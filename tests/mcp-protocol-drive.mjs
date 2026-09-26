@@ -190,7 +190,10 @@ try {
     const p = schema?.properties ?? {};
     return p.utc?.maxLength === 64 && p.latitude?.minimum === -90 && p.latitude.maximum === 90
       && p.longitude?.minimum === -180 && p.longitude.maximum === 180
-      && JSON.stringify(p.houseSystem?.enum) === JSON.stringify(['placidus', 'whole'])
+      && JSON.stringify(p.houseSystem?.enum) === JSON.stringify([
+        'placidus', 'whole', 'porphyry', 'equal', 'vehlow', 'koch', 'regiomontanus',
+        'campanus', 'topocentric', 'alcabitius', 'morinus', 'meridian',
+      ])
       && String(p.utc?.description).includes('1800-01-01');
   })());
   // An OR over two different sentences is why this passed while the one tool
@@ -332,7 +335,7 @@ try {
     ['an unknown extra argument', () => attempt('calculate_natal_chart', { ...LONDON, houseSystemm: 'whole' })],
     ['a wrongly typed argument', () => attempt('calculate_natal_chart', { ...LONDON, latitude: '51.5' })],
     ['an out-of-range latitude', () => attempt('calculate_natal_chart', { ...LONDON, latitude: 95 })],
-    ['an unsupported house system', () => attempt('calculate_natal_chart', { ...LONDON, houseSystem: 'koch' })],
+    ['an unsupported house system', () => attempt('calculate_natal_chart', { ...LONDON, houseSystem: 'gauquelin' })],
     ['a date before the supported epoch', () => attempt('calculate_natal_chart', { ...LONDON, utc: '1799-12-31T00:00:00Z' })],
     ['a date that does not exist', () => attempt('calculate_natal_chart', { ...LONDON, utc: '2001-02-29T00:00:00Z' })],
     ['a wall time with no zone', () => attempt('calculate_natal_chart', { ...LONDON, utc: '1990-06-15T13:30:00' })],

@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { HOUSE_SYSTEMS as ENGINE_HOUSE_SYSTEMS } from '@zodiacs/engine';
 import {
   EPOCH_MAX_UTC, EPOCH_MIN_UTC, HOUSE_SYSTEMS, LIMITS, REFERENCES,
   parseCoordinates, parseInstant, polarAngleExclusion, recordTooLarge, resultTooLarge,
@@ -138,6 +139,7 @@ describe('the size gates', () => {
   });
 });
 
-it('offers exactly the house systems the engine computes', () => {
-  expect([...HOUSE_SYSTEMS]).toEqual(['placidus', 'whole']);
+it('offers exactly the house systems the engine computes, the default first', () => {
+  expect([...HOUSE_SYSTEMS].sort()).toEqual([...ENGINE_HOUSE_SYSTEMS].sort());
+  expect(HOUSE_SYSTEMS[0]).toBe('placidus');
 });

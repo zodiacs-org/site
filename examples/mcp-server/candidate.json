@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "package": "zodiacs-mcp-server",
-  "version": "0.1.0-rc.8",
+  "version": "0.1.0-rc.9",
   "status": "Unpublished release candidate. Not on npm, under this or any other name. Install from the versioned archive at https://zodiacs.org/examples/, whose SHA-256 is published beside it.",
   "sourceRepository": "https://github.com/ZodiacsOfficial/site",
   "sourcePaths": [
@@ -17,11 +17,11 @@
     "note": "Inlined into server.mjs by esbuild because neither is published: the engine is an unpublished candidate, and the comparison is TypeScript in the site repository. Bundling is what keeps one copy of the comparison rules rather than two.",
     "engine": {
       "package": "@zodiacs/engine",
-      "version": "0.1.1-rc.8",
+      "version": "0.1.1-rc.9",
       "releaseStatus": "unpublished-candidate",
       "sourceRepository": "https://github.com/zodiacs-org/engine",
       "sourcePackagePath": "",
-      "artifactSha256": "3b934376fa53983cbdd7eb1a6ecf0eb0d50fbc49df01bc610b20c63bd5d12be6"
+      "artifactSha256": "bb5592302b1fa542cc745a9410b5a77faf49bbf4e205347ab771810efc300a20"
     },
     "ephemeris": {
       "name": "astronomy-engine",
@@ -63,6 +63,6 @@
     "receipt": "zodiacs.calculation-receipt.draft-v1",
     "note": "Zodiacs-owned draft vocabulary, not an industry interoperability standard."
   },
-  "supersedes": "0.1.0-rc.7",
-  "changedSince": "rc.1 through rc.7 are unchanged and still downloadable; this is a separate immutable archive. The engine inside it moves from 0.1.1-rc.7 to 0.1.1-rc.8, which takes \u0394T from an observed model with a band instead of astronomy-engine's 2004 polynomial: in 2026 \u0394T is 69.20 s where rc.7 used 75.50 s, and positions move by the difference, the Moon by about 3.4\u2033. Every calculation record now carries the \u0394T it was computed with and names its ephemeris, under a new conventions set; records written by rc.3 to rc.7 still parse and compare. A chart outside 1800\u20132200 carries a new outside-reference-span flag; this adapter's epoch lies inside that span, so none of its own charts does. The comparison changes where records now carry \u0394T: it lists every field of each record's \u0394T, a different moment accounts for a different modelled value, a pinned or otherwise different \u0394T at one instant is named as a cause of the positions it moves, and a record whose caller pinned \u0394T is recalculated with that pin, as the engine's own replay does. A record naming rc.7 is not re-run on this engine, so its differences stay hypotheses."
+  "supersedes": "0.1.0-rc.8",
+  "changedSince": "rc.1 through rc.8 are unchanged and still downloadable; this is a separate immutable archive. The engine inside it moves from 0.1.1-rc.8 to 0.1.1-rc.9, which adds nine house systems for twelve: whole sign, Placidus and Porphyry as before, and Koch, Regiomontanus, Campanus, Topocentric, Alcabitius, Equal, Vehlow, Meridian and Morinus, each as Swiss Ephemeris defines it. calculate_natal_chart now offers all twelve; it offered placidus and whole before. Koch, like Placidus, is undefined inside the polar circle, where the engine uses whole sign and the result reports both the request and the system used. Positions, angles and the records' conventions are unchanged, so records written by rc.3 to rc.8 still parse and compare. A record naming rc.8 is not re-run on this engine, so its differences stay hypotheses."
 }

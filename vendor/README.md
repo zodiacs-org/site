@@ -1,30 +1,41 @@
 # Vendored @zodiacs/engine artifact
 
-`zodiacs-engine-0.1.1-rc.8.tgz` is the exact npm pack artifact consumed by this
+`zodiacs-engine-0.1.1-rc.9.tgz` is the exact npm pack artifact consumed by this
 site. The standalone starter keeps its separate engine `0.1.1-rc.3` pin and
 immutable project archive. The optional ownership SDK remains separate.
 
-- Package: `@zodiacs/engine@0.1.1-rc.8` (unpublished candidate)
+- Package: `@zodiacs/engine@0.1.1-rc.9` (unpublished candidate)
 - Source repository: `https://github.com/zodiacs-org/engine` (the package at the
   repository root; up to rc.6 it was `packages/engine` of `zodiacs-org/sdk`)
-- Source commit: `352ea49d9e1d7b07975a050bb4877acc454f86f5`
-- Artifact carrier commit: `a5b7d1d19a1c79465b2970b9ae948a8b5721a7c4`
-- Artifact SHA-256: `3b934376fa53983cbdd7eb1a6ecf0eb0d50fbc49df01bc610b20c63bd5d12be6`
-- [Immutable anonymous download](https://raw.githubusercontent.com/zodiacs-org/engine/a5b7d1d19a1c79465b2970b9ae948a8b5721a7c4/artifacts/zodiacs-engine-0.1.1-rc.8.tgz)
-- Archive: 30 files, 51,748 packed bytes, 173,105 unpacked bytes.
+- Source commit: `82aad2fcc9b204a687e0b67f709681e62f9e889a`
+- Artifact carrier commit: `fa1050e033a197b117868ce546d85352bff35376`
+- Artifact SHA-256: `bb5592302b1fa542cc745a9410b5a77faf49bbf4e205347ab771810efc300a20`
+- [Immutable anonymous download](https://raw.githubusercontent.com/zodiacs-org/engine/fa1050e033a197b117868ce546d85352bff35376/artifacts/zodiacs-engine-0.1.1-rc.9.tgz)
+- Archive: 30 files, 55,576 packed bytes, 188,488 unpacked bytes.
 
 The public engine archive was downloaded without credentials and checked against
-the recorded SHA-256. The candidate runs every calculation on observed ΔT with a
-1-σ band (model `zodiacs-deltat/1`, table of 2026-09-24), finds longitude
-crossings with one solver that refuses instead of throwing, flags charts outside
-1800–2200, and depends on exactly `astronomy-engine` 2.1.19. Receipts name the
-ephemeris and record ΔT under a new conventions set; receipts from rc.3 to rc.7
-keep theirs and stay readable. An imported receipt remains an untrusted claim.
+the recorded SHA-256. The candidate adds nine house systems to whole sign,
+Placidus and Porphyry, for twelve: Koch, Regiomontanus, Campanus, Topocentric,
+Alcabitius, Equal, Vehlow, Meridian and Morinus. Nothing else it computes
+moves, and its receipt conventions are rc.8's. An imported receipt remains an
+untrusted claim.
 
-New checks of this artifact are recorded in [the rc.8 adoption evidence](../docs/platform/evidence/site-engine-rc8/README.md).
+New checks of this artifact are recorded in [the rc.9 adoption evidence](../docs/platform/evidence/site-engine-rc9/README.md).
 Earlier evidence and immutable artifacts retain their original identities.
 The site pin is not evidence of npm publication, production deployment,
 required human review, or external adoption.
+
+## Previous rc.8 site candidate
+
+`zodiacs-engine-0.1.1-rc.8.tgz` and its checksum remain unchanged. Source commit:
+`352ea49d9e1d7b07975a050bb4877acc454f86f5` (root of `zodiacs-org/engine`);
+immutable artifact carrier: `a5b7d1d19a1c79465b2970b9ae948a8b5721a7c4`; SHA-256:
+`3b934376fa53983cbdd7eb1a6ecf0eb0d50fbc49df01bc610b20c63bd5d12be6`. It ran
+every calculation on observed ΔT with a 1-σ band (model `zodiacs-deltat/1`),
+found longitude crossings with one solver that refuses instead of throwing,
+flagged charts outside 1800–2200 and named its ephemeris in receipts, all kept
+in rc.9. Its original [rc.8 evidence](../docs/platform/evidence/site-engine-rc8/README.md)
+retains that package identity and does not certify rc.9.
 
 ## Previous rc.7 site candidate
 
@@ -36,7 +47,7 @@ an aspect applying from its orb's rate, took speeds as the derivative of the
 reported longitude, built the angles on the true obliquity of date, put the
 Placidus limit at the polar circle and added Porphyry houses, all kept in rc.8.
 Its original [rc.7 evidence](../docs/platform/evidence/site-engine-rc7/README.md)
-retains that package identity and does not certify rc.8.
+retains that package identity and does not certify rc.8 or rc.9.
 
 ## Previous rc.6 site candidate
 

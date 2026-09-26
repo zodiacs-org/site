@@ -11,8 +11,8 @@ constraint that draft set.
 **Availability — passed.** `https://zodiacs.org/developers/mcp/` returns 200 in
 production and publishes a pinned archive whose digest matches what the page
 prints. The install instructions point at something real. Every expected value
-below was measured against **0.1.0-rc.8**. Before sending, check that the page
-still advertises rc.8; if a later archive has shipped, re-measure steps 2 to 4
+below was measured against **0.1.0-rc.9**. Before sending, check that the page
+still advertises rc.9; if a later archive has shipped, re-measure steps 2 to 4
 against whatever it names, because the `reproduced` wording and the withholding
 have both changed between candidates before.
 
@@ -119,7 +119,7 @@ Ask your assistant, in your own words:
 Synthetic: round public coordinates for New York, on a date chosen for what it
 exercises. Nobody's birth details.
 
-Checks, on rc.8 with engine 0.1.1-rc.8 — `get_capabilities` will tell you what
+Checks, on rc.9 with engine 0.1.1-rc.9 — `get_capabilities` will tell you what
 you actually have:
 
 - twelve bodies, four angles, twelve cusps;
@@ -176,7 +176,7 @@ comparison as `left` and `right`.
   "houseSystem": "whole", "output": "record" }
 ```
 
-A correct answer, in full — this is what rc.8 returns:
+A correct answer, in full — this is what rc.9 returns:
 
 - `identical: false`, and
   `counts: { differences: 15, substantive: 15, displayOnly: 0, explanations: 1 }`.
@@ -195,7 +195,7 @@ A correct answer, in full — this is what rc.8 returns:
   covering all fifteen rows:
 
   > Each chart's own recorded values were reproduced from its own declared inputs
-  > on engine 0.1.1-rc.8, and changing only the house system turns each one into
+  > on engine 0.1.1-rc.9, and changing only the house system turns each one into
   > the other, in both directions.
 
   Read that sentence for what it claims and what it does not. It says the engine
@@ -372,3 +372,13 @@ these checks: the chart summary's `engine` field now also names the ephemeris,
 `astronomy-engine` 2.1.19, and the comparison now lists and explains
 differences in ΔT, which two records of one instant, each taking ΔT from the
 engine's model, do not have.
+
+And again against `zodiacs-mcp-server-0.1.0-rc.9.tgz` (sha256 `a1b86029…`), from
+a clean extraction of that archive before it shipped. Its engine, 0.1.1-rc.9,
+adds nine house systems and moves no position, angle or cusp that rc.8
+computed, and the adapter now offers all twelve systems where it offered two.
+Only the engine the `reproduced` sentence names changed. Everything else came
+back unchanged: the Sun and ascendant in step 2, the counts, the fifteen rows,
+`cusp-1`'s delta, the whole-sign cusps, the two limits, the refusal text,
+fourteen installed packages and seventeen verifier lines. These checks use
+Placidus and whole sign, so they do not exercise the new systems.

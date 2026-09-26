@@ -57,7 +57,7 @@ happen against the `.tgz` you still have:
 ```sh
 # from the directory holding the archive, against the SHA-256 on the page above
 node -e 'const e=process.argv[2];const a=require("crypto").createHash("sha256").update(require("fs").readFileSync(process.argv[1])).digest("hex");if(a!==e){console.error("Mismatch. Delete this copy and install again from the page.\n  expected "+e+"\n  got      "+a);process.exit(1)}console.log("Archive verified: "+a)' \
-  zodiacs-mcp-server-0.1.0-rc.8.tgz '<the SHA-256 published on the page>'
+  zodiacs-mcp-server-0.1.0-rc.9.tgz '<the SHA-256 published on the page>'
 ```
 
 Then, inside the extracted directory:
@@ -144,7 +144,7 @@ first rather than guessing at supported options.
 | `utc` | string, required | ISO-8601 with an explicit zone: `1990-06-15T13:30:00Z` or `1990-06-15T19:00:00+05:30`. A wall time with no zone is refused, not assumed to be UTC. Within 1800-01-01 to 2199-12-31. |
 | `latitude` | number | −90 to 90. Supply both coordinates or neither. Exactly 90 or −90 needs `timeKnown: false`: the engine does not compute angles at the poles, which its own records state as `angleExclusions`. |
 | `longitude` | number | −180 to 180. |
-| `houseSystem` | `placidus` \| `whole` | Default `placidus`. |
+| `houseSystem` | `placidus` \| `whole` \| `porphyry` \| `equal` \| `vehlow` \| `koch` \| `regiomontanus` \| `campanus` \| `topocentric` \| `alcabitius` \| `morinus` \| `meridian` | Default `placidus`. Placidus and Koch fall back to whole sign inside the polar circle. |
 | `timeKnown` | boolean | Default `true`. `false` makes `utc` a reference instant and suppresses angles and houses. It does not imply noon. |
 | `reference` | `supplied-instant` \| `utc-noon` | Recorded in the calculation record, not in the summary. Omitting it is the usual case and infers nothing. `utc-noon` means no birth time was known and midday UTC stands in, so it needs `timeKnown: false` and `utc` at exactly `12:00:00Z`. The envelope's third value, `local-noon`, is not offered: it requires a captured local date, wall time, zone and offset, and this adapter resolves no timezones. |
 | `output` | `summary` \| `record` | Default `summary`. |
@@ -213,7 +213,7 @@ original: the cause stays a hypothesis and the limit is stated.
 ```
 
 ```json
-{ "engine": { "name": "@zodiacs/engine", "version": "0.1.1-rc.8",
+{ "engine": { "name": "@zodiacs/engine", "version": "0.1.1-rc.9",
               "ephemeris": { "name": "astronomy-engine", "version": "2.1.19" } },
   "timeKnown": true,
   "houses": { "requested": "placidus", "actual": "placidus", "absenceReason": null },
@@ -263,7 +263,7 @@ are separate fields, so a fallback is visible rather than silent.
     { "id": "house-system", "evidence": "reproduced",
       "statement": "The different house system accounts for the house cusps.",
       "covers": [ "cusp-1", "…cusp-12", "houses-requested", "houses-actual", "houses-system" ],
-      "detail": "Each chart's own recorded values were reproduced from its own declared inputs on engine 0.1.1-rc.8, and changing only the house system turns each one into the other, in both directions." } ],
+      "detail": "Each chart's own recorded values were reproduced from its own declared inputs on engine 0.1.1-rc.9, and changing only the house system turns each one into the other, in both directions." } ],
   "limits": [
     "Only the house system is re-run here. A different moment or place is never promoted past a hypothesis, even when both records name the same engine.",
     "Both receipts name the same engine, so agreement between them would show consistency, not independent astronomical accuracy." ],
@@ -286,8 +286,8 @@ not settle, and it is worth reading even when everything else looks resolved.
 
 | | |
 | --- | --- |
-| adapter | `0.1.0-rc.8`, unpublished candidate |
-| engine | `@zodiacs/engine` `0.1.1-rc.8`, unpublished candidate, bundled into `server.mjs` |
+| adapter | `0.1.0-rc.9`, unpublished candidate |
+| engine | `@zodiacs/engine` `0.1.1-rc.9`, unpublished candidate, bundled into `server.mjs` |
 | ephemeris | `astronomy-engine` 2.1.19, inside the engine |
 | MCP SDK | `@modelcontextprotocol/server` 2.0.0, pinned exactly, installed from npm |
 | validation | `zod` 4.6.5, pinned exactly |
@@ -314,8 +314,6 @@ the engine artifact's own SHA-256 and the source paths every part was built from
   not of the claim that two records came from independent software. Two records
   from one engine agreeing shows consistency, not independent astronomical
   accuracy.
-- **Only two house systems**, `placidus` and `whole`, because those are the two
-  the engine computes.
 - **No body-to-house mapping.** The summary returns the cusps and the body
   longitudes; which house a body falls in is left to the caller, and getting it
   right needs the same wraparound care as everything else here. Worth adding;

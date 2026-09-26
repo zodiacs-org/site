@@ -6,27 +6,27 @@
     "script": "tests/phase1-acceptance-drive.mjs",
     "contractVersion": 4
   },
-  "capturedAt": "2026-09-26T09:02:27.048Z",
+  "capturedAt": "2026-09-26T10:45:16.052Z",
   "browser": "Chromium 149.0.7827.55",
   "dailyDate": "2026-09-26",
   "publicationCanonicalSha256": "8d332ad51e6bdaf922d806128ddd88c7631549bb9c1fc5eb22cd3028f5d539a2",
-  "templateSourceSha256": "81ac8a4e469d7a50557b1bb3719fa2f3207d21063a0aac328a41773e3253c4c6",
+  "templateSourceSha256": "6452847ddd2b82601817dbea1f372d28e8c92e41f7534e88db5084e974fc9871",
   "renderPayloadSha256": {
     "daily": "e05e3c4f5ce359d17b2222ee336e4867d2482d261fd69caff5bb00e63d52345d",
     "dailyPublication": "2ef601c18b79da19450f35984256d6656c895b2265a3f34be2d7d30587bcb88e",
-    "dailyPublicationManifest": "6da83684d4224ec98d2f3d20279ef6282c99bd2b772143418cd816fcdde77f8a",
+    "dailyPublicationManifest": "99623ad1f1d0e0de18cd9be079bf6d73463ae767b24dde3a9c2d3df939cb3ff5",
     "horoscopeProgram": "703ae74bd9c4d0dbf0ed0d2fd4beb397adcc9aa2ff78734276e88ec7221eb36c"
   },
   "buildReceipt": {
     "schema": "zodiacs.phase1-build-receipt.v1",
-    "builtAt": "2026-09-26T09:01:54.787Z",
-    "templateSourceSha256": "81ac8a4e469d7a50557b1bb3719fa2f3207d21063a0aac328a41773e3253c4c6",
+    "builtAt": "2026-09-26T10:42:08.432Z",
+    "templateSourceSha256": "6452847ddd2b82601817dbea1f372d28e8c92e41f7534e88db5084e974fc9871",
     "dailyDate": "2026-09-26",
     "publicationCanonicalSha256": "8d332ad51e6bdaf922d806128ddd88c7631549bb9c1fc5eb22cd3028f5d539a2",
     "renderPayloadSha256": {
       "daily": "e05e3c4f5ce359d17b2222ee336e4867d2482d261fd69caff5bb00e63d52345d",
       "dailyPublication": "2ef601c18b79da19450f35984256d6656c895b2265a3f34be2d7d30587bcb88e",
-      "dailyPublicationManifest": "6da83684d4224ec98d2f3d20279ef6282c99bd2b772143418cd816fcdde77f8a",
+      "dailyPublicationManifest": "99623ad1f1d0e0de18cd9be079bf6d73463ae767b24dde3a9c2d3df939cb3ff5",
       "horoscopeProgram": "703ae74bd9c4d0dbf0ed0d2fd4beb397adcc9aa2ff78734276e88ec7221eb36c"
     }
   },

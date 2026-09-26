@@ -13,7 +13,7 @@
 import { NATAL_ENVELOPE_LIMITS } from '@zodiacs/engine/receipt';
 
 /** This adapter's own version, distinct from the engine's. */
-export const ADAPTER_VERSION = '0.1.0-rc.8';
+export const ADAPTER_VERSION = '0.1.0-rc.9';
 export const ADAPTER_NAME = 'zodiacs-mcp-server';
 
 /**
@@ -28,8 +28,14 @@ export const EPOCH_MAX_UTC = '2199-12-31T23:59:59.999Z';
 const EPOCH_MIN = Date.parse(EPOCH_MIN_UTC);
 const EPOCH_MAX = Date.parse(EPOCH_MAX_UTC);
 
-/** The engine's two house systems. Anything else is refused, not substituted. */
-export const HOUSE_SYSTEMS = Object.freeze(['placidus', 'whole'] as const);
+/**
+ * The engine's twelve house systems, the default first. Anything else is
+ * refused, not substituted.
+ */
+export const HOUSE_SYSTEMS = Object.freeze([
+  'placidus', 'whole', 'porphyry', 'equal', 'vehlow', 'koch', 'regiomontanus',
+  'campanus', 'topocentric', 'alcabitius', 'morinus', 'meridian',
+] as const);
 export type HouseSystemName = (typeof HOUSE_SYSTEMS)[number];
 
 /**

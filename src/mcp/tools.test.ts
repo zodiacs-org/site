@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { ENGINE_VERSION, REFERENCE_SPAN } from '@zodiacs/engine';
+import { ENGINE_VERSION, REFERENCE_SPAN, natalChart } from '@zodiacs/engine';
 import { parseNatalEnvelope } from '@zodiacs/engine/receipt';
-import { EPOCH_MAX_UTC, EPOCH_MIN_UTC } from './bounds';
+import { EPOCH_MAX_UTC, EPOCH_MIN_UTC, HOUSE_SYSTEMS } from './bounds';
 import {
   COMPARE_INPUT, NATAL_INPUT, PRIVACY, UNSUPPORTED,
   calculateNatalChart, compareCalculationRecords, describeCapabilities,
@@ -41,7 +41,7 @@ describe('the schemas a host reads before calling anything', () => {
 
   it('applies its bounds in the schema, not only in the handler', () => {
     expect(NATAL_INPUT.safeParse({ ...LONDON, latitude: 95 }).success).toBe(false);
-    expect(NATAL_INPUT.safeParse({ ...LONDON, houseSystem: 'koch' }).success).toBe(false);
+    expect(NATAL_INPUT.safeParse({ ...LONDON, houseSystem: 'gauquelin' }).success).toBe(false);
     expect(NATAL_INPUT.safeParse({ ...LONDON, utc: 'x'.repeat(65) }).success).toBe(false);
     expect(COMPARE_INPUT.safeParse({ left: '', right: '{}' }).success).toBe(false);
   });
@@ -107,6 +107,21 @@ describe('calculate_natal_chart', () => {
     const value = outcome.ok ? (outcome.value as Record<string, any>) : {};
     expect(value.houses.requested).toBe('placidus');
     expect(value.houses.actual).toBe('whole');
+    expect(value.resultFlags).toContain('polar-fallback');
+  });
+
+  it.each(HOUSE_SYSTEMS)('computes %s as the engine does, in a record the engine accepts', (system) => {
+    const outcome = natal({ ...LONDON, houseSystem: system });
+    const value = outcome.ok ? (outcome.value as Record<string, any>) : {};
+    expect(value.houses).toEqual({ requested: system, actual: system, absenceReason: null });
+    expect(value.cusps).toEqual(natalChart({ ...LONDON, houseSystem: system }).houses?.cusps);
+    expect(parseNatalEnvelope(recordFor({ ...LONDON, houseSystem: system })).ok).toBe(true);
+  });
+
+  it('falls back from Koch as it does from Placidus, and says so', () => {
+    const outcome = natal({ ...POLAR, houseSystem: 'koch' });
+    const value = outcome.ok ? (outcome.value as Record<string, any>) : {};
+    expect(value.houses).toEqual({ requested: 'koch', actual: 'whole', absenceReason: null });
     expect(value.resultFlags).toContain('polar-fallback');
   });
 

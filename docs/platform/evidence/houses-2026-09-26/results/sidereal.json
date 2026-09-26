@@ -1,0 +1,77 @@
+{
+ "swisseph": "2.10.03",
+ "pyerfa": "2.0.1.5",
+ "unit": "arcseconds",
+ "rows": [
+  {
+   "utc": "1820-06-15T07:13:00.000Z",
+   "engineMinusErfa": -0.056,
+   "swissMinusErfa": 0.34
+  },
+  {
+   "utc": "1860-06-15T07:13:00.000Z",
+   "engineMinusErfa": 0.056,
+   "swissMinusErfa": -0.0
+  },
+  {
+   "utc": "1900-06-15T07:13:00.000Z",
+   "engineMinusErfa": 0.018,
+   "swissMinusErfa": -0.0
+  },
+  {
+   "utc": "1950-06-15T07:13:00.000Z",
+   "engineMinusErfa": 0.02,
+   "swissMinusErfa": -0.001
+  },
+  {
+   "utc": "2000-06-15T07:13:00.000Z",
+   "engineMinusErfa": -0.085,
+   "swissMinusErfa": -0.0
+  },
+  {
+   "utc": "2040-06-15T07:13:00.000Z",
+   "engineMinusErfa": -0.009,
+   "swissMinusErfa": 0.001
+  },
+  {
+   "utc": "2049-06-15T07:13:00.000Z",
+   "engineMinusErfa": 0.019,
+   "swissMinusErfa": 0.0
+  },
+  {
+   "utc": "2051-06-15T07:13:00.000Z",
+   "engineMinusErfa": 0.007,
+   "swissMinusErfa": -1.908
+  },
+  {
+   "utc": "2060-06-15T07:13:00.000Z",
+   "engineMinusErfa": 0.059,
+   "swissMinusErfa": -1.902
+  },
+  {
+   "utc": "2080-06-15T07:13:00.000Z",
+   "engineMinusErfa": 0.113,
+   "swissMinusErfa": -1.865
+  },
+  {
+   "utc": "2100-06-15T07:13:00.000Z",
+   "engineMinusErfa": -0.003,
+   "swissMinusErfa": -1.792
+  },
+  {
+   "utc": "2130-06-15T07:13:00.000Z",
+   "engineMinusErfa": -0.069,
+   "swissMinusErfa": -1.609
+  },
+  {
+   "utc": "2160-06-15T07:13:00.000Z",
+   "engineMinusErfa": -0.058,
+   "swissMinusErfa": -1.306
+  },
+  {
+   "utc": "2190-06-15T07:13:00.000Z",
+   "engineMinusErfa": 0.084,
+   "swissMinusErfa": -0.864
+  }
+ ]
+}

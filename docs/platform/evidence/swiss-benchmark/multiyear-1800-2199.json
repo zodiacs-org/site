@@ -1,6 +1,6 @@
 {
  "what": "@zodiacs/engine against Swiss Ephemeris, apparent geocentric ecliptic of date, tropical, every ten days 1800-2199 at 12:00 UTC",
- "engine": "0.1.1-rc.8",
+ "engine": "0.1.1-rc.9",
  "node": "v22.22.2",
  "swissBinding": "2.10.03",
  "swissBackendsObserved": [
@@ -11,7 +11,7 @@
  "from": "1800-01-01",
  "to": "2199-12-31",
  "instants": 14610,
- "zodiacsDumpSha256": "9428745f2ac8655813f987328e9ddd9cd0bc9753a6b172bc3b322cc955a2fad7",
+ "zodiacsDumpSha256": "3ccb31b035b7e25eb1e866e5627ea398b234295ad864ccd360467067a6c87a4b",
  "units": "arcseconds; absolute differences, engine minus Swiss",
  "clocks": {
   "sameUt": "both at the same UT; includes the two programs' delta-T disagreement, as a chart would",

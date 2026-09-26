@@ -39,9 +39,10 @@ Ephemeris* for the Moon. Zodiacs did not write those models.
 | Positions | Swiss 2.10.03 / `.se1`, every tenth day 1800–2199, ten bodies and the true node | 22.92″ to 2026 at the same UT (Venus, 1878); 29.12″ to 2199 at the same TT (Pluto) | [`multiyear-1800-2199.json`](../platform/evidence/swiss-benchmark/multiyear-1800-2199.json) |
 | Clock (ΔT) | IERS EOP 20 C04 and finals2000A, twelve preregistered dates and every day from 1962 | 0.031 s on the twelve dates; 0.083 s worst day | [`../platform/evidence/deltat-2026-09-25/`](../platform/evidence/deltat-2026-09-25/) |
 | Angles and houses | Swiss `houses_ex`: three polar cases and five Placidus cases in the suite; the audit's latitude grid | 1.58″ worst angle and exact whole-sign cusps in the polar cases; ascendant within 6.4″ of an ERFA arbiter on the grid since rc.7 (up to 512″ near 66° before) | [`swiss-node-polar/`](swiss-node-polar/), [audit](../platform/evidence/engine-audit-2026-09-22/LEDGER.md) |
+| Houses, twelve systems | Swiss 2.10.03 `swe_houses_armc` given the same sidereal time, latitude and obliquity: a 5,616-case ladder from 55° to 66.6° and 20,000 draws over every latitude; `swe_houses_ex` end to end | 0.0096″ given the same inputs (Placidus; the other eleven 0.00005″ or less); end to end from 1850 to 2049, 1.95″ broad and one Koch case of 353 on the ladder at 3.73″ | [`../platform/evidence/houses-2026-09-26/`](../platform/evidence/houses-2026-09-26/) |
 | Local time | host IANA/ICU, two Node majors and a browser | no disagreement in the cases run (a pass, not a residual) | [`../platform/evidence/site-engine-rc6/`](../platform/evidence/site-engine-rc6/) |
 | Event search | Swiss hourly scans, independent roots | one contract **failed-incomplete** | [`transit-windows/`](transit-windows/), [`swiss-lunar-return/`](swiss-lunar-return/) |
-| Runtime support | Node 22.22.2 and Node 24.21.0 for rc.8 and rc.7; Node 22.23.2, Node 24.19.0 and Chrome 152 for rc.6 | parity in the cases run (a pass, not a residual) | [`../platform/evidence/site-engine-rc8/`](../platform/evidence/site-engine-rc8/), [`../platform/evidence/site-engine-rc7/`](../platform/evidence/site-engine-rc7/), [`../platform/evidence/site-engine-rc6/`](../platform/evidence/site-engine-rc6/) |
+| Runtime support | Node 22.22.2 and Node 24.21.0 for rc.9, rc.8 and rc.7; Node 22.23.2, Node 24.19.0 and Chrome 152 for rc.6 | parity in the cases run (a pass, not a residual) | [`../platform/evidence/site-engine-rc9/`](../platform/evidence/site-engine-rc9/), [`../platform/evidence/site-engine-rc8/`](../platform/evidence/site-engine-rc8/), [`../platform/evidence/site-engine-rc7/`](../platform/evidence/site-engine-rc7/), [`../platform/evidence/site-engine-rc6/`](../platform/evidence/site-engine-rc6/) |
 
 ## 1. Positions
 
@@ -178,9 +179,39 @@ Placidus at the same limit, but falls back to **whole sign** and sets
 Both behaviours are compared against the same Swiss `W` tuples, so the
 fallback is checked rather than excused.
 
+Since rc.9 the engine offers twelve systems. Koch, Regiomontanus, Campanus,
+Topocentric (Polich–Page), Alcabitius, Equal, Vehlow, Meridian (axial
+rotation) and Morinus join whole sign, Placidus and Porphyry, each following
+the definition Swiss uses. The 2026-09-26 record measures them against Swiss
+in two ways:
+
+- **Given the same inputs.** Each system and Swiss's `swe_houses_armc` get the
+  same sidereal time, latitude and obliquity. Every system agrees to 0.0096″
+  or better: Placidus, which iterates, reaches 0.0096″, and the other eleven
+  0.00005″ or less. That covers a 5,616-case ladder from 55° to 66.6° in both
+  hemispheres and 20,000 draws over every latitude. Polar status agrees in
+  every case.
+- **End to end.** Each side computes from a UTC instant with its own sidereal
+  time and obliquity. From 1850 to 2049, where the two programs' sidereal
+  times agree, eleven systems are within 3″ of `swe_houses_ex`. Koch reaches
+  3.73″ in one ladder case of 353, at 65.6° N. Given Swiss's own inputs there,
+  it agrees to 0.0000000004″, so the 3.73″ is Koch magnifying a small input
+  difference near the polar circle.
+
+Koch, like Placidus, is undefined inside the polar circle; it falls back to
+whole sign with `polar-fallback`. There Regiomontanus, Campanus, Topocentric,
+Equal and Vehlow turn with the ascendant, as Swiss's do.
+
+Outside 1850–2050 Swiss's sidereal time switches to a long-term model. At 2051
+it is 1.908″ from ERFA's IAU 2006/2000A value, where the engine's is within
+0.113″ at every date sampled from 1820 to 2190. End-to-end differences there
+measure that model rather than the houses
+([`houses-2026-09-26/`](../platform/evidence/houses-2026-09-26/README.md)).
+
 Not established: exact geographic poles and degenerate horizon intersections
 remain outside verified scope; Swiss's house model is itself a convention, so
-cusp agreement is convention agreement.
+cusp agreement is convention agreement. The package and the MCP adapter offer
+all twelve systems; the site's own forms still offer whole sign and Placidus.
 
 ## 3. Local time
 
@@ -307,9 +338,9 @@ tested, not proven complete.
 ## 5. Runtime support
 
 ESM only, TypeScript declarations included, no CommonJS export. The manifest
-declares Node ≥18. What was actually executed is narrower: for rc.8, Node
-22.22.2 and 24.21.0 for the parity matrix and the public-download consumer
-check; for rc.6, Node 22.23.2 and 24.19.0, and Chrome 152 for the browser run,
+declares Node ≥18. What was actually executed is narrower: for rc.9 and rc.8,
+Node 22.22.2 and 24.21.0 for the parity matrix and the public-download
+consumer check; for rc.6, Node 22.23.2 and 24.19.0, and Chrome 152 for the browser run,
 with thirteen network, storage and cookie observer negative controls showing
 zero calls during calculation.
 
@@ -409,3 +440,10 @@ here as the record:
 - the prototype: "where this engine, on its own ΔT, reaches 64.8″ (about 0.9″
   would remain with the same correction)";
 - reproducing it: "(astronomy-engine's 202.65 s is reproducible offline)".
+
+Vendoring engine 0.1.1-rc.9 on 2026-09-26 corrected these in place. Their
+earlier wording is kept here as the record:
+
+- the table's runtime row: "Node 22.22.2 and Node 24.21.0 for rc.8 and rc.7";
+- section 5: "for rc.8, Node 22.22.2 and 24.21.0 for the parity matrix and the
+  public-download consumer check".

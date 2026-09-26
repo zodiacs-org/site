@@ -74,7 +74,7 @@ export const NATAL_INPUT = z.strictObject({
   longitude: z.number().min(-180).max(180).optional()
     .describe('Degrees east, -180 to 180. Supply both coordinates or neither.'),
   houseSystem: z.enum(HOUSE_SYSTEMS).default('placidus')
-    .describe('Requested house system. Both the request and what the engine could actually use are reported, which differ at high latitudes.'),
+    .describe('Requested house system. Both the request and what the engine could actually use are reported, which differ inside the polar circle: Placidus and Koch are undefined there, and the engine uses whole sign.'),
   timeKnown: z.boolean().default(true)
     .describe('False means utc is a reference instant rather than a birth time, which suppresses angles and houses. It does not imply noon.'),
   reference: z.enum(REFERENCES).optional()

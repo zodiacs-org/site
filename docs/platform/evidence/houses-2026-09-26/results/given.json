@@ -1,0 +1,202 @@
+{
+ "swisseph": "2.10.03",
+ "unit": "arcseconds, largest of the twelve cusps per case",
+ "sets": {
+  "broad": {
+   "alcabitius": {
+    "compared": 20000,
+    "max": 4.93e-05,
+    "p50": 2.05e-10,
+    "bothUndefined": 0,
+    "onlyEngineUndefined": 0,
+    "onlySwissUndefined": 0
+   },
+   "campanus": {
+    "compared": 20000,
+    "max": 1.64e-09,
+    "p50": 2.05e-10,
+    "bothUndefined": 0,
+    "onlyEngineUndefined": 0,
+    "onlySwissUndefined": 0
+   },
+   "equal": {
+    "compared": 20000,
+    "max": 1.64e-09,
+    "p50": 1.02e-10,
+    "bothUndefined": 0,
+    "onlyEngineUndefined": 0,
+    "onlySwissUndefined": 0
+   },
+   "koch": {
+    "compared": 14801,
+    "max": 3.68e-09,
+    "p50": 2.05e-10,
+    "bothUndefined": 5199,
+    "onlyEngineUndefined": 0,
+    "onlySwissUndefined": 0
+   },
+   "meridian": {
+    "compared": 20000,
+    "max": 5.12e-10,
+    "p50": 2.05e-10,
+    "bothUndefined": 0,
+    "onlyEngineUndefined": 0,
+    "onlySwissUndefined": 0
+   },
+   "morinus": {
+    "compared": 20000,
+    "max": 8.19e-10,
+    "p50": 2.05e-10,
+    "bothUndefined": 0,
+    "onlyEngineUndefined": 0,
+    "onlySwissUndefined": 0
+   },
+   "placidus": {
+    "compared": 14801,
+    "max": 0.0096,
+    "p50": 3.88e-07,
+    "bothUndefined": 5199,
+    "onlyEngineUndefined": 0,
+    "onlySwissUndefined": 0
+   },
+   "porphyry": {
+    "compared": 20000,
+    "max": 1.43e-09,
+    "p50": 2.05e-10,
+    "bothUndefined": 0,
+    "onlyEngineUndefined": 0,
+    "onlySwissUndefined": 0
+   },
+   "regiomontanus": {
+    "compared": 20000,
+    "max": 2.86e-09,
+    "p50": 2.05e-10,
+    "bothUndefined": 0,
+    "onlyEngineUndefined": 0,
+    "onlySwissUndefined": 0
+   },
+   "topocentric": {
+    "compared": 20000,
+    "max": 8.59e-09,
+    "p50": 2.05e-10,
+    "bothUndefined": 0,
+    "onlyEngineUndefined": 0,
+    "onlySwissUndefined": 0
+   },
+   "vehlow": {
+    "compared": 20000,
+    "max": 1.64e-09,
+    "p50": 1.02e-10,
+    "bothUndefined": 0,
+    "onlyEngineUndefined": 0,
+    "onlySwissUndefined": 0
+   },
+   "whole": {
+    "compared": 20000,
+    "max": 0.0,
+    "p50": 0.0,
+    "bothUndefined": 0,
+    "onlyEngineUndefined": 0,
+    "onlySwissUndefined": 0
+   }
+  },
+  "ladder": {
+   "alcabitius": {
+    "compared": 5616,
+    "max": 8.19e-10,
+    "p50": 2.05e-10,
+    "bothUndefined": 0,
+    "onlyEngineUndefined": 0,
+    "onlySwissUndefined": 0
+   },
+   "campanus": {
+    "compared": 5616,
+    "max": 8.19e-10,
+    "p50": 2.05e-10,
+    "bothUndefined": 0,
+    "onlyEngineUndefined": 0,
+    "onlySwissUndefined": 0
+   },
+   "equal": {
+    "compared": 5616,
+    "max": 8.19e-10,
+    "p50": 1.02e-10,
+    "bothUndefined": 0,
+    "onlyEngineUndefined": 0,
+    "onlySwissUndefined": 0
+   },
+   "koch": {
+    "compared": 5568,
+    "max": 4.71e-09,
+    "p50": 2.05e-10,
+    "bothUndefined": 48,
+    "onlyEngineUndefined": 0,
+    "onlySwissUndefined": 0
+   },
+   "meridian": {
+    "compared": 5616,
+    "max": 3.07e-10,
+    "p50": 2.05e-10,
+    "bothUndefined": 0,
+    "onlyEngineUndefined": 0,
+    "onlySwissUndefined": 0
+   },
+   "morinus": {
+    "compared": 5616,
+    "max": 4.09e-10,
+    "p50": 2.05e-10,
+    "bothUndefined": 0,
+    "onlyEngineUndefined": 0,
+    "onlySwissUndefined": 0
+   },
+   "placidus": {
+    "compared": 5568,
+    "max": 0.00519,
+    "p50": 0.0001,
+    "bothUndefined": 48,
+    "onlyEngineUndefined": 0,
+    "onlySwissUndefined": 0
+   },
+   "porphyry": {
+    "compared": 5616,
+    "max": 8.19e-10,
+    "p50": 2.05e-10,
+    "bothUndefined": 0,
+    "onlyEngineUndefined": 0,
+    "onlySwissUndefined": 0
+   },
+   "regiomontanus": {
+    "compared": 5616,
+    "max": 7.16e-10,
+    "p50": 2.05e-10,
+    "bothUndefined": 0,
+    "onlyEngineUndefined": 0,
+    "onlySwissUndefined": 0
+   },
+   "topocentric": {
+    "compared": 5616,
+    "max": 6.14e-10,
+    "p50": 2.05e-10,
+    "bothUndefined": 0,
+    "onlyEngineUndefined": 0,
+    "onlySwissUndefined": 0
+   },
+   "vehlow": {
+    "compared": 5616,
+    "max": 8.19e-10,
+    "p50": 1.02e-10,
+    "bothUndefined": 0,
+    "onlyEngineUndefined": 0,
+    "onlySwissUndefined": 0
+   },
+   "whole": {
+    "compared": 5616,
+    "max": 0.0,
+    "p50": 0.0,
+    "bothUndefined": 0,
+    "onlyEngineUndefined": 0,
+    "onlySwissUndefined": 0
+   }
+  }
+ }
+}

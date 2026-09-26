@@ -72,11 +72,11 @@ across ~90 samples and fails arbitrary routes on a contended runner; it cost
 ## Card 2 — Publish the engine to npm
 
 **What.** One authenticated publication of the prepared
-`@zodiacs/engine@0.1.1-rc.8` **archive** — the exact audited bytes, not a fresh
+`@zodiacs/engine@0.1.1-rc.9` **archive** — the exact audited bytes, not a fresh
 pack of a working tree — by a maintainer with npm 2FA, under an explicit `rc`
-dist-tag. Until 2026-09-24 this card named rc.6, and until 2026-09-25 rc.7; the
-site has run rc.8 since, and the earlier archives stay in `vendor/` only as a
-record.
+dist-tag. Until 2026-09-24 this card named rc.6, until 2026-09-25 rc.7, and
+until 2026-09-26 rc.8; the site has run rc.9 since, and the earlier archives
+stay in `vendor/` only as a record.
 
 **Why it cannot be done here, and why no workflow fixes that.**
 
@@ -138,7 +138,7 @@ of them is how this card went wrong the first time:
 | `@zodiacs/engine` on the registry | **absent** — `npm view @zodiacs/engine version` → `E404` |
 
 Write access to the repository publishes nothing. Neither does hosting an
-archive in a repository: `vendor/zodiacs-engine-0.1.1-rc.8.tgz` and the pinned
+archive in a repository: `vendor/zodiacs-engine-0.1.1-rc.9.tgz` and the pinned
 `raw.githubusercontent` copy are a **candidate archive**, not an npm release,
 and no surface here may describe them as published. The single missing
 capability is an authenticated registry session, and it is missing on this
@@ -148,10 +148,10 @@ machine only — not denied to the owner.
 
 | | |
 | --- | --- |
-| package | `@zodiacs/engine` `0.1.1-rc.8` |
-| the bytes to publish | `vendor/zodiacs-engine-0.1.1-rc.8.tgz` in **this** repository, sha256 `3b934376fa53983cbdd7eb1a6ecf0eb0d50fbc49df01bc610b20c63bd5d12be6`. This is the archive the whole site is built and tested against — `package.json` depends on `file:vendor/…`. |
-| same bytes, immutably | `https://raw.githubusercontent.com/zodiacs-org/engine/a5b7d1d19a1c79465b2970b9ae948a8b5721a7c4/artifacts/zodiacs-engine-0.1.1-rc.8.tgz` |
-| source | `zodiacs-org/engine`, the repository root, at commit `352ea49d9e1d7b07975a050bb4877acc454f86f5`. Both it and the artifact commit `a5b7d1d1` are on `main`, merged in engine #3. Up to rc.6 the engine was `packages/engine` of `ZodiacsOfficial/sdk`. |
+| package | `@zodiacs/engine` `0.1.1-rc.9` |
+| the bytes to publish | `vendor/zodiacs-engine-0.1.1-rc.9.tgz` in **this** repository, sha256 `bb5592302b1fa542cc745a9410b5a77faf49bbf4e205347ab771810efc300a20`. This is the archive the whole site is built and tested against — `package.json` depends on `file:vendor/…`. |
+| same bytes, immutably | `https://raw.githubusercontent.com/zodiacs-org/engine/fa1050e033a197b117868ce546d85352bff35376/artifacts/zodiacs-engine-0.1.1-rc.9.tgz` |
+| source | `zodiacs-org/engine`, the repository root, at commit `82aad2fcc9b204a687e0b67f709681e62f9e889a`. Both it and the artifact commit `fa1050e0` are on `main`, merged in engine #4. Up to rc.6 the engine was `packages/engine` of `ZodiacsOfficial/sdk`. |
 | manifest | already correct: `repository` points at `zodiacs-org/engine`, `publishConfig.access` is `public`, `engines.node` is `>=18` |
 | publish workflow | none exists. engine `main` has `ci.yml`, which references no `npm publish`, token or `id-token`. |
 
@@ -166,7 +166,7 @@ that is not the one every gate in this repository has been run against.
 
 **The order that works.**
 
-1. Done for rc.8: its source and archive are on `zodiacs-org/engine` `main`.
+1. Done for rc.9: its source and archive are on `zodiacs-org/engine` `main`.
    (Publishing the archive does not require a checkout at all — step 1 below
    is the only thing that has to be true.)
 2. Publish, per the commands below.
@@ -186,21 +186,21 @@ that is not the one every gate in this repository has been run against.
 npm --version
 
 # 1. Confirm the bytes are the audited bytes, before anything else.
-sha256sum vendor/zodiacs-engine-0.1.1-rc.8.tgz
-# must equal 3b934376fa53983cbdd7eb1a6ecf0eb0d50fbc49df01bc610b20c63bd5d12be6
+sha256sum vendor/zodiacs-engine-0.1.1-rc.9.tgz
+# must equal bb5592302b1fa542cc745a9410b5a77faf49bbf4e205347ab771810efc300a20
 
 # 2. Note the two values npm WILL report for this archive. Both are already
 #    committed and test-enforced, so there is nothing to trust here:
 #    package-lock.json records the sha512 (scripts/platform-candidate-docs.test.mjs
 #    asserts it equals sha512 of the archive), and the sha1 recomputes locally.
-#      integrity: sha512-jvKFOhPDloPwp70pGmkMoO8H4vbDVqoRg1mAvG84av3FhCmOQVR/QztJO6Nc5In8fWe0xKCM445Mk4Tz6FSi4w==
-#      shasum:    d616fca86cc1d794bccef6d9a4a95cd5dbb7468b
-echo "integrity: sha512-$(openssl dgst -sha512 -binary vendor/zodiacs-engine-0.1.1-rc.8.tgz | openssl base64 -A)"
-echo "shasum:    $(openssl dgst -sha1 -r vendor/zodiacs-engine-0.1.1-rc.8.tgz | awk '{print $1}')"
+#      integrity: sha512-E1VhVpsef0c90r/O7vVWD68FZ7wJXpIs+IlmB0kQn6acfyyH6stckoof2jTPgxSVJryA5aGsxAHO6vIGwnjZZg==
+#      shasum:    69df4b9bdde1db1835d14cf1b4af4b5d857fe413
+echo "integrity: sha512-$(openssl dgst -sha512 -binary vendor/zodiacs-engine-0.1.1-rc.9.tgz | openssl base64 -A)"
+echo "shasum:    $(openssl dgst -sha1 -r vendor/zodiacs-engine-0.1.1-rc.9.tgz | awk '{print $1}')"
 
 # 3. Read the archive's file list without touching the registry. --json is not
 #    optional: the human-readable output truncates the integrity value.
-npm pack --dry-run --json ./vendor/zodiacs-engine-0.1.1-rc.8.tgz
+npm pack --dry-run --json ./vendor/zodiacs-engine-0.1.1-rc.9.tgz
 
 # 4. Authenticate. 2FA/OTP at the prompt. Nobody needs to send that OTP anywhere.
 npm login
@@ -208,13 +208,13 @@ npm whoami
 
 # 5. Dry run. This does make one read-only registry request (a packument fetch
 #    for the version-collision and implicit-tag checks). It cannot publish.
-npm publish ./vendor/zodiacs-engine-0.1.1-rc.8.tgz --tag rc --access public --dry-run
+npm publish ./vendor/zodiacs-engine-0.1.1-rc.9.tgz --tag rc --access public --dry-run
 
 # 6. Publish. `--tag rc` is mandatory, not stylistic: without it npm 10 silently
-#    makes 0.1.1-rc.8 the `latest` tag, and a bare `npm install @zodiacs/engine`
+#    makes 0.1.1-rc.9 the `latest` tag, and a bare `npm install @zodiacs/engine`
 #    starts resolving to a release candidate. (npm >= 11 errors instead. `--force`
 #    and a `publishConfig.tag` both disable that guard; this archive has neither.)
-npm publish ./vendor/zodiacs-engine-0.1.1-rc.8.tgz --tag rc --access public
+npm publish ./vendor/zodiacs-engine-0.1.1-rc.9.tgz --tag rc --access public
 ```
 
 **Check afterwards.** An earlier version of this card said to run
@@ -227,16 +227,16 @@ failing. Use these instead:
 
 ```bash
 npm dist-tag ls @zodiacs/engine
-# expect exactly:  rc: 0.1.1-rc.8        and no `latest:` line
+# expect exactly:  rc: 0.1.1-rc.9        and no `latest:` line
 
-npm view @zodiacs/engine@0.1.1-rc.8 dist.integrity   # == the sha512 from step 2
-npm view @zodiacs/engine@0.1.1-rc.8 dist.shasum      # == the sha1 from step 2
+npm view @zodiacs/engine@0.1.1-rc.9 dist.integrity   # == the sha512 from step 2
+npm view @zodiacs/engine@0.1.1-rc.9 dist.shasum      # == the sha1 from step 2
 npm access get status @zodiacs/engine                # expect: public
 
 # The SHA-256 this repository records can only be checked by fetching and hashing.
-curl -sSL "$(npm view @zodiacs/engine@0.1.1-rc.8 dist.tarball)" -o /tmp/served.tgz
-sha256sum /tmp/served.tgz   # must equal 3b934376…
-cmp /tmp/served.tgz vendor/zodiacs-engine-0.1.1-rc.8.tgz && echo "byte-identical"
+curl -sSL "$(npm view @zodiacs/engine@0.1.1-rc.9 dist.tarball)" -o /tmp/served.tgz
+sha256sum /tmp/served.tgz   # must equal bb559230…
+cmp /tmp/served.tgz vendor/zodiacs-engine-0.1.1-rc.9.tgz && echo "byte-identical"
 
 # And prove a bare install does NOT pick up the candidate. Written as a test,
 # not as a command to eyeball: `npm view @zodiacs/engine@latest version` looks
@@ -271,11 +271,11 @@ being true:
   [the engine release record](evidence/engine-release/README.md) records the
   registry state directly — `npm view @zodiacs/engine versions` → 404.
 
-**To undo.** `npm unpublish @zodiacs/engine@0.1.1-rc.8` is allowed within 72
+**To undo.** `npm unpublish @zodiacs/engine@0.1.1-rc.9` is allowed within 72
 hours of publication **only if** no package in the public registry depends on it.
 After 72 hours it needs all three of: no dependents, under 300 downloads in the
 last week, and a single owner. Two things are permanent either way: the exact
-string `@zodiacs/engine@0.1.1-rc.8` can never be published again, and
+string `@zodiacs/engine@0.1.1-rc.9` can never be published again, and
 unpublishing the *whole* package locks the name for 24 hours. Choose the version
 number with that in mind — the string is spent the moment it is used.
 ---

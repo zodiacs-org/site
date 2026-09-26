@@ -198,7 +198,7 @@ const tools = [
         range every date in which has been independently checked for accuracy; the
         engine's own receipts record <code>broadDateRange</code> as not certified.
         Coordinates come as a pair or not
-        at all, the house system is one of two the engine computes, and a record is at
+        at all, the house system is one of the twelve the engine computes, and a record is at
         most 64 KB of content. An argument the schema does not know is refused rather
         than ignored. A model-supplied value becomes a number, a date or one of a fixed
         set of option strings — never a command, a path, a module name, a URL or a
@@ -257,8 +257,6 @@ const tools = [
         <li>No authentication of anything — not a record, not an engine version, not
           the claim that two records came from independent software. Two records from
           one engine agreeing shows consistency, not independent accuracy.</li>
-        <li>Two house systems, <code>placidus</code> and <code>whole</code>, because
-          those are the two the engine computes.</li>
         <li>No body-to-house mapping. The summary returns the cusps and the body
           longitudes; which house a body falls in is left to the caller.</li>
         <li>No <code>outputSchema</code> on the tools. Arguments are schema-bounded;
