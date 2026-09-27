@@ -1,0 +1,113 @@
+{
+  "schema": "zodiacs.registry-research-item.v1",
+  "sourceType": "zodiacs-research",
+  "publisher": "Zodiacs.org Research System",
+  "byline": "Zodiacs.org Research System",
+  "method": {
+    "id": "zodiacs.registry-research-method.v1",
+    "version": 1,
+    "generator": "zodiacs.registry-research.deterministic.v1",
+    "deterministicTemplatesOnly": true,
+    "modelAuthoredProse": false,
+    "scoreRule": "The disclosed Registry Outlook sky score is copied before market comparison. Market fields cannot alter that score or its wording.",
+    "observationRule": "Follow-ups use the first archived market snapshot at or after the requested elapsed interval and report the actual elapsed time.",
+    "causalityRule": "Market changes are observations, never evidence that a sky event caused a price or liquidity movement.",
+    "publicationRule": "During the pilot, an exact artifact hash and named reviewer are required before an item enters public feeds."
+  },
+  "riskStatement": "Symbolic research—not investment advice. Market observations never alter the sky score.",
+  "scienceNote": "Astrology has no established predictive relationship with asset prices. Crypto assets can lose all value.",
+  "revisions": [],
+  "id": "zrx-market-check-2026-09-27",
+  "slug": "market-check-2026-09-27",
+  "kind": "market-check",
+  "templateId": "market-check.v1",
+  "issuedAt": "2026-09-27T05:04:03.404Z",
+  "visibleAt": "2026-09-27T05:04:03.404Z",
+  "title": "Libra market check · 2026-09-27",
+  "summary": "Libra price, market cap, liquidity, volume, and collection medians at one archived observation.",
+  "url": "/terminal/research/market-check-2026-09-27/",
+  "signs": [
+    "libra"
+  ],
+  "topics": [
+    "markets",
+    "market-check"
+  ],
+  "symbolicScore": {
+    "sign": "libra",
+    "attention": 14,
+    "tone": 0,
+    "eventIntensity": 0,
+    "calculation": "9 disclosed Sun occupancy-attention points",
+    "marketFieldsUsed": false
+  },
+  "sections": {
+    "skyFact": {
+      "heading": "Sky fact",
+      "body": "Libra is the highest-ranked attention entry in the separately published 2026-09-27 daily outlook.",
+      "evidence": [
+        "public/assets/registry-outlook.json"
+      ]
+    },
+    "traditionalReading": {
+      "heading": "Traditional reading",
+      "body": "A modest sky emphasis for this sign, without a strong directional tone. Signal: steady. The symbolic score was fixed before this market comparison.",
+      "evidence": [
+        "public/assets/registry-outlook.json"
+      ]
+    },
+    "marketObservation": {
+      "heading": "Market observation",
+      "body": "At 2026-09-27T05:04:03.404Z, Libra was indexed at $0.00009641, with +0.52% over 24 hours, $96.41K market cap, $96.41K FDV, $23.38K indexed liquidity, $32.45 24-hour volume, and 1 indexed pool. Market cap and FDV are kept separate. These descriptive fields did not alter the sky score. Libra market cap was 1.052× the collection median and indexed liquidity was 1.286× the collection median.",
+      "evidence": [
+        "public/assets/data/registry-market-history.v1.json"
+      ]
+    }
+  },
+  "market": {
+    "available": true,
+    "snapshotId": "registry-market:2026-09-27:2026-09-27T05:04:03.404Z",
+    "observedAt": "2026-09-27T05:04:03.404Z",
+    "provider": "DexScreener",
+    "sign": "libra",
+    "priceUsd": 0.00009641,
+    "change24hPct": 0.52,
+    "marketCapUsd": 96413,
+    "fdvUsd": 96413,
+    "liquidityUsd": 23380.08,
+    "volume24hUsd": 32.45,
+    "indexedPoolCount": 1,
+    "deepestPoolUrl": "https://dexscreener.com/solana/dtxpqjk4ae4h2wc7d5rpij8ymsqxqlutcnkrpbcjcan9",
+    "collectionMedian": {
+      "marketCapUsd": 91626,
+      "liquidityUsd": 18173.79
+    },
+    "vsCollectionMedian": {
+      "marketCap": 1.052,
+      "liquidity": 1.286
+    }
+  },
+  "evidence": {
+    "outlookEdition": "public/assets/registry-outlook.json#daily:2026-09-27",
+    "marketSnapshotId": "registry-market:2026-09-27:2026-09-27T05:04:03.404Z",
+    "coverage": {
+      "overall": "complete",
+      "events": "complete",
+      "occupancies": "complete",
+      "expectedTransitMonths": [
+        "2026-09"
+      ],
+      "missingTransitMonths": [],
+      "missingOccupancyPlanets": []
+    }
+  },
+  "artifactHash": "b782fce8e83af50c2c6498f63cae8877d7af7bbe378ca4a7695c7a7804b79d42",
+  "publishedAt": "2026-09-27T05:04:03.404Z",
+  "publication": {
+    "mode": "post-pilot-deterministic-allowlist",
+    "publishedAt": "2026-09-27T05:04:03.404Z",
+    "reviewer": null,
+    "artifactSha256": "b782fce8e83af50c2c6498f63cae8877d7af7bbe378ca4a7695c7a7804b79d42"
+  },
+  "status": "approved"
+}
