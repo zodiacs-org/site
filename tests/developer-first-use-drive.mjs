@@ -63,8 +63,8 @@ await withPreview({ port: Number(process.env.FIRST_USE_DRIVE_PORT ?? 4461) }, as
 
       await page.goto(`${BASE}/developers/`, { waitUntil: 'networkidle' });
       const cards = await page.locator('.dev-paths > li h2 a').evaluateAll((a) => a.map((x) => ({ text: x.textContent.trim(), href: x.getAttribute('href') })));
-      check(`${tag}: hub leads with the three jobs, then compare`,
-        JSON.stringify(cards.map((c) => c.href)) === JSON.stringify(['/developers/examples/', '/widgets/', '/developers/mcp/', '/developers/compare/']), cards);
+      check(`${tag}: hub leads with the three jobs, then compare, then the conformance suite`,
+        JSON.stringify(cards.map((c) => c.href)) === JSON.stringify(['/developers/engine/', '/widgets/', '/developers/mcp/', '/developers/compare/', '/developers/conformance/']), cards);
       check(`${tag}: no horizontal overflow on the hub`,
         await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
       check(`${tag}: hub renders without page errors`, errs.length === 0, errs);
