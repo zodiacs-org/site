@@ -13,7 +13,7 @@
  * the same handful of years; leading a couple's card with it says nothing
  * about them.
  */
-import { rankedContacts, type PairSummary, type MinimalBody } from './engine/synastry';
+import { rankedContacts, summarizePair, type PairSummary, type MinimalBody } from './engine/synastry';
 import type { CatalogLocale as Locale } from './i18n';
 import { aspectLabel, planetLabel } from './i18n/astrology';
 import { degreeInSign, SIGNS, signForLongitude, signName } from './signs';
@@ -31,6 +31,13 @@ export interface CompatibilityCardPerson {
   label: string;
   bodies: MinimalBody[];
   asc: number | null;
+  /**
+   * The civil birth date of a chart computed on this device without a birth
+   * time, whose bodies are noon at the birthplace. The picture then draws the
+   * sky at 12:00 UTC on it instead (compatibilityPicturePeople); the date
+   * itself is never drawn.
+   */
+  untimedDate?: string;
 }
 
 const W = 1080;
@@ -105,6 +112,41 @@ export function compatibilityPlacementLine(person: CompatibilityCardPerson, loca
       ? `${row.sign} ${row.key === 'rising' ? Math.floor(row.degree!) : row.degree!.toFixed(0)}°`
       : '—'))
     .join('  ·  ');
+}
+
+/**
+ * The two people, and the contacts between them, that a picture draws. A
+ * chart computed on this device without a birth time is noon at the
+ * birthplace, and its bodies give that instant: a contact with its Moon,
+ * printed to a tenth of a degree, puts it within minutes, and with it the
+ * birthplace's time zone, or before standard time its longitude. Such a
+ * person is drawn as their link carries them, the sky at 12:00 UTC on the
+ * birth date (sharedReferenceInstant), without the Moon, whose sign such a
+ * chart never states, and the contacts are found again from what is drawn.
+ * Anyone else is drawn as given.
+ */
+export async function compatibilityPicturePeople(
+  a: CompatibilityCardPerson,
+  b: CompatibilityCardPerson,
+  summary: PairSummary,
+): Promise<{ a: CompatibilityCardPerson; b: CompatibilityCardPerson; summary: PairSummary }> {
+  if (!a.untimedDate && !b.untimedDate) return { a, b, summary };
+  const [{ computeBodies }, { sharedReferenceInstant }] = await Promise.all([
+    import('./engine/full'),
+    import('./share-positions-noon'),
+  ]);
+  const drawn = (person: CompatibilityCardPerson): CompatibilityCardPerson => {
+    if (!person.untimedDate) return person;
+    const utc = sharedReferenceInstant(person.untimedDate);
+    if (!utc) throw new Error('a picture of a chart without a birth time needs its birth date');
+    return {
+      label: person.label,
+      bodies: computeBodies(utc).filter(({ body }) => body !== 'Moon').map(({ body, lon }) => ({ body, lon })),
+      asc: null,
+    };
+  };
+  const people = { a: drawn(a), b: drawn(b) };
+  return { ...people, summary: summarizePair(people.a.bodies, people.b.bodies) };
 }
 
 export function compatibilityHeadline(summary: Pick<PairSummary, 'easeful' | 'charged'>, locale: Locale = 'en'): string {
@@ -194,6 +236,7 @@ export async function drawCompatibilityCard(
   summary: PairSummary,
   locale: Locale = 'en',
 ): Promise<Blob> {
+  ({ a, b, summary } = await compatibilityPicturePeople(a, b, summary));
   const people = [a, b];
   const signIcons = await Promise.all(SIGNS.map((sign) => loadIcon(sign.slug)));
   await document.fonts.ready;

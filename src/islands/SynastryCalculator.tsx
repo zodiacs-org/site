@@ -1616,8 +1616,8 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
                     />
                     <compatShareMod.CompatibilityShareControl
                       key={result.at}
-                      a={{ label: result.a.label, bodies: result.a.bodies, asc: result.a.asc }}
-                      b={{ label: result.b.label, bodies: result.b.bodies, asc: result.b.asc }}
+                      a={{ label: result.a.label, bodies: result.a.bodies, asc: result.a.asc, untimedDate: result.a.untimedDate }}
+                      b={{ label: result.b.label, bodies: result.b.bodies, asc: result.b.asc, untimedDate: result.b.untimedDate }}
                       summary={result.summary}
                       locale={locale}
                     />
@@ -1648,8 +1648,8 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
                     />
                     <compatShareMod.CompatibilityShareControl
                       key={result.at}
-                      a={{ label: result.a.label, bodies: result.a.bodies, asc: result.a.asc }}
-                      b={{ label: result.b.label, bodies: result.b.bodies, asc: result.b.asc }}
+                      a={{ label: result.a.label, bodies: result.a.bodies, asc: result.a.asc, untimedDate: result.a.untimedDate }}
+                      b={{ label: result.b.label, bodies: result.b.bodies, asc: result.b.asc, untimedDate: result.b.untimedDate }}
                       summary={result.summary}
                       locale={locale}
                     />

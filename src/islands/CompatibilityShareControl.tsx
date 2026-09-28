@@ -9,6 +9,8 @@ interface CompatibilitySharePerson {
   label: string;
   bodies: MinimalBody[];
   asc: number | null;
+  /** A chart computed here without a birth time: the picture draws noon UTC on this date (compatibilityPicturePeople). */
+  untimedDate?: string;
 }
 
 interface CompatibilityShareControlProps {
