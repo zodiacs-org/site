@@ -36,6 +36,7 @@ import {
   type ChartSceneModel, type EntityRef,
 } from '../lib/scene/types';
 import { formatLongitude, signBySlug, signForLongitude, signName } from '../lib/signs';
+import { signIcon } from '../lib/sign-icon';
 import { bigThree } from '../lib/interpretations';
 import { prepareLocalTime, resolveLocalToUtc } from '../lib/time/localToUtc';
 import { assessLocalDateReference } from '../lib/time/local-date-reference';
@@ -2254,8 +2255,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                     <span class="mono--label">{title}</span>
                     <span class="three-card__sign">
                       <picture class="three-card__icon">
-                        <source srcset={`/assets/zodiac-icons/128/${s.slug}.avif`} type="image/avif" />
-                        <img src={`/assets/zodiac-icons/128/${s.slug}.webp`} width="44" height="44" alt="" decoding="async" />
+                        <img src={signIcon(128, s.slug)} width="44" height="44" alt="" decoding="async" />
                       </picture>
                       {signName(s, locale)}
                     </span>

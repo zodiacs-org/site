@@ -107,6 +107,10 @@ jobs:
           T17_SHARE_EVIDENCE: "1"
         run: node tests/t17-positions-share.mjs
 
+      - name: Sign pictures are the same requests for every chart
+        timeout-minutes: 5
+        run: node tests/sign-icon-requests-drive.mjs
+
       - name: Imported calendar input boundaries
         run: node tests/platform-share-boundary-drive.mjs
 

@@ -5,6 +5,7 @@ import PlanetGlyph from '../../components/PlanetGlyph';
 import type { Aspect, BodyName } from '../../lib/engine/types';
 import { natalAspectLine, type ChartWeather } from '../../lib/natal';
 import { SIGNS, signForLongitude, signName } from '../../lib/signs';
+import { signIcon } from '../../lib/sign-icon';
 import { entityId, type EntityRef, type SignSlug } from '../../lib/scene/types';
 import { moonCandidates, moonLabel } from '../../lib/moon-certainty';
 import './ReadingPath.css';
@@ -179,9 +180,8 @@ function BigThreeTile({ label, lon, entity, selection, onShow, moonSignCandidate
     >
       <span class="reading-path__big-label">{label}</span>
       <picture class="reading-path__sign-disc" aria-hidden="true">
-        <source srcset={`/assets/zodiac-icons/48/${sign.slug}.avif`} type="image/avif" />
         <img
-          src={`/assets/zodiac-icons/48/${sign.slug}.webp`}
+          src={signIcon(48, sign.slug)}
           width="40"
           height="40"
           alt=""

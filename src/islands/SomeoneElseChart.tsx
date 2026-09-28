@@ -16,6 +16,7 @@ import { useProfile } from '../lib/hooks/useProfile';
 import { useProfileAccessGeneration } from '../lib/hooks/useProfileAccessGeneration';
 import { bigThree } from '../lib/interpretations';
 import { SIGNS, SIGN_SLUGS, signBySlug, signForLongitude, signName } from '../lib/signs';
+import { signIcon } from '../lib/sign-icon';
 import '../styles/someone-else.css';
 
 type EntryMode = 'details' | 'big-three' | 'link';
@@ -122,8 +123,7 @@ function SignPreview({ role, slug }: { role: string; slug: string | null }) {
   return (
     <li class="other-chart__sign" style={`--sign:${sign.hue}`}>
       <picture class="other-chart__sign-disc" aria-hidden="true">
-        <source srcset={`/assets/zodiac-icons/48/${slug}.avif`} type="image/avif" />
-        <img src={`/assets/zodiac-icons/48/${slug}.webp`} width="42" height="42" alt="" />
+        <img src={signIcon(48, slug)} width="42" height="42" alt="" />
       </picture>
       <span><small>{role}</small><strong>{signName(sign)}</strong></span>
     </li>
@@ -513,8 +513,7 @@ export default function SomeoneElseChart() {
                         <div class="other-chart__reading-title">
                           <div class="other-chart__reading-sign">
                             <picture class="other-chart__sign-disc" aria-hidden="true">
-                              <source srcset={`/assets/zodiac-icons/48/${placement.slug}.avif`} type="image/avif" />
-                              <img src={`/assets/zodiac-icons/48/${placement.slug}.webp`} width="42" height="42" alt="" />
+                              <img src={signIcon(48, placement.slug)} width="42" height="42" alt="" />
                             </picture>
                             <span><small>{placementLabel}</small><strong>{signName(sign)}</strong></span>
                           </div>

@@ -11,6 +11,7 @@ import type { SavedChart } from '../lib/profile/schema';
 import { useEngine } from '../lib/hooks/useEngine';
 import { useProfile } from '../lib/hooks/useProfile';
 import { signForLongitude, formatLongitude, signName } from '../lib/signs';
+import { signIcon } from '../lib/sign-icon';
 import { profileChartHandoffFragment } from '../lib/chart-handoff';
 import type { Session } from '@supabase/supabase-js';
 import type * as Sync from '../lib/profile/sync';
@@ -227,8 +228,7 @@ function ChipRow({ chart, locale }: { chart: SavedChart; locale: Locale }) {
         return (
           <a class="pf-chip" href={localizePath(locale, `/${s.slug}/`)} style={`--sign:${s.hue}`} key={label} title={formatLongitude(lon, locale)}>
             <picture class="pf-chip__icon">
-              <source srcset={`/assets/zodiac-icons/48/${s.slug}.avif`} type="image/avif" />
-              <img src={`/assets/zodiac-icons/48/${s.slug}.webp`} width="16" height="16" alt="" loading="lazy" decoding="async" />
+              <img src={signIcon(48, s.slug)} width="16" height="16" alt="" loading="lazy" decoding="async" />
             </picture>
             <span class="pf-chip__label">{t(locale, label)}</span> {signName(s, locale)}
           </a>

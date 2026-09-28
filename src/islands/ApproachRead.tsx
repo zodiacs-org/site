@@ -11,6 +11,7 @@ import {
   type PreparedChartCard,
 } from '../lib/share-card';
 import { signBySlug, signName } from '../lib/signs';
+import { signIcon } from '../lib/sign-icon';
 
 interface Props {
   chart: Chart;
@@ -31,9 +32,8 @@ function SignDisc({ part, locale }: { part: ApproachPart; locale: Locale }) {
   return (
     <span class="calc__approach-sign" style={`--sign:${signBySlug(part.sign).hue}`}>
       <picture>
-        <source srcset={`/assets/zodiac-icons/48/${part.sign}.avif`} type="image/avif" />
         <img
-          src={`/assets/zodiac-icons/48/${part.sign}.webp`}
+          src={signIcon(48, part.sign)}
           width="36"
           height="36"
           alt=""

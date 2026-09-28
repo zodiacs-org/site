@@ -175,13 +175,33 @@ function loadSvg(xml: string): Promise<HTMLImageElement> {
   });
 }
 
+let discBatch: Promise<Map<string, Blob>> | null = null;
+
+/**
+ * All twelve 128px discs, fetched in zodiac order, for the card being made:
+ * fetching only the discs a card shows would give our host the chart's signs.
+ * Discs a card asks for at once share one batch, which ends when it settles.
+ */
+function allDiscs(): Promise<Map<string, Blob>> {
+  if (!discBatch) {
+    const batch = Promise.all(SIGNS.map(async ({ slug }) => {
+      const res = await fetch(`/assets/zodiac-icons/128/${slug}.webp`);
+      if (!res.ok) throw new Error(`zodiac disc unavailable: ${slug}`);
+      return [slug, await res.blob()] as const;
+    })).then((entries) => new Map(entries));
+    discBatch = batch;
+    const settle = () => { if (discBatch === batch) discBatch = null; };
+    batch.then(settle, settle);
+  }
+  return discBatch;
+}
+
 /** Shared by every card builder; the 128px discs are the canonical card art. */
 export async function loadDisc(slug: string): Promise<ImageBitmap | null> {
   if (!slug) return null;
   try {
-    const res = await fetch(`/assets/zodiac-icons/128/${slug}.webp`);
-    if (!res.ok) return null;
-    return await createImageBitmap(await res.blob());
+    const blob = (await allDiscs()).get(slug);
+    return blob ? await createImageBitmap(blob) : null;
   } catch {
     return null;
   }

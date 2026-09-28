@@ -15,6 +15,7 @@ import {
 } from '../lib/share-card';
 import { aspectLabel } from '../lib/i18n/astrology';
 import { signBySlug, signName } from '../lib/signs';
+import { signIcon } from '../lib/sign-icon';
 import { moonCandidates } from '../lib/moon-certainty';
 
 interface Props {
@@ -140,8 +141,7 @@ export default function CommunicationRead({ chart, locale = 'en' }: Props) {
               {part.sign && (
                 <span class="calc__comm-sign" style={`--sign:${signBySlug(part.sign).hue}`}>
                   <picture>
-                    <source srcset={`/assets/zodiac-icons/48/${part.sign}.avif`} type="image/avif" />
-                    <img src={`/assets/zodiac-icons/48/${part.sign}.webp`} width="32" height="32" alt="" loading="lazy" decoding="async" />
+                    <img src={signIcon(48, part.sign)} width="32" height="32" alt="" loading="lazy" decoding="async" />
                   </picture>
                   {signName(signBySlug(part.sign), locale)}
                 </span>

@@ -10,6 +10,7 @@
  */
 import { normalizeLongitude, settledSignIndex, signIndexOf } from '../lib/profile/settled-signs';
 import { SIGNS, formatLongitude } from '../lib/signs';
+import { signIcon } from '../lib/sign-icon';
 import type { SavedChart } from '../lib/profile/schema';
 import type { PositionsShareChart } from '../lib/share-positions';
 
@@ -80,8 +81,7 @@ export default function PlacementList({ placements, linked = true }: { placement
                   : formatLongitude(placement.lon, 'en')}
               >
                 <picture class="chip__icon">
-                  <source srcset={`/assets/zodiac-icons/48/${placement.slug}.avif`} type="image/avif" />
-                  <img src={`/assets/zodiac-icons/48/${placement.slug}.webp`} width="18" height="18" alt="" loading="lazy" decoding="async" />
+                  <img src={signIcon(48, placement.slug)} width="18" height="18" alt="" loading="lazy" decoding="async" />
                 </picture>
                 {placement.name}
               </Chip>
