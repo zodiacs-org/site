@@ -158,11 +158,12 @@ export default function ChartShareDialog({
   }, [mode, primaryAlternative]);
 
   async function buildChoice(choice: Choice, hidden: boolean): Promise<PreparedChartCard> {
-    const timeOptions = { referenceTime: !chart.input.timeKnown, moonAmbiguous };
+    // Images with birth details hidden show what the links carry (share-card's imageChart).
+    const timeOptions = { referenceTime: !chart.input.timeKnown, moonAmbiguous, birthDate };
     if (choice === 'sheet') {
       await ensurePastelZodiacIconEmbedding();
       return prepareChartSheet(chart, {
-        locale, hideBirthDetails: hidden, birthDetails, moonAmbiguous,
+        locale, hideBirthDetails: hidden, birthDetails, moonAmbiguous, birthDate,
       });
     }
     if (choice === 'placement') {
@@ -366,7 +367,8 @@ export default function ChartShareDialog({
           )}
         </div>
         <p class="calc-share-dialog__note" data-chart-image-privacy>
-          {shareText(locale, hideBirthDetails ? 'chartImagePrivacy' : 'chartImagePrivacyDetails')}
+          {shareText(locale, !hideBirthDetails ? 'chartImagePrivacyDetails'
+            : chart.input.timeKnown ? 'chartImagePrivacy' : 'chartImagePrivacyNoTime')}
         </p>
         {(card === 'error' || Object.values(states).includes('error')) && <p class="calc__error" role="alert">{t(locale, 'cardError')}</p>}
       </div>

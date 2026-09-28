@@ -290,6 +290,13 @@ try {
       }
       assert.equal(preparedSheetText.includes('Standout in my chart'), false,
         'the chart sheet and signature must remain separate compositions');
+      // Hidden birth details: the twelve bodies to the arcminute, the four
+      // angles only to the whole degree, as the positions-only link has them.
+      const sheetValues = preparedSheet.text.map((entry) => entry.value);
+      assert.equal(sheetValues.filter((value) => /^[A-Z][a-z]+ \d{2}°\d{2}′$/u.test(value)).length, 12,
+        'the hidden chart sheet must give the twelve bodies to the arcminute');
+      assert.equal(sheetValues.filter((value) => /^[A-Z][a-z]+ \d{2}°$/u.test(value)).length, 4,
+        'the hidden chart sheet must give ASC, DSC, MC and IC only to the whole degree');
       const sheetWordmarks = preparedSheet.text.filter((entry) => entry.value === 'zodiacs.org');
       assert.deepEqual(sheetWordmarks.map(({ align, x, y }) => ({ align, x, y })), [
         { align: 'right', x: 1708, y: 104 },
@@ -360,7 +367,7 @@ try {
       });
       assert.equal(
         (await dialog.locator('[data-chart-image-privacy]').innerText()).trim(),
-        'This image includes the birth date, local time, place, coordinates, time zone, and resolved UTC. It does not include a name or chart link.',
+        'This image includes the birth date and, if known, the local birth time, with the place, coordinates, time zone and UTC instant. It does not include a name or chart link.',
         'privacy copy must disclose the birth details when the toggle is off',
       );
       await source.waitForFunction((birth) => (
@@ -382,7 +389,7 @@ try {
       await dialog.locator('[data-hide-birth-details]').check();
       assert.equal(
         (await dialog.locator('[data-chart-image-privacy]').innerText()).trim(),
-        'The image shows chart positions and calculation settings, with no name, birth date, time, place, coordinates or chart link. Its positions still give the birth date and time, and its Ascendant and Midheaven the approximate birthplace.',
+        'The image shows chart positions and calculation settings, with no name, birth date, time, place, coordinates or chart link. Its positions still give the birth date and time. It shows the Ascendant and Midheaven only to the whole degree and leaves out Placidus houses, so it narrows the birthplace no more than the link does.',
         'privacy copy must return to the hidden-details statement',
       );
       await source.waitForFunction(() => (
@@ -1104,6 +1111,8 @@ try {
         'a positions-only link without a birth time must carry no angles');
       assert.match(await untimedDialog.locator('[data-positions-share-note]').innerText(), /12:00 UTC on your birth date/,
         'the share note must say which instant a link without a birth time carries');
+      assert.match(await untimedDialog.locator('[data-chart-image-privacy]').innerText(), /12:00 UTC on your birth date/,
+        'the image note must say an image without a birth time shows the sky at 12:00 UTC');
       await untimed.close();
 
       // The computed chart sheet is prepared before the mobile action, so one

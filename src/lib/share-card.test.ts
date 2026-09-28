@@ -23,8 +23,17 @@ import {
   shareCardTimeNotes,
   signatureCardContent,
   savePreparedChartCard,
+  CHART_SHEET_ASPECT_SCOPE_NO_MOON,
+  cardDegreeText,
+  chartSheetContent,
+  imageChart,
+  imagePositions,
+  timedImageChart,
 } from './share-card';
 import type { Chart } from './engine/types';
+import { computeBodies, computeChart } from './engine/full';
+import { decodePositionsLink, encodeSharedPositionsLink } from './share-positions';
+import { prepareLocalTime, resolveLocalToUtc } from './time/localToUtc';
 
 const CHART = { engineVersion: '1.0.0' } as Chart;
 
@@ -396,5 +405,125 @@ describe('share-card content', () => {
     expect(content.rows.map(({ body }) => body)).toEqual(['Mercury', 'Moon']);
     expect(content.notes).toEqual(['Birth time would add my Rising sign.', 'My Moon may change signs without an exact birth time.']);
     expect(content.rows.find(({ body }) => body === 'Moon')?.sign).toBe('Needs a birth time');
+  });
+});
+
+/*
+ * What a chart image shows while birth details are hidden. The chart sheet
+ * printed "Birth details hidden" while drawing ASC, DSC, MC and IC to the
+ * arcminute, Placidus house numbers and, for a chart without a birth time,
+ * the Moon's aspects with their orbs to the arcminute: with a birth time that
+ * put the birthplace in a box a few kilometres across, and without one the
+ * orbs gave the instant of noon at the birthplace to within a minute, and so
+ * its time zone or longitude. These check the data the renderer draws.
+ */
+describe('a chart image with birth details hidden', () => {
+  const minutes = /\d{2}°\d{2}′/u;
+  const timed = (houseSystem: 'whole' | 'placidus') => computeChart({
+    utc: new Date('1987-03-14T05:42:00Z'), latitude: 45.764, longitude: 4.8357, houseSystem, timeKnown: true,
+  });
+
+  it('draws the angles only to the whole degree, as the link carries them, and leaves out Placidus houses', () => {
+    const chart = timed('placidus');
+    const drawn = timedImageChart(chart);
+    // The wheel turns on these, and they are the link's own angles.
+    const link = decodePositionsLink(encodeSharedPositionsLink({
+      bodies: chart.bodies, angles: chart.angles, houseSystem: 'placidus', engineVersion: chart.engineVersion,
+    })!)!;
+    expect({ asc: drawn.angles!.asc, mc: drawn.angles!.mc }).toEqual(link.angles);
+    expect(drawn.angles!.dsc).toBe((link.angles!.asc + 180) % 360);
+    expect(drawn.angles!.ic).toBe((link.angles!.mc + 180) % 360);
+    expect(drawn.houses).toBeNull();
+    expect(drawn.input.latitude).toBeUndefined();
+    expect(drawn.input.longitude).toBeUndefined();
+    expect(drawn.bodies).toBe(chart.bodies);
+
+    const content = chartSheetContent(drawn, { hideBirthDetails: true, housesLeftOut: true });
+    expect(content.provenance).toEqual(['Birth details hidden']);
+    const angleRows = content.rows.filter((row) => ['ASC', 'DSC', 'MC', 'IC'].includes(row.body));
+    expect(angleRows.map((row) => row.text)).toEqual(['ASC', 'DSC', 'MC', 'IC'].map((label) => {
+      const lon = chart.angles![label.toLowerCase() as 'asc' | 'dsc' | 'mc' | 'ic'];
+      const within = Math.floor(lon % 30);
+      return `${['Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo', 'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'][Math.floor(lon / 30)]} ${String(within).padStart(2, '0')}°`;
+    }));
+    for (const row of angleRows) expect(row.text).not.toMatch(minutes);
+    expect(content.rows.every((row) => row.house === null)).toBe(true);
+    expect(content.settings).toBe('Apparent geocentric · Tropical of date · Placidus houses left out · True Node');
+    // The bodies keep the arcminute, which gives the birth date and time, as the link does.
+    expect(content.rows.find((row) => row.body === 'Moon')!.text).toMatch(minutes);
+
+    // With birth details shown the sheet stays exact, with its Placidus houses.
+    const shown = chartSheetContent(chart, { hideBirthDetails: false });
+    expect(shown.rows.find((row) => row.body === 'ASC')!.text).toMatch(minutes);
+    expect(shown.rows.every((row) => row.house !== null)).toBe(true);
+  });
+
+  it('keeps whole-sign houses, which follow from the ascendant’s sign', () => {
+    const chart = timed('whole');
+    const drawn = timedImageChart(chart);
+    expect(drawn.houses).toEqual(chart.houses);
+    const hidden = chartSheetContent(drawn, { hideBirthDetails: true });
+    const shown = chartSheetContent(chart, { hideBirthDetails: false });
+    expect(hidden.rows.map((row) => row.house)).toEqual(shown.rows.map((row) => row.house));
+    expect(hidden.settings).toContain('Whole sign houses');
+  });
+
+  it('draws a chart without a birth time as the sky at 12:00 UTC on its date: the same image for every birthplace', async () => {
+    const births = [
+      { date: '1870-06-15', zone: 'America/New_York', lat: 42.89, lon: -78.88 },
+      { date: '1870-06-15', zone: 'America/New_York', lat: 40.71, lon: -74.01 },
+      { date: '1870-06-15', zone: 'Europe/Paris', lat: 48.39, lon: -4.49 },
+      { date: '2000-04-11', zone: 'Asia/Kathmandu', lat: 27.72, lon: 85.32 },
+      { date: '2000-04-11', zone: 'Australia/Adelaide', lat: -34.93, lon: 138.6 },
+      { date: '2000-04-11', zone: 'Pacific/Pago_Pago', lat: -14.28, lon: -170.7 },
+    ];
+    const byDate = new Map<string, Set<string>>();
+    const own = new Set<string>();
+    for (const birth of births) {
+      await prepareLocalTime(birth.date, birth.zone);
+      const resolved = resolveLocalToUtc(birth.date, '12:00', birth.zone, { longitude: birth.lon });
+      // As the calculator makes it: noon at the birthplace, the Moon's sign unknown.
+      const chart = {
+        ...computeChart({
+          utc: resolved.utc, latitude: birth.lat, longitude: birth.lon,
+          houseSystem: 'placidus', timeKnown: false, flags: resolved.flags,
+        }),
+        moonSignCandidates: [],
+      };
+      own.add(JSON.stringify(chartSheetContent(chart, { hideBirthDetails: true, moonAmbiguous: true })));
+      const drawn = await imageChart(chart, birth.date);
+      expect(drawn.input.utc.toISOString()).toBe(`${birth.date}T12:00:00.000Z`);
+      expect(drawn.angles).toBeNull();
+      expect(drawn.houses).toBeNull();
+      expect(drawn.aspects.some((aspect) => aspect.a === 'Moon' || aspect.b === 'Moon')).toBe(false);
+      const content = chartSheetContent(drawn, { hideBirthDetails: true, moonAmbiguous: true });
+      expect(content.cells.some((cell) => cell.row === 'Moon' || cell.column === 'Moon')).toBe(false);
+      expect(content.rows.find((row) => row.body === 'Moon')!.text).not.toMatch(minutes);
+      expect(content.aspectScope).toBe(CHART_SHEET_ASPECT_SCOPE_NO_MOON);
+      expect(content.settings).toBe('Reference positions at 12:00 UTC · Apparent geocentric · Tropical of date · No houses · True Node');
+      // Everything the sheet and its wheel draw, keyed by date alone.
+      const image = JSON.stringify({ content, bodies: drawn.bodies, aspects: drawn.aspects });
+      if (!byDate.has(birth.date)) byDate.set(birth.date, new Set());
+      byDate.get(birth.date)!.add(image);
+    }
+    expect([...byDate.values()].map((images) => images.size)).toEqual([1, 1]);
+    // The chart's own noon at each birthplace drew a different sheet for each.
+    expect(own.size).toBe(births.length);
+    const chart = { ...timed('whole'), input: { ...timed('whole').input, timeKnown: false }, angles: null, houses: null };
+    await expect(imageChart(chart)).rejects.toThrow('birth date');
+    await expect(imageChart(chart, '2000-02-30')).rejects.toThrow('birth date');
+  });
+
+  it('gives the Big Three and placement cards the rising sign’s whole degree, and a chart without a birth time noon UTC', async () => {
+    const chart = timed('placidus');
+    const positions = await imagePositions({ bodies: chart.bodies, angles: chart.angles, engineVersion: chart.engineVersion });
+    expect(positions.angles).toEqual({ asc: Math.floor(chart.angles!.asc) + 0.5, mc: Math.floor(chart.angles!.mc) + 0.5 });
+    const rising = bigThreePlacements(positions).find((placement) => placement.kind === 'rising')!;
+    expect(cardDegreeText('rising', rising.degree)).toBe(`${Math.floor(chart.angles!.asc % 30)}°`);
+    expect(cardDegreeText('sun', 12.345)).toBe('12.3°');
+    const untimed = await imagePositions({ bodies: chart.bodies, angles: null, engineVersion: chart.engineVersion }, '2000-04-11');
+    expect(untimed.bodies).toEqual(computeBodies(new Date('2000-04-11T12:00:00Z')));
+    expect(untimed.moonSignCandidates).toEqual([]);
+    await expect(imagePositions({ bodies: chart.bodies, angles: null, engineVersion: chart.engineVersion })).rejects.toThrow('birth date');
   });
 });

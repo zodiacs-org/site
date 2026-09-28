@@ -24,7 +24,9 @@ import {
 import type { Angles, AspectType, BodyName, BodyPosition, Chart } from './engine/types';
 import type { SolarReturnExportModel } from '../islands/solar-return/export-model';
 import { ASPECTS } from './engine/aspects';
-import { houseOf } from './engine/houses';
+import { houseOf, wholeSignCusps } from './engine/houses';
+import { wholeDegreeAngle } from './share-positions';
+import { sharedReferenceInstant } from './share-positions-noon';
 import type { CatalogLocale as Locale } from './i18n';
 import { shareCardFormat, shareCardText } from './share-card-copy';
 import { communicationRead } from './communication';
@@ -54,6 +56,12 @@ export interface ShareCardOptions {
   hideBirthDetails?: boolean;
   /** Sheet-only provenance, rendered only after explicit privacy opt-in. */
   birthDetails?: ChartSheetBirthDetails;
+  /**
+   * The civil birth date (YYYY-MM-DD) of a chart without a birth time. An
+   * image of such a chart with its birth details hidden shows the sky at 12:00
+   * UTC on it (see imageChart), and cannot be made without it.
+   */
+  birthDate?: string;
 }
 
 export interface ChartSheetBirthDetails {
@@ -83,6 +91,63 @@ export function authoredSignatureForLocale(
   locale: Locale,
 ): ChartSignature | null {
   return locale === 'en' ? chartSignature(chart, locale) : null;
+}
+
+/**
+ * What an image draws of a chart with a birth time while its birth details
+ * are hidden: no more of the birthplace than the chart's link carries. The
+ * ascendant and midheaven (and so the descendant and IC) sit at the middle of
+ * their whole degree, as a shared code keeps them (wholeDegreeAngle), so the
+ * wheel's rotation, the angle labels and the angle rows give only the degree:
+ * to the arcminute, with the planets, they put the birthplace in a box a few
+ * kilometres across. Whole-sign houses follow from the ascendant's sign and
+ * stay; Placidus cusps would need the exact angles and are left out. The
+ * coordinates are dropped from the chart so nothing can draw them.
+ */
+export function timedImageChart(chart: Chart): Chart {
+  if (!chart.angles) return chart;
+  const asc = wholeDegreeAngle(chart.angles.asc);
+  const mc = wholeDegreeAngle(chart.angles.mc);
+  return {
+    ...chart,
+    input: { ...chart.input, latitude: undefined, longitude: undefined },
+    angles: { asc, mc, dsc: (asc + 180) % 360, ic: (mc + 180) % 360 },
+    houses: chart.houses?.system === 'whole' ? { system: 'whole', cusps: wholeSignCusps(asc) } : null,
+  };
+}
+
+/**
+ * The chart an image draws while birth details are hidden. With a birth
+ * time, timedImageChart. Without one, the chart is noon at the birthplace, an
+ * instant whose positions give the place away (its time zone, or before
+ * standard time its longitude, to within a minute of time from the Moon's
+ * orbs), so the image shows the sky at 12:00 UTC on the civil birth date, as
+ * the chart's link carries it (sharedReferenceInstant): the Moon's sign is
+ * left unknown and its aspects out, as on the chart itself. Rejects a chart
+ * without a birth time whose date is missing or not a date.
+ */
+export async function imageChart(chart: Chart, birthDate?: string): Promise<Chart> {
+  if (chart.input.timeKnown) return timedImageChart(chart);
+  const utc = birthDate ? sharedReferenceInstant(birthDate) : null;
+  if (!utc) throw new Error('an image of a chart without a birth time needs its birth date');
+  const { computeChart } = await import('./engine/full');
+  const noon = computeChart({ utc, houseSystem: chart.input.houseSystem, timeKnown: false });
+  return {
+    ...noon,
+    aspects: noon.aspects.filter((aspect) => aspect.a !== 'Moon' && aspect.b !== 'Moon'),
+    moonSignCandidates: [],
+  };
+}
+
+/** imageChart for the Big Three and placement cards, which carry positions only. */
+export async function imagePositions(chart: BigThreeCardChart, birthDate?: string): Promise<BigThreeCardChart> {
+  if (chart.angles) {
+    return { ...chart, angles: { asc: wholeDegreeAngle(chart.angles.asc), mc: wholeDegreeAngle(chart.angles.mc) } };
+  }
+  const utc = birthDate ? sharedReferenceInstant(birthDate) : null;
+  if (!utc) throw new Error('an image of a chart without a birth time needs its birth date');
+  const { computeBodies } = await import('./engine/full');
+  return { bodies: computeBodies(utc), angles: null, engineVersion: chart.engineVersion, moonSignCandidates: [] };
 }
 
 export const SHARE_CARD_SCALE = 2;
@@ -239,6 +304,11 @@ export function bigThreePlacements(
     }
     return { kind, lon, slug: sign.slug, sign: signName(sign, locale), degree: degreeInSign(lon) };
   });
+}
+
+/** A placement's degree in its sign as a card prints it: the rising sign's only whole, as imagePositions keeps it. */
+export function cardDegreeText(kind: BigThreePlacement['kind'], degree: number): string {
+  return kind === 'rising' ? `${Math.floor(degree)}°` : `${degree.toFixed(1)}°`;
 }
 
 export function dominantProfile(chart: Pick<Chart, 'bodies'> & Partial<Pick<Chart, 'angles' | 'moonSignCandidates'>>): { element: Element | null; modality: Modality | null } {
@@ -644,7 +714,7 @@ async function drawBigThreeCard(
     ctx.textAlign = 'left';
     ctx.fillStyle = INK_2;
     ctx.font = `400 26px ${MONO}`;
-    ctx.fillText(placement.uncertain ? label : `${label} · ${placement.degree.toFixed(1)}°`, 334, y + 25);
+    ctx.fillText(placement.uncertain ? label : `${label} · ${cardDegreeText(placement.kind, placement.degree)}`, 334, y + 25);
     ctx.fillStyle = INK_0;
     ctx.font = `500 58px ${SERIF}`;
     ctx.fillText(placement.sign, 334, y + 84, W - 400);
@@ -1042,15 +1112,21 @@ export function chartPreviewPlacement(longitude: number): ChartPreviewPlacement 
 
 export function chartSheetSettings(
   chart: Pick<Chart, 'houses'> & { input?: Pick<Chart['input'], 'timeKnown'> },
+  drawn: { housesLeftOut?: boolean; noonUtc?: boolean } = {},
 ): string {
-  const houses = chart.houses
-    ? `${chart.houses.system === 'whole' ? 'Whole sign' : 'Placidus'} houses`
-    : 'No houses';
-  const reference = chart.input?.timeKnown === false ? 'Reference positions · ' : '';
+  const houses = drawn.housesLeftOut ? 'Placidus houses left out'
+    : chart.houses
+      ? `${chart.houses.system === 'whole' ? 'Whole sign' : 'Placidus'} houses`
+      : 'No houses';
+  const reference = chart.input?.timeKnown === false
+    ? drawn.noonUtc ? 'Reference positions at 12:00 UTC · ' : 'Reference positions · '
+    : '';
   return `${reference}Apparent geocentric · Tropical of date · ${houses} · True Node`;
 }
 
 export const CHART_SHEET_ASPECT_SCOPE = 'Major aspects · Sun–Pluto · Nodes & angles excluded';
+/** The scope of an image of a chart without a birth time, which leaves the Moon's aspects out. */
+export const CHART_SHEET_ASPECT_SCOPE_NO_MOON = 'Major aspects · Sun–Pluto · Moon, nodes & angles excluded';
 export const CHART_SHEET_ASPECT_LEGEND = 'Orb · A applying · S separating';
 
 export function chartSheetOrbLimits(): string[] {
@@ -1125,6 +1201,78 @@ function sheetPositionText(longitude: number, locale: Locale): string {
   return `${signName(SIGNS[value.signIndex], locale)} ${String(value.degree).padStart(2, '0')}°${String(value.minute).padStart(2, '0')}′`;
 }
 
+/** An angle as an image with hidden birth details gives it: its sign and whole degree. */
+function sheetAngleText(longitude: number, locale: Locale): string {
+  return `${signName(signForLongitude(longitude), locale)} ${String(Math.floor(degreeInSign(longitude))).padStart(2, '0')}°`;
+}
+
+type SheetLabel = BodyName | 'ASC' | 'MC' | 'DSC' | 'IC';
+
+export interface ChartSheetContent {
+  provenance: string[];
+  /** The positions table: each row's position text, house and motion as drawn. */
+  rows: { body: SheetLabel; text: string; house: string | null; retrograde: boolean }[];
+  aspectScope: string;
+  /** The aspect grid's filled cells. */
+  cells: { row: BodyName; column: BodyName; glyph: string; orb: string }[];
+  moonNote: string | null;
+  settings: string;
+  engine: string;
+}
+
+/**
+ * Everything a chart sheet draws besides its wheel, which draws the same
+ * chart's bodies, angles, cusps and aspects. `chart` is the chart the sheet
+ * shows: the chart itself with birth details shown, imageChart's with them
+ * hidden, when an angle is given only to its whole degree.
+ */
+export function chartSheetContent(
+  chart: Chart,
+  options: ShareCardOptions & { housesLeftOut?: boolean } = {},
+): ChartSheetContent {
+  const locale = options.locale ?? 'en';
+  const hidden = options.hideBirthDetails !== false;
+  // Without a birth time and with details hidden, the Moon's aspects are never drawn.
+  const withoutMoon = hidden && !chart.input.timeKnown;
+  const noonUtc = !chart.input.timeKnown && chart.input.utc.toISOString().endsWith('T12:00:00.000Z');
+  const rows: ChartSheetContent['rows'] = chart.bodies.map((body) => ({
+    body: body.body,
+    text: body.body === 'Moon' && moonIsUncertain(chart) ? moonLabel(chart, locale) : sheetPositionText(body.lon, locale),
+    house: chart.houses ? `H${houseOf(body.lon, chart.houses.cusps)}` : null,
+    retrograde: body.retrograde,
+  }));
+  if (chart.angles) {
+    for (const [body, lon] of [
+      ['ASC', chart.angles.asc], ['DSC', chart.angles.dsc], ['MC', chart.angles.mc], ['IC', chart.angles.ic],
+    ] as const) {
+      rows.push({
+        body,
+        text: hidden ? sheetAngleText(lon, locale) : sheetPositionText(lon, locale),
+        house: chart.houses ? `H${houseOf(lon, chart.houses.cusps)}` : null,
+        retrograde: false,
+      });
+    }
+  }
+  const byPair = new Map(chart.aspects.map((aspect) => [[aspect.a, aspect.b].sort().join('|'), aspect] as const));
+  const cells: ChartSheetContent['cells'] = [];
+  SHEET_BODIES.forEach((row, rowIndex) => SHEET_BODIES.forEach((column, columnIndex) => {
+    if (columnIndex >= rowIndex) return;
+    const aspect = withoutMoon && (row === 'Moon' || column === 'Moon') ? undefined : byPair.get([row, column].sort().join('|'));
+    if (aspect) cells.push({ row, column, glyph: ASPECT_GLYPH[aspect.type], orb: chartSheetAspectOrb(aspect.orb, aspect.applying) });
+  }));
+  return {
+    provenance: chartSheetProvenanceLines(chart, options.birthDetails, hidden),
+    rows,
+    aspectScope: withoutMoon ? CHART_SHEET_ASPECT_SCOPE_NO_MOON : CHART_SHEET_ASPECT_SCOPE,
+    cells,
+    moonNote: options.moonAmbiguous || moonIsUncertain(chart)
+      ? `${shareCardText(locale, 'moon')}: ${moonLabel(chart, locale)} · ${t(locale, 'needsBirthTime')}`
+      : null,
+    settings: chartSheetSettings(chart, { housesLeftOut: options.housesLeftOut, noonUtc }),
+    engine: `Engine ${chart.engineVersion}`,
+  };
+}
+
 function drawSheetLabel(
   ctx: CanvasRenderingContext2D,
   body: BodyName | 'ASC' | 'MC' | 'DSC' | 'IC',
@@ -1146,8 +1294,11 @@ function drawSheetLabel(
   ctx.fillText(short, x + (compact ? 38 : 44), y);
 }
 
-async function drawChartSheet(chart: Chart, options: ShareCardOptions = {}): Promise<Blob> {
-  const locale = options.locale ?? 'en';
+async function drawChartSheet(
+  chart: Chart,
+  options: ShareCardOptions & { housesLeftOut?: boolean } = {},
+): Promise<Blob> {
+  const content = chartSheetContent(chart, options);
   await document.fonts.ready;
   await Promise.all([
     document.fonts.load(`500 40px ${SERIF}`),
@@ -1188,14 +1339,13 @@ async function drawChartSheet(chart: Chart, options: ShareCardOptions = {}): Pro
   ctx.fillStyle = INK_2;
   ctx.font = `400 23px ${MONO}`;
   let provenanceY = 158;
-  chartSheetProvenanceLines(chart, options.birthDetails, options.hideBirthDetails !== false)
-    .forEach((receiptLine) => {
-      const lines = wrappedLines(ctx, receiptLine, 500, 2);
-      lines.forEach((line) => {
-        ctx.fillText(line, 92, provenanceY);
-        provenanceY += 30;
-      });
+  content.provenance.forEach((receiptLine) => {
+    const lines = wrappedLines(ctx, receiptLine, 500, 2);
+    lines.forEach((line) => {
+      ctx.fillText(line, 92, provenanceY);
+      provenanceY += 30;
     });
+  });
 
   ctx.drawImage(
     wheel,
@@ -1205,23 +1355,6 @@ async function drawChartSheet(chart: Chart, options: ShareCardOptions = {}): Pro
     CHART_SHEET_LAYOUT.wheelSize,
   );
 
-  const rows: Array<{
-    body: BodyName | 'ASC' | 'MC' | 'DSC' | 'IC';
-    lon: number;
-    retrograde?: boolean;
-  }> = chart.bodies.map((body) => ({
-    body: body.body,
-    lon: body.lon,
-    retrograde: body.retrograde,
-  }));
-  if (chart.angles) {
-    rows.push(
-      { body: 'ASC', lon: chart.angles.asc },
-      { body: 'DSC', lon: chart.angles.dsc },
-      { body: 'MC', lon: chart.angles.mc },
-      { body: 'IC', lon: chart.angles.ic },
-    );
-  }
   const tableX = 92;
   const tableTop = CHART_SHEET_LAYOUT.tableTop;
   const rowHeight = CHART_SHEET_LAYOUT.tableRowHeight;
@@ -1229,17 +1362,16 @@ async function drawChartSheet(chart: Chart, options: ShareCardOptions = {}): Pro
   ctx.fillStyle = INK_2;
   ctx.font = `italic 400 32px ${SERIF}`;
   ctx.fillText('Positions', tableX, CHART_SHEET_LAYOUT.sectionTitleY);
-  rows.forEach((row, index) => {
+  content.rows.forEach((row, index) => {
     const y = tableTop + index * rowHeight;
     drawSheetLabel(ctx, row.body, tableX, y);
     ctx.fillStyle = INK_0;
     ctx.font = `400 27px ${MONO}`;
-    const uncertainMoon = row.body === 'Moon' && moonIsUncertain(chart);
-    ctx.fillText(uncertainMoon ? moonLabel(chart, locale) : sheetPositionText(row.lon, locale), tableX + 168, y, 580);
-    if (chart.houses) {
+    ctx.fillText(row.text, tableX + 168, y, 580);
+    if (row.house) {
       ctx.fillStyle = INK_2;
       ctx.font = `400 24px ${MONO}`;
-      ctx.fillText(`H${houseOf(row.lon, chart.houses.cusps)}`, tableX + 650, y);
+      ctx.fillText(row.house, tableX + 650, y);
     }
     if (row.retrograde) {
       ctx.fillStyle = 'rgba(224,176,128,0.9)';
@@ -1256,16 +1388,12 @@ async function drawChartSheet(chart: Chart, options: ShareCardOptions = {}): Pro
   const gridX = CHART_SHEET_LAYOUT.aspectGridX;
   const gridY = CHART_SHEET_LAYOUT.aspectGridY;
   const cell = CHART_SHEET_LAYOUT.aspectCellSize;
-  const byPair = new Map(chart.aspects.map((aspect) => {
-    const key = [aspect.a, aspect.b].sort().join('|');
-    return [key, aspect] as const;
-  }));
   ctx.textAlign = 'left';
   ctx.fillStyle = INK_2;
   ctx.font = `italic 400 32px ${SERIF}`;
   ctx.fillText('Aspect grid', gridX, CHART_SHEET_LAYOUT.sectionTitleY);
   ctx.font = `400 20px ${MONO}`;
-  ctx.fillText(CHART_SHEET_ASPECT_SCOPE, gridX, 1350);
+  ctx.fillText(content.aspectScope, gridX, 1350);
   ctx.font = `400 17px ${MONO}`;
   ctx.fillText(CHART_SHEET_ASPECT_LEGEND, gridX, 1382);
   chartSheetOrbLimits().forEach((line, index) => {
@@ -1281,35 +1409,34 @@ async function drawChartSheet(chart: Chart, options: ShareCardOptions = {}): Pro
   });
   for (let row = 0; row < SHEET_BODIES.length; row += 1) {
     for (let column = 0; column < SHEET_BODIES.length; column += 1) {
-      const x = gridX + column * cell;
-      const y = gridY + row * cell;
       ctx.strokeStyle = HAIR;
-      ctx.strokeRect(x, y, cell, cell);
-      if (column >= row) continue;
-      const aspect = byPair.get([SHEET_BODIES[row], SHEET_BODIES[column]].sort().join('|'));
-      if (!aspect) continue;
-      ctx.textAlign = 'center';
-      ctx.fillStyle = INK_0;
-      ctx.font = `400 26px ${SERIF}`;
-      ctx.fillText(ASPECT_GLYPH[aspect.type], x + cell / 2, y + 21);
-      ctx.fillStyle = INK_2;
-      ctx.font = `400 14px ${MONO}`;
-      ctx.fillText(chartSheetAspectOrb(aspect.orb, aspect.applying), x + cell / 2, y + 48);
+      ctx.strokeRect(gridX + column * cell, gridY + row * cell, cell, cell);
     }
   }
+  for (const { row, column, glyph, orb } of content.cells) {
+    const x = gridX + SHEET_BODIES.indexOf(column as typeof SHEET_BODIES[number]) * cell;
+    const y = gridY + SHEET_BODIES.indexOf(row as typeof SHEET_BODIES[number]) * cell;
+    ctx.textAlign = 'center';
+    ctx.fillStyle = INK_0;
+    ctx.font = `400 26px ${SERIF}`;
+    ctx.fillText(glyph, x + cell / 2, y + 21);
+    ctx.fillStyle = INK_2;
+    ctx.font = `400 14px ${MONO}`;
+    ctx.fillText(orb, x + cell / 2, y + 48);
+  }
 
-  if (options.moonAmbiguous || moonIsUncertain(chart)) {
+  if (content.moonNote) {
     ctx.textAlign = 'left';
     ctx.fillStyle = INK_2;
     ctx.font = `400 18px ${MONO}`;
-    ctx.fillText(`${shareCardText(locale, 'moon')}: ${moonLabel(chart, locale)} · ${t(locale, 'needsBirthTime')}`, 92, 2278, 1180);
+    ctx.fillText(content.moonNote, 92, 2278, 1180);
   }
   ctx.textAlign = 'left';
   ctx.fillStyle = INK_2;
   ctx.font = `400 22px ${MONO}`;
-  ctx.fillText(chartSheetSettings(chart), 92, CHART_SHEET_LAYOUT.footerY, 1260);
+  ctx.fillText(content.settings, 92, CHART_SHEET_LAYOUT.footerY, 1260);
   ctx.textAlign = 'right';
-  ctx.fillText(`Engine ${chart.engineVersion}`, SHEET_W - 92, CHART_SHEET_LAYOUT.footerY);
+  ctx.fillText(content.engine, SHEET_W - 92, CHART_SHEET_LAYOUT.footerY);
   const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
   if (!blob) throw new Error('png encode failed');
   return blob;
@@ -1356,7 +1483,7 @@ async function drawPlacementCard(
   ctx.fillText(uncertainMoon ? moonLabel(chart, locale) : signName(sign, locale), W / 2, 690, W - 140);
   ctx.fillStyle = INK_2;
   ctx.font = `400 30px ${MONO}`;
-  ctx.fillText(uncertainMoon ? t(locale, 'needsBirthTime') : `${degreeInSign(source).toFixed(1)}°`, W / 2, 770, W - 140);
+  ctx.fillText(uncertainMoon ? t(locale, 'needsBirthTime') : cardDegreeText(placement, degreeInSign(source)), W / 2, 770, W - 140);
   ctx.font = `400 28px ${SERIF}`;
   ctx.fillText(shareCardText(locale, placement === 'moon' ? 'moonDescriptor' : 'risingDescriptor'), W / 2, 850);
   ctx.font = `400 20px ${MONO}`;
@@ -1369,12 +1496,12 @@ async function drawPlacementCard(
   return blob;
 }
 
-export async function drawCard(
+/** Draws the chart it is given; prepareChartCard gives it the chart an image may show. */
+async function drawCard(
   chart: Chart,
   options: ShareCardOptions = {},
 ): Promise<Blob> {
   if (options.moonAmbiguous && chart.moonSignCandidates === undefined) chart = { ...chart, moonSignCandidates: [] };
-  if (options.variant === 'sheet') return drawChartSheet(chart, options);
   if (options.variant === 'big-three') return drawBigThreeCard(chart, options);
   if (options.variant === 'communication') return drawCommunicationCard(chart, options);
   if (options.variant === 'signature') return drawSignatureCard(chart, options);
@@ -1481,10 +1608,10 @@ export interface BigThreeCardChart {
 export async function prepareBigThreeCard(
   chart: BigThreeCardChart,
   locale: Locale = 'en',
-  options: Pick<ShareCardOptions, 'referenceTime' | 'moonAmbiguous'> = {},
+  options: Pick<ShareCardOptions, 'referenceTime' | 'moonAmbiguous' | 'birthDate'> = {},
 ): Promise<PreparedChartCard> {
   return {
-    blob: await drawBigThreeCard(chart, { ...options, variant: 'big-three', locale }),
+    blob: await drawBigThreeCard(await imagePositions(chart, options.birthDate), { ...options, variant: 'big-three', locale }),
     filename: chartCardFilename({ variant: 'big-three', locale }),
   };
 }
@@ -1493,10 +1620,10 @@ export async function preparePlacementCard(
   chart: BigThreeCardChart,
   placement: 'moon' | 'rising',
   locale: Locale = 'en',
-  options: Pick<ShareCardOptions, 'referenceTime' | 'moonAmbiguous'> = {},
+  options: Pick<ShareCardOptions, 'referenceTime' | 'moonAmbiguous' | 'birthDate'> = {},
 ): Promise<PreparedChartCard> {
   return {
-    blob: await drawPlacementCard(chart, placement, { ...options, locale }),
+    blob: await drawPlacementCard(await imagePositions(chart, options.birthDate), placement, { ...options, locale }),
     filename: placement === 'moon' ? 'zodiacs-moon-sign.png' : 'zodiacs-rising-sign.png',
   };
 }
@@ -1508,9 +1635,21 @@ export async function prepareChartSheet(
   if (options.moonAmbiguous && chart.moonSignCandidates === undefined) chart = { ...chart, moonSignCandidates: [] };
   const sheetOptions: ShareCardOptions = { ...options, variant: 'sheet' };
   return {
-    blob: await drawChartSheet(chart, sheetOptions),
+    blob: await drawChartSheet(...await sheetDrawing(chart, sheetOptions)),
     filename: chartCardFilename(sheetOptions),
   };
+}
+
+/** A sheet's chart and options: imageChart's while birth details are hidden. */
+async function sheetDrawing(
+  chart: Chart,
+  options: ShareCardOptions,
+): Promise<[Chart, ShareCardOptions & { housesLeftOut: boolean }]> {
+  const hidden = options.hideBirthDetails !== false;
+  return [
+    hidden ? await imageChart(chart, options.birthDate) : chart,
+    { ...options, housesLeftOut: hidden && chart.houses?.system === 'placidus' },
+  ];
 }
 
 /**
@@ -1521,8 +1660,13 @@ export async function prepareChartCard(
   chart: Chart,
   options: ShareCardOptions = {},
 ): Promise<PreparedChartCard> {
+  if (options.variant === 'sheet') return prepareChartSheet(chart, options);
+  // The two readings name signs only; every other card draws positions.
+  const drawn = options.variant === 'communication' || options.variant === 'approach'
+    ? timedImageChart(chart)
+    : await imageChart(chart, options.birthDate);
   return {
-    blob: await drawCard(chart, options),
+    blob: await drawCard(drawn, options),
     filename: chartCardFilename(options),
   };
 }

@@ -25,7 +25,7 @@ function generate(snapshot) {
 
 describe('historical July build report', () => {
   it('reproduces the report with its pinned inventory even when the current inventory has grown', () => {
-    expect(current.match(/^- `[^`]+`$/gm)).toHaveLength(581);
+    expect(current.match(/^- `[^`]+`$/gm)).toHaveLength(582);
     const report = generate(historical);
     expect(report).toBe(readFileSync(new URL('../BUILD-REPORT.md', import.meta.url), 'utf8'));
     expect(report.slice(report.indexOf('# i18n additions\n'))).toBe(historical);

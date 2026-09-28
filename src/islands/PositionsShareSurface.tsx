@@ -42,8 +42,9 @@ export const SHARE_POSITIONS_EN = {
     preparingImage: 'Preparing image…',
     shareThisImage: 'Share this image',
     moreWaysToShare: 'More ways to share',
-    chartImagePrivacy: 'The image shows chart positions and calculation settings, with no name, birth date, time, place, coordinates or chart link. Its positions still give the birth date and time, and its Ascendant and Midheaven the approximate birthplace.',
-    chartImagePrivacyDetails: 'This image includes the birth date, local time, place, coordinates, time zone, and resolved UTC. It does not include a name or chart link.',
+    chartImagePrivacy: 'The image shows chart positions and calculation settings, with no name, birth date, time, place, coordinates or chart link. Its positions still give the birth date and time. It shows the Ascendant and Midheaven only to the whole degree and leaves out Placidus houses, so it narrows the birthplace no more than the link does.',
+    chartImagePrivacyNoTime: 'The image shows chart positions and calculation settings, with no name, birth date, place, coordinates or chart link. With no birth time, it shows the sky at 12:00 UTC on your birth date, as the link does, so it gives your birth date but nothing about your birthplace. Any position can differ a little from your chart, and on a day a planet changes sign, so can its sign.',
+    chartImagePrivacyDetails: 'This image includes the birth date and, if known, the local birth time, with the place, coordinates, time zone and UTC instant. It does not include a name or chart link.',
     moonCardTitle: 'Moon sign card',
     risingCardTitle: 'Rising sign card',
     moonCardAction: 'Share my Moon sign',
@@ -71,8 +72,9 @@ const SHARE_COPY = {
     preparingImage: 'Preparando imagen…',
     shareThisImage: 'Compartir esta imagen',
     moreWaysToShare: 'Más formas de compartir',
-    chartImagePrivacy: 'La imagen muestra las posiciones de la carta y los ajustes de cálculo, sin nombre, fecha, hora ni lugar de nacimiento, coordenadas ni enlace a la carta. Sus posiciones siguen dando la fecha y la hora de nacimiento, y su ascendente y su medio cielo, el lugar de nacimiento aproximado.',
-    chartImagePrivacyDetails: 'Esta imagen incluye la fecha, la hora local, el lugar, las coordenadas, la zona horaria y la hora UTC calculada. No incluye el nombre ni un enlace a la carta.',
+    chartImagePrivacy: 'La imagen muestra las posiciones de la carta y los ajustes de cálculo, sin nombre, fecha, hora ni lugar de nacimiento, coordenadas ni enlace a la carta. Sus posiciones siguen dando la fecha y la hora de nacimiento. Muestra el ascendente y el medio cielo solo al grado entero y deja fuera las casas Placidus, así que no acota el lugar de nacimiento más que el enlace.',
+    chartImagePrivacyNoTime: 'La imagen muestra las posiciones de la carta y los ajustes de cálculo, sin nombre, fecha ni lugar de nacimiento, coordenadas ni enlace a la carta. Sin hora de nacimiento, muestra el cielo de las 12:00 UTC de tu fecha de nacimiento, igual que el enlace, así que da tu fecha de nacimiento pero nada sobre tu lugar de nacimiento. Cualquier posición puede diferir un poco de tu carta y, el día en que un planeta cambia de signo, también su signo.',
+    chartImagePrivacyDetails: 'Esta imagen incluye la fecha y, si se conoce, la hora local de nacimiento, con el lugar, las coordenadas, la zona horaria y el instante UTC. No incluye el nombre ni un enlace a la carta.',
     moonCardTitle: 'Tarjeta del signo lunar',
     risingCardTitle: 'Tarjeta del ascendente',
     moonCardAction: 'Compartir mi signo lunar',
@@ -97,8 +99,9 @@ const SHARE_COPY = {
     preparingImage: 'Preparando imagem…',
     shareThisImage: 'Compartilhar esta imagem',
     moreWaysToShare: 'Mais formas de compartilhar',
-    chartImagePrivacy: 'A imagem mostra as posições do mapa e as configurações de cálculo, sem nome, data, hora ou local de nascimento, coordenadas nem link do mapa. Suas posições ainda revelam a data e a hora de nascimento, e o ascendente e o meio do céu, o local de nascimento aproximado.',
-    chartImagePrivacyDetails: 'Esta imagem inclui a data, a hora local, o local, as coordenadas, o fuso horário e o UTC calculado. Não inclui nome nem link do mapa.',
+    chartImagePrivacy: 'A imagem mostra as posições do mapa e as configurações de cálculo, sem nome, data, hora ou local de nascimento, coordenadas nem link do mapa. Suas posições ainda revelam a data e a hora de nascimento. Ela mostra o ascendente e o meio do céu apenas em graus inteiros e deixa de fora as casas Placidus, então não restringe o local de nascimento mais do que o link.',
+    chartImagePrivacyNoTime: 'A imagem mostra as posições do mapa e as configurações de cálculo, sem nome, data ou local de nascimento, coordenadas nem link do mapa. Sem a hora de nascimento, ela mostra o céu das 12:00 UTC da sua data de nascimento, como o link; por isso indica a sua data de nascimento, mas nada sobre o seu local de nascimento. Qualquer posição pode diferir um pouco do seu mapa e, no dia em que um planeta muda de signo, também o signo dele.',
+    chartImagePrivacyDetails: 'Esta imagem inclui a data e, se conhecida, a hora local de nascimento, com o local, as coordenadas, o fuso horário e o instante UTC. Não inclui nome nem link do mapa.',
     moonCardTitle: 'Cartão do signo lunar',
     risingCardTitle: 'Cartão do ascendente',
     moonCardAction: 'Compartilhar meu signo lunar',
@@ -123,8 +126,9 @@ const SHARE_COPY = {
     preparingImage: 'Préparation de l’image…',
     shareThisImage: 'Partager cette image',
     moreWaysToShare: 'Autres façons de partager',
-    chartImagePrivacy: 'L’image montre les positions du thème et les réglages de calcul, sans nom, date, heure ou lieu de naissance, coordonnées ni lien vers le thème. Ses positions donnent encore la date et l’heure de naissance, et son ascendant et son milieu du ciel, le lieu de naissance approximatif.',
-    chartImagePrivacyDetails: 'Cette image inclut la date, l’heure locale, le lieu, les coordonnées, le fuseau horaire et l’UTC calculé. Elle n’inclut ni nom ni lien vers le thème.',
+    chartImagePrivacy: 'L’image montre les positions du thème et les réglages de calcul, sans nom, date, heure ou lieu de naissance, coordonnées ni lien vers le thème. Ses positions donnent encore la date et l’heure de naissance. Elle ne montre l’ascendant et le milieu du ciel qu’au degré entier et laisse de côté les maisons Placidus : elle ne situe donc pas le lieu de naissance plus précisément que le lien.',
+    chartImagePrivacyNoTime: 'L’image montre les positions du thème et les réglages de calcul, sans nom, date ou lieu de naissance, coordonnées ni lien vers le thème. Sans heure de naissance, elle montre le ciel de 12:00 UTC à ta date de naissance, comme le lien : elle donne ta date de naissance, mais rien sur ton lieu de naissance. Chaque position peut différer un peu de ton thème et, le jour où une planète change de signe, son signe aussi.',
+    chartImagePrivacyDetails: 'Cette image inclut la date et, si elle est connue, l’heure locale de naissance, avec le lieu, les coordonnées, le fuseau horaire et l’instant UTC. Elle n’inclut ni nom ni lien vers le thème.',
     moonCardTitle: 'Carte du signe lunaire',
     risingCardTitle: 'Carte de l’Ascendant',
     moonCardAction: 'Partager mon signe lunaire',
@@ -149,8 +153,9 @@ const SHARE_COPY = {
     preparingImage: 'Preparazione immagine…',
     shareThisImage: 'Condividi questa immagine',
     moreWaysToShare: 'Altri modi per condividere',
-    chartImagePrivacy: 'L’immagine mostra le posizioni del tema e le impostazioni di calcolo, senza nome, data, ora o luogo di nascita, coordinate né link al tema. Le sue posizioni danno ancora la data e l’ora di nascita, e l’ascendente e il medio cielo il luogo di nascita approssimativo.',
-    chartImagePrivacyDetails: 'Questa immagine include data, ora locale, luogo, coordinate, fuso orario e UTC calcolato. Non include nome né un link al tema.',
+    chartImagePrivacy: 'L’immagine mostra le posizioni del tema e le impostazioni di calcolo, senza nome, data, ora o luogo di nascita, coordinate né link al tema. Le sue posizioni danno ancora la data e l’ora di nascita. Mostra l’ascendente e il medio cielo solo al grado intero e lascia fuori le case Placidus, quindi non restringe il luogo di nascita più del link.',
+    chartImagePrivacyNoTime: 'L’immagine mostra le posizioni del tema e le impostazioni di calcolo, senza nome, data o luogo di nascita, coordinate né link al tema. Senza ora di nascita, mostra il cielo delle 12:00 UTC della tua data di nascita, come il link, quindi indica la data di nascita ma nulla del luogo di nascita. Ogni posizione può differire un po’ dal tuo tema e, nel giorno in cui un pianeta cambia segno, anche il suo segno.',
+    chartImagePrivacyDetails: 'Questa immagine include la data e, se nota, l’ora locale di nascita, con luogo, coordinate, fuso orario e istante UTC. Non include nome né un link al tema.',
     moonCardTitle: 'Carta del segno lunare',
     risingCardTitle: 'Carta dell’Ascendente',
     moonCardAction: 'Condividi il mio segno lunare',
@@ -175,8 +180,9 @@ const SHARE_COPY = {
     preparingImage: 'Готовим изображение…',
     shareThisImage: 'Поделиться изображением',
     moreWaysToShare: 'Другие способы поделиться',
-    chartImagePrivacy: 'На изображении есть положения карты и настройки расчёта, но нет имени, даты, времени и места рождения, координат и ссылки на карту. По положениям всё же можно определить дату и время рождения, а по асценденту и MC — примерное место рождения.',
-    chartImagePrivacyDetails: 'На этом изображении есть дата, местное время, место, координаты, часовой пояс и рассчитанное UTC. Имя и ссылка на карту не включены.',
+    chartImagePrivacy: 'На изображении есть положения карты и настройки расчёта, но нет имени, даты, времени и места рождения, координат и ссылки на карту. По положениям всё же можно определить дату и время рождения. Асцендент и MC показаны только с точностью до целого градуса, а дома Плацидуса не показаны, поэтому место рождения по изображению сужается не больше, чем по ссылке.',
+    chartImagePrivacyNoTime: 'На изображении есть положения карты и настройки расчёта, но нет имени, даты и места рождения, координат и ссылки на карту. Без времени рождения на нём небо на 12:00 UTC в день вашего рождения, как и в ссылке, поэтому оно выдаёт дату рождения, но ничего не говорит о месте рождения. Любое положение может немного отличаться от вашей карты, а в день, когда планета меняет знак, — и её знак.',
+    chartImagePrivacyDetails: 'На этом изображении есть дата и, если известно, местное время рождения, а также место, координаты, часовой пояс и момент UTC. Имя и ссылка на карту не включены.',
     moonCardTitle: 'Карточка знака Луны',
     risingCardTitle: 'Карточка асцендента',
     moonCardAction: 'Поделиться знаком Луны',
@@ -195,19 +201,25 @@ export function decodePositionsToken(token: string): PositionsShareChart | null 
   return decodePositionsLink(token);
 }
 
+/**
+ * The image offered first, with birth details hidden. birthDate is the civil
+ * date a chart without a birth time is shown at 12:00 UTC on, as its link is.
+ */
 export async function preparePrimaryShareArtifact(
   chart: Chart,
   mode: 'full' | 'moon' | 'rising',
   locale: Locale,
   moonAmbiguous = false,
+  birthDate?: string,
 ): Promise<PreparedChartCard> {
   if (mode === 'full') {
     await ensurePastelZodiacIconEmbedding();
-    return prepareChartSheet(chart, { locale, hideBirthDetails: true, moonAmbiguous });
+    return prepareChartSheet(chart, { locale, hideBirthDetails: true, moonAmbiguous, birthDate });
   }
   return preparePlacementCard(chart, mode, locale, {
     referenceTime: !chart.input.timeKnown,
     moonAmbiguous,
+    birthDate,
   });
 }
 

@@ -1409,7 +1409,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
       });
       void import('./PositionsShareSurface').then(async (surface) => {
         if (!runIsCurrent()) return;
-        const prepared = await surface.preparePrimaryShareArtifact(result, mode, locale, nextMoonAmbiguous);
+        const prepared = await surface.preparePrimaryShareArtifact(result, mode, locale, nextMoonAmbiguous, input.date);
         if (!runIsCurrent()) return;
         shareRuntimeRef.current.primary = { artifact: prepared, share: surface.sharePrimaryArtifact };
         setCard('idle');
