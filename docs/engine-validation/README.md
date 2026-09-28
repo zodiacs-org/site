@@ -42,7 +42,7 @@ Ephemeris* for the Moon. Zodiacs did not write those models.
 | Houses, twelve systems | Swiss 2.10.03 `swe_houses_armc` given the same sidereal time, latitude and obliquity: a 5,616-case ladder from 55° to 66.6° and 20,000 draws over every latitude; `swe_houses_ex` end to end | 0.0096″ given the same inputs (Placidus; the other eleven 0.00005″ or less); end to end from 1850 to 2049, 1.95″ broad and one Koch case of 353 on the ladder at 3.73″ | [`../platform/evidence/houses-2026-09-26/`](../platform/evidence/houses-2026-09-26/) |
 | Local time | host IANA/ICU, two Node majors and a browser | no disagreement in the cases run (a pass, not a residual) | [`../platform/evidence/site-engine-rc6/`](../platform/evidence/site-engine-rc6/) |
 | Event search | Swiss hourly scans, independent roots | one contract **failed-incomplete** | [`transit-windows/`](transit-windows/), [`swiss-lunar-return/`](swiss-lunar-return/) |
-| Runtime support | Node 22.22.2 and Node 24.21.0 for rc.9, rc.8 and rc.7; Node 22.23.2, Node 24.19.0 and Chrome 152 for rc.6 | parity in the cases run (a pass, not a residual) | [`../platform/evidence/site-engine-rc9/`](../platform/evidence/site-engine-rc9/), [`../platform/evidence/site-engine-rc8/`](../platform/evidence/site-engine-rc8/), [`../platform/evidence/site-engine-rc7/`](../platform/evidence/site-engine-rc7/), [`../platform/evidence/site-engine-rc6/`](../platform/evidence/site-engine-rc6/) |
+| Runtime support | Node 22.22.2 and Node 24.19.0 for rc.10; Node 22.22.2 and Node 24.21.0 for rc.9, rc.8 and rc.7; Node 22.23.2, Node 24.19.0 and Chrome 152 for rc.6 | parity in the cases run (a pass, not a residual) | [`../platform/evidence/site-engine-rc10/`](../platform/evidence/site-engine-rc10/), [`../platform/evidence/site-engine-rc9/`](../platform/evidence/site-engine-rc9/), [`../platform/evidence/site-engine-rc8/`](../platform/evidence/site-engine-rc8/), [`../platform/evidence/site-engine-rc7/`](../platform/evidence/site-engine-rc7/), [`../platform/evidence/site-engine-rc6/`](../platform/evidence/site-engine-rc6/) |
 
 ## 1. Positions
 
@@ -179,7 +179,7 @@ Placidus at the same limit, but falls back to **whole sign** and sets
 Both behaviours are compared against the same Swiss `W` tuples, so the
 fallback is checked rather than excused.
 
-Since rc.9 the engine offers twelve systems. Koch, Regiomontanus, Campanus,
+The rc.9 record below covers its twelve systems. Koch, Regiomontanus, Campanus,
 Topocentric (Polich–Page), Alcabitius, Equal, Vehlow, Meridian (axial
 rotation) and Morinus join whole sign, Placidus and Porphyry, each following
 the definition Swiss uses. The 2026-09-26 record measures them against Swiss
@@ -211,7 +211,7 @@ measure that model rather than the houses
 Not established: exact geographic poles and degenerate horizon intersections
 remain outside verified scope; Swiss's house model is itself a convention, so
 cusp agreement is convention agreement. The package and the MCP adapter offer
-all twelve systems; the site's own forms still offer whole sign and Placidus.
+all thirteen systems since rc.10; the site's own forms still offer whole sign and Placidus.
 
 ## 3. Local time
 
@@ -338,8 +338,10 @@ tested, not proven complete.
 ## 5. Runtime support
 
 ESM only, TypeScript declarations included, no CommonJS export. The manifest
-declares Node ≥18. What was actually executed is narrower: for rc.9 and rc.8,
-Node 22.22.2 and 24.21.0 for the parity matrix and the public-download
+declares Node ≥18. What was actually executed is narrower: for rc.10,
+Node 22.22.2 and 24.19.0 for the parity matrix and clean packed-consumer
+check, plus the site acceptance captures on Chromium 153.0.8010.0; for rc.9
+and rc.8, Node 22.22.2 and 24.21.0 for the parity matrix and public-download
 consumer check; for rc.6, Node 22.23.2 and 24.19.0, and Chrome 152 for the browser run,
 with thirteen network, storage and cookie observer negative controls showing
 zero calls during calculation.

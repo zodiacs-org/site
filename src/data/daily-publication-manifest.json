@@ -1,7 +1,7 @@
 {
   "schema": "zodiacs.daily-publication-manifest.v2",
-  "date": "2026-09-26",
-  "snapshotAt": "2026-09-26T12:00:00.000Z",
+  "date": "2026-09-28",
+  "snapshotAt": "2026-09-28T12:00:00.000Z",
   "status": "verified",
   "policy": {
     "id": "org.zodiacs.daily.en",
@@ -10,28 +10,28 @@
   },
   "facts": {
     "path": "src/data/daily.json",
-    "fileSha256": "e05e3c4f5ce359d17b2222ee336e4867d2482d261fd69caff5bb00e63d52345d",
-    "canonicalSha256": "fb3a8b3a3b39287947f91471b1557f240618cd5518d3fdf701a84d1a29944488",
-    "factCount": 37,
+    "fileSha256": "96b0bb9ccd7fdf442c47ca2db2d37bb67285078cd5fb7869d5fd166bb49424b8",
+    "canonicalSha256": "6db2f01bf06b050279917a6cb3426d597a8f0f262505794653d117d241dda1c1",
+    "factCount": 48,
     "eventsCoverage": "complete",
     "eventsSource": "src/data/transits-2026-09.json",
     "eventsSourceSha256": "8d14ed0e7dfd8bc13d74a85f620d43525a910edf2ae8f51325d84731a540c59a",
     "eventsSourceCanonicalSha256": "dffb4383a4859bde2a180a860b6484f6b876d09085bc9037bb497bf49ff5ca1f",
     "engine": {
       "name": "@zodiacs/engine",
-      "version": "0.1.1-rc.9"
+      "version": "0.1.1-rc.10"
     }
   },
   "publication": {
     "path": "src/data/daily-publication.json",
-    "canonicalSha256": "8d332ad51e6bdaf922d806128ddd88c7631549bb9c1fc5eb22cd3028f5d539a2",
+    "canonicalSha256": "0d8c1c01b1263e20ade1d24c7a7d126d204416624132822f8d67d687580942ae",
     "signCount": 12,
     "outputCount": 72
   },
   "generation": {
     "mode": "deterministic-template",
     "generatorId": "zodiacs.daily-renderer.v1.1",
-    "generatorSha256": "83fcbd8f7839c5351c9989b89f899f8c148593bc96388bff7f83a6ffcaade106",
+    "generatorSha256": "1dfcf71abaa08a641a1e1a72bc8f1fd90758cb657f51100b12eae8561e5da0b0",
     "model": null,
     "freeformModelOutput": false
   },

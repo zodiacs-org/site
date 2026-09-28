@@ -1,0 +1,269 @@
+{
+  "schema": "zodiacs-site-engine-adoption-validation/v1",
+  "recordedAtUTC": "2026-09-28T08:04:44.849812+00:00",
+  "scope": "Local automated validation of the rc.10 site adoption working tree. Not a merge, deployment, npm publication, external certification or general ephemeris accuracy claim.",
+  "runtime": {
+    "node": "v22.22.2",
+    "secondEngineConsumerNode": "v24.19.0",
+    "chromium": "Chromium 153.0.8010.0",
+    "playwright": "1.61.1",
+    "claudeCodeCLI": "2.1.283",
+    "claudeModelRequests": 0
+  },
+  "sourceIdentity": {
+    "siteBaseMain": "cccb145bdf5eda533d72b182fedee60a81f0433e",
+    "opusBudgetBranchHead": "f8b233a27c7870e3e94b494bfe4b498a4f26ec22",
+    "templateSourceSha256": "1692712d3453273e77b2df7501cc73bdd69e6d54f3e8619bf8f65acdece0661c",
+    "sourceIdentityScope": "These are source/base references and the actual captured working-tree fingerprint. No unpublished local commit is used as a public artifact or evidence carrier."
+  },
+  "engine": {
+    "version": "0.1.1-rc.10",
+    "sourceCommit": "9c4f3fd77b5d6235288d9cdfc2ac1d183a5c4d6b",
+    "artifactCommit": "d0c5cd0c8edaa849d2e2c0793ccc32c28826e7ee",
+    "archive": "vendor/zodiacs-engine-0.1.1-rc.10.tgz",
+    "sha256": "a377cdc8c12e25ff7de4fe95ddf77a4cdee8d2da97071b0f8454e340b374565c",
+    "bytes": 61318
+  },
+  "mcp": {
+    "version": "0.1.0-rc.10",
+    "archive": "public/examples/zodiacs-mcp-server-0.1.0-rc.10.tgz",
+    "sha256": "0405ecf4380af09a6f621d5bb3a1604cc72e725a905ad6911bf53264dcf43568",
+    "bytes": 71472,
+    "serverSha256": "08e2f54cfcf28a9b4d90381004bfc8e761531de2c8a59745f0a0dbbf5ec4df5b",
+    "tools": 3,
+    "chartPointsExposed": false
+  },
+  "checks": [
+    {
+      "name": "site-unit-and-contract-suite",
+      "command": "npm test",
+      "exitCode": 0,
+      "testFilesPassed": 479,
+      "testFilesSkipped": 1,
+      "testsPassed": 6032,
+      "testsSkipped": 4,
+      "testsTotal": 6036,
+      "note": "Final default-build run after refreshing screenshots and the existing Swiss corpus. An earlier run concurrent with a production-flags build exposed stale evidence and flag-dependent assertions; this final full run passes without modifying those tests."
+    },
+    {
+      "name": "astro-check",
+      "command": "npm run check",
+      "exitCode": 0,
+      "files": 1136,
+      "errors": 0,
+      "warnings": 0,
+      "hints": 15
+    },
+    {
+      "name": "default-build",
+      "command": "npm run build",
+      "exitCode": 0,
+      "note": "Default committed flags; all chained content, dist, schema, isolation and bundle gates passed."
+    },
+    {
+      "name": "production-flags-build",
+      "command": "npm run build",
+      "environmentSource": ".github/workflows/site-check.yml jobs.production-flags-build.env",
+      "exitCode": 0,
+      "note": "Used the exact existing job environment via parsed workflow YAML; did not edit the workflow or production feature choices for this run. Default build run afterward restored generated defaults. The inherited PR #588 budget changes are preserved."
+    },
+    {
+      "name": "engine-consumer-parity",
+      "command": "node scripts/platform-engine-report.mjs",
+      "runtimeReports": [
+        "node22-parity.json",
+        "node24-parity.json"
+      ],
+      "status": "passed",
+      "note": "Frozen small node/polar corpus only; no general bound."
+    },
+    {
+      "name": "clean-packed-engine-consumer",
+      "command": "node scripts/verify-packed-consumer.mjs (from exact rc.10 engine source)",
+      "evidence": "public-candidate-consumer.log",
+      "checksPerRuntime": 16,
+      "runtimeCount": 2,
+      "status": "passed"
+    },
+    {
+      "name": "mcp-protocol",
+      "command": "npm run test:mcp:protocol",
+      "checks": 87,
+      "passed": 87,
+      "evidence": "../mcp-adapter/protocol-drive.json"
+    },
+    {
+      "name": "mcp-synthetic-benchmark",
+      "command": "npm run test:mcp:benchmark",
+      "scenarios": 18,
+      "assertions": {
+        "passed": 112,
+        "of": 112
+      },
+      "evidence": "../mcp-adapter/benchmark.json",
+      "note": "Synthetic same-engine regression classification, not real-world accuracy."
+    },
+    {
+      "name": "mcp-named-host",
+      "command": "npm run test:mcp:host",
+      "checks": 7,
+      "passed": 7,
+      "evidence": "../mcp-adapter/host-drive.json",
+      "note": "Real Claude Code CLI stdio add/list/get/remove handshake in throwaway configuration; no model-driven request."
+    },
+    {
+      "name": "mcp-packed-consumer",
+      "command": "npm install --ignore-scripts then npm test in a fresh extraction of the public MCP archive",
+      "checks": 17,
+      "passed": 17,
+      "exitCode": 0
+    },
+    {
+      "name": "phase1-browser-acceptance",
+      "command": "PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=<Chromium executable> node tests/phase1-acceptance-drive.mjs",
+      "exitCode": 0,
+      "captures": 18,
+      "http200": 18,
+      "recordedErrors": 0,
+      "viewports": [
+        360,
+        1280
+      ],
+      "manifest": "../../../acceptance/phase1/screenshots/manifest.json",
+      "note": "Unchanged repository Playwright driver. Two representative images were visually inspected by an AI agent: Today at 1280 and daily at 360. This is not human design approval."
+    },
+    {
+      "name": "swiss-existing-corpus-refresh",
+      "evidence": "swiss-refresh.json",
+      "calculations": 321420,
+      "instants": 14610,
+      "bodies": 11,
+      "clocks": 2,
+      "status": "passed",
+      "reportedStatisticalValuesCompared": 1914,
+      "reportedStatisticalValuesChanged": 0,
+      "note": "Does not include Equal-MC or new chartPoints."
+    },
+    {
+      "name": "claims-ledger",
+      "commands": [
+        "node scripts/claims-ledger.mjs --unlisted",
+        "node scripts/claims-ledger.mjs --orphans"
+      ],
+      "unlisted": 0,
+      "orphans": 0,
+      "exitCode": 0
+    },
+    {
+      "name": "phase1-scope",
+      "command": "node scripts/phase1-scope-guard.mjs --base origin/main",
+      "status": "passed",
+      "note": "Protected scope untouched."
+    },
+    {
+      "name": "mcp-reproducible-pack",
+      "command": "npm run mcp:pack:check",
+      "exitCode": 0,
+      "note": "Archive bytes verified. Final remote carrier pin is a separate metadata step."
+    },
+    {
+      "name": "patch-whitespace",
+      "command": "git diff --check",
+      "exitCode": 0
+    },
+    {
+      "name": "final-copy-and-evidence-consistency",
+      "command": "node node_modules/vitest/vitest.mjs run scripts/claims-ledger.test.mjs scripts/claims-bindings.test.mjs scripts/methodology-accuracy-claim.test.mjs scripts/phase1-acceptance-evidence.test.mjs",
+      "exitCode": 0,
+      "testFilesPassed": 4,
+      "testsPassed": 49,
+      "note": "After the full suite, corrected runtime-version documentation and narrowed inherited import-side-effect/Delta-T wording. The final copy-only changes are outside the screenshot source boundary; its source fingerprint remains current. Ledger unlisted/orphan checks also repeated with zero findings."
+    }
+  ],
+  "bundleBudgets": {
+    "unit": "KiB gzip as reported by existing budget script",
+    "productionFlags": {
+      "birthChart": {
+        "measured": 70.4,
+        "limit": 71
+      },
+      "compatibility": {
+        "measured": 35.6,
+        "limit": 36
+      },
+      "engineChunk": {
+        "measured": 26.1,
+        "limit": 27
+      },
+      "largestChunk": {
+        "measured": 50.1,
+        "limit": 60
+      }
+    },
+    "note": "Rounded display values, not additional measured precision. Full default and production-flags build gates passed."
+  },
+  "browserSetup": {
+    "agentBrowserCLI": "0.38.1",
+    "agentBrowserAttempts": 2,
+    "agentBrowserOutcome": "Daemon exited during startup with no error output; no successful browser result claimed for that CLI.",
+    "fallback": "Actual Chromium 153.0.8010.0 from temporary @sparticuz/chromium 153.0.0, verified through Playwright. Standard CDN install failed with a truncated archive; exact npm Brotli/tar payloads were manually extracted after this environment rejected an ownership operation. No repository browser driver, acceptance gate or dependencies changed.",
+    "captureRetry": "First unchanged capture run encountered the pre-existing preview instance; after stopping/clearing it, the next full capture completed 18/18."
+  },
+  "rawLocalLogs": [
+    {
+      "kind": "fullTests",
+      "path": "/tmp/site-rc10-final-tests.log",
+      "sha256": "fc8546f3111d3cc2266b97bfb376b746c9091dc16d4f10716a54800079ef0203",
+      "committed": false
+    },
+    {
+      "kind": "astroCheck",
+      "path": "/tmp/site-rc10-check.log",
+      "sha256": "cd9e4f554fe96e605cebaf5fd1cf76ebb7865bcee6b16676b23c3cec40dfcdeb",
+      "committed": false
+    },
+    {
+      "kind": "defaultBuild",
+      "path": "/tmp/site-rc10-default-build.log",
+      "sha256": "f5bd2207dae12fae1720f588a60cc1b8ce1d7a7be18207dd0c8ebecbe7155974",
+      "committed": false
+    },
+    {
+      "kind": "productionFlagsBuild",
+      "path": "/tmp/site-rc10-production-build.log",
+      "sha256": "64ad4a0588c534eeca7aa0a4ab8ffcec08ef643e97382762b86f4140bf13e1f1",
+      "committed": false
+    },
+    {
+      "kind": "screenshots",
+      "path": "/tmp/site-rc10-phase1-capture.log",
+      "sha256": "d1fdef1db1882ca575687e64bc79c4e9fdd240cb6f7ff08f4ae8f764faa9308a",
+      "committed": false
+    },
+    {
+      "kind": "mcpCleanConsumer",
+      "path": "/tmp/site-rc10-mcp-consumer.log",
+      "sha256": "25535761c33323b9efaaa4165005a96dc1d03ea8c1049577c912a1115888629c",
+      "committed": false
+    },
+    {
+      "kind": "finalCopyAndEvidence",
+      "path": "/tmp/site-rc10-final-copy-tests.log",
+      "sha256": "d98ab79da16c20d77b8348d720c5a3606dee5ff97e1220a9b51bfc0bea9cac98",
+      "committed": false
+    }
+  ],
+  "limits": [
+    "Full historical PR #5 Swiss record for new points/Equal-MC remains unavailable; this adoption does not reconstruct or certify it.",
+    "The rc.9 twelve-house-system Swiss record remains a historical twelve-system measurement; Equal-MC has a defining spacing/cusp test only in this adoption.",
+    "Receipt/import conventions and trust behavior are unchanged.",
+    "No production merge, deploy, npm release or model-spending approval is implied by these checks."
+  ],
+  "publication": {
+    "status": "remote-carrier-pinned",
+    "carrierCommit": "9216262432b295230cf536d96c319a26e1fcf5ed",
+    "carrierTree": "a54ddfa6c71f06622517cdf8e4530099a0b8d11f",
+    "branch": "codex/site-rc10-recovery-20260928",
+    "note": "The published carrier tree exactly matches the recovered and validated source tree. Engine evidenceCommit and MCP artifactCommit now point to this immutable remote commit. Prior test results and their timestamps are preserved; no merge, deployment or npm publication is recorded."
+  }
+}

@@ -1,12 +1,12 @@
 {
   "kind": "synthetic regression benchmark",
   "whatItIsNot": "Not a measured accuracy rate. Every pair here is built by the same engine from synthetic inputs, so this measures whether the comparison classifies the cases its rules describe. It says nothing about how often the tool is right about a disagreement between two independently authored astrology engines, and nothing about real-world users, because no such corpus exists here.",
-  "startedAt": "2026-09-26T10:30:50.738Z",
-  "completedAt": "2026-09-26T10:30:51.276Z",
+  "startedAt": "2026-09-28T07:50:17.313Z",
+  "completedAt": "2026-09-28T07:50:17.795Z",
   "node": "v22.22.2",
   "server": {
     "path": "examples/mcp-server/server.mjs",
-    "sha256": "632638536e2b7d32b8c2410363495e95c38f58216cbdcc35a7ff7b3fb7a2629e"
+    "sha256": "08e2f54cfcf28a9b4d90381004bfc8e761531de2c8a59745f0a0dbbf5ec4df5b"
   },
   "expectationsSha256": "70468ade20f70f4a59c141070b5957d43e3e32a96d911accb8a4e77c94d90235",
   "scenarios": {
