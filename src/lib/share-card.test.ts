@@ -32,7 +32,7 @@ import {
 } from './share-card';
 import type { Chart } from './engine/types';
 import { computeBodies, computeChart } from './engine/full';
-import { decodePositionsLink, encodeSharedPositionsLink } from './share-positions';
+import { decodePositionsLink, encodeSharedPositionsLink, wholeDegreeAngle } from './share-positions';
 import { prepareLocalTime, resolveLocalToUtc } from './time/localToUtc';
 
 const CHART = { engineVersion: '1.0.0' } as Chart;
@@ -456,6 +456,13 @@ describe('a chart image with birth details hidden', () => {
     const shown = chartSheetContent(chart, { hideBirthDetails: false });
     expect(shown.rows.find((row) => row.body === 'ASC')!.text).toMatch(minutes);
     expect(shown.rows.every((row) => row.house !== null)).toBe(true);
+  });
+
+  it('rounds every angle the way the link does, at the edges of signs and of the zodiac too', () => {
+    for (const lon of [0, 0.0004, 29.999, 30, 123.456, 359.4, 359.9996]) {
+      const chart = { ...timed('whole'), angles: { asc: lon, mc: lon, dsc: 0, ic: 0 } };
+      expect(timedImageChart(chart).angles).toMatchObject({ asc: wholeDegreeAngle(lon), mc: wholeDegreeAngle(lon) });
+    }
   });
 
   it('keeps whole-sign houses, which follow from the ascendant’s sign', () => {

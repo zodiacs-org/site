@@ -25,8 +25,6 @@ import type { Angles, AspectType, BodyName, BodyPosition, Chart } from './engine
 import type { SolarReturnExportModel } from '../islands/solar-return/export-model';
 import { ASPECTS } from './engine/aspects';
 import { houseOf, wholeSignCusps } from './engine/houses';
-import { wholeDegreeAngle } from './share-positions';
-import { sharedReferenceInstant } from './share-positions-noon';
 import type { CatalogLocale as Locale } from './i18n';
 import { shareCardFormat, shareCardText } from './share-card-copy';
 import { communicationRead } from './communication';
@@ -94,6 +92,14 @@ export function authoredSignatureForLocale(
 }
 
 /**
+ * An angle as a shared code keeps it, the middle of its whole degree:
+ * share-positions' wholeDegreeAngle, kept here so the pages that load this
+ * renderer on demand do not also preload the codec (share-card.test.ts holds
+ * the two to the same angles).
+ */
+const wholeDegreeAngle = (longitude: number) => Math.floor(longitude) + 0.5;
+
+/**
  * What an image draws of a chart with a birth time while its birth details
  * are hidden: no more of the birthplace than the chart's link carries. The
  * ascendant and midheaven (and so the descendant and IC) sit at the middle of
@@ -128,8 +134,7 @@ export function timedImageChart(chart: Chart): Chart {
  */
 export async function imageChart(chart: Chart, birthDate?: string): Promise<Chart> {
   if (chart.input.timeKnown) return timedImageChart(chart);
-  const utc = birthDate ? sharedReferenceInstant(birthDate) : null;
-  if (!utc) throw new Error('an image of a chart without a birth time needs its birth date');
+  const utc = await referenceInstant(birthDate);
   const { computeChart } = await import('./engine/full');
   const noon = computeChart({ utc, houseSystem: chart.input.houseSystem, timeKnown: false });
   return {
@@ -144,10 +149,17 @@ export async function imagePositions(chart: BigThreeCardChart, birthDate?: strin
   if (chart.angles) {
     return { ...chart, angles: { asc: wholeDegreeAngle(chart.angles.asc), mc: wholeDegreeAngle(chart.angles.mc) } };
   }
-  const utc = birthDate ? sharedReferenceInstant(birthDate) : null;
-  if (!utc) throw new Error('an image of a chart without a birth time needs its birth date');
+  const utc = await referenceInstant(birthDate);
   const { computeBodies } = await import('./engine/full');
   return { bodies: computeBodies(utc), angles: null, engineVersion: chart.engineVersion, moonSignCandidates: [] };
+}
+
+/** 12:00 UTC on the civil birth date, as a link carries it (sharedReferenceInstant), loaded on demand. */
+async function referenceInstant(birthDate: string | undefined): Promise<Date> {
+  const { sharedReferenceInstant } = await import('./share-positions-noon');
+  const utc = birthDate ? sharedReferenceInstant(birthDate) : null;
+  if (!utc) throw new Error('an image of a chart without a birth time needs its birth date');
+  return utc;
 }
 
 export const SHARE_CARD_SCALE = 2;
