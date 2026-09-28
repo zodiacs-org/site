@@ -30,10 +30,12 @@ import {
   imagePositions,
   prepareChartCard,
   timedImageChart,
+  wholeMinuteInstant,
 } from './share-card';
 import type { Chart } from './engine/types';
 import { computeBodies, computeChart } from './engine/full';
 import { decodePositionsLink, encodeSharedPositionsLink, wholeDegreeAngle } from './share-positions';
+import { sharedTimedInstant, timedSharedPositions } from './share-positions-noon';
 import { prepareLocalTime, resolveLocalToUtc } from './time/localToUtc';
 
 const CHART = { engineVersion: '1.0.0' } as Chart;
@@ -459,6 +461,89 @@ describe('a chart image with birth details hidden', () => {
     expect(shown.rows.every((row) => row.house !== null)).toBe(true);
   });
 
+  /*
+   * Before standard time a chart keeps the birthplace's own mean time, so its
+   * UTC instant has seconds that are the longitude's (four minutes of time per
+   * degree). The sheet drew the bodies at that instant: the rows to the
+   * arcminute with the aspect orbs gave the seconds to 8 to 30 s, and a blind
+   * solver then put the birthplace in strips 2.4 to 10 km wide (Buffalo,
+   * Brest, Kathmandu). It now draws them at the whole minute, as the link does.
+   */
+  const preStandardTime = [
+    { place: 'Buffalo', date: '1870-06-15', time: '14:30', zone: 'America/New_York', lat: 42.8864, lon: -78.8784 },
+    { place: 'Rochester', date: '1870-06-15', time: '14:30', zone: 'America/New_York', lat: 43.1566, lon: -77.6088 },
+    { place: 'Omaha', date: '1880-03-02', time: '07:05', zone: 'America/Chicago', lat: 41.2565, lon: -95.9345 },
+    { place: 'Brest', date: '1880-10-20', time: '21:47', zone: 'Europe/Paris', lat: 48.3904, lon: -4.4861 },
+    { place: 'Riyadh', date: '1946-05-10', time: '09:10', zone: 'Asia/Riyadh', lat: 24.6877, lon: 46.7219 },
+    { place: 'Kathmandu', date: '1915-01-20', time: '16:20', zone: 'Asia/Kathmandu', lat: 27.7172, lon: 85.324 },
+    { place: 'Coyoacán', date: '1907-07-06', time: '08:30', zone: 'America/Mexico_City', lat: 19.3467, lon: -99.1617 },
+  ];
+  const angleRows = new Set(['ASC', 'DSC', 'MC', 'IC']);
+
+  it('draws a chart with a birth time at its whole UTC minute: the same sheet for every instant that rounds to it', async () => {
+    for (const birth of preStandardTime) {
+      await prepareLocalTime(birth.date, birth.zone);
+      const resolved = resolveLocalToUtc(birth.date, birth.time, birth.zone, { longitude: birth.lon });
+      const minute = wholeMinuteInstant(resolved.utc);
+      expect(minute).toEqual(sharedTimedInstant(resolved.utc));
+      const chartAt = (ms: number) => computeChart({
+        utc: new Date(ms), latitude: birth.lat, longitude: birth.lon, houseSystem: 'whole', timeKnown: true, flags: resolved.flags,
+      });
+      // What the sheet draws besides the angles, which are the chart's own at the whole degree.
+      const drawnAt = async (ms: number) => {
+        const drawn = await imageChart(chartAt(ms));
+        const content = chartSheetContent(drawn, { hideBirthDetails: true });
+        return {
+          drawn,
+          text: JSON.stringify({ ...content, rows: content.rows.filter((row) => !angleRows.has(row.body)) }),
+        };
+      };
+      const reference = await drawnAt(minute.getTime());
+      for (let offset = -30_000; offset < 30_000; offset += 2_500) {
+        const at = await drawnAt(minute.getTime() + offset);
+        expect(at.text, `${birth.place} ${offset / 1000} s`).toBe(reference.text);
+        expect(at.drawn.bodies).toEqual(reference.drawn.bodies);
+        expect(at.drawn.aspects).toEqual(reference.drawn.aspects);
+        expect(at.drawn.input.utc).toEqual(minute);
+      }
+      // The true instant draws what its link carries: the bodies at the whole
+      // minute, and the chart's own angles at the middle of the whole degree.
+      const truth = chartAt(resolved.utc.getTime());
+      const drawn = await imageChart(truth);
+      const link = decodePositionsLink(encodeSharedPositionsLink(timedSharedPositions({
+        bodies: truth.bodies, angles: truth.angles, houseSystem: 'whole', engineVersion: truth.engineVersion,
+      }, resolved.utc, computeBodies)!)!)!;
+      expect({ asc: drawn.angles!.asc, mc: drawn.angles!.mc }).toEqual(link.angles);
+      for (const row of link.bodies) {
+        const lon = drawn.bodies.find((body) => body.body === row.body)!.lon;
+        expect(Math.abs(((row.lon - lon + 540) % 360) - 180)).toBeLessThanOrEqual(0.0005 + 1e-9);
+      }
+    }
+  }, 120_000);
+
+  it('leaves a solver of the sheet at least the whole minute, so no strip of longitude', async () => {
+    for (const birth of preStandardTime.filter(({ place }) => ['Buffalo', 'Brest', 'Kathmandu'].includes(place))) {
+      await prepareLocalTime(birth.date, birth.zone);
+      const resolved = resolveLocalToUtc(birth.date, birth.time, birth.zone, { longitude: birth.lon });
+      // A solver sees only the drawn bodies and aspects, which no longer depend on the place.
+      const sheet = async (ms: number) => {
+        const content = chartSheetContent(await imageChart(computeChart({
+          utc: new Date(ms), latitude: 0, longitude: 0, houseSystem: 'whole', timeKnown: true,
+        })), { hideBirthDetails: true });
+        return JSON.stringify([content.rows.filter((row) => !angleRows.has(row.body)), content.cells]);
+      };
+      const target = await sheet(resolved.utc.getTime());
+      const minute = wholeMinuteInstant(resolved.utc).getTime();
+      const matching: number[] = [];
+      for (let offset = -45; offset < 45; offset += 1) {
+        if (await sheet(minute + offset * 1000) === target) matching.push(offset);
+      }
+      // Every instant that rounds to the birth's minute matches, a full 60 s:
+      // before standard time the birth could be at any longitude's seconds.
+      expect(matching.filter((offset) => offset >= -30 && offset < 30).length, birth.place).toBe(60);
+    }
+  }, 120_000);
+
   it('rounds every angle the way the link does, at the edges of signs and of the zodiac too', () => {
     for (const lon of [0, 0.0004, 29.999, 30, 123.456, 359.4, 359.9996]) {
       const chart = { ...timed('whole'), angles: { asc: lon, mc: lon, dsc: 0, ic: 0 } };
@@ -569,5 +654,10 @@ describe('a chart image with birth details hidden', () => {
     expect(untimed.bodies).toEqual(computeBodies(new Date('2000-04-11T12:00:00Z')));
     expect(untimed.moonSignCandidates).toEqual([]);
     await expect(imagePositions({ bodies: chart.bodies, angles: null, engineVersion: chart.engineVersion })).rejects.toThrow('birth date');
+    // A chart that brings an instant with seconds is drawn at the whole minute; the full chart brings its own.
+    const lmt = computeChart({ utc: new Date('1870-06-15T19:45:31Z'), latitude: 42.89, longitude: -78.88, houseSystem: 'whole', timeKnown: true });
+    const atMinute = computeBodies(new Date('1870-06-15T19:46:00Z'));
+    expect((await imagePositions(lmt)).bodies).toEqual(atMinute);
+    expect((await imagePositions({ bodies: lmt.bodies, angles: lmt.angles, engineVersion: lmt.engineVersion, utc: lmt.input.utc })).bodies).toEqual(atMinute);
   });
 });

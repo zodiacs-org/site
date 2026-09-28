@@ -99,24 +99,51 @@ export function authoredSignatureForLocale(
  */
 const wholeDegreeAngle = (longitude: number) => Math.floor(longitude) + 0.5;
 
+const MINUTE_MS = 60_000;
+
+/**
+ * An instant rounded to the whole minute, as a shared code takes a chart's
+ * instant: share-positions-noon's sharedTimedInstant, kept here for the same
+ * reason as wholeDegreeAngle (share-card.test.ts holds the two together).
+ */
+export function wholeMinuteInstant(utc: Date): Date {
+  return new Date(Math.round(utc.getTime() / MINUTE_MS) * MINUTE_MS);
+}
+
 /**
  * What an image draws of a chart with a birth time while its birth details
- * are hidden: no more of the birthplace than the chart's link carries. The
- * ascendant and midheaven (and so the descendant and IC) sit at the middle of
- * their whole degree, as a shared code keeps them (wholeDegreeAngle), so the
- * wheel's rotation, the angle labels and the angle rows give only the degree:
- * to the arcminute, with the planets, they put the birthplace in a box a few
- * kilometres across. Whole-sign houses follow from the ascendant's sign and
- * stay; Placidus cusps would need the exact angles and are left out. The
- * coordinates are dropped from the chart so nothing can draw them.
+ * are hidden: no more than the chart's link carries. The bodies and their
+ * aspects are those at the chart's UTC instant rounded to the whole minute,
+ * as the link's are: before standard time the instant itself has the
+ * birthplace's mean-time seconds, and the rows to the arcminute with the
+ * aspect orbs gave those seconds, and so the longitude, to within strips a
+ * few kilometres wide. `atMinute` is the chart computed at that minute; it is
+ * needed only when the instant has seconds (imageChart computes it). The
+ * ascendant and midheaven (and so the descendant and IC) are the chart's
+ * own, at the middle of their whole degree, as the link keeps them
+ * (wholeDegreeAngle): the wheel's rotation, the angle labels and the angle
+ * rows give only the degree. Whole-sign houses follow from the ascendant's
+ * sign and stay; Placidus cusps would need the exact angles and are left
+ * out. The coordinates are dropped from the chart so nothing can draw them.
  */
-export function timedImageChart(chart: Chart): Chart {
-  if (!chart.angles) return chart;
+export function timedImageChart(chart: Chart, atMinute?: Pick<Chart, 'bodies' | 'aspects'>): Chart {
+  const minute = wholeMinuteInstant(chart.input.utc);
+  const onMinute = minute.getTime() === chart.input.utc.getTime();
+  if (!onMinute && !atMinute) {
+    throw new Error('an image of a chart whose instant has seconds needs its bodies at the whole minute');
+  }
+  const { bodies, aspects } = onMinute ? chart : atMinute!;
+  const drawn: Chart = {
+    ...chart,
+    input: { ...chart.input, utc: minute, latitude: undefined, longitude: undefined },
+    bodies,
+    aspects,
+  };
+  if (!chart.angles) return drawn;
   const asc = wholeDegreeAngle(chart.angles.asc);
   const mc = wholeDegreeAngle(chart.angles.mc);
   return {
-    ...chart,
-    input: { ...chart.input, latitude: undefined, longitude: undefined },
+    ...drawn,
     angles: { asc, mc, dsc: (asc + 180) % 360, ic: (mc + 180) % 360 },
     houses: chart.houses?.system === 'whole' ? { system: 'whole', cusps: wholeSignCusps(asc) } : null,
   };
@@ -135,7 +162,12 @@ export function timedImageChart(chart: Chart): Chart {
  * whose date is missing or not a date.
  */
 export async function imageChart(chart: Chart, birthDate?: string): Promise<Chart> {
-  if (chart.input.timeKnown) return timedImageChart(chart);
+  if (chart.input.timeKnown) {
+    const minute = wholeMinuteInstant(chart.input.utc);
+    if (minute.getTime() === chart.input.utc.getTime()) return timedImageChart(chart);
+    const { computeChart } = await import('./engine/full');
+    return timedImageChart(chart, computeChart({ ...chart.input, utc: minute }));
+  }
   const utc = await referenceInstant(birthDate);
   const { computeChart } = await import('./engine/full');
   const noon = computeChart({ utc, houseSystem: chart.input.houseSystem, timeKnown: false });
@@ -146,10 +178,21 @@ export async function imageChart(chart: Chart, birthDate?: string): Promise<Char
   };
 }
 
-/** imageChart for the Big Three and placement cards, which carry positions only. */
+/**
+ * imageChart for the Big Three and placement cards, which carry positions
+ * only: with a birth time, the rising sign's whole degree and, when the chart
+ * brings its instant (a calculator chart does), the bodies at the whole minute.
+ */
 export async function imagePositions(chart: BigThreeCardChart, birthDate?: string): Promise<BigThreeCardChart> {
   if (chart.angles) {
-    return { ...chart, angles: { asc: wholeDegreeAngle(chart.angles.asc), mc: wholeDegreeAngle(chart.angles.mc) } };
+    const angles = { asc: wholeDegreeAngle(chart.angles.asc), mc: wholeDegreeAngle(chart.angles.mc) };
+    const utc = chart.utc ?? (chart as Partial<Chart>).input?.utc;
+    const at = utc === undefined ? null : new Date(utc);
+    if (at && Number.isFinite(at.getTime()) && wholeMinuteInstant(at).getTime() !== at.getTime()) {
+      const { computeBodies } = await import('./engine/full');
+      return { ...chart, bodies: computeBodies(wholeMinuteInstant(at)), angles };
+    }
+    return { ...chart, angles };
   }
   const utc = await referenceInstant(birthDate);
   const { computeBodies } = await import('./engine/full');
@@ -1612,6 +1655,8 @@ export interface BigThreeCardChart {
   bodies: readonly Pick<BodyPosition, 'body' | 'lon'>[];
   angles: Pick<Angles, 'asc' | 'mc'> | null;
   engineVersion: string;
+  /** The chart's UTC instant, for a chart computed here: a card draws its bodies at the whole minute. */
+  utc?: Date | string;
 }
 
 /**

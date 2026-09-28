@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'preact/hooks';
-import { buildAspectPatternModel, patternDegrees, patternEdgeReceipt, selectedPatternCard, type AspectPatternModel } from '../../lib/aspect-pattern-model';
+import { buildAspectPatternModel, patternDegrees, patternEdgeReceipt, selectedPatternCard, type AspectPatternModel, type SelectedPatternCard } from '../../lib/aspect-pattern-model';
+import { chartForImage } from '../../lib/chart-image-sky';
 import type { AspectPatternFeatureProps } from './AspectPatternFeature';
 import { AspectPatternDiagram } from './AspectPatternDiagram';
 import AspectPatternActions from './AspectPatternActions';
@@ -7,9 +8,20 @@ import { PATTERN_NAMES, PATTERN_ORBS, patternReading, patternRole } from './copy
 
 export default function AspectPatternPanel(props: AspectPatternFeatureProps) {
   const model = useMemo(() => buildAspectPatternModel(props), [props.context, props.sourceKey, props.timeKnown, props.points, props.aspects]);
-  return <PatternSelection key={model.identity} model={model} onSelectBody={props.onSelectBody} />;
+  // A share image is found again in the sky it is drawn from (imageOf, imageSky).
+  const imageCard = async (id: string): Promise<SelectedPatternCard | null> => {
+    const sky = props.imageSky ? await props.imageSky()
+      : props.imageOf ? await chartForImage(props.imageOf).then((drawn) => ({ points: drawn.bodies, aspects: drawn.aspects }))
+        : null;
+    return sky ? selectedPatternCard(buildAspectPatternModel({ ...props, ...sky }), id) : selectedPatternCard(model, id);
+  };
+  return <PatternSelection key={model.identity} model={model} onSelectBody={props.onSelectBody} imageCard={imageCard} />;
 }
-export function PatternSelection({ model, onSelectBody }: { model: AspectPatternModel; onSelectBody: AspectPatternFeatureProps['onSelectBody'] }) {
+export function PatternSelection({ model, onSelectBody, imageCard }: {
+  model: AspectPatternModel;
+  onSelectBody: AspectPatternFeatureProps['onSelectBody'];
+  imageCard?: (id: string) => Promise<SelectedPatternCard | null>;
+}) {
   const [selectedId, setSelectedId] = useState(model.roots[0]?.id ?? '');
   const [selectedEdge, setSelectedEdge] = useState<string | null>(null);
   const detection = model.detection;
@@ -59,7 +71,7 @@ export function PatternSelection({ model, onSelectBody }: { model: AspectPattern
         {parents.length > 0 && <div data-pattern-parents><p>Included in:</p>{parents.map((p) => <button key={p.id} class="apat__pick" type="button" onClick={(event) => { choose(p.id); event.currentTarget.closest('[data-pattern-panel]')?.querySelector<HTMLSelectElement>('[data-pattern-select]')?.focus(); }}>{title(p.id)}</button>)}</div>}
         {model.timeKnown ? <p class="apat__reading" data-pattern-reading>{patternReading(selected, model.context)}</p>
           : <p data-pattern-withheld>Add known birth times for a symbolic reading or a share image. The reference geometry above does not establish a whole-day pattern.</p>}
-        {card && <AspectPatternActions key={card.identity} card={card} />}
+        {card && <AspectPatternActions key={card.identity} card={card} imageCard={imageCard ? () => imageCard(card.pattern.id) : undefined} />}
       </>}
     <details class="apat__policy"><summary>Which bodies and orb limits?</summary><p>{PATTERN_ORBS}</p><p>Only the Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune and Pluto can be members. An unknown-time Moon is excluded. Every required edge must qualify; extra contacts do not cancel a pattern.</p></details>
   </div>;

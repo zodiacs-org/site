@@ -84,7 +84,7 @@ export default function BigThreeQuick() {
       if (!isCurrent()) return;
       const { chart } = source;
       const prepared = await module.prepareBigThreeCard(
-        { bodies: chart.bodies, angles: chart.angles, engineVersion: chart.engineVersion },
+        { bodies: chart.bodies, angles: chart.angles, engineVersion: chart.engineVersion, utc: chart.input?.utc },
         'en',
       );
       if (!isCurrent()) return;

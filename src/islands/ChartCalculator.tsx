@@ -2614,6 +2614,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
 
               {mode === 'full' && locale === 'en' && AspectPatternFeature && (
                 <AspectPatternFeature context="natal" points={chart.bodies} aspects={chart.aspects}
+                  imageOf={{ chart, birthDate: computedInput?.date }}
                   timeKnown={chart.input.timeKnown && !chart.flags.includes('no-time')}
                   sourceKey={String(chartContextIdRef.current)}
                   onSelectBody={(body) => showOnChartFromReading({ kind: 'body', body }, 'instant')} />
@@ -2646,6 +2647,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
               {mode === 'full' && ChartContext && (
                 <ChartContext input={{ bodies: chart.bodies, timeKnown: chart.input.timeKnown,
                   moonSignCandidates: chart.moonSignCandidates, angles: chart.angles, houses: chart.houses }}
+                  imageOf={{ chart, birthDate: computedInput?.date }}
                   locale={locale} inputRevision={inputRevision}
                   isInputCurrent={(revision) => inputRevisionRef.current === revision}
                   selection={selection} onShowOnChart={showOnChartFromReading} />
