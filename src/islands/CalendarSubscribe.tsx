@@ -3,7 +3,8 @@ import {
   encodeSharedPositionsLink,
   type PositionsShareInput,
 } from '../lib/share-positions';
-import { loadUntimedSharedPositions } from '../lib/share-positions-untimed';
+import { onWholeMinute } from '../lib/share-positions-noon';
+import { loadTimedSharedPositions, loadUntimedSharedPositions } from '../lib/share-positions-untimed';
 import type { TransitContact } from '../lib/engine/transit-scan';
 import type { CatalogLocale as Locale } from '../lib/i18n';
 
@@ -14,6 +15,13 @@ export interface CalendarPositionsSource {
   angles: PositionsShareInput['angles'];
   houseSystem: PositionsShareInput['houseSystem'];
   engineVersion: string;
+  /**
+   * The chart's UTC instant. With a birth time, the feed's code carries the
+   * bodies at this instant rounded to the whole minute (sharedTimedInstant),
+   * so before standard time its seconds cannot give the birthplace's
+   * longitude.
+   */
+  utc: Date | string;
 }
 
 const COPY = {
@@ -67,8 +75,12 @@ const COPY = {
   },
 } as const;
 
-/** The feed's code: every position to 0.001°, ASC and MC to the whole degree. */
-export function calendarToken(positions: CalendarPositionsSource): string | null {
+/**
+ * The feed's code: every position to 0.001°, ASC and MC to the whole degree.
+ * Given positions a code may carry: at the whole minute with a birth time,
+ * at 12:00 UTC on the birth date without one.
+ */
+export function calendarToken(positions: Omit<CalendarPositionsSource, 'utc'>): string | null {
   return encodeSharedPositionsLink(positions as PositionsShareInput);
 }
 
@@ -106,19 +118,34 @@ interface CalendarSubscribeProps {
 export default function CalendarSubscribe({ locale, positions, birthDate, contacts }: CalendarSubscribeProps) {
   const copy = COPY[locale];
   const timeUnknown = birthDate !== undefined;
-  const direct = useMemo(() => (timeUnknown ? null : calendarToken(positions)), [positions, timeUnknown]);
-  const [untimed, setUntimed] = useState<string | null>(null);
-  const { houseSystem, engineVersion } = positions;
+  const { bodies, angles, houseSystem, engineVersion, utc } = positions;
+  // A chart with a birth time on a whole UTC minute is shared as it is; one
+  // with seconds (before standard time) waits for its bodies at the minute.
+  const wholeMinute = !timeUnknown && onWholeMinute(utc);
+  const direct = useMemo(() => (wholeMinute ? calendarToken(positions) : null), [positions, wholeMinute]);
+  // Callers rebuild `positions` on every render, so the load is keyed on its values.
+  const asc = angles?.asc ?? null;
+  const mc = angles?.mc ?? null;
+  const utcMs = utc instanceof Date ? utc.getTime() : Date.parse(String(utc));
+  const instant = Number.isFinite(utcMs) ? utcMs : null;
+  const [loaded, setLoaded] = useState<string | null>(null);
   useEffect(() => {
-    setUntimed(null);
-    if (birthDate === undefined) return undefined;
+    setLoaded(null);
+    if (wholeMinute) return undefined;
     let current = true;
-    void loadUntimedSharedPositions({ houseSystem, engineVersion }, birthDate).then((shared) => {
-      if (current) setUntimed(shared ? calendarToken(shared) : null);
+    const ready = birthDate !== undefined
+      ? loadUntimedSharedPositions({ houseSystem, engineVersion }, birthDate)
+      : instant === null
+        ? Promise.resolve(null)
+        : loadTimedSharedPositions({
+          bodies, angles: asc === null || mc === null ? null : { asc, mc }, houseSystem, engineVersion,
+        } as PositionsShareInput, new Date(instant));
+    void ready.then((shared) => {
+      if (current) setLoaded(shared ? calendarToken(shared) : null);
     }, (error) => console.error(error));
     return () => { current = false; };
-  }, [birthDate, houseSystem, engineVersion]);
-  const token = timeUnknown ? untimed : direct;
+  }, [birthDate, houseSystem, engineVersion, wholeMinute, bodies, asc, mc, instant]);
+  const token = wholeMinute ? direct : loaded;
   const [href, setHref] = useState('');
   const [busy, setBusy] = useState(false);
 

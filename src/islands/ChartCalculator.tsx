@@ -2852,6 +2852,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                       angles: chart.angles ? { asc: chart.angles.asc, mc: chart.angles.mc } : null,
                       houseSystem: chart.houses?.system ?? houseSystem,
                       engineVersion: chart.engineVersion,
+                      utc: chart.input.utc,
                     }}
                     birthDate={chart.input.timeKnown ? undefined : computedInput?.date ?? ''}
                   />

@@ -5,7 +5,8 @@ import type { PositionsShareInput } from '../../lib/share-positions';
 import type { PreparedChartCard } from '../../lib/share-card';
 import { shareCardText } from '../../lib/share-card-copy';
 import { encodeSynastryLink } from '../../lib/share-synastry';
-import { loadUntimedSharedPositions } from '../../lib/share-positions-untimed';
+import { onWholeMinute } from '../../lib/share-positions-noon';
+import { loadTimedSharedPositions, loadUntimedSharedPositions } from '../../lib/share-positions-untimed';
 
 interface SendPerson {
   label: string;
@@ -20,13 +21,29 @@ interface SendPerson {
    * time and for positions that arrived in a link, which pass on unchanged.
    */
   untimedDate?: string;
+  /**
+   * The UTC instant of a chart computed on this device with a birth time.
+   * Before standard time it has seconds, which would give the birthplace's
+   * longitude, so the link carries the bodies at the whole minute instead
+   * (see sharedTimedInstant). Absent for positions that arrived in a link.
+   */
+  utc?: Date | string;
 }
 
-/** The two-chart link for a pair of sides, with each untimed side at noon UTC on its date. */
+/** Whether a side's link positions differ from its own and must be computed first. */
+const needsShared = (person: SendPerson) => person.untimedDate !== undefined
+  || (person.utc !== undefined && !onWholeMinute(person.utc));
+
+/**
+ * The two-chart link for a pair of sides: each untimed side at noon UTC on
+ * its date, each timed side computed here at its whole UTC minute.
+ */
 export async function sendBackToken(a: SendPerson, b: SendPerson): Promise<string | null> {
-  const side = (person: SendPerson) => (person.untimedDate === undefined
-    ? Promise.resolve(person.positions)
-    : loadUntimedSharedPositions(person.positions, person.untimedDate));
+  const side = (person: SendPerson) => (person.untimedDate !== undefined
+    ? loadUntimedSharedPositions(person.positions, person.untimedDate)
+    : person.utc !== undefined
+      ? loadTimedSharedPositions(person.positions, person.utc)
+      : Promise.resolve(person.positions));
   const [chartA, chartB] = await Promise.all([side(a), side(b)]);
   return chartA && chartB
     ? encodeSynastryLink({ sides: [{ chart: chartA, label: a.label }, { chart: chartB, label: b.label }] })
@@ -100,23 +117,23 @@ export function SendBackCard({
     prepared: PreparedChartCard;
   } | null>(null);
   const [bigThreeState, setBigThreeState] = useState<BigThreeState>('preparing');
-  const untimed = a.untimedDate !== undefined || b.untimedDate !== undefined;
-  const direct = useMemo(() => (untimed ? null : encodeSynastryLink({
+  const computed = needsShared(a) || needsShared(b);
+  const direct = useMemo(() => (computed ? null : encodeSynastryLink({
     sides: [
       { chart: a.positions, label: a.label },
       { chart: b.positions, label: b.label },
     ],
-  })), [a, b, untimed]);
-  const [untimedToken, setUntimedToken] = useState<string | null>(null);
-  // Keyed on the sides' values: callers pass fresh wrapper objects each render.
+  })), [a, b, computed]);
+  const [computedToken, setComputedToken] = useState<string | null>(null);
+  // Keyed on the sides' values, so a caller may pass fresh wrapper objects each render.
   useEffect(() => {
-    setUntimedToken(null);
-    if (!untimed) return undefined;
+    setComputedToken(null);
+    if (!computed) return undefined;
     let active = true;
-    void sendBackToken(a, b).then((next) => { if (active) setUntimedToken(next); }, () => {});
+    void sendBackToken(a, b).then((next) => { if (active) setComputedToken(next); }, () => {});
     return () => { active = false; };
-  }, [a.positions, b.positions, a.label, b.label, a.untimedDate, b.untimedDate]);
-  const token = untimed ? untimedToken : direct;
+  }, [a.positions, b.positions, a.label, b.label, a.untimedDate, b.untimedDate, a.utc, b.utc]);
+  const token = computed ? computedToken : direct;
   const url = token && typeof window !== 'undefined'
     ? `${window.location.origin}/compatibility/#s=${token}`
     : '';

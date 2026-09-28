@@ -55,6 +55,12 @@ describe('synastry sides and the send-back link', () => {
     expect(linkUntimed.untimedDate).toBe('1990-04-11');
     expect(savedUntimed.untimedDate).toBe('1990-04-11');
     for (const side of [formTimed, linkTimed, savedTimed]) expect(side.untimedDate).toBeUndefined();
+    // A side with a birth time carries the instant its positions were computed
+    // at, so a link can take them at the whole minute; an untimed side does not.
+    expect(new Date(formTimed.utc!).toISOString()).toBe('1990-04-11T02:45:00.000Z');
+    expect(new Date(linkTimed.utc!).toISOString()).toBe('1990-04-11T02:45:00.000Z');
+    expect(savedTimed.utc).toBe('1990-04-11T06:15:00.000Z');
+    for (const side of [formUntimed, linkUntimed, savedUntimed]) expect(side.utc).toBeUndefined();
     // The untimed sides' own positions are noon in Kathmandu (06:15 UTC).
     expect(formUntimed.positions.angles).toBeNull();
   });

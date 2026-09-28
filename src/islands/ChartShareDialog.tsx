@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'preact/hooks';
 import type { Chart } from '../lib/engine/types';
 import { t, type CatalogLocale as Locale } from '../lib/i18n';
 import { encodeSharedPositionsLink, type PositionsShareInput } from '../lib/share-positions';
-import { loadUntimedSharedPositions } from '../lib/share-positions-untimed';
+import { loadTimedSharedPositions, loadUntimedSharedPositions } from '../lib/share-positions-untimed';
 import { previewPlacements, previewQuery } from '../lib/share-preview';
 import {
   prepareBigThreeCard,
@@ -115,14 +115,16 @@ export default function ChartShareDialog({
   useEffect(() => {
     let current = true;
     const base = { houseSystem: chart.houses?.system ?? 'whole', engineVersion: chart.engineVersion };
-    // Without a birth time the chart is noon at the birthplace, an instant
-    // that gives the place away; the links carry noon UTC on the date instead.
+    // With a birth time the links carry the bodies at the whole minute, whose
+    // seconds can no longer give the longitude before standard time. Without
+    // one the chart is noon at the birthplace, an instant that gives the place
+    // away; the links carry noon UTC on the date instead.
     const ready: Promise<PositionsShareInput | null> = chart.input.timeKnown
-      ? Promise.resolve({
+      ? loadTimedSharedPositions({
         ...base,
         bodies: chart.bodies,
         angles: chart.angles ? { asc: chart.angles.asc, mc: chart.angles.mc } : null,
-      })
+      }, chart.input.utc)
       : birthDate ? loadUntimedSharedPositions(base, birthDate) : Promise.resolve(null);
     void ready.then((shared) => {
       if (!current || !shared) return;

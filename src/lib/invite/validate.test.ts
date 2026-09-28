@@ -27,7 +27,7 @@ function savedChart(timed = true): Record<string, unknown> {
     },
     summary: {
       engineVersion: 'zodiacs-1.0.0',
-      utcISO: '1907-07-06T14:59:36.000Z',
+      utcISO: '1907-07-06T15:07:00.000Z',
       houseSystem: 'whole',
       bodies: POSITION_BODY_ORDER.map((body, index) => ({
         body,
@@ -75,6 +75,31 @@ describe('Phase 4 invite validation', () => {
     expect(result?.sunSign).toBe('cancer');
     expect(JSON.stringify(result)).not.toMatch(/1907|Coyoacán|Mexico|America\/Mexico|19\.36|-99\.16/iu);
     expect(deriveInviteChartFromSyncedPayload(savedChart(false))).toBeNull();
+  });
+
+  it('shares a chart with a birth time at its whole UTC minute, and makes none from an instant with seconds and no ephemeris', () => {
+    // Mexico City kept its own mean time, −6:36:36, until 1922, so 08:30 there
+    // was 15:06:36 UTC, and those seconds would give the birthplace's longitude.
+    const meanTime = savedChart();
+    (meanTime.summary as { utcISO: string }).utcISO = '1907-07-06T15:06:36.000Z';
+    const asked: string[] = [];
+    const bodiesAt = (utc: Date) => {
+      asked.push(utc.toISOString());
+      return POSITION_BODY_ORDER.map((body, index) => ({ body, lon: 200 + index * 7.4321 }));
+    };
+    const result = deriveInviteChartFromSyncedPayload(meanTime, bodiesAt);
+    expect(asked).toEqual(['1907-07-06T15:07:00.000Z']);
+    expect(result?.positions.b).toEqual(POSITION_BODY_ORDER.map((_, index) => Math.round((200 + index * 7.4321) * 1000) / 1000));
+    expect(result?.positions.a).toEqual([124.5, 30.5]);
+    expect(deriveInviteChartFromSyncedPayload(meanTime)).toBeNull();
+
+    // A whole minute keeps the chart's own positions and asks the ephemeris nothing.
+    const own = deriveInviteChartFromSyncedPayload(savedChart(), () => { throw new Error('not asked'); });
+    expect(own?.positions.b).toEqual(POSITION_BODY_ORDER.map((_, index) => Math.round(index * 27.1 * 1000) / 1000));
+    // A chart with a birth time and no instant makes none.
+    const missing = savedChart();
+    delete (missing.summary as { utcISO?: string }).utcISO;
+    expect(deriveInviteChartFromSyncedPayload(missing, bodiesAt)).toBeNull();
   });
 
   it('rejects malformed chart summaries and time/angle disagreement', () => {

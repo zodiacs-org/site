@@ -39,6 +39,7 @@ function chartPayload(): Record<string, unknown> {
     },
     summary: {
       engineVersion: 'zodiacs-1.0.0',
+      utcISO: '1907-07-06T08:30:00.000Z',
       houseSystem: 'whole',
       bodies: POSITION_BODY_ORDER.map((body, index) => ({ body, lon: index * 27 })),
       angles: { asc: 12, mc: 101 },

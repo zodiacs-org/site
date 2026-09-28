@@ -82,6 +82,7 @@ interface TransitFocusRequest {
 function wheelFromChart(
   r: Chart,
   timeKnown: boolean,
+  utc: Date,
   houseSystem: CalendarPositionsSource['houseSystem'] = r.houses?.system ?? 'whole',
 ): NatalWheel {
   return {
@@ -102,6 +103,7 @@ function wheelFromChart(
       angles: r.angles ? { asc: r.angles.asc, mc: r.angles.mc } : null,
       houseSystem,
       engineVersion: r.engineVersion,
+      utc,
     } : null,
   };
 }
@@ -114,6 +116,7 @@ function calendarPositionsFromSaved(chart: SavedChart): CalendarPositionsSource 
     angles: chart.summary.angles,
     houseSystem: chart.summary.houseSystem,
     engineVersion: chart.summary.engineVersion,
+    utc: chart.summary.utcISO,
   };
 }
 
@@ -128,7 +131,7 @@ function natalFromForm(slot: SlotState, engine: Engine): NatalWheel {
     timeKnown,
     flags: resolved.flags,
   });
-  return wheelFromChart(r, timeKnown);
+  return wheelFromChart(r, timeKnown, resolved.utc);
 }
 
 function natalFromSaved(chart: SavedChart, engine: Engine): NatalWheel {
@@ -148,7 +151,7 @@ function natalFromSaved(chart: SavedChart, engine: Engine): NatalWheel {
       timeKnown,
       flags: resolved.flags,
     });
-    return wheelFromChart(r, timeKnown, chart.summary.houseSystem);
+    return wheelFromChart(r, timeKnown, resolved.utc, chart.summary.houseSystem);
   }
   // No stored place — draw from the summary (bodies + ascendant), no house ring.
   const timeKnown = chart.birth.timeKnown && Boolean(chart.birth.time);

@@ -97,8 +97,27 @@ describe('chart card links', () => {
     // One's own card is still recognised, against the same noon-UTC positions.
     expect(cardMatchesChart(card, positions)).toBe(true);
     expect(cardMatchesChart(card, positionsForChart(chart))).toBe(false);
-    // A chart with a birth time keeps its own positions.
+    // A chart with a birth time on a whole UTC minute keeps its own positions.
     expect(await loadCardPositionsForChart(savedChart())).toEqual(positionsForChart(savedChart()));
+  });
+
+  it('makes a card with a birth time whose instant has seconds at the whole minute, keeping its angles', async () => {
+    // Before standard time the instant carries the birthplace's mean-time
+    // seconds, which would give its longitude; the card takes the whole minute.
+    const chart = savedChart();
+    chart.summary.utcISO = '1870-06-15T19:45:31.000Z';
+    const positions = (await loadCardPositionsForChart(chart))!;
+    const minute = computeBodies(new Date('1870-06-15T19:46:00Z'));
+    for (const row of positions.bodies) {
+      expect(row.lon).toBe(minute.find((body) => body.body === row.body)!.lon);
+    }
+    expect(positions.angles).toEqual(positionsForChart(chart).angles);
+    const asked: string[] = [];
+    cardPositionsForChart(chart, (utc) => { asked.push(utc.toISOString()); return minute; });
+    expect(asked).toEqual(['1870-06-15T19:46:00.000Z']);
+    const card = decodeCardLink(encodeCardLink({ chart: positions, label: 'Maya' })!)!;
+    expect(card.timeKnown).toBe(true);
+    expect(cardMatchesChart(card, positions)).toBe(true);
   });
 
   it('gives no rising sign for a chart without a birth time', () => {

@@ -6,7 +6,7 @@ import {
   type PositionsShareChart,
   type PositionsShareInput,
 } from '../share-positions.js';
-import { untimedSharedPositions } from '../share-positions-noon.js';
+import { onWholeMinute, timedSharedPositions, untimedSharedPositions } from '../share-positions-noon.js';
 import type { SignSlug } from '../scene/types';
 import { signForLongitude } from '../signs.js';
 import type { InvitePublicPayload } from './types';
@@ -162,8 +162,11 @@ export function positionsFromStored(value: unknown): PositionsShareChart | null 
  *
  * A chart without a birth time was computed at noon at the birthplace, an
  * instant that gives the place away, so its invitation carries the sky at
- * 12:00 UTC on the birth date instead, from bodiesAt (the server ephemeris).
- * Without bodiesAt such a chart makes no invitation.
+ * 12:00 UTC on the birth date instead. A chart with a birth time whose UTC
+ * instant has seconds (before standard time, when those seconds give the
+ * birthplace's longitude) carries its bodies at the whole minute. Both come
+ * from bodiesAt (the server ephemeris); without it such a chart makes no
+ * invitation, and neither does a chart with a birth time and no instant.
  */
 export function deriveInviteChartFromSyncedPayload(
   value: unknown,
@@ -183,18 +186,21 @@ export function deriveInviteChartFromSyncedPayload(
     houseSystem: summary.houseSystem,
     engineVersion: summary.engineVersion,
   } as Pick<PositionsShareInput, 'houseSystem' | 'engineVersion'>;
-  const input = timeKnown
-    ? {
+  let input: PositionsShareInput | null = null;
+  if (timeKnown) {
+    const own = {
       ...base,
       bodies: rawBodies.map((item) => {
         const row = record(item);
         return { body: row?.body, lon: row?.lon };
       }),
       angles: summary.angles,
-    } as PositionsShareInput
-    : bodiesAt && typeof birth.date === 'string'
-      ? untimedSharedPositions(base, birth.date, bodiesAt)
-      : null;
+    } as PositionsShareInput;
+    const utc = typeof summary.utcISO === 'string' ? summary.utcISO : '';
+    input = onWholeMinute(utc) ? own : bodiesAt ? timedSharedPositions(own, utc, bodiesAt) : null;
+  } else if (bodiesAt && typeof birth.date === 'string') {
+    input = untimedSharedPositions(base, birth.date, bodiesAt);
+  }
   const token = input ? encodeSharedPositionsLink(input) : null;
   const positions = token ? decodePositionsLink(token) : null;
   const sun = positions?.bodies.find((body) => body.body === 'Sun');

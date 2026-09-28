@@ -59,7 +59,8 @@ export default async function handler(req: any, res: any): Promise<void> {
     }
     const syncedPayload = await getOwnedSyncedChartPayload(owner.id, input.chartId);
     // A chart without a birth time is shared as the sky at 12:00 UTC on its
-    // date; the server ephemeris computes it (loaded only on this path).
+    // date, and one whose instant has seconds (before standard time) at its
+    // whole minute; the server ephemeris computes them (loaded only on this path).
     const { bodyLongitude } = await import('../../engine/server-ephemeris.js');
     const chart = deriveInviteChartFromSyncedPayload(
       syncedPayload,

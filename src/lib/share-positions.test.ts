@@ -11,7 +11,13 @@ import {
   type PositionsShareInput,
   wholeDegreeAngle,
 } from './share-positions';
-import { sharedReferenceInstant, untimedSharedPositions } from './share-positions-noon';
+import {
+  onWholeMinute,
+  sharedReferenceInstant,
+  sharedTimedInstant,
+  timedSharedPositions,
+  untimedSharedPositions,
+} from './share-positions-noon';
 import { prepareLocalTime, resolveLocalToUtc } from './time/localToUtc';
 
 // Sidereal time and obliquity below are read on the engine's clock, as its
@@ -180,6 +186,138 @@ describe('what the code of a chart without a birth time gives away', () => {
     // One code per date, whatever the birthplace, so nothing in it depends on the place.
     expect([...codesByDate.values()].map((codes) => codes.size)).toEqual([1, 1]);
   }, 60_000);
+});
+
+/*
+ * A chart with a birth time, before standard time. The time is entered to
+ * the minute, but the chart keeps the birthplace's own mean time, four
+ * minutes of time per degree of longitude, so the seconds of its UTC instant
+ * are the longitude's: UTC seconds + longitude × 240 s is a whole minute. The
+ * bodies at 0.001° give the instant to about ±3 s, so a code made from the
+ * chart's own positions gave a recipient the longitude to within strips a
+ * few kilometres wide, one every quarter degree, inside the band the MC's
+ * degree leaves. Shared codes now carry the bodies at the instant rounded to
+ * the whole minute (sharedTimedInstant).
+ */
+const TIMED_BEFORE_STANDARD_TIME: ReadonlyArray<{
+  place: string; date: string; time: string; zone: string; lat: number; lon: number;
+}> = [
+  { place: 'Buffalo', date: '1870-06-15', time: '14:30', zone: 'America/New_York', lat: 42.8864, lon: -78.8784 },
+  { place: 'Rochester', date: '1870-06-15', time: '14:30', zone: 'America/New_York', lat: 43.1566, lon: -77.6088 },
+  { place: 'Omaha', date: '1880-03-02', time: '07:05', zone: 'America/Chicago', lat: 41.2565, lon: -95.9345 },
+  { place: 'Brest', date: '1880-10-20', time: '21:47', zone: 'Europe/Paris', lat: 48.3904, lon: -4.4861 },
+  { place: 'Kathmandu', date: '1915-01-20', time: '16:20', zone: 'Asia/Kathmandu', lat: 27.7172, lon: 85.324 },
+  { place: 'Riyadh', date: '1946-05-10', time: '09:10', zone: 'Asia/Riyadh', lat: 24.6877, lon: 46.7219 },
+];
+
+async function timedChart(birth: typeof TIMED_BEFORE_STANDARD_TIME[number], longitude = birth.lon) {
+  await prepareLocalTime(birth.date, birth.zone);
+  const resolved = resolveLocalToUtc(birth.date, birth.time, birth.zone, { longitude });
+  const chart = computeChart({
+    utc: resolved.utc, latitude: birth.lat, longitude,
+    houseSystem: 'whole', timeKnown: true, flags: resolved.flags,
+  });
+  const own: PositionsShareInput = {
+    bodies: chart.bodies,
+    angles: { asc: chart.angles!.asc, mc: chart.angles!.mc },
+    houseSystem: 'whole',
+    engineVersion: chart.engineVersion,
+  };
+  return { resolved, chart, own };
+}
+
+/** The instant a code's bodies describe, and how far either side of it the Moon's 0.001° allows. */
+function decodeWindow(code: string, guess: number): { at: number; halfWindowMs: number } {
+  const at = decodeInstant(code, guess);
+  expect(at).not.toBeNull();
+  const degreesPerMs = Math.abs(signed(bodyLongitude('Moon', new Date(at! + 60_000)) - bodyLongitude('Moon', new Date(at! - 60_000)))) / 120_000;
+  return { at: at!, halfWindowMs: 0.0005 / degreesPerMs };
+}
+
+/** Seconds past the minute, from −30 to 30. */
+const secondsPastMinute = (ms: number) => signed(((ms / 1000) % 60) * 6) / 6;
+
+describe('what the code of a chart with a birth time gives away before standard time', () => {
+  it('shares a chart at its UTC instant rounded to the whole minute, and a whole minute unchanged', () => {
+    expect(sharedTimedInstant(new Date('1870-06-15T19:45:31.000Z'))?.toISOString()).toBe('1870-06-15T19:46:00.000Z');
+    expect(sharedTimedInstant('1946-05-10T06:03:07.000Z')?.toISOString()).toBe('1946-05-10T06:03:00.000Z');
+    expect(sharedTimedInstant('1969-12-31T23:59:30.000Z')?.toISOString()).toBe('1970-01-01T00:00:00.000Z');
+    expect(sharedTimedInstant('not a date')).toBeNull();
+    expect(onWholeMinute('1987-03-14T05:42:00.000Z')).toBe(true);
+    expect(onWholeMinute('1870-06-15T19:45:31.000Z')).toBe(false);
+    const asked: string[] = [];
+    const bodiesAt = (utc: Date) => {
+      asked.push(utc.toISOString());
+      return input(null).bodies;
+    };
+    const chart = input({ asc: 12.3, mc: 280.9 });
+    // A whole minute keeps the chart's own positions and asks the ephemeris nothing.
+    expect(timedSharedPositions(chart, '1987-03-14T05:42:00.000Z', bodiesAt)).toBe(chart);
+    expect(asked).toEqual([]);
+    // Seconds are replaced by the whole minute; the angles stay the chart's.
+    expect(timedSharedPositions({ ...chart, bodies: [] }, '1870-06-15T19:45:31.000Z', bodiesAt))
+      .toEqual({ ...chart, bodies: input(null).bodies });
+    expect(asked).toEqual(['1870-06-15T19:46:00.000Z']);
+    expect(timedSharedPositions(chart, 'not a date', bodiesAt)).toBeNull();
+  });
+
+  it('was the longitude: the seconds of the chart’s own positions put the birthplace in strips about 3 km wide', async () => {
+    for (const birth of TIMED_BEFORE_STANDARD_TIME) {
+      const { resolved, own } = await timedChart(birth);
+      expect(resolved.localMeanTime?.longitude, birth.place).toBe(birth.lon);
+      expect(onWholeMinute(resolved.utc), birth.place).toBe(false);
+      const { at, halfWindowMs } = decodeWindow(encodeSharedPositionsLink(own)!, resolved.utc.getTime());
+      // The decoder reads the instant's seconds to about ±3 s…
+      expect(halfWindowMs, birth.place).toBeLessThan(4000);
+      expect(Math.abs(at - resolved.utc.getTime()), birth.place).toBeLessThan(halfWindowMs + 500);
+      // …and local mean time makes UTC seconds + longitude × 240 s a whole
+      // minute, so the longitude lies in the strip those seconds allow.
+      expect(Math.abs(secondsPastMinute(at + birth.lon * 240_000)), birth.place).toBeLessThan(halfWindowMs / 1000 + 0.5);
+      const stripKm = ((2 * halfWindowMs) / 240_000) * KM_PER_DEGREE_LONGITUDE_AT_EQUATOR * Math.cos(birth.lat * DEG);
+      expect(stripKm, birth.place).toBeLessThan(3.3);
+    }
+  }, 60_000);
+
+  it('is now nothing: the shared bodies are those at the whole minute, the same for every longitude that rounds to it', async () => {
+    for (const birth of TIMED_BEFORE_STANDARD_TIME) {
+      const { resolved, chart, own } = await timedChart(birth);
+      const shared = timedSharedPositions(own, resolved.utc, computeBodies)!;
+      const code = encodeSharedPositionsLink(shared)!;
+      const { at, halfWindowMs } = decodeWindow(code, resolved.utc.getTime());
+      // The decoder now reads a whole minute, within 30 s of the birth…
+      expect(Math.abs(secondsPastMinute(at)), birth.place).toBeLessThan(halfWindowMs / 1000 + 0.5);
+      expect(Math.abs(at - resolved.utc.getTime()), birth.place).toBeLessThan(30_000 + halfWindowMs + 500);
+      // …which moves the Moon at most 0.0054° and every other body less than 0.001°.
+      for (const { body, lon } of shared.bodies) {
+        const drift = Math.abs(signed(lon - chart.bodies.find((row) => row.body === body)!.lon));
+        expect(drift, `${birth.place} ${body}`).toBeLessThanOrEqual(body === 'Moon' ? 0.0054 : 0.001);
+      }
+      // Every longitude within 0.1° whose instant rounds to the same minute
+      // gives exactly the same bodies, so they no longer tell those places apart.
+      const bodies = decodePositionsLink(code)!.bodies;
+      let alike = 0;
+      for (let step = -10; step <= 10; step += 1) {
+        const nearby = await timedChart(birth, birth.lon + step * 0.01);
+        if (sharedTimedInstant(nearby.resolved.utc)!.getTime() !== sharedTimedInstant(resolved.utc)!.getTime()) continue;
+        const nearbyShared = timedSharedPositions(nearby.own, nearby.resolved.utc, computeBodies)!;
+        expect(decodePositionsLink(encodeSharedPositionsLink(nearbyShared)!)!.bodies, `${birth.place} ${step}`).toEqual(bodies);
+        alike += 1;
+      }
+      expect(alike, birth.place).toBeGreaterThanOrEqual(5);
+    }
+  }, 120_000);
+
+  it('rounds a zone whose own offset had seconds, as Monrovia’s did until 1972', async () => {
+    await prepareLocalTime('1971-06-01', 'Africa/Monrovia');
+    const resolved = resolveLocalToUtc('1971-06-01', '14:30', 'Africa/Monrovia', { longitude: -10.8 });
+    expect(resolved.utc.toISOString()).toBe('1971-06-01T15:14:30.000Z');
+    const chart = computeChart({ utc: resolved.utc, latitude: 6.3, longitude: -10.8, houseSystem: 'whole', timeKnown: true });
+    const shared = timedSharedPositions({
+      bodies: chart.bodies, angles: chart.angles, houseSystem: 'whole', engineVersion: chart.engineVersion,
+    }, resolved.utc, computeBodies)!;
+    const { at, halfWindowMs } = decodeWindow(encodeSharedPositionsLink(shared)!, resolved.utc.getTime());
+    expect(Math.abs(secondsPastMinute(at))).toBeLessThan(halfWindowMs / 1000 + 0.5);
+  });
 });
 
 /*

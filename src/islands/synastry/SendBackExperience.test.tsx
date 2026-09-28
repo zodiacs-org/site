@@ -95,11 +95,26 @@ describe('the send-back link', () => {
     expect(await sendBackToken(received, { ...own, untimedDate: '1990-02-30' })).toBeNull();
   });
 
-  it('keeps sides with a birth time as they are', async () => {
+  it('keeps sides with a birth time on a whole UTC minute, and received sides, as they are', async () => {
     const a = person('Frida', true);
-    const b = person('Me', true);
+    const b = { ...person('Me', true), utc: '1990-04-11T06:15:00.000Z' };
     expect(await sendBackToken(a, b)).toBe(encodeSynastryLink({
       sides: [{ chart: a.positions, label: a.label }, { chart: b.positions, label: b.label }],
     }));
+  });
+
+  it('carries a side computed here with a birth time whose instant has seconds at the whole minute', async () => {
+    // Buffalo, 15 June 1870, 14:30 on its own mean time: 19:45:31 UTC.
+    const received = person('Frida', true);
+    const own = { ...person('Me', true), utc: '1870-06-15T19:45:31.000Z' };
+    const decoded = decodeSynastryLink((await sendBackToken(received, own))!)!;
+    expect(decoded.sides[0].chart.bodies.map(({ lon }) => lon))
+      .toEqual(received.positions.bodies.map(({ lon }) => round(lon)));
+    const minute = computeBodies(new Date('1870-06-15T19:46:00Z'));
+    expect(decoded.sides[1].chart.bodies.map(({ body, lon }) => [body, lon]))
+      .toEqual(BODY_NAMES.map((body) => [body, round(minute.find((row) => row.body === body)!.lon)]));
+    // The angles stay the chart's, to the whole degree.
+    expect(decoded.sides[1].chart.angles).toEqual({ asc: 48.5, mc: 312.5 });
+    expect(await sendBackToken(received, { ...own, utc: 'not a date' })).toBeNull();
   });
 });

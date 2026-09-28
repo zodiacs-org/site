@@ -71,6 +71,8 @@ interface Person {
   positions: PositionsShareInput;
   /** A chart computed here without a birth time: its civil date, so a link carries noon UTC on it. */
   untimedDate?: string;
+  /** A chart computed here with a birth time: its UTC instant, so a link carries its bodies at the whole minute. */
+  utc?: Date | string;
   /** The Old Style date entered beside the Gregorian one, as one line. */
   oldStyle?: string;
 }
@@ -255,7 +257,7 @@ export async function resolveSaved(chart: SavedChart, loadEngine: EngineLoader):
       houseSystem: summary.houseSystem,
       engineVersion: summary.engineVersion,
     },
-    ...(resolved.timeKnown ? {} : { untimedDate: chart.birth.date }),
+    ...(resolved.timeKnown ? { utc: summary.utcISO } : { untimedDate: chart.birth.date }),
   };
 }
 
@@ -297,7 +299,7 @@ export async function resolveLink(link: { input: ShareChartInput; label: string 
       houseSystem: result.input.houseSystem,
       engineVersion: result.engineVersion,
     },
-    ...(input.timeKnown ? {} : { untimedDate: input.date }),
+    ...(input.timeKnown ? { utc: resolved.utc } : { untimedDate: input.date }),
   };
 }
 
@@ -334,7 +336,7 @@ export async function resolveForm(slot: SlotState, fallbackLabel: string, loadEn
       houseSystem: result.input.houseSystem,
       engineVersion: result.engineVersion,
     },
-    ...(timeKnown ? {} : { untimedDate: slot.date }),
+    ...(timeKnown ? { utc: resolved.utc } : { untimedDate: slot.date }),
     oldStyle: slot.oldStyle,
   };
 }
@@ -1556,8 +1558,8 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
           {result.source === 'plain' && sendBackMod && (
             <sendBackMod.SendBackCard
               variant="share"
-              a={{ label: result.a.label, bodies: result.a.bodies, asc: result.a.asc, positions: result.a.positions, untimedDate: result.a.untimedDate }}
-              b={{ label: result.b.label, bodies: result.b.bodies, asc: result.b.asc, positions: result.b.positions, untimedDate: result.b.untimedDate }}
+              a={result.a}
+              b={result.b}
               summary={result.summary}
               inviterLabel={result.b.label}
             />
@@ -1568,20 +1570,8 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
           {(result.source === 'invite' || result.source === 'invite-restored') && sendBackMod && (
             <>
               <sendBackMod.SendBackCard
-                a={{
-                  label: result.a.label,
-                  bodies: result.a.bodies,
-                  asc: result.a.asc,
-                  positions: result.a.positions,
-                  untimedDate: result.a.untimedDate,
-                }}
-                b={{
-                  label: result.b.label,
-                  bodies: result.b.bodies,
-                  asc: result.b.asc,
-                  positions: result.b.positions,
-                  untimedDate: result.b.untimedDate,
-                }}
+                a={result.a}
+                b={result.b}
                 summary={result.summary}
                 inviterLabel={result.a.label}
                 onReturned={(method) => track('invite_returned', { method })}
