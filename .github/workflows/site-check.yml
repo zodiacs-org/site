@@ -610,6 +610,17 @@ jobs:
   # needs to be on, the publishable and VAPID keys only need to be non-empty,
   # and the RPC URLs only need to pass build-time validation. Keep the list in
   # step with the public variables set for Production in Vercel.
+  #
+  # Production also has the daily email settings, and some pages read those
+  # server-side variables while they are built. With the whole chain present
+  # (hasDailyChartEmailProvider in src/lib/email/daily-config.ts),
+  # /birth-chart/ renders the post-chart brief and loads one more chunk.
+  # Without them this job measured #587's /birth-chart/ at 67.3 KB, and
+  # production stopped at 70.4 KB. So the chain gets stand-ins too, and they
+  # only need to pass the same presence and length checks. PUBLIC_SUPABASE_URL
+  # reaches production's build even though the project's own variable list in
+  # Vercel does not show it. Nothing in this job sends email or contacts
+  # Supabase.
   production-flags-build:
     name: Build with production's feature flags
     runs-on: ubuntu-latest
@@ -627,6 +638,17 @@ jobs:
       PUBLIC_PLAUSIBLE_SCRIPT_URL: https://plausible.io/js/script.js
       SOLANA_RPC_URL: https://production-flags-ci.invalid/rpc
       BASE_RPC_URL: https://production-flags-ci.invalid/base
+      PUBLIC_SUPABASE_URL: https://production-flags-ci.invalid
+      SUPABASE_SERVICE_ROLE_KEY: ci_stand_in_service_role
+      DAILY_EMAIL_ENABLED: "1"
+      EMAIL_PROVIDER: resend
+      RESEND_API_KEY: re_ci_stand_in_sending
+      RESEND_CONTACTS_API_KEY: re_ci_stand_in_contacts
+      RESEND_FROM_EMAIL: "Zodiacs.org <ci@production-flags-ci.invalid>"
+      RESEND_DAILY_SEGMENT_ID: ci_stand_in_daily_segment
+      EMAIL_CONFIRM_SECRET: ci-stand-in-confirm-secret-00000000000000000000
+      DAILY_EMAIL_UNSUBSCRIBE_SECRET: ci-stand-in-unsubscribe-secret-000000000000000
+      DAILY_EMAIL_RECIPIENT_HASH_SECRET: ci-stand-in-recipient-secret-0000000000000000
     steps:
       - name: Checkout
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0

@@ -1,29 +1,40 @@
 # Vendored @zodiacs/engine artifact
 
-`zodiacs-engine-0.1.1-rc.9.tgz` is the exact npm pack artifact consumed by this
-site. The standalone starter keeps its separate engine `0.1.1-rc.3` pin and
-immutable project archive. The optional ownership SDK remains separate.
+`zodiacs-engine-0.1.1-rc.10.tgz` is the exact npm pack artifact consumed by this
+candidate site revision. The standalone starter keeps its separate engine
+`0.1.1-rc.3` pin and immutable project archive.
 
-- Package: `@zodiacs/engine@0.1.1-rc.9` (unpublished candidate)
-- Source repository: `https://github.com/zodiacs-org/engine` (the package at the
-  repository root; up to rc.6 it was `packages/engine` of `zodiacs-org/sdk`)
-- Source commit: `82aad2fcc9b204a687e0b67f709681e62f9e889a`
-- Artifact carrier commit: `fa1050e033a197b117868ce546d85352bff35376`
-- Artifact SHA-256: `bb5592302b1fa542cc745a9410b5a77faf49bbf4e205347ab771810efc300a20`
-- [Immutable anonymous download](https://raw.githubusercontent.com/zodiacs-org/engine/fa1050e033a197b117868ce546d85352bff35376/artifacts/zodiacs-engine-0.1.1-rc.9.tgz)
-- Archive: 30 files, 55,576 packed bytes, 188,488 unpacked bytes.
+- Package: `@zodiacs/engine@0.1.1-rc.10` (unpublished candidate)
+- Source repository: `https://github.com/zodiacs-org/engine`
+- Source commit: `9c4f3fd77b5d6235288d9cdfc2ac1d183a5c4d6b`
+- Artifact carrier commit: `d0c5cd0c8edaa849d2e2c0793ccc32c28826e7ee`
+- Artifact SHA-256: `a377cdc8c12e25ff7de4fe95ddf77a4cdee8d2da97071b0f8454e340b374565c`
+- [Immutable anonymous download](https://raw.githubusercontent.com/zodiacs-org/engine/d0c5cd0c8edaa849d2e2c0793ccc32c28826e7ee/artifacts/zodiacs-engine-0.1.1-rc.10.tgz)
+- Archive: 30 files, 61,318 packed bytes.
 
-The public engine archive was downloaded without credentials and checked against
-the recorded SHA-256. The candidate adds nine house systems to whole sign,
-Placidus and Porphyry, for twelve: Koch, Regiomontanus, Campanus, Topocentric,
-Alcabitius, Equal, Vehlow, Meridian and Morinus. Nothing else it computes
-moves, and its receipt conventions are rc.8's. An imported receipt remains an
-untrusted claim.
+The archive was copied from the previously downloaded, digest-verified rc.10
+artifact and its SHA-256 checked again for this adoption. It adds Equal-MC
+houses and the `chartPoints` API. The receipt conventions remain rc.8's;
+imported receipts remain untrusted claims. The MCP adapter offers Equal-MC,
+but does not expose `chartPoints`. The site's consumer forms retain whole
+sign and Placidus.
 
-New checks of this artifact are recorded in [the rc.9 adoption evidence](../docs/platform/evidence/site-engine-rc9/README.md).
-Earlier evidence and immutable artifacts retain their original identities.
-The site pin is not evidence of npm publication, production deployment,
-required human review, or external adoption.
+[The rc.10 adoption evidence](../docs/platform/evidence/site-engine-rc10/README.md)
+distinguishes new verification from prior release measurements. The Swiss
+statistics summarized in engine PR #5 were not supplied as a reproducible
+measurement record here and are not re-certified by this adoption.
+
+The site pin is not evidence of npm publication, production deployment or
+external adoption. Earlier archives and evidence retain their identities.
+
+## Previous rc.9 site candidate
+
+`zodiacs-engine-0.1.1-rc.9.tgz` and its checksum remain unchanged. Source
+`82aad2fcc9b204a687e0b67f709681e62f9e889a`, carrier
+`fa1050e033a197b117868ce546d85352bff35376`, SHA-256
+`bb5592302b1fa542cc745a9410b5a77faf49bbf4e205347ab771810efc300a20`.
+[Its evidence](../docs/platform/evidence/site-engine-rc9/README.md) describes
+that release's twelve house systems and does not certify rc.10.
 
 ## Previous rc.8 site candidate
 

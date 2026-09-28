@@ -10,7 +10,7 @@ import { computeBodies as packageComputeBodies } from '@zodiacs/engine/internal'
 import { computeBodies, computeChart } from './full';
 import { ENGINE_VERSION } from './types';
 
-const artifactPath = resolve(process.cwd(), 'vendor/zodiacs-engine-0.1.1-rc.9.tgz');
+const artifactPath = resolve(process.cwd(), 'vendor/zodiacs-engine-0.1.1-rc.10.tgz');
 const docsPath = resolve(process.cwd(), 'public/sdk/engine');
 
 function walk(directory: string): string[] {
@@ -49,12 +49,12 @@ describe('vendored @zodiacs/engine integration', () => {
     });
   });
 
-  it('computes all twelve house systems, falling back only from Placidus and Koch inside the polar circle', () => {
+  it('computes all thirteen house systems, falling back only from Placidus and Koch inside the polar circle', () => {
     // Synthetic: round coordinates for London and Longyearbyen, nobody's birth.
     const at = { utc: '1990-06-15T13:30:00Z', longitude: 15.6267 };
     const QUADRANT = ['placidus', 'koch', 'porphyry', 'regiomontanus', 'campanus', 'topocentric', 'alcabitius'];
     expect([...HOUSE_SYSTEMS].sort()).toEqual([
-      'alcabitius', 'campanus', 'equal', 'koch', 'meridian', 'morinus', 'placidus', 'porphyry',
+      'alcabitius', 'campanus', 'equal', 'equal-mc', 'koch', 'meridian', 'morinus', 'placidus', 'porphyry',
       'regiomontanus', 'topocentric', 'vehlow', 'whole',
     ]);
     for (const houseSystem of HOUSE_SYSTEMS) {
@@ -67,6 +67,13 @@ describe('vendored @zodiacs/engine integration', () => {
         expect(london.houses?.cusps[0], houseSystem).toBeCloseTo(london.angles!.asc, 9);
         expect(london.houses?.cusps[9], houseSystem).toBeCloseTo(london.angles!.mc, 9);
       }
+      if (houseSystem === 'equal-mc') {
+        expect(london.houses!.cusps[9]).toBeCloseTo(london.angles!.mc, 9);
+        for (let i = 0; i < 12; i += 1) {
+          const expected = (london.angles!.mc + (i - 9) * 30 + 360) % 360;
+          expect(london.houses!.cusps[i]).toBeCloseTo(expected, 9);
+        }
+      }
       const polar = natalChart({ ...at, latitude: 78.2232, houseSystem });
       const fallsBack = houseSystem === 'placidus' || houseSystem === 'koch';
       expect(polar.houses?.system, houseSystem).toBe(fallsBack ? 'whole' : houseSystem);
@@ -77,7 +84,7 @@ describe('vendored @zodiacs/engine integration', () => {
   it('matches both recorded checksums in the repository', () => {
     const artifact = readFileSync(artifactPath);
     const checksum = readFileSync(
-      resolve(process.cwd(), 'vendor/zodiacs-engine-0.1.1-rc.9.sha256'),
+      resolve(process.cwd(), 'vendor/zodiacs-engine-0.1.1-rc.10.sha256'),
       'utf8',
     ).trim().split(/\s+/u)[0];
     const lock = JSON.parse(
@@ -98,7 +105,7 @@ describe('vendored @zodiacs/engine integration', () => {
     const siteBodies = computeBodies(date);
 
     expect(ENGINE_VERSION).toBe(packageEngineVersion);
-    expect(ENGINE_VERSION).toBe('0.1.1-rc.9');
+    expect(ENGINE_VERSION).toBe('0.1.1-rc.10');
     expect(siteBodies).toEqual(
       packageBodies.map(({ body, lon, lat, speed, retrograde }) => ({
         body,

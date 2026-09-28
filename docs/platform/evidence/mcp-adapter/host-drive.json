@@ -16,36 +16,36 @@
   },
   "server": {
     "path": "examples/mcp-server/server.mjs",
-    "sha256": "632638536e2b7d32b8c2410363495e95c38f58216cbdcc35a7ff7b3fb7a2629e"
+    "sha256": "08e2f54cfcf28a9b4d90381004bfc8e761531de2c8a59745f0a0dbbf5ec4df5b"
   },
-  "completedAt": "2026-09-26T10:30:50.399Z",
+  "completedAt": "2026-09-28T07:50:20.963Z",
   "checks": 7,
   "passed": 7,
   "results": [
     {
       "name": "the host accepts the server through its documented add command",
       "ok": true,
-      "detail": "Added stdio MCP server zodiacs with command: node /tmp/claude-0/-home-user-site/25475091-052a-53d7-9cd4-cf04ce09dc68/scratchpad/site-rc9/examples/mcp-server/server.mjs to local config\nFile modified: /tmp/zodiacs-mcp-host-MQUJKS/claude-config/.claude.json [project: /tmp/zodiacs-mcp-host-MQUJKS/project]"
+      "detail": "Added stdio MCP server zodiacs with command: node /workspace/scratch/c1943cbff40d/opus-continuation/site/examples/mcp-server/server.mjs to local config\nFile modified: /tmp/zodiacs-mcp-host-na2YPb/claude-config/.claude.json [project: /tmp/zodiacs-mcp-host-na2YPb/project]"
     },
     {
       "name": "the registration landed in the throwaway config, not the real one",
       "ok": true,
-      "detail": "Added stdio MCP server zodiacs with command: node /tmp/claude-0/-home-user-site/25475091-052a-53d7-9cd4-cf04ce09dc68/scratchpad/site-rc9/examples/mcp-server/server.mjs to local config\nFile modified: /tmp/zodiacs-mcp-host-MQUJKS/claude-config/.claude.json [project: /tmp/zodiacs-mcp-host-MQUJKS/project]"
+      "detail": "Added stdio MCP server zodiacs with command: node /workspace/scratch/c1943cbff40d/opus-continuation/site/examples/mcp-server/server.mjs to local config\nFile modified: /tmp/zodiacs-mcp-host-na2YPb/claude-config/.claude.json [project: /tmp/zodiacs-mcp-host-na2YPb/project]"
     },
     {
       "name": "the host launches the server and reports it connected",
       "ok": true,
-      "detail": "Checking MCP server health…\n\nzodiacs: node /tmp/claude-0/-home-user-site/25475091-052a-53d7-9cd4-cf04ce09dc68/scratchpad/site-rc9/examples/mcp-server/server.mjs - √ Connected"
+      "detail": "Checking MCP server health…\n\nzodiacs: node /workspace/scratch/c1943cbff40d/opus-continuation/site/examples/mcp-server/server.mjs - ✔ Connected"
     },
     {
       "name": "the host reports it as a connected stdio server",
       "ok": true,
-      "detail": "zodiacs:\n  Scope: Local config (private to you in this project)\n  Status: √ Connected\n  Type: stdio\n  Command: node\n  Args: /tmp/claude-0/-home-user-site/25475091-052a-53d7-9cd4-cf04ce09dc68/scratchpad/site-rc9/examples/mcp-server/server.mjs\n  Environment:\n\nTo remove this server, run: claude mcp remove zodiacs -s local"
+      "detail": "zodiacs:\n  Scope: Local config (private to you in this project)\n  Status: ✔ Connected\n  Type: stdio\n  Command: node\n  Args: /workspace/scratch/c1943cbff40d/opus-continuation/site/examples/mcp-server/server.mjs\n  Environment:\n\nTo remove this server, run: claude mcp remove zodiacs -s local"
     },
     {
       "name": "the documented removal command removes it",
       "ok": true,
-      "detail": "Removed MCP server zodiacs from local config\nFile modified: /tmp/zodiacs-mcp-host-MQUJKS/claude-config/.claude.json [project: /tmp/zodiacs-mcp-host-MQUJKS/project]"
+      "detail": "Removed MCP server zodiacs from local config\nFile modified: /tmp/zodiacs-mcp-host-na2YPb/claude-config/.claude.json [project: /tmp/zodiacs-mcp-host-na2YPb/project]"
     },
     {
       "name": "nothing is left configured after removal",
@@ -56,8 +56,8 @@
       "name": "the machine's own Claude Code configuration is byte-identical throughout",
       "ok": true,
       "detail": {
-        "before": "069a6ce270013a879931f73ae3cf8a2d61a632c45325eef8a83f0d1ba3714f9d",
-        "after": "069a6ce270013a879931f73ae3cf8a2d61a632c45325eef8a83f0d1ba3714f9d"
+        "before": "absent",
+        "after": "absent"
       }
     }
   ]
