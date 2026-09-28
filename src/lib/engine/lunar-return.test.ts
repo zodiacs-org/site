@@ -5,9 +5,8 @@ import * as ephemeris from './full';
 import { findLongitudeCrossings } from './returns';
 import { resolveLocalToUtc } from '../time/localToUtc';
 import type { Chart, ChartInput } from './types';
-import policy from './fixtures/swiss-lunar-return-policy.json';
-import references from './fixtures/swiss-lunar-returns.fixture.json';
-import returnedCharts from './fixtures/swiss-lunar-returned-charts.fixture.json';
+import policy from './fixtures/independent-lunar-return-policy.json';
+import references from './fixtures/independent-lunar-returns.json';
 import applicability from './fixtures/swiss-lunar-fixed-target-applicability.json';
 import {
   lunarReturnChart, lunarReturnInstant, LUNAR_RETURN_HORIZON_DAYS,
@@ -36,8 +35,7 @@ afterAll(() => {
   const sourceFiles = [
     './lunar-return.ts', './lunar-return.test.ts', './full.ts', './houses.ts',
     './types.ts', './returns.ts',
-    './fixtures/swiss-lunar-return-policy.json', './fixtures/swiss-lunar-returns.fixture.json',
-    './fixtures/swiss-lunar-returned-charts.fixture.json',
+    './fixtures/independent-lunar-return-policy.json', './fixtures/independent-lunar-returns.json',
     './fixtures/swiss-lunar-fixed-target-applicability.json',
   ];
   writeFileSync(path, JSON.stringify({
@@ -62,8 +60,11 @@ function expectTime(actual: Date, expected: { expectedMilliseconds: number; time
   expect(milliseconds, diagnostic).toBeLessThanOrEqual(interval[1]);
 }
 
+type ReferencePosition = { longitudeDegrees: number; speedDegreesPerDay?: number };
+
 function expectIndependentChart(actual: Chart, expected: typeof references.cases[number]['chartAtIndependentInstant']) {
-  for (const [name, position] of Object.entries(expected.positions)) {
+  // The references carry a speed for the node, the one body whose speed is gated.
+  for (const [name, position] of Object.entries(expected.positions) as [string, ReferencePosition][]) {
     const body = actual.bodies.find((row) => row.body === name)!;
     expect(body, name).toBeDefined();
     expect(Number.isFinite(body.lon), name).toBe(true);
@@ -74,11 +75,13 @@ function expectIndependentChart(actual: Chart, expected: typeof references.cases
         : policy.gates.otherPlanetCircularDegreesMaximum;
     expect(Math.abs(delta(body.lon, position.longitudeDegrees)), name).toBeLessThanOrEqual(gate);
     if (name === 'North Node') {
-      expect(Math.abs(body.speed - position.speedDegreesPerDay))
+      expect(Number.isFinite(position.speedDegreesPerDay), name).toBe(true);
+      const speed = position.speedDegreesPerDay!;
+      expect(Math.abs(body.speed - speed))
         .toBeLessThanOrEqual(policy.gates.nodeSpeedAbsoluteDegreesPerDayMaximum);
       if (Math.abs(body.speed) > policy.gates.directionDeadbandDegreesPerDay
-        && Math.abs(position.speedDegreesPerDay) > policy.gates.directionDeadbandDegreesPerDay) {
-        expect(body.retrograde).toBe(position.speedDegreesPerDay < 0);
+        && Math.abs(speed) > policy.gates.directionDeadbandDegreesPerDay) {
+        expect(body.retrograde).toBe(speed < 0);
       }
     }
   }
@@ -96,16 +99,24 @@ function expectIndependentChart(actual: Chart, expected: typeof references.cases
   });
 }
 
+// The six lunar-return cases against NASA JPL Horizons (DE441) for the Moon
+// and the chart bodies and ERFA for angles and cusps
+// (docs/engine-validation/independent-references/). The cases, gates and
+// conditioning are the Swiss lunar-return policy's, declared on 2026-09-05
+// before any application comparison and carried over unchanged; only the
+// arbiter changed, when Swiss output was removed from the tree on 2026-09-28
+// (docs/platform/programme/DECISIONS-2026-09-28.md §3), and with it L-wrap's
+// birth, the first 0° crossing of the Horizons Moon after 2000-01-01.
 describe('independent lunar return references', () => {
   it('preserves the approved inputs, gates and applicability amendment', () => {
-    expect(digest(new URL('./fixtures/swiss-lunar-return-policy.json', import.meta.url)))
-      .toBe('16c807cfb7374c340200064ba6f4332b98923f77b05f6f24f62ea5541d5aa146');
-    expect(digest(new URL('./fixtures/swiss-lunar-returns.fixture.json', import.meta.url)))
-      .toBe('22e4a55652e12541d01cbd46c7efad018a06e60169fb399e2d02a6ab2ab6d5d5');
+    expect(digest(new URL('./fixtures/independent-lunar-return-policy.json', import.meta.url)))
+      .toBe('c61e4162d580dfce8cbebd90dfa08313a7b442c879a711787e93c293abb7877b');
+    expect(digest(new URL('./fixtures/independent-lunar-returns.json', import.meta.url)))
+      .toBe('c5ccdf4ed1f21355fb5cbcbc4feaa2cd3e8e05dedd3f09c5c65b2643ec557d2a');
     expect(digest(new URL('./fixtures/swiss-lunar-fixed-target-applicability.json', import.meta.url)))
       .toBe('2f9056c0f93b22e3270bf1f496d804759a9057ac6b3e5a142604248ba1dddb1a');
-    expect(digest(new URL('./fixtures/swiss-lunar-returned-charts.fixture.json', import.meta.url)))
-      .toBe('daa41662758d7c1f4dfa234e2dfbd33a884d11b343d94af605b28a537c18b410');
+    // The carried-over policy names the one it supersedes, and keeps its gates.
+    expect(policy.supersedes.sha256).toBe('16c807cfb7374c340200064ba6f4332b98923f77b05f6f24f62ea5541d5aa146');
     expect(LUNAR_RETURN_STEP_DAYS).toBe(policy.productScanContract.stepDays);
     expect(LUNAR_RETURN_HORIZON_DAYS).toBe(policy.productScanContract.horizonUniformDays);
     expect(LUNAR_RETURN_MIN_UTC).toBe(policy.supportedTransportInterval.minimumInclusive);
@@ -138,7 +149,7 @@ describe('independent lunar return references', () => {
     expect(Number.isFinite(moon.speed)).toBe(true);
     expect(moon.retrograde).toBe(false);
     expect(Math.abs(delta(moon.lon, target))).toBeLessThanOrEqual(policy.gates.productOwnTargetResidualDegreesMaximum);
-    // Returned-chart parity uses the separate same-time Swiss supplement;
+    // Returned-chart parity uses the separate same-time reference below;
     // independent event timing and fixed-clock components remain separate.
   });
 
@@ -164,22 +175,20 @@ describe('independent lunar return references', () => {
       .toBeLessThanOrEqual(policy.gates.transitMoonAtIndependentInstantCircularDegreesMaximum);
   });
 
-  it.each(returnedCharts.charts)('$id: returned chart at the same independent reference clock', (reference) => {
+  it.each(references.returnedCharts)('$id: returned chart at the same independent reference clock', (reference) => {
     const input = policy.cases.find((row) => row.id === reference.caseId)!;
     const location = reference.id.endsWith(':relocation') ? input.relocationAtSameInstant! : input.returnLocation;
     const chart = lunarReturnChart(natalInput(input.birthTransport), new Date(input.afterTransport), locationFor(location));
     record(reference.caseId, reference.id.endsWith(':relocation') ? 'sameTimeRelocatedChart' : 'sameTimeReturnedChart', { chart });
-    // The Swiss supplement was acquired at the instant the product returned
-    // up to engine 0.1.1-rc.7. rc.8's observed ΔT moved each return by
-    // 0.1 to 11 s (the independent event-time bands, tested above, are
-    // unchanged). The supplement is kept as acquired: the returned chart must
-    // be the chart at its own instant, the product's chart at the
-    // supplement's instant is held to Swiss, and the two instants may differ
-    // by at most 15 s. Beyond that the pack needs a new acquisition.
+    // The reference chart was taken at the instant the product returned when
+    // the references were built. The returned chart must be the chart at its
+    // own instant, the product's chart at the reference's instant is held to
+    // it, and the two instants may differ by at most 15 s. Beyond that,
+    // rebuild the independent references at the new product timestamp.
     const place = { ...locationFor(location), houseSystem: 'placidus' as const, timeKnown: true };
     expect(chart).toEqual(ephemeris.computeChart({ utc: chart.input.utc, ...place }));
     const supplementUtc = new Date(reference.utc);
-    expect(Math.abs(chart.input.utc.getTime() - supplementUtc.getTime()), 'Same-time Swiss fixture does not apply; acquire a new independent supplement at the new product timestamp')
+    expect(Math.abs(chart.input.utc.getTime() - supplementUtc.getTime()), 'The returned-chart reference no longer applies; rebuild the independent references at the new product timestamp')
       .toBeLessThanOrEqual(15_000);
     expectIndependentChart(ephemeris.computeChart({ utc: supplementUtc, ...place }), reference.reference);
   });
