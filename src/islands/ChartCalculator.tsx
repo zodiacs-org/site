@@ -2853,6 +2853,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                       houseSystem: chart.houses?.system ?? houseSystem,
                       engineVersion: chart.engineVersion,
                     }}
+                    birthDate={chart.input.timeKnown ? undefined : computedInput?.date ?? ''}
                   />
                 )}
                 {card === 'error' && <p class="calc__error" role="alert">{t(locale, 'cardError')}</p>}

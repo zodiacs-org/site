@@ -1,14 +1,16 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { computeChart } from '../engine/full';
+import { computeBodies, computeChart } from '../engine/full';
 import { ENGINE_VERSION } from '../engine/types';
 import { encodePositionsLink } from '../share-positions';
 import type { SavedChart } from './schema';
 import {
   cardMatchesChart,
+  cardPositionsForChart,
   cardTokenFromHash,
   cardUrl,
   decodeCardLink,
   encodeCardLink,
+  loadCardPositionsForChart,
   positionsForChart,
 } from './card-link';
 import { CIRCLE_KEY, MAX_CIRCLE, addCard, loadCircle, parseCircle, removeCircleEntry, renameCircleEntry } from './circle';
@@ -57,7 +59,9 @@ describe('chart card links', () => {
     const wire = JSON.parse(Buffer.from(token.slice(3), 'base64url').toString('utf8'));
     expect(Object.keys(wire).sort()).toEqual(['k', 'l', 'p']);
     expect(token).not.toContain('1992');
-    expect(cardMatchesChart(card, chart)).toBe(true);
+    expect(cardMatchesChart(card, positionsForChart(chart))).toBe(true);
+    expect(cardMatchesChart(card, positionsForChart(savedChart(false)))).toBe(false);
+    expect(cardMatchesChart(card, null)).toBe(false);
   });
 
   it('carries ASC and MC to the whole degree and every body to 0.001°', () => {
@@ -73,6 +77,28 @@ describe('chart card links', () => {
     // A card with exact angles is not one this site makes, so it is refused.
     const wire = JSON.parse(Buffer.from(token.slice(3), 'base64url').toString('utf8'));
     expect(decodeCardLink(reencode({ ...wire, p: encodePositionsLink(positionsForChart(chart)) }))).toBeNull();
+  });
+
+  it('makes a card without a birth time from the sky at 12:00 UTC on the birth date, not the chart’s own noon', async () => {
+    // The saved chart's own positions stand for noon at the birthplace, an
+    // instant that gives the place away; the card carries noon UTC instead.
+    const chart = savedChart(false);
+    const positions = (await loadCardPositionsForChart(chart))!;
+    expect(positions.angles).toBeNull();
+    const noonUtc = computeBodies(new Date('1992-03-09T12:00:00Z'));
+    for (const row of positions.bodies) {
+      expect(row.lon).toBe(noonUtc.find((body) => body.body === row.body)!.lon);
+    }
+    const asked: string[] = [];
+    cardPositionsForChart(chart, (utc) => { asked.push(utc.toISOString()); return noonUtc; });
+    expect(asked).toEqual(['1992-03-09T12:00:00.000Z']);
+    const card = decodeCardLink(encodeCardLink({ chart: positions, label: 'Maya' })!)!;
+    expect(card.timeKnown).toBe(false);
+    // One's own card is still recognised, against the same noon-UTC positions.
+    expect(cardMatchesChart(card, positions)).toBe(true);
+    expect(cardMatchesChart(card, positionsForChart(chart))).toBe(false);
+    // A chart with a birth time keeps its own positions.
+    expect(await loadCardPositionsForChart(savedChart())).toEqual(positionsForChart(savedChart()));
   });
 
   it('gives no rising sign for a chart without a birth time', () => {

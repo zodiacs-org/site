@@ -3,7 +3,9 @@ import { render } from 'preact-render-to-string';
 import { describe, expect, it } from 'vitest';
 import type { PairSummary } from '../../lib/engine/synastry';
 import type { PositionsShareInput } from '../../lib/share-positions';
-import { SendBackCard } from './SendBackExperience';
+import { computeBodies } from '../../lib/engine/full';
+import { decodeSynastryLink, encodeSynastryLink } from '../../lib/share-synastry';
+import { SendBackCard, sendBackToken } from './SendBackExperience';
 
 const BODY_NAMES = [
   'Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter',
@@ -70,5 +72,34 @@ describe('Phase 4 send-back share surfaces', () => {
 
     expect(markup).not.toContain('data-share-card-action="big-three"');
     expect(markup).not.toContain('Share the big three');
+  });
+});
+
+describe('the send-back link', () => {
+  const round = (lon: number) => {
+    const value = Math.round(lon * 1000) / 1000;
+    return value >= 360 ? 0 : value;
+  };
+
+  it('carries a side computed here without a birth time as the sky at 12:00 UTC on its date, and a received side unchanged', async () => {
+    const received = person('Frida', false);
+    const own = { ...person('Me', false), untimedDate: '1990-04-11' };
+    const decoded = decodeSynastryLink((await sendBackToken(received, own))!)!;
+    expect(decoded.sides[0].chart.bodies.map(({ lon }) => lon))
+      .toEqual(received.positions.bodies.map(({ lon }) => round(lon)));
+    // Not the chart's own positions (noon at the birthplace), which give the place away.
+    const noonUtc = computeBodies(new Date('1990-04-11T12:00:00Z'));
+    expect(decoded.sides[1].chart.bodies.map(({ body, lon }) => [body, lon]))
+      .toEqual(BODY_NAMES.map((body) => [body, round(noonUtc.find((row) => row.body === body)!.lon)]));
+    expect(decoded.sides.map(({ timeKnown }) => timeKnown)).toEqual([false, false]);
+    expect(await sendBackToken(received, { ...own, untimedDate: '1990-02-30' })).toBeNull();
+  });
+
+  it('keeps sides with a birth time as they are', async () => {
+    const a = person('Frida', true);
+    const b = person('Me', true);
+    expect(await sendBackToken(a, b)).toBe(encodeSynastryLink({
+      sides: [{ chart: a.positions, label: a.label }, { chart: b.positions, label: b.label }],
+    }));
   });
 });

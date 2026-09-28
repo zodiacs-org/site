@@ -5,12 +5,32 @@ import type { PositionsShareInput } from '../../lib/share-positions';
 import type { PreparedChartCard } from '../../lib/share-card';
 import { shareCardText } from '../../lib/share-card-copy';
 import { encodeSynastryLink } from '../../lib/share-synastry';
+import { loadUntimedSharedPositions } from '../../lib/share-positions-untimed';
 
 interface SendPerson {
   label: string;
   bodies: MinimalBody[];
   asc: number | null;
   positions: PositionsShareInput;
+  /**
+   * The civil birth date of a chart computed on this device without a birth
+   * time. Its positions are noon at the birthplace, which would give the
+   * place away, so the link carries the sky at 12:00 UTC on this date
+   * instead (see sharedReferenceInstant). Absent for a chart with a birth
+   * time and for positions that arrived in a link, which pass on unchanged.
+   */
+  untimedDate?: string;
+}
+
+/** The two-chart link for a pair of sides, with each untimed side at noon UTC on its date. */
+export async function sendBackToken(a: SendPerson, b: SendPerson): Promise<string | null> {
+  const side = (person: SendPerson) => (person.untimedDate === undefined
+    ? Promise.resolve(person.positions)
+    : loadUntimedSharedPositions(person.positions, person.untimedDate));
+  const [chartA, chartB] = await Promise.all([side(a), side(b)]);
+  return chartA && chartB
+    ? encodeSynastryLink({ sides: [{ chart: chartA, label: a.label }, { chart: chartB, label: b.label }] })
+    : null;
 }
 
 type SendMethod = 'share' | 'copy' | 'download';
@@ -80,12 +100,23 @@ export function SendBackCard({
     prepared: PreparedChartCard;
   } | null>(null);
   const [bigThreeState, setBigThreeState] = useState<BigThreeState>('preparing');
-  const token = useMemo(() => encodeSynastryLink({
+  const untimed = a.untimedDate !== undefined || b.untimedDate !== undefined;
+  const direct = useMemo(() => (untimed ? null : encodeSynastryLink({
     sides: [
       { chart: a.positions, label: a.label },
       { chart: b.positions, label: b.label },
     ],
-  }), [a, b]);
+  })), [a, b, untimed]);
+  const [untimedToken, setUntimedToken] = useState<string | null>(null);
+  // Keyed on the sides' values: callers pass fresh wrapper objects each render.
+  useEffect(() => {
+    setUntimedToken(null);
+    if (!untimed) return undefined;
+    let active = true;
+    void sendBackToken(a, b).then((next) => { if (active) setUntimedToken(next); }, () => {});
+    return () => { active = false; };
+  }, [a.positions, b.positions, a.label, b.label, a.untimedDate, b.untimedDate]);
+  const token = untimed ? untimedToken : direct;
   const url = token && typeof window !== 'undefined'
     ? `${window.location.origin}/compatibility/#s=${token}`
     : '';

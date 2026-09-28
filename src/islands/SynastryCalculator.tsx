@@ -69,6 +69,8 @@ interface Person {
   depth: { body: string; lon: number; lat: number; retrograde?: boolean }[] | null;
   /** Privacy-safe shape used by the positions-only send-back codec. */
   positions: PositionsShareInput;
+  /** A chart computed here without a birth time: its civil date, so a link carries noon UTC on it. */
+  untimedDate?: string;
   /** The Old Style date entered beside the Gregorian one, as one line. */
   oldStyle?: string;
 }
@@ -253,10 +255,11 @@ export async function resolveSaved(chart: SavedChart, loadEngine: EngineLoader):
       houseSystem: summary.houseSystem,
       engineVersion: summary.engineVersion,
     },
+    ...(resolved.timeKnown ? {} : { untimedDate: chart.birth.date }),
   };
 }
 
-async function resolveLink(link: { input: ShareChartInput; label: string }, loadEngine: EngineLoader): Promise<Person> {
+export async function resolveLink(link: { input: ShareChartInput; label: string }, loadEngine: EngineLoader): Promise<Person> {
   const [engine, { prepareLocalTime, resolveLocalToUtc }] = await Promise.all([
     loadEngine(),
     loadModule(() => import('../lib/time/localToUtc')),
@@ -294,10 +297,11 @@ async function resolveLink(link: { input: ShareChartInput; label: string }, load
       houseSystem: result.input.houseSystem,
       engineVersion: result.engineVersion,
     },
+    ...(input.timeKnown ? {} : { untimedDate: input.date }),
   };
 }
 
-async function resolveForm(slot: SlotState, fallbackLabel: string, loadEngine: EngineLoader): Promise<Person> {
+export async function resolveForm(slot: SlotState, fallbackLabel: string, loadEngine: EngineLoader): Promise<Person> {
   const [engine, { prepareLocalTime, resolveLocalToUtc }] = await Promise.all([
     loadEngine(),
     loadModule(() => import('../lib/time/localToUtc')),
@@ -330,6 +334,7 @@ async function resolveForm(slot: SlotState, fallbackLabel: string, loadEngine: E
       houseSystem: result.input.houseSystem,
       engineVersion: result.engineVersion,
     },
+    ...(timeKnown ? {} : { untimedDate: slot.date }),
     oldStyle: slot.oldStyle,
   };
 }
@@ -1551,8 +1556,8 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
           {result.source === 'plain' && sendBackMod && (
             <sendBackMod.SendBackCard
               variant="share"
-              a={{ label: result.a.label, bodies: result.a.bodies, asc: result.a.asc, positions: result.a.positions }}
-              b={{ label: result.b.label, bodies: result.b.bodies, asc: result.b.asc, positions: result.b.positions }}
+              a={{ label: result.a.label, bodies: result.a.bodies, asc: result.a.asc, positions: result.a.positions, untimedDate: result.a.untimedDate }}
+              b={{ label: result.b.label, bodies: result.b.bodies, asc: result.b.asc, positions: result.b.positions, untimedDate: result.b.untimedDate }}
               summary={result.summary}
               inviterLabel={result.b.label}
             />
@@ -1568,12 +1573,14 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
                   bodies: result.a.bodies,
                   asc: result.a.asc,
                   positions: result.a.positions,
+                  untimedDate: result.a.untimedDate,
                 }}
                 b={{
                   label: result.b.label,
                   bodies: result.b.bodies,
                   asc: result.b.asc,
                   positions: result.b.positions,
+                  untimedDate: result.b.untimedDate,
                 }}
                 summary={result.summary}
                 inviterLabel={result.a.label}

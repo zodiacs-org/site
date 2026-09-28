@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
 import type { Chart } from '../lib/engine/types';
 import { t, type CatalogLocale as Locale } from '../lib/i18n';
-import { encodeSharedPositionsLink } from '../lib/share-positions';
+import { encodeSharedPositionsLink, type PositionsShareInput } from '../lib/share-positions';
+import { loadUntimedSharedPositions } from '../lib/share-positions-untimed';
 import { previewPlacements, previewQuery } from '../lib/share-preview';
 import {
   prepareBigThreeCard,
@@ -110,22 +111,32 @@ export default function ChartShareDialog({
     return () => { if (dialog?.open) dialog.close(); };
   }, []);
 
+  const birthDate = birthDetails?.date;
   useEffect(() => {
-    const shared = {
-      bodies: chart.bodies,
-      angles: chart.angles ? { asc: chart.angles.asc, mc: chart.angles.mc } : null,
-      houseSystem: chart.houses?.system ?? 'whole',
-      engineVersion: chart.engineVersion,
-    };
-    const token = encodeSharedPositionsLink(shared);
-    const placements = previewPlacements(shared);
-    if (!token || !placements) return;
-    const positions = `${window.location.origin}${receiverPath}#p=${token}`;
-    // The preview service gets the Sun, Moon and Rising to the whole degree;
-    // the full code stays in the fragment.
-    const preview = `${window.location.origin}/api/og/chart?${previewQuery(placements)}#p=${token}`;
-    setLinks({ positions, preview });
-  }, [chart, receiverPath]);
+    let current = true;
+    const base = { houseSystem: chart.houses?.system ?? 'whole', engineVersion: chart.engineVersion };
+    // Without a birth time the chart is noon at the birthplace, an instant
+    // that gives the place away; the links carry noon UTC on the date instead.
+    const ready: Promise<PositionsShareInput | null> = chart.input.timeKnown
+      ? Promise.resolve({
+        ...base,
+        bodies: chart.bodies,
+        angles: chart.angles ? { asc: chart.angles.asc, mc: chart.angles.mc } : null,
+      })
+      : birthDate ? loadUntimedSharedPositions(base, birthDate) : Promise.resolve(null);
+    void ready.then((shared) => {
+      if (!current || !shared) return;
+      const token = encodeSharedPositionsLink(shared);
+      const placements = previewPlacements(shared);
+      if (!token || !placements) return;
+      const positions = `${window.location.origin}${receiverPath}#p=${token}`;
+      // The preview service gets the Sun, Moon and Rising to the whole degree;
+      // the full code stays in the fragment.
+      const preview = `${window.location.origin}/api/og/chart?${previewQuery(placements)}#p=${token}`;
+      setLinks({ positions, preview });
+    }, (error) => console.error(error));
+    return () => { current = false; };
+  }, [chart, receiverPath, birthDate]);
 
   useEffect(() => {
     if (!preparedPrimary) return;
@@ -265,7 +276,9 @@ export default function ChartShareDialog({
               dataHook="positions"
               onCopied={() => trackShare('positions_link')}
             />
-            <p class="calc-share-dialog__note">{shareText(locale, 'positionsShareNote')}</p>
+            <p class="calc-share-dialog__note" data-positions-share-note>
+              {shareText(locale, chart.input.timeKnown ? 'positionsShareNote' : 'positionsShareNoteNoTime')}
+            </p>
             <CopyLinkButton
               url={links.preview}
               state={linkState.preview}

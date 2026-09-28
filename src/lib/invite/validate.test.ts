@@ -59,10 +59,22 @@ describe('Phase 4 invite validation', () => {
     );
   });
 
-  it('keeps no-time charts angle-free', () => {
-    const result = deriveInviteChartFromSyncedPayload(savedChart(false));
+  it('shares a no-time chart as the sky at 12:00 UTC on its date, with no angles, and makes none without an ephemeris', () => {
+    const asked: string[] = [];
+    // A stand-in ephemeris: the invitation must use whatever it gives for noon UTC.
+    const bodiesAt = (utc: Date) => {
+      asked.push(utc.toISOString());
+      return POSITION_BODY_ORDER.map((body, index) => ({ body, lon: 100 + index * 13.1234 }));
+    };
+    const result = deriveInviteChartFromSyncedPayload(savedChart(false), bodiesAt);
+    expect(asked).toEqual(['1907-07-06T12:00:00.000Z']);
     expect(result?.timeKnown).toBe(false);
     expect(result?.positions).not.toHaveProperty('a');
+    // Not the chart's own positions (noon at the birthplace), which give the place away.
+    expect(result?.positions.b).toEqual(POSITION_BODY_ORDER.map((_, index) => Math.round((100 + index * 13.1234) * 1000) / 1000));
+    expect(result?.sunSign).toBe('cancer');
+    expect(JSON.stringify(result)).not.toMatch(/1907|Coyoacán|Mexico|America\/Mexico|19\.36|-99\.16/iu);
+    expect(deriveInviteChartFromSyncedPayload(savedChart(false))).toBeNull();
   });
 
   it('rejects malformed chart summaries and time/angle disagreement', () => {
@@ -73,7 +85,11 @@ describe('Phase 4 invite validation', () => {
     const disagree = savedChart(false);
     (disagree.summary as { angles: unknown }).angles = { asc: 1, mc: 2 };
     // Unknown-time input deliberately ignores stale angles.
-    expect(deriveInviteChartFromSyncedPayload(disagree)?.positions).not.toHaveProperty('a');
+    const bodiesAt = () => POSITION_BODY_ORDER.map((body, index) => ({ body, lon: index * 27.1 }));
+    expect(deriveInviteChartFromSyncedPayload(disagree, bodiesAt)?.positions).not.toHaveProperty('a');
+    const badDate = savedChart(false);
+    (badDate.birth as { date: string }).date = '1907-02-30';
+    expect(deriveInviteChartFromSyncedPayload(badDate, bodiesAt)).toBeNull();
   });
 
   it('accepts exact create/id/empty bodies only', () => {

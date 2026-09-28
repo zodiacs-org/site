@@ -15,8 +15,10 @@ import {
   cardMatchesChart,
   cardTokenFromHash,
   decodeCardLink,
+  loadCardPositionsForChart,
   type ChartCard,
 } from '../lib/profile/card-link';
+import type { PositionsShareInput } from '../lib/share-positions';
 import { MAX_CIRCLE, addCard, type AddCardResult } from '../lib/profile/circle';
 import { settledSunHue } from '../lib/profile/settled-signs';
 import { announceInboxPrimary, useProfileSurface } from '../lib/profile/surface-gate';
@@ -44,6 +46,17 @@ export default function ProfileCardInbox({ accountBound = false }: { accountBoun
   const surface = useProfileSurface(accountBound);
   const [arrival, setArrival] = useState<Arrival>({ state: 'none' });
   const self = useMemo(() => explicitSelfChart(profile.charts), [profile.charts]);
+  // The positions a card of one's own chart would carry, to recognise it.
+  const [selfPositions, setSelfPositions] = useState<PositionsShareInput | null>(null);
+  useEffect(() => {
+    setSelfPositions(null);
+    if (!self || arrival.state !== 'ready') return undefined;
+    let current = true;
+    void loadCardPositionsForChart(self).then((positions) => {
+      if (current) setSelfPositions(positions);
+    }, () => {});
+    return () => { current = false; };
+  }, [self, arrival.state]);
 
   useEffect(() => {
     setArrival(takeCardFromLocation(window.location, window.history));
@@ -54,7 +67,7 @@ export default function ProfileCardInbox({ accountBound = false }: { accountBoun
   // kept by someone with a chart of their own, the offer to send theirs.
   const shown = surface && arrival.state === 'ready' && !arrival.dismissed;
   const holdsPrimary = shown && arrival.state === 'ready'
-    && !(ready && self !== null && cardMatchesChart(arrival.card, self))
+    && !(ready && self !== null && cardMatchesChart(arrival.card, selfPositions))
     && (self !== null || (arrival.result !== 'added' && arrival.result !== 'updated'));
   useEffect(() => announceInboxPrimary(holdsPrimary), [holdsPrimary]);
 
@@ -81,7 +94,7 @@ export default function ProfileCardInbox({ accountBound = false }: { accountBoun
 
   const { card, result } = arrival;
   const who = card.label || 'Someone';
-  const own = ready && self !== null && cardMatchesChart(card, self);
+  const own = ready && self !== null && cardMatchesChart(card, selfPositions);
   const hue = settledSunHue(card.chart.bodies, card.timeKnown);
   const added = result === 'added' || result === 'updated';
   const dismiss = () => setArrival({ ...arrival, dismissed: true });
