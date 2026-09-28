@@ -41,12 +41,12 @@ describe('public legal identity', () => {
       source('src/pages/privacy/index.astro'),
     ]);
 
-    // About and the privacy policy were revised again on 23 September 2026,
-    // when the claims ledger held their privacy wording to the code.
-    expect(about).toContain("dateModified: '2026-09-23T00:00:00.000Z'");
+    // About and the privacy policy were revised again on 28 September 2026,
+    // when the privacy audit's findings (F-17, F-18, F-19, F-27, F-40) were fixed.
+    expect(about).toContain("dateModified: '2026-09-28T00:00:00.000Z'");
     expect(terms).toContain("const updated = '29 August 2026'");
     expect(terms).toContain("const modifiedAt = '2026-08-29T00:00:00.000Z'");
-    expect(privacy).toContain("const updated = '23 September 2026'");
-    expect(privacy).toContain("const modifiedAt = '2026-09-23T00:00:00.000Z'");
+    expect(privacy).toContain("const updated = '28 September 2026'");
+    expect(privacy).toContain("const modifiedAt = '2026-09-28T00:00:00.000Z'");
   });
 });

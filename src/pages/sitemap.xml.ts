@@ -65,6 +65,15 @@ const ENGINE_PHASE1_ROUTES = [
   '/retrogrades/', '/solar-return/', '/void-of-course-moon/', '/ru/birth-chart/', '/ru/methodology/',
   '/ru/moon-sign/', '/ru/privacy/',
 ] as const;
+// The privacy audit of 2026-09-28 (findings F-17, F-18, F-19, F-27, F-40)
+// changed what these routes say about shared chart codes, Guide's chart
+// attachment, sign pictures and request logs.
+const PRIVACY_AUDIT_LASTMOD = '2026-09-28';
+const PRIVACY_AUDIT_ROUTES = [
+  '/about/', '/ask/', '/birth-chart/someone-else/', '/methodology/', '/privacy/', '/tools/',
+  '/es/methodology/', '/es/privacy/', '/pt/methodology/', '/pt/privacy/', '/fr/methodology/',
+  '/fr/privacy/', '/it/methodology/', '/it/privacy/', '/ru/methodology/', '/ru/privacy/',
+] as const;
 // Keep these dates source-controlled: build environments may have shallow or
 // absent Git history. When an evergreen page's rendered source changes, update
 // its entry here in the same commit.
@@ -186,6 +195,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/methodology/', '2026-09-20'] as const,
   // Last, so it wins over each route's earlier date.
   ...ENGINE_PHASE1_ROUTES.map((loc) => [loc, ENGINE_PHASE1_LASTMOD] as const),
+  // After that, the privacy audit's fixes, which won over it for these.
+  ...PRIVACY_AUDIT_ROUTES.map((loc) => [loc, PRIVACY_AUDIT_LASTMOD] as const),
 ]);
 
 function getLastmod(loc: string): string {

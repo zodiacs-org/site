@@ -16,8 +16,8 @@ const walletChartEnabled = configuredWalletChains({
   PUBLIC_WALLET_CHART_ENABLED:
     import.meta.env.PUBLIC_WALLET_CHART_ENABLED ?? process.env.PUBLIC_WALLET_CHART_ENABLED,
 }).length > 0;
-const updated = '23 de septiembre de 2026';
-const modifiedAt = '2026-09-23T00:00:00.000Z';
+const updated = '28 de septiembre de 2026';
+const modifiedAt = '2026-09-28T00:00:00.000Z';
 
 const jsonLd = [
   {
@@ -54,7 +54,8 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         la carta, y esas posiciones aún permiten deducir tu fecha y hora de
         nacimiento. Si adjuntas explícitamente una carta al asistente, también
         sale del dispositivo un resumen solo de posiciones; no se adjuntan los
-        nombres guardados ni los datos de nacimiento en bruto. Aura envía una
+        nombres guardados ni los datos de nacimiento en bruto, aunque sus
+        posiciones aún permiten deducir tu fecha y hora de nacimiento. Aura envía una
         dirección pública de billetera —no tus datos de nacimiento ni de la
         carta— a un proveedor de datos de blockchain para una consulta de solo
         lectura. Las cuentas{weeklyDigestEnabled ? ',' : ' y'}
@@ -90,7 +91,10 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         elegido según la primera letra que escribes, y busca en él dentro de tu
         navegador. Para un nacimiento anterior a 1970, la calculadora también
         descarga un archivo de cambios históricos de hora elegido según la zona
-        horaria del lugar de nacimiento. Ninguna de las dos solicitudes va a otro servicio. Los archivos que se solicitan muestran a nuestro proveedor de alojamiento la primera letra de la ciudad que escribiste y, para un nacimiento anterior a 1970, un grupo de zonas horarias que incluye la del lugar de nacimiento.
+        horaria del lugar de nacimiento. Ninguna de las dos solicitudes va a otro servicio. Los archivos que se solicitan muestran a nuestro proveedor de alojamiento la primera letra de la ciudad que escribiste y, para un nacimiento anterior a 1970, un grupo de zonas horarias que incluye la del lugar de nacimiento. Cuando
+        una página muestra los signos de una carta natal, primero solicita las
+        imágenes de los doce signos, en el mismo orden para cada carta, de modo
+        que esas solicitudes no muestran qué signos tiene la carta.
       </p>
 
       <h2>Guide</h2>
@@ -108,13 +112,19 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         usan para entrenar sus modelos, y que sus registros de supervisión de
         abusos conservan el contenido enviado hasta 30 días, o más tiempo
         cuando la ley lo exige o cuando es necesario para proteger de daños sus
-        servicios o a terceros. Una carta guardada solo se incluye después de
-        que pulses «Adjuntar mi carta»; la pantalla de consentimiento muestra
-        el resumen solo de posiciones antes de enviarlo. Ese resumen acompaña
-        cada pregunta mientras «Usando mi carta» siga activo; puedes
-        desactivarlo. Guide nunca adjunta el nombre, la fecha de nacimiento, la
-        hora, el lugar de nacimiento ni las coordenadas que tengas guardados;
-        todo lo que escribes en el chat forma parte del mensaje que envías.
+        servicios o a terceros. Guide ofrece adjuntar una carta solo en la
+        vista previa de sincronización cifrada, que está desactivada en el
+        sitio público, y solo la carta que marcaste allí como tuya. Se incluye
+        solo después de que pulses «Adjuntar mi carta»; la pantalla de
+        consentimiento muestra el resumen solo de posiciones antes de enviarlo.
+        Ese resumen acompaña cada pregunta mientras «Usando mi carta» siga
+        activo; puedes desactivarlo. Guide nunca adjunta el nombre, la fecha de
+        nacimiento, la hora, el lugar de nacimiento ni las coordenadas que
+        tengas guardados, pero las posiciones planetarias del resumen aún
+        permiten deducir tu fecha y hora de nacimiento, y su ascendente y su
+        Medio Cielo, al grado entero, tu lugar de nacimiento de forma
+        aproximada; todo lo que escribes en el chat forma parte del mensaje que
+        envías.
         Para aplicar el límite diario, conservamos un identificador
         unidireccional con sal derivado de tu dirección IP, nunca la IP
         original, junto con su recuento diario y un registro de cada solicitud.
@@ -480,9 +490,19 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         servicio de calendario reciben ese código cada vez que el calendario se
         actualiza. El código no tiene campos de nombre, fecha, hora ni lugar.
         Sus posiciones planetarias aún permiten deducir tu fecha y hora de
-        nacimiento; el ascendente y el Medio Cielo se redondean al grado, lo
-        que sitúa el lugar de nacimiento solo dentro de una región de unos
-        500 km de ancho. Las direcciones de calendario creadas antes del 23
+        nacimiento. El ascendente y el Medio Cielo se redondean al grado, lo
+        que aun así acota el lugar de nacimiento a una zona de un grado de
+        longitud de ancho, aproximadamente: unos 110 km en el ecuador, 80 km a
+        45° norte o sur y 55 km a 60°. De norte a sur, la zona mide al menos
+        400 km a menos de 15° del ecuador, 200 km a menos de 45° y 70 km a
+        menos de 60°; más al norte puede ser más estrecha, y cerca del círculo
+        polar ártico puede ser una franja de menos de un kilómetro de norte a
+        sur. Una carta sin hora de nacimiento no tiene ascendente ni Medio
+        Cielo, y su código lleva el cielo de las 12:00 UTC de la fecha de
+        nacimiento, que da la fecha pero nada sobre el lugar de nacimiento. Los
+        códigos creados para una carta así con una versión anterior del sitio
+        llevan en cambio el mediodía en el lugar de nacimiento, que da su zona
+        horaria o, antes de la hora estándar, su longitud. Las direcciones de calendario creadas antes del 23
         de septiembre de 2026 llevan el ascendente y el Medio Cielo con más
         precisión. Nuestro servidor ahora los redondea antes de usarlos, pero la
         dirección en sí no cambia; para sustituirla, elimina ese calendario y
@@ -540,7 +560,10 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         Como todos los servicios de alojamiento web, sus servidores procesan las
         solicitudes que hace tu navegador y pueden conservar registros técnicos
         de corta duración (como la dirección IP y el tipo de navegador) para
-        servir el sitio y protegerlo de abusos. No mostramos publicidad y no
+        servir el sitio y protegerlo de abusos. Esos registros conservan la
+        dirección web completa de cada solicitud, que en un calendario de
+        tránsitos incluye su código de carta y en un enlace con vista previa
+        incluye el Sol, la Luna y el Ascendente. No mostramos publicidad y no
         usamos cookies de seguimiento entre sitios ni píxeles de marketing de
         terceros.
       </p>

@@ -9,7 +9,7 @@ const jsonLd = [
     headline: 'How zodiacs.org computes your chart',
     url: 'https://zodiacs.org/methodology/',
     datePublished: '2026-07-05T10:36:57Z',
-    dateModified: '2026-09-23T00:00:00Z',
+    dateModified: '2026-09-28T00:00:00Z',
     author: EDITOR_AUTHOR,
     publisher: { '@id': 'https://zodiacs.org/#org' },
     mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://zodiacs.org/methodology/' },
@@ -258,10 +258,13 @@ const jsonLd = [
         in your browser's local storage first, deletable by you at any time. If
         you sign in to an account, your saved charts and their birth details
         upload to your Supabase account and are protected by row-level security.
-        Guide sends each question to OpenAI; if you press “Attach my chart”, a
-        placements-only summary goes with each message while “Using my chart”
-        remains on. The assistant never attaches the saved name, birth fields,
-        or coordinates. A transit calendar or a compatibility invitation sends a
+        Guide sends each question to OpenAI; if you press “Attach my chart”,
+        which is offered only in the encrypted sync preview, a placements-only
+        summary goes with each message while “Using my chart” remains on. The
+        assistant never attaches the saved name, birth fields, or coordinates,
+        though the summary's positions still give the birth date and time, and
+        its ascendant and midheaven, kept to the whole degree, the birthplace
+        roughly. A transit calendar or a compatibility invitation sends a
         chart's positions, which still give the birth date and time; the
         <a href="/privacy/">privacy page</a> lists every case.
       </p>
@@ -269,7 +272,7 @@ const jsonLd = [
       <h2>Honest limits</h2>
       <ul>
         <li>Chiron and the asteroids aren't included yet (the engine's remit is major bodies); they're planned via public-domain JPL data.</li>
-        <li>When birth time is unknown, the site uses 12:00 local civil time as a reference for body positions. It omits the rising sign, angles, and houses, and it marks the Moon's sign as unverified, because the Moon can change sign during the day.</li>
+        <li>When birth time is unknown, the site uses 12:00 local civil time as a reference for body positions. It omits the rising sign, angles, and houses, and it marks the Moon's sign as unverified, because the Moon can change sign during the day. A link, calendar, invitation, or card shared from such a chart carries the positions at 12:00 UTC on the birth date instead, because noon at the birthplace would give away its time zone or, before standard time, its longitude.</li>
         <li>Supported birth years: 1800–2199.</li>
         <li>The JPL checks validate astronomical position calculations, not astrological interpretation. Interpretations here are traditional and reflective, not scientifically validated predictions.</li>
       </ul>

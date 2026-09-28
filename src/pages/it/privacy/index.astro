@@ -16,8 +16,8 @@ const walletChartEnabled = configuredWalletChains({
   PUBLIC_WALLET_CHART_ENABLED:
     import.meta.env.PUBLIC_WALLET_CHART_ENABLED ?? process.env.PUBLIC_WALLET_CHART_ENABLED,
 }).length > 0;
-const updated = '23 settembre 2026';
-const modifiedAt = '2026-09-23T00:00:00.000Z';
+const updated = '28 settembre 2026';
+const modifiedAt = '2026-09-28T00:00:00.000Z';
 
 const jsonLd = [
   {
@@ -54,7 +54,9 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         quelle posizioni si possono comunque ricavare la tua data e la tua ora
         di nascita. Se alleghi esplicitamente un tema all’assistente, lascia il
         dispositivo anche un riepilogo delle sole posizioni; i nomi salvati e i
-        dati di nascita grezzi non vengono allegati. Aura invia un indirizzo
+        dati di nascita grezzi non vengono allegati, anche se dalle sue
+        posizioni si possono comunque ricavare la tua data e la tua ora di
+        nascita. Aura invia un indirizzo
         pubblico del wallet — non i tuoi dati di nascita o del tema — a un
         fornitore di dati blockchain per una consultazione di sola lettura.
         Gli account{weeklyDigestEnabled ? ',' : ' e'}
@@ -91,6 +93,9 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         browser. Per una nascita prima del 1970, il calcolatore scarica anche
         un file con i cambi d’ora storici, scelto in base al fuso orario del
         luogo di nascita. Nessuna delle due richieste va a un altro servizio. I file richiesti mostrano al nostro hosting la prima lettera della città che hai digitato e, per una nascita prima del 1970, un gruppo di fusi orari che comprende quello del luogo di nascita.
+        Quando una pagina mostra i segni di un tema natale, richiede prima le
+        immagini di tutti e dodici i segni, nello stesso ordine per ogni tema,
+        quindi quelle richieste non mostrano quali segni ha il tema.
       </p>
 
       <h2>Guide</h2>
@@ -108,13 +113,19 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         dell’API non vengono usati per addestrare i suoi modelli, e che i suoi
         log di monitoraggio degli abusi conservano i contenuti inviati fino a 30
         giorni, o più a lungo quando la legge lo richiede o quando è necessario
-        per proteggere i suoi servizi o altre persone da danni. Un tema salvato
-        viene incluso solo dopo che premi “Allega il mio tema”; la schermata di
-        consenso mostra il riepilogo delle sole posizioni prima che venga
-        inviato. Quel riepilogo accompagna ogni domanda finché “Con il mio tema”
-        resta attivo; puoi disattivarlo. Guide non allega mai il nome, la data
-        e l’ora di nascita, il luogo di nascita o le coordinate che hai salvato;
-        tutto ciò che scrivi nella chat fa parte del messaggio che invii.
+        per proteggere i suoi servizi o altre persone da danni. Guide propone
+        di allegare un tema solo nell’anteprima della sincronizzazione cifrata,
+        disattivata sul sito pubblico, e solo il tema che lì hai indicato come
+        tuo. Viene incluso solo dopo che premi “Allega il mio tema”; la
+        schermata di consenso mostra il riepilogo delle sole posizioni prima
+        che venga inviato. Quel riepilogo accompagna ogni domanda finché “Con il
+        mio tema” resta attivo; puoi disattivarlo. Guide non allega mai il nome,
+        la data e l’ora di nascita, il luogo di nascita o le coordinate che hai
+        salvato, ma dalle posizioni dei pianeti del riepilogo si possono
+        comunque ricavare la tua data e la tua ora di nascita, e dal suo
+        ascendente e dal suo Medio Cielo, al grado intero, il luogo di nascita
+        in modo approssimativo; tutto ciò che scrivi nella chat fa parte del
+        messaggio che invii.
         Per applicare il limite giornaliero conserviamo un identificativo
         irreversibile con sale derivato dal tuo indirizzo IP, mai l’IP
         originale, insieme al suo conteggio giornaliero e a una traccia di ogni
@@ -485,9 +496,19 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         il tuo servizio di calendario ricevono quel codice ogni volta che il
         calendario si aggiorna. Il codice non ha campi per nome, data, ora o
         luogo. Le sue posizioni planetarie permettono comunque di ricavare la
-        tua data e la tua ora di nascita; l’ascendente e il Medio Cielo sono
-        arrotondati al grado, il che colloca il luogo di nascita solo entro una
-        regione larga circa 500 km.
+        tua data e la tua ora di nascita. L’ascendente e il Medio Cielo sono
+        arrotondati al grado, il che restringe comunque il luogo di nascita a
+        una zona larga circa un grado di longitudine: circa 110 km
+        all’equatore, 80 km a 45° nord o sud e 55 km a 60°. Da nord a sud la
+        zona misura almeno 400 km entro 15° dall’equatore, 200 km entro 45° e
+        70 km entro 60°; più a nord può essere più stretta, e vicino al Circolo
+        polare artico può essere una striscia di meno di un chilometro da nord
+        a sud. Un tema senza ora di nascita non ha ascendente né Medio Cielo, e
+        il suo codice contiene il cielo delle 12:00 UTC della data di nascita,
+        che indica la data ma nulla del luogo di nascita. I codici creati per
+        un tema così da una versione precedente del sito contengono invece il
+        mezzogiorno nel luogo di nascita, che ne indica il fuso orario o, prima
+        dell’ora standard, la longitudine.
         Gli indirizzi dei calendari creati prima del 23 settembre 2026
         contengono l’ascendente e il Medio Cielo con maggiore precisione. Ora il
         nostro server li arrotonda prima di usarli, ma l’indirizzo in sé non
@@ -545,7 +566,10 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         Come per qualsiasi servizio di hosting web, i suoi server elaborano le
         richieste fatte dal tuo browser e possono conservare log tecnici di
         breve durata (come indirizzo IP e tipo di browser) per fornire il sito e
-        proteggerlo dagli abusi. Non mostriamo pubblicità e non usiamo cookie di
+        proteggerlo dagli abusi. Quei log conservano l’indirizzo web completo di
+        ogni richiesta, che per un calendario dei transiti include il codice
+        del tema e per un link con anteprima include Sole, Luna e Ascendente.
+        Non mostriamo pubblicità e non usiamo cookie di
         tracciamento tra siti né pixel di marketing di terze parti.
       </p>
       {accountSyncV2Enabled ? (

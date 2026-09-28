@@ -25,7 +25,7 @@ const faq = [
   },
   {
     q: 'How does it use my birth chart?',
-    a: 'Only if you attach it, and you see exactly what is sent first. If you have a saved chart on this device, Guide can include a placements-only summary — computed in your browser — after you confirm a preview of the precise text. No saved name, birth date, time, place, or coordinates travel with it, and Zodiacs.org does not store it while you are signed out.',
+    a: 'Only if you attach it, and you see exactly what is sent first. Attaching a chart is offered only in the encrypted sync preview, which is off on the public site, and only for the one chart you marked there as your own. Guide then includes a placements-only summary, computed in your browser, after you confirm a preview of the precise text. No saved name, birth date, time, place, or coordinates travel with it, though its planet positions still give your birth date and time, and its rising sign and midheaven, kept to the whole degree, your birthplace roughly. Zodiacs.org does not store it while you are signed out.',
   },
   {
     q: 'What will it not do?',
@@ -108,9 +108,10 @@ const jsonLd = [
       </section>
       <section class="tile ask__card" aria-labelledby="ask-chart">
         <h2 id="ask-chart">Your own chart</h2>
-        <p>With a chart saved on this device, Guide can read your
-        actual placements — after you approve a preview of exactly what will
-        be sent. Placements only; nothing stored; your call every time.</p>
+        <p>In the encrypted sync preview, Guide can read the placements of
+        the one chart you marked as your own, after you approve a preview of
+        exactly what will be sent. That preview is off on the public site, so
+        for now you can type the placements you want to ask about.</p>
         <p class="ask__links"><a href="/birth-chart/">Compute a chart</a> · <a href="/profile/">Saved charts</a></p>
       </section>
     </div>

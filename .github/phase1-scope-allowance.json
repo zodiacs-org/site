@@ -1,12 +1,16 @@
 {
   "version": 1,
-  "id": "owner-reported-astrofolio-card-rise-jank-2026-09-26",
-  "baseCommit": "f2bd0dd45947ff392d0de1135695f584a71bfa08",
+  "id": "privacy-audit-fixes-2026-09-28",
+  "baseCommit": "c7c591bad3a0cb1f3ccb5d5b2196466e848d73e1",
   "protectedPaths": [
-    "public/assets/app.js",
-    "scripts/registry-consumer-contract.test.mjs",
-    "scripts/registry-pastel-polish.test.mjs",
-    "src/app.jsx"
+    "src/pages/es/methodology/index.astro",
+    "src/pages/es/privacy/index.astro",
+    "src/pages/fr/methodology/index.astro",
+    "src/pages/fr/privacy/index.astro",
+    "src/pages/it/methodology/index.astro",
+    "src/pages/it/privacy/index.astro",
+    "src/pages/pt/methodology/index.astro",
+    "src/pages/pt/privacy/index.astro"
   ],
-  "authorization": "On 2026-09-26 the owner reported that users find the card rise on /astrofolio/ phones janky and unreliable, and asked for it to be fixed. The rise moves from per-frame script writes (--stack and --rise on the film and runway, --rise-order on each look) to scroll-driven animations in src/terminal/split-styles.css, so src/app.jsx drops those writes, public/assets/app.js is its generated build, and the two Registry tests pin the new mechanism in place of the old one. Preserve market data, addresses, flags, copy and transaction behavior."
+  "authorization": "The owner's handoff of 2026-09-28 directs fixing privacy findings and making privacy descriptions truthful; these are audit findings F-17, F-18, F-19 and F-40; only the listed sentences change. In each listed privacy page: the updated date, the summary's and the Guide section's sentences on what an attached chart gives away and when attaching is offered (F-19), the sentence on sign pictures (F-18), the shared-code sentences on the birthplace area by latitude and on charts without a birth time (F-17, F-40), and the hosting-log sentence on full request addresses (F-27, the one true sentence the audit asks for with F-20). In each listed methodology page: its dateModified, the Guide sentence (F-19) and the no-birth-time sentence (F-17). Every one of these sentences that the claims extractor selects is listed in docs/claims/ledger.json with its claim and evidence."
 }

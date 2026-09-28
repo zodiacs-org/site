@@ -16,8 +16,8 @@ const walletChartEnabled = configuredWalletChains({
   PUBLIC_WALLET_CHART_ENABLED:
     import.meta.env.PUBLIC_WALLET_CHART_ENABLED ?? process.env.PUBLIC_WALLET_CHART_ENABLED,
 }).length > 0;
-const updated = '23 de setembro de 2026';
-const modifiedAt = '2026-09-23T00:00:00.000Z';
+const updated = '28 de setembro de 2026';
+const modifiedAt = '2026-09-28T00:00:00.000Z';
 
 const jsonLd = [
   {
@@ -54,7 +54,8 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         e essas posições ainda permitem deduzir sua data e hora de nascimento.
         Se você anexar explicitamente um mapa ao assistente, um resumo apenas
         das posições também sai do dispositivo; os nomes salvos e os dados de
-        nascimento brutos não são anexados. Aura envia um endereço público de
+        nascimento brutos não são anexados, embora as posições dele ainda
+        permitam deduzir sua data e hora de nascimento. Aura envia um endereço público de
         carteira — não seus dados de nascimento nem os do mapa — a um provedor
         de dados de blockchain para uma consulta somente para leitura. As
         contas{weeklyDigestEnabled ? ',' : ' e'} os dados lembrados do
@@ -91,7 +92,10 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         pela primeira letra que você digita e faz a busca nesse arquivo no seu
         navegador. Para um nascimento antes de 1970, a calculadora também baixa
         um arquivo de mudanças históricas de horário, escolhido pelo fuso
-        horário do local de nascimento. Nenhuma das duas solicitações vai para outro serviço. Os arquivos solicitados mostram ao nosso provedor de hospedagem a primeira letra da cidade que você digitou e, para um nascimento antes de 1970, um grupo de fusos horários que inclui o do local de nascimento.
+        horário do local de nascimento. Nenhuma das duas solicitações vai para outro serviço. Os arquivos solicitados mostram ao nosso provedor de hospedagem a primeira letra da cidade que você digitou e, para um nascimento antes de 1970, um grupo de fusos horários que inclui o do local de nascimento. Quando
+        uma página mostra os signos de um mapa natal, ela primeiro solicita as
+        imagens dos doze signos, na mesma ordem para todo mapa, de modo que
+        essas solicitações não mostram quais signos o mapa tem.
       </p>
 
       <h2>Guide</h2>
@@ -109,12 +113,17 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         seus registros de monitoramento de abuso guardam o conteúdo enviado por
         até 30 dias, ou por mais tempo quando a lei exige ou quando isso é
         necessário para proteger seus serviços ou outras pessoas contra danos.
-        Um mapa salvo só é incluído depois que você pressiona
+        O Guide oferece anexar um mapa só na prévia da sincronização
+        criptografada, que está desativada no site público, e só o mapa que
+        você marcou lá como seu. Ele só é incluído depois que você pressiona
         “Anexar meu mapa”; a tela de consentimento mostra o resumo apenas das
         posições antes do envio. Esse resumo acompanha cada pergunta enquanto
         “Usando meu mapa” estiver ativo; você pode desativá-lo. O Guide nunca
         anexa seu nome salvo, sua data e hora de nascimento, seu local de
-        nascimento nem suas coordenadas; tudo o que você digita no chat faz
+        nascimento nem suas coordenadas, mas as posições dos planetas no resumo
+        ainda permitem deduzir sua data e hora de nascimento, e o ascendente e
+        o Meio do Céu, em graus inteiros, o seu local de nascimento de forma
+        aproximada; tudo o que você digita no chat faz
         parte da mensagem que você envia. Para aplicar o limite diário, mantemos um identificador
         unidirecional com sal, derivado do seu endereço IP (nunca o IP
         original), com a respectiva contagem diária e um registro de cada
@@ -473,9 +482,19 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         calendário recebem esse código a cada atualização do calendário. O
         código não tem campos de nome, data, hora nem local. Ainda assim, as
         posições dos planetas no código permitem deduzir sua data e hora de
-        nascimento; o ascendente e o Meio do Céu são arredondados ao grau
-        inteiro, o que situa o local de nascimento apenas dentro de uma região
-        de cerca de 500 km de largura. Os endereços de calendário criados
+        nascimento. O ascendente e o Meio do Céu são arredondados ao grau
+        inteiro, o que ainda restringe o local de nascimento a uma área de
+        cerca de um grau de longitude de largura: uns 110 km no equador, 80 km
+        a 45° norte ou sul e 55 km a 60°. De norte a sul, a área tem pelo menos
+        400 km a menos de 15° do equador, 200 km a menos de 45° e 70 km a menos
+        de 60°; mais ao norte pode ser mais estreita, e perto do Círculo Polar
+        Ártico pode ser uma faixa de menos de um quilômetro de norte a sul. Um
+        mapa sem hora de nascimento não tem ascendente nem Meio do Céu, e o
+        código dele leva o céu das 12:00 UTC da data de nascimento, que indica
+        a data, mas nada sobre o local de nascimento. Os códigos criados para
+        um mapa assim por uma versão anterior do site levam, em vez disso, o
+        meio-dia no local de nascimento, que indica o fuso horário dele ou,
+        antes da hora padrão, a longitude. Os endereços de calendário criados
         antes de 23 de setembro de 2026 levam o ascendente e o Meio do Céu com
         mais precisão. Nosso servidor agora os arredonda antes de usá-los, mas o
         endereço em si não muda; para substituí-lo, remova esse calendário e
@@ -532,7 +551,10 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         Como acontece com qualquer serviço de hospedagem na web, os servidores
         dela processam as solicitações feitas pelo seu navegador e podem manter
         registros técnicos de curta duração (como endereço IP e tipo de
-        navegador) para entregar o site e protegê-lo contra abusos. Não
+        navegador) para entregar o site e protegê-lo contra abusos. Esses
+        registros guardam o endereço web completo de cada solicitação, que num
+        calendário de trânsitos inclui o código do mapa e num link com prévia
+        inclui o Sol, a Lua e o Ascendente. Não
         veiculamos publicidade e não usamos cookies de rastreamento entre sites
         nem pixels de marketing de terceiros.
       </p>

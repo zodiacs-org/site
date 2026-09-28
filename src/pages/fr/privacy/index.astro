@@ -16,8 +16,8 @@ const walletChartEnabled = configuredWalletChains({
   PUBLIC_WALLET_CHART_ENABLED:
     import.meta.env.PUBLIC_WALLET_CHART_ENABLED ?? process.env.PUBLIC_WALLET_CHART_ENABLED,
 }).length > 0;
-const updated = '23 septembre 2026';
-const modifiedAt = '2026-09-23T00:00:00.000Z';
+const updated = '28 septembre 2026';
+const modifiedAt = '2026-09-28T00:00:00.000Z';
 
 const jsonLd = [
   {
@@ -54,8 +54,9 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         positions du thème, et ces positions permettent encore de retrouver ta
         date et ton heure de naissance. Si tu joins explicitement un thème à
         l’assistant, un résumé limité aux positions quitte aussi l’appareil ; les
-        noms enregistrés et les données de naissance brutes ne sont pas joints.
-        Aura transmet une adresse publique de portefeuille — pas tes données de
+        noms enregistrés et les données de naissance brutes ne sont pas joints,
+        mais ses positions permettent encore de retrouver ta date et ton heure
+        de naissance. Aura transmet une adresse publique de portefeuille — pas tes données de
         naissance ni celles de ton thème — à un fournisseur de données blockchain
         pour une consultation en lecture seule. Les comptes{weeklyDigestEnabled ? ',' : ' et'}
         les données Aura mémorisées{weeklyDigestEnabled ? ' et l’e-mail hebdomadaire' : ''} sont
@@ -91,6 +92,9 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         fichier se fait dans ton navigateur. Pour une naissance antérieure à 1970,
         le calculateur télécharge aussi un fichier des changements d’heure
         historiques, choisi d’après le fuseau horaire du lieu de naissance. Aucune de ces deux requêtes n’est adressée à un autre service. Les fichiers demandés indiquent à notre hébergeur la première lettre de la ville que tu as tapée et, pour une naissance antérieure à 1970, un groupe de fuseaux horaires qui comprend celui du lieu de naissance.
+        Quand une page affiche les signes d’un thème natal, elle demande d’abord
+        les images des douze signes, dans le même ordre pour chaque thème : ces
+        requêtes ne montrent donc pas quels signes le thème contient.
       </p>
 
       <h2>Guide</h2>
@@ -108,12 +112,18 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         modèles, et que ses journaux de surveillance des abus conservent le
         contenu envoyé jusqu’à 30 jours, ou plus longtemps lorsque la loi l’exige
         ou lorsque c’est nécessaire pour protéger ses services ou d’autres
-        personnes contre un préjudice. Un thème enregistré n’est inclus qu’après
-        un appui sur « Joindre mon thème » ; l’écran de consentement montre le
-        résumé limité aux positions avant son envoi. Ce résumé accompagne chaque
-        question tant que « Avec mon thème » reste activé ; tu peux le
-        désactiver. Guide ne joint jamais ton nom enregistré, ta date et ton heure
-        de naissance, ton lieu de naissance ni tes coordonnées ; tout ce que tu
+        personnes contre un préjudice. Guide ne propose de joindre un thème que
+        dans l’aperçu de la synchronisation chiffrée, désactivé sur le site
+        public, et seulement le thème que tu y as marqué comme le tien. Il
+        n’est inclus qu’après un appui sur « Joindre mon thème » ; l’écran de
+        consentement montre le résumé limité aux positions avant son envoi. Ce
+        résumé accompagne chaque question tant que « Avec mon thème » reste
+        activé ; tu peux le désactiver. Guide ne joint jamais ton nom
+        enregistré, ta date et ton heure de naissance, ton lieu de naissance ni
+        tes coordonnées, mais les positions des planètes du résumé permettent
+        encore de retrouver ta date et ton heure de naissance, et son ascendant
+        et son milieu du ciel, au degré entier, ton lieu de naissance de façon
+        approximative ; tout ce que tu
         écris dans la discussion fait partie du message que tu envoies. Pour
         appliquer la limite quotidienne, nous conservons un identifiant
         irréversible calculé avec un sel à partir de ton adresse IP, jamais
@@ -484,9 +494,19 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         calendrier reçoivent ce code à chaque actualisation du calendrier. Le code
         ne comporte aucun champ de nom, de date, d’heure ou de lieu. Ses positions
         planétaires permettent encore de retrouver ta date et ton heure de
-        naissance ; l’ascendant et le milieu du ciel sont arrondis au degré près,
-        ce qui ne situe le lieu de naissance que dans une zone d’environ 500 km
-        de large. Les adresses de calendrier créées avant le 23 septembre 2026
+        naissance. L’ascendant et le milieu du ciel sont arrondis au degré près,
+        ce qui situe quand même le lieu de naissance dans une zone d’environ un
+        degré de longitude de large : environ 110 km à l’équateur, 80 km à 45°
+        nord ou sud et 55 km à 60°. Du nord au sud, la zone mesure au moins
+        400 km à moins de 15° de l’équateur, 200 km à moins de 45° et 70 km à
+        moins de 60° ; plus au nord, elle peut être plus étroite, et près du
+        cercle polaire arctique ce peut être une bande de moins d’un kilomètre
+        du nord au sud. Un thème sans heure de naissance n’a ni
+        ascendant ni milieu du ciel, et son code contient le ciel de 12:00 UTC à
+        la date de naissance, qui donne la date mais rien sur le lieu de
+        naissance. Les codes créés pour un tel thème par une version antérieure
+        du site contiennent plutôt midi au lieu de naissance, ce qui donne son
+        fuseau horaire ou, avant l’heure légale, sa longitude. Les adresses de calendrier créées avant le 23 septembre 2026
         contiennent l’ascendant et le milieu du ciel avec plus de précision. Notre
         serveur les arrondit désormais avant de les utiliser, mais l’adresse
         elle-même ne change pas ; pour la remplacer, supprime ce calendrier et
@@ -544,7 +564,10 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         Comme chez tout hébergeur web, ses serveurs traitent les requêtes de ton
         navigateur et peuvent conserver de brefs journaux techniques (comme
         l’adresse IP et le type de navigateur) pour servir le site et le protéger
-        contre les abus. Nous ne diffusons pas de publicité et n’utilisons ni
+        contre les abus. Ces journaux conservent l’adresse web complète de chaque
+        requête, qui pour un calendrier des transits contient son code de thème
+        et pour un lien avec aperçu contient le Soleil, la Lune et l’Ascendant.
+        Nous ne diffusons pas de publicité et n’utilisons ni
         cookies de suivi intersite ni pixels marketing tiers.
       </p>
       {accountSyncV2Enabled ? (
