@@ -93,6 +93,20 @@ function placementRows(person: CompatibilityCardPerson, locale: Locale) {
   });
 }
 
+/**
+ * One person's Big Three as the picture prints it. The rising sign's degree
+ * is only whole, as the two-chart link keeps it: rounded to the nearest
+ * degree, beside the link's whole degree, it would halve the range the link
+ * leaves for the ascendant.
+ */
+export function compatibilityPlacementLine(person: CompatibilityCardPerson, locale: Locale = 'en'): string {
+  return placementRows(person, locale)
+    .map((row) => (row.sign
+      ? `${row.sign} ${row.key === 'rising' ? Math.floor(row.degree!) : row.degree!.toFixed(0)}°`
+      : '—'))
+    .join('  ·  ');
+}
+
 export function compatibilityHeadline(summary: Pick<PairSummary, 'easeful' | 'charged'>, locale: Locale = 'en'): string {
   if (summary.easeful > summary.charged) return shareCardText(locale, 'compatibilityFlow');
   if (summary.charged > summary.easeful) return shareCardText(locale, 'compatibilityCharge');
@@ -181,7 +195,6 @@ export async function drawCompatibilityCard(
   locale: Locale = 'en',
 ): Promise<Blob> {
   const people = [a, b];
-  const rows = people.map((person) => placementRows(person, locale));
   const signIcons = await Promise.all(SIGNS.map((sign) => loadIcon(sign.slug)));
   await document.fonts.ready;
   await Promise.all([
@@ -305,9 +318,7 @@ export async function drawCompatibilityCard(
 
   people.forEach((person, personIndex) => {
     const y = 1222 + personIndex * 42;
-    const placements = rows[personIndex]
-      .map((row) => (row.sign ? `${row.sign} ${row.degree!.toFixed(0)}°` : '—'))
-      .join('  ·  ');
+    const placements = compatibilityPlacementLine(person, locale);
     ctx.textAlign = 'left';
     ctx.fillStyle = FAINT;
     ctx.font = `400 20px ${MONO}`;
