@@ -305,6 +305,7 @@ export const IT_ADDITIONS = Object.freeze({
   'shareCard.compatibilityBusy': 'Creazione dell’immagine di compatibilità…',
   'shareCard.compatibilityCharge': 'Un’intesa che richiede attenzione',
   'shareCard.compatibilityError': 'Non è stato possibile creare questa immagine nel tuo browser.',
+  'shareCard.moonSettledNote': 'La Luna è rimasta in questo segno per tutto quel giorno, ovunque.',
   'shareCard.compatibilityFlow': 'Fluidità, con un attrito utile',
   'shareCard.compatibilitySaved': 'Immagine di compatibilità salvata.',
   'shareCard.compatibilityTitle': 'Compatibilità',

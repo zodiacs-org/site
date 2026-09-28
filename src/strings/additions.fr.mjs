@@ -299,6 +299,7 @@ export const FR_ADDITIONS = Object.freeze({
   'shareCard.compatibilityBusy': 'Création de la carte de compatibilité…',
   'shareCard.compatibilityCharge': 'Une alchimie qui demande de l’attention',
   'shareCard.compatibilityError': 'Impossible de créer cette carte dans ton navigateur.',
+  'shareCard.moonSettledNote': 'La Lune est restée dans ce signe toute la journée, partout.',
   'shareCard.compatibilityFlow': 'De la fluidité, avec une tension utile',
   'shareCard.compatibilitySaved': 'Carte de compatibilité enregistrée.',
   'shareCard.compatibilityTitle': 'Compatibilité',

@@ -305,6 +305,7 @@ export const PT_ADDITIONS = Object.freeze({
   'shareCard.compatibilityBusy': 'Criando o cartão de compatibilidade…',
   'shareCard.compatibilityCharge': 'Química que pede atenção',
   'shareCard.compatibilityError': 'Não foi possível criar este cartão no seu navegador.',
+  'shareCard.moonSettledNote': 'A Lua ficou neste signo o dia todo, em todo lugar.',
   'shareCard.compatibilityFlow': 'Fluidez, com um atrito útil',
   'shareCard.compatibilitySaved': 'Cartão de compatibilidade salvo.',
   'shareCard.compatibilityTitle': 'Compatibilidade',

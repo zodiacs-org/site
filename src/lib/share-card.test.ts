@@ -30,10 +30,12 @@ import {
   imagePositions,
   prepareChartCard,
   timedImageChart,
+  untimedMoonSign,
   wholeMinuteInstant,
 } from './share-card';
 import type { Chart } from './engine/types';
-import { computeBodies, computeChart } from './engine/full';
+import { bodyLongitude, computeBodies, computeChart } from './engine/full';
+import { signForLongitude } from './signs';
 import { decodePositionsLink, encodeSharedPositionsLink, wholeDegreeAngle } from './share-positions';
 import { sharedTimedInstant, timedSharedPositions } from './share-positions-noon';
 import { prepareLocalTime, resolveLocalToUtc } from './time/localToUtc';
@@ -641,6 +643,27 @@ describe('a chart image with birth details hidden', () => {
     const [communication] = JSON.parse([...drawn][0]);
     expect(communication.rows.map(({ body, sign }: { body: string; sign: string }) => [body, sign]))
       .toEqual([['Mercury', 'Libra'], ['Moon', 'Needs a birth time'], ['Mars', 'Virgo']]);
+  });
+
+  it('names the Moon’s sign on a card without a birth time only when it held all that date in every time zone', async () => {
+    let settled = 0;
+    for (let day = 1; day <= 30; day += 1) {
+      const date = `2000-04-${String(day).padStart(2, '0')}`;
+      // Every hour from 00:00 at UTC+14 to 24:00 at UTC−12, the whole date anywhere.
+      const start = Date.parse(`${date}T00:00:00Z`) - 14 * 3_600_000;
+      const signs = new Set<string>();
+      for (let hour = 0; hour <= 50; hour += 1) {
+        signs.add(signForLongitude(bodyLongitude('Moon', new Date(Math.min(start + hour * 3_600_000, start + 50 * 3_600_000 - 1)))).slug);
+      }
+      const expected = signs.size === 1 ? [...signs][0] : null;
+      expect(await untimedMoonSign(date), date).toBe(expected);
+      if (expected) settled += 1;
+    }
+    // A sign lasts about two and a half days, so some dates hold one and most do not.
+    expect(settled).toBeGreaterThan(0);
+    expect(settled).toBeLessThan(15);
+    expect(await untimedMoonSign('2000-02-30')).toBeNull();
+    expect(await untimedMoonSign()).toBeNull();
   });
 
   it('gives the Big Three and placement cards the rising sign’s whole degree, and a chart without a birth time noon UTC', async () => {

@@ -199,6 +199,26 @@ export async function imagePositions(chart: BigThreeCardChart, birthDate?: strin
   return { bodies: computeBodies(utc), angles: null, engineVersion: chart.engineVersion, moonSignCandidates: [] };
 }
 
+const HOUR_MS = 3_600_000;
+
+/**
+ * The Moon's sign on a card of a chart without a birth time: shown only when
+ * the Moon is in that sign at every instant of the birth date in every time
+ * zone, from 00:00 at UTC+14, where the date begins first, to 24:00 at
+ * UTC−12, where it ends last. That depends on the date alone, so it says
+ * nothing about the birthplace. The Moon never moves backwards and never
+ * crosses a whole sign in those 50 hours, so the same sign at both ends is
+ * the same sign throughout. Null otherwise, or for a date that is not one.
+ */
+export async function untimedMoonSign(birthDate?: string): Promise<string | null> {
+  const noon = await referenceInstant(birthDate).catch(() => null);
+  if (!noon) return null;
+  const { bodyLongitude } = await import('./engine/full');
+  const first = signForLongitude(bodyLongitude('Moon', new Date(noon.getTime() - 26 * HOUR_MS))).slug;
+  const last = signForLongitude(bodyLongitude('Moon', new Date(noon.getTime() + 24 * HOUR_MS - 1))).slug;
+  return first === last ? first : null;
+}
+
 /** 12:00 UTC on the civil birth date, as a link carries it (sharedReferenceInstant), loaded on demand. */
 async function referenceInstant(birthDate: string | undefined): Promise<Date> {
   const { sharedReferenceInstant } = await import('./share-positions-noon');
@@ -1502,11 +1522,11 @@ async function drawChartSheet(
 async function drawPlacementCard(
   chart: BigThreeCardChart,
   placement: 'moon' | 'rising',
-  options: ShareCardOptions = {},
+  options: ShareCardOptions & { moonSettled?: boolean } = {},
 ): Promise<Blob> {
   if (options.moonAmbiguous && chart.moonSignCandidates === undefined) chart = { ...chart, moonSignCandidates: [] };
   const locale = options.locale ?? 'en';
-  const timeNotes = shareCardTimeNotes(locale, options);
+  const timeNotes = [...shareCardTimeNotes(locale, options), ...(options.moonSettled ? [shareCardText(locale, 'moonSettledNote')] : [])];
   const source = placement === 'moon'
     ? chart.bodies.find((body) => body.body === 'Moon')?.lon
     : chart.angles?.asc;
@@ -1540,7 +1560,8 @@ async function drawPlacementCard(
   ctx.fillText(uncertainMoon ? moonLabel(chart, locale) : signName(sign, locale), W / 2, 690, W - 140);
   ctx.fillStyle = INK_2;
   ctx.font = `400 30px ${MONO}`;
-  ctx.fillText(uncertainMoon ? t(locale, 'needsBirthTime') : cardDegreeText(placement, degreeInSign(source)), W / 2, 770, W - 140);
+  // A settled Moon without a birth time has a sign but no degree to give.
+  if (!options.moonSettled) ctx.fillText(uncertainMoon ? t(locale, 'needsBirthTime') : cardDegreeText(placement, degreeInSign(source)), W / 2, 770, W - 140);
   ctx.font = `400 28px ${SERIF}`;
   ctx.fillText(shareCardText(locale, placement === 'moon' ? 'moonDescriptor' : 'risingDescriptor'), W / 2, 850);
   ctx.font = `400 20px ${MONO}`;
@@ -1718,8 +1739,15 @@ export async function preparePlacementCard(
   locale: Locale = 'en',
   options: Pick<ShareCardOptions, 'referenceTime' | 'moonAmbiguous' | 'birthDate'> = {},
 ): Promise<PreparedChartCard> {
+  const drawn = await imagePositions(chart, options.birthDate);
+  // Without a birth time, the Moon's sign only when it held all that date everywhere.
+  const settled = placement === 'moon' && !drawn.angles ? await untimedMoonSign(options.birthDate) : null;
   return {
-    blob: await drawPlacementCard(await imagePositions(chart, options.birthDate), placement, { ...options, locale }),
+    blob: await drawPlacementCard(
+      settled ? { ...drawn, moonSignCandidates: [settled] } : drawn,
+      placement,
+      { ...options, locale, ...(settled ? { moonAmbiguous: false, moonSettled: true } : {}) },
+    ),
     filename: placement === 'moon' ? 'zodiacs-moon-sign.png' : 'zodiacs-rising-sign.png',
   };
 }

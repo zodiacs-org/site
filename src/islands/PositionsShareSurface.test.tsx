@@ -49,10 +49,18 @@ describe('ChartShareDialog', () => {
     expect(markup).toContain('data-share-primary="placement"');
     expect(markup).toContain('data-share-placement-preview');
     expect(markup).toContain('Moon sign card');
-    expect(markup).toContain('Share my Moon sign');
+    // With no settled Moon sign to show, the action does not promise one.
+    expect(markup).toContain('Needs a birth time');
+    expect(markup).toContain('Share this image');
+    expect(markup).not.toContain('Share my Moon sign');
     expect(markup).not.toContain('Share chart sheet');
     expect(markup).not.toContain('Share the big three');
     expect(markup).not.toContain('data-share-card-action="signature"');
+    // A Moon whose sign is known keeps its promise.
+    const known = render(h(ChartShareDialog, {
+      chart, locale: 'en', mode: 'moon', card: 'idle', onCardStateChange: () => {}, onClose: () => {},
+    }));
+    expect(known).toContain('Share my Moon sign');
   });
 
   it('uses placement-specific copy and preview for a Rising card', () => {
