@@ -22,15 +22,17 @@ try {
       const response = await page.goto(`${baseURL}/developers/`, { waitUntil: 'networkidle' });
       assert.equal(response.status(), 200);
       const paths = page.getByRole('navigation', { name: 'Developer integration paths', exact: true });
-      // The four cards, in the order the hub presents them. The order is the
+      // The five cards, in the order the hub presents them. The order is the
       // point: an earlier version led with sky data and a hosted API that does
       // not exist, so a first-time reader met the two things they could not use
-      // before the two they could.
+      // before the two they could. The conformance suite, which is for people
+      // writing an engine rather than using one, comes last.
       const cards = [
         ['Calculate a chart', '/developers/examples/'],
         ['Embed a tool', '/widgets/'],
         ['Connect an AI assistant', '/developers/mcp/'],
         ['Compare two calculation records', '/developers/compare/'],
+        ['Check an engine against independent references', '/developers/conformance/'],
       ];
       for (const [name, href] of cards) {
         assert.equal(await paths.getByRole('link', { name, exact: true }).getAttribute('href'), href);
