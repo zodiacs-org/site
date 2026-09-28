@@ -172,7 +172,7 @@ const COPY: Record<AssistantLocale, Copy> = {
     cloudTitle: 'Before Guide answers',
     cloudBody: 'Guide sends your question, recent Guide messages, and the visible sources above to OpenAI for an input safety check and to generate a draft reply. It then sends that generated draft reply back to OpenAI for a second safety check before showing it. This web Guide conversation stays only in this browser session, is not synced to your account, and is not stored as text by Zodiacs.org. Under standard API controls, OpenAI may retain abuse-monitoring data for up to 30 days, or longer where the law requires it or to protect against harm. Continue for this Guide day?',
     cloudConfirm: 'Continue with Guide', cloudCancel: 'Not now', consentTitle: 'Before your chart is attached',
-    consentBody: 'This is the one chart you explicitly marked as your own. The exact placement lines below will be sent to OpenAI with your question. Zodiacs.org does not attach its saved name, birth date, time, place, or coordinates, and does not store the signed-out conversation.',
+    consentBody: 'This is the one chart you explicitly marked as your own. The placement lines below will be sent to OpenAI with your question. Zodiacs.org does not attach its saved name, birth date, time, place, or coordinates, and does not store the signed-out conversation. The planet positions still give your birth date and time, and the ascendant and midheaven, kept to the whole degree, give your birthplace roughly.',
     consentConfirm: 'Attach my chart', consentCancel: 'Keep it private', sources: 'From this site:',
     contextUpdated: 'Source removed. Earlier messages remain visible, but Guide will not use them in future answers.',
   },
@@ -193,7 +193,7 @@ const COPY: Record<AssistantLocale, Copy> = {
     cloudTitle: 'Antes de que Guide responda',
     cloudBody: 'Guide envía tu pregunta, los mensajes recientes y las fuentes visibles a OpenAI para una revisión de seguridad de la entrada y para generar un borrador de respuesta. Después envía ese borrador de respuesta generado de nuevo a OpenAI para una segunda revisión de seguridad antes de mostrártelo. Esta conversación web permanece solo en esta sesión del navegador, no se sincroniza con tu cuenta y Zodiacs.org no almacena su texto. Con los controles estándar de la API, OpenAI puede conservar datos de control de abusos hasta 30 días, o más cuando la ley lo exige o para proteger frente a daños. ¿Continuar durante este día de Guide?',
     cloudConfirm: 'Continuar con Guide', cloudCancel: 'Ahora no', consentTitle: 'Antes de adjuntar tu carta',
-    consentBody: 'Las posiciones exactas que aparecen abajo se enviarán a OpenAI con tu pregunta. Zodiacs.org no adjunta tu nombre, fecha, hora, lugar de nacimiento ni coordenadas guardados, y no guarda la conversación.',
+    consentBody: 'Las posiciones que aparecen abajo se enviarán a OpenAI con tu pregunta. Zodiacs.org no adjunta tu nombre, fecha, hora, lugar de nacimiento ni coordenadas guardados, y no guarda la conversación. Aun así, las posiciones de los planetas permiten deducir tu fecha y hora de nacimiento, y el ascendente y el medio cielo, al grado entero, tu lugar de nacimiento de forma aproximada.',
     consentConfirm: 'Adjuntar mi carta', consentCancel: 'Mantenerla privada', sources: 'De este sitio:',
     contextUpdated: 'Fuente eliminada. Los mensajes anteriores siguen visibles, pero Guide no los usará en respuestas futuras.',
   },
@@ -214,7 +214,7 @@ const COPY: Record<AssistantLocale, Copy> = {
     cloudTitle: 'Antes de o Guide responder',
     cloudBody: 'O Guide envia sua pergunta, as mensagens recentes e as fontes visíveis à OpenAI para uma verificação de segurança da entrada e para gerar um rascunho de resposta. Depois, envia esse rascunho de resposta gerado de volta à OpenAI para uma segunda verificação de segurança antes de mostrá-lo. Esta conversa do Guide na web fica apenas nesta sessão do navegador, não é sincronizada com sua conta e não é armazenada como texto pelo Zodiacs.org. Nos controles padrão da API, a OpenAI pode reter dados de monitoramento de abuso por até 30 dias, ou mais quando a lei exige ou para proteger contra danos. Continuar neste dia do Guide?',
     cloudConfirm: 'Continuar com o Guide', cloudCancel: 'Agora não', consentTitle: 'Antes de anexar seu mapa',
-    consentBody: 'As posições exatas abaixo serão enviadas à OpenAI com sua pergunta. O Zodiacs.org não anexa nome, data, hora, local de nascimento nem coordenadas salvos e não armazena a conversa.',
+    consentBody: 'As posições abaixo serão enviadas à OpenAI com sua pergunta. O Zodiacs.org não anexa nome, data, hora, local de nascimento nem coordenadas salvos e não armazena a conversa. Mesmo assim, as posições dos planetas permitem deduzir sua data e hora de nascimento, e o ascendente e o meio do céu, em graus inteiros, o seu local de nascimento de forma aproximada.',
     consentConfirm: 'Anexar meu mapa', consentCancel: 'Manter privado', sources: 'Deste site:',
     contextUpdated: 'Fonte removida. As mensagens anteriores continuam visíveis, mas o Guide não as usará nas próximas respostas.',
   },
@@ -235,7 +235,7 @@ const COPY: Record<AssistantLocale, Copy> = {
     cloudTitle: 'Avant la réponse de Guide',
     cloudBody: 'Guide envoie ta question, les messages récents et les sources visibles à OpenAI pour un contrôle de sécurité de l’entrée et pour produire un brouillon de réponse. Guide renvoie ensuite ce brouillon de réponse généré à OpenAI pour un second contrôle de sécurité avant de te l’afficher. Cette conversation Guide web reste uniquement dans cette session du navigateur, n’est pas synchronisée avec ton compte et n’est pas stockée sous forme de texte par Zodiacs.org. Avec les contrôles API standard, OpenAI peut garder des données de surveillance des abus jusqu’à 30 jours, ou plus longtemps lorsque la loi l’exige ou pour prévenir un préjudice. Continuer pour cette journée Guide ?',
     cloudConfirm: 'Continuer avec Guide', cloudCancel: 'Pas maintenant', consentTitle: 'Avant de joindre ton thème',
-    consentBody: 'Les positions exactes ci-dessous seront envoyées à OpenAI avec ta question. Zodiacs.org ne joint aucun nom, date, heure, lieu de naissance ou coordonnée enregistrés et ne conserve pas la conversation.',
+    consentBody: 'Les positions ci-dessous seront envoyées à OpenAI avec ta question. Zodiacs.org ne joint aucun nom, date, heure, lieu de naissance ou coordonnée enregistrés et ne conserve pas la conversation. Les positions des planètes permettent quand même de retrouver ta date et ton heure de naissance, et l’ascendant et le milieu du ciel, au degré entier, ton lieu de naissance de façon approximative.',
     consentConfirm: 'Joindre mon thème', consentCancel: 'Le garder privé', sources: 'Depuis ce site :',
     contextUpdated: 'Source retirée. Les anciens messages restent visibles, mais Guide ne les utilisera plus dans ses réponses.',
   },
@@ -256,7 +256,7 @@ const COPY: Record<AssistantLocale, Copy> = {
     cloudTitle: 'Prima che Guide risponda',
     cloudBody: 'Guide invia la tua domanda, i messaggi recenti e le fonti visibili a OpenAI per un controllo di sicurezza dell’input e per generare una bozza di risposta. Poi invia di nuovo a OpenAI la bozza di risposta generata per un secondo controllo di sicurezza prima di mostrartela. Questa conversazione web con Guide resta soltanto in questa sessione del browser, non viene sincronizzata con il tuo account e non viene archiviata come testo da Zodiacs.org. Con i controlli API standard, OpenAI può conservare dati di monitoraggio degli abusi fino a 30 giorni, o più a lungo quando la legge lo richiede o per prevenire danni. Continuare per questa giornata Guide?',
     cloudConfirm: 'Continua con Guide', cloudCancel: 'Non ora', consentTitle: 'Prima di allegare il tuo tema',
-    consentBody: 'Le posizioni esatte qui sotto saranno inviate a OpenAI con la tua domanda. Zodiacs.org non allega nome, data, ora, luogo di nascita o coordinate salvati e non conserva la conversazione.',
+    consentBody: 'Le posizioni qui sotto saranno inviate a OpenAI con la tua domanda. Zodiacs.org non allega nome, data, ora, luogo di nascita o coordinate salvati e non conserva la conversazione. Le posizioni dei pianeti permettono comunque di ricavare data e ora di nascita, e l’ascendente e il medio cielo, al grado intero, il luogo di nascita in modo approssimativo.',
     consentConfirm: 'Allega il mio tema', consentCancel: 'Tienilo privato', sources: 'Da questo sito:',
     contextUpdated: 'Fonte rimossa. I messaggi precedenti restano visibili, ma Guide non li userà nelle risposte future.',
   },
@@ -780,44 +780,31 @@ function placementLabel(lon: number): string {
   return `${Math.floor(within)}°${String(minutes).padStart(2, '0')}′ ${sign.name}`;
 }
 
-function validCusps(value: unknown): value is number[] {
-  return Array.isArray(value) && value.length === 12 && value.every(finiteLongitude);
+/** An angle as a shared chart code keeps it: its sign and whole degree. */
+function wholeDegreeLabel(lon: number): string {
+  return `${Math.floor(degreeInSign(lon))}° ${signForLongitude(lon).name}`;
 }
 
-/** Resolve a saved chart to placement lines without returning birth inputs. */
+/**
+ * Resolve a saved chart to placement lines without returning birth inputs.
+ * The bodies go to the arcminute, which still gives the birth date and time.
+ * The ascendant and midheaven go only to the whole degree, as in a shared
+ * chart code: to the arcminute, with the bodies, they would give the
+ * birthplace to about ten kilometres. House numbers are given only for
+ * whole-sign houses, which follow from the ascendant's sign; Placidus
+ * numbers would need the exact angles, so a Placidus chart has none.
+ */
 export async function placementSummaryForChart(chart: StoredChart): Promise<string | null> {
-  let bodies = chart.summary.bodies;
-  let angles = chart.birth.timeKnown ? chart.summary.angles : null;
-  let cusps: number[] | null = null;
-  if (chart.birth.timeKnown && angles && chart.summary.houseSystem === 'whole') cusps = wholeSignCusps(angles.asc);
-  const canResolvePlacidus = chart.summary.houseSystem === 'placidus' && chart.birth.timeKnown
-    && chart.birth.place !== null && /^\d{4}-\d{2}-\d{2}$/.test(chart.birth.date)
-    && typeof chart.birth.time === 'string' && /^\d{2}:\d{2}$/.test(chart.birth.time);
-  if (canResolvePlacidus) {
-    try {
-      const [{ computeChart }, { prepareLocalTime, resolveLocalToUtc }] = await Promise.all([
-        import('../engine/full'), import('../time/localToUtc'),
-      ]);
-      const place = chart.birth.place!;
-      await prepareLocalTime(chart.birth.date, place.tz);
-      const resolved = resolveLocalToUtc(chart.birth.date, chart.birth.time!, place.tz, { longitude: place.lon });
-      const computed = computeChart({
-        utc: resolved.utc, latitude: place.lat, longitude: place.lon,
-        houseSystem: 'placidus', timeKnown: true, flags: resolved.flags,
-      });
-      bodies = computed.bodies.map(({ body, lon, retrograde }) => ({ body, lon, retrograde }));
-      angles = computed.angles ? { asc: computed.angles.asc, mc: computed.angles.mc } : null;
-      cusps = validCusps(computed.houses?.cusps) ? computed.houses.cusps : null;
-    } catch { cusps = null; }
-  }
-  const lines = bodies.map(({ body, lon, retrograde }) => {
+  const angles = chart.birth.timeKnown ? chart.summary.angles : null;
+  const cusps = angles && chart.summary.houseSystem === 'whole' ? wholeSignCusps(angles.asc) : null;
+  const lines = chart.summary.bodies.map(({ body, lon, retrograde }) => {
     const house = cusps ? houseOf(lon, cusps) : null;
     return `${body}: ${placementLabel(lon)}${house ? ` · house ${house}` : ''}${retrograde ? ' · retrograde' : ''}`;
   });
   if (angles) {
     for (const [label, lon] of [['ASC', angles.asc], ['MC', angles.mc]] as const) {
       const house = cusps ? houseOf(lon, cusps) : null;
-      lines.push(`${label}: ${placementLabel(lon)}${house ? ` · house ${house}` : ''}`);
+      lines.push(`${label}: ${wholeDegreeLabel(lon)}${house ? ` · house ${house}` : ''}`);
     }
   }
   if (!lines.length) return null;

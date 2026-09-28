@@ -113,7 +113,7 @@ describe('saved-chart assistant context', () => {
     expect(chart?.summary.angles?.asc).toBeCloseTo(23.871984112302016, 10);
     expect(chart?.summary.angles?.mc).toBe(242.6868131443143);
     const summary = await placementSummaryForChart(chart!);
-    expect(summary).toContain('ASC: 23°52′ Aries · house 1');
+    expect(summary).toContain('ASC: 23° Aries · house 1');
     expect(summary).toContain('Sun: 15°00′ Aries · house 1');
     expect(summary).not.toMatch(/Secret Person|2001-12-21|09:00|Polar fixture|78\.2232|15\.6267|UTC/);
     expect(selectedSelfChartFromJson(polarProfileJson(), ownerJson(), metadataJson([]))).toBeNull();
@@ -123,7 +123,7 @@ describe('saved-chart assistant context', () => {
   it('does not change an already-correct current polar summary', async () => {
     const chart = selfChart(polarProfileJson({ corrected: true }));
     expect(chart?.summary.angles?.asc).toBe(23.871984112302016);
-    expect(await placementSummaryForChart(chart!)).toContain('ASC: 23°52′ Aries · house 1');
+    expect(await placementSummaryForChart(chart!)).toContain('ASC: 23° Aries · house 1');
   });
 
   it('leaves unfamiliar legacy records to the existing context parser without inferring a repair', () => {
@@ -142,8 +142,8 @@ describe('saved-chart assistant context', () => {
       'Sun: 15°00′ Aries · house 1',
       'Moon: 5°30′ Cancer · house 4',
       'Mercury: 25°15′ Pisces · house 12 · retrograde',
-      'ASC: 5°00′ Aries · house 1',
-      'MC: 5°00′ Capricorn · house 10',
+      'ASC: 5° Aries · house 1',
+      'MC: 5° Capricorn · house 10',
     ].join('\n'));
     expect(summary).not.toMatch(/Secret Person|1990-04-17|08:45|Bangkok|13\.7563|100\.5018|Asia\/Bangkok/);
   });
@@ -170,12 +170,28 @@ describe('saved-chart assistant context', () => {
     expect(summary).not.toMatch(/house|ASC:|MC:/);
   });
 
-  it('recomputes Placidus houses locally and still returns placements only', async () => {
+  it('gives a Placidus chart no house numbers, which would need the exact angles', async () => {
     const chart = selfChart(profileJson({ houseSystem: 'placidus' }));
     const summary = await placementSummaryForChart(chart!);
-    expect(summary).toMatch(/Sun: \d+°\d{2}′ [A-Z][a-z]+ · house \d+/);
-    expect(summary).toMatch(/ASC: .* · house 1/);
+    expect(summary).toBe([
+      'Tropical chart placements:',
+      'Sun: 15°00′ Aries',
+      'Moon: 5°30′ Cancer',
+      'Mercury: 25°15′ Pisces · retrograde',
+      'ASC: 5° Aries',
+      'MC: 5° Capricorn',
+    ].join('\n'));
     expect(summary).not.toMatch(/Secret Person|1990-04-17|08:45|Bangkok|13\.7563|100\.5018|Asia\/Bangkok/);
+  });
+
+  it('sends the ascendant and midheaven only to the whole degree, as a shared chart code does', async () => {
+    // 23.871984° and 242.686813° would be 23°52′ Aries and 2°41′ Sagittarius to the arcminute.
+    const summary = (await placementSummaryForChart(selfChart(polarProfileJson({ corrected: true }))!))!;
+    expect(summary).toContain('ASC: 23° Aries');
+    expect(summary).toContain('MC: 2° Sagittarius');
+    expect(summary).not.toMatch(/(?:ASC|MC): \d+°\d{2}′/);
+    // The bodies keep the arcminute, which gives the birth date and time.
+    expect(summary).toMatch(/Sun: 15°00′ Aries/);
   });
 });
 
