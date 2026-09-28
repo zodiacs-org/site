@@ -123,8 +123,10 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         tengas guardados, pero las posiciones planetarias del resumen aún
         permiten deducir tu fecha y hora de nacimiento, y su ascendente y su
         Medio Cielo, al grado entero, tu lugar de nacimiento de forma
-        aproximada; todo lo que escribes en el chat forma parte del mensaje que
-        envías.
+        aproximada. Para una carta sin hora de nacimiento, el resumen es el
+        cielo de las 12:00 UTC de la fecha de nacimiento, sin la Luna, que da
+        la fecha pero nada sobre el lugar de nacimiento. Todo lo que escribes
+        en el chat forma parte del mensaje que envías.
         Para aplicar el límite diario, conservamos un identificador
         unidireccional con sal derivado de tu dirección IP, nunca la IP
         original, junto con su recuento diario y un registro de cada solicitud.
@@ -162,6 +164,19 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         la dirección el Sol, la Luna y el ascendente, con precisión de grado,
         así que los reciben nuestro servidor y cualquier aplicación que muestre
         la vista previa.
+      </p>
+      <p>
+        Una imagen de la carta que creas desde las opciones para compartir se
+        dibuja en tu dispositivo y va solo a donde la compartas o la guardes.
+        Salvo que elijas mostrar los datos de nacimiento en la hoja de la
+        carta, no tiene nombre, fecha, hora ni lugar de nacimiento ni
+        coordenadas. Sus posiciones planetarias siguen dando la fecha y la hora
+        de nacimiento, pero muestra el ascendente y el Medio Cielo solo al
+        grado entero y deja fuera las casas Placidus, así que no acota el
+        lugar de nacimiento más que un enlace solo de posiciones. Una imagen
+        de una carta sin hora de nacimiento muestra el cielo de las 12:00 UTC
+        de la fecha de nacimiento, igual que el enlace de esa carta, que da la
+        fecha pero nada sobre el lugar de nacimiento.
       </p>
       <p>
         Si has iniciado sesión y creas una invitación de compatibilidad a
@@ -490,7 +505,9 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         servicio de calendario reciben ese código cada vez que el calendario se
         actualiza. El código no tiene campos de nombre, fecha, hora ni lugar.
         Sus posiciones planetarias aún permiten deducir tu fecha y hora de
-        nacimiento. El ascendente y el Medio Cielo se redondean al grado, lo
+        nacimiento al minuto: se toman en la hora de nacimiento en UTC
+        redondeada al minuto entero. El ascendente y el Medio Cielo se
+        redondean al grado, lo
         que aun así acota el lugar de nacimiento a una zona de un grado de
         longitud de ancho, aproximadamente: unos 110 km en el ecuador, 80 km a
         45° norte o sur y 55 km a 60°. De norte a sur, la zona mide al menos
@@ -500,12 +517,19 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         sur. Una carta sin hora de nacimiento no tiene ascendente ni Medio
         Cielo, y su código lleva el cielo de las 12:00 UTC de la fecha de
         nacimiento, que da la fecha pero nada sobre el lugar de nacimiento. Los
-        códigos creados para una carta así con una versión anterior del sitio
-        llevan en cambio el mediodía en el lugar de nacimiento, que da su zona
-        horaria o, antes de la hora estándar, su longitud. Las direcciones de calendario creadas antes del 23
-        de septiembre de 2026 llevan el ascendente y el Medio Cielo con más
-        precisión. Nuestro servidor ahora los redondea antes de usarlos, pero la
-        dirección en sí no cambia; para sustituirla, elimina ese calendario y
+        códigos creados con una versión anterior del sitio pueden llevar más.
+        Para una carta sin hora de nacimiento llevan el mediodía en el lugar de
+        nacimiento, que da su zona horaria o, antes de la hora estándar, su
+        longitud. Para un nacimiento anterior a la hora estándar, cuando la
+        carta usa la hora media del propio lugar de nacimiento, llevan el
+        segundo del nacimiento, que acota el lugar de nacimiento a unas pocas
+        franjas de unos 3 km de ancho o menos. Las direcciones de calendario
+        creadas antes del 23 de septiembre de 2026 también llevan el
+        ascendente y el Medio Cielo con más precisión; nuestro servidor ahora
+        los redondea antes de usarlos. Una dirección de calendario nunca cambia
+        por sí sola, así que para sustituir una creada con una versión
+        anterior, como la de una carta sin hora de nacimiento o la de un
+        nacimiento anterior a la hora estándar, elimina ese calendario y
         vuelve a suscribirte.
       </p>
       {webPushEnabled && (

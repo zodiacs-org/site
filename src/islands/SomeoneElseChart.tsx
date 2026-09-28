@@ -571,7 +571,7 @@ export default function SomeoneElseChart() {
                   <p>{shared.kind === 'details'
                     ? `Includes a ${shared.input.timeKnown ? 'known' : 'missing'} birth time. The details stay inside the link fragment.`
                     : shared.chart.angles
-                      ? 'The link has no name, date, time or place fields. Its exact positions still give their birth date and time, and their birthplace roughly: an area about 110 km wide and hundreds of kilometres long near the equator, smaller nearer the poles, and near the Arctic Circle sometimes a strip less than a kilometre from north to south.'
+                      ? 'The link has no name, date, time or place fields. Its exact positions still give their birth date and time, and their birthplace roughly: an area about 110 km wide and hundreds of kilometres long near the equator, smaller nearer the poles, and near the Arctic Circle sometimes a strip less than a kilometre from north to south. A link made by an earlier version of the site for a birth before standard time can narrow it to strips about 3 km wide.'
                       : 'The link has no name, date, time or place fields. With no birth time, its positions give their birth date.'}</p>
                 </div>
               </div>

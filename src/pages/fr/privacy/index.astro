@@ -123,8 +123,10 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         tes coordonnées, mais les positions des planètes du résumé permettent
         encore de retrouver ta date et ton heure de naissance, et son ascendant
         et son milieu du ciel, au degré entier, ton lieu de naissance de façon
-        approximative ; tout ce que tu
-        écris dans la discussion fait partie du message que tu envoies. Pour
+        approximative. Pour un thème sans heure de naissance, le résumé est le
+        ciel de 12:00 UTC à la date de naissance, sans la Lune, ce qui donne la
+        date mais rien sur le lieu de naissance. Tout ce que tu écris dans la
+        discussion fait partie du message que tu envoies. Pour
         appliquer la limite quotidienne, nous conservons un identifiant
         irréversible calculé avec un sel à partir de ton adresse IP, jamais
         l’adresse IP brute, avec son compteur journalier et une trace de chaque
@@ -161,6 +163,20 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         transféré. Un lien avec image d’aperçu place aussi dans l’adresse le
         Soleil, la Lune et l’ascendant, au degré près, si bien que notre serveur
         et toute application qui affiche l’aperçu les reçoivent.
+      </p>
+      <p>
+        Une image du thème que tu crées depuis les options de partage est
+        dessinée sur ton appareil et ne va que là où tu la partages ou
+        l’enregistres. Sauf si tu choisis d’afficher les données de naissance
+        sur la feuille du thème, elle ne comporte ni nom, ni date, heure ou lieu
+        de naissance, ni coordonnées. Ses positions planétaires donnent encore
+        la date et l’heure de naissance, mais elle ne montre l’ascendant et le
+        milieu du ciel qu’au degré entier et laisse de côté les maisons
+        Placidus : elle ne situe donc pas le lieu de naissance plus précisément
+        qu’un lien limité aux positions. Une image d’un thème sans heure de
+        naissance montre le ciel de 12:00 UTC à la date de naissance, comme le
+        lien de ce thème, ce qui donne la date mais rien sur le lieu de
+        naissance.
       </p>
       <p>
         Si tu es connecté et que tu crées une invitation de compatibilité à partir
@@ -494,7 +510,9 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         calendrier reçoivent ce code à chaque actualisation du calendrier. Le code
         ne comporte aucun champ de nom, de date, d’heure ou de lieu. Ses positions
         planétaires permettent encore de retrouver ta date et ton heure de
-        naissance. L’ascendant et le milieu du ciel sont arrondis au degré près,
+        naissance à la minute près : elles sont prises à l’heure de naissance
+        en UTC arrondie à la minute entière. L’ascendant et le milieu du ciel
+        sont arrondis au degré près,
         ce qui situe quand même le lieu de naissance dans une zone d’environ un
         degré de longitude de large : environ 110 km à l’équateur, 80 km à 45°
         nord ou sud et 55 km à 60°. Du nord au sud, la zone mesure au moins
@@ -504,13 +522,20 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         du nord au sud. Un thème sans heure de naissance n’a ni
         ascendant ni milieu du ciel, et son code contient le ciel de 12:00 UTC à
         la date de naissance, qui donne la date mais rien sur le lieu de
-        naissance. Les codes créés pour un tel thème par une version antérieure
-        du site contiennent plutôt midi au lieu de naissance, ce qui donne son
-        fuseau horaire ou, avant l’heure légale, sa longitude. Les adresses de calendrier créées avant le 23 septembre 2026
-        contiennent l’ascendant et le milieu du ciel avec plus de précision. Notre
-        serveur les arrondit désormais avant de les utiliser, mais l’adresse
-        elle-même ne change pas ; pour la remplacer, supprime ce calendrier et
-        abonne-toi de nouveau.
+        naissance. Les codes créés par une version antérieure du site peuvent
+        en contenir davantage. Pour un thème sans heure de naissance, ils
+        contiennent midi au lieu de naissance, ce qui donne son fuseau horaire
+        ou, avant l’heure légale, sa longitude. Pour une naissance antérieure à
+        l’heure légale, quand le thème suit le temps moyen du lieu de naissance
+        lui-même, ils contiennent la seconde de la naissance, ce qui situe le
+        lieu de naissance dans quelques bandes d’environ 3 km de large ou
+        moins. Les adresses de calendrier créées avant le 23 septembre 2026
+        contiennent aussi l’ascendant et le milieu du ciel avec plus de
+        précision ; notre serveur les arrondit désormais avant de les utiliser.
+        Une adresse de calendrier ne change jamais d’elle-même : pour remplacer
+        une adresse créée par une version antérieure, par exemple pour un thème
+        sans heure de naissance ou pour une naissance antérieure à l’heure
+        légale, supprime ce calendrier et abonne-toi de nouveau.
       </p>
       {webPushEnabled && (
         <p>

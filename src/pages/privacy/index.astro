@@ -112,8 +112,11 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         turn it off. Guide never attaches your saved name, birth date, time,
         birthplace, or coordinates, but the summary's planet positions still
         give your birth date and time, and its ascendant and midheaven, kept
-        to the whole degree, give your birthplace roughly; anything you type
-        into chat is part of the message you send.
+        to the whole degree, give your birthplace roughly. For a chart without
+        a birth time, the summary is the sky at 12:00 UTC on the birth date,
+        without the Moon, which gives the date but nothing about the
+        birthplace. Anything you type into chat is part of the message you
+        send.
         To enforce the daily limit, we keep a salted one-way identifier derived
         from your IP address, never the raw IP, with its daily count and a
         record of each request. Each later quota check deletes counts older than
@@ -144,6 +147,18 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         including anyone it is forwarded to. A link with a preview image also
         puts the Sun, Moon, and rising sign, to the degree, in the address, so
         our server and any app that shows the preview receive them.
+      </p>
+      <p>
+        A chart image you make from the share options is drawn on your device
+        and goes only where you share or save it. Unless you choose to show
+        birth details on the chart sheet, it has no name, birth date, time,
+        place, or coordinates. Its planet positions still give the birth date
+        and time, but it shows the ascendant and midheaven only to the whole
+        degree and leaves out Placidus houses, so it narrows the birthplace no
+        more than a positions-only link does. An image of a chart without a
+        birth time shows the sky at 12:00 UTC on the birth date, as that
+        chart's link does, which gives the date but nothing about the
+        birthplace.
       </p>
       <p>
         If you are signed in and create a compatibility invitation from a
@@ -448,21 +463,27 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         address. Our server, its cache, and your calendar service receive that
         code each time the calendar refreshes. The code has no name, date, time,
         or place fields. Its planet positions still give your birth date and
-        time. The ascendant and midheaven are rounded to the degree, which
-        still narrows the birthplace to an area about one degree of longitude
-        wide: about 110 km at the equator, 80 km at 45° north or south, and
-        55 km at 60°. From north to south the area is at least 400 km within
-        15° of the equator, 200 km within 45°, and 70 km within 60°; further
-        north it can be narrower, and near the Arctic Circle it can be a strip
-        less than a kilometre from north to south. A chart without a birth time
-        has no ascendant or midheaven, and its code carries the sky at 12:00 UTC
-        on the birth date, which gives the date but nothing about the
-        birthplace. Codes made for such a chart by an earlier version of the
-        site carry noon at the birthplace instead, which gives its time zone
-        or, before standard time, its longitude.
-        Calendar addresses made before 23 September 2026 carry the ascendant and
-        midheaven more precisely. Our server now rounds them before use, but the
-        address itself does not change; to replace it, remove that calendar and
+        time to the minute: they are taken at the birth time in UTC rounded to
+        the whole minute. The ascendant and midheaven are rounded to the
+        degree, which still narrows the birthplace to an area about one degree
+        of longitude wide: about 110 km at the equator, 80 km at 45° north or
+        south, and 55 km at 60°. From north to south the area is at least
+        400 km within 15° of the equator, 200 km within 45°, and 70 km within
+        60°; further north it can be narrower, and near the Arctic Circle it
+        can be a strip less than a kilometre from north to south. A chart
+        without a birth time has no ascendant or midheaven, and its code
+        carries the sky at 12:00 UTC on the birth date, which gives the date
+        but nothing about the birthplace. Codes made by an earlier version of
+        the site can carry more. For a chart without a birth time they carry
+        noon at the birthplace, which gives its time zone or, before standard
+        time, its longitude. For a birth before standard time, when a chart
+        keeps the birthplace's own mean time, they carry the second of the
+        birth, which narrows the birthplace to a few strips about 3 km wide or
+        less. Calendar addresses made before 23 September 2026 also carry the
+        ascendant and midheaven more precisely; our server now rounds them
+        before use. A calendar address never changes by itself, so to replace
+        one made by an earlier version, such as one for a chart without a birth
+        time or for a birth before standard time, remove that calendar and
         subscribe again.
       </p>
       {webPushEnabled && (

@@ -903,7 +903,7 @@ try {
       assert.equal(new URL(received.url()).hash, '', 'successful #p fragment must be consumed and stripped');
       assert.equal((await positions.locator('.notice').innerText()).trim(), 'Positions only, with no name, date, time or place fields.');
       assert.equal((await positions.locator('.calc__positions-privacy').first().innerText()).trim(),
-        'The exact positions still give the birth date and time. They also narrow the birthplace to an area about 110 km wide and hundreds of kilometres long near the equator, and smaller nearer the poles; near the Arctic Circle it can be a strip less than a kilometre from north to south.',
+        'The exact positions still give the birth date and time. They also narrow the birthplace to an area about 110 km wide and hundreds of kilometres long near the equator, and smaller nearer the poles; near the Arctic Circle it can be a strip less than a kilometre from north to south. A link made by an earlier version of the site for a birth before standard time can narrow it to strips about 3 km wide.',
         'positions receiver must say what the exact positions still give');
       assert.equal(await positions.locator('svg.wheel').count(), 1, 'positions result keeps a static wheel');
       assert.equal(await positions.locator('tbody tr').count(), 14, 'twelve bodies plus encoded ASC/MC must be shown');

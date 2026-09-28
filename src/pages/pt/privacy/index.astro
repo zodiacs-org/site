@@ -123,8 +123,10 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         nascimento nem suas coordenadas, mas as posições dos planetas no resumo
         ainda permitem deduzir sua data e hora de nascimento, e o ascendente e
         o Meio do Céu, em graus inteiros, o seu local de nascimento de forma
-        aproximada; tudo o que você digita no chat faz
-        parte da mensagem que você envia. Para aplicar o limite diário, mantemos um identificador
+        aproximada. Para um mapa sem hora de nascimento, o resumo é o céu das
+        12:00 UTC da data de nascimento, sem a Lua, que indica a data, mas nada
+        sobre o local de nascimento. Tudo o que você digita no chat faz parte
+        da mensagem que você envia. Para aplicar o limite diário, mantemos um identificador
         unidirecional com sal, derivado do seu endereço IP (nunca o IP
         original), com a respectiva contagem diária e um registro de cada
         solicitação. Cada verificação de cota posterior apaga as contagens mais
@@ -159,6 +161,19 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         prévia também coloca no endereço o Sol, a Lua e o ascendente, com
         precisão de grau, de modo que nosso servidor e qualquer aplicativo que
         mostre a prévia os recebem.
+      </p>
+      <p>
+        Uma imagem do mapa que você cria nas opções de compartilhamento é
+        desenhada no seu dispositivo e vai só para onde você a compartilha ou a
+        salva. A menos que você escolha mostrar os dados de nascimento na folha
+        do mapa, ela não tem nome, data, hora ou local de nascimento nem
+        coordenadas. Suas posições planetárias ainda indicam a data e a hora de
+        nascimento, mas ela mostra o ascendente e o Meio do Céu apenas em graus
+        inteiros e deixa de fora as casas Placidus, então não restringe o
+        local de nascimento mais do que um link só com posições. Uma imagem de
+        um mapa sem hora de nascimento mostra o céu das 12:00 UTC da data de
+        nascimento, como o link desse mapa, que indica a data, mas nada sobre o
+        local de nascimento.
       </p>
       <p>
         Se você estiver conectado e criar um convite de compatibilidade a partir
@@ -482,7 +497,9 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         calendário recebem esse código a cada atualização do calendário. O
         código não tem campos de nome, data, hora nem local. Ainda assim, as
         posições dos planetas no código permitem deduzir sua data e hora de
-        nascimento. O ascendente e o Meio do Céu são arredondados ao grau
+        nascimento com precisão de minuto: elas são tomadas na hora de
+        nascimento em UTC arredondada ao minuto inteiro. O ascendente e o Meio
+        do Céu são arredondados ao grau
         inteiro, o que ainda restringe o local de nascimento a uma área de
         cerca de um grau de longitude de largura: uns 110 km no equador, 80 km
         a 45° norte ou sul e 55 km a 60°. De norte a sul, a área tem pelo menos
@@ -491,14 +508,19 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         Ártico pode ser uma faixa de menos de um quilômetro de norte a sul. Um
         mapa sem hora de nascimento não tem ascendente nem Meio do Céu, e o
         código dele leva o céu das 12:00 UTC da data de nascimento, que indica
-        a data, mas nada sobre o local de nascimento. Os códigos criados para
-        um mapa assim por uma versão anterior do site levam, em vez disso, o
-        meio-dia no local de nascimento, que indica o fuso horário dele ou,
-        antes da hora padrão, a longitude. Os endereços de calendário criados
-        antes de 23 de setembro de 2026 levam o ascendente e o Meio do Céu com
-        mais precisão. Nosso servidor agora os arredonda antes de usá-los, mas o
-        endereço em si não muda; para substituí-lo, remova esse calendário e
-        assine novamente.
+        a data, mas nada sobre o local de nascimento. Os códigos criados por
+        uma versão anterior do site podem levar mais. Para um mapa sem hora de
+        nascimento, levam o meio-dia no local de nascimento, que indica o fuso
+        horário dele ou, antes da hora padrão, a longitude. Para um nascimento
+        anterior à hora padrão, quando o mapa segue o tempo médio do próprio
+        local de nascimento, levam o segundo do nascimento, que restringe o
+        local de nascimento a poucas faixas de cerca de 3 km de largura ou
+        menos. Os endereços de calendário criados antes de 23 de setembro de
+        2026 também levam o ascendente e o Meio do Céu com mais precisão; nosso
+        servidor agora os arredonda antes de usá-los. Um endereço de calendário
+        nunca muda sozinho, então, para substituir um criado por uma versão
+        anterior, como o de um mapa sem hora de nascimento ou de um nascimento
+        anterior à hora padrão, remova esse calendário e assine novamente.
       </p>
       {webPushEnabled && (
         <p>
