@@ -71,6 +71,13 @@ The rc.9 twelve-system Swiss record remains unchanged and does not establish
 Equal-MC residuals. The integration test checks Equal-MC's defining spacing
 and tenth cusp; it is a definition check, not a fresh Swiss measurement.
 
+*Appended 2026-09-28.* The full record is now published at
+[`../points-2026-09-26/`](../points-2026-09-26/README.md). Its tools were
+rerun against this archive and reproduced every result file byte for byte.
+Equal-MC agrees with Swiss's house function to 0.0000000004″ given its
+inputs, and to 0.24″ end to end from 1850 to 2049. The paragraph above is kept
+as written.
+
 The osculating (true) Lilith remains absent, as PR #5 explicitly deferred it
 until a JPL-based Moon. No precision provider, astrological predictive
 validity, general completeness or Swiss replacement claim follows from this

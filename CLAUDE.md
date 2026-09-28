@@ -181,6 +181,9 @@ owns that page.
   `report-bundles.mjs` never sees them. `--check` for drift; the site-check
   drift gate runs it
 - `i18n-additions.md` (repo root) ← `node scripts/build-i18n-additions.mjs`
+- `docs/platform/programme/LEDGER.md` ← `node scripts/programme-ledger.mjs`
+  (source `docs/platform/programme/acceptance-ledger.json`; `--check` for drift,
+  `--summary` for the completion figures)
 
 `public/sw.js` is a PWA worker — the owner approved superseding the old
 push-only rule (2026-07-15, WS4 merge decision). Strict invariants: HTML

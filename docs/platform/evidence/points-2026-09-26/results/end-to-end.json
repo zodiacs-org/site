@@ -1,0 +1,90 @@
+{
+ "swisseph": "2.10.03",
+ "unit": "arcseconds; for equal-mc the largest of the twelve cusps per case",
+ "windows": {
+  "1850-2049": {
+   "broad": {
+    "equal-mc": {
+     "compared": 1534,
+     "max": 0.238,
+     "p95": 0.138,
+     "p50": 0.049
+    },
+    "vertex": {
+     "compared": 1534,
+     "max": 3.458,
+     "p95": 0.152,
+     "p50": 0.034
+    },
+    "eastPoint": {
+     "compared": 1534,
+     "max": 0.242,
+     "p95": 0.137,
+     "p50": 0.048
+    }
+   },
+   "ladder": {
+    "equal-mc": {
+     "compared": 351,
+     "max": 0.229,
+     "p95": 0.129,
+     "p50": 0.048
+    },
+    "vertex": {
+     "compared": 351,
+     "max": 0.231,
+     "p95": 0.131,
+     "p50": 0.044
+    },
+    "eastPoint": {
+     "compared": 351,
+     "max": 0.231,
+     "p95": 0.132,
+     "p50": 0.047
+    }
+   }
+  },
+  "1800-2199": {
+   "broad": {
+    "equal-mc": {
+     "compared": 3000,
+     "max": 2.247,
+     "p95": 1.901,
+     "p50": 0.117
+    },
+    "vertex": {
+     "compared": 3000,
+     "max": 42.827,
+     "p95": 1.916,
+     "p50": 0.083
+    },
+    "eastPoint": {
+     "compared": 3000,
+     "max": 2.217,
+     "p95": 1.921,
+     "p50": 0.116
+    }
+   },
+   "ladder": {
+    "equal-mc": {
+     "compared": 708,
+     "max": 2.108,
+     "p95": 1.945,
+     "p50": 0.117
+    },
+    "vertex": {
+     "compared": 708,
+     "max": 2.784,
+     "p95": 1.981,
+     "p50": 0.118
+    },
+    "eastPoint": {
+     "compared": 708,
+     "max": 2.154,
+     "p95": 1.901,
+     "p50": 0.115
+    }
+   }
+  }
+ }
+}

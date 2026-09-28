@@ -1,0 +1,4413 @@
+{
+  "schema": "a6-rules/dispositions/1",
+  "generated": "2026-09-28",
+  "tree": "site merge f2bd0dd45947ff392d0de1135695f584a71bfa08 (read only)",
+  "searched": [
+    "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+    "docs/platform/evidence/phase1-verdicts-2026-09-25/",
+    "docs/platform/evidence/phase1-verdicts-2026-09-26/",
+    "docs/claims/ledger.json (evidence kind \"finding\")",
+    "docs/platform/evidence/*/ (site-engine-rc7..rc10, houses-2026-09-26, deltat-2026-09-2*, events-vs-swiss-*, lunations-2026-09-23, phase1-events, tz-history-2025c, engine-beyond-swiss/corpora and horizons-frame, swiss-benchmark, precision-2026-09-20)",
+    "docs/engine-validation/README.md",
+    "examples/precision-alpha/*.md",
+    "docs/platform/REMAINING.md, ACTION-CARDS.md",
+    "vendor/zodiacs-engine-0.1.1-rc.10.tgz package/CHANGELOG.md",
+    "git history of main and the pre-squash PR #556 branch (objects present in the clone)",
+    "grep for every ledger id outside the audit record"
+  ],
+  "conventions": [
+    "'disposition' is a short status; 'evidence' lists recorded dispositions (file, 1-based lines, note; 'quote' fields are exact and machine-checked).",
+    "'observed_tree_state' is what the tree at f2bd0dd shows, kept apart because it is an observation, not a recorded disposition.",
+    "Commit ids marked 'pre-squash commit of PR #556' are on the PR branch; main carries them as the single squash commit 3f31ba17.",
+    "'no recorded disposition' means none of the searched sources records one; planned v2 steps are not counted as dispositions.",
+    "The repository also uses R1/R2/R3 for unrelated 2026-09-12 maintenance items (docs/platform/evidence/r1-r2-maintenance/, r3-release-integration/); none of those refers to the brief's R1-R9."
+  ],
+  "counts_by_class": {
+    "A closed by a recorded PASS verdict": 21,
+    "B fixed or addressed, no rule verdict of its own": 5,
+    "C defect fixed, v1 rule FAIL recorded": 1,
+    "D partially addressed": 17,
+    "E record corrected": 8,
+    "F premise or process recorded": 6,
+    "G disclosed, defect open": 10,
+    "H deferred (wholly or in part) by brief v2": 7,
+    "I open (recorded as open)": 5,
+    "J no recorded disposition": 48
+  },
+  "counts": {
+    "fixed; rule PASS": 7,
+    "deferred by brief v2": 4,
+    "deferred in part by brief v2": 3,
+    "no recorded disposition": 46,
+    "partially addressed (record corrected)": 1,
+    "fixed; rule PASS under amendment": 11,
+    "partially addressed": 15,
+    "open (recorded)": 3,
+    "defect fixed; v1 rule FAIL recorded": 1,
+    "disclosed; defect open": 7,
+    "fixed; rule PASS (site resolver)": 1,
+    "disclosed; gate unchanged": 1,
+    "record corrected": 7,
+    "record corrected; owner decision pending": 1,
+    "fixed (recorded as step 1.8c)": 1,
+    "open (recorded as M2 work)": 1,
+    "open (recorded NOT RUN)": 1,
+    "disclosed": 2,
+    "premise recorded": 3,
+    "premise recorded; frame decomposed": 1,
+    "no recorded CI disposition": 1,
+    "cited as evidence (note)": 1,
+    "recorded; residual open": 1,
+    "addressed": 1,
+    "recorded as test": 1,
+    "addressed differently": 1,
+    "fixed on the site; SDK half open": 1,
+    "fixed": 1,
+    "partially addressed (owner decisions not recorded)": 1,
+    "recorded (process)": 1,
+    "fixed; rule PASS (as restated by the decision)": 1
+  },
+  "dispositions": [
+    {
+      "id": "angles-houses-aspects-2",
+      "title": "Aspect 'applying' flag is wrong whenever orb < 0.01 x relative speed (the last ~13 minutes before every exact Moon aspect)",
+      "disposition": "fixed; rule PASS",
+      "summary": "Step 1.2 (v1 rule 1a) PASS on vendored rc.7: 0 of 236,932 aspects misclassified on the 2024 Swiss scan, 0 false positives, 0 of 1,048,251 synthetic cases, 28 of 28 named cases.",
+      "v2_steps": [
+        "1.2"
+      ],
+      "commits_prs": [
+        "zodiacs-org/engine#1 (named by PREREGISTRATION.md as the rc.7 change)",
+        "site PR #578 (merge 982caca2): vendors @zodiacs/engine 0.1.1-rc.7",
+        "site PR #580 (merge 34ac8efa): rc.7 Phase 1 verdicts; amendments A1, A3, A4 adopted; step 1.4 preregistered (A2)"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            52,
+            81
+          ],
+          "note": "Step 1.2 rule, baseline (cites ledger angles-houses-aspects-2) and verdict.",
+          "quote": "- **Verdict: PASS** (2026-09-25), on the vendored rc.7"
+        },
+        {
+          "file": "docs/platform/evidence/phase1-verdicts-2026-09-25/README.md",
+          "lines": [
+            18,
+            23
+          ],
+          "note": "Verdict table row for 1.2."
+        },
+        {
+          "file": "docs/platform/evidence/phase1-verdicts-2026-09-25/README.md",
+          "lines": [
+            25,
+            81
+          ],
+          "note": "Measurements and rc.6 control (506 of 236,932, the audit figure)."
+        },
+        {
+          "file": "vendor/zodiacs-engine-0.1.1-rc.10.tgz#package/CHANGELOG.md",
+          "lines": [
+            116,
+            119
+          ],
+          "note": "Engine changelog rc.7: applying judged from the sign of the orb's rate of change."
+        },
+        {
+          "file": "docs/platform/evidence/site-engine-rc7/README.md",
+          "lines": [
+            27,
+            30
+          ],
+          "note": "rc.7 adoption record."
+        },
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            7,
+            7
+          ],
+          "claim": "acc.aspect-method",
+          "note": "Public claim cites this finding as evidence."
+        }
+      ],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "A closed by a recorded PASS verdict"
+    },
+    {
+      "id": "alpha-reduction-math-1",
+      "title": "Outer planets are system barycentres, up to 0.093 arcsec off the physical centre; Swiss can return centres, the alpha cannot",
+      "disposition": "deferred by brief v2",
+      "summary": "Planet centres from satellite kernels are deferred (\"at most 0.09″, far below anything a chart shows\").",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            413,
+            414
+          ],
+          "note": "Deferred.",
+          "quote": "Planet centres from satellite kernels (at most 0.09″, far below anything a chart shows)."
+        }
+      ],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "H deferred (wholly or in part) by brief v2"
+    },
+    {
+      "id": "alpha-reduction-math-2",
+      "title": "No topocentric, heliocentric, barycentric, J2000/astrometric, sidereal or rate output: Swiss offers all of them",
+      "disposition": "deferred in part by brief v2",
+      "summary": "Same capability gap: topocentric (interval-proven part deferred), heliocentric/J2000/sidereal/rates planned for v2 Phase 2 D and 3.2; nothing implemented.",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            415,
+            416
+          ],
+          "note": "Deferred: interval-proven topocentric search."
+        }
+      ],
+      "open_items": "v2 Phase 2 D, 3.2.",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "H deferred (wholly or in part) by brief v2"
+    },
+    {
+      "id": "alpha-search-partition-1",
+      "title": "acceptPartialPlan is inert: an accepted partial plan searches nothing, contradicting the option's documented purpose",
+      "disposition": "no recorded disposition",
+      "summary": "No record. The research runtime (examples/precision-alpha) changed only by three appended documentation corrections between the audit tree 39b7a127 and f2bd0dd.",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [],
+      "open_items": "v2 Phase 4 [v1 M4.2]",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "alpha-search-partition-2",
+      "title": "The Moon's partition failures (P-3, P-4) are an enclosure-construction defect, not the geometry: cos(elongation) is enclosed 2,900x too wide",
+      "disposition": "no recorded disposition",
+      "summary": "The Moon enclosure fix is v2 Phase 4 work [v1 M4.1–4.3] (\"The original PARTIAL stays in the record\"); the solar-deflection search FAIL is deferred until after that fix. Nothing implemented.",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            407,
+            408
+          ],
+          "note": "Planned."
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            416,
+            417
+          ],
+          "note": "Solar-deflection search deferred until after the Moon enclosure fix."
+        }
+      ],
+      "open_items": "v2 Phase 4.",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "alpha-search-partition-3",
+      "title": "Only longitude crossings exist; stations, aspects, latitude/declination/elongation events and eclipses are absent although the proof machinery covers them",
+      "disposition": "partially addressed (record corrected)",
+      "summary": "PARTITION-RESULTS.md carries a correction that its last column is the widest floor cell, not span (citing the critic on this finding). The operation gap itself (stations, aspects, latitude events) is v2 Phase 4 work [v1 M4.4–4.5]; no implementation recorded.",
+      "v2_steps": [
+        "Phase 0 item 2"
+      ],
+      "commits_prs": [
+        "5f0dec2e (Append the corrections Phase 0 lists; pre-squash commit of PR #556, object present in the clone)",
+        "site PR #556, squash-merged to main as 3f31ba17 (2026-09-24)"
+      ],
+      "evidence": [
+        {
+          "file": "examples/precision-alpha/PARTITION-RESULTS.md",
+          "lines": [
+            106,
+            110
+          ],
+          "note": "Appended correction."
+        }
+      ],
+      "open_items": "Proven stations/aspects/latitude crossings (v1 M4.4).",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "D partially addressed"
+    },
+    {
+      "id": "angles-houses-aspects-1",
+      "title": "ASC and Placidus cusps use mean obliquity with apparent sidereal time and true-of-date longitudes: up to 512\" (0.14 deg) error, 22\" p95",
+      "disposition": "fixed; rule PASS under amendment",
+      "summary": "Step 1.3 (v1 rule 1b) PASS under amendment A1, PARTIAL as first written: ASC vs Swiss p95 2.219″, max 71.33″; vs ERFA max 6.36″ (0.36″ within 45°); 45 of 816 added vectors exceed the original 5″ gates, 0 under A1.",
+      "v2_steps": [
+        "1.3"
+      ],
+      "commits_prs": [
+        "zodiacs-org/engine#1 (named by PREREGISTRATION.md as the rc.7 change)",
+        "site PR #578 (merge 982caca2): vendors @zodiacs/engine 0.1.1-rc.7",
+        "site PR #580 (merge 34ac8efa): rc.7 Phase 1 verdicts; amendments A1, A3, A4 adopted; step 1.4 preregistered (A2)",
+        "a81831fe (ERFA arbiter pinned in scripts/angles-grid.test.mjs; pre-squash commit of PR #556, object present in the clone)"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            83,
+            121
+          ],
+          "note": "Step 1.3 rule, baselines (cites ledger angles-houses-aspects-1) and verdict.",
+          "quote": "- **Verdict: PASS under amendment A1** (adopted 2026-09-25); **PARTIAL as first written.**"
+        },
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            465,
+            479
+          ],
+          "note": "Amendment A1 as adopted (8″ at 66°; ERFA outside 1850–2050)."
+        },
+        {
+          "file": "docs/platform/evidence/phase1-verdicts-2026-09-25/README.md",
+          "lines": [
+            83,
+            154
+          ],
+          "note": "1.3 measurements and rc.6 control."
+        },
+        {
+          "file": "vendor/zodiacs-engine-0.1.1-rc.10.tgz#package/CHANGELOG.md",
+          "lines": [
+            124,
+            127
+          ],
+          "note": "Changelog rc.7: true obliquity of date."
+        },
+        {
+          "file": "docs/engine-validation/README.md",
+          "lines": [
+            164,
+            172
+          ],
+          "note": "Validation report states the fix since rc.7."
+        },
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            6,
+            6
+          ],
+          "claim": "acc.angles-houses",
+          "note": "Public claim cites this finding."
+        }
+      ],
+      "open_items": "The 6.36″ residual is the engine's five-term nutation, which PREREGISTRATION says goes with M2 (A1, lines 476–479).",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "A closed by a recorded PASS verdict"
+    },
+    {
+      "id": "angles-houses-aspects-7",
+      "title": "Capability gap: 2 house systems, no house position, no Vertex/East Point/co-ascendants, no cusp speeds, no azimuth/altitude, no minor/angle/node/declination aspects in the package",
+      "disposition": "partially addressed",
+      "summary": "rc.9 adds nine house systems (twelve; Swiss definitions; given-input agreement ≤ 0.0096″, end-to-end PASS for eleven, Koch FAIL in 1 of 353 ladder cases 1850–2049) and rc.10 adds Equal-MC (thirteen) plus Vertex and East Point. House position with latitude, cusp speeds, azimuth/altitude, minor/angle/node aspects and configurable orbs are not recorded. Site forms still offer whole sign and Placidus only.",
+      "v2_steps": [
+        "v2 Phase 2 A (houses)"
+      ],
+      "commits_prs": [
+        "site PR #587 (merge b0f37e65): @zodiacs/engine 0.1.1-rc.9, twelve house systems",
+        "site PR #593 (merge f2bd0dd4; commits 92162624, e29d0dbc): @zodiacs/engine 0.1.1-rc.10"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/houses-2026-09-26/README.md",
+          "lines": [
+            1,
+            16
+          ],
+          "note": "The M5 house rule this record judges."
+        },
+        {
+          "file": "docs/platform/evidence/houses-2026-09-26/README.md",
+          "lines": [
+            52,
+            52
+          ],
+          "note": "Given inputs: PASS.",
+          "quote": "**Given Swiss's inputs: PASS for all twelve systems, and polar status agrees.**"
+        },
+        {
+          "file": "docs/platform/evidence/houses-2026-09-26/README.md",
+          "lines": [
+            92,
+            94
+          ],
+          "note": "End to end: PASS for eleven, Koch FAIL in one case."
+        },
+        {
+          "file": "docs/platform/evidence/site-engine-rc9/README.md",
+          "lines": [
+            16,
+            31
+          ],
+          "note": "rc.9 adoption."
+        },
+        {
+          "file": "docs/platform/evidence/site-engine-rc9/README.md",
+          "lines": [
+            60,
+            65
+          ],
+          "note": "Limits: forms still offer two systems."
+        },
+        {
+          "file": "vendor/zodiacs-engine-0.1.1-rc.10.tgz#package/CHANGELOG.md",
+          "lines": [
+            3,
+            25
+          ],
+          "note": "Changelog rc.10: Equal-MC, Vertex, East Point."
+        },
+        {
+          "file": "docs/platform/evidence/site-engine-rc10/README.md",
+          "lines": [
+            64,
+            77
+          ],
+          "note": "rc.10: no fresh Swiss measurement of Equal-MC in the site record."
+        },
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            19,
+            19
+          ],
+          "claim": "acc.house-systems",
+          "note": "Public claim for twelve systems."
+        },
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            7,
+            7
+          ],
+          "claim": "acc.aspect-method",
+          "note": "Cites this finding (aspect set unchanged: five Ptolemaic)."
+        }
+      ],
+      "open_items": "housePosition, cusp speeds, co-ascendants, configurable aspects; Koch end-to-end case; Equal-MC not measured in the site record.",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "D partially addressed"
+    },
+    {
+      "id": "data-toolchain-packaging-1",
+      "title": "Compiler is hard-wired to DE440s' span; no pack can cover the site's 1800–2199 epoch",
+      "disposition": "no recorded disposition",
+      "summary": "No compiler change is recorded; examples/precision-alpha changed only by appended documentation corrections since the audit tree (39b7a127).",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [],
+      "open_items": "v2 Phase 4 compiler fixes [v1 M2.1].",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "data-toolchain-packaging-4",
+      "title": "No distribution path reaches users: 404 on npm, private alpha, no pack, and the alpha already exceeds the engine-chunk budget",
+      "disposition": "open (recorded)",
+      "summary": "@zodiacs/engine is still not published (npm 404 through rc.10); publication is authorized by the owner and blocked by npm authentication; the engine source moved to its own repository zodiacs-org/engine from rc.7. No record changes the research runtime's private status or distributes a pack.",
+      "v2_steps": [],
+      "commits_prs": [
+        "site PR #593 (merge f2bd0dd4; commits 92162624, e29d0dbc): @zodiacs/engine 0.1.1-rc.10"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/REMAINING.md",
+          "lines": [
+            97,
+            110
+          ],
+          "note": "Backlog item A state."
+        },
+        {
+          "file": "docs/platform/REMAINING.md",
+          "lines": [
+            258,
+            293
+          ],
+          "note": "Engine npm publication: blocked by authentication; engine repository."
+        },
+        {
+          "file": "docs/platform/ACTION-CARDS.md",
+          "lines": [
+            72,
+            90
+          ],
+          "note": "Card 2: publish the engine."
+        },
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            66,
+            66
+          ],
+          "claim": "product.engine-package",
+          "note": "Cites this finding: unpublished candidate."
+        }
+      ],
+      "open_items": "First publication (owner action); v2 3.1.",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "I open (recorded as open)"
+    },
+    {
+      "id": "data-toolchain-packaging-5",
+      "title": "Public API is a chart API, not an ephemeris API; no calc(body,time,flags), no frames/centres/time scales/bounds",
+      "disposition": "no recorded disposition",
+      "summary": "No calc(body, time, flags)-class API is recorded; planned as v2 3.2.",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [],
+      "open_items": "v2 3.2.",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "production-event-search-1",
+      "title": "sky.json lunations use an aberration-free Sun: 40 s late vs Horizons, Swiss and the site's own transits files",
+      "disposition": "defect fixed; v1 rule FAIL recorded",
+      "summary": "sky.json lunations now use the apparent Sun (the two datasets agree within 2 s: PASS on the second half of rule 1d). The first half of rule 1d (all 124 within 2 s of Swiss) FAILED when first run (1 of 124, max 11.8 s) and again on rc.8 under A4 (80 of 124, max 5.153 s); remainder attributed to the analytic Moon (M2).",
+      "v2_steps": [
+        "1.5"
+      ],
+      "commits_prs": [
+        "3d279d73 (Find new and full moons in sky.json on the apparent Sun; pre-squash commit of PR #556, object present in the clone)",
+        "site PR #556, squash-merged to main as 3f31ba17 (2026-09-24)",
+        "site PR #584 (merge 7edaf200): rc.8 Phase 1 verdicts (1.4, A4 re-run, 1.7, 1.10, 1.11)"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            152,
+            169
+          ],
+          "note": "Step 1.5 verdicts (cites ledger production-event-search-1).",
+          "quote": "- **Verdict: FAIL** on the first part: 1 of 124 within 2 s of Swiss"
+        },
+        {
+          "file": "docs/platform/evidence/lunations-2026-09-23/README.md",
+          "lines": [
+            1,
+            33
+          ],
+          "note": "Lunation record: both generators use scripts/lunation-search.mjs; scripts/sky-lunations.test.mjs holds them together."
+        },
+        {
+          "file": "docs/platform/evidence/phase1-verdicts-2026-09-26/README.md",
+          "lines": [
+            121,
+            133
+          ],
+          "note": "A4's re-run: FAIL."
+        },
+        {
+          "file": "docs/platform/evidence/events-vs-swiss-2026-09-25/README.md",
+          "lines": [
+            32,
+            53
+          ],
+          "note": "rc.8 catalog comparison."
+        }
+      ],
+      "open_items": "v1 rule 1d first half remains FAIL pending the DE backend (M2 / v2 Phase 4).",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "C defect fixed, v1 rule FAIL recorded"
+    },
+    {
+      "id": "production-event-search-2",
+      "title": "Solar-return and Sun-ingress instants run 37–39 s late against JPL Horizons; Swiss is within 1.2 s",
+      "disposition": "disclosed; defect open",
+      "summary": "The public solar-return statement now gives the seasonal error (about 30 s early to about 40 s late against JPL, angles up to about 0.24°); the Sun-series error remains (M2).",
+      "v2_steps": [
+        "1.14"
+      ],
+      "commits_prs": [
+        "2b95098f (Say how close each published event time is, and hold the copy to it; pre-squash commit of PR #556, object present in the clone)",
+        "104042c9 (Say an unknown birth time can move a solar return by up to 12 hours; pre-squash commit of PR #556, object present in the clone)",
+        "site PR #556, squash-merged to main as 3f31ba17 (2026-09-24)"
+      ],
+      "evidence": [
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            29,
+            29
+          ],
+          "claim": "acc.solar-return",
+          "note": "Public claim cites this finding."
+        }
+      ],
+      "open_items": "M2.",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "G disclosed, defect open"
+    },
+    {
+      "id": "production-event-search-3",
+      "title": "Delta-T model biases every event instant: Moon events 5–7 s early now and growing",
+      "disposition": "partially addressed",
+      "summary": "The ΔT part is closed by step 1.4 (rc.8): Moon ingresses now a median 0.86 s and at most 4.48 s from Swiss (rc.7: median 6.26 s, max 10.25 s, all early); new and full moons 80 of 124 within 2 s (A4 re-run, still FAIL). The remainder is the analytic Moon (M2).",
+      "v2_steps": [
+        "1.4",
+        "1.5"
+      ],
+      "commits_prs": [
+        "site PR #581 (merge 975bb68f): vendors @zodiacs/engine 0.1.1-rc.8",
+        "site PR #584 (merge 7edaf200): rc.8 Phase 1 verdicts (1.4, A4 re-run, 1.7, 1.10, 1.11)"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/events-vs-swiss-2026-09-25/README.md",
+          "lines": [
+            32,
+            53
+          ],
+          "note": "rc.8 catalog against Swiss."
+        },
+        {
+          "file": "docs/platform/evidence/events-vs-swiss-2026-09-25/README.md",
+          "lines": [
+            66,
+            74
+          ],
+          "note": "Moon sign changes on rc.8."
+        },
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            164,
+            169
+          ],
+          "note": "A4's re-run: FAIL, remainder is the analytic Moon, M2's work."
+        },
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            33,
+            33
+          ],
+          "claim": "acc.voc-times",
+          "note": "Public claim cites this finding and production-event-search-14."
+        }
+      ],
+      "open_items": "Residual Moon-event error from the analytic lunar series (M2 / v2 Phase 4).",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "D partially addressed"
+    },
+    {
+      "id": "production-event-search-4",
+      "title": "Fixed-step crossing scan silently drops grazing pass pairs in Saturn returns and yearScan; the code comment claims the 5-day step is safe",
+      "disposition": "fixed; rule PASS",
+      "summary": "Step 1.6 (v1 rule 1f) PASS: Saturn 0.002° graze returns 3 passes, Jupiter dips return both, synthetic mid-cell pair found; 4,941 of 4,941 station-graze cases 2020–2030. The solver moved into the package at rc.8.",
+      "v2_steps": [
+        "1.6"
+      ],
+      "commits_prs": [
+        "b280c597 (Keep grazing return passes the coarse scan could not see; pre-squash commit of PR #556, object present in the clone)",
+        "site PR #556, squash-merged to main as 3f31ba17 (2026-09-24)",
+        "site PR #581 (merge 975bb68f): vendors @zodiacs/engine 0.1.1-rc.8"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            171,
+            180
+          ],
+          "note": "Step 1.6 verdict (cites ledger production-event-search-4).",
+          "quote": "- **Verdict: PASS.** All three are tests in"
+        },
+        {
+          "file": "docs/platform/evidence/phase1-events/README.md",
+          "lines": [
+            1,
+            35
+          ],
+          "note": "Grazing-pass record and corpus."
+        },
+        {
+          "file": "src/lib/engine/grazing-crossings.test.ts",
+          "lines": [
+            1,
+            3
+          ],
+          "note": "Test header cites the finding."
+        },
+        {
+          "file": "vendor/zodiacs-engine-0.1.1-rc.10.tgz#package/CHANGELOG.md",
+          "lines": [
+            97,
+            99
+          ],
+          "note": "Changelog rc.8: grazing station pairs found in the package solver."
+        },
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            26,
+            26
+          ],
+          "claim": "acc.return-passes",
+          "note": "Public claim cites this finding."
+        }
+      ],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "A closed by a recorded PASS verdict"
+    },
+    {
+      "id": "production-event-search-7",
+      "title": "Outer-planet station instants in sky.json are 20–40 minutes off JPL Horizons and published to the millisecond with no uncertainty",
+      "disposition": "disclosed; defect open",
+      "summary": "Published station times measured against Swiss (within about 41 min, Pluto); the ±0.001-day step moves no station by more than 66 s, so the positions set the limit; the pages state these limits and scripts/claims-bindings.test.mjs holds them.",
+      "v2_steps": [],
+      "commits_prs": [
+        "site PR #556, squash-merged to main as 3f31ba17 (2026-09-24)",
+        "site PR #581 (merge 975bb68f): vendors @zodiacs/engine 0.1.1-rc.8"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/events-vs-swiss-2026-09-23/README.md",
+          "lines": [
+            1,
+            37
+          ],
+          "note": "rc.7 catalog vs Swiss."
+        },
+        {
+          "file": "docs/platform/evidence/events-vs-swiss-2026-09-23/README.md",
+          "lines": [
+            56,
+            77
+          ],
+          "note": "Station speed step does not change the limit."
+        },
+        {
+          "file": "docs/platform/evidence/events-vs-swiss-2026-09-25/README.md",
+          "lines": [
+            1,
+            31
+          ],
+          "note": "rc.8 catalog vs Swiss."
+        },
+        {
+          "file": "docs/engine-validation/README.md",
+          "lines": [
+            305,
+            315
+          ],
+          "note": "Validation report event-search section."
+        },
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            16,
+            16
+          ],
+          "claim": "acc.events-timing",
+          "note": "Public claim (no finding evidence cited)."
+        }
+      ],
+      "open_items": "DE-backed station timing with a band (M2/M4).",
+      "observed_tree_state": [],
+      "uncertain": "acc.events-timing does not cite this ledger id; the link is by content.",
+      "disposition_class": "G disclosed, defect open"
+    },
+    {
+      "id": "production-event-search-8",
+      "title": "Eclipse data omits everything Swiss provides beyond peak and kind: contacts, magnitudes, Saros, geography, local circumstances",
+      "disposition": "no recorded disposition",
+      "summary": "No record adds eclipse contacts, magnitudes, Saros or local circumstances (v2 Phase 2 Eclipses [v1 M5] is planned, not done).",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [],
+      "open_items": "v2 Phase 2 A Eclipses.",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "production-positions-1",
+      "title": "Truncated VSOP87 series, not the reduction, sets the engine's accuracy floor (up to 15.6\" today)",
+      "disposition": "disclosed; defect open",
+      "summary": "The multi-year distribution fixture is committed (Phase 0 item 4) and the public pages quote it (Venus 22.9″, Pluto 29.1″); the truncated series itself remains until the DE backend (M2 / v2 Phase 4).",
+      "v2_steps": [
+        "Phase 0 item 4"
+      ],
+      "commits_prs": [
+        "3c890cab (Measure the engine against Swiss every tenth day, and say what the sample missed; pre-squash commit of PR #556, object present in the clone)",
+        "site PR #556, squash-merged to main as 3f31ba17 (2026-09-24)"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            408,
+            408
+          ],
+          "note": "Phase 0 item 4 Done."
+        },
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            31,
+            31
+          ],
+          "claim": "acc.swiss-multiyear",
+          "note": "Public claim cites this finding."
+        },
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            30,
+            30
+          ],
+          "claim": "acc.swiss-benchmark",
+          "note": "Benchmark re-run on rc.8."
+        }
+      ],
+      "open_items": "Replace the truncated VSOP87/ILE series (M2).",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "G disclosed, defect open"
+    },
+    {
+      "id": "production-positions-2",
+      "title": "Delta-T model is 6.7 s too large today (>=5.4 s beyond any physical value), 110 s at 2100, and is neither exposed nor documented",
+      "disposition": "fixed; rule PASS under amendment",
+      "summary": "Same ΔT defect as time-1 (grouped with it in the v1 §2 table, row 2); closed by step 1.4 under A2 on rc.8.",
+      "v2_steps": [
+        "1.4"
+      ],
+      "commits_prs": [
+        "site PR #580 (merge 34ac8efa): rc.7 Phase 1 verdicts; amendments A1, A3, A4 adopted; step 1.4 preregistered (A2)",
+        "site PR #581 (merge 975bb68f): vendors @zodiacs/engine 0.1.1-rc.8",
+        "site PR #584 (merge 7edaf200): rc.8 Phase 1 verdicts (1.4, A4 re-run, 1.7, 1.10, 1.11)"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            123,
+            150
+          ],
+          "note": "Step 1.4 verdict."
+        },
+        {
+          "file": "docs/platform/evidence/phase1-verdicts-2026-09-26/README.md",
+          "lines": [
+            26,
+            119
+          ],
+          "note": "1.4 gates."
+        },
+        {
+          "file": "vendor/zodiacs-engine-0.1.1-rc.10.tgz#package/CHANGELOG.md",
+          "lines": [
+            72,
+            79
+          ],
+          "note": "Changelog rc.8."
+        }
+      ],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "A closed by a recorded PASS verdict"
+    },
+    {
+      "id": "production-positions-3",
+      "title": "computeChart passes the MEAN obliquity to the angles while bodies use the TRUE ecliptic and GAST: Ascendant off by up to 18.5\" vs Swiss today",
+      "disposition": "fixed; rule PASS under amendment",
+      "summary": "Same defect as angles-houses-aspects-1 (mean obliquity with apparent sidereal time); closed by step 1.3 under A1.",
+      "v2_steps": [
+        "1.3"
+      ],
+      "commits_prs": [
+        "zodiacs-org/engine#1 (named by PREREGISTRATION.md as the rc.7 change)",
+        "site PR #578 (merge 982caca2): vendors @zodiacs/engine 0.1.1-rc.7",
+        "site PR #580 (merge 34ac8efa): rc.7 Phase 1 verdicts; amendments A1, A3, A4 adopted; step 1.4 preregistered (A2)"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            83,
+            121
+          ],
+          "note": "Step 1.3 verdict."
+        },
+        {
+          "file": "vendor/zodiacs-engine-0.1.1-rc.10.tgz#package/CHANGELOG.md",
+          "lines": [
+            124,
+            127
+          ],
+          "note": "Changelog rc.7."
+        }
+      ],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": "PREREGISTRATION cites angles-houses-aspects-1 only; the link to this id is through the v1 §2 table row 3, which groups them.",
+      "disposition_class": "A closed by a recorded PASS verdict"
+    },
+    {
+      "id": "production-positions-4",
+      "title": "True node carries a -7.25\" mean bias (p50 7.0\", max 19.9\" vs Swiss TRUE_NODE) caused by the analytic Moon's velocity, not by a definition difference; committed 6.07\" maximum understates it",
+      "disposition": "disclosed; defect open",
+      "summary": "The true-node bias remains (analytic Moon state); the claims ledger cites the finding for the frame and Swiss-pack statements, and rc.7/rc.8 parity runs still report 6.07″ node longitude on the frozen pack.",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            18,
+            18
+          ],
+          "claim": "acc.frame",
+          "note": "Cites this finding."
+        },
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            32,
+            32
+          ],
+          "claim": "acc.swiss-packs",
+          "note": "Cites this finding; 6.07″ node maximum."
+        },
+        {
+          "file": "docs/platform/evidence/site-engine-rc8/README.md",
+          "lines": [
+            61,
+            70
+          ],
+          "note": "rc.8 parity: 6.07″ in node longitude."
+        }
+      ],
+      "open_items": "Node from the DE Moon state (M2.4).",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "G disclosed, defect open"
+    },
+    {
+      "id": "production-positions-5",
+      "title": "Moon route (EclipticGeoMoon) applies no light-time/aberration (net -0.70\", constant) on top of a 1.3\"-4.4\" analytic-series error that reaches 7.5\" at 1800 and 20\" at 2400",
+      "disposition": "disclosed; defect open",
+      "summary": "Since rc.8 the receipt names the Moon 'astronomy-engine-ecliptic-geo-moon;no-light-time;no-aberration'; the Moon's missing light-time/aberration itself remains (M2).",
+      "v2_steps": [
+        "1.11"
+      ],
+      "commits_prs": [
+        "site PR #581 (merge 975bb68f): vendors @zodiacs/engine 0.1.1-rc.8"
+      ],
+      "evidence": [
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            25,
+            25
+          ],
+          "claim": "acc.receipt-positions",
+          "note": "Receipt wording since rc.8."
+        },
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            18,
+            18
+          ],
+          "claim": "acc.frame",
+          "note": "Cites this finding."
+        },
+        {
+          "file": "vendor/zodiacs-engine-0.1.1-rc.10.tgz#package/CHANGELOG.md",
+          "lines": [
+            80,
+            86
+          ],
+          "note": "Changelog rc.8."
+        }
+      ],
+      "open_items": "M2.",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "G disclosed, defect open"
+    },
+    {
+      "id": "production-positions-6",
+      "title": "Custom Pluto integrator drifts to -8\" (2100), -29\" (2200, Horizons-confirmed) and -33\" (2400); +18.6\" at 1800",
+      "disposition": "no recorded disposition",
+      "summary": "No record changes the Pluto integrator; the multi-year fixture and the public multi-year claim quote Pluto at 29.1″ (1800–2199, same TT).",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            31,
+            31
+          ],
+          "claim": "acc.swiss-multiyear",
+          "note": "Quotes the Pluto maximum (not a disposition)."
+        }
+      ],
+      "open_items": "M2 (DE backend).",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "swiss-parity-1",
+      "title": "Production Delta-T is 6.7 s wrong at the present epoch, displacing the Moon 3.5 arcsec today",
+      "disposition": "fixed; rule PASS under amendment",
+      "summary": "Same ΔT defect as time-1 (grouped with it in the v1 §2 table, row 2); closed by step 1.4 under A2 on rc.8.",
+      "v2_steps": [
+        "1.4"
+      ],
+      "commits_prs": [
+        "site PR #580 (merge 34ac8efa): rc.7 Phase 1 verdicts; amendments A1, A3, A4 adopted; step 1.4 preregistered (A2)",
+        "site PR #581 (merge 975bb68f): vendors @zodiacs/engine 0.1.1-rc.8",
+        "site PR #584 (merge 7edaf200): rc.8 Phase 1 verdicts (1.4, A4 re-run, 1.7, 1.10, 1.11)"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            123,
+            150
+          ],
+          "note": "Step 1.4 verdict."
+        },
+        {
+          "file": "docs/platform/evidence/phase1-verdicts-2026-09-26/README.md",
+          "lines": [
+            26,
+            119
+          ],
+          "note": "1.4 gates."
+        },
+        {
+          "file": "vendor/zodiacs-engine-0.1.1-rc.10.tgz#package/CHANGELOG.md",
+          "lines": [
+            72,
+            79
+          ],
+          "note": "Changelog rc.8."
+        },
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            13,
+            13
+          ],
+          "claim": "acc.deltat",
+          "note": "Public claim cites swiss-parity-1."
+        }
+      ],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "A closed by a recorded PASS verdict"
+    },
+    {
+      "id": "swiss-parity-2",
+      "title": "Shipped engine positions are 4-10x further from JPL than Swiss's own zero-data Moshier fallback",
+      "disposition": "disclosed; defect open",
+      "summary": "Same series gap as production-positions-1; measured and quoted, not fixed.",
+      "v2_steps": [
+        "Phase 0 item 4"
+      ],
+      "commits_prs": [
+        "site PR #556, squash-merged to main as 3f31ba17 (2026-09-24)"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            408,
+            408
+          ],
+          "note": "Phase 0 item 4 Done."
+        },
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            31,
+            31
+          ],
+          "claim": "acc.swiss-multiyear",
+          "note": "Multi-year statement."
+        }
+      ],
+      "open_items": "M2.",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "G disclosed, defect open"
+    },
+    {
+      "id": "swiss-parity-10",
+      "title": "Daily-use bodies absent: Chiron, Lilith (mean/true apogee), mean node, and the four main asteroids",
+      "disposition": "partially addressed",
+      "summary": "rc.10 adds the mean node and mean Black Moon Lilith (changelog: within 0.7″ of Swiss SE_MEAN_NODE/SE_MEAN_APOG every 3.7 days 1800–2199); osculating Lilith left out (astronomy-engine series 198″ median from Swiss); Chiron, the four asteroids and fixed stars not added. The site record says the engine PR's Swiss comparison of the new points was not available and was not re-run.",
+      "v2_steps": [
+        "v2 Phase 2 A (points)"
+      ],
+      "commits_prs": [
+        "site PR #593 (merge f2bd0dd4; commits 92162624, e29d0dbc): @zodiacs/engine 0.1.1-rc.10"
+      ],
+      "evidence": [
+        {
+          "file": "vendor/zodiacs-engine-0.1.1-rc.10.tgz#package/CHANGELOG.md",
+          "lines": [
+            11,
+            28
+          ],
+          "note": "Changelog rc.10."
+        },
+        {
+          "file": "docs/platform/evidence/site-engine-rc10/README.md",
+          "lines": [
+            64,
+            77
+          ],
+          "note": "Measurement limits."
+        }
+      ],
+      "open_items": "Chiron/Ceres/Pallas/Juno/Vesta; osculating Lilith; the site-side Swiss record for the new points.",
+      "observed_tree_state": [],
+      "uncertain": "0.7″ would meet v2's '≤ 1″ from Swiss' but not v1 M5's '≤ 0.1″' if that bound is meant for the mean node; the figure is the engine changelog's, not a site verdict.",
+      "disposition_class": "D partially addressed"
+    },
+    {
+      "id": "swiss-parity-11",
+      "title": "Two house systems (whole sign, Placidus) against Swiss's 24; Koch, Equal, Porphyry, Regiomontanus, Campanus are daily-use",
+      "disposition": "partially addressed",
+      "summary": "Same house-system work as angles-houses-aspects-7 (rc.9, rc.10): thirteen systems in the package and MCP adapter; site forms still two.",
+      "v2_steps": [
+        "v2 Phase 2 A (houses)"
+      ],
+      "commits_prs": [
+        "site PR #587 (merge b0f37e65): @zodiacs/engine 0.1.1-rc.9, twelve house systems",
+        "site PR #593 (merge f2bd0dd4; commits 92162624, e29d0dbc): @zodiacs/engine 0.1.1-rc.10"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/houses-2026-09-26/README.md",
+          "lines": [
+            52,
+            52
+          ],
+          "note": "Given inputs: PASS."
+        },
+        {
+          "file": "docs/platform/evidence/houses-2026-09-26/README.md",
+          "lines": [
+            92,
+            94
+          ],
+          "note": "End to end."
+        },
+        {
+          "file": "docs/platform/evidence/site-engine-rc9/README.md",
+          "lines": [
+            60,
+            65
+          ],
+          "note": "Forms still offer two systems."
+        },
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            19,
+            19
+          ],
+          "claim": "acc.house-systems",
+          "note": "Public claim."
+        }
+      ],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "D partially addressed"
+    },
+    {
+      "id": "swiss-parity-12",
+      "title": "No sidereal zodiac: zero ayanamsas against Swiss's 48",
+      "disposition": "no recorded disposition",
+      "summary": "No ayanamsa or sidereal zodiac is recorded in rc.7–rc.10.",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [],
+      "open_items": "v2 Phase 2 B.",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "time-1",
+      "title": "Production Delta-T (Espenak-Meeus 2004 polynomials) is ~6 s wrong today and the docs call the gap a 'convention'",
+      "disposition": "fixed; rule PASS under amendment",
+      "summary": "Step 1.4 (v1 rule 1c) PASS under amendment A2 on vendored rc.8: ΔT model zodiacs-deltat/1, at most 0.0306 s from IERS on the 12 dates, every IERS day since 1962 within 0.0834 s, receipt carries model/value/band/table/digest. The public \"convention\" wording was corrected first in PR #556.",
+      "v2_steps": [
+        "1.4"
+      ],
+      "commits_prs": [
+        "c3f980a4 (State today's ΔT error instead of calling it a convention; pre-squash commit of PR #556, object present in the clone)",
+        "site PR #580 (merge 34ac8efa): rc.7 Phase 1 verdicts; amendments A1, A3, A4 adopted; step 1.4 preregistered (A2)",
+        "site PR #581 (merge 975bb68f): vendors @zodiacs/engine 0.1.1-rc.8",
+        "site PR #584 (merge 7edaf200): rc.8 Phase 1 verdicts (1.4, A4 re-run, 1.7, 1.10, 1.11)"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            123,
+            150
+          ],
+          "note": "Step 1.4 verdict.",
+          "quote": "- **Verdict: PASS under amendment A2** (2026-09-26), on the vendored rc.8"
+        },
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            480,
+            609
+          ],
+          "note": "Amendment A2: the model fixed before code."
+        },
+        {
+          "file": "docs/platform/evidence/phase1-verdicts-2026-09-26/README.md",
+          "lines": [
+            26,
+            119
+          ],
+          "note": "1.4 gates and holdout."
+        },
+        {
+          "file": "docs/platform/evidence/deltat-2026-09-25/README.md",
+          "lines": [
+            1,
+            23
+          ],
+          "note": "ΔT model record, committed before the engine code."
+        },
+        {
+          "file": "vendor/zodiacs-engine-0.1.1-rc.10.tgz#package/CHANGELOG.md",
+          "lines": [
+            72,
+            79
+          ],
+          "note": "Changelog rc.8."
+        },
+        {
+          "file": "docs/engine-validation/README.md",
+          "lines": [
+            114,
+            131
+          ],
+          "note": "Correction of 2026-09-23 and addition of 2026-09-25 in the validation report."
+        },
+        {
+          "file": "docs/platform/evidence/swiss-benchmark/RESULTS.md",
+          "lines": [
+            91,
+            95
+          ],
+          "note": "Correction of 2026-09-23 in the Swiss benchmark results."
+        },
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            13,
+            13
+          ],
+          "claim": "acc.deltat",
+          "note": "Public claim cites this finding."
+        },
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            14,
+            14
+          ],
+          "claim": "acc.deltat-formula",
+          "note": "States the rc.7 formula and its error."
+        }
+      ],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "A closed by a recorded PASS verdict"
+    },
+    {
+      "id": "time-2",
+      "title": "Pre-1970 offsets for 98 zones are another city's history on ICU hosts (tzdb merger policy, no backzone)",
+      "disposition": "fixed; rule PASS (site resolver)",
+      "summary": "Step 1.12 PASS \"with the reference stated\": the site pins tzdb 2025c with backzone and reads each zone's history before 1970 from it; Stockholm 1947-07-01 12:00 → +60. Against the audit's 98-zone list as built (Debian 2025b reference) the verdict would be PARTIAL, 179 of 193. The engine package's geo adapter still relies on host Intl (claims ledger time.host-icu), so v2 1.12's \"inside the engine\" is met on the site, not in the package.",
+      "v2_steps": [
+        "1.12"
+      ],
+      "commits_prs": [
+        "c58f9b32 (Pin each zone's history before 1970 from tzdb 2025c with backzone; pre-squash commit of PR #556, object present in the clone)",
+        "6e2b9b3f (Read a birthplace time before 1970 on its zone's pinned history; pre-squash commit of PR #556, object present in the clone)",
+        "site PR #556, squash-merged to main as 3f31ba17 (2026-09-24)"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            300,
+            330
+          ],
+          "note": "Step 1.12 verdict.",
+          "quote": "- **Verdict: PASS**, with the reference stated."
+        },
+        {
+          "file": "docs/platform/evidence/tz-history-2025c/README.md",
+          "lines": [
+            1,
+            33
+          ],
+          "note": "Pinned zone-history record."
+        },
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/corpora/README.md",
+          "lines": [
+            1,
+            30
+          ],
+          "note": "Corpora: tzdb-divergence-98.json and the check file."
+        },
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            79,
+            79
+          ],
+          "claim": "time.pinned-history",
+          "note": "Public claim cites this finding."
+        },
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            73,
+            73
+          ],
+          "claim": "time.host-icu",
+          "note": "Package geo adapter uses host Intl."
+        }
+      ],
+      "open_items": "Backzone tzdb inside the engine package (v2 1.12 wording; v1 M3 \"compiled into the engine\").",
+      "observed_tree_state": [],
+      "uncertain": "Whether v2 1.12 is satisfied by the site-side table alone is not settled by the records.",
+      "disposition_class": "A closed by a recorded PASS verdict"
+    },
+    {
+      "id": "time-3",
+      "title": "No Julian-calendar input path: Julian-era birth dates are silently read as proleptic Gregorian",
+      "disposition": "fixed; rule PASS",
+      "summary": "Step 1.13 PASS for the library (1.13a, PR #556) and the forms (1.13b, PR #585): 0 of 255,675 Julian dates 1500–2199 differ from Swiss; Petrograd 1917-10-25 O.S. gives the 1917-11-07 chart; adoption dates for 42 countries.",
+      "v2_steps": [
+        "1.13"
+      ],
+      "commits_prs": [
+        "2ebd8272 (Convert Old Style dates to the Gregorian calendar; pre-squash commit of PR #556, object present in the clone)",
+        "site PR #556, squash-merged to main as 3f31ba17 (2026-09-24)",
+        "site PR #585 (merge 12f483df): Julian (Old Style) calendar on the birth forms"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            332,
+            345
+          ],
+          "note": "Step 1.13 verdict.",
+          "quote": "- **Verdict: PASS, for the library (1.13a) and the forms (1.13b).**"
+        },
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            77,
+            77
+          ],
+          "claim": "time.old-style",
+          "note": "Public claim."
+        },
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            78,
+            78
+          ],
+          "claim": "time.old-style-adoption",
+          "note": "Public claim."
+        }
+      ],
+      "open_items": "No record that the engine package, MCP schema or share codec gained a calendar input (the finding named all four).",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "A closed by a recorded PASS verdict"
+    },
+    {
+      "id": "verification-honesty-1",
+      "title": "In-suite Horizons gate is 12x-3600x looser than measured residuals and the reference set is not reproducible",
+      "disposition": "disclosed; gate unchanged",
+      "summary": "The public claim now states the Horizons gates (0.05° planets, 0.15°–0.2° Moon) and the largest residual (14.8″), and the fixture records the audit's re-fetch (API 1.2, DE441); the gates themselves are not tightened to per-body multiples of the residual (v1 M6 clause 1).",
+      "v2_steps": [
+        "1.14"
+      ],
+      "commits_prs": [
+        "e2d1ddea (Give the NASA JPL Horizons test its figure, and today's ΔT on the engine page; pre-squash commit of PR #556, object present in the clone)",
+        "1675f51c (Type the Horizons reference fixture where the engine test reads it; pre-squash commit of PR #556, object present in the clone)",
+        "site PR #556, squash-merged to main as 3f31ba17 (2026-09-24)"
+      ],
+      "evidence": [
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            20,
+            20
+          ],
+          "claim": "acc.jpl-gate",
+          "note": "Cites this finding."
+        },
+        {
+          "file": "docs/engine-validation/README.md",
+          "lines": [
+            378,
+            391
+          ],
+          "note": "Validation report: the original fetch's provider version is not recorded."
+        }
+      ],
+      "open_items": "Per-body gates of max(3× residual, 2″) (v1 M6 clause 1).",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "G disclosed, defect open"
+    },
+    {
+      "id": "verification-honesty-2",
+      "title": "Shipped Delta-T model is 2-6 s off IERS today and nothing tests it; Swiss is within 0.4 s",
+      "disposition": "fixed; rule PASS under amendment",
+      "summary": "Same ΔT defect as time-1 (grouped with it in the v1 §2 table, row 2); closed by step 1.4 under A2 on rc.8. The weekly .github/workflows/deltat-monitor.yml now checks the table against IERS (commits nothing).",
+      "v2_steps": [
+        "1.4"
+      ],
+      "commits_prs": [
+        "site PR #580 (merge 34ac8efa): rc.7 Phase 1 verdicts; amendments A1, A3, A4 adopted; step 1.4 preregistered (A2)",
+        "site PR #581 (merge 975bb68f): vendors @zodiacs/engine 0.1.1-rc.8",
+        "site PR #584 (merge 7edaf200): rc.8 Phase 1 verdicts (1.4, A4 re-run, 1.7, 1.10, 1.11)"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            123,
+            150
+          ],
+          "note": "Step 1.4 verdict."
+        },
+        {
+          "file": "docs/platform/evidence/phase1-verdicts-2026-09-26/README.md",
+          "lines": [
+            26,
+            119
+          ],
+          "note": "1.4 gates."
+        },
+        {
+          "file": "vendor/zodiacs-engine-0.1.1-rc.10.tgz#package/CHANGELOG.md",
+          "lines": [
+            72,
+            79
+          ],
+          "note": "Changelog rc.8."
+        },
+        {
+          "file": "docs/platform/evidence/site-engine-rc8/README.md",
+          "lines": [
+            44,
+            60
+          ],
+          "note": "The site installs the model for every astronomy-engine caller; weekly monitor."
+        }
+      ],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "A closed by a recorded PASS verdict"
+    },
+    {
+      "id": "verification-honesty-3",
+      "title": "First independent anchors: shipped engine misses NASA Venus-transit greatest instants by 17-21 s where the alpha and Swiss hit within 1 s",
+      "disposition": "partially addressed",
+      "summary": "The four canon events are committed as a corpus (Phase 0 item 1); no test or CI gate reads them.",
+      "v2_steps": [
+        "Phase 0 item 1"
+      ],
+      "commits_prs": [
+        "site PR #556, squash-merged to main as 3f31ba17 (2026-09-24)"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/corpora/README.md",
+          "lines": [
+            1,
+            30
+          ],
+          "note": "canon-events.json listed in the corpora."
+        },
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            405,
+            405
+          ],
+          "note": "Phase 0 item 1 Done."
+        }
+      ],
+      "open_items": "canon-events gates (v1 M6 clause 2; M2.6(iii)).",
+      "observed_tree_state": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/corpora/canon-events.json",
+          "lines": null,
+          "note": "At f2bd0dd no file under src/, scripts/, tests/ or examples/ references canon-events.json, and no workflow references tier-B, the benchmark or canon events."
+        }
+      ],
+      "uncertain": null,
+      "disposition_class": "D partially addressed"
+    },
+    {
+      "id": "verification-honesty-4",
+      "title": "'42 families each confirmed by a mutation that made it fail' is recorded for 13 families and one recorded mutation survives",
+      "disposition": "record corrected",
+      "summary": "PARTITION-RESULTS.md carries an appended correction: the mutation record holds for 11 of 42 families and one recorded mutation survives. No committed mutation ledger re-run in CI is recorded (v1 M6).",
+      "v2_steps": [
+        "Phase 0 item 2"
+      ],
+      "commits_prs": [
+        "5f0dec2e (Append the corrections Phase 0 lists; pre-squash commit of PR #556, object present in the clone)",
+        "site PR #556, squash-merged to main as 3f31ba17 (2026-09-24)"
+      ],
+      "evidence": [
+        {
+          "file": "examples/precision-alpha/PARTITION-RESULTS.md",
+          "lines": [
+            349,
+            358
+          ],
+          "note": "Appended correction (cites ledger verification-honesty-4)."
+        },
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            406,
+            406
+          ],
+          "note": "Phase 0 item 2 Done."
+        }
+      ],
+      "open_items": "tools/mutate.mjs ledger re-run in CI (v1 M6 clause 9).",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "E record corrected"
+    },
+    {
+      "id": "verification-honesty-5",
+      "title": "CI enforces only the literal gate and frozen Swiss fixtures; tier-b, the benchmark, Delta-T and every anchor are documentation only",
+      "disposition": "partially addressed",
+      "summary": "The vitest suite that site-check.yml runs (npm test) now includes an ERFA-arbiter angle test (scripts/angles-grid.test.mjs), and a weekly workflow monitors ΔT; the Swiss benchmark was re-run on rc.8 and rc.10 by hand. No record puts tier-B, the 180-case benchmark or the canon anchors into CI.",
+      "v2_steps": [],
+      "commits_prs": [
+        "site PR #556, squash-merged to main as 3f31ba17 (2026-09-24)",
+        "site PR #581 (merge 975bb68f): vendors @zodiacs/engine 0.1.1-rc.8",
+        "site PR #593 (merge f2bd0dd4; commits 92162624, e29d0dbc): @zodiacs/engine 0.1.1-rc.10"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            92,
+            99
+          ],
+          "note": "ERFA arbiter pinned by scripts/angles-grid.test.mjs."
+        },
+        {
+          "file": "docs/platform/evidence/site-engine-rc8/README.md",
+          "lines": [
+            44,
+            60
+          ],
+          "note": "Weekly deltat-monitor workflow."
+        },
+        {
+          "file": "docs/platform/evidence/site-engine-rc10/README.md",
+          "lines": [
+            46,
+            53
+          ],
+          "note": "rc.10 Swiss refresh (manual)."
+        },
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            32,
+            32
+          ],
+          "claim": "acc.swiss-packs",
+          "note": "Cites this finding."
+        }
+      ],
+      "open_items": "Tier-B, benchmark and anchors in CI (v1 M6).",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "D partially addressed"
+    },
+    {
+      "id": "alpha-reduction-math-3",
+      "title": "Interval allowances are covered by slack, not by the stated analysis, in three places (no counterexample found)",
+      "disposition": "no recorded disposition",
+      "summary": "No record. The research runtime (examples/precision-alpha) changed only by three appended documentation corrections between the audit tree 39b7a127 and f2bd0dd.",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "alpha-reduction-math-4",
+      "title": "Five documentation statements in the core contradict the code or each other",
+      "disposition": "no recorded disposition",
+      "summary": "No record. The research runtime (examples/precision-alpha) changed only by three appended documentation corrections between the audit tree 39b7a127 and f2bd0dd.",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "alpha-search-partition-4",
+      "title": "Record-wide Lipschitz constants make a double root of f′ catastrophic: 794,201 evaluations and 101,850 unmerged unresolved slivers (geometric), 4,000,001 and zero events (retarded rungs)",
+      "disposition": "no recorded disposition",
+      "summary": "No record. The research runtime (examples/precision-alpha) changed only by three appended documentation corrections between the audit tree 39b7a127 and f2bd0dd.",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "alpha-search-partition-5",
+      "title": "partitionKey omits every numerical constant whose change would move spans, so an imported plan from a different build passes the key check",
+      "disposition": "no recorded disposition",
+      "summary": "No record. The research runtime (examples/precision-alpha) changed only by three appended documentation corrections between the audit tree 39b7a127 and f2bd0dd.",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [],
+      "open_items": "v2 Phase 4 [v1 M4.2]",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "alpha-search-partition-6",
+      "title": "tauPadFactor is a dead option: accepted, validated, typed and documented, never read",
+      "disposition": "no recorded disposition",
+      "summary": "No record. The research runtime (examples/precision-alpha) changed only by three appended documentation corrections between the audit tree 39b7a127 and f2bd0dd.",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [],
+      "open_items": "v2 Phase 4 [v1 M4.2]",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "alpha-search-partition-7",
+      "title": "Endpoint-root ownership fires only on exact zeros, so window-edge and record-boundary roots cost the proven claim in every rung",
+      "disposition": "no recorded disposition",
+      "summary": "No record. The research runtime (examples/precision-alpha) changed only by three appended documentation corrections between the audit tree 39b7a127 and f2bd0dd.",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "alpha-search-partition-8",
+      "title": "The of-date and deflected rungs' projection weights enter as point values whose declared 4e-15 error is not carried into the enclosure",
+      "disposition": "no recorded disposition",
+      "summary": "No record. The research runtime (examples/precision-alpha) changed only by three appended documentation corrections between the audit tree 39b7a127 and f2bd0dd.",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "alpha-search-partition-9",
+      "title": "zodiacs-partitioned-search/1 has no invariant gate: a self-inconsistent result is reported, not refused",
+      "disposition": "no recorded disposition",
+      "summary": "No record. The research runtime (examples/precision-alpha) changed only by three appended documentation corrections between the audit tree 39b7a127 and f2bd0dd.",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [],
+      "open_items": "v2 Phase 4 [v1 M4.2]",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "alpha-search-partition-10",
+      "title": "compile.mjs treats --help as a full compile into the package tree from a machine-specific default kernel path",
+      "disposition": "no recorded disposition",
+      "summary": "No record. The research runtime (examples/precision-alpha) changed only by three appended documentation corrections between the audit tree 39b7a127 and f2bd0dd.",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "angles-houses-aspects-3",
+      "title": "Placidus refused at a hard |lat| > 66 while Swiss computes to 90 - eps (66.56): Rovaniemi gets a whole-sign fallback chart",
+      "disposition": "fixed; rule PASS",
+      "summary": "Step 1.9 (v1 rule 1h) PASS on rc.7: limit at 90° − ε (66.53°–66.59°), status agrees with Swiss 336 of 336, cusps within 0.0085″ on Swiss inputs. Owner-delegated decision (2026-09-23): whole sign stays the Placidus fallback (PLACIDUS_POLAR_FALLBACK); Porphyry offered at any latitude.",
+      "v2_steps": [
+        "1.9"
+      ],
+      "commits_prs": [
+        "zodiacs-org/engine#1 (named by PREREGISTRATION.md as the rc.7 change)",
+        "site PR #578 (merge 982caca2): vendors @zodiacs/engine 0.1.1-rc.7",
+        "site PR #580 (merge 34ac8efa): rc.7 Phase 1 verdicts; amendments A1, A3, A4 adopted; step 1.4 preregistered (A2)",
+        "834a92e9 (Add the Placidus limit to the rc.7 patches; pre-squash commit of PR #556, object present in the clone)",
+        "fa7f92e7 (Add Porphyry and the named polar fallback to the rc.7 patches; pre-squash commit of PR #556, object present in the clone)"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            230,
+            264
+          ],
+          "note": "Step 1.9 verdict (cites ledger angles-houses-aspects-3) and the delegated fallback decision.",
+          "quote": "- **Verdict: PASS** (2026-09-25), on the vendored rc.7"
+        },
+        {
+          "file": "docs/platform/evidence/phase1-verdicts-2026-09-25/README.md",
+          "lines": [
+            232,
+            270
+          ],
+          "note": "1.9 measurements."
+        },
+        {
+          "file": "vendor/zodiacs-engine-0.1.1-rc.10.tgz#package/CHANGELOG.md",
+          "lines": [
+            128,
+            134
+          ],
+          "note": "Changelog rc.7: limit and Porphyry."
+        },
+        {
+          "file": "docs/engine-validation/README.md",
+          "lines": [
+            174,
+            178
+          ],
+          "note": "Validation report: since rc.7 the limit is 90° minus the obliquity."
+        },
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            6,
+            6
+          ],
+          "claim": "acc.angles-houses",
+          "note": "Public claim cites this finding."
+        }
+      ],
+      "open_items": "Site forms still offer whole sign and Placidus only (rc.9/rc.10 records).",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "A closed by a recorded PASS verdict"
+    },
+    {
+      "id": "angles-houses-aspects-5",
+      "title": "House placement ignores ecliptic latitude: differs from Swiss house_pos in 2.75% of placements (Pluto 12.75%, Moon 3.25%)",
+      "disposition": "no recorded disposition",
+      "summary": "No housePosition with ecliptic latitude is recorded; the rc.10 package exports do not include one.",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [],
+      "open_items": null,
+      "observed_tree_state": [
+        {
+          "file": "vendor/zodiacs-engine-0.1.1-rc.10.tgz#package/dist/index.d.ts",
+          "lines": [
+            5,
+            5
+          ],
+          "note": "rc.10 internal-math exports list houseOf and computeHouses; no housePosition."
+        }
+      ],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "angles-houses-aspects-6",
+      "title": "Declination derived with mean obliquity (or fixed J2000 23.4392911 when no instant is known): up to 44.5\" (1900) / 8.4\" error; the transformation formula itself is correct",
+      "disposition": "no recorded disposition",
+      "summary": "No record changes the site declination path.",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [],
+      "open_items": null,
+      "observed_tree_state": [
+        {
+          "file": "src/lib/wheel/ecliptic3d.ts",
+          "lines": [
+            41,
+            41
+          ],
+          "note": "At f2bd0dd the fixed J2000 obliquity default is still exported.",
+          "quote": "export const OBLIQUITY = 23.4392911;"
+        }
+      ],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "angles-houses-aspects-8",
+      "title": "Chart-shape thresholds leave dead zones: even 10-planet spreads of 122-148 deg and 182-223 deg classify as nothing",
+      "disposition": "no recorded disposition",
+      "summary": "No record addresses the chart-shape dead zones.",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "angles-houses-aspects-12",
+      "title": "docs/engine-validation/README.md overstates angle validation ('1.57\" worst angle, cusps exact') and misstates Swiss's polar limit as 66 deg",
+      "disposition": "record corrected",
+      "summary": "The validation report's \"1.57″ worst angle\" row and Swiss's polar limit (90° − ε) were corrected in place, with the earlier wording kept under its Corrections section; the report now quotes the 3,128-case grid result.",
+      "v2_steps": [
+        "Phase 0 item 2",
+        "1.14"
+      ],
+      "commits_prs": [
+        "5f0dec2e (Append the corrections Phase 0 lists; pre-squash commit of PR #556, object present in the clone)",
+        "67a9e71b (Correct public claims that the claims-ledger research found untrue; pre-squash commit of PR #556, object present in the clone)",
+        "site PR #556, squash-merged to main as 3f31ba17 (2026-09-24)"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            406,
+            406
+          ],
+          "note": "Phase 0 item 2: corrected in place because step 1.14 holds the report."
+        },
+        {
+          "file": "docs/engine-validation/README.md",
+          "lines": [
+            164,
+            178
+          ],
+          "note": "Angles section as corrected."
+        },
+        {
+          "file": "docs/engine-validation/README.md",
+          "lines": [
+            394,
+            455
+          ],
+          "note": "Corrections section keeps the earlier wording."
+        },
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            6,
+            6
+          ],
+          "claim": "acc.angles-houses",
+          "note": "Public claim cites this finding."
+        }
+      ],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "E record corrected"
+    },
+    {
+      "id": "angles-houses-aspects-14",
+      "title": "Site horizon drawing uses mean sidereal time while the engine uses apparent: 0.005 deg internal inconsistency",
+      "disposition": "no recorded disposition",
+      "summary": "No record addresses the DepthFigure mean-sidereal-time drawing.",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [],
+      "open_items": null,
+      "observed_tree_state": [
+        {
+          "file": "src/components/DepthFigure.astro",
+          "lines": [
+            113,
+            113
+          ],
+          "note": "At f2bd0dd the zenith is still computed from gmstHours.",
+          "quote": "gastHours: gmstHours(utcMs!)"
+        }
+      ],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "data-toolchain-packaging-2",
+      "title": "A pack compiled with the default --out ships inside the npm archive",
+      "disposition": "no recorded disposition",
+      "summary": "No record.",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "data-toolchain-packaging-3",
+      "title": "RIGHTS.md claims the pack header carries the NAIF attribution obligations; it does not",
+      "disposition": "no recorded disposition",
+      "summary": "No provenance block is recorded in the pack header; compiler/RESULTS.md carries only the \"public domain\" correction (data-toolchain-packaging-13).",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "data-toolchain-packaging-6",
+      "title": "Tree commits ~20,000 per-instant Swiss output values while stating bulk per-instant values are not committed",
+      "disposition": "record corrected; owner decision pending",
+      "summary": "METADATA-CORRECTION.md and LICENSING.md now list every tracked file of Swiss output (fixtures, per-row reports, event deltas), each a frozen measurement or oracle and none a fitting target, and say the pending owner decision covers them too.",
+      "v2_steps": [
+        "Phase 0 item 2"
+      ],
+      "commits_prs": [
+        "5f0dec2e (Append the corrections Phase 0 lists; pre-squash commit of PR #556, object present in the clone)",
+        "site PR #556, squash-merged to main as 3f31ba17 (2026-09-24)"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/precision-2026-09-20/METADATA-CORRECTION.md",
+          "lines": [
+            95,
+            125
+          ],
+          "note": "Owner decision text and appended correction (cites data-toolchain-packaging-6)."
+        },
+        {
+          "file": "docs/platform/evidence/swiss-benchmark/LICENSING.md",
+          "lines": [
+            24,
+            33
+          ],
+          "note": "Appended correction."
+        },
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            406,
+            406
+          ],
+          "note": "Phase 0 item 2 Done."
+        }
+      ],
+      "open_items": "Owner decision (a) amend RIGHTS.md or (b) remove the files: no recorded decision.",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "E record corrected"
+    },
+    {
+      "id": "data-toolchain-packaging-7",
+      "title": "Cross-runtime bit-identity holds for the partitioned path only; the released reducer relies on Math.sin/cos/atan2",
+      "disposition": "no recorded disposition",
+      "summary": "No record routes the released reducer through trig.mjs.",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "data-toolchain-packaging-8",
+      "title": "Receipt CONVENTIONS strings are truthful but 'apparent' omits deflection and the receipt does not identify the ephemeris model by default",
+      "disposition": "fixed; rule PASS",
+      "summary": "Step 1.11 (v1 rule 1j) PASS on rc.8: the validator refuses a receipt without engine.ephemeris; since rc.8 the conventions no longer call planets 'apparent' (planets 'aberrated-geocentric-ecliptic-of-date;no-deflection', Moon 'astronomy-engine-ecliptic-geo-moon;no-light-time;no-aberration').",
+      "v2_steps": [
+        "1.11"
+      ],
+      "commits_prs": [
+        "site PR #581 (merge 975bb68f): vendors @zodiacs/engine 0.1.1-rc.8",
+        "site PR #584 (merge 7edaf200): rc.8 Phase 1 verdicts (1.4, A4 re-run, 1.7, 1.10, 1.11)"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            283,
+            298
+          ],
+          "note": "Step 1.11 verdict (cites ledger data-toolchain-packaging-8 and time-7).",
+          "quote": "- **Verdict: PASS** (2026-09-26), on the vendored rc.8; not run before it."
+        },
+        {
+          "file": "docs/platform/evidence/phase1-verdicts-2026-09-26/README.md",
+          "lines": [
+            178,
+            202
+          ],
+          "note": "1.11 measurement."
+        },
+        {
+          "file": "vendor/zodiacs-engine-0.1.1-rc.10.tgz#package/CHANGELOG.md",
+          "lines": [
+            80,
+            86
+          ],
+          "note": "Changelog rc.8: receipts name the ephemeris; planets no longer called apparent."
+        },
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            25,
+            25
+          ],
+          "claim": "acc.receipt-positions",
+          "note": "Public claim cites this finding and production-positions-8."
+        }
+      ],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "A closed by a recorded PASS verdict"
+    },
+    {
+      "id": "data-toolchain-packaging-9",
+      "title": "Container validates geometry but not numerical conventions; a pack declaring a different Chebyshev convention decodes silently wrong",
+      "disposition": "no recorded disposition",
+      "summary": "No record.",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "data-toolchain-packaging-12",
+      "title": "NOTICE gaps: shipped ERFA-derived vectors and verbatim ERFA C sources are not named; no JPL attribution text for user-compiled packs; site root has no LICENSE/NOTICE",
+      "disposition": "no recorded disposition",
+      "summary": "No record extends NOTICE or adds a root LICENSE/NOTICE to the site repository.",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [],
+      "open_items": null,
+      "observed_tree_state": [
+        {
+          "file": "(repository root)",
+          "lines": null,
+          "note": "At f2bd0dd there is no LICENSE, NOTICE or THIRD-PARTY-NOTICES file at the site root."
+        }
+      ],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "data-toolchain-packaging-13",
+      "title": "Documentation drift in the shipped compile guide and frozen compiler RESULTS",
+      "disposition": "record corrected",
+      "summary": "examples/00-prepare-a-pack.md now says 423 tests; compiler/RESULTS.md §11 carries the correction of the \"public domain\" clause (cites data-toolchain-packaging-13). --kernel is not recorded as made required.",
+      "v2_steps": [
+        "Phase 0 item 2"
+      ],
+      "commits_prs": [
+        "5f0dec2e (Append the corrections Phase 0 lists; pre-squash commit of PR #556, object present in the clone)",
+        "site PR #556, squash-merged to main as 3f31ba17 (2026-09-24)"
+      ],
+      "evidence": [
+        {
+          "file": "examples/precision-alpha/examples/00-prepare-a-pack.md",
+          "lines": [
+            52,
+            53
+          ],
+          "note": "Appended correction."
+        },
+        {
+          "file": "docs/platform/evidence/precision-2026-09-20/compiler/RESULTS.md",
+          "lines": [
+            382,
+            385
+          ],
+          "note": "Appended correction."
+        },
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            406,
+            406
+          ],
+          "note": "Phase 0 item 2 Done."
+        }
+      ],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "E record corrected"
+    },
+    {
+      "id": "production-event-search-5",
+      "title": "Two crossing solvers ship with different semantics: package includes an exact lower endpoint and throws on a 10,000-sample budget; the site's copy does neither",
+      "disposition": "fixed; rule PASS",
+      "summary": "Step 1.10 (v1 rule 1i) PASS on rc.8: the site's own solver is removed; every scan calls @zodiacs/engine/crossings; the audit's s2 cases agree to the millisecond through both entry points; a 10,000-sample budget refuses whole instead of throwing.",
+      "v2_steps": [
+        "1.10"
+      ],
+      "commits_prs": [
+        "site PR #581 (merge 975bb68f): vendors @zodiacs/engine 0.1.1-rc.8",
+        "site PR #584 (merge 7edaf200): rc.8 Phase 1 verdicts (1.4, A4 re-run, 1.7, 1.10, 1.11)"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            266,
+            281
+          ],
+          "note": "Step 1.10 verdict (cites ledger production-event-search-5).",
+          "quote": "- **Verdict: PASS** (2026-09-26), on the vendored rc.8; not run before it."
+        },
+        {
+          "file": "docs/platform/evidence/phase1-verdicts-2026-09-26/README.md",
+          "lines": [
+            152,
+            176
+          ],
+          "note": "1.10 measurement."
+        },
+        {
+          "file": "scripts/crossings-s2.test.mjs",
+          "lines": [
+            1,
+            6
+          ],
+          "note": "Test header cites the finding."
+        },
+        {
+          "file": "vendor/zodiacs-engine-0.1.1-rc.10.tgz#package/CHANGELOG.md",
+          "lines": [
+            89,
+            104
+          ],
+          "note": "Changelog rc.8: one solver, (from, to] window, typed refusal."
+        },
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            27,
+            27
+          ],
+          "claim": "acc.search-caps",
+          "note": "Public claim cites this finding."
+        }
+      ],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "A closed by a recorded PASS verdict"
+    },
+    {
+      "id": "production-event-search-6",
+      "title": "Transit-window budgets are 25–100× the measured residual and mark 14% of windows uncertain that Swiss would state plainly",
+      "disposition": "no recorded disposition",
+      "summary": "No record re-derives the transit-window budgets.",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "production-event-search-9",
+      "title": "build-transits.mjs daily aspect scan claims 'Daily samples catch every crossing'; near a Mercury station a 74\" band is blind",
+      "disposition": "no recorded disposition",
+      "summary": "No record addresses the build-transits.mjs daily aspect scan.",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [],
+      "open_items": null,
+      "observed_tree_state": [
+        {
+          "file": "scripts/build-transits.mjs",
+          "lines": [
+            183,
+            183
+          ],
+          "note": "At f2bd0dd the comment still reads as the finding quoted it.",
+          "quote": "Daily samples catch every crossing"
+        }
+      ],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "production-event-search-10",
+      "title": "Saturn natalRetrograde uses a ±1-day difference while the chart uses ±6 h; they disagree inside a 40 s window around a station",
+      "disposition": "fixed (recorded as step 1.8c)",
+      "summary": "Natal Saturn's direction now comes from the chart's own speed (PR #556, step 1.8c; engine rc.7 changelog). The 1.8 verdict record: saturnReturn(...).natalRetrograde, the chart's flag and Swiss agree an hour either side of all six Saturn stations (12 of 12).",
+      "v2_steps": [
+        "1.8"
+      ],
+      "commits_prs": [
+        "5875f20f (Take natal Saturn's direction from the chart's own speed; pre-squash commit of PR #556, object present in the clone)",
+        "site PR #556, squash-merged to main as 3f31ba17 (2026-09-24)",
+        "site PR #578 (merge 982caca2): vendors @zodiacs/engine 0.1.1-rc.7"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            207,
+            209
+          ],
+          "note": "PREREGISTRATION notes natal Saturn's direction comes from the chart's own speed (1.8c)."
+        },
+        {
+          "file": "vendor/zodiacs-engine-0.1.1-rc.10.tgz#package/CHANGELOG.md",
+          "lines": [
+            120,
+            123
+          ],
+          "note": "Changelog rc.7."
+        },
+        {
+          "file": "docs/platform/evidence/phase1-verdicts-2026-09-25/README.md",
+          "lines": [
+            225,
+            226
+          ],
+          "note": "Saturn station agreement, 12 of 12."
+        }
+      ],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": "No PREREGISTRATION line names this ledger id; the mapping is by content.",
+      "disposition_class": "B fixed or addressed, no rule verdict of its own"
+    },
+    {
+      "id": "production-event-search-11",
+      "title": "Return and year scans compute far outside the declared 1800–2199 range without error or flag",
+      "disposition": "partially addressed",
+      "summary": "Scans half of step 1.7 PASS on the site since PR #556 (returns, year scans and the solar return clipped to 1800–2199 with a rangeClipped record). The validation report says the pages do not yet show the clipping notice.",
+      "v2_steps": [
+        "1.7"
+      ],
+      "commits_prs": [
+        "a36d7d57 (Keep return and year scans inside 1800–2199; pre-squash commit of PR #556, object present in the clone)",
+        "site PR #556, squash-merged to main as 3f31ba17 (2026-09-24)"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            190,
+            195
+          ],
+          "note": "Earlier PARTIAL: scans PASS on the site."
+        },
+        {
+          "file": "docs/engine-validation/README.md",
+          "lines": [
+            328,
+            332
+          ],
+          "note": "Clipping recorded as rangeClipped; the notice needs locale text (step 1.7).",
+          "quote": "but the pages do not yet say so"
+        }
+      ],
+      "open_items": "User-facing notice of clipping not yet shown (per docs/engine-validation/README.md).",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "D partially addressed"
+    },
+    {
+      "id": "production-event-search-12",
+      "title": "Yearly sky/eclipse/ingress/birthday data have no refresh automation or coverage check",
+      "disposition": "no recorded disposition",
+      "summary": "No record adds yearly refresh automation or a coverage check for the yearly data files. (A2 says the ΔT table is refreshed \"with the yearly sky-data refresh\", which is a manual step.)",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [],
+      "open_items": null,
+      "observed_tree_state": [
+        {
+          "file": ".github/workflows/",
+          "lines": null,
+          "note": "At f2bd0dd no workflow regenerates the yearly sky, eclipse, ingress or birthday data (the list has transits-monthly.yml, deltat-monitor.yml and others)."
+        }
+      ],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "production-positions-7",
+      "title": "Nutation keeps 5 of the 77 IAU 2000B luni-solar terms: 0.2685\" max longitude error (1900-2100), present in every shipped longitude",
+      "disposition": "open (recorded as M2 work)",
+      "summary": "PREREGISTRATION attributes the residual 6.36″ ascendant error at 66° to the engine's five-term nutation and says it \"goes with the nutation model, which M2 replaces\".",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            476,
+            479
+          ],
+          "note": "A1 adopted: the 8″ gate is the five-term Δψ; M2 replaces the nutation model."
+        },
+        {
+          "file": "examples/precision-alpha/CHART-ADAPTER-CONTRACT.md",
+          "lines": [
+            73,
+            80
+          ],
+          "note": "Contract correction quotes the 5-term vs 77-term difference."
+        }
+      ],
+      "open_items": "77-term nutation (v1 M2.4).",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "I open (recorded as open)"
+    },
+    {
+      "id": "production-positions-8",
+      "title": "Gravitational light deflection absent: 1.14\" measured at Jupiter's 2025 conjunction; receipt's 'apparent' label is therefore not the IAU apparent place",
+      "disposition": "partially addressed",
+      "summary": "The receipt no longer calls planets 'apparent' (rc.8: 'aberrated-geocentric-ecliptic-of-date;no-deflection'); gravitational deflection itself is still absent (M2).",
+      "v2_steps": [
+        "1.11"
+      ],
+      "commits_prs": [
+        "site PR #581 (merge 975bb68f): vendors @zodiacs/engine 0.1.1-rc.8"
+      ],
+      "evidence": [
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            25,
+            25
+          ],
+          "claim": "acc.receipt-positions",
+          "note": "Cites this finding."
+        },
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            18,
+            18
+          ],
+          "claim": "acc.frame",
+          "note": "Cites this finding."
+        },
+        {
+          "file": "vendor/zodiacs-engine-0.1.1-rc.10.tgz#package/CHANGELOG.md",
+          "lines": [
+            80,
+            86
+          ],
+          "note": "Changelog rc.8."
+        }
+      ],
+      "open_items": "Deflection in the planet chain (M2).",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "D partially addressed"
+    },
+    {
+      "id": "production-positions-9",
+      "title": "+-6 h central-difference speed is off by up to 7.5\"/day for the Moon; station times differ from Swiss by up to 38 min but the derivative contributes at most 1.1 min",
+      "disposition": "fixed; rule PASS under amendment",
+      "summary": "Step 1.8 (v1 rule 1g) PASS under A3, PARTIAL as first written: Moon speed max 1.397″/day vs Swiss (8 of 417 samples over 1″/day, none over 1.5″); station flags 108 of 108; rc.7 speeds are ±0.001-day derivatives of the reported longitude.",
+      "v2_steps": [
+        "1.8"
+      ],
+      "commits_prs": [
+        "zodiacs-org/engine#1 (named by PREREGISTRATION.md as the rc.7 change)",
+        "site PR #578 (merge 982caca2): vendors @zodiacs/engine 0.1.1-rc.7",
+        "site PR #580 (merge 34ac8efa): rc.7 Phase 1 verdicts; amendments A1, A3, A4 adopted; step 1.4 preregistered (A2)"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            197,
+            228
+          ],
+          "note": "Step 1.8 verdict (cites ledger production-positions-9, swiss-parity-7, angles-houses-aspects-10)."
+        },
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            610,
+            622
+          ],
+          "note": "Amendment A3 as adopted; the 1″ FAIL stays beside the verdict."
+        },
+        {
+          "file": "docs/platform/evidence/phase1-verdicts-2026-09-25/README.md",
+          "lines": [
+            156,
+            230
+          ],
+          "note": "1.8 measurements."
+        },
+        {
+          "file": "vendor/zodiacs-engine-0.1.1-rc.10.tgz#package/CHANGELOG.md",
+          "lines": [
+            120,
+            123
+          ],
+          "note": "Changelog rc.7: speeds as ±0.001-day derivatives."
+        }
+      ],
+      "open_items": "Gate returns to 1″/day when the DE backend replaces the analytic Moon (A3).",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "A closed by a recorded PASS verdict"
+    },
+    {
+      "id": "production-positions-10",
+      "title": "No validity span or out-of-range flag: the package computes any year and silently degrades (Moon 303\" and Pluto 33\" at 2400)",
+      "disposition": "fixed; rule PASS",
+      "summary": "Step 1.7 (v1 rule 1e) PASS on rc.8: natalChart flags outside-reference-span at 2300 and 900 and exactly outside [1800, 2200). The package still computes such dates.",
+      "v2_steps": [
+        "1.7"
+      ],
+      "commits_prs": [
+        "site PR #581 (merge 975bb68f): vendors @zodiacs/engine 0.1.1-rc.8",
+        "site PR #584 (merge 7edaf200): rc.8 Phase 1 verdicts (1.4, A4 re-run, 1.7, 1.10, 1.11)"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            182,
+            195
+          ],
+          "note": "Step 1.7 verdict (earlier PARTIAL kept).",
+          "quote": "- **Verdict: PASS** (2026-09-26), on the vendored rc.8."
+        },
+        {
+          "file": "docs/platform/evidence/phase1-verdicts-2026-09-26/README.md",
+          "lines": [
+            135,
+            150
+          ],
+          "note": "1.7 measurement."
+        },
+        {
+          "file": "vendor/zodiacs-engine-0.1.1-rc.10.tgz#package/CHANGELOG.md",
+          "lines": [
+            87,
+            88
+          ],
+          "note": "Changelog rc.8: REFERENCE_SPAN flag."
+        },
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            68,
+            68
+          ],
+          "claim": "product.reference-span",
+          "note": "Public claim: the flag is set; the package bounds no input date."
+        }
+      ],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "A closed by a recorded PASS verdict"
+    },
+    {
+      "id": "swiss-parity-3",
+      "title": "The 'DE440 vs Swiss DE431' advantage does not exist and a committed record misattributes the Moon residual to it",
+      "disposition": "record corrected",
+      "summary": "numerics/RESULTS.md carries appended corrections (2026-09-23): the .se1 files are DE441-based and the Moon's 0.0107″ is the DE440-versus-DE441 lunar difference; Phase 0 item 2 Done.",
+      "v2_steps": [
+        "Phase 0 item 2"
+      ],
+      "commits_prs": [
+        "5f0dec2e (Append the corrections Phase 0 lists, and read the engine by glob; pre-squash commit of PR #556, object present in the clone)",
+        "site PR #556, squash-merged to main as 3f31ba17 (2026-09-24)"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/precision-2026-09-20/numerics/RESULTS.md",
+          "lines": [
+            239,
+            250
+          ],
+          "note": "Appended correction in §4."
+        },
+        {
+          "file": "docs/platform/evidence/precision-2026-09-20/numerics/RESULTS.md",
+          "lines": [
+            363,
+            365
+          ],
+          "note": "Appended correction in the open-questions list."
+        },
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            406,
+            406
+          ],
+          "note": "Phase 0 item 2 Done."
+        }
+      ],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "E record corrected"
+    },
+    {
+      "id": "swiss-parity-6",
+      "title": "Production Moon is not the apparent place its receipt declares: 0.6 arcsec systematic today, 4.2 arcsec at 1851 with the clock pinned",
+      "disposition": "partially addressed",
+      "summary": "Receipt wording for the Moon corrected in rc.8; the Moon correction itself remains (M2).",
+      "v2_steps": [
+        "1.11"
+      ],
+      "commits_prs": [
+        "site PR #581 (merge 975bb68f): vendors @zodiacs/engine 0.1.1-rc.8"
+      ],
+      "evidence": [
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            25,
+            25
+          ],
+          "claim": "acc.receipt-positions",
+          "note": "Moon qualifier since rc.8."
+        },
+        {
+          "file": "vendor/zodiacs-engine-0.1.1-rc.10.tgz#package/CHANGELOG.md",
+          "lines": [
+            80,
+            86
+          ],
+          "note": "Changelog rc.8."
+        }
+      ],
+      "open_items": "M2.",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "D partially addressed"
+    },
+    {
+      "id": "swiss-parity-7",
+      "title": "Speeds are a ±0.25-day central difference; Moon speed differs from Swiss's analytic speed by up to 3.4 arcsec/day",
+      "disposition": "fixed; rule PASS under amendment",
+      "summary": "Cited as a baseline of step 1.8, PASS under A3.",
+      "v2_steps": [
+        "1.8"
+      ],
+      "commits_prs": [
+        "zodiacs-org/engine#1 (named by PREREGISTRATION.md as the rc.7 change)",
+        "site PR #578 (merge 982caca2): vendors @zodiacs/engine 0.1.1-rc.7",
+        "site PR #580 (merge 34ac8efa): rc.7 Phase 1 verdicts; amendments A1, A3, A4 adopted; step 1.4 preregistered (A2)"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            197,
+            228
+          ],
+          "note": "Step 1.8."
+        },
+        {
+          "file": "docs/platform/evidence/phase1-verdicts-2026-09-25/README.md",
+          "lines": [
+            156,
+            230
+          ],
+          "note": "1.8 measurements."
+        }
+      ],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "A closed by a recorded PASS verdict"
+    },
+    {
+      "id": "swiss-parity-13",
+      "title": "No topocentric option; the geocentric-only Moon is up to ~1 degree from the observer's sky",
+      "disposition": "deferred in part by brief v2",
+      "summary": "Interval-proven topocentric search is deferred by v2; a pointwise topocentric Moon is planned for Phase 2 (R5). Nothing implemented.",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            415,
+            416
+          ],
+          "note": "Deferred: interval-proven topocentric search.",
+          "quote": "Interval-proven topocentric search (the pointwise version is in Phase 2)."
+        }
+      ],
+      "open_items": "Pointwise topocentric Moon (v2 Phase 2 A).",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "H deferred (wholly or in part) by brief v2"
+    },
+    {
+      "id": "time-4",
+      "title": "UTC is fed where UT1 is meant (no leap-second or UT1-UTC treatment): up to 0.9 s, 13.5 arcsec RAMC, 44 arcsec in MC/ASC at 66 deg",
+      "disposition": "open (recorded)",
+      "summary": "The ΔT record says UT1−UTC and leap seconds \"belong to M3\"; rc.8 receipts declare the convention \"tt-minus-ut1;ut1-read-as-utc;value-in-result\".",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/deltat-2026-09-25/README.md",
+          "lines": [
+            17,
+            23
+          ],
+          "note": "UTC taken as UT1; leap seconds and UT1−UTC belong to M3.",
+          "quote": "UT1 − UTC and leap seconds belong to M3"
+        },
+        {
+          "file": "docs/platform/evidence/phase1-verdicts-2026-09-26/README.md",
+          "lines": [
+            66,
+            66
+          ],
+          "note": "rc.8 receipt conventions."
+        }
+      ],
+      "open_items": "v1 M3 leap-second table and UT1−UTC (no v2 step names them).",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "I open (recorded as open)"
+    },
+    {
+      "id": "time-5",
+      "title": "The 'lmt' and 'dst-*' flags are heuristics that misfire both ways",
+      "disposition": "open (recorded NOT RUN)",
+      "summary": "PREREGISTRATION records v1 M3's rule \"`time-5`'s six flag probes classify correctly\" as NOT RUN. v2 step 1.1 keeps the heuristic lmt flag rule and adds a localMeanTime field; the claims ledger's time.lmt-notice cites this finding for the notice wording.",
+      "v2_steps": [
+        "1.1"
+      ],
+      "commits_prs": [],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            394,
+            394
+          ],
+          "note": "NOT RUN.",
+          "quote": "- `time-5`'s six flag probes classify correctly: NOT RUN."
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            258,
+            258
+          ],
+          "note": "v2 1.1 keeps the lmt flag rule.",
+          "quote": "The `lmt` flag keeps its current rule"
+        },
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            74,
+            74
+          ],
+          "claim": "time.lmt-notice",
+          "note": "Public claim cites this finding."
+        }
+      ],
+      "open_items": "Flags derived from the transition record (v1 M3); dst-gap/dst-fold misfires.",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "I open (recorded as open)"
+    },
+    {
+      "id": "time-6",
+      "title": "House angles mix an apparent (true-equinox) sidereal time with the mean obliquity, evaluated at UTC centuries",
+      "disposition": "fixed; rule PASS under amendment",
+      "summary": "Same defect as angles-houses-aspects-1; closed by step 1.3 under A1. The rc.8 receipts read UT1 as UTC (see time-4).",
+      "v2_steps": [
+        "1.3"
+      ],
+      "commits_prs": [
+        "zodiacs-org/engine#1 (named by PREREGISTRATION.md as the rc.7 change)",
+        "site PR #578 (merge 982caca2): vendors @zodiacs/engine 0.1.1-rc.7",
+        "site PR #580 (merge 34ac8efa): rc.7 Phase 1 verdicts; amendments A1, A3, A4 adopted; step 1.4 preregistered (A2)"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            83,
+            121
+          ],
+          "note": "Step 1.3 verdict."
+        },
+        {
+          "file": "vendor/zodiacs-engine-0.1.1-rc.10.tgz#package/CHANGELOG.md",
+          "lines": [
+            124,
+            127
+          ],
+          "note": "Changelog rc.7."
+        }
+      ],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": "The TT-versus-UTC time-argument part of this finding is not judged by rule 1b.",
+      "disposition_class": "A closed by a recorded PASS verdict"
+    },
+    {
+      "id": "time-7",
+      "title": "Receipts never carry the tzdb/ICU version or any time-scale facts, and the site and SDK keep two divergent copies of the resolver",
+      "disposition": "partially addressed",
+      "summary": "rc.8 receipts carry ΔT (a time-scale fact) and the ephemeris identity (1.11 PASS), but PREREGISTRATION says a tzdb version in receipts is not part of rule 1j and is not judged. The site resolver (birthplace mean time, pinned 2025c history before 1970) and the engine package's geo adapter (host Intl for every date) remain two different resolvers.",
+      "v2_steps": [
+        "1.11"
+      ],
+      "commits_prs": [
+        "site PR #581 (merge 975bb68f): vendors @zodiacs/engine 0.1.1-rc.8",
+        "site PR #584 (merge 7edaf200): rc.8 Phase 1 verdicts (1.4, A4 re-run, 1.7, 1.10, 1.11)"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            297,
+            298
+          ],
+          "note": "tzdb version explicitly not judged.",
+          "quote": "Whether a receipt carries a tzdb version (ledger time-7) is not part of it and is not judged here."
+        },
+        {
+          "file": "docs/platform/evidence/phase1-verdicts-2026-09-26/README.md",
+          "lines": [
+            199,
+            202
+          ],
+          "note": "Same statement in the verdict record."
+        },
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            73,
+            73
+          ],
+          "claim": "time.host-icu",
+          "note": "Public claim cites this finding: the package geo adapter relies on host Intl."
+        }
+      ],
+      "open_items": "tzdbVersion/timeScale in receipts; a single resolver.",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "D partially addressed"
+    },
+    {
+      "id": "time-8",
+      "title": "Adapter contract states the UTC->TT split backwards",
+      "disposition": "record corrected",
+      "summary": "CHART-ADAPTER-CONTRACT.md carries an appended correction stating the UTC → TT split correctly (cites time-8).",
+      "v2_steps": [
+        "Phase 0 item 2"
+      ],
+      "commits_prs": [
+        "5f0dec2e (Append the corrections Phase 0 lists; pre-squash commit of PR #556, object present in the clone)",
+        "site PR #556, squash-merged to main as 3f31ba17 (2026-09-24)"
+      ],
+      "evidence": [
+        {
+          "file": "examples/precision-alpha/CHART-ADAPTER-CONTRACT.md",
+          "lines": [
+            174,
+            180
+          ],
+          "note": "Appended correction."
+        },
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            406,
+            406
+          ],
+          "note": "Phase 0 item 2 Done."
+        }
+      ],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "E record corrected"
+    },
+    {
+      "id": "verification-honesty-6",
+      "title": "Claims audit: four figures have no committed receipt; one transcribed figure is now reproduced",
+      "disposition": "partially addressed",
+      "summary": "Swiss ΔT 93.18 s at 2100 is committed since 2026-09-25 (deltat-2026-09-25/outputs/swiss-deltat.json) and the node/polar maxima are re-measured in the rc.7/rc.8 parity files; swiss-benchmark/RESULTS.md still says that figure has no committed report. No record for the 32.87 % floor-occupancy figure.",
+      "v2_steps": [],
+      "commits_prs": [
+        "site PR #580 (merge 34ac8efa): rc.7 Phase 1 verdicts; amendments A1, A3, A4 adopted; step 1.4 preregistered (A2)",
+        "site PR #581 (merge 975bb68f): vendors @zodiacs/engine 0.1.1-rc.8"
+      ],
+      "evidence": [
+        {
+          "file": "docs/engine-validation/README.md",
+          "lines": [
+            378,
+            391
+          ],
+          "note": "Validation report: ΔT figure committed since 2026-09-25."
+        },
+        {
+          "file": "docs/platform/evidence/swiss-benchmark/RESULTS.md",
+          "lines": [
+            102,
+            104
+          ],
+          "note": "Benchmark results still call it transcribed (stale)."
+        },
+        {
+          "file": "docs/platform/evidence/site-engine-rc7/README.md",
+          "lines": [
+            41,
+            47
+          ],
+          "note": "rc.7 parity files: 6.07″ node longitude, 1.58″ polar angles."
+        },
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            14,
+            14
+          ],
+          "claim": "acc.deltat-formula",
+          "note": "Cites this finding."
+        },
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            30,
+            30
+          ],
+          "claim": "acc.swiss-benchmark",
+          "note": "Cites this finding."
+        },
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            32,
+            32
+          ],
+          "claim": "acc.swiss-packs",
+          "note": "Cites this finding."
+        }
+      ],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "D partially addressed"
+    },
+    {
+      "id": "verification-honesty-7",
+      "title": "Pre-registration ordering of the Swiss packs is self-reported, not verifiable from history",
+      "disposition": "disclosed",
+      "summary": "The public Swiss-pack claim says the packs' policy-first order could not be confirmed independently.",
+      "v2_steps": [
+        "1.14"
+      ],
+      "commits_prs": [
+        "site PR #556, squash-merged to main as 3f31ba17 (2026-09-24)"
+      ],
+      "evidence": [
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            32,
+            32
+          ],
+          "claim": "acc.swiss-packs",
+          "note": "Cites this finding."
+        }
+      ],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "G disclosed, defect open"
+    },
+    {
+      "id": "verification-honesty-8",
+      "title": "Moon speed from a +/-0.25 day central difference is 2-6 arcsec/day slow near perigee and untested",
+      "disposition": "fixed; rule PASS under amendment",
+      "summary": "Amendment A3 cites this finding (the 1″/day gate came from one perigee); step 1.8 PASS under A3 on rc.7.",
+      "v2_steps": [
+        "1.8"
+      ],
+      "commits_prs": [
+        "site PR #578 (merge 982caca2): vendors @zodiacs/engine 0.1.1-rc.7",
+        "site PR #580 (merge 34ac8efa): rc.7 Phase 1 verdicts; amendments A1, A3, A4 adopted; step 1.4 preregistered (A2)"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            447,
+            453
+          ],
+          "note": "A3 proposal cites ledger verification-honesty-8."
+        },
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            610,
+            622
+          ],
+          "note": "A3 adopted."
+        },
+        {
+          "file": "docs/platform/evidence/phase1-verdicts-2026-09-25/README.md",
+          "lines": [
+            156,
+            230
+          ],
+          "note": "1.8 measurements."
+        }
+      ],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "A closed by a recorded PASS verdict"
+    },
+    {
+      "id": "verification-honesty-9",
+      "title": "Placidus between 60 and 66 degrees is untested; residual vs Swiss grows to 9.2 arcsec with no flag before the hard 66-degree cut",
+      "disposition": "partially addressed",
+      "summary": "Step 1.3 added Swiss vectors at ±63, ±65 and ±66° (PASS under A1), and the rc.9 house record covers a 55°–66.6° ladder; the ERFA half is in CI, the Swiss half is not committed. No placidus-near-limit flag is recorded.",
+      "v2_steps": [
+        "1.3"
+      ],
+      "commits_prs": [
+        "site PR #580 (merge 34ac8efa): rc.7 Phase 1 verdicts; amendments A1, A3, A4 adopted; step 1.4 preregistered (A2)",
+        "site PR #587 (merge b0f37e65): @zodiacs/engine 0.1.1-rc.9, twelve house systems"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            100,
+            121
+          ],
+          "note": "Step 1.3 added vectors."
+        },
+        {
+          "file": "docs/platform/evidence/houses-2026-09-26/README.md",
+          "lines": [
+            18,
+            52
+          ],
+          "note": "rc.9 ladder."
+        }
+      ],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "D partially addressed"
+    },
+    {
+      "id": "alpha-reduction-math-5",
+      "title": "Reduction order and conventions match the ERFA apparent-place chain to 4.4e-7 arcsec (planets) with only the documented Klioner term missing",
+      "disposition": "deferred by brief v2",
+      "summary": "The Klioner term is deferred; the ERFA-chain tier-B gate asked for here is v1 M2.6(viii), which v2 keeps.",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            415,
+            415
+          ],
+          "note": "Deferred.",
+          "quote": "The Klioner term."
+        }
+      ],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "H deferred (wholly or in part) by brief v2"
+    },
+    {
+      "id": "alpha-reduction-math-6",
+      "title": "TDB-TT three-term form is within 21.8 us of eraDtdb; a full series would remove the last time-scale term",
+      "disposition": "no recorded disposition",
+      "summary": "No record. The research runtime (examples/precision-alpha) changed only by three appended documentation corrections between the audit tree 39b7a127 and f2bd0dd.",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "alpha-reduction-math-7",
+      "title": "IAU 2000A would move longitudes by at most 0.00215 arcsec on the corpus; Swiss uses 2000B by default too",
+      "disposition": "deferred in part by brief v2",
+      "summary": "v2 defers \"the full IAU 2000A nutation in the angle path\"; the finding concerns longitudes generally.",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            414,
+            414
+          ],
+          "note": "Deferred (angle path only).",
+          "quote": "The full IAU 2000A nutation in the angle path (sub-arcsecond)."
+        }
+      ],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": "Whether the deferral covers IAU 2000A in the longitude chain is not stated.",
+      "disposition_class": "H deferred (wholly or in part) by brief v2"
+    },
+    {
+      "id": "alpha-reduction-math-8",
+      "title": "Geocentric Moon is formed by cancelling two 1.5e8 km barycentric vectors at two epochs: a 1.3e-5 arcsec numerical floor",
+      "disposition": "no recorded disposition",
+      "summary": "No record. The research runtime (examples/precision-alpha) changed only by three appended documentation corrections between the audit tree 39b7a127 and f2bd0dd.",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "alpha-reduction-math-9",
+      "title": "Re-measured against Swiss on 2,000 fresh rows: 0.0104 arcsec max, and the residual is the instrument, not the reduction",
+      "disposition": "record corrected",
+      "summary": "The decomposition this finding asked for is recorded: numerics/RESULTS.md correction, and Horizons VECTORS against the DE440s kernel (Moon 10.2 mas at 1851, 8.6 mas at 2148; Mars within 0.001 mas), which settles the lunar attribution with no frame model. Not committed as a tier-B test.",
+      "v2_steps": [
+        "Phase 0 items 2-3"
+      ],
+      "commits_prs": [
+        "b1876996 (Take Horizons's ecliptic frame apart, and check the pack's Moon with no frame; pre-squash commit of PR #556, object present in the clone)",
+        "site PR #556, squash-merged to main as 3f31ba17 (2026-09-24)"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/precision-2026-09-20/numerics/RESULTS.md",
+          "lines": [
+            239,
+            250
+          ],
+          "note": "Appended correction."
+        },
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/horizons-frame/README.md",
+          "lines": [
+            111,
+            134
+          ],
+          "note": "VECTORS comparison."
+        },
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            407,
+            407
+          ],
+          "note": "Phase 0 item 3 Done."
+        }
+      ],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "E record corrected"
+    },
+    {
+      "id": "alpha-reduction-math-10",
+      "title": "Harness premise failed: Swiss cannot read de440s.bsp; FLG_JPLEPH silently answers with Moshier (flag 4)",
+      "disposition": "premise recorded",
+      "summary": "Recorded as one of the three false premises (v2 R8, Phase 0 item 3 Done). Swiss cannot read .bsp (FLG_JPLEPH answers with Moshier).",
+      "v2_steps": [
+        "Phase 0 item 3"
+      ],
+      "commits_prs": [
+        "site PR #556, squash-merged to main as 3f31ba17 (2026-09-24)"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            216,
+            216
+          ],
+          "note": "R8 names the premises and the auditors who caught them."
+        },
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            407,
+            407
+          ],
+          "note": "Phase 0 item 3 Done: the three false premises are recorded."
+        }
+      ],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "F premise or process recorded"
+    },
+    {
+      "id": "alpha-reduction-math-11",
+      "title": "Horizons QUANTITIES=31 is an IAU76/80 ecliptic-of-date frame: 0.049 arcsec from the alpha at J2000 for Mars, so it cannot arbitrate at the mas level",
+      "disposition": "premise recorded; frame decomposed",
+      "summary": "Horizons QUANTITIES=31's frame was taken apart: an IAU 1976/1980 model with Horizons's EOP offsets reproduces it to 5.5 mas of Swiss; the frame term is about −0.048″ from 1962 to 2026, −0.373″ at 1851 and +0.345″ at 2148; v2 §2 carries a correction to R8.",
+      "v2_steps": [
+        "Phase 0 item 3"
+      ],
+      "commits_prs": [
+        "b1876996 (Take Horizons's ecliptic frame apart; pre-squash commit of PR #556, object present in the clone)",
+        "site PR #556, squash-merged to main as 3f31ba17 (2026-09-24)"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/horizons-frame/README.md",
+          "lines": [
+            12,
+            110
+          ],
+          "note": "Frame decomposition."
+        },
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            407,
+            407
+          ],
+          "note": "Phase 0 item 3 Done."
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            219,
+            224
+          ],
+          "note": "Correction to R8 in the brief."
+        }
+      ],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "F premise or process recorded"
+    },
+    {
+      "id": "alpha-reduction-math-12",
+      "title": "No output carries a sky-referenced error bound; the pointwise apparent() carries none at all",
+      "disposition": "no recorded disposition",
+      "summary": "Error bounds on every result are v2 Phase 4 work [v1 M2.4]; nothing recorded.",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [],
+      "open_items": "v2 Phase 4.",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "alpha-search-partition-11",
+      "title": "Evaluations undercount wall time by 16–25 %: frame, aberration and deflection phases charge zero evaluations",
+      "disposition": "no recorded disposition",
+      "summary": "No record. The research runtime (examples/precision-alpha) changed only by three appended documentation corrections between the audit tree 39b7a127 and f2bd0dd.",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "alpha-search-partition-12",
+      "title": "Bracket claim near a noise-level endpoint is technically a tolerance, not a containment (unconfirmed)",
+      "disposition": "no recorded disposition",
+      "summary": "No record. The research runtime (examples/precision-alpha) changed only by three appended documentation corrections between the audit tree 39b7a127 and f2bd0dd.",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "alpha-search-partition-13",
+      "title": "Chart-adapter contract omissions: nutation model versus frame, nodes, coverage window, houses",
+      "disposition": "record corrected",
+      "summary": "CHART-ADAPTER-CONTRACT.md carries appended corrections for the nutation model versus frame, the nodes (from the pack's Moon state, own provenance field) and an out-of-coverage policy (each cites alpha-search-partition-13). No adapter code is recorded.",
+      "v2_steps": [
+        "Phase 0 item 2"
+      ],
+      "commits_prs": [
+        "5f0dec2e (Append the corrections Phase 0 lists; pre-squash commit of PR #556, object present in the clone)",
+        "site PR #556, squash-merged to main as 3f31ba17 (2026-09-24)"
+      ],
+      "evidence": [
+        {
+          "file": "examples/precision-alpha/CHART-ADAPTER-CONTRACT.md",
+          "lines": [
+            73,
+            80
+          ],
+          "note": "Nutation model versus frame."
+        },
+        {
+          "file": "examples/precision-alpha/CHART-ADAPTER-CONTRACT.md",
+          "lines": [
+            197,
+            202
+          ],
+          "note": "Nodes."
+        },
+        {
+          "file": "examples/precision-alpha/CHART-ADAPTER-CONTRACT.md",
+          "lines": [
+            461,
+            465
+          ],
+          "note": "Coverage policy."
+        },
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            406,
+            406
+          ],
+          "note": "Phase 0 item 2 Done."
+        }
+      ],
+      "open_items": "GAST/obliquity-of-date requirement and \"value plus proven half-width\" are not in the appended corrections.",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "E record corrected"
+    },
+    {
+      "id": "alpha-search-partition-14",
+      "title": "Empirical mode: request endpoints are silently rounded to whole milliseconds and reported as if requested",
+      "disposition": "no recorded disposition",
+      "summary": "No record. The research runtime (examples/precision-alpha) changed only by three appended documentation corrections between the audit tree 39b7a127 and f2bd0dd.",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "angles-houses-aspects-4",
+      "title": "Placidus iteration and angle formulas are numerically equivalent to Swiss when given the same inputs (0.004\" cusps, 1e-5\" angles) with no convergence failures",
+      "disposition": "no recorded disposition",
+      "summary": "The suggested docs note and iteration-count test are not recorded; later measurements agree with the finding (Placidus within 0.0085″ on Swiss inputs in step 1.9; 0.0096″ in the rc.9 house record).",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/phase1-verdicts-2026-09-25/README.md",
+          "lines": [
+            249,
+            253
+          ],
+          "note": "1.9 cusps on Swiss inputs."
+        },
+        {
+          "file": "docs/platform/evidence/houses-2026-09-26/README.md",
+          "lines": [
+            18,
+            52
+          ],
+          "note": "rc.9 given-input comparison."
+        }
+      ],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "angles-houses-aspects-9",
+      "title": "Classical dignity table is correct against the Ptolemaic scheme but stops at domicile/exaltation/detriment/fall",
+      "disposition": "no recorded disposition",
+      "summary": "No record extends the dignity table (rc.10 adds sect only).",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "angles-houses-aspects-10",
+      "title": "Finite-difference speed (+/-0.25 day) places planetary stations 1-4 minutes from Swiss's analytic speed; retrograde flag correct outside that window",
+      "disposition": "fixed; rule PASS under amendment",
+      "summary": "Cited as a baseline of step 1.8, PASS under A3. The audit's three named stations are now −1.32, +1.05 and −3.46 minutes from Swiss.",
+      "v2_steps": [
+        "1.8"
+      ],
+      "commits_prs": [
+        "zodiacs-org/engine#1 (named by PREREGISTRATION.md as the rc.7 change)",
+        "site PR #578 (merge 982caca2): vendors @zodiacs/engine 0.1.1-rc.7",
+        "site PR #580 (merge 34ac8efa): rc.7 Phase 1 verdicts; amendments A1, A3, A4 adopted; step 1.4 preregistered (A2)"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            197,
+            228
+          ],
+          "note": "Step 1.8."
+        },
+        {
+          "file": "docs/platform/evidence/phase1-verdicts-2026-09-25/README.md",
+          "lines": [
+            156,
+            230
+          ],
+          "note": "1.8 measurements."
+        }
+      ],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "A closed by a recorded PASS verdict"
+    },
+    {
+      "id": "angles-houses-aspects-11",
+      "title": "The engine's sidereal time is closer to the IAU 2006/2000A standard than Swiss's default: 0.19\" vs 1.9\" in RAMC outside 1850-2050; obliquity time argument (UTC vs TT) is negligible",
+      "disposition": "no recorded disposition",
+      "summary": "No record adds DUT1 or a fuller nutation to the sidereal-time path; the rc.9 record notes the engine's sidereal time matches ERFA to about 0.1″.",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/site-engine-rc9/README.md",
+          "lines": [
+            60,
+            65
+          ],
+          "note": "Limits section."
+        }
+      ],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "angles-houses-aspects-13",
+      "title": "Polar ASC quadrant rule matches Swiss on 1,152 sweep points; exact pole and DUT1 remain out of scope",
+      "disposition": "disclosed",
+      "summary": "The receipt's own coverage statement excludes angles at the exact poles and where the ecliptic meets the horizon; the claims ledger cites this finding. No code change for |lat| = 90 is recorded.",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            67,
+            67
+          ],
+          "claim": "product.receipt-coverage",
+          "note": "Coverage statement."
+        },
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            6,
+            6
+          ],
+          "claim": "acc.angles-houses",
+          "note": "Cites this finding."
+        },
+        {
+          "file": "docs/platform/evidence/site-engine-rc8/README.md",
+          "lines": [
+            84,
+            93
+          ],
+          "note": "rc.8 limits: exact poles outside verified scope."
+        }
+      ],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "G disclosed, defect open"
+    },
+    {
+      "id": "data-toolchain-packaging-10",
+      "title": "Production tarball rebuilds byte-identically from the pinned commit; pins, hashes and lock integrity all agree",
+      "disposition": "no recorded CI disposition",
+      "summary": "The CI rebuild job (v1 M6, v2 3.1) is not recorded. The rc.7 and rc.9 adoption records state that two clean clones of the source commit packed the same bytes (a manual check).",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/site-engine-rc7/README.md",
+          "lines": [
+            1,
+            12
+          ],
+          "note": "rc.7: two clean clones packed the same bytes."
+        },
+        {
+          "file": "docs/platform/evidence/site-engine-rc9/README.md",
+          "lines": [
+            3,
+            14
+          ],
+          "note": "rc.9: two clean clones packed the same bytes."
+        }
+      ],
+      "open_items": "CI rebuild-and-diff job (v2 3.1).",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "data-toolchain-packaging-11",
+      "title": "Integrity verified end to end; authenticity absent by design — what an Ed25519 manifest would add and cost",
+      "disposition": "deferred by brief v2",
+      "summary": "Pack signing is deferred until a pack is distributed.",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            416,
+            416
+          ],
+          "note": "Deferred.",
+          "quote": "Pack signing, until a pack is distributed."
+        }
+      ],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "H deferred (wholly or in part) by brief v2"
+    },
+    {
+      "id": "data-toolchain-packaging-14",
+      "title": "Coverage refusal verified: typed out-of-coverage errors, no silent fallback; usable window is coverage minus max light-time",
+      "disposition": "no recorded disposition",
+      "summary": "Note (coverage refusal verified); the suggested usableCoverage API is not recorded.",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "production-event-search-13",
+      "title": "Lunar-return Moon path lacks the −0.7\" light-time term the README concedes; sized at +1.3 s of return time",
+      "disposition": "disclosed; defect open",
+      "summary": "The Moon's missing light-time is stated in receipts (rc.8) and in the claims ledger's frame statement; not fixed.",
+      "v2_steps": [],
+      "commits_prs": [
+        "site PR #581 (merge 975bb68f): vendors @zodiacs/engine 0.1.1-rc.8"
+      ],
+      "evidence": [
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            18,
+            18
+          ],
+          "claim": "acc.frame",
+          "note": "Moon through its lunar theory without light-time or aberration."
+        },
+        {
+          "file": "docs/engine-validation/README.md",
+          "lines": [
+            298,
+            303
+          ],
+          "note": "Lunar-return record states the model difference."
+        }
+      ],
+      "open_items": "M2.",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "G disclosed, defect open"
+    },
+    {
+      "id": "production-event-search-14",
+      "title": "Void-of-course: definition, precision and coverage stated; matches the modern 'last exact Ptolemaic aspect' convention",
+      "disposition": "cited as evidence (note)",
+      "summary": "The claims ledger cites this note for the void-of-course statement; the optional variants in its fix are not recorded.",
+      "v2_steps": [
+        "1.14"
+      ],
+      "commits_prs": [
+        "site PR #556, squash-merged to main as 3f31ba17 (2026-09-24)"
+      ],
+      "evidence": [
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            33,
+            33
+          ],
+          "claim": "acc.voc-times",
+          "note": "Cites this finding."
+        }
+      ],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "production-event-search-15",
+      "title": "Progressions: tropical-year day-for-a-year (365.2422 mean solar days per civil day), planets only, no alternative rates",
+      "disposition": "no recorded disposition",
+      "summary": "No record adds progression options.",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "production-event-search-16",
+      "title": "Half-day transit-window sampling is sound for the slow bodies: 12-hour motion ≤0.121° and stations ≥117 days apart",
+      "disposition": "no recorded disposition",
+      "summary": "No record adds the sampling argument to the transit-windows README.",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "production-event-search-17",
+      "title": "Path to exceed Swiss: certified completeness from the alpha's derivative-enclosure search behind every production crossing",
+      "disposition": "no recorded disposition",
+      "summary": "Certified completeness behind production crossings is v2 Phase 4 work [v1 M4.4–4.5]; nothing recorded.",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [],
+      "open_items": "v2 Phase 4.",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "production-positions-11",
+      "title": "DE431 (Swiss .se1) vs DE440s is 0.003\" or less: moving to DE440/441 gains nothing against Swiss by itself; the premise that Swiss can read de440s.bsp is false",
+      "disposition": "premise recorded",
+      "summary": "Recorded as one of the three false premises (v2 R8, Phase 0 item 3 Done). Swiss cannot read .bsp; DE431 vs DE440s.",
+      "v2_steps": [
+        "Phase 0 item 3"
+      ],
+      "commits_prs": [
+        "site PR #556, squash-merged to main as 3f31ba17 (2026-09-24)"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            216,
+            216
+          ],
+          "note": "R8 names the premises and the auditors who caught them."
+        },
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            407,
+            407
+          ],
+          "note": "Phase 0 item 3 Done: the three false premises are recorded."
+        }
+      ],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "F premise or process recorded"
+    },
+    {
+      "id": "production-positions-12",
+      "title": "Frame-chain nits: FK5 obliquity 84381.448\" in the VSOP rotation vs P03 84381.406\" in precession, no ICRS frame bias (0.022\"), heliocentric aberration velocity, UTC taken as UT1",
+      "disposition": "no recorded disposition",
+      "summary": "No record addresses the frame-chain nits (FK5 vs P03 obliquity, frame bias, heliocentric aberration velocity).",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [],
+      "open_items": "M2 adoption of the DE reduction.",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "production-positions-13",
+      "title": "Capability gaps versus Swiss in the body set and outputs",
+      "disposition": "partially addressed",
+      "summary": "rc.10 adds mean node and mean apogee (Black Moon Lilith), Vertex, East Point, antiscia, midpoints and seven lots (chartPoints); distance/full state, topocentric and sidereal modes, Chiron and asteroids are not recorded.",
+      "v2_steps": [],
+      "commits_prs": [
+        "site PR #593 (merge f2bd0dd4; commits 92162624, e29d0dbc): @zodiacs/engine 0.1.1-rc.10"
+      ],
+      "evidence": [
+        {
+          "file": "vendor/zodiacs-engine-0.1.1-rc.10.tgz#package/CHANGELOG.md",
+          "lines": [
+            11,
+            28
+          ],
+          "note": "Changelog rc.10."
+        },
+        {
+          "file": "docs/platform/evidence/site-engine-rc10/README.md",
+          "lines": [
+            21,
+            30
+          ],
+          "note": "rc.10 adoption record."
+        }
+      ],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "D partially addressed"
+    },
+    {
+      "id": "swiss-parity-4",
+      "title": "No Zodiacs configuration is measurably closer to Horizons than Swiss; the residual is Horizons's IAU76/80 frame",
+      "disposition": "recorded; residual open",
+      "summary": "Parity as the ceiling is stated in the brief (v2 §0) and the frame was decomposed (Phase 0 item 3). Comparisons in the frame record use barycentres for outer planets, but src/lib/engine/fixtures/horizons-reference.json still holds body centres: PREREGISTRATION said it would move at rc.7, then \"with rc.8's\" re-vendoring.",
+      "v2_steps": [
+        "Phase 0 item 3"
+      ],
+      "commits_prs": [
+        "site PR #556, squash-merged to main as 3f31ba17 (2026-09-24)"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            101,
+            101
+          ],
+          "note": "Positions row: parity is the ceiling."
+        },
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            407,
+            407
+          ],
+          "note": "Phase 0 item 3, including the fixture note."
+        },
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/horizons-frame/README.md",
+          "lines": [
+            136,
+            158
+          ],
+          "note": "Barycentres; the engine fixture does not follow yet."
+        }
+      ],
+      "open_items": "Move the engine fixture to barycentre COMMANDs (promised for rc.7, then rc.8; not done at rc.10).",
+      "observed_tree_state": [
+        {
+          "file": "src/lib/engine/fixtures/horizons-reference.json",
+          "lines": [
+            1,
+            28
+          ],
+          "note": "At f2bd0dd the fixture is unchanged since PR #556 (values match body centres per the frame record); no rc.8/rc.9/rc.10 change to it."
+        }
+      ],
+      "uncertain": null,
+      "disposition_class": "F premise or process recorded"
+    },
+    {
+      "id": "swiss-parity-5",
+      "title": "Swiss's centre-of-body correction is exact; satellite kernels are a 0.075 arcsec catch-up for the alpha, not a lead",
+      "disposition": "deferred by brief v2",
+      "summary": "Same item as alpha-reduction-math-1.",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            413,
+            414
+          ],
+          "note": "Deferred."
+        }
+      ],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "H deferred (wholly or in part) by brief v2"
+    },
+    {
+      "id": "swiss-parity-8",
+      "title": "Delta-T has no published uncertainty anywhere; three respected models spread 256 s (140 arcsec of Moon) at 2148",
+      "disposition": "addressed",
+      "summary": "Since rc.8 every chart carries a ΔT value with a 1-σ band (model zodiacs-deltat/1; σ grows with years past the last observed day).",
+      "v2_steps": [
+        "1.4"
+      ],
+      "commits_prs": [
+        "site PR #581 (merge 975bb68f): vendors @zodiacs/engine 0.1.1-rc.8",
+        "site PR #584 (merge 7edaf200): rc.8 Phase 1 verdicts (1.4, A4 re-run, 1.7, 1.10, 1.11)"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            497,
+            508
+          ],
+          "note": "A2 band definition."
+        },
+        {
+          "file": "vendor/zodiacs-engine-0.1.1-rc.10.tgz#package/CHANGELOG.md",
+          "lines": [
+            72,
+            79
+          ],
+          "note": "Changelog rc.8."
+        },
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            13,
+            13
+          ],
+          "claim": "acc.deltat",
+          "note": "Public claim."
+        }
+      ],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "B fixed or addressed, no rule verdict of its own"
+    },
+    {
+      "id": "swiss-parity-9",
+      "title": "Swiss cannot read SPK kernels: set_jpl_file('de440s.bsp') silently answers from Moshier",
+      "disposition": "premise recorded",
+      "summary": "Recorded as one of the three false premises (v2 R8, Phase 0 item 3 Done). Swiss cannot read SPK kernels. The Moshier return-flag pitfall was already in swiss-benchmark/CONFIGURATION.md before the audit.",
+      "v2_steps": [
+        "Phase 0 item 3"
+      ],
+      "commits_prs": [
+        "site PR #556, squash-merged to main as 3f31ba17 (2026-09-24)"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            216,
+            216
+          ],
+          "note": "R8 names the premises and the auditors who caught them."
+        },
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            407,
+            407
+          ],
+          "note": "Phase 0 item 3 Done: the three false premises are recorded."
+        }
+      ],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "F premise or process recorded"
+    },
+    {
+      "id": "time-9",
+      "title": "Gap/fold resolver verified: 1,675,757 wall minutes around all 42,861 ICU transitions in 418 zones, zero failures in both copies",
+      "disposition": "recorded as test",
+      "summary": "The audit's all-zone round-trip scan is committed as a test (src/lib/time/localToUtc-roundtrip.test.ts): default 26,403 changes / 184,817 minutes; TZ_SCAN=full 42,861 / 1,675,757. PREREGISTRATION records v1 M3's round-trip rule as PASS (see 1.1).",
+      "v2_steps": [
+        "1.1"
+      ],
+      "commits_prs": [
+        "5d5aeab0 (Keep the audit's all-zone round-trip scan as a test; pre-squash commit of PR #556, object present in the clone)",
+        "site PR #556, squash-merged to main as 3f31ba17 (2026-09-24)"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            45,
+            50
+          ],
+          "note": "Step 1.1 verdict names the round-trip test."
+        },
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            393,
+            393
+          ],
+          "note": "Version 1's other M3 rules: round-trip scan PASS.",
+          "quote": "- The round-trip scan: PASS (see 1.1)."
+        },
+        {
+          "file": "src/lib/time/localToUtc-roundtrip.test.ts",
+          "lines": [
+            1,
+            8
+          ],
+          "note": "Test header cites finding time-9."
+        },
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            80,
+            80
+          ],
+          "claim": "time.roundtrip-scan",
+          "note": "Public claim cites this finding."
+        },
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            72,
+            72
+          ],
+          "claim": "time.gap-fold",
+          "note": "Public claim cites this finding."
+        }
+      ],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "B fixed or addressed, no rule verdict of its own"
+    },
+    {
+      "id": "time-10",
+      "title": "Alpha time scales verified: TDB-TT within 22 us of ERFA, integer-ms TT exact, compiler and runtime agree on TDB",
+      "disposition": "no recorded disposition",
+      "summary": "No record. The research runtime (examples/precision-alpha) changed only by three appended documentation corrections between the audit tree 39b7a127 and f2bd0dd.",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "time-11",
+      "title": "Year range and Delta-T model extremes: what the stack accepts and returns outside 1800-2199",
+      "disposition": "partially addressed",
+      "summary": "outside-reference-span flag since rc.8 (1.7) and a ΔT band in every result (1.4); the claims ledger cites this finding for the statement that the package core and MCP adapter resolve no time zone. No record of refusing dates by a ΔT-band threshold.",
+      "v2_steps": [
+        "1.4",
+        "1.7"
+      ],
+      "commits_prs": [
+        "site PR #581 (merge 975bb68f): vendors @zodiacs/engine 0.1.1-rc.8",
+        "site PR #584 (merge 7edaf200): rc.8 Phase 1 verdicts (1.4, A4 re-run, 1.7, 1.10, 1.11)"
+      ],
+      "evidence": [
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            75,
+            75
+          ],
+          "claim": "time.mcp-no-timezones",
+          "note": "Public claim cites this finding."
+        },
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            182,
+            195
+          ],
+          "note": "Step 1.7."
+        },
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            123,
+            150
+          ],
+          "note": "Step 1.4."
+        }
+      ],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "D partially addressed"
+    },
+    {
+      "id": "verification-honesty-10",
+      "title": "Far dates measured: at 2300 and 2399 the engine differs from Swiss by 262-288 arcsec (Moon) and 4-35 arcsec (planets), mostly Delta-T",
+      "disposition": "addressed differently",
+      "summary": "outside-reference-span is set outside [1800, 2200) since rc.8 (step 1.7), not outside 1801–2150 as the finding proposed; receipts name the ΔT model (rc.8).",
+      "v2_steps": [
+        "1.7"
+      ],
+      "commits_prs": [
+        "site PR #581 (merge 975bb68f): vendors @zodiacs/engine 0.1.1-rc.8",
+        "site PR #584 (merge 7edaf200): rc.8 Phase 1 verdicts (1.4, A4 re-run, 1.7, 1.10, 1.11)"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            182,
+            195
+          ],
+          "note": "Step 1.7."
+        },
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            68,
+            68
+          ],
+          "claim": "product.reference-span",
+          "note": "Flag statement."
+        }
+      ],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "B fixed or addressed, no rule verdict of its own"
+    },
+    {
+      "id": "verification-honesty-11",
+      "title": "Edge cases probed and found sound but uncommitted as tests: poles, natal-instant transits, identical synastry, station flag, leap second, receipt fuzz",
+      "disposition": "no recorded disposition",
+      "summary": "No record commits the edge probes as tests (step 1.8 re-measured station-flag agreement in its verdict record; Swiss output is not committed).",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/phase1-verdicts-2026-09-25/README.md",
+          "lines": [
+            214,
+            226
+          ],
+          "note": "1.8 station-flag measurements (not a committed test)."
+        }
+      ],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "R1",
+      "title": "Birthplace local mean time.",
+      "disposition": "fixed on the site; SDK half open",
+      "summary": "Step 1.1 PASS: every listed case is a test (Buffalo 1870 −5:15:31, Brest 1880 −0:17:58, Omaha 1880 −6:23:46, national mean times unchanged, Bergen, gap/fold); the round-trip scan passes. The claims ledger says the engine package's geo adapter \"applies no birthplace mean time\", so the SDK's resolveBirth change (v2 1.1) is not done.",
+      "v2_steps": [
+        "1.1"
+      ],
+      "commits_prs": [
+        "fdcf6e37 (Use the birthplace's own local mean time before standard time; pre-squash commit of PR #556, object present in the clone)",
+        "f2702f03 (Model the birthplace clock at the end of local mean time; pre-squash commit of PR #556, object present in the clone)",
+        "site PR #556, squash-merged to main as 3f31ba17 (2026-09-24)"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            32,
+            50
+          ],
+          "note": "Step 1.1 rule, baseline and verdict.",
+          "quote": "- **Verdict: PASS.** Every listed case is a test in"
+        },
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            70,
+            70
+          ],
+          "claim": "time.birthplace-lmt",
+          "note": "Public claim."
+        },
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            73,
+            73
+          ],
+          "claim": "time.host-icu",
+          "note": "Package geo adapter applies no birthplace mean time."
+        }
+      ],
+      "open_items": "SDK resolveBirth (v2 R1 effort '1 d SDK'; step 1.1).",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "A closed by a recorded PASS verdict"
+    },
+    {
+      "id": "R2",
+      "title": "Public copy misdescribes pre-standard time.",
+      "disposition": "fixed",
+      "summary": "The methodology page and the llms files now describe birthplace local mean time and the pinned history; step 1.14 PASS holds every accuracy/time/privacy sentence to evidence; the lmtNotice string stays (the fact-check disposition says R1 makes it true).",
+      "v2_steps": [
+        "1.1",
+        "1.14"
+      ],
+      "commits_prs": [
+        "95c9d052 (Word the mean time notices and records as the resolver behaves; pre-squash commit of PR #556, object present in the clone)",
+        "67a9e71b (Correct public claims that the claims-ledger research found untrue; pre-squash commit of PR #556, object present in the clone)",
+        "3a8f22e3 (Add the claims ledger, with a test that holds the copy to it; pre-squash commit of PR #556, object present in the clone)",
+        "baed8f3b (Correct the time, share-link and privacy wording in every language; pre-squash commit of PR #556, object present in the clone)",
+        "site PR #556, squash-merged to main as 3f31ba17 (2026-09-24)"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            347,
+            363
+          ],
+          "note": "Step 1.14 verdict.",
+          "quote": "- **Verdict: PASS for sentences** (2026-09-23)."
+        },
+        {
+          "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v2-FACTCHECK.md",
+          "lines": [
+            302,
+            302
+          ],
+          "note": "Fact-check disposition 13."
+        },
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            70,
+            70
+          ],
+          "claim": "time.birthplace-lmt",
+          "note": "Public claim."
+        },
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            74,
+            74
+          ],
+          "claim": "time.lmt-notice",
+          "note": "Notice wording."
+        }
+      ],
+      "open_items": null,
+      "observed_tree_state": [
+        {
+          "file": "src/pages/methodology/index.astro",
+          "lines": [
+            214,
+            214
+          ],
+          "note": "At f2bd0dd the page says very old dates use the birthplace's own local mean time.",
+          "quote": "use the local mean time of the birthplace itself"
+        }
+      ],
+      "uncertain": null,
+      "disposition_class": "B fixed or addressed, no rule verdict of its own"
+    },
+    {
+      "id": "R3",
+      "title": "No platform.",
+      "disposition": "open (recorded)",
+      "summary": "No platform yet: engine unpublished (npm 404), MCP is a local stdio adapter (rc.10 candidate, three tools), no hosted compute endpoint (\"a personalized hosted chart API does not exist\"), no SDK outside TypeScript.",
+      "v2_steps": [],
+      "commits_prs": [
+        "site PR #593 (merge f2bd0dd4; commits 92162624, e29d0dbc): @zodiacs/engine 0.1.1-rc.10"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/REMAINING.md",
+          "lines": [
+            97,
+            110
+          ],
+          "note": "Backlog A."
+        },
+        {
+          "file": "docs/platform/REMAINING.md",
+          "lines": [
+            170,
+            176
+          ],
+          "note": "Backlog C: narrow hosted beta not started."
+        },
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            66,
+            66
+          ],
+          "claim": "product.engine-package",
+          "note": "Unpublished candidate."
+        },
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            56,
+            56
+          ],
+          "claim": "priv.no-chart-api",
+          "note": "No hosted chart API."
+        },
+        {
+          "file": "docs/platform/evidence/site-engine-rc10/README.md",
+          "lines": [
+            21,
+            30
+          ],
+          "note": "MCP adapter 0.1.0-rc.10, three tools."
+        }
+      ],
+      "open_items": "v2 Phase 3.",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "I open (recorded as open)"
+    },
+    {
+      "id": "R4",
+      "title": "Breadth gaps are whole traditions.",
+      "disposition": "partially addressed",
+      "summary": "rc.9/rc.10 add Western items (houses, mean node, mean Lilith, Vertex/East Point, seven lots, antiscia, midpoints) and move two site-only pieces into the package (the crossing solver in rc.8; sect as sectOf in rc.10). No Vedic, Chinese, profections, planetary hours, solar arc or rise/set is recorded, and no record moves progressions, returns, void-of-course, declination parallels, aspect patterns, composites, dignities or Moon-sign candidates into the package.",
+      "v2_steps": [],
+      "commits_prs": [
+        "site PR #587 (merge b0f37e65): @zodiacs/engine 0.1.1-rc.9, twelve house systems",
+        "site PR #593 (merge f2bd0dd4; commits 92162624, e29d0dbc): @zodiacs/engine 0.1.1-rc.10"
+      ],
+      "evidence": [
+        {
+          "file": "vendor/zodiacs-engine-0.1.1-rc.10.tgz#package/CHANGELOG.md",
+          "lines": [
+            3,
+            68
+          ],
+          "note": "Changelog rc.9 and rc.10."
+        },
+        {
+          "file": "docs/platform/evidence/site-engine-rc10/README.md",
+          "lines": [
+            21,
+            30
+          ],
+          "note": "rc.10 adoption."
+        }
+      ],
+      "open_items": "v2 Phase 2.",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "D partially addressed"
+    },
+    {
+      "id": "R5",
+      "title": "Topocentric position is a degree-level matter for the Moon (horizontal parallax about 54′–61′), not an arcsecond refinement, and some practices use it.",
+      "disposition": "no recorded disposition",
+      "summary": "No topocentric Moon is recorded.",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [],
+      "open_items": "v2 Phase 2 A (pointwise, ≤ 0.05″).",
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "R6",
+      "title": "The engine is presented through token ownership.",
+      "disposition": "partially addressed (owner decisions not recorded)",
+      "summary": "The engine has its own repository, zodiacs-org/engine, from rc.7 (REMAINING.md). No record of owner decisions §10.2/§10.3 or of re-described SDK metadata.",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [
+        {
+          "file": "docs/platform/REMAINING.md",
+          "lines": [
+            280,
+            287
+          ],
+          "note": "Engine source in zodiacs-org/engine."
+        }
+      ],
+      "open_items": "G1 / §10.2, §10.3 owner decisions; npm homepage; TypeDoc home and version.",
+      "observed_tree_state": [
+        {
+          "file": "vendor/zodiacs-engine-0.1.1-rc.10.tgz#package/package.json",
+          "lines": [
+            15,
+            21
+          ],
+          "note": "At f2bd0dd the vendored rc.10 manifest still gives homepage https://zodiacs.org/sdk/engine/ and repository zodiacs-org/engine."
+        },
+        {
+          "file": "public/sdk/engine/index.html",
+          "lines": [
+            1,
+            162
+          ],
+          "note": "The TypeDoc page is still for 0.1.1-rc.1 and links https://zodiacs.org/registry/ twice (lines 3 and 162)."
+        }
+      ],
+      "uncertain": null,
+      "disposition_class": "D partially addressed"
+    },
+    {
+      "id": "R7",
+      "title": "The site repository's public face is stale.",
+      "disposition": "no recorded disposition",
+      "summary": "No record addresses the site repository's description, topics, README or license (§10.6).",
+      "v2_steps": [],
+      "commits_prs": [],
+      "evidence": [],
+      "open_items": "G2, 3.11, §10.6.",
+      "observed_tree_state": [
+        {
+          "file": "README.md",
+          "lines": [
+            21,
+            21
+          ],
+          "note": "At f2bd0dd the README still says the retired look is unchanged.",
+          "quote": "Warm Gilt museum aesthetic, unchanged."
+        },
+        {
+          "file": "(repository root)",
+          "lines": null,
+          "note": "At f2bd0dd there is no LICENSE, CITATION.cff, SECURITY.md, CONTRIBUTING.md or CODE_OF_CONDUCT.md; AGENTS.md exists (added by PR #567 as an agent pointer to CLAUDE.md, not as G3 repository basics)."
+        }
+      ],
+      "uncertain": null,
+      "disposition_class": "J no recorded disposition"
+    },
+    {
+      "id": "R8",
+      "title": "Shared premises.",
+      "disposition": "recorded (process)",
+      "summary": "Phase 0 item 3 records the three false premises; the frame record corrects R8's \"about 0.05″\" (valid only inside the EOP span). §5 is a standing process rule; adoption records mark their checks as \"automated ... not an independent review\".",
+      "v2_steps": [
+        "Phase 0 item 3",
+        "§5"
+      ],
+      "commits_prs": [
+        "b1876996 (Take Horizons's ecliptic frame apart; pre-squash commit of PR #556, object present in the clone)",
+        "site PR #556, squash-merged to main as 3f31ba17 (2026-09-24)"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            407,
+            407
+          ],
+          "note": "Phase 0 item 3."
+        },
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/horizons-frame/README.md",
+          "lines": [
+            108,
+            110
+          ],
+          "note": "R8's figure holds only inside the EOP span."
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            219,
+            224
+          ],
+          "note": "Correction in the brief."
+        },
+        {
+          "file": "docs/platform/evidence/site-engine-rc7/README.md",
+          "lines": [
+            49,
+            55
+          ],
+          "note": "Example of the wording used for automated checks.",
+          "quote": "not an independent review"
+        }
+      ],
+      "open_items": null,
+      "observed_tree_state": [],
+      "uncertain": null,
+      "disposition_class": "F premise or process recorded"
+    },
+    {
+      "id": "R9",
+      "title": "The share token reveals the birth.",
+      "disposition": "fixed; rule PASS (as restated by the decision)",
+      "summary": "Owner-delegated decision (2026-09-23): angles in every shared positions code go to the middle of their whole degree; planets stay at 0.001°; the preview link keeps the code in its fragment. Step 1.15 PASS \"against the rule as the decision restates it\": the region left for the birthplace has a long side of at least 70 km (median 500–550 km); the birth instant stays recoverable to a 6.3 s window at the median, and the copy says so. The \"zero-PII\" wording is gone from api/calendar/transits.ts.",
+      "v2_steps": [
+        "1.15",
+        "1.14"
+      ],
+      "commits_prs": [
+        "c979f16f (Keep ASC and MC to the whole degree in every shared positions code; pre-squash commit of PR #556, object present in the clone)",
+        "f738c805 (Keep the full code in the fragment of a link with a preview; pre-squash commit of PR #556, object present in the clone)",
+        "efd5be3f (Rewrite the privacy page after an independent check, in all six languages; pre-squash commit of PR #556, object present in the clone)",
+        "1d054c02 (Record the one-time copy allowance and the 1.14 and 1.15 verdicts; pre-squash commit of PR #556, object present in the clone)",
+        "site PR #556, squash-merged to main as 3f31ba17 (2026-09-24)"
+      ],
+      "evidence": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            365,
+            389
+          ],
+          "note": "Step 1.15 decision and verdict.",
+          "quote": "- **Verdict: PASS, against the rule as the decision restates it.**"
+        },
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            60,
+            60
+          ],
+          "claim": "priv.positions-token",
+          "note": "Cites R9."
+        },
+        {
+          "file": "docs/claims/ledger.json",
+          "lines": [
+            45,
+            45
+          ],
+          "claim": "priv.fragment-links",
+          "note": "Cites R9."
+        }
+      ],
+      "open_items": "The token still carries the birth instant to seconds (disclosed); the feed still takes the code in a URL (disclosed).",
+      "observed_tree_state": [
+        {
+          "file": "api/calendar/transits.ts",
+          "lines": [
+            27,
+            28
+          ],
+          "note": "The feed takes the angles of any code to the whole degree."
+        }
+      ],
+      "uncertain": "The decision changed the premise of rule 1.15 (\"cannot recover the birth instant\"); the PASS is against the restated rule.",
+      "disposition_class": "A closed by a recorded PASS verdict"
+    }
+  ]
+}
