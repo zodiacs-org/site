@@ -38,6 +38,12 @@ export interface CompatibilityCardPerson {
    * itself is never drawn.
    */
   untimedDate?: string;
+  /**
+   * The UTC instant of a chart computed on this device with a birth time. The
+   * picture draws its bodies at the whole minute (compatibilityPicturePeople);
+   * the instant itself is never drawn.
+   */
+  utc?: Date | string;
 }
 
 const W = 1080;
@@ -114,35 +120,41 @@ export function compatibilityPlacementLine(person: CompatibilityCardPerson, loca
     .join('  ·  ');
 }
 
+const withoutBirthTime = (person: CompatibilityCardPerson) => person.untimedDate !== undefined || person.asc === null;
+const hasSeconds = (utc: Date | string | undefined) => utc !== undefined && new Date(utc).getTime() % 60_000 !== 0;
+
 /**
- * The two people, and the contacts between them, that a picture draws. A
- * chart computed on this device without a birth time is noon at the
- * birthplace, and its bodies give that instant: a contact with its Moon,
- * printed to a tenth of a degree, puts it within minutes, and with it the
- * birthplace's time zone, or before standard time its longitude. Such a
- * person is drawn as their link carries them, the sky at 12:00 UTC on the
- * birth date (sharedReferenceInstant), without the Moon, whose sign such a
- * chart never states, and the contacts are found again from what is drawn.
- * Anyone else is drawn as given.
+ * The two people, and the contacts between them, that a picture draws: each
+ * as their link carries them (share-positions-noon's pictureBodies), so the
+ * picture shows no more of either than their link. A chart computed on this
+ * device without a birth time is noon at the birthplace, and its bodies give
+ * that instant: a contact with its Moon, printed to a tenth of a degree, put
+ * it within minutes, and with it the birthplace's time zone, or before
+ * standard time its longitude. Such a person is drawn as the sky at 12:00 UTC
+ * on the birth date, and anyone without a birth time without the Moon, whose
+ * sign such a chart never states. A chart with a birth time whose instant has
+ * seconds (before standard time) is drawn at the whole minute. The contacts
+ * are found again from what is drawn; when nothing changes they are the
+ * page's.
  */
 export async function compatibilityPicturePeople(
   a: CompatibilityCardPerson,
   b: CompatibilityCardPerson,
   summary: PairSummary,
 ): Promise<{ a: CompatibilityCardPerson; b: CompatibilityCardPerson; summary: PairSummary }> {
-  if (!a.untimedDate && !b.untimedDate) return { a, b, summary };
-  const [{ computeBodies }, { sharedReferenceInstant }] = await Promise.all([
+  const changes = (person: CompatibilityCardPerson) => withoutBirthTime(person) || hasSeconds(person.utc);
+  if (!changes(a) && !changes(b)) return { a, b, summary };
+  const [{ computeBodies }, { pictureBodies }] = await Promise.all([
     import('./engine/full'),
     import('./share-positions-noon'),
   ]);
   const drawn = (person: CompatibilityCardPerson): CompatibilityCardPerson => {
-    if (!person.untimedDate) return person;
-    const utc = sharedReferenceInstant(person.untimedDate);
-    if (!utc) throw new Error('a picture of a chart without a birth time needs its birth date');
+    if (!changes(person)) return person;
+    const timeKnown = !withoutBirthTime(person);
     return {
       label: person.label,
-      bodies: computeBodies(utc).filter(({ body }) => body !== 'Moon').map(({ body, lon }) => ({ body, lon })),
-      asc: null,
+      bodies: pictureBodies({ ...person, timeKnown }, computeBodies),
+      asc: timeKnown ? person.asc : null,
     };
   };
   const people = { a: drawn(a), b: drawn(b) };

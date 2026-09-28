@@ -11,6 +11,8 @@ interface CompatibilitySharePerson {
   asc: number | null;
   /** A chart computed here without a birth time: the picture draws noon UTC on this date (compatibilityPicturePeople). */
   untimedDate?: string;
+  /** A chart computed here with a birth time: the picture draws its bodies at the whole minute. */
+  utc?: Date | string;
 }
 
 interface CompatibilityShareControlProps {

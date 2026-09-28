@@ -99,3 +99,39 @@ export function timedSharedPositions(
   if (!minute) return null;
   return onWholeMinute(utc) ? chart : { ...chart, bodies: bodiesAt(minute) };
 }
+
+/** A person in a two-chart picture, as the calculator knows them. */
+export interface PicturePerson {
+  bodies: readonly { body: string; lon: number }[];
+  timeKnown: boolean;
+  /** A chart with a birth time computed on this device: its UTC instant. */
+  utc?: Date | string;
+  /** A chart without a birth time computed on this device: its civil birth date. */
+  untimedDate?: string;
+}
+
+/**
+ * The bodies a two-chart picture (compatibility, composite) draws of one
+ * person: those their link carries, so a picture shows no more of them than
+ * the link. With a birth time, the bodies at the UTC instant rounded to the
+ * whole minute (sharedTimedInstant). Without one, the sky at 12:00 UTC on the
+ * birth date for a chart computed here (sharedReferenceInstant), since its own
+ * bodies are noon at the birthplace, and in any case without the Moon, whose
+ * sign such a chart never states. Positions that arrived in a link are already
+ * what it carries. Only the bodies the person already has are drawn.
+ */
+export function pictureBodies(
+  person: PicturePerson,
+  bodiesAt: (utc: Date) => readonly { body: string; lon: number }[],
+): { body: string; lon: number }[] {
+  const names = new Set(person.bodies.map(({ body }) => body));
+  const at = (utc: Date | null) => {
+    if (!utc) throw new RangeError('a picture of a chart needs a valid instant or birth date');
+    return bodiesAt(utc).filter(({ body }) => names.has(body));
+  };
+  const drawn = person.timeKnown
+    ? person.utc !== undefined && !onWholeMinute(person.utc) ? at(sharedTimedInstant(person.utc)) : person.bodies
+    : (person.untimedDate !== undefined ? at(sharedReferenceInstant(person.untimedDate)) : person.bodies)
+      .filter(({ body }) => body !== 'Moon');
+  return drawn.map(({ body, lon }) => ({ body, lon }));
+}

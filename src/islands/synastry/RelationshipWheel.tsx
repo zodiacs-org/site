@@ -53,6 +53,10 @@ export interface WheelPerson {
   mc: number | null;
   cusps: number[] | null;
   timeKnown: boolean;
+  /** A chart computed here without a birth time: its civil date, for a picture's noon-UTC sky. */
+  untimedDate?: string;
+  /** A chart computed here with a birth time: its UTC instant, for a picture's whole minute. */
+  utc?: Date | string;
 }
 
 export interface RelationshipWheelProps {
@@ -599,6 +603,10 @@ export default function RelationshipWheel({ locale, a, b, summary }: Relationshi
           data-relationship-panel="composite"
         >
           <CompositePanel locale={locale} data={composite} sourceKey={compositeSource}
+            people={{
+              a: { bodies: a.bodies, timeKnown: a.timeKnown, utc: a.utc, untimedDate: a.untimedDate },
+              b: { bodies: b.bodies, timeKnown: b.timeKnown, utc: b.utc, untimedDate: b.untimedDate },
+            }}
             sourceTimesKnown={a.timeKnown && b.timeKnown}
             selectedId={compositeSelected}
             onSelect={(id) => setCompositeFocus(id ? { source: compositeSource, id } : null)} />

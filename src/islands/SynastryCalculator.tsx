@@ -1541,6 +1541,8 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
                 mc: result.a.wheel.mc,
                 cusps: result.a.wheel.cusps,
                 timeKnown: result.a.timeKnown,
+                untimedDate: result.a.untimedDate,
+                utc: result.a.utc,
               }}
               b={{
                 label: result.b.label,
@@ -1550,6 +1552,8 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
                 mc: result.b.wheel.mc,
                 cusps: result.b.wheel.cusps,
                 timeKnown: result.b.timeKnown,
+                untimedDate: result.b.untimedDate,
+                utc: result.b.utc,
               }}
               summary={result.summary}
             />
@@ -1616,8 +1620,8 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
                     />
                     <compatShareMod.CompatibilityShareControl
                       key={result.at}
-                      a={{ label: result.a.label, bodies: result.a.bodies, asc: result.a.asc, untimedDate: result.a.untimedDate }}
-                      b={{ label: result.b.label, bodies: result.b.bodies, asc: result.b.asc, untimedDate: result.b.untimedDate }}
+                      a={{ label: result.a.label, bodies: result.a.bodies, asc: result.a.asc, untimedDate: result.a.untimedDate, utc: result.a.utc }}
+                      b={{ label: result.b.label, bodies: result.b.bodies, asc: result.b.asc, untimedDate: result.b.untimedDate, utc: result.b.utc }}
                       summary={result.summary}
                       locale={locale}
                     />
@@ -1648,8 +1652,8 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
                     />
                     <compatShareMod.CompatibilityShareControl
                       key={result.at}
-                      a={{ label: result.a.label, bodies: result.a.bodies, asc: result.a.asc, untimedDate: result.a.untimedDate }}
-                      b={{ label: result.b.label, bodies: result.b.bodies, asc: result.b.asc, untimedDate: result.b.untimedDate }}
+                      a={{ label: result.a.label, bodies: result.a.bodies, asc: result.a.asc, untimedDate: result.a.untimedDate, utc: result.a.utc }}
+                      b={{ label: result.b.label, bodies: result.b.bodies, asc: result.b.asc, untimedDate: result.b.untimedDate, utc: result.b.utc }}
                       summary={result.summary}
                       locale={locale}
                     />

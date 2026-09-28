@@ -85,6 +85,32 @@ describe('compatibility share card', () => {
       .rejects.toThrow('birth date');
   });
 
+  it('draws anyone without a birth time without the Moon, and a birth time at its whole minute', async () => {
+    const partner: CompatibilityCardPerson = {
+      label: 'Sam',
+      bodies: computeBodies(new Date('1995-08-01T09:30:00Z')).map(({ body, lon }) => ({ body, lon })),
+      asc: 123.4,
+    };
+    // Positions that arrived in a link without a birth time are noon UTC already; the Moon still goes.
+    const received: CompatibilityCardPerson = {
+      label: 'Lee', bodies: computeBodies(new Date('2000-04-11T12:00:00Z')).map(({ body, lon }) => ({ body, lon })), asc: null,
+    };
+    const drawn = await compatibilityPicturePeople(received, partner, summarizePair(received.bodies, partner.bodies));
+    expect(drawn.a.bodies).toEqual(received.bodies.filter(({ body }) => body !== 'Moon'));
+    expect(drawn.summary.aspects.some((contact) => contact.a === 'Moon')).toBe(false);
+    // Before standard time a chart's instant has seconds: the picture takes the whole minute.
+    const pictures = new Set<string>();
+    for (const second of [-30, -1, 0, 17, 29.5]) {
+      const utc = new Date(Date.parse('1870-06-15T19:46:00Z') + second * 1000);
+      const person: CompatibilityCardPerson = {
+        label: 'Ana', bodies: computeBodies(utc).map(({ body, lon }) => ({ body, lon })), asc: 200.2, utc,
+      };
+      const picture = await compatibilityPicturePeople(person, partner, summarizePair(person.bodies, partner.bodies));
+      pictures.add(JSON.stringify([picture.a.bodies, picture.a.asc, picture.summary]));
+    }
+    expect(pictures.size).toBe(1);
+  });
+
   it('keeps the logo above the occupied two-person footer', () => {
     expect(COMPATIBILITY_CARD_BRAND_LAYOUT.wordmarkX).toBe(1014);
     expect(COMPATIBILITY_CARD_BRAND_LAYOUT.centerY).toBe(76);
