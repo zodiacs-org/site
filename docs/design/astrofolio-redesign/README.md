@@ -15,6 +15,8 @@
 
 **Share card, 2026-09-24:** from six directions (Film, Cabinet, Season, Faces, Clock and Cosmic eye), the owner chose **Faces** for the image a shared link shows. It is one evergreen card: the twelve portraits of the glyph film, one per sign, in two rows around a band with the wordmark and "Twelve signs. Twelve tokens." `scripts/build-astrofolio-share-card.mjs` renders it from the film. It replaces the seasonal card, and the seasonal cards stay published for links already shared.
 
+**Smoother card rise, 2026-09-26:** people reported that the rise on phones was janky and unreliable. A script used to move the looks on every frame, so they lagged behind the thumb, jumped when the phone's toolbar came and went, and could catch a vertical swipe. Now the browser runs the dim, the caption and the rise as scroll-driven animations, together with the scroll itself. The looks rise together as one row, so a vertical swipe on a look always scrolls the page. The rise is measured against the small viewport, which holds still while the toolbar moves. In browsers without scroll-driven animations, and with reduced motion, the opening scrolls away before the runway and nothing moves on its own.
+
 These are four working prototypes for `/astrofolio/`. Each is built only from assets already in this repository:
 
 - the twelve gold figures (`public/assets/sculptures/`)

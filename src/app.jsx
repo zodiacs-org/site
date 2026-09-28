@@ -4923,18 +4923,9 @@
             hero.style.removeProperty('--hero-out');
             hero.style.removeProperty('--hero-caption');
             hero.dataset.caption = 'live';
-            // On phones the film stays behind the runway: it dims, and the
-            // caption rises and fades, as the runway comes up the screen.
-            // The runway reads the same value to raise its looks.
-            const runway = document.getElementById('the-twelve');
-            if (runway && matchesMedia(CAMPAIGN_PHONE_QUERY)) {
-              const rise = clampUnit(1 - runway.getBoundingClientRect().top / Math.max(1, window.innerHeight));
-              hero.style.setProperty('--stack', rise.toFixed(3));
-              runway.style.setProperty('--rise', rise.toFixed(3));
-            } else {
-              hero.style.removeProperty('--stack');
-              runway?.style.removeProperty('--rise');
-            }
+            // On phones the film dims, the caption fades and the runway rises
+            // as scroll-driven animations in the stylesheet, so the scroll
+            // itself drives them and nothing here runs per frame.
             return;
           }
           // The film opens from its place inside the wordmark until it
@@ -5076,7 +5067,7 @@
         <article
           className={'campaign-look' + (inSeason ? ' is-season' : '') + (active ? ' is-active' : '')}
           data-look={slug}
-          style={{ '--sign': item.hue, '--rise-order': Math.min(index, 3) }}
+          style={{ '--sign': item.hue }}
           aria-labelledby={`campaign-look-${slug}`}
           onFocus={(event) => {
             // Keyboard focus inside the pinned runway brings the look into

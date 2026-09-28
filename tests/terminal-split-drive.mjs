@@ -629,57 +629,99 @@ try {
     await page.setViewportSize({ width: 390, height: 844 });
 
     // Phones: as the page moves on, the film stays in place and dims, the
-    // caption rises and fades, and the looks come up over the dimmed film in
-    // two beats: the film falls nearly black first, then the looks rise from
-    // below as solid cards, the next a beat behind. Discover more lands the
-    // runway at the top.
+    // caption lifts away and fades, and the runway's track of looks comes up
+    // over the dimmed film in two beats: the film falls nearly black first,
+    // then the track rises from below and settles as the runway reaches the
+    // top. Every beat is a scroll-driven animation on the page's own scroll,
+    // so the script writes nothing per frame, and the track moves as one
+    // piece, so it never scrolls vertically under a thumb. Discover more
+    // lands the runway at the top.
     const readStack = () => page.evaluate(() => {
       const hero = document.getElementById('official-twelve');
       const caption = hero.querySelector('.campaign-hero__caption');
       const runway = document.getElementById('the-twelve');
-      const lift = (look) => {
-        const transform = getComputedStyle(look).transform;
+      const track = runway.querySelector('.campaign-runway__track');
+      const lift = (node) => {
+        const transform = getComputedStyle(node).transform;
         return transform === 'none' ? 0 : Math.round(new DOMMatrixReadOnly(transform).m42);
       };
       return {
+        heroPosition: getComputedStyle(hero).position,
         heroTop: Math.round(hero.getBoundingClientRect().top),
         runwayTop: Math.round(runway.getBoundingClientRect().top),
-        stack: Number.parseFloat(hero.style.getPropertyValue('--stack') || '0'),
-        rise: Number.parseFloat(runway.style.getPropertyValue('--rise') || '0'),
+        inline: [hero.style.getPropertyValue('--stack'), runway.style.getPropertyValue('--rise'), track.style.transform].join(''),
         dim: Number.parseFloat(getComputedStyle(hero.querySelector('.campaign-hero__pin'), '::after').opacity),
         captionTop: Math.round(caption.getBoundingClientRect().top),
         captionOpacity: Number.parseFloat(getComputedStyle(caption).opacity),
-        lifts: [...runway.querySelectorAll('.campaign-look')].slice(0, 3).map(lift),
-        lookOpacity: Number.parseFloat(getComputedStyle(runway.querySelector('.campaign-look')).opacity),
+        trackLift: lift(track),
+        lookLifts: [...track.querySelectorAll('.campaign-look')].slice(0, 3).map(lift),
+        lookOpacity: Number.parseFloat(getComputedStyle(track.querySelector('.campaign-look')).opacity),
         dots: Number.parseFloat(getComputedStyle(runway.querySelector('.campaign-runway__dots')).opacity),
+        overflowY: getComputedStyle(track).overflowY,
+        trackRange: track.scrollHeight - track.clientHeight,
+        timelines: document.getAnimations()
+          .filter((animation) => /^campaign-(?:film-dim|caption-fade|caption-lift|runway-rise|dots-in)$/u.test(animation.animationName ?? ''))
+          .map((animation) => `${animation.animationName} ${animation.timeline?.constructor.name}`)
+          .sort(),
       };
     });
-    await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
-    await page.waitForFunction(() => document.getElementById('official-twelve')?.style.getPropertyValue('--stack') === '0.000');
+    // Scroll-driven animations take up a new scroll position on the next
+    // frame.
+    const nextFrames = () => page.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))));
+    const scrollPageTo = async (top) => {
+      await page.evaluate((y) => window.scrollTo({ top: y, behavior: 'instant' }), top);
+      await page.waitForFunction((y) => Math.abs(window.scrollY - y) <= 1, top);
+      await nextFrames();
+    };
+    await scrollPageTo(0);
     const stackStart = await readStack();
+    assert.equal(stackStart.heroPosition, 'sticky', 'the film stays behind the runway');
+    assert.deepEqual(stackStart.timelines, [
+      'campaign-caption-fade ScrollTimeline',
+      'campaign-caption-lift ScrollTimeline',
+      'campaign-dots-in ScrollTimeline',
+      'campaign-film-dim ScrollTimeline',
+      'campaign-runway-rise ScrollTimeline',
+    ], 'every beat runs on the page scroll');
+    assert.equal(stackStart.inline, '', 'the script writes no per-frame state');
     assert.equal(stackStart.dim, 0, 'the first screen shows the film undimmed');
     assert.equal(stackStart.captionOpacity, 1);
-    await page.evaluate(() => window.scrollTo({ top: Math.round(window.innerHeight / 2), behavior: 'instant' }));
-    await page.waitForFunction(() => Math.abs(Number.parseFloat(document.getElementById('official-twelve')?.style.getPropertyValue('--stack') || '0') - 0.5) < 0.05);
+    assert.ok(stackStart.trackLift > 300, `the looks wait below the screen (${stackStart.trackLift}px below their place)`);
+    await scrollPageTo(422);
     const stackMiddle = await readStack();
-    assert.ok(Math.abs(stackMiddle.heroTop) <= 1, 'the film stays in place while the card rises over it');
-    assert.ok(Math.abs(stackMiddle.runwayTop - 422) <= 2, 'the card is halfway up the screen');
-    assert.ok(Math.abs(stackMiddle.dim - 0.81) < 0.03, `the film falls nearly black in the first beat (${stackMiddle.dim})`);
+    assert.ok(Math.abs(stackMiddle.heroTop) <= 1, 'the film stays in place while the runway rises over it');
+    assert.ok(Math.abs(stackMiddle.runwayTop - 422) <= 2, 'the runway is halfway up the screen');
+    assert.ok(Math.abs(stackMiddle.dim - 0.8) < 0.03, `the film falls nearly black in the first beat (${stackMiddle.dim})`);
     assert.ok(stackMiddle.captionTop < stackStart.captionTop - 60, 'the caption rises as the page moves on');
     assert.ok(stackMiddle.captionOpacity < 0.3, `the caption fades as it rises (${stackMiddle.captionOpacity})`);
-    assert.equal(stackMiddle.rise, stackMiddle.stack, 'the looks rise on the same scroll as the film dims');
-    assert.ok(stackMiddle.lifts[0] > 40 && stackMiddle.lifts[0] < 140, `the first look is still rising (${stackMiddle.lifts[0]}px below its place)`);
-    assert.ok(stackMiddle.lifts[1] > stackMiddle.lifts[0] + 40, `the next look is a beat behind (${stackMiddle.lifts.join(', ')})`);
+    assert.ok(stackMiddle.trackLift > 40 && stackMiddle.trackLift < 140, `the looks are still rising (${stackMiddle.trackLift}px below their place)`);
+    assert.deepEqual(stackMiddle.lookLifts, [0, 0, 0], 'the looks rise with their track, never on their own');
     assert.equal(stackMiddle.lookOpacity, 1, 'the looks rise as solid cards');
     assert.equal(stackMiddle.dots, 0, 'the disc row waits until the looks have nearly arrived');
-    await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
+    assert.equal(stackMiddle.overflowY, 'hidden', 'the swipeable track never scrolls vertically');
+    assert.equal(stackMiddle.trackRange, 0, 'nothing overflows the track while it rises');
+    assert.equal(stackMiddle.inline, '');
+    // A vertical scroll that starts on a rising look moves the page, never
+    // the track.
+    await scrollPageTo(464);
+    const wheelAt = await page.evaluate(() => {
+      const look = document.querySelector('.campaign-runway__track > .campaign-look').getBoundingClientRect();
+      const bagTop = document.querySelector('.campaign-bag')?.getBoundingClientRect().top ?? window.innerHeight;
+      return { x: Math.round(look.left + look.width / 2), y: Math.round((look.top + Math.min(look.bottom, bagTop)) / 2) };
+    });
+    await page.mouse.move(wheelAt.x, wheelAt.y);
+    await page.mouse.wheel(0, 240);
+    await page.waitForFunction(() => window.scrollY > 564, undefined, { timeout: 5000 });
+    assert.equal(await page.locator('.campaign-runway__track').evaluate((node) => node.scrollTop), 0, 'the wheel moved the page, not the track');
+    await scrollPageTo(0);
     await page.locator('.campaign-discover').click();
     await page.waitForFunction(() => Math.abs(document.getElementById('the-twelve')?.getBoundingClientRect().top ?? 99) <= 1);
-    await page.waitForFunction(() => document.getElementById('official-twelve')?.style.getPropertyValue('--stack') === '1.000');
+    await nextFrames();
     const stackTop = await readStack();
     assert.ok(Math.abs(stackTop.dim - 0.9) < 0.01, 'the runway leaves the film fully dimmed behind it');
     assert.equal(stackTop.captionOpacity, 0, 'the caption has faded away');
-    assert.deepEqual(stackTop.lifts, [0, 0, 0], 'the looks have settled in place');
+    assert.equal(stackTop.trackLift, 0, 'the looks have settled in place');
+    assert.deepEqual(stackTop.lookLifts, [0, 0, 0]);
     assert.equal(stackTop.dots, 1, 'the disc row is in place');
     assert.equal(await page.locator('#the-twelve').evaluate((node) => getComputedStyle(node).backgroundColor), 'rgba(0, 0, 0, 0)', 'the looks float over the dimmed film');
     // The phone bar slid away on the way down, so the disc row has the top of
@@ -986,10 +1028,25 @@ try {
     assert.equal(reducedFilm.pending, 2);
     assert.equal(reducedFilm.cue, 'none');
     assert.match(reducedFilm.bag, /^(?:0s|0ms)(?:, (?:0s|0ms))*$/u);
-    // Reduced motion never offsets the looks as the runway comes up.
-    await reducedPage.evaluate(() => window.scrollTo({ top: Math.round(window.innerHeight / 2), behavior: 'instant' }));
-    await reducedPage.waitForFunction(() => Number.parseFloat(document.getElementById('the-twelve')?.style.getPropertyValue('--rise') || '0') > 0.3);
-    assert.deepEqual(await reducedPage.locator('#the-twelve .campaign-look').evaluateAll((looks) => looks.slice(0, 3).map((look) => getComputedStyle(look).transform)), ['none', 'none', 'none'], 'reduced motion keeps the looks in place');
+    // Reduced motion is the plain column: the opening scrolls away before
+    // the runway, and nothing moves on its own.
+    await reducedPage.evaluate(() => window.scrollTo({ top: 422, behavior: 'instant' }));
+    await reducedPage.waitForFunction(() => Math.abs(window.scrollY - 422) <= 1);
+    await reducedPage.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))));
+    const reducedStack = await reducedPage.evaluate(() => {
+      const hero = document.getElementById('official-twelve');
+      const track = document.querySelector('#the-twelve .campaign-runway__track');
+      return {
+        heroPosition: getComputedStyle(hero).position,
+        heroTop: Math.round(hero.getBoundingClientRect().top),
+        transforms: [track, ...[...track.querySelectorAll('.campaign-look')].slice(0, 3)].map((node) => getComputedStyle(node).transform),
+        dots: getComputedStyle(document.querySelector('#the-twelve .campaign-runway__dots')).opacity,
+      };
+    });
+    assert.notEqual(reducedStack.heroPosition, 'sticky', 'reduced motion lets the opening scroll away');
+    assert.ok(reducedStack.heroTop <= -420, `the opening moves up with the page (${reducedStack.heroTop})`);
+    assert.deepEqual(reducedStack.transforms, ['none', 'none', 'none', 'none'], 'reduced motion keeps the track and its looks in place');
+    assert.equal(reducedStack.dots, '1', 'the disc row is always in place');
     await reducedPage.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
     await reducedPage.locator('[data-consumer-sign="virgo"]').click();
     await reducedPage.waitForFunction(() => {

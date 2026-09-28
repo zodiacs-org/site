@@ -415,12 +415,20 @@ describe('Astrofolio consumer and Terminal market-desk split', () => {
     expect(follow).toContain("trackAnalytics('registry_sign_selected', { sign: chosen.asset.sign, source: 'consumer_swipe' });");
     expect(runway).toContain('if (!stageRef.current.pinned) window.requestAnimationFrame(() => followSwipe(pickLook()));');
     expect(runway).toContain("if (!stageRef.current.pinned) steerRef.current = { ticker: next.ticker, until: window.performance.now() + 1200 };");
-    // Phones: the looks rise with the scroll. The film's paint hands the
-    // runway the same 0-to-1 value that dims the film; nothing is timed.
+    // Phones: the film dims and the looks rise with the scroll as
+    // scroll-driven animations in the stylesheet (pinned in
+    // registry-pastel-polish). The script times nothing and writes nothing
+    // per frame for them, and in carousel mode the track carries no inline
+    // transform, so the stylesheet's rise owns it.
     expect(runway).not.toContain('dataset.rise');
-    expect(functionBlock(source, 'CampaignHero')).toContain("runway.style.setProperty('--rise', rise.toFixed(3));");
-    expect(functionBlock(source, 'CampaignHero')).toContain("runway?.style.removeProperty('--rise');");
-    expect(functionBlock(source, 'CampaignLook')).toContain("'--rise-order': Math.min(index, 3)");
+    for (const property of ["'--stack'", "'--rise'"]) {
+      expect(hero).not.toContain(property);
+      expect(runway).not.toContain(property);
+    }
+    expect(look).toContain("style={{ '--sign': item.hue }}");
+    expect(look).not.toContain('--rise-order');
+    expect(runway).toContain("section.dataset.mode = stage.pinned ? 'pinned' : 'carousel';");
+    expect(runway).toContain("track.style.removeProperty('transform');");
     expect(source).toContain("const CAMPAIGN_PHONE_QUERY = '(max-width: 900px)';");
     // The opening sticks only behind the runway, inside one stack.
     ordered(source, [
@@ -432,7 +440,6 @@ describe('Astrofolio consumer and Terminal market-desk split', () => {
       '<CampaignAbout />',
       '<CampaignApp />',
     ]);
-    expect(functionBlock(source, 'CampaignHero')).toContain("hero.style.setProperty('--stack', rise.toFixed(3));");
     // Phones: the looks carry no buttons, so the bag stays over the runway,
     // and its sign opens a sheet of all twelve. A sign picked there moves the
     // runway to its look without moving the page.

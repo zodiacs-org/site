@@ -213,20 +213,34 @@ describe('registry pastel polish', () => {
     expect(campaignReduced).toContain('.consumer-registry .btn.btn--fomo:active,');
     // Reduced motion also keeps the film still and the runway unpinned.
     const stack = campaign.slice(campaign.indexOf('/* Phones: as the page moves on, the film stays in place and dims'), campaign.indexOf('@media (min-width: 601px) and (max-width: 900px)'));
-    expect(stack).toContain('.campaign-stack > .campaign-hero { position: sticky; top: 0; z-index: 0; }');
-    expect(stack).toContain('opacity: calc(min(1, var(--stack, 0) * 1.8) * .9);');
-    expect(stack).toContain('opacity: calc(1 - var(--stack, 0) * 2.6);');
-    expect(stack).toContain('transform: translateY(calc(var(--stack, 0) * -30vh));');
-    expect(stack).not.toContain('scale(calc(1 - var(--stack');
-    expect(stack).not.toContain('data-rise');
-    // The looks rise with the scroll as solid cards, the next a beat behind,
-    // and only when motion is welcome.
-    const rise = stack.slice(stack.indexOf('@media (max-width: 900px) and (prefers-reduced-motion: no-preference) {'), stack.indexOf('@media (max-width: 900px) and (prefers-reduced-motion: reduce) {'));
-    expect(rise).toContain('--look-rise: clamp(0, calc((var(--rise, 1) - .3 - min(var(--rise-order, 0), 2) * .07) / .5), 1);');
-    expect(rise).toContain('transform: translateY(calc((1 - var(--look-rise)) * (1 - var(--look-rise)) * (1 - var(--look-rise)) * 48vh));');
-    expect(rise).toContain('.campaign-stack > .campaign-runway .campaign-runway__dots { opacity: clamp(0, calc((var(--rise, 1) - .55) / .3), 1); }');
-    expect(rise).not.toContain('.campaign-look { opacity');
-    expect(stack).toContain('@media (max-width: 900px) and (prefers-reduced-motion: reduce) {\n      .campaign-stack .campaign-hero__caption { transform: none; }\n      .campaign-discover__cue { animation: none; }');
+    // The opening is one small-viewport screen tall, so the beats are set
+    // against that span, which holds still while a phone's toolbar comes and
+    // goes. The swipeable track never scrolls vertically.
+    expect(stack).toContain('.campaign-stack { position: relative; --stack-span: max(100svh, 560px); }');
+    expect(stack).toContain('.campaign-stack > .campaign-runway[data-mode="carousel"] .campaign-runway__track { overflow-y: hidden; }');
+    // Every beat is a scroll-driven animation on the page's own scroll, set
+    // only where the browser runs them and motion is welcome. Everywhere else
+    // the opening scrolls away before the runway as a plain column.
+    const beats = stack.slice(stack.indexOf('@supports (animation-timeline: scroll()) and (animation-range: 0% 100%) {'), stack.indexOf('@media (max-width: 900px) and (prefers-reduced-motion: reduce) {'));
+    expect(beats).toContain('@supports (animation-timeline: scroll()) and (animation-range: 0% 100%) {\n      @media (max-width: 900px) and (prefers-reduced-motion: no-preference) {\n        .campaign-stack > .campaign-hero { position: sticky; top: 0; z-index: 0; }');
+    expect(stack.slice(0, stack.indexOf('@supports (animation-timeline: scroll()) and (animation-range: 0% 100%) {'))).not.toContain('position: sticky');
+    expect(beats).toContain('animation: campaign-film-dim linear both;\n          animation-timeline: scroll(root);\n          animation-range: 0 calc(var(--stack-span) * .56);');
+    expect(beats).toContain('animation: campaign-caption-fade linear both, campaign-caption-lift linear both;\n          animation-timeline: scroll(root), scroll(root);\n          animation-range: 0 calc(var(--stack-span) * .38), 0 var(--stack-span);');
+    // The looks rise as one track, easing out, so they arrive fast and
+    // settle; the disc row follows them in.
+    expect(beats).toContain('.campaign-stack > .campaign-runway[data-mode="carousel"] .campaign-runway__track {\n          animation: campaign-runway-rise cubic-bezier(.215, .61, .355, 1) both;\n          animation-timeline: scroll(root);\n          animation-range: calc(var(--stack-span) * .3) calc(var(--stack-span) * .8);');
+    expect(beats).toContain('.campaign-stack > .campaign-runway[data-mode="carousel"] .campaign-runway__dots {\n          animation: campaign-dots-in linear both;\n          animation-timeline: scroll(root);\n          animation-range: calc(var(--stack-span) * .55) calc(var(--stack-span) * .85);');
+    expect(beats).not.toContain('.campaign-look');
+    expect(stack).toContain('@keyframes campaign-film-dim { from { opacity: 0; } to { opacity: .9; } }');
+    expect(stack).toContain('@keyframes campaign-caption-fade { from { opacity: 1; } to { opacity: 0; } }');
+    expect(stack).toContain('@keyframes campaign-caption-lift { from { transform: none; } to { transform: translateY(-30vh); } }');
+    expect(stack).toContain('@keyframes campaign-runway-rise { from { transform: translateY(48vh); } to { transform: none; } }');
+    expect(stack).toContain('@keyframes campaign-dots-in { from { opacity: 0; } to { opacity: 1; } }');
+    // Nothing reads values a script writes per frame, and nothing is timed.
+    for (const retired of ['var(--stack,', 'var(--rise', '--look-rise', '--rise-order', 'data-rise', 'scale(calc(1 - var(--stack']) {
+      expect(stack).not.toContain(retired);
+    }
+    expect(stack).toContain('@media (max-width: 900px) and (prefers-reduced-motion: reduce) {\n      .campaign-discover__cue { animation: none; }');
     const stillFilm = campaign.slice(campaign.indexOf('@media (min-width: 901px) and (prefers-reduced-motion: reduce)'));
     expect(stillFilm).toContain('.campaign-hero { height: auto; }');
     expect(stillFilm).toContain('.campaign-hero__pin { position: relative; }');
