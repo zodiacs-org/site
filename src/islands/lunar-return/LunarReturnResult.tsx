@@ -13,6 +13,8 @@ const utcLabel = (iso: string) => iso.slice(0, 19).replace('T', ' · ') + ' UTC'
 
 export function LunarReturnResult({ result, Wheel }: LunarReturnResultProps) {
   const model = useMemo(() => lunarReturnExportModel(result), [result]);
+  // Images and calendar files start from the natal Moon at the whole minute.
+  const shared = useMemo(() => (result.shared ? lunarReturnExportModel({ ...result, chart: result.shared }) : model), [result, model]);
   const { wheel } = model;
   const heading = useRef<HTMLHeadingElement>(null);
   useEffect(() => { heading.current?.focus(); }, [model]);
@@ -34,7 +36,7 @@ export function LunarReturnResult({ result, Wheel }: LunarReturnResultProps) {
         aspects={wheel.aspects.filter((aspect) => aspect.orb < 6)} animate={false} />
       </div></div>
     </section>
-    <LunarReturnActions model={model} />
+    <LunarReturnActions model={shared} />
     <EvidenceDisclosure label="Return chart details" variant="panel" className="shell sr-result__details">
       <div class="sr-result__details-content">
         <p class="sr-result__instant mono">Return · {utcLabel(model.instantUtc)}<br />Reference · {utcLabel(model.referenceUtc)}<br />Your time · {new Date(model.instantUtc).toLocaleString('en', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', timeZoneName: 'short' })}</p>

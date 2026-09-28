@@ -14,6 +14,8 @@ export interface SolarReturnResultProps { result: SolarReturnResultData; Wheel: 
 export function SolarReturnResult({ result, Wheel }: SolarReturnResultProps) {
   const { chart } = result;
   const model = useMemo(() => solarReturnExportModel(result), [result]);
+  // Images and calendar files start from the natal Sun at the whole minute.
+  const shared = useMemo(() => (result.shared ? solarReturnExportModel({ ...result, chart: result.shared }) : model), [result, model]);
   const { wheel } = model;
   const sun = chart.bodies.find((body) => body.body === 'Sun')!;
   const planetsOnly = model.reading[0]?.kind === 'planets-only';
@@ -54,7 +56,7 @@ export function SolarReturnResult({ result, Wheel }: SolarReturnResultProps) {
         </div>
       </section>
 
-      <SolarReturnActions model={model} />
+      <SolarReturnActions model={shared} />
 
       <div class="calc__actions">
         <a class="btn btn--ghost" href="/birth-chart/">Open your full birth chart →</a>

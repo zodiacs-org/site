@@ -134,7 +134,7 @@ export default function SolarReturnActions({ model }: { model: SolarReturnExport
         <button class="btn btn--ghost" type="button" disabled={!prepared || preparing || sharing} onClick={shareImage}>{sharing ? 'Sharing…' : 'Share image'}</button>
         <button class="btn btn--ghost" type="button" disabled={calendarBusy} onClick={saveCalendar}>{calendarBusy ? 'Preparing calendar…' : 'Add to calendar'}</button>
       </div>
-      <p class="field__help">The image includes this return chart and reading. The calendar marks its {model.noTime ? 'approximate ' : ''}return instant. Birth details and names are omitted.</p>
+      <p class="field__help">The image shows this return chart and reading, with the return to the whole minute, the angles to the whole degree and no Placidus houses. The calendar marks the {model.noTime ? 'approximate ' : ''}return to the whole minute. Birth details and names are left out.</p>
       {model.noTime && <p class="field__help">The return instant can shift by hours with your exact birth time.</p>}
       {preparing && <p class="field__help" role="status">Preparing your return image…</p>}
       {imageError && <p class="calc__error" role="alert" data-sr-image-error>{imageError}</p>}

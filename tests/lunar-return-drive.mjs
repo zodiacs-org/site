@@ -176,17 +176,21 @@ export async function runLunarReturnChecks({ browser, baseURL, check, outDir }) 
       if (outDir) await detail.screenshot({ path: `${outDir}/details-${width}.png`, animations: 'disabled' });
       const calendar = await download(page, '[data-lr-calendar]', outDir, `return-${width}.ics`); record(`calendar-${width}`, calendar);
       const cal = fields(calendar.bytes); const calText = calendar.bytes.toString('utf8');
-      check(`Lunar ${width}: real calendar matches displayed event/reference and private identity`, cal.DTSTART === instant.replace(/[-:]/g, '').replace(/\.\d{3}Z$/, 'Z')
-        && cal.UID === `lunar-return-${instant.replace(/[-:.]/g, '')}@zodiacs.org` && cal.DURATION === 'PT1M' && cal.TRANSP === 'TRANSPARENT'
-        && cal.DESCRIPTION.includes(REFERENCE) && cal.DESCRIPTION.includes(instant) && cal.DESCRIPTION.includes('for display only')
+      // The calendar and the image give the return to the whole minute (the next one if the nearest would not follow the reference).
+      const nearest = Math.round(Date.parse(instant) / 60000) * 60000;
+      const shown = new Date(nearest <= Date.parse(REFERENCE) ? nearest + 60000 : nearest).toISOString();
+      check(`Lunar ${width}: real calendar marks the displayed return to the whole minute, after the reference, with a private identity`, cal.DTSTART === shown.replace(/[-:]/g, '').replace(/\.\d{3}Z$/, 'Z')
+        && cal.UID === `lunar-return-${shown.slice(0, 16).replace(/[-:]/g, '')}Z@zodiacs.org` && cal.DURATION === 'PT1M' && cal.TRANSP === 'TRANSPARENT'
+        && cal.DESCRIPTION.includes(REFERENCE) && cal.DESCRIPTION.includes(shown) && cal.DESCRIPTION.includes('for display only')
         && !/Private|1990-02-01|Synthetic|LOCATION:|VALARM|RRULE/.test(calText));
       await prepare(page); const image = await download(page, '[data-lr-download]', outDir, `return-${width}.png`); record(`image-${width}`, image);
       const png = PNG.sync.read(image.bytes); const ink = await page.evaluate(() => window.__lrText); const text = ink.map((r) => r.text).join(' ');
-      const reading = await page.locator('[data-lr-reading]').allTextContents();
+      // Placidus houses, and the house they put the Moon in, are left out of the image.
+      const reading = await page.locator('[data-lr-reading]:not([data-lr-reading="moon-house"])').allTextContents();
       check(`Lunar ${width}: actual PNG contains matching clocks, reading, branding and unclipped text`, png.width === 1080 && png.height === 1350
-        && text.includes('Lunar return') && text.includes(instant.replace('T', ' ').replace('Z', ' UTC'))
-        && text.includes(REFERENCE.replace('T', ' ').replace('Z', ' UTC')) && text.includes('zodiacs.org')
-        && reading.every((line) => text.includes(line)) && lunarTextGeometryFits(ink) && !/Private|1990-02-01|Synthetic/.test(text), JSON.stringify({ sha256: image.sha256, ink }));
+        && text.includes('Lunar return') && text.includes(`Return: ${shown.slice(0, 16).replace('T', ' ')} UTC`)
+        && text.includes(`Next after: ${REFERENCE.slice(0, 16).replace('T', ' ')} UTC`) && text.includes('zodiacs.org')
+        && text.includes('Placidus houses are left out of this image.') && reading.every((line) => text.includes(line)) && lunarTextGeometryFits(ink) && !/Private|1990-02-01|Synthetic/.test(text), JSON.stringify({ sha256: image.sha256, ink }));
       await page.locator('[data-lr-share]').focus(); await page.keyboard.press('Space');
       await page.waitForFunction(() => window.__lrShare[0]?.sha256);
       const share = await page.evaluate(() => window.__lrShare[0]);

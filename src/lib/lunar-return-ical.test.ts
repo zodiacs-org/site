@@ -14,26 +14,32 @@ const property = (calendar: string, name: string) => unfold(calendar).split('\r\
 describe('lunar calendar identity and privacy', () => {
   it('marks one UTC instant with an explicit transparent display minute and recorded reference', () => {
     const calendar = buildLunarReturnCalendar(model(), GENERATED);
-    expect(property(calendar, 'DTSTART')).toBe('DTSTART:20260924T131415Z');
+    // The marker is the return to the whole minute, as its image prints it.
+    expect(property(calendar, 'DTSTART')).toBe('DTSTART:20260924T131400Z');
     expect(property(calendar, 'DTSTAMP')).toBe('DTSTAMP:20260905T100102Z');
     expect(property(calendar, 'SUMMARY')).toBe('SUMMARY:Lunar return');
     expect(property(calendar, 'DESCRIPTION')).toContain('one-minute duration is for display only\\, not a duration of the lunar return.');
     expect(property(calendar, 'DESCRIPTION')).toContain('recorded reference: 2026-09-05T10:00:00.000Z.');
-    expect(property(calendar, 'DESCRIPTION')).toContain('Calculated return instant: 2026-09-24T13:14:15.678Z.');
+    expect(property(calendar, 'DESCRIPTION')).toContain('Calculated return instant\\, to the whole minute: 2026-09-24T13:14:00.000Z.');
     expect(calendar).toContain('TRANSP:TRANSPARENT\r\n'); expect(calendar).toContain('DURATION:PT1M\r\n');
     expect(calendar.match(/BEGIN:VEVENT/g)).toHaveLength(1);
     expect(calendar).not.toMatch(/(?:VALARM|DTEND|RRULE|TRIGGER|RDATE|EXDATE):/);
-    expect(lunarReturnCalendarFilename(model())).toBe('zodiacs-lunar-return-20260924T131415678Z.ics');
+    expect(lunarReturnCalendarFilename(model())).toBe('zodiacs-lunar-return-20260924T1314Z.ics');
   });
-  it('keeps identity across relocation/re-export, distinguishes milliseconds, and omits reference from UID', () => {
+  it('keeps identity across relocation/re-export, one identity per whole minute, and omits reference from UID', () => {
     const initial = buildLunarReturnCalendar(model(), GENERATED);
     const relocated = buildLunarReturnCalendar(model({ wheel: { bodies: [], aspects: [], angles: { asc: 20, mc: 100, ic: 280, dsc: 200 }, houses: null } }), '2026-09-06T00:00:00Z');
     const revisedReference = buildLunarReturnCalendar(model({ referenceUtc: '2026-09-06T00:00:00Z' }), GENERATED);
-    expect(property(initial, 'UID')).toBe('UID:lunar-return-20260924T131415678Z@zodiacs.org');
+    expect(property(initial, 'UID')).toBe('UID:lunar-return-20260924T1314Z@zodiacs.org');
     expect(property(relocated, 'UID')).toBe(property(initial, 'UID'));
     expect(property(revisedReference, 'UID')).toBe(property(initial, 'UID'));
     expect(property(relocated, 'DTSTAMP')).not.toBe(property(initial, 'DTSTAMP'));
-    expect(property(buildLunarReturnCalendar(model({ instantUtc: '2026-09-24T13:14:15.679Z' }), GENERATED), 'UID')).not.toBe(property(initial, 'UID'));
+    // The seconds are never exported: the same minute is the same marker.
+    expect(buildLunarReturnCalendar(model({ instantUtc: '2026-09-24T13:14:29.999Z' }), GENERATED)).toBe(initial);
+    expect(property(buildLunarReturnCalendar(model({ instantUtc: '2026-09-24T13:14:30.000Z' }), GENERATED), 'UID')).toBe('UID:lunar-return-20260924T1315Z@zodiacs.org');
+    // Rounding never puts the return at or before its recorded reference.
+    const close = buildLunarReturnCalendar(model({ referenceUtc: '2026-09-24T13:14:10.000Z', instantUtc: '2026-09-24T13:14:20.000Z' }), GENERATED);
+    expect(property(close, 'DTSTART')).toBe('DTSTART:20260924T131500Z');
   });
   it('serializes only chosen timestamps and constant copy even when extra fields are supplied', () => {
     const privateText = 'PRIVATE_PERSON London 1989-12-20 11:30 51.5 -0.12';

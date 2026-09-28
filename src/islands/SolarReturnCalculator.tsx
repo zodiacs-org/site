@@ -140,6 +140,7 @@ export default function SolarReturnCalculator() {
       savedSunLon: selected && !birthplace
         ? selected.summary.bodies.find((body) => body.body === 'Sun')?.lon ?? null
         : null,
+      savedUtc: selected && !birthplace ? selected.summary.utcISO : null,
       houseSystem: selected?.summary.houseSystem ?? profile.settings.houseSystem,
       castLocation: selected && !birthplace ? null : (differentPlace ? castCity : birthplace),
       year: yearMode === 'current' ? 'current' as const : Number(customYear),

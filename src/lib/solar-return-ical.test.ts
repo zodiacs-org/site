@@ -34,7 +34,8 @@ describe('Solar Return calendar handoff', () => {
     expect(lines.filter((line) => line === 'BEGIN:VEVENT')).toHaveLength(1);
     expect(lines.filter((line) => line === 'END:VEVENT')).toHaveLength(1);
     expect(lines).toContain('DTSTAMP:20260905T080000Z');
-    expect(lines).toContain('DTSTART:20260706T123456Z');
+    // The marker is the return to the whole minute, as its image prints it.
+    expect(lines).toContain('DTSTART:20260706T123500Z');
     expect(lines).toContain('DURATION:PT1M');
     expect(lines).toContain('TRANSP:TRANSPARENT');
     expect(lines).toContain('SUMMARY:Solar return · 2026');
@@ -56,8 +57,8 @@ describe('Solar Return calendar handoff', () => {
     });
     const calendar = buildSolarReturnCalendar(approximate, GENERATED_AT);
     expect(property(calendar, 'SUMMARY')).toBe('SUMMARY:Approximate solar return · 2027');
-    expect(property(calendar, 'DTSTART')).toBe('DTSTART:20261231T235945Z');
-    expect(property(calendar, 'UID')).toContain('solar-return-2027-20261231T235945000Z@zodiacs.org');
+    expect(property(calendar, 'DTSTART')).toBe('DTSTART:20270101T000000Z');
+    expect(property(calendar, 'UID')).toContain('solar-return-2027-20270101T000000000Z@zodiacs.org');
     expect(property(calendar, 'DESCRIPTION')).toContain('The return instant can shift by hours with your exact birth time.');
     expect(solarReturnCalendarFilename(approximate)).toBe('zodiacs-approximate-solar-return-2027.ics');
   });
@@ -75,8 +76,12 @@ describe('Solar Return calendar handoff', () => {
     const later = buildSolarReturnCalendar(model(), '2026-09-06T08:00:00Z');
     expect(property(first, 'UID')).toBe(property(later, 'UID'));
     expect(property(first, 'DTSTAMP')).not.toBe(property(later, 'DTSTAMP'));
-    const distinct = buildSolarReturnCalendar(model({ instantUtc: '2026-07-06T12:34:56.790Z' }), GENERATED_AT);
+    // One identity per whole minute: the seconds are never exported.
+    const sameMinute = buildSolarReturnCalendar(model({ instantUtc: '2026-07-06T12:35:29.999Z' }), GENERATED_AT);
+    expect(sameMinute).toBe(first);
+    const distinct = buildSolarReturnCalendar(model({ instantUtc: '2026-07-06T12:35:30.000Z' }), GENERATED_AT);
     expect(property(distinct, 'UID')).not.toBe(property(first, 'UID'));
+    expect(property(distinct, 'DTSTART')).toBe('DTSTART:20260706T123600Z');
   });
 
   it('escapes description text and folds UTF-8 content into CRLF lines of at most 75 octets', () => {

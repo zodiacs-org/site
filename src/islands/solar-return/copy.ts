@@ -73,7 +73,7 @@ export function planetsOnlyReturnReading(
 }
 
 export const SR_COPY = {
-  noon: 'Computed from a noon chart — the return instant can shift by up to about 12 hours with your exact birth time, and houses need it.',
+  noon: 'Computed from the sky at 12:00 UTC on your birth date — the return instant can shift by up to about a day with your exact birth time, and houses need it.',
   noPlace: 'This saved chart has no stored birthplace, so the return is shown planets-only.',
   asc: {
     aries: "The year leads with ignition — you'll be handed situations that reward starting before you feel ready. Momentum is this year's currency.",

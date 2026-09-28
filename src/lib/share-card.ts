@@ -1578,8 +1578,45 @@ export interface PreparedChartCard {
   filename: string;
 }
 
+/**
+ * What a solar return image shows of the return: no more of the birth than a
+ * chart's link. The Sun returns to its natal longitude, so the return instant
+ * to the second gave the birth instant to about a second, and before standard
+ * time the birthplace's longitude in strips; the image prints it to the whole
+ * minute. A return cast at the birthplace is drawn as a natal image is: its
+ * angles at the middle of their whole degree (the Ascendant line gives the
+ * whole degree), with whole-sign houses, which follow from the ascendant's
+ * sign; Placidus houses, and the house they put the Sun in, are left out, and
+ * a note says so. A return without a birth time is computed from 12:00 UTC on
+ * the birth date (solar-return/compute.ts).
+ */
+export function solarReturnImageModel(model: SolarReturnExportModel): SolarReturnExportModel {
+  const instantUtc = wholeMinuteInstant(new Date(model.instantUtc)).toISOString();
+  const { angles, houses } = model.wheel;
+  if (!angles) return { ...model, instantUtc };
+  const asc = wholeDegreeAngle(angles.asc);
+  const mc = wholeDegreeAngle(angles.mc);
+  const wholeSign = houses?.system === 'whole' ? { system: 'whole' as const, cusps: wholeSignCusps(asc) } : null;
+  const placidusLeftOut = Boolean(houses) && !wholeSign;
+  const sun = model.wheel.bodies.find((body) => body.body === 'Sun');
+  const readingBasis = model.readingBasis.flatMap((line) => {
+    if (line.startsWith('Ascendant ')) return [`Ascendant ${Math.floor(degreeInSign(asc))}° ${signName(signForLongitude(asc))}`];
+    if (line.startsWith('Sun in house ')) return wholeSign && sun ? [`Sun in house ${houseOf(sun.lon, wholeSign.cusps)}`] : [];
+    return [line];
+  });
+  return {
+    ...model,
+    instantUtc,
+    wheel: { ...model.wheel, angles: { asc, mc, dsc: (asc + 180) % 360, ic: (mc + 180) % 360 }, houses: wholeSign },
+    reading: placidusLeftOut ? model.reading.filter((entry) => entry.kind !== 'sun-house') : model.reading,
+    readingBasis,
+    notes: placidusLeftOut ? [...model.notes, 'Placidus houses are left out of this image.'] : model.notes,
+  };
+}
+
 /** A return-specific image; it never passes through a natal card variant. */
-export async function prepareSolarReturnCard(model: SolarReturnExportModel): Promise<PreparedChartCard> {
+export async function prepareSolarReturnCard(source: SolarReturnExportModel): Promise<PreparedChartCard> {
+  const model = solarReturnImageModel(source);
   const sans = '"Instrument Sans", system-ui, sans-serif';
   await document.fonts.ready;
   const faces = await Promise.all([
@@ -1608,7 +1645,7 @@ export async function prepareSolarReturnCard(model: SolarReturnExportModel): Pro
   ctx.fillText(title, 72, 68);
   ctx.font = `400 22px ${MONO}`;
   ctx.fillStyle = INK_2;
-  ctx.fillText(`${model.instantUtc.slice(0, 19).replace('T', ' ')} UTC`, 72, 144);
+  ctx.fillText(`${model.instantUtc.slice(0, 16).replace('T', ' ')} UTC`, 72, 144);
 
   const wheel = await loadSvg(await wheelSvgString(model.wheel));
   ctx.drawImage(wheel, (W - 610) / 2, 192, 610, 610);
