@@ -1,4 +1,5 @@
 import { execFile } from 'node:child_process';
+import { readdirSync } from 'node:fs';
 import { mkdtemp, readFile, readdir, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
@@ -38,42 +39,47 @@ afterEach(async () => {
   temporaryRoot = undefined;
 });
 
+const catalogFilenames = readdirSync(resolve(repositoryRoot, 'src/data'))
+  .filter((name) => /^transits-\d{4}-(?:0[1-9]|1[0-2])\.json$/u.test(name))
+  .sort();
+const expectedFilenames = Array.from({ length: 60 }, (_, index) => {
+  const year = 2026 + Math.floor(index / 12);
+  const month = String((index % 12) + 1).padStart(2, '0');
+  return `transits-${year}-${month}.json`;
+});
+
 describe('Transit fact generation', () => {
-  it('regenerates every committed monthly catalog from the site engine', async () => {
+  it('keeps one committed catalog for every month of 2026–2030', () => {
+    expect(catalogFilenames).toEqual(expectedFilenames);
+  });
+
+  // One test per month. A single test that regenerated all sixty months took
+  // 110.7 s of its 120 s budget (audit finding F-41) and later ran over it on
+  // a slower runner; per month, each regeneration keeps its own budget and
+  // every assertion stays the same.
+  it.each(expectedFilenames)('regenerates %s byte for byte from the site engine', async (filename) => {
     temporaryRoot = await mkdtemp(join(tmpdir(), 'zodiacs-transit-parity-'));
-    const filenames = (await readdir(resolve(repositoryRoot, 'src/data')))
-      .filter((name) => /^transits-\d{4}-(?:0[1-9]|1[0-2])\.json$/u.test(name))
-      .sort();
-    const expectedFilenames = Array.from({ length: 60 }, (_, index) => {
-      const year = 2026 + Math.floor(index / 12);
-      const month = String((index % 12) + 1).padStart(2, '0');
-      return `transits-${year}-${month}.json`;
-    });
-    expect(filenames).toEqual(expectedFilenames);
+    const month = filename.slice('transits-'.length, -'.json'.length);
+    const firstOutput = join(temporaryRoot, 'first', filename);
+    const secondOutput = join(temporaryRoot, 'second', filename);
+    // Two independent processes; running them side by side still shows that
+    // the generator gives the same bytes twice.
+    await Promise.all([firstOutput, secondOutput].map((output) => execFileAsync(process.execPath, [
+      'scripts/build-transits.mjs',
+      month,
+      '--output',
+      output,
+    ], { cwd: repositoryRoot })));
 
-    for (const filename of filenames) {
-      const month = filename.slice('transits-'.length, -'.json'.length);
-      const firstOutput = join(temporaryRoot, 'first', filename);
-      const secondOutput = join(temporaryRoot, 'second', filename);
-      for (const output of [firstOutput, secondOutput]) {
-        await execFileAsync(process.execPath, [
-          'scripts/build-transits.mjs',
-          month,
-          '--output',
-          output,
-        ], { cwd: repositoryRoot });
-      }
-
-      const [first, second, committed] = await Promise.all([
-        readFile(firstOutput, 'utf8'),
-        readFile(secondOutput, 'utf8'),
-        readFile(resolve(repositoryRoot, 'src/data', filename), 'utf8'),
-      ]);
-      expect(first, `${filename} must regenerate byte-for-byte`).toBe(second);
-      expect(canonicalTransit(JSON.parse(first)), filename)
-        .toEqual(canonicalTransit(JSON.parse(committed)));
-    }
-  }, 120_000);
+    const [first, second, committed] = await Promise.all([
+      readFile(firstOutput, 'utf8'),
+      readFile(secondOutput, 'utf8'),
+      readFile(resolve(repositoryRoot, 'src/data', filename), 'utf8'),
+    ]);
+    expect(first, `${filename} must regenerate byte-for-byte`).toBe(second);
+    expect(canonicalTransit(JSON.parse(first)), filename)
+      .toEqual(canonicalTransit(JSON.parse(committed)));
+  }, 60_000);
 
   it('pins complete monthly coverage and aggregate event counts for 2026–2030', async () => {
     const filenames = (await readdir(resolve(repositoryRoot, 'src/data')))
