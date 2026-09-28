@@ -16,6 +16,9 @@ const evidence = JSON.parse(read('docs/platform/evidence/events-vs-swiss-2026-09
 const MINUTE = 60;
 const HOUR = 3600;
 
+// deltas.json keeps each event's id and published instant; its differences
+// from Swiss were removed on 2026-09-28 (DECISIONS-2026-09-28 §3), leaving the
+// summary statistics the copy is held to.
 describe('event times against Swiss Ephemeris', () => {
   it('were measured on the catalog the site publishes now', () => {
     const published = eventsCatalog().events
@@ -175,11 +178,13 @@ describe('the Moon ingresses on the void-of-course calendar', () => {
 
 describe('the Moon\'s disagreement with Swiss Ephemeris on the methodology page', () => {
   it('states the in-span maximum as the ceiling, and the median beside it', () => {
+    // The per-row differences were removed on 2026-09-28 (DECISIONS-2026-09-28
+    // §3); these are their statistics, computed from the rows before then by
+    // the formula this test used on them (median of the middle two of 16).
     const report = JSON.parse(read('docs/platform/evidence/swiss-benchmark/report-measure-rc8.json'));
-    const moon = report.rows.filter((row) => row.body === 'Moon' && row.stratum !== 'future')
-      .map((row) => Math.abs(row.dLonArcsec)).sort((a, b) => a - b);
-    const median = (moon[moon.length / 2 - 1] + moon[moon.length / 2]) / 2;
+    const moon = report.statistics.withinRecord.moon;
+    expect(moon.n).toBe(16);
     const page = read('src/pages/methodology/index.astro').replace(/\s+/g, ' ');
-    expect(page).toContain(`is at most ${moon.at(-1).toFixed(1)} arcseconds over the span measured below, with a median of ${median.toFixed(1)}`);
+    expect(page).toContain(`is at most ${moon.maxAbsArcsec.toFixed(1)} arcseconds over the span measured below, with a median of ${moon.medianAbsArcsec.toFixed(1)}`);
   });
 });

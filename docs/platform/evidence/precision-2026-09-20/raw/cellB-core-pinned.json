@@ -11,8 +11,6 @@
    "stratum": "ordinary",
    "utc": "1988-03-21T06:45:00Z",
    "deltaTEngineSeconds": 55.865066990372725,
-   "deltaTReferenceSeconds": 55.92464268259734,
-   "deltaTAppliedSeconds": 55.92464268259734,
    "bodies": {
     "Sun": {
      "lon": 0.8733377781408649,
@@ -77,8 +75,6 @@
    "stratum": "ordinary",
    "utc": "1990-06-15T13:30:00Z",
    "deltaTEngineSeconds": 57.167071870935615,
-   "deltaTReferenceSeconds": 57.16566630727268,
-   "deltaTAppliedSeconds": 57.16566630727268,
    "bodies": {
     "Sun": {
      "lon": 84.18908507169391,
@@ -143,8 +139,6 @@
    "stratum": "ordinary",
    "utc": "2001-09-11T12:00:00Z",
    "deltaTEngineSeconds": 64.26147910533473,
-   "deltaTReferenceSeconds": 64.24003703291693,
-   "deltaTAppliedSeconds": 64.24003703291693,
    "bodies": {
     "Sun": {
      "lon": 168.81474506577592,
@@ -209,8 +203,6 @@
    "stratum": "ordinary",
    "utc": "2015-11-02T23:59:00Z",
    "deltaTEngineSeconds": 69.40507744147908,
-   "deltaTReferenceSeconds": 68.02297930585684,
-   "deltaTAppliedSeconds": 68.02297930585684,
    "bodies": {
     "Sun": {
      "lon": 220.2386082220101,
@@ -275,8 +267,6 @@
    "stratum": "ordinary",
    "utc": "2024-02-29T00:00:00Z",
    "deltaTEngineSeconds": 73.94366906373762,
-   "deltaTReferenceSeconds": 69.08480847467125,
-   "deltaTAppliedSeconds": 69.08480847467125,
    "bodies": {
     "Sun": {
      "lon": 339.8857083498716,
@@ -341,8 +331,6 @@
    "stratum": "ordinary",
    "utc": "2026-09-20T08:00:00Z",
    "deltaTEngineSeconds": 75.49416357069276,
-   "deltaTReferenceSeconds": 68.82133168941044,
-   "deltaTAppliedSeconds": 68.82133168941044,
    "bodies": {
     "Sun": {
      "lon": 177.3893150637615,
@@ -407,8 +395,6 @@
    "stratum": "boundary",
    "utc": "2024-03-20T03:06:00Z",
    "deltaTEngineSeconds": 73.97630175109953,
-   "deltaTReferenceSeconds": 69.07952013417692,
-   "deltaTAppliedSeconds": 69.07952013417692,
    "bodies": {
     "Sun": {
      "lon": 359.99969118269496,
@@ -473,8 +459,6 @@
    "stratum": "boundary",
    "utc": "2024-06-20T20:51:00Z",
    "deltaTEngineSeconds": 74.12708642659709,
-   "deltaTReferenceSeconds": 69.05452609293843,
-   "deltaTAppliedSeconds": 69.05452609293843,
    "bodies": {
     "Sun": {
      "lon": 89.99987332876083,
@@ -539,8 +523,6 @@
    "stratum": "historical",
    "utc": "1900-01-01T12:00:00Z",
    "deltaTEngineSeconds": -2.7569667901843786,
-   "deltaTReferenceSeconds": -1.951761860140173,
-   "deltaTAppliedSeconds": -1.951761860140173,
    "bodies": {
     "Sun": {
      "lon": 280.66337701414386,
@@ -605,8 +587,6 @@
    "stratum": "historical",
    "utc": "1850-07-04T18:00:00Z",
    "deltaTEngineSeconds": 7.1617086650803685,
-   "deltaTReferenceSeconds": 9.572739603335071,
-   "deltaTAppliedSeconds": 9.572739603335071,
    "bodies": {
     "Sun": {
      "lon": 102.31379885070993,
@@ -671,8 +651,6 @@
    "stratum": "historical",
    "utc": "1801-01-01T00:00:00Z",
    "deltaTEngineSeconds": 13.410248374566436,
-   "deltaTReferenceSeconds": 18.441576508628714,
-   "deltaTAppliedSeconds": 18.441576508628714,
    "bodies": {
     "Sun": {
      "lon": 280.1801502511751,
@@ -737,8 +715,6 @@
    "stratum": "future",
    "utc": "2100-01-01T00:00:00Z",
    "deltaTEngineSeconds": 202.65156815294176,
-   "deltaTReferenceSeconds": 93.18204620799999,
-   "deltaTAppliedSeconds": 93.18204620799999,
    "bodies": {
     "Sun": {
      "lon": 280.60439243940806,
@@ -803,8 +779,6 @@
    "stratum": "future",
    "utc": "2190-12-31T23:00:00Z",
    "deltaTEngineSeconds": 420.3615174628794,
-   "deltaTReferenceSeconds": 154.45688415808306,
-   "deltaTAppliedSeconds": 154.45688415808306,
    "bodies": {
     "Sun": {
      "lon": 280.4673696567735,
@@ -869,8 +843,6 @@
    "stratum": "geometry",
    "utc": "2000-01-01T00:00:00Z",
    "deltaTEngineSeconds": 63.8466251947122,
-   "deltaTReferenceSeconds": 63.8285,
-   "deltaTAppliedSeconds": 63.8285,
    "bodies": {
     "Sun": {
      "lon": 279.859036595695,
@@ -935,8 +907,6 @@
    "stratum": "geometry",
    "utc": "2000-01-01T00:00:00Z",
    "deltaTEngineSeconds": 63.8466251947122,
-   "deltaTReferenceSeconds": 63.8285,
-   "deltaTAppliedSeconds": 63.8285,
    "bodies": {
     "Sun": {
      "lon": 279.859036595695,
@@ -1001,8 +971,6 @@
    "stratum": "polar",
    "utc": "1990-12-15T09:00:00Z",
    "deltaTEngineSeconds": 57.51417228311766,
-   "deltaTReferenceSeconds": 57.53176058469669,
-   "deltaTAppliedSeconds": 57.53176058469669,
    "bodies": {
     "Sun": {
      "lon": 263.1220076889072,
@@ -1067,8 +1035,6 @@
    "stratum": "polar",
    "utc": "2020-06-21T00:00:00Z",
    "deltaTEngineSeconds": 71.83560545963701,
-   "deltaTReferenceSeconds": 69.37377892052363,
-   "deltaTAppliedSeconds": 69.37377892052363,
    "bodies": {
     "Sun": {
      "lon": 90.09036097386121,
@@ -1133,8 +1099,6 @@
    "stratum": "unknown-time",
    "utc": "1975-05-05T12:00:00Z",
    "deltaTEngineSeconds": 45.77111957478337,
-   "deltaTReferenceSeconds": 45.80493107541101,
-   "deltaTAppliedSeconds": 45.80493107541101,
    "bodies": {
     "Sun": {
      "lon": 44.3762720444754,
@@ -1190,5 +1154,26 @@
    "angles": null
   }
  ],
- "controlVerified": true
+ "controlVerified": true,
+ "swissOutputRemoved": {
+  "on": "2026-09-28",
+  "under": "docs/platform/programme/DECISIONS-2026-09-28.md §3",
+  "what": "per-case engine-minus-Swiss differences in longitude, latitude and speed",
+  "removed": [
+   {
+    "path": ".cases[].deltaTReferenceSeconds|deltaTAppliedSeconds",
+    "count": 18,
+    "sha256": "5c219bf7bae828c46dfba66b5bfad27a1bb194f0071b2db5473570b0760174da",
+    "bytes": 1515,
+    "what": "Swiss's Delta T for each case, which this pinned cell also applied"
+   }
+  ],
+  "fileBefore": {
+   "bytes": 28776,
+   "sha256": "1f35fbfc77393dc1018cb13a3ea5cc5dab1d7f5091df1e1b13230380a81caa07"
+  },
+  "lastCommitWithTheValues": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+  "regenerate": "docs/platform/evidence/precision-2026-09-20: node tools/dump-core-controlled.mjs <swiss.json> [--pinned], swiss.json from swiss-benchmark/tools/dump_swiss.py (CONTROLLED-BASELINE.md)",
+  "record": "docs/engine-validation/SWISS-OUTPUT-REMOVAL.md"
+ }
 }

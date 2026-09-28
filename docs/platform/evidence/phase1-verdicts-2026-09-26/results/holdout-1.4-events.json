@@ -109,401 +109,321 @@
    "id": "saturn-stations-direct-2029-01-05",
    "family": "station",
    "at": "2029-01-05T12:31:52.938Z",
-   "minusRc7Seconds": 7.91,
-   "minusSwissSeconds": -416.929,
-   "rc7MinusSwissSeconds": -426.094
+   "minusRc7Seconds": 7.91
   },
   {
    "id": "new-moon-2030-12-24",
    "family": "lunation",
    "at": "2030-12-24T17:32:15.075Z",
-   "minusRc7Seconds": 8.488,
-   "minusSwissSeconds": 1.086,
-   "rc7MinusSwissSeconds": -7.402
+   "minusRc7Seconds": 8.488
   },
   {
    "id": "jupiter-enters-scorpio-2029-09-24",
    "family": "ingress",
    "at": "2029-09-24T06:27:17.997Z",
-   "minusRc7Seconds": 7.847,
-   "minusSwissSeconds": 191.404,
-   "rc7MinusSwissSeconds": 183.557
+   "minusRc7Seconds": 7.847
   },
   {
    "id": "mercury-stations-retrograde-2030-04-13",
    "family": "station",
    "at": "2030-04-13T02:27:55.194Z",
-   "minusRc7Seconds": 7.91,
-   "minusSwissSeconds": -329.771,
-   "rc7MinusSwissSeconds": -337.678
+   "minusRc7Seconds": 7.91
   },
   {
    "id": "saturn-stations-retrograde-2028-08-22",
    "family": "station",
    "at": "2028-08-22T22:16:58.212Z",
-   "minusRc7Seconds": 6.592,
-   "minusSwissSeconds": -4.359,
-   "rc7MinusSwissSeconds": -10.975
+   "minusRc7Seconds": 6.592
   },
   {
    "id": "eclipse-2026-03-03",
    "family": "eclipse",
    "at": "2026-03-03T11:33:46.313Z",
-   "minusRc7Seconds": 6.024,
-   "minusSwissSeconds": 5.099,
-   "rc7MinusSwissSeconds": -0.925
+   "minusRc7Seconds": 6.024
   },
   {
    "id": "pluto-stations-direct-2027-10-18",
    "family": "station",
    "at": "2027-10-18T03:51:13.094Z",
-   "minusRc7Seconds": 6.591,
-   "minusSwissSeconds": -75.936,
-   "rc7MinusSwissSeconds": -85.034
+   "minusRc7Seconds": 6.591
   },
   {
    "id": "full-moon-2026-08-28",
    "family": "lunation",
    "at": "2026-08-28T04:18:31.156Z",
-   "minusRc7Seconds": 6.262,
-   "minusSwissSeconds": -1.249,
-   "rc7MinusSwissSeconds": -7.511
+   "minusRc7Seconds": 6.262
   },
   {
    "id": "new-moon-2029-03-15",
    "family": "lunation",
    "at": "2029-03-15T04:19:15.732Z",
-   "minusRc7Seconds": 7.58,
-   "minusSwissSeconds": -0.149,
-   "rc7MinusSwissSeconds": -7.729
+   "minusRc7Seconds": 7.58
   },
   {
    "id": "new-moon-2028-07-22",
    "family": "lunation",
    "at": "2028-07-22T03:01:44.808Z",
-   "minusRc7Seconds": 7.169,
-   "minusSwissSeconds": 1.387,
-   "rc7MinusSwissSeconds": -5.782
+   "minusRc7Seconds": 7.169
   },
   {
    "id": "jupiter-opposition-neptune-2028-09-28",
    "family": "aspect",
    "at": "2028-09-28T19:29:36.928Z",
-   "minusRc7Seconds": 7.334,
-   "minusSwissSeconds": 820.666,
-   "rc7MinusSwissSeconds": 813.332
+   "minusRc7Seconds": 7.334
   },
   {
    "id": "jupiter-sextile-uranus-2026-07-21",
    "family": "aspect",
    "at": "2026-07-21T11:13:13.623Z",
-   "minusRc7Seconds": 6.18,
-   "minusSwissSeconds": 170.339,
-   "rc7MinusSwissSeconds": 164.159
+   "minusRc7Seconds": 6.18
   },
   {
    "id": "venus-stations-direct-2030-01-26",
    "family": "station",
    "at": "2030-01-26T21:33:38.407Z",
-   "minusRc7Seconds": 7.91,
-   "minusSwissSeconds": 32.7,
-   "rc7MinusSwissSeconds": 24.775
+   "minusRc7Seconds": 7.91
   },
   {
    "id": "full-moon-2028-12-31",
    "family": "lunation",
    "at": "2028-12-31T16:48:27.585Z",
-   "minusRc7Seconds": 7.498,
-   "minusSwissSeconds": -4.297,
-   "rc7MinusSwissSeconds": -11.795
+   "minusRc7Seconds": 7.498
   },
   {
    "id": "full-moon-2029-03-30",
    "family": "lunation",
    "at": "2029-03-30T02:26:25.051Z",
-   "minusRc7Seconds": 7.58,
-   "minusSwissSeconds": -0.261,
-   "rc7MinusSwissSeconds": -7.841
+   "minusRc7Seconds": 7.58
   },
   {
    "id": "jupiter-trine-neptune-2030-12-10",
    "family": "aspect",
    "at": "2030-12-10T08:13:31.669Z",
-   "minusRc7Seconds": 8.487,
-   "minusSwissSeconds": 685.489,
-   "rc7MinusSwissSeconds": 677.002
+   "minusRc7Seconds": 8.487
   },
   {
    "id": "uranus-stations-retrograde-2027-09-15",
    "family": "station",
    "at": "2027-09-15T09:15:09.667Z",
-   "minusRc7Seconds": 6.592,
-   "minusSwissSeconds": 355.564,
-   "rc7MinusSwissSeconds": 348.702
+   "minusRc7Seconds": 6.592
   },
   {
    "id": "venus-stations-direct-2028-06-22",
    "family": "station",
    "at": "2028-06-22T22:13:23.319Z",
-   "minusRc7Seconds": 6.592,
-   "minusSwissSeconds": 43.098,
-   "rc7MinusSwissSeconds": 36.511
+   "minusRc7Seconds": 6.592
   },
   {
    "id": "eclipse-2029-12-05",
    "family": "eclipse",
    "at": "2029-12-05T15:02:47.855Z",
-   "minusRc7Seconds": 7.949,
-   "minusSwissSeconds": -3.081,
-   "rc7MinusSwissSeconds": -11.03
+   "minusRc7Seconds": 7.949
   },
   {
    "id": "jupiter-opposition-saturn-2030-11-20",
    "family": "aspect",
    "at": "2030-11-20T01:08:11.527Z",
-   "minusRc7Seconds": 8.487,
-   "minusSwissSeconds": 151.83,
-   "rc7MinusSwissSeconds": 143.343
+   "minusRc7Seconds": 8.487
   },
   {
    "id": "full-moon-2026-10-26",
    "family": "lunation",
    "at": "2026-10-26T04:11:44.937Z",
-   "minusRc7Seconds": 6.263,
-   "minusSwissSeconds": -4.208,
-   "rc7MinusSwissSeconds": -10.471
+   "minusRc7Seconds": 6.263
   },
   {
    "id": "new-moon-2028-09-18",
    "family": "lunation",
    "at": "2028-09-18T18:23:45.722Z",
-   "minusRc7Seconds": 7.333,
-   "minusSwissSeconds": -0.177,
-   "rc7MinusSwissSeconds": -7.51
+   "minusRc7Seconds": 7.333
   },
   {
    "id": "full-moon-2027-12-13",
    "family": "lunation",
    "at": "2027-12-13T16:08:48.111Z",
-   "minusRc7Seconds": 6.92,
-   "minusSwissSeconds": -0.281,
-   "rc7MinusSwissSeconds": -7.201
+   "minusRc7Seconds": 6.92
   },
   {
    "id": "new-moon-2029-12-05",
    "family": "lunation",
    "at": "2029-12-05T14:52:07.613Z",
-   "minusRc7Seconds": 7.992,
-   "minusSwissSeconds": -0.78,
-   "rc7MinusSwissSeconds": -8.772
+   "minusRc7Seconds": 7.992
   },
   {
    "id": "eclipse-2027-02-20",
    "family": "eclipse",
    "at": "2027-02-20T23:12:50.555Z",
-   "minusRc7Seconds": 6.413,
-   "minusSwissSeconds": -2.285,
-   "rc7MinusSwissSeconds": -8.698
+   "minusRc7Seconds": 6.413
   },
   {
    "id": "pluto-stations-retrograde-2026-05-06",
    "family": "station",
    "at": "2026-05-06T15:44:42.860Z",
-   "minusRc7Seconds": 5.273,
-   "minusSwissSeconds": 615.919,
-   "rc7MinusSwissSeconds": 610.751
+   "minusRc7Seconds": 5.273
   },
   {
    "id": "jupiter-stations-direct-2029-06-13",
    "family": "station",
    "at": "2029-06-13T21:07:50.653Z",
-   "minusRc7Seconds": 7.91,
-   "minusSwissSeconds": 78.993,
-   "rc7MinusSwissSeconds": 71.089
+   "minusRc7Seconds": 7.91
   },
   {
    "id": "neptune-stations-direct-2027-12-15",
    "family": "station",
    "at": "2027-12-15T09:42:54.755Z",
-   "minusRc7Seconds": 7.911,
-   "minusSwissSeconds": 2193.901,
-   "rc7MinusSwissSeconds": 2185.967
+   "minusRc7Seconds": 7.911
   },
   {
    "id": "saturn-conjunction-neptune-2026-02-20",
    "family": "aspect",
    "at": "2026-02-20T18:29:22.728Z",
-   "minusRc7Seconds": 5.933,
-   "minusSwissSeconds": 5723.52,
-   "rc7MinusSwissSeconds": 5717.587
+   "minusRc7Seconds": 5.933
   },
   {
    "id": "full-moon-2029-05-27",
    "family": "lunation",
    "at": "2029-05-27T18:37:33.321Z",
-   "minusRc7Seconds": 7.662,
-   "minusSwissSeconds": 2.337,
-   "rc7MinusSwissSeconds": -5.325
+   "minusRc7Seconds": 7.662
   },
   {
    "id": "saturn-enters-aries-2026-02-14",
    "family": "ingress",
    "at": "2026-02-14T00:39:37.844Z",
-   "minusRc7Seconds": 5.994,
-   "minusSwissSeconds": 1678.672,
-   "rc7MinusSwissSeconds": 1672.678
+   "minusRc7Seconds": 5.994
   },
   {
    "id": "mercury-stations-retrograde-2027-02-09",
    "family": "station",
    "at": "2027-02-09T17:35:43.212Z",
-   "minusRc7Seconds": 6.592,
-   "minusSwissSeconds": -22.06,
-   "rc7MinusSwissSeconds": -28.651
+   "minusRc7Seconds": 6.592
   },
   {
    "id": "full-moon-2030-09-11",
    "family": "lunation",
    "at": "2030-09-11T21:17:57.675Z",
-   "minusRc7Seconds": 8.405,
-   "minusSwissSeconds": 1.298,
-   "rc7MinusSwissSeconds": -7.107
+   "minusRc7Seconds": 8.405
   },
   {
    "id": "jupiter-stations-direct-2028-05-13",
    "family": "station",
    "at": "2028-05-13T19:57:49.042Z",
-   "minusRc7Seconds": 6.592,
-   "minusSwissSeconds": -143.712,
-   "rc7MinusSwissSeconds": -150.227
+   "minusRc7Seconds": 6.592
   },
   {
    "id": "new-moon-2029-05-13",
    "family": "lunation",
    "at": "2029-05-13T13:42:09.298Z",
-   "minusRc7Seconds": 7.663,
-   "minusSwissSeconds": -0.252,
-   "rc7MinusSwissSeconds": -7.915
+   "minusRc7Seconds": 7.663
   },
   {
    "id": "full-moon-2028-04-09",
    "family": "lunation",
    "at": "2028-04-09T10:26:36.972Z",
-   "minusRc7Seconds": 7.087,
-   "minusSwissSeconds": -1.151,
-   "rc7MinusSwissSeconds": -8.238
+   "minusRc7Seconds": 7.087
   },
   {
    "id": "jupiter-opposition-pluto-2026-07-20",
    "family": "aspect",
    "at": "2026-07-20T14:45:49.903Z",
-   "minusRc7Seconds": 6.178,
-   "minusSwissSeconds": 64.916,
-   "rc7MinusSwissSeconds": 58.738
+   "minusRc7Seconds": 6.178
   },
   {
    "id": "full-moon-2029-09-22",
    "family": "lunation",
    "at": "2029-09-22T16:29:22.920Z",
-   "minusRc7Seconds": 7.828,
-   "minusSwissSeconds": 3.658,
-   "rc7MinusSwissSeconds": -4.17
+   "minusRc7Seconds": 7.828
   },
   {
    "id": "new-moon-2026-09-11",
    "family": "lunation",
    "at": "2026-09-11T03:26:56.471Z",
-   "minusRc7Seconds": 6.261,
-   "minusSwissSeconds": -3.811,
-   "rc7MinusSwissSeconds": -10.072
+   "minusRc7Seconds": 6.261
   },
   {
    "id": "full-moon-2027-02-20",
    "family": "lunation",
    "at": "2027-02-20T23:23:37.537Z",
-   "minusRc7Seconds": 6.427,
-   "minusSwissSeconds": -1.968,
-   "rc7MinusSwissSeconds": -8.395
+   "minusRc7Seconds": 6.427
   },
   {
    "id": "new-moon-2026-06-15",
    "family": "lunation",
    "at": "2026-06-15T02:54:11.458Z",
-   "minusRc7Seconds": 6.181,
-   "minusSwissSeconds": 1.01,
-   "rc7MinusSwissSeconds": -5.171
+   "minusRc7Seconds": 6.181
   },
   {
    "id": "mercury-stations-retrograde-2029-01-07",
    "family": "station",
    "at": "2029-01-07T07:57:21.356Z",
-   "minusRc7Seconds": 7.91,
-   "minusSwissSeconds": 48.743,
-   "rc7MinusSwissSeconds": 40.834
+   "minusRc7Seconds": 7.91
   },
   {
    "id": "jupiter-stations-direct-2027-04-13",
    "family": "station",
    "at": "2027-04-13T02:13:19.804Z",
-   "minusRc7Seconds": 6.592,
-   "minusSwissSeconds": 114.287,
-   "rc7MinusSwissSeconds": 107.981
+   "minusRc7Seconds": 6.592
   },
   {
    "id": "full-moon-2028-05-08",
    "family": "lunation",
    "at": "2028-05-08T19:48:57.413Z",
-   "minusRc7Seconds": 7.169,
-   "minusSwissSeconds": 0.3,
-   "rc7MinusSwissSeconds": -6.869
+   "minusRc7Seconds": 7.169
   },
   {
    "id": "uranus-trine-pluto-2028-01-13",
    "family": "aspect",
    "at": "2028-01-13T06:52:39.447Z",
-   "minusRc7Seconds": 7.005,
-   "minusSwissSeconds": 714.401,
-   "rc7MinusSwissSeconds": 707.396
+   "minusRc7Seconds": 7.005
   },
   {
    "id": "full-moon-2027-11-14",
    "family": "lunation",
    "at": "2027-11-14T03:25:53.355Z",
-   "minusRc7Seconds": 6.921,
-   "minusSwissSeconds": -2.984,
-   "rc7MinusSwissSeconds": -9.905
+   "minusRc7Seconds": 6.921
   },
   {
    "id": "full-moon-2028-06-07",
    "family": "lunation",
    "at": "2028-06-07T06:08:49.814Z",
-   "minusRc7Seconds": 7.169,
-   "minusSwissSeconds": 0.248,
-   "rc7MinusSwissSeconds": -6.921
+   "minusRc7Seconds": 7.169
   },
   {
    "id": "saturn-stations-retrograde-2026-07-26",
    "family": "station",
    "at": "2026-07-26T19:57:43.769Z",
-   "minusRc7Seconds": 6.592,
-   "minusSwissSeconds": 73.794,
-   "rc7MinusSwissSeconds": 67.204
+   "minusRc7Seconds": 6.592
   },
   {
    "id": "full-moon-2030-07-15",
    "family": "lunation",
    "at": "2030-07-15T02:11:59.795Z",
-   "minusRc7Seconds": 8.321,
-   "minusSwissSeconds": -0.225,
-   "rc7MinusSwissSeconds": -8.546
+   "minusRc7Seconds": 8.321
   },
   {
    "id": "full-moon-2026-12-24",
    "family": "lunation",
    "at": "2026-12-24T01:28:16.508Z",
-   "minusRc7Seconds": 6.346,
-   "minusSwissSeconds": 2.016,
-   "rc7MinusSwissSeconds": -4.33
+   "minusRc7Seconds": 6.346
   }
- ]
+ ],
+ "swissOutputRemoved": {
+  "on": "2026-09-28",
+  "under": "docs/platform/programme/DECISIONS-2026-09-28.md §3",
+  "what": "each drawn event's instant minus Swiss's, for rc.8 and rc.7",
+  "removed": [
+   {
+    "path": ".rows[].minusSwissSeconds|rc7MinusSwissSeconds",
+    "count": 50,
+    "sha256": "abf75745832a99067f228e68dd788c3c1eb3e53511a7136b1637e73ec466b025",
+    "bytes": 2979
+   }
+  ],
+  "fileBefore": {
+   "bytes": 12065,
+   "sha256": "98922712ddd441d6fd408191350f2ef814756b8d05e11de5db70de39bb37297b"
+  },
+  "lastCommitWithTheValues": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+  "regenerate": "python3 docs/platform/evidence/phase1-verdicts-2026-09-26/tools/holdout_events.py <holdout-1.4.json>, with both events-vs-swiss deltas regenerated first",
+  "record": "docs/engine-validation/SWISS-OUTPUT-REMOVAL.md"
+ }
 }

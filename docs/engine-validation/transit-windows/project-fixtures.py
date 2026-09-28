@@ -6,7 +6,10 @@ from pathlib import Path
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('source_archive_root', type=Path, help='Root of the extracted zodiacs-wave24-qualified-source-2026-09-07.zip')
-parser.add_argument('--output', type=Path, default=Path(__file__).parents[3] / 'src/lib/engine/fixtures/transit-window-independent.json')
+# No default: the projection holds Swiss's per-case values, which left the tree
+# on 2026-09-28 (docs/platform/programme/DECISIONS-2026-09-28.md §3). Write it
+# to a scratch path outside the repository when a Swiss comparison is wanted.
+parser.add_argument('--output', type=Path, required=True, help='Where to write the projection, outside the repository')
 args = parser.parse_args()
 ROOT = args.source_archive_root
 INPUTS = [

@@ -98,7 +98,6 @@
         }
       },
       "atTheTurningPointItself": {
-        "swissLongitude": 32.649851538274184,
         "deLongitude": 32.64986476685977,
         "coreLongitude": 32.650713158437554,
         "deMinusSwissArcsec": 0.04762290811299863,
@@ -583,5 +582,25 @@
         "howMeasured": "not an error: the declared allowance, 0.05 degrees, against |g*| = 0.0442 degrees"
       }
     ]
+  },
+  "swissOutputRemoved": {
+    "on": "2026-09-28",
+    "under": "docs/platform/programme/DECISIONS-2026-09-28.md §3",
+    "what": "Swiss's longitude of Uranus at the D turning point (the differences and the margin the analysis cites stay)",
+    "removed": [
+      {
+        "path": ".sources.ephemerisModel.atTheTurningPointItself.swissLongitude",
+        "count": 1,
+        "sha256": "320287a39039ed35a542ef84eeed9ce3f7dbf9fa5db3e2c990116aba44b57e61",
+        "bytes": 18
+      }
+    ],
+    "fileBefore": {
+      "bytes": 25724,
+      "sha256": "1a882e6d606d652d1ac514d79c606c8776e07e8078db7db976ef86c65c4f946f"
+    },
+    "lastCommitWithTheValues": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+    "regenerate": "python3 docs/platform/evidence/precision-2026-09-20/search/verify/swiss-station.py, and search/lib/swiss-longitudes.py through search/reproduce.mjs",
+    "record": "docs/engine-validation/SWISS-OUTPUT-REMOVAL.md"
   }
 }

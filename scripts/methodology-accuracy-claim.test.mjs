@@ -34,9 +34,20 @@ const root = process.cwd();
 const read = (p) => readFileSync(resolve(root, p), 'utf8');
 
 // The 180 measurements as run again on 2026-09-25 with engine 0.1.1-rc.8, whose
-// clock is observed ΔT; report-measure.json beside it is rc.6's run.
+// clock is observed ΔT; report-measure.json beside it is rc.6's run. The
+// per-row differences from Swiss were removed from the tree on 2026-09-28
+// (docs/platform/programme/DECISIONS-2026-09-28.md §3; the record is
+// docs/engine-validation/SWISS-OUTPUT-REMOVAL.md). The report keeps the
+// comparator's own aggregates and, under `statistics`, the figures this file
+// used to compute from the rows, computed from them by the same formulas
+// before they went (docs/engine-validation/swiss-output-removal/strip.py,
+// whose --check recomputes them from the last commit that has the rows).
 const report = JSON.parse(read('docs/platform/evidence/swiss-benchmark/report-measure-rc8.json'));
 const corpus = read('docs/platform/evidence/swiss-benchmark/tools/corpus.mjs');
+const { withinRecord, farFuture } = report.statistics;
+/** The comparator's own per-stratum aggregates, which the statistics must agree with. */
+const strata = Object.entries(report.byStratum);
+const withinStrata = strata.filter(([name]) => name !== 'future').map(([, s]) => s);
 
 /**
  * What a reader sees, near enough: the source with its stylesheet, its markup
@@ -64,31 +75,19 @@ const enginePage = proseOf('src/pages/developers/engine/index.astro');
 /** Sentence-ish fragments. Only the ones mentioning arcminutes are inspected. */
 const fragments = prose.split(/(?<=[.;])\s+/u).map((s) => s.trim()).filter(Boolean);
 
-/** The comparator's convention, copied so a drift there shows up here. */
-const quantile = (sorted, q) => {
-  const i = (sorted.length - 1) * q;
-  const lo = Math.floor(i);
-  const hi = Math.ceil(i);
-  return lo === hi ? sorted[lo] : sorted[lo] + (sorted[hi] - sorted[lo]) * (i - lo);
-};
-
-const withinRecord = report.rows.filter((r) => r.stratum !== 'future');
-const farFuture = report.rows.filter((r) => r.stratum === 'future');
-const abs = withinRecord.map((r) => Math.abs(r.dLonArcsec)).sort((a, b) => a - b);
-const overArcminute = farFuture
-  .filter((r) => Math.abs(r.dLonArcsec) > 60)
-  .sort((a, b) => Math.abs(a.dLonArcsec) - Math.abs(b.dLonArcsec));
-
 const tenth = (x) => Number(x.toFixed(1)).toFixed(1);
 
-/** The span the rows actually cover, read from the corpus they came from. */
-function spanOf(rows) {
-  const ids = new Set(rows.map((r) => r.id));
+/** The span the measured cases actually cover, read from the corpus they came from. */
+function spanOf(caseIds) {
+  const ids = new Set(caseIds);
   const years = [...corpus.matchAll(/c\('([\w-]+)',\s*'([\w-]+)',\s*'(\d{4})-/gu)]
     .filter(([, id]) => ids.has(id))
     .map(([, , , year]) => Number(year));
   return `from ${Math.min(...years)} to ${Math.max(...years)}`;
 }
+
+/** The far-future Moon cases, in the order of their epochs. */
+const futureMoons = () => [...farFuture.moonCases].sort((a, b) => yearOf(a.id) - yearOf(b.id));
 
 /** The year a corpus case is dated in. */
 const yearOf = (id) => Number(new RegExp(`c\\('${id}',[^)]*'(\\d{4})-`, 'u').exec(corpus)[1]);
@@ -120,29 +119,49 @@ describe('the accuracy claim on /methodology/', () => {
     expect(prose).not.toMatch(/high-accuracy/u);
   });
 
+  it('keeps statistics that agree with the comparator\'s own aggregates', () => {
+    // The statistics were computed from the rows before they were removed; the
+    // comparator's per-stratum aggregates, which stay, have to agree with them.
+    expect(withinRecord.n).toBe(withinStrata.reduce((sum, s) => sum + s.n, 0));
+    expect(farFuture.n).toBe(report.byStratum.future.n);
+    expect(withinRecord.n + farFuture.n).toBe(report.overall.n);
+    expect(withinRecord.caseIds).toHaveLength(withinRecord.n / 10);
+    const worstWithin = withinStrata.reduce((a, b) => (b.maxAbsArcsec > a.maxAbsArcsec ? b : a));
+    expect(withinRecord.maxAbsArcsec).toBe(worstWithin.maxAbsArcsec);
+    expect(withinRecord.worstCase).toEqual({ id: worstWithin.worstCase.id, body: worstWithin.worstCase.body });
+    expect(farFuture.worstCase.absArcsec).toBe(report.byStratum.future.maxAbsArcsec);
+    expect(farFuture.worstCase.id).toBe(report.byStratum.future.worstCase.id);
+    expect(farFuture.worstCase.body).toBe(report.byStratum.future.worstCase.body);
+    expect(farFuture.overOneArcminute === 0).toBe(report.byStratum.future.maxAbsArcsec <= 60);
+    expect(withinRecord.p50AbsArcsec).toBeLessThanOrEqual(withinRecord.p95AbsArcsec);
+    expect(withinRecord.p95AbsArcsec).toBeLessThanOrEqual(withinRecord.maxAbsArcsec);
+    // The Moon: every Moon row is either within the record or a far-future case.
+    expect(withinRecord.moon.n + farFuture.moonCases.length).toBe(report.byBody.Moon.n);
+    expect(Math.max(withinRecord.moon.maxAbsArcsec, ...farFuture.moonCases.map((m) => m.absArcsec)))
+      .toBe(report.byBody.Moon.maxAbsArcsec);
+  });
+
   it('quotes the measured distribution, with its denominator and its span', () => {
-    expect(withinRecord).toHaveLength(160);
-    const dates = report.rows.map((r) => r.utc ?? null).filter(Boolean);
-    // The report rows carry no date, so the span is taken from the corpus the
+    expect(withinRecord.n).toBe(160);
+    // The statistics carry no date, so the span is taken from the corpus the
     // report was produced from rather than assumed.
-    const ids = new Set(withinRecord.map((r) => r.id));
+    const ids = new Set(withinRecord.caseIds);
     const years = [...corpus.matchAll(/c\('([\w-]+)',\s*'([\w-]+)',\s*'(\d{4})-/gu)]
       .filter(([, id]) => ids.has(id))
       .map(([, , , year]) => Number(year));
-    expect(years.length).toBeGreaterThan(0);
+    expect(years).toHaveLength(ids.size);
     const span = `from ${Math.min(...years)} to ${Math.max(...years)}`;
     expect(prose, `the page must say "${span}"`)
-      .toContain(`Across the ${withinRecord.length} measurements ${span}`);
-    expect(dates).toHaveLength(0); // guards the assumption above, not the page
+      .toContain(`Across the ${withinRecord.n} measurements ${span}`);
   });
 
   it('gives every figure its unit and its place in the sentence', () => {
-    const p50 = tenth(quantile(abs, 0.5));
-    const p95 = tenth(quantile(abs, 0.95));
-    const max = tenth(abs[abs.length - 1]);
+    const p50 = tenth(withinRecord.p50AbsArcsec);
+    const p95 = tenth(withinRecord.p95AbsArcsec);
+    const max = tenth(withinRecord.maxAbsArcsec);
     expect(prose).toContain(`the median disagreement in longitude is ${p50} arcseconds`);
     expect(prose).toContain(`the 95th percentile is ${p95} arcseconds`);
-    const worst = withinRecord.reduce((a, b) => (Math.abs(b.dLonArcsec) > Math.abs(a.dLonArcsec) ? b : a));
+    const worst = withinRecord.worstCase;
     const worstYear = /c\('historic-03',[^)]*'(\d{4})-/u.exec(corpus);
     expect(worst.id).toBe('historic-03');
     expect(prose).toContain(`the largest is ${max} arcseconds — ${worst.body} in ${worstYear[1]}`);
@@ -156,17 +175,18 @@ describe('the accuracy claim on /methodology/', () => {
   });
 
   it('binds the far-future cases to their bodies and epochs, none over an arcminute', () => {
-    expect(overArcminute).toHaveLength(0);
-    expect(farFuture).toHaveLength(report.rows.length - withinRecord.length);
-    const worst = farFuture.reduce((a, b) => (Math.abs(b.dLonArcsec) > Math.abs(a.dLonArcsec) ? b : a));
-    expect(prose).toContain(`The other ${farFuture.length} measurements are the far-future cases, and none of them`
-      + ` reaches one arcminute: the largest is ${tenth(Math.abs(worst.dLonArcsec))} arcseconds,`
+    expect(farFuture.overOneArcminute).toBe(0);
+    expect(report.byStratum.future.maxAbsArcsec).toBeLessThan(60);
+    expect(farFuture.n).toBe(report.overall.n - withinRecord.n);
+    const worst = farFuture.worstCase;
+    expect(prose).toContain(`The other ${farFuture.n} measurements are the far-future cases, and none of them`
+      + ` reaches one arcminute: the largest is ${tenth(worst.absArcsec)} arcseconds,`
       + ` ${worst.body} at ${yearOf(worst.id)}`);
     // Each Moon value with its own epoch: swapping them has to fail.
-    const moons = farFuture.filter((row) => row.body === 'Moon').sort((a, b) => yearOf(a.id) - yearOf(b.id));
+    const moons = futureMoons();
     expect(moons.map((row) => row.id)).toEqual(['future-01', 'future-02']);
-    expect(prose).toContain(`it measured ${tenth(Math.abs(moons[0].dLonArcsec))} arcseconds from Swiss`
-      + ` at ${yearOf(moons[0].id)} and ${tenth(Math.abs(moons[1].dLonArcsec))} arcseconds at ${yearOf(moons[1].id)}`);
+    expect(prose).toContain(`it measured ${tenth(moons[0].absArcsec)} arcseconds from Swiss`
+      + ` at ${yearOf(moons[0].id)} and ${tenth(moons[1].absArcsec)} arcseconds at ${yearOf(moons[1].id)}`);
   });
 
   it('shows the delta-T arithmetic it relies on, and gets it right', () => {
@@ -175,23 +195,29 @@ describe('the accuracy claim on /methodology/', () => {
     expect(stated, 'the page must name both values and the band, not only the gap').toBeTruthy();
     const [, epoch, swiss, engine, sigma, gap] = stated;
     expect(epoch).toBe('2100');
-    // Swiss's value is committed with the tool that read it; the engine's is the
-    // installed engine's own, at the instant the 2100 case was measured.
-    const swissDeltaT = JSON.parse(read('docs/platform/evidence/deltat-2026-09-25/outputs/swiss-deltat.json'));
-    expect(swiss).toBe(tenth(swissDeltaT.seconds['2100-01-01T00:00Z']));
+    // Swiss's value is the one the benchmark record reports, read by the tool
+    // committed beside it (deltat-2026-09-25/tools/moon/swiss_deltat.py); the
+    // value itself left outputs/swiss-deltat.json on 2026-09-28 with the rest
+    // of Swiss's raw output. The engine's is the installed engine's own, at the
+    // instant the 2100 case was measured.
+    const recorded = /At 2100-01-01 the Swiss ΔT model gives ([\d.]+) s/u
+      .exec(read('docs/platform/evidence/swiss-benchmark/RESULTS.md').replace(/\s+/gu, ' '));
+    expect(recorded, 'RESULTS.md must report the Swiss ΔT at 2100').toBeTruthy();
+    const swissSeconds = Number(recorded[1]);
+    expect(swiss).toBe(tenth(swissSeconds));
     const utc = /c\('future-01',\s*'future',\s*'([^']+)'/u.exec(corpus)[1];
     expect(utc).toBe('2100-01-01T00:00:00Z');
     const model = deltaTAt((Date.parse(utc) - Date.UTC(2000, 0, 1, 12)) / 86_400_000);
     expect(engine).toBe(tenth(model.seconds));
     expect(sigma).toBe(tenth(model.sigma));
-    const exactGap = swissDeltaT.seconds['2100-01-01T00:00Z'] - model.seconds;
+    const exactGap = swissSeconds - model.seconds;
     expect(gap).toBe(tenth(exactGap));
     // What the gap alone does to the Moon, at its mean rate, against what was measured.
     const rate = 0.549;
     const claimed = /so the gap alone moves it about ([\d.]+) arcseconds/u.exec(prose);
     expect(claimed, 'the page must say what the clock alone does').toBeTruthy();
     expect(claimed[1]).toBe(tenth(exactGap * rate));
-    const observed = Math.abs(farFuture.find((r) => r.id === 'future-01' && r.body === 'Moon').dLonArcsec);
+    const observed = farFuture.moonCases.find((m) => m.id === 'future-01').absArcsec;
     expect(Math.abs(Number(claimed[1]) - observed)).toBeLessThan(1);
   });
 
@@ -242,7 +268,7 @@ describe('the accuracy claim on /methodology/', () => {
     const version = /reports library ([\d.]+)/u.exec(read('docs/platform/evidence/swiss-benchmark/CONFIGURATION.md'));
     expect(version, 'CONFIGURATION.md must pin the Swiss library version').toBeTruthy();
     expect(prose).toContain(`Swiss Ephemeris ${version[1]}`);
-    expect(prose).toContain(`${report.rows.length / 10} charts × 10 bodies`);
+    expect(prose).toContain(`${report.overall.n / 10} charts × 10 bodies`);
   });
 
   it('describes the reduction the engine actually performs', () => {
@@ -269,16 +295,16 @@ describe('the same figures on /developers/engine/', () => {
   // The front door repeats the headline; a re-run that moved the distribution
   // has to fail here too, not only on the page that states it at length.
   it('quotes the median and the maximum with their unit and denominator', () => {
-    const span = spanOf(withinRecord);
-    expect(enginePage).toContain(`across the ${withinRecord.length} measurements ${span}`);
-    expect(enginePage).toContain(`the median disagreement in ecliptic longitude is ${tenth(quantile(abs, 0.5))} arcseconds`);
-    expect(enginePage).toContain(`the largest is ${tenth(abs[abs.length - 1])} arcseconds`);
+    const span = spanOf(withinRecord.caseIds);
+    expect(enginePage).toContain(`across the ${withinRecord.n} measurements ${span}`);
+    expect(enginePage).toContain(`the median disagreement in ecliptic longitude is ${tenth(withinRecord.p50AbsArcsec)} arcseconds`);
+    expect(enginePage).toContain(`the largest is ${tenth(withinRecord.maxAbsArcsec)} arcseconds`);
   });
 
   it('binds each far-future Moon case to its own epoch', () => {
-    const moons = farFuture.filter((row) => row.body === 'Moon').sort((a, b) => yearOf(a.id) - yearOf(b.id));
-    expect(enginePage).toContain(`the Moon is ${tenth(Math.abs(moons[0].dLonArcsec))} arcseconds from Swiss`
-      + ` at ${yearOf(moons[0].id)} and ${tenth(Math.abs(moons[1].dLonArcsec))} arcseconds at ${yearOf(moons[1].id)}`);
+    const moons = futureMoons();
+    expect(enginePage).toContain(`the Moon is ${tenth(moons[0].absArcsec)} arcseconds from Swiss`
+      + ` at ${yearOf(moons[0].id)} and ${tenth(moons[1].absArcsec)} arcseconds at ${yearOf(moons[1].id)}`);
   });
 
   it('says the package does not bound its input date, because it does not', () => {

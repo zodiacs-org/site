@@ -1,0 +1,1776 @@
+{
+ "what": "Swiss Ephemeris output removed from the tree on 2026-09-28 under docs/platform/programme/DECISIONS-2026-09-28.md §3. Every file and field removed, with the SHA-256 of what was removed, the commit that still has it, and the command that regenerates it. Made by strip.py beside this file.",
+ "base": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+ "removedFiles": [
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/t1-swiss.json",
+   "bytes": 380798,
+   "sha256": "31b0970247d489e0940ed391a8f83898ac2dc1df7c468467028bf391d31c938f",
+   "what": "Swiss nutation and obliquity at 1,964 instants",
+   "lastCommitWithTheFile": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: python3 tools/t1-nutation-swiss.py <t1-node.json> <ephe> (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/t1-swiss.json",
+   "bytes": 380798,
+   "sha256": "31b0970247d489e0940ed391a8f83898ac2dc1df7c468467028bf391d31c938f",
+   "what": "the same 1,964 instants, rerun",
+   "lastCommitWithTheFile": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: python3 tools/t1-nutation-swiss.py <t1-node.json> <ephe> (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/v1-swiss.json",
+   "bytes": 570916,
+   "sha256": "aeee17ed869a2e1614d06dfd5781ebb4643e8a539f1597bd5d3e9049bc1ae81d",
+   "what": "Swiss nutation and obliquity at 2,945 instants",
+   "lastCommitWithTheFile": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: python3 tools/t1-nutation-swiss.py <t1-node.json> <ephe> (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/v4-dense-diff.json",
+   "bytes": 415730,
+   "sha256": "3b3bf96567ea5a63370abaa8e6722c7c6809af141d9c8757a9f81abdab799890",
+   "what": "prototype minus Swiss for ten bodies at 600 instants, beside the prototype's own values in v4-dense.json",
+   "lastCommitWithTheFile": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: python3 verify/v4-swiss.py, after node verify/v4-dense-dump.mjs"
+  },
+  {
+   "path": "src/lib/engine/fixtures/swiss-eight-cases.fixture.json",
+   "bytes": 47130,
+   "sha256": "e51073b6c78ce721a4cd284d6626566c1c267c63075e6c81654302d6d5f9c7ed",
+   "what": "Swiss positions at three epochs, two stations, a solar return with two charts and a Saturn return",
+   "lastCommitWithTheFile": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+   "regenerate": "python3 docs/engine-validation/swiss-eight-cases/extract-fixture.py <retained evidence> <out.json> (its README)"
+  },
+  {
+   "path": "src/lib/engine/fixtures/swiss-lunar-return-policy.json",
+   "bytes": 22350,
+   "sha256": "16c807cfb7374c340200064ba6f4332b98923f77b05f6f24f62ea5541d5aa146",
+   "what": "the lunar-return policy, whose L-wrap birth instant was the first 0-degree crossing of Swiss's Moon after 2000-01-01; superseded by independent-lunar-return-policy.json, which carries its other cases, its gates and its conditioning unchanged",
+   "lastCommitWithTheFile": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+   "regenerate": "python3 docs/engine-validation/swiss-lunar-return/extract-fixture.py and extract-returned-charts.py <retained evidence> <out.json> (its README)"
+  },
+  {
+   "path": "src/lib/engine/fixtures/swiss-lunar-returned-charts.fixture.json",
+   "bytes": 49768,
+   "sha256": "daa41662758d7c1f4dfa234e2dfbd33a884d11b343d94af605b28a537c18b410",
+   "what": "Swiss charts at the seven instants the product returned",
+   "lastCommitWithTheFile": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+   "regenerate": "python3 docs/engine-validation/swiss-lunar-return/extract-fixture.py and extract-returned-charts.py <retained evidence> <out.json> (its README)"
+  },
+  {
+   "path": "src/lib/engine/fixtures/swiss-lunar-returns.fixture.json",
+   "bytes": 69305,
+   "sha256": "22e4a55652e12541d01cbd46c7efad018a06e60169fb399e2d02a6ab2ab6d5d5",
+   "what": "Swiss lunar-return instants, bands and charts for six cases",
+   "lastCommitWithTheFile": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+   "regenerate": "python3 docs/engine-validation/swiss-lunar-return/extract-fixture.py and extract-returned-charts.py <retained evidence> <out.json> (its README)"
+  },
+  {
+   "path": "src/lib/engine/fixtures/swiss-node-polar.fixture.json",
+   "bytes": 23525,
+   "sha256": "022fbc030185b84aa0954411aab266577cd75f50a1947dc4717e92d8a9db9260",
+   "what": "Swiss true node (three epochs) and whole-sign angles and cusps (three polar places)",
+   "lastCommitWithTheFile": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+   "regenerate": "docs/engine-validation/swiss-node-polar/README.md (acquire.py, generate-references.py)"
+  },
+  {
+   "path": "src/lib/engine/fixtures/transit-window-independent.json",
+   "bytes": 83570,
+   "sha256": "db4ddce1d2761ad0ada1ab7aaf456d74d2f79b6b6a3434b1b8f6b9895ad66c3a",
+   "what": "Swiss transit-window components, bands, minima and crops for the nine A-I cases",
+   "lastCommitWithTheFile": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+   "regenerate": "python3 docs/engine-validation/transit-windows/project-fixtures.py <extracted archive> --output <out.json> (its README)"
+  }
+ ],
+ "strippedFiles": [
+  {
+   "path": "docs/platform/evidence/deltat-2026-09-25/outputs/swiss-deltat.json",
+   "serialiser": "py",
+   "before": {
+    "bytes": 660,
+    "sha256": "3b7ed8bd1204e57e9c8edc8d515a7d961d3f8f60eef28225cf1afb7c2771f0c2"
+   },
+   "after": {
+    "bytes": 1508,
+    "sha256": "91a2e817476b58b19433ed6d72e3f96d2ab182f05f56aac431ade03d8faf044d"
+   },
+   "removed": [
+    {
+     "path": ".seconds",
+     "count": 3,
+     "sha256": "c38cf2d6ed7143be269e06c29f06ef9744d292aa2beef0d7849ba4ce33979ef7",
+     "bytes": 79
+    },
+    {
+     "path": ".before1962.swissMinusS15_2016_at",
+     "count": 3,
+     "sha256": "51b545ab0b77bdd06e886af55bac6f3d706e0b9ec4ba73e8bce7b123602b2dd2",
+     "bytes": 40
+    },
+    {
+     "path": ".at1000",
+     "count": 2,
+     "sha256": "32bce87ba0c032f90fae6a96f7bf228a9f7365256a9229a878547ef87623a1e6",
+     "bytes": 56
+    }
+   ],
+   "regenerate": "DELTAT_SOURCES=<dir> python3 docs/platform/evidence/deltat-2026-09-25/tools/moon/swiss_deltat.py <ephe>"
+  },
+  {
+   "path": "docs/platform/evidence/engine-beyond-swiss/corpora/canon-events.json",
+   "serialiser": "text",
+   "before": {
+    "bytes": 3251,
+    "sha256": "e5e1d89ef856e98aeadfc8c291196c4bd329de41b5217af0282190dd5447e316"
+   },
+   "after": {
+    "bytes": 4017,
+    "sha256": "5239f307ceb5cace0f4e330830744016cfad068db46b413e403e36919b277e7b"
+   },
+   "removed": [
+    {
+     "path": ".baseline.<event>.swiss",
+     "count": 4,
+     "sha256": "24b82b33bd2c72d346953e89305734f288d752bd51e94f684debf6d951bc9cbf",
+     "bytes": 117
+    }
+   ],
+   "regenerate": "the four canon events located in Swiss Ephemeris 2.10.03, as the engine audit did (engine-audit-2026-09-22/LEDGER.md, verification-honesty-3)"
+  },
+  {
+   "path": "docs/platform/evidence/engine-beyond-swiss/corpora/horizons-24/corpus-tt.json",
+   "serialiser": "py",
+   "before": {
+    "bytes": 3962,
+    "sha256": "a31df4c952f778f398f5c8ea888c8d29300ac317bcb984de1e520078a09733a7"
+   },
+   "after": {
+    "bytes": 3835,
+    "sha256": "e61de362932f9a65b1d878d865545049877c52e4c0301a0eb63b3364e4828a72"
+   },
+   "removed": [
+    {
+     "path": ".cases[].deltaTSeconds",
+     "count": 24,
+     "sha256": "ec648e52d9891ba911fc775b90976a30dff7776dabbcfbc2c532c1bb5dc85a7b",
+     "bytes": 873
+    }
+   ],
+   "regenerate": "swe.deltat_ex(jdUt, swe.FLG_SWIEPH) at each corpus instant, as the audit's swiss_dump.py read it (engine-beyond-swiss/corpora/README.md)"
+  },
+  {
+   "path": "docs/platform/evidence/events-vs-swiss-2026-09-23/deltas.json",
+   "serialiser": "py",
+   "before": {
+    "bytes": 42870,
+    "sha256": "09f4627ed69295d41f53348737e5b7bda1d77cf9b58a369f014a12a569ca4a2d"
+   },
+   "after": {
+    "bytes": 35811,
+    "sha256": "79d56f102834a9be667df480c7454ba8acb22c2ca7e89c3f05983b8b17221ee1"
+   },
+   "removed": [
+    {
+     "path": ".deltas[].deltaSeconds",
+     "count": 290,
+     "sha256": "b70803665c57a8ca301c408585f5126d7d364acd06072b6e05b2b1b4d665ae48",
+     "bytes": 7157
+    },
+    {
+     "path": ".summary.swissDeltaTSeconds2026",
+     "count": 1,
+     "sha256": "c0d106f34d96eabb6b53c588fc3b8411ae74fe144004f8bfd2a8608a53648e11",
+     "bytes": 6
+    }
+   ],
+   "regenerate": "python3 docs/platform/evidence/events-vs-swiss-2026-09-23/tools/compare.py <catalog dump> <ephe> <out.json>, on the dump tools/dump-catalog.ts writes"
+  },
+  {
+   "path": "docs/platform/evidence/events-vs-swiss-2026-09-25/deltas.json",
+   "serialiser": "py",
+   "before": {
+    "bytes": 42791,
+    "sha256": "8ba61fc4d636516e22e6036422fb5f6f1d43d40ac4d5b5ea6c5f1151b2eef411"
+   },
+   "after": {
+    "bytes": 35830,
+    "sha256": "5652d8ef7b5428515e773f0b9a0f1778cb038817bcac6bd38f3ccf31ecc0dbf7"
+   },
+   "removed": [
+    {
+     "path": ".deltas[].deltaSeconds",
+     "count": 290,
+     "sha256": "7d813990623fa97345a9d6fafd1e4c8e458d1503efcf78749762da8feac839af",
+     "bytes": 7059
+    },
+    {
+     "path": ".summary.swissDeltaTSeconds2026",
+     "count": 1,
+     "sha256": "c0d106f34d96eabb6b53c588fc3b8411ae74fe144004f8bfd2a8608a53648e11",
+     "bytes": 6
+    }
+   ],
+   "regenerate": "python3 docs/platform/evidence/events-vs-swiss-2026-09-23/tools/compare.py <catalog dump> <ephe> <out.json>, on the dump tools/dump-catalog.ts writes"
+  },
+  {
+   "path": "docs/platform/evidence/houses-2026-09-26/results/sidereal.json",
+   "serialiser": "py",
+   "before": {
+    "bytes": 1535,
+    "sha256": "63eebe00dc6960a46f24770dd5a45f7347a8b1ed4f6e5ff676ada01478e1adea"
+   },
+   "after": {
+    "bytes": 2307,
+    "sha256": "2287a130d38a24e8dc37fb8a91f0597f8946fe756871a9f36a9bea0d6c2b09bc"
+   },
+   "removed": [
+    {
+     "path": ".rows[].swissMinusErfa",
+     "count": 14,
+     "sha256": "55584891877d64f6529b655154957c93ed650568f78cc8c9e5df658c94e46a8e",
+     "bytes": 353
+    }
+   ],
+   "regenerate": "docs/platform/evidence/houses-2026-09-26/tools: node sidereal.mjs > sidereal.jsonl; python3 sidereal.py sidereal.jsonl (run-all.sh)"
+  },
+  {
+   "path": "docs/platform/evidence/independent-node-polar-node22.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 3370,
+    "sha256": "58cea9957846b79c514b606f37b89f7b670f78af3106eaef89c22dd594db37ff"
+   },
+   "after": {
+    "bytes": 2148,
+    "sha256": "95cdaeef5f73d07611203a6ef5bf4edbb155743c3c040622883a8c8f8abe52f6"
+   },
+   "removed": [
+    {
+     "path": ".nodes",
+     "count": 3,
+     "sha256": "70f1409edb00fcf4c924619e002ec73ba8cc0f97bfa90b4be6329d983d953a11",
+     "bytes": 469
+    },
+    {
+     "path": ".polar",
+     "count": 6,
+     "sha256": "7c141ab7b7843a05fdb8ca6e76f25b3d42e5f2d82f1713d2fe9d8dfb48b0f79e",
+     "bytes": 1312
+    }
+   ],
+   "regenerate": "node scripts/platform-engine-report.mjs at commit 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83, with the engine version the file names installed"
+  },
+  {
+   "path": "docs/platform/evidence/independent-node-polar-node24.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 3370,
+    "sha256": "1b7d3ba8021693d44da50851667c7b25e790042bd6ee9378f9dcc581a5b84b3a"
+   },
+   "after": {
+    "bytes": 2148,
+    "sha256": "9b11458dc783f89b4bab47560871f0165f894b3e492c75b9d0e161ae9cfc9af4"
+   },
+   "removed": [
+    {
+     "path": ".nodes",
+     "count": 3,
+     "sha256": "70f1409edb00fcf4c924619e002ec73ba8cc0f97bfa90b4be6329d983d953a11",
+     "bytes": 469
+    },
+    {
+     "path": ".polar",
+     "count": 6,
+     "sha256": "7c141ab7b7843a05fdb8ca6e76f25b3d42e5f2d82f1713d2fe9d8dfb48b0f79e",
+     "bytes": 1312
+    }
+   ],
+   "regenerate": "node scripts/platform-engine-report.mjs at commit 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83, with the engine version the file names installed"
+  },
+  {
+   "path": "docs/platform/evidence/phase1-verdicts-2026-09-26/results/holdout-1.4-events.json",
+   "serialiser": "py",
+   "before": {
+    "bytes": 12065,
+    "sha256": "98922712ddd441d6fd408191350f2ef814756b8d05e11de5db70de39bb37297b"
+   },
+   "after": {
+    "bytes": 9514,
+    "sha256": "782a8d802a5f13c0607e4008b96be0f5ce79f9069f9a4a26838462282a0e666d"
+   },
+   "removed": [
+    {
+     "path": ".rows[].minusSwissSeconds|rc7MinusSwissSeconds",
+     "count": 50,
+     "sha256": "abf75745832a99067f228e68dd788c3c1eb3e53511a7136b1637e73ec466b025",
+     "bytes": 2979
+    }
+   ],
+   "regenerate": "python3 docs/platform/evidence/phase1-verdicts-2026-09-26/tools/holdout_events.py <holdout-1.4.json>, with both events-vs-swiss deltas regenerated first"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/counterfactual/cellA-core-own-common.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 19213,
+    "sha256": "dfa4b09a516378faba9e78a191a9a8f780258a6a3ae9fb63804e71f636cca718"
+   },
+   "after": {
+    "bytes": 19352,
+    "sha256": "904d9096789542004147d87768e5ba472739dbbb0a9a56368c3cbb9c6e5060dd"
+   },
+   "removed": [
+    {
+     "path": ".cases[].deltaTReferenceSeconds",
+     "count": 16,
+     "sha256": "4e676e22efbdd8c6cf7407eae8184db24e5270a578725baa0d27249c187fe53e",
+     "bytes": 702,
+     "what": "Swiss's Delta T for each case"
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20: node tools/dump-core-controlled.mjs <swiss.json> [--pinned], swiss.json from swiss-benchmark/tools/dump_swiss.py (CONTROLLED-BASELINE.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/counterfactual/cellA-core-own-nut2000b-common.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 19318,
+    "sha256": "6931c2bb9f69d7c692ff82751af1628929e2b0d062f4cef9955a4d91200262a2"
+   },
+   "after": {
+    "bytes": 19457,
+    "sha256": "d17983b52ae9dd7a73eaf963b572a946aa531a606874e519425c4a6ebddfbd39"
+   },
+   "removed": [
+    {
+     "path": ".cases[].deltaTReferenceSeconds",
+     "count": 16,
+     "sha256": "4e676e22efbdd8c6cf7407eae8184db24e5270a578725baa0d27249c187fe53e",
+     "bytes": 702,
+     "what": "Swiss's Delta T for each case"
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20: node tools/dump-core-controlled.mjs <swiss.json> [--pinned], swiss.json from swiss-benchmark/tools/dump_swiss.py (CONTROLLED-BASELINE.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/counterfactual/cellA-core-own-nut2000b.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 21710,
+    "sha256": "7ca87d9014b716802aec5b0269709cc15aba363d6032a9baf99607d3631bc4dc"
+   },
+   "after": {
+    "bytes": 21761,
+    "sha256": "a6fdca822b6ede9ca7c7b222465a26d1f99c1c262ae5e0a344d5ee6c0923e2b8"
+   },
+   "removed": [
+    {
+     "path": ".cases[].deltaTReferenceSeconds",
+     "count": 18,
+     "sha256": "083f8ea37340cacc3314c749eee8c01793879283f74fea3486db8dcc897a8210",
+     "bytes": 794,
+     "what": "Swiss's Delta T for each case"
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20: node tools/dump-core-controlled.mjs <swiss.json> [--pinned], swiss.json from swiss-benchmark/tools/dump_swiss.py (CONTROLLED-BASELINE.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/counterfactual/cellB-core-pinned-common.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 19212,
+    "sha256": "7d80c237c65036aeff207cab8a1a56972966a7ea4efa7fa046347d63cb8a8070"
+   },
+   "after": {
+    "bytes": 18773,
+    "sha256": "6bc996ba1ac8eaf019e27e45fa7f4bdcfeaed82b99adc65b6c30034a60c4f35f"
+   },
+   "removed": [
+    {
+     "path": ".cases[].deltaTReferenceSeconds|deltaTAppliedSeconds",
+     "count": 16,
+     "sha256": "cc438f5f95268cbdb65722b5ca943eab4437b135945d30a834c7595d584b3b4a",
+     "bytes": 1339,
+     "what": "Swiss's Delta T for each case, which this pinned cell also applied"
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20: node tools/dump-core-controlled.mjs <swiss.json> [--pinned], swiss.json from swiss-benchmark/tools/dump_swiss.py (CONTROLLED-BASELINE.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/counterfactual/cellB-core-pinned-nut2000b-common.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 19321,
+    "sha256": "554e31de10f7a241101f32b6667be1a0e9bb9da156b2248c8548695a04e2b70d"
+   },
+   "after": {
+    "bytes": 18882,
+    "sha256": "580f41ff118d487c64b7e8466a6065f30782dba8a5d725e3ef6387719ddc01ed"
+   },
+   "removed": [
+    {
+     "path": ".cases[].deltaTReferenceSeconds|deltaTAppliedSeconds",
+     "count": 16,
+     "sha256": "cc438f5f95268cbdb65722b5ca943eab4437b135945d30a834c7595d584b3b4a",
+     "bytes": 1339,
+     "what": "Swiss's Delta T for each case, which this pinned cell also applied"
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20: node tools/dump-core-controlled.mjs <swiss.json> [--pinned], swiss.json from swiss-benchmark/tools/dump_swiss.py (CONTROLLED-BASELINE.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/counterfactual/cellB-core-pinned-nut2000b.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 21720,
+    "sha256": "c66d9c403fc3b0d8d35aec55d52e2169fe336e4702e5c2f64edc1cf65d404587"
+   },
+   "after": {
+    "bytes": 21109,
+    "sha256": "efbb2ed226e55ff9bb22f9c4b77896fd07b40c4d0d8fbc640debf208ce2c43d5"
+   },
+   "removed": [
+    {
+     "path": ".cases[].deltaTReferenceSeconds|deltaTAppliedSeconds",
+     "count": 18,
+     "sha256": "5c219bf7bae828c46dfba66b5bfad27a1bb194f0071b2db5473570b0760174da",
+     "bytes": 1515,
+     "what": "Swiss's Delta T for each case, which this pinned cell also applied"
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20: node tools/dump-core-controlled.mjs <swiss.json> [--pinned], swiss.json from swiss-benchmark/tools/dump_swiss.py (CONTROLLED-BASELINE.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/repro-cellD-report.json",
+   "serialiser": "py",
+   "before": {
+    "bytes": 37090,
+    "sha256": "df995cd72927dfd2f2815b11558939709678fd087b2e24804cfe6f5ab4937b72"
+   },
+   "after": {
+    "bytes": 6396,
+    "sha256": "37f73172d93aa21c0dc08e987fa63c68b48cd705e37b75d2f136af3b67b71aa2"
+   },
+   "removed": [
+    {
+     "path": ".rows",
+     "count": 160,
+     "sha256": "87523a7685d858b36accdac443ed30221420ad28f60352177e499615e6243497",
+     "bytes": 25765
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/sweep/report-a-aberration-first-order.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 38231,
+    "sha256": "a4f12d7da820e07e579b1180100806b1313b84ae5fd4ab1be2dc8eaea24fdd3b"
+   },
+   "after": {
+    "bytes": 6492,
+    "sha256": "92a88e08ba8e0b380dcf93588e35987e502030b0cbb978454f3c3a2da179e391"
+   },
+   "removed": [
+    {
+     "path": ".rows",
+     "count": 160,
+     "sha256": "22833690adc74f6a99c58ddae479c5511366257427a435c66180b951aba1c013",
+     "bytes": 26731
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/sweep/report-a-aberration-off.json",
+   "serialiser": "py",
+   "before": {
+    "bytes": 38427,
+    "sha256": "e929693e7b634926a493844b8fbac39270d663ba14013bd394cfa57ed380d879"
+   },
+   "after": {
+    "bytes": 7797,
+    "sha256": "4f62728ed0c7f0d619d40bb996f9f872516b1eadd05465bfda98178be76756ee"
+   },
+   "removed": [
+    {
+     "path": ".rows",
+     "count": 160,
+     "sha256": "c67c8c5611e1c17723d66577c0685d8f8ed31fed7b91de894dc3e007746895d9",
+     "bytes": 25701
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/sweep/report-a-bias-off.json",
+   "serialiser": "py",
+   "before": {
+    "bytes": 37730,
+    "sha256": "89c116bb29c8dc2cfc2d7777ab26c0ee3a7c28946d5f021308d7a3ec430b565f"
+   },
+   "after": {
+    "bytes": 6442,
+    "sha256": "b6166e9a99f4e8e496bb620e96ecd941e70bd2f9bb088693f0a8afc9cfa7f1e8"
+   },
+   "removed": [
+    {
+     "path": ".rows",
+     "count": 160,
+     "sha256": "1fbe5641eacdfd8677e0eca929f0ab6174fa1d421d881796c5b3e59d372c3f0f",
+     "bytes": 26359
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/sweep/report-a-deflection-off.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 37981,
+    "sha256": "6b61bf4d26055e0aa0314e4a50def5ad4dc0d2345971269ab32ec4dbf16f7e98"
+   },
+   "after": {
+    "bytes": 6434,
+    "sha256": "108be57f9be82d77a7e3d605c1ce0c4ccd8369e00e49a929b68edf0aa2d1e46a"
+   },
+   "removed": [
+    {
+     "path": ".rows",
+     "count": 160,
+     "sha256": "a48e5aea217cf611cfb6c01a40876f745e7e50605beaefafc65e0ec232c0284b",
+     "bytes": 26575
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/sweep/report-a-light-time-1-iteration.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 38261,
+    "sha256": "7cada384ad112b479f5a137c87d3d436f57ae7ac69314a808c7d29f629e8fcf2"
+   },
+   "after": {
+    "bytes": 6499,
+    "sha256": "36c0c85cd995f2c3ae4c4bbb952e5e22e74eda0e182117b6f86a71dd080995d5"
+   },
+   "removed": [
+    {
+     "path": ".rows",
+     "count": 160,
+     "sha256": "6f5d64a13ea13f75d8f719ad75b83802ec98d21282c96229f4c3e43da6f04211",
+     "bytes": 26740
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/sweep/report-a-light-time-2-iterations.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 38309,
+    "sha256": "882c54a5e1bebef7edfeff9e1f9ced1b342af92692313ce90825917437c08fe4"
+   },
+   "after": {
+    "bytes": 6500,
+    "sha256": "871f57f7917962cb19f84c534b1776e40ceb3ff983a017e57c7401d9d509879c"
+   },
+   "removed": [
+    {
+     "path": ".rows",
+     "count": 160,
+     "sha256": "5a79ba5830cb2db1b239fb3333eb06abcc91ed7fbcb4a08d66ab28126211a5e3",
+     "bytes": 26775
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/sweep/report-a-nutation-back-to-ae.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 37806,
+    "sha256": "e69b96ea3a05ef532dc145c9265ccca1a463af1573383836955a67aeacfcd90d"
+   },
+   "after": {
+    "bytes": 6399,
+    "sha256": "9d04c52b1ae0d18782011912a16de45be775c95226fb651192c57086e00b7d7a"
+   },
+   "removed": [
+    {
+     "path": ".rows",
+     "count": 160,
+     "sha256": "ed3f4335d310d76b739968666398067165ee21387816cea181822c7883feddd8",
+     "bytes": 26417
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/sweep/report-a-observer-velocity-h-600s.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 38290,
+    "sha256": "b5de0d8bc3856acc5db81913d5aa9bdac9e2a4329ef32d8306aa530a24f39034"
+   },
+   "after": {
+    "bytes": 6492,
+    "sha256": "a911139aaa3c9089c6c6a43a744c1a333c5d5f5ef07d84c7862fb493f9c8f1d0"
+   },
+   "removed": [
+    {
+     "path": ".rows",
+     "count": 160,
+     "sha256": "1ce4cf87ad48ceba4307e711688e3d185e6d388820915324c6566e5d4ee0e577",
+     "bytes": 26764
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/sweep/report-a-observer-velocity-h-60s.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 38302,
+    "sha256": "90998017c8bca1770740eb8c9ff855e3d5a93edb485850e00dba5515756f7a09"
+   },
+   "after": {
+    "bytes": 6500,
+    "sha256": "7f4cb0b5afec4e609e9a7e84dc03b9cf72bb891d2d896ce06c1851d9097127a4"
+   },
+   "removed": [
+    {
+     "path": ".rows",
+     "count": 160,
+     "sha256": "7b8779f41e17530c1cba6013b156c57601933ba067c33f0b582ae7a6e6e35e9c",
+     "bytes": 26768
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/sweep/report-a-tdb-off-tt-as-tdb-.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 38295,
+    "sha256": "4360c7f4866a43aeebe05706d83b00e906a38bbd6dfcb39af217c9dc3f2788b6"
+   },
+   "after": {
+    "bytes": 6495,
+    "sha256": "329684bc5e6add4fd248d7397bd62cf3c0fd512b01b8f2c7d5fc6b3279ed83f1"
+   },
+   "removed": [
+    {
+     "path": ".rows",
+     "count": 160,
+     "sha256": "73b3433b402051cfbb840b52d1e43381ae97e0ec063f84f6955cda579994aa45",
+     "bytes": 26766
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/sweep/report-p0-prototype-as-shipped.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 37471,
+    "sha256": "4b21580142800a2dccd99f6a4b8589d2f033b865ee9d07c2d6dcfa61ee7e4d0e"
+   },
+   "after": {
+    "bytes": 6391,
+    "sha256": "b67962582c673abe52c1a98da10133215a1f10684e9102bb700e9e7b1b3b8a79"
+   },
+   "removed": [
+    {
+     "path": ".rows",
+     "count": 160,
+     "sha256": "e5d67c6fce6cdbf8f9cdbf240a65cd37cdcc6f1276609d99c4bc1bbd9bf1e2b6",
+     "bytes": 26149
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/sweep/report-p1-iau2000b-nutation.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 37680,
+    "sha256": "0d142a96720592fba4f69235fc42f7dbd766cc6ee1bd47dac79cd2afb11efe94"
+   },
+   "after": {
+    "bytes": 6427,
+    "sha256": "9cb2bc86dcff83da4a80689d9e30d125ad7b909444ca636e660f7bba85185425"
+   },
+   "removed": [
+    {
+     "path": ".rows",
+     "count": 160,
+     "sha256": "e521ab8e36eecafed161c4df7fc635fabe7d02686f6bbe32117b935da2fad524",
+     "bytes": 26322
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/sweep/report-p1a-iau2000a-nutation.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 37685,
+    "sha256": "fc5d2da65de70aaf4314e216c2acc765e93bc28124530a34663028e8726ca334"
+   },
+   "after": {
+    "bytes": 6432,
+    "sha256": "5a563f1c16fb579ecc042ed706addea7d8aa80b0d83be0aa2636814a49fee6ef"
+   },
+   "removed": [
+    {
+     "path": ".rows",
+     "count": 160,
+     "sha256": "49922a3bc0478bc89167c6983feb7c1b2a191d665e3f8762663be7067546ac65",
+     "bytes": 26322
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/sweep/report-p2-frame-bias-only.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 37702,
+    "sha256": "0d99bc0f2a732b0d7d3e0191206be55c84dce41255b20b1c319c2c03f3dfd86b"
+   },
+   "after": {
+    "bytes": 6370,
+    "sha256": "cd5dd45708c0021237e611ed17501bf742250e1c2e3b938f6704231114f54653"
+   },
+   "removed": [
+    {
+     "path": ".rows",
+     "count": 160,
+     "sha256": "f9be16dea165196593c7d7ea41f845fa2d1df64511eb32ae4aa863f482a947ac",
+     "bytes": 26365
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/sweep/report-p3-2000b-frame-bias.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 38004,
+    "sha256": "c8f2dcfc7f48d11e63e9c15a5af61a80a6c04e196cde131d0a8028cb34d396f5"
+   },
+   "after": {
+    "bytes": 6440,
+    "sha256": "e6a9407c1f5ffd9096a52ee937af1645aa17b0a3999061ca6e2407437b192aec"
+   },
+   "removed": [
+    {
+     "path": ".rows",
+     "count": 160,
+     "sha256": "26e8289d02995456bc544a07544f1955a46868df56a9a0022314c314de4901f3",
+     "bytes": 26590
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/sweep/report-p4-2000b-bias-tdb.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 37976,
+    "sha256": "ee9bc59301d9cc9491b31451fac172803dec98da98cb73aa79b54f90cb2e8b5e"
+   },
+   "after": {
+    "bytes": 6435,
+    "sha256": "385369a7bd9a4842482c84f524bbb6a84ef9a259b2cd59d2836766128d99f370"
+   },
+   "removed": [
+    {
+     "path": ".rows",
+     "count": 160,
+     "sha256": "895a7b2d200b0d696e3e9f684f3fdfd789669c3da639a4a3642f7935eceafff4",
+     "bytes": 26568
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/sweep/report-p5-2000b-bias-tdb-deflection.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 38238,
+    "sha256": "e7ace4452ede40d2dc3f79bbee388ad95def65818cf724897ba5d82977c214f7"
+   },
+   "after": {
+    "bytes": 6492,
+    "sha256": "92fe76a2be68c61d00b4ae61d855ed4bb1062232046d7f59fe7141f806fc7684"
+   },
+   "removed": [
+    {
+     "path": ".rows",
+     "count": 160,
+     "sha256": "5a20f4e3d13a1a8fc751c1ee65b3e140d427623211ffeba9dd05ac44a140176f",
+     "bytes": 26738
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/sweep/report-p6-full-aberration-too.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 38302,
+    "sha256": "fee4a5f925207eafaaa76f67a2eef59cf99e43e15daf16d3f129fa1e9ea774c6"
+   },
+   "after": {
+    "bytes": 6500,
+    "sha256": "41d1f7f374ec78b7c36e10ebff6e4bd91722a13a079b3acd93e9690335916181"
+   },
+   "removed": [
+    {
+     "path": ".rows",
+     "count": 160,
+     "sha256": "2bb858657d0b416700520a7f23e75d68c208ddd33926838b0484b7e8454575a8",
+     "bytes": 26768
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/sweep/report-p7-analytic-observer-velocity.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 38298,
+    "sha256": "b57e48ecf3ca6827116e9a819d5a1a1385b2df8cb8d17f9a8c2018b5f487c3c2"
+   },
+   "after": {
+    "bytes": 6499,
+    "sha256": "e66f9e1eb79dfb30d305e4018333f2b9b840222037a071f2fb7f96a6f32e1fb3"
+   },
+   "removed": [
+    {
+     "path": ".rows",
+     "count": 160,
+     "sha256": "328f098b1da14fb0b2dd1997dc04b8f2cc85ee3be92662c3a49ad57f29ca36d2",
+     "bytes": 26765
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/sweep/report-p8-best-light-time-to-1e-11.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 38298,
+    "sha256": "b57e48ecf3ca6827116e9a819d5a1a1385b2df8cb8d17f9a8c2018b5f487c3c2"
+   },
+   "after": {
+    "bytes": 6499,
+    "sha256": "e66f9e1eb79dfb30d305e4018333f2b9b840222037a071f2fb7f96a6f32e1fb3"
+   },
+   "removed": [
+    {
+     "path": ".rows",
+     "count": 160,
+     "sha256": "328f098b1da14fb0b2dd1997dc04b8f2cc85ee3be92662c3a49ad57f29ca36d2",
+     "bytes": 26765
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/sweep/report-p8a-best-with-iau2000a.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 38252,
+    "sha256": "141573a1db497d9083b97eb9fedc1d23b88939d8641d4c013ba839df3c20df4f"
+   },
+   "after": {
+    "bytes": 6487,
+    "sha256": "639665b86691b30379b16d51933b5c1099959b7a73172756f2091f635deae2aa"
+   },
+   "removed": [
+    {
+     "path": ".rows",
+     "count": 160,
+     "sha256": "eb8e0887ea55784fffbdad8b459542458802d24b49e5d6b53543ede78bba888d",
+     "bytes": 26755
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/counterfactual/cellA-core-own-common.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 19213,
+    "sha256": "dfa4b09a516378faba9e78a191a9a8f780258a6a3ae9fb63804e71f636cca718"
+   },
+   "after": {
+    "bytes": 19352,
+    "sha256": "904d9096789542004147d87768e5ba472739dbbb0a9a56368c3cbb9c6e5060dd"
+   },
+   "removed": [
+    {
+     "path": ".cases[].deltaTReferenceSeconds",
+     "count": 16,
+     "sha256": "4e676e22efbdd8c6cf7407eae8184db24e5270a578725baa0d27249c187fe53e",
+     "bytes": 702,
+     "what": "Swiss's Delta T for each case"
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20: node tools/dump-core-controlled.mjs <swiss.json> [--pinned], swiss.json from swiss-benchmark/tools/dump_swiss.py (CONTROLLED-BASELINE.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/counterfactual/cellA-core-own-nut2000b-common.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 19318,
+    "sha256": "6931c2bb9f69d7c692ff82751af1628929e2b0d062f4cef9955a4d91200262a2"
+   },
+   "after": {
+    "bytes": 19457,
+    "sha256": "d17983b52ae9dd7a73eaf963b572a946aa531a606874e519425c4a6ebddfbd39"
+   },
+   "removed": [
+    {
+     "path": ".cases[].deltaTReferenceSeconds",
+     "count": 16,
+     "sha256": "4e676e22efbdd8c6cf7407eae8184db24e5270a578725baa0d27249c187fe53e",
+     "bytes": 702,
+     "what": "Swiss's Delta T for each case"
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20: node tools/dump-core-controlled.mjs <swiss.json> [--pinned], swiss.json from swiss-benchmark/tools/dump_swiss.py (CONTROLLED-BASELINE.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/counterfactual/cellA-core-own-nut2000b.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 21710,
+    "sha256": "7ca87d9014b716802aec5b0269709cc15aba363d6032a9baf99607d3631bc4dc"
+   },
+   "after": {
+    "bytes": 21761,
+    "sha256": "a6fdca822b6ede9ca7c7b222465a26d1f99c1c262ae5e0a344d5ee6c0923e2b8"
+   },
+   "removed": [
+    {
+     "path": ".cases[].deltaTReferenceSeconds",
+     "count": 18,
+     "sha256": "083f8ea37340cacc3314c749eee8c01793879283f74fea3486db8dcc897a8210",
+     "bytes": 794,
+     "what": "Swiss's Delta T for each case"
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20: node tools/dump-core-controlled.mjs <swiss.json> [--pinned], swiss.json from swiss-benchmark/tools/dump_swiss.py (CONTROLLED-BASELINE.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/counterfactual/cellB-core-pinned-common.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 19212,
+    "sha256": "7d80c237c65036aeff207cab8a1a56972966a7ea4efa7fa046347d63cb8a8070"
+   },
+   "after": {
+    "bytes": 18773,
+    "sha256": "6bc996ba1ac8eaf019e27e45fa7f4bdcfeaed82b99adc65b6c30034a60c4f35f"
+   },
+   "removed": [
+    {
+     "path": ".cases[].deltaTReferenceSeconds|deltaTAppliedSeconds",
+     "count": 16,
+     "sha256": "cc438f5f95268cbdb65722b5ca943eab4437b135945d30a834c7595d584b3b4a",
+     "bytes": 1339,
+     "what": "Swiss's Delta T for each case, which this pinned cell also applied"
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20: node tools/dump-core-controlled.mjs <swiss.json> [--pinned], swiss.json from swiss-benchmark/tools/dump_swiss.py (CONTROLLED-BASELINE.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/counterfactual/cellB-core-pinned-nut2000b-common.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 19321,
+    "sha256": "554e31de10f7a241101f32b6667be1a0e9bb9da156b2248c8548695a04e2b70d"
+   },
+   "after": {
+    "bytes": 18882,
+    "sha256": "580f41ff118d487c64b7e8466a6065f30782dba8a5d725e3ef6387719ddc01ed"
+   },
+   "removed": [
+    {
+     "path": ".cases[].deltaTReferenceSeconds|deltaTAppliedSeconds",
+     "count": 16,
+     "sha256": "cc438f5f95268cbdb65722b5ca943eab4437b135945d30a834c7595d584b3b4a",
+     "bytes": 1339,
+     "what": "Swiss's Delta T for each case, which this pinned cell also applied"
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20: node tools/dump-core-controlled.mjs <swiss.json> [--pinned], swiss.json from swiss-benchmark/tools/dump_swiss.py (CONTROLLED-BASELINE.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/counterfactual/cellB-core-pinned-nut2000b.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 21720,
+    "sha256": "c66d9c403fc3b0d8d35aec55d52e2169fe336e4702e5c2f64edc1cf65d404587"
+   },
+   "after": {
+    "bytes": 21109,
+    "sha256": "efbb2ed226e55ff9bb22f9c4b77896fd07b40c4d0d8fbc640debf208ce2c43d5"
+   },
+   "removed": [
+    {
+     "path": ".cases[].deltaTReferenceSeconds|deltaTAppliedSeconds",
+     "count": 18,
+     "sha256": "5c219bf7bae828c46dfba66b5bfad27a1bb194f0071b2db5473570b0760174da",
+     "bytes": 1515,
+     "what": "Swiss's Delta T for each case, which this pinned cell also applied"
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20: node tools/dump-core-controlled.mjs <swiss.json> [--pinned], swiss.json from swiss-benchmark/tools/dump_swiss.py (CONTROLLED-BASELINE.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/holdout-p0-prototype-report.json",
+   "serialiser": "py",
+   "before": {
+    "bytes": 12667,
+    "sha256": "2182a439983f180cdf848f6907835dab179795169d47cd96868b51fa377a1fe7"
+   },
+   "after": {
+    "bytes": 5613,
+    "sha256": "20897dbff06679aeea9e7c57c6d0d4ff8cc840a9805c343ebc2a935e0bd7890e"
+   },
+   "removed": [
+    {
+     "path": ".rows",
+     "count": 40,
+     "sha256": "d948ab3ff90bd677c51c8c99f22fdbba64dc37817b8bf0f46b049c69dcf2dcb9",
+     "bytes": 6443
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/holdout-p8-best-report.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 12953,
+    "sha256": "a4c35395ce7e3171a56cc74c222df4857066e6ffd5cc49117409aacb63b11f95"
+   },
+   "after": {
+    "bytes": 5711,
+    "sha256": "d51c7fd13304e3fe3a93c1bc64cfa1c31527a677aff7bba08fc4a0961af13d67"
+   },
+   "removed": [
+    {
+     "path": ".rows",
+     "count": 40,
+     "sha256": "371fb191770f3cd4800a4c0478bf665c2a49550cda7c831e54fa18738a42b5b7",
+     "bytes": 6600
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/holdout-p8a-best-2000a-report.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 12952,
+    "sha256": "e555058a0df43b065020d06a8c205eda4961ebdb432c944855a38b3fa4b3d47f"
+   },
+   "after": {
+    "bytes": 5715,
+    "sha256": "dda543833fe4bb906394d0ab3957e8da32584f0f6703a31aef4c16a864aa510f"
+   },
+   "removed": [
+    {
+     "path": ".rows",
+     "count": 40,
+     "sha256": "fa017df187415dec10202f907194f6238cfecc75515df239a81b3ffdf3ef4a01",
+     "bytes": 6598
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/p8-report.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 38298,
+    "sha256": "b57e48ecf3ca6827116e9a819d5a1a1385b2df8cb8d17f9a8c2018b5f487c3c2"
+   },
+   "after": {
+    "bytes": 6499,
+    "sha256": "e66f9e1eb79dfb30d305e4018333f2b9b840222037a071f2fb7f96a6f32e1fb3"
+   },
+   "removed": [
+    {
+     "path": ".rows",
+     "count": 160,
+     "sha256": "328f098b1da14fb0b2dd1997dc04b8f2cc85ee3be92662c3a49ad57f29ca36d2",
+     "bytes": 26765
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/repro-cellD-report.json",
+   "serialiser": "py",
+   "before": {
+    "bytes": 37090,
+    "sha256": "df995cd72927dfd2f2815b11558939709678fd087b2e24804cfe6f5ab4937b72"
+   },
+   "after": {
+    "bytes": 6396,
+    "sha256": "37f73172d93aa21c0dc08e987fa63c68b48cd705e37b75d2f136af3b67b71aa2"
+   },
+   "removed": [
+    {
+     "path": ".rows",
+     "count": 160,
+     "sha256": "87523a7685d858b36accdac443ed30221420ad28f60352177e499615e6243497",
+     "bytes": 25765
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/raw/cellA-core-own.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 28764,
+    "sha256": "d67762eebcc9ac2bc2701b7815f1f8c4c07ed53d4409fe8c2451ec35466f431d"
+   },
+   "after": {
+    "bytes": 28816,
+    "sha256": "e3fa46fc494c531919d4f63c3c7a61f09ee5461e2ea75b8be83c06eb8b8e4b36"
+   },
+   "removed": [
+    {
+     "path": ".cases[].deltaTReferenceSeconds",
+     "count": 18,
+     "sha256": "083f8ea37340cacc3314c749eee8c01793879283f74fea3486db8dcc897a8210",
+     "bytes": 794,
+     "what": "Swiss's Delta T for each case"
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20: node tools/dump-core-controlled.mjs <swiss.json> [--pinned], swiss.json from swiss-benchmark/tools/dump_swiss.py (CONTROLLED-BASELINE.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/raw/cellB-core-pinned.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 28776,
+    "sha256": "1f35fbfc77393dc1018cb13a3ea5cc5dab1d7f5091df1e1b13230380a81caa07"
+   },
+   "after": {
+    "bytes": 28076,
+    "sha256": "f45bb251d19d3bb002119295b56c314fff5ce98cdea14eda217fbda1e3406d76"
+   },
+   "removed": [
+    {
+     "path": ".cases[].deltaTReferenceSeconds|deltaTAppliedSeconds",
+     "count": 18,
+     "sha256": "5c219bf7bae828c46dfba66b5bfad27a1bb194f0071b2db5473570b0760174da",
+     "bytes": 1515,
+     "what": "Swiss's Delta T for each case, which this pinned cell also applied"
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20: node tools/dump-core-controlled.mjs <swiss.json> [--pinned], swiss.json from swiss-benchmark/tools/dump_swiss.py (CONTROLLED-BASELINE.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/raw/cmp-A-core-own.json",
+   "serialiser": "py",
+   "before": {
+    "bytes": 40591,
+    "sha256": "3d041365ccea566609a6593ee4862ea517ddae450c7d1989c30018d783bec27e"
+   },
+   "after": {
+    "bytes": 5875,
+    "sha256": "a96e23b6867815153451ce9928b83bd9b0de3df243de0d62b0c217d107b3e506"
+   },
+   "removed": [
+    {
+     "path": ".rows",
+     "count": 180,
+     "sha256": "ecc428332255089fad05d51b82ddc7dbd8f0be9542f98f6be5d506f5168ab65b",
+     "bytes": 29065
+    }
+   ],
+   "regenerate": "docs/platform/evidence/swiss-benchmark/tools: node dump-zodiacs.mjs > zodiacs.json; python3 dump_swiss.py zodiacs.json <ephe> > swiss.json; node compare.mjs zodiacs.json swiss.json (RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/raw/cmp-B-core-pinned.json",
+   "serialiser": "py",
+   "before": {
+    "bytes": 40675,
+    "sha256": "9cb69f045ed6878f44a1dc03a128c0cc596f2170ccd85acd19173f6fa400b191"
+   },
+   "after": {
+    "bytes": 5895,
+    "sha256": "a3f4e7ff2a8dddb5fc9ab178ac42b9194b535b11aa45ba3dee342d599c2a3ccc"
+   },
+   "removed": [
+    {
+     "path": ".rows",
+     "count": 180,
+     "sha256": "8705f6f423547ecdd849825591c5bf6db01f97b0ea21681e28ce4d60c42813fd",
+     "bytes": 29129
+    }
+   ],
+   "regenerate": "docs/platform/evidence/swiss-benchmark/tools: node dump-zodiacs.mjs > zodiacs.json; python3 dump_swiss.py zodiacs.json <ephe> > swiss.json; node compare.mjs zodiacs.json swiss.json (RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/raw/cmp-C-proto-own.json",
+   "serialiser": "py",
+   "before": {
+    "bytes": 37890,
+    "sha256": "6798f0add41e2971f85b62ea07eaeeecc6c453b10098467e4e08df752863842b"
+   },
+   "after": {
+    "bytes": 7245,
+    "sha256": "cb2b327d134093e696e8572ad580c86cf25d49e746002a80b6178a9624052b5d"
+   },
+   "removed": [
+    {
+     "path": ".rows",
+     "count": 160,
+     "sha256": "efe647595e65f4440718e89277c2efb5ac126b9d80479e74c603d8e3eed9976d",
+     "bytes": 25714
+    }
+   ],
+   "regenerate": "docs/platform/evidence/swiss-benchmark/tools: node dump-zodiacs.mjs > zodiacs.json; python3 dump_swiss.py zodiacs.json <ephe> > swiss.json; node compare.mjs zodiacs.json swiss.json (RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/raw/cmp-D-proto-pinned.json",
+   "serialiser": "py",
+   "before": {
+    "bytes": 37090,
+    "sha256": "df995cd72927dfd2f2815b11558939709678fd087b2e24804cfe6f5ab4937b72"
+   },
+   "after": {
+    "bytes": 6394,
+    "sha256": "84a05bd88e9814b6b89b4105e74c2b72da75efef04ac432463c9d998676d895b"
+   },
+   "removed": [
+    {
+     "path": ".rows",
+     "count": 160,
+     "sha256": "87523a7685d858b36accdac443ed30221420ad28f60352177e499615e6243497",
+     "bytes": 25765
+    }
+   ],
+   "regenerate": "docs/platform/evidence/swiss-benchmark/tools: node dump-zodiacs.mjs > zodiacs.json; python3 dump_swiss.py zodiacs.json <ephe> > swiss.json; node compare.mjs zodiacs.json swiss.json (RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/raw/recovered-report-proto-engine-deltat.json",
+   "serialiser": "py",
+   "before": {
+    "bytes": 37890,
+    "sha256": "6798f0add41e2971f85b62ea07eaeeecc6c453b10098467e4e08df752863842b"
+   },
+   "after": {
+    "bytes": 7245,
+    "sha256": "cb2b327d134093e696e8572ad580c86cf25d49e746002a80b6178a9624052b5d"
+   },
+   "removed": [
+    {
+     "path": ".rows",
+     "count": 160,
+     "sha256": "efe647595e65f4440718e89277c2efb5ac126b9d80479e74c603d8e3eed9976d",
+     "bytes": 25714
+    }
+   ],
+   "regenerate": "docs/platform/evidence/swiss-benchmark/tools: node dump-zodiacs.mjs > zodiacs.json; python3 dump_swiss.py zodiacs.json <ephe> > swiss.json; node compare.mjs zodiacs.json swiss.json (RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/search/raw/decomposition.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 25724,
+    "sha256": "70308a57fe75a03e1178b7acb83f3042738fa290820c9ddb53a4336e0e7aa11f"
+   },
+   "after": {
+    "bytes": 26611,
+    "sha256": "28a91d2891acc1903202bafb1c1b263df151c93d4e9bbabecdf684d897397628"
+   },
+   "removed": [
+    {
+     "path": ".sources.ephemerisModel.atTheTurningPointItself.swissLongitude",
+     "count": 1,
+     "sha256": "320287a39039ed35a542ef84eeed9ce3f7dbf9fa5db3e2c990116aba44b57e61",
+     "bytes": 18
+    }
+   ],
+   "regenerate": "python3 docs/platform/evidence/precision-2026-09-20/search/verify/swiss-station.py, and search/lib/swiss-longitudes.py through search/reproduce.mjs"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/search/raw/reproduction.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 15425,
+    "sha256": "af9f5a32059ffdd9d8c45ff20bbe9ea1cab78d3ecc300fff3eecc9fd49c21eb5"
+   },
+   "after": {
+    "bytes": 16600,
+    "sha256": "d8e601d54cdff431525f918a867999e37470ca1f5cd253284fd1c218bd5e7e42"
+   },
+   "removed": [
+    {
+     "path": ".independentReproduction.swiss.stationUtc",
+     "count": 1,
+     "sha256": "46f826408b8db2d49cbbb3dcb9dd5564f5e4d16bd8d0cbaed49c4702dc0e712c",
+     "bytes": 26
+    },
+    {
+     "path": ".independentReproduction.swiss.stationLongitudeDegrees",
+     "count": 1,
+     "sha256": "86c94f95b75b798def64c6156953d1cea717d98e59c8d113b2722ec81541b162",
+     "bytes": 17
+    },
+    {
+     "path": ".independentReproduction.swiss.stationSpeedDegPerDay",
+     "count": 1,
+     "sha256": "ecba08b9a5fd4533bcb287fef2046e9b670648d822cfdd338cfd4d6c2a3a950f",
+     "bytes": 21
+    }
+   ],
+   "regenerate": "python3 docs/platform/evidence/precision-2026-09-20/search/verify/swiss-station.py, and search/lib/swiss-longitudes.py through search/reproduce.mjs"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/search/verify/raw-original/decomposition.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 25724,
+    "sha256": "1a882e6d606d652d1ac514d79c606c8776e07e8078db7db976ef86c65c4f946f"
+   },
+   "after": {
+    "bytes": 26611,
+    "sha256": "533ccbc180ca35a9d4809b40562ebc6f3dcecf3c1c808143566ecfd77a8db72a"
+   },
+   "removed": [
+    {
+     "path": ".sources.ephemerisModel.atTheTurningPointItself.swissLongitude",
+     "count": 1,
+     "sha256": "320287a39039ed35a542ef84eeed9ce3f7dbf9fa5db3e2c990116aba44b57e61",
+     "bytes": 18
+    }
+   ],
+   "regenerate": "python3 docs/platform/evidence/precision-2026-09-20/search/verify/swiss-station.py, and search/lib/swiss-longitudes.py through search/reproduce.mjs"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/search/verify/raw-original/reproduction.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 15425,
+    "sha256": "dfcdd22cc52b847ffe9b6e707f3f7cda6478f1ee66df28fc9185239ad878a97c"
+   },
+   "after": {
+    "bytes": 16600,
+    "sha256": "ec3feae54648988e7047259ff1d1364690655486ce0c4cb1c677e8d49d814f13"
+   },
+   "removed": [
+    {
+     "path": ".independentReproduction.swiss.stationUtc",
+     "count": 1,
+     "sha256": "46f826408b8db2d49cbbb3dcb9dd5564f5e4d16bd8d0cbaed49c4702dc0e712c",
+     "bytes": 26
+    },
+    {
+     "path": ".independentReproduction.swiss.stationLongitudeDegrees",
+     "count": 1,
+     "sha256": "86c94f95b75b798def64c6156953d1cea717d98e59c8d113b2722ec81541b162",
+     "bytes": 17
+    },
+    {
+     "path": ".independentReproduction.swiss.stationSpeedDegPerDay",
+     "count": 1,
+     "sha256": "ecba08b9a5fd4533bcb287fef2046e9b670648d822cfdd338cfd4d6c2a3a950f",
+     "bytes": 21
+    }
+   ],
+   "regenerate": "python3 docs/platform/evidence/precision-2026-09-20/search/verify/swiss-station.py, and search/lib/swiss-longitudes.py through search/reproduce.mjs"
+  },
+  {
+   "path": "docs/platform/evidence/site-engine-rc10/node22-parity.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 3369,
+    "sha256": "f202da583437e97daf74d6ace8ea8b5acab548a6b8458e53cdad1a0ee7e0a1e9"
+   },
+   "after": {
+    "bytes": 2148,
+    "sha256": "be6c9ad7dfe5105632d9327a16817d2484da01bb6894aa8ad7ea96c932af3717"
+   },
+   "removed": [
+    {
+     "path": ".nodes",
+     "count": 3,
+     "sha256": "3139f11a60d6b57adea9177c0eccd9bbafcdb4bbebb32aa05fd166bc27a7d793",
+     "bytes": 468
+    },
+    {
+     "path": ".polar",
+     "count": 6,
+     "sha256": "fe016057b5d34eb39e23b0dcc944d905df847005a8a6e45ac74a26c8d6166053",
+     "bytes": 1312
+    }
+   ],
+   "regenerate": "node scripts/platform-engine-report.mjs at commit 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83, with the engine version the file names installed"
+  },
+  {
+   "path": "docs/platform/evidence/site-engine-rc10/node24-parity.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 3369,
+    "sha256": "67e067203e65b21f544f0ef16890754248497ad1af5047b4d34b7d45d1f5e7a3"
+   },
+   "after": {
+    "bytes": 2148,
+    "sha256": "a2aab3ae8b0098828b5ae04ab3a7c689b4bcd22b12011be34e8f0a3538e1c005"
+   },
+   "removed": [
+    {
+     "path": ".nodes",
+     "count": 3,
+     "sha256": "3139f11a60d6b57adea9177c0eccd9bbafcdb4bbebb32aa05fd166bc27a7d793",
+     "bytes": 468
+    },
+    {
+     "path": ".polar",
+     "count": 6,
+     "sha256": "fe016057b5d34eb39e23b0dcc944d905df847005a8a6e45ac74a26c8d6166053",
+     "bytes": 1312
+    }
+   ],
+   "regenerate": "node scripts/platform-engine-report.mjs at commit 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83, with the engine version the file names installed"
+  },
+  {
+   "path": "docs/platform/evidence/site-engine-rc5/independent-node-polar-node22.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 3370,
+    "sha256": "f868f04c0449bb443587e7d4d21a4e5e2da8a4783593de8e0769e6c45dd1a731"
+   },
+   "after": {
+    "bytes": 2148,
+    "sha256": "6ec62e99adb078c6de380522c3764c3a1ab4095d84ba2b7b49c3543841a51d88"
+   },
+   "removed": [
+    {
+     "path": ".nodes",
+     "count": 3,
+     "sha256": "70f1409edb00fcf4c924619e002ec73ba8cc0f97bfa90b4be6329d983d953a11",
+     "bytes": 469
+    },
+    {
+     "path": ".polar",
+     "count": 6,
+     "sha256": "7c141ab7b7843a05fdb8ca6e76f25b3d42e5f2d82f1713d2fe9d8dfb48b0f79e",
+     "bytes": 1312
+    }
+   ],
+   "regenerate": "node scripts/platform-engine-report.mjs at commit 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83, with the engine version the file names installed"
+  },
+  {
+   "path": "docs/platform/evidence/site-engine-rc5/independent-node-polar-node24.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 3370,
+    "sha256": "fd4c4eaf1f7a465250e153e5be75bdae39dd7cf490534ba6fbc4a6cff9ad8728"
+   },
+   "after": {
+    "bytes": 2148,
+    "sha256": "5c003a3dc9e790ca70d092585d9316783a59118afaf59bbca223f2c02ec7637f"
+   },
+   "removed": [
+    {
+     "path": ".nodes",
+     "count": 3,
+     "sha256": "70f1409edb00fcf4c924619e002ec73ba8cc0f97bfa90b4be6329d983d953a11",
+     "bytes": 469
+    },
+    {
+     "path": ".polar",
+     "count": 6,
+     "sha256": "7c141ab7b7843a05fdb8ca6e76f25b3d42e5f2d82f1713d2fe9d8dfb48b0f79e",
+     "bytes": 1312
+    }
+   ],
+   "regenerate": "node scripts/platform-engine-report.mjs at commit 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83, with the engine version the file names installed"
+  },
+  {
+   "path": "docs/platform/evidence/site-engine-rc7/node22-parity.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 3372,
+    "sha256": "1d9b0e42725d676d0e76633ce77aa8f89890dcd3009632f7c1f48bb1e57fe7f6"
+   },
+   "after": {
+    "bytes": 2148,
+    "sha256": "2118ec89e00000dfd228096a2a897b800ac2654e1ac3ee0931d1818e18c4b4ae"
+   },
+   "removed": [
+    {
+     "path": ".nodes",
+     "count": 3,
+     "sha256": "70f1409edb00fcf4c924619e002ec73ba8cc0f97bfa90b4be6329d983d953a11",
+     "bytes": 469
+    },
+    {
+     "path": ".polar",
+     "count": 6,
+     "sha256": "66e5491e5c45b9cf089658daf90a61647941c634356a53aad2198765e08008e7",
+     "bytes": 1314
+    }
+   ],
+   "regenerate": "node scripts/platform-engine-report.mjs at commit 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83, with the engine version the file names installed"
+  },
+  {
+   "path": "docs/platform/evidence/site-engine-rc7/node24-parity.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 3372,
+    "sha256": "f92451a93b84d6fa09969cdc6fc83c3199f7a3c2d969f5f5a7ccfa4873a4c91c"
+   },
+   "after": {
+    "bytes": 2148,
+    "sha256": "7d2af37d5237cb7547db463027d5ad0747f3868975268bf6b8ff5f7987bcf75b"
+   },
+   "removed": [
+    {
+     "path": ".nodes",
+     "count": 3,
+     "sha256": "70f1409edb00fcf4c924619e002ec73ba8cc0f97bfa90b4be6329d983d953a11",
+     "bytes": 469
+    },
+    {
+     "path": ".polar",
+     "count": 6,
+     "sha256": "66e5491e5c45b9cf089658daf90a61647941c634356a53aad2198765e08008e7",
+     "bytes": 1314
+    }
+   ],
+   "regenerate": "node scripts/platform-engine-report.mjs at commit 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83, with the engine version the file names installed"
+  },
+  {
+   "path": "docs/platform/evidence/site-engine-rc8/node22-parity.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 3367,
+    "sha256": "d4539da1f0cc53d2d23f4c8061893a5b830836f78f26a5358c8966879971be25"
+   },
+   "after": {
+    "bytes": 2146,
+    "sha256": "fb99ec8bd7ab3373dc0a62c9ee12b119dbcba243f6a6a1ea736bd572fc889333"
+   },
+   "removed": [
+    {
+     "path": ".nodes",
+     "count": 3,
+     "sha256": "3139f11a60d6b57adea9177c0eccd9bbafcdb4bbebb32aa05fd166bc27a7d793",
+     "bytes": 468
+    },
+    {
+     "path": ".polar",
+     "count": 6,
+     "sha256": "fe016057b5d34eb39e23b0dcc944d905df847005a8a6e45ac74a26c8d6166053",
+     "bytes": 1312
+    }
+   ],
+   "regenerate": "node scripts/platform-engine-report.mjs at commit 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83, with the engine version the file names installed"
+  },
+  {
+   "path": "docs/platform/evidence/site-engine-rc8/node24-parity.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 3367,
+    "sha256": "0973012c74990ac68a775c07ec84b9f4cc86eff0d9a23d459d935721a8601694"
+   },
+   "after": {
+    "bytes": 2146,
+    "sha256": "adb4da600cfdcd466e278ec33423e1a19f0462f4b5f2d946ed974b3d23ca6ae9"
+   },
+   "removed": [
+    {
+     "path": ".nodes",
+     "count": 3,
+     "sha256": "3139f11a60d6b57adea9177c0eccd9bbafcdb4bbebb32aa05fd166bc27a7d793",
+     "bytes": 468
+    },
+    {
+     "path": ".polar",
+     "count": 6,
+     "sha256": "fe016057b5d34eb39e23b0dcc944d905df847005a8a6e45ac74a26c8d6166053",
+     "bytes": 1312
+    }
+   ],
+   "regenerate": "node scripts/platform-engine-report.mjs at commit 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83, with the engine version the file names installed"
+  },
+  {
+   "path": "docs/platform/evidence/site-engine-rc9/node22-parity.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 3367,
+    "sha256": "47e113eee164e6cb9eb193e58212bc9afd44fa47f8da4bc89826b2fd1b93b4eb"
+   },
+   "after": {
+    "bytes": 2146,
+    "sha256": "362e746cb8a480aa02ad5568cb9a371a81a0e34ae98d244afa3d65ef4e781e82"
+   },
+   "removed": [
+    {
+     "path": ".nodes",
+     "count": 3,
+     "sha256": "3139f11a60d6b57adea9177c0eccd9bbafcdb4bbebb32aa05fd166bc27a7d793",
+     "bytes": 468
+    },
+    {
+     "path": ".polar",
+     "count": 6,
+     "sha256": "fe016057b5d34eb39e23b0dcc944d905df847005a8a6e45ac74a26c8d6166053",
+     "bytes": 1312
+    }
+   ],
+   "regenerate": "node scripts/platform-engine-report.mjs at commit 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83, with the engine version the file names installed"
+  },
+  {
+   "path": "docs/platform/evidence/site-engine-rc9/node24-parity.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 3367,
+    "sha256": "261a5e63cab3bae656965d01d8dbe30b473f80e13bef2ebdc2deba1f167b4aa5"
+   },
+   "after": {
+    "bytes": 2146,
+    "sha256": "07d77682ce437f4227b7cae25484127d8dcf587e8956282fd9e5d6741d686d36"
+   },
+   "removed": [
+    {
+     "path": ".nodes",
+     "count": 3,
+     "sha256": "3139f11a60d6b57adea9177c0eccd9bbafcdb4bbebb32aa05fd166bc27a7d793",
+     "bytes": 468
+    },
+    {
+     "path": ".polar",
+     "count": 6,
+     "sha256": "fe016057b5d34eb39e23b0dcc944d905df847005a8a6e45ac74a26c8d6166053",
+     "bytes": 1312
+    }
+   ],
+   "regenerate": "node scripts/platform-engine-report.mjs at commit 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83, with the engine version the file names installed"
+  },
+  {
+   "path": "docs/platform/evidence/swiss-benchmark/report-holdout-core.json",
+   "serialiser": "py",
+   "before": {
+    "bytes": 16209,
+    "sha256": "277c69178ec45e5428f0ffb975464af76f3c06b36917e73d23a709c68fcd89cf"
+   },
+   "after": {
+    "bytes": 5320,
+    "sha256": "afcd2fe9efe2a57681a725ae2357bee8986b5de48018a59ce0b4bdea121806ed"
+   },
+   "removed": [
+    {
+     "path": ".rows",
+     "count": 60,
+     "sha256": "0bb9af6efebf9f25ea9ffda8c7ae5a5b8d27aa5bc1fc28b2cb6c1b3892417a5f",
+     "bytes": 9556
+    }
+   ],
+   "regenerate": "docs/platform/evidence/swiss-benchmark/tools: node dump-zodiacs.mjs > zodiacs.json; python3 dump_swiss.py zodiacs.json <ephe> > swiss.json; node compare.mjs zodiacs.json swiss.json (RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/swiss-benchmark/report-holdout-prototype.json",
+   "serialiser": "py",
+   "before": {
+    "bytes": 12565,
+    "sha256": "ad669d71b0611bb97bb82547ca5afc2a4e95e54b20c190ed074f39b355a94b0a"
+   },
+   "after": {
+    "bytes": 5613,
+    "sha256": "796282828b46628d3eb1757d3fd96121671cdd31738b5b49e3f0efc8d690fded"
+   },
+   "removed": [
+    {
+     "path": ".rows",
+     "count": 40,
+     "sha256": "51c8e2cf705c4fc79f2b2f2263e4efabe9d6e022f3a04b496c81c9d541ab81c8",
+     "bytes": 6339
+    }
+   ],
+   "regenerate": "docs/platform/evidence/swiss-benchmark/tools: node dump-zodiacs.mjs > zodiacs.json; python3 dump_swiss.py zodiacs.json <ephe> > swiss.json; node compare.mjs zodiacs.json swiss.json (RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/swiss-benchmark/report-measure-rc8.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 40687,
+    "sha256": "ad5f444dbe30e89dc0ed189781fbd0ebca5e7b371512cd51c5d9fff783436844"
+   },
+   "after": {
+    "bytes": 7255,
+    "sha256": "54857e4ddfff1a8b9e5be71d0e5b8ff4c46bde66bb16bd658451bfb1eb40e633"
+   },
+   "removed": [
+    {
+     "path": ".rows",
+     "count": 180,
+     "sha256": "595d2a63e15c24833c1f178e23f38f1573794751ae6c9058be7fbb5f1647654c",
+     "bytes": 29149
+    }
+   ],
+   "regenerate": "docs/platform/evidence/swiss-benchmark/tools: node dump-zodiacs.mjs > zodiacs.json; python3 dump_swiss.py zodiacs.json <ephe> > swiss.json; node compare.mjs zodiacs.json swiss.json (RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/swiss-benchmark/report-measure.json",
+   "serialiser": "py",
+   "before": {
+    "bytes": 40591,
+    "sha256": "3d041365ccea566609a6593ee4862ea517ddae450c7d1989c30018d783bec27e"
+   },
+   "after": {
+    "bytes": 5875,
+    "sha256": "a96e23b6867815153451ce9928b83bd9b0de3df243de0d62b0c217d107b3e506"
+   },
+   "removed": [
+    {
+     "path": ".rows",
+     "count": 180,
+     "sha256": "ecc428332255089fad05d51b82ddc7dbd8f0be9542f98f6be5d506f5168ab65b",
+     "bytes": 29065
+    }
+   ],
+   "regenerate": "docs/platform/evidence/swiss-benchmark/tools: node dump-zodiacs.mjs > zodiacs.json; python3 dump_swiss.py zodiacs.json <ephe> > swiss.json; node compare.mjs zodiacs.json swiss.json (RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/swiss-benchmark/report-prototype-matched.json",
+   "serialiser": "py",
+   "before": {
+    "bytes": 37090,
+    "sha256": "df995cd72927dfd2f2815b11558939709678fd087b2e24804cfe6f5ab4937b72"
+   },
+   "after": {
+    "bytes": 6394,
+    "sha256": "84a05bd88e9814b6b89b4105e74c2b72da75efef04ac432463c9d998676d895b"
+   },
+   "removed": [
+    {
+     "path": ".rows",
+     "count": 160,
+     "sha256": "87523a7685d858b36accdac443ed30221420ad28f60352177e499615e6243497",
+     "bytes": 25765
+    }
+   ],
+   "regenerate": "docs/platform/evidence/swiss-benchmark/tools: node dump-zodiacs.mjs > zodiacs.json; python3 dump_swiss.py zodiacs.json <ephe> > swiss.json; node compare.mjs zodiacs.json swiss.json (RESULTS.md)"
+  }
+ ]
+}
