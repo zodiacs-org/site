@@ -1,0 +1,49 @@
+name: Wrong chart
+description: A chart, position, house or date on zodiacs.org that looks wrong.
+title: "Wrong chart: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Issues here are public. A calculation receipt contains a birth date, time and place.
+        Please reproduce the problem with invented details if you can, and paste the receipt
+        for those. If it only happens with real details you would rather not publish, email
+        admin@zodiacs.org instead.
+  - type: input
+    id: page
+    attributes:
+      label: Page
+      description: The address of the page that shows the problem.
+      placeholder: https://zodiacs.org/birth-chart/
+    validations:
+      required: true
+  - type: textarea
+    id: wrong
+    attributes:
+      label: What looks wrong
+      description: The value the site shows, and where on the page.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected, and why
+      description: For example another program's value with its name, version and settings, an almanac, or a published source.
+    validations:
+      required: true
+  - type: textarea
+    id: record
+    attributes:
+      label: Calculation receipt
+      description: The file from "Download calculation receipt (.json)" under a birth chart's result, pasted here. It names the inputs, conventions and engine version that produced the chart.
+      render: json
+  - type: dropdown
+    id: details
+    attributes:
+      label: Birth details in this report
+      options:
+        - Invented details that show the problem
+        - Real details, which I am content to make public
+        - No birth details included
+    validations:
+      required: true

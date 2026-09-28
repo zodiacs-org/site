@@ -1,0 +1,16 @@
+Copyright (c) Zodiacs.org. All rights reserved.
+
+This repository is published so that its work can be read and checked. No
+licence is granted to copy, modify, distribute or use its contents, except
+where a file or directory states other terms.
+
+Parts with their own terms:
+
+- The chart engine, @zodiacs/engine, is MIT-licensed. Its source is at
+  https://github.com/zodiacs-org/engine, and the archive in vendor/ carries
+  its own licence files.
+- The shared sky data the site publishes under /api/v1/ is licensed under
+  CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/).
+- Place names and coordinates are from GeoNames (https://www.geonames.org/),
+  licensed under CC BY 4.0 and converted into the site's own format.
+- Third-party packages keep their own licences.

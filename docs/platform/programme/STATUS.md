@@ -1,12 +1,29 @@
 # Programme status
 
-Checkpoint 3: the conformance suite, 2026-09-28. The next session should start here.
+Checkpoint 4: the conformance results page is live, 2026-09-28. The next session should start here.
 
-**Overall delivery: 12%** — 21.5 of 182.45 weighted units accepted; blocked on owner or external action: 5% (9.5).
+**Overall delivery: 13%** — 23 of 182.45 weighted units accepted; blocked on owner or external action: 5% (10).
 
 The figure is computed by `node scripts/programme-ledger.mjs --summary` from [`acceptance-ledger.json`](acceptance-ledger.json). The method is in [README.md](README.md) and the unit list in [LEDGER.md](LEDGER.md).
 
-## What changed since checkpoint 2
+## What changed since checkpoint 3
+
+- `/developers/conformance/` is live. Production deployment `dpl_DToHaomhWAgA3cA4QGTN4aHBxycm` serves #596 (`2ca93d41`), so B1.c is accepted (1.5 units).
+- The site repository has its basics:
+  - a rewritten README;
+  - a LICENSE file stating that all rights are reserved;
+  - SECURITY.md, CONTRIBUTING.md, CODE_OF_CONDUCT.md and CITATION.cff;
+  - a "Wrong chart" issue form that asks for the calculation receipt.
+
+  This is G2's README and the site's part of P3.11. G2's description and topics wait for step 5 below, so its 0.5 units now count as blocked.
+- Independent reviews of the Hellenistic and Vedic branches found no errors in the computed techniques. Both branches need corrections before rc.15:
+  - Hellenistic: the source claims for two monthly conventions, and evidence that presented self-checks as agreement with the sources.
+  - Vedic: a hang when ΔT is pinned very large, wrong whole-sign cusps in `siderealChart`, and ayanamsa documentation that misstates the construction.
+  - Both: packaging, which moves to subpath exports.
+
+  The fixes are in progress.
+
+## What changed at checkpoint 3
 
 The conformance suite v0 is on `main` of `zodiacs-org/engine` (`8c4946b1`, PR #9), and its CI workflow is green there:
 
@@ -64,6 +81,7 @@ The owner, or Codex working on the owner's computer, can do these. Each says wha
      - topics: astrology, ephemeris, astronomy, natal-chart, house-systems, typescript, conformance-testing.
    - `zodiacs-org/site`:
      - description: "Source of zodiacs.org. All rights reserved."
+   - In both repositories, open Settings, then Code security, and turn on **Private vulnerability reporting**. SECURITY.md offers it beside email to admin@zodiacs.org.
 6. **Search and analytics baselines.**
    1. On GitHub, create the **private** repository `zodiacs-org/analytics-baselines`.
    2. Export these, and commit the files unchanged under `2026-09-28/`:
@@ -89,7 +107,7 @@ Later, once the site has rebuilt the MCP server on the published engine: the sam
 
 ## Identities verified at this checkpoint
 
-**Site.** `main` = `b972bc9d` (#595). Production serves it: `dpl_4GXuoGQdzFnVYqPkshLPvp5TWtQF`, READY.
+**Site.** `main` = `2ca93d41` (#596). Production serves it: `dpl_DToHaomhWAgA3cA4QGTN4aHBxycm`, READY.
 
 **Engine.** `main` = `8c4946b1` (PR #9, the conformance suite). CI and the Conformance workflow are green on it (runs 36439264630 and 36439264956). The package on `main` is still rc.12.
 
@@ -115,16 +133,18 @@ Later, once the site has rebuilt the MCP server on the published engine: the sam
   - the changelog's wording and the reference documentation's canonical address.
 
   It keeps rc.13's own fixes (F-01, F-02, F-06, F-07, F-13–F-16, and the engine part of F-21). It waits for an independent check before its PR.
-- **Site privacy fixes** (F-17, F-18, F-19, F-40, F-26, F-27).
+- **Site privacy fixes** (F-17, F-18, F-19, F-40, F-26, F-27): implemented in six commits, now under independent review.
 - **Engine time steps** (1.1, 1.12, 1.13), the leap-second table and the receipts' time basis, on their own branch.
 - **Engine features**, each on its own branch:
-  - Hellenistic timing: profections, firdaria, zodiacal releasing and solar arc.
-  - Vedic core: ayanamsas, nakshatras, vargas, KP and dashas. Four named ayanamsas miss their 0.01″ gate and are recorded as failures.
+  - Hellenistic timing: profections, firdaria, zodiacal releasing and solar arc. Reviewed; the corrections are being made.
+  - Vedic core: ayanamsas, nakshatras, vargas, KP and dashas. Four named ayanamsas miss their 0.01″ gate and are recorded as failures. Reviewed; the corrections are being made.
+  - The uniform calculation API with its coordinate frames (P3.2, P2.D).
+  - Birth-time window partitions (B2.a), checked against dense one-second sampling.
+- **The time atlas's first slice** (B3.a): the United States and France before 1920, every rule with a primary citation, under `atlas/` in the engine repository (CC BY 4.0).
 
 ## Next
 
-1. Verify `/developers/conformance/` in production, then record B1.c as accepted.
-2. Review, push and merge rc.14. Then:
+1. Review, push and merge rc.14. Then:
    - the npm first publish (step 1 above);
    - its adoption on the site: progressions through the package, keeping ChartLens's dynamic import;
    - the MCP server, rebuilt under a new version;
