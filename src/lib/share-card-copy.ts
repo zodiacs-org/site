@@ -33,6 +33,7 @@ export const SHARE_CARD_EN = {
   compatibilityBusy: 'Rendering compatibility card…',
   compatibilitySaved: 'Compatibility card saved.',
   compatibilityError: "Couldn't draw this card in your browser.",
+  compatibilityNoTimeNote: 'For a chart without a birth time, the image uses the sky at 12:00 UTC on that date and leaves out the Moon, so its contacts can differ from this page.',
 } as const;
 
 export const SHARE_CARD_COPY = {
@@ -70,6 +71,7 @@ export const SHARE_CARD_COPY = {
     compatibilityBusy: 'Creando tarjeta de compatibilidad…',
     compatibilitySaved: 'Tarjeta de compatibilidad guardada.',
     compatibilityError: 'No se pudo crear esta tarjeta en tu navegador.',
+    compatibilityNoTimeNote: 'Para una carta sin hora de nacimiento, la imagen usa el cielo de las 12:00 UTC de esa fecha y deja fuera la Luna, así que sus contactos pueden diferir de esta página.',
   },
   pt: {
     bigThreeTitle: 'Seu trio principal',
@@ -104,6 +106,7 @@ export const SHARE_CARD_COPY = {
     compatibilityBusy: 'Criando o cartão de compatibilidade…',
     compatibilitySaved: 'Cartão de compatibilidade salvo.',
     compatibilityError: 'Não foi possível criar este cartão no seu navegador.',
+    compatibilityNoTimeNote: 'Para um mapa sem hora de nascimento, a imagem usa o céu das 12:00 UTC dessa data e deixa de fora a Lua, então os contatos podem diferir desta página.',
   },
   fr: {
     bigThreeTitle: 'Tes trois piliers',
@@ -138,6 +141,7 @@ export const SHARE_CARD_COPY = {
     compatibilityBusy: 'Création de la carte de compatibilité…',
     compatibilitySaved: 'Carte de compatibilité enregistrée.',
     compatibilityError: 'Impossible de créer cette carte dans ton navigateur.',
+    compatibilityNoTimeNote: 'Pour un thème sans heure de naissance, l’image utilise le ciel de 12:00 UTC à cette date et laisse de côté la Lune : ses contacts peuvent donc différer de cette page.',
   },
   it: {
     bigThreeTitle: 'I tuoi tre pilastri',
@@ -172,6 +176,7 @@ export const SHARE_CARD_COPY = {
     compatibilityBusy: 'Creazione dell’immagine di compatibilità…',
     compatibilitySaved: 'Immagine di compatibilità salvata.',
     compatibilityError: 'Non è stato possibile creare questa immagine nel tuo browser.',
+    compatibilityNoTimeNote: 'Per un tema senza ora di nascita, l’immagine usa il cielo delle 12:00 UTC di quella data e lascia fuori la Luna, quindi i suoi contatti possono differire da questa pagina.',
   },
   ru: {
     bigThreeTitle: 'Ваша большая тройка',
@@ -206,6 +211,7 @@ export const SHARE_CARD_COPY = {
     compatibilityBusy: 'Рисуем карточку совместимости…',
     compatibilitySaved: 'Карточка совместимости сохранена.',
     compatibilityError: 'Не удалось нарисовать эту карточку в вашем браузере.',
+    compatibilityNoTimeNote: 'Для карты без времени рождения изображение использует небо на 12:00 UTC в эту дату и не показывает Луну, поэтому его аспекты могут отличаться от этой страницы.',
   },
 } as const satisfies Record<Locale, Record<keyof typeof SHARE_CARD_EN, string>>;
 

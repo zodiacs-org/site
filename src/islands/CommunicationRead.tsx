@@ -118,6 +118,7 @@ export default function CommunicationRead({ chart, locale = 'en', birthDate }: P
           <span class="orb" aria-hidden="true">{shareState === 'saved' ? '✓' : '↗'}</span>
         </button>
       </header>
+      {!chart.input.timeKnown && <p class="field__help" data-card-no-time>Without a birth time, the image uses the sky at 12:00 UTC on your birth date, so on a day a planet changes sign it can show a different sign from this page.</p>}
       <p class="calc__comm-intro">{COMMUNICATION_COPY.intro}</p>
 
       <div class="calc__comm-flow" aria-hidden="true">

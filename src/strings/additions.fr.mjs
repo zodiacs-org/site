@@ -299,6 +299,7 @@ export const FR_ADDITIONS = Object.freeze({
   'shareCard.compatibilityBusy': 'Création de la carte de compatibilité…',
   'shareCard.compatibilityCharge': 'Une alchimie qui demande de l’attention',
   'shareCard.compatibilityError': 'Impossible de créer cette carte dans ton navigateur.',
+  'shareCard.compatibilityNoTimeNote': 'Pour un thème sans heure de naissance, l’image utilise le ciel de 12:00 UTC à cette date et laisse de côté la Lune : ses contacts peuvent donc différer de cette page.',
   'shareCard.moonSettledNote': 'La Lune est restée dans ce signe toute la journée, partout.',
   'shareCard.compatibilityFlow': 'De la fluidité, avec une tension utile',
   'shareCard.compatibilitySaved': 'Carte de compatibilité enregistrée.',

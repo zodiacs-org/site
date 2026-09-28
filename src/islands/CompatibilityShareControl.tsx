@@ -57,6 +57,7 @@ export function CompatibilityShareControl({
   locale,
 }: CompatibilityShareControlProps) {
   const [card, setCard] = useState<CardState>('idle');
+  const noTime = [a, b].some((person) => person.untimedDate !== undefined || person.asc === null);
 
   async function share() {
     if (card === 'busy') return;
@@ -92,6 +93,7 @@ export function CompatibilityShareControl({
           : shareCardText(locale, 'compatibilityAction')}</span>
         <span class="orb">{card === 'saved' ? '✓' : '↗'}</span>
       </button>
+      {noTime && <p class="field__help" data-compatibility-no-time>{shareCardText(locale, 'compatibilityNoTimeNote')}</p>}
       {card === 'saved' && (
         <p class="sr-only" role="status">{shareCardText(locale, 'compatibilitySaved')}</p>
       )}
