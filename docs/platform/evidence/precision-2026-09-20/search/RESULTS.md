@@ -540,3 +540,20 @@ it.
 | `uranus-d.mjs` | task 6 and the new contract |
 | `run-all.sh` | regenerates everything in order |
 | `raw/*.json` | every figure above, with its denominator and the command that produced it |
+
+## Swiss output removed, 2026-09-28
+
+Under [DECISIONS-2026-09-28 §3](../../../programme/DECISIONS-2026-09-28.md)
+the fixture this analysis read, `src/lib/engine/fixtures/transit-window-independent.json`
+(SHA-256 `db4ddce1d2761ad0ada1ab7aaf456d74d2f79b6b6a3434b1b8f6b9895ad66c3a`),
+left the tree. So did Swiss's own figures for the D station in
+`raw/reproduction.json` and `verify/raw-original/reproduction.json`
+(`independentReproduction.swiss`: its instant, longitude and speed), and
+Swiss's longitude at the turning point in both `decomposition.json` files.
+The differences, margins and other figures this analysis cites stay, as the
+figures above do. To run `decompose.mjs`, `reproduce.mjs` or `uranus-d.mjs`
+again, restore the fixture from commit `2ca93d41` to the path they read and
+delete it afterwards; `scripts/swiss-output-guard.test.mjs` fails while it is
+there. `verify/swiss-station.py` and `lib/swiss-longitudes.py` regenerate the
+Swiss figures. The record of everything removed is
+[`../../../../engine-validation/SWISS-OUTPUT-REMOVAL.md`](../../../../engine-validation/SWISS-OUTPUT-REMOVAL.md).

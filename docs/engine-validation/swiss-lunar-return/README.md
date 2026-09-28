@@ -185,3 +185,28 @@ returned chart is exactly the chart computed at its own instant; the product's
 chart at the supplement's recorded clock meets every returned-chart gate; and
 the two instants differ by at most 15 seconds. A solver change beyond that
 still needs a new acquisition, with the original evidence retained.
+
+## Addition, 2026-09-28: the fixtures left the tree
+
+Under [DECISIONS-2026-09-28 §3](../../platform/programme/DECISIONS-2026-09-28.md)
+three files left the tree:
+
+| File | SHA-256 |
+| --- | --- |
+| `src/lib/engine/fixtures/swiss-lunar-returns.fixture.json` | `22e4a55652e12541d01cbd46c7efad018a06e60169fb399e2d02a6ab2ab6d5d5` |
+| `src/lib/engine/fixtures/swiss-lunar-returned-charts.fixture.json` | `daa41662758d7c1f4dfa234e2dfbd33a884d11b343d94af605b28a537c18b410` |
+| `src/lib/engine/fixtures/swiss-lunar-return-policy.json` | `16c807cfb7374c340200064ba6f4332b98923f77b05f6f24f62ea5541d5aa146` |
+
+The policy went too because its L-wrap birth instant was itself Swiss output.
+Commit `2ca93d41` still has all three. The two recipes above regenerate the
+fixtures from the retained package: write them outside the repository and
+compare them with `git show 2ca93d41:<path>` rather than with the paths the
+`cmp` lines name. `lunar-return.test.ts` reads
+`independent-lunar-returns.json` under `independent-lunar-return-policy.json`,
+which carries this policy's cases, interval, scan contract, gates and
+conditioning unchanged and takes the L-wrap birth from the NASA JPL Horizons
+Moon instead, 2000-01-12T18:48:22.487Z
+([`../independent-references/`](../independent-references/README.md)). The
+applicability amendment stays. The figures above are this pack's, measured
+against Swiss. The record of everything removed is
+[`../SWISS-OUTPUT-REMOVAL.md`](../SWISS-OUTPUT-REMOVAL.md).

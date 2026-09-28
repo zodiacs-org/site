@@ -146,3 +146,17 @@ that model in production. Delta-T past the observed record is an extrapolation
 of something unpredictable, and gate 4 of `swiss-benchmark/NEXT.md` still
 stands: choosing a Delta-T model is a separate decision from choosing an
 ephemeris.
+
+## Swiss output removed, 2026-09-28
+
+Under [DECISIONS-2026-09-28 §3](../../programme/DECISIONS-2026-09-28.md) the
+per-case Swiss values left the cells: `raw/cellA-core-own.json` and
+`raw/cellB-core-pinned.json` lost each case's Swiss ΔT
+(`deltaTReferenceSeconds`, and in cell B, which was pinned to it,
+`deltaTAppliedSeconds`), and `raw/cmp-*.json` and
+`raw/recovered-report-proto-engine-deltat.json` lost their per-row
+differences. The positions the engine computed and every statistic stay,
+and each file records the SHA-256 of what it lost under `swissOutputRemoved`.
+Commit `2ca93d41` still has the values, and `tools/dump-core-controlled.mjs`
+regenerates the cells. The record of everything removed is
+[`../../../engine-validation/SWISS-OUTPUT-REMOVAL.md`](../../../engine-validation/SWISS-OUTPUT-REMOVAL.md).

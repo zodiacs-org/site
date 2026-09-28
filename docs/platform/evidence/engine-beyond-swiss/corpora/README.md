@@ -38,3 +38,16 @@ SHA-256 of the audit's file. Counts measured against Swiss (for example "0 of
   `../../swiss-benchmark/multiyear-1800-2199.json` (statistics only), made by
   `multiyear-zodiacs.mjs` and `multiyear_swiss.py` in
   `../../swiss-benchmark/tools/`.
+
+## Swiss output removed, 2026-09-28
+
+Under [DECISIONS-2026-09-28 §3](../../../programme/DECISIONS-2026-09-28.md)
+two files here lost Swiss's values. `horizons-24/corpus-tt.json` lost Swiss's
+ΔT at each of its 24 instants; the TT instants stay, because Horizons was
+asked for the corpus at them, so their difference from the UT instants still
+gives that ΔT to the precision of a Julian date. `canon-events.json` lost
+Swiss's residual from the canon at each of the four events; the engine's and
+the alpha's stay. Commit `2ca93d41` still has the values, and each file
+records the SHA-256 of what it lost under `swissOutputRemoved`. The commands
+that regenerate them, and the record of everything removed, are in
+[`../../../../engine-validation/SWISS-OUTPUT-REMOVAL.md`](../../../../engine-validation/SWISS-OUTPUT-REMOVAL.md).

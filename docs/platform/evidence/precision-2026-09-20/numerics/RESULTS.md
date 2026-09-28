@@ -448,3 +448,26 @@ Satellite kernels for §4 (NAIF, public domain), downloaded to
 `/tmp/claude-0/satkernels/`: `jup348.bsp`, `sat480.bsp`, `nep097.bsp`,
 `plu060.bsp` from
 `https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/satellites/`.
+
+## Swiss output removed, 2026-09-28
+
+Under [DECISIONS-2026-09-28 §3](../../../programme/DECISIONS-2026-09-28.md)
+Swiss's raw output left this directory. Four files were removed:
+
+| File | SHA-256 |
+| --- | --- |
+| `raw/t1-swiss.json` | `31b0970247d489e0940ed391a8f83898ac2dc1df7c468467028bf391d31c938f` |
+| `verify/t1-swiss.json` | `31b0970247d489e0940ed391a8f83898ac2dc1df7c468467028bf391d31c938f` |
+| `verify/v1-swiss.json` | `aeee17ed869a2e1614d06dfd5781ebb4643e8a539f1597bd5d3e9049bc1ae81d` |
+| `verify/v4-dense-diff.json` | `3b3bf96567ea5a63370abaa8e6722c7c6809af141d9c8757a9f81abdab799890` |
+
+The per-row differences also left the sweep, hold-out and reproduction
+reports (`raw/sweep/`, `raw/repro-cellD-report.json`, `verify/p8-report.json`,
+`verify/repro-cellD-report.json`, `verify/holdout-*-report.json`), and Swiss's
+ΔT left the counterfactual cells. Their statistics stay, each file records
+the SHA-256 of what it lost under `swissOutputRemoved`, and the figures above
+are unchanged. Commit `2ca93d41` still has everything, and the recipes above
+regenerate it; point the ones that write `raw/t1-swiss.json` and
+`verify/v4-dense-diff.json` outside the repository. The record of everything
+removed is
+[`../../../../engine-validation/SWISS-OUTPUT-REMOVAL.md`](../../../../engine-validation/SWISS-OUTPUT-REMOVAL.md).

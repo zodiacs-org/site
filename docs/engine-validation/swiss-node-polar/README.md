@@ -110,3 +110,19 @@ script refuses to overwrite a prior raw result. Acquisition-time timestamps
 and scratch paths naturally differ in a new receipt. Compare scientific
 tuples, flags, conventions and pinned source hashes separately from receipt
 metadata, and retain both original and new raw evidence.
+
+## Addition, 2026-09-28: the fixture left the tree
+
+Under [DECISIONS-2026-09-28 §3](../../platform/programme/DECISIONS-2026-09-28.md)
+Swiss's raw output left the current tree, and with it
+`src/lib/engine/fixtures/swiss-node-polar.fixture.json`, SHA-256
+`022fbc030185b84aa0954411aab266577cd75f50a1947dc4717e92d8a9db9260`
+as in the table above. Commit `2ca93d41` still has it
+(`git show 2ca93d41:src/lib/engine/fixtures/swiss-node-polar.fixture.json`),
+and the recipe under Reproduction regenerates it in a scratch directory, which
+is where it should stay. The policy stays. `engine.test.ts` and
+`scripts/platform-engine-report.mjs` hold the same six cases to its unchanged
+gates against NASA JPL Horizons and ERFA
+([`../independent-references/`](../independent-references/README.md)). The
+maxima above are this pack's, measured against Swiss. The record of
+everything removed is [`../SWISS-OUTPUT-REMOVAL.md`](../SWISS-OUTPUT-REMOVAL.md).

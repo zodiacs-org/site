@@ -57,3 +57,23 @@ Finite modern fixtures and the bounded half-day slow-planet sampling grid do
 not certify arbitrary high-frequency trajectories or every supported epoch.
 Historical Wave 19 raw files and the later Wave 20 supplement remain separate
 unrecovered evidence limitations, as recorded in their original recovery notes.
+
+## Addition, 2026-09-28: the projection left the tree
+
+Under [DECISIONS-2026-09-28 §3](../../platform/programme/DECISIONS-2026-09-28.md)
+the A–I compact projection, `src/lib/engine/fixtures/transit-window-independent.json`,
+SHA-256 `db4ddce1d2761ad0ada1ab7aaf456d74d2f79b6b6a3434b1b8f6b9895ad66c3a`
+as in the table above, left the tree. Commit `2ca93d41` still has it.
+`project-fixtures.py` regenerates it and now requires `--output`, which should
+name a path outside the repository:
+`python3 docs/engine-validation/transit-windows/project-fixtures.py /path/to/extracted/archive --output /tmp/transit-window-independent.json`.
+The receipts' hashes, the v6 policy, its acquisition wrapper and the runtime
+manifest stay. `transit-window-independent.test.ts` reads
+`transit-window-horizons.json`: the same nine cases, 30 branches, budgets and
+crops, on the NASA JPL Horizons longitude
+([`../independent-references/`](../independent-references/README.md)). The
+original contract stays `failed-incomplete`, and the new reference reaches the
+same limit on its own: Uranus turns 0.0442° from the D target in the second
+period, inside the 0.05° budget, so that period keeps an uncertain exact
+topology. The record of everything removed is
+[`../SWISS-OUTPUT-REMOVAL.md`](../SWISS-OUTPUT-REMOVAL.md).

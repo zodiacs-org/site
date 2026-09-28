@@ -90,3 +90,8 @@ mattered myself rather than taking either side on trust.
   The brief's assumption that it would transfer does not hold.
 - Bulk raw outputs over 1 MiB are excluded by size with hashes and
   regeneration commands in [`EXCLUDED-RAW.md`](EXCLUDED-RAW.md).
+- Swiss's raw output left this directory on 2026-09-28, under
+  [DECISIONS-2026-09-28 §3](../../programme/DECISIONS-2026-09-28.md);
+  statistics and digests stay, and
+  [`SWISS-OUTPUT-REMOVAL.md`](../../../engine-validation/SWISS-OUTPUT-REMOVAL.md)
+  lists what went, with its SHA-256 and how to regenerate it.

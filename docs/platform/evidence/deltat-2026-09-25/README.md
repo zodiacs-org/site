@@ -461,3 +461,14 @@ the last observed IERS day; the events part is run and reported, not gated:
 for each drawn event, the regenerated catalog's instant minus rc.7's and,
 with `../events-vs-swiss-2026-09-23/tools/compare.py`, minus Swiss's, as
 statistics per event class.
+
+## Swiss output removed, 2026-09-28
+
+Under [DECISIONS-2026-09-28 §3](../../programme/DECISIONS-2026-09-28.md) `outputs/swiss-deltat.json` kept its statistics (the largest
+differences from the S15 reconstructions, 1800 to 1940, and from this model,
+1800 to 1961, with the latter's RMS) and lost Swiss's ΔT at 2026-09-22, 2050
+and 2100 and its differences from S15 at 1800, 1850, 1900 and the year 1000.
+The figures quoted above, such as Swiss's 93.18 s at 2100, are as the file
+had them. Commit `2ca93d41` still has it whole, the file records the SHA-256
+of what it lost under `swissOutputRemoved`, and `tools/moon/swiss_deltat.py`
+regenerates it. The record of everything removed is [`../../../engine-validation/SWISS-OUTPUT-REMOVAL.md`](../../../engine-validation/SWISS-OUTPUT-REMOVAL.md).

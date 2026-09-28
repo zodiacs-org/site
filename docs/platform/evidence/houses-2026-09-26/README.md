@@ -103,3 +103,14 @@ It needs:
 - Swiss's `sepl_18.se1` and `semo_18.se1` in `SWISS_EPHE`.
 
 It writes only `results/` and a scratch directory.
+
+## Swiss output removed, 2026-09-28
+
+Under [DECISIONS-2026-09-28 §3](../../programme/DECISIONS-2026-09-28.md) `results/sidereal.json` lost Swiss's sidereal time minus
+ERFA's at each of its fourteen dates. The engine's differences from ERFA
+stay, and so does Swiss's largest, 1.908″ at 2051, with its date
+(`swissMinusErfaStatistics`). The figures above are unchanged. Commit
+`2ca93d41` still has the values, the file records the SHA-256 of what it
+lost under `swissOutputRemoved`, and `tools/sidereal.mjs` with
+`tools/sidereal.py` regenerates them (`tools/run-all.sh`). The record of
+everything removed is [`../../../engine-validation/SWISS-OUTPUT-REMOVAL.md`](../../../engine-validation/SWISS-OUTPUT-REMOVAL.md).
