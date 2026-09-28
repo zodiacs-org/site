@@ -1,7 +1,7 @@
 {
   "version": 1,
   "brief": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md (version 2) with the version 1 rules it retains",
-  "asOf": "2026-09-28 (conformance suite v0 on engine main 8c4946b1; site main and production b972bc9d)",
+  "asOf": "2026-09-28 (site main and production 2ca93d41; engine main 8c4946b1)",
   "denominator": {
     "unit": "working days, from the brief's effort estimates (README.md)",
     "totalWeight": 182.45,
@@ -1566,7 +1566,7 @@
       "status": "partial",
       "release": "none",
       "evidence": [],
-      "notes": "engine has LICENSE; SECURITY, CONTRIBUTING, CODE_OF_CONDUCT, CITATION, AGENTS and issue templates missing in the engine; the site has no LICENSE"
+      "notes": "site: LICENSE (all rights reserved), SECURITY.md, CONTRIBUTING.md, CODE_OF_CONDUCT.md (Contributor Covenant 2.1), CITATION.cff, AGENTS.md and a wrong-chart issue form; engine: LICENSE only so far (SECURITY, CONTRIBUTING, CODE_OF_CONDUCT, CITATION, AGENTS and issue templates missing)"
     },
     {
       "id": "P4.1",
@@ -2007,10 +2007,16 @@
       "weight": 0.5,
       "gate": "accurate description, topics and README",
       "dependsOn": [],
-      "status": "not-started",
+      "status": "partial",
       "release": "none",
-      "evidence": [],
-      "notes": "decided 2026-09-28: all rights reserved for the site repository (docs/platform/programme/DECISIONS-2026-09-28.md §6)"
+      "evidence": [
+        "README.md rewritten: what the repository holds, how to build it, and all rights reserved (LICENSE)"
+      ],
+      "notes": "decided 2026-09-28: all rights reserved for the site repository (docs/platform/programme/DECISIONS-2026-09-28.md §6); the repository description and topics wait for the owner (STATUS.md, step 5)",
+      "blockedBy": {
+        "owner": true,
+        "action": "with the owner's GitHub login (the owner or Codex): set the site repository's description and topics, as STATUS.md step 5 lists"
+      }
     },
     {
       "id": "G3",
@@ -2104,13 +2110,13 @@
       "weight": 1.5,
       "gate": "CI job green; results page live",
       "dependsOn": [],
-      "status": "validated",
-      "release": "merged",
+      "status": "accepted",
+      "release": "deployed",
       "evidence": [
-        "Conformance workflow run 36439264956 on engine main, green; the harness self-test, validation, run and report checks run on every engine change",
-        "src/pages/developers/conformance/index.astro, from src/data/conformance/summary.json (sha256 0407deee…2ba0, copied unchanged from engine 8c4946b1)"
-      ],
-      "notes": "accepted once the production deployment serving /developers/conformance/ is verified"
+        "Conformance workflow run 36439264956 on engine main 8c4946b1, green; the harness self-test, validation, run and report checks run on every engine change",
+        "src/pages/developers/conformance/index.astro, from src/data/conformance/summary.json (sha256 0407deee…2ba0, copied unchanged from engine 8c4946b1); merged in #596 (2ca93d41)",
+        "production deployment dpl_DToHaomhWAgA3cA4QGTN4aHBxycm (commit 2ca93d41), READY and aliased to zodiacs.org; https://zodiacs.org/developers/conformance/ returned 200 with both runs on 2026-09-28, and the sitemap, llms.txt and the developer hub link to it"
+      ]
     },
     {
       "id": "B1.d",
