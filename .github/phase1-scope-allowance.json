@@ -1,7 +1,7 @@
 {
   "version": 1,
   "id": "privacy-audit-fixes-2026-09-28",
-  "baseCommit": "b972bc9db1cf372cea576e0d26e2f8ae14cdf346",
+  "baseCommit": "145d36e356d38496dac7053fee2cf325bac68784",
   "protectedPaths": [
     "src/pages/es/methodology/index.astro",
     "src/pages/es/privacy/index.astro",
@@ -12,5 +12,5 @@
     "src/pages/pt/methodology/index.astro",
     "src/pages/pt/privacy/index.astro"
   ],
-  "authorization": "The owner's handoff of 2026-09-28 directs fixing privacy findings and making privacy descriptions truthful; these are audit findings F-17, F-18, F-19 and F-40; only the listed sentences change. In each listed privacy page: the updated date, the summary's and the Guide section's sentences on what an attached chart gives away and when attaching is offered (F-19), the sentence on sign pictures (F-18), the shared-code sentences on the birthplace area by latitude and on charts without a birth time (F-17, F-40), and the hosting-log sentence on full request addresses (F-27, the one true sentence the audit asks for with F-20). In each listed methodology page: its dateModified, the Guide sentence (F-19) and the no-birth-time sentence (F-17). Every one of these sentences that the claims extractor selects is listed in docs/claims/ledger.json with its claim and evidence."
+  "authorization": "The owner's handoff of 2026-09-28 directs fixing privacy findings and making privacy descriptions truthful; these are audit findings F-17, F-18, F-19 and F-40, and the independent review of that work the same day; only the listed sentences change. In each listed privacy page: the updated date, the summary's and the Guide section's sentences on what an attached chart gives away and when attaching is offered (F-19), and the Guide sentence on a chart without a birth time, attached as the sky at 12:00 UTC on its date (review); the sentence on sign pictures (F-18); a new paragraph on what a chart image from the share options shows (review); the shared-code sentences on the birth date and time to the minute, on the birthplace area by latitude, on charts without a birth time, on what codes made by earlier versions carry and on replacing such a calendar address (F-17, F-40 and the review); and the hosting-log sentence on full request addresses (F-27, the one true sentence the audit asks for with F-20). In each listed methodology page: its dateModified, the Guide sentence (F-19) and the no-birth-time sentence (F-17). Every one of these sentences that the claims extractor selects is listed in docs/claims/ledger.json with its claim and evidence."
 }
