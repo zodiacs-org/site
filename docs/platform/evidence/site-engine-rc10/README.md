@@ -53,8 +53,13 @@ cached Python binding were hash-verified; only summary statistics and the
 receipt are committed.
 
 Site, MCP, build and browser results are recorded in `validation.json`.
-Public artifact and evidence URLs require a second commit that pins
-the actual remote carrier; an unpublished local SHA does not establish them.
+The recovered source and evidence are published in carrier commit
+[`9216262432b295230cf536d96c319a26e1fcf5ed`](https://github.com/zodiacs-org/site/commit/9216262432b295230cf536d96c319a26e1fcf5ed).
+Its complete tree, `a54ddfa6c71f06622517cdf8e4530099a0b8d11f`, matches the
+validated recovery checkpoint exactly. A separate metadata commit pins the
+engine evidence and MCP archive URLs to this actual remote carrier. The
+original validation results and timestamps are preserved. This publication
+does not record a production merge, deployment or npm release.
 
 ## Measurement limits
 

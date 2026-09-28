@@ -260,7 +260,10 @@
     "No production merge, deploy, npm release or model-spending approval is implied by these checks."
   ],
   "publication": {
-    "status": "pending-remote-carrier-pin",
-    "note": "The first remote carrier must be created before evidenceCommit and MCP artifactCommit are replaced with its actual immutable SHA. Local placeholder values are not public provenance."
+    "status": "remote-carrier-pinned",
+    "carrierCommit": "9216262432b295230cf536d96c319a26e1fcf5ed",
+    "carrierTree": "a54ddfa6c71f06622517cdf8e4530099a0b8d11f",
+    "branch": "codex/site-rc10-recovery-20260928",
+    "note": "The published carrier tree exactly matches the recovered and validated source tree. Engine evidenceCommit and MCP artifactCommit now point to this immutable remote commit. Prior test results and their timestamps are preserved; no merge, deployment or npm publication is recorded."
   }
 }
