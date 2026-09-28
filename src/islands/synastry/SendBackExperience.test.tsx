@@ -5,7 +5,8 @@ import type { PairSummary } from '../../lib/engine/synastry';
 import type { PositionsShareInput } from '../../lib/share-positions';
 import { computeBodies } from '../../lib/engine/full';
 import { decodeSynastryLink, encodeSynastryLink } from '../../lib/share-synastry';
-import { SendBackCard, sendBackToken } from './SendBackExperience';
+import { imagePositions } from '../../lib/share-card';
+import { SendBackCard, bigThreeCardSource, sendBackToken } from './SendBackExperience';
 
 const BODY_NAMES = [
   'Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter',
@@ -116,5 +117,18 @@ describe('the send-back link', () => {
     // The angles stay the chart's, to the whole degree.
     expect(decoded.sides[1].chart.angles).toEqual({ asc: 48.5, mc: 312.5 });
     expect(await sendBackToken(received, { ...own, utc: 'not a date' })).toBeNull();
+  });
+
+  it('draws B’s Big Three card from a side computed here at its whole minute, as its link does', async () => {
+    const utc = new Date('1870-06-15T19:45:31Z');
+    const side = {
+      ...person('Me', true),
+      positions: { ...positions(true), bodies: computeBodies(utc).map(({ body, lon }) => ({ body, lon })) },
+      utc,
+    };
+    expect((await imagePositions(bigThreeCardSource(side))).bodies).toEqual(computeBodies(new Date('1870-06-15T19:46:00Z')));
+    // A received side brings no instant and is drawn as it arrived.
+    const received = person('Them', true);
+    expect((await imagePositions(bigThreeCardSource(received))).bodies).toEqual(received.positions.bodies);
   });
 });

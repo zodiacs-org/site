@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'preact/hooks';
 import { NextActionCard } from '../../components/NextActionCard';
 import type { MinimalBody, PairSummary } from '../../lib/engine/synastry';
 import type { PositionsShareInput } from '../../lib/share-positions';
-import type { PreparedChartCard } from '../../lib/share-card';
+import type { BigThreeCardChart, PreparedChartCard } from '../../lib/share-card';
 import { shareCardText } from '../../lib/share-card-copy';
 import { encodeSynastryLink } from '../../lib/share-synastry';
 import { onWholeMinute } from '../../lib/share-positions-noon';
@@ -28,6 +28,14 @@ interface SendPerson {
    * (see sharedTimedInstant). Absent for positions that arrived in a link.
    */
   utc?: Date | string;
+}
+
+/**
+ * What B's Big Three card draws: a side computed here brings its instant, so
+ * the card takes its bodies at the whole minute, as its link does.
+ */
+export function bigThreeCardSource(person: SendPerson): BigThreeCardChart {
+  return { ...person.positions, utc: person.utc };
 }
 
 /** Whether a side's link positions differ from its own and must be computed first. */
@@ -159,7 +167,7 @@ export function SendBackCard({
     setBigThreeState('preparing');
     if (!b.positions.angles) return () => { active = false; };
     void import('../../lib/share-card').then(async (module) => {
-      const prepared = await module.prepareBigThreeCard(b.positions, 'en');
+      const prepared = await module.prepareBigThreeCard(bigThreeCardSource(b), 'en');
       if (!active) return;
       setBigThree({ module, prepared });
       setBigThreeState('ready');
@@ -167,7 +175,7 @@ export function SendBackCard({
       if (active) setBigThreeState('error');
     });
     return () => { active = false; };
-  }, [b.positions]);
+  }, [b.positions, b.utc]);
 
   async function copy() {
     if (!url) return;
