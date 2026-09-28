@@ -1,0 +1,2227 @@
+{
+  "schemaVersion": 1,
+  "what": "Independent transit-window references for the nine A-I cases: 3-degree orb components, threshold and exact bands, closest approaches, crops and D's unresolved exact topology.",
+  "arbiters": {
+    "positions": "NASA JPL Horizons API 1.2, DE441: observer-centred apparent ecliptic longitude of date (QUANTITIES 31, CENTER 500@399, airless, TIME_TYPE TT); Mars to Pluto as system barycentres (NAIF 4-9).",
+    "trueNode": "Ascending node of the Moon's osculating orbit from Horizons DE441 geometric geocentric state vectors (VECTORS, ICRF): h = r x v, rotated with ERFA pnm06a and the true obliquity into the true ecliptic and equinox of date; speed by central difference over +-0.001 day.",
+    "angles": "ERFA 2.0.1 (pyerfa 2.0.1.5): GAST = gst06a with UT1 taken as the instant, as the engine does; true obliquity = obl06 + Delta-epsilon of nut06a; ASC, MC and Placidus by the conformance suite's L2 construction (zodiacs-org/engine 8c4946b1, CC0); whole-sign cusps from the ASC where |latitude| >= 90 deg - true obliquity.",
+    "events": "Roots of the Horizons longitude interpolated from a uniform TT table (nine-point Lagrange), refined to 1e-9 day; each band is the connected set on the root's monotonic branch where the longitude is within the predeclared budget of its level, with 1 s of padding each side."
+  },
+  "clock": "Each instant is evaluated at the engine's own TT for it: UT is the instant, TT = UT + Delta T of model zodiacs-deltat/1 (table 6371988c510a1c6c), as astronomy-engine's MakeTime reads it with the engine's clock installed (tools/engine-clock.ts). A comparison therefore measures positions and angles, not Delta T; the clock is checked against the IERS in docs/platform/evidence/deltat-2026-09-25/.",
+  "engineClock": {
+    "engineVersion": "0.1.1-rc.10",
+    "deltaTModel": "zodiacs-deltat/1",
+    "deltaTTable": "2026-09-24",
+    "deltaTTableDigest": "6371988c510a1c6c"
+  },
+  "generator": {
+    "command": "python3 docs/engine-validation/independent-references/tools/build.py",
+    "sources": {
+      "docs/engine-validation/independent-references/cases.json": "eecfa25c5408b4c11baf5f2f73df93ba333850f7ba00c3ae0a1f0cab8d60520e",
+      "docs/engine-validation/independent-references/tools/build.py": "33ac83f46f24cf889ec570cbad1e37c7e9d61057111daf99478c157db4506184",
+      "docs/engine-validation/independent-references/tools/engine-clock.ts": "aa7f7724082b3798eb4728fa60b1e630612773e732bb236b97bc98348ce9d1a7",
+      "docs/engine-validation/independent-references/tools/geometry.py": "c7ec362ff44a7ffa7d88229695f6b9d9b5af74b8289b268888ed5b5342f7147c",
+      "docs/engine-validation/independent-references/tools/horizons.py": "344a4e4bce3bd6efb0d7db147e554af172a4fd59205fb290a6db209aed9c50d8",
+      "docs/engine-validation/independent-references/tools/series.py": "dfc0d9e14b417e534ca327ef92402fc0b0b4c42418154e9ee02be14682d35490"
+    },
+    "pyerfa": "2.0.1.5",
+    "erfa": "2.0.1"
+  },
+  "horizonsManifest": {
+    "path": "docs/engine-validation/independent-references/horizons/MANIFEST.json",
+    "sha256": "b4088ed1a8d7dbaab5f2fd2e2262cc9f99ff85cfcb75931bd715021e39bb4355"
+  },
+  "noSwiss": "No Swiss Ephemeris code or output is read or reproduced here.",
+  "conditioningNotes": {},
+  "coherentNatalInput": {
+    "birthUTC": "1990-02-01T12:00:00Z",
+    "latitudeDegrees": 19.4326,
+    "longitudeDegreesEastPositive": -99.1332,
+    "houseSystem": "placidus"
+  },
+  "cases": [
+    {
+      "id": "A-Jupiter2020",
+      "movingBody": "Jupiter",
+      "natalPoint": "Jupiter",
+      "targetLongitudeDegrees": 276.6703386,
+      "targetKind": "literal",
+      "angularBudgetDegrees": 0.05,
+      "natalComponentBudgetDegrees": null,
+      "input": {
+        "clock": "UTC"
+      },
+      "fromUtc": "2019-01-01T00:00:00.000Z",
+      "toUtc": "2020-12-31T00:00:00.000Z",
+      "anchorUtc": "2020-01-01T00:00:00.000Z",
+      "geometries": [
+        {
+          "sourceId": "A-Jupiter2020:conjunction:0",
+          "aspect": "conjunction",
+          "offset": 0,
+          "components": [
+            {
+              "startUtc": "2019-12-18T23:17:40.949Z",
+              "endUtc": "2020-01-14T01:58:12.536Z",
+              "startClipped": false,
+              "endClipped": false,
+              "entryBandMs": [
+                1576692219197,
+                1576729898421
+              ],
+              "exitBandMs": [
+                1578948113059,
+                1578986078668
+              ],
+              "exactBandsMs": [
+                [
+                  1577818052436,
+                  1577855549017
+                ]
+              ],
+              "localMinima": [],
+              "globalMinimumKind": "exact",
+              "globalMinimum": null,
+              "exactTopology": "resolved"
+            }
+          ]
+        }
+      ],
+      "crops": [
+        {
+          "label": "first-half",
+          "geometryId": "A-Jupiter2020:conjunction:0",
+          "fromUtc": "2019-01-01T00:00:00.000Z",
+          "toUtc": "2020-01-01T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 24.901031908187406,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 1.2214809430588502e-07,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": true
+            }
+          ],
+          "portions": [
+            {
+              "startClipped": false,
+              "endClipped": true,
+              "sourceExactCount": 1
+            }
+          ]
+        },
+        {
+          "label": "second-half",
+          "geometryId": "A-Jupiter2020:conjunction:0",
+          "fromUtc": "2020-01-01T00:00:00.000Z",
+          "toUtc": "2020-12-31T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 1.2214809430588502e-07,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": true
+            },
+            {
+              "orbDegrees": 25.884774503397693,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": [
+            {
+              "startClipped": true,
+              "endClipped": false,
+              "sourceExactCount": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "B-Saturn1990",
+      "movingBody": "Saturn",
+      "natalPoint": "Saturn",
+      "targetLongitudeDegrees": 289.2786878,
+      "targetKind": "natal-saturn",
+      "angularBudgetDegrees": 0.1,
+      "natalComponentBudgetDegrees": 0.05,
+      "input": {
+        "clock": "nominal UT1",
+        "birthProductNumericTransport": "1990-02-01T12:00:00.000Z"
+      },
+      "fromUtc": "2018-07-01T00:00:00.000Z",
+      "toUtc": "2020-06-30T00:00:00.000Z",
+      "anchorUtc": "2019-07-01T00:00:00.000Z",
+      "geometries": [
+        {
+          "sourceId": "B-Saturn1990:conjunction:0",
+          "aspect": "conjunction",
+          "offset": 0,
+          "components": [
+            {
+              "startUtc": "2019-02-13T11:59:27.403Z",
+              "endUtc": "2019-07-22T14:35:42.323Z",
+              "startClipped": false,
+              "endClipped": false,
+              "entryBandMs": [
+                1549974086034,
+                1550144910053
+              ],
+              "exitBandMs": [
+                1563684462466,
+                1563928951702
+              ],
+              "exactBandsMs": [
+                [
+                  1553044636837,
+                  1553327129408
+                ],
+                [
+                  1559923617047,
+                  1560225047743
+                ]
+              ],
+              "localMinima": [],
+              "globalMinimumKind": "exact",
+              "globalMinimum": null,
+              "exactTopology": "resolved"
+            },
+            {
+              "startUtc": "2019-11-12T08:10:53.545Z",
+              "endUtc": "2020-01-08T12:11:54.116Z",
+              "startClipped": false,
+              "endClipped": false,
+              "entryBandMs": [
+                1573439276931,
+                1573651375932
+              ],
+              "exitBandMs": [
+                1578412433546,
+                1578558533323
+              ],
+              "exactBandsMs": [
+                [
+                  1576147266707,
+                  1576305774239
+                ]
+              ],
+              "localMinima": [],
+              "globalMinimumKind": "exact",
+              "globalMinimum": null,
+              "exactTopology": "resolved"
+            }
+          ]
+        }
+      ],
+      "crops": [
+        {
+          "label": "first-half",
+          "geometryId": "B-Saturn1990:conjunction:0",
+          "fromUtc": "2018-07-01T00:00:00.000Z",
+          "toUtc": "2019-07-01T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 13.676431261732432,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 1.4243455608678914,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": [
+            {
+              "startClipped": false,
+              "endClipped": true,
+              "sourceExactCount": 2
+            }
+          ]
+        },
+        {
+          "label": "second-half",
+          "geometryId": "B-Saturn1990:conjunction:0",
+          "fromUtc": "2019-07-01T00:00:00.000Z",
+          "toUtc": "2020-06-30T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 1.4243455608678914,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 10.85341482857416,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": [
+            {
+              "startClipped": true,
+              "endClipped": false,
+              "sourceExactCount": 0
+            },
+            {
+              "startClipped": false,
+              "endClipped": false,
+              "sourceExactCount": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C-SaturnNearApproach2026",
+      "movingBody": "Saturn",
+      "natalPoint": "Saturn",
+      "targetLongitudeDegrees": 16.249945001500002,
+      "targetKind": "station-offset",
+      "angularBudgetDegrees": 0.05,
+      "natalComponentBudgetDegrees": null,
+      "input": {
+        "clock": "UTC, with no leap second after 2016"
+      },
+      "fromUtc": "2025-07-01T00:00:00.000Z",
+      "toUtc": "2027-07-01T00:00:00.000Z",
+      "anchorUtc": "2026-07-01T00:00:00.000Z",
+      "geometries": [
+        {
+          "sourceId": "C-SaturnNearApproach2026:conjunction:0",
+          "aspect": "conjunction",
+          "offset": 0,
+          "components": [
+            {
+              "startUtc": "2026-06-14T04:04:31.306Z",
+              "endUtc": "2026-09-08T03:03:42.934Z",
+              "startClipped": false,
+              "endClipped": false,
+              "entryBandMs": [
+                1781346644596,
+                1781474037385
+              ],
+              "exitBandMs": [
+                1788769109364,
+                1788903279742
+              ],
+              "exactBandsMs": [],
+              "localMinima": [
+                {
+                  "orbDegrees": 1.500000000024,
+                  "timeEnvelopeMs": [
+                    1784158437595,
+                    1786031957542
+                  ],
+                  "sourceBestUtc": "2026-07-26T19:56:17.527Z"
+                }
+              ],
+              "globalMinimumKind": "isolated-source-minimum",
+              "globalMinimum": {
+                "orbDegrees": 1.500000000024,
+                "timeEnvelopeMs": [
+                  1784158437595,
+                  1786031957542
+                ],
+                "sourceBestUtc": "2026-07-26T19:56:17.527Z"
+              },
+              "exactTopology": "resolved"
+            },
+            {
+              "startUtc": "2027-03-02T13:03:57.983Z",
+              "endUtc": "2027-04-20T07:20:00.103Z",
+              "startClipped": false,
+              "endClipped": false,
+              "entryBandMs": [
+                1803954643341,
+                1804030530946
+              ],
+              "exitBandMs": [
+                1808170979204,
+                1808240244799
+              ],
+              "exactBandsMs": [
+                [
+                  1806110384169,
+                  1806179494813
+                ]
+              ],
+              "localMinima": [],
+              "globalMinimumKind": "exact",
+              "globalMinimum": null,
+              "exactTopology": "resolved"
+            }
+          ]
+        }
+      ],
+      "crops": [
+        {
+          "label": "first-half",
+          "geometryId": "C-SaturnNearApproach2026:conjunction:0",
+          "fromUtc": "2025-07-01T00:00:00.000Z",
+          "toUtc": "2026-07-01T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 14.439803317924202,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 2.0632119860150624,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": [
+            {
+              "startClipped": false,
+              "endClipped": true,
+              "sourceExactCount": 0
+            }
+          ]
+        },
+        {
+          "label": "second-half",
+          "geometryId": "C-SaturnNearApproach2026:conjunction:0",
+          "fromUtc": "2026-07-01T00:00:00.000Z",
+          "toUtc": "2027-07-01T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 2.0632119860150624,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 10.301696363302653,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": [
+            {
+              "startClipped": true,
+              "endClipped": false,
+              "sourceExactCount": 0
+            },
+            {
+              "startClipped": false,
+              "endClipped": false,
+              "sourceExactCount": 1
+            }
+          ]
+        },
+        {
+          "label": "station-plus-minus-one-day",
+          "geometryId": "C-SaturnNearApproach2026:conjunction:0",
+          "fromUtc": "2026-07-25T19:56:17.527Z",
+          "toUtc": "2026-07-27T19:56:17.527Z",
+          "boundaries": [
+            {
+              "orbDegrees": 1.5008519514225327,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 1.5008531224400485,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": [
+            {
+              "startClipped": true,
+              "endClipped": true,
+              "sourceExactCount": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "D-Uranus2020",
+      "movingBody": "Uranus",
+      "natalPoint": "Uranus",
+      "targetLongitudeDegrees": 32.6940395,
+      "targetKind": "literal",
+      "angularBudgetDegrees": 0.05,
+      "natalComponentBudgetDegrees": null,
+      "input": {
+        "clock": "UTC"
+      },
+      "fromUtc": "2019-01-01T00:00:00.000Z",
+      "toUtc": "2020-12-31T00:00:00.000Z",
+      "anchorUtc": "2020-01-01T00:00:00.000Z",
+      "geometries": [
+        {
+          "sourceId": "D-Uranus2020:conjunction:0",
+          "aspect": "conjunction",
+          "offset": 0,
+          "components": [
+            {
+              "startUtc": "2019-02-27T03:30:42.077Z",
+              "endUtc": "2019-06-24T20:44:55.154Z",
+              "startClipped": false,
+              "endClipped": false,
+              "entryBandMs": [
+                1551130114844,
+                1551344338180
+              ],
+              "exitBandMs": [
+                1561292306264,
+                1561528655214
+              ],
+              "exactBandsMs": [
+                [
+                  1556149064770,
+                  1556299513415
+                ]
+              ],
+              "localMinima": [],
+              "globalMinimumKind": "exact",
+              "globalMinimum": null,
+              "exactTopology": "resolved"
+            },
+            {
+              "startUtc": "2019-09-30T09:06:21.996Z",
+              "endUtc": "2020-04-10T15:17:21.363Z",
+              "startClipped": false,
+              "endClipped": false,
+              "entryBandMs": [
+                1569707670138,
+                1569958718935
+              ],
+              "exitBandMs": [
+                1586454729531,
+                1586608710478
+              ],
+              "exactBandsMs": [],
+              "exactTopology": "uncertain",
+              "globalMinimumKind": "unresolved-cross-model-count",
+              "globalMinimum": null,
+              "localMinima": [],
+              "turningPointMarginDegrees": 0.0442015,
+              "possibleExactRegionMs": [
+                1577432517308,
+                1579979994639
+              ],
+              "possibleMinimumRegionMs": [
+                1577125512310,
+                1580282256736
+              ],
+              "sourceExactCount": 2
+            }
+          ]
+        }
+      ],
+      "crops": [
+        {
+          "label": "first-half",
+          "geometryId": "D-Uranus2020:conjunction:0",
+          "fromUtc": "2019-01-01T00:00:00.000Z",
+          "toUtc": "2020-01-01T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 4.079084652660981,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 6.396758180926554e-07,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": true
+            }
+          ],
+          "portions": [
+            {
+              "startClipped": false,
+              "endClipped": false,
+              "sourceExactCount": 1
+            },
+            {
+              "startClipped": false,
+              "endClipped": true,
+              "sourceExactCount": 1
+            }
+          ]
+        },
+        {
+          "label": "second-half",
+          "geometryId": "D-Uranus2020:conjunction:0",
+          "fromUtc": "2020-01-01T00:00:00.000Z",
+          "toUtc": "2020-12-31T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 6.396758180926554e-07,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": true
+            },
+            {
+              "orbDegrees": 4.117104027012488,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": [
+            {
+              "startClipped": true,
+              "endClipped": false,
+              "sourceExactCount": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E-Neptune2020",
+      "movingBody": "Neptune",
+      "natalPoint": "Neptune",
+      "targetLongitudeDegrees": 346.2645218,
+      "targetKind": "literal",
+      "angularBudgetDegrees": 0.05,
+      "natalComponentBudgetDegrees": null,
+      "input": {
+        "clock": "UTC"
+      },
+      "fromUtc": "2019-01-01T00:00:00.000Z",
+      "toUtc": "2020-12-31T00:00:00.000Z",
+      "anchorUtc": "2020-01-01T00:00:00.000Z",
+      "geometries": [
+        {
+          "sourceId": "E-Neptune2020:conjunction:0",
+          "aspect": "conjunction",
+          "offset": 0,
+          "components": [
+            {
+              "startUtc": "2019-01-01T00:00:00.000Z",
+              "endUtc": "2020-03-31T21:00:02.930Z",
+              "startClipped": true,
+              "endClipped": false,
+              "entryBandMs": null,
+              "exitBandMs": [
+                1585567924705,
+                1585809800113
+              ],
+              "exactBandsMs": [
+                [
+                  1552040382351,
+                  1552268032355
+                ],
+                [
+                  1571576222954,
+                  1572052124905
+                ],
+                [
+                  1577604233868,
+                  1578054026353
+                ]
+              ],
+              "localMinima": [],
+              "globalMinimumKind": "exact",
+              "globalMinimum": null,
+              "exactTopology": "resolved"
+            },
+            {
+              "startUtc": "2020-09-22T03:03:29.662Z",
+              "endUtc": "2020-12-31T00:00:00.000Z",
+              "startClipped": false,
+              "endClipped": true,
+              "entryBandMs": [
+                1600584489916,
+                1600904493974
+              ],
+              "exitBandMs": null,
+              "exactBandsMs": [],
+              "localMinima": [
+                {
+                  "orbDegrees": 1.898090099295,
+                  "timeEnvelopeMs": [
+                    1604982103657,
+                    1608218120626
+                  ],
+                  "sourceBestUtc": "2020-11-29T00:36:10.125Z"
+                }
+              ],
+              "globalMinimumKind": "isolated-source-minimum",
+              "globalMinimum": {
+                "orbDegrees": 1.898090099295,
+                "timeEnvelopeMs": [
+                  1604982103657,
+                  1608218120626
+                ],
+                "sourceBestUtc": "2020-11-29T00:36:10.125Z"
+              },
+              "exactTopology": "resolved"
+            }
+          ]
+        }
+      ],
+      "crops": [
+        {
+          "label": "first-half",
+          "geometryId": "E-Neptune2020:conjunction:0",
+          "fromUtc": "2019-01-01T00:00:00.000Z",
+          "toUtc": "2020-01-01T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 2.1837165995613077,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 3.3496417017886415e-07,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": true
+            }
+          ],
+          "portions": [
+            {
+              "startClipped": true,
+              "endClipped": true,
+              "sourceExactCount": 2
+            }
+          ]
+        },
+        {
+          "label": "second-half",
+          "geometryId": "E-Neptune2020:conjunction:0",
+          "fromUtc": "2020-01-01T00:00:00.000Z",
+          "toUtc": "2020-12-31T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 3.3496417017886415e-07,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": true
+            },
+            {
+              "orbDegrees": 2.1906818361912883,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": [
+            {
+              "startClipped": true,
+              "endClipped": false,
+              "sourceExactCount": 1
+            },
+            {
+              "startClipped": false,
+              "endClipped": true,
+              "sourceExactCount": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "F-Pluto2020",
+      "movingBody": "Pluto",
+      "natalPoint": "Pluto",
+      "targetLongitudeDegrees": 292.3855818,
+      "targetKind": "literal",
+      "angularBudgetDegrees": 0.05,
+      "natalComponentBudgetDegrees": null,
+      "input": {
+        "clock": "UTC"
+      },
+      "fromUtc": "2019-01-01T00:00:00.000Z",
+      "toUtc": "2020-12-31T00:00:00.000Z",
+      "anchorUtc": "2020-01-01T00:00:00.000Z",
+      "geometries": [
+        {
+          "sourceId": "F-Pluto2020:conjunction:0",
+          "aspect": "conjunction",
+          "offset": 0,
+          "components": [
+            {
+              "startUtc": "2019-01-01T00:00:00.000Z",
+              "endUtc": "2020-12-31T00:00:00.000Z",
+              "startClipped": true,
+              "endClipped": true,
+              "entryBandMs": null,
+              "exitBandMs": null,
+              "exactBandsMs": [
+                [
+                  1551048970490,
+                  1551387330136
+                ],
+                [
+                  1561121434879,
+                  1561507476817
+                ],
+                [
+                  1577705248703,
+                  1577967682790
+                ]
+              ],
+              "localMinima": [
+                {
+                  "orbDegrees": 0.100990454254,
+                  "timeEnvelopeMs": [
+                    1600047767964,
+                    1603554111673
+                  ],
+                  "sourceBestUtc": "2020-10-04T13:32:07.305Z"
+                }
+              ],
+              "globalMinimumKind": "exact",
+              "globalMinimum": null,
+              "exactTopology": "resolved"
+            }
+          ]
+        }
+      ],
+      "crops": [
+        {
+          "label": "first-half",
+          "geometryId": "F-Pluto2020:conjunction:0",
+          "fromUtc": "2019-01-01T00:00:00.000Z",
+          "toUtc": "2020-01-01T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 1.7923355697512307,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 2.0179319562885212e-05,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": true
+            }
+          ],
+          "portions": [
+            {
+              "startClipped": true,
+              "endClipped": true,
+              "sourceExactCount": 3
+            }
+          ]
+        },
+        {
+          "label": "second-half",
+          "geometryId": "F-Pluto2020:conjunction:0",
+          "fromUtc": "2020-01-01T00:00:00.000Z",
+          "toUtc": "2020-12-31T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 2.0179319562885212e-05,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": true
+            },
+            {
+              "orbDegrees": 1.7699349630215693,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": [
+            {
+              "startClipped": true,
+              "endClipped": true,
+              "sourceExactCount": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "G-Solar1990Moon",
+      "movingBody": "Jupiter",
+      "natalPoint": "Moon",
+      "targetLongitudeDegrees": 25.5935981,
+      "targetKind": "coherent-natal",
+      "angularBudgetDegrees": 0.2,
+      "natalComponentBudgetDegrees": 0.15,
+      "input": {
+        "clock": "UTC"
+      },
+      "fromUtc": "2019-01-01T00:00:00.000Z",
+      "toUtc": "2020-12-31T00:00:00.000Z",
+      "anchorUtc": "2020-01-01T00:00:00.000Z",
+      "geometries": [
+        {
+          "sourceId": "G-Solar1990Moon:conjunction:0",
+          "aspect": "conjunction",
+          "offset": 0,
+          "components": []
+        },
+        {
+          "sourceId": "G-Solar1990Moon:sextile:60",
+          "aspect": "sextile",
+          "offset": 60,
+          "components": []
+        },
+        {
+          "sourceId": "G-Solar1990Moon:sextile:300",
+          "aspect": "sextile",
+          "offset": 300,
+          "components": []
+        },
+        {
+          "sourceId": "G-Solar1990Moon:square:90",
+          "aspect": "square",
+          "offset": 90,
+          "components": []
+        },
+        {
+          "sourceId": "G-Solar1990Moon:square:270",
+          "aspect": "square",
+          "offset": 270,
+          "components": [
+            {
+              "startUtc": "2020-03-19T00:24:52.714Z",
+              "endUtc": "2020-07-12T08:24:55.016Z",
+              "startClipped": false,
+              "endClipped": false,
+              "entryBandMs": [
+                1584465313774,
+                1584691625240
+              ],
+              "exitBandMs": [
+                1594407810149,
+                1594676418609
+              ],
+              "exactBandsMs": [
+                [
+                  1586457355894,
+                  1586812549156
+                ],
+                [
+                  1592126984836,
+                  1592491289842
+                ]
+              ],
+              "localMinima": [],
+              "globalMinimumKind": "exact",
+              "globalMinimum": null,
+              "exactTopology": "resolved"
+            },
+            {
+              "startUtc": "2020-11-11T06:00:15.959Z",
+              "endUtc": "2020-12-13T00:02:53.308Z",
+              "startClipped": false,
+              "endClipped": false,
+              "entryBandMs": [
+                1604966935356,
+                1605180273312
+              ],
+              "exitBandMs": [
+                1607735796267,
+                1607899325359
+              ],
+              "exactBandsMs": [
+                [
+                  1606443596188,
+                  1606623949066
+                ]
+              ],
+              "localMinima": [],
+              "globalMinimumKind": "exact",
+              "globalMinimum": null,
+              "exactTopology": "resolved"
+            }
+          ]
+        },
+        {
+          "sourceId": "G-Solar1990Moon:trine:120",
+          "aspect": "trine",
+          "offset": 120,
+          "components": []
+        },
+        {
+          "sourceId": "G-Solar1990Moon:trine:240",
+          "aspect": "trine",
+          "offset": 240,
+          "components": [
+            {
+              "startUtc": "2019-03-07T15:50:28.256Z",
+              "endUtc": "2019-05-15T00:33:58.544Z",
+              "startClipped": false,
+              "endClipped": false,
+              "entryBandMs": [
+                1551805048725,
+                1552151675797
+              ],
+              "exitBandMs": [
+                1557697704503,
+                1558055037337
+              ],
+              "exactBandsMs": [],
+              "localMinima": [
+                {
+                  "orbDegrees": 1.243389473944,
+                  "timeEnvelopeMs": [
+                    1553531483885,
+                    1556304143807
+                  ],
+                  "sourceBestUtc": "2019-04-10T17:00:46.724Z"
+                }
+              ],
+              "globalMinimumKind": "isolated-source-minimum",
+              "globalMinimum": {
+                "orbDegrees": 1.243389473944,
+                "timeEnvelopeMs": [
+                  1553531483885,
+                  1556304143807
+                ],
+                "sourceBestUtc": "2019-04-10T17:00:46.724Z"
+              },
+              "exactTopology": "resolved"
+            },
+            {
+              "startUtc": "2019-10-27T23:41:26.467Z",
+              "endUtc": "2019-11-26T09:23:35.636Z",
+              "startClipped": false,
+              "endClipped": false,
+              "entryBandMs": [
+                1572126505232,
+                1572312074940
+              ],
+              "exitBandMs": [
+                1574680990422,
+                1574839187308
+              ],
+              "exactBandsMs": [
+                [
+                  1573455220071,
+                  1573623415906
+                ]
+              ],
+              "localMinima": [],
+              "globalMinimumKind": "exact",
+              "globalMinimum": null,
+              "exactTopology": "resolved"
+            }
+          ]
+        },
+        {
+          "sourceId": "G-Solar1990Moon:opposition:180",
+          "aspect": "opposition",
+          "offset": 180,
+          "components": []
+        }
+      ],
+      "crops": [
+        {
+          "label": "first-half",
+          "geometryId": "G-Solar1990Moon:conjunction:0",
+          "fromUtc": "2019-01-01T00:00:00.000Z",
+          "toUtc": "2020-01-01T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 133.8242914081875,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 108.92325937785199,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": []
+        },
+        {
+          "label": "second-half",
+          "geometryId": "G-Solar1990Moon:conjunction:0",
+          "fromUtc": "2020-01-01T00:00:00.000Z",
+          "toUtc": "2020-12-31T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 108.92325937785199,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 83.03848499660239,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": []
+        },
+        {
+          "label": "first-half",
+          "geometryId": "G-Solar1990Moon:sextile:60",
+          "fromUtc": "2019-01-01T00:00:00.000Z",
+          "toUtc": "2020-01-01T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 166.1757085918125,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 168.923259377852,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": []
+        },
+        {
+          "label": "second-half",
+          "geometryId": "G-Solar1990Moon:sextile:60",
+          "fromUtc": "2020-01-01T00:00:00.000Z",
+          "toUtc": "2020-12-31T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 168.923259377852,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 143.0384849966024,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": []
+        },
+        {
+          "label": "first-half",
+          "geometryId": "G-Solar1990Moon:sextile:300",
+          "fromUtc": "2019-01-01T00:00:00.000Z",
+          "toUtc": "2020-01-01T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 73.82429140818749,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 48.92325937785199,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": []
+        },
+        {
+          "label": "second-half",
+          "geometryId": "G-Solar1990Moon:sextile:300",
+          "fromUtc": "2020-01-01T00:00:00.000Z",
+          "toUtc": "2020-12-31T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 48.92325937785199,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 23.038484996602392,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": []
+        },
+        {
+          "label": "first-half",
+          "geometryId": "G-Solar1990Moon:square:90",
+          "fromUtc": "2019-01-01T00:00:00.000Z",
+          "toUtc": "2020-01-01T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 136.1757085918125,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 161.076740622148,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": []
+        },
+        {
+          "label": "second-half",
+          "geometryId": "G-Solar1990Moon:square:90",
+          "fromUtc": "2020-01-01T00:00:00.000Z",
+          "toUtc": "2020-12-31T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 161.076740622148,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 173.0384849966024,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": []
+        },
+        {
+          "label": "first-half",
+          "geometryId": "G-Solar1990Moon:square:270",
+          "fromUtc": "2019-01-01T00:00:00.000Z",
+          "toUtc": "2020-01-01T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 43.82429140818749,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 18.92325937785199,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": []
+        },
+        {
+          "label": "second-half",
+          "geometryId": "G-Solar1990Moon:square:270",
+          "fromUtc": "2020-01-01T00:00:00.000Z",
+          "toUtc": "2020-12-31T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 18.92325937785199,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 6.961515003397608,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": [
+            {
+              "startClipped": false,
+              "endClipped": false,
+              "sourceExactCount": 2
+            },
+            {
+              "startClipped": false,
+              "endClipped": false,
+              "sourceExactCount": 1
+            }
+          ]
+        },
+        {
+          "label": "first-half",
+          "geometryId": "G-Solar1990Moon:trine:120",
+          "fromUtc": "2019-01-01T00:00:00.000Z",
+          "toUtc": "2020-01-01T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 106.17570859181251,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 131.076740622148,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": []
+        },
+        {
+          "label": "second-half",
+          "geometryId": "G-Solar1990Moon:trine:120",
+          "fromUtc": "2020-01-01T00:00:00.000Z",
+          "toUtc": "2020-12-31T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 131.076740622148,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 156.9615150033976,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": []
+        },
+        {
+          "label": "first-half",
+          "geometryId": "G-Solar1990Moon:trine:240",
+          "fromUtc": "2019-01-01T00:00:00.000Z",
+          "toUtc": "2020-01-01T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 13.824291408187491,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 11.076740622148009,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": [
+            {
+              "startClipped": false,
+              "endClipped": false,
+              "sourceExactCount": 0
+            },
+            {
+              "startClipped": false,
+              "endClipped": false,
+              "sourceExactCount": 1
+            }
+          ]
+        },
+        {
+          "label": "second-half",
+          "geometryId": "G-Solar1990Moon:trine:240",
+          "fromUtc": "2020-01-01T00:00:00.000Z",
+          "toUtc": "2020-12-31T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 11.076740622148009,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 36.96151500339761,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": []
+        },
+        {
+          "label": "first-half",
+          "geometryId": "G-Solar1990Moon:opposition:180",
+          "fromUtc": "2019-01-01T00:00:00.000Z",
+          "toUtc": "2020-01-01T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 46.17570859181251,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 71.07674062214801,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": []
+        },
+        {
+          "label": "second-half",
+          "geometryId": "G-Solar1990Moon:opposition:180",
+          "fromUtc": "2020-01-01T00:00:00.000Z",
+          "toUtc": "2020-12-31T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 71.07674062214801,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 96.96151500339761,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": []
+        }
+      ]
+    },
+    {
+      "id": "H-Solar1990ASC",
+      "movingBody": "Jupiter",
+      "natalPoint": "ASC",
+      "targetLongitudeDegrees": 292.4886428763,
+      "targetKind": "coherent-natal",
+      "angularBudgetDegrees": 0.15,
+      "natalComponentBudgetDegrees": 0.1,
+      "input": {
+        "clock": "UTC"
+      },
+      "fromUtc": "2019-01-01T00:00:00.000Z",
+      "toUtc": "2020-12-31T00:00:00.000Z",
+      "anchorUtc": "2020-01-01T00:00:00.000Z",
+      "geometries": [
+        {
+          "sourceId": "H-Solar1990ASC:conjunction:0",
+          "aspect": "conjunction",
+          "offset": 0,
+          "components": [
+            {
+              "startUtc": "2020-02-29T16:40:05.712Z",
+              "endUtc": "2020-04-10T17:05:09.311Z",
+              "startClipped": false,
+              "endClipped": false,
+              "entryBandMs": [
+                1582924473209,
+                1583064803219
+              ],
+              "exitBandMs": [
+                1586411399992,
+                1586670217989
+              ],
+              "exactBandsMs": [
+                [
+                  1584434813610,
+                  1584603023279
+                ]
+              ],
+              "localMinima": [],
+              "globalMinimumKind": "exact",
+              "globalMinimum": null,
+              "exactTopology": "resolved"
+            },
+            {
+              "startUtc": "2020-06-17T15:32:22.729Z",
+              "endUtc": "2020-08-06T22:15:56.939Z",
+              "startClipped": false,
+              "endClipped": false,
+              "entryBandMs": [
+                1592272549008,
+                1592538697957
+              ],
+              "exitBandMs": [
+                1596629917202,
+                1596877725257
+              ],
+              "exactBandsMs": [
+                [
+                  1594512045284,
+                  1594713241324
+                ]
+              ],
+              "localMinima": [],
+              "globalMinimumKind": "exact",
+              "globalMinimum": null,
+              "exactTopology": "resolved"
+            },
+            {
+              "startUtc": "2020-10-19T14:48:55.780Z",
+              "endUtc": "2020-11-27T14:18:42.303Z",
+              "startClipped": false,
+              "endClipped": false,
+              "entryBandMs": [
+                1602999090216,
+                1603234910139
+              ],
+              "exitBandMs": [
+                1606418581382,
+                1606554435417
+              ],
+              "exactBandsMs": [
+                [
+                  1604937105448,
+                  1605098396700
+                ]
+              ],
+              "localMinima": [],
+              "globalMinimumKind": "exact",
+              "globalMinimum": null,
+              "exactTopology": "resolved"
+            }
+          ]
+        },
+        {
+          "sourceId": "H-Solar1990ASC:sextile:60",
+          "aspect": "sextile",
+          "offset": 60,
+          "components": []
+        },
+        {
+          "sourceId": "H-Solar1990ASC:sextile:300",
+          "aspect": "sextile",
+          "offset": 300,
+          "components": []
+        },
+        {
+          "sourceId": "H-Solar1990ASC:square:90",
+          "aspect": "square",
+          "offset": 90,
+          "components": []
+        },
+        {
+          "sourceId": "H-Solar1990ASC:square:270",
+          "aspect": "square",
+          "offset": 270,
+          "components": []
+        },
+        {
+          "sourceId": "H-Solar1990ASC:trine:120",
+          "aspect": "trine",
+          "offset": 120,
+          "components": []
+        },
+        {
+          "sourceId": "H-Solar1990ASC:trine:240",
+          "aspect": "trine",
+          "offset": 240,
+          "components": []
+        },
+        {
+          "sourceId": "H-Solar1990ASC:opposition:180",
+          "aspect": "opposition",
+          "offset": 180,
+          "components": []
+        }
+      ],
+      "crops": [
+        {
+          "label": "first-half",
+          "geometryId": "H-Solar1990ASC:conjunction:0",
+          "fromUtc": "2019-01-01T00:00:00.000Z",
+          "toUtc": "2020-01-01T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 40.719336184487474,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 15.818304154151974,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": []
+        },
+        {
+          "label": "second-half",
+          "geometryId": "H-Solar1990ASC:conjunction:0",
+          "fromUtc": "2020-01-01T00:00:00.000Z",
+          "toUtc": "2020-12-31T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 15.818304154151974,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 10.066470227097625,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": [
+            {
+              "startClipped": false,
+              "endClipped": false,
+              "sourceExactCount": 1
+            },
+            {
+              "startClipped": false,
+              "endClipped": false,
+              "sourceExactCount": 1
+            },
+            {
+              "startClipped": false,
+              "endClipped": false,
+              "sourceExactCount": 1
+            }
+          ]
+        },
+        {
+          "label": "first-half",
+          "geometryId": "H-Solar1990ASC:sextile:60",
+          "fromUtc": "2019-01-01T00:00:00.000Z",
+          "toUtc": "2020-01-01T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 100.71933618448747,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 75.81830415415197,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": []
+        },
+        {
+          "label": "second-half",
+          "geometryId": "H-Solar1990ASC:sextile:60",
+          "fromUtc": "2020-01-01T00:00:00.000Z",
+          "toUtc": "2020-12-31T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 75.81830415415197,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 49.933529772902375,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": []
+        },
+        {
+          "label": "first-half",
+          "geometryId": "H-Solar1990ASC:sextile:300",
+          "fromUtc": "2019-01-01T00:00:00.000Z",
+          "toUtc": "2020-01-01T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 19.280663815512526,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 44.181695845848026,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": []
+        },
+        {
+          "label": "second-half",
+          "geometryId": "H-Solar1990ASC:sextile:300",
+          "fromUtc": "2020-01-01T00:00:00.000Z",
+          "toUtc": "2020-12-31T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 44.181695845848026,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 70.06647022709762,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": []
+        },
+        {
+          "label": "first-half",
+          "geometryId": "H-Solar1990ASC:square:90",
+          "fromUtc": "2019-01-01T00:00:00.000Z",
+          "toUtc": "2020-01-01T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 130.71933618448747,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 105.81830415415197,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": []
+        },
+        {
+          "label": "second-half",
+          "geometryId": "H-Solar1990ASC:square:90",
+          "fromUtc": "2020-01-01T00:00:00.000Z",
+          "toUtc": "2020-12-31T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 105.81830415415197,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 79.93352977290238,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": []
+        },
+        {
+          "label": "first-half",
+          "geometryId": "H-Solar1990ASC:square:270",
+          "fromUtc": "2019-01-01T00:00:00.000Z",
+          "toUtc": "2020-01-01T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 49.280663815512526,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 74.18169584584803,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": []
+        },
+        {
+          "label": "second-half",
+          "geometryId": "H-Solar1990ASC:square:270",
+          "fromUtc": "2020-01-01T00:00:00.000Z",
+          "toUtc": "2020-12-31T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 74.18169584584803,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 100.06647022709762,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": []
+        },
+        {
+          "label": "first-half",
+          "geometryId": "H-Solar1990ASC:trine:120",
+          "fromUtc": "2019-01-01T00:00:00.000Z",
+          "toUtc": "2020-01-01T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 160.71933618448747,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 135.81830415415197,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": []
+        },
+        {
+          "label": "second-half",
+          "geometryId": "H-Solar1990ASC:trine:120",
+          "fromUtc": "2020-01-01T00:00:00.000Z",
+          "toUtc": "2020-12-31T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 135.81830415415197,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 109.93352977290238,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": []
+        },
+        {
+          "label": "first-half",
+          "geometryId": "H-Solar1990ASC:trine:240",
+          "fromUtc": "2019-01-01T00:00:00.000Z",
+          "toUtc": "2020-01-01T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 79.28066381551253,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 104.18169584584803,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": []
+        },
+        {
+          "label": "second-half",
+          "geometryId": "H-Solar1990ASC:trine:240",
+          "fromUtc": "2020-01-01T00:00:00.000Z",
+          "toUtc": "2020-12-31T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 104.18169584584803,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 130.06647022709762,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": []
+        },
+        {
+          "label": "first-half",
+          "geometryId": "H-Solar1990ASC:opposition:180",
+          "fromUtc": "2019-01-01T00:00:00.000Z",
+          "toUtc": "2020-01-01T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 139.28066381551253,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 164.18169584584803,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": []
+        },
+        {
+          "label": "second-half",
+          "geometryId": "H-Solar1990ASC:opposition:180",
+          "fromUtc": "2020-01-01T00:00:00.000Z",
+          "toUtc": "2020-12-31T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 164.18169584584803,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 169.93352977290238,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": []
+        }
+      ]
+    },
+    {
+      "id": "I-Solar1990MC",
+      "movingBody": "Jupiter",
+      "natalPoint": "MC",
+      "targetLongitudeDegrees": 214.5703111915,
+      "targetKind": "coherent-natal",
+      "angularBudgetDegrees": 0.15,
+      "natalComponentBudgetDegrees": 0.1,
+      "input": {
+        "clock": "UTC"
+      },
+      "fromUtc": "2019-01-01T00:00:00.000Z",
+      "toUtc": "2020-12-31T00:00:00.000Z",
+      "anchorUtc": "2020-01-01T00:00:00.000Z",
+      "geometries": [
+        {
+          "sourceId": "I-Solar1990MC:conjunction:0",
+          "aspect": "conjunction",
+          "offset": 0,
+          "components": []
+        },
+        {
+          "sourceId": "I-Solar1990MC:sextile:60",
+          "aspect": "sextile",
+          "offset": 60,
+          "components": [
+            {
+              "startUtc": "2019-12-09T18:10:49.046Z",
+              "endUtc": "2020-01-04T21:49:16.620Z",
+              "startClipped": false,
+              "endClipped": false,
+              "entryBandMs": [
+                1575857724602,
+                1575972299545
+              ],
+              "exitBandMs": [
+                1578118209461,
+                1578230928856
+              ],
+              "exactBandsMs": [
+                [
+                  1576993181306,
+                  1577105815961
+                ]
+              ],
+              "localMinima": [],
+              "globalMinimumKind": "exact",
+              "globalMinimum": null,
+              "exactTopology": "resolved"
+            }
+          ]
+        },
+        {
+          "sourceId": "I-Solar1990MC:sextile:300",
+          "aspect": "sextile",
+          "offset": 300,
+          "components": []
+        },
+        {
+          "sourceId": "I-Solar1990MC:square:90",
+          "aspect": "square",
+          "offset": 90,
+          "components": [
+            {
+              "startUtc": "2020-12-26T15:23:42.974Z",
+              "endUtc": "2020-12-31T00:00:00.000Z",
+              "startClipped": false,
+              "endClipped": true,
+              "entryBandMs": [
+                1608938377069,
+                1609053933403
+              ],
+              "exitBandMs": null,
+              "exactBandsMs": [],
+              "localMinima": [],
+              "globalMinimumKind": "no-verified-minimum-within-this-portion",
+              "globalMinimum": null,
+              "exactTopology": "resolved"
+            }
+          ]
+        },
+        {
+          "sourceId": "I-Solar1990MC:square:270",
+          "aspect": "square",
+          "offset": 270,
+          "components": []
+        },
+        {
+          "sourceId": "I-Solar1990MC:trine:120",
+          "aspect": "trine",
+          "offset": 120,
+          "components": []
+        },
+        {
+          "sourceId": "I-Solar1990MC:trine:240",
+          "aspect": "trine",
+          "offset": 240,
+          "components": []
+        },
+        {
+          "sourceId": "I-Solar1990MC:opposition:180",
+          "aspect": "opposition",
+          "offset": 180,
+          "components": []
+        }
+      ],
+      "crops": [
+        {
+          "label": "first-half",
+          "geometryId": "I-Solar1990MC:conjunction:0",
+          "fromUtc": "2019-01-01T00:00:00.000Z",
+          "toUtc": "2020-01-01T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 37.19899550031255,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 62.10002753064805,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": []
+        },
+        {
+          "label": "second-half",
+          "geometryId": "I-Solar1990MC:conjunction:0",
+          "fromUtc": "2020-01-01T00:00:00.000Z",
+          "toUtc": "2020-12-31T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 62.10002753064805,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 87.98480191189765,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": []
+        },
+        {
+          "label": "first-half",
+          "geometryId": "I-Solar1990MC:sextile:60",
+          "fromUtc": "2019-01-01T00:00:00.000Z",
+          "toUtc": "2020-01-01T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 22.80100449968745,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 2.100027530648049,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": [
+            {
+              "startClipped": false,
+              "endClipped": true,
+              "sourceExactCount": 1
+            }
+          ]
+        },
+        {
+          "label": "second-half",
+          "geometryId": "I-Solar1990MC:sextile:60",
+          "fromUtc": "2020-01-01T00:00:00.000Z",
+          "toUtc": "2020-12-31T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 2.100027530648049,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 27.984801911897648,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": [
+            {
+              "startClipped": true,
+              "endClipped": false,
+              "sourceExactCount": 0
+            }
+          ]
+        },
+        {
+          "label": "first-half",
+          "geometryId": "I-Solar1990MC:sextile:300",
+          "fromUtc": "2019-01-01T00:00:00.000Z",
+          "toUtc": "2020-01-01T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 97.19899550031255,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 122.10002753064805,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": []
+        },
+        {
+          "label": "second-half",
+          "geometryId": "I-Solar1990MC:sextile:300",
+          "fromUtc": "2020-01-01T00:00:00.000Z",
+          "toUtc": "2020-12-31T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 122.10002753064805,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 147.98480191189765,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": []
+        },
+        {
+          "label": "first-half",
+          "geometryId": "I-Solar1990MC:square:90",
+          "fromUtc": "2019-01-01T00:00:00.000Z",
+          "toUtc": "2020-01-01T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 52.80100449968745,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 27.89997246935195,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": []
+        },
+        {
+          "label": "second-half",
+          "geometryId": "I-Solar1990MC:square:90",
+          "fromUtc": "2020-01-01T00:00:00.000Z",
+          "toUtc": "2020-12-31T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 27.89997246935195,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 2.015198088102352,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": [
+            {
+              "startClipped": false,
+              "endClipped": true,
+              "sourceExactCount": 0
+            }
+          ]
+        },
+        {
+          "label": "first-half",
+          "geometryId": "I-Solar1990MC:square:270",
+          "fromUtc": "2019-01-01T00:00:00.000Z",
+          "toUtc": "2020-01-01T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 127.19899550031255,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 152.10002753064805,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": []
+        },
+        {
+          "label": "second-half",
+          "geometryId": "I-Solar1990MC:square:270",
+          "fromUtc": "2020-01-01T00:00:00.000Z",
+          "toUtc": "2020-12-31T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 152.10002753064805,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 177.98480191189765,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": []
+        },
+        {
+          "label": "first-half",
+          "geometryId": "I-Solar1990MC:trine:120",
+          "fromUtc": "2019-01-01T00:00:00.000Z",
+          "toUtc": "2020-01-01T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 82.80100449968745,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 57.89997246935195,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": []
+        },
+        {
+          "label": "second-half",
+          "geometryId": "I-Solar1990MC:trine:120",
+          "fromUtc": "2020-01-01T00:00:00.000Z",
+          "toUtc": "2020-12-31T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 57.89997246935195,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 32.01519808810235,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": []
+        },
+        {
+          "label": "first-half",
+          "geometryId": "I-Solar1990MC:trine:240",
+          "fromUtc": "2019-01-01T00:00:00.000Z",
+          "toUtc": "2020-01-01T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 157.19899550031255,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 177.89997246935195,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": []
+        },
+        {
+          "label": "second-half",
+          "geometryId": "I-Solar1990MC:trine:240",
+          "fromUtc": "2020-01-01T00:00:00.000Z",
+          "toUtc": "2020-12-31T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 177.89997246935195,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 152.01519808810235,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": []
+        },
+        {
+          "label": "first-half",
+          "geometryId": "I-Solar1990MC:opposition:180",
+          "fromUtc": "2019-01-01T00:00:00.000Z",
+          "toUtc": "2020-01-01T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 142.80100449968745,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 117.89997246935195,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": []
+        },
+        {
+          "label": "second-half",
+          "geometryId": "I-Solar1990MC:opposition:180",
+          "fromUtc": "2020-01-01T00:00:00.000Z",
+          "toUtc": "2020-12-31T00:00:00.000Z",
+          "boundaries": [
+            {
+              "orbDegrees": 117.89997246935195,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            },
+            {
+              "orbDegrees": 92.01519808810235,
+              "membershipAmbiguousWithinBudget": false,
+              "exactCountAmbiguousWithinBudget": false
+            }
+          ],
+          "portions": []
+        }
+      ]
+    }
+  ]
+}
