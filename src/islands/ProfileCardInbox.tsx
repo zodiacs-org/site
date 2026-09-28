@@ -19,6 +19,7 @@ import {
   type ChartCard,
 } from '../lib/profile/card-link';
 import type { PositionsShareInput } from '../lib/share-positions';
+import type { SavedChart } from '../lib/profile/schema';
 import { MAX_CIRCLE, addCard, type AddCardResult } from '../lib/profile/circle';
 import { settledSunHue } from '../lib/profile/settled-signs';
 import { announceInboxPrimary, useProfileSurface } from '../lib/profile/surface-gate';
@@ -46,17 +47,21 @@ export default function ProfileCardInbox({ accountBound = false }: { accountBoun
   const surface = useProfileSurface(accountBound);
   const [arrival, setArrival] = useState<Arrival>({ state: 'none' });
   const self = useMemo(() => explicitSelfChart(profile.charts), [profile.charts]);
-  // The positions a card of one's own chart would carry, to recognise it.
-  const [selfPositions, setSelfPositions] = useState<PositionsShareInput | null>(null);
+  // The positions a card of one's own chart would carry, to recognise it,
+  // with the chart they belong to. Until they are known the card waits,
+  // rather than showing for a frame as someone else's.
+  const [selfCard, setSelfCard] = useState<{ chart: SavedChart; positions: PositionsShareInput | null } | null>(null);
   useEffect(() => {
-    setSelfPositions(null);
     if (!self || arrival.state !== 'ready') return undefined;
     let current = true;
-    void loadCardPositionsForChart(self).then((positions) => {
-      if (current) setSelfPositions(positions);
-    }, () => {});
+    const settle = (positions: PositionsShareInput | null) => { if (current) setSelfCard({ chart: self, positions }); };
+    void loadCardPositionsForChart(self).then(settle, () => settle(null));
     return () => { current = false; };
   }, [self, arrival.state]);
+  const selfKnown = self !== null && selfCard !== null
+    && selfCard.chart.id === self.id && selfCard.chart.updatedAt === self.updatedAt;
+  const selfPositions = selfKnown ? selfCard!.positions : null;
+  const recognising = arrival.state === 'ready' && self !== null && !selfKnown;
 
   useEffect(() => {
     setArrival(takeCardFromLocation(window.location, window.history));
@@ -65,13 +70,13 @@ export default function ProfileCardInbox({ accountBound = false }: { accountBoun
 
   // Whether this card shows a white action: the offer to keep it, or, once
   // kept by someone with a chart of their own, the offer to send theirs.
-  const shown = surface && arrival.state === 'ready' && !arrival.dismissed;
+  const shown = surface && arrival.state === 'ready' && !arrival.dismissed && !recognising;
   const holdsPrimary = shown && arrival.state === 'ready'
     && !(ready && self !== null && cardMatchesChart(arrival.card, selfPositions))
     && (self !== null || (arrival.result !== 'added' && arrival.result !== 'updated'));
   useEffect(() => announceInboxPrimary(holdsPrimary), [holdsPrimary]);
 
-  if (!surface || arrival.state === 'none' || (arrival.state === 'ready' && arrival.dismissed)) return null;
+  if (!surface || arrival.state === 'none' || (arrival.state === 'ready' && (arrival.dismissed || recognising))) return null;
 
   if (arrival.state === 'invalid') {
     return (

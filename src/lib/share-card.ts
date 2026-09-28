@@ -175,19 +175,23 @@ function loadSvg(xml: string): Promise<HTMLImageElement> {
   });
 }
 
-let discBatch: Promise<Map<string, Blob>> | null = null;
+let discBatch: Promise<Map<string, Blob | null>> | null = null;
 
 /**
  * All twelve 128px discs, fetched in zodiac order, for the card being made:
  * fetching only the discs a card shows would give our host the chart's signs.
  * Discs a card asks for at once share one batch, which ends when it settles.
+ * A disc that fails to arrive is left off its card alone.
  */
-function allDiscs(): Promise<Map<string, Blob>> {
+function allDiscs(): Promise<Map<string, Blob | null>> {
   if (!discBatch) {
     const batch = Promise.all(SIGNS.map(async ({ slug }) => {
-      const res = await fetch(`/assets/zodiac-icons/128/${slug}.webp`);
-      if (!res.ok) throw new Error(`zodiac disc unavailable: ${slug}`);
-      return [slug, await res.blob()] as const;
+      try {
+        const res = await fetch(`/assets/zodiac-icons/128/${slug}.webp`);
+        return [slug, res.ok ? await res.blob() : null] as const;
+      } catch {
+        return [slug, null] as const;
+      }
     })).then((entries) => new Map(entries));
     discBatch = batch;
     const settle = () => { if (discBatch === batch) discBatch = null; };
