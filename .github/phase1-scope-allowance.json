@@ -1,7 +1,7 @@
 {
   "version": 1,
   "id": "owner-reported-astrofolio-card-rise-jank-2026-09-26",
-  "baseCommit": "12f483df79819d25c81b483006e093574cc74710",
+  "baseCommit": "f2bd0dd45947ff392d0de1135695f584a71bfa08",
   "protectedPaths": [
     "public/assets/app.js",
     "scripts/registry-consumer-contract.test.mjs",
