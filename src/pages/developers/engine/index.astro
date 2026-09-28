@@ -106,9 +106,9 @@ const jsonLd = [{
     </dl>
     <div class="prose">
       <p>
-        It computes twelve house systems, each as Swiss Ephemeris defines it:
+        It computes thirteen house systems, each as Swiss Ephemeris defines it:
         whole sign, Placidus, Koch, Porphyry, Regiomontanus, Campanus,
-        Topocentric (Polich–Page), Alcabitius, Equal, Vehlow, Meridian (axial
+        Topocentric (Polich–Page), Alcabitius, Equal (Ascendant), Equal-MC, Vehlow, Meridian (axial
         rotation) and Morinus. Aspects are the five major ones, with separate
         luminary orbs. Two optional entry points ship beside the core:{' '}
         <code>@zodiacs/engine/geo</code> resolves a local wall time and IANA
@@ -218,10 +218,10 @@ const jsonLd = [{
       <ul>
         <li>Tropical only. No sidereal mode, no ayanamsha, no topocentric parallax.</li>
         <li>Sun through Pluto and the true nodes. No Chiron, no asteroids.</li>
-        <li>Placidus and Koch are undefined inside the polar circle; where the absolute latitude is 90° minus the obliquity or more (66.53° to 66.59° over 1800–2200) they fall back to whole sign and flag it. The other ten systems are defined there.</li>
+        <li>Placidus and Koch are undefined inside the polar circle; where the absolute latitude is 90° minus the obliquity or more (66.53° to 66.59° over 1800–2200) they fall back to whole sign and flag it. The other eleven systems are defined there.</li>
         <li>Event searches sample the motion at a fixed step, so they can miss an event between samples. The solver is tested, not proven complete.</li>
         <li>No input-date bound. Outside 1800–2200, the range the engine has been checked over, a chart carries the <code>outside-reference-span</code> flag; see the caveat under accuracy.</li>
-        <li>The manifest declares Node 18 and newer. What has actually been executed for this candidate is Node 22.22.2 and Node 24.21.0, and the site's Chromium browser checks — narrower than the declaration.</li>
+        <li>The manifest declares Node 18 and newer. What has actually been executed for this candidate is Node 22.22.2 and Node 24.19.0, and the site's Chromium browser checks — narrower than the declaration.</li>
         <li>No interpretation. The engine returns geometry; what it means is your problem, and not an astronomical claim.</li>
       </ul>
       <p>

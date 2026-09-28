@@ -192,7 +192,7 @@ try {
       && p.longitude?.minimum === -180 && p.longitude.maximum === 180
       && JSON.stringify(p.houseSystem?.enum) === JSON.stringify([
         'placidus', 'whole', 'porphyry', 'equal', 'vehlow', 'koch', 'regiomontanus',
-        'campanus', 'topocentric', 'alcabitius', 'morinus', 'meridian',
+        'campanus', 'topocentric', 'alcabitius', 'morinus', 'meridian', 'equal-mc',
       ])
       && String(p.utc?.description).includes('1800-01-01');
   })());
