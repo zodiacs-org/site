@@ -1,41 +1,44 @@
 # Programme status
 
-Checkpoint 2: the owner's decisions, 2026-09-28. The next session should start here.
+Checkpoint 3: the conformance suite, 2026-09-28. The next session should start here.
 
-**Overall delivery: 7%** — 13 of 182.45 weighted units accepted; blocked on owner or external action: 5% (9.5).
+**Overall delivery: 12%** — 21.5 of 182.45 weighted units accepted; blocked on owner or external action: 5% (9.5).
 
 The figure is computed by `node scripts/programme-ledger.mjs --summary` from [`acceptance-ledger.json`](acceptance-ledger.json). The method is in [README.md](README.md) and the unit list in [LEDGER.md](LEDGER.md).
 
-## What changed since checkpoint 1
+## What changed since checkpoint 2
 
-The owner delegated every open decision of brief §10. They are made and recorded in [DECISIONS-2026-09-28.md](DECISIONS-2026-09-28.md):
+The conformance suite v0 is on `main` of `zodiacs-org/engine` (`8c4946b1`, PR #9), and its CI workflow is green there:
 
-- amendments A1 and A3 are rejected;
-- the calendar feed moves to opaque ids;
-- raw Swiss output leaves the tree;
-- publishing goes under the shared `@zodiacs` npm scope;
-- the hosted API is free, with no new spending;
-- the site repository keeps all rights reserved;
-- the conformance vectors are CC0 1.0 and the atlas is CC BY 4.0.
+- 500 vectors in three levels: positions (240), houses and angles (150), and time and calendars (110). Each names an independent arbiter and a tolerance, and none uses Swiss Ephemeris as its arbiter. The files are CC0 1.0.
+- A harness, with adapters for this engine and for Swiss Ephemeris through pyswisseph.
+- A CI workflow. It validates the vectors, rebuilds them from their generators byte for byte, and re-runs this engine against the committed verdicts.
+- A public discrepancy process. An independent review before release withdrew one vector and clarified six points, all recorded in its log.
 
-No accepted weight changed. The blocked weight fell from 18.0 to 9.5:
+The results, from `conformance/results/summary.json`:
 
-- Four units no longer wait on a decision: the calendar feed (P1.15), the hosted API (P3.3), the site README (G2) and the atlas licence (B3.c).
-- Steps 1.3 and 1.8 are now recorded as failed against their original gates. They were waiting for ratification, which is now refused.
-- What remains blocked needs the owner's own accounts. The steps are below.
+- **Engine rc.12:** 232 pass, 222 fail and 46 unsupported.
+  - Positions: 193 of 240 fail the 1″ tolerance, with a median longitude residual of 2.07″ and a largest of 18.8″.
+  - Houses and angles: all 150 pass.
+  - Time: 29 fail, 20 of them on tzdb's `backzone` history before 1970.
+- **Swiss Ephemeris 2.10.03:** 403 pass, 47 fail and 50 unsupported. All 47 failures are houses and angles, from its long-term sidereal time outside 1850–2050.
+
+This checkpoint's PR publishes the results at `/developers/conformance/`. B1.a, B1.b and B1.d are accepted (8.5 units), and B1.c is validated until the page is verified in production.
+
+The owner's decisions of checkpoint 2 are in [DECISIONS-2026-09-28.md](DECISIONS-2026-09-28.md).
+
+The npm step below now waits for rc.14. The independent review of rc.13 found defects (listed under "In progress"), so rc.13 will not be published.
 
 ## Steps that need the owner's accounts
 
 The owner, or Codex working on the owner's computer, can do these. Each says what to report back. None needs a password or token to be shared.
 
-1. **npm: the first publish of `@zodiacs/engine`.** Do this once engine rc.13 is on `main` of `zodiacs-org/engine`.
+1. **npm: the first publish of `@zodiacs/engine`.** Not yet: this waits for engine rc.14 on `main` of `zodiacs-org/engine`. When it is there, this step will name the archive and its SHA-256. Publish no other file.
    1. Sign in at npmjs.com as `zodiacs`, the account that publishes `@zodiacs/sdk`. Under Account, confirm that two-factor authentication covers authorization and writes.
-   2. On any computer with Node 20 or later, fetch and check the archive:
-      - `curl -LO https://github.com/zodiacs-org/engine/raw/main/artifacts/zodiacs-engine-0.1.1-rc.13.tgz`
-      - `sha256sum zodiacs-engine-0.1.1-rc.13.tgz` must print `12db9dce0f2c7551924b41caa5609f57bf31dfb9051a72901b94cdae29d3b840`. If it does not, stop.
+   2. On any computer with Node 20.19 or later, download the archive named here, and check that `sha256sum` prints the value given here. If it does not, stop.
    3. Publish it:
       - `npm login` (as `zodiacs`)
-      - `npm publish zodiacs-engine-0.1.1-rc.13.tgz --access public --tag next`, entering the one-time code when asked.
+      - `npm publish <the archive> --access public --tag next`, entering the one-time code when asked.
    4. On npmjs.com, open `@zodiacs/engine`, then Settings.
       - Under Trusted Publisher, choose GitHub Actions: organization `zodiacs-org`, repository `engine`, workflow `release.yml`, environment `npm`.
       - Under Publishing access, choose "Require two-factor authentication and disallow tokens".
@@ -82,16 +85,13 @@ The owner, or Codex working on the owner's computer, can do these. Each says wha
    > Zodiacs.org (admin@zodiacs.org)
 8. **The assistants.** Confirm that free accounts exist on ChatGPT, Claude, Gemini, Microsoft Copilot and Perplexity for admin@zodiacs.org, with no payment method added. The panel questions will be supplied with the first run.
 
-Later, once the site has rebuilt the MCP server on rc.13: the same first publish for `@zodiacs/mcp-server`, from its verified archive.
+Later, once the site has rebuilt the MCP server on the published engine: the same first publish for `@zodiacs/mcp-server`, from its verified archive.
 
 ## Identities verified at this checkpoint
 
-**Site.** `main` = `c7c591ba` (#594). Production serves it: `dpl_FrGg8yQgQWHoDrazdAohWMSPRP6i`, READY.
+**Site.** `main` = `b972bc9d` (#595). Production serves it: `dpl_4GXuoGQdzFnVYqPkshLPvp5TWtQF`, READY.
 
-**Engine.** `main` = `df01d2d7` (PR #8, rc.12). The rc.13 candidate is on a local branch and not yet pushed:
-
-- source `f05ea02b`, archive carried by `4eee7002`;
-- archive SHA-256 `12db9dce…b840`, 79,092 bytes, rebuilt identically on Node 20, 22 and 24.
+**Engine.** `main` = `8c4946b1` (PR #9, the conformance suite). CI and the Conformance workflow are green on it (runs 36439264630 and 36439264956). The package on `main` is still rc.12.
 
 | archive | SHA-256 | source | status |
 | --- | --- | --- | --- |
@@ -99,6 +99,7 @@ Later, once the site has rebuilt the MCP server on rc.13: the same first publish
 | rc.11 | `d88e0ff8…7862` | `be3585b3` (merge `537ecaf4`) | merged; not adopted |
 | rc.11 (superseded) | `13d637db…` | `00bdae79` | never merged; a second archive under the same version (F-01) |
 | rc.12 | `c4cf150f…f7f0` | `a1d0f2c6` (merge `df01d2d7`) | merged; not adopted |
+| rc.13 | `12db9dce…b840` | `f05ea02b`, carried by `4eee7002` | reviewed; defects found; never pushed, and not to be published |
 
 **MCP.** `0.1.0-rc.10`, `0405ecf4…3568`, 71,472 bytes; artifact commit `92162624`.
 
@@ -106,24 +107,34 @@ Later, once the site has rebuilt the MCP server on rc.13: the same first publish
 
 ## In progress
 
-- **Engine rc.13**, which fixes the aspect exactness (F-06), the Sun's out-of-bounds flag (F-07), the rc.12 follow-ups (F-13–F-16), archive identity and CI binding (F-01, F-02), and the engine's token framing (F-21, engine part). It waits for an independent review before its PR.
-- **Conformance suite v0** (B1): 500 vectors in three levels, each with an independent arbiter and a tolerance, adapters for this engine and for Swiss Ephemeris, and a CI job. It waits for an independent review before its PR.
+- **Engine rc.14**, which fixes what the rc.13 review found:
+  - the supported Node versions and their CI coverage;
+  - the archive-binding check over the full history and every receipt;
+  - the Sun's out-of-bounds convention;
+  - an exact separation, and far dates outside the documented span refused;
+  - the changelog's wording and the reference documentation's canonical address.
+
+  It keeps rc.13's own fixes (F-01, F-02, F-06, F-07, F-13–F-16, and the engine part of F-21). It waits for an independent check before its PR.
 - **Site privacy fixes** (F-17, F-18, F-19, F-40, F-26, F-27).
-- **Engine features:** Hellenistic timing (profections, firdaria, zodiacal releasing, solar arc) and Vedic core (ayanamsas, nakshatras, vargas, KP, dashas), each on its own branch.
+- **Engine time steps** (1.1, 1.12, 1.13), the leap-second table and the receipts' time basis, on their own branch.
+- **Engine features**, each on its own branch:
+  - Hellenistic timing: profections, firdaria, zodiacal releasing and solar arc.
+  - Vedic core: ayanamsas, nakshatras, vargas, KP and dashas. Four named ayanamsas miss their 0.01″ gate and are recorded as failures.
 
 ## Next
 
-1. Review, push and merge rc.13, then adopt it on the site:
-   - progressions through the package, keeping ChartLens's dynamic import;
-   - the MCP server rebuilt under a new version;
+1. Verify `/developers/conformance/` in production, then record B1.c as accepted.
+2. Review, push and merge rc.14. Then:
+   - the npm first publish (step 1 above);
+   - its adoption on the site: progressions through the package, keeping ChartLens's dynamic import;
+   - the MCP server, rebuilt under a new version;
    - docs and claims;
    - `/birth-chart/` measured against its 71 KB budget with production's flags;
    - the CI and install-snippet fixes F-03 and F-04 alongside.
-2. Review and merge the conformance suite, then publish its results page at `/developers/conformance/`.
 3. The site privacy PR, then the decisions' own work:
    - opaque calendar feed ids;
    - the removal of raw Swiss output;
    - the site README and licence statement.
-4. Engine rc.14: the time steps in the package (1.1, 1.12, 1.13), the leap-second table and the receipts' time basis. After it, the Hellenistic and Vedic features.
+4. Engine rc.15: the time steps, then the Hellenistic and Vedic features. They take the package over its size gate, so they come with subpath exports and a documented budget.
 
-**To resume.** Read this file, then `DECISIONS-2026-09-28.md`, `LEDGER.md` and `FINDINGS.md`. Check `git log` on site `main` and engine `main` against the identities above, and read the open PRs in both repositories.
+**To resume.** Read this file, then `DECISIONS-2026-09-28.md`, `LEDGER.md` and `FINDINGS.md`. Check `git log` on site `main` and engine `main` against the identities above, and read the open PRs in both repositories. The conformance suite is described in `conformance/README.md` in the engine repository.

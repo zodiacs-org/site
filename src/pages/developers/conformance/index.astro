@@ -1,0 +1,265 @@
+---
+import packageDocument from '../../../../package.json';
+import Base from '../../../layouts/Base.astro';
+import summary from '../../../data/conformance/summary.json';
+import source from '../../../data/conformance/source.json';
+
+const suiteTree = `${source.repository}/tree/${source.commit}/conformance`;
+const suiteFile = (path: string) => `${source.repository}/blob/${source.commit}/conformance/${path}`;
+const total = summary.levels.reduce((sum, level) => sum + level.count, 0);
+const testedEngine = summary.runs.find((run) => run.adapter.engine === '@zodiacs/engine')?.adapter.engineVersion;
+const siteEngine = /zodiacs-engine-(.+)\.tgz$/u.exec(packageDocument.dependencies['@zodiacs/engine'])?.[1] ?? packageDocument.dependencies['@zodiacs/engine'];
+
+const title = 'Conformance Suite for Astrology Engines | Zodiacs.org';
+const description = 'An open conformance suite for astrology computation: 500 test vectors for positions, houses and angles, time zones, time scales and calendars, each with an independent arbiter and a stated tolerance, and the results for @zodiacs/engine and for Swiss Ephemeris.';
+
+type Bucket = { count: number; pass: number; fail: number; unsupported: number; error: number };
+type Stats = { unit: string; n: number; median: number; p95: number; max: number };
+type KindSummary = Bucket & { residuals?: Record<string, Stats> };
+
+const levelTitles: Record<string, string> = { L1: 'Positions', L2: 'Houses and angles', L3: 'Time and calendars' };
+const kindTitles: Record<string, string> = {
+  'position.apparent.ecliptic-true-of-date': 'Apparent positions, ecliptic of date',
+  'angles.asc-mc': 'Ascendant and midheaven',
+  'angles.vertex-east-point': 'Vertex and east point',
+  'houses.cusps': 'House cusps, thirteen systems',
+  'time.zone-offset': 'Time zone offsets',
+  'time.local-mean-time': 'Local mean time',
+  'time.tt-minus-utc': 'TT − UTC',
+  'time.delta-t': 'ΔT (TT − UT1)',
+  'calendar.to-jdn': 'Calendar date to day number',
+  'calendar.from-jdn': 'Day number to calendar date',
+};
+const symbol: Record<string, string> = { arcsec: '″', deg: '°', s: ' s' };
+
+function residual(kind: KindSummary): string {
+  const parts = Object.entries(kind.residuals ?? {}).map(([field, stats]) => {
+    const unit = symbol[stats.unit] ?? '';
+    const format = (value: number) => (stats.unit === 'arcsec' ? value.toFixed(3) : value.toPrecision(3));
+    return `${field} ${format(stats.median)}${unit} / ${format(stats.max)}${unit}`;
+  });
+  return parts.join('; ') || '—';
+}
+
+const escape = (text: string) => text.replace(/&/gu, '&amp;').replace(/</gu, '&lt;').replace(/>/gu, '&gt;');
+const inline = (text: string) => escape(text)
+  .replace(/\*\*([^*]+)\*\*/gu, '<strong>$1</strong>')
+  .replace(/`([^`]+)`/gu, '<code>$1</code>');
+
+/** The notes beside each run are Markdown bullet lists, one level of nesting. */
+function notesHtml(markdown: string | null): string {
+  if (!markdown) return '';
+  const out: string[] = ['<ul>'];
+  let nested = false;
+  for (const line of markdown.split('\n')) {
+    const item = /^(\s*)- (.*)$/u.exec(line);
+    if (!item) continue;
+    const deep = item[1].length > 0;
+    if (deep && !nested) {
+      out[out.length - 1] = out[out.length - 1].replace(/<\/li>$/u, '');
+      out.push('<ul>');
+      nested = true;
+    } else if (!deep && nested) {
+      out.push('</ul></li>');
+      nested = false;
+    }
+    out.push(`<li>${inline(item[2])}</li>`);
+  }
+  if (nested) out.push('</ul></li>');
+  out.push('</ul>');
+  return out.join('');
+}
+
+const runs = summary.runs.map((run) => ({
+  ...run,
+  heading: `${run.adapter.engine} ${run.adapter.engineVersion}`,
+  levels: summary.levels.map((level) => ({
+    level: level.level,
+    bucket: (run.summary.byLevel as Record<string, Bucket>)[level.level],
+    kinds: level.kinds.map((kind) => ({ kind: kind.kind, bucket: (run.summary.byKind as Record<string, KindSummary>)[kind.kind] })),
+  })),
+  tags: Object.entries((run.summary.byTag ?? {}) as Record<string, Bucket>),
+}));
+
+const jsonLd = [{
+  '@type': 'Dataset',
+  name: 'Zodiacs.org conformance suite for astrology computation',
+  description,
+  url: 'https://zodiacs.org/developers/conformance/',
+  version: summary.suiteVersion,
+  license: 'https://creativecommons.org/publicdomain/zero/1.0/',
+  isAccessibleForFree: true,
+  creator: { '@type': 'Organization', name: 'Zodiacs.org', url: 'https://zodiacs.org/' },
+  distribution: [{ '@type': 'DataDownload', encodingFormat: 'application/json', contentUrl: `${source.repository}/tree/${source.commit}/conformance/vectors` }],
+}];
+---
+<Base title={title} description={description} path="/developers/conformance/" jsonLd={jsonLd}>
+  <section class="section container container--narrow conformance-page">
+    <em class="kicker">Conformance suite</em>
+    <h1 class="display">Check an engine against independent references.</h1>
+
+    <div class="prose">
+      <p>
+        The suite is {total} test vectors for the numbers an astrology program
+        computes: positions, angles and house cusps, time zone offsets, time
+        scales and calendar dates. Each vector names its arbiter, the
+        independent source that decides the expected value, and a tolerance
+        that was fixed before any engine was run against it. None uses Swiss
+        Ephemeris as its arbiter; Swiss Ephemeris is measured like any other
+        engine.
+      </p>
+      <p>
+        Any engine can be run against it through a small adapter that reads
+        and writes one JSON object per line. The vectors, the harness and the
+        adapters are dedicated to the public domain under CC0 1.0.
+        Version {summary.suiteVersion} is at <a href={suiteTree}>zodiacs-org/engine</a>,
+        commit <code>{source.commit.slice(0, 7)}</code>, with its{' '}
+        <a href={suiteFile('SPEC.md')}>format and protocol</a> and{' '}
+        <a href={suiteFile('RESULTS.md')}>full results</a>.
+      </p>
+    </div>
+
+    <h2 id="vectors">What it checks</h2>
+    <div class="conformance-table-wrap" tabindex="0" role="region" aria-label="Vectors by level and kind">
+      <table>
+        <thead><tr><th scope="col">Level</th><th scope="col">Kind</th><th scope="col">Vectors</th><th scope="col">Tolerance</th></tr></thead>
+        <tbody>
+          {summary.levels.map((level) => level.kinds.map((kind) => (
+            <tr>
+              <td>{level.level}</td>
+              <th scope="row">{kindTitles[kind.kind] ?? kind.kind}</th>
+              <td>{kind.count}</td>
+              <td class="conformance-tolerance">{kind.tolerance}</td>
+            </tr>
+          )))}
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="arbiters">The arbiters</h2>
+    <div class="prose">
+      <ul>
+        {summary.levels.map((level) => level.arbiters.map((arbiter) => (
+          <li><strong>{levelTitles[level.level]}.</strong> {arbiter.name}.</li>
+        )))}
+      </ul>
+      <p>
+        Each vector file records how its arbiter was applied, the digest of
+        every input, and the arbiter's own uncertainty. The generators rebuild
+        every file byte for byte, and the engine repository's continuous
+        integration checks that they still do.
+      </p>
+    </div>
+
+    <h2 id="results">Results</h2>
+    <div class="prose">
+      <p>
+        A vector an engine has no function for is counted as unsupported, not
+        as a failure. Residuals are the median and largest difference from the
+        expected value.
+      </p>
+      <p>
+        The @zodiacs/engine results are for version {testedEngine}, the version
+        in the engine repository when the suite was released. This site's
+        charts use version {siteEngine}.
+      </p>
+    </div>
+    {runs.map((run) => (
+      <>
+        <h3 class="conformance-run">{run.heading}</h3>
+        <div class="conformance-table-wrap" tabindex="0" role="region" aria-label={`Results for ${run.heading}`}>
+          <table>
+            <thead><tr><th scope="col">Kind</th><th scope="col">Pass</th><th scope="col">Fail</th><th scope="col">Unsupported</th><th scope="col">Median / largest residual</th></tr></thead>
+            <tbody>
+              {run.levels.map((level) => (
+                <>
+                  {level.kinds.map((kind) => kind.bucket && (
+                    <tr>
+                      <th scope="row">{kindTitles[kind.kind] ?? kind.kind}</th>
+                      <td>{kind.bucket.pass}</td>
+                      <td>{kind.bucket.fail}</td>
+                      <td>{kind.bucket.unsupported + kind.bucket.error}</td>
+                      <td class="conformance-residual">{residual(kind.bucket)}</td>
+                    </tr>
+                  ))}
+                  {level.bucket && (
+                    <tr class="conformance-total">
+                      <th scope="row">{levelTitles[level.level]}, all</th>
+                      <td>{level.bucket.pass}</td>
+                      <td>{level.bucket.fail}</td>
+                      <td>{level.bucket.unsupported + level.bucket.error}</td>
+                      <td></td>
+                    </tr>
+                  )}
+                </>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        {run.tags.length > 0 && (
+          <p class="conformance-tags">
+            {run.tags.map(([tag, bucket]) => `Vectors tagged ${tag}: ${bucket.pass} pass, ${bucket.fail} fail, ${bucket.unsupported} unsupported, of ${bucket.count}.`).join(' ')}
+          </p>
+        )}
+        {run.values === 'none' && (
+          <p class="conformance-tags">Published as verdicts, returned flags and summary statistics only.</p>
+        )}
+        <div class="prose conformance-notes" set:html={notesHtml(run.notes)} />
+      </>
+    ))}
+
+    <h2 id="run">Run it yourself</h2>
+    <div class="prose">
+      <p>
+        With Node.js 20 or later, from a clone of the engine repository:
+      </p>
+    </div>
+    <pre tabindex="0" role="region" aria-label="Commands"><code>{`npm ci && npm run build
+node conformance/harness/validate.mjs --expect-total ${total}
+node conformance/harness/run.mjs \\
+  --adapter "node conformance/adapters/zodiacs-engine.mjs" \\
+  --out my-results.json`}</code></pre>
+    <div class="prose">
+      <p>
+        To measure another engine, write an adapter that follows{' '}
+        <a href={suiteFile('SPEC.md')}>the protocol</a>: one JSON request per
+        line in, one JSON response per line out, and <code>unsupported</code>
+        for anything the engine cannot answer.
+      </p>
+    </div>
+
+    <h2 id="discrepancies">Report an error in the suite</h2>
+    <div class="prose">
+      <p>
+        If you believe a vector's expected value, tolerance or arbiter is
+        wrong, open a{' '}
+        <a href={`${source.repository}/issues/new?template=conformance-discrepancy.yml`}>conformance discrepancy</a>{' '}
+        with your evidence. Every report gets a public disposition in{' '}
+        <a href={suiteFile('DISCREPANCIES.md')}>the log</a>. A vector is never
+        changed in place: a wrong one is withdrawn and replaced under a new id.
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .conformance-page h1 { margin: var(--s-1) 0 var(--s-4); }
+  .conformance-page h2 { margin: var(--s-12) 0 var(--s-4); font-size: var(--text-lg); scroll-margin-top: 96px; }
+  .conformance-page h3.conformance-run { margin: var(--s-8) 0 var(--s-3); }
+  .conformance-page .prose { max-width: 68ch; }
+  .conformance-page code { font-family: var(--font-mono); font-size: .9em; overflow-wrap: anywhere; }
+  pre { margin: var(--s-6) 0; padding: var(--s-4); border: 1px solid var(--hair-2); border-radius: var(--radius-sm); max-width: 100%; overflow-x: auto; font-size: var(--text-sm); line-height: 1.7; }
+  pre:focus-visible, .conformance-table-wrap:focus-visible { outline: 2px solid var(--text-2); outline-offset: 4px; }
+  pre code { overflow-wrap: normal; }
+  .conformance-table-wrap { overflow-x: auto; margin: var(--s-4) 0; }
+  .conformance-table-wrap table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); }
+  .conformance-table-wrap th,
+  .conformance-table-wrap td { padding: 10px 12px; border-bottom: 1px solid var(--hair-1); text-align: left; vertical-align: top; }
+  .conformance-table-wrap thead th { color: var(--faint); font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; }
+  .conformance-table-wrap tbody th { font-weight: 500; }
+  .conformance-table-wrap td { font-family: var(--font-mono); white-space: nowrap; }
+  .conformance-tolerance, .conformance-residual { white-space: normal !important; color: var(--text-2); }
+  .conformance-total th, .conformance-total td { color: var(--text-1); border-bottom-color: var(--hair-2); }
+  .conformance-tags { color: var(--text-2); font-size: var(--text-sm); max-width: 68ch; }
+  .conformance-notes { font-size: var(--text-sm); color: var(--text-2); }
+</style>

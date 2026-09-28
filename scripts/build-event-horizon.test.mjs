@@ -16,23 +16,23 @@ afterEach(async () => {
 });
 
 describe('Phase 2 five-year event horizon', () => {
-  it('regenerates the committed sky and eclipse catalogs byte-for-byte', async () => {
+  // One test per catalog, each with its own budget: together they took 4.0 s
+  // of vitest's default 5 s and timed out under a full parallel run.
+  it.each([
+    { script: 'scripts/build-sky.mjs', source: 'src/data/sky.json' },
+    { script: 'scripts/build-eclipses.mjs', source: 'src/data/eclipses.json' },
+  ])('regenerates the committed $source byte-for-byte', async ({ script, source }) => {
     temporaryRoot = await mkdtemp(join(tmpdir(), 'zodiacs-event-horizon-'));
-    for (const { script, source } of [
-      { script: 'scripts/build-sky.mjs', source: 'src/data/sky.json' },
-      { script: 'scripts/build-eclipses.mjs', source: 'src/data/eclipses.json' },
-    ]) {
-      const committed = await readFile(resolve(repositoryRoot, source), 'utf8');
-      const generatedAt = JSON.parse(committed).generatedAt;
-      const output = resolve(temporaryRoot, source.split('/').at(-1));
-      await execFileAsync(process.execPath, [
-        script,
-        '--output', output,
-        '--generated-at', generatedAt,
-      ], { cwd: repositoryRoot });
-      expect(await readFile(output, 'utf8'), `${source} must regenerate byte-for-byte`).toBe(committed);
-    }
-  });
+    const committed = await readFile(resolve(repositoryRoot, source), 'utf8');
+    const generatedAt = JSON.parse(committed).generatedAt;
+    const output = resolve(temporaryRoot, source.split('/').at(-1));
+    await execFileAsync(process.execPath, [
+      script,
+      '--output', output,
+      '--generated-at', generatedAt,
+    ], { cwd: repositoryRoot });
+    expect(await readFile(output, 'utf8'), `${source} must regenerate byte-for-byte`).toBe(committed);
+  }, 60_000);
 
   it('pins the exact inclusive 2026–2030 horizon and preserved anchors', async () => {
     const [sky, eclipses] = await Promise.all([

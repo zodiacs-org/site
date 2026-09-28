@@ -63,13 +63,14 @@ describe('assistant site context', () => {
       // Developer support and runnable examples add two static pages.
       // The chart-difference tool at /developers/compare/ adds one more.
       // The local MCP adapter's page at /developers/mcp/ adds one more again.
-      // The engine's own product page at /developers/engine/ adds the last one.
-      consumerRoutes: 695,
+      // The engine's own product page at /developers/engine/ adds one more.
+      // The conformance suite's results page at /developers/conformance/ adds the last one.
+      consumerRoutes: 696,
       glossary: 145,
       guides: 12,
       learn: 159,
       pairs: 78,
-      staticPages: 56,
+      staticPages: 57,
       tools: 20,
     });
     expect(context).toContain('- /birthday/february-29/ — Pisces birthday guide.');

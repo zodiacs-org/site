@@ -66,7 +66,7 @@ Severity follows the audit's scale:
 | F-37 | minor | wing | `src/islands/WalletChart.tsx:189` passes no longitude and never calls `prepareLocalTime`, so it gets the host's zone history | open |
 | F-38 | minor | time | A gap at the end of a local-mean-time era drops the `localMeanTime` field (Buffalo 1883-11-18 11:50), so the notice does not show | open |
 | F-39 | minor | copy | `lmtNotice` also fires for legal mean times (Galway 1885, Amsterdam to 1937, Monrovia to 1972), where the birthplace's own mean time was not used | open |
-| F-41 | minor | tests | The committed round-trip scan covers only the host path, not the pinned tables production uses; `build-transits.test.mjs` runs 110.7 s against a 120 s timeout | open |
+| F-41 | minor | tests | The committed round-trip scan covers only the host path, not the pinned tables production uses; `build-transits.test.mjs` runs 110.7 s against a 120 s timeout | timeout: fixed in #596 after it timed out in CI (one test per month; `build-event-horizon.test.mjs`, at 4.0 s of a 5 s default, likewise split); round-trip scan: open |
 | F-08 | info | engine | The physical declination rule (≤ 0.01″ vs Swiss FLG_EQUATORIAL) is not met: median 1.71″, max 20.76″ | FAIL recorded on P2.A.aspects.declination-accuracy; waits for P4.1 |
 | F-09 | info | engine | astronomy-engine's five-term nutation puts true obliquity up to 0.082″ from ERFA | noted for P4.1 |
 | F-10 | info | engine tests | Some rc.11 tests confirm the implementation with itself | rc.13 adds independent oracles |

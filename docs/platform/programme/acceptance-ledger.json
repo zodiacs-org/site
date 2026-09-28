@@ -1,7 +1,7 @@
 {
   "version": 1,
   "brief": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md (version 2) with the version 1 rules it retains",
-  "asOf": "2026-09-28 (owner decisions recorded; site main and production c7c591ba, engine main df01d2d7)",
+  "asOf": "2026-09-28 (conformance suite v0 on engine main 8c4946b1; site main and production b972bc9d)",
   "denominator": {
     "unit": "working days, from the brief's effort estimates (README.md)",
     "totalWeight": 182.45,
@@ -2067,10 +2067,15 @@
       "weight": 5,
       "gate": "every vector names its arbiter and tolerance; no Swiss arbiter",
       "dependsOn": [],
-      "status": "partial",
-      "release": "none",
-      "evidence": [],
-      "notes": "committed corpora exist (Horizons-anchored corpus, angle grid, tzdb divergence list, Swiss benchmark); no CC0 vector suite with arbiters; licence decided 2026-09-28: CC0 1.0 (docs/platform/programme/DECISIONS-2026-09-28.md §7)"
+      "status": "accepted",
+      "release": "merged",
+      "evidence": [
+        "zodiacs-org/engine@8c4946b1 (PR #9): conformance/vectors/L1-positions.json (240), L2-houses-angles.json (150), L3-time-calendars.json (110)",
+        "Conformance workflow run 36439264956 on engine main, green: validate.mjs --expect-total 500 checks every vector's arbiter, tolerance and input digests and refuses a Swiss arbiter; the generators job rebuilds all three files byte for byte",
+        "conformance/DISCREPANCIES.md: the pre-release independent review and its seven dispositions, 2026-09-28",
+        "conformance/LICENSE: CC0 1.0"
+      ],
+      "notes": "suite 0.1.0; arbiters: Horizons DE441 (L1), ERFA with each house system's construction (L2), tzdb 2025c with backzone via zic, the IERS leap-second table and UT1 series, and two calendar algorithms (L3); the history of Swiss Ephemeris's part in choosing the L1 instants and identifying the frame is disclosed in conformance/README.md; licence decided 2026-09-28 (DECISIONS-2026-09-28.md §7)"
     },
     {
       "id": "B1.b",
@@ -2081,9 +2086,14 @@
       "weight": 2.5,
       "gate": "both adapters run the suite",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "accepted",
+      "release": "merged",
+      "evidence": [
+        "zodiacs-org/engine@8c4946b1 (PR #9): conformance/harness/run.mjs, adapters/zodiacs-engine.mjs, adapters/pyswisseph.py",
+        "Conformance workflow run 36439264956 on engine main, green: the engine adapter re-runs all 500 vectors and must match the committed verdicts in results/zodiacs-engine.json",
+        "conformance/results/pyswisseph.json: Swiss Ephemeris 2.10.03 through pyswisseph 20230604, verdicts, returned flags and statistics only (--values none)"
+      ],
+      "notes": "rc.12: 232 pass, 222 fail, 46 unsupported; Swiss Ephemeris: 403 pass, 47 fail, 50 unsupported; the causes are in results/*.notes.md"
     },
     {
       "id": "B1.c",
@@ -2094,9 +2104,13 @@
       "weight": 1.5,
       "gate": "CI job green; results page live",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "validated",
+      "release": "merged",
+      "evidence": [
+        "Conformance workflow run 36439264956 on engine main, green; the harness self-test, validation, run and report checks run on every engine change",
+        "src/pages/developers/conformance/index.astro, from src/data/conformance/summary.json (sha256 0407deee…2ba0, copied unchanged from engine 8c4946b1)"
+      ],
+      "notes": "accepted once the production deployment serving /developers/conformance/ is verified"
     },
     {
       "id": "B1.d",
@@ -2107,9 +2121,12 @@
       "weight": 1,
       "gate": "documented process with a published disposition log",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "accepted",
+      "release": "merged",
+      "evidence": [
+        "zodiacs-org/engine@8c4946b1 (PR #9): conformance/DISCREPANCIES.md (process, three dispositions, a log with seven entries)",
+        ".github/ISSUE_TEMPLATE/conformance-discrepancy.yml"
+      ]
     },
     {
       "id": "B2.a",

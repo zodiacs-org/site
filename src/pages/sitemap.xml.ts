@@ -95,12 +95,13 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // Developer pages date from the last commit that changed their content, not
   // from the review cycle that first shipped the section; these had drifted a
   // fortnight behind edits that were live.
-  ['/developers/', '2026-09-20'] as const,
+  ['/developers/', '2026-09-28'] as const,
   ['/developers/support/', '2026-09-20'] as const,
   ['/developers/engine/', '2026-09-20'] as const,
   ['/developers/examples/', '2026-09-17'] as const,
   ['/developers/compare/', '2026-09-18'] as const,
   ['/developers/mcp/', '2026-09-18'] as const,
+  ['/developers/conformance/', '2026-09-28'] as const,
   ['/lunar-return/', '2026-09-06'] as const,
   ['/tools/', '2026-09-06'] as const,
   // Astrofolio on the Fomo app: the consumer landing page for the twelve.
@@ -274,6 +275,7 @@ export const GET: APIRoute = async () => {
     { loc: '/developers/examples/', priority: 0.6 },
     { loc: '/developers/compare/', priority: 0.6 },
     { loc: '/developers/mcp/', priority: 0.6 },
+    { loc: '/developers/conformance/', priority: 0.6 },
     { loc: '/fomo/', priority: 0.6 },
     { loc: '/disclosure/', priority: 0.5 },
     // Locale variants and hreflang blocks are added below through the same
