@@ -14,6 +14,8 @@ import {
 import { GUIDE_CLOUD_DISCLOSURE_POLICY_VERSION } from '../guide-server/policy';
 import { GUIDE_KNOWLEDGE_ENTRIES } from '../guide-knowledge/catalog';
 import { GUIDE_SHELL_URL, guideLoaderSource } from './guide-loader.mjs';
+import { computeBodies } from '../engine/full';
+import { degreeInSign, signForLongitude } from '../signs';
 
 const ACCOUNT_ID = '11111111-1111-4111-8111-111111111111';
 const OLDER_ID = '22222222-2222-4222-8222-222222222222';
@@ -163,11 +165,39 @@ describe('saved-chart assistant context', () => {
     )).toBeNull();
   });
 
-  it('omits angles and houses when birth time is unknown', async () => {
-    const chart = selfChart(profileJson({ timeKnown: false }));
-    const summary = await placementSummaryForChart(chart!);
-    expect(summary).toContain('Sun: 15°00′ Aries');
+  it('sends a chart without a birth time as the sky at 12:00 UTC on its date, without the Moon, angles or houses', async () => {
+    // The saved positions are noon in Bangkok, whose bodies to the arcminute
+    // would give the time zone; Guide gets noon UTC on the date instead.
+    const summary = (await placementSummaryForChart(selfChart(profileJson({ timeKnown: false }))!))!;
+    const arcminute = (lon: number) => {
+      const within = degreeInSign(lon);
+      return `${Math.floor(within)}°${String(Math.floor((within - Math.floor(within)) * 60 + 1e-7)).padStart(2, '0')}′ ${signForLongitude(lon).name}`;
+    };
+    const noonUtc = computeBodies(new Date('1990-04-17T12:00:00Z'));
+    expect(summary.split('\n')).toEqual([
+      'Tropical chart placements at 12:00 UTC on the birth date (birth time not known):',
+      ...noonUtc.map(({ body, lon, retrograde }) => (body === 'Moon'
+        ? 'Moon: sign not known without a birth time'
+        : `${body}: ${arcminute(lon)}${retrograde ? ' · retrograde' : ''}`)),
+    ]);
+    expect(summary).not.toContain('Sun: 15°00′ Aries');
     expect(summary).not.toMatch(/house|ASC:|MC:/);
+    // Nothing in it comes from the birthplace: another place on the date gives the same lines.
+    const elsewhere = JSON.parse(profileJson({ timeKnown: false }));
+    elsewhere.charts[1].birth.place = { name: 'Honolulu', country: 'US', lat: 21.31, lon: -157.86, tz: 'Pacific/Honolulu' };
+    elsewhere.charts[1].summary.bodies = [{ body: 'Sun', lon: 27.3, retrograde: false }];
+    expect(await placementSummaryForChart(selfChart(JSON.stringify(elsewhere))!)).toBe(summary);
+  });
+
+  it('asks consent for a chart without a birth time in words true of its noon-UTC lines, in every locale', async () => {
+    const source = await readFile(new URL('./open-assistant.ts', import.meta.url), 'utf8');
+    const noTime = [...source.matchAll(/consentBodyNoTime: '([^'\n]+)'/gu)].map((match) => match[1] ?? '');
+    expect(noTime).toHaveLength(5);
+    for (const body of noTime) {
+      expect(body).toContain('12:00 UTC');
+      expect(body).toContain('OpenAI');
+    }
+    expect(source).toContain('const body = chart.birth.timeKnown ? copy.consentBody : copy.consentBodyNoTime;');
   });
 
   it('gives a Placidus chart no house numbers, which would need the exact angles', async () => {
