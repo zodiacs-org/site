@@ -1,5 +1,7 @@
 # Finite remaining platform checklist
 
+*Appended 2026-09-28.* For the engine and platform programme, the current status is [`programme/STATUS.md`](programme/STATUS.md), measured against the brief by [`programme/LEDGER.md`](programme/LEDGER.md). This page is kept as its history. An audit on 2026-09-28 found parts of it out of date: saved records, for example, are now active in production.
+
 Current checkpoint: 2026-09-16. L2a, L2b and L3b/c are released and production-verified. The saved-records feature is merged and deployed but inactive: activating its flag is a Vercel project change this environment cannot make.
 Historical source-specific evidence remains linked from [STATUS](STATUS.md).
 

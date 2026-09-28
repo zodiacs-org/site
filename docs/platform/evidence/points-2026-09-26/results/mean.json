@@ -1,0 +1,37 @@
+{
+ "swisseph": "2.10.03",
+ "span": [
+  "1800-01-01T12:00:00.000Z",
+  "2199-12-30T00:00:00.000Z"
+ ],
+ "unit": "arcseconds; speeds in arcseconds per day",
+ "meanNode": {
+  "longitude": {
+   "compared": 39486,
+   "max": 0.671,
+   "p50": 0.192
+  },
+  "speed": {
+   "compared": 39486,
+   "max": 0.0787,
+   "p50": 0.0166
+  }
+ },
+ "blackMoonLilith": {
+  "longitude": {
+   "compared": 39486,
+   "max": 0.716,
+   "p50": 0.188
+  },
+  "latitude": {
+   "compared": 39486,
+   "max": 0.0163,
+   "p50": 0.00181
+  },
+  "speed": {
+   "compared": 39486,
+   "max": 0.079,
+   "p50": 0.0163
+  }
+ }
+}

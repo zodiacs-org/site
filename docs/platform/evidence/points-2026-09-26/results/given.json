@@ -1,0 +1,40 @@
+{
+ "swisseph": "2.10.03",
+ "unit": "arcseconds; for equal-mc the largest of the twelve cusps per case",
+ "sets": {
+  "broad": {
+   "eastPoint": {
+    "compared": 20000,
+    "max": 3.07e-10,
+    "p50": 0.0
+   },
+   "equal-mc": {
+    "compared": 20000,
+    "max": 4.09e-10,
+    "p50": 1.02e-10
+   },
+   "vertex": {
+    "compared": 20000,
+    "max": 1.64e-09,
+    "p50": 0.0
+   }
+  },
+  "ladder": {
+   "eastPoint": {
+    "compared": 5616,
+    "max": 2.05e-10,
+    "p50": 0.0
+   },
+   "equal-mc": {
+    "compared": 5616,
+    "max": 4.09e-10,
+    "p50": 0.0
+   },
+   "vertex": {
+    "compared": 5616,
+    "max": 3.07e-10,
+    "p50": 0.0
+   }
+  }
+ }
+}

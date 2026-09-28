@@ -1,0 +1,2563 @@
+{
+  "version": 1,
+  "brief": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md (version 2) with the version 1 rules it retains",
+  "asOf": "2026-09-28 (first audit checkpoint; site main 817132f7, production f2bd0dd4/817132f7, engine main df01d2d7)",
+  "denominator": {
+    "unit": "working days, from the brief's effort estimates (README.md)",
+    "totalWeight": 182.45,
+    "unitCount": 151,
+    "digest": "52f0e08533e8774bf10d33a322b597f3205aea1a76980f6e2a8a6ba33fc1d0a8",
+    "changes": [
+      {
+        "date": "2026-09-28",
+        "digest": "52f0e08533e8774bf10d33a322b597f3205aea1a76980f6e2a8a6ba33fc1d0a8",
+        "reason": "Initial denominator, fixed before any status was assigned.",
+        "decision": "integrator, under the owner's handoff of 2026-09-28 (\"Build a committed, versioned acceptance ledger before assigning a new overall percentage\")"
+      }
+    ]
+  },
+  "units": [
+    {
+      "id": "P0.1",
+      "area": "Phase 0",
+      "title": "Preregistration file with baselines and the corpora it runs on",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 0 item 1; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M0.1",
+      "scope": "required",
+      "weight": 0.75,
+      "gate": "PREREGISTRATION.md holds every M1–M6 rule with baselines; the audit corpora are committed",
+      "dependsOn": [],
+      "status": "accepted",
+      "release": "merged",
+      "evidence": [
+        "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+        "docs/platform/evidence/engine-beyond-swiss/corpora/"
+      ],
+      "notes": "the file collects rules the briefs fixed before any code; it was written after seven steps landed, and says so"
+    },
+    {
+      "id": "P0.2",
+      "area": "Phase 0",
+      "title": "Appended corrections to every record v1 lists",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 0 item 2; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M0.2",
+      "scope": "required",
+      "weight": 0.25,
+      "gate": "each listed file carries a dated appended correction",
+      "dependsOn": [],
+      "status": "accepted",
+      "release": "merged",
+      "evidence": [
+        "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md \"Phase 0 items\" table (Done)"
+      ]
+    },
+    {
+      "id": "P0.3",
+      "area": "Phase 0",
+      "title": "Three false premises recorded; Horizons QUANTITIES=31 frame decomposed",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 0 item 3, R8; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M0.3",
+      "scope": "required",
+      "weight": 0.25,
+      "gate": "premises recorded; pyerfa decomposition reproduces the residual; VECTORS arbiter used",
+      "dependsOn": [],
+      "status": "accepted",
+      "release": "merged",
+      "evidence": [
+        "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md \"Phase 0 items\" table (Done)"
+      ]
+    },
+    {
+      "id": "P0.4",
+      "area": "Phase 0",
+      "title": "Multi-year engine-vs-Swiss distribution fixture",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 0 item 4; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M0.4",
+      "scope": "required",
+      "weight": 0.25,
+      "gate": "fixture committed and quoted by the methodology and validation pages",
+      "dependsOn": [],
+      "status": "accepted",
+      "release": "merged",
+      "evidence": [
+        "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md \"Phase 0 items\" table (Done)"
+      ]
+    },
+    {
+      "id": "P0.5",
+      "area": "Phase 0",
+      "title": "lite.ts header corrected and its fixture test",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 0 item 5; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M0.5",
+      "scope": "required",
+      "weight": 0.25,
+      "gate": "header states measured errors; a 50-instant test holds it",
+      "dependsOn": [],
+      "status": "accepted",
+      "release": "merged",
+      "evidence": [
+        "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md \"Phase 0 items\" item 5"
+      ],
+      "notes": "deviation recorded: the test measures lite.ts against the full engine, not a Swiss fixture, because no Swiss output may enter src/"
+    },
+    {
+      "id": "P0.6",
+      "area": "Phase 0",
+      "title": "Audit, evidence and both briefs committed",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 0 item 6",
+      "scope": "required",
+      "weight": 0.25,
+      "gate": "committed in the site repository",
+      "dependsOn": [],
+      "status": "accepted",
+      "release": "merged",
+      "evidence": [
+        "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md \"Phase 0 items\" table (Done)"
+      ]
+    },
+    {
+      "id": "P0.7a",
+      "area": "Phase 0",
+      "title": "Baselines for §9 measures that are publicly measurable",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 0 item 7, §9",
+      "scope": "required",
+      "weight": 0.25,
+      "gate": "registry downloads, repository stars/forks/dependents, MCP Registry entries, citing domains recorded with date and method",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "P0.7b",
+      "area": "Phase 0",
+      "title": "Baselines for §9 measures that need owner-controlled accounts",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 0 item 7, §9",
+      "scope": "required",
+      "weight": 0.25,
+      "gate": "Search Console/Bing impressions for the developer query set; analytics; assistant panel baseline recorded",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": [],
+      "blockedBy": {
+        "owner": true,
+        "action": "export or grant read access to Search Console, Bing Webmaster Tools and Plausible; choose the assistant accounts for the A8 panel"
+      },
+      "notes": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md item 7: \"Not done; needs the owner's analytics\""
+    },
+    {
+      "id": "P1.01a",
+      "area": "Phase 1",
+      "title": "1.1 Birthplace local mean time in the site resolver",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 1 step 1.1 (R1, R2)",
+      "scope": "required",
+      "weight": 0.75,
+      "gate": "the step 1.1 acceptance list (Buffalo, Brest, Omaha, NY, Chicago, Paris, Galway/Brest/Porto, Bergen, gap and fold, receipts, all-zone round-trip scan test)",
+      "dependsOn": [],
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md §1.1",
+        "independent re-verification 2026-09-28 (A4), reproduced by running code: 13/13 named cases, era table 519/519 vs a fresh zic build, receipts parse"
+      ],
+      "notes": "a gap at the end of an LMT era drops the localMeanTime field (F-38)"
+    },
+    {
+      "id": "P1.01b",
+      "area": "Phase 1",
+      "title": "1.1 Birthplace local mean time in the engine package (resolveBirth)",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 1 step 1.1; R1 effort \"1 d SDK\"",
+      "scope": "required",
+      "weight": 0.75,
+      "gate": "the same acceptance list through the package entry point, released and adopted",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": [],
+      "notes": "engine resolveBirth (rc.10, rc.11) still converts with the zone alone: Buffalo 1870 −4:56:02 vs the site −5:15:31 (F-35)"
+    },
+    {
+      "id": "P1.02",
+      "area": "Phase 1",
+      "title": "1.2 applying as a sign test plus stationary",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md step 1.2; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M1 1a",
+      "scope": "required",
+      "weight": 0.5,
+      "gate": "v1 1a rule",
+      "dependsOn": [],
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md §1.2",
+        "independent re-verification 2026-09-28 (A4), reproduced by running code: 0/236,932 on rc.10 and rc.11; 0/1,000,000 synthetic"
+      ]
+    },
+    {
+      "id": "P1.03",
+      "area": "Phase 1",
+      "title": "1.3 Angles and Placidus on the true obliquity of date",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md step 1.3; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M1 1b",
+      "scope": "required",
+      "weight": 0.5,
+      "gate": "v1 1b rule (5″ gates at 63/65/66°)",
+      "dependsOn": [],
+      "status": "validated",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md §1.3 and amendment A1",
+        "independent re-verification 2026-09-28 (A4), reproduced by running code: p95 2.218″, max 71.333″; ERFA 6.361″; 45/816 vectors over 5″ as first written, 0 under A1"
+      ],
+      "blockedBy": {
+        "owner": true,
+        "action": "ratify or reject amendment A1 (rule 1b: 8″ at 66°); the original 5″ gate returns with the DE backend either way"
+      },
+      "notes": "passes only under amendment A1, adopted after the residual was seen (F-29)"
+    },
+    {
+      "id": "P1.04",
+      "area": "Phase 1",
+      "title": "1.4 Observed ΔT with a 1-σ band in results and receipts",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md step 1.4; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M1 1c",
+      "scope": "required",
+      "weight": 1,
+      "gate": "v1 1c rule (as amended by A2)",
+      "dependsOn": [],
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md §1.4",
+        "independent re-verification 2026-09-28 (A4), reproduced by running code: max 0.0306 s at the 12 dates against IERS files fetched 2026-09-28"
+      ]
+    },
+    {
+      "id": "P1.05",
+      "area": "Phase 1",
+      "title": "1.5 Lunation times in sky.json by apparent-longitude bisection",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md step 1.5; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M1 1d",
+      "scope": "required",
+      "weight": 0.5,
+      "gate": "all 124 committed lunations within 2 s of Swiss; sky vs transits ≤ 2 s",
+      "dependsOn": [],
+      "status": "failed",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md §1.5 and A4 re-run",
+        "independent re-verification 2026-09-28 (A4), reproduced by running code: 80/124 within 2 s, largest 5.153 s"
+      ],
+      "notes": "the Moon's geometry, which the DE backend (P4.1) replaces"
+    },
+    {
+      "id": "P1.06",
+      "area": "Phase 1",
+      "title": "1.6 Grazing return passes no longer dropped",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md step 1.6; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M1 1f",
+      "scope": "required",
+      "weight": 0.5,
+      "gate": "v1 1f rule",
+      "dependsOn": [],
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md §1.6",
+        "independent re-verification 2026-09-28 (A4), reproduced by running code: Saturn graze 3 passes within 16 ms of a fine scan; 148/148 graze cases"
+      ]
+    },
+    {
+      "id": "P1.07",
+      "area": "Phase 1",
+      "title": "1.7 outside-reference-span and range-clipped flags",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md step 1.7; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M1 1e",
+      "scope": "required",
+      "weight": 0.25,
+      "gate": "v1 1e rule",
+      "dependsOn": [],
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md §1.7",
+        "independent re-verification 2026-09-28 (A4), reproduced by running code: flag exactly outside [1800, 2200) on rc.10 and rc.11"
+      ]
+    },
+    {
+      "id": "P1.08",
+      "area": "Phase 1",
+      "title": "1.8 Moon and planet speeds",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md step 1.8; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M1 1g",
+      "scope": "required",
+      "weight": 0.5,
+      "gate": "v1 1g rule (Moon speed ≤ 1″/day at perigee/apogee)",
+      "dependsOn": [],
+      "status": "validated",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md §1.8 and amendment A3",
+        "independent re-verification 2026-09-28 (A4), reproduced by running code: max 1.398″/day, 8 of 400 samples over 1″; station flags 108/108"
+      ],
+      "blockedBy": {
+        "owner": true,
+        "action": "ratify or reject amendment A3 (rule 1g: 1.5″/day); the original 1″/day gate returns with the DE backend either way"
+      },
+      "notes": "passes only under amendment A3, adopted after the residual was seen (F-29)"
+    },
+    {
+      "id": "P1.09",
+      "area": "Phase 1",
+      "title": "1.9 Placidus polar limit at 90° − ε, named fallback, Porphyry",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md step 1.9; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M1 1h",
+      "scope": "required",
+      "weight": 0.5,
+      "gate": "v1 1h rule",
+      "dependsOn": [],
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md §1.9",
+        "independent re-verification 2026-09-28 (A4), reproduced by running code: 336/336 polar status; cusps 0.0085″"
+      ]
+    },
+    {
+      "id": "P1.10",
+      "area": "Phase 1",
+      "title": "1.10 One crossing solver, typed refusals",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md step 1.10; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M1 1i",
+      "scope": "required",
+      "weight": 0.75,
+      "gate": "v1 1i rule",
+      "dependsOn": [],
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md §1.10",
+        "independent re-verification 2026-09-28 (A4), reproduced by running code: crossings-s2 4/4; every site scan imports the package solver"
+      ]
+    },
+    {
+      "id": "P1.11",
+      "area": "Phase 1",
+      "title": "1.11 Receipts describe what was computed; ephemeris identity required",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md step 1.11; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M1 1j",
+      "scope": "required",
+      "weight": 0.75,
+      "gate": "v1 1j rule",
+      "dependsOn": [],
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md §1.11",
+        "independent re-verification 2026-09-28 (A4), reproduced by running code: receipt without ephemeris identity refused"
+      ]
+    },
+    {
+      "id": "P1.12a",
+      "area": "Phase 1",
+      "title": "1.12 Pinned backzone tzdb history in the site resolver",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md step 1.12; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M3",
+      "scope": "required",
+      "weight": 0.5,
+      "gate": "M3 rule for the 98 divergent zones through the site path; Stockholm 1947-07-01 12:00 → +60",
+      "dependsOn": [],
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md §1.12",
+        "independent re-verification 2026-09-28 (A4), reproduced by running code: 98-zone list 187/187 vs 7/187 for host Intl; 775,266/775,266 round trip; Stockholm +1:00"
+      ]
+    },
+    {
+      "id": "P1.12b",
+      "area": "Phase 1",
+      "title": "1.12 Backzone-complete tzdb inside the engine as versioned per-zone shards",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md step 1.12 (\"inside the engine\"); docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M3 scope 4",
+      "scope": "required",
+      "weight": 1,
+      "gate": "the same rule through the package, with Intl as a cross-check, released and adopted",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": [],
+      "notes": "engine resolveBirth: Stockholm 1947-07-01 12:00 gives +2:00 (F-35)"
+    },
+    {
+      "id": "P1.13a",
+      "area": "Phase 1",
+      "title": "1.13 Julian calendar input with adoption-date warnings in the site",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md step 1.13; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M3 rules 3–4",
+      "scope": "required",
+      "weight": 0.5,
+      "gate": "Petrograd 1917-10-25 O.S. gives the 1917-11-07 chart; Julian↔Gregorian agrees with swe_julday/revjul exactly",
+      "dependsOn": [],
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md §1.13",
+        "independent re-verification 2026-09-28 (A4), reproduced by running code: 0/255,675 and 0/255,670 differ from Swiss julday/revjul; Petrograd chart identical"
+      ]
+    },
+    {
+      "id": "P1.13b",
+      "area": "Phase 1",
+      "title": "1.13 calendar: 'gregorian' | 'julian' input in the engine package",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md step 1.13; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M3 scope 5",
+      "scope": "required",
+      "weight": 0.25,
+      "gate": "the same rule through the package; unknown calendars refused, not ignored",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": [],
+      "notes": "engine resolveBirth silently ignores calendar:'julian' (F-36)"
+    },
+    {
+      "id": "P1.14",
+      "area": "Phase 1",
+      "title": "1.14 Claims ledger enforced over every accuracy/time/privacy sentence",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md step 1.14; §7 NN13",
+      "scope": "required",
+      "weight": 1,
+      "gate": "every such sentence (site, llms files, receipts, developer docs) has an evidence path; enforced by test",
+      "dependsOn": [],
+      "status": "partial",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md §1.14",
+        "independent re-verification 2026-09-28 (A4), reproduced by running code: 80 claims, tests 33/33; 5 of 11 planted sentences caught"
+      ],
+      "notes": "developer docs and trigger-free claims escape the extractor (F-23)"
+    },
+    {
+      "id": "P1.15",
+      "area": "Phase 1",
+      "title": "1.15 Share token: coarsened or out of URLs, described truthfully",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md step 1.15 (R9); §6 privacy; §10.4",
+      "scope": "required",
+      "weight": 1,
+      "gate": "decoder test shows the chosen precision cannot recover the birth instant to better than the stated window; truthful wording in the claims ledger",
+      "dependsOn": [],
+      "status": "partial",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md §1.15"
+      ],
+      "blockedBy": {
+        "owner": true,
+        "action": "decide §10.4: coarsen the feed code to a stated window, or move it out of URLs (a random feed id)"
+      },
+      "notes": "no committed test decodes the instant (a code-only decoder recovers 100/100 to a median 6.28 s); time-unknown codes leak the birthplace (F-17); the region figure fails at high latitude (F-40)"
+    },
+    {
+      "id": "P1.M3a",
+      "area": "Phase 1",
+      "title": "M3 remainder: leap-second table for exact UTC→TAI→TT",
+      "source": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M3 scope 1; docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §0 time axis",
+      "scope": "required",
+      "weight": 0.5,
+      "gate": "UTC→TT through a leap-second table; tests at leap-second boundaries",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "P1.M3b",
+      "area": "Phase 1",
+      "title": "M3 remainder: UT1−UTC fed to sidereal time with a fallback band",
+      "source": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M3 scope 2; docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §0 time axis",
+      "scope": "required",
+      "weight": 0.75,
+      "gate": "UT1−UTC from finals with predictions; ±0.9 s fallback band; sidereal time uses it",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "P1.M3c",
+      "area": "Phase 1",
+      "title": "M3 remainder: ΔT band propagated into longitude and event-time bands",
+      "source": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M3 scope 3",
+      "scope": "required",
+      "weight": 0.75,
+      "gate": "per-body longitude uncertainty and event-time bands derived from σ(ΔT)",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "P1.M3d",
+      "area": "Phase 1",
+      "title": "M3 remainder: receipts carry timeScale, tzdbVersion and the applied transition",
+      "source": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M3 scope 6; NN7",
+      "scope": "required",
+      "weight": 0.5,
+      "gate": "receipt fields present and validated",
+      "dependsOn": [],
+      "status": "partial",
+      "release": "none",
+      "evidence": [],
+      "notes": "receipts carry ΔT with model, band and table digest (1.4); no UT1−UTC, leap seconds or tzdb version"
+    },
+    {
+      "id": "P1.M3e",
+      "area": "Phase 1",
+      "title": "M3 remainder: time-5's six flag probes classify correctly",
+      "source": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M3 rule 5",
+      "scope": "required",
+      "weight": 0.5,
+      "gate": "flags derived from transition records; six probes pass",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": [],
+      "notes": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md \"Version 1's other M3 rules\": NOT RUN"
+    },
+    {
+      "id": "P2.A.house.whole",
+      "area": "Phase 2 A Western",
+      "title": "House system: whole",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 A houses; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M5 houses",
+      "scope": "required",
+      "weight": 0.2,
+      "gate": "≤ 0.01″ from Swiss houses_armc given its inputs and ≤ 3″ end to end on the 55–66.6° ladder; polar status agrees; in a released engine adopted by the site and MCP",
+      "dependsOn": [],
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/houses-2026-09-26/README.md (given Swiss inputs: PASS for all twelve rc.9 systems; end to end on the ladder 1850–2049: eleven PASS, Koch 3.73″ in 1 of 353)",
+        "docs/platform/evidence/site-engine-rc10/ (site vendors engine rc.10 since f2bd0dd4; production dpl_GNiCYhHNi5daRWqT3ra4qSzT8XZf at 817132f7)",
+        "MCP 0.1.0-rc.10 offers the system (src/mcp/bounds.ts)"
+      ],
+      "notes": "consumer forms still offer whole sign and Placidus only; that is site exposure (§4.6), not this gate"
+    },
+    {
+      "id": "P2.A.house.placidus",
+      "area": "Phase 2 A Western",
+      "title": "House system: placidus",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 A houses; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M5 houses",
+      "scope": "required",
+      "weight": 0.2,
+      "gate": "≤ 0.01″ from Swiss houses_armc given its inputs and ≤ 3″ end to end on the 55–66.6° ladder; polar status agrees; in a released engine adopted by the site and MCP",
+      "dependsOn": [],
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/houses-2026-09-26/README.md (given Swiss inputs: PASS for all twelve rc.9 systems; end to end on the ladder 1850–2049: eleven PASS, Koch 3.73″ in 1 of 353)",
+        "docs/platform/evidence/site-engine-rc10/ (site vendors engine rc.10 since f2bd0dd4; production dpl_GNiCYhHNi5daRWqT3ra4qSzT8XZf at 817132f7)",
+        "MCP 0.1.0-rc.10 offers the system (src/mcp/bounds.ts)"
+      ],
+      "notes": "consumer forms still offer whole sign and Placidus only; that is site exposure (§4.6), not this gate"
+    },
+    {
+      "id": "P2.A.house.porphyry",
+      "area": "Phase 2 A Western",
+      "title": "House system: porphyry",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 A houses; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M5 houses",
+      "scope": "required",
+      "weight": 0.2,
+      "gate": "≤ 0.01″ from Swiss houses_armc given its inputs and ≤ 3″ end to end on the 55–66.6° ladder; polar status agrees; in a released engine adopted by the site and MCP",
+      "dependsOn": [],
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/houses-2026-09-26/README.md (given Swiss inputs: PASS for all twelve rc.9 systems; end to end on the ladder 1850–2049: eleven PASS, Koch 3.73″ in 1 of 353)",
+        "docs/platform/evidence/site-engine-rc10/ (site vendors engine rc.10 since f2bd0dd4; production dpl_GNiCYhHNi5daRWqT3ra4qSzT8XZf at 817132f7)",
+        "MCP 0.1.0-rc.10 offers the system (src/mcp/bounds.ts)"
+      ],
+      "notes": "consumer forms still offer whole sign and Placidus only; that is site exposure (§4.6), not this gate"
+    },
+    {
+      "id": "P2.A.house.koch",
+      "area": "Phase 2 A Western",
+      "title": "House system: koch",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 A houses; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M5 houses",
+      "scope": "required",
+      "weight": 0.2,
+      "gate": "≤ 0.01″ from Swiss houses_armc given its inputs and ≤ 3″ end to end on the 55–66.6° ladder; polar status agrees; in a released engine adopted by the site and MCP",
+      "dependsOn": [],
+      "status": "failed",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/houses-2026-09-26/README.md (given Swiss inputs: PASS for all twelve rc.9 systems; end to end on the ladder 1850–2049: eleven PASS, Koch 3.73″ in 1 of 353)"
+      ],
+      "notes": "end to end 3.73″ > 3″ in one ladder case at 65.6° N; given Swiss inputs it agrees to 4e-10″, so the excess is the sidereal-time input difference Koch magnifies. FAIL stands until the input agreement improves (Phase 4)"
+    },
+    {
+      "id": "P2.A.house.regiomontanus",
+      "area": "Phase 2 A Western",
+      "title": "House system: regiomontanus",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 A houses; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M5 houses",
+      "scope": "required",
+      "weight": 0.2,
+      "gate": "≤ 0.01″ from Swiss houses_armc given its inputs and ≤ 3″ end to end on the 55–66.6° ladder; polar status agrees; in a released engine adopted by the site and MCP",
+      "dependsOn": [],
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/houses-2026-09-26/README.md (given Swiss inputs: PASS for all twelve rc.9 systems; end to end on the ladder 1850–2049: eleven PASS, Koch 3.73″ in 1 of 353)",
+        "docs/platform/evidence/site-engine-rc10/ (site vendors engine rc.10 since f2bd0dd4; production dpl_GNiCYhHNi5daRWqT3ra4qSzT8XZf at 817132f7)",
+        "MCP 0.1.0-rc.10 offers the system (src/mcp/bounds.ts)"
+      ],
+      "notes": "consumer forms still offer whole sign and Placidus only; that is site exposure (§4.6), not this gate"
+    },
+    {
+      "id": "P2.A.house.campanus",
+      "area": "Phase 2 A Western",
+      "title": "House system: campanus",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 A houses; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M5 houses",
+      "scope": "required",
+      "weight": 0.2,
+      "gate": "≤ 0.01″ from Swiss houses_armc given its inputs and ≤ 3″ end to end on the 55–66.6° ladder; polar status agrees; in a released engine adopted by the site and MCP",
+      "dependsOn": [],
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/houses-2026-09-26/README.md (given Swiss inputs: PASS for all twelve rc.9 systems; end to end on the ladder 1850–2049: eleven PASS, Koch 3.73″ in 1 of 353)",
+        "docs/platform/evidence/site-engine-rc10/ (site vendors engine rc.10 since f2bd0dd4; production dpl_GNiCYhHNi5daRWqT3ra4qSzT8XZf at 817132f7)",
+        "MCP 0.1.0-rc.10 offers the system (src/mcp/bounds.ts)"
+      ],
+      "notes": "consumer forms still offer whole sign and Placidus only; that is site exposure (§4.6), not this gate"
+    },
+    {
+      "id": "P2.A.house.topocentric",
+      "area": "Phase 2 A Western",
+      "title": "House system: topocentric",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 A houses; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M5 houses",
+      "scope": "required",
+      "weight": 0.2,
+      "gate": "≤ 0.01″ from Swiss houses_armc given its inputs and ≤ 3″ end to end on the 55–66.6° ladder; polar status agrees; in a released engine adopted by the site and MCP",
+      "dependsOn": [],
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/houses-2026-09-26/README.md (given Swiss inputs: PASS for all twelve rc.9 systems; end to end on the ladder 1850–2049: eleven PASS, Koch 3.73″ in 1 of 353)",
+        "docs/platform/evidence/site-engine-rc10/ (site vendors engine rc.10 since f2bd0dd4; production dpl_GNiCYhHNi5daRWqT3ra4qSzT8XZf at 817132f7)",
+        "MCP 0.1.0-rc.10 offers the system (src/mcp/bounds.ts)"
+      ],
+      "notes": "consumer forms still offer whole sign and Placidus only; that is site exposure (§4.6), not this gate"
+    },
+    {
+      "id": "P2.A.house.alcabitius",
+      "area": "Phase 2 A Western",
+      "title": "House system: alcabitius",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 A houses; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M5 houses",
+      "scope": "required",
+      "weight": 0.2,
+      "gate": "≤ 0.01″ from Swiss houses_armc given its inputs and ≤ 3″ end to end on the 55–66.6° ladder; polar status agrees; in a released engine adopted by the site and MCP",
+      "dependsOn": [],
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/houses-2026-09-26/README.md (given Swiss inputs: PASS for all twelve rc.9 systems; end to end on the ladder 1850–2049: eleven PASS, Koch 3.73″ in 1 of 353)",
+        "docs/platform/evidence/site-engine-rc10/ (site vendors engine rc.10 since f2bd0dd4; production dpl_GNiCYhHNi5daRWqT3ra4qSzT8XZf at 817132f7)",
+        "MCP 0.1.0-rc.10 offers the system (src/mcp/bounds.ts)"
+      ],
+      "notes": "consumer forms still offer whole sign and Placidus only; that is site exposure (§4.6), not this gate"
+    },
+    {
+      "id": "P2.A.house.equal",
+      "area": "Phase 2 A Western",
+      "title": "House system: equal",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 A houses; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M5 houses",
+      "scope": "required",
+      "weight": 0.2,
+      "gate": "≤ 0.01″ from Swiss houses_armc given its inputs and ≤ 3″ end to end on the 55–66.6° ladder; polar status agrees; in a released engine adopted by the site and MCP",
+      "dependsOn": [],
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/houses-2026-09-26/README.md (given Swiss inputs: PASS for all twelve rc.9 systems; end to end on the ladder 1850–2049: eleven PASS, Koch 3.73″ in 1 of 353)",
+        "docs/platform/evidence/site-engine-rc10/ (site vendors engine rc.10 since f2bd0dd4; production dpl_GNiCYhHNi5daRWqT3ra4qSzT8XZf at 817132f7)",
+        "MCP 0.1.0-rc.10 offers the system (src/mcp/bounds.ts)"
+      ],
+      "notes": "consumer forms still offer whole sign and Placidus only; that is site exposure (§4.6), not this gate"
+    },
+    {
+      "id": "P2.A.house.equal-mc",
+      "area": "Phase 2 A Western",
+      "title": "House system: equal-mc",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 A houses; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M5 houses",
+      "scope": "required",
+      "weight": 0.2,
+      "gate": "≤ 0.01″ from Swiss houses_armc given its inputs and ≤ 3″ end to end on the 55–66.6° ladder; polar status agrees; in a released engine adopted by the site and MCP",
+      "dependsOn": [],
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/points-2026-09-26/ (re-run 2026-09-28 on the deployed rc.10 archive a377cdc8…; every result file reproduced byte for byte): given inputs max 4.09e-10″ (ladder and broad); end to end 1850–2049 ladder max 0.229″",
+        "docs/platform/evidence/site-engine-rc10/ (site vendors engine rc.10 since f2bd0dd4; production dpl_GNiCYhHNi5daRWqT3ra4qSzT8XZf at 817132f7)"
+      ]
+    },
+    {
+      "id": "P2.A.house.vehlow",
+      "area": "Phase 2 A Western",
+      "title": "House system: vehlow",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 A houses; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M5 houses",
+      "scope": "required",
+      "weight": 0.2,
+      "gate": "≤ 0.01″ from Swiss houses_armc given its inputs and ≤ 3″ end to end on the 55–66.6° ladder; polar status agrees; in a released engine adopted by the site and MCP",
+      "dependsOn": [],
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/houses-2026-09-26/README.md (given Swiss inputs: PASS for all twelve rc.9 systems; end to end on the ladder 1850–2049: eleven PASS, Koch 3.73″ in 1 of 353)",
+        "docs/platform/evidence/site-engine-rc10/ (site vendors engine rc.10 since f2bd0dd4; production dpl_GNiCYhHNi5daRWqT3ra4qSzT8XZf at 817132f7)",
+        "MCP 0.1.0-rc.10 offers the system (src/mcp/bounds.ts)"
+      ],
+      "notes": "consumer forms still offer whole sign and Placidus only; that is site exposure (§4.6), not this gate"
+    },
+    {
+      "id": "P2.A.house.meridian",
+      "area": "Phase 2 A Western",
+      "title": "House system: meridian",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 A houses; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M5 houses",
+      "scope": "required",
+      "weight": 0.2,
+      "gate": "≤ 0.01″ from Swiss houses_armc given its inputs and ≤ 3″ end to end on the 55–66.6° ladder; polar status agrees; in a released engine adopted by the site and MCP",
+      "dependsOn": [],
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/houses-2026-09-26/README.md (given Swiss inputs: PASS for all twelve rc.9 systems; end to end on the ladder 1850–2049: eleven PASS, Koch 3.73″ in 1 of 353)",
+        "docs/platform/evidence/site-engine-rc10/ (site vendors engine rc.10 since f2bd0dd4; production dpl_GNiCYhHNi5daRWqT3ra4qSzT8XZf at 817132f7)",
+        "MCP 0.1.0-rc.10 offers the system (src/mcp/bounds.ts)"
+      ],
+      "notes": "consumer forms still offer whole sign and Placidus only; that is site exposure (§4.6), not this gate"
+    },
+    {
+      "id": "P2.A.house.morinus",
+      "area": "Phase 2 A Western",
+      "title": "House system: morinus",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 A houses; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M5 houses",
+      "scope": "required",
+      "weight": 0.2,
+      "gate": "≤ 0.01″ from Swiss houses_armc given its inputs and ≤ 3″ end to end on the 55–66.6° ladder; polar status agrees; in a released engine adopted by the site and MCP",
+      "dependsOn": [],
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/houses-2026-09-26/README.md (given Swiss inputs: PASS for all twelve rc.9 systems; end to end on the ladder 1850–2049: eleven PASS, Koch 3.73″ in 1 of 353)",
+        "docs/platform/evidence/site-engine-rc10/ (site vendors engine rc.10 since f2bd0dd4; production dpl_GNiCYhHNi5daRWqT3ra4qSzT8XZf at 817132f7)",
+        "MCP 0.1.0-rc.10 offers the system (src/mcp/bounds.ts)"
+      ],
+      "notes": "consumer forms still offer whole sign and Placidus only; that is site exposure (§4.6), not this gate"
+    },
+    {
+      "id": "P2.A.houses.polar-policy",
+      "area": "Phase 2 A Western",
+      "title": "A polar policy per house system with a named fallback",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 A houses",
+      "scope": "required",
+      "weight": 0.5,
+      "gate": "polar status agrees with Swiss per system; fallback named in results",
+      "dependsOn": [],
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/houses-2026-09-26/README.md (given Swiss inputs: PASS for all twelve rc.9 systems; end to end on the ladder 1850–2049: eleven PASS, Koch 3.73″ in 1 of 353) (polar status agrees in every case)",
+        "docs/platform/evidence/site-engine-rc10/ (site vendors engine rc.10 since f2bd0dd4; production dpl_GNiCYhHNi5daRWqT3ra4qSzT8XZf at 817132f7)"
+      ]
+    },
+    {
+      "id": "P2.A.houses.position",
+      "area": "Phase 2 A Western",
+      "title": "House position of a body with latitude",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 A houses; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M5",
+      "scope": "required",
+      "weight": 0.75,
+      "gate": "vs Swiss house_pos on a grid",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "P2.A.houses.vertex-east-point",
+      "area": "Phase 2 A Western",
+      "title": "Vertex and East Point",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 A houses; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M5",
+      "scope": "required",
+      "weight": 0.5,
+      "gate": "M5 houses rule applied to the points (≤ 0.01″ given inputs; ≤ 3″ end to end on the ladder)",
+      "dependsOn": [],
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/points-2026-09-26/ (re-run 2026-09-28 on the deployed rc.10 archive a377cdc8…; every result file reproduced byte for byte): given inputs Vertex ≤ 1.64e-9″, East Point ≤ 3.07e-10″; end to end ladder 1850–2049 both ≤ 0.231″",
+        "docs/platform/evidence/site-engine-rc10/ (site vendors engine rc.10 since f2bd0dd4; production dpl_GNiCYhHNi5daRWqT3ra4qSzT8XZf at 817132f7)"
+      ],
+      "notes": "broad set: one near-zenith Vertex case at 3.46″ (0.000014″ given Swiss inputs); the M5 rule is judged on the ladder"
+    },
+    {
+      "id": "P2.A.houses.co-ascendants",
+      "area": "Phase 2 A Western",
+      "title": "Co-ascendants and polar ascendant",
+      "source": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M5 houses (\"Vertex/East Point/co-ascendants\")",
+      "scope": "required",
+      "weight": 0.25,
+      "gate": "vs Swiss houses_ex ascmc",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "P2.A.houses.cusp-speeds",
+      "area": "Phase 2 A Western",
+      "title": "Analytic cusp speeds",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 A houses; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M5",
+      "scope": "required",
+      "weight": 0.75,
+      "gate": "vs Swiss houses_ex2 speeds",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "P2.A.points.mean-node-lilith",
+      "area": "Phase 2 A Western",
+      "title": "Mean node and mean Black Moon Lilith",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 A points",
+      "scope": "required",
+      "weight": 0.75,
+      "gate": "≤ 1″ from Swiss SE_MEAN_NODE / SE_MEAN_APOG over the stated span",
+      "dependsOn": [],
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/points-2026-09-26/ (re-run 2026-09-28 on the deployed rc.10 archive a377cdc8…; every result file reproduced byte for byte): mean node max 0.671″, Lilith max 0.716″ over 39,486 instants 1800–2199",
+        "docs/platform/evidence/site-engine-rc10/ (site vendors engine rc.10 since f2bd0dd4; production dpl_GNiCYhHNi5daRWqT3ra4qSzT8XZf at 817132f7)"
+      ],
+      "notes": "v2's rule (≤ 1″) governs; v1 M5's reading of ≤ 0.1″ for the node would not be met (0.671″)"
+    },
+    {
+      "id": "P2.A.points.osculating-lilith",
+      "area": "Phase 2 A Western",
+      "title": "Osculating Black Moon Lilith",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 A points",
+      "scope": "required",
+      "weight": 1,
+      "gate": "≤ 1″ from Swiss SE_OSCU_APOG",
+      "dependsOn": [
+        "P4.1"
+      ],
+      "status": "not-started",
+      "release": "none",
+      "evidence": [],
+      "notes": "engine rc.10 evidence: astronomy-engine lunar series 198″ median from Swiss in a probe; waits for the DE backend"
+    },
+    {
+      "id": "P2.A.points.lots",
+      "area": "Phase 2 A Western",
+      "title": "Lots of Fortune and Spirit (day/night) and the other Hellenistic lots",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 A points",
+      "scope": "required",
+      "weight": 0.5,
+      "gate": "one citation per lot formula; tests hold each formula",
+      "dependsOn": [],
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "engine@f5f33892 src/points.ts (Paulus Alexandrinus, Introductory Matters, ch. 23; Ptolemy variant noted)",
+        "engine src/points.test.ts day and night formulas for all seven",
+        "docs/platform/evidence/site-engine-rc10/ (site vendors engine rc.10 since f2bd0dd4; production dpl_GNiCYhHNi5daRWqT3ra4qSzT8XZf at 817132f7)"
+      ]
+    },
+    {
+      "id": "P2.A.points.antiscia-midpoints",
+      "area": "Phase 2 A Western",
+      "title": "Antiscia and midpoints",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 A points",
+      "scope": "required",
+      "weight": 0.25,
+      "gate": "definitions cited; tests",
+      "dependsOn": [],
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "engine src/points.ts and src/points.test.ts (mirror axes; nearer midpoint, opposite-point rule)",
+        "docs/platform/evidence/site-engine-rc10/ (site vendors engine rc.10 since f2bd0dd4; production dpl_GNiCYhHNi5daRWqT3ra4qSzT8XZf at 817132f7)"
+      ]
+    },
+    {
+      "id": "P2.A.aspects.configurable",
+      "area": "Phase 2 A Western",
+      "title": "Configurable aspect sets and orbs, minor aspects",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 A aspects; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M5",
+      "scope": "required",
+      "weight": 1,
+      "gate": "fixtures for every pattern definition; exact inclusive orb semantics as documented",
+      "dependsOn": [],
+      "status": "failed",
+      "release": "merged",
+      "evidence": [
+        "engine rc.11 (537ecaf4); independent review 2026-09-28: the exact-orb claim fails on general decimal inputs (finding F-06)"
+      ],
+      "notes": "fix in progress as rc.13; then site adoption"
+    },
+    {
+      "id": "P2.A.aspects.declination-oob",
+      "area": "Phase 2 A Western",
+      "title": "Declination parallels/contra-parallels and out-of-bounds in the package",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 A aspects",
+      "scope": "required",
+      "weight": 0.75,
+      "gate": "package functions with fixtures; OOB rule correct against a first-principles computation",
+      "dependsOn": [],
+      "status": "merged",
+      "release": "merged",
+      "evidence": [
+        "engine rc.11 (537ecaf4)"
+      ],
+      "notes": "Sun flagged out of bounds at about half of solstices (F-07); not adopted by the site"
+    },
+    {
+      "id": "P2.A.aspects.declination-accuracy",
+      "area": "Phase 2 A Western",
+      "title": "Declinations ≤ 0.01″ from Swiss FLG_EQUATORIAL",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 A aspects; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M5 frames",
+      "scope": "required",
+      "weight": 0.75,
+      "gate": "physical declinations ≤ 0.01″ from Swiss FLG_EQUATORIAL",
+      "dependsOn": [
+        "P4.1"
+      ],
+      "status": "failed",
+      "release": "merged",
+      "evidence": [
+        "independent review 2026-09-28 vs Swiss FLG_EQUATORIAL, 2,000 instants × 10 bodies 1800–2200: median 1.71″, p95 11.87″, max 20.76″"
+      ],
+      "notes": "the rotation itself agrees with ERFA to 3e-10″; the residual is the positions (astronomy-engine), so this waits for P4.1"
+    },
+    {
+      "id": "P2.A.timing.progressions",
+      "area": "Phase 2 A Western",
+      "title": "Secondary progressions in the package",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 A timing",
+      "scope": "required",
+      "weight": 1,
+      "gate": "fixtures from a cited worked example; site parity",
+      "dependsOn": [],
+      "status": "merged",
+      "release": "merged",
+      "evidence": [
+        "engine rc.12 merged df01d2d7 (PR #8); independent review reproduced every claim"
+      ],
+      "notes": "site adoption pending (P2.E.progressions)"
+    },
+    {
+      "id": "P2.A.timing.returns",
+      "area": "Phase 2 A Western",
+      "title": "Solar and lunar returns in the package",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 A timing",
+      "scope": "required",
+      "weight": 1.5,
+      "gate": "fixtures from cited worked examples; site parity",
+      "dependsOn": [],
+      "status": "partial",
+      "release": "none",
+      "evidence": [],
+      "notes": "site-only implementation (src/lib/engine returns); package has Saturn returns and a longitude-crossing search"
+    },
+    {
+      "id": "P2.A.timing.solar-arc",
+      "area": "Phase 2 A Western",
+      "title": "Solar arc directions",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 A timing",
+      "scope": "required",
+      "weight": 0.75,
+      "gate": "fixtures from cited worked examples",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "P2.A.timing.primary-directions",
+      "area": "Phase 2 A Western",
+      "title": "Primary directions (Ptolemy and Naibod keys; semi-arc and Regiomontanus)",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 A timing",
+      "scope": "required",
+      "weight": 2.5,
+      "gate": "against Swiss-derived arcs; cited examples",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "P2.A.timing.profections",
+      "area": "Phase 2 A Western",
+      "title": "Annual and monthly profections",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 A timing",
+      "scope": "required",
+      "weight": 0.75,
+      "gate": "cited worked examples",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "P2.A.timing.firdaria",
+      "area": "Phase 2 A Western",
+      "title": "Firdaria",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 A timing",
+      "scope": "required",
+      "weight": 0.75,
+      "gate": "cited worked examples",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "P2.A.timing.releasing",
+      "area": "Phase 2 A Western",
+      "title": "Zodiacal releasing",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 A timing",
+      "scope": "required",
+      "weight": 1,
+      "gate": "cited worked examples",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "P2.A.timing.planetary-returns",
+      "area": "Phase 2 A Western",
+      "title": "Planetary returns",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 A timing",
+      "scope": "required",
+      "weight": 0.75,
+      "gate": "cited worked examples; completeness verdict",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "P2.A.timing.planetary-hours",
+      "area": "Phase 2 A Western",
+      "title": "Planetary hours",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 A timing",
+      "scope": "required",
+      "weight": 0.75,
+      "gate": "cited worked examples; sunrise/sunset per rise-set rule",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "P2.A.rise-set",
+      "area": "Phase 2 A Western",
+      "title": "Rise, set and transit with refraction, semi-diameter and polar flags",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 A",
+      "scope": "required",
+      "weight": 1.5,
+      "gate": "≤ 5 s from Swiss rise_trans and a first-principles computation on a site grid; USNO ±30 s check",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "P2.A.composite-davison",
+      "area": "Phase 2 A Western",
+      "title": "Composite and Davison charts",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 A",
+      "scope": "required",
+      "weight": 0.75,
+      "gate": "definitions cited; fixtures",
+      "dependsOn": [],
+      "status": "partial",
+      "release": "none",
+      "evidence": [],
+      "notes": "composite exists in the site only; no Davison"
+    },
+    {
+      "id": "P2.A.eclipses",
+      "area": "Phase 2 A Western",
+      "title": "Eclipses: contacts, magnitudes, Saros, local circumstances",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 A; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M5 eclipses",
+      "scope": "required",
+      "weight": 2.5,
+      "gate": "peaks ≤ 15 s and contacts ≤ 60 s vs Swiss; canon anchors",
+      "dependsOn": [],
+      "status": "partial",
+      "release": "none",
+      "evidence": [],
+      "notes": "site eclipse data from scripts/build-eclipses.mjs; no package API, no contacts or local circumstances"
+    },
+    {
+      "id": "P2.A.asteroids",
+      "area": "Phase 2 A Western",
+      "title": "Chiron, Ceres, Pallas, Juno, Vesta via Horizons SPK on the hosted path",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 A; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M2a(b), M5",
+      "scope": "required",
+      "weight": 2,
+      "gate": "≤ 0.05″ vs Horizons; refuse outside coverage",
+      "dependsOn": [
+        "P3.3"
+      ],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "P2.A.fixed-stars",
+      "area": "Phase 2 A Western",
+      "title": "Fixed stars: curated, cited list",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 A; §7 NN12 revised",
+      "scope": "required",
+      "weight": 2,
+      "gate": "≤ 1″ from Swiss fixstar where both cover; citation and uncertainty per star",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "P2.A.topocentric-moon",
+      "area": "Phase 2 A Western",
+      "title": "Topocentric Moon, pointwise",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 A (R5); docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M2a(a)",
+      "scope": "required",
+      "weight": 0.75,
+      "gate": "≤ 0.05″ from Swiss FLG_TOPOCTR and pyerfa",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "P2.B.ayanamsas",
+      "area": "Phase 2 B Sidereal/Vedic",
+      "title": "Ayanamsas (Lahiri, ICRC, Fagan–Bradley, KP, Raman, Yukteswar, True Citra/Revati/Pushya, Galactic Centre, user-defined)",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 B; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M2a(c), M5",
+      "scope": "required",
+      "weight": 2,
+      "gate": "≤ 0.01″ from get_ayanamsa_ex_ut; each definition cited",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "P2.B.nakshatras",
+      "area": "Phase 2 B Sidereal/Vedic",
+      "title": "Nakshatras and padas",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 B",
+      "scope": "required",
+      "weight": 0.5,
+      "gate": "exact on boundary fixtures",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "P2.B.dashas",
+      "area": "Phase 2 B Sidereal/Vedic",
+      "title": "Vimshottari dasha to five levels (year-length named); Yogini, Ashtottari",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 B",
+      "scope": "required",
+      "weight": 2,
+      "gate": "boundaries within 5 s of an independent first-principles computation",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "P2.B.vargas",
+      "area": "Phase 2 B Sidereal/Vedic",
+      "title": "Sixteen divisional charts with named variants and time sensitivity",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 B",
+      "scope": "required",
+      "weight": 2,
+      "gate": "exact on boundary fixtures",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "P2.B.panchang",
+      "area": "Phase 2 B Sidereal/Vedic",
+      "title": "Panchang (tithi, nakshatra, yoga, karana, vara) from sunrise",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 B",
+      "scope": "required",
+      "weight": 2,
+      "gate": "transitions within 5 s of first principles; one season spot-checked against a published panchang",
+      "dependsOn": [
+        "P2.A.rise-set"
+      ],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "P2.B.kp",
+      "area": "Phase 2 B Sidereal/Vedic",
+      "title": "KP sub-lords and sub-sub-lords; ruling planets",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 B",
+      "scope": "required",
+      "weight": 1,
+      "gate": "exact on boundary fixtures",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "P2.C.solar-terms",
+      "area": "Phase 2 C Chinese",
+      "title": "The 24 solar terms as exact instants",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 C",
+      "scope": "required",
+      "weight": 0.75,
+      "gate": "instants within 2 s (event rule) of an independent computation",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "P2.C.four-pillars",
+      "area": "Phase 2 C Chinese",
+      "title": "Four Pillars with named hour and day-boundary conventions",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 C",
+      "scope": "required",
+      "weight": 1.25,
+      "gate": "fixtures on Lichun and jie boundaries",
+      "dependsOn": [
+        "P2.C.solar-terms"
+      ],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "P2.D.frames",
+      "area": "Phase 2 D Frames",
+      "title": "Equatorial, J2000/ICRS, heliocentric, distances, speeds in every coordinate via the uniform API",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 D; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M5 frames",
+      "scope": "required",
+      "weight": 2,
+      "gate": "round-trip fixtures; vs an independent pyerfa chain",
+      "dependsOn": [
+        "P3.2"
+      ],
+      "status": "partial",
+      "release": "none",
+      "evidence": [],
+      "notes": "rc.11 adds vector-derived equatorial coordinates; no uniform frame/center API"
+    },
+    {
+      "id": "P2.E.progressions",
+      "area": "Phase 2 E Techniques into packages",
+      "title": "Site imports secondary progressions from the package",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 E; §1 site-only list",
+      "scope": "required",
+      "weight": 0.5,
+      "gate": "package function released; the site imports it and its own implementation is removed; parity recorded; deployed",
+      "dependsOn": [],
+      "status": "merged",
+      "release": "merged",
+      "evidence": [
+        "engine rc.12 df01d2d7"
+      ],
+      "notes": "site adoption pending"
+    },
+    {
+      "id": "P2.E.returns",
+      "area": "Phase 2 E Techniques into packages",
+      "title": "Site imports solar and lunar returns from the package",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 E; §1 site-only list",
+      "scope": "required",
+      "weight": 0.5,
+      "gate": "package function released; the site imports it and its own implementation is removed; parity recorded; deployed",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "P2.E.void-of-course",
+      "area": "Phase 2 E Techniques into packages",
+      "title": "Site imports void-of-course Moon from the package",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 E; §1 site-only list",
+      "scope": "required",
+      "weight": 0.5,
+      "gate": "package function released; the site imports it and its own implementation is removed; parity recorded; deployed",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "P2.E.declinations",
+      "area": "Phase 2 E Techniques into packages",
+      "title": "Site imports declination parallels from the package",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 E; §1 site-only list",
+      "scope": "required",
+      "weight": 0.5,
+      "gate": "package function released; the site imports it and its own implementation is removed; parity recorded; deployed",
+      "dependsOn": [],
+      "status": "merged",
+      "release": "merged",
+      "evidence": [
+        "engine rc.11"
+      ],
+      "notes": "site still computes parallels with its own code on a fixed obliquity"
+    },
+    {
+      "id": "P2.E.aspect-patterns",
+      "area": "Phase 2 E Techniques into packages",
+      "title": "Site imports aspect patterns from the package",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 E; §1 site-only list",
+      "scope": "required",
+      "weight": 0.5,
+      "gate": "package function released; the site imports it and its own implementation is removed; parity recorded; deployed",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "P2.E.composite",
+      "area": "Phase 2 E Techniques into packages",
+      "title": "Site imports composite charts from the package",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 E; §1 site-only list",
+      "scope": "required",
+      "weight": 0.5,
+      "gate": "package function released; the site imports it and its own implementation is removed; parity recorded; deployed",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "P2.E.dignities",
+      "area": "Phase 2 E Techniques into packages",
+      "title": "Site imports dignities (triplicity, terms, faces, reception) from the package",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 E; §1 site-only list",
+      "scope": "required",
+      "weight": 0.5,
+      "gate": "package function released; the site imports it and its own implementation is removed; parity recorded; deployed",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "P2.E.sect",
+      "area": "Phase 2 E Techniques into packages",
+      "title": "Site imports sect from the package",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 E; §1 site-only list",
+      "scope": "required",
+      "weight": 0.5,
+      "gate": "package function released; the site imports it and its own implementation is removed; parity recorded; deployed",
+      "dependsOn": [],
+      "status": "merged",
+      "release": "merged",
+      "evidence": [
+        "engine rc.10 sectOf"
+      ],
+      "notes": "site does not import it"
+    },
+    {
+      "id": "P2.E.moon-sign-candidates",
+      "area": "Phase 2 E Techniques into packages",
+      "title": "Site imports Moon-sign candidates for an unknown birth time from the package",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 E; §1 site-only list",
+      "scope": "required",
+      "weight": 0.5,
+      "gate": "package function released; the site imports it and its own implementation is removed; parity recorded; deployed",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "P3.1a",
+      "area": "Phase 3 Platform",
+      "title": "Publish @zodiacs/engine with provenance (trusted publishing, OIDC)",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 step 3.1; §10.3",
+      "scope": "required",
+      "weight": 1,
+      "gate": "npm view shows the package with provenance",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": [],
+      "blockedBy": {
+        "owner": true,
+        "action": "decide the npm scope (shared @zodiacs or a separate one), confirm account control, and do the first manual two-factor publish of each new name; reserve zodiacs on PyPI and @zodiacs on JSR"
+      },
+      "notes": "npm view @zodiacs/engine returns 404 (2026-09-28)"
+    },
+    {
+      "id": "P3.1b",
+      "area": "Phase 3 Platform",
+      "title": "Publish mcp-server, cli, ai-tools and wheel with provenance",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 step 3.1",
+      "scope": "required",
+      "weight": 1,
+      "gate": "npm view shows each package with provenance",
+      "dependsOn": [
+        "P3.1a",
+        "P3.7",
+        "A3",
+        "P3.1d"
+      ],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "P3.1c",
+      "area": "Phase 3 Platform",
+      "title": "JSR mirror, CycloneDX SBOM per release, byte-identical rebuild check in CI",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 step 3.1; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M6 rebuild-ci",
+      "scope": "required",
+      "weight": 1,
+      "gate": "rebuild check green in CI; SBOM attached; JSR entry resolves",
+      "dependsOn": [
+        "P3.1a"
+      ],
+      "status": "partial",
+      "release": "none",
+      "evidence": [],
+      "notes": "packs reproduce byte for byte on Node 20/22/24 (audit 2026-09-28) but no CI job binds artifacts to source yet (F-02)"
+    },
+    {
+      "id": "P3.1d",
+      "area": "Phase 3 Platform",
+      "title": "@zodiacs/wheel package (accessible chart wheel)",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 step 3.1; §4.2 D7",
+      "scope": "required",
+      "weight": 0.5,
+      "gate": "package with structured text description and keyboard navigation (D7)",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "P3.2",
+      "area": "Phase 3 Platform",
+      "title": "Uniform calculation API: calc, houses, events, chart",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 step 3.2; §4.4",
+      "scope": "required",
+      "weight": 3,
+      "gate": ".d.ts covers every calc_ut option Phase 2 ships; round-trip fixtures; typed refusals",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "P3.3",
+      "area": "Phase 3 Platform",
+      "title": "Hosted compute endpoints (stateless, POST-only birth data, receipts, budgets)",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 step 3.3; §6 privacy",
+      "scope": "required",
+      "weight": 4,
+      "gate": "negative-control test shows no input in any log line; receipts name the backend; latency and cost recorded",
+      "dependsOn": [
+        "P3.2"
+      ],
+      "status": "not-started",
+      "release": "none",
+      "evidence": [],
+      "blockedBy": {
+        "owner": true,
+        "action": "set the free-tier level and hosting budget (§10.5)"
+      }
+    },
+    {
+      "id": "P3.4",
+      "area": "Phase 3 Platform",
+      "title": "OpenAPI 3.1 with schemas and examples; TypeScript and Python clients; Markdown twins",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 step 3.4",
+      "scope": "required",
+      "weight": 2,
+      "gate": "schema validates every example; clean-consumer test per client",
+      "dependsOn": [
+        "P3.3"
+      ],
+      "status": "partial",
+      "release": "none",
+      "evidence": [],
+      "notes": "static /api/v1 OpenAPI 3.1 with 11 GET operations and no examples; no compute endpoints"
+    },
+    {
+      "id": "P3.5",
+      "area": "Phase 3 Platform",
+      "title": "Python SDK: hosted client plus offline engine via WebAssembly; NumPy; Jupyter wheels",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 step 3.5",
+      "scope": "required",
+      "weight": 4,
+      "gate": "conformance vectors pass in both languages; identity or stated tolerance",
+      "dependsOn": [
+        "P3.4",
+        "B1.a"
+      ],
+      "status": "not-started",
+      "release": "none",
+      "evidence": [],
+      "blockedBy": {
+        "owner": true,
+        "action": "reserve and grant publish rights for zodiacs on PyPI (§10.3)"
+      }
+    },
+    {
+      "id": "P3.6",
+      "area": "Phase 3 Platform",
+      "title": "Remote MCP server (Streamable HTTP) and MCP Registry listing",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 step 3.6; Track A1",
+      "scope": "required",
+      "weight": 2,
+      "gate": "MCP conformance tests and Inspector CLI pass against every tool; the registry entry resolves",
+      "dependsOn": [
+        "P3.3"
+      ],
+      "status": "partial",
+      "release": "none",
+      "evidence": [],
+      "notes": "local stdio MCP adapter 0.1.0-rc.10 with three tools; no remote server, no registry entry"
+    },
+    {
+      "id": "P3.7",
+      "area": "Phase 3 Platform",
+      "title": "CLI: npx @zodiacs/cli chart/positions/events/verify/conformance",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 step 3.7",
+      "scope": "required",
+      "weight": 1.5,
+      "gate": "clean-consumer install on Linux, macOS and Windows",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "P3.8",
+      "area": "Phase 3 Platform",
+      "title": "Playground at /developers/playground/",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 step 3.8",
+      "scope": "required",
+      "weight": 1.5,
+      "gate": "agents and people can reproduce any documented example",
+      "dependsOn": [
+        "P3.3"
+      ],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "P3.10",
+      "area": "Phase 3 Platform",
+      "title": "Documentation: quickstarts, recipes, conventions, errors, changelog, deprecation policy, status page",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 step 3.10",
+      "scope": "required",
+      "weight": 2.5,
+      "gate": "every page has a Markdown twin and is listed in llms.txt",
+      "dependsOn": [],
+      "status": "partial",
+      "release": "none",
+      "evidence": [],
+      "notes": "developer pages and llms files exist; most listed quickstarts and references do not"
+    },
+    {
+      "id": "P3.11",
+      "area": "Phase 3 Platform",
+      "title": "Repository basics in every public repository",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 step 3.11; Track G3",
+      "scope": "required",
+      "weight": 0.5,
+      "gate": "LICENSE, SECURITY, CONTRIBUTING, CODE_OF_CONDUCT, CITATION.cff, AGENTS.md and a wrong-chart issue template present in every public repository",
+      "dependsOn": [],
+      "status": "partial",
+      "release": "none",
+      "evidence": [],
+      "notes": "engine has LICENSE; SECURITY, CONTRIBUTING, CODE_OF_CONDUCT, CITATION, AGENTS and issue templates missing in the engine; the site has no LICENSE"
+    },
+    {
+      "id": "P4.1",
+      "area": "Phase 4 Precision",
+      "title": "DE440 reduction as the hosted backend (v1 M2.6 rules)",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 4; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M2, M2.6 (i)–(viii)",
+      "scope": "required",
+      "weight": 8,
+      "gate": "v1 M2.6 (i)–(viii) on the hosted path",
+      "dependsOn": [
+        "P3.3"
+      ],
+      "status": "partial",
+      "release": "none",
+      "evidence": [],
+      "notes": "research runtime examples/precision-alpha computes from DE440s; not a hosted backend; M2.6 rules not run on a shipped path"
+    },
+    {
+      "id": "P4.2",
+      "area": "Phase 4 Precision",
+      "title": "Compiler fixes: span from the kernel; refuse over-budget packs",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 4; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M2.1",
+      "scope": "required",
+      "weight": 1.5,
+      "gate": "v1 M2.1",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "P4.3",
+      "area": "Phase 4 Precision",
+      "title": "Error bounds on every result, in the API and the interface",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 4; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M2.4; §4.2 D3",
+      "scope": "required",
+      "weight": 5,
+      "gate": "bounds labelled proven/measured/estimated, checked against arbiters",
+      "dependsOn": [
+        "P4.1"
+      ],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "P4.4.ingresses",
+      "area": "Phase 4 Precision",
+      "title": "Proven completeness: ingresses",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 4; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M4.4–4.5",
+      "scope": "required",
+      "weight": 2,
+      "gate": "v1 M4.4/M4.5 rules: exact-polynomial fixtures; typed verdicts surfaced in UI and API",
+      "dependsOn": [
+        "P4.5"
+      ],
+      "status": "partial",
+      "release": "none",
+      "evidence": [],
+      "notes": "validated geometric crossings exist only in the research runtime"
+    },
+    {
+      "id": "P4.4.stations",
+      "area": "Phase 4 Precision",
+      "title": "Proven completeness: stations",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 4; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M4.4–4.5",
+      "scope": "required",
+      "weight": 2,
+      "gate": "v1 M4.4/M4.5 rules: exact-polynomial fixtures; typed verdicts surfaced in UI and API",
+      "dependsOn": [
+        "P4.5"
+      ],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "P4.4.returns",
+      "area": "Phase 4 Precision",
+      "title": "Proven completeness: returns",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 4; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M4.4–4.5",
+      "scope": "required",
+      "weight": 2,
+      "gate": "v1 M4.4/M4.5 rules: exact-polynomial fixtures; typed verdicts surfaced in UI and API",
+      "dependsOn": [
+        "P4.5"
+      ],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "P4.4.transits",
+      "area": "Phase 4 Precision",
+      "title": "Proven completeness: transits",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 4; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M4.4–4.5",
+      "scope": "required",
+      "weight": 1.5,
+      "gate": "v1 M4.4/M4.5 rules: exact-polynomial fixtures; typed verdicts surfaced in UI and API",
+      "dependsOn": [
+        "P4.5"
+      ],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "P4.4.aspects",
+      "area": "Phase 4 Precision",
+      "title": "Proven completeness: aspects",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 4; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M4.4–4.5",
+      "scope": "required",
+      "weight": 1.5,
+      "gate": "v1 M4.4/M4.5 rules: exact-polynomial fixtures; typed verdicts surfaced in UI and API",
+      "dependsOn": [
+        "P4.5"
+      ],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "P4.4.latitude-crossings",
+      "area": "Phase 4 Precision",
+      "title": "Proven completeness: latitude-crossings",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 4; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M4.4–4.5",
+      "scope": "required",
+      "weight": 1,
+      "gate": "v1 M4.4/M4.5 rules: exact-polynomial fixtures; typed verdicts surfaced in UI and API",
+      "dependsOn": [
+        "P4.5"
+      ],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "P4.5",
+      "area": "Phase 4 Precision",
+      "title": "Moon enclosure fix as a new preregistered version",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 4; docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md M4.1–4.3",
+      "scope": "required",
+      "weight": 6,
+      "gate": "v1 M4.3 rules under the new version; the original PARTIAL kept",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "A1.a",
+      "area": "Track A Agents",
+      "title": "MCP tools get_positions and find_events (with completeness verdict)",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md Track A1",
+      "scope": "required",
+      "weight": 1,
+      "gate": "output schemas; readOnlyHint/openWorldHint; tests",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "A1.b",
+      "area": "Track A Agents",
+      "title": "MCP tool check_sky_fact",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md Track A1; B4",
+      "scope": "required",
+      "weight": 1,
+      "gate": "true/false/depends with computed facts and a receipt; never interpretive",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "A1.c",
+      "area": "Track A Agents",
+      "title": "MCP tools resolve_birth_time and search_places",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md Track A1",
+      "scope": "required",
+      "weight": 0.75,
+      "gate": "flags for gap/fold/LMT/uncertain zone/calendar",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "A1.d",
+      "area": "Track A Agents",
+      "title": "MCP tools explain_factor and get_sky_today",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md Track A1",
+      "scope": "required",
+      "weight": 0.5,
+      "gate": "site's own text with tradition and source; never generated",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "A1.e",
+      "area": "Track A Agents",
+      "title": "Methodology and conventions as MCP resources; annotations and output schemas on every tool",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md Track A1",
+      "scope": "required",
+      "weight": 0.75,
+      "gate": "every tool annotated with an output schema",
+      "dependsOn": [],
+      "status": "partial",
+      "release": "none",
+      "evidence": [],
+      "notes": "the three stdio tools carry readOnlyHint/openWorldHint; no output schemas"
+    },
+    {
+      "id": "A2",
+      "area": "Track A Agents",
+      "title": "WebMCP tool on every calculator in every released locale",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md Track A2",
+      "scope": "required",
+      "weight": 1.5,
+      "gate": "each calculator registers its tool when modelContext exists",
+      "dependsOn": [],
+      "status": "partial",
+      "release": "none",
+      "evidence": [],
+      "notes": "WebMCP registers one tool (zodiacs.search) on English pages"
+    },
+    {
+      "id": "A3",
+      "area": "Track A Agents",
+      "title": "@zodiacs/ai-tools for the main agent frameworks",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md Track A3",
+      "scope": "required",
+      "weight": 1.5,
+      "gate": "tool definitions and local executors; tests per framework",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "A4",
+      "area": "Track A Agents",
+      "title": "Agent Skill (SKILL.md) in a public repository",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md Track A4",
+      "scope": "required",
+      "weight": 0.5,
+      "gate": "published SKILL.md bundle",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "A5",
+      "area": "Track A Agents",
+      "title": "Documentation agents can read (llms developer section, twins, AGENTS.md, Context7, DeepWiki)",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md Track A5",
+      "scope": "required",
+      "weight": 1,
+      "gate": "llms.txt developer section; OpenAPI linked; AGENTS.md per repo; Context7 submission; DeepWiki indexed",
+      "dependsOn": [],
+      "status": "partial",
+      "release": "none",
+      "evidence": [],
+      "notes": "llms.txt and llms-full.txt exist; developer content sits under the Registry heading (F-21); no AGENTS.md in the engine; Context7/DeepWiki not confirmed"
+    },
+    {
+      "id": "A6",
+      "area": "Track A Agents",
+      "title": "Citations in every API and MCP response",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md Track A6",
+      "scope": "required",
+      "weight": 0.5,
+      "gate": "cite {url, receipt, engine, version} on every response",
+      "dependsOn": [],
+      "status": "partial",
+      "release": "none",
+      "evidence": [],
+      "notes": "MCP results carry receipts; no cite object"
+    },
+    {
+      "id": "A8",
+      "area": "Track A Agents",
+      "title": "Monthly assistant panel set up and first run recorded",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md Track A8; §9",
+      "scope": "required",
+      "weight": 0.75,
+      "gate": "fixed prompt panel, method and first results committed",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": [],
+      "blockedBy": {
+        "owner": true,
+        "action": "provide or approve access to the major assistants for the panel"
+      }
+    },
+    {
+      "id": "S1",
+      "area": "Track S Search",
+      "title": "Structured data: SoftwareApplication, SoftwareSourceCode, WebAPI, Dataset",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md Track S1",
+      "scope": "required",
+      "weight": 1,
+      "gate": "markup validates; listed on the developer pages",
+      "dependsOn": [],
+      "status": "partial",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "S2",
+      "area": "Track S Search",
+      "title": "FAQPage markup only where the page is an FAQ",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md Track S2",
+      "scope": "required",
+      "weight": 0.25,
+      "gate": "audit of FAQPage use recorded and corrected",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "S3",
+      "area": "Track S Search",
+      "title": "Demand gate for every generated page family",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md Track S3",
+      "scope": "required",
+      "weight": 1.5,
+      "gate": "each family indexed only with demand evidence; noindex the rest",
+      "dependsOn": [],
+      "status": "partial",
+      "release": "none",
+      "evidence": [],
+      "notes": "the people pilot applies a demand gate; other generated families do not"
+    },
+    {
+      "id": "S4",
+      "area": "Track S Search",
+      "title": "Developer-query pages with runnable snippets and an honest comparison",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md Track S4",
+      "scope": "required",
+      "weight": 1.5,
+      "gate": "pages for the S4 query list; /developers/compare/ updated per phase",
+      "dependsOn": [],
+      "status": "partial",
+      "release": "none",
+      "evidence": [],
+      "notes": "/developers/compare/ exists; no pages for the S4 query list"
+    },
+    {
+      "id": "S6",
+      "area": "Track S Search",
+      "title": "Trust-signal CI extended to developer docs",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md Track S6",
+      "scope": "required",
+      "weight": 0.5,
+      "gate": "persona/editor/Person-markup blocks cover developer docs",
+      "dependsOn": [],
+      "status": "partial",
+      "release": "none",
+      "evidence": [],
+      "notes": "CI blocks the retired persona in src/; developer docs not covered"
+    },
+    {
+      "id": "S7",
+      "area": "Track S Search",
+      "title": "One entity; Organization sameAs to GitHub, npm, PyPI, MCP Registry",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md Track S7",
+      "scope": "required",
+      "weight": 0.25,
+      "gate": "markup lists the entries that exist",
+      "dependsOn": [
+        "P3.1a"
+      ],
+      "status": "partial",
+      "release": "none",
+      "evidence": [],
+      "notes": "Organization sameAs lists only the token-framed SDK repository"
+    },
+    {
+      "id": "S8",
+      "area": "Track S Search",
+      "title": "IndexNow for every new or changed URL; webmaster tools verified",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md Track S8",
+      "scope": "required",
+      "weight": 0.5,
+      "gate": "IndexNow covers developer docs and datasets; Bing and Google verified",
+      "dependsOn": [],
+      "status": "partial",
+      "release": "none",
+      "evidence": [],
+      "blockedBy": {
+        "owner": true,
+        "action": "verify the site in Bing Webmaster Tools and Google Search Console"
+      },
+      "notes": "IndexNow runs for daily pages only"
+    },
+    {
+      "id": "S9",
+      "area": "Track S Search",
+      "title": "robots.txt allows every crawler",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md Track S9",
+      "scope": "required",
+      "weight": 0.1,
+      "gate": "robots.txt allows all",
+      "dependsOn": [],
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "public/robots.txt allows every crawler"
+      ]
+    },
+    {
+      "id": "G1",
+      "area": "Track G GitHub",
+      "title": "Engine home outside /sdk/; neutral description and topics",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md Track G1; §10.2 (decided: zodiacs-org/engine)",
+      "scope": "required",
+      "weight": 1,
+      "gate": "engine docs at a home outside /sdk/; repository description and topics set; no token framing",
+      "dependsOn": [],
+      "status": "partial",
+      "release": "none",
+      "evidence": [],
+      "notes": "zodiacs-org/engine exists (§10.2 decided); docs still at /sdk/engine/ (rc.1 TypeDoc with Registry links); no description/topics"
+    },
+    {
+      "id": "G2",
+      "area": "Track G GitHub",
+      "title": "Site repository description, topics and README rewrite",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md Track G2; §10.6",
+      "scope": "required",
+      "weight": 0.5,
+      "gate": "accurate description, topics and README",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": [],
+      "blockedBy": {
+        "owner": true,
+        "action": "choose the site repository licence (§10.6)"
+      }
+    },
+    {
+      "id": "G3",
+      "area": "Track G GitHub",
+      "title": "Every public repository: README quickstart and badges, releases with notes and signed artifacts, Scorecard, Dependabot, CodeQL",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md Track G3",
+      "scope": "required",
+      "weight": 2,
+      "gate": "present and green in every public repository",
+      "dependsOn": [],
+      "status": "partial",
+      "release": "none",
+      "evidence": [],
+      "notes": "Dependabot runs on the site; no CodeQL, Scorecard, releases or badges"
+    },
+    {
+      "id": "G4",
+      "area": "Track G GitHub",
+      "title": "Tagged releases with changelogs and a Zenodo DOI per release",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md Track G4",
+      "scope": "required",
+      "weight": 1,
+      "gate": "tags and GitHub releases; Zenodo DOI minted",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": [],
+      "blockedBy": {
+        "owner": true,
+        "action": "connect the Zenodo GitHub integration for the engine repository"
+      }
+    },
+    {
+      "id": "G5",
+      "area": "Track G GitHub",
+      "title": "Curated-list submissions once packages are published",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md Track G5",
+      "scope": "required",
+      "weight": 0.5,
+      "gate": "submissions recorded",
+      "dependsOn": [
+        "P3.1a"
+      ],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "B1.a",
+      "area": "Frontier bets (first slices)",
+      "title": "Conformance v0: 500 L1–L3 vectors, each with an independent arbiter and tolerance, CC0",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §4.1 B1; §3 step 3.9",
+      "scope": "required",
+      "weight": 5,
+      "gate": "every vector names its arbiter and tolerance; no Swiss arbiter",
+      "dependsOn": [],
+      "status": "partial",
+      "release": "none",
+      "evidence": [],
+      "notes": "committed corpora exist (Horizons-anchored corpus, angle grid, tzdb divergence list, Swiss benchmark); no CC0 vector suite with arbiters"
+    },
+    {
+      "id": "B1.b",
+      "area": "Frontier bets (first slices)",
+      "title": "Conformance harness with adapters for this engine and pyswisseph (instrument, flags published)",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §4.1 B1",
+      "scope": "required",
+      "weight": 2.5,
+      "gate": "both adapters run the suite",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "B1.c",
+      "area": "Frontier bets (first slices)",
+      "title": "Conformance in CI and a public results page",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §4.1 B1; §3 step 3.9",
+      "scope": "required",
+      "weight": 1.5,
+      "gate": "CI job green; results page live",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "B1.d",
+      "area": "Frontier bets (first slices)",
+      "title": "Public discrepancy process for the suite",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §4.1 B1; §5 item 5",
+      "scope": "required",
+      "weight": 1,
+      "gate": "documented process with a published disposition log",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "B2.a",
+      "area": "Frontier bets (first slices)",
+      "title": "Birth-time window partition (Sun, Moon, Ascendant, houses, aspects) in the engine/API, sampled at 1 s",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §4.1 B2",
+      "scope": "required",
+      "weight": 4,
+      "gate": "switch instants agree with dense 1 s sampling on 1,000 random windows, zero missed",
+      "dependsOn": [],
+      "status": "partial",
+      "release": "none",
+      "evidence": [],
+      "notes": "site Moon-sign candidates for unknown times (moon-certainty.ts); research interval machinery"
+    },
+    {
+      "id": "B2.b",
+      "area": "Frontier bets (first slices)",
+      "title": "Birth chart tool shows the uncertainty",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §4.1 B2; §4.6",
+      "scope": "required",
+      "weight": 3,
+      "gate": "deployed UI with one-line summary and detail on request",
+      "dependsOn": [
+        "B2.a"
+      ],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "B2.c",
+      "area": "Frontier bets (first slices)",
+      "title": "B2 rule run recorded",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §4.1 B2",
+      "scope": "required",
+      "weight": 1,
+      "gate": "the 1,000-window rule recorded as PASS/FAIL",
+      "dependsOn": [
+        "B2.a"
+      ],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "B3.a",
+      "area": "Frontier bets (first slices)",
+      "title": "Time atlas first slice: United States and France before 1920, primary citations",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §4.1 B3",
+      "scope": "required",
+      "weight": 7,
+      "gate": "every rule has a primary citation; round-trip consistency tests; every tzdb difference explained",
+      "dependsOn": [],
+      "status": "partial",
+      "release": "none",
+      "evidence": [],
+      "notes": "R1's era table and resolver; GeoNames shards; people-pilot manifest"
+    },
+    {
+      "id": "B3.b",
+      "area": "Frontier bets (first slices)",
+      "title": "Atlas feeds resolve_birth_time",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §4.1 B3",
+      "scope": "required",
+      "weight": 1,
+      "gate": "resolver uses the atlas with its uncertainty flag",
+      "dependsOn": [
+        "B3.a",
+        "A1.c"
+      ],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "B3.c",
+      "area": "Frontier bets (first slices)",
+      "title": "Published atlas dataset and a diff viewer",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §4.1 B3; §10.10",
+      "scope": "required",
+      "weight": 2,
+      "gate": "dataset released under CC BY or ODbL with a diff viewer",
+      "dependsOn": [
+        "B3.a"
+      ],
+      "status": "not-started",
+      "release": "none",
+      "evidence": [],
+      "blockedBy": {
+        "owner": true,
+        "action": "choose the atlas data licence (§10.10)"
+      }
+    },
+    {
+      "id": "B4.a",
+      "area": "Frontier bets (first slices)",
+      "title": "Sky benchmark v0: 300 questions, engine ground truth, scorer, raw answers",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §4.1 B4; Track A7",
+      "scope": "required",
+      "weight": 3,
+      "gate": "items, scorer and raw answers published; check_sky_fact agrees with the engine on every item",
+      "dependsOn": [
+        "A1.b"
+      ],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "B4.b",
+      "area": "Frontier bets (first slices)",
+      "title": "Benchmark scored for five assistants with and without the tools",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §4.1 B4",
+      "scope": "required",
+      "weight": 2,
+      "gate": "scores published",
+      "dependsOn": [
+        "B4.a",
+        "P3.6"
+      ],
+      "status": "not-started",
+      "release": "none",
+      "evidence": [],
+      "blockedBy": {
+        "owner": true,
+        "action": "provide or approve access to five assistants for scoring"
+      }
+    },
+    {
+      "id": "B5.a",
+      "area": "Frontier bets (first slices)",
+      "title": "Certified feed of ingresses, stations and lunations 2026–2030 with proof certificates",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §4.1 B5",
+      "scope": "required",
+      "weight": 5,
+      "gate": "zero missed, zero extra against Horizons-derived scans over 2020–2030",
+      "dependsOn": [
+        "P4.4.ingresses",
+        "P4.4.stations"
+      ],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "B5.b",
+      "area": "Frontier bets (first slices)",
+      "title": "Election grammar with five predicates compiled to the interval search",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §4.1 B5",
+      "scope": "required",
+      "weight": 3,
+      "gate": "query results against brute force at 10 s on 100 random queries",
+      "dependsOn": [],
+      "status": "not-started",
+      "release": "none",
+      "evidence": []
+    },
+    {
+      "id": "R44",
+      "area": "Standards §4.4",
+      "title": "Conventions registry begun as the receipt vocabulary, with ids, definitions and URIs on zodiacs.org",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §4.4",
+      "scope": "required",
+      "weight": 1.5,
+      "gate": "registry published; receipts and conformance vectors use its ids",
+      "dependsOn": [],
+      "status": "partial",
+      "release": "none",
+      "evidence": [],
+      "notes": "receipt conventions vocabulary exists (engine receipt.ts); no published registry"
+    }
+  ],
+  "excluded": [
+    {
+      "id": "D1",
+      "title": "Permanent chart records",
+      "classification": "later",
+      "basis": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §4.2 (\"alongside or after the bets\"); not a first-slice requirement"
+    },
+    {
+      "id": "D2",
+      "title": "Proof certificates with a second-language checker",
+      "classification": "later",
+      "basis": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §4.2 (\"alongside or after the bets\"); not a first-slice requirement"
+    },
+    {
+      "id": "D4",
+      "title": "WASM core for other languages",
+      "classification": "later",
+      "basis": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §4.2 (\"alongside or after the bets\"); not a first-slice requirement"
+    },
+    {
+      "id": "D5",
+      "title": "Convention-robust charts",
+      "classification": "later",
+      "basis": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §4.2 (\"alongside or after the bets\"); not a first-slice requirement"
+    },
+    {
+      "id": "D6",
+      "title": "Historical sky −3000..+3000 with ΔT error bars",
+      "classification": "later",
+      "basis": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §4.2 (\"alongside or after the bets\"); not a first-slice requirement"
+    },
+    {
+      "id": "D8",
+      "title": "Cited interpretation corpus",
+      "classification": "later",
+      "basis": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §4.2 (\"alongside or after the bets\"); not a first-slice requirement"
+    },
+    {
+      "id": "D9",
+      "title": "Vocabulary with stable URIs",
+      "classification": "later",
+      "basis": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §4.2 (\"alongside or after the bets\"); not a first-slice requirement"
+    },
+    {
+      "id": "D11",
+      "title": "Astrocartography as data",
+      "classification": "later",
+      "basis": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §4.2 (\"alongside or after the bets\"); not a first-slice requirement"
+    },
+    {
+      "id": "D12",
+      "title": "An honest laboratory",
+      "classification": "later",
+      "basis": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §4.2 (\"alongside or after the bets\"); not a first-slice requirement"
+    },
+    {
+      "id": "D13",
+      "title": "Self-hostable API container",
+      "classification": "later",
+      "basis": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §4.2 (\"alongside or after the bets\"); not a first-slice requirement"
+    },
+    {
+      "id": "D14",
+      "title": "Edge and mobile CI",
+      "classification": "later",
+      "basis": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §4.2 (\"alongside or after the bets\"); not a first-slice requirement"
+    },
+    {
+      "id": "D15",
+      "title": "\"Where does this number come from?\" on every number",
+      "classification": "later",
+      "basis": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §4.2 (\"alongside or after the bets\"); not a first-slice requirement"
+    },
+    {
+      "id": "D16",
+      "title": "Public log of the published sky",
+      "classification": "later",
+      "basis": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §4.2 (\"alongside or after the bets\"); not a first-slice requirement"
+    },
+    {
+      "id": "D3",
+      "title": "A bound on every number",
+      "classification": "counted-elsewhere",
+      "basis": "counted as P4.3"
+    },
+    {
+      "id": "D7",
+      "title": "Accessible charts",
+      "classification": "counted-elsewhere",
+      "basis": "counted as P3.1d (@zodiacs/wheel ships with it)"
+    },
+    {
+      "id": "D10",
+      "title": "Fixed stars with provenance",
+      "classification": "counted-elsewhere",
+      "basis": "counted as P2.A.fixed-stars; catalogue extension later"
+    },
+    {
+      "id": "X-1",
+      "title": "Machine-checked numerics",
+      "classification": "research",
+      "basis": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §4.3 (reach: long shots worth a short spike)"
+    },
+    {
+      "id": "X-2",
+      "title": "Lunar occultations",
+      "classification": "research",
+      "basis": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §4.3 (reach: long shots worth a short spike)"
+    },
+    {
+      "id": "X-3",
+      "title": "Heliacal risings and settings",
+      "classification": "research",
+      "basis": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §4.3 (reach: long shots worth a short spike)"
+    },
+    {
+      "id": "X-4",
+      "title": "Lunisolar calendars",
+      "classification": "research",
+      "basis": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §4.3 (reach: long shots worth a short spike)"
+    },
+    {
+      "id": "X-5",
+      "title": "Islamic crescent visibility",
+      "classification": "research",
+      "basis": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §4.3 (reach: long shots worth a short spike)"
+    },
+    {
+      "id": "X-6",
+      "title": "Papers",
+      "classification": "research",
+      "basis": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §4.3 (reach: long shots worth a short spike)"
+    },
+    {
+      "id": "X-7",
+      "title": "Open datasets with DOIs",
+      "classification": "research",
+      "basis": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §4.3 (reach: long shots worth a short spike)"
+    },
+    {
+      "id": "4.4.spec",
+      "title": "Open computation spec (JSON Schema/OpenAPI components)",
+      "classification": "later",
+      "basis": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §4.4 (\"grows with B1\")"
+    },
+    {
+      "id": "4.6.new-tools",
+      "title": "Nakshatra, panchang, dasha, solar-term and Four Pillars consumer tools",
+      "classification": "demand-gated",
+      "basis": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §4.6 (size with demand data first; S3); locales are §10.11"
+    },
+    {
+      "id": "4.6.proven-calendars",
+      "title": "Event calendars say \"all events found, proven\"",
+      "classification": "later",
+      "basis": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §4.6; needs Phase 4 P4.4"
+    },
+    {
+      "id": "P3.9",
+      "title": "Conformance suite v0 run in CI",
+      "classification": "counted-elsewhere",
+      "basis": "counted as B1.a–B1.c"
+    },
+    {
+      "id": "A7",
+      "title": "Assistant benchmark",
+      "classification": "counted-elsewhere",
+      "basis": "counted as B4.a–B4.b"
+    },
+    {
+      "id": "S5",
+      "title": "Earn links",
+      "classification": "outcome",
+      "basis": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md Track S5; §9 (an outcome, tracked with the measures)"
+    },
+    {
+      "id": "deferred.centres",
+      "title": "Planet centres from satellite kernels",
+      "classification": "deferred",
+      "basis": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 \"Deferred, with reasons\""
+    },
+    {
+      "id": "deferred.nutation-angles",
+      "title": "Full IAU 2000A nutation in the angle path",
+      "classification": "deferred",
+      "basis": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 \"Deferred, with reasons\""
+    },
+    {
+      "id": "deferred.klioner",
+      "title": "The Klioner term",
+      "classification": "deferred",
+      "basis": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 \"Deferred, with reasons\""
+    },
+    {
+      "id": "deferred.topocentric-search",
+      "title": "Interval-proven topocentric search",
+      "classification": "deferred",
+      "basis": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 \"Deferred, with reasons\""
+    },
+    {
+      "id": "deferred.pack-signing",
+      "title": "Pack signing until a pack is distributed",
+      "classification": "deferred",
+      "basis": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 \"Deferred, with reasons\""
+    },
+    {
+      "id": "deferred.deflection",
+      "title": "Solar-deflection search (FAIL stands)",
+      "classification": "deferred",
+      "basis": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 \"Deferred, with reasons\""
+    },
+    {
+      "id": "p2-not.asteroids",
+      "title": "Other numbered asteroids",
+      "classification": "deferred",
+      "basis": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 (\"Not in Phase 2\")"
+    },
+    {
+      "id": "p2-not.heliacal",
+      "title": "Heliacal phenomena",
+      "classification": "deferred",
+      "basis": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 (\"Not in Phase 2\")"
+    },
+    {
+      "id": "p2-not.occultations",
+      "title": "Occultations",
+      "classification": "deferred",
+      "basis": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 (\"Not in Phase 2\")"
+    },
+    {
+      "id": "p2-not.gauquelin",
+      "title": "Gauquelin sectors",
+      "classification": "deferred",
+      "basis": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 (\"Not in Phase 2\")"
+    },
+    {
+      "id": "p2-not.range",
+      "title": "Dates outside the ephemeris range",
+      "classification": "deferred",
+      "basis": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §3 Phase 2 (\"Not in Phase 2\")"
+    }
+  ],
+  "outcomes": [
+    {
+      "id": "9.adoption",
+      "title": "Adoption: downloads, remote MCP sessions, API requests, stars, dependents, engines reporting conformance, citations",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §9"
+    },
+    {
+      "id": "9.quality",
+      "title": "Quality: conformance level, benchmark scores, discrepancy reports and time to disposition, claims-ledger coverage",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §9"
+    },
+    {
+      "id": "9.search",
+      "title": "Search and assistants: developer-query impressions and clicks; monthly assistant panel",
+      "source": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md §9"
+    }
+  ]
+}

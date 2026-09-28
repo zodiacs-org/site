@@ -1,5 +1,7 @@
 # Zodiacs Platform status
 
+*Appended 2026-09-28.* For the engine and platform programme, the current status is [`programme/STATUS.md`](programme/STATUS.md), measured against the brief by [`programme/LEDGER.md`](programme/LEDGER.md). This page is kept as its history. An audit on 2026-09-28 found parts of it out of date: saved records, for example, are now active in production.
+
 ## Released — the chart-difference tool, and a local MCP adapter over it
 
 Two deliveries after L3, both recorded here because this page was behind

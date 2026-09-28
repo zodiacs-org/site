@@ -1,0 +1,4604 @@
+{
+  "schema": "a6-rules/v1-rules/1",
+  "generated": "2026-09-28",
+  "purpose": "Every version-1 rule that version 2 of the engine brief retains by reference, quoted exactly.",
+  "sources": {
+    "brief_v1": {
+      "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+      "sha256": "c394c6da635803c4aba829c506a9cb7d666eac2d78ebcb26ff28dc52d01ffcb8"
+    },
+    "brief_v2": {
+      "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+      "sha256": "4ea7108cae55aebbcf8c20504100269e4440cb1a515fc723d63f7741e944c259"
+    },
+    "factcheck": {
+      "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v2-FACTCHECK.md",
+      "sha256": "6bcc38512d2fc6c7409cffc6aa76888998ce4c7b72ee6d44ab207cb71dd1e417"
+    },
+    "preregistration": {
+      "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+      "sha256": "a539b6e675f2e1c2d50cc132abceab45f3cbf55d95d0153d071c0b4fc8ee49e9"
+    },
+    "site_tree": "merge f2bd0dd45947ff392d0de1135695f584a71bfa08"
+  },
+  "conventions": [
+    "Line numbers are 1-based in the file named. \"verbatim\" and every \"quote\" are exact substrings of the stated lines; where a quote spans soft-wrapped Markdown lines, the lines are joined with single spaces after stripping each line (the build script asserts every quote).",
+    "Where one source line holds several rules (M2.6, M2a, M3, M5, M6, §6), sub-ids such as M2.6(iii), M3.rule(2) or M5.houses are exact substrings of that line; segmentation marked \"split by extractor\" is ours, not the brief's numbering.",
+    "v2_retention summarises what the v2 text says about the rule; \"uncertain\" marks a retention the text does not settle.",
+    "later_records point to PREREGISTRATION.md verdicts and amendments made after v2; they are records, not changes to the brief text.",
+    "v2_retention_class is our classification of v2_retention into: heading or preamble; retained unchanged; retained by explicit reference; retained with change or in part; superseded; retained in substance, not cited; not cited by v2; uncertain."
+  ],
+  "rules": [
+    {
+      "id": "M-PREAMBLE",
+      "section": "v1 §3 The programme (preamble)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          61,
+          61
+        ]
+      },
+      "verbatim": "Seven milestones. Each has a written rule committed **before** its code, with the baseline numbers from this audit already in hand. Effort figures are the verifiers' estimates summed; treat them as order of magnitude. M1 and M0 first; M2 is the lever everything else stands on; M3 and M4 may run in parallel after M2; M5 after M2; M6 threads through and gates the end. Every milestone ends with the ten-part report (§6) and, at M2 and M4, two bounded reviewers.",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            230,
+            233
+          ],
+          "quote": "Version 1's milestone numbers are given in brackets so that the audit ids and version 1's rules still trace. Every phase ends with the report in §11.",
+          "section": "§3 The programme (preamble)"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            20,
+            23
+          ],
+          "quote": "Version 1 began with arcsecond work. Version 2 begins with the errors a person can see",
+          "section": "'What changed from version 1' item 1 (Order)"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            61,
+            65
+          ],
+          "quote": "Version 1 capped the team at one integrator and two AI reviewers. Version 2 requires neither a headcount nor a human reviewer. It requires independence (§5)",
+          "section": "'What changed from version 1' item 9 (Governance by independence)"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            867,
+            867
+          ],
+          "quote": "- **10 (team)** is replaced by §5.",
+          "section": "§7 change to NN10"
+        }
+      ],
+      "v2_retention": "partly superseded",
+      "v2_changes": [
+        "Ordering replaced by v2 Phases 0-4 (v2 Phase 1 = v1 M1 plus M3 time items brought forward; v2 Phase 2 = v1 M5 widened, which v1 placed after M2; v2 Phase 4 = v1 M2 and M4).",
+        "'at M2 and M4, two bounded reviewers' replaced by v2 §5 independence rules (v2 'What changed' item 9; §7 change to NN10).",
+        "'Every milestone ends with the ten-part report (§6)' retained as 'Every phase ends with the report in §11' (v2 §11 = v1 §6 ten parts plus parts 11-13)."
+      ],
+      "v2_retention_class": "superseded"
+    },
+    {
+      "id": "M0",
+      "section": "v1 §3 M0 heading",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          63,
+          63
+        ]
+      },
+      "verbatim": "### M0 — Freeze, baseline, correct the record (1–2 d, no engine code)",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            235,
+            235
+          ],
+          "quote": "### Phase 0 — Record (1–2 days) [v1 M0]",
+          "section": "§3 Phase 0 heading"
+        }
+      ],
+      "v2_retention": "retained (Phase 0)",
+      "v2_retention_class": "heading or preamble"
+    },
+    {
+      "id": "M0.1",
+      "section": "v1 §3 M0 item 1",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          65,
+          65
+        ]
+      },
+      "verbatim": "1. Commit `docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md` holding every rule in M1–M6 below with these baselines, and the corpora the rules run on: the audit's 24-instant × 10-body Horizons-anchored corpus with recorded queries, API version and kernels; the four canon events (2017-08-21, 2024-04-08, Venus 2004-06-08, 2012-06-06) with their canon values and rounding; the IERS `finals2000A` snapshot; the 2024 30-min aspect scan inputs; the 3,128-case angle grid; the tzdb divergence list. Fresh holdouts per milestone are generated by a rule written here and opened once.",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            235,
+            235
+          ],
+          "quote": "### Phase 0 — Record (1–2 days) [v1 M0]",
+          "section": "§3 Phase 0 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            237,
+            243
+          ],
+          "quote": "Version 1's M0 items 1–5, unchanged: the preregistration file with the baselines and corpora; the appended corrections; the premises and the frame decomposition (now three premises, R8); the multi-year distribution fixture; the `lite.ts` header and its fixture test.",
+          "section": "§3 Phase 0"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            237,
+            243
+          ],
+          "quote": "The corpora version 1 and §4 rely on — the Horizons-anchored corpus, the angle grid, the tzdb divergence list, the 2024 aspect scan — exist today only in the audit's scratch (`ARTIFACTS.sha256.tsv` records them); committing them is part of item 1.",
+          "section": "§3 Phase 0"
+        },
+        {
+          "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v2-FACTCHECK.md",
+          "lines": [
+            72,
+            83
+          ],
+          "quote": "The corpora B1 lists under \"already have\" (the 240-row corpus, the 3,128-case grid, the tzdb divergence list, the 2024 aspect scan) are also audit scratch, not repository files.",
+          "factcheck_item": 2
+        },
+        {
+          "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v2-FACTCHECK.md",
+          "lines": [
+            291,
+            291
+          ],
+          "quote": "Phase 0 and B1 now say the corpora are still in the audit's scratch until Phase 0 commits them.",
+          "factcheck_item": 2
+        }
+      ],
+      "v2_retention": "retained unchanged (v2 text says \"unchanged\")",
+      "later_records": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            405,
+            405
+          ],
+          "quote": "| 1. This file and the corpora | Done. |"
+        },
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            17,
+            21
+          ],
+          "quote": "This file was written later, after seven steps had landed on the site, so it collects the rules and records verdicts; it does not set them.",
+          "note": "PREREGISTRATION.md fixes the rules by the SHA-256 of BRIEF-v1.md (§3 M1-M6, §5) and of the v2 brief (lines 12-15); it restates only the Phase 1 rules (v1 M1, v1 M3 and v2 steps 1.1, 1.14, 1.15) and records Phase 0 items; M2, M4, M5, M6 are held by the digest alone."
+        }
+      ],
+      "v2_retention_class": "retained unchanged"
+    },
+    {
+      "id": "M0.2",
+      "section": "v1 §3 M0 item 2",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          66,
+          66
+        ]
+      },
+      "verbatim": "2. Append corrections (never rewrite): `numerics/RESULTS.md` (`.se1` is DE441-based; the Moon residual is DE440-vs-DE441); `swiss-benchmark/RESULTS.md`, `docs/engine-validation/README.md` and `src/pages/methodology` (the Delta-T gap is a stale model with a measurable present-day error, not a convention; the \"1.57″ worst angle\" row; Swiss's polar limit is 90−ε); `PARTITION-RESULTS.md` (\"widest span\" is the widest floor cell; 11 of 42 families record a mutation); `CHART-ADAPTER-CONTRACT.md` §time (leap seconds after 1972, Delta-T for UT1; frame vs nutation model; nodes; coverage policy); `examples/00-prepare-a-pack.md` (423 tests); `METADATA-CORRECTION.md`/`LICENSING.md` (Swiss outputs are committed as frozen fixtures — list them).",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            235,
+            235
+          ],
+          "quote": "### Phase 0 — Record (1–2 days) [v1 M0]",
+          "section": "§3 Phase 0 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            237,
+            243
+          ],
+          "quote": "Version 1's M0 items 1–5, unchanged: the preregistration file with the baselines and corpora; the appended corrections; the premises and the frame decomposition (now three premises, R8); the multi-year distribution fixture; the `lite.ts` header and its fixture test.",
+          "section": "§3 Phase 0"
+        }
+      ],
+      "v2_retention": "retained unchanged (v2 text says \"unchanged\")",
+      "later_records": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            406,
+            406
+          ],
+          "quote": "| 2. Appended corrections | Done."
+        }
+      ],
+      "v2_retention_class": "retained unchanged"
+    },
+    {
+      "id": "M0.3",
+      "section": "v1 §3 M0 item 3",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          67,
+          67
+        ]
+      },
+      "verbatim": "3. Record the two false premises for future harnesses: Swiss cannot read NAIF `.bsp` (check the flag); Horizons Q31 is IAU76/80. Decompose that frame once with pyerfa (`prec76+nut80+obl80` vs `pfw06+nut06a+obl06`) on the 24-instant corpus and confirm it reproduces the +0.369/+0.047/−0.346″ residual; then standardise every Horizons comparison of the outer planets on barycentre `COMMAND`s (9, 8, 7) and use Horizons **VECTORS** (geometric ICRF, DE441) as the frame-free arbiter for the pack (Moon 301 and Mars 499 at 1851 and 2148) — settling the DE440-vs-DE441 lunar attribution directly. (1 d)",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            235,
+            235
+          ],
+          "quote": "### Phase 0 — Record (1–2 days) [v1 M0]",
+          "section": "§3 Phase 0 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            237,
+            243
+          ],
+          "quote": "Version 1's M0 items 1–5, unchanged: the preregistration file with the baselines and corpora; the appended corrections; the premises and the frame decomposition (now three premises, R8); the multi-year distribution fixture; the `lite.ts` header and its fixture test.",
+          "section": "§3 Phase 0"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            216,
+            216
+          ],
+          "quote": "The context block given to all nine auditors stated two false premises",
+          "section": "§2 R8"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            219,
+            224
+          ],
+          "quote": "*Correction, 2026-09-23.* R8's \"about 0.05″\" is the size of Horizons's IAU76/80 frame only inside its EOP span, 1962-01-20 to 2026-12-18.",
+          "section": "§2 correction to R8"
+        },
+        {
+          "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v2-FACTCHECK.md",
+          "lines": [
+            186,
+            189
+          ],
+          "quote": "Version 1's M0.3 names a different pair: the `.bsp` premise and \"Horizons Q31 is IAU76/80\".",
+          "factcheck_item": 16
+        },
+        {
+          "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v2-FACTCHECK.md",
+          "lines": [
+            305,
+            305
+          ],
+          "quote": "R8, Phase 0 and §5 rewritten; the premises are three.",
+          "factcheck_item": 16
+        }
+      ],
+      "v2_retention": "retained with change: v2 records three premises (R8) where v1 M0.3 records two, although v2 Phase 0 calls items 1-5 \"unchanged\"",
+      "factcheck_changes": [
+        "Fact-check item 16 led v2 to rewrite R8, Phase 0 and §5 so that the premises are three."
+      ],
+      "later_records": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            407,
+            407
+          ],
+          "quote": "Version 1's bare `prec76+nut80+obl80` leaves up to 0.125″.",
+          "note": "Phase 0 item 3 recorded Done; the frame decomposition needed Horizons EOP offsets, which v1 M0.3 did not name."
+        }
+      ],
+      "v2_retention_class": "retained with change or in part"
+    },
+    {
+      "id": "M0.4",
+      "section": "v1 §3 M0 item 4",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          68,
+          68
+        ]
+      },
+      "verbatim": "4. Commit the critic's **multi-year distribution** (shipped engine vs Swiss every ten days 1800–2200: per-body p50/p95/max per half-century) as the benchmark fixture the methodology page and `docs/engine-validation` quote; it replaces the single-year headline. (0.3 d)",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            235,
+            235
+          ],
+          "quote": "### Phase 0 — Record (1–2 days) [v1 M0]",
+          "section": "§3 Phase 0 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            237,
+            243
+          ],
+          "quote": "Version 1's M0 items 1–5, unchanged: the preregistration file with the baselines and corpora; the appended corrections; the premises and the frame decomposition (now three premises, R8); the multi-year distribution fixture; the `lite.ts` header and its fixture test.",
+          "section": "§3 Phase 0"
+        }
+      ],
+      "v2_retention": "retained unchanged (v2 text says \"unchanged\")",
+      "later_records": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            408,
+            408
+          ],
+          "quote": "| 4. Multi-year distribution fixture | Done."
+        }
+      ],
+      "v2_retention_class": "retained unchanged"
+    },
+    {
+      "id": "M0.5",
+      "section": "v1 §3 M0 item 5",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          69,
+          69
+        ]
+      },
+      "verbatim": "5. Correct `src/lib/engine/lite.ts`'s header (measured: Sun 0.016°, Moon 0.356° max, not ±0.01°/±0.3°) and add a 50-instant Swiss fixture test for it. (0.3 d)",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            235,
+            235
+          ],
+          "quote": "### Phase 0 — Record (1–2 days) [v1 M0]",
+          "section": "§3 Phase 0 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            237,
+            243
+          ],
+          "quote": "Version 1's M0 items 1–5, unchanged: the preregistration file with the baselines and corpora; the appended corrections; the premises and the frame decomposition (now three premises, R8); the multi-year distribution fixture; the `lite.ts` header and its fixture test.",
+          "section": "§3 Phase 0"
+        }
+      ],
+      "v2_retention": "retained unchanged (v2 text says \"unchanged\")",
+      "later_records": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            409,
+            409
+          ],
+          "quote": "Done, with one deviation: the test measures `lite.ts` against the full engine at 50 instants, not against a Swiss fixture, so no Swiss output is committed under `src/`."
+        }
+      ],
+      "v2_retention_class": "retained unchanged"
+    },
+    {
+      "id": "M1",
+      "section": "v1 §3 M1 preamble",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          73,
+          73
+        ]
+      },
+      "verbatim": "Land as separate, reviewable commits in this order; each rule runs against the committed corpora.",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            251,
+            251
+          ],
+          "quote": "### Phase 1 — Errors a person can see (about 2 weeks) [v1 M1 + time items from M3]",
+          "section": "§3 Phase 1 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            253,
+            254
+          ],
+          "quote": "Land these as separate, reviewable commits, in this order. The last column is the acceptance test.",
+          "section": "§3 Phase 1 preamble"
+        }
+      ],
+      "v2_retention": "retained (Phase 1); v2 inserts step 1.1 (R1) first, orders 1f before 1e, and adds 1.12-1.15",
+      "heading": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          71,
+          71
+        ],
+        "verbatim": "### M1 — Correctness on the shipped path that needs no new data (≈ 4 d)"
+      },
+      "table_header": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          75,
+          75
+        ],
+        "verbatim": "| step | change | rule (PASS/FAIL, preregistered) |"
+      },
+      "v2_retention_class": "heading or preamble"
+    },
+    {
+      "id": "M1.1a",
+      "section": "v1 §3 M1 table row 1a",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          77,
+          77
+        ]
+      },
+      "verbatim": "| 1a | `applying` = sign test on the signed relative rate (`(wrap(a−b) − angle)·(va−vb) < 0`), third state `stationary` below 1e-9°/day | 0 misclassifications over the 2024 30-min Swiss-position scan (236,932 aspects) and the synthetic sweep; 0 false positives; wrap/retrograde cases pass |",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            251,
+            251
+          ],
+          "quote": "### Phase 1 — Errors a person can see (about 2 weeks) [v1 M1 + time items from M3]",
+          "section": "§3 Phase 1 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            259,
+            259
+          ],
+          "quote": "| 1.2 | `applying` as a sign test on the signed relative rate, plus a `stationary` state [v1 1a] | v1 1a's rule |",
+          "section": "§3 Phase 1 step 1.2"
+        }
+      ],
+      "v2_retention": "retained by reference as v2 step 1.2 (\"v1 1a's rule\")",
+      "change_cell": "`applying` = sign test on the signed relative rate (`(wrap(a−b) − angle)·(va−vb) < 0`), third state `stationary` below 1e-9°/day",
+      "rule_cell": "0 misclassifications over the 2024 30-min Swiss-position scan (236,932 aspects) and the synthetic sweep; 0 false positives; wrap/retrograde cases pass",
+      "v2_step": "1.2",
+      "later_records": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            60,
+            60
+          ],
+          "quote": "- **Verdict: PASS** (2026-09-25), on the vendored rc.7"
+        }
+      ],
+      "v2_retention_class": "retained by explicit reference"
+    },
+    {
+      "id": "M1.1b",
+      "section": "v1 §3 M1 table row 1b",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          78,
+          78
+        ]
+      },
+      "verbatim": "| 1b | Angles and Placidus use the true obliquity of date (`e_tilt().tobl`), T from TT; receipt `angles: gast-and-true-obliquity`; regenerate frozen angle fixtures; add Swiss vectors at 63/65/66° both hemispheres with 5″ gates | 3,128-case grid vs Swiss `houses_ex`: ASC p95 ≤ 3″, max ≤ 75″ (Swiss's own long-term sidereal model); vs the ERFA arbiter: max ≤ 8″, and ≤ 0.5″ for |lat| ≤ 45 |",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            251,
+            251
+          ],
+          "quote": "### Phase 1 — Errors a person can see (about 2 weeks) [v1 M1 + time items from M3]",
+          "section": "§3 Phase 1 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            260,
+            260
+          ],
+          "quote": "| 1.3 | Angles and Placidus on the true obliquity of date [v1 1b] | v1 1b's rule |",
+          "section": "§3 Phase 1 step 1.3"
+        }
+      ],
+      "v2_retention": "retained by reference as v2 step 1.3 (\"v1 1b's rule\")",
+      "change_cell": "Angles and Placidus use the true obliquity of date (`e_tilt().tobl`), T from TT; receipt `angles: gast-and-true-obliquity`; regenerate frozen angle fixtures; add Swiss vectors at 63/65/66° both hemispheres with 5″ gates",
+      "rule_cell": "3,128-case grid vs Swiss `houses_ex`: ASC p95 ≤ 3″, max ≤ 75″ (Swiss's own long-term sidereal model); vs the ERFA arbiter: max ≤ 8″, and ≤ 0.5″ for |lat| ≤ 45",
+      "v2_step": "1.3",
+      "later_records": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            100,
+            101
+          ],
+          "quote": "- **Verdict: PASS under amendment A1** (adopted 2026-09-25); **PARTIAL as first written.**"
+        },
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            465,
+            470
+          ],
+          "quote": "Their gates are 5″ at 63° and 65° and 8″ at 66°.",
+          "note": "Amendment A1 (adopted 2026-09-25) changes the added-vector gates of rule 1b."
+        }
+      ],
+      "v2_retention_class": "retained by explicit reference"
+    },
+    {
+      "id": "M1.1c",
+      "section": "v1 §3 M1 table row 1c",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          79,
+          79
+        ]
+      },
+      "verbatim": "| 1c | Delta-T via `SetDeltaTFunction`: IERS/USNO TT−UT1 table 1620–present, Bulletin A prediction, Stephenson–Morrison–Hohenkerk 2016 with the DE440 tidal acceleration outside, documented extrapolation with a 1-σ band; `deltaT {seconds, model, sigma}` on results and in receipt CONVENTIONS; caller pin; weekly refresh via the existing cron | |ΔT − IERS| ≤ 0.2 s on 12 dated values 1962–present; receipt carries model+value+band; production-path Moon p50 vs Swiss within 0.3″ of the TT-pinned p50. State up front that the Moon residual vs Horizons may rise until M2 (opposite-sign geometry) |",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            251,
+            251
+          ],
+          "quote": "### Phase 1 — Errors a person can see (about 2 weeks) [v1 M1 + time items from M3]",
+          "section": "§3 Phase 1 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            261,
+            261
+          ],
+          "quote": "| 1.4 | Observed ΔT with a 1-σ band, in results and receipts [v1 1c] | v1 1c's rule |",
+          "section": "§3 Phase 1 step 1.4"
+        }
+      ],
+      "v2_retention": "retained by reference as v2 step 1.4 (\"v1 1c's rule\")",
+      "change_cell": "Delta-T via `SetDeltaTFunction`: IERS/USNO TT−UT1 table 1620–present, Bulletin A prediction, Stephenson–Morrison–Hohenkerk 2016 with the DE440 tidal acceleration outside, documented extrapolation with a 1-σ band; `deltaT {seconds, model, sigma}` on results and in receipt CONVENTIONS; caller pin; weekly refresh via the existing cron",
+      "rule_cell": "|ΔT − IERS| ≤ 0.2 s on 12 dated values 1962–present; receipt carries model+value+band; production-path Moon p50 vs Swiss within 0.3″ of the TT-pinned p50. State up front that the Moon residual vs Horizons may rise until M2 (opposite-sign geometry)",
+      "v2_step": "1.4",
+      "later_records": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            131,
+            131
+          ],
+          "quote": "- **Verdict: PASS under amendment A2** (2026-09-26), on the vendored rc.8"
+        },
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            521,
+            525
+          ],
+          "quote": "*Refresh.* Rule 1c's \"weekly refresh via the existing cron\" becomes: the table lives only in the engine package;",
+          "note": "Amendment A2 (adopted 2026-09-25) fixes the ΔT model before code, replaces the weekly table refresh by a weekly monitor, reads 'IERS/USNO table 1620-present' as SMH 2016/USNO/IERS, and drops the 'DE440 tidal acceleration'."
+        },
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            517,
+            520
+          ],
+          "quote": "Rule 1c's \"DE440 tidal acceleration\" is not applied"
+        }
+      ],
+      "v2_retention_class": "retained by explicit reference"
+    },
+    {
+      "id": "M1.1d",
+      "section": "v1 §3 M1 table row 1d",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          80,
+          80
+        ]
+      },
+      "verbatim": "| 1d | `build-sky.mjs` lunations by apparent-longitude bisection (same as `build-transits.mjs`); join tolerance minutes; drift test | all 124 committed lunations within 2 s of Swiss; sky vs transits ≤ 2 s |",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            251,
+            251
+          ],
+          "quote": "### Phase 1 — Errors a person can see (about 2 weeks) [v1 M1 + time items from M3]",
+          "section": "§3 Phase 1 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            262,
+            262
+          ],
+          "quote": "| 1.5 | Lunation times in `sky.json` by apparent-longitude bisection [v1 1d] | v1 1d's rule |",
+          "section": "§3 Phase 1 step 1.5"
+        }
+      ],
+      "v2_retention": "retained by reference as v2 step 1.5 (\"v1 1d's rule\")",
+      "change_cell": "`build-sky.mjs` lunations by apparent-longitude bisection (same as `build-transits.mjs`); join tolerance minutes; drift test",
+      "rule_cell": "all 124 committed lunations within 2 s of Swiss; sky vs transits ≤ 2 s",
+      "v2_step": "1.5",
+      "later_records": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            158,
+            158
+          ],
+          "quote": "- **Verdict: FAIL** on the first part: 1 of 124 within 2 s of Swiss"
+        },
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            164,
+            164
+          ],
+          "quote": "- **A4's re-run: FAIL** (2026-09-26, on the vendored rc.8)"
+        },
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            623,
+            626
+          ],
+          "quote": "When step 1.4 has landed, the same 2 s gate is run again with the same denominator",
+          "note": "Amendment A4 (adopted 2026-09-25) adds a re-run; the FAIL stands."
+        }
+      ],
+      "v2_retention_class": "retained by explicit reference"
+    },
+    {
+      "id": "M1.1e",
+      "section": "v1 §3 M1 table row 1e",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          81,
+          81
+        ]
+      },
+      "verbatim": "| 1e | `outside-reference-span` flag outside 1800–2199 (site) / the validated span (package); clip return/solar/year scans with a `range-clipped` flag | flag present for 2300 and 900; scans never exceed the span |",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            251,
+            251
+          ],
+          "quote": "### Phase 1 — Errors a person can see (about 2 weeks) [v1 M1 + time items from M3]",
+          "section": "§3 Phase 1 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            264,
+            264
+          ],
+          "quote": "| 1.7 | `outside-reference-span` and `range-clipped` flags [v1 1e] | v1 1e's rule |",
+          "section": "§3 Phase 1 step 1.7"
+        }
+      ],
+      "v2_retention": "retained by reference as v2 step 1.7 (\"v1 1e's rule\")",
+      "change_cell": "`outside-reference-span` flag outside 1800–2199 (site) / the validated span (package); clip return/solar/year scans with a `range-clipped` flag",
+      "rule_cell": "flag present for 2300 and 900; scans never exceed the span",
+      "v2_step": "1.7",
+      "later_records": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            185,
+            185
+          ],
+          "quote": "- **Verdict: PASS** (2026-09-26), on the vendored rc.8."
+        },
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            190,
+            190
+          ],
+          "quote": "- **Earlier: PARTIAL.**"
+        }
+      ],
+      "v2_retention_class": "retained by explicit reference"
+    },
+    {
+      "id": "M1.1f",
+      "section": "v1 §3 M1 table row 1f",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          82,
+          82
+        ]
+      },
+      "verbatim": "| 1f | Station-split (as `transit-scan-core` does) or ≤ 1-day steps in `returns.ts`/`year-scan.ts`; replace the \"5-day step is safe\" comment with the measured blind band | Saturn 0.002° graze case returns 3 passes; Jupiter yearScan dips ≤ 0.005° return both; synthetic mid-cell pair found |",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            251,
+            251
+          ],
+          "quote": "### Phase 1 — Errors a person can see (about 2 weeks) [v1 M1 + time items from M3]",
+          "section": "§3 Phase 1 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            263,
+            263
+          ],
+          "quote": "| 1.6 | Grazing return passes no longer dropped [v1 1f] | v1 1f's rule |",
+          "section": "§3 Phase 1 step 1.6"
+        }
+      ],
+      "v2_retention": "retained by reference as v2 step 1.6 (\"v1 1f's rule\")",
+      "change_cell": "Station-split (as `transit-scan-core` does) or ≤ 1-day steps in `returns.ts`/`year-scan.ts`; replace the \"5-day step is safe\" comment with the measured blind band",
+      "rule_cell": "Saturn 0.002° graze case returns 3 passes; Jupiter yearScan dips ≤ 0.005° return both; synthetic mid-cell pair found",
+      "v2_step": "1.6",
+      "later_records": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            177,
+            177
+          ],
+          "quote": "- **Verdict: PASS.** All three are tests in"
+        }
+      ],
+      "v2_retention_class": "retained by explicit reference"
+    },
+    {
+      "id": "M1.1g",
+      "section": "v1 §3 M1 table row 1g",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          83,
+          83
+        ]
+      },
+      "verbatim": "| 1g | Moon speed from `GeoMoonState` velocity; planets by state vector or h = 0.01 d; `natalRetrograde` from the same derivative | Moon speed vs Swiss ≤ 1″/day at perigee/apogee; station-flag agreement at ±1 h |",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            251,
+            251
+          ],
+          "quote": "### Phase 1 — Errors a person can see (about 2 weeks) [v1 M1 + time items from M3]",
+          "section": "§3 Phase 1 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            265,
+            265
+          ],
+          "quote": "| 1.8 | Moon and planet speeds from state vectors [v1 1g] | v1 1g's rule |",
+          "section": "§3 Phase 1 step 1.8"
+        }
+      ],
+      "v2_retention": "retained by reference as v2 step 1.8 (\"v1 1g's rule\")",
+      "change_cell": "Moon speed from `GeoMoonState` velocity; planets by state vector or h = 0.01 d; `natalRetrograde` from the same derivative",
+      "rule_cell": "Moon speed vs Swiss ≤ 1″/day at perigee/apogee; station-flag agreement at ±1 h",
+      "v2_step": "1.8",
+      "later_records": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            205,
+            206
+          ],
+          "quote": "- **Verdict: PASS under amendment A3** (adopted 2026-09-25); **PARTIAL as first written**: FAIL on the Moon's 1″/day, PASS on the station flags."
+        },
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            610,
+            612
+          ],
+          "quote": "Rule 1g's Moon gate is ≤ 1.5″ a day at perigee and apogee, and the speed is \"the derivative of the reported longitude\" in place of \"state vectors\"; version 2's Phase 1 table reads the same way.",
+          "note": "Amendment A3 (adopted 2026-09-25). v2 line 265 still reads 'Moon and planet speeds from state vectors [v1 1g]' at this merge, so 'reads the same way' is either an instruction to read v2 with A3's substitution or inaccurate: uncertain."
+        }
+      ],
+      "v2_retention_class": "retained by explicit reference"
+    },
+    {
+      "id": "M1.1h",
+      "section": "v1 §3 M1 table row 1h",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          84,
+          84
+        ]
+      },
+      "verbatim": "| 1h | Placidus limit `|lat| ≥ 90 − ε_true` (after 1b), `fallbackSystem` named, Porphyry offered | 336-case 66.05–66.55 ladder: status agrees with Swiss 336/336; cusps ≤ 0.02″ given Swiss inputs |",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            251,
+            251
+          ],
+          "quote": "### Phase 1 — Errors a person can see (about 2 weeks) [v1 M1 + time items from M3]",
+          "section": "§3 Phase 1 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            266,
+            266
+          ],
+          "quote": "| 1.9 | Placidus polar limit at 90° − ε, a named fallback, Porphyry offered [v1 1h] | v1 1h's rule |",
+          "section": "§3 Phase 1 step 1.9"
+        }
+      ],
+      "v2_retention": "retained by reference as v2 step 1.9 (\"v1 1h's rule\")",
+      "change_cell": "Placidus limit `|lat| ≥ 90 − ε_true` (after 1b), `fallbackSystem` named, Porphyry offered",
+      "rule_cell": "336-case 66.05–66.55 ladder: status agrees with Swiss 336/336; cusps ≤ 0.02″ given Swiss inputs",
+      "v2_step": "1.9",
+      "later_records": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            243,
+            243
+          ],
+          "quote": "- **Verdict: PASS** (2026-09-25), on the vendored rc.7"
+        },
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            257,
+            259
+          ],
+          "quote": "The owner delegated the fallback decision on 2026-09-23: whole sign stays the Placidus fallback, named `PLACIDUS_POLAR_FALLBACK`, and Porphyry can be asked for at any latitude."
+        }
+      ],
+      "v2_retention_class": "retained by explicit reference"
+    },
+    {
+      "id": "M1.1i",
+      "section": "v1 §3 M1 table row 1i",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          85,
+          85
+        ]
+      },
+      "verbatim": "| 1i | One crossing solver: site imports the package's; typed `refused` instead of a throw; interval convention encoded and tested | parity test on the audit's s2 cases; no throw on the site's Moon scans |",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            251,
+            251
+          ],
+          "quote": "### Phase 1 — Errors a person can see (about 2 weeks) [v1 M1 + time items from M3]",
+          "section": "§3 Phase 1 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            267,
+            267
+          ],
+          "quote": "| 1.10 | One crossing solver, typed refusals [v1 1i] | v1 1i's rule |",
+          "section": "§3 Phase 1 step 1.10"
+        }
+      ],
+      "v2_retention": "retained by reference as v2 step 1.10 (\"v1 1i's rule\")",
+      "change_cell": "One crossing solver: site imports the package's; typed `refused` instead of a throw; interval convention encoded and tested",
+      "rule_cell": "parity test on the audit's s2 cases; no throw on the site's Moon scans",
+      "v2_step": "1.10",
+      "later_records": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            273,
+            273
+          ],
+          "quote": "- **Verdict: PASS** (2026-09-26), on the vendored rc.8; not run before it."
+        }
+      ],
+      "v2_retention_class": "retained by explicit reference"
+    },
+    {
+      "id": "M1.1j",
+      "section": "v1 §3 M1 table row 1j",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          86,
+          86
+        ]
+      },
+      "verbatim": "| 1j | Receipts: `planetPositions: aberrated-geocentric-ecliptic-of-date;no-deflection` until M2; `moonPosition` qualifier; ephemeris `{name, version}` required and engine-populated; fill `runtime.tzdbVersion` where the host exposes it | receipt validator rejects a receipt without ephemeris identity |",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            251,
+            251
+          ],
+          "quote": "### Phase 1 — Errors a person can see (about 2 weeks) [v1 M1 + time items from M3]",
+          "section": "§3 Phase 1 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            268,
+            268
+          ],
+          "quote": "| 1.11 | Receipts that describe what was computed, with ephemeris identity required [v1 1j] | v1 1j's rule |",
+          "section": "§3 Phase 1 step 1.11"
+        }
+      ],
+      "v2_retention": "retained by reference as v2 step 1.11 (\"v1 1j's rule\")",
+      "change_cell": "Receipts: `planetPositions: aberrated-geocentric-ecliptic-of-date;no-deflection` until M2; `moonPosition` qualifier; ephemeris `{name, version}` required and engine-populated; fill `runtime.tzdbVersion` where the host exposes it",
+      "rule_cell": "receipt validator rejects a receipt without ephemeris identity",
+      "v2_step": "1.11",
+      "later_records": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            289,
+            289
+          ],
+          "quote": "- **Verdict: PASS** (2026-09-26), on the vendored rc.8; not run before it."
+        },
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            297,
+            298
+          ],
+          "quote": "The rule covers the ephemeris only. Whether a receipt carries a tzdb version (ledger time-7) is not part of it and is not judged here."
+        }
+      ],
+      "v2_retention_class": "retained by explicit reference"
+    },
+    {
+      "id": "M2",
+      "section": "v1 §3 M2 heading",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          88,
+          88
+        ]
+      },
+      "verbatim": "### M2 — Adopt the DE reduction as the shipped positional backend, behind a flag (≈ 15–20 d)",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            392,
+            392
+          ],
+          "quote": "### Phase 4 — Precision and proofs (about 6–7 weeks) [v1 M2, M4]",
+          "section": "§3 Phase 4 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            394,
+            394
+          ],
+          "quote": "Version 1 put M2 at 15–20 days and M4 at 15 days.",
+          "section": "§3 Phase 4"
+        }
+      ],
+      "v2_retention": "retained (Phase 4, \"[v1 M2, M4]\")",
+      "v2_changes": [
+        "v1 adopts the DE reduction 'as the shipped positional backend, behind a flag'; v2 makes it the hosted API's backend first and the on-device backend only when NAIF answers (v2 'What changed' item 6; Phase 4)."
+      ],
+      "v2_retention_class": "retained with change or in part"
+    },
+    {
+      "id": "M2.1",
+      "section": "v1 §3 M2 item 1 (Compiler)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          90,
+          90
+        ]
+      },
+      "verbatim": "1. **Compiler**: derive span from the kernel; `nrec = ceil(span/L)` with a clipped last record; refuse when any proven bound exceeds its budget; `--kernel` required, `--out` defaults to cwd, `--help` handled; container checks `formatVersion` and `conventions.{chebyshev, units}` as enumerated tokens; header gets a `provenance` block (producer name+institution, DE440 citation with DOI, kernel hash, modification note per the NAIF rule). Compile a **1790–2210 pack from DE440** (≈ 2.3 MiB by measured scaling) so the site's 1800–2199 has light-time margin. Rule: DE440 full, DE440 cropped and DE432s each compile to a pack that opens and answers, or are refused with a typed reason; tier-B 85/85 on the new pack; payload digest recorded.",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            392,
+            392
+          ],
+          "quote": "### Phase 4 — Precision and proofs (about 6–7 weeks) [v1 M2, M4]",
+          "section": "§3 Phase 4 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            401,
+            402
+          ],
+          "quote": "- Compiler fixes [v1 M2.1]: derive the span from the kernel, and refuse over-budget packs.",
+          "section": "§3 Phase 4"
+        }
+      ],
+      "v2_retention": "retained by reference ([v1 M2.1]); v2 restates only span derivation and refusal of over-budget packs",
+      "v2_retention_class": "retained by explicit reference"
+    },
+    {
+      "id": "M2.2",
+      "section": "v1 §3 M2 item 2 (Distribution)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          91,
+          91
+        ]
+      },
+      "verbatim": "2. **Distribution** (the permitted route): serve `de440.bsp`/`de440s.bsp` unmodified with the NAIF attribution and compile the pack client-side in a Worker (24.5 s measured in Node) cached by kernel digest, **or** compile at build time and serve the pack behind an explicit, documented opt-in download; runtime pins the pack digest; add an Ed25519 detached manifest and a published key; no automatic fetch, no fetch during a chart unless the user opted in. Send NAIF the derived-coefficient question; ship no derived pack until answered. Rule: the site-engine-rc6 network/storage negative controls show zero calls during calculation with the flag off, and only the opted-in fetch with it on.",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            392,
+            392
+          ],
+          "quote": "### Phase 4 — Precision and proofs (about 6–7 weeks) [v1 M2, M4]",
+          "section": "§3 Phase 4 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            396,
+            400
+          ],
+          "quote": "The DE440 reduction becomes the hosted API's backend first; version 1's M2.6 rules (i)–(viii) apply on that path. It becomes the on-device backend when NAIF answers the derived-coefficient question [v1 M2.2].",
+          "section": "§3 Phase 4"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            48,
+            53
+          ],
+          "quote": "High precision ships on the API first; the on-device pack follows when NAIF answers.",
+          "section": "'What changed from version 1' item 6"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            865,
+            866
+          ],
+          "quote": "- **6 (data distribution)**: the hosted API may compute from the DE440 pack on the server. The pack itself is not distributed until NAIF answers.",
+          "section": "§7 change to NN6"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            918,
+            919
+          ],
+          "quote": "8. **NAIF:** send the derived-coefficient question drafted for version 1's M2.2.",
+          "section": "§10 Owner decisions item 8"
+        },
+        {
+          "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v2-FACTCHECK.md",
+          "lines": [
+            140,
+            143
+          ],
+          "quote": "The browser compile is an unrun probe (v1 M2a e).",
+          "factcheck_item": 10
+        }
+      ],
+      "v2_retention": "retained by reference with changed ordering: v2 defers on-device use until NAIF answers; hosted API first",
+      "v2_changes": [
+        "v1 M2.2 permits client-side compilation of the unmodified kernel in a Worker now; v2 makes on-device use wait for NAIF's answer and ships high precision on the hosted API first (CLI power users may compile their own kernel locally)."
+      ],
+      "factcheck_changes": [
+        "Fact-check item 10: the 24.5 s compile was measured in Node, not a browser; v2 'What changed' item 6 rewritten."
+      ],
+      "v2_retention_class": "retained with change or in part"
+    },
+    {
+      "id": "M2.3",
+      "section": "v1 §3 M2 item 3 (Bundling)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          92,
+          92
+        ]
+      },
+      "verbatim": "3. **Bundling**: the precision runtime as a separately imported chunk with its own budget line (`precision-chunk ≤ 40 KB gz`); the eager `engine-chunk ≤ 25 KB` and the astronomy-engine import allowlist untouched. Rule: `report-bundles.mjs` passes with the backend absent and present.",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            392,
+            392
+          ],
+          "quote": "### Phase 4 — Precision and proofs (about 6–7 weeks) [v1 M2, M4]",
+          "section": "§3 Phase 4 heading"
+        }
+      ],
+      "v2_retention": "uncertain: no v2 text cites M2.3; covered only by the Phase 4 bracket [v1 M2, M4] (bundle isolation also survives through NN5, which v2 §7 keeps)",
+      "v2_retention_class": "uncertain"
+    },
+    {
+      "id": "M2.4",
+      "section": "v1 §3 M2 item 4 (Chart adapter)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          93,
+          93
+        ]
+      },
+      "verbatim": "4. **Chart adapter** (per `CHART-ADAPTER-CONTRACT.md` with the audit's corrections): positions for the ten bodies from the pack through the alpha reducer (`CORRECTED` options; add the Klioner term); **nodes** from the pack's Moon state (`r × v` with the analytic velocity) with their own provenance field; **planet centres** from satellite-kernel delta series (≤ 0.09″; state kernel coverage per body); **analytic rates** (dλ/dt, dβ/dt, dr/dt) by differentiating the pointwise chain; GAST and true obliquity from the same 77-term nutation as the longitudes (replacing astronomy-engine's 5 terms in the angle path); **time**: UTC → TT exactly via leap seconds from 1972 (M1c's table for UT1 and pre-1972), TT → TDB as the alpha does; **coverage policy**: outside the pack, refuse or fall back to astronomy-engine with a per-body flag and a receipt convention that says so — never mix models silently; **uncertainty**: attach `{numerical, data, model}` bounds to every position (pack fit bound / distance, centre-offset bound where barycentric, 2000B-vs-2000A, TDB−TT, ΔT band × rate), each labelled proven/measured/estimated.",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            392,
+            392
+          ],
+          "quote": "### Phase 4 — Precision and proofs (about 6–7 weeks) [v1 M2, M4]",
+          "section": "§3 Phase 4 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            403,
+            403
+          ],
+          "quote": "- Error bounds on every result [v1 M2.4], in the API and the interface.",
+          "section": "§3 Phase 4"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            413,
+            417
+          ],
+          "quote": "Planet centres from satellite kernels (at most 0.09″, far below anything a chart shows). The full IAU 2000A nutation in the angle path (sub-arcsecond). The Klioner term.",
+          "section": "§3 Deferred, with reasons"
+        }
+      ],
+      "v2_retention": "retained by reference for error bounds ([v1 M2.4]); parts explicitly deferred by v2",
+      "v2_changes": [
+        "v2 'Deferred, with reasons' defers planet centres from satellite kernels and the Klioner term, both of which v1 M2.4 includes ('add the Klioner term'; 'planet centres from satellite-kernel delta series'), and the full IAU 2000A nutation in the angle path."
+      ],
+      "v2_retention_class": "retained with change or in part"
+    },
+    {
+      "id": "M2.5",
+      "section": "v1 §3 M2 item 5 (Receipts and MCP/compare)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          94,
+          94
+        ]
+      },
+      "verbatim": "5. **Receipts and MCP/compare**: backend name, pack digest, ΔT model/value/band, nutation model, obliquity convention; a chart from the new backend is a different calculation and says so; the compare tool shows the two backends' differences honestly.",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            392,
+            392
+          ],
+          "quote": "### Phase 4 — Precision and proofs (about 6–7 weeks) [v1 M2, M4]",
+          "section": "§3 Phase 4 heading"
+        }
+      ],
+      "v2_retention": "uncertain: no v2 text cites M2.5; covered only by the Phase 4 bracket [v1 M2, M4] (receipt honesty also survives through NN7, which v2 §7 keeps)",
+      "v2_retention_class": "uncertain"
+    },
+    {
+      "id": "M2.6",
+      "section": "v1 §3 M2 item 6 (Rules, preregistered)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          95,
+          95
+        ]
+      },
+      "verbatim": "6. **Rules (preregistered)**: (i) 240-row corpus, clock pinned, shipped-path longitudes vs Horizons barycentres: max ≤ 0.5″, p50 ≤ 0.15″ — parity with Swiss's 0.384″/0.098″ within 0.12″; latitude max ≤ 0.2″; (ii) vs Swiss on the DE440 binary: Moon ≤ 0.01″, planets ≤ 0.003″; (iii) canon anchors on the shipped path: Venus transits within 2 s TT, eclipses within 2 s; (iv) the original 180-case benchmark re-run with the same denominator: over 1801–2026 p50 ≤ 0.2″, p95 ≤ 0.4″, max ≤ 0.5″ (from 1.62 / 12.08 / 18.64), and the 2100/2190 rows reported with the new ΔT beside the old; (v) node vs Swiss `TRUE_NODE` p50 ≤ 1″, max ≤ 3″ (Swiss's own internal noise); (vi) cross-runtime: same pack bytes in Node/Chromium/Firefox, positions equal to 1e-9° (bit-identical if the reducer is routed through `trig.mjs`); (vii) tier-A and tier-B green in CI (M6); (viii) the alpha's `apparent()` ERFA-chain comparison committed as a tier-B gate at 1e-6″.",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            392,
+            392
+          ],
+          "quote": "### Phase 4 — Precision and proofs (about 6–7 weeks) [v1 M2, M4]",
+          "section": "§3 Phase 4 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            396,
+            400
+          ],
+          "quote": "The DE440 reduction becomes the hosted API's backend first; version 1's M2.6 rules (i)–(viii) apply on that path. It becomes the on-device backend when NAIF answers the derived-coefficient question [v1 M2.2].",
+          "section": "§3 Phase 4"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            409,
+            409
+          ],
+          "quote": "- Rules: version 1's M2.6 and M4 rules, unchanged.",
+          "section": "§3 Phase 4"
+        }
+      ],
+      "v2_retention": "retained unchanged ('Rules: version 1's M2.6 and M4 rules, unchanged'), applied on the hosted-API path first",
+      "v2_changes": [
+        "v1 states several M2.6 rules for 'the shipped path'; v2 says they 'apply on that path', meaning the hosted API's DE440 backend first."
+      ],
+      "v2_retention_class": "retained unchanged"
+    },
+    {
+      "id": "M2.6(i)",
+      "section": "v1 §3 M2 item 6 rule (i)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          95,
+          95
+        ]
+      },
+      "verbatim": "(i) 240-row corpus, clock pinned, shipped-path longitudes vs Horizons barycentres: max ≤ 0.5″, p50 ≤ 0.15″ — parity with Swiss's 0.384″/0.098″ within 0.12″; latitude max ≤ 0.2″",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            396,
+            400
+          ],
+          "quote": "The DE440 reduction becomes the hosted API's backend first; version 1's M2.6 rules (i)–(viii) apply on that path. It becomes the on-device backend when NAIF answers the derived-coefficient question [v1 M2.2].",
+          "section": "§3 Phase 4"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            409,
+            409
+          ],
+          "quote": "- Rules: version 1's M2.6 and M4 rules, unchanged.",
+          "section": "§3 Phase 4"
+        }
+      ],
+      "v2_retention": "retained unchanged (v2 Phase 4: \"version 1's M2.6 rules (i)–(viii) apply on that path\")",
+      "v2_changes": [
+        "v1 wrote this rule for 'the shipped path'; v2 applies M2.6 'on that path', i.e. the hosted API's DE440 backend first."
+      ],
+      "v2_retention_class": "retained unchanged"
+    },
+    {
+      "id": "M2.6(ii)",
+      "section": "v1 §3 M2 item 6 rule (ii)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          95,
+          95
+        ]
+      },
+      "verbatim": "(ii) vs Swiss on the DE440 binary: Moon ≤ 0.01″, planets ≤ 0.003″",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            396,
+            400
+          ],
+          "quote": "The DE440 reduction becomes the hosted API's backend first; version 1's M2.6 rules (i)–(viii) apply on that path. It becomes the on-device backend when NAIF answers the derived-coefficient question [v1 M2.2].",
+          "section": "§3 Phase 4"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            409,
+            409
+          ],
+          "quote": "- Rules: version 1's M2.6 and M4 rules, unchanged.",
+          "section": "§3 Phase 4"
+        }
+      ],
+      "v2_retention": "retained unchanged (v2 Phase 4: \"version 1's M2.6 rules (i)–(viii) apply on that path\")",
+      "v2_retention_class": "retained unchanged"
+    },
+    {
+      "id": "M2.6(iii)",
+      "section": "v1 §3 M2 item 6 rule (iii)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          95,
+          95
+        ]
+      },
+      "verbatim": "(iii) canon anchors on the shipped path: Venus transits within 2 s TT, eclipses within 2 s",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            396,
+            400
+          ],
+          "quote": "The DE440 reduction becomes the hosted API's backend first; version 1's M2.6 rules (i)–(viii) apply on that path. It becomes the on-device backend when NAIF answers the derived-coefficient question [v1 M2.2].",
+          "section": "§3 Phase 4"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            409,
+            409
+          ],
+          "quote": "- Rules: version 1's M2.6 and M4 rules, unchanged.",
+          "section": "§3 Phase 4"
+        }
+      ],
+      "v2_retention": "retained unchanged (v2 Phase 4: \"version 1's M2.6 rules (i)–(viii) apply on that path\")",
+      "v2_changes": [
+        "v1 wrote this rule for 'the shipped path'; v2 applies M2.6 'on that path', i.e. the hosted API's DE440 backend first."
+      ],
+      "v2_retention_class": "retained unchanged"
+    },
+    {
+      "id": "M2.6(iv)",
+      "section": "v1 §3 M2 item 6 rule (iv)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          95,
+          95
+        ]
+      },
+      "verbatim": "(iv) the original 180-case benchmark re-run with the same denominator: over 1801–2026 p50 ≤ 0.2″, p95 ≤ 0.4″, max ≤ 0.5″ (from 1.62 / 12.08 / 18.64), and the 2100/2190 rows reported with the new ΔT beside the old",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            396,
+            400
+          ],
+          "quote": "The DE440 reduction becomes the hosted API's backend first; version 1's M2.6 rules (i)–(viii) apply on that path. It becomes the on-device backend when NAIF answers the derived-coefficient question [v1 M2.2].",
+          "section": "§3 Phase 4"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            409,
+            409
+          ],
+          "quote": "- Rules: version 1's M2.6 and M4 rules, unchanged.",
+          "section": "§3 Phase 4"
+        }
+      ],
+      "v2_retention": "retained unchanged (v2 Phase 4: \"version 1's M2.6 rules (i)–(viii) apply on that path\")",
+      "v2_retention_class": "retained unchanged"
+    },
+    {
+      "id": "M2.6(v)",
+      "section": "v1 §3 M2 item 6 rule (v)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          95,
+          95
+        ]
+      },
+      "verbatim": "(v) node vs Swiss `TRUE_NODE` p50 ≤ 1″, max ≤ 3″ (Swiss's own internal noise)",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            396,
+            400
+          ],
+          "quote": "The DE440 reduction becomes the hosted API's backend first; version 1's M2.6 rules (i)–(viii) apply on that path. It becomes the on-device backend when NAIF answers the derived-coefficient question [v1 M2.2].",
+          "section": "§3 Phase 4"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            409,
+            409
+          ],
+          "quote": "- Rules: version 1's M2.6 and M4 rules, unchanged.",
+          "section": "§3 Phase 4"
+        }
+      ],
+      "v2_retention": "retained unchanged (v2 Phase 4: \"version 1's M2.6 rules (i)–(viii) apply on that path\")",
+      "v2_retention_class": "retained unchanged"
+    },
+    {
+      "id": "M2.6(vi)",
+      "section": "v1 §3 M2 item 6 rule (vi)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          95,
+          95
+        ]
+      },
+      "verbatim": "(vi) cross-runtime: same pack bytes in Node/Chromium/Firefox, positions equal to 1e-9° (bit-identical if the reducer is routed through `trig.mjs`)",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            396,
+            400
+          ],
+          "quote": "The DE440 reduction becomes the hosted API's backend first; version 1's M2.6 rules (i)–(viii) apply on that path. It becomes the on-device backend when NAIF answers the derived-coefficient question [v1 M2.2].",
+          "section": "§3 Phase 4"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            409,
+            409
+          ],
+          "quote": "- Rules: version 1's M2.6 and M4 rules, unchanged.",
+          "section": "§3 Phase 4"
+        }
+      ],
+      "v2_retention": "retained unchanged (v2 Phase 4: \"version 1's M2.6 rules (i)–(viii) apply on that path\")",
+      "v2_changes": [
+        "v1 asks for the same pack bytes in Node, Chromium and Firefox; v2 keeps the pack off devices until NAIF answers, so the browser half of this rule has no v2 path before then (tension; uncertain)."
+      ],
+      "tension_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            48,
+            53
+          ],
+          "quote": "High precision ships on the API first; the on-device pack follows when NAIF answers.",
+          "section": "'What changed from version 1' item 6"
+        }
+      ],
+      "v2_retention_class": "retained unchanged"
+    },
+    {
+      "id": "M2.6(vii)",
+      "section": "v1 §3 M2 item 6 rule (vii)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          95,
+          95
+        ]
+      },
+      "verbatim": "(vii) tier-A and tier-B green in CI (M6)",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            396,
+            400
+          ],
+          "quote": "The DE440 reduction becomes the hosted API's backend first; version 1's M2.6 rules (i)–(viii) apply on that path. It becomes the on-device backend when NAIF answers the derived-coefficient question [v1 M2.2].",
+          "section": "§3 Phase 4"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            409,
+            409
+          ],
+          "quote": "- Rules: version 1's M2.6 and M4 rules, unchanged.",
+          "section": "§3 Phase 4"
+        }
+      ],
+      "v2_retention": "retained unchanged (v2 Phase 4: \"version 1's M2.6 rules (i)–(viii) apply on that path\")",
+      "v2_retention_class": "retained unchanged"
+    },
+    {
+      "id": "M2.6(viii)",
+      "section": "v1 §3 M2 item 6 rule (viii)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          95,
+          95
+        ]
+      },
+      "verbatim": "(viii) the alpha's `apparent()` ERFA-chain comparison committed as a tier-B gate at 1e-6″",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            396,
+            400
+          ],
+          "quote": "The DE440 reduction becomes the hosted API's backend first; version 1's M2.6 rules (i)–(viii) apply on that path. It becomes the on-device backend when NAIF answers the derived-coefficient question [v1 M2.2].",
+          "section": "§3 Phase 4"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            409,
+            409
+          ],
+          "quote": "- Rules: version 1's M2.6 and M4 rules, unchanged.",
+          "section": "§3 Phase 4"
+        }
+      ],
+      "v2_retention": "retained unchanged (v2 Phase 4: \"version 1's M2.6 rules (i)–(viii) apply on that path\")",
+      "v2_retention_class": "retained unchanged"
+    },
+    {
+      "id": "M2a",
+      "section": "v1 §3 M2a heading",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          97,
+          97
+        ]
+      },
+      "verbatim": "### M2a — Settle five unknowns inside M2, before committing M5's estimates (≈ 7 d of probes)",
+      "v2_references": [],
+      "v2_retention": "no v2 reference to M2a as a whole; items (b) and (c) are cited individually",
+      "v2_retention_class": "heading or preamble"
+    },
+    {
+      "id": "M2a(a)",
+      "section": "v1 §3 M2a item (a)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          99,
+          99
+        ]
+      },
+      "verbatim": "(a) **topocentric** — prototype geodetic→GCRS in a scratch copy of `reduce.mjs` and validate at 100 instants × 3 sites against Swiss `FLG_TOPOCTR` (0.05″) and pyerfa `atco13` (2 d)",
+      "v2_references": [],
+      "v2_retention": "not cited by v2 (v2 Phase 2 has its own pointwise topocentric Moon rule, lines 321-322, citing R5, not M2a(a))",
+      "v2_retention_class": "not cited by v2"
+    },
+    {
+      "id": "M2a(b)",
+      "section": "v1 §3 M2a item (b)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          99,
+          99
+        ]
+      },
+      "verbatim": "(b) **small bodies** — generate one Horizons SPK for 2060 Chiron over 1900–2100, teach `spkref`/the compiler its segment type (or resample to type 2), compile, and compare with Swiss `SE_CHIRON` (needs `seas_18.se1`) (2 d)",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            311,
+            312
+          ],
+          "quote": "- *Chiron, Ceres, Pallas, Juno and Vesta* from Horizons-generated SPK segments, on the hosted path first [v1 M2a b].",
+          "section": "§3 Phase 2 A"
+        }
+      ],
+      "v2_retention": "retained by reference ([v1 M2a b])",
+      "v2_retention_class": "retained by explicit reference"
+    },
+    {
+      "id": "M2a(c)",
+      "section": "v1 §3 M2a item (c)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          99,
+          99
+        ]
+      },
+      "verbatim": "(c) **ayanamsas** — implement Lahiri and Fagan–Bradley as offsets from `frames.mjs`'s precession and compare with `get_ayanamsa_ex_ut` at 50 instants (0.5 d)",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            326,
+            329
+          ],
+          "quote": "Rule: ≤ 0.01″ from `get_ayanamsa_ex_ut` [v1 M2a c].",
+          "section": "§3 Phase 2 B Ayanamsas"
+        }
+      ],
+      "v2_retention": "retained by reference ([v1 M2a c]); note the ≤ 0.01″ figure is v1 M5's sidereal rule, not M2a(c)'s",
+      "v2_retention_class": "retained by explicit reference"
+    },
+    {
+      "id": "M2a(d)",
+      "section": "v1 §3 M2a item (d)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          99,
+          99
+        ]
+      },
+      "verbatim": "(d) **cost** — wire the alpha as a lazily imported chunk with the IERS and tzdb tables as `/data` shards in a scratch worktree, run `npm run build` and `report-bundles`, and record chart-route timings (1 d)",
+      "v2_references": [],
+      "v2_retention": "not cited by v2",
+      "v2_retention_class": "not cited by v2"
+    },
+    {
+      "id": "M2a(e)",
+      "section": "v1 §3 M2a item (e)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          99,
+          99
+        ]
+      },
+      "verbatim": "(e) a **browser modality** that no auditor exercised — one Playwright run on Chromium and Firefox for the Stockholm 1947 offset via Intl, the Temporal interval provider, `apparent()` digests on 200 instants vs Node, and `compile.mjs` in a Worker against `de440s.bsp` with timing (1.5 d)",
+      "v2_references": [
+        {
+          "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v2-FACTCHECK.md",
+          "lines": [
+            140,
+            143
+          ],
+          "quote": "The browser compile is an unrun probe (v1 M2a e).",
+          "factcheck_item": 10
+        }
+      ],
+      "v2_retention": "not cited by v2 itself; cited by the fact-check (item 10)",
+      "v2_retention_class": "not cited by v2"
+    },
+    {
+      "id": "M2a-closing",
+      "section": "v1 §3 M2a closing sentence",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          99,
+          99
+        ]
+      },
+      "verbatim": "Revise M3–M5's estimates from these results before starting them.",
+      "v2_references": [],
+      "v2_retention": "not cited by v2",
+      "v2_retention_class": "not cited by v2"
+    },
+    {
+      "id": "M3",
+      "section": "v1 §3 M3 (whole paragraph)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          103,
+          103
+        ]
+      },
+      "verbatim": "Leap-second table (IERS Bulletin C) for exact UTC→TAI→TT; UT1−UTC from `finals.all` with 90-day predictions and a ±0.9 s fallback band, fed to sidereal time/ERA; ΔT band propagated into per-body longitude uncertainty and event-time bands; a **backzone-complete tzdb** compiled into the engine as versioned per-zone shards (Intl as cross-check; flags derived from the transition record: LMT / legal change / DST / date-line; `zone-history-uncertain` where tzdb marks data approximate; an atlas override hook); a `calendar: 'gregorian' | 'julian'` input with JDN conversion and a per-country adoption-date warning; receipts carry `timeScale {deltaT, sigma, model, ut1MinusUtc, leapSeconds}`, `tzdbVersion`, data form and the applied transition. Rules: the 1.68 M-minute round-trip scan passes against the shipped table; the 98-zone divergence list resolves to backzone truth (Stockholm 1947-07-01 12:00 → +60); Julian↔Gregorian agrees with `swe_julday`/`swe_revjul` exactly; Petrograd 1917-10-25 O.S. yields the 1917-11-07 chart; `time-5`'s six flag probes classify correctly; ΔT within 0.2 s of IERS 1962–present with the band ≥ the IERS formal error.",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            251,
+            251
+          ],
+          "quote": "### Phase 1 — Errors a person can see (about 2 weeks) [v1 M1 + time items from M3]",
+          "section": "§3 Phase 1 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            269,
+            269
+          ],
+          "quote": "| 1.12 | **Backzone-complete tzdb inside the engine**, as versioned per-zone data shards, with Intl as a cross-check [v1 M3, brought forward] | v1 M3's rule for the 98 divergent zones; Stockholm 1947-07-01 12:00 → +60 |",
+          "section": "§3 Phase 1 step 1.12"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            270,
+            270
+          ],
+          "quote": "| 1.13 | **Julian calendar input**, with adoption-date warnings per country [v1 M3, brought forward] | v1 M3's rule; Petrograd 1917-10-25 O.S. gives the 1917-11-07 chart |",
+          "section": "§3 Phase 1 step 1.13"
+        }
+      ],
+      "v2_retention": "partly retained: tzdb (1.12) and Julian calendar (1.13) brought forward into Phase 1 with \"v1 M3's rule\"; leap seconds, UT1−UTC, ΔT band propagation and the receipt timeScale have no v2 step (uncertain)",
+      "heading": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          101,
+          101
+        ],
+        "verbatim": "### M3 — Time as a first-class model (≈ 8 d; may run parallel to M4)"
+      },
+      "v2_retention_class": "retained with change or in part"
+    },
+    {
+      "id": "M3.scope(1)",
+      "section": "v1 §3 M3 scope clause 1 (extractor segmentation at top-level semicolons)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          103,
+          103
+        ]
+      },
+      "verbatim": "Leap-second table (IERS Bulletin C) for exact UTC→TAI→TT",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            251,
+            251
+          ],
+          "quote": "### Phase 1 — Errors a person can see (about 2 weeks) [v1 M1 + time items from M3]",
+          "section": "§3 Phase 1 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            102,
+            102
+          ],
+          "quote": "ahead: observed ΔT with a band, leap seconds, UT1, backzone tzdb inside the engine, birthplace local mean time, calendars, an open atlas.",
+          "section": "§0 Where each axis stands (Time row)"
+        }
+      ],
+      "v2_retention": "uncertain: no v2 step names the leap-second table; the §0 Time row lists leap seconds as where the axis can go",
+      "segmentation": "split by extractor; not numbered in the source",
+      "v2_retention_class": "uncertain"
+    },
+    {
+      "id": "M3.scope(2)",
+      "section": "v1 §3 M3 scope clause 2 (extractor segmentation at top-level semicolons)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          103,
+          103
+        ]
+      },
+      "verbatim": "UT1−UTC from `finals.all` with 90-day predictions and a ±0.9 s fallback band, fed to sidereal time/ERA",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            251,
+            251
+          ],
+          "quote": "### Phase 1 — Errors a person can see (about 2 weeks) [v1 M1 + time items from M3]",
+          "section": "§3 Phase 1 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            102,
+            102
+          ],
+          "quote": "ahead: observed ΔT with a band, leap seconds, UT1, backzone tzdb inside the engine, birthplace local mean time, calendars, an open atlas.",
+          "section": "§0 Where each axis stands (Time row)"
+        }
+      ],
+      "v2_retention": "uncertain: no v2 step names UT1−UTC; the §0 Time row lists UT1 as where the axis can go",
+      "segmentation": "split by extractor; not numbered in the source",
+      "v2_retention_class": "uncertain"
+    },
+    {
+      "id": "M3.scope(3)",
+      "section": "v1 §3 M3 scope clause 3 (extractor segmentation at top-level semicolons)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          103,
+          103
+        ]
+      },
+      "verbatim": "ΔT band propagated into per-body longitude uncertainty and event-time bands",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            251,
+            251
+          ],
+          "quote": "### Phase 1 — Errors a person can see (about 2 weeks) [v1 M1 + time items from M3]",
+          "section": "§3 Phase 1 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            403,
+            403
+          ],
+          "quote": "- Error bounds on every result [v1 M2.4], in the API and the interface.",
+          "section": "§3 Phase 4"
+        }
+      ],
+      "v2_retention": "uncertain: no v2 step cites this M3 clause; v2 Phase 4 error bounds [v1 M2.4] may cover it",
+      "segmentation": "split by extractor; not numbered in the source",
+      "v2_retention_class": "uncertain"
+    },
+    {
+      "id": "M3.scope(4)",
+      "section": "v1 §3 M3 scope clause 4 (extractor segmentation at top-level semicolons)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          103,
+          103
+        ]
+      },
+      "verbatim": "a **backzone-complete tzdb** compiled into the engine as versioned per-zone shards (Intl as cross-check; flags derived from the transition record: LMT / legal change / DST / date-line; `zone-history-uncertain` where tzdb marks data approximate; an atlas override hook)",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            251,
+            251
+          ],
+          "quote": "### Phase 1 — Errors a person can see (about 2 weeks) [v1 M1 + time items from M3]",
+          "section": "§3 Phase 1 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            269,
+            269
+          ],
+          "quote": "**Backzone-complete tzdb inside the engine**, as versioned per-zone data shards, with Intl as a cross-check [v1 M3, brought forward]",
+          "section": "§3 Phase 1 step 1.12"
+        }
+      ],
+      "v2_retention": "retained by reference (1.12); the flag-derivation sub-clause is not restated and v2 1.1 keeps the heuristic `lmt` flag",
+      "segmentation": "split by extractor; not numbered in the source",
+      "v2_retention_class": "retained by explicit reference"
+    },
+    {
+      "id": "M3.scope(5)",
+      "section": "v1 §3 M3 scope clause 5 (extractor segmentation at top-level semicolons)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          103,
+          103
+        ]
+      },
+      "verbatim": "a `calendar: 'gregorian' | 'julian'` input with JDN conversion and a per-country adoption-date warning",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            251,
+            251
+          ],
+          "quote": "### Phase 1 — Errors a person can see (about 2 weeks) [v1 M1 + time items from M3]",
+          "section": "§3 Phase 1 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            270,
+            270
+          ],
+          "quote": "**Julian calendar input**, with adoption-date warnings per country [v1 M3, brought forward]",
+          "section": "§3 Phase 1 step 1.13"
+        }
+      ],
+      "v2_retention": "retained by reference (1.13)",
+      "segmentation": "split by extractor; not numbered in the source",
+      "v2_retention_class": "retained by explicit reference"
+    },
+    {
+      "id": "M3.scope(6)",
+      "section": "v1 §3 M3 scope clause 6 (extractor segmentation at top-level semicolons)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          103,
+          103
+        ]
+      },
+      "verbatim": "receipts carry `timeScale {deltaT, sigma, model, ut1MinusUtc, leapSeconds}`, `tzdbVersion`, data form and the applied transition",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            251,
+            251
+          ],
+          "quote": "### Phase 1 — Errors a person can see (about 2 weeks) [v1 M1 + time items from M3]",
+          "section": "§3 Phase 1 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            261,
+            261
+          ],
+          "quote": "Observed ΔT with a 1-σ band, in results and receipts [v1 1c]",
+          "section": "§3 Phase 1 step 1.4"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            268,
+            268
+          ],
+          "quote": "Receipts that describe what was computed, with ephemeris identity required [v1 1j]",
+          "section": "§3 Phase 1 step 1.11"
+        }
+      ],
+      "v2_retention": "uncertain: v2 puts ΔT in receipts (1.4) and requires ephemeris identity (1.11); no v2 step names `tzdbVersion`, UT1−UTC or leap seconds in receipts",
+      "segmentation": "split by extractor; not numbered in the source",
+      "v2_retention_class": "uncertain"
+    },
+    {
+      "id": "M3.rule(1)",
+      "section": "v1 §3 M3 rule clause 1 (extractor segmentation of the \"Rules:\" sentence)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          103,
+          103
+        ]
+      },
+      "verbatim": "the 1.68 M-minute round-trip scan passes against the shipped table",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            258,
+            258
+          ],
+          "quote": "the audit's all-zone round-trip scan, committed as a test in this step, passes",
+          "section": "§3 Phase 1 step 1.1 acceptance"
+        },
+        {
+          "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v2-FACTCHECK.md",
+          "lines": [
+            200,
+            202
+          ],
+          "quote": "The scan is not in the repository; it is the audit's time-9 run (42,861 transitions, 1,675,757 minutes).",
+          "factcheck_item": 19
+        },
+        {
+          "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v2-FACTCHECK.md",
+          "lines": [
+            308,
+            308
+          ],
+          "quote": "Step 1.1 now commits the scan as a test.",
+          "factcheck_item": 19
+        }
+      ],
+      "v2_retention": "equivalent content in v2 step 1.1 acceptance (not cited as M3); moved by fact-check item 19",
+      "segmentation": "split by extractor at semicolons; not numbered in the source",
+      "later_records": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            393,
+            393
+          ],
+          "quote": "- The round-trip scan: PASS (see 1.1)."
+        }
+      ],
+      "v2_retention_class": "retained in substance, not cited"
+    },
+    {
+      "id": "M3.rule(2)",
+      "section": "v1 §3 M3 rule clause 2 (extractor segmentation of the \"Rules:\" sentence)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          103,
+          103
+        ]
+      },
+      "verbatim": "the 98-zone divergence list resolves to backzone truth (Stockholm 1947-07-01 12:00 → +60)",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            269,
+            269
+          ],
+          "quote": "v1 M3's rule for the 98 divergent zones; Stockholm 1947-07-01 12:00 → +60",
+          "section": "§3 Phase 1 step 1.12"
+        }
+      ],
+      "v2_retention": "retained by reference (1.12)",
+      "segmentation": "split by extractor at semicolons; not numbered in the source",
+      "later_records": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            306,
+            306
+          ],
+          "quote": "- **Verdict: PASS**, with the reference stated."
+        }
+      ],
+      "v2_retention_class": "retained by explicit reference"
+    },
+    {
+      "id": "M3.rule(3)",
+      "section": "v1 §3 M3 rule clause 3 (extractor segmentation of the \"Rules:\" sentence)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          103,
+          103
+        ]
+      },
+      "verbatim": "Julian↔Gregorian agrees with `swe_julday`/`swe_revjul` exactly",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            270,
+            270
+          ],
+          "quote": "v1 M3's rule; Petrograd 1917-10-25 O.S. gives the 1917-11-07 chart",
+          "section": "§3 Phase 1 step 1.13"
+        }
+      ],
+      "v2_retention": "retained by reference (1.13)",
+      "segmentation": "split by extractor at semicolons; not numbered in the source",
+      "later_records": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            336,
+            336
+          ],
+          "quote": "- **Verdict: PASS, for the library (1.13a) and the forms (1.13b).**"
+        }
+      ],
+      "v2_retention_class": "retained by explicit reference"
+    },
+    {
+      "id": "M3.rule(4)",
+      "section": "v1 §3 M3 rule clause 4 (extractor segmentation of the \"Rules:\" sentence)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          103,
+          103
+        ]
+      },
+      "verbatim": "Petrograd 1917-10-25 O.S. yields the 1917-11-07 chart",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            270,
+            270
+          ],
+          "quote": "v1 M3's rule; Petrograd 1917-10-25 O.S. gives the 1917-11-07 chart",
+          "section": "§3 Phase 1 step 1.13"
+        }
+      ],
+      "v2_retention": "retained by reference (1.13)",
+      "segmentation": "split by extractor at semicolons; not numbered in the source",
+      "later_records": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            336,
+            336
+          ],
+          "quote": "- **Verdict: PASS, for the library (1.13a) and the forms (1.13b).**"
+        }
+      ],
+      "v2_retention_class": "retained by explicit reference"
+    },
+    {
+      "id": "M3.rule(5)",
+      "section": "v1 §3 M3 rule clause 5 (extractor segmentation of the \"Rules:\" sentence)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          103,
+          103
+        ]
+      },
+      "verbatim": "`time-5`'s six flag probes classify correctly",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            258,
+            258
+          ],
+          "quote": "The `lmt` flag keeps its current rule (any sub-minute offset, which also fires for national mean times and for Monrovia's −0:44:30 until 1972)",
+          "section": "§3 Phase 1 step 1.1"
+        }
+      ],
+      "v2_retention": "uncertain: not cited by v2; v2 step 1.1 keeps the heuristic `lmt` flag, while v1 M3 asks for flags derived from the transition record",
+      "segmentation": "split by extractor at semicolons; not numbered in the source",
+      "later_records": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            394,
+            394
+          ],
+          "quote": "- `time-5`'s six flag probes classify correctly: NOT RUN."
+        }
+      ],
+      "v2_retention_class": "uncertain"
+    },
+    {
+      "id": "M3.rule(6)",
+      "section": "v1 §3 M3 rule clause 6 (extractor segmentation of the \"Rules:\" sentence)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          103,
+          103
+        ]
+      },
+      "verbatim": "ΔT within 0.2 s of IERS 1962–present with the band ≥ the IERS formal error",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            261,
+            261
+          ],
+          "quote": "| 1.4 | Observed ΔT with a 1-σ band, in results and receipts [v1 1c] | v1 1c's rule |",
+          "section": "§3 Phase 1 step 1.4"
+        }
+      ],
+      "v2_retention": "not cited as M3; v2 1.4 cites rule 1c only (uncertain whether the M3 band rule is retained)",
+      "segmentation": "split by extractor at semicolons; not numbered in the source",
+      "later_records": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            395,
+            396
+          ],
+          "quote": "- ΔT within 0.2 s of IERS 1962–present with the band ≥ the IERS formal error: PASS (2026-09-26, step 1.4, on the vendored rc.8)."
+        }
+      ],
+      "v2_retention_class": "uncertain"
+    },
+    {
+      "id": "M4",
+      "section": "v1 §3 M4 heading",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          105,
+          105
+        ]
+      },
+      "verbatim": "### M4 — Proven completeness on the shipped path (≈ 15 d; may run parallel to M3)",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            392,
+            392
+          ],
+          "quote": "### Phase 4 — Precision and proofs (about 6–7 weeks) [v1 M2, M4]",
+          "section": "§3 Phase 4 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            394,
+            394
+          ],
+          "quote": "Version 1 put M2 at 15–20 days and M4 at 15 days.",
+          "section": "§3 Phase 4"
+        }
+      ],
+      "v2_retention": "retained (Phase 4, \"[v1 M2, M4]\")",
+      "v2_retention_class": "retained by explicit reference"
+    },
+    {
+      "id": "M4.1",
+      "section": "v1 §3 M4 item 1",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          107,
+          107
+        ]
+      },
+      "verbatim": "1. Fix the enclosure: geocentric vector from merged weights `[T(t) − O(t)] + [T(t−τ) − T(t)]` (mean-value term from the velocity/acceleration bounds); centred form for `cos(elongation)` intersected with the naive form; apply to `retardedCell` too; local (per-cell) derivative bounds; merge adjacent unresolved spans; carry the declared trig bound into projection weights; make the three slack-covered pads explicit; endpoint-root ownership with a proven `reach`.",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            392,
+            392
+          ],
+          "quote": "### Phase 4 — Precision and proofs (about 6–7 weeks) [v1 M2, M4]",
+          "section": "§3 Phase 4 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            407,
+            408
+          ],
+          "quote": "- The Moon enclosure fix as a new preregistered version [v1 M4.1–4.3]. The original PARTIAL stays in the record.",
+          "section": "§3 Phase 4"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            409,
+            409
+          ],
+          "quote": "- Rules: version 1's M2.6 and M4 rules, unchanged.",
+          "section": "§3 Phase 4"
+        }
+      ],
+      "v2_retention": "retained by reference ([v1 M4.1–4.3]); \"Rules: version 1's M2.6 and M4 rules, unchanged\"",
+      "v2_retention_class": "retained unchanged"
+    },
+    {
+      "id": "M4.2",
+      "section": "v1 §3 M4 item 2",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          108,
+          108
+        ]
+      },
+      "verbatim": "2. Fix `acceptPartialPlan`; add the `numericsPolicy` hash to the partition key; add `buildPartitionedResult` with invariants; remove or implement `tauPadFactor`.",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            392,
+            392
+          ],
+          "quote": "### Phase 4 — Precision and proofs (about 6–7 weeks) [v1 M2, M4]",
+          "section": "§3 Phase 4 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            407,
+            408
+          ],
+          "quote": "- The Moon enclosure fix as a new preregistered version [v1 M4.1–4.3]. The original PARTIAL stays in the record.",
+          "section": "§3 Phase 4"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            409,
+            409
+          ],
+          "quote": "- Rules: version 1's M2.6 and M4 rules, unchanged.",
+          "section": "§3 Phase 4"
+        }
+      ],
+      "v2_retention": "retained by reference ([v1 M4.1–4.3]); \"Rules: version 1's M2.6 and M4 rules, unchanged\"",
+      "v2_retention_class": "retained unchanged"
+    },
+    {
+      "id": "M4.3",
+      "section": "v1 §3 M4 item 3",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          109,
+          109
+        ]
+      },
+      "verbatim": "3. Re-run the partition evaluation as a **new preregistered version** — the original PARTIAL stays; report both. Rules: P-3 boundary ≤ 1 % on the Moon and P-4 ≥ 4× on every conjunction-heavy case **under the new version**; the deflected Moon search finishes within the unchanged 4,000,000 budget; the twenty-fixture matrix and the ten-case regression corpus show zero lost events and bit-identical events where nothing changed.",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            392,
+            392
+          ],
+          "quote": "### Phase 4 — Precision and proofs (about 6–7 weeks) [v1 M2, M4]",
+          "section": "§3 Phase 4 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            407,
+            408
+          ],
+          "quote": "- The Moon enclosure fix as a new preregistered version [v1 M4.1–4.3]. The original PARTIAL stays in the record.",
+          "section": "§3 Phase 4"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            409,
+            409
+          ],
+          "quote": "- Rules: version 1's M2.6 and M4 rules, unchanged.",
+          "section": "§3 Phase 4"
+        }
+      ],
+      "v2_retention": "retained by reference ([v1 M4.1–4.3]); \"Rules: version 1's M2.6 and M4 rules, unchanged\"",
+      "rule_clause": "Rules: P-3 boundary ≤ 1 % on the Moon and P-4 ≥ 4× on every conjunction-heavy case **under the new version**; the deflected Moon search finishes within the unchanged 4,000,000 budget; the twenty-fixture matrix and the ten-case regression corpus show zero lost events and bit-identical events where nothing changed.",
+      "v2_retention_class": "retained unchanged"
+    },
+    {
+      "id": "M4.4",
+      "section": "v1 §3 M4 item 4",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          110,
+          110
+        ]
+      },
+      "verbatim": "4. Extend the proven operations for the geometric quantity, then lift through the interval chain: `searchGeometricStation` (roots of `x·y′ − y·x′`), `searchGeometricAspect` (degree-2n bilinear polynomial with the θ / θ+180° quadrant test), `searchGeometricLatitude` (roots of `z_ecl`), separation-threshold events (generalising the floor), eclipse detection as a separation threshold against apparent radii. Rules: exact-polynomial fixtures with known stations/aspects/latitude roots: zero false proven, zero missed; real-pack counts agree with Swiss-derived scans and Horizons over 2020–2030 with every discrepancy classified missed/extra/excluded/boundary/unprocessed.",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            392,
+            392
+          ],
+          "quote": "### Phase 4 — Precision and proofs (about 6–7 weeks) [v1 M2, M4]",
+          "section": "§3 Phase 4 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            404,
+            406
+          ],
+          "quote": "- Proven completeness for ingresses, stations, returns, transits, aspects and latitude crossings [v1 M4.4–4.5].",
+          "section": "§3 Phase 4"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            409,
+            409
+          ],
+          "quote": "- Rules: version 1's M2.6 and M4 rules, unchanged.",
+          "section": "§3 Phase 4"
+        }
+      ],
+      "v2_retention": "retained by reference ([v1 M4.4–4.5]); \"Rules: version 1's M2.6 and M4 rules, unchanged\"",
+      "rule_clause": "Rules: exact-polynomial fixtures with known stations/aspects/latitude roots: zero false proven, zero missed; real-pack counts agree with Swiss-derived scans and Horizons over 2020–2030 with every discrepancy classified missed/extra/excluded/boundary/unprocessed.",
+      "v2_retention_class": "retained unchanged"
+    },
+    {
+      "id": "M4.5",
+      "section": "v1 §3 M4 item 5",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          111,
+          111
+        ]
+      },
+      "verbatim": "5. Route production event finding (returns, `yearScan`, ingresses, transit scans, VOC) through the validated search with typed verdicts surfaced in the UI (\"all crossings, proven\" / \"this stretch unresolved\"). Rules: the Saturn graze and Jupiter cases return complete counts with `proven`; Sun events within 2 s and Moon events within 1.5 s of Horizons (after M2); stations published with a level-set band and within 60 s of Horizons for Neptune; sky.json regenerated from the same path.",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            392,
+            392
+          ],
+          "quote": "### Phase 4 — Precision and proofs (about 6–7 weeks) [v1 M2, M4]",
+          "section": "§3 Phase 4 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            404,
+            406
+          ],
+          "quote": "- Proven completeness for ingresses, stations, returns, transits, aspects and latitude crossings [v1 M4.4–4.5].",
+          "section": "§3 Phase 4"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            409,
+            409
+          ],
+          "quote": "- Rules: version 1's M2.6 and M4 rules, unchanged.",
+          "section": "§3 Phase 4"
+        }
+      ],
+      "v2_retention": "retained by reference ([v1 M4.4–4.5]); \"Rules: version 1's M2.6 and M4 rules, unchanged\"",
+      "rule_clause": "Rules: the Saturn graze and Jupiter cases return complete counts with `proven`; Sun events within 2 s and Moon events within 1.5 s of Horizons (after M2); stations published with a level-set band and within 60 s of Horizons for Neptune; sky.json regenerated from the same path.",
+      "v2_retention_class": "retained unchanged"
+    },
+    {
+      "id": "M5",
+      "section": "v1 §3 M5 (whole paragraph)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          115,
+          115
+        ]
+      },
+      "verbatim": "Houses: Equal, Porphyry, Koch, Regiomontanus, Campanus, Alcabitius, Morinus, Meridian, Vehlow, Topocentric — closed forms where they exist, published contraction bound and iteration count where they iterate, a per-system polar policy with a named fallback, `housePosition` with latitude, Vertex/East Point/co-ascendants, analytic cusp speeds (rule: each system vs Swiss `houses_ex` on the 55–66.6° ladder ≤ 0.01″ given Swiss inputs and ≤ 3″ end-to-end; polar status agrees with Swiss per system). Bodies: mean node and mean/osculating apogee from the Moon state and standard mean elements (rule: ≤ 0.1″ / ≤ 1″ vs Swiss); Chiron and Ceres/Pallas/Juno/Vesta from Horizons-generated SPK segments compiled into the pack with stated coverage (rule: ≤ 0.05″ vs Horizons; refuse outside coverage). Sidereal: Lahiri, Lahiri ICRC, Fagan–Bradley, Krishnamurti, Raman, True Citra, Galactic Centre 0° Sag, plus user-defined (rule: ≤ 0.01″ vs `get_ayanamsa_ex_ut`; the receipt names the ayanamsa and its definition). Frames: equatorial/J2000/ICRS/cartesian output; declination and parallels from the engine with the true obliquity (rule: ≤ 0.01″ vs Swiss `FLG_EQUATORIAL`). Topocentric observer (WGS84 → GCRS, ERA from the same chain, diurnal aberration; rule: ≤ 0.05″ vs Swiss `FLG_TOPOCTR`, validated also against pyerfa `atco13`). Eclipses: contacts, semi-durations, greatest-eclipse coordinates and per-observer circumstances from astronomy-engine now, Saros by table (rule: peaks ≤ 15 s and contacts ≤ 60 s vs Swiss); rise/set/transit wrapping the existing searches. Configurable aspect sets and orbs; angle and node aspects; essential dignities completed (triplicity, terms, faces, reception). Not in this programme: numbered asteroids, fixed-star catalogue breadth, occultations, heliacal phenomena, Gauquelin sectors, the DE441 30,000-year range.",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            274,
+            274
+          ],
+          "quote": "### Phase 2 — The breadth developers check first (about 8 weeks) [v1 M5, widened]",
+          "section": "§3 Phase 2 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            276,
+            280
+          ],
+          "quote": "Version 1 put its narrower M5 alone at about 20 days; the traditions added here roughly double it. In the order developers look for things. The rules follow version 1's M5 pattern: each item against Swiss as an instrument where Swiss computes it, against a first-principles computation where it does not, and every formula or definition cited.",
+          "section": "§3 Phase 2 preamble"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            372,
+            374
+          ],
+          "quote": "Not in Phase 2: other numbered asteroids (the hosted API may offer them on demand later), heliacal phenomena, occultations, Gauquelin sectors, and dates outside the ephemeris range.",
+          "section": "§3 Phase 2"
+        }
+      ],
+      "v2_retention": "retained as a pattern and widened (Phase 2)",
+      "heading": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          113,
+          113
+        ],
+        "verbatim": "### M5 — Breadth to parity, in demand order (≈ 20 d; after M2)"
+      },
+      "v2_retention_class": "retained with change or in part"
+    },
+    {
+      "id": "M5.houses",
+      "section": "v1 §3 M5 clause \"Houses:\" (extractor segmentation)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          115,
+          115
+        ]
+      },
+      "verbatim": "Houses: Equal, Porphyry, Koch, Regiomontanus, Campanus, Alcabitius, Morinus, Meridian, Vehlow, Topocentric — closed forms where they exist, published contraction bound and iteration count where they iterate, a per-system polar policy with a named fallback, `housePosition` with latitude, Vertex/East Point/co-ascendants, analytic cusp speeds (rule: each system vs Swiss `houses_ex` on the 55–66.6° ladder ≤ 0.01″ given Swiss inputs and ≤ 3″ end-to-end; polar status agrees with Swiss per system)",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            274,
+            274
+          ],
+          "quote": "### Phase 2 — The breadth developers check first (about 8 weeks) [v1 M5, widened]",
+          "section": "§3 Phase 2 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            284,
+            288
+          ],
+          "quote": "cusp speeds. Rule: v1 M5's.",
+          "section": "§3 Phase 2 A Houses"
+        }
+      ],
+      "v2_retention": "retained by reference ('Rule: v1 M5's.'); v2 adds Equal from the MC",
+      "segmentation": "split by extractor at sentence/semicolon boundaries; not numbered in the source",
+      "v2_retention_class": "retained by explicit reference"
+    },
+    {
+      "id": "M5.bodies-mean",
+      "section": "v1 §3 M5 clause \"Bodies:\" (extractor segmentation)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          115,
+          115
+        ]
+      },
+      "verbatim": "Bodies: mean node and mean/osculating apogee from the Moon state and standard mean elements (rule: ≤ 0.1″ / ≤ 1″ vs Swiss)",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            276,
+            280
+          ],
+          "quote": "Version 1 put its narrower M5 alone at about 20 days; the traditions added here roughly double it. In the order developers look for things. The rules follow version 1's M5 pattern: each item against Swiss as an instrument where Swiss computes it, against a first-principles computation where it does not, and every formula or definition cited.",
+          "section": "§3 Phase 2 preamble"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            289,
+            293
+          ],
+          "quote": "Rule: ≤ 1″ from Swiss where Swiss computes it; one citation per lot formula.",
+          "section": "§3 Phase 2 A Points"
+        }
+      ],
+      "v2_retention": "uncertain: v2 Phase 2 Points gives '≤ 1″ from Swiss where Swiss computes it' for the mean node and Lilith, where v1 gives '≤ 0.1″ / ≤ 1″'",
+      "segmentation": "split by extractor at sentence/semicolon boundaries; not numbered in the source",
+      "v2_retention_class": "uncertain"
+    },
+    {
+      "id": "M5.small-bodies",
+      "section": "v1 §3 M5 clause \"Chiron and Ceres\" (extractor segmentation)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          115,
+          115
+        ]
+      },
+      "verbatim": "Chiron and Ceres/Pallas/Juno/Vesta from Horizons-generated SPK segments compiled into the pack with stated coverage (rule: ≤ 0.05″ vs Horizons; refuse outside coverage)",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            276,
+            280
+          ],
+          "quote": "Version 1 put its narrower M5 alone at about 20 days; the traditions added here roughly double it. In the order developers look for things. The rules follow version 1's M5 pattern: each item against Swiss as an instrument where Swiss computes it, against a first-principles computation where it does not, and every formula or definition cited.",
+          "section": "§3 Phase 2 preamble"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            311,
+            312
+          ],
+          "quote": "[v1 M2a b]",
+          "section": "§3 Phase 2 A"
+        }
+      ],
+      "v2_retention": "uncertain: v2 cites M2a(b), not this M5 rule, and states no tolerance; v1's '≤ 0.05″ vs Horizons; refuse outside coverage' is not restated",
+      "segmentation": "split by extractor at sentence/semicolon boundaries; not numbered in the source",
+      "v2_retention_class": "uncertain"
+    },
+    {
+      "id": "M5.sidereal",
+      "section": "v1 §3 M5 clause \"Sidereal:\" (extractor segmentation)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          115,
+          115
+        ]
+      },
+      "verbatim": "Sidereal: Lahiri, Lahiri ICRC, Fagan–Bradley, Krishnamurti, Raman, True Citra, Galactic Centre 0° Sag, plus user-defined (rule: ≤ 0.01″ vs `get_ayanamsa_ex_ut`; the receipt names the ayanamsa and its definition)",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            326,
+            329
+          ],
+          "quote": "Rule: ≤ 0.01″ from `get_ayanamsa_ex_ut` [v1 M2a c].",
+          "section": "§3 Phase 2 B Ayanamsas"
+        }
+      ],
+      "v2_retention": "retained in substance (same ≤ 0.01″ tolerance, but v2 cites M2a c)",
+      "segmentation": "split by extractor at sentence/semicolon boundaries; not numbered in the source",
+      "v2_retention_class": "retained in substance, not cited"
+    },
+    {
+      "id": "M5.frames",
+      "section": "v1 §3 M5 clause \"Frames:\" (extractor segmentation)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          115,
+          115
+        ]
+      },
+      "verbatim": "Frames: equatorial/J2000/ICRS/cartesian output; declination and parallels from the engine with the true obliquity (rule: ≤ 0.01″ vs Swiss `FLG_EQUATORIAL`)",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            294,
+            297
+          ],
+          "quote": "Rule: declinations ≤ 0.01″ from Swiss `FLG_EQUATORIAL`;",
+          "section": "§3 Phase 2 A Aspects"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            363,
+            364
+          ],
+          "quote": "Equatorial (RA/Dec), J2000/ICRS, heliocentric, distances, and speeds in every coordinate, all through the uniform API (3.2).",
+          "section": "§3 Phase 2 D"
+        }
+      ],
+      "v2_retention": "retained in substance",
+      "segmentation": "split by extractor at sentence/semicolon boundaries; not numbered in the source",
+      "v2_retention_class": "retained in substance, not cited"
+    },
+    {
+      "id": "M5.topocentric",
+      "section": "v1 §3 M5 clause \"Topocentric observer\" (extractor segmentation)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          115,
+          115
+        ]
+      },
+      "verbatim": "Topocentric observer (WGS84 → GCRS, ERA from the same chain, diurnal aberration; rule: ≤ 0.05″ vs Swiss `FLG_TOPOCTR`, validated also against pyerfa `atco13`)",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            321,
+            322
+          ],
+          "quote": "- *Topocentric Moon, pointwise* (R5). Rule: ≤ 0.05″ from Swiss `FLG_TOPOCTR` and from pyerfa.",
+          "section": "§3 Phase 2 A"
+        }
+      ],
+      "v2_retention": "retained in substance (v2 cites R5, not M5)",
+      "segmentation": "split by extractor at sentence/semicolon boundaries; not numbered in the source",
+      "v2_retention_class": "retained in substance, not cited"
+    },
+    {
+      "id": "M5.eclipses",
+      "section": "v1 §3 M5 clause \"Eclipses:\" (extractor segmentation)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          115,
+          115
+        ]
+      },
+      "verbatim": "Eclipses: contacts, semi-durations, greatest-eclipse coordinates and per-observer circumstances from astronomy-engine now, Saros by table (rule: peaks ≤ 15 s and contacts ≤ 60 s vs Swiss)",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            309,
+            310
+          ],
+          "quote": "- *Eclipses:* contacts, magnitudes, Saros series and local circumstances [v1 M5].",
+          "section": "§3 Phase 2 A"
+        }
+      ],
+      "v2_retention": "retained by reference ([v1 M5])",
+      "segmentation": "split by extractor at sentence/semicolon boundaries; not numbered in the source",
+      "v2_retention_class": "retained by explicit reference"
+    },
+    {
+      "id": "M5.rise-set",
+      "section": "v1 §3 M5 clause \"rise/set/transit\" (extractor segmentation)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          115,
+          115
+        ]
+      },
+      "verbatim": "rise/set/transit wrapping the existing searches",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            304,
+            307
+          ],
+          "quote": "Rule: ≤ 5 s from Swiss `rise_trans` and from a first-principles computation on a grid of sites;",
+          "section": "§3 Phase 2 A Rise, set and transit"
+        }
+      ],
+      "v2_retention": "superseded: v2 adds a rule where v1 has none",
+      "segmentation": "split by extractor at sentence/semicolon boundaries; not numbered in the source",
+      "v2_retention_class": "superseded"
+    },
+    {
+      "id": "M5.aspects-dignities",
+      "section": "v1 §3 M5 clause \"Configurable aspect sets\" (extractor segmentation)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          115,
+          115
+        ]
+      },
+      "verbatim": "Configurable aspect sets and orbs; angle and node aspects; essential dignities completed (triplicity, terms, faces, reception)",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            294,
+            297
+          ],
+          "quote": "configurable sets and orbs (per body, per aspect, separate applying and separating orbs); minor aspects;",
+          "section": "§3 Phase 2 A Aspects"
+        }
+      ],
+      "v2_retention": "retained in substance",
+      "segmentation": "split by extractor at sentence/semicolon boundaries; not numbered in the source",
+      "v2_retention_class": "retained in substance, not cited"
+    },
+    {
+      "id": "M5.exclusions",
+      "section": "v1 §3 M5 clause \"Not in this programme:\" (extractor segmentation)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          115,
+          115
+        ]
+      },
+      "verbatim": "Not in this programme: numbered asteroids, fixed-star catalogue breadth, occultations, heliacal phenomena, Gauquelin sectors, the DE441 30,000-year range",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            313,
+            320
+          ],
+          "quote": "(This replaces version 1's ban on fixed stars; see §7.)",
+          "section": "§3 Phase 2 A Fixed stars"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            372,
+            374
+          ],
+          "quote": "Not in Phase 2: other numbered asteroids",
+          "section": "§3 Phase 2"
+        }
+      ],
+      "v2_retention": "changed: v2 admits a curated fixed-star list and Chiron plus the four asteroids; its own exclusion list drops fixed-star breadth and the DE441 range wording",
+      "segmentation": "split by extractor at sentence/semicolon boundaries; not numbered in the source",
+      "v2_retention_class": "retained with change or in part"
+    },
+    {
+      "id": "M6",
+      "section": "v1 §3 M6 (whole paragraph)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          119,
+          119
+        ]
+      },
+      "verbatim": "Committed Horizons reference set (query, API version, kernels, retrieval date; barycentre `COMMAND`s for the outer planets) with per-body gates of max(3× measured residual, 2″) now and 3× the M2 residuals after M2; `canon-events.json` with 2 s TT gates on the pack path (25 s on the astronomy-engine fallback until retired), extended with 10–20 IOTA reduced occultation timings, six Astronomical Almanac apparent places and the 2016/2019 Mercury transits so that at least one anchor per body class is not descended from a JPL vector table; the ERFA `gst06a` + IERS DUT1 arbiter on the 3,128-case angle grid; the MCP adapter and `api/calendar/transits.ts` driven with the same corpus as the engine (they inherit every production defect and nobody has measured what they emit); synastry, progressions and `transit-scan-core`'s station splitting measured rather than read; a 12-value IERS Delta-T fixture with a 0.2 s gate and a yearly refresh job; tier-B in CI against a committed 1–2 MiB excerpt pack with its digest (fix `spk-backend.mjs`'s `docs/` import so the packaged alpha can run it); a quarterly Swiss benchmark re-run with cached `.se1`, the flag assertion, and a diff of p50/p95/max within 0.05″; `tools/mutate.mjs` with a committed ledger covering every family the results documents cite, re-run in CI; a row-count assertion in `engine.test.ts`; the tzdb round-trip scan as a test; Placidus 60–66° fixtures at 15″; the receipt fuzz; the edge probes (natal-instant transits, self-synastry, station flag, tangency). A CI job that rebuilds the production tarball from its pinned source commit and diffs the hash. Two bounded reviewers (domain mathematics and conservative bounds; implementation, identity, accounting and consumer claims) in isolated worktrees at the end of M2 and M4; mutation tests in copies; every finding reproduced before it is acted on.",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            380,
+            380
+          ],
+          "quote": "The byte-identical rebuild check runs in CI [v1 M6].",
+          "section": "§3 Phase 3 step 3.1"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            61,
+            65
+          ],
+          "quote": "Version 1 capped the team at one integrator and two AI reviewers. Version 2 requires neither a headcount nor a human reviewer. It requires independence (§5)",
+          "section": "'What changed from version 1' item 9 (Governance by independence)"
+        }
+      ],
+      "v2_retention": "partly retained: the rebuild CI check is cited (3.1); M2.6(vii) cites M6 for tier-A/B CI; the two-reviewer clause is replaced by v2 §5; the other clauses are not cited (uncertain)",
+      "heading": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          117,
+          117
+        ],
+        "verbatim": "### M6 — Verification that enforces the story (≈ 6 d; threads through, gates the end)"
+      },
+      "v2_retention_class": "retained with change or in part"
+    },
+    {
+      "id": "M6.clause(1)",
+      "section": "v1 §3 M6 clause 1 (extractor segmentation at top-level semicolons)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          119,
+          119
+        ]
+      },
+      "verbatim": "Committed Horizons reference set (query, API version, kernels, retrieval date; barycentre `COMMAND`s for the outer planets) with per-body gates of max(3× measured residual, 2″) now and 3× the M2 residuals after M2",
+      "v2_references": [],
+      "v2_retention": "not cited by v2 (uncertain)",
+      "segmentation": "split by extractor; not numbered in the source",
+      "v2_retention_class": "uncertain"
+    },
+    {
+      "id": "M6.clause(2)",
+      "section": "v1 §3 M6 clause 2 (extractor segmentation at top-level semicolons)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          119,
+          119
+        ]
+      },
+      "verbatim": "`canon-events.json` with 2 s TT gates on the pack path (25 s on the astronomy-engine fallback until retired), extended with 10–20 IOTA reduced occultation timings, six Astronomical Almanac apparent places and the 2016/2019 Mercury transits so that at least one anchor per body class is not descended from a JPL vector table",
+      "v2_references": [],
+      "v2_retention": "not cited by v2; M2.6(iii) keeps canon anchors as a rule (uncertain whether the M6 fixture and gates are retained)",
+      "segmentation": "split by extractor; not numbered in the source",
+      "v2_retention_class": "uncertain"
+    },
+    {
+      "id": "M6.clause(3)",
+      "section": "v1 §3 M6 clause 3 (extractor segmentation at top-level semicolons)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          119,
+          119
+        ]
+      },
+      "verbatim": "the ERFA `gst06a` + IERS DUT1 arbiter on the 3,128-case angle grid",
+      "v2_references": [],
+      "v2_retention": "not cited by v2 (uncertain)",
+      "segmentation": "split by extractor; not numbered in the source",
+      "v2_retention_class": "uncertain"
+    },
+    {
+      "id": "M6.clause(4)",
+      "section": "v1 §3 M6 clause 4 (extractor segmentation at top-level semicolons)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          119,
+          119
+        ]
+      },
+      "verbatim": "the MCP adapter and `api/calendar/transits.ts` driven with the same corpus as the engine (they inherit every production defect and nobody has measured what they emit)",
+      "v2_references": [],
+      "v2_retention": "not cited by v2; v2 3.6 sets MCP conformance tests instead (uncertain)",
+      "segmentation": "split by extractor; not numbered in the source",
+      "v2_retention_class": "uncertain"
+    },
+    {
+      "id": "M6.clause(5)",
+      "section": "v1 §3 M6 clause 5 (extractor segmentation at top-level semicolons)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          119,
+          119
+        ]
+      },
+      "verbatim": "synastry, progressions and `transit-scan-core`'s station splitting measured rather than read",
+      "v2_references": [],
+      "v2_retention": "not cited by v2 (uncertain)",
+      "segmentation": "split by extractor; not numbered in the source",
+      "v2_retention_class": "uncertain"
+    },
+    {
+      "id": "M6.clause(6)",
+      "section": "v1 §3 M6 clause 6 (extractor segmentation at top-level semicolons)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          119,
+          119
+        ]
+      },
+      "verbatim": "a 12-value IERS Delta-T fixture with a 0.2 s gate and a yearly refresh job",
+      "v2_references": [],
+      "v2_retention": "not cited as M6; v2 step 1.4 keeps rule 1c, whose gate is the same twelve IERS values (the yearly refresh job is changed by PREREGISTRATION amendment A2)",
+      "segmentation": "split by extractor; not numbered in the source",
+      "v2_retention_class": "retained in substance, not cited"
+    },
+    {
+      "id": "M6.clause(7)",
+      "section": "v1 §3 M6 clause 7 (extractor segmentation at top-level semicolons)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          119,
+          119
+        ]
+      },
+      "verbatim": "tier-B in CI against a committed 1–2 MiB excerpt pack with its digest (fix `spk-backend.mjs`'s `docs/` import so the packaged alpha can run it)",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            409,
+            409
+          ],
+          "quote": "- Rules: version 1's M2.6 and M4 rules, unchanged.",
+          "section": "§3 Phase 4"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            396,
+            400
+          ],
+          "quote": "The DE440 reduction becomes the hosted API's backend first; version 1's M2.6 rules (i)–(viii) apply on that path. It becomes the on-device backend when NAIF answers the derived-coefficient question [v1 M2.2].",
+          "section": "§3 Phase 4"
+        }
+      ],
+      "v2_retention": "retained through M2.6(vii) \"tier-A and tier-B green in CI (M6)\"",
+      "segmentation": "split by extractor; not numbered in the source",
+      "v2_retention_class": "retained by explicit reference"
+    },
+    {
+      "id": "M6.clause(8)",
+      "section": "v1 §3 M6 clause 8 (extractor segmentation at top-level semicolons)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          119,
+          119
+        ]
+      },
+      "verbatim": "a quarterly Swiss benchmark re-run with cached `.se1`, the flag assertion, and a diff of p50/p95/max within 0.05″",
+      "v2_references": [],
+      "v2_retention": "not cited by v2 (uncertain)",
+      "segmentation": "split by extractor; not numbered in the source",
+      "v2_retention_class": "uncertain"
+    },
+    {
+      "id": "M6.clause(9)",
+      "section": "v1 §3 M6 clause 9 (extractor segmentation at top-level semicolons)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          119,
+          119
+        ]
+      },
+      "verbatim": "`tools/mutate.mjs` with a committed ledger covering every family the results documents cite, re-run in CI",
+      "v2_references": [],
+      "v2_retention": "not cited by v2 (uncertain)",
+      "segmentation": "split by extractor; not numbered in the source",
+      "v2_retention_class": "uncertain"
+    },
+    {
+      "id": "M6.clause(10)",
+      "section": "v1 §3 M6 clause 10 (extractor segmentation at top-level semicolons)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          119,
+          119
+        ]
+      },
+      "verbatim": "a row-count assertion in `engine.test.ts`",
+      "v2_references": [],
+      "v2_retention": "not cited by v2 (uncertain)",
+      "segmentation": "split by extractor; not numbered in the source",
+      "v2_retention_class": "uncertain"
+    },
+    {
+      "id": "M6.clause(11)",
+      "section": "v1 §3 M6 clause 11 (extractor segmentation at top-level semicolons)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          119,
+          119
+        ]
+      },
+      "verbatim": "the tzdb round-trip scan as a test",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            258,
+            258
+          ],
+          "quote": "the audit's all-zone round-trip scan, committed as a test in this step, passes",
+          "section": "§3 Phase 1 step 1.1 acceptance"
+        }
+      ],
+      "v2_retention": "not cited as M6; equivalent content in v2 step 1.1 acceptance (\"the audit's all-zone round-trip scan, committed as a test in this step\")",
+      "segmentation": "split by extractor; not numbered in the source",
+      "v2_retention_class": "retained in substance, not cited"
+    },
+    {
+      "id": "M6.clause(12)",
+      "section": "v1 §3 M6 clause 12 (extractor segmentation at top-level semicolons)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          119,
+          119
+        ]
+      },
+      "verbatim": "Placidus 60–66° fixtures at 15″",
+      "v2_references": [],
+      "v2_retention": "not cited by v2 (uncertain)",
+      "segmentation": "split by extractor; not numbered in the source",
+      "v2_retention_class": "uncertain"
+    },
+    {
+      "id": "M6.clause(13)",
+      "section": "v1 §3 M6 clause 13 (extractor segmentation at top-level semicolons)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          119,
+          119
+        ]
+      },
+      "verbatim": "the receipt fuzz",
+      "v2_references": [],
+      "v2_retention": "not cited by v2 (uncertain)",
+      "segmentation": "split by extractor; not numbered in the source",
+      "v2_retention_class": "uncertain"
+    },
+    {
+      "id": "M6.clause(14)",
+      "section": "v1 §3 M6 clause 14 (extractor segmentation at top-level semicolons)",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          119,
+          119
+        ]
+      },
+      "verbatim": "the edge probes (natal-instant transits, self-synastry, station flag, tangency)",
+      "v2_references": [],
+      "v2_retention": "not cited by v2 (uncertain)",
+      "segmentation": "split by extractor; not numbered in the source",
+      "v2_retention_class": "uncertain"
+    },
+    {
+      "id": "M6.rebuild-ci",
+      "section": "v1 §3 M6 rebuild CI sentence",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          119,
+          119
+        ]
+      },
+      "verbatim": "A CI job that rebuilds the production tarball from its pinned source commit and diffs the hash",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            380,
+            380
+          ],
+          "quote": "The byte-identical rebuild check runs in CI [v1 M6].",
+          "section": "§3 Phase 3 step 3.1"
+        }
+      ],
+      "v2_retention": "retained by reference (3.1)",
+      "v2_retention_class": "retained by explicit reference"
+    },
+    {
+      "id": "M6.reviewers",
+      "section": "v1 §3 M6 reviewer sentence",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          119,
+          119
+        ]
+      },
+      "verbatim": "Two bounded reviewers (domain mathematics and conservative bounds; implementation, identity, accounting and consumer claims) in isolated worktrees at the end of M2 and M4; mutation tests in copies; every finding reproduced before it is acted on",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            61,
+            65
+          ],
+          "quote": "Version 1 capped the team at one integrator and two AI reviewers. Version 2 requires neither a headcount nor a human reviewer. It requires independence (§5)",
+          "section": "'What changed from version 1' item 9 (Governance by independence)"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            804,
+            805
+          ],
+          "quote": "So version 2 drops version 1's headcount rule and requires independence instead:",
+          "section": "§5 Governance"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            867,
+            867
+          ],
+          "quote": "- **10 (team)** is replaced by §5.",
+          "section": "§7 change to NN10"
+        }
+      ],
+      "v2_retention": "superseded by v2 §5 (independence instead of headcount)",
+      "v2_retention_class": "superseded"
+    },
+    {
+      "id": "NN1",
+      "section": "v1 §4 non-negotiable 1",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          127,
+          127
+        ]
+      },
+      "verbatim": "1. **Preregister before you optimise.** For each milestone commit the corpus, the oracle with its version receipt, the metric, the denominator and the quantified pass/fail thresholds before changing code. Quantify \"substantially\" and \"material\" from the measured baseline, never after seeing results.",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            855,
+            855
+          ],
+          "quote": "## 7. Non-negotiables (version 1's §4, revised)",
+          "section": "§7 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            857,
+            857
+          ],
+          "quote": "Version 1's twelve stand, with these changes:",
+          "section": "§7 Non-negotiables"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            859,
+            861
+          ],
+          "quote": "- **1 (preregister before optimising)** applies to every claim of superiority, completeness, accuracy or bound. Ordinary bug fixes need ordinary tests with named cases.",
+          "section": "§7 change to NN1"
+        }
+      ],
+      "v2_retention": "retained with scope narrowed",
+      "title": "Preregister before you optimise.",
+      "v2_changes": [
+        "Scope narrowed to claims of superiority, completeness, accuracy or bound; ordinary bug fixes need ordinary tests. v1 M1's table calls every M1 rule 'PASS/FAIL, preregistered'; v2 Phase 1 keeps those rules by reference, so whether steps 1.2-1.11 still need preregistration is not settled by the text (PREREGISTRATION.md treats them as preregistered rules)."
+      ],
+      "tension_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            72,
+            74
+          ],
+          "quote": "12. **Preregistration is scoped.** It stays mandatory for every claim of superiority, completeness, accuracy or error bound. Ordinary bug fixes need ordinary tests with named cases.",
+          "section": "'What changed from version 1' item 12"
+        }
+      ],
+      "v2_retention_class": "retained with change or in part"
+    },
+    {
+      "id": "NN2",
+      "section": "v1 §4 non-negotiable 2",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          128,
+          128
+        ]
+      },
+      "verbatim": "2. **Never change a denominator to pass.** Report the original metric alongside any new one with the same denominator. A failed verdict stays in the tree as failed (DEFLECTION FAIL, PARTITION PARTIAL, the Uranus D `failed-incomplete` contract); records are corrected by an appended note, never rewritten.",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            855,
+            855
+          ],
+          "quote": "## 7. Non-negotiables (version 1's §4, revised)",
+          "section": "§7 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            857,
+            857
+          ],
+          "quote": "Version 1's twelve stand, with these changes:",
+          "section": "§7 Non-negotiables"
+        }
+      ],
+      "v2_retention": "retained unchanged (\"Version 1's twelve stand\")",
+      "title": "Never change a denominator to pass.",
+      "v2_retention_class": "retained unchanged"
+    },
+    {
+      "id": "NN3",
+      "section": "v1 §4 non-negotiable 3",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          129,
+          129
+        ]
+      },
+      "verbatim": "3. **Swiss is an instrument, never a fitting target.** No Swiss code, data or output enters `src/`, any pack, or any coefficient fit. Read the returned flag on every Swiss call and refuse rows that did not answer with SWIEPH. Do not commit further bulk Swiss output; correct the licensing record so it describes what is already committed.",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            855,
+            855
+          ],
+          "quote": "## 7. Non-negotiables (version 1's §4, revised)",
+          "section": "§7 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            857,
+            857
+          ],
+          "quote": "Version 1's twelve stand, with these changes:",
+          "section": "§7 Non-negotiables"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            849,
+            850
+          ],
+          "quote": "No Swiss code, data or output in `src/` or any pack [v1 §4.3].",
+          "section": "§6 Boundaries (Licensing)"
+        }
+      ],
+      "v2_retention": "retained unchanged; cited as [v1 §4.3] in v2 §6",
+      "title": "Swiss is an instrument, never a fitting target.",
+      "v2_retention_class": "retained unchanged"
+    },
+    {
+      "id": "NN4",
+      "section": "v1 §4 non-negotiable 4",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          130,
+          130
+        ]
+      },
+      "verbatim": "4. **Arbiters.** Geometric checks: Horizons VECTORS (ICRF states, DE441) and the raw DE440s kernel. Reduction checks: an independent pyerfa chain over the same kernel. Time checks: IERS tables and Horizons UT- vs TT-tagged states. Observational anchors where they exist (eclipse contacts, transits of Venus and Mercury, IOTA occultation timings, Almanac apparent places). Swiss `.se1` with the flag check as a secondary instrument; Swiss on the DE440 JPL **binary** (not `.bsp`) when the same-series comparison is needed. Horizons QUANTITIES=31 only at the 0.5″ level (its IAU76/80 frame drifts ~0.24″/century against IAU 2006), with barycentre `COMMAND`s for the outer planets, never as a milliarcsecond arbiter. A Swiss comparison whose returned flag is not SWIEPH (or JPLEPH) is discarded, not reported.",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            855,
+            855
+          ],
+          "quote": "## 7. Non-negotiables (version 1's §4, revised)",
+          "section": "§7 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            857,
+            857
+          ],
+          "quote": "Version 1's twelve stand, with these changes:",
+          "section": "§7 Non-negotiables"
+        }
+      ],
+      "v2_retention": "retained unchanged (\"Version 1's twelve stand\")",
+      "title": "Arbiters.",
+      "later_records": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/horizons-frame/README.md",
+          "lines": [
+            60,
+            61
+          ],
+          "quote": "**Outside 1962–2026**, the offsets are held while the IAU 1976 precession drifts from IAU 2006 at 0.30″ a century.",
+          "note": "NN4 gives the IAU76/80 drift as '~0.24″/century'; the Phase 0 frame decomposition measured 0.30″ a century outside the EOP span."
+        }
+      ],
+      "v2_retention_class": "retained unchanged"
+    },
+    {
+      "id": "NN5",
+      "section": "v1 §4 non-negotiable 5",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          131,
+          131
+        ]
+      },
+      "verbatim": "5. **The shipped path is the product.** Improvements land behind a flag in the site's engine with a receipt-convention change and a coverage policy, not as another research mode beside it. Keep bundle isolation (`src/lib/engine/full.ts` stays the only browser importer of astronomy-engine; `scripts/report-bundles.mjs` must still pass with the precision runtime absent; the homepage never loads an ephemeris). Give the precision runtime its own budget line as a separately loaded chunk.",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            855,
+            855
+          ],
+          "quote": "## 7. Non-negotiables (version 1's §4, revised)",
+          "section": "§7 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            857,
+            857
+          ],
+          "quote": "Version 1's twelve stand, with these changes:",
+          "section": "§7 Non-negotiables"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            862,
+            864
+          ],
+          "quote": "- **5 (the shipped path is the product)** covers the hosted API too: the same engine and the same receipts, never a separate code path with different numbers.",
+          "section": "§7 change to NN5"
+        }
+      ],
+      "v2_retention": "retained and extended to the hosted API",
+      "title": "The shipped path is the product.",
+      "v2_changes": [
+        "v2 extends NN5 to the hosted API ('never a separate code path with different numbers'), while v2 Phase 4 and 3.3 run the hosted API on the DE440 pack and on-device charts on astronomy-engine until NAIF answers; receipts name the backend (NN7), but the numbers differ (tension)."
+      ],
+      "tension_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            382,
+            382
+          ],
+          "quote": "The DE440 pack on the server, not redistributed, as the precise backend, named in the receipt; astronomy-engine as the named fallback.",
+          "section": "§3 Phase 3 step 3.3"
+        }
+      ],
+      "v2_retention_class": "retained with change or in part"
+    },
+    {
+      "id": "NN6",
+      "section": "v1 §4 non-negotiable 6",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          132,
+          132
+        ]
+      },
+      "verbatim": "6. **Data distribution stays separate from runtime distribution.** No automatic pack download, no silent network request, no birth-data upload, no analytics carrying inputs, no connector changes, no change to global site security headers. The permitted route is redistributing `de440s.bsp` unmodified with the NAIF attribution and compiling the pack client-side or at build time under the user's own copy; settle the derived-coefficient question with NAIF in parallel and do not ship a derived pack until it is settled.",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            855,
+            855
+          ],
+          "quote": "## 7. Non-negotiables (version 1's §4, revised)",
+          "section": "§7 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            857,
+            857
+          ],
+          "quote": "Version 1's twelve stand, with these changes:",
+          "section": "§7 Non-negotiables"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            865,
+            866
+          ],
+          "quote": "- **6 (data distribution)**: the hosted API may compute from the DE440 pack on the server. The pack itself is not distributed until NAIF answers.",
+          "section": "§7 change to NN6"
+        }
+      ],
+      "v2_retention": "retained with an exception for server-side use of the pack",
+      "title": "Data distribution stays separate from runtime distribution.",
+      "v2_changes": [
+        "v2 §7 amends only the pack clause. v1 NN6 also says 'no birth-data upload' and 'no change to global site security headers'; v2 step 3.3 adds hosted endpoints that take birth data in POST bodies with open CORS, which v2 does not reconcile with this clause (tension; uncertain)."
+      ],
+      "tension_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            382,
+            382
+          ],
+          "quote": "Birth data, or anything from which it can be recovered (R9), only ever in POST bodies, never in URLs, because CDNs and analytics log URLs.",
+          "section": "§3 Phase 3 step 3.3"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            382,
+            382
+          ],
+          "quote": "Open CORS;",
+          "section": "§3 Phase 3 step 3.3"
+        }
+      ],
+      "v2_retention_class": "retained with change or in part"
+    },
+    {
+      "id": "NN7",
+      "section": "v1 §4 non-negotiable 7",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          133,
+          133
+        ]
+      },
+      "verbatim": "7. **Receipts must stay honest.** A different backend is a different calculation and must say so. Every receipt names the ephemeris model and version, the Delta-T model and value with its band, the tzdb version and data form, the calendar, the nutation model and the obliquity convention. Fix the current overstatements (`apparent` without deflection; `gast-and-mean-obliquity`).",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            855,
+            855
+          ],
+          "quote": "## 7. Non-negotiables (version 1's §4, revised)",
+          "section": "§7 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            857,
+            857
+          ],
+          "quote": "Version 1's twelve stand, with these changes:",
+          "section": "§7 Non-negotiables"
+        }
+      ],
+      "v2_retention": "retained unchanged (\"Version 1's twelve stand\")",
+      "title": "Receipts must stay honest.",
+      "v2_retention_class": "retained unchanged"
+    },
+    {
+      "id": "NN8",
+      "section": "v1 §4 non-negotiable 8",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          134,
+          134
+        ]
+      },
+      "verbatim": "8. **Every guarantee needs its actual justification.** Tests and failure to find a counterexample are not proofs. Where an enclosure's padding is covered by slack rather than by the stated analysis, make the analysis true by construction or narrow the claim. Boundary brackets are not exact instants; keep admission and exclusion bounds distinct; never call an excluded interval empty or an unprocessed interval excluded.",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            855,
+            855
+          ],
+          "quote": "## 7. Non-negotiables (version 1's §4, revised)",
+          "section": "§7 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            857,
+            857
+          ],
+          "quote": "Version 1's twelve stand, with these changes:",
+          "section": "§7 Non-negotiables"
+        }
+      ],
+      "v2_retention": "retained unchanged (\"Version 1's twelve stand\")",
+      "title": "Every guarantee needs its actual justification.",
+      "v2_retention_class": "retained unchanged"
+    },
+    {
+      "id": "NN9",
+      "section": "v1 §4 non-negotiable 9",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          135,
+          135
+        ]
+      },
+      "verbatim": "9. **Budgets.** One whole-request budget across preprocessing, all subsearches and verification; never reset per subinterval; never raise a budget to manufacture success; report the wall-clock share of zero-evaluation phases when claiming cost ratios.",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            855,
+            855
+          ],
+          "quote": "## 7. Non-negotiables (version 1's §4, revised)",
+          "section": "§7 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            857,
+            857
+          ],
+          "quote": "Version 1's twelve stand, with these changes:",
+          "section": "§7 Non-negotiables"
+        }
+      ],
+      "v2_retention": "retained unchanged (\"Version 1's twelve stand\")",
+      "title": "Budgets.",
+      "v2_retention_class": "retained unchanged"
+    },
+    {
+      "id": "NN10",
+      "section": "v1 §4 non-negotiable 10",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          136,
+          136
+        ]
+      },
+      "verbatim": "10. **Team.** One integrator plus at most two bounded AI reviewers in isolated worktrees, each with a written remit; mutation tests in copies, never in a tree another reviewer is testing. Reproduce every review finding before acting on it and record the disposition of each.",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            855,
+            855
+          ],
+          "quote": "## 7. Non-negotiables (version 1's §4, revised)",
+          "section": "§7 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            857,
+            857
+          ],
+          "quote": "Version 1's twelve stand, with these changes:",
+          "section": "§7 Non-negotiables"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            867,
+            867
+          ],
+          "quote": "- **10 (team)** is replaced by §5.",
+          "section": "§7 change to NN10"
+        }
+      ],
+      "v2_retention": "superseded by v2 §5",
+      "title": "Team.",
+      "v2_changes": [
+        "Replaced by v2 §5: execution over reading, no shared premises, a different instrument, a different reviewer for public-claim milestones, public reproducibility, humans optional."
+      ],
+      "v2_retention_class": "superseded"
+    },
+    {
+      "id": "NN11",
+      "section": "v1 §4 non-negotiable 11",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          137,
+          137
+        ]
+      },
+      "verbatim": "11. **Generated output is committed with its source**; CI drift gates stay green; never commit flag-on output; never hand-edit generated files; grep the test suite before renaming any root document.",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            855,
+            855
+          ],
+          "quote": "## 7. Non-negotiables (version 1's §4, revised)",
+          "section": "§7 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            857,
+            857
+          ],
+          "quote": "Version 1's twelve stand, with these changes:",
+          "section": "§7 Non-negotiables"
+        }
+      ],
+      "v2_retention": "retained unchanged (\"Version 1's twelve stand\")",
+      "title": "Generated output is committed with its source",
+      "v2_retention_class": "retained unchanged"
+    },
+    {
+      "id": "NN12",
+      "section": "v1 §4 non-negotiable 12",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          138,
+          138
+        ]
+      },
+      "verbatim": "12. **Do not** add asteroids, fixed stars, heliacal phenomena or a new compression scheme during this programme; do not silence a failing test; do not disable a gate to ship.",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            855,
+            855
+          ],
+          "quote": "## 7. Non-negotiables (version 1's §4, revised)",
+          "section": "§7 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            857,
+            857
+          ],
+          "quote": "Version 1's twelve stand, with these changes:",
+          "section": "§7 Non-negotiables"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            868,
+            871
+          ],
+          "quote": "- **12**: fixed stars are allowed as a curated, cited list (Phase 2). Chiron, Ceres, Pallas, Juno and Vesta come through Horizons-derived SPK on the hosted path; other numbered asteroids on demand later. Still no new compression scheme, no silenced test, no disabled gate.",
+          "section": "§7 change to NN12"
+        }
+      ],
+      "v2_retention": "retained with change: fixed stars and five small bodies admitted; heliacal phenomena not mentioned (uncertain whether that ban stands)",
+      "title": "Do not",
+      "v2_changes": [
+        "Fixed stars (curated, cited) and Chiron, Ceres, Pallas, Juno and Vesta are admitted; v2 X-3 lists heliacal risings as a reach item although v1 NN12 bans heliacal phenomena and v2 §7's revision of 12 does not mention them (uncertain whether the heliacal ban stands)."
+      ],
+      "tension_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            734,
+            735
+          ],
+          "quote": "- **X-3. Heliacal risings and settings,** with published visibility models and their assumptions stated.",
+          "section": "§4.3 Reach X-3"
+        }
+      ],
+      "v2_retention_class": "retained with change or in part"
+    },
+    {
+      "id": "NN-preamble",
+      "section": "v1 §4 heading",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          125,
+          125
+        ]
+      },
+      "verbatim": "## 4. Non-negotiables (standing owner constraints; every one applies to every milestone)",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            855,
+            855
+          ],
+          "quote": "## 7. Non-negotiables (version 1's §4, revised)",
+          "section": "§7 heading"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            857,
+            857
+          ],
+          "quote": "Version 1's twelve stand, with these changes:",
+          "section": "§7 Non-negotiables"
+        }
+      ],
+      "v2_retention": "retained (\"Version 1's twelve stand, with these changes\")",
+      "v2_retention_class": "heading or preamble"
+    },
+    {
+      "id": "EVAL",
+      "section": "v1 §5 heading",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          140,
+          140
+        ]
+      },
+      "verbatim": "## 5. Evaluation discipline (applies to every acceptance rule in §3)",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            878,
+            879
+          ],
+          "quote": "Version 1's §5, unchanged: corpora and fresh holdouts, denominators, the PASS / FAIL / PARTIAL vocabulary, and receipts for every oracle.",
+          "section": "§8 Evaluation discipline"
+        }
+      ],
+      "v2_retention": "retained unchanged",
+      "v2_retention_class": "heading or preamble"
+    },
+    {
+      "id": "EVAL.1",
+      "section": "v1 §5 item 1",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          142,
+          142
+        ]
+      },
+      "verbatim": "- **Corpus.** Reuse `docs/platform/evidence/swiss-benchmark/tools/corpus.mjs` (180 measurements, stratified, six holdouts) as the regression set; write one fresh holdout per milestone by a rule fixed before it exists and open it once. Extend the epoch range to the site's 1800–2199 when the pack covers it.",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            878,
+            879
+          ],
+          "quote": "Version 1's §5, unchanged: corpora and fresh holdouts, denominators, the PASS / FAIL / PARTIAL vocabulary, and receipts for every oracle.",
+          "section": "§8 Evaluation discipline"
+        }
+      ],
+      "v2_retention": "retained unchanged",
+      "title": "Corpus.",
+      "later_records": [
+        {
+          "file": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md",
+          "lines": [
+            413,
+            429
+          ],
+          "quote": "The draw uses mulberry32 seeded with the first 32 bits of SHA-256(`zodiacs-holdout/<step>`)",
+          "note": "The fresh-holdout rule; only zodiacs-holdout/1.4 is recorded as drawn."
+        }
+      ],
+      "v2_retention_class": "retained unchanged"
+    },
+    {
+      "id": "EVAL.2",
+      "section": "v1 §5 item 2",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          143,
+          143
+        ]
+      },
+      "verbatim": "- **Denominators.** Positions: arcseconds per body, p50/p95/max, per stratum, per epoch band. Events: seconds against the arbiter instant, per event class. Completeness: counts of missed, extra, excluded, boundary-ambiguous and unprocessed events reported separately. Cost: evaluations and wall milliseconds, both.",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            878,
+            879
+          ],
+          "quote": "Version 1's §5, unchanged: corpora and fresh holdouts, denominators, the PASS / FAIL / PARTIAL vocabulary, and receipts for every oracle.",
+          "section": "§8 Evaluation discipline"
+        }
+      ],
+      "v2_retention": "retained unchanged",
+      "title": "Denominators.",
+      "later_records": [],
+      "v2_retention_class": "retained unchanged"
+    },
+    {
+      "id": "EVAL.3",
+      "section": "v1 §5 item 3",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          144,
+          144
+        ]
+      },
+      "verbatim": "- **Verdict vocabulary.** PASS / FAIL / PARTIAL per rule, with the measured number beside each; never \"complete within the supported domain\" while boundary regions may still contain events.",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            878,
+            879
+          ],
+          "quote": "Version 1's §5, unchanged: corpora and fresh holdouts, denominators, the PASS / FAIL / PARTIAL vocabulary, and receipts for every oracle.",
+          "section": "§8 Evaluation discipline"
+        }
+      ],
+      "v2_retention": "retained unchanged",
+      "title": "Verdict vocabulary.",
+      "later_records": [],
+      "v2_retention_class": "retained unchanged"
+    },
+    {
+      "id": "EVAL.4",
+      "section": "v1 §5 item 4",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          145,
+          145
+        ]
+      },
+      "verbatim": "- **Receipts for oracles.** Record Horizons's version banner and query strings, pyswisseph and `.se1` file hashes, pyerfa and jplephem versions, IERS file dates. A number without a receipt is transcribed, not measured, and is labelled as such.",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            878,
+            879
+          ],
+          "quote": "Version 1's §5, unchanged: corpora and fresh holdouts, denominators, the PASS / FAIL / PARTIAL vocabulary, and receipts for every oracle.",
+          "section": "§8 Evaluation discipline"
+        }
+      ],
+      "v2_retention": "retained unchanged",
+      "title": "Receipts for oracles.",
+      "later_records": [],
+      "v2_retention_class": "retained unchanged"
+    },
+    {
+      "id": "REPORT",
+      "section": "v1 §6 preamble",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          149,
+          149
+        ]
+      },
+      "verbatim": "Ten numbered parts, as the owner's previous reports:",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            926,
+            926
+          ],
+          "quote": "Version 1's §6 ten parts, plus:",
+          "section": "§11 Report"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            230,
+            233
+          ],
+          "quote": "Version 1's milestone numbers are given in brackets so that the audit ids and version 1's rules still trace. Every phase ends with the report in §11.",
+          "section": "§3 The programme (preamble)"
+        }
+      ],
+      "v2_retention": "retained (v2 §11 = the ten parts plus 11-13)",
+      "heading": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          147,
+          147
+        ],
+        "verbatim": "## 6. Deliverables and the final report"
+      },
+      "v2_retention_class": "heading or preamble"
+    },
+    {
+      "id": "REPORT1",
+      "section": "v1 §6 report part 1",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          149,
+          149
+        ]
+      },
+      "verbatim": "1. exact source and PR identities",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            926,
+            926
+          ],
+          "quote": "Version 1's §6 ten parts, plus:",
+          "section": "§11 Report"
+        }
+      ],
+      "v2_retention": "retained unchanged",
+      "v2_retention_class": "retained unchanged"
+    },
+    {
+      "id": "REPORT2",
+      "section": "v1 §6 report part 2",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          149,
+          149
+        ]
+      },
+      "verbatim": "2. the original failures preserved and explained",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            926,
+            926
+          ],
+          "quote": "Version 1's §6 ten parts, plus:",
+          "section": "§11 Report"
+        }
+      ],
+      "v2_retention": "retained unchanged",
+      "v2_retention_class": "retained unchanged"
+    },
+    {
+      "id": "REPORT3",
+      "section": "v1 §6 report part 3",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          149,
+          149
+        ]
+      },
+      "verbatim": "3. what changed in the shipped path",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            926,
+            926
+          ],
+          "quote": "Version 1's §6 ten parts, plus:",
+          "section": "§11 Report"
+        }
+      ],
+      "v2_retention": "retained unchanged",
+      "v2_retention_class": "retained unchanged"
+    },
+    {
+      "id": "REPORT4",
+      "section": "v1 §6 report part 4",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          149,
+          149
+        ]
+      },
+      "verbatim": "4. accuracy against the arbiters, per axis, with the original benchmark alongside",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            926,
+            926
+          ],
+          "quote": "Version 1's §6 ten parts, plus:",
+          "section": "§11 Report"
+        }
+      ],
+      "v2_retention": "retained unchanged",
+      "v2_retention_class": "retained unchanged"
+    },
+    {
+      "id": "REPORT5",
+      "section": "v1 §6 report part 5",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          149,
+          149
+        ]
+      },
+      "verbatim": "5. event-finding results, completeness counts and what remains unresolved",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            926,
+            926
+          ],
+          "quote": "Version 1's §6 ten parts, plus:",
+          "section": "§11 Report"
+        }
+      ],
+      "v2_retention": "retained unchanged",
+      "v2_retention_class": "retained unchanged"
+    },
+    {
+      "id": "REPORT6",
+      "section": "v1 §6 report part 6",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          149,
+          149
+        ]
+      },
+      "verbatim": "6. end-to-end cost including preprocessing and cache break-even",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            926,
+            926
+          ],
+          "quote": "Version 1's §6 ten parts, plus:",
+          "section": "§11 Report"
+        }
+      ],
+      "v2_retention": "retained unchanged",
+      "v2_retention_class": "retained unchanged"
+    },
+    {
+      "id": "REPORT7",
+      "section": "v1 §6 report part 7",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          149,
+          149
+        ]
+      },
+      "verbatim": "7. time-scale and calendar results with uncertainty bands",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            926,
+            926
+          ],
+          "quote": "Version 1's §6 ten parts, plus:",
+          "section": "§11 Report"
+        }
+      ],
+      "v2_retention": "retained unchanged",
+      "v2_retention_class": "retained unchanged"
+    },
+    {
+      "id": "REPORT8",
+      "section": "v1 §6 report part 8",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          149,
+          149
+        ]
+      },
+      "verbatim": "8. same-byte browser/Node and clean-consumer results",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            926,
+            926
+          ],
+          "quote": "Version 1's §6 ten parts, plus:",
+          "section": "§11 Report"
+        }
+      ],
+      "v2_retention": "retained unchanged",
+      "v2_retention_class": "retained unchanged"
+    },
+    {
+      "id": "REPORT9",
+      "section": "v1 §6 report part 9",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          149,
+          149
+        ]
+      },
+      "verbatim": "9. whether, axis by axis, the stack now exceeds Swiss, matches it, or remains behind — with the arbiter named for each",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            926,
+            926
+          ],
+          "quote": "Version 1's §6 ten parts, plus:",
+          "section": "§11 Report"
+        }
+      ],
+      "v2_retention": "retained unchanged",
+      "v2_retention_class": "retained unchanged"
+    },
+    {
+      "id": "REPORT10",
+      "section": "v1 §6 report part 10",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          149,
+          149
+        ]
+      },
+      "verbatim": "10. what remains before the next milestone",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            926,
+            926
+          ],
+          "quote": "Version 1's §6 ten parts, plus:",
+          "section": "§11 Report"
+        }
+      ],
+      "v2_retention": "retained unchanged",
+      "v2_retention_class": "retained unchanged"
+    },
+    {
+      "id": "REPORT-closing",
+      "section": "v1 §6 closing sentence",
+      "source": {
+        "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+        "lines": [
+          149,
+          149
+        ]
+      },
+      "verbatim": "Do not label a failed milestone successful by changing its denominator; do not declare a universal engine or a Swiss replacement.",
+      "v2_references": [
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            933,
+            934
+          ],
+          "quote": "Do not call a failed milestone successful by changing its denominator. Do not declare a universal engine.",
+          "section": "§11 Report (closing)"
+        },
+        {
+          "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+          "lines": [
+            66,
+            68
+          ],
+          "quote": "\"Never call it a Swiss replacement\" becomes an owner decision once breadth parity and precision parity pass (§10).",
+          "section": "'What changed from version 1' item 10"
+        }
+      ],
+      "v2_retention": "changed: v2 §11 keeps 'Do not call a failed milestone successful by changing its denominator. Do not declare a universal engine.' and drops 'or a Swiss replacement', which becomes owner decision §10.1",
+      "v2_retention_class": "retained with change or in part"
+    }
+  ],
+  "retained_v1_findings_table": {
+    "retained_by": {
+      "file": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md",
+      "lines": [
+        203,
+        205
+      ],
+      "quote": "Version 1's twenty-row table stands with the verifiers' corrections; do not re-rank it.",
+      "section": "§2 Findings"
+    },
+    "header": {
+      "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+      "lines": [
+        31,
+        34
+      ],
+      "verbatim": "Every item below was reproduced by an adversarial verifier; ids point into `ENGINE-AUDIT-2026-09-22.md` and `ledger.md`, which carry the evidence paths and the corrections the verifiers made. Severities are the corrected ones."
+    },
+    "rows": [
+      {
+        "row": "1",
+        "ids_cell": "production-positions-1, swiss-parity-2",
+        "sev": "major",
+        "finding": "Shipped positions are set by astronomy-engine's truncated VSOP87/ILE series: Neptune 15″, Saturn 8–9″, Venus/Mercury 5–7″, Moon 1.3–4.4″ vs DE440s; corpus max 18.8″ / p50 2.07″ vs Horizons — 4–10× worse than Swiss's zero-data Moshier. The reduction contributes < 0.3″.",
+        "fix_effort": "12 d (M2)",
+        "source": {
+          "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+          "lines": [
+            35,
+            35
+          ]
+        },
+        "verbatim": "| 1 | production-positions-1, swiss-parity-2 | major | Shipped positions are set by astronomy-engine's truncated VSOP87/ILE series: Neptune 15″, Saturn 8–9″, Venus/Mercury 5–7″, Moon 1.3–4.4″ vs DE440s; corpus max 18.8″ / p50 2.07″ vs Horizons — 4–10× worse than Swiss's zero-data Moshier. The reduction contributes < 0.3″. | 12 d (M2) |"
+      },
+      {
+        "row": "2",
+        "ids_cell": "time-1, production-positions-2, swiss-parity-1, verification-honesty-2",
+        "sev": "major",
+        "finding": "Delta-T is a 2004 polynomial, +6.3 s vs IERS today, +110 s at 2100; Moon +3.3″; unexposed, untested; docs call it a convention.",
+        "fix_effort": "3–4 d (M1)",
+        "source": {
+          "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+          "lines": [
+            36,
+            36
+          ]
+        },
+        "verbatim": "| 2 | time-1, production-positions-2, swiss-parity-1, verification-honesty-2 | major | Delta-T is a 2004 polynomial, +6.3 s vs IERS today, +110 s at 2100; Moon +3.3″; unexposed, untested; docs call it a convention. | 3–4 d (M1) |"
+      },
+      {
+        "row": "3",
+        "ids_cell": "angles-houses-aspects-1, production-positions-3, time-6",
+        "sev": "major",
+        "finding": "Angles pair apparent sidereal time with the mean obliquity: ASC p95 22″, max 512″ (lat 66); one-line fix.",
+        "fix_effort": "0.5 d (M1)",
+        "source": {
+          "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+          "lines": [
+            37,
+            37
+          ]
+        },
+        "verbatim": "| 3 | angles-houses-aspects-1, production-positions-3, time-6 | major | Angles pair apparent sidereal time with the mean obliquity: ASC p95 22″, max 512″ (lat 66); one-line fix. | 0.5 d (M1) |"
+      },
+      {
+        "row": "4",
+        "ids_cell": "time-2",
+        "sev": "major",
+        "finding": "Host ICU tzdb without backzone: 98 zones return another city's pre-1970 offsets; Stockholm 1947 ASC 9.5° wrong; no tzdb version in receipts.",
+        "fix_effort": "5 d (M3)",
+        "source": {
+          "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+          "lines": [
+            38,
+            38
+          ]
+        },
+        "verbatim": "| 4 | time-2 | major | Host ICU tzdb without backzone: 98 zones return another city's pre-1970 offsets; Stockholm 1947 ASC 9.5° wrong; no tzdb version in receipts. | 5 d (M3) |"
+      },
+      {
+        "row": "5",
+        "ids_cell": "angles-houses-aspects-2",
+        "sev": "major (blocking by the letter of the rule)",
+        "finding": "`applying` is false for every aspect of every pair in the 14.4 min before exactness (0.21 % of rows, no false positives; contradicts the d.ts). Fix first; it is the cheapest item here.",
+        "fix_effort": "0.25 d (M1)",
+        "source": {
+          "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+          "lines": [
+            39,
+            39
+          ]
+        },
+        "verbatim": "| 5 | angles-houses-aspects-2 | major (blocking by the letter of the rule) | `applying` is false for every aspect of every pair in the 14.4 min before exactness (0.21 % of rows, no false positives; contradicts the d.ts). Fix first; it is the cheapest item here. | 0.25 d (M1) |"
+      },
+      {
+        "row": "6",
+        "ids_cell": "data-toolchain-packaging-4, -1",
+        "sev": "major",
+        "finding": "The accurate runtime reaches no user: npm 404, alpha private, no pack, 27.5 KB gz vs a 25 KB gate; the compiler cannot produce a pack covering 1800–2199 and silently accepts budget-blowing packs from shorter kernels.",
+        "fix_effort": "3 + 5 d (M2)",
+        "source": {
+          "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+          "lines": [
+            40,
+            40
+          ]
+        },
+        "verbatim": "| 6 | data-toolchain-packaging-4, -1 | major | The accurate runtime reaches no user: npm 404, alpha private, no pack, 27.5 KB gz vs a 25 KB gate; the compiler cannot produce a pack covering 1800–2199 and silently accepts budget-blowing packs from shorter kernels. | 3 + 5 d (M2) |"
+      },
+      {
+        "row": "7",
+        "ids_cell": "production-positions-6, -5, -4",
+        "sev": "major",
+        "finding": "Pluto integrator −29″ at 2200; Moon route without light-time (−0.70″) on a 1.3–7.5″ series; node −7.3″ from the analytic Moon state. All disappear with the DE pack.",
+        "fix_effort": "in M2",
+        "source": {
+          "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+          "lines": [
+            41,
+            41
+          ]
+        },
+        "verbatim": "| 7 | production-positions-6, -5, -4 | major | Pluto integrator −29″ at 2200; Moon route without light-time (−0.70″) on a 1.3–7.5″ series; node −7.3″ from the analytic Moon state. All disappear with the DE pack. | in M2 |"
+      },
+      {
+        "row": "8",
+        "ids_cell": "alpha-search-partition-2",
+        "sev": "major",
+        "finding": "The Moon partition's P-3/P-4 failures are an enclosure-construction defect (geocentric vector enclosed as R−O, losing Earth–Moon co-motion: 44.8× of a 2,893× excess); fixable, and the key to a practical deflected search.",
+        "fix_effort": "4 d (M4)",
+        "source": {
+          "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+          "lines": [
+            42,
+            42
+          ]
+        },
+        "verbatim": "| 8 | alpha-search-partition-2 | major | The Moon partition's P-3/P-4 failures are an enclosure-construction defect (geocentric vector enclosed as R−O, losing Earth–Moon co-motion: 44.8× of a 2,893× excess); fixable, and the key to a practical deflected search. | 4 d (M4) |"
+      },
+      {
+        "row": "9",
+        "ids_cell": "production-event-search-1, -2, -3",
+        "sev": "major",
+        "finding": "sky.json lunations 40 s late (aberration-free Sun); Sun events −28…+42 s seasonal; Moon events −6 s (Delta-T).",
+        "fix_effort": "0.5 d + M1/M2",
+        "source": {
+          "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+          "lines": [
+            43,
+            43
+          ]
+        },
+        "verbatim": "| 9 | production-event-search-1, -2, -3 | major | sky.json lunations 40 s late (aberration-free Sun); Sun events −28…+42 s seasonal; Moon events −6 s (Delta-T). | 0.5 d + M1/M2 |"
+      },
+      {
+        "row": "10",
+        "ids_cell": "production-event-search-4",
+        "sev": "major",
+        "finding": "Fixed-step crossing scan silently drops grazing pass pairs (Saturn return: 1 pass where there are 3).",
+        "fix_effort": "2 d (M1/M4)",
+        "source": {
+          "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+          "lines": [
+            44,
+            44
+          ]
+        },
+        "verbatim": "| 10 | production-event-search-4 | major | Fixed-step crossing scan silently drops grazing pass pairs (Saturn return: 1 pass where there are 3). | 2 d (M1/M4) |"
+      },
+      {
+        "row": "11",
+        "ids_cell": "production-event-search-7",
+        "sev": "major",
+        "finding": "Station instants 20–45 min from DE441, published to the millisecond.",
+        "fix_effort": "with M2 + band",
+        "source": {
+          "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+          "lines": [
+            45,
+            45
+          ]
+        },
+        "verbatim": "| 11 | production-event-search-7 | major | Station instants 20–45 min from DE441, published to the millisecond. | with M2 + band |"
+      },
+      {
+        "row": "12",
+        "ids_cell": "time-3",
+        "sev": "major",
+        "finding": "No Julian-calendar input; Old-Style dates read as Gregorian (Russia 1917: Sun 13° off).",
+        "fix_effort": "2 d (M3)",
+        "source": {
+          "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+          "lines": [
+            46,
+            46
+          ]
+        },
+        "verbatim": "| 12 | time-3 | major | No Julian-calendar input; Old-Style dates read as Gregorian (Russia 1917: Sun 13° off). | 2 d (M3) |"
+      },
+      {
+        "row": "13",
+        "ids_cell": "alpha-reduction-math-2, swiss-parity-13, data-toolchain-packaging-5",
+        "sev": "major",
+        "finding": "No topocentric/heliocentric/J2000/sidereal/rates; no `calc(body, time, flags)`-class API; positions carry no distance, rates or bounds.",
+        "fix_effort": "8 + 15 d (M2/M5)",
+        "source": {
+          "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+          "lines": [
+            47,
+            47
+          ]
+        },
+        "verbatim": "| 13 | alpha-reduction-math-2, swiss-parity-13, data-toolchain-packaging-5 | major | No topocentric/heliocentric/J2000/sidereal/rates; no `calc(body, time, flags)`-class API; positions carry no distance, rates or bounds. | 8 + 15 d (M2/M5) |"
+      },
+      {
+        "row": "14",
+        "ids_cell": "angles-houses-aspects-7, swiss-parity-11",
+        "sev": "major",
+        "finding": "2 house systems vs 24; no house position with latitude, extra angles, cusp speeds, configurable aspects.",
+        "fix_effort": "6 d (M5)",
+        "source": {
+          "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+          "lines": [
+            48,
+            48
+          ]
+        },
+        "verbatim": "| 14 | angles-houses-aspects-7, swiss-parity-11 | major | 2 house systems vs 24; no house position with latitude, extra angles, cusp speeds, configurable aspects. | 6 d (M5) |"
+      },
+      {
+        "row": "15",
+        "ids_cell": "swiss-parity-10, -12",
+        "sev": "major",
+        "finding": "No Chiron, Lilith, mean node, big-four asteroids, fixed stars; no sidereal zodiac (0 vs 48 ayanamsas).",
+        "fix_effort": "8 + 3 d (M5)",
+        "source": {
+          "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+          "lines": [
+            49,
+            49
+          ]
+        },
+        "verbatim": "| 15 | swiss-parity-10, -12 | major | No Chiron, Lilith, mean node, big-four asteroids, fixed stars; no sidereal zodiac (0 vs 48 ayanamsas). | 8 + 3 d (M5) |"
+      },
+      {
+        "row": "16",
+        "ids_cell": "alpha-search-partition-1, -3",
+        "sev": "major",
+        "finding": "`acceptPartialPlan` is inert; only longitude crossings are proven although stations/aspects/latitude are polynomial roots the proof covers; no eclipses/occultations/rise-set.",
+        "fix_effort": "0.5 + 12 d (M4)",
+        "source": {
+          "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+          "lines": [
+            50,
+            50
+          ]
+        },
+        "verbatim": "| 16 | alpha-search-partition-1, -3 | major | `acceptPartialPlan` is inert; only longitude crossings are proven although stations/aspects/latitude are polynomial roots the proof covers; no eclipses/occultations/rise-set. | 0.5 + 12 d (M4) |"
+      },
+      {
+        "row": "17",
+        "ids_cell": "alpha-reduction-math-1, swiss-parity-5",
+        "sev": "major",
+        "finding": "Outer planets are system barycentres (Pluto 0.093″, Jupiter 0.076″); Swiss returns centres with its sepm files.",
+        "fix_effort": "4 d (M2)",
+        "source": {
+          "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+          "lines": [
+            51,
+            51
+          ]
+        },
+        "verbatim": "| 17 | alpha-reduction-math-1, swiss-parity-5 | major | Outer planets are system barycentres (Pluto 0.093″, Jupiter 0.076″); Swiss returns centres with its sepm files. | 4 d (M2) |"
+      },
+      {
+        "row": "18",
+        "ids_cell": "verification-honesty-1, -5, -4",
+        "sev": "major",
+        "finding": "CI gates 12–9,400× looser than residuals; nothing data-dependent, no Delta-T, no anchor runs in CI; the \"42 mutation-confirmed families\" claim holds for 11.",
+        "fix_effort": "5 d (M6)",
+        "source": {
+          "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+          "lines": [
+            52,
+            52
+          ]
+        },
+        "verbatim": "| 18 | verification-honesty-1, -5, -4 | major | CI gates 12–9,400× looser than residuals; nothing data-dependent, no Delta-T, no anchor runs in CI; the \"42 mutation-confirmed families\" claim holds for 11. | 5 d (M6) |"
+      },
+      {
+        "row": "19",
+        "ids_cell": "production-event-search-8",
+        "sev": "major",
+        "finding": "Eclipse data lacks contacts, magnitudes, Saros, local circumstances that astronomy-engine already exposes.",
+        "fix_effort": "4 d (M5)",
+        "source": {
+          "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+          "lines": [
+            53,
+            53
+          ]
+        },
+        "verbatim": "| 19 | production-event-search-8 | major | Eclipse data lacks contacts, magnitudes, Saros, local circumstances that astronomy-engine already exposes. | 4 d (M5) |"
+      },
+      {
+        "row": "20",
+        "ids_cell": "alpha-reduction-math-12",
+        "sev": "note",
+        "finding": "No pointwise output carries an error bound although every ingredient is measured — the clearest \"provably better\" item.",
+        "fix_effort": "3 d (M2)",
+        "source": {
+          "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+          "lines": [
+            54,
+            54
+          ]
+        },
+        "verbatim": "| 20 | alpha-reduction-math-12 | note | No pointwise output carries an error bound although every ingredient is measured — the clearest \"provably better\" item. | 3 d (M2) |"
+      },
+      {
+        "row": "—",
+        "ids_cell": "minor/note items",
+        "sev": "—",
+        "finding": "Placidus 66° cut; two solvers; window budgets; nutation 5/77 terms; deflection absent; ±6 h speed; range flag; receipt overstatements; NOTICE/RIGHTS gaps; slack-covered interval pads; dead options; docs drift.",
+        "fix_effort": "folded in",
+        "source": {
+          "file": "docs/platform/evidence/engine-audit-2026-09-22/BRIEF-v1.md",
+          "lines": [
+            55,
+            55
+          ]
+        },
+        "verbatim": "| — | minor/note items | — | Placidus 66° cut; two solvers; window budgets; nutation 5/77 terms; deflection absent; ±6 h speed; range flag; receipt overstatements; NOTICE/RIGHTS gaps; slack-covered interval pads; dead options; docs drift. | folded in |"
+      }
+    ]
+  },
+  "counts": {
+    "rules": 117,
+    "by_v2_retention_class": {
+      "heading or preamble": 6,
+      "retained unchanged": 39,
+      "retained by explicit reference": 23,
+      "retained with change or in part": 13,
+      "superseded": 4,
+      "retained in substance, not cited": 7,
+      "not cited by v2": 4,
+      "uncertain": 21
+    },
+    "retained_v1_findings_table_rows": 21
+  }
+}

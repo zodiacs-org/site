@@ -1,0 +1,11 @@
+{
+ "pyerfa": "2.0.1.5",
+ "instants": 401,
+ "span": "TT centuries -2 to +2",
+ "unit": "arcseconds, largest difference",
+ "largest": {
+  "l": 4.19e-07,
+  "F": 4.19e-07,
+  "node": 8.19e-10
+ }
+}
