@@ -2652,11 +2652,11 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
               )}
 
               {mode === 'full' && showsEnglishInterpretation && ApproachRead && (
-                <ApproachRead chart={chart} locale={locale} moonAmbiguous={moonAmbiguous} />
+                <ApproachRead chart={chart} locale={locale} moonAmbiguous={moonAmbiguous} birthDate={computedInput?.date} />
               )}
 
               {mode === 'full' && showsEnglishInterpretation && CommunicationRead && (
-                <CommunicationRead chart={chart} locale={locale} />
+                <CommunicationRead chart={chart} locale={locale} birthDate={computedInput?.date} />
               )}
             </>
           )}

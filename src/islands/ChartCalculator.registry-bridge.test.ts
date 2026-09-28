@@ -18,7 +18,7 @@ describe('ChartCalculator Registry bridge contract', () => {
 
   it('places one measured bridge after the chart readings and before the result actions', async () => {
     const source = await readFile(calculatorUrl, 'utf8');
-    const readings = source.indexOf('<CommunicationRead chart={chart} locale={locale} />');
+    const readings = source.indexOf('<CommunicationRead chart={chart} locale={locale} birthDate={computedInput?.date} />');
     const bridge = source.indexOf('data-registry-bridge-surface="birth_chart"');
     const actions = source.indexOf("{/* One primary action, derived from the visitor's current state. */}");
 

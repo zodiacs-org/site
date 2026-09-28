@@ -17,6 +17,8 @@ interface Props {
   chart: Chart;
   locale?: Locale;
   moonAmbiguous?: boolean;
+  /** The civil birth date: the card of a chart without a birth time shows 12:00 UTC on it. */
+  birthDate?: string;
 }
 
 type ShareState = 'preparing' | 'idle' | 'busy' | 'saved' | 'error';
@@ -68,6 +70,7 @@ export default function ApproachRead({
   chart,
   locale = 'en',
   moonAmbiguous = false,
+  birthDate,
 }: Props) {
   const read = useMemo(
     () => approachRead(chart, { moonAmbiguous }),
@@ -87,6 +90,7 @@ export default function ApproachRead({
       variant: 'approach',
       locale,
       moonAmbiguous,
+      birthDate,
     }).then((prepared) => {
       if (!current) return;
       setPreparedCard(prepared);
@@ -96,7 +100,7 @@ export default function ApproachRead({
       if (current) setShareState('error');
     });
     return () => { current = false; };
-  }, [chart, locale, moonAmbiguous]);
+  }, [chart, locale, moonAmbiguous, birthDate]);
 
   function shareReading(): void {
     if (!preparedCard || shareState === 'preparing' || shareState === 'busy') return;

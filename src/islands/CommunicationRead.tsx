@@ -21,11 +21,13 @@ import { moonCandidates } from '../lib/moon-certainty';
 interface Props {
   chart: Chart;
   locale?: Locale;
+  /** The civil birth date: the card of a chart without a birth time shows 12:00 UTC on it. */
+  birthDate?: string;
 }
 
 type ShareState = 'preparing' | 'idle' | 'busy' | 'saved' | 'error';
 
-export default function CommunicationRead({ chart, locale = 'en' }: Props) {
+export default function CommunicationRead({ chart, locale = 'en', birthDate }: Props) {
   const read = useMemo(() => communicationRead(chart), [chart]);
   const [shareState, setShareState] = useState<ShareState>('preparing');
   const [preparedCard, setPreparedCard] = useState<PreparedChartCard | null>(null);
@@ -61,7 +63,7 @@ export default function CommunicationRead({ chart, locale = 'en' }: Props) {
     let current = true;
     setPreparedCard(null);
     setShareState('preparing');
-    void prepareChartCard(chart, { variant: 'communication', locale }).then((prepared) => {
+    void prepareChartCard(chart, { variant: 'communication', locale, birthDate }).then((prepared) => {
       if (!current) return;
       setPreparedCard(prepared);
       setShareState('idle');
@@ -70,7 +72,7 @@ export default function CommunicationRead({ chart, locale = 'en' }: Props) {
       if (current) setShareState('error');
     });
     return () => { current = false; };
-  }, [chart, locale]);
+  }, [chart, locale, birthDate]);
 
   function shareReading(): void {
     if (!preparedCard || shareState === 'preparing' || shareState === 'busy') return;

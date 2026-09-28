@@ -28,6 +28,7 @@ import {
   chartSheetContent,
   imageChart,
   imagePositions,
+  prepareChartCard,
   timedImageChart,
 } from './share-card';
 import type { Chart } from './engine/types';
@@ -519,6 +520,42 @@ describe('a chart image with birth details hidden', () => {
     const chart = { ...timed('whole'), input: { ...timed('whole').input, timeKnown: false }, angles: null, houses: null };
     await expect(imageChart(chart)).rejects.toThrow('birth date');
     await expect(imageChart(chart, '2000-02-30')).rejects.toThrow('birth date');
+  });
+
+  it('draws the reading cards of a chart without a birth time from the same noon UTC sky', async () => {
+    // They name only signs, but a sign can depend on when noon fell at the
+    // birthplace: Mercury entered Scorpio at about 13:30 UTC on 28 September
+    // 2000, after noon in Kathmandu (06:15 UTC) and before noon in Pago Pago
+    // (23:00 UTC).
+    const date = '2000-09-28';
+    const own = new Set<string>();
+    const drawn = new Set<string>();
+    for (const birth of [
+      { zone: 'Asia/Kathmandu', lat: 27.72, lon: 85.32 },
+      { zone: 'Pacific/Pago_Pago', lat: -14.28, lon: -170.7 },
+    ]) {
+      await prepareLocalTime(date, birth.zone);
+      const resolved = resolveLocalToUtc(date, '12:00', birth.zone, { longitude: birth.lon });
+      const chart = {
+        ...computeChart({
+          utc: resolved.utc, latitude: birth.lat, longitude: birth.lon,
+          houseSystem: 'whole', timeKnown: false, flags: resolved.flags,
+        }),
+        moonSignCandidates: [],
+      };
+      own.add(JSON.stringify([communicationCardContent(chart), approachCardContent(chart)]));
+      const image = await imageChart(chart, date);
+      drawn.add(JSON.stringify([communicationCardContent(image), approachCardContent(image)]));
+      // prepareChartCard draws both from imageChart: without the date it stops before drawing.
+      for (const variant of ['communication', 'approach'] as const) {
+        await expect(prepareChartCard(chart, { variant })).rejects.toThrow('birth date');
+      }
+    }
+    expect(own.size).toBe(2);
+    expect(drawn.size).toBe(1);
+    const [communication] = JSON.parse([...drawn][0]);
+    expect(communication.rows.map(({ body, sign }: { body: string; sign: string }) => [body, sign]))
+      .toEqual([['Mercury', 'Libra'], ['Moon', 'Needs a birth time'], ['Mars', 'Virgo']]);
   });
 
   it('gives the Big Three and placement cards the rising sign’s whole degree, and a chart without a birth time noon UTC', async () => {

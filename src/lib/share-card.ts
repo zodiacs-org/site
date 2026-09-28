@@ -123,14 +123,16 @@ export function timedImageChart(chart: Chart): Chart {
 }
 
 /**
- * The chart an image draws while birth details are hidden. With a birth
- * time, timedImageChart. Without one, the chart is noon at the birthplace, an
- * instant whose positions give the place away (its time zone, or before
- * standard time its longitude, to within a minute of time from the Moon's
- * orbs), so the image shows the sky at 12:00 UTC on the civil birth date, as
- * the chart's link carries it (sharedReferenceInstant): the Moon's sign is
- * left unknown and its aspects out, as on the chart itself. Rejects a chart
- * without a birth time whose date is missing or not a date.
+ * The chart an image draws while birth details are hidden, as every card
+ * does. With a birth time, timedImageChart. Without one, the chart is noon at
+ * the birthplace, an instant whose positions give the place away (its time
+ * zone, or before standard time its longitude, to within a minute of time
+ * from the Moon's orbs), so the image shows the sky at 12:00 UTC on the civil
+ * birth date, as the chart's link carries it (sharedReferenceInstant): the
+ * Moon's sign is left unknown, as whoever opens the link sees it, and its
+ * aspects out; whether the Moon stays in one sign through the local birth
+ * date depends on the time zone too. Rejects a chart without a birth time
+ * whose date is missing or not a date.
  */
 export async function imageChart(chart: Chart, birthDate?: string): Promise<Chart> {
   if (chart.input.timeKnown) return timedImageChart(chart);
@@ -1673,12 +1675,11 @@ export async function prepareChartCard(
   options: ShareCardOptions = {},
 ): Promise<PreparedChartCard> {
   if (options.variant === 'sheet') return prepareChartSheet(chart, options);
-  // The two readings name signs only; every other card draws positions.
-  const drawn = options.variant === 'communication' || options.variant === 'approach'
-    ? timedImageChart(chart)
-    : await imageChart(chart, options.birthDate);
+  // The reading cards name only signs, but for a chart without a birth time
+  // even a sign can depend on when noon at the birthplace fell: the Moon's,
+  // or a planet's on the day it changes sign.
   return {
-    blob: await drawCard(drawn, options),
+    blob: await drawCard(await imageChart(chart, options.birthDate), options),
     filename: chartCardFilename(options),
   };
 }
