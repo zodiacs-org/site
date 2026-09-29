@@ -62,22 +62,23 @@ positional acceptance gate, not a provider-published accuracy bound or a
 budget derived from product residuals. Two endpoint budgets give the
 natal-derived 0.30-degree branch.
 
-| Case | First independent event transport | Complete root count | Clock |
-| --- | --- | --- | --- |
-| L-modern-a | 2026-03-20T23:14:55.358Z | 1 | UTC |
-| L-modern-b | 2026-03-12T15:11:55.512Z | 2 | UTC |
-| L-wrap | 2026-03-19T04:02:58.391Z | 1 | UTC |
-| L-year-boundary | 2026-01-28T08:05:36.208Z | 1 | UTC |
-| L-range-start | 1800-01-29T08:53:08.040Z | 1 | nominal UT1 |
-| L-range-end | 2199-12-19T09:09:13.298Z | 1 | nominal UT1 |
+| Case | Complete root count | Clock |
+| --- | --- | --- |
+| L-modern-a | 1 | UTC |
+| L-modern-b | 2 | UTC |
+| L-wrap | 1 | UTC |
+| L-year-boundary | 1 | UTC |
+| L-range-start | 1 | nominal UT1 |
+| L-range-end | 1 | nominal UT1 |
 
-Modern B's second root is `2026-04-08T23:14:20.202Z`. The wrap natal input
-was independently selected before full acquisition as the first Swiss Moon
-zero crossing after 2000-01-01, rounded once to
-`2000-01-12T18:48:22.048Z`. The selected timestamp's actual Swiss longitude
-is retained; it was not replaced with an exact zero. The original candidate
-policy, separately authorized preparatory lookup and amended v2 are all
-preserved.
+The table first gave each case's first independent event, Modern B's second
+root, and the wrap case's natal input, all Swiss instants; they left on
+2026-09-29 (below). The wrap natal input was independently selected before
+full acquisition as the first Swiss Moon zero crossing after 2000-01-01,
+rounded once to the millisecond. The selected timestamp's actual Swiss
+longitude was retained; it was not replaced with an exact zero. The original
+candidate policy, separately authorized preparatory lookup and amended v2 are
+all preserved.
 
 All six natal-derived comparisons remain required. Only the three
 nonidentity windows (modern A, modern B, wrap) admit the additional fixed
@@ -210,3 +211,13 @@ Moon instead, 2000-01-12T18:48:22.487Z
 applicability amendment stays. The figures above are this pack's, measured
 against Swiss. The record of everything removed is
 [`../SWISS-OUTPUT-REMOVAL.md`](../SWISS-OUTPUT-REMOVAL.md).
+
+## Addition, 2026-09-29: the Swiss instants left the tables
+
+Under [DECISIONS-2026-09-29 §2](../../platform/programme/DECISIONS-2026-09-29.md)
+a README table that lists Swiss's values case by case counts as data, so the
+six first independent events, Modern B's second root and the wrap case's
+Swiss natal input left the section above. Commit `2ca93d41` has them, in this
+file and in the fixtures, and the recipes above regenerate them outside the
+repository. The measured residuals and bands above are statistics of the
+pack and stay.

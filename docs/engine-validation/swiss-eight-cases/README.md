@@ -87,12 +87,13 @@ are independently asserted outside that station deadband case.
 
 ## Returned-chart clock applicability
 
-The original independent Solar root remains `2025-01-31T23:57:47.793Z`.
-The initial product return was `2025-01-31T23:57:48.787Z`, a +0.994-second
-residual, and its chart received a separate Swiss evaluation at that exact
-timestamp. Only the timestamp was supplied by the product; location came
-from the frozen input policy, and all expected coordinates came from Swiss.
-Both independent return-time checks remain separate from chart parity.
+The original independent Solar root remains as the pack recorded it (the
+instant left this file on 2026-09-29, below). The initial product return was
+`2025-01-31T23:57:48.787Z`, less than one second after it, and its chart
+received a separate Swiss evaluation at that exact timestamp. Only the
+timestamp was supplied by the product; location came from the frozen input
+policy, and all expected coordinates came from Swiss. Both independent
+return-time checks remain separate from chart parity.
 
 The test first verifies that this same-time reference applies to the actual
 returned timestamp. If solver output changes, even within the unchanged
@@ -159,3 +160,12 @@ returned-chart reference is taken at the instant the product returns, under
 the same 15-second rule. The figures above are this pack's, measured against
 Swiss. The record of everything removed is
 [`../SWISS-OUTPUT-REMOVAL.md`](../SWISS-OUTPUT-REMOVAL.md).
+
+## Addition, 2026-09-29: the Swiss root left this file
+
+Under [DECISIONS-2026-09-29 §2](../../platform/programme/DECISIONS-2026-09-29.md)
+no per-case Swiss value stays as data, and the section on returned-chart
+clock applicability gave the Solar root's Swiss instant and the product's
+residual from it, which together gave it back. Both left; the root is in
+commit `2ca93d41`, in the fixture and in this file, and `extract-fixture.py`
+regenerates it outside the repository.

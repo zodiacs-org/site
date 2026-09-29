@@ -4,37 +4,90 @@ On 2026-09-28 Swiss Ephemeris's raw output left the current tree, under the
 owner's decision
 [DECISIONS-2026-09-28 §3](../platform/programme/DECISIONS-2026-09-28.md)
 (audit finding F-22 in [`FINDINGS.md`](../platform/programme/FINDINGS.md)).
-Brief §6 says "no Swiss code, data or output in `src/` or any pack". The raw
-fixtures under `src/lib/engine/fixtures/` and the raw Swiss values in the
-evidence folders are gone; statistics and SHA-256 digests stay. Git history
-was not rewritten: commit `2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83`, the
-base of this change, is the last with every value, and
+Brief §6 says "no Swiss code, data or output in `src/` or any pack". An
+independent review that day found Swiss material the removal had left, and
+[DECISIONS-2026-09-29 §2](../platform/programme/DECISIONS-2026-09-29.md) set
+what the removal covers:
+
+- no Swiss Ephemeris source code anywhere in the tree;
+- no per-case Swiss value kept as data anywhere: not in a file, a field, a
+  table, a list or a script, and not as a value that arithmetic on what
+  remains gives back;
+- no Swiss value in `src/` in any form, prose included: the pages give
+  statistics over a stated range, and tests read committed statistics;
+- figures quoted in the prose of a dated evidence README, audit record or
+  report stay as written; the records are named at the end.
+
+The rest left on 2026-09-29. Statistics and SHA-256 digests stay. Git
+history was not rewritten: commit `2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83`,
+the base of both removals, is the last with every value, and
 `git show 2ca93d41:<path>` gives any of them back.
 
-Everything removed is listed below and, field by field with its SHA-256, in
+In all, 10 files were removed, 131 lost the fields that held Swiss's values,
+and 21 were replaced by an independent rebuild. Each is listed below and,
+field by field with its SHA-256, in
 [`swiss-output-removal/manifest.json`](swiss-output-removal/manifest.json).
 [`swiss-output-removal/strip.py`](swiss-output-removal/strip.py) made the
 change from the base commit's bytes, and `strip.py --check` confirms the tree
-still matches it. `scripts/swiss-output-guard.test.mjs` fails if a removed
-file or field comes back, or if a Swiss reference fixture appears under
-`src/lib/engine/fixtures/`.
+still matches it; the `swiss-output-removal` job of
+`.github/workflows/site-check.yml` runs it on every pull request and every
+push to `main`.
+
+`swiss-output-removal/value-digests.json` holds a digest of each of the
+44,071 distinctive numbers and timestamps that left: a number with seven or
+more significant digits, a whole number of twelve or more digits (a
+millisecond clock) that is not a whole minute, or a timestamp with a
+fraction of a second that is not on a whole minute. Each
+digest is the first 16 hexadecimal digits of the token's SHA-256, a
+membership test rather than a way back to the value. 40,604 of them are
+"gone": no data or code file and nothing under `src/` holds them. The other
+3,467 are "kept", because they still appear there as inputs, statistics or
+reference values; the last sections say which. `strip.py` and
+`scripts/lib/swiss-output-scan.mjs` read a token the same way, and the
+digests carry calibration texts that hold the two to it.
+
+`scripts/swiss-output-guard.test.mjs` reads the tree by content, not by name.
+It walks every tracked file and every file that would be added, and the
+members of `.tgz`, `.tar.gz`, `.tar`, `.gz` and `.zip` archives three levels
+deep, all but `swiss-output-removal/` itself, whose digests are not values,
+and fails on:
+
+- a removed or replaced file's bytes under any name or in any archive;
+- a "gone" value in any data or code file (JSON, CSV, text, logs, scripts and
+  the like), or in any file under `src/`;
+- a Swiss provenance marker (`pyswisseph`, `swisseph`, `SWIEPH`, a `swe.`
+  call) under `src/`, beyond the two kept policies, which it pins by
+  SHA-256, and the conformance suite's summary, which may carry statistics
+  only;
+- Swiss Ephemeris source code in any data or code file, or a `patch` in a
+  swisseph commit receipt;
+
+and, as before, on a removed file at its old path or a removed field back in
+a stripped file. On this tree it reads 14,744 files and 9,758 archive
+members in about 20 seconds.
 
 ## What counts as Swiss output
 
 A value Swiss Ephemeris returned: a position, a speed, a cusp, an angle, an
 event time, a ΔT. Also a table that gives, for every case of a set, Swiss's
 value or its difference from something reproducible (the engine, an arbiter,
-a published instant), because either gives Swiss's value back.
+a published instant), because either gives Swiss's value back; and any value
+that arithmetic on what remains gives back, such as a difference kept beside
+the other term, a TT instant kept beside its UT, or a position computed at
+UT + Swiss's ΔT beside the same program's position at its own clock. And
+Swiss Ephemeris source code, which is licensed under the AGPL or
+commercially.
 
 What stays:
 
 - statistics: counts, means, percentiles, and extremes with the case they
   came from;
 - SHA-256 digests;
-- the few figures an analysis or a report cites for one case it examines,
-  and the figures READMEs and reports quote, which are left as written;
+- figures quoted in the prose of the dated records listed at the end, as
+  part of the finding each records;
 - the scripts that call Swiss (pyswisseph), which regenerate its values on
-  demand, and their receipts;
+  demand: they read Swiss's inputs from outside the repository and write
+  outside it;
 - the packs' acceptance policies, which hold cases, gates, inputs and
   digests but no value Swiss returned.
 
@@ -76,26 +129,20 @@ Write the output outside the repository.
 - `transit-window-independent.json`:
   `python3 docs/engine-validation/transit-windows/project-fixtures.py <extracted archive> --output <out.json>`.
 
-The Swiss acquisitions themselves need the pinned pyswisseph 2.10.3.2 build and
-the `.se1` data files that `swiss-node-polar/README.md` and
-`../platform/evidence/swiss-benchmark/CONFIGURATION.md` identify by SHA-256;
-neither was ever in this repository. The engine-validation extractions also
-need the retained raw bundles their READMEs name.
-
 `swiss-lunar-return-policy.json` held no position, but its `L-wrap` case was
 born at the first 0° crossing of Swiss's Moon after 2000-01-01, an instant
 Swiss gave. `independent-lunar-return-policy.json` carries its other cases,
 its gates and its conditioning unchanged, names it by SHA-256, and takes that
 crossing from the Horizons Moon instead.
 
-## Stripped files
+## Stripped on 2026-09-28
 
-In 74 files Swiss's per-case values sat beside statistics. The values were
-removed and every other field kept byte for byte: each file was written back
-with the serializer that reproduces its original bytes, and
-`canon-events.json`, which is laid out by hand, had its Swiss column cut from
-the text. Each now carries a
-`swissOutputRemoved` block naming the decision, the fields removed, the
+In 74 files Swiss's per-case values sat beside statistics (one of them,
+`corpus-tt.json`, was replaced on 2026-09-29; below). The values were removed
+and every other field kept byte for byte: each file was written back with the
+serializer that reproduces its original bytes, and `canon-events.json`, which
+is laid out by hand, had its Swiss column cut from the text. Each now carries
+a `swissOutputRemoved` block naming the decision, the fields removed, the
 SHA-256 and size of what was removed, the file's SHA-256 before, the base
 commit and the command that regenerates the values.
 
@@ -116,7 +163,7 @@ README quotes.
 |  | `.before1962.swissMinusS15_2016_at` | 3 | `51b545ab0b77bdd06e886af55bac6f3d706e0b9ec4ba73e8bce7b123602b2dd2` |
 |  | `.at1000` | 2 | `32bce87ba0c032f90fae6a96f7bf228a9f7365256a9229a878547ef87623a1e6` |
 | `engine-beyond-swiss/corpora/canon-events.json` | `.baseline.<event>.swiss` | 4 | `24b82b33bd2c72d346953e89305734f288d752bd51e94f684debf6d951bc9cbf` |
-| `engine-beyond-swiss/corpora/horizons-24/corpus-tt.json` | `.cases[].deltaTSeconds` | 24 | `ec648e52d9891ba911fc775b90976a30dff7776dabbcfbc2c532c1bb5dc85a7b` |
+| `engine-beyond-swiss/corpora/horizons-24/corpus-tt.json` (replaced on 2026-09-29) | `.cases[].deltaTSeconds` | 24 | `ec648e52d9891ba911fc775b90976a30dff7776dabbcfbc2c532c1bb5dc85a7b` |
 | `events-vs-swiss-2026-09-23/deltas.json` | `.deltas[].deltaSeconds` | 290 | `b70803665c57a8ca301c408585f5126d7d364acd06072b6e05b2b1b4d665ae48` |
 |  | `.summary.swissDeltaTSeconds2026` | 1 | `c0d106f34d96eabb6b53c588fc3b8411ae74fe144004f8bfd2a8608a53648e11` |
 | `events-vs-swiss-2026-09-25/deltas.json` | `.deltas[].deltaSeconds` | 290 | `7d813990623fa97345a9d6fafd1e4c8e458d1503efcf78749762da8feac839af` |
@@ -207,25 +254,208 @@ README quotes.
 | `swiss-benchmark/report-measure.json` | `.rows` | 180 | `ecc428332255089fad05d51b82ddc7dbd8f0be9542f98f6be5d506f5168ab65b` |
 | `swiss-benchmark/report-prototype-matched.json` | `.rows` | 160 | `87523a7685d858b36accdac443ed30221420ad28f60352177e499615e6243497` |
 
-How to regenerate the removed values:
+Twelve of these files lost more on 2026-09-29 (next section): the seven
+cell B files, both copies of `decomposition.json` and `reproduction.json`,
+and `report-measure-rc8.json`.
 
-- `swiss-benchmark/report-*.json` and the precision work's `cmp-*`,
-  `recovered-report-proto-engine-deltat.json` (10 files):
-  in `docs/platform/evidence/swiss-benchmark/tools`,
+## Removed on 2026-09-29
+
+The review found four kinds of Swiss material the first removal had left.
+This is what left for each, under
+[DECISIONS-2026-09-29 §2](../platform/programme/DECISIONS-2026-09-29.md).
+
+### Values that arithmetic on what remained gave back
+
+- **The Horizons corpus's clock.** `horizons-24/corpus-tt.json` kept the TT
+  instants the corpus was fetched at, UT + Swiss's ΔT, beside their UT
+  instants: `(jdTt − jdUt) · 86400` gave all 24 removed ΔT values back, the
+  worst to 1.9e-5 s. The time column of every Horizons response fetched at
+  those instants did the same, and so did `horizons-frame/vectors/results.json`,
+  which kept each instant's TT (`instants[].jdTdb`). The corpus was re-timed
+  on the engine's own ΔT (below), and the TT left `vectors/results.json`.
+- **The Uranus D analysis** (`precision-2026-09-20/search/raw/` and its copy
+  in `search/verify/raw-original/`). `decomposition.json` kept the DE
+  prototype's and the engine's difference from Swiss at the turning point
+  beside their own longitudes, Swiss's TT − UTC and its residual, a 6-hourly
+  grid that starts at Swiss's component start, and the ends of the recorded
+  possible-exact region. `reproduction.json` kept Swiss's station minus the
+  target beside the target, Swiss's TT − UTC, and the two components' ends
+  and regions, which were Swiss's hourly scan. `uranus-d.json` kept the
+  component ends it searched between, the crop-boundary orbs and Swiss's
+  offset from the level at the 2020-01-01 boundary. The margins, the
+  smallest distance of each program's longitude from the target, stay: the
+  analysis rests on them.
+- **Positions on Swiss's clock** (`precision-2026-09-20/`). To hold the clock
+  fixed against Swiss, cell B of the controlled baseline ran the engine, and
+  cell D, the modelling sweep, the reproduction of cell D and the three
+  hold-out runs ran the DE prototype, at each case's UT + Swiss's ΔT. Beside
+  the same program at its own clock (cells A and C), the Moon's difference
+  over its speed gives that ΔT back: to within 0.012 s from cell B and
+  0.0034 s from cell D. These 61 files keep their cases' ids, strata and UT
+  and lost their per-case positions, and cell B its angles. Cells A and C
+  keep theirs, and every statistic made from the pinned runs stays.
+- **The far-future Moon.** The statistics block written into
+  `report-measure-rc8.json` on 2026-09-28 listed the Moon's difference from
+  Swiss at each of its two far-future epochs, which with the engine's own
+  Moon gives Swiss's back. The count stays.
+
+| File (under `docs/platform/evidence/`, but for the receipt) | Removed | Values | SHA-256 of the removed values |
+| --- | --- | ---: | --- |
+| `docs/engine-validation/swiss-node-polar/receipts/swisseph-master-commit.json` | `.files[].patch` | 1 | `0ff17b461a65c963adfd0ae7c318a3d8b352f1af1766f04c0b0d62c49fcb5176` |
+| `engine-beyond-swiss/horizons-frame/vectors/results.json` | `.instants[].jdTdb` | 24 | `6c5910d731a5805eff1d86cb85caeba72f7f9ced5480c4cbe324980c15ef1420` |
+| `precision-2026-09-20/numerics/{raw,verify}/counterfactual/cellB-core-pinned-common.json` | `.cases[].bodies\|angles` | 16 | `094cb633a4565d94973b1e37e5fcd3bde0dfdf49c3d885b81e2855f5a6fc041e` |
+| `precision-2026-09-20/numerics/{raw,verify}/counterfactual/cellB-core-pinned-nut2000b-common.json` | `.cases[].bodies\|angles` | 16 | `08078783c5fdd8c45c95678af5558e4427f668882e0d6843616560bd6f286e24` |
+| `precision-2026-09-20/numerics/{raw,verify}/counterfactual/cellB-core-pinned-nut2000b.json` | `.cases[].bodies\|angles` | 18 | `219737258661df377a51ebc517d69de5bbabddca33a60b9de922cb22785370c9` |
+| `precision-2026-09-20/numerics/{raw,verify}/counterfactual/cellD-proto-pinned-common.json` | `.cases[].bodies` | 16 | `b96910dad8800e8aaa4edf8b5cd72de7adb5cf5190d2265783691ea7133fb306` |
+| `precision-2026-09-20/numerics/{raw,verify}/counterfactual/cellD-proto-pinned-nut2000b-common.json` | `.cases[].bodies` | 16 | `1a999a8811547fc474c81f4db15c55de1de38832bcc187a4854950f4f11cf77d` |
+| `precision-2026-09-20/numerics/{raw,verify}/counterfactual/cellD-proto-pinned-nut2000b.json` | `.cases[].bodies` | 18 | `293592fdf51e397129c06fad08fc929c260615e277580e9c789d527866881cf9` |
+| `precision-2026-09-20/numerics/{raw,verify}/repro-cellD-dump.json` | `.cases[].bodies` | 18 | `643e6828ff6960d403fa1069d73ef22097a9abdcf3b6630b82665bc83b6db0e7` |
+| `precision-2026-09-20/numerics/{raw,verify}/sweep/sweep-a-aberration-first-order.json` | `.cases[].bodies` | 18 | `016c06aae8f9985124a63a07faef830d3db24c7d6983d721754ae8698743d002` |
+| `precision-2026-09-20/numerics/{raw,verify}/sweep/sweep-a-aberration-off.json` | `.cases[].bodies` | 18 | `0ede878d73dbf0c4a0d57d82e62156b0a2fc686c9a04f0f58fc074853c936526` |
+| `precision-2026-09-20/numerics/{raw,verify}/sweep/sweep-a-bias-off.json` | `.cases[].bodies` | 18 | `ec23ec5ec423335daacd60e8f3bbe6442a71c1c368e21f1ef4702da738a06608` |
+| `precision-2026-09-20/numerics/{raw,verify}/sweep/sweep-a-deflection-off.json` | `.cases[].bodies` | 18 | `5b6f9a380d75df460a652c7db939eb196f80d040e24359f7f7a64e6edb59ade6` |
+| `precision-2026-09-20/numerics/{raw,verify}/sweep/sweep-a-light-time-1-iteration.json` | `.cases[].bodies` | 18 | `7c56c0415595bf4d01672328db068044d55f9ad8c26e2d14d1cd9c60e89f0753` |
+| `precision-2026-09-20/numerics/{raw,verify}/sweep/sweep-a-light-time-2-iterations.json` | `.cases[].bodies` | 18 | `a4f9e00e61575b6e48e7ffb6e527dfa3ee798b8443f5345881b91a0c4930fd15` |
+| `precision-2026-09-20/numerics/{raw,verify}/sweep/sweep-a-nutation-back-to-ae.json` | `.cases[].bodies` | 18 | `6b5c1a96951947aafac8ee4a4c99b27924d86f9d2bd49bc156b0448eb84d3200` |
+| `precision-2026-09-20/numerics/{raw,verify}/sweep/sweep-a-observer-velocity-h-600s.json` | `.cases[].bodies` | 18 | `8445c022ab6c49dc7dc451839496ed1b41dbbc441a6df46e82bf0b62200092ab` |
+| `precision-2026-09-20/numerics/{raw,verify}/sweep/sweep-a-observer-velocity-h-60s.json` | `.cases[].bodies` | 18 | `77a2113e03ccd854ff44cf25f5a02f3615b3f64583c9f36125e3a07b1d30cc79` |
+| `precision-2026-09-20/numerics/{raw,verify}/sweep/sweep-a-tdb-off-tt-as-tdb-.json` | `.cases[].bodies` | 18 | `667d8ceef9be70258e6efe1d256cb7749ac354b99d1b549be7a9ab7ae54e5923` |
+| `precision-2026-09-20/numerics/{raw,verify}/sweep/sweep-p0-prototype-as-shipped.json` | `.cases[].bodies` | 18 | `afa3f0dcf1859c7c6fc3c219e3b262975c3ed1d9de8de10f05c8da333022df21` |
+| `precision-2026-09-20/numerics/{raw,verify}/sweep/sweep-p1-iau2000b-nutation.json` | `.cases[].bodies` | 18 | `1dd6d88cf642e56e12eb237d7972aaa313bb5bc17a737eff6ab63035d0034fea` |
+| `precision-2026-09-20/numerics/{raw,verify}/sweep/sweep-p1a-iau2000a-nutation.json` | `.cases[].bodies` | 18 | `7c7c875c1cd42ab481ec7959c86d9c2436ad8efb6150d0e8900be68c9f45e244` |
+| `precision-2026-09-20/numerics/{raw,verify}/sweep/sweep-p2-frame-bias-only.json` | `.cases[].bodies` | 18 | `204199a0d091d864949c0324dae011c8ba173699fb5e1fa320a0e3bfdbe4716d` |
+| `precision-2026-09-20/numerics/{raw,verify}/sweep/sweep-p3-2000b-frame-bias.json` | `.cases[].bodies` | 18 | `374d40fd330ebe3e8dc617a9dcd8366842a02c560c79881ef0c00fecc8ee4ef1` |
+| `precision-2026-09-20/numerics/{raw,verify}/sweep/sweep-p4-2000b-bias-tdb.json` | `.cases[].bodies` | 18 | `1ef5bd3b0beb11960d4f977424bbd7f00a281e93557b9707b7f63415c3abfb38` |
+| `precision-2026-09-20/numerics/{raw,verify}/sweep/sweep-p5-2000b-bias-tdb-deflection.json` | `.cases[].bodies` | 18 | `2c45d978e55c3de907a0d09b29bd5cdf03d3306c7d6644015bd9e66abc273fd8` |
+| `precision-2026-09-20/numerics/{raw,verify}/sweep/sweep-p6-full-aberration-too.json` | `.cases[].bodies` | 18 | `d59236f467ad5ca06acec77268b402d6c5789f986a3668be46ddb5ef0c890f93` |
+| `precision-2026-09-20/numerics/{raw,verify}/sweep/sweep-p7-analytic-observer-velocity.json` | `.cases[].bodies` | 18 | `03023f16e0481de1c1370a6a546d76748cf14623a196fd19acceb57707c1efe0` |
+| `precision-2026-09-20/numerics/{raw,verify}/sweep/sweep-p8-best-light-time-to-1e-11.json` | `.cases[].bodies` | 18 | `b2e07781a5712b12c7f39ea097494eee1516b80efe50a305e8b094cb6f7d0ab1` |
+| `precision-2026-09-20/numerics/{raw,verify}/sweep/sweep-p8a-best-with-iau2000a.json` | `.cases[].bodies` | 18 | `b756cb15f992a636da5eb3d09a84a89e8f0403e9269d63005c9dac179cbe39d4` |
+| `precision-2026-09-20/numerics/verify/holdout-p0-prototype.json` | `.cases[].bodies` | 6 | `641d6814eb95079f2dbd418405760e702be597a45102c8d433fbab20cafa13be` |
+| `precision-2026-09-20/numerics/verify/holdout-p8-best.json` | `.cases[].bodies` | 6 | `a196b82f994ed51662edef5855ddf31df35bcc26d75f99c986893aae23088178` |
+| `precision-2026-09-20/numerics/verify/holdout-p8a-best-2000a.json` | `.cases[].bodies` | 6 | `6cd06c2ae80e6efdb40e0001efd650473dd708edbe2032ecacd8f030e475712e` |
+| `precision-2026-09-20/raw/cellB-core-pinned.json` | `.cases[].bodies\|angles` | 18 | `59e4fd386121ccb72a675e0cdc9cdedb37f901328aab55f0c2bc3071d1833866` |
+| `precision-2026-09-20/raw/cellD-proto-pinned.json` | `.cases[].bodies` | 18 | `643e6828ff6960d403fa1069d73ef22097a9abdcf3b6630b82665bc83b6db0e7` |
+| `precision-2026-09-20/search/{raw,verify/raw-original}/decomposition.json` | `.sources.ephemerisModel.overComponent.fromUtc\|toUtc` | 2 | `6d62d6ccce3fa659cc2e8302d0729d2029a420081613218c326371877b14da66` |
+|  | `.sources.ephemerisModel.atTheTurningPointItself.deMinusSwissArcsec\|coreMinusSwissArcsec` | 2 | `8d53b840e23d0d7bc4e0ff731f258f8e1f6a722498c7af066cb4c1adc9a67ecc` |
+|  | `.sources.timeModel.thisWindowIsHistorical.swissReturnedTtMinusUtcSeconds\|residualSeconds` | 2 | `3f319d4c4ff7c6104f551b21bab754d0025c594d21dad4664cf6c9b01d914a11` |
+|  | `.stationaryGeometryAudit.theRightTreatment.recordedPossibleExactRegionUtc` | 2 | `88c5d716e271f50e18cc2bd04b17c8bcd7a72be356803d17af0f7a5401741e58` |
+| `precision-2026-09-20/search/{raw,verify/raw-original}/reproduction.json` | `.recordedContract.components[].startUtc\|endUtc\|possibleExactRegionUtc\|possibleMinimumRegionUtc` | 2 | `d7b20e50afa588a426fbd77d0eaa0f8b17cfbe0d1082fae5a226216f84a1d73d` |
+|  | `.independentReproduction.swiss.signedStationMinusTargetDegrees\|ttMinusUtcSeconds` | 2 | `6d4800489d3847402e365fc8ae8d6928243cd4522dab4c8b5af4f09b9f02c048` |
+| `precision-2026-09-20/search/{raw,verify/raw-original}/uranus-d.json` | `.results.perComponentExactLevel[].fromUtc\|toUtc` | 2 | `5960af026c269213deb5eb0197e7b7c78d59a4255b88ceb2e77793cb75db1a78` |
+|  | `.results.crops.halves[].recordedBoundaryOrbDegrees` | 2 | `76beadaaef60d2ec0ff2942ffe9578483cb041f3df2d77b78c85231455efe6e6` |
+|  | `.results.crops.theBoundaryEvent.swissOffsetFromLevelDegrees\|swissOffsetFromLevelArcsec\|recordedCropBoundaryOrbDegrees\|deMinusSwissAtTheBoundaryArcsec\|rootOffsetFromBoundarySecondsSwiss` | 5 | `3f05ab82ab163825c515eceaa1d47b03f760e661e98d1fabf9121e0397340c9d` |
+| `swiss-benchmark/report-measure-rc8.json` | `.statistics.farFuture.moonCases` | 2 | `36ad1218ee678fd678990c44c1d2856508fa0085a0ffff38e30b59fb8fa697e0` |
+
+### The Horizons corpus, re-timed
+
+21 files were replaced rather than stripped, because the Swiss value was
+their clock. `corpora/tools/retime-corpus.mjs` wrote `corpus-tt.json` with
+TT = UT + the engine's own ΔT (model `zodiacs-deltat/1`) at each
+preregistered UT instant, rounded to the 1e-8 day a request carries, and
+Horizons was asked again for the sixteen TT files in `horizons-24/` and the
+three VECTORS files in `horizons-frame/vectors/`, whose query log was
+replaced with them. `Moon_UT.txt`, at the UT instants on Horizons's own
+clock, is unchanged. The instants moved by the difference between the two
+programs' ΔT: fractions of a second up to 2026, more after it. The manifest
+gives each file's SHA-256 before and after, and the guard fails on the old
+bytes under any name. The horizons-frame study keeps its first-run figures,
+with `results-2026-09-29.json` and `vectors/results-2026-09-29.json` beside
+them; the two runs agree to within the rounding of Horizons's printed angles
+([`../platform/evidence/engine-beyond-swiss/horizons-frame/README.md`](../platform/evidence/engine-beyond-swiss/horizons-frame/README.md)).
+
+### Swiss Ephemeris source code
+
+`swiss-node-polar/receipts/swisseph-master-commit.json` is GitHub's record
+of the swisseph commit whose data files the node/polar acquisition used. Its
+`files[].patch` held that commit's diff: 148 lines of `swetest.c`, 5,178
+bytes, SHA-256
+`135fbf87aed62a9275457268498f7b99cdcee14a2eb4e0082520674e2f9b229b`. The
+patch left, and the manifest records each patch's file, SHA-256, size and
+line count. The commit's identity, author, date and file statistics stay,
+and `acquire.py` reads only its sha. A search of every tracked file for
+Swiss Ephemeris's headers (`swephexp.h`, `sweph.h`, `swedate.h` and the
+rest), its internal `swi_` functions, `swetest`'s usage text and its
+copyright line found nothing else. "Astrodienst" appears only in prose and
+receipts that name the provider.
+
+### On the site's pages
+
+`/methodology/` gave Swiss's ΔT at 2100 and, with `/developers/engine/`, the
+Moon's difference from Swiss at 2100 and at 2190, and
+`scripts/methodology-accuracy-claim.test.mjs` read the ΔT from the prose of
+`swiss-benchmark/RESULTS.md`. The pages now give statistics over a stated
+span. From 2100 to 2199 the two programs' ΔT differ by 14.3 to 36.7 s,
+inside the engine's own 1-σ of 42.4 to 103.4 s, and that alone moves the
+Moon by 7.0″ to 23.4″. Those figures are
+[`swiss-benchmark/deltat-gap-2100-2199.json`](../platform/evidence/swiss-benchmark/deltat-gap-2100-2199.json):
+the extremes of a daily run over 36,524 days, with no daily value and no
+date for any extreme. `tools/deltat-gap-zodiacs.mjs` writes the engine's
+side outside the repository, and `tools/deltat_gap_swiss.py` computes
+Swiss's ΔT on demand with pyswisseph and writes only the statistics. The
+test reads that file, checks it against the installed engine, and fails if
+either page states Swiss's ΔT at a date. The claims ledger's `acc.deltat`,
+`acc.deltat-formula` and `acc.swiss-benchmark` statements no longer quote
+Swiss's value at a date.
+
+### In READMEs and scripts
+
+A README table or list that gives Swiss's values case by case is data. These
+left:
+
+- `swiss-lunar-return/README.md`: each case's first independent event,
+  Modern B's second root and the wrap case's Swiss natal input;
+- `swiss-eight-cases/README.md`: the Solar root's Swiss instant, and the
+  product's residual from it, which together gave it back;
+- `precision-2026-09-20/search/RESULTS.md`: Swiss's D station instant, its
+  TT − UTC, the ends of its possible-exact region and its offset at the crop
+  boundary;
+- `engine-validation/README.md`: Swiss's ΔT at 2100 and the far-future
+  Moon's difference from Swiss at each epoch, in section 1 and in the
+  paragraph on what cannot be reproduced;
+- the Uranus D verification scripts, which carried Swiss's component ends
+  and possible-exact region as literals. They, `reproduce.mjs`,
+  `decompose.mjs` and `uranus-d.mjs` read the fixture of commit `2ca93d41`
+  from a path outside the repository, as an argument or from
+  `SWISS_WINDOW_FIXTURE`, and refuse one inside it (`search/lib/backends.mjs`);
+  `search/run-all.sh` writes its output outside the repository.
+
+## How to regenerate
+
+Run a regeneration outside the repository, and commit statistics only. The
+Swiss acquisitions need the pinned pyswisseph 2.10.3.2 build and the `.se1`
+data files that `swiss-node-polar/README.md` and
+`../platform/evidence/swiss-benchmark/CONFIGURATION.md` identify by SHA-256;
+neither was ever in this repository. The engine-validation extractions also
+need the retained raw bundles their READMEs name. The removed files' commands
+are above; every file's is in the manifest. For the stripped and replaced
+files, by group:
+
+- `swiss-benchmark/report-*.json`, the precision work's `cmp-*.json` and
+  `recovered-report-proto-engine-deltat.json` (10 files): in
+  `docs/platform/evidence/swiss-benchmark/tools`,
   `node dump-zodiacs.mjs > zodiacs.json; python3 dump_swiss.py zodiacs.json <ephe> > swiss.json; node compare.mjs zodiacs.json swiss.json`
   (`RESULTS.md` there).
-- The precision sweep and hold-out reports (27 files): in
-  `docs/platform/evidence/precision-2026-09-20/numerics`,
+- The precision sweep, its reports and the hold-out and reproduction
+  reports (69 files): in `docs/platform/evidence/precision-2026-09-20/numerics`,
   `node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>`, with the
   Swiss side from `swiss-benchmark/tools/dump_swiss.py` (`numerics/RESULTS.md`).
-- The controlled cells and counterfactuals (14 files): in
+- The counterfactual cells (18 files): in the same directory,
+  `node tools/t2-core-counterfactual.mjs <outdir>`, with the four cells where
+  it reads them and Swiss's run at `/tmp/claude-0/swisslab/swiss-measure.json`.
+- The controlled cells A and B (2 files): in
   `docs/platform/evidence/precision-2026-09-20`,
-  `node tools/dump-core-controlled.mjs <swiss.json> [--pinned]`, with
-  `swiss.json` from `swiss-benchmark/tools/dump_swiss.py`
-  (`CONTROLLED-BASELINE.md`).
-- The Uranus D analysis (4 files):
+  `node tools/dump-core-controlled.mjs <swiss.json> [--pinned]`
+  (`CONTROLLED-BASELINE.md`); cell D and its two reproductions (3 files):
+  `node docs/platform/evidence/swiss-benchmark/prototype/dump-prototype.mjs <de440s.bsp> <swiss.json>`.
+- The three hold-out runs: in `numerics`, `node verify/v3-holdout.mjs`, with
+  Swiss's hold-out run at `/tmp/claude-0/swisslab/swiss-hold.json`.
+- The Uranus D analysis (6 files):
   `python3 docs/platform/evidence/precision-2026-09-20/search/verify/swiss-station.py`,
-  and `search/lib/swiss-longitudes.py` through `search/reproduce.mjs`.
+  and `search/lib/swiss-longitudes.py` through `search/reproduce.mjs`,
+  `decompose.mjs` and `uranus-d.mjs`, each given the fixture of commit
+  `2ca93d41` from outside the repository and writing outside it
+  (`SWISS_WINDOW_FIXTURE=<fixture> sh search/run-all.sh <directory>`).
 - `events-vs-swiss-2026-09-23/deltas.json` and `-25/deltas.json`:
   `python3 docs/platform/evidence/events-vs-swiss-2026-09-23/tools/compare.py <catalog dump> <ephe> <out.json>`,
   on the dump `tools/dump-catalog.ts` writes.
@@ -237,26 +467,34 @@ How to regenerate the removed values:
 - `houses-2026-09-26/results/sidereal.json`: in
   `docs/platform/evidence/houses-2026-09-26/tools`,
   `node sidereal.mjs > sidereal.jsonl; python3 sidereal.py sidereal.jsonl` (`run-all.sh`).
-- `engine-beyond-swiss/corpora/horizons-24/corpus-tt.json`:
-  `swe.deltat_ex(jdUt, swe.FLG_SWIEPH)` at each corpus instant, as the audit's
-  `swiss_dump.py` read it (`corpora/README.md`).
-- `engine-beyond-swiss/corpora/canon-events.json`: the four canon events
-  located in Swiss Ephemeris 2.10.03, as the engine audit did
-  (`engine-audit-2026-09-22/LEDGER.md`, verification-honesty-3).
-- The twelve node/polar parity reports (`independent-node-polar-node22.json`
-  and `-node24.json`, and those under `site-engine-rc5/`, `rc7/`, `rc8/`,
-  `rc9/` and `rc10/`): `node scripts/platform-engine-report.mjs` at commit
-  `2ca93d41`, with the engine version each file names installed. Their
-  per-case differences left, and their maxima and digests stay; within each
-  release the Node 22 and Node 24 digests are equal, which is the parity the
-  reports were made to show.
+- The twelve node/polar parity reports: `node scripts/platform-engine-report.mjs`
+  at commit `2ca93d41`, with the engine version each file names installed.
+  Their per-case differences left, and their maxima and digests stay; within
+  each release the Node 22 and Node 24 digests are equal, which is the
+  parity the reports were made to show.
+- `engine-beyond-swiss/corpora/horizons-24/corpus-tt.json`: Swiss's ΔT at
+  each corpus instant is, from the repository root,
+  `python3 -c "import json, sys, swisseph as swe; swe.set_ephe_path(sys.argv[1]); [print(c['id'], swe.deltat_ex(c['jdUt'], swe.FLG_SWIEPH) * 86400) for c in json.load(open('docs/platform/evidence/engine-beyond-swiss/corpora/horizons-24/corpus-tt.json'))['cases']]" <ephe>`;
+  on 2026-09-29 it gave back all 24 removed values exactly. The Horizons
+  responses as first fetched, and `horizons-frame/vectors/results.json`'s
+  TT, are `git show 2ca93d41:<path>`.
+- `engine-beyond-swiss/corpora/canon-events.json`: no committed command
+  regenerates Swiss's four canon residuals. The engine audit located the
+  four events in Swiss Ephemeris 2.10.03 with a script it did not commit;
+  `engine-audit-2026-09-22/LEDGER.md` (verification-honesty-3) gives the
+  method. The values are only in commit `2ca93d41`.
+- The swisseph commit receipt's patch: the commit as GitHub's API gives it,
+  `https://api.github.com/repos/aloistr/swisseph/commits/3fd0f956d73898b91cc4f67cf18b21af656d1342`.
+  It is Swiss Ephemeris source code and stays out of the tree.
 
-Run a regeneration outside the repository, and commit statistics only. Some
-of the recipes write into the tree by default (`numerics/verify/v4-swiss.py`
-writes `verify/v4-dense-diff.json`, and `numerics/RESULTS.md` redirects
-`t1-nutation-swiss.py` into `raw/t1-swiss.json`); the guard test fails if
-their output is left there. `transit-windows/project-fixtures.py` now needs
-`--output`, so it no longer writes into `src/lib/engine/fixtures/` by default.
+Some recipes write into the tree by default: `numerics/verify/v4-swiss.py`
+writes `verify/v4-dense-diff.json`, `numerics/RESULTS.md` redirects
+`t1-nutation-swiss.py` into `raw/t1-swiss.json`, and the sweep, the
+counterfactual cells, the reproduction of cell D and the hold-out runs write
+their positions on Swiss's clock into `numerics/raw/` and `numerics/verify/`.
+Point them outside the repository; the guard fails if their output is left
+there. `transit-windows/project-fixtures.py` needs `--output`, so it no longer
+writes into `src/lib/engine/fixtures/` by default.
 
 ## The tests
 
@@ -277,7 +515,7 @@ command that rebuilds them are in
 | `progressions.test.ts` | ten JPL longitudes carried in the Swiss fixture | the same ten, from `horizons-reference.json` |
 | `lunar-return.test.ts`: six cases and seven returned charts | Swiss roots, bands and charts | Horizons roots and bands; Horizons and ERFA charts |
 | `transit-window-independent.test.ts`: nine cases, 30 branches | Swiss hourly scans | the Horizons longitude, with the same budgets and D's uncertain topology |
-| `scripts/methodology-accuracy-claim.test.mjs`, `scripts/claims-bindings.test.mjs` | the benchmark's rows | the statistics recorded from them, cross-checked against the comparator's own aggregates; Swiss's ΔT at 2100 as `swiss-benchmark/RESULTS.md` reports it |
+| `scripts/methodology-accuracy-claim.test.mjs`, `scripts/claims-bindings.test.mjs` | the benchmark's rows | the statistics recorded from them, cross-checked against the comparator's own aggregates; since 2026-09-29, for the clock, the statistics of `swiss-benchmark/deltat-gap-2100-2199.json` in place of Swiss's ΔT at 2100 |
 | `swiss-benchmark/prototype/spk.test.mjs` | Swiss's ΔT at 2100 as a pin | a round 90 s pin: the test is of the mechanism |
 | `src/lib/transit-window-ical.test.ts` | a window whose ends were Swiss's D period | the same period's ends from the independent references |
 
@@ -286,35 +524,84 @@ against the independent references. The engine passes every gate against the
 new references; no case moved outside a tolerance the Swiss comparison used
 to pass, and no gate was changed.
 
+Two more tests and a CI job hold the arrangement in place.
+`transit-window-independent.test.ts` checks that the original pack is still
+`failed-incomplete`, reading the removed fixture's own status from the
+manifest, which keeps the fixture's fields that hold no Swiss value under
+the digest the test pinned while the fixture was here.
+`src/lib/engine/independent-references-clock.test.ts` fails when the
+installed engine's ΔT model or table differs from the one each reference
+file was built on (`engineClock`), because every reference is taken at the
+engine's own TT; the references' README says where that clock departs from
+the policies' text. CI rebuilds the four reference files offline from the
+kept Horizons responses and fails unless they come out byte for byte, with
+Python 3.11 and the hashed `tools/requirements.txt`.
+
 ## What remains in the tree, and why
 
-A search of the tree for every distinctive number (seven or more decimals)
-and every millisecond timestamp that was removed finds these, and only these:
+The guard's digests say exactly what remains. Of the 44,071 distinctive
+tokens that left, these 3,467 still appear in a data or code file or under
+`src/`:
 
-- the removed files' inputs, not their outputs: the instants of the dense
-  and nutation grids (`numerics/verify/v4-dense.json`, `v7-probe.mjs`,
-  `v13-break.mjs`), the transit-window cases' query ends and anchors, and
-  the coverage of the loaded ephemeris files in two receipts
-  (`transit-windows/wave24-d-qualified-policy.v6.json`,
-  `phase1-verdicts-2026-09-25/results/provenance.json`);
-- statistics that equal a removed value because they are an extreme or a
-  median of it: `numerics/verify/v2-sweep-summary.json`,
-  `raw/four-configurations/report.json`, the 64.8″ Moon at 2100 in the
-  precision summaries;
-- the Uranus D analysis in `precision-2026-09-20/search/`: its component
-  ends, crop orbs and station instant are the figures the analysis examines
-  for that one case, in `uranus-d.json`, `reproduction.json`,
-  `decomposition.json`, `RESULTS.md` and a few verification scripts;
-- two inputs a removed value can still be worked back from:
-  `horizons-24/corpus-tt.json` keeps the TT instants the Horizons corpus was
-  fetched at, which Swiss's ΔT set, so their difference from the UT instants
-  gives it back to the precision of a Julian date; and cell B of the
-  controlled baseline keeps the positions the engine computed on Swiss's ΔT.
-  Both are kept because the measurements they record were made at them;
-- figures READMEs and reports quote, left as written: for example the
-  lunar-return pack's six first-return instants in
-  `swiss-lunar-return/README.md`, Swiss's ΔT of 93.18 s at 2100 in
-  `swiss-benchmark/RESULTS.md`, and the source manifests of earlier
-  captures, which list the removed files with their digests.
+- 2,562 are the instants of the nutation and dense grids, which were the
+  inputs of the removed runs, not their output: `numerics/raw/t1-node.json`,
+  `numerics/verify/t1-node.json` and `numerics/verify/v4-dense.json` hold
+  the engine's and the prototype's own values at them, and a few scripts
+  name a grid instant;
+- 447 are statistics that equal a removed value because they are an extreme
+  or a median of it: the reports' `overall`, `byBody` and `byStratum`
+  blocks, the sweep summaries, `numerics/raw/SUMMARY.json`,
+  `controlled-2x2.json`, `t2-core-counterfactual.json`, the node/polar
+  maxima, the event comparisons' maxima, the claims ledger's bindings, and
+  the D case's margin in `reproduction.json`;
+- 432 are Horizons's own figures that the re-timed responses share with the
+  first fetch: the constants in its headers (the astronomical unit, the
+  speed of light, the Earth's radii), columns printed too coarsely for a
+  shift of under a second to change, and one instant whose TT rounds the
+  same on both clocks;
+- 26 are case inputs and receipts: the birthplaces' coordinates, the JPL
+  longitudes the eight-case fixture carried (now in `horizons-reference.json`)
+  and the transit targets taken from them, the node/polar acquisition's
+  timestamps, and the coverage of the ephemeris files it loaded.
+
+An extreme keeps the case it came from, as the decisions allow: with the
+engine's value for that case, it gives Swiss's value there back, one value
+per body, stratum or report, not a table of the set. The pages quote such
+extremes too, for example the largest difference up to 2026 with its body
+and year.
 
 `vendor/`, the engine archives and the Registry wing were not touched.
+
+## Dated records that keep quoted figures
+
+The decision of 2026-09-29 keeps figures quoted in the prose of a dated
+evidence README, audit record or report, as part of the finding it records.
+These records quote Swiss's own values, or its difference from another
+program at a named case, and stay as written:
+
+- `docs/platform/evidence/engine-audit-2026-09-22/`: `LEDGER.md`,
+  `AUDIT.md`, `CRITIC.md`, `BRIEF-v1.md`, and the reports in `results/` and
+  `verify/` (JSON and text), whose fields are prose: Swiss's event instants,
+  its ΔT at named dates, the angles and two cusps of one chart, and the four
+  canon residuals;
+- `docs/platform/evidence/deltat-2026-09-25/README.md`: Swiss's ΔT at
+  2026-09-22, 2050 and 2100, and its differences from the S15
+  reconstructions, the values that left `outputs/swiss-deltat.json`;
+- `docs/platform/evidence/events-vs-swiss-2026-09-23/README.md`,
+  `events-vs-swiss-2026-09-25/README.md` and
+  `lunations-2026-09-23/README.md`: Swiss's ΔT in 2026;
+- `docs/platform/evidence/houses-2026-09-26/README.md`: Swiss's sidereal time
+  minus ERFA's at 1820;
+- `docs/platform/evidence/swiss-benchmark/RESULTS.md`: Swiss's ΔT at
+  2100-01-01;
+- `docs/platform/evidence/precision-2026-09-20/`: `README.md`,
+  `CONTROLLED-BASELINE.md`, `numerics/RESULTS.md` and `search/RESULTS.md`,
+  and the finding and answer prose of `search/raw/uranus-d.json` and its
+  `verify/raw-original/` copy, which give Swiss's offset from the level at
+  the 2020-01-01 boundary;
+- `docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md`, and
+  `phase1-verdicts-2026-09-25/README.md`, whose extremes name their cases;
+- `docs/engine-validation/README.md`: section 1's account of rc.7 (the Moon
+  64.8″ from Swiss at 2100 and 159.4″ at 2190) and of the prototype's 2100
+  case pinned to Swiss's clock, and the dated corrections that quote earlier
+  wording.
