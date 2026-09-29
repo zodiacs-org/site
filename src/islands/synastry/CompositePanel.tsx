@@ -11,7 +11,8 @@ import CalculationReload, { calculationError } from '../CalculationReload';
 import { CompositeWheel } from './CompositeWheel';
 import { COMPOSITE_COPY } from './compositeCopy';
 import { compositeReading } from './compositeReadings';
-import { compositeAspectId, compositeBodyId, compositeSelection, type CompositeTabData } from './relationshipData';
+import { buildCompositeTabData, compositeAspectId, compositeBodyId, compositeSelection, type CompositeTabData } from './relationshipData';
+import type { PicturePerson } from '../../lib/share-positions-noon';
 export { COMPOSITE_NOTE } from './compositeCopy';
 
 type CardModule = typeof import('../../lib/composite-card');
@@ -20,6 +21,8 @@ interface ReadyCard { source: string; prepared: PreparedChartCard; module: CardM
 interface CompositePanelProps {
   locale: Locale;
   data: CompositeTabData;
+  /** The two charts as the calculator knows them: a picture draws each as its link carries it. */
+  people?: { a: PicturePerson; b: PicturePerson };
   sourceKey: string;
   /** Both original chart times, independent of which midpoint bodies exist. */
   sourceTimesKnown: boolean;
@@ -27,7 +30,28 @@ interface CompositePanelProps {
   onSelect: (id: string | null) => void;
 }
 
-export function CompositePanel({ locale, data, sourceKey, sourceTimesKnown, selectedId, onSelect }: CompositePanelProps) {
+/**
+ * The composite a picture draws: each person as their link carries them
+ * (share-positions-noon's pictureBodies), so the picture shows no more of
+ * either than their link. The page's own composite is `data`.
+ */
+export async function compositePictureData(
+  data: CompositeTabData,
+  people: CompositePanelProps['people'],
+): Promise<CompositeTabData> {
+  const changes = (person: PicturePerson) => !person.timeKnown
+    || (person.utc !== undefined && new Date(person.utc).getTime() % 60_000 !== 0);
+  if (!people || (!changes(people.a) && !changes(people.b))) return data;
+  const [{ computeBodies }, { pictureBodies }] = await Promise.all([
+    import('../../lib/engine/full'),
+    import('../../lib/share-positions-noon'),
+  ]);
+  return buildCompositeTabData(pictureBodies(people.a, computeBodies), pictureBodies(people.b, computeBodies), {
+    aTimeKnown: people.a.timeKnown, bTimeKnown: people.b.timeKnown,
+  });
+}
+
+export function CompositePanel({ locale, data, people, sourceKey, sourceTimesKnown, selectedId, onSelect }: CompositePanelProps) {
   const c = COMPOSITE_COPY[locale];
   const selected = compositeSelection(data, selectedId);
   const reading = compositeReading(data, selectedId);
@@ -72,9 +96,9 @@ export function CompositePanel({ locale, data, sourceKey, sourceTimesKnown, sele
     setExportOwner(identity); setOpen(true); setBusy(true); setError(''); setOutcome(null);
     releasePreview(); setReady(null);
     try {
-      const module = await loadCard();
+      const [module, picture] = await Promise.all([loadCard(), compositePictureData(data, people)]);
       if (!current()) return;
-      const prepared = await module.prepareCompositeCard(data, locale);
+      const prepared = await module.prepareCompositeCard(picture, locale, { noTime: !sourceTimesKnown });
       if (!current()) return;
       const url = URL.createObjectURL(prepared.blob);
       cardUrl.current = url;
@@ -186,12 +210,14 @@ export function CompositePanel({ locale, data, sourceKey, sourceTimesKnown, sele
       </section>
 
       {locale === 'en' && <AspectPatternFeature context="composite" points={data.points} aspects={data.aspects}
-        timeKnown={sourceTimesKnown} sourceKey={sourceKey} onSelectBody={(body) => onSelect(compositeBodyId(body))} />}
+        timeKnown={sourceTimesKnown} sourceKey={sourceKey} onSelectBody={(body) => onSelect(compositeBodyId(body))}
+        imageSky={() => compositePictureData(data, people)} />}
 
       <div class="rcomp__export">
         <button class="btn btn--glass" type="button" data-composite-export disabled={!data.points.length || (exportOpen && busy)} onClick={prepareImage}>
           {exportOpen && !image && error ? c.retry : c.imageAction}
         </button>
+        {!sourceTimesKnown && <p class="field__help" data-composite-image-no-time>{c.imageNoTime}</p>}
         {exportOpen && <section class="rcomp__image-panel" aria-label={c.imageTitle}>
           <div class="rcomp__detail-head">
             <h4>{c.imageTitle}</h4>

@@ -7,6 +7,7 @@
  *   npm run build
  *   OUT_DIR=/tmp/shots node tests/transit-ring-drive.mjs
  */
+import { readFile } from 'node:fs/promises';
 import { chromium } from 'playwright-core';
 import { spawn } from 'node:child_process';
 import { setTimeout as wait } from 'node:timers/promises';
@@ -125,6 +126,23 @@ try {
   await page.waitForSelector('[data-transit-mark]', { timeout: 30000 });
   const markCount = await page.locator('[data-transit-mark]').count();
   check('exact-date markers render on the timeline', markCount > 0, `${markCount} markers`);
+
+  // The calendar file keeps the exact times, from the exact chart, and says
+  // so beside its button; the feed's note keeps its approximate contacts to
+  // the feed. The file's UIDs are hashes of what each event shows.
+  const notes = await page.locator('.calendar-subscribe__note').allInnerTexts();
+  check('the feed note keeps its approximate angle contacts to the feed',
+    notes.some((note) => note.includes('The feed keeps the Ascendant and Midheaven to the whole degree, so its contacts to those two points are approximate')));
+  check('the download note says the file\'s times come from the exact chart',
+    notes.some((note) => note.includes('The times in the file come from your exact chart')));
+  const [calendarDownload] = await Promise.all([page.waitForEvent('download'), page.locator('[data-calendar-download]').click()]);
+  const calendarPath = await calendarDownload.path();
+  const calendarFile = calendarPath ? await readFile(calendarPath, 'utf8') : '';
+  const calendarUids = calendarFile.split('\r\n').filter((line) => line.startsWith('UID:'));
+  check('calendar file UIDs carry no time', calendarUids.length > 0
+    && calendarUids.every((line) => /^UID:transit-[0-9a-f]{16}@zodiacs\.org$/u.test(line)), calendarUids.slice(0, 2).join(' '));
+  check('calendar file keeps each contact to the second',
+    (calendarFile.match(/DTSTART:\d{8}T\d{6}Z/gu) ?? []).length === calendarUids.length);
   const dateBeforeJump = await page.locator('.tring__date').textContent();
   await page.locator('[data-transit-mark]').first().click();
   await wait(1200);
@@ -179,6 +197,9 @@ try {
   await rm.close();
 
   await browser.close();
+} catch (error) {
+  // Keep the checks already made when a later browser action fails.
+  check('drive completed without an unhandled failure', false, error instanceof Error ? error.message : String(error));
 } finally {
   preview.kill();
 }

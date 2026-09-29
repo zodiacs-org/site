@@ -120,7 +120,9 @@ describe('ProfileInvitesView', () => {
 
   it('uses the canonical pastel disc and contains no raw birth details', () => {
     const markup = view();
-    expect(markup).toContain('/assets/zodiac-icons/48/cancer.avif');
+    // WebP only: an AVIF <source> would be fetched for this Sun sign alone
+    // (signIcon in lib/sign-icon.ts asks for all twelve WebP discs first).
+    expect(markup).not.toContain('/assets/zodiac-icons/48/cancer.avif');
     expect(markup).toContain('/assets/zodiac-icons/48/cancer.webp');
     expect(markup).not.toMatch(/birth date|birth time|birth place|latitude|longitude/iu);
   });

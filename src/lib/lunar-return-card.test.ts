@@ -92,13 +92,15 @@ describe('dedicated lunar image content', () => {
     const fixture = install(), card = model();
     const prepared = await prepareLunarReturnCard({ ...card, privateName: 'NEVER_PAINT_PRIVATE' } as LunarReturnExportModel);
     const text = fixture.painted.map((row) => row.text).join(' ');
-    expect(text).toContain('Lunar return'); expect(text).toContain('2026-09-24 13:14:15.678 UTC');
-    expect(text).toContain('Next after: 2026-09-05 10:00:00.000 UTC');
+    // The return and its reference to the whole minute, never the seconds.
+    expect(text).toContain('Lunar return'); expect(text).toContain('Return: 2026-09-24 13:14 UTC');
+    expect(text).toContain('Next after: 2026-09-05 10:00 UTC'); expect(text).not.toMatch(/13:14:15|\.678/u);
     card.reading.forEach((row) => expect(text).toContain(row.text));
     [...card.readingBasis, ...card.notes].forEach((value) => expect(text).toContain(value));
     expect(text).toContain('zodiacs.org'); expect(text).not.toContain('NEVER_PAINT_PRIVATE');
     const node = hooks.render.mock.calls[0][0] as VNode<{ signImageHrefs: Record<string, string> }>;
-    expect(node.props).toMatchObject({ bodies: card.wheel.bodies, ...card.wheel.angles, cusps: card.wheel.houses!.cusps, aspects: card.wheel.aspects });
+    // The angles at the middle of their whole degree, as a chart's link keeps them.
+    expect(node.props).toMatchObject({ bodies: card.wheel.bodies, asc: 15.5, mc: 105.5, dsc: 195.5, ic: 285.5, cusps: card.wheel.houses!.cusps, aspects: card.wheel.aspects });
     expect(node.props).not.toHaveProperty('input');
     const hrefs = node.props.signImageHrefs;
     expect(Object.keys(hrefs)).toHaveLength(12);
@@ -108,7 +110,7 @@ describe('dedicated lunar image content', () => {
     expect(hooks.render).toHaveBeenLastCalledWith(null, fixture.host);
     expect(fixture.sizes).toEqual([[1080, 1350]]); expect(fixture.canvas.width).toBe(0);
     expect(fixture.close).toHaveBeenCalledOnce(); expect(fixture.images[0].src).toBe('');
-    expect(prepared.filename).toBe('zodiacs-lunar-return-20260924T131415678Z.png');
+    expect(prepared.filename).toBe('zodiacs-lunar-return-20260924T1314Z.png');
     expect(prepared.blob.type).toBe('image/png');
   });
   it('rejects incomplete or nonfinite geometry before allocating a wheel or fetching artwork', async () => {
@@ -116,12 +118,25 @@ describe('dedicated lunar image content', () => {
     const invalid = [
       { ...model(), wheel: { ...model().wheel, angles: null } },
       { ...model(), wheel: { ...model().wheel, houses: null } },
+      { ...model(), wheel: { ...model().wheel, angles: { asc: NaN, mc: 105, dsc: 195, ic: 285 } } },
       { ...model(), wheel: { ...model().wheel, bodies: model().wheel.bodies.filter((point) => point.body !== 'Moon') } },
       { ...model(), wheel: { ...model().wheel, bodies: model().wheel.bodies.map((point) => ({ ...point, lon: NaN })) } },
       { ...model(), referenceUtc: model().instantUtc },
     ];
     for (const card of invalid) await expect(prepareLunarReturnCard(card)).rejects.toThrow('lunar_card_unavailable');
     expect(fixture.fetch).not.toHaveBeenCalled(); expect(hooks.render).not.toHaveBeenCalled();
+  });
+  it('leaves out Placidus houses and the house they put the Moon in, and says so', async () => {
+    const fixture = install(), card = model();
+    card.wheel.houses = { system: 'placidus', cusps: [15, 44, 73, 105, 137, 166, 195, 224, 253, 285, 317, 346] };
+    card.readingBasis = ['Moon 0°00′ Gemini · house 3', 'Moon sextile Mercury · 0.0° orb'];
+    await prepareLunarReturnCard(card);
+    const text = fixture.painted.map((row) => row.text).join(' ');
+    expect(text).toContain('Moon 0°00′ Gemini'); expect(text).not.toContain('house 3');
+    expect(text).not.toContain(card.reading[0].text); expect(text).toContain(card.reading[1].text);
+    expect(text).toContain('Placidus houses are left out of this image.');
+    const node = hooks.render.mock.calls[0][0] as VNode<Record<string, unknown>>;
+    expect(node.props.cusps).toBeUndefined();
   });
   it('fails overflowing copy instead of clipping its qualification and releases allocated resources', async () => {
     const fixture = install(); const card = model(); card.notes = ['A '.repeat(2000)];

@@ -9,6 +9,10 @@ interface CompatibilitySharePerson {
   label: string;
   bodies: MinimalBody[];
   asc: number | null;
+  /** A chart computed here without a birth time: the picture draws noon UTC on this date (compatibilityPicturePeople). */
+  untimedDate?: string;
+  /** A chart computed here with a birth time: the picture draws its bodies at the whole minute. */
+  utc?: Date | string;
 }
 
 interface CompatibilityShareControlProps {
@@ -53,6 +57,7 @@ export function CompatibilityShareControl({
   locale,
 }: CompatibilityShareControlProps) {
   const [card, setCard] = useState<CardState>('idle');
+  const noTime = [a, b].some((person) => person.untimedDate !== undefined || person.asc === null);
 
   async function share() {
     if (card === 'busy') return;
@@ -88,6 +93,7 @@ export function CompatibilityShareControl({
           : shareCardText(locale, 'compatibilityAction')}</span>
         <span class="orb">{card === 'saved' ? '✓' : '↗'}</span>
       </button>
+      {noTime && <p class="field__help" data-compatibility-no-time>{shareCardText(locale, 'compatibilityNoTimeNote')}</p>}
       {card === 'saved' && (
         <p class="sr-only" role="status">{shareCardText(locale, 'compatibilitySaved')}</p>
       )}

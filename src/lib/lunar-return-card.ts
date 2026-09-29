@@ -5,7 +5,8 @@ import type { LunarReturnExportModel } from '../islands/lunar-return/export-mode
 import { BRAND_ICON_PATHS } from './brand-icons.mjs';
 import { drawShareBrandLockup, PORTRAIT_SHARE_CARD_BRAND_LAYOUT, type LoadedShareBrandIcon } from './share-card-brand';
 import { downloadPreparedChartCard, type PreparedChartCard, type CardOutcome } from './share-card';
-import { lunarReturnTimestamp } from './lunar-return-ical';
+import { lunarReturnShownInstant, lunarReturnTimestamp } from './lunar-return-ical';
+import { wholeSignCusps } from './engine/houses';
 import { SIGNS } from './signs';
 
 export const LUNAR_RETURN_CARD_SIZE = Object.freeze({ width: 1080, height: 1350 });
@@ -169,18 +170,55 @@ function paragraphs(context: CanvasRenderingContext2D, values: string[], y: numb
   throw new Error('lunar_text_overflow');
 }
 
-export function prepareLunarReturnCard(model: LunarReturnExportModel, parent?: AbortSignal): Promise<PreparedChartCard> {
+const middleOfDegree = (longitude: number) => Math.floor(longitude) + 0.5;
+
+/**
+ * What a lunar return image shows of the return: no more of the birth than a
+ * chart's link. The Moon returns to its natal longitude, so the instant to
+ * the millisecond gave the birth instant to about a millisecond, and before
+ * standard time the birthplace's longitude; the image prints it to the whole
+ * minute (lunarReturnShownInstant). Cast at the birthplace by default, the
+ * return is drawn as a natal image is: its angles at the middle of their
+ * whole degree, with whole-sign houses, which follow from the ascendant's
+ * sign; Placidus houses, and the house they put the Moon in, are left out,
+ * and a note says so.
+ */
+export function lunarReturnImageModel(model: LunarReturnExportModel): LunarReturnExportModel {
+  const instantUtc = lunarReturnShownInstant(model);
+  const { angles, houses } = model.wheel;
+  if (!angles) return { ...model, instantUtc };
+  const asc = middleOfDegree(angles.asc);
+  const mc = middleOfDegree(angles.mc);
+  const wholeSign = houses?.system === 'whole' ? { system: 'whole' as const, cusps: wholeSignCusps(asc) } : null;
+  const placidusLeftOut = Boolean(houses) && !wholeSign;
+  return {
+    ...model,
+    instantUtc,
+    wheel: { ...model.wheel, angles: { asc, mc, dsc: (asc + 180) % 360, ic: (mc + 180) % 360 }, houses: wholeSign },
+    reading: placidusLeftOut ? model.reading.filter((entry) => entry.kind !== 'moon-house') : model.reading,
+    // A whole-sign house follows from the signs; a Placidus house does not.
+    readingBasis: placidusLeftOut
+      ? model.readingBasis.map((line) => (line.startsWith('Moon ') ? line.replace(/ · house \d+$/u, '') : line))
+      : model.readingBasis,
+    notes: placidusLeftOut ? [...model.notes, 'Placidus houses are left out of this image.'] : model.notes,
+  };
+}
+
+export function prepareLunarReturnCard(source: LunarReturnExportModel, parent?: AbortSignal): Promise<PreparedChartCard> {
   return bounded(async (signal) => {
-    const instant = lunarReturnTimestamp(model.instantUtc);
-    const reference = lunarReturnTimestamp(model.referenceUtc);
-    const { bodies, angles, houses } = model.wheel;
+    const { bodies, angles, houses } = source.wheel;
     const longitude = (value: number) => Number.isFinite(value) && value >= 0 && value < 360;
-    if (instant <= reference || model.title !== 'Lunar return' || !bodies.length || bodies.length > 12
+    if (lunarReturnTimestamp(source.instantUtc) <= lunarReturnTimestamp(source.referenceUtc)
+      || source.title !== 'Lunar return' || !bodies.length || bodies.length > 12
       || !bodies.some((point) => point.body === 'Moon') || bodies.some((point) => !longitude(point.lon))
       || !angles || (['asc', 'mc', 'dsc', 'ic'] as const).some((key) => !longitude(angles[key]))
       || !houses || houses.cusps.length !== 12 || houses.cusps.some((value) => !longitude(value))) {
       throw new Error('lunar_card_unavailable');
     }
+    // Validated as computed; drawn as lunarReturnImageModel shows it.
+    const model = lunarReturnImageModel(source);
+    const instant = lunarReturnTimestamp(model.instantUtc);
+    const reference = lunarReturnTimestamp(model.referenceUtc);
     let icon: LoadedShareBrandIcon | undefined;
     let wheel: HTMLImageElement | undefined;
     let canvas: HTMLCanvasElement | undefined;
@@ -209,8 +247,8 @@ export function prepareLunarReturnCard(model: LunarReturnExportModel, parent?: A
       context.fillStyle = '#060709'; context.fillRect(0, 0, canvas.width, canvas.height);
       context.textBaseline = 'top'; context.textAlign = 'left';
       paragraphs(context, ['Lunar return'], 49, 64, 52, 52, '#EEF1F7', SERIF);
-      paragraphs(context, [`Return: ${instant.replace('T', ' ').replace('Z', ' UTC')}`], 121, 28, 20, 20, '#C6CCDA', MONO);
-      paragraphs(context, [`Next after: ${reference.replace('T', ' ').replace('Z', ' UTC')}`], 155, 27, 18, 18, '#8E96AB', MONO);
+      paragraphs(context, [`Return: ${instant.slice(0, 16).replace('T', ' ')} UTC`], 121, 28, 20, 20, '#C6CCDA', MONO);
+      paragraphs(context, [`Next after: ${reference.slice(0, 16).replace('T', ' ')} UTC`], 155, 27, 18, 18, '#8E96AB', MONO);
       context.drawImage(wheel, 240, 193, 600, 600);
       paragraphs(context, model.readingBasis, 810, 68, 19, 18, '#8E96AB');
       paragraphs(context, model.reading.map((reading) => reading.text), 899, 222, 26, 23, '#EEF1F7');
@@ -224,7 +262,7 @@ export function prepareLunarReturnCard(model: LunarReturnExportModel, parent?: A
       const blob = await new Promise<Blob>((resolve, reject) => canvas!.toBlob((value) =>
         value ? resolve(value) : reject(new Error('lunar_png_unavailable')), 'image/png'));
       signal.throwIfAborted();
-      return { blob, filename: `zodiacs-lunar-return-${instant.replace(/[-:.]/g, '')}.png` };
+      return { blob, filename: `zodiacs-lunar-return-${instant.slice(0, 16).replace(/[-:]/g, '')}Z.png` };
     } finally {
       signal.removeEventListener('abort', release); release();
     }

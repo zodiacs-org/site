@@ -157,6 +157,14 @@ try {
   check('calendar contains positions-only contact copy and no birth data',
     tripletCalendar.includes('Transiting Saturn opposition natal ASC')
       && privateValues.every((value) => !tripletCalendar.includes(value)));
+  // The file keeps exact times, which the note beside its button says; its
+  // UIDs are hashes of what each event shows, with no time in them.
+  const tripletUids = tripletCalendar.split('\r\n').filter((line) => line.startsWith('UID:'));
+  check('calendar UIDs carry no time', tripletUids.length === 3
+    && tripletUids.every((line) => /^UID:transit-[0-9a-f]{16}@zodiacs\.org$/u.test(line)), tripletUids.join(' '));
+  check('calendar keeps each contact to the second', (tripletCalendar.match(/DTSTART:\d{8}T\d{6}Z/gu) ?? []).length === 3);
+  check('the note beside the calendar button says its times come from the exact chart',
+    (await page.locator('[data-search-calendar-note]').innerText()).startsWith('The times in the file come from your exact chart'));
 
   // Moon stays out of the standing active-transit list, but a search request
   // must still bridge into one local focused chord and receipt.

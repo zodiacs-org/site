@@ -8,7 +8,15 @@ type Renderer = typeof import('../../lib/aspect-pattern-card');
 interface PreparedImage { source: object; card: PreparedChartCard; renderer: Renderer; url: string }
 const loadRenderer = () => loadModule(() => import('../../lib/aspect-pattern-card'));
 
-export default function AspectPatternActions({ card }: { card: SelectedPatternCard }) {
+/**
+ * `card` is the page's pattern; `imageCard`, when given, finds the same
+ * pattern in the sky the image is drawn from, which shows no more than the
+ * chart's link (AspectPatternPanel).
+ */
+export default function AspectPatternActions({ card, imageCard }: {
+  card: SelectedPatternCard;
+  imageCard?: () => Promise<SelectedPatternCard | null>;
+}) {
   const [open, setOpen] = useState<object | null>(null);
   const [prepared, setPrepared] = useState<PreparedImage | null>(null);
   const [preparing, setPreparing] = useState(false);
@@ -64,9 +72,11 @@ export default function AspectPatternActions({ card }: { card: SelectedPatternCa
     try {
       const result = await Promise.race([Promise.resolve().then(async () => {
         abort.signal.throwIfAborted();
-        const renderer = await loadRenderer();
+        const [renderer, drawn] = await Promise.all([loadRenderer(), imageCard ? imageCard() : card]);
         abort.signal.throwIfAborted(); importing = false;
-        const image = await renderer.prepareAspectPatternCard(card, abort.signal);
+        // A pattern at an orb limit can fall out at the whole minute; then there is no image.
+        if (!drawn) throw new Error('pattern_image_unavailable');
+        const image = await renderer.prepareAspectPatternCard(drawn, abort.signal);
         abort.signal.throwIfAborted();
         return { renderer, image };
       }), stopped]);

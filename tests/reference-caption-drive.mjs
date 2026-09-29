@@ -53,7 +53,7 @@ window.fixture={city:null,canvasText:[],
   if(!known)chart.moonSignCandidates=[];
   const details={date:'2000-01-15',time:known?'08:30':'12:00',timeKnown:known,city:'',country:'',timezone:'Africa/Khartoum'};
   const token=encodePositionsLink({bodies:chart.bodies,angles:chart.angles,houseSystem:'whole',engineVersion:chart.engineVersion});
-  window.fixture.canvasText=[];prepared=await prepareChartCard(chart,{locale,variant,referenceTime:!known,moonAmbiguous:!known,hideBirthDetails:false,birthDetails:details});
+  window.fixture.canvasText=[];prepared=await prepareChartCard(chart,{locale,variant,referenceTime:!known,moonAmbiguous:!known,hideBirthDetails:false,birthDetails:details,birthDate:details.date});
   const snapshot={chart:JSON.stringify(chart),token,preview:chartPreview.previewPlacementsFromToken?chartPreview.previewModel(chartPreview.previewPlacementsFromToken(token)):chartPreview.previewModel(token),settings:chartSheetSettings(chart),provenance:chartSheetProvenanceLines(chart,details,false),notes:shareCardTimeNotes(locale,{referenceTime:!known}),canvasText:[...window.fixture.canvasText],filename:prepared.filename};
   document.getElementById('image-download').disabled=false;return snapshot;
  }};

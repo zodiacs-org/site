@@ -36,6 +36,7 @@ import {
   type ChartSceneModel, type EntityRef,
 } from '../lib/scene/types';
 import { formatLongitude, signBySlug, signForLongitude, signName } from '../lib/signs';
+import { signIcon } from '../lib/sign-icon';
 import { bigThree } from '../lib/interpretations';
 import { prepareLocalTime, resolveLocalToUtc } from '../lib/time/localToUtc';
 import { assessLocalDateReference } from '../lib/time/local-date-reference';
@@ -1408,7 +1409,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
       });
       void import('./PositionsShareSurface').then(async (surface) => {
         if (!runIsCurrent()) return;
-        const prepared = await surface.preparePrimaryShareArtifact(result, mode, locale, nextMoonAmbiguous);
+        const prepared = await surface.preparePrimaryShareArtifact(result, mode, locale, nextMoonAmbiguous, input.date);
         if (!runIsCurrent()) return;
         shareRuntimeRef.current.primary = { artifact: prepared, share: surface.sharePrimaryArtifact };
         setCard('idle');
@@ -2254,8 +2255,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                     <span class="mono--label">{title}</span>
                     <span class="three-card__sign">
                       <picture class="three-card__icon">
-                        <source srcset={`/assets/zodiac-icons/128/${s.slug}.avif`} type="image/avif" />
-                        <img src={`/assets/zodiac-icons/128/${s.slug}.webp`} width="44" height="44" alt="" decoding="async" />
+                        <img src={signIcon(128, s.slug)} width="44" height="44" alt="" decoding="async" />
                       </picture>
                       {signName(s, locale)}
                     </span>
@@ -2614,6 +2614,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
 
               {mode === 'full' && locale === 'en' && AspectPatternFeature && (
                 <AspectPatternFeature context="natal" points={chart.bodies} aspects={chart.aspects}
+                  imageOf={{ chart, birthDate: computedInput?.date }}
                   timeKnown={chart.input.timeKnown && !chart.flags.includes('no-time')}
                   sourceKey={String(chartContextIdRef.current)}
                   onSelectBody={(body) => showOnChartFromReading({ kind: 'body', body }, 'instant')} />
@@ -2646,17 +2647,18 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
               {mode === 'full' && ChartContext && (
                 <ChartContext input={{ bodies: chart.bodies, timeKnown: chart.input.timeKnown,
                   moonSignCandidates: chart.moonSignCandidates, angles: chart.angles, houses: chart.houses }}
+                  imageOf={{ chart, birthDate: computedInput?.date }}
                   locale={locale} inputRevision={inputRevision}
                   isInputCurrent={(revision) => inputRevisionRef.current === revision}
                   selection={selection} onShowOnChart={showOnChartFromReading} />
               )}
 
               {mode === 'full' && showsEnglishInterpretation && ApproachRead && (
-                <ApproachRead chart={chart} locale={locale} moonAmbiguous={moonAmbiguous} />
+                <ApproachRead chart={chart} locale={locale} moonAmbiguous={moonAmbiguous} birthDate={computedInput?.date} />
               )}
 
               {mode === 'full' && showsEnglishInterpretation && CommunicationRead && (
-                <CommunicationRead chart={chart} locale={locale} />
+                <CommunicationRead chart={chart} locale={locale} birthDate={computedInput?.date} />
               )}
             </>
           )}
@@ -2852,7 +2854,9 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                       angles: chart.angles ? { asc: chart.angles.asc, mc: chart.angles.mc } : null,
                       houseSystem: chart.houses?.system ?? houseSystem,
                       engineVersion: chart.engineVersion,
+                      utc: chart.input.utc,
                     }}
+                    birthDate={chart.input.timeKnown ? undefined : computedInput?.date ?? ''}
                   />
                 )}
                 {card === 'error' && <p class="calc__error" role="alert">{t(locale, 'cardError')}</p>}

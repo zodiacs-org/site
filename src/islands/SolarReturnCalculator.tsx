@@ -140,6 +140,7 @@ export default function SolarReturnCalculator() {
       savedSunLon: selected && !birthplace
         ? selected.summary.bodies.find((body) => body.body === 'Sun')?.lon ?? null
         : null,
+      savedUtc: selected && !birthplace ? selected.summary.utcISO : null,
       houseSystem: selected?.summary.houseSystem ?? profile.settings.houseSystem,
       castLocation: selected && !birthplace ? null : (differentPlace ? castCity : birthplace),
       year: yearMode === 'current' ? 'current' as const : Number(customYear),
@@ -221,7 +222,7 @@ export default function SolarReturnCalculator() {
                 onTimeKnownChange={(known) => { invalidateResult(); setTimeKnown(known); if (!known) { setDifferentPlace(false); setCastCity(null); } }}
                 onCityChange={(value) => { invalidateResult(); setCity(value); }}
                 requireKnownTime
-                timeHelp="Unknown time uses a noon chart and suppresses houses."
+                timeHelp="Unknown time uses the sky at 12:00 UTC on the birth date and leaves out houses."
                 placeHelp="A birthplace is required so the birth date can be resolved in its timezone."
               />
             </div>

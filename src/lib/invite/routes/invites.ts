@@ -16,6 +16,7 @@ import {
   createCompatibilityInviteToken,
 } from '../token.js';
 import { deriveInviteChartFromSyncedPayload, parseCreateInviteBody } from '../validate.js';
+import { POSITION_BODY_ORDER } from '../../share-positions.js';
 
 export default async function handler(req: any, res: any): Promise<void> {
   if (req.method !== 'GET' && req.method !== 'POST') {
@@ -57,7 +58,14 @@ export default async function handler(req: any, res: any): Promise<void> {
       return;
     }
     const syncedPayload = await getOwnedSyncedChartPayload(owner.id, input.chartId);
-    const chart = deriveInviteChartFromSyncedPayload(syncedPayload);
+    // A chart without a birth time is shared as the sky at 12:00 UTC on its
+    // date, and one whose instant has seconds (before standard time) at its
+    // whole minute; the server ephemeris computes them (loaded only on this path).
+    const { bodyLongitude } = await import('../../engine/server-ephemeris.js');
+    const chart = deriveInviteChartFromSyncedPayload(
+      syncedPayload,
+      (utc) => POSITION_BODY_ORDER.map((body) => ({ body, lon: bodyLongitude(body, utc) })),
+    );
     if (!chart) {
       sendInviteJson(res, 404, { error: 'chart_not_found' });
       return;

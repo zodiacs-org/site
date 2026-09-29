@@ -82,6 +82,7 @@ interface TransitFocusRequest {
 function wheelFromChart(
   r: Chart,
   timeKnown: boolean,
+  utc: Date,
   houseSystem: CalendarPositionsSource['houseSystem'] = r.houses?.system ?? 'whole',
 ): NatalWheel {
   return {
@@ -102,6 +103,7 @@ function wheelFromChart(
       angles: r.angles ? { asc: r.angles.asc, mc: r.angles.mc } : null,
       houseSystem,
       engineVersion: r.engineVersion,
+      utc,
     } : null,
   };
 }
@@ -114,6 +116,7 @@ function calendarPositionsFromSaved(chart: SavedChart): CalendarPositionsSource 
     angles: chart.summary.angles,
     houseSystem: chart.summary.houseSystem,
     engineVersion: chart.summary.engineVersion,
+    utc: chart.summary.utcISO,
   };
 }
 
@@ -128,7 +131,7 @@ function natalFromForm(slot: SlotState, engine: Engine): NatalWheel {
     timeKnown,
     flags: resolved.flags,
   });
-  return wheelFromChart(r, timeKnown);
+  return wheelFromChart(r, timeKnown, resolved.utc);
 }
 
 function natalFromSaved(chart: SavedChart, engine: Engine): NatalWheel {
@@ -148,7 +151,7 @@ function natalFromSaved(chart: SavedChart, engine: Engine): NatalWheel {
       timeKnown,
       flags: resolved.flags,
     });
-    return wheelFromChart(r, timeKnown, chart.summary.houseSystem);
+    return wheelFromChart(r, timeKnown, resolved.utc, chart.summary.houseSystem);
   }
   // No stored place — draw from the summary (bodies + ascendant), no house ring.
   const timeKnown = chart.birth.timeKnown && Boolean(chart.birth.time);
@@ -482,7 +485,7 @@ export default function TransitTracker({ locale: rawLocale = 'en' }: { locale?: 
           <summary class="tsearch-host__summary"><span>Your transit itinerary</span><span class="orb" aria-hidden="true">↗</span></summary>
           <div class="core tsearch-host__core">
             {ItineraryComponent ? <ItineraryComponent key={result.revision} natal={searchNatal}
-              timeKnown={result.natal.itineraryTimeKnown} anchorMs={result.nowMs} />
+              timeKnown={result.natal.itineraryTimeKnown} birthTimeKnown={result.natal.timeKnown} anchorMs={result.nowMs} />
               : itineraryError ? <div><p class="calc__error" role="alert">{itineraryError}</p>
                 <button type="button" class="btn" onClick={() => openItinerary()}>Try again</button></div>
                 : <p role="status">{itineraryLoading ? 'Loading your itinerary…' : 'Open to explore your longer transit periods.'}</p>}
@@ -504,6 +507,7 @@ export default function TransitTracker({ locale: rawLocale = 'en' }: { locale?: 
                 natalPoints={searchNatalPoints}
                 nowMs={result?.nowMs ?? Date.now()}
                 onShowOnRing={(contact) => setSearchFocus({ contact })}
+                timeKnown={result?.natal.timeKnown ?? true}
               />
             ) : (
               searchError

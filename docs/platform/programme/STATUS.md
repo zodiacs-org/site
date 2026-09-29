@@ -1,65 +1,57 @@
 # Programme status
 
-Checkpoint 4: the conformance results page is live, 2026-09-28. The next session should start here.
+Checkpoint 5: engine rc.14 and the time atlas are on the engine's `main`, every public repository has its basics, and the privacy fixes go to production, 2026-09-29. The next session should start here.
 
-**Overall delivery: 13%** — 23 of 182.45 weighted units accepted; blocked on owner or external action: 5% (10).
+**Overall delivery: 17%** — 30.5 of 182.45 weighted units accepted; blocked on owner or external action: 5% (10).
 
 The figure is computed by `node scripts/programme-ledger.mjs --summary` from [`acceptance-ledger.json`](acceptance-ledger.json). The method is in [README.md](README.md) and the unit list in [LEDGER.md](LEDGER.md).
 
-## What changed since checkpoint 3
+## What changed since checkpoint 4
 
-- `/developers/conformance/` is live. Production deployment `dpl_DToHaomhWAgA3cA4QGTN4aHBxycm` serves #596 (`2ca93d41`), so B1.c is accepted (1.5 units).
-- The site repository has its basics:
-  - a rewritten README;
-  - a LICENSE file stating that all rights are reserved;
-  - SECURITY.md, CONTRIBUTING.md, CODE_OF_CONDUCT.md and CITATION.cff;
-  - a "Wrong chart" issue form that asks for the calculation receipt.
+- **Engine rc.14 is on `main` of `zodiacs-org/engine`** (PR #10, merged as `8deda244`). It fixes what the audit found in rc.11 and rc.12 (F-01, F-02, F-06, F-07, F-10–F-16 and the engine part of F-21), and what four independent reviews found in rc.13 and in rc.14's builds. rc.13 was never released; its archive stays in `artifacts/` under its own identity and will not be published. The rc.14 archive:
+  - `artifacts/zodiacs-engine-0.1.1-rc.14.tgz`, SHA-256 `adc9805e22cd2468fa3340a864d9c53b36ff91e8f1592fdb35d8da8b69f4476e`, 87,415 bytes;
+  - built from `03db4bb`, and rebuilt byte for byte on Node 20.19.0, 22.22.2 and 24.21.0;
+  - the same conformance verdicts as rc.12: 232 pass, 222 fail, 46 unsupported.
 
-  This is G2's README and the site's part of P3.11. G2's description and topics wait for step 5 below, so its 0.5 units now count as blocked.
-- Independent reviews of the Hellenistic and Vedic branches found no errors in the computed techniques. Both branches need corrections before rc.15:
-  - Hellenistic: the source claims for two monthly conventions, and evidence that presented self-checks as agreement with the sources.
-  - Vedic: a hang when ΔT is pinned very large, wrong whole-sign cusps in `siderealChart`, and ayanamsa documentation that misstates the construction.
-  - Both: packaging, which moves to subpath exports.
+  The site still vendors rc.10, so none of these fixes counts until the site adopts rc.14 and production serves it. The npm step below is now ready.
+- **The time atlas's first slice is on the engine's `main`** (PR #11, merged as `056bcd1a`). It records what civil clocks showed in the United States and France, Alsace and Moselle included, from 1870 to 1919:
+  - 59 rules for 21 places, each with a primary citation, 66 in all;
+  - 258 boundaries and 2,735 local↔UTC round trips checked in CI;
+  - 108 differences from tzdb 2025c, each matched by exactly one of 11 explanations.
 
-  The fixes are in progress.
+  An independent review and two re-checks checked the excerpts against their sources and recomputed the tzdb comparison. B3.a is accepted (7 units). The atlas does not feed `resolveBirth` yet (B3.b).
+- **Every public repository has its basics.** The engine (PR #12, `b0ddb886`) and the SDK (`zodiacs-org/sdk` PR #14, `a95dc0cf`) now have every file the site got in #597: a security policy, a contribution guide, a code of conduct, citation metadata, agent notes and a wrong-result issue form. CodeQL, Scorecard and Dependabot run in both; the engine also has a release workflow for npm trusted publishing. P3.11 is accepted (0.5 units). The site still needs topics (G2) and code scanning (G3).
+- **The engine's About box is set**: its description, website and topics read back as step 5 asked.
+- **The privacy fixes** (#599) go to production with this checkpoint:
+  - share codes and calendar feeds carry a timed birth only to its whole UTC minute, and a chart without a birth time as the sky at 12:00 UTC on its date;
+  - every shared image is drawn no more precisely than its link;
+  - a chart's page asks for all twelve sign pictures;
+  - Guide gets the ascendant and midheaven to the whole degree.
 
-## What changed at checkpoint 3
-
-The conformance suite v0 is on `main` of `zodiacs-org/engine` (`8c4946b1`, PR #9), and its CI workflow is green there:
-
-- 500 vectors in three levels: positions (240), houses and angles (150), and time and calendars (110). Each names an independent arbiter and a tolerance, and none uses Swiss Ephemeris as its arbiter. The files are CC0 1.0.
-- A harness, with adapters for this engine and for Swiss Ephemeris through pyswisseph.
-- A CI workflow. It validates the vectors, rebuilds them from their generators byte for byte, and re-runs this engine against the committed verdicts.
-- A public discrepancy process. An independent review before release withdrew one vector and clarified six points, all recorded in its log.
-
-The results, from `conformance/results/summary.json`:
-
-- **Engine rc.12:** 232 pass, 222 fail and 46 unsupported.
-  - Positions: 193 of 240 fail the 1″ tolerance, with a median longitude residual of 2.07″ and a largest of 18.8″.
-  - Houses and angles: all 150 pass.
-  - Time: 29 fail, 20 of them on tzdb's `backzone` history before 1970.
-- **Swiss Ephemeris 2.10.03:** 403 pass, 47 fail and 50 unsupported. All 47 failures are houses and angles, from its long-term sidereal time outside 1850–2050.
-
-This checkpoint's PR publishes the results at `/developers/conformance/`. B1.a, B1.b and B1.d are accepted (8.5 units), and B1.c is validated until the page is verified in production.
-
-The owner's decisions of checkpoint 2 are in [DECISIONS-2026-09-28.md](DECISIONS-2026-09-28.md).
-
-The npm step below now waits for rc.14. The independent review of rc.13 found defects (listed under "In progress"), so rc.13 will not be published.
+  The privacy page says what each of these carries. This closes F-17, F-18, F-19, F-26, F-27 and F-40, and F-43–F-45, found while the fixes were made. Two independent checks verified the fixes. P1.15 stays partial: the opaque feed ids decided on 2026-09-28 are not built yet.
+- The review of the birth-time window search found three minor engine defects, F-46–F-48. They are in [FINDINGS.md](FINDINGS.md).
 
 ## Steps that need the owner's accounts
 
 The owner, or Codex working on the owner's computer, can do these. Each says what to report back. None needs a password or token to be shared.
 
-1. **npm: the first publish of `@zodiacs/engine`.** Not yet: this waits for engine rc.14 on `main` of `zodiacs-org/engine`. When it is there, this step will name the archive and its SHA-256. Publish no other file.
+1. **npm: the first publish of `@zodiacs/engine`.** Ready. Publish this archive and no other file:
+   - `https://github.com/zodiacs-org/engine/raw/main/artifacts/zodiacs-engine-0.1.1-rc.14.tgz`
+   - SHA-256 `adc9805e22cd2468fa3340a864d9c53b36ff91e8f1592fdb35d8da8b69f4476e`
+
+   The steps:
    1. Sign in at npmjs.com as `zodiacs`, the account that publishes `@zodiacs/sdk`. Under Account, confirm that two-factor authentication covers authorization and writes.
-   2. On any computer with Node 20.19 or later, download the archive named here, and check that `sha256sum` prints the value given here. If it does not, stop.
+   2. On any computer with Node 20.19 or later, download the archive, and check that `sha256sum` (on macOS, `shasum -a 256`) prints the value above. If it does not, stop.
    3. Publish it:
       - `npm login` (as `zodiacs`)
-      - `npm publish <the archive> --access public --tag next`, entering the one-time code when asked.
-   4. On npmjs.com, open `@zodiacs/engine`, then Settings.
-      - Under Trusted Publisher, choose GitHub Actions: organization `zodiacs-org`, repository `engine`, workflow `release.yml`, environment `npm`.
+      - `npm publish zodiacs-engine-0.1.1-rc.14.tgz --access public --tag next`, entering the one-time code when asked.
+   4. On GitHub, in `zodiacs-org/engine`, open Settings, then Environments, and create the environment `npm`. Under "Deployment branches and tags", choose "Selected branches and tags" and add `main`.
+   5. On npmjs.com, open `@zodiacs/engine`, then Settings.
+      - Under Trusted Publisher, choose GitHub Actions: organization or user `zodiacs-org`, repository `engine`, workflow `release.yml`, environment `npm`. Under Allowed actions, keep "npm stage publish" and also select "npm publish".
       - Under Publishing access, choose "Require two-factor authentication and disallow tokens".
-   5. Report the output of `npm view @zodiacs/engine dist-tags` and a screenshot of the Trusted Publisher settings.
+   6. Report the output of `npm view @zodiacs/engine dist-tags` and of `npm view @zodiacs/engine@0.1.1-rc.14 dist.shasum dist.integrity`, a screenshot of each npm setting, and one of the GitHub environment.
+
+   A correct publish reports `dist.shasum` `30498f08cc95550445ef2666e1324a5ac007d7d4` and `dist.integrity` `sha512-uOruhtGRmzAFnbaF+Kc8tPFDPZEk0cm77gLfF5Fdl78FjxkcZjvjyMrql/gTSkWFAniapdjpUoKxch4p/elc7Q==`.
 2. **PyPI: reserve `zodiacs`.**
    1. Sign in at pypi.org, or create an account with admin@zodiacs.org and turn on two-factor authentication.
    2. Under Your account, then Publishing, choose "Add a new pending publisher", then GitHub: project name `zodiacs`, owner `zodiacs-org`, repository `engine`, workflow `pypi.yml`, environment `pypi`.
@@ -74,14 +66,21 @@ The owner, or Codex working on the owner's computer, can do these. Each says wha
    2. If `zodiacs-org` is not listed, grant it: on GitHub, open Settings, then Applications, then Authorized OAuth Apps, then Zenodo, and grant access to `zodiacs-org`.
    3. Turn on `zodiacs-org/engine`.
    4. Report a screenshot.
-5. **The repositories' About boxes** on GitHub (the gear beside About).
-   - `zodiacs-org/engine`:
-     - description: "MIT-licensed astrology calculation engine: positions, houses, points and timing techniques, with receipts and a public conformance suite";
-     - website: `https://zodiacs.org/developers/engine/`;
-     - topics: astrology, ephemeris, astronomy, natal-chart, house-systems, typescript, conformance-testing.
-   - `zodiacs-org/site`:
-     - description: "Source of zodiacs.org. All rights reserved."
-   - In both repositories, open Settings, then Code security, and turn on **Private vulnerability reporting**. SECURITY.md offers it beside email to admin@zodiacs.org.
+5. **Repository settings** on GitHub.
+   - `zodiacs-org/site`: its description and website are set. Add the topics (the gear beside About): astrology, birth-chart, natal-chart, horoscope, astro, typescript.
+   - `zodiacs-org/engine`: its About box is done. Two settings remain:
+     - Settings, then General, then Pull Requests: keep "Allow merge commits", and turn off "Allow squash merging" and "Allow rebase merging". The archive record names source commits that only a merge commit keeps.
+     - Settings, then Rules, then Rulesets: a branch ruleset for the default branch that blocks force pushes and deletions, and requires these status checks to pass:
+       - Engine (Node 20), Engine (Node 22), Engine (Node 24);
+       - Every carried archive rebuilds from its source commit;
+       - Pack;
+       - Packed consumer (Node 20.19.0), Packed consumer (Node 22.7.0), Packed consumer (Node 22), Packed consumer (Node 24);
+       - Conformance suite; Conformance vectors rebuild from their sources;
+       - Time atlas checks.
+
+       All of them run on every pull request.
+   - In each public repository (`site`, `engine` and `sdk`): open Settings, then Code security, and turn on **Private vulnerability reporting**. Every SECURITY.md already offers its **Report a vulnerability** button beside email to admin@zodiacs.org.
+   - Report a screenshot of each.
 6. **Search and analytics baselines.**
    1. On GitHub, create the **private** repository `zodiacs-org/analytics-baselines`.
    2. Export these, and commit the files unchanged under `2026-09-28/`:
@@ -105,11 +104,12 @@ The owner, or Codex working on the owner's computer, can do these. Each says wha
 
 Later, once the site has rebuilt the MCP server on the published engine: the same first publish for `@zodiacs/mcp-server`, from its verified archive.
 
+
 ## Identities verified at this checkpoint
 
-**Site.** `main` = `2ca93d41` (#596). Production serves it: `dpl_DToHaomhWAgA3cA4QGTN4aHBxycm`, READY.
+**Site.** `main` = `15949ec0` (the daily sky of 2026-09-29, after #597 `145d36e3`). Production serves it: `dpl_MtfvqRJszyHFx5RDEVb7kpRc6aun`, READY. The site vendors engine rc.10.
 
-**Engine.** `main` = `8c4946b1` (PR #9, the conformance suite). CI and the Conformance workflow are green on it (runs 36439264630 and 36439264956). The package on `main` is still rc.12.
+**Engine.** `main` = `b0ddb886` (PR #12). CI, Conformance, Atlas, CodeQL and Scorecard are green on it (runs 36535531997, 36535531826, 36535532013, 36535531827 and 36535531876). The package on `main` is rc.14.
 
 | archive | SHA-256 | source | status |
 | --- | --- | --- | --- |
@@ -117,44 +117,35 @@ Later, once the site has rebuilt the MCP server on the published engine: the sam
 | rc.11 | `d88e0ff8…7862` | `be3585b3` (merge `537ecaf4`) | merged; not adopted |
 | rc.11 (superseded) | `13d637db…` | `00bdae79` | never merged; a second archive under the same version (F-01) |
 | rc.12 | `c4cf150f…f7f0` | `a1d0f2c6` (merge `df01d2d7`) | merged; not adopted |
-| rc.13 | `12db9dce…b840` | `f05ea02b`, carried by `4eee7002` | reviewed; defects found; never pushed, and not to be published |
+| rc.13 | `12db9dce…b840` | `f05ea02b`, carried by `4eee7002` | carried on `main`; never released, and not to be published |
+| rc.14 | `adc9805e…476e` | `03db4bb6`, carried by `b221534` (merge `8deda244`) | merged; the site's adoption is in progress; npm waits for step 1 |
 
-**MCP.** `0.1.0-rc.10`, `0405ecf4…3568`, 71,472 bytes; artifact commit `92162624`.
+**SDK.** `zodiacs-org/sdk` `main` = `a95dc0cf` (PR #14).
 
-**Registries.** Nothing of the engine or platform is published. npm returns 404 for `@zodiacs/engine` and `@zodiacs/mcp-server`; `@zodiacs/sdk` 1.0.1 is the token SDK. PyPI `zodiacs` and the JSR `@zodiacs` scope do not exist.
+**MCP.** Production serves `0.1.0-rc.10`, `0405ecf4…3568`, 71,472 bytes (artifact commit `92162624`). The rc.14 adoption builds `0.1.0-rc.14`.
+
+**Registries.** Nothing of the engine or platform is published. On 2026-09-29, npm returned 404 for `@zodiacs/engine` and `@zodiacs/mcp-server`; `@zodiacs/sdk` 1.0.1 is the token SDK. PyPI `zodiacs` and the JSR `@zodiacs` scope do not exist.
 
 ## In progress
 
-- **Engine rc.14**, which fixes what the rc.13 review found:
-  - the supported Node versions and their CI coverage;
-  - the archive-binding check over the full history and every receipt;
-  - the Sun's out-of-bounds convention;
-  - an exact separation, and far dates outside the documented span refused;
-  - the changelog's wording and the reference documentation's canonical address.
+- **The site's adoption of rc.14**, on its own branch, after this PR:
+  - rc.14 vendored, with progressions through the package;
+  - the MCP server rebuilt as `0.1.0-rc.14`;
+  - F-03 (`mcp:pack:check` in CI) and F-04 (the install guard);
+  - the conformance results refreshed, and the evidence.
 
-  It keeps rc.13's own fixes (F-01, F-02, F-06, F-07, F-13–F-16, and the engine part of F-21). It waits for an independent check before its PR.
-- **Site privacy fixes** (F-17, F-18, F-19, F-40, F-26, F-27): implemented in six commits, now under independent review.
-- **Engine time steps** (1.1, 1.12, 1.13), the leap-second table and the receipts' time basis, on their own branch.
-- **Engine features**, each on its own branch:
-  - Hellenistic timing: profections, firdaria, zodiacal releasing and solar arc. Reviewed; the corrections are being made.
-  - Vedic core: ayanamsas, nakshatras, vargas, KP and dashas. Four named ayanamsas miss their 0.01″ gate and are recorded as failures. Reviewed; the corrections are being made.
-  - The uniform calculation API with its coordinate frames (P3.2, P2.D).
-  - Birth-time window partitions (B2.a), checked against dense one-second sampling.
-- **The time atlas's first slice** (B3.a): the United States and France before 1920, every rule with a primary citation, under `atlas/` in the engine repository (CC BY 4.0).
+  It needs main merged in, retaken captures and an independent review before its PR.
+- **Engine rc.15**: the time steps (1.1, 1.12, 1.13, the leap-second table and the receipts' time basis), Hellenistic timing and the Vedic core. They are integrated with subpath exports and a size budget for each entry point. Two independent reviews are running: one of the time basis, one of the integration.
+- **Birth-time window partitions (B2.a).** The independent review reproduced the preregistered gate: 1,000 windows, none missed and none extra. Its findings are fixed on the branch, with a bisection for F-46. The search goes into rc.16 with the uniform calculation API and its frames (P3.2, P2.D).
+- **F-22**, the removal of raw Swiss output from the site tree, on its own branch, after this PR.
+- **Nutation.** Replacing the five-term truncation with full IAU 2000B, as its own reviewed engine change; not started.
 
 ## Next
 
-1. Review, push and merge rc.14. Then:
-   - the npm first publish (step 1 above);
-   - its adoption on the site: progressions through the package, keeping ChartLens's dynamic import;
-   - the MCP server, rebuilt under a new version;
-   - docs and claims;
-   - `/birth-chart/` measured against its 71 KB budget with production's flags;
-   - the CI and install-snippet fixes F-03 and F-04 alongside.
-3. The site privacy PR, then the decisions' own work:
-   - opaque calendar feed ids;
-   - the removal of raw Swiss output;
-   - the site README and licence statement.
-4. Engine rc.15: the time steps, then the Hellenistic and Vedic features. They take the package over its size gate, so they come with subpath exports and a documented budget.
+1. Merge this PR and verify production. Then record the privacy fixes as live.
+2. The rc.14 adoption PR. When production serves it, the rc.14 fixes count, and each unit that waited on rc.14 is assessed again.
+3. rc.15: act on the two reviews, then its PR.
+4. F-22, the opaque calendar feed ids (P1.15), the engine reference at `/developers/engine/reference/` (G1), and the site's CodeQL and Scorecard (G3).
+5. rc.16: the calculation API, frames and birth-time windows; then the nutation change.
 
-**To resume.** Read this file, then `DECISIONS-2026-09-28.md`, `LEDGER.md` and `FINDINGS.md`. Check `git log` on site `main` and engine `main` against the identities above, and read the open PRs in both repositories. The conformance suite is described in `conformance/README.md` in the engine repository.
+**To resume.** Read this file, then `DECISIONS-2026-09-28.md`, `LEDGER.md` and `FINDINGS.md`. Check `git log` on site `main` and engine `main` against the identities above, and read the open PRs in both repositories. The conformance suite is described in `conformance/README.md` in the engine repository, and the atlas in `atlas/README.md`.
