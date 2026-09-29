@@ -2,9 +2,12 @@
  * JSON Schema (draft 2020-12) for every sky data API payload, and the
  * OpenAPI 3.1 document composed from the same definitions. One source: the
  * published schema files, the OpenAPI components, and the tests all read
- * these objects.
+ * these objects. The document also describes the compute endpoints, whose
+ * schemas and examples come from src/lib/compute-api/openapi.ts.
  */
 import { API_BASE, API_ORIGIN, PLANET_SLUGS, schemaUrl } from './meta';
+import { COMPUTE_COMPONENTS, COMPUTE_TAG, computeOpenApiPaths } from '../compute-api/openapi';
+import { COMPUTE_DOCS_URL } from '../compute-api/constants';
 
 type Schema = Record<string, unknown>;
 
@@ -366,10 +369,10 @@ export function buildOpenApi(
   return {
     openapi: '3.1.0',
     info: {
-      title: 'Zodiacs.org sky data API',
+      title: 'Zodiacs.org API',
       version,
-      summary: "Free, static, read-only sky data: today's sky, upcoming events, planets, signs, and per-year retrogrades, stations, ingresses, moon phases, eclipses, and aspects.",
-      description: `Every response is a static JSON file served from the CDN with open CORS and no authentication. Positions are apparent geocentric tropical ecliptic longitudes computed at 12:00 UTC daily. Data as of ${dailyDate}. Guide for AI agents: ${API_BASE}/llms.txt. Documentation: ${API_ORIGIN}/developers/.`,
+      summary: "Free sky data as static files: today's sky, upcoming events, planets, signs, and per-year retrogrades, stations, ingresses, moon phases, eclipses, and aspects. And six calculation endpoints that take a POST body.",
+      description: `The sky data (tags daily and yearly) is static JSON files served from the CDN with open CORS and no authentication. Positions are apparent geocentric tropical ecliptic longitudes computed at 12:00 UTC daily. Data as of ${dailyDate}. Guide for AI agents: ${API_BASE}/llms.txt. Documentation: ${API_ORIGIN}/developers/. The compute endpoints (tag compute) calculate from the body of a POST request, with open CORS and no authentication; their documentation is ${COMPUTE_DOCS_URL}.`,
       license: { name: 'CC BY 4.0', identifier: 'CC-BY-4.0', url: 'https://creativecommons.org/licenses/by/4.0/' },
       contact: { url: `${API_ORIGIN}/developers/` },
     },
@@ -377,6 +380,7 @@ export function buildOpenApi(
     tags: [
       { name: 'daily', description: 'Daily publication is scheduled from 00:00 UTC using positions computed for noon UTC. Delivery can be delayed; check each payload edition date.' },
       { name: 'yearly', description: 'Regenerated when the underlying yearly data is refreshed.' },
+      { ...COMPUTE_TAG },
     ],
     paths: {
       '/api/v1/index.json': { get: { operationId: 'getIndex', summary: 'Every endpoint and document', tags: ['daily'], responses: jsonResponse('index', 'The endpoint manifest.') } },
@@ -398,9 +402,13 @@ export function buildOpenApi(
       ...yearPath('moon-phases', 'moon-phases', 'Moon phases for a year', skyYears),
       ...yearPath('eclipses', 'eclipses', 'Eclipses for a year', eclipseYears),
       ...yearPath('aspects', 'aspects', 'Exact aspects for a year', transitYears),
+      ...computeOpenApiPaths(),
     },
     components: {
-      schemas: Object.fromEntries(Object.entries(SCHEMAS).map(([name, schema]) => [name, componentSchema(schema)])),
+      schemas: {
+        ...Object.fromEntries(Object.entries(SCHEMAS).map(([name, schema]) => [name, componentSchema(schema)])),
+        ...COMPUTE_COMPONENTS,
+      },
     },
   };
 }
