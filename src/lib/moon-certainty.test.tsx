@@ -79,13 +79,22 @@ describe('local-day Moon uncertainty', () => {
       chart, locale: 'en', mode: 'moon', card: 'idle', moonAmbiguous,
       onCardStateChange: () => {}, onClose: () => {},
     }));
+    // Without a birth time the exported card is drawn from the sky at 12:00 UTC
+    // and names the Moon's sign only once untimedMoonSign finds one it held all
+    // that date in every time zone (t17 checks that in the browser), never the
+    // local-day candidates: the preview and its button follow the card.
     const boundary = unknownTimeChart();
-    expect(preview(boundary)).toContain('Aquarius / Pisces');
+    expect(moonLabel(boundary)).toBe('Aquarius / Pisces');
+    expect(preview(boundary)).toContain('Needs a birth time');
+    expect(preview(boundary)).not.toContain('Aquarius / Pisces');
     expect(preview(boundary)).not.toContain('calc-share-dialog__placement-glyph');
+    expect(preview(boundary)).toContain('Share this image');
 
     const stable = unknownTimeChart('1990-01-02');
-    expect(preview(stable)).toContain('calc-share-dialog__placement-glyph');
-    expect(preview(stable)).toContain('Pisces');
+    expect(moonLabel(stable)).toBe('Pisces');
+    expect(preview(stable)).toContain('Needs a birth time');
+    expect(preview(stable)).not.toContain('calc-share-dialog__placement-glyph');
+    expect(preview(stable)).not.toContain('Share my Moon sign');
     delete stable.moonSignCandidates;
     expect(preview(stable, true)).toContain('Needs a birth time');
     expect(preview(stable, true)).not.toContain('calc-share-dialog__placement-glyph');
