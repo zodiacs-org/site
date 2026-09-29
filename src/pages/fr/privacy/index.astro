@@ -16,8 +16,8 @@ const walletChartEnabled = configuredWalletChains({
   PUBLIC_WALLET_CHART_ENABLED:
     import.meta.env.PUBLIC_WALLET_CHART_ENABLED ?? process.env.PUBLIC_WALLET_CHART_ENABLED,
 }).length > 0;
-const updated = '23 septembre 2026';
-const modifiedAt = '2026-09-23T00:00:00.000Z';
+const updated = '29 septembre 2026';
+const modifiedAt = '2026-09-29T00:00:00.000Z';
 
 const jsonLd = [
   {
@@ -54,8 +54,9 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         positions du thème, et ces positions permettent encore de retrouver ta
         date et ton heure de naissance. Si tu joins explicitement un thème à
         l’assistant, un résumé limité aux positions quitte aussi l’appareil ; les
-        noms enregistrés et les données de naissance brutes ne sont pas joints.
-        Aura transmet une adresse publique de portefeuille — pas tes données de
+        noms enregistrés et les données de naissance brutes ne sont pas joints,
+        mais ses positions permettent encore de retrouver ta date et ton heure
+        de naissance. Aura transmet une adresse publique de portefeuille — pas tes données de
         naissance ni celles de ton thème — à un fournisseur de données blockchain
         pour une consultation en lecture seule. Les comptes{weeklyDigestEnabled ? ',' : ' et'}
         les données Aura mémorisées{weeklyDigestEnabled ? ' et l’e-mail hebdomadaire' : ''} sont
@@ -91,6 +92,9 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         fichier se fait dans ton navigateur. Pour une naissance antérieure à 1970,
         le calculateur télécharge aussi un fichier des changements d’heure
         historiques, choisi d’après le fuseau horaire du lieu de naissance. Aucune de ces deux requêtes n’est adressée à un autre service. Les fichiers demandés indiquent à notre hébergeur la première lettre de la ville que tu as tapée et, pour une naissance antérieure à 1970, un groupe de fuseaux horaires qui comprend celui du lieu de naissance.
+        Quand une page affiche les signes d’un thème natal, elle demande d’abord
+        les images des douze signes, dans le même ordre pour chaque thème : ces
+        requêtes ne montrent donc pas quels signes le thème contient.
       </p>
 
       <h2>Guide</h2>
@@ -108,13 +112,21 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         modèles, et que ses journaux de surveillance des abus conservent le
         contenu envoyé jusqu’à 30 jours, ou plus longtemps lorsque la loi l’exige
         ou lorsque c’est nécessaire pour protéger ses services ou d’autres
-        personnes contre un préjudice. Un thème enregistré n’est inclus qu’après
-        un appui sur « Joindre mon thème » ; l’écran de consentement montre le
-        résumé limité aux positions avant son envoi. Ce résumé accompagne chaque
-        question tant que « Avec mon thème » reste activé ; tu peux le
-        désactiver. Guide ne joint jamais ton nom enregistré, ta date et ton heure
-        de naissance, ton lieu de naissance ni tes coordonnées ; tout ce que tu
-        écris dans la discussion fait partie du message que tu envoies. Pour
+        personnes contre un préjudice. Guide ne propose de joindre un thème que
+        dans l’aperçu de la synchronisation chiffrée, désactivé sur le site
+        public, et seulement le thème que tu y as marqué comme le tien. Il
+        n’est inclus qu’après un appui sur « Joindre mon thème » ; l’écran de
+        consentement montre le résumé limité aux positions avant son envoi. Ce
+        résumé accompagne chaque question tant que « Avec mon thème » reste
+        activé ; tu peux le désactiver. Guide ne joint jamais ton nom
+        enregistré, ta date et ton heure de naissance, ton lieu de naissance ni
+        tes coordonnées, mais les positions des planètes du résumé permettent
+        encore de retrouver ta date et ton heure de naissance, et son ascendant
+        et son milieu du ciel, au degré entier, ton lieu de naissance de façon
+        approximative. Pour un thème sans heure de naissance, le résumé est le
+        ciel de 12:00 UTC à la date de naissance, sans la Lune, ce qui donne la
+        date mais rien sur le lieu de naissance. Tout ce que tu écris dans la
+        discussion fait partie du message que tu envoies. Pour
         appliquer la limite quotidienne, nous conservons un identifiant
         irréversible calculé avec un sel à partir de ton adresse IP, jamais
         l’adresse IP brute, avec son compteur journalier et une trace de chaque
@@ -151,6 +163,37 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         transféré. Un lien avec image d’aperçu place aussi dans l’adresse le
         Soleil, la Lune et l’ascendant, au degré près, si bien que notre serveur
         et toute application qui affiche l’aperçu les reçoivent.
+      </p>
+      <p>
+        Toute image que tu peux créer d’un thème, d’une paire de thèmes ou d’une
+        révolution — la feuille du thème et les cartes du thème, les images
+        d’une lecture, d’une configuration d’aspects ou d’une section de
+        l’explorateur, les images de compatibilité et de thème composite, et les
+        images de révolution solaire et lunaire — est dessinée sur ton appareil
+        et ne va que là où tu la partages ou l’enregistres. Sauf si tu choisis
+        d’afficher les données de naissance sur la feuille du thème, aucune ne
+        comporte de date, d’heure ou de lieu de naissance, ni de coordonnées ;
+        aucune ne comporte de nom, sauf une image de compatibilité, qui montre
+        les noms des deux thèmes, et aucune ne montre plus d’une naissance que
+        son lien limité aux positions. Les positions planétaires d’un thème sont
+        celles de l’heure de naissance en UTC arrondie à la minute entière, qui
+        donnent encore la date et l’heure de naissance à la minute près ;
+        l’ascendant et le milieu du ciel ne sont montrés qu’au degré entier, et
+        les maisons Placidus sont laissées de côté. Une image de révolution est
+        calculée à partir de ces positions et donne la révolution à la minute
+        entière, comme son fichier de calendrier. Un thème sans heure de
+        naissance est dessiné avec le ciel de 12:00 UTC à la date de naissance,
+        comme son lien, ce qui donne la date mais rien sur le lieu de
+        naissance ; le signe de la Lune n’apparaît que si la Lune y est restée
+        toute cette journée, partout, et une image de deux thèmes laisse de côté
+        la Lune de cette personne. Chaque image seule ne situe pas le lieu de
+        naissance plus précisément qu’un lien, mais plusieurs partagées ensemble
+        le situent davantage. Pour une naissance à Lyon en 1987, un lien seul
+        laisse une zone d’environ 19 100 km² ; un lien et une image de
+        révolution solaire calculée pour le lieu de naissance, comme le sont par
+        défaut les images de révolution, laissent environ 3 900 km², environ
+        cinq fois moins ; un lien avec deux images de révolution solaire et
+        quatre de révolution lunaire laisse environ 1 500 km².
       </p>
       <p>
         Si tu es connecté et que tu crées une invitation de compatibilité à partir
@@ -480,17 +523,48 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
       </p>
       <p>
         Un flux de calendrier des transits contient un code de thème limité aux
-        positions dans son adresse web. Notre serveur, son cache et ton service de
-        calendrier reçoivent ce code à chaque actualisation du calendrier. Le code
-        ne comporte aucun champ de nom, de date, d’heure ou de lieu. Ses positions
-        planétaires permettent encore de retrouver ta date et ton heure de
-        naissance ; l’ascendant et le milieu du ciel sont arrondis au degré près,
-        ce qui ne situe le lieu de naissance que dans une zone d’environ 500 km
-        de large. Les adresses de calendrier créées avant le 23 septembre 2026
-        contiennent l’ascendant et le milieu du ciel avec plus de précision. Notre
-        serveur les arrondit désormais avant de les utiliser, mais l’adresse
-        elle-même ne change pas ; pour la remplacer, supprime ce calendrier et
-        abonne-toi de nouveau.
+        positions dans son adresse web. Notre serveur, son cache et ton service
+        de calendrier reçoivent ce code à chaque actualisation du calendrier. Le
+        code ne comporte aucun champ de nom, de date, d’heure ou de lieu. Ses
+        positions planétaires permettent encore de retrouver ta date et ton
+        heure de naissance à la minute près : elles sont prises à l’heure de
+        naissance en UTC arrondie à la minute entière. L’ascendant et le milieu
+        du ciel sont arrondis au degré près, ce qui situe quand même le lieu de
+        naissance dans une zone d’environ un degré de longitude de large :
+        environ 110 km à l’équateur, 80 km à 45° nord ou sud et 55 km à 60°. Du
+        nord au sud, la zone mesure au moins 400 km à moins de 15° de
+        l’équateur, 200 km à moins de 45° et 70 km à moins de 60° ; plus au
+        nord, elle peut être plus étroite, et près du cercle polaire arctique ce
+        peut être une bande de moins d’un kilomètre du nord au sud. Un thème
+        sans heure de naissance n’a ni ascendant ni milieu du ciel, et son code
+        contient le ciel de 12:00 UTC à la date de naissance, qui donne la date
+        mais rien sur le lieu de naissance. Les codes créés par une version
+        antérieure du site peuvent en contenir davantage. Pour un thème sans
+        heure de naissance, ils contiennent midi au lieu de naissance, ce qui
+        donne son fuseau horaire ou, avant l’heure légale, sa longitude, et une
+        image de deux thèmes faite avec un tel code dessine ce thème à partir de
+        ces positions, et non du ciel de 12:00 UTC. Pour une naissance
+        antérieure à l’heure légale, quand le thème suit le temps moyen du lieu
+        de naissance lui-même, ils contiennent la seconde de la naissance, ce
+        qui situe le lieu de naissance dans quelques bandes d’environ 3 km de
+        large ou moins. Les adresses de calendrier créées avant le 23 septembre
+        2026 contiennent aussi l’ascendant et le milieu du ciel avec plus de
+        précision ; notre serveur les arrondit désormais avant de les utiliser.
+        Une adresse de calendrier ne change jamais d’elle-même : pour remplacer
+        une adresse créée par une version antérieure, par exemple pour un thème
+        sans heure de naissance ou pour une naissance antérieure à l’heure
+        légale, supprime ce calendrier et abonne-toi de nouveau.
+      </p>
+      <p>
+        Un fichier de calendrier que tu télécharges depuis la page des transits
+        est créé dans ton navigateur à partir de ton thème tel qu’il y est
+        calculé, et non du code du thème, et ses heures sont exactes. Toute
+        personne avec qui tu le partages, ou tout calendrier en ligne où tu
+        l’importes, peut en déduire ta date et ton heure de naissance, et ton
+        lieu de naissance par celles de ton ascendant ou de ton milieu du ciel ;
+        sans heure de naissance, le thème est calculé pour midi au lieu de
+        naissance, et elles donnent alors son fuseau horaire ou, avant l’heure
+        légale, sa longitude.
       </p>
       {webPushEnabled && (
         <p>
@@ -544,7 +618,10 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         Comme chez tout hébergeur web, ses serveurs traitent les requêtes de ton
         navigateur et peuvent conserver de brefs journaux techniques (comme
         l’adresse IP et le type de navigateur) pour servir le site et le protéger
-        contre les abus. Nous ne diffusons pas de publicité et n’utilisons ni
+        contre les abus. Ces journaux conservent l’adresse web complète de chaque
+        requête, qui pour un calendrier des transits contient son code de thème
+        et pour un lien avec aperçu contient le Soleil, la Lune et l’Ascendant.
+        Nous ne diffusons pas de publicité et n’utilisons ni
         cookies de suivi intersite ni pixels marketing tiers.
       </p>
       {accountSyncV2Enabled ? (

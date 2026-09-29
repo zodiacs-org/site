@@ -15,16 +15,19 @@ import {
 } from '../lib/share-card';
 import { aspectLabel } from '../lib/i18n/astrology';
 import { signBySlug, signName } from '../lib/signs';
+import { signIcon } from '../lib/sign-icon';
 import { moonCandidates } from '../lib/moon-certainty';
 
 interface Props {
   chart: Chart;
   locale?: Locale;
+  /** The civil birth date: the card of a chart without a birth time shows 12:00 UTC on it. */
+  birthDate?: string;
 }
 
 type ShareState = 'preparing' | 'idle' | 'busy' | 'saved' | 'error';
 
-export default function CommunicationRead({ chart, locale = 'en' }: Props) {
+export default function CommunicationRead({ chart, locale = 'en', birthDate }: Props) {
   const read = useMemo(() => communicationRead(chart), [chart]);
   const [shareState, setShareState] = useState<ShareState>('preparing');
   const [preparedCard, setPreparedCard] = useState<PreparedChartCard | null>(null);
@@ -60,7 +63,7 @@ export default function CommunicationRead({ chart, locale = 'en' }: Props) {
     let current = true;
     setPreparedCard(null);
     setShareState('preparing');
-    void prepareChartCard(chart, { variant: 'communication', locale }).then((prepared) => {
+    void prepareChartCard(chart, { variant: 'communication', locale, birthDate }).then((prepared) => {
       if (!current) return;
       setPreparedCard(prepared);
       setShareState('idle');
@@ -69,7 +72,7 @@ export default function CommunicationRead({ chart, locale = 'en' }: Props) {
       if (current) setShareState('error');
     });
     return () => { current = false; };
-  }, [chart, locale]);
+  }, [chart, locale, birthDate]);
 
   function shareReading(): void {
     if (!preparedCard || shareState === 'preparing' || shareState === 'busy') return;
@@ -115,6 +118,7 @@ export default function CommunicationRead({ chart, locale = 'en' }: Props) {
           <span class="orb" aria-hidden="true">{shareState === 'saved' ? '✓' : '↗'}</span>
         </button>
       </header>
+      {!chart.input.timeKnown && <p class="field__help" data-card-no-time>Without a birth time, the image uses the sky at 12:00 UTC on your birth date, so on a day a planet changes sign it can show a different sign from this page.</p>}
       <p class="calc__comm-intro">{COMMUNICATION_COPY.intro}</p>
 
       <div class="calc__comm-flow" aria-hidden="true">
@@ -140,8 +144,7 @@ export default function CommunicationRead({ chart, locale = 'en' }: Props) {
               {part.sign && (
                 <span class="calc__comm-sign" style={`--sign:${signBySlug(part.sign).hue}`}>
                   <picture>
-                    <source srcset={`/assets/zodiac-icons/48/${part.sign}.avif`} type="image/avif" />
-                    <img src={`/assets/zodiac-icons/48/${part.sign}.webp`} width="32" height="32" alt="" loading="lazy" decoding="async" />
+                    <img src={signIcon(48, part.sign)} width="32" height="32" alt="" loading="lazy" decoding="async" />
                   </picture>
                   {signName(signBySlug(part.sign), locale)}
                 </span>

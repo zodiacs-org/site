@@ -55,6 +55,7 @@ import { sectOf } from '../../lib/sect';
 import type { HouseSystem } from '../../lib/engine/types';
 import type { EntityRef } from '../../lib/scene/types';
 import { SIGNS, formatLongitude } from '../../lib/signs';
+import { signIcon } from '../../lib/sign-icon';
 import { aspectLabel, planetLabel } from '../../lib/i18n/astrology';
 import { collisionNudge } from '../../lib/scene/layout';
 import { turnFrame, bodyLonAt, type TurnFrame } from './turning';
@@ -704,7 +705,7 @@ export default function EclipticView({
         {icons.map(({ sign, p }) => (
           <image
             class="ev-signicon"
-            href={`/assets/zodiac-icons/48/${sign.slug}.webp`}
+            href={signIcon(48, sign.slug)}
             x={(p.x - 11).toFixed(2)} y={(p.y - 11).toFixed(2)}
             width="22" height="22"
             style={`opacity:${cue(p.depth).toFixed(3)}`}

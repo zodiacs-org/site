@@ -6,7 +6,10 @@
  * birth date, time, place, coordinates, timezone, or account. A card leaves
  * the device, so its token is made like every other code that does
  * (encodeSharedPositionsLink): ASC and MC to the whole degree. The planets
- * stay at 0.001°, so a card still gives the birth date and time.
+ * stay at 0.001°, at the chart's UTC instant rounded to the whole minute, so
+ * a card still gives the birth date and time to the minute. A card from a
+ * chart without a birth time carries the sky at 12:00 UTC on the birth date
+ * (cardPositionsForChart), not the chart's noon at the birthplace.
  *
  * The token travels in the URL fragment (`/profile/#card=…`), which the
  * browser does not send to a server; the receiving page reads it, strips
@@ -19,6 +22,7 @@ import {
   type PositionsShareChart,
   type PositionsShareInput,
 } from '../share-positions';
+import { onWholeMinute, timedSharedPositions, untimedSharedPositions } from '../share-positions-noon';
 import { DISPLAY_NAME_MAX, cleanDisplayName } from './me';
 import type { SavedChart } from './schema';
 
@@ -109,9 +113,11 @@ export function decodeCardLink(token: string): ChartCard | null {
 }
 
 /**
- * The positions a saved chart may share: its twelve longitudes, and the
- * angles only when the birth time is known (a reference-time chart has no
- * rising sign to give).
+ * A saved chart's own positions: its twelve longitudes, and the angles only
+ * when the birth time is known (a reference-time chart has no rising sign to
+ * give). For a chart without a birth time these are noon at the birthplace,
+ * and before standard time they are an instant with seconds, so a card
+ * carries them only as cardPositionsForChart allows.
  */
 export function positionsForChart(chart: Pick<SavedChart, 'birth' | 'summary'>): PositionsShareInput {
   return {
@@ -124,9 +130,36 @@ export function positionsForChart(chart: Pick<SavedChart, 'birth' | 'summary'>):
   };
 }
 
-/** Whether a received card carries this saved chart's positions, as a card would. */
-export function cardMatchesChart(card: ChartCard, chart: Pick<SavedChart, 'birth' | 'summary'>): boolean {
-  const own = encodeSharedPositionsLink(positionsForChart(chart));
+/**
+ * The positions a card made from a saved chart carries: with a birth time,
+ * positionsForChart at the chart's UTC instant rounded to the whole minute
+ * (sharedTimedInstant: before standard time the instant's seconds would give
+ * the birthplace's longitude); without one, the sky at 12:00 UTC on the birth
+ * date (sharedReferenceInstant), which says nothing about the birthplace.
+ * Bodies that must be computed come from bodiesAt.
+ */
+export function cardPositionsForChart(
+  chart: Pick<SavedChart, 'birth' | 'summary'>,
+  bodiesAt: (utc: Date) => PositionsShareInput['bodies'],
+): PositionsShareInput | null {
+  const positions = positionsForChart(chart);
+  return chart.birth.timeKnown === true
+    ? timedSharedPositions(positions, chart.summary.utcISO, bodiesAt)
+    : untimedSharedPositions(positions, chart.birth.date, bodiesAt);
+}
+
+/** cardPositionsForChart with the browser engine, loaded only when bodies must be computed. */
+export async function loadCardPositionsForChart(
+  chart: Pick<SavedChart, 'birth' | 'summary'>,
+): Promise<PositionsShareInput | null> {
+  if (chart.birth.timeKnown === true && onWholeMinute(chart.summary.utcISO)) return positionsForChart(chart);
+  const { computeBodies } = await import('../engine/full');
+  return cardPositionsForChart(chart, computeBodies);
+}
+
+/** Whether a received card carries these positions (cardPositionsForChart of one's own chart), as a card would. */
+export function cardMatchesChart(card: ChartCard, positions: PositionsShareInput | null): boolean {
+  const own = positions ? encodeSharedPositionsLink(positions) : null;
   return own !== null && own === encodeSharedPositionsLink(card.chart);
 }
 

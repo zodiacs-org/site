@@ -16,8 +16,8 @@ const walletChartEnabled = configuredWalletChains({
   PUBLIC_WALLET_CHART_ENABLED:
     import.meta.env.PUBLIC_WALLET_CHART_ENABLED ?? process.env.PUBLIC_WALLET_CHART_ENABLED,
 }).length > 0;
-const updated = '23 September 2026';
-const modifiedAt = '2026-09-23T00:00:00.000Z';
+const updated = '29 September 2026';
+const modifiedAt = '2026-09-29T00:00:00.000Z';
 
 const jsonLd = [
   {
@@ -51,7 +51,8 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         and those positions still give your birth date and time. If you
         explicitly attach a chart to the assistant,
         a placements-only summary also leaves the device; saved names and raw
-        birth fields are not attached. Aura sends one public wallet address—not your birth or chart
+        birth fields are not attached, though its positions still give your
+        birth date and time. Aura sends one public wallet address—not your birth or chart
         data—to a blockchain-data provider for a read-only lookup. Accounts{weeklyDigestEnabled ? ',' : ' and'}
         remembered Aura data{weeklyDigestEnabled ? ', and the weekly email' : ''} are optional and off by
         default. We show no ads and use no cross-site tracking.
@@ -84,7 +85,10 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         chosen by the birthplace's time zone. Neither request goes to any other
         service. Which files are requested shows our host the first letter of
         the city you typed and, for a birth before 1970, a group of time zones
-        that includes the birthplace's.
+        that includes the birthplace's. When a page shows the signs of a birth
+        chart, it first requests the pictures of all twelve signs, in the same
+        order for every chart, so those requests do not show which signs the
+        chart has.
       </p>
 
       <h2>Guide</h2>
@@ -99,13 +103,20 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         OpenAI states that API data is not used to train its models by default,
         and that its abuse-monitoring logs keep submitted content for up to 30
         days, or longer where the law requires it or where that is needed to
-        protect its services or others from harm. A saved chart is included
-        only after you press “Attach my chart”; the consent screen shows the
-        placements-only summary before it is sent. That summary accompanies
-        each question while “Using my chart” remains on; you can turn it off.
-        Your saved name, birth date, time, birthplace,
-        and coordinates are never attached by Guide; anything you type
-        into chat is part of the message you send.
+        protect its services or others from harm. Guide offers to attach a
+        chart only in the encrypted sync preview, which is off on the public
+        site, and only the one chart you marked there as your own. It is
+        included only after you press “Attach my chart”; the consent screen
+        shows the placements-only summary before it is sent. That summary
+        accompanies each question while “Using my chart” remains on; you can
+        turn it off. Guide never attaches your saved name, birth date, time,
+        birthplace, or coordinates, but the summary's planet positions still
+        give your birth date and time, and its ascendant and midheaven, kept
+        to the whole degree, give your birthplace roughly. For a chart without
+        a birth time, the summary is the sky at 12:00 UTC on the birth date,
+        without the Moon, which gives the date but nothing about the
+        birthplace. Anything you type into chat is part of the message you
+        send.
         To enforce the daily limit, we keep a salted one-way identifier derived
         from your IP address, never the raw IP, with its daily count and a
         record of each request. Each later quota check deletes counts older than
@@ -136,6 +147,32 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         including anyone it is forwarded to. A link with a preview image also
         puts the Sun, Moon, and rising sign, to the degree, in the address, so
         our server and any app that shows the preview receive them.
+      </p>
+      <p>
+        Every image you can make of a chart, a pair of charts or a return — the
+        chart sheet and chart cards, the images of a reading, an aspect pattern
+        or an explorer section, the compatibility and composite pictures, and
+        the solar and lunar return images — is drawn on your device and goes
+        only where you share or save it. Unless you choose to show birth details
+        on the chart sheet, none has a birth date, time, place, or coordinates,
+        and none has a name except a compatibility picture, which shows the
+        names of the two charts; none shows more of a birth than its
+        positions-only link does. A chart's planet positions are those at the
+        birth time in UTC rounded to the whole minute, which still give the
+        birth date and time to the minute; the ascendant and midheaven are shown
+        only to the whole degree, and Placidus houses are left out. A return
+        image is found from those positions and gives the return to the whole
+        minute, as does its calendar file. A chart without a birth time is drawn
+        from the sky at 12:00 UTC on the birth date, as its link is, which gives
+        the date but nothing about the birthplace; the Moon's sign is shown only
+        when the Moon stayed in it all that day everywhere, and a picture of two
+        charts leaves such a person's Moon out. Each image alone narrows a
+        birthplace no more than a link does, but images shared together narrow
+        it further. For a birth in Lyon in 1987, a link alone leaves an area of
+        about 19,100 km²; a link and one solar return image cast at the
+        birthplace, as return images are by default, leave about 3,900 km²,
+        about five times smaller; a link with two solar return images and four
+        lunar return images leaves about 1,500 km².
       </p>
       <p>
         If you are signed in and create a compatibility invitation from a
@@ -440,12 +477,39 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         address. Our server, its cache, and your calendar service receive that
         code each time the calendar refreshes. The code has no name, date, time,
         or place fields. Its planet positions still give your birth date and
-        time; the ascendant and midheaven are rounded to the degree, which
-        places the birthplace only within a region about 500 km across.
-        Calendar addresses made before 23 September 2026 carry the ascendant and
-        midheaven more precisely. Our server now rounds them before use, but the
-        address itself does not change; to replace it, remove that calendar and
-        subscribe again.
+        time to the minute: they are taken at the birth time in UTC rounded to
+        the whole minute. The ascendant and midheaven are rounded to the degree,
+        which still narrows the birthplace to an area about one degree of
+        longitude wide: about 110 km at the equator, 80 km at 45° north or
+        south, and 55 km at 60°. From north to south the area is at least 400 km
+        within 15° of the equator, 200 km within 45°, and 70 km within 60°;
+        further north it can be narrower, and near the Arctic Circle it can be a
+        strip less than a kilometre from north to south. A chart without a birth
+        time has no ascendant or midheaven, and its code carries the sky at
+        12:00 UTC on the birth date, which gives the date but nothing about the
+        birthplace. Codes made by an earlier version of the site can carry more.
+        For a chart without a birth time they carry noon at the birthplace,
+        which gives its time zone or, before standard time, its longitude, and a
+        picture of two charts made with such a code draws that chart from those
+        positions, not from the sky at 12:00 UTC. For a birth before standard
+        time, when a chart keeps the birthplace's own mean time, they carry the
+        second of the birth, which narrows the birthplace to a few strips about
+        3 km wide or less. Calendar addresses made before 23 September 2026 also
+        carry the ascendant and midheaven more precisely; our server now rounds
+        them before use. A calendar address never changes by itself, so to
+        replace one made by an earlier version, such as one for a chart without
+        a birth time or for a birth before standard time, remove that calendar
+        and subscribe again.
+      </p>
+      <p>
+        A calendar file you download from the Transits page is built in your
+        browser from your chart as calculated there, not from the chart code,
+        and its times are exact. Anyone you share it with, or any online
+        calendar you import it into, can work out from them your birth date and
+        time, and your birthplace from those for your ascendant or midheaven;
+        without a birth time the chart is calculated for noon at your
+        birthplace, so they give its time zone or, before standard time, its
+        longitude.
       </p>
       {webPushEnabled && (
         <p>
@@ -493,7 +557,10 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         The site is hosted on <a href="https://vercel.com/" rel="noopener noreferrer">Vercel</a>.
         Like all web hosts, their servers process the requests your browser
         makes and may keep short-lived technical logs (such as IP address and
-        browser type) to deliver the site and guard against abuse. We do not run
+        browser type) to deliver the site and guard against abuse. Those logs
+        keep the full web address of each request, which for a transit
+        calendar includes its chart code and for a link with a preview image
+        includes the Sun, Moon, and rising sign. We do not run
         advertising, and we use no cross-site tracking cookies or third-party
         marketing pixels.
       </p>

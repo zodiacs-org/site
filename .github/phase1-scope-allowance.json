@@ -1,12 +1,19 @@
 {
   "version": 1,
-  "id": "owner-reported-astrofolio-card-rise-jank-2026-09-26",
-  "baseCommit": "f2bd0dd45947ff392d0de1135695f584a71bfa08",
+  "id": "privacy-audit-fixes-2026-09-28",
+  "baseCommit": "15949ec06390a3d4d0741ae64e6712e4dce4600d",
   "protectedPaths": [
-    "public/assets/app.js",
-    "scripts/registry-consumer-contract.test.mjs",
-    "scripts/registry-pastel-polish.test.mjs",
-    "src/app.jsx"
+    "src/pages/es/methodology/index.astro",
+    "src/pages/es/privacy/index.astro",
+    "src/pages/fr/methodology/index.astro",
+    "src/pages/fr/privacy/index.astro",
+    "src/pages/it/methodology/index.astro",
+    "src/pages/it/privacy/index.astro",
+    "src/pages/pt/methodology/index.astro",
+    "src/pages/pt/privacy/index.astro",
+    "src/strings/additions.fr.mjs",
+    "src/strings/additions.it.mjs",
+    "src/strings/additions.pt.mjs"
   ],
-  "authorization": "On 2026-09-26 the owner reported that users find the card rise on /astrofolio/ phones janky and unreliable, and asked for it to be fixed. The rise moves from per-frame script writes (--stack and --rise on the film and runway, --rise-order on each look) to scroll-driven animations in src/terminal/split-styles.css, so src/app.jsx drops those writes, public/assets/app.js is its generated build, and the two Registry tests pin the new mechanism in place of the old one. Preserve market data, addresses, flags, copy and transaction behavior."
+  "authorization": "The owner's handoff of 2026-09-28 directs fixing privacy findings and making privacy descriptions truthful; these are audit findings F-17, F-18, F-19 and F-40, and the independent review of that work the same day; only the listed sentences change. In each listed privacy page: the updated date, the summary's and the Guide section's sentences on what an attached chart gives away and when attaching is offered (F-19), and the Guide sentence on a chart without a birth time, attached as the sky at 12:00 UTC on its date (review); the sentence on sign pictures (F-18); a new paragraph on what every image of a chart, a pair of charts or a return shows (review and its re-check), whose sentences on which images have names and on what images shared together leave, with the measured areas, follow the second review; the shared-code sentences on the birth date and time to the minute, on the birthplace area by latitude, on charts without a birth time, on what codes made by earlier versions carry, which now adds that a picture of two charts draws such a code's chart from its positions (second review), and on replacing such a calendar address (F-17, F-40 and the review); a new paragraph on calendar files downloaded from the Transits page, whose exact times give the birth time and place (second review); and the hosting-log sentence on full request addresses (F-27, the one true sentence the audit asks for with F-20). In each listed methodology page: its dateModified, the Guide sentence (F-19) and the no-birth-time sentence (F-17). In each listed additions catalog (French, Italian and Portuguese): the added translations of the notes on a Moon card without a birth time and beside a compatibility image, shareCard.moonSettledNote and shareCard.compatibilityNoTimeNote (the review’s re-check). Every one of these sentences that the claims extractor selects is listed in docs/claims/ledger.json with its claim and evidence."
 }

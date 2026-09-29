@@ -12,6 +12,7 @@ import {
   formatLongitude, signBySlug, signDates, signEssence, signForLongitude,
   signName, elementLabel, modalityLabel,
 } from '../../lib/signs';
+import { signIcon } from '../../lib/sign-icon';
 import { NATAL_HOUSE_THEME, natalAspectLine, planetInHouseLine } from '../../lib/natal';
 import { placementContext } from '../../lib/natal-context';
 import { moonCandidates, moonIsUncertain, moonLabel } from '../../lib/moon-certainty';
@@ -81,8 +82,7 @@ interface Props {
 function SignDisc({ slug, size = 20 }: { slug: string; size?: number }) {
   return (
     <picture class="insp__disc">
-      <source srcset={`/assets/zodiac-icons/48/${slug}.avif`} type="image/avif" />
-      <img src={`/assets/zodiac-icons/48/${slug}.webp`} width={size} height={size} alt="" decoding="async" />
+      <img src={signIcon(48, slug)} width={size} height={size} alt="" decoding="async" />
     </picture>
   );
 }

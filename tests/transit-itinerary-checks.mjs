@@ -49,6 +49,10 @@ export async function runTransitItineraryChecks({ browser, baseURL, check, outDi
         && calendar.includes('DTEND:') && !calendar.includes('DURATION:PT1M')
         && !['Private fixture name', '1990-02-01', '19.4326', '-99.1332', chart.id].some((value) => calendar.includes(value)));
       if (outDir) await copyFile(path, `${outDir}/itinerary-known-${width}.ics`);
+      const EXACT_NOTE = 'The times in the file come from your exact chart';
+      const NOON_NOTE = 'Without a birth time, the times in the file come from your chart for noon at your birthplace';
+      check(`itinerary ${width}: the calendar note says the file's times come from the exact chart`,
+        (await itinerary.locator('[data-itinerary-calendar-note]').innerText()).startsWith(EXACT_NOTE));
       for (const id of ['audit-itinerary-unknown', 'audit-itinerary-unverified', 'audit-itinerary-ambiguous']) {
         await page.locator('#trans-source').selectOption(id);
         check(`itinerary ${width}: source replacement clears old results`, await page.locator('[data-transit-itinerary]').count() === 0);
@@ -58,6 +62,10 @@ export async function runTransitItineraryChecks({ browser, baseURL, check, outDi
         await itinerary.getByText('Your itinerary is ready.', { exact: true }).waitFor({ timeout: 45_000 });
         const headings = await itinerary.locator('h4').allTextContents();
         check(`itinerary ${width}: ${id} excludes Moon and angles`, !headings.some((text) => /your (?:Moon|ASC|MC|rising sign|Midheaven)\b/.test(text)));
+        // Without a birth time the chart is noon at the birthplace, which the note names.
+        const note = await itinerary.locator('[data-itinerary-calendar-note]').innerText();
+        check(`itinerary ${width}: ${id} calendar note names where its times come from`,
+          note.startsWith(id === 'audit-itinerary-unknown' ? NOON_NOTE : EXACT_NOTE), note);
       }
       if (outDir) { await itinerary.scrollIntoViewIfNeeded(); await page.screenshot({ path: `${outDir}/itinerary-reference-${width}.png` }); }
       // A real worker-load failure keeps the result page usable and offers retry.

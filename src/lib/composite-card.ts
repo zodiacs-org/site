@@ -123,11 +123,25 @@ function wrap(context: CanvasRenderingContext2D, value: string, x: number, y: nu
   return y + lineHeight;
 }
 
-export function prepareCompositeCard(data: CompositeTabData, locale: Locale = 'en'): Promise<PreparedChartCard> {
-  return bounded((signal) => paintCompositeCard(data, locale, signal));
+/**
+ * `data` is the composite the picture draws: CompositePanel's picture data,
+ * each person as their link carries them. `noTime` says one of them has no
+ * birth time, so the picture notes it is drawn from 12:00 UTC without the Moon.
+ */
+export function prepareCompositeCard(
+  data: CompositeTabData,
+  locale: Locale = 'en',
+  options: { noTime?: boolean } = {},
+): Promise<PreparedChartCard> {
+  return bounded((signal) => paintCompositeCard(data, locale, options, signal));
 }
 
-async function paintCompositeCard(data: CompositeTabData, locale: Locale, signal: AbortSignal): Promise<PreparedChartCard> {
+async function paintCompositeCard(
+  data: CompositeTabData,
+  locale: Locale,
+  options: { noTime?: boolean },
+  signal: AbortSignal,
+): Promise<PreparedChartCard> {
   if (!data.points.length || data.points.length > 12) throw new Error('composite_points_unavailable');
   const c = COMPOSITE_COPY[locale];
   const [wheel, ...faces] = await Promise.all([
@@ -162,7 +176,8 @@ async function paintCompositeCard(data: CompositeTabData, locale: Locale, signal
     text(context, `${planetLabel(locale, point.body)}${reference} · ${formatLongitude(point.lon, locale)}`, x, y, 458, 22, MONO);
   });
   context.fillStyle = '#8E96AB'; context.font = `500 21px ${SANS}`;
-  if (data.moonProvisional) wrap(context, `* ${c.moonTimeNotice}`, 64, 1101, 952, 27);
+  if (options.noTime) wrap(context, c.imageNoTime, 64, 1101, 952, 27);
+  else if (data.moonProvisional) wrap(context, `* ${c.moonTimeNotice}`, 64, 1101, 952, 27);
   context.font = `500 18px ${SANS}`;
   wrap(context, c.oppositeConvention, 64, 1210, 952, 24);
   await bounded(() => withShareBrandIcon((icon) => {

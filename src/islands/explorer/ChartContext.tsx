@@ -9,6 +9,7 @@ import { CONTEXT_COPY, CONTEXT_SECTIONS, SHAPE_RULE_COPY, DIGNITY_RULE_COPY, con
 import { loadModule } from '../../lib/module-load';
 import type { PreparedChartCard } from '../../lib/share-card';
 import type { ChartContextCard } from '../../lib/chart-context-card';
+import { chartForImage, type ChartImageSource } from '../../lib/chart-image-sky';
 import CalculationReload, { calculationLoadMessage } from '../CalculationReload';
 import './ChartContext.css';
 
@@ -19,6 +20,21 @@ export interface ChartContextProps {
   isInputCurrent: (revision: number) => boolean;
   selection: EntityRef | null;
   onShowOnChart: (entity: EntityRef, behavior: 'instant') => void;
+  /**
+   * The chart a section image is drawn from, as share-card's imageChart draws
+   * it, so it shows no more than the chart's link. Absent, the image is the page's.
+   */
+  imageOf?: ChartImageSource;
+}
+
+/** A section's lines as its image shows them: from the chart an image draws (imageOf). */
+async function imageLines(props: ChartContextProps, section: ContextSection, model: ReturnType<typeof buildChartContext>): Promise<string[]> {
+  if (!props.imageOf) return contextSectionLines(model, section, props.locale);
+  const drawn = await chartForImage(props.imageOf);
+  return contextSectionLines(buildChartContext({
+    bodies: drawn.bodies, timeKnown: props.input.timeKnown, moonSignCandidates: drawn.moonSignCandidates,
+    angles: drawn.angles, houses: drawn.houses,
+  }), section, props.locale);
 }
 /** Full-result-only context; the original reading and wheel keep their owners. */
 export default function ChartContext(props: ChartContextProps) {
@@ -47,7 +63,7 @@ export default function ChartContext(props: ChartContextProps) {
     release();active.current=section;const request=generation.current;
     const abort=new AbortController();controller.current=abort;
     setView({source,section,busy:true,message:c.preparing,error:''});
-    const payload:ChartContextCard={locale:props.locale,section,title:c[section],lines:contextSectionLines(model,section,props.locale),convention:model.convention};
+    const card={locale:props.locale,section,title:c[section],convention:model.convention};
     let rejectStop!:(cause:unknown)=>void;
     const stopped=new Promise<never>((_,reject)=>{rejectStop=reject;});
     const onAbort=()=>rejectStop(abort.signal.reason);abort.signal.addEventListener('abort',onAbort,{once:true});
@@ -55,9 +71,10 @@ export default function ChartContext(props: ChartContextProps) {
     let importing=true;
     try{
       const result=await Promise.race([Promise.resolve().then(async()=>{
-        abort.signal.throwIfAborted();const renderer=await loadModule(()=>import('../../lib/chart-context-card'));
-        abort.signal.throwIfAborted();importing=false;const card=await renderer.prepareChartContextCard(payload,abort.signal);
-        abort.signal.throwIfAborted();return {renderer,card};
+        abort.signal.throwIfAborted();const [renderer,lines]=await Promise.all([loadModule(()=>import('../../lib/chart-context-card')),imageLines(props,section,model)]);
+        abort.signal.throwIfAborted();importing=false;const payload:ChartContextCard={...card,lines};
+        const image=await renderer.prepareChartContextCard(payload,abort.signal);
+        abort.signal.throwIfAborted();return {renderer,card:image};
       }),stopped]);
       if(!owns(request,section))return;
       const url=URL.createObjectURL(result.card.blob);preview.current=url;

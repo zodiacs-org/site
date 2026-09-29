@@ -158,7 +158,7 @@ export default function LunarReturnActions({ model }: { model: LunarReturnExport
       </button>
       {(state.prepared || state.preparing) && <button class="btn btn--ghost" type="button" data-lr-close-image onClick={closeImage}>Close image</button>}
     </div>
-    <p class="field__help">The image includes this return chart and reading. The calendar marks its return instant. Names and birth details are omitted.</p>
+    <p class="field__help">The image shows this return chart and reading, with the return to the whole minute, the angles to the whole degree and no Placidus houses. The calendar marks the return to the whole minute. Names and birth details are left out.</p>
     {state.prepared && <>
       <img data-lr-image class="sr-result__image" src={state.prepared.url} width="1080" height="1350"
         style={{ display: 'block', width: '100%', maxWidth: '540px', height: 'auto' }}

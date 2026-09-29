@@ -11,11 +11,14 @@ import {
   type PreparedChartCard,
 } from '../lib/share-card';
 import { signBySlug, signName } from '../lib/signs';
+import { signIcon } from '../lib/sign-icon';
 
 interface Props {
   chart: Chart;
   locale?: Locale;
   moonAmbiguous?: boolean;
+  /** The civil birth date: the card of a chart without a birth time shows 12:00 UTC on it. */
+  birthDate?: string;
 }
 
 type ShareState = 'preparing' | 'idle' | 'busy' | 'saved' | 'error';
@@ -31,9 +34,8 @@ function SignDisc({ part, locale }: { part: ApproachPart; locale: Locale }) {
   return (
     <span class="calc__approach-sign" style={`--sign:${signBySlug(part.sign).hue}`}>
       <picture>
-        <source srcset={`/assets/zodiac-icons/48/${part.sign}.avif`} type="image/avif" />
         <img
-          src={`/assets/zodiac-icons/48/${part.sign}.webp`}
+          src={signIcon(48, part.sign)}
           width="36"
           height="36"
           alt=""
@@ -68,6 +70,7 @@ export default function ApproachRead({
   chart,
   locale = 'en',
   moonAmbiguous = false,
+  birthDate,
 }: Props) {
   const read = useMemo(
     () => approachRead(chart, { moonAmbiguous }),
@@ -87,6 +90,7 @@ export default function ApproachRead({
       variant: 'approach',
       locale,
       moonAmbiguous,
+      birthDate,
     }).then((prepared) => {
       if (!current) return;
       setPreparedCard(prepared);
@@ -96,7 +100,7 @@ export default function ApproachRead({
       if (current) setShareState('error');
     });
     return () => { current = false; };
-  }, [chart, locale, moonAmbiguous]);
+  }, [chart, locale, moonAmbiguous, birthDate]);
 
   function shareReading(): void {
     if (!preparedCard || shareState === 'preparing' || shareState === 'busy') return;
@@ -142,6 +146,7 @@ export default function ApproachRead({
           <span class="orb" aria-hidden="true">{shareState === 'saved' ? '✓' : '↗'}</span>
         </button>
       </header>
+      {!chart.input.timeKnown && <p class="field__help" data-card-no-time>Without a birth time, the image uses the sky at 12:00 UTC on your birth date, so on a day a planet changes sign it can show a different sign from this page.</p>}
       <p class="calc__approach-intro">
         A practical guide to making a good first move, saying things so they land, building trust,
         and keeping pressure from becoming conflict.

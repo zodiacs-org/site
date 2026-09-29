@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'preact/hooks';
 import type { City } from '../lib/geo/search';
 import { preloadIndex, searchCities } from '../lib/geo/search';
 import { SIGNS, signForLongitude, type Sign } from '../lib/signs';
+import { signIcon } from '../lib/sign-icon';
 import { prepareLocalTime, resolveLocalToUtc } from '../lib/time/localToUtc';
 import { WIDGET_EN, widgetSignName } from '../strings/widgets';
 
@@ -213,7 +214,7 @@ export default function MiniBirthChartWidget() {
         <section class="mini-chart__result" aria-live="polite">
           {placements.map((placement) => (
             <article key={placement.label}>
-              <img src={`/assets/zodiac-icons/48/${placement.sign.slug}.webp`} alt="" width="42" height="42" decoding="async" />
+              <img src={signIcon(48, placement.sign.slug)} alt="" width="42" height="42" decoding="async" />
               <div>
                 <small>{placement.label}</small>
                 <strong>{widgetSignName(placement.sign.slug)}</strong>

@@ -5,6 +5,7 @@ import { useProfileAccessGeneration } from '../../lib/hooks/useProfileAccessGene
 import type { SavedChart } from '../../lib/profile/schema';
 import type { InvitePublicPayload } from '../../lib/invite/types';
 import { rememberInviteLink } from '../../lib/invite/local-links';
+import { signIcon } from '../../lib/sign-icon';
 
 const COPY = {
   invTitle: 'Invite them to fill in their half.',
@@ -149,8 +150,7 @@ function formatExpiry(value: string): string {
 function PastelSign({ sign, size = 24 }: { sign: string; size?: number }) {
   return (
     <picture class="syn-invite__sign" aria-hidden="true">
-      <source srcset={`/assets/zodiac-icons/128/${sign}.avif`} type="image/avif" />
-      <img src={`/assets/zodiac-icons/128/${sign}.webp`} width={size} height={size} alt="" decoding="async" />
+      <img src={signIcon(128, sign)} width={size} height={size} alt="" decoding="async" />
     </picture>
   );
 }

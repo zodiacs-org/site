@@ -14,6 +14,10 @@ import {
 import { GUIDE_CLOUD_DISCLOSURE_POLICY_VERSION } from '../guide-server/policy';
 import { GUIDE_KNOWLEDGE_ENTRIES } from '../guide-knowledge/catalog';
 import { GUIDE_SHELL_URL, guideLoaderSource } from './guide-loader.mjs';
+import { computeBodies, computeChart } from '../engine/full';
+import { sharedTimedInstant } from '../share-positions-noon';
+import { degreeInSign, signForLongitude } from '../signs';
+import { prepareLocalTime, resolveLocalToUtc } from '../time/localToUtc';
 
 const ACCOUNT_ID = '11111111-1111-4111-8111-111111111111';
 const OLDER_ID = '22222222-2222-4222-8222-222222222222';
@@ -38,6 +42,7 @@ function profileJson({
           houseSystem: 'whole',
           bodies: [{ body: 'Sun', lon: 280, retrograde: false }],
           angles: { asc: 12, mc: 282 },
+          utcISO: '1980-01-01T12:00:00.000Z',
         },
       },
       {
@@ -64,6 +69,8 @@ function profileJson({
             { body: 'Mercury', lon: 355.25, retrograde: true },
           ],
           angles: { asc: 5, mc: 275 },
+          // 08:45 in Bangkok (UTC+7), or its noon without a birth time.
+          utcISO: timeKnown ? '1990-04-17T01:45:00.000Z' : '1990-04-17T05:00:00.000Z',
         },
       },
     ],
@@ -97,6 +104,7 @@ function polarProfileJson({ corrected = false, malformed = false } = {}) {
     place: { name: 'Polar fixture', lat: 78.2232, lon: 15.6267, tz: 'UTC' },
   };
   selected.summary.engineVersion = '0.1.0';
+  selected.summary.utcISO = '2001-12-21T09:00:00.000Z';
   selected.summary.angles = {
     asc: corrected ? 23.871984112302016 : 203.87198411230202,
     mc: 242.6868131443143,
@@ -113,7 +121,7 @@ describe('saved-chart assistant context', () => {
     expect(chart?.summary.angles?.asc).toBeCloseTo(23.871984112302016, 10);
     expect(chart?.summary.angles?.mc).toBe(242.6868131443143);
     const summary = await placementSummaryForChart(chart!);
-    expect(summary).toContain('ASC: 23°52′ Aries · house 1');
+    expect(summary).toContain('ASC: 23° Aries · house 1');
     expect(summary).toContain('Sun: 15°00′ Aries · house 1');
     expect(summary).not.toMatch(/Secret Person|2001-12-21|09:00|Polar fixture|78\.2232|15\.6267|UTC/);
     expect(selectedSelfChartFromJson(polarProfileJson(), ownerJson(), metadataJson([]))).toBeNull();
@@ -123,7 +131,7 @@ describe('saved-chart assistant context', () => {
   it('does not change an already-correct current polar summary', async () => {
     const chart = selfChart(polarProfileJson({ corrected: true }));
     expect(chart?.summary.angles?.asc).toBe(23.871984112302016);
-    expect(await placementSummaryForChart(chart!)).toContain('ASC: 23°52′ Aries · house 1');
+    expect(await placementSummaryForChart(chart!)).toContain('ASC: 23° Aries · house 1');
   });
 
   it('leaves unfamiliar legacy records to the existing context parser without inferring a repair', () => {
@@ -142,8 +150,8 @@ describe('saved-chart assistant context', () => {
       'Sun: 15°00′ Aries · house 1',
       'Moon: 5°30′ Cancer · house 4',
       'Mercury: 25°15′ Pisces · house 12 · retrograde',
-      'ASC: 5°00′ Aries · house 1',
-      'MC: 5°00′ Capricorn · house 10',
+      'ASC: 5° Aries · house 1',
+      'MC: 5° Capricorn · house 10',
     ].join('\n'));
     expect(summary).not.toMatch(/Secret Person|1990-04-17|08:45|Bangkok|13\.7563|100\.5018|Asia\/Bangkok/);
   });
@@ -163,19 +171,116 @@ describe('saved-chart assistant context', () => {
     )).toBeNull();
   });
 
-  it('omits angles and houses when birth time is unknown', async () => {
-    const chart = selfChart(profileJson({ timeKnown: false }));
-    const summary = await placementSummaryForChart(chart!);
-    expect(summary).toContain('Sun: 15°00′ Aries');
+  it('sends a chart without a birth time as the sky at 12:00 UTC on its date, without the Moon, angles or houses', async () => {
+    // The saved positions are noon in Bangkok, whose bodies to the arcminute
+    // would give the time zone; Guide gets noon UTC on the date instead.
+    const summary = (await placementSummaryForChart(selfChart(profileJson({ timeKnown: false }))!))!;
+    const arcminute = (lon: number) => {
+      const within = degreeInSign(lon);
+      return `${Math.floor(within)}°${String(Math.floor((within - Math.floor(within)) * 60 + 1e-7)).padStart(2, '0')}′ ${signForLongitude(lon).name}`;
+    };
+    const noonUtc = computeBodies(new Date('1990-04-17T12:00:00Z'));
+    expect(summary.split('\n')).toEqual([
+      'Tropical chart placements at 12:00 UTC on the birth date (birth time not known):',
+      ...noonUtc.map(({ body, lon, retrograde }) => (body === 'Moon'
+        ? 'Moon: sign not known without a birth time'
+        : `${body}: ${arcminute(lon)}${retrograde ? ' · retrograde' : ''}`)),
+    ]);
+    expect(summary).not.toContain('Sun: 15°00′ Aries');
     expect(summary).not.toMatch(/house|ASC:|MC:/);
+    // Nothing in it comes from the birthplace: another place on the date gives the same lines.
+    const elsewhere = JSON.parse(profileJson({ timeKnown: false }));
+    elsewhere.charts[1].birth.place = { name: 'Honolulu', country: 'US', lat: 21.31, lon: -157.86, tz: 'Pacific/Honolulu' };
+    elsewhere.charts[1].summary.bodies = [{ body: 'Sun', lon: 27.3, retrograde: false }];
+    expect(await placementSummaryForChart(selfChart(JSON.stringify(elsewhere))!)).toBe(summary);
   });
 
-  it('recomputes Placidus houses locally and still returns placements only', async () => {
+  it('sends a chart with a birth time as its link carries it, at its UTC instant rounded to the whole minute', async () => {
+    // Before standard time a chart keeps the birthplace's own mean time, so
+    // its instant has seconds (19:40:26 UTC here, from Rochester's
+    // longitude). The bodies at that instant, to the arcminute, fitted a
+    // window of about 104 s, which with a link's minute gave the birth to
+    // 14.5 s; Guide now sends the bodies at the minute, as the link does.
+    const birth = { date: '1870-06-15', time: '14:30', zone: 'America/New_York', lat: 43.1566, lon: -77.6088 };
+    await prepareLocalTime(birth.date, birth.zone);
+    const utc = resolveLocalToUtc(birth.date, birth.time, birth.zone, { longitude: birth.lon }).utc;
+    expect(utc.toISOString()).toBe('1870-06-15T19:40:26.000Z');
+    const minute = sharedTimedInstant(utc)!.getTime();
+    const chartAt = (ms: number) => {
+      const chart = computeChart({ utc: new Date(ms), latitude: birth.lat, longitude: birth.lon, houseSystem: 'whole', timeKnown: true });
+      const profile = JSON.parse(profileJson());
+      profile.charts[1].birth = { date: birth.date, time: birth.time, timeKnown: true,
+        place: { name: 'Rochester', country: 'US', lat: birth.lat, lon: birth.lon, tz: birth.zone } };
+      profile.charts[1].summary = {
+        houseSystem: 'whole', engineVersion: chart.engineVersion, utcISO: chart.input.utc.toISOString(),
+        bodies: chart.bodies.map(({ body, lon, retrograde }) => ({ body, lon, retrograde })),
+        angles: { asc: chart.angles!.asc, mc: chart.angles!.mc },
+      };
+      return { chart, stored: selfChart(JSON.stringify(profile))! };
+    };
+    // The bodies' lines alone: the angles' lines keep the whole degree of the chart's own angles.
+    const bodyLines = (summary: string | null) => summary!.split('\n').slice(1)
+      .filter((line) => !/^(?:ASC|MC):/u.test(line)).map((line) => line.replace(/ · house \d+/u, ''));
+    const arcminute = (lon: number) => {
+      const within = degreeInSign(lon);
+      return `${Math.floor(within)}°${String(Math.floor((within - Math.floor(within)) * 60 + 1e-7)).padStart(2, '0')}′ ${signForLongitude(lon).name}`;
+    };
+    const linkLines = computeBodies(new Date(minute))
+      .map(({ body, lon, retrograde }) => `${body}: ${arcminute(lon)}${retrograde ? ' · retrograde' : ''}`);
+    const sent = new Set<string>();
+    const exact = new Set<string>();
+    for (let ms = minute - 30_000; ms < minute + 30_000; ms += 500) {
+      const { chart, stored } = chartAt(ms);
+      const lines = bodyLines(await placementSummaryForChart(stored));
+      expect(lines).toEqual(linkLines);
+      sent.add(lines.join('\n'));
+      exact.add(chart.bodies.map(({ body, lon, retrograde }) => `${body}: ${arcminute(lon)}${retrograde ? ' · retrograde' : ''}`).join('\n'));
+    }
+    // Every instant in the minute sends the same lines; the exact instants' own lines differ.
+    expect(sent.size).toBe(1);
+    expect(exact.size).toBeGreaterThan(1);
+    // A chart already on a whole minute keeps its own bodies, and one without an instant sends nothing.
+    const { chart, stored } = chartAt(minute);
+    expect(bodyLines(await placementSummaryForChart(stored))).toEqual(linkLines);
+    expect(stored.summary.utcISO).toBe(chart.input.utc.toISOString());
+    const noInstant = JSON.parse(profileJson());
+    delete noInstant.charts[1].summary.utcISO;
+    expect(await placementSummaryForChart(selfChart(JSON.stringify(noInstant))!)).toBeNull();
+  });
+
+  it('asks consent for a chart without a birth time in words true of its noon-UTC lines, in every locale', async () => {
+    const source = await readFile(new URL('./open-assistant.ts', import.meta.url), 'utf8');
+    const noTime = [...source.matchAll(/consentBodyNoTime: '([^'\n]+)'/gu)].map((match) => match[1] ?? '');
+    expect(noTime).toHaveLength(5);
+    for (const body of noTime) {
+      expect(body).toContain('12:00 UTC');
+      expect(body).toContain('OpenAI');
+    }
+    expect(source).toContain('const body = chart.birth.timeKnown ? copy.consentBody : copy.consentBodyNoTime;');
+  });
+
+  it('gives a Placidus chart no house numbers, which would need the exact angles', async () => {
     const chart = selfChart(profileJson({ houseSystem: 'placidus' }));
     const summary = await placementSummaryForChart(chart!);
-    expect(summary).toMatch(/Sun: \d+°\d{2}′ [A-Z][a-z]+ · house \d+/);
-    expect(summary).toMatch(/ASC: .* · house 1/);
+    expect(summary).toBe([
+      'Tropical chart placements:',
+      'Sun: 15°00′ Aries',
+      'Moon: 5°30′ Cancer',
+      'Mercury: 25°15′ Pisces · retrograde',
+      'ASC: 5° Aries',
+      'MC: 5° Capricorn',
+    ].join('\n'));
     expect(summary).not.toMatch(/Secret Person|1990-04-17|08:45|Bangkok|13\.7563|100\.5018|Asia\/Bangkok/);
+  });
+
+  it('sends the ascendant and midheaven only to the whole degree, as a shared chart code does', async () => {
+    // 23.871984° and 242.686813° would be 23°52′ Aries and 2°41′ Sagittarius to the arcminute.
+    const summary = (await placementSummaryForChart(selfChart(polarProfileJson({ corrected: true }))!))!;
+    expect(summary).toContain('ASC: 23° Aries');
+    expect(summary).toContain('MC: 2° Sagittarius');
+    expect(summary).not.toMatch(/(?:ASC|MC): \d+°\d{2}′/);
+    // The bodies keep the arcminute, which gives the birth date and time.
+    expect(summary).toMatch(/Sun: 15°00′ Aries/);
   });
 });
 

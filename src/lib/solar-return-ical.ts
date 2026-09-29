@@ -24,6 +24,10 @@ function returnInstant(value: string): Date {
   return instant;
 }
 
+function wholeMinute(instant: Date): Date {
+  return new Date(Math.round(instant.getTime() / 60_000) * 60_000);
+}
+
 export function solarReturnCalendarFilename(model: SolarReturnExportModel): string {
   return `zodiacs-${model.noTime ? 'approximate-' : ''}solar-return-${returnYear(model)}.ics`;
 }
@@ -34,12 +38,14 @@ export function buildSolarReturnCalendar(
   generatedAt: Date | string,
 ): string {
   const year = returnYear(model);
-  const instant = returnInstant(model.instantUtc);
+  // The marker is the return to the whole minute, as its image prints it: to
+  // the second, the return gives the birth instant to about a second, and
+  // before standard time the birthplace's longitude. Re-export and
+  // relocation preserve the same UID.
+  const instant = wholeMinute(returnInstant(model.instantUtc));
   const dtstamp = formatIcalUtc(generatedAt);
   if (!/^\d{8}T\d{6}Z$/.test(dtstamp)) throw new RangeError('Invalid UTC calendar receipt time.');
   const title = model.noTime ? 'Approximate solar return' : 'Solar return';
-  // Keep milliseconds in the stable identity even though RFC 5545 DTSTART
-  // carries whole seconds. Re-export and relocation preserve the same UID.
   const uidInstant = instant.toISOString().replace(/[-:.]/g, '');
   const description = [
     'Calendar marker — the one-minute duration is for display only, not a duration of the solar return.',

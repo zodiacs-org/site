@@ -1,0 +1,13 @@
+cff-version: 1.2.0
+message: "If you refer to this site's methods or records, please cite it as below. The chart engine has its own citation in zodiacs-org/engine."
+type: software
+title: "zodiacs.org"
+authors:
+  - name: "Zodiacs.org"
+    website: "https://zodiacs.org"
+url: "https://zodiacs.org"
+repository-code: "https://github.com/zodiacs-org/site"
+keywords:
+  - astrology
+  - natal chart
+  - ephemeris

@@ -11,8 +11,14 @@
  * and keeping the fragment compact.
  *
  * A code that leaves the device (a chart link, the transit calendar feed, a
- * two-chart link, an invitation) is made with encodeSharedPositionsLink,
- * which keeps ASC and MC only to the whole degree. See wholeDegreeAngle.
+ * two-chart link, an invitation, a chart card) is made with
+ * encodeSharedPositionsLink, which keeps ASC and MC only to the whole degree
+ * (see wholeDegreeAngle). Its bodies are those at the chart's UTC instant
+ * rounded to the whole minute; a chart without a birth time has no angles,
+ * and its code carries the sky at 12:00 UTC on the birth date instead of the
+ * chart's own positions (see share-positions-noon.ts).
+ * share-positions-callers.test.ts holds every producer of a shared code to
+ * these rules.
  */
 import type {
   Angles, BodyName, BodyPosition, HouseSystem,
@@ -153,11 +159,19 @@ export function encodePositionsLink(input: PositionsShareInput): string | null {
 /**
  * The middle of the whole degree an angle falls in: 123.456° becomes 123.5°.
  * The sign and the whole degree stay as they were, and the error is at most
- * 0.5°. ASC and MC are the only values in a positions code that depend on
- * where the birth took place; the planets, the Moon and the nodes do not, and
- * they stay at 0.001°, so the birth date and time can still be worked out
- * from a shared code. share-positions.test.ts measures the region the rounded
- * angles leave for the birthplace.
+ * 0.5°. In the code of a chart with a birth time, ASC and MC depend on where
+ * the birth took place. The planets, the Moon and the nodes stay at 0.001°,
+ * so the birth date and time can still be worked out from a shared code, to
+ * the minute: they are taken at the chart's UTC instant rounded to the whole
+ * minute (sharedTimedInstant), because before standard time the instant
+ * itself depends on the place, and its seconds would give the birthplace's
+ * longitude to within strips about 3 km wide. share-positions.test.ts
+ * measures the region the rounded angles leave for the birthplace at every
+ * latitude the place index reaches, and that the seconds are gone.
+ *
+ * A chart without a birth time is computed at 12:00 at the birthplace, an
+ * instant that depends on the place, so its own positions are never shared
+ * (see share-positions-noon.ts).
  */
 export function wholeDegreeAngle(longitude: number): number {
   return typeof longitude === 'number' ? Math.floor(longitude) + 0.5 : Number.NaN;
@@ -172,7 +186,9 @@ export function wholeDegreeAngles(
 /**
  * encodePositionsLink with ASC and MC at the whole degree. Every code that
  * leaves the device is made here; encodePositionsLink alone stays exact for
- * the charts a person keeps for themselves.
+ * the charts a person keeps for themselves. The input must already carry
+ * timedSharedPositions or untimedSharedPositions (share-positions-noon.ts),
+ * or be a code that was received and is passed on unchanged.
  */
 export function encodeSharedPositionsLink(input: PositionsShareInput): string | null {
   if (typeof input !== 'object' || input === null) return null;

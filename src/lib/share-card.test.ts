@@ -1,3 +1,4 @@
+import { readdirSync, readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   CHART_SHEET_LAYOUT,
@@ -23,8 +24,22 @@ import {
   shareCardTimeNotes,
   signatureCardContent,
   savePreparedChartCard,
+  CHART_SHEET_ASPECT_SCOPE_NO_MOON,
+  cardDegreeText,
+  chartSheetContent,
+  imageChart,
+  imagePositions,
+  prepareChartCard,
+  timedImageChart,
+  untimedMoonSign,
+  wholeMinuteInstant,
 } from './share-card';
 import type { Chart } from './engine/types';
+import { bodyLongitude, computeBodies, computeChart } from './engine/full';
+import { signForLongitude } from './signs';
+import { decodePositionsLink, encodeSharedPositionsLink, wholeDegreeAngle } from './share-positions';
+import { sharedTimedInstant, timedSharedPositions } from './share-positions-noon';
+import { prepareLocalTime, resolveLocalToUtc } from './time/localToUtc';
 
 const CHART = { engineVersion: '1.0.0' } as Chart;
 
@@ -396,5 +411,317 @@ describe('share-card content', () => {
     expect(content.rows.map(({ body }) => body)).toEqual(['Mercury', 'Moon']);
     expect(content.notes).toEqual(['Birth time would add my Rising sign.', 'My Moon may change signs without an exact birth time.']);
     expect(content.rows.find(({ body }) => body === 'Moon')?.sign).toBe('Needs a birth time');
+  });
+});
+
+/*
+ * What a chart image shows while birth details are hidden. The chart sheet
+ * printed "Birth details hidden" while drawing ASC, DSC, MC and IC to the
+ * arcminute, Placidus house numbers and, for a chart without a birth time,
+ * the Moon's aspects with their orbs to the arcminute: with a birth time that
+ * put the birthplace in a box a few kilometres across, and without one the
+ * orbs gave the instant of noon at the birthplace to within a minute, and so
+ * its time zone or longitude. These check the data the renderer draws.
+ */
+describe('a chart image with birth details hidden', () => {
+  const minutes = /\d{2}°\d{2}′/u;
+  const timed = (houseSystem: 'whole' | 'placidus') => computeChart({
+    utc: new Date('1987-03-14T05:42:00Z'), latitude: 45.764, longitude: 4.8357, houseSystem, timeKnown: true,
+  });
+
+  it('draws the angles only to the whole degree, as the link carries them, and leaves out Placidus houses', () => {
+    const chart = timed('placidus');
+    const drawn = timedImageChart(chart);
+    // The wheel turns on these, and they are the link's own angles.
+    const link = decodePositionsLink(encodeSharedPositionsLink({
+      bodies: chart.bodies, angles: chart.angles, houseSystem: 'placidus', engineVersion: chart.engineVersion,
+    })!)!;
+    expect({ asc: drawn.angles!.asc, mc: drawn.angles!.mc }).toEqual(link.angles);
+    expect(drawn.angles!.dsc).toBe((link.angles!.asc + 180) % 360);
+    expect(drawn.angles!.ic).toBe((link.angles!.mc + 180) % 360);
+    expect(drawn.houses).toBeNull();
+    expect(drawn.input.latitude).toBeUndefined();
+    expect(drawn.input.longitude).toBeUndefined();
+    expect(drawn.bodies).toBe(chart.bodies);
+
+    const content = chartSheetContent(drawn, { hideBirthDetails: true, housesLeftOut: true });
+    expect(content.provenance).toEqual(['Birth details hidden']);
+    const angleRows = content.rows.filter((row) => ['ASC', 'DSC', 'MC', 'IC'].includes(row.body));
+    expect(angleRows.map((row) => row.text)).toEqual(['ASC', 'DSC', 'MC', 'IC'].map((label) => {
+      const lon = chart.angles![label.toLowerCase() as 'asc' | 'dsc' | 'mc' | 'ic'];
+      const within = Math.floor(lon % 30);
+      return `${['Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo', 'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'][Math.floor(lon / 30)]} ${String(within).padStart(2, '0')}°`;
+    }));
+    for (const row of angleRows) expect(row.text).not.toMatch(minutes);
+    expect(content.rows.every((row) => row.house === null)).toBe(true);
+    expect(content.settings).toBe('Apparent geocentric · Tropical of date · Placidus houses left out · True Node');
+    // The bodies keep the arcminute, which gives the birth date and time, as the link does.
+    expect(content.rows.find((row) => row.body === 'Moon')!.text).toMatch(minutes);
+
+    // With birth details shown the sheet stays exact, with its Placidus houses.
+    const shown = chartSheetContent(chart, { hideBirthDetails: false });
+    expect(shown.rows.find((row) => row.body === 'ASC')!.text).toMatch(minutes);
+    expect(shown.rows.every((row) => row.house !== null)).toBe(true);
+  });
+
+  /*
+   * Before standard time a chart keeps the birthplace's own mean time, so its
+   * UTC instant has seconds that are the longitude's (four minutes of time per
+   * degree). The sheet drew the bodies at that instant: the rows to the
+   * arcminute with the aspect orbs gave the seconds to 8 to 30 s, and a blind
+   * solver then put the birthplace in strips 2.4 to 10 km wide (Buffalo,
+   * Brest, Kathmandu). It now draws them at the whole minute, as the link does.
+   */
+  const preStandardTime = [
+    { place: 'Buffalo', date: '1870-06-15', time: '14:30', zone: 'America/New_York', lat: 42.8864, lon: -78.8784 },
+    { place: 'Rochester', date: '1870-06-15', time: '14:30', zone: 'America/New_York', lat: 43.1566, lon: -77.6088 },
+    { place: 'Omaha', date: '1880-03-02', time: '07:05', zone: 'America/Chicago', lat: 41.2565, lon: -95.9345 },
+    { place: 'Brest', date: '1880-10-20', time: '21:47', zone: 'Europe/Paris', lat: 48.3904, lon: -4.4861 },
+    { place: 'Riyadh', date: '1946-05-10', time: '09:10', zone: 'Asia/Riyadh', lat: 24.6877, lon: 46.7219 },
+    { place: 'Kathmandu', date: '1915-01-20', time: '16:20', zone: 'Asia/Kathmandu', lat: 27.7172, lon: 85.324 },
+    { place: 'Coyoacán', date: '1907-07-06', time: '08:30', zone: 'America/Mexico_City', lat: 19.3467, lon: -99.1617 },
+  ];
+  const angleRows = new Set(['ASC', 'DSC', 'MC', 'IC']);
+
+  it('draws a chart with a birth time at its whole UTC minute: the same sheet for every instant that rounds to it', async () => {
+    for (const birth of preStandardTime) {
+      await prepareLocalTime(birth.date, birth.zone);
+      const resolved = resolveLocalToUtc(birth.date, birth.time, birth.zone, { longitude: birth.lon });
+      const minute = wholeMinuteInstant(resolved.utc);
+      expect(minute).toEqual(sharedTimedInstant(resolved.utc));
+      const chartAt = (ms: number) => computeChart({
+        utc: new Date(ms), latitude: birth.lat, longitude: birth.lon, houseSystem: 'whole', timeKnown: true, flags: resolved.flags,
+      });
+      // What the sheet draws besides the angles, which are the chart's own at the whole degree.
+      const drawnAt = async (ms: number) => {
+        const drawn = await imageChart(chartAt(ms));
+        const content = chartSheetContent(drawn, { hideBirthDetails: true });
+        return {
+          drawn,
+          text: JSON.stringify({ ...content, rows: content.rows.filter((row) => !angleRows.has(row.body)) }),
+        };
+      };
+      const reference = await drawnAt(minute.getTime());
+      for (let offset = -30_000; offset < 30_000; offset += 2_500) {
+        const at = await drawnAt(minute.getTime() + offset);
+        expect(at.text, `${birth.place} ${offset / 1000} s`).toBe(reference.text);
+        expect(at.drawn.bodies).toEqual(reference.drawn.bodies);
+        expect(at.drawn.aspects).toEqual(reference.drawn.aspects);
+        expect(at.drawn.input.utc).toEqual(minute);
+      }
+      // The true instant draws what its link carries: the bodies at the whole
+      // minute, and the chart's own angles at the middle of the whole degree.
+      const truth = chartAt(resolved.utc.getTime());
+      const drawn = await imageChart(truth);
+      const link = decodePositionsLink(encodeSharedPositionsLink(timedSharedPositions({
+        bodies: truth.bodies, angles: truth.angles, houseSystem: 'whole', engineVersion: truth.engineVersion,
+      }, resolved.utc, computeBodies)!)!)!;
+      expect({ asc: drawn.angles!.asc, mc: drawn.angles!.mc }).toEqual(link.angles);
+      for (const row of link.bodies) {
+        const lon = drawn.bodies.find((body) => body.body === row.body)!.lon;
+        expect(Math.abs(((row.lon - lon + 540) % 360) - 180)).toBeLessThanOrEqual(0.0005 + 1e-9);
+      }
+    }
+  }, 120_000);
+
+  it('leaves a solver of the sheet at least the whole minute, so no strip of longitude', async () => {
+    for (const birth of preStandardTime.filter(({ place }) => ['Buffalo', 'Brest', 'Kathmandu'].includes(place))) {
+      await prepareLocalTime(birth.date, birth.zone);
+      const resolved = resolveLocalToUtc(birth.date, birth.time, birth.zone, { longitude: birth.lon });
+      // A solver sees only the drawn bodies and aspects, which no longer depend on the place.
+      const sheet = async (ms: number) => {
+        const content = chartSheetContent(await imageChart(computeChart({
+          utc: new Date(ms), latitude: 0, longitude: 0, houseSystem: 'whole', timeKnown: true,
+        })), { hideBirthDetails: true });
+        return JSON.stringify([content.rows.filter((row) => !angleRows.has(row.body)), content.cells]);
+      };
+      const target = await sheet(resolved.utc.getTime());
+      const minute = wholeMinuteInstant(resolved.utc).getTime();
+      const matching: number[] = [];
+      for (let offset = -45; offset < 45; offset += 1) {
+        if (await sheet(minute + offset * 1000) === target) matching.push(offset);
+      }
+      // Every instant that rounds to the birth's minute matches, a full 60 s:
+      // before standard time the birth could be at any longitude's seconds.
+      expect(matching.filter((offset) => offset >= -30 && offset < 30).length, birth.place).toBe(60);
+    }
+  }, 120_000);
+
+  it('rounds every angle the way the link does, at the edges of signs and of the zodiac too', () => {
+    for (const lon of [0, 0.0004, 29.999, 30, 123.456, 359.4, 359.9996]) {
+      const chart = { ...timed('whole'), angles: { asc: lon, mc: lon, dsc: 0, ic: 0 } };
+      expect(timedImageChart(chart).angles).toMatchObject({ asc: wholeDegreeAngle(lon), mc: wholeDegreeAngle(lon) });
+    }
+  });
+
+  it('keeps whole-sign houses, which follow from the ascendant’s sign', () => {
+    const chart = timed('whole');
+    const drawn = timedImageChart(chart);
+    expect(drawn.houses).toEqual(chart.houses);
+    const hidden = chartSheetContent(drawn, { hideBirthDetails: true });
+    const shown = chartSheetContent(chart, { hideBirthDetails: false });
+    expect(hidden.rows.map((row) => row.house)).toEqual(shown.rows.map((row) => row.house));
+    expect(hidden.settings).toContain('Whole sign houses');
+  });
+
+  it('draws a chart without a birth time as the sky at 12:00 UTC on its date: the same image for every birthplace', async () => {
+    const births = [
+      { date: '1870-06-15', zone: 'America/New_York', lat: 42.89, lon: -78.88 },
+      { date: '1870-06-15', zone: 'America/New_York', lat: 40.71, lon: -74.01 },
+      { date: '1870-06-15', zone: 'Europe/Paris', lat: 48.39, lon: -4.49 },
+      { date: '2000-04-11', zone: 'Asia/Kathmandu', lat: 27.72, lon: 85.32 },
+      { date: '2000-04-11', zone: 'Australia/Adelaide', lat: -34.93, lon: 138.6 },
+      { date: '2000-04-11', zone: 'Pacific/Pago_Pago', lat: -14.28, lon: -170.7 },
+    ];
+    const byDate = new Map<string, Set<string>>();
+    const own = new Set<string>();
+    for (const birth of births) {
+      await prepareLocalTime(birth.date, birth.zone);
+      const resolved = resolveLocalToUtc(birth.date, '12:00', birth.zone, { longitude: birth.lon });
+      // As the calculator makes it: noon at the birthplace, the Moon's sign unknown.
+      const chart = {
+        ...computeChart({
+          utc: resolved.utc, latitude: birth.lat, longitude: birth.lon,
+          houseSystem: 'placidus', timeKnown: false, flags: resolved.flags,
+        }),
+        moonSignCandidates: [],
+      };
+      own.add(JSON.stringify(chartSheetContent(chart, { hideBirthDetails: true, moonAmbiguous: true })));
+      const drawn = await imageChart(chart, birth.date);
+      expect(drawn.input.utc.toISOString()).toBe(`${birth.date}T12:00:00.000Z`);
+      expect(drawn.angles).toBeNull();
+      expect(drawn.houses).toBeNull();
+      expect(drawn.aspects.some((aspect) => aspect.a === 'Moon' || aspect.b === 'Moon')).toBe(false);
+      const content = chartSheetContent(drawn, { hideBirthDetails: true, moonAmbiguous: true });
+      expect(content.cells.some((cell) => cell.row === 'Moon' || cell.column === 'Moon')).toBe(false);
+      expect(content.rows.find((row) => row.body === 'Moon')!.text).not.toMatch(minutes);
+      expect(content.aspectScope).toBe(CHART_SHEET_ASPECT_SCOPE_NO_MOON);
+      expect(content.settings).toBe('Reference positions at 12:00 UTC · Apparent geocentric · Tropical of date · No houses · True Node');
+      // Everything the sheet and its wheel draw, keyed by date alone.
+      const image = JSON.stringify({ content, bodies: drawn.bodies, aspects: drawn.aspects });
+      if (!byDate.has(birth.date)) byDate.set(birth.date, new Set());
+      byDate.get(birth.date)!.add(image);
+    }
+    expect([...byDate.values()].map((images) => images.size)).toEqual([1, 1]);
+    // The chart's own noon at each birthplace drew a different sheet for each.
+    expect(own.size).toBe(births.length);
+    const chart = { ...timed('whole'), input: { ...timed('whole').input, timeKnown: false }, angles: null, houses: null };
+    await expect(imageChart(chart)).rejects.toThrow('birth date');
+    await expect(imageChart(chart, '2000-02-30')).rejects.toThrow('birth date');
+  });
+
+  it('draws the reading cards of a chart without a birth time from the same noon UTC sky', async () => {
+    // They name only signs, but a sign can depend on when noon fell at the
+    // birthplace: Mercury entered Scorpio at about 13:30 UTC on 28 September
+    // 2000, after noon in Kathmandu (06:15 UTC) and before noon in Pago Pago
+    // (23:00 UTC).
+    const date = '2000-09-28';
+    const own = new Set<string>();
+    const drawn = new Set<string>();
+    for (const birth of [
+      { zone: 'Asia/Kathmandu', lat: 27.72, lon: 85.32 },
+      { zone: 'Pacific/Pago_Pago', lat: -14.28, lon: -170.7 },
+    ]) {
+      await prepareLocalTime(date, birth.zone);
+      const resolved = resolveLocalToUtc(date, '12:00', birth.zone, { longitude: birth.lon });
+      const chart = {
+        ...computeChart({
+          utc: resolved.utc, latitude: birth.lat, longitude: birth.lon,
+          houseSystem: 'whole', timeKnown: false, flags: resolved.flags,
+        }),
+        moonSignCandidates: [],
+      };
+      own.add(JSON.stringify([communicationCardContent(chart), approachCardContent(chart)]));
+      const image = await imageChart(chart, date);
+      drawn.add(JSON.stringify([communicationCardContent(image), approachCardContent(image)]));
+      // prepareChartCard draws both from imageChart: without the date it stops before drawing.
+      for (const variant of ['communication', 'approach'] as const) {
+        await expect(prepareChartCard(chart, { variant })).rejects.toThrow('birth date');
+      }
+    }
+    expect(own.size).toBe(2);
+    expect(drawn.size).toBe(1);
+    const [communication] = JSON.parse([...drawn][0]);
+    expect(communication.rows.map(({ body, sign }: { body: string; sign: string }) => [body, sign]))
+      .toEqual([['Mercury', 'Libra'], ['Moon', 'Needs a birth time'], ['Mars', 'Virgo']]);
+  });
+
+  it('names the Moon’s sign on a card without a birth time only when it held all that date in every time zone', async () => {
+    let settled = 0;
+    for (let day = 1; day <= 30; day += 1) {
+      const date = `2000-04-${String(day).padStart(2, '0')}`;
+      // Every hour from 00:00 at UTC+14 to 24:00 at UTC−12, the whole date anywhere.
+      const start = Date.parse(`${date}T00:00:00Z`) - 14 * 3_600_000;
+      const signs = new Set<string>();
+      for (let hour = 0; hour <= 50; hour += 1) {
+        signs.add(signForLongitude(bodyLongitude('Moon', new Date(Math.min(start + hour * 3_600_000, start + 50 * 3_600_000 - 1)))).slug);
+      }
+      const expected = signs.size === 1 ? [...signs][0] : null;
+      expect(await untimedMoonSign(date), date).toBe(expected);
+      if (expected) settled += 1;
+    }
+    // A sign lasts about two and a half days, so some dates hold one and most do not.
+    expect(settled).toBeGreaterThan(0);
+    expect(settled).toBeLessThan(15);
+    expect(await untimedMoonSign('2000-02-30')).toBeNull();
+    expect(await untimedMoonSign()).toBeNull();
+  });
+
+  it('checks the Moon over a span that holds every date, save in Alaska before 1867 and the Philippines and Micronesia before 1845', async () => {
+    // The span is 00:00 at UTC+14 to 24:00 at UTC−12. The pinned time zone
+    // history keeps offsets outside it only for dates kept on the other side
+    // of the date line, all before 1868.
+    const outside: string[] = [];
+    const directory = new URL('../data/tz-history/2025c/', import.meta.url);
+    for (const file of readdirSync(directory).filter((name) => name !== 'excluded.json')) {
+      const { zones } = JSON.parse(readFileSync(new URL(file, directory), 'utf8')) as {
+        zones: Record<string, { t: number[]; o: number[] }>;
+      };
+      for (const [zone, { t, o }] of Object.entries(zones)) {
+        o.forEach((offset, era) => {
+          if (offset <= 14 * 3600 && offset >= -12 * 3600) return;
+          const until = t[era] === undefined ? 'now' : new Date(t[era] * 1000).toISOString().slice(0, 10);
+          outside.push(`${zone} until ${until}`);
+        });
+      }
+    }
+    expect(outside.sort()).toEqual([
+      'America/Anchorage until 1867-10-19', 'America/Juneau until 1867-10-19', 'America/Metlakatla until 1867-10-19',
+      'America/Sitka until 1867-10-19', 'America/Yakutat until 1867-10-19',
+      'Asia/Manila until 1844-12-31',
+      'Pacific/Chuuk until 1844-12-31', 'Pacific/Guam until 1844-12-31', 'Pacific/Kosrae until 1844-12-31',
+      'Pacific/Palau until 1844-12-31', 'Pacific/Pohnpei until 1844-12-31', 'Pacific/Ponape until 1844-12-31',
+      'Pacific/Saipan until 1844-12-31', 'Pacific/Truk until 1844-12-31', 'Pacific/Yap until 1844-12-31',
+      'US/Alaska until 1867-10-19',
+    ]);
+    // The site uses them: a date in Juneau in 1850 began an hour before the
+    // span, and one in Manila in 1840 ended almost four hours after it.
+    const hoursFromNoon = async (date: string, time: string, zone: string, longitude: number) => {
+      await prepareLocalTime(date, zone);
+      return (resolveLocalToUtc(date, time, zone, { longitude }).utc.getTime() - Date.parse(`${date}T12:00:00Z`)) / 3_600_000;
+    };
+    expect(await hoursFromNoon('1850-01-01', '00:00', 'America/Juneau', -134.42)).toBeCloseTo(-27.04, 2);
+    expect(await hoursFromNoon('1840-01-01', '00:00', 'Asia/Manila', 120.98) + 24).toBeCloseTo(27.9, 1);
+    // Since then every date falls inside it.
+    expect(await hoursFromNoon('2000-01-01', '00:00', 'Pacific/Kiritimati', -157.4)).toBe(-26);
+    expect(await hoursFromNoon('2000-01-01', '23:59', 'Pacific/Pago_Pago', -170.7)).toBeLessThan(24);
+  });
+
+  it('gives the Big Three and placement cards the rising sign’s whole degree, and a chart without a birth time noon UTC', async () => {
+    const chart = timed('placidus');
+    const positions = await imagePositions({ bodies: chart.bodies, angles: chart.angles, engineVersion: chart.engineVersion });
+    expect(positions.angles).toEqual({ asc: Math.floor(chart.angles!.asc) + 0.5, mc: Math.floor(chart.angles!.mc) + 0.5 });
+    const rising = bigThreePlacements(positions).find((placement) => placement.kind === 'rising')!;
+    expect(cardDegreeText('rising', rising.degree)).toBe(`${Math.floor(chart.angles!.asc % 30)}°`);
+    expect(cardDegreeText('sun', 12.345)).toBe('12.3°');
+    const untimed = await imagePositions({ bodies: chart.bodies, angles: null, engineVersion: chart.engineVersion }, '2000-04-11');
+    expect(untimed.bodies).toEqual(computeBodies(new Date('2000-04-11T12:00:00Z')));
+    expect(untimed.moonSignCandidates).toEqual([]);
+    await expect(imagePositions({ bodies: chart.bodies, angles: null, engineVersion: chart.engineVersion })).rejects.toThrow('birth date');
+    // A chart that brings an instant with seconds is drawn at the whole minute; the full chart brings its own.
+    const lmt = computeChart({ utc: new Date('1870-06-15T19:45:31Z'), latitude: 42.89, longitude: -78.88, houseSystem: 'whole', timeKnown: true });
+    const atMinute = computeBodies(new Date('1870-06-15T19:46:00Z'));
+    expect((await imagePositions(lmt)).bodies).toEqual(atMinute);
+    expect((await imagePositions({ bodies: lmt.bodies, angles: lmt.angles, engineVersion: lmt.engineVersion, utc: lmt.input.utc })).bodies).toEqual(atMinute);
   });
 });

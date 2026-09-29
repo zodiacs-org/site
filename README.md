@@ -1,73 +1,61 @@
 # zodiacs.org
 
-Official website repository for Zodiacs.org — a free astrology platform
-(Learn / Tools / Collect) with the original token registry preserved as the
-site's collector's wing.
+The source of [zodiacs.org](https://zodiacs.org): a free astrology site with
+guides, calculators that compute charts in the visitor's browser, and a
+developer section. The site also keeps the Registry (Astrofolio), its record
+of the Zodiacs collection, as a separate wing with its own pages.
 
-Live site: https://zodiacs.org · Strategy: [`docs/STRATEGY.md`](docs/STRATEGY.md)
+Production deploys from `main` through Vercel as a static Astro build, with a
+few serverless functions under `api/`.
 
-Production deploys from the `main` branch through Vercel (Astro static build).
+This repository is public so that its work can be read and checked. It is not
+open source: all rights are reserved (see [LICENSE](LICENSE)).
 
-## The two wings
+## What is where
 
-- **New site (Astro)** — everything in `src/`: homepage, 12 sign guides at
-  `/{sign}/`, calculators (`/birth-chart/`, `/moon-sign/`, `/rising-sign/`),
-  learn pages, and the local-first cosmic profile. Dark "Cosmic Void" design
-  system, Instrument Sans + JetBrains Mono, the pastel SDK sign icons as the
-  core visual language. No token/market language on these surfaces.
-- **Legacy wing (`public/`)** — the registry experience, served verbatim at
-  its historical URLs: `/registry/` (the original registry landing),
-  `/registry/{sign}/` (catalogue pages), `/thesis/`, `/archive/`, `/sdk/`, and
-  the discovery ring. Warm Gilt museum aesthetic, unchanged.
-
-## Repository structure
-
-- `src/pages/` — Astro routes (homepage, guides, calculators, profile, sitemap)
-- `src/lib/engine/` — client-side chart engine (astronomy-engine + in-house
-  houses/aspects; `engine/full.ts` is the only module importing the ephemeris)
-- `src/content/guides/` — the 12 sign guides (MDX, zod-validated)
-- `src/styles/tokens.css` — the Cosmic Void design tokens
-- `src/app.jsx` — source for the legacy registry SPA served at `/registry/`
-- `public/` — the legacy wing + root artifacts, shipped byte-verbatim
-- `scripts/` — wing generators + data pipelines (see below)
-- `docs/STRATEGY.md` — product/UX/SEO/technical strategy
-
-## Generated output (edit sources, then regenerate and commit both)
-
-| Output | Generator | Source |
-| --- | --- | --- |
-| `public/registry/{sign}/index.html` | `npm run legacy:signs` | `scripts/sign-data.mjs` + registry JSON |
-| `public/archive/` + feeds | `npm run legacy:archive` | `scripts/archive-data.mjs` |
-| `public/assets/app.js` | `npm run legacy:app` | `src/app.jsx` |
-| `public/assets/og/*.png` | `npm run legacy:og` | registry + artwork (Playwright) |
-| `public/assets/zodiac-icons/{48,128,400}/` | `npm run data:icons` | `public/assets/sdk/zodiac-icons/circle/` |
-| `public/data/cities/` | `npm run data:cities` | GeoNames (CC-BY 4.0) |
-| `src/data/sky.json` | `npm run data:sky` | astronomy-engine |
-| `public/assets/pulse.json`, `distribution.json` | weekly cron workflows | Wikimedia / Solana RPC |
-
-CI (`site-check`) builds the Astro site, runs the engine accuracy vectors,
-checks every link in `dist/`, and re-runs the wing generators failing on any
-drift — commit regenerated output together with the source edit.
+- **The astrology site** is everything Astro builds from `src/`: the sign
+  guides, the Learn pages, the calculators (`/birth-chart/`, `/moon-sign/`,
+  `/rising-sign/` and others), the daily pages and the developer pages under
+  `/developers/`. Charts are computed on the visitor's device by
+  [`@zodiacs/engine`](https://github.com/zodiacs-org/engine), which the site
+  vendors as a digest-pinned archive in `vendor/`.
+- **The Registry wing** is the static pages in `public/registry/`,
+  `public/thesis/`, `public/archive/` and `public/sdk/`, plus the wing routes
+  under `src/pages/registry/`, `src/pages/terminal/` and `src/pages/fomo/`. It
+  keeps its own register; `CLAUDE.md` gives the boundary between the two, and
+  CI enforces it.
+- **Records** of how the site and its engine are checked are in `docs/`:
+  `docs/platform/programme/` (the programme's acceptance ledger and status),
+  `docs/platform/evidence/` (measurements), and `docs/claims/ledger.json` (the
+  evidence behind every accuracy, time and privacy sentence on the site).
 
 ## Development
 
 ```bash
-npm install
+npm ci
 npm run dev        # Astro dev server
-npm run build      # static build to dist/
-npm run check      # astro check (types)
-npm test           # engine accuracy vectors (vitest)
-node scripts/check-dist.mjs   # link/artifact integrity over dist/
+npm run build      # static build to dist/ (runs the generators' checks first)
+npm run check      # consumer boundary, footer and astro check
+npm test           # vitest
+node scripts/check-dist.mjs   # link and artifact integrity over dist/
 ```
 
-## Safety posture
+Several files are generated; `CLAUDE.md` lists each with its generator. Edit
+the source, run the generator, and commit both: CI regenerates them and fails
+on any difference.
 
-The registry wing stays read-only infrastructure: no custody, signing, or
-transaction submission happens on Zodiacs.org. Acquisition links on catalogue
-pages route to third-party venues and are framed as access, never as
-recommendations. Crypto/market language never appears outside the wing —
-CI enforces this.
+## Privacy
 
-Birth data entered into the calculators is computed entirely client-side and
-never leaves the visitor's device; saved charts live in the browser's local
-storage. Place search data: GeoNames.org (CC BY 4.0).
+Birth details entered in the calculators are computed on the visitor's device.
+What the site does send, and when, is described on
+[the privacy page](https://zodiacs.org/privacy/).
+
+## Licence
+
+All rights reserved; see [LICENSE](LICENSE), which also lists the parts that
+come with their own terms: the MIT-licensed chart engine, the CC BY 4.0 sky
+data and GeoNames place data, and third-party packages.
+
+[CONTRIBUTING.md](CONTRIBUTING.md) says what kinds of report are welcome,
+[SECURITY.md](SECURITY.md) how to report a security problem, and
+[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) the rules for taking part.
