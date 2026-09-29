@@ -8,6 +8,12 @@ const sourceRoot = `${candidate.sourceRepository}/blob/${candidate.sourceCommit}
 // rc.3 to rc.6; rc.7's second conventions set is in the candidate changelog.
 const receiptSpec = 'https://github.com/zodiacs-org/sdk/blob/fb57af7a2cd7c30983cc8fb655183d5a11f9cf30/docs/platform/receipt-draft-v1.md';
 const evidenceUrl = (path: string) => `${candidate.evidenceRepository}/blob/${candidate.evidenceCommit}/${path}`;
+// As on /developers/mcp/: the all-zero placeholder may be built and reviewed,
+// but a production deployment would link evidence files that do not resolve.
+if (process.env.VERCEL_ENV === 'production' && /^0{40}$/.test(candidate.evidenceCommit)) {
+  throw new Error('src/data/platform-engine-candidate.json still has the all-zero evidenceCommit placeholder;'
+    + ' pin it to the pushed evidence commit before deploying');
+}
 const description = 'Current Zodiacs developer support: local engine candidate, public sky data, hosted widgets, planned chart API, runtime checks, calculation limits, privacy, and licenses.';
 const engineRows = [
   ['Language and runtime', 'ESM JavaScript with TypeScript declarations. The manifest declares Node.js ^20.19.0 || >=22.7.0: astronomy-engine ships ES modules in a package without "type": "module", which plain Node loads as ES modules only from 20.19.0 and 22.7.0. There is no CommonJS export. Browser integrations need an ESM-aware bundler or equivalent dependency setup; bundlers are not affected by the Node range.'],
