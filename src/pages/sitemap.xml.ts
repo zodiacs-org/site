@@ -65,6 +65,23 @@ const ENGINE_PHASE1_ROUTES = [
   '/retrogrades/', '/solar-return/', '/void-of-course-moon/', '/ru/birth-chart/', '/ru/methodology/',
   '/ru/moon-sign/', '/ru/privacy/',
 ] as const;
+// The privacy audit of 2026-09-28 (findings F-17, F-18, F-19, F-27, F-40)
+// changed what these routes say about shared chart codes, Guide's chart
+// attachment, sign pictures and request logs.
+const PRIVACY_AUDIT_LASTMOD = '2026-09-28';
+const PRIVACY_AUDIT_ROUTES = [
+  '/about/', '/ask/', '/birth-chart/someone-else/', '/methodology/', '/privacy/', '/tools/',
+  '/es/methodology/', '/es/privacy/', '/pt/methodology/', '/pt/privacy/', '/fr/methodology/',
+  '/fr/privacy/', '/it/methodology/', '/it/privacy/', '/ru/methodology/', '/ru/privacy/',
+] as const;
+// The share-image review of 2026-09-29 changed what the privacy pages say
+// about images, downloaded calendar files and older links, and what the
+// solar return page says about an unknown birth time.
+const SHARE_IMAGE_REVIEW_LASTMOD = '2026-09-29';
+const SHARE_IMAGE_REVIEW_ROUTES = [
+  '/privacy/', '/es/privacy/', '/pt/privacy/', '/fr/privacy/', '/it/privacy/', '/ru/privacy/',
+  '/solar-return/',
+] as const;
 // Keep these dates source-controlled: build environments may have shallow or
 // absent Git history. When an evergreen page's rendered source changes, update
 // its entry here in the same commit.
@@ -186,6 +203,10 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ['/methodology/', '2026-09-20'] as const,
   // Last, so it wins over each route's earlier date.
   ...ENGINE_PHASE1_ROUTES.map((loc) => [loc, ENGINE_PHASE1_LASTMOD] as const),
+  // After that, the privacy audit's fixes, which won over it for these.
+  ...PRIVACY_AUDIT_ROUTES.map((loc) => [loc, PRIVACY_AUDIT_LASTMOD] as const),
+  // And the share-image review, last of all.
+  ...SHARE_IMAGE_REVIEW_ROUTES.map((loc) => [loc, SHARE_IMAGE_REVIEW_LASTMOD] as const),
 ]);
 
 function getLastmod(loc: string): string {

@@ -7,8 +7,13 @@ import sharp from 'sharp';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { withPreview } from './visual/preview-server.mjs';
 import { trackHydrationDiagnostics } from './t17-hydration-diagnostics.mjs';
+import { computeBodies } from '@zodiacs/engine/internal';
 
 const TIMEOUT = 45_000;
+const BODY_ORDER = [
+  'Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter',
+  'Saturn', 'Uranus', 'Neptune', 'Pluto', 'North Node', 'South Node',
+];
 const BIRTH = {
   date: '1990-06-15',
   time: '08:30',
@@ -285,6 +290,13 @@ try {
       }
       assert.equal(preparedSheetText.includes('Standout in my chart'), false,
         'the chart sheet and signature must remain separate compositions');
+      // Hidden birth details: the twelve bodies to the arcminute, the four
+      // angles only to the whole degree, as the positions-only link has them.
+      const sheetValues = preparedSheet.text.map((entry) => entry.value);
+      assert.equal(sheetValues.filter((value) => /^[A-Z][a-z]+ \d{2}°\d{2}′$/u.test(value)).length, 12,
+        'the hidden chart sheet must give the twelve bodies to the arcminute');
+      assert.equal(sheetValues.filter((value) => /^[A-Z][a-z]+ \d{2}°$/u.test(value)).length, 4,
+        'the hidden chart sheet must give ASC, DSC, MC and IC only to the whole degree');
       const sheetWordmarks = preparedSheet.text.filter((entry) => entry.value === 'zodiacs.org');
       assert.deepEqual(sheetWordmarks.map(({ align, x, y }) => ({ align, x, y })), [
         { align: 'right', x: 1708, y: 104 },
@@ -355,7 +367,7 @@ try {
       });
       assert.equal(
         (await dialog.locator('[data-chart-image-privacy]').innerText()).trim(),
-        'This image includes the birth date, local time, place, coordinates, time zone, and resolved UTC. It does not include a name or chart link.',
+        'This image includes the birth date and, if known, the local birth time, with the place, coordinates, time zone and UTC instant. It does not include a name or chart link.',
         'privacy copy must disclose the birth details when the toggle is off',
       );
       await source.waitForFunction((birth) => (
@@ -377,7 +389,7 @@ try {
       await dialog.locator('[data-hide-birth-details]').check();
       assert.equal(
         (await dialog.locator('[data-chart-image-privacy]').innerText()).trim(),
-        'The image shows chart positions and calculation settings, with no name, birth date, time, place, coordinates or chart link. Its positions still give the birth date and time, and its Ascendant and Midheaven the approximate birthplace.',
+        'The image shows chart positions and calculation settings, with no name, birth date, time, place, coordinates or chart link. Its positions still give the birth date and time. It shows the Ascendant and Midheaven only to the whole degree and leaves out Placidus houses, so it narrows the birthplace no more than the link does.',
         'privacy copy must return to the hidden-details statement',
       );
       await source.waitForFunction(() => (
@@ -891,7 +903,7 @@ try {
       assert.equal(new URL(received.url()).hash, '', 'successful #p fragment must be consumed and stripped');
       assert.equal((await positions.locator('.notice').innerText()).trim(), 'Positions only, with no name, date, time or place fields.');
       assert.equal((await positions.locator('.calc__positions-privacy').first().innerText()).trim(),
-        'The exact positions still give the birth date and time. They give the birthplace only as a region about 500 km across.',
+        'The exact positions still give the birth date and time. They also narrow the birthplace to an area about 110 km wide and hundreds of kilometres long near the equator, and smaller nearer the poles; near the Arctic Circle it can be a strip less than a kilometre from north to south. A link made by an earlier version of the site for a birth before standard time can narrow it to strips about 3 km wide.',
         'positions receiver must say what the exact positions still give');
       assert.equal(await positions.locator('svg.wheel').count(), 1, 'positions result keeps a static wheel');
       assert.equal(await positions.locator('tbody tr').count(), 14, 'twelve bodies plus encoded ASC/MC must be shown');
@@ -1067,8 +1079,93 @@ try {
       assert.equal(await unknownMoonDialog.locator('[data-share-primary="placement"] h3').innerText(), 'Moon sign card');
       assert.match(await unknownMoonDialog.locator('[data-share-placement-preview]').innerText(), /Needs a birth time/,
         'the share dialog preview must not revert to the single reference Moon sign');
-      assert.match(await unknownMoonDialog.locator('[data-share-card-action="placement"]').innerText(), /Share my Moon sign/);
+      // An image that names no Moon sign does not promise one.
+      const unknownMoonAction = await unknownMoonDialog.locator('[data-share-card-action="placement"]').innerText();
+      assert.match(unknownMoonAction, /Share this image/);
+      assert.doesNotMatch(unknownMoonAction, /Share my Moon sign/);
       await unknownMoon.close();
+
+      // Without a birth time the Moon card is drawn from the sky at 12:00 UTC:
+      // it names the sign only when the Moon held it all that date in every
+      // time zone, from 10:00 UTC the day before to 12:00 UTC the day after.
+      for (const moonCase of [
+        // All Aquarius in London on 31 December 1989, but Pisces from 06:11 UTC on 1 January.
+        { date: '1989-12-31', notNamed: 'Aquarius', card: null },
+        // Virgo from 02:58 UTC on 14 January 1990 to 12:18 UTC on the 16th.
+        { date: '1990-01-15', card: 'Virgo' },
+      ]) {
+        const moonPage = await trackedPage();
+        await open(moonPage, `${baseURL}/moon-sign/`);
+        await moonPage.evaluate(() => { globalThis.__t17CanvasText = []; });
+        await moonPage.locator('#birth-date').fill(moonCase.date);
+        await moonPage.locator('.field__toggle input[type="checkbox"]').check();
+        await selectCity(moonPage, 'London');
+        await moonPage.locator('.calc__form button[type="submit"]').click();
+        await moonPage.locator('.calc__result').waitFor({ state: 'visible', timeout: TIMEOUT });
+        await moonPage.waitForFunction(() => {
+          const action = document.querySelector('[data-share-placement]');
+          return document.querySelector('.calc__form')?.getAttribute('aria-busy') === 'false'
+            && action instanceof HTMLButtonElement && !action.disabled;
+        }, null, { timeout: TIMEOUT });
+        // The page itself names no Moon sign without a birth time.
+        assert.match(await moonPage.locator('.calc__three [data-moon-uncertain]').innerText(), /Needs a birth time/);
+        const cardText = await moonPage.evaluate(() => globalThis.__t17CanvasText.map((entry) => entry.value).join(' | '));
+        await moonPage.locator('[data-share-options]').click();
+        const moonDialog = moonPage.locator('[data-share-dialog]');
+        await moonDialog.waitFor({ state: 'visible', timeout: TIMEOUT });
+        const moonAction = moonDialog.locator('[data-share-card-action="placement"]');
+        if (moonCase.card) {
+          assert.equal(cardText.includes(moonCase.card) && cardText.includes('The Moon was in this sign all that day, everywhere.'), true,
+            `${moonCase.date}: a Moon that held its sign all that date everywhere is named on the card`);
+          assert.equal(cardText.includes('Needs a birth time'), false, `${moonCase.date}: the settled card names its sign`);
+          await moonPage.waitForFunction(() => /Share my Moon sign/.test(
+            document.querySelector('[data-share-card-action="placement"]')?.textContent ?? '',
+          ), null, { timeout: TIMEOUT });
+          assert.match(await moonDialog.locator('[data-share-placement-preview]').innerText(), new RegExp(moonCase.card));
+        } else {
+          assert.equal(cardText.includes('Needs a birth time'), true,
+            `${moonCase.date}: a Moon that changed sign somewhere on that date is not named on the card`);
+          assert.equal(cardText.includes(moonCase.notNamed), false, `${moonCase.date}: the card names no sign the Moon left somewhere that date`);
+          assert.match(await moonDialog.locator('[data-share-placement-preview]').innerText(), /Needs a birth time/);
+          await moonPage.waitForTimeout(500);
+          assert.match(await moonAction.innerText(), /Share this image/);
+          assert.doesNotMatch(await moonAction.innerText(), /Share my Moon sign/);
+        }
+        await moonPage.close();
+      }
+
+      // A chart without a birth time is noon at the birthplace, an instant
+      // that gives the place away (Kathmandu keeps UTC+5:45), so its link
+      // carries the sky at 12:00 UTC on the birth date instead.
+      const untimed = await trackedPage();
+      await open(untimed, `${baseURL}/moon-sign/`);
+      await untimed.evaluate(() => { globalThis.__t17Clipboard.length = 0; });
+      await untimed.locator('#birth-date').fill('1990-04-11');
+      await untimed.locator('.field__toggle input[type="checkbox"]').check();
+      await selectCity(untimed, 'Kathmandu');
+      await untimed.locator('.calc__form button[type="submit"]').click();
+      await untimed.locator('.calc__result').waitFor({ state: 'visible', timeout: TIMEOUT });
+      await untimed.waitForFunction(() => document.querySelector('.calc__form')?.getAttribute('aria-busy') === 'false', null, { timeout: TIMEOUT });
+      await untimed.locator('[data-share-options]').click();
+      const untimedDialog = untimed.locator('[data-share-dialog]');
+      await untimedDialog.waitFor({ state: 'visible', timeout: TIMEOUT });
+      await untimedDialog.locator('[data-positions-link]').click();
+      await untimed.waitForFunction(() => globalThis.__t17Clipboard.length === 1, null, { timeout: TIMEOUT });
+      const untimedWire = v2Wire((await clipboard(untimed))[0]).wire;
+      const noonUtc = computeBodies(new Date('1990-04-11T12:00:00Z'));
+      const toWire = (longitude) => {
+        const rounded = Math.round(longitude * 1000) / 1000;
+        return rounded >= 360 ? 0 : rounded;
+      };
+      assert.deepEqual(untimedWire.b, BODY_ORDER.map((body) => toWire(noonUtc.find((row) => row.body === body).lon)),
+        'a positions-only link without a birth time must carry the sky at 12:00 UTC on the birth date');
+      assert.equal(Object.prototype.hasOwnProperty.call(untimedWire, 'a'), false,
+        'a positions-only link without a birth time must carry no angles');
+      assert.match(await untimedDialog.locator('[data-positions-share-note]').innerText(), /12:00 UTC on your birth date/,
+        'the share note must say which instant a link without a birth time carries');
+      assert.match(await untimedDialog.locator('[data-chart-image-privacy]').innerText(), /12:00 UTC on your birth date/,
+        'the image note must say an image without a birth time shows the sky at 12:00 UTC');
+      await untimed.close();
 
       // The computed chart sheet is prepared before the mobile action, so one
       // tap reaches native file sharing without an intermediate dialog.

@@ -26,6 +26,7 @@ export type CompositeCopyKey =
   | "imageTitle"
   | "imageReceipt"
   | "imageAlt"
+  | "imageNoTime"
   | "imageReady"
   | "shareAction"
   | "downloadAction"
@@ -62,6 +63,7 @@ export const COMPOSITE_COPY = {
     imageTitle: "Composite chart",
     imageReceipt: "Midpoints of two charts · No houses or angles",
     imageAlt: "Composite chart image with midpoint placements and aspects, without houses or angles.",
+    imageNoTime: "A chart without a birth time is drawn from the sky at 12:00 UTC on its date, without the Moon.",
     imageReady: "Image ready. Choose Share or Download.",
     shareAction: "Share",
     downloadAction: "Download",
@@ -97,6 +99,7 @@ export const COMPOSITE_COPY = {
     imageTitle: "Carta compuesta",
     imageReceipt: "Puntos medios de dos cartas · Sin casas ni ángulos",
     imageAlt: "Imagen de la carta compuesta con posiciones de los puntos medios y aspectos, sin casas ni ángulos.",
+    imageNoTime: "Una carta sin hora de nacimiento se dibuja con el cielo de las 12:00 UTC de su fecha, sin la Luna.",
     imageReady: "Imagen lista. Elige Compartir o Descargar.",
     shareAction: "Compartir",
     downloadAction: "Descargar",
@@ -132,6 +135,7 @@ export const COMPOSITE_COPY = {
     imageTitle: "Mapa composto",
     imageReceipt: "Pontos médios de dois mapas · Sem casas nem ângulos",
     imageAlt: "Imagem do mapa composto com posições dos pontos médios e aspectos, sem casas nem ângulos.",
+    imageNoTime: "Um mapa sem hora de nascimento é desenhado com o céu das 12:00 UTC da sua data, sem a Lua.",
     imageReady: "Imagem pronta. Escolha Compartilhar ou Baixar.",
     shareAction: "Compartilhar",
     downloadAction: "Baixar",
@@ -167,6 +171,7 @@ export const COMPOSITE_COPY = {
     imageTitle: "Thème composite",
     imageReceipt: "Points médians de deux thèmes · Sans maisons ni angles",
     imageAlt: "Image du thème composite avec les positions des points médians et les aspects, sans maisons ni angles.",
+    imageNoTime: "Un thème sans heure de naissance est dessiné avec le ciel de 12:00 UTC à sa date, sans la Lune.",
     imageReady: "Image prête. Choisis Partager ou Télécharger.",
     shareAction: "Partager",
     downloadAction: "Télécharger",
@@ -202,6 +207,7 @@ export const COMPOSITE_COPY = {
     imageTitle: "Tema composito",
     imageReceipt: "Punti medi di due temi · Senza case né angoli",
     imageAlt: "Immagine del tema composito con le posizioni dei punti medi e gli aspetti, senza case né angoli.",
+    imageNoTime: "Un tema senza ora di nascita è disegnato con il cielo delle 12:00 UTC della sua data, senza la Luna.",
     imageReady: "Immagine pronta. Scegli Condividi o Scarica.",
     shareAction: "Condividi",
     downloadAction: "Scarica",
@@ -237,6 +243,7 @@ export const COMPOSITE_COPY = {
     imageTitle: "Композитная карта",
     imageReceipt: "Средние точки двух карт · Без домов и углов",
     imageAlt: "Изображение композитной карты с положениями средних точек и аспектами, без домов и углов.",
+    imageNoTime: "Карта без времени рождения нарисована по небу на 12:00 UTC в её дату, без Луны.",
     imageReady: "Изображение готово. Выберите «Поделиться» или «Скачать».",
     shareAction: "Поделиться",
     downloadAction: "Скачать",

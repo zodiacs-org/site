@@ -4,7 +4,9 @@ import {
   encodeSharedPositionsLink,
   POSITION_BODY_ORDER,
   type PositionsShareChart,
+  type PositionsShareInput,
 } from '../share-positions.js';
+import { onWholeMinute, timedSharedPositions, untimedSharedPositions } from '../share-positions-noon.js';
 import type { SignSlug } from '../scene/types';
 import { signForLongitude } from '../signs.js';
 import type { InvitePublicPayload } from './types';
@@ -157,8 +159,19 @@ export function positionsFromStored(value: unknown): PositionsShareChart | null 
  * The invitee receives these positions, so ASC and MC are kept only to the
  * whole degree, as in every other code that leaves the device. Invitations
  * stored before this change keep their angles until they expire.
+ *
+ * A chart without a birth time was computed at noon at the birthplace, an
+ * instant that gives the place away, so its invitation carries the sky at
+ * 12:00 UTC on the birth date instead. A chart with a birth time whose UTC
+ * instant has seconds (before standard time, when those seconds give the
+ * birthplace's longitude) carries its bodies at the whole minute. Both come
+ * from bodiesAt (the server ephemeris); without it such a chart makes no
+ * invitation, and neither does a chart with a birth time and no instant.
  */
-export function deriveInviteChartFromSyncedPayload(value: unknown): InviteDerivedChart | null {
+export function deriveInviteChartFromSyncedPayload(
+  value: unknown,
+  bodiesAt?: (utc: Date) => PositionsShareInput['bodies'],
+): InviteDerivedChart | null {
   const chart = record(value);
   const summary = record(chart?.summary);
   const birth = record(chart?.birth);
@@ -169,16 +182,26 @@ export function deriveInviteChartFromSyncedPayload(value: unknown): InviteDerive
   const label = labelFromChartName(chart.name);
   const timeKnown = birth.timeKnown === true;
   const rawBodies = Array.isArray(summary.bodies) ? summary.bodies : [];
-  const input = {
-    bodies: rawBodies.map((item) => {
-      const row = record(item);
-      return { body: row?.body, lon: row?.lon };
-    }),
-    angles: timeKnown ? summary.angles : null,
+  const base = {
     houseSystem: summary.houseSystem,
     engineVersion: summary.engineVersion,
-  } as Parameters<typeof encodeSharedPositionsLink>[0];
-  const token = encodeSharedPositionsLink(input);
+  } as Pick<PositionsShareInput, 'houseSystem' | 'engineVersion'>;
+  let input: PositionsShareInput | null = null;
+  if (timeKnown) {
+    const own = {
+      ...base,
+      bodies: rawBodies.map((item) => {
+        const row = record(item);
+        return { body: row?.body, lon: row?.lon };
+      }),
+      angles: summary.angles,
+    } as PositionsShareInput;
+    const utc = typeof summary.utcISO === 'string' ? summary.utcISO : '';
+    input = onWholeMinute(utc) ? own : bodiesAt ? timedSharedPositions(own, utc, bodiesAt) : null;
+  } else if (bodiesAt && typeof birth.date === 'string') {
+    input = untimedSharedPositions(base, birth.date, bodiesAt);
+  }
+  const token = input ? encodeSharedPositionsLink(input) : null;
   const positions = token ? decodePositionsLink(token) : null;
   const sun = positions?.bodies.find((body) => body.body === 'Sun');
   if (!label || !positions || !sun || (timeKnown !== (positions.angles !== null))) return null;

@@ -9,6 +9,7 @@ import { trackAnalytics } from '../lib/analytics';
 import type { InviteState, InviteStatusRow } from '../lib/invite/types';
 import { getSupabaseClient, isSupabaseConfigured } from '../lib/supabase/client';
 import { SIGNS, SIGN_SLUGS } from '../lib/signs';
+import { signIcon } from '../lib/sign-icon';
 
 const STATUS_CACHE_PREFIX = 'zodiacs.compat.invite-status.v1.';
 const INVITE_ID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/iu;
@@ -175,9 +176,8 @@ function SignDisc({ slug }: { slug: InviteStatusRow['sunSign'] }) {
   if (!sign) return null;
   return (
     <picture class="pf-invites__disc" aria-hidden="true">
-      <source srcset={`/assets/zodiac-icons/48/${sign.slug}.avif`} type="image/avif" />
       <img
-        src={`/assets/zodiac-icons/48/${sign.slug}.webp`}
+        src={signIcon(48, sign.slug)}
         width="32"
         height="32"
         alt=""

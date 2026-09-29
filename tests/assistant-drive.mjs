@@ -40,6 +40,9 @@ const profile = {
         { body: 'Mercury', lon: 45.25, retrograde: true },
       ],
       angles: { asc: 125, mc: 35 },
+      // 08:45 in Bangkok (UTC+7). Guide sends the bodies at this instant
+      // rounded to the whole minute, as a link does; it is one already.
+      utcISO: '1990-04-17T01:45:00.000Z',
     },
   }],
 };

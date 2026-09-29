@@ -2,15 +2,60 @@ import { useEffect, useMemo, useState } from 'preact/hooks';
 import { NextActionCard } from '../../components/NextActionCard';
 import type { MinimalBody, PairSummary } from '../../lib/engine/synastry';
 import type { PositionsShareInput } from '../../lib/share-positions';
-import type { PreparedChartCard } from '../../lib/share-card';
+import type { BigThreeCardChart, PreparedChartCard } from '../../lib/share-card';
 import { shareCardText } from '../../lib/share-card-copy';
 import { encodeSynastryLink } from '../../lib/share-synastry';
+import { onWholeMinute } from '../../lib/share-positions-noon';
+import { loadTimedSharedPositions, loadUntimedSharedPositions } from '../../lib/share-positions-untimed';
 
 interface SendPerson {
   label: string;
   bodies: MinimalBody[];
   asc: number | null;
   positions: PositionsShareInput;
+  /**
+   * The civil birth date of a chart computed on this device without a birth
+   * time. Its positions are noon at the birthplace, which would give the
+   * place away, so the link carries the sky at 12:00 UTC on this date
+   * instead (see sharedReferenceInstant). Absent for a chart with a birth
+   * time and for positions that arrived in a link, which pass on unchanged.
+   */
+  untimedDate?: string;
+  /**
+   * The UTC instant of a chart computed on this device with a birth time.
+   * Before standard time it has seconds, which would give the birthplace's
+   * longitude, so the link carries the bodies at the whole minute instead
+   * (see sharedTimedInstant). Absent for positions that arrived in a link.
+   */
+  utc?: Date | string;
+}
+
+/**
+ * What B's Big Three card draws: a side computed here brings its instant, so
+ * the card takes its bodies at the whole minute, as its link does.
+ */
+export function bigThreeCardSource(person: SendPerson): BigThreeCardChart {
+  return { ...person.positions, utc: person.utc };
+}
+
+/** Whether a side's link positions differ from its own and must be computed first. */
+const needsShared = (person: SendPerson) => person.untimedDate !== undefined
+  || (person.utc !== undefined && !onWholeMinute(person.utc));
+
+/**
+ * The two-chart link for a pair of sides: each untimed side at noon UTC on
+ * its date, each timed side computed here at its whole UTC minute.
+ */
+export async function sendBackToken(a: SendPerson, b: SendPerson): Promise<string | null> {
+  const side = (person: SendPerson) => (person.untimedDate !== undefined
+    ? loadUntimedSharedPositions(person.positions, person.untimedDate)
+    : person.utc !== undefined
+      ? loadTimedSharedPositions(person.positions, person.utc)
+      : Promise.resolve(person.positions));
+  const [chartA, chartB] = await Promise.all([side(a), side(b)]);
+  return chartA && chartB
+    ? encodeSynastryLink({ sides: [{ chart: chartA, label: a.label }, { chart: chartB, label: b.label }] })
+    : null;
 }
 
 type SendMethod = 'share' | 'copy' | 'download';
@@ -80,12 +125,23 @@ export function SendBackCard({
     prepared: PreparedChartCard;
   } | null>(null);
   const [bigThreeState, setBigThreeState] = useState<BigThreeState>('preparing');
-  const token = useMemo(() => encodeSynastryLink({
+  const computed = needsShared(a) || needsShared(b);
+  const direct = useMemo(() => (computed ? null : encodeSynastryLink({
     sides: [
       { chart: a.positions, label: a.label },
       { chart: b.positions, label: b.label },
     ],
-  }), [a, b]);
+  })), [a, b, computed]);
+  const [computedToken, setComputedToken] = useState<string | null>(null);
+  // Keyed on the sides' values, so a caller may pass fresh wrapper objects each render.
+  useEffect(() => {
+    setComputedToken(null);
+    if (!computed) return undefined;
+    let active = true;
+    void sendBackToken(a, b).then((next) => { if (active) setComputedToken(next); }, () => {});
+    return () => { active = false; };
+  }, [a.positions, b.positions, a.label, b.label, a.untimedDate, b.untimedDate, a.utc, b.utc]);
+  const token = computed ? computedToken : direct;
   const url = token && typeof window !== 'undefined'
     ? `${window.location.origin}/compatibility/#s=${token}`
     : '';
@@ -111,7 +167,7 @@ export function SendBackCard({
     setBigThreeState('preparing');
     if (!b.positions.angles) return () => { active = false; };
     void import('../../lib/share-card').then(async (module) => {
-      const prepared = await module.prepareBigThreeCard(b.positions, 'en');
+      const prepared = await module.prepareBigThreeCard(bigThreeCardSource(b), 'en');
       if (!active) return;
       setBigThree({ module, prepared });
       setBigThreeState('ready');
@@ -119,7 +175,7 @@ export function SendBackCard({
       if (active) setBigThreeState('error');
     });
     return () => { active = false; };
-  }, [b.positions]);
+  }, [b.positions, b.utc]);
 
   async function copy() {
     if (!url) return;

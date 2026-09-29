@@ -1,5 +1,6 @@
 import { lunarReturnChart } from '../../lib/engine/lunar-return';
 import type { Chart, HouseSystem } from '../../lib/engine/types';
+import { sharedTimedInstant } from '../../lib/share-positions-noon';
 import { resolveLocalToUtc } from '../../lib/time/localToUtc';
 
 export { prepareLocalTime } from '../../lib/time/localToUtc';
@@ -15,6 +16,14 @@ export interface LunarReturnComputeInput {
 }
 export interface LunarReturnResultData {
   chart: Chart;
+  /**
+   * The return an image and a calendar file show: found from the natal Moon
+   * at the birth instant rounded to the whole minute, as a chart's link
+   * carries it. Absent when that is `chart` itself. Before standard time the
+   * birth instant has the birthplace's mean-time seconds, and the return found
+   * from them gives them back.
+   */
+  shared?: Chart;
   /** Captured once by submit; retries retain this instant. */
   referenceUtc: string;
   natalTimeFlags: ReadonlyArray<'lmt'>;
@@ -34,14 +43,19 @@ export function computeLunarReturn(input: LunarReturnComputeInput, reference: Da
   if (resolved.flags.includes('dst-gap') || resolved.flags.includes('dst-fold')) {
     throw new RangeError('This local birth time is skipped or repeated by a clock change. Check the original birth record before calculating.');
   }
-  const chart = lunarReturnChart({
-    utc: resolved.utc, latitude: input.birthplace.lat, longitude: input.birthplace.lon,
-    houseSystem: input.houseSystem, timeKnown: true, flags: resolved.flags,
-  }, reference, input.castLocation
+  const natal = {
+    latitude: input.birthplace.lat, longitude: input.birthplace.lon,
+    houseSystem: input.houseSystem, timeKnown: true as const, flags: resolved.flags,
+  };
+  const cast = input.castLocation
     ? { latitude: input.castLocation.lat, longitude: input.castLocation.lon }
-    : undefined);
+    : undefined;
+  const chart = lunarReturnChart({ ...natal, utc: resolved.utc }, reference, cast);
+  const minute = sharedTimedInstant(resolved.utc)!;
   return {
-    chart, referenceUtc: reference.toISOString(),
+    chart,
+    ...(minute.getTime() !== resolved.utc.getTime() ? { shared: lunarReturnChart({ ...natal, utc: minute }, reference, cast) } : {}),
+    referenceUtc: reference.toISOString(),
     natalTimeFlags: resolved.flags.filter((flag): flag is 'lmt' => flag === 'lmt'),
     natalLocalMeanTime: resolved.localMeanTime !== undefined,
   };

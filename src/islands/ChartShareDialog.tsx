@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
 import type { Chart } from '../lib/engine/types';
 import { t, type CatalogLocale as Locale } from '../lib/i18n';
-import { encodeSharedPositionsLink } from '../lib/share-positions';
+import { encodeSharedPositionsLink, type PositionsShareInput } from '../lib/share-positions';
+import { loadTimedSharedPositions, loadUntimedSharedPositions } from '../lib/share-positions-untimed';
 import { previewPlacements, previewQuery } from '../lib/share-preview';
 import {
   prepareBigThreeCard,
@@ -10,12 +11,13 @@ import {
   preparePlacementCard,
   primaryShareCardVariant,
   savePreparedChartCard,
+  untimedMoonSign,
   type ChartSheetBirthDetails,
   type PreparedChartCard,
 } from '../lib/share-card';
 import { ensurePastelZodiacIconEmbedding } from '../lib/share-card-pastel-icons';
 import { shareCardText } from '../lib/share-card-copy';
-import { signForLongitude, signName } from '../lib/signs';
+import { signBySlug, signForLongitude, signName } from '../lib/signs';
 import { moonIsUncertain, moonLabel } from '../lib/moon-certainty';
 import Wheel from '../lib/wheel/Wheel';
 import { CopyLinkButton, type CopyLinkState } from './CopyLinkButton';
@@ -110,22 +112,48 @@ export default function ChartShareDialog({
     return () => { if (dialog?.open) dialog.close(); };
   }, []);
 
+  const birthDate = birthDetails?.date;
+  // Without a birth time the Moon card is drawn from the sky at 12:00 UTC, as
+  // the link is, and names a sign only when the Moon held it all that date
+  // everywhere (untimedMoonSign), whatever sign the page gives for the birthplace.
+  const moonFromNoon = mode === 'moon' && !chart.angles;
+  const [settledMoon, setSettledMoon] = useState<string | null>(null);
   useEffect(() => {
-    const shared = {
-      bodies: chart.bodies,
-      angles: chart.angles ? { asc: chart.angles.asc, mc: chart.angles.mc } : null,
-      houseSystem: chart.houses?.system ?? 'whole',
-      engineVersion: chart.engineVersion,
-    };
-    const token = encodeSharedPositionsLink(shared);
-    const placements = previewPlacements(shared);
-    if (!token || !placements) return;
-    const positions = `${window.location.origin}${receiverPath}#p=${token}`;
-    // The preview service gets the Sun, Moon and Rising to the whole degree;
-    // the full code stays in the fragment.
-    const preview = `${window.location.origin}/api/og/chart?${previewQuery(placements)}#p=${token}`;
-    setLinks({ positions, preview });
-  }, [chart, receiverPath]);
+    setSettledMoon(null);
+    if (!moonFromNoon) return undefined;
+    let current = true;
+    void untimedMoonSign(birthDate).then((sign) => { if (current) setSettledMoon(sign); }, () => {});
+    return () => { current = false; };
+  }, [chart, mode, birthDate]);
+  const settledSign = moonFromNoon && settledMoon ? signBySlug(settledMoon) : null;
+  const imageMoonUnknown = moonFromNoon ? !settledSign : uncertainMoon;
+  useEffect(() => {
+    let current = true;
+    const base = { houseSystem: chart.houses?.system ?? 'whole', engineVersion: chart.engineVersion };
+    // With a birth time the links carry the bodies at the whole minute, whose
+    // seconds can no longer give the longitude before standard time. Without
+    // one the chart is noon at the birthplace, an instant that gives the place
+    // away; the links carry noon UTC on the date instead.
+    const ready: Promise<PositionsShareInput | null> = chart.input.timeKnown
+      ? loadTimedSharedPositions({
+        ...base,
+        bodies: chart.bodies,
+        angles: chart.angles ? { asc: chart.angles.asc, mc: chart.angles.mc } : null,
+      }, chart.input.utc)
+      : birthDate ? loadUntimedSharedPositions(base, birthDate) : Promise.resolve(null);
+    void ready.then((shared) => {
+      if (!current || !shared) return;
+      const token = encodeSharedPositionsLink(shared);
+      const placements = previewPlacements(shared);
+      if (!token || !placements) return;
+      const positions = `${window.location.origin}${receiverPath}#p=${token}`;
+      // The preview service gets the Sun, Moon and Rising to the whole degree;
+      // the full code stays in the fragment.
+      const preview = `${window.location.origin}/api/og/chart?${previewQuery(placements)}#p=${token}`;
+      setLinks({ positions, preview });
+    }, (error) => console.error(error));
+    return () => { current = false; };
+  }, [chart, receiverPath, birthDate]);
 
   useEffect(() => {
     if (!preparedPrimary) return;
@@ -145,11 +173,12 @@ export default function ChartShareDialog({
   }, [mode, primaryAlternative]);
 
   async function buildChoice(choice: Choice, hidden: boolean): Promise<PreparedChartCard> {
-    const timeOptions = { referenceTime: !chart.input.timeKnown, moonAmbiguous };
+    // Images with birth details hidden show what the links carry (share-card's imageChart).
+    const timeOptions = { referenceTime: !chart.input.timeKnown, moonAmbiguous, birthDate };
     if (choice === 'sheet') {
       await ensurePastelZodiacIconEmbedding();
       return prepareChartSheet(chart, {
-        locale, hideBirthDetails: hidden, birthDetails, moonAmbiguous,
+        locale, hideBirthDetails: hidden, birthDetails, moonAmbiguous, birthDate,
       });
     }
     if (choice === 'placement') {
@@ -230,6 +259,8 @@ export default function ChartShareDialog({
     if (choice === 'sheet') return copy.sheet;
     if (choice === 'signature') return shareCardText(locale, 'signatureAction');
     if (choice === 'placement') {
+      // A Moon card that names no sign does not promise one.
+      if (imageMoonUnknown) return shareText(locale, 'shareThisImage');
       return shareText(locale, mode === 'moon' ? 'moonCardAction' : 'risingCardAction');
     }
     if (choice === 'big-three') return shareCardText(locale, 'bigThreeAction');
@@ -265,7 +296,9 @@ export default function ChartShareDialog({
               dataHook="positions"
               onCopied={() => trackShare('positions_link')}
             />
-            <p class="calc-share-dialog__note">{shareText(locale, 'positionsShareNote')}</p>
+            <p class="calc-share-dialog__note" data-positions-share-note>
+              {shareText(locale, chart.input.timeKnown ? 'positionsShareNote' : 'positionsShareNoteNoTime')}
+            </p>
             <CopyLinkButton
               url={links.preview}
               state={linkState.preview}
@@ -308,14 +341,14 @@ export default function ChartShareDialog({
                 aspects={chart.aspects.filter((aspect) => aspect.orb < 6)}
               />
             </div>
-          ) : uncertainMoon ? (
+          ) : imageMoonUnknown ? (
             <div class="calc-share-dialog__placement" data-share-placement-preview>
-              <span>{moonLabel(placementChart, locale)}</span>
+              <span>{moonLabel(moonFromNoon ? { ...placementChart, moonSignCandidates: [] } : placementChart, locale)}</span>
             </div>
-          ) : placementSign ? (
-            <div class="calc-share-dialog__placement" style={`--sign:${placementSign.hue}`} aria-hidden="true" data-share-placement-preview>
-              <span class="calc-share-dialog__placement-glyph">{placementSign.glyph}</span>
-              <span>{signName(placementSign, locale)}</span>
+          ) : settledSign ?? placementSign ? (
+            <div class="calc-share-dialog__placement" style={`--sign:${(settledSign ?? placementSign)!.hue}`} aria-hidden="true" data-share-placement-preview>
+              <span class="calc-share-dialog__placement-glyph">{(settledSign ?? placementSign)!.glyph}</span>
+              <span>{signName((settledSign ?? placementSign)!, locale)}</span>
             </div>
           ) : null}
           <div class="calc-share-dialog__chart-copy"><h3>{primaryTitle}</h3></div>
@@ -351,7 +384,8 @@ export default function ChartShareDialog({
           )}
         </div>
         <p class="calc-share-dialog__note" data-chart-image-privacy>
-          {shareText(locale, hideBirthDetails ? 'chartImagePrivacy' : 'chartImagePrivacyDetails')}
+          {shareText(locale, !hideBirthDetails ? 'chartImagePrivacyDetails'
+            : chart.input.timeKnown ? 'chartImagePrivacy' : 'chartImagePrivacyNoTime')}
         </p>
         {(card === 'error' || Object.values(states).includes('error')) && <p class="calc__error" role="alert">{t(locale, 'cardError')}</p>}
       </div>

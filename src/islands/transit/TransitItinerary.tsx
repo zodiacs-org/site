@@ -38,8 +38,17 @@ function Period({ window }: { window: TransitWindow }) {
   </article>;
 }
 
-export function TransitItinerary({ natal, timeKnown, anchorMs }: {
-  natal: NatalTransitChart; timeKnown: boolean; anchorMs: number;
+const CALENDAR_NOTE = 'The times in the file come from your exact chart, so anyone you share it with, or any online calendar you import it into, can work out your birth time from them, and your birthplace from those for your Ascendant or Midheaven.';
+const CALENDAR_NOTE_NO_TIME = 'Without a birth time, the times in the file come from your chart for noon at your birthplace, so anyone you share it with, or any online calendar you import it into, can work out your birth date from them, and the time zone of your birthplace or, before standard time, its longitude.';
+
+/**
+ * `timeKnown` says whether the itinerary may use the Moon and angles; a chart
+ * whose birth time falls in a clock change has a birth time but not that.
+ * `birthTimeKnown` says whether the chart has a birth time at all: without
+ * one it is noon at the birthplace, which the calendar note names.
+ */
+export function TransitItinerary({ natal, timeKnown, anchorMs, birthTimeKnown = timeKnown }: {
+  natal: NatalTransitChart; timeKnown: boolean; anchorMs: number; birthTimeKnown?: boolean;
 }) {
   const [windows, setWindows] = useState<TransitWindow[] | null>(null);
   const [busy, setBusy] = useState(false);
@@ -100,6 +109,7 @@ export function TransitItinerary({ natal, timeKnown, anchorMs }: {
       {busy && <button type="button" class="btn" onClick={() => { cancel(); setBusy(false); setStatus('Calculation cancelled.'); }}>Cancel</button>}
       {!!exportable.length && <button type="button" class="btn" onClick={download}>Calendar for {exportable.length} periods</button>}
     </div>
+    {!!exportable.length && <p class="field__help" data-itinerary-calendar-note>{birthTimeKnown ? CALENDAR_NOTE : CALENDAR_NOTE_NO_TIME}</p>}
     <p role="status" aria-live="polite">{status}</p>
     {error && <p class="calc__error" role="alert">{error}</p>}
     {windows && <>

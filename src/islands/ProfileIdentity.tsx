@@ -22,7 +22,7 @@ import { useMe } from '../lib/hooks/useMe';
 import { explicitSelfChart } from '../lib/profile/read-store';
 import { markPrimarySelfChart } from '../lib/profile/store';
 import { DEFAULT_ME, DISPLAY_NAME_MAX, cleanDisplayName, resolvedDisplayName, saveMe } from '../lib/profile/me';
-import { OPEN_CARD_EVENT, cardUrl, encodeCardLink, positionsForChart } from '../lib/profile/card-link';
+import { OPEN_CARD_EVENT, cardUrl, encodeCardLink, loadCardPositionsForChart } from '../lib/profile/card-link';
 import { chartHandle, personalChartName, savedChartSunHue } from '../lib/profile/your-people';
 import { initialIcon, initialOf } from '../lib/profile/initial';
 import { todayLead } from '../lib/profile/today-reading';
@@ -310,7 +310,15 @@ function SharePanel({ chart, name, hue, placements, onAddName, onClose }: {
   const [state, setState] = useState<CopyState>('idle');
   const [canShare, setCanShare] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
-  const token = useMemo(() => encodeCardLink({ chart: positionsForChart(chart), label: name }), [chart, name]);
+  const [token, setToken] = useState<string | null>(null);
+  useEffect(() => {
+    let current = true;
+    setToken(null);
+    void loadCardPositionsForChart(chart).then((positions) => {
+      if (current) setToken(positions ? encodeCardLink({ chart: positions, label: name }) : null);
+    }, (error) => console.error(error));
+    return () => { current = false; };
+  }, [chart, name]);
   const url = token ? cardUrl(window.location.origin, token) : null;
 
   useEffect(() => {

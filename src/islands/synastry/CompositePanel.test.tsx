@@ -177,7 +177,8 @@ describe('composite export ownership and recovery', () => {
     expect(find('data-composite-export', failed).props.children).toBe(COMPOSITE_COPY.en.retry);
     await find('data-composite-export', failed).props.onClick();
     expect(find('data-composite-image').props.src).toBe('blob:composite');
-    expect(harness.prepare).toHaveBeenCalledWith(data, 'en');
+    // Without people the picture is the page's composite; both times known, no notice.
+    expect(harness.prepare).toHaveBeenCalledWith(data, 'en', { noTime: false });
   });
 
   it.each(['close', 'replace', 'unmount'])('discards a late prepared image after %s', async (action) => {

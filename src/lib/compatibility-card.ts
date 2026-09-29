@@ -13,7 +13,7 @@
  * the same handful of years; leading a couple's card with it says nothing
  * about them.
  */
-import { rankedContacts, type PairSummary, type MinimalBody } from './engine/synastry';
+import { rankedContacts, summarizePair, type PairSummary, type MinimalBody } from './engine/synastry';
 import type { CatalogLocale as Locale } from './i18n';
 import { aspectLabel, planetLabel } from './i18n/astrology';
 import { degreeInSign, SIGNS, signForLongitude, signName } from './signs';
@@ -31,6 +31,19 @@ export interface CompatibilityCardPerson {
   label: string;
   bodies: MinimalBody[];
   asc: number | null;
+  /**
+   * The civil birth date of a chart computed on this device without a birth
+   * time, whose bodies are noon at the birthplace. The picture then draws the
+   * sky at 12:00 UTC on it instead (compatibilityPicturePeople); the date
+   * itself is never drawn.
+   */
+  untimedDate?: string;
+  /**
+   * The UTC instant of a chart computed on this device with a birth time. The
+   * picture draws its bodies at the whole minute (compatibilityPicturePeople);
+   * the instant itself is never drawn.
+   */
+  utc?: Date | string;
 }
 
 const W = 1080;
@@ -91,6 +104,61 @@ function placementRows(person: CompatibilityCardPerson, locale: Locale) {
       degree: degreeInSign(lon),
     };
   });
+}
+
+/**
+ * One person's Big Three as the picture prints it. The rising sign's degree
+ * is only whole, as the two-chart link keeps it: rounded to the nearest
+ * degree, beside the link's whole degree, it would halve the range the link
+ * leaves for the ascendant.
+ */
+export function compatibilityPlacementLine(person: CompatibilityCardPerson, locale: Locale = 'en'): string {
+  return placementRows(person, locale)
+    .map((row) => (row.sign
+      ? `${row.sign} ${row.key === 'rising' ? Math.floor(row.degree!) : row.degree!.toFixed(0)}°`
+      : '—'))
+    .join('  ·  ');
+}
+
+const withoutBirthTime = (person: CompatibilityCardPerson) => person.untimedDate !== undefined || person.asc === null;
+const hasSeconds = (utc: Date | string | undefined) => utc !== undefined && new Date(utc).getTime() % 60_000 !== 0;
+
+/**
+ * The two people, and the contacts between them, that a picture draws: each
+ * as their link carries them (share-positions-noon's pictureBodies), so the
+ * picture shows no more of either than their link. A chart computed on this
+ * device without a birth time is noon at the birthplace, and its bodies give
+ * that instant: a contact with its Moon, printed to a tenth of a degree, put
+ * it within minutes, and with it the birthplace's time zone, or before
+ * standard time its longitude. Such a person is drawn as the sky at 12:00 UTC
+ * on the birth date, and anyone without a birth time without the Moon, whose
+ * sign such a chart never states. A chart with a birth time whose instant has
+ * seconds (before standard time) is drawn at the whole minute. The contacts
+ * are found again from what is drawn; when nothing changes they are the
+ * page's.
+ */
+export async function compatibilityPicturePeople(
+  a: CompatibilityCardPerson,
+  b: CompatibilityCardPerson,
+  summary: PairSummary,
+): Promise<{ a: CompatibilityCardPerson; b: CompatibilityCardPerson; summary: PairSummary }> {
+  const changes = (person: CompatibilityCardPerson) => withoutBirthTime(person) || hasSeconds(person.utc);
+  if (!changes(a) && !changes(b)) return { a, b, summary };
+  const [{ computeBodies }, { pictureBodies }] = await Promise.all([
+    import('./engine/full'),
+    import('./share-positions-noon'),
+  ]);
+  const drawn = (person: CompatibilityCardPerson): CompatibilityCardPerson => {
+    if (!changes(person)) return person;
+    const timeKnown = !withoutBirthTime(person);
+    return {
+      label: person.label,
+      bodies: pictureBodies({ ...person, timeKnown }, computeBodies),
+      asc: timeKnown ? person.asc : null,
+    };
+  };
+  const people = { a: drawn(a), b: drawn(b) };
+  return { ...people, summary: summarizePair(people.a.bodies, people.b.bodies) };
 }
 
 export function compatibilityHeadline(summary: Pick<PairSummary, 'easeful' | 'charged'>, locale: Locale = 'en'): string {
@@ -180,8 +248,8 @@ export async function drawCompatibilityCard(
   summary: PairSummary,
   locale: Locale = 'en',
 ): Promise<Blob> {
+  ({ a, b, summary } = await compatibilityPicturePeople(a, b, summary));
   const people = [a, b];
-  const rows = people.map((person) => placementRows(person, locale));
   const signIcons = await Promise.all(SIGNS.map((sign) => loadIcon(sign.slug)));
   await document.fonts.ready;
   await Promise.all([
@@ -305,9 +373,7 @@ export async function drawCompatibilityCard(
 
   people.forEach((person, personIndex) => {
     const y = 1222 + personIndex * 42;
-    const placements = rows[personIndex]
-      .map((row) => (row.sign ? `${row.sign} ${row.degree!.toFixed(0)}°` : '—'))
-      .join('  ·  ');
+    const placements = compatibilityPlacementLine(person, locale);
     ctx.textAlign = 'left';
     ctx.fillStyle = FAINT;
     ctx.font = `400 20px ${MONO}`;

@@ -69,6 +69,10 @@ interface Person {
   depth: { body: string; lon: number; lat: number; retrograde?: boolean }[] | null;
   /** Privacy-safe shape used by the positions-only send-back codec. */
   positions: PositionsShareInput;
+  /** A chart computed here without a birth time: its civil date, so a link carries noon UTC on it. */
+  untimedDate?: string;
+  /** A chart computed here with a birth time: its UTC instant, so a link carries its bodies at the whole minute. */
+  utc?: Date | string;
   /** The Old Style date entered beside the Gregorian one, as one line. */
   oldStyle?: string;
 }
@@ -253,10 +257,11 @@ export async function resolveSaved(chart: SavedChart, loadEngine: EngineLoader):
       houseSystem: summary.houseSystem,
       engineVersion: summary.engineVersion,
     },
+    ...(resolved.timeKnown ? { utc: summary.utcISO } : { untimedDate: chart.birth.date }),
   };
 }
 
-async function resolveLink(link: { input: ShareChartInput; label: string }, loadEngine: EngineLoader): Promise<Person> {
+export async function resolveLink(link: { input: ShareChartInput; label: string }, loadEngine: EngineLoader): Promise<Person> {
   const [engine, { prepareLocalTime, resolveLocalToUtc }] = await Promise.all([
     loadEngine(),
     loadModule(() => import('../lib/time/localToUtc')),
@@ -294,10 +299,11 @@ async function resolveLink(link: { input: ShareChartInput; label: string }, load
       houseSystem: result.input.houseSystem,
       engineVersion: result.engineVersion,
     },
+    ...(input.timeKnown ? { utc: resolved.utc } : { untimedDate: input.date }),
   };
 }
 
-async function resolveForm(slot: SlotState, fallbackLabel: string, loadEngine: EngineLoader): Promise<Person> {
+export async function resolveForm(slot: SlotState, fallbackLabel: string, loadEngine: EngineLoader): Promise<Person> {
   const [engine, { prepareLocalTime, resolveLocalToUtc }] = await Promise.all([
     loadEngine(),
     loadModule(() => import('../lib/time/localToUtc')),
@@ -330,6 +336,7 @@ async function resolveForm(slot: SlotState, fallbackLabel: string, loadEngine: E
       houseSystem: result.input.houseSystem,
       engineVersion: result.engineVersion,
     },
+    ...(timeKnown ? { utc: resolved.utc } : { untimedDate: slot.date }),
     oldStyle: slot.oldStyle,
   };
 }
@@ -1534,6 +1541,8 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
                 mc: result.a.wheel.mc,
                 cusps: result.a.wheel.cusps,
                 timeKnown: result.a.timeKnown,
+                untimedDate: result.a.untimedDate,
+                utc: result.a.utc,
               }}
               b={{
                 label: result.b.label,
@@ -1543,6 +1552,8 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
                 mc: result.b.wheel.mc,
                 cusps: result.b.wheel.cusps,
                 timeKnown: result.b.timeKnown,
+                untimedDate: result.b.untimedDate,
+                utc: result.b.utc,
               }}
               summary={result.summary}
             />
@@ -1551,8 +1562,8 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
           {result.source === 'plain' && sendBackMod && (
             <sendBackMod.SendBackCard
               variant="share"
-              a={{ label: result.a.label, bodies: result.a.bodies, asc: result.a.asc, positions: result.a.positions }}
-              b={{ label: result.b.label, bodies: result.b.bodies, asc: result.b.asc, positions: result.b.positions }}
+              a={result.a}
+              b={result.b}
               summary={result.summary}
               inviterLabel={result.b.label}
             />
@@ -1563,18 +1574,8 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
           {(result.source === 'invite' || result.source === 'invite-restored') && sendBackMod && (
             <>
               <sendBackMod.SendBackCard
-                a={{
-                  label: result.a.label,
-                  bodies: result.a.bodies,
-                  asc: result.a.asc,
-                  positions: result.a.positions,
-                }}
-                b={{
-                  label: result.b.label,
-                  bodies: result.b.bodies,
-                  asc: result.b.asc,
-                  positions: result.b.positions,
-                }}
+                a={result.a}
+                b={result.b}
                 summary={result.summary}
                 inviterLabel={result.a.label}
                 onReturned={(method) => track('invite_returned', { method })}
@@ -1619,8 +1620,8 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
                     />
                     <compatShareMod.CompatibilityShareControl
                       key={result.at}
-                      a={{ label: result.a.label, bodies: result.a.bodies, asc: result.a.asc }}
-                      b={{ label: result.b.label, bodies: result.b.bodies, asc: result.b.asc }}
+                      a={{ label: result.a.label, bodies: result.a.bodies, asc: result.a.asc, untimedDate: result.a.untimedDate, utc: result.a.utc }}
+                      b={{ label: result.b.label, bodies: result.b.bodies, asc: result.b.asc, untimedDate: result.b.untimedDate, utc: result.b.utc }}
                       summary={result.summary}
                       locale={locale}
                     />
@@ -1651,8 +1652,8 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
                     />
                     <compatShareMod.CompatibilityShareControl
                       key={result.at}
-                      a={{ label: result.a.label, bodies: result.a.bodies, asc: result.a.asc }}
-                      b={{ label: result.b.label, bodies: result.b.bodies, asc: result.b.asc }}
+                      a={{ label: result.a.label, bodies: result.a.bodies, asc: result.a.asc, untimedDate: result.a.untimedDate, utc: result.a.utc }}
+                      b={{ label: result.b.label, bodies: result.b.bodies, asc: result.b.asc, untimedDate: result.b.untimedDate, utc: result.b.utc }}
                       summary={result.summary}
                       locale={locale}
                     />

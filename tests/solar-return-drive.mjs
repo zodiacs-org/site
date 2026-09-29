@@ -142,11 +142,15 @@ async function checkCalendar(page, check, outDir, slug, approximate) {
   const fields = calendarFields(file.bytes);
   const receipt = await page.locator('[data-return-instant]').textContent();
   const utc = receipt.match(/UTC · (\d{4}-\d\d-\d\d) · (\d\d:\d\d:\d\d)/);
-  const expected = utc ? `${utc[1]}T${utc[2]}Z`.replace(/[-:]/g, '') : null;
+  const shown = utc ? Date.parse(`${utc[1]}T${utc[2]}Z`) : Number.NaN;
+  // The calendar marks the return to the whole minute, found from the birth
+  // instant's whole minute: within a minute of the page's own return.
+  const marked = /^(\d{4})(\d\d)(\d\d)T(\d\d)(\d\d)00Z$/.exec(fields.DTSTART ?? '');
+  const markedMs = marked ? Date.UTC(+marked[1], +marked[2] - 1, +marked[3], +marked[4], +marked[5]) : Number.NaN;
   const text = file.bytes.toString('utf8');
-  check(`Solar ${slug}: calendar marks the displayed UTC instant with honest uncertainty`,
+  check(`Solar ${slug}: calendar marks the displayed return to the whole minute with honest uncertainty`,
     file.name === `zodiacs-${approximate ? 'approximate-' : ''}solar-return-2024.ics`
-    && fields.DTSTART === expected && fields.DURATION === 'PT1M' && fields.TRANSP === 'TRANSPARENT'
+    && Math.abs(markedMs - shown) <= 60_000 && fields.DURATION === 'PT1M' && fields.TRANSP === 'TRANSPARENT'
     && fields.SUMMARY === `${approximate ? 'Approximate solar return' : 'Solar return'} · 2024`
     && fields.DESCRIPTION.includes('for display only')
     && fields.DESCRIPTION.includes('shift by hours') === approximate
@@ -282,7 +286,7 @@ export async function runSolarReturnChecks({ browser, baseURL, check, outDir }) 
     check('Solar: failed PNG encoding keeps the valid unknown-time wheel and calendar', await page.locator('.wheel').count() === 1
       && await page.getByRole('button', { name: 'Save image', exact: true }).isDisabled()
       && await page.getByRole('button', { name: 'Add to calendar', exact: true }).isEnabled()
-      && await page.locator('[data-noon-notice]').textContent() === 'Computed from a noon chart — the return instant can shift by up to about 12 hours with your exact birth time, and houses need it.'
+      && await page.locator('[data-noon-notice]').textContent() === 'Computed from the sky at 12:00 UTC on your birth date — the return instant can shift by up to about a day with your exact birth time, and houses need it.'
       && await page.getByRole('columnheader', { name: 'House', includeHidden: true }).count() === 0);
     record('unknown-calendar', (await checkCalendar(page, check, outDir, 'unknown-2024', true)).file);
     if (outDir) await page.locator('[data-sr-exports]').screenshot({ path: `${outDir}/image-encode-failure-390.png`, animations: 'disabled' });

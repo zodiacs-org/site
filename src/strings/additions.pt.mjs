@@ -305,6 +305,8 @@ export const PT_ADDITIONS = Object.freeze({
   'shareCard.compatibilityBusy': 'Criando o cartão de compatibilidade…',
   'shareCard.compatibilityCharge': 'Química que pede atenção',
   'shareCard.compatibilityError': 'Não foi possível criar este cartão no seu navegador.',
+  'shareCard.compatibilityNoTimeNote': 'Para um mapa sem hora de nascimento, a imagem usa o céu das 12:00 UTC dessa data e deixa de fora a Lua, então os contatos podem diferir desta página.',
+  'shareCard.moonSettledNote': 'A Lua ficou neste signo o dia todo, em todo lugar.',
   'shareCard.compatibilityFlow': 'Fluidez, com um atrito útil',
   'shareCard.compatibilitySaved': 'Cartão de compatibilidade salvo.',
   'shareCard.compatibilityTitle': 'Compatibilidade',

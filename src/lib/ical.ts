@@ -56,23 +56,33 @@ function slug(value: string): string {
   return value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
 
-function uidTimestamp(value: string): string {
-  const date = new Date(value);
-  const seconds = formatIcalUtc(date);
-  const milliseconds = date.getUTCMilliseconds();
-  return milliseconds === 0
-    ? seconds
-    : `${seconds.slice(0, -1)}${String(milliseconds).padStart(3, '0')}Z`;
+/** FNV-1a over the UTF-8 bytes, 32 bits, from the given offset basis. */
+function fnv1a32(bytes: Uint8Array, basis: number): number {
+  let hash = basis >>> 0;
+  for (const byte of bytes) hash = Math.imul(hash ^ byte, 0x01000193) >>> 0;
+  return hash;
 }
 
+/**
+ * A contact's UID: a hash of what its event already shows, its start as
+ * DTSTART gives it (to the second) and its title, so the UID carries nothing
+ * the event does not, and the same contact keeps its UID from one file or
+ * refresh to the next. The UID once held the exact instant to the
+ * millisecond, finer than DTSTART: in a file made from the exact chart, a
+ * contact to the ascendant or midheaven then gave that angle to a millionth
+ * of a degree.
+ */
 export function transitContactUid(contact: TransitContact): string {
-  return [
-    'transit',
-    uidTimestamp(contact.exactUtc),
-    slug(contact.transitBody),
+  const shown = encoder.encode([
+    formatIcalUtc(contact.exactUtc),
+    contact.transitBody,
     contact.aspect,
-    slug(contact.natalPoint),
-  ].join('-') + '@zodiacs.org';
+    contact.natalPoint,
+  ].join('|'));
+  const hash = [0x811c9dc5, 0x050c5d1f]
+    .map((basis) => fnv1a32(shown, basis).toString(16).padStart(8, '0'))
+    .join('');
+  return `transit-${hash}@zodiacs.org`;
 }
 
 function contactDescription(contact: TransitContact, exact: boolean): string {
@@ -116,6 +126,7 @@ function truncateToMinute(value: string): string {
 /**
  * Serialize one transit calendar. Input order does not affect event order or
  * UIDs; separate retrograde passes remain separate because their instants do.
+ * Two contacts that would show the same start and title are one event.
  */
 export function serializeTransitContacts(
   contacts: readonly TransitContact[],
@@ -123,16 +134,24 @@ export function serializeTransitContacts(
 ): string {
   if (contacts.length === 0) throw new RangeError('A transit calendar requires at least one contact.');
   const dtstamp = formatIcalUtc(options.generatedAt);
+  const seen = new Set<string>();
   const prepared = contacts.map((contact) => {
     const exact = options.natalAngles !== 'whole-degree'
       || (contact.natalPoint !== 'ASC' && contact.natalPoint !== 'MC');
     const shown = exact ? contact : { ...contact, exactUtc: truncateToMinute(contact.exactUtc) };
-    return { contact: shown, exact, dtstart: formatIcalUtc(shown.exactUtc) };
+    return { contact: shown, exact, dtstart: formatIcalUtc(shown.exactUtc), uid: transitContactUid(shown) };
   }).sort((a, b) =>
     a.dtstart.localeCompare(b.dtstart)
     || a.contact.transitBody.localeCompare(b.contact.transitBody)
     || a.contact.natalPoint.localeCompare(b.contact.natalPoint)
-    || a.contact.aspect.localeCompare(b.contact.aspect));
+    || a.contact.aspect.localeCompare(b.contact.aspect)
+    || a.contact.exactUtc.localeCompare(b.contact.exactUtc)
+    || a.contact.pass - b.contact.pass)
+    .filter(({ uid }) => {
+      if (seen.has(uid)) return false;
+      seen.add(uid);
+      return true;
+    });
 
   const lines = [
     'BEGIN:VCALENDAR',

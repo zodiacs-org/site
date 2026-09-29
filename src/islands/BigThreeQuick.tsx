@@ -6,7 +6,7 @@ import { useEngine } from '../lib/hooks/useEngine';
 import CalculationReload, { calculationError } from './CalculationReload';
 import { loadModule } from '../lib/module-load';
 import { prepareLocalTime, resolveLocalToUtc } from '../lib/time/localToUtc';
-import { formatLongitude, signForLongitude, signName } from '../lib/signs';
+import { SIGNS, formatLongitude, signForLongitude, signName } from '../lib/signs';
 import { bigThree } from '../lib/interpretations';
 import { chartHandoffFragment } from '../lib/chart-handoff';
 import type { Chart } from '../lib/engine/types';
@@ -30,6 +30,17 @@ interface Placement {
 }
 
 const TITLES: Record<Placement['kind'], string> = { sun: 'Sun', moon: 'Moon', rising: 'Rising' };
+let heldDiscs: HTMLImageElement[] | undefined;
+
+/**
+ * All twelve discs, in zodiac order, before the three a chart shows, so the
+ * requests do not show its signs. lib/sign-icon.ts does this for the other
+ * pages; it is written out here to keep this route's static bundle small.
+ */
+function requestAllDiscs(): void {
+  if (typeof Image === 'undefined' || heldDiscs) return;
+  heldDiscs = SIGNS.map(({ slug }) => Object.assign(new Image(), { src: `/assets/zodiac-icons/128/${slug}.webp` }));
+}
 
 function track(name: string, props: Record<string, string>): void {
   const analytics = (window as Window & {
@@ -73,7 +84,7 @@ export default function BigThreeQuick() {
       if (!isCurrent()) return;
       const { chart } = source;
       const prepared = await module.prepareBigThreeCard(
-        { bodies: chart.bodies, angles: chart.angles, engineVersion: chart.engineVersion },
+        { bodies: chart.bodies, angles: chart.angles, engineVersion: chart.engineVersion, utc: chart.input?.utc },
         'en',
       );
       if (!isCurrent()) return;
@@ -130,6 +141,7 @@ export default function BigThreeQuick() {
       const moon = chart.bodies.find((body) => body.body === 'Moon');
       if (!sun || !moon || !chart.angles) throw new Error('incomplete chart');
       cardSource.current = { chart, run };
+      requestAllDiscs();
       setPlacements([
         { kind: 'sun', title: TITLES.sun, lon: sun.lon },
         { kind: 'moon', title: TITLES.moon, lon: moon.lon },
@@ -248,7 +260,6 @@ export default function BigThreeQuick() {
                     <span class="mono--label">{title}</span>
                     <span class="three-card__sign">
                       <picture class="three-card__icon">
-                        <source srcset={`/assets/zodiac-icons/128/${s.slug}.avif`} type="image/avif" />
                         <img src={`/assets/zodiac-icons/128/${s.slug}.webp`} width="44" height="44" alt="" decoding="async" />
                       </picture>
                       {signName(s, 'en')}

@@ -161,12 +161,16 @@ describe('technical audit remediation contracts', () => {
     expect(sitemap).toContain("const LEGAL_IDENTITY_LASTMOD = '2026-08-29'");
     expect(sitemap).toContain("...['/', '/about/', '/privacy/', '/terms/'].map((loc) => [loc, LEGAL_IDENTITY_LASTMOD] as const)");
     expect(terms).toContain("const modifiedAt = '2026-08-29T00:00:00.000Z'");
-    // Revised again on 2026-09-23 (the claims ledger's corrections); the
-    // sitemap's ENGINE_PHASE1_LASTMOD carries the same date for both.
-    expect(privacy).toContain("const modifiedAt = '2026-09-23T00:00:00.000Z'");
+    // Revised on 2026-09-23 (the claims ledger's corrections), on 2026-09-28
+    // (the privacy audit's fixes) and on 2026-09-29 (the share-image review);
+    // the sitemap's SHARE_IMAGE_REVIEW_LASTMOD carries the last date for it.
+    expect(privacy).toContain("const modifiedAt = '2026-09-29T00:00:00.000Z'");
     for (const page of [privacy, terms]) expect(page).toContain('dateModified: modifiedAt');
-    expect(about).toContain("dateModified: '2026-09-23T00:00:00.000Z'");
+    expect(about).toContain("dateModified: '2026-09-28T00:00:00.000Z'");
     expect(sitemap).toContain("const ENGINE_PHASE1_LASTMOD = '2026-09-23'");
+    expect(sitemap).toContain("const PRIVACY_AUDIT_LASTMOD = '2026-09-28'");
+    expect(sitemap).toContain("const SHARE_IMAGE_REVIEW_LASTMOD = '2026-09-29'");
+    expect(sitemap).toContain("'/about/', '/ask/', '/birth-chart/someone-else/', '/methodology/', '/privacy/', '/tools/',");
     for (const [page, path, modified] of [
       [learn, '/learn/', '2026-09-05T00:00:00.000Z'],
       [houses, '/learn/houses/', '2026-08-23T00:00:00.000Z'],
