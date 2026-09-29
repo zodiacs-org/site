@@ -42,11 +42,13 @@ describe('public legal identity', () => {
     ]);
 
     // About and the privacy policy were revised again on 28 September 2026,
-    // when the privacy audit's findings (F-17, F-18, F-19, F-27, F-40) were fixed.
+    // when the privacy audit's findings (F-17, F-18, F-19, F-27, F-40) were
+    // fixed, and the privacy policy once more on 29 September 2026, after the
+    // review of shareable images and downloaded calendar files.
     expect(about).toContain("dateModified: '2026-09-28T00:00:00.000Z'");
     expect(terms).toContain("const updated = '29 August 2026'");
     expect(terms).toContain("const modifiedAt = '2026-08-29T00:00:00.000Z'");
-    expect(privacy).toContain("const updated = '28 September 2026'");
-    expect(privacy).toContain("const modifiedAt = '2026-09-28T00:00:00.000Z'");
+    expect(privacy).toContain("const updated = '29 September 2026'");
+    expect(privacy).toContain("const modifiedAt = '2026-09-29T00:00:00.000Z'");
   });
 });

@@ -16,8 +16,8 @@ const walletChartEnabled = configuredWalletChains({
   PUBLIC_WALLET_CHART_ENABLED:
     import.meta.env.PUBLIC_WALLET_CHART_ENABLED ?? process.env.PUBLIC_WALLET_CHART_ENABLED,
 }).length > 0;
-const updated = '28 de setembro de 2026';
-const modifiedAt = '2026-09-28T00:00:00.000Z';
+const updated = '29 de setembro de 2026';
+const modifiedAt = '2026-09-29T00:00:00.000Z';
 
 const jsonLd = [
   {
@@ -169,22 +169,27 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         as imagens de compatibilidade e de mapa composto, e as imagens de
         revolução solar e lunar — é desenhada no seu dispositivo e vai só para
         onde você a compartilha ou a salva. A menos que você escolha mostrar os
-        dados de nascimento na folha do mapa, nenhuma tem nome, data, hora ou
-        local de nascimento nem coordenadas, e nenhuma mostra de um nascimento
-        mais do que o link só com posições dele. As posições planetárias de um
-        mapa são as da hora de nascimento em UTC arredondada ao minuto inteiro,
-        que ainda indicam a data e a hora de nascimento até o minuto; o
-        ascendente e o Meio do Céu aparecem apenas em graus inteiros, e as casas
-        Placidus ficam de fora. Uma imagem de revolução é calculada a partir
-        dessas posições e indica a revolução até o minuto inteiro, assim como o
-        arquivo de calendário dela. Um mapa sem hora de nascimento é desenhado
-        com o céu das 12:00 UTC da data de nascimento, como o link dele, o que
-        indica a data, mas nada sobre o local de nascimento; o signo da Lua só
-        aparece se a Lua ficou nele durante todo esse dia, em todo lugar, e uma
-        imagem de dois mapas deixa de fora a Lua dessa pessoa. Uma imagem de
-        compatibilidade também mostra os nomes dos dois mapas. Cada imagem
-        sozinha não restringe o local de nascimento mais do que um link; várias
-        compartilhadas juntas podem restringi-lo mais.
+        dados de nascimento na folha do mapa, nenhuma tem data, hora ou local de
+        nascimento nem coordenadas; nenhuma tem nomes, exceto uma imagem de
+        compatibilidade, que mostra os nomes dos dois mapas, e nenhuma mostra de
+        um nascimento mais do que o link só com posições dele. As posições
+        planetárias de um mapa são as da hora de nascimento em UTC arredondada
+        ao minuto inteiro, que ainda indicam a data e a hora de nascimento até o
+        minuto; o ascendente e o Meio do Céu aparecem apenas em graus inteiros,
+        e as casas Placidus ficam de fora. Uma imagem de revolução é calculada a
+        partir dessas posições e indica a revolução até o minuto inteiro, assim
+        como o arquivo de calendário dela. Um mapa sem hora de nascimento é
+        desenhado com o céu das 12:00 UTC da data de nascimento, como o link
+        dele, o que indica a data, mas nada sobre o local de nascimento; o signo
+        da Lua só aparece se a Lua ficou nele durante todo esse dia, em todo
+        lugar, e uma imagem de dois mapas deixa de fora a Lua dessa pessoa. Cada
+        imagem sozinha não restringe o local de nascimento mais do que um link,
+        mas várias compartilhadas juntas o restringem mais. Para um nascimento
+        em Lyon em 1987, um link sozinho deixa uma área de cerca de 19.100 km²;
+        um link e uma imagem de revolução solar calculada para o local de
+        nascimento, como as imagens de revolução são por padrão, deixam cerca de
+        3.900 km², cerca de cinco vezes menos; um link com duas imagens de
+        revolução solar e quatro de revolução lunar deixa cerca de 1.500 km².
       </p>
       <p>
         Se você estiver conectado e criar um convite de compatibilidade a partir
@@ -510,28 +515,41 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         posições dos planetas no código permitem deduzir sua data e hora de
         nascimento com precisão de minuto: elas são tomadas na hora de
         nascimento em UTC arredondada ao minuto inteiro. O ascendente e o Meio
-        do Céu são arredondados ao grau
-        inteiro, o que ainda restringe o local de nascimento a uma área de
-        cerca de um grau de longitude de largura: uns 110 km no equador, 80 km
-        a 45° norte ou sul e 55 km a 60°. De norte a sul, a área tem pelo menos
-        400 km a menos de 15° do equador, 200 km a menos de 45° e 70 km a menos
-        de 60°; mais ao norte pode ser mais estreita, e perto do Círculo Polar
-        Ártico pode ser uma faixa de menos de um quilômetro de norte a sul. Um
-        mapa sem hora de nascimento não tem ascendente nem Meio do Céu, e o
-        código dele leva o céu das 12:00 UTC da data de nascimento, que indica
-        a data, mas nada sobre o local de nascimento. Os códigos criados por
-        uma versão anterior do site podem levar mais. Para um mapa sem hora de
-        nascimento, levam o meio-dia no local de nascimento, que indica o fuso
-        horário dele ou, antes da hora padrão, a longitude. Para um nascimento
-        anterior à hora padrão, quando o mapa segue o tempo médio do próprio
-        local de nascimento, levam o segundo do nascimento, que restringe o
-        local de nascimento a poucas faixas de cerca de 3 km de largura ou
-        menos. Os endereços de calendário criados antes de 23 de setembro de
-        2026 também levam o ascendente e o Meio do Céu com mais precisão; nosso
-        servidor agora os arredonda antes de usá-los. Um endereço de calendário
-        nunca muda sozinho, então, para substituir um criado por uma versão
-        anterior, como o de um mapa sem hora de nascimento ou de um nascimento
-        anterior à hora padrão, remova esse calendário e assine novamente.
+        do Céu são arredondados ao grau inteiro, o que ainda restringe o local
+        de nascimento a uma área de cerca de um grau de longitude de largura:
+        uns 110 km no equador, 80 km a 45° norte ou sul e 55 km a 60°. De norte
+        a sul, a área tem pelo menos 400 km a menos de 15° do equador, 200 km a
+        menos de 45° e 70 km a menos de 60°; mais ao norte pode ser mais
+        estreita, e perto do Círculo Polar Ártico pode ser uma faixa de menos de
+        um quilômetro de norte a sul. Um mapa sem hora de nascimento não tem
+        ascendente nem Meio do Céu, e o código dele leva o céu das 12:00 UTC da
+        data de nascimento, que indica a data, mas nada sobre o local de
+        nascimento. Os códigos criados por uma versão anterior do site podem
+        levar mais. Para um mapa sem hora de nascimento, levam o meio-dia no
+        local de nascimento, que indica o fuso horário dele ou, antes da hora
+        padrão, a longitude, e uma imagem de dois mapas feita com um desses
+        códigos desenha esse mapa com essas posições, não com o céu das 12:00
+        UTC. Para um nascimento anterior à hora padrão, quando o mapa segue o
+        tempo médio do próprio local de nascimento, levam o segundo do
+        nascimento, que restringe o local de nascimento a poucas faixas de cerca
+        de 3 km de largura ou menos. Os endereços de calendário criados antes de
+        23 de setembro de 2026 também levam o ascendente e o Meio do Céu com
+        mais precisão; nosso servidor agora os arredonda antes de usá-los. Um
+        endereço de calendário nunca muda sozinho, então, para substituir um
+        criado por uma versão anterior, como o de um mapa sem hora de nascimento
+        ou de um nascimento anterior à hora padrão, remova esse calendário e
+        assine novamente.
+      </p>
+      <p>
+        Um arquivo de calendário que você baixa da página de trânsitos é criado
+        no seu navegador a partir do seu mapa como ele é calculado ali, não a
+        partir do código do mapa, e os horários dele são exatos. Qualquer pessoa
+        com quem você o compartilhar, ou qualquer calendário on-line para o qual
+        você o importar, pode descobrir por eles a sua data e hora de
+        nascimento, e o seu local de nascimento pelos do seu ascendente ou Meio
+        do Céu; sem hora de nascimento, o mapa é calculado para o meio-dia no
+        seu local de nascimento, e então eles indicam o fuso horário dele ou,
+        antes da hora padrão, a longitude.
       </p>
       {webPushEnabled && (
         <p>

@@ -134,7 +134,7 @@ describe('Astrofolio beginner buying guide', () => {
     expect(guide).toContain(':global(body:has(.buy-guide) .zfooter__note) { display: none; }');
     expect(base).toContain('<SiteFooter locale={locale} terminalMarketNotice={props.terminalMarketNotice} noAssistant={props.noAssistant} />');
     expect(footer).toContain('const terminalMarketNotice = Boolean(Astro.props.terminalMarketNotice)');
-    expect(privacy).toContain("const updated = '28 September 2026'");
+    expect(privacy).toContain("const updated = '29 September 2026'");
     expect(privacy).toContain('selected token mint and requested amount as quote parameters');
     expect(privacy).toContain('public Solana address to Jupiter');
     expect(privacy).toContain('signed transaction and Jupiter request identifier');

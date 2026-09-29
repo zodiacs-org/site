@@ -16,8 +16,8 @@ const walletChartEnabled = configuredWalletChains({
   PUBLIC_WALLET_CHART_ENABLED:
     import.meta.env.PUBLIC_WALLET_CHART_ENABLED ?? process.env.PUBLIC_WALLET_CHART_ENABLED,
 }).length > 0;
-const updated = '28 septembre 2026';
-const modifiedAt = '2026-09-28T00:00:00.000Z';
+const updated = '29 septembre 2026';
+const modifiedAt = '2026-09-29T00:00:00.000Z';
 
 const jsonLd = [
   {
@@ -172,23 +172,28 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         images de révolution solaire et lunaire — est dessinée sur ton appareil
         et ne va que là où tu la partages ou l’enregistres. Sauf si tu choisis
         d’afficher les données de naissance sur la feuille du thème, aucune ne
-        comporte de nom, de date, d’heure ou de lieu de naissance, ni de
-        coordonnées, et aucune ne montre plus d’une naissance que son lien
-        limité aux positions. Les positions planétaires d’un thème sont celles
-        de l’heure de naissance en UTC arrondie à la minute entière, qui donnent
-        encore la date et l’heure de naissance à la minute près ; l’ascendant et
-        le milieu du ciel ne sont montrés qu’au degré entier, et les maisons
-        Placidus sont laissées de côté. Une image de révolution est calculée à
-        partir de ces positions et donne la révolution à la minute entière,
-        comme son fichier de calendrier. Un thème sans heure de naissance est
-        dessiné avec le ciel de 12:00 UTC à la date de naissance, comme son
-        lien, ce qui donne la date mais rien sur le lieu de naissance ; le signe
-        de la Lune n’apparaît que si la Lune y est restée toute cette journée,
-        partout, et une image de deux thèmes laisse de côté la Lune de cette
-        personne. Une image de compatibilité montre aussi les noms des deux
-        thèmes. Chaque image seule ne situe pas le lieu de naissance plus
-        précisément qu’un lien ; plusieurs partagées ensemble peuvent le situer
-        davantage.
+        comporte de date, d’heure ou de lieu de naissance, ni de coordonnées ;
+        aucune ne comporte de nom, sauf une image de compatibilité, qui montre
+        les noms des deux thèmes, et aucune ne montre plus d’une naissance que
+        son lien limité aux positions. Les positions planétaires d’un thème sont
+        celles de l’heure de naissance en UTC arrondie à la minute entière, qui
+        donnent encore la date et l’heure de naissance à la minute près ;
+        l’ascendant et le milieu du ciel ne sont montrés qu’au degré entier, et
+        les maisons Placidus sont laissées de côté. Une image de révolution est
+        calculée à partir de ces positions et donne la révolution à la minute
+        entière, comme son fichier de calendrier. Un thème sans heure de
+        naissance est dessiné avec le ciel de 12:00 UTC à la date de naissance,
+        comme son lien, ce qui donne la date mais rien sur le lieu de
+        naissance ; le signe de la Lune n’apparaît que si la Lune y est restée
+        toute cette journée, partout, et une image de deux thèmes laisse de côté
+        la Lune de cette personne. Chaque image seule ne situe pas le lieu de
+        naissance plus précisément qu’un lien, mais plusieurs partagées ensemble
+        le situent davantage. Pour une naissance à Lyon en 1987, un lien seul
+        laisse une zone d’environ 19 100 km² ; un lien et une image de
+        révolution solaire calculée pour le lieu de naissance, comme le sont par
+        défaut les images de révolution, laissent environ 3 900 km², environ
+        cinq fois moins ; un lien avec deux images de révolution solaire et
+        quatre de révolution lunaire laisse environ 1 500 km².
       </p>
       <p>
         Si tu es connecté et que tu crées une invitation de compatibilité à partir
@@ -518,36 +523,48 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
       </p>
       <p>
         Un flux de calendrier des transits contient un code de thème limité aux
-        positions dans son adresse web. Notre serveur, son cache et ton service de
-        calendrier reçoivent ce code à chaque actualisation du calendrier. Le code
-        ne comporte aucun champ de nom, de date, d’heure ou de lieu. Ses positions
-        planétaires permettent encore de retrouver ta date et ton heure de
-        naissance à la minute près : elles sont prises à l’heure de naissance
-        en UTC arrondie à la minute entière. L’ascendant et le milieu du ciel
-        sont arrondis au degré près,
-        ce qui situe quand même le lieu de naissance dans une zone d’environ un
-        degré de longitude de large : environ 110 km à l’équateur, 80 km à 45°
-        nord ou sud et 55 km à 60°. Du nord au sud, la zone mesure au moins
-        400 km à moins de 15° de l’équateur, 200 km à moins de 45° et 70 km à
-        moins de 60° ; plus au nord, elle peut être plus étroite, et près du
-        cercle polaire arctique ce peut être une bande de moins d’un kilomètre
-        du nord au sud. Un thème sans heure de naissance n’a ni
-        ascendant ni milieu du ciel, et son code contient le ciel de 12:00 UTC à
-        la date de naissance, qui donne la date mais rien sur le lieu de
-        naissance. Les codes créés par une version antérieure du site peuvent
-        en contenir davantage. Pour un thème sans heure de naissance, ils
-        contiennent midi au lieu de naissance, ce qui donne son fuseau horaire
-        ou, avant l’heure légale, sa longitude. Pour une naissance antérieure à
-        l’heure légale, quand le thème suit le temps moyen du lieu de naissance
-        lui-même, ils contiennent la seconde de la naissance, ce qui situe le
-        lieu de naissance dans quelques bandes d’environ 3 km de large ou
-        moins. Les adresses de calendrier créées avant le 23 septembre 2026
-        contiennent aussi l’ascendant et le milieu du ciel avec plus de
+        positions dans son adresse web. Notre serveur, son cache et ton service
+        de calendrier reçoivent ce code à chaque actualisation du calendrier. Le
+        code ne comporte aucun champ de nom, de date, d’heure ou de lieu. Ses
+        positions planétaires permettent encore de retrouver ta date et ton
+        heure de naissance à la minute près : elles sont prises à l’heure de
+        naissance en UTC arrondie à la minute entière. L’ascendant et le milieu
+        du ciel sont arrondis au degré près, ce qui situe quand même le lieu de
+        naissance dans une zone d’environ un degré de longitude de large :
+        environ 110 km à l’équateur, 80 km à 45° nord ou sud et 55 km à 60°. Du
+        nord au sud, la zone mesure au moins 400 km à moins de 15° de
+        l’équateur, 200 km à moins de 45° et 70 km à moins de 60° ; plus au
+        nord, elle peut être plus étroite, et près du cercle polaire arctique ce
+        peut être une bande de moins d’un kilomètre du nord au sud. Un thème
+        sans heure de naissance n’a ni ascendant ni milieu du ciel, et son code
+        contient le ciel de 12:00 UTC à la date de naissance, qui donne la date
+        mais rien sur le lieu de naissance. Les codes créés par une version
+        antérieure du site peuvent en contenir davantage. Pour un thème sans
+        heure de naissance, ils contiennent midi au lieu de naissance, ce qui
+        donne son fuseau horaire ou, avant l’heure légale, sa longitude, et une
+        image de deux thèmes faite avec un tel code dessine ce thème à partir de
+        ces positions, et non du ciel de 12:00 UTC. Pour une naissance
+        antérieure à l’heure légale, quand le thème suit le temps moyen du lieu
+        de naissance lui-même, ils contiennent la seconde de la naissance, ce
+        qui situe le lieu de naissance dans quelques bandes d’environ 3 km de
+        large ou moins. Les adresses de calendrier créées avant le 23 septembre
+        2026 contiennent aussi l’ascendant et le milieu du ciel avec plus de
         précision ; notre serveur les arrondit désormais avant de les utiliser.
         Une adresse de calendrier ne change jamais d’elle-même : pour remplacer
         une adresse créée par une version antérieure, par exemple pour un thème
         sans heure de naissance ou pour une naissance antérieure à l’heure
         légale, supprime ce calendrier et abonne-toi de nouveau.
+      </p>
+      <p>
+        Un fichier de calendrier que tu télécharges depuis la page des transits
+        est créé dans ton navigateur à partir de ton thème tel qu’il y est
+        calculé, et non du code du thème, et ses heures sont exactes. Toute
+        personne avec qui tu le partages, ou tout calendrier en ligne où tu
+        l’importes, peut en déduire ta date et ton heure de naissance, et ton
+        lieu de naissance par celles de ton ascendant ou de ton milieu du ciel ;
+        sans heure de naissance, le thème est calculé pour midi au lieu de
+        naissance, et elles donnent alors son fuseau horaire ou, avant l’heure
+        légale, sa longitude.
       </p>
       {webPushEnabled && (
         <p>

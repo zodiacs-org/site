@@ -16,8 +16,8 @@ const walletChartEnabled = configuredWalletChains({
   PUBLIC_WALLET_CHART_ENABLED:
     import.meta.env.PUBLIC_WALLET_CHART_ENABLED ?? process.env.PUBLIC_WALLET_CHART_ENABLED,
 }).length > 0;
-const updated = '28 settembre 2026';
-const modifiedAt = '2026-09-28T00:00:00.000Z';
+const updated = '29 settembre 2026';
+const modifiedAt = '2026-09-29T00:00:00.000Z';
 
 const jsonLd = [
   {
@@ -172,22 +172,28 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         dell’esploratore, le immagini di compatibilità e del tema composito, e
         le immagini della rivoluzione solare e lunare — viene disegnata sul tuo
         dispositivo e va solo dove la condividi o la salvi. Se non scegli di
-        mostrare i dati di nascita nel foglio del tema, nessuna contiene nome,
-        data, ora o luogo di nascita né coordinate, e nessuna mostra di una
-        nascita più del suo link con le sole posizioni. Le posizioni planetarie
-        di un tema sono quelle dell’ora di nascita in UTC arrotondata al minuto
-        intero, che indicano ancora data e ora di nascita al minuto;
-        l’ascendente e il Medio Cielo sono mostrati solo al grado intero e le
-        case Placidus sono lasciate fuori. Un’immagine di una rivoluzione è
-        calcolata da queste posizioni e indica la rivoluzione al minuto intero,
-        come il suo file di calendario. Un tema senza ora di nascita è disegnato
-        con il cielo delle 12:00 UTC della data di nascita, come il suo link,
-        che indica la data ma nulla del luogo di nascita; il segno della Luna
-        compare solo se la Luna vi è rimasta per tutto quel giorno, ovunque, e
-        un’immagine di due temi lascia fuori la Luna di quella persona.
-        Un’immagine di compatibilità mostra anche i nomi dei due temi. Ogni
-        immagine da sola non restringe il luogo di nascita più di un link;
-        diverse condivise insieme possono restringerlo di più.
+        mostrare i dati di nascita nel foglio del tema, nessuna contiene data,
+        ora o luogo di nascita né coordinate; nessuna contiene nomi tranne
+        un’immagine di compatibilità, che mostra i nomi dei due temi, e nessuna
+        mostra di una nascita più del suo link con le sole posizioni. Le
+        posizioni planetarie di un tema sono quelle dell’ora di nascita in UTC
+        arrotondata al minuto intero, che indicano ancora data e ora di nascita
+        al minuto; l’ascendente e il Medio Cielo sono mostrati solo al grado
+        intero e le case Placidus sono lasciate fuori. Un’immagine di una
+        rivoluzione è calcolata da queste posizioni e indica la rivoluzione al
+        minuto intero, come il suo file di calendario. Un tema senza ora di
+        nascita è disegnato con il cielo delle 12:00 UTC della data di nascita,
+        come il suo link, che indica la data ma nulla del luogo di nascita; il
+        segno della Luna compare solo se la Luna vi è rimasta per tutto quel
+        giorno, ovunque, e un’immagine di due temi lascia fuori la Luna di
+        quella persona. Ogni immagine da sola non restringe il luogo di nascita
+        più di un link, ma diverse condivise insieme lo restringono di più. Per
+        una nascita a Lione nel 1987, un link da solo lascia una zona di circa
+        19.100 km²; un link e un’immagine della rivoluzione solare calcolata per
+        il luogo di nascita, come lo sono per impostazione predefinita le
+        immagini delle rivoluzioni, lasciano circa 3.900 km², circa cinque volte
+        meno; un link con due immagini della rivoluzione solare e quattro della
+        rivoluzione lunare lascia circa 1.500 km².
       </p>
       <p>
         Se hai effettuato l’accesso e crei un invito di compatibilità da un tema
@@ -524,29 +530,40 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         luogo. Le sue posizioni planetarie permettono comunque di ricavare la
         tua data e la tua ora di nascita al minuto: sono prese all’ora di
         nascita in UTC arrotondata al minuto intero. L’ascendente e il Medio
-        Cielo sono
-        arrotondati al grado, il che restringe comunque il luogo di nascita a
-        una zona larga circa un grado di longitudine: circa 110 km
+        Cielo sono arrotondati al grado, il che restringe comunque il luogo di
+        nascita a una zona larga circa un grado di longitudine: circa 110 km
         all’equatore, 80 km a 45° nord o sud e 55 km a 60°. Da nord a sud la
-        zona misura almeno 400 km entro 15° dall’equatore, 200 km entro 45° e
-        70 km entro 60°; più a nord può essere più stretta, e vicino al Circolo
-        polare artico può essere una striscia di meno di un chilometro da nord
-        a sud. Un tema senza ora di nascita non ha ascendente né Medio Cielo, e
-        il suo codice contiene il cielo delle 12:00 UTC della data di nascita,
-        che indica la data ma nulla del luogo di nascita. I codici creati da una
-        versione precedente del sito possono contenere di più. Per un tema
-        senza ora di nascita contengono il mezzogiorno nel luogo di nascita,
-        che ne indica il fuso orario o, prima dell’ora standard, la
-        longitudine. Per una nascita precedente all’ora standard, quando il
-        tema segue il tempo medio del luogo di nascita stesso, contengono il
-        secondo della nascita, che restringe il luogo di nascita a poche
-        strisce larghe circa 3 km o meno. Gli indirizzi dei calendari creati
-        prima del 23 settembre 2026 contengono anche l’ascendente e il Medio
-        Cielo con maggiore precisione; ora il nostro server li arrotonda prima
-        di usarli. Un indirizzo di calendario non cambia mai da solo, quindi per
-        sostituirne uno creato da una versione precedente, come quello di un
-        tema senza ora di nascita o di una nascita precedente all’ora standard,
-        rimuovi quel calendario e iscriviti di nuovo.
+        zona misura almeno 400 km entro 15° dall’equatore, 200 km entro 45° e 70
+        km entro 60°; più a nord può essere più stretta, e vicino al Circolo
+        polare artico può essere una striscia di meno di un chilometro da nord a
+        sud. Un tema senza ora di nascita non ha ascendente né Medio Cielo, e il
+        suo codice contiene il cielo delle 12:00 UTC della data di nascita, che
+        indica la data ma nulla del luogo di nascita. I codici creati da una
+        versione precedente del sito possono contenere di più. Per un tema senza
+        ora di nascita contengono il mezzogiorno nel luogo di nascita, che ne
+        indica il fuso orario o, prima dell’ora standard, la longitudine, e
+        un’immagine di due temi fatta con uno di questi codici disegna quel tema
+        da quelle posizioni, non dal cielo delle 12:00 UTC. Per una nascita
+        precedente all’ora standard, quando il tema segue il tempo medio del
+        luogo di nascita stesso, contengono il secondo della nascita, che
+        restringe il luogo di nascita a poche strisce larghe circa 3 km o meno.
+        Gli indirizzi dei calendari creati prima del 23 settembre 2026
+        contengono anche l’ascendente e il Medio Cielo con maggiore precisione;
+        ora il nostro server li arrotonda prima di usarli. Un indirizzo di
+        calendario non cambia mai da solo, quindi per sostituirne uno creato da
+        una versione precedente, come quello di un tema senza ora di nascita o
+        di una nascita precedente all’ora standard, rimuovi quel calendario e
+        iscriviti di nuovo.
+      </p>
+      <p>
+        Un file di calendario che scarichi dalla pagina dei transiti viene
+        creato nel tuo browser dal tuo tema così come vi è calcolato, non dal
+        codice del tema, e i suoi orari sono esatti. Chiunque con cui lo
+        condividi, o qualsiasi calendario online in cui lo importi, può
+        ricavarne la tua data e ora di nascita, e il tuo luogo di nascita da
+        quelli del tuo ascendente o Medio Cielo; senza ora di nascita, il tema è
+        calcolato per il mezzogiorno nel luogo di nascita, e allora ne indicano
+        il fuso orario o, prima dell’ora standard, la longitudine.
       </p>
       {webPushEnabled && (
         <p>

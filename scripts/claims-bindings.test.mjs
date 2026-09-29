@@ -1,10 +1,14 @@
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
+import './lib/deltat-install.mjs';
+import { e_tilt, MakeTime, SiderealTime } from 'astronomy-engine';
 import { describe, expect, it } from 'vitest';
 import { eventsCatalog } from '../src/lib/events/catalog.ts';
-import { bodyLongitude } from '../src/lib/engine/full.ts';
+import { bodyLongitude, computeChart } from '../src/lib/engine/full.ts';
 import { solarReturnInstant } from '../src/lib/engine/solar-return.ts';
 import { prepareLocalTime, resolveLocalToUtc } from '../src/lib/time/localToUtc.ts';
+import { computeLunarReturn } from '../src/islands/lunar-return/compute.ts';
+import { computeSolarReturn } from '../src/islands/solar-return/compute.ts';
 
 /*
  * Sentences that state a measured accuracy, held to the measurement behind
@@ -57,6 +61,83 @@ describe('event times against Swiss Ephemeris', () => {
     expect(band).toContain('so slowly that this time can be off by several hours.');
     expect(read('src/pages/events/index.astro')).toContain('Uranus, Neptune or Pluto by several hours');
   });
+});
+
+describe('images of one birth shared together', () => {
+  it('narrow the birthplace about five times with one solar return image, as the privacy page says', async () => {
+    // A link carries the ascendant and midheaven to the whole degree at the
+    // birth minute. A solar or lunar return image cast at the birthplace, as
+    // they are by default, draws its own to the whole degree, at an instant
+    // anyone can find again from the link. The places left are those that
+    // give every image's whole degrees, counted on a 0.01° grid.
+    const birth = { date: '1987-03-14', time: '06:42', zone: 'Europe/Paris', lat: 45.764, lon: 4.8357 };
+    await prepareLocalTime(birth.date, birth.zone);
+    const utc = resolveLocalToUtc(birth.date, birth.time, birth.zone, { longitude: birth.lon }).utc;
+    const place = { name: 'Lyon', lat: birth.lat, lon: birth.lon, tz: birth.zone };
+    const shown = [utc];
+    for (const year of [2025, 2026]) {
+      const result = computeSolarReturn({
+        birthDate: birth.date, birthTime: birth.time, timeKnown: true, birthplace: place,
+        savedSunLon: null, houseSystem: 'whole', castLocation: place, year,
+      }, new Date('2026-09-28T00:00:00Z'));
+      shown.push((result.shared ?? result.chart).input.utc);
+    }
+    let reference = new Date('2026-06-01T00:00:00Z');
+    for (let pass = 0; pass < 4; pass += 1) {
+      const result = computeLunarReturn({
+        birthDate: birth.date, birthTime: birth.time, timeKnown: true, birthplace: place,
+        houseSystem: 'whole', castLocation: null,
+      }, reference);
+      const at = (result.shared ?? result.chart).input.utc;
+      shown.push(at);
+      reference = new Date(at.getTime() + 86_400_000);
+    }
+    const RAD = Math.PI / 180;
+    const norm = (x) => ((x % 360) + 360) % 360;
+    const images = shown.map((at) => {
+      const chart = computeChart({ utc: at, latitude: birth.lat, longitude: birth.lon, houseSystem: 'whole', timeKnown: true });
+      const time = MakeTime(at);
+      return {
+        gast: SiderealTime(time) * 15,
+        eps: e_tilt(time).tobl * RAD,
+        asc: Math.floor(chart.angles.asc),
+        mc: Math.floor(chart.angles.mc),
+      };
+    });
+    // How many images, in order, a place gives the same whole degrees as.
+    const agrees = (lat, lon) => {
+      let count = 0;
+      for (const image of images) {
+        const ramc = norm(image.gast + lon) * RAD;
+        const mc = norm(Math.atan2(Math.sin(ramc), Math.cos(ramc) * Math.cos(image.eps)) / RAD);
+        if (Math.floor(mc) !== image.mc) break;
+        const asc = norm(Math.atan2(Math.cos(ramc), -(Math.sin(ramc) * Math.cos(image.eps) + Math.tan(lat * RAD) * Math.sin(image.eps))) / RAD);
+        if (Math.floor(asc) !== image.asc) break;
+        count += 1;
+      }
+      return count;
+    };
+    const cellKm2 = 0.01 * 111.32 * Math.cos(birth.lat * RAD) * 0.01 * 110.57;
+    const cells = new Array(images.length + 1).fill(0);
+    for (let lon = birth.lon - 1.5; lon <= birth.lon + 1.5; lon += 0.01) {
+      for (let lat = birth.lat - 12; lat <= birth.lat + 12; lat += 0.01) cells[agrees(lat, lon)] += 1;
+    }
+    // Places that agree with at least the first n images.
+    const area = (n) => cells.slice(n).reduce((sum, count) => sum + count, 0) * cellKm2;
+    const [link, oneSolar, all] = [area(1), area(2), area(7)];
+    expect(link).toBeGreaterThan(18_600);
+    expect(link).toBeLessThan(19_600);
+    expect(oneSolar).toBeGreaterThan(3_700);
+    expect(oneSolar).toBeLessThan(4_100);
+    expect(link / oneSolar).toBeGreaterThan(4.5);
+    expect(link / oneSolar).toBeLessThan(5.5);
+    expect(all).toBeGreaterThan(1_400);
+    expect(all).toBeLessThan(1_650);
+    const page = read('src/pages/privacy/index.astro').replace(/\s+/gu, ' ');
+    expect(page).toContain('For a birth in Lyon in 1987, a link alone leaves an area of about 19,100 km²;');
+    expect(page).toContain('leave about 3,900 km², about five times smaller;');
+    expect(page).toContain('a link with two solar return images and four lunar return images leaves about 1,500 km².');
+  }, 120_000);
 });
 
 describe('the solar return with an unknown birth time', () => {

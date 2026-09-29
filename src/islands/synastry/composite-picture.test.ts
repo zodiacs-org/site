@@ -53,6 +53,18 @@ describe('a composite picture', () => {
     expect(picture.points.some((point) => point.body === 'Moon')).toBe(false);
   });
 
+  it('draws a person whose positions arrived in a link from those positions, even an older link’s noon at the birthplace', async () => {
+    // An older link for a chart without a birth time carries noon at the
+    // birthplace (06:15 UTC in Kathmandu), not 12:00 UTC. The picture cannot
+    // tell, and draws the positions it received, without the Moon.
+    const received = { bodies: computeBodies(new Date(`${date}T06:15:00Z`)).map(({ body, lon }) => ({ body, lon })), timeKnown: false };
+    const page = buildCompositeTabData(received.bodies, otherPerson.bodies, { aTimeKnown: false, bTimeKnown: true });
+    const picture = await compositePictureData(page, { a: received, b: otherPerson });
+    const drawn = (data: typeof page) => data.points.filter((point) => point.body !== 'Moon').map(({ body, lon }) => [body, lon]);
+    expect(drawn(picture)).toEqual(drawn(page));
+    expect(picture.points.some((point) => point.body === 'Moon')).toBe(false);
+  });
+
   it('draws a person with a birth time at the whole minute: one picture for every instant in it', async () => {
     const pictures = new Set<string>();
     for (const second of [-30, -3, 0, 12, 29.9]) {
