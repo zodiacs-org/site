@@ -1,6 +1,6 @@
 {
   "name": "zodiacs-mcp-server",
-  "version": "0.1.0-rc.10",
+  "version": "0.1.0-rc.14",
   "private": true,
   "description": "A local stdio MCP server over the Zodiacs engine and its chart comparison. Unpublished release candidate.",
   "license": "MIT",
