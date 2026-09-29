@@ -1,0 +1,59 @@
+Mutation check of the compute API's negative control, 2026-09-29.
+
+Planted in src/lib/compute-api/handler.ts, after the body is read (never committed):
+
+      const body = await readJsonBody(req);
++     console.log(body);
+
+Command: NO_COLOR=1 npx vitest run tests/api/compute-api-privacy.test.ts
+
+   ✓ compute API negative control > computes the canaries it looks for, and they are distinctive
+   × compute API negative control > keeps every canary out of logs, output, errors, headers and error bodies, with the real Firewall SDK
+   × compute API negative control > keeps every canary out of the same places when the compatibility function serves the request, as deployed
+   × compute API negative control > writes nothing at all to any console method or to the output when the rate limit is not consulted
+   ✓ compute API negative control > sees what a leak would look like: a canary written to the console is caught
+   ✓ the site and the compute API > is not called by any page, island or script of the site
+
+Test Files  1 failed (1)
+Tests  3 failed | 3 passed (6)
+
+The first failing test, through the handler, listed 94 leaks; the second, through
+api/compatibility.ts as deployed, listed 88 (every scenario but the failing
+resolver, which cannot be planted there); the third stopped at its first scenario,
+whose console was no longer silent. The first test's leaks, by scenario:
+
+  Firewall rule not provisioned: 9
+  a date that does not exist: 1
+  a latitude out of range: 6
+  a resolver that fails: 6
+  a zone the server does not know: 3
+  an instant without a zone: 2
+  chart from an instant: 8
+  chart from local time: 9
+  events: 2
+  houses from local time: 9
+  over the events window: 4
+  over the positions budget: 2
+  positions: 4
+  query string alongside a body: 8
+  sky-fact at an instant: 2
+  sky-fact ingress on a date: 2
+  sky-fact on a date in a zone: 2
+  time with longitude: 6
+  time without longitude: 3
+  unknown fields named after the input: 6
+
+The first scenario's lines, as the test printed them:
+
+  "chart from local time: console carries 1913-07-19",
+  "chart from local time: console carries 04:37",
+  "chart from local time: console carries Australia/Lord_Howe",
+  "chart from local time: console carries -31.55537",
+  "chart from local time: console carries 31.55537",
+  "chart from local time: console carries -31.555",
+  "chart from local time: console carries 159.07735",
+  "chart from local time: console carries 159.07735",
+  "chart from local time: console carries 159.077",
+
+The handler was then restored byte for byte (cmp against the copy taken before the
+plant) and the file carries no console call.

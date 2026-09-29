@@ -246,16 +246,27 @@ production Firewall changes. Do not execute it from this remediation PR.
 
 The API uses `@vercel/firewall` SDK rate-limit IDs. For each rule, the **If**
 condition must be `@vercel/firewall` with the exact Rate limit ID below, set to
-10 requests per 60 seconds using the default client-IP key. Leave the rule's
+the limit in the table using the default client-IP key. Leave the rule's
 **Then** action at its SDK-rule default. A path-matched Deny rule is wrong: it
 would return 403 instead of letting the endpoint return 429 with `Retry-After`.
 
-| Rate limit ID | Endpoint |
-| --- | --- |
-| `zodiacs-email-subscribe` | `/api/email/subscribe` |
-| `registry-aura-holdings-v1` | `/api/aura-holdings` |
-| `zodiacs-wallet-birth` | `/api/wallet-birth` |
-| `zodiacs-transit-calendar` | `/api/calendar/transits` |
+| Rate limit ID | Endpoint | Limit |
+| --- | --- | --- |
+| `zodiacs-email-subscribe` | `/api/email/subscribe` | 10 requests per 60 seconds |
+| `registry-aura-holdings-v1` | `/api/aura-holdings` | 10 requests per 60 seconds |
+| `zodiacs-wallet-birth` | `/api/wallet-birth` | 10 requests per 60 seconds |
+| `zodiacs-transit-calendar` | `/api/calendar/transits` | 10 requests per 60 seconds |
+| `zodiacs-compute-api` | the six compute endpoints, `/api/v1/{chart,positions,houses,events,time,sky-fact}` (served by `api/compatibility.ts`) | 60 requests per 60 seconds |
+
+The compute API's limit is higher because programs call it in batches and most
+requests take a few milliseconds; its largest request (a 366-day events window
+with every body) took about 0.6 s warm in the measurements in
+`docs/platform/evidence/compute-api-2026-09-29/`, so one address at the limit
+costs at most about 40 function-seconds a minute. Until the rule exists, the
+SDK reports `not-found` and the API fails open, as the transit calendar does.
+To switch the API off without removing it, set `COMPUTE_API_ENABLED=0` for
+Production and redeploy: every compute endpoint then answers 503 with
+`Retry-After`. Leave it unset, or anything but `0`, to keep it on.
 
 After the owner explicitly authorizes and publishes the rules, verify the email
 rule without a recipient or email body:
@@ -299,13 +310,18 @@ publish one custom rule:
 | Field | Value |
 | --- | --- |
 | Name | `sky-data-api-bypass` |
-| If | Request path starts with `/api/v1/` |
+| If | Request path matches the regular expression `^/api/v1/.*\.[^/]+$` |
 | Then | Bypass, with "bypass system-level mitigations" enabled |
 
-Bypass removes DDoS mitigation for the matched paths, so keep it scoped to
-`/api/v1/` (small, edge-cached static files) and keep the plan's bandwidth
-allowance in view; on a plan with rate limiting, a generous per-IP rate-limit
-rule for the same path can sit above it if abuse ever appears.
+Bypass removes DDoS mitigation for the matched paths, so keep it scoped to the
+static files under `/api/v1/` (small, edge-cached, every one named with an
+extension) and keep the plan's bandwidth allowance in view; on a plan with
+rate limiting, a generous per-IP rate-limit rule for the same paths can sit
+above it if abuse ever appears. Do not widen it to every path starting with
+`/api/v1/`: since 2026-09-29 that prefix also holds the six compute endpoints,
+which run a function on every request and must keep the platform's
+mitigations. The expression is the one `vercel.json` uses for the static
+files' cache header, which no compute path can match.
 
 Verify from any non-residential network after publishing:
 
