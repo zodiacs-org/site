@@ -369,4 +369,8 @@ on dates chosen for what they exercise.
 
 ## Licence
 
-MIT. `candidate.json` records what is bundled and where it came from.
+MIT AND CC-BY-4.0. The adapter's own code is MIT. `server.mjs` bundles
+`@zodiacs/engine` 0.1.1-rc.14, whose ΔT module contains 32 values of Table S15
+of Stephenson, Morrison and Hohenkerk (2016) under CC BY 4.0. `NOTICE` gives
+the attributions; keep it if you redistribute the archive. `candidate.json`
+records what is bundled and where it came from.

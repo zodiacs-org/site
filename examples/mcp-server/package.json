@@ -3,7 +3,7 @@
   "version": "0.1.0-rc.14",
   "private": true,
   "description": "A local stdio MCP server over the Zodiacs engine and its chart comparison. Unpublished release candidate.",
-  "license": "MIT",
+  "license": "MIT AND CC-BY-4.0",
   "type": "module",
   "engines": {
     "node": ">=22"
@@ -12,6 +12,7 @@
     "server.mjs",
     "verify.mjs",
     "README.md",
+    "NOTICE",
     "candidate.json",
     "npm-shrinkwrap.json"
   ],

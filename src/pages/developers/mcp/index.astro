@@ -15,6 +15,13 @@ if (!/^[0-9a-f]{40}$/.test(manifest.artifactCommit ?? '')) {
   throw new Error('public/examples/mcp-server.json has no artifactCommit;'
     + ' run node scripts/pack-mcp-server.mjs --artifact-commit <sha> after committing the archive');
 }
+// The all-zero placeholder passes the pattern, so that a branch can be built
+// and reviewed before its pin commit exists. A production deployment may not
+// carry it: the download would not resolve.
+if (process.env.VERCEL_ENV === 'production' && /^0{40}$/.test(manifest.artifactCommit)) {
+  throw new Error('public/examples/mcp-server.json still has the all-zero artifactCommit placeholder;'
+    + ' pin it with node scripts/pack-mcp-server.mjs --artifact-commit <sha> before deploying');
+}
 const archiveUrl = archiveUrlFor(manifest);
 
 const install = installBlock(manifest);
@@ -49,7 +56,9 @@ const tools = [
       <p>
         <strong>{manifest.releaseStatus === 'unpublished-candidate' ? 'Unpublished candidate' : manifest.releaseStatus}
         · {manifest.name} {manifest.version}.</strong> It is not on npm. Install it from the
-        archive below, whose SHA-256 is published beside it.
+        archive below, whose SHA-256 is published beside it. The adapter's code is MIT.
+        The archive is MIT and CC BY 4.0 together, because it bundles the engine's ΔT
+        values; its <code>NOTICE</code> gives the attributions.
       </p>
     </div>
 

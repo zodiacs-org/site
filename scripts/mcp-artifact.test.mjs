@@ -145,7 +145,7 @@ describe('the archive the site distributes', () => {
     expect(readme).toContain(`| adapter | \`${manifest.version}\`, unpublished candidate |`);
   });
 
-  it('carries exactly the six files the package declares, and no more', () => {
+  it('carries exactly the seven files the package declares, and no more', () => {
     // Read the tar header names directly rather than extracting: the point is
     // to know what is in the archive, not to run it.
     const tar = gunzipSync(archive);
@@ -159,9 +159,23 @@ describe('the archive the site distributes', () => {
       offset += Math.ceil(size / 512) * 512;
     }
     expect(names.sort()).toEqual([
-      'package/README.md', 'package/candidate.json', 'package/npm-shrinkwrap.json',
+      'package/NOTICE', 'package/README.md', 'package/candidate.json', 'package/npm-shrinkwrap.json',
       'package/package.json', 'package/server.mjs', 'package/verify.mjs',
     ]);
+  });
+
+  it('declares the licence of what it bundles and carries the engine NOTICE', async () => {
+    // server.mjs inlines the engine, whose ΔT module holds 32 values of Table
+    // S15 under CC BY 4.0: an MIT-only label would drop that attribution.
+    const pkg = JSON.parse(await readFile(resolve(ROOT, 'examples/mcp-server/package.json'), 'utf8'));
+    expect(pkg.license).toBe('MIT AND CC-BY-4.0');
+    expect(pkg.files).toContain('NOTICE');
+    const notice = await readFile(resolve(ROOT, 'examples/mcp-server/NOTICE'), 'utf8');
+    const engineNotice = await readFile(
+      resolve(ROOT, 'node_modules/@zodiacs/engine/NOTICE'), 'utf8');
+    expect(notice.endsWith(engineNotice), 'the engine NOTICE, unchanged, at the end').toBe(true);
+    expect(notice).toContain('Table S15');
+    expect(bundle).toContain('var SY = [');
   });
 
   it('pins every runtime dependency exactly, and locks the whole tree', async () => {
