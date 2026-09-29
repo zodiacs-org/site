@@ -42,7 +42,13 @@ const read = (p) => readFileSync(resolve(root, p), 'utf8');
 // used to compute from the rows, computed from them by the same formulas
 // before they went (docs/engine-validation/swiss-output-removal/strip.py,
 // whose --check recomputes them from the last commit that has the rows).
+// Since 2026-09-29 (DECISIONS-2026-09-29 §2) the pages carry no Swiss value
+// at one date: the far-future Moon's two per-case differences left the
+// statistics, and the clock is stated as statistics over 2100–2199, which
+// deltat-gap-2100-2199.json holds and its tools regenerate with Swiss run on
+// demand.
 const report = JSON.parse(read('docs/platform/evidence/swiss-benchmark/report-measure-rc8.json'));
+const gap = JSON.parse(read('docs/platform/evidence/swiss-benchmark/deltat-gap-2100-2199.json'));
 const corpus = read('docs/platform/evidence/swiss-benchmark/tools/corpus.mjs');
 const { withinRecord, farFuture } = report.statistics;
 /** The comparator's own per-stratum aggregates, which the statistics must agree with. */
@@ -85,9 +91,6 @@ function spanOf(caseIds) {
     .map(([, , , year]) => Number(year));
   return `from ${Math.min(...years)} to ${Math.max(...years)}`;
 }
-
-/** The far-future Moon cases, in the order of their epochs. */
-const futureMoons = () => [...farFuture.moonCases].sort((a, b) => yearOf(a.id) - yearOf(b.id));
 
 /** The year a corpus case is dated in. */
 const yearOf = (id) => Number(new RegExp(`c\\('${id}',[^)]*'(\\d{4})-`, 'u').exec(corpus)[1]);
@@ -135,10 +138,11 @@ describe('the accuracy claim on /methodology/', () => {
     expect(farFuture.overOneArcminute === 0).toBe(report.byStratum.future.maxAbsArcsec <= 60);
     expect(withinRecord.p50AbsArcsec).toBeLessThanOrEqual(withinRecord.p95AbsArcsec);
     expect(withinRecord.p95AbsArcsec).toBeLessThanOrEqual(withinRecord.maxAbsArcsec);
-    // The Moon: every Moon row is either within the record or a far-future case.
-    expect(withinRecord.moon.n + farFuture.moonCases.length).toBe(report.byBody.Moon.n);
-    expect(Math.max(withinRecord.moon.maxAbsArcsec, ...farFuture.moonCases.map((m) => m.absArcsec)))
-      .toBe(report.byBody.Moon.maxAbsArcsec);
+    // The Moon: every Moon row is either within the record or a far-future
+    // case, and the far-future ones are counted, not listed.
+    expect(withinRecord.moon.n + farFuture.moon.n).toBe(report.byBody.Moon.n);
+    expect(report.byBody.Moon.maxAbsArcsec).toBeGreaterThanOrEqual(withinRecord.moon.maxAbsArcsec);
+    expect(farFuture).not.toHaveProperty('moonCases');
   });
 
   it('quotes the measured distribution, with its denominator and its span', () => {
@@ -182,43 +186,52 @@ describe('the accuracy claim on /methodology/', () => {
     expect(prose).toContain(`The other ${farFuture.n} measurements are the far-future cases, and none of them`
       + ` reaches one arcminute: the largest is ${tenth(worst.absArcsec)} arcseconds,`
       + ` ${worst.body} at ${yearOf(worst.id)}`);
-    // Each Moon value with its own epoch: swapping them has to fail.
-    const moons = futureMoons();
-    expect(moons.map((row) => row.id)).toEqual(['future-01', 'future-02']);
-    expect(prose).toContain(`it measured ${tenth(moons[0].absArcsec)} arcseconds from Swiss`
-      + ` at ${yearOf(moons[0].id)} and ${tenth(moons[1].absArcsec)} arcseconds at ${yearOf(moons[1].id)}`);
+    // The Moon's far-future cases are no longer quoted one by one: each, with
+    // the engine's own Moon beside it, gave Swiss's back.
+    expect(prose).not.toMatch(/arcseconds from Swiss at \d{4}/u);
   });
 
-  it('shows the delta-T arithmetic it relies on, and gets it right', () => {
-    const stated = /Swiss reads ΔT at (\d{4}) as ([\d.]+) seconds, and this engine as ([\d.]+) seconds with a one-sigma uncertainty of ([\d.]+) seconds, a gap of ([\d.]+) seconds/u
+  it("gives the two clocks' difference as statistics over 2100–2199, from the committed run", () => {
+    // Statistics over a stated span, never Swiss's ΔT at one date: the run
+    // (tools/deltat-gap-zodiacs.mjs and tools/deltat_gap_swiss.py) computes
+    // Swiss's ΔT on demand and commits only the extremes, with no daily value
+    // and no date for either.
+    const installed = JSON.parse(read('node_modules/@zodiacs/engine/package.json')).version;
+    expect(gap.engine, 'a new engine needs the run again: tools/deltat-gap-zodiacs.mjs').toBe(installed);
+    expect(gap.deltaTTableDigest).toBe(deltaTAt(0).tableDigest);
+    expect([gap.from, gap.to, gap.cadenceDays, gap.n]).toEqual(['2100-01-01', '2199-12-31', 1, 36524]);
+    expect(Object.keys(gap).sort()).toEqual(['cadenceDays', 'deltaTModel', 'deltaTTable', 'deltaTTableDigest', 'engine',
+      'engineSigmaSeconds', 'ephemerisFiles', 'from', 'moonArcsecPerSecond', 'moonOffsetArcsec', 'n', 'node', 'swissBinding',
+      'swissCall', 'swissMinusEngineSeconds', 'to', 'what', 'zodiacsDumpSha256']);
+    const stated = /From (\d{4}) to (\d{4}) their values differ by ([\d.]+) to ([\d.]+) seconds, inside this engine's own one-sigma uncertainty, which grows from ([\d.]+) to ([\d.]+) seconds over those years/u
       .exec(prose);
-    expect(stated, 'the page must name both values and the band, not only the gap').toBeTruthy();
-    const [, epoch, swiss, engine, sigma, gap] = stated;
-    expect(epoch).toBe('2100');
-    // Swiss's value is the one the benchmark record reports, read by the tool
-    // committed beside it (deltat-2026-09-25/tools/moon/swiss_deltat.py); the
-    // value itself left outputs/swiss-deltat.json on 2026-09-28 with the rest
-    // of Swiss's raw output. The engine's is the installed engine's own, at the
-    // instant the 2100 case was measured.
-    const recorded = /At 2100-01-01 the Swiss ΔT model gives ([\d.]+) s/u
-      .exec(read('docs/platform/evidence/swiss-benchmark/RESULTS.md').replace(/\s+/gu, ' '));
-    expect(recorded, 'RESULTS.md must report the Swiss ΔT at 2100').toBeTruthy();
-    const swissSeconds = Number(recorded[1]);
-    expect(swiss).toBe(tenth(swissSeconds));
-    const utc = /c\('future-01',\s*'future',\s*'([^']+)'/u.exec(corpus)[1];
-    expect(utc).toBe('2100-01-01T00:00:00Z');
-    const model = deltaTAt((Date.parse(utc) - Date.UTC(2000, 0, 1, 12)) / 86_400_000);
-    expect(engine).toBe(tenth(model.seconds));
-    expect(sigma).toBe(tenth(model.sigma));
-    const exactGap = swissSeconds - model.seconds;
-    expect(gap).toBe(tenth(exactGap));
-    // What the gap alone does to the Moon, at its mean rate, against what was measured.
-    const rate = 0.549;
-    const claimed = /so the gap alone moves it about ([\d.]+) arcseconds/u.exec(prose);
-    expect(claimed, 'the page must say what the clock alone does').toBeTruthy();
-    expect(claimed[1]).toBe(tenth(exactGap * rate));
-    const observed = farFuture.moonCases.find((m) => m.id === 'future-01').absArcsec;
-    expect(Math.abs(Number(claimed[1]) - observed)).toBeLessThan(1);
+    expect(stated, 'the page must give the span, the difference and the band').toBeTruthy();
+    const [, from, to, least, most, sigmaFrom, sigmaTo] = stated;
+    expect([from, to]).toEqual([gap.from.slice(0, 4), gap.to.slice(0, 4)]);
+    expect([least, most]).toEqual([tenth(gap.swissMinusEngineSeconds.min), tenth(gap.swissMinusEngineSeconds.max)]);
+    // "Inside" the band: the largest difference is below the smallest σ.
+    expect(gap.swissMinusEngineSeconds.min).toBeGreaterThan(0);
+    expect(gap.swissMinusEngineSeconds.max).toBeLessThan(gap.engineSigmaSeconds.min);
+    // The band is the installed engine's own, at the ends of the span, where
+    // it is smallest and largest: σ never decreases.
+    const at = (iso) => deltaTAt((Date.parse(iso) - Date.UTC(2000, 0, 1, 12)) / 86_400_000);
+    expect(at('2100-01-01T00:00:00Z').sigma).toBeCloseTo(gap.engineSigmaSeconds.min, 3);
+    expect(at('2199-12-31T00:00:00Z').sigma).toBeCloseTo(gap.engineSigmaSeconds.max, 3);
+    expect([sigmaFrom, sigmaTo]).toEqual([tenth(gap.engineSigmaSeconds.min), tenth(gap.engineSigmaSeconds.max)]);
+    // What the difference alone does to the Moon, at the Moon's own speed.
+    expect(prose).toMatch(/The Moon moves about half an arcsecond per second of time/u);
+    expect(gap.moonArcsecPerSecond.min).toBeGreaterThan(0.45);
+    expect(gap.moonArcsecPerSecond.max).toBeLessThan(0.65);
+    const moved = /so the difference alone moves it by ([\d.]+) to ([\d.]+) arcseconds/u.exec(prose);
+    expect(moved, 'the page must say what the clock alone does to the Moon').toBeTruthy();
+    expect([moved[1], moved[2]]).toEqual([tenth(gap.moonOffsetArcsec.min), tenth(gap.moonOffsetArcsec.max)]);
+    expect(gap.moonOffsetArcsec.min).toBeGreaterThanOrEqual(gap.swissMinusEngineSeconds.min * gap.moonArcsecPerSecond.min - 0.001);
+    expect(gap.moonOffsetArcsec.max).toBeLessThanOrEqual(gap.swissMinusEngineSeconds.max * gap.moonArcsecPerSecond.max + 0.001);
+    // And no Swiss value at one date, on either page.
+    for (const page of [prose, enginePage]) {
+      expect(page).not.toMatch(/Swiss reads ΔT/u);
+      expect(page).not.toMatch(/\b93\.\d\b/u);
+    }
   });
 
   it('states the observed ΔT the engine uses, with its measured agreement', () => {
@@ -301,10 +314,11 @@ describe('the same figures on /developers/engine/', () => {
     expect(enginePage).toContain(`the largest is ${tenth(withinRecord.maxAbsArcsec)} arcseconds`);
   });
 
-  it('binds each far-future Moon case to its own epoch', () => {
-    const moons = futureMoons();
-    expect(enginePage).toContain(`the Moon is ${tenth(moons[0].absArcsec)} arcseconds from Swiss`
-      + ` at ${yearOf(moons[0].id)} and ${tenth(moons[1].absArcsec)} arcseconds at ${yearOf(moons[1].id)}`);
+  it('gives the far-future clock difference and what it does to the Moon from the same statistics', () => {
+    expect(enginePage).toContain(`from ${gap.from.slice(0, 4)} to ${gap.to.slice(0, 4)} their ΔT values differ by`
+      + ` ${tenth(gap.swissMinusEngineSeconds.min)} to ${tenth(gap.swissMinusEngineSeconds.max)} seconds,`
+      + ` which alone moves the Moon by ${tenth(gap.moonOffsetArcsec.min)} to ${tenth(gap.moonOffsetArcsec.max)} arcseconds`);
+    expect(enginePage).not.toMatch(/arcseconds from Swiss at \d{4}/u);
   });
 
   it('says the package does not bound its input date, because it does not', () => {

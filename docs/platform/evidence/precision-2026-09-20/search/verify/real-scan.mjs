@@ -1,11 +1,14 @@
 // Run the REPOSITORY'S ACTUAL findLongitudeCrossingsWith (type-stripped, unmodified logic)
 // against the same synthetic-dip Uranus setup the track demonstrated with a reimplementation.
 import { findLongitudeCrossingsWith } from './lc.ts';
-import { deBackend, DAY_MS, circular } from '../lib/backends.mjs';
+import { deBackend, DAY_MS, circular, swissDComponents } from '../lib/backends.mjs';
 import { buildLevelProblem, locateTurningPoint } from '../lib/astro-harness.mjs';
 const de = await deBackend();
 const TARGET = 32.6940395;
-const aMs = Date.parse('2019-09-30T09:06:55.823Z'), bMs = Date.parse('2020-04-10T15:17:01.450Z');
+// Component 2's ends are Swiss's, from the removed transit-window fixture:
+// give it from outside the repository (lib/backends.mjs, swissWindowFixture).
+const [, c2] = swissDComponents();
+const aMs = Date.parse(c2.startUtc), bMs = Date.parse(c2.endUtc);
 const p = buildLevelProblem({ lon: de.lon, body:'Uranus', targetDegrees: TARGET, aMs, bMs });
 const st = locateTurningPoint({ f:p.f, fromMs:Date.parse('2019-12-01T00:00:00Z'), toMs:Date.parse('2020-02-15T00:00:00Z'), secondDerivativeBound:p.bounds.bounds.secondDerivativeBound });
 const h=600000;

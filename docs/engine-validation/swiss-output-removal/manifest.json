@@ -1,6 +1,16 @@
 {
- "what": "Swiss Ephemeris output removed from the tree on 2026-09-28 under docs/platform/programme/DECISIONS-2026-09-28.md §3. Every file and field removed, with the SHA-256 of what was removed, the commit that still has it, and the command that regenerates it. Made by strip.py beside this file.",
+ "what": "Swiss Ephemeris output removed from the tree on 2026-09-28 under docs/platform/programme/DECISIONS-2026-09-28.md §3 and on 2026-09-29 under docs/platform/programme/DECISIONS-2026-09-29.md §2. Every file and field removed, and every file replaced by an independent rebuild, with the SHA-256 of what was removed, the commit that still has it, and the command that regenerates it; value-digests.json holds the digests of the distinctive values removed. Made by strip.py beside this file.",
  "base": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+ "rounds": [
+  {
+   "on": "2026-09-28",
+   "under": "docs/platform/programme/DECISIONS-2026-09-28.md §3"
+  },
+  {
+   "on": "2026-09-29",
+   "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2"
+  }
+ ],
  "removedFiles": [
   {
    "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/t1-swiss.json",
@@ -80,10 +90,48 @@
    "sha256": "db4ddce1d2761ad0ada1ab7aaf456d74d2f79b6b6a3434b1b8f6b9895ad66c3a",
    "what": "Swiss transit-window components, bands, minima and crops for the nine A-I cases",
    "lastCommitWithTheFile": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
-   "regenerate": "python3 docs/engine-validation/transit-windows/project-fixtures.py <extracted archive> --output <out.json> (its README)"
+   "regenerate": "python3 docs/engine-validation/transit-windows/project-fixtures.py <extracted archive> --output <out.json> (its README)",
+   "nonSwissFields": {
+    "originalPackStatus": "failed-incomplete",
+    "qualifiedDSourceAcceptedByRoot": true,
+    "sourceHashes": {
+     "v2": "3c48a6f13c5b0ea080e4b298418422d4b76a9405aeb767f25b61963e085c579b",
+     "v3": "8faab02e91e8dc1e96652118802e97d5d6a567e9475e5ebe18ed54f80118f62f",
+     "v6": "2776acbc5b15fb80e0ecc9ce2cc63dc19b9a835a080461da8adee9b5f7c2485c"
+    }
+   }
   }
  ],
  "strippedFiles": [
+  {
+   "path": "docs/engine-validation/swiss-node-polar/receipts/swisseph-master-commit.json",
+   "serialiser": "py",
+   "before": {
+    "bytes": 9804,
+    "sha256": "cb2bc6bad819b5909340afe53f2a639e44eeb2a76406c4555048556c77c0bf5b"
+   },
+   "after": {
+    "bytes": 5589,
+    "sha256": "534eb3d0b7fe332994320940465a7d7b05d870f86b5ed4415c239799732ce6a7"
+   },
+   "removed": [
+    {
+     "path": ".files[].patch",
+     "count": 1,
+     "sha256": "0ff17b461a65c963adfd0ae7c318a3d8b352f1af1766f04c0b0d62c49fcb5176",
+     "bytes": 5485,
+     "patches": [
+      {
+       "file": "swetest.c",
+       "sha256": "135fbf87aed62a9275457268498f7b99cdcee14a2eb4e0082520674e2f9b229b",
+       "bytes": 5178,
+       "lines": 148
+      }
+     ]
+    }
+   ],
+   "regenerate": "the commit receipt as GitHub gives it: https://api.github.com/repos/aloistr/swisseph/commits/3fd0f956d73898b91cc4f67cf18b21af656d1342; its patch is Swiss Ephemeris source code and stays out of the tree"
+  },
   {
    "path": "docs/platform/evidence/deltat-2026-09-25/outputs/swiss-deltat.json",
    "serialiser": "py",
@@ -125,8 +173,8 @@
     "sha256": "e5e1d89ef856e98aeadfc8c291196c4bd329de41b5217af0282190dd5447e316"
    },
    "after": {
-    "bytes": 4017,
-    "sha256": "5239f307ceb5cace0f4e330830744016cfad068db46b413e403e36919b277e7b"
+    "bytes": 4166,
+    "sha256": "0c7f24489e36f7141921c69a8f14526384551036d6c2226322661d22ceec1ac6"
    },
    "removed": [
     {
@@ -136,28 +184,28 @@
      "bytes": 117
     }
    ],
-   "regenerate": "the four canon events located in Swiss Ephemeris 2.10.03, as the engine audit did (engine-audit-2026-09-22/LEDGER.md, verification-honesty-3)"
+   "regenerate": "no committed command: the engine audit located the four events in Swiss Ephemeris 2.10.03 with its swiss-anchors.py, which it did not commit (engine-audit-2026-09-22/LEDGER.md, verification-honesty-3, gives the method); the values are only in commit 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83"
   },
   {
-   "path": "docs/platform/evidence/engine-beyond-swiss/corpora/horizons-24/corpus-tt.json",
+   "path": "docs/platform/evidence/engine-beyond-swiss/horizons-frame/vectors/results.json",
    "serialiser": "py",
    "before": {
-    "bytes": 3962,
-    "sha256": "a31df4c952f778f398f5c8ea888c8d29300ac317bcb984de1e520078a09733a7"
+    "bytes": 9180,
+    "sha256": "6e02af025557a4d2acd46f88dd52a456db7ed5ce068c4f840fc444f8216a8efa"
    },
    "after": {
-    "bytes": 3835,
-    "sha256": "e61de362932f9a65b1d878d865545049877c52e4c0301a0eb63b3364e4828a72"
+    "bytes": 9367,
+    "sha256": "98cd44045cf6753238c59f70ac5664813e803b2af57b2d80ba86988ef93fd042"
    },
    "removed": [
     {
-     "path": ".cases[].deltaTSeconds",
+     "path": ".instants[].jdTdb",
      "count": 24,
-     "sha256": "ec648e52d9891ba911fc775b90976a30dff7776dabbcfbc2c532c1bb5dc85a7b",
-     "bytes": 873
+     "sha256": "6c5910d731a5805eff1d86cb85caeba72f7f9ced5480c4cbe324980c15ef1420",
+     "bytes": 721
     }
    ],
-   "regenerate": "swe.deltat_ex(jdUt, swe.FLG_SWIEPH) at each corpus instant, as the audit's swiss_dump.py read it (engine-beyond-swiss/corpora/README.md)"
+   "regenerate": "the TT of each instant as the corpus was first fetched: git show 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83:docs/platform/evidence/engine-beyond-swiss/corpora/horizons-24/corpus-tt.json, or UT + Swiss's Delta T as under the corpus's own entry"
   },
   {
    "path": "docs/platform/evidence/events-vs-swiss-2026-09-23/deltas.json",
@@ -317,8 +365,8 @@
     "sha256": "dfa4b09a516378faba9e78a191a9a8f780258a6a3ae9fb63804e71f636cca718"
    },
    "after": {
-    "bytes": 19352,
-    "sha256": "904d9096789542004147d87768e5ba472739dbbb0a9a56368c3cbb9c6e5060dd"
+    "bytes": 19485,
+    "sha256": "1dad551d3cd659044c36591135f87dec3cd8e7e939ac5662068cfeba82df9140"
    },
    "removed": [
     {
@@ -329,7 +377,7 @@
      "what": "Swiss's Delta T for each case"
     }
    ],
-   "regenerate": "docs/platform/evidence/precision-2026-09-20: node tools/dump-core-controlled.mjs <swiss.json> [--pinned], swiss.json from swiss-benchmark/tools/dump_swiss.py (CONTROLLED-BASELINE.md)"
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-core-counterfactual.mjs <outdir>, with the four cells where it reads them (tools/dump-core-controlled.mjs and swiss-benchmark/prototype/dump-prototype.mjs write them) and Swiss's run at /tmp/claude-0/swisslab/swiss-measure.json from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
   },
   {
    "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/counterfactual/cellA-core-own-nut2000b-common.json",
@@ -339,8 +387,8 @@
     "sha256": "6931c2bb9f69d7c692ff82751af1628929e2b0d062f4cef9955a4d91200262a2"
    },
    "after": {
-    "bytes": 19457,
-    "sha256": "d17983b52ae9dd7a73eaf963b572a946aa531a606874e519425c4a6ebddfbd39"
+    "bytes": 19590,
+    "sha256": "02e3bf61a96e97876572ebf00c00987b605f8a1057729ec6916893ce48145e76"
    },
    "removed": [
     {
@@ -351,7 +399,7 @@
      "what": "Swiss's Delta T for each case"
     }
    ],
-   "regenerate": "docs/platform/evidence/precision-2026-09-20: node tools/dump-core-controlled.mjs <swiss.json> [--pinned], swiss.json from swiss-benchmark/tools/dump_swiss.py (CONTROLLED-BASELINE.md)"
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-core-counterfactual.mjs <outdir>, with the four cells where it reads them (tools/dump-core-controlled.mjs and swiss-benchmark/prototype/dump-prototype.mjs write them) and Swiss's run at /tmp/claude-0/swisslab/swiss-measure.json from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
   },
   {
    "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/counterfactual/cellA-core-own-nut2000b.json",
@@ -361,8 +409,8 @@
     "sha256": "7ca87d9014b716802aec5b0269709cc15aba363d6032a9baf99607d3631bc4dc"
    },
    "after": {
-    "bytes": 21761,
-    "sha256": "a6fdca822b6ede9ca7c7b222465a26d1f99c1c262ae5e0a344d5ee6c0923e2b8"
+    "bytes": 21894,
+    "sha256": "cee1aed9dcf5e619039bc7a5e7023c2d1aa5b5bfed0c4d6568092d7ce7884e69"
    },
    "removed": [
     {
@@ -373,7 +421,7 @@
      "what": "Swiss's Delta T for each case"
     }
    ],
-   "regenerate": "docs/platform/evidence/precision-2026-09-20: node tools/dump-core-controlled.mjs <swiss.json> [--pinned], swiss.json from swiss-benchmark/tools/dump_swiss.py (CONTROLLED-BASELINE.md)"
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-core-counterfactual.mjs <outdir>, with the four cells where it reads them (tools/dump-core-controlled.mjs and swiss-benchmark/prototype/dump-prototype.mjs write them) and Swiss's run at /tmp/claude-0/swisslab/swiss-measure.json from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
   },
   {
    "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/counterfactual/cellB-core-pinned-common.json",
@@ -383,8 +431,8 @@
     "sha256": "7d80c237c65036aeff207cab8a1a56972966a7ea4efa7fa046347d63cb8a8070"
    },
    "after": {
-    "bytes": 18773,
-    "sha256": "6bc996ba1ac8eaf019e27e45fa7f4bdcfeaed82b99adc65b6c30034a60c4f35f"
+    "bytes": 3364,
+    "sha256": "706b3b1132bf0b3a7888a624ac42d690ba49a5a6d58da6a2c642ca21cda7f28c"
    },
    "removed": [
     {
@@ -393,9 +441,18 @@
      "sha256": "cc438f5f95268cbdb65722b5ca943eab4437b135945d30a834c7595d584b3b4a",
      "bytes": 1339,
      "what": "Swiss's Delta T for each case, which this pinned cell also applied"
+    },
+    {
+     "path": ".cases[].bodies|angles",
+     "count": 16,
+     "sha256": "094cb633a4565d94973b1e37e5fcd3bde0dfdf49c3d885b81e2855f5a6fc041e",
+     "bytes": 15977,
+     "what": "the engine's positions and angles at each case's UT + Swiss's Delta T; beside cell A's, at the engine's own clock, the Moon's difference over its speed gives that Delta T back to within 0.012 s",
+     "on": "2026-09-29",
+     "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2"
     }
    ],
-   "regenerate": "docs/platform/evidence/precision-2026-09-20: node tools/dump-core-controlled.mjs <swiss.json> [--pinned], swiss.json from swiss-benchmark/tools/dump_swiss.py (CONTROLLED-BASELINE.md)"
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-core-counterfactual.mjs <outdir>, with the four cells where it reads them (tools/dump-core-controlled.mjs and swiss-benchmark/prototype/dump-prototype.mjs write them) and Swiss's run at /tmp/claude-0/swisslab/swiss-measure.json from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
   },
   {
    "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/counterfactual/cellB-core-pinned-nut2000b-common.json",
@@ -405,8 +462,8 @@
     "sha256": "554e31de10f7a241101f32b6667be1a0e9bb9da156b2248c8548695a04e2b70d"
    },
    "after": {
-    "bytes": 18882,
-    "sha256": "580f41ff118d487c64b7e8466a6065f30782dba8a5d725e3ef6387719ddc01ed"
+    "bytes": 3470,
+    "sha256": "610c1d9496386d2f34011bdedfdbebbc0078ad42e7d6e7e85df447edef1a2d11"
    },
    "removed": [
     {
@@ -415,9 +472,18 @@
      "sha256": "cc438f5f95268cbdb65722b5ca943eab4437b135945d30a834c7595d584b3b4a",
      "bytes": 1339,
      "what": "Swiss's Delta T for each case, which this pinned cell also applied"
+    },
+    {
+     "path": ".cases[].bodies|angles",
+     "count": 16,
+     "sha256": "08078783c5fdd8c45c95678af5558e4427f668882e0d6843616560bd6f286e24",
+     "bytes": 15980,
+     "what": "the engine's positions and angles at each case's UT + Swiss's Delta T; beside cell A's, at the engine's own clock, the Moon's difference over its speed gives that Delta T back to within 0.012 s",
+     "on": "2026-09-29",
+     "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2"
     }
    ],
-   "regenerate": "docs/platform/evidence/precision-2026-09-20: node tools/dump-core-controlled.mjs <swiss.json> [--pinned], swiss.json from swiss-benchmark/tools/dump_swiss.py (CONTROLLED-BASELINE.md)"
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-core-counterfactual.mjs <outdir>, with the four cells where it reads them (tools/dump-core-controlled.mjs and swiss-benchmark/prototype/dump-prototype.mjs write them) and Swiss's run at /tmp/claude-0/swisslab/swiss-measure.json from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
   },
   {
    "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/counterfactual/cellB-core-pinned-nut2000b.json",
@@ -427,8 +493,8 @@
     "sha256": "c66d9c403fc3b0d8d35aec55d52e2169fe336e4702e5c2f64edc1cf65d404587"
    },
    "after": {
-    "bytes": 21109,
-    "sha256": "efbb2ed226e55ff9bb22f9c4b77896fd07b40c4d0d8fbc640debf208ce2c43d5"
+    "bytes": 3691,
+    "sha256": "e3bc9be25eaec0b84086e0a478e991c217984848a88a55f2023f101a9059f801"
    },
    "removed": [
     {
@@ -437,9 +503,102 @@
      "sha256": "5c219bf7bae828c46dfba66b5bfad27a1bb194f0071b2db5473570b0760174da",
      "bytes": 1515,
      "what": "Swiss's Delta T for each case, which this pinned cell also applied"
+    },
+    {
+     "path": ".cases[].bodies|angles",
+     "count": 18,
+     "sha256": "219737258661df377a51ebc517d69de5bbabddca33a60b9de922cb22785370c9",
+     "bytes": 17990,
+     "what": "the engine's positions and angles at each case's UT + Swiss's Delta T; beside cell A's, at the engine's own clock, the Moon's difference over its speed gives that Delta T back to within 0.012 s",
+     "on": "2026-09-29",
+     "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2"
     }
    ],
-   "regenerate": "docs/platform/evidence/precision-2026-09-20: node tools/dump-core-controlled.mjs <swiss.json> [--pinned], swiss.json from swiss-benchmark/tools/dump_swiss.py (CONTROLLED-BASELINE.md)"
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-core-counterfactual.mjs <outdir>, with the four cells where it reads them (tools/dump-core-controlled.mjs and swiss-benchmark/prototype/dump-prototype.mjs write them) and Swiss's run at /tmp/claude-0/swisslab/swiss-measure.json from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/counterfactual/cellD-proto-pinned-common.json",
+   "serialiser": "py-compact",
+   "before": {
+    "bytes": 9824,
+    "sha256": "ad78ee0883a662c437a438c97bf29579e7f0a76b5ff56af1636d1734e8af3688"
+   },
+   "after": {
+    "bytes": 2246,
+    "sha256": "cfe6df3b92d6e0b4a1fad9d2812503e53648b5825d5caba0d1298b21853e7ecb"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 16,
+     "sha256": "b96910dad8800e8aaa4edf8b5cd72de7adb5cf5190d2265783691ea7133fb306",
+     "bytes": 8660
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-core-counterfactual.mjs <outdir>, with the four cells where it reads them (tools/dump-core-controlled.mjs and swiss-benchmark/prototype/dump-prototype.mjs write them) and Swiss's run at /tmp/claude-0/swisslab/swiss-measure.json from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/counterfactual/cellD-proto-pinned-nut2000b-common.json",
+   "serialiser": "py-compact",
+   "before": {
+    "bytes": 9920,
+    "sha256": "ecc5e8f7a2047a9534acdbfc80760945f61a409bc3a6ce70bcbf571a7fb72e49"
+   },
+   "after": {
+    "bytes": 2353,
+    "sha256": "ebf501f5a3316278acd4d7f2d911ad89fed9f8a0909989c623571bc7a75c16b9"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 16,
+     "sha256": "1a999a8811547fc474c81f4db15c55de1de38832bcc187a4854950f4f11cf77d",
+     "bytes": 8649
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-core-counterfactual.mjs <outdir>, with the four cells where it reads them (tools/dump-core-controlled.mjs and swiss-benchmark/prototype/dump-prototype.mjs write them) and Swiss's run at /tmp/claude-0/swisslab/swiss-measure.json from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/counterfactual/cellD-proto-pinned-nut2000b.json",
+   "serialiser": "py-compact",
+   "before": {
+    "bytes": 10386,
+    "sha256": "c934f2ee78a55660e4efd8c4401438fef80ae594d2beeaa1d7e09e1e5c45c166"
+   },
+   "after": {
+    "bytes": 2530,
+    "sha256": "a270c02f7538c7b813f83724891c651d92386f8de3978d7bcfe2f73a5fdbd666"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "293592fdf51e397129c06fad08fc929c260615e277580e9c789d527866881cf9",
+     "bytes": 8943
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-core-counterfactual.mjs <outdir>, with the four cells where it reads them (tools/dump-core-controlled.mjs and swiss-benchmark/prototype/dump-prototype.mjs write them) and Swiss's run at /tmp/claude-0/swisslab/swiss-measure.json from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/repro-cellD-dump.json",
+   "serialiser": "py",
+   "before": {
+    "bytes": 16099,
+    "sha256": "dee4a8c41663864f1e3177b6057f6c663f3c54ef72a26c5bcc1a1410abaf327d"
+   },
+   "after": {
+    "bytes": 2776,
+    "sha256": "78da77dea9b7d9afb6911f019e93d529f318462e468c6c707d5efce2eb0cb814"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "643e6828ff6960d403fa1069d73ef22097a9abdcf3b6630b82665bc83b6db0e7",
+     "bytes": 8954
+    }
+   ],
+   "regenerate": "node docs/platform/evidence/swiss-benchmark/prototype/dump-prototype.mjs <de440s.bsp> <swiss.json>, swiss.json from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md, \"the published cell D, reproduced exactly\")"
   },
   {
    "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/repro-cellD-report.json",
@@ -904,6 +1063,447 @@
    "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
   },
   {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/sweep/sweep-a-aberration-first-order.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 20527,
+    "sha256": "53fb30bbe41d74e30cab561788d2949b8ceb849df57c0d62b2d9e545fcd7ac8d"
+   },
+   "after": {
+    "bytes": 2419,
+    "sha256": "c5389f59acdccf38148bc130fed47d2b8913b090d8543ec29b6267baa463cc8d"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "016c06aae8f9985124a63a07faef830d3db24c7d6983d721754ae8698743d002",
+     "bytes": 19003
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/sweep/sweep-a-aberration-off.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 20532,
+    "sha256": "45459131cd3febfdef8f6c70123d129fb76ee7a17837cd724e788567fc2b2222"
+   },
+   "after": {
+    "bytes": 2418,
+    "sha256": "5194efdb1de9fa7bc699d6cb9bbe5ae4c2ffc6765260f0ac4febea6ee06d57f1"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "0ede878d73dbf0c4a0d57d82e62156b0a2fc686c9a04f0f58fc074853c936526",
+     "bytes": 19009
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/sweep/sweep-a-bias-off.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 20520,
+    "sha256": "d49764710794d0f2dbdc251c75cf0abff956cb3e4555b4ef7ed89ad22ea5b824"
+   },
+   "after": {
+    "bytes": 2419,
+    "sha256": "b73348a3e76ddd760e3a57399652959b11996bcf726d5d7c000b4e30b465ec51"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "ec23ec5ec423335daacd60e8f3bbe6442a71c1c368e21f1ef4702da738a06608",
+     "bytes": 18996
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/sweep/sweep-a-deflection-off.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 20516,
+    "sha256": "c202e0f075f0368ea7929733c93f7a7eabd6bcdb1c225c75359d723f18102219"
+   },
+   "after": {
+    "bytes": 2419,
+    "sha256": "b000cb6a19b9fe4d3dd8f7bf6abfca34ce3eb6fac95b0d64a8c44cad0b1ba113"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "5b6f9a380d75df460a652c7db939eb196f80d040e24359f7f7a64e6edb59ade6",
+     "bytes": 18992
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/sweep/sweep-a-light-time-1-iteration.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 20670,
+    "sha256": "1857b055467d111eaaec9fda4d64214b936484db8a162aac54092ca1f4877d61"
+   },
+   "after": {
+    "bytes": 2417,
+    "sha256": "c34bdae0228c7a468ca3da9080c35e1518c16d9bd4123e6abe68eb65d8751790"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "7c56c0415595bf4d01672328db068044d55f9ad8c26e2d14d1cd9c60e89f0753",
+     "bytes": 19148
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/sweep/sweep-a-light-time-2-iterations.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 20672,
+    "sha256": "ba88ec573d535f40015c65a98593c000d8bbf87891957125e6f5254f28b1d8e9"
+   },
+   "after": {
+    "bytes": 2417,
+    "sha256": "05b15e45f093c909860533244f1863b95b5b3ddf695e46db7fd353f928ad378f"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "a4f9e00e61575b6e48e7ffb6e527dfa3ee798b8443f5345881b91a0c4930fd15",
+     "bytes": 19150
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/sweep/sweep-a-nutation-back-to-ae.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 20503,
+    "sha256": "e2a079150c66985aef83defac9c4a1f1edb12ac55f6666eaff06df140b248705"
+   },
+   "after": {
+    "bytes": 2415,
+    "sha256": "fff9b7157f1d4c6859fd5a6e7dd97cabbf2ece52ac90de461bceb8787320134e"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "6b5c1a96951947aafac8ee4a4c99b27924d86f9d2bd49bc156b0448eb84d3200",
+     "bytes": 18983
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/sweep/sweep-a-observer-velocity-h-600s.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 20520,
+    "sha256": "d132349ea9bba7870f784339eb582df527f4d8688b4a3c202a82b3d7b3f0e971"
+   },
+   "after": {
+    "bytes": 2420,
+    "sha256": "c4a0b1d555106d36e73f6b48c08a3a60a4bc8c74887ca57973472ebe2c2b6622"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "8445c022ab6c49dc7dc451839496ed1b41dbbc441a6df46e82bf0b62200092ab",
+     "bytes": 18995
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/sweep/sweep-a-observer-velocity-h-60s.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 20512,
+    "sha256": "0d6d1be6b190a0b62ec0193f06aabb99aff9c0b92bb89f2641f039c0692ec6bf"
+   },
+   "after": {
+    "bytes": 2419,
+    "sha256": "b4969777cdcf2b8933b08bf3e06ac48f71209e426775bc06b9b6ced9d860a297"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "77a2113e03ccd854ff44cf25f5a02f3615b3f64583c9f36125e3a07b1d30cc79",
+     "bytes": 18988
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/sweep/sweep-a-tdb-off-tt-as-tdb-.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 20528,
+    "sha256": "0752ea725d9f0841e0738377f57505d60e420eb7844162b0862029527ea223c8"
+   },
+   "after": {
+    "bytes": 2417,
+    "sha256": "f49e54806223d1e93c46a1b6fd228299f69a08199e7f516c3843204dfbc6286e"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "667d8ceef9be70258e6efe1d256cb7749ac354b99d1b549be7a9ab7ae54e5923",
+     "bytes": 19006
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/sweep/sweep-p0-prototype-as-shipped.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 20507,
+    "sha256": "82c4c7dc6e102cfb13e5b004d2d043f1c49ca59ef4c2d55f58b1e642875c63a0"
+   },
+   "after": {
+    "bytes": 2416,
+    "sha256": "d943e67837d088c5ad50f0bca1bff67bbfab3808522e96da5556c6a6d68348dc"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "afa3f0dcf1859c7c6fc3c219e3b262975c3ed1d9de8de10f05c8da333022df21",
+     "bytes": 18986
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/sweep/sweep-p1-iau2000b-nutation.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 20527,
+    "sha256": "506a9cde8604798765e415f1e8b36b04c97a0e53366e1d950bdf336888d35685"
+   },
+   "after": {
+    "bytes": 2419,
+    "sha256": "5525c399f21f1347168336674f9edafec52b898e58efd1e9f1ee314c721ae39d"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "1dd6d88cf642e56e12eb237d7972aaa313bb5bc17a737eff6ab63035d0034fea",
+     "bytes": 19003
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/sweep/sweep-p1a-iau2000a-nutation.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 20527,
+    "sha256": "a232309d3f7aeda0ed5888f153e9e09ec39dffb28392823d5e15732648825ce8"
+   },
+   "after": {
+    "bytes": 2419,
+    "sha256": "f4f40b1e177e7bedf394b58ad0725c029e151cc2b99f6b95bf587742de91e58c"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "7c7c875c1cd42ab481ec7959c86d9c2436ad8efb6150d0e8900be68c9f45e244",
+     "bytes": 19003
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/sweep/sweep-p2-frame-bias-only.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 20523,
+    "sha256": "90a055664ef1a225d36627a4cda73dc430dd850362d42f496cd77a02c5f80ab9"
+   },
+   "after": {
+    "bytes": 2415,
+    "sha256": "f4927c63b37286c7bfc78d863ae9b96e1cf8196c82ba45b5544d3712c4b45488"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "204199a0d091d864949c0324dae011c8ba173699fb5e1fa320a0e3bfdbe4716d",
+     "bytes": 19003
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/sweep/sweep-p3-2000b-frame-bias.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 20531,
+    "sha256": "e42dda0a45d38eee0712908322e55fa1bb5f0dc1b7d72bb74fe1b8d5211a8645"
+   },
+   "after": {
+    "bytes": 2418,
+    "sha256": "d411f32a37bd8b8a31ba1a0e474c816ac8d8fd000575d7268abb0b6c0be0fc11"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "374d40fd330ebe3e8dc617a9dcd8366842a02c560c79881ef0c00fecc8ee4ef1",
+     "bytes": 19008
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/sweep/sweep-p4-2000b-bias-tdb.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 20529,
+    "sha256": "31aeeca35d5564ca36a837e8f565be9a3545df1e7849cc27367eb18f6e5472a0"
+   },
+   "after": {
+    "bytes": 2419,
+    "sha256": "a2e00394f5ddefc72f61f01557187da5406d878ebecdd32641a0e96603d87d73"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "1ef5bd3b0beb11960d4f977424bbd7f00a281e93557b9707b7f63415c3abfb38",
+     "bytes": 19005
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/sweep/sweep-p5-2000b-bias-tdb-deflection.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 20513,
+    "sha256": "4a1f53eed3388ab8ee673bc9f9049037d35ab52b09e6c5223f991ad360b8a666"
+   },
+   "after": {
+    "bytes": 2418,
+    "sha256": "041d04be64e88c2ceede64a04ae0c8f5b606ca2f4768aa2a1d1870855069a1fd"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "2c45d978e55c3de907a0d09b29bd5cdf03d3306c7d6644015bd9e66abc273fd8",
+     "bytes": 18990
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/sweep/sweep-p6-full-aberration-too.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 20508,
+    "sha256": "f18851b9da02b20ee3c6ef7a60ed18b3573fa20baf9693175a356edc29ff3e6c"
+   },
+   "after": {
+    "bytes": 2417,
+    "sha256": "3c30a76388b4c0ae700d74988b7074b07cd5aceda20afab7814a6b5cae5c5959"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "d59236f467ad5ca06acec77268b402d6c5789f986a3668be46ddb5ef0c890f93",
+     "bytes": 18986
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/sweep/sweep-p7-analytic-observer-velocity.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 20500,
+    "sha256": "e6a5ba9be8a765eacef6858ae6308f372d238e2070a05802713b7af9bd28da12"
+   },
+   "after": {
+    "bytes": 2416,
+    "sha256": "d81adc9beb25b0306fa9d419d14b6b0490c5055af211c587fdfa93ca6bfaf67a"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "03023f16e0481de1c1370a6a546d76748cf14623a196fd19acceb57707c1efe0",
+     "bytes": 18979
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/sweep/sweep-p8-best-light-time-to-1e-11.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 20502,
+    "sha256": "cf9bc1dc6b40f452671575d0db4732a540cfb0ea480a75d49c15f39a5b1bf4f9"
+   },
+   "after": {
+    "bytes": 2418,
+    "sha256": "905ea357d2c8d4c99936f6a75eef34b02328f0a090b3d86a08d6e02095cffa9d"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "b2e07781a5712b12c7f39ea097494eee1516b80efe50a305e8b094cb6f7d0ab1",
+     "bytes": 18979
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/raw/sweep/sweep-p8a-best-with-iau2000a.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 20518,
+    "sha256": "66c757d3e2fd2d1e0b6de0373f6e99d21a9c5b96afe5000fcd8021c4dd033de2"
+   },
+   "after": {
+    "bytes": 2418,
+    "sha256": "e540ed53c76f7dd4be9a3d87f737e40e05e8521376341590d81fc7a91969e38e"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "b756cb15f992a636da5eb3d09a84a89e8f0403e9269d63005c9dac179cbe39d4",
+     "bytes": 18995
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
    "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/counterfactual/cellA-core-own-common.json",
    "serialiser": "js",
    "before": {
@@ -911,8 +1511,8 @@
     "sha256": "dfa4b09a516378faba9e78a191a9a8f780258a6a3ae9fb63804e71f636cca718"
    },
    "after": {
-    "bytes": 19352,
-    "sha256": "904d9096789542004147d87768e5ba472739dbbb0a9a56368c3cbb9c6e5060dd"
+    "bytes": 19485,
+    "sha256": "1dad551d3cd659044c36591135f87dec3cd8e7e939ac5662068cfeba82df9140"
    },
    "removed": [
     {
@@ -923,7 +1523,7 @@
      "what": "Swiss's Delta T for each case"
     }
    ],
-   "regenerate": "docs/platform/evidence/precision-2026-09-20: node tools/dump-core-controlled.mjs <swiss.json> [--pinned], swiss.json from swiss-benchmark/tools/dump_swiss.py (CONTROLLED-BASELINE.md)"
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-core-counterfactual.mjs <outdir>, with the four cells where it reads them (tools/dump-core-controlled.mjs and swiss-benchmark/prototype/dump-prototype.mjs write them) and Swiss's run at /tmp/claude-0/swisslab/swiss-measure.json from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
   },
   {
    "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/counterfactual/cellA-core-own-nut2000b-common.json",
@@ -933,8 +1533,8 @@
     "sha256": "6931c2bb9f69d7c692ff82751af1628929e2b0d062f4cef9955a4d91200262a2"
    },
    "after": {
-    "bytes": 19457,
-    "sha256": "d17983b52ae9dd7a73eaf963b572a946aa531a606874e519425c4a6ebddfbd39"
+    "bytes": 19590,
+    "sha256": "02e3bf61a96e97876572ebf00c00987b605f8a1057729ec6916893ce48145e76"
    },
    "removed": [
     {
@@ -945,7 +1545,7 @@
      "what": "Swiss's Delta T for each case"
     }
    ],
-   "regenerate": "docs/platform/evidence/precision-2026-09-20: node tools/dump-core-controlled.mjs <swiss.json> [--pinned], swiss.json from swiss-benchmark/tools/dump_swiss.py (CONTROLLED-BASELINE.md)"
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-core-counterfactual.mjs <outdir>, with the four cells where it reads them (tools/dump-core-controlled.mjs and swiss-benchmark/prototype/dump-prototype.mjs write them) and Swiss's run at /tmp/claude-0/swisslab/swiss-measure.json from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
   },
   {
    "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/counterfactual/cellA-core-own-nut2000b.json",
@@ -955,8 +1555,8 @@
     "sha256": "7ca87d9014b716802aec5b0269709cc15aba363d6032a9baf99607d3631bc4dc"
    },
    "after": {
-    "bytes": 21761,
-    "sha256": "a6fdca822b6ede9ca7c7b222465a26d1f99c1c262ae5e0a344d5ee6c0923e2b8"
+    "bytes": 21894,
+    "sha256": "cee1aed9dcf5e619039bc7a5e7023c2d1aa5b5bfed0c4d6568092d7ce7884e69"
    },
    "removed": [
     {
@@ -967,7 +1567,7 @@
      "what": "Swiss's Delta T for each case"
     }
    ],
-   "regenerate": "docs/platform/evidence/precision-2026-09-20: node tools/dump-core-controlled.mjs <swiss.json> [--pinned], swiss.json from swiss-benchmark/tools/dump_swiss.py (CONTROLLED-BASELINE.md)"
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-core-counterfactual.mjs <outdir>, with the four cells where it reads them (tools/dump-core-controlled.mjs and swiss-benchmark/prototype/dump-prototype.mjs write them) and Swiss's run at /tmp/claude-0/swisslab/swiss-measure.json from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
   },
   {
    "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/counterfactual/cellB-core-pinned-common.json",
@@ -977,8 +1577,8 @@
     "sha256": "7d80c237c65036aeff207cab8a1a56972966a7ea4efa7fa046347d63cb8a8070"
    },
    "after": {
-    "bytes": 18773,
-    "sha256": "6bc996ba1ac8eaf019e27e45fa7f4bdcfeaed82b99adc65b6c30034a60c4f35f"
+    "bytes": 3364,
+    "sha256": "706b3b1132bf0b3a7888a624ac42d690ba49a5a6d58da6a2c642ca21cda7f28c"
    },
    "removed": [
     {
@@ -987,9 +1587,18 @@
      "sha256": "cc438f5f95268cbdb65722b5ca943eab4437b135945d30a834c7595d584b3b4a",
      "bytes": 1339,
      "what": "Swiss's Delta T for each case, which this pinned cell also applied"
+    },
+    {
+     "path": ".cases[].bodies|angles",
+     "count": 16,
+     "sha256": "094cb633a4565d94973b1e37e5fcd3bde0dfdf49c3d885b81e2855f5a6fc041e",
+     "bytes": 15977,
+     "what": "the engine's positions and angles at each case's UT + Swiss's Delta T; beside cell A's, at the engine's own clock, the Moon's difference over its speed gives that Delta T back to within 0.012 s",
+     "on": "2026-09-29",
+     "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2"
     }
    ],
-   "regenerate": "docs/platform/evidence/precision-2026-09-20: node tools/dump-core-controlled.mjs <swiss.json> [--pinned], swiss.json from swiss-benchmark/tools/dump_swiss.py (CONTROLLED-BASELINE.md)"
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-core-counterfactual.mjs <outdir>, with the four cells where it reads them (tools/dump-core-controlled.mjs and swiss-benchmark/prototype/dump-prototype.mjs write them) and Swiss's run at /tmp/claude-0/swisslab/swiss-measure.json from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
   },
   {
    "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/counterfactual/cellB-core-pinned-nut2000b-common.json",
@@ -999,8 +1608,8 @@
     "sha256": "554e31de10f7a241101f32b6667be1a0e9bb9da156b2248c8548695a04e2b70d"
    },
    "after": {
-    "bytes": 18882,
-    "sha256": "580f41ff118d487c64b7e8466a6065f30782dba8a5d725e3ef6387719ddc01ed"
+    "bytes": 3470,
+    "sha256": "610c1d9496386d2f34011bdedfdbebbc0078ad42e7d6e7e85df447edef1a2d11"
    },
    "removed": [
     {
@@ -1009,9 +1618,18 @@
      "sha256": "cc438f5f95268cbdb65722b5ca943eab4437b135945d30a834c7595d584b3b4a",
      "bytes": 1339,
      "what": "Swiss's Delta T for each case, which this pinned cell also applied"
+    },
+    {
+     "path": ".cases[].bodies|angles",
+     "count": 16,
+     "sha256": "08078783c5fdd8c45c95678af5558e4427f668882e0d6843616560bd6f286e24",
+     "bytes": 15980,
+     "what": "the engine's positions and angles at each case's UT + Swiss's Delta T; beside cell A's, at the engine's own clock, the Moon's difference over its speed gives that Delta T back to within 0.012 s",
+     "on": "2026-09-29",
+     "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2"
     }
    ],
-   "regenerate": "docs/platform/evidence/precision-2026-09-20: node tools/dump-core-controlled.mjs <swiss.json> [--pinned], swiss.json from swiss-benchmark/tools/dump_swiss.py (CONTROLLED-BASELINE.md)"
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-core-counterfactual.mjs <outdir>, with the four cells where it reads them (tools/dump-core-controlled.mjs and swiss-benchmark/prototype/dump-prototype.mjs write them) and Swiss's run at /tmp/claude-0/swisslab/swiss-measure.json from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
   },
   {
    "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/counterfactual/cellB-core-pinned-nut2000b.json",
@@ -1021,8 +1639,8 @@
     "sha256": "c66d9c403fc3b0d8d35aec55d52e2169fe336e4702e5c2f64edc1cf65d404587"
    },
    "after": {
-    "bytes": 21109,
-    "sha256": "efbb2ed226e55ff9bb22f9c4b77896fd07b40c4d0d8fbc640debf208ce2c43d5"
+    "bytes": 3691,
+    "sha256": "e3bc9be25eaec0b84086e0a478e991c217984848a88a55f2023f101a9059f801"
    },
    "removed": [
     {
@@ -1031,9 +1649,81 @@
      "sha256": "5c219bf7bae828c46dfba66b5bfad27a1bb194f0071b2db5473570b0760174da",
      "bytes": 1515,
      "what": "Swiss's Delta T for each case, which this pinned cell also applied"
+    },
+    {
+     "path": ".cases[].bodies|angles",
+     "count": 18,
+     "sha256": "219737258661df377a51ebc517d69de5bbabddca33a60b9de922cb22785370c9",
+     "bytes": 17990,
+     "what": "the engine's positions and angles at each case's UT + Swiss's Delta T; beside cell A's, at the engine's own clock, the Moon's difference over its speed gives that Delta T back to within 0.012 s",
+     "on": "2026-09-29",
+     "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2"
     }
    ],
-   "regenerate": "docs/platform/evidence/precision-2026-09-20: node tools/dump-core-controlled.mjs <swiss.json> [--pinned], swiss.json from swiss-benchmark/tools/dump_swiss.py (CONTROLLED-BASELINE.md)"
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-core-counterfactual.mjs <outdir>, with the four cells where it reads them (tools/dump-core-controlled.mjs and swiss-benchmark/prototype/dump-prototype.mjs write them) and Swiss's run at /tmp/claude-0/swisslab/swiss-measure.json from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/counterfactual/cellD-proto-pinned-common.json",
+   "serialiser": "py-compact",
+   "before": {
+    "bytes": 9824,
+    "sha256": "ad78ee0883a662c437a438c97bf29579e7f0a76b5ff56af1636d1734e8af3688"
+   },
+   "after": {
+    "bytes": 2246,
+    "sha256": "cfe6df3b92d6e0b4a1fad9d2812503e53648b5825d5caba0d1298b21853e7ecb"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 16,
+     "sha256": "b96910dad8800e8aaa4edf8b5cd72de7adb5cf5190d2265783691ea7133fb306",
+     "bytes": 8660
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-core-counterfactual.mjs <outdir>, with the four cells where it reads them (tools/dump-core-controlled.mjs and swiss-benchmark/prototype/dump-prototype.mjs write them) and Swiss's run at /tmp/claude-0/swisslab/swiss-measure.json from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/counterfactual/cellD-proto-pinned-nut2000b-common.json",
+   "serialiser": "py-compact",
+   "before": {
+    "bytes": 9920,
+    "sha256": "ecc5e8f7a2047a9534acdbfc80760945f61a409bc3a6ce70bcbf571a7fb72e49"
+   },
+   "after": {
+    "bytes": 2353,
+    "sha256": "ebf501f5a3316278acd4d7f2d911ad89fed9f8a0909989c623571bc7a75c16b9"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 16,
+     "sha256": "1a999a8811547fc474c81f4db15c55de1de38832bcc187a4854950f4f11cf77d",
+     "bytes": 8649
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-core-counterfactual.mjs <outdir>, with the four cells where it reads them (tools/dump-core-controlled.mjs and swiss-benchmark/prototype/dump-prototype.mjs write them) and Swiss's run at /tmp/claude-0/swisslab/swiss-measure.json from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/counterfactual/cellD-proto-pinned-nut2000b.json",
+   "serialiser": "py-compact",
+   "before": {
+    "bytes": 10386,
+    "sha256": "c934f2ee78a55660e4efd8c4401438fef80ae594d2beeaa1d7e09e1e5c45c166"
+   },
+   "after": {
+    "bytes": 2530,
+    "sha256": "a270c02f7538c7b813f83724891c651d92386f8de3978d7bcfe2f73a5fdbd666"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "293592fdf51e397129c06fad08fc929c260615e277580e9c789d527866881cf9",
+     "bytes": 8943
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-core-counterfactual.mjs <outdir>, with the four cells where it reads them (tools/dump-core-controlled.mjs and swiss-benchmark/prototype/dump-prototype.mjs write them) and Swiss's run at /tmp/claude-0/swisslab/swiss-measure.json from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
   },
   {
    "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/holdout-p0-prototype-report.json",
@@ -1057,6 +1747,27 @@
    "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
   },
   {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/holdout-p0-prototype.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 5646,
+    "sha256": "e49275011c9b42bfd2622e18cb97e74581c0949ffd039e04fdc6cb106c3f0327"
+   },
+   "after": {
+    "bytes": 1986,
+    "sha256": "488ba9c4680fc6be1584ab066d257966ba010aabcc157f5e92af165616cc3ae3"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 6,
+     "sha256": "641d6814eb95079f2dbd418405760e702be597a45102c8d433fbab20cafa13be",
+     "bytes": 3175
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node verify/v3-holdout.mjs, with Swiss's hold-out run at /tmp/claude-0/swisslab/swiss-hold.json from swiss-benchmark/tools/dump_swiss.py"
+  },
+  {
    "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/holdout-p8-best-report.json",
    "serialiser": "js",
    "before": {
@@ -1076,6 +1787,27 @@
     }
    ],
    "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/holdout-p8-best.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 5650,
+    "sha256": "9ebf2abe36ccd9b7c7a5ff98e4f958d4910fb3538e1dcd9ac94bd42bee1fd5d3"
+   },
+   "after": {
+    "bytes": 1983,
+    "sha256": "ca729139c50e08683da6ec7d5819a8f948dfe046a40c0df35a1952183771e0f8"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 6,
+     "sha256": "a196b82f994ed51662edef5855ddf31df35bcc26d75f99c986893aae23088178",
+     "bytes": 3180
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node verify/v3-holdout.mjs, with Swiss's hold-out run at /tmp/claude-0/swisslab/swiss-hold.json from swiss-benchmark/tools/dump_swiss.py"
   },
   {
    "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/holdout-p8a-best-2000a-report.json",
@@ -1099,6 +1831,27 @@
    "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
   },
   {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/holdout-p8a-best-2000a.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 5655,
+    "sha256": "c012c61754aa858a9e8c661bfa1fe5d0ebd4fca673037d6fdef0a01117e45aed"
+   },
+   "after": {
+    "bytes": 1990,
+    "sha256": "b51bdad61c37d307b2fd2f58852c3957e0f7fab9dc17812d741254b25f38bec4"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 6,
+     "sha256": "6cd06c2ae80e6efdb40e0001efd650473dd708edbe2032ecacd8f030e475712e",
+     "bytes": 3178
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node verify/v3-holdout.mjs, with Swiss's hold-out run at /tmp/claude-0/swisslab/swiss-hold.json from swiss-benchmark/tools/dump_swiss.py"
+  },
+  {
    "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/p8-report.json",
    "serialiser": "js",
    "before": {
@@ -1118,6 +1871,27 @@
     }
    ],
    "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/repro-cellD-dump.json",
+   "serialiser": "py",
+   "before": {
+    "bytes": 16099,
+    "sha256": "dee4a8c41663864f1e3177b6057f6c663f3c54ef72a26c5bcc1a1410abaf327d"
+   },
+   "after": {
+    "bytes": 2776,
+    "sha256": "78da77dea9b7d9afb6911f019e93d529f318462e468c6c707d5efce2eb0cb814"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "643e6828ff6960d403fa1069d73ef22097a9abdcf3b6630b82665bc83b6db0e7",
+     "bytes": 8954
+    }
+   ],
+   "regenerate": "node docs/platform/evidence/swiss-benchmark/prototype/dump-prototype.mjs <de440s.bsp> <swiss.json>, swiss.json from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md, \"the published cell D, reproduced exactly\")"
   },
   {
    "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/repro-cellD-report.json",
@@ -1141,6 +1915,447 @@
    "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
   },
   {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/sweep/sweep-a-aberration-first-order.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 20527,
+    "sha256": "53fb30bbe41d74e30cab561788d2949b8ceb849df57c0d62b2d9e545fcd7ac8d"
+   },
+   "after": {
+    "bytes": 2419,
+    "sha256": "c5389f59acdccf38148bc130fed47d2b8913b090d8543ec29b6267baa463cc8d"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "016c06aae8f9985124a63a07faef830d3db24c7d6983d721754ae8698743d002",
+     "bytes": 19003
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/sweep/sweep-a-aberration-off.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 20532,
+    "sha256": "45459131cd3febfdef8f6c70123d129fb76ee7a17837cd724e788567fc2b2222"
+   },
+   "after": {
+    "bytes": 2418,
+    "sha256": "5194efdb1de9fa7bc699d6cb9bbe5ae4c2ffc6765260f0ac4febea6ee06d57f1"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "0ede878d73dbf0c4a0d57d82e62156b0a2fc686c9a04f0f58fc074853c936526",
+     "bytes": 19009
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/sweep/sweep-a-bias-off.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 20520,
+    "sha256": "d49764710794d0f2dbdc251c75cf0abff956cb3e4555b4ef7ed89ad22ea5b824"
+   },
+   "after": {
+    "bytes": 2419,
+    "sha256": "b73348a3e76ddd760e3a57399652959b11996bcf726d5d7c000b4e30b465ec51"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "ec23ec5ec423335daacd60e8f3bbe6442a71c1c368e21f1ef4702da738a06608",
+     "bytes": 18996
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/sweep/sweep-a-deflection-off.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 20516,
+    "sha256": "c202e0f075f0368ea7929733c93f7a7eabd6bcdb1c225c75359d723f18102219"
+   },
+   "after": {
+    "bytes": 2419,
+    "sha256": "b000cb6a19b9fe4d3dd8f7bf6abfca34ce3eb6fac95b0d64a8c44cad0b1ba113"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "5b6f9a380d75df460a652c7db939eb196f80d040e24359f7f7a64e6edb59ade6",
+     "bytes": 18992
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/sweep/sweep-a-light-time-1-iteration.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 20670,
+    "sha256": "1857b055467d111eaaec9fda4d64214b936484db8a162aac54092ca1f4877d61"
+   },
+   "after": {
+    "bytes": 2417,
+    "sha256": "c34bdae0228c7a468ca3da9080c35e1518c16d9bd4123e6abe68eb65d8751790"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "7c56c0415595bf4d01672328db068044d55f9ad8c26e2d14d1cd9c60e89f0753",
+     "bytes": 19148
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/sweep/sweep-a-light-time-2-iterations.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 20672,
+    "sha256": "ba88ec573d535f40015c65a98593c000d8bbf87891957125e6f5254f28b1d8e9"
+   },
+   "after": {
+    "bytes": 2417,
+    "sha256": "05b15e45f093c909860533244f1863b95b5b3ddf695e46db7fd353f928ad378f"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "a4f9e00e61575b6e48e7ffb6e527dfa3ee798b8443f5345881b91a0c4930fd15",
+     "bytes": 19150
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/sweep/sweep-a-nutation-back-to-ae.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 20503,
+    "sha256": "e2a079150c66985aef83defac9c4a1f1edb12ac55f6666eaff06df140b248705"
+   },
+   "after": {
+    "bytes": 2415,
+    "sha256": "fff9b7157f1d4c6859fd5a6e7dd97cabbf2ece52ac90de461bceb8787320134e"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "6b5c1a96951947aafac8ee4a4c99b27924d86f9d2bd49bc156b0448eb84d3200",
+     "bytes": 18983
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/sweep/sweep-a-observer-velocity-h-600s.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 20520,
+    "sha256": "d132349ea9bba7870f784339eb582df527f4d8688b4a3c202a82b3d7b3f0e971"
+   },
+   "after": {
+    "bytes": 2420,
+    "sha256": "c4a0b1d555106d36e73f6b48c08a3a60a4bc8c74887ca57973472ebe2c2b6622"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "8445c022ab6c49dc7dc451839496ed1b41dbbc441a6df46e82bf0b62200092ab",
+     "bytes": 18995
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/sweep/sweep-a-observer-velocity-h-60s.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 20512,
+    "sha256": "0d6d1be6b190a0b62ec0193f06aabb99aff9c0b92bb89f2641f039c0692ec6bf"
+   },
+   "after": {
+    "bytes": 2419,
+    "sha256": "b4969777cdcf2b8933b08bf3e06ac48f71209e426775bc06b9b6ced9d860a297"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "77a2113e03ccd854ff44cf25f5a02f3615b3f64583c9f36125e3a07b1d30cc79",
+     "bytes": 18988
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/sweep/sweep-a-tdb-off-tt-as-tdb-.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 20528,
+    "sha256": "0752ea725d9f0841e0738377f57505d60e420eb7844162b0862029527ea223c8"
+   },
+   "after": {
+    "bytes": 2417,
+    "sha256": "f49e54806223d1e93c46a1b6fd228299f69a08199e7f516c3843204dfbc6286e"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "667d8ceef9be70258e6efe1d256cb7749ac354b99d1b549be7a9ab7ae54e5923",
+     "bytes": 19006
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/sweep/sweep-p0-prototype-as-shipped.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 20507,
+    "sha256": "82c4c7dc6e102cfb13e5b004d2d043f1c49ca59ef4c2d55f58b1e642875c63a0"
+   },
+   "after": {
+    "bytes": 2416,
+    "sha256": "d943e67837d088c5ad50f0bca1bff67bbfab3808522e96da5556c6a6d68348dc"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "afa3f0dcf1859c7c6fc3c219e3b262975c3ed1d9de8de10f05c8da333022df21",
+     "bytes": 18986
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/sweep/sweep-p1-iau2000b-nutation.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 20527,
+    "sha256": "506a9cde8604798765e415f1e8b36b04c97a0e53366e1d950bdf336888d35685"
+   },
+   "after": {
+    "bytes": 2419,
+    "sha256": "5525c399f21f1347168336674f9edafec52b898e58efd1e9f1ee314c721ae39d"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "1dd6d88cf642e56e12eb237d7972aaa313bb5bc17a737eff6ab63035d0034fea",
+     "bytes": 19003
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/sweep/sweep-p1a-iau2000a-nutation.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 20527,
+    "sha256": "a232309d3f7aeda0ed5888f153e9e09ec39dffb28392823d5e15732648825ce8"
+   },
+   "after": {
+    "bytes": 2419,
+    "sha256": "f4f40b1e177e7bedf394b58ad0725c029e151cc2b99f6b95bf587742de91e58c"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "7c7c875c1cd42ab481ec7959c86d9c2436ad8efb6150d0e8900be68c9f45e244",
+     "bytes": 19003
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/sweep/sweep-p2-frame-bias-only.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 20523,
+    "sha256": "90a055664ef1a225d36627a4cda73dc430dd850362d42f496cd77a02c5f80ab9"
+   },
+   "after": {
+    "bytes": 2415,
+    "sha256": "f4927c63b37286c7bfc78d863ae9b96e1cf8196c82ba45b5544d3712c4b45488"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "204199a0d091d864949c0324dae011c8ba173699fb5e1fa320a0e3bfdbe4716d",
+     "bytes": 19003
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/sweep/sweep-p3-2000b-frame-bias.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 20531,
+    "sha256": "e42dda0a45d38eee0712908322e55fa1bb5f0dc1b7d72bb74fe1b8d5211a8645"
+   },
+   "after": {
+    "bytes": 2418,
+    "sha256": "d411f32a37bd8b8a31ba1a0e474c816ac8d8fd000575d7268abb0b6c0be0fc11"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "374d40fd330ebe3e8dc617a9dcd8366842a02c560c79881ef0c00fecc8ee4ef1",
+     "bytes": 19008
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/sweep/sweep-p4-2000b-bias-tdb.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 20529,
+    "sha256": "31aeeca35d5564ca36a837e8f565be9a3545df1e7849cc27367eb18f6e5472a0"
+   },
+   "after": {
+    "bytes": 2419,
+    "sha256": "a2e00394f5ddefc72f61f01557187da5406d878ebecdd32641a0e96603d87d73"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "1ef5bd3b0beb11960d4f977424bbd7f00a281e93557b9707b7f63415c3abfb38",
+     "bytes": 19005
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/sweep/sweep-p5-2000b-bias-tdb-deflection.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 20513,
+    "sha256": "4a1f53eed3388ab8ee673bc9f9049037d35ab52b09e6c5223f991ad360b8a666"
+   },
+   "after": {
+    "bytes": 2418,
+    "sha256": "041d04be64e88c2ceede64a04ae0c8f5b606ca2f4768aa2a1d1870855069a1fd"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "2c45d978e55c3de907a0d09b29bd5cdf03d3306c7d6644015bd9e66abc273fd8",
+     "bytes": 18990
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/sweep/sweep-p6-full-aberration-too.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 20508,
+    "sha256": "f18851b9da02b20ee3c6ef7a60ed18b3573fa20baf9693175a356edc29ff3e6c"
+   },
+   "after": {
+    "bytes": 2417,
+    "sha256": "3c30a76388b4c0ae700d74988b7074b07cd5aceda20afab7814a6b5cae5c5959"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "d59236f467ad5ca06acec77268b402d6c5789f986a3668be46ddb5ef0c890f93",
+     "bytes": 18986
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/sweep/sweep-p7-analytic-observer-velocity.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 20500,
+    "sha256": "e6a5ba9be8a765eacef6858ae6308f372d238e2070a05802713b7af9bd28da12"
+   },
+   "after": {
+    "bytes": 2416,
+    "sha256": "d81adc9beb25b0306fa9d419d14b6b0490c5055af211c587fdfa93ca6bfaf67a"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "03023f16e0481de1c1370a6a546d76748cf14623a196fd19acceb57707c1efe0",
+     "bytes": 18979
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/sweep/sweep-p8-best-light-time-to-1e-11.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 20502,
+    "sha256": "cf9bc1dc6b40f452671575d0db4732a540cfb0ea480a75d49c15f39a5b1bf4f9"
+   },
+   "after": {
+    "bytes": 2418,
+    "sha256": "905ea357d2c8d4c99936f6a75eef34b02328f0a090b3d86a08d6e02095cffa9d"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "b2e07781a5712b12c7f39ea097494eee1516b80efe50a305e8b094cb6f7d0ab1",
+     "bytes": 18979
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/numerics/verify/sweep/sweep-p8a-best-with-iau2000a.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 20518,
+    "sha256": "66c757d3e2fd2d1e0b6de0373f6e99d21a9c5b96afe5000fcd8021c4dd033de2"
+   },
+   "after": {
+    "bytes": 2418,
+    "sha256": "e540ed53c76f7dd4be9a3d87f737e40e05e8521376341590d81fc7a91969e38e"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "b756cb15f992a636da5eb3d09a84a89e8f0403e9269d63005c9dac179cbe39d4",
+     "bytes": 18995
+    }
+   ],
+   "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node tools/t2-sweep.mjs <kernel> <swiss-measure.json> <outdir>, the Swiss side from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md)"
+  },
+  {
    "path": "docs/platform/evidence/precision-2026-09-20/raw/cellA-core-own.json",
    "serialiser": "js",
    "before": {
@@ -1148,8 +2363,8 @@
     "sha256": "d67762eebcc9ac2bc2701b7815f1f8c4c07ed53d4409fe8c2451ec35466f431d"
    },
    "after": {
-    "bytes": 28816,
-    "sha256": "e3fa46fc494c531919d4f63c3c7a61f09ee5461e2ea75b8be83c06eb8b8e4b36"
+    "bytes": 28773,
+    "sha256": "33680789dc81d9f32dedbad3e1c2b26281e8512a1b920a57700f21a3007844d1"
    },
    "removed": [
     {
@@ -1170,8 +2385,8 @@
     "sha256": "1f35fbfc77393dc1018cb13a3ea5cc5dab1d7f5091df1e1b13230380a81caa07"
    },
    "after": {
-    "bytes": 28076,
-    "sha256": "f45bb251d19d3bb002119295b56c314fff5ce98cdea14eda217fbda1e3406d76"
+    "bytes": 4046,
+    "sha256": "68466055e3ec349c87472c7e46590656f9275118ba98300d7364efb5e2181e75"
    },
    "removed": [
     {
@@ -1180,9 +2395,39 @@
      "sha256": "5c219bf7bae828c46dfba66b5bfad27a1bb194f0071b2db5473570b0760174da",
      "bytes": 1515,
      "what": "Swiss's Delta T for each case, which this pinned cell also applied"
+    },
+    {
+     "path": ".cases[].bodies|angles",
+     "count": 18,
+     "sha256": "59e4fd386121ccb72a675e0cdc9cdedb37f901328aab55f0c2bc3071d1833866",
+     "bytes": 17988,
+     "what": "the engine's positions and angles at each case's UT + Swiss's Delta T; beside cell A's, at the engine's own clock, the Moon's difference over its speed gives that Delta T back to within 0.012 s",
+     "on": "2026-09-29",
+     "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2"
     }
    ],
    "regenerate": "docs/platform/evidence/precision-2026-09-20: node tools/dump-core-controlled.mjs <swiss.json> [--pinned], swiss.json from swiss-benchmark/tools/dump_swiss.py (CONTROLLED-BASELINE.md)"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/raw/cellD-proto-pinned.json",
+   "serialiser": "py",
+   "before": {
+    "bytes": 16099,
+    "sha256": "dee4a8c41663864f1e3177b6057f6c663f3c54ef72a26c5bcc1a1410abaf327d"
+   },
+   "after": {
+    "bytes": 2776,
+    "sha256": "78da77dea9b7d9afb6911f019e93d529f318462e468c6c707d5efce2eb0cb814"
+   },
+   "removed": [
+    {
+     "path": ".cases[].bodies",
+     "count": 18,
+     "sha256": "643e6828ff6960d403fa1069d73ef22097a9abdcf3b6630b82665bc83b6db0e7",
+     "bytes": 8954
+    }
+   ],
+   "regenerate": "node docs/platform/evidence/swiss-benchmark/prototype/dump-prototype.mjs <de440s.bsp> <swiss.json>, swiss.json from swiss-benchmark/tools/dump_swiss.py (numerics/RESULTS.md, \"the published cell D, reproduced exactly\")"
   },
   {
    "path": "docs/platform/evidence/precision-2026-09-20/raw/cmp-A-core-own.json",
@@ -1297,8 +2542,8 @@
     "sha256": "70308a57fe75a03e1178b7acb83f3042738fa290820c9ddb53a4336e0e7aa11f"
    },
    "after": {
-    "bytes": 26611,
-    "sha256": "28a91d2891acc1903202bafb1c1b263df151c93d4e9bbabecdf684d897397628"
+    "bytes": 28290,
+    "sha256": "139dc0ee57ee2d60b410214476e5bc970140320286cd443aef9838a4f7aafe68"
    },
    "removed": [
     {
@@ -1306,9 +2551,45 @@
      "count": 1,
      "sha256": "320287a39039ed35a542ef84eeed9ce3f7dbf9fa5db3e2c990116aba44b57e61",
      "bytes": 18
+    },
+    {
+     "path": ".sources.ephemerisModel.overComponent.fromUtc|toUtc",
+     "count": 2,
+     "sha256": "6d62d6ccce3fa659cc2e8302d0729d2029a420081613218c326371877b14da66",
+     "bytes": 73,
+     "what": "the 6-hourly grid over the second component, which starts at Swiss's component start and so ends at a fixed step from it",
+     "on": "2026-09-29",
+     "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2"
+    },
+    {
+     "path": ".sources.ephemerisModel.atTheTurningPointItself.deMinusSwissArcsec|coreMinusSwissArcsec",
+     "count": 2,
+     "sha256": "8d53b840e23d0d7bc4e0ff731f258f8e1f6a722498c7af066cb4c1adc9a67ecc",
+     "bytes": 84,
+     "what": "the DE prototype's and the engine's difference from Swiss at the turning point, which with their longitudes beside them give Swiss's back",
+     "on": "2026-09-29",
+     "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2"
+    },
+    {
+     "path": ".sources.timeModel.thisWindowIsHistorical.swissReturnedTtMinusUtcSeconds|residualSeconds",
+     "count": 2,
+     "sha256": "3f319d4c4ff7c6104f551b21bab754d0025c594d21dad4664cf6c9b01d914a11",
+     "bytes": 92,
+     "what": "Swiss's own TT - UTC for the window, and its difference from 69.184 s",
+     "on": "2026-09-29",
+     "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2"
+    },
+    {
+     "path": ".stationaryGeometryAudit.theRightTreatment.recordedPossibleExactRegionUtc",
+     "count": 2,
+     "sha256": "88c5d716e271f50e18cc2bd04b17c8bcd7a72be356803d17af0f7a5401741e58",
+     "bytes": 55,
+     "what": "the ends of the region Swiss's scan found the second component's exact passes possible in (its width and the DE level set's difference from it stay)",
+     "on": "2026-09-29",
+     "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2"
     }
    ],
-   "regenerate": "python3 docs/platform/evidence/precision-2026-09-20/search/verify/swiss-station.py, and search/lib/swiss-longitudes.py through search/reproduce.mjs"
+   "regenerate": "python3 docs/platform/evidence/precision-2026-09-20/search/verify/swiss-station.py, and search/lib/swiss-longitudes.py through search/reproduce.mjs, decompose.mjs and uranus-d.mjs, each given the fixture of commit 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83 from outside the repository (SWISS_WINDOW_FIXTURE or its first argument) and writing outside it"
   },
   {
    "path": "docs/platform/evidence/precision-2026-09-20/search/raw/reproduction.json",
@@ -1318,8 +2599,8 @@
     "sha256": "af9f5a32059ffdd9d8c45ff20bbe9ea1cab78d3ecc300fff3eecc9fd49c21eb5"
    },
    "after": {
-    "bytes": 16600,
-    "sha256": "d8e601d54cdff431525f918a867999e37470ca1f5cd253284fd1c218bd5e7e42"
+    "bytes": 17186,
+    "sha256": "237bc98b6feffdbf49aa585e655c74ecdf08a1b8eb0d06aa08e07550af3334d6"
    },
    "removed": [
     {
@@ -1339,9 +2620,63 @@
      "count": 1,
      "sha256": "ecba08b9a5fd4533bcb287fef2046e9b670648d822cfdd338cfd4d6c2a3a950f",
      "bytes": 21
+    },
+    {
+     "path": ".recordedContract.components[].startUtc|endUtc|possibleExactRegionUtc|possibleMinimumRegionUtc",
+     "count": 2,
+     "sha256": "d7b20e50afa588a426fbd77d0eaa0f8b17cfbe0d1082fae5a226216f84a1d73d",
+     "bytes": 379,
+     "what": "Swiss's component ends, the ends of an hourly Swiss scan of the 3-degree orb, and the regions its exact passes and minimum were possible in",
+     "on": "2026-09-29",
+     "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2"
+    },
+    {
+     "path": ".independentReproduction.swiss.signedStationMinusTargetDegrees|ttMinusUtcSeconds",
+     "count": 2,
+     "sha256": "6d4800489d3847402e365fc8ae8d6928243cd4522dab4c8b5af4f09b9f02c048",
+     "bytes": 94,
+     "what": "Swiss's station minus the target, which with the target beside it gives Swiss's station longitude back, and Swiss's own TT - UTC",
+     "on": "2026-09-29",
+     "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2"
     }
    ],
-   "regenerate": "python3 docs/platform/evidence/precision-2026-09-20/search/verify/swiss-station.py, and search/lib/swiss-longitudes.py through search/reproduce.mjs"
+   "regenerate": "python3 docs/platform/evidence/precision-2026-09-20/search/verify/swiss-station.py, and search/lib/swiss-longitudes.py through search/reproduce.mjs, decompose.mjs and uranus-d.mjs, each given the fixture of commit 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83 from outside the repository (SWISS_WINDOW_FIXTURE or its first argument) and writing outside it"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/search/raw/uranus-d.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 35187,
+    "sha256": "7c3ea2bf602468bc2ff58a0f1fa7b429e0e68bc056268e48e52085c8fa2b36f9"
+   },
+   "after": {
+    "bytes": 36606,
+    "sha256": "b038c6b2faad32d74c23c46457c87144168578061dfec2161b70603660c0cda3"
+   },
+   "removed": [
+    {
+     "path": ".results.perComponentExactLevel[].fromUtc|toUtc",
+     "count": 2,
+     "sha256": "5960af026c269213deb5eb0197e7b7c78d59a4255b88ceb2e77793cb75db1a78",
+     "bytes": 149,
+     "what": "Swiss's component ends, the ends of an hourly Swiss scan of the 3-degree orb, used as the searched intervals"
+    },
+    {
+     "path": ".results.crops.halves[].recordedBoundaryOrbDegrees",
+     "count": 2,
+     "sha256": "76beadaaef60d2ec0ff2942ffe9578483cb041f3df2d77b78c85231455efe6e6",
+     "bytes": 150,
+     "what": "Swiss's orb at each crop boundary"
+    },
+    {
+     "path": ".results.crops.theBoundaryEvent.swissOffsetFromLevelDegrees|swissOffsetFromLevelArcsec|recordedCropBoundaryOrbDegrees|deMinusSwissAtTheBoundaryArcsec|rootOffsetFromBoundarySecondsSwiss",
+     "count": 5,
+     "sha256": "3f05ab82ab163825c515eceaa1d47b03f760e661e98d1fabf9121e0397340c9d",
+     "bytes": 270,
+     "what": "Swiss's offset from the level at the crop boundary, in degrees, arcseconds and seconds of motion, and the DE prototype's difference from it"
+    }
+   ],
+   "regenerate": "python3 docs/platform/evidence/precision-2026-09-20/search/verify/swiss-station.py, and search/lib/swiss-longitudes.py through search/reproduce.mjs, decompose.mjs and uranus-d.mjs, each given the fixture of commit 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83 from outside the repository (SWISS_WINDOW_FIXTURE or its first argument) and writing outside it"
   },
   {
    "path": "docs/platform/evidence/precision-2026-09-20/search/verify/raw-original/decomposition.json",
@@ -1351,8 +2686,8 @@
     "sha256": "1a882e6d606d652d1ac514d79c606c8776e07e8078db7db976ef86c65c4f946f"
    },
    "after": {
-    "bytes": 26611,
-    "sha256": "533ccbc180ca35a9d4809b40562ebc6f3dcecf3c1c808143566ecfd77a8db72a"
+    "bytes": 28290,
+    "sha256": "6dfecf8644e5c94a88755249c4e7a1d4f77b9a1bc347e73e0756452ccab32965"
    },
    "removed": [
     {
@@ -1360,9 +2695,45 @@
      "count": 1,
      "sha256": "320287a39039ed35a542ef84eeed9ce3f7dbf9fa5db3e2c990116aba44b57e61",
      "bytes": 18
+    },
+    {
+     "path": ".sources.ephemerisModel.overComponent.fromUtc|toUtc",
+     "count": 2,
+     "sha256": "6d62d6ccce3fa659cc2e8302d0729d2029a420081613218c326371877b14da66",
+     "bytes": 73,
+     "what": "the 6-hourly grid over the second component, which starts at Swiss's component start and so ends at a fixed step from it",
+     "on": "2026-09-29",
+     "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2"
+    },
+    {
+     "path": ".sources.ephemerisModel.atTheTurningPointItself.deMinusSwissArcsec|coreMinusSwissArcsec",
+     "count": 2,
+     "sha256": "8d53b840e23d0d7bc4e0ff731f258f8e1f6a722498c7af066cb4c1adc9a67ecc",
+     "bytes": 84,
+     "what": "the DE prototype's and the engine's difference from Swiss at the turning point, which with their longitudes beside them give Swiss's back",
+     "on": "2026-09-29",
+     "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2"
+    },
+    {
+     "path": ".sources.timeModel.thisWindowIsHistorical.swissReturnedTtMinusUtcSeconds|residualSeconds",
+     "count": 2,
+     "sha256": "3f319d4c4ff7c6104f551b21bab754d0025c594d21dad4664cf6c9b01d914a11",
+     "bytes": 92,
+     "what": "Swiss's own TT - UTC for the window, and its difference from 69.184 s",
+     "on": "2026-09-29",
+     "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2"
+    },
+    {
+     "path": ".stationaryGeometryAudit.theRightTreatment.recordedPossibleExactRegionUtc",
+     "count": 2,
+     "sha256": "88c5d716e271f50e18cc2bd04b17c8bcd7a72be356803d17af0f7a5401741e58",
+     "bytes": 55,
+     "what": "the ends of the region Swiss's scan found the second component's exact passes possible in (its width and the DE level set's difference from it stay)",
+     "on": "2026-09-29",
+     "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2"
     }
    ],
-   "regenerate": "python3 docs/platform/evidence/precision-2026-09-20/search/verify/swiss-station.py, and search/lib/swiss-longitudes.py through search/reproduce.mjs"
+   "regenerate": "python3 docs/platform/evidence/precision-2026-09-20/search/verify/swiss-station.py, and search/lib/swiss-longitudes.py through search/reproduce.mjs, decompose.mjs and uranus-d.mjs, each given the fixture of commit 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83 from outside the repository (SWISS_WINDOW_FIXTURE or its first argument) and writing outside it"
   },
   {
    "path": "docs/platform/evidence/precision-2026-09-20/search/verify/raw-original/reproduction.json",
@@ -1372,8 +2743,8 @@
     "sha256": "dfcdd22cc52b847ffe9b6e707f3f7cda6478f1ee66df28fc9185239ad878a97c"
    },
    "after": {
-    "bytes": 16600,
-    "sha256": "ec3feae54648988e7047259ff1d1364690655486ce0c4cb1c677e8d49d814f13"
+    "bytes": 17186,
+    "sha256": "e6f20cd21d8ab938bd6349aefff3d6c1ef280894d51f4b41e68b31172613ec66"
    },
    "removed": [
     {
@@ -1393,9 +2764,63 @@
      "count": 1,
      "sha256": "ecba08b9a5fd4533bcb287fef2046e9b670648d822cfdd338cfd4d6c2a3a950f",
      "bytes": 21
+    },
+    {
+     "path": ".recordedContract.components[].startUtc|endUtc|possibleExactRegionUtc|possibleMinimumRegionUtc",
+     "count": 2,
+     "sha256": "d7b20e50afa588a426fbd77d0eaa0f8b17cfbe0d1082fae5a226216f84a1d73d",
+     "bytes": 379,
+     "what": "Swiss's component ends, the ends of an hourly Swiss scan of the 3-degree orb, and the regions its exact passes and minimum were possible in",
+     "on": "2026-09-29",
+     "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2"
+    },
+    {
+     "path": ".independentReproduction.swiss.signedStationMinusTargetDegrees|ttMinusUtcSeconds",
+     "count": 2,
+     "sha256": "6d4800489d3847402e365fc8ae8d6928243cd4522dab4c8b5af4f09b9f02c048",
+     "bytes": 94,
+     "what": "Swiss's station minus the target, which with the target beside it gives Swiss's station longitude back, and Swiss's own TT - UTC",
+     "on": "2026-09-29",
+     "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2"
     }
    ],
-   "regenerate": "python3 docs/platform/evidence/precision-2026-09-20/search/verify/swiss-station.py, and search/lib/swiss-longitudes.py through search/reproduce.mjs"
+   "regenerate": "python3 docs/platform/evidence/precision-2026-09-20/search/verify/swiss-station.py, and search/lib/swiss-longitudes.py through search/reproduce.mjs, decompose.mjs and uranus-d.mjs, each given the fixture of commit 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83 from outside the repository (SWISS_WINDOW_FIXTURE or its first argument) and writing outside it"
+  },
+  {
+   "path": "docs/platform/evidence/precision-2026-09-20/search/verify/raw-original/uranus-d.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 35187,
+    "sha256": "46da5e9fdf62cceed4a7d57b1e5ab6aaaa814a3d63443f05f2b198806e62fd49"
+   },
+   "after": {
+    "bytes": 36606,
+    "sha256": "175a78145c3c63c217364b17edd0cc22fe00a7542dd0723474508d2c0d12cb54"
+   },
+   "removed": [
+    {
+     "path": ".results.perComponentExactLevel[].fromUtc|toUtc",
+     "count": 2,
+     "sha256": "5960af026c269213deb5eb0197e7b7c78d59a4255b88ceb2e77793cb75db1a78",
+     "bytes": 149,
+     "what": "Swiss's component ends, the ends of an hourly Swiss scan of the 3-degree orb, used as the searched intervals"
+    },
+    {
+     "path": ".results.crops.halves[].recordedBoundaryOrbDegrees",
+     "count": 2,
+     "sha256": "76beadaaef60d2ec0ff2942ffe9578483cb041f3df2d77b78c85231455efe6e6",
+     "bytes": 150,
+     "what": "Swiss's orb at each crop boundary"
+    },
+    {
+     "path": ".results.crops.theBoundaryEvent.swissOffsetFromLevelDegrees|swissOffsetFromLevelArcsec|recordedCropBoundaryOrbDegrees|deMinusSwissAtTheBoundaryArcsec|rootOffsetFromBoundarySecondsSwiss",
+     "count": 5,
+     "sha256": "3f05ab82ab163825c515eceaa1d47b03f760e661e98d1fabf9121e0397340c9d",
+     "bytes": 270,
+     "what": "Swiss's offset from the level at the crop boundary, in degrees, arcseconds and seconds of motion, and the DE prototype's difference from it"
+    }
+   ],
+   "regenerate": "python3 docs/platform/evidence/precision-2026-09-20/search/verify/swiss-station.py, and search/lib/swiss-longitudes.py through search/reproduce.mjs, decompose.mjs and uranus-d.mjs, each given the fixture of commit 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83 from outside the repository (SWISS_WINDOW_FIXTURE or its first argument) and writing outside it"
   },
   {
    "path": "docs/platform/evidence/site-engine-rc10/node22-parity.json",
@@ -1717,8 +3142,8 @@
     "sha256": "ad5f444dbe30e89dc0ed189781fbd0ebca5e7b371512cd51c5d9fff783436844"
    },
    "after": {
-    "bytes": 7255,
-    "sha256": "54857e4ddfff1a8b9e5be71d0e5b8ff4c46bde66bb16bd658451bfb1eb40e633"
+    "bytes": 7684,
+    "sha256": "4b23734a56f5de09d392c14b079783e872703461c3d99c1e1e448ed630a42cc6"
    },
    "removed": [
     {
@@ -1726,6 +3151,15 @@
      "count": 180,
      "sha256": "595d2a63e15c24833c1f178e23f38f1573794751ae6c9058be7fbb5f1647654c",
      "bytes": 29149
+    },
+    {
+     "path": ".statistics.farFuture.moonCases",
+     "count": 2,
+     "sha256": "36ad1218ee678fd678990c44c1d2856508fa0085a0ffff38e30b59fb8fa697e0",
+     "bytes": 99,
+     "what": "the far-future Moon's difference from Swiss at each of its two epochs, which the statistics listed case by case",
+     "on": "2026-09-29",
+     "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2"
     }
    ],
    "regenerate": "docs/platform/evidence/swiss-benchmark/tools: node dump-zodiacs.mjs > zodiacs.json; python3 dump_swiss.py zodiacs.json <ephe> > swiss.json; node compare.mjs zodiacs.json swiss.json (RESULTS.md)"
@@ -1772,5 +3206,366 @@
    ],
    "regenerate": "docs/platform/evidence/swiss-benchmark/tools: node dump-zodiacs.mjs > zodiacs.json; python3 dump_swiss.py zodiacs.json <ephe> > swiss.json; node compare.mjs zodiacs.json swiss.json (RESULTS.md)"
   }
- ]
+ ],
+ "replacedFiles": [
+  {
+   "path": "docs/platform/evidence/engine-beyond-swiss/corpora/horizons-24/Jupiter.txt",
+   "on": "2026-09-29",
+   "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2",
+   "what": "Horizons's answer at the corpus's TT instants as first fetched, UT + Swiss's Delta T, which its time column gave back beside the UT instants of corpus.json; replaced by its answer at UT + the engine's Delta T",
+   "before": {
+    "bytes": 6716,
+    "sha256": "7f4044c6d3a0bf8a45d7e5383f77ef47022ea8f49b084c47adbb70684e4c8253"
+   },
+   "after": {
+    "bytes": 6716,
+    "sha256": "45366e6af9f4a86469b9dd0514b9c6c7db3ebd252b8f1eb2f8f1f1cdadab733a"
+   },
+   "lastCommitWithTheValues": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+   "regenerate": "the response as first fetched, at UT + Swiss's Delta T: git show 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83:<path>. The one in the tree is Horizons's answer at UT + the engine's Delta T: delete it and run python3 fetch.py beside it (horizons-24/ or horizons-frame/vectors/fetch_vectors.py)"
+  },
+  {
+   "path": "docs/platform/evidence/engine-beyond-swiss/corpora/horizons-24/JupiterBary.txt",
+   "on": "2026-09-29",
+   "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2",
+   "what": "Horizons's answer at the corpus's TT instants as first fetched, UT + Swiss's Delta T, which its time column gave back beside the UT instants of corpus.json; replaced by its answer at UT + the engine's Delta T",
+   "before": {
+    "bytes": 6652,
+    "sha256": "1eaec268c5f6cbb68fff2b06bfcb0b125ed7650a2ac37b328177103068caf25b"
+   },
+   "after": {
+    "bytes": 6652,
+    "sha256": "019ae4277d0cfc5a7869438919950f8bf108ccaa721f231e932032cec74ec592"
+   },
+   "lastCommitWithTheValues": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+   "regenerate": "the response as first fetched, at UT + Swiss's Delta T: git show 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83:<path>. The one in the tree is Horizons's answer at UT + the engine's Delta T: delete it and run python3 fetch.py beside it (horizons-24/ or horizons-frame/vectors/fetch_vectors.py)"
+  },
+  {
+   "path": "docs/platform/evidence/engine-beyond-swiss/corpora/horizons-24/Mars.txt",
+   "on": "2026-09-29",
+   "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2",
+   "what": "Horizons's answer at the corpus's TT instants as first fetched, UT + Swiss's Delta T, which its time column gave back beside the UT instants of corpus.json; replaced by its answer at UT + the engine's Delta T",
+   "before": {
+    "bytes": 6701,
+    "sha256": "e44a9e5aa513e73b05d27315e767513a5fa63640b42edd1bf3d5a8a6ea798482"
+   },
+   "after": {
+    "bytes": 6701,
+    "sha256": "ae5a139b6c2255b987fcc3da570aeb0d80f1bbe0808503caa439d8742f1c8bf5"
+   },
+   "lastCommitWithTheValues": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+   "regenerate": "the response as first fetched, at UT + Swiss's Delta T: git show 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83:<path>. The one in the tree is Horizons's answer at UT + the engine's Delta T: delete it and run python3 fetch.py beside it (horizons-24/ or horizons-frame/vectors/fetch_vectors.py)"
+  },
+  {
+   "path": "docs/platform/evidence/engine-beyond-swiss/corpora/horizons-24/MarsBary.txt",
+   "on": "2026-09-29",
+   "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2",
+   "what": "Horizons's answer at the corpus's TT instants as first fetched, UT + Swiss's Delta T, which its time column gave back beside the UT instants of corpus.json; replaced by its answer at UT + the engine's Delta T",
+   "before": {
+    "bytes": 6652,
+    "sha256": "a22aa46e939879c7bfb927b798a25055b0210ba77bff1bbaeb9465960d8f3157"
+   },
+   "after": {
+    "bytes": 6652,
+    "sha256": "2f1188c5e371bc50da4193d7728eae7361c15fcb1509c1aab3ca311be636f4e3"
+   },
+   "lastCommitWithTheValues": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+   "regenerate": "the response as first fetched, at UT + Swiss's Delta T: git show 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83:<path>. The one in the tree is Horizons's answer at UT + the engine's Delta T: delete it and run python3 fetch.py beside it (horizons-24/ or horizons-frame/vectors/fetch_vectors.py)"
+  },
+  {
+   "path": "docs/platform/evidence/engine-beyond-swiss/corpora/horizons-24/Mercury.txt",
+   "on": "2026-09-29",
+   "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2",
+   "what": "Horizons's answer at the corpus's TT instants as first fetched, UT + Swiss's Delta T, which its time column gave back beside the UT instants of corpus.json; replaced by its answer at UT + the engine's Delta T",
+   "before": {
+    "bytes": 6700,
+    "sha256": "366b52eb9d27ff836164c1f2f0efcf3147554366bafcaf2ea6056297138ebcf5"
+   },
+   "after": {
+    "bytes": 6700,
+    "sha256": "d6dcbfa8b044bede52eee4efb636267b68bb90247bac9ca8078c27c23aec75de"
+   },
+   "lastCommitWithTheValues": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+   "regenerate": "the response as first fetched, at UT + Swiss's Delta T: git show 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83:<path>. The one in the tree is Horizons's answer at UT + the engine's Delta T: delete it and run python3 fetch.py beside it (horizons-24/ or horizons-frame/vectors/fetch_vectors.py)"
+  },
+  {
+   "path": "docs/platform/evidence/engine-beyond-swiss/corpora/horizons-24/Moon.txt",
+   "on": "2026-09-29",
+   "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2",
+   "what": "Horizons's answer at the corpus's TT instants as first fetched, UT + Swiss's Delta T, which its time column gave back beside the UT instants of corpus.json; replaced by its answer at UT + the engine's Delta T",
+   "before": {
+    "bytes": 6702,
+    "sha256": "078502783f45570643fab9780b12eec41bc8a8ccbecb0f398dcc8a81fd674d8c"
+   },
+   "after": {
+    "bytes": 6702,
+    "sha256": "7ae096999cf85f13f74a04f93fdee9554d6beebb36f56f9e9ed8721cd2bbfdd0"
+   },
+   "lastCommitWithTheValues": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+   "regenerate": "the response as first fetched, at UT + Swiss's Delta T: git show 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83:<path>. The one in the tree is Horizons's answer at UT + the engine's Delta T: delete it and run python3 fetch.py beside it (horizons-24/ or horizons-frame/vectors/fetch_vectors.py)"
+  },
+  {
+   "path": "docs/platform/evidence/engine-beyond-swiss/corpora/horizons-24/Neptune.txt",
+   "on": "2026-09-29",
+   "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2",
+   "what": "Horizons's answer at the corpus's TT instants as first fetched, UT + Swiss's Delta T, which its time column gave back beside the UT instants of corpus.json; replaced by its answer at UT + the engine's Delta T",
+   "before": {
+    "bytes": 6724,
+    "sha256": "d6277d34e935763557841004f01208118f7ac2f605ad88dbbe5c519a1dc7c508"
+   },
+   "after": {
+    "bytes": 6724,
+    "sha256": "f723a58995a67aba9ad76c62a8cde76f70da1534e982a3ebe0ff133c3535bccb"
+   },
+   "lastCommitWithTheValues": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+   "regenerate": "the response as first fetched, at UT + Swiss's Delta T: git show 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83:<path>. The one in the tree is Horizons's answer at UT + the engine's Delta T: delete it and run python3 fetch.py beside it (horizons-24/ or horizons-frame/vectors/fetch_vectors.py)"
+  },
+  {
+   "path": "docs/platform/evidence/engine-beyond-swiss/corpora/horizons-24/NeptuneBary.txt",
+   "on": "2026-09-29",
+   "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2",
+   "what": "Horizons's answer at the corpus's TT instants as first fetched, UT + Swiss's Delta T, which its time column gave back beside the UT instants of corpus.json; replaced by its answer at UT + the engine's Delta T",
+   "before": {
+    "bytes": 6652,
+    "sha256": "0e6939df35c1b623c51b1a4f2fd294bfb70679faac420f1bc94ce27035a05c02"
+   },
+   "after": {
+    "bytes": 6652,
+    "sha256": "59c5c888be9d15218b31a80ce90f5ec42f47fdb65d84b63740e1960a3a07c288"
+   },
+   "lastCommitWithTheValues": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+   "regenerate": "the response as first fetched, at UT + Swiss's Delta T: git show 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83:<path>. The one in the tree is Horizons's answer at UT + the engine's Delta T: delete it and run python3 fetch.py beside it (horizons-24/ or horizons-frame/vectors/fetch_vectors.py)"
+  },
+  {
+   "path": "docs/platform/evidence/engine-beyond-swiss/corpora/horizons-24/Pluto.txt",
+   "on": "2026-09-29",
+   "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2",
+   "what": "Horizons's answer at the corpus's TT instants as first fetched, UT + Swiss's Delta T, which its time column gave back beside the UT instants of corpus.json; replaced by its answer at UT + the engine's Delta T",
+   "before": {
+    "bytes": 6716,
+    "sha256": "0426b865e367ce6a864d33aa327366a2257da4c7b451a1093b4d9d3a4257859b"
+   },
+   "after": {
+    "bytes": 6716,
+    "sha256": "84addbb38b746c71ea281b56376d002718b3080342c2f4484e6c844bec9d7ee9"
+   },
+   "lastCommitWithTheValues": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+   "regenerate": "the response as first fetched, at UT + Swiss's Delta T: git show 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83:<path>. The one in the tree is Horizons's answer at UT + the engine's Delta T: delete it and run python3 fetch.py beside it (horizons-24/ or horizons-frame/vectors/fetch_vectors.py)"
+  },
+  {
+   "path": "docs/platform/evidence/engine-beyond-swiss/corpora/horizons-24/PlutoBary.txt",
+   "on": "2026-09-29",
+   "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2",
+   "what": "Horizons's answer at the corpus's TT instants as first fetched, UT + Swiss's Delta T, which its time column gave back beside the UT instants of corpus.json; replaced by its answer at UT + the engine's Delta T",
+   "before": {
+    "bytes": 6652,
+    "sha256": "8f05e7e2f9ed78a7a67a932945d819f216babe1248a5f8469637305a3d303ce7"
+   },
+   "after": {
+    "bytes": 6652,
+    "sha256": "fc202576dd7f50bb3b32ae37ca479a2eb093417b8ef860a8b589a0ca53d47b96"
+   },
+   "lastCommitWithTheValues": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+   "regenerate": "the response as first fetched, at UT + Swiss's Delta T: git show 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83:<path>. The one in the tree is Horizons's answer at UT + the engine's Delta T: delete it and run python3 fetch.py beside it (horizons-24/ or horizons-frame/vectors/fetch_vectors.py)"
+  },
+  {
+   "path": "docs/platform/evidence/engine-beyond-swiss/corpora/horizons-24/Saturn.txt",
+   "on": "2026-09-29",
+   "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2",
+   "what": "Horizons's answer at the corpus's TT instants as first fetched, UT + Swiss's Delta T, which its time column gave back beside the UT instants of corpus.json; replaced by its answer at UT + the engine's Delta T",
+   "before": {
+    "bytes": 6702,
+    "sha256": "c91fa3690d542d78f0132c052cb8e52031d08ccbab5872f48b210a1c0b59c40e"
+   },
+   "after": {
+    "bytes": 6702,
+    "sha256": "dd6fe5d32c79d64fbf774f83e96f3834bac237a8c192bfe85592d5e44c39d4f2"
+   },
+   "lastCommitWithTheValues": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+   "regenerate": "the response as first fetched, at UT + Swiss's Delta T: git show 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83:<path>. The one in the tree is Horizons's answer at UT + the engine's Delta T: delete it and run python3 fetch.py beside it (horizons-24/ or horizons-frame/vectors/fetch_vectors.py)"
+  },
+  {
+   "path": "docs/platform/evidence/engine-beyond-swiss/corpora/horizons-24/SaturnBary.txt",
+   "on": "2026-09-29",
+   "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2",
+   "what": "Horizons's answer at the corpus's TT instants as first fetched, UT + Swiss's Delta T, which its time column gave back beside the UT instants of corpus.json; replaced by its answer at UT + the engine's Delta T",
+   "before": {
+    "bytes": 6652,
+    "sha256": "db838e950198d1cd53da818cd880d7b29b119b6420cdad17de3d0ec25379aa76"
+   },
+   "after": {
+    "bytes": 6652,
+    "sha256": "f2a7db04a1eec0173678ce4184858829bbd4dbcf88f9be6cbb1762773e90daa3"
+   },
+   "lastCommitWithTheValues": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+   "regenerate": "the response as first fetched, at UT + Swiss's Delta T: git show 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83:<path>. The one in the tree is Horizons's answer at UT + the engine's Delta T: delete it and run python3 fetch.py beside it (horizons-24/ or horizons-frame/vectors/fetch_vectors.py)"
+  },
+  {
+   "path": "docs/platform/evidence/engine-beyond-swiss/corpora/horizons-24/Sun.txt",
+   "on": "2026-09-29",
+   "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2",
+   "what": "Horizons's answer at the corpus's TT instants as first fetched, UT + Swiss's Delta T, which its time column gave back beside the UT instants of corpus.json; replaced by its answer at UT + the engine's Delta T",
+   "before": {
+    "bytes": 6700,
+    "sha256": "9396249e39c56cea6be986469b54f61955b8d302b343caeea0853eae0735a8bc"
+   },
+   "after": {
+    "bytes": 6700,
+    "sha256": "aca5c7b9a1d86df0744f4e8e9da10f6aea168b2547329c103c7ff88b306ca945"
+   },
+   "lastCommitWithTheValues": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+   "regenerate": "the response as first fetched, at UT + Swiss's Delta T: git show 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83:<path>. The one in the tree is Horizons's answer at UT + the engine's Delta T: delete it and run python3 fetch.py beside it (horizons-24/ or horizons-frame/vectors/fetch_vectors.py)"
+  },
+  {
+   "path": "docs/platform/evidence/engine-beyond-swiss/corpora/horizons-24/Uranus.txt",
+   "on": "2026-09-29",
+   "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2",
+   "what": "Horizons's answer at the corpus's TT instants as first fetched, UT + Swiss's Delta T, which its time column gave back beside the UT instants of corpus.json; replaced by its answer at UT + the engine's Delta T",
+   "before": {
+    "bytes": 6708,
+    "sha256": "87937649bca052a4182deb72d7e6efc4104eaf181a54a6de1ab710950b2c2a9e"
+   },
+   "after": {
+    "bytes": 6708,
+    "sha256": "78c88a12709a22dce96df36b8995dbc35e1d922b3a8972613ba29a416a6291e1"
+   },
+   "lastCommitWithTheValues": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+   "regenerate": "the response as first fetched, at UT + Swiss's Delta T: git show 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83:<path>. The one in the tree is Horizons's answer at UT + the engine's Delta T: delete it and run python3 fetch.py beside it (horizons-24/ or horizons-frame/vectors/fetch_vectors.py)"
+  },
+  {
+   "path": "docs/platform/evidence/engine-beyond-swiss/corpora/horizons-24/UranusBary.txt",
+   "on": "2026-09-29",
+   "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2",
+   "what": "Horizons's answer at the corpus's TT instants as first fetched, UT + Swiss's Delta T, which its time column gave back beside the UT instants of corpus.json; replaced by its answer at UT + the engine's Delta T",
+   "before": {
+    "bytes": 6652,
+    "sha256": "af6c5ec16a53af784d618c361b88984ab09565c36fd57db607a0060c20686456"
+   },
+   "after": {
+    "bytes": 6652,
+    "sha256": "694cf8cde8ceaba521e2535c83f9f3bbbdfbb4b00f675daacf2755af316e1fb8"
+   },
+   "lastCommitWithTheValues": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+   "regenerate": "the response as first fetched, at UT + Swiss's Delta T: git show 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83:<path>. The one in the tree is Horizons's answer at UT + the engine's Delta T: delete it and run python3 fetch.py beside it (horizons-24/ or horizons-frame/vectors/fetch_vectors.py)"
+  },
+  {
+   "path": "docs/platform/evidence/engine-beyond-swiss/corpora/horizons-24/Venus.txt",
+   "on": "2026-09-29",
+   "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2",
+   "what": "Horizons's answer at the corpus's TT instants as first fetched, UT + Swiss's Delta T, which its time column gave back beside the UT instants of corpus.json; replaced by its answer at UT + the engine's Delta T",
+   "before": {
+    "bytes": 6700,
+    "sha256": "9286abd667436c6f57e1a713816c8283c2113e630e8184f97080fd9792ea7a72"
+   },
+   "after": {
+    "bytes": 6700,
+    "sha256": "67b158aa530901bae26f9cf1c8d7a84a08d3aaeea2413e76d585bd9533b7e4b1"
+   },
+   "lastCommitWithTheValues": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+   "regenerate": "the response as first fetched, at UT + Swiss's Delta T: git show 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83:<path>. The one in the tree is Horizons's answer at UT + the engine's Delta T: delete it and run python3 fetch.py beside it (horizons-24/ or horizons-frame/vectors/fetch_vectors.py)"
+  },
+  {
+   "path": "docs/platform/evidence/engine-beyond-swiss/corpora/horizons-24/corpus-tt.json",
+   "on": "2026-09-29",
+   "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2",
+   "what": "the corpus's TT instants at UT + Swiss's Delta T, and that Delta T; replaced by TT at UT + the engine's Delta T (node docs/platform/evidence/engine-beyond-swiss/corpora/tools/retime-corpus.mjs)",
+   "before": {
+    "bytes": 3962,
+    "sha256": "a31df4c952f778f398f5c8ea888c8d29300ac317bcb984de1e520078a09733a7"
+   },
+   "after": {
+    "bytes": 4445,
+    "sha256": "b0c0c0c32e52419f314c8fe33fae7e0b2820e6e861f226eb6a6f3a86010321dd"
+   },
+   "removed": [
+    {
+     "path": ".cases[].deltaTSeconds",
+     "count": 24,
+     "sha256": "ec648e52d9891ba911fc775b90976a30dff7776dabbcfbc2c532c1bb5dc85a7b",
+     "bytes": 873
+    },
+    {
+     "path": ".cases[].jdTt",
+     "count": 24,
+     "sha256": "d0ef009aa0dd6e7c6163df54b9b06e4114fdffe5759aff28415fe9b28dd3b5c1",
+     "bytes": 657,
+     "what": "the TT instants at UT + Swiss's Delta T",
+     "on": "2026-09-29",
+     "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2"
+    }
+   ],
+   "lastCommitWithTheValues": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+   "regenerate": "from the repository root, python3 -c \"import json, sys, swisseph as swe; swe.set_ephe_path(sys.argv[1]); [print(c['id'], swe.deltat_ex(c['jdUt'], swe.FLG_SWIEPH) * 86400) for c in json.load(open('docs/platform/evidence/engine-beyond-swiss/corpora/horizons-24/corpus-tt.json'))['cases']]\" <ephe>, which prints Swiss's Delta T at each corpus instant"
+  },
+  {
+   "path": "docs/platform/evidence/engine-beyond-swiss/horizons-frame/vectors/Mars.txt",
+   "on": "2026-09-29",
+   "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2",
+   "what": "Horizons's geometric state vectors at the corpus's TT instants as first fetched, UT + Swiss's Delta T, which its time column gave back beside the UT instants of corpus.json; replaced by its answer at UT + the engine's Delta T",
+   "before": {
+    "bytes": 7329,
+    "sha256": "263399ad4686e1dba4bb6ed13c00c94cc333d44cca676a14e9f435949be28cdd"
+   },
+   "after": {
+    "bytes": 7329,
+    "sha256": "614e3cece38fa36351219856c4c3dc166764394185462d04183343ae4d9aafea"
+   },
+   "lastCommitWithTheValues": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+   "regenerate": "the response as first fetched, at UT + Swiss's Delta T: git show 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83:<path>. The one in the tree is Horizons's answer at UT + the engine's Delta T: delete it and run python3 fetch.py beside it (horizons-24/ or horizons-frame/vectors/fetch_vectors.py)"
+  },
+  {
+   "path": "docs/platform/evidence/engine-beyond-swiss/horizons-frame/vectors/MarsBary.txt",
+   "on": "2026-09-29",
+   "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2",
+   "what": "Horizons's geometric state vectors at the corpus's TT instants as first fetched, UT + Swiss's Delta T, which its time column gave back beside the UT instants of corpus.json; replaced by its answer at UT + the engine's Delta T",
+   "before": {
+    "bytes": 7328,
+    "sha256": "15b753ee145ea4791baea47d1a07cb5222cd57f9d8387f850e0fea2d1b43f1af"
+   },
+   "after": {
+    "bytes": 7328,
+    "sha256": "b54f1ff12bf8a7322babaf68fd50efd83834afb8cd1908e13682e48d95cc278a"
+   },
+   "lastCommitWithTheValues": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+   "regenerate": "the response as first fetched, at UT + Swiss's Delta T: git show 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83:<path>. The one in the tree is Horizons's answer at UT + the engine's Delta T: delete it and run python3 fetch.py beside it (horizons-24/ or horizons-frame/vectors/fetch_vectors.py)"
+  },
+  {
+   "path": "docs/platform/evidence/engine-beyond-swiss/horizons-frame/vectors/Moon.txt",
+   "on": "2026-09-29",
+   "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2",
+   "what": "Horizons's geometric state vectors at the corpus's TT instants as first fetched, UT + Swiss's Delta T, which its time column gave back beside the UT instants of corpus.json; replaced by its answer at UT + the engine's Delta T",
+   "before": {
+    "bytes": 7328,
+    "sha256": "a5c43de2afb0f5947c679370d27135fb503840e9c9f61cf3118139192968d4e3"
+   },
+   "after": {
+    "bytes": 7328,
+    "sha256": "777855c468b90c4c5ca913b1e1b2c0a0417826619c488a38148f259ba10ca723"
+   },
+   "lastCommitWithTheValues": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+   "regenerate": "the response as first fetched, at UT + Swiss's Delta T: git show 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83:<path>. The one in the tree is Horizons's answer at UT + the engine's Delta T: delete it and run python3 fetch.py beside it (horizons-24/ or horizons-frame/vectors/fetch_vectors.py)"
+  },
+  {
+   "path": "docs/platform/evidence/engine-beyond-swiss/horizons-frame/vectors/queries.log",
+   "on": "2026-09-29",
+   "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2",
+   "what": "the queries of the first fetch, whose TLIST carried the TT instants at UT + Swiss's Delta T; replaced by the queries at UT + the engine's Delta T",
+   "before": {
+    "bytes": 2472,
+    "sha256": "b9e34348ef1fc040abdd843184b36eb315d836c59b97990f966dacda39268129"
+   },
+   "after": {
+    "bytes": 2472,
+    "sha256": "9d2548a89eb4d79ed9dc2eb15756ea2e3760572eeb2483890489786706a18c29"
+   },
+   "lastCommitWithTheValues": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+   "regenerate": "the response as first fetched, at UT + Swiss's Delta T: git show 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83:<path>. The one in the tree is Horizons's answer at UT + the engine's Delta T: delete it and run python3 fetch.py beside it (horizons-24/ or horizons-frame/vectors/fetch_vectors.py)"
+  }
+ ],
+ "valueDigests": {
+  "path": "docs/engine-validation/swiss-output-removal/value-digests.json",
+  "sha256": "8c477bd745165478af53131f808f1d6d63e20eb5263a7d25704bb6000ffcb4d0",
+  "gone": 40604,
+  "kept": 3467
+ }
 }

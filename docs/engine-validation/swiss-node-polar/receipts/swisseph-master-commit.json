@@ -94,8 +94,35 @@
       "changes": 88,
       "blob_url": "https://github.com/aloistr/swisseph/blob/3fd0f956d73898b91cc4f67cf18b21af656d1342/swetest.c",
       "raw_url": "https://github.com/aloistr/swisseph/raw/3fd0f956d73898b91cc4f67cf18b21af656d1342/swetest.c",
-      "contents_url": "https://api.github.com/repos/aloistr/swisseph/contents/swetest.c?ref=3fd0f956d73898b91cc4f67cf18b21af656d1342",
-      "patch": "@@ -73,6 +73,7 @@ static char *infocmd0 = \"\\n\\\n \\n\";\n static char *infocmd1 = \"\\n\\\n   Command line options:\\n\\\n+  Note: spaces have to be observed carefully, as given\\n\\\n      help commands:\\n\\\n         -?, -h  display whole info\\n\\\n         -hcmd   display commands\\n\\\n@@ -82,7 +83,7 @@ static char *infocmd1 = \"\\n\\\n         -hexamp  display examples\\n\\\n         -glp  report file location of library\\n\\\n      input time formats:\\n\\\n-        -bDATE  begin date; e.g. -b1.1.1992 if\\n\\\n+        -bDATE  begin date; e.g. -b31.1.1992 for 31 January 1991\\n\\\n                 Note: the date format is day month year (European style).\\n\\\n         -bj...  begin date as an absolute Julian day number; e.g. -bj2415020.5\\n\\\n         -j...   same as -bj\\n\\\n@@ -289,6 +290,11 @@ static char *infocmd4 = \"\\\n \t-ep\t\t  use extra precision in output for some data\\n\\\n \t-dms              use dms instead of fractions, at some places\\n\\\n \t-lim\t\t  print ephemeris file range\\n\\\n+\t-astposDDD\t  list named asteroids within orb of 0.5° of position DDD\\n\\\n+\t-astposDDD,orb\t  list named asteroids within orb of position DDD\\n\\\n+\t\t\t  DDD is must be decimal between 0.00° and 359.99999°\\n\\\n+\t\t\t  orb must be deciaml between 0.01° and 1.0°\\n\\\n+\t\t\t  \\n\\\n      observer position:\\n\\\n         -hel    compute heliocentric positions\\n\\\n         -bary   compute barycentric positions (bar. earth instead of node) \\n\\\n@@ -738,6 +744,7 @@ static int cut_str_any(char *s, char *cutlist, char *cpos[], int nmax);\n static int32 call_swe_fixstar(char *star, double te, int32 iflag, double *x, char *serr);\n static void jd_to_time_string(double jut, char *stimeout);\n static char *our_strcpy(char *to, char *from);\n+static int print_asteroids(double tjd, double dref, double orb);\n \n /* globals shared between main() and print_line() */\n static char *fmt = \"PLBRS\";\n@@ -855,6 +862,8 @@ int main(int argc, char *argv[])\n   double t2, thour = 0;\n   double delt;\n   double tid_acc = 0;\n+  double orb = 0.5;\n+  double astpos = -1;\n   datm[0] = 1013.25; datm[1] = 15; datm[2] = 40; datm[3] = 0;\n   dobs[0] = 0; dobs[1] = 0;\n   dobs[2] = 0; dobs[3] = 0; dobs[4] = 0; dobs[5] = 0;\n@@ -1109,6 +1118,14 @@ int main(int argc, char *argv[])\n       sp = argv[i] + 4;\n       if (*sp == '[') sp++;\n       sscanf(sp, \"%lf,%lf,%lf,%lf,%lf,%lf\", &(dobs[0]), &(dobs[1]), &(dobs[2]), &(dobs[3]), &(dobs[4]), &(dobs[5]));\n+    } else if (strncmp(argv[i], \"-astpos\", 7) == 0) {\n+      double x1, x2;\n+      sp = argv[i] + 7;\n+      j = sscanf(sp, \"%lf,%lf\", &x1, &x2);\n+      if (j > 0 && x1 >= 0 && x1 < 360)\n+        astpos = x1;\n+      if (j > 1 && x2 >= 0 && x2 <=1 )\n+        orb = x2;\n     } else if (strcmp(argv[i], \"-orbel\") == 0) {\n       do_orbital_elements = TRUE;\n     } else if (strcmp(argv[i], \"-bwd\") == 0) {\n@@ -1582,6 +1599,11 @@ int main(int argc, char *argv[])\n       }\n       if (with_header && !with_header_always)\n         with_header = FALSE;\n+      if (astpos >= 0) {\n+\tprint_asteroids(tjd, astpos, orb);\n+\tswe_close();\n+\treturn OK;\n+      }\n       if (do_ayanamsa) {\n \tif (swe_get_ayanamsa_ex(te, iflag, &daya, serr) == ERR) {\n \t  printf(\"   error in swe_get_ayanamsa_ex(): %s\\n\", serr);\n@@ -2232,10 +2254,10 @@ static int print_line(int mode, AS_BOOL is_first, int sid_mode)\n         if (round_flag & BIT_ROUND_MIN) {\n \t  printf(\"%# 6.2f\", x[0]);\n \t} else {\n-\tif (output_extra_prec)\n-\t  printf(\"%# 11.11f\", x[0]);\n-\telse\n-\t  printf(\"%# 11.7f\", x[0]);\n+\t  if (output_extra_prec)\n+\t    printf(\"%# 11.11f\", x[0]);\n+\t  else\n+\t    printf(\"%# 11.7f\", x[0]);\n \t}\n \tbreak;\n     case 'G':\n@@ -4117,3 +4139,59 @@ static char *our_strcpy(char *to, char *from)\n   }\n   return to;\n }\n+\n+#if TRUE\n+// this function should move to swephlib.c in next release\n+int swe_get_named_ast_list(int amax, int *iarr, char*serr) \n+{\n+  char si[AS_MAXCH], *sp;\n+  FILE *fp = swi_fopen(-1, SE_ASTNAMFILE, swed.ephepath, serr);\n+  int nast = 0;\n+  if (fp == NULL) return ERR;\n+  while (fgets(si, AS_MAXCH, fp) != NULL) {\n+    sp = si + 8;\n+    if (! isdigit(*sp))  {\t// named asteroids do not start with digit\n+      iarr[nast] = atoi(si);\n+      nast++;\n+    }\n+    if (nast == amax) break;\n+  }\n+  fclose(fp);\n+  return nast;\n+}\n+\n+int print_asteroids(double tjd, double dref, double orb)\n+{\n+  int i, rc, nast, amax = 30000;\n+  int arr[amax];\n+  char serr[AS_MAXCH];\n+  char si[AS_MAXCH];\n+  nast = swe_get_named_ast_list(amax, arr, serr);\n+  if (nast == ERR) {\n+    printf(\" error in swe_get_named_ast_list(): %s\\n\", serr);\n+    return ERR;\n+  }\n+  strcpy(si,  dms(dref, BIT_ZODIAC|BIT_ROUND_SEC));\n+  printf(\"\\nAsteroids near %.6lf° (%s) within orb %.3lf°\\n\\t(out of %d named asteroids)\\n\\n\", dref, si, orb, nast);\n+  for (i = 0; i < nast; i++) {\n+    int ipl = arr[i] + SE_AST_OFFSET;\n+    double xx[6];\n+    rc = swe_calc(tjd, ipl, 0, &xx[0], serr);\n+    if (rc >= 0 && dref >= 0) {\n+      double d = swe_difdeg2n(dref, xx[0]);\n+      char pname[AS_MAXCH];\n+      if (fabs(d) <= orb) {\n+\tchar m = ' ';\n+\tif (d < 0)  {\n+\t  d = -d;\n+\t  m = '-';\n+\t}\n+        swe_get_planet_name(ipl, pname);\n+\t// put orb in front for easy sorting\n+\tprintf(\"%.3f%c\\t%d\\t%-20s\\n\", d, m, arr[i], pname);\n+      }\n+    }\n+  }\n+  return OK;\n+}\n+#endif"
+      "contents_url": "https://api.github.com/repos/aloistr/swisseph/contents/swetest.c?ref=3fd0f956d73898b91cc4f67cf18b21af656d1342"
     }
-  ]
+  ],
+  "swissOutputRemoved": {
+    "on": "2026-09-29",
+    "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2",
+    "what": "the patch of each file the commit changed, as GitHub's API returns it: 148 lines of swetest.c, Swiss Ephemeris source code (the commit's identity, author, date and statistics stay; acquire.py reads only its sha)",
+    "removed": [
+      {
+        "path": ".files[].patch",
+        "count": 1,
+        "sha256": "0ff17b461a65c963adfd0ae7c318a3d8b352f1af1766f04c0b0d62c49fcb5176",
+        "bytes": 5485,
+        "patches": [
+          {
+            "file": "swetest.c",
+            "sha256": "135fbf87aed62a9275457268498f7b99cdcee14a2eb4e0082520674e2f9b229b",
+            "bytes": 5178,
+            "lines": 148
+          }
+        ]
+      }
+    ],
+    "fileBefore": {
+      "bytes": 9804,
+      "sha256": "cb2bc6bad819b5909340afe53f2a639e44eeb2a76406c4555048556c77c0bf5b"
+    },
+    "lastCommitWithTheValues": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+    "regenerate": "the commit receipt as GitHub gives it: https://api.github.com/repos/aloistr/swisseph/commits/3fd0f956d73898b91cc4f67cf18b21af656d1342; its patch is Swiss Ephemeris source code and stays out of the tree",
+    "record": "docs/engine-validation/SWISS-OUTPUT-REMOVAL.md"
+  }
 }

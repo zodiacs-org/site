@@ -12,7 +12,7 @@ SHA-256 of the audit's file. Counts measured against Swiss (for example "0 of
 
 | file | what it is | source |
 | --- | --- | --- |
-| `horizons-24/` | The 24-instant corpus (`corpus.json`: instants stratified by epoch 1851–2148, the design and the five configurations it was run in) and NASA JPL Horizons's answers for it: apparent geocentric ecliptic longitude and latitude of date (QUANTITIES 31, airless, TT), one file per body. The outer planets are there both as bodies (599, 699, …) and as barycentres (5, 6, 7, 8, 9), and Mars as body and barycentre (499, 4), as brief v1 M0 item 3 asks. `Moon_UT.txt` is the Moon at the UT instants. Every file carries Horizons's banner: API 1.2, DE441, EOP file eop.260922.p261219. `corpus-tt.json` gives the TT Julian dates sent (TT = UT + Swiss's ΔT, recorded as a clock value). `fetch.py` made the requests; it read those dates from the audit's `swiss.json`, whose `cases[].jdTt` are the ones in `corpus-tt.json`. Its frame is taken apart in `../horizons-frame/`. | audit, `production-positions/` |
+| `horizons-24/` | The 24-instant corpus (`corpus.json`: instants stratified by epoch 1851–2148, the design and the five configurations it was run in) and NASA JPL Horizons's answers for it: apparent geocentric ecliptic longitude and latitude of date (QUANTITIES 31, airless, TT), one file per body. The outer planets are there both as bodies (599, 699, …) and as barycentres (5, 6, 7, 8, 9), and Mars as body and barycentre (499, 4), as brief v1 M0 item 3 asks. `Moon_UT.txt` is the Moon at the UT instants. Every file carries Horizons's banner: API 1.2, DE441; `Moon_UT.txt` names EOP file eop.260922.p261219, and the other sixteen, fetched again on 2026-09-29, eop.260928.p261225. `corpus-tt.json` gives the TT Julian dates sent: TT = UT + the engine's own ΔT, made by `tools/retime-corpus.mjs` (until 2026-09-29, UT + Swiss's ΔT; see below). `fetch.py` makes the requests from `corpus-tt.json` and logs each query in `queries.log`. Its frame is taken apart in `../horizons-frame/`. | audit, `production-positions/` |
 | `angle-grid-inputs.json` | Inputs only, `[utc, lat, lon, house system]`: grid A, 3,128 cases (1800–2200 every 25 years, every 3 hours, latitude 0 and ±10 to ±66); grid B, a 5,616-case Placidus ladder at 0.1° steps from 55° to 66.6° in both hemispheres (1800, 2000, 2200); grid C, 1,152 whole-sign cases from 66.6° to 90° in both hemispheres; grid L, the 336-case ladder of rule 1h (66.05–66.55 in both hemispheres, 1800, 2000 and 2200, every 3 hours). | A, B, C: the auditor's `angles-houses-aspects/swiss.json` (sha256 `1e51824b…5355c`); L: the verifier's `swiss_grid.json` (sha256 `7be155ba…3d8f`) |
 | `angle-grid-erfa.json` | The ERFA arbiter for grids A and L, so rules 1b and 1h can be checked without Swiss output: the ascendant and midheaven of each grid A case, and Placidus's limit (90° − ε, ε the true obliquity of date) at each grid L case, which allows 320 of the 336. pyerfa 2.0.1.5 (ERFA 2.0.1): `gst06a` with UT1 taken as UTC, `obl06` plus the Δε of `nut06a`, on the engine's own clock, so a comparison measures the angle model and not ΔT. Made by `tools/angle-clock.ts` and `tools/angle-arbiter.py`; `scripts/angles-grid.test.mjs` reads it. | this record |
 | `canon-events.json` | The four canon events: the greatest eclipse of 2017-08-21 and 2024-04-08, and the greatest transit of Venus of 2004-06-08 and 2012-06-06, as NASA's eclipse pages give them, with the rounding and the digest of each page. | audit, `verification-honesty/anchors/` |
@@ -43,11 +43,40 @@ SHA-256 of the audit's file. Counts measured against Swiss (for example "0 of
 
 Under [DECISIONS-2026-09-28 §3](../../../programme/DECISIONS-2026-09-28.md)
 two files here lost Swiss's values. `horizons-24/corpus-tt.json` lost Swiss's
-ΔT at each of its 24 instants; the TT instants stay, because Horizons was
-asked for the corpus at them, so their difference from the UT instants still
-gives that ΔT to the precision of a Julian date. `canon-events.json` lost
+ΔT at each of its 24 instants; its TT instants stayed, and their difference
+from the UT instants still gave that ΔT to the precision of a Julian date
+(until 2026-09-29, below). `canon-events.json` lost
 Swiss's residual from the canon at each of the four events; the engine's and
 the alpha's stay. Commit `2ca93d41` still has the values, and each file
 records the SHA-256 of what it lost under `swissOutputRemoved`. The commands
 that regenerate them, and the record of everything removed, are in
+[`../../../../engine-validation/SWISS-OUTPUT-REMOVAL.md`](../../../../engine-validation/SWISS-OUTPUT-REMOVAL.md).
+
+## The corpus re-timed, 2026-09-29
+
+The corpus was fetched at TT = UT + Swiss's ΔT, so each TT instant, in
+`corpus-tt.json` and in the time column of every Horizons response here and
+in `../horizons-frame/vectors/`, gave Swiss's ΔT back beside the UT instants
+of `corpus.json`. Under
+[DECISIONS-2026-09-29 §2](../../../programme/DECISIONS-2026-09-29.md) that is
+Swiss output kept as data, so the corpus now runs on the engine's own ΔT
+(model zodiacs-deltat/1), the clock every chart on the site uses:
+
+- `tools/retime-corpus.mjs` wrote `corpus-tt.json`: TT = UT + the engine's ΔT
+  at each preregistered UT instant, rounded to the 1e-8 day a request carries;
+- `horizons-24/fetch.py` asked Horizons again for the sixteen TT files, and
+  `../horizons-frame/vectors/fetch_vectors.py` for the three VECTORS files;
+- `Moon_UT.txt`, at the UT instants on Horizons's own ΔT, is unchanged.
+
+The instants moved by the difference between the two programs' ΔT: fractions
+of a second up to 2026, more after it, where both extrapolate. The fixed
+clock the design asks for is kept, since every configuration is still
+evaluated at the same TT; only where that TT comes from changed.
+`corpus.json` is the preregistered design and still says Swiss's ΔT.
+Commit `2ca93d41` has the corpus as first fetched, and so do the conformance
+suite's L1 sources, which name commit `3f31ba17` of this repository. The
+horizons-frame study was made on the first fetch and keeps its figures; its
+re-run on this one is beside it
+([`../horizons-frame/README.md`](../horizons-frame/README.md)). What left the
+tree, file by file, is in
 [`../../../../engine-validation/SWISS-OUTPUT-REMOVAL.md`](../../../../engine-validation/SWISS-OUTPUT-REMOVAL.md).

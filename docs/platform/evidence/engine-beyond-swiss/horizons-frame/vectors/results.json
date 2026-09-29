@@ -31,7 +31,6 @@
   {
    "id": "A1",
    "utc": "1851-03-14T04:37:00Z",
-   "jdTdb": "2397195.692474590",
    "Moon": {
     "angleMas": 10.2418,
     "displacementM": 18.06
@@ -49,7 +48,6 @@
   {
    "id": "A2",
    "utc": "1866-11-02T19:12:00Z",
-   "jdTdb": "2402908.300075090",
    "Moon": {
     "angleMas": 6.2328,
     "displacementM": 11.88
@@ -67,7 +65,6 @@
   {
    "id": "A3",
    "utc": "1882-07-21T09:48:00Z",
-   "jdTdb": "2408647.908286790",
    "Moon": {
     "angleMas": 3.9865,
     "displacementM": 7.81
@@ -85,7 +82,6 @@
   {
    "id": "A4",
    "utc": "1897-01-09T22:05:00Z",
-   "jdTdb": "2413934.420087540",
    "Moon": {
     "angleMas": 2.6837,
     "displacementM": 5.23
@@ -103,7 +99,6 @@
   {
    "id": "B1",
    "utc": "1908-05-30T15:23:00Z",
-   "jdTdb": "2418092.141078800",
    "Moon": {
     "angleMas": 1.9548,
     "displacementM": 3.72
@@ -121,7 +116,6 @@
   {
    "id": "B2",
    "utc": "1919-12-04T02:41:00Z",
-   "jdTdb": "2422296.612055320",
    "Moon": {
     "angleMas": 1.4158,
     "displacementM": 2.51
@@ -139,7 +133,6 @@
   {
    "id": "B3",
    "utc": "1933-08-17T11:56:00Z",
-   "jdTdb": "2427301.997503210",
    "Moon": {
     "angleMas": 0.5809,
     "displacementM": 1.13
@@ -157,7 +150,6 @@
   {
    "id": "B4",
    "utc": "1946-02-23T20:14:00Z",
-   "jdTdb": "2431875.343374610",
    "Moon": {
     "angleMas": 0.234,
     "displacementM": 0.46
@@ -175,7 +167,6 @@
   {
    "id": "C1",
    "utc": "1957-10-04T19:28:00Z",
-   "jdTdb": "2436116.311482090",
    "Moon": {
     "angleMas": 0.0588,
     "displacementM": 0.12
@@ -193,7 +184,6 @@
   {
    "id": "C2",
    "utc": "1969-07-20T20:17:00Z",
-   "jdTdb": "2440423.345598800",
    "Moon": {
     "angleMas": 0.005,
     "displacementM": 0.01
@@ -211,7 +201,6 @@
   {
    "id": "C3",
    "utc": "1977-03-08T06:03:00Z",
-   "jdTdb": "2443210.752635510",
    "Moon": {
     "angleMas": 0.0367,
     "displacementM": 0.07
@@ -229,7 +218,6 @@
   {
    "id": "C4",
    "utc": "1986-11-13T13:47:00Z",
-   "jdTdb": "2446748.074945170",
    "Moon": {
     "angleMas": 0.1194,
     "displacementM": 0.23
@@ -247,7 +235,6 @@
   {
    "id": "C5",
    "utc": "1999-08-11T10:51:00Z",
-   "jdTdb": "2451401.952820620",
    "Moon": {
     "angleMas": 0.3984,
     "displacementM": 0.72
@@ -265,7 +252,6 @@
   {
    "id": "D1",
    "utc": "2003-08-27T09:51:00Z",
-   "jdTdb": "2452878.911163690",
    "Moon": {
     "angleMas": 0.5011,
     "displacementM": 0.92
@@ -283,7 +269,6 @@
   {
    "id": "D2",
    "utc": "2012-05-21T00:33:00Z",
-   "jdTdb": "2456068.523688820",
    "Moon": {
     "angleMas": 0.6673,
     "displacementM": 1.31
@@ -301,7 +286,6 @@
   {
    "id": "D3",
    "utc": "2020-12-21T18:20:00Z",
-   "jdTdb": "2459205.264691670",
    "Moon": {
     "angleMas": 0.942,
     "displacementM": 1.83
@@ -319,7 +303,6 @@
   {
    "id": "D4",
    "utc": "2026-09-22T17:00:00Z",
-   "jdTdb": "2461306.209129870",
    "Moon": {
     "angleMas": 1.1789,
     "displacementM": 2.27
@@ -337,7 +320,6 @@
   {
    "id": "D5",
    "utc": "2038-01-19T03:14:07Z",
-   "jdTdb": "2465442.635628340",
    "Moon": {
     "angleMas": 1.7817,
     "displacementM": 3.3
@@ -355,7 +337,6 @@
   {
    "id": "E1",
    "utc": "2055-06-06T12:00:00Z",
-   "jdTdb": "2471790.000882020",
    "Moon": {
     "angleMas": 2.8719,
     "displacementM": 5.13
@@ -373,7 +354,6 @@
   {
    "id": "E2",
    "utc": "2071-10-29T21:39:00Z",
-   "jdTdb": "2477779.403028460",
    "Moon": {
     "angleMas": 3.2274,
     "displacementM": 6.32
@@ -391,7 +371,6 @@
   {
    "id": "E3",
    "utc": "2088-04-02T05:26:00Z",
-   "jdTdb": "2483778.727407640",
    "Moon": {
     "angleMas": 4.6729,
     "displacementM": 8.65
@@ -409,7 +388,6 @@
   {
    "id": "F1",
    "utc": "2104-09-15T14:08:00Z",
-   "jdTdb": "2489788.089993090",
    "Moon": {
     "angleMas": 5.4616,
     "displacementM": 10.43
@@ -427,7 +405,6 @@
   {
    "id": "F2",
    "utc": "2125-02-11T23:45:00Z",
-   "jdTdb": "2497242.490811660",
    "Moon": {
     "angleMas": 7.3858,
     "displacementM": 13.66
@@ -445,7 +422,6 @@
   {
    "id": "F3",
    "utc": "2148-12-30T07:31:00Z",
-   "jdTdb": "2505964.814594620",
    "Moon": {
     "angleMas": 8.6009,
     "displacementM": 16.53
@@ -460,5 +436,25 @@
    },
    "horizonsMarsBodyMinusBarycentreM": 0.16
   }
- ]
+ ],
+ "swissOutputRemoved": {
+  "on": "2026-09-29",
+  "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2",
+  "what": "the TT of each corpus instant as first fetched, UT + Swiss's Delta T, which beside the UT instant gives that Delta T back (the ephemeris differences stay)",
+  "removed": [
+   {
+    "path": ".instants[].jdTdb",
+    "count": 24,
+    "sha256": "6c5910d731a5805eff1d86cb85caeba72f7f9ced5480c4cbe324980c15ef1420",
+    "bytes": 721
+   }
+  ],
+  "fileBefore": {
+   "bytes": 9180,
+   "sha256": "6e02af025557a4d2acd46f88dd52a456db7ed5ce068c4f840fc444f8216a8efa"
+  },
+  "lastCommitWithTheValues": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+  "regenerate": "the TT of each instant as the corpus was first fetched: git show 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83:docs/platform/evidence/engine-beyond-swiss/corpora/horizons-24/corpus-tt.json, or UT + Swiss's Delta T as under the corpus's own entry",
+  "record": "docs/engine-validation/SWISS-OUTPUT-REMOVAL.md"
+ }
 }

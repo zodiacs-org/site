@@ -471,3 +471,21 @@ regenerate it; point the ones that write `raw/t1-swiss.json` and
 `verify/v4-dense-diff.json` outside the repository. The record of everything
 removed is
 [`../../../../engine-validation/SWISS-OUTPUT-REMOVAL.md`](../../../../engine-validation/SWISS-OUTPUT-REMOVAL.md).
+
+## Positions on Swiss's clock removed, 2026-09-29
+
+Under [DECISIONS-2026-09-29 §2](../../../programme/DECISIONS-2026-09-29.md)
+the positions computed on Swiss's clock left too. The sweep, the matched
+counterfactual cells, the reproduction of cell D and the hold-out runs placed
+each case at its UT + Swiss's ΔT, and beside the same program at its own
+clock (cells A and C) the Moon's difference over its speed gives that ΔT
+back, to within 0.012 s for the engine and 0.0034 s for the prototype. `raw/sweep/sweep-*.json` and `verify/sweep/sweep-*.json` (21
+variants each), `raw/repro-cellD-dump.json`, `verify/repro-cellD-dump.json`,
+`verify/holdout-*.json` (three runs, not their reports) and the `cellB-*` and
+`cellD-*` files under `raw/counterfactual/` and `verify/counterfactual/` lost
+their per-case `bodies` (and cell B its `angles`). Each keeps its cases' ids,
+strata and UT, records the SHA-256 of what it lost under `swissOutputRemoved`,
+and the statistics in the reports, `raw/t2-sweep-summary.json`,
+`verify/v2-sweep-summary.json` and `t2-core-counterfactual.json` stay as they
+were. The recipes above write these files into `raw/` and `verify/`; point
+them outside the repository too.

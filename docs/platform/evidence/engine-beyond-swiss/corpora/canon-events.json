@@ -66,7 +66,7 @@
    "sha256": "e5e1d89ef856e98aeadfc8c291196c4bd329de41b5217af0282190dd5447e316"
   },
   "lastCommitWithTheValues": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
-  "regenerate": "the four canon events located in Swiss Ephemeris 2.10.03, as the engine audit did (engine-audit-2026-09-22/LEDGER.md, verification-honesty-3)",
+  "regenerate": "no committed command: the engine audit located the four events in Swiss Ephemeris 2.10.03 with its swiss-anchors.py, which it did not commit (engine-audit-2026-09-22/LEDGER.md, verification-honesty-3, gives the method); the values are only in commit 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
   "record": "docs/engine-validation/SWISS-OUTPUT-REMOVAL.md"
  }
 }

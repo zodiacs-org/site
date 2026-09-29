@@ -160,3 +160,16 @@ and each file records the SHA-256 of what it lost under `swissOutputRemoved`.
 Commit `2ca93d41` still has the values, and `tools/dump-core-controlled.mjs`
 regenerates the cells. The record of everything removed is
 [`../../../engine-validation/SWISS-OUTPUT-REMOVAL.md`](../../../engine-validation/SWISS-OUTPUT-REMOVAL.md).
+
+## Positions on Swiss's clock removed, 2026-09-29
+
+Under [DECISIONS-2026-09-29 §2](../../programme/DECISIONS-2026-09-29.md) the
+positions of the two pinned cells left as well. Cell B ran the engine, and
+cell D the prototype, at each case's UT + Swiss's ΔT, so beside cells A and C
+the Moon's difference over its speed gives that ΔT back: to within 0.012 s
+from cell B and 0.0034 s from cell D. `raw/cellB-core-pinned.json` lost its
+per-case `bodies` and `angles`, and `raw/cellD-proto-pinned.json` its
+`bodies`; each keeps its cases' ids, strata and UT and records the SHA-256 of
+what it lost under `swissOutputRemoved`. Cells A and C, on the programs' own
+clocks, keep their positions, and every figure above and in
+`raw/controlled-2x2.json` is unchanged.

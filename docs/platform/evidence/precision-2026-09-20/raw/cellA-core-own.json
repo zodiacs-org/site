@@ -1176,7 +1176,7 @@
  "swissOutputRemoved": {
   "on": "2026-09-28",
   "under": "docs/platform/programme/DECISIONS-2026-09-28.md §3",
-  "what": "per-case engine-minus-Swiss differences in longitude, latitude and speed",
+  "what": "Swiss's Delta T for each case",
   "removed": [
    {
     "path": ".cases[].deltaTReferenceSeconds",

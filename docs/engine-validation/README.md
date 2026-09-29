@@ -74,9 +74,12 @@ committed together, so it could not confirm it independently. The node/polar pac
 0.001685457° (6.07″) in node longitude, 0.000350604°/day in node speed, and
 0.000434825° (1.57″) in polar angles — recorded against `@zodiacs/engine`
 0.1.0, not the rc.6 named at the top of this page, and those maxima are that
-run's. Since 2026-09-28 the fixtures are out of the tree, with the rest of
-Swiss's raw output ([`SWISS-OUTPUT-REMOVAL.md`](SWISS-OUTPUT-REMOVAL.md)), and
-the suite holds the same cases to the same gates against JPL Horizons and ERFA
+run's. Since 2026-09-28 the fixtures are out of the tree, and since
+2026-09-29 so is every other per-case Swiss value kept as data, including the
+ones arithmetic on what remained gave back; statistics, digests and the
+figures dated records quote stay
+([`SWISS-OUTPUT-REMOVAL.md`](SWISS-OUTPUT-REMOVAL.md)). The suite holds the
+same cases to the same gates against JPL Horizons and ERFA
 ([`independent-references/`](independent-references/)).
 
 **The distribution.** [`swiss-benchmark/`](../platform/evidence/swiss-benchmark/)
@@ -103,11 +106,14 @@ the whole span is 29.12″ (Pluto, 2199), and the Moon stays within 7.15″ from
 2150 to 2199, where at the same UT it reaches 20.47″: past the IERS
 predictions the two programs' clocks are two extrapolations.
 
-None of the 180 exceeds one arcminute on rc.8. The far-future Moon is 7.5″
-from Swiss at 2100 and 15.3″ at 2190, and the clock is still most of it: the
-two programs extrapolate ΔT past the IERS predictions differently — Swiss
-93.18 s at 2100, the engine 78.93 s with a 1-σ of 42.39 s, 14.25 s apart — and
-the Moon moves about 0.549″ per second of time, 7.8″ for that gap. Up to rc.7
+None of the 180 exceeds one arcminute on rc.8. For the far-future Moon the
+clock is most of the difference: the two programs extrapolate ΔT past the IERS
+predictions differently, and from 2100 to 2199 their values differ by 14.3
+to 36.7 s, inside the engine's own 1-σ of 42.4 to 103.4 s; at the Moon's 0.49
+to 0.64″ per second of time, that alone moves it 7.0″ to 23.4″
+([`deltat-gap-2100-2199.json`](../platform/evidence/swiss-benchmark/deltat-gap-2100-2199.json),
+statistics of a daily run, with Swiss's ΔT computed on demand by
+`tools/deltat_gap_swiss.py` beside it). Up to rc.7
 the engine's clock read 202.65 s at 2100, and two of the 180 exceeded one
 arcminute, both the Moon: 64.8″ at 2100 and 159.4″ at 2190. Pinning ΔT to the
 reference collapsed **the DE440s prototype's** 2100 case from 63.887″ to
@@ -382,22 +388,23 @@ carries its corpus, its per-call record of which Swiss backend answered, and
 the statistics of its rows; the rows left the tree on 2026-09-28 with the rest
 of Swiss's raw output, and its tools regenerate them.
 
-Three things here are not reproducible from the repository, and naming them is
+Two things here are not reproducible from the repository, and naming them is
 the point of the rest of it. The JPL Horizons values the suite checks
 (`src/lib/engine/fixtures/horizons-reference.json`) record their query, and
 the audit's re-fetch on 2026-09-22 (API version 1.2, DE441) matched six of
 the seven 2020 values exactly and Neptune to 0.004″, but the provider version
 of the original fetch is not recorded, and `swiss-eight-cases/README.md` says
-it "remains unknown". The Swiss ΔT of
-93.18 s at 2100 was transcribed from a run rather than committed as a receipt;
-from 2026-09-25 it was committed with the tool that reads it
-(`../platform/evidence/deltat-2026-09-25/outputs/swiss-deltat.json`, by
-`tools/moon/swiss_deltat.py`), and since 2026-09-28 only the tool is. And the benchmark's
+it "remains unknown". And the benchmark's
 performance table has no committed JSON; its `prototype, engine ΔT` row, which
 had none either, was recovered and committed on 2026-09-20
 (`precision-2026-09-20/raw/recovered-report-proto-engine-deltat.json`).
 Everything else can be re-derived: from the committed files, or, where it
-compares with Swiss, by running Swiss again with the committed tools.
+compares with Swiss, by running Swiss again with the committed tools. Until
+2026-09-29 there was a third: section 1 quoted Swiss's ΔT at 2100, which was
+transcribed from a run and then kept only as the tool that reads it. Section 1
+now gives the two programs' ΔT difference over 2100–2199 as statistics, which
+`tools/deltat-gap-zodiacs.mjs` and `tools/deltat_gap_swiss.py` in
+`../platform/evidence/swiss-benchmark/` compute again, Swiss included.
 
 ## Corrections
 

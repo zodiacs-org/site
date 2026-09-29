@@ -31,29 +31,15 @@
     "components": [
       {
         "sourceId": "D-component-1",
-        "startUtc": "2019-02-27T03:30:13.194Z",
-        "endUtc": "2019-06-24T20:44:23.508Z",
         "sourceExactCount": 1,
         "exactTopology": "resolved",
-        "globalMinimumKind": "exact",
-        "possibleExactRegionUtc": null,
-        "possibleMinimumRegionUtc": null
+        "globalMinimumKind": "exact"
       },
       {
         "sourceId": "D-component-2",
-        "startUtc": "2019-09-30T09:06:55.823Z",
-        "endUtc": "2020-04-10T15:17:01.450Z",
         "sourceExactCount": 2,
         "exactTopology": "uncertain",
-        "globalMinimumKind": "unresolved-cross-model-count",
-        "possibleExactRegionUtc": [
-          "2019-12-27T07:43:29.465Z",
-          "2020-01-25T19:18:24.834Z"
-        ],
-        "possibleMinimumRegionUtc": [
-          "2019-12-23T18:26:26.720Z",
-          "2020-01-29T07:16:24.451Z"
-        ]
+        "globalMinimumKind": "unresolved-cross-model-count"
       }
     ]
   },
@@ -155,12 +141,10 @@
       "what": "pyswisseph 2.10.03, flags 258, v6 clock recipe (TT = UTC + 69.184 s)",
       "method": "one-hour grid over +/-60 h around the DE station, then a one-second grid over +/-1 h around the coarse minimum; 7321 SWIEPH evaluations",
       "evaluations": 7322,
-      "signedStationMinusTargetDegrees": -0.04418806605816883,
       "marginDegrees": 0.04418806605816883,
       "marginVersusRecorded": 1.0030731800725334e-9,
       "marginVersusRecordedArcsec": 0.0000036110634482611204,
       "clearsOriginalGate": false,
-      "ttMinusUtcSeconds": 69.18401420116425,
       "retflag": 258
     }
   },
@@ -358,6 +342,24 @@
         "count": 1,
         "sha256": "ecba08b9a5fd4533bcb287fef2046e9b670648d822cfdd338cfd4d6c2a3a950f",
         "bytes": 21
+      },
+      {
+        "path": ".recordedContract.components[].startUtc|endUtc|possibleExactRegionUtc|possibleMinimumRegionUtc",
+        "count": 2,
+        "sha256": "d7b20e50afa588a426fbd77d0eaa0f8b17cfbe0d1082fae5a226216f84a1d73d",
+        "bytes": 379,
+        "what": "Swiss's component ends, the ends of an hourly Swiss scan of the 3-degree orb, and the regions its exact passes and minimum were possible in",
+        "on": "2026-09-29",
+        "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2"
+      },
+      {
+        "path": ".independentReproduction.swiss.signedStationMinusTargetDegrees|ttMinusUtcSeconds",
+        "count": 2,
+        "sha256": "6d4800489d3847402e365fc8ae8d6928243cd4522dab4c8b5af4f09b9f02c048",
+        "bytes": 94,
+        "what": "Swiss's station minus the target, which with the target beside it gives Swiss's station longitude back, and Swiss's own TT - UTC",
+        "on": "2026-09-29",
+        "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2"
       }
     ],
     "fileBefore": {
@@ -365,7 +367,7 @@
       "sha256": "dfcdd22cc52b847ffe9b6e707f3f7cda6478f1ee66df28fc9185239ad878a97c"
     },
     "lastCommitWithTheValues": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
-    "regenerate": "python3 docs/platform/evidence/precision-2026-09-20/search/verify/swiss-station.py, and search/lib/swiss-longitudes.py through search/reproduce.mjs",
+    "regenerate": "python3 docs/platform/evidence/precision-2026-09-20/search/verify/swiss-station.py, and search/lib/swiss-longitudes.py through search/reproduce.mjs, decompose.mjs and uranus-d.mjs, each given the fixture of commit 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83 from outside the repository (SWISS_WINDOW_FIXTURE or its first argument) and writing outside it",
     "record": "docs/engine-validation/SWISS-OUTPUT-REMOVAL.md"
   }
 }

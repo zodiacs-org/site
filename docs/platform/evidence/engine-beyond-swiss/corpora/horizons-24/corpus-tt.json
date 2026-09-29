@@ -1,169 +1,181 @@
 {
- "note": "The 24 corpus instants: UTC, and the TT Julian dates sent to Horizons (TLIST, TIME_TYPE=TT). TT was taken as UT + Swiss's deltaT, recorded here as a clock value, not a position.",
+ "note": "The 24 corpus instants: UTC, and the TT Julian dates sent to Horizons (TLIST, TIME_TYPE=TT). TT is UT + the engine's own ΔT (deltaTSeconds, model and table under clock), rounded to the 1e-8 day the request carries. Until 2026-09-29 TT was UT + Swiss Ephemeris's ΔT, which the TT instants gave back; that clock left the tree under docs/platform/programme/DECISIONS-2026-09-29.md §2 (docs/engine-validation/SWISS-OUTPUT-REMOVAL.md).",
+ "clock": {
+  "engine": "0.1.1-rc.10",
+  "deltaTModel": "zodiacs-deltat/1",
+  "deltaTTable": "2026-09-24",
+  "deltaTTableDigest": "6371988c510a1c6c",
+  "rounding": "jdTt to 1e-8 day",
+  "madeBy": "node docs/platform/evidence/engine-beyond-swiss/corpora/tools/retime-corpus.mjs"
+ },
  "cases": [
   {
    "id": "A1",
    "utc": "1851-03-14T04:37:00Z",
    "jdUt": 2397195.6923611113,
-   "jdTt": 2397195.6924745925
+   "deltaTSeconds": 9.724543072632162,
+   "jdTt": 2397195.69247366
   },
   {
    "id": "A2",
    "utc": "1866-11-02T19:12:00Z",
    "jdUt": 2402908.3,
-   "jdTt": 2402908.300075087
+   "deltaTSeconds": 6.426608447498965,
+   "jdTt": 2402908.30007438
   },
   {
    "id": "A3",
    "utc": "1882-07-21T09:48:00Z",
    "jdUt": 2408647.908333333,
-   "jdTt": 2408647.9082867857
+   "deltaTSeconds": -4.063766054321887,
+   "jdTt": 2408647.9082863
   },
   {
    "id": "A4",
    "utc": "1897-01-09T22:05:00Z",
    "jdUt": 2413934.420138889,
-   "jdTt": 2413934.4200875396
+   "deltaTSeconds": -4.465918924523359,
+   "jdTt": 2413934.4200872
   },
   {
    "id": "B1",
    "utc": "1908-05-30T15:23:00Z",
    "jdUt": 2418092.140972222,
-   "jdTt": 2418092.141078796
+   "deltaTSeconds": 9.188612632579732,
+   "jdTt": 2418092.14107857
   },
   {
    "id": "B2",
    "utc": "1919-12-04T02:41:00Z",
    "jdUt": 2422296.6118055554,
-   "jdTt": 2422296.612055316
+   "deltaTSeconds": 21.572867831507963,
+   "jdTt": 2422296.61205524
   },
   {
    "id": "B3",
    "utc": "1933-08-17T11:56:00Z",
    "jdUt": 2427301.9972222224,
-   "jdTt": 2427301.997503209
+   "deltaTSeconds": 24.27100235854757,
+   "jdTt": 2427301.99750314
   },
   {
    "id": "B4",
    "utc": "1946-02-23T20:14:00Z",
    "jdUt": 2431875.3430555556,
-   "jdTt": 2431875.3433746113
+   "deltaTSeconds": 27.34370712601721,
+   "jdTt": 2431875.34337203
   },
   {
    "id": "C1",
    "utc": "1957-10-04T19:28:00Z",
    "jdUt": 2436116.311111111,
-   "jdTt": 2436116.311482087
+   "deltaTSeconds": 32.051690470758174,
+   "jdTt": 2436116.31148208
   },
   {
    "id": "C2",
    "utc": "1969-07-20T20:17:00Z",
    "jdUt": 2440423.345138889,
-   "jdTt": 2440423.3455988024
+   "deltaTSeconds": 39.73955711460945,
+   "jdTt": 2440423.34559884
   },
   {
    "id": "C3",
    "utc": "1977-03-08T06:03:00Z",
    "jdUt": 2443210.752083333,
-   "jdTt": 2443210.752635514
+   "deltaTSeconds": 47.70389350901208,
+   "jdTt": 2443210.75263546
   },
   {
    "id": "C4",
    "utc": "1986-11-13T13:47:00Z",
    "jdUt": 2446748.074305556,
-   "jdTt": 2446748.07494517
+   "deltaTSeconds": 55.260029945242984,
+   "jdTt": 2446748.07494514
   },
   {
    "id": "C5",
    "utc": "1999-08-11T10:51:00Z",
    "jdUt": 2451401.9520833334,
-   "jdTt": 2451401.9528206224
+   "deltaTSeconds": 63.68900821355232,
+   "jdTt": 2451401.95282047
   },
   {
    "id": "D1",
    "utc": "2003-08-27T09:51:00Z",
    "jdUt": 2452878.910416667,
-   "jdTt": 2452878.911163686
+   "deltaTSeconds": 64.53520476842344,
+   "jdTt": 2452878.9111636
   },
   {
    "id": "D2",
    "utc": "2012-05-21T00:33:00Z",
    "jdUt": 2456068.5229166667,
-   "jdTt": 2456068.523688819
+   "deltaTSeconds": 66.71926654118181,
+   "jdTt": 2456068.52368888
   },
   {
    "id": "D3",
    "utc": "2020-12-21T18:20:00Z",
    "jdUt": 2459205.263888889,
-   "jdTt": 2459205.264691673
+   "deltaTSeconds": 69.36,
+   "jdTt": 2459205.26469167
   },
   {
    "id": "D4",
    "utc": "2026-09-22T17:00:00Z",
    "jdUt": 2461306.2083333335,
-   "jdTt": 2461306.20912987
+   "deltaTSeconds": 69.1995629699248,
+   "jdTt": 2461306.20913425
   },
   {
    "id": "D5",
    "utc": "2038-01-19T03:14:07Z",
    "jdUt": 2465442.6348032407,
-   "jdTt": 2465442.6356283394
+   "deltaTSeconds": 70.4125325811085,
+   "jdTt": 2465442.6356182
   },
   {
    "id": "E1",
    "utc": "2055-06-06T12:00:00Z",
-   "jdUt": 2471790.0,
-   "jdTt": 2471790.000882015
+   "jdUt": 2471790,
+   "deltaTSeconds": 71.94946755250228,
+   "jdTt": 2471790.00083275
   },
   {
    "id": "E2",
    "utc": "2071-10-29T21:39:00Z",
    "jdUt": 2477779.402083333,
-   "jdTt": 2477779.403028457
+   "deltaTSeconds": 73.8124460407831,
+   "jdTt": 2477779.40293764
   },
   {
    "id": "E3",
    "utc": "2088-04-02T05:26:00Z",
    "jdUt": 2483778.726388889,
-   "jdTt": 2483778.7274076417
+   "deltaTSeconds": 76.45407112481912,
+   "jdTt": 2483778.72727377
   },
   {
    "id": "F1",
    "utc": "2104-09-15T14:08:00Z",
    "jdUt": 2489788.0888888887,
-   "jdTt": 2489788.089993089
+   "deltaTSeconds": 80.06722220549314,
+   "jdTt": 2489788.08981559
   },
   {
    "id": "F2",
    "utc": "2125-02-11T23:45:00Z",
    "jdUt": 2497242.4895833335,
-   "jdTt": 2497242.4908116646
+   "deltaTSeconds": 86.09269449128277,
+   "jdTt": 2497242.49057978
   },
   {
    "id": "F3",
    "utc": "2148-12-30T07:31:00Z",
    "jdUt": 2505964.8131944444,
-   "jdTt": 2505964.8145946246
+   "deltaTSeconds": 95.59067217311657,
+   "jdTt": 2505964.81430082
   }
- ],
- "swissOutputRemoved": {
-  "on": "2026-09-28",
-  "under": "docs/platform/programme/DECISIONS-2026-09-28.md §3",
-  "what": "Swiss's Delta T at each corpus instant (the TT instants it gave stay, as the corpus inputs)",
-  "removed": [
-   {
-    "path": ".cases[].deltaTSeconds",
-    "count": 24,
-    "sha256": "ec648e52d9891ba911fc775b90976a30dff7776dabbcfbc2c532c1bb5dc85a7b",
-    "bytes": 873
-   }
-  ],
-  "fileBefore": {
-   "bytes": 3962,
-   "sha256": "a31df4c952f778f398f5c8ea888c8d29300ac317bcb984de1e520078a09733a7"
-  },
-  "lastCommitWithTheValues": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
-  "regenerate": "swe.deltat_ex(jdUt, swe.FLG_SWIEPH) at each corpus instant, as the audit's swiss_dump.py read it (engine-beyond-swiss/corpora/README.md)",
-  "record": "docs/engine-validation/SWISS-OUTPUT-REMOVAL.md"
- }
+ ]
 }

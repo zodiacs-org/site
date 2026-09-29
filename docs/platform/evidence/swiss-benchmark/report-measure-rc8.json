@@ -212,7 +212,7 @@
  },
  "excluded": [],
  "statistics": {
-  "what": "Statistics of the removed rows that the site's copy states, computed from them before they were removed (2026-09-28, docs/platform/programme/DECISIONS-2026-09-28.md §3) by the formulas scripts/methodology-accuracy-claim.test.mjs and scripts/claims-bindings.test.mjs used on the rows.",
+  "what": "Statistics of the removed rows that the site's copy states, computed from them before they were removed (2026-09-28, docs/platform/programme/DECISIONS-2026-09-28.md §3) by the formulas scripts/methodology-accuracy-claim.test.mjs and scripts/claims-bindings.test.mjs used on the rows. The far-future Moon's two differences, first listed here case by case, left on 2026-09-29 (docs/platform/programme/DECISIONS-2026-09-29.md §2); the count of those cases stays.",
   "withinRecord": {
    "what": "the rows outside the far-future stratum",
    "n": 160,
@@ -256,16 +256,9 @@
     "body": "Pluto",
     "absArcsec": 24.769741045281535
    },
-   "moonCases": [
-    {
-     "id": "future-01",
-     "absArcsec": 7.465197715316663
-    },
-    {
-     "id": "future-02",
-     "absArcsec": 15.34003775138899
-    }
-   ]
+   "moon": {
+    "n": 2
+   }
   }
  },
  "swissOutputRemoved": {
@@ -278,6 +271,15 @@
     "count": 180,
     "sha256": "595d2a63e15c24833c1f178e23f38f1573794751ae6c9058be7fbb5f1647654c",
     "bytes": 29149
+   },
+   {
+    "path": ".statistics.farFuture.moonCases",
+    "count": 2,
+    "sha256": "36ad1218ee678fd678990c44c1d2856508fa0085a0ffff38e30b59fb8fa697e0",
+    "bytes": 99,
+    "what": "the far-future Moon's difference from Swiss at each of its two epochs, which the statistics listed case by case",
+    "on": "2026-09-29",
+    "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2"
    }
   ],
   "fileBefore": {
