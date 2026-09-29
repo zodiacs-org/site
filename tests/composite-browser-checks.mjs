@@ -329,7 +329,11 @@ export async function runCompositeBrowserChecks({ browser, baseURL, check, outDi
     for (const width of [390, 1440]) {
       const label = `${locale}-${width}`;
       const c = EXPECTED[locale];
-      const context = await browser.newContext({ viewport: { width, height: 1000 }, deviceScaleFactor: 1, reducedMotion: 'reduce', acceptDownloads: true });
+      // The site's service worker claims the page a few seconds after load, and
+      // a fetch it answers never reaches page.route: the controlled artwork
+      // request below would then not arrive. Block it, as the other
+      // interception drives do.
+      const context = await browser.newContext({ viewport: { width, height: 1000 }, deviceScaleFactor: 1, reducedMotion: 'reduce', acceptDownloads: true, serviceWorkers: 'block' });
       await installObservation(context, profile);
       const page = await context.newPage();
       const expectedAborts = new Set();
