@@ -279,6 +279,47 @@ jobs:
       - name: Drift gate
         run: git diff --exit-code -- public/
 
+  # The Swiss output removal (docs/engine-validation/SWISS-OUTPUT-REMOVAL.md)
+  # and the independent references that replaced Swiss's fixtures. strip.py
+  # --check reads commit 2ca93d41, the last with every Swiss value, and the
+  # first removal's commits, so the job needs the full history. The reference
+  # build reads only the Horizons responses kept in the repository and the
+  # installed engine, so it runs offline and must give the committed bytes.
+  swiss-output-removal:
+    name: Swiss output removal and independent references
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Setup Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: '3.11'
+
+      - name: Install
+        run: |
+          npm ci
+          python -m pip install --require-hashes --no-deps -r docs/engine-validation/independent-references/tools/requirements.txt
+
+      - name: The tree matches strip.py
+        run: python docs/engine-validation/swiss-output-removal/strip.py --check
+
+      - name: Rebuild the independent references offline
+        run: python docs/engine-validation/independent-references/tools/build.py
+
+      - name: Reference drift gate
+        run: git diff --exit-code -- src/lib/engine/fixtures/ docs/engine-validation/independent-references/
+
   phase3-delivery-sql:
     name: Phase 3 delivery SQL
     runs-on: ubuntu-latest
