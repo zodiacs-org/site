@@ -4,10 +4,18 @@ import { relative, resolve, sep } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { build } from 'esbuild';
 
-import { ENGINE_VERSION as packageEngineVersion, HOUSE_SYSTEMS, natalChart } from '@zodiacs/engine';
+import {
+  ENGINE_VERSION as packageEngineVersion,
+  HOUSE_SYSTEMS,
+  natalChart,
+  PROGRESSION_DAYS_PER_YEAR as packageProgressionDaysPerYear,
+  progressedBodies as packageProgressedBodies,
+  progressedInstant as packageProgressedInstant,
+} from '@zodiacs/engine';
 import { computeBodies as packageComputeBodies } from '@zodiacs/engine/internal';
 
 import { computeBodies, computeChart } from './full';
+import { PROGRESSION_DAYS_PER_YEAR, progressedBodies, progressedInstant } from './progressions';
 import { ENGINE_VERSION } from './types';
 
 const artifactPath = resolve(process.cwd(), 'vendor/zodiacs-engine-0.1.1-rc.14.tgz');
@@ -116,6 +124,28 @@ describe('vendored @zodiacs/engine integration', () => {
       })),
     );
     expect(siteBodies.some((body) => 'sign' in body || 'degree' in body)).toBe(false);
+  });
+
+  it('takes secondary progressions from the package, in the site body shape', () => {
+    // Since rc.12 the package carries the site's day-for-a-year convention;
+    // the site keeps only a shape adapter, behind ChartLens's dynamic import.
+    const birth = new Date('1907-07-06T15:06:36Z');
+    for (const target of [new Date('2026-07-06T00:00:00Z'), new Date('1900-01-01T00:00:00Z'), birth]) {
+      expect(progressedInstant(birth, target)).toEqual(packageProgressedInstant(birth, target));
+      const site = progressedBodies(birth, target);
+      expect(site).toEqual(packageProgressedBodies(birth, target).map(({ body, lon, lat, speed, retrograde }) => ({
+        body, lon, lat, speed, retrograde,
+      })));
+      expect(site.some((body) => 'sign' in body || 'degree' in body)).toBe(false);
+    }
+    expect(PROGRESSION_DAYS_PER_YEAR).toBe(packageProgressionDaysPerYear);
+
+    const adapter = readFileSync(resolve(process.cwd(), 'src/lib/engine/progressions.ts'), 'utf8');
+    expect(adapter).toMatch(/from '@zodiacs\/engine';/u);
+    expect(adapter, 'no formula of its own').not.toMatch(/=\s*365\.2422|86_?400_?000|from '\.\/full'/u);
+    const lens = readFileSync(resolve(process.cwd(), 'src/islands/explorer/lens/ChartLens.tsx'), 'utf8');
+    expect(lens).toContain("await import('../../../lib/engine/progressions')");
+    expect(lens, 'ChartLens must not load progressions up front').not.toMatch(/^import[^;]*engine\/progressions/mu);
   });
 
   it('makes the optional draft receipt available without changing replay intent or unknown time', async () => {
