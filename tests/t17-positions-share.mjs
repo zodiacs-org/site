@@ -1079,8 +1079,60 @@ try {
       assert.equal(await unknownMoonDialog.locator('[data-share-primary="placement"] h3').innerText(), 'Moon sign card');
       assert.match(await unknownMoonDialog.locator('[data-share-placement-preview]').innerText(), /Needs a birth time/,
         'the share dialog preview must not revert to the single reference Moon sign');
-      assert.match(await unknownMoonDialog.locator('[data-share-card-action="placement"]').innerText(), /Share my Moon sign/);
+      // An image that names no Moon sign does not promise one.
+      const unknownMoonAction = await unknownMoonDialog.locator('[data-share-card-action="placement"]').innerText();
+      assert.match(unknownMoonAction, /Share this image/);
+      assert.doesNotMatch(unknownMoonAction, /Share my Moon sign/);
       await unknownMoon.close();
+
+      // Without a birth time the Moon card is drawn from the sky at 12:00 UTC:
+      // it names the sign only when the Moon held it all that date in every
+      // time zone, whatever sign the page gives for the birthplace's own day.
+      for (const moonCase of [
+        // London's 31 December 1989 is all Aquarius; the Moon enters Pisces at 06:11 UTC on 1 January.
+        { date: '1989-12-31', page: 'Aquarius', card: null },
+        // From 10:00 UTC on 14 January to 12:00 UTC on 16 January 1990 the Moon is in Virgo.
+        { date: '1990-01-15', page: 'Virgo', card: 'Virgo' },
+      ]) {
+        const moonPage = await trackedPage();
+        await open(moonPage, `${baseURL}/moon-sign/`);
+        await moonPage.evaluate(() => { globalThis.__t17CanvasText = []; });
+        await moonPage.locator('#birth-date').fill(moonCase.date);
+        await moonPage.locator('.field__toggle input[type="checkbox"]').check();
+        await selectCity(moonPage, 'London');
+        await moonPage.locator('.calc__form button[type="submit"]').click();
+        await moonPage.locator('.calc__result').waitFor({ state: 'visible', timeout: TIMEOUT });
+        await moonPage.waitForFunction(() => {
+          const action = document.querySelector('[data-share-placement]');
+          return document.querySelector('.calc__form')?.getAttribute('aria-busy') === 'false'
+            && action instanceof HTMLButtonElement && !action.disabled;
+        }, null, { timeout: TIMEOUT });
+        assert.match(await moonPage.locator('.calc__three').innerText(), new RegExp(moonCase.page),
+          `${moonCase.date}: the page names the Moon's sign for the birthplace's day`);
+        const cardText = await moonPage.evaluate(() => globalThis.__t17CanvasText.map((entry) => entry.value).join(' | '));
+        await moonPage.locator('[data-share-options]').click();
+        const moonDialog = moonPage.locator('[data-share-dialog]');
+        await moonDialog.waitFor({ state: 'visible', timeout: TIMEOUT });
+        const moonAction = moonDialog.locator('[data-share-card-action="placement"]');
+        if (moonCase.card) {
+          assert.equal(cardText.includes(moonCase.card) && cardText.includes('The Moon was in this sign all that day, everywhere.'), true,
+            `${moonCase.date}: a Moon that held its sign all that date everywhere is named on the card`);
+          assert.equal(cardText.includes('Needs a birth time'), false, `${moonCase.date}: the settled card names its sign`);
+          await moonPage.waitForFunction(() => /Share my Moon sign/.test(
+            document.querySelector('[data-share-card-action="placement"]')?.textContent ?? '',
+          ), null, { timeout: TIMEOUT });
+          assert.match(await moonDialog.locator('[data-share-placement-preview]').innerText(), new RegExp(moonCase.card));
+        } else {
+          assert.equal(cardText.includes('Needs a birth time'), true,
+            `${moonCase.date}: a Moon that changed sign somewhere on that date is not named on the card`);
+          assert.equal(cardText.includes(moonCase.page), false, `${moonCase.date}: the card does not take the page's sign`);
+          assert.match(await moonDialog.locator('[data-share-placement-preview]').innerText(), /Needs a birth time/);
+          await moonPage.waitForTimeout(500);
+          assert.match(await moonAction.innerText(), /Share this image/);
+          assert.doesNotMatch(await moonAction.innerText(), /Share my Moon sign/);
+        }
+        await moonPage.close();
+      }
 
       // A chart without a birth time is noon at the birthplace, an instant
       // that gives the place away (Kathmandu keeps UTC+5:45), so its link

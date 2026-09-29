@@ -113,16 +113,20 @@ export default function ChartShareDialog({
   }, []);
 
   const birthDate = birthDetails?.date;
-  // Without a birth time, the Moon card names the sign the Moon held all that date everywhere, if any.
+  // Without a birth time the Moon card is drawn from the sky at 12:00 UTC, as
+  // the link is, and names a sign only when the Moon held it all that date
+  // everywhere (untimedMoonSign), whatever sign the page gives for the birthplace.
+  const moonFromNoon = mode === 'moon' && !chart.angles;
   const [settledMoon, setSettledMoon] = useState<string | null>(null);
   useEffect(() => {
     setSettledMoon(null);
-    if (mode !== 'moon' || chart.input.timeKnown) return undefined;
+    if (!moonFromNoon) return undefined;
     let current = true;
     void untimedMoonSign(birthDate).then((sign) => { if (current) setSettledMoon(sign); }, () => {});
     return () => { current = false; };
   }, [chart, mode, birthDate]);
-  const settledSign = uncertainMoon && settledMoon ? signBySlug(settledMoon) : null;
+  const settledSign = moonFromNoon && settledMoon ? signBySlug(settledMoon) : null;
+  const imageMoonUnknown = moonFromNoon ? !settledSign : uncertainMoon;
   useEffect(() => {
     let current = true;
     const base = { houseSystem: chart.houses?.system ?? 'whole', engineVersion: chart.engineVersion };
@@ -256,7 +260,7 @@ export default function ChartShareDialog({
     if (choice === 'signature') return shareCardText(locale, 'signatureAction');
     if (choice === 'placement') {
       // A Moon card that names no sign does not promise one.
-      if (uncertainMoon && !settledSign) return shareText(locale, 'shareThisImage');
+      if (imageMoonUnknown) return shareText(locale, 'shareThisImage');
       return shareText(locale, mode === 'moon' ? 'moonCardAction' : 'risingCardAction');
     }
     if (choice === 'big-three') return shareCardText(locale, 'bigThreeAction');
@@ -337,9 +341,9 @@ export default function ChartShareDialog({
                 aspects={chart.aspects.filter((aspect) => aspect.orb < 6)}
               />
             </div>
-          ) : uncertainMoon && !settledSign ? (
+          ) : imageMoonUnknown ? (
             <div class="calc-share-dialog__placement" data-share-placement-preview>
-              <span>{moonLabel(placementChart, locale)}</span>
+              <span>{moonLabel(moonFromNoon ? { ...placementChart, moonSignCandidates: [] } : placementChart, locale)}</span>
             </div>
           ) : settledSign ?? placementSign ? (
             <div class="calc-share-dialog__placement" style={`--sign:${(settledSign ?? placementSign)!.hue}`} aria-hidden="true" data-share-placement-preview>

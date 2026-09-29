@@ -63,6 +63,24 @@ describe('ChartShareDialog', () => {
     expect(known).toContain('Share my Moon sign');
   });
 
+  it('does not promise the Moon sign the page names for a chart without a birth time until the image can name it', () => {
+    // The page names one sign for the birthplace's own day; the image, drawn
+    // from 12:00 UTC, names one only when it held all that date everywhere.
+    const markup = render(h(ChartShareDialog, {
+      chart: { ...chart, input: { ...chart.input, timeKnown: false }, angles: null, houses: null, moonSignCandidates: ['aquarius'] },
+      locale: 'en',
+      mode: 'moon',
+      card: 'idle',
+      birthDetails: { date: '1989-12-31', time: '12:00', timeKnown: false, city: 'London', timezone: 'Europe/London' },
+      onCardStateChange: () => {},
+      onClose: () => {},
+    }));
+    expect(markup).toContain('Needs a birth time');
+    expect(markup).toContain('Share this image');
+    expect(markup).not.toContain('Share my Moon sign');
+    expect(markup).not.toContain('Aquarius');
+  });
+
   it('uses placement-specific copy and preview for a Rising card', () => {
     const markup = render(h(ChartShareDialog, {
       chart,
