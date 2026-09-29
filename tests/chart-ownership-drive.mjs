@@ -34,6 +34,12 @@ const ts = createRequire(resolve(root, 'package.json'))('typescript');
  * chart of its own input. A builder is any served function whose return value
  * (the last operand of a comma expression included) is the chart with its
  * first argument passed through as input.
+ *
+ * Since engine 0.1.1-rc.13 the calculation runs the builder inside the
+ * engine's error wrapper, evaluated(() => { clock(pin); try { return
+ * chartAt(input, pin); } ... }), which turns anything but an Error thrown by
+ * the ephemeris into a RangeError. The builder's chart is then what the
+ * wrapped function returns, so a call that wraps such a function counts too.
  */
 const chunkDir = resolve(dist, '_astro');
 const natalCandidates = [];
@@ -74,12 +80,19 @@ for (const file of (await readdir(chunkDir)).filter((name) => name.endsWith('.js
       return properties.get('input') === input && properties.has('bodies') && properties.has('engineVersion');
     });
   }).map((fn) => fn.name.text));
+  const buildsFrom = (expression, input, self) => ts.isCallExpression(expression)
+    && ts.isIdentifier(expression.expression) && expression.expression.text !== self
+    && builders.has(expression.expression.text) && expression.arguments[0]?.getText(ast) === input;
+  // What a function passed to the returned call returns: the error wrapper's body.
+  const wrappedReturns = (expression) => (ts.isCallExpression(expression) ? expression.arguments : [])
+    .filter((argument) => ts.isArrowFunction(argument) || ts.isFunctionExpression(argument))
+    .flatMap((wrapped) => (ts.isBlock(wrapped.body) ? returnedExpressions(wrapped) : [wrapped.body]))
+    .map(lastOperand);
   for (const fn of functions) {
     if (fn.parameters.length !== 1) continue;
     const input = fn.parameters[0].name.getText(ast);
-    const delegates = returnedExpressions(fn).some((expression) => ts.isCallExpression(expression)
-      && ts.isIdentifier(expression.expression) && expression.expression.text !== fn.name.text
-      && builders.has(expression.expression.text) && expression.arguments[0]?.getText(ast) === input);
+    const delegates = returnedExpressions(fn).some((expression) => buildsFrom(expression, input, fn.name.text)
+      || wrappedReturns(expression).some((wrapped) => buildsFrom(wrapped, input, fn.name.text)));
     if (builders.has(fn.name.text) || delegates) natalCandidates.push({ file, function: fn.name.text });
   }
 }
@@ -87,7 +100,7 @@ assert.equal(natalCandidates.length, 1, `expected exactly one served natal calcu
 const nativeFile = natalCandidates[0].file;
 const nativeBytes = await readFile(resolve(chunkDir, nativeFile));
 const nativeFunctions = [natalCandidates[0].function];
-const nativeIdentity = { file: nativeFile, sha256: sha(nativeBytes), function: nativeFunctions[0], mapping: 'One-argument function returning its exact input plus bodies and engineVersion, itself or through the chart builder it passes that input to; parsed from actual served chunk.' };
+const nativeIdentity = { file: nativeFile, sha256: sha(nativeBytes), function: nativeFunctions[0], mapping: 'One-argument function returning its exact input plus bodies and engineVersion, itself or through the chart builder it passes that input to, directly or inside the error wrapper of the engine; parsed from actual served chunk.' };
 const served = {}, requests = [], results = [], contexts = [], releases = [];
 const mime = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.webp': 'image/webp', '.woff2': 'font/woff2', '.ico': 'image/x-icon', '.jpg': 'image/jpeg', '.mp4': 'video/mp4', '.webm': 'video/webm' };
 const server = createServer(async (req, res) => {

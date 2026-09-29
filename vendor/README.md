@@ -1,31 +1,51 @@
 # Vendored @zodiacs/engine artifact
 
-`zodiacs-engine-0.1.1-rc.10.tgz` is the exact npm pack artifact consumed by this
+`zodiacs-engine-0.1.1-rc.14.tgz` is the exact npm pack artifact consumed by this
 candidate site revision. The standalone starter keeps its separate engine
 `0.1.1-rc.3` pin and immutable project archive.
 
-- Package: `@zodiacs/engine@0.1.1-rc.10` (unpublished candidate)
+- Package: `@zodiacs/engine@0.1.1-rc.14` (unpublished candidate)
 - Source repository: `https://github.com/zodiacs-org/engine`
-- Source commit: `9c4f3fd77b5d6235288d9cdfc2ac1d183a5c4d6b`
-- Artifact carrier commit: `d0c5cd0c8edaa849d2e2c0793ccc32c28826e7ee`
-- Artifact SHA-256: `a377cdc8c12e25ff7de4fe95ddf77a4cdee8d2da97071b0f8454e340b374565c`
-- [Immutable anonymous download](https://raw.githubusercontent.com/zodiacs-org/engine/d0c5cd0c8edaa849d2e2c0793ccc32c28826e7ee/artifacts/zodiacs-engine-0.1.1-rc.10.tgz)
-- Archive: 30 files, 61,318 packed bytes.
+- Source commit: `03db4bb602377896283775920519b26d1f19a890`
+- Artifact carrier commit: `b221534e75842c9d7e589c456ed57957844cd06b`, merged into
+  engine `main` by `8deda244dc87ccf5f68abba1f3173f142da40a2a` (engine PR #10)
+- Artifact SHA-256: `adc9805e22cd2468fa3340a864d9c53b36ff91e8f1592fdb35d8da8b69f4476e`
+- [Immutable anonymous download](https://raw.githubusercontent.com/zodiacs-org/engine/b221534e75842c9d7e589c456ed57957844cd06b/artifacts/zodiacs-engine-0.1.1-rc.14.tgz)
+- Archive: 30 files, 87,415 packed bytes, 282,469 unpacked bytes.
 
-The archive was copied from the previously downloaded, digest-verified rc.10
-artifact and its SHA-256 checked again for this adoption. It adds Equal-MC
-houses and the `chartPoints` API. The receipt conventions remain rc.8's;
-imported receipts remain untrusted claims. The MCP adapter offers Equal-MC,
-but does not expose `chartPoints`. The site's consumer forms retain whole
+The archive and its `.sha256` receipt were written from the engine
+repository's git objects at `8deda244`, byte for byte, and the digest checked
+again; the anonymous download above gives the same bytes. The licence
+expression is now `MIT AND CC-BY-4.0`: the code is MIT, and the 32 ΔT values of
+Stephenson, Morrison & Hohenkerk's Table S15 in its ΔT module are CC BY 4.0, as
+the packaged NOTICE and LICENSING.md say. `engines.node` is
+`^20.19.0 || >=22.7.0`. Instants outside `EPHEMERIS_SPAN` (TT 0001-04-30 to
+3998-09-03) throw a `RangeError`.
+
+Since rc.10 the package added configurable aspects, declinations and parallels
+(rc.11), secondary progressions (rc.12), and exact configured-aspect and
+declination decisions with the Sun's out-of-bounds convention and
+`boundMarginArcsec` (rc.13, rc.14). The site now takes its secondary
+progressions from the package; nothing else it computes changes. The receipt
+conventions remain rc.8's; imported receipts remain untrusted claims. The MCP
+adapter exposes none of the new APIs. The site's consumer forms retain whole
 sign and Placidus.
 
-[The rc.10 adoption evidence](../docs/platform/evidence/site-engine-rc10/README.md)
-distinguishes new verification from prior release measurements. The Swiss
-statistics summarized in engine PR #5 were not supplied as a reproducible
-measurement record here and are not re-certified by this adoption.
+[The rc.14 adoption evidence](../docs/platform/evidence/site-engine-rc14/README.md)
+records what was run for this adoption and what it does not establish.
 
 The site pin is not evidence of npm publication, production deployment or
 external adoption. Earlier archives and evidence retain their identities.
+
+## Previous rc.10 site candidate
+
+`zodiacs-engine-0.1.1-rc.10.tgz` and its checksum remain unchanged. Source
+`9c4f3fd77b5d6235288d9cdfc2ac1d183a5c4d6b`, carrier
+`d0c5cd0c8edaa849d2e2c0793ccc32c28826e7ee`, SHA-256
+`a377cdc8c12e25ff7de4fe95ddf77a4cdee8d2da97071b0f8454e340b374565c`, 61,318
+bytes. It added Equal-MC houses and the `chartPoints` API.
+[Its evidence](../docs/platform/evidence/site-engine-rc10/README.md) describes
+that release and does not certify rc.14.
 
 ## Previous rc.9 site candidate
 
