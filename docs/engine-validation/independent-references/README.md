@@ -95,6 +95,33 @@ for a rebuild.
 Each file records the engine version and ΔT table it was built against
 (`engineClock`), the SHA-256 of every source that made it (`generator`), the
 Horizons responses it read (`horizonsManifest`) and the policy that gates it.
+`src/lib/engine/independent-references-clock.test.ts` fails when the
+installed engine carries a different ΔT model or table from the one a file
+records: every reference instant would have moved under it, so a new table
+means running `tools/build.py` again and committing the new files and pins.
+
+### Where this clock departs from the policies
+
+The policies were written for Swiss's clock, and the carried-over ones keep
+their text. Taking the engine's clock instead changes two things.
+
+- **UTC-labelled cases.** The eight-case policy declares TT − UTC for the
+  cases it labels UTC: 64.184 s for E2000 (2000-02-29T12:00Z), 57.184 s at
+  the Solar1990 birth and 69.184 s over its 2025 search. The engine takes the
+  instant as UT1 and adds its own ΔT, 63.872 s, 56.921 s and 69.137 s there,
+  so those references sit 0.312 s, 0.263 s and 0.047 s earlier in TT than the
+  policy's clock text: UT1 − UTC on those days, which the engine does not
+  apply. At the Moon's half an arcsecond per second that is at most 0.17″,
+  against a Moon gate of 0.15° and a planet gate of 0.05°.
+- **Event times.** A return, station or crossing is found on TT and carried
+  back to UT with the engine's ΔT, so the reference's UTC carries the
+  engine's clock, and far from the present, where ΔT is an extrapolation, it
+  carries the engine's extrapolation. The event tests therefore check the
+  engine's search and positions, not its clock. The clock is checked
+  separately: `scripts/deltat-monitor.mjs` compares the engine's ΔT table
+  with the IERS values every week, and
+  [`../../platform/evidence/deltat-2026-09-25/`](../../platform/evidence/deltat-2026-09-25/)
+  records how closely they agree.
 
 ## Rebuilding
 
