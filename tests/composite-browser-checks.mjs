@@ -19,6 +19,15 @@ const EXPECTED_ASPECTS = [
   ['Moon', 'opposition', 'Saturn', 10],
 ].map(([a, type, b, orb]) => ({ id: `composite:aspect:${a}:${type}:${b}`, orb }));
 const PRIVATE_VALUES = ['1907-07-06', '08:30', 'Coyoacán', 'America/Mexico_City', '19.35', '-99.16'];
+// What the image says in place of the page's provisional Moon when a chart has no birth time.
+const IMAGE_NO_TIME = {
+  en: 'A chart without a birth time is drawn from the sky at 12:00 UTC on its date, without the Moon.',
+  es: 'Una carta sin hora de nacimiento se dibuja con el cielo de las 12:00 UTC de su fecha, sin la Luna.',
+  pt: 'Um mapa sem hora de nascimento é desenhado com o céu das 12:00 UTC da sua data, sem a Lua.',
+  fr: 'Un thème sans heure de naissance est dessiné avec le ciel de 12:00 UTC à sa date, sans la Lune.',
+  it: 'Un tema senza ora di nascita è disegnato con il cielo delle 12:00 UTC della sua data, senza la Luna.',
+  ru: 'Карта без времени рождения нарисована по небу на 12:00 UTC в её дату, без Луны.',
+};
 const EXPECTED = {
   en: { title: 'Composite chart', wheel: 'Composite chart wheel', receipt: 'Midpoints of two charts · No houses or angles', provisional: 'Provisional Moon', cue: '', ready: 'Image ready. Choose Share or Download.', shared: 'Composite image shared.', downloaded: 'Composite image downloaded.', cancelled: 'Sharing cancelled. The image is still ready.' },
   es: { title: 'Carta compuesta', wheel: 'Rueda de la carta compuesta', receipt: 'Puntos medios de dos cartas · Sin casas ni ángulos', provisional: 'Luna provisional', cue: 'La interpretación que sigue está en inglés.', ready: 'Imagen lista. Elige Compartir o Descargar.', shared: 'Imagen de la carta compuesta compartida.', downloaded: 'Imagen de la carta compuesta descargada.', cancelled: 'Se canceló el envío. La imagen sigue lista.' },
@@ -279,14 +288,31 @@ async function createAndDownload({ page, locale, label, check, outDir, measureme
   const drawnText = normalize(textRows.join(' '));
   check(`${label}: downloads a dedicated nonblank composite PNG`, download.suggestedFilename() === 'zodiacs-composite.png' && png.width === 1080 && png.height === 1350 && png.foreground > 1000 && png.wheelForeground > 400, JSON.stringify(png));
   check(`${label}: PNG title and house-free receipt are localized`, drawnText.includes(c.title) && drawnText.includes(normalize(c.receipt)), drawnText.slice(0, 250));
-  check(`${label}: image contains all twelve exact localized placements and aspect count`, placements.length === 12 && placements.every((row) => {
-    const value = row.receipt.replace(` · ${c.provisional}`, '');
-    const marker = provisional && row.body === 'Moon' ? ' *' : '';
-    return drawnText.includes(normalize(`${row.label}${marker} · ${value}`));
-  }) && drawnText.includes(`${aspectTitle}: ${EXPECTED_ASPECTS.length}`));
+  if (provisional) {
+    // A saved chart without a birth time is drawn as its link carries it
+    // (compositePictureData): the sky at 12:00 UTC on its birth date, not the
+    // positions stored for its noon at the birthplace, and without the Moon.
+    // These fixtures store synthetic positions, so every drawn midpoint moves.
+    const rows = textRows.map(normalize);
+    const drawn = placements.filter((row) => row.body !== 'Moon')
+      .map((row) => ({ page: normalize(`${row.label} · ${row.receipt}`), image: rows.find((text) => text.startsWith(`${normalize(row.label)} · `)) }));
+    check(`${label}: image draws the eleven placements besides the Moon from the sky at 12:00 UTC, and their aspect count`, placements.length === 12
+      && drawn.every(({ image }) => image && /· \d{1,2}°\d{2}′ \S+$/u.test(image)) && drawn.some(({ page, image }) => image !== page)
+      && !rows.some((text) => text.startsWith(`${normalize(placements.find((row) => row.body === 'Moon')?.label ?? 'Moon')} `))
+      && new RegExp(`${aspectTitle.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&')}: \\d+`, 'u').test(drawnText), JSON.stringify(drawn.slice(0, 3)));
+  } else {
+    check(`${label}: image contains all twelve exact localized placements and aspect count`, placements.length === 12 && placements.every((row) => {
+      const value = row.receipt.replace(` · ${c.provisional}`, '');
+      return drawnText.includes(normalize(`${row.label} · ${value}`));
+    }) && drawnText.includes(`${aspectTitle}: ${EXPECTED_ASPECTS.length}`));
+  }
   check(`${label}: image contains no stored birth inputs or natal verdict`, PRIVATE_VALUES.every((value) => !drawnText.includes(value)) && !/A birth chart|Your big three|Flow, with useful friction|Chemistry that asks/u.test(drawnText));
   const moonLabel = placements.find((row) => row.body === 'Moon')?.label;
-  check(`${label}: image uncertainty matches its inputs`, provisional ? moonNotice.length > 30 && drawnText.includes(moonNotice) && textRows.some((row) => row.startsWith(`${moonLabel} * ·`)) : !textRows.some((row) => row.includes(' * ·')) && !drawnText.includes(c.provisional));
+  const noTimeNote = normalize(IMAGE_NO_TIME[locale]);
+  const pageNoTimeNote = provisional ? normalize(await page.locator('[data-composite-image-no-time]').textContent()) : '';
+  check(`${label}: image uncertainty matches its inputs`, provisional ? moonNotice.length > 30 && pageNoTimeNote === noTimeNote && drawnText.includes(noTimeNote)
+    && !textRows.some((row) => row.startsWith(`${moonLabel} `) || row.includes(' * ·')) && !drawnText.includes(c.provisional)
+    : !drawnText.includes(noTimeNote) && await page.locator('[data-composite-image-no-time]').count() === 0 && !textRows.some((row) => row.includes(' * ·')) && !drawnText.includes(c.provisional));
   await waitStatus(page, c.downloaded);
   check(`${label}: download status is distinct and preview remains`, await page.locator('[data-composite-image]').isVisible() && !(await page.locator('[data-composite-export-status]').textContent()).includes(c.shared));
   if (outDir) await writeFile(`${outDir}/${label}.png`, bytes);
