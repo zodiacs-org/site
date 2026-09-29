@@ -49,7 +49,7 @@ const documents = [
 
 const skyEmbed = iframeEmbedCode({ origin: 'https://zodiacs.org', kind: 'sky', theme: 'dark', title: WIDGET_EN.widgetTitleSky });
 
-const description = 'Build with Zodiacs: evaluate the local TypeScript chart engine, fetch free shared-sky JSON, or embed a moon, sky, or mini-chart widget. Current support, release status, and calculation limits in one place.';
+const description = 'Build with Zodiacs: evaluate the local TypeScript chart engine, call the compute API, fetch free shared-sky JSON, or embed a moon, sky, or mini-chart widget. Current support, release status, and calculation limits in one place.';
 
 const jsonLd = [{
   '@type': 'WebPage',
@@ -74,6 +74,11 @@ const jsonLd = [{
           <p class="dev-status">{candidate.releaseLabel} · engine {candidate.version}</p>
           <h2><a href="/developers/engine/">Calculate a chart</a></h2>
           <p>{candidate.name} takes an instant and coordinates and returns bodies, angles, cusps and aspects, in your own browser or Node.js process, with no network request. What it computes, what it costs to bundle, how close it is to Swiss Ephemeris, and a verified install are on its page. <a href="/developers/examples/">The starter</a> is the same job as a running project; it pins engine {starterEngine.version}, while the site runs {candidate.version}.</p>
+        </li>
+        <li>
+          <p class="dev-status">Available · runs on our server</p>
+          <h2><a href="/developers/compute/">Calculate on our server</a></h2>
+          <p>Six POST endpoints for a chart, positions, houses, the events in a window, a local time read as UTC, and whether a sky fact holds, each answer with a receipt and the engine's version. No key. Birth data goes in the request body, and nothing from a request is stored or logged.</p>
         </li>
         <li>
           <p class="dev-status">Available · hosted embeds</p>
@@ -102,8 +107,7 @@ const jsonLd = [{
         Also here, without an account or a key: <a href="#sky-data">shared sky data</a> as
         plain JSON files, and <a href="/developers/support/">the support matrix</a> —
         runtime requirements, the runtimes actually tested and known limits — worth
-        reading before you choose an integration. A personalized hosted chart API is
-        <a href="/developers/support/#hosted">planned and does not exist yet</a>.
+        reading before you choose an integration.
       </p>
       <p>
         The <a href="/sdk/">optional ownership SDK</a> is a separate,
@@ -120,7 +124,7 @@ const jsonLd = [{
         eclipses, and exact aspects — are published as versioned JSON. The
         files are static, cached at the edge, and open to any origin. There is
         no key or signup. These files contain no personal birth data: they describe
-        the shared sky, and{' '}
+        the shared sky, and the site's own{' '}
         <a href="/methodology/">chart calculation stays on the device</a>.
       </p>
     </div>

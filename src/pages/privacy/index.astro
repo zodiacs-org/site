@@ -552,6 +552,26 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         it can remain in a backup until that backup expires.
       </p>
 
+      <h2 id="compute-api">The compute API</h2>
+      <p>
+        The <a href="/developers/compute/">compute API</a> is for programs: it
+        computes a chart, positions, houses, events, a local time or a sky
+        fact from what a program sends it. The site's own calculators do not
+        use it. It reads the body of each request, which can hold a birth
+        date, time and place, and nothing from the query string. Nothing from
+        a request or its result is written to a log, a file or a database, no
+        error repeats what was sent, and every response is marked so that no
+        cache stores it. While an instance of the API is running, it keeps in
+        memory the public time zone and ephemeris tables it has loaded to
+        answer; they show which time zones and periods have been asked about,
+        but no date, time or place of any request. To enforce the rate limit,
+        the API sends the request's headers, which include your IP address,
+        to Vercel's firewall, which counts the requests from each address; it
+        never sends the body. Our host's logs, described below, keep the full
+        web address of each request, so birth details belong in the body, not
+        in the address.
+      </p>
+
       <h2>Hosting, logs, and analytics</h2>
       <p>
         The site is hosted on <a href="https://vercel.com/" rel="noopener noreferrer">Vercel</a>.

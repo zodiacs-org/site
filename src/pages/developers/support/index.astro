@@ -14,7 +14,7 @@ if (process.env.VERCEL_ENV === 'production' && /^0{40}$/.test(candidate.evidence
   throw new Error('src/data/platform-engine-candidate.json still has the all-zero evidenceCommit placeholder;'
     + ' pin it to the pushed evidence commit before deploying');
 }
-const description = 'Current Zodiacs developer support: local engine candidate, public sky data, hosted widgets, planned chart API, runtime checks, calculation limits, privacy, and licenses.';
+const description = 'Current Zodiacs developer support: local engine candidate, public sky data, hosted widgets, the compute API, runtime checks, calculation limits, privacy, and licenses.';
 const engineRows = [
   ['Language and runtime', 'ESM JavaScript with TypeScript declarations. The manifest declares Node.js ^20.19.0 || >=22.7.0: astronomy-engine ships ES modules in a package without "type": "module", which plain Node loads as ES modules only from 20.19.0 and 22.7.0. There is no CommonJS export. Browser integrations need an ESM-aware bundler or equivalent dependency setup; bundlers are not affected by the Node range.'],
   ['Recorded runtime checks', 'The linked reports record this candidate’s tested runtimes, package consumers and TypeScript declarations. They identify the exact artifact and validation scope; they do not certify every browser or all Node versions allowed by the manifest.'],
@@ -46,9 +46,8 @@ const engineRows = [
     <div class="prose">
       <p>
         <a href="/developers/">Developer tools</a> have different release states.
-        Public sky files and hosted embeds are available now. The local engine
-        below is a downloadable review candidate. Personalized hosted computation
-        is planned and has no public endpoint.
+        Public sky files, hosted embeds and the compute API are available now.
+        The local engine below is a downloadable review candidate.
       </p>
     </div>
 
@@ -174,15 +173,17 @@ const engineRows = [
       </p>
     </div>
 
-    <h2 id="hosted">Personalized hosted computation · planned</h2>
+    <h2 id="hosted">Hosted computation · available</h2>
     <div class="prose">
       <p>
-        There is no public hosted natal or personalized-transit endpoint to
-        call yet, and none is being built in the current work. Its input
-        contract, privacy limits and cost limits are undecided — that is a
-        design question that has not been answered, not an artifact waiting for
-        approval. Use the local engine candidate for evaluation; the public
-        shared-sky files do not accept birth inputs.
+        <a href="/developers/compute/">The compute API</a> runs the same engine
+        on our server: six POST endpoints for a chart, positions, houses,
+        events in a window, local time and sky facts, with no key. Birth data
+        goes in the request body; nothing from a request is stored or logged,
+        and no response is cached. Requests from one address are rate limited,
+        and each endpoint has published limits past which a request is refused
+        rather than computed. The public shared-sky files still take no birth
+        inputs.
       </p>
     </div>
 
