@@ -23,7 +23,10 @@ range).
 The branch starts from site `main` at `15949ec06390a3d4d0741ae64e6712e4dce4600d`,
 the daily edition of 2026-09-29 on top of `145d36e3` (#597): the build's
 freshness gate requires the day's edition. Every earlier engine and MCP
-archive stays in place, unchanged.
+archive stays in place, unchanged. The branch then merged `main` at
+`aca257ad` (#599, the privacy fixes). Everything below was measured before
+that merge unless it says otherwise; "After the review" gives what changed
+since.
 
 ## What is adopted
 
@@ -149,7 +152,9 @@ and packed by `npm run mcp:pack`; `mcp:build:check` and `mcp:pack:check` pass.
 The protocol drive passes 87 of 87, the synthetic benchmark 18 scenarios and
 112 of 112 assertions, the named-host drive 7 of 7, and a fresh extraction of
 the public archive installs with `npm ci` and passes its own 17 checks. The
-engine still gives the README's example answer to the last digit.
+engine still gives the README's example answer to the last digit. These
+figures are for the first packing of the archive; "After the review" says why
+it was packed again.
 
 **F-04.** `f04-install-guard.log`: the install block of the base commit, run
 with the real curl and npm in an empty directory under a project, installed
@@ -225,3 +230,39 @@ before that commit.
   `rc14-20260928/` in its repository).
 - The declination accuracy target the engine records as unmet stays unmet;
   nothing here uses declinations.
+
+## After the review
+
+An independent review of this branch, after the merge of #599, found one
+blocker and one major, and several smaller points.
+
+- **Blocker: the Phase 1 captures.** The merge took #599's captures, whose
+  template digest no longer matched the tree. They are retaken on this build.
+- **Major: the MCP archive's licence.** `server.mjs` inlines the engine,
+  whose ΔT module holds 32 values of Table S15 under CC BY 4.0, but the
+  adapter's `package.json` said `MIT` and the archive carried no notice. The
+  archive is packed again with `"license": "MIT AND CC-BY-4.0"` and a
+  `NOTICE` that ends with the engine's NOTICE unchanged. `server.mjs` is
+  byte for byte the same; the archive is 75,220 bytes, SHA-256
+  `40936e289f6023a2c165a09ef0af8e369f8c8dbfbc6883551bda3fc8faa52f0f`
+  (the first packing was 73,940 bytes, `27c6d1b0…`, and was never pushed).
+  `scripts/mcp-artifact.test.mjs` checks the licence, the NOTICE and the
+  archive's seven files. The adapter's archives 0.1.0-rc.8 to rc.10, released
+  earlier, carry the same values under an MIT-only label; they stay as
+  released, and FINDINGS.md records it as F-49.
+- **The all-zero pins.** A production build of `/developers/mcp/` or
+  `/developers/support/` now stops while the MCP `artifactCommit` or the
+  engine `evidenceCommit` is still the all-zero placeholder, so a merge before
+  the pin commit cannot deploy links that do not resolve.
+- **Wording.** The engine page's description, the root `README.md` and
+  `LICENSE` said the engine is MIT-licensed; they now give its code as MIT and
+  its ΔT data as CC BY 4.0. The engine page gives the refused span as
+  Terrestrial Time 0001-04-30 to 3998-09-03, and `llms-full.txt` no longer
+  calls the package tree-shakeable with no import-time side effects: its root
+  entry builds its default aspect policy when it loads.
+- **Budgets on the merged branch,** as the review measured them in gzip
+  bytes with production's flags and with the defaults: `/birth-chart/` 72,360
+  and 69,172 (limit 72,704); `/compatibility/` 36,751 and 36,299 (36,864);
+  `/big-three/` 30,674 and 30,674 (30,720); `/today/` 20,913 and 20,909
+  (22,016); the engine chunk 27,303 (27,648). The rise in `/birth-chart/`
+  comes from #599.
