@@ -166,19 +166,28 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         la vista previa.
       </p>
       <p>
-        Una imagen de la carta que creas desde las opciones para compartir se
-        dibuja en tu dispositivo y va solo a donde la compartas o la guardes.
-        Salvo que elijas mostrar los datos de nacimiento en la hoja de la
-        carta, no tiene nombre, fecha, hora ni lugar de nacimiento ni
-        coordenadas. Sus posiciones planetarias siguen dando la fecha y la hora
-        de nacimiento, pero muestra el ascendente y el Medio Cielo solo al
-        grado entero y deja fuera las casas Placidus, así que no acota el
-        lugar de nacimiento más que un enlace solo de posiciones. Una imagen
-        de una carta sin hora de nacimiento muestra el cielo de las 12:00 UTC
-        de la fecha de nacimiento, igual que el enlace de esa carta, que da la
-        fecha pero nada sobre el lugar de nacimiento. Una imagen de
-        compatibilidad muestra además los nombres de las dos cartas, y a una
-        persona sin hora de nacimiento la dibuja igual, sin la Luna.
+        Toda imagen que puedes crear de una carta, de un par de cartas o de un
+        retorno —la hoja de la carta y las tarjetas de la carta, las imágenes de
+        una lectura, de un patrón de aspectos o de una sección del explorador,
+        las imágenes de compatibilidad y de carta compuesta, y las imágenes de
+        retorno solar y lunar— se dibuja en tu dispositivo y va solo a donde la
+        compartas o la guardes. Salvo que elijas mostrar los datos de nacimiento
+        en la hoja de la carta, ninguna tiene nombre, fecha, hora ni lugar de
+        nacimiento ni coordenadas, y ninguna muestra de un nacimiento más que su
+        enlace solo de posiciones. Las posiciones planetarias de una carta son
+        las de la hora de nacimiento en UTC redondeada al minuto entero, que
+        siguen dando la fecha y la hora de nacimiento al minuto; el ascendente y
+        el Medio Cielo se muestran solo al grado entero, y las casas Placidus
+        quedan fuera. Una imagen de retorno se calcula a partir de esas
+        posiciones y da el retorno al minuto entero, igual que su archivo de
+        calendario. Una carta sin hora de nacimiento se dibuja con el cielo de
+        las 12:00 UTC de la fecha de nacimiento, igual que su enlace, lo que da
+        la fecha pero nada sobre el lugar de nacimiento; el signo de la Luna
+        solo aparece si la Luna estuvo en él todo ese día en todas partes, y una
+        imagen de dos cartas deja fuera la Luna de esa persona. Una imagen de
+        compatibilidad muestra además los nombres de las dos cartas. Cada imagen
+        por sí sola no acota el lugar de nacimiento más que un enlace; varias
+        compartidas juntas pueden acotarlo más.
       </p>
       <p>
         Si has iniciado sesión y creas una invitación de compatibilidad a

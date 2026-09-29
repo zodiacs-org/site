@@ -163,19 +163,28 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         mostre a prévia os recebem.
       </p>
       <p>
-        Uma imagem do mapa que você cria nas opções de compartilhamento é
-        desenhada no seu dispositivo e vai só para onde você a compartilha ou a
-        salva. A menos que você escolha mostrar os dados de nascimento na folha
-        do mapa, ela não tem nome, data, hora ou local de nascimento nem
-        coordenadas. Suas posições planetárias ainda indicam a data e a hora de
-        nascimento, mas ela mostra o ascendente e o Meio do Céu apenas em graus
-        inteiros e deixa de fora as casas Placidus, então não restringe o
-        local de nascimento mais do que um link só com posições. Uma imagem de
-        um mapa sem hora de nascimento mostra o céu das 12:00 UTC da data de
-        nascimento, como o link desse mapa, que indica a data, mas nada sobre o
-        local de nascimento. Uma imagem de compatibilidade também mostra os
-        nomes dos dois mapas e desenha da mesma forma uma pessoa sem hora de
-        nascimento, sem a Lua.
+        Toda imagem que você pode criar de um mapa, de um par de mapas ou de uma
+        revolução — a folha do mapa e os cartões do mapa, as imagens de uma
+        leitura, de uma configuração de aspectos ou de uma seção do explorador,
+        as imagens de compatibilidade e de mapa composto, e as imagens de
+        revolução solar e lunar — é desenhada no seu dispositivo e vai só para
+        onde você a compartilha ou a salva. A menos que você escolha mostrar os
+        dados de nascimento na folha do mapa, nenhuma tem nome, data, hora ou
+        local de nascimento nem coordenadas, e nenhuma mostra de um nascimento
+        mais do que o link só com posições dele. As posições planetárias de um
+        mapa são as da hora de nascimento em UTC arredondada ao minuto inteiro,
+        que ainda indicam a data e a hora de nascimento até o minuto; o
+        ascendente e o Meio do Céu aparecem apenas em graus inteiros, e as casas
+        Placidus ficam de fora. Uma imagem de revolução é calculada a partir
+        dessas posições e indica a revolução até o minuto inteiro, assim como o
+        arquivo de calendário dela. Um mapa sem hora de nascimento é desenhado
+        com o céu das 12:00 UTC da data de nascimento, como o link dele, o que
+        indica a data, mas nada sobre o local de nascimento; o signo da Lua só
+        aparece se a Lua ficou nele durante todo esse dia, em todo lugar, e uma
+        imagem de dois mapas deixa de fora a Lua dessa pessoa. Uma imagem de
+        compatibilidade também mostra os nomes dos dois mapas. Cada imagem
+        sozinha não restringe o local de nascimento mais do que um link; várias
+        compartilhadas juntas podem restringi-lo mais.
       </p>
       <p>
         Se você estiver conectado e criar um convite de compatibilidade a partir

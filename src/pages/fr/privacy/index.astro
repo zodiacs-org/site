@@ -165,20 +165,30 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         et toute application qui affiche l’aperçu les reçoivent.
       </p>
       <p>
-        Une image du thème que tu crées depuis les options de partage est
-        dessinée sur ton appareil et ne va que là où tu la partages ou
-        l’enregistres. Sauf si tu choisis d’afficher les données de naissance
-        sur la feuille du thème, elle ne comporte ni nom, ni date, heure ou lieu
-        de naissance, ni coordonnées. Ses positions planétaires donnent encore
-        la date et l’heure de naissance, mais elle ne montre l’ascendant et le
-        milieu du ciel qu’au degré entier et laisse de côté les maisons
-        Placidus : elle ne situe donc pas le lieu de naissance plus précisément
-        qu’un lien limité aux positions. Une image d’un thème sans heure de
-        naissance montre le ciel de 12:00 UTC à la date de naissance, comme le
-        lien de ce thème, ce qui donne la date mais rien sur le lieu de
-        naissance. Une image de compatibilité montre aussi les noms des deux
-        thèmes, et elle dessine de la même façon une personne sans heure de
-        naissance, sans la Lune.
+        Toute image que tu peux créer d’un thème, d’une paire de thèmes ou d’une
+        révolution — la feuille du thème et les cartes du thème, les images
+        d’une lecture, d’une configuration d’aspects ou d’une section de
+        l’explorateur, les images de compatibilité et de thème composite, et les
+        images de révolution solaire et lunaire — est dessinée sur ton appareil
+        et ne va que là où tu la partages ou l’enregistres. Sauf si tu choisis
+        d’afficher les données de naissance sur la feuille du thème, aucune ne
+        comporte de nom, de date, d’heure ou de lieu de naissance, ni de
+        coordonnées, et aucune ne montre plus d’une naissance que son lien
+        limité aux positions. Les positions planétaires d’un thème sont celles
+        de l’heure de naissance en UTC arrondie à la minute entière, qui donnent
+        encore la date et l’heure de naissance à la minute près ; l’ascendant et
+        le milieu du ciel ne sont montrés qu’au degré entier, et les maisons
+        Placidus sont laissées de côté. Une image de révolution est calculée à
+        partir de ces positions et donne la révolution à la minute entière,
+        comme son fichier de calendrier. Un thème sans heure de naissance est
+        dessiné avec le ciel de 12:00 UTC à la date de naissance, comme son
+        lien, ce qui donne la date mais rien sur le lieu de naissance ; le signe
+        de la Lune n’apparaît que si la Lune y est restée toute cette journée,
+        partout, et une image de deux thèmes laisse de côté la Lune de cette
+        personne. Une image de compatibilité montre aussi les noms des deux
+        thèmes. Chaque image seule ne situe pas le lieu de naissance plus
+        précisément qu’un lien ; plusieurs partagées ensemble peuvent le situer
+        davantage.
       </p>
       <p>
         Si tu es connecté et que tu crées une invitation de compatibilité à partir

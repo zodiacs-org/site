@@ -166,19 +166,28 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         qualsiasi app che mostri l’anteprima.
       </p>
       <p>
-        Un’immagine del tema che crei dalle opzioni di condivisione viene
-        disegnata sul tuo dispositivo e va solo dove la condividi o la salvi.
-        Se non scegli di mostrare i dati di nascita nel foglio del tema, non
-        contiene nome, data, ora o luogo di nascita né coordinate. Le sue
-        posizioni planetarie indicano ancora la data e l’ora di nascita, ma
-        mostra l’ascendente e il Medio Cielo solo al grado intero e lascia fuori
-        le case Placidus, quindi non restringe il luogo di nascita più di un
-        link con le sole posizioni. Un’immagine di un tema senza ora di nascita
-        mostra il cielo delle 12:00 UTC della data di nascita, come il link di
-        quel tema, che indica la data ma nulla del luogo di nascita.
-        Un’immagine di compatibilità mostra anche i nomi dei due temi, e
-        disegna allo stesso modo una persona senza ora di nascita, senza la
-        Luna.
+        Ogni immagine che puoi creare di un tema, di una coppia di temi o di una
+        rivoluzione — il foglio del tema e le carte del tema, le immagini di una
+        lettura, di una configurazione di aspetti o di una sezione
+        dell’esploratore, le immagini di compatibilità e del tema composito, e
+        le immagini della rivoluzione solare e lunare — viene disegnata sul tuo
+        dispositivo e va solo dove la condividi o la salvi. Se non scegli di
+        mostrare i dati di nascita nel foglio del tema, nessuna contiene nome,
+        data, ora o luogo di nascita né coordinate, e nessuna mostra di una
+        nascita più del suo link con le sole posizioni. Le posizioni planetarie
+        di un tema sono quelle dell’ora di nascita in UTC arrotondata al minuto
+        intero, che indicano ancora data e ora di nascita al minuto;
+        l’ascendente e il Medio Cielo sono mostrati solo al grado intero e le
+        case Placidus sono lasciate fuori. Un’immagine di una rivoluzione è
+        calcolata da queste posizioni e indica la rivoluzione al minuto intero,
+        come il suo file di calendario. Un tema senza ora di nascita è disegnato
+        con il cielo delle 12:00 UTC della data di nascita, come il suo link,
+        che indica la data ma nulla del luogo di nascita; il segno della Luna
+        compare solo se la Luna vi è rimasta per tutto quel giorno, ovunque, e
+        un’immagine di due temi lascia fuori la Luna di quella persona.
+        Un’immagine di compatibilità mostra anche i nomi dei due temi. Ogni
+        immagine da sola non restringe il luogo di nascita più di un link;
+        diverse condivise insieme possono restringerlo di più.
       </p>
       <p>
         Se hai effettuato l’accesso e crei un invito di compatibilità da un tema
