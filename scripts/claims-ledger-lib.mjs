@@ -142,6 +142,7 @@ export const TRUST_PATTERNS = Object.freeze([
   /^src\/pages\/developers\//u,
   /^src\/mcp\/[^/]+\.ts$/u,
   /^src\/lib\/sky-api\/[^/]+\.ts$/u,
+  /^src\/lib\/compute-api\/[^/]+\.ts$/u,
   /^scripts\/build-assistant-context\.mjs$/u,
 ]);
 

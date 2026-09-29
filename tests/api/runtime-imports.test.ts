@@ -193,6 +193,26 @@ describe('Vercel API runtime packaging', () => {
     expect(EXPECTED_HANDLERS).toHaveLength(12);
   });
 
+  it('routes the six compute endpoints through the existing compatibility function', () => {
+    const vercel = JSON.parse(readFileSync(join(ROOT, 'vercel.json'), 'utf8'));
+    for (const endpoint of ['chart', 'positions', 'houses', 'events', 'time', 'sky-fact']) {
+      expect(vercel.rewrites).toContainEqual({
+        source: `/api/v1/${endpoint}`,
+        destination: `/api/compatibility?__zodiacs_compute=${endpoint}`,
+      });
+    }
+    expect(runtimeImports(join(ROOT, 'api/compatibility.ts'))).toContainEqual({
+      specifier: './_compute/handler.js',
+      hasJsonAttribute: false,
+    });
+    // The site's resolver reaches the function as a self-contained bundle,
+    // not through its extensionless source imports.
+    expect(runtimeImports(join(ROOT, 'api/_compute/handler.ts'))).toContainEqual({
+      specifier: './local-time.mjs',
+      hasJsonAttribute: false,
+    });
+  });
+
   it('routes Registry news through the existing compatibility function', () => {
     const vercel = JSON.parse(readFileSync(join(ROOT, 'vercel.json'), 'utf8'));
     expect(vercel.rewrites).toContainEqual({
