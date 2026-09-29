@@ -42,7 +42,7 @@ Ephemeris* for the Moon. Zodiacs did not write those models.
 | Houses, twelve systems | Swiss 2.10.03 `swe_houses_armc` given the same sidereal time, latitude and obliquity: a 5,616-case ladder from 55° to 66.6° and 20,000 draws over every latitude; `swe_houses_ex` end to end | 0.0096″ given the same inputs (Placidus; the other eleven 0.00005″ or less); end to end from 1850 to 2049, 1.95″ broad and one Koch case of 353 on the ladder at 3.73″ | [`../platform/evidence/houses-2026-09-26/`](../platform/evidence/houses-2026-09-26/) |
 | Local time | host IANA/ICU, two Node majors and a browser | no disagreement in the cases run (a pass, not a residual) | [`../platform/evidence/site-engine-rc6/`](../platform/evidence/site-engine-rc6/) |
 | Event search | Swiss hourly scans, independent roots | one contract **failed-incomplete** | [`transit-windows/`](transit-windows/), [`swiss-lunar-return/`](swiss-lunar-return/) |
-| Runtime support | Node 22.22.2 and Node 24.19.0 for rc.10; Node 22.22.2 and Node 24.21.0 for rc.9, rc.8 and rc.7; Node 22.23.2, Node 24.19.0 and Chrome 152 for rc.6 | parity in the cases run (a pass, not a residual) | [`../platform/evidence/site-engine-rc10/`](../platform/evidence/site-engine-rc10/), [`../platform/evidence/site-engine-rc9/`](../platform/evidence/site-engine-rc9/), [`../platform/evidence/site-engine-rc8/`](../platform/evidence/site-engine-rc8/), [`../platform/evidence/site-engine-rc7/`](../platform/evidence/site-engine-rc7/), [`../platform/evidence/site-engine-rc6/`](../platform/evidence/site-engine-rc6/) |
+| Runtime support | Node 22.22.2 and Node 24.21.0 for rc.14; Node 22.22.2 and Node 24.19.0 for rc.10; Node 22.22.2 and Node 24.21.0 for rc.9, rc.8 and rc.7; Node 22.23.2, Node 24.19.0 and Chrome 152 for rc.6 | parity in the cases run (a pass, not a residual) | [`../platform/evidence/site-engine-rc14/`](../platform/evidence/site-engine-rc14/), [`../platform/evidence/site-engine-rc10/`](../platform/evidence/site-engine-rc10/), [`../platform/evidence/site-engine-rc9/`](../platform/evidence/site-engine-rc9/), [`../platform/evidence/site-engine-rc8/`](../platform/evidence/site-engine-rc8/), [`../platform/evidence/site-engine-rc7/`](../platform/evidence/site-engine-rc7/), [`../platform/evidence/site-engine-rc6/`](../platform/evidence/site-engine-rc6/) |
 
 ## 1. Positions
 
@@ -149,7 +149,11 @@ densely for the distribution plus three point epochs (1800, 2000, 2199) in the
 eight-case pack — the range zodiacs.org accepts is touched at its edges and
 sampled sparsely in between, which is not the same as measured across it.
 
-And the package bounds nothing. `1800–2199` is this site's own form validation
+And the package bounds only what its ephemeris cannot evaluate: since rc.14
+every calculation throws a `RangeError` for an instant outside Terrestrial Time
+0001-04-30 to 3998-09-03 (`EPHEMERIS_SPAN`), the years astronomy-engine
+tabulates. That span is where it evaluates at all, not where it is accurate.
+`1800–2199` is this site's own form validation
 (`src/lib/share.ts`, `src/lib/engine/transit-window-core.ts`); `natalChart`
 will compute year 900 or year 3500 and return a chart with no error. Nothing
 here says anything about those, and since rc.8 the chart says so: outside
@@ -337,8 +341,14 @@ tested, not proven complete.
 
 ## 5. Runtime support
 
-ESM only, TypeScript declarations included, no CommonJS export. The manifest
-declares Node ≥18. What was actually executed is narrower: for rc.10,
+ESM only, TypeScript declarations included, no CommonJS export. Since rc.14
+the manifest declares Node `^20.19.0 || >=22.7.0`: astronomy-engine ships ES
+modules in a package without `"type": "module"`, which plain Node loads as ES
+modules only from those versions, and rc.13's `>=18` was false. What was
+actually executed is narrower: for rc.14, Node 22.22.2 and 24.21.0 for the
+parity matrix and clean packed-consumer check, plus the site acceptance
+captures on Chromium 149.0.7827.55, while the engine's own packed-consumer
+matrix adds Node 20.19.0 and 22.7.0; for rc.10,
 Node 22.22.2 and 24.19.0 for the parity matrix and clean packed-consumer
 check, plus the site acceptance captures on Chromium 153.0.8010.0; for rc.9
 and rc.8, Node 22.22.2 and 24.21.0 for the parity matrix and public-download
@@ -449,3 +459,10 @@ earlier wording is kept here as the record:
 - the table's runtime row: "Node 22.22.2 and Node 24.21.0 for rc.8 and rc.7";
 - section 5: "for rc.8, Node 22.22.2 and 24.21.0 for the parity matrix and the
   public-download consumer check".
+
+Vendoring engine 0.1.1-rc.14 on 2026-09-29 corrected these in place. Their
+earlier wording is kept here as the record:
+
+- section 1, on bounds: "And the package bounds nothing.";
+- section 5: "The manifest declares Node ≥18. What was actually executed is
+  narrower: for rc.10,".
