@@ -60,18 +60,25 @@ describe('event times against Swiss Ephemeris', () => {
 });
 
 describe('the solar return with an unknown birth time', () => {
-  it('can move by up to about 12 hours, as the page and the result notice say', () => {
-    // The widest case of a 1930-2010 sweep of five zones: a birth at the start of the day.
-    const date = '1958-10-15';
-    const noon = resolveLocalToUtc(date, '12:00', 'Pacific/Pago_Pago').utc;
-    const midnight = resolveLocalToUtc(date, '00:00', 'Pacific/Pago_Pago').utc;
+  it('can move by up to about a day from the 12:00 UTC it starts from, as the page and the result notice say', () => {
+    // Without a birth time the natal Sun is the Sun at 12:00 UTC on the birth
+    // date. A birth on that date was, somewhere, from 26 hours before it
+    // (00:00 at UTC+14) to 24 hours after (24:00 at UTC-12); Pago Pago, at
+    // UTC-11, ends the date 23 hours after it.
+    const date = '2000-10-15';
+    const noon = new Date(`${date}T12:00:00Z`);
     const near = new Date(Date.UTC(2026, 9, 15, 12));
-    const shift = Math.abs(solarReturnInstant(bodyLongitude('Sun', midnight), near).getTime()
+    const shift = (birth) => (solarReturnInstant(bodyLongitude('Sun', birth), near).getTime()
       - solarReturnInstant(bodyLongitude('Sun', noon), near).getTime()) / 3_600_000;
-    expect(shift).toBeGreaterThan(11.5);
-    expect(shift).toBeLessThan(12.5);
-    expect(read('src/pages/solar-return/index.astro')).toContain('shift the return by up to about 12 hours');
-    expect(read('src/islands/solar-return/copy.ts')).toContain('can shift by up to about 12 hours');
+    const earliest = shift(resolveLocalToUtc(date, '00:00', 'Pacific/Kiritimati').utc);
+    const latest = shift(resolveLocalToUtc(date, '23:59', 'Pacific/Pago_Pago').utc);
+    expect(earliest).toBeGreaterThan(-26.5);
+    expect(earliest).toBeLessThan(-25.5);
+    expect(latest).toBeGreaterThan(22.5);
+    expect(latest).toBeLessThan(23.5);
+    expect(read('src/islands/solar-return/compute.ts')).toContain('const noon = sharedReferenceInstant(birthDate);');
+    expect(read('src/pages/solar-return/index.astro')).toContain('shift the return by up to about a day');
+    expect(read('src/islands/solar-return/copy.ts')).toContain('can shift by up to about a day');
   });
 });
 
