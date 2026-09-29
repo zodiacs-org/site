@@ -62,6 +62,8 @@ interface StoredChart {
     engineVersion: string;
     bodies: StoredBody[];
     angles: { asc: number; mc: number } | null;
+    /** The chart's UTC instant, as saved. */
+    utcISO: string | null;
   };
 }
 
@@ -720,6 +722,7 @@ function parseStoredChart(value: unknown): StoredChart | null {
       engineVersion: typeof summary.engineVersion === 'string' ? summary.engineVersion : '',
       bodies,
       angles,
+      utcISO: typeof summary.utcISO === 'string' ? summary.utcISO : null,
     },
   };
 }
@@ -819,10 +822,37 @@ async function untimedPlacements(chart: StoredChart): Promise<StoredBody[] | nul
 }
 
 /**
+ * The bodies Guide gets for a chart with a birth time: those at the chart's
+ * UTC instant rounded to the whole minute (sharedTimedInstant), as a shared
+ * chart code carries them. Before standard time a chart keeps the
+ * birthplace's own mean time, so its instant has seconds that are the
+ * longitude's; the bodies there, to the arcminute, fitted only 101 to 120 s
+ * of instants, and with a link's minute put the birth within 14.5 s
+ * (Rochester 1870). At the minute they say nothing a link does not. A chart
+ * already on a whole minute keeps its own bodies; one without a valid
+ * instant has none to send.
+ */
+async function timedPlacements(chart: StoredChart): Promise<StoredBody[] | null> {
+  const utc = chart.summary.utcISO;
+  if (utc === null) return null;
+  const { onWholeMinute, sharedTimedInstant } = await import('../share-positions-noon');
+  const minute = sharedTimedInstant(utc);
+  if (!minute) return null;
+  if (onWholeMinute(utc)) return chart.summary.bodies;
+  const { computeBodies } = await import('../engine/full');
+  const atMinute = new Map(computeBodies(minute).map((body) => [body.body as string, body]));
+  return chart.summary.bodies.flatMap(({ body }) => {
+    const shared = atMinute.get(body);
+    return shared ? [{ body, lon: shared.lon, retrograde: shared.retrograde }] : [];
+  });
+}
+
+/**
  * Resolve a saved chart to placement lines without returning birth inputs.
- * The bodies go to the arcminute, which still gives the birth date and time.
- * The ascendant and midheaven go only to the whole degree, as in a shared
- * chart code: to the arcminute, with the bodies, they would give the
+ * The bodies go to the arcminute at the chart's UTC instant rounded to the
+ * whole minute, as in a shared chart code, which still gives the birth date
+ * and time. The ascendant and midheaven go only to the whole degree, as in a
+ * shared chart code: to the arcminute, with the bodies, they would give the
  * birthplace to about ten kilometres. House numbers are given only for
  * whole-sign houses, which follow from the ascendant's sign; Placidus
  * numbers would need the exact angles, so a Placidus chart has none. A chart
@@ -833,7 +863,7 @@ export async function placementSummaryForChart(chart: StoredChart): Promise<stri
   const timed = chart.birth.timeKnown;
   const angles = timed ? chart.summary.angles : null;
   const cusps = angles && chart.summary.houseSystem === 'whole' ? wholeSignCusps(angles.asc) : null;
-  const bodies = timed ? chart.summary.bodies : await untimedPlacements(chart);
+  const bodies = timed ? await timedPlacements(chart) : await untimedPlacements(chart);
   if (!bodies) return null;
   const lines = bodies.map(({ body, lon, retrograde }) => {
     if (!timed && body === 'Moon') return 'Moon: sign not known without a birth time';

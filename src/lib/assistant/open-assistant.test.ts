@@ -14,8 +14,10 @@ import {
 import { GUIDE_CLOUD_DISCLOSURE_POLICY_VERSION } from '../guide-server/policy';
 import { GUIDE_KNOWLEDGE_ENTRIES } from '../guide-knowledge/catalog';
 import { GUIDE_SHELL_URL, guideLoaderSource } from './guide-loader.mjs';
-import { computeBodies } from '../engine/full';
+import { computeBodies, computeChart } from '../engine/full';
+import { sharedTimedInstant } from '../share-positions-noon';
 import { degreeInSign, signForLongitude } from '../signs';
+import { prepareLocalTime, resolveLocalToUtc } from '../time/localToUtc';
 
 const ACCOUNT_ID = '11111111-1111-4111-8111-111111111111';
 const OLDER_ID = '22222222-2222-4222-8222-222222222222';
@@ -40,6 +42,7 @@ function profileJson({
           houseSystem: 'whole',
           bodies: [{ body: 'Sun', lon: 280, retrograde: false }],
           angles: { asc: 12, mc: 282 },
+          utcISO: '1980-01-01T12:00:00.000Z',
         },
       },
       {
@@ -66,6 +69,8 @@ function profileJson({
             { body: 'Mercury', lon: 355.25, retrograde: true },
           ],
           angles: { asc: 5, mc: 275 },
+          // 08:45 in Bangkok (UTC+7), or its noon without a birth time.
+          utcISO: timeKnown ? '1990-04-17T01:45:00.000Z' : '1990-04-17T05:00:00.000Z',
         },
       },
     ],
@@ -99,6 +104,7 @@ function polarProfileJson({ corrected = false, malformed = false } = {}) {
     place: { name: 'Polar fixture', lat: 78.2232, lon: 15.6267, tz: 'UTC' },
   };
   selected.summary.engineVersion = '0.1.0';
+  selected.summary.utcISO = '2001-12-21T09:00:00.000Z';
   selected.summary.angles = {
     asc: corrected ? 23.871984112302016 : 203.87198411230202,
     mc: 242.6868131443143,
@@ -187,6 +193,59 @@ describe('saved-chart assistant context', () => {
     elsewhere.charts[1].birth.place = { name: 'Honolulu', country: 'US', lat: 21.31, lon: -157.86, tz: 'Pacific/Honolulu' };
     elsewhere.charts[1].summary.bodies = [{ body: 'Sun', lon: 27.3, retrograde: false }];
     expect(await placementSummaryForChart(selfChart(JSON.stringify(elsewhere))!)).toBe(summary);
+  });
+
+  it('sends a chart with a birth time as its link carries it, at its UTC instant rounded to the whole minute', async () => {
+    // Before standard time a chart keeps the birthplace's own mean time, so
+    // its instant has seconds (19:40:26 UTC here, from Rochester's
+    // longitude). The bodies at that instant, to the arcminute, fitted a
+    // window of about 104 s, which with a link's minute gave the birth to
+    // 14.5 s; Guide now sends the bodies at the minute, as the link does.
+    const birth = { date: '1870-06-15', time: '14:30', zone: 'America/New_York', lat: 43.1566, lon: -77.6088 };
+    await prepareLocalTime(birth.date, birth.zone);
+    const utc = resolveLocalToUtc(birth.date, birth.time, birth.zone, { longitude: birth.lon }).utc;
+    expect(utc.toISOString()).toBe('1870-06-15T19:40:26.000Z');
+    const minute = sharedTimedInstant(utc)!.getTime();
+    const chartAt = (ms: number) => {
+      const chart = computeChart({ utc: new Date(ms), latitude: birth.lat, longitude: birth.lon, houseSystem: 'whole', timeKnown: true });
+      const profile = JSON.parse(profileJson());
+      profile.charts[1].birth = { date: birth.date, time: birth.time, timeKnown: true,
+        place: { name: 'Rochester', country: 'US', lat: birth.lat, lon: birth.lon, tz: birth.zone } };
+      profile.charts[1].summary = {
+        houseSystem: 'whole', engineVersion: chart.engineVersion, utcISO: chart.input.utc.toISOString(),
+        bodies: chart.bodies.map(({ body, lon, retrograde }) => ({ body, lon, retrograde })),
+        angles: { asc: chart.angles!.asc, mc: chart.angles!.mc },
+      };
+      return { chart, stored: selfChart(JSON.stringify(profile))! };
+    };
+    // The bodies' lines alone: the angles' lines keep the whole degree of the chart's own angles.
+    const bodyLines = (summary: string | null) => summary!.split('\n').slice(1)
+      .filter((line) => !/^(?:ASC|MC):/u.test(line)).map((line) => line.replace(/ · house \d+/u, ''));
+    const arcminute = (lon: number) => {
+      const within = degreeInSign(lon);
+      return `${Math.floor(within)}°${String(Math.floor((within - Math.floor(within)) * 60 + 1e-7)).padStart(2, '0')}′ ${signForLongitude(lon).name}`;
+    };
+    const linkLines = computeBodies(new Date(minute))
+      .map(({ body, lon, retrograde }) => `${body}: ${arcminute(lon)}${retrograde ? ' · retrograde' : ''}`);
+    const sent = new Set<string>();
+    const exact = new Set<string>();
+    for (let ms = minute - 30_000; ms < minute + 30_000; ms += 500) {
+      const { chart, stored } = chartAt(ms);
+      const lines = bodyLines(await placementSummaryForChart(stored));
+      expect(lines).toEqual(linkLines);
+      sent.add(lines.join('\n'));
+      exact.add(chart.bodies.map(({ body, lon, retrograde }) => `${body}: ${arcminute(lon)}${retrograde ? ' · retrograde' : ''}`).join('\n'));
+    }
+    // Every instant in the minute sends the same lines; the exact instants' own lines differ.
+    expect(sent.size).toBe(1);
+    expect(exact.size).toBeGreaterThan(1);
+    // A chart already on a whole minute keeps its own bodies, and one without an instant sends nothing.
+    const { chart, stored } = chartAt(minute);
+    expect(bodyLines(await placementSummaryForChart(stored))).toEqual(linkLines);
+    expect(stored.summary.utcISO).toBe(chart.input.utc.toISOString());
+    const noInstant = JSON.parse(profileJson());
+    delete noInstant.charts[1].summary.utcISO;
+    expect(await placementSummaryForChart(selfChart(JSON.stringify(noInstant))!)).toBeNull();
   });
 
   it('asks consent for a chart without a birth time in words true of its noon-UTC lines, in every locale', async () => {
