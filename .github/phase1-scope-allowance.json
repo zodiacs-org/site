@@ -1,7 +1,7 @@
 {
   "version": 1,
   "id": "privacy-audit-fixes-2026-09-28",
-  "baseCommit": "145d36e356d38496dac7053fee2cf325bac68784",
+  "baseCommit": "15949ec06390a3d4d0741ae64e6712e4dce4600d",
   "protectedPaths": [
     "src/pages/es/methodology/index.astro",
     "src/pages/es/privacy/index.astro",
