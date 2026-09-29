@@ -158,11 +158,18 @@ const jsonLd = [{
         as a failure. Residuals are the median and largest difference from the
         expected value.
       </p>
-      <p>
-        The @zodiacs/engine results are for version {testedEngine}, the version
-        in the engine repository when the suite was released. This site's
-        charts use version {siteEngine}.
-      </p>
+      {testedEngine === siteEngine ? (
+        <p>
+          The @zodiacs/engine results are for version {testedEngine}, the
+          version this site's charts use.
+        </p>
+      ) : (
+        <p>
+          The @zodiacs/engine results are for version {testedEngine}, the
+          version in the engine repository at that commit. This site's charts
+          use version {siteEngine}.
+        </p>
+      )}
     </div>
     {runs.map((run) => (
       <>
