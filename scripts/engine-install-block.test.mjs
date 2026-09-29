@@ -31,6 +31,13 @@
  * `node` removed from the PATH; the symlink cases are real; and the static
  * assertions now say what must NOT be between the download and the install
  * rather than only what must be present.
+ *
+ * Finding F-04 (docs/platform/programme/FINDINGS.md) was that the block could
+ * install into a parent directory: run where there is no package.json, `npm
+ * install` walks up to the nearest directory that has one and installs into
+ * that project. The block now stops first, before any download, and the cases
+ * below show both halves: the real npm choosing the parent, and the block
+ * refusing to get that far.
  */
 import { execFileSync } from 'node:child_process';
 import { mkdtempSync, mkdirSync, symlinkSync, lstatSync, writeFileSync, readFileSync, existsSync, rmSync } from 'node:fs';
@@ -78,14 +85,18 @@ function pathWithoutNode(dir) {
   return bin;
 }
 
+/** A project's package.json, which the block now requires in the directory it runs in (F-04). */
+const PROJECT = '{ "name": "reader-project", "private": true }\n';
+
 function run(bytes, {
   seedFile = false, seedDir = false, seedSymlinkTo = null, seedDanglingSymlink = false,
-  npmFails = false, dir = null, shell = 'bash', withoutNode = false,
+  npmFails = false, dir = null, shell = 'bash', withoutNode = false, packageJson = true,
 } = {}) {
   dir = dir ?? mkdtempSync(join(tmpdir(), 'zodiacs-engine-install-'));
   const target = join(dir, file);
   const payload = join(dir, 'payload.bin');
   if (bytes) writeFileSync(payload, bytes);
+  if (packageJson && !existsSync(join(dir, 'package.json'))) writeFileSync(join(dir, 'package.json'), PROJECT);
   if (seedFile) writeFileSync(target, 'something of mine');
   if (seedDir) {
     mkdirSync(target, { recursive: true });
@@ -96,9 +107,11 @@ function run(bytes, {
     symlinkSync(join(dir, seedSymlinkTo), target);
   }
   if (seedDanglingSymlink) symlinkSync(join(dir, 'not-created-yet'), target);
+  // Every call to the curl stub leaves a mark, so a case can show that nothing
+  // was downloaded, not only that nothing was installed.
   const curl = bytes
-    ? `curl() { while [ $# -gt 0 ]; do [ "$1" = "-o" ] && { cp '${payload}' "$2"; return 0; }; shift; done; return 1; }`
-    : `curl() { : > "${file}"; echo "curl: (22) The requested URL returned error: 404" >&2; return 22; }`;
+    ? `curl() { echo curl >> '${dir}/curl.log'; while [ $# -gt 0 ]; do [ "$1" = "-o" ] && { cp '${payload}' "$2"; return 0; }; shift; done; return 1; }`
+    : `curl() { echo curl >> '${dir}/curl.log'; : > "${file}"; echo "curl: (22) The requested URL returned error: 404" >&2; return 22; }`;
   const npm = `npm() { echo "npm $*" >> '${dir}/npm.log'; return ${npmFails ? 1 : 0}; }`;
   const env = withoutNode ? { ...process.env, PATH: pathWithoutNode(dir) } : process.env;
   let status = 0;
@@ -119,6 +132,7 @@ function run(bytes, {
     output,
     archivePresent: present,
     npmLog: existsSync(join(dir, 'npm.log')) ? readFileSync(join(dir, 'npm.log'), 'utf8') : '',
+    downloaded: existsSync(join(dir, 'curl.log')),
     seededIntact: seedFile && existsSync(target) ? readFileSync(target, 'utf8') : null,
     seededDirIntact: seedDir && existsSync(join(target, 'mine.txt'))
       ? readFileSync(join(target, 'mine.txt'), 'utf8') : null,
@@ -185,6 +199,35 @@ describe('the install commands the engine page publishes', () => {
 
   it('asks npm not to run the archive\'s lifecycle scripts', () => {
     expect(block).toMatch(/npm install --ignore-scripts "\.\/\$FILE"/u);
+  });
+
+  it('checks for a package.json here before it downloads anything (F-04)', () => {
+    const guard = block.indexOf('if test ! -f package.json; then');
+    expect(guard, 'the package.json guard must be in the block').toBeGreaterThan(-1);
+    expect(guard).toBeLessThan(block.indexOf('curl --disable'));
+    expect(guard).toBeLessThan(block.indexOf('npm install'));
+  });
+
+  it('guards against what npm really does without a package.json here (F-04)', () => {
+    // The premise of the guard, shown with the real npm rather than assumed:
+    // run in a directory with no package.json, npm takes the nearest parent
+    // that has one as the project, and `npm install` would write there.
+    // `npm prefix` prints that directory without touching the network. npm's
+    // own variables are dropped, because `npm test` sets a local prefix of
+    // its own in the environment.
+    const env = Object.fromEntries(Object.entries(process.env).filter(([key]) => !/^npm_/iu.test(key)));
+    const parent = mkdtempSync(join(tmpdir(), 'zodiacs-engine-parent-'));
+    const child = join(parent, 'new-project');
+    mkdirSync(child);
+    writeFileSync(join(parent, 'package.json'), PROJECT);
+    const prefix = (cwd) => execFileSync('npm', ['prefix'], { cwd, env, encoding: 'utf8' }).trim();
+    try {
+      expect(prefix(child), 'npm would install into the parent project').toBe(parent);
+      writeFileSync(join(child, 'package.json'), PROJECT);
+      expect(prefix(child), 'with a package.json here, npm installs here').toBe(child);
+    } finally {
+      discard(parent);
+    }
   });
 
   it('refuses to render a block from a manifest it cannot safely interpolate', () => {
@@ -303,6 +346,44 @@ describe('the install commands the engine page publishes', () => {
       expect(result.status).not.toBe(0);
       expect(result.npmLog).toBe('');
       expect(result.victim, 'the file the link points at must be unchanged').toBe('victim contents');
+    });
+
+    it('stops before downloading anything when this directory has no package.json', () => {
+      const result = run(archive, { shell, packageJson: false });
+      discard(result.dir);
+      expect(result.status).not.toBe(0);
+      expect(result.downloaded, 'nothing may be downloaded').toBe(false);
+      expect(result.npmLog, 'nothing may be installed').toBe('');
+      expect(result.archivePresent).toBe(false);
+      expect(result.output).toContain('there is no package.json here');
+    });
+
+    it('does not install into a parent project from a directory without a package.json', () => {
+      // F-04: npm would take the parent's package.json for this project's.
+      const parent = mkdtempSync(join(tmpdir(), 'zodiacs-engine-parent-'));
+      const child = join(parent, 'new-project');
+      mkdirSync(child);
+      writeFileSync(join(parent, 'package.json'), PROJECT);
+      const result = run(archive, { shell, dir: child, packageJson: false });
+      const parentManifest = readFileSync(join(parent, 'package.json'), 'utf8');
+      const parentEntries = existsSync(join(parent, 'node_modules')) || existsSync(join(parent, file));
+      discard(parent);
+      expect(result.status).not.toBe(0);
+      expect(result.downloaded).toBe(false);
+      expect(result.npmLog).toBe('');
+      expect(result.archivePresent).toBe(false);
+      expect(parentManifest, 'the parent project must be left alone').toBe(PROJECT);
+      expect(parentEntries).toBe(false);
+    });
+
+    it('does not take a directory named package.json for a project', () => {
+      const dir = mkdtempSync(join(tmpdir(), 'zodiacs-engine-install-'));
+      mkdirSync(join(dir, 'package.json'));
+      const result = run(archive, { shell, dir, packageJson: false });
+      discard(dir);
+      expect(result.status).not.toBe(0);
+      expect(result.downloaded).toBe(false);
+      expect(result.npmLog).toBe('');
     });
 
     it('can simply be run again after a rejected download', () => {
