@@ -9,7 +9,7 @@ const jsonLd = [
     headline: 'How zodiacs.org computes your chart',
     url: 'https://zodiacs.org/methodology/',
     datePublished: '2026-07-05T10:36:57Z',
-    dateModified: '2026-09-28T00:00:00Z',
+    dateModified: '2026-09-29T00:00:00Z',
     author: EDITOR_AUTHOR,
     publisher: { '@id': 'https://zodiacs.org/#org' },
     mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://zodiacs.org/methodology/' },
@@ -119,6 +119,10 @@ const jsonLd = [
         September 2026 it takes ΔT from Stephenson, Morrison and Hohenkerk's
         2016 reconstruction before 1941, from US Naval Observatory and IERS
         records after it, and from the IERS predictions for the year ahead.
+        The reconstruction's 32 values are from Table S15 of their paper,{' '}
+        <a href="https://doi.org/10.1098/rspa.2016.0404" rel="noopener noreferrer">Proceedings of the Royal Society A 472, 20160404</a>,
+        rounded to 0.01 seconds and used under{' '}
+        <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener noreferrer">CC BY 4.0</a>.
         From 1962 on it is within 0.09 seconds of the IERS value on every day,
         and each chart records the value it used and its uncertainty. Before
         that it used a fixed formula, which on 22 September 2026 read 75.5

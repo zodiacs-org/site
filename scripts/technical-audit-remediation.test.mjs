@@ -160,7 +160,9 @@ describe('technical audit remediation contracts', () => {
     expect(sitemap).toContain("const AUDIT_REMEDIATION_LASTMOD = '2026-08-23'");
     expect(sitemap).toContain("const LEGAL_IDENTITY_LASTMOD = '2026-08-29'");
     expect(sitemap).toContain("...['/', '/about/', '/privacy/', '/terms/'].map((loc) => [loc, LEGAL_IDENTITY_LASTMOD] as const)");
-    expect(terms).toContain("const modifiedAt = '2026-08-29T00:00:00.000Z'");
+    // Revised on 2026-09-29 (the ΔT attribution, finding F-50); the sitemap's
+    // DELTAT_ATTRIBUTION_LASTMOD carries that date for it.
+    expect(terms).toContain("const modifiedAt = '2026-09-29T00:00:00.000Z'");
     // Revised on 2026-09-23 (the claims ledger's corrections), on 2026-09-28
     // (the privacy audit's fixes) and on 2026-09-29 (the share-image review);
     // the sitemap's SHARE_IMAGE_REVIEW_LASTMOD carries the last date for it.
@@ -170,6 +172,8 @@ describe('technical audit remediation contracts', () => {
     expect(sitemap).toContain("const ENGINE_PHASE1_LASTMOD = '2026-09-23'");
     expect(sitemap).toContain("const PRIVACY_AUDIT_LASTMOD = '2026-09-28'");
     expect(sitemap).toContain("const SHARE_IMAGE_REVIEW_LASTMOD = '2026-09-29'");
+    expect(sitemap).toContain("const DELTAT_ATTRIBUTION_LASTMOD = '2026-09-29'");
+    expect(sitemap).toContain("const DELTAT_ATTRIBUTION_ROUTES = ['/methodology/', '/terms/'] as const;");
     expect(sitemap).toContain("'/about/', '/ask/', '/birth-chart/someone-else/', '/methodology/', '/privacy/', '/tools/',");
     for (const [page, path, modified] of [
       [learn, '/learn/', '2026-09-05T00:00:00.000Z'],
