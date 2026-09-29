@@ -1,3 +1,4 @@
+import { readdirSync, readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   CHART_SHEET_LAYOUT,
@@ -664,6 +665,46 @@ describe('a chart image with birth details hidden', () => {
     expect(settled).toBeLessThan(15);
     expect(await untimedMoonSign('2000-02-30')).toBeNull();
     expect(await untimedMoonSign()).toBeNull();
+  });
+
+  it('checks the Moon over a span that holds every date, save in Alaska before 1867 and the Philippines and Micronesia before 1845', async () => {
+    // The span is 00:00 at UTC+14 to 24:00 at UTC−12. The pinned time zone
+    // history keeps offsets outside it only for dates kept on the other side
+    // of the date line, all before 1868.
+    const outside: string[] = [];
+    const directory = new URL('../data/tz-history/2025c/', import.meta.url);
+    for (const file of readdirSync(directory).filter((name) => name !== 'excluded.json')) {
+      const { zones } = JSON.parse(readFileSync(new URL(file, directory), 'utf8')) as {
+        zones: Record<string, { t: number[]; o: number[] }>;
+      };
+      for (const [zone, { t, o }] of Object.entries(zones)) {
+        o.forEach((offset, era) => {
+          if (offset <= 14 * 3600 && offset >= -12 * 3600) return;
+          const until = t[era] === undefined ? 'now' : new Date(t[era] * 1000).toISOString().slice(0, 10);
+          outside.push(`${zone} until ${until}`);
+        });
+      }
+    }
+    expect(outside.sort()).toEqual([
+      'America/Anchorage until 1867-10-19', 'America/Juneau until 1867-10-19', 'America/Metlakatla until 1867-10-19',
+      'America/Sitka until 1867-10-19', 'America/Yakutat until 1867-10-19',
+      'Asia/Manila until 1844-12-31',
+      'Pacific/Chuuk until 1844-12-31', 'Pacific/Guam until 1844-12-31', 'Pacific/Kosrae until 1844-12-31',
+      'Pacific/Palau until 1844-12-31', 'Pacific/Pohnpei until 1844-12-31', 'Pacific/Ponape until 1844-12-31',
+      'Pacific/Saipan until 1844-12-31', 'Pacific/Truk until 1844-12-31', 'Pacific/Yap until 1844-12-31',
+      'US/Alaska until 1867-10-19',
+    ]);
+    // The site uses them: a date in Juneau in 1850 began an hour before the
+    // span, and one in Manila in 1840 ended almost four hours after it.
+    const hoursFromNoon = async (date: string, time: string, zone: string, longitude: number) => {
+      await prepareLocalTime(date, zone);
+      return (resolveLocalToUtc(date, time, zone, { longitude }).utc.getTime() - Date.parse(`${date}T12:00:00Z`)) / 3_600_000;
+    };
+    expect(await hoursFromNoon('1850-01-01', '00:00', 'America/Juneau', -134.42)).toBeCloseTo(-27.04, 2);
+    expect(await hoursFromNoon('1840-01-01', '00:00', 'Asia/Manila', 120.98) + 24).toBeCloseTo(27.9, 1);
+    // Since then every date falls inside it.
+    expect(await hoursFromNoon('2000-01-01', '00:00', 'Pacific/Kiritimati', -157.4)).toBe(-26);
+    expect(await hoursFromNoon('2000-01-01', '23:59', 'Pacific/Pago_Pago', -170.7)).toBeLessThan(24);
   });
 
   it('gives the Big Three and placement cards the rising sign’s whole degree, and a chart without a birth time noon UTC', async () => {

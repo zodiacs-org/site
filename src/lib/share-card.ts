@@ -210,6 +210,16 @@ const HOUR_MS = 3_600_000;
  * 32° in those 50 hours, so it cannot leave a sign and come back to it: the
  * same sign at both ends is the same sign throughout. Null otherwise, or for
  * a date that is not one.
+ *
+ * Every offset since standard time lies within UTC−12 to UTC+14. The pinned
+ * time zone history has two rare exceptions, both from before a place moved
+ * across the date line (share-card.test.ts holds the list): Alaska kept the
+ * Asian side's date until 18 October 1867, at about UTC+14 to UTC+15:20, and
+ * the Philippines, Guam, Palau and much of Micronesia the American side's
+ * until the end of 1844, at about UTC−13 to UTC−16:15. A date there began up
+ * to about an hour and a half earlier, or ended up to about four and a
+ * quarter hours later, than this span, so for a birth there and then the
+ * card can name a sign the Moon was not in for part of that date.
  */
 export async function untimedMoonSign(birthDate?: string): Promise<string | null> {
   const noon = await referenceInstant(birthDate).catch(() => null);
