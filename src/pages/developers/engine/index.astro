@@ -14,7 +14,7 @@ const title = 'Zodiacs Engine — Local TypeScript Chart Engine | Zodiacs.org';
 // this constant out of the source to build the committed site guide, and it
 // only matches a quoted string. Keeping the measured figures out of it also
 // means the meta description cannot drift away from the table below.
-const description = '@zodiacs/engine is the MIT-licensed TypeScript chart engine behind zodiacs.org: natal charts, transits, synastry, Moon phase and Saturn returns, computed in your own browser or Node process with no network request. What it computes, what it costs to bundle, how close it is to Swiss Ephemeris, and an install that verifies the archive digest.';
+const description = '@zodiacs/engine is the TypeScript chart engine behind zodiacs.org, MIT code with CC BY 4.0 ΔT data: natal charts, transits, synastry, Moon phase and Saturn returns, computed in your own browser or Node process with no network request. What it computes, what it costs to bundle, how close it is to Swiss Ephemeris, and an install that verifies the archive digest.';
 
 const kb = (n: number) => `${n} KB`;
 
@@ -232,7 +232,7 @@ const jsonLd = [{
         <li>Sun through Pluto and the true nodes. No Chiron, no asteroids.</li>
         <li>Placidus and Koch are undefined inside the polar circle; where the absolute latitude is 90° minus the obliquity or more (66.53° to 66.59° over 1800–2200) they fall back to whole sign and flag it. The other eleven systems are defined there.</li>
         <li>Event searches sample the motion at a fixed step, so they can miss an event between samples. The solver is tested, not proven complete.</li>
-        <li>No input-date bound inside the years the ephemeris covers, 1 to 3998; outside them a calculation throws. Outside 1800–2200, the range the engine has been checked over, a chart carries the <code>outside-reference-span</code> flag; see the caveat under accuracy.</li>
+        <li>No input-date bound inside the span the ephemeris covers, Terrestrial Time 0001-04-30 to 3998-09-03; outside it a calculation throws. Outside 1800–2200, the range the engine has been checked over, a chart carries the <code>outside-reference-span</code> flag; see the caveat under accuracy.</li>
         <li>The manifest declares Node 20.19 or a later 20.x, and 22.7 and newer. What has actually been executed for this candidate is Node 22.22.2 and Node 24.21.0 here, with the site's Chromium browser checks, and Node 20.19.0, 22.7.0, 22.22.2 and 24.21.0 in the engine's own packed-archive check — narrower than the declaration.</li>
         <li>No interpretation. The engine returns geometry; what it means is your problem, and not an astronomical claim.</li>
       </ul>

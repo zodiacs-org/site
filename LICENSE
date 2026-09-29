@@ -6,7 +6,9 @@ where a file or directory states other terms.
 
 Parts with their own terms:
 
-- The chart engine, @zodiacs/engine, is MIT-licensed. Its source is at
+- The chart engine, @zodiacs/engine, is MIT AND CC-BY-4.0: its code is MIT,
+  and its ΔT module carries 32 values of Table S15 of Stephenson, Morrison
+  and Hohenkerk (2016) under CC BY 4.0, as its NOTICE says. Its source is at
   https://github.com/zodiacs-org/engine, and the archive in vendor/ carries
   its own licence files.
 - The shared sky data the site publishes under /api/v1/ is licensed under

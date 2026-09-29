@@ -53,7 +53,7 @@ What the site does send, and when, is described on
 ## Licence
 
 All rights reserved; see [LICENSE](LICENSE), which also lists the parts that
-come with their own terms: the MIT-licensed chart engine, the CC BY 4.0 sky
+come with their own terms: the chart engine (MIT code with CC BY 4.0 ΔT data), the CC BY 4.0 sky
 data and GeoNames place data, and third-party packages.
 
 [CONTRIBUTING.md](CONTRIBUTING.md) says what kinds of report are welcome,
