@@ -102,13 +102,14 @@ resolves.
   and bounded return/event searches, validated against independently sourced
   reference cases with matched conventions. Then the release version, exact
   artifact, retained notices and a clean external installation.
-  **State:** `@zodiacs/engine@0.1.1-rc.10` is the prepared site candidate, with bounded verification recorded in
-  [the rc.10 adoption record](evidence/site-engine-rc10/README.md)
+  **State:** `@zodiacs/engine@0.1.1-rc.14` is the prepared site candidate, with bounded verification recorded in
+  [the rc.14 adoption record](evidence/site-engine-rc14/README.md)
   (artifact SHA-256 matches its record, and a clean external project installs
   the exact tarball and computes an ordinary natal chart through the documented
   public entry points). It is **not published**: `@zodiacs/engine` returns 404
   from the public registry and this environment holds no npm credentials.
-  This continuation has not been merged or deployed.
+  Until the rc.14 adoption is deployed, production serves rc.10, recorded in
+  [the rc.10 adoption record](evidence/site-engine-rc10/README.md).
   See [the engine release record](evidence/engine-release/README.md).
 - [ ] **B — Developer onboarding and existing public data.** Audited against
   each named requirement on 2026-09-17; most of it was already built, two gates
@@ -281,8 +282,9 @@ dependencies of this release.
   maintainer action.
   **Also worth recording:** from rc.7 the engine is its own repository,
   `zodiacs-org/engine`, and it is on `main` there: the source of
-  `@zodiacs/engine@0.1.1-rc.10` is commit `9c4f3fd` at the repository root, and
-  the archive is committed at `d0c5cd0`, both merged in engine #5 (rc.8's,
+  `@zodiacs/engine@0.1.1-rc.14` is commit `03db4bb` at the repository root, and
+  the archive is committed at `b221534`, both merged in engine #10 (rc.10's,
+  `9c4f3fd` and `d0c5cd0`, in engine #5; rc.8's,
   `352ea49d` and `a5b7d1d1`, in engine #3; rc.7's, `6e14f3f7` and `f37dcdd6`,
   in engine #2). Up to rc.6
   it was `packages/engine` of `ZodiacsOfficial/sdk`, pinned at `fb57af7a` on

@@ -56,8 +56,8 @@ Severity follows the audit's scale:
 | F-45 | major | privacy | The composite card printed the Moon midpoint to the arcminute when one person had no birth time; anyone who knows the other chart could recover that person's local noon, and so their zone | fixed in #599: a person without a birth time is drawn at 12:00 UTC without the Moon |
 | F-01 | minor | provenance | Two different archives both named 0.1.1-rc.11 | fix in rc.13 (artifact list; one version, one byte sequence); fixed in engine rc.14 (zodiacs-org/engine#10, merged 2026-09-29 as `8deda244`); reaches production when the site adopts it |
 | F-02 | minor | provenance | Engine CI never binds an artifact to its source | fix in rc.13 (CI rebuild-and-compare); fixed in engine rc.14 (zodiacs-org/engine#10, merged 2026-09-29 as `8deda244`); reaches production when the site adopts it; CI on the merge ran the check |
-| F-03 | minor | provenance | Site CI does not run `mcp:pack:check` | open: site CI change planned |
-| F-04 | minor | docs | The engine install snippet can install into a parent directory | open: guard in the snippet planned |
+| F-03 | minor | provenance | Site CI does not run `mcp:pack:check` | open: site CI change planned; fixed by the rc.14 adoption (2026-09-29): the Legacy wing drift job runs it |
+| F-04 | minor | docs | The engine install snippet can install into a parent directory | open: guard in the snippet planned; fixed by the rc.14 adoption (2026-09-29): the snippet stops without a package.json |
 | F-07 | minor | engine rc.11 | The Sun is flagged out of bounds at about half of all solstices | fix in rc.13; fixed in engine rc.14 (zodiacs-org/engine#10, merged 2026-09-29 as `8deda244`); reaches production when the site adopts it; the chart's own Sun is exempt by a stated convention |
 | F-13–F-16 | minor | engine rc.12 | Follow-ups from the PR #8 review (tolerance derivation, RangeError at Date limits, wording, script isolation) | fix in rc.13; fixed in engine rc.14 (zodiacs-org/engine#10, merged 2026-09-29 as `8deda244`); reaches production when the site adopts it |
 | F-23 | minor | claims | The claims ledger does not read developer docs (`public/sdk/**`, example READMEs, the engine's README and CHANGELOG) | open |
@@ -73,6 +73,7 @@ Severity follows the audit's scale:
 | F-46 | minor | engine | Placidus cusps failed to converge at isolated instants within about 1e-8° of the polar limit, so `natalChart` fell back to whole signs there (and said so), although Placidus exists there | open: a bisection fallback is on the birth-time window branch, for the next candidate |
 | F-47 | minor | engine | ΔT is discontinuous at its 1941 seam: TT steps back 13.95 ms at 1940-12-31T18:00Z | open; the window search splits at the seam meanwhile |
 | F-48 | minor | engine | The true node's finite-difference jitter (up to 4.83e-5°) makes some node ingresses too costly to partition to the millisecond | open: the window search reports them unresolved; a smoother node is planned |
+| F-49 | major | licensing | The MCP adapter's archives 0.1.0-rc.8, rc.9 and rc.10 inline the engine's 32 ΔT values of Table S15, which are CC BY 4.0, under an MIT-only label and without a notice | open: 0.1.0-rc.14 carries the licence expression and a NOTICE; the released archives stay as released, and whether to add attribution beside them or stop serving them is for the owner |
 | F-08 | info | engine | The physical declination rule (≤ 0.01″ vs Swiss FLG_EQUATORIAL) is not met: median 1.71″, max 20.76″ | FAIL recorded on P2.A.aspects.declination-accuracy; waits for P4.1 |
 | F-09 | info | engine | astronomy-engine's five-term nutation puts true obliquity up to 0.082″ from ERFA | noted for P4.1 |
 | F-10 | info | engine tests | Some rc.11 tests confirm the implementation with itself | rc.13 adds independent oracles; fixed in engine rc.14 (zodiacs-org/engine#10, merged 2026-09-29 as `8deda244`); reaches production when the site adopts it |
@@ -205,3 +206,24 @@ They are now tracked by the units named, and will get a disposition when those u
   - Fix plan: make ΔT continuous at the seam, in a reviewed engine change with a conformance run.
 - **Node jitter (F-48).** The true node comes from astronomy-engine's 1.728 s velocity difference. Its jitter reaches 4.83e-5° (scanned, 1800–2200), so every millisecond near a node ingress has to be evaluated. 24 of the 294 node ingresses in 1800–2200 exceed the search's budget.
   - Fix plan: the search reports those intervals as unresolved instead of failing. A smoother node, from a proper lunar velocity, is planned as its own reviewed change.
+
+### F-03 — the MCP archive's drift gate is not in CI (minor)
+
+- **Reproduction.** `.github/workflows/site-check.yml` at `145d36e3` runs neither `npm run mcp:pack:check` nor `npm run mcp:build:check`. `scripts/mcp-artifact.test.mjs` checks the committed bundle and archive against their manifest, but not that a fresh `npm pack` of `examples/mcp-server` still gives the archive's bytes.
+- **Fix.** In the rc.14 adoption (2026-09-29), the Legacy wing drift job, which checks the other generated files, runs `npm run mcp:pack:check`. That script rebuilds `server.mjs` from `src/mcp/` and fails if it differs, packs the example afresh and compares the archive byte for byte, rebuilds the manifest from the package, and requires a 40-hex `artifactCommit`. `npm pack` reads only the example's files, so the job stays offline.
+- **Regression test.** The step itself. It passes with the rc.14 archive.
+- **Residual risk.** npm's pack output is deterministic for one npm version; a different npm on the CI runner could pack other bytes and fail the step without any change here. The all-zero `artifactCommit` placeholder passes the pattern, so the step does not show that the commit is pinned; the adoption record says when it is.
+
+### F-04 — the engine install snippet and a parent package.json (minor)
+
+- **Reproduction.** Run the block from `/developers/engine/` at `145d36e3` in a new, empty directory whose parent holds a `package.json`. It verifies the archive and then runs `npm install`, which takes the nearest directory above with a `package.json` or `node_modules` as the project: the package lands in the parent's `node_modules` and the parent's manifest, and the block reports success (`../evidence/site-engine-rc14/f04-install-guard.log`, case 1, with the real curl and npm).
+- **Fix.** In the rc.14 adoption (2026-09-29), the block stops before downloading anything unless the directory it runs in has a `package.json` file, and says to run it in the project's directory or create one with `npm init -y`. The page says so beside the block.
+- **Regression test.** `scripts/engine-install-block.test.mjs`: the real npm's `npm prefix` names the parent from a child without a `package.json` and the child once it has one; in bash, dash and sh, the block downloads nothing, installs nothing and leaves the parent untouched without a `package.json`, and refuses a directory named `package.json`. The same log's cases 2 and 3 run the new block with the real curl and npm: it stops in that layout, and installs into the directory once it has a `package.json`, leaving the parent unchanged.
+- **Residual risk.** Inside an npm workspace, a member directory has a `package.json` and npm still installs through the workspace root, as a workspace install should.
+
+### F-49 — the MCP adapter's earlier archives and the ΔT values (major, licensing)
+
+- **Found.** By the independent review of the rc.14 adoption, 2026-09-29, for the rc.14 archive; the scan below extends it to the archives already released.
+- **What.** Since engine rc.8 the ΔT module carries 32 values of Table S15 of Stephenson, Morrison and Hohenkerk (2016), published under CC BY 4.0. The MCP adapter's `server.mjs` inlines the engine, so its archives carry them too. A search of every archive under `public/examples/` for the table's opening values finds them in `zodiacs-mcp-server` 0.1.0-rc.8, rc.9 and rc.10 and in the rc.14 candidate, and in no other archive. Each labelled itself `MIT` and carried no notice.
+- **Fixed for rc.14.** The archive declares `MIT AND CC-BY-4.0` and carries a NOTICE that ends with the engine's NOTICE unchanged; `scripts/mcp-artifact.test.mjs` checks both.
+- **Still open.** The released archives are immutable and pinned by digest, so they are not repacked. `/developers/mcp/` offers only the current archive, but the earlier ones stay reachable at their URLs. Adding attribution beside them, or no longer serving them, is the owner's decision.

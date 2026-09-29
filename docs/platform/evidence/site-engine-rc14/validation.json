@@ -1,0 +1,704 @@
+{
+  "schema": "zodiacs-site-engine-adoption-validation/v1",
+  "recordedAtUTC": "2026-09-29T09:01:15.857900+00:00",
+  "scope": "Local automated validation of the rc.14 adoption on the local branch rc14-adoption. Not a push, merge, deployment, npm publication, external certification or general ephemeris accuracy claim.",
+  "runtime": {
+    "node": "v22.22.2",
+    "npm": "10.9.7",
+    "secondEngineConsumerNode": "v24.21.0",
+    "chromium": "Chromium 149.0.7827.55",
+    "playwright": "1.61.1",
+    "esbuild": "0.28.1",
+    "claudeCodeCLI": "2.1.284",
+    "claudeModelRequests": 0
+  },
+  "sourceIdentity": {
+    "siteBaseMain": "15949ec06390a3d4d0741ae64e6712e4dce4600d",
+    "siteMainNamedForTheTask": "145d36e356d38496dac7053fee2cf325bac68784",
+    "baseNote": "origin/main moved from 145d36e3 (#597) to 15949ec0, the daily edition of 2026-09-29, before the branch was cut. The branch starts there because the build's freshness gate requires the day's edition; 15949ec0 changes only daily-edition data.",
+    "engineRepositoryMain": "8deda244dc87ccf5f68abba1f3173f142da40a2a",
+    "templateSourceSha256": "8eb5680527c5bcffeb2c390f947069cf8ae5fa5e9d9a9e2b7a0a45ef510fc621",
+    "sourceIdentityScope": "Source and base references and the Phase 1 template fingerprint of the validated working tree. No unpublished local commit is used as a public artifact or evidence carrier."
+  },
+  "engine": {
+    "version": "0.1.1-rc.14",
+    "sourceCommit": "03db4bb602377896283775920519b26d1f19a890",
+    "artifactCommit": "b221534e75842c9d7e589c456ed57957844cd06b",
+    "mergeCommit": "8deda244dc87ccf5f68abba1f3173f142da40a2a",
+    "archive": "vendor/zodiacs-engine-0.1.1-rc.14.tgz",
+    "sha256": "adc9805e22cd2468fa3340a864d9c53b36ff91e8f1592fdb35d8da8b69f4476e",
+    "bytes": 87415,
+    "files": 30,
+    "unpackedBytes": 282469,
+    "integrity": "sha512-uOruhtGRmzAFnbaF+Kc8tPFDPZEk0cm77gLfF5Fdl78FjxkcZjvjyMrql/gTSkWFAniapdjpUoKxch4p/elc7Q==",
+    "license": "MIT AND CC-BY-4.0",
+    "engines": "^20.19.0 || >=22.7.0",
+    "bytesSource": "git cat-file blob 8deda244:artifacts/zodiacs-engine-0.1.1-rc.14.tgz in the engine repository; the anonymous raw.githubusercontent download at b221534e gave the same bytes."
+  },
+  "mcp": {
+    "version": "0.1.0-rc.14",
+    "archive": "public/examples/zodiacs-mcp-server-0.1.0-rc.14.tgz",
+    "sha256": "27c6d1b04e013b3ae692019ff455c8a0de4f12be3cf53c5b5919ad7439fbe8a0",
+    "bytes": 73940,
+    "serverSha256": "6df2b010b745efe926afe44ec54a7b5239d709fa2373b20e5aae3cc8dedf0b2a",
+    "serverBytes": 202311,
+    "tools": 3,
+    "toolsChangedSinceRc10": false,
+    "chartPointsExposed": false,
+    "artifactCommit": "0000000000000000000000000000000000000000"
+  },
+  "checks": [
+    {
+      "name": "site-unit-and-contract-suite",
+      "command": "npm test",
+      "exitCode": 0,
+      "testFilesPassed": 482,
+      "testFilesFailed": 0,
+      "testFilesSkipped": 0,
+      "testFilesTotal": 482,
+      "testsPassed": 6119,
+      "testsFailed": 0,
+      "testsSkipped": 0,
+      "testsTotal": 6119,
+      "afterBuild": "default flags",
+      "note": "The third full run on the final tree, after the final default build. The two full runs before it on the same tree each failed only by vitest's 5-second timeout while other work loaded the machine: 3 tests of scripts/precision-alpha-types.test.mjs in one, 1 test of src/lib/profile/saved-record-inactive.test.ts in the other. Each of those files passes alone."
+    },
+    {
+      "name": "astro-check",
+      "command": "npm run check",
+      "exitCode": 0,
+      "files": 1138,
+      "errors": 0,
+      "warnings": 0,
+      "hints": 15
+    },
+    {
+      "name": "default-build",
+      "command": "npm run build",
+      "exitCode": 0,
+      "note": "Committed default flags. Every chained gate passed: the daily verify, replay and freshness gates, the transit audit of every committed month, check-dist, the schema checks, report-bundles --fail and the Phase 1 build receipt."
+    },
+    {
+      "name": "production-flags-build",
+      "command": "npm run build",
+      "environmentSource": ".github/workflows/site-check.yml jobs.production-flags-build.env",
+      "exitCode": 0,
+      "note": "The job's exact environment. The two files the build stamps, public/astrofolio/index.html and public/thesis/index.html, were restored afterwards; no flag-on output is committed."
+    },
+    {
+      "name": "check-dist",
+      "command": "node scripts/check-dist.mjs",
+      "exitCode": 0,
+      "productionFlags": {
+        "html": 4436,
+        "searchEntries": 1142,
+        "feedItems": 9
+      },
+      "defaultFlags": {
+        "html": 4436,
+        "searchEntries": 1140,
+        "feedItems": 9
+      }
+    },
+    {
+      "name": "report-bundles",
+      "command": "node scripts/report-bundles.mjs --fail",
+      "exitCode": 0,
+      "underBothFlagSets": true,
+      "note": "Budgets pass; engine isolation: package boundary clear, homepage markers clear. Sizes in bundleBudgets."
+    },
+    {
+      "name": "site-outputs-rc10-vs-rc14",
+      "command": "node docs/platform/evidence/site-engine-rc14/tools/compare-site-outputs.mjs 15949ec06390a3d4d0741ae64e6712e4dce4600d vendor/zodiacs-engine-0.1.1-rc.10.tgz",
+      "evidence": "site-outputs.json",
+      "calls": 572767,
+      "valuesCompared": 33069705,
+      "differingValues": 204551,
+      "engineVersionValues": 204546,
+      "invalidDateValues": 5,
+      "otherDifferences": 0,
+      "progressions": {
+        "births": 158,
+        "cases": 1422,
+        "instantMappings": 121,
+        "differences": 0
+      }
+    },
+    {
+      "name": "engine-consumer-parity",
+      "command": "node scripts/platform-engine-report.mjs",
+      "runtimeReports": [
+        "node22-parity.json",
+        "node24-parity.json"
+      ],
+      "status": "passed",
+      "note": "Frozen node and polar corpus, both house systems; every residual equals the other runtime's and rc.10's. Not a general bound."
+    },
+    {
+      "name": "clean-packed-engine-consumer",
+      "command": "node scripts/verify-packed-consumer.mjs (from engine source 03db4bb)",
+      "evidence": "public-candidate-consumer.log",
+      "checksPerRuntime": 26,
+      "checksPerRuntimeNote": "25 behaviour groups and the TypeScript 5.9.3 declaration check",
+      "runtimeCount": 2,
+      "status": "passed"
+    },
+    {
+      "name": "swiss-existing-corpus-refresh",
+      "evidence": "swiss-refresh.json",
+      "calculations": 321420,
+      "instants": 14610,
+      "bodies": 11,
+      "clocks": 2,
+      "status": "passed",
+      "reportedStatisticalValuesCompared": 1914,
+      "reportedStatisticalValuesChanged": 0,
+      "note": "Statistics and digests only; no Swiss code, data or per-instant value is committed. Replaces docs/platform/evidence/swiss-benchmark/multiyear-1800-2199.json, where only engine and zodiacsDumpSha256 change."
+    },
+    {
+      "name": "mcp-build-check",
+      "command": "npm run mcp:build:check",
+      "exitCode": 0
+    },
+    {
+      "name": "mcp-reproducible-pack",
+      "command": "npm run mcp:pack:check",
+      "exitCode": 0,
+      "note": "Archive bytes verified; artifactCommit is the all-zero placeholder until the remote carrier pin."
+    },
+    {
+      "name": "mcp-protocol",
+      "command": "npm run test:mcp:protocol",
+      "checks": 87,
+      "passed": 87,
+      "evidence": "../mcp-adapter/protocol-drive.json"
+    },
+    {
+      "name": "mcp-synthetic-benchmark",
+      "command": "npm run test:mcp:benchmark",
+      "scenarios": 18,
+      "assertions": {
+        "passed": 112,
+        "of": 112
+      },
+      "evidence": "../mcp-adapter/benchmark.json",
+      "note": "Synthetic same-engine regression classification, not real-world accuracy."
+    },
+    {
+      "name": "mcp-named-host",
+      "command": "npm run test:mcp:host",
+      "checks": 7,
+      "passed": 7,
+      "evidence": "../mcp-adapter/host-drive.json",
+      "note": "Claude Code CLI 2.1.284 stdio add/list/get/remove handshake in a throwaway configuration; no model-driven request."
+    },
+    {
+      "name": "mcp-packed-consumer",
+      "command": "npm ci then npm test in a fresh extraction of the public MCP archive",
+      "checks": 17,
+      "passed": 17,
+      "exitCode": 0
+    },
+    {
+      "name": "f04-install-guard",
+      "command": "node node_modules/vitest/vitest.mjs run scripts/engine-install-block.test.mjs",
+      "exitCode": 0,
+      "tests": 51,
+      "evidence": "f04-install-guard.log",
+      "note": "The log runs the base block and this block with the real curl and npm: the base block installed into the parent project; this block stops, then installs into the directory once it has a package.json."
+    },
+    {
+      "name": "phase1-browser-acceptance",
+      "command": "PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=<Chromium executable> node tests/phase1-acceptance-drive.mjs",
+      "exitCode": 0,
+      "captures": 18,
+      "http200": 18,
+      "recordedErrors": 0,
+      "viewports": [
+        360,
+        1280
+      ],
+      "dailyDate": "2026-09-29",
+      "manifest": "../../../acceptance/phase1/screenshots/manifest.json",
+      "note": "Unchanged repository driver. The captures were retaken because the template digest covers package.json and package-lock.json. The daily pages show 2026-09-29's edition where the previous captures showed 2026-09-28's, and a different Chromium build (149.0.7827.55, not 153.0.8010.0) rendered them; nothing on these pages shows the engine version. This is not human design approval."
+    },
+    {
+      "name": "phase1-evidence",
+      "command": "node node_modules/vitest/vitest.mjs run scripts/phase1-acceptance-evidence.test.mjs",
+      "exitCode": 0,
+      "testsPassed": 5
+    },
+    {
+      "name": "claims-ledger",
+      "commands": [
+        "node scripts/claims-ledger.mjs --unlisted",
+        "node scripts/claims-ledger.mjs --orphans"
+      ],
+      "unlisted": 0,
+      "orphans": 0,
+      "exitCode": 0
+    },
+    {
+      "name": "phase1-scope",
+      "command": "node scripts/phase1-scope-guard.mjs --base origin/main",
+      "status": "passed",
+      "note": "Protected scope untouched; no one-time allowance used."
+    },
+    {
+      "name": "generators-without-drift",
+      "commands": [
+        "node scripts/build-i18n-additions.mjs",
+        "npx vite-node --script scripts/build-assistant-context.mjs"
+      ],
+      "changedFiles": 0
+    },
+    {
+      "name": "patch-whitespace",
+      "command": "git diff --check",
+      "exitCode": 0
+    }
+  ],
+  "bundleBudgets": {
+    "unit": "gzip bytes of each route's initial transitive local JavaScript, summed as scripts/report-bundles.mjs sums them (it prints KiB to one decimal)",
+    "budgetsChanged": false,
+    "base": "15949ec0 built the same two ways with vendor/zodiacs-engine-0.1.1-rc.10.tgz installed",
+    "productionFlags": {
+      "routes": {
+        "/": {
+          "limitKb": 42,
+          "limitBytes": 43008,
+          "baseRc10": 31517,
+          "rc14": 31517,
+          "delta": 0,
+          "initialChunks": 29
+        },
+        "/birth-chart/": {
+          "limitKb": 71,
+          "limitBytes": 72704,
+          "baseRc10": 72091,
+          "rc14": 72081,
+          "delta": -10,
+          "initialChunks": 43
+        },
+        "/big-three/": {
+          "limitKb": 30,
+          "limitBytes": 30720,
+          "baseRc10": 30624,
+          "rc14": 30621,
+          "delta": -3,
+          "initialChunks": 21
+        },
+        "/transits/": {
+          "limitKb": 30,
+          "limitBytes": 30720,
+          "baseRc10": 29370,
+          "rc14": 29370,
+          "delta": 0,
+          "initialChunks": 24
+        },
+        "/solar-return/": {
+          "limitKb": 30,
+          "limitBytes": 30720,
+          "baseRc10": 24394,
+          "rc14": 24391,
+          "delta": -3,
+          "initialChunks": 18
+        },
+        "/lunar-return/": {
+          "limitKb": 30,
+          "limitBytes": 30720,
+          "baseRc10": 24335,
+          "rc14": 24334,
+          "delta": -1,
+          "initialChunks": 18
+        },
+        "/numerology/": {
+          "limitKb": 30,
+          "limitBytes": 30720,
+          "baseRc10": 17744,
+          "rc14": 17744,
+          "delta": 0,
+          "initialChunks": 7
+        },
+        "/numerology/life-path/7/": {
+          "limitKb": 30,
+          "limitBytes": 30720,
+          "baseRc10": 17744,
+          "rc14": 17744,
+          "delta": 0,
+          "initialChunks": 7
+        },
+        "/void-of-course-moon/": {
+          "limitKb": 5,
+          "limitBytes": 5120,
+          "baseRc10": 0,
+          "rc14": 0,
+          "delta": 0,
+          "initialChunks": 0
+        },
+        "/today/": {
+          "limitKb": 21.5,
+          "limitBytes": 22016,
+          "baseRc10": 20913,
+          "rc14": 20913,
+          "delta": 0,
+          "initialChunks": 13
+        },
+        "/compatibility/": {
+          "limitKb": 36,
+          "limitBytes": 36864,
+          "baseRc10": 36447,
+          "rc14": 36447,
+          "delta": 0,
+          "initialChunks": 24
+        },
+        "/aries/": {
+          "limitKb": 0,
+          "limitBytes": 0,
+          "baseRc10": 0,
+          "rc14": 0,
+          "delta": 0,
+          "initialChunks": 0
+        },
+        "/almanac/": {
+          "limitKb": 0,
+          "limitBytes": 0,
+          "baseRc10": 0,
+          "rc14": 0,
+          "delta": 0,
+          "initialChunks": 0
+        },
+        "/almanac/sky-2026-08/": {
+          "limitKb": 0,
+          "limitBytes": 0,
+          "baseRc10": 0,
+          "rc14": 0,
+          "delta": 0,
+          "initialChunks": 0
+        },
+        "/almanac/reading-a-childs-chart/": {
+          "limitKb": 0,
+          "limitBytes": 0,
+          "baseRc10": 0,
+          "rc14": 0,
+          "delta": 0,
+          "initialChunks": 0
+        },
+        "/registry/collection/": {
+          "limitKb": 48,
+          "limitBytes": 49152,
+          "baseRc10": 36628,
+          "rc14": 36628,
+          "delta": 0,
+          "initialChunks": 20
+        }
+      },
+      "chunkMax": {
+        "limitKb": 60,
+        "limitBytes": 61440,
+        "baseRc10": 51328,
+        "rc14": 51328,
+        "delta": 0,
+        "chunk": "/_astro/client.CuDwyYwN.js"
+      },
+      "engineChunk": {
+        "limitKb": 27,
+        "limitBytes": 27648,
+        "baseRc10": 26776,
+        "rc14": 27303,
+        "delta": 527,
+        "chunk": "/_astro/full.CmWi26On.js"
+      }
+    },
+    "defaultFlags": {
+      "routes": {
+        "/": {
+          "limitKb": 42,
+          "limitBytes": 43008,
+          "baseRc10": 31517,
+          "rc14": 31517,
+          "delta": 0,
+          "initialChunks": 29
+        },
+        "/birth-chart/": {
+          "limitKb": 71,
+          "limitBytes": 72704,
+          "baseRc10": 68901,
+          "rc14": 68892,
+          "delta": -9,
+          "initialChunks": 42
+        },
+        "/big-three/": {
+          "limitKb": 30,
+          "limitBytes": 30720,
+          "baseRc10": 30624,
+          "rc14": 30621,
+          "delta": -3,
+          "initialChunks": 21
+        },
+        "/transits/": {
+          "limitKb": 30,
+          "limitBytes": 30720,
+          "baseRc10": 29370,
+          "rc14": 29370,
+          "delta": 0,
+          "initialChunks": 24
+        },
+        "/solar-return/": {
+          "limitKb": 30,
+          "limitBytes": 30720,
+          "baseRc10": 24394,
+          "rc14": 24391,
+          "delta": -3,
+          "initialChunks": 18
+        },
+        "/lunar-return/": {
+          "limitKb": 30,
+          "limitBytes": 30720,
+          "baseRc10": 24335,
+          "rc14": 24334,
+          "delta": -1,
+          "initialChunks": 18
+        },
+        "/numerology/": {
+          "limitKb": 30,
+          "limitBytes": 30720,
+          "baseRc10": 17744,
+          "rc14": 17744,
+          "delta": 0,
+          "initialChunks": 7
+        },
+        "/numerology/life-path/7/": {
+          "limitKb": 30,
+          "limitBytes": 30720,
+          "baseRc10": 17744,
+          "rc14": 17744,
+          "delta": 0,
+          "initialChunks": 7
+        },
+        "/void-of-course-moon/": {
+          "limitKb": 5,
+          "limitBytes": 5120,
+          "baseRc10": 0,
+          "rc14": 0,
+          "delta": 0,
+          "initialChunks": 0
+        },
+        "/today/": {
+          "limitKb": 21.5,
+          "limitBytes": 22016,
+          "baseRc10": 20910,
+          "rc14": 20909,
+          "delta": -1,
+          "initialChunks": 13
+        },
+        "/compatibility/": {
+          "limitKb": 36,
+          "limitBytes": 36864,
+          "baseRc10": 36002,
+          "rc14": 36006,
+          "delta": 4,
+          "initialChunks": 24
+        },
+        "/aries/": {
+          "limitKb": 0,
+          "limitBytes": 0,
+          "baseRc10": 0,
+          "rc14": 0,
+          "delta": 0,
+          "initialChunks": 0
+        },
+        "/almanac/": {
+          "limitKb": 0,
+          "limitBytes": 0,
+          "baseRc10": 0,
+          "rc14": 0,
+          "delta": 0,
+          "initialChunks": 0
+        },
+        "/almanac/sky-2026-08/": {
+          "limitKb": 0,
+          "limitBytes": 0,
+          "baseRc10": 0,
+          "rc14": 0,
+          "delta": 0,
+          "initialChunks": 0
+        },
+        "/almanac/reading-a-childs-chart/": {
+          "limitKb": 0,
+          "limitBytes": 0,
+          "baseRc10": 0,
+          "rc14": 0,
+          "delta": 0,
+          "initialChunks": 0
+        },
+        "/registry/collection/": {
+          "limitKb": 48,
+          "limitBytes": 49152,
+          "baseRc10": 0,
+          "rc14": 0,
+          "delta": 0,
+          "initialChunks": 0
+        }
+      },
+      "chunkMax": {
+        "limitKb": 60,
+        "limitBytes": 61440,
+        "baseRc10": 51289,
+        "rc14": 51289,
+        "delta": 0,
+        "chunk": "/_astro/client.D6U9smGw.js"
+      },
+      "engineChunk": {
+        "limitKb": 27,
+        "limitBytes": 27648,
+        "baseRc10": 26776,
+        "rc14": 27303,
+        "delta": 527,
+        "chunk": "/_astro/full.CmWi26On.js"
+      }
+    },
+    "explanation": [
+      "No budget changed, and no route's initial JavaScript grew by more than 4 bytes: /birth-chart/ is 10 bytes smaller with production's flags and 9 bytes smaller with the defaults.",
+      "rc.14 renames the two package chunks the initial bundles share, its aspect table and its house arithmetic (chunk-FR5TX5ZG and chunk-N4WHSUFK became chunk-NAJ735VN and chunk-4OSOCZY2). With hashed file names and the version string set aside, every chunk of the initial bundles of /, /birth-chart/, /big-three/, /today/ and /compatibility/ in the default build is byte for byte the base build's; the new names compress a few bytes differently.",
+      "That is the whole of /compatibility/'s 4 bytes under the default flags (0 with production's): no code joined the page, so nothing could move behind a dynamic import.",
+      "src/lib/engine/progressions.ts and the package root entry it imports are reached only through ChartLens's await import(); they are in no route's initial closure, and the build reports no ineffective dynamic import for them.",
+      "The engine chunk, which pages load only when a chart is asked for, grew by 527 bytes: the package's chart chunk by 458 (mostly rc.13's error wrapper and rc.14's span check) and its ΔT chunk by 72 (Rolldown placed EPHEMERIS_SPAN there), less 3 bytes elsewhere. 345 bytes of its 27 KB budget remain."
+    ]
+  },
+  "browserDrives": {
+    "target": "a local astro preview of the default build, driven by Playwright 1.61.1 with Chromium 149.0.7827.55",
+    "drives": [
+      {
+        "drive": "tests/platform-developers-drive.mjs",
+        "result": "passed",
+        "checks": 11
+      },
+      {
+        "drive": "tests/developer-first-use-drive.mjs",
+        "result": "passed",
+        "checks": 88
+      },
+      {
+        "drive": "tests/chart-compare-drive.mjs",
+        "result": "passed",
+        "passed": 34,
+        "of": 34,
+        "note": "Its committed record, docs/platform/evidence/chart-compare/browser-drive.json, is the feature's rc.8 acceptance and was left unchanged."
+      },
+      {
+        "drive": "tests/chart-ownership-drive.mjs",
+        "result": "passed",
+        "passed": 17,
+        "of": 17,
+        "note": "Changed here to find the natal calculation inside the error wrapper that rc.13 added around it; before the change it found none and failed."
+      },
+      {
+        "drive": "tests/t17-positions-share.mjs",
+        "result": "passed",
+        "exitCode": 0,
+        "note": "Run without T17_SHARE_EVIDENCE, so the committed Phase 4 sharing record was not rewritten."
+      },
+      {
+        "drive": "tests/platform-share-boundary-drive.mjs",
+        "result": "passed",
+        "checks": 12,
+        "engineVersion": "0.1.1-rc.14"
+      },
+      {
+        "drive": "tests/moon-result-ownership-drive.mjs",
+        "result": "passed",
+        "groups": 20
+      },
+      {
+        "drive": "tests/post-chart-context-clear-drive.mjs",
+        "result": "passed",
+        "passed": 23,
+        "of": 23
+      },
+      {
+        "drive": "tests/local-date-intervals-drive.mjs",
+        "result": "passed",
+        "passedChecks": 127
+      },
+      {
+        "drive": "tests/local-date-reference-drive.mjs",
+        "result": "passed",
+        "passed": 35,
+        "of": 35
+      },
+      {
+        "drive": "tests/chart-reference-confidence-drive.mjs",
+        "result": "passed",
+        "passed": 20,
+        "of": 20
+      },
+      {
+        "drive": "tests/reference-caption-drive.mjs",
+        "result": "passed",
+        "passed": 34,
+        "of": 34
+      },
+      {
+        "drive": "tests/saved-natal-storage-drive.mjs",
+        "result": "passed",
+        "passed": 31,
+        "of": 31
+      },
+      {
+        "drive": "tests/lens-drive.mjs",
+        "result": "failed",
+        "passed": 27,
+        "of": 28,
+        "sameOnBase": true,
+        "note": "The one failure, a no-time note on the progressed lens, is listed under knownFailuresOutsideThisChange; the progressed positions, notes and ring render."
+      },
+      {
+        "drive": "tests/explorer-drive.mjs",
+        "result": "failed",
+        "passedBeforeStop": 321,
+        "failedBeforeStop": 16,
+        "sameOnBase": true,
+        "note": "Runs in CI only on pull requests that opt in (browser-evidence.yml). Listed under knownFailuresOutsideThisChange."
+      }
+    ]
+  },
+  "knownFailuresOutsideThisChange": [
+    {
+      "check": "tests/lens-drive.mjs: no-time chart shows the noon note on progressed",
+      "observed": "The note reads \"Progressed houses need a convention we haven’t adopted, so only the planets progress here. Reference positions are shown. Houses and rising are withheld without a birth time.\" and the drive looks for \"noon chart\".",
+      "cause": "src/islands/explorer/lens/copy.ts changed its no-time note in 9912e37b; the drive was last changed in 3f1d808d.",
+      "sameOnBase": true,
+      "baseRun": "15949ec0 built with the committed defaults on rc.10: the same 27 passes and the same failure."
+    },
+    {
+      "check": "tests/explorer-drive.mjs: 16 locale-discovery checks of the mobile tool menu, and a stop in tests/explorer-moon-checks.mjs",
+      "observed": "\"missing mobile tool rows\": the menu has seven rows where tests/locale-capture-readiness.mjs requires nine; then a 30-second timeout waiting for [data-guide-launcher] to become visible on /birth-chart/ at 390 px, which stays hidden.",
+      "cause": "Navigation and Guide behaviour this change does not touch (src/components/SiteNav.astro and the Guide launcher are unchanged here).",
+      "sameOnBase": true,
+      "baseRun": "15949ec0 built with the committed defaults on rc.10: the same 321 passes, the same 16 failures and the same stop."
+    },
+    {
+      "check": "tests/explorer-drive.mjs first run on each build",
+      "observed": "net::ERR_CONNECTION_REFUSED on 127.0.0.1:4399 after the first scenario.",
+      "cause": "The drive gives the preview server it spawns 2.5 seconds to start; on this machine that was sometimes not enough. With the port already served, the drive runs to the outcome above on both builds.",
+      "sameOnBase": true
+    },
+    {
+      "check": "npm test under load",
+      "observed": "Two full runs on the final tree, while other work loaded the machine, each failed only by vitest's 5-second timeout: 3 tests of scripts/precision-alpha-types.test.mjs in one, 1 test of src/lib/profile/saved-record-inactive.test.ts in the other. An earlier run on this branch timed out in that test and in scripts/phase1-acceptance-evidence.test.mjs.",
+      "cause": "Load. Each of those files passes alone (4 of 4, 4 of 4 and 5 of 5), and the third full run on the final tree passed 6,119 of 6,119 tests.",
+      "sameOnBase": null
+    }
+  ],
+  "limits": [
+    "The site-output comparison is the site against itself on two archives, not a measurement against a reference.",
+    "The rc.11 to rc.14 APIs the site does not use (configured aspects, declinations) are not measured here; their evidence is the engine repository's.",
+    "Receipt and import conventions and trust behaviour are unchanged.",
+    "No push, merge, deployment, npm release or model-spending approval is implied by these checks."
+  ],
+  "publication": {
+    "status": "pending-remote-carrier-pin",
+    "note": "The engine evidenceCommit in src/data/platform-engine-candidate.json and the MCP artifactCommit in public/examples/mcp-server.json are the all-zero placeholder. After the branch is pushed, a follow-up commit pins both to the pushed commit that carries this record and the rc.14 MCP archive, as e29d0dbc did for rc.10. The branch must not be deployed before that commit."
+  }
+}

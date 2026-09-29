@@ -45,6 +45,10 @@ const fontContract = [
   },
 ];
 
+// The two faces with font-display: optional. Each is preloaded, because
+// Chromium holds the first frame only for a preloaded optional font.
+const optionalHeroFaces = ['instrument-sans-home-nav-core.woff2', 'eb-garamond-home-400-core.woff2'];
+
 describe('homepage first-paint assets', () => {
   it.each(fontContract)('pins the deterministic $file subset', async ({ file, source, sha256 }) => {
     const [subset, full] = await Promise.all([
@@ -69,6 +73,17 @@ describe('homepage first-paint assets', () => {
     expect(css).toContain('/assets/home/eb-garamond-home-400-core.woff2');
     expect(css).toContain('/assets/home/instrument-sans-home-nav-core.woff2');
     expect(css).toContain('/assets/home/jetbrains-mono-home-nav-core.woff2');
+  });
+
+  it('preloads each optional hero face after the poster hints', async () => {
+    const page = await readFile(resolve(repositoryRoot, 'src/pages/index.astro'), 'utf8');
+    const lastPosterHint = page.lastIndexOf('href="/assets/hero/zodiacs-hero-poster');
+
+    for (const face of optionalHeroFaces) {
+      const hint = page.match(new RegExp(`<link\\s+slot="head"\\s+rel="preload"\\s+as="font"\\s+type="font/woff2"\\s+href="/assets/home/${face.replaceAll('.', '\\.')}"\\s+crossorigin\\s*/>`, 'u'));
+      expect(hint).not.toBeNull();
+      expect(page.indexOf(hint[0])).toBeGreaterThan(lastPosterHint);
+    }
   });
 
   it('keeps the mobile poster motion on the first-render path', async () => {
@@ -128,6 +143,13 @@ describe('homepage first-paint assets', () => {
       expect(catalog).toBeGreaterThan(hero);
       expect(catalog).toBeLessThan(firstIsland);
       for (const { file } of fontContract) expect(html).toContain(`/assets/home/${file}`);
+      // The two optional hero faces are preloaded after the poster hints, so
+      // the first frame waits for them instead of re-laying the hero out.
+      for (const face of optionalHeroFaces) {
+        const hint = html.indexOf(`<link rel="preload" as="font" type="font/woff2" href="/assets/home/${face}" crossorigin>`);
+        expect(hint).toBeGreaterThan(posterHint);
+        expect(hint).toBeLessThan(criticalBase);
+      }
 
       // The receipt remains available without JavaScript, and its static
       // dependency tree must not become a home hydration root again.

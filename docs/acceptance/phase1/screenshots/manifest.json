@@ -6,27 +6,27 @@
     "script": "tests/phase1-acceptance-drive.mjs",
     "contractVersion": 4
   },
-  "capturedAt": "2026-09-29T12:33:38.416Z",
+  "capturedAt": "2026-09-29T17:00:49.153Z",
   "browser": "Chromium 149.0.7827.55",
   "dailyDate": "2026-09-29",
   "publicationCanonicalSha256": "eaa18dca0a292777e741a5cb742dfc2ece72bebdbb52051efab004447e873c65",
-  "templateSourceSha256": "c1250b0572945d75fd48bcab401340ddfc6b1677325274401994480b3a421bdb",
+  "templateSourceSha256": "423e988e44f6fa35adf791cfc6433e38fb9cb096d7e61f47af166b5016d4410b",
   "renderPayloadSha256": {
     "daily": "7b37b76e6824e957326c518e66111e9a242e2f0e521518d75374b93e8f72db8e",
     "dailyPublication": "9c48c34440faac30208dca940e15fb2e6af1f87fde8b77a44e57b7b18f821d5d",
-    "dailyPublicationManifest": "51a7915216a30f857ec3c345dcadaffc247a1ee19b551bfed179b6b1b8b9d9f2",
+    "dailyPublicationManifest": "b2520bbd509d211c6b05a21a34d6564926440b4f2e7ff605b6fa8a34a6aed13b",
     "horoscopeProgram": "539e83e5f2f51bea7881d56bf39b7f9de72d97201519798f9c7e0231a2fab26f"
   },
   "buildReceipt": {
     "schema": "zodiacs.phase1-build-receipt.v1",
-    "builtAt": "2026-09-29T12:32:47.318Z",
-    "templateSourceSha256": "c1250b0572945d75fd48bcab401340ddfc6b1677325274401994480b3a421bdb",
+    "builtAt": "2026-09-29T16:59:41.862Z",
+    "templateSourceSha256": "423e988e44f6fa35adf791cfc6433e38fb9cb096d7e61f47af166b5016d4410b",
     "dailyDate": "2026-09-29",
     "publicationCanonicalSha256": "eaa18dca0a292777e741a5cb742dfc2ece72bebdbb52051efab004447e873c65",
     "renderPayloadSha256": {
       "daily": "7b37b76e6824e957326c518e66111e9a242e2f0e521518d75374b93e8f72db8e",
       "dailyPublication": "9c48c34440faac30208dca940e15fb2e6af1f87fde8b77a44e57b7b18f821d5d",
-      "dailyPublicationManifest": "51a7915216a30f857ec3c345dcadaffc247a1ee19b551bfed179b6b1b8b9d9f2",
+      "dailyPublicationManifest": "b2520bbd509d211c6b05a21a34d6564926440b4f2e7ff605b6fa8a34a6aed13b",
       "horoscopeProgram": "539e83e5f2f51bea7881d56bf39b7f9de72d97201519798f9c7e0231a2fab26f"
     }
   },
@@ -186,7 +186,7 @@
         "file": "tomorrow-360.png",
         "width": 360,
         "height": 4343,
-        "sha256": "321dc8fbb1f032f6a1e45d5e2e28e5190ce5c9446182dce5a60810496357bbba"
+        "sha256": "c1bd1da72a4c604757e83573804f9d5d7626a8a8773967f6ad7472c072687d12"
       },
       "layout": {
         "clientWidth": 360,
