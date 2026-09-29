@@ -48,7 +48,7 @@ describe('serializeTransitContacts', () => {
       'CALSCALE:GREGORIAN',
       'X-WR-CALNAME:Zodiacs.org transit contacts',
       'BEGIN:VEVENT',
-      'UID:transit-20190321T160400Z-saturn-conjunction-saturn@zodiacs.org',
+      'UID:transit-b37ebe4c8960c77a@zodiacs.org',
       'DTSTAMP:20260711T000000Z',
       'DTSTART:20190321T160400Z',
       'DURATION:PT1M',
@@ -72,14 +72,42 @@ describe('serializeTransitContacts', () => {
 
     const uids = SATURN_PASSES.map(transitContactUid);
     expect(new Set(uids).size).toBe(3);
-    expect(uids[0]).toBe('transit-20190321T160400Z-saturn-conjunction-saturn@zodiacs.org');
+    expect(uids[0]).toBe('transit-b37ebe4c8960c77a@zodiacs.org');
 
     const sameContactInDifferentWindow = { ...SATURN_PASSES[0], pass: 2, passCount: 2 };
     expect(transitContactUid(sameContactInDifferentWindow)).toBe(uids[0]);
 
-    const closePass = { ...SATURN_PASSES[0], exactUtc: '2019-03-21T16:04:00.250Z' };
-    expect(transitContactUid(closePass)).toContain('20190321T160400250Z');
-    expect(transitContactUid(closePass)).not.toBe(transitContactUid(SATURN_PASSES[0]));
+    const aSecondLater = { ...SATURN_PASSES[0], exactUtc: '2019-03-21T16:04:01.000Z' };
+    expect(transitContactUid(aSecondLater)).not.toBe(uids[0]);
+  });
+
+  it('puts in a UID nothing its event does not show: no instant, and nothing finer than DTSTART', () => {
+    // In a file made from the exact chart, a contact to the midheaven at
+    // 11:37:43.801 once had that millisecond in its UID, which gave the
+    // midheaven to a millionth of a degree. The UID is now a hash of the
+    // start to the second and the title, the same for every instant in
+    // that second, and holds no readable time.
+    const mc: TransitContact = {
+      transitBody: 'Jupiter',
+      natalPoint: 'MC',
+      aspect: 'trine',
+      exactUtc: '2026-10-17T11:37:43.801Z',
+      pass: 1,
+      passCount: 1,
+    };
+    const uid = transitContactUid(mc);
+    expect(uid).toMatch(/^transit-[0-9a-f]{16}@zodiacs\.org$/u);
+    expect(uid).not.toMatch(/2026|1017|113743|801/u);
+    for (const ms of [0, 1, 500, 999]) {
+      expect(transitContactUid({ ...mc, exactUtc: `2026-10-17T11:37:43.${String(ms).padStart(3, '0')}Z` })).toBe(uid);
+    }
+    const calendar = serializeTransitContacts([mc], OPTIONS).replace(/\r\n[ \t]/g, '');
+    expect(calendar).toContain(`UID:${uid}${CRLF}`);
+    expect(calendar).toContain(`DTSTART:20261017T113743Z${CRLF}`);
+    // Two contacts that would show the same start and title are one event.
+    const twice = serializeTransitContacts([mc, { ...mc, exactUtc: '2026-10-17T11:37:43.100Z' }], OPTIONS);
+    expect(twice.match(/BEGIN:VEVENT/g)).toHaveLength(1);
+    expect(twice).toBe(serializeTransitContacts([{ ...mc, exactUtc: '2026-10-17T11:37:43.100Z' }, mc], OPTIONS));
   });
 
   it('gives contacts to whole-degree angles to the minute without calling them exact', () => {
@@ -94,13 +122,14 @@ describe('serializeTransitContacts', () => {
     const planet: TransitContact = { ...angle, natalPoint: 'Moon' };
     const calendar = serializeTransitContacts([angle, planet], { ...OPTIONS, natalAngles: 'whole-degree' });
     const unfolded = calendar.replace(/\r\n[ \t]/g, '');
-    expect(unfolded).toContain('UID:transit-20190321T160400Z-saturn-square-asc@zodiacs.org');
+    expect(unfolded).toContain(`UID:${transitContactUid({ ...angle, exactUtc: '2019-03-21T16:04:00.000Z' })}${CRLF}`);
     expect(unfolded).toContain('DTSTART:20190321T160400Z');
     expect(unfolded).toContain(`SUMMARY:Transiting Saturn square natal ASC${CRLF}`);
     expect(unfolded).toContain(
       `DESCRIPTION:Tropical transit contact. Natal angle to the whole degree. Time: 2019-03-21 16:04 UTC.${CRLF}`,
     );
-    expect(unfolded).toContain('UID:transit-20190321T160437250Z-saturn-square-moon@zodiacs.org');
+    expect(unfolded).toContain(`UID:${transitContactUid(planet)}${CRLF}`);
+    expect(transitContactUid(planet)).toBe('transit-e0a58d5f0898c349@zodiacs.org');
     expect(unfolded).toContain('DTSTART:20190321T160437Z');
     expect(unfolded).toContain(`SUMMARY:Transiting Saturn square natal Moon (exact)${CRLF}`);
 

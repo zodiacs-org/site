@@ -74,7 +74,7 @@ describe('subscribable transit calendar', () => {
     for (const event of angleEvents) {
       expect(event).not.toContain('(exact)');
       expect(event).toMatch(/DTSTART:\d{8}T\d{4}00Z/);
-      expect(event).toMatch(/UID:transit-\d{8}T\d{4}00Z-/);
+      expect(event).toMatch(/UID:transit-[0-9a-f]{16}@zodiacs\.org\r\n/);
       expect(event).toContain('DESCRIPTION:Tropical transit contact. Natal angle to the whole degree. Time:');
     }
     expect(events.some((event) => event.includes('SUMMARY:Transiting Sun conjunction natal ASC\r\n'))).toBe(true);

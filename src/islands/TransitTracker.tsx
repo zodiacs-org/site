@@ -485,7 +485,7 @@ export default function TransitTracker({ locale: rawLocale = 'en' }: { locale?: 
           <summary class="tsearch-host__summary"><span>Your transit itinerary</span><span class="orb" aria-hidden="true">↗</span></summary>
           <div class="core tsearch-host__core">
             {ItineraryComponent ? <ItineraryComponent key={result.revision} natal={searchNatal}
-              timeKnown={result.natal.itineraryTimeKnown} anchorMs={result.nowMs} />
+              timeKnown={result.natal.itineraryTimeKnown} birthTimeKnown={result.natal.timeKnown} anchorMs={result.nowMs} />
               : itineraryError ? <div><p class="calc__error" role="alert">{itineraryError}</p>
                 <button type="button" class="btn" onClick={() => openItinerary()}>Try again</button></div>
                 : <p role="status">{itineraryLoading ? 'Loading your itinerary…' : 'Open to explore your longer transit periods.'}</p>}
@@ -507,6 +507,7 @@ export default function TransitTracker({ locale: rawLocale = 'en' }: { locale?: 
                 natalPoints={searchNatalPoints}
                 nowMs={result?.nowMs ?? Date.now()}
                 onShowOnRing={(contact) => setSearchFocus({ contact })}
+                timeKnown={result?.natal.timeKnown ?? true}
               />
             ) : (
               searchError
