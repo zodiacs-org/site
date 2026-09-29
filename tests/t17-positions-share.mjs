@@ -1087,12 +1087,12 @@ try {
 
       // Without a birth time the Moon card is drawn from the sky at 12:00 UTC:
       // it names the sign only when the Moon held it all that date in every
-      // time zone, whatever sign the page gives for the birthplace's own day.
+      // time zone, from 10:00 UTC the day before to 12:00 UTC the day after.
       for (const moonCase of [
-        // London's 31 December 1989 is all Aquarius; the Moon enters Pisces at 06:11 UTC on 1 January.
-        { date: '1989-12-31', page: 'Aquarius', card: null },
-        // From 10:00 UTC on 14 January to 12:00 UTC on 16 January 1990 the Moon is in Virgo.
-        { date: '1990-01-15', page: 'Virgo', card: 'Virgo' },
+        // All Aquarius in London on 31 December 1989, but Pisces from 06:11 UTC on 1 January.
+        { date: '1989-12-31', notNamed: 'Aquarius', card: null },
+        // Virgo from 02:58 UTC on 14 January 1990 to 12:18 UTC on the 16th.
+        { date: '1990-01-15', card: 'Virgo' },
       ]) {
         const moonPage = await trackedPage();
         await open(moonPage, `${baseURL}/moon-sign/`);
@@ -1107,8 +1107,8 @@ try {
           return document.querySelector('.calc__form')?.getAttribute('aria-busy') === 'false'
             && action instanceof HTMLButtonElement && !action.disabled;
         }, null, { timeout: TIMEOUT });
-        assert.match(await moonPage.locator('.calc__three').innerText(), new RegExp(moonCase.page),
-          `${moonCase.date}: the page names the Moon's sign for the birthplace's day`);
+        // The page itself names no Moon sign without a birth time.
+        assert.match(await moonPage.locator('.calc__three [data-moon-uncertain]').innerText(), /Needs a birth time/);
         const cardText = await moonPage.evaluate(() => globalThis.__t17CanvasText.map((entry) => entry.value).join(' | '));
         await moonPage.locator('[data-share-options]').click();
         const moonDialog = moonPage.locator('[data-share-dialog]');
@@ -1125,7 +1125,7 @@ try {
         } else {
           assert.equal(cardText.includes('Needs a birth time'), true,
             `${moonCase.date}: a Moon that changed sign somewhere on that date is not named on the card`);
-          assert.equal(cardText.includes(moonCase.page), false, `${moonCase.date}: the card does not take the page's sign`);
+          assert.equal(cardText.includes(moonCase.notNamed), false, `${moonCase.date}: the card names no sign the Moon left somewhere that date`);
           assert.match(await moonDialog.locator('[data-share-placement-preview]').innerText(), /Needs a birth time/);
           await moonPage.waitForTimeout(500);
           assert.match(await moonAction.innerText(), /Share this image/);

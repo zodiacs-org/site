@@ -206,9 +206,10 @@ const HOUR_MS = 3_600_000;
  * the Moon is in that sign at every instant of the birth date in every time
  * zone, from 00:00 at UTC+14, where the date begins first, to 24:00 at
  * UTC−12, where it ends last. That depends on the date alone, so it says
- * nothing about the birthplace. The Moon never moves backwards and never
- * crosses a whole sign in those 50 hours, so the same sign at both ends is
- * the same sign throughout. Null otherwise, or for a date that is not one.
+ * nothing about the birthplace. The Moon only moves forwards, at most about
+ * 32° in those 50 hours, so it cannot leave a sign and come back to it: the
+ * same sign at both ends is the same sign throughout. Null otherwise, or for
+ * a date that is not one.
  */
 export async function untimedMoonSign(birthDate?: string): Promise<string | null> {
   const noon = await referenceInstant(birthDate).catch(() => null);
