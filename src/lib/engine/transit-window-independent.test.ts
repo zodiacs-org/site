@@ -79,6 +79,17 @@ describe('independent A–I transit-window references', () => {
     expect(second.exactTopology).toBe('uncertain');
     expect(second.turningPointMarginDegrees).toBeLessThan(d.angularBudgetDegrees);
   });
+  it('keeps the original pack failed-incomplete, as the removed Swiss fixture recorded it', () => {
+    // The Swiss fixture left the tree on 2026-09-28. The removal manifest keeps
+    // its fields that hold no Swiss value, read from its bytes by strip.py, whose
+    // --check derives them again from commit 2ca93d41; the digest is the one
+    // this test pinned while the fixture was here.
+    const manifest = JSON.parse(readFileSync(new URL('../../../docs/engine-validation/swiss-output-removal/manifest.json', import.meta.url), 'utf8'));
+    const removed = manifest.removedFiles.find((entry: { path: string }) => entry.path === 'src/lib/engine/fixtures/transit-window-independent.json');
+    expect(removed.sha256).toBe('db4ddce1d2761ad0ada1ab7aaf456d74d2f79b6b6a3434b1b8f6b9895ad66c3a');
+    expect(removed.nonSwissFields.originalPackStatus).toBe('failed-incomplete');
+    expect(removed.nonSwissFields.qualifiedDSourceAcceptedByRoot).toBe(true);
+  });
   for (const source of fixtures.cases) it(source.id, () => {
     const point = source.natalPoint as WindowNatalPoint;
     let target = source.targetLongitudeDegrees;
