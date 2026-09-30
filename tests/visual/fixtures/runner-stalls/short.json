@@ -1,0 +1,12 @@
+{
+  "description": "Hand-made. Tasks under 50 ms that spent most of their time off the CPU: 49.9 ms wall with 0.3 ms CPU, and 36.7 ms wall with none (the thesis-1 sample of Site Check run 36712798339, #603). Short off-CPU tasks occur in ordinary loads and are not called stalls.",
+  "traceEvents": [
+    { "args": { "name": "CrBrowserMain" }, "cat": "__metadata", "name": "thread_name", "ph": "M", "pid": 100, "tid": 100, "ts": 0 },
+    { "args": { "name": "CrRendererMain" }, "cat": "__metadata", "name": "thread_name", "ph": "M", "pid": 200, "tid": 200, "ts": 0 },
+    { "args": { "data": { "frameTreeNodeId": 2, "frames": [{ "frame": "F0", "isInPrimaryMainFrame": true, "isOutermostMainFrame": true, "name": "", "processId": 200, "url": "about:blank" }], "persistentIds": true } }, "cat": "disabled-by-default-devtools.timeline", "name": "TracingStartedInBrowser", "ph": "I", "pid": 100, "s": "t", "tid": 100, "ts": 1000000 },
+    { "args": { "data": { "frame": "F0", "isInPrimaryMainFrame": true, "isOutermostMainFrame": true, "name": "", "processId": 200, "url": "http://127.0.0.1:4328/thesis/" } }, "cat": "disabled-by-default-devtools.timeline", "name": "FrameCommittedInBrowser", "ph": "I", "pid": 100, "s": "t", "tid": 100, "ts": 1009000 },
+    { "args": {}, "cat": "disabled-by-default-devtools.timeline", "dur": 8100, "name": "RunTask", "ph": "X", "pid": 200, "tdur": 7900, "tid": 200, "ts": 1010000, "tts": 20000 },
+    { "args": {}, "cat": "disabled-by-default-devtools.timeline", "dur": 49900, "name": "RunTask", "ph": "X", "pid": 200, "tdur": 300, "tid": 200, "ts": 1200000, "tts": 27900 },
+    { "args": {}, "cat": "disabled-by-default-devtools.timeline", "dur": 36700, "name": "RunTask", "ph": "X", "pid": 200, "tdur": 0, "tid": 200, "ts": 1400000, "tts": 28200 }
+  ]
+}

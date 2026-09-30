@@ -1,40 +1,33 @@
 # Programme status
 
-Checkpoint 6: production serves engine rc.14, Swiss Ephemeris output is out of the site's tree, and the ΔT values carry their attribution, 2026-09-30. The next session should start here.
+Checkpoint 7: production serves engine rc.15 and the MCP adapter 0.1.0-rc.15, and the units rc.15 carries are judged on its evidence, 2026-09-30. The next session should start here.
 
-Addendum, 2026-09-30: the owner's steps of the same day put `@zodiacs/engine` on npm, 0.1.1-rc.15 with provenance (P3.1a accepted), set up PyPI, JSR and Zenodo, sent the NAIF question and confirmed the assistant accounts. The list below keeps only what remains.
-
-**Overall delivery: 18%** — 33.75 of 182.45 weighted units accepted; blocked on owner or external action: 2% (4.5).
+**Overall delivery: 23%** — 42.5 of 182.45 weighted units accepted; blocked on owner or external action: 2% (4).
 
 The figure is computed by `node scripts/programme-ledger.mjs --summary` from [`acceptance-ledger.json`](acceptance-ledger.json). The method is in [README.md](README.md) and the unit list in [LEDGER.md](LEDGER.md).
 
-## What changed since checkpoint 5
+## What changed since checkpoint 6
 
-- **Production serves engine rc.14** (#600, merged as `6cc4d477`; deployment `dpl_2JtJjuE2bU8CYTBMxKF3kco43qcN`). The production engine chunk reports `0.1.1-rc.14`, and both pinned downloads match their published digests. The site takes secondary progressions from the package. Its chart calculations give the same numbers as on rc.10: 572,767 calls and 33,069,705 values compared exactly, with only the engine version and five invalid-date refusals differing.
-  - F-01, F-02, F-04, F-06, F-07, F-10–F-16 and the engine part of F-21 are in production;
-  - F-03 (`mcp:pack:check` in CI) is merged;
-  - the MCP adapter is `0.1.0-rc.14`, labelled `MIT AND CC-BY-4.0` with a NOTICE.
+The figure moves from 19% (34.25) to 23% (42.5).
 
-  Three units are accepted: secondary progressions in the package (P2.A.timing.progressions), the site importing them (P2.E.progressions) and the declination and out-of-bounds functions (P2.A.aspects.declination-oob). Configurable aspects (P2.A.aspects.configurable) move from failed to partial.
-- **The privacy fixes of #599 are in production** (merged as `aca257ad`, deployment `dpl_AuGvEUL1oJPenrfbFq3FkGH5V9s9`): F-17, F-18, F-19, F-26, F-27, F-40 and F-43–F-45.
-- **Swiss Ephemeris output is out of the site's tree** (F-22, #602), under the decisions of 2026-09-28 §3 and 2026-09-29 §2. History is not rewritten: `2ca93d41` is the last commit with every value.
-  - Removed: 10 files, per-case values from 133 files, 21 files rebuilt on the engine's own clock, and 148 lines of `swetest.c` in a receipt.
-  - `strip.py --check` runs in CI, and a guard test fails if any of it comes back under any name.
-  - The pages give the two programs' ΔT difference over 2100–2199 as statistics.
-  - `docs/engine-validation/SWISS-OUTPUT-REMOVAL.md` is the record.
-- **The ΔT values carry their attribution.**
-  - F-49: the MCP archives 0.1.0-rc.8 to rc.10 stay as released, and a notice beside them gives the attribution.
-  - F-50: the terms and methodology pages give the work, its DOI and its licence.
-- **F-51**, the Lighthouse gate failing on runner stalls, is recorded; the gate is unchanged.
-- **Decisions of 2026-09-29** ([DECISIONS-2026-09-29.md](DECISIONS-2026-09-29.md)):
-  1. the F-49 notice;
-  2. what removing Swiss output covers;
-  3. published worked examples in tests;
-  4. the IERS C04 values in the engine;
-  5. the hosted compute API's first version.
-- **Engine rc.15 is on the engine's `main`** ([zodiacs-org/engine#20](https://github.com/zodiacs-org/engine/pull/20), merged as `93ebae9f`): the time basis, Hellenistic timing and the Vedic techniques.
-  - A re-check found living people's birth data in commits of its local history. The history was rebuilt before the first push, so no commit carries it.
-  - The archive is `24eeb597…d348`, 190,974 bytes, and every gate passes.
+- **Production serves engine rc.15** (#603, merged as `2197e696`; deployment `dpl_Ax6saHNV85duCvdExDz7LpSHrLD7`, READY at 13:30 UTC). The engine chunk that `/birth-chart/` loads carries `0.1.1-rc.15`. The MCP archive 0.1.0-rc.15 and the engine archive that the install lines pin download with their published digests, and npm's `latest` is the same engine bytes ([`evidence/site-engine-rc15/`](../evidence/site-engine-rc15/README.md), "In production").
+  - The site's charts read an instant from 1972 to 2027-10-02 as UTC, on the IERS leap seconds and UT1 − UTC. Elsewhere its chart values agree with rc.14's within 0.000003″, the lunar nodes within 0.072″.
+  - The engine chunk's budget is 32,358 gzip bytes (DECISIONS-2026-09-30.md §2).
+  - The site keeps its own local-time resolver, declinations and sect (§4).
+  - F-35, F-36, F-39 and F-46 are in production, and F-52 to F-55 describe production since #603.
+- **The units rc.15 carries**, judged on its evidence (LEDGER.md gives each reason):
+  - accepted, 8.25: the leap-second table (P1.M3a), UT1 − UTC with its fallback band in sidereal time (P1.M3b), receipts with the time scale, tzdb version and transition (P1.M3d), time-5's six flag probes (P1.M3e), Julian calendar input in the package (P1.13b), profections, firdaria, zodiacal releasing and solar arcs (P2.A.timing), nakshatras and padas (P2.B.nakshatras), and the dashas (P2.B.dashas);
+  - validated, 1.75: the package's birthplace mean time and zone history (P1.01b, P1.12b) pass their lists and are on npm, but neither the site nor the MCP adapter calls them, and their gates ask for adoption;
+  - partial: the vargas lack the birth-time sensitivity output (P2.B.vargas), and KP the ruling planets (P2.B.kp);
+  - failed: five of the nine named ayanamsas miss the 0.01″ gate against Swiss, Krishnamurti by 0.071″, Raman 10.1″, Yukteswar 806″, True Pushya 0.54″ and the Galactic Centre 0.10″; Lahiri ICRC is not implemented (P2.B.ayanamsas).
+- **The owner's steps of 2026-09-30** put `@zodiacs/engine` 0.1.1-rc.15 on npm with provenance (P3.1a accepted) and then moved `latest` to it. They set up PyPI, JSR and Zenodo, sent the NAIF question, confirmed the assistant accounts, finished the repository settings (G2 accepted), published the Firewall rules and set the calendar feeds' secret.
+- **F-57**, found verifying production: the developer pages and the llms files said that the engine is not on npm and that `npm view @zodiacs/engine` returns 404, and the claims ledger marked that claim supported. Fixed in this PR: they, `vendor/README.md` and the candidate record say that npm serves 0.1.1-rc.15 under `latest` and `next`, published with SLSA provenance, with the pinned archive as the verified alternative, on a registry read of 2026-09-30 committed as evidence (`evidence/site-engine-rc15/npm-registry.json`). The released MCP archive and the engine's packed README keep the old sentence until their next versions.
+- **Decisions of 2026-09-30** ([DECISIONS-2026-09-30.md](DECISIONS-2026-09-30.md)):
+  1. the Chinese solar terms wait for a Sun not fitted to JPL data;
+  2. the engine chunk's budget rises by rc.15's measured growth;
+  3. seven reference values that equal removed Swiss values stay;
+  4. declinations and sect wait for a pure entry point;
+  5. the site carries the 1972 UT1 − UTC values as the engine does.
 
 ## Steps that need the owner's accounts
 
@@ -49,73 +42,55 @@ Done on 2026-09-30, by the owner's report:
 - **NAIF.** The question was sent once, on 2026-09-30 at 10:54 UTC, to the manager the contact page names for general requests. No answer yet. Do not resend it.
 - **Assistants.** Free accounts exist on ChatGPT, Claude, Gemini and Perplexity for admin@zodiacs.org, with no payment method. Microsoft Copilot has no signed-in account.
 
+Done in the second report of 2026-09-30:
+- **npm's `latest` tag** points at 0.1.1-rc.15, so a plain install selects the attested version.
+- **Repository settings.** The site's topics (astro, astrology, birth-chart, horoscope, natal-chart, typescript). The engine allows merge commits only. Its `main` ruleset (24244836) blocks deletion and force pushes and requires the twelve checks, with no bypass and no required review. Private vulnerability reporting is on in site, engine and sdk.
+- **Vercel Firewall.** Version 5 is active with five SDK rate-limit rules, each a fixed 60-second window counted by IP: `zodiacs-email-subscribe`, `registry-aura-holdings-v1` and `zodiacs-wallet-birth` at 10, `zodiacs-transit-calendar` at 120 and `zodiacs-compute-api` at 60. Twelve empty requests to the email endpoint gave eleven 400s and then a 429 with `Retry-After: 60`. The eleventh passed because the loop crossed a window boundary.
+- **Calendar feeds.** `CALENDAR_FEED_SWEEP_SECRET` is in Vercel Production (sensitive) and in the GitHub environment `calendar-feed-production`, limited to `main`. `PUBLIC_SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are Production project variables.
+
 Remaining:
 
-1. **npm's `latest` tag.** It points at 0.1.1-rc.14, the manual first upload, so a plain `npm install @zodiacs/engine` installs the version without provenance. With the owner's authorization, move it: `npm dist-tag add @zodiacs/engine@0.1.1-rc.15 latest`, signed in with two-factor authentication. Until a stable version exists, `latest` should follow each reviewed, attested candidate.
-2. **Repository settings** on GitHub.
-   - `zodiacs-org/site`: add the topics (the gear beside About): astrology, birth-chart, natal-chart, horoscope, astro, typescript. On 2026-09-30 a GitHub search found none.
-   - `zodiacs-org/engine`:
-     - Settings, then General, then Pull Requests: keep "Allow merge commits", and turn off "Allow squash merging" and "Allow rebase merging". The archive record names source commits that only a merge commit keeps.
-     - Settings, then Rules, then Rulesets: a branch ruleset for the default branch that blocks force pushes and deletions, and requires these status checks to pass:
-       - Engine (Node 20), Engine (Node 22), Engine (Node 24);
-       - Every carried archive rebuilds from its source commit;
-       - Pack;
-       - Packed consumer (Node 20.19.0), Packed consumer (Node 22.7.0), Packed consumer (Node 22), Packed consumer (Node 24);
-       - Conformance suite; Conformance vectors rebuild from their sources;
-       - Time atlas checks.
-
-       All of them run on every pull request.
-   - In each public repository (`site`, `engine` and `sdk`): open Settings, then Code security, and turn on **Private vulnerability reporting**. Every SECURITY.md already offers its **Report a vulnerability** button beside email to admin@zodiacs.org.
-   - Report a screenshot of each.
-3. **The first GitHub release of the engine (G4).** A published GitHub release on `zodiacs-org/engine` makes Zenodo mint a DOI, and a DOI is permanent. With the owner's authorization, the first release is 0.1.1-rc.15, tagged at its merge commit, with its CHANGELOG entry as the notes.
-4. **JSR (P3.1c).** A publish workflow using GitHub's OIDC token is to be added to the engine. Its first run needs the owner's authorization.
-5. **Search and analytics baselines (P0.7b).** Add Bing's export when it is ready, then either attach `zodiacs-org/analytics-baselines` read-only to this work, or compute the aggregates on the owner's side. Only aggregates would be committed, to that private repository.
-6. **Vercel Firewall rate limits.** Four live endpoints call Vercel's rate-limit SDK, and no rule exists for any of them, so none is limited today. The site's runbook (§3) makes publishing them the owner's step. In the project's Firewall tab, add one custom rule per ID: If "@vercel/firewall" Rate limit ID equals the ID; Then Rate Limit, fixed window, 60 seconds, counted by IP.
-   - 10 requests: `zodiacs-email-subscribe`, `registry-aura-holdings-v1`, `zodiacs-wallet-birth`;
-   - 120 requests: `zodiacs-transit-calendar`, because calendar apps fetch many subscribers' feeds from a few shared addresses (runbook §3);
-   - 60 requests: `zodiacs-compute-api`, for the compute endpoints when they ship.
-
-   No Deny or Challenge rule, and no rule on a path. The team is on Pro, whose rate limiting is billed from the plan's monthly credit. Publish, then run the two checks in `docs/OWNER-SETUP-RUNBOOK.md` §3 and report their output.
-7. **Calendar feeds, before their release.** The opaque feed ids (P1.15) are ready on a branch. They need, in this order:
-   1. `CALENDAR_FEED_SWEEP_SECRET`, a random value of at least 32 characters, stored without printing it in Vercel Production and as a secret of a GitHub environment `calendar-feed-production` limited to `main`;
-   2. confirmation that Production has `PUBLIC_SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`.
-
-   On 2026-09-30 the project listed `PUBLIC_SUPABASE_URL` for Preview and Development only, and no production page bundle carried the Supabase address. Report where Production gets it, if anywhere, without its value.
-8. **Microsoft Copilot**, only if the monthly panel (A8) and the assistant benchmark (B4.b) are to cover five assistants: a free account for admin@zodiacs.org.
+1. **The first GitHub release of the engine (G4).** A published GitHub release on `zodiacs-org/engine` makes Zenodo mint a DOI, and a DOI is permanent. With the owner's authorization, the first release is 0.1.1-rc.15, tagged at its merge commit, with its CHANGELOG entry as the notes.
+2. **JSR (P3.1c).** A publish workflow using GitHub's OIDC token is to be added to the engine. Its first run needs the owner's authorization.
+3. **Search and analytics baselines (P0.7b).** Add Bing's export when it is ready, then either attach `zodiacs-org/analytics-baselines` read-only to this work, or compute the aggregates on the owner's side. Only aggregates would be committed, to that private repository.
+4. **Before the calendar feeds' release (P1.15).** Add one more SDK rule the same way: `zodiacs-calendar-feed-write`, 3 requests per 60 seconds, counted by IP, for creating and removing feeds. At most 3 a minute from one address makes at most 183 an hour, against the 500 all visitors share. Confirm in the project's settings that "Automatically expose System Environment Variables" is on, since the feed routes read `VERCEL_ENV`.
+5. **The compute API's rule** may change once its review fixes land. Its worst case is being bounded per address, and any new number will come with its arithmetic.
+6. **Microsoft Copilot**, only if the monthly panel (A8) and the assistant benchmark (B4.b) are to cover five assistants: a free account for admin@zodiacs.org.
 
 Later, once the site has rebuilt the MCP server on the published engine: the same manual first upload for `@zodiacs/mcp-server`, from its verified archive, since npm sets up a trusted publisher only for a package that exists.
 
 ## Identities verified at this checkpoint
 
-**Site.** `main` = `23dd8cb7` (the daily sky of 2026-09-30, after #600 `6cc4d477`). Production serves it: `dpl_GhqWmtsbsk17JCsKC5ohHUtC5GFd`, READY. The site vendors engine rc.14.
+**Site.** `main` = `2197e696` (#603, a merge commit whose tree is its head `4bc853e1`'s). Production serves it: `dpl_Ax6saHNV85duCvdExDz7LpSHrLD7`, READY since 13:30:31 UTC, with the aliases `zodiacs.org` and `www.zodiacs.org`. The site vendors engine rc.15, and its engine chunk, `/_astro/full.Dc14JBf_.js`, carries `0.1.1-rc.15`.
 
-**Engine.** `main` = `93ebae9f` (PR #20): rc.15 on the rebuilt history `104bd5a` (source), `cbad72c` (carrier) and `07ed236` (gate records). CI passed every job on the PR's head.
+**Engine.** `main` = `d5326a88` (PR #21: the Python alpha and its PyPI publishing; the JavaScript package is rc.15's). rc.15 is `93ebae9f` (PR #20), on the rebuilt history `104bd5a` (source), `cbad72c` (carrier) and `07ed236` (gate records).
 
 | archive | SHA-256 | source | status |
 | --- | --- | --- | --- |
-| rc.14 | `adc9805e…476e` | `03db4bb6`, carried by `b221534` (merge `8deda244`) | the site vendors it; production serves it; npm waits for step 1 |
-| rc.15 | `24eeb597…d348` | `104bd5a`, carried by `cbad72c` (merge `93ebae9f`) | merged; not adopted |
+| rc.14 | `adc9805e…476e` | `03db4bb6`, carried by `b221534` (merge `8deda244`) | on npm, the one manual first upload |
+| rc.15 | `24eeb597…d348` | `104bd5a`, carried by `cbad72c` (merge `93ebae9f`) | the site vendors it; production serves it; on npm with provenance |
 
 The earlier archives are as checkpoint 5 lists them. rc.15's three local builds (`3651c525…`, `554ed7ea…`, `bddfb3b7…`) were never pushed; `artifacts/README.md` records them by digest.
 
+**npm.** `@zodiacs/engine`: `latest` and `next` are both `0.1.1-rc.15`, whose registry SHA-1 (`e4a49148…4862`) and SHA-512 integrity are those of `24eeb597…d348`. `@zodiacs/mcp-server` is not on npm.
+
+**PyPI.** `zodiacs` 0.1.0a1. **JSR.** The scope and package exist; nothing is published.
+
 **SDK.** `zodiacs-org/sdk` `main` = `a95dc0cf` (PR #14).
 
-**MCP.** Production serves `0.1.0-rc.14`, `40936e28…2f0f`, 75,220 bytes, pinned to `0f7e0cf2`.
-
-**Registries.** Nothing of the engine or platform is published. On 2026-09-29, npm returned 404 for `@zodiacs/engine`.
+**MCP.** Production serves `0.1.0-rc.15`, `567054c6…9657`, 86,944 bytes, pinned to `218de839`; it bundles engine rc.15.
 
 ## In progress
 
-- **The site's adoption of engine rc.15.** rc.15 grows the site's engine chunk by about 5 KB gzip over its 27,648-byte budget, from the time basis's tables; the adoption has to shrink that or raise the budget with its reason.
 - **Full IAU 2000B nutation**, on branch `feature-nutation` for rc.16. Against ERFA over 1800–2200, the nutation's share of every longitude falls from 0.252″ to 0.0037″ at most, and the ascendant's error from 0.824″ to 0.0063″. The planets' own series still dominate their longitudes, at up to about 19″. Against Swiss over 1850–2049 the ascendant is within 0.004″. The Koch ladder's worst case falls from 3.73″ to 0.035″ (F-33, P2.A.house.koch).
-- **The hosted compute API** (P3.3), on branch `compute-api`: six POST endpoints, a privacy negative-control test, budgets, a switch and receipts, per decision §5. Its PR follows this one.
-- **Opaque calendar feed ids** (P1.15), on branch `feed-ids`: the review's findings are fixed; the release waits for step 10.
-- **rc.16's pieces**, each on its own branch: the calculation API and frames, birth-time windows, the site's techniques in the package, house extras, and rise/set with planetary hours. The Chinese solar terms fit the Sun to DE430, which cannot ship before NAIF answers (step 7); they need another source first.
+- **The hosted compute API** (P3.3), on branch `compute-api`: six POST endpoints, a privacy negative-control test, budgets, a switch and receipts, per the decision of 2026-09-29 §5.
+- **Opaque calendar feed ids** (P1.15), on branch `feed-ids`: the review's findings are fixed; the release waits for the owner's step 4.
+- **rc.16's pieces**, each on its own branch: the calculation API and frames, birth-time windows, the site's techniques in the package, house extras, and rise/set with planetary hours. The Chinese solar terms are left out of rc.16, and return with a Sun that is not derived from a JPL ephemeris or when NAIF answers (DECISIONS-2026-09-30.md §1).
 
 ## Next
 
-1. Merge this PR and verify production.
-2. The site's adoption of engine rc.15, with the chunk-size decision.
-3. The compute API PR, then its latency and cost on production.
-4. rc.16: integrate the branches onto rc.15 and review them.
-5. The calendar feeds' release, once step 10 is done.
+1. The compute API PR, then its latency and cost on production.
+2. rc.16: integrate the branches onto rc.15 and review them. The units judged here also ask of a next candidate: an export for the time basis (F-53), declinations and sect from an entry point that loads no ephemeris (P2.E.declinations, P2.E.sect), the vargas' birth-time sensitivity (P2.B.vargas) and KP's ruling planets (P2.B.kp). Its README's release paragraph should say what the registry shows (F-57).
+3. The MCP adapter's next version, whose `get_capabilities`, README and `candidate.json` report the engine as published (F-57).
+4. Decide whether the site's forms resolve local times through `@zodiacs/engine/geo`, which P1.01b and P1.12b need; the two already agree on 264,455 wall times.
+5. The calendar feeds' release, once the owner's step 4 is done.

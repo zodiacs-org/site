@@ -7,6 +7,8 @@ import * as chromeLauncher from 'chrome-launcher';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './browser.mjs';
 import { withPreview } from './preview-server.mjs';
 import { saveLighthouseAssets } from './lighthouse-assets.mjs';
+import { calibrations, describeMisses, gateRoute, MAX_STALL_RETAKES, stallSummary } from './lighthouse-gate.mjs';
+import { describeStalls } from './runner-stalls.mjs';
 
 const visualRoot = dirname(fileURLToPath(import.meta.url));
 const artifactRoot = resolve(visualRoot, 'artifacts/lighthouse');
@@ -65,66 +67,12 @@ const selectedRoutes = routeFilter.size > 0
 if (selectedRoutes.length === 0) {
   throw new Error(`LIGHTHOUSE_ROUTES did not match a route: ${[...routeFilter].join(', ')}`);
 }
-const budgets = {
-  score: 0.95,
-  lcp: 2_500,
-  // The brief says zero CLS, so any positive raw Lighthouse value fails.
-  cls: 0,
-  tbt: 200,
-};
-
-// Calibrated per-route exceptions to the shared budgets. An entry here is a
-// documented, dated concession to measured CI behavior — kept as tight as
-// that evidence allows and meant to be re-tightened when floor work lands,
-// never widened casually. Accessibility, SEO, CLS, and TBT are never
-// calibrated.
-//
-// Evidence, 2026-08-31, six consecutive CI runs (PR #320 heads and the
-// main merge 43b97c3): the homepage's simulated LCP floors at ~2.35s (hero
-// poster behind the full font + inline-CSS critical path; local worst-of-5
-// held 2.43s) and every run drew at least one ~3.02–3.04s worst sample
-// with a flat benchmarkIndex — a recurring runner-side mode, not page pace
-// — scoring 93 in those samples. /birth-chart/ held 2.26–2.42s with an
-// occasional 2.71–2.73s sample (score at the 95 boundary) in half the
-// runs. No other route missed once; the deferred service-worker, hydration,
-// and menu-icon work had already removed every startup racer the traces
-// identified, and content-visibility on below-fold sections measured as a
-// no-op. The ceilings below still cap those worst measurements, and the
-// score floors are the scores those accepted-worst samples produce — one
-// consistent concession per route, not two independent ones.
-const calibrations = {
-  home: { lcp: 3_100, performance: 0.90 },
-  'birth-chart': { lcp: 2_800, performance: 0.93 },
-};
+// The budgets, the per-route calibrations, the worst-of-runs summary and the
+// runner-stall rule (audit finding F-51) that decides which samples count
+// live in lighthouse-gate.mjs, where they are tested without a browser.
 
 if (!Number.isInteger(runCount) || runCount < 1 || runCount > 5) {
   throw new Error('LIGHTHOUSE_RUNS must be an integer from 1 to 5.');
-}
-
-function metric(lhr, auditId) {
-  const value = lhr.audits[auditId]?.numericValue;
-  if (!Number.isFinite(value)) throw new Error(`Lighthouse returned no numeric value for ${auditId}.`);
-  return value;
-}
-
-function categoryScore(lhr, categoryId) {
-  const value = lhr.categories[categoryId]?.score;
-  if (!Number.isFinite(value)) throw new Error(`Lighthouse returned no score for ${categoryId}.`);
-  return value;
-}
-
-function categoryScoreWithout(lhr, categoryId, excludedAuditIds) {
-  let earned = 0;
-  let possible = 0;
-  for (const ref of lhr.categories[categoryId]?.auditRefs ?? []) {
-    if (excludedAuditIds.has(ref.id) || ref.weight <= 0) continue;
-    const score = lhr.audits[ref.id]?.score;
-    if (!Number.isFinite(score)) continue;
-    earned += score * ref.weight;
-    possible += ref.weight;
-  }
-  if (possible === 0) throw new Error(`Lighthouse returned no scored ${categoryId} audits.`);
-  return earned / possible;
 }
 
 function incompleteRunReason(lhr) {
@@ -141,126 +89,129 @@ function incompleteRunReason(lhr) {
   return missing.length > 0 ? `missing ${missing.join(', ')}` : null;
 }
 
-function gateSummary(results) {
-  return {
-    // The brief requires three passing runs, so report and gate the weakest
-    // result rather than allowing a median to hide one failed run.
-    performance: Math.min(...results.map((result) => result.performance)),
-    accessibility: Math.min(...results.map((result) => result.accessibility)),
-    seo: Math.min(...results.map((result) => result.seo)),
-    lcp: Math.max(...results.map((result) => result.lcp)),
-    cls: Math.max(...results.map((result) => result.cls)),
-    tbt: Math.max(...results.map((result) => result.tbt)),
-    searchPrivate: results.every((result) => result.searchPrivate),
-  };
+function formatValues(values) {
+  if (!values) return '  —     —     —        —         —         —';
+  return `${Math.round(values.performance * 100).toString().padStart(3)}   ${Math.round(values.accessibility * 100).toString().padStart(3)}   ${Math.round(values.seo * 100).toString().padStart(3)}   ${(values.lcp / 1000).toFixed(2).padStart(6)}s   ${values.cls.toFixed(3).padStart(6)}   ${Math.round(values.tbt).toString().padStart(5)}ms`;
 }
 
 await rm(artifactRoot, { recursive: true, force: true });
 await mkdir(artifactRoot, { recursive: true });
 
 const chromePath = await findChromium();
+// CI keeps every sample's trace so a failed gate can be traced to actual tasks.
+const saveAssets = process.env.LIGHTHOUSE_SAVE_ASSETS === '1' || process.env.CI === 'true';
+
+async function takeSample(route, url, take) {
+  // Each sample gets a fresh browser process. Reusing one process made
+  // later samples inherit renderer/benchmark drift from earlier audits,
+  // which obscured cold-load regressions instead of measuring them.
+  let result;
+  for (let attempt = 1; attempt <= 2 && !result; attempt += 1) {
+    const chrome = await chromeLauncher.launch({
+      chromePath,
+      chromeFlags: [
+        '--headless=new',
+        '--disable-gpu',
+        ...STABLE_CHROMIUM_ARGS,
+      ],
+      logLevel: 'silent',
+    });
+    try {
+      const candidate = await lighthouse(url, {
+        port: chrome.port,
+        logLevel: 'error',
+        output: 'json',
+        onlyCategories: ['performance', 'accessibility', 'seo'],
+        maxWaitForLoad: 45_000,
+        disableStorageReset: false,
+      }, mobileConfig);
+      const incompleteReason = incompleteRunReason(candidate.lhr);
+      if (incompleteReason) {
+        await writeFile(
+          resolve(artifactRoot, `${route.name}-${take}-attempt-${attempt}-invalid.json`),
+          JSON.stringify(candidate.lhr, null, 2),
+        );
+        throw new Error(`incomplete Lighthouse result (${incompleteReason})`);
+      }
+      result = candidate;
+    } catch (error) {
+      if (attempt === 2) throw error;
+      console.warn(
+        `     ↳ Lighthouse runtime failed for ${route.path} sample ${take} (${error.message}); retrying once in a fresh browser.`,
+      );
+    } finally {
+      await chrome.kill();
+    }
+  }
+  if (!result) throw new Error(`Lighthouse returned no result for ${url}.`);
+  return result;
+}
+
+async function keepSample(route, result, sample) {
+  // The audit and browser shutdown are complete before diagnostic disk I/O.
+  if (sample.status === 'valid') {
+    const name = `${route.name}-${sample.index}`;
+    await writeFile(resolve(artifactRoot, `${name}.json`), JSON.stringify(result.lhr, null, 2));
+    if (saveAssets) await saveLighthouseAssets(result, artifactRoot, name);
+    return;
+  }
+  // A sample set aside for a runner stall always keeps its report and trace,
+  // under a name of its own, so the stall can be checked afterwards.
+  const name = `${route.name}-stalled-${sample.index}`;
+  await writeFile(resolve(artifactRoot, `${name}.json`), JSON.stringify(result.lhr, null, 2));
+  let kept = `${name}.json and ${name}.trace.json`;
+  try {
+    await saveLighthouseAssets(result, artifactRoot, name);
+  } catch (error) {
+    if (saveAssets) throw error;
+    kept = `${name}.json (trace not kept: ${error.message})`;
+  }
+  console.warn(
+    `     ↳ ${route.path} sample ${sample.take} missed ${describeMisses(sample.values, sample.misses, route)} while the runner held the page's main thread off the CPU (${describeStalls(sample.stalls)}).`,
+  );
+  console.warn(
+    `       Set aside as ${kept}; ${sample.retaken ? `retake ${sample.index} of ${MAX_STALL_RETAKES}, in a fresh browser.` : 'no retakes left.'}`,
+  );
+}
 
 let failures = 0;
+const verdicts = [];
 await withPreview({ port: Number(process.env.LIGHTHOUSE_PORT ?? 4328) }, async (baseURL) => {
-    console.log(`Lighthouse · ${runCount} run${runCount === 1 ? '' : 's'} per route · ${baseURL}`);
+    console.log(`Lighthouse · ${runCount} run${runCount === 1 ? '' : 's'} per route, up to ${MAX_STALL_RETAKES} more after a runner stall · ${baseURL}`);
     console.log('Route                         Perf  A11y   SEO     LCP       CLS       TBT');
 
     for (const route of selectedRoutes) {
-      const results = [];
-      for (let index = 0; index < runCount; index += 1) {
-        const url = `${baseURL}${route.path}`;
-        // Each sample gets a fresh browser process. Reusing one process made
-        // later samples inherit renderer/benchmark drift from earlier audits,
-        // which obscured cold-load regressions instead of measuring them.
-        let result;
-        for (let attempt = 1; attempt <= 2 && !result; attempt += 1) {
-          const chrome = await chromeLauncher.launch({
-            chromePath,
-            chromeFlags: [
-              '--headless=new',
-              '--disable-gpu',
-              ...STABLE_CHROMIUM_ARGS,
-            ],
-            logLevel: 'silent',
-          });
-          try {
-            const candidate = await lighthouse(url, {
-              port: chrome.port,
-              logLevel: 'error',
-              output: 'json',
-              onlyCategories: ['performance', 'accessibility', 'seo'],
-              maxWaitForLoad: 45_000,
-              disableStorageReset: false,
-            }, mobileConfig);
-            const incompleteReason = incompleteRunReason(candidate.lhr);
-            if (incompleteReason) {
-              await writeFile(
-                resolve(artifactRoot, `${route.name}-${index + 1}-attempt-${attempt}-invalid.json`),
-                JSON.stringify(candidate.lhr, null, 2),
-              );
-              throw new Error(`incomplete Lighthouse result (${incompleteReason})`);
-            }
-            result = candidate;
-          } catch (error) {
-            if (attempt === 2) throw error;
-            console.warn(
-              `     ↳ Lighthouse runtime failed for ${route.path} sample ${index + 1} (${error.message}); retrying once in a fresh browser.`,
-            );
-          } finally {
-            await chrome.kill();
-          }
-        }
-        if (!result) throw new Error(`Lighthouse returned no result for ${url}.`);
-
-        const lhr = result.lhr;
-        results.push({
-          performance: categoryScore(lhr, 'performance'),
-          accessibility: categoryScore(lhr, 'accessibility'),
-          // Deliberately protected routes must remain noindex. Gate every SEO
-          // audit except the intentional "is-crawlable" failure, then
-          // separately require that audit to fail closed on all runs.
-          seo: route.intentionalNoindex
-            ? categoryScoreWithout(lhr, 'seo', new Set(['is-crawlable']))
-            : categoryScore(lhr, 'seo'),
-          searchPrivate: route.intentionalNoindex
-            ? lhr.audits['is-crawlable']?.score === 0
-            : true,
-          lcp: metric(lhr, 'largest-contentful-paint'),
-          cls: metric(lhr, 'cumulative-layout-shift'),
-          tbt: metric(lhr, 'total-blocking-time'),
-        });
-        await writeFile(
-          resolve(artifactRoot, `${route.name}-${index + 1}.json`),
-          JSON.stringify(lhr, null, 2),
+      const url = `${baseURL}${route.path}`;
+      const verdict = await gateRoute({
+        route,
+        runs: runCount,
+        takeSample: (take) => takeSample(route, url, take),
+        record: (result, sample) => keepSample(route, result, sample),
+      });
+      verdicts.push(verdict);
+      if (verdict.failed) failures += 1;
+      console.log(`${verdict.failed ? 'FAIL' : 'pass'} ${route.path.padEnd(22)} ${formatValues(verdict.values)}`);
+      if (!verdict.complete) {
+        console.log(
+          `     ↳ ${stallSummary(verdict)}: ${verdict.valid.length} valid sample${verdict.valid.length === 1 ? '' : 's'} of the ${runCount} the gate needs, so the route fails.`,
         );
-        // The audit and browser shutdown are complete before diagnostic disk I/O.
-        // CI keeps every sample so a failed gate can be traced to actual tasks.
-        if (process.env.LIGHTHOUSE_SAVE_ASSETS === '1' || process.env.CI === 'true') {
-          await saveLighthouseAssets(result, artifactRoot, `${route.name}-${index + 1}`);
-        }
       }
-
-      const values = gateSummary(results);
-      const calibration = calibrations[route.name] ?? {};
-      const failed = values.performance < (calibration.performance ?? budgets.score)
-        || values.accessibility < budgets.score
-        || values.seo < budgets.score
-        || (route.intentionalNoindex && !values.searchPrivate)
-        || values.lcp > (calibration.lcp ?? budgets.lcp)
-        || values.cls > budgets.cls
-        || values.tbt > budgets.tbt;
-      if (failed) failures += 1;
-      console.log(
-        `${failed ? 'FAIL' : 'pass'} ${route.path.padEnd(22)} ${Math.round(values.performance * 100).toString().padStart(3)}   ${Math.round(values.accessibility * 100).toString().padStart(3)}   ${Math.round(values.seo * 100).toString().padStart(3)}   ${(values.lcp / 1000).toFixed(2).padStart(6)}s   ${values.cls.toFixed(3).padStart(6)}   ${Math.round(values.tbt).toString().padStart(5)}ms`,
-      );
-      if (route.intentionalNoindex) {
+      if (route.intentionalNoindex && verdict.values?.searchPrivate) {
         console.log('     ↳ SEO excludes only the intentional noindex audit; noindex remained active in every run.');
       }
     }
+
+    const stalled = verdicts.filter((verdict) => verdict.setAside.length > 0);
+    const setAside = stalled.reduce((sum, verdict) => sum + verdict.setAside.length, 0);
+    const retakes = stalled.reduce((sum, verdict) => sum + verdict.retakes, 0);
+    console.log(stalled.length === 0
+      ? 'Runner stalls: none; no sample was retaken.'
+      : `Runner stalls: ${setAside} sample${setAside === 1 ? '' : 's'} set aside and ${retakes} retaken — ${stalled.map((verdict) => `${verdict.route.path} ${verdict.setAside.length}`).join(', ')}.`);
 });
 
 if (failures > 0) {
+  const stalledOut = verdicts.filter((verdict) => !verdict.complete);
   throw new Error(
-    `${failures} route${failures === 1 ? '' : 's'} missed the Phase 1/2 Lighthouse gate: performance, accessibility, and SEO ≥95; LCP ≤2.50s; CLS =0; TBT ≤200ms — except the documented per-route calibrations (${Object.keys(calibrations).join(', ')}).`,
+    `${failures} route${failures === 1 ? '' : 's'} missed the Phase 1/2 Lighthouse gate: performance, accessibility, and SEO ≥95; LCP ≤2.50s; CLS =0; TBT ≤200ms — except the documented per-route calibrations (${Object.keys(calibrations).join(', ')}).${stalledOut.length > 0 ? ` Too few valid samples: ${stalledOut.map((verdict) => `${verdict.route.path} (${stallSummary(verdict)})`).join(', ')}.` : ''}`,
   );
 }
