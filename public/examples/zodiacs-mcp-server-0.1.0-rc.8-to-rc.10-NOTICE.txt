@@ -1,0 +1,41 @@
+Notice for zodiacs-mcp-server 0.1.0-rc.8, 0.1.0-rc.9 and 0.1.0-rc.10
+=====================================================================
+
+These three archives are served unchanged, because their SHA-256 digests are
+published and pinned:
+
+  zodiacs-mcp-server-0.1.0-rc.8.tgz
+    7887a6622b5fca8d16ad723fb588e7f52aed32d37fa31c4240357c932c0a2f1d
+  zodiacs-mcp-server-0.1.0-rc.9.tgz
+    a1b86029dccf33bafe89ed2b1bb06a1c016a35f3aa8f20fef9d5aba201bae0ec
+  zodiacs-mcp-server-0.1.0-rc.10.tgz
+    0405ecf4380af09a6f621d5bb3a1604cc72e725a905ad6911bf53264dcf43568
+
+Each archive's package.json gives its licence as MIT, and none carries a
+notice. MIT covers the adapter's own code. But the server.mjs in each archive
+bundles @zodiacs/engine (0.1.1-rc.8, 0.1.1-rc.9 and 0.1.1-rc.10), and the
+engine's ΔT module, inlined there, contains 32 values of Table S15, rounded to
+0.01 s, and constants of equations (4.1) and (5.1) from:
+
+  Stephenson, F. R., Morrison, L. V. & Hohenkerk, C. Y. 2016, Measurement of
+  the Earth's rotation: 720 BC to AD 2015. Proc. R. Soc. A 472: 20160404.
+  doi:10.1098/rspa.2016.0404
+  Published under Creative Commons Attribution 4.0 International (CC BY 4.0):
+  https://creativecommons.org/licenses/by/4.0/
+  The values are used unmodified except for rounding; the engine rebuilds the
+  authors' spline from them.
+
+Those values are under CC BY 4.0, not MIT. If you redistribute one of these
+archives or its server.mjs, keep this notice with it.
+
+The engine's ΔT values from 1941 come from the United States Naval Observatory
+(historic_deltat.data and tai-utc.dat, US Government works) and from the
+International Earth Rotation and Reference Systems Service (IERS EOP 20 C04
+and Bulletin A, finals2000A.all), which asks that its products be cited:
+IERS, https://www.iers.org/.
+
+server.mjs also bundles astronomy-engine 2.1.19, Copyright (c) 2019-2023 Don
+Cross, under the MIT License; its permission notice is kept in server.mjs.
+
+Archives from 0.1.0-rc.14 on declare MIT AND CC-BY-4.0 and carry their own
+NOTICE file.

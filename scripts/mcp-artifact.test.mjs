@@ -211,3 +211,28 @@ describe('the archive the site distributes', () => {
     expect(readme).not.toMatch(/your birth data never leaves your device/i);
   });
 });
+
+/**
+ * F-49: the archives 0.1.0-rc.8 to rc.10 bundle the engine's CC BY 4.0 ΔT
+ * values under an MIT label and without a notice. They stay as released, and
+ * the notice beside them must name each by the digest the site serves.
+ */
+describe('the notice beside the 0.1.0-rc.8 to rc.10 archives', () => {
+  const NOTICE = 'zodiacs-mcp-server-0.1.0-rc.8-to-rc.10-NOTICE.txt';
+
+  it('names each archive by the digest of the file the site serves', async () => {
+    const notice = await readFile(join(PUBLIC, NOTICE), 'utf8');
+    for (const version of ['0.1.0-rc.8', '0.1.0-rc.9', '0.1.0-rc.10']) {
+      const file = `zodiacs-mcp-server-${version}.tgz`;
+      const digest = createHash('sha256').update(await readFile(join(PUBLIC, file))).digest('hex');
+      expect(notice, file).toContain(`  ${file}\n    ${digest}\n`);
+    }
+    expect(notice).toContain('doi:10.1098/rspa.2016.0404');
+    expect(notice).toContain('https://creativecommons.org/licenses/by/4.0/');
+  });
+
+  it('is linked from the MCP page', async () => {
+    const page = await readFile(resolve(ROOT, 'src/pages/developers/mcp/index.astro'), 'utf8');
+    expect(page).toContain(`href="/examples/${NOTICE}"`);
+  });
+});
