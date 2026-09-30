@@ -281,11 +281,15 @@ the slowest such request took 359.2 ms of CPU in
 most about 8.7 CPU-seconds a minute on that machine: 10 events requests and
 30 others at the slowest measured (`worst-case.json` shows the arithmetic).
 
-If `zodiacs-compute-api` is already published at 60 requests per 60 seconds,
-as this runbook first gave it, change its limit to 40 and publish
-`zodiacs-compute-events` at 10: at 60, one address could cost about 12.1
-CPU-seconds a minute. Until the events rule exists, the events endpoint
-answers 503 and the other five answer as usual.
+The owner first published `zodiacs-compute-api` at 60 requests per 60
+seconds, as this runbook first gave it; at 60, one address could cost about
+12.1 CPU-seconds a minute. On 2026-09-30 the owner published Firewall
+version 6, by the owner's report: `zodiacs-compute-api` at 40 and
+`zodiacs-compute-events` at 10, beside the four rules above and
+`zodiacs-calendar-feed-write` at 3 for the calendar feeds, each a fixed
+60-second window counted by IP with the `rate_limit` (429) action. Until the
+events rule exists in a project, its events endpoint answers 503 and the
+other five answer as usual.
 
 To switch the API off without removing it, set `COMPUTE_API_ENABLED=0` for
 Production and redeploy: every compute endpoint then answers 503 `disabled`

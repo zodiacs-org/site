@@ -33,9 +33,11 @@ through the handler; none of it is a measurement of the deployment. The
 deployed figures can be taken once the owner publishes the two Firewall rules
 (`docs/OWNER-SETUP-RUNBOOK.md` §3) and the API is deployed. An endpoint answers
 503 until every rule it is counted under exists: the events endpoint needs
-both, the other five only `zodiacs-compute-api`. On 2026-09-30 the owner had
-published `zodiacs-compute-api` at 60 requests a minute, from this branch's
-first runbook; the runbook now has it at 40, with the events rule beside it.
+both, the other five only `zodiacs-compute-api`. The owner first published
+`zodiacs-compute-api` at 60 requests a minute, from this branch's first
+runbook, and on 2026-09-30 published Firewall version 6 with it at 40 and
+`zodiacs-compute-events` at 10, by the owner's report; no request to these
+endpoints had been made then, since they were not deployed.
 
 ## What is here
 

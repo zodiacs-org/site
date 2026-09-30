@@ -48,14 +48,17 @@ Done in the second report of 2026-09-30:
 - **Vercel Firewall.** Version 5 is active with five SDK rate-limit rules, each a fixed 60-second window counted by IP: `zodiacs-email-subscribe`, `registry-aura-holdings-v1` and `zodiacs-wallet-birth` at 10, `zodiacs-transit-calendar` at 120 and `zodiacs-compute-api` at 60. Twelve empty requests to the email endpoint gave eleven 400s and then a 429 with `Retry-After: 60`. The eleventh passed because the loop crossed a window boundary.
 - **Calendar feeds.** `CALENDAR_FEED_SWEEP_SECRET` is in Vercel Production (sensitive) and in the GitHub environment `calendar-feed-production`, limited to `main`. `PUBLIC_SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are Production project variables.
 
+Done in the third report of 2026-09-30:
+- **Vercel Firewall.** Version 6 is active with seven SDK rate-limit rules, each a fixed 60-second window counted by IP with the `rate_limit` (429) action: the five above, with `zodiacs-compute-api` changed from 60 to 40, and two new ones, `zodiacs-compute-events` at 10 and `zodiacs-calendar-feed-write` at 3. Nothing else changed, and no endpoint was tested.
+- **System Environment Variables.** "Automatically expose System Environment Variables" is on for the project, so the feed routes can read `VERCEL_ENV`. Nothing was changed.
+- **Bing.** Its Search Performance still said it was preparing the data, so there was no export yet.
+
 Remaining:
 
 1. **The first GitHub release of the engine (G4).** A published GitHub release on `zodiacs-org/engine` makes Zenodo mint a DOI, and a DOI is permanent. With the owner's authorization, the first release is 0.1.1-rc.15, tagged at its merge commit, with its CHANGELOG entry as the notes.
 2. **JSR (P3.1c).** A publish workflow using GitHub's OIDC token is to be added to the engine. Its first run needs the owner's authorization.
 3. **Search and analytics baselines (P0.7b).** Add Bing's export when it is ready, then either attach `zodiacs-org/analytics-baselines` read-only to this work, or compute the aggregates on the owner's side. Only aggregates would be committed, to that private repository.
-4. **Before the calendar feeds' release (P1.15).** Add one more SDK rule the same way: `zodiacs-calendar-feed-write`, 3 requests per 60 seconds, counted by IP, for creating and removing feeds. At most 3 a minute from one address makes at most 183 an hour, against the 500 all visitors share. Confirm in the project's settings that "Automatically expose System Environment Variables" is on, since the feed routes read `VERCEL_ENV`.
-5. **The compute API's rule** may change once its review fixes land. Its worst case is being bounded per address, and any new number will come with its arithmetic.
-6. **Microsoft Copilot**, only if the monthly panel (A8) and the assistant benchmark (B4.b) are to cover five assistants: a free account for admin@zodiacs.org.
+4. **Microsoft Copilot**, only if the monthly panel (A8) and the assistant benchmark (B4.b) are to cover five assistants: a free account for admin@zodiacs.org.
 
 Later, once the site has rebuilt the MCP server on the published engine: the same manual first upload for `@zodiacs/mcp-server`, from its verified archive, since npm sets up a trusted publisher only for a package that exists.
 
@@ -83,8 +86,8 @@ The earlier archives are as checkpoint 5 lists them. rc.15's three local builds 
 ## In progress
 
 - **Full IAU 2000B nutation**, on branch `feature-nutation` for rc.16. Against ERFA over 1800–2200, the nutation's share of every longitude falls from 0.252″ to 0.0037″ at most, and the ascendant's error from 0.824″ to 0.0063″. The planets' own series still dominate their longitudes, at up to about 19″. Against Swiss over 1850–2049 the ascendant is within 0.004″. The Koch ladder's worst case falls from 3.73″ to 0.035″ (F-33, P2.A.house.koch).
-- **The hosted compute API** (P3.3), on branch `compute-api`: six POST endpoints, a privacy negative-control test, budgets, a switch and receipts, per the decision of 2026-09-29 §5.
-- **Opaque calendar feed ids** (P1.15), on branch `feed-ids`: the review's findings are fixed; the release waits for the owner's step 4.
+- **The hosted compute API** (P3.3), in its own PR: six POST endpoints, a privacy negative-control test, budgets, a switch and receipts, per the decision of 2026-09-29 §5. Both of its Firewall rules are published.
+- **Opaque calendar feed ids** (P1.15), on branch `feed-ids`: the review's findings are fixed, and the owner's settings it waited for are in place.
 - **rc.16's pieces**, each on its own branch: the calculation API and frames, birth-time windows, the site's techniques in the package, house extras, and rise/set with planetary hours. The Chinese solar terms are left out of rc.16, and return with a Sun that is not derived from a JPL ephemeris or when NAIF answers (DECISIONS-2026-09-30.md §1).
 
 ## Next
@@ -93,4 +96,4 @@ The earlier archives are as checkpoint 5 lists them. rc.15's three local builds 
 2. rc.16: integrate the branches onto rc.15 and review them. The units judged here also ask of a next candidate: an export for the time basis (F-53), declinations and sect from an entry point that loads no ephemeris (P2.E.declinations, P2.E.sect), the vargas' birth-time sensitivity (P2.B.vargas) and KP's ruling planets (P2.B.kp). Its README's release paragraph should say what the registry shows (F-57).
 3. The MCP adapter's next version, whose `get_capabilities`, README and `candidate.json` report the engine as published (F-57).
 4. Decide whether the site's forms resolve local times through `@zodiacs/engine/geo`, which P1.01b and P1.12b need; the two already agree on 264,455 wall times.
-5. The calendar feeds' release, once the owner's step 4 is done.
+5. The calendar feeds' release.
