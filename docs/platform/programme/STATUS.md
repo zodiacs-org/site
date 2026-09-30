@@ -71,7 +71,8 @@ Remaining:
 4. **JSR (P3.1c).** A publish workflow using GitHub's OIDC token is to be added to the engine. Its first run needs the owner's authorization.
 5. **Search and analytics baselines (P0.7b).** Add Bing's export when it is ready, then either attach `zodiacs-org/analytics-baselines` read-only to this work, or compute the aggregates on the owner's side. Only aggregates would be committed, to that private repository.
 6. **Vercel Firewall rate limits.** Four live endpoints call Vercel's rate-limit SDK, and no rule exists for any of them, so none is limited today. The site's runbook (§3) makes publishing them the owner's step. In the project's Firewall tab, add one custom rule per ID: If "@vercel/firewall" Rate limit ID equals the ID; Then Rate Limit, fixed window, 60 seconds, counted by IP.
-   - 10 requests: `zodiacs-email-subscribe`, `registry-aura-holdings-v1`, `zodiacs-wallet-birth`, `zodiacs-transit-calendar`;
+   - 10 requests: `zodiacs-email-subscribe`, `registry-aura-holdings-v1`, `zodiacs-wallet-birth`;
+   - 120 requests: `zodiacs-transit-calendar`, because calendar apps fetch many subscribers' feeds from a few shared addresses (runbook §3);
    - 60 requests: `zodiacs-compute-api`, for the compute endpoints when they ship.
 
    No Deny or Challenge rule, and no rule on a path. The team is on Pro, whose rate limiting is billed from the plan's monthly credit. Publish, then run the two checks in `docs/OWNER-SETUP-RUNBOOK.md` §3 and report their output.
