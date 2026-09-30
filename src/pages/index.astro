@@ -106,6 +106,28 @@ const tools = [
     media="(min-width: 720px)"
     fetchpriority="high"
   />
+  <!-- The hero's two optional faces. Chromium holds the first frame for a
+       preloaded optional font, for at most its 100 ms block period, so the
+       hero is laid out once, in whichever face is ready. Without the preload
+       a face that arrived inside the block period re-laid the hero foot out
+       after the first frame: CLS 0.056 in one of three CI samples on
+       2026-09-29. After the poster hints, so the poster stays first. -->
+  <link
+    slot="head"
+    rel="preload"
+    as="font"
+    type="font/woff2"
+    href="/assets/home/instrument-sans-home-nav-core.woff2"
+    crossorigin
+  />
+  <link
+    slot="head"
+    rel="preload"
+    as="font"
+    type="font/woff2"
+    href="/assets/home/eb-garamond-home-400-core.woff2"
+    crossorigin
+  />
   <style
     slot="head"
     is:inline

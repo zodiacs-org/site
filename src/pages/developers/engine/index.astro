@@ -14,7 +14,7 @@ const title = 'Zodiacs Engine — Local TypeScript Chart Engine | Zodiacs.org';
 // this constant out of the source to build the committed site guide, and it
 // only matches a quoted string. Keeping the measured figures out of it also
 // means the meta description cannot drift away from the table below.
-const description = '@zodiacs/engine is the MIT-licensed TypeScript chart engine behind zodiacs.org: natal charts, transits, synastry, Moon phase and Saturn returns, computed in your own browser or Node process with no network request. What it computes, what it costs to bundle, how close it is to Swiss Ephemeris, and an install that verifies the archive digest.';
+const description = '@zodiacs/engine is the TypeScript chart engine behind zodiacs.org, MIT code with CC BY 4.0 ΔT data: natal charts, transits, synastry, Moon phase and Saturn returns, computed in your own browser or Node process with no network request. What it computes, what it costs to bundle, how close it is to Swiss Ephemeris, and an install that verifies the archive digest.';
 
 const kb = (n: number) => `${n} KB`;
 
@@ -25,6 +25,9 @@ const api = [
   ['synastry(first, second)', 'Inter-chart aspects between two charts with element and modality balances.'],
   ['moonPhase(date)', 'Phase angle, illumination and name, from the same positions a chart uses.'],
   ['saturnReturn(birth)', 'Natal Saturn and every return season to roughly age 92, each with its exact crossings.'],
+  ['progressedBodies(birth, target)', 'Secondary progressions: the positions one day after birth for each tropical year of life lived to the target date. This site\'s progressed lens uses it.'],
+  ['findConfiguredAspects(bodies, policy)', 'Aspects under a policy you set with createAspectPolicy: major, minor or custom angles, and orbs per aspect, per body and for applying or separating motion.'],
+  ['chartDeclinations(chart)', 'Right ascension and declination of each body, parallels and contraparallels, and each body\'s signed margin to the out-of-bounds limit, in arcseconds.'],
 ];
 
 const jsonLd = [{
@@ -34,7 +37,7 @@ const jsonLd = [{
   url: 'https://zodiacs.org/developers/engine/',
   codeRepository: candidate.sourceRepository,
   programmingLanguage: 'TypeScript',
-  license: 'https://opensource.org/licenses/MIT',
+  license: ['https://spdx.org/licenses/MIT.html', 'https://spdx.org/licenses/CC-BY-4.0.html'],
   softwareVersion: candidate.version,
   runtimePlatform: 'Node.js, browsers',
 }];
@@ -53,8 +56,11 @@ const jsonLd = [{
         the process it runs in.
       </p>
       <p>
-        MIT, ESM, TypeScript declarations included, Node.js 18 and newer or any
-        browser with a bundler. One runtime dependency —{' '}
+        ESM, TypeScript declarations included, for Node.js 20.19 or a later
+        20.x, Node.js 22.7 and newer, or any browser with a bundler. The code
+        is MIT; the package is MIT and CC BY 4.0 together, because its ΔT
+        module carries 32 values from Stephenson, Morrison and Hohenkerk's
+        Table S15, which are CC BY 4.0. One runtime dependency —{' '}
         <a href="https://github.com/cosinekitty/astronomy" rel="noopener noreferrer">Astronomy Engine</a>{' '}
         by Don Cross, also MIT, which supplies the planetary and lunar series.
         Zodiacs did not write those models; what is ours is the chart on top of
@@ -80,8 +86,11 @@ const jsonLd = [{
         returns 404, and <a href="/developers/support/#engine-candidate">the support page says why</a>.
         The published archive is the evaluation route, and it is the bytes a
         registry release will carry if it is published from this archive rather
-        than repacked from a directory. Paste this into a POSIX shell; it
-        refuses to install anything whose digest does not match.
+        than repacked from a directory. Paste this into a POSIX shell, in your
+        project's directory; it refuses to install anything whose digest does
+        not match. It also stops if that directory has no package.json, because
+        npm would otherwise install into the nearest directory above it that
+        has one.
       </p>
     </div>
     <pre tabindex="0" role="region" aria-label="Install commands"><code>{install}</code></pre>
@@ -110,7 +119,8 @@ const jsonLd = [{
         whole sign, Placidus, Koch, Porphyry, Regiomontanus, Campanus,
         Topocentric (Polich–Page), Alcabitius, Equal (Ascendant), Equal-MC, Vehlow, Meridian (axial
         rotation) and Morinus. Aspects are the five major ones, with separate
-        luminary orbs. Two optional entry points ship beside the core:{' '}
+        luminary orbs. A configured aspect policy, a separate function, adds
+        minor and custom angles. Two optional entry points ship beside the core:{' '}
         <code>@zodiacs/engine/geo</code> resolves a local wall time and IANA
         zone to an instant, and <code>@zodiacs/engine/receipt</code> validates
         a portable chart record. Both are separate imports, so neither costs
@@ -196,9 +206,11 @@ const jsonLd = [{
         value is 69.2, which on its own moved the Moon about 3.5 arcseconds.
       </p>
       <p>
-        And the engine does not bound its input date at all. It will compute
-        year 900 or year 3500 and return a chart with no error. Nothing above
-        says anything about either, and since rc.8 the chart says so itself:
+        And the engine bounds its input date only where its ephemeris ends:
+        since rc.14 an instant outside Terrestrial Time 0001-04-30 to
+        3998-09-03 throws a <code>RangeError</code>. It will compute year 900
+        or year 3500 and return a chart with no error. Nothing above says
+        anything about either, and since rc.8 the chart says so itself:
         outside 1800–2200 it carries the <code>outside-reference-span</code>{' '}
         flag. zodiacs.org clamps its own forms to 1800–2199; if you are taking
         dates from users, pick a bound and enforce it yourself.
@@ -220,8 +232,8 @@ const jsonLd = [{
         <li>Sun through Pluto and the true nodes. No Chiron, no asteroids.</li>
         <li>Placidus and Koch are undefined inside the polar circle; where the absolute latitude is 90° minus the obliquity or more (66.53° to 66.59° over 1800–2200) they fall back to whole sign and flag it. The other eleven systems are defined there.</li>
         <li>Event searches sample the motion at a fixed step, so they can miss an event between samples. The solver is tested, not proven complete.</li>
-        <li>No input-date bound. Outside 1800–2200, the range the engine has been checked over, a chart carries the <code>outside-reference-span</code> flag; see the caveat under accuracy.</li>
-        <li>The manifest declares Node 18 and newer. What has actually been executed for this candidate is Node 22.22.2 and Node 24.19.0, and the site's Chromium browser checks — narrower than the declaration.</li>
+        <li>No input-date bound inside the span the ephemeris covers, Terrestrial Time 0001-04-30 to 3998-09-03; outside it a calculation throws. Outside 1800–2200, the range the engine has been checked over, a chart carries the <code>outside-reference-span</code> flag; see the caveat under accuracy.</li>
+        <li>The manifest declares Node 20.19 or a later 20.x, and 22.7 and newer. What has actually been executed for this candidate is Node 22.22.2 and Node 24.21.0 here, with the site's Chromium browser checks, and Node 20.19.0, 22.7.0, 22.22.2 and 24.21.0 in the engine's own packed-archive check — narrower than the declaration.</li>
         <li>No interpretation. The engine returns geometry; what it means is your problem, and not an astronomical claim.</li>
       </ul>
       <p>
@@ -235,12 +247,15 @@ const jsonLd = [{
     <h2 id="source">Source and licence</h2>
     <div class="prose">
       <p>
-        MIT, in the <a href={sourceTree}>Zodiacs engine repository</a> at
+        The code is MIT, in the <a href={sourceTree}>Zodiacs engine repository</a> at
         commit{' '}
-        <code>{candidate.sourceCommit.slice(0, 12)}</code>. Keep the packaged
-        {' '}<code>LICENSE</code> and <code>NOTICE</code> when you redistribute:
-        the NOTICE carries Astronomy Engine's MIT notice and the CC BY 4.0
-        attribution that GeoNames-derived place data requires.{' '}
+        <code>{candidate.sourceCommit.slice(0, 12)}</code>; the package's
+        licence expression is <code>MIT AND CC-BY-4.0</code>, for the ΔT
+        values above. Keep the packaged <code>LICENSE</code>,{' '}
+        <code>LICENSING.md</code> and <code>NOTICE</code> when you
+        redistribute: the NOTICE carries Astronomy Engine's MIT notice, the
+        attribution those ΔT values require, and the CC BY 4.0 attribution
+        that GeoNames-derived place data requires.{' '}
         <a href={`${candidate.sourceRepository}/issues`}>Report a problem</a>.
       </p>
     </div>

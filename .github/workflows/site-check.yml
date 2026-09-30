@@ -261,6 +261,15 @@ jobs:
       - name: Verify Registry hub generated output
         run: npm run registry:hub:check
 
+      # The local MCP adapter ships generated artifacts too (finding F-03):
+      # examples/mcp-server/server.mjs must be what src/mcp/ bundles to, and
+      # public/examples/ must hold a fresh `npm pack` of that package byte for
+      # byte, with a manifest rebuilt from it that names a 40-hex artifact
+      # commit. `npm pack` reads only the example's files, so this stays
+      # offline.
+      - name: Verify MCP adapter bundle, archive and manifest
+        run: npm run mcp:pack:check
+
       # Committed wing HTML must match what the builders produce from
       # sources (build-app resolves the pinned local @babel/standalone,
       # so this job runs fully offline).

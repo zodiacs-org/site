@@ -13,7 +13,7 @@
 import { NATAL_ENVELOPE_LIMITS } from '@zodiacs/engine/receipt';
 
 /** This adapter's own version, distinct from the engine's. */
-export const ADAPTER_VERSION = '0.1.0-rc.10';
+export const ADAPTER_VERSION = '0.1.0-rc.14';
 export const ADAPTER_NAME = 'zodiacs-mcp-server';
 
 /**

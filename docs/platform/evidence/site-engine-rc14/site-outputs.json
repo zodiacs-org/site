@@ -1,0 +1,293 @@
+{
+  "schema": "zodiacs-site-engine-output-comparison/v1",
+  "generatedAt": "2026-09-29T06:57:54.030Z",
+  "node": "v22.22.2",
+  "esbuild": "0.28.1",
+  "old": {
+    "sourceCommit": "15949ec06390a3d4d0741ae64e6712e4dce4600d",
+    "sources": {
+      "src/lib/engine/full.ts": "2f34bf48efd52d47fa9771b2373d4d5f696616b4e3faf6a4ec784190782ae624",
+      "src/lib/engine/chart-adapter.ts": "12cbde8ea2b1704c1fd5a6a87200621a9719b078e3461a9dcfb506527d6f44f1",
+      "src/lib/engine/types.ts": "1c5665a9621f78da2c10ce8e17dbeafdb2fdb379faf2c80df5391efab015ad99",
+      "src/lib/engine/progressions.ts": "5bac39d815857b0322b4ef93e48cf7f8046881b4a7d0cca2918e6140c12db48e"
+    },
+    "archive": "vendor/zodiacs-engine-0.1.1-rc.10.tgz",
+    "archiveSha256": "a377cdc8c12e25ff7de4fe95ddf77a4cdee8d2da97071b0f8454e340b374565c",
+    "engineVersion": "0.1.1-rc.10",
+    "bundledPackageFiles": 7
+  },
+  "new": {
+    "sources": {
+      "src/lib/engine/full.ts": "2f34bf48efd52d47fa9771b2373d4d5f696616b4e3faf6a4ec784190782ae624",
+      "src/lib/engine/chart-adapter.ts": "12cbde8ea2b1704c1fd5a6a87200621a9719b078e3461a9dcfb506527d6f44f1",
+      "src/lib/engine/types.ts": "1c5665a9621f78da2c10ce8e17dbeafdb2fdb379faf2c80df5391efab015ad99",
+      "src/lib/engine/progressions.ts": "ec24e2757f9b5cb3024865f52ad127a5f05f66dee24f51b14dc30786f06cf20b"
+    },
+    "installed": "0.1.1-rc.14",
+    "engineVersion": "0.1.1-rc.14",
+    "bundledPackageFiles": 11
+  },
+  "corpus": {
+    "instants": 14610,
+    "cadenceDays": 10,
+    "from": "1800-01-01T12:00:00.000Z",
+    "to": "2199-12-25T12:00:00.000Z",
+    "locations": [
+      {
+        "id": "tromso",
+        "latitude": 69.6492,
+        "longitude": 18.9553
+      },
+      {
+        "id": "longyearbyen",
+        "latitude": 78.2232,
+        "longitude": 15.6267
+      },
+      {
+        "id": "southern-longyearbyen-mirror",
+        "latitude": -78.2232,
+        "longitude": 15.6267
+      },
+      {
+        "id": "london",
+        "latitude": 51.5074,
+        "longitude": -0.1278
+      },
+      {
+        "id": "sydney",
+        "latitude": -33.8688,
+        "longitude": 151.2093
+      },
+      {
+        "id": "quito",
+        "latitude": -0.1807,
+        "longitude": -78.4678
+      }
+    ],
+    "houseSystems": [
+      "whole",
+      "placidus"
+    ],
+    "frozenNodePolarFixtureSha256": "022fbc030185b84aa0954411aab266577cd75f50a1947dc4717e92d8a9db9260"
+  },
+  "sections": {
+    "positions": {
+      "description": "computeBodies at every corpus instant: body order and every field of all twelve rows",
+      "calls": 14610,
+      "values": 876600,
+      "differingValues": 0
+    },
+    "singleBody": {
+      "description": "bodyLongitude and longitudeSpeed for all twelve bodies at every corpus instant",
+      "calls": 350640,
+      "values": 350640,
+      "differingValues": 0
+    },
+    "charts": {
+      "description": "computeChart at every corpus instant, six locations, whole sign and Placidus, time known; every field",
+      "calls": 175320,
+      "values": 27600030,
+      "differingValues": 175320
+    },
+    "unknownTime": {
+      "description": "computeChart at every corpus instant with no birth time, with and without a place",
+      "calls": 29220,
+      "values": 4154400,
+      "differingValues": 29220
+    },
+    "frozenNodePolar": {
+      "description": "the rc.10 parity corpus: node instants through computeBodies, polar locations through computeChart in both systems",
+      "calls": 9,
+      "values": 1167,
+      "differingValues": 6
+    },
+    "progressions": {
+      "description": "progressedInstant and progressedBodies: the base commit's own code on rc.10 against this branch's package-backed adapter on rc.14",
+      "calls": 2844,
+      "values": 86742,
+      "differingValues": 0,
+      "births": 158,
+      "bodyCases": 1422
+    },
+    "progressionMapping": {
+      "description": "progressedInstant only, across the whole Date range, where no position is computed",
+      "calls": 121,
+      "values": 121,
+      "differingValues": 0,
+      "mappings": 121
+    },
+    "invalidDates": {
+      "description": "invalid dates, which no site path passes: recorded, not required to agree",
+      "calls": 3,
+      "values": 5,
+      "differingValues": 5
+    }
+  },
+  "differences": [
+    {
+      "section": "charts",
+      "path": "chart.engineVersion",
+      "count": 175320,
+      "examples": [
+        {
+          "context": "1800-01-01T12:00:00.000Z tromso whole",
+          "old": "0.1.1-rc.10",
+          "new": "0.1.1-rc.14"
+        },
+        {
+          "context": "1800-01-01T12:00:00.000Z tromso placidus",
+          "old": "0.1.1-rc.10",
+          "new": "0.1.1-rc.14"
+        },
+        {
+          "context": "1800-01-01T12:00:00.000Z longyearbyen whole",
+          "old": "0.1.1-rc.10",
+          "new": "0.1.1-rc.14"
+        },
+        {
+          "context": "1800-01-01T12:00:00.000Z longyearbyen placidus",
+          "old": "0.1.1-rc.10",
+          "new": "0.1.1-rc.14"
+        },
+        {
+          "context": "1800-01-01T12:00:00.000Z southern-longyearbyen-mirror whole",
+          "old": "0.1.1-rc.10",
+          "new": "0.1.1-rc.14"
+        }
+      ]
+    },
+    {
+      "section": "unknownTime",
+      "path": "chart.engineVersion",
+      "count": 29220,
+      "examples": [
+        {
+          "context": "1800-01-01T12:00:00.000Z no time, place",
+          "old": "0.1.1-rc.10",
+          "new": "0.1.1-rc.14"
+        },
+        {
+          "context": "1800-01-01T12:00:00.000Z no time, no place",
+          "old": "0.1.1-rc.10",
+          "new": "0.1.1-rc.14"
+        },
+        {
+          "context": "1800-01-11T12:00:00.000Z no time, place",
+          "old": "0.1.1-rc.10",
+          "new": "0.1.1-rc.14"
+        },
+        {
+          "context": "1800-01-11T12:00:00.000Z no time, no place",
+          "old": "0.1.1-rc.10",
+          "new": "0.1.1-rc.14"
+        },
+        {
+          "context": "1800-01-21T12:00:00.000Z no time, place",
+          "old": "0.1.1-rc.10",
+          "new": "0.1.1-rc.14"
+        }
+      ]
+    },
+    {
+      "section": "frozenNodePolar",
+      "path": "chart.engineVersion",
+      "count": 6,
+      "examples": [
+        {
+          "context": "swiss-polar-tromso whole",
+          "old": "0.1.1-rc.10",
+          "new": "0.1.1-rc.14"
+        },
+        {
+          "context": "swiss-polar-tromso placidus",
+          "old": "0.1.1-rc.10",
+          "new": "0.1.1-rc.14"
+        },
+        {
+          "context": "swiss-polar-longyearbyen whole",
+          "old": "0.1.1-rc.10",
+          "new": "0.1.1-rc.14"
+        },
+        {
+          "context": "swiss-polar-longyearbyen placidus",
+          "old": "0.1.1-rc.10",
+          "new": "0.1.1-rc.14"
+        },
+        {
+          "context": "swiss-polar-southern-longyearbyen-mirror whole",
+          "old": "0.1.1-rc.10",
+          "new": "0.1.1-rc.14"
+        }
+      ]
+    },
+    {
+      "section": "invalidDates",
+      "path": "progressedInstant outcome",
+      "count": 1,
+      "examples": [
+        {
+          "context": "invalid birth",
+          "old": "returned",
+          "new": {
+            "name": "RangeError",
+            "message": "birthUtc must be a valid Date, finite epoch-millisecond timestamp, or ISO calendar date/date-time with an explicit UTC offset."
+          }
+        }
+      ]
+    },
+    {
+      "section": "invalidDates",
+      "path": "progressedBodies error.message",
+      "count": 1,
+      "examples": [
+        {
+          "context": "invalid target",
+          "old": "Argument must be a Date object, an AstroTime object, or a numeric UTC Julian date.",
+          "new": "target must be a valid Date, finite epoch-millisecond timestamp, or ISO calendar date/date-time with an explicit UTC offset."
+        }
+      ]
+    },
+    {
+      "section": "invalidDates",
+      "path": "progressedBodies error.name",
+      "count": 1,
+      "examples": [
+        {
+          "context": "invalid target",
+          "old": "String",
+          "new": "RangeError"
+        }
+      ]
+    },
+    {
+      "section": "invalidDates",
+      "path": "computeBodies error.message",
+      "count": 1,
+      "examples": [
+        {
+          "context": "invalid date",
+          "old": "Argument must be a Date object, an AstroTime object, or a numeric UTC Julian date.",
+          "new": "The instant is outside the ephemeris span: its Terrestrial Time, and that of each speed sample, must lie between 0001-04-30T12:00 and 3998-09-03T12:00 TT, the years astronomy-engine tabulates (EPHEMERIS_SPAN)."
+        }
+      ]
+    },
+    {
+      "section": "invalidDates",
+      "path": "computeBodies error.name",
+      "count": 1,
+      "examples": [
+        {
+          "context": "invalid date",
+          "old": "String",
+          "new": "RangeError"
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "calls": 572767,
+    "values": 33069705,
+    "differingValues": 204551,
+    "differencesOtherThanEngineVersionAndInvalidDates": 0
+  }
+}

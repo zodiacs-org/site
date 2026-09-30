@@ -24,6 +24,12 @@
  * reason. `scripts/engine-install-block.test.mjs`
  * executes it against the real archive, a tampered one, a truncated one, and a
  * failing download.
+ *
+ * It also stops, before downloading anything, unless the directory it runs in
+ * has a package.json (finding F-04). Without one, `npm install` does not
+ * install here: it walks up to the nearest parent directory with a
+ * package.json or node_modules and installs into that project instead. The
+ * test shows npm doing that, and the guard stopping it, in every shell.
  */
 export interface EngineArtifact {
   readonly name: string;
@@ -64,6 +70,12 @@ return `( set -eu
 # a failure stops the install without closing your terminal.
 BASE=$(pwd)
 FILE='${file}'
+# Run it in your project's directory. Without a package.json here, npm would
+# install into the nearest parent directory that has one.
+if test ! -f package.json; then
+  echo "Stop: there is no package.json here. Run this in your project's directory, or create one first with: npm init -y" >&2
+  exit 1
+fi
 if test -e "$FILE" || test -L "$FILE"; then
   echo "Stop: $FILE already exists here. Move or delete it, then run this again." >&2
   exit 1

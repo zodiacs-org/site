@@ -321,16 +321,31 @@ describe('the same figures on /developers/engine/', () => {
     expect(enginePage).not.toMatch(/arcseconds from Swiss at \d{4}/u);
   });
 
-  it('says the package does not bound its input date, because it does not', () => {
+  it('says the package bounds its input date only where its ephemeris ends, because it does', async () => {
     // The page used to say the engine accepts 1800-2199. That is this site's
-    // own form validation (src/lib/share.ts); the package rejects nothing.
-    expect(enginePage).toMatch(/does not bound its input date/u);
-    expect(enginePage).not.toMatch(/the engine accepts dates from 1800 to 2199/u);
+    // own form validation (src/lib/share.ts). Up to rc.13 the package rejected
+    // nothing; since rc.14 it refuses only instants outside EPHEMERIS_SPAN,
+    // the years astronomy-engine tabulates.
+    expect(enginePage).toMatch(/bounds its input date only where its ephemeris ends/u);
+    expect(enginePage).toContain('outside Terrestrial Time 0001-04-30 to 3998-09-03 throws a RangeError');
+    expect(enginePage).not.toMatch(/does not bound its input date|the engine accepts dates from 1800 to 2199/u);
     const packaged = read('node_modules/@zodiacs/engine/dist/index.js')
       + read('node_modules/@zodiacs/engine/dist/index.d.ts');
-    expect(packaged, 'if the package ever gains a range, this claim must change').not.toMatch(/2199/u);
-    expect(read('src/lib/share.ts'), 'the site is where the bound lives').toMatch(/year > 2199/u);
-    // What the package does instead since rc.8: it flags a chart outside its reference span.
+    expect(packaged, 'if the package ever gains a 2199 range, this claim must change').not.toMatch(/2199/u);
+    expect(read('src/lib/share.ts'), 'the site is where the 1800-2199 bound lives').toMatch(/year > 2199/u);
+    const { EPHEMERIS_SPAN, natalChart } = await import('@zodiacs/engine');
+    expect(EPHEMERIS_SPAN).toMatchObject({ timeScale: 'TT', fromTT: '0001-04-30T12:00:00', toTT: '3998-09-03T12:00:00' });
+    // Inside the span it computes, with no error, what the page says it computes…
+    for (const year of [900, 3500]) {
+      const utc = new Date(Date.UTC(year, 5, 15, 12));
+      expect(natalChart({ utc, timeKnown: false }).flags, String(year)).toContain('outside-reference-span');
+    }
+    // …and outside it every calculation throws.
+    for (const year of [-500, 4500]) {
+      const utc = new Date(Date.UTC(year, 5, 15, 12));
+      expect(() => natalChart({ utc, timeKnown: false }), String(year)).toThrow(/outside the ephemeris span/u);
+    }
+    // What the package does inside the span since rc.8: it flags a chart outside its reference span.
     expect(packaged).toMatch(/outside-reference-span/u);
     expect(enginePage).toContain('outside 1800–2200 it carries the outside-reference-span flag');
   });
