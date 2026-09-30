@@ -2,7 +2,7 @@ import { build } from 'esbuild';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { natalChart } from '@zodiacs/engine';
 import { natalReplayInput, parseNatalEnvelope } from '@zodiacs/engine/receipt';
-import { resolveLocalToUtc } from '../time/localToUtc';
+import { prepareLocalTime, resolveLocalToUtc } from '../time/localToUtc';
 import { decodeChartLink, encodeChartLink } from '../share';
 import { computeChart } from './full';
 import { computeCalculatorReceipt, type CalculatorWallTime } from './calculator-receipt';
@@ -33,6 +33,10 @@ function calculate(date: string, time: string, timeZone: string, timeKnown = tru
   return { captured, input, envelope: parsed.envelope };
 }
 
+// The fifth column is the flags an older resolution recorded for each wall
+// time: no dst-gap, and `lmt` for an offset with seconds, the flag's meaning
+// before engine rc.15. Each instant is a legal clock after its zone's local
+// mean time era, so none carries `lmt` now.
 const historicalGaps = [
   ["America/Caracas", "1890-01-01", "1890-01-01T04:27:44.000Z", -267.6666666666667, ["lmt"], 0.06666666666666667],
   ["America/Dawson_Creek", "1884-01-01", "1884-01-01T08:00:56.000Z", -480, [], 0.9333333333333333],
@@ -99,15 +103,15 @@ describe('calculator capture from actual civil resolution', () => {
     expect(result.input.flags).toEqual(flags);
   });
 
-  it.each(historicalGaps)('captures corrected seconds context for %s %s from one natal call', (zone, date, instant, offsetMinutes, legacyFlags, gapShiftMinutes) => {
+  it.each(historicalGaps)('captures corrected seconds context for %s %s from one natal call', (zone, date, instant, offsetMinutes, _olderFlags, gapShiftMinutes) => {
     const resolved = resolveLocalToUtc(date, '00:00', zone);
     expect(resolved.utc.toISOString()).toBe(instant);
-    expect(resolved.flags).toEqual(['dst-gap', ...legacyFlags]);
+    expect(resolved.flags).toEqual(['dst-gap']);
     const { captured, input, envelope } = calculate(date, '00:00', zone);
     expect(natalChart).toHaveBeenCalledTimes(1);
     expect(captured.chart).toEqual(computeChart(input));
     expect(envelope.receipt).toMatchObject({
-      instant, inputFlags: ['dst-gap', ...legacyFlags],
+      instant, inputFlags: ['dst-gap'],
       reference: 'supplied-instant', sourceInstant: null, provenance: null,
       localResolution: { date, time: '00:00', timeZone: zone, offsetMinutes, gapShiftMinutes,
         policy: { fold: 'earlier', gap: 'shift-forward' } },
@@ -148,7 +152,8 @@ describe('calculator capture from actual civil resolution', () => {
     ['2024-11-03', '01:30', 'America/New_York', true, '2024-11-03T05:30:00.000Z', -240, 0, ['dst-fold']],
     ['2024-10-06', '02:15', 'Australia/Lord_Howe', true, '2024-10-05T15:45:00.000Z', 660, 30, ['dst-gap']],
     ['2011-12-30', '12:00', 'Pacific/Apia', false, '2011-12-30T22:00:00.000Z', 840, 1440, ['dst-gap']],
-    ['1907-07-06', '08:30', 'America/Mexico_City', true, '1907-07-06T15:06:36.000Z', -396.6, 0, ['lmt']],
+    // Without a longitude the resolver claims no local mean time: see below.
+    ['1907-07-06', '08:30', 'America/Mexico_City', true, '1907-07-06T15:06:36.000Z', -396.6, 0, []],
     ['0099-01-15', '08:30', 'UTC', true, '0099-01-15T08:30:00.000Z', 0, 0, []],
   ] as const)('captures %s %s in %s without a second natal call', (date, time, zone, known, instant, offset, shift, flags) => {
     const { captured, input, envelope } = calculate(date, time, zone, known);
@@ -163,6 +168,26 @@ describe('calculator capture from actual civil resolution', () => {
       houses: { requested: 'placidus', actual: known ? 'whole' : null },
     });
     expect(natalReplayInput(envelope).utc).toBe(instant);
+  });
+
+  it('records the lmt flag of a wall time read on a local mean time', async () => {
+    // A synthetic birthplace on Mexico City's own meridian (6:36:36 west, 99.15° W),
+    // resolved with its longitude as the calculator does: the same instant and
+    // offset as without one, read on the zone's local mean time, which engine
+    // rc.15's `lmt` flag records.
+    await prepareLocalTime('1907-07-06', 'America/Mexico_City');
+    const resolved = resolveLocalToUtc('1907-07-06', '08:30', 'America/Mexico_City', { longitude: -99.15 });
+    expect(resolved.flags).toEqual(['lmt']);
+    const captured = computeCalculatorReceipt({
+      utc: resolved.utc, latitude: 19.4, longitude: -99.15, houseSystem: 'placidus', timeKnown: true, flags: resolved.flags,
+    }, { date: '1907-07-06', time: '08:30', timeZone: 'America/Mexico_City',
+      offsetMinutes: resolved.offsetMinutes, reference: 'supplied-instant' });
+    expect(natalChart).toHaveBeenCalledTimes(1);
+    const parsed = parseNatalEnvelope(captured!.envelopeJson);
+    expect(parsed.ok && parsed.envelope.receipt).toMatchObject({
+      instant: '1907-07-06T15:06:36.000Z', inputFlags: ['lmt'],
+      localResolution: { offsetMinutes: -396.6, gapShiftMinutes: 0 },
+    });
   });
 
   it('keeps serialized data detached from subsequent presentation and Date mutations', () => {
