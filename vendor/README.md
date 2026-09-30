@@ -1,41 +1,68 @@
 # Vendored @zodiacs/engine artifact
 
-`zodiacs-engine-0.1.1-rc.14.tgz` is the exact npm pack artifact consumed by this
+`zodiacs-engine-0.1.1-rc.15.tgz` is the exact npm pack artifact consumed by this
 candidate site revision. The standalone starter keeps its separate engine
 `0.1.1-rc.3` pin and immutable project archive.
 
-- Package: `@zodiacs/engine@0.1.1-rc.14` (unpublished candidate)
+- Package: `@zodiacs/engine@0.1.1-rc.15` (unpublished candidate)
 - Source repository: `https://github.com/zodiacs-org/engine`
-- Source commit: `03db4bb602377896283775920519b26d1f19a890`
-- Artifact carrier commit: `b221534e75842c9d7e589c456ed57957844cd06b`, merged into
-  engine `main` by `8deda244dc87ccf5f68abba1f3173f142da40a2a` (engine PR #10)
-- Artifact SHA-256: `adc9805e22cd2468fa3340a864d9c53b36ff91e8f1592fdb35d8da8b69f4476e`
-- [Immutable anonymous download](https://raw.githubusercontent.com/zodiacs-org/engine/b221534e75842c9d7e589c456ed57957844cd06b/artifacts/zodiacs-engine-0.1.1-rc.14.tgz)
-- Archive: 30 files, 87,415 packed bytes, 282,469 unpacked bytes.
+- Source commit: `104bd5a56ee00356eecc75f15f0aa946f5a39f41`
+- Artifact carrier commit: `cbad72cf075c1950bca1250dfd911085da3208d2`, merged into
+  engine `main` by `93ebae9fa54597aeaafbb346873f7f51e3cc6cb6` (engine PR #20)
+- Artifact SHA-256: `24eeb597b0157598c0faa26bb615c0cb5dfaaeac0393d62c73fbd37c5da4d348`
+- [Immutable anonymous download](https://raw.githubusercontent.com/zodiacs-org/engine/cbad72cf075c1950bca1250dfd911085da3208d2/artifacts/zodiacs-engine-0.1.1-rc.15.tgz)
+- Archive: 54 files, 190,974 packed bytes, 668,343 unpacked bytes.
 
 The archive and its `.sha256` receipt were written from the engine
-repository's git objects at `8deda244`, byte for byte, and the digest checked
-again; the anonymous download above gives the same bytes. The licence
-expression is now `MIT AND CC-BY-4.0`: the code is MIT, and the 32 ΔT values of
-Stephenson, Morrison & Hohenkerk's Table S15 in its ΔT module are CC BY 4.0, as
-the packaged NOTICE and LICENSING.md say. `engines.node` is
-`^20.19.0 || >=22.7.0`. Instants outside `EPHEMERIS_SPAN` (TT 0001-04-30 to
-3998-09-03) throw a `RangeError`.
+repository's git objects at `93ebae9f`, byte for byte (blob ids `304a8165…`
+and `29f73f02…`), and the digest checked again; the anonymous download above
+gives the same bytes. The licence expression is `MIT AND CC-BY-4.0`, as in
+rc.14. The packaged NOTICE and LICENSING.md now also cite the IERS leap-second
+list, the IERS UT1 − UTC data the core carries, the tzdb 2025c history that
+`@zodiacs/engine/geo` ships, and the sources of the Gregorian adoption table
+and of the Vedic ayanamsas' star values. `engines.node` is
+`^20.19.0 || >=22.7.0`.
 
-Since rc.10 the package added configurable aspects, declinations and parallels
-(rc.11), secondary progressions (rc.12), and exact configured-aspect and
-declination decisions with the Sun's out-of-bounds convention and
-`boundMarginArcsec` (rc.13, rc.14). The site now takes its secondary
-progressions from the package; nothing else it computes changes. The receipt
-conventions remain rc.8's; imported receipts remain untrusted claims. The MCP
-adapter exposes none of the new APIs. The site's consumer forms retain whole
-sign and Placidus.
+What rc.15 changes for this site:
 
-[The rc.14 adoption evidence](../docs/platform/evidence/site-engine-rc14/README.md)
+- From 1972 to 2027-10-02 a chart reads its instant as UTC: TT from the IERS
+  leap seconds and UT1 from IERS UT1 − UTC. rc.14 read every instant as UT1
+  with the ΔT model, which it still does outside those years. Positions move
+  by up to about half an arcsecond (the Moon) and the angles by UT1 − UTC,
+  up to about 13″ in the midheaven. Charts report `timeScale`, and their
+  `deltaT.model` is `"iers-utc/1"` in those years.
+- Receipts gain a conventions set at index 0 of
+  `NATAL_RECEIPT_CONVENTION_SETS`, recording the time basis; receipts of
+  rc.8 to rc.14 still parse under the rc.8 set, now at index 1.
+- In `@zodiacs/engine/geo`, a wall time before 1970 needs `prepareLocalTime`
+  first, unknown options throw, and `lmt` means a local-mean-time clock. The
+  site keeps its own resolver, `src/lib/time/localToUtc.ts`.
+- New entry points `@zodiacs/engine/timing` and `@zodiacs/engine/vedic`, which
+  the root entry does not import.
+
+The package does not export its time basis. `src/lib/engine/time-basis.mjs`
+is its compiled code bundled from this archive by
+`scripts/build-time-basis.mjs`, for the calendar function's server adapter
+and the reference tools, which call astronomy-engine directly.
+
+[The rc.15 adoption evidence](../docs/platform/evidence/site-engine-rc15/README.md)
 records what was run for this adoption and what it does not establish.
 
 The site pin is not evidence of npm publication, production deployment or
 external adoption. Earlier archives and evidence retain their identities.
+
+## Previous rc.14 site candidate
+
+`zodiacs-engine-0.1.1-rc.14.tgz` and its checksum remain unchanged. Source
+`03db4bb602377896283775920519b26d1f19a890`, carrier
+`b221534e75842c9d7e589c456ed57957844cd06b` (merged by `8deda244`), SHA-256
+`adc9805e22cd2468fa3340a864d9c53b36ff91e8f1592fdb35d8da8b69f4476e`, 87,415
+bytes. It added configurable aspects, declinations and parallels (rc.11),
+secondary progressions (rc.12), exact configured-aspect and declination
+decisions (rc.13), and the Sun's out-of-bounds convention, `EPHEMERIS_SPAN`
+refusal and the licence expression `MIT AND CC-BY-4.0` (rc.14).
+[Its evidence](../docs/platform/evidence/site-engine-rc14/README.md) describes
+that release and does not certify rc.15.
 
 ## Previous rc.10 site candidate
 
@@ -45,7 +72,7 @@ external adoption. Earlier archives and evidence retain their identities.
 `a377cdc8c12e25ff7de4fe95ddf77a4cdee8d2da97071b0f8454e340b374565c`, 61,318
 bytes. It added Equal-MC houses and the `chartPoints` API.
 [Its evidence](../docs/platform/evidence/site-engine-rc10/README.md) describes
-that release and does not certify rc.14.
+that release and does not certify rc.14 or rc.15.
 
 ## Previous rc.9 site candidate
 
