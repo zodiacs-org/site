@@ -1,40 +1,33 @@
 # Programme status
 
-Checkpoint 6: production serves engine rc.14, Swiss Ephemeris output is out of the site's tree, and the ΔT values carry their attribution, 2026-09-30. The next session should start here.
+Checkpoint 7: production serves engine rc.15 and the MCP adapter 0.1.0-rc.15, and the units rc.15 carries are judged on its evidence, 2026-09-30. The next session should start here.
 
-Addendum, 2026-09-30: the owner's steps of the same day put `@zodiacs/engine` on npm, 0.1.1-rc.15 with provenance (P3.1a accepted), set up PyPI, JSR and Zenodo, sent the NAIF question and confirmed the assistant accounts. A second report the same day finished the repository settings, published the Firewall rules, moved npm's `latest` to rc.15 and set the calendar feeds' secret (G2 accepted). The list below keeps only what remains.
-
-**Overall delivery: 19%** — 34.25 of 182.45 weighted units accepted; blocked on owner or external action: 2% (4).
+**Overall delivery: 23%** — 42.5 of 182.45 weighted units accepted; blocked on owner or external action: 2% (4).
 
 The figure is computed by `node scripts/programme-ledger.mjs --summary` from [`acceptance-ledger.json`](acceptance-ledger.json). The method is in [README.md](README.md) and the unit list in [LEDGER.md](LEDGER.md).
 
-## What changed since checkpoint 5
+## What changed since checkpoint 6
 
-- **Production serves engine rc.14** (#600, merged as `6cc4d477`; deployment `dpl_2JtJjuE2bU8CYTBMxKF3kco43qcN`). The production engine chunk reports `0.1.1-rc.14`, and both pinned downloads match their published digests. The site takes secondary progressions from the package. Its chart calculations give the same numbers as on rc.10: 572,767 calls and 33,069,705 values compared exactly, with only the engine version and five invalid-date refusals differing.
-  - F-01, F-02, F-04, F-06, F-07, F-10–F-16 and the engine part of F-21 are in production;
-  - F-03 (`mcp:pack:check` in CI) is merged;
-  - the MCP adapter is `0.1.0-rc.14`, labelled `MIT AND CC-BY-4.0` with a NOTICE.
+The figure moves from 19% (34.25) to 23% (42.5).
 
-  Three units are accepted: secondary progressions in the package (P2.A.timing.progressions), the site importing them (P2.E.progressions) and the declination and out-of-bounds functions (P2.A.aspects.declination-oob). Configurable aspects (P2.A.aspects.configurable) move from failed to partial.
-- **The privacy fixes of #599 are in production** (merged as `aca257ad`, deployment `dpl_AuGvEUL1oJPenrfbFq3FkGH5V9s9`): F-17, F-18, F-19, F-26, F-27, F-40 and F-43–F-45.
-- **Swiss Ephemeris output is out of the site's tree** (F-22, #602), under the decisions of 2026-09-28 §3 and 2026-09-29 §2. History is not rewritten: `2ca93d41` is the last commit with every value.
-  - Removed: 10 files, per-case values from 133 files, 21 files rebuilt on the engine's own clock, and 148 lines of `swetest.c` in a receipt.
-  - `strip.py --check` runs in CI, and a guard test fails if any of it comes back under any name.
-  - The pages give the two programs' ΔT difference over 2100–2199 as statistics.
-  - `docs/engine-validation/SWISS-OUTPUT-REMOVAL.md` is the record.
-- **The ΔT values carry their attribution.**
-  - F-49: the MCP archives 0.1.0-rc.8 to rc.10 stay as released, and a notice beside them gives the attribution.
-  - F-50: the terms and methodology pages give the work, its DOI and its licence.
-- **F-51**, the Lighthouse gate failing on runner stalls, is recorded; the gate is unchanged.
-- **Decisions of 2026-09-29** ([DECISIONS-2026-09-29.md](DECISIONS-2026-09-29.md)):
-  1. the F-49 notice;
-  2. what removing Swiss output covers;
-  3. published worked examples in tests;
-  4. the IERS C04 values in the engine;
-  5. the hosted compute API's first version.
-- **Engine rc.15 is on the engine's `main`** ([zodiacs-org/engine#20](https://github.com/zodiacs-org/engine/pull/20), merged as `93ebae9f`): the time basis, Hellenistic timing and the Vedic techniques.
-  - A re-check found living people's birth data in commits of its local history. The history was rebuilt before the first push, so no commit carries it.
-  - The archive is `24eeb597…d348`, 190,974 bytes, and every gate passes.
+- **Production serves engine rc.15** (#603, merged as `2197e696`; deployment `dpl_Ax6saHNV85duCvdExDz7LpSHrLD7`, READY at 13:30 UTC). The engine chunk that `/birth-chart/` loads carries `0.1.1-rc.15`. The MCP archive 0.1.0-rc.15 and the engine archive that the install lines pin download with their published digests, and npm's `latest` is the same engine bytes ([`evidence/site-engine-rc15/`](../evidence/site-engine-rc15/README.md), "In production").
+  - The site's charts read an instant from 1972 to 2027-10-02 as UTC, on the IERS leap seconds and UT1 − UTC. Elsewhere its chart values agree with rc.14's within 0.000003″, the lunar nodes within 0.072″.
+  - The engine chunk's budget is 32,358 gzip bytes (DECISIONS-2026-09-30.md §2).
+  - The site keeps its own local-time resolver, declinations and sect (§4).
+  - F-35, F-36, F-39 and F-46 are in production, and F-52 to F-55 describe production since #603.
+- **The units rc.15 carries**, judged on its evidence (LEDGER.md gives each reason):
+  - accepted, 8.25: the leap-second table (P1.M3a), UT1 − UTC with its fallback band in sidereal time (P1.M3b), receipts with the time scale, tzdb version and transition (P1.M3d), time-5's six flag probes (P1.M3e), Julian calendar input in the package (P1.13b), profections, firdaria, zodiacal releasing and solar arcs (P2.A.timing), nakshatras and padas (P2.B.nakshatras), and the dashas (P2.B.dashas);
+  - validated, 1.75: the package's birthplace mean time and zone history (P1.01b, P1.12b) pass their lists and are on npm, but neither the site nor the MCP adapter calls them, and their gates ask for adoption;
+  - partial: the vargas lack the birth-time sensitivity output (P2.B.vargas), and KP the ruling planets (P2.B.kp);
+  - failed: five of the nine named ayanamsas miss the 0.01″ gate against Swiss, Krishnamurti by 0.071″, Raman 10.1″, Yukteswar 806″, True Pushya 0.54″ and the Galactic Centre 0.10″; Lahiri ICRC is not implemented (P2.B.ayanamsas).
+- **The owner's steps of 2026-09-30** put `@zodiacs/engine` 0.1.1-rc.15 on npm with provenance (P3.1a accepted) and then moved `latest` to it. They set up PyPI, JSR and Zenodo, sent the NAIF question, confirmed the assistant accounts, finished the repository settings (G2 accepted), published the Firewall rules and set the calendar feeds' secret.
+- **F-57**: the developer pages and the llms files still say that the engine is not on npm and that `npm view @zodiacs/engine` returns 404, and the claims ledger still marks that claim supported.
+- **Decisions of 2026-09-30** ([DECISIONS-2026-09-30.md](DECISIONS-2026-09-30.md)):
+  1. the Chinese solar terms wait for a Sun not fitted to JPL data;
+  2. the engine chunk's budget rises by rc.15's measured growth;
+  3. seven reference values that equal removed Swiss values stay;
+  4. declinations and sect wait for a pure entry point;
+  5. the site carries the 1972 UT1 − UTC values as the engine does.
 
 ## Steps that need the owner's accounts
 
@@ -68,35 +61,36 @@ Later, once the site has rebuilt the MCP server on the published engine: the sam
 
 ## Identities verified at this checkpoint
 
-**Site.** `main` = `23dd8cb7` (the daily sky of 2026-09-30, after #600 `6cc4d477`). Production serves it: `dpl_GhqWmtsbsk17JCsKC5ohHUtC5GFd`, READY. The site vendors engine rc.14.
+**Site.** `main` = `2197e696` (#603, a merge commit whose tree is its head `4bc853e1`'s). Production serves it: `dpl_Ax6saHNV85duCvdExDz7LpSHrLD7`, READY since 13:30:31 UTC, with the aliases `zodiacs.org` and `www.zodiacs.org`. The site vendors engine rc.15, and its engine chunk, `/_astro/full.Dc14JBf_.js`, carries `0.1.1-rc.15`.
 
-**Engine.** `main` = `93ebae9f` (PR #20): rc.15 on the rebuilt history `104bd5a` (source), `cbad72c` (carrier) and `07ed236` (gate records). CI passed every job on the PR's head.
+**Engine.** `main` = `d5326a88` (PR #21: the Python alpha and its PyPI publishing; the JavaScript package is rc.15's). rc.15 is `93ebae9f` (PR #20), on the rebuilt history `104bd5a` (source), `cbad72c` (carrier) and `07ed236` (gate records).
 
 | archive | SHA-256 | source | status |
 | --- | --- | --- | --- |
-| rc.14 | `adc9805e…476e` | `03db4bb6`, carried by `b221534` (merge `8deda244`) | the site vendors it; production serves it; npm waits for step 1 |
-| rc.15 | `24eeb597…d348` | `104bd5a`, carried by `cbad72c` (merge `93ebae9f`) | merged; not adopted |
+| rc.14 | `adc9805e…476e` | `03db4bb6`, carried by `b221534` (merge `8deda244`) | on npm, the one manual first upload |
+| rc.15 | `24eeb597…d348` | `104bd5a`, carried by `cbad72c` (merge `93ebae9f`) | the site vendors it; production serves it; on npm with provenance |
 
 The earlier archives are as checkpoint 5 lists them. rc.15's three local builds (`3651c525…`, `554ed7ea…`, `bddfb3b7…`) were never pushed; `artifacts/README.md` records them by digest.
 
+**npm.** `@zodiacs/engine`: `latest` and `next` are both `0.1.1-rc.15`, whose registry SHA-1 (`e4a49148…4862`) and SHA-512 integrity are those of `24eeb597…d348`. `@zodiacs/mcp-server` is not on npm.
+
+**PyPI.** `zodiacs` 0.1.0a1. **JSR.** The scope and package exist; nothing is published.
+
 **SDK.** `zodiacs-org/sdk` `main` = `a95dc0cf` (PR #14).
 
-**MCP.** Production serves `0.1.0-rc.14`, `40936e28…2f0f`, 75,220 bytes, pinned to `0f7e0cf2`.
-
-**Registries.** Nothing of the engine or platform is published. On 2026-09-29, npm returned 404 for `@zodiacs/engine`.
+**MCP.** Production serves `0.1.0-rc.15`, `567054c6…9657`, 86,944 bytes, pinned to `218de839`; it bundles engine rc.15.
 
 ## In progress
 
-- **The site's adoption of engine rc.15.** rc.15 grows the site's engine chunk by about 5 KB gzip over its 27,648-byte budget, from the time basis's tables; the adoption has to shrink that or raise the budget with its reason.
 - **Full IAU 2000B nutation**, on branch `feature-nutation` for rc.16. Against ERFA over 1800–2200, the nutation's share of every longitude falls from 0.252″ to 0.0037″ at most, and the ascendant's error from 0.824″ to 0.0063″. The planets' own series still dominate their longitudes, at up to about 19″. Against Swiss over 1850–2049 the ascendant is within 0.004″. The Koch ladder's worst case falls from 3.73″ to 0.035″ (F-33, P2.A.house.koch).
-- **The hosted compute API** (P3.3), on branch `compute-api`: six POST endpoints, a privacy negative-control test, budgets, a switch and receipts, per decision §5. Its PR follows this one.
-- **Opaque calendar feed ids** (P1.15), on branch `feed-ids`: the review's findings are fixed; the release waits for step 10.
-- **rc.16's pieces**, each on its own branch: the calculation API and frames, birth-time windows, the site's techniques in the package, house extras, and rise/set with planetary hours. The Chinese solar terms fit the Sun to DE430, which cannot ship before NAIF answers (step 7); they need another source first.
+- **The hosted compute API** (P3.3), on branch `compute-api`: six POST endpoints, a privacy negative-control test, budgets, a switch and receipts, per the decision of 2026-09-29 §5.
+- **Opaque calendar feed ids** (P1.15), on branch `feed-ids`: the review's findings are fixed; the release waits for the owner's step 4.
+- **rc.16's pieces**, each on its own branch: the calculation API and frames, birth-time windows, the site's techniques in the package, house extras, and rise/set with planetary hours. The Chinese solar terms are left out of rc.16, and return with a Sun that is not derived from a JPL ephemeris or when NAIF answers (DECISIONS-2026-09-30.md §1).
 
 ## Next
 
-1. Merge this PR and verify production.
-2. The site's adoption of engine rc.15, with the chunk-size decision.
-3. The compute API PR, then its latency and cost on production.
-4. rc.16: integrate the branches onto rc.15 and review them.
-5. The calendar feeds' release, once step 10 is done.
+1. Correct the developer pages, the llms files, the candidate record and the claims ledger's `product.engine-package` for the npm release, with the test that requires "Unpublished candidate" (F-57).
+2. The compute API PR, then its latency and cost on production.
+3. rc.16: integrate the branches onto rc.15 and review them. The units judged here also ask of a next candidate: an export for the time basis (F-53), declinations and sect from an entry point that loads no ephemeris (P2.E.declinations, P2.E.sect), the vargas' birth-time sensitivity (P2.B.vargas) and KP's ruling planets (P2.B.kp).
+4. Decide whether the site's forms resolve local times through `@zodiacs/engine/geo`, which P1.01b and P1.12b need; the two already agree on 264,455 wall times.
+5. The calendar feeds' release, once the owner's step 4 is done.

@@ -1,0 +1,41 @@
+{
+  "origin": "https://zodiacs.org",
+  "page": "/birth-chart/",
+  "checkedAt": "2026-09-30T14:08:34.180Z",
+  "entryScripts": 4,
+  "modulesReached": 112,
+  "fetchFailures": [],
+  "connectionRetries": 23,
+  "engineChunks": [
+    {
+      "path": "/_astro/full.Dc14JBf_.js",
+      "bytes": 434,
+      "sha256": "416c16ec6cb75c69e55785033aa92e73055f9a2e94a687f53b41311c54693cdb",
+      "staticClosureSize": 7,
+      "staticClosureVersions": [
+        {
+          "path": "/_astro/chunk-MFF3VKO3.DkBXfVur.js",
+          "versions": [
+            "0.1.1-rc.15"
+          ]
+        }
+      ]
+    }
+  ],
+  "modulesWithVersionStrings": [
+    {
+      "path": "/_astro/chunk-MFF3VKO3.DkBXfVur.js",
+      "versions": [
+        "0.1.1-rc.15"
+      ]
+    },
+    {
+      "path": "/_astro/receipt.CJu8tDDo.js",
+      "versions": [
+        "0.1.1-rc.15",
+        "0.1.1-rc.9",
+        "0.1.1-rc.10"
+      ]
+    }
+  ]
+}

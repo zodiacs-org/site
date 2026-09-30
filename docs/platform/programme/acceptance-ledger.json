@@ -1,7 +1,7 @@
 {
   "version": 1,
   "brief": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md (version 2) with the version 1 rules it retains",
-  "asOf": "2026-09-30 (site main 91cbb741, production dpl_AkpKhbZtdLghukbA47PAKEtx7kfn; engine main d5326a88; sdk main a95dc0cf; npm @zodiacs/engine 0.1.1-rc.15 under next)",
+  "asOf": "2026-09-30 (site main 2197e696, production dpl_Ax6saHNV85duCvdExDz7LpSHrLD7; engine main d5326a8; sdk main a95dc0cf; npm @zodiacs/engine 0.1.1-rc.15 latest)",
   "denominator": {
     "unit": "working days, from the brief's effort estimates (README.md)",
     "totalWeight": 182.45,
@@ -167,10 +167,15 @@
       "weight": 0.75,
       "gate": "the same acceptance list through the package entry point, released and adopted",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": [],
-      "notes": "engine resolveBirth (rc.10, rc.11) still converts with the zone alone: Buffalo 1870 −4:56:02 vs the site −5:15:31 (F-35)"
+      "status": "validated",
+      "release": "released",
+      "evidence": [
+        "engine rc.15 (zodiacs-org/engine#20, merged as 93ebae9f): step 1.1's list through @zodiacs/engine/geo (resolveLocalToUtc with a longitude, resolveLocalBirth), in src/geo/birthplace.test.ts: Buffalo 1870 −5:15:31, Brest 1880 −0:17:58, Omaha 1880 −6:23:46, New York 1870 and Chicago 1880 equal to the zone, Paris 1880 +0:09:24, Galway 1885, Brest 1900 and Porto 1890 unchanged, Bergen 1894 +0:21:17 where Intl gives +1:00, the Buffalo gap and Hartford fold of 1883-11-18, and receipts that validate with the mean time recorded (engine docs/evidence/time-2026-09-28/README.md, \"Acceptance cases\")",
+        "the all-zone round-trip scan through the package: 39,839 offset changes 1850–2037 and 278,869 wall minutes in the unit suite, and 65,237 changes 1850–2100 and 2,548,849 wall minutes in full scope, 0 failures (engine docs/evidence/rc15-20260929/recut/roundtrip-default.json, roundtrip-full.json); the tests pass on the published tree (engine docs/evidence/rc15-20260929/rebuilt/full-tests-v22.22.2.log; the carrier's CI jobs, rebuilt/carrier/)",
+        "released: @zodiacs/engine 0.1.1-rc.15 is on npm with provenance under latest and next (P3.1a; read again on 2026-09-30, docs/platform/evidence/site-engine-rc15/README.md, \"In production\")",
+        "docs/platform/evidence/site-engine-rc15/local-time.json: on 264,455 wall times 1850–1969 at 928 places, the site's resolver and rc.15's resolveLocalToUtc give the same instants and flags"
+      ],
+      "notes": "not adopted: the site resolves local times with its own src/lib/time/localToUtc.ts, and no deployed site code imports @zodiacs/engine/geo; the MCP adapter 0.1.0-rc.15 takes UTC or an explicit offset and resolves no zones (examples/mcp-server/candidate.json). Adoption needs the site's local-time resolution to call the package's prepareLocalTime and resolveLocalToUtc (or resolveBirth) with its own conversion removed, parity recorded and deployed, or the MCP adapter to resolve local births with resolveBirth; F-35's package part is fixed"
     },
     {
       "id": "P1.02",
@@ -360,10 +365,15 @@
       "weight": 1,
       "gate": "the same rule through the package, with Intl as a cross-check, released and adopted",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": [],
-      "notes": "engine resolveBirth: Stockholm 1947-07-01 12:00 gives +2:00 (F-35)"
+      "status": "validated",
+      "release": "released",
+      "evidence": [
+        "engine rc.15 (zodiacs-org/engine#20, merged as 93ebae9f): tzdb 2025c with backzone, compiled by zic, ships as 16 per-name-hash shards that @zodiacs/engine/geo loads through prepareLocalTime; results name the tzdb version and data form, and the host's Intl answers from 1970 and is the cross-check before it (engine docs/time.md; docs/evidence/time-2026-09-28/README.md)",
+        "the M3 rule through the package, src/geo/zone-history.test.ts on Node 22.22.2 (tzdb 2025c): Stockholm 1947-07-01 12:00 +60 where the host gives +120; of the 98-zone list's segments, 179 of 185 as the reference, with the same six reference differences as P1.12a (Tijuana ×3, Coral_Harbour ×3), and 8 \"-00\" spans left to Intl; the shards regenerate from the pinned tzdata archive (engine docs/evidence/rc15-20260929/recut/generators.log); the tests pass on the published tree (engine docs/evidence/rc15-20260929/rebuilt/full-tests-v22.22.2.log; the carrier's CI jobs, rebuilt/carrier/)",
+        "released: @zodiacs/engine 0.1.1-rc.15 is on npm with provenance under latest and next (P3.1a; read again on 2026-09-30, docs/platform/evidence/site-engine-rc15/README.md, \"In production\")",
+        "docs/platform/evidence/site-engine-rc15/local-time.json: on 264,455 wall times 1850–1969, the site's resolver (the same tzdb release, pinned in its own shards) and the package agree"
+      ],
+      "notes": "not adopted: the site resolves local times with its own src/lib/time/localToUtc.ts, and no deployed site code imports @zodiacs/engine/geo; the MCP adapter 0.1.0-rc.15 takes UTC or an explicit offset and resolves no zones (examples/mcp-server/candidate.json). Adoption needs the site's forms or the MCP adapter to resolve through @zodiacs/engine/geo, deployed; F-35's package part is fixed"
     },
     {
       "id": "P1.13a",
@@ -390,10 +400,14 @@
       "weight": 0.25,
       "gate": "the same rule through the package; unknown calendars refused, not ignored",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": [],
-      "notes": "engine resolveBirth silently ignores calendar:'julian' (F-36)"
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "engine rc.15 (zodiacs-org/engine#20, merged as 93ebae9f), src/geo/calendar.test.ts through @zodiacs/engine/geo: Petrograd 1917-10-25 12:00 Old Style gives the 1917-11-07 chart, the same instant and Sun as typing the Gregorian date; calendar values \"Julian\", \"old-style\", \"\", null and 1, and unknown keys, throw RangeError from resolveLocalToUtc and resolveBirth (F-36)",
+        "Julian↔Gregorian: the package passes, in both directions on every day from 1500 to 2199, the day-counter test the site's converter passes (src/lib/time/calendar.test.ts), and the site's converter agrees with swe_julday/swe_revjul on all 255,675 Julian dates of that range (docs/platform/evidence/engine-beyond-swiss/corpora/julian-vs-swiss.json), so the package does too; against an independent implementation of Richards's algorithm, 2,817,174 days from JDN 0 to Julian 3000-12-31 and 1,096,114 string round trips, 0 mismatches (engine docs/evidence/rc15-20260929/recut/jdn-richards.json)",
+        "docs/platform/evidence/site-engine-rc15/ (site vendors engine rc.15 since #603, merged as 2197e696; production dpl_Ax6saHNV85duCvdExDz7LpSHrLD7, its engine chunk carrying 0.1.1-rc.15)"
+      ],
+      "notes": "the site's birth forms keep their own Julian conversion (P1.13a); the package's adoption notes date 18 countries from public-domain sources"
     },
     {
       "id": "P1.14",
@@ -410,7 +424,7 @@
         "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md §1.14",
         "independent re-verification 2026-09-28 (A4), reproduced by running code: 80 claims, tests 33/33; 5 of 11 planted sentences caught"
       ],
-      "notes": "developer docs and trigger-free claims escape the extractor (F-23)"
+      "notes": "developer docs and trigger-free claims escape the extractor (F-23); the claim product.engine-package still says npm view returns 404, on a registry read of 2026-09-23, after the engine was published on 2026-09-30 (F-57)"
     },
     {
       "id": "P1.15",
@@ -437,9 +451,14 @@
       "weight": 0.5,
       "gate": "UTC→TT through a leap-second table; tests at leap-second boundaries",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "engine rc.15 (zodiacs-org/engine#20, merged as 93ebae9f): from 1972, TT = UTC + (TAI − UTC) + 32.184 s from the IERS leap-second list (updated 2026-07-06, expires 2027-06-28); src/time-scale.test.ts checks UTC, TT and UT1 input on either side of each of the 27 leap seconds; the tests pass on the published tree (engine docs/evidence/rc15-20260929/rebuilt/full-tests-v22.22.2.log; the carrier's CI jobs, rebuilt/carrier/)",
+        "through the public API against IERS Bulletin C 72: all 28 changes, 58 checks, 0 failures, on 0.1.1-rc.15 (engine docs/evidence/rc15-20260929/leap-seconds.json); the conformance suite's 9 TT − UTC vectors go from fail to pass, residuals up to 2.0e-8 s (conformance-changes.json)",
+        "used by the site's charts from 1972 to 2027-10-02, compared on both sides of every leap second (docs/platform/evidence/site-engine-rc15/site-outputs.json); docs/platform/evidence/site-engine-rc15/ (site vendors engine rc.15 since #603, merged as 2197e696; production dpl_Ax6saHNV85duCvdExDz7LpSHrLD7, its engine chunk carrying 0.1.1-rc.15)"
+      ],
+      "notes": "after 2027-06-28 the list is carried past its expiry (engine docs/evidence/rc15-20260929/README.md, \"What is not established\")"
     },
     {
       "id": "P1.M3b",
@@ -450,9 +469,14 @@
       "weight": 0.75,
       "gate": "UT1−UTC from finals with predictions; ±0.9 s fallback band; sidereal time uses it",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "engine rc.15 (zodiacs-org/engine#20, merged as 93ebae9f): UT1 − UTC from IERS finals2000A.all of 2026-09-24, observed and then predicted to 2027-10-02, and EOP 20 C04 for 1972; src/time-scale.test.ts reproduces every daily IERS value within the table's stated bound (within 0.79 ms of finals2000A.all, 0.66 ms of C04) (engine docs/evidence/time-2026-09-28/README.md; rc15-20260929/README.md); the tests pass on the published tree (engine docs/evidence/rc15-20260929/rebuilt/full-tests-v22.22.2.log; the carrier's CI jobs, rebuilt/carrier/)",
+        "outside the table UT1 − UTC is 0 within the ±0.9 s band (UT1_FALLBACK_BAND, source \"fallback\"), and the table's edges are labelled by it (engine docs/evidence/rc15-20260929/time-basis-fixes.json, tableEdges); UT1 drives the Earth rotation angle and sidereal time, TT the positions",
+        "used by the site's charts: from 1972 to 2027-10-02 their angles move with UT1 − UTC, the midheaven by up to 12.69″ and the ascendant by up to 62.69″ at 69.6° N (docs/platform/evidence/site-engine-rc15/site-outputs.json, clock-difference.json); docs/platform/evidence/site-engine-rc15/ (site vendors engine rc.15 since #603, merged as 2197e696; production dpl_Ax6saHNV85duCvdExDz7LpSHrLD7, its engine chunk carrying 0.1.1-rc.15)"
+      ],
+      "notes": "values after 2026-09-24 are IERS predictions; before 1972 and after 2027-10-02 an instant is still read as UT1 on the ΔT model"
     },
     {
       "id": "P1.M3c",
@@ -476,10 +500,14 @@
       "weight": 0.5,
       "gate": "receipt fields present and validated",
       "dependsOn": [],
-      "status": "partial",
-      "release": "none",
-      "evidence": [],
-      "notes": "receipts carry ΔT with model, band and table digest (1.4); no UT1−UTC, leap seconds or tzdb version"
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "engine rc.15 (zodiacs-org/engine#20, merged as 93ebae9f): the time-basis conventions set records receipt.timeScale and result.timeScale (ΔT with σ and model, UT1 − UTC with source and band, leap seconds) and, in the local resolution, the calendar as written, tzdbVersion, dataForm, the clock, the applied transition and the birthplace's mean time; parseNatalEnvelope checks each field present against the offsets and flags (src/receipt.ts)",
+        "src/receipt-time-basis.test.ts (52 tests, altered fields refused) and src/geo/flags.test.ts (the six probes' receipts carry the transition's cause); the tests pass on the published tree (engine docs/evidence/rc15-20260929/rebuilt/full-tests-v22.22.2.log; the carrier's CI jobs, rebuilt/carrier/)",
+        "docs/platform/evidence/site-engine-rc15/ (site vendors engine rc.15 since #603, merged as 2197e696; production dpl_Ax6saHNV85duCvdExDz7LpSHrLD7, its engine chunk carrying 0.1.1-rc.15): the calculator's receipts use the time-basis set"
+      ],
+      "notes": "the site's calculator receipts carry the time basis, but their local record keeps rc.14's six fields, since the site's own resolver gives no tzdb version or transition record (src/lib/engine/calculator-receipt.ts)"
     },
     {
       "id": "P1.M3e",
@@ -490,10 +518,14 @@
       "weight": 0.5,
       "gate": "flags derived from transition records; six probes pass",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": [],
-      "notes": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md \"Version 1's other M3 rules\": NOT RUN"
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "engine rc.15 (zodiacs-org/engine#20, merged as 93ebae9f), src/geo/flags.test.ts, \"time-5's six flag probes\": Guam 1890 lmt (a local mean time in whole minutes); Kolkata 1900 and Monrovia 1960 legal, no flag; New York 1883-11-18 12:02 a fold caused by a legal change, with lmt; Apia 2011-12-30 and Kwajalein 1993-08-21 gaps across the date line; each through a receipt that validates and carries the cause; the tests pass on the published tree (engine docs/evidence/rc15-20260929/rebuilt/full-tests-v22.22.2.log; the carrier's CI jobs, rebuilt/carrier/)",
+        "the flags come from the tzdb transition record: lmt only for a local mean time, and every gap or fold with its cause (dst, legal-change or date-line) in jump; dst-gap and dst-fold stay, deprecated, for a gap or fold of any cause (engine docs/evidence/time-2026-09-28/README.md, \"M3e\")",
+        "docs/platform/evidence/site-engine-rc15/ (site vendors engine rc.15 since #603, merged as 2197e696; production dpl_Ax6saHNV85duCvdExDz7LpSHrLD7, its engine chunk carrying 0.1.1-rc.15)"
+      ],
+      "notes": "PREREGISTRATION.md's \"NOT RUN\" is the site's Phase 1 record, from before rc.15; since #603 the site gives lmt the package's meaning, and the two agree on the flags of 264,455 wall times 1850–1969 (docs/platform/evidence/site-engine-rc15/local-time.json)"
     },
     {
       "id": "P2.A.house.whole",
@@ -958,9 +990,14 @@
       "weight": 0.75,
       "gate": "fixtures from cited worked examples",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "engine rc.15 (zodiacs-org/engine#20, merged as 93ebae9f), @zodiacs/engine/timing, src/timing/solar-arc.test.ts: Saunders, Solar Arc Directions (1996), Figures 1–3 (pp. 3–5): the true solar arcs 42°20.008′, 39°27.001′ and 19°9.053′ against the printed 42°20′, 39°27′ and 19°09′, and each figure's 14 directed rows reproduced exactly from its printed radix (engine docs/evidence/timing-hellenistic-2026-09-28/README.md, §4)",
+        "the tests pass on the published tree (engine docs/evidence/rc15-20260929/rebuilt/full-tests-v22.22.2.log; the carrier's CI jobs, rebuilt/carrier/); a chart given on UT1 or TT directs from its UTC instant (src/timing/solar-arc.test.ts, \"solar arcs and a chart's own clock\")",
+        "docs/platform/evidence/site-engine-rc15/ (site vendors engine rc.15 since #603, merged as 2197e696; production dpl_Ax6saHNV85duCvdExDz7LpSHrLD7, its engine chunk carrying 0.1.1-rc.15)"
+      ],
+      "notes": "published worked examples about people who have died, cited with page, as DECISIONS-2026-09-29.md §3 allows; arcs in right ascension and the Naibod and one-degree keys are not offered"
     },
     {
       "id": "P2.A.timing.primary-directions",
@@ -984,9 +1021,14 @@
       "weight": 0.75,
       "gate": "cited worked examples",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "engine rc.15 (zodiacs-org/engine#20, merged as 93ebae9f), @zodiacs/engine/timing, src/timing/profections.test.ts: Valens, Anthologies IV.11 (tr. Riley, p. 78), the Ascendant in Virgo in the 35th year profected to Cancer, house 11, the Moon ruling, and the Moon and Venus to Virgo and Scorpio; Brennan, The Astrology Podcast ep. 153, its imagined chart with Cancer rising; al-Bīrūnī, Book of Instruction §§522–524, the thirteenth month repeating the year's sign (engine docs/evidence/timing-hellenistic-2026-09-28/README.md, §1)",
+        "the tests pass on the published tree (engine docs/evidence/rc15-20260929/rebuilt/full-tests-v22.22.2.log; the carrier's CI jobs, rebuilt/carrier/)",
+        "docs/platform/evidence/site-engine-rc15/ (site vendors engine rc.15 since #603, merged as 2197e696; production dpl_Ax6saHNV85duCvdExDz7LpSHrLD7, its engine chunk carrying 0.1.1-rc.15)"
+      ],
+      "notes": "the dated checks run on invented charts counted by hand, which replace the podcast's living people (DECISIONS-2026-09-29.md §3); the \"solar\", \"thirteenths\" and \"twelfths\" month conventions are named, and none is a source's rule as stated; the site does not use @zodiacs/engine/timing"
     },
     {
       "id": "P2.A.timing.firdaria",
@@ -997,9 +1039,14 @@
       "weight": 0.75,
       "gate": "cited worked examples",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "engine rc.15 (zodiacs-org/engine#20, merged as 93ebae9f), @zodiacs/engine/timing, src/timing/firdaria.test.ts: Birchfield, \"The Fardārāt in Nativities\" (2020), Tables 1–3, the day sequence and both night sequences (Bonatti, Abu Maʿshar) with their end ages and the Sun, Venus, Mercury and Moon sub-periods; Abu Maʿshar IV.7.24 as Birchfield quotes it, the nodes from year 71 by day and by night; al-Bīrūnī, Book of Instruction §438 (tr. Wright, p. 48), the order, years and shares (engine docs/evidence/timing-hellenistic-2026-09-28/README.md, §2)",
+        "the tests pass on the published tree (engine docs/evidence/rc15-20260929/rebuilt/full-tests-v22.22.2.log; the carrier's CI jobs, rebuilt/carrier/)",
+        "docs/platform/evidence/site-engine-rc15/ (site vendors engine rc.15 since #603, merged as 2197e696; production dpl_Ax6saHNV85duCvdExDz7LpSHrLD7, its engine chunk carrying 0.1.1-rc.15)"
+      ],
+      "notes": "where a source contradicts its own stated rule (Birchfield's Saturn, Jupiter and Mars rows; four shares in al-Bīrūnī's typescript) the fixtures keep the rule and the README records the printed figure; no dated firdaria example on a nativity was found in a verifiable source, so dated boundaries are checked against solar returns"
     },
     {
       "id": "P2.A.timing.releasing",
@@ -1010,9 +1057,14 @@
       "weight": 1,
       "gate": "cited worked examples",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "engine rc.15 (zodiacs-org/engine#20, merged as 93ebae9f), @zodiacs/engine/timing, src/timing/releasing.test.ts: Valens, Anthologies IV.4–IV.10 (tr. Riley, pp. 71–77): the IV.10 table of years, months, days and hours, the Aries and Gemini sequences with the loosing of the bond, Fortune in Leo and Daimon in Scorpio to 69 years 4 months (IV.8), 33 years and 23 days (IV.9) and the Pisces periods to the fourth level (IV.10); Saunders (1996), the Lot of Fortune of two figures within 1.5′ (engine docs/evidence/timing-hellenistic-2026-09-28/README.md, §3)",
+        "the tests pass on the published tree (engine docs/evidence/rc15-20260929/rebuilt/full-tests-v22.22.2.log; the carrier's CI jobs, rebuilt/carrier/)",
+        "docs/platform/evidence/site-engine-rc15/ (site vendors engine rc.15 since #603, merged as 2197e696; production dpl_Ax6saHNV85duCvdExDz7LpSHrLD7, its engine chunk carrying 0.1.1-rc.15)"
+      ],
+      "notes": "IV.10's fourth-level date is a whole-day count, and both readings are tested (discrepancy 1); invented charts replace the podcast's living people; \"julian-365.25\" has no published worked example and is tested by its scaling only"
     },
     {
       "id": "P2.A.timing.planetary-returns",
@@ -1131,9 +1183,15 @@
       "weight": 2,
       "gate": "≤ 0.01″ from get_ayanamsa_ex_ut; each definition cited",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "failed",
+      "release": "deployed",
+      "evidence": [
+        "engine rc.15 (zodiacs-org/engine#20, merged as 93ebae9f), @zodiacs/engine/vedic: the mean ayanamsa against swe_get_ayanamsa_ex_ut (pyswisseph 2.10.03 as an instrument) at 14,647 instants 1800–2200, statistics only (engine docs/evidence/rc15-20260929/ayanamsa-swiss.json; the published build's ayanamsas are within 7.7e-11″ of the build measured, recut/ayanamsa-engine.json); within 0.01″: Lahiri 0.001284″, Fagan–Bradley 0.000910″, True Chitra 0.002000″, True Revati 0.004363″, user-defined 0.001006″, 0.001223″ and 0.001285″",
+        "over the gate: Krishnamurti 0.071153″ (epoch 1900-01-01 0h TT, where Swiss uses J1900.0), Raman 10.137788″ and Yukteswar 806.15428″ (the cited texts' definitions, not Swiss's constants), True Pushya 0.543838″ (12 instants with δ Cnc within 0.2° of the Sun) and the Galactic Centre 0.100779″ (catalogue data)",
+        "each definition cited (engine docs/vedic.md; engine docs/evidence/vedic-2026-09-28/README.md); the epoch and star ayanamsas agree with ERFA to 4.3e-7″ and 0.00077″, and Lahiri with the Indian Astronomical Ephemeris 2027 to 0.0044″ (mean) and 0.0505″ (true)",
+        "docs/platform/evidence/site-engine-rc15/ (site vendors engine rc.15 since #603, merged as 2197e696; production dpl_Ax6saHNV85duCvdExDz7LpSHrLD7, its engine chunk carrying 0.1.1-rc.15)"
+      ],
+      "notes": "FAIL on five of the nine named definitions; Lahiri ICRC is not implemented (userAyanamsa takes any value at an epoch); given Swiss's own constants the engine matches Krishnamurti, Raman and Yukteswar within 0.0024″, so those three differ by definition"
     },
     {
       "id": "P2.B.nakshatras",
@@ -1144,9 +1202,13 @@
       "weight": 0.5,
       "gate": "exact on boundary fixtures",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "engine rc.15 (zodiacs-org/engine#20, merged as 93ebae9f), @zodiacs/engine/vedic nakshatraOf: exact on the 108 nakshatra and pada boundaries (324 points) of src/vedic/fixtures/boundaries.json, whose values come from the texts by exact rational arithmetic without the engine (engine docs/evidence/vedic-2026-09-28/README.md, \"Boundary fixtures\"); src/vedic/boundaries.test.ts passes on the published tree (engine docs/evidence/rc15-20260929/rebuilt/full-tests-v22.22.2.log)",
+        "docs/platform/evidence/site-engine-rc15/ (site vendors engine rc.15 since #603, merged as 2197e696; production dpl_Ax6saHNV85duCvdExDz7LpSHrLD7, its engine chunk carrying 0.1.1-rc.15)"
+      ],
+      "notes": "lords and order from BPHS 46; a degree–minute boundary that is not a double is placed by its rounding (engine docs/vedic.md)"
     },
     {
       "id": "P2.B.dashas",
@@ -1157,9 +1219,14 @@
       "weight": 2,
       "gate": "boundaries within 5 s of an independent first-principles computation",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "engine rc.15 (zodiacs-org/engine#20, merged as 93ebae9f), @zodiacs/engine/vedic: Vimshottari to five levels, and Yogini and Ashtottari, each under a named yearLength (julian 365.25, tropical 365.2422 or savana 360 days) that the result records; against an independent exact-rational implementation of the BPHS rules, 402,240 periods over 240 cases, largest difference 2.26 µs against the 5 s gate, no lord or count mismatch (engine docs/evidence/vedic-2026-09-28/results/dasha-independent.json); BPHS 46's published balance, Ketu 2 months 3 days, matches",
+        "the same tool run on the rc.15 archive production vendors gives the same output apart from the version label (docs/platform/evidence/site-engine-rc15/dasha-independent-rc15.json)",
+        "docs/platform/evidence/site-engine-rc15/ (site vendors engine rc.15 since #603, merged as 2197e696; production dpl_Ax6saHNV85duCvdExDz7LpSHrLD7, its engine chunk carrying 0.1.1-rc.15)"
+      ],
+      "notes": "Yogini and Ashtottari give mahadashas only; the brief's 365.2564-day sidereal year and the Sun's actual return are not offered, and the natal receipt has no Vedic field; balances come from the Moon's arc, not bhayat and bhabhog"
     },
     {
       "id": "P2.B.vargas",
@@ -1170,9 +1237,13 @@
       "weight": 2,
       "gate": "exact on boundary fixtures",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "partial",
+      "release": "deployed",
+      "evidence": [
+        "engine rc.15 (zodiacs-org/engine#20, merged as 93ebae9f), @zodiacs/engine/vedic vargaOf: the sixteen Parashari vargas and the cyclic D2 and D3 exact on their 3,480 boundaries (10,440 points) of src/vedic/fixtures/boundaries.json, whose values come from the texts by exact rational arithmetic without the engine (engine docs/evidence/vedic-2026-09-28/README.md, \"Boundary fixtures\"); src/vedic/boundaries.test.ts passes on the published tree (engine docs/evidence/rc15-20260929/rebuilt/full-tests-v22.22.2.log); variants named, and the Kashinatha hora and the Jagannatha and Somanatha drekkanas refused by name",
+        "docs/platform/evidence/site-engine-rc15/ (site vendors engine rc.15 since #603, merged as 2197e696; production dpl_Ax6saHNV85duCvdExDz7LpSHrLD7, its engine chunk carrying 0.1.1-rc.15)"
+      ],
+      "notes": "the time-sensitivity output the unit names (the minutes of birth time before each varga sign changes, brief §3 Phase 2 B) is not implemented"
     },
     {
       "id": "P2.B.panchang",
@@ -1198,9 +1269,13 @@
       "weight": 1,
       "gate": "exact on boundary fixtures",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "partial",
+      "release": "deployed",
+      "evidence": [
+        "engine rc.15 (zodiacs-org/engine#20, merged as 93ebae9f), @zodiacs/engine/vedic kpLordsOf and KP_SUBS: the sign, star, sub and sub-sub lords exact on 2,193 boundaries (2,187 sub-sub boundaries and 6 sign cuts; 6,579 points) of src/vedic/fixtures/boundaries.json, whose values come from the texts by exact rational arithmetic without the engine (engine docs/evidence/vedic-2026-09-28/README.md, \"Boundary fixtures\"); src/vedic/boundaries.test.ts passes on the published tree (engine docs/evidence/rc15-20260929/rebuilt/full-tests-v22.22.2.log); for any sidereal longitude, siderealChart's Placidus cusps included",
+        "docs/platform/evidence/site-engine-rc15/ (site vendors engine rc.15 since #603, merged as 2197e696; production dpl_Ax6saHNV85duCvdExDz7LpSHrLD7, its engine chunk carrying 0.1.1-rc.15)"
+      ],
+      "notes": "the ruling planets the unit names are not implemented"
     },
     {
       "id": "P2.C.solar-terms",
@@ -1303,7 +1378,7 @@
       "evidence": [
         "engine rc.11"
       ],
-      "notes": "site still computes parallels with its own code on a fixed obliquity"
+      "notes": "site still computes parallels with its own code on a fixed obliquity; rc.15 exports the package's parallels only from the root entry's shared chunk, which loads astronomy-engine: decided 2026-09-30 (DECISIONS-2026-09-30.md §4, F-54), the site keeps its own until an entry point that loads no ephemeris exports them"
     },
     {
       "id": "P2.E.aspect-patterns",
@@ -1358,7 +1433,7 @@
       "evidence": [
         "engine rc.10 sectOf"
       ],
-      "notes": "site does not import it"
+      "notes": "site does not import it; rc.15 exports sectOf only from the root entry's shared chunk, which loads astronomy-engine, and decides sect by the Sun's ecliptic arc where the site uses its altitude: decided 2026-09-30 (DECISIONS-2026-09-30.md §4, F-54), the site keeps its own until an entry point that loads no ephemeris exports it"
     },
     {
       "id": "P2.E.moon-sign-candidates",
@@ -1517,7 +1592,7 @@
       "status": "partial",
       "release": "none",
       "evidence": [],
-      "notes": "local stdio MCP adapter 0.1.0-rc.14 (bundling engine rc.14) with three tools; no remote server, no registry entry"
+      "notes": "local stdio MCP adapter 0.1.0-rc.15 (bundling engine rc.15; production serves it since #603) with three tools; no remote server, no registry entry"
     },
     {
       "id": "P3.7",
