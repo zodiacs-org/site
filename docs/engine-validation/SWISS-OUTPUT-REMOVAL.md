@@ -39,10 +39,12 @@ more significant digits, a whole number of twelve or more digits (a
 millisecond clock) that is not a whole minute, or a timestamp with a
 fraction of a second that is not on a whole minute. Each
 digest is the first 16 hexadecimal digits of the token's SHA-256, a
-membership test rather than a way back to the value. 40,604 of them are
+membership test rather than a way back to the value. 40,597 of them are
 "gone": no data or code file and nothing under `src/` holds them. The other
-3,467 are "kept", because they still appear there as inputs, statistics or
-reference values; the last sections say which. `strip.py` and
+3,474 are "kept", because they still appear there as inputs, statistics or
+reference values; the last sections say which. (Until 2026-09-30 the split was
+40,604 and 3,467; "The independent references on engine rc.15's clock" below
+says why seven moved.) `strip.py` and
 `scripts/lib/swiss-output-scan.mjs` read a token the same way, and the
 digests carry calibration texts that hold the two to it.
 
@@ -558,7 +560,7 @@ Python 3.11 and the hashed `tools/requirements.txt`.
 ## What remains in the tree, and why
 
 The guard's digests say exactly what remains. Of the 44,071 distinctive
-tokens that left, these 3,467 still appear in a data or code file or under
+tokens that left, these 3,474 still appear in a data or code file or under
 `src/`:
 
 - 2,562 are the instants of the nutation and dense grids, which were the
@@ -580,7 +582,10 @@ tokens that left, these 3,467 still appear in a data or code file or under
 - 26 are case inputs and receipts: the birthplaces' coordinates, the JPL
   longitudes the eight-case fixture carried (now in `horizons-reference.json`)
   and the transit targets taken from them, the node/polar acquisition's
-  timestamps, and the coverage of the ephemeris files it loaded.
+  timestamps, and the coverage of the ephemeris files it loaded;
+- 7 are independent reference values that equal a removed value since engine
+  rc.15's clock: five Terrestrial Time instants of UTC cases, and one Horizons
+  lunar crossing (below).
 
 An extreme keeps the case it came from, as the decisions allow: with the
 engine's value for that case, it gives Swiss's value there back, one value
@@ -589,6 +594,27 @@ extremes too, for example the largest difference up to 2026 with its body
 and year.
 
 `vendor/`, the engine archives and the Registry wing were not touched.
+
+### The independent references on engine rc.15's clock, 2026-09-30
+
+Engine 0.1.1-rc.15 reads an instant from 1972 to 2027-10-02 as UTC: TT =
+UTC + (TAI − UTC) + 32.184 s, from the IERS leap seconds. That is the
+definition Swiss's `swe_utc_to_jd` applies, and the removed node and polar
+fixture recorded the TT of its UTC cases that way. The independent references,
+rebuilt on rc.15's clock (`independent-references/README.md`, "Clock"), now
+hold the same TT for five of those instants: 2001-12-21T09:00Z,
+2001-12-21T09:30Z, 2005-03-15T00:00Z, 2020-01-01T00:00Z and
+2026-07-01T00:00Z, as `input.jdTT` in `independent-node-polar.json` and, for
+three of them, in the Horizons queries and responses they were taken from.
+And the first return of the lunar pack's `L-modern-a`, the root of the Horizons
+Moon carried to UTC on the same clock, falls on the millisecond Swiss's return
+did: `expectedMilliseconds` and `independentChartUTC` in
+`independent-lunar-returns.json`. None of these came from Swiss: the TT
+instants follow from the UTC instant and the leap-second list, and the
+crossing from Horizons DE441. The guard matched them by value, so their seven
+digests moved from "gone" to "kept" in `value-digests.json`, whose SHA-256
+and counts `manifest.json` records; `strip.py --check` confirms the two lists
+still hold exactly the digests of what was removed.
 
 ## Dated records that keep quoted figures
 

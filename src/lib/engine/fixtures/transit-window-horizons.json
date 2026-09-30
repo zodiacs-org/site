@@ -4,24 +4,27 @@
   "arbiters": {
     "positions": "NASA JPL Horizons API 1.2, DE441: observer-centred apparent ecliptic longitude of date (QUANTITIES 31, CENTER 500@399, airless, TIME_TYPE TT); Mars to Pluto as system barycentres (NAIF 4-9).",
     "trueNode": "Ascending node of the Moon's osculating orbit from Horizons DE441 geometric geocentric state vectors (VECTORS, ICRF): h = r x v, rotated with ERFA pnm06a and the true obliquity into the true ecliptic and equinox of date; speed by central difference over +-0.001 day.",
-    "angles": "ERFA 2.0.1 (pyerfa 2.0.1.5): GAST = gst06a with UT1 taken as the instant, as the engine does; true obliquity = obl06 + Delta-epsilon of nut06a; ASC, MC and Placidus by the conformance suite's L2 construction (zodiacs-org/engine 8c4946b1, CC0); whole-sign cusps from the ASC where |latitude| >= 90 deg - true obliquity.",
+    "angles": "ERFA 2.0.1 (pyerfa 2.0.1.5): GAST = gst06a at the engine's UT1 and TT for the instant; true obliquity = obl06 + Delta-epsilon of nut06a; ASC, MC and Placidus by the conformance suite's L2 construction (zodiacs-org/engine 8c4946b1, CC0); whole-sign cusps from the ASC where |latitude| >= 90 deg - true obliquity.",
     "events": "Roots of the Horizons longitude interpolated from a uniform TT table (nine-point Lagrange), refined to 1e-9 day; each band is the connected set on the root's monotonic branch where the longitude is within the predeclared budget of its level, with 1 s of padding each side."
   },
-  "clock": "Each instant is evaluated at the engine's own TT for it: UT is the instant, TT = UT + Delta T of model zodiacs-deltat/1 (table 6371988c510a1c6c), as astronomy-engine's MakeTime reads it with the engine's clock installed (tools/engine-clock.ts). A comparison therefore measures positions and angles, not Delta T; the clock is checked against the IERS in docs/platform/evidence/deltat-2026-09-25/.",
+  "clock": "Each instant is evaluated at the engine's own UT1 and TT for it, as the engine makes astronomy-engine's time (tools/engine-clock.ts): from 1972-01-01 to 2027-10-02 the instant is read as UTC, with TT = UTC + (TAI - UTC) + 32.184 s from the IERS leap seconds and UT1 = UTC + (UT1 - UTC) (basis iers-utc/1, table 064d98b4a531053a); at any other instant UT1 is the instant and TT = UT1 + Delta T of model zodiacs-deltat/1 (table 6371988c510a1c6c). A comparison therefore measures positions and angles, not the clock; the clock is checked against the IERS in docs/platform/evidence/deltat-2026-09-25/.",
   "engineClock": {
-    "engineVersion": "0.1.1-rc.14",
+    "engineVersion": "0.1.1-rc.15",
     "deltaTModel": "zodiacs-deltat/1",
     "deltaTTable": "2026-09-24",
-    "deltaTTableDigest": "6371988c510a1c6c"
+    "deltaTTableDigest": "6371988c510a1c6c",
+    "iersModel": "iers-utc/1",
+    "iersTable": "2026-09-24",
+    "iersTableDigest": "064d98b4a531053a"
   },
   "generator": {
     "command": "python3 docs/engine-validation/independent-references/tools/build.py",
     "sources": {
       "docs/engine-validation/independent-references/cases.json": "eecfa25c5408b4c11baf5f2f73df93ba333850f7ba00c3ae0a1f0cab8d60520e",
-      "docs/engine-validation/independent-references/tools/build.py": "33ac83f46f24cf889ec570cbad1e37c7e9d61057111daf99478c157db4506184",
-      "docs/engine-validation/independent-references/tools/engine-clock.ts": "aa7f7724082b3798eb4728fa60b1e630612773e732bb236b97bc98348ce9d1a7",
+      "docs/engine-validation/independent-references/tools/build.py": "de1138a4cad5da3644a9674605a9b0857e2fa5e1c08df3426bec2916776cc4f8",
+      "docs/engine-validation/independent-references/tools/engine-clock.ts": "37d5ccc0e744a88220c98249ae28207a760fbabcecd0b3f3c610ef2b2a97b408",
       "docs/engine-validation/independent-references/tools/geometry.py": "c7ec362ff44a7ffa7d88229695f6b9d9b5af74b8289b268888ed5b5342f7147c",
-      "docs/engine-validation/independent-references/tools/horizons.py": "344a4e4bce3bd6efb0d7db147e554af172a4fd59205fb290a6db209aed9c50d8",
+      "docs/engine-validation/independent-references/tools/horizons.py": "c734a652b01c8f78efe1ed696d0f1ffb28737e24debe47f9b3e60b1ec0478a85",
       "docs/engine-validation/independent-references/tools/series.py": "dfc0d9e14b417e534ca327ef92402fc0b0b4c42418154e9ee02be14682d35490"
     },
     "pyerfa": "2.0.1.5",
@@ -29,7 +32,7 @@
   },
   "horizonsManifest": {
     "path": "docs/engine-validation/independent-references/horizons/MANIFEST.json",
-    "sha256": "b4088ed1a8d7dbaab5f2fd2e2262cc9f99ff85cfcb75931bd715021e39bb4355"
+    "sha256": "3eb362a7eb57bb921d8519453ff03f94344dede7e86a8cd2c9722fce27fb3a8f"
   },
   "noSwiss": "No Swiss Ephemeris code or output is read or reproduced here.",
   "conditioningNotes": {},
@@ -61,22 +64,22 @@
           "offset": 0,
           "components": [
             {
-              "startUtc": "2019-12-18T23:17:40.949Z",
-              "endUtc": "2020-01-14T01:58:12.536Z",
+              "startUtc": "2019-12-18T23:17:41.120Z",
+              "endUtc": "2020-01-14T01:58:12.712Z",
               "startClipped": false,
               "endClipped": false,
               "entryBandMs": [
-                1576692219197,
-                1576729898421
+                1576692219368,
+                1576729898592
               ],
               "exitBandMs": [
-                1578948113059,
-                1578986078668
+                1578948113235,
+                1578986078844
               ],
               "exactBandsMs": [
                 [
-                  1577818052436,
-                  1577855549017
+                  1577818052612,
+                  1577855549193
                 ]
               ],
               "localMinima": [],
@@ -95,12 +98,12 @@
           "toUtc": "2020-01-01T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 24.901031908187406,
+              "orbDegrees": 24.901031995299718,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 1.2214809430588502e-07,
+              "orbDegrees": 3.467422402536613e-07,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": true
             }
@@ -109,7 +112,7 @@
             {
               "startClipped": false,
               "endClipped": true,
-              "sourceExactCount": 1
+              "sourceExactCount": 0
             }
           ]
         },
@@ -120,12 +123,12 @@
           "toUtc": "2020-12-31T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 1.2214809430588502e-07,
+              "orbDegrees": 3.467422402536613e-07,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": true
             },
             {
-              "orbDegrees": 25.884774503397693,
+              "orbDegrees": 25.884774039967624,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -134,7 +137,7 @@
             {
               "startClipped": true,
               "endClipped": false,
-              "sourceExactCount": 0
+              "sourceExactCount": 1
             }
           ]
         }
@@ -144,7 +147,7 @@
       "id": "B-Saturn1990",
       "movingBody": "Saturn",
       "natalPoint": "Saturn",
-      "targetLongitudeDegrees": 289.2786878,
+      "targetLongitudeDegrees": 289.2786882,
       "targetKind": "natal-saturn",
       "angularBudgetDegrees": 0.1,
       "natalComponentBudgetDegrees": 0.05,
@@ -162,26 +165,26 @@
           "offset": 0,
           "components": [
             {
-              "startUtc": "2019-02-13T11:59:27.403Z",
-              "endUtc": "2019-07-22T14:35:42.323Z",
+              "startUtc": "2019-02-13T11:59:27.797Z",
+              "endUtc": "2019-07-22T14:35:41.947Z",
               "startClipped": false,
               "endClipped": false,
               "entryBandMs": [
-                1549974086034,
-                1550144910053
+                1549974086425,
+                1550144910450
               ],
               "exitBandMs": [
-                1563684462466,
-                1563928951702
+                1563684462094,
+                1563928951322
               ],
               "exactBandsMs": [
                 [
-                  1553044636837,
-                  1553327129408
+                  1553044637448,
+                  1553327130062
                 ],
                 [
-                  1559923617047,
-                  1560225047743
+                  1559923616520,
+                  1560225047256
                 ]
               ],
               "localMinima": [],
@@ -190,22 +193,22 @@
               "exactTopology": "resolved"
             },
             {
-              "startUtc": "2019-11-12T08:10:53.545Z",
-              "endUtc": "2020-01-08T12:11:54.116Z",
+              "startUtc": "2019-11-12T08:10:54.126Z",
+              "endUtc": "2020-01-08T12:11:54.584Z",
               "startClipped": false,
               "endClipped": false,
               "entryBandMs": [
-                1573439276931,
-                1573651375932
+                1573439277519,
+                1573651376507
               ],
               "exitBandMs": [
-                1578412433546,
-                1578558533323
+                1578412434015,
+                1578558533791
               ],
               "exactBandsMs": [
                 [
-                  1576147266707,
-                  1576305774239
+                  1576147267194,
+                  1576305774723
                 ]
               ],
               "localMinima": [],
@@ -224,12 +227,12 @@
           "toUtc": "2019-07-01T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 13.676431261732432,
+              "orbDegrees": 13.676431738306519,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 1.4243455608678914,
+              "orbDegrees": 1.4243458727605685,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -249,12 +252,12 @@
           "toUtc": "2020-06-30T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 1.4243455608678914,
+              "orbDegrees": 1.4243458727605685,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 10.85341482857416,
+              "orbDegrees": 10.853414562799912,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -295,57 +298,57 @@
           "offset": 0,
           "components": [
             {
-              "startUtc": "2026-06-14T04:04:31.306Z",
-              "endUtc": "2026-09-08T03:03:42.934Z",
+              "startUtc": "2026-06-14T04:04:31.288Z",
+              "endUtc": "2026-09-08T03:03:42.945Z",
               "startClipped": false,
               "endClipped": false,
               "entryBandMs": [
-                1781346644596,
-                1781474037385
+                1781346644577,
+                1781474037366
               ],
               "exitBandMs": [
-                1788769109364,
-                1788903279742
+                1788769109374,
+                1788903279753
               ],
               "exactBandsMs": [],
               "localMinima": [
                 {
                   "orbDegrees": 1.500000000024,
                   "timeEnvelopeMs": [
-                    1784158437595,
+                    1784158437587,
                     1786031957542
                   ],
-                  "sourceBestUtc": "2026-07-26T19:56:17.527Z"
+                  "sourceBestUtc": "2026-07-26T19:56:17.523Z"
                 }
               ],
               "globalMinimumKind": "isolated-source-minimum",
               "globalMinimum": {
                 "orbDegrees": 1.500000000024,
                 "timeEnvelopeMs": [
-                  1784158437595,
+                  1784158437587,
                   1786031957542
                 ],
-                "sourceBestUtc": "2026-07-26T19:56:17.527Z"
+                "sourceBestUtc": "2026-07-26T19:56:17.523Z"
               },
               "exactTopology": "resolved"
             },
             {
-              "startUtc": "2027-03-02T13:03:57.983Z",
-              "endUtc": "2027-04-20T07:20:00.103Z",
+              "startUtc": "2027-03-02T13:03:58.149Z",
+              "endUtc": "2027-04-20T07:20:00.291Z",
               "startClipped": false,
               "endClipped": false,
               "entryBandMs": [
-                1803954643341,
-                1804030530946
+                1803954643507,
+                1804030531112
               ],
               "exitBandMs": [
-                1808170979204,
-                1808240244799
+                1808170979392,
+                1808240244987
               ],
               "exactBandsMs": [
                 [
-                  1806110384169,
-                  1806179494813
+                  1806110384353,
+                  1806179494997
                 ]
               ],
               "localMinima": [],
@@ -364,12 +367,12 @@
           "toUtc": "2026-07-01T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 14.439803317924202,
+              "orbDegrees": 14.439803304056454,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 2.0632119860150624,
+              "orbDegrees": 2.063211979661901,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -389,12 +392,12 @@
           "toUtc": "2027-07-01T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 2.0632119860150624,
+              "orbDegrees": 2.063211979661901,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 10.301696363302653,
+              "orbDegrees": 10.301696217291692,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -415,16 +418,16 @@
         {
           "label": "station-plus-minus-one-day",
           "geometryId": "C-SaturnNearApproach2026:conjunction:0",
-          "fromUtc": "2026-07-25T19:56:17.527Z",
-          "toUtc": "2026-07-27T19:56:17.527Z",
+          "fromUtc": "2026-07-25T19:56:17.523Z",
+          "toUtc": "2026-07-27T19:56:17.523Z",
           "boundaries": [
             {
-              "orbDegrees": 1.5008519514225327,
+              "orbDegrees": 1.5008519514153704,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 1.5008531224400485,
+              "orbDegrees": 1.500853122433682,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -460,22 +463,22 @@
           "offset": 0,
           "components": [
             {
-              "startUtc": "2019-02-27T03:30:42.077Z",
-              "endUtc": "2019-06-24T20:44:55.154Z",
+              "startUtc": "2019-02-27T03:30:42.135Z",
+              "endUtc": "2019-06-24T20:44:55.257Z",
               "startClipped": false,
               "endClipped": false,
               "entryBandMs": [
-                1551130114844,
-                1551344338180
+                1551130114901,
+                1551344338238
               ],
               "exitBandMs": [
-                1561292306264,
-                1561528655214
+                1561292306367,
+                1561528655318
               ],
               "exactBandsMs": [
                 [
-                  1556149064770,
-                  1556299513415
+                  1556149064850,
+                  1556299513495
                 ]
               ],
               "localMinima": [],
@@ -484,17 +487,17 @@
               "exactTopology": "resolved"
             },
             {
-              "startUtc": "2019-09-30T09:06:21.996Z",
-              "endUtc": "2020-04-10T15:17:21.363Z",
+              "startUtc": "2019-09-30T09:06:22.137Z",
+              "endUtc": "2020-04-10T15:17:21.539Z",
               "startClipped": false,
               "endClipped": false,
               "entryBandMs": [
-                1569707670138,
-                1569958718935
+                1569707670278,
+                1569958719076
               ],
               "exitBandMs": [
-                1586454729531,
-                1586608710478
+                1586454729707,
+                1586608710653
               ],
               "exactBandsMs": [],
               "exactTopology": "uncertain",
@@ -503,12 +506,12 @@
               "localMinima": [],
               "turningPointMarginDegrees": 0.0442015,
               "possibleExactRegionMs": [
-                1577432517308,
-                1579979994639
+                1577432517482,
+                1579979994815
               ],
               "possibleMinimumRegionMs": [
-                1577125512310,
-                1580282256736
+                1577125512483,
+                1580282256912
               ],
               "sourceExactCount": 2
             }
@@ -523,12 +526,12 @@
           "toUtc": "2020-01-01T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 4.079084652660981,
+              "orbDegrees": 4.079084650540494,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 6.396758180926554e-07,
+              "orbDegrees": 6.218991757123149e-07,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": true
             }
@@ -553,12 +556,12 @@
           "toUtc": "2020-12-31T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 6.396758180926554e-07,
+              "orbDegrees": 6.218991757123149e-07,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": true
             },
             {
-              "orbDegrees": 4.117104027012488,
+              "orbDegrees": 4.117104052043032,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -595,26 +598,26 @@
           "components": [
             {
               "startUtc": "2019-01-01T00:00:00.000Z",
-              "endUtc": "2020-03-31T21:00:02.930Z",
+              "endUtc": "2020-03-31T21:00:03.106Z",
               "startClipped": true,
               "endClipped": false,
               "entryBandMs": null,
               "exitBandMs": [
-                1585567924705,
-                1585809800113
+                1585567924881,
+                1585809800289
               ],
               "exactBandsMs": [
                 [
-                  1552040382351,
-                  1552268032355
+                  1552040382412,
+                  1552268032417
                 ],
                 [
-                  1571576222954,
-                  1572052124905
+                  1571576223102,
+                  1572052125055
                 ],
                 [
-                  1577604233868,
-                  1578054026353
+                  1577604234043,
+                  1578054026529
                 ]
               ],
               "localMinima": [],
@@ -623,13 +626,13 @@
               "exactTopology": "resolved"
             },
             {
-              "startUtc": "2020-09-22T03:03:29.662Z",
+              "startUtc": "2020-09-22T03:03:29.838Z",
               "endUtc": "2020-12-31T00:00:00.000Z",
               "startClipped": false,
               "endClipped": true,
               "entryBandMs": [
-                1600584489916,
-                1600904493974
+                1600584490092,
+                1600904494150
               ],
               "exitBandMs": null,
               "exactBandsMs": [],
@@ -637,20 +640,20 @@
                 {
                   "orbDegrees": 1.898090099295,
                   "timeEnvelopeMs": [
-                    1604982103657,
-                    1608218120626
+                    1604982103833,
+                    1608218120802
                   ],
-                  "sourceBestUtc": "2020-11-29T00:36:10.125Z"
+                  "sourceBestUtc": "2020-11-29T00:36:10.301Z"
                 }
               ],
               "globalMinimumKind": "isolated-source-minimum",
               "globalMinimum": {
                 "orbDegrees": 1.898090099295,
                 "timeEnvelopeMs": [
-                  1604982103657,
-                  1608218120626
+                  1604982103833,
+                  1608218120802
                 ],
-                "sourceBestUtc": "2020-11-29T00:36:10.125Z"
+                "sourceBestUtc": "2020-11-29T00:36:10.301Z"
               },
               "exactTopology": "resolved"
             }
@@ -665,12 +668,12 @@
           "toUtc": "2020-01-01T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 2.1837165995613077,
+              "orbDegrees": 2.1837166080548513,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 3.3496417017886415e-07,
+              "orbDegrees": 3.7414611142594367e-07,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": true
             }
@@ -690,12 +693,12 @@
           "toUtc": "2020-12-31T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 3.3496417017886415e-07,
+              "orbDegrees": 3.7414611142594367e-07,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": true
             },
             {
-              "orbDegrees": 2.1906818361912883,
+              "orbDegrees": 2.1906817994806715,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -744,26 +747,26 @@
               "exitBandMs": null,
               "exactBandsMs": [
                 [
-                  1551048970490,
-                  1551387330136
+                  1551048970547,
+                  1551387330195
                 ],
                 [
-                  1561121434879,
-                  1561507476817
+                  1561121434981,
+                  1561507476920
                 ],
                 [
-                  1577705248703,
-                  1577967682790
+                  1577705248878,
+                  1577967682966
                 ]
               ],
               "localMinima": [
                 {
                   "orbDegrees": 0.100990454254,
                   "timeEnvelopeMs": [
-                    1600047767964,
-                    1603554111673
+                    1600047768140,
+                    1603554111849
                   ],
-                  "sourceBestUtc": "2020-10-04T13:32:07.305Z"
+                  "sourceBestUtc": "2020-10-04T13:32:07.481Z"
                 }
               ],
               "globalMinimumKind": "exact",
@@ -781,12 +784,12 @@
           "toUtc": "2020-01-01T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 1.7923355697512307,
+              "orbDegrees": 1.7923355835969232,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 2.0179319562885212e-05,
+              "orbDegrees": 2.0112323227294837e-05,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": true
             }
@@ -806,12 +809,12 @@
           "toUtc": "2020-12-31T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 2.0179319562885212e-05,
+              "orbDegrees": 2.0112323227294837e-05,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": true
             },
             {
-              "orbDegrees": 1.7699349630215693,
+              "orbDegrees": 1.7699348968674258,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -830,7 +833,7 @@
       "id": "G-Solar1990Moon",
       "movingBody": "Jupiter",
       "natalPoint": "Moon",
-      "targetLongitudeDegrees": 25.5935981,
+      "targetLongitudeDegrees": 25.5936412,
       "targetKind": "coherent-natal",
       "angularBudgetDegrees": 0.2,
       "natalComponentBudgetDegrees": 0.15,
@@ -871,26 +874,26 @@
           "offset": 270,
           "components": [
             {
-              "startUtc": "2020-03-19T00:24:52.714Z",
-              "endUtc": "2020-07-12T08:24:55.016Z",
+              "startUtc": "2020-03-19T00:25:17.270Z",
+              "endUtc": "2020-07-12T08:24:26.258Z",
               "startClipped": false,
               "endClipped": false,
               "entryBandMs": [
-                1584465313774,
-                1584691625240
+                1584465337924,
+                1584691650232
               ],
               "exitBandMs": [
-                1594407810149,
-                1594676418609
+                1594407781288,
+                1594676389903
               ],
               "exactBandsMs": [
                 [
-                  1586457355894,
-                  1586812549156
+                  1586457392351,
+                  1586812589871
                 ],
                 [
-                  1592126984836,
-                  1592491289842
+                  1592126943625,
+                  1592491252619
                 ]
               ],
               "localMinima": [],
@@ -899,22 +902,22 @@
               "exactTopology": "resolved"
             },
             {
-              "startUtc": "2020-11-11T06:00:15.959Z",
-              "endUtc": "2020-12-13T00:02:53.308Z",
+              "startUtc": "2020-11-11T06:00:39.119Z",
+              "endUtc": "2020-12-13T00:03:11.103Z",
               "startClipped": false,
               "endClipped": false,
               "entryBandMs": [
-                1604966935356,
-                1605180273312
+                1604966958875,
+                1605180296131
               ],
               "exitBandMs": [
-                1607735796267,
-                1607899325359
+                1607735814156,
+                1607899343065
               ],
               "exactBandsMs": [
                 [
-                  1606443596188,
-                  1606623949066
+                  1606443615959,
+                  1606623968517
                 ]
               ],
               "localMinima": [],
@@ -936,57 +939,57 @@
           "offset": 240,
           "components": [
             {
-              "startUtc": "2019-03-07T15:50:28.256Z",
-              "endUtc": "2019-05-15T00:33:58.544Z",
+              "startUtc": "2019-03-07T15:51:05.609Z",
+              "endUtc": "2019-05-15T00:33:20.188Z",
               "startClipped": false,
               "endClipped": false,
               "entryBandMs": [
-                1551805048725,
-                1552151675797
+                1551805084286,
+                1552151715284
               ],
               "exitBandMs": [
-                1557697704503,
-                1558055037337
+                1557697664206,
+                1558055000566
               ],
               "exactBandsMs": [],
               "localMinima": [
                 {
-                  "orbDegrees": 1.243389473944,
+                  "orbDegrees": 1.243432573944,
                   "timeEnvelopeMs": [
-                    1553531483885,
-                    1556304143807
+                    1553531483953,
+                    1556304143887
                   ],
-                  "sourceBestUtc": "2019-04-10T17:00:46.724Z"
+                  "sourceBestUtc": "2019-04-10T17:00:46.799Z"
                 }
               ],
               "globalMinimumKind": "isolated-source-minimum",
               "globalMinimum": {
-                "orbDegrees": 1.243389473944,
+                "orbDegrees": 1.243432573944,
                 "timeEnvelopeMs": [
-                  1553531483885,
-                  1556304143807
+                  1553531483953,
+                  1556304143887
                 ],
-                "sourceBestUtc": "2019-04-10T17:00:46.724Z"
+                "sourceBestUtc": "2019-04-10T17:00:46.799Z"
               },
               "exactTopology": "resolved"
             },
             {
-              "startUtc": "2019-10-27T23:41:26.467Z",
-              "endUtc": "2019-11-26T09:23:35.636Z",
+              "startUtc": "2019-10-27T23:41:46.611Z",
+              "endUtc": "2019-11-26T09:23:52.843Z",
               "startClipped": false,
               "endClipped": false,
               "entryBandMs": [
-                1572126505232,
-                1572312074940
+                1572126525550,
+                1572312094918
               ],
               "exitBandMs": [
-                1574680990422,
-                1574839187308
+                1574681007685,
+                1574839204462
               ],
               "exactBandsMs": [
                 [
-                  1573455220071,
-                  1573623415906
+                  1573455238445,
+                  1573623434094
                 ]
               ],
               "localMinima": [],
@@ -1011,12 +1014,12 @@
           "toUtc": "2020-01-01T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 133.8242914081875,
+              "orbDegrees": 133.82433459529977,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 108.92325937785199,
+              "orbDegrees": 108.9233029467423,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -1030,12 +1033,12 @@
           "toUtc": "2020-12-31T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 108.92325937785199,
+              "orbDegrees": 108.9233029467423,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 83.03848499660239,
+              "orbDegrees": 83.03852856003232,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -1049,12 +1052,12 @@
           "toUtc": "2020-01-01T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 166.1757085918125,
+              "orbDegrees": 166.17566540470023,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 168.923259377852,
+              "orbDegrees": 168.9233029467423,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -1068,12 +1071,12 @@
           "toUtc": "2020-12-31T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 168.923259377852,
+              "orbDegrees": 168.9233029467423,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 143.0384849966024,
+              "orbDegrees": 143.03852856003243,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -1087,12 +1090,12 @@
           "toUtc": "2020-01-01T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 73.82429140818749,
+              "orbDegrees": 73.82433459529972,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 48.92325937785199,
+              "orbDegrees": 48.92330294674224,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -1106,12 +1109,12 @@
           "toUtc": "2020-12-31T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 48.92325937785199,
+              "orbDegrees": 48.92330294674224,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 23.038484996602392,
+              "orbDegrees": 23.03852856003232,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -1125,12 +1128,12 @@
           "toUtc": "2020-01-01T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 136.1757085918125,
+              "orbDegrees": 136.17566540470023,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 161.076740622148,
+              "orbDegrees": 161.0766970532577,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -1144,12 +1147,12 @@
           "toUtc": "2020-12-31T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 161.076740622148,
+              "orbDegrees": 161.0766970532577,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 173.0384849966024,
+              "orbDegrees": 173.03852856003243,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -1163,12 +1166,12 @@
           "toUtc": "2020-01-01T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 43.82429140818749,
+              "orbDegrees": 43.82433459529972,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 18.92325937785199,
+              "orbDegrees": 18.923302946742297,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -1182,12 +1185,12 @@
           "toUtc": "2020-12-31T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 18.92325937785199,
+              "orbDegrees": 18.923302946742297,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 6.961515003397608,
+              "orbDegrees": 6.961471439967681,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -1212,12 +1215,12 @@
           "toUtc": "2020-01-01T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 106.17570859181251,
+              "orbDegrees": 106.17566540470023,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 131.076740622148,
+              "orbDegrees": 131.0766970532577,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -1231,12 +1234,12 @@
           "toUtc": "2020-12-31T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 131.076740622148,
+              "orbDegrees": 131.0766970532577,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 156.9615150033976,
+              "orbDegrees": 156.96147143996757,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -1250,12 +1253,12 @@
           "toUtc": "2020-01-01T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 13.824291408187491,
+              "orbDegrees": 13.82433459529966,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 11.076740622148009,
+              "orbDegrees": 11.076697053257703,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -1280,12 +1283,12 @@
           "toUtc": "2020-12-31T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 11.076740622148009,
+              "orbDegrees": 11.076697053257703,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 36.96151500339761,
+              "orbDegrees": 36.96147143996768,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -1299,12 +1302,12 @@
           "toUtc": "2020-01-01T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 46.17570859181251,
+              "orbDegrees": 46.175665404700226,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 71.07674062214801,
+              "orbDegrees": 71.0766970532577,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -1318,12 +1321,12 @@
           "toUtc": "2020-12-31T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 71.07674062214801,
+              "orbDegrees": 71.0766970532577,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 96.96151500339761,
+              "orbDegrees": 96.96147143996757,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -1336,7 +1339,7 @@
       "id": "H-Solar1990ASC",
       "movingBody": "Jupiter",
       "natalPoint": "ASC",
-      "targetLongitudeDegrees": 292.4886428763,
+      "targetLongitudeDegrees": 292.4897840782,
       "targetKind": "coherent-natal",
       "angularBudgetDegrees": 0.15,
       "natalComponentBudgetDegrees": 0.1,
@@ -1353,22 +1356,22 @@
           "offset": 0,
           "components": [
             {
-              "startUtc": "2020-02-29T16:40:05.712Z",
-              "endUtc": "2020-04-10T17:05:09.311Z",
+              "startUtc": "2020-02-29T16:48:59.691Z",
+              "endUtc": "2020-04-10T17:21:33.314Z",
               "startClipped": false,
               "endClipped": false,
               "entryBandMs": [
-                1582924473209,
-                1583064803219
+                1582925003707,
+                1583065340794
               ],
               "exitBandMs": [
-                1586411399992,
-                1586670217989
+                1586412348407,
+                1586671242727
               ],
               "exactBandsMs": [
                 [
-                  1584434813610,
-                  1584603023279
+                  1584435445778,
+                  1584603671543
                 ]
               ],
               "localMinima": [],
@@ -1377,22 +1380,22 @@
               "exactTopology": "resolved"
             },
             {
-              "startUtc": "2020-06-17T15:32:22.729Z",
-              "endUtc": "2020-08-06T22:15:56.939Z",
+              "startUtc": "2020-06-17T15:15:31.225Z",
+              "endUtc": "2020-08-06T22:00:15.118Z",
               "startClipped": false,
               "endClipped": false,
               "entryBandMs": [
-                1592272549008,
-                1592538697957
+                1592271499454,
+                1592537719216
               ],
               "exitBandMs": [
-                1596629917202,
-                1596877725257
+                1596628999053,
+                1596876756384
               ],
               "exactBandsMs": [
                 [
-                  1594512045284,
-                  1594713241324
+                  1594511278851,
+                  1594712476896
                 ]
               ],
               "localMinima": [],
@@ -1401,22 +1404,22 @@
               "exactTopology": "resolved"
             },
             {
-              "startUtc": "2020-10-19T14:48:55.780Z",
-              "endUtc": "2020-11-27T14:18:42.303Z",
+              "startUtc": "2020-10-19T15:03:52.318Z",
+              "endUtc": "2020-11-27T14:27:19.232Z",
               "startClipped": false,
               "endClipped": false,
               "entryBandMs": [
-                1602999090216,
-                1603234910139
+                1603000017977,
+                1603235778927
               ],
               "exitBandMs": [
-                1606418581382,
-                1606554435417
+                1606419101617,
+                1606554949142
               ],
               "exactBandsMs": [
                 [
-                  1604937105448,
-                  1605098396700
+                  1604937726408,
+                  1605099003338
                 ]
               ],
               "localMinima": [],
@@ -1477,12 +1480,12 @@
           "toUtc": "2020-01-01T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 40.719336184487474,
+              "orbDegrees": 40.72047747349973,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 15.818304154151974,
+              "orbDegrees": 15.81944582494225,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -1496,12 +1499,12 @@
           "toUtc": "2020-12-31T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 15.818304154151974,
+              "orbDegrees": 15.81944582494225,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 10.066470227097625,
+              "orbDegrees": 10.065328561767615,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -1531,12 +1534,12 @@
           "toUtc": "2020-01-01T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 100.71933618448747,
+              "orbDegrees": 100.72047747349973,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 75.81830415415197,
+              "orbDegrees": 75.81944582494225,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -1550,12 +1553,12 @@
           "toUtc": "2020-12-31T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 75.81830415415197,
+              "orbDegrees": 75.81944582494225,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 49.933529772902375,
+              "orbDegrees": 49.934671438232385,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -1569,12 +1572,12 @@
           "toUtc": "2020-01-01T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 19.280663815512526,
+              "orbDegrees": 19.27952252650016,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 44.181695845848026,
+              "orbDegrees": 44.18055417505775,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -1588,12 +1591,12 @@
           "toUtc": "2020-12-31T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 44.181695845848026,
+              "orbDegrees": 44.18055417505775,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 70.06647022709762,
+              "orbDegrees": 70.0653285617675,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -1607,12 +1610,12 @@
           "toUtc": "2020-01-01T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 130.71933618448747,
+              "orbDegrees": 130.72047747349973,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 105.81830415415197,
+              "orbDegrees": 105.81944582494225,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -1626,12 +1629,12 @@
           "toUtc": "2020-12-31T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 105.81830415415197,
+              "orbDegrees": 105.81944582494225,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 79.93352977290238,
+              "orbDegrees": 79.93467143823239,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -1645,12 +1648,12 @@
           "toUtc": "2020-01-01T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 49.280663815512526,
+              "orbDegrees": 49.27952252650016,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 74.18169584584803,
+              "orbDegrees": 74.18055417505775,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -1664,12 +1667,12 @@
           "toUtc": "2020-12-31T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 74.18169584584803,
+              "orbDegrees": 74.18055417505775,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 100.06647022709762,
+              "orbDegrees": 100.0653285617675,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -1683,12 +1686,12 @@
           "toUtc": "2020-01-01T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 160.71933618448747,
+              "orbDegrees": 160.72047747349973,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 135.81830415415197,
+              "orbDegrees": 135.81944582494225,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -1702,12 +1705,12 @@
           "toUtc": "2020-12-31T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 135.81830415415197,
+              "orbDegrees": 135.81944582494225,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 109.93352977290238,
+              "orbDegrees": 109.93467143823239,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -1721,12 +1724,12 @@
           "toUtc": "2020-01-01T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 79.28066381551253,
+              "orbDegrees": 79.27952252650016,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 104.18169584584803,
+              "orbDegrees": 104.18055417505775,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -1740,12 +1743,12 @@
           "toUtc": "2020-12-31T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 104.18169584584803,
+              "orbDegrees": 104.18055417505775,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 130.06647022709762,
+              "orbDegrees": 130.0653285617675,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -1759,12 +1762,12 @@
           "toUtc": "2020-01-01T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 139.28066381551253,
+              "orbDegrees": 139.27952252650027,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 164.18169584584803,
+              "orbDegrees": 164.18055417505775,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -1778,12 +1781,12 @@
           "toUtc": "2020-12-31T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 164.18169584584803,
+              "orbDegrees": 164.18055417505775,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 169.93352977290238,
+              "orbDegrees": 169.93467143823239,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -1796,7 +1799,7 @@
       "id": "I-Solar1990MC",
       "movingBody": "Jupiter",
       "natalPoint": "MC",
-      "targetLongitudeDegrees": 214.5703111915,
+      "targetLongitudeDegrees": 214.5714838621,
       "targetKind": "coherent-natal",
       "angularBudgetDegrees": 0.15,
       "natalComponentBudgetDegrees": 0.1,
@@ -1819,22 +1822,22 @@
           "offset": 60,
           "components": [
             {
-              "startUtc": "2019-12-09T18:10:49.046Z",
-              "endUtc": "2020-01-04T21:49:16.620Z",
+              "startUtc": "2019-12-09T18:18:17.063Z",
+              "endUtc": "2020-01-04T21:56:37.395Z",
               "startClipped": false,
               "endClipped": false,
               "entryBandMs": [
-                1575857724602,
-                1575972299545
+                1575858173206,
+                1575972746993
               ],
               "exitBandMs": [
-                1578118209461,
-                1578230928856
+                1578118650048,
+                1578231369835
               ],
               "exactBandsMs": [
                 [
-                  1576993181306,
-                  1577105815961
+                  1576993621965,
+                  1577106256187
                 ]
               ],
               "localMinima": [],
@@ -1856,13 +1859,13 @@
           "offset": 90,
           "components": [
             {
-              "startUtc": "2020-12-26T15:23:42.974Z",
+              "startUtc": "2020-12-26T15:31:14.832Z",
               "endUtc": "2020-12-31T00:00:00.000Z",
               "startClipped": false,
               "endClipped": true,
               "entryBandMs": [
-                1608938377069,
-                1609053933403
+                1608938830000,
+                1609054384216
               ],
               "exitBandMs": null,
               "exactBandsMs": [],
@@ -1906,12 +1909,12 @@
           "toUtc": "2020-01-01T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 37.19899550031255,
+              "orbDegrees": 37.19782274260024,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 62.10002753064805,
+              "orbDegrees": 62.098854391157715,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -1925,12 +1928,12 @@
           "toUtc": "2020-12-31T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 62.10002753064805,
+              "orbDegrees": 62.098854391157715,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 87.98480191189765,
+              "orbDegrees": 87.98362877786758,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -1944,12 +1947,12 @@
           "toUtc": "2020-01-01T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 22.80100449968745,
+              "orbDegrees": 22.802177257399762,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 2.100027530648049,
+              "orbDegrees": 2.098854391157829,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -1969,12 +1972,12 @@
           "toUtc": "2020-12-31T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 2.100027530648049,
+              "orbDegrees": 2.098854391157829,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 27.984801911897648,
+              "orbDegrees": 27.98362877786758,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -1994,12 +1997,12 @@
           "toUtc": "2020-01-01T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 97.19899550031255,
+              "orbDegrees": 97.19782274260024,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 122.10002753064805,
+              "orbDegrees": 122.09885439115783,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -2013,12 +2016,12 @@
           "toUtc": "2020-12-31T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 122.10002753064805,
+              "orbDegrees": 122.09885439115783,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 147.98480191189765,
+              "orbDegrees": 147.98362877786758,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -2032,12 +2035,12 @@
           "toUtc": "2020-01-01T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 52.80100449968745,
+              "orbDegrees": 52.802177257399705,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 27.89997246935195,
+              "orbDegrees": 27.90114560884217,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -2051,12 +2054,12 @@
           "toUtc": "2020-12-31T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 27.89997246935195,
+              "orbDegrees": 27.90114560884217,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 2.015198088102352,
+              "orbDegrees": 2.0163712221324204,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -2076,12 +2079,12 @@
           "toUtc": "2020-01-01T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 127.19899550031255,
+              "orbDegrees": 127.19782274260024,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 152.10002753064805,
+              "orbDegrees": 152.09885439115783,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -2095,12 +2098,12 @@
           "toUtc": "2020-12-31T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 152.10002753064805,
+              "orbDegrees": 152.09885439115783,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 177.98480191189765,
+              "orbDegrees": 177.98362877786758,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -2114,12 +2117,12 @@
           "toUtc": "2020-01-01T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 82.80100449968745,
+              "orbDegrees": 82.8021772573997,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 57.89997246935195,
+              "orbDegrees": 57.90114560884223,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -2133,12 +2136,12 @@
           "toUtc": "2020-12-31T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 57.89997246935195,
+              "orbDegrees": 57.90114560884223,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 32.01519808810235,
+              "orbDegrees": 32.01637122213236,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -2152,12 +2155,12 @@
           "toUtc": "2020-01-01T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 157.19899550031255,
+              "orbDegrees": 157.19782274260024,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 177.89997246935195,
+              "orbDegrees": 177.90114560884217,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -2171,12 +2174,12 @@
           "toUtc": "2020-12-31T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 177.89997246935195,
+              "orbDegrees": 177.90114560884217,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 152.01519808810235,
+              "orbDegrees": 152.01637122213242,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -2190,12 +2193,12 @@
           "toUtc": "2020-01-01T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 142.80100449968745,
+              "orbDegrees": 142.80217725739976,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 117.89997246935195,
+              "orbDegrees": 117.90114560884217,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }
@@ -2209,12 +2212,12 @@
           "toUtc": "2020-12-31T00:00:00.000Z",
           "boundaries": [
             {
-              "orbDegrees": 117.89997246935195,
+              "orbDegrees": 117.90114560884217,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             },
             {
-              "orbDegrees": 92.01519808810235,
+              "orbDegrees": 92.01637122213242,
               "membershipAmbiguousWithinBudget": false,
               "exactCountAmbiguousWithinBudget": false
             }

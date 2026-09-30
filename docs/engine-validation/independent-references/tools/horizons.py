@@ -3,7 +3,9 @@
 Every response is kept byte for byte under ../horizons/, named after the
 request, with its query, retrieval time and SHA-256 in ../horizons/MANIFEST.json.
 A later build reads the kept files and never fetches again unless asked to
-(--refresh), so the references regenerate identically from the repository.
+(--refresh fetches every response again; --refresh-changed only those whose
+query changed, as when the engine's clock moves an instant), so the
+references regenerate identically from the repository.
 
 Quantities used:
   * OBSERVER, QUANTITIES 31, CENTER 500@399, APPARENT AIRLESS, TIME_TYPE TT:
@@ -37,7 +39,7 @@ TARGETS = {
     'Jupiter': '5', 'Saturn': '6', 'Uranus': '7', 'Neptune': '8', 'Pluto': '9',
 }
 
-REFRESH = False
+REFRESH = False  # True: fetch every response again; 'changed': only those whose query changed
 USED = set()
 
 
@@ -63,14 +65,16 @@ def request(name: str, params: dict) -> str:
     full.update(params)
     query = {k: (v if k == 'format' else "'%s'" % v) for k, v in full.items()}
     manifest = _load_manifest()
-    if os.path.exists(path) and not REFRESH:
+    if os.path.exists(path) and REFRESH is not True:
         data = open(path, 'rb').read()
         entry = manifest['responses'].get(name)
         if entry is None or entry['query'] != full:
-            raise SystemExit('horizons: %s is kept but its query changed; rerun with --refresh' % name)
-        if hashlib.sha256(data).hexdigest() != entry['sha256']:
-            raise SystemExit('horizons: %s does not match its recorded SHA-256' % name)
-        return data.decode()
+            if REFRESH != 'changed':
+                raise SystemExit('horizons: %s is kept but its query changed; rerun with --refresh-changed' % name)
+        else:
+            if hashlib.sha256(data).hexdigest() != entry['sha256']:
+                raise SystemExit('horizons: %s does not match its recorded SHA-256' % name)
+            return data.decode()
     url = API + '?' + urllib.parse.urlencode(query)
     for attempt in range(5):
         try:

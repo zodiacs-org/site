@@ -4,24 +4,27 @@
   "arbiters": {
     "positions": "NASA JPL Horizons API 1.2, DE441: observer-centred apparent ecliptic longitude of date (QUANTITIES 31, CENTER 500@399, airless, TIME_TYPE TT); Mars to Pluto as system barycentres (NAIF 4-9).",
     "trueNode": "Ascending node of the Moon's osculating orbit from Horizons DE441 geometric geocentric state vectors (VECTORS, ICRF): h = r x v, rotated with ERFA pnm06a and the true obliquity into the true ecliptic and equinox of date; speed by central difference over +-0.001 day.",
-    "angles": "ERFA 2.0.1 (pyerfa 2.0.1.5): GAST = gst06a with UT1 taken as the instant, as the engine does; true obliquity = obl06 + Delta-epsilon of nut06a; ASC, MC and Placidus by the conformance suite's L2 construction (zodiacs-org/engine 8c4946b1, CC0); whole-sign cusps from the ASC where |latitude| >= 90 deg - true obliquity.",
+    "angles": "ERFA 2.0.1 (pyerfa 2.0.1.5): GAST = gst06a at the engine's UT1 and TT for the instant; true obliquity = obl06 + Delta-epsilon of nut06a; ASC, MC and Placidus by the conformance suite's L2 construction (zodiacs-org/engine 8c4946b1, CC0); whole-sign cusps from the ASC where |latitude| >= 90 deg - true obliquity.",
     "events": "Roots of the Horizons longitude interpolated from a uniform TT table (nine-point Lagrange), refined to 1e-9 day; each band is the connected set on the root's monotonic branch where the longitude is within the predeclared budget of its level, with 1 s of padding each side."
   },
-  "clock": "Each instant is evaluated at the engine's own TT for it: UT is the instant, TT = UT + Delta T of model zodiacs-deltat/1 (table 6371988c510a1c6c), as astronomy-engine's MakeTime reads it with the engine's clock installed (tools/engine-clock.ts). A comparison therefore measures positions and angles, not Delta T; the clock is checked against the IERS in docs/platform/evidence/deltat-2026-09-25/.",
+  "clock": "Each instant is evaluated at the engine's own UT1 and TT for it, as the engine makes astronomy-engine's time (tools/engine-clock.ts): from 1972-01-01 to 2027-10-02 the instant is read as UTC, with TT = UTC + (TAI - UTC) + 32.184 s from the IERS leap seconds and UT1 = UTC + (UT1 - UTC) (basis iers-utc/1, table 064d98b4a531053a); at any other instant UT1 is the instant and TT = UT1 + Delta T of model zodiacs-deltat/1 (table 6371988c510a1c6c). A comparison therefore measures positions and angles, not the clock; the clock is checked against the IERS in docs/platform/evidence/deltat-2026-09-25/.",
   "engineClock": {
-    "engineVersion": "0.1.1-rc.14",
+    "engineVersion": "0.1.1-rc.15",
     "deltaTModel": "zodiacs-deltat/1",
     "deltaTTable": "2026-09-24",
-    "deltaTTableDigest": "6371988c510a1c6c"
+    "deltaTTableDigest": "6371988c510a1c6c",
+    "iersModel": "iers-utc/1",
+    "iersTable": "2026-09-24",
+    "iersTableDigest": "064d98b4a531053a"
   },
   "generator": {
     "command": "python3 docs/engine-validation/independent-references/tools/build.py",
     "sources": {
       "docs/engine-validation/independent-references/cases.json": "eecfa25c5408b4c11baf5f2f73df93ba333850f7ba00c3ae0a1f0cab8d60520e",
-      "docs/engine-validation/independent-references/tools/build.py": "33ac83f46f24cf889ec570cbad1e37c7e9d61057111daf99478c157db4506184",
-      "docs/engine-validation/independent-references/tools/engine-clock.ts": "aa7f7724082b3798eb4728fa60b1e630612773e732bb236b97bc98348ce9d1a7",
+      "docs/engine-validation/independent-references/tools/build.py": "de1138a4cad5da3644a9674605a9b0857e2fa5e1c08df3426bec2916776cc4f8",
+      "docs/engine-validation/independent-references/tools/engine-clock.ts": "37d5ccc0e744a88220c98249ae28207a760fbabcecd0b3f3c610ef2b2a97b408",
       "docs/engine-validation/independent-references/tools/geometry.py": "c7ec362ff44a7ffa7d88229695f6b9d9b5af74b8289b268888ed5b5342f7147c",
-      "docs/engine-validation/independent-references/tools/horizons.py": "344a4e4bce3bd6efb0d7db147e554af172a4fd59205fb290a6db209aed9c50d8",
+      "docs/engine-validation/independent-references/tools/horizons.py": "c734a652b01c8f78efe1ed696d0f1ffb28737e24debe47f9b3e60b1ec0478a85",
       "docs/engine-validation/independent-references/tools/series.py": "dfc0d9e14b417e534ca327ef92402fc0b0b4c42418154e9ee02be14682d35490"
     },
     "pyerfa": "2.0.1.5",
@@ -29,7 +32,7 @@
   },
   "horizonsManifest": {
     "path": "docs/engine-validation/independent-references/horizons/MANIFEST.json",
-    "sha256": "b4088ed1a8d7dbaab5f2fd2e2262cc9f99ff85cfcb75931bd715021e39bb4355"
+    "sha256": "3eb362a7eb57bb921d8519453ff03f94344dede7e86a8cd2c9722fce27fb3a8f"
   },
   "noSwiss": "No Swiss Ephemeris code or output is read or reproduced here.",
   "gates": {
@@ -41,31 +44,31 @@
       "id": "true-node-2005-03-15",
       "input": {
         "utc": "2005-03-15T00:00:00Z",
-        "jdTT": 2453444.500749098,
-        "deltaTSeconds": 64.722088
+        "jdTT": 2453444.5007428704,
+        "deltaTSeconds": 64.748
       },
-      "longitudeDegrees": 23.0282464627,
-      "longitudeSpeedDegreesPerDay": 0.0290877311
+      "longitudeDegrees": 23.0282462816,
+      "longitudeSpeedDegreesPerDay": 0.0290877221
     },
     {
       "id": "true-node-2020-01-01",
       "input": {
         "utc": "2020-01-01T00:00:00Z",
-        "jdTT": 2458849.5008027754,
-        "deltaTSeconds": 69.359808
+        "jdTT": 2458849.500800741,
+        "deltaTSeconds": 69.361333
       },
-      "longitudeDegrees": 98.3877362169,
-      "longitudeSpeedDegreesPerDay": -0.0027276154
+      "longitudeDegrees": 98.3877362224,
+      "longitudeSpeedDegreesPerDay": -0.0027276138
     },
     {
       "id": "true-node-2026-07-01",
       "input": {
         "utc": "2026-07-01T00:00:00Z",
-        "jdTT": 2461222.5008005933,
-        "deltaTSeconds": 69.171241
+        "jdTT": 2461222.500800741,
+        "deltaTSeconds": 69.169667
       },
-      "longitudeDegrees": 330.8751297793,
-      "longitudeSpeedDegreesPerDay": -0.1155639562
+      "longitudeDegrees": 330.8751297622,
+      "longitudeSpeedDegreesPerDay": -0.1155639511
     }
   ],
   "polar": [
@@ -73,8 +76,8 @@
       "id": "polar-tromso",
       "input": {
         "utc": "2001-12-21T09:30:00Z",
-        "jdTT": 2452264.8965774756,
-        "deltaTSeconds": 64.293903
+        "jdTT": 2452264.896576204,
+        "deltaTSeconds": 64.289396
       },
       "latitudeDegrees": 69.6492,
       "longitudeDegreesEastPositive": 18.9553,
@@ -82,8 +85,8 @@
       "placidusLimitDegrees": 66.5609558752,
       "placidusDefined": false,
       "whole": {
-        "ascendantDegrees": 57.4943259456,
-        "midheavenDegrees": 252.9109544973,
+        "ascendantDegrees": 57.4946342106,
+        "midheavenDegrees": 252.9105438657,
         "cuspsDegrees": [
           30.0,
           60.0,
@@ -104,17 +107,17 @@
       "id": "polar-longyearbyen",
       "input": {
         "utc": "2001-12-21T09:00:00Z",
-        "jdTT": 2452264.875744142,
-        "deltaTSeconds": 64.293891
+        "jdTT": 2452264.8757428704,
+        "deltaTSeconds": 64.289375
       },
       "latitudeDegrees": 78.2232,
       "longitudeDegreesEastPositive": 15.6267,
-      "trueObliquityDegrees": 23.4390439282,
-      "placidusLimitDegrees": 66.5609560718,
+      "trueObliquityDegrees": 23.4390439281,
+      "placidusLimitDegrees": 66.5609560719,
       "placidusDefined": false,
       "whole": {
-        "ascendantDegrees": 23.8719500924,
-        "midheavenDegrees": 242.686818506,
+        "ascendantDegrees": 23.8721733854,
+        "midheavenDegrees": 242.6863986019,
         "cuspsDegrees": [
           0.0,
           30.0,
@@ -135,17 +138,17 @@
       "id": "polar-southern-longyearbyen-mirror",
       "input": {
         "utc": "2001-12-21T09:00:00Z",
-        "jdTT": 2452264.875744142,
-        "deltaTSeconds": 64.293891
+        "jdTT": 2452264.8757428704,
+        "deltaTSeconds": 64.289375
       },
       "latitudeDegrees": -78.2232,
       "longitudeDegreesEastPositive": 15.6267,
-      "trueObliquityDegrees": 23.4390439282,
-      "placidusLimitDegrees": 66.5609560718,
+      "trueObliquityDegrees": 23.4390439281,
+      "placidusLimitDegrees": 66.5609560719,
       "placidusDefined": false,
       "whole": {
-        "ascendantDegrees": 349.7309620317,
-        "midheavenDegrees": 242.686818506,
+        "ascendantDegrees": 349.7308119967,
+        "midheavenDegrees": 242.6863986019,
         "cuspsDegrees": [
           330.0,
           0.0,
@@ -169,21 +172,21 @@
       "utc": "1990-06-15T12:30:00Z",
       "latitude": 40.7128,
       "longitude": -74.006,
-      "asc": 122.5777490867,
-      "mc": 18.4578360119,
+      "asc": 122.5777060381,
+      "mc": 18.4577775905,
       "cusps": [
-        122.5777490867,
-        142.8740134849,
-        167.4466900869,
-        198.4578360119,
-        235.1357949095,
-        271.4916953002,
-        302.5777490867,
-        322.8740134849,
-        347.4466900869,
-        18.4578360119,
-        55.1357949095,
-        91.4916953002
+        122.5777060381,
+        142.8739672188,
+        167.4466375836,
+        198.4577775905,
+        235.1357373359,
+        271.4916457029,
+        302.5777060381,
+        322.8739672188,
+        347.4466375836,
+        18.4577775905,
+        55.1357373359,
+        91.4916457029
       ]
     },
     {
@@ -191,21 +194,21 @@
       "utc": "1985-03-21T04:15:00Z",
       "latitude": 35.6762,
       "longitude": 139.6503,
-      "asc": 124.1898366017,
-      "mc": 23.7986056921,
+      "asc": 124.1888603176,
+      "mc": 23.7973349574,
       "cusps": [
-        124.1898366017,
-        146.0577787843,
-        172.1349435903,
-        203.7986056921,
-        239.2893164276,
-        273.7533754264,
-        304.1898366017,
-        326.0577787843,
-        352.1349435903,
-        23.7986056921,
-        59.2893164276,
-        93.7533754264
+        124.1888603176,
+        146.0567270615,
+        172.1337645806,
+        203.7973349574,
+        239.2880932032,
+        273.7522934843,
+        304.1888603176,
+        326.0567270615,
+        352.1337645806,
+        23.7973349574,
+        59.2880932032,
+        93.7522934843
       ]
     },
     {
@@ -235,21 +238,21 @@
       "utc": "2000-06-21T22:10:00Z",
       "latitude": 60.1699,
       "longitude": 24.9384,
-      "asc": 350.4311643868,
-      "mc": 268.0217164004,
+      "asc": 350.4349468378,
+      "mc": 268.0225089991,
       "cusps": [
-        350.4311643868,
-        54.719871659,
-        74.6208177307,
-        88.0217164004,
-        100.9818561925,
-        118.7413775634,
-        170.4311643868,
-        234.719871659,
-        254.6208177307,
-        268.0217164004,
-        280.9818561925,
-        298.7413775634
+        350.4349468378,
+        54.7212393293,
+        74.6217147675,
+        88.0225089991,
+        100.9827210417,
+        118.7426302063,
+        170.4349468378,
+        234.7212393293,
+        254.6217147675,
+        268.0225089991,
+        280.9827210417,
+        298.7426302063
       ]
     },
     {
@@ -257,21 +260,21 @@
       "utc": "2010-12-21T05:55:00Z",
       "latitude": -0.1807,
       "longitude": -78.4678,
-      "asc": 190.8785989658,
-      "mc": 99.1770126582,
+      "asc": 190.8779958627,
+      "mc": 99.176500344,
       "cusps": [
-        190.8785989658,
-        222.4648566476,
-        251.5439402849,
-        279.1770126582,
-        307.5584394373,
-        338.3280605982,
-        10.8785989658,
-        42.4648566476,
-        71.5439402849,
-        99.1770126582,
-        127.5584394373,
-        158.3280605982
+        190.8779958627,
+        222.4642942295,
+        251.5434207228,
+        279.176500344,
+        307.557893794,
+        338.327467455,
+        10.8779958627,
+        42.4642942295,
+        71.5434207228,
+        99.176500344,
+        127.557893794,
+        158.327467455
       ]
     }
   ]

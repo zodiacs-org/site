@@ -9,6 +9,7 @@ arbiter changes. No Swiss Ephemeris code or output is read here.
     python3 tools/build.py select-wrap   # once: the L-wrap birth, from Horizons
     python3 tools/build.py               # every pack, from the kept responses
     python3 tools/build.py --refresh     # fetch every Horizons response again
+    python3 tools/build.py --refresh-changed  # only those whose query changed
 
 Run from docs/engine-validation/independent-references/ with pyerfa 2.0.1.5
 installed and the repository's node_modules present (tools/engine-clock.ts
@@ -22,16 +23,19 @@ Arbiters
              the true ecliptic and equinox of date with ERFA's pnm06a and true
              obliquity, longitude of z x h. Speed: central difference of that
              longitude over +-0.001 day.
-  angles     ERFA gst06a (IAU 2006/2000A) with UT1 taken as the instant, as the
-             engine does, and the true obliquity obl06 + Delta-epsilon of
-             nut06a; ASC, MC and Placidus cusps by the conformance suite's L2
-             construction (tools/geometry.py).
+  angles     ERFA gst06a (IAU 2006/2000A) at the engine's UT1 for the instant,
+             and the true obliquity obl06 + Delta-epsilon of nut06a; ASC, MC
+             and Placidus cusps by the conformance suite's L2 construction
+             (tools/geometry.py).
   events     roots of the Horizons longitude, interpolated from a uniform TT
              table (tools/series.py), with the predeclared longitude bands.
 Clock
-  Every instant is evaluated at the engine's own TT for it (tools/engine-clock.ts),
-  as the ERFA angle arbiter of angle-grid-erfa.json already is: a comparison
-  measures positions and angles, not the two programs' Delta T.
+  Every instant is evaluated at the engine's own TT and UT1 for it
+  (tools/engine-clock.ts), as the ERFA angle arbiter of angle-grid-erfa.json
+  already is: a comparison measures positions and angles, not the clock. Since
+  engine 0.1.1-rc.15 the engine reads an instant from 1972-01-01 to 2027-10-02
+  as UTC (TT from the IERS leap seconds, UT1 from IERS UT1 - UTC) and any other
+  instant as UT1 with its Delta T model.
 """
 from __future__ import annotations
 
@@ -99,6 +103,20 @@ def wrap180(x):
 # ---------------------------------------------------------------------------
 
 class Clock:
+    """The engine's clock, from tools/engine-clock.ts.
+
+    Since engine 0.1.1-rc.15 an instant, the product's millisecond transport,
+    from 1972-01-01 to 2027-10-02 is read as UTC: UT1 = UTC + (UT1 - UTC) and
+    TT = UTC + (TAI - UTC) + 32.184 s. Any other instant is read as UT1, with
+    TT = UT1 + Delta T of the engine's model. The instants of the request come
+    with their UT1 and TT. Each range carries, at uniform nodes of the instant
+    and on both sides of every change of piece of the basis inside it, UT1 -
+    instant and TT - UT1 in seconds, interpolated here linearly in the
+    instant. Their sum, TT - instant, is constant within a piece of the IERS
+    basis, so TT is exact there; elsewhere this is the interpolation of Delta T
+    the references have always used.
+    """
+
     def __init__(self, data):
         self.data = data
         self.instants = data['instants']
@@ -106,34 +124,61 @@ class Clock:
         for r in data['ranges'].values():
             nodes.extend(r['nodes'])
         nodes.sort()
-        self.ut = [n[0] for n in nodes]
-        self.dt = [n[1] for n in nodes]
+        self.at = [n[0] for n in nodes]
+        self.du = [n[1] for n in nodes]
+        self.dt = [n[2] for n in nodes]
+        self.fallbacks = []
 
     def tt_of(self, key):
         return self.instants[key]['tt']
 
-    def delta_t(self, ut):
-        i = _bisect.bisect_right(self.ut, ut)
-        if i <= 0 or i >= len(self.ut):
-            raise ValueError('no clock node around UT %r' % ut)
-        u0, u1 = self.ut[i - 1], self.ut[i]
-        f = (ut - u0) / (u1 - u0)
-        return self.dt[i - 1] + f * (self.dt[i] - self.dt[i - 1])
+    def ut1_of(self, key):
+        return self.instants[key]['ut']
 
-    def ut_of_tt(self, tt):
-        ut = tt - 69.0 / 86400.0
+    def offsets(self, days):
+        """(UT1 - instant, TT - UT1) in seconds at an instant, days from J2000."""
+        i = _bisect.bisect_right(self.at, days)
+        if i <= 0 or i >= len(self.at):
+            raise ValueError('no clock node around %r' % days)
+        a0, a1 = self.at[i - 1], self.at[i]
+        f = (days - a0) / (a1 - a0)
+        return (self.du[i - 1] + f * (self.du[i] - self.du[i - 1]),
+                self.dt[i - 1] + f * (self.dt[i] - self.dt[i - 1]))
+
+    def tt_of_days(self, days):
+        du, dt = self.offsets(days)
+        return days + du / 86400.0 + dt / 86400.0
+
+    def days_of_tt(self, tt):
+        """The instant whose TT is tt. The fixed-point iteration converges
+        wherever TT is continuous in the instant; inside a leap second, or at a
+        change of basis, no instant or two have that TT, and this takes the
+        earliest instant at which TT reaches it."""
+        days = tt - 69.0 / 86400.0
         for _ in range(6):
-            ut = tt - self.delta_t(ut) / 86400.0
-        return ut
-
-    def tt_of_ut(self, ut):
-        return ut + self.delta_t(ut) / 86400.0
+            du, dt = self.offsets(days)
+            days = tt - (du + dt) / 86400.0
+        if abs(self.tt_of_days(days) - tt) <= 1e-10:
+            return days
+        node_tt = lambda k: self.at[k] + self.du[k] / 86400.0 + self.dt[k] / 86400.0  # noqa: E731
+        for k in range(1, len(self.at)):
+            t0, t1 = node_tt(k - 1), node_tt(k)
+            if t0 <= tt <= t1 and self.at[k] > self.at[k - 1]:
+                days = self.at[k - 1] + (tt - t0) / (t1 - t0) * (self.at[k] - self.at[k - 1])
+                self.fallbacks.append(iso_of_ms(days * DAY_MS + J2000_MS))
+                return days
+        raise ValueError('no clock node around TT %r' % tt)
 
     def ms_of_tt(self, tt):
-        return self.ut_of_tt(tt) * DAY_MS + J2000_MS
+        return self.days_of_tt(tt) * DAY_MS + J2000_MS
 
     def tt_of_ms(self, ms):
-        return self.tt_of_ut((ms - J2000_MS) / DAY_MS)
+        return self.tt_of_days((ms - J2000_MS) / DAY_MS)
+
+    def ut1_of_ms(self, ms):
+        days = (ms - J2000_MS) / DAY_MS
+        du, _ = self.offsets(days)
+        return days + du / 86400.0
 
 
 def ms_of_iso(iso):
@@ -448,7 +493,7 @@ def pack_eight_cases(clock, policy):
     specs = []
     for key, ms in (('solar:independent', independent_ms), ('solar:returned', ms_of_iso(returned_iso))):
         tt = clock.tt_of_ms(ms)
-        specs.append({'key': key, 'tt': tt, 'ut': (ms - J2000_MS) / DAY_MS, **place})
+        specs.append({'key': key, 'tt': tt, 'ut': clock.ut1_of_ms(ms), **place})
     CHART_SPECS.extend(specs)
     out['solar'] = {
         'natalLongitudeDegrees': natal,
@@ -527,18 +572,18 @@ def pack_lunar(clock, policy):
         first = int(round(found[0]['ms']))
         loc = case['returnLocation']
         system = 'placidus'
-        specs.append({'key': '%s:independent' % case['id'], 'tt': clock.tt_of_ms(first), 'ut': (first - J2000_MS) / DAY_MS,
+        specs.append({'key': '%s:independent' % case['id'], 'tt': clock.tt_of_ms(first), 'ut': clock.ut1_of_ms(first),
                       'latitude': loc['latitudeDegrees'], 'longitude': loc['longitudeDegreesEastPositive'], 'system': system})
         if case.get('relocationAtSameInstant'):
             r = case['relocationAtSameInstant']
-            specs.append({'key': '%s:independent:relocation' % case['id'], 'tt': clock.tt_of_ms(first), 'ut': (first - J2000_MS) / DAY_MS,
+            specs.append({'key': '%s:independent:relocation' % case['id'], 'tt': clock.tt_of_ms(first), 'ut': clock.ut1_of_ms(first),
                           'latitude': r['latitudeDegrees'], 'longitude': r['longitudeDegreesEastPositive'], 'system': system})
         product = ms_of_iso(RETURNS['lunar:%s' % case['id']])
-        specs.append({'key': '%s:main' % case['id'], 'tt': clock.tt_of_ms(product), 'ut': (product - J2000_MS) / DAY_MS,
+        specs.append({'key': '%s:main' % case['id'], 'tt': clock.tt_of_ms(product), 'ut': clock.ut1_of_ms(product),
                       'latitude': loc['latitudeDegrees'], 'longitude': loc['longitudeDegreesEastPositive'], 'system': system})
         if case.get('relocationAtSameInstant'):
             r = case['relocationAtSameInstant']
-            specs.append({'key': '%s:relocation' % case['id'], 'tt': clock.tt_of_ms(product), 'ut': (product - J2000_MS) / DAY_MS,
+            specs.append({'key': '%s:relocation' % case['id'], 'tt': clock.tt_of_ms(product), 'ut': clock.ut1_of_ms(product),
                           'latitude': r['latitudeDegrees'], 'longitude': r['longitudeDegreesEastPositive'], 'system': system})
         per_case[case['id']] = (natal, found, first, product)
     CHART_SPECS.extend(specs)
@@ -756,10 +801,9 @@ def pack_windows(clock, spec, eight):
                              ms_of_iso('2019-01-01T00:00:00Z'), ms_of_iso('2020-12-31T00:00:00Z'), '1 d', 10)
     tables['Saturn'] = SATURN
     natal = spec['coherentNatalInput']
-    natal_ms = ms_of_iso(natal['birthUTC'])
     natal_tt = clock.tt_of('window:natal')
     natal_moon = positions_at([natal_tt])['Moon'][0]
-    natal_angles = geometry.chart_angles((natal_ms - J2000_MS) / DAY_MS + J2000, natal_tt + J2000,
+    natal_angles = geometry.chart_angles(clock.ut1_of('window:natal') + J2000, natal_tt + J2000,
                                          natal['latitudeDegrees'], natal['longitudeDegreesEastPositive'], 'placidus')
     station = next(s for s in eight['stations'] if s['id'] == 'Sstation')
     out_cases, warnings = [], {}
@@ -816,12 +860,14 @@ def header(what, clock_data, extra=None):
         'arbiters': {
             'positions': 'NASA JPL Horizons API 1.2, DE441: observer-centred apparent ecliptic longitude of date (QUANTITIES 31, CENTER 500@399, airless, TIME_TYPE TT); Mars to Pluto as system barycentres (NAIF 4-9).',
             'trueNode': 'Ascending node of the Moon\'s osculating orbit from Horizons DE441 geometric geocentric state vectors (VECTORS, ICRF): h = r x v, rotated with ERFA pnm06a and the true obliquity into the true ecliptic and equinox of date; speed by central difference over +-0.001 day.',
-            'angles': 'ERFA 2.0.1 (pyerfa 2.0.1.5): GAST = gst06a with UT1 taken as the instant, as the engine does; true obliquity = obl06 + Delta-epsilon of nut06a; ASC, MC and Placidus by the conformance suite\'s L2 construction (zodiacs-org/engine 8c4946b1, CC0); whole-sign cusps from the ASC where |latitude| >= 90 deg - true obliquity.',
+            'angles': 'ERFA 2.0.1 (pyerfa 2.0.1.5): GAST = gst06a at the engine\'s UT1 and TT for the instant; true obliquity = obl06 + Delta-epsilon of nut06a; ASC, MC and Placidus by the conformance suite\'s L2 construction (zodiacs-org/engine 8c4946b1, CC0); whole-sign cusps from the ASC where |latitude| >= 90 deg - true obliquity.',
             'events': 'Roots of the Horizons longitude interpolated from a uniform TT table (nine-point Lagrange), refined to 1e-9 day; each band is the connected set on the root\'s monotonic branch where the longitude is within the predeclared budget of its level, with 1 s of padding each side.',
         },
-        'clock': 'Each instant is evaluated at the engine\'s own TT for it: UT is the instant, TT = UT + Delta T of model %s (table %s), as astronomy-engine\'s MakeTime reads it with the engine\'s clock installed (tools/engine-clock.ts). A comparison therefore measures positions and angles, not Delta T; the clock is checked against the IERS in docs/platform/evidence/deltat-2026-09-25/.' % (clock_data['deltaTModel'], clock_data['deltaTTableDigest']),
+        'clock': 'Each instant is evaluated at the engine\'s own UT1 and TT for it, as the engine makes astronomy-engine\'s time (tools/engine-clock.ts): from 1972-01-01 to 2027-10-02 the instant is read as UTC, with TT = UTC + (TAI - UTC) + 32.184 s from the IERS leap seconds and UT1 = UTC + (UT1 - UTC) (basis %s, table %s); at any other instant UT1 is the instant and TT = UT1 + Delta T of model %s (table %s). A comparison therefore measures positions and angles, not the clock; the clock is checked against the IERS in docs/platform/evidence/deltat-2026-09-25/.' % (clock_data['iersModel'], clock_data['iersTableDigest'], clock_data['deltaTModel'], clock_data['deltaTTableDigest']),
         'engineClock': {'engineVersion': clock_data['engineVersion'], 'deltaTModel': clock_data['deltaTModel'],
-                        'deltaTTable': clock_data['deltaTTable'], 'deltaTTableDigest': clock_data['deltaTTableDigest']},
+                        'deltaTTable': clock_data['deltaTTable'], 'deltaTTableDigest': clock_data['deltaTTableDigest'],
+                        'iersModel': clock_data['iersModel'], 'iersTable': clock_data['iersTable'],
+                        'iersTableDigest': clock_data['iersTableDigest']},
         'generator': {
             'command': 'python3 docs/engine-validation/independent-references/tools/build.py',
             'sources': {rel(p): sha256(p) for p in sorted(
@@ -871,6 +917,8 @@ def main(argv):
     global SATURN, RETURNS
     if '--refresh' in argv:
         horizons.REFRESH = True
+    elif '--refresh-changed' in argv:
+        horizons.REFRESH = 'changed'
     if argv[:1] == ['select-wrap']:
         select_wrap()
         return
@@ -931,6 +979,8 @@ def main(argv):
     })
     if warnings:
         print('conditioning notes: ' + json.dumps(warnings, indent=1), file=sys.stderr)
+    if clock.fallbacks:
+        print('TT roots with no single instant on the engine\'s clock: ' + ', '.join(clock.fallbacks), file=sys.stderr)
     horizons.prune()
 
 
