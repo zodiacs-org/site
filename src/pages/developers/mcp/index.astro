@@ -136,8 +136,9 @@ const tools = [
         <code>npm run verify</code> uses. <code>npm ci --omit=dev</code> installs
         the three and the server runs; only the verifier needs the rest. The engine
         ({manifest.engine.package} {manifest.engine.version}) and the comparison are
-        already inside <code>server.mjs</code>, because neither is published and
-        bundling them keeps one copy of the comparison rules rather than two.
+        already inside <code>server.mjs</code>. The engine was not on npm when this
+        version was built; the comparison is not published, and bundling it keeps
+        one copy of the comparison rules rather than two.
         Node {manifest.node}.
       </p>
     </div>

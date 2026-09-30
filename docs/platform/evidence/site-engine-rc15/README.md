@@ -449,3 +449,36 @@ Files added:
 - `production-engine-chunk.json` and `tools/production-engine-chunk.mjs`: the
   engine chunk check;
 - `dasha-independent-rc15.json`: the dasha comparison on the released archive.
+
+## The registry read, 2026-09-30
+
+F-57's fix rests on what npm records for the version the site vendors, read at
+14:24 UTC:
+
+```sh
+node docs/platform/evidence/site-engine-rc15/tools/npm-registry-read.mjs 0.1.1-rc.15 > npm-registry.json
+```
+
+- `latest` and `next` are both `0.1.1-rc.15`, published 2026-09-30 at 11:53
+  UTC.
+- npm's tarball has SHA-1 `e4a49148…4862` and the SHA-512 integrity
+  `sha512-eezpBQ0N…`, both the vendored archive's, 54 files.
+- Its SLSA provenance (`https://slsa.dev/provenance/v1`), for a subject whose
+  SHA-512 is the archive's, names the repository
+  `https://github.com/zodiacs-org/engine`, the workflow
+  `.github/workflows/release.yml` on `refs/heads/main`, the commit
+  `d5326a8869d0058c62b913b8bc1e007bb5a808c1` and run 36711081147. That commit
+  is engine `main` when the package was published; the tarball it built is
+  byte for byte the archive packed from `104bd5a`.
+- `npm audit signatures`, in a scratch project that installed the version from
+  the registry, verified the registry signatures of the engine and
+  astronomy-engine and the engine's attestation, and reported nothing invalid
+  or missing.
+
+The tool decodes the provenance without verifying it; `npm audit signatures`
+is the verification. Provenance says where the package was built. It does not
+test the results.
+
+Files added:
+
+- `npm-registry.json` and `tools/npm-registry-read.mjs`: the registry read.

@@ -21,7 +21,7 @@ The figure moves from 19% (34.25) to 23% (42.5).
   - partial: the vargas lack the birth-time sensitivity output (P2.B.vargas), and KP the ruling planets (P2.B.kp);
   - failed: five of the nine named ayanamsas miss the 0.01″ gate against Swiss, Krishnamurti by 0.071″, Raman 10.1″, Yukteswar 806″, True Pushya 0.54″ and the Galactic Centre 0.10″; Lahiri ICRC is not implemented (P2.B.ayanamsas).
 - **The owner's steps of 2026-09-30** put `@zodiacs/engine` 0.1.1-rc.15 on npm with provenance (P3.1a accepted) and then moved `latest` to it. They set up PyPI, JSR and Zenodo, sent the NAIF question, confirmed the assistant accounts, finished the repository settings (G2 accepted), published the Firewall rules and set the calendar feeds' secret.
-- **F-57**: the developer pages and the llms files still say that the engine is not on npm and that `npm view @zodiacs/engine` returns 404, and the claims ledger still marks that claim supported.
+- **F-57**, found verifying production: the developer pages and the llms files said that the engine is not on npm and that `npm view @zodiacs/engine` returns 404, and the claims ledger marked that claim supported. Fixed in this PR: they, `vendor/README.md` and the candidate record say that npm serves 0.1.1-rc.15 under `latest` and `next`, published with SLSA provenance, with the pinned archive as the verified alternative, on a registry read of 2026-09-30 committed as evidence (`evidence/site-engine-rc15/npm-registry.json`). The released MCP archive and the engine's packed README keep the old sentence until their next versions.
 - **Decisions of 2026-09-30** ([DECISIONS-2026-09-30.md](DECISIONS-2026-09-30.md)):
   1. the Chinese solar terms wait for a Sun not fitted to JPL data;
   2. the engine chunk's budget rises by rc.15's measured growth;
@@ -89,8 +89,8 @@ The earlier archives are as checkpoint 5 lists them. rc.15's three local builds 
 
 ## Next
 
-1. Correct the developer pages, the llms files, the candidate record and the claims ledger's `product.engine-package` for the npm release, with the test that requires "Unpublished candidate" (F-57).
-2. The compute API PR, then its latency and cost on production.
-3. rc.16: integrate the branches onto rc.15 and review them. The units judged here also ask of a next candidate: an export for the time basis (F-53), declinations and sect from an entry point that loads no ephemeris (P2.E.declinations, P2.E.sect), the vargas' birth-time sensitivity (P2.B.vargas) and KP's ruling planets (P2.B.kp).
+1. The compute API PR, then its latency and cost on production.
+2. rc.16: integrate the branches onto rc.15 and review them. The units judged here also ask of a next candidate: an export for the time basis (F-53), declinations and sect from an entry point that loads no ephemeris (P2.E.declinations, P2.E.sect), the vargas' birth-time sensitivity (P2.B.vargas) and KP's ruling planets (P2.B.kp). Its README's release paragraph should say what the registry shows (F-57).
+3. The MCP adapter's next version, whose `get_capabilities`, README and `candidate.json` report the engine as published (F-57).
 4. Decide whether the site's forms resolve local times through `@zodiacs/engine/geo`, which P1.01b and P1.12b need; the two already agree on 264,455 wall times.
 5. The calendar feeds' release, once the owner's step 4 is done.

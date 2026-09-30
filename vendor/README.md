@@ -4,7 +4,10 @@
 candidate site revision. The standalone starter keeps its separate engine
 `0.1.1-rc.3` pin and immutable project archive.
 
-- Package: `@zodiacs/engine@0.1.1-rc.15` (unpublished candidate)
+- Package: `@zodiacs/engine@0.1.1-rc.15`, on npm under `latest` and `next`
+  since 2026-09-30, published from the engine's `release.yml` with SLSA
+  provenance; npm's tarball has this archive's SHA-1 and SHA-512
+  (`docs/platform/evidence/site-engine-rc15/npm-registry.json`)
 - Source repository: `https://github.com/zodiacs-org/engine`
 - Source commit: `104bd5a56ee00356eecc75f15f0aa946f5a39f41`
 - Artifact carrier commit: `cbad72cf075c1950bca1250dfd911085da3208d2`, merged into

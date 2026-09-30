@@ -34,8 +34,9 @@ export function assertEngineCandidate(candidate) {
   if (candidate.schemaVersion !== 1 || candidate.name !== '@zodiacs/engine'
     || !matches(candidate.version, /^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)-rc\.(?:0|[1-9]\d*)$/u)
     || candidate.version.includes('\n')
-    || candidate.releaseStatus !== 'unpublished-candidate'
-    || candidate.releaseLabel !== 'Unpublished candidate'
+    // Published to npm on 2026-09-30 (docs/platform/evidence/site-engine-rc15/npm-registry.json).
+    || candidate.releaseStatus !== 'published'
+    || candidate.releaseLabel !== 'On npm'
     || !matches(candidate.sha256, /^[a-f0-9]{64}$/u) || candidate.sha256.length !== 64
     || !commit(candidate.sourceCommit) || !commit(candidate.artifactCommit) || !commit(candidate.evidenceCommit)
     || !SOURCE_PACKAGE_PATHS.has(candidate.sourceRepository)

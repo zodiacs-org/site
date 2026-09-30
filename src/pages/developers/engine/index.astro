@@ -87,15 +87,27 @@ const jsonLd = [{
     <h2 id="install">Install it</h2>
     <div class="prose">
       <p>
-        {candidate.name} is not on npm yet — <code>{`npm view ${candidate.name}`}</code>{' '}
-        returns 404, and <a href="/developers/support/#engine-candidate">the support page says why</a>.
-        The published archive is the evaluation route, and it is the bytes a
-        registry release will carry if it is published from this archive rather
-        than repacked from a directory. Paste this into a POSIX shell, in your
-        project's directory; it refuses to install anything whose digest does
-        not match. It also stops if that directory has no package.json, because
-        npm would otherwise install into the nearest directory above it that
-        has one.
+        {candidate.name} is on npm. This installs {candidate.version}, the
+        version npm serves under both <code>latest</code> and <code>next</code>:
+      </p>
+    </div>
+    <pre tabindex="0" role="region" aria-label="Install from npm"><code>{`npm install ${candidate.name}`}</code></pre>
+    <div class="prose">
+      <p>
+        It was published from the engine repository's <code>release.yml</code>{' '}
+        workflow with SLSA provenance. The provenance names the source
+        repository, the workflow and the commit the package was built from, and{' '}
+        <code>npm audit signatures</code> verifies it. That shows where the
+        package came from, not that its results are right;{' '}
+        <a href="#accuracy">How close it is</a> gives the measurements.
+      </p>
+      <p>
+        The pinned archive is the same package, byte for byte: npm records the
+        same SHA-1 and SHA-512 for its tarball. To install those exact bytes,
+        paste this into a POSIX shell, in your project's directory; it refuses
+        to install anything whose digest does not match. It also stops if that
+        directory has no package.json, because npm would otherwise install into
+        the nearest directory above it that has one.
       </p>
     </div>
     <pre tabindex="0" role="region" aria-label="Install commands"><code>{install}</code></pre>
