@@ -348,7 +348,7 @@ describe('registry pastel polish', () => {
     for (const value of [wingNav, astrofolio, terminal, markets, thesis, sdk, technical]) {
       expect(value).toContain('@media (max-width: 599.5px) {\n    .wnav-wrap { top: 0; padding-top: 0; transition: transform 360ms cubic-bezier(0.22,1,0.36,1), opacity 260ms ease; }');
       expect(value).toContain('.wnav-wrap.is-away { transform: translateY(-100%); opacity: 0; }');
-      expect(value).toContain("html body .wnav-wrap .wnav { --wnav-lockup: clamp(12px, 3.8vw, 15px); display: grid; grid-template-areas: 'menu . mark chip . search'; grid-template-columns: 44px minmax(0,1fr) calc(var(--wnav-lockup) * 5.7 + 13px) calc(var(--wnav-lockup) * 8.27 + 13px) minmax(0,1fr) 44px; box-sizing: border-box; width: 100%; height: calc(52px + env(safe-area-inset-top, 0px));");
+      expect(value).toContain("html body .wnav-wrap .wnav { --wnav-lockup: clamp(10px, 3.2vw, 13px); display: grid; grid-template-areas: 'menu . mark chip . profile search'; grid-template-columns: 44px minmax(0,1fr) calc(var(--wnav-lockup) * 5.7 + 13px) calc(var(--wnav-lockup) * 8.27 + 13px) minmax(0,1fr) 44px 44px; box-sizing: border-box; width: 100%; max-width: none; height: calc(52px + env(safe-area-inset-top, 0px));");
       expect(value).toContain('border-width: 0 0 1px; border-radius: 0; box-shadow: none; }');
       expect(value).toContain('.wnav__burger { grid-area: menu; border-color: transparent; }');
       expect(value).toContain(".wnav__burger:not([aria-expanded='true']) .wnav__burger-line:nth-child(2) { opacity: 0; }");
@@ -369,9 +369,9 @@ describe('registry pastel polish', () => {
     expect(header).toContain("wrap.classList.toggle('is-away', next);");
     expect(header).toContain("|| root.classList.contains('has-campaign-sheet')");
     expect(siteNav).toContain(":global(html:not([data-chart-share-receiver])) .nav-wrap.is-away { transform: translateY(-100%); opacity: 0; }");
-    expect(siteNav).toContain("grid-template-areas: 'menu . mark chip . search';");
-    expect(siteNav).toContain("grid-template-areas: 'menu . mark chip . .';");
-    expect(siteNav).toContain('grid-template-columns: 44px minmax(0, 1fr) calc(var(--nav-lockup) * 5.7 + 13px) calc(var(--nav-lockup) * 8.27 + 13px) minmax(0, 1fr) 44px;');
+    expect(siteNav).toContain("grid-template-areas: 'menu . mark chip . profile search';");
+    expect(siteNav).toContain("grid-template-areas: 'menu . mark chip . profile .';");
+    expect(siteNav).toContain('grid-template-columns: 44px minmax(0, 1fr) calc(var(--nav-lockup) * 5.7 + 13px) calc(var(--nav-lockup) * 8.27 + 13px) minmax(0, 1fr) 44px 44px;');
     expect(siteNav).toContain(":global(html:not([data-chart-share-receiver])) .nav__chip::before {");
     expect(siteNav).toContain(":global(html:not([data-chart-share-receiver])) .nav__burger:not([aria-expanded='true']) .nav__burger-line:nth-child(2) { opacity: 0; }");
     expect(siteNav).toContain("var phone = window.matchMedia('(max-width: 599.5px)');");
@@ -380,7 +380,7 @@ describe('registry pastel polish', () => {
     for (const value of [wingNav, astrofolio, terminal, markets, thesis, sdk, technical]) {
       expect(value).toContain('height: 52px; padding: 0 10px 0 20px;');
       expect(value).toContain('gap: 10px;');
-      expect(value).toContain('@media (min-width: 820px) { .wnav { gap: 10px; } }');
+      expect(value).toContain('@media (min-width: 920px) { .wnav { gap: 10px; } }');
       expect(value).toContain('@media (min-width: 900px) { .wnav { gap: 18px; } }');
       expect(value).toContain('rgba(198,204,218,0.16)');
       expect(value).toContain('width: 18px; height: 1.5px;');
@@ -389,8 +389,8 @@ describe('registry pastel polish', () => {
       expect(value).toContain('translate(-50%, calc(-50% + 5px))');
       expect(value).toContain('transform 220ms cubic-bezier(0.77,0,0.175,1)');
       expect(value).toContain('letter-spacing: 0.14em;');
-      expect(value).toMatch(/@media \(min-width: 820px\) \{ \.wnav__chip \{ (?:(?:min-)?height: 34px; )?letter-spacing: 0\.14em; \} \}/u);
-      expect(value).toContain('@media (max-width: 819.5px) { .wnav__sep, .wnav__dim { display: none; } }');
+      expect(value).toMatch(/@media \(min-width: 920px\) \{ \.wnav__chip \{ (?:(?:min-)?height: 34px; )?letter-spacing: 0\.14em; \} \}/u);
+      expect(value).toContain('@media (max-width: 919.5px) { .wnav__sep, .wnav__dim { display: none; } }');
       expect(value).toContain('padding-top: env(safe-area-inset-top);');
       expect(value).toContain('border: 1px solid rgba(198,204,218,0.16);');
       expect(value).toContain('border-left: 1px solid rgba(198,204,218,0.16);');
@@ -404,7 +404,7 @@ describe('registry pastel polish', () => {
     }
     for (const value of [wingNav, astrofolio, thesis]) {
       expect(cssRule(value, '.wnav__burger {')).toContain('width: 44px; height: 44px;');
-      expect(value).toMatch(/@media \(max-width: 819\.5px\)\s*\{[\s\S]{0,260}\.wnav__search\s*\{[^}]*width:\s*44px;[^}]*height:\s*44px;/u);
+      expect(value).toMatch(/@media \(max-width: 919\.5px\)\s*\{[\s\S]{0,260}\.wnav__search\s*\{[^}]*width:\s*44px;[^}]*height:\s*44px;/u);
       expect(cssRule(value, '.wnav__chip {')).toMatch(/(?:min-)?height:\s*44px;/u);
       expect(value).toContain('@media (max-width: 360px) {');
       expect(value).toContain('.wnav { gap: 4px; padding: 0 4px 0 10px; }');
@@ -480,10 +480,10 @@ describe('registry pastel polish', () => {
     expect(html).not.toContain('data-copy-identity');
     expect(html).toContain("@font-face { font-family: 'Instrument Sans';");
     expect(cssRule(html, 'html, body {')).toContain('font-family: var(--sans);');
-    expect(cssRule(html, '.lot__title {')).toContain('font-family: var(--sans);');
-    expect(cssRule(html, '.sec__title {')).toContain('font-family: var(--sans);');
+    expect(cssRule(html, '.lot__title {')).toContain('font-family: var(--profile-display);');
+    expect(cssRule(html, '.sec__title {')).toContain('font-family: var(--profile-display);');
     expect(cssRule(html, '.sec__title {')).toContain('text-transform: none;');
-    expect(cssRule(html, '.record-detail__title {')).toContain('font-family: var(--sans);');
+    expect(cssRule(html, '.record-detail__title {')).toContain('font-family: var(--profile-display);');
     expect(cssRule(html, '.ftr {')).toContain('font-family: var(--sans);');
     expect(cssRule(html, '.ftr {')).toContain('letter-spacing: 0;');
     expect(html).toContain('.lot__eyebrow, .lot__intro, .lot__dates, .sec__title,');
@@ -528,7 +528,7 @@ describe('registry pastel polish', () => {
     expect(html).not.toMatch(/href="https:\/\/jup\.ag\//u);
     expect(html).not.toContain('Continue to Jupiter');
     expect(html).toContain('View live chart');
-    expect(html).toContain('class="lot__meta"');
+    expect(html).toContain('class="profile-breadcrumb"');
     expect(html).toContain('min-height: 44px;');
     expect(html).toContain('.standings__list a { display: grid;');
     expect(html).toContain('min-height: 56px;');

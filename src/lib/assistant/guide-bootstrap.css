@@ -1,4 +1,4 @@
-/* Privacy-neutral Guide launcher: a labelled pill; avatar-only on small screens. */
+/* Privacy-neutral Guide launcher: labelled at every size. */
 .zguide-shell-portrait {
   display: block;
   flex: 0 0 auto;
@@ -47,12 +47,12 @@
   .zguide-launcher {
     right: max(12px, env(safe-area-inset-right));
     bottom: max(12px, env(safe-area-inset-bottom));
-    width: 48px;
-    height: 48px;
-    gap: 0;
-    padding: 7px;
-    border-radius: 50%;
-    font-size: 0;
+    width: auto;
+    height: 44px;
+    min-height: 44px;
+    gap: 6px;
+    padding: 5px 12px 5px 5px;
+    font-size: 12px;
   }
 }
 @media (prefers-reduced-motion: reduce) {

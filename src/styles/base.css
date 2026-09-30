@@ -141,6 +141,22 @@ input, select { font: inherit; }
   text-wrap: pretty;
 }
 
+/* Discovery grids use one quiet surface; the double bezel remains reserved
+   for calculators and other elevated interactions. */
+main :is(.tools-grid, .learn-grid) > a.shell {
+  padding: 0;
+  border: 1px solid var(--hair-2);
+  border-radius: 18px;
+  background: rgba(198,204,218,0.025);
+  box-shadow: none;
+}
+main :is(.tools-grid, .learn-grid) > a.shell > .core {
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  box-shadow: none;
+}
+
 /* Display serif utility — h1/h2 scale headlines. */
 .display {
   font-family: var(--font-serif);
@@ -511,19 +527,20 @@ a.shell { display: block; text-decoration: none; transition: transform var(--dur
   color: var(--faint);
 }
 
-/* ── Scroll reveal ─────────────────────────────────────────────── */
-.reveal {
-  opacity: 0;
-  transform: translateY(12px);
-  transition:
-    opacity 240ms cubic-bezier(0.23, 1, 0.32, 1),
-    transform 240ms cubic-bezier(0.23, 1, 0.32, 1);
-  transition-delay: var(--reveal-delay, 0ms);
-  will-change: opacity, transform;
+/* Reading and controls never wait for the scroll observer. Only small
+   editorial headings get motion; whole cards and articles remain still. */
+.reveal { opacity: 1; transform: none; }
+.reveal.is-in:is(h1, h2, .section-head, .kicker) {
+  animation: heading-arrive 240ms cubic-bezier(0.23, 1, 0.32, 1) both;
 }
-.reveal.is-in { opacity: 1; transform: translateY(0); }
+@keyframes heading-arrive {
+  from { opacity: 0.92; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+body:has(:focus-visible) .reveal { animation: none; }
 @media (prefers-reduced-motion: reduce) {
   .reveal {
+    animation: none !important;
     transition: none !important;
     opacity: 1 !important;
     transform: none !important;

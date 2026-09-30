@@ -10,7 +10,7 @@
 //
 // The output is committed static HTML, consistent with how this site ships
 // (no runtime build). Pages share the main site's Cosmic Void surfaces while
-// using plain, consumer-facing language and sans-serif interface typography.
+// using plain language, sans-serif interfaces, and editorial display headings.
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
@@ -37,6 +37,7 @@ import { SITE_FOOTER_STYLESHEET, renderStaticFooter } from './site-footer.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = resolve(here, '..');
+const profilePolishCss = await readFile(resolve(here, 'registry-profile-polish.css'), 'utf8');
 
 // The official token records live at /registry/ (301 from the old /collect/
 // path via vercel.json).
@@ -531,9 +532,11 @@ function render(m) {
 
   ${brandIconLinkMarkup()}
   ${SITE_FOOTER_STYLESHEET}
+  <link rel="preload" href="/fonts/eb-garamond-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
 
   <style>
-    /* Self-hosted interface faces. */
+    /* Self-hosted interface and editorial faces. */
+    @font-face { font-family: 'EB Garamond'; src: url('/fonts/eb-garamond-latin-400-normal.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
     @font-face { font-family: 'Instrument Sans'; src: url('/fonts/instrument-sans-latin-wght-normal.woff2') format('woff2-variations'); font-weight: 400 700; font-style: normal; font-display: swap; }
     @font-face { font-family: 'JetBrains Mono'; src: url('/fonts/jetbrains-mono-latin-wght-normal.woff2') format('woff2-variations'); font-weight: 300 600; font-style: normal; font-display: swap; }
   </style>
@@ -554,6 +557,11 @@ ${JSON.stringify(jsonLd(m), null, 2)}
       --serif: var(--sans);
       --mono: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
       --display: var(--sans);
+      --profile-display: 'EB Garamond', Georgia, serif;
+      --profile-hue: ${m.hue};
+      --profile-art-mask: url('/assets/sculptures/512/${m.slug}.webp');
+      --profile-title-size: ${m.name.length >= 9 ? 'clamp(48px, 8vw, 82px)' : 'clamp(48px, 9.5vw, 100px)'};
+      --profile-mobile-title-size: ${m.name.length >= 9 ? 'clamp(44px, 11vw, 56px)' : 'clamp(56px, 15vw, 72px)'};
       --vermilion: #D4603F;
       --ease: cubic-bezier(0.32, 0.72, 0, 1);
       --z-grain: 1; --z-base: 10; --z-nav: 40;
@@ -655,7 +663,7 @@ ${JSON.stringify(jsonLd(m), null, 2)}
     .lot__eyebrow .g { color: var(--ink-dim); }
     .lot__title {
       margin: 0 0 14px;
-      font-family: var(--sans); font-weight: 650;
+      font-family: var(--profile-display); font-weight: 400;
       font-size: clamp(56px, 11vw, 124px);
       line-height: 0.92; letter-spacing: -0.012em; color: var(--ink);
       text-wrap: balance;
@@ -825,7 +833,7 @@ ${JSON.stringify(jsonLd(m), null, 2)}
     .sec__head { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
     .sec__head .line { flex: 1; height: 1px; background: var(--hair); }
     .sec__title {
-      margin: 0; font-family: var(--sans); font-weight: 600; font-size: clamp(25px, 4vw, 36px);
+      margin: 0; font-family: var(--profile-display); font-weight: 400; font-size: clamp(25px, 4vw, 36px);
       letter-spacing: -0.02em; text-transform: none; color: var(--ink);
     }
 
@@ -847,7 +855,7 @@ ${JSON.stringify(jsonLd(m), null, 2)}
     .record-detail[open] > .record-detail__summary::after { content: "−"; color: var(--gold-bright); }
     .record-detail__summary:hover::after { color: var(--gold-bright); }
     .record-detail__title {
-      font-family: var(--sans); font-size: clamp(19px, 2.6vw, 24px);
+      font-family: var(--profile-display); font-size: clamp(19px, 2.6vw, 24px);
       font-weight: 600; line-height: 1.2; letter-spacing: 0; color: var(--ink);
     }
     .record-detail__hint {
@@ -1134,12 +1142,8 @@ ${JSON.stringify(jsonLd(m), null, 2)}
     .assistant-link:focus-visible { outline: 1px solid var(--gold); outline-offset: 4px; }
 
     /* Reveal */
-    .reveal {
-      opacity: 0; transform: translateY(18px); filter: blur(6px);
-      transition: opacity 900ms var(--ease), transform 900ms var(--ease), filter 900ms var(--ease);
-      will-change: opacity, transform, filter;
-    }
-    .reveal.is-in { opacity: 1; transform: translateY(0); filter: blur(0); }
+    /* Content stays readable while headings receive a short scroll entrance. */
+    .reveal { opacity: 1; transform: none; }
     @media (prefers-reduced-motion: reduce) {
       .reveal { transition: none !important; opacity: 1 !important; transform: none !important; filter: none !important; }
       .lot__next { transition: none; }
@@ -1336,6 +1340,7 @@ ${JSON.stringify(jsonLd(m), null, 2)}
       .rec__row { align-items: flex-start; }
       .copychip { max-width: 100%; }
     }
+    ${profilePolishCss}
   </style>
   <noscript><style>.reveal { opacity: 1 !important; transform: none !important; filter: none !important; }</style></noscript>
 </head>
@@ -1347,35 +1352,36 @@ ${JSON.stringify(jsonLd(m), null, 2)}
   ${wingNavHtml({ includeSearch: true })}
 
   <main class="pg" id="main">
-    <section class="lot" aria-labelledby="lot-title">
-      <nav aria-label="Breadcrumb"><ol class="lot__crumbs"><li><a href="/registry/">All signs</a></li><li aria-current="page">${esc(m.name)}</li></ol></nav>
-      <span class="lot__eyebrow">Zodiac sign <span class="g">·</span> ${m.order} of 12</span>
-      <h1 class="lot__title" id="lot-title">${esc(m.name)} <picture class="lot__title-icon" aria-hidden="true"><source srcset="/assets/zodiac-icons/400/${m.slug}.avif" type="image/avif"/><img src="/assets/zodiac-icons/400/${m.slug}.webp" width="112" height="112" alt="" decoding="async" fetchpriority="high"/></picture></h1>
-      <p class="lot__intro">${esc(m.consumer.essence)}</p>
-      <div class="lot__meta">
-        <div class="lot__dates">${esc(m.consumer.dates)} · ${esc(titleCase(m.consumer.element))} sign</div>
-        <div class="identity-actions">
-          <button type="button" data-share-sign>Share ${esc(m.name)}</button>
-        </div>
+    <div class="profile-opening" data-profile-design="celestial">
+      <div class="profile-breadcrumb">
+        <nav aria-label="Breadcrumb"><ol class="lot__crumbs"><li><a href="/registry/">All signs</a></li><li aria-current="page">${esc(m.name)}</li></ol></nav>
+        <div class="identity-actions"><button type="button" data-share-sign>Share ${esc(m.name)}</button></div>
       </div>
-    </section>
-
-    <div class="split">
-      <div class="split__figure" aria-label="${esc(m.name)} artwork">
-        <div class="card profile-art" style="margin:0">
-          <div class="card__inner"><div class="stage"><img src="/assets/sculptures/512/${m.slug}.webp" srcset="/assets/sculptures/512/${m.slug}.webp 512w, /assets/sculptures/1024/${m.slug}.webp 1024w" sizes="(max-width: 540px) 260px, (max-width: 959px) 360px, 410px" width="1024" height="1024" alt="${esc(m.name)} zodiac artwork" decoding="async" fetchpriority="high" /></div></div>
+      <section class="lot" aria-labelledby="lot-title">
+        <span class="lot__eyebrow">Zodiac sign <span class="g">·</span> ${m.order} of 12</span>
+        <h1 class="lot__title" id="lot-title">${esc(m.name)} <picture class="lot__title-icon" aria-hidden="true"><source srcset="/assets/zodiac-icons/400/${m.slug}.avif" type="image/avif"/><img src="/assets/zodiac-icons/400/${m.slug}.webp" width="112" height="112" alt="" decoding="async"/></picture></h1>
+        <div class="profile-celestial-art" aria-label="${esc(m.name)} artwork">
+          <img class="profile-art__sky" src="/assets/constellations/${m.slug}.svg" alt="" aria-hidden="true" decoding="async" />
+          <div class="card profile-art">
+            <div class="card__inner"><div class="stage"><img src="/assets/sculptures/512/${m.slug}.webp" srcset="/assets/sculptures/512/${m.slug}.webp 512w, /assets/sculptures/1024/${m.slug}.webp 1024w" sizes="(max-width: 599px) 280px, 360px" width="1024" height="1024" alt="${esc(m.name)} zodiac artwork" decoding="async" fetchpriority="high" /><span class="profile-art__light" aria-hidden="true"></span></div></div>
+          </div>
         </div>
-      </div>
-
-      <div class="split__content">
+        <p class="lot__intro">${esc(m.consumer.essence)}</p>
         <section class="profile-panel glance" aria-labelledby="glance-title">
           <h2 id="glance-title">${esc(m.name)} at a glance</h2>
           <dl>
-${glanceRows.map(([key, value]) => `            <div><dt>${esc(key)}</dt><dd>${esc(value)}</dd></div>`).join('\n')}
+${glanceRows.slice(0, 3).map(([key, value]) => `            <div><dt>${esc(key)}</dt><dd${key === 'Type' ? ` aria-label="${esc(value)}"` : ''}>${esc(key === 'Type' ? titleCase(m.consumer.modality) : value)}</dd></div>`).join('\n')}
           </dl>
         </section>
-      </div>
+        <div class="profile-actions">
+          <a class="profile-explore" href="/${m.slug}/">Explore your sign <span aria-hidden="true">↗</span></a>
+          <a class="profile-record" href="#token">Public record <span aria-hidden="true">↓</span></a>
+        </div>
+      </section>
     </div>
+    <nav class="profile-sections" aria-label="Profile sections">
+      <a href="#identity">The sign</a><a href="#people">Shared birthdays</a><a href="#constellation">In the sky</a><a href="#token">The record</a>
+    </nav>
 
     <section class="sec reveal pride" id="identity" aria-labelledby="identity-title">
       <div class="sec__head"><h2 class="sec__title" id="identity-title">Born under ${esc(m.name)}</h2><span class="line"></span></div>
@@ -1385,7 +1391,7 @@ ${glanceRows.map(([key, value]) => `            <div><dt>${esc(key)}</dt><dd>${e
         <article class="attention-card" data-attention><span class="attention-card__label">Wikipedia views</span><strong>${m.attention.signViews.toLocaleString('en-US')} a day</strong><p>The English Wikipedia page for ${esc(m.name)} averaged ${m.attention.signViews.toLocaleString('en-US')} views a day from ${esc(m.attention.from)} to ${esc(m.attention.to)}.</p><small>Source: Wikimedia · updated ${esc(m.attention.capturedAt)}. One person may account for more than one view. This shows interest, not ownership or value. <a href="/thesis/#pulse">See the source</a>.</small></article>
       </div>
       <div class="people-block">
-        <div><span class="people-block__label">You’re in good company</span></div>
+        <div id="people"><span class="people-block__label">You’re in good company</span></div>
         <ul>
 ${m.people.map((person) => `          <li><a href="/people/${person.slug}/"${person.protectedLiving ? ' rel="nofollow"' : ''}><strong>${esc(person.name)}</strong><span>${esc(person.date)}</span></a></li>`).join('\n')}
         </ul>
@@ -1539,14 +1545,39 @@ ${guideLoaderSource('en')}
         entries.forEach(function (entry) {
           if (entry.isIntersecting) { entry.target.classList.add('is-in'); io.unobserve(entry.target); }
         });
-      }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+      }, { threshold: 0, rootMargin: '0px 0px 48px 0px' });
       reveals.forEach(function (el) { io.observe(el); });
     } else {
       reveals.forEach(function (el) { el.classList.add('is-in'); });
     }
 
+    // Decorative light runs only while the sculpture can be seen.
+    var art = document.querySelector('.profile-art');
+    if (art && 'IntersectionObserver' in window) {
+      var artInView = false;
+      var artMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      var syncArtMotion = function () {
+        art.dataset.artVisible = String(artInView && !document.hidden && !artMotion.matches);
+      };
+      var artObserver = new IntersectionObserver(function (entries) {
+        artInView = entries[0].isIntersecting;
+        syncArtMotion();
+      }, { threshold: 0.1 });
+      artObserver.observe(art);
+      document.addEventListener('visibilitychange', syncArtMotion);
+      artMotion.addEventListener('change', syncArtMotion);
+    }
+
     // Unified site nav (Part AA) — Signs dropdown + mobile burger (wing-nav.mjs)
     ${wingNavScript()}
+
+    // Section navigation exposes the requested sky record before scrolling.
+    document.querySelectorAll('.profile-sections a').forEach(function (link) {
+      link.addEventListener('click', function () {
+        var target = document.getElementById(link.hash.slice(1));
+        if (target && target.tagName === 'DETAILS') target.open = true;
+      });
+    });
 
     // Copy chips
     document.querySelectorAll('.copychip[data-copy]').forEach(function (chip) {

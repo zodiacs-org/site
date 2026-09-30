@@ -72,7 +72,8 @@ describe('Registry catalogue shell parity', () => {
 
       expect(html.match(/<nav class="wnav"/gu)).toHaveLength(1);
       expect(nav).not.toContain('wnav__pill');
-      expect(nav).toMatch(/<\/div>\s*<a class="wnav__search" href="\/\?search=1" aria-label="Search the site">/u);
+      expect(nav).toMatch(/<\/div>\s*<a class="wnav__profile-shortcut" href="\/profile\/" aria-label="Your profile"/u);
+      expect(nav).toContain('<a class="wnav__search" href="/?search=1" aria-label="Search the site">');
       expect(searchIndex).toBeGreaterThan(nav.indexOf('class="wnav__links"'));
       expect(chipIndex).toBeGreaterThan(searchIndex);
       expect(burgerIndex).toBeGreaterThan(chipIndex);
@@ -89,7 +90,7 @@ describe('Registry catalogue shell parity', () => {
     }
   });
 
-  it('inherits the main site sans stack without restoring editorial catalogue headings', async () => {
+  it('keeps the shared sans interface and gives profile display headings the site serif', async () => {
     const [hub, ...profiles] = await Promise.all([
       read('public/registry/index.html'),
       ...signs.map((sign) => read(`public/registry/${sign}/index.html`)),
@@ -105,9 +106,9 @@ describe('Registry catalogue shell parity', () => {
       expect(html).toContain("--sans: 'Instrument Sans', 'Instrument Sans Fallback', 'Instrument Sans Fallback Android', system-ui, -apple-system, sans-serif");
       expect(html).toContain('--serif: var(--sans);');
       expect(cssRule(html, 'html, body {')).toContain('font-family: var(--sans);');
-      expect(cssRule(html, '.lot__title {')).toContain('font-family: var(--sans);');
-      expect(cssRule(html, '.sec__title {')).toContain('font-family: var(--sans);');
-      expect(cssRule(html, '.record-detail__title {')).toContain('font-family: var(--sans);');
+      expect(cssRule(html, '.lot__title {')).toContain('font-family: var(--profile-display);');
+      expect(cssRule(html, '.sec__title {')).toContain('font-family: var(--profile-display);');
+      expect(cssRule(html, '.record-detail__title {')).toContain('font-family: var(--profile-display);');
       expectMainSiteNavType(html);
     }
   });

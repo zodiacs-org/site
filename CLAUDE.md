@@ -80,8 +80,11 @@ The CONTENT boundary survives the visual merge:
 
 ## Generated vs source (do not hand-edit generated output)
 
-`public/sdk/index.html` is hand-authored source. Edit it directly; no generator
-owns that page.
+`public/sdk/index.html` is hand-authored source. Edit its content directly.
+The navigation regions on it, `public/thesis/index.html`, and
+`public/terminal/markets/index.html` are synchronized from `scripts/wing-nav.mjs`
+by `node scripts/sync-wing-navigation.mjs` (predev/prebuild); edit the shared
+navigation source and run the synchronizer, leaving the rest hand-authored.
 
 - `public/registry/{sign}/index.html` ← `node scripts/build-sign-pages.mjs`
   (data: `scripts/sign-data.mjs` + `public/registry/zodiacs.registry.json`)

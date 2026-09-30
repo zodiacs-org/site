@@ -1,12 +1,33 @@
 {
   "version": 1,
-  "id": "compute-api-birth-chart-faq-2026-09-30",
-  "baseCommit": "acbfad2ead3424aa7f115f500f93a7587e05c91d",
+  "id": "celestial-profiles-and-consumer-cohesion-live-2026-10-01",
+  "baseCommit": "51242ba6304fdc13a82bd063c02ae099d6711d86",
   "protectedPaths": [
-    "src/pages/es/birth-chart/index.astro",
-    "src/pages/fr/birth-chart/index.astro",
-    "src/pages/it/birth-chart/index.astro",
-    "src/pages/pt/birth-chart/index.astro"
+    "public/assets/app.js",
+    "public/registry/aquarius/index.html",
+    "public/registry/aries/index.html",
+    "public/registry/cancer/index.html",
+    "public/registry/capricorn/index.html",
+    "public/registry/gemini/index.html",
+    "public/registry/index.html",
+    "public/registry/leo/index.html",
+    "public/registry/libra/index.html",
+    "public/registry/pisces/index.html",
+    "public/registry/sagittarius/index.html",
+    "public/registry/scorpio/index.html",
+    "public/registry/taurus/index.html",
+    "public/registry/technical/index.html",
+    "public/registry/virgo/index.html",
+    "public/sdk/index.html",
+    "public/terminal/markets/index.html",
+    "scripts/build-sign-pages.mjs",
+    "scripts/registry-pastel-polish.test.mjs",
+    "scripts/registry-shell-parity.test.mjs",
+    "src/app.jsx",
+    "src/pages/es/profile/index.astro",
+    "src/pages/fr/profile/index.astro",
+    "src/pages/it/profile/index.astro",
+    "src/pages/pt/profile/index.astro"
   ],
-  "authorization": "The decision of 2026-09-28 §5 and the record of 2026-09-29 §5 make the hosted compute API (ledger unit P3.3). Its independent review of 2026-09-30 found that the Spanish, French, Italian and Portuguese birth chart pages say no server chart API exists, which the API makes false. Only one sentence changes in each listed page: the first sentence of the answer to the question on what happens to birth data now says, as the English and Russian pages already do, that the calculator on the page uses no server chart API and needs no account. Nothing else in these files changes."
+  "authorization": "The owner expands the visual edit to the whole site, requests consumer-friendly cohesion and continuity, asks to fix the cutoff in the Registry preview, improve the personal profile and its discovery, and make Guide accessible, easy to hide, and smaller on mobile. This allowance covers the existing Registry profile treatment and shared navigation across all wing sources and generated output, including SDK, Terminal and localized profile styling. Profile facts, addresses, acquisition behavior, market logic, chart computations, account/storage boundaries and Guide privacy behavior are preserved. The owner selected option B, the Celestial portrait with each sign\u2019s own constellation behind its original sculpture, and explicitly instructed: push B live. The shared sitewide polish and compact Guide are included in this approved release."
 }

@@ -40,9 +40,15 @@ const NEUTRAL_HUE = '#C6CCDA';
 function Intro() {
   return (
     <div class="pf-hero">
+      <svg class="pf-hero__mark" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+        <circle cx="32" cy="32" r="27"/><circle cx="32" cy="32" r="17"/>
+        <path d="M32 5v10m0 34v10M5 32h10m34 0h10M12.9 12.9l7 7m24.2 24.2 7 7M12.9 51.1l7-7m24.2-24.2 7-7"/>
+        <circle cx="32" cy="32" r="4"/>
+      </svg>
       <em class="kicker">Your astrology</em>
       <h1 class="display">Your charts, today and ahead.</h1>
       <p>Return to your chart, see what is active now, and keep the forecasts and moments you choose in one timeline.</p>
+      <a class="pf-hero__start" href="/birth-chart/">Make a birth chart <span aria-hidden="true">↗</span></a>
     </div>
   );
 }
