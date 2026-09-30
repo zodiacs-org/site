@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { natalChart, ENGINE_VERSION } from '@zodiacs/engine';
 import { NATAL_RECEIPT_CONVENTION_SETS, createNatalEnvelope, parseNatalEnvelope } from '@zodiacs/engine/receipt';
 import type { NatalEnvelope } from '@zodiacs/engine/receipt';
+import { deltaTAt } from '@zodiacs/engine/deltat';
 import { compareEnvelopes, type Evidence, type Replay } from './diff';
 import { replay as pageReplay } from './replay';
 import { buildEnvelope, ORDINARY, PRESETS, presetEnvelopes, type SyntheticInput } from './fixtures';
@@ -11,6 +12,7 @@ const replay: Replay = (request) => {
   const chart = natalChart({
     utc: request.utc, latitude: request.latitude, longitude: request.longitude, houseSystem: request.houseSystem,
     ...(request.deltaT === undefined ? {} : { deltaT: request.deltaT }),
+    ...(request.timeScale === undefined ? {} : { timeScale: request.timeScale }),
   } as Parameters<typeof natalChart>[0]) as {
     angles: Record<string, number> | null;
     bodies: { body: string; lon: number }[];
@@ -60,7 +62,10 @@ function asWrittenBy(envelope: NatalEnvelope, version: '0.1.1-rc.3' | '0.1.1-rc.
   const record = JSON.parse(JSON.stringify(envelope));
   record.receipt.engine = { name: record.receipt.engine.name, version };
   record.receipt.conventions = { ...(version === '0.1.1-rc.7' ? RC7_CONVENTIONS : RC3_CONVENTIONS) };
+  // Nor the time basis that rc.15 records: the instant's scale and how it became UT1 and TT.
+  delete record.receipt.timeScale;
   delete record.result.deltaT;
+  delete record.result.timeScale;
   return record;
 }
 
@@ -198,14 +203,14 @@ describe('comparing two calculation receipts', () => {
   });
 
   it('reads a receipt naming a different engine version of the same schema', () => {
-    // The developer starter pins engine 0.1.1-rc.3 while the site pins rc.8.
-    // Only rc.8 is installed here, so this checks what can be checked offline:
+    // The developer starter pins engine 0.1.1-rc.3 while the site pins rc.15.
+    // Only rc.15 is installed here, so this checks what can be checked offline:
     // a receipt naming rc.3, written in rc.3's conventions, parses, and the
     // version difference is reported rather than quietly ignored.
     const relabelled = JSON.parse(JSON.stringify(buildEnvelope(ORDINARY)));
     relabelled.receipt.engine.version = '0.1.1-rc.3';
     const refused = parseNatalEnvelope(JSON.stringify(relabelled));
-    expect(refused.ok ? 'accepted' : refused.code, 'rc.8 conventions under an rc.3 label').toBe('inconsistent_result');
+    expect(refused.ok ? 'accepted' : refused.code, 'the current conventions under an rc.3 label').toBe('inconsistent_result');
     const envelope = asWrittenBy(buildEnvelope(ORDINARY), '0.1.1-rc.3');
     const reparsed = parseNatalEnvelope(JSON.stringify(envelope));
     expect(reparsed.ok).toBe(true);
@@ -314,9 +319,9 @@ describe('regressions an adversarial review found', () => {
     // disagree slightly". One millisecond moves every body by less than the
     // sixth decimal, so every row prints the same and every row is rounding.
     //
-    // The millisecond before, not the one after. The Moon covers 1.5e-7° in a
-    // millisecond, and under rc.8's ΔT its longitude at 13:30:00.000 sits that
-    // close below a sixth-decimal boundary, so the millisecond after crosses it.
+    // The millisecond before. The Moon covers 1.5e-7° in a millisecond, so at an
+    // instant just below a sixth-decimal boundary the millisecond after crosses
+    // it; on engine rc.15's time basis neither neighbour of 13:30:00.000 does.
     const base = buildEnvelope({ ...ORDINARY, utc: '1990-06-15T13:30:00.000Z' });
     const oneMs = compareEnvelopes(base, buildEnvelope({ ...ORDINARY, utc: '1990-06-15T13:29:59.999Z' }), live);
     const oneMsRows = oneMs.differences.filter((row) => row.id.endsWith('-lon'));
@@ -330,14 +335,15 @@ describe('regressions an adversarial review found', () => {
     expect(evidenceFor(oneMs, 'instant')).toBe('hypothesis');
     expect(evidenceFor(oneMs, 'unexplained')).toBeNull();
 
-    // Ten milliseconds moves the faster bodies across a rounding boundary while
+    // Six milliseconds moves the faster bodies across a rounding boundary while
     // the slower ones stay put, so one comparison carries both kinds at once —
     // and the distance between the two is not what separates them. Mercury
-    // moves 2.0e-7 and prints differently; the lunar nodes move 5.3e-7 and
-    // print the same.
-    const tenMs = compareEnvelopes(base, buildEnvelope({ ...ORDINARY, utc: '1990-06-15T13:30:00.010Z' }), live);
-    const moved = tenMs.differences.filter((row) => row.id.endsWith('-lon') && row.kind === 'numeric');
-    const still = tenMs.differences.filter((row) => row.id.endsWith('-lon') && row.kind === 'display');
+    // moves 1.2e-7 and prints differently; the lunar nodes move 5.1e-7 and
+    // print the same. (Under the ΔT model, before engine rc.15 read 1990 on
+    // IERS UT1, ten milliseconds showed the same, with 2.0e-7 and 5.3e-7.)
+    const sixMs = compareEnvelopes(base, buildEnvelope({ ...ORDINARY, utc: '1990-06-15T13:30:00.006Z' }), live);
+    const moved = sixMs.differences.filter((row) => row.id.endsWith('-lon') && row.kind === 'numeric');
+    const still = sixMs.differences.filter((row) => row.id.endsWith('-lon') && row.kind === 'display');
     expect(moved.length).toBeGreaterThan(0);
     expect(still.length).toBeGreaterThan(0);
     for (const row of moved) expect(row.left, row.id).not.toBe(row.right);
@@ -595,16 +601,19 @@ describe('what a local recalculation has to establish before it is a cause', () 
     return copy;
   };
   /**
-   * Rewrites the instant a record declares, and the ΔT that goes with it. From
-   * rc.8 the parser checks a modelled ΔT against the declared instant, so a
-   * rewritten instant alone is refused (tested below). The model is public, so
-   * the second edit is no obstacle to anyone, and the values still come from
-   * the other moment: this is the same counterexample under the rc.8 parser.
+   * Rewrites the instant a record declares, and the ΔT and time basis that go
+   * with it. From rc.8 the parser checks a modelled ΔT against the declared
+   * instant, and from rc.15 the time basis too, so a rewritten instant alone is
+   * refused (tested below). Both are public, so the extra edits are no obstacle
+   * to anyone, and the values still come from the other moment: this is the
+   * same counterexample under the rc.15 parser.
    */
   const declaring = (utc: string) => (o: any) => {
     o.receipt.instant = new Date(utc).toISOString();
     o.receipt.sourceInstant = utc;
-    o.result.deltaT = JSON.parse(JSON.stringify(at(utc, 'placidus').result.deltaT));
+    const fresh = at(utc, 'placidus').result;
+    o.result.deltaT = JSON.parse(JSON.stringify(fresh.deltaT));
+    o.result.timeScale = JSON.parse(JSON.stringify((fresh as { timeScale?: unknown }).timeScale));
   };
   const houseSystemEvidence = (left: NatalEnvelope, right: NatalEnvelope) =>
     compareEnvelopes(left, right, live).explanations.find((item) => item.id === 'house-system')?.evidence ?? null;
@@ -965,24 +974,35 @@ describe('ΔT, which records carry from engine 0.1.1-rc.8 on', () => {
     // Same instant, place, house system and engine: nothing else is offered.
     expect(comparison.explanations.map((item) => item.id)).toEqual(['delta-t']);
     // Seconds are not degrees, so the row carries no delta for a table to print as one.
+    // 1990 is read on IERS UT1 − UTC from engine rc.15 (the model gave 57.181833).
     expect(comparison.differences.find((row) => row.id === 'delta-t-seconds'))
-      .toMatchObject({ area: 'Time scale', kind: 'numeric', left: '57.181833', right: '75.500000', delta: null });
+      .toMatchObject({ area: 'Time scale', kind: 'numeric', left: '57.197125', right: '75.500000', delta: null });
   });
 
   it('does not call two records the same when only the source of their ΔT differs', () => {
-    // Pinned at exactly the model's value: every position agrees to the printed
-    // precision, and the two records still say different things about ΔT.
+    // Pinned at exactly the value the time basis gives: every longitude and
+    // latitude agrees, and the two records still say different things about ΔT.
+    // From engine rc.15 a pin also puts TT on UT1, so the time between a speed's
+    // two samples follows the Earth's rotation rather than UTC: 2.3e-8 longer
+    // here, which moves the Sun's and the Moon's speeds across a sixth decimal.
     const modelled = buildEnvelope(ORDINARY);
     const comparison = compareEnvelopes(modelled, pinnedEnvelope(ORDINARY, modelled.result.deltaT!.seconds), live);
     expect(comparison.identical).toBe(false);
     expect(comparison.differences.some((row) => row.id === 'delta-t-seconds')).toBe(false);
+    const speeds = comparison.differences.filter((row) => row.id.endsWith('-speed') && row.kind !== 'display');
+    expect(speeds.map((row) => row.id)).toEqual(['body-Sun-speed', 'body-Moon-speed']);
+    for (const row of speeds) expect(Math.abs(row.delta! / Number(row.left))).toBeLessThan(3e-8);
     expect(comparison.differences.find((row) => row.id === 'delta-t-model'))
-      .toMatchObject({ left: 'zodiacs-deltat/1', right: 'pinned' });
-    expect(comparison.differences.filter((row) => row.area !== 'Time scale').every((row) => row.kind === 'display'))
-      .toBe(true);
+      .toMatchObject({ left: 'iers-utc/1', right: 'pinned' });
+    // A pin also records its own time basis: no leap seconds, since TT is UT1 plus the pin.
+    expect(comparison.differences.find((row) => row.id === 'time-basis'))
+      .toMatchObject({ area: 'Time scale', left: 'iers', right: 'pinned' });
+    expect(comparison.differences.filter((row) => row.area !== 'Time scale' && !row.id.endsWith('-speed'))
+      .every((row) => row.kind === 'display')).toBe(true);
     const deltaT = cause(comparison, 'delta-t');
-    expect(deltaT?.evidence).toBe('reported');
-    expect(deltaT?.covers.every((id) => id.startsWith('delta-t-'))).toBe(true);
+    expect(deltaT?.evidence).toBe('hypothesis');
+    const area = (id: string) => comparison.differences.find((row) => row.id === id)?.area;
+    expect(deltaT?.covers.filter((id) => area(id) !== 'Time scale')).toEqual(['body-Sun-speed', 'body-Moon-speed']);
     expect(comparison.explanations.map((item) => item.id)).toEqual(['delta-t']);
   });
 
@@ -1005,7 +1025,8 @@ describe('ΔT, which records carry from engine 0.1.1-rc.8 on', () => {
     expect(deltaT?.evidence).toBe('reported');
     expect(deltaT?.covers).toEqual(expect.arrayContaining(['delta-t-seconds', 'delta-t-model']));
     // Five hours move the positions; eighteen seconds of ΔT are not offered for them.
-    expect(deltaT?.covers.some((id) => !id.startsWith('delta-t-'))).toBe(false);
+    const area = (id: string) => comparison.differences.find((row) => row.id === id)?.area;
+    expect(deltaT?.covers.some((id) => area(id) !== 'Time scale')).toBe(false);
     expect(evidenceFor(comparison, 'unexplained')).toBeNull();
   });
 
@@ -1036,5 +1057,81 @@ describe('ΔT, which records carry from engine 0.1.1-rc.8 on', () => {
     // The difference is stated where the parser ties it, in the conventions.
     expect(comparison.differences.find((row) => row.id === 'convention-deltaT')?.left).toBe('—');
     expect(evidenceFor(comparison, 'conventions')).toBe('reported');
+  });
+});
+
+describe('the time basis, which records carry from engine 0.1.1-rc.15 on', () => {
+  const cause = (comparison: ReturnType<typeof compareEnvelopes>, id: string) =>
+    comparison.explanations.find((item) => item.id === id) ?? null;
+  /** `buildEnvelope`, with the instant read on another scale. */
+  const onScale = (input: SyntheticInput, timeScale: 'ut1' | 'tt'): NatalEnvelope => {
+    const envelope = createNatalEnvelope(natalChart({
+      utc: input.utc, latitude: input.latitude, longitude: input.longitude, houseSystem: input.houseSystem,
+      timeScale,
+    } as Parameters<typeof natalChart>[0]), { sourceInstant: input.sourceInstant ?? input.utc });
+    const parsed = parseNatalEnvelope(JSON.stringify(envelope));
+    if (!parsed.ok) throw new Error(`the parser rejected a ${timeScale} fixture: ${parsed.code}`);
+    return parsed.envelope;
+  };
+
+  it('names another input scale as the candidate for the positions and angles it moved', () => {
+    const comparison = compareEnvelopes(buildEnvelope(ORDINARY), onScale(ORDINARY, 'tt'), live);
+    expect(comparison.differences.find((row) => row.id === 'time-scale'))
+      .toMatchObject({ area: 'Inputs', left: 'utc', right: 'tt' });
+    const scale = cause(comparison, 'time-scale');
+    expect(scale?.evidence).toBe('hypothesis');
+    // Both are read on IERS in 1990; the scale moves ΔT and UT1 − UTC, not the basis.
+    expect(scale?.covers).toEqual(expect.arrayContaining(['time-scale', 'body-Moon-lon', 'angle-asc', 'delta-t-seconds', 'ut1-utc-seconds']));
+    expect(comparison.differences.some((row) => row.id === 'time-basis')).toBe(false);
+    expect(cause(comparison, 'delta-t')).toBeNull();
+    expect(evidenceFor(comparison, 'unexplained')).toBeNull();
+  });
+
+  it('replays a record on its own scale, so its values can reproduce', () => {
+    // Two TT records differing only in house system. Replayed on UTC, neither
+    // would reproduce its own values: the same digits are another moment.
+    const comparison = compareEnvelopes(onScale(ORDINARY, 'tt'), onScale({ ...ORDINARY, houseSystem: 'whole' }, 'tt'), live);
+    expect(evidenceFor(comparison, 'house-system')).toBe('reproduced');
+    const request = { utc: ORDINARY.utc, latitude: ORDINARY.latitude, longitude: ORDINARY.longitude,
+      houseSystem: 'placidus', timeKnown: true };
+    const moon = (result: ReturnType<typeof pageReplay>) => result?.bodies.find((row) => row.body === 'Moon')?.lon;
+    const ttMoon = onScale(ORDINARY, 'tt').result.bodies.find((row) => row.body === 'Moon')?.lon;
+    expect(moon(pageReplay({ ...request, timeScale: 'tt' }))).toBe(ttMoon);
+    expect(moon(pageReplay(request))).not.toBe(ttMoon);
+  });
+
+  it('lets a moment across 1972 account for where one engine took ΔT from', () => {
+    // One engine version: before 1972 the ΔT model, from 1972 IERS.
+    const comparison = compareEnvelopes(
+      buildEnvelope({ ...ORDINARY, utc: '1971-06-15T13:30:00Z' }), buildEnvelope({ ...ORDINARY, utc: '1973-06-15T13:30:00Z' }), live,
+    );
+    expect(comparison.differences.find((row) => row.id === 'delta-t-model'))
+      .toMatchObject({ left: 'zodiacs-deltat/1', right: 'iers-utc/1' });
+    expect(comparison.differences.find((row) => row.id === 'time-basis')).toMatchObject({ left: 'delta-t', right: 'iers' });
+    expect(cause(comparison, 'instant')?.covers).toEqual(expect.arrayContaining(['delta-t-model', 'time-basis', 'tai-utc-seconds']));
+    expect(cause(comparison, 'delta-t')).toBeNull();
+    expect(evidenceFor(comparison, 'unexplained')).toBeNull();
+  });
+
+  it('reads a record of the rc.8 conventions, which states no scale, as a difference of conventions', () => {
+    // As rc.8 to rc.14 wrote it: the instant read as UT1 with the model's ΔT,
+    // and no time basis recorded. Its positions here are rc.15's, which the
+    // parser does not recompute; only the model's ΔT at the instant is checked.
+    const current = buildEnvelope(ORDINARY);
+    const record = JSON.parse(JSON.stringify(current));
+    record.receipt.engine = { ...record.receipt.engine, version: '0.1.1-rc.14' };
+    record.receipt.conventions = { ...NATAL_RECEIPT_CONVENTION_SETS.find((set) => set.deltaT === 'tt-minus-ut1;ut1-read-as-utc;value-in-result') };
+    delete record.receipt.timeScale;
+    delete record.result.timeScale;
+    record.result.deltaT = deltaTAt((Date.parse(ORDINARY.utc) - Date.UTC(2000, 0, 1, 12)) / 86_400_000);
+    const parsed = parseNatalEnvelope(JSON.stringify(record));
+    expect(parsed.ok ? 'accepted' : parsed.code).toBe('accepted');
+    if (!parsed.ok) return;
+    const comparison = compareEnvelopes(parsed.envelope, current, live);
+    expect(comparison.differences.find((row) => row.id === 'time-scale')).toMatchObject({ left: '—', right: 'utc' });
+    expect(cause(comparison, 'time-scale')).toBeNull();
+    expect(cause(comparison, 'conventions')?.covers).toEqual(expect.arrayContaining(['time-scale', 'convention-timeScale']));
+    expect(comparison.differences.some((row) => ['time-basis', 'ut1-utc-seconds'].includes(row.id))).toBe(false);
+    expect(cause(comparison, 'unexplained')?.covers ?? []).not.toContain('time-scale');
   });
 });

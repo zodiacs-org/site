@@ -64,6 +64,11 @@ export interface ReplayRequest {
    * engine's own model, which is what a record without a pin was computed with.
    */
   readonly deltaT?: number;
+  /**
+   * The scale the record's instant is on, where it is not UTC (engine
+   * 0.1.1-rc.15 on). The same digits on another scale are another moment.
+   */
+  readonly timeScale?: 'ut1' | 'tt';
 }
 export interface ReplayResult {
   readonly angles: Record<string, number> | null;
@@ -111,8 +116,33 @@ const DELTA_T_LABELS: Record<string, string> = {
   segment: 'ΔT segment',
 };
 
-/** The ΔT rows that say where a value came from, which no difference in the moment can change. */
+/**
+ * The ΔT rows that say where a value came from. Within one engine version only
+ * the moment picks them: from 0.1.1-rc.15 an instant from 1972 to 2027-10-02
+ * takes ΔT from IERS and any other from the model. Across versions a different
+ * table can change them at one instant, so there no difference in the moment
+ * is enough to account for them.
+ */
 const DELTA_T_SOURCE_ROWS = new Set(['delta-t-model', 'delta-t-table', 'delta-t-tableDigest']);
+
+/**
+ * The time basis a record carries from engine 0.1.1-rc.15 on
+ * (`result.timeScale`): how its instant became UT1 and TT. Its input scale is
+ * the receipt's `timeScale`, compared with the inputs.
+ */
+const TIME_BASIS_LABELS: ReadonlyArray<readonly [id: string, label: string, read: (scale: Record<string, any>) => unknown]> = [
+  ['time-basis', 'Time basis', (scale) => scale.basis],
+  ['ut1-utc-seconds', 'UT1 − UTC, seconds', (scale) => scale.ut1MinusUtc?.seconds ?? null],
+  ['ut1-utc-sigma', 'UT1 − UTC band (1σ), seconds', (scale) => scale.ut1MinusUtc?.sigma ?? null],
+  ['ut1-utc-source', 'UT1 − UTC source', (scale) => scale.ut1MinusUtc?.source ?? null],
+  ['tai-utc-seconds', 'TAI − UTC (leap seconds), seconds', (scale) => scale.leapSeconds?.taiMinusUtc ?? null],
+  ['leap-seconds-listed', 'Leap-second list in force', (scale) => scale.leapSeconds?.listed ?? null],
+];
+
+function timeBasisOf(envelope: NatalEnvelope): Record<string, any> | null {
+  const scale = (envelope.result as { timeScale?: unknown }).timeScale;
+  return scale !== null && typeof scale === 'object' ? scale as Record<string, any> : null;
+}
 
 function deltaTOf(envelope: NatalEnvelope): Record<string, unknown> | null {
   const deltaT = (envelope.result as { deltaT?: unknown }).deltaT;
@@ -248,9 +278,13 @@ function replayInputOf(envelope: NatalEnvelope): ReplayRequest | null {
   // chart and then blames the record for not matching.
   const deltaT = deltaTOf(envelope);
   const pinned = deltaT?.model === 'pinned' && typeof deltaT.seconds === 'number' ? { deltaT: deltaT.seconds } : {};
+  // So is the scale of the instant (engine 0.1.1-rc.15 on): read on UTC, a UT1
+  // or TT instant is another moment.
+  const scale = (receipt as { timeScale?: unknown }).timeScale;
+  const onScale = scale === 'ut1' || scale === 'tt' ? { timeScale: scale } : {};
   return {
     utc: receipt.instant, latitude, longitude, houseSystem: receipt.houses.requested,
-    timeKnown: receipt.timeKnown === true, ...pinned,
+    timeKnown: receipt.timeKnown === true, ...pinned, ...onScale,
   };
 }
 
@@ -291,6 +325,8 @@ function collectDifferences(left: NatalEnvelope, right: NatalEnvelope): Differen
   text('instant', 'Inputs', 'Resolved instant (UTC)', lr.instant, rr.instant);
   text('source-instant', 'Inputs', 'Instant as supplied', lr.sourceInstant, rr.sourceInstant);
   text('reference', 'Inputs', 'How the instant was reached', lr.reference, rr.reference);
+  // The scale the instant is on, which records state from engine 0.1.1-rc.15.
+  text('time-scale', 'Inputs', 'Time scale of the instant', lr.timeScale, rr.timeScale);
   text('time-known', 'Inputs', 'Birth time known', lr.timeKnown, rr.timeKnown);
   text('zone', 'Inputs', 'Supplied time zone', lr.localResolution?.timeZone ?? null, rr.localResolution?.timeZone ?? null);
   scalar('latitude', 'Inputs', 'Latitude', lr.coordinates?.latitude, rr.coordinates?.latitude);
@@ -330,6 +366,14 @@ function collectDifferences(left: NatalEnvelope, right: NatalEnvelope): Differen
       quantity(`delta-t-${key}`, 'Time scale', Object.hasOwn(DELTA_T_LABELS, key) ? DELTA_T_LABELS[key] : `ΔT ${key}`,
         own(ldt), own(rdt));
     }
+  }
+
+  // How each instant became UT1 and TT, which records carry from engine
+  // 0.1.1-rc.15: a different moment, input scale or pin can change it.
+  const lts = timeBasisOf(left);
+  const rts = timeBasisOf(right);
+  if (lts && rts) {
+    for (const [id, label, read] of TIME_BASIS_LABELS) quantity(id, 'Time scale', label, read(lts), read(rts));
   }
 
   const la = (left.result as any).angles as Record<string, number> | null;
@@ -423,7 +467,7 @@ type RowCategory = 'computed' | 'setting' | 'input' | 'provenance';
 /** Requested or actual house system: a setting, not a result. */
 const SETTING_ROWS = new Set(['houses-requested', 'houses-actual', 'houses-system']);
 /** Birth details as supplied, and how the instant was reached from them. */
-const INPUT_ROWS = new Set(['instant', 'source-instant', 'reference', 'time-known', 'zone', 'latitude', 'longitude']);
+const INPUT_ROWS = new Set(['instant', 'source-instant', 'reference', 'time-scale', 'time-known', 'zone', 'latitude', 'longitude']);
 /** What a file says about itself, or about how its run went. */
 const PROVENANCE_ROWS = new Set(['engine-version', 'schema', 'result-flags', 'input-flags', 'houses-absence']);
 
@@ -665,18 +709,24 @@ function explain(left: NatalEnvelope, right: NatalEnvelope, differences: Differe
     }
   }
 
-  // ΔT. The engine's model gives it as a function of the instant, so a
-  // different moment accounts for a different modelled value. It cannot
-  // account for a different source — a value a caller pinned, or another
-  // table — and at one instant nothing but the source can move ΔT at all.
+  // ΔT and the time basis. The engine gives both as a function of the instant
+  // on its scale, so a different moment accounts for different modelled
+  // values; within one engine version that includes where ΔT came from, since
+  // from 0.1.1-rc.15 the instant picks IERS or the model. A moment cannot
+  // account for a value a caller pinned, another table or another input scale,
+  // and at one instant nothing but those can move them at all.
   const deltaTRows = differences
     .filter((row) => row.area === 'Time scale' && row.kind !== 'display').map((row) => row.id);
   const modelled = (envelope: NatalEnvelope) => {
     const deltaT = deltaTOf(envelope);
     return deltaT !== null && deltaT.model !== 'pinned';
   };
-  const momentMovesDeltaT = has('instant') && modelled(left) && modelled(right)
-    && !deltaTRows.some((id) => DELTA_T_SOURCE_ROWS.has(id));
+  const statedScale = (envelope: NatalEnvelope) => typeof (envelope.receipt as { timeScale?: unknown }).timeScale === 'string';
+  // Both records say which scale their instant is on, and they differ. A record
+  // from before 0.1.1-rc.15 states none; that is a difference of conventions.
+  const scaleDiffers = has('time-scale') && statedScale(left) && statedScale(right);
+  const momentMovesDeltaT = has('instant') && modelled(left) && modelled(right) && !has('time-scale')
+    && (sameEngine || !deltaTRows.some((id) => DELTA_T_SOURCE_ROWS.has(id)));
 
   if (has('instant') && computed.length > 0) {
     explanations.push({
@@ -691,7 +741,23 @@ function explain(left: NatalEnvelope, right: NatalEnvelope, differences: Differe
     });
   }
 
-  if (deltaTRows.length > 0 && !momentMovesDeltaT) {
+  if (scaleDiffers) {
+    // The same digits on another scale are another moment. Across two instants
+    // the moment is the candidate for the positions, and this claims its own rows.
+    const moved = has('instant') ? [] : downstream(['Positions', 'Angles', 'Houses', 'Aspects']);
+    explanations.push({
+      id: 'time-scale', evidence: moved.length > 0 ? 'hypothesis' : 'reported',
+      statement: moved.length > 0
+        ? 'The two records read their instant on different time scales, which moves the positions and the angles.'
+        : 'The two records read their instant on different time scales.',
+      covers: ['time-scale', ...(modelled(left) && modelled(right) ? deltaTRows : []), ...moved],
+      detail: 'From engine 0.1.1-rc.15 an instant can be given on UTC, UT1 or TT, and the same digits on another scale '
+        + 'are another moment: TT runs about 69 seconds ahead of UTC today, which moves the Moon by about half an '
+        + 'arcsecond per second, and UT1 differs from UTC by up to 0.9 seconds, which turns the angles. It is not re-run here.',
+    });
+  }
+
+  if (deltaTRows.length > 0 && !momentMovesDeltaT && !(scaleDiffers && modelled(left) && modelled(right))) {
     // At one instant a different ΔT is the only thing here that moved the
     // clock the positions are computed on, so it is a candidate for them. Across
     // two instants the moment is, and this claims only its own rows.
@@ -703,7 +769,8 @@ function explain(left: NatalEnvelope, right: NatalEnvelope, differences: Differe
         : 'The two records state ΔT (TT − UT1) differently.',
       covers: [...deltaTRows, ...moved],
       detail: 'ΔT is the gap between the clock the instant is written in and the clock the positions are computed on. '
-        + 'A record takes it from the engine’s model at its instant unless its caller pinned it. A different value '
+        + 'A record takes it from the engine’s time basis at its instant unless its caller pinned it: from engine '
+        + '0.1.1-rc.15 IERS from 1972 to 2027-10-02 and the model otherwise, before that the model throughout. A different value '
         + 'moves every body, the Moon by about half an arcsecond per second of ΔT, and the angles far less. It is not re-run here.',
     });
   }
@@ -756,7 +823,9 @@ function explain(left: NatalEnvelope, right: NatalEnvelope, differences: Differe
     explanations.push({
       id: 'conventions', evidence: 'reported',
       statement: 'The two charts were computed under different stated conventions.',
-      covers: conventionRows,
+      // A record from before engine 0.1.1-rc.15 states no input scale: its
+      // conventions read every instant as UT1. That row belongs to them.
+      covers: [...conventionRows, ...(has('time-scale') && !scaleDiffers ? ['time-scale'] : [])],
       detail: 'Different conventions can make values incomparable rather than merely different.',
     });
   }
