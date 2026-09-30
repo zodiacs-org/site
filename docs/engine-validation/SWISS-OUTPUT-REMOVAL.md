@@ -420,6 +420,24 @@ left:
   `SWISS_WINDOW_FIXTURE`, and refuse one inside it (`search/lib/backends.mjs`);
   `search/run-all.sh` writes its output outside the repository.
 
+### Added by #600, removed on 2026-09-30
+
+#600 vendored engine rc.14 on 2026-09-29, after this removal began, and
+recorded two parity reports with the per-case differences from the Swiss node
+and polar fixture that rc.5 to rc.10's reports carried until 2026-09-28.
+rc.14 gives the same results as rc.10 on those cases, so the rows held the
+same values, and the guard failed on them when this branch took in `main`.
+They are stripped as the earlier reports were: `.nodes` and `.polar` leave,
+and the maxima stay. `strip.py` reads them from `a9d3d9e8`, the commit that
+added them.
+
+| file | removed | rows | SHA-256 of what was removed |
+| --- | --- | ---: | --- |
+| `site-engine-rc14/node22-parity.json` | `.nodes` | 3 | `3139f11a60d6b57adea9177c0eccd9bbafcdb4bbebb32aa05fd166bc27a7d793` |
+|  | `.polar` | 6 | `fe016057b5d34eb39e23b0dcc944d905df847005a8a6e45ac74a26c8d6166053` |
+| `site-engine-rc14/node24-parity.json` | `.nodes` | 3 | `3139f11a60d6b57adea9177c0eccd9bbafcdb4bbebb32aa05fd166bc27a7d793` |
+|  | `.polar` | 6 | `fe016057b5d34eb39e23b0dcc944d905df847005a8a6e45ac74a26c8d6166053` |
+
 ## How to regenerate
 
 Run a regeneration outside the repository, and commit statistics only. The

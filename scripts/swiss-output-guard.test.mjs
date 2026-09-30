@@ -37,6 +37,10 @@ const DECISIONS = {
   '2026-09-29': 'docs/platform/programme/DECISIONS-2026-09-29.md §2',
 };
 const SCAN_TIMEOUT = 300_000;
+const LATER_BASES = {
+  'docs/platform/evidence/site-engine-rc14/node22-parity.json': 'a9d3d9e85c9293b1a8b809d072b3a0c3edde1a76',
+  'docs/platform/evidence/site-engine-rc14/node24-parity.json': 'a9d3d9e85c9293b1a8b809d072b3a0c3edde1a76',
+};
 
 /** Swiss provenance: its Python binding, the library's name, its ephemeris flag, a call on the swe module. */
 const PROVENANCE = /pyswisseph|swisseph|swieph|\bswe\.[a-z_]+/giu;
@@ -146,7 +150,9 @@ describe('Swiss Ephemeris output stays out of the tree', () => {
     expect(manifest.rounds).toEqual(Object.entries(DECISIONS).map(([on, under]) => ({ on, under })));
     for (const under of Object.values(DECISIONS)) expect(manifest.what).toContain(under);
     expect(manifest.removedFiles).toHaveLength(10);
-    expect(manifest.strippedFiles).toHaveLength(131);
+    // 131 through the second round, and the two rc.14 parity reports #600 added
+    // after it began (SWISS-OUTPUT-REMOVAL.md, "Added by #600").
+    expect(manifest.strippedFiles).toHaveLength(133);
     expect(manifest.replacedFiles).toHaveLength(21);
     for (const entry of [...manifest.removedFiles, ...manifest.strippedFiles, ...manifest.replacedFiles]) {
       expect(entry.regenerate, entry.path).toMatch(/\S/u);
@@ -190,7 +196,11 @@ describe('Swiss Ephemeris output stays out of the tree', () => {
       expect(marker, `${entry.path} says what left it`).toBeTruthy();
       expect(DECISIONS[marker.on], entry.path).toBe(marker.under);
       expect(marker.removed, entry.path).toEqual(entry.removed);
-      expect(marker.lastCommitWithTheValues, entry.path).toBe(manifest.base);
+      // Every stripped file comes from the removal's base commit, except the two
+      // rc.14 parity reports #600 added after it began, read from the commit that
+      // added them (SWISS-OUTPUT-REMOVAL.md, "Added by #600").
+      const base = LATER_BASES[entry.path] ?? manifest.base;
+      expect(marker.lastCommitWithTheValues, entry.path).toBe(base);
     }
   });
 

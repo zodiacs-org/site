@@ -51,6 +51,9 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.normpath(os.path.join(HERE, os.pardir, os.pardir, os.pardir))
 BASE = '2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83'
+# The commit of #600 that added the rc.14 parity reports, after BASE, with the
+# same per-case rows as rc.5 to rc.10's.
+MAIN_RC14 = 'a9d3d9e85c9293b1a8b809d072b3a0c3edde1a76'
 ROUND_1 = {'on': '2026-09-28', 'under': 'docs/platform/programme/DECISIONS-2026-09-28.md §3'}
 ROUND_2 = {'on': '2026-09-29', 'under': 'docs/platform/programme/DECISIONS-2026-09-29.md §2'}
 DATE, UNDER = ROUND_1['on'], ROUND_1['under']
@@ -61,8 +64,8 @@ RECORD = 'docs/engine-validation/SWISS-OUTPUT-REMOVAL.md'
 EV = 'docs/platform/evidence/'
 
 
-def git_bytes(path):
-    return subprocess.run(['git', 'show', '%s:%s' % (BASE, path)], cwd=ROOT, check=True, capture_output=True).stdout
+def git_bytes(path, commit=BASE):
+    return subprocess.run(['git', 'show', '%s:%s' % (commit, path)], cwd=ROOT, check=True, capture_output=True).stdout
 
 
 def sha(data: bytes) -> str:
@@ -291,6 +294,7 @@ REGEN = {
     'corpus-deltat': 'from the repository root, python3 -c "import json, sys, swisseph as swe; swe.set_ephe_path(sys.argv[1]); [print(c[\'id\'], swe.deltat_ex(c[\'jdUt\'], swe.FLG_SWIEPH) * 86400) for c in json.load(open(\'docs/platform/evidence/engine-beyond-swiss/corpora/horizons-24/corpus-tt.json\'))[\'cases\']]" <ephe>, which prints Swiss\'s Delta T at each corpus instant',
     'canon': 'no committed command: the engine audit located the four events in Swiss Ephemeris 2.10.03 with its swiss-anchors.py, which it did not commit (engine-audit-2026-09-22/LEDGER.md, verification-honesty-3, gives the method); the values are only in commit %s' % BASE,
     'parity': 'node scripts/platform-engine-report.mjs at commit %s, with the engine version the file names installed' % BASE,
+    'parity-rc14': 'node scripts/platform-engine-report.mjs at commit %s, with the engine version the file names installed' % MAIN_RC14,
     'uranus': 'python3 docs/platform/evidence/precision-2026-09-20/search/verify/swiss-station.py, and search/lib/swiss-longitudes.py through search/reproduce.mjs, decompose.mjs and uranus-d.mjs, each given the fixture of commit %s from outside the repository (SWISS_WINDOW_FIXTURE or its first argument) and writing outside it' % BASE,
     'patch': 'the commit receipt as GitHub gives it: https://api.github.com/repos/aloistr/swisseph/commits/3fd0f956d73898b91cc4f67cf18b21af656d1342; its patch is Swiss Ephemeris source code and stays out of the tree',
     'vectors-tt': 'the TT of each instant as the corpus was first fetched: git show %s:docs/platform/evidence/engine-beyond-swiss/corpora/horizons-24/corpus-tt.json, or UT + Swiss\'s Delta T as under the corpus\'s own entry' % BASE,
@@ -457,6 +461,10 @@ for rc in ('site-engine-rc5/independent-node-polar-node', 'site-engine-rc7/node'
 for name in PARITY:
     SPEC[name] = {'paths': [['nodes'], ['polar']], 'what': 'per-case differences from the Swiss node/polar fixture (three node epochs, three polar places in two house systems); the maxima stay',
                   'regen': 'parity'}
+for n in ('22', '24'):
+    SPEC[EV + 'site-engine-rc14/node' + n + '-parity.json'] = {
+        'paths': [['nodes'], ['polar']], 'round': ROUND_2, 'base': MAIN_RC14, 'regen': 'parity-rc14',
+        'what': 'per-case differences from the Swiss node/polar fixture (three node epochs, three polar places in two house systems), which #600 recorded for rc.14 on 2026-09-29 after the second round began and which were removed on 2026-09-30; the maxima stay'}
 COMPONENT_ENDS = 'Swiss\'s component ends, the ends of an hourly Swiss scan of the 3-degree orb'
 for base in ('search/raw/', 'search/verify/raw-original/'):
     SPEC[EV + 'precision-2026-09-20/' + base + 'decomposition.json'] = {
@@ -609,7 +617,7 @@ def transform(path, spec, value):
         'what': spec['what'] if 'what' in spec else BENCH_ROWS,
         'removed': removed,
         'fileBefore': None,
-        'lastCommitWithTheValues': BASE,
+        'lastCommitWithTheValues': spec.get('base', BASE),
         'regenerate': REGEN[spec['regen']],
         'record': RECORD,
     }
@@ -762,7 +770,7 @@ def main(argv):
         elif os.path.exists(full):
             subprocess.run(['git', 'rm', '-q', path], cwd=ROOT, check=True)
     for path, spec in sorted(SPEC.items()):
-        data = git_bytes(path)
+        data = git_bytes(path, spec.get('base', BASE))
         if spec.get('text'):
             out, marker, style = text_edit(data, spec)
             stripped_values.append([json.loads(m.group(1)) for m in re.finditer(r'"swiss": (-?[0-9.]+)', data.decode())])

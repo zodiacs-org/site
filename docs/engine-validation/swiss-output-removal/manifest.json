@@ -2877,6 +2877,60 @@
    "regenerate": "node scripts/platform-engine-report.mjs at commit 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83, with the engine version the file names installed"
   },
   {
+   "path": "docs/platform/evidence/site-engine-rc14/node22-parity.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 3369,
+    "sha256": "4d56596fceda320bc4bf72cf44b7a934cac1af1e3900441c36637c97d6caa6e8"
+   },
+   "after": {
+    "bytes": 2259,
+    "sha256": "cc82dbff5f0004f7e1d3fc3478a629c54628b2ebc073f7e3f946388fa225caf8"
+   },
+   "removed": [
+    {
+     "path": ".nodes",
+     "count": 3,
+     "sha256": "3139f11a60d6b57adea9177c0eccd9bbafcdb4bbebb32aa05fd166bc27a7d793",
+     "bytes": 468
+    },
+    {
+     "path": ".polar",
+     "count": 6,
+     "sha256": "fe016057b5d34eb39e23b0dcc944d905df847005a8a6e45ac74a26c8d6166053",
+     "bytes": 1312
+    }
+   ],
+   "regenerate": "node scripts/platform-engine-report.mjs at commit a9d3d9e85c9293b1a8b809d072b3a0c3edde1a76, with the engine version the file names installed"
+  },
+  {
+   "path": "docs/platform/evidence/site-engine-rc14/node24-parity.json",
+   "serialiser": "js",
+   "before": {
+    "bytes": 3369,
+    "sha256": "e9e23cce29eb4ae243d5c6c019f259a54379374f845b06b3e30494a0fd2944f7"
+   },
+   "after": {
+    "bytes": 2259,
+    "sha256": "ceaae7bdfcee4c19b1413ecd4a910881ee2d98f0f7b9fe83eec6e3d49a46e085"
+   },
+   "removed": [
+    {
+     "path": ".nodes",
+     "count": 3,
+     "sha256": "3139f11a60d6b57adea9177c0eccd9bbafcdb4bbebb32aa05fd166bc27a7d793",
+     "bytes": 468
+    },
+    {
+     "path": ".polar",
+     "count": 6,
+     "sha256": "fe016057b5d34eb39e23b0dcc944d905df847005a8a6e45ac74a26c8d6166053",
+     "bytes": 1312
+    }
+   ],
+   "regenerate": "node scripts/platform-engine-report.mjs at commit a9d3d9e85c9293b1a8b809d072b3a0c3edde1a76, with the engine version the file names installed"
+  },
+  {
    "path": "docs/platform/evidence/site-engine-rc5/independent-node-polar-node22.json",
    "serialiser": "js",
    "before": {
