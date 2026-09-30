@@ -6,8 +6,8 @@
  * engine writes no receipt for the other calculations, so positions, events,
  * time and sky-fact carry `zodiacs.compute-receipt.v1`: the same engine
  * identity, conventions and coverage statement the engine writes into its own
- * receipts, read from one it writes, plus what the request used (ΔT model,
- * searches, time zone data).
+ * receipts, read from one it writes, plus what the request used (the ΔT
+ * sources of the engine's time basis, searches, time zone data).
  *
  * `cite.receipt` is a digest of the receipt in the same response, not a second
  * copy: SHA-256 over its RFC 8785 canonical JSON, so any client can recompute
@@ -38,18 +38,41 @@ export const BACKEND = Object.freeze({
   ephemeris: Object.freeze({ name: EPHEMERIS.name, version: EPHEMERIS.version }),
 });
 
-type EngineStatements = Pick<NatalReceipt, 'conventions' | 'coverage'>;
+/** A source of ΔT (TT − UT1) as a chart names it: its model, table and the table's digest. */
+export interface DeltaTSource {
+  model: string;
+  table: string;
+  tableDigest: string;
+}
+
+type EngineStatements = Pick<NatalReceipt, 'conventions' | 'coverage'> & { deltaT: readonly [DeltaTSource, DeltaTSource] };
 let statements: EngineStatements | null = null;
 
 /**
  * The conventions and coverage statement exactly as the engine writes them
- * into a receipt. The engine exports its conventions set but not the coverage
- * statement, so both are read from a receipt it writes for a fixed instant.
+ * into a receipt, and the two sources of ΔT its time basis uses: IERS (the
+ * leap seconds and UT1 − UTC) from 1972 to the end of its UT1 table, as a chart
+ * at 2000-01-01 names it, and the ΔT model otherwise. The engine exports its
+ * conventions set and the model's table but not the coverage statement or the
+ * UT1 table's, so those are read from a chart and a receipt it writes for a
+ * fixed instant.
  */
 export function engineStatements(): EngineStatements {
   if (!statements) {
-    const { receipt } = createNatalEnvelope(natalChart({ utc: '2000-01-01T12:00:00Z', timeKnown: false }));
-    statements = { conventions: receipt.conventions, coverage: receipt.coverage };
+    const chart = natalChart({ utc: '2000-01-01T12:00:00Z', timeKnown: false });
+    const { receipt } = createNatalEnvelope(chart);
+    const { model, table, tableDigest } = chart.deltaT;
+    if (model !== 'iers-utc/1' || table === null || tableDigest === null) {
+      throw new Error('The engine\'s chart for 2000-01-01 no longer names the IERS table.');
+    }
+    statements = {
+      conventions: receipt.conventions,
+      coverage: receipt.coverage,
+      deltaT: [
+        { model, table, tableDigest },
+        { model: DELTA_T_MODEL, table: DELTA_T_TABLE.version, tableDigest: DELTA_T_TABLE.digest },
+      ],
+    };
   }
   return statements;
 }
@@ -75,7 +98,8 @@ export interface ComputeReceipt {
   conventions: EngineStatements['conventions'];
   coverage: EngineStatements['coverage'];
   referenceSpan: { from: string; to: string };
-  deltaT: { model: string; table: string; tableDigest: string };
+  /** The two ΔT sources of the engine's time basis, IERS first; each result that gives an instant's ΔT names which applied. */
+  deltaT: readonly [DeltaTSource, DeltaTSource];
   timeResolution?: TimeResolutionFacts;
   search?: SearchFacts;
 }
@@ -84,7 +108,7 @@ export function computeReceipt(
   endpoint: ComputeEndpoint,
   extra: { timeResolution?: TimeResolutionFacts; search?: SearchFacts } = {},
 ): ComputeReceipt {
-  const { conventions, coverage } = engineStatements();
+  const { conventions, coverage, deltaT } = engineStatements();
   return {
     schema: COMPUTE_RECEIPT_SCHEMA,
     endpoint,
@@ -92,7 +116,7 @@ export function computeReceipt(
     conventions,
     coverage,
     referenceSpan: { from: REFERENCE_SPAN.from, to: REFERENCE_SPAN.to },
-    deltaT: { model: DELTA_T_MODEL, table: DELTA_T_TABLE.version, tableDigest: DELTA_T_TABLE.digest },
+    deltaT,
     ...(extra.timeResolution ? { timeResolution: extra.timeResolution } : {}),
     ...(extra.search ? { search: extra.search } : {}),
   };

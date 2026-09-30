@@ -177,6 +177,15 @@ const jsonLd = [{
         computed and flagged <code>outside-reference-span</code>.
       </p>
       <p>
+        The engine reads an instant as a chart reads it. From 1972 to
+        2 October 2027 it is UTC: Terrestrial Time is UTC plus the leap
+        seconds and 32.184 seconds, and UT1 comes from the IERS measurements
+        of UT1 − UTC. Before 1972 and after that date it is read as UT1, and
+        Terrestrial Time is UT1 plus the engine's ΔT model. Every result that
+        gives an instant's ΔT also gives its <code>timeScale</code>, which
+        says which way it was read.
+      </p>
+      <p>
         A latitude is degrees north, greater than −90 and less than 90: the
         engine computes no angles at the poles. A longitude is degrees east,
         from −180 to 180. A house system is one of the engine's thirteen:{' '}
@@ -196,7 +205,7 @@ const jsonLd = [{
         <code>natalChart</code> returns: twelve bodies (the Sun, the Moon, the
         eight planets and the two nodes) with longitude, latitude, speed, sign
         and degree; the four angles; the house system used and its twelve
-        cusps; the aspects; flags; and the ΔT used. A local time is resolved as
+        cusps; the aspects; flags; and the ΔT and time basis used. A local time is resolved as
         the <a href="#time">time endpoint</a> resolves it, with the place's
         longitude, and <code>result.local</code> says how it was read. The
         receipt is the engine's own chart receipt.
@@ -223,7 +232,7 @@ const jsonLd = [{
         each instant it returns the engine's <code>positions()</code> rows for
         those bodies: tropical longitude and latitude of date, speed in degrees
         a day, whether the body is retrograde, and its sign and degree, with
-        the ΔT used and any flags.
+        the ΔT and time basis used and any flags.
       </p>
     </div>
     <pre tabindex="0" role="region" aria-label="Positions request"><code>{request('positions')}</code></pre>
@@ -237,7 +246,7 @@ const jsonLd = [{
       <p>
         <code>POST /api/v1/houses</code> takes the same fields as{' '}
         <a href="#chart">chart</a> and returns only the angles, the house system
-        used and its twelve cusps, with flags and the ΔT used. Its receipt is
+        used and its twelve cusps, with flags and the ΔT and time basis used. Its receipt is
         the chart's.
       </p>
     </div>
@@ -308,9 +317,10 @@ const jsonLd = [{
           runtime, and <code>zoneHistory</code> is <code>runtime</code>. For a
           date up to 1 January 1970 that history can differ from the pinned
           one, and <code>zoneUncertain</code> is true.</li>
-        <li>Terrestrial Time is the instant plus ΔT, with the instant read as
-          UT1, as the engine reads every instant, to the millisecond. ΔT comes
-          with its one-sigma band and the part of the model it came from.</li>
+        <li>Terrestrial Time and ΔT are the engine's for that instant, to the
+          millisecond, read as described above. ΔT comes with its one-sigma
+          band and the source it came from: the IERS measurements, or the part
+          of the model.</li>
       </ul>
     </div>
     <pre tabindex="0" role="region" aria-label="Time request"><code>{request('time')}</code></pre>
@@ -367,9 +377,9 @@ const jsonLd = [{
         <li><code>receipt</code>, how. For chart and houses it is the engine's
           own chart receipt, <code>zodiacs.calculation-receipt.draft-v1</code>.
           For the other four it is <code>zodiacs.compute-receipt.v1</code>: the
-          engine's conventions and coverage as its receipts state them, the ΔT
-          model and table, and, where they apply, the search's limits and how
-          local time was read.</li>
+          engine's conventions and coverage as its receipts state them, the two
+          sources of ΔT its time basis uses, and, where they apply, the
+          search's limits and how local time was read.</li>
         <li><code>backend</code>, the engine and its version, and the ephemeris it uses.</li>
         <li><code>cite</code>, what to quote beside a result: <code>url</code>,
           this page at the endpoint's section; <code>receipt</code>, a digest of

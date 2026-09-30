@@ -1045,6 +1045,7 @@ var init_tz_history_load = __esm({
 // src/lib/time/birthplace-clock.ts
 var birthplace_clock_exports = {};
 __export(birthplace_clock_exports, {
+  inMeanTimeEra: () => inMeanTimeEra,
   prepare: () => prepare,
   readBirthplace: () => readBirthplace
 });
@@ -1099,6 +1100,14 @@ function readBirthplace(tz, wallMs, longitude) {
   const zoneOffset = place.pinned ? readClock(wallMs, place.zoneAt, place.samples).chosen.offset : null;
   const { chosen, flags } = readClock(wallMs, place.clockAt, place.samples);
   return { chosen, flags, zoneOffset, inEra: chosen.utcMs < place.endMs };
+}
+function inMeanTimeEra(tz, utcMs) {
+  if (utcMs >= LOCAL_MEAN_TIME_ERAS_END_BEFORE) return false;
+  if (!lmtEraEnd) {
+    throw new Error("Local mean time eras are not loaded: await prepareLocalTime(date, timeZone) before resolving.");
+  }
+  const era = lmtNames.get(nameKey(tz));
+  return era !== void 0 && utcMs < lmtEraEnd[era] * 1e3;
 }
 function pinnedOffset(history, utcMs) {
   let lo = 0;
@@ -1335,6 +1344,7 @@ function resolveLocalToUtc(date, time, tz, options = {}) {
   }
   let zoneOffset = chosen.offset;
   let inEra = false;
+  let readByBirthplace = false;
   const { longitude } = options;
   if (typeof longitude === "number" && Number.isFinite(longitude) && Math.abs(longitude) <= 180 && wallMs < BIRTHPLACE_WALL_END) {
     if (!birthplace) {
@@ -1344,9 +1354,10 @@ function resolveLocalToUtc(date, time, tz, options = {}) {
     if (place) {
       ({ chosen, flags, inEra } = place);
       if (place.zoneOffset !== null) zoneOffset = place.zoneOffset;
+      readByBirthplace = true;
     }
   }
-  if (Math.abs(chosen.offset % 1) > 1e-9) flags.push("lmt");
+  if (readByBirthplace && birthplace.inMeanTimeEra(tz, chosen.utcMs)) flags.push("lmt");
   return {
     utc: new Date(chosen.utcMs),
     offsetMinutes: chosen.offset,

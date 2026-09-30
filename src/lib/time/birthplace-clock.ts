@@ -129,7 +129,9 @@ export function inMeanTimeEra(tz: string, utcMs: number): boolean {
   if (!lmtEraEnd) {
     throw new Error('Local mean time eras are not loaded: await prepareLocalTime(date, timeZone) before resolving.');
   }
-  return Object.prototype.hasOwnProperty.call(lmtEraEnd, tz) && utcMs < lmtEraEnd[tz] * 1000;
+  // The table's spelling of the zone, whatever case it was given in.
+  const era = lmtNames.get(nameKey(tz));
+  return era !== undefined && utcMs < lmtEraEnd[era] * 1000;
 }
 
 /**

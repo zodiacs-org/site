@@ -5,7 +5,6 @@ import { checkRateLimit } from '@vercel/firewall';
 import {
   ENGINE_VERSION,
   HOUSE_SYSTEMS,
-  deltaTAt,
   moonPhase,
   natalChart,
   outsideReferenceSpan,
@@ -46,7 +45,6 @@ const handler = createComputeApiHandler({ localTime, env: {}, rateLimit: async (
 const call = (endpoint: ComputeEndpoint | null, body?: unknown, extra: Partial<HarnessRequest> = {}) =>
   run(handler, { endpoint, body, ...extra });
 const DAY = 86_400_000;
-const J2000_UT_MS = Date.UTC(2000, 0, 1, 12);
 
 /** RFC 8785 written independently of the handler: sorted keys, ECMAScript numbers and strings. */
 function jcs(value: unknown): string {
@@ -483,11 +481,14 @@ describe('compute API validation', () => {
   it('flags a local time or a day at the ends of the accepted dates that reaches past the instant span', async () => {
     const tokyo = await call('time', { local: { date: '1800-01-01', time: '00:00', zone: 'Asia/Tokyo' } });
     expect(tokyo.json.result.utc).toBe('1799-12-31T14:41:01.000Z');
-    expect(tokyo.json.result.flags).toEqual(['lmt', 'outside-reference-span']);
+    expect(tokyo.json.result.flags).toEqual(['outside-reference-span']);
     const honolulu = await call('time', { local: { date: '2199-12-31', time: '23:59', zone: 'Pacific/Honolulu' } });
     expect(honolulu.json.result.utc).toBe('2200-01-01T09:59:00.000Z');
     expect(honolulu.json.result.flags).toEqual(['outside-reference-span']);
-    expect((await call('time', { local: { date: '1800-01-01', time: '12:00', zone: 'Asia/Tokyo' } })).json.result.flags).toEqual(['lmt']);
+    expect((await call('time', { local: { date: '1800-01-01', time: '12:00', zone: 'Asia/Tokyo' } })).json.result.flags).toEqual([]);
+    // With a longitude the birthplace's mean time reads the time, and lmt says so.
+    const place = await call('time', { local: { date: '1800-01-01', time: '00:00', zone: 'Asia/Tokyo' }, longitude: 139.69 });
+    expect(place.json.result.flags).toEqual(['lmt', 'outside-reference-span']);
     const chart = await call('chart', { local: { date: '1800-01-01', time: '00:00', zone: 'Asia/Tokyo' }, latitude: 35.68, longitude: 139.69 });
     expect(chart.json.result.flags).toContain('outside-reference-span');
     for (const [body, flagged] of [
@@ -549,12 +550,19 @@ describe('compute API receipts, backend and citation', () => {
     }
   });
 
-  it("names the ΔT model and table, the engine's conventions and coverage, and each search's limits", async () => {
+  it("names both ΔT sources and their tables, the engine's conventions and coverage, and each search's limits", async () => {
     const chart = await call('chart', CHART);
     const { json } = await call('events', VALID.events);
     expect(json.receipt.conventions).toEqual(chart.json.receipt.conventions);
     expect(json.receipt.coverage).toEqual(chart.json.receipt.coverage);
-    expect(json.receipt.deltaT).toEqual({ model: 'zodiacs-deltat/1', table: chart.json.result.deltaT.table, tableDigest: chart.json.result.deltaT.tableDigest });
+    // The engine reads 2000 on IERS UT1 − UTC and 1900 on its ΔT model; the receipt names both sources.
+    const modern = chart.json.result.deltaT;
+    const early = (await call('chart', { ...CHART, utc: '1900-01-01T12:00:00Z' })).json.result.deltaT;
+    expect([modern.model, early.model]).toEqual(['iers-utc/1', 'zodiacs-deltat/1']);
+    expect(json.receipt.deltaT).toEqual([
+      { model: 'iers-utc/1', table: modern.table, tableDigest: modern.tableDigest },
+      { model: 'zodiacs-deltat/1', table: early.table, tableDigest: early.tableDigest },
+    ]);
     expect(json.receipt.search).toMatchObject({
       solver: 'engine-longitude-crossings', bisections: 24, maxSamples: BUDGETS['events.samples'],
       window: 'start-exclusive-end-inclusive', completeness: 'tested-not-proven',
@@ -607,11 +615,13 @@ describe('compute API parity with the engine and the site resolver', () => {
       expect(answer.result).toEqual({
         instant: '1987-03-14T04:42:00.000Z', local: null, bodies: expected.bodies, angles: expected.angles,
         houses: expected.houses, aspects: expected.aspects, flags: expected.flags, deltaT: expected.deltaT,
+        timeScale: expected.timeScale,
       });
       expect(answer.receipt).toEqual(JSON.parse(JSON.stringify(receipt)));
       const houses = (await call('houses', request)).json;
       expect(houses.result).toEqual({
         instant: '1987-03-14T04:42:00.000Z', local: null, angles: expected.angles, houses: expected.houses, flags: expected.flags, deltaT: expected.deltaT,
+        timeScale: expected.timeScale,
       });
       expect(houses.receipt).toEqual(answer.receipt);
     }
@@ -641,17 +651,20 @@ describe('compute API parity with the engine and the site resolver', () => {
     }
   });
 
-  it('positions returns positions() rows, the ΔT a chart at that instant is computed with, and the reference-span flag', async () => {
+  it('positions returns positions() rows, the ΔT and time basis a chart at that instant is computed with, and the reference-span flag', async () => {
     const instants = ['1800-01-01T00:00:00Z', '1969-07-20T20:17:40Z', '2026-09-29T12:00:00Z', '2199-12-31T23:59:59Z'];
     const { json } = await call('positions', { instants, bodies: ['Moon', 'Sun', 'South Node'] });
     json.result.instants.forEach((row: any, index: number) => {
       const at = new Date(instants[index]);
       expect(row.instant).toBe(at.toISOString());
       expect(row.bodies).toEqual(JSON.parse(JSON.stringify(positions(at).filter((body) => ['Sun', 'Moon', 'South Node'].includes(body.body)))));
-      expect(row.deltaT).toEqual(natalChart({ utc: at, timeKnown: false }).deltaT);
-      expect(row.deltaT).toEqual(deltaTAt((at.getTime() - J2000_UT_MS) / DAY));
+      const chart = natalChart({ utc: at, timeKnown: false });
+      expect(row.deltaT).toEqual(chart.deltaT);
+      expect(row.timeScale).toEqual(chart.timeScale);
       expect(row.flags).toEqual(outsideReferenceSpan(at) ? ['outside-reference-span'] : []);
     });
+    // Before 1972 and after the UT1 table the instant is read as UT1; between, on IERS UT1 − UTC.
+    expect(json.result.instants.map((row: any) => row.timeScale.basis)).toEqual(['delta-t', 'delta-t', 'iers', 'delta-t']);
     const all = (await call('positions', { instants: ['2026-09-29T12:00:00Z'] })).json;
     expect(all.result.instants[0].bodies.map((row: any) => row.body)).toEqual([...POSITION_BODIES]);
   });
@@ -712,7 +725,7 @@ describe('compute API parity with the engine and the site resolver', () => {
     }
   }, 60_000);
 
-  it("time is the site resolver's answer, TT is UTC plus ΔT, and the zone history is named", async () => {
+  it("time is the site resolver's answer, TT and ΔT are a chart's at that instant, and the zone history is named", async () => {
     const cases = [
       [{ date: '1947-07-01', time: '12:00', zone: 'Europe/Stockholm' }, 18.07, 'pinned', false],
       [{ date: '1947-07-01', time: '12:00', zone: 'Europe/Stockholm' }, null, 'runtime', true],
@@ -726,16 +739,24 @@ describe('compute API parity with the engine and the site resolver', () => {
       await prepareLocalTime(local.date, local.zone);
       const resolved = resolveLocalToUtc(local.date, local.time, local.zone, longitude === null ? {} : { longitude });
       const answer = (await call('time', longitude === null ? { local } : { local, longitude })).json.result;
-      const deltaT = natalChart({ utc: resolved.utc, timeKnown: false }).deltaT;
+      const chart = natalChart({ utc: resolved.utc, timeKnown: false });
       expect(answer.utc).toBe(resolved.utc.toISOString());
       expect(answer.offsetMinutes).toBe(resolved.offsetMinutes);
       expect(answer.flags).toEqual(resolved.flags);
       expect(answer.localMeanTime).toEqual(resolved.localMeanTime ?? null);
       expect(answer.zoneHistory, `${local.date} ${local.zone}`).toBe(history);
       expect(answer.zoneUncertain).toBe(uncertain);
-      expect(answer.deltaT).toEqual(deltaT);
-      expect(answer.tt).toBe(new Date(resolved.utc.getTime() + Math.round(deltaT.seconds * 1000)).toISOString().slice(0, -1));
+      expect(answer.deltaT).toEqual(chart.deltaT);
+      expect(answer.timeScale).toEqual(chart.timeScale);
+      // TT = UT1 + ΔT: UT1 is UTC plus IERS UT1 − UTC from 1972, the instant itself before.
+      const ut1 = resolved.utc.getTime() + (chart.timeScale.ut1MinusUtc?.seconds ?? 0) * 1000;
+      expect(answer.tt).toBe(new Date(Math.round(ut1 + chart.deltaT.seconds * 1000)).toISOString().slice(0, -1));
+      if (chart.timeScale.basis === 'iers') {
+        // From 1972, TT is UTC plus the leap seconds and 32.184 s, to the millisecond.
+        expect(Date.parse(`${answer.tt}Z`) - resolved.utc.getTime()).toBe(chart.timeScale.leapSeconds!.taiMinusUtc * 1000 + 32_184);
+      }
     }
+    expect(cases.some(([local]) => local.date >= '1972')).toBe(true);
   });
 
   it('sky-fact answers from the computed values it returns, and depends only on the time of day or the zone', async () => {

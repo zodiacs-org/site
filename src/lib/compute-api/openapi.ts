@@ -238,16 +238,26 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
   DeltaT: {
     type: 'object',
     required: ['seconds', 'sigma', 'model', 'table', 'tableDigest', 'segment'],
-    description: 'ΔT = TT − UT1 in seconds, with its 1-sigma band and where it came from, as the engine reports it.',
+    description: 'ΔT = TT − UT1 in seconds, with its 1-sigma band and where it came from, as the engine reports it for a chart at the instant: iers-utc/1 from 1972 to the end of the engine\'s UT1 table, its model zodiacs-deltat/1 otherwise.',
     properties: {
       seconds: num,
-      sigma: { type: ['number', 'null'] },
-      model: str,
-      table: { type: ['string', 'null'] },
-      tableDigest: { type: ['string', 'null'] },
-      segment: { enum: ['long-term', 'reconstructed', 'observed', 'predicted', 'extrapolated', 'pinned'] },
+      sigma: num,
+      model: { enum: ['iers-utc/1', 'zodiacs-deltat/1'] },
+      table: str,
+      tableDigest: str,
+      segment: { enum: ['long-term', 'reconstructed', 'observed', 'predicted', 'extrapolated'] },
     },
   },
+  TimeScale: object(['input', 'basis', 'ut1MinusUtc', 'leapSeconds'], {
+    input: { const: 'utc' },
+    basis: { enum: ['iers', 'delta-t'] },
+    ut1MinusUtc: nullable(object(['seconds', 'sigma', 'source'], {
+      seconds: num, sigma: num, source: { enum: ['observed', 'predicted', 'fallback'] },
+    }, 'UT1 − UTC in seconds as the engine used it, with its 1-sigma band and its source: observed or predicted by IERS, or fallback after the table ends; null before 1972.')),
+    leapSeconds: nullable(object(['taiMinusUtc', 'listed'], {
+      taiMinusUtc: num, listed: bool,
+    }, 'TAI − UTC in seconds from the IERS leap-second list; listed is false after the list expires and its last value is carried.')),
+  }, 'How the engine read the instant, as a chart reports it. basis iers, from 1972 to the end of its UT1 table: TT is UTC plus the leap seconds and 32.184 s, and UT1 is UTC plus IERS UT1 − UTC. basis delta-t, otherwise: the instant is read as UT1, and TT is UT1 plus the ΔT model.'),
   LocalResolution: {
     type: 'object',
     required: ['offsetMinutes', 'flags', 'localMeanTime', 'zoneHistory', 'zoneUncertain'],
@@ -292,7 +302,16 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
       conventions: { type: 'object', additionalProperties: str },
       coverage: { type: 'object', additionalProperties: str },
       referenceSpan: { type: 'object', required: ['from', 'to'], properties: { from: outputInstant, to: outputInstant } },
-      deltaT: { type: 'object', required: ['model', 'table', 'tableDigest'], properties: { model: str, table: str, tableDigest: str } },
+      deltaT: {
+        type: 'array',
+        description: 'The two sources of ΔT the engine\'s time basis uses: IERS from 1972 to the end of its UT1 table, then its model. A result that gives an instant\'s ΔT names which applied.',
+        prefixItems: [
+          object(['model', 'table', 'tableDigest'], { model: { const: 'iers-utc/1' }, table: str, tableDigest: str }),
+          object(['model', 'table', 'tableDigest'], { model: { const: 'zodiacs-deltat/1' }, table: str, tableDigest: str }),
+        ],
+        minItems: 2,
+        maxItems: 2,
+      },
       timeResolution: {
         type: 'object',
         required: ['resolver', 'policy', 'pinnedTzdb', 'runtimeTzdb'],
@@ -342,7 +361,7 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
 
   ChartResult: {
     type: 'object',
-    required: ['instant', 'local', 'bodies', 'angles', 'houses', 'aspects', 'flags', 'deltaT'],
+    required: ['instant', 'local', 'bodies', 'angles', 'houses', 'aspects', 'flags', 'deltaT', 'timeScale'],
     properties: {
       instant: outputInstant,
       local: nullable(ref('LocalResolution')),
@@ -352,11 +371,12 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
       aspects: { type: 'array', items: ref('Aspect') },
       flags: { type: 'array', items: ref('ChartFlag') },
       deltaT: ref('DeltaT'),
+      timeScale: ref('TimeScale'),
     },
   },
   HousesResult: {
     type: 'object',
-    required: ['instant', 'local', 'angles', 'houses', 'flags', 'deltaT'],
+    required: ['instant', 'local', 'angles', 'houses', 'flags', 'deltaT', 'timeScale'],
     properties: {
       instant: outputInstant,
       local: nullable(ref('LocalResolution')),
@@ -364,6 +384,7 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
       houses: nullable(ref('Houses')),
       flags: { type: 'array', items: ref('ChartFlag') },
       deltaT: ref('DeltaT'),
+      timeScale: ref('TimeScale'),
     },
   },
   PositionsResult: {
@@ -374,11 +395,12 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
         type: 'array',
         items: {
           type: 'object',
-          required: ['instant', 'bodies', 'deltaT', 'flags'],
+          required: ['instant', 'bodies', 'deltaT', 'timeScale', 'flags'],
           properties: {
             instant: outputInstant,
             bodies: { type: 'array', items: ref('BodyPosition') },
             deltaT: ref('DeltaT'),
+            timeScale: ref('TimeScale'),
             flags: { type: 'array', items: { const: 'outside-reference-span' } },
           },
         },
@@ -417,7 +439,7 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
   },
   TimeResult: {
     type: 'object',
-    required: ['utc', 'offsetMinutes', 'flags', 'localMeanTime', 'zoneHistory', 'zoneUncertain', 'tt', 'deltaT'],
+    required: ['utc', 'offsetMinutes', 'flags', 'localMeanTime', 'zoneHistory', 'zoneUncertain', 'tt', 'deltaT', 'timeScale'],
     properties: {
       utc: outputInstant,
       offsetMinutes: num,
@@ -429,8 +451,9 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
       localMeanTime: nullable({ type: 'object', required: ['longitude', 'zoneOffsetMinutes'], properties: { longitude: num, zoneOffsetMinutes: num } }),
       zoneHistory: { enum: ['pinned', 'runtime'] },
       zoneUncertain: bool,
-      tt: { type: 'string', pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}$', description: 'Terrestrial Time to the millisecond, with no zone designator because it is not UTC.' },
+      tt: { type: 'string', pattern: '^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}$', description: 'Terrestrial Time to the millisecond, as the engine reads the instant (timeScale says how), with no zone designator because it is not UTC.' },
       deltaT: ref('DeltaT'),
+      timeScale: ref('TimeScale'),
     },
   },
   BodyState: object(['lon', 'sign', 'degree', 'speed', 'retrograde'], {
@@ -462,8 +485,8 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
       facts: {
         description: 'The computed values that decide the answer. At an instant: the body\'s state there. On a day: the state at its start and end with the sign changes or stations between, or the ingresses or lunations in it. flags holds outside-reference-span when the instant or the day reaches past the instant span.',
         oneOf: [
-          object(['lon', 'sign', 'degree', 'speed', 'retrograde', 'deltaT', 'flags'], {
-            lon: num, sign, degree: num, speed: num, retrograde: bool, deltaT: ref('DeltaT'),
+          object(['lon', 'sign', 'degree', 'speed', 'retrograde', 'deltaT', 'timeScale', 'flags'], {
+            lon: num, sign, degree: num, speed: num, retrograde: bool, deltaT: ref('DeltaT'), timeScale: ref('TimeScale'),
             boundaryMarginArcsec: { type: 'number', minimum: 0, description: 'For a sign fact: the distance to the nearer sign boundary.' },
             flags: spanFlags,
           }, 'At an instant.'),

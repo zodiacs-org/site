@@ -1,14 +1,15 @@
 /**
  * The six calculations. Each takes a validated request and returns the body
  * of a success response; every number in it comes from the vendored engine's
- * root entry point (`natalChart`, `positions`, `moonPhase`, `deltaTAt`,
+ * root entry point (`natalChart`, `positions`, `moonPhase`,
  * `outsideReferenceSpan`, `searchLongitudeCrossings`,
- * `searchLongitudeCrossingsWith`) or, for local civil time, from the site's
- * own resolver. The engine's `/receipt` entry point writes the chart receipt.
- * Nothing here keeps anything once the request is answered.
+ * `searchLongitudeCrossingsWith`), from the engine's own time basis, which
+ * src/lib/engine/time-basis.mjs carries because the package does not export
+ * it, or, for local civil time, from the site's own resolver. The engine's
+ * `/receipt` entry point writes the chart receipt. Nothing here keeps
+ * anything once the request is answered.
  */
 import {
-  deltaTAt,
   degreeInSign,
   moonPhase,
   natalChart,
@@ -21,10 +22,10 @@ import {
   type BodyPosition,
   type Chart,
   type CrossingSearchResult,
-  type DeltaT,
   type LongitudeCrossing,
 } from '@zodiacs/engine';
 import { createNatalEnvelope, type NatalEnvelopeContext, type NatalReceipt } from '@zodiacs/engine/receipt';
+import { timeBasis, type TimeBasis } from '../engine/time-basis.mjs';
 import {
   ANY_ZONE_DAY,
   BUDGETS,
@@ -70,12 +71,17 @@ export interface ComputeDependencies {
 
 const HOUR_MS = 3_600_000;
 const DAY_MS = 86_400_000;
-/** astronomy-engine's `ut` counts days from 2000-01-01T12:00Z. */
-const J2000_UT_MS = Date.UTC(2000, 0, 1, 12);
+/** The time basis counts days from 2000-01-01T12:00 on each scale. */
+const J2000_MS = Date.UTC(2000, 0, 1, 12);
 
-/** The ΔT the engine reads an instant with, as `deltaTAt` gives it for astronomy-engine's `ut`. */
-function deltaTFor(instant: Date): DeltaT {
-  return deltaTAt((instant.getTime() - J2000_UT_MS) / DAY_MS);
+/**
+ * How the engine reads an instant given in UTC, as natalChart and positions()
+ * read it: from 1972 to the end of its UT1 table, TT from the leap seconds and
+ * UT1 from IERS UT1 − UTC; otherwise the instant as UT1, with the ΔT model.
+ * Its deltaT and timeScale are a chart's at that instant.
+ */
+function basisOf(instant: Date): Pick<TimeBasis, 'deltaT' | 'timeScale' | 'ttDays'> {
+  return timeBasis(instant.getTime());
 }
 
 function iso(date: Date): string {
@@ -262,6 +268,7 @@ export async function computeChart(request: PlaceInstantRequest, dependencies: C
     aspects: chart.aspects,
     flags: chart.flags,
     deltaT: chart.deltaT,
+    timeScale: chart.timeScale,
   }, receipt);
 }
 
@@ -274,6 +281,7 @@ export async function computeHouses(request: PlaceInstantRequest, dependencies: 
     houses: chart.houses,
     flags: chart.flags,
     deltaT: chart.deltaT,
+    timeScale: chart.timeScale,
   }, receipt);
 }
 
@@ -282,10 +290,12 @@ export async function computeHouses(request: PlaceInstantRequest, dependencies: 
 export function computePositions(request: PositionsRequest) {
   const instants = request.instants.map((instant) => {
     const rows = positions(instant);
+    const { deltaT, timeScale } = basisOf(instant);
     return {
       instant: iso(instant),
       bodies: request.bodies ? rows.filter((row) => request.bodies!.includes(row.body)) : rows,
-      deltaT: deltaTFor(instant),
+      deltaT,
+      timeScale,
       flags: outsideReferenceSpan(instant) ? ['outside-reference-span' as const] : [],
     };
   });
@@ -354,9 +364,11 @@ export function computeEvents(request: EventsRequest) {
 
 export async function computeTime(request: TimeRequest, dependencies: ComputeDependencies) {
   const local = await resolveLocal(dependencies.localTime, request.local, request.longitude);
-  const deltaT = deltaTFor(local.utc);
-  // TT = UT1 + ΔT, with the instant read as UT1, as the engine reads it; to the millisecond.
-  const tt = new Date(local.utc.getTime() + Math.round(deltaT.seconds * 1000));
+  // TT as the engine reads the instant: from 1972 to the end of its UT1 table,
+  // UTC plus the leap seconds and 32.184 s; otherwise the instant read as UT1,
+  // plus ΔT. Days from 2000-01-01T12:00 on TT, to the millisecond.
+  const { deltaT, timeScale, ttDays } = basisOf(local.utc);
+  const tt = new Date(J2000_MS + Math.round(ttDays * DAY_MS));
   const summary = localSummary(local);
   return successBody('time', {
     utc: iso(local.utc),
@@ -364,6 +376,7 @@ export async function computeTime(request: TimeRequest, dependencies: ComputeDep
     flags: [...summary.flags, ...spanFlags(local.utc)],
     tt: iso(tt).slice(0, -1),
     deltaT,
+    timeScale,
   }, computeReceipt('time', { timeResolution: timeResolutionFacts() }));
 }
 
@@ -437,6 +450,7 @@ export async function computeSkyFact(request: SkyFactRequest, dependencies: Comp
   if ((request.kind === 'sign' || request.kind === 'retrograde') && 'instant' in request.when) {
     const instant = request.when.instant;
     const state = stateAt(rowsAt(instant), request.body);
+    const basis = basisOf(instant);
     const answer: Answer = request.kind === 'sign'
       ? (state.sign === request.sign ? 'true' : 'false')
       : (state.retrograde ? 'true' : 'false');
@@ -449,7 +463,8 @@ export async function computeSkyFact(request: SkyFactRequest, dependencies: Comp
       zone: null,
       facts: {
         ...state,
-        deltaT: deltaTFor(instant),
+        deltaT: basis.deltaT,
+        timeScale: basis.timeScale,
         ...(request.kind === 'sign' ? { boundaryMarginArcsec: boundaryMarginArcsec(state.lon) } : {}),
         flags: outsideReferenceSpan(instant) ? ['outside-reference-span' as const] : [],
       },
