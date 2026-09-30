@@ -115,10 +115,16 @@ const jsonLd = [
         arcseconds.
       </p>
       <p>
-        Up to the present the engine uses the recorded value. Since 25
-        September 2026 it takes ΔT from Stephenson, Morrison and Hohenkerk's
-        2016 reconstruction before 1941, from US Naval Observatory and IERS
-        records after it, and from the IERS predictions for the year ahead.
+        Up to the present the engine uses the recorded values. Since its
+        release 0.1.1-rc.15 it reads a birth time from 1972, when leap seconds
+        began, to 2 October 2027 as UTC: atomic time comes from the IERS leap
+        seconds, and the Earth's rotation, which the ascendant and midheaven
+        turn with, from the IERS measurements of UT1 and their predictions.
+        For other dates it takes ΔT, as it did for every date from 25
+        September 2026 until that release, from Stephenson, Morrison and
+        Hohenkerk's 2016 reconstruction before 1941, from US Naval Observatory
+        and IERS records after it, and from the IERS predictions for the year
+        ahead.
         The reconstruction's 32 values are from Table S15 of their paper,{' '}
         <a href="https://doi.org/10.1098/rspa.2016.0404" rel="noopener noreferrer">Proceedings of the Royal Society A 472, 20160404</a>,
         rounded to 0.01 seconds and used under{' '}

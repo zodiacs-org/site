@@ -28,6 +28,8 @@ const api = [
   ['progressedBodies(birth, target)', 'Secondary progressions: the positions one day after birth for each tropical year of life lived to the target date. This site\'s progressed lens uses it.'],
   ['findConfiguredAspects(bodies, policy)', 'Aspects under a policy you set with createAspectPolicy: major, minor or custom angles, and orbs per aspect, per body and for applying or separating motion.'],
   ['chartDeclinations(chart)', 'Right ascension and declination of each body, parallels and contraparallels, and each body\'s signed margin to the out-of-bounds limit, in arcseconds.'],
+  ['@zodiacs/engine/timing', 'Hellenistic timing, a separate import: annual profections, firdaria, zodiacal releasing and solar arc directions. This site uses none of it.'],
+  ['@zodiacs/engine/vedic', 'The sidereal zodiac, a separate import: ayanamsas, sidereal charts, nakshatras, vargas, KP sub-lords and the Vimshottari, Yogini and Ashtottari dashas. This site uses none of it.'],
 ];
 
 const jsonLd = [{
@@ -60,7 +62,10 @@ const jsonLd = [{
         20.x, Node.js 22.7 and newer, or any browser with a bundler. The code
         is MIT; the package is MIT and CC BY 4.0 together, because its ΔT
         module carries 32 values from Stephenson, Morrison and Hohenkerk's
-        Table S15, which are CC BY 4.0. One runtime dependency —{' '}
+        Table S15, which are CC BY 4.0. It also carries time data: the IERS
+        leap-second list and a UT1 − UTC table from IERS, and the IANA time
+        zone history before 1970; its <code>NOTICE</code> names every source.
+        One runtime dependency —{' '}
         <a href="https://github.com/cosinekitty/astronomy" rel="noopener noreferrer">Astronomy Engine</a>{' '}
         by Don Cross, also MIT, which supplies the planetary and lunar series.
         Zodiacs did not write those models; what is ours is the chart on top of
@@ -120,11 +125,16 @@ const jsonLd = [{
         Topocentric (Polich–Page), Alcabitius, Equal (Ascendant), Equal-MC, Vehlow, Meridian (axial
         rotation) and Morinus. Aspects are the five major ones, with separate
         luminary orbs. A configured aspect policy, a separate function, adds
-        minor and custom angles. Two optional entry points ship beside the core:{' '}
+        minor and custom angles. Optional entry points ship beside the core:{' '}
         <code>@zodiacs/engine/geo</code> resolves a local wall time and IANA
-        zone to an instant, and <code>@zodiacs/engine/receipt</code> validates
-        a portable chart record. Both are separate imports, so neither costs
-        anything if you do not use them.
+        zone to an instant, <code>@zodiacs/engine/receipt</code> validates
+        a portable chart record, and <code>/timing</code> and{' '}
+        <code>/vedic</code> hold the techniques listed above. Each is a
+        separate import, so none costs anything if you do not use it. Before
+        1970, <code>/geo</code> reads a wall time on the IANA time zone
+        history the package ships, in 16 files that{' '}
+        <code>prepareLocalTime</code> loads first; from 1970 on, on the time
+        zone data of the host.
       </p>
       <p>
         One thing to know about <code>@zodiacs/engine/geo</code> before you
@@ -150,14 +160,18 @@ const jsonLd = [{
         <tbody>
           <tr><th scope="row">Natal charts</th><td>{kb(bundle.natal.minKb)}</td><td>{kb(bundle.natal.gzipKb)}</td><td>{kb(bundle.natal.brotliKb)}</td></tr>
           <tr><th scope="row">+ <code>resolveBirth</code>, local-time resolution alone</th><td>{kb(bundle.localTime.minKb)}</td><td>{kb(bundle.localTime.gzipKb)}</td><td>{kb(bundle.localTime.brotliKb)}</td></tr>
-          <tr><th scope="row">+ the whole <code>/geo</code> entry point, GeoNames client included</th><td>{kb(bundle.geo.minKb)}</td><td>{kb(bundle.geo.gzipKb)}</td><td>{kb(bundle.geo.brotliKb)}</td></tr>
+          <tr><th scope="row">+ the whole <code>/geo</code> entry point, GeoNames client and the 16 zone-history files included</th><td>{kb(bundle.geo.minKb)}</td><td>{kb(bundle.geo.gzipKb)}</td><td>{kb(bundle.geo.brotliKb)}</td></tr>
         </tbody>
       </table>
     </div>
     <div class="prose">
       <p>
-        Most of that is the ephemeris series, and it is the price of not
-        calling a server. There are no data files to host or download at
+        Most of the first row is the ephemeris series, and it is the price of
+        not calling a server. The last row is mostly the time zone history
+        before 1970: bundled into one file, as here, it comes along whole,
+        while a bundler that splits code ships each of its 16 files as a
+        separate chunk that <code>prepareLocalTime</code> loads only for a
+        date that needs it. There are no data files to host or download at
         runtime, no key, and no account. This site keeps the engine out of its
         own homepage bundle and loads it only on pages that cast a chart; a
         bundler will do the same for you if you import it behind a dynamic
@@ -190,13 +204,18 @@ const jsonLd = [{
         observation.
       </p>
       <p>
-        Up to the present the clock is observed. Since 0.1.1-rc.8 the engine
-        takes ΔT, the gap between atomic time and the Earth's rotation, from
-        Stephenson, Morrison and Hohenkerk's 2016 reconstruction before 1941,
-        from US Naval Observatory and IERS records after it, and from the IERS
-        predictions: from 1962 on it is within 0.09 seconds of the IERS value
-        on every day, and every chart returns the value it used with its
-        one-sigma uncertainty. Past the predictions both programs
+        Up to the present the clock is observed. Since 0.1.1-rc.15 the engine
+        reads an instant from 1972 to 2 October 2027 as UTC: atomic time comes
+        from the IERS leap seconds, and the Earth's rotation from the IERS
+        values of UT1 − UTC, which its table reproduces within 0.79
+        milliseconds on every day. Other instants it reads as UT1 and takes
+        ΔT, the gap between atomic time and the Earth's rotation, from its
+        model, as it has since 0.1.1-rc.8: Stephenson, Morrison and
+        Hohenkerk's 2016 reconstruction before 1941, US Naval Observatory and
+        IERS records after it, and the IERS predictions; from 1962 on it is
+        within 0.09 seconds of the IERS value on every day. Every chart
+        returns the ΔT it used with its one-sigma uncertainty, and says which
+        way it read its instant. Past the predictions both programs
         extrapolate: from 2100 to 2199 their ΔT values differ by 14.3 to
         36.7 seconds, which alone moves the Moon by{' '}
         <strong>7.0 to 23.4 arcseconds</strong>; at the same instant of
@@ -228,7 +247,7 @@ const jsonLd = [{
     <h2 id="limits">What it does not do</h2>
     <div class="prose">
       <ul>
-        <li>Tropical only. No sidereal mode, no ayanamsha, no topocentric parallax.</li>
+        <li>The core is tropical. The sidereal zodiac, with its ayanamsas, is in the separate <code>/vedic</code> entry point, which this site does not use. No topocentric parallax.</li>
         <li>Sun through Pluto and the true nodes. No Chiron, no asteroids.</li>
         <li>Placidus and Koch are undefined inside the polar circle; where the absolute latitude is 90° minus the obliquity or more (66.53° to 66.59° over 1800–2200) they fall back to whole sign and flag it. The other eleven systems are defined there.</li>
         <li>Event searches sample the motion at a fixed step, so they can miss an event between samples. The solver is tested, not proven complete.</li>
@@ -254,8 +273,11 @@ const jsonLd = [{
         values above. Keep the packaged <code>LICENSE</code>,{' '}
         <code>LICENSING.md</code> and <code>NOTICE</code> when you
         redistribute: the NOTICE carries Astronomy Engine's MIT notice, the
-        attribution those ΔT values require, and the CC BY 4.0 attribution
-        that GeoNames-derived place data requires.{' '}
+        attribution those ΔT values require, the sources of the time zone,
+        leap-second and UT1 data and of the star values in{' '}
+        <code>/vedic</code>, and the CC BY 4.0 attribution that
+        GeoNames-derived place data requires; LICENSING.md gives the terms of
+        each and three questions about them that are still open.{' '}
         <a href={`${candidate.sourceRepository}/issues`}>Report a problem</a>.
       </p>
     </div>
