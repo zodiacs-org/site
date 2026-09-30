@@ -270,6 +270,13 @@ jobs:
       - name: Verify MCP adapter bundle, archive and manifest
         run: npm run mcp:pack:check
 
+      # The engine's own time basis, which the package does not export, bundled
+      # from the installed dist/ for the calendar function's server adapter and
+      # the reference tools. It must be what the vendored engine gives: the
+      # generator checks it against natalChart before comparing bytes.
+      - name: Verify the engine time-basis bundle
+        run: node scripts/build-time-basis.mjs --check
+
       # Committed wing HTML must match what the builders produce from
       # sources (build-app resolves the pinned local @babel/standalone,
       # so this job runs fully offline).
