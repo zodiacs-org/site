@@ -112,7 +112,7 @@ describe('independent lunar return references', () => {
     expect(digest(new URL('./fixtures/independent-lunar-return-policy.json', import.meta.url)))
       .toBe('c61e4162d580dfce8cbebd90dfa08313a7b442c879a711787e93c293abb7877b');
     expect(digest(new URL('./fixtures/independent-lunar-returns.json', import.meta.url)))
-      .toBe('c5ccdf4ed1f21355fb5cbcbc4feaa2cd3e8e05dedd3f09c5c65b2643ec557d2a');
+      .toBe('131439f21117b85b413974d5bd7ec3094baa087cc15b91248e9692178402dcab');
     expect(digest(new URL('./fixtures/swiss-lunar-fixed-target-applicability.json', import.meta.url)))
       .toBe('2f9056c0f93b22e3270bf1f496d804759a9057ac6b3e5a142604248ba1dddb1a');
     // The carried-over policy names the one it supersedes, and keeps its gates.

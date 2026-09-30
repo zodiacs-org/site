@@ -51,7 +51,7 @@ describe('independent true node and polar references', () => {
       .update(readFileSync(new URL(`./fixtures/${name}`, import.meta.url)))
       .digest('hex');
     expect(digest('independent-node-polar.json'))
-      .toBe('618bdc5e49ce1ede12ffb30dad35311e71b40ba1a922fcef20c7fe010ba538a8');
+      .toBe('7e969149c746c1cc1fb5a96a5405a5af04b6b319c918abb5f3dea4ca17385fcd');
     expect(digest('swiss-node-polar-policy.json'))
       .toBe('7742cb2bc7cd0932a344ddcb708e45dad07b91cb653ea1f55538c2d73fa18e96');
   });
@@ -109,7 +109,7 @@ describe('independent representative supported epochs', () => {
       .update(readFileSync(new URL(`./fixtures/${name}`, import.meta.url)))
       .digest('hex');
     expect(digest('independent-eight-cases.json'))
-      .toBe('796073092d49a27e542f59b2ff178b03b3799c2cf606b68627e2cae6940ef022');
+      .toBe('ba7ffe9619c4d248f5018e972d5afb35f1153c3ebe077a4dee11a7ea4e1b51fc');
     expect(digest('swiss-eight-cases-policy.json'))
       .toBe('9dfc069be7c6854da1f0dff578c0b213e64624e720d21e27c6301b7612fd79a4');
   });

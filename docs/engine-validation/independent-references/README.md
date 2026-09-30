@@ -99,6 +99,9 @@ Horizons responses it read (`horizonsManifest`) and the policy that gates it.
 installed engine carries a different ΔT model or table from the one a file
 records: every reference instant would have moved under it, so a new table
 means running `tools/build.py` again and committing the new files and pins.
+A new engine version with the same model and table changes only the version
+a file records, but Site Check rebuilds the files and fails on any changed
+byte, so it too means a rebuild and new pins.
 
 ### Where this clock departs from the policies
 

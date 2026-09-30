@@ -16,7 +16,7 @@ const policyBytes = read('swiss-node-polar-policy.json');
 const fixture = JSON.parse(fixtureBytes);
 const policy = JSON.parse(policyBytes);
 const digest = (bytes) => createHash('sha256').update(bytes).digest('hex');
-assert.equal(digest(fixtureBytes), '618bdc5e49ce1ede12ffb30dad35311e71b40ba1a922fcef20c7fe010ba538a8');
+assert.equal(digest(fixtureBytes), '7e969149c746c1cc1fb5a96a5405a5af04b6b319c918abb5f3dea4ca17385fcd');
 assert.equal(digest(policyBytes), '7742cb2bc7cd0932a344ddcb708e45dad07b91cb653ea1f55538c2d73fa18e96');
 const distance = (a, b) => Math.abs(((a - b + 540) % 360) - 180);
 const nodes = fixture.trueNode.map((reference) => {
