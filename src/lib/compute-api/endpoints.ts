@@ -39,7 +39,7 @@ import {
   type PhaseName,
   type SignSlug,
 } from './constants.js';
-import { budgetExhausted } from './errors.js';
+import { budgetExhausted, invalidRequest } from './errors.js';
 import {
   resolveLocal,
   runtimeTzdbVersion,
@@ -54,13 +54,14 @@ import {
   type SearchFacts,
   type SuccessBody,
 } from './receipt.js';
-import type {
-  EventsRequest,
-  FactDay,
-  PlaceInstantRequest,
-  PositionsRequest,
-  SkyFactRequest,
-  TimeRequest,
+import {
+  VALIDATION_MESSAGES,
+  type EventsRequest,
+  type FactDay,
+  type PlaceInstantRequest,
+  type PositionsRequest,
+  type SkyFactRequest,
+  type TimeRequest,
 } from './validate.js';
 
 export interface ComputeDependencies {
@@ -177,6 +178,17 @@ function phaseCrossings(target: number, from: Date, to: Date, budget: SampleBudg
 
 function placeOf(lon: number): { lon: number; sign: SignSlug; degree: number } {
   return { lon, sign: signForLongitude(lon).slug, degree: degreeInSign(lon) };
+}
+
+/**
+ * The engine's flag for an instant outside its reference span, which is also
+ * the span of instants a request may give. A local time or a day read at the
+ * ends of the accepted dates can reach past it (00:00 on 1800-01-01 in Tokyo
+ * is 14:41 UTC the day before), and is computed and flagged rather than
+ * refused.
+ */
+function spanFlags(...instants: Date[]): Array<'outside-reference-span'> {
+  return instants.some((instant) => outsideReferenceSpan(instant)) ? ['outside-reference-span'] : [];
 }
 
 // ---------- chart and houses ----------
@@ -345,9 +357,11 @@ export async function computeTime(request: TimeRequest, dependencies: ComputeDep
   const deltaT = deltaTFor(local.utc);
   // TT = UT1 + ΔT, with the instant read as UT1, as the engine reads it; to the millisecond.
   const tt = new Date(local.utc.getTime() + Math.round(deltaT.seconds * 1000));
+  const summary = localSummary(local);
   return successBody('time', {
     utc: iso(local.utc),
-    ...localSummary(local),
+    ...summary,
+    flags: [...summary.flags, ...spanFlags(local.utc)],
     tt: iso(tt).slice(0, -1),
     deltaT,
   }, computeReceipt('time', { timeResolution: timeResolutionFacts() }));
@@ -380,6 +394,10 @@ async function dayWindow(day: FactDay, dependencies: ComputeDependencies): Promi
   }
   const start = await resolveLocal(dependencies.localTime, { date: day.date, time: '00:00', zone: day.zone }, null);
   const end = await resolveLocal(dependencies.localTime, { date: nextDate(day.date), time: '00:00', zone: day.zone }, null);
+  // A zone that crossed the date line can skip a whole date (Apia skipped
+  // 30 December 2011): its midnight and the next one are the same instant,
+  // and no fact holds on a day that did not happen.
+  if (end.utc.getTime() <= start.utc.getTime()) throw invalidRequest('/date', VALIDATION_MESSAGES.skippedDay);
   return {
     basis: 'local-day',
     from: start.utc,
@@ -442,6 +460,8 @@ export async function computeSkyFact(request: SkyFactRequest, dependencies: Comp
   const window = await dayWindow(day, dependencies);
   const span = searchSpan(window);
   const anyZone = window.basis === 'any-zone-day';
+  // The day read at the ends of the accepted dates can reach past the reference span.
+  const flags = spanFlags(window.from, span.to);
   let answer: Answer;
   let facts: Record<string, unknown>;
 
@@ -454,7 +474,7 @@ export async function computeSkyFact(request: SkyFactRequest, dependencies: Comp
           .map((crossing) => ({ at: iso(crossing.at), into: signEntered(boundary, crossing.retrograde), retrograde: crossing.retrograde })))
         .sort((a, b) => a.at.localeCompare(b.at));
       answer = changes.length > 0 ? 'depends' : (atStart.sign === request.sign ? 'true' : 'false');
-      facts = { atStart, atEnd: stateAt(rowsAt(span.to), request.body), changes };
+      facts = { atStart, atEnd: stateAt(rowsAt(span.to), request.body), changes, flags };
       break;
     }
     case 'retrograde': {
@@ -464,7 +484,7 @@ export async function computeSkyFact(request: SkyFactRequest, dependencies: Comp
           .map((crossing) => ({ at: iso(crossing.at), type: crossing.retrograde ? 'retrograde' as const : 'direct' as const }))
         : [];
       answer = stations.length > 0 ? 'depends' : (atStart.retrograde ? 'true' : 'false');
-      facts = { atStart, atEnd: stateAt(rowsAt(span.to), request.body), stations };
+      facts = { atStart, atEnd: stateAt(rowsAt(span.to), request.body), stations, flags };
       break;
     }
     case 'ingress': {
@@ -475,14 +495,14 @@ export async function computeSkyFact(request: SkyFactRequest, dependencies: Comp
       ].map((crossing) => ({ at: iso(crossing.at), retrograde: crossing.retrograde }))
         .sort((a, b) => a.at.localeCompare(b.at));
       answer = ingresses.length === 0 ? 'false' : anyZone ? 'depends' : 'true';
-      facts = { ingresses };
+      facts = { ingresses, flags };
       break;
     }
     case 'phase': {
       const lunations = phaseCrossings(PHASES[request.phase], span.from, span.to, budget)
         .map((crossing) => ({ at: iso(crossing.at), ...placeOf(rowOf(rowsAt(crossing.at), 'Moon').lon) }));
       answer = lunations.length === 0 ? 'false' : anyZone ? 'depends' : 'true';
-      facts = { lunations };
+      facts = { lunations, flags };
       break;
     }
   }

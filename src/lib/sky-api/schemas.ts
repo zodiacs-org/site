@@ -373,7 +373,8 @@ export function buildOpenApi(
       version,
       summary: "Free sky data as static files: today's sky, upcoming events, planets, signs, and per-year retrogrades, stations, ingresses, moon phases, eclipses, and aspects. And six calculation endpoints that take a POST body.",
       description: `The sky data (tags daily and yearly) is static JSON files served from the CDN with open CORS and no authentication. Positions are apparent geocentric tropical ecliptic longitudes computed at 12:00 UTC daily. Data as of ${dailyDate}. Guide for AI agents: ${API_BASE}/llms.txt. Documentation: ${API_ORIGIN}/developers/. The compute endpoints (tag compute) calculate from the body of a POST request, with open CORS and no authentication; their documentation is ${COMPUTE_DOCS_URL}.`,
-      license: { name: 'CC BY 4.0', identifier: 'CC-BY-4.0', url: 'https://creativecommons.org/licenses/by/4.0/' },
+      // OpenAPI 3.1 takes an SPDX identifier or a URL, not both; every payload carries licenseUrl.
+      license: { name: 'CC BY 4.0', identifier: 'CC-BY-4.0' },
       contact: { url: `${API_ORIGIN}/developers/` },
     },
     servers: [{ url: API_ORIGIN }],

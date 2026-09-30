@@ -94,6 +94,13 @@ const COMPUTE_API_ROUTES = [
   '/developers/', '/developers/compute/', '/developers/support/', '/birth-chart/', '/ru/birth-chart/',
   '/privacy/',
 ] as const;
+// Its review of 2026-09-30 changed what these say about availability, logs,
+// memory and citations, and the four translated birth chart FAQs.
+const COMPUTE_API_REVIEW_LASTMOD = '2026-09-30';
+const COMPUTE_API_REVIEW_ROUTES = [
+  '/developers/', '/developers/compute/', '/developers/support/', '/privacy/',
+  '/es/birth-chart/', '/fr/birth-chart/', '/it/birth-chart/', '/pt/birth-chart/',
+] as const;
 // Keep these dates source-controlled: build environments may have shallow or
 // absent Git history. When an evergreen page's rendered source changes, update
 // its entry here in the same commit.
@@ -221,8 +228,9 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...SHARE_IMAGE_REVIEW_ROUTES.map((loc) => [loc, SHARE_IMAGE_REVIEW_LASTMOD] as const),
   // Then the ΔT attribution.
   ...DELTAT_ATTRIBUTION_ROUTES.map((loc) => [loc, DELTAT_ATTRIBUTION_LASTMOD] as const),
-  // And the compute API, last of all.
+  // Then the compute API, and its review last of all.
   ...COMPUTE_API_ROUTES.map((loc) => [loc, COMPUTE_API_LASTMOD] as const),
+  ...COMPUTE_API_REVIEW_ROUTES.map((loc) => [loc, COMPUTE_API_REVIEW_LASTMOD] as const),
 ]);
 
 function getLastmod(loc: string): string {

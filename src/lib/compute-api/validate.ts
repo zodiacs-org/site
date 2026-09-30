@@ -5,10 +5,16 @@
  * to the field and a fixed sentence. Budgets are checked after the shape, so
  * a refused budget always concerns a request that is otherwise valid.
  *
- * The JSON Schemas in schemas.ts describe the same rules for readers and
+ * A zone name is taken in any letter case and replaced by its tzdb spelling
+ * (europe/paris becomes Europe/Paris) before anything reads it, so a table
+ * keyed by name never sees another spelling and an answer names the zone as
+ * tzdb does. A name that has no tzdb spelling is refused.
+ *
+ * The JSON Schemas in openapi.ts describe the same rules for readers and
  * tools; tests/api/compute-api-openapi.test.ts holds the two together. A few
  * rules no JSON Schema can state (a real calendar date, a time zone the
- * server's Intl data knows) are enforced here only.
+ * server's data knows, a window whose end is after its start) are enforced
+ * here only.
  */
 import { HOUSE_SYSTEMS, type HouseSystem } from '@zodiacs/engine';
 import { parseCivilDate, parseCivilTime } from '../time/civil-date.js';
@@ -32,8 +38,12 @@ import { budgetExhausted, invalidRequest } from './errors.js';
 export interface LocalInput {
   date: string;
   time: string;
+  /** The zone's tzdb spelling, whatever case the request used. */
   zone: string;
 }
+
+/** The tzdb spelling of a zone name in any letter case, or null: LocalTimeModule.canonicalZoneName. */
+export type ZoneNames = (name: string) => Promise<string | null>;
 
 export interface PlaceInstantRequest {
   /** Set for a `utc` request; null for a `local` one until it is resolved. */
@@ -108,7 +118,20 @@ const TEXT = Object.freeze({
   phase: `Must be one of: ${PHASE_NAMES.join(', ')}.`,
   instantOrDate: 'Give exactly one of instant and date.',
   zoneNeedsDate: 'A zone goes with a date, not with an instant.',
+  skippedDay: 'This date did not happen in this zone: its clocks went from the day before straight to the day after.',
 });
+
+/**
+ * Every pointer a refusal can carry: the fields each endpoint names, and an
+ * index into instants, bodies or kinds. A pointer never names a key the
+ * request invented.
+ */
+export const VALIDATION_POINTERS = Object.freeze([
+  '', '/utc', '/local', '/local/date', '/local/time', '/local/zone', '/latitude', '/longitude',
+  '/houseSystem', '/instants', '/bodies', '/from', '/to', '/kinds', '/kind', '/body', '/sign',
+  '/phase', '/instant', '/date', '/zone',
+] as const);
+export const INDEXED_POINTERS = Object.freeze(['/instants', '/bodies', '/kinds'] as const);
 
 const ZONE_NAME = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/u;
 const INSTANT = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{1,3}))?)?(Z|[+-]\d{2}:\d{2})$/u;
@@ -205,21 +228,26 @@ function zoneKnown(zone: string): boolean {
   }
 }
 
-export function zoneAt(value: unknown, pointer: string): string {
+/**
+ * A zone name in any letter case, as its tzdb spelling. Refused when no table
+ * has the name, or when the runtime's Intl data, which reads every offset
+ * from 1970 on, does not know it.
+ */
+export async function zoneAt(value: unknown, pointer: string, zones: ZoneNames): Promise<string> {
   const text = stringAt(value, pointer);
   if (text.length > 64 || !ZONE_NAME.test(text)) throw invalidRequest(pointer, TEXT.zoneFormat);
-  if (!zoneKnown(text)) throw invalidRequest(pointer, TEXT.zoneUnknown);
-  return text;
+  const name = await zones(text);
+  if (name === null || !zoneKnown(name)) throw invalidRequest(pointer, TEXT.zoneUnknown);
+  return name;
 }
 
-function localAt(value: unknown, pointer: string): LocalInput {
+async function localAt(value: unknown, pointer: string, zones: ZoneNames): Promise<LocalInput> {
   const object = objectAt(value, pointer);
   onlyFields(object, ['date', 'time', 'zone'], pointer);
-  return {
-    date: dateAt(required(object, 'date', pointer), child(pointer, 'date')),
-    time: timeAt(required(object, 'time', pointer), child(pointer, 'time')),
-    zone: zoneAt(required(object, 'zone', pointer), child(pointer, 'zone')),
-  };
+  const date = dateAt(required(object, 'date', pointer), child(pointer, 'date'));
+  const time = timeAt(required(object, 'time', pointer), child(pointer, 'time'));
+  const zone = await zoneAt(required(object, 'zone', pointer), child(pointer, 'zone'), zones);
+  return { date, time, zone };
 }
 
 function latitudeAt(value: unknown, pointer: string): number {
@@ -257,12 +285,12 @@ function bodyObject(value: unknown): JsonObject {
 }
 
 /** chart and houses: an instant given as utc or as local time, a place and a house system. */
-export function parsePlaceInstantRequest(value: unknown): PlaceInstantRequest {
+export async function parsePlaceInstantRequest(value: unknown, zones: ZoneNames): Promise<PlaceInstantRequest> {
   const object = bodyObject(value);
   onlyFields(object, ['utc', 'local', 'latitude', 'longitude', 'houseSystem'], '');
   if (has(object, 'utc') === has(object, 'local')) throw invalidRequest('', TEXT.utcOrLocal);
   const instant = has(object, 'utc') ? instantAt(object.utc, '/utc') : null;
-  const local = has(object, 'local') ? localAt(object.local, '/local') : null;
+  const local = has(object, 'local') ? await localAt(object.local, '/local', zones) : null;
   const latitude = latitudeAt(required(object, 'latitude', ''), '/latitude');
   const longitude = longitudeAt(required(object, 'longitude', ''), '/longitude');
   const houseSystem = has(object, 'houseSystem')
@@ -314,30 +342,30 @@ export function parseEventsRequest(value: unknown): EventsRequest {
   };
 }
 
-export function parseTimeRequest(value: unknown): TimeRequest {
+export async function parseTimeRequest(value: unknown, zones: ZoneNames): Promise<TimeRequest> {
   const object = bodyObject(value);
   onlyFields(object, ['local', 'longitude'], '');
-  const local = localAt(required(object, 'local', ''), '/local');
+  const local = await localAt(required(object, 'local', ''), '/local', zones);
   const longitude = has(object, 'longitude') ? longitudeAt(object.longitude, '/longitude') : null;
   return { local, longitude };
 }
 
-function factDay(object: JsonObject): FactDay {
+async function factDay(object: JsonObject, zones: ZoneNames): Promise<FactDay> {
   const date = dateAt(required(object, 'date', ''), '/date');
-  const zone = has(object, 'zone') ? zoneAt(object.zone, '/zone') : null;
+  const zone = has(object, 'zone') ? await zoneAt(object.zone, '/zone', zones) : null;
   return { date, zone };
 }
 
-function factWhen(object: JsonObject): FactWhen {
+async function factWhen(object: JsonObject, zones: ZoneNames): Promise<FactWhen> {
   if (has(object, 'instant') === has(object, 'date')) throw invalidRequest('', TEXT.instantOrDate);
   if (has(object, 'instant')) {
     if (has(object, 'zone')) throw invalidRequest('/zone', TEXT.zoneNeedsDate);
     return { instant: instantAt(object.instant, '/instant').date };
   }
-  return factDay(object);
+  return factDay(object, zones);
 }
 
-export function parseSkyFactRequest(value: unknown): SkyFactRequest {
+export async function parseSkyFactRequest(value: unknown, zones: ZoneNames): Promise<SkyFactRequest> {
   const object = bodyObject(value);
   const kind = oneOf(required(object, 'kind', ''), '/kind', SKY_FACT_KINDS, TEXT.factKind);
   switch (kind) {
@@ -345,23 +373,23 @@ export function parseSkyFactRequest(value: unknown): SkyFactRequest {
       onlyFields(object, ['kind', 'body', 'sign', 'instant', 'date', 'zone'], '');
       const body = oneOf(required(object, 'body', ''), '/body', EVENT_BODIES, TEXT.eventBody);
       const sign = oneOf(required(object, 'sign', ''), '/sign', SIGN_SLUGS, TEXT.sign);
-      return { kind, body, sign, when: factWhen(object) };
+      return { kind, body, sign, when: await factWhen(object, zones) };
     }
     case 'retrograde': {
       onlyFields(object, ['kind', 'body', 'instant', 'date', 'zone'], '');
       const body = oneOf(required(object, 'body', ''), '/body', EVENT_BODIES, TEXT.eventBody);
-      return { kind, body, when: factWhen(object) };
+      return { kind, body, when: await factWhen(object, zones) };
     }
     case 'ingress': {
       onlyFields(object, ['kind', 'body', 'sign', 'date', 'zone'], '');
       const body = oneOf(required(object, 'body', ''), '/body', EVENT_BODIES, TEXT.eventBody);
       const sign = oneOf(required(object, 'sign', ''), '/sign', SIGN_SLUGS, TEXT.sign);
-      return { kind, body, sign, day: factDay(object) };
+      return { kind, body, sign, day: await factDay(object, zones) };
     }
     case 'phase': {
       onlyFields(object, ['kind', 'phase', 'date', 'zone'], '');
       const phase = oneOf(required(object, 'phase', ''), '/phase', PHASE_NAMES, TEXT.phase);
-      return { kind, phase, day: factDay(object) };
+      return { kind, phase, day: await factDay(object, zones) };
     }
   }
 }

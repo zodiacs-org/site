@@ -109,6 +109,13 @@ export function prepareLocalTime(date: string, timeZone: string): Promise<void> 
   return ready;
 }
 
+/**
+ * Formatters by zone name, as the caller gave it. Intl reads a name in any
+ * letter case and also takes UTC offsets as names (+05:30), so a caller can
+ * send thousands of names; each cache starts again once it holds 1,024, more
+ * than there are named zones, and a name Intl refuses is never stored. The
+ * compute API passes only a name's tzdb spelling (./zone-names.ts).
+ */
 const offsetFormatters = new Map<string, Intl.DateTimeFormat>();
 const wallFormatters = new Map<string, Intl.DateTimeFormat>();
 
@@ -126,6 +133,7 @@ function offsetFormatter(tz: string): Intl.DateTimeFormat {
       // Do not include a potentially private, untrusted zone value in errors.
       throw new RangeError('An explicit supported timezone is required.');
     }
+    if (offsetFormatters.size >= 1024) offsetFormatters.clear();
     offsetFormatters.set(tz, f);
   }
   return f;
@@ -141,6 +149,7 @@ function wallFormatter(tz: string): Intl.DateTimeFormat {
       hour: '2-digit', minute: '2-digit', second: '2-digit',
       fractionalSecondDigits: 3, hourCycle: 'h23',
     });
+    if (wallFormatters.size >= 1024) wallFormatters.clear();
     wallFormatters.set(tz, f);
   }
   return f;

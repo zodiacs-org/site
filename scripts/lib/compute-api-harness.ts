@@ -21,6 +21,8 @@ export interface HarnessRequest {
 
 export interface HarnessResponse {
   status: number;
+  /** What the handler set as the reason phrase; undefined leaves Node's default for the status. */
+  statusMessage: unknown;
   headers: Map<string, string>;
   text: string;
   json: any;
@@ -60,6 +62,7 @@ export function makeResponse() {
   const headers = new Map<string, string>();
   const recorder = {
     statusCode: 0,
+    statusMessage: undefined as unknown,
     text: '',
     ended: false,
     setHeader(name: string, value: string | number) {
@@ -87,7 +90,7 @@ export async function run(
   if (!res.ended) throw new Error('the handler did not end the response');
   let json: any = null;
   if (res.text) json = JSON.parse(res.text);
-  return { status: res.statusCode, headers: res.headers, text: res.text, json };
+  return { status: res.statusCode, statusMessage: res.statusMessage, headers: res.headers, text: res.text, json };
 }
 
 /**

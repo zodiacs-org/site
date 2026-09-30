@@ -20,8 +20,28 @@ describe("the compute API's local-time bundle", () => {
     expect(read(TYPES_PATH).equals(types)).toBe(true);
     expect(inputs).toContain('src/lib/time/localToUtc.ts');
     expect(inputs).toContain('src/lib/time/birthplace-clock.ts');
+    expect(inputs).toContain('src/lib/time/zone-names.ts');
     expect(inputs).toContain('src/data/tz-lmt.json');
+    expect(inputs).toContain('src/data/tz-history/2025c/excluded.json');
   });
+
+  it('gives every zone name the spelling the source gives it, in any letter case', async () => {
+    const directory = new URL('../../src/data/tz-history/2025c/', import.meta.url);
+    const names = new Set<string>([
+      ...Intl.supportedValuesOf('timeZone'),
+      ...Object.keys(JSON.parse(read('src/data/tz-lmt.json').toString('utf8')).eras),
+      ...Object.keys(JSON.parse(readFileSync(new URL('excluded.json', directory), 'utf8')).excluded),
+    ]);
+    for (const file of readdirSync(directory).filter((name) => /^\d{2}\.json$/u.test(name))) {
+      for (const zone of Object.keys(JSON.parse(readFileSync(new URL(file, directory), 'utf8')).zones)) names.add(zone);
+    }
+    for (const name of [...names, 'Europe/Atlantis', 'SystemV/AST4', '+05:30']) {
+      for (const spelling of [name, name.toLowerCase(), name.toUpperCase()]) {
+        expect(await bundled.canonicalZoneName(spelling), spelling).toBe(await source.canonicalZoneName(spelling));
+      }
+    }
+    expect(names.size).toBeGreaterThan(590);
+  }, 60_000);
 
   it('carries every zone history of the pinned release', async () => {
     const directory = new URL('../../src/data/tz-history/2025c/', import.meta.url);

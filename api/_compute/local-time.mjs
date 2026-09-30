@@ -2,12 +2,8 @@
 //
 // The site's local-time resolver for the compute API's function, with its tables inlined.
 // Bundled by esbuild 0.28.1, platform node, format esm, target node22.
-var __create = Object.create;
 var __defProp = Object.defineProperty;
-var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
-var __getProtoOf = Object.getPrototypeOf;
-var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __glob = (map) => (path) => {
   var fn = map[path];
   if (fn) return fn();
@@ -21,33 +17,10 @@ var __esm = (fn, res, err) => function __init() {
     throw err = [e], e;
   }
 };
-var __commonJS = (cb, mod) => function __require() {
-  try {
-    return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
-  } catch (e) {
-    throw mod = 0, e;
-  }
-};
 var __export = (target, all) => {
   for (var name in all)
     __defProp(target, name, { get: all[name], enumerable: true });
 };
-var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
-      if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
-  }
-  return to;
-};
-var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
-  // If the importer is in node compatibility mode or this is not an ESM
-  // file that has been converted to a CommonJS file using a Babel-
-  // compatible transform (i.e. "__esModule" has not been set), then set
-  // "default" to the CommonJS "module.exports" for node compatibility.
-  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
-  mod
-));
 
 // src/lib/module-load.ts
 async function loadModule(load) {
@@ -108,1772 +81,860 @@ var init_civil_date = __esm({
 });
 
 // src/data/tz-lmt.json
-var require_tz_lmt = __commonJS({
-  "src/data/tz-lmt.json"(exports, module) {
-    module.exports = {
-      tzdb: "2025c",
-      source: {
-        url: "https://data.iana.org/time-zones/releases/tzdata2025c.tar.gz",
-        sha256: "4aa79e4effee53fc4029ffe5f6ebe97937282ebcdf386d5d2da91ce84142f957",
-        files: [
-          "africa",
-          "antarctica",
-          "asia",
-          "australasia",
-          "europe",
-          "northamerica",
-          "southamerica",
-          "etcetera",
-          "backward",
-          "backzone"
-        ]
-      },
-      eras: {
-        "Africa/Abidjan": -1830383032,
-        "Africa/Accra": -1709337548,
-        "Africa/Addis_Ababa": -3155682888,
-        "Africa/Algiers": -2486592732,
-        "Africa/Asmara": -3155682932,
-        "Africa/Asmera": -3155682932,
-        "Africa/Bamako": -1830382080,
-        "Africa/Bangui": -1830388460,
-        "Africa/Banjul": -1830380004,
-        "Africa/Bissau": -1830380400,
-        "Africa/Blantyre": -1844302800,
-        "Africa/Brazzaville": -1830387668,
-        "Africa/Bujumbura": -2524528648,
-        "Africa/Cairo": -2185409109,
-        "Africa/Casablanca": -1773012580,
-        "Africa/Ceuta": -2177452800,
-        "Africa/Conakry": -1830380708,
-        "Africa/Dakar": -1830379816,
-        "Africa/Dar_es_Salaam": -1230777428,
-        "Africa/Djibouti": -1846291956,
-        "Africa/Douala": -1830386328,
-        "Africa/El_Aaiun": -1136070432,
-        "Africa/Freetown": -2776979220,
-        "Africa/Gaborone": -2682294220,
-        "Africa/Harare": -2109290652,
-        "Africa/Johannesburg": -2458173120,
-        "Africa/Juba": -1230775588,
-        "Africa/Kampala": -1309745380,
-        "Africa/Khartoum": -1230775808,
-        "Africa/Kigali": -1091498416,
-        "Africa/Kinshasa": -2276643672,
-        "Africa/Lagos": -2035584815,
-        "Africa/Libreville": -1830386268,
-        "Africa/Lome": -2429827492,
-        "Africa/Luanda": -2461452776,
-        "Africa/Lubumbashi": -2276646592,
-        "Africa/Lusaka": -2109289988,
-        "Africa/Malabo": -1830386108,
-        "Africa/Maputo": -1924999818,
-        "Africa/Maseru": -2109289800,
-        "Africa/Mbabane": -2109290664,
-        "Africa/Mogadishu": -2403572488,
-        "Africa/Monrovia": -2776979812,
-        "Africa/Nairobi": -1946168836,
-        "Africa/Ndjamena": -1830387612,
-        "Africa/Niamey": -1830384508,
-        "Africa/Nouakchott": -1830380172,
-        "Africa/Ouagadougou": -1830383636,
-        "Africa/Porto-Novo": -1830384628,
-        "Africa/Sao_Tome": -2713912016,
-        "Africa/Timbuktu": -1830383276,
-        "Africa/Tripoli": -1577926364,
-        "Africa/Tunis": -2797202444,
-        "Africa/Windhoek": -2458170504,
-        "America/Adak": -2188944802,
-        "America/Anchorage": -2188951224,
-        "America/Anguilla": -1825098464,
-        "America/Antigua": -1825098768,
-        "America/Araguaina": -1767214032,
-        "America/Argentina/Buenos_Aires": -2372097972,
-        "America/Argentina/Catamarca": -2372096212,
-        "America/Argentina/ComodRivadavia": -2372095800,
-        "America/Argentina/Cordoba": -2372096592,
-        "America/Argentina/Jujuy": -2372096328,
-        "America/Argentina/La_Rioja": -2372095956,
-        "America/Argentina/Mendoza": -2372095484,
-        "America/Argentina/Rio_Gallegos": -2372095388,
-        "America/Argentina/Salta": -2372096300,
-        "America/Argentina/San_Juan": -2372095556,
-        "America/Argentina/San_Luis": -2372096076,
-        "America/Argentina/Tucuman": -2372096348,
-        "America/Argentina/Ushuaia": -2372095608,
-        "America/Aruba": -1826738376,
-        "America/Asuncion": -2524507760,
-        "America/Atikokan": -2366733212,
-        "America/Atka": -2188944802,
-        "America/Bahia": -1767216356,
-        "America/Bahia_Banderas": -1514739600,
-        "America/Barbados": -1841256091,
-        "America/Belem": -1767213964,
-        "America/Belize": -1822500432,
-        "America/Blanc-Sablon": -2713896692,
-        "America/Boa_Vista": -1767211040,
-        "America/Bogota": -2707671824,
-        "America/Boise": -271764e4,
-        "America/Buenos_Aires": -2372097972,
-        "America/Campo_Grande": -1767212492,
-        "America/Cancun": -1514743200,
-        "America/Caracas": -2524505536,
-        "America/Catamarca": -2372096212,
-        "America/Cayenne": -1846269040,
-        "America/Cayman": -2524502068,
-        "America/Chicago": -2717647200,
-        "America/Chihuahua": -1514739600,
-        "America/Ciudad_Juarez": -1514739600,
-        "America/Coral_Harbour": -2713890440,
-        "America/Cordoba": -2372096592,
-        "America/Costa_Rica": -2524501427,
-        "America/Coyhaique": -2524504304,
-        "America/Creston": -2713882436,
-        "America/Cuiaba": -1767212140,
-        "America/Curacao": -1826738653,
-        "America/Danmarkshavn": -1686091520,
-        "America/Dawson": -2188996940,
-        "America/Dawson_Creek": -2713881544,
-        "America/Denver": -2717643600,
-        "America/Detroit": -2051202469,
-        "America/Dominica": -1846266804,
-        "America/Edmonton": -1998663968,
-        "America/Eirunepe": -1767208832,
-        "America/El_Salvador": -1546279392,
-        "America/Ensenada": -1514736e3,
-        "America/Fort_Nelson": -2713880953,
-        "America/Fort_Wayne": -2717647200,
-        "America/Fortaleza": -1767216360,
-        "America/Glace_Bay": -2131646412,
-        "America/Godthab": -1686083584,
-        "America/Goose_Bay": -2713895900,
-        "America/Grand_Turk": -2524504528,
-        "America/Grenada": -1846266780,
-        "America/Guadeloupe": -1848254032,
-        "America/Guatemala": -1617040676,
-        "America/Guayaquil": -2524502440,
-        "America/Guyana": -1843589241,
-        "America/Halifax": -2131645536,
-        "America/Havana": -2524501832,
-        "America/Hermosillo": -1514739600,
-        "America/Indiana/Indianapolis": -2717647200,
-        "America/Indiana/Knox": -2717647200,
-        "America/Indiana/Marengo": -2717647200,
-        "America/Indiana/Petersburg": -2717647200,
-        "America/Indiana/Tell_City": -2717647200,
-        "America/Indiana/Vevay": -2717647200,
-        "America/Indiana/Vincennes": -2717647200,
-        "America/Indiana/Winamac": -2717647200,
-        "America/Indianapolis": -2717647200,
-        "America/Jamaica": -2524503170,
-        "America/Jujuy": -2372096328,
-        "America/Juneau": -2188954939,
-        "America/Kentucky/Louisville": -2717647200,
-        "America/Kentucky/Monticello": -2717647200,
-        "America/Knox_IN": -2717647200,
-        "America/Kralendijk": -1826738653,
-        "America/La_Paz": -2524505244,
-        "America/Lima": -2524503108,
-        "America/Los_Angeles": -271764e4,
-        "America/Louisville": -2717647200,
-        "America/Lower_Princes": -1826738653,
-        "America/Maceio": -1767217028,
-        "America/Managua": -2524500892,
-        "America/Manaus": -1767211196,
-        "America/Marigot": -1825098836,
-        "America/Martinique": -2524506940,
-        "America/Matamoros": -1514743200,
-        "America/Mazatlan": -1514739600,
-        "America/Mendoza": -2372095484,
-        "America/Menominee": -2659759773,
-        "America/Merida": -1514743200,
-        "America/Metlakatla": -2188955622,
-        "America/Mexico_City": -1514739600,
-        "America/Miquelon": -1847650520,
-        "America/Moncton": -2715882052,
-        "America/Monterrey": -1514743200,
-        "America/Montevideo": -1942690509,
-        "America/Montreal": -2713892744,
-        "America/Montserrat": -1846266608,
-        "America/Nassau": -1825095030,
-        "America/New_York": -2717650800,
-        "America/Nipigon": -2366734016,
-        "America/Nome": -2188947502,
-        "America/Noronha": -1767217820,
-        "America/North_Dakota/Beulah": -2717643600,
-        "America/North_Dakota/Center": -2717643600,
-        "America/North_Dakota/New_Salem": -2717643600,
-        "America/Nuuk": -1686083584,
-        "America/Ojinaga": -1514739600,
-        "America/Panama": -2524502512,
-        "America/Paramaribo": -1861906760,
-        "America/Phoenix": -2717643600,
-        "America/Port-au-Prince": -2524504240,
-        "America/Port_of_Spain": -1825098836,
-        "America/Porto_Acre": -1767209328,
-        "America/Porto_Velho": -1767210264,
-        "America/Puerto_Rico": -2233035335,
-        "America/Punta_Arenas": -2524504580,
-        "America/Rainy_River": -2366732504,
-        "America/Recife": -1767217224,
-        "America/Regina": -2030202084,
-        "America/Rio_Branco": -1767209328,
-        "America/Rosario": -2372011040,
-        "America/Santa_Isabel": -1514739600,
-        "America/Santarem": -1767212472,
-        "America/Santiago": -2524504635,
-        "America/Santo_Domingo": -2524504824,
-        "America/Sao_Paulo": -1767214412,
-        "America/Scoresbysund": -1686090728,
-        "America/Shiprock": -2717643600,
-        "America/Sitka": -2188954727,
-        "America/St_Barthelemy": -1825098836,
-        "America/St_Johns": -2713897748,
-        "America/St_Kitts": -1825098548,
-        "America/St_Lucia": -2524506960,
-        "America/St_Thomas": -1846266016,
-        "America/St_Vincent": -2524506904,
-        "America/Swift_Current": -2030201320,
-        "America/Tegucigalpa": -1538503868,
-        "America/Thule": -1686079492,
-        "America/Thunder_Bay": -2366733780,
-        "America/Tijuana": -1514739600,
-        "America/Toronto": -2366736148,
-        "America/Tortola": -1846266092,
-        "America/Vancouver": -2713880852,
-        "America/Virgin": -1846266016,
-        "America/Whitehorse": -2188997988,
-        "America/Winnipeg": -2602258284,
-        "America/Yakutat": -2188953665,
-        "Arctic/Longyearbyen": -2366757780,
-        "Asia/Aden": -631162794,
-        "Asia/Almaty": -1441170468,
-        "Asia/Amman": -1230776624,
-        "Asia/Anadyr": -1441194596,
-        "Asia/Aqtau": -1441164064,
-        "Asia/Aqtobe": -1441165720,
-        "Asia/Ashgabat": -1441166012,
-        "Asia/Ashkhabad": -1441166012,
-        "Asia/Atyrau": -1441164464,
-        "Asia/Baghdad": -2524532260,
-        "Asia/Bahrain": -897880940,
-        "Asia/Baku": -1441163964,
-        "Asia/Bangkok": -2840164924,
-        "Asia/Barnaul": -1579844100,
-        "Asia/Beirut": -2840149320,
-        "Asia/Bishkek": -1441169904,
-        "Asia/Brunei": -1383464380,
-        "Asia/Calcutta": -3645237208,
-        "Asia/Chita": -1579419232,
-        "Asia/Choibalsan": -2032931252,
-        "Asia/Chongqing": -1325487980,
-        "Asia/Chungking": -1325487980,
-        "Asia/Colombo": -2840159964,
-        "Asia/Dacca": -2524543300,
-        "Asia/Damascus": -1577931912,
-        "Asia/Dhaka": -2524543300,
-        "Asia/Dili": -1830412800,
-        "Asia/Dubai": -1577936472,
-        "Asia/Dushanbe": -1441168512,
-        "Asia/Famagusta": -1518920148,
-        "Asia/Gaza": -2185409872,
-        "Asia/Hanoi": -2004073404,
-        "Asia/Harbin": -1325492804,
-        "Asia/Hebron": -2185410023,
-        "Asia/Ho_Chi_Minh": -2004073590,
-        "Asia/Hong_Kong": -2056690800,
-        "Asia/Hovd": -2032927596,
-        "Asia/Irkutsk": -2840165825,
-        "Asia/Istanbul": -2840147752,
-        "Asia/Jakarta": -3231299232,
-        "Asia/Jayapura": -1172913768,
-        "Asia/Jerusalem": -2840149254,
-        "Asia/Kabul": -2524538208,
-        "Asia/Kamchatka": -1487759676,
-        "Asia/Karachi": -1988166492,
-        "Asia/Kashgar": -1325480636,
-        "Asia/Kathmandu": -1577943676,
-        "Asia/Katmandu": -1577943676,
-        "Asia/Khandyga": -1579424533,
-        "Asia/Kolkata": -3645237208,
-        "Asia/Krasnoyarsk": -1577513486,
-        "Asia/Kuala_Lumpur": -2177477206,
-        "Asia/Kuching": -1383463280,
-        "Asia/Kuwait": -631163516,
-        "Asia/Macao": -2056692850,
-        "Asia/Macau": -2056692850,
-        "Asia/Magadan": -1441188192,
-        "Asia/Makassar": -1577951856,
-        "Asia/Manila": -2219083200,
-        "Asia/Muscat": -1577937264,
-        "Asia/Nicosia": -1518920008,
-        "Asia/Novokuznetsk": -1441259328,
-        "Asia/Novosibirsk": -1579476700,
-        "Asia/Omsk": -1582088010,
-        "Asia/Oral": -1441164324,
-        "Asia/Phnom_Penh": -2004073180,
-        "Asia/Pontianak": -1946186240,
-        "Asia/Pyongyang": -1948782180,
-        "Asia/Qatar": -1577935568,
-        "Asia/Qostanay": -1441167268,
-        "Asia/Qyzylorda": -1441167712,
-        "Asia/Rangoon": -2840163887,
-        "Asia/Riyadh": -719636812,
-        "Asia/Saigon": -2004073590,
-        "Asia/Sakhalin": -2031039048,
-        "Asia/Samarkand": -1441168073,
-        "Asia/Seoul": -1948782472,
-        "Asia/Shanghai": -2177481943,
-        "Asia/Singapore": -2177477725,
-        "Asia/Srednekolymsk": -1441188892,
-        "Asia/Taipei": -2335248360,
-        "Asia/Tashkent": -1441168631,
-        "Asia/Tbilisi": -2840151551,
-        "Asia/Tehran": -1704165944,
-        "Asia/Tel_Aviv": -2840149144,
-        "Asia/Thimbu": -706341516,
-        "Asia/Thimphu": -706341516,
-        "Asia/Tokyo": -2587712400,
-        "Asia/Tomsk": -1578807591,
-        "Asia/Ujung_Pandang": -1577951856,
-        "Asia/Ulaanbaatar": -2032931252,
-        "Asia/Ulan_Bator": -2032931252,
-        "Asia/Urumqi": -1325483420,
-        "Asia/Ust-Nera": -1579426374,
-        "Asia/Vientiane": -2004072624,
-        "Asia/Vladivostok": -1487321251,
-        "Asia/Yakutsk": -1579423138,
-        "Asia/Yangon": -2840163887,
-        "Asia/Yekaterinburg": -1688270553,
-        "Asia/Yerevan": -1441162680,
-        "Atlantic/Azores": -2713904240,
-        "Atlantic/Bermuda": -2524506042,
-        "Atlantic/Canary": -1509663504,
-        "Atlantic/Cape_Verde": -1830376800,
-        "Atlantic/Faeroe": -1955748776,
-        "Atlantic/Faroe": -1955748776,
-        "Atlantic/Madeira": -2713906344,
-        "Atlantic/Reykjavik": -1956609120,
-        "Atlantic/South_Georgia": -2524512832,
-        "Atlantic/St_Helena": -2524520232,
-        "Atlantic/Stanley": -2524507716,
-        "Australia/ACT": -2364113092,
-        "Australia/Adelaide": -2364110060,
-        "Australia/Brisbane": -2366791928,
-        "Australia/Broken_Hill": -2364110748,
-        "Australia/Canberra": -2364113092,
-        "Australia/Currie": -2345794528,
-        "Australia/Darwin": -2364108200,
-        "Australia/Eucla": -2337928528,
-        "Australia/Hobart": -2345795356,
-        "Australia/LHI": -2364114980,
-        "Australia/Lindeman": -2366790956,
-        "Australia/Lord_Howe": -2364114980,
-        "Australia/Melbourne": -2364111592,
-        "Australia/NSW": -2364113092,
-        "Australia/North": -2364108200,
-        "Australia/Perth": -2337925404,
-        "Australia/Queensland": -2366791928,
-        "Australia/South": -2364110060,
-        "Australia/Sydney": -2364113092,
-        "Australia/Tasmania": -2345795356,
-        "Australia/Victoria": -2364111592,
-        "Australia/West": -2337925404,
-        "Australia/Yancowinna": -2364110748,
-        "Brazil/Acre": -1767209328,
-        "Brazil/DeNoronha": -1767217820,
-        "Brazil/East": -1767214412,
-        "Brazil/West": -1767211196,
-        "Canada/Atlantic": -2131645536,
-        "Canada/Central": -2602258284,
-        "Canada/Eastern": -2366736148,
-        "Canada/Mountain": -1998663968,
-        "Canada/Newfoundland": -2713897748,
-        "Canada/Pacific": -2713880852,
-        "Canada/Saskatchewan": -2030202084,
-        "Canada/Yukon": -2188997988,
-        "Chile/Continental": -2524504635,
-        "Chile/EasterIsland": -2524495352,
-        Cuba: -2524501832,
-        Egypt: -2185409109,
-        Eire: -2821649679,
-        "Europe/Amsterdam": -4260212372,
-        "Europe/Andorra": -2177453164,
-        "Europe/Astrakhan": -1441249932,
-        "Europe/Athens": -2344642492,
-        "Europe/Belfast": -2821649780,
-        "Europe/Belgrade": -2713915320,
-        "Europe/Berlin": -2422054408,
-        "Europe/Bratislava": -3786829064,
-        "Europe/Brussels": -2840141850,
-        "Europe/Bucharest": -2469404664,
-        "Europe/Budapest": -2498260580,
-        "Europe/Busingen": -3675198848,
-        "Europe/Chisinau": -2840147720,
-        "Europe/Copenhagen": -2524524620,
-        "Europe/Dublin": -2821649679,
-        "Europe/Gibraltar": -2821649916,
-        "Europe/Guernsey": -1784245791,
-        "Europe/Helsinki": -2890258789,
-        "Europe/Isle_of_Man": -2737842125,
-        "Europe/Istanbul": -2840147752,
-        "Europe/Jersey": -2258092800,
-        "Europe/Kaliningrad": -2422056120,
-        "Europe/Kiev": -2840148124,
-        "Europe/Kirov": -1593820800,
-        "Europe/Kyiv": -2840148124,
-        "Europe/Lisbon": -2713908195,
-        "Europe/Ljubljana": -2713913884,
-        "Europe/London": -3852662325,
-        "Europe/Luxembourg": -2069713476,
-        "Europe/Madrid": -2177452800,
-        "Europe/Malta": -2403478684,
-        "Europe/Mariehamn": -2890258789,
-        "Europe/Minsk": -2840147416,
-        "Europe/Monaco": -2448318572,
-        "Europe/Moscow": -2840149817,
-        "Europe/Nicosia": -1518920008,
-        "Europe/Oslo": -2366757780,
-        "Europe/Paris": -2486592561,
-        "Europe/Podgorica": -2713915320,
-        "Europe/Prague": -3786829064,
-        "Europe/Riga": -2840146594,
-        "Europe/Rome": -3252098996,
-        "Europe/Samara": -1593820800,
-        "Europe/San_Marino": -3252098996,
-        "Europe/Sarajevo": -2713914820,
-        "Europe/Saratov": -1593820800,
-        "Europe/Simferopol": -2840148984,
-        "Europe/Skopje": -2713915544,
-        "Europe/Sofia": -2840146396,
-        "Europe/Stockholm": -2871681132,
-        "Europe/Tallinn": -2840146740,
-        "Europe/Tirane": -1767230360,
-        "Europe/Tiraspol": -2840147912,
-        "Europe/Ulyanovsk": -1593820800,
-        "Europe/Uzhgorod": -2500939752,
-        "Europe/Vaduz": -2385247084,
-        "Europe/Vatican": -3252098996,
-        "Europe/Vienna": -2422055121,
-        "Europe/Vilnius": -2840146876,
-        "Europe/Volgograd": -1577761060,
-        "Europe/Warsaw": -2840145840,
-        "Europe/Zagreb": -2713914232,
-        "Europe/Zaporozhye": -2840149240,
-        "Europe/Zurich": -3675198848,
-        GB: -3852662325,
-        "GB-Eire": -3852662325,
-        Hongkong: -2056690800,
-        Iceland: -1956609120,
-        "Indian/Antananarivo": -1846293004,
-        "Indian/Chagos": -1988167780,
-        "Indian/Christmas": -2364102172,
-        "Indian/Cocos": -2209012060,
-        "Indian/Comoro": -1846291984,
-        "Indian/Mahe": -1988163708,
-        "Indian/Maldives": -2840158440,
-        "Indian/Mauritius": -1988164200,
-        "Indian/Mayotte": -1846292456,
-        "Indian/Reunion": -1848886912,
-        Iran: -1704165944,
-        Israel: -2840149254,
-        Jamaica: -2524503170,
-        Japan: -2587712400,
-        Kwajalein: -2177492960,
-        Libya: -1577926364,
-        "Mexico/BajaNorte": -1514739600,
-        "Mexico/BajaSur": -1514739600,
-        "Mexico/General": -1514739600,
-        NZ: -3192435544,
-        "NZ-CHAT": -3192437628,
-        Navajo: -2717643600,
-        PRC: -2177481943,
-        "Pacific/Apia": -1861878784,
-        "Pacific/Auckland": -3192435544,
-        "Pacific/Bougainville": -2840178136,
-        "Pacific/Chatham": -3192437628,
-        "Pacific/Chuuk": -2177489228,
-        "Pacific/Easter": -2524495352,
-        "Pacific/Efate": -1829387596,
-        "Pacific/Fakaofo": -2177411704,
-        "Pacific/Fiji": -1709985344,
-        "Pacific/Funafuti": -2177495812,
-        "Pacific/Galapagos": -1230746496,
-        "Pacific/Gambier": -1806678012,
-        "Pacific/Guadalcanal": -1806748788,
-        "Pacific/Guam": -2177487540,
-        "Pacific/Honolulu": -2334101314,
-        "Pacific/Kiritimati": -2177415040,
-        "Pacific/Kosrae": -2177491916,
-        "Pacific/Kwajalein": -2177492960,
-        "Pacific/Majuro": -2177493888,
-        "Pacific/Marquesas": -1806676920,
-        "Pacific/Midway": -2177410232,
-        "Pacific/Nauru": -1545131260,
-        "Pacific/Niue": -543069620,
-        "Pacific/Norfolk": -2177493112,
-        "Pacific/Noumea": -1829387148,
-        "Pacific/Pago_Pago": -1861879032,
-        "Pacific/Palau": -2177485076,
-        "Pacific/Pitcairn": -2177421580,
-        "Pacific/Pohnpei": -2177490772,
-        "Pacific/Ponape": -2177490772,
-        "Pacific/Port_Moresby": -2840176120,
-        "Pacific/Rarotonga": -543072056,
-        "Pacific/Saipan": -2177487780,
-        "Pacific/Samoa": -1861879032,
-        "Pacific/Tahiti": -1806674504,
-        "Pacific/Tarawa": -2177494324,
-        "Pacific/Tongatapu": -767189952,
-        "Pacific/Truk": -2177489228,
-        "Pacific/Wake": -2177492788,
-        "Pacific/Wallis": -2177496920,
-        "Pacific/Yap": -2177489228,
-        Poland: -2840145840,
-        Portugal: -2713908195,
-        ROC: -2335248360,
-        ROK: -1948782472,
-        Singapore: -2177477725,
-        Turkey: -2840147752,
-        "US/Alaska": -2188951224,
-        "US/Aleutian": -2188944802,
-        "US/Arizona": -2717643600,
-        "US/Central": -2717647200,
-        "US/East-Indiana": -2717647200,
-        "US/Eastern": -2717650800,
-        "US/Hawaii": -2334101314,
-        "US/Indiana-Starke": -2717647200,
-        "US/Michigan": -2051202469,
-        "US/Mountain": -2717643600,
-        "US/Pacific": -271764e4,
-        "US/Samoa": -1861879032,
-        "W-SU": -2840149817
-      },
-      offsets: {
-        "Africa/Abidjan": -968,
-        "Africa/Accra": -52,
-        "Africa/Addis_Ababa": 9288,
-        "Africa/Algiers": 732,
-        "Africa/Asmara": 9332,
-        "Africa/Asmera": 9332,
-        "Africa/Bamako": -1920,
-        "Africa/Bangui": 4460,
-        "Africa/Banjul": -3996,
-        "Africa/Bissau": -3740,
-        "Africa/Blantyre": 8400,
-        "Africa/Brazzaville": 3668,
-        "Africa/Bujumbura": 7048,
-        "Africa/Cairo": 7509,
-        "Africa/Casablanca": -1820,
-        "Africa/Ceuta": -1276,
-        "Africa/Conakry": -3292,
-        "Africa/Dakar": -4184,
-        "Africa/Dar_es_Salaam": 9428,
-        "Africa/Djibouti": 10356,
-        "Africa/Douala": 2328,
-        "Africa/El_Aaiun": -3168,
-        "Africa/Freetown": -3180,
-        "Africa/Gaborone": 6220,
-        "Africa/Harare": 7452,
-        "Africa/Johannesburg": 6720,
-        "Africa/Juba": 7588,
-        "Africa/Kampala": 7780,
-        "Africa/Khartoum": 7808,
-        "Africa/Kigali": 7216,
-        "Africa/Kinshasa": 3672,
-        "Africa/Lagos": 815,
-        "Africa/Libreville": 2268,
-        "Africa/Lome": 292,
-        "Africa/Luanda": 3176,
-        "Africa/Lubumbashi": 6592,
-        "Africa/Lusaka": 6788,
-        "Africa/Malabo": 2108,
-        "Africa/Maputo": 7818,
-        "Africa/Maseru": 6600,
-        "Africa/Mbabane": 7464,
-        "Africa/Mogadishu": 10888,
-        "Africa/Monrovia": -2588,
-        "Africa/Nairobi": 8836,
-        "Africa/Ndjamena": 3612,
-        "Africa/Niamey": 508,
-        "Africa/Nouakchott": -3828,
-        "Africa/Ouagadougou": -364,
-        "Africa/Porto-Novo": 628,
-        "Africa/Sao_Tome": 1616,
-        "Africa/Timbuktu": -724,
-        "Africa/Tripoli": 3164,
-        "Africa/Tunis": 2444,
-        "Africa/Windhoek": 4104,
-        "America/Anguilla": -15136,
-        "America/Antigua": -14832,
-        "America/Araguaina": -11568,
-        "America/Argentina/Buenos_Aires": -14028,
-        "America/Argentina/Catamarca": -15788,
-        "America/Argentina/ComodRivadavia": -16200,
-        "America/Argentina/Cordoba": -15408,
-        "America/Argentina/Jujuy": -15672,
-        "America/Argentina/La_Rioja": -16044,
-        "America/Argentina/Mendoza": -16516,
-        "America/Argentina/Rio_Gallegos": -16612,
-        "America/Argentina/Salta": -15700,
-        "America/Argentina/San_Juan": -16444,
-        "America/Argentina/San_Luis": -15924,
-        "America/Argentina/Tucuman": -15652,
-        "America/Argentina/Ushuaia": -16392,
-        "America/Aruba": -16824,
-        "America/Asuncion": -13840,
-        "America/Atikokan": -21988,
-        "America/Bahia": -9244,
-        "America/Bahia_Banderas": -25260,
-        "America/Barbados": -14309,
-        "America/Belem": -11636,
-        "America/Belize": -21168,
-        "America/Blanc-Sablon": -13708,
-        "America/Boa_Vista": -14560,
-        "America/Bogota": -17776,
-        "America/Boise": -27889,
-        "America/Buenos_Aires": -14028,
-        "America/Campo_Grande": -13108,
-        "America/Cancun": -20824,
-        "America/Caracas": -16064,
-        "America/Catamarca": -15788,
-        "America/Cayenne": -12560,
-        "America/Cayman": -19532,
-        "America/Chicago": -21036,
-        "America/Chihuahua": -25460,
-        "America/Ciudad_Juarez": -25556,
-        "America/Coral_Harbour": -19960,
-        "America/Cordoba": -15408,
-        "America/Costa_Rica": -20173,
-        "America/Coyhaique": -17296,
-        "America/Creston": -27964,
-        "America/Cuiaba": -13460,
-        "America/Curacao": -16547,
-        "America/Danmarkshavn": -4480,
-        "America/Dawson": -33460,
-        "America/Dawson_Creek": -28856,
-        "America/Denver": -25196,
-        "America/Detroit": -19931,
-        "America/Dominica": -14736,
-        "America/Edmonton": -27232,
-        "America/Eirunepe": -16768,
-        "America/El_Salvador": -21408,
-        "America/Ensenada": -27988,
-        "America/Fort_Nelson": -29447,
-        "America/Fort_Wayne": -20678,
-        "America/Fortaleza": -9240,
-        "America/Glace_Bay": -14388,
-        "America/Godthab": -12416,
-        "America/Goose_Bay": -14500,
-        "America/Grand_Turk": -17072,
-        "America/Grenada": -14820,
-        "America/Guadeloupe": -14768,
-        "America/Guatemala": -21724,
-        "America/Guayaquil": -19160,
-        "America/Guyana": -13959,
-        "America/Halifax": -15264,
-        "America/Havana": -19768,
-        "America/Hermosillo": -26632,
-        "America/Indiana/Indianapolis": -20678,
-        "America/Indiana/Knox": -20790,
-        "America/Indiana/Marengo": -20723,
-        "America/Indiana/Petersburg": -20947,
-        "America/Indiana/Tell_City": -20823,
-        "America/Indiana/Vevay": -20416,
-        "America/Indiana/Vincennes": -21007,
-        "America/Indiana/Winamac": -20785,
-        "America/Indianapolis": -20678,
-        "America/Jamaica": -18430,
-        "America/Jujuy": -15672,
-        "America/Kentucky/Louisville": -20582,
-        "America/Kentucky/Monticello": -20364,
-        "America/Knox_IN": -20790,
-        "America/Kralendijk": -16547,
-        "America/La_Paz": -16356,
-        "America/Lima": -18492,
-        "America/Los_Angeles": -28378,
-        "America/Louisville": -20582,
-        "America/Lower_Princes": -16547,
-        "America/Maceio": -8572,
-        "America/Managua": -20708,
-        "America/Manaus": -14404,
-        "America/Marigot": -14764,
-        "America/Martinique": -14660,
-        "America/Matamoros": -23400,
-        "America/Mazatlan": -25540,
-        "America/Mendoza": -16516,
-        "America/Menominee": -21027,
-        "America/Merida": -21508,
-        "America/Mexico_City": -23796,
-        "America/Miquelon": -13480,
-        "America/Moncton": -15548,
-        "America/Monterrey": -24076,
-        "America/Montevideo": -13491,
-        "America/Montreal": -17656,
-        "America/Montserrat": -14932,
-        "America/Nassau": -18570,
-        "America/New_York": -17762,
-        "America/Nipigon": -21184,
-        "America/Noronha": -7780,
-        "America/North_Dakota/Beulah": -24427,
-        "America/North_Dakota/Center": -24312,
-        "America/North_Dakota/New_Salem": -24339,
-        "America/Nuuk": -12416,
-        "America/Ojinaga": -25060,
-        "America/Panama": -19088,
-        "America/Paramaribo": -13240,
-        "America/Phoenix": -26898,
-        "America/Port-au-Prince": -17360,
-        "America/Port_of_Spain": -14764,
-        "America/Porto_Acre": -16272,
-        "America/Porto_Velho": -15336,
-        "America/Puerto_Rico": -15865,
-        "America/Punta_Arenas": -17020,
-        "America/Rainy_River": -22696,
-        "America/Recife": -8376,
-        "America/Regina": -25116,
-        "America/Rio_Branco": -16272,
-        "America/Rosario": -14560,
-        "America/Santa_Isabel": -28084,
-        "America/Santarem": -13128,
-        "America/Santiago": -16965,
-        "America/Santo_Domingo": -16776,
-        "America/Sao_Paulo": -11188,
-        "America/Scoresbysund": -5272,
-        "America/Shiprock": -25196,
-        "America/St_Barthelemy": -14764,
-        "America/St_Johns": -12652,
-        "America/St_Kitts": -15052,
-        "America/St_Lucia": -14640,
-        "America/St_Thomas": -15584,
-        "America/St_Vincent": -14696,
-        "America/Swift_Current": -25880,
-        "America/Tegucigalpa": -20932,
-        "America/Thule": -16508,
-        "America/Thunder_Bay": -21420,
-        "America/Tijuana": -28084,
-        "America/Toronto": -19052,
-        "America/Tortola": -15508,
-        "America/Vancouver": -29548,
-        "America/Virgin": -15584,
-        "America/Whitehorse": -32412,
-        "America/Winnipeg": -23316,
-        "Arctic/Longyearbyen": 2580,
-        "Asia/Aden": 10794,
-        "Asia/Almaty": 18468,
-        "Asia/Amman": 8624,
-        "Asia/Anadyr": 42596,
-        "Asia/Aqtau": 12064,
-        "Asia/Aqtobe": 13720,
-        "Asia/Ashgabat": 14012,
-        "Asia/Ashkhabad": 14012,
-        "Asia/Atyrau": 12464,
-        "Asia/Baghdad": 10660,
-        "Asia/Bahrain": 12140,
-        "Asia/Baku": 11964,
-        "Asia/Bangkok": 24124,
-        "Asia/Barnaul": 20100,
-        "Asia/Beirut": 8520,
-        "Asia/Bishkek": 17904,
-        "Asia/Brunei": 27580,
-        "Asia/Calcutta": 21208,
-        "Asia/Chita": 27232,
-        "Asia/Choibalsan": 25652,
-        "Asia/Chongqing": 25580,
-        "Asia/Chungking": 25580,
-        "Asia/Colombo": 19164,
-        "Asia/Dacca": 21700,
-        "Asia/Damascus": 8712,
-        "Asia/Dhaka": 21700,
-        "Asia/Dili": 30140,
-        "Asia/Dubai": 13272,
-        "Asia/Dushanbe": 16512,
-        "Asia/Famagusta": 8148,
-        "Asia/Gaza": 8272,
-        "Asia/Hanoi": 25404,
-        "Asia/Harbin": 30404,
-        "Asia/Hebron": 8423,
-        "Asia/Ho_Chi_Minh": 25590,
-        "Asia/Hong_Kong": 27402,
-        "Asia/Hovd": 21996,
-        "Asia/Irkutsk": 25025,
-        "Asia/Istanbul": 6952,
-        "Asia/Jakarta": 25632,
-        "Asia/Jayapura": 33768,
-        "Asia/Jerusalem": 8454,
-        "Asia/Kabul": 16608,
-        "Asia/Kamchatka": 38076,
-        "Asia/Karachi": 16092,
-        "Asia/Kashgar": 18236,
-        "Asia/Kathmandu": 20476,
-        "Asia/Katmandu": 20476,
-        "Asia/Khandyga": 32533,
-        "Asia/Kolkata": 21208,
-        "Asia/Krasnoyarsk": 22286,
-        "Asia/Kuala_Lumpur": 24406,
-        "Asia/Kuching": 26480,
-        "Asia/Kuwait": 11516,
-        "Asia/Macao": 27250,
-        "Asia/Macau": 27250,
-        "Asia/Magadan": 36192,
-        "Asia/Makassar": 28656,
-        "Asia/Muscat": 14064,
-        "Asia/Nicosia": 8008,
-        "Asia/Novokuznetsk": 20928,
-        "Asia/Novosibirsk": 19900,
-        "Asia/Omsk": 17610,
-        "Asia/Oral": 12324,
-        "Asia/Phnom_Penh": 25180,
-        "Asia/Pontianak": 26240,
-        "Asia/Pyongyang": 30180,
-        "Asia/Qatar": 12368,
-        "Asia/Qostanay": 15268,
-        "Asia/Qyzylorda": 15712,
-        "Asia/Rangoon": 23087,
-        "Asia/Riyadh": 11212,
-        "Asia/Saigon": 25590,
-        "Asia/Sakhalin": 34248,
-        "Asia/Samarkand": 16073,
-        "Asia/Seoul": 30472,
-        "Asia/Shanghai": 29143,
-        "Asia/Singapore": 24925,
-        "Asia/Srednekolymsk": 36892,
-        "Asia/Taipei": 29160,
-        "Asia/Tashkent": 16631,
-        "Asia/Tbilisi": 10751,
-        "Asia/Tehran": 12344,
-        "Asia/Tel_Aviv": 8344,
-        "Asia/Thimbu": 21516,
-        "Asia/Thimphu": 21516,
-        "Asia/Tokyo": 33539,
-        "Asia/Tomsk": 20391,
-        "Asia/Ujung_Pandang": 28656,
-        "Asia/Ulaanbaatar": 25652,
-        "Asia/Ulan_Bator": 25652,
-        "Asia/Urumqi": 21020,
-        "Asia/Ust-Nera": 34374,
-        "Asia/Vientiane": 24624,
-        "Asia/Vladivostok": 31651,
-        "Asia/Yakutsk": 31138,
-        "Asia/Yangon": 23087,
-        "Asia/Yekaterinburg": 14553,
-        "Asia/Yerevan": 10680,
-        "Atlantic/Azores": -6160,
-        "Atlantic/Bermuda": -15558,
-        "Atlantic/Canary": -3696,
-        "Atlantic/Cape_Verde": -5644,
-        "Atlantic/Faeroe": -1624,
-        "Atlantic/Faroe": -1624,
-        "Atlantic/Madeira": -4056,
-        "Atlantic/Reykjavik": -5280,
-        "Atlantic/South_Georgia": -8768,
-        "Atlantic/St_Helena": -1368,
-        "Atlantic/Stanley": -13884,
-        "Australia/ACT": 36292,
-        "Australia/Adelaide": 33260,
-        "Australia/Brisbane": 36728,
-        "Australia/Broken_Hill": 33948,
-        "Australia/Canberra": 36292,
-        "Australia/Currie": 34528,
-        "Australia/Darwin": 31400,
-        "Australia/Eucla": 30928,
-        "Australia/Hobart": 35356,
-        "Australia/LHI": 38180,
-        "Australia/Lindeman": 35756,
-        "Australia/Lord_Howe": 38180,
-        "Australia/Melbourne": 34792,
-        "Australia/NSW": 36292,
-        "Australia/North": 31400,
-        "Australia/Perth": 27804,
-        "Australia/Queensland": 36728,
-        "Australia/South": 33260,
-        "Australia/Sydney": 36292,
-        "Australia/Tasmania": 35356,
-        "Australia/Victoria": 34792,
-        "Australia/West": 27804,
-        "Australia/Yancowinna": 33948,
-        "Brazil/Acre": -16272,
-        "Brazil/DeNoronha": -7780,
-        "Brazil/East": -11188,
-        "Brazil/West": -14404,
-        "Canada/Atlantic": -15264,
-        "Canada/Central": -23316,
-        "Canada/Eastern": -19052,
-        "Canada/Mountain": -27232,
-        "Canada/Newfoundland": -12652,
-        "Canada/Pacific": -29548,
-        "Canada/Saskatchewan": -25116,
-        "Canada/Yukon": -32412,
-        "Chile/Continental": -16965,
-        "Chile/EasterIsland": -26248,
-        Cuba: -19768,
-        Egypt: 7509,
-        Eire: -1521,
-        "Europe/Amsterdam": 1172,
-        "Europe/Andorra": 364,
-        "Europe/Astrakhan": 11532,
-        "Europe/Athens": 5692,
-        "Europe/Belfast": -1420,
-        "Europe/Belgrade": 4920,
-        "Europe/Berlin": 3208,
-        "Europe/Bratislava": 3464,
-        "Europe/Brussels": 1050,
-        "Europe/Bucharest": 6264,
-        "Europe/Budapest": 4580,
-        "Europe/Busingen": 2048,
-        "Europe/Chisinau": 6920,
-        "Europe/Copenhagen": 3020,
-        "Europe/Dublin": -1521,
-        "Europe/Gibraltar": -1284,
-        "Europe/Guernsey": -609,
-        "Europe/Helsinki": 5989,
-        "Europe/Isle_of_Man": -1075,
-        "Europe/Istanbul": 6952,
-        "Europe/Jersey": -506,
-        "Europe/Kaliningrad": 4920,
-        "Europe/Kiev": 7324,
-        "Europe/Kirov": 11928,
-        "Europe/Kyiv": 7324,
-        "Europe/Lisbon": -2205,
-        "Europe/Ljubljana": 3484,
-        "Europe/London": -75,
-        "Europe/Luxembourg": 1476,
-        "Europe/Madrid": -884,
-        "Europe/Malta": 3484,
-        "Europe/Mariehamn": 5989,
-        "Europe/Minsk": 6616,
-        "Europe/Monaco": 1772,
-        "Europe/Moscow": 9017,
-        "Europe/Nicosia": 8008,
-        "Europe/Oslo": 2580,
-        "Europe/Paris": 561,
-        "Europe/Podgorica": 4920,
-        "Europe/Prague": 3464,
-        "Europe/Riga": 5794,
-        "Europe/Rome": 2996,
-        "Europe/Samara": 12020,
-        "Europe/San_Marino": 2996,
-        "Europe/Sarajevo": 4420,
-        "Europe/Saratov": 11058,
-        "Europe/Simferopol": 8184,
-        "Europe/Skopje": 5144,
-        "Europe/Sofia": 5596,
-        "Europe/Stockholm": 4332,
-        "Europe/Tallinn": 5940,
-        "Europe/Tirane": 4760,
-        "Europe/Tiraspol": 7112,
-        "Europe/Ulyanovsk": 11616,
-        "Europe/Uzhgorod": 5352,
-        "Europe/Vaduz": 2284,
-        "Europe/Vatican": 2996,
-        "Europe/Vienna": 3921,
-        "Europe/Vilnius": 6076,
-        "Europe/Volgograd": 10660,
-        "Europe/Warsaw": 5040,
-        "Europe/Zagreb": 3832,
-        "Europe/Zaporozhye": 8440,
-        "Europe/Zurich": 2048,
-        GB: -75,
-        "GB-Eire": -75,
-        Hongkong: 27402,
-        Iceland: -5280,
-        "Indian/Antananarivo": 11404,
-        "Indian/Chagos": 17380,
-        "Indian/Christmas": 25372,
-        "Indian/Cocos": 23260,
-        "Indian/Comoro": 10384,
-        "Indian/Mahe": 13308,
-        "Indian/Maldives": 17640,
-        "Indian/Mauritius": 13800,
-        "Indian/Mayotte": 10856,
-        "Indian/Reunion": 13312,
-        Iran: 12344,
-        Israel: 8454,
-        Jamaica: -18430,
-        Japan: 33539,
-        Kwajalein: 40160,
-        Libya: 3164,
-        "Mexico/BajaNorte": -28084,
-        "Mexico/BajaSur": -25540,
-        "Mexico/General": -23796,
-        NZ: 41944,
-        "NZ-CHAT": 44028,
-        Navajo: -25196,
-        PRC: 29143,
-        "Pacific/Auckland": 41944,
-        "Pacific/Bougainville": 37336,
-        "Pacific/Chatham": 44028,
-        "Pacific/Easter": -26248,
-        "Pacific/Efate": 40396,
-        "Pacific/Fakaofo": -41096,
-        "Pacific/Fiji": 42944,
-        "Pacific/Funafuti": 43012,
-        "Pacific/Galapagos": -21504,
-        "Pacific/Gambier": -32388,
-        "Pacific/Guadalcanal": 38388,
-        "Pacific/Honolulu": -37886,
-        "Pacific/Kiritimati": -37760,
-        "Pacific/Kwajalein": 40160,
-        "Pacific/Majuro": 41088,
-        "Pacific/Marquesas": -33480,
-        "Pacific/Midway": -42568,
-        "Pacific/Nauru": 40060,
-        "Pacific/Niue": -40780,
-        "Pacific/Norfolk": 40312,
-        "Pacific/Noumea": 39948,
-        "Pacific/Pitcairn": -31220,
-        "Pacific/Port_Moresby": 35320,
-        "Pacific/Tahiti": -35896,
-        "Pacific/Tarawa": 41524,
-        "Pacific/Tongatapu": 44352,
-        "Pacific/Wake": 39988,
-        "Pacific/Wallis": 44120,
-        Poland: 5040,
-        Portugal: -2205,
-        ROC: 29160,
-        ROK: 30472,
-        Singapore: 24925,
-        Turkey: 6952,
-        "US/Arizona": -26898,
-        "US/Central": -21036,
-        "US/East-Indiana": -20678,
-        "US/Eastern": -17762,
-        "US/Hawaii": -37886,
-        "US/Indiana-Starke": -20790,
-        "US/Michigan": -19931,
-        "US/Mountain": -25196,
-        "US/Pacific": -28378,
-        "W-SU": 9017
-      },
-      dateLine: {
-        "America/Adak": [
-          [
-            -3225223727,
-            44002
-          ],
-          [
-            -2188944802,
-            -42398
-          ]
-        ],
-        "America/Anchorage": [
-          [
-            -3225223727,
-            50424
-          ],
-          [
-            -2188951224,
-            -35976
-          ]
-        ],
-        "America/Atka": [
-          [
-            -3225223727,
-            44002
-          ],
-          [
-            -2188944802,
-            -42398
-          ]
-        ],
-        "America/Juneau": [
-          [
-            -3225223727,
-            54139
-          ],
-          [
-            -2188954939,
-            -32261
-          ]
-        ],
-        "America/Metlakatla": [
-          [
-            -3225223727,
-            54822
-          ],
-          [
-            -2188955622,
-            -31578
-          ]
-        ],
-        "America/Nome": [
-          [
-            -3225223727,
-            46702
-          ],
-          [
-            -2188947502,
-            -39698
-          ]
-        ],
-        "America/Sitka": [
-          [
-            -3225223727,
-            53927
-          ],
-          [
-            -2188954727,
-            -32473
-          ]
-        ],
-        "America/Yakutat": [
-          [
-            -3225223727,
-            52865
-          ],
-          [
-            -2188953665,
-            -33535
-          ]
-        ],
-        "Asia/Manila": [
-          [
-            -3944621032,
-            -57368
-          ],
-          [
-            -2219083200,
-            29032
-          ]
-        ],
-        "Pacific/Apia": [
-          [
-            -2445424384,
-            45184
-          ],
-          [
-            -1861878784,
-            -41216
-          ]
-        ],
-        "Pacific/Chuuk": [
-          [
-            -3944628428,
-            -49972
-          ],
-          [
-            -2177489228,
-            36428
-          ]
-        ],
-        "Pacific/Guam": [
-          [
-            -3944626740,
-            -51660
-          ],
-          [
-            -2177487540,
-            34740
-          ]
-        ],
-        "Pacific/Kosrae": [
-          [
-            -3944631116,
-            -47284
-          ],
-          [
-            -2177491916,
-            39116
-          ]
-        ],
-        "Pacific/Pago_Pago": [
-          [
-            -2445424632,
-            45432
-          ],
-          [
-            -1861879032,
-            -40968
-          ]
-        ],
-        "Pacific/Palau": [
-          [
-            -3944624276,
-            -54124
-          ],
-          [
-            -2177485076,
-            32276
-          ]
-        ],
-        "Pacific/Pohnpei": [
-          [
-            -3944629972,
-            -48428
-          ],
-          [
-            -2177490772,
-            37972
-          ]
-        ],
-        "Pacific/Ponape": [
-          [
-            -3944629972,
-            -48428
-          ],
-          [
-            -2177490772,
-            37972
-          ]
-        ],
-        "Pacific/Rarotonga": [
-          [
-            -2209555256,
-            48056
-          ],
-          [
-            -543072056,
-            -38344
-          ]
-        ],
-        "Pacific/Saipan": [
-          [
-            -3944626980,
-            -51420
-          ],
-          [
-            -2177487780,
-            34980
-          ]
-        ],
-        "Pacific/Samoa": [
-          [
-            -2445424632,
-            45432
-          ],
-          [
-            -1861879032,
-            -40968
-          ]
-        ],
-        "Pacific/Truk": [
-          [
-            -3944628428,
-            -49972
-          ],
-          [
-            -2177489228,
-            36428
-          ]
-        ],
-        "Pacific/Yap": [
-          [
-            -3944628428,
-            -49972
-          ],
-          [
-            -2177489228,
-            36428
-          ]
-        ],
-        "US/Alaska": [
-          [
-            -3225223727,
-            50424
-          ],
-          [
-            -2188951224,
-            -35976
-          ]
-        ],
-        "US/Aleutian": [
-          [
-            -3225223727,
-            44002
-          ],
-          [
-            -2188944802,
-            -42398
-          ]
-        ],
-        "US/Samoa": [
-          [
-            -2445424632,
-            45432
-          ],
-          [
-            -1861879032,
-            -40968
-          ]
-        ]
-      }
-    };
+var tz_lmt_exports = {};
+__export(tz_lmt_exports, {
+  default: () => tz_lmt_default
+});
+var tz_lmt_default;
+var init_tz_lmt = __esm({
+  "src/data/tz-lmt.json"() {
+    "use strict";
+    tz_lmt_default = JSON.parse('{"tzdb":"2025c","source":{"url":"https://data.iana.org/time-zones/releases/tzdata2025c.tar.gz","sha256":"4aa79e4effee53fc4029ffe5f6ebe97937282ebcdf386d5d2da91ce84142f957","files":["africa","antarctica","asia","australasia","europe","northamerica","southamerica","etcetera","backward","backzone"]},"eras":{"Africa/Abidjan":-1830383032,"Africa/Accra":-1709337548,"Africa/Addis_Ababa":-3155682888,"Africa/Algiers":-2486592732,"Africa/Asmara":-3155682932,"Africa/Asmera":-3155682932,"Africa/Bamako":-1830382080,"Africa/Bangui":-1830388460,"Africa/Banjul":-1830380004,"Africa/Bissau":-1830380400,"Africa/Blantyre":-1844302800,"Africa/Brazzaville":-1830387668,"Africa/Bujumbura":-2524528648,"Africa/Cairo":-2185409109,"Africa/Casablanca":-1773012580,"Africa/Ceuta":-2177452800,"Africa/Conakry":-1830380708,"Africa/Dakar":-1830379816,"Africa/Dar_es_Salaam":-1230777428,"Africa/Djibouti":-1846291956,"Africa/Douala":-1830386328,"Africa/El_Aaiun":-1136070432,"Africa/Freetown":-2776979220,"Africa/Gaborone":-2682294220,"Africa/Harare":-2109290652,"Africa/Johannesburg":-2458173120,"Africa/Juba":-1230775588,"Africa/Kampala":-1309745380,"Africa/Khartoum":-1230775808,"Africa/Kigali":-1091498416,"Africa/Kinshasa":-2276643672,"Africa/Lagos":-2035584815,"Africa/Libreville":-1830386268,"Africa/Lome":-2429827492,"Africa/Luanda":-2461452776,"Africa/Lubumbashi":-2276646592,"Africa/Lusaka":-2109289988,"Africa/Malabo":-1830386108,"Africa/Maputo":-1924999818,"Africa/Maseru":-2109289800,"Africa/Mbabane":-2109290664,"Africa/Mogadishu":-2403572488,"Africa/Monrovia":-2776979812,"Africa/Nairobi":-1946168836,"Africa/Ndjamena":-1830387612,"Africa/Niamey":-1830384508,"Africa/Nouakchott":-1830380172,"Africa/Ouagadougou":-1830383636,"Africa/Porto-Novo":-1830384628,"Africa/Sao_Tome":-2713912016,"Africa/Timbuktu":-1830383276,"Africa/Tripoli":-1577926364,"Africa/Tunis":-2797202444,"Africa/Windhoek":-2458170504,"America/Adak":-2188944802,"America/Anchorage":-2188951224,"America/Anguilla":-1825098464,"America/Antigua":-1825098768,"America/Araguaina":-1767214032,"America/Argentina/Buenos_Aires":-2372097972,"America/Argentina/Catamarca":-2372096212,"America/Argentina/ComodRivadavia":-2372095800,"America/Argentina/Cordoba":-2372096592,"America/Argentina/Jujuy":-2372096328,"America/Argentina/La_Rioja":-2372095956,"America/Argentina/Mendoza":-2372095484,"America/Argentina/Rio_Gallegos":-2372095388,"America/Argentina/Salta":-2372096300,"America/Argentina/San_Juan":-2372095556,"America/Argentina/San_Luis":-2372096076,"America/Argentina/Tucuman":-2372096348,"America/Argentina/Ushuaia":-2372095608,"America/Aruba":-1826738376,"America/Asuncion":-2524507760,"America/Atikokan":-2366733212,"America/Atka":-2188944802,"America/Bahia":-1767216356,"America/Bahia_Banderas":-1514739600,"America/Barbados":-1841256091,"America/Belem":-1767213964,"America/Belize":-1822500432,"America/Blanc-Sablon":-2713896692,"America/Boa_Vista":-1767211040,"America/Bogota":-2707671824,"America/Boise":-2717640000,"America/Buenos_Aires":-2372097972,"America/Campo_Grande":-1767212492,"America/Cancun":-1514743200,"America/Caracas":-2524505536,"America/Catamarca":-2372096212,"America/Cayenne":-1846269040,"America/Cayman":-2524502068,"America/Chicago":-2717647200,"America/Chihuahua":-1514739600,"America/Ciudad_Juarez":-1514739600,"America/Coral_Harbour":-2713890440,"America/Cordoba":-2372096592,"America/Costa_Rica":-2524501427,"America/Coyhaique":-2524504304,"America/Creston":-2713882436,"America/Cuiaba":-1767212140,"America/Curacao":-1826738653,"America/Danmarkshavn":-1686091520,"America/Dawson":-2188996940,"America/Dawson_Creek":-2713881544,"America/Denver":-2717643600,"America/Detroit":-2051202469,"America/Dominica":-1846266804,"America/Edmonton":-1998663968,"America/Eirunepe":-1767208832,"America/El_Salvador":-1546279392,"America/Ensenada":-1514736000,"America/Fort_Nelson":-2713880953,"America/Fort_Wayne":-2717647200,"America/Fortaleza":-1767216360,"America/Glace_Bay":-2131646412,"America/Godthab":-1686083584,"America/Goose_Bay":-2713895900,"America/Grand_Turk":-2524504528,"America/Grenada":-1846266780,"America/Guadeloupe":-1848254032,"America/Guatemala":-1617040676,"America/Guayaquil":-2524502440,"America/Guyana":-1843589241,"America/Halifax":-2131645536,"America/Havana":-2524501832,"America/Hermosillo":-1514739600,"America/Indiana/Indianapolis":-2717647200,"America/Indiana/Knox":-2717647200,"America/Indiana/Marengo":-2717647200,"America/Indiana/Petersburg":-2717647200,"America/Indiana/Tell_City":-2717647200,"America/Indiana/Vevay":-2717647200,"America/Indiana/Vincennes":-2717647200,"America/Indiana/Winamac":-2717647200,"America/Indianapolis":-2717647200,"America/Jamaica":-2524503170,"America/Jujuy":-2372096328,"America/Juneau":-2188954939,"America/Kentucky/Louisville":-2717647200,"America/Kentucky/Monticello":-2717647200,"America/Knox_IN":-2717647200,"America/Kralendijk":-1826738653,"America/La_Paz":-2524505244,"America/Lima":-2524503108,"America/Los_Angeles":-2717640000,"America/Louisville":-2717647200,"America/Lower_Princes":-1826738653,"America/Maceio":-1767217028,"America/Managua":-2524500892,"America/Manaus":-1767211196,"America/Marigot":-1825098836,"America/Martinique":-2524506940,"America/Matamoros":-1514743200,"America/Mazatlan":-1514739600,"America/Mendoza":-2372095484,"America/Menominee":-2659759773,"America/Merida":-1514743200,"America/Metlakatla":-2188955622,"America/Mexico_City":-1514739600,"America/Miquelon":-1847650520,"America/Moncton":-2715882052,"America/Monterrey":-1514743200,"America/Montevideo":-1942690509,"America/Montreal":-2713892744,"America/Montserrat":-1846266608,"America/Nassau":-1825095030,"America/New_York":-2717650800,"America/Nipigon":-2366734016,"America/Nome":-2188947502,"America/Noronha":-1767217820,"America/North_Dakota/Beulah":-2717643600,"America/North_Dakota/Center":-2717643600,"America/North_Dakota/New_Salem":-2717643600,"America/Nuuk":-1686083584,"America/Ojinaga":-1514739600,"America/Panama":-2524502512,"America/Paramaribo":-1861906760,"America/Phoenix":-2717643600,"America/Port-au-Prince":-2524504240,"America/Port_of_Spain":-1825098836,"America/Porto_Acre":-1767209328,"America/Porto_Velho":-1767210264,"America/Puerto_Rico":-2233035335,"America/Punta_Arenas":-2524504580,"America/Rainy_River":-2366732504,"America/Recife":-1767217224,"America/Regina":-2030202084,"America/Rio_Branco":-1767209328,"America/Rosario":-2372011040,"America/Santa_Isabel":-1514739600,"America/Santarem":-1767212472,"America/Santiago":-2524504635,"America/Santo_Domingo":-2524504824,"America/Sao_Paulo":-1767214412,"America/Scoresbysund":-1686090728,"America/Shiprock":-2717643600,"America/Sitka":-2188954727,"America/St_Barthelemy":-1825098836,"America/St_Johns":-2713897748,"America/St_Kitts":-1825098548,"America/St_Lucia":-2524506960,"America/St_Thomas":-1846266016,"America/St_Vincent":-2524506904,"America/Swift_Current":-2030201320,"America/Tegucigalpa":-1538503868,"America/Thule":-1686079492,"America/Thunder_Bay":-2366733780,"America/Tijuana":-1514739600,"America/Toronto":-2366736148,"America/Tortola":-1846266092,"America/Vancouver":-2713880852,"America/Virgin":-1846266016,"America/Whitehorse":-2188997988,"America/Winnipeg":-2602258284,"America/Yakutat":-2188953665,"Arctic/Longyearbyen":-2366757780,"Asia/Aden":-631162794,"Asia/Almaty":-1441170468,"Asia/Amman":-1230776624,"Asia/Anadyr":-1441194596,"Asia/Aqtau":-1441164064,"Asia/Aqtobe":-1441165720,"Asia/Ashgabat":-1441166012,"Asia/Ashkhabad":-1441166012,"Asia/Atyrau":-1441164464,"Asia/Baghdad":-2524532260,"Asia/Bahrain":-897880940,"Asia/Baku":-1441163964,"Asia/Bangkok":-2840164924,"Asia/Barnaul":-1579844100,"Asia/Beirut":-2840149320,"Asia/Bishkek":-1441169904,"Asia/Brunei":-1383464380,"Asia/Calcutta":-3645237208,"Asia/Chita":-1579419232,"Asia/Choibalsan":-2032931252,"Asia/Chongqing":-1325487980,"Asia/Chungking":-1325487980,"Asia/Colombo":-2840159964,"Asia/Dacca":-2524543300,"Asia/Damascus":-1577931912,"Asia/Dhaka":-2524543300,"Asia/Dili":-1830412800,"Asia/Dubai":-1577936472,"Asia/Dushanbe":-1441168512,"Asia/Famagusta":-1518920148,"Asia/Gaza":-2185409872,"Asia/Hanoi":-2004073404,"Asia/Harbin":-1325492804,"Asia/Hebron":-2185410023,"Asia/Ho_Chi_Minh":-2004073590,"Asia/Hong_Kong":-2056690800,"Asia/Hovd":-2032927596,"Asia/Irkutsk":-2840165825,"Asia/Istanbul":-2840147752,"Asia/Jakarta":-3231299232,"Asia/Jayapura":-1172913768,"Asia/Jerusalem":-2840149254,"Asia/Kabul":-2524538208,"Asia/Kamchatka":-1487759676,"Asia/Karachi":-1988166492,"Asia/Kashgar":-1325480636,"Asia/Kathmandu":-1577943676,"Asia/Katmandu":-1577943676,"Asia/Khandyga":-1579424533,"Asia/Kolkata":-3645237208,"Asia/Krasnoyarsk":-1577513486,"Asia/Kuala_Lumpur":-2177477206,"Asia/Kuching":-1383463280,"Asia/Kuwait":-631163516,"Asia/Macao":-2056692850,"Asia/Macau":-2056692850,"Asia/Magadan":-1441188192,"Asia/Makassar":-1577951856,"Asia/Manila":-2219083200,"Asia/Muscat":-1577937264,"Asia/Nicosia":-1518920008,"Asia/Novokuznetsk":-1441259328,"Asia/Novosibirsk":-1579476700,"Asia/Omsk":-1582088010,"Asia/Oral":-1441164324,"Asia/Phnom_Penh":-2004073180,"Asia/Pontianak":-1946186240,"Asia/Pyongyang":-1948782180,"Asia/Qatar":-1577935568,"Asia/Qostanay":-1441167268,"Asia/Qyzylorda":-1441167712,"Asia/Rangoon":-2840163887,"Asia/Riyadh":-719636812,"Asia/Saigon":-2004073590,"Asia/Sakhalin":-2031039048,"Asia/Samarkand":-1441168073,"Asia/Seoul":-1948782472,"Asia/Shanghai":-2177481943,"Asia/Singapore":-2177477725,"Asia/Srednekolymsk":-1441188892,"Asia/Taipei":-2335248360,"Asia/Tashkent":-1441168631,"Asia/Tbilisi":-2840151551,"Asia/Tehran":-1704165944,"Asia/Tel_Aviv":-2840149144,"Asia/Thimbu":-706341516,"Asia/Thimphu":-706341516,"Asia/Tokyo":-2587712400,"Asia/Tomsk":-1578807591,"Asia/Ujung_Pandang":-1577951856,"Asia/Ulaanbaatar":-2032931252,"Asia/Ulan_Bator":-2032931252,"Asia/Urumqi":-1325483420,"Asia/Ust-Nera":-1579426374,"Asia/Vientiane":-2004072624,"Asia/Vladivostok":-1487321251,"Asia/Yakutsk":-1579423138,"Asia/Yangon":-2840163887,"Asia/Yekaterinburg":-1688270553,"Asia/Yerevan":-1441162680,"Atlantic/Azores":-2713904240,"Atlantic/Bermuda":-2524506042,"Atlantic/Canary":-1509663504,"Atlantic/Cape_Verde":-1830376800,"Atlantic/Faeroe":-1955748776,"Atlantic/Faroe":-1955748776,"Atlantic/Madeira":-2713906344,"Atlantic/Reykjavik":-1956609120,"Atlantic/South_Georgia":-2524512832,"Atlantic/St_Helena":-2524520232,"Atlantic/Stanley":-2524507716,"Australia/ACT":-2364113092,"Australia/Adelaide":-2364110060,"Australia/Brisbane":-2366791928,"Australia/Broken_Hill":-2364110748,"Australia/Canberra":-2364113092,"Australia/Currie":-2345794528,"Australia/Darwin":-2364108200,"Australia/Eucla":-2337928528,"Australia/Hobart":-2345795356,"Australia/LHI":-2364114980,"Australia/Lindeman":-2366790956,"Australia/Lord_Howe":-2364114980,"Australia/Melbourne":-2364111592,"Australia/NSW":-2364113092,"Australia/North":-2364108200,"Australia/Perth":-2337925404,"Australia/Queensland":-2366791928,"Australia/South":-2364110060,"Australia/Sydney":-2364113092,"Australia/Tasmania":-2345795356,"Australia/Victoria":-2364111592,"Australia/West":-2337925404,"Australia/Yancowinna":-2364110748,"Brazil/Acre":-1767209328,"Brazil/DeNoronha":-1767217820,"Brazil/East":-1767214412,"Brazil/West":-1767211196,"Canada/Atlantic":-2131645536,"Canada/Central":-2602258284,"Canada/Eastern":-2366736148,"Canada/Mountain":-1998663968,"Canada/Newfoundland":-2713897748,"Canada/Pacific":-2713880852,"Canada/Saskatchewan":-2030202084,"Canada/Yukon":-2188997988,"Chile/Continental":-2524504635,"Chile/EasterIsland":-2524495352,"Cuba":-2524501832,"Egypt":-2185409109,"Eire":-2821649679,"Europe/Amsterdam":-4260212372,"Europe/Andorra":-2177453164,"Europe/Astrakhan":-1441249932,"Europe/Athens":-2344642492,"Europe/Belfast":-2821649780,"Europe/Belgrade":-2713915320,"Europe/Berlin":-2422054408,"Europe/Bratislava":-3786829064,"Europe/Brussels":-2840141850,"Europe/Bucharest":-2469404664,"Europe/Budapest":-2498260580,"Europe/Busingen":-3675198848,"Europe/Chisinau":-2840147720,"Europe/Copenhagen":-2524524620,"Europe/Dublin":-2821649679,"Europe/Gibraltar":-2821649916,"Europe/Guernsey":-1784245791,"Europe/Helsinki":-2890258789,"Europe/Isle_of_Man":-2737842125,"Europe/Istanbul":-2840147752,"Europe/Jersey":-2258092800,"Europe/Kaliningrad":-2422056120,"Europe/Kiev":-2840148124,"Europe/Kirov":-1593820800,"Europe/Kyiv":-2840148124,"Europe/Lisbon":-2713908195,"Europe/Ljubljana":-2713913884,"Europe/London":-3852662325,"Europe/Luxembourg":-2069713476,"Europe/Madrid":-2177452800,"Europe/Malta":-2403478684,"Europe/Mariehamn":-2890258789,"Europe/Minsk":-2840147416,"Europe/Monaco":-2448318572,"Europe/Moscow":-2840149817,"Europe/Nicosia":-1518920008,"Europe/Oslo":-2366757780,"Europe/Paris":-2486592561,"Europe/Podgorica":-2713915320,"Europe/Prague":-3786829064,"Europe/Riga":-2840146594,"Europe/Rome":-3252098996,"Europe/Samara":-1593820800,"Europe/San_Marino":-3252098996,"Europe/Sarajevo":-2713914820,"Europe/Saratov":-1593820800,"Europe/Simferopol":-2840148984,"Europe/Skopje":-2713915544,"Europe/Sofia":-2840146396,"Europe/Stockholm":-2871681132,"Europe/Tallinn":-2840146740,"Europe/Tirane":-1767230360,"Europe/Tiraspol":-2840147912,"Europe/Ulyanovsk":-1593820800,"Europe/Uzhgorod":-2500939752,"Europe/Vaduz":-2385247084,"Europe/Vatican":-3252098996,"Europe/Vienna":-2422055121,"Europe/Vilnius":-2840146876,"Europe/Volgograd":-1577761060,"Europe/Warsaw":-2840145840,"Europe/Zagreb":-2713914232,"Europe/Zaporozhye":-2840149240,"Europe/Zurich":-3675198848,"GB":-3852662325,"GB-Eire":-3852662325,"Hongkong":-2056690800,"Iceland":-1956609120,"Indian/Antananarivo":-1846293004,"Indian/Chagos":-1988167780,"Indian/Christmas":-2364102172,"Indian/Cocos":-2209012060,"Indian/Comoro":-1846291984,"Indian/Mahe":-1988163708,"Indian/Maldives":-2840158440,"Indian/Mauritius":-1988164200,"Indian/Mayotte":-1846292456,"Indian/Reunion":-1848886912,"Iran":-1704165944,"Israel":-2840149254,"Jamaica":-2524503170,"Japan":-2587712400,"Kwajalein":-2177492960,"Libya":-1577926364,"Mexico/BajaNorte":-1514739600,"Mexico/BajaSur":-1514739600,"Mexico/General":-1514739600,"NZ":-3192435544,"NZ-CHAT":-3192437628,"Navajo":-2717643600,"PRC":-2177481943,"Pacific/Apia":-1861878784,"Pacific/Auckland":-3192435544,"Pacific/Bougainville":-2840178136,"Pacific/Chatham":-3192437628,"Pacific/Chuuk":-2177489228,"Pacific/Easter":-2524495352,"Pacific/Efate":-1829387596,"Pacific/Fakaofo":-2177411704,"Pacific/Fiji":-1709985344,"Pacific/Funafuti":-2177495812,"Pacific/Galapagos":-1230746496,"Pacific/Gambier":-1806678012,"Pacific/Guadalcanal":-1806748788,"Pacific/Guam":-2177487540,"Pacific/Honolulu":-2334101314,"Pacific/Kiritimati":-2177415040,"Pacific/Kosrae":-2177491916,"Pacific/Kwajalein":-2177492960,"Pacific/Majuro":-2177493888,"Pacific/Marquesas":-1806676920,"Pacific/Midway":-2177410232,"Pacific/Nauru":-1545131260,"Pacific/Niue":-543069620,"Pacific/Norfolk":-2177493112,"Pacific/Noumea":-1829387148,"Pacific/Pago_Pago":-1861879032,"Pacific/Palau":-2177485076,"Pacific/Pitcairn":-2177421580,"Pacific/Pohnpei":-2177490772,"Pacific/Ponape":-2177490772,"Pacific/Port_Moresby":-2840176120,"Pacific/Rarotonga":-543072056,"Pacific/Saipan":-2177487780,"Pacific/Samoa":-1861879032,"Pacific/Tahiti":-1806674504,"Pacific/Tarawa":-2177494324,"Pacific/Tongatapu":-767189952,"Pacific/Truk":-2177489228,"Pacific/Wake":-2177492788,"Pacific/Wallis":-2177496920,"Pacific/Yap":-2177489228,"Poland":-2840145840,"Portugal":-2713908195,"ROC":-2335248360,"ROK":-1948782472,"Singapore":-2177477725,"Turkey":-2840147752,"US/Alaska":-2188951224,"US/Aleutian":-2188944802,"US/Arizona":-2717643600,"US/Central":-2717647200,"US/East-Indiana":-2717647200,"US/Eastern":-2717650800,"US/Hawaii":-2334101314,"US/Indiana-Starke":-2717647200,"US/Michigan":-2051202469,"US/Mountain":-2717643600,"US/Pacific":-2717640000,"US/Samoa":-1861879032,"W-SU":-2840149817},"offsets":{"Africa/Abidjan":-968,"Africa/Accra":-52,"Africa/Addis_Ababa":9288,"Africa/Algiers":732,"Africa/Asmara":9332,"Africa/Asmera":9332,"Africa/Bamako":-1920,"Africa/Bangui":4460,"Africa/Banjul":-3996,"Africa/Bissau":-3740,"Africa/Blantyre":8400,"Africa/Brazzaville":3668,"Africa/Bujumbura":7048,"Africa/Cairo":7509,"Africa/Casablanca":-1820,"Africa/Ceuta":-1276,"Africa/Conakry":-3292,"Africa/Dakar":-4184,"Africa/Dar_es_Salaam":9428,"Africa/Djibouti":10356,"Africa/Douala":2328,"Africa/El_Aaiun":-3168,"Africa/Freetown":-3180,"Africa/Gaborone":6220,"Africa/Harare":7452,"Africa/Johannesburg":6720,"Africa/Juba":7588,"Africa/Kampala":7780,"Africa/Khartoum":7808,"Africa/Kigali":7216,"Africa/Kinshasa":3672,"Africa/Lagos":815,"Africa/Libreville":2268,"Africa/Lome":292,"Africa/Luanda":3176,"Africa/Lubumbashi":6592,"Africa/Lusaka":6788,"Africa/Malabo":2108,"Africa/Maputo":7818,"Africa/Maseru":6600,"Africa/Mbabane":7464,"Africa/Mogadishu":10888,"Africa/Monrovia":-2588,"Africa/Nairobi":8836,"Africa/Ndjamena":3612,"Africa/Niamey":508,"Africa/Nouakchott":-3828,"Africa/Ouagadougou":-364,"Africa/Porto-Novo":628,"Africa/Sao_Tome":1616,"Africa/Timbuktu":-724,"Africa/Tripoli":3164,"Africa/Tunis":2444,"Africa/Windhoek":4104,"America/Anguilla":-15136,"America/Antigua":-14832,"America/Araguaina":-11568,"America/Argentina/Buenos_Aires":-14028,"America/Argentina/Catamarca":-15788,"America/Argentina/ComodRivadavia":-16200,"America/Argentina/Cordoba":-15408,"America/Argentina/Jujuy":-15672,"America/Argentina/La_Rioja":-16044,"America/Argentina/Mendoza":-16516,"America/Argentina/Rio_Gallegos":-16612,"America/Argentina/Salta":-15700,"America/Argentina/San_Juan":-16444,"America/Argentina/San_Luis":-15924,"America/Argentina/Tucuman":-15652,"America/Argentina/Ushuaia":-16392,"America/Aruba":-16824,"America/Asuncion":-13840,"America/Atikokan":-21988,"America/Bahia":-9244,"America/Bahia_Banderas":-25260,"America/Barbados":-14309,"America/Belem":-11636,"America/Belize":-21168,"America/Blanc-Sablon":-13708,"America/Boa_Vista":-14560,"America/Bogota":-17776,"America/Boise":-27889,"America/Buenos_Aires":-14028,"America/Campo_Grande":-13108,"America/Cancun":-20824,"America/Caracas":-16064,"America/Catamarca":-15788,"America/Cayenne":-12560,"America/Cayman":-19532,"America/Chicago":-21036,"America/Chihuahua":-25460,"America/Ciudad_Juarez":-25556,"America/Coral_Harbour":-19960,"America/Cordoba":-15408,"America/Costa_Rica":-20173,"America/Coyhaique":-17296,"America/Creston":-27964,"America/Cuiaba":-13460,"America/Curacao":-16547,"America/Danmarkshavn":-4480,"America/Dawson":-33460,"America/Dawson_Creek":-28856,"America/Denver":-25196,"America/Detroit":-19931,"America/Dominica":-14736,"America/Edmonton":-27232,"America/Eirunepe":-16768,"America/El_Salvador":-21408,"America/Ensenada":-27988,"America/Fort_Nelson":-29447,"America/Fort_Wayne":-20678,"America/Fortaleza":-9240,"America/Glace_Bay":-14388,"America/Godthab":-12416,"America/Goose_Bay":-14500,"America/Grand_Turk":-17072,"America/Grenada":-14820,"America/Guadeloupe":-14768,"America/Guatemala":-21724,"America/Guayaquil":-19160,"America/Guyana":-13959,"America/Halifax":-15264,"America/Havana":-19768,"America/Hermosillo":-26632,"America/Indiana/Indianapolis":-20678,"America/Indiana/Knox":-20790,"America/Indiana/Marengo":-20723,"America/Indiana/Petersburg":-20947,"America/Indiana/Tell_City":-20823,"America/Indiana/Vevay":-20416,"America/Indiana/Vincennes":-21007,"America/Indiana/Winamac":-20785,"America/Indianapolis":-20678,"America/Jamaica":-18430,"America/Jujuy":-15672,"America/Kentucky/Louisville":-20582,"America/Kentucky/Monticello":-20364,"America/Knox_IN":-20790,"America/Kralendijk":-16547,"America/La_Paz":-16356,"America/Lima":-18492,"America/Los_Angeles":-28378,"America/Louisville":-20582,"America/Lower_Princes":-16547,"America/Maceio":-8572,"America/Managua":-20708,"America/Manaus":-14404,"America/Marigot":-14764,"America/Martinique":-14660,"America/Matamoros":-23400,"America/Mazatlan":-25540,"America/Mendoza":-16516,"America/Menominee":-21027,"America/Merida":-21508,"America/Mexico_City":-23796,"America/Miquelon":-13480,"America/Moncton":-15548,"America/Monterrey":-24076,"America/Montevideo":-13491,"America/Montreal":-17656,"America/Montserrat":-14932,"America/Nassau":-18570,"America/New_York":-17762,"America/Nipigon":-21184,"America/Noronha":-7780,"America/North_Dakota/Beulah":-24427,"America/North_Dakota/Center":-24312,"America/North_Dakota/New_Salem":-24339,"America/Nuuk":-12416,"America/Ojinaga":-25060,"America/Panama":-19088,"America/Paramaribo":-13240,"America/Phoenix":-26898,"America/Port-au-Prince":-17360,"America/Port_of_Spain":-14764,"America/Porto_Acre":-16272,"America/Porto_Velho":-15336,"America/Puerto_Rico":-15865,"America/Punta_Arenas":-17020,"America/Rainy_River":-22696,"America/Recife":-8376,"America/Regina":-25116,"America/Rio_Branco":-16272,"America/Rosario":-14560,"America/Santa_Isabel":-28084,"America/Santarem":-13128,"America/Santiago":-16965,"America/Santo_Domingo":-16776,"America/Sao_Paulo":-11188,"America/Scoresbysund":-5272,"America/Shiprock":-25196,"America/St_Barthelemy":-14764,"America/St_Johns":-12652,"America/St_Kitts":-15052,"America/St_Lucia":-14640,"America/St_Thomas":-15584,"America/St_Vincent":-14696,"America/Swift_Current":-25880,"America/Tegucigalpa":-20932,"America/Thule":-16508,"America/Thunder_Bay":-21420,"America/Tijuana":-28084,"America/Toronto":-19052,"America/Tortola":-15508,"America/Vancouver":-29548,"America/Virgin":-15584,"America/Whitehorse":-32412,"America/Winnipeg":-23316,"Arctic/Longyearbyen":2580,"Asia/Aden":10794,"Asia/Almaty":18468,"Asia/Amman":8624,"Asia/Anadyr":42596,"Asia/Aqtau":12064,"Asia/Aqtobe":13720,"Asia/Ashgabat":14012,"Asia/Ashkhabad":14012,"Asia/Atyrau":12464,"Asia/Baghdad":10660,"Asia/Bahrain":12140,"Asia/Baku":11964,"Asia/Bangkok":24124,"Asia/Barnaul":20100,"Asia/Beirut":8520,"Asia/Bishkek":17904,"Asia/Brunei":27580,"Asia/Calcutta":21208,"Asia/Chita":27232,"Asia/Choibalsan":25652,"Asia/Chongqing":25580,"Asia/Chungking":25580,"Asia/Colombo":19164,"Asia/Dacca":21700,"Asia/Damascus":8712,"Asia/Dhaka":21700,"Asia/Dili":30140,"Asia/Dubai":13272,"Asia/Dushanbe":16512,"Asia/Famagusta":8148,"Asia/Gaza":8272,"Asia/Hanoi":25404,"Asia/Harbin":30404,"Asia/Hebron":8423,"Asia/Ho_Chi_Minh":25590,"Asia/Hong_Kong":27402,"Asia/Hovd":21996,"Asia/Irkutsk":25025,"Asia/Istanbul":6952,"Asia/Jakarta":25632,"Asia/Jayapura":33768,"Asia/Jerusalem":8454,"Asia/Kabul":16608,"Asia/Kamchatka":38076,"Asia/Karachi":16092,"Asia/Kashgar":18236,"Asia/Kathmandu":20476,"Asia/Katmandu":20476,"Asia/Khandyga":32533,"Asia/Kolkata":21208,"Asia/Krasnoyarsk":22286,"Asia/Kuala_Lumpur":24406,"Asia/Kuching":26480,"Asia/Kuwait":11516,"Asia/Macao":27250,"Asia/Macau":27250,"Asia/Magadan":36192,"Asia/Makassar":28656,"Asia/Muscat":14064,"Asia/Nicosia":8008,"Asia/Novokuznetsk":20928,"Asia/Novosibirsk":19900,"Asia/Omsk":17610,"Asia/Oral":12324,"Asia/Phnom_Penh":25180,"Asia/Pontianak":26240,"Asia/Pyongyang":30180,"Asia/Qatar":12368,"Asia/Qostanay":15268,"Asia/Qyzylorda":15712,"Asia/Rangoon":23087,"Asia/Riyadh":11212,"Asia/Saigon":25590,"Asia/Sakhalin":34248,"Asia/Samarkand":16073,"Asia/Seoul":30472,"Asia/Shanghai":29143,"Asia/Singapore":24925,"Asia/Srednekolymsk":36892,"Asia/Taipei":29160,"Asia/Tashkent":16631,"Asia/Tbilisi":10751,"Asia/Tehran":12344,"Asia/Tel_Aviv":8344,"Asia/Thimbu":21516,"Asia/Thimphu":21516,"Asia/Tokyo":33539,"Asia/Tomsk":20391,"Asia/Ujung_Pandang":28656,"Asia/Ulaanbaatar":25652,"Asia/Ulan_Bator":25652,"Asia/Urumqi":21020,"Asia/Ust-Nera":34374,"Asia/Vientiane":24624,"Asia/Vladivostok":31651,"Asia/Yakutsk":31138,"Asia/Yangon":23087,"Asia/Yekaterinburg":14553,"Asia/Yerevan":10680,"Atlantic/Azores":-6160,"Atlantic/Bermuda":-15558,"Atlantic/Canary":-3696,"Atlantic/Cape_Verde":-5644,"Atlantic/Faeroe":-1624,"Atlantic/Faroe":-1624,"Atlantic/Madeira":-4056,"Atlantic/Reykjavik":-5280,"Atlantic/South_Georgia":-8768,"Atlantic/St_Helena":-1368,"Atlantic/Stanley":-13884,"Australia/ACT":36292,"Australia/Adelaide":33260,"Australia/Brisbane":36728,"Australia/Broken_Hill":33948,"Australia/Canberra":36292,"Australia/Currie":34528,"Australia/Darwin":31400,"Australia/Eucla":30928,"Australia/Hobart":35356,"Australia/LHI":38180,"Australia/Lindeman":35756,"Australia/Lord_Howe":38180,"Australia/Melbourne":34792,"Australia/NSW":36292,"Australia/North":31400,"Australia/Perth":27804,"Australia/Queensland":36728,"Australia/South":33260,"Australia/Sydney":36292,"Australia/Tasmania":35356,"Australia/Victoria":34792,"Australia/West":27804,"Australia/Yancowinna":33948,"Brazil/Acre":-16272,"Brazil/DeNoronha":-7780,"Brazil/East":-11188,"Brazil/West":-14404,"Canada/Atlantic":-15264,"Canada/Central":-23316,"Canada/Eastern":-19052,"Canada/Mountain":-27232,"Canada/Newfoundland":-12652,"Canada/Pacific":-29548,"Canada/Saskatchewan":-25116,"Canada/Yukon":-32412,"Chile/Continental":-16965,"Chile/EasterIsland":-26248,"Cuba":-19768,"Egypt":7509,"Eire":-1521,"Europe/Amsterdam":1172,"Europe/Andorra":364,"Europe/Astrakhan":11532,"Europe/Athens":5692,"Europe/Belfast":-1420,"Europe/Belgrade":4920,"Europe/Berlin":3208,"Europe/Bratislava":3464,"Europe/Brussels":1050,"Europe/Bucharest":6264,"Europe/Budapest":4580,"Europe/Busingen":2048,"Europe/Chisinau":6920,"Europe/Copenhagen":3020,"Europe/Dublin":-1521,"Europe/Gibraltar":-1284,"Europe/Guernsey":-609,"Europe/Helsinki":5989,"Europe/Isle_of_Man":-1075,"Europe/Istanbul":6952,"Europe/Jersey":-506,"Europe/Kaliningrad":4920,"Europe/Kiev":7324,"Europe/Kirov":11928,"Europe/Kyiv":7324,"Europe/Lisbon":-2205,"Europe/Ljubljana":3484,"Europe/London":-75,"Europe/Luxembourg":1476,"Europe/Madrid":-884,"Europe/Malta":3484,"Europe/Mariehamn":5989,"Europe/Minsk":6616,"Europe/Monaco":1772,"Europe/Moscow":9017,"Europe/Nicosia":8008,"Europe/Oslo":2580,"Europe/Paris":561,"Europe/Podgorica":4920,"Europe/Prague":3464,"Europe/Riga":5794,"Europe/Rome":2996,"Europe/Samara":12020,"Europe/San_Marino":2996,"Europe/Sarajevo":4420,"Europe/Saratov":11058,"Europe/Simferopol":8184,"Europe/Skopje":5144,"Europe/Sofia":5596,"Europe/Stockholm":4332,"Europe/Tallinn":5940,"Europe/Tirane":4760,"Europe/Tiraspol":7112,"Europe/Ulyanovsk":11616,"Europe/Uzhgorod":5352,"Europe/Vaduz":2284,"Europe/Vatican":2996,"Europe/Vienna":3921,"Europe/Vilnius":6076,"Europe/Volgograd":10660,"Europe/Warsaw":5040,"Europe/Zagreb":3832,"Europe/Zaporozhye":8440,"Europe/Zurich":2048,"GB":-75,"GB-Eire":-75,"Hongkong":27402,"Iceland":-5280,"Indian/Antananarivo":11404,"Indian/Chagos":17380,"Indian/Christmas":25372,"Indian/Cocos":23260,"Indian/Comoro":10384,"Indian/Mahe":13308,"Indian/Maldives":17640,"Indian/Mauritius":13800,"Indian/Mayotte":10856,"Indian/Reunion":13312,"Iran":12344,"Israel":8454,"Jamaica":-18430,"Japan":33539,"Kwajalein":40160,"Libya":3164,"Mexico/BajaNorte":-28084,"Mexico/BajaSur":-25540,"Mexico/General":-23796,"NZ":41944,"NZ-CHAT":44028,"Navajo":-25196,"PRC":29143,"Pacific/Auckland":41944,"Pacific/Bougainville":37336,"Pacific/Chatham":44028,"Pacific/Easter":-26248,"Pacific/Efate":40396,"Pacific/Fakaofo":-41096,"Pacific/Fiji":42944,"Pacific/Funafuti":43012,"Pacific/Galapagos":-21504,"Pacific/Gambier":-32388,"Pacific/Guadalcanal":38388,"Pacific/Honolulu":-37886,"Pacific/Kiritimati":-37760,"Pacific/Kwajalein":40160,"Pacific/Majuro":41088,"Pacific/Marquesas":-33480,"Pacific/Midway":-42568,"Pacific/Nauru":40060,"Pacific/Niue":-40780,"Pacific/Norfolk":40312,"Pacific/Noumea":39948,"Pacific/Pitcairn":-31220,"Pacific/Port_Moresby":35320,"Pacific/Tahiti":-35896,"Pacific/Tarawa":41524,"Pacific/Tongatapu":44352,"Pacific/Wake":39988,"Pacific/Wallis":44120,"Poland":5040,"Portugal":-2205,"ROC":29160,"ROK":30472,"Singapore":24925,"Turkey":6952,"US/Arizona":-26898,"US/Central":-21036,"US/East-Indiana":-20678,"US/Eastern":-17762,"US/Hawaii":-37886,"US/Indiana-Starke":-20790,"US/Michigan":-19931,"US/Mountain":-25196,"US/Pacific":-28378,"W-SU":9017},"dateLine":{"America/Adak":[[-3225223727,44002],[-2188944802,-42398]],"America/Anchorage":[[-3225223727,50424],[-2188951224,-35976]],"America/Atka":[[-3225223727,44002],[-2188944802,-42398]],"America/Juneau":[[-3225223727,54139],[-2188954939,-32261]],"America/Metlakatla":[[-3225223727,54822],[-2188955622,-31578]],"America/Nome":[[-3225223727,46702],[-2188947502,-39698]],"America/Sitka":[[-3225223727,53927],[-2188954727,-32473]],"America/Yakutat":[[-3225223727,52865],[-2188953665,-33535]],"Asia/Manila":[[-3944621032,-57368],[-2219083200,29032]],"Pacific/Apia":[[-2445424384,45184],[-1861878784,-41216]],"Pacific/Chuuk":[[-3944628428,-49972],[-2177489228,36428]],"Pacific/Guam":[[-3944626740,-51660],[-2177487540,34740]],"Pacific/Kosrae":[[-3944631116,-47284],[-2177491916,39116]],"Pacific/Pago_Pago":[[-2445424632,45432],[-1861879032,-40968]],"Pacific/Palau":[[-3944624276,-54124],[-2177485076,32276]],"Pacific/Pohnpei":[[-3944629972,-48428],[-2177490772,37972]],"Pacific/Ponape":[[-3944629972,-48428],[-2177490772,37972]],"Pacific/Rarotonga":[[-2209555256,48056],[-543072056,-38344]],"Pacific/Saipan":[[-3944626980,-51420],[-2177487780,34980]],"Pacific/Samoa":[[-2445424632,45432],[-1861879032,-40968]],"Pacific/Truk":[[-3944628428,-49972],[-2177489228,36428]],"Pacific/Yap":[[-3944628428,-49972],[-2177489228,36428]],"US/Alaska":[[-3225223727,50424],[-2188951224,-35976]],"US/Aleutian":[[-3225223727,44002],[-2188944802,-42398]],"US/Samoa":[[-2445424632,45432],[-1861879032,-40968]]}}');
   }
 });
 
 // src/data/tz-history/2025c/00.json
-var require__ = __commonJS({
-  "src/data/tz-history/2025c/00.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "America/Boa_Vista": { source: "America/Boa_Vista", t: [-1767211040, -1206954e3, -1191358800, -1175371200, -1159822800, -633816e3, -622065600, -60228e4, -591829200, -570744e3, -560206800, -539121600, -531349200, -191361600, -184194e3, -15516e4, -150066e3, -128894400, -121122e3, -99950400, -89586e3, -68414400, -57963600], o: [-14560, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400] }, "America/Dawson": { source: "America/Dawson", t: [-2188996940, -1632056400, -1615125600, -1596978e3, -1583164800, -880203600, -765381600, -147884400, -131554800], o: [-33460, -32400, -28800, -32400, -28800, -32400, -28800, -32400, -25200, -32400] }, "America/Goose_Bay": { source: "America/Goose_Bay", t: [-2713895900, -1632076148, -1615145348, -1096921748, -1061670600, -1048973400, -1030221e3, -1017523800, -998771400, -986074200, -966717e3, -954624600, -935267400, -922570200, -903817800, -891120600, -872368200, -765401400, -746044200, -733347e3, -714594600, -701897400, -683145e3, -670447800, -651695400, -638998200, -619641e3, -606943800, -589401e3, -576099e3, -557951400, -544649400, -526501800, -513199800, -495052200, -481750200, -463602600, -450300600, -431548200, -418246200, -400098600, -386796600, -368649e3, -355347e3, -337199400, -323897400, -305749800, -289423800, -273695400, -257974200, -242245800, -226524600, -210796200, -195075e3, -179346600, -163625400, -147897e3, -131571e3, -119903400, -116445600, -100119600, -84391200, -6867e4, -52941600, -37220400, -21492e3, -5770800], o: [-14500, -12652, -9052, -12652, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400] }, "America/Regina": { source: "America/Regina", t: [-2030202084, -1632063600, -1615132800, -1251651600, -1238349600, -1220202e3, -12069e5, -1188752400, -1175450400, -1156698e3, -1144000800, -1125248400, -1111946400, -1032714e3, -1016992800, -1001264400, -986148e3, -969814800, -954093600, -937760400, -922039200, -906310800, -890589600, -880210800, -765388800, -748450800, -732729600, -715791600, -702489600, -684342e3, -67104e4, -652892400, -639590400, -620838e3, -608140800, -589388400, -576086400, -557938800, -544636800, -526489200, -513187200, -495039600, -481737600, -46359e4, -450288e3, -431535600, -418233600, -400086e3, -386784e3, -337186800, -321465600, -305737200], o: [-25116, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600] }, "Asia/Choibalsan": { source: "Asia/Ulaanbaatar", t: [-2032931252], o: [25652, 25200] }, "Canada/Atlantic": { source: "America/Halifax", t: [-2131645536, -1696276800, -1680469200, -1632074400, -1615143600, -1566763200, -155709e4, -1535486400, -1524949200, -1504468800, -1493413200, -1472414400, -1461963600, -1440964800, -1429390800, -1409515200, -1396731600, -1376856e3, -1366491600, -1346616e3, -1333832400, -1313956800, -1303678800, -1282507200, -1272661200, -1251057600, -1240088400, -1219608e3, -1207429200, -1188763200, -1175979600, -1157313600, -1143925200, -1124049600, -1113771600, -1091390400, -1081026e3, -1059854400, -1050786e3, -1030910400, -1018126800, -999460800, -986677200, -965592e3, -955227600, -935956800, -923173200, -904507200, -891723600, -880221600, -765399600, -747252e3, -73395e4, -715802400, -702500400, -684352800, -671050800, -652903200, -639601200, -589399200, -576097200, -557949600, -544647600, -5265e5, -513198e3, -495050400, -481748400, -431546400, -418244400, -400096800, -386794800, -368647200, -355345200, -337197600, -323895600, -242244e3, -226522800, -210794400, -195073200, -179344800, -163623600, -147895200, -131569200, -116445600, -100119600, -84391200, -6867e4, -52941600, -37220400, -21492e3, -5770800], o: [-15264, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400] }, "Etc/GMT+3": { source: "Etc/GMT+3", t: [], o: [-10800] } } };
+var __exports = {};
+__export(__exports, {
+  default: () => __default
+});
+var __default;
+var init__ = __esm({
+  "src/data/tz-history/2025c/00.json"() {
+    "use strict";
+    __default = JSON.parse('{"tzdb":"2025c","zones":{"America/Boa_Vista":{"source":"America/Boa_Vista","t":[-1767211040,-1206954000,-1191358800,-1175371200,-1159822800,-633816000,-622065600,-602280000,-591829200,-570744000,-560206800,-539121600,-531349200,-191361600,-184194000,-155160000,-150066000,-128894400,-121122000,-99950400,-89586000,-68414400,-57963600],"o":[-14560,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400]},"America/Dawson":{"source":"America/Dawson","t":[-2188996940,-1632056400,-1615125600,-1596978000,-1583164800,-880203600,-765381600,-147884400,-131554800],"o":[-33460,-32400,-28800,-32400,-28800,-32400,-28800,-32400,-25200,-32400]},"America/Goose_Bay":{"source":"America/Goose_Bay","t":[-2713895900,-1632076148,-1615145348,-1096921748,-1061670600,-1048973400,-1030221000,-1017523800,-998771400,-986074200,-966717000,-954624600,-935267400,-922570200,-903817800,-891120600,-872368200,-765401400,-746044200,-733347000,-714594600,-701897400,-683145000,-670447800,-651695400,-638998200,-619641000,-606943800,-589401000,-576099000,-557951400,-544649400,-526501800,-513199800,-495052200,-481750200,-463602600,-450300600,-431548200,-418246200,-400098600,-386796600,-368649000,-355347000,-337199400,-323897400,-305749800,-289423800,-273695400,-257974200,-242245800,-226524600,-210796200,-195075000,-179346600,-163625400,-147897000,-131571000,-119903400,-116445600,-100119600,-84391200,-68670000,-52941600,-37220400,-21492000,-5770800],"o":[-14500,-12652,-9052,-12652,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400]},"America/Regina":{"source":"America/Regina","t":[-2030202084,-1632063600,-1615132800,-1251651600,-1238349600,-1220202000,-1206900000,-1188752400,-1175450400,-1156698000,-1144000800,-1125248400,-1111946400,-1032714000,-1016992800,-1001264400,-986148000,-969814800,-954093600,-937760400,-922039200,-906310800,-890589600,-880210800,-765388800,-748450800,-732729600,-715791600,-702489600,-684342000,-671040000,-652892400,-639590400,-620838000,-608140800,-589388400,-576086400,-557938800,-544636800,-526489200,-513187200,-495039600,-481737600,-463590000,-450288000,-431535600,-418233600,-400086000,-386784000,-337186800,-321465600,-305737200],"o":[-25116,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600]},"Asia/Choibalsan":{"source":"Asia/Ulaanbaatar","t":[-2032931252],"o":[25652,25200]},"Canada/Atlantic":{"source":"America/Halifax","t":[-2131645536,-1696276800,-1680469200,-1632074400,-1615143600,-1566763200,-1557090000,-1535486400,-1524949200,-1504468800,-1493413200,-1472414400,-1461963600,-1440964800,-1429390800,-1409515200,-1396731600,-1376856000,-1366491600,-1346616000,-1333832400,-1313956800,-1303678800,-1282507200,-1272661200,-1251057600,-1240088400,-1219608000,-1207429200,-1188763200,-1175979600,-1157313600,-1143925200,-1124049600,-1113771600,-1091390400,-1081026000,-1059854400,-1050786000,-1030910400,-1018126800,-999460800,-986677200,-965592000,-955227600,-935956800,-923173200,-904507200,-891723600,-880221600,-765399600,-747252000,-733950000,-715802400,-702500400,-684352800,-671050800,-652903200,-639601200,-589399200,-576097200,-557949600,-544647600,-526500000,-513198000,-495050400,-481748400,-431546400,-418244400,-400096800,-386794800,-368647200,-355345200,-337197600,-323895600,-242244000,-226522800,-210794400,-195073200,-179344800,-163623600,-147895200,-131569200,-116445600,-100119600,-84391200,-68670000,-52941600,-37220400,-21492000,-5770800],"o":[-15264,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400]},"Etc/GMT+3":{"source":"Etc/GMT+3","t":[],"o":[-10800]}}}');
   }
 });
 
 // src/data/tz-history/2025c/01.json
-var require__2 = __commonJS({
-  "src/data/tz-history/2025c/01.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "America/Argentina/Jujuy": { source: "America/Argentina/Jujuy", t: [-2372096328, -1567453392, -1233432e3, -1222981200, -1205956800, -1194037200, -1172865600, -1162501200, -1141329600, -1130965200, -1109793600, -1099429200, -1078257600, -1067806800, -1046635200, -1036270800, -1015099200, -1004734800, -983563200, -973198800, -952027200, -941576400, -931032e3, -900882e3, -890337600, -833749200, -827265600, -752274e3, -733780800, -197326800, -190843200, -184194e3, -164491200, -152658e3, -132955200, -121122e3, -101419200, -86821200, -71092800, -54766800, -39038400, -23317200, -7588800], o: [-15672, -15408, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800] }, "America/Noronha": { source: "America/Noronha", t: [-1767217820, -1206961200, -1191366e3, -1175378400, -115983e4, -633823200, -622072800, -602287200, -591836400, -570751200, -560214e3, -539128800, -531356400, -191368800, -184201200, -155167200, -150073200, -128901600, -121129200, -99957600, -89593200, -68421600, -57970800], o: [-7780, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200] }, "America/Punta_Arenas": { source: "America/Punta_Arenas", t: [-2524504580, -1892661435, -1688410800, -1619205435, -1593806400, -1335986235, -1317585600, -1304362800, -1286049600, -1272826800, -1254513600, -1241290800, -1222977600, -1209754800, -1191355200, -1178132400, -870552e3, -865278e3, -718056e3, -713649600, -36619200, -23922e3, -3355200], o: [-17020, -16965, -18e3, -16965, -14400, -16965, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -10800, -14400, -10800] }, "Asia/Ashkhabad": { source: "Asia/Ashgabat", t: [-1441166012, -1247544e3], o: [14012, 14400, 18e3] }, "Asia/Kuching": { source: "Asia/Kuching", t: [-1383463280, -1167636600, -1082448e3, -1074586800, -1050825600, -1042964400, -1019289600, -1011428400, -987753600, -979892400, -956217600, -948356400, -924595200, -916734e3, -893059200, -885198e3, -879667200, -767005200], o: [26480, 27e3, 28800, 3e4, 28800, 3e4, 28800, 3e4, 28800, 3e4, 28800, 3e4, 28800, 3e4, 28800, 3e4, 28800, 32400, 28800] }, "Asia/Shanghai": { source: "Asia/Shanghai", t: [-2177481943, -1600675200, -1585904400, -933667200, -922093200, -908870400, -888829200, -881049600, -767869200, -745833600, -733827600, -716889600, -699613200, -683884800, -670669200, -652348800, -650019600], o: [29143, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800] } } };
+var __exports2 = {};
+__export(__exports2, {
+  default: () => __default2
+});
+var __default2;
+var init__2 = __esm({
+  "src/data/tz-history/2025c/01.json"() {
+    "use strict";
+    __default2 = JSON.parse('{"tzdb":"2025c","zones":{"America/Argentina/Jujuy":{"source":"America/Argentina/Jujuy","t":[-2372096328,-1567453392,-1233432000,-1222981200,-1205956800,-1194037200,-1172865600,-1162501200,-1141329600,-1130965200,-1109793600,-1099429200,-1078257600,-1067806800,-1046635200,-1036270800,-1015099200,-1004734800,-983563200,-973198800,-952027200,-941576400,-931032000,-900882000,-890337600,-833749200,-827265600,-752274000,-733780800,-197326800,-190843200,-184194000,-164491200,-152658000,-132955200,-121122000,-101419200,-86821200,-71092800,-54766800,-39038400,-23317200,-7588800],"o":[-15672,-15408,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800]},"America/Noronha":{"source":"America/Noronha","t":[-1767217820,-1206961200,-1191366000,-1175378400,-1159830000,-633823200,-622072800,-602287200,-591836400,-570751200,-560214000,-539128800,-531356400,-191368800,-184201200,-155167200,-150073200,-128901600,-121129200,-99957600,-89593200,-68421600,-57970800],"o":[-7780,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200]},"America/Punta_Arenas":{"source":"America/Punta_Arenas","t":[-2524504580,-1892661435,-1688410800,-1619205435,-1593806400,-1335986235,-1317585600,-1304362800,-1286049600,-1272826800,-1254513600,-1241290800,-1222977600,-1209754800,-1191355200,-1178132400,-870552000,-865278000,-718056000,-713649600,-36619200,-23922000,-3355200],"o":[-17020,-16965,-18000,-16965,-14400,-16965,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-10800,-14400,-10800]},"Asia/Ashkhabad":{"source":"Asia/Ashgabat","t":[-1441166012,-1247544000],"o":[14012,14400,18000]},"Asia/Kuching":{"source":"Asia/Kuching","t":[-1383463280,-1167636600,-1082448000,-1074586800,-1050825600,-1042964400,-1019289600,-1011428400,-987753600,-979892400,-956217600,-948356400,-924595200,-916734000,-893059200,-885198000,-879667200,-767005200],"o":[26480,27000,28800,30000,28800,30000,28800,30000,28800,30000,28800,30000,28800,30000,28800,30000,28800,32400,28800]},"Asia/Shanghai":{"source":"Asia/Shanghai","t":[-2177481943,-1600675200,-1585904400,-933667200,-922093200,-908870400,-888829200,-881049600,-767869200,-745833600,-733827600,-716889600,-699613200,-683884800,-670669200,-652348800,-650019600],"o":[29143,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800]}}}');
   }
 });
 
 // src/data/tz-history/2025c/02.json
-var require__3 = __commonJS({
-  "src/data/tz-history/2025c/02.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "Africa/Libreville": { source: "Africa/Libreville", t: [-1830386268], o: [2268, 3600] }, "Africa/Nouakchott": { source: "Africa/Nouakchott", t: [-1830380172, -1131235200, -286930800], o: [-3828, 0, -3600, 0] }, "America/Bahia_Banderas": { source: "America/Bahia_Banderas", t: [-1514739600, -1343149200, -1234807200, -1220461200, -1207159200, -1191344400, -873828e3], o: [-25260, -25200, -21600, -25200, -21600, -25200, -21600, -25200] }, "America/Chihuahua": { source: "America/Chihuahua", t: [-1514739600, -1343149200, -1234807200, -1220461200, -1207159200, -1191344400], o: [-25460, -25200, -21600, -25200, -21600, -25200, -21600] }, "America/Whitehorse": { source: "America/Whitehorse", t: [-2188997988, -1632056400, -1615125600, -1596978e3, -1583164800, -880203600, -765381600, -147884400, -131554800, -121273200], o: [-32412, -32400, -28800, -32400, -28800, -32400, -28800, -32400, -25200, -32400, -28800] }, "Asia/Istanbul": { source: "Europe/Istanbul", t: [-2840147752, -1869875816, -1693706400, -1680490800, -1570413600, -1552186800, -1538359200, -1522551600, -1507514400, -1490583600, -1440208800, -142803e4, -1409709600, -1396494e3, -931053600, -922676400, -917834400, -892436400, -875844e3, -764737200, -744343200, -733806e3, -716436e3, -701924400, -684986400, -670474800, -654141600, -639025200, -622087200, -606970800, -590032800, -575521200, -23562e4, -194842800, -177732e3, -165726e3], o: [6952, 7016, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200] }, "Asia/Tashkent": { source: "Asia/Tashkent", t: [-1441168631, -1247547600], o: [16631, 18e3, 21600] }, "Asia/Tel_Aviv": { source: "Asia/Tel_Aviv", t: [-2840149144, -1641003660, -933638400, -923097600, -919036800, -857347200, -844300800, -825811200, -812678400, -794188800, -779846400, -762652800, -748310400, -731116800, -681955200, -673228800, -667958400, -65232e4, -636422400, -62208e4, -608947200, -59184e4, -572486400, -558576e3, -542851200, -527731200, -514425600, -490838400, -482976e3, -459388800, -451526400, -428544e3, -418262400, -400118400, -387417600], o: [8344, 8460, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 14400, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200] }, "Atlantic/Canary": { source: "Atlantic/Canary", t: [-1509663504, -733874400], o: [-3696, -3600, 0] }, "Europe/Guernsey": { source: "Europe/Guernsey", t: [-1784245791, -1691964e3, -1680472800, -1664143200, -1650146400, -1633903200, -1617487200, -1601848800, -1586037600, -1570399200, -1552168800, -1538344800, -1522533600, -15075e5, -1490565600, -1473631200, -1460930400, -1442786400, -1428876e3, -1410732e3, -1396216800, -1379282400, -1364767200, -1348437600, -1333317600, -1315778400, -1301263200, -1284328800, -1269813600, -1253484e3, -1238364e3, -1221429600, -1206914400, -118998e4, -1175464800, -1159135200, -1143410400, -1126476e3, -1111960800, -1095631200, -1080511200, -1063576800, -1049061600, -1032127200, -1017612e3, -1001282400, -986162400, -969228e3, -950479200, -942012e3, -930963600, -857257200, -844556400, -828226800, -812502e3, -796777200, -781052400, -772066800, -764805600, -748476e3, -733356e3, -719445600, -71703e4, -706748400, -699487200, -687996e3, -668037600, -654732e3, -636588e3, -622072800, -605743200, -590623200, -574293600, -558568800, -542239200, -527119200, -512604e3, -496274400, -481154400, -46422e4, -449704800, -432165600, -417650400, -401320800, -386200800, -369266400, -354751200, -337816800, -323301600, -306972e3, -291852e3, -276732e3, -257983200, -245282400, -226533600, -213228e3, -195084e3, -182383200, -163634400, -150933600, -132184800, -119484e3, -100735200, -88034400, -68680800, -59004e3], o: [-609, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 0, 3600, 0, 3600, 7200, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600] }, "Indian/Mauritius": { source: "Indian/Mauritius", t: [-1988164200], o: [13800, 14400] }, "Pacific/Apia": { source: "Pacific/Apia", t: [-2445424384, -1861878784, -631110600], o: [45184, -41216, -41400, -39600] } } };
+var __exports3 = {};
+__export(__exports3, {
+  default: () => __default3
+});
+var __default3;
+var init__3 = __esm({
+  "src/data/tz-history/2025c/02.json"() {
+    "use strict";
+    __default3 = JSON.parse('{"tzdb":"2025c","zones":{"Africa/Libreville":{"source":"Africa/Libreville","t":[-1830386268],"o":[2268,3600]},"Africa/Nouakchott":{"source":"Africa/Nouakchott","t":[-1830380172,-1131235200,-286930800],"o":[-3828,0,-3600,0]},"America/Bahia_Banderas":{"source":"America/Bahia_Banderas","t":[-1514739600,-1343149200,-1234807200,-1220461200,-1207159200,-1191344400,-873828000],"o":[-25260,-25200,-21600,-25200,-21600,-25200,-21600,-25200]},"America/Chihuahua":{"source":"America/Chihuahua","t":[-1514739600,-1343149200,-1234807200,-1220461200,-1207159200,-1191344400],"o":[-25460,-25200,-21600,-25200,-21600,-25200,-21600]},"America/Whitehorse":{"source":"America/Whitehorse","t":[-2188997988,-1632056400,-1615125600,-1596978000,-1583164800,-880203600,-765381600,-147884400,-131554800,-121273200],"o":[-32412,-32400,-28800,-32400,-28800,-32400,-28800,-32400,-25200,-32400,-28800]},"Asia/Istanbul":{"source":"Europe/Istanbul","t":[-2840147752,-1869875816,-1693706400,-1680490800,-1570413600,-1552186800,-1538359200,-1522551600,-1507514400,-1490583600,-1440208800,-1428030000,-1409709600,-1396494000,-931053600,-922676400,-917834400,-892436400,-875844000,-764737200,-744343200,-733806000,-716436000,-701924400,-684986400,-670474800,-654141600,-639025200,-622087200,-606970800,-590032800,-575521200,-235620000,-194842800,-177732000,-165726000],"o":[6952,7016,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200]},"Asia/Tashkent":{"source":"Asia/Tashkent","t":[-1441168631,-1247547600],"o":[16631,18000,21600]},"Asia/Tel_Aviv":{"source":"Asia/Tel_Aviv","t":[-2840149144,-1641003660,-933638400,-923097600,-919036800,-857347200,-844300800,-825811200,-812678400,-794188800,-779846400,-762652800,-748310400,-731116800,-681955200,-673228800,-667958400,-652320000,-636422400,-622080000,-608947200,-591840000,-572486400,-558576000,-542851200,-527731200,-514425600,-490838400,-482976000,-459388800,-451526400,-428544000,-418262400,-400118400,-387417600],"o":[8344,8460,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,14400,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200]},"Atlantic/Canary":{"source":"Atlantic/Canary","t":[-1509663504,-733874400],"o":[-3696,-3600,0]},"Europe/Guernsey":{"source":"Europe/Guernsey","t":[-1784245791,-1691964000,-1680472800,-1664143200,-1650146400,-1633903200,-1617487200,-1601848800,-1586037600,-1570399200,-1552168800,-1538344800,-1522533600,-1507500000,-1490565600,-1473631200,-1460930400,-1442786400,-1428876000,-1410732000,-1396216800,-1379282400,-1364767200,-1348437600,-1333317600,-1315778400,-1301263200,-1284328800,-1269813600,-1253484000,-1238364000,-1221429600,-1206914400,-1189980000,-1175464800,-1159135200,-1143410400,-1126476000,-1111960800,-1095631200,-1080511200,-1063576800,-1049061600,-1032127200,-1017612000,-1001282400,-986162400,-969228000,-950479200,-942012000,-930963600,-857257200,-844556400,-828226800,-812502000,-796777200,-781052400,-772066800,-764805600,-748476000,-733356000,-719445600,-717030000,-706748400,-699487200,-687996000,-668037600,-654732000,-636588000,-622072800,-605743200,-590623200,-574293600,-558568800,-542239200,-527119200,-512604000,-496274400,-481154400,-464220000,-449704800,-432165600,-417650400,-401320800,-386200800,-369266400,-354751200,-337816800,-323301600,-306972000,-291852000,-276732000,-257983200,-245282400,-226533600,-213228000,-195084000,-182383200,-163634400,-150933600,-132184800,-119484000,-100735200,-88034400,-68680800,-59004000],"o":[-609,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,7200,3600,7200,3600,7200,3600,7200,3600,0,3600,0,3600,7200,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600]},"Indian/Mauritius":{"source":"Indian/Mauritius","t":[-1988164200],"o":[13800,14400]},"Pacific/Apia":{"source":"Pacific/Apia","t":[-2445424384,-1861878784,-631110600],"o":[45184,-41216,-41400,-39600]}}}');
   }
 });
 
 // src/data/tz-history/2025c/03.json
-var require__4 = __commonJS({
-  "src/data/tz-history/2025c/03.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "Africa/Bujumbura": { source: "Africa/Bujumbura", t: [-2524528648], o: [7048, 7200] }, "America/Kralendijk": { source: "America/Curacao", t: [-1826738653, -157750200], o: [-16547, -16200, -14400] }, "America/Marigot": { source: "America/Port_of_Spain", t: [-1825098836], o: [-14764, -14400] }, "America/St_Vincent": { source: "America/St_Vincent", t: [-1830369304], o: [-14696, -14400] }, "Antarctica/Mawson": { source: "Antarctica/Mawson", t: [-501206400], o: [null, 21600] }, "Asia/Damascus": { source: "Asia/Damascus", t: [-1577931912, -1568592e3, -1554080400, -1537142400, -1522630800, -1505692800, -1491181200, -1474243200, -1459126800, -242265600, -228877200, -210556800, -197427600, -178934400, -165718800, -147398400, -134269200, -116467200, -102646800, -84326400, -71110800, -52704e3, -39488400, -21168e3, -7952400], o: [8712, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200] }, "Asia/Khandyga": { source: "Asia/Khandyga", t: [-1579424533, -1247558400], o: [32533, 28800, 32400] }, "Asia/Ust-Nera": { source: "Asia/Ust-Nera", t: [-1579426374, -1247558400], o: [34374, 28800, 32400] }, "Etc/GMT-4": { source: "Etc/GMT-4", t: [], o: [14400] }, "US/Alaska": { source: "America/Anchorage", t: [-3225223727, -2188951224, -8802e5, -765378e3, -21470400, -5749200], o: [50424, -35976, -36e3, -32400, -36e3, -32400, -36e3] } } };
+var __exports4 = {};
+__export(__exports4, {
+  default: () => __default4
+});
+var __default4;
+var init__4 = __esm({
+  "src/data/tz-history/2025c/03.json"() {
+    "use strict";
+    __default4 = JSON.parse('{"tzdb":"2025c","zones":{"Africa/Bujumbura":{"source":"Africa/Bujumbura","t":[-2524528648],"o":[7048,7200]},"America/Kralendijk":{"source":"America/Curacao","t":[-1826738653,-157750200],"o":[-16547,-16200,-14400]},"America/Marigot":{"source":"America/Port_of_Spain","t":[-1825098836],"o":[-14764,-14400]},"America/St_Vincent":{"source":"America/St_Vincent","t":[-1830369304],"o":[-14696,-14400]},"Antarctica/Mawson":{"source":"Antarctica/Mawson","t":[-501206400],"o":[null,21600]},"Asia/Damascus":{"source":"Asia/Damascus","t":[-1577931912,-1568592000,-1554080400,-1537142400,-1522630800,-1505692800,-1491181200,-1474243200,-1459126800,-242265600,-228877200,-210556800,-197427600,-178934400,-165718800,-147398400,-134269200,-116467200,-102646800,-84326400,-71110800,-52704000,-39488400,-21168000,-7952400],"o":[8712,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200]},"Asia/Khandyga":{"source":"Asia/Khandyga","t":[-1579424533,-1247558400],"o":[32533,28800,32400]},"Asia/Ust-Nera":{"source":"Asia/Ust-Nera","t":[-1579426374,-1247558400],"o":[34374,28800,32400]},"Etc/GMT-4":{"source":"Etc/GMT-4","t":[],"o":[14400]},"US/Alaska":{"source":"America/Anchorage","t":[-3225223727,-2188951224,-880200000,-765378000,-21470400,-5749200],"o":[50424,-35976,-36000,-32400,-36000,-32400,-36000]}}}');
   }
 });
 
 // src/data/tz-history/2025c/04.json
-var require__5 = __commonJS({
-  "src/data/tz-history/2025c/04.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "America/Merida": { source: "America/Merida", t: [-1514743200], o: [-21508, -21600] }, "Antarctica/Vostok": { source: "Antarctica/Vostok", t: [-380073600], o: [null, 25200] }, "Atlantic/Stanley": { source: "Atlantic/Stanley", t: [-1824235716, -1018209600, -1003093200, -98676e4, -971643600, -954705600, -939589200, -923256e3, -908139600, -891806400, -87669e4, -860356800, -852066e3], o: [-13884, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400] }, "Chile/EasterIsland": { source: "Pacific/Easter", t: [-1178124152, -36619200, -23922e3, -3355200], o: [-26248, -25200, -21600, -25200, -21600] }, "GMT+0": { source: "Etc/GMT", t: [], o: [0] }, "Pacific/Kosrae": { source: "Pacific/Kosrae", t: [-3944631116, -2177491916, -1743678e3, -1606813200, -1041418800, -907408800, -770634e3, -7988400], o: [-47284, 39116, 39600, 32400, 39600, 36e3, 32400, 39600, 43200] } } };
+var __exports5 = {};
+__export(__exports5, {
+  default: () => __default5
+});
+var __default5;
+var init__5 = __esm({
+  "src/data/tz-history/2025c/04.json"() {
+    "use strict";
+    __default5 = JSON.parse('{"tzdb":"2025c","zones":{"America/Merida":{"source":"America/Merida","t":[-1514743200],"o":[-21508,-21600]},"Antarctica/Vostok":{"source":"Antarctica/Vostok","t":[-380073600],"o":[null,25200]},"Atlantic/Stanley":{"source":"Atlantic/Stanley","t":[-1824235716,-1018209600,-1003093200,-986760000,-971643600,-954705600,-939589200,-923256000,-908139600,-891806400,-876690000,-860356800,-852066000],"o":[-13884,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400]},"Chile/EasterIsland":{"source":"Pacific/Easter","t":[-1178124152,-36619200,-23922000,-3355200],"o":[-26248,-25200,-21600,-25200,-21600]},"GMT+0":{"source":"Etc/GMT","t":[],"o":[0]},"Pacific/Kosrae":{"source":"Pacific/Kosrae","t":[-3944631116,-2177491916,-1743678000,-1606813200,-1041418800,-907408800,-770634000,-7988400],"o":[-47284,39116,39600,32400,39600,36000,32400,39600,43200]}}}');
   }
 });
 
 // src/data/tz-history/2025c/05.json
-var require__6 = __commonJS({
-  "src/data/tz-history/2025c/05.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "America/Guatemala": { source: "America/Guatemala", t: [-1617040676], o: [-21724, -21600] }, "America/Indiana/Knox": { source: "America/Indiana/Knox", t: [-2717647200, -1633276800, -1615136400, -1601827200, -1583686800, -880214400, -765392400, -715795200, -702493200, -684345600, -671043600, -652896e3, -639594e3, -620841600, -608144400, -589392e3, -57609e4, -557942400, -544640400, -526492800, -513190800, -495043200, -481741200, -463593600, -447267600, -431539200, -415818e3, -400089600, -386787600, -36864e4, -355338e3, -337190400, -321469200, -305740800, -289414800, -273686400, -257965200, -242236800, -195066e3, -84384e3, -68662800, -52934400, -37213200, -21484800, -5763600], o: [-20790, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600] }, "America/Santo_Domingo": { source: "America/Santo_Domingo", t: [-2524504824, -1159773600, -100119600, -89668800, -5770800], o: [-16776, -16800, -18e3, -14400, -18e3, -16200] }, "America/Winnipeg": { source: "America/Winnipeg", t: [-2602258284, -1694368800, -1681671600, -1632067200, -1615136400, -1029686400, -1018198800, -880214400, -765392400, -746035200, -732733200, -715795200, -702493200, -684345600, -671043600, -652896e3, -639594e3, -620755200, -607626e3, -589392e3, -57609e4, -557942400, -544640400, -526492800, -513190800, -495043200, -481741200, -463593600, -450291600, -431539200, -418237200, -400089600, -386787600, -36864e4, -355338e3, -337190400, -321469200, -305740800, -292438800, -210787200, -19809e4, -116438400, -100108800, -84384e3, -68659200, -52934400, -37209600, -21484800, -576e4], o: [-23316, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600] }, "Antarctica/Rothera": { source: "Antarctica/Rothera", t: [], o: [null] }, "Asia/Baku": { source: "Asia/Baku", t: [-1441163964, -405140400], o: [11964, 10800, 14400] }, "Asia/Chita": { source: "Asia/Chita", t: [-1579419232, -1247558400], o: [27232, 28800, 32400] }, "Asia/Kolkata": { source: "Asia/Kolkata", t: [-3645237208, -3155694800, -2019705670, -891581400, -872058600, -862637400, -764145e3], o: [21208, 21200, 19270, 19800, 23400, 19800, 23400, 19800] }, "Etc/GMT+4": { source: "Etc/GMT+4", t: [], o: [-14400] }, "Pacific/Marquesas": { source: "Pacific/Marquesas", t: [-1806676920], o: [-33480, -34200] } } };
+var __exports6 = {};
+__export(__exports6, {
+  default: () => __default6
+});
+var __default6;
+var init__6 = __esm({
+  "src/data/tz-history/2025c/05.json"() {
+    "use strict";
+    __default6 = JSON.parse('{"tzdb":"2025c","zones":{"America/Guatemala":{"source":"America/Guatemala","t":[-1617040676],"o":[-21724,-21600]},"America/Indiana/Knox":{"source":"America/Indiana/Knox","t":[-2717647200,-1633276800,-1615136400,-1601827200,-1583686800,-880214400,-765392400,-715795200,-702493200,-684345600,-671043600,-652896000,-639594000,-620841600,-608144400,-589392000,-576090000,-557942400,-544640400,-526492800,-513190800,-495043200,-481741200,-463593600,-447267600,-431539200,-415818000,-400089600,-386787600,-368640000,-355338000,-337190400,-321469200,-305740800,-289414800,-273686400,-257965200,-242236800,-195066000,-84384000,-68662800,-52934400,-37213200,-21484800,-5763600],"o":[-20790,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600]},"America/Santo_Domingo":{"source":"America/Santo_Domingo","t":[-2524504824,-1159773600,-100119600,-89668800,-5770800],"o":[-16776,-16800,-18000,-14400,-18000,-16200]},"America/Winnipeg":{"source":"America/Winnipeg","t":[-2602258284,-1694368800,-1681671600,-1632067200,-1615136400,-1029686400,-1018198800,-880214400,-765392400,-746035200,-732733200,-715795200,-702493200,-684345600,-671043600,-652896000,-639594000,-620755200,-607626000,-589392000,-576090000,-557942400,-544640400,-526492800,-513190800,-495043200,-481741200,-463593600,-450291600,-431539200,-418237200,-400089600,-386787600,-368640000,-355338000,-337190400,-321469200,-305740800,-292438800,-210787200,-198090000,-116438400,-100108800,-84384000,-68659200,-52934400,-37209600,-21484800,-5760000],"o":[-23316,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600]},"Antarctica/Rothera":{"source":"Antarctica/Rothera","t":[],"o":[null]},"Asia/Baku":{"source":"Asia/Baku","t":[-1441163964,-405140400],"o":[11964,10800,14400]},"Asia/Chita":{"source":"Asia/Chita","t":[-1579419232,-1247558400],"o":[27232,28800,32400]},"Asia/Kolkata":{"source":"Asia/Kolkata","t":[-3645237208,-3155694800,-2019705670,-891581400,-872058600,-862637400,-764145000],"o":[21208,21200,19270,19800,23400,19800,23400,19800]},"Etc/GMT+4":{"source":"Etc/GMT+4","t":[],"o":[-14400]},"Pacific/Marquesas":{"source":"Pacific/Marquesas","t":[-1806676920],"o":[-33480,-34200]}}}');
   }
 });
 
 // src/data/tz-history/2025c/06.json
-var require__7 = __commonJS({
-  "src/data/tz-history/2025c/06.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "Africa/Nairobi": { source: "Africa/Nairobi", t: [-1946168836, -1309746600, -1261969200, -1041388200, -865305900], o: [8836, 9e3, 10800, 9e3, 9900, 10800] }, "America/Bogota": { source: "America/Bogota", t: [-1739041424], o: [-17776, -18e3] }, "Europe/Nicosia": { source: "Asia/Nicosia", t: [-1518920008], o: [8008, 7200] }, "Pacific/Gambier": { source: "Pacific/Gambier", t: [-1806678012], o: [-32388, -32400] } } };
+var __exports7 = {};
+__export(__exports7, {
+  default: () => __default7
+});
+var __default7;
+var init__7 = __esm({
+  "src/data/tz-history/2025c/06.json"() {
+    "use strict";
+    __default7 = JSON.parse('{"tzdb":"2025c","zones":{"Africa/Nairobi":{"source":"Africa/Nairobi","t":[-1946168836,-1309746600,-1261969200,-1041388200,-865305900],"o":[8836,9000,10800,9000,9900,10800]},"America/Bogota":{"source":"America/Bogota","t":[-1739041424],"o":[-17776,-18000]},"Europe/Nicosia":{"source":"Asia/Nicosia","t":[-1518920008],"o":[8008,7200]},"Pacific/Gambier":{"source":"Pacific/Gambier","t":[-1806678012],"o":[-32388,-32400]}}}');
   }
 });
 
 // src/data/tz-history/2025c/07.json
-var require__8 = __commonJS({
-  "src/data/tz-history/2025c/07.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "Africa/Luanda": { source: "Africa/Luanda", t: [-2461452776, -1830387600], o: [3176, 3124, 3600] }, "Africa/Porto-Novo": { source: "Africa/Porto-Novo", t: [-1830384628, -1131235200], o: [628, 0, 3600] }, "America/Antigua": { source: "America/Antigua", t: [-1825098768, -599598e3], o: [-14832, -18e3, -14400] }, "America/La_Paz": { source: "America/La_Paz", t: [-1205954844, -1192307244], o: [-16356, -12756, -14400] }, "America/Port_of_Spain": { source: "America/Port_of_Spain", t: [-1825098836], o: [-14764, -14400] }, "America/Yakutat": { source: "America/Yakutat", t: [-3225223727, -2188953665, -880203600, -765381600, -21474e3, -5752800], o: [52865, -33535, -32400, -28800, -32400, -28800, -32400] }, "Asia/Kabul": { source: "Asia/Kabul", t: [-2524538208, -788932800], o: [16608, 14400, 16200] }, "Australia/Victoria": { source: "Australia/Melbourne", t: [-2364111592, -167256e4, -1665388800, -883641600, -876124800, -8604e5, -844675200, -828345600, -813225600], o: [34792, 36e3, 39600, 36e3, 39600, 36e3, 39600, 36e3, 39600, 36e3] }, "Canada/Mountain": { source: "America/Edmonton", t: [-1998663968, -1632063600, -1615132800, -1600614e3, -1596816e3, -1567954800, -1551628800, -1536505200, -1523203200, -1504450800, -1491753600, -1473001200, -1459699200, -880210800, -765388800, -715791600, -702489600], o: [-27232, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200] }, UCT: { source: "Etc/UTC", t: [], o: [0] } } };
+var __exports8 = {};
+__export(__exports8, {
+  default: () => __default8
+});
+var __default8;
+var init__8 = __esm({
+  "src/data/tz-history/2025c/07.json"() {
+    "use strict";
+    __default8 = JSON.parse('{"tzdb":"2025c","zones":{"Africa/Luanda":{"source":"Africa/Luanda","t":[-2461452776,-1830387600],"o":[3176,3124,3600]},"Africa/Porto-Novo":{"source":"Africa/Porto-Novo","t":[-1830384628,-1131235200],"o":[628,0,3600]},"America/Antigua":{"source":"America/Antigua","t":[-1825098768,-599598000],"o":[-14832,-18000,-14400]},"America/La_Paz":{"source":"America/La_Paz","t":[-1205954844,-1192307244],"o":[-16356,-12756,-14400]},"America/Port_of_Spain":{"source":"America/Port_of_Spain","t":[-1825098836],"o":[-14764,-14400]},"America/Yakutat":{"source":"America/Yakutat","t":[-3225223727,-2188953665,-880203600,-765381600,-21474000,-5752800],"o":[52865,-33535,-32400,-28800,-32400,-28800,-32400]},"Asia/Kabul":{"source":"Asia/Kabul","t":[-2524538208,-788932800],"o":[16608,14400,16200]},"Australia/Victoria":{"source":"Australia/Melbourne","t":[-2364111592,-1672560000,-1665388800,-883641600,-876124800,-860400000,-844675200,-828345600,-813225600],"o":[34792,36000,39600,36000,39600,36000,39600,36000,39600,36000]},"Canada/Mountain":{"source":"America/Edmonton","t":[-1998663968,-1632063600,-1615132800,-1600614000,-1596816000,-1567954800,-1551628800,-1536505200,-1523203200,-1504450800,-1491753600,-1473001200,-1459699200,-880210800,-765388800,-715791600,-702489600],"o":[-27232,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200]},"UCT":{"source":"Etc/UTC","t":[],"o":[0]}}}');
   }
 });
 
 // src/data/tz-history/2025c/08.json
-var require__9 = __commonJS({
-  "src/data/tz-history/2025c/08.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "Africa/Accra": { source: "Africa/Accra", t: [-1709337548, -1581206400, -1577917200, -1556834400, -1546294800, -1525298400, -1514758800, -1493762400, -1483222800, -1462226400, -1451686800, -1430604e3, -1420064400, -1399068e3, -1388528400, -1367532e3, -1356992400, -1335996e3, -1325456400, -1304373600, -1293834e3, -1272837600, -1262298e3, -1241301600, -1230762e3, -1209765600, -1199226e3, -1178143200, -1167603600, -1146607200, -1136067600, -1115071200, -1104531600, -1083535200, -1072995600, -1051912800, -1041373200, -1020376800, -1009837200, -988840800, -978301200, -957304800, -946765200, -936309600, -915142800, -904773600, -883606800, -880329600, -756952200, -610149600, -599610600, -578613600, -568074600, -546991200, -536452200, -515455200, -504916200, -483919200, -473380200, -452383200, -441844200], o: [-52, 0, 1200, 0, 1200, 0, 1200, 0, 1200, 0, 1200, 0, 1200, 0, 1200, 0, 1200, 0, 1200, 0, 1200, 0, 1200, 0, 1200, 0, 1200, 0, 1200, 0, 1200, 0, 1200, 0, 1200, 0, 1200, 0, 1200, 0, 1200, 0, 1200, 0, 1200, 0, 1200, 0, 1800, 0, 1800, 0, 1800, 0, 1800, 0, 1800, 0, 1800, 0, 1800, 0] }, "America/Atikokan": { source: "America/Atikokan", t: [-2366733212, -1632067200, -1615136400, -923248800], o: [-21988, -21600, -18e3, -21600, -18e3] }, "America/Ciudad_Juarez": { source: "America/Ciudad_Juarez", t: [-1514739600, -1343149200, -1234807200, -1220461200, -1207159200, -1191344400], o: [-25556, -25200, -21600, -25200, -21600, -25200, -21600] }, "America/Porto_Acre": { source: "America/Rio_Branco", t: [-1767209328, -1206950400, -1191355200, -1175367600, -1159819200, -633812400, -622062e3, -602276400, -591825600, -570740400, -560203200, -539118e3, -531345600, -191358e3, -184190400, -155156400, -150062400, -128890800, -121118400, -99946800, -89582400, -68410800, -5796e4], o: [-16272, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3] }, "Etc/Zulu": { source: "Etc/UTC", t: [], o: [0] }, "Europe/Ulyanovsk": { source: "Europe/Ulyanovsk", t: [-1593820800, -1247540400], o: [11616, 10800, 14400] }, HST: { source: "HST", t: [], o: [-36e3] }, "Indian/Mayotte": { source: "Indian/Mayotte", t: [-1846292456], o: [10856, 10800] }, "Pacific/Samoa": { source: "Pacific/Pago_Pago", t: [-2445424632, -1861879032], o: [45432, -40968, -39600] } } };
+var __exports9 = {};
+__export(__exports9, {
+  default: () => __default9
+});
+var __default9;
+var init__9 = __esm({
+  "src/data/tz-history/2025c/08.json"() {
+    "use strict";
+    __default9 = JSON.parse('{"tzdb":"2025c","zones":{"Africa/Accra":{"source":"Africa/Accra","t":[-1709337548,-1581206400,-1577917200,-1556834400,-1546294800,-1525298400,-1514758800,-1493762400,-1483222800,-1462226400,-1451686800,-1430604000,-1420064400,-1399068000,-1388528400,-1367532000,-1356992400,-1335996000,-1325456400,-1304373600,-1293834000,-1272837600,-1262298000,-1241301600,-1230762000,-1209765600,-1199226000,-1178143200,-1167603600,-1146607200,-1136067600,-1115071200,-1104531600,-1083535200,-1072995600,-1051912800,-1041373200,-1020376800,-1009837200,-988840800,-978301200,-957304800,-946765200,-936309600,-915142800,-904773600,-883606800,-880329600,-756952200,-610149600,-599610600,-578613600,-568074600,-546991200,-536452200,-515455200,-504916200,-483919200,-473380200,-452383200,-441844200],"o":[-52,0,1200,0,1200,0,1200,0,1200,0,1200,0,1200,0,1200,0,1200,0,1200,0,1200,0,1200,0,1200,0,1200,0,1200,0,1200,0,1200,0,1200,0,1200,0,1200,0,1200,0,1200,0,1200,0,1200,0,1800,0,1800,0,1800,0,1800,0,1800,0,1800,0,1800,0]},"America/Atikokan":{"source":"America/Atikokan","t":[-2366733212,-1632067200,-1615136400,-923248800],"o":[-21988,-21600,-18000,-21600,-18000]},"America/Ciudad_Juarez":{"source":"America/Ciudad_Juarez","t":[-1514739600,-1343149200,-1234807200,-1220461200,-1207159200,-1191344400],"o":[-25556,-25200,-21600,-25200,-21600,-25200,-21600]},"America/Porto_Acre":{"source":"America/Rio_Branco","t":[-1767209328,-1206950400,-1191355200,-1175367600,-1159819200,-633812400,-622062000,-602276400,-591825600,-570740400,-560203200,-539118000,-531345600,-191358000,-184190400,-155156400,-150062400,-128890800,-121118400,-99946800,-89582400,-68410800,-57960000],"o":[-16272,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000]},"Etc/Zulu":{"source":"Etc/UTC","t":[],"o":[0]},"Europe/Ulyanovsk":{"source":"Europe/Ulyanovsk","t":[-1593820800,-1247540400],"o":[11616,10800,14400]},"HST":{"source":"HST","t":[],"o":[-36000]},"Indian/Mayotte":{"source":"Indian/Mayotte","t":[-1846292456],"o":[10856,10800]},"Pacific/Samoa":{"source":"Pacific/Pago_Pago","t":[-2445424632,-1861879032],"o":[45432,-40968,-39600]}}}');
   }
 });
 
 // src/data/tz-history/2025c/09.json
-var require__10 = __commonJS({
-  "src/data/tz-history/2025c/09.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "Africa/Bissau": { source: "Africa/Bissau", t: [-1830380400], o: [-3740, -3600] }, "America/Adak": { source: "America/Adak", t: [-3225223727, -2188944802, -880196400, -765374400, -21466800, -5745600], o: [44002, -42398, -39600, -36e3, -39600, -36e3, -39600] }, "America/Cayman": { source: "America/Cayman", t: [-2524502068, -1827687170], o: [-19532, -18430, -18e3] }, "America/Glace_Bay": { source: "America/Glace_Bay", t: [-2131646412, -1632074400, -1615143600, -880221600, -765399600, -5265e5, -513198e3], o: [-14388, -14400, -10800, -14400, -10800, -14400, -10800, -14400] }, "America/Lima": { source: "America/Lima", t: [-2524503108, -1938538284, -1009825200, -1002052800, -986756400, -971035200, -955306800, -939585600], o: [-18492, -18516, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3] }, "America/Toronto": { source: "America/Toronto", t: [-2366736148, -1632070800, -161514e4, -1601753400, -1583697600, -1567357200, -1554667200, -1534698e3, -1524074400, -1503248400, -1492365600, -1471798800, -1460916e3, -1440954e3, -1428861600, -1409504400, -1397412e3, -1378054800, -1365962400, -1346605200, -1333908e3, -1315155600, -1301853600, -1283706e3, -1270404e3, -1252256400, -1238954400, -1220806800, -1207504800, -1188752400, -1176055200, -1157302800, -1144000800, -1125853200, -1112551200, -1094403600, -1081101600, -1062954e3, -1049652e3, -1031504400, -1018202400, -1000054800, -986752800, -968000400, -955303200, -936550800, -765396e3, -747248400, -733946400, -715798800, -702496800, -684349200, -671047200, -652899600, -634154400, -620845200, -602704800, -589395600, -576093600, -557946e3, -544644e3, -526496400, -513194400, -495046800, -481744800, -463597200, -450295200, -431542800, -418240800, -400093200, -384372e3, -368643600, -352922400, -337194e3, -321472800, -305744400, -289418400, -27369e4, -257968800, -242240400, -226519200, -210790800, -195069600, -179341200, -16362e4, -147891600, -131565600, -116442e3, -100116e3, -84387600, -68666400, -52938e3, -37216800, -21488400, -5767200], o: [-19052, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3] }, "Antarctica/Palmer": { source: "Antarctica/Palmer", t: [-157766400, -152658e3, -132955200, -121122e3, -101419200, -86821200, -71092800, -54766800, -39038400, -23317200, -7588800], o: [null, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800] }, "Indian/Reunion": { source: "Indian/Reunion", t: [-1848886912], o: [13312, 14400] }, Jamaica: { source: "America/Jamaica", t: [-1827687170], o: [-18430, -18e3] } } };
+var __exports10 = {};
+__export(__exports10, {
+  default: () => __default10
+});
+var __default10;
+var init__10 = __esm({
+  "src/data/tz-history/2025c/09.json"() {
+    "use strict";
+    __default10 = JSON.parse('{"tzdb":"2025c","zones":{"Africa/Bissau":{"source":"Africa/Bissau","t":[-1830380400],"o":[-3740,-3600]},"America/Adak":{"source":"America/Adak","t":[-3225223727,-2188944802,-880196400,-765374400,-21466800,-5745600],"o":[44002,-42398,-39600,-36000,-39600,-36000,-39600]},"America/Cayman":{"source":"America/Cayman","t":[-2524502068,-1827687170],"o":[-19532,-18430,-18000]},"America/Glace_Bay":{"source":"America/Glace_Bay","t":[-2131646412,-1632074400,-1615143600,-880221600,-765399600,-526500000,-513198000],"o":[-14388,-14400,-10800,-14400,-10800,-14400,-10800,-14400]},"America/Lima":{"source":"America/Lima","t":[-2524503108,-1938538284,-1009825200,-1002052800,-986756400,-971035200,-955306800,-939585600],"o":[-18492,-18516,-18000,-14400,-18000,-14400,-18000,-14400,-18000]},"America/Toronto":{"source":"America/Toronto","t":[-2366736148,-1632070800,-1615140000,-1601753400,-1583697600,-1567357200,-1554667200,-1534698000,-1524074400,-1503248400,-1492365600,-1471798800,-1460916000,-1440954000,-1428861600,-1409504400,-1397412000,-1378054800,-1365962400,-1346605200,-1333908000,-1315155600,-1301853600,-1283706000,-1270404000,-1252256400,-1238954400,-1220806800,-1207504800,-1188752400,-1176055200,-1157302800,-1144000800,-1125853200,-1112551200,-1094403600,-1081101600,-1062954000,-1049652000,-1031504400,-1018202400,-1000054800,-986752800,-968000400,-955303200,-936550800,-765396000,-747248400,-733946400,-715798800,-702496800,-684349200,-671047200,-652899600,-634154400,-620845200,-602704800,-589395600,-576093600,-557946000,-544644000,-526496400,-513194400,-495046800,-481744800,-463597200,-450295200,-431542800,-418240800,-400093200,-384372000,-368643600,-352922400,-337194000,-321472800,-305744400,-289418400,-273690000,-257968800,-242240400,-226519200,-210790800,-195069600,-179341200,-163620000,-147891600,-131565600,-116442000,-100116000,-84387600,-68666400,-52938000,-37216800,-21488400,-5767200],"o":[-19052,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000]},"Antarctica/Palmer":{"source":"Antarctica/Palmer","t":[-157766400,-152658000,-132955200,-121122000,-101419200,-86821200,-71092800,-54766800,-39038400,-23317200,-7588800],"o":[null,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800]},"Indian/Reunion":{"source":"Indian/Reunion","t":[-1848886912],"o":[13312,14400]},"Jamaica":{"source":"America/Jamaica","t":[-1827687170],"o":[-18430,-18000]}}}');
   }
 });
 
 // src/data/tz-history/2025c/10.json
-var require__11 = __commonJS({
-  "src/data/tz-history/2025c/10.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "America/Blanc-Sablon": { source: "America/Blanc-Sablon", t: [-2713896692, -1632074400, -1615143600, -880221600, -765399600], o: [-13708, -14400, -10800, -14400, -10800, -14400] }, "America/Creston": { source: "America/Creston", t: [-2713882436, -1680454800, -1627833600], o: [-27964, -25200, -28800, -25200] }, "America/Fortaleza": { source: "America/Fortaleza", t: [-1767216360, -1206957600, -1191362400, -1175374800, -1159826400, -633819600, -622069200, -602283600, -591832800, -570747600, -560210400, -539125200, -531352800, -191365200, -184197600, -155163600, -150069600, -128898e3, -121125600, -99954e3, -89589600, -68418e3, -57967200], o: [-9240, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800] }, "America/Santiago": { source: "America/Santiago", t: [-1892661435, -1688410800, -1619205435, -1593806400, -1335986235, -1317585600, -1304362800, -1286049600, -1272826800, -1254513600, -1241290800, -1222977600, -1209754800, -1191355200, -1178132400, -870552e3, -865278e3, -74052e4, -736635600, -718056e3, -713649600, -36619200, -23922e3, -3355200], o: [-16965, -18e3, -16965, -14400, -16965, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -10800, -14400, -18e3, -14400, -10800, -14400, -10800] }, "Asia/Samarkand": { source: "Asia/Samarkand", t: [-1441168073, -1247544e3], o: [16073, 14400, 18e3] }, "Canada/Yukon": { source: "America/Whitehorse", t: [-2188997988, -1632056400, -1615125600, -1596978e3, -1583164800, -880203600, -765381600, -147884400, -131554800, -121273200], o: [-32412, -32400, -28800, -32400, -28800, -32400, -28800, -32400, -25200, -32400, -28800] }, "Etc/GMT": { source: "Etc/GMT", t: [], o: [0] }, "Etc/GMT-12": { source: "Etc/GMT-12", t: [], o: [43200] }, "Etc/Greenwich": { source: "Etc/GMT", t: [], o: [0] }, "Europe/Mariehamn": { source: "Europe/Helsinki", t: [-1535938789, -875671200, -859773600], o: [5989, 7200, 10800, 7200] }, "Indian/Maldives": { source: "Indian/Maldives", t: [-315636840], o: [17640, 18e3] }, "US/Arizona": { source: "America/Phoenix", t: [-2717643600, -1633273200, -1615132800, -1601823600, -1583683200, -880210800, -820519140, -812653140, -796845540, -84380400, -68659200], o: [-26898, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200] } } };
+var __exports11 = {};
+__export(__exports11, {
+  default: () => __default11
+});
+var __default11;
+var init__11 = __esm({
+  "src/data/tz-history/2025c/10.json"() {
+    "use strict";
+    __default11 = JSON.parse('{"tzdb":"2025c","zones":{"America/Blanc-Sablon":{"source":"America/Blanc-Sablon","t":[-2713896692,-1632074400,-1615143600,-880221600,-765399600],"o":[-13708,-14400,-10800,-14400,-10800,-14400]},"America/Creston":{"source":"America/Creston","t":[-2713882436,-1680454800,-1627833600],"o":[-27964,-25200,-28800,-25200]},"America/Fortaleza":{"source":"America/Fortaleza","t":[-1767216360,-1206957600,-1191362400,-1175374800,-1159826400,-633819600,-622069200,-602283600,-591832800,-570747600,-560210400,-539125200,-531352800,-191365200,-184197600,-155163600,-150069600,-128898000,-121125600,-99954000,-89589600,-68418000,-57967200],"o":[-9240,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800]},"America/Santiago":{"source":"America/Santiago","t":[-1892661435,-1688410800,-1619205435,-1593806400,-1335986235,-1317585600,-1304362800,-1286049600,-1272826800,-1254513600,-1241290800,-1222977600,-1209754800,-1191355200,-1178132400,-870552000,-865278000,-740520000,-736635600,-718056000,-713649600,-36619200,-23922000,-3355200],"o":[-16965,-18000,-16965,-14400,-16965,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-10800,-14400,-18000,-14400,-10800,-14400,-10800]},"Asia/Samarkand":{"source":"Asia/Samarkand","t":[-1441168073,-1247544000],"o":[16073,14400,18000]},"Canada/Yukon":{"source":"America/Whitehorse","t":[-2188997988,-1632056400,-1615125600,-1596978000,-1583164800,-880203600,-765381600,-147884400,-131554800,-121273200],"o":[-32412,-32400,-28800,-32400,-28800,-32400,-28800,-32400,-25200,-32400,-28800]},"Etc/GMT":{"source":"Etc/GMT","t":[],"o":[0]},"Etc/GMT-12":{"source":"Etc/GMT-12","t":[],"o":[43200]},"Etc/Greenwich":{"source":"Etc/GMT","t":[],"o":[0]},"Europe/Mariehamn":{"source":"Europe/Helsinki","t":[-1535938789,-875671200,-859773600],"o":[5989,7200,10800,7200]},"Indian/Maldives":{"source":"Indian/Maldives","t":[-315636840],"o":[17640,18000]},"US/Arizona":{"source":"America/Phoenix","t":[-2717643600,-1633273200,-1615132800,-1601823600,-1583683200,-880210800,-820519140,-812653140,-796845540,-84380400,-68659200],"o":[-26898,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200]}}}');
   }
 });
 
 // src/data/tz-history/2025c/11.json
-var require__12 = __commonJS({
-  "src/data/tz-history/2025c/11.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "Africa/Kigali": { source: "Africa/Kigali", t: [-1091498416], o: [7216, 7200] }, "America/Argentina/San_Juan": { source: "America/Argentina/San_Juan", t: [-2372095556, -1567453392, -1233432e3, -1222981200, -1205956800, -1194037200, -1172865600, -1162501200, -1141329600, -1130965200, -1109793600, -1099429200, -1078257600, -1067806800, -1046635200, -1036270800, -1015099200, -1004734800, -983563200, -973198800, -952027200, -941576400, -931032e3, -900882e3, -890337600, -833749200, -827265600, -752274e3, -733780800, -197326800, -190843200, -184194e3, -164491200, -152658e3, -132955200, -121122e3, -101419200, -86821200, -71092800, -54766800, -39038400, -23317200, -7588800], o: [-16444, -15408, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800] }, "America/Manaus": { source: "America/Manaus", t: [-1767211196, -1206954e3, -1191358800, -1175371200, -1159822800, -633816e3, -622065600, -60228e4, -591829200, -570744e3, -560206800, -539121600, -531349200, -191361600, -184194e3, -15516e4, -150066e3, -128894400, -121122e3, -99950400, -89586e3, -68414400, -57963600], o: [-14404, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400] }, "America/Tortola": { source: "America/Tortola", t: [-1846266092], o: [-15508, -14400] }, "America/Vancouver": { source: "America/Vancouver", t: [-2713880852, -163206e4, -1615129200, -880207200, -765385200, -747237600, -733935600, -715788e3, -702486e3, -684338400, -671036400, -652888800, -639586800, -620834400, -608137200, -589384800, -576082800, -557935200, -544633200, -526485600, -513183600, -495036e3, -481734e3, -463586400, -450284400, -431532e3, -41823e4, -400082400, -386780400, -368632800, -355330800, -337183200, -323881200, -305733600, -292431600, -273679200, -260982e3, -242229600, -226508400, -21078e4, -195058800, -179330400, -163609200, -147880800, -131554800, -116431200, -100105200, -84376800, -68655600, -52927200, -37206e3, -21477600, -5756400], o: [-29548, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800] }, "Australia/Lord_Howe": { source: "Australia/Lord_Howe", t: [-2364114980], o: [38180, 36e3] }, "Europe/Zurich": { source: "Europe/Zurich", t: [-3675198848, -2385246586, -904435200, -891129600, -872985600, -85968e4], o: [2048, 1786, 3600, 7200, 3600, 7200, 3600] }, "Mexico/BajaSur": { source: "America/Mazatlan", t: [-1514739600, -1343149200, -1234807200, -1220461200, -1207159200, -1191344400, -873828e3], o: [-25540, -25200, -21600, -25200, -21600, -25200, -21600, -25200] }, "US/Central": { source: "America/Chicago", t: [-2717647200, -1633276800, -1615136400, -1601827200, -1583686800, -1563724800, -1551632400, -1538928e3, -1520182800, -1504454400, -1491757200, -1473004800, -1459702800, -1441555200, -1428253200, -1410105600, -1396803600, -1378656e3, -1365354e3, -1347206400, -1333904400, -1315152e3, -130185e4, -1283702400, -1270400400, -1252252800, -1238950800, -1220803200, -1207501200, -1189353600, -1176051600, -1157299200, -1144602e3, -1125849600, -1112547600, -10944e5, -1081098e3, -1067788800, -1045414800, -1031500800, -1018198800, -1000051200, -986749200, -967996800, -955299600, -936547200, -923245200, -905097600, -891795600, -880214400, -765392400, -747244800, -733942800, -715795200, -702493200, -684345600, -671043600, -652896e3, -639594e3, -620841600, -608144400, -589392e3, -57609e4, -557942400, -544640400, -526492800, -513190800, -495043200, -481741200, -463593600, -447267600, -431539200, -415818e3, -400089600, -384368400, -36864e4, -352918800, -337190400, -321469200, -305740800, -289414800, -273686400, -257965200, -242236800, -226515600, -210787200, -195066e3, -179337600, -163616400, -147888e3, -131562e3, -116438400, -100112400, -84384e3, -68662800, -52934400, -37213200, -21484800, -5763600], o: [-21036, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600] } } };
+var __exports12 = {};
+__export(__exports12, {
+  default: () => __default12
+});
+var __default12;
+var init__12 = __esm({
+  "src/data/tz-history/2025c/11.json"() {
+    "use strict";
+    __default12 = JSON.parse('{"tzdb":"2025c","zones":{"Africa/Kigali":{"source":"Africa/Kigali","t":[-1091498416],"o":[7216,7200]},"America/Argentina/San_Juan":{"source":"America/Argentina/San_Juan","t":[-2372095556,-1567453392,-1233432000,-1222981200,-1205956800,-1194037200,-1172865600,-1162501200,-1141329600,-1130965200,-1109793600,-1099429200,-1078257600,-1067806800,-1046635200,-1036270800,-1015099200,-1004734800,-983563200,-973198800,-952027200,-941576400,-931032000,-900882000,-890337600,-833749200,-827265600,-752274000,-733780800,-197326800,-190843200,-184194000,-164491200,-152658000,-132955200,-121122000,-101419200,-86821200,-71092800,-54766800,-39038400,-23317200,-7588800],"o":[-16444,-15408,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800]},"America/Manaus":{"source":"America/Manaus","t":[-1767211196,-1206954000,-1191358800,-1175371200,-1159822800,-633816000,-622065600,-602280000,-591829200,-570744000,-560206800,-539121600,-531349200,-191361600,-184194000,-155160000,-150066000,-128894400,-121122000,-99950400,-89586000,-68414400,-57963600],"o":[-14404,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400]},"America/Tortola":{"source":"America/Tortola","t":[-1846266092],"o":[-15508,-14400]},"America/Vancouver":{"source":"America/Vancouver","t":[-2713880852,-1632060000,-1615129200,-880207200,-765385200,-747237600,-733935600,-715788000,-702486000,-684338400,-671036400,-652888800,-639586800,-620834400,-608137200,-589384800,-576082800,-557935200,-544633200,-526485600,-513183600,-495036000,-481734000,-463586400,-450284400,-431532000,-418230000,-400082400,-386780400,-368632800,-355330800,-337183200,-323881200,-305733600,-292431600,-273679200,-260982000,-242229600,-226508400,-210780000,-195058800,-179330400,-163609200,-147880800,-131554800,-116431200,-100105200,-84376800,-68655600,-52927200,-37206000,-21477600,-5756400],"o":[-29548,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800]},"Australia/Lord_Howe":{"source":"Australia/Lord_Howe","t":[-2364114980],"o":[38180,36000]},"Europe/Zurich":{"source":"Europe/Zurich","t":[-3675198848,-2385246586,-904435200,-891129600,-872985600,-859680000],"o":[2048,1786,3600,7200,3600,7200,3600]},"Mexico/BajaSur":{"source":"America/Mazatlan","t":[-1514739600,-1343149200,-1234807200,-1220461200,-1207159200,-1191344400,-873828000],"o":[-25540,-25200,-21600,-25200,-21600,-25200,-21600,-25200]},"US/Central":{"source":"America/Chicago","t":[-2717647200,-1633276800,-1615136400,-1601827200,-1583686800,-1563724800,-1551632400,-1538928000,-1520182800,-1504454400,-1491757200,-1473004800,-1459702800,-1441555200,-1428253200,-1410105600,-1396803600,-1378656000,-1365354000,-1347206400,-1333904400,-1315152000,-1301850000,-1283702400,-1270400400,-1252252800,-1238950800,-1220803200,-1207501200,-1189353600,-1176051600,-1157299200,-1144602000,-1125849600,-1112547600,-1094400000,-1081098000,-1067788800,-1045414800,-1031500800,-1018198800,-1000051200,-986749200,-967996800,-955299600,-936547200,-923245200,-905097600,-891795600,-880214400,-765392400,-747244800,-733942800,-715795200,-702493200,-684345600,-671043600,-652896000,-639594000,-620841600,-608144400,-589392000,-576090000,-557942400,-544640400,-526492800,-513190800,-495043200,-481741200,-463593600,-447267600,-431539200,-415818000,-400089600,-384368400,-368640000,-352918800,-337190400,-321469200,-305740800,-289414800,-273686400,-257965200,-242236800,-226515600,-210787200,-195066000,-179337600,-163616400,-147888000,-131562000,-116438400,-100112400,-84384000,-68662800,-52934400,-37213200,-21484800,-5763600],"o":[-21036,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600]}}}');
   }
 });
 
 // src/data/tz-history/2025c/12.json
-var require__13 = __commonJS({
-  "src/data/tz-history/2025c/12.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "Africa/Bangui": { source: "Africa/Bangui", t: [-1830388460], o: [4460, 3600] }, "America/Louisville": { source: "America/Kentucky/Louisville", t: [-2717647200, -1633276800, -1615136400, -1601827200, -1583686800, -1535904e3, -1525280400, -905097600, -891795600, -880214400, -765392400, -747251940, -744224400, -620841600, -608144400, -589392e3, -57609e4, -557942400, -544640400, -526492800, -513190800, -495043200, -481741200, -463593600, -450291600, -431539200, -415818e3, -400089600, -384368400, -36864e4, -352918800, -337190400, -321469200, -305740800, -289414800, -273686400, -52938e3, -37216800, -21488400, -5767200], o: [-20582, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -14400, -18e3, -14400, -18e3] }, "America/Mendoza": { source: "America/Argentina/Mendoza", t: [-2372095484, -1567453392, -1233432e3, -1222981200, -1205956800, -1194037200, -1172865600, -1162501200, -1141329600, -1130965200, -1109793600, -1099429200, -1078257600, -1067806800, -1046635200, -1036270800, -1015099200, -1004734800, -983563200, -973198800, -952027200, -941576400, -931032e3, -900882e3, -890337600, -833749200, -827265600, -752274e3, -733780800, -197326800, -190843200, -184194e3, -164491200, -152658e3, -132955200, -121122e3, -101419200, -86821200, -71092800, -54766800, -39038400, -23317200, -7588800], o: [-16516, -15408, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800] }, "Asia/Atyrau": { source: "Asia/Atyrau", t: [-1441164464, -1247540400], o: [12464, 10800, 18e3] }, "Australia/Queensland": { source: "Australia/Brisbane", t: [-2366791928, -167256e4, -1665388800, -883641600, -876124800, -8604e5, -844675200, -828345600, -813225600], o: [36728, 36e3, 39600, 36e3, 39600, 36e3, 39600, 36e3, 39600, 36e3] }, "Etc/GMT+7": { source: "Etc/GMT+7", t: [], o: [-25200] }, "Europe/Stockholm": { source: "Europe/Stockholm", t: [-2871681132, -2208992414, -1692496800, -1680483600], o: [4332, 3614, 3600, 7200, 3600] }, "Indian/Cocos": { source: "Indian/Cocos", t: [-2209012060], o: [23260, 23400] }, PRC: { source: "Asia/Shanghai", t: [-2177481943, -1600675200, -1585904400, -933667200, -922093200, -908870400, -888829200, -881049600, -767869200, -745833600, -733827600, -716889600, -699613200, -683884800, -670669200, -652348800, -650019600], o: [29143, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800] }, "Pacific/Guadalcanal": { source: "Pacific/Guadalcanal", t: [-1806748788], o: [38388, 39600] } } };
+var __exports13 = {};
+__export(__exports13, {
+  default: () => __default13
+});
+var __default13;
+var init__13 = __esm({
+  "src/data/tz-history/2025c/12.json"() {
+    "use strict";
+    __default13 = JSON.parse('{"tzdb":"2025c","zones":{"Africa/Bangui":{"source":"Africa/Bangui","t":[-1830388460],"o":[4460,3600]},"America/Louisville":{"source":"America/Kentucky/Louisville","t":[-2717647200,-1633276800,-1615136400,-1601827200,-1583686800,-1535904000,-1525280400,-905097600,-891795600,-880214400,-765392400,-747251940,-744224400,-620841600,-608144400,-589392000,-576090000,-557942400,-544640400,-526492800,-513190800,-495043200,-481741200,-463593600,-450291600,-431539200,-415818000,-400089600,-384368400,-368640000,-352918800,-337190400,-321469200,-305740800,-289414800,-273686400,-52938000,-37216800,-21488400,-5767200],"o":[-20582,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-14400,-18000,-14400,-18000]},"America/Mendoza":{"source":"America/Argentina/Mendoza","t":[-2372095484,-1567453392,-1233432000,-1222981200,-1205956800,-1194037200,-1172865600,-1162501200,-1141329600,-1130965200,-1109793600,-1099429200,-1078257600,-1067806800,-1046635200,-1036270800,-1015099200,-1004734800,-983563200,-973198800,-952027200,-941576400,-931032000,-900882000,-890337600,-833749200,-827265600,-752274000,-733780800,-197326800,-190843200,-184194000,-164491200,-152658000,-132955200,-121122000,-101419200,-86821200,-71092800,-54766800,-39038400,-23317200,-7588800],"o":[-16516,-15408,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800]},"Asia/Atyrau":{"source":"Asia/Atyrau","t":[-1441164464,-1247540400],"o":[12464,10800,18000]},"Australia/Queensland":{"source":"Australia/Brisbane","t":[-2366791928,-1672560000,-1665388800,-883641600,-876124800,-860400000,-844675200,-828345600,-813225600],"o":[36728,36000,39600,36000,39600,36000,39600,36000,39600,36000]},"Etc/GMT+7":{"source":"Etc/GMT+7","t":[],"o":[-25200]},"Europe/Stockholm":{"source":"Europe/Stockholm","t":[-2871681132,-2208992414,-1692496800,-1680483600],"o":[4332,3614,3600,7200,3600]},"Indian/Cocos":{"source":"Indian/Cocos","t":[-2209012060],"o":[23260,23400]},"PRC":{"source":"Asia/Shanghai","t":[-2177481943,-1600675200,-1585904400,-933667200,-922093200,-908870400,-888829200,-881049600,-767869200,-745833600,-733827600,-716889600,-699613200,-683884800,-670669200,-652348800,-650019600],"o":[29143,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800]},"Pacific/Guadalcanal":{"source":"Pacific/Guadalcanal","t":[-1806748788],"o":[38388,39600]}}}');
   }
 });
 
 // src/data/tz-history/2025c/13.json
-var require__14 = __commonJS({
-  "src/data/tz-history/2025c/13.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "Africa/Niamey": { source: "Africa/Niamey", t: [-1830384508, -1131231600, -315619200], o: [508, -3600, 0, 3600] }, "America/Porto_Velho": { source: "America/Porto_Velho", t: [-1767210264, -1206954e3, -1191358800, -1175371200, -1159822800, -633816e3, -622065600, -60228e4, -591829200, -570744e3, -560206800, -539121600, -531349200, -191361600, -184194e3, -15516e4, -150066e3, -128894400, -121122e3, -99950400, -89586e3, -68414400, -57963600], o: [-15336, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400] }, "America/St_Kitts": { source: "America/St_Kitts", t: [-1825098548], o: [-15052, -14400] }, "Asia/Bahrain": { source: "Asia/Bahrain", t: [-897880940, -820553400], o: [12140, 12600, 14400] }, "Asia/Dubai": { source: "Asia/Dubai", t: [-1577936472], o: [13272, 14400] }, "Asia/Karachi": { source: "Asia/Karachi", t: [-1988166492, -862637400, -764145e3, -576135e3], o: [16092, 19800, 23400, 19800, 18e3] }, "Asia/Saigon": { source: "Asia/Ho_Chi_Minh", t: [-1851577590, -852105600, -782643600, -767869200, -718095600, -457772400, -315648e3], o: [25590, 25200, 28800, 32400, 25200, 28800, 25200, 28800] }, "Australia/LHI": { source: "Australia/Lord_Howe", t: [-2364114980], o: [38180, 36e3] }, "Europe/Andorra": { source: "Europe/Andorra", t: [-2177453164, -733881600], o: [364, 0, 3600] } } };
+var __exports14 = {};
+__export(__exports14, {
+  default: () => __default14
+});
+var __default14;
+var init__14 = __esm({
+  "src/data/tz-history/2025c/13.json"() {
+    "use strict";
+    __default14 = JSON.parse('{"tzdb":"2025c","zones":{"Africa/Niamey":{"source":"Africa/Niamey","t":[-1830384508,-1131231600,-315619200],"o":[508,-3600,0,3600]},"America/Porto_Velho":{"source":"America/Porto_Velho","t":[-1767210264,-1206954000,-1191358800,-1175371200,-1159822800,-633816000,-622065600,-602280000,-591829200,-570744000,-560206800,-539121600,-531349200,-191361600,-184194000,-155160000,-150066000,-128894400,-121122000,-99950400,-89586000,-68414400,-57963600],"o":[-15336,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400]},"America/St_Kitts":{"source":"America/St_Kitts","t":[-1825098548],"o":[-15052,-14400]},"Asia/Bahrain":{"source":"Asia/Bahrain","t":[-897880940,-820553400],"o":[12140,12600,14400]},"Asia/Dubai":{"source":"Asia/Dubai","t":[-1577936472],"o":[13272,14400]},"Asia/Karachi":{"source":"Asia/Karachi","t":[-1988166492,-862637400,-764145000,-576135000],"o":[16092,19800,23400,19800,18000]},"Asia/Saigon":{"source":"Asia/Ho_Chi_Minh","t":[-1851577590,-852105600,-782643600,-767869200,-718095600,-457772400,-315648000],"o":[25590,25200,28800,32400,25200,28800,25200,28800]},"Australia/LHI":{"source":"Australia/Lord_Howe","t":[-2364114980],"o":[38180,36000]},"Europe/Andorra":{"source":"Europe/Andorra","t":[-2177453164,-733881600],"o":[364,0,3600]}}}');
   }
 });
 
 // src/data/tz-history/2025c/14.json
-var require__15 = __commonJS({
-  "src/data/tz-history/2025c/14.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "America/Maceio": { source: "America/Maceio", t: [-1767217028, -1206957600, -1191362400, -1175374800, -1159826400, -633819600, -622069200, -602283600, -591832800, -570747600, -560210400, -539125200, -531352800, -191365200, -184197600, -155163600, -150069600, -128898e3, -121125600, -99954e3, -89589600, -68418e3, -57967200], o: [-8572, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800] }, "America/Rio_Branco": { source: "America/Rio_Branco", t: [-1767209328, -1206950400, -1191355200, -1175367600, -1159819200, -633812400, -622062e3, -602276400, -591825600, -570740400, -560203200, -539118e3, -531345600, -191358e3, -184190400, -155156400, -150062400, -128890800, -121118400, -99946800, -89582400, -68410800, -5796e4], o: [-16272, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3] }, "America/St_Johns": { source: "America/St_Johns", t: [-1664130548, -1650137348, -1632076148, -1615145348, -1598650148, -1590100148, -1567286948, -1551565748, -1535837348, -1520116148, -1503782948, -1488666548, -1472333348, -1457216948, -1440883748, -1425767348, -1409434148, -1394317748, -1377984548, -1362263348, -1346534948, -1330813748, -1314480548, -1299364148, -1283030948, -1267914548, -1251581348, -1236464948, -1220131748, -1205015348, -1188682148, -1172960948, -1156627748, -1141511348, -1125178148, -1110061748, -1096921748, -1093728600, -1078612200, -1061670600, -1048973400, -1030221e3, -1017523800, -998771400, -986074200, -966717e3, -954624600, -935267400, -922570200, -903817800, -891120600, -872368200, -765401400, -746044200, -733347e3, -714594600, -701897400, -683145e3, -670447800, -651695400, -638998200, -619641e3, -606943800, -589401e3, -576099e3, -557951400, -544649400, -526501800, -513199800, -495052200, -481750200, -463602600, -450300600, -431548200, -418246200, -400098600, -386796600, -368649e3, -355347e3, -337199400, -323897400, -305749800, -289423800, -273695400, -257974200, -242245800, -226524600, -210796200, -195075e3, -179346600, -163625400, -147897e3, -131571e3, -116447400, -100121400, -84393e3, -68671800, -52943400, -37222200, -21493800, -5772600], o: [-12652, -9052, -12652, -9052, -12652, -9052, -12652, -9052, -12652, -9052, -12652, -9052, -12652, -9052, -12652, -9052, -12652, -9052, -12652, -9052, -12652, -9052, -12652, -9052, -12652, -9052, -12652, -9052, -12652, -9052, -12652, -9052, -12652, -9052, -12652, -9052, -12652, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600] }, "Australia/Lindeman": { source: "Australia/Lindeman", t: [-2366790956, -167256e4, -1665388800, -883641600, -876124800, -8604e5, -844675200, -828345600, -813225600], o: [35756, 36e3, 39600, 36e3, 39600, 36e3, 39600, 36e3, 39600, 36e3] }, CST6CDT: { source: "CST6CDT", t: [-1633276800, -1615136400, -1601827200, -1583686800, -880214400, -765392400, -84384e3, -68662800, -52934400, -37213200, -21484800, -5763600], o: [-21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600] }, "Etc/GMT0": { source: "Etc/GMT", t: [], o: [0] }, "Europe/London": { source: "Europe/London", t: [-3852662325, -1691964e3, -1680472800, -1664143200, -1650146400, -1633903200, -1617487200, -1601848800, -1586037600, -1570399200, -1552168800, -1538344800, -1522533600, -15075e5, -1490565600, -1473631200, -1460930400, -1442786400, -1428876e3, -1410732e3, -1396216800, -1379282400, -1364767200, -1348437600, -1333317600, -1315778400, -1301263200, -1284328800, -1269813600, -1253484e3, -1238364e3, -1221429600, -1206914400, -118998e4, -1175464800, -1159135200, -1143410400, -1126476e3, -1111960800, -1095631200, -1080511200, -1063576800, -1049061600, -1032127200, -1017612e3, -1001282400, -986162400, -969228e3, -950479200, -942012e3, -904518e3, -896050800, -875487600, -864601200, -844038e3, -832546800, -812588400, -798073200, -781052400, -772066800, -764805600, -748476e3, -733356e3, -719445600, -71703e4, -706748400, -699487200, -687996e3, -668037600, -654732e3, -636588e3, -622072800, -605743200, -590623200, -574293600, -558568800, -542239200, -527119200, -512604e3, -496274400, -481154400, -46422e4, -449704800, -432165600, -417650400, -401320800, -386200800, -369266400, -354751200, -337816800, -323301600, -306972e3, -291852e3, -276732e3, -257983200, -245282400, -226533600, -213228e3, -195084e3, -182383200, -163634400, -150933600, -132184800, -119484e3, -100735200, -88034400, -68680800, -59004e3], o: [-75, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 0, 3600, 0, 3600, 7200, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600] } } };
+var __exports15 = {};
+__export(__exports15, {
+  default: () => __default15
+});
+var __default15;
+var init__15 = __esm({
+  "src/data/tz-history/2025c/14.json"() {
+    "use strict";
+    __default15 = JSON.parse('{"tzdb":"2025c","zones":{"America/Maceio":{"source":"America/Maceio","t":[-1767217028,-1206957600,-1191362400,-1175374800,-1159826400,-633819600,-622069200,-602283600,-591832800,-570747600,-560210400,-539125200,-531352800,-191365200,-184197600,-155163600,-150069600,-128898000,-121125600,-99954000,-89589600,-68418000,-57967200],"o":[-8572,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800]},"America/Rio_Branco":{"source":"America/Rio_Branco","t":[-1767209328,-1206950400,-1191355200,-1175367600,-1159819200,-633812400,-622062000,-602276400,-591825600,-570740400,-560203200,-539118000,-531345600,-191358000,-184190400,-155156400,-150062400,-128890800,-121118400,-99946800,-89582400,-68410800,-57960000],"o":[-16272,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000]},"America/St_Johns":{"source":"America/St_Johns","t":[-1664130548,-1650137348,-1632076148,-1615145348,-1598650148,-1590100148,-1567286948,-1551565748,-1535837348,-1520116148,-1503782948,-1488666548,-1472333348,-1457216948,-1440883748,-1425767348,-1409434148,-1394317748,-1377984548,-1362263348,-1346534948,-1330813748,-1314480548,-1299364148,-1283030948,-1267914548,-1251581348,-1236464948,-1220131748,-1205015348,-1188682148,-1172960948,-1156627748,-1141511348,-1125178148,-1110061748,-1096921748,-1093728600,-1078612200,-1061670600,-1048973400,-1030221000,-1017523800,-998771400,-986074200,-966717000,-954624600,-935267400,-922570200,-903817800,-891120600,-872368200,-765401400,-746044200,-733347000,-714594600,-701897400,-683145000,-670447800,-651695400,-638998200,-619641000,-606943800,-589401000,-576099000,-557951400,-544649400,-526501800,-513199800,-495052200,-481750200,-463602600,-450300600,-431548200,-418246200,-400098600,-386796600,-368649000,-355347000,-337199400,-323897400,-305749800,-289423800,-273695400,-257974200,-242245800,-226524600,-210796200,-195075000,-179346600,-163625400,-147897000,-131571000,-116447400,-100121400,-84393000,-68671800,-52943400,-37222200,-21493800,-5772600],"o":[-12652,-9052,-12652,-9052,-12652,-9052,-12652,-9052,-12652,-9052,-12652,-9052,-12652,-9052,-12652,-9052,-12652,-9052,-12652,-9052,-12652,-9052,-12652,-9052,-12652,-9052,-12652,-9052,-12652,-9052,-12652,-9052,-12652,-9052,-12652,-9052,-12652,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600]},"Australia/Lindeman":{"source":"Australia/Lindeman","t":[-2366790956,-1672560000,-1665388800,-883641600,-876124800,-860400000,-844675200,-828345600,-813225600],"o":[35756,36000,39600,36000,39600,36000,39600,36000,39600,36000]},"CST6CDT":{"source":"CST6CDT","t":[-1633276800,-1615136400,-1601827200,-1583686800,-880214400,-765392400,-84384000,-68662800,-52934400,-37213200,-21484800,-5763600],"o":[-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600]},"Etc/GMT0":{"source":"Etc/GMT","t":[],"o":[0]},"Europe/London":{"source":"Europe/London","t":[-3852662325,-1691964000,-1680472800,-1664143200,-1650146400,-1633903200,-1617487200,-1601848800,-1586037600,-1570399200,-1552168800,-1538344800,-1522533600,-1507500000,-1490565600,-1473631200,-1460930400,-1442786400,-1428876000,-1410732000,-1396216800,-1379282400,-1364767200,-1348437600,-1333317600,-1315778400,-1301263200,-1284328800,-1269813600,-1253484000,-1238364000,-1221429600,-1206914400,-1189980000,-1175464800,-1159135200,-1143410400,-1126476000,-1111960800,-1095631200,-1080511200,-1063576800,-1049061600,-1032127200,-1017612000,-1001282400,-986162400,-969228000,-950479200,-942012000,-904518000,-896050800,-875487600,-864601200,-844038000,-832546800,-812588400,-798073200,-781052400,-772066800,-764805600,-748476000,-733356000,-719445600,-717030000,-706748400,-699487200,-687996000,-668037600,-654732000,-636588000,-622072800,-605743200,-590623200,-574293600,-558568800,-542239200,-527119200,-512604000,-496274400,-481154400,-464220000,-449704800,-432165600,-417650400,-401320800,-386200800,-369266400,-354751200,-337816800,-323301600,-306972000,-291852000,-276732000,-257983200,-245282400,-226533600,-213228000,-195084000,-182383200,-163634400,-150933600,-132184800,-119484000,-100735200,-88034400,-68680800,-59004000],"o":[-75,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,0,3600,0,3600,7200,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600]}}}');
   }
 });
 
 // src/data/tz-history/2025c/15.json
-var require__16 = __commonJS({
-  "src/data/tz-history/2025c/15.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "America/Aruba": { source: "America/Aruba", t: [-1826738376, -157750200], o: [-16824, -16200, -14400] }, "America/Guadeloupe": { source: "America/Guadeloupe", t: [-1848254032], o: [-14768, -14400] }, "America/Resolute": { source: "America/Resolute", t: [-704937600], o: [null, -21600] }, "America/Santarem": { source: "America/Santarem", t: [-1767212472, -1206954e3, -1191358800, -1175371200, -1159822800, -633816e3, -622065600, -60228e4, -591829200, -570744e3, -560206800, -539121600, -531349200, -191361600, -184194e3, -15516e4, -150066e3, -128894400, -121122e3, -99950400, -89586e3, -68414400, -57963600], o: [-13128, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400] }, "Asia/Hovd": { source: "Asia/Hovd", t: [-2032927596], o: [21996, 21600] }, "Asia/Novosibirsk": { source: "Asia/Novosibirsk", t: [-1579476700, -1247551200], o: [19900, 21600, 25200] }, "Asia/Ulan_Bator": { source: "Asia/Ulaanbaatar", t: [-2032931252], o: [25652, 25200] }, "Australia/Yancowinna": { source: "Australia/Broken_Hill", t: [-2364110748, -2314951200, -2230189200, -1672558200, -1665387e3, -883639800, -876123e3, -860398200, -844673400, -828343800, -813223800], o: [33948, 36e3, 32400, 34200, 37800, 34200, 37800, 34200, 37800, 34200, 37800, 34200] }, "Etc/GMT-0": { source: "Etc/GMT", t: [], o: [0] }, "Europe/Oslo": { source: "Europe/Oslo", t: [-2366757780, -1691884800, -1680573600, -927511200, -857257200, -844556400, -828226800, -812502e3, -796777200, -781052400, -765327600, -340844400, -324514800, -30879e4, -293065200, -277340400, -261615600, -245890800, -230166e3, -214441200, -198716400, -182991600, -166662e3, -147913200, -135212400], o: [2580, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600] }, "Europe/Paris": { source: "Europe/Paris", t: [-1855958961, -1689814800, -1680397200, -1665363600, -1648342800, -1635123600, -1616893200, -1604278800, -1585443600, -1574038800, -1552266e3, -1539997200, -1520557200, -1507510800, -1490576400, -1470618e3, -1459126800, -1444006800, -1427677200, -1411952400, -1396227600, -1379293200, -1364778e3, -1348448400, -1333328400, -1316394e3, -1301274e3, -1284339600, -1269824400, -1253494800, -1238374800, -1221440400, -1206925200, -1191200400, -1175475600, -1160355600, -1143421200, -1127696400, -1111971600, -1096851600, -1080522e3, -1063587600, -1049072400, -1033347600, -1017622800, -1002502800, -986173200, -969238800, -95049e4, -942012e3, -932436e3, -857257200, -844556400, -828226800, -812502e3, -796266e3, -781052400, -766623600], o: [561, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600] }, "Europe/Sarajevo": { source: "Europe/Sarajevo", t: [-2713914820, -905824800, -857257200, -844556400, -828226800, -812502e3, -796777200, -781052400, -766623600], o: [4420, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600] }, "Pacific/Chatham": { source: "Pacific/Chatham", t: [-3192437628, -757426500], o: [44028, 44100, 45900] }, "Pacific/Kwajalein": { source: "Pacific/Kwajalein", t: [-2177492960, -1041418800, -907408800, -817462800, -7988400], o: [40160, 39600, 36e3, 32400, 39600, -43200] }, Turkey: { source: "Europe/Istanbul", t: [-2840147752, -1869875816, -1693706400, -1680490800, -1570413600, -1552186800, -1538359200, -1522551600, -1507514400, -1490583600, -1440208800, -142803e4, -1409709600, -1396494e3, -931053600, -922676400, -917834400, -892436400, -875844e3, -764737200, -744343200, -733806e3, -716436e3, -701924400, -684986400, -670474800, -654141600, -639025200, -622087200, -606970800, -590032800, -575521200, -23562e4, -194842800, -177732e3, -165726e3], o: [6952, 7016, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200] } } };
+var __exports16 = {};
+__export(__exports16, {
+  default: () => __default16
+});
+var __default16;
+var init__16 = __esm({
+  "src/data/tz-history/2025c/15.json"() {
+    "use strict";
+    __default16 = JSON.parse('{"tzdb":"2025c","zones":{"America/Aruba":{"source":"America/Aruba","t":[-1826738376,-157750200],"o":[-16824,-16200,-14400]},"America/Guadeloupe":{"source":"America/Guadeloupe","t":[-1848254032],"o":[-14768,-14400]},"America/Resolute":{"source":"America/Resolute","t":[-704937600],"o":[null,-21600]},"America/Santarem":{"source":"America/Santarem","t":[-1767212472,-1206954000,-1191358800,-1175371200,-1159822800,-633816000,-622065600,-602280000,-591829200,-570744000,-560206800,-539121600,-531349200,-191361600,-184194000,-155160000,-150066000,-128894400,-121122000,-99950400,-89586000,-68414400,-57963600],"o":[-13128,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400]},"Asia/Hovd":{"source":"Asia/Hovd","t":[-2032927596],"o":[21996,21600]},"Asia/Novosibirsk":{"source":"Asia/Novosibirsk","t":[-1579476700,-1247551200],"o":[19900,21600,25200]},"Asia/Ulan_Bator":{"source":"Asia/Ulaanbaatar","t":[-2032931252],"o":[25652,25200]},"Australia/Yancowinna":{"source":"Australia/Broken_Hill","t":[-2364110748,-2314951200,-2230189200,-1672558200,-1665387000,-883639800,-876123000,-860398200,-844673400,-828343800,-813223800],"o":[33948,36000,32400,34200,37800,34200,37800,34200,37800,34200,37800,34200]},"Etc/GMT-0":{"source":"Etc/GMT","t":[],"o":[0]},"Europe/Oslo":{"source":"Europe/Oslo","t":[-2366757780,-1691884800,-1680573600,-927511200,-857257200,-844556400,-828226800,-812502000,-796777200,-781052400,-765327600,-340844400,-324514800,-308790000,-293065200,-277340400,-261615600,-245890800,-230166000,-214441200,-198716400,-182991600,-166662000,-147913200,-135212400],"o":[2580,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600]},"Europe/Paris":{"source":"Europe/Paris","t":[-1855958961,-1689814800,-1680397200,-1665363600,-1648342800,-1635123600,-1616893200,-1604278800,-1585443600,-1574038800,-1552266000,-1539997200,-1520557200,-1507510800,-1490576400,-1470618000,-1459126800,-1444006800,-1427677200,-1411952400,-1396227600,-1379293200,-1364778000,-1348448400,-1333328400,-1316394000,-1301274000,-1284339600,-1269824400,-1253494800,-1238374800,-1221440400,-1206925200,-1191200400,-1175475600,-1160355600,-1143421200,-1127696400,-1111971600,-1096851600,-1080522000,-1063587600,-1049072400,-1033347600,-1017622800,-1002502800,-986173200,-969238800,-950490000,-942012000,-932436000,-857257200,-844556400,-828226800,-812502000,-796266000,-781052400,-766623600],"o":[561,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,7200,3600,7200,3600,7200,3600,7200,3600]},"Europe/Sarajevo":{"source":"Europe/Sarajevo","t":[-2713914820,-905824800,-857257200,-844556400,-828226800,-812502000,-796777200,-781052400,-766623600],"o":[4420,3600,7200,3600,7200,3600,7200,3600,7200,3600]},"Pacific/Chatham":{"source":"Pacific/Chatham","t":[-3192437628,-757426500],"o":[44028,44100,45900]},"Pacific/Kwajalein":{"source":"Pacific/Kwajalein","t":[-2177492960,-1041418800,-907408800,-817462800,-7988400],"o":[40160,39600,36000,32400,39600,-43200]},"Turkey":{"source":"Europe/Istanbul","t":[-2840147752,-1869875816,-1693706400,-1680490800,-1570413600,-1552186800,-1538359200,-1522551600,-1507514400,-1490583600,-1440208800,-1428030000,-1409709600,-1396494000,-931053600,-922676400,-917834400,-892436400,-875844000,-764737200,-744343200,-733806000,-716436000,-701924400,-684986400,-670474800,-654141600,-639025200,-622087200,-606970800,-590032800,-575521200,-235620000,-194842800,-177732000,-165726000],"o":[6952,7016,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200]}}}');
   }
 });
 
 // src/data/tz-history/2025c/16.json
-var require__17 = __commonJS({
-  "src/data/tz-history/2025c/16.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "America/Hermosillo": { source: "America/Hermosillo", t: [-1514739600, -1343149200, -1234807200, -1220461200, -1207159200, -1191344400, -873828e3], o: [-26632, -25200, -21600, -25200, -21600, -25200, -21600, -25200] }, "America/Indiana/Vincennes": { source: "America/Indiana/Vincennes", t: [-2717647200, -1633276800, -1615136400, -1601827200, -1583686800, -880214400, -765392400, -747244800, -733942800, -526492800, -513190800, -495043200, -481741200, -462996e3, -450291600, -431539200, -418237200, -400089600, -386787600, -36864e4, -355338e3, -337190400, -323888400, -305740800, -289414800, -273686400, -260989200, -242236800, -226515600, -210787200, -195066e3, -179337600, -21488400, -5767200], o: [-21007, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -14400, -18e3] }, "Asia/Taipei": { source: "Asia/Taipei", t: [-2335248360, -1017820800, -766224e3, -745833600, -733827600, -716889600, -699613200, -683884800, -670669200, -652348800, -639133200, -620812800, -607597200, -589276800, -576061200, -562924800, -541760400, -528710400, -510224400, -497174400, -478688400, -465638400, -449830800, -434016e3, -418208400, -40248e4, -386672400, -370944e3, -355136400, -339408e3, -323600400, -302515200, -291978e3, -270979200, -260442e3], o: [29160, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800] }, "Australia/Canberra": { source: "Australia/Sydney", t: [-2364113092, -167256e4, -1665388800, -883641600, -876124800, -8604e5, -844675200, -828345600, -813225600], o: [36292, 36e3, 39600, 36e3, 39600, 36e3, 39600, 36e3, 39600, 36e3] }, "Europe/Jersey": { source: "Europe/Jersey", t: [-2258092800, -1691964e3, -1680472800, -1664143200, -1650146400, -1633903200, -1617487200, -1601848800, -1586037600, -1570399200, -1552168800, -1538344800, -1522533600, -15075e5, -1490565600, -1473631200, -1460930400, -1442786400, -1428876e3, -1410732e3, -1396216800, -1379282400, -1364767200, -1348437600, -1333317600, -1315778400, -1301263200, -1284328800, -1269813600, -1253484e3, -1238364e3, -1221429600, -1206914400, -118998e4, -1175464800, -1159135200, -1143410400, -1126476e3, -1111960800, -1095631200, -1080511200, -1063576800, -1049061600, -1032127200, -1017612e3, -1001282400, -986162400, -969228e3, -950479200, -942012e3, -930963600, -857257200, -844556400, -828226800, -812502e3, -796777200, -781052400, -772066800, -764805600, -748476e3, -733356e3, -719445600, -71703e4, -706748400, -699487200, -687996e3, -668037600, -654732e3, -636588e3, -622072800, -605743200, -590623200, -574293600, -558568800, -542239200, -527119200, -512604e3, -496274400, -481154400, -46422e4, -449704800, -432165600, -417650400, -401320800, -386200800, -369266400, -354751200, -337816800, -323301600, -306972e3, -291852e3, -276732e3, -257983200, -245282400, -226533600, -213228e3, -195084e3, -182383200, -163634400, -150933600, -132184800, -119484e3, -100735200, -88034400, -68680800, -59004e3], o: [-506, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 0, 3600, 0, 3600, 7200, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600] }, "Pacific/Pohnpei": { source: "Pacific/Pohnpei", t: [-3944629972, -2177490772, -1743678e3, -1606813200, -1041418800, -907408800, -770634e3], o: [-48428, 37972, 39600, 32400, 39600, 36e3, 32400, 39600] }, "US/East-Indiana": { source: "America/Indiana/Indianapolis", t: [-2717647200, -1633276800, -1615136400, -1601827200, -1583686800, -900259200, -891795600, -880214400, -765392400, -747244800, -733942800, -715795200, -702493200, -684345600, -671043600, -652896e3, -639594e3, -620841600, -608144400, -589392e3, -57609e4, -557942400, -544640400, -526492800, -513190800, -495043200, -481741200, -463593600, -386787600, -36864e4, -21488400, -5767200], o: [-20678, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -14400, -18e3] } } };
+var __exports17 = {};
+__export(__exports17, {
+  default: () => __default17
+});
+var __default17;
+var init__17 = __esm({
+  "src/data/tz-history/2025c/16.json"() {
+    "use strict";
+    __default17 = JSON.parse('{"tzdb":"2025c","zones":{"America/Hermosillo":{"source":"America/Hermosillo","t":[-1514739600,-1343149200,-1234807200,-1220461200,-1207159200,-1191344400,-873828000],"o":[-26632,-25200,-21600,-25200,-21600,-25200,-21600,-25200]},"America/Indiana/Vincennes":{"source":"America/Indiana/Vincennes","t":[-2717647200,-1633276800,-1615136400,-1601827200,-1583686800,-880214400,-765392400,-747244800,-733942800,-526492800,-513190800,-495043200,-481741200,-462996000,-450291600,-431539200,-418237200,-400089600,-386787600,-368640000,-355338000,-337190400,-323888400,-305740800,-289414800,-273686400,-260989200,-242236800,-226515600,-210787200,-195066000,-179337600,-21488400,-5767200],"o":[-21007,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-14400,-18000]},"Asia/Taipei":{"source":"Asia/Taipei","t":[-2335248360,-1017820800,-766224000,-745833600,-733827600,-716889600,-699613200,-683884800,-670669200,-652348800,-639133200,-620812800,-607597200,-589276800,-576061200,-562924800,-541760400,-528710400,-510224400,-497174400,-478688400,-465638400,-449830800,-434016000,-418208400,-402480000,-386672400,-370944000,-355136400,-339408000,-323600400,-302515200,-291978000,-270979200,-260442000],"o":[29160,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800]},"Australia/Canberra":{"source":"Australia/Sydney","t":[-2364113092,-1672560000,-1665388800,-883641600,-876124800,-860400000,-844675200,-828345600,-813225600],"o":[36292,36000,39600,36000,39600,36000,39600,36000,39600,36000]},"Europe/Jersey":{"source":"Europe/Jersey","t":[-2258092800,-1691964000,-1680472800,-1664143200,-1650146400,-1633903200,-1617487200,-1601848800,-1586037600,-1570399200,-1552168800,-1538344800,-1522533600,-1507500000,-1490565600,-1473631200,-1460930400,-1442786400,-1428876000,-1410732000,-1396216800,-1379282400,-1364767200,-1348437600,-1333317600,-1315778400,-1301263200,-1284328800,-1269813600,-1253484000,-1238364000,-1221429600,-1206914400,-1189980000,-1175464800,-1159135200,-1143410400,-1126476000,-1111960800,-1095631200,-1080511200,-1063576800,-1049061600,-1032127200,-1017612000,-1001282400,-986162400,-969228000,-950479200,-942012000,-930963600,-857257200,-844556400,-828226800,-812502000,-796777200,-781052400,-772066800,-764805600,-748476000,-733356000,-719445600,-717030000,-706748400,-699487200,-687996000,-668037600,-654732000,-636588000,-622072800,-605743200,-590623200,-574293600,-558568800,-542239200,-527119200,-512604000,-496274400,-481154400,-464220000,-449704800,-432165600,-417650400,-401320800,-386200800,-369266400,-354751200,-337816800,-323301600,-306972000,-291852000,-276732000,-257983200,-245282400,-226533600,-213228000,-195084000,-182383200,-163634400,-150933600,-132184800,-119484000,-100735200,-88034400,-68680800,-59004000],"o":[-506,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,7200,3600,7200,3600,7200,3600,7200,3600,0,3600,0,3600,7200,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600]},"Pacific/Pohnpei":{"source":"Pacific/Pohnpei","t":[-3944629972,-2177490772,-1743678000,-1606813200,-1041418800,-907408800,-770634000],"o":[-48428,37972,39600,32400,39600,36000,32400,39600]},"US/East-Indiana":{"source":"America/Indiana/Indianapolis","t":[-2717647200,-1633276800,-1615136400,-1601827200,-1583686800,-900259200,-891795600,-880214400,-765392400,-747244800,-733942800,-715795200,-702493200,-684345600,-671043600,-652896000,-639594000,-620841600,-608144400,-589392000,-576090000,-557942400,-544640400,-526492800,-513190800,-495043200,-481741200,-463593600,-386787600,-368640000,-21488400,-5767200],"o":[-20678,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-14400,-18000]}}}');
   }
 });
 
 // src/data/tz-history/2025c/17.json
-var require__18 = __commonJS({
-  "src/data/tz-history/2025c/17.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "America/Argentina/Salta": { source: "America/Argentina/Salta", t: [-2372096300, -1567453392, -1233432e3, -1222981200, -1205956800, -1194037200, -1172865600, -1162501200, -1141329600, -1130965200, -1109793600, -1099429200, -1078257600, -1067806800, -1046635200, -1036270800, -1015099200, -1004734800, -983563200, -973198800, -952027200, -941576400, -931032e3, -900882e3, -890337600, -833749200, -827265600, -752274e3, -733780800, -197326800, -190843200, -184194e3, -164491200, -152658e3, -132955200, -121122e3, -101419200, -86821200, -71092800, -54766800, -39038400, -23317200, -7588800], o: [-15700, -15408, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800] }, "Asia/Anadyr": { source: "Asia/Anadyr", t: [-1441194596, -1247572800], o: [42596, 43200, 46800] }, "Asia/Barnaul": { source: "Asia/Barnaul", t: [-1579844100, -1247551200], o: [20100, 21600, 25200] }, "Asia/Colombo": { source: "Asia/Colombo", t: [-2840159964, -2019705572, -883287e3, -862639200, -764051400], o: [19164, 19172, 19800, 21600, 23400, 19800] }, "Asia/Gaza": { source: "Asia/Gaza", t: [-2185409872, -933638400, -923097600, -919036800, -857347200, -844300800, -825811200, -812678400, -794188800, -779846400, -762652800, -748310400, -731116800, -399088800, -386650800, -368330400, -355114800, -336790800, -323654400, -305168400, -292032e3, -273632400, -260496e3, -242096400, -22896e4, -210560400, -197424e3, -178938e3, -165801600, -147402e3, -134265600, -115866e3, -102643200, -8433e4, -81313200], o: [8272, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200] }, "Etc/GMT+8": { source: "Etc/GMT+8", t: [], o: [-28800] }, "Europe/Belfast": { source: "Europe/Belfast", t: [-2821649780, -1691962479, -1680471279, -1664143200, -1650146400, -1633903200, -1617487200, -1601848800, -1586037600, -1570399200, -1552168800, -1538344800, -1522533600, -15075e5, -1490565600, -1473631200, -1460930400, -1442786400, -1428876e3, -1410732e3, -1396216800, -1379282400, -1364767200, -1348437600, -1333317600, -1315778400, -1301263200, -1284328800, -1269813600, -1253484e3, -1238364e3, -1221429600, -1206914400, -118998e4, -1175464800, -1159135200, -1143410400, -1126476e3, -1111960800, -1095631200, -1080511200, -1063576800, -1049061600, -1032127200, -1017612e3, -1001282400, -986162400, -969228e3, -950479200, -942012e3, -904518e3, -896050800, -875487600, -864601200, -844038e3, -832546800, -812588400, -798073200, -781052400, -772066800, -764805600, -748476e3, -733356e3, -719445600, -71703e4, -706748400, -699487200, -687996e3, -668037600, -654732e3, -636588e3, -622072800, -605743200, -590623200, -574293600, -558568800, -542239200, -527119200, -512604e3, -496274400, -481154400, -46422e4, -449704800, -432165600, -417650400, -401320800, -386200800, -369266400, -354751200, -337816800, -323301600, -306972e3, -291852e3, -276732e3, -257983200, -245282400, -226533600, -213228e3, -195084e3, -182383200, -163634400, -150933600, -132184800, -119484e3, -100735200, -88034400, -68680800, -59004e3], o: [-1420, -1521, 2079, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 0, 3600, 0, 3600, 7200, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600] }, "Europe/Brussels": { source: "Europe/Brussels", t: [-2450995200, -1740355200, -1693702800, -1680483600, -1663455600, -165015e4, -1632006e3, -1618700400, -1613826e3, -1604278800, -158553e4, -1574038800, -1552266e3, -1539997200, -1520557200, -1507510800, -1490576400, -1473642e3, -1459126800, -1444006800, -1427677200, -1411952400, -1396227600, -1379293200, -1364778e3, -1348448400, -1333328400, -1316394e3, -1301263200, -1284328800, -1269813600, -1253484e3, -1238364e3, -1221429600, -1206914400, -1191189600, -1175464800, -1160344800, -1143410400, -1127685600, -1111960800, -1096840800, -1080511200, -1063576800, -1049061600, -1033336800, -1017612e3, -1002492e3, -986162400, -969228e3, -950479200, -942012e3, -934668e3, -857257200, -844556400, -828226800, -812502e3, -798073200, -781052400, -766623600, -745455600, -733273200], o: [1050, 0, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600] }, NZ: { source: "Pacific/Auckland", t: [-3192435544, -1330335e3, -1320057e3, -1300699800, -1287396e3, -1269250200, -1255946400, -1237800600, -1224496800, -1206351e3, -1192442400, -1174901400, -1160992800, -1143451800, -1125914400, -1112607e3, -1094464800, -1081157400, -1063015200, -1049707800, -1031565600, -1018258200, -1000116e3, -986808600, -968061600, -955359e3, -936612e3, -923304600], o: [41944, 41400, 45e3, 41400, 43200, 41400, 43200, 41400, 43200, 41400, 43200, 41400, 43200, 41400, 43200, 41400, 43200, 41400, 43200, 41400, 43200, 41400, 43200, 41400, 43200, 41400, 43200, 41400, 43200] } } };
+var __exports18 = {};
+__export(__exports18, {
+  default: () => __default18
+});
+var __default18;
+var init__18 = __esm({
+  "src/data/tz-history/2025c/17.json"() {
+    "use strict";
+    __default18 = JSON.parse('{"tzdb":"2025c","zones":{"America/Argentina/Salta":{"source":"America/Argentina/Salta","t":[-2372096300,-1567453392,-1233432000,-1222981200,-1205956800,-1194037200,-1172865600,-1162501200,-1141329600,-1130965200,-1109793600,-1099429200,-1078257600,-1067806800,-1046635200,-1036270800,-1015099200,-1004734800,-983563200,-973198800,-952027200,-941576400,-931032000,-900882000,-890337600,-833749200,-827265600,-752274000,-733780800,-197326800,-190843200,-184194000,-164491200,-152658000,-132955200,-121122000,-101419200,-86821200,-71092800,-54766800,-39038400,-23317200,-7588800],"o":[-15700,-15408,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800]},"Asia/Anadyr":{"source":"Asia/Anadyr","t":[-1441194596,-1247572800],"o":[42596,43200,46800]},"Asia/Barnaul":{"source":"Asia/Barnaul","t":[-1579844100,-1247551200],"o":[20100,21600,25200]},"Asia/Colombo":{"source":"Asia/Colombo","t":[-2840159964,-2019705572,-883287000,-862639200,-764051400],"o":[19164,19172,19800,21600,23400,19800]},"Asia/Gaza":{"source":"Asia/Gaza","t":[-2185409872,-933638400,-923097600,-919036800,-857347200,-844300800,-825811200,-812678400,-794188800,-779846400,-762652800,-748310400,-731116800,-399088800,-386650800,-368330400,-355114800,-336790800,-323654400,-305168400,-292032000,-273632400,-260496000,-242096400,-228960000,-210560400,-197424000,-178938000,-165801600,-147402000,-134265600,-115866000,-102643200,-84330000,-81313200],"o":[8272,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200]},"Etc/GMT+8":{"source":"Etc/GMT+8","t":[],"o":[-28800]},"Europe/Belfast":{"source":"Europe/Belfast","t":[-2821649780,-1691962479,-1680471279,-1664143200,-1650146400,-1633903200,-1617487200,-1601848800,-1586037600,-1570399200,-1552168800,-1538344800,-1522533600,-1507500000,-1490565600,-1473631200,-1460930400,-1442786400,-1428876000,-1410732000,-1396216800,-1379282400,-1364767200,-1348437600,-1333317600,-1315778400,-1301263200,-1284328800,-1269813600,-1253484000,-1238364000,-1221429600,-1206914400,-1189980000,-1175464800,-1159135200,-1143410400,-1126476000,-1111960800,-1095631200,-1080511200,-1063576800,-1049061600,-1032127200,-1017612000,-1001282400,-986162400,-969228000,-950479200,-942012000,-904518000,-896050800,-875487600,-864601200,-844038000,-832546800,-812588400,-798073200,-781052400,-772066800,-764805600,-748476000,-733356000,-719445600,-717030000,-706748400,-699487200,-687996000,-668037600,-654732000,-636588000,-622072800,-605743200,-590623200,-574293600,-558568800,-542239200,-527119200,-512604000,-496274400,-481154400,-464220000,-449704800,-432165600,-417650400,-401320800,-386200800,-369266400,-354751200,-337816800,-323301600,-306972000,-291852000,-276732000,-257983200,-245282400,-226533600,-213228000,-195084000,-182383200,-163634400,-150933600,-132184800,-119484000,-100735200,-88034400,-68680800,-59004000],"o":[-1420,-1521,2079,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,0,3600,0,3600,7200,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600]},"Europe/Brussels":{"source":"Europe/Brussels","t":[-2450995200,-1740355200,-1693702800,-1680483600,-1663455600,-1650150000,-1632006000,-1618700400,-1613826000,-1604278800,-1585530000,-1574038800,-1552266000,-1539997200,-1520557200,-1507510800,-1490576400,-1473642000,-1459126800,-1444006800,-1427677200,-1411952400,-1396227600,-1379293200,-1364778000,-1348448400,-1333328400,-1316394000,-1301263200,-1284328800,-1269813600,-1253484000,-1238364000,-1221429600,-1206914400,-1191189600,-1175464800,-1160344800,-1143410400,-1127685600,-1111960800,-1096840800,-1080511200,-1063576800,-1049061600,-1033336800,-1017612000,-1002492000,-986162400,-969228000,-950479200,-942012000,-934668000,-857257200,-844556400,-828226800,-812502000,-798073200,-781052400,-766623600,-745455600,-733273200],"o":[1050,0,3600,7200,3600,7200,3600,7200,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600]},"NZ":{"source":"Pacific/Auckland","t":[-3192435544,-1330335000,-1320057000,-1300699800,-1287396000,-1269250200,-1255946400,-1237800600,-1224496800,-1206351000,-1192442400,-1174901400,-1160992800,-1143451800,-1125914400,-1112607000,-1094464800,-1081157400,-1063015200,-1049707800,-1031565600,-1018258200,-1000116000,-986808600,-968061600,-955359000,-936612000,-923304600],"o":[41944,41400,45000,41400,43200,41400,43200,41400,43200,41400,43200,41400,43200,41400,43200,41400,43200,41400,43200,41400,43200,41400,43200,41400,43200,41400,43200,41400,43200]}}}');
   }
 });
 
 // src/data/tz-history/2025c/18.json
-var require__19 = __commonJS({
-  "src/data/tz-history/2025c/18.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "Africa/Johannesburg": { source: "Africa/Johannesburg", t: [-2458173120, -2109288600, -860976e3, -845254800, -829526400, -813805200], o: [6720, 5400, 7200, 10800, 7200, 10800, 7200] }, "Africa/Lubumbashi": { source: "Africa/Lubumbashi", t: [-2276646592, -1567990800], o: [6592, 3600, 7200] }, "America/Argentina/Ushuaia": { source: "America/Argentina/Ushuaia", t: [-2372095608, -1567453392, -1233432e3, -1222981200, -1205956800, -1194037200, -1172865600, -1162501200, -1141329600, -1130965200, -1109793600, -1099429200, -1078257600, -1067806800, -1046635200, -1036270800, -1015099200, -1004734800, -983563200, -973198800, -952027200, -941576400, -931032e3, -900882e3, -890337600, -833749200, -827265600, -752274e3, -733780800, -197326800, -190843200, -184194e3, -164491200, -152658e3, -132955200, -121122e3, -101419200, -86821200, -71092800, -54766800, -39038400, -23317200, -7588800], o: [-16392, -15408, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800] }, "America/Boise": { source: "America/Boise", t: [-271764e4, -1633269600, -1615129200, -160182e4, -1583679600, -1471788e3, -880210800, -765388800, -84380400, -68659200, -52930800, -37209600, -21481200, -576e4], o: [-27889, -28800, -25200, -28800, -25200, -28800, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200] }, "America/Edmonton": { source: "America/Edmonton", t: [-1998663968, -1632063600, -1615132800, -1600614e3, -1596816e3, -1567954800, -1551628800, -1536505200, -1523203200, -1504450800, -1491753600, -1473001200, -1459699200, -880210800, -765388800, -715791600, -702489600], o: [-27232, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200] }, "Antarctica/Macquarie": { source: "Antarctica/Macquarie", t: [-2214259200, -1680508800, -1665388800, -1601719200, -687052800, -71136e3, -55411200, -37267200, -25776e3, -5817600], o: [null, 36e3, 39600, 36e3, null, 36e3, 39600, 36e3, 39600, 36e3, 39600] }, "Asia/Aden": { source: "Asia/Aden", t: [-631162794], o: [10794, 10800] }, "Asia/Aqtobe": { source: "Asia/Aqtobe", t: [-1441165720, -1247544e3], o: [13720, 14400, 18e3] }, "Asia/Tehran": { source: "Asia/Tehran", t: [-1090466744], o: [12344, 12600] }, "Europe/Isle_of_Man": { source: "Europe/Isle_of_Man", t: [-2737842125, -1691964e3, -1680472800, -1664143200, -1650146400, -1633903200, -1617487200, -1601848800, -1586037600, -1570399200, -1552168800, -1538344800, -1522533600, -15075e5, -1490565600, -1473631200, -1460930400, -1442786400, -1428876e3, -1410732e3, -1396216800, -1379282400, -1364767200, -1348437600, -1333317600, -1315778400, -1301263200, -1284328800, -1269813600, -1253484e3, -1238364e3, -1221429600, -1206914400, -118998e4, -1175464800, -1159135200, -1143410400, -1126476e3, -1111960800, -1095631200, -1080511200, -1063576800, -1049061600, -1032127200, -1017612e3, -1001282400, -986162400, -969228e3, -950479200, -942012e3, -904518e3, -896050800, -875487600, -864601200, -844038e3, -832546800, -812588400, -798073200, -781052400, -772066800, -764805600, -748476e3, -733356e3, -719445600, -71703e4, -706748400, -699487200, -687996e3, -668037600, -654732e3, -636588e3, -622072800, -605743200, -590623200, -574293600, -558568800, -542239200, -527119200, -512604e3, -496274400, -481154400, -46422e4, -449704800, -432165600, -417650400, -401320800, -386200800, -369266400, -354751200, -337816800, -323301600, -306972e3, -291852e3, -276732e3, -257983200, -245282400, -226533600, -213228e3, -195084e3, -182383200, -163634400, -150933600, -132184800, -119484e3, -100735200, -88034400, -68680800, -59004e3], o: [-1075, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 0, 3600, 0, 3600, 7200, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600] }, "Europe/Istanbul": { source: "Europe/Istanbul", t: [-2840147752, -1869875816, -1693706400, -1680490800, -1570413600, -1552186800, -1538359200, -1522551600, -1507514400, -1490583600, -1440208800, -142803e4, -1409709600, -1396494e3, -931053600, -922676400, -917834400, -892436400, -875844e3, -764737200, -744343200, -733806e3, -716436e3, -701924400, -684986400, -670474800, -654141600, -639025200, -622087200, -606970800, -590032800, -575521200, -23562e4, -194842800, -177732e3, -165726e3], o: [6952, 7016, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200] }, "Pacific/Fakaofo": { source: "Pacific/Fakaofo", t: [-2177411704], o: [-41096, -39600] } } };
+var __exports19 = {};
+__export(__exports19, {
+  default: () => __default19
+});
+var __default19;
+var init__19 = __esm({
+  "src/data/tz-history/2025c/18.json"() {
+    "use strict";
+    __default19 = JSON.parse('{"tzdb":"2025c","zones":{"Africa/Johannesburg":{"source":"Africa/Johannesburg","t":[-2458173120,-2109288600,-860976000,-845254800,-829526400,-813805200],"o":[6720,5400,7200,10800,7200,10800,7200]},"Africa/Lubumbashi":{"source":"Africa/Lubumbashi","t":[-2276646592,-1567990800],"o":[6592,3600,7200]},"America/Argentina/Ushuaia":{"source":"America/Argentina/Ushuaia","t":[-2372095608,-1567453392,-1233432000,-1222981200,-1205956800,-1194037200,-1172865600,-1162501200,-1141329600,-1130965200,-1109793600,-1099429200,-1078257600,-1067806800,-1046635200,-1036270800,-1015099200,-1004734800,-983563200,-973198800,-952027200,-941576400,-931032000,-900882000,-890337600,-833749200,-827265600,-752274000,-733780800,-197326800,-190843200,-184194000,-164491200,-152658000,-132955200,-121122000,-101419200,-86821200,-71092800,-54766800,-39038400,-23317200,-7588800],"o":[-16392,-15408,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800]},"America/Boise":{"source":"America/Boise","t":[-2717640000,-1633269600,-1615129200,-1601820000,-1583679600,-1471788000,-880210800,-765388800,-84380400,-68659200,-52930800,-37209600,-21481200,-5760000],"o":[-27889,-28800,-25200,-28800,-25200,-28800,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200]},"America/Edmonton":{"source":"America/Edmonton","t":[-1998663968,-1632063600,-1615132800,-1600614000,-1596816000,-1567954800,-1551628800,-1536505200,-1523203200,-1504450800,-1491753600,-1473001200,-1459699200,-880210800,-765388800,-715791600,-702489600],"o":[-27232,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200]},"Antarctica/Macquarie":{"source":"Antarctica/Macquarie","t":[-2214259200,-1680508800,-1665388800,-1601719200,-687052800,-71136000,-55411200,-37267200,-25776000,-5817600],"o":[null,36000,39600,36000,null,36000,39600,36000,39600,36000,39600]},"Asia/Aden":{"source":"Asia/Aden","t":[-631162794],"o":[10794,10800]},"Asia/Aqtobe":{"source":"Asia/Aqtobe","t":[-1441165720,-1247544000],"o":[13720,14400,18000]},"Asia/Tehran":{"source":"Asia/Tehran","t":[-1090466744],"o":[12344,12600]},"Europe/Isle_of_Man":{"source":"Europe/Isle_of_Man","t":[-2737842125,-1691964000,-1680472800,-1664143200,-1650146400,-1633903200,-1617487200,-1601848800,-1586037600,-1570399200,-1552168800,-1538344800,-1522533600,-1507500000,-1490565600,-1473631200,-1460930400,-1442786400,-1428876000,-1410732000,-1396216800,-1379282400,-1364767200,-1348437600,-1333317600,-1315778400,-1301263200,-1284328800,-1269813600,-1253484000,-1238364000,-1221429600,-1206914400,-1189980000,-1175464800,-1159135200,-1143410400,-1126476000,-1111960800,-1095631200,-1080511200,-1063576800,-1049061600,-1032127200,-1017612000,-1001282400,-986162400,-969228000,-950479200,-942012000,-904518000,-896050800,-875487600,-864601200,-844038000,-832546800,-812588400,-798073200,-781052400,-772066800,-764805600,-748476000,-733356000,-719445600,-717030000,-706748400,-699487200,-687996000,-668037600,-654732000,-636588000,-622072800,-605743200,-590623200,-574293600,-558568800,-542239200,-527119200,-512604000,-496274400,-481154400,-464220000,-449704800,-432165600,-417650400,-401320800,-386200800,-369266400,-354751200,-337816800,-323301600,-306972000,-291852000,-276732000,-257983200,-245282400,-226533600,-213228000,-195084000,-182383200,-163634400,-150933600,-132184800,-119484000,-100735200,-88034400,-68680800,-59004000],"o":[-1075,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,0,3600,0,3600,7200,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600]},"Europe/Istanbul":{"source":"Europe/Istanbul","t":[-2840147752,-1869875816,-1693706400,-1680490800,-1570413600,-1552186800,-1538359200,-1522551600,-1507514400,-1490583600,-1440208800,-1428030000,-1409709600,-1396494000,-931053600,-922676400,-917834400,-892436400,-875844000,-764737200,-744343200,-733806000,-716436000,-701924400,-684986400,-670474800,-654141600,-639025200,-622087200,-606970800,-590032800,-575521200,-235620000,-194842800,-177732000,-165726000],"o":[6952,7016,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200]},"Pacific/Fakaofo":{"source":"Pacific/Fakaofo","t":[-2177411704],"o":[-41096,-39600]}}}');
   }
 });
 
 // src/data/tz-history/2025c/19.json
-var require__20 = __commonJS({
-  "src/data/tz-history/2025c/19.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "America/Buenos_Aires": { source: "America/Argentina/Buenos_Aires", t: [-2372097972, -1567453392, -1233432e3, -1222981200, -1205956800, -1194037200, -1172865600, -1162501200, -1141329600, -1130965200, -1109793600, -1099429200, -1078257600, -1067806800, -1046635200, -1036270800, -1015099200, -1004734800, -983563200, -973198800, -952027200, -941576400, -931032e3, -900882e3, -890337600, -833749200, -827265600, -752274e3, -733780800, -197326800, -190843200, -184194e3, -164491200, -152658e3, -132955200, -121122e3, -101419200, -86821200, -71092800, -54766800, -39038400, -23317200, -7588800], o: [-14028, -15408, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800] }, "Asia/Thimbu": { source: "Asia/Thimphu", t: [-706341516], o: [21516, 19800] }, "Etc/GMT+2": { source: "Etc/GMT+2", t: [], o: [-7200] }, "Europe/Samara": { source: "Europe/Samara", t: [-1593820800, -1247540400], o: [12020, 10800, 14400] }, "Europe/Warsaw": { source: "Europe/Warsaw", t: [-1717032240, -1693706400, -1680483600, -1663455600, -165015e4, -1632006e3, -1600473600, -1587168e3, -1501725600, -931734e3, -857257200, -844556400, -828226800, -812502e3, -796608e3, -778726800, -76266e4, -748486800, -733273200, -715215600, -70191e4, -684975600, -670460400, -654130800, -639010800, -397094400, -386812800, -371088e3, -355363200, -334195200, -323308800, -307584e3, -291859200, -271296e3, -260409600, -239846400, -22896e4, -208396800, -197510400, -176342400, -166060800], o: [5040, 3600, 7200, 3600, 7200, 3600, 7200, 10800, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600] } } };
+var __exports20 = {};
+__export(__exports20, {
+  default: () => __default20
+});
+var __default20;
+var init__20 = __esm({
+  "src/data/tz-history/2025c/19.json"() {
+    "use strict";
+    __default20 = JSON.parse('{"tzdb":"2025c","zones":{"America/Buenos_Aires":{"source":"America/Argentina/Buenos_Aires","t":[-2372097972,-1567453392,-1233432000,-1222981200,-1205956800,-1194037200,-1172865600,-1162501200,-1141329600,-1130965200,-1109793600,-1099429200,-1078257600,-1067806800,-1046635200,-1036270800,-1015099200,-1004734800,-983563200,-973198800,-952027200,-941576400,-931032000,-900882000,-890337600,-833749200,-827265600,-752274000,-733780800,-197326800,-190843200,-184194000,-164491200,-152658000,-132955200,-121122000,-101419200,-86821200,-71092800,-54766800,-39038400,-23317200,-7588800],"o":[-14028,-15408,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800]},"Asia/Thimbu":{"source":"Asia/Thimphu","t":[-706341516],"o":[21516,19800]},"Etc/GMT+2":{"source":"Etc/GMT+2","t":[],"o":[-7200]},"Europe/Samara":{"source":"Europe/Samara","t":[-1593820800,-1247540400],"o":[12020,10800,14400]},"Europe/Warsaw":{"source":"Europe/Warsaw","t":[-1717032240,-1693706400,-1680483600,-1663455600,-1650150000,-1632006000,-1600473600,-1587168000,-1501725600,-931734000,-857257200,-844556400,-828226800,-812502000,-796608000,-778726800,-762660000,-748486800,-733273200,-715215600,-701910000,-684975600,-670460400,-654130800,-639010800,-397094400,-386812800,-371088000,-355363200,-334195200,-323308800,-307584000,-291859200,-271296000,-260409600,-239846400,-228960000,-208396800,-197510400,-176342400,-166060800],"o":[5040,3600,7200,3600,7200,3600,7200,10800,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600]}}}');
   }
 });
 
 // src/data/tz-history/2025c/20.json
-var require__21 = __commonJS({
-  "src/data/tz-history/2025c/20.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "America/Chicago": { source: "America/Chicago", t: [-2717647200, -1633276800, -1615136400, -1601827200, -1583686800, -1563724800, -1551632400, -1538928e3, -1520182800, -1504454400, -1491757200, -1473004800, -1459702800, -1441555200, -1428253200, -1410105600, -1396803600, -1378656e3, -1365354e3, -1347206400, -1333904400, -1315152e3, -130185e4, -1283702400, -1270400400, -1252252800, -1238950800, -1220803200, -1207501200, -1189353600, -1176051600, -1157299200, -1144602e3, -1125849600, -1112547600, -10944e5, -1081098e3, -1067788800, -1045414800, -1031500800, -1018198800, -1000051200, -986749200, -967996800, -955299600, -936547200, -923245200, -905097600, -891795600, -880214400, -765392400, -747244800, -733942800, -715795200, -702493200, -684345600, -671043600, -652896e3, -639594e3, -620841600, -608144400, -589392e3, -57609e4, -557942400, -544640400, -526492800, -513190800, -495043200, -481741200, -463593600, -447267600, -431539200, -415818e3, -400089600, -384368400, -36864e4, -352918800, -337190400, -321469200, -305740800, -289414800, -273686400, -257965200, -242236800, -226515600, -210787200, -195066e3, -179337600, -163616400, -147888e3, -131562e3, -116438400, -100112400, -84384e3, -68662800, -52934400, -37213200, -21484800, -5763600], o: [-21036, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600] }, "America/Indiana/Marengo": { source: "America/Indiana/Marengo", t: [-2717647200, -1633276800, -1615136400, -1601827200, -1583686800, -880214400, -765392400, -589392e3, -57609e4, -495043200, -481741200, -463593600, -450291600, -431539200, -418237200, -400089600, -386787600, -36864e4, -355338e3, -337190400, -323888400, -305740800, -292438800, -273686400, -21488400, -5767200], o: [-20723, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -14400, -18e3] }, "America/Mazatlan": { source: "America/Mazatlan", t: [-1514739600, -1343149200, -1234807200, -1220461200, -1207159200, -1191344400, -873828e3], o: [-25540, -25200, -21600, -25200, -21600, -25200, -21600, -25200] }, "Etc/GMT-9": { source: "Etc/GMT-9", t: [], o: [32400] }, "Europe/Berlin": { source: "Europe/Berlin", t: [-2422054408, -1693706400, -1680483600, -1663455600, -165015e4, -1632006e3, -1618700400, -938905200, -857257200, -844556400, -828226800, -812502e3, -796777200, -781052400, -776563200, -765936e3, -761180400, -748479600, -733273200, -717631200, -714610800, -710380800, -70191e4, -684975600, -670460400, -654130800, -639010800], o: [3208, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 10800, 7200, 3600, 7200, 3600, 7200, 10800, 7200, 3600, 7200, 3600, 7200, 3600] }, "Europe/Simferopol": { source: "Europe/Simferopol", t: [-2840148984, -1441160160, -1247536800, -888894e3, -857257200, -844556400, -828226800, -812502e3, -811648800], o: [8184, 8160, 7200, 10800, 7200, 3600, 7200, 3600, 7200, 10800] }, "GB-Eire": { source: "Europe/London", t: [-3852662325, -1691964e3, -1680472800, -1664143200, -1650146400, -1633903200, -1617487200, -1601848800, -1586037600, -1570399200, -1552168800, -1538344800, -1522533600, -15075e5, -1490565600, -1473631200, -1460930400, -1442786400, -1428876e3, -1410732e3, -1396216800, -1379282400, -1364767200, -1348437600, -1333317600, -1315778400, -1301263200, -1284328800, -1269813600, -1253484e3, -1238364e3, -1221429600, -1206914400, -118998e4, -1175464800, -1159135200, -1143410400, -1126476e3, -1111960800, -1095631200, -1080511200, -1063576800, -1049061600, -1032127200, -1017612e3, -1001282400, -986162400, -969228e3, -950479200, -942012e3, -904518e3, -896050800, -875487600, -864601200, -844038e3, -832546800, -812588400, -798073200, -781052400, -772066800, -764805600, -748476e3, -733356e3, -719445600, -71703e4, -706748400, -699487200, -687996e3, -668037600, -654732e3, -636588e3, -622072800, -605743200, -590623200, -574293600, -558568800, -542239200, -527119200, -512604e3, -496274400, -481154400, -46422e4, -449704800, -432165600, -417650400, -401320800, -386200800, -369266400, -354751200, -337816800, -323301600, -306972e3, -291852e3, -276732e3, -257983200, -245282400, -226533600, -213228e3, -195084e3, -182383200, -163634400, -150933600, -132184800, -119484e3, -100735200, -88034400, -68680800, -59004e3], o: [-75, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 0, 3600, 0, 3600, 7200, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600] }, "Pacific/Midway": { source: "Pacific/Midway", t: [-2177410232, -428504400, -420645600], o: [-42568, -39600, -36e3, -39600] } } };
+var __exports21 = {};
+__export(__exports21, {
+  default: () => __default21
+});
+var __default21;
+var init__21 = __esm({
+  "src/data/tz-history/2025c/20.json"() {
+    "use strict";
+    __default21 = JSON.parse('{"tzdb":"2025c","zones":{"America/Chicago":{"source":"America/Chicago","t":[-2717647200,-1633276800,-1615136400,-1601827200,-1583686800,-1563724800,-1551632400,-1538928000,-1520182800,-1504454400,-1491757200,-1473004800,-1459702800,-1441555200,-1428253200,-1410105600,-1396803600,-1378656000,-1365354000,-1347206400,-1333904400,-1315152000,-1301850000,-1283702400,-1270400400,-1252252800,-1238950800,-1220803200,-1207501200,-1189353600,-1176051600,-1157299200,-1144602000,-1125849600,-1112547600,-1094400000,-1081098000,-1067788800,-1045414800,-1031500800,-1018198800,-1000051200,-986749200,-967996800,-955299600,-936547200,-923245200,-905097600,-891795600,-880214400,-765392400,-747244800,-733942800,-715795200,-702493200,-684345600,-671043600,-652896000,-639594000,-620841600,-608144400,-589392000,-576090000,-557942400,-544640400,-526492800,-513190800,-495043200,-481741200,-463593600,-447267600,-431539200,-415818000,-400089600,-384368400,-368640000,-352918800,-337190400,-321469200,-305740800,-289414800,-273686400,-257965200,-242236800,-226515600,-210787200,-195066000,-179337600,-163616400,-147888000,-131562000,-116438400,-100112400,-84384000,-68662800,-52934400,-37213200,-21484800,-5763600],"o":[-21036,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600]},"America/Indiana/Marengo":{"source":"America/Indiana/Marengo","t":[-2717647200,-1633276800,-1615136400,-1601827200,-1583686800,-880214400,-765392400,-589392000,-576090000,-495043200,-481741200,-463593600,-450291600,-431539200,-418237200,-400089600,-386787600,-368640000,-355338000,-337190400,-323888400,-305740800,-292438800,-273686400,-21488400,-5767200],"o":[-20723,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-14400,-18000]},"America/Mazatlan":{"source":"America/Mazatlan","t":[-1514739600,-1343149200,-1234807200,-1220461200,-1207159200,-1191344400,-873828000],"o":[-25540,-25200,-21600,-25200,-21600,-25200,-21600,-25200]},"Etc/GMT-9":{"source":"Etc/GMT-9","t":[],"o":[32400]},"Europe/Berlin":{"source":"Europe/Berlin","t":[-2422054408,-1693706400,-1680483600,-1663455600,-1650150000,-1632006000,-1618700400,-938905200,-857257200,-844556400,-828226800,-812502000,-796777200,-781052400,-776563200,-765936000,-761180400,-748479600,-733273200,-717631200,-714610800,-710380800,-701910000,-684975600,-670460400,-654130800,-639010800],"o":[3208,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,10800,7200,3600,7200,3600,7200,10800,7200,3600,7200,3600,7200,3600]},"Europe/Simferopol":{"source":"Europe/Simferopol","t":[-2840148984,-1441160160,-1247536800,-888894000,-857257200,-844556400,-828226800,-812502000,-811648800],"o":[8184,8160,7200,10800,7200,3600,7200,3600,7200,10800]},"GB-Eire":{"source":"Europe/London","t":[-3852662325,-1691964000,-1680472800,-1664143200,-1650146400,-1633903200,-1617487200,-1601848800,-1586037600,-1570399200,-1552168800,-1538344800,-1522533600,-1507500000,-1490565600,-1473631200,-1460930400,-1442786400,-1428876000,-1410732000,-1396216800,-1379282400,-1364767200,-1348437600,-1333317600,-1315778400,-1301263200,-1284328800,-1269813600,-1253484000,-1238364000,-1221429600,-1206914400,-1189980000,-1175464800,-1159135200,-1143410400,-1126476000,-1111960800,-1095631200,-1080511200,-1063576800,-1049061600,-1032127200,-1017612000,-1001282400,-986162400,-969228000,-950479200,-942012000,-904518000,-896050800,-875487600,-864601200,-844038000,-832546800,-812588400,-798073200,-781052400,-772066800,-764805600,-748476000,-733356000,-719445600,-717030000,-706748400,-699487200,-687996000,-668037600,-654732000,-636588000,-622072800,-605743200,-590623200,-574293600,-558568800,-542239200,-527119200,-512604000,-496274400,-481154400,-464220000,-449704800,-432165600,-417650400,-401320800,-386200800,-369266400,-354751200,-337816800,-323301600,-306972000,-291852000,-276732000,-257983200,-245282400,-226533600,-213228000,-195084000,-182383200,-163634400,-150933600,-132184800,-119484000,-100735200,-88034400,-68680800,-59004000],"o":[-75,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,0,3600,0,3600,7200,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600]},"Pacific/Midway":{"source":"Pacific/Midway","t":[-2177410232,-428504400,-420645600],"o":[-42568,-39600,-36000,-39600]}}}');
   }
 });
 
 // src/data/tz-history/2025c/21.json
-var require__22 = __commonJS({
-  "src/data/tz-history/2025c/21.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "Africa/Casablanca": { source: "Africa/Casablanca", t: [-1773012580, -956361600, -95049e4, -942019200, -761187600, -617241600, -605149200, -81432e3, -71110800], o: [-1820, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0] }, "Africa/Sao_Tome": { source: "Africa/Sao_Tome", t: [-2713912016, -1830384e3], o: [1616, -2205, 0] }, "America/Atka": { source: "America/Adak", t: [-3225223727, -2188944802, -880196400, -765374400, -21466800, -5745600], o: [44002, -42398, -39600, -36e3, -39600, -36e3, -39600] }, "America/Thunder_Bay": { source: "America/Thunder_Bay", t: [-2366733780, -1893434400, -880218e3, -765396e3], o: [-21420, -21600, -18e3, -14400, -18e3] }, "Asia/Kuwait": { source: "Asia/Kuwait", t: [-631163516], o: [11516, 10800] }, "Asia/Pontianak": { source: "Asia/Pontianak", t: [-1172906240, -881220600, -766054800, -683883e3, -620812800, -189415800], o: [26240, 27e3, 32400, 27e3, 28800, 27e3, 28800] }, "Australia/Perth": { source: "Australia/Perth", t: [-2337925404, -1672552800, -1665381600, -883634400, -876117600, -860392800, -844668e3], o: [27804, 28800, 32400, 28800, 32400, 28800, 32400, 28800] }, "Brazil/East": { source: "America/Sao_Paulo", t: [-1767214412, -1206957600, -1191362400, -1175374800, -1159826400, -633819600, -622069200, -602283600, -591832800, -570747600, -560210400, -539125200, -531352800, -195426e3, -184197600, -155163600, -150069600, -128898e3, -121125600, -99954e3, -89589600, -68418e3, -57967200], o: [-11188, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800] }, "Europe/Madrid": { source: "Europe/Madrid", t: [-2177452800, -1631926800, -1616889600, -1601168400, -1585353600, -1442451600, -1427673600, -1379293200, -1364774400, -1348448400, -1333324800, -1316390400, -1301270400, -1284339600, -1269820800, -1026954e3, -1017619200, -1001898e3, -999482400, -986090400, -954115200, -940208400, -873079200, -862621200, -842839200, -828320400, -811389600, -796870800, -77994e4, -765421200, -748490400, -733971600, -652327200, -639018e3], o: [-884, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 7200, 3600, 0, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600] }, "Europe/Riga": { source: "Europe/Riga", t: [-1632008194, -1618702594, -1601681794, -1597275394, -1377308194, -928029600, -899521200, -857257200, -844556400, -828226800, -812502e3, -796777200, -795834e3], o: [5794, 9394, 5794, 9394, 5794, 7200, 10800, 7200, 3600, 7200, 3600, 7200, 3600, 10800] }, Iran: { source: "Asia/Tehran", t: [-1090466744], o: [12344, 12600] }, "Pacific/Wallis": { source: "Pacific/Wallis", t: [-2177496920], o: [44120, 43200] } } };
+var __exports22 = {};
+__export(__exports22, {
+  default: () => __default22
+});
+var __default22;
+var init__22 = __esm({
+  "src/data/tz-history/2025c/21.json"() {
+    "use strict";
+    __default22 = JSON.parse('{"tzdb":"2025c","zones":{"Africa/Casablanca":{"source":"Africa/Casablanca","t":[-1773012580,-956361600,-950490000,-942019200,-761187600,-617241600,-605149200,-81432000,-71110800],"o":[-1820,0,3600,0,3600,0,3600,0,3600,0]},"Africa/Sao_Tome":{"source":"Africa/Sao_Tome","t":[-2713912016,-1830384000],"o":[1616,-2205,0]},"America/Atka":{"source":"America/Adak","t":[-3225223727,-2188944802,-880196400,-765374400,-21466800,-5745600],"o":[44002,-42398,-39600,-36000,-39600,-36000,-39600]},"America/Thunder_Bay":{"source":"America/Thunder_Bay","t":[-2366733780,-1893434400,-880218000,-765396000],"o":[-21420,-21600,-18000,-14400,-18000]},"Asia/Kuwait":{"source":"Asia/Kuwait","t":[-631163516],"o":[11516,10800]},"Asia/Pontianak":{"source":"Asia/Pontianak","t":[-1172906240,-881220600,-766054800,-683883000,-620812800,-189415800],"o":[26240,27000,32400,27000,28800,27000,28800]},"Australia/Perth":{"source":"Australia/Perth","t":[-2337925404,-1672552800,-1665381600,-883634400,-876117600,-860392800,-844668000],"o":[27804,28800,32400,28800,32400,28800,32400,28800]},"Brazil/East":{"source":"America/Sao_Paulo","t":[-1767214412,-1206957600,-1191362400,-1175374800,-1159826400,-633819600,-622069200,-602283600,-591832800,-570747600,-560210400,-539125200,-531352800,-195426000,-184197600,-155163600,-150069600,-128898000,-121125600,-99954000,-89589600,-68418000,-57967200],"o":[-11188,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800]},"Europe/Madrid":{"source":"Europe/Madrid","t":[-2177452800,-1631926800,-1616889600,-1601168400,-1585353600,-1442451600,-1427673600,-1379293200,-1364774400,-1348448400,-1333324800,-1316390400,-1301270400,-1284339600,-1269820800,-1026954000,-1017619200,-1001898000,-999482400,-986090400,-954115200,-940208400,-873079200,-862621200,-842839200,-828320400,-811389600,-796870800,-779940000,-765421200,-748490400,-733971600,-652327200,-639018000],"o":[-884,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,7200,3600,0,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600]},"Europe/Riga":{"source":"Europe/Riga","t":[-1632008194,-1618702594,-1601681794,-1597275394,-1377308194,-928029600,-899521200,-857257200,-844556400,-828226800,-812502000,-796777200,-795834000],"o":[5794,9394,5794,9394,5794,7200,10800,7200,3600,7200,3600,7200,3600,10800]},"Iran":{"source":"Asia/Tehran","t":[-1090466744],"o":[12344,12600]},"Pacific/Wallis":{"source":"Pacific/Wallis","t":[-2177496920],"o":[44120,43200]}}}');
   }
 });
 
 // src/data/tz-history/2025c/22.json
-var require__23 = __commonJS({
-  "src/data/tz-history/2025c/22.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "America/Argentina/Cordoba": { source: "America/Argentina/Cordoba", t: [-1567453392, -1233432e3, -1222981200, -1205956800, -1194037200, -1172865600, -1162501200, -1141329600, -1130965200, -1109793600, -1099429200, -1078257600, -1067806800, -1046635200, -1036270800, -1015099200, -1004734800, -983563200, -973198800, -952027200, -941576400, -931032e3, -900882e3, -890337600, -833749200, -827265600, -752274e3, -733780800, -197326800, -190843200, -184194e3, -164491200, -152658e3, -132955200, -121122e3, -101419200, -86821200, -71092800, -54766800, -39038400, -23317200, -7588800], o: [-15408, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800] }, "America/Campo_Grande": { source: "America/Campo_Grande", t: [-1767212492, -1206954e3, -1191358800, -1175371200, -1159822800, -633816e3, -622065600, -60228e4, -591829200, -570744e3, -560206800, -539121600, -531349200, -191361600, -184194e3, -15516e4, -150066e3, -128894400, -121122e3, -99950400, -89586e3, -68414400, -57963600], o: [-13108, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400] }, "America/Coyhaique": { source: "America/Coyhaique", t: [-2524504304, -1892661435, -1688410800, -1619205435, -1593806400, -1335986235, -1317585600, -1304362800, -1286049600, -1272826800, -1254513600, -1241290800, -1222977600, -1209754800, -1191355200, -1178132400, -870552e3, -865278e3, -718056e3, -713649600, -36619200, -23922e3, -3355200], o: [-17296, -16965, -18e3, -16965, -14400, -16965, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -10800, -14400, -10800] }, "America/Indiana/Petersburg": { source: "America/Indiana/Petersburg", t: [-2717647200, -1633276800, -1615136400, -1601827200, -1583686800, -880214400, -765392400, -462996e3, -450291600, -431539200, -418237200, -400089600, -386787600, -36864e4, -355338e3, -337190400, -323888400, -305740800, -292438800, -273686400, -257965200, -242236800, -226515600, -210787200, -195066e3, -179337600, -163616400, -147888e3, -100112400, -84384e3, -68662800, -52934400, -37213200, -21484800, -5763600], o: [-20947, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600] }, "America/Juneau": { source: "America/Juneau", t: [-3225223727, -2188954939, -880207200, -765385200, -21477600, -5756400], o: [54139, -32261, -28800, -25200, -28800, -25200, -28800] }, "Asia/Nicosia": { source: "Asia/Nicosia", t: [-1518920008], o: [8008, 7200] }, "Etc/GMT-7": { source: "Etc/GMT-7", t: [], o: [25200] }, "Europe/Dublin": { source: "Europe/Dublin", t: [-1691962479, -1680471279, -1664143200, -1650146400, -1633903200, -1617487200, -1601848800, -1586037600, -1570399200, -1552168800, -1538344800, -1522533600, -15075e5, -1490565600, -1473631200, -1460930400, -1442786400, -1428876e3, -1410732e3, -1396216800, -1379282400, -1364767200, -1348437600, -1333317600, -1315778400, -1301263200, -1284328800, -1269813600, -1253484e3, -1238364e3, -1221429600, -1206914400, -118998e4, -1175464800, -1159135200, -1143410400, -1126476e3, -1111960800, -1095631200, -1080511200, -1063576800, -1049061600, -1032127200, -1017612e3, -1001282400, -986162400, -969228e3, -950479200, -942012e3, -733356e3, -719445600, -699487200, -684972e3, -668037600, -654732e3, -636588e3, -622072800, -605743200, -590623200, -574293600, -558568800, -542239200, -527119200, -512604e3, -496274400, -481154400, -46422e4, -449704800, -432165600, -417650400, -401320800, -386200800, -369266400, -354751200, -337816800, -323301600, -306972e3, -291852e3, -276732e3, -257983200, -245282400, -226533600, -213228e3, -195084e3, -182383200, -163634400, -150933600, -132184800, -119484e3, -100735200, -88034400, -68680800, -59004e3], o: [-1521, 2079, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600] }, "Europe/Vilnius": { source: "Europe/Vilnius", t: [-2840146876, -1672536240, -1585100136, -1561251600, -1553565600, -928198800, -900126e3, -857257200, -844556400, -828226800, -812502e3, -802144800], o: [6076, 5040, 5736, 3600, 7200, 3600, 10800, 7200, 3600, 7200, 3600, 7200, 10800] }, Hongkong: { source: "Asia/Hong_Kong", t: [-2056690800, -900910800, -891579600, -884248200, -761209200, -747907200, -728541e3, -717049800, -697091400, -683785800, -668061e3, -654755400, -636611400, -623305800, -605161800, -591856200, -573712200, -559801800, -541657800, -528352200, -510211800, -498112200, -478762200, -466662600, -446707800, -435213e3, -415258200, -403158600, -383808600, -371709e3, -352359e3, -340259400, -320909400, -308809800, -288855e3, -277360200, -257405400, -245910600, -225955800, -213856200, -194506200, -182406600, -163056600, -148537800, -132816600, -117088200, -101367e3, -85638600, -69312600, -53584200, -37863e3, -22134600, -6413400], o: [27402, 28800, 32400, 30600, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800] }, "Pacific/Johnston": { source: "Pacific/Johnston", t: [], o: [-36e3] }, "Pacific/Nauru": { source: "Pacific/Nauru", t: [-1545131260, -862918200, -767350800], o: [40060, 41400, 32400, 41400] }, "Pacific/Tongatapu": { source: "Pacific/Tongatapu", t: [-767189952, -284041200], o: [44352, 44400, 46800] } } };
+var __exports23 = {};
+__export(__exports23, {
+  default: () => __default23
+});
+var __default23;
+var init__23 = __esm({
+  "src/data/tz-history/2025c/22.json"() {
+    "use strict";
+    __default23 = JSON.parse('{"tzdb":"2025c","zones":{"America/Argentina/Cordoba":{"source":"America/Argentina/Cordoba","t":[-1567453392,-1233432000,-1222981200,-1205956800,-1194037200,-1172865600,-1162501200,-1141329600,-1130965200,-1109793600,-1099429200,-1078257600,-1067806800,-1046635200,-1036270800,-1015099200,-1004734800,-983563200,-973198800,-952027200,-941576400,-931032000,-900882000,-890337600,-833749200,-827265600,-752274000,-733780800,-197326800,-190843200,-184194000,-164491200,-152658000,-132955200,-121122000,-101419200,-86821200,-71092800,-54766800,-39038400,-23317200,-7588800],"o":[-15408,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800]},"America/Campo_Grande":{"source":"America/Campo_Grande","t":[-1767212492,-1206954000,-1191358800,-1175371200,-1159822800,-633816000,-622065600,-602280000,-591829200,-570744000,-560206800,-539121600,-531349200,-191361600,-184194000,-155160000,-150066000,-128894400,-121122000,-99950400,-89586000,-68414400,-57963600],"o":[-13108,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400]},"America/Coyhaique":{"source":"America/Coyhaique","t":[-2524504304,-1892661435,-1688410800,-1619205435,-1593806400,-1335986235,-1317585600,-1304362800,-1286049600,-1272826800,-1254513600,-1241290800,-1222977600,-1209754800,-1191355200,-1178132400,-870552000,-865278000,-718056000,-713649600,-36619200,-23922000,-3355200],"o":[-17296,-16965,-18000,-16965,-14400,-16965,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-10800,-14400,-10800]},"America/Indiana/Petersburg":{"source":"America/Indiana/Petersburg","t":[-2717647200,-1633276800,-1615136400,-1601827200,-1583686800,-880214400,-765392400,-462996000,-450291600,-431539200,-418237200,-400089600,-386787600,-368640000,-355338000,-337190400,-323888400,-305740800,-292438800,-273686400,-257965200,-242236800,-226515600,-210787200,-195066000,-179337600,-163616400,-147888000,-100112400,-84384000,-68662800,-52934400,-37213200,-21484800,-5763600],"o":[-20947,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600]},"America/Juneau":{"source":"America/Juneau","t":[-3225223727,-2188954939,-880207200,-765385200,-21477600,-5756400],"o":[54139,-32261,-28800,-25200,-28800,-25200,-28800]},"Asia/Nicosia":{"source":"Asia/Nicosia","t":[-1518920008],"o":[8008,7200]},"Etc/GMT-7":{"source":"Etc/GMT-7","t":[],"o":[25200]},"Europe/Dublin":{"source":"Europe/Dublin","t":[-1691962479,-1680471279,-1664143200,-1650146400,-1633903200,-1617487200,-1601848800,-1586037600,-1570399200,-1552168800,-1538344800,-1522533600,-1507500000,-1490565600,-1473631200,-1460930400,-1442786400,-1428876000,-1410732000,-1396216800,-1379282400,-1364767200,-1348437600,-1333317600,-1315778400,-1301263200,-1284328800,-1269813600,-1253484000,-1238364000,-1221429600,-1206914400,-1189980000,-1175464800,-1159135200,-1143410400,-1126476000,-1111960800,-1095631200,-1080511200,-1063576800,-1049061600,-1032127200,-1017612000,-1001282400,-986162400,-969228000,-950479200,-942012000,-733356000,-719445600,-699487200,-684972000,-668037600,-654732000,-636588000,-622072800,-605743200,-590623200,-574293600,-558568800,-542239200,-527119200,-512604000,-496274400,-481154400,-464220000,-449704800,-432165600,-417650400,-401320800,-386200800,-369266400,-354751200,-337816800,-323301600,-306972000,-291852000,-276732000,-257983200,-245282400,-226533600,-213228000,-195084000,-182383200,-163634400,-150933600,-132184800,-119484000,-100735200,-88034400,-68680800,-59004000],"o":[-1521,2079,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600]},"Europe/Vilnius":{"source":"Europe/Vilnius","t":[-2840146876,-1672536240,-1585100136,-1561251600,-1553565600,-928198800,-900126000,-857257200,-844556400,-828226800,-812502000,-802144800],"o":[6076,5040,5736,3600,7200,3600,10800,7200,3600,7200,3600,7200,10800]},"Hongkong":{"source":"Asia/Hong_Kong","t":[-2056690800,-900910800,-891579600,-884248200,-761209200,-747907200,-728541000,-717049800,-697091400,-683785800,-668061000,-654755400,-636611400,-623305800,-605161800,-591856200,-573712200,-559801800,-541657800,-528352200,-510211800,-498112200,-478762200,-466662600,-446707800,-435213000,-415258200,-403158600,-383808600,-371709000,-352359000,-340259400,-320909400,-308809800,-288855000,-277360200,-257405400,-245910600,-225955800,-213856200,-194506200,-182406600,-163056600,-148537800,-132816600,-117088200,-101367000,-85638600,-69312600,-53584200,-37863000,-22134600,-6413400],"o":[27402,28800,32400,30600,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800]},"Pacific/Johnston":{"source":"Pacific/Johnston","t":[],"o":[-36000]},"Pacific/Nauru":{"source":"Pacific/Nauru","t":[-1545131260,-862918200,-767350800],"o":[40060,41400,32400,41400]},"Pacific/Tongatapu":{"source":"Pacific/Tongatapu","t":[-767189952,-284041200],"o":[44352,44400,46800]}}}');
   }
 });
 
 // src/data/tz-history/2025c/23.json
-var require__24 = __commonJS({
-  "src/data/tz-history/2025c/23.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "Africa/Algiers": { source: "Africa/Algiers", t: [-2486592732, -1855958961, -1689814800, -1680397200, -1665363600, -1648342800, -1635123600, -1616893200, -1604278800, -1585443600, -1574038800, -1552266e3, -1539997200, -1531443600, -956365200, -950486400, -942012e3, -812502e3, -796262400, -781052400, -766630800, -733280400, -439430400, -212029200], o: [732, 561, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 7200, 3600, 7200, 3600, 0, 3600, 0] }, "Africa/Maseru": { source: "Africa/Maseru", t: [-2109289800, -829526400, -813805200], o: [6600, 7200, 10800, 7200] }, "America/Argentina/Rio_Gallegos": { source: "America/Argentina/Rio_Gallegos", t: [-2372095388, -1567453392, -1233432e3, -1222981200, -1205956800, -1194037200, -1172865600, -1162501200, -1141329600, -1130965200, -1109793600, -1099429200, -1078257600, -1067806800, -1046635200, -1036270800, -1015099200, -1004734800, -983563200, -973198800, -952027200, -941576400, -931032e3, -900882e3, -890337600, -833749200, -827265600, -752274e3, -733780800, -197326800, -190843200, -184194e3, -164491200, -152658e3, -132955200, -121122e3, -101419200, -86821200, -71092800, -54766800, -39038400, -23317200, -7588800], o: [-16612, -15408, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800] }, "America/Detroit": { source: "America/Detroit", t: [-2051202469, -1724083200, -880218e3, -765396e3, -684349200, -671047200, -80506740, -68666400, -52938e3, -37216800], o: [-19931, -21600, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3] }, "America/Fort_Nelson": { source: "America/Fort_Nelson", t: [-2713880953, -163206e4, -1615129200, -880207200, -765385200, -715788e3, -702486e3, -684338400, -671036400, -652888800, -639586800, -620834400, -608137200, -589384800, -576082800, -557935200, -544633200, -526485600, -513183600, -495036e3, -481734e3, -463586400, -450284400, -431532e3, -41823e4, -400082400, -386780400, -368632800, -355330800, -337183200, -323881200, -305733600, -292431600, -273679200, -260982e3, -242229600, -226508400, -21078e4, -195058800, -179330400, -163609200, -147880800, -131554800, -116431200, -100105200, -84376800, -68655600, -52927200, -37206e3, -21477600, -5756400], o: [-29447, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800] }, "America/Guyana": { source: "America/Guyana", t: [-1843589241, -1730577600], o: [-13959, -14400, -13500] }, "America/Matamoros": { source: "America/Matamoros", t: [-1514743200], o: [-23400, -21600] }, "America/Mexico_City": { source: "America/Mexico_City", t: [-1514739600, -1343149200, -1234807200, -1220461200, -1207159200, -1191344400, -975261600, -963169200, -917114400, -907354800, -821901600, -810068400, -627501600, -61299e4], o: [-23796, -25200, -21600, -25200, -21600, -25200, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600] }, "Antarctica/McMurdo": { source: "Antarctica/McMurdo", t: [-441849600], o: [null, 43200] }, "Atlantic/Madeira": { source: "Atlantic/Madeira", t: [-1830380400, -1689552e3, -1677798e3, -166743e4, -1647734400, -1635894e3, -1616198400, -1604358e3, -1584662400, -1572735600, -155304e4, -1541199600, -1521504e3, -1442448e3, -1427673600, -1379289600, -1364774400, -1348444800, -1333324800, -1316390400, -1301270400, -1284336e3, -1269820800, -1221436800, -1206921600, -1191196800, -1175472e3, -1127692800, -1111968e3, -1096848e3, -1080518400, -1063584e3, -1049068800, -1033344e3, -1017619200, -1002499200, -986169600, -969235200, -950486400, -942019200, -922492800, -906940800, -891129600, -877305600, -873680400, -864003600, -857952e3, -845856e3, -842835600, -831344400, -825897600, -814406400, -810781200, -799894800, -794448e3, -782956800, -779331600, -768445200, -762998400, -749088e3, -733363200, -717627600, -701902800, -686178e3, -670453200, -654728400, -639003600, -623278800, -607554e3, -591829200, -575499600, -559774800, -54405e4, -528325200, -512600400, -496875600, -481150800, -465426e3, -449701200, -433976400, -417646800, -401922e3, -386197200, -370472400, -354747600, -339022800, -323298e3, -307573200, -291848400, -276123600, -260398800, -244674e3, -228344400, -212619600, -196894800, -18117e4, -165445200, -149720400, -133995600, -118270800], o: [-4056, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, 3600, 0, -3600, 0, 3600, 0, -3600, 0, 3600, 0, -3600, 0, 3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0] }, "Australia/South": { source: "Australia/Adelaide", t: [-2364110060, -2230189200, -1672558200, -1665387e3, -883639800, -876123e3, -860398200, -844673400, -828343800, -813223800], o: [33260, 32400, 34200, 37800, 34200, 37800, 34200, 37800, 34200, 37800, 34200] }, "Canada/Newfoundland": { source: "America/St_Johns", t: [-1664130548, -1650137348, -1632076148, -1615145348, -1598650148, -1590100148, -1567286948, -1551565748, -1535837348, -1520116148, -1503782948, -1488666548, -1472333348, -1457216948, -1440883748, -1425767348, -1409434148, -1394317748, -1377984548, -1362263348, -1346534948, -1330813748, -1314480548, -1299364148, -1283030948, -1267914548, -1251581348, -1236464948, -1220131748, -1205015348, -1188682148, -1172960948, -1156627748, -1141511348, -1125178148, -1110061748, -1096921748, -1093728600, -1078612200, -1061670600, -1048973400, -1030221e3, -1017523800, -998771400, -986074200, -966717e3, -954624600, -935267400, -922570200, -903817800, -891120600, -872368200, -765401400, -746044200, -733347e3, -714594600, -701897400, -683145e3, -670447800, -651695400, -638998200, -619641e3, -606943800, -589401e3, -576099e3, -557951400, -544649400, -526501800, -513199800, -495052200, -481750200, -463602600, -450300600, -431548200, -418246200, -400098600, -386796600, -368649e3, -355347e3, -337199400, -323897400, -305749800, -289423800, -273695400, -257974200, -242245800, -226524600, -210796200, -195075e3, -179346600, -163625400, -147897e3, -131571e3, -116447400, -100121400, -84393e3, -68671800, -52943400, -37222200, -21493800, -5772600], o: [-12652, -9052, -12652, -9052, -12652, -9052, -12652, -9052, -12652, -9052, -12652, -9052, -12652, -9052, -12652, -9052, -12652, -9052, -12652, -9052, -12652, -9052, -12652, -9052, -12652, -9052, -12652, -9052, -12652, -9052, -12652, -9052, -12652, -9052, -12652, -9052, -12652, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600, -9e3, -12600] }, "Europe/Kirov": { source: "Europe/Kirov", t: [-1593820800, -1247540400], o: [11928, 10800, 14400] }, "Europe/Kyiv": { source: "Europe/Kyiv", t: [-1441159324, -1247536800, -892522800, -857257200, -844556400, -828226800, -825382800], o: [7324, 7200, 10800, 7200, 3600, 7200, 3600, 10800] }, "Pacific/Saipan": { source: "Pacific/Saipan", t: [-3944626980, -2177487780, -804157200, -331891200, -28161e4, -73728e3, -29415540, -16704e3, -10659600], o: [-51420, 34980, 32400, 36e3, 39600, 36e3, 39600, 36e3, 39600, 36e3] }, ROC: { source: "Asia/Taipei", t: [-2335248360, -1017820800, -766224e3, -745833600, -733827600, -716889600, -699613200, -683884800, -670669200, -652348800, -639133200, -620812800, -607597200, -589276800, -576061200, -562924800, -541760400, -528710400, -510224400, -497174400, -478688400, -465638400, -449830800, -434016e3, -418208400, -40248e4, -386672400, -370944e3, -355136400, -339408e3, -323600400, -302515200, -291978e3, -270979200, -260442e3], o: [29160, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800] } } };
+var __exports24 = {};
+__export(__exports24, {
+  default: () => __default24
+});
+var __default24;
+var init__24 = __esm({
+  "src/data/tz-history/2025c/23.json"() {
+    "use strict";
+    __default24 = JSON.parse('{"tzdb":"2025c","zones":{"Africa/Algiers":{"source":"Africa/Algiers","t":[-2486592732,-1855958961,-1689814800,-1680397200,-1665363600,-1648342800,-1635123600,-1616893200,-1604278800,-1585443600,-1574038800,-1552266000,-1539997200,-1531443600,-956365200,-950486400,-942012000,-812502000,-796262400,-781052400,-766630800,-733280400,-439430400,-212029200],"o":[732,561,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,7200,3600,7200,3600,0,3600,0]},"Africa/Maseru":{"source":"Africa/Maseru","t":[-2109289800,-829526400,-813805200],"o":[6600,7200,10800,7200]},"America/Argentina/Rio_Gallegos":{"source":"America/Argentina/Rio_Gallegos","t":[-2372095388,-1567453392,-1233432000,-1222981200,-1205956800,-1194037200,-1172865600,-1162501200,-1141329600,-1130965200,-1109793600,-1099429200,-1078257600,-1067806800,-1046635200,-1036270800,-1015099200,-1004734800,-983563200,-973198800,-952027200,-941576400,-931032000,-900882000,-890337600,-833749200,-827265600,-752274000,-733780800,-197326800,-190843200,-184194000,-164491200,-152658000,-132955200,-121122000,-101419200,-86821200,-71092800,-54766800,-39038400,-23317200,-7588800],"o":[-16612,-15408,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800]},"America/Detroit":{"source":"America/Detroit","t":[-2051202469,-1724083200,-880218000,-765396000,-684349200,-671047200,-80506740,-68666400,-52938000,-37216800],"o":[-19931,-21600,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000]},"America/Fort_Nelson":{"source":"America/Fort_Nelson","t":[-2713880953,-1632060000,-1615129200,-880207200,-765385200,-715788000,-702486000,-684338400,-671036400,-652888800,-639586800,-620834400,-608137200,-589384800,-576082800,-557935200,-544633200,-526485600,-513183600,-495036000,-481734000,-463586400,-450284400,-431532000,-418230000,-400082400,-386780400,-368632800,-355330800,-337183200,-323881200,-305733600,-292431600,-273679200,-260982000,-242229600,-226508400,-210780000,-195058800,-179330400,-163609200,-147880800,-131554800,-116431200,-100105200,-84376800,-68655600,-52927200,-37206000,-21477600,-5756400],"o":[-29447,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800]},"America/Guyana":{"source":"America/Guyana","t":[-1843589241,-1730577600],"o":[-13959,-14400,-13500]},"America/Matamoros":{"source":"America/Matamoros","t":[-1514743200],"o":[-23400,-21600]},"America/Mexico_City":{"source":"America/Mexico_City","t":[-1514739600,-1343149200,-1234807200,-1220461200,-1207159200,-1191344400,-975261600,-963169200,-917114400,-907354800,-821901600,-810068400,-627501600,-612990000],"o":[-23796,-25200,-21600,-25200,-21600,-25200,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600]},"Antarctica/McMurdo":{"source":"Antarctica/McMurdo","t":[-441849600],"o":[null,43200]},"Atlantic/Madeira":{"source":"Atlantic/Madeira","t":[-1830380400,-1689552000,-1677798000,-1667430000,-1647734400,-1635894000,-1616198400,-1604358000,-1584662400,-1572735600,-1553040000,-1541199600,-1521504000,-1442448000,-1427673600,-1379289600,-1364774400,-1348444800,-1333324800,-1316390400,-1301270400,-1284336000,-1269820800,-1221436800,-1206921600,-1191196800,-1175472000,-1127692800,-1111968000,-1096848000,-1080518400,-1063584000,-1049068800,-1033344000,-1017619200,-1002499200,-986169600,-969235200,-950486400,-942019200,-922492800,-906940800,-891129600,-877305600,-873680400,-864003600,-857952000,-845856000,-842835600,-831344400,-825897600,-814406400,-810781200,-799894800,-794448000,-782956800,-779331600,-768445200,-762998400,-749088000,-733363200,-717627600,-701902800,-686178000,-670453200,-654728400,-639003600,-623278800,-607554000,-591829200,-575499600,-559774800,-544050000,-528325200,-512600400,-496875600,-481150800,-465426000,-449701200,-433976400,-417646800,-401922000,-386197200,-370472400,-354747600,-339022800,-323298000,-307573200,-291848400,-276123600,-260398800,-244674000,-228344400,-212619600,-196894800,-181170000,-165445200,-149720400,-133995600,-118270800],"o":[-4056,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,3600,0,-3600,0,3600,0,-3600,0,3600,0,-3600,0,3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0]},"Australia/South":{"source":"Australia/Adelaide","t":[-2364110060,-2230189200,-1672558200,-1665387000,-883639800,-876123000,-860398200,-844673400,-828343800,-813223800],"o":[33260,32400,34200,37800,34200,37800,34200,37800,34200,37800,34200]},"Canada/Newfoundland":{"source":"America/St_Johns","t":[-1664130548,-1650137348,-1632076148,-1615145348,-1598650148,-1590100148,-1567286948,-1551565748,-1535837348,-1520116148,-1503782948,-1488666548,-1472333348,-1457216948,-1440883748,-1425767348,-1409434148,-1394317748,-1377984548,-1362263348,-1346534948,-1330813748,-1314480548,-1299364148,-1283030948,-1267914548,-1251581348,-1236464948,-1220131748,-1205015348,-1188682148,-1172960948,-1156627748,-1141511348,-1125178148,-1110061748,-1096921748,-1093728600,-1078612200,-1061670600,-1048973400,-1030221000,-1017523800,-998771400,-986074200,-966717000,-954624600,-935267400,-922570200,-903817800,-891120600,-872368200,-765401400,-746044200,-733347000,-714594600,-701897400,-683145000,-670447800,-651695400,-638998200,-619641000,-606943800,-589401000,-576099000,-557951400,-544649400,-526501800,-513199800,-495052200,-481750200,-463602600,-450300600,-431548200,-418246200,-400098600,-386796600,-368649000,-355347000,-337199400,-323897400,-305749800,-289423800,-273695400,-257974200,-242245800,-226524600,-210796200,-195075000,-179346600,-163625400,-147897000,-131571000,-116447400,-100121400,-84393000,-68671800,-52943400,-37222200,-21493800,-5772600],"o":[-12652,-9052,-12652,-9052,-12652,-9052,-12652,-9052,-12652,-9052,-12652,-9052,-12652,-9052,-12652,-9052,-12652,-9052,-12652,-9052,-12652,-9052,-12652,-9052,-12652,-9052,-12652,-9052,-12652,-9052,-12652,-9052,-12652,-9052,-12652,-9052,-12652,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600,-9000,-12600]},"Europe/Kirov":{"source":"Europe/Kirov","t":[-1593820800,-1247540400],"o":[11928,10800,14400]},"Europe/Kyiv":{"source":"Europe/Kyiv","t":[-1441159324,-1247536800,-892522800,-857257200,-844556400,-828226800,-825382800],"o":[7324,7200,10800,7200,3600,7200,3600,10800]},"Pacific/Saipan":{"source":"Pacific/Saipan","t":[-3944626980,-2177487780,-804157200,-331891200,-281610000,-73728000,-29415540,-16704000,-10659600],"o":[-51420,34980,32400,36000,39600,36000,39600,36000,39600,36000]},"ROC":{"source":"Asia/Taipei","t":[-2335248360,-1017820800,-766224000,-745833600,-733827600,-716889600,-699613200,-683884800,-670669200,-652348800,-639133200,-620812800,-607597200,-589276800,-576061200,-562924800,-541760400,-528710400,-510224400,-497174400,-478688400,-465638400,-449830800,-434016000,-418208400,-402480000,-386672400,-370944000,-355136400,-339408000,-323600400,-302515200,-291978000,-270979200,-260442000],"o":[29160,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800]}}}');
   }
 });
 
 // src/data/tz-history/2025c/24.json
-var require__25 = __commonJS({
-  "src/data/tz-history/2025c/24.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "Africa/Banjul": { source: "Africa/Banjul", t: [-1159829604, -880930800], o: [-3996, -3600, 0] }, "Africa/Dar_es_Salaam": { source: "Africa/Dar_es_Salaam", t: [-1230777428, -694321200, -284006700], o: [9428, 10800, 9900, 10800] }, "America/Cancun": { source: "America/Cancun", t: [-1514743200], o: [-20824, -21600] }, "Asia/Aqtau": { source: "Asia/Aqtau", t: [-1441164064, -1247544e3], o: [12064, 14400, 18e3] }, "Asia/Dili": { source: "Asia/Dili", t: [-1830412800, -879152400], o: [30140, 28800, 32400] }, "Asia/Yangon": { source: "Asia/Yangon", t: [-1577946287, -873268200, -77841e4], o: [23087, 23400, 32400, 23400] }, "Asia/Yekaterinburg": { source: "Asia/Yekaterinburg", t: [-1688270553, -1592610305, -1247544e3], o: [14553, 13505, 14400, 18e3] }, "Atlantic/Azores": { source: "Atlantic/Azores", t: [-2713904240, -1830376800, -1689548400, -1677794400, -1667426400, -1647730800, -1635890400, -1616194800, -1604354400, -1584658800, -1572732e3, -1553036400, -1541196e3, -1521500400, -1442444400, -142767e4, -1379286e3, -1364770800, -1348441200, -1333321200, -1316386800, -1301266800, -1284332400, -1269817200, -1221433200, -1206918e3, -1191193200, -1175468400, -1127689200, -1111964400, -1096844400, -1080514800, -1063580400, -1049065200, -1033340400, -1017615600, -1002495600, -986166e3, -969231600, -950482800, -942015600, -922489200, -906937200, -891126e3, -877302e3, -873676800, -864e6, -857948400, -845852400, -842832e3, -831340800, -825894e3, -814402800, -810777600, -799891200, -794444400, -782953200, -779328e3, -768441600, -762994800, -749084400, -733359600, -717624e3, -701899200, -686174400, -670449600, -654724800, -639e6, -623275200, -607550400, -591825600, -575496e3, -559771200, -544046400, -528321600, -512596800, -496872e3, -481147200, -465422400, -449697600, -433972800, -417643200, -401918400, -386193600, -370468800, -354744e3, -339019200, -323294400, -307569600, -291844800, -27612e4, -260395200, -244670400, -228340800, -212616e3, -196891200, -181166400, -165441600, -149716800, -133992e3, -118267200], o: [-6160, -6872, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, 0, -3600, -7200, -3600, 0, -3600, -7200, -3600, 0, -3600, -7200, -3600, 0, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600] }, "Atlantic/Faeroe": { source: "Atlantic/Faroe", t: [-1955748776], o: [-1624, 0] }, "Etc/GMT-14": { source: "Etc/GMT-14", t: [], o: [50400] } } };
+var __exports25 = {};
+__export(__exports25, {
+  default: () => __default25
+});
+var __default25;
+var init__25 = __esm({
+  "src/data/tz-history/2025c/24.json"() {
+    "use strict";
+    __default25 = JSON.parse('{"tzdb":"2025c","zones":{"Africa/Banjul":{"source":"Africa/Banjul","t":[-1159829604,-880930800],"o":[-3996,-3600,0]},"Africa/Dar_es_Salaam":{"source":"Africa/Dar_es_Salaam","t":[-1230777428,-694321200,-284006700],"o":[9428,10800,9900,10800]},"America/Cancun":{"source":"America/Cancun","t":[-1514743200],"o":[-20824,-21600]},"Asia/Aqtau":{"source":"Asia/Aqtau","t":[-1441164064,-1247544000],"o":[12064,14400,18000]},"Asia/Dili":{"source":"Asia/Dili","t":[-1830412800,-879152400],"o":[30140,28800,32400]},"Asia/Yangon":{"source":"Asia/Yangon","t":[-1577946287,-873268200,-778410000],"o":[23087,23400,32400,23400]},"Asia/Yekaterinburg":{"source":"Asia/Yekaterinburg","t":[-1688270553,-1592610305,-1247544000],"o":[14553,13505,14400,18000]},"Atlantic/Azores":{"source":"Atlantic/Azores","t":[-2713904240,-1830376800,-1689548400,-1677794400,-1667426400,-1647730800,-1635890400,-1616194800,-1604354400,-1584658800,-1572732000,-1553036400,-1541196000,-1521500400,-1442444400,-1427670000,-1379286000,-1364770800,-1348441200,-1333321200,-1316386800,-1301266800,-1284332400,-1269817200,-1221433200,-1206918000,-1191193200,-1175468400,-1127689200,-1111964400,-1096844400,-1080514800,-1063580400,-1049065200,-1033340400,-1017615600,-1002495600,-986166000,-969231600,-950482800,-942015600,-922489200,-906937200,-891126000,-877302000,-873676800,-864000000,-857948400,-845852400,-842832000,-831340800,-825894000,-814402800,-810777600,-799891200,-794444400,-782953200,-779328000,-768441600,-762994800,-749084400,-733359600,-717624000,-701899200,-686174400,-670449600,-654724800,-639000000,-623275200,-607550400,-591825600,-575496000,-559771200,-544046400,-528321600,-512596800,-496872000,-481147200,-465422400,-449697600,-433972800,-417643200,-401918400,-386193600,-370468800,-354744000,-339019200,-323294400,-307569600,-291844800,-276120000,-260395200,-244670400,-228340800,-212616000,-196891200,-181166400,-165441600,-149716800,-133992000,-118267200],"o":[-6160,-6872,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,0,-3600,-7200,-3600,0,-3600,-7200,-3600,0,-3600,-7200,-3600,0,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600]},"Atlantic/Faeroe":{"source":"Atlantic/Faroe","t":[-1955748776],"o":[-1624,0]},"Etc/GMT-14":{"source":"Etc/GMT-14","t":[],"o":[50400]}}}');
   }
 });
 
 // src/data/tz-history/2025c/25.json
-var require__26 = __commonJS({
-  "src/data/tz-history/2025c/25.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "America/Cambridge_Bay": { source: "America/Cambridge_Bay", t: [-1577923200, -880210800, -765388800], o: [null, -25200, -21600, -25200] }, "America/Coral_Harbour": { source: "America/Coral_Harbour", t: [-2713890440, -1632070800, -161514e4, -1596992400, -1583179200, -880218e3, -765396e3], o: [-19960, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3] }, "America/Ojinaga": { source: "America/Ojinaga", t: [-1514739600, -1343149200, -1234807200, -1220461200, -1207159200, -1191344400], o: [-25060, -25200, -21600, -25200, -21600, -25200, -21600] }, "America/Virgin": { source: "America/St_Thomas", t: [-1846266016], o: [-15584, -14400] }, "Asia/Ho_Chi_Minh": { source: "Asia/Ho_Chi_Minh", t: [-1851577590, -852105600, -782643600, -767869200, -718095600, -457772400, -315648e3], o: [25590, 25200, 28800, 32400, 25200, 28800, 25200, 28800] }, EST5EDT: { source: "EST5EDT", t: [-1633280400, -161514e4, -1601830800, -1583690400, -880218e3, -765396e3, -84387600, -68666400, -52938e3, -37216800, -21488400, -5767200], o: [-18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3] }, "Europe/Athens": { source: "Europe/Athens", t: [-1686101632, -1182996e3, -1178161200, -906861600, -904878e3, -857257200, -844477200, -828237600, -812422800, -552362400, -541652400], o: [5692, 7200, 10800, 7200, 10800, 7200, 3600, 7200, 3600, 7200, 10800, 7200] } } };
+var __exports26 = {};
+__export(__exports26, {
+  default: () => __default26
+});
+var __default26;
+var init__26 = __esm({
+  "src/data/tz-history/2025c/25.json"() {
+    "use strict";
+    __default26 = JSON.parse('{"tzdb":"2025c","zones":{"America/Cambridge_Bay":{"source":"America/Cambridge_Bay","t":[-1577923200,-880210800,-765388800],"o":[null,-25200,-21600,-25200]},"America/Coral_Harbour":{"source":"America/Coral_Harbour","t":[-2713890440,-1632070800,-1615140000,-1596992400,-1583179200,-880218000,-765396000],"o":[-19960,-18000,-14400,-18000,-14400,-18000,-14400,-18000]},"America/Ojinaga":{"source":"America/Ojinaga","t":[-1514739600,-1343149200,-1234807200,-1220461200,-1207159200,-1191344400],"o":[-25060,-25200,-21600,-25200,-21600,-25200,-21600]},"America/Virgin":{"source":"America/St_Thomas","t":[-1846266016],"o":[-15584,-14400]},"Asia/Ho_Chi_Minh":{"source":"Asia/Ho_Chi_Minh","t":[-1851577590,-852105600,-782643600,-767869200,-718095600,-457772400,-315648000],"o":[25590,25200,28800,32400,25200,28800,25200,28800]},"EST5EDT":{"source":"EST5EDT","t":[-1633280400,-1615140000,-1601830800,-1583690400,-880218000,-765396000,-84387600,-68666400,-52938000,-37216800,-21488400,-5767200],"o":[-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000]},"Europe/Athens":{"source":"Europe/Athens","t":[-1686101632,-1182996000,-1178161200,-906861600,-904878000,-857257200,-844477200,-828237600,-812422800,-552362400,-541652400],"o":[5692,7200,10800,7200,10800,7200,3600,7200,3600,7200,10800,7200]}}}');
   }
 });
 
 // src/data/tz-history/2025c/26.json
-var require__27 = __commonJS({
-  "src/data/tz-history/2025c/26.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "America/Caracas": { source: "America/Caracas", t: [-2524505536, -1826739140, -157750200], o: [-16064, -16060, -16200, -14400] }, "America/Curacao": { source: "America/Curacao", t: [-1826738653, -157750200], o: [-16547, -16200, -14400] }, "America/Indiana/Tell_City": { source: "America/Indiana/Tell_City", t: [-2717647200, -1633276800, -1615136400, -1601827200, -1583686800, -880214400, -765392400, -462996e3, -450291600, -431539200, -418237200, -400089600, -386787600, -36864e4, -355338e3, -337190400, -323888400, -305740800, -292438800, -273686400, -257965200, -242236800, -226515600, -210787200, -195066e3, -179337600, -68662800, -52934400, -37213200, -21484800, -5767200], o: [-20823, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -14400, -18e3] }, "Asia/Tomsk": { source: "Asia/Tomsk", t: [-1578807591, -1247551200], o: [20391, 21600, 25200] }, Eire: { source: "Europe/Dublin", t: [-1691962479, -1680471279, -1664143200, -1650146400, -1633903200, -1617487200, -1601848800, -1586037600, -1570399200, -1552168800, -1538344800, -1522533600, -15075e5, -1490565600, -1473631200, -1460930400, -1442786400, -1428876e3, -1410732e3, -1396216800, -1379282400, -1364767200, -1348437600, -1333317600, -1315778400, -1301263200, -1284328800, -1269813600, -1253484e3, -1238364e3, -1221429600, -1206914400, -118998e4, -1175464800, -1159135200, -1143410400, -1126476e3, -1111960800, -1095631200, -1080511200, -1063576800, -1049061600, -1032127200, -1017612e3, -1001282400, -986162400, -969228e3, -950479200, -942012e3, -733356e3, -719445600, -699487200, -684972e3, -668037600, -654732e3, -636588e3, -622072800, -605743200, -590623200, -574293600, -558568800, -542239200, -527119200, -512604e3, -496274400, -481154400, -46422e4, -449704800, -432165600, -417650400, -401320800, -386200800, -369266400, -354751200, -337816800, -323301600, -306972e3, -291852e3, -276732e3, -257983200, -245282400, -226533600, -213228e3, -195084e3, -182383200, -163634400, -150933600, -132184800, -119484e3, -100735200, -88034400, -68680800, -59004e3], o: [-1521, 2079, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600] } } };
+var __exports27 = {};
+__export(__exports27, {
+  default: () => __default27
+});
+var __default27;
+var init__27 = __esm({
+  "src/data/tz-history/2025c/26.json"() {
+    "use strict";
+    __default27 = JSON.parse('{"tzdb":"2025c","zones":{"America/Caracas":{"source":"America/Caracas","t":[-2524505536,-1826739140,-157750200],"o":[-16064,-16060,-16200,-14400]},"America/Curacao":{"source":"America/Curacao","t":[-1826738653,-157750200],"o":[-16547,-16200,-14400]},"America/Indiana/Tell_City":{"source":"America/Indiana/Tell_City","t":[-2717647200,-1633276800,-1615136400,-1601827200,-1583686800,-880214400,-765392400,-462996000,-450291600,-431539200,-418237200,-400089600,-386787600,-368640000,-355338000,-337190400,-323888400,-305740800,-292438800,-273686400,-257965200,-242236800,-226515600,-210787200,-195066000,-179337600,-68662800,-52934400,-37213200,-21484800,-5767200],"o":[-20823,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-14400,-18000]},"Asia/Tomsk":{"source":"Asia/Tomsk","t":[-1578807591,-1247551200],"o":[20391,21600,25200]},"Eire":{"source":"Europe/Dublin","t":[-1691962479,-1680471279,-1664143200,-1650146400,-1633903200,-1617487200,-1601848800,-1586037600,-1570399200,-1552168800,-1538344800,-1522533600,-1507500000,-1490565600,-1473631200,-1460930400,-1442786400,-1428876000,-1410732000,-1396216800,-1379282400,-1364767200,-1348437600,-1333317600,-1315778400,-1301263200,-1284328800,-1269813600,-1253484000,-1238364000,-1221429600,-1206914400,-1189980000,-1175464800,-1159135200,-1143410400,-1126476000,-1111960800,-1095631200,-1080511200,-1063576800,-1049061600,-1032127200,-1017612000,-1001282400,-986162400,-969228000,-950479200,-942012000,-733356000,-719445600,-699487200,-684972000,-668037600,-654732000,-636588000,-622072800,-605743200,-590623200,-574293600,-558568800,-542239200,-527119200,-512604000,-496274400,-481154400,-464220000,-449704800,-432165600,-417650400,-401320800,-386200800,-369266400,-354751200,-337816800,-323301600,-306972000,-291852000,-276732000,-257983200,-245282400,-226533600,-213228000,-195084000,-182383200,-163634400,-150933600,-132184800,-119484000,-100735200,-88034400,-68680800,-59004000],"o":[-1521,2079,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600]}}}');
   }
 });
 
 // src/data/tz-history/2025c/27.json
-var require__28 = __commonJS({
-  "src/data/tz-history/2025c/27.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "America/Grand_Turk": { source: "America/Grand_Turk", t: [-2524504528, -1827687170], o: [-17072, -18430, -18e3] }, "America/Halifax": { source: "America/Halifax", t: [-2131645536, -1696276800, -1680469200, -1632074400, -1615143600, -1566763200, -155709e4, -1535486400, -1524949200, -1504468800, -1493413200, -1472414400, -1461963600, -1440964800, -1429390800, -1409515200, -1396731600, -1376856e3, -1366491600, -1346616e3, -1333832400, -1313956800, -1303678800, -1282507200, -1272661200, -1251057600, -1240088400, -1219608e3, -1207429200, -1188763200, -1175979600, -1157313600, -1143925200, -1124049600, -1113771600, -1091390400, -1081026e3, -1059854400, -1050786e3, -1030910400, -1018126800, -999460800, -986677200, -965592e3, -955227600, -935956800, -923173200, -904507200, -891723600, -880221600, -765399600, -747252e3, -73395e4, -715802400, -702500400, -684352800, -671050800, -652903200, -639601200, -589399200, -576097200, -557949600, -544647600, -5265e5, -513198e3, -495050400, -481748400, -431546400, -418244400, -400096800, -386794800, -368647200, -355345200, -337197600, -323895600, -242244e3, -226522800, -210794400, -195073200, -179344800, -163623600, -147895200, -131569200, -116445600, -100119600, -84391200, -6867e4, -52941600, -37220400, -21492e3, -5770800], o: [-15264, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400] }, "Arctic/Longyearbyen": { source: "Europe/Oslo", t: [-2366757780, -1691884800, -1680573600, -927511200, -857257200, -844556400, -828226800, -812502e3, -796777200, -781052400, -765327600, -340844400, -324514800, -30879e4, -293065200, -277340400, -261615600, -245890800, -230166e3, -214441200, -198716400, -182991600, -166662e3, -147913200, -135212400], o: [2580, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600] }, "Asia/Katmandu": { source: "Asia/Kathmandu", t: [-1577943676], o: [20476, 19800] }, "Europe/Lisbon": { source: "Europe/Lisbon", t: [-1830384e3, -1689555600, -1677801600, -1667433600, -1647738e3, -1635897600, -1616202e3, -1604361600, -1584666e3, -1572739200, -1553043600, -1541203200, -1521507600, -1442451600, -1427677200, -1379293200, -1364778e3, -1348448400, -1333328400, -1316394e3, -1301274e3, -1284339600, -1269824400, -1221440400, -1206925200, -1191200400, -1175475600, -1127696400, -1111971600, -1096851600, -1080522e3, -1063587600, -1049072400, -1033347600, -1017622800, -1002502800, -986173200, -969238800, -95049e4, -942022800, -922496400, -906944400, -891133200, -877309200, -873684e3, -864007200, -857955600, -845859600, -842839200, -831348e3, -825901200, -81441e4, -810784800, -799898400, -794451600, -782960400, -779335200, -768448800, -763002e3, -749091600, -733366800, -717631200, -701906400, -686181600, -670456800, -654732e3, -639007200, -623282400, -607557600, -591832800, -575503200, -559778400, -544053600, -528328800, -512604e3, -496879200, -481154400, -465429600, -449704800, -43398e4, -417650400, -401925600, -386200800, -370476e3, -354751200, -339026400, -323301600, -307576800, -291852e3, -276127200, -260402400, -244677600, -228348e3, -212623200, -196898400, -181173600, -165448800, -149724e3, -133999200, -118274400], o: [-2205, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 7200, 3600, 0, 3600, 7200, 3600, 0, 3600, 7200, 3600, 0, 3600, 7200, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600] }, "Europe/Volgograd": { source: "Europe/Volgograd", t: [-1577761060, -1247540400], o: [10660, 10800, 14400] }, "Europe/Zagreb": { source: "Europe/Zagreb", t: [-2713914232, -905824800, -857257200, -844556400, -828226800, -812502e3, -796777200, -781052400, -766623600], o: [3832, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600] }, Japan: { source: "Asia/Tokyo", t: [-2587712400, -683802e3, -672310800, -654771600, -640861200, -620298e3, -609411600, -588848400, -577962e3], o: [33539, 32400, 36e3, 32400, 36e3, 32400, 36e3, 32400, 36e3, 32400] }, Zulu: { source: "Etc/UTC", t: [], o: [0] } } };
+var __exports28 = {};
+__export(__exports28, {
+  default: () => __default28
+});
+var __default28;
+var init__28 = __esm({
+  "src/data/tz-history/2025c/27.json"() {
+    "use strict";
+    __default28 = JSON.parse('{"tzdb":"2025c","zones":{"America/Grand_Turk":{"source":"America/Grand_Turk","t":[-2524504528,-1827687170],"o":[-17072,-18430,-18000]},"America/Halifax":{"source":"America/Halifax","t":[-2131645536,-1696276800,-1680469200,-1632074400,-1615143600,-1566763200,-1557090000,-1535486400,-1524949200,-1504468800,-1493413200,-1472414400,-1461963600,-1440964800,-1429390800,-1409515200,-1396731600,-1376856000,-1366491600,-1346616000,-1333832400,-1313956800,-1303678800,-1282507200,-1272661200,-1251057600,-1240088400,-1219608000,-1207429200,-1188763200,-1175979600,-1157313600,-1143925200,-1124049600,-1113771600,-1091390400,-1081026000,-1059854400,-1050786000,-1030910400,-1018126800,-999460800,-986677200,-965592000,-955227600,-935956800,-923173200,-904507200,-891723600,-880221600,-765399600,-747252000,-733950000,-715802400,-702500400,-684352800,-671050800,-652903200,-639601200,-589399200,-576097200,-557949600,-544647600,-526500000,-513198000,-495050400,-481748400,-431546400,-418244400,-400096800,-386794800,-368647200,-355345200,-337197600,-323895600,-242244000,-226522800,-210794400,-195073200,-179344800,-163623600,-147895200,-131569200,-116445600,-100119600,-84391200,-68670000,-52941600,-37220400,-21492000,-5770800],"o":[-15264,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400]},"Arctic/Longyearbyen":{"source":"Europe/Oslo","t":[-2366757780,-1691884800,-1680573600,-927511200,-857257200,-844556400,-828226800,-812502000,-796777200,-781052400,-765327600,-340844400,-324514800,-308790000,-293065200,-277340400,-261615600,-245890800,-230166000,-214441200,-198716400,-182991600,-166662000,-147913200,-135212400],"o":[2580,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600]},"Asia/Katmandu":{"source":"Asia/Kathmandu","t":[-1577943676],"o":[20476,19800]},"Europe/Lisbon":{"source":"Europe/Lisbon","t":[-1830384000,-1689555600,-1677801600,-1667433600,-1647738000,-1635897600,-1616202000,-1604361600,-1584666000,-1572739200,-1553043600,-1541203200,-1521507600,-1442451600,-1427677200,-1379293200,-1364778000,-1348448400,-1333328400,-1316394000,-1301274000,-1284339600,-1269824400,-1221440400,-1206925200,-1191200400,-1175475600,-1127696400,-1111971600,-1096851600,-1080522000,-1063587600,-1049072400,-1033347600,-1017622800,-1002502800,-986173200,-969238800,-950490000,-942022800,-922496400,-906944400,-891133200,-877309200,-873684000,-864007200,-857955600,-845859600,-842839200,-831348000,-825901200,-814410000,-810784800,-799898400,-794451600,-782960400,-779335200,-768448800,-763002000,-749091600,-733366800,-717631200,-701906400,-686181600,-670456800,-654732000,-639007200,-623282400,-607557600,-591832800,-575503200,-559778400,-544053600,-528328800,-512604000,-496879200,-481154400,-465429600,-449704800,-433980000,-417650400,-401925600,-386200800,-370476000,-354751200,-339026400,-323301600,-307576800,-291852000,-276127200,-260402400,-244677600,-228348000,-212623200,-196898400,-181173600,-165448800,-149724000,-133999200,-118274400],"o":[-2205,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,7200,3600,0,3600,7200,3600,0,3600,7200,3600,0,3600,7200,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600]},"Europe/Volgograd":{"source":"Europe/Volgograd","t":[-1577761060,-1247540400],"o":[10660,10800,14400]},"Europe/Zagreb":{"source":"Europe/Zagreb","t":[-2713914232,-905824800,-857257200,-844556400,-828226800,-812502000,-796777200,-781052400,-766623600],"o":[3832,3600,7200,3600,7200,3600,7200,3600,7200,3600]},"Japan":{"source":"Asia/Tokyo","t":[-2587712400,-683802000,-672310800,-654771600,-640861200,-620298000,-609411600,-588848400,-577962000],"o":[33539,32400,36000,32400,36000,32400,36000,32400,36000,32400]},"Zulu":{"source":"Etc/UTC","t":[],"o":[0]}}}');
   }
 });
 
 // src/data/tz-history/2025c/28.json
-var require__29 = __commonJS({
-  "src/data/tz-history/2025c/28.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "America/Danmarkshavn": { source: "America/Danmarkshavn", t: [-1686091520], o: [-4480, -10800] }, "America/Denver": { source: "America/Denver", t: [-2717643600, -1633273200, -1615132800, -1601823600, -1583683200, -1570374e3, -1551628800, -1538924400, -1534089600, -880210800, -765388800, -147884400, -131558400, -116434800, -100108800, -84380400, -68659200, -52930800, -37209600, -21481200, -576e4], o: [-25196, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200] }, "America/Fort_Wayne": { source: "America/Indiana/Indianapolis", t: [-2717647200, -1633276800, -1615136400, -1601827200, -1583686800, -900259200, -891795600, -880214400, -765392400, -747244800, -733942800, -715795200, -702493200, -684345600, -671043600, -652896e3, -639594e3, -620841600, -608144400, -589392e3, -57609e4, -557942400, -544640400, -526492800, -513190800, -495043200, -481741200, -463593600, -386787600, -36864e4, -21488400, -5767200], o: [-20678, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -14400, -18e3] }, "Asia/Dacca": { source: "Asia/Dhaka", t: [-2524543300, -891582800, -872058600, -862637400, -576138600], o: [21700, 21200, 23400, 19800, 23400, 21600] }, "Europe/Moscow": { source: "Europe/Moscow", t: [-1688265017, -1656819079, -1641353479, -1627965079, -1618716679, -1596429079, -1593820800, -1589860800, -1542427200, -1539493200, -1525323600, -1522728e3, -1491188400, -1247536800], o: [9017, 9079, 12679, 9079, 16279, 12679, 16279, 14400, 10800, 14400, 18e3, 14400, 10800, 7200, 10800] }, "Europe/Prague": { source: "Europe/Prague", t: [-2469401864, -1693706400, -1680483600, -1663455600, -165015e4, -1632006e3, -1618700400, -938905200, -857257200, -844556400, -828226800, -812502e3, -796777200, -781052400, -765327600, -746578800, -733359600, -728517600, -72126e4, -716425200, -70191e4, -684975600, -670460400, -654217200, -639010800], o: [3464, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 0, 3600, 7200, 3600, 7200, 3600, 7200, 3600] }, "Europe/Vaduz": { source: "Europe/Vaduz", t: [-2385247084, -904435200, -891129600, -872985600, -85968e4], o: [2284, 3600, 7200, 3600, 7200, 3600] }, "US/Michigan": { source: "America/Detroit", t: [-2051202469, -1724083200, -880218e3, -765396e3, -684349200, -671047200, -80506740, -68666400, -52938e3, -37216800], o: [-19931, -21600, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3] } } };
+var __exports29 = {};
+__export(__exports29, {
+  default: () => __default29
+});
+var __default29;
+var init__29 = __esm({
+  "src/data/tz-history/2025c/28.json"() {
+    "use strict";
+    __default29 = JSON.parse('{"tzdb":"2025c","zones":{"America/Danmarkshavn":{"source":"America/Danmarkshavn","t":[-1686091520],"o":[-4480,-10800]},"America/Denver":{"source":"America/Denver","t":[-2717643600,-1633273200,-1615132800,-1601823600,-1583683200,-1570374000,-1551628800,-1538924400,-1534089600,-880210800,-765388800,-147884400,-131558400,-116434800,-100108800,-84380400,-68659200,-52930800,-37209600,-21481200,-5760000],"o":[-25196,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200]},"America/Fort_Wayne":{"source":"America/Indiana/Indianapolis","t":[-2717647200,-1633276800,-1615136400,-1601827200,-1583686800,-900259200,-891795600,-880214400,-765392400,-747244800,-733942800,-715795200,-702493200,-684345600,-671043600,-652896000,-639594000,-620841600,-608144400,-589392000,-576090000,-557942400,-544640400,-526492800,-513190800,-495043200,-481741200,-463593600,-386787600,-368640000,-21488400,-5767200],"o":[-20678,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-14400,-18000]},"Asia/Dacca":{"source":"Asia/Dhaka","t":[-2524543300,-891582800,-872058600,-862637400,-576138600],"o":[21700,21200,23400,19800,23400,21600]},"Europe/Moscow":{"source":"Europe/Moscow","t":[-1688265017,-1656819079,-1641353479,-1627965079,-1618716679,-1596429079,-1593820800,-1589860800,-1542427200,-1539493200,-1525323600,-1522728000,-1491188400,-1247536800],"o":[9017,9079,12679,9079,16279,12679,16279,14400,10800,14400,18000,14400,10800,7200,10800]},"Europe/Prague":{"source":"Europe/Prague","t":[-2469401864,-1693706400,-1680483600,-1663455600,-1650150000,-1632006000,-1618700400,-938905200,-857257200,-844556400,-828226800,-812502000,-796777200,-781052400,-765327600,-746578800,-733359600,-728517600,-721260000,-716425200,-701910000,-684975600,-670460400,-654217200,-639010800],"o":[3464,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,0,3600,7200,3600,7200,3600,7200,3600]},"Europe/Vaduz":{"source":"Europe/Vaduz","t":[-2385247084,-904435200,-891129600,-872985600,-859680000],"o":[2284,3600,7200,3600,7200,3600]},"US/Michigan":{"source":"America/Detroit","t":[-2051202469,-1724083200,-880218000,-765396000,-684349200,-671047200,-80506740,-68666400,-52938000,-37216800],"o":[-19931,-21600,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000]}}}');
   }
 });
 
 // src/data/tz-history/2025c/29.json
-var require__30 = __commonJS({
-  "src/data/tz-history/2025c/29.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "America/Menominee": { source: "America/Menominee", t: [-2659759773, -1633276800, -1615136400, -1601827200, -1583686800, -880214400, -765392400, -747244800, -733942800, -116438400, -100112400, -21484800], o: [-21027, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3] }, "America/Swift_Current": { source: "America/Swift_Current", t: [-2030201320, -1632063600, -1615132800, -880210800, -765388800, -747241200, -732729600, -715791600, -702489600, -684342e3, -67104e4, -652892400, -639590400, -400086e3, -384364800, -337186800, -321465600, -305737200, -292435200, -273682800, -260985600], o: [-25880, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200] }, "America/Yellowknife": { source: "America/Yellowknife", t: [-1104537600, -880210800, -765388800], o: [null, -25200, -21600, -25200] }, "Asia/Jayapura": { source: "Asia/Jayapura", t: [-1172913768, -799491600, -189423e3], o: [33768, 32400, 34200, 32400] }, "Asia/Srednekolymsk": { source: "Asia/Srednekolymsk", t: [-1441188892, -1247565600], o: [36892, 36e3, 39600] }, "Canada/Central": { source: "America/Winnipeg", t: [-2602258284, -1694368800, -1681671600, -1632067200, -1615136400, -1029686400, -1018198800, -880214400, -765392400, -746035200, -732733200, -715795200, -702493200, -684345600, -671043600, -652896e3, -639594e3, -620755200, -607626e3, -589392e3, -57609e4, -557942400, -544640400, -526492800, -513190800, -495043200, -481741200, -463593600, -450291600, -431539200, -418237200, -400089600, -386787600, -36864e4, -355338e3, -337190400, -321469200, -305740800, -292438800, -210787200, -19809e4, -116438400, -100108800, -84384e3, -68659200, -52934400, -37209600, -21484800, -576e4], o: [-23316, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600] }, "Etc/GMT-13": { source: "Etc/GMT-13", t: [], o: [46800] }, "Europe/Astrakhan": { source: "Europe/Astrakhan", t: [-1441249932, -1247540400], o: [11532, 10800, 14400] }, "Europe/Rome": { source: "Europe/Rome", t: [-2403565200, -1690765200, -1680487200, -1664758800, -1648951200, -1635123600, -1616896800, -1604278800, -1585533600, -1571014800, -1555293600, -932432400, -857257200, -844556400, -828226800, -812502e3, -798073200, -781052400, -766717200, -750898800, -733359600, -719456400, -701917200, -689209200, -670460400, -114051600, -103168800, -81997200, -71715600, -50547600, -40266e3, -18493200, -8211600], o: [2996, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600] }, "Indian/Christmas": { source: "Indian/Christmas", t: [-2364102172], o: [25372, 25200] }, "Pacific/Majuro": { source: "Pacific/Majuro", t: [-2177493888, -1743678e3, -1606813200, -1041418800, -907408800, -818067600, -7988400], o: [41088, 39600, 32400, 39600, 36e3, 32400, 39600, 43200] }, "Pacific/Yap": { source: "Pacific/Chuuk", t: [-3944628428, -2177489228, -1743674400, -1606813200, -907408800, -770634e3], o: [-49972, 36428, 36e3, 32400, 36e3, 32400, 36e3] }, UTC: { source: "Etc/UTC", t: [], o: [0] } } };
+var __exports30 = {};
+__export(__exports30, {
+  default: () => __default30
+});
+var __default30;
+var init__30 = __esm({
+  "src/data/tz-history/2025c/29.json"() {
+    "use strict";
+    __default30 = JSON.parse('{"tzdb":"2025c","zones":{"America/Menominee":{"source":"America/Menominee","t":[-2659759773,-1633276800,-1615136400,-1601827200,-1583686800,-880214400,-765392400,-747244800,-733942800,-116438400,-100112400,-21484800],"o":[-21027,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000]},"America/Swift_Current":{"source":"America/Swift_Current","t":[-2030201320,-1632063600,-1615132800,-880210800,-765388800,-747241200,-732729600,-715791600,-702489600,-684342000,-671040000,-652892400,-639590400,-400086000,-384364800,-337186800,-321465600,-305737200,-292435200,-273682800,-260985600],"o":[-25880,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200]},"America/Yellowknife":{"source":"America/Yellowknife","t":[-1104537600,-880210800,-765388800],"o":[null,-25200,-21600,-25200]},"Asia/Jayapura":{"source":"Asia/Jayapura","t":[-1172913768,-799491600,-189423000],"o":[33768,32400,34200,32400]},"Asia/Srednekolymsk":{"source":"Asia/Srednekolymsk","t":[-1441188892,-1247565600],"o":[36892,36000,39600]},"Canada/Central":{"source":"America/Winnipeg","t":[-2602258284,-1694368800,-1681671600,-1632067200,-1615136400,-1029686400,-1018198800,-880214400,-765392400,-746035200,-732733200,-715795200,-702493200,-684345600,-671043600,-652896000,-639594000,-620755200,-607626000,-589392000,-576090000,-557942400,-544640400,-526492800,-513190800,-495043200,-481741200,-463593600,-450291600,-431539200,-418237200,-400089600,-386787600,-368640000,-355338000,-337190400,-321469200,-305740800,-292438800,-210787200,-198090000,-116438400,-100108800,-84384000,-68659200,-52934400,-37209600,-21484800,-5760000],"o":[-23316,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600]},"Etc/GMT-13":{"source":"Etc/GMT-13","t":[],"o":[46800]},"Europe/Astrakhan":{"source":"Europe/Astrakhan","t":[-1441249932,-1247540400],"o":[11532,10800,14400]},"Europe/Rome":{"source":"Europe/Rome","t":[-2403565200,-1690765200,-1680487200,-1664758800,-1648951200,-1635123600,-1616896800,-1604278800,-1585533600,-1571014800,-1555293600,-932432400,-857257200,-844556400,-828226800,-812502000,-798073200,-781052400,-766717200,-750898800,-733359600,-719456400,-701917200,-689209200,-670460400,-114051600,-103168800,-81997200,-71715600,-50547600,-40266000,-18493200,-8211600],"o":[2996,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600]},"Indian/Christmas":{"source":"Indian/Christmas","t":[-2364102172],"o":[25372,25200]},"Pacific/Majuro":{"source":"Pacific/Majuro","t":[-2177493888,-1743678000,-1606813200,-1041418800,-907408800,-818067600,-7988400],"o":[41088,39600,32400,39600,36000,32400,39600,43200]},"Pacific/Yap":{"source":"Pacific/Chuuk","t":[-3944628428,-2177489228,-1743674400,-1606813200,-907408800,-770634000],"o":[-49972,36428,36000,32400,36000,32400,36000]},"UTC":{"source":"Etc/UTC","t":[],"o":[0]}}}');
   }
 });
 
 // src/data/tz-history/2025c/30.json
-var require__31 = __commonJS({
-  "src/data/tz-history/2025c/30.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "America/Barbados": { source: "America/Barbados", t: [-1841256091, -874263600, -862682400, -841604400, -830714400, -811882800, -79866e4], o: [-14309, -14400, -10800, -14400, -10800, -14400, -12600, -14400] }, "America/Port-au-Prince": { source: "America/Port-au-Prince", t: [-2524504240, -1670483460], o: [-17360, -17340, -18e3] }, "Asia/Jerusalem": { source: "Asia/Jerusalem", t: [-2840149254, -1641003640, -933638400, -923097600, -919036800, -857347200, -844300800, -825811200, -812678400, -794188800, -779846400, -762652800, -748310400, -731116800, -681955200, -673228800, -667958400, -65232e4, -636422400, -62208e4, -608947200, -59184e4, -572486400, -558576e3, -542851200, -527731200, -514425600, -490838400, -482976e3, -459388800, -451526400, -428544e3, -418262400, -400118400, -387417600], o: [8454, 8440, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 14400, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200] }, "Australia/ACT": { source: "Australia/Sydney", t: [-2364113092, -167256e4, -1665388800, -883641600, -876124800, -8604e5, -844675200, -828345600, -813225600], o: [36292, 36e3, 39600, 36e3, 39600, 36e3, 39600, 36e3, 39600, 36e3] }, "Etc/UCT": { source: "Etc/UTC", t: [], o: [0] } } };
+var __exports31 = {};
+__export(__exports31, {
+  default: () => __default31
+});
+var __default31;
+var init__31 = __esm({
+  "src/data/tz-history/2025c/30.json"() {
+    "use strict";
+    __default31 = JSON.parse('{"tzdb":"2025c","zones":{"America/Barbados":{"source":"America/Barbados","t":[-1841256091,-874263600,-862682400,-841604400,-830714400,-811882800,-798660000],"o":[-14309,-14400,-10800,-14400,-10800,-14400,-12600,-14400]},"America/Port-au-Prince":{"source":"America/Port-au-Prince","t":[-2524504240,-1670483460],"o":[-17360,-17340,-18000]},"Asia/Jerusalem":{"source":"Asia/Jerusalem","t":[-2840149254,-1641003640,-933638400,-923097600,-919036800,-857347200,-844300800,-825811200,-812678400,-794188800,-779846400,-762652800,-748310400,-731116800,-681955200,-673228800,-667958400,-652320000,-636422400,-622080000,-608947200,-591840000,-572486400,-558576000,-542851200,-527731200,-514425600,-490838400,-482976000,-459388800,-451526400,-428544000,-418262400,-400118400,-387417600],"o":[8454,8440,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,14400,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200]},"Australia/ACT":{"source":"Australia/Sydney","t":[-2364113092,-1672560000,-1665388800,-883641600,-876124800,-860400000,-844675200,-828345600,-813225600],"o":[36292,36000,39600,36000,39600,36000,39600,36000,39600,36000]},"Etc/UCT":{"source":"Etc/UTC","t":[],"o":[0]}}}');
   }
 });
 
 // src/data/tz-history/2025c/31.json
-var require__32 = __commonJS({
-  "src/data/tz-history/2025c/31.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "Africa/Asmera": { source: "Africa/Asmara", t: [-2524530932, -1062210920], o: [9332, 9320, 10800] }, "Africa/Dakar": { source: "Africa/Dakar", t: [-1830379816, -902098800], o: [-4184, -3600, 0] }, "America/Argentina/Catamarca": { source: "America/Argentina/Catamarca", t: [-2372096212, -1567453392, -1233432e3, -1222981200, -1205956800, -1194037200, -1172865600, -1162501200, -1141329600, -1130965200, -1109793600, -1099429200, -1078257600, -1067806800, -1046635200, -1036270800, -1015099200, -1004734800, -983563200, -973198800, -952027200, -941576400, -931032e3, -900882e3, -890337600, -833749200, -827265600, -752274e3, -733780800, -197326800, -190843200, -184194e3, -164491200, -152658e3, -132955200, -121122e3, -101419200, -86821200, -71092800, -54766800, -39038400, -23317200, -7588800], o: [-15788, -15408, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800] }, "America/Monterrey": { source: "America/Monterrey", t: [-1514743200, -1343149200, -1234807200, -1220461200, -1207159200, -1191344400], o: [-24076, -25200, -21600, -25200, -21600, -25200, -21600] }, "America/Montserrat": { source: "America/Montserrat", t: [-1846266608], o: [-14932, -14400] }, "America/Shiprock": { source: "America/Denver", t: [-2717643600, -1633273200, -1615132800, -1601823600, -1583683200, -1570374e3, -1551628800, -1538924400, -1534089600, -880210800, -765388800, -147884400, -131558400, -116434800, -100108800, -84380400, -68659200, -52930800, -37209600, -21481200, -576e4], o: [-25196, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200] }, "Asia/Beirut": { source: "Asia/Beirut", t: [-2840149320, -1570413600, -1552186800, -1538359200, -1522551600, -1507514400, -1490583600, -1473645600, -1460948400, -399866400, -386650800, -368330400, -355114800, -336794400, -323578800, -305172e3, -291956400, -273636e3, -260420400], o: [8520, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200] }, "Asia/Bishkek": { source: "Asia/Bishkek", t: [-1441169904, -1247547600], o: [17904, 18e3, 21600] }, "Asia/Irkutsk": { source: "Asia/Irkutsk", t: [-1575874625, -1247554800], o: [25025, 25200, 28800] }, "Asia/Qyzylorda": { source: "Asia/Qyzylorda", t: [-1441167712, -1247544e3], o: [15712, 14400, 18e3] }, "Etc/GMT+6": { source: "Etc/GMT+6", t: [], o: [-21600] }, GMT: { source: "Etc/GMT", t: [], o: [0] }, "US/Indiana-Starke": { source: "America/Indiana/Knox", t: [-2717647200, -1633276800, -1615136400, -1601827200, -1583686800, -880214400, -765392400, -715795200, -702493200, -684345600, -671043600, -652896e3, -639594e3, -620841600, -608144400, -589392e3, -57609e4, -557942400, -544640400, -526492800, -513190800, -495043200, -481741200, -463593600, -447267600, -431539200, -415818e3, -400089600, -386787600, -36864e4, -355338e3, -337190400, -321469200, -305740800, -289414800, -273686400, -257965200, -242236800, -195066e3, -84384e3, -68662800, -52934400, -37213200, -21484800, -5763600], o: [-20790, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600] } } };
+var __exports32 = {};
+__export(__exports32, {
+  default: () => __default32
+});
+var __default32;
+var init__32 = __esm({
+  "src/data/tz-history/2025c/31.json"() {
+    "use strict";
+    __default32 = JSON.parse('{"tzdb":"2025c","zones":{"Africa/Asmera":{"source":"Africa/Asmara","t":[-2524530932,-1062210920],"o":[9332,9320,10800]},"Africa/Dakar":{"source":"Africa/Dakar","t":[-1830379816,-902098800],"o":[-4184,-3600,0]},"America/Argentina/Catamarca":{"source":"America/Argentina/Catamarca","t":[-2372096212,-1567453392,-1233432000,-1222981200,-1205956800,-1194037200,-1172865600,-1162501200,-1141329600,-1130965200,-1109793600,-1099429200,-1078257600,-1067806800,-1046635200,-1036270800,-1015099200,-1004734800,-983563200,-973198800,-952027200,-941576400,-931032000,-900882000,-890337600,-833749200,-827265600,-752274000,-733780800,-197326800,-190843200,-184194000,-164491200,-152658000,-132955200,-121122000,-101419200,-86821200,-71092800,-54766800,-39038400,-23317200,-7588800],"o":[-15788,-15408,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800]},"America/Monterrey":{"source":"America/Monterrey","t":[-1514743200,-1343149200,-1234807200,-1220461200,-1207159200,-1191344400],"o":[-24076,-25200,-21600,-25200,-21600,-25200,-21600]},"America/Montserrat":{"source":"America/Montserrat","t":[-1846266608],"o":[-14932,-14400]},"America/Shiprock":{"source":"America/Denver","t":[-2717643600,-1633273200,-1615132800,-1601823600,-1583683200,-1570374000,-1551628800,-1538924400,-1534089600,-880210800,-765388800,-147884400,-131558400,-116434800,-100108800,-84380400,-68659200,-52930800,-37209600,-21481200,-5760000],"o":[-25196,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200]},"Asia/Beirut":{"source":"Asia/Beirut","t":[-2840149320,-1570413600,-1552186800,-1538359200,-1522551600,-1507514400,-1490583600,-1473645600,-1460948400,-399866400,-386650800,-368330400,-355114800,-336794400,-323578800,-305172000,-291956400,-273636000,-260420400],"o":[8520,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200]},"Asia/Bishkek":{"source":"Asia/Bishkek","t":[-1441169904,-1247547600],"o":[17904,18000,21600]},"Asia/Irkutsk":{"source":"Asia/Irkutsk","t":[-1575874625,-1247554800],"o":[25025,25200,28800]},"Asia/Qyzylorda":{"source":"Asia/Qyzylorda","t":[-1441167712,-1247544000],"o":[15712,14400,18000]},"Etc/GMT+6":{"source":"Etc/GMT+6","t":[],"o":[-21600]},"GMT":{"source":"Etc/GMT","t":[],"o":[0]},"US/Indiana-Starke":{"source":"America/Indiana/Knox","t":[-2717647200,-1633276800,-1615136400,-1601827200,-1583686800,-880214400,-765392400,-715795200,-702493200,-684345600,-671043600,-652896000,-639594000,-620841600,-608144400,-589392000,-576090000,-557942400,-544640400,-526492800,-513190800,-495043200,-481741200,-463593600,-447267600,-431539200,-415818000,-400089600,-386787600,-368640000,-355338000,-337190400,-321469200,-305740800,-289414800,-273686400,-257965200,-242236800,-195066000,-84384000,-68662800,-52934400,-37213200,-21484800,-5763600],"o":[-20790,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600]}}}');
   }
 });
 
 // src/data/tz-history/2025c/32.json
-var require__33 = __commonJS({
-  "src/data/tz-history/2025c/32.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "Africa/Juba": { source: "Africa/Juba", t: [-1230775588], o: [7588, 7200] }, "Africa/Maputo": { source: "Africa/Maputo", t: [-1924999818], o: [7818, 7200] }, "Africa/Ndjamena": { source: "Africa/Ndjamena", t: [-1830387612], o: [3612, 3600] }, "America/Panama": { source: "America/Panama", t: [-2524502512, -1946918424], o: [-19088, -19176, -18e3] }, "Asia/Vladivostok": { source: "Asia/Vladivostok", t: [-1487321251, -1247562e3], o: [31651, 32400, 36e3] }, "Australia/Tasmania": { source: "Australia/Hobart", t: [-2345795356, -1680508800, -1665388800, -164664e4, -1635753600, -1615190400, -1604304e3, -883641600, -876124800, -8604e5, -844675200, -828345600, -813225600, -71136e3, -55411200, -37267200, -25776e3, -5817600], o: [35356, 36e3, 39600, 36e3, 39600, 36e3, 39600, 36e3, 39600, 36e3, 39600, 36e3, 39600, 36e3, 39600, 36e3, 39600, 36e3, 39600] } } };
+var __exports33 = {};
+__export(__exports33, {
+  default: () => __default33
+});
+var __default33;
+var init__33 = __esm({
+  "src/data/tz-history/2025c/32.json"() {
+    "use strict";
+    __default33 = JSON.parse('{"tzdb":"2025c","zones":{"Africa/Juba":{"source":"Africa/Juba","t":[-1230775588],"o":[7588,7200]},"Africa/Maputo":{"source":"Africa/Maputo","t":[-1924999818],"o":[7818,7200]},"Africa/Ndjamena":{"source":"Africa/Ndjamena","t":[-1830387612],"o":[3612,3600]},"America/Panama":{"source":"America/Panama","t":[-2524502512,-1946918424],"o":[-19088,-19176,-18000]},"Asia/Vladivostok":{"source":"Asia/Vladivostok","t":[-1487321251,-1247562000],"o":[31651,32400,36000]},"Australia/Tasmania":{"source":"Australia/Hobart","t":[-2345795356,-1680508800,-1665388800,-1646640000,-1635753600,-1615190400,-1604304000,-883641600,-876124800,-860400000,-844675200,-828345600,-813225600,-71136000,-55411200,-37267200,-25776000,-5817600],"o":[35356,36000,39600,36000,39600,36000,39600,36000,39600,36000,39600,36000,39600,36000,39600,36000,39600,36000,39600]}}}');
   }
 });
 
 // src/data/tz-history/2025c/33.json
-var require__34 = __commonJS({
-  "src/data/tz-history/2025c/33.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "America/Indiana/Winamac": { source: "America/Indiana/Winamac", t: [-2717647200, -1633276800, -1615136400, -1601827200, -1583686800, -880214400, -765392400, -747244800, -733942800, -715795200, -702493200, -684345600, -671043600, -652896e3, -639594e3, -620841600, -608144400, -589392e3, -57609e4, -557942400, -544640400, -526492800, -513190800, -495043200, -481741200, -463593600, -447267600, -431539200, -415818e3, -400089600, -386787600, -36864e4, -355338e3, -337190400, -323888400, -305740800, -292438800, -273686400, -21488400, -5767200], o: [-20785, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -14400, -18e3] }, "America/St_Barthelemy": { source: "America/Port_of_Spain", t: [-1825098836], o: [-14764, -14400] }, "Antarctica/Casey": { source: "Antarctica/Casey", t: [-31536e3], o: [null, 28800] }, "Antarctica/Davis": { source: "Antarctica/Davis", t: [-409190400, -163062e3, -28857600], o: [null, 25200, null, 25200] }, "Asia/Macau": { source: "Asia/Macau", t: [-2056692850, -884509200, -873280800, -855918e3, -841744800, -828529200, -765363600, -747046800, -733827600, -716461200, -697021200, -683715600, -667990800, -654771600, -636627600, -623322e3, -605178e3, -591872400, -573642e3, -559818e3, -541674e3, -528368400, -510224400, -498128400, -478774800, -466678800, -446720400, -435229200, -415258200, -403158600, -383808600, -371709e3, -352359e3, -340259400, -320909400, -308809800, -288855e3, -277360200, -257405400, -245910600, -225955800, -213856200, -194506200, -182406600, -163056600, -148537800, -132820200, -117088200, -101370600, -85638600, -69312600, -53584200, -37863e3, -22134600, -6413400], o: [27250, 28800, 32400, 36e3, 32400, 36e3, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800] }, "Brazil/Acre": { source: "America/Rio_Branco", t: [-1767209328, -1206950400, -1191355200, -1175367600, -1159819200, -633812400, -622062e3, -602276400, -591825600, -570740400, -560203200, -539118e3, -531345600, -191358e3, -184190400, -155156400, -150062400, -128890800, -121118400, -99946800, -89582400, -68410800, -5796e4], o: [-16272, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3] }, "Mexico/General": { source: "America/Mexico_City", t: [-1514739600, -1343149200, -1234807200, -1220461200, -1207159200, -1191344400, -975261600, -963169200, -917114400, -907354800, -821901600, -810068400, -627501600, -61299e4], o: [-23796, -25200, -21600, -25200, -21600, -25200, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600] }, Singapore: { source: "Asia/Singapore", t: [-2038200925, -1167634800, -89418e4, -879665400, -767005200], o: [24925, 25200, 26400, 27e3, 32400, 27e3] }, "US/Samoa": { source: "Pacific/Pago_Pago", t: [-2445424632, -1861879032], o: [45432, -40968, -39600] } } };
+var __exports34 = {};
+__export(__exports34, {
+  default: () => __default34
+});
+var __default34;
+var init__34 = __esm({
+  "src/data/tz-history/2025c/33.json"() {
+    "use strict";
+    __default34 = JSON.parse('{"tzdb":"2025c","zones":{"America/Indiana/Winamac":{"source":"America/Indiana/Winamac","t":[-2717647200,-1633276800,-1615136400,-1601827200,-1583686800,-880214400,-765392400,-747244800,-733942800,-715795200,-702493200,-684345600,-671043600,-652896000,-639594000,-620841600,-608144400,-589392000,-576090000,-557942400,-544640400,-526492800,-513190800,-495043200,-481741200,-463593600,-447267600,-431539200,-415818000,-400089600,-386787600,-368640000,-355338000,-337190400,-323888400,-305740800,-292438800,-273686400,-21488400,-5767200],"o":[-20785,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-14400,-18000]},"America/St_Barthelemy":{"source":"America/Port_of_Spain","t":[-1825098836],"o":[-14764,-14400]},"Antarctica/Casey":{"source":"Antarctica/Casey","t":[-31536000],"o":[null,28800]},"Antarctica/Davis":{"source":"Antarctica/Davis","t":[-409190400,-163062000,-28857600],"o":[null,25200,null,25200]},"Asia/Macau":{"source":"Asia/Macau","t":[-2056692850,-884509200,-873280800,-855918000,-841744800,-828529200,-765363600,-747046800,-733827600,-716461200,-697021200,-683715600,-667990800,-654771600,-636627600,-623322000,-605178000,-591872400,-573642000,-559818000,-541674000,-528368400,-510224400,-498128400,-478774800,-466678800,-446720400,-435229200,-415258200,-403158600,-383808600,-371709000,-352359000,-340259400,-320909400,-308809800,-288855000,-277360200,-257405400,-245910600,-225955800,-213856200,-194506200,-182406600,-163056600,-148537800,-132820200,-117088200,-101370600,-85638600,-69312600,-53584200,-37863000,-22134600,-6413400],"o":[27250,28800,32400,36000,32400,36000,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800]},"Brazil/Acre":{"source":"America/Rio_Branco","t":[-1767209328,-1206950400,-1191355200,-1175367600,-1159819200,-633812400,-622062000,-602276400,-591825600,-570740400,-560203200,-539118000,-531345600,-191358000,-184190400,-155156400,-150062400,-128890800,-121118400,-99946800,-89582400,-68410800,-57960000],"o":[-16272,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000]},"Mexico/General":{"source":"America/Mexico_City","t":[-1514739600,-1343149200,-1234807200,-1220461200,-1207159200,-1191344400,-975261600,-963169200,-917114400,-907354800,-821901600,-810068400,-627501600,-612990000],"o":[-23796,-25200,-21600,-25200,-21600,-25200,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600]},"Singapore":{"source":"Asia/Singapore","t":[-2038200925,-1167634800,-894180000,-879665400,-767005200],"o":[24925,25200,26400,27000,32400,27000]},"US/Samoa":{"source":"Pacific/Pago_Pago","t":[-2445424632,-1861879032],"o":[45432,-40968,-39600]}}}');
   }
 });
 
 // src/data/tz-history/2025c/34.json
-var require__35 = __commonJS({
-  "src/data/tz-history/2025c/34.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "America/North_Dakota/Center": { source: "America/North_Dakota/Center", t: [-2717643600, -1633273200, -1615132800, -1601823600, -1583683200, -880210800, -765388800, -84380400, -68659200, -52930800, -37209600, -21481200, -576e4], o: [-24312, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200] }, "America/St_Lucia": { source: "America/St_Lucia", t: [-1830369360], o: [-14640, -14400] }, "Antarctica/DumontDUrville": { source: "Antarctica/DumontDUrville", t: [-725846400, -566992800, -415497600], o: [null, 36e3, null, 36e3] }, "Asia/Jakarta": { source: "Asia/Jakarta", t: [-1451719200, -1172906400, -876641400, -766054800, -683883e3, -620812800, -189415800], o: [25632, 26400, 27e3, 32400, 27e3, 28800, 27e3, 25200] }, "Asia/Pyongyang": { source: "Asia/Pyongyang", t: [-1948782180, -1830414600], o: [30180, 30600, 32400] }, "Etc/GMT+10": { source: "Etc/GMT+10", t: [], o: [-36e3] }, "Etc/GMT-3": { source: "Etc/GMT-3", t: [], o: [10800] }, "Indian/Mahe": { source: "Indian/Mahe", t: [-1988163708], o: [13308, 14400] }, Navajo: { source: "America/Denver", t: [-2717643600, -1633273200, -1615132800, -1601823600, -1583683200, -1570374e3, -1551628800, -1538924400, -1534089600, -880210800, -765388800, -147884400, -131558400, -116434800, -100108800, -84380400, -68659200, -52930800, -37209600, -21481200, -576e4], o: [-25196, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200] }, "Pacific/Port_Moresby": { source: "Pacific/Port_Moresby", t: [-2840176120, -2366790512], o: [35320, 35312, 36e3] }, "US/Eastern": { source: "America/New_York", t: [-2717650800, -1633280400, -161514e4, -1601830800, -1583690400, -1570381200, -1551636e3, -1536512400, -1523210400, -1504458e3, -1491760800, -1473008400, -1459706400, -1441558800, -1428256800, -1410109200, -1396807200, -1378659600, -1365357600, -134721e4, -1333908e3, -1315155600, -1301853600, -1283706e3, -1270404e3, -1252256400, -1238954400, -1220806800, -1207504800, -1189357200, -1176055200, -1157302800, -1144605600, -1125853200, -1112551200, -1094403600, -1081101600, -1062954e3, -1049652e3, -1031504400, -1018202400, -1000054800, -986752800, -968000400, -955303200, -936550800, -923248800, -905101200, -891799200, -880218e3, -765396e3, -747248400, -733946400, -715798800, -702496800, -684349200, -671047200, -652899600, -639597600, -620845200, -608148e3, -589395600, -576093600, -557946e3, -544644e3, -526496400, -513194400, -495046800, -481744800, -463597200, -447271200, -431542800, -415821600, -400093200, -384372e3, -368643600, -352922400, -337194e3, -321472800, -305744400, -289418400, -27369e4, -257968800, -242240400, -226519200, -210790800, -195069600, -179341200, -16362e4, -147891600, -131565600, -116442e3, -100116e3, -84387600, -68666400, -52938e3, -37216800, -21488400, -5767200], o: [-17762, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3] } } };
+var __exports35 = {};
+__export(__exports35, {
+  default: () => __default35
+});
+var __default35;
+var init__35 = __esm({
+  "src/data/tz-history/2025c/34.json"() {
+    "use strict";
+    __default35 = JSON.parse('{"tzdb":"2025c","zones":{"America/North_Dakota/Center":{"source":"America/North_Dakota/Center","t":[-2717643600,-1633273200,-1615132800,-1601823600,-1583683200,-880210800,-765388800,-84380400,-68659200,-52930800,-37209600,-21481200,-5760000],"o":[-24312,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200]},"America/St_Lucia":{"source":"America/St_Lucia","t":[-1830369360],"o":[-14640,-14400]},"Antarctica/DumontDUrville":{"source":"Antarctica/DumontDUrville","t":[-725846400,-566992800,-415497600],"o":[null,36000,null,36000]},"Asia/Jakarta":{"source":"Asia/Jakarta","t":[-1451719200,-1172906400,-876641400,-766054800,-683883000,-620812800,-189415800],"o":[25632,26400,27000,32400,27000,28800,27000,25200]},"Asia/Pyongyang":{"source":"Asia/Pyongyang","t":[-1948782180,-1830414600],"o":[30180,30600,32400]},"Etc/GMT+10":{"source":"Etc/GMT+10","t":[],"o":[-36000]},"Etc/GMT-3":{"source":"Etc/GMT-3","t":[],"o":[10800]},"Indian/Mahe":{"source":"Indian/Mahe","t":[-1988163708],"o":[13308,14400]},"Navajo":{"source":"America/Denver","t":[-2717643600,-1633273200,-1615132800,-1601823600,-1583683200,-1570374000,-1551628800,-1538924400,-1534089600,-880210800,-765388800,-147884400,-131558400,-116434800,-100108800,-84380400,-68659200,-52930800,-37209600,-21481200,-5760000],"o":[-25196,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200]},"Pacific/Port_Moresby":{"source":"Pacific/Port_Moresby","t":[-2840176120,-2366790512],"o":[35320,35312,36000]},"US/Eastern":{"source":"America/New_York","t":[-2717650800,-1633280400,-1615140000,-1601830800,-1583690400,-1570381200,-1551636000,-1536512400,-1523210400,-1504458000,-1491760800,-1473008400,-1459706400,-1441558800,-1428256800,-1410109200,-1396807200,-1378659600,-1365357600,-1347210000,-1333908000,-1315155600,-1301853600,-1283706000,-1270404000,-1252256400,-1238954400,-1220806800,-1207504800,-1189357200,-1176055200,-1157302800,-1144605600,-1125853200,-1112551200,-1094403600,-1081101600,-1062954000,-1049652000,-1031504400,-1018202400,-1000054800,-986752800,-968000400,-955303200,-936550800,-923248800,-905101200,-891799200,-880218000,-765396000,-747248400,-733946400,-715798800,-702496800,-684349200,-671047200,-652899600,-639597600,-620845200,-608148000,-589395600,-576093600,-557946000,-544644000,-526496400,-513194400,-495046800,-481744800,-463597200,-447271200,-431542800,-415821600,-400093200,-384372000,-368643600,-352922400,-337194000,-321472800,-305744400,-289418400,-273690000,-257968800,-242240400,-226519200,-210790800,-195069600,-179341200,-163620000,-147891600,-131565600,-116442000,-100116000,-84387600,-68666400,-52938000,-37216800,-21488400,-5767200],"o":[-17762,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000]}}}');
   }
 });
 
 // src/data/tz-history/2025c/35.json
-var require__36 = __commonJS({
-  "src/data/tz-history/2025c/35.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "Africa/Timbuktu": { source: "Africa/Timbuktu", t: [-1830383276], o: [-724, 0] }, "Asia/Urumqi": { source: "Asia/Urumqi", t: [-1325483420], o: [21020, 21600] }, "Atlantic/Faroe": { source: "Atlantic/Faroe", t: [-1955748776], o: [-1624, 0] }, "Europe/Bucharest": { source: "Europe/Bucharest", t: [-1213148664, -1187056800, -1175479200, -1159754400, -1144029600, -11277e5, -1111975200, -1096250400, -1080525600, -1064800800, -1049076e3, -1033351200, -1017626400, -1001901600, -986176800, -970452e3, -954727200], o: [6264, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200] }, "Europe/San_Marino": { source: "Europe/Rome", t: [-2403565200, -1690765200, -1680487200, -1664758800, -1648951200, -1635123600, -1616896800, -1604278800, -1585533600, -1571014800, -1555293600, -932432400, -857257200, -844556400, -828226800, -812502e3, -798073200, -781052400, -766717200, -750898800, -733359600, -719456400, -701917200, -689209200, -670460400, -114051600, -103168800, -81997200, -71715600, -50547600, -40266e3, -18493200, -8211600], o: [2996, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600] }, "Pacific/Funafuti": { source: "Pacific/Funafuti", t: [-2177495812], o: [43012, 43200] } } };
+var __exports36 = {};
+__export(__exports36, {
+  default: () => __default36
+});
+var __default36;
+var init__36 = __esm({
+  "src/data/tz-history/2025c/35.json"() {
+    "use strict";
+    __default36 = JSON.parse('{"tzdb":"2025c","zones":{"Africa/Timbuktu":{"source":"Africa/Timbuktu","t":[-1830383276],"o":[-724,0]},"Asia/Urumqi":{"source":"Asia/Urumqi","t":[-1325483420],"o":[21020,21600]},"Atlantic/Faroe":{"source":"Atlantic/Faroe","t":[-1955748776],"o":[-1624,0]},"Europe/Bucharest":{"source":"Europe/Bucharest","t":[-1213148664,-1187056800,-1175479200,-1159754400,-1144029600,-1127700000,-1111975200,-1096250400,-1080525600,-1064800800,-1049076000,-1033351200,-1017626400,-1001901600,-986176800,-970452000,-954727200],"o":[6264,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200]},"Europe/San_Marino":{"source":"Europe/Rome","t":[-2403565200,-1690765200,-1680487200,-1664758800,-1648951200,-1635123600,-1616896800,-1604278800,-1585533600,-1571014800,-1555293600,-932432400,-857257200,-844556400,-828226800,-812502000,-798073200,-781052400,-766717200,-750898800,-733359600,-719456400,-701917200,-689209200,-670460400,-114051600,-103168800,-81997200,-71715600,-50547600,-40266000,-18493200,-8211600],"o":[2996,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600]},"Pacific/Funafuti":{"source":"Pacific/Funafuti","t":[-2177495812],"o":[43012,43200]}}}');
   }
 });
 
 // src/data/tz-history/2025c/36.json
-var require__37 = __commonJS({
-  "src/data/tz-history/2025c/36.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "America/Anchorage": { source: "America/Anchorage", t: [-3225223727, -2188951224, -8802e5, -765378e3, -21470400, -5749200], o: [50424, -35976, -36e3, -32400, -36e3, -32400, -36e3] }, "America/Costa_Rica": { source: "America/Costa_Rica", t: [-1545071027], o: [-20173, -21600] }, "America/Lower_Princes": { source: "America/Curacao", t: [-1826738653, -157750200], o: [-16547, -16200, -14400] }, "America/Moncton": { source: "America/Moncton", t: [-2715882052, -2131642800, -1632074400, -1615143600, -1153681200, -1145822400, -1122231600, -1114372800, -1090782e3, -1082923200, -1059332400, -1051473600, -1027882800, -1020024e3, -996433200, -988574400, -965674800, -955396800, -934743600, -923947200, -904503600, -891892800, -880221600, -765399600, -747252e3, -73395e4, -715802400, -702500400, -684352800, -671050800, -652903200, -639601200, -620848800, -608151600, -589399200, -576097200, -557949600, -544647600, -5265e5, -513198e3, -495050400, -481748400, -463600800, -450298800, -431546400, -418244400, -400096800, -384375600, -368647200, -352926e3, -337197600, -321476400, -305748e3, -289422e3, -273693600, -257972400, -242244e3, -226522800, -210794400, -195073200, -179344800, -163623600, -147895200, -131569200, -116445600, -100119600, -84391200, -6867e4, -52941600, -37220400, -21492e3, -5770800], o: [-15548, -18e3, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400] }, "America/Tijuana": { source: "America/Tijuana", t: [-1514739600, -1451667600, -1343145600, -1234803600, -1222963200, -1207242e3, -873820800, -761418e3, -686073600, -661539600, -620755200, -608144400, -589384800, -576082800, -557935200, -544633200, -526489200, -513183600, -495039600, -481734e3, -46359e4, -450284400, -431535600, -41823e4, -400086e3, -386780400, -368636400, -355330800, -337186800, -323881200, -305737200, -292431600, -273682800, -260982e3, -242233200, -226508400, -210783600, -195058800, -179334e3, -163609200, -147884400, -131554800, -116434800, -100105200, -84376800, -68655600, -52927200, -37206e3, -21477600, -5756400], o: [-28084, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800] }, "Asia/Kuala_Lumpur": { source: "Asia/Kuala_Lumpur", t: [-2177477206, -2038200925, -1167634800, -89418e4, -879665400, -767005200], o: [24406, 24925, 25200, 26400, 27e3, 32400, 27e3] }, "Brazil/DeNoronha": { source: "America/Noronha", t: [-1767217820, -1206961200, -1191366e3, -1175378400, -115983e4, -633823200, -622072800, -602287200, -591836400, -570751200, -560214e3, -539128800, -531356400, -191368800, -184201200, -155167200, -150073200, -128901600, -121129200, -99957600, -89593200, -68421600, -57970800], o: [-7780, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200, -3600, -7200] }, "Canada/Eastern": { source: "America/Toronto", t: [-2366736148, -1632070800, -161514e4, -1601753400, -1583697600, -1567357200, -1554667200, -1534698e3, -1524074400, -1503248400, -1492365600, -1471798800, -1460916e3, -1440954e3, -1428861600, -1409504400, -1397412e3, -1378054800, -1365962400, -1346605200, -1333908e3, -1315155600, -1301853600, -1283706e3, -1270404e3, -1252256400, -1238954400, -1220806800, -1207504800, -1188752400, -1176055200, -1157302800, -1144000800, -1125853200, -1112551200, -1094403600, -1081101600, -1062954e3, -1049652e3, -1031504400, -1018202400, -1000054800, -986752800, -968000400, -955303200, -936550800, -765396e3, -747248400, -733946400, -715798800, -702496800, -684349200, -671047200, -652899600, -634154400, -620845200, -602704800, -589395600, -576093600, -557946e3, -544644e3, -526496400, -513194400, -495046800, -481744800, -463597200, -450295200, -431542800, -418240800, -400093200, -384372e3, -368643600, -352922400, -337194e3, -321472800, -305744400, -289418400, -27369e4, -257968800, -242240400, -226519200, -210790800, -195069600, -179341200, -16362e4, -147891600, -131565600, -116442e3, -100116e3, -84387600, -68666400, -52938e3, -37216800, -21488400, -5767200], o: [-19052, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3] }, "Etc/GMT-10": { source: "Etc/GMT-10", t: [], o: [36e3] }, "Europe/Luxembourg": { source: "Europe/Luxembourg", t: [-2069713476, -1692496800, -1680483600, -1662343200, -1650157200, -1632006e3, -1618700400, -1612659600, -1604278800, -1585519200, -1574038800, -1552258800, -1539997200, -152055e4, -1507510800, -1490572800, -1473642e3, -1459119600, -1444006800, -1427673600, -1411866e3, -1396224e3, -1379293200, -1364774400, -1348448400, -1333324800, -1316394e3, -1301270400, -1284339600, -1269813600, -1253484e3, -1238364e3, -1221429600, -1206914400, -1191189600, -1175464800, -1160344800, -1143410400, -1127685600, -1111960800, -1096840800, -1080511200, -1063576800, -1049061600, -1033336800, -1017612e3, -1002492e3, -986162400, -969228e3, -950479200, -942012e3, -935186400, -857257200, -844556400, -828226800, -812502e3, -797986800, -781052400, -766623600, -745455600, -733273200], o: [1476, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600] }, "Europe/Skopje": { source: "Europe/Skopje", t: [-2713915544, -905824800, -857257200, -844556400, -828226800, -812502e3, -796777200, -781052400, -766623600], o: [5144, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600] }, "Pacific/Palau": { source: "Pacific/Palau", t: [-3944624276, -2177485076], o: [-54124, 32276, 32400] } } };
+var __exports37 = {};
+__export(__exports37, {
+  default: () => __default37
+});
+var __default37;
+var init__37 = __esm({
+  "src/data/tz-history/2025c/36.json"() {
+    "use strict";
+    __default37 = JSON.parse('{"tzdb":"2025c","zones":{"America/Anchorage":{"source":"America/Anchorage","t":[-3225223727,-2188951224,-880200000,-765378000,-21470400,-5749200],"o":[50424,-35976,-36000,-32400,-36000,-32400,-36000]},"America/Costa_Rica":{"source":"America/Costa_Rica","t":[-1545071027],"o":[-20173,-21600]},"America/Lower_Princes":{"source":"America/Curacao","t":[-1826738653,-157750200],"o":[-16547,-16200,-14400]},"America/Moncton":{"source":"America/Moncton","t":[-2715882052,-2131642800,-1632074400,-1615143600,-1153681200,-1145822400,-1122231600,-1114372800,-1090782000,-1082923200,-1059332400,-1051473600,-1027882800,-1020024000,-996433200,-988574400,-965674800,-955396800,-934743600,-923947200,-904503600,-891892800,-880221600,-765399600,-747252000,-733950000,-715802400,-702500400,-684352800,-671050800,-652903200,-639601200,-620848800,-608151600,-589399200,-576097200,-557949600,-544647600,-526500000,-513198000,-495050400,-481748400,-463600800,-450298800,-431546400,-418244400,-400096800,-384375600,-368647200,-352926000,-337197600,-321476400,-305748000,-289422000,-273693600,-257972400,-242244000,-226522800,-210794400,-195073200,-179344800,-163623600,-147895200,-131569200,-116445600,-100119600,-84391200,-68670000,-52941600,-37220400,-21492000,-5770800],"o":[-15548,-18000,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400]},"America/Tijuana":{"source":"America/Tijuana","t":[-1514739600,-1451667600,-1343145600,-1234803600,-1222963200,-1207242000,-873820800,-761418000,-686073600,-661539600,-620755200,-608144400,-589384800,-576082800,-557935200,-544633200,-526489200,-513183600,-495039600,-481734000,-463590000,-450284400,-431535600,-418230000,-400086000,-386780400,-368636400,-355330800,-337186800,-323881200,-305737200,-292431600,-273682800,-260982000,-242233200,-226508400,-210783600,-195058800,-179334000,-163609200,-147884400,-131554800,-116434800,-100105200,-84376800,-68655600,-52927200,-37206000,-21477600,-5756400],"o":[-28084,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800]},"Asia/Kuala_Lumpur":{"source":"Asia/Kuala_Lumpur","t":[-2177477206,-2038200925,-1167634800,-894180000,-879665400,-767005200],"o":[24406,24925,25200,26400,27000,32400,27000]},"Brazil/DeNoronha":{"source":"America/Noronha","t":[-1767217820,-1206961200,-1191366000,-1175378400,-1159830000,-633823200,-622072800,-602287200,-591836400,-570751200,-560214000,-539128800,-531356400,-191368800,-184201200,-155167200,-150073200,-128901600,-121129200,-99957600,-89593200,-68421600,-57970800],"o":[-7780,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200,-3600,-7200]},"Canada/Eastern":{"source":"America/Toronto","t":[-2366736148,-1632070800,-1615140000,-1601753400,-1583697600,-1567357200,-1554667200,-1534698000,-1524074400,-1503248400,-1492365600,-1471798800,-1460916000,-1440954000,-1428861600,-1409504400,-1397412000,-1378054800,-1365962400,-1346605200,-1333908000,-1315155600,-1301853600,-1283706000,-1270404000,-1252256400,-1238954400,-1220806800,-1207504800,-1188752400,-1176055200,-1157302800,-1144000800,-1125853200,-1112551200,-1094403600,-1081101600,-1062954000,-1049652000,-1031504400,-1018202400,-1000054800,-986752800,-968000400,-955303200,-936550800,-765396000,-747248400,-733946400,-715798800,-702496800,-684349200,-671047200,-652899600,-634154400,-620845200,-602704800,-589395600,-576093600,-557946000,-544644000,-526496400,-513194400,-495046800,-481744800,-463597200,-450295200,-431542800,-418240800,-400093200,-384372000,-368643600,-352922400,-337194000,-321472800,-305744400,-289418400,-273690000,-257968800,-242240400,-226519200,-210790800,-195069600,-179341200,-163620000,-147891600,-131565600,-116442000,-100116000,-84387600,-68666400,-52938000,-37216800,-21488400,-5767200],"o":[-19052,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000]},"Etc/GMT-10":{"source":"Etc/GMT-10","t":[],"o":[36000]},"Europe/Luxembourg":{"source":"Europe/Luxembourg","t":[-2069713476,-1692496800,-1680483600,-1662343200,-1650157200,-1632006000,-1618700400,-1612659600,-1604278800,-1585519200,-1574038800,-1552258800,-1539997200,-1520550000,-1507510800,-1490572800,-1473642000,-1459119600,-1444006800,-1427673600,-1411866000,-1396224000,-1379293200,-1364774400,-1348448400,-1333324800,-1316394000,-1301270400,-1284339600,-1269813600,-1253484000,-1238364000,-1221429600,-1206914400,-1191189600,-1175464800,-1160344800,-1143410400,-1127685600,-1111960800,-1096840800,-1080511200,-1063576800,-1049061600,-1033336800,-1017612000,-1002492000,-986162400,-969228000,-950479200,-942012000,-935186400,-857257200,-844556400,-828226800,-812502000,-797986800,-781052400,-766623600,-745455600,-733273200],"o":[1476,3600,7200,3600,7200,3600,7200,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600]},"Europe/Skopje":{"source":"Europe/Skopje","t":[-2713915544,-905824800,-857257200,-844556400,-828226800,-812502000,-796777200,-781052400,-766623600],"o":[5144,3600,7200,3600,7200,3600,7200,3600,7200,3600]},"Pacific/Palau":{"source":"Pacific/Palau","t":[-3944624276,-2177485076],"o":[-54124,32276,32400]}}}');
   }
 });
 
 // src/data/tz-history/2025c/37.json
-var require__38 = __commonJS({
-  "src/data/tz-history/2025c/37.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "America/Godthab": { source: "America/Nuuk", t: [-1686083584], o: [-12416, -10800] }, Iceland: { source: "Atlantic/Reykjavik", t: [-1956609120, -1668211200, -1647212400, -1636675200, -161343e4, -1605139200, -1581894e3, -1539561600, -153135e4, -968025600, -952293600, -942008400, -920239200, -909957600, -888789600, -877903200, -857944800, -846453600, -826495200, -815004e3, -795045600, -783554400, -762991200, -752104800, -731541600, -717631200, -700092e3, -686181600, -668642400, -654732e3, -636588e3, -623282400, -605743200, -591832800, -573688800, -559778400, -542239200, -528328800, -510789600, -496879200, -47934e4, -465429600, -447890400, -43398e4, -415836e3, -401925600, -384386400, -370476e3, -352936800, -339026400, -321487200, -307576800, -290037600, -276127200, -258588e3, -244677600, -226533600, -212623200, -195084e3, -181173600, -163634400, -149724e3, -132184800, -118274400, -100735200, -86824800, -68680800, -54770400], o: [-5280, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0] }, "Indian/Antananarivo": { source: "Indian/Antananarivo", t: [-1846293004, -499924800, -492062400], o: [11404, 10800, 14400, 10800] }, Israel: { source: "Asia/Jerusalem", t: [-2840149254, -1641003640, -933638400, -923097600, -919036800, -857347200, -844300800, -825811200, -812678400, -794188800, -779846400, -762652800, -748310400, -731116800, -681955200, -673228800, -667958400, -65232e4, -636422400, -62208e4, -608947200, -59184e4, -572486400, -558576e3, -542851200, -527731200, -514425600, -490838400, -482976e3, -459388800, -451526400, -428544e3, -418262400, -400118400, -387417600], o: [8454, 8440, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 14400, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200] }, "Pacific/Chuuk": { source: "Pacific/Chuuk", t: [-3944628428, -2177489228, -1743674400, -1606813200, -907408800, -770634e3], o: [-49972, 36428, 36e3, 32400, 36e3, 32400, 36e3] }, Poland: { source: "Europe/Warsaw", t: [-1717032240, -1693706400, -1680483600, -1663455600, -165015e4, -1632006e3, -1600473600, -1587168e3, -1501725600, -931734e3, -857257200, -844556400, -828226800, -812502e3, -796608e3, -778726800, -76266e4, -748486800, -733273200, -715215600, -70191e4, -684975600, -670460400, -654130800, -639010800, -397094400, -386812800, -371088e3, -355363200, -334195200, -323308800, -307584e3, -291859200, -271296e3, -260409600, -239846400, -22896e4, -208396800, -197510400, -176342400, -166060800], o: [5040, 3600, 7200, 3600, 7200, 3600, 7200, 10800, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600] } } };
+var __exports38 = {};
+__export(__exports38, {
+  default: () => __default38
+});
+var __default38;
+var init__38 = __esm({
+  "src/data/tz-history/2025c/37.json"() {
+    "use strict";
+    __default38 = JSON.parse('{"tzdb":"2025c","zones":{"America/Godthab":{"source":"America/Nuuk","t":[-1686083584],"o":[-12416,-10800]},"Iceland":{"source":"Atlantic/Reykjavik","t":[-1956609120,-1668211200,-1647212400,-1636675200,-1613430000,-1605139200,-1581894000,-1539561600,-1531350000,-968025600,-952293600,-942008400,-920239200,-909957600,-888789600,-877903200,-857944800,-846453600,-826495200,-815004000,-795045600,-783554400,-762991200,-752104800,-731541600,-717631200,-700092000,-686181600,-668642400,-654732000,-636588000,-623282400,-605743200,-591832800,-573688800,-559778400,-542239200,-528328800,-510789600,-496879200,-479340000,-465429600,-447890400,-433980000,-415836000,-401925600,-384386400,-370476000,-352936800,-339026400,-321487200,-307576800,-290037600,-276127200,-258588000,-244677600,-226533600,-212623200,-195084000,-181173600,-163634400,-149724000,-132184800,-118274400,-100735200,-86824800,-68680800,-54770400],"o":[-5280,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0]},"Indian/Antananarivo":{"source":"Indian/Antananarivo","t":[-1846293004,-499924800,-492062400],"o":[11404,10800,14400,10800]},"Israel":{"source":"Asia/Jerusalem","t":[-2840149254,-1641003640,-933638400,-923097600,-919036800,-857347200,-844300800,-825811200,-812678400,-794188800,-779846400,-762652800,-748310400,-731116800,-681955200,-673228800,-667958400,-652320000,-636422400,-622080000,-608947200,-591840000,-572486400,-558576000,-542851200,-527731200,-514425600,-490838400,-482976000,-459388800,-451526400,-428544000,-418262400,-400118400,-387417600],"o":[8454,8440,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,14400,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200]},"Pacific/Chuuk":{"source":"Pacific/Chuuk","t":[-3944628428,-2177489228,-1743674400,-1606813200,-907408800,-770634000],"o":[-49972,36428,36000,32400,36000,32400,36000]},"Poland":{"source":"Europe/Warsaw","t":[-1717032240,-1693706400,-1680483600,-1663455600,-1650150000,-1632006000,-1600473600,-1587168000,-1501725600,-931734000,-857257200,-844556400,-828226800,-812502000,-796608000,-778726800,-762660000,-748486800,-733273200,-715215600,-701910000,-684975600,-670460400,-654130800,-639010800,-397094400,-386812800,-371088000,-355363200,-334195200,-323308800,-307584000,-291859200,-271296000,-260409600,-239846400,-228960000,-208396800,-197510400,-176342400,-166060800],"o":[5040,3600,7200,3600,7200,3600,7200,10800,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600]}}}');
   }
 });
 
 // src/data/tz-history/2025c/38.json
-var require__39 = __commonJS({
-  "src/data/tz-history/2025c/38.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "Africa/Brazzaville": { source: "Africa/Brazzaville", t: [-1830387668], o: [3668, 3600] }, "Africa/Djibouti": { source: "Africa/Djibouti", t: [-1846291956], o: [10356, 10800] }, "Africa/Mbabane": { source: "Africa/Mbabane", t: [-2109290664], o: [7464, 7200] }, "America/Managua": { source: "America/Managua", t: [-2524500892, -1121105688], o: [-20708, -20712, -21600] }, "America/North_Dakota/Beulah": { source: "America/North_Dakota/Beulah", t: [-2717643600, -1633273200, -1615132800, -1601823600, -1583683200, -880210800, -765388800, -84380400, -68659200, -52930800, -37209600, -21481200, -576e4], o: [-24427, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200] }, "Asia/Dushanbe": { source: "Asia/Dushanbe", t: [-1441168512, -1247547600], o: [16512, 18e3, 21600] }, "Atlantic/Bermuda": { source: "Atlantic/Bermuda", t: [-1664307642, -1648932042, -1632080442, -1618692042, -1262281242, -882727200, -858538800, -845229600, -825879600, -814384800, -793825200, -782935200, -762375600, -713988e3, -70371e4, -681933600, -672865200, -650484e3, -641415600, -618429600, -609966e3, -58698e4, -578516400, -555530400, -546462e3, -429127200, -415825200], o: [-15558, -11958, -15558, -11958, -15558, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400] }, "Etc/GMT+1": { source: "Etc/GMT+1", t: [], o: [-3600] }, "Europe/Budapest": { source: "Europe/Budapest", t: [-2498260580, -1693706400, -1680483600, -1663455600, -165015e4, -1632006e3, -1618700400, -160047e4, -1587250800, -1569711600, -1555196400, -906775200, -857257200, -844556400, -828226800, -812502e3, -796777200, -778471200, -762656400, -749689200, -733276800, -717634800, -70191e4, -686185200, -670460400, -654130800, -639010800, -492656400, -481168800, -461199600, -449708400, -428540400, -418258800, -397090800, -386809200], o: [4580, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600] }, "Pacific/Bougainville": { source: "Pacific/Bougainville", t: [-2840178136, -2366790512, -868010400, -768906e3], o: [37336, 35312, 36e3, 32400, 36e3] }, "Pacific/Kanton": { source: "Pacific/Kanton", t: [-1020470400], o: [null, -43200] }, "Pacific/Kiritimati": { source: "Pacific/Kiritimati", t: [-2177415040], o: [-37760, -38400] }, "Pacific/Norfolk": { source: "Pacific/Norfolk", t: [-2177493112, -599656320], o: [40312, 40320, 41400] } } };
+var __exports39 = {};
+__export(__exports39, {
+  default: () => __default39
+});
+var __default39;
+var init__39 = __esm({
+  "src/data/tz-history/2025c/38.json"() {
+    "use strict";
+    __default39 = JSON.parse('{"tzdb":"2025c","zones":{"Africa/Brazzaville":{"source":"Africa/Brazzaville","t":[-1830387668],"o":[3668,3600]},"Africa/Djibouti":{"source":"Africa/Djibouti","t":[-1846291956],"o":[10356,10800]},"Africa/Mbabane":{"source":"Africa/Mbabane","t":[-2109290664],"o":[7464,7200]},"America/Managua":{"source":"America/Managua","t":[-2524500892,-1121105688],"o":[-20708,-20712,-21600]},"America/North_Dakota/Beulah":{"source":"America/North_Dakota/Beulah","t":[-2717643600,-1633273200,-1615132800,-1601823600,-1583683200,-880210800,-765388800,-84380400,-68659200,-52930800,-37209600,-21481200,-5760000],"o":[-24427,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200]},"Asia/Dushanbe":{"source":"Asia/Dushanbe","t":[-1441168512,-1247547600],"o":[16512,18000,21600]},"Atlantic/Bermuda":{"source":"Atlantic/Bermuda","t":[-1664307642,-1648932042,-1632080442,-1618692042,-1262281242,-882727200,-858538800,-845229600,-825879600,-814384800,-793825200,-782935200,-762375600,-713988000,-703710000,-681933600,-672865200,-650484000,-641415600,-618429600,-609966000,-586980000,-578516400,-555530400,-546462000,-429127200,-415825200],"o":[-15558,-11958,-15558,-11958,-15558,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400]},"Etc/GMT+1":{"source":"Etc/GMT+1","t":[],"o":[-3600]},"Europe/Budapest":{"source":"Europe/Budapest","t":[-2498260580,-1693706400,-1680483600,-1663455600,-1650150000,-1632006000,-1618700400,-1600470000,-1587250800,-1569711600,-1555196400,-906775200,-857257200,-844556400,-828226800,-812502000,-796777200,-778471200,-762656400,-749689200,-733276800,-717634800,-701910000,-686185200,-670460400,-654130800,-639010800,-492656400,-481168800,-461199600,-449708400,-428540400,-418258800,-397090800,-386809200],"o":[4580,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600]},"Pacific/Bougainville":{"source":"Pacific/Bougainville","t":[-2840178136,-2366790512,-868010400,-768906000],"o":[37336,35312,36000,32400,36000]},"Pacific/Kanton":{"source":"Pacific/Kanton","t":[-1020470400],"o":[null,-43200]},"Pacific/Kiritimati":{"source":"Pacific/Kiritimati","t":[-2177415040],"o":[-37760,-38400]},"Pacific/Norfolk":{"source":"Pacific/Norfolk","t":[-2177493112,-599656320],"o":[40312,40320,41400]}}}');
   }
 });
 
 // src/data/tz-history/2025c/39.json
-var require__40 = __commonJS({
-  "src/data/tz-history/2025c/39.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "Africa/Addis_Ababa": { source: "Africa/Addis_Ababa", t: [-3155682888, -1062210920], o: [9288, 9320, 10800] }, "Africa/Khartoum": { source: "Africa/Khartoum", t: [-1230775808], o: [7808, 7200] }, "Africa/Mogadishu": { source: "Africa/Mogadishu", t: [-2403572488, -1230778800, -410236200], o: [10888, 10800, 9e3, 10800] }, "America/Dawson_Creek": { source: "America/Dawson_Creek", t: [-2713881544, -163206e4, -1615129200, -880207200, -765385200, -715788e3, -702486e3, -684338400, -671036400, -652888800, -639586800, -620834400, -608137200, -589384800, -576082800, -557935200, -544633200, -526485600, -513183600, -495036e3, -481734e3, -463586400, -450284400, -431532e3, -41823e4, -400082400, -386780400, -368632800, -355330800, -337183200, -323881200, -305733600, -292431600, -273679200, -260982e3, -242229600, -226508400, -21078e4, -195058800, -179330400, -163609200, -147880800, -131554800, -116431200, -100105200, -84376800, -68655600, -52927200, -37206e3, -21477600, -5756400], o: [-28856, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800] }, "Asia/Dhaka": { source: "Asia/Dhaka", t: [-2524543300, -891582800, -872058600, -862637400, -576138600], o: [21700, 21200, 23400, 19800, 23400, 21600] }, "Asia/Makassar": { source: "Asia/Makassar", t: [-1172908656, -880272e3, -766054800], o: [28656, 28800, 32400, 28800] }, "Australia/Broken_Hill": { source: "Australia/Broken_Hill", t: [-2364110748, -2314951200, -2230189200, -1672558200, -1665387e3, -883639800, -876123e3, -860398200, -844673400, -828343800, -813223800], o: [33948, 36e3, 32400, 34200, 37800, 34200, 37800, 34200, 37800, 34200, 37800, 34200] }, EST: { source: "EST", t: [], o: [-18e3] }, "Etc/GMT-8": { source: "Etc/GMT-8", t: [], o: [28800] }, Portugal: { source: "Europe/Lisbon", t: [-1830384e3, -1689555600, -1677801600, -1667433600, -1647738e3, -1635897600, -1616202e3, -1604361600, -1584666e3, -1572739200, -1553043600, -1541203200, -1521507600, -1442451600, -1427677200, -1379293200, -1364778e3, -1348448400, -1333328400, -1316394e3, -1301274e3, -1284339600, -1269824400, -1221440400, -1206925200, -1191200400, -1175475600, -1127696400, -1111971600, -1096851600, -1080522e3, -1063587600, -1049072400, -1033347600, -1017622800, -1002502800, -986173200, -969238800, -95049e4, -942022800, -922496400, -906944400, -891133200, -877309200, -873684e3, -864007200, -857955600, -845859600, -842839200, -831348e3, -825901200, -81441e4, -810784800, -799898400, -794451600, -782960400, -779335200, -768448800, -763002e3, -749091600, -733366800, -717631200, -701906400, -686181600, -670456800, -654732e3, -639007200, -623282400, -607557600, -591832800, -575503200, -559778400, -544053600, -528328800, -512604e3, -496879200, -481154400, -465429600, -449704800, -43398e4, -417650400, -401925600, -386200800, -370476e3, -354751200, -339026400, -323301600, -307576800, -291852e3, -276127200, -260402400, -244677600, -228348e3, -212623200, -196898400, -181173600, -165448800, -149724e3, -133999200, -118274400], o: [-2205, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 7200, 3600, 0, 3600, 7200, 3600, 0, 3600, 7200, 3600, 0, 3600, 7200, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600] } } };
+var __exports40 = {};
+__export(__exports40, {
+  default: () => __default40
+});
+var __default40;
+var init__40 = __esm({
+  "src/data/tz-history/2025c/39.json"() {
+    "use strict";
+    __default40 = JSON.parse('{"tzdb":"2025c","zones":{"Africa/Addis_Ababa":{"source":"Africa/Addis_Ababa","t":[-3155682888,-1062210920],"o":[9288,9320,10800]},"Africa/Khartoum":{"source":"Africa/Khartoum","t":[-1230775808],"o":[7808,7200]},"Africa/Mogadishu":{"source":"Africa/Mogadishu","t":[-2403572488,-1230778800,-410236200],"o":[10888,10800,9000,10800]},"America/Dawson_Creek":{"source":"America/Dawson_Creek","t":[-2713881544,-1632060000,-1615129200,-880207200,-765385200,-715788000,-702486000,-684338400,-671036400,-652888800,-639586800,-620834400,-608137200,-589384800,-576082800,-557935200,-544633200,-526485600,-513183600,-495036000,-481734000,-463586400,-450284400,-431532000,-418230000,-400082400,-386780400,-368632800,-355330800,-337183200,-323881200,-305733600,-292431600,-273679200,-260982000,-242229600,-226508400,-210780000,-195058800,-179330400,-163609200,-147880800,-131554800,-116431200,-100105200,-84376800,-68655600,-52927200,-37206000,-21477600,-5756400],"o":[-28856,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800]},"Asia/Dhaka":{"source":"Asia/Dhaka","t":[-2524543300,-891582800,-872058600,-862637400,-576138600],"o":[21700,21200,23400,19800,23400,21600]},"Asia/Makassar":{"source":"Asia/Makassar","t":[-1172908656,-880272000,-766054800],"o":[28656,28800,32400,28800]},"Australia/Broken_Hill":{"source":"Australia/Broken_Hill","t":[-2364110748,-2314951200,-2230189200,-1672558200,-1665387000,-883639800,-876123000,-860398200,-844673400,-828343800,-813223800],"o":[33948,36000,32400,34200,37800,34200,37800,34200,37800,34200,37800,34200]},"EST":{"source":"EST","t":[],"o":[-18000]},"Etc/GMT-8":{"source":"Etc/GMT-8","t":[],"o":[28800]},"Portugal":{"source":"Europe/Lisbon","t":[-1830384000,-1689555600,-1677801600,-1667433600,-1647738000,-1635897600,-1616202000,-1604361600,-1584666000,-1572739200,-1553043600,-1541203200,-1521507600,-1442451600,-1427677200,-1379293200,-1364778000,-1348448400,-1333328400,-1316394000,-1301274000,-1284339600,-1269824400,-1221440400,-1206925200,-1191200400,-1175475600,-1127696400,-1111971600,-1096851600,-1080522000,-1063587600,-1049072400,-1033347600,-1017622800,-1002502800,-986173200,-969238800,-950490000,-942022800,-922496400,-906944400,-891133200,-877309200,-873684000,-864007200,-857955600,-845859600,-842839200,-831348000,-825901200,-814410000,-810784800,-799898400,-794451600,-782960400,-779335200,-768448800,-763002000,-749091600,-733366800,-717631200,-701906400,-686181600,-670456800,-654732000,-639007200,-623282400,-607557600,-591832800,-575503200,-559778400,-544053600,-528328800,-512604000,-496879200,-481154400,-465429600,-449704800,-433980000,-417650400,-401925600,-386200800,-370476000,-354751200,-339026400,-323301600,-307576800,-291852000,-276127200,-260402400,-244677600,-228348000,-212623200,-196898400,-181173600,-165448800,-149724000,-133999200,-118274400],"o":[-2205,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,7200,3600,0,3600,7200,3600,0,3600,7200,3600,0,3600,7200,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600]}}}');
   }
 });
 
 // src/data/tz-history/2025c/40.json
-var require__41 = __commonJS({
-  "src/data/tz-history/2025c/40.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "America/El_Salvador": { source: "America/El_Salvador", t: [-1546279392], o: [-21408, -21600] }, "America/Knox_IN": { source: "America/Indiana/Knox", t: [-2717647200, -1633276800, -1615136400, -1601827200, -1583686800, -880214400, -765392400, -715795200, -702493200, -684345600, -671043600, -652896e3, -639594e3, -620841600, -608144400, -589392e3, -57609e4, -557942400, -544640400, -526492800, -513190800, -495043200, -481741200, -463593600, -447267600, -431539200, -415818e3, -400089600, -386787600, -36864e4, -355338e3, -337190400, -321469200, -305740800, -289414800, -273686400, -257965200, -242236800, -195066e3, -84384e3, -68662800, -52934400, -37213200, -21484800, -5763600], o: [-20790, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600] }, "America/Santa_Isabel": { source: "America/Tijuana", t: [-1514739600, -1451667600, -1343145600, -1234803600, -1222963200, -1207242e3, -873820800, -761418e3, -686073600, -661539600, -620755200, -608144400, -589384800, -576082800, -557935200, -544633200, -526489200, -513183600, -495039600, -481734e3, -46359e4, -450284400, -431535600, -41823e4, -400086e3, -386780400, -368636400, -355330800, -337186800, -323881200, -305737200, -292431600, -273682800, -260982e3, -242233200, -226508400, -210783600, -195058800, -179334e3, -163609200, -147884400, -131554800, -116434800, -100105200, -84376800, -68655600, -52927200, -37206e3, -21477600, -5756400], o: [-28084, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800] }, "America/Scoresbysund": { source: "America/Scoresbysund", t: [-1686090728], o: [-5272, -7200] }, "America/Sitka": { source: "America/Sitka", t: [-3225223727, -2188954727, -880207200, -765385200, -21477600, -5756400], o: [53927, -32473, -28800, -25200, -28800, -25200, -28800] }, "Asia/Manila": { source: "Asia/Manila", t: [-3944621032, -2219083200, -1046678400, -1040115600, -885024e3, -760093200, -496224e3, -491562e3], o: [-57368, 29032, 28800, 32400, 28800, 32400, 28800, 32400, 28800] }, "Australia/Currie": { source: "Australia/Currie", t: [-2345794528, -1680508800, -1665388800, -164664e4, -1635753600, -1615190400, -1604304e3, -883641600, -876124800, -8604e5, -844675200, -828345600, -813225600, -37267200, -25776e3, -5817600], o: [34528, 36e3, 39600, 36e3, 39600, 36e3, 39600, 36e3, 39600, 36e3, 39600, 36e3, 39600, 36e3, 39600, 36e3, 39600] }, Egypt: { source: "Africa/Cairo", t: [-2185409109, -929844e3, -923108400, -906170400, -892868400, -875844e3, -85779e4, -844308e3, -825822e3, -812685600, -794199600, -779853600, -762663600, -399088800, -386650800, -368330400, -355114800, -336790800, -323654400, -305168400, -292032e3, -273632400, -260496e3, -242096400, -22896e4, -210560400, -197424e3, -178938e3, -165801600, -147402e3, -134265600, -115866e3, -102643200, -8433e4, -71107200, -52707600, -39484800, -21171600, -7948800], o: [7509, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200] }, "Europe/Kaliningrad": { source: "Europe/Kaliningrad", t: [-2422056120, -1693706400, -1680483600, -1663455600, -165015e4, -1632006e3, -1618700400, -938905200, -857257200, -844556400, -828226800, -812502e3, -796777200, -781052400, -778730400, -762663600, -749095200], o: [4920, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 10800, 7200, 10800] }, "Europe/Vatican": { source: "Europe/Rome", t: [-2403565200, -1690765200, -1680487200, -1664758800, -1648951200, -1635123600, -1616896800, -1604278800, -1585533600, -1571014800, -1555293600, -932432400, -857257200, -844556400, -828226800, -812502e3, -798073200, -781052400, -766717200, -750898800, -733359600, -719456400, -701917200, -689209200, -670460400, -114051600, -103168800, -81997200, -71715600, -50547600, -40266e3, -18493200, -8211600], o: [2996, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600] }, "Pacific/Auckland": { source: "Pacific/Auckland", t: [-3192435544, -1330335e3, -1320057e3, -1300699800, -1287396e3, -1269250200, -1255946400, -1237800600, -1224496800, -1206351e3, -1192442400, -1174901400, -1160992800, -1143451800, -1125914400, -1112607e3, -1094464800, -1081157400, -1063015200, -1049707800, -1031565600, -1018258200, -1000116e3, -986808600, -968061600, -955359e3, -936612e3, -923304600], o: [41944, 41400, 45e3, 41400, 43200, 41400, 43200, 41400, 43200, 41400, 43200, 41400, 43200, 41400, 43200, 41400, 43200, 41400, 43200, 41400, 43200, 41400, 43200, 41400, 43200, 41400, 43200, 41400, 43200] }, "Pacific/Pago_Pago": { source: "Pacific/Pago_Pago", t: [-2445424632, -1861879032], o: [45432, -40968, -39600] } } };
+var __exports41 = {};
+__export(__exports41, {
+  default: () => __default41
+});
+var __default41;
+var init__41 = __esm({
+  "src/data/tz-history/2025c/40.json"() {
+    "use strict";
+    __default41 = JSON.parse('{"tzdb":"2025c","zones":{"America/El_Salvador":{"source":"America/El_Salvador","t":[-1546279392],"o":[-21408,-21600]},"America/Knox_IN":{"source":"America/Indiana/Knox","t":[-2717647200,-1633276800,-1615136400,-1601827200,-1583686800,-880214400,-765392400,-715795200,-702493200,-684345600,-671043600,-652896000,-639594000,-620841600,-608144400,-589392000,-576090000,-557942400,-544640400,-526492800,-513190800,-495043200,-481741200,-463593600,-447267600,-431539200,-415818000,-400089600,-386787600,-368640000,-355338000,-337190400,-321469200,-305740800,-289414800,-273686400,-257965200,-242236800,-195066000,-84384000,-68662800,-52934400,-37213200,-21484800,-5763600],"o":[-20790,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600]},"America/Santa_Isabel":{"source":"America/Tijuana","t":[-1514739600,-1451667600,-1343145600,-1234803600,-1222963200,-1207242000,-873820800,-761418000,-686073600,-661539600,-620755200,-608144400,-589384800,-576082800,-557935200,-544633200,-526489200,-513183600,-495039600,-481734000,-463590000,-450284400,-431535600,-418230000,-400086000,-386780400,-368636400,-355330800,-337186800,-323881200,-305737200,-292431600,-273682800,-260982000,-242233200,-226508400,-210783600,-195058800,-179334000,-163609200,-147884400,-131554800,-116434800,-100105200,-84376800,-68655600,-52927200,-37206000,-21477600,-5756400],"o":[-28084,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800]},"America/Scoresbysund":{"source":"America/Scoresbysund","t":[-1686090728],"o":[-5272,-7200]},"America/Sitka":{"source":"America/Sitka","t":[-3225223727,-2188954727,-880207200,-765385200,-21477600,-5756400],"o":[53927,-32473,-28800,-25200,-28800,-25200,-28800]},"Asia/Manila":{"source":"Asia/Manila","t":[-3944621032,-2219083200,-1046678400,-1040115600,-885024000,-760093200,-496224000,-491562000],"o":[-57368,29032,28800,32400,28800,32400,28800,32400,28800]},"Australia/Currie":{"source":"Australia/Currie","t":[-2345794528,-1680508800,-1665388800,-1646640000,-1635753600,-1615190400,-1604304000,-883641600,-876124800,-860400000,-844675200,-828345600,-813225600,-37267200,-25776000,-5817600],"o":[34528,36000,39600,36000,39600,36000,39600,36000,39600,36000,39600,36000,39600,36000,39600,36000,39600]},"Egypt":{"source":"Africa/Cairo","t":[-2185409109,-929844000,-923108400,-906170400,-892868400,-875844000,-857790000,-844308000,-825822000,-812685600,-794199600,-779853600,-762663600,-399088800,-386650800,-368330400,-355114800,-336790800,-323654400,-305168400,-292032000,-273632400,-260496000,-242096400,-228960000,-210560400,-197424000,-178938000,-165801600,-147402000,-134265600,-115866000,-102643200,-84330000,-71107200,-52707600,-39484800,-21171600,-7948800],"o":[7509,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200]},"Europe/Kaliningrad":{"source":"Europe/Kaliningrad","t":[-2422056120,-1693706400,-1680483600,-1663455600,-1650150000,-1632006000,-1618700400,-938905200,-857257200,-844556400,-828226800,-812502000,-796777200,-781052400,-778730400,-762663600,-749095200],"o":[4920,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,10800,7200,10800]},"Europe/Vatican":{"source":"Europe/Rome","t":[-2403565200,-1690765200,-1680487200,-1664758800,-1648951200,-1635123600,-1616896800,-1604278800,-1585533600,-1571014800,-1555293600,-932432400,-857257200,-844556400,-828226800,-812502000,-798073200,-781052400,-766717200,-750898800,-733359600,-719456400,-701917200,-689209200,-670460400,-114051600,-103168800,-81997200,-71715600,-50547600,-40266000,-18493200,-8211600],"o":[2996,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600]},"Pacific/Auckland":{"source":"Pacific/Auckland","t":[-3192435544,-1330335000,-1320057000,-1300699800,-1287396000,-1269250200,-1255946400,-1237800600,-1224496800,-1206351000,-1192442400,-1174901400,-1160992800,-1143451800,-1125914400,-1112607000,-1094464800,-1081157400,-1063015200,-1049707800,-1031565600,-1018258200,-1000116000,-986808600,-968061600,-955359000,-936612000,-923304600],"o":[41944,41400,45000,41400,43200,41400,43200,41400,43200,41400,43200,41400,43200,41400,43200,41400,43200,41400,43200,41400,43200,41400,43200,41400,43200,41400,43200,41400,43200]},"Pacific/Pago_Pago":{"source":"Pacific/Pago_Pago","t":[-2445424632,-1861879032],"o":[45432,-40968,-39600]}}}');
   }
 });
 
 // src/data/tz-history/2025c/41.json
-var require__42 = __commonJS({
-  "src/data/tz-history/2025c/41.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "America/Argentina/Buenos_Aires": { source: "America/Argentina/Buenos_Aires", t: [-2372097972, -1567453392, -1233432e3, -1222981200, -1205956800, -1194037200, -1172865600, -1162501200, -1141329600, -1130965200, -1109793600, -1099429200, -1078257600, -1067806800, -1046635200, -1036270800, -1015099200, -1004734800, -983563200, -973198800, -952027200, -941576400, -931032e3, -900882e3, -890337600, -833749200, -827265600, -752274e3, -733780800, -197326800, -190843200, -184194e3, -164491200, -152658e3, -132955200, -121122e3, -101419200, -86821200, -71092800, -54766800, -39038400, -23317200, -7588800], o: [-14028, -15408, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800] }, "America/Nassau": { source: "America/Nassau", t: [-1825095030, -873140400, -788904e3, -786222e3, -763848e3, -179341200, -16362e4, -147891600, -131565600, -116442e3, -100116e3, -84387600, -68666400, -52938e3, -37216800, -21488400, -5767200], o: [-18570, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3] }, "America/Sao_Paulo": { source: "America/Sao_Paulo", t: [-1767214412, -1206957600, -1191362400, -1175374800, -1159826400, -633819600, -622069200, -602283600, -591832800, -570747600, -560210400, -539125200, -531352800, -195426e3, -184197600, -155163600, -150069600, -128898e3, -121125600, -99954e3, -89589600, -68418e3, -57967200], o: [-11188, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800] }, "Asia/Muscat": { source: "Asia/Muscat", t: [-1577937264], o: [14064, 14400] }, "Asia/Sakhalin": { source: "Asia/Sakhalin", t: [-2031039048, -768560400], o: [34248, 32400, 39600] }, "Asia/Thimphu": { source: "Asia/Thimphu", t: [-706341516], o: [21516, 19800] }, "Asia/Vientiane": { source: "Asia/Vientiane", t: [-2004072624, -1851577590, -852105600, -782643600, -767869200, -718095600, -464428800], o: [24624, 25590, 25200, 28800, 32400, 25200, 28800, 25200] }, "Australia/West": { source: "Australia/Perth", t: [-2337925404, -1672552800, -1665381600, -883634400, -876117600, -860392800, -844668e3], o: [27804, 28800, 32400, 28800, 32400, 28800, 32400, 28800] }, "Etc/GMT-6": { source: "Etc/GMT-6", t: [], o: [21600] }, "Europe/Malta": { source: "Europe/Malta", t: [-2403478684, -1690765200, -1680487200, -1664758800, -1648951200, -1635123600, -1616896800, -1604278800, -1585533600, -1571014800, -1555293600, -932432400, -857257200, -844556400, -828226800, -812588400, -798073200, -781052400, -766717200, -750898800, -733359600, -719456400, -701917200, -689209200, -670460400, -114051600, -103168800, -81997200, -71715600, -50547600, -40266e3, -18493200, -8211600], o: [3484, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600] }, MET: { source: "MET", t: [-1693706400, -1680483600, -1663455600, -165015e4, -1632006e3, -1618700400, -938905200, -857257200, -844556400, -828226800, -812502e3, -796777200, -781052400, -766623600], o: [3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600] } } };
+var __exports42 = {};
+__export(__exports42, {
+  default: () => __default42
+});
+var __default42;
+var init__42 = __esm({
+  "src/data/tz-history/2025c/41.json"() {
+    "use strict";
+    __default42 = JSON.parse('{"tzdb":"2025c","zones":{"America/Argentina/Buenos_Aires":{"source":"America/Argentina/Buenos_Aires","t":[-2372097972,-1567453392,-1233432000,-1222981200,-1205956800,-1194037200,-1172865600,-1162501200,-1141329600,-1130965200,-1109793600,-1099429200,-1078257600,-1067806800,-1046635200,-1036270800,-1015099200,-1004734800,-983563200,-973198800,-952027200,-941576400,-931032000,-900882000,-890337600,-833749200,-827265600,-752274000,-733780800,-197326800,-190843200,-184194000,-164491200,-152658000,-132955200,-121122000,-101419200,-86821200,-71092800,-54766800,-39038400,-23317200,-7588800],"o":[-14028,-15408,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800]},"America/Nassau":{"source":"America/Nassau","t":[-1825095030,-873140400,-788904000,-786222000,-763848000,-179341200,-163620000,-147891600,-131565600,-116442000,-100116000,-84387600,-68666400,-52938000,-37216800,-21488400,-5767200],"o":[-18570,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000]},"America/Sao_Paulo":{"source":"America/Sao_Paulo","t":[-1767214412,-1206957600,-1191362400,-1175374800,-1159826400,-633819600,-622069200,-602283600,-591832800,-570747600,-560210400,-539125200,-531352800,-195426000,-184197600,-155163600,-150069600,-128898000,-121125600,-99954000,-89589600,-68418000,-57967200],"o":[-11188,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800]},"Asia/Muscat":{"source":"Asia/Muscat","t":[-1577937264],"o":[14064,14400]},"Asia/Sakhalin":{"source":"Asia/Sakhalin","t":[-2031039048,-768560400],"o":[34248,32400,39600]},"Asia/Thimphu":{"source":"Asia/Thimphu","t":[-706341516],"o":[21516,19800]},"Asia/Vientiane":{"source":"Asia/Vientiane","t":[-2004072624,-1851577590,-852105600,-782643600,-767869200,-718095600,-464428800],"o":[24624,25590,25200,28800,32400,25200,28800,25200]},"Australia/West":{"source":"Australia/Perth","t":[-2337925404,-1672552800,-1665381600,-883634400,-876117600,-860392800,-844668000],"o":[27804,28800,32400,28800,32400,28800,32400,28800]},"Etc/GMT-6":{"source":"Etc/GMT-6","t":[],"o":[21600]},"Europe/Malta":{"source":"Europe/Malta","t":[-2403478684,-1690765200,-1680487200,-1664758800,-1648951200,-1635123600,-1616896800,-1604278800,-1585533600,-1571014800,-1555293600,-932432400,-857257200,-844556400,-828226800,-812588400,-798073200,-781052400,-766717200,-750898800,-733359600,-719456400,-701917200,-689209200,-670460400,-114051600,-103168800,-81997200,-71715600,-50547600,-40266000,-18493200,-8211600],"o":[3484,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600]},"MET":{"source":"MET","t":[-1693706400,-1680483600,-1663455600,-1650150000,-1632006000,-1618700400,-938905200,-857257200,-844556400,-828226800,-812502000,-796777200,-781052400,-766623600],"o":[3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600]}}}');
   }
 });
 
 // src/data/tz-history/2025c/42.json
-var require__43 = __commonJS({
-  "src/data/tz-history/2025c/42.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "Africa/Lagos": { source: "Africa/Lagos", t: [-2035584815, -1940889600, -1767226415, -1588465800], o: [815, 0, 815, 1800, 3600] }, "Africa/Ouagadougou": { source: "Africa/Ouagadougou", t: [-1830383636], o: [-364, 0] }, "Asia/Hebron": { source: "Asia/Hebron", t: [-2185410023, -933638400, -923097600, -919036800, -857347200, -844300800, -825811200, -812678400, -794188800, -779846400, -762652800, -748310400, -731116800, -399088800, -386650800, -368330400, -355114800, -336790800, -323654400, -305168400, -292032e3, -273632400, -260496e3, -242096400, -22896e4, -210560400, -197424e3, -178938e3, -165801600, -147402e3, -134265600, -115866e3, -102643200, -8433e4, -81313200], o: [8423, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200] }, "Asia/Phnom_Penh": { source: "Asia/Phnom_Penh", t: [-2004073180, -1851577590, -852105600, -782643600, -767869200], o: [25180, 25590, 25200, 28800, 32400, 25200] }, "Australia/Eucla": { source: "Australia/Eucla", t: [-2337928528, -1672555500, -1665384300, -883637100, -876120300, -860395500, -844670700], o: [30928, 31500, 35100, 31500, 35100, 31500, 35100, 31500] }, "Europe/Minsk": { source: "Europe/Minsk", t: [-2840147416, -1441158600, -1247536800, -899780400, -857257200, -844556400, -828226800, -812502e3, -804650400], o: [6616, 6600, 7200, 10800, 7200, 3600, 7200, 3600, 7200, 10800] }, Libya: { source: "Africa/Tripoli", t: [-1577926364, -574902e3, -568087200, -512175600, -504928800, -449888400, -441856800, -347158800], o: [3164, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200] }, "Pacific/Tahiti": { source: "Pacific/Tahiti", t: [-1806674504], o: [-35896, -36e3] }, Universal: { source: "Etc/UTC", t: [], o: [0] } } };
+var __exports43 = {};
+__export(__exports43, {
+  default: () => __default43
+});
+var __default43;
+var init__43 = __esm({
+  "src/data/tz-history/2025c/42.json"() {
+    "use strict";
+    __default43 = JSON.parse('{"tzdb":"2025c","zones":{"Africa/Lagos":{"source":"Africa/Lagos","t":[-2035584815,-1940889600,-1767226415,-1588465800],"o":[815,0,815,1800,3600]},"Africa/Ouagadougou":{"source":"Africa/Ouagadougou","t":[-1830383636],"o":[-364,0]},"Asia/Hebron":{"source":"Asia/Hebron","t":[-2185410023,-933638400,-923097600,-919036800,-857347200,-844300800,-825811200,-812678400,-794188800,-779846400,-762652800,-748310400,-731116800,-399088800,-386650800,-368330400,-355114800,-336790800,-323654400,-305168400,-292032000,-273632400,-260496000,-242096400,-228960000,-210560400,-197424000,-178938000,-165801600,-147402000,-134265600,-115866000,-102643200,-84330000,-81313200],"o":[8423,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200]},"Asia/Phnom_Penh":{"source":"Asia/Phnom_Penh","t":[-2004073180,-1851577590,-852105600,-782643600,-767869200],"o":[25180,25590,25200,28800,32400,25200]},"Australia/Eucla":{"source":"Australia/Eucla","t":[-2337928528,-1672555500,-1665384300,-883637100,-876120300,-860395500,-844670700],"o":[30928,31500,35100,31500,35100,31500,35100,31500]},"Europe/Minsk":{"source":"Europe/Minsk","t":[-2840147416,-1441158600,-1247536800,-899780400,-857257200,-844556400,-828226800,-812502000,-804650400],"o":[6616,6600,7200,10800,7200,3600,7200,3600,7200,10800]},"Libya":{"source":"Africa/Tripoli","t":[-1577926364,-574902000,-568087200,-512175600,-504928800,-449888400,-441856800,-347158800],"o":[3164,3600,7200,3600,7200,3600,7200,3600,7200]},"Pacific/Tahiti":{"source":"Pacific/Tahiti","t":[-1806674504],"o":[-35896,-36000]},"Universal":{"source":"Etc/UTC","t":[],"o":[0]}}}');
   }
 });
 
 // src/data/tz-history/2025c/43.json
-var require__44 = __commonJS({
-  "src/data/tz-history/2025c/43.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "Africa/Asmara": { source: "Africa/Asmara", t: [-2524530932, -1062210920], o: [9332, 9320, 10800] }, "Africa/Lome": { source: "Africa/Lome", t: [-2429827492], o: [292, 0] }, "Africa/Tunis": { source: "Africa/Tunis", t: [-2797202444, -1855958961, -969242400, -950493600, -94194e4, -891136800, -877827600, -857257200, -844556400, -842918400, -842223600, -828230400, -812502e3, -796269600, -781052400, -766634400], o: [2444, 561, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600] }, "America/Belize": { source: "America/Belize", t: [-1822500432, -1616954400, -1606069800, -1585504800, -1574015400, -1554055200, -1542565800, -1522605600, -1511116200, -1490551200, -1479666600, -1459101600, -1448217e3, -1427652e3, -1416162600, -1396202400, -1384713e3, -1364752800, -1353263400, -1333303200, -1321813800, -1301248800, -1290364200, -1269799200, -1258914600, -1238349600, -1226860200, -12069e5, -1195410600, -1175450400, -1163961e3, -1143396e3, -1132511400, -1111946400, -1101061800, -1080496800, -1069612200, -1049047200, -1037557800, -1017597600, -1006108200, -986148e3, -974658600, -954093600, -943209e3, -922644e3, -911759400, -891194400, -879705e3, -868212e3, -758746800, -701892e3, -690402600, -670442400, -658953e3, -638992800, -627503400, -606938400, -596053800, -575488800, -564604200, -544039200, -532549800, -512589600, -501100200, -48114e4, -469650600, -449690400, -438201e3, -417636e3, -406751400, -386186400, -375301800, -354736800, -343247400, -323287200, -311797800, -291837600, -280348200, -259783200, -248898600, -228333600, -217449e3, -196884e3, -185999400, -165434400, -153945e3, -133984800, -122495400, -102535200, -91045800, -70480800, -59596200], o: [-21168, -21600, -19800, -21600, -19800, -21600, -19800, -21600, -19800, -21600, -19800, -21600, -19800, -21600, -19800, -21600, -19800, -21600, -19800, -21600, -19800, -21600, -19800, -21600, -19800, -21600, -19800, -21600, -19800, -21600, -19800, -21600, -19800, -21600, -19800, -21600, -19800, -21600, -19800, -21600, -19800, -21600, -19800, -21600, -19800, -21600, -19800, -21600, -19800, -21600, -18e3, -21600, -19800, -21600, -19800, -21600, -19800, -21600, -19800, -21600, -19800, -21600, -19800, -21600, -19800, -21600, -19800, -21600, -19800, -21600, -19800, -21600, -19800, -21600, -19800, -21600, -19800, -21600, -19800, -21600, -19800, -21600, -19800, -21600, -19800, -21600, -19800, -21600, -19800, -21600, -19800, -21600, -19800, -21600] }, "America/Havana": { source: "America/Havana", t: [-2524501832, -1402813824, -1311534e3, -1300996800, -933534e3, -925675200, -902084400, -893620800, -87003e4, -862171200, -775681200, -767822400, -744231600, -736372800, -144702e3, -134251200, -113425200, -102542400, -86295600, -72907200, -54154800, -41457600, -21495600, -5774400], o: [-19768, -19776, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3] }, "Asia/Famagusta": { source: "Asia/Famagusta", t: [-1518920148], o: [8148, 7200] }, "Canada/Saskatchewan": { source: "America/Regina", t: [-2030202084, -1632063600, -1615132800, -1251651600, -1238349600, -1220202e3, -12069e5, -1188752400, -1175450400, -1156698e3, -1144000800, -1125248400, -1111946400, -1032714e3, -1016992800, -1001264400, -986148e3, -969814800, -954093600, -937760400, -922039200, -906310800, -890589600, -880210800, -765388800, -748450800, -732729600, -715791600, -702489600, -684342e3, -67104e4, -652892400, -639590400, -620838e3, -608140800, -589388400, -576086400, -557938800, -544636800, -526489200, -513187200, -495039600, -481737600, -46359e4, -450288e3, -431535600, -418233600, -400086e3, -386784e3, -337186800, -321465600, -305737200], o: [-25116, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600] }, "Europe/Kiev": { source: "Europe/Kyiv", t: [-1441159324, -1247536800, -892522800, -857257200, -844556400, -828226800, -825382800], o: [7324, 7200, 10800, 7200, 3600, 7200, 3600, 10800] } } };
+var __exports44 = {};
+__export(__exports44, {
+  default: () => __default44
+});
+var __default44;
+var init__44 = __esm({
+  "src/data/tz-history/2025c/43.json"() {
+    "use strict";
+    __default44 = JSON.parse('{"tzdb":"2025c","zones":{"Africa/Asmara":{"source":"Africa/Asmara","t":[-2524530932,-1062210920],"o":[9332,9320,10800]},"Africa/Lome":{"source":"Africa/Lome","t":[-2429827492],"o":[292,0]},"Africa/Tunis":{"source":"Africa/Tunis","t":[-2797202444,-1855958961,-969242400,-950493600,-941940000,-891136800,-877827600,-857257200,-844556400,-842918400,-842223600,-828230400,-812502000,-796269600,-781052400,-766634400],"o":[2444,561,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600]},"America/Belize":{"source":"America/Belize","t":[-1822500432,-1616954400,-1606069800,-1585504800,-1574015400,-1554055200,-1542565800,-1522605600,-1511116200,-1490551200,-1479666600,-1459101600,-1448217000,-1427652000,-1416162600,-1396202400,-1384713000,-1364752800,-1353263400,-1333303200,-1321813800,-1301248800,-1290364200,-1269799200,-1258914600,-1238349600,-1226860200,-1206900000,-1195410600,-1175450400,-1163961000,-1143396000,-1132511400,-1111946400,-1101061800,-1080496800,-1069612200,-1049047200,-1037557800,-1017597600,-1006108200,-986148000,-974658600,-954093600,-943209000,-922644000,-911759400,-891194400,-879705000,-868212000,-758746800,-701892000,-690402600,-670442400,-658953000,-638992800,-627503400,-606938400,-596053800,-575488800,-564604200,-544039200,-532549800,-512589600,-501100200,-481140000,-469650600,-449690400,-438201000,-417636000,-406751400,-386186400,-375301800,-354736800,-343247400,-323287200,-311797800,-291837600,-280348200,-259783200,-248898600,-228333600,-217449000,-196884000,-185999400,-165434400,-153945000,-133984800,-122495400,-102535200,-91045800,-70480800,-59596200],"o":[-21168,-21600,-19800,-21600,-19800,-21600,-19800,-21600,-19800,-21600,-19800,-21600,-19800,-21600,-19800,-21600,-19800,-21600,-19800,-21600,-19800,-21600,-19800,-21600,-19800,-21600,-19800,-21600,-19800,-21600,-19800,-21600,-19800,-21600,-19800,-21600,-19800,-21600,-19800,-21600,-19800,-21600,-19800,-21600,-19800,-21600,-19800,-21600,-19800,-21600,-18000,-21600,-19800,-21600,-19800,-21600,-19800,-21600,-19800,-21600,-19800,-21600,-19800,-21600,-19800,-21600,-19800,-21600,-19800,-21600,-19800,-21600,-19800,-21600,-19800,-21600,-19800,-21600,-19800,-21600,-19800,-21600,-19800,-21600,-19800,-21600,-19800,-21600,-19800,-21600,-19800,-21600,-19800,-21600]},"America/Havana":{"source":"America/Havana","t":[-2524501832,-1402813824,-1311534000,-1300996800,-933534000,-925675200,-902084400,-893620800,-870030000,-862171200,-775681200,-767822400,-744231600,-736372800,-144702000,-134251200,-113425200,-102542400,-86295600,-72907200,-54154800,-41457600,-21495600,-5774400],"o":[-19768,-19776,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000]},"Asia/Famagusta":{"source":"Asia/Famagusta","t":[-1518920148],"o":[8148,7200]},"Canada/Saskatchewan":{"source":"America/Regina","t":[-2030202084,-1632063600,-1615132800,-1251651600,-1238349600,-1220202000,-1206900000,-1188752400,-1175450400,-1156698000,-1144000800,-1125248400,-1111946400,-1032714000,-1016992800,-1001264400,-986148000,-969814800,-954093600,-937760400,-922039200,-906310800,-890589600,-880210800,-765388800,-748450800,-732729600,-715791600,-702489600,-684342000,-671040000,-652892400,-639590400,-620838000,-608140800,-589388400,-576086400,-557938800,-544636800,-526489200,-513187200,-495039600,-481737600,-463590000,-450288000,-431535600,-418233600,-400086000,-386784000,-337186800,-321465600,-305737200],"o":[-25116,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600]},"Europe/Kiev":{"source":"Europe/Kyiv","t":[-1441159324,-1247536800,-892522800,-857257200,-844556400,-828226800,-825382800],"o":[7324,7200,10800,7200,3600,7200,3600,10800]}}}');
   }
 });
 
 // src/data/tz-history/2025c/44.json
-var require__45 = __commonJS({
-  "src/data/tz-history/2025c/44.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "Africa/El_Aaiun": { source: "Africa/El_Aaiun", t: [-1136070432], o: [-3168, -3600] }, "America/Inuvik": { source: "America/Inuvik", t: [-536457600], o: [null, -28800] }, "America/Metlakatla": { source: "America/Metlakatla", t: [-3225223727, -2188955622, -880207200, -765385200, -21477600, -5756400], o: [54822, -31578, -28800, -25200, -28800, -25200, -28800] }, "America/Miquelon": { source: "America/Miquelon", t: [-1847650520], o: [-13480, -14400] }, "Asia/Almaty": { source: "Asia/Almaty", t: [-1441170468, -1247547600], o: [18468, 18e3, 21600] }, Cuba: { source: "America/Havana", t: [-2524501832, -1402813824, -1311534e3, -1300996800, -933534e3, -925675200, -902084400, -893620800, -87003e4, -862171200, -775681200, -767822400, -744231600, -736372800, -144702e3, -134251200, -113425200, -102542400, -86295600, -72907200, -54154800, -41457600, -21495600, -5774400], o: [-19768, -19776, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3] }, "Etc/UTC": { source: "Etc/UTC", t: [], o: [0] }, GB: { source: "Europe/London", t: [-3852662325, -1691964e3, -1680472800, -1664143200, -1650146400, -1633903200, -1617487200, -1601848800, -1586037600, -1570399200, -1552168800, -1538344800, -1522533600, -15075e5, -1490565600, -1473631200, -1460930400, -1442786400, -1428876e3, -1410732e3, -1396216800, -1379282400, -1364767200, -1348437600, -1333317600, -1315778400, -1301263200, -1284328800, -1269813600, -1253484e3, -1238364e3, -1221429600, -1206914400, -118998e4, -1175464800, -1159135200, -1143410400, -1126476e3, -1111960800, -1095631200, -1080511200, -1063576800, -1049061600, -1032127200, -1017612e3, -1001282400, -986162400, -969228e3, -950479200, -942012e3, -904518e3, -896050800, -875487600, -864601200, -844038e3, -832546800, -812588400, -798073200, -781052400, -772066800, -764805600, -748476e3, -733356e3, -719445600, -71703e4, -706748400, -699487200, -687996e3, -668037600, -654732e3, -636588e3, -622072800, -605743200, -590623200, -574293600, -558568800, -542239200, -527119200, -512604e3, -496274400, -481154400, -46422e4, -449704800, -432165600, -417650400, -401320800, -386200800, -369266400, -354751200, -337816800, -323301600, -306972e3, -291852e3, -276732e3, -257983200, -245282400, -226533600, -213228e3, -195084e3, -182383200, -163634400, -150933600, -132184800, -119484e3, -100735200, -88034400, -68680800, -59004e3], o: [-75, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 0, 3600, 0, 3600, 7200, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600] } } };
+var __exports45 = {};
+__export(__exports45, {
+  default: () => __default45
+});
+var __default45;
+var init__45 = __esm({
+  "src/data/tz-history/2025c/44.json"() {
+    "use strict";
+    __default45 = JSON.parse('{"tzdb":"2025c","zones":{"Africa/El_Aaiun":{"source":"Africa/El_Aaiun","t":[-1136070432],"o":[-3168,-3600]},"America/Inuvik":{"source":"America/Inuvik","t":[-536457600],"o":[null,-28800]},"America/Metlakatla":{"source":"America/Metlakatla","t":[-3225223727,-2188955622,-880207200,-765385200,-21477600,-5756400],"o":[54822,-31578,-28800,-25200,-28800,-25200,-28800]},"America/Miquelon":{"source":"America/Miquelon","t":[-1847650520],"o":[-13480,-14400]},"Asia/Almaty":{"source":"Asia/Almaty","t":[-1441170468,-1247547600],"o":[18468,18000,21600]},"Cuba":{"source":"America/Havana","t":[-2524501832,-1402813824,-1311534000,-1300996800,-933534000,-925675200,-902084400,-893620800,-870030000,-862171200,-775681200,-767822400,-744231600,-736372800,-144702000,-134251200,-113425200,-102542400,-86295600,-72907200,-54154800,-41457600,-21495600,-5774400],"o":[-19768,-19776,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000]},"Etc/UTC":{"source":"Etc/UTC","t":[],"o":[0]},"GB":{"source":"Europe/London","t":[-3852662325,-1691964000,-1680472800,-1664143200,-1650146400,-1633903200,-1617487200,-1601848800,-1586037600,-1570399200,-1552168800,-1538344800,-1522533600,-1507500000,-1490565600,-1473631200,-1460930400,-1442786400,-1428876000,-1410732000,-1396216800,-1379282400,-1364767200,-1348437600,-1333317600,-1315778400,-1301263200,-1284328800,-1269813600,-1253484000,-1238364000,-1221429600,-1206914400,-1189980000,-1175464800,-1159135200,-1143410400,-1126476000,-1111960800,-1095631200,-1080511200,-1063576800,-1049061600,-1032127200,-1017612000,-1001282400,-986162400,-969228000,-950479200,-942012000,-904518000,-896050800,-875487600,-864601200,-844038000,-832546800,-812588400,-798073200,-781052400,-772066800,-764805600,-748476000,-733356000,-719445600,-717030000,-706748400,-699487200,-687996000,-668037600,-654732000,-636588000,-622072800,-605743200,-590623200,-574293600,-558568800,-542239200,-527119200,-512604000,-496274400,-481154400,-464220000,-449704800,-432165600,-417650400,-401320800,-386200800,-369266400,-354751200,-337816800,-323301600,-306972000,-291852000,-276732000,-257983200,-245282400,-226533600,-213228000,-195084000,-182383200,-163634400,-150933600,-132184800,-119484000,-100735200,-88034400,-68680800,-59004000],"o":[-75,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,0,3600,0,3600,7200,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600]}}}');
   }
 });
 
 // src/data/tz-history/2025c/45.json
-var require__46 = __commonJS({
-  "src/data/tz-history/2025c/45.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "America/Anguilla": { source: "America/Anguilla", t: [-1825098464], o: [-15136, -14400] }, "America/Belem": { source: "America/Belem", t: [-1767213964, -1206957600, -1191362400, -1175374800, -1159826400, -633819600, -622069200, -602283600, -591832800, -570747600, -560210400, -539125200, -531352800, -191365200, -184197600, -155163600, -150069600, -128898e3, -121125600, -99954e3, -89589600, -68418e3, -57967200], o: [-11636, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800] }, "America/Catamarca": { source: "America/Argentina/Catamarca", t: [-2372096212, -1567453392, -1233432e3, -1222981200, -1205956800, -1194037200, -1172865600, -1162501200, -1141329600, -1130965200, -1109793600, -1099429200, -1078257600, -1067806800, -1046635200, -1036270800, -1015099200, -1004734800, -983563200, -973198800, -952027200, -941576400, -931032e3, -900882e3, -890337600, -833749200, -827265600, -752274e3, -733780800, -197326800, -190843200, -184194e3, -164491200, -152658e3, -132955200, -121122e3, -101419200, -86821200, -71092800, -54766800, -39038400, -23317200, -7588800], o: [-15788, -15408, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800] }, "America/Eirunepe": { source: "America/Eirunepe", t: [-1767208832, -1206950400, -1191355200, -1175367600, -1159819200, -633812400, -622062e3, -602276400, -591825600, -570740400, -560203200, -539118e3, -531345600, -191358e3, -184190400, -155156400, -150062400, -128890800, -121118400, -99946800, -89582400, -68410800, -5796e4], o: [-16768, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3] }, "America/Nuuk": { source: "America/Nuuk", t: [-1686083584], o: [-12416, -10800] }, "Asia/Brunei": { source: "Asia/Brunei", t: [-1383464380, -1167636600], o: [27580, 27e3, 28800] }, "Asia/Kamchatka": { source: "Asia/Kamchatka", t: [-1487759676, -1247569200], o: [38076, 39600, 43200] }, "Mexico/BajaNorte": { source: "America/Tijuana", t: [-1514739600, -1451667600, -1343145600, -1234803600, -1222963200, -1207242e3, -873820800, -761418e3, -686073600, -661539600, -620755200, -608144400, -589384800, -576082800, -557935200, -544633200, -526489200, -513183600, -495039600, -481734e3, -46359e4, -450284400, -431535600, -41823e4, -400086e3, -386780400, -368636400, -355330800, -337186800, -323881200, -305737200, -292431600, -273682800, -260982e3, -242233200, -226508400, -210783600, -195058800, -179334e3, -163609200, -147884400, -131554800, -116434800, -100105200, -84376800, -68655600, -52927200, -37206e3, -21477600, -5756400], o: [-28084, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800] } } };
+var __exports46 = {};
+__export(__exports46, {
+  default: () => __default46
+});
+var __default46;
+var init__46 = __esm({
+  "src/data/tz-history/2025c/45.json"() {
+    "use strict";
+    __default46 = JSON.parse('{"tzdb":"2025c","zones":{"America/Anguilla":{"source":"America/Anguilla","t":[-1825098464],"o":[-15136,-14400]},"America/Belem":{"source":"America/Belem","t":[-1767213964,-1206957600,-1191362400,-1175374800,-1159826400,-633819600,-622069200,-602283600,-591832800,-570747600,-560210400,-539125200,-531352800,-191365200,-184197600,-155163600,-150069600,-128898000,-121125600,-99954000,-89589600,-68418000,-57967200],"o":[-11636,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800]},"America/Catamarca":{"source":"America/Argentina/Catamarca","t":[-2372096212,-1567453392,-1233432000,-1222981200,-1205956800,-1194037200,-1172865600,-1162501200,-1141329600,-1130965200,-1109793600,-1099429200,-1078257600,-1067806800,-1046635200,-1036270800,-1015099200,-1004734800,-983563200,-973198800,-952027200,-941576400,-931032000,-900882000,-890337600,-833749200,-827265600,-752274000,-733780800,-197326800,-190843200,-184194000,-164491200,-152658000,-132955200,-121122000,-101419200,-86821200,-71092800,-54766800,-39038400,-23317200,-7588800],"o":[-15788,-15408,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800]},"America/Eirunepe":{"source":"America/Eirunepe","t":[-1767208832,-1206950400,-1191355200,-1175367600,-1159819200,-633812400,-622062000,-602276400,-591825600,-570740400,-560203200,-539118000,-531345600,-191358000,-184190400,-155156400,-150062400,-128890800,-121118400,-99946800,-89582400,-68410800,-57960000],"o":[-16768,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000]},"America/Nuuk":{"source":"America/Nuuk","t":[-1686083584],"o":[-12416,-10800]},"Asia/Brunei":{"source":"Asia/Brunei","t":[-1383464380,-1167636600],"o":[27580,27000,28800]},"Asia/Kamchatka":{"source":"Asia/Kamchatka","t":[-1487759676,-1247569200],"o":[38076,39600,43200]},"Mexico/BajaNorte":{"source":"America/Tijuana","t":[-1514739600,-1451667600,-1343145600,-1234803600,-1222963200,-1207242000,-873820800,-761418000,-686073600,-661539600,-620755200,-608144400,-589384800,-576082800,-557935200,-544633200,-526489200,-513183600,-495039600,-481734000,-463590000,-450284400,-431535600,-418230000,-400086000,-386780400,-368636400,-355330800,-337186800,-323881200,-305737200,-292431600,-273682800,-260982000,-242233200,-226508400,-210783600,-195058800,-179334000,-163609200,-147884400,-131554800,-116434800,-100105200,-84376800,-68655600,-52927200,-37206000,-21477600,-5756400],"o":[-28084,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800]}}}');
   }
 });
 
 // src/data/tz-history/2025c/46.json
-var require__47 = __commonJS({
-  "src/data/tz-history/2025c/46.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "America/Argentina/Mendoza": { source: "America/Argentina/Mendoza", t: [-2372095484, -1567453392, -1233432e3, -1222981200, -1205956800, -1194037200, -1172865600, -1162501200, -1141329600, -1130965200, -1109793600, -1099429200, -1078257600, -1067806800, -1046635200, -1036270800, -1015099200, -1004734800, -983563200, -973198800, -952027200, -941576400, -931032e3, -900882e3, -890337600, -833749200, -827265600, -752274e3, -733780800, -197326800, -190843200, -184194e3, -164491200, -152658e3, -132955200, -121122e3, -101419200, -86821200, -71092800, -54766800, -39038400, -23317200, -7588800], o: [-16516, -15408, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800] }, "America/Grenada": { source: "America/Grenada", t: [-1846266780], o: [-14820, -14400] }, "America/Indiana/Vevay": { source: "America/Indiana/Vevay", t: [-2717647200, -1633276800, -1615136400, -1601827200, -1583686800, -880214400, -765392400, -495043200, -21488400, -5767200], o: [-20416, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -14400, -18e3] }, "America/Jamaica": { source: "America/Jamaica", t: [-1827687170], o: [-18430, -18e3] }, "Antarctica/South_Pole": { source: "Antarctica/McMurdo", t: [-441849600], o: [null, 43200] }, "Asia/Omsk": { source: "Asia/Omsk", t: [-1582088010, -1247547600], o: [17610, 18e3, 21600] }, "Asia/Qostanay": { source: "Asia/Qostanay", t: [-1441167268, -1247544e3], o: [15268, 14400, 18e3] }, "Europe/Chisinau": { source: "Europe/Chisinau", t: [-2840147720, -1637114100, -1213148664, -1187056800, -1175479200, -1159754400, -1144029600, -11277e5, -1111975200, -1096250400, -1080525600, -1064800800, -1049076e3, -1033351200, -1017626400, -1001901600, -986176800, -970452e3, -954727200, -927165600, -898138800, -857257200, -844556400, -828226800, -812502e3, -800157600], o: [6920, 6900, 6264, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 3600, 7200, 3600, 7200, 10800] }, "Indian/Comoro": { source: "Indian/Comoro", t: [-1846291984], o: [10384, 10800] } } };
+var __exports47 = {};
+__export(__exports47, {
+  default: () => __default47
+});
+var __default47;
+var init__47 = __esm({
+  "src/data/tz-history/2025c/46.json"() {
+    "use strict";
+    __default47 = JSON.parse('{"tzdb":"2025c","zones":{"America/Argentina/Mendoza":{"source":"America/Argentina/Mendoza","t":[-2372095484,-1567453392,-1233432000,-1222981200,-1205956800,-1194037200,-1172865600,-1162501200,-1141329600,-1130965200,-1109793600,-1099429200,-1078257600,-1067806800,-1046635200,-1036270800,-1015099200,-1004734800,-983563200,-973198800,-952027200,-941576400,-931032000,-900882000,-890337600,-833749200,-827265600,-752274000,-733780800,-197326800,-190843200,-184194000,-164491200,-152658000,-132955200,-121122000,-101419200,-86821200,-71092800,-54766800,-39038400,-23317200,-7588800],"o":[-16516,-15408,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800]},"America/Grenada":{"source":"America/Grenada","t":[-1846266780],"o":[-14820,-14400]},"America/Indiana/Vevay":{"source":"America/Indiana/Vevay","t":[-2717647200,-1633276800,-1615136400,-1601827200,-1583686800,-880214400,-765392400,-495043200,-21488400,-5767200],"o":[-20416,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-14400,-18000]},"America/Jamaica":{"source":"America/Jamaica","t":[-1827687170],"o":[-18430,-18000]},"Antarctica/South_Pole":{"source":"Antarctica/McMurdo","t":[-441849600],"o":[null,43200]},"Asia/Omsk":{"source":"Asia/Omsk","t":[-1582088010,-1247547600],"o":[17610,18000,21600]},"Asia/Qostanay":{"source":"Asia/Qostanay","t":[-1441167268,-1247544000],"o":[15268,14400,18000]},"Europe/Chisinau":{"source":"Europe/Chisinau","t":[-2840147720,-1637114100,-1213148664,-1187056800,-1175479200,-1159754400,-1144029600,-1127700000,-1111975200,-1096250400,-1080525600,-1064800800,-1049076000,-1033351200,-1017626400,-1001901600,-986176800,-970452000,-954727200,-927165600,-898138800,-857257200,-844556400,-828226800,-812502000,-800157600],"o":[6920,6900,6264,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,3600,7200,3600,7200,10800]},"Indian/Comoro":{"source":"Indian/Comoro","t":[-1846291984],"o":[10384,10800]}}}');
   }
 });
 
 // src/data/tz-history/2025c/47.json
-var require__48 = __commonJS({
-  "src/data/tz-history/2025c/47.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "Africa/Windhoek": { source: "Africa/Windhoek", t: [-2458170504, -2109288600, -860976e3, -845254800], o: [4104, 5400, 7200, 10800, 7200] }, "US/Hawaii": { source: "Pacific/Honolulu", t: [-2334101314, -1157283e3, -1155436200, -880198200, -765376200, -712150200], o: [-37886, -37800, -34200, -37800, -34200, -37800, -36e3] } } };
+var __exports48 = {};
+__export(__exports48, {
+  default: () => __default48
+});
+var __default48;
+var init__48 = __esm({
+  "src/data/tz-history/2025c/47.json"() {
+    "use strict";
+    __default48 = JSON.parse('{"tzdb":"2025c","zones":{"Africa/Windhoek":{"source":"Africa/Windhoek","t":[-2458170504,-2109288600,-860976000,-845254800],"o":[4104,5400,7200,10800,7200]},"US/Hawaii":{"source":"Pacific/Honolulu","t":[-2334101314,-1157283000,-1155436200,-880198200,-765376200,-712150200],"o":[-37886,-37800,-34200,-37800,-34200,-37800,-36000]}}}');
   }
 });
 
 // src/data/tz-history/2025c/48.json
-var require__49 = __commonJS({
-  "src/data/tz-history/2025c/48.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "Africa/Douala": { source: "Africa/Douala", t: [-1830386328], o: [2328, 3600] }, "Africa/Kinshasa": { source: "Africa/Kinshasa", t: [-2276643672], o: [3672, 3600] }, "America/Montevideo": { source: "America/Montevideo", t: [-1567455309, -1459627200, -1443819600, -1428006600, -1412283600, -1396470600, -1380747600, -1141590600, -1128286800, -1110141e3, -1096837200, -1078691400, -1065387600, -1047241800, -1033938e3, -1015187400, -1002488400, -983737800, -971038800, -954707400, -938984400, -920838600, -907534800, -896819400, -853621200, -845847e3, -334789200, -319671e3, -314226e3, -309996e3, -149720400, -134604e3, -50446800, -34205400], o: [-13491, -14400, -10800, -12600, -10800, -12600, -10800, -12600, -10800, -12600, -10800, -12600, -10800, -12600, -10800, -12600, -10800, -12600, -10800, -12600, -10800, -12600, -10800, -12600, -10800, -9e3, -10800, -9e3, -10800, -7200, -10800, -7200, -10800, -9e3, -10800] }, "America/St_Thomas": { source: "America/St_Thomas", t: [-1846266016], o: [-15584, -14400] }, "Asia/Krasnoyarsk": { source: "Asia/Krasnoyarsk", t: [-1577513486, -1247551200], o: [22286, 21600, 25200] }, "Asia/Oral": { source: "Asia/Oral", t: [-1441164324, -1247540400], o: [12324, 10800, 18e3] }, "Asia/Yerevan": { source: "Asia/Yerevan", t: [-1441162680, -405140400], o: [10680, 10800, 14400] }, "Atlantic/Cape_Verde": { source: "Atlantic/Cape_Verde", t: [-1830376800, -862610400, -764118e3], o: [-5644, -7200, -3600, -7200] }, "Atlantic/South_Georgia": { source: "Atlantic/South_Georgia", t: [-2524512832], o: [-8768, -7200] }, "Etc/GMT-5": { source: "Etc/GMT-5", t: [], o: [18e3] }, "Europe/Podgorica": { source: "Europe/Belgrade", t: [-2713915320, -905824800, -857257200, -844556400, -828226800, -812502e3, -796777200, -777942e3, -766623600], o: [4920, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600] }, PST8PDT: { source: "PST8PDT", t: [-1633269600, -1615129200, -160182e4, -1583679600, -880207200, -765385200, -84376800, -68655600, -52927200, -37206e3, -21477600, -5756400], o: [-28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800] }, "Pacific/Rarotonga": { source: "Pacific/Rarotonga", t: [-2209555256, -543072056], o: [48056, -38344, -37800] } } };
+var __exports49 = {};
+__export(__exports49, {
+  default: () => __default49
+});
+var __default49;
+var init__49 = __esm({
+  "src/data/tz-history/2025c/48.json"() {
+    "use strict";
+    __default49 = JSON.parse('{"tzdb":"2025c","zones":{"Africa/Douala":{"source":"Africa/Douala","t":[-1830386328],"o":[2328,3600]},"Africa/Kinshasa":{"source":"Africa/Kinshasa","t":[-2276643672],"o":[3672,3600]},"America/Montevideo":{"source":"America/Montevideo","t":[-1567455309,-1459627200,-1443819600,-1428006600,-1412283600,-1396470600,-1380747600,-1141590600,-1128286800,-1110141000,-1096837200,-1078691400,-1065387600,-1047241800,-1033938000,-1015187400,-1002488400,-983737800,-971038800,-954707400,-938984400,-920838600,-907534800,-896819400,-853621200,-845847000,-334789200,-319671000,-314226000,-309996000,-149720400,-134604000,-50446800,-34205400],"o":[-13491,-14400,-10800,-12600,-10800,-12600,-10800,-12600,-10800,-12600,-10800,-12600,-10800,-12600,-10800,-12600,-10800,-12600,-10800,-12600,-10800,-12600,-10800,-12600,-10800,-9000,-10800,-9000,-10800,-7200,-10800,-7200,-10800,-9000,-10800]},"America/St_Thomas":{"source":"America/St_Thomas","t":[-1846266016],"o":[-15584,-14400]},"Asia/Krasnoyarsk":{"source":"Asia/Krasnoyarsk","t":[-1577513486,-1247551200],"o":[22286,21600,25200]},"Asia/Oral":{"source":"Asia/Oral","t":[-1441164324,-1247540400],"o":[12324,10800,18000]},"Asia/Yerevan":{"source":"Asia/Yerevan","t":[-1441162680,-405140400],"o":[10680,10800,14400]},"Atlantic/Cape_Verde":{"source":"Atlantic/Cape_Verde","t":[-1830376800,-862610400,-764118000],"o":[-5644,-7200,-3600,-7200]},"Atlantic/South_Georgia":{"source":"Atlantic/South_Georgia","t":[-2524512832],"o":[-8768,-7200]},"Etc/GMT-5":{"source":"Etc/GMT-5","t":[],"o":[18000]},"Europe/Podgorica":{"source":"Europe/Belgrade","t":[-2713915320,-905824800,-857257200,-844556400,-828226800,-812502000,-796777200,-777942000,-766623600],"o":[4920,3600,7200,3600,7200,3600,7200,3600,7200,3600]},"PST8PDT":{"source":"PST8PDT","t":[-1633269600,-1615129200,-1601820000,-1583679600,-880207200,-765385200,-84376800,-68655600,-52927200,-37206000,-21477600,-5756400],"o":[-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800]},"Pacific/Rarotonga":{"source":"Pacific/Rarotonga","t":[-2209555256,-543072056],"o":[48056,-38344,-37800]}}}');
   }
 });
 
 // src/data/tz-history/2025c/49.json
-var require__50 = __commonJS({
-  "src/data/tz-history/2025c/49.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "Africa/Conakry": { source: "Africa/Conakry", t: [-1830380708, -1131235200, -315615600], o: [-3292, 0, -3600, 0] }, "America/Indianapolis": { source: "America/Indiana/Indianapolis", t: [-2717647200, -1633276800, -1615136400, -1601827200, -1583686800, -900259200, -891795600, -880214400, -765392400, -747244800, -733942800, -715795200, -702493200, -684345600, -671043600, -652896e3, -639594e3, -620841600, -608144400, -589392e3, -57609e4, -557942400, -544640400, -526492800, -513190800, -495043200, -481741200, -463593600, -386787600, -36864e4, -21488400, -5767200], o: [-20678, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -14400, -18e3] }, "America/Pangnirtung": { source: "America/Pangnirtung", t: [-1546300800, -880218e3, -765396e3], o: [null, -18e3, -14400, -18e3] }, "Antarctica/Troll": { source: "Antarctica/Troll", t: [], o: [null] }, "Australia/Melbourne": { source: "Australia/Melbourne", t: [-2364111592, -167256e4, -1665388800, -883641600, -876124800, -8604e5, -844675200, -828345600, -813225600], o: [34792, 36e3, 39600, 36e3, 39600, 36e3, 39600, 36e3, 39600, 36e3] } } };
+var __exports50 = {};
+__export(__exports50, {
+  default: () => __default50
+});
+var __default50;
+var init__50 = __esm({
+  "src/data/tz-history/2025c/49.json"() {
+    "use strict";
+    __default50 = JSON.parse('{"tzdb":"2025c","zones":{"Africa/Conakry":{"source":"Africa/Conakry","t":[-1830380708,-1131235200,-315615600],"o":[-3292,0,-3600,0]},"America/Indianapolis":{"source":"America/Indiana/Indianapolis","t":[-2717647200,-1633276800,-1615136400,-1601827200,-1583686800,-900259200,-891795600,-880214400,-765392400,-747244800,-733942800,-715795200,-702493200,-684345600,-671043600,-652896000,-639594000,-620841600,-608144400,-589392000,-576090000,-557942400,-544640400,-526492800,-513190800,-495043200,-481741200,-463593600,-386787600,-368640000,-21488400,-5767200],"o":[-20678,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-14400,-18000]},"America/Pangnirtung":{"source":"America/Pangnirtung","t":[-1546300800,-880218000,-765396000],"o":[null,-18000,-14400,-18000]},"Antarctica/Troll":{"source":"Antarctica/Troll","t":[],"o":[null]},"Australia/Melbourne":{"source":"Australia/Melbourne","t":[-2364111592,-1672560000,-1665388800,-883641600,-876124800,-860400000,-844675200,-828345600,-813225600],"o":[34792,36000,39600,36000,39600,36000,39600,36000,39600,36000]}}}');
   }
 });
 
 // src/data/tz-history/2025c/50.json
-var require__51 = __commonJS({
-  "src/data/tz-history/2025c/50.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "America/Asuncion": { source: "America/Asuncion", t: [-1206389360], o: [-13840, -14400] }, "America/Indiana/Indianapolis": { source: "America/Indiana/Indianapolis", t: [-2717647200, -1633276800, -1615136400, -1601827200, -1583686800, -900259200, -891795600, -880214400, -765392400, -747244800, -733942800, -715795200, -702493200, -684345600, -671043600, -652896e3, -639594e3, -620841600, -608144400, -589392e3, -57609e4, -557942400, -544640400, -526492800, -513190800, -495043200, -481741200, -463593600, -386787600, -36864e4, -21488400, -5767200], o: [-20678, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -14400, -18e3] }, "America/North_Dakota/New_Salem": { source: "America/North_Dakota/New_Salem", t: [-2717643600, -1633273200, -1615132800, -1601823600, -1583683200, -880210800, -765388800, -84380400, -68659200, -52930800, -37209600, -21481200, -576e4], o: [-24339, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200] }, "America/Paramaribo": { source: "America/Paramaribo", t: [-1861906760, -1104524348, -765317964], o: [-13240, -13252, -13236, -12600] }, "America/Tegucigalpa": { source: "America/Tegucigalpa", t: [-1538503868], o: [-20932, -21600] }, "Asia/Singapore": { source: "Asia/Singapore", t: [-2038200925, -1167634800, -89418e4, -879665400, -767005200], o: [24925, 25200, 26400, 27e3, 32400, 27e3] }, "Australia/Sydney": { source: "Australia/Sydney", t: [-2364113092, -167256e4, -1665388800, -883641600, -876124800, -8604e5, -844675200, -828345600, -813225600], o: [36292, 36e3, 39600, 36e3, 39600, 36e3, 39600, 36e3, 39600, 36e3] }, "Etc/GMT+5": { source: "Etc/GMT+5", t: [], o: [-18e3] }, "Europe/Belgrade": { source: "Europe/Belgrade", t: [-2713915320, -905824800, -857257200, -844556400, -828226800, -812502e3, -796777200, -777942e3, -766623600], o: [4920, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600] }, "Europe/Sofia": { source: "Europe/Sofia", t: [-2840146396, -2369527016, -857257200, -844556400, -828226800, -812502e3, -796777200, -781048800], o: [5596, 7016, 7200, 3600, 7200, 3600, 7200, 3600, 7200] }, "GMT-0": { source: "Etc/GMT", t: [], o: [0] }, "NZ-CHAT": { source: "Pacific/Chatham", t: [-3192437628, -757426500], o: [44028, 44100, 45900] }, "Pacific/Ponape": { source: "Pacific/Pohnpei", t: [-3944629972, -2177490772, -1743678e3, -1606813200, -1041418800, -907408800, -770634e3], o: [-48428, 37972, 39600, 32400, 39600, 36e3, 32400, 39600] } } };
+var __exports51 = {};
+__export(__exports51, {
+  default: () => __default51
+});
+var __default51;
+var init__51 = __esm({
+  "src/data/tz-history/2025c/50.json"() {
+    "use strict";
+    __default51 = JSON.parse('{"tzdb":"2025c","zones":{"America/Asuncion":{"source":"America/Asuncion","t":[-1206389360],"o":[-13840,-14400]},"America/Indiana/Indianapolis":{"source":"America/Indiana/Indianapolis","t":[-2717647200,-1633276800,-1615136400,-1601827200,-1583686800,-900259200,-891795600,-880214400,-765392400,-747244800,-733942800,-715795200,-702493200,-684345600,-671043600,-652896000,-639594000,-620841600,-608144400,-589392000,-576090000,-557942400,-544640400,-526492800,-513190800,-495043200,-481741200,-463593600,-386787600,-368640000,-21488400,-5767200],"o":[-20678,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-14400,-18000]},"America/North_Dakota/New_Salem":{"source":"America/North_Dakota/New_Salem","t":[-2717643600,-1633273200,-1615132800,-1601823600,-1583683200,-880210800,-765388800,-84380400,-68659200,-52930800,-37209600,-21481200,-5760000],"o":[-24339,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200]},"America/Paramaribo":{"source":"America/Paramaribo","t":[-1861906760,-1104524348,-765317964],"o":[-13240,-13252,-13236,-12600]},"America/Tegucigalpa":{"source":"America/Tegucigalpa","t":[-1538503868],"o":[-20932,-21600]},"Asia/Singapore":{"source":"Asia/Singapore","t":[-2038200925,-1167634800,-894180000,-879665400,-767005200],"o":[24925,25200,26400,27000,32400,27000]},"Australia/Sydney":{"source":"Australia/Sydney","t":[-2364113092,-1672560000,-1665388800,-883641600,-876124800,-860400000,-844675200,-828345600,-813225600],"o":[36292,36000,39600,36000,39600,36000,39600,36000,39600,36000]},"Etc/GMT+5":{"source":"Etc/GMT+5","t":[],"o":[-18000]},"Europe/Belgrade":{"source":"Europe/Belgrade","t":[-2713915320,-905824800,-857257200,-844556400,-828226800,-812502000,-796777200,-777942000,-766623600],"o":[4920,3600,7200,3600,7200,3600,7200,3600,7200,3600]},"Europe/Sofia":{"source":"Europe/Sofia","t":[-2840146396,-2369527016,-857257200,-844556400,-828226800,-812502000,-796777200,-781048800],"o":[5596,7016,7200,3600,7200,3600,7200,3600,7200]},"GMT-0":{"source":"Etc/GMT","t":[],"o":[0]},"NZ-CHAT":{"source":"Pacific/Chatham","t":[-3192437628,-757426500],"o":[44028,44100,45900]},"Pacific/Ponape":{"source":"Pacific/Pohnpei","t":[-3944629972,-2177490772,-1743678000,-1606813200,-1041418800,-907408800,-770634000],"o":[-48428,37972,39600,32400,39600,36000,32400,39600]}}}');
   }
 });
 
 // src/data/tz-history/2025c/51.json
-var require__52 = __commonJS({
-  "src/data/tz-history/2025c/51.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "Africa/Abidjan": { source: "Africa/Abidjan", t: [-1830383032], o: [-968, 0] }, "Africa/Lusaka": { source: "Africa/Lusaka", t: [-2109289988], o: [6788, 7200] }, "Africa/Monrovia": { source: "Africa/Monrovia", t: [-1604359012], o: [-2588, -2670] }, "Africa/Tripoli": { source: "Africa/Tripoli", t: [-1577926364, -574902e3, -568087200, -512175600, -504928800, -449888400, -441856800, -347158800], o: [3164, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200] }, "America/Jujuy": { source: "America/Argentina/Jujuy", t: [-2372096328, -1567453392, -1233432e3, -1222981200, -1205956800, -1194037200, -1172865600, -1162501200, -1141329600, -1130965200, -1109793600, -1099429200, -1078257600, -1067806800, -1046635200, -1036270800, -1015099200, -1004734800, -983563200, -973198800, -952027200, -941576400, -931032e3, -900882e3, -890337600, -833749200, -827265600, -752274e3, -733780800, -197326800, -190843200, -184194e3, -164491200, -152658e3, -132955200, -121122e3, -101419200, -86821200, -71092800, -54766800, -39038400, -23317200, -7588800], o: [-15672, -15408, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800] }, "America/Kentucky/Louisville": { source: "America/Kentucky/Louisville", t: [-2717647200, -1633276800, -1615136400, -1601827200, -1583686800, -1535904e3, -1525280400, -905097600, -891795600, -880214400, -765392400, -747251940, -744224400, -620841600, -608144400, -589392e3, -57609e4, -557942400, -544640400, -526492800, -513190800, -495043200, -481741200, -463593600, -450291600, -431539200, -415818e3, -400089600, -384368400, -36864e4, -352918800, -337190400, -321469200, -305740800, -289414800, -273686400, -52938e3, -37216800, -21488400, -5767200], o: [-20582, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -14400, -18e3, -14400, -18e3] }, "Asia/Macao": { source: "Asia/Macau", t: [-2056692850, -884509200, -873280800, -855918e3, -841744800, -828529200, -765363600, -747046800, -733827600, -716461200, -697021200, -683715600, -667990800, -654771600, -636627600, -623322e3, -605178e3, -591872400, -573642e3, -559818e3, -541674e3, -528368400, -510224400, -498128400, -478774800, -466678800, -446720400, -435229200, -415258200, -403158600, -383808600, -371709e3, -352359e3, -340259400, -320909400, -308809800, -288855e3, -277360200, -257405400, -245910600, -225955800, -213856200, -194506200, -182406600, -163056600, -148537800, -132820200, -117088200, -101370600, -85638600, -69312600, -53584200, -37863e3, -22134600, -6413400], o: [27250, 28800, 32400, 36e3, 32400, 36e3, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800] }, "Atlantic/St_Helena": { source: "Atlantic/St_Helena", t: [-599614632], o: [-1368, 0] }, CET: { source: "CET", t: [-1693706400, -1680483600, -1663455600, -165015e4, -1632006e3, -1618700400, -938905200, -857257200, -844556400, -828226800, -812502e3, -796777200, -781052400, -766623600], o: [3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600] }, "Europe/Vienna": { source: "Europe/Vienna", t: [-2422055121, -1693706400, -1680483600, -1663455600, -165015e4, -1632006e3, -1618700400, -1569711600, -1555801200, -938905200, -857257200, -844556400, -828226800, -812502e3, -796777200, -781052400, -780188400, -748479600, -733273200, -717634800, -70191e4, -684975600, -670460400], o: [3921, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600] }, "Pacific/Tarawa": { source: "Pacific/Tarawa", t: [-2177494324], o: [41524, 43200] } } };
+var __exports52 = {};
+__export(__exports52, {
+  default: () => __default52
+});
+var __default52;
+var init__52 = __esm({
+  "src/data/tz-history/2025c/51.json"() {
+    "use strict";
+    __default52 = JSON.parse('{"tzdb":"2025c","zones":{"Africa/Abidjan":{"source":"Africa/Abidjan","t":[-1830383032],"o":[-968,0]},"Africa/Lusaka":{"source":"Africa/Lusaka","t":[-2109289988],"o":[6788,7200]},"Africa/Monrovia":{"source":"Africa/Monrovia","t":[-1604359012],"o":[-2588,-2670]},"Africa/Tripoli":{"source":"Africa/Tripoli","t":[-1577926364,-574902000,-568087200,-512175600,-504928800,-449888400,-441856800,-347158800],"o":[3164,3600,7200,3600,7200,3600,7200,3600,7200]},"America/Jujuy":{"source":"America/Argentina/Jujuy","t":[-2372096328,-1567453392,-1233432000,-1222981200,-1205956800,-1194037200,-1172865600,-1162501200,-1141329600,-1130965200,-1109793600,-1099429200,-1078257600,-1067806800,-1046635200,-1036270800,-1015099200,-1004734800,-983563200,-973198800,-952027200,-941576400,-931032000,-900882000,-890337600,-833749200,-827265600,-752274000,-733780800,-197326800,-190843200,-184194000,-164491200,-152658000,-132955200,-121122000,-101419200,-86821200,-71092800,-54766800,-39038400,-23317200,-7588800],"o":[-15672,-15408,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800]},"America/Kentucky/Louisville":{"source":"America/Kentucky/Louisville","t":[-2717647200,-1633276800,-1615136400,-1601827200,-1583686800,-1535904000,-1525280400,-905097600,-891795600,-880214400,-765392400,-747251940,-744224400,-620841600,-608144400,-589392000,-576090000,-557942400,-544640400,-526492800,-513190800,-495043200,-481741200,-463593600,-450291600,-431539200,-415818000,-400089600,-384368400,-368640000,-352918800,-337190400,-321469200,-305740800,-289414800,-273686400,-52938000,-37216800,-21488400,-5767200],"o":[-20582,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-14400,-18000,-14400,-18000]},"Asia/Macao":{"source":"Asia/Macau","t":[-2056692850,-884509200,-873280800,-855918000,-841744800,-828529200,-765363600,-747046800,-733827600,-716461200,-697021200,-683715600,-667990800,-654771600,-636627600,-623322000,-605178000,-591872400,-573642000,-559818000,-541674000,-528368400,-510224400,-498128400,-478774800,-466678800,-446720400,-435229200,-415258200,-403158600,-383808600,-371709000,-352359000,-340259400,-320909400,-308809800,-288855000,-277360200,-257405400,-245910600,-225955800,-213856200,-194506200,-182406600,-163056600,-148537800,-132820200,-117088200,-101370600,-85638600,-69312600,-53584200,-37863000,-22134600,-6413400],"o":[27250,28800,32400,36000,32400,36000,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800]},"Atlantic/St_Helena":{"source":"Atlantic/St_Helena","t":[-599614632],"o":[-1368,0]},"CET":{"source":"CET","t":[-1693706400,-1680483600,-1663455600,-1650150000,-1632006000,-1618700400,-938905200,-857257200,-844556400,-828226800,-812502000,-796777200,-781052400,-766623600],"o":[3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600]},"Europe/Vienna":{"source":"Europe/Vienna","t":[-2422055121,-1693706400,-1680483600,-1663455600,-1650150000,-1632006000,-1618700400,-1569711600,-1555801200,-938905200,-857257200,-844556400,-828226800,-812502000,-796777200,-781052400,-780188400,-748479600,-733273200,-717634800,-701910000,-684975600,-670460400],"o":[3921,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600]},"Pacific/Tarawa":{"source":"Pacific/Tarawa","t":[-2177494324],"o":[41524,43200]}}}');
   }
 });
 
 // src/data/tz-history/2025c/52.json
-var require__53 = __commonJS({
-  "src/data/tz-history/2025c/52.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "Africa/Ceuta": { source: "Africa/Ceuta", t: [-2177452800, -1630112400, -1616810400, -1442451600, -1427673600, -1379293200, -1364774400, -1348448400, -1333324800, -1316390400, -1301270400, -81432e3, -71110800], o: [-1276, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0] }, "America/Los_Angeles": { source: "America/Los_Angeles", t: [-271764e4, -1633269600, -1615129200, -160182e4, -1583679600, -880207200, -765385200, -687967140, -662655600, -620838e3, -608137200, -589388400, -576082800, -557938800, -544633200, -526489200, -513183600, -495039600, -481734e3, -46359e4, -450284400, -431535600, -41823e4, -400086e3, -386780400, -368636400, -355330800, -337186800, -323881200, -305737200, -292431600, -273682800, -260982e3, -242233200, -226508400, -210783600, -195058800, -179334e3, -163609200, -147884400, -131554800, -116434800, -100105200, -84376800, -68655600, -52927200, -37206e3, -21477600, -5756400], o: [-28378, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800] }, "America/Thule": { source: "America/Thule", t: [-1686079492], o: [-16508, -14400] } } };
+var __exports53 = {};
+__export(__exports53, {
+  default: () => __default53
+});
+var __default53;
+var init__53 = __esm({
+  "src/data/tz-history/2025c/52.json"() {
+    "use strict";
+    __default53 = JSON.parse('{"tzdb":"2025c","zones":{"Africa/Ceuta":{"source":"Africa/Ceuta","t":[-2177452800,-1630112400,-1616810400,-1442451600,-1427673600,-1379293200,-1364774400,-1348448400,-1333324800,-1316390400,-1301270400,-81432000,-71110800],"o":[-1276,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0]},"America/Los_Angeles":{"source":"America/Los_Angeles","t":[-2717640000,-1633269600,-1615129200,-1601820000,-1583679600,-880207200,-765385200,-687967140,-662655600,-620838000,-608137200,-589388400,-576082800,-557938800,-544633200,-526489200,-513183600,-495039600,-481734000,-463590000,-450284400,-431535600,-418230000,-400086000,-386780400,-368636400,-355330800,-337186800,-323881200,-305737200,-292431600,-273682800,-260982000,-242233200,-226508400,-210783600,-195058800,-179334000,-163609200,-147884400,-131554800,-116434800,-100105200,-84376800,-68655600,-52927200,-37206000,-21477600,-5756400],"o":[-28378,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800]},"America/Thule":{"source":"America/Thule","t":[-1686079492],"o":[-16508,-14400]}}}');
   }
 });
 
 // src/data/tz-history/2025c/53.json
-var require__54 = __commonJS({
-  "src/data/tz-history/2025c/53.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "Africa/Bamako": { source: "Africa/Bamako", t: [-1830382080, -1131235200, -300841200], o: [-1920, 0, -3600, 0] }, "America/Argentina/La_Rioja": { source: "America/Argentina/La_Rioja", t: [-2372095956, -1567453392, -1233432e3, -1222981200, -1205956800, -1194037200, -1172865600, -1162501200, -1141329600, -1130965200, -1109793600, -1099429200, -1078257600, -1067806800, -1046635200, -1036270800, -1015099200, -1004734800, -983563200, -973198800, -952027200, -941576400, -931032e3, -900882e3, -890337600, -833749200, -827265600, -752274e3, -733780800, -197326800, -190843200, -184194e3, -164491200, -152658e3, -132955200, -121122e3, -101419200, -86821200, -71092800, -54766800, -39038400, -23317200, -7588800], o: [-16044, -15408, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800] }, "America/Bahia": { source: "America/Bahia", t: [-1767216356, -1206957600, -1191362400, -1175374800, -1159826400, -633819600, -622069200, -602283600, -591832800, -570747600, -560210400, -539125200, -531352800, -191365200, -184197600, -155163600, -150069600, -128898e3, -121125600, -99954e3, -89589600, -68418e3, -57967200], o: [-9244, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800] }, "America/Cayenne": { source: "America/Cayenne", t: [-1846269040, -71092800], o: [-12560, -14400, -10800] }, "America/Kentucky/Monticello": { source: "America/Kentucky/Monticello", t: [-2717647200, -1633276800, -1615136400, -1601827200, -1583686800, -880214400, -765392400, -52934400, -37213200, -21484800, -5763600], o: [-20364, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600, -18e3, -21600] }, "America/Nome": { source: "America/Nome", t: [-3225223727, -2188947502, -880196400, -765374400, -21466800, -5745600], o: [46702, -39698, -39600, -36e3, -39600, -36e3, -39600] }, "America/Puerto_Rico": { source: "America/Puerto_Rico", t: [-2233035335, -873057600, -765399600], o: [-15865, -14400, -10800, -14400] }, "Asia/Magadan": { source: "Asia/Magadan", t: [-1441188192, -1247565600], o: [36192, 36e3, 39600] }, "Etc/GMT+11": { source: "Etc/GMT+11", t: [], o: [-39600] }, "Etc/GMT-2": { source: "Etc/GMT-2", t: [], o: [7200] }, "Europe/Helsinki": { source: "Europe/Helsinki", t: [-1535938789, -875671200, -859773600], o: [5989, 7200, 10800, 7200] }, "Indian/Kerguelen": { source: "Indian/Kerguelen", t: [-631152e3], o: [null, 18e3] }, "Pacific/Fiji": { source: "Pacific/Fiji", t: [-1709985344], o: [42944, 43200] }, "US/Aleutian": { source: "America/Adak", t: [-3225223727, -2188944802, -880196400, -765374400, -21466800, -5745600], o: [44002, -42398, -39600, -36e3, -39600, -36e3, -39600] }, "US/Pacific": { source: "America/Los_Angeles", t: [-271764e4, -1633269600, -1615129200, -160182e4, -1583679600, -880207200, -765385200, -687967140, -662655600, -620838e3, -608137200, -589388400, -576082800, -557938800, -544633200, -526489200, -513183600, -495039600, -481734e3, -46359e4, -450284400, -431535600, -41823e4, -400086e3, -386780400, -368636400, -355330800, -337186800, -323881200, -305737200, -292431600, -273682800, -260982e3, -242233200, -226508400, -210783600, -195058800, -179334e3, -163609200, -147884400, -131554800, -116434800, -100105200, -84376800, -68655600, -52927200, -37206e3, -21477600, -5756400], o: [-28378, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800] } } };
+var __exports54 = {};
+__export(__exports54, {
+  default: () => __default54
+});
+var __default54;
+var init__54 = __esm({
+  "src/data/tz-history/2025c/53.json"() {
+    "use strict";
+    __default54 = JSON.parse('{"tzdb":"2025c","zones":{"Africa/Bamako":{"source":"Africa/Bamako","t":[-1830382080,-1131235200,-300841200],"o":[-1920,0,-3600,0]},"America/Argentina/La_Rioja":{"source":"America/Argentina/La_Rioja","t":[-2372095956,-1567453392,-1233432000,-1222981200,-1205956800,-1194037200,-1172865600,-1162501200,-1141329600,-1130965200,-1109793600,-1099429200,-1078257600,-1067806800,-1046635200,-1036270800,-1015099200,-1004734800,-983563200,-973198800,-952027200,-941576400,-931032000,-900882000,-890337600,-833749200,-827265600,-752274000,-733780800,-197326800,-190843200,-184194000,-164491200,-152658000,-132955200,-121122000,-101419200,-86821200,-71092800,-54766800,-39038400,-23317200,-7588800],"o":[-16044,-15408,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800]},"America/Bahia":{"source":"America/Bahia","t":[-1767216356,-1206957600,-1191362400,-1175374800,-1159826400,-633819600,-622069200,-602283600,-591832800,-570747600,-560210400,-539125200,-531352800,-191365200,-184197600,-155163600,-150069600,-128898000,-121125600,-99954000,-89589600,-68418000,-57967200],"o":[-9244,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800]},"America/Cayenne":{"source":"America/Cayenne","t":[-1846269040,-71092800],"o":[-12560,-14400,-10800]},"America/Kentucky/Monticello":{"source":"America/Kentucky/Monticello","t":[-2717647200,-1633276800,-1615136400,-1601827200,-1583686800,-880214400,-765392400,-52934400,-37213200,-21484800,-5763600],"o":[-20364,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600,-18000,-21600]},"America/Nome":{"source":"America/Nome","t":[-3225223727,-2188947502,-880196400,-765374400,-21466800,-5745600],"o":[46702,-39698,-39600,-36000,-39600,-36000,-39600]},"America/Puerto_Rico":{"source":"America/Puerto_Rico","t":[-2233035335,-873057600,-765399600],"o":[-15865,-14400,-10800,-14400]},"Asia/Magadan":{"source":"Asia/Magadan","t":[-1441188192,-1247565600],"o":[36192,36000,39600]},"Etc/GMT+11":{"source":"Etc/GMT+11","t":[],"o":[-39600]},"Etc/GMT-2":{"source":"Etc/GMT-2","t":[],"o":[7200]},"Europe/Helsinki":{"source":"Europe/Helsinki","t":[-1535938789,-875671200,-859773600],"o":[5989,7200,10800,7200]},"Indian/Kerguelen":{"source":"Indian/Kerguelen","t":[-631152000],"o":[null,18000]},"Pacific/Fiji":{"source":"Pacific/Fiji","t":[-1709985344],"o":[42944,43200]},"US/Aleutian":{"source":"America/Adak","t":[-3225223727,-2188944802,-880196400,-765374400,-21466800,-5745600],"o":[44002,-42398,-39600,-36000,-39600,-36000,-39600]},"US/Pacific":{"source":"America/Los_Angeles","t":[-2717640000,-1633269600,-1615129200,-1601820000,-1583679600,-880207200,-765385200,-687967140,-662655600,-620838000,-608137200,-589388400,-576082800,-557938800,-544633200,-526489200,-513183600,-495039600,-481734000,-463590000,-450284400,-431535600,-418230000,-400086000,-386780400,-368636400,-355330800,-337186800,-323881200,-305737200,-292431600,-273682800,-260982000,-242233200,-226508400,-210783600,-195058800,-179334000,-163609200,-147884400,-131554800,-116434800,-100105200,-84376800,-68655600,-52927200,-37206000,-21477600,-5756400],"o":[-28378,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800]}}}');
   }
 });
 
 // src/data/tz-history/2025c/54.json
-var require__55 = __commonJS({
-  "src/data/tz-history/2025c/54.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "Asia/Hong_Kong": { source: "Asia/Hong_Kong", t: [-2056690800, -900910800, -891579600, -884248200, -761209200, -747907200, -728541e3, -717049800, -697091400, -683785800, -668061e3, -654755400, -636611400, -623305800, -605161800, -591856200, -573712200, -559801800, -541657800, -528352200, -510211800, -498112200, -478762200, -466662600, -446707800, -435213e3, -415258200, -403158600, -383808600, -371709e3, -352359e3, -340259400, -320909400, -308809800, -288855e3, -277360200, -257405400, -245910600, -225955800, -213856200, -194506200, -182406600, -163056600, -148537800, -132816600, -117088200, -101367e3, -85638600, -69312600, -53584200, -37863e3, -22134600, -6413400], o: [27402, 28800, 32400, 30600, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800, 32400, 28800] }, "Asia/Tbilisi": { source: "Asia/Tbilisi", t: [-1441162751, -405140400], o: [10751, 10800, 14400] }, "Australia/NSW": { source: "Australia/Sydney", t: [-2364113092, -167256e4, -1665388800, -883641600, -876124800, -8604e5, -844675200, -828345600, -813225600], o: [36292, 36e3, 39600, 36e3, 39600, 36e3, 39600, 36e3, 39600, 36e3] }, "Europe/Saratov": { source: "Europe/Saratov", t: [-1593820800, -1247540400], o: [11058, 10800, 14400] }, "Pacific/Efate": { source: "Pacific/Efate", t: [-1829387596], o: [40396, 39600] }, "Pacific/Niue": { source: "Pacific/Niue", t: [-543069620, -173623200], o: [-40780, -40800, -39600] } } };
+var __exports55 = {};
+__export(__exports55, {
+  default: () => __default55
+});
+var __default55;
+var init__55 = __esm({
+  "src/data/tz-history/2025c/54.json"() {
+    "use strict";
+    __default55 = JSON.parse('{"tzdb":"2025c","zones":{"Asia/Hong_Kong":{"source":"Asia/Hong_Kong","t":[-2056690800,-900910800,-891579600,-884248200,-761209200,-747907200,-728541000,-717049800,-697091400,-683785800,-668061000,-654755400,-636611400,-623305800,-605161800,-591856200,-573712200,-559801800,-541657800,-528352200,-510211800,-498112200,-478762200,-466662600,-446707800,-435213000,-415258200,-403158600,-383808600,-371709000,-352359000,-340259400,-320909400,-308809800,-288855000,-277360200,-257405400,-245910600,-225955800,-213856200,-194506200,-182406600,-163056600,-148537800,-132816600,-117088200,-101367000,-85638600,-69312600,-53584200,-37863000,-22134600,-6413400],"o":[27402,28800,32400,30600,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800,32400,28800]},"Asia/Tbilisi":{"source":"Asia/Tbilisi","t":[-1441162751,-405140400],"o":[10751,10800,14400]},"Australia/NSW":{"source":"Australia/Sydney","t":[-2364113092,-1672560000,-1665388800,-883641600,-876124800,-860400000,-844675200,-828345600,-813225600],"o":[36292,36000,39600,36000,39600,36000,39600,36000,39600,36000]},"Europe/Saratov":{"source":"Europe/Saratov","t":[-1593820800,-1247540400],"o":[11058,10800,14400]},"Pacific/Efate":{"source":"Pacific/Efate","t":[-1829387596],"o":[40396,39600]},"Pacific/Niue":{"source":"Pacific/Niue","t":[-543069620,-173623200],"o":[-40780,-40800,-39600]}}}');
   }
 });
 
 // src/data/tz-history/2025c/55.json
-var require__56 = __commonJS({
-  "src/data/tz-history/2025c/55.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "America/Cuiaba": { source: "America/Cuiaba", t: [-1767212140, -1206954e3, -1191358800, -1175371200, -1159822800, -633816e3, -622065600, -60228e4, -591829200, -570744e3, -560206800, -539121600, -531349200, -191361600, -184194e3, -15516e4, -150066e3, -128894400, -121122e3, -99950400, -89586e3, -68414400, -57963600], o: [-13460, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400] }, "Asia/Baghdad": { source: "Asia/Baghdad", t: [-2524532260, -1641005856], o: [10660, 10656, 10800] }, "Australia/Adelaide": { source: "Australia/Adelaide", t: [-2364110060, -2230189200, -1672558200, -1665387e3, -883639800, -876123e3, -860398200, -844673400, -828343800, -813223800], o: [33260, 32400, 34200, 37800, 34200, 37800, 34200, 37800, 34200, 37800, 34200] }, "Canada/Pacific": { source: "America/Vancouver", t: [-2713880852, -163206e4, -1615129200, -880207200, -765385200, -747237600, -733935600, -715788e3, -702486e3, -684338400, -671036400, -652888800, -639586800, -620834400, -608137200, -589384800, -576082800, -557935200, -544633200, -526485600, -513183600, -495036e3, -481734e3, -463586400, -450284400, -431532e3, -41823e4, -400082400, -386780400, -368632800, -355330800, -337183200, -323881200, -305733600, -292431600, -273679200, -260982e3, -242229600, -226508400, -21078e4, -195058800, -179330400, -163609200, -147880800, -131554800, -116431200, -100105200, -84376800, -68655600, -52927200, -37206e3, -21477600, -5756400], o: [-29548, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800, -25200, -28800] }, "Etc/GMT-11": { source: "Etc/GMT-11", t: [], o: [39600] }, "Europe/Bratislava": { source: "Europe/Prague", t: [-2469401864, -1693706400, -1680483600, -1663455600, -165015e4, -1632006e3, -1618700400, -938905200, -857257200, -844556400, -828226800, -812502e3, -796777200, -781052400, -765327600, -746578800, -733359600, -728517600, -72126e4, -716425200, -70191e4, -684975600, -670460400, -654217200, -639010800], o: [3464, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 0, 3600, 7200, 3600, 7200, 3600, 7200, 3600] } } };
+var __exports56 = {};
+__export(__exports56, {
+  default: () => __default56
+});
+var __default56;
+var init__56 = __esm({
+  "src/data/tz-history/2025c/55.json"() {
+    "use strict";
+    __default56 = JSON.parse('{"tzdb":"2025c","zones":{"America/Cuiaba":{"source":"America/Cuiaba","t":[-1767212140,-1206954000,-1191358800,-1175371200,-1159822800,-633816000,-622065600,-602280000,-591829200,-570744000,-560206800,-539121600,-531349200,-191361600,-184194000,-155160000,-150066000,-128894400,-121122000,-99950400,-89586000,-68414400,-57963600],"o":[-13460,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400]},"Asia/Baghdad":{"source":"Asia/Baghdad","t":[-2524532260,-1641005856],"o":[10660,10656,10800]},"Australia/Adelaide":{"source":"Australia/Adelaide","t":[-2364110060,-2230189200,-1672558200,-1665387000,-883639800,-876123000,-860398200,-844673400,-828343800,-813223800],"o":[33260,32400,34200,37800,34200,37800,34200,37800,34200,37800,34200]},"Canada/Pacific":{"source":"America/Vancouver","t":[-2713880852,-1632060000,-1615129200,-880207200,-765385200,-747237600,-733935600,-715788000,-702486000,-684338400,-671036400,-652888800,-639586800,-620834400,-608137200,-589384800,-576082800,-557935200,-544633200,-526485600,-513183600,-495036000,-481734000,-463586400,-450284400,-431532000,-418230000,-400082400,-386780400,-368632800,-355330800,-337183200,-323881200,-305733600,-292431600,-273679200,-260982000,-242229600,-226508400,-210780000,-195058800,-179330400,-163609200,-147880800,-131554800,-116431200,-100105200,-84376800,-68655600,-52927200,-37206000,-21477600,-5756400],"o":[-29548,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800,-25200,-28800]},"Etc/GMT-11":{"source":"Etc/GMT-11","t":[],"o":[39600]},"Europe/Bratislava":{"source":"Europe/Prague","t":[-2469401864,-1693706400,-1680483600,-1663455600,-1650150000,-1632006000,-1618700400,-938905200,-857257200,-844556400,-828226800,-812502000,-796777200,-781052400,-765327600,-746578800,-733359600,-728517600,-721260000,-716425200,-701910000,-684975600,-670460400,-654217200,-639010800],"o":[3464,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,0,3600,7200,3600,7200,3600,7200,3600]}}}');
   }
 });
 
 // src/data/tz-history/2025c/56.json
-var require__57 = __commonJS({
-  "src/data/tz-history/2025c/56.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "America/Recife": { source: "America/Recife", t: [-1767217224, -1206957600, -1191362400, -1175374800, -1159826400, -633819600, -622069200, -602283600, -591832800, -570747600, -560210400, -539125200, -531352800, -191365200, -184197600, -155163600, -150069600, -128898e3, -121125600, -99954e3, -89589600, -68418e3, -57967200], o: [-8376, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800] }, "Asia/Seoul": { source: "Asia/Seoul", t: [-1948782472, -1830414600, -68121e4, -672228e3, -654771600, -640864800, -623408400, -609415200, -588848400, -577965600, -498128400, -462702600, -451733400, -429784200, -418296600, -399544200, -387451800, -368094600, -356002200, -336645e3, -324552600, -305195400, -293103e3, -264933e3], o: [30472, 30600, 32400, 36e3, 32400, 36e3, 32400, 36e3, 32400, 36e3, 32400, 30600, 34200, 30600, 34200, 30600, 34200, 30600, 34200, 30600, 34200, 30600, 34200, 30600, 32400] }, "Asia/Ulaanbaatar": { source: "Asia/Ulaanbaatar", t: [-2032931252], o: [25652, 25200] }, "Australia/Hobart": { source: "Australia/Hobart", t: [-2345795356, -1680508800, -1665388800, -164664e4, -1635753600, -1615190400, -1604304e3, -883641600, -876124800, -8604e5, -844675200, -828345600, -813225600, -71136e3, -55411200, -37267200, -25776e3, -5817600], o: [35356, 36e3, 39600, 36e3, 39600, 36e3, 39600, 36e3, 39600, 36e3, 39600, 36e3, 39600, 36e3, 39600, 36e3, 39600, 36e3, 39600] }, "Chile/Continental": { source: "America/Santiago", t: [-1892661435, -1688410800, -1619205435, -1593806400, -1335986235, -1317585600, -1304362800, -1286049600, -1272826800, -1254513600, -1241290800, -1222977600, -1209754800, -1191355200, -1178132400, -870552e3, -865278e3, -74052e4, -736635600, -718056e3, -713649600, -36619200, -23922e3, -3355200], o: [-16965, -18e3, -16965, -14400, -16965, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -10800, -14400, -18e3, -14400, -10800, -14400, -10800] }, "Europe/Amsterdam": { source: "Europe/Amsterdam", t: [-1693700372, -1680484772, -1663453172, -1650147572, -1633213172, -1617488372, -1601158772, -1586038772, -1569709172, -1554589172, -1538259572, -1523139572, -1507501172, -1490566772, -1470176372, -1459117172, -1443997172, -1427667572, -1406672372, -1396217972, -1376950772, -1364768372, -1345414772, -1333318772, -1313792372, -1301264372, -1282256372, -1269814772, -1250720372, -1238365172, -1219184372, -1206915572, -1186957172, -1175465972, -1156025972, -1143411572, -1124489972, -1111961972, -1092953972, -1080512372, -1061331572, -1049062772, -1029190772, -1025745572, -1017613200, -998259600, -986163600, -966723600, -954109200, -935022e3, -857257200, -844556400, -828226800, -812502e3, -796777200, -781052400, -766623600], o: [1172, 4772, 1172, 4772, 1172, 4772, 1172, 4772, 1172, 4772, 1172, 4772, 1172, 4772, 1172, 4772, 1172, 4772, 1172, 4772, 1172, 4772, 1172, 4772, 1172, 4772, 1172, 4772, 1172, 4772, 1172, 4772, 1172, 4772, 1172, 4772, 1172, 4772, 1172, 4772, 1172, 4772, 1172, 4772, 4800, 1200, 4800, 1200, 4800, 1200, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600] }, "Europe/Copenhagen": { source: "Europe/Copenhagen", t: [-2398294220, -1692496800, -1680490800, -935110800, -857257200, -844556400, -828226800, -812502e3, -796777200, -781052400, -769388400, -747010800, -736383600, -715215600, -706748400, -683161200, -675298800], o: [3020, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600] } } };
+var __exports57 = {};
+__export(__exports57, {
+  default: () => __default57
+});
+var __default57;
+var init__57 = __esm({
+  "src/data/tz-history/2025c/56.json"() {
+    "use strict";
+    __default57 = JSON.parse('{"tzdb":"2025c","zones":{"America/Recife":{"source":"America/Recife","t":[-1767217224,-1206957600,-1191362400,-1175374800,-1159826400,-633819600,-622069200,-602283600,-591832800,-570747600,-560210400,-539125200,-531352800,-191365200,-184197600,-155163600,-150069600,-128898000,-121125600,-99954000,-89589600,-68418000,-57967200],"o":[-8376,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800]},"Asia/Seoul":{"source":"Asia/Seoul","t":[-1948782472,-1830414600,-681210000,-672228000,-654771600,-640864800,-623408400,-609415200,-588848400,-577965600,-498128400,-462702600,-451733400,-429784200,-418296600,-399544200,-387451800,-368094600,-356002200,-336645000,-324552600,-305195400,-293103000,-264933000],"o":[30472,30600,32400,36000,32400,36000,32400,36000,32400,36000,32400,30600,34200,30600,34200,30600,34200,30600,34200,30600,34200,30600,34200,30600,32400]},"Asia/Ulaanbaatar":{"source":"Asia/Ulaanbaatar","t":[-2032931252],"o":[25652,25200]},"Australia/Hobart":{"source":"Australia/Hobart","t":[-2345795356,-1680508800,-1665388800,-1646640000,-1635753600,-1615190400,-1604304000,-883641600,-876124800,-860400000,-844675200,-828345600,-813225600,-71136000,-55411200,-37267200,-25776000,-5817600],"o":[35356,36000,39600,36000,39600,36000,39600,36000,39600,36000,39600,36000,39600,36000,39600,36000,39600,36000,39600]},"Chile/Continental":{"source":"America/Santiago","t":[-1892661435,-1688410800,-1619205435,-1593806400,-1335986235,-1317585600,-1304362800,-1286049600,-1272826800,-1254513600,-1241290800,-1222977600,-1209754800,-1191355200,-1178132400,-870552000,-865278000,-740520000,-736635600,-718056000,-713649600,-36619200,-23922000,-3355200],"o":[-16965,-18000,-16965,-14400,-16965,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-10800,-14400,-18000,-14400,-10800,-14400,-10800]},"Europe/Amsterdam":{"source":"Europe/Amsterdam","t":[-1693700372,-1680484772,-1663453172,-1650147572,-1633213172,-1617488372,-1601158772,-1586038772,-1569709172,-1554589172,-1538259572,-1523139572,-1507501172,-1490566772,-1470176372,-1459117172,-1443997172,-1427667572,-1406672372,-1396217972,-1376950772,-1364768372,-1345414772,-1333318772,-1313792372,-1301264372,-1282256372,-1269814772,-1250720372,-1238365172,-1219184372,-1206915572,-1186957172,-1175465972,-1156025972,-1143411572,-1124489972,-1111961972,-1092953972,-1080512372,-1061331572,-1049062772,-1029190772,-1025745572,-1017613200,-998259600,-986163600,-966723600,-954109200,-935022000,-857257200,-844556400,-828226800,-812502000,-796777200,-781052400,-766623600],"o":[1172,4772,1172,4772,1172,4772,1172,4772,1172,4772,1172,4772,1172,4772,1172,4772,1172,4772,1172,4772,1172,4772,1172,4772,1172,4772,1172,4772,1172,4772,1172,4772,1172,4772,1172,4772,1172,4772,1172,4772,1172,4772,1172,4772,4800,1200,4800,1200,4800,1200,7200,3600,7200,3600,7200,3600,7200,3600]},"Europe/Copenhagen":{"source":"Europe/Copenhagen","t":[-2398294220,-1692496800,-1680490800,-935110800,-857257200,-844556400,-828226800,-812502000,-796777200,-781052400,-769388400,-747010800,-736383600,-715215600,-706748400,-683161200,-675298800],"o":[3020,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600]}}}');
   }
 });
 
 // src/data/tz-history/2025c/57.json
-var require__58 = __commonJS({
-  "src/data/tz-history/2025c/57.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "Etc/GMT+0": { source: "Etc/GMT", t: [], o: [0] }, "Europe/Busingen": { source: "Europe/Zurich", t: [-3675198848, -2385246586, -904435200, -891129600, -872985600, -85968e4], o: [2048, 1786, 3600, 7200, 3600, 7200, 3600] }, "Pacific/Pitcairn": { source: "Pacific/Pitcairn", t: [-2177421580], o: [-31220, -30600] }, "US/Mountain": { source: "America/Denver", t: [-2717643600, -1633273200, -1615132800, -1601823600, -1583683200, -1570374e3, -1551628800, -1538924400, -1534089600, -880210800, -765388800, -147884400, -131558400, -116434800, -100108800, -84380400, -68659200, -52930800, -37209600, -21481200, -576e4], o: [-25196, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200] }, "W-SU": { source: "Europe/Moscow", t: [-1688265017, -1656819079, -1641353479, -1627965079, -1618716679, -1596429079, -1593820800, -1589860800, -1542427200, -1539493200, -1525323600, -1522728e3, -1491188400, -1247536800], o: [9017, 9079, 12679, 9079, 16279, 12679, 16279, 14400, 10800, 14400, 18e3, 14400, 10800, 7200, 10800] } } };
+var __exports58 = {};
+__export(__exports58, {
+  default: () => __default58
+});
+var __default58;
+var init__58 = __esm({
+  "src/data/tz-history/2025c/57.json"() {
+    "use strict";
+    __default58 = JSON.parse('{"tzdb":"2025c","zones":{"Etc/GMT+0":{"source":"Etc/GMT","t":[],"o":[0]},"Europe/Busingen":{"source":"Europe/Zurich","t":[-3675198848,-2385246586,-904435200,-891129600,-872985600,-859680000],"o":[2048,1786,3600,7200,3600,7200,3600]},"Pacific/Pitcairn":{"source":"Pacific/Pitcairn","t":[-2177421580],"o":[-31220,-30600]},"US/Mountain":{"source":"America/Denver","t":[-2717643600,-1633273200,-1615132800,-1601823600,-1583683200,-1570374000,-1551628800,-1538924400,-1534089600,-880210800,-765388800,-147884400,-131558400,-116434800,-100108800,-84380400,-68659200,-52930800,-37209600,-21481200,-5760000],"o":[-25196,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200]},"W-SU":{"source":"Europe/Moscow","t":[-1688265017,-1656819079,-1641353479,-1627965079,-1618716679,-1596429079,-1593820800,-1589860800,-1542427200,-1539493200,-1525323600,-1522728000,-1491188400,-1247536800],"o":[9017,9079,12679,9079,16279,12679,16279,14400,10800,14400,18000,14400,10800,7200,10800]}}}');
   }
 });
 
 // src/data/tz-history/2025c/58.json
-var require__59 = __commonJS({
-  "src/data/tz-history/2025c/58.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "Africa/Malabo": { source: "Africa/Malabo", t: [-1830386108, -190857600], o: [2108, 0, 3600] }, "America/Argentina/San_Luis": { source: "America/Argentina/San_Luis", t: [-2372096076, -1567453392, -1233432e3, -1222981200, -1205956800, -1194037200, -1172865600, -1162501200, -1141329600, -1130965200, -1109793600, -1099429200, -1078257600, -1067806800, -1046635200, -1036270800, -1015099200, -1004734800, -983563200, -973198800, -952027200, -941576400, -931032e3, -900882e3, -890337600, -833749200, -827265600, -752274e3, -733780800, -197326800, -190843200, -184194e3, -164491200, -152658e3, -132955200, -121122e3, -101419200, -86821200, -71092800, -54766800, -39038400, -23317200, -7588800], o: [-15924, -15408, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800] }, "America/Guayaquil": { source: "America/Guayaquil", t: [-2524502440, -1230749160], o: [-19160, -18840, -18e3] }, "Asia/Rangoon": { source: "Asia/Yangon", t: [-1577946287, -873268200, -77841e4], o: [23087, 23400, 32400, 23400] }, "Pacific/Noumea": { source: "Pacific/Noumea", t: [-1829387148], o: [39948, 39600] } } };
+var __exports59 = {};
+__export(__exports59, {
+  default: () => __default59
+});
+var __default59;
+var init__59 = __esm({
+  "src/data/tz-history/2025c/58.json"() {
+    "use strict";
+    __default59 = JSON.parse('{"tzdb":"2025c","zones":{"Africa/Malabo":{"source":"Africa/Malabo","t":[-1830386108,-190857600],"o":[2108,0,3600]},"America/Argentina/San_Luis":{"source":"America/Argentina/San_Luis","t":[-2372096076,-1567453392,-1233432000,-1222981200,-1205956800,-1194037200,-1172865600,-1162501200,-1141329600,-1130965200,-1109793600,-1099429200,-1078257600,-1067806800,-1046635200,-1036270800,-1015099200,-1004734800,-983563200,-973198800,-952027200,-941576400,-931032000,-900882000,-890337600,-833749200,-827265600,-752274000,-733780800,-197326800,-190843200,-184194000,-164491200,-152658000,-132955200,-121122000,-101419200,-86821200,-71092800,-54766800,-39038400,-23317200,-7588800],"o":[-15924,-15408,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800]},"America/Guayaquil":{"source":"America/Guayaquil","t":[-2524502440,-1230749160],"o":[-19160,-18840,-18000]},"Asia/Rangoon":{"source":"Asia/Yangon","t":[-1577946287,-873268200,-778410000],"o":[23087,23400,32400,23400]},"Pacific/Noumea":{"source":"Pacific/Noumea","t":[-1829387148],"o":[39948,39600]}}}');
   }
 });
 
 // src/data/tz-history/2025c/59.json
-var require__60 = __commonJS({
-  "src/data/tz-history/2025c/59.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "Africa/Harare": { source: "Africa/Harare", t: [-2109290652], o: [7452, 7200] }, "Africa/Kampala": { source: "Africa/Kampala", t: [-1309745380, -1262314800, -694319400, -410237100], o: [7780, 10800, 9e3, 9900, 10800] }, "America/Argentina/Tucuman": { source: "America/Argentina/Tucuman", t: [-2372096348, -1567453392, -1233432e3, -1222981200, -1205956800, -1194037200, -1172865600, -1162501200, -1141329600, -1130965200, -1109793600, -1099429200, -1078257600, -1067806800, -1046635200, -1036270800, -1015099200, -1004734800, -983563200, -973198800, -952027200, -941576400, -931032e3, -900882e3, -890337600, -833749200, -827265600, -752274e3, -733780800, -197326800, -190843200, -184194e3, -164491200, -152658e3, -132955200, -121122e3, -101419200, -86821200, -71092800, -54766800, -39038400, -23317200, -7588800], o: [-15652, -15408, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800] }, "America/Iqaluit": { source: "America/Iqaluit", t: [-865296e3, -765396e3], o: [null, -14400, -18e3] }, "America/Martinique": { source: "America/Martinique", t: [-1851537340], o: [-14660, -14400] }, "Antarctica/Syowa": { source: "Antarctica/Syowa", t: [-407808e3], o: [null, 10800] }, "Asia/Calcutta": { source: "Asia/Kolkata", t: [-3645237208, -3155694800, -2019705670, -891581400, -872058600, -862637400, -764145e3], o: [21208, 21200, 19270, 19800, 23400, 19800, 23400, 19800] }, "Asia/Kathmandu": { source: "Asia/Kathmandu", t: [-1577943676], o: [20476, 19800] }, "Asia/Riyadh": { source: "Asia/Riyadh", t: [-719636812], o: [11212, 10800] }, "Etc/Universal": { source: "Etc/UTC", t: [], o: [0] }, "Europe/Ljubljana": { source: "Europe/Ljubljana", t: [-2713913884, -905824800, -857257200, -844556400, -828226800, -812502e3, -796777200, -781052400, -766623600], o: [3484, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600] }, "Europe/Monaco": { source: "Europe/Monaco", t: [-2448318572, -1854403761, -1689814800, -1680397200, -1665363600, -1648342800, -1635123600, -1616893200, -1604278800, -1585443600, -1574038800, -1552266e3, -1539997200, -1520557200, -1507510800, -1490576400, -1470618e3, -1459126800, -1444006800, -1427677200, -1411952400, -1396227600, -1379293200, -1364778e3, -1348448400, -1333328400, -1316394e3, -1301274e3, -1284339600, -1269824400, -1253494800, -1238374800, -1221440400, -1206925200, -1191200400, -1175475600, -1160355600, -1143421200, -1127696400, -1111971600, -1096851600, -1080522e3, -1063587600, -1049072400, -1033347600, -1017622800, -1002502800, -986173200, -969238800, -95049e4, -942012e3, -904438800, -891136800, -877827600, -857257200, -844556400, -828226800, -812502e3, -796266e3, -781052400, -766623600], o: [1772, 561, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600] }, "Europe/Tirane": { source: "Europe/Tirane", t: [-1767230360, -932346e3, -857257200, -844556400, -843519600], o: [4760, 3600, 7200, 3600, 7200, 3600] }, Greenwich: { source: "Etc/GMT", t: [], o: [0] }, "Pacific/Easter": { source: "Pacific/Easter", t: [-1178124152, -36619200, -23922e3, -3355200], o: [-26248, -25200, -21600, -25200, -21600] }, "Pacific/Truk": { source: "Pacific/Chuuk", t: [-3944628428, -2177489228, -1743674400, -1606813200, -907408800, -770634e3], o: [-49972, 36428, 36e3, 32400, 36e3, 32400, 36e3] } } };
+var __exports60 = {};
+__export(__exports60, {
+  default: () => __default60
+});
+var __default60;
+var init__60 = __esm({
+  "src/data/tz-history/2025c/59.json"() {
+    "use strict";
+    __default60 = JSON.parse('{"tzdb":"2025c","zones":{"Africa/Harare":{"source":"Africa/Harare","t":[-2109290652],"o":[7452,7200]},"Africa/Kampala":{"source":"Africa/Kampala","t":[-1309745380,-1262314800,-694319400,-410237100],"o":[7780,10800,9000,9900,10800]},"America/Argentina/Tucuman":{"source":"America/Argentina/Tucuman","t":[-2372096348,-1567453392,-1233432000,-1222981200,-1205956800,-1194037200,-1172865600,-1162501200,-1141329600,-1130965200,-1109793600,-1099429200,-1078257600,-1067806800,-1046635200,-1036270800,-1015099200,-1004734800,-983563200,-973198800,-952027200,-941576400,-931032000,-900882000,-890337600,-833749200,-827265600,-752274000,-733780800,-197326800,-190843200,-184194000,-164491200,-152658000,-132955200,-121122000,-101419200,-86821200,-71092800,-54766800,-39038400,-23317200,-7588800],"o":[-15652,-15408,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800]},"America/Iqaluit":{"source":"America/Iqaluit","t":[-865296000,-765396000],"o":[null,-14400,-18000]},"America/Martinique":{"source":"America/Martinique","t":[-1851537340],"o":[-14660,-14400]},"Antarctica/Syowa":{"source":"Antarctica/Syowa","t":[-407808000],"o":[null,10800]},"Asia/Calcutta":{"source":"Asia/Kolkata","t":[-3645237208,-3155694800,-2019705670,-891581400,-872058600,-862637400,-764145000],"o":[21208,21200,19270,19800,23400,19800,23400,19800]},"Asia/Kathmandu":{"source":"Asia/Kathmandu","t":[-1577943676],"o":[20476,19800]},"Asia/Riyadh":{"source":"Asia/Riyadh","t":[-719636812],"o":[11212,10800]},"Etc/Universal":{"source":"Etc/UTC","t":[],"o":[0]},"Europe/Ljubljana":{"source":"Europe/Ljubljana","t":[-2713913884,-905824800,-857257200,-844556400,-828226800,-812502000,-796777200,-781052400,-766623600],"o":[3484,3600,7200,3600,7200,3600,7200,3600,7200,3600]},"Europe/Monaco":{"source":"Europe/Monaco","t":[-2448318572,-1854403761,-1689814800,-1680397200,-1665363600,-1648342800,-1635123600,-1616893200,-1604278800,-1585443600,-1574038800,-1552266000,-1539997200,-1520557200,-1507510800,-1490576400,-1470618000,-1459126800,-1444006800,-1427677200,-1411952400,-1396227600,-1379293200,-1364778000,-1348448400,-1333328400,-1316394000,-1301274000,-1284339600,-1269824400,-1253494800,-1238374800,-1221440400,-1206925200,-1191200400,-1175475600,-1160355600,-1143421200,-1127696400,-1111971600,-1096851600,-1080522000,-1063587600,-1049072400,-1033347600,-1017622800,-1002502800,-986173200,-969238800,-950490000,-942012000,-904438800,-891136800,-877827600,-857257200,-844556400,-828226800,-812502000,-796266000,-781052400,-766623600],"o":[1772,561,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600]},"Europe/Tirane":{"source":"Europe/Tirane","t":[-1767230360,-932346000,-857257200,-844556400,-843519600],"o":[4760,3600,7200,3600,7200,3600]},"Greenwich":{"source":"Etc/GMT","t":[],"o":[0]},"Pacific/Easter":{"source":"Pacific/Easter","t":[-1178124152,-36619200,-23922000,-3355200],"o":[-26248,-25200,-21600,-25200,-21600]},"Pacific/Truk":{"source":"Pacific/Chuuk","t":[-3944628428,-2177489228,-1743674400,-1606813200,-907408800,-770634000],"o":[-49972,36428,36000,32400,36000,32400,36000]}}}');
   }
 });
 
 // src/data/tz-history/2025c/60.json
-var require__61 = __commonJS({
-  "src/data/tz-history/2025c/60.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "Africa/Cairo": { source: "Africa/Cairo", t: [-2185409109, -929844e3, -923108400, -906170400, -892868400, -875844e3, -85779e4, -844308e3, -825822e3, -812685600, -794199600, -779853600, -762663600, -399088800, -386650800, -368330400, -355114800, -336790800, -323654400, -305168400, -292032e3, -273632400, -260496e3, -242096400, -22896e4, -210560400, -197424e3, -178938e3, -165801600, -147402e3, -134265600, -115866e3, -102643200, -8433e4, -71107200, -52707600, -39484800, -21171600, -7948800], o: [7509, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200, 10800, 7200] }, "America/Cordoba": { source: "America/Argentina/Cordoba", t: [-1567453392, -1233432e3, -1222981200, -1205956800, -1194037200, -1172865600, -1162501200, -1141329600, -1130965200, -1109793600, -1099429200, -1078257600, -1067806800, -1046635200, -1036270800, -1015099200, -1004734800, -983563200, -973198800, -952027200, -941576400, -931032e3, -900882e3, -890337600, -833749200, -827265600, -752274e3, -733780800, -197326800, -190843200, -184194e3, -164491200, -152658e3, -132955200, -121122e3, -101419200, -86821200, -71092800, -54766800, -39038400, -23317200, -7588800], o: [-15408, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800] }, "America/New_York": { source: "America/New_York", t: [-2717650800, -1633280400, -161514e4, -1601830800, -1583690400, -1570381200, -1551636e3, -1536512400, -1523210400, -1504458e3, -1491760800, -1473008400, -1459706400, -1441558800, -1428256800, -1410109200, -1396807200, -1378659600, -1365357600, -134721e4, -1333908e3, -1315155600, -1301853600, -1283706e3, -1270404e3, -1252256400, -1238954400, -1220806800, -1207504800, -1189357200, -1176055200, -1157302800, -1144605600, -1125853200, -1112551200, -1094403600, -1081101600, -1062954e3, -1049652e3, -1031504400, -1018202400, -1000054800, -986752800, -968000400, -955303200, -936550800, -923248800, -905101200, -891799200, -880218e3, -765396e3, -747248400, -733946400, -715798800, -702496800, -684349200, -671047200, -652899600, -639597600, -620845200, -608148e3, -589395600, -576093600, -557946e3, -544644e3, -526496400, -513194400, -495046800, -481744800, -463597200, -447271200, -431542800, -415821600, -400093200, -384372e3, -368643600, -352922400, -337194e3, -321472800, -305744400, -289418400, -27369e4, -257968800, -242240400, -226519200, -210790800, -195069600, -179341200, -16362e4, -147891600, -131565600, -116442e3, -100116e3, -84387600, -68666400, -52938e3, -37216800, -21488400, -5767200], o: [-17762, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3] }, "Asia/Yakutsk": { source: "Asia/Yakutsk", t: [-1579423138, -1247558400], o: [31138, 28800, 32400] }, "Atlantic/Reykjavik": { source: "Atlantic/Reykjavik", t: [-1956609120, -1668211200, -1647212400, -1636675200, -161343e4, -1605139200, -1581894e3, -1539561600, -153135e4, -968025600, -952293600, -942008400, -920239200, -909957600, -888789600, -877903200, -857944800, -846453600, -826495200, -815004e3, -795045600, -783554400, -762991200, -752104800, -731541600, -717631200, -700092e3, -686181600, -668642400, -654732e3, -636588e3, -623282400, -605743200, -591832800, -573688800, -559778400, -542239200, -528328800, -510789600, -496879200, -47934e4, -465429600, -447890400, -43398e4, -415836e3, -401925600, -384386400, -370476e3, -352936800, -339026400, -321487200, -307576800, -290037600, -276127200, -258588e3, -244677600, -226533600, -212623200, -195084e3, -181173600, -163634400, -149724e3, -132184800, -118274400, -100735200, -86824800, -68680800, -54770400], o: [-5280, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0, -3600, 0] }, "Etc/GMT+12": { source: "Etc/GMT+12", t: [], o: [-43200] }, "Etc/GMT-1": { source: "Etc/GMT-1", t: [], o: [3600] }, "Europe/Gibraltar": { source: "Europe/Gibraltar", t: [-2821649916, -1691964e3, -1680472800, -1664143200, -1650146400, -1633903200, -1617487200, -1601848800, -1586037600, -1570399200, -1552168800, -1538344800, -1522533600, -15075e5, -1490565600, -1473631200, -1460930400, -1442786400, -1428876e3, -1410732e3, -1396216800, -1379282400, -1364767200, -1348437600, -1333317600, -1315778400, -1301263200, -1284328800, -1269813600, -1253484e3, -1238364e3, -1221429600, -1206914400, -118998e4, -1175464800, -1159135200, -1143410400, -1126476e3, -1111960800, -1095631200, -1080511200, -1063576800, -1049061600, -1032127200, -1017612e3, -1001282400, -986162400, -969228e3, -950479200, -942012e3, -904518e3, -896050800, -875487600, -864601200, -844038e3, -832546800, -812588400, -798073200, -781052400, -772066800, -764805600, -748476e3, -733356e3, -719445600, -71703e4, -706748400, -699487200, -687996e3, -668037600, -654732e3, -636588e3, -622072800, -605743200, -590623200, -574293600, -558568800, -542239200, -527119200, -512604e3, -496274400, -481154400, -46422e4, -449704800, -432165600, -417650400, -401320800], o: [-1284, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 7200, 3600, 0, 3600, 0, 3600, 7200, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600, 0, 3600] }, "Pacific/Galapagos": { source: "Pacific/Galapagos", t: [-1230746496], o: [-21504, -18e3] } } };
+var __exports61 = {};
+__export(__exports61, {
+  default: () => __default61
+});
+var __default61;
+var init__61 = __esm({
+  "src/data/tz-history/2025c/60.json"() {
+    "use strict";
+    __default61 = JSON.parse('{"tzdb":"2025c","zones":{"Africa/Cairo":{"source":"Africa/Cairo","t":[-2185409109,-929844000,-923108400,-906170400,-892868400,-875844000,-857790000,-844308000,-825822000,-812685600,-794199600,-779853600,-762663600,-399088800,-386650800,-368330400,-355114800,-336790800,-323654400,-305168400,-292032000,-273632400,-260496000,-242096400,-228960000,-210560400,-197424000,-178938000,-165801600,-147402000,-134265600,-115866000,-102643200,-84330000,-71107200,-52707600,-39484800,-21171600,-7948800],"o":[7509,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200,10800,7200]},"America/Cordoba":{"source":"America/Argentina/Cordoba","t":[-1567453392,-1233432000,-1222981200,-1205956800,-1194037200,-1172865600,-1162501200,-1141329600,-1130965200,-1109793600,-1099429200,-1078257600,-1067806800,-1046635200,-1036270800,-1015099200,-1004734800,-983563200,-973198800,-952027200,-941576400,-931032000,-900882000,-890337600,-833749200,-827265600,-752274000,-733780800,-197326800,-190843200,-184194000,-164491200,-152658000,-132955200,-121122000,-101419200,-86821200,-71092800,-54766800,-39038400,-23317200,-7588800],"o":[-15408,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800]},"America/New_York":{"source":"America/New_York","t":[-2717650800,-1633280400,-1615140000,-1601830800,-1583690400,-1570381200,-1551636000,-1536512400,-1523210400,-1504458000,-1491760800,-1473008400,-1459706400,-1441558800,-1428256800,-1410109200,-1396807200,-1378659600,-1365357600,-1347210000,-1333908000,-1315155600,-1301853600,-1283706000,-1270404000,-1252256400,-1238954400,-1220806800,-1207504800,-1189357200,-1176055200,-1157302800,-1144605600,-1125853200,-1112551200,-1094403600,-1081101600,-1062954000,-1049652000,-1031504400,-1018202400,-1000054800,-986752800,-968000400,-955303200,-936550800,-923248800,-905101200,-891799200,-880218000,-765396000,-747248400,-733946400,-715798800,-702496800,-684349200,-671047200,-652899600,-639597600,-620845200,-608148000,-589395600,-576093600,-557946000,-544644000,-526496400,-513194400,-495046800,-481744800,-463597200,-447271200,-431542800,-415821600,-400093200,-384372000,-368643600,-352922400,-337194000,-321472800,-305744400,-289418400,-273690000,-257968800,-242240400,-226519200,-210790800,-195069600,-179341200,-163620000,-147891600,-131565600,-116442000,-100116000,-84387600,-68666400,-52938000,-37216800,-21488400,-5767200],"o":[-17762,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000]},"Asia/Yakutsk":{"source":"Asia/Yakutsk","t":[-1579423138,-1247558400],"o":[31138,28800,32400]},"Atlantic/Reykjavik":{"source":"Atlantic/Reykjavik","t":[-1956609120,-1668211200,-1647212400,-1636675200,-1613430000,-1605139200,-1581894000,-1539561600,-1531350000,-968025600,-952293600,-942008400,-920239200,-909957600,-888789600,-877903200,-857944800,-846453600,-826495200,-815004000,-795045600,-783554400,-762991200,-752104800,-731541600,-717631200,-700092000,-686181600,-668642400,-654732000,-636588000,-623282400,-605743200,-591832800,-573688800,-559778400,-542239200,-528328800,-510789600,-496879200,-479340000,-465429600,-447890400,-433980000,-415836000,-401925600,-384386400,-370476000,-352936800,-339026400,-321487200,-307576800,-290037600,-276127200,-258588000,-244677600,-226533600,-212623200,-195084000,-181173600,-163634400,-149724000,-132184800,-118274400,-100735200,-86824800,-68680800,-54770400],"o":[-5280,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0,-3600,0]},"Etc/GMT+12":{"source":"Etc/GMT+12","t":[],"o":[-43200]},"Etc/GMT-1":{"source":"Etc/GMT-1","t":[],"o":[3600]},"Europe/Gibraltar":{"source":"Europe/Gibraltar","t":[-2821649916,-1691964000,-1680472800,-1664143200,-1650146400,-1633903200,-1617487200,-1601848800,-1586037600,-1570399200,-1552168800,-1538344800,-1522533600,-1507500000,-1490565600,-1473631200,-1460930400,-1442786400,-1428876000,-1410732000,-1396216800,-1379282400,-1364767200,-1348437600,-1333317600,-1315778400,-1301263200,-1284328800,-1269813600,-1253484000,-1238364000,-1221429600,-1206914400,-1189980000,-1175464800,-1159135200,-1143410400,-1126476000,-1111960800,-1095631200,-1080511200,-1063576800,-1049061600,-1032127200,-1017612000,-1001282400,-986162400,-969228000,-950479200,-942012000,-904518000,-896050800,-875487600,-864601200,-844038000,-832546800,-812588400,-798073200,-781052400,-772066800,-764805600,-748476000,-733356000,-719445600,-717030000,-706748400,-699487200,-687996000,-668037600,-654732000,-636588000,-622072800,-605743200,-590623200,-574293600,-558568800,-542239200,-527119200,-512604000,-496274400,-481154400,-464220000,-449704800,-432165600,-417650400,-401320800],"o":[-1284,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,7200,3600,7200,3600,7200,3600,7200,3600,7200,3600,0,3600,0,3600,7200,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600,0,3600]},"Pacific/Galapagos":{"source":"Pacific/Galapagos","t":[-1230746496],"o":[-21504,-18000]}}}');
   }
 });
 
 // src/data/tz-history/2025c/61.json
-var require__62 = __commonJS({
-  "src/data/tz-history/2025c/61.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "Africa/Gaborone": { source: "Africa/Gaborone", t: [-2682294220, -2109288600, -829526400, -813805200], o: [6220, 5400, 7200, 10800, 7200] }, "America/Araguaina": { source: "America/Araguaina", t: [-1767214032, -1206957600, -1191362400, -1175374800, -1159826400, -633819600, -622069200, -602283600, -591832800, -570747600, -560210400, -539125200, -531352800, -191365200, -184197600, -155163600, -150069600, -128898e3, -121125600, -99954e3, -89589600, -68418e3, -57967200], o: [-11568, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800, -7200, -10800] }, "Asia/Bangkok": { source: "Asia/Bangkok", t: [-1570084924], o: [24124, 25200] }, "Asia/Qatar": { source: "Asia/Qatar", t: [-1577935568], o: [12368, 14400] }, "Asia/Ujung_Pandang": { source: "Asia/Makassar", t: [-1172908656, -880272e3, -766054800], o: [28656, 28800, 32400, 28800] }, "Australia/Darwin": { source: "Australia/Darwin", t: [-2364108200, -2230189200, -1672558200, -1665387e3, -883639800, -876123e3, -860398200, -844673400, -828343800, -813223800], o: [31400, 32400, 34200, 37800, 34200, 37800, 34200, 37800, 34200, 37800, 34200] }, "Australia/North": { source: "Australia/Darwin", t: [-2364108200, -2230189200, -1672558200, -1665387e3, -883639800, -876123e3, -860398200, -844673400, -828343800, -813223800], o: [31400, 32400, 34200, 37800, 34200, 37800, 34200, 37800, 34200, 37800, 34200] }, GMT0: { source: "Etc/GMT", t: [], o: [0] }, "Pacific/Wake": { source: "Pacific/Wake", t: [-2177492788], o: [39988, 43200] } } };
+var __exports62 = {};
+__export(__exports62, {
+  default: () => __default62
+});
+var __default62;
+var init__62 = __esm({
+  "src/data/tz-history/2025c/61.json"() {
+    "use strict";
+    __default62 = JSON.parse('{"tzdb":"2025c","zones":{"Africa/Gaborone":{"source":"Africa/Gaborone","t":[-2682294220,-2109288600,-829526400,-813805200],"o":[6220,5400,7200,10800,7200]},"America/Araguaina":{"source":"America/Araguaina","t":[-1767214032,-1206957600,-1191362400,-1175374800,-1159826400,-633819600,-622069200,-602283600,-591832800,-570747600,-560210400,-539125200,-531352800,-191365200,-184197600,-155163600,-150069600,-128898000,-121125600,-99954000,-89589600,-68418000,-57967200],"o":[-11568,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800,-7200,-10800]},"Asia/Bangkok":{"source":"Asia/Bangkok","t":[-1570084924],"o":[24124,25200]},"Asia/Qatar":{"source":"Asia/Qatar","t":[-1577935568],"o":[12368,14400]},"Asia/Ujung_Pandang":{"source":"Asia/Makassar","t":[-1172908656,-880272000,-766054800],"o":[28656,28800,32400,28800]},"Australia/Darwin":{"source":"Australia/Darwin","t":[-2364108200,-2230189200,-1672558200,-1665387000,-883639800,-876123000,-860398200,-844673400,-828343800,-813223800],"o":[31400,32400,34200,37800,34200,37800,34200,37800,34200,37800,34200]},"Australia/North":{"source":"Australia/Darwin","t":[-2364108200,-2230189200,-1672558200,-1665387000,-883639800,-876123000,-860398200,-844673400,-828343800,-813223800],"o":[31400,32400,34200,37800,34200,37800,34200,37800,34200,37800,34200]},"GMT0":{"source":"Etc/GMT","t":[],"o":[0]},"Pacific/Wake":{"source":"Pacific/Wake","t":[-2177492788],"o":[39988,43200]}}}');
   }
 });
 
 // src/data/tz-history/2025c/62.json
-var require__63 = __commonJS({
-  "src/data/tz-history/2025c/62.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "Africa/Freetown": { source: "Africa/Freetown", t: [-1783120020, -1170284400, -1159831200, -1146610800, -1128295200, -1115074800, -1096759200, -1083538800, -1065136800, -1051916400, -1033600800, -1020380400, -1002064800, -988844400, -965258400, -957308400, -956964e3, -885769200], o: [-3180, -3600, -2400, -3600, -2400, -3600, -2400, -3600, -2400, -3600, -2400, -3600, -2400, -3600, -2400, -3600, -2400, -3600, 0] }, "America/Dominica": { source: "America/Dominica", t: [-1846266804], o: [-14736, -14400] }, "America/Montreal": { source: "America/Montreal", t: [-2713892744, -1665334800, -1662753600, -1632070800, -161514e4, -1601742600, -1583775e3, -1567355400, -1554053400, -1535907600, -1522603800, -1504458e3, -1491154200, -1439830800, -1428255e3, -1409504400, -1396805400, -1378054800, -1365355800, -1346612400, -1333915200, -1315162800, -1301860800, -1283713200, -1270411200, -1252263600, -1238961600, -1220814e3, -1207512e3, -1188759600, -1176062400, -115731e4, -1144008e3, -1125860400, -1112558400, -1094410800, -1081108800, -1062961200, -1049659200, -1031511600, -1018209600, -1000062e3, -98676e4, -968007600, -955310400, -936558e3, -765396e3, -747248400, -733946400, -715798800, -702496800, -684349200, -671047200, -652899600, -636573600, -620845200, -605124e3, -589395600, -576093600, -557946e3, -544644e3, -526496400, -513194400, -495046800, -481744800, -463597200, -450295200, -431542800, -418240800, -400093200, -384372e3, -368643600, -352922400, -337194e3, -321472800, -305744400, -289418400, -27369e4, -257968800, -242240400, -226519200, -210790800, -195069600, -179341200, -16362e4, -147891600, -131565600, -116442e3, -100116e3, -84387600, -68666400, -52938e3, -37216800, -21488400, -5767200], o: [-17656, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3, -14400, -18e3] }, "America/Rankin_Inlet": { source: "America/Rankin_Inlet", t: [-410227200], o: [null, -21600] }, "Asia/Amman": { source: "Asia/Amman", t: [-1230776624], o: [8624, 7200] }, "Asia/Tokyo": { source: "Asia/Tokyo", t: [-2587712400, -683802e3, -672310800, -654771600, -640861200, -620298e3, -609411600, -588848400, -577962e3], o: [33539, 32400, 36e3, 32400, 36e3, 32400, 36e3, 32400, 36e3, 32400] }, "Australia/Brisbane": { source: "Australia/Brisbane", t: [-2366791928, -167256e4, -1665388800, -883641600, -876124800, -8604e5, -844675200, -828345600, -813225600], o: [36728, 36e3, 39600, 36e3, 39600, 36e3, 39600, 36e3, 39600, 36e3] }, "Etc/GMT+9": { source: "Etc/GMT+9", t: [], o: [-32400] }, "Europe/Tallinn": { source: "Europe/Tallinn", t: [-1638322740, -1632006e3, -1618700400, -1593824400, -1535938740, -927943200, -892954800, -857257200, -844556400, -828226800, -812502e3, -797652e3], o: [5940, 3600, 7200, 3600, 5940, 7200, 10800, 7200, 3600, 7200, 3600, 7200, 10800] }, "Indian/Chagos": { source: "Indian/Chagos", t: [-1988167780], o: [17380, 18e3] } } };
+var __exports63 = {};
+__export(__exports63, {
+  default: () => __default63
+});
+var __default63;
+var init__63 = __esm({
+  "src/data/tz-history/2025c/62.json"() {
+    "use strict";
+    __default63 = JSON.parse('{"tzdb":"2025c","zones":{"Africa/Freetown":{"source":"Africa/Freetown","t":[-1783120020,-1170284400,-1159831200,-1146610800,-1128295200,-1115074800,-1096759200,-1083538800,-1065136800,-1051916400,-1033600800,-1020380400,-1002064800,-988844400,-965258400,-957308400,-956964000,-885769200],"o":[-3180,-3600,-2400,-3600,-2400,-3600,-2400,-3600,-2400,-3600,-2400,-3600,-2400,-3600,-2400,-3600,-2400,-3600,0]},"America/Dominica":{"source":"America/Dominica","t":[-1846266804],"o":[-14736,-14400]},"America/Montreal":{"source":"America/Montreal","t":[-2713892744,-1665334800,-1662753600,-1632070800,-1615140000,-1601742600,-1583775000,-1567355400,-1554053400,-1535907600,-1522603800,-1504458000,-1491154200,-1439830800,-1428255000,-1409504400,-1396805400,-1378054800,-1365355800,-1346612400,-1333915200,-1315162800,-1301860800,-1283713200,-1270411200,-1252263600,-1238961600,-1220814000,-1207512000,-1188759600,-1176062400,-1157310000,-1144008000,-1125860400,-1112558400,-1094410800,-1081108800,-1062961200,-1049659200,-1031511600,-1018209600,-1000062000,-986760000,-968007600,-955310400,-936558000,-765396000,-747248400,-733946400,-715798800,-702496800,-684349200,-671047200,-652899600,-636573600,-620845200,-605124000,-589395600,-576093600,-557946000,-544644000,-526496400,-513194400,-495046800,-481744800,-463597200,-450295200,-431542800,-418240800,-400093200,-384372000,-368643600,-352922400,-337194000,-321472800,-305744400,-289418400,-273690000,-257968800,-242240400,-226519200,-210790800,-195069600,-179341200,-163620000,-147891600,-131565600,-116442000,-100116000,-84387600,-68666400,-52938000,-37216800,-21488400,-5767200],"o":[-17656,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000,-14400,-18000]},"America/Rankin_Inlet":{"source":"America/Rankin_Inlet","t":[-410227200],"o":[null,-21600]},"Asia/Amman":{"source":"Asia/Amman","t":[-1230776624],"o":[8624,7200]},"Asia/Tokyo":{"source":"Asia/Tokyo","t":[-2587712400,-683802000,-672310800,-654771600,-640861200,-620298000,-609411600,-588848400,-577962000],"o":[33539,32400,36000,32400,36000,32400,36000,32400,36000,32400]},"Australia/Brisbane":{"source":"Australia/Brisbane","t":[-2366791928,-1672560000,-1665388800,-883641600,-876124800,-860400000,-844675200,-828345600,-813225600],"o":[36728,36000,39600,36000,39600,36000,39600,36000,39600,36000]},"Etc/GMT+9":{"source":"Etc/GMT+9","t":[],"o":[-32400]},"Europe/Tallinn":{"source":"Europe/Tallinn","t":[-1638322740,-1632006000,-1618700400,-1593824400,-1535938740,-927943200,-892954800,-857257200,-844556400,-828226800,-812502000,-797652000],"o":[5940,3600,7200,3600,5940,7200,10800,7200,3600,7200,3600,7200,10800]},"Indian/Chagos":{"source":"Indian/Chagos","t":[-1988167780],"o":[17380,18000]}}}');
   }
 });
 
 // src/data/tz-history/2025c/63.json
-var require__64 = __commonJS({
-  "src/data/tz-history/2025c/63.json"(exports, module) {
-    module.exports = { tzdb: "2025c", zones: { "Africa/Blantyre": { source: "Africa/Blantyre", t: [-1844302800, -1751682070, -1404440460], o: [8400, 8470, 8460, 7200] }, "America/Phoenix": { source: "America/Phoenix", t: [-2717643600, -1633273200, -1615132800, -1601823600, -1583683200, -880210800, -820519140, -812653140, -796845540, -84380400, -68659200], o: [-26898, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200] }, "Asia/Ashgabat": { source: "Asia/Ashgabat", t: [-1441166012, -1247544e3], o: [14012, 14400, 18e3] }, "Asia/Novokuznetsk": { source: "Asia/Novokuznetsk", t: [-1441259328, -1247551200], o: [20928, 21600, 25200] }, "Brazil/West": { source: "America/Manaus", t: [-1767211196, -1206954e3, -1191358800, -1175371200, -1159822800, -633816e3, -622065600, -60228e4, -591829200, -570744e3, -560206800, -539121600, -531349200, -191361600, -184194e3, -15516e4, -150066e3, -128894400, -121122e3, -99950400, -89586e3, -68414400, -57963600], o: [-14404, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400, -10800, -14400] }, Kwajalein: { source: "Pacific/Kwajalein", t: [-2177492960, -1041418800, -907408800, -817462800, -7988400], o: [40160, 39600, 36e3, 32400, 39600, -43200] }, MST: { source: "MST", t: [], o: [-25200] }, MST7MDT: { source: "MST7MDT", t: [-1633273200, -1615132800, -1601823600, -1583683200, -880210800, -765388800, -84380400, -68659200, -52930800, -37209600, -21481200, -576e4], o: [-25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200, -21600, -25200] }, "Pacific/Guam": { source: "Pacific/Guam", t: [-3944626740, -2177487540, -885549600, -802256400, -331891200, -28161e4, -73728e3, -29415540, -16704e3, -10659600], o: [-51660, 34740, 36e3, 32400, 36e3, 39600, 36e3, 39600, 36e3, 39600, 36e3] }, "Pacific/Honolulu": { source: "Pacific/Honolulu", t: [-2334101314, -1157283e3, -1155436200, -880198200, -765376200, -712150200], o: [-37886, -37800, -34200, -37800, -34200, -37800, -36e3] }, ROK: { source: "Asia/Seoul", t: [-1948782472, -1830414600, -68121e4, -672228e3, -654771600, -640864800, -623408400, -609415200, -588848400, -577965600, -498128400, -462702600, -451733400, -429784200, -418296600, -399544200, -387451800, -368094600, -356002200, -336645e3, -324552600, -305195400, -293103e3, -264933e3], o: [30472, 30600, 32400, 36e3, 32400, 36e3, 32400, 36e3, 32400, 36e3, 32400, 30600, 34200, 30600, 34200, 30600, 34200, 30600, 34200, 30600, 34200, 30600, 34200, 30600, 32400] } } };
+var __exports64 = {};
+__export(__exports64, {
+  default: () => __default64
+});
+var __default64;
+var init__64 = __esm({
+  "src/data/tz-history/2025c/63.json"() {
+    "use strict";
+    __default64 = JSON.parse('{"tzdb":"2025c","zones":{"Africa/Blantyre":{"source":"Africa/Blantyre","t":[-1844302800,-1751682070,-1404440460],"o":[8400,8470,8460,7200]},"America/Phoenix":{"source":"America/Phoenix","t":[-2717643600,-1633273200,-1615132800,-1601823600,-1583683200,-880210800,-820519140,-812653140,-796845540,-84380400,-68659200],"o":[-26898,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200]},"Asia/Ashgabat":{"source":"Asia/Ashgabat","t":[-1441166012,-1247544000],"o":[14012,14400,18000]},"Asia/Novokuznetsk":{"source":"Asia/Novokuznetsk","t":[-1441259328,-1247551200],"o":[20928,21600,25200]},"Brazil/West":{"source":"America/Manaus","t":[-1767211196,-1206954000,-1191358800,-1175371200,-1159822800,-633816000,-622065600,-602280000,-591829200,-570744000,-560206800,-539121600,-531349200,-191361600,-184194000,-155160000,-150066000,-128894400,-121122000,-99950400,-89586000,-68414400,-57963600],"o":[-14404,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400,-10800,-14400]},"Kwajalein":{"source":"Pacific/Kwajalein","t":[-2177492960,-1041418800,-907408800,-817462800,-7988400],"o":[40160,39600,36000,32400,39600,-43200]},"MST":{"source":"MST","t":[],"o":[-25200]},"MST7MDT":{"source":"MST7MDT","t":[-1633273200,-1615132800,-1601823600,-1583683200,-880210800,-765388800,-84380400,-68659200,-52930800,-37209600,-21481200,-5760000],"o":[-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200,-21600,-25200]},"Pacific/Guam":{"source":"Pacific/Guam","t":[-3944626740,-2177487540,-885549600,-802256400,-331891200,-281610000,-73728000,-29415540,-16704000,-10659600],"o":[-51660,34740,36000,32400,36000,39600,36000,39600,36000,39600,36000]},"Pacific/Honolulu":{"source":"Pacific/Honolulu","t":[-2334101314,-1157283000,-1155436200,-880198200,-765376200,-712150200],"o":[-37886,-37800,-34200,-37800,-34200,-37800,-36000]},"ROK":{"source":"Asia/Seoul","t":[-1948782472,-1830414600,-681210000,-672228000,-654771600,-640864800,-623408400,-609415200,-588848400,-577965600,-498128400,-462702600,-451733400,-429784200,-418296600,-399544200,-387451800,-368094600,-356002200,-336645000,-324552600,-305195400,-293103000,-264933000],"o":[30472,30600,32400,36000,32400,36000,32400,36000,32400,36000,32400,30600,34200,30600,34200,30600,34200,30600,34200,30600,34200,30600,34200,30600,32400]}}}');
   }
 });
 
 // src/data/tz-history/2025c/excluded.json
-var require_excluded = __commonJS({
-  "src/data/tz-history/2025c/excluded.json"(exports, module) {
-    module.exports = {
-      tzdb: "2025c",
-      excluded: {
-        "America/Argentina/ComodRivadavia": "pinned history (America/Argentina/ComodRivadavia) differs from the default build after 1970",
-        "America/Ensenada": "pinned history (America/Ensenada) differs from the default build after 1970",
-        "America/Nipigon": "pinned history (America/Nipigon) differs from the default build after 1970",
-        "America/Rainy_River": "pinned history (America/Rainy_River) differs from the default build after 1970",
-        "America/Rosario": "pinned history (America/Rosario) differs from the default build after 1970",
-        "Asia/Chongqing": "pinned history (Asia/Chongqing) differs from the default build after 1970",
-        "Asia/Chungking": "pinned history (Asia/Chongqing) differs from the default build after 1970",
-        "Asia/Hanoi": "not in the default build",
-        "Asia/Harbin": "pinned history (Asia/Harbin) differs from the default build after 1970",
-        "Asia/Kashgar": "pinned history (Asia/Kashgar) differs from the default build after 1970",
-        "Atlantic/Jan_Mayen": "pinned history (Atlantic/Jan_Mayen) differs from the default build after 1970",
-        EET: "pinned history (EET) differs from the default build after 1970",
-        "Europe/Tiraspol": "pinned history (Europe/Tiraspol) differs from the default build after 1970",
-        "Europe/Uzhgorod": "pinned history (Europe/Uzhgorod) differs from the default build after 1970",
-        "Europe/Zaporozhye": "pinned history (Europe/Zaporozhye) differs from the default build after 1970",
-        "Pacific/Enderbury": "pinned history (Pacific/Enderbury) differs from the default build after 1970",
-        WET: "pinned history (WET) differs from the default build after 1970"
-      }
-    };
+var excluded_exports = {};
+__export(excluded_exports, {
+  default: () => excluded_default
+});
+var excluded_default;
+var init_excluded = __esm({
+  "src/data/tz-history/2025c/excluded.json"() {
+    "use strict";
+    excluded_default = JSON.parse('{"tzdb":"2025c","excluded":{"America/Argentina/ComodRivadavia":"pinned history (America/Argentina/ComodRivadavia) differs from the default build after 1970","America/Ensenada":"pinned history (America/Ensenada) differs from the default build after 1970","America/Nipigon":"pinned history (America/Nipigon) differs from the default build after 1970","America/Rainy_River":"pinned history (America/Rainy_River) differs from the default build after 1970","America/Rosario":"pinned history (America/Rosario) differs from the default build after 1970","Asia/Chongqing":"pinned history (Asia/Chongqing) differs from the default build after 1970","Asia/Chungking":"pinned history (Asia/Chongqing) differs from the default build after 1970","Asia/Hanoi":"not in the default build","Asia/Harbin":"pinned history (Asia/Harbin) differs from the default build after 1970","Asia/Kashgar":"pinned history (Asia/Kashgar) differs from the default build after 1970","Atlantic/Jan_Mayen":"pinned history (Atlantic/Jan_Mayen) differs from the default build after 1970","EET":"pinned history (EET) differs from the default build after 1970","Europe/Tiraspol":"pinned history (Europe/Tiraspol) differs from the default build after 1970","Europe/Uzhgorod":"pinned history (Europe/Uzhgorod) differs from the default build after 1970","Europe/Zaporozhye":"pinned history (Europe/Zaporozhye) differs from the default build after 1970","Pacific/Enderbury":"pinned history (Pacific/Enderbury) differs from the default build after 1970","WET":"pinned history (WET) differs from the default build after 1970"}}');
   }
 });
 
@@ -1882,71 +943,71 @@ var globImport_data_tz_history_2025c_json;
 var init_ = __esm({
   'import("../../data/tz-history/2025c/**/*.json") in src/lib/time/tz-history-load.ts'() {
     globImport_data_tz_history_2025c_json = __glob({
-      "../../data/tz-history/2025c/00.json": () => Promise.resolve().then(() => __toESM(require__())),
-      "../../data/tz-history/2025c/01.json": () => Promise.resolve().then(() => __toESM(require__2())),
-      "../../data/tz-history/2025c/02.json": () => Promise.resolve().then(() => __toESM(require__3())),
-      "../../data/tz-history/2025c/03.json": () => Promise.resolve().then(() => __toESM(require__4())),
-      "../../data/tz-history/2025c/04.json": () => Promise.resolve().then(() => __toESM(require__5())),
-      "../../data/tz-history/2025c/05.json": () => Promise.resolve().then(() => __toESM(require__6())),
-      "../../data/tz-history/2025c/06.json": () => Promise.resolve().then(() => __toESM(require__7())),
-      "../../data/tz-history/2025c/07.json": () => Promise.resolve().then(() => __toESM(require__8())),
-      "../../data/tz-history/2025c/08.json": () => Promise.resolve().then(() => __toESM(require__9())),
-      "../../data/tz-history/2025c/09.json": () => Promise.resolve().then(() => __toESM(require__10())),
-      "../../data/tz-history/2025c/10.json": () => Promise.resolve().then(() => __toESM(require__11())),
-      "../../data/tz-history/2025c/11.json": () => Promise.resolve().then(() => __toESM(require__12())),
-      "../../data/tz-history/2025c/12.json": () => Promise.resolve().then(() => __toESM(require__13())),
-      "../../data/tz-history/2025c/13.json": () => Promise.resolve().then(() => __toESM(require__14())),
-      "../../data/tz-history/2025c/14.json": () => Promise.resolve().then(() => __toESM(require__15())),
-      "../../data/tz-history/2025c/15.json": () => Promise.resolve().then(() => __toESM(require__16())),
-      "../../data/tz-history/2025c/16.json": () => Promise.resolve().then(() => __toESM(require__17())),
-      "../../data/tz-history/2025c/17.json": () => Promise.resolve().then(() => __toESM(require__18())),
-      "../../data/tz-history/2025c/18.json": () => Promise.resolve().then(() => __toESM(require__19())),
-      "../../data/tz-history/2025c/19.json": () => Promise.resolve().then(() => __toESM(require__20())),
-      "../../data/tz-history/2025c/20.json": () => Promise.resolve().then(() => __toESM(require__21())),
-      "../../data/tz-history/2025c/21.json": () => Promise.resolve().then(() => __toESM(require__22())),
-      "../../data/tz-history/2025c/22.json": () => Promise.resolve().then(() => __toESM(require__23())),
-      "../../data/tz-history/2025c/23.json": () => Promise.resolve().then(() => __toESM(require__24())),
-      "../../data/tz-history/2025c/24.json": () => Promise.resolve().then(() => __toESM(require__25())),
-      "../../data/tz-history/2025c/25.json": () => Promise.resolve().then(() => __toESM(require__26())),
-      "../../data/tz-history/2025c/26.json": () => Promise.resolve().then(() => __toESM(require__27())),
-      "../../data/tz-history/2025c/27.json": () => Promise.resolve().then(() => __toESM(require__28())),
-      "../../data/tz-history/2025c/28.json": () => Promise.resolve().then(() => __toESM(require__29())),
-      "../../data/tz-history/2025c/29.json": () => Promise.resolve().then(() => __toESM(require__30())),
-      "../../data/tz-history/2025c/30.json": () => Promise.resolve().then(() => __toESM(require__31())),
-      "../../data/tz-history/2025c/31.json": () => Promise.resolve().then(() => __toESM(require__32())),
-      "../../data/tz-history/2025c/32.json": () => Promise.resolve().then(() => __toESM(require__33())),
-      "../../data/tz-history/2025c/33.json": () => Promise.resolve().then(() => __toESM(require__34())),
-      "../../data/tz-history/2025c/34.json": () => Promise.resolve().then(() => __toESM(require__35())),
-      "../../data/tz-history/2025c/35.json": () => Promise.resolve().then(() => __toESM(require__36())),
-      "../../data/tz-history/2025c/36.json": () => Promise.resolve().then(() => __toESM(require__37())),
-      "../../data/tz-history/2025c/37.json": () => Promise.resolve().then(() => __toESM(require__38())),
-      "../../data/tz-history/2025c/38.json": () => Promise.resolve().then(() => __toESM(require__39())),
-      "../../data/tz-history/2025c/39.json": () => Promise.resolve().then(() => __toESM(require__40())),
-      "../../data/tz-history/2025c/40.json": () => Promise.resolve().then(() => __toESM(require__41())),
-      "../../data/tz-history/2025c/41.json": () => Promise.resolve().then(() => __toESM(require__42())),
-      "../../data/tz-history/2025c/42.json": () => Promise.resolve().then(() => __toESM(require__43())),
-      "../../data/tz-history/2025c/43.json": () => Promise.resolve().then(() => __toESM(require__44())),
-      "../../data/tz-history/2025c/44.json": () => Promise.resolve().then(() => __toESM(require__45())),
-      "../../data/tz-history/2025c/45.json": () => Promise.resolve().then(() => __toESM(require__46())),
-      "../../data/tz-history/2025c/46.json": () => Promise.resolve().then(() => __toESM(require__47())),
-      "../../data/tz-history/2025c/47.json": () => Promise.resolve().then(() => __toESM(require__48())),
-      "../../data/tz-history/2025c/48.json": () => Promise.resolve().then(() => __toESM(require__49())),
-      "../../data/tz-history/2025c/49.json": () => Promise.resolve().then(() => __toESM(require__50())),
-      "../../data/tz-history/2025c/50.json": () => Promise.resolve().then(() => __toESM(require__51())),
-      "../../data/tz-history/2025c/51.json": () => Promise.resolve().then(() => __toESM(require__52())),
-      "../../data/tz-history/2025c/52.json": () => Promise.resolve().then(() => __toESM(require__53())),
-      "../../data/tz-history/2025c/53.json": () => Promise.resolve().then(() => __toESM(require__54())),
-      "../../data/tz-history/2025c/54.json": () => Promise.resolve().then(() => __toESM(require__55())),
-      "../../data/tz-history/2025c/55.json": () => Promise.resolve().then(() => __toESM(require__56())),
-      "../../data/tz-history/2025c/56.json": () => Promise.resolve().then(() => __toESM(require__57())),
-      "../../data/tz-history/2025c/57.json": () => Promise.resolve().then(() => __toESM(require__58())),
-      "../../data/tz-history/2025c/58.json": () => Promise.resolve().then(() => __toESM(require__59())),
-      "../../data/tz-history/2025c/59.json": () => Promise.resolve().then(() => __toESM(require__60())),
-      "../../data/tz-history/2025c/60.json": () => Promise.resolve().then(() => __toESM(require__61())),
-      "../../data/tz-history/2025c/61.json": () => Promise.resolve().then(() => __toESM(require__62())),
-      "../../data/tz-history/2025c/62.json": () => Promise.resolve().then(() => __toESM(require__63())),
-      "../../data/tz-history/2025c/63.json": () => Promise.resolve().then(() => __toESM(require__64())),
-      "../../data/tz-history/2025c/excluded.json": () => Promise.resolve().then(() => __toESM(require_excluded()))
+      "../../data/tz-history/2025c/00.json": () => Promise.resolve().then(() => (init__(), __exports)),
+      "../../data/tz-history/2025c/01.json": () => Promise.resolve().then(() => (init__2(), __exports2)),
+      "../../data/tz-history/2025c/02.json": () => Promise.resolve().then(() => (init__3(), __exports3)),
+      "../../data/tz-history/2025c/03.json": () => Promise.resolve().then(() => (init__4(), __exports4)),
+      "../../data/tz-history/2025c/04.json": () => Promise.resolve().then(() => (init__5(), __exports5)),
+      "../../data/tz-history/2025c/05.json": () => Promise.resolve().then(() => (init__6(), __exports6)),
+      "../../data/tz-history/2025c/06.json": () => Promise.resolve().then(() => (init__7(), __exports7)),
+      "../../data/tz-history/2025c/07.json": () => Promise.resolve().then(() => (init__8(), __exports8)),
+      "../../data/tz-history/2025c/08.json": () => Promise.resolve().then(() => (init__9(), __exports9)),
+      "../../data/tz-history/2025c/09.json": () => Promise.resolve().then(() => (init__10(), __exports10)),
+      "../../data/tz-history/2025c/10.json": () => Promise.resolve().then(() => (init__11(), __exports11)),
+      "../../data/tz-history/2025c/11.json": () => Promise.resolve().then(() => (init__12(), __exports12)),
+      "../../data/tz-history/2025c/12.json": () => Promise.resolve().then(() => (init__13(), __exports13)),
+      "../../data/tz-history/2025c/13.json": () => Promise.resolve().then(() => (init__14(), __exports14)),
+      "../../data/tz-history/2025c/14.json": () => Promise.resolve().then(() => (init__15(), __exports15)),
+      "../../data/tz-history/2025c/15.json": () => Promise.resolve().then(() => (init__16(), __exports16)),
+      "../../data/tz-history/2025c/16.json": () => Promise.resolve().then(() => (init__17(), __exports17)),
+      "../../data/tz-history/2025c/17.json": () => Promise.resolve().then(() => (init__18(), __exports18)),
+      "../../data/tz-history/2025c/18.json": () => Promise.resolve().then(() => (init__19(), __exports19)),
+      "../../data/tz-history/2025c/19.json": () => Promise.resolve().then(() => (init__20(), __exports20)),
+      "../../data/tz-history/2025c/20.json": () => Promise.resolve().then(() => (init__21(), __exports21)),
+      "../../data/tz-history/2025c/21.json": () => Promise.resolve().then(() => (init__22(), __exports22)),
+      "../../data/tz-history/2025c/22.json": () => Promise.resolve().then(() => (init__23(), __exports23)),
+      "../../data/tz-history/2025c/23.json": () => Promise.resolve().then(() => (init__24(), __exports24)),
+      "../../data/tz-history/2025c/24.json": () => Promise.resolve().then(() => (init__25(), __exports25)),
+      "../../data/tz-history/2025c/25.json": () => Promise.resolve().then(() => (init__26(), __exports26)),
+      "../../data/tz-history/2025c/26.json": () => Promise.resolve().then(() => (init__27(), __exports27)),
+      "../../data/tz-history/2025c/27.json": () => Promise.resolve().then(() => (init__28(), __exports28)),
+      "../../data/tz-history/2025c/28.json": () => Promise.resolve().then(() => (init__29(), __exports29)),
+      "../../data/tz-history/2025c/29.json": () => Promise.resolve().then(() => (init__30(), __exports30)),
+      "../../data/tz-history/2025c/30.json": () => Promise.resolve().then(() => (init__31(), __exports31)),
+      "../../data/tz-history/2025c/31.json": () => Promise.resolve().then(() => (init__32(), __exports32)),
+      "../../data/tz-history/2025c/32.json": () => Promise.resolve().then(() => (init__33(), __exports33)),
+      "../../data/tz-history/2025c/33.json": () => Promise.resolve().then(() => (init__34(), __exports34)),
+      "../../data/tz-history/2025c/34.json": () => Promise.resolve().then(() => (init__35(), __exports35)),
+      "../../data/tz-history/2025c/35.json": () => Promise.resolve().then(() => (init__36(), __exports36)),
+      "../../data/tz-history/2025c/36.json": () => Promise.resolve().then(() => (init__37(), __exports37)),
+      "../../data/tz-history/2025c/37.json": () => Promise.resolve().then(() => (init__38(), __exports38)),
+      "../../data/tz-history/2025c/38.json": () => Promise.resolve().then(() => (init__39(), __exports39)),
+      "../../data/tz-history/2025c/39.json": () => Promise.resolve().then(() => (init__40(), __exports40)),
+      "../../data/tz-history/2025c/40.json": () => Promise.resolve().then(() => (init__41(), __exports41)),
+      "../../data/tz-history/2025c/41.json": () => Promise.resolve().then(() => (init__42(), __exports42)),
+      "../../data/tz-history/2025c/42.json": () => Promise.resolve().then(() => (init__43(), __exports43)),
+      "../../data/tz-history/2025c/43.json": () => Promise.resolve().then(() => (init__44(), __exports44)),
+      "../../data/tz-history/2025c/44.json": () => Promise.resolve().then(() => (init__45(), __exports45)),
+      "../../data/tz-history/2025c/45.json": () => Promise.resolve().then(() => (init__46(), __exports46)),
+      "../../data/tz-history/2025c/46.json": () => Promise.resolve().then(() => (init__47(), __exports47)),
+      "../../data/tz-history/2025c/47.json": () => Promise.resolve().then(() => (init__48(), __exports48)),
+      "../../data/tz-history/2025c/48.json": () => Promise.resolve().then(() => (init__49(), __exports49)),
+      "../../data/tz-history/2025c/49.json": () => Promise.resolve().then(() => (init__50(), __exports50)),
+      "../../data/tz-history/2025c/50.json": () => Promise.resolve().then(() => (init__51(), __exports51)),
+      "../../data/tz-history/2025c/51.json": () => Promise.resolve().then(() => (init__52(), __exports52)),
+      "../../data/tz-history/2025c/52.json": () => Promise.resolve().then(() => (init__53(), __exports53)),
+      "../../data/tz-history/2025c/53.json": () => Promise.resolve().then(() => (init__54(), __exports54)),
+      "../../data/tz-history/2025c/54.json": () => Promise.resolve().then(() => (init__55(), __exports55)),
+      "../../data/tz-history/2025c/55.json": () => Promise.resolve().then(() => (init__56(), __exports56)),
+      "../../data/tz-history/2025c/56.json": () => Promise.resolve().then(() => (init__57(), __exports57)),
+      "../../data/tz-history/2025c/57.json": () => Promise.resolve().then(() => (init__58(), __exports58)),
+      "../../data/tz-history/2025c/58.json": () => Promise.resolve().then(() => (init__59(), __exports59)),
+      "../../data/tz-history/2025c/59.json": () => Promise.resolve().then(() => (init__60(), __exports60)),
+      "../../data/tz-history/2025c/60.json": () => Promise.resolve().then(() => (init__61(), __exports61)),
+      "../../data/tz-history/2025c/61.json": () => Promise.resolve().then(() => (init__62(), __exports62)),
+      "../../data/tz-history/2025c/62.json": () => Promise.resolve().then(() => (init__63(), __exports63)),
+      "../../data/tz-history/2025c/63.json": () => Promise.resolve().then(() => (init__64(), __exports64)),
+      "../../data/tz-history/2025c/excluded.json": () => Promise.resolve().then(() => (init_excluded(), excluded_exports))
     });
   }
 });
@@ -1987,13 +1048,25 @@ __export(birthplace_clock_exports, {
   prepare: () => prepare,
   readBirthplace: () => readBirthplace
 });
+function nameKey(name) {
+  return name.replace(/[A-Z]/gu, (letter) => letter.toLowerCase());
+}
+function intlAccepts(name) {
+  try {
+    offsetAt(name, 0);
+    return true;
+  } catch {
+    return false;
+  }
+}
 function prepare(date, timeZone) {
   const loads = [];
   if (localMeanTimeCanApply(date) && !lmtEraEnd) {
     if (!lmtEraLoad) {
-      const pending = loadModule(() => Promise.resolve().then(() => __toESM(require_tz_lmt(), 1))).then(({ default: table }) => {
+      const pending = loadModule(() => Promise.resolve().then(() => (init_tz_lmt(), tz_lmt_exports))).then(({ default: table }) => {
         lmtOffsets = table.offsets;
         lmtDateLine = table.dateLine;
+        lmtNames = new Map(Object.keys(table.eras).map((name) => [nameKey(name), name]));
         lmtEraEnd = table.eras;
       });
       lmtEraLoad = pending;
@@ -2003,8 +1076,8 @@ function prepare(date, timeZone) {
     }
     loads.push(lmtEraLoad);
   }
-  const key = timeZone.toLowerCase();
-  if (birthplaceTimeCanApply(date) && !zoneHistories.has(key)) {
+  const key = nameKey(timeZone);
+  if (birthplaceTimeCanApply(date) && !zoneHistories.has(key) && intlAccepts(timeZone)) {
     let pending = zoneHistoryLoads.get(key);
     if (!pending) {
       const load = loadModule(async () => (await Promise.resolve().then(() => (init_tz_history_load(), tz_history_load_exports))).loadZoneHistory(timeZone)).then((history) => {
@@ -2043,7 +1116,7 @@ function birthplaceClock(tz, wallMs, longitude) {
   const probe = 36 * 36e5;
   let history = null;
   if (wallMs < ZONE_HISTORY_END + 864e5) {
-    const key = tz.toLowerCase();
+    const key = nameKey(tz);
     if (!zoneHistories.has(key)) {
       throw new Error("Zone history is not loaded: await prepareLocalTime(date, timeZone) before resolving.");
     }
@@ -2056,16 +1129,17 @@ function birthplaceClock(tz, wallMs, longitude) {
     if (!lmtEraEnd) {
       throw new Error("Local mean time eras are not loaded: await prepareLocalTime(date, timeZone) before resolving.");
     }
-    if (Object.prototype.hasOwnProperty.call(lmtEraEnd, tz) && wallMs - probe - lmtEraEnd[tz] * 1e3 <= 0) {
-      const eraEnd = lmtEraEnd[tz] * 1e3;
+    const era = lmtNames.get(nameKey(tz));
+    if (era !== void 0 && wallMs - probe - lmtEraEnd[era] * 1e3 <= 0) {
+      const eraEnd = lmtEraEnd[era] * 1e3;
       const meanSeconds = Math.round(longitude * 240);
-      const own = (table) => Object.prototype.hasOwnProperty.call(table, tz);
-      const eraLines = own(lmtDateLine) ? lmtDateLine[tz] : null;
+      const own = (table) => Object.prototype.hasOwnProperty.call(table, era);
+      const eraLines = own(lmtDateLine) ? lmtDateLine[era] : null;
       const eraOffset = (utcMs) => {
         if (eraLines) {
           for (const [until, offset] of eraLines) if (utcMs < until * 1e3) return offset / 60;
         }
-        if (own(lmtOffsets)) return lmtOffsets[tz] / 60;
+        if (own(lmtOffsets)) return lmtOffsets[era] / 60;
         return zoneAt(utcMs);
       };
       const birthplaceOffset = (utcMs) => {
@@ -2120,7 +1194,7 @@ function readClock(wallMs, clockAt, samples) {
   const utcMs = wallMs - Math.round(clockAt(lo) * 6e4);
   return { chosen: { utcMs, offset: clockAt(utcMs) }, flags: ["dst-gap"] };
 }
-var lmtEraEnd, lmtOffsets, lmtDateLine, lmtEraLoad, zoneHistories, zoneHistoryLoads, ZONE_HISTORY_END, MAX_MEAN_TIME_DEPARTURE_MINUTES;
+var lmtEraEnd, lmtOffsets, lmtDateLine, lmtNames, lmtEraLoad, zoneHistories, zoneHistoryLoads, ZONE_HISTORY_END, MAX_MEAN_TIME_DEPARTURE_MINUTES;
 var init_birthplace_clock = __esm({
   "src/lib/time/birthplace-clock.ts"() {
     "use strict";
@@ -2129,6 +1203,7 @@ var init_birthplace_clock = __esm({
     lmtEraEnd = null;
     lmtOffsets = {};
     lmtDateLine = {};
+    lmtNames = /* @__PURE__ */ new Map();
     lmtEraLoad = null;
     zoneHistories = /* @__PURE__ */ new Map();
     zoneHistoryLoads = /* @__PURE__ */ new Map();
@@ -2173,6 +1248,7 @@ function offsetFormatter(tz) {
     } catch {
       throw new RangeError("An explicit supported timezone is required.");
     }
+    if (offsetFormatters.size >= 1024) offsetFormatters.clear();
     offsetFormatters.set(tz, f);
   }
   return f;
@@ -2194,6 +1270,7 @@ function wallFormatter(tz) {
       fractionalSecondDigits: 3,
       hourCycle: "h23"
     });
+    if (wallFormatters.size >= 1024) wallFormatters.clear();
     wallFormatters.set(tz, f);
   }
   return f;
@@ -2296,7 +1373,126 @@ var init_localToUtc = __esm({
 // src/lib/compute-api/local-time-source.ts
 init_localToUtc();
 init_tz_history_load();
+
+// src/lib/time/zone-names.ts
+init_module_load();
+init_tz_history_load();
+
+// import("../../data/tz-history/2025c/**/*.json") in src/lib/time/zone-names.ts
+var globImport_data_tz_history_2025c_json2 = __glob({
+  "../../data/tz-history/2025c/00.json": () => Promise.resolve().then(() => (init__(), __exports)),
+  "../../data/tz-history/2025c/01.json": () => Promise.resolve().then(() => (init__2(), __exports2)),
+  "../../data/tz-history/2025c/02.json": () => Promise.resolve().then(() => (init__3(), __exports3)),
+  "../../data/tz-history/2025c/03.json": () => Promise.resolve().then(() => (init__4(), __exports4)),
+  "../../data/tz-history/2025c/04.json": () => Promise.resolve().then(() => (init__5(), __exports5)),
+  "../../data/tz-history/2025c/05.json": () => Promise.resolve().then(() => (init__6(), __exports6)),
+  "../../data/tz-history/2025c/06.json": () => Promise.resolve().then(() => (init__7(), __exports7)),
+  "../../data/tz-history/2025c/07.json": () => Promise.resolve().then(() => (init__8(), __exports8)),
+  "../../data/tz-history/2025c/08.json": () => Promise.resolve().then(() => (init__9(), __exports9)),
+  "../../data/tz-history/2025c/09.json": () => Promise.resolve().then(() => (init__10(), __exports10)),
+  "../../data/tz-history/2025c/10.json": () => Promise.resolve().then(() => (init__11(), __exports11)),
+  "../../data/tz-history/2025c/11.json": () => Promise.resolve().then(() => (init__12(), __exports12)),
+  "../../data/tz-history/2025c/12.json": () => Promise.resolve().then(() => (init__13(), __exports13)),
+  "../../data/tz-history/2025c/13.json": () => Promise.resolve().then(() => (init__14(), __exports14)),
+  "../../data/tz-history/2025c/14.json": () => Promise.resolve().then(() => (init__15(), __exports15)),
+  "../../data/tz-history/2025c/15.json": () => Promise.resolve().then(() => (init__16(), __exports16)),
+  "../../data/tz-history/2025c/16.json": () => Promise.resolve().then(() => (init__17(), __exports17)),
+  "../../data/tz-history/2025c/17.json": () => Promise.resolve().then(() => (init__18(), __exports18)),
+  "../../data/tz-history/2025c/18.json": () => Promise.resolve().then(() => (init__19(), __exports19)),
+  "../../data/tz-history/2025c/19.json": () => Promise.resolve().then(() => (init__20(), __exports20)),
+  "../../data/tz-history/2025c/20.json": () => Promise.resolve().then(() => (init__21(), __exports21)),
+  "../../data/tz-history/2025c/21.json": () => Promise.resolve().then(() => (init__22(), __exports22)),
+  "../../data/tz-history/2025c/22.json": () => Promise.resolve().then(() => (init__23(), __exports23)),
+  "../../data/tz-history/2025c/23.json": () => Promise.resolve().then(() => (init__24(), __exports24)),
+  "../../data/tz-history/2025c/24.json": () => Promise.resolve().then(() => (init__25(), __exports25)),
+  "../../data/tz-history/2025c/25.json": () => Promise.resolve().then(() => (init__26(), __exports26)),
+  "../../data/tz-history/2025c/26.json": () => Promise.resolve().then(() => (init__27(), __exports27)),
+  "../../data/tz-history/2025c/27.json": () => Promise.resolve().then(() => (init__28(), __exports28)),
+  "../../data/tz-history/2025c/28.json": () => Promise.resolve().then(() => (init__29(), __exports29)),
+  "../../data/tz-history/2025c/29.json": () => Promise.resolve().then(() => (init__30(), __exports30)),
+  "../../data/tz-history/2025c/30.json": () => Promise.resolve().then(() => (init__31(), __exports31)),
+  "../../data/tz-history/2025c/31.json": () => Promise.resolve().then(() => (init__32(), __exports32)),
+  "../../data/tz-history/2025c/32.json": () => Promise.resolve().then(() => (init__33(), __exports33)),
+  "../../data/tz-history/2025c/33.json": () => Promise.resolve().then(() => (init__34(), __exports34)),
+  "../../data/tz-history/2025c/34.json": () => Promise.resolve().then(() => (init__35(), __exports35)),
+  "../../data/tz-history/2025c/35.json": () => Promise.resolve().then(() => (init__36(), __exports36)),
+  "../../data/tz-history/2025c/36.json": () => Promise.resolve().then(() => (init__37(), __exports37)),
+  "../../data/tz-history/2025c/37.json": () => Promise.resolve().then(() => (init__38(), __exports38)),
+  "../../data/tz-history/2025c/38.json": () => Promise.resolve().then(() => (init__39(), __exports39)),
+  "../../data/tz-history/2025c/39.json": () => Promise.resolve().then(() => (init__40(), __exports40)),
+  "../../data/tz-history/2025c/40.json": () => Promise.resolve().then(() => (init__41(), __exports41)),
+  "../../data/tz-history/2025c/41.json": () => Promise.resolve().then(() => (init__42(), __exports42)),
+  "../../data/tz-history/2025c/42.json": () => Promise.resolve().then(() => (init__43(), __exports43)),
+  "../../data/tz-history/2025c/43.json": () => Promise.resolve().then(() => (init__44(), __exports44)),
+  "../../data/tz-history/2025c/44.json": () => Promise.resolve().then(() => (init__45(), __exports45)),
+  "../../data/tz-history/2025c/45.json": () => Promise.resolve().then(() => (init__46(), __exports46)),
+  "../../data/tz-history/2025c/46.json": () => Promise.resolve().then(() => (init__47(), __exports47)),
+  "../../data/tz-history/2025c/47.json": () => Promise.resolve().then(() => (init__48(), __exports48)),
+  "../../data/tz-history/2025c/48.json": () => Promise.resolve().then(() => (init__49(), __exports49)),
+  "../../data/tz-history/2025c/49.json": () => Promise.resolve().then(() => (init__50(), __exports50)),
+  "../../data/tz-history/2025c/50.json": () => Promise.resolve().then(() => (init__51(), __exports51)),
+  "../../data/tz-history/2025c/51.json": () => Promise.resolve().then(() => (init__52(), __exports52)),
+  "../../data/tz-history/2025c/52.json": () => Promise.resolve().then(() => (init__53(), __exports53)),
+  "../../data/tz-history/2025c/53.json": () => Promise.resolve().then(() => (init__54(), __exports54)),
+  "../../data/tz-history/2025c/54.json": () => Promise.resolve().then(() => (init__55(), __exports55)),
+  "../../data/tz-history/2025c/55.json": () => Promise.resolve().then(() => (init__56(), __exports56)),
+  "../../data/tz-history/2025c/56.json": () => Promise.resolve().then(() => (init__57(), __exports57)),
+  "../../data/tz-history/2025c/57.json": () => Promise.resolve().then(() => (init__58(), __exports58)),
+  "../../data/tz-history/2025c/58.json": () => Promise.resolve().then(() => (init__59(), __exports59)),
+  "../../data/tz-history/2025c/59.json": () => Promise.resolve().then(() => (init__60(), __exports60)),
+  "../../data/tz-history/2025c/60.json": () => Promise.resolve().then(() => (init__61(), __exports61)),
+  "../../data/tz-history/2025c/61.json": () => Promise.resolve().then(() => (init__62(), __exports62)),
+  "../../data/tz-history/2025c/62.json": () => Promise.resolve().then(() => (init__63(), __exports63)),
+  "../../data/tz-history/2025c/63.json": () => Promise.resolve().then(() => (init__64(), __exports64)),
+  "../../data/tz-history/2025c/excluded.json": () => Promise.resolve().then(() => (init_excluded(), excluded_exports))
+});
+
+// src/lib/time/zone-names.ts
+function nameKey2(name) {
+  return /^[\x21-\x7e]{1,64}$/u.test(name) ? name.replace(/[A-Z]/gu, (letter) => letter.toLowerCase()) : null;
+}
+function byKey(names) {
+  const map = /* @__PURE__ */ new Map();
+  for (const name of names) {
+    const key = nameKey2(name);
+    if (key !== null) map.set(key, name);
+  }
+  return map;
+}
+var intlNames = null;
+function intlName(key) {
+  if (!intlNames) {
+    intlNames = byKey(typeof Intl.supportedValuesOf === "function" ? Intl.supportedValuesOf("timeZone") : []);
+  }
+  return intlNames.get(key);
+}
+var lmtNames2 = null;
+function lmtName(key) {
+  if (!lmtNames2) {
+    const pending = loadModule(() => Promise.resolve().then(() => (init_tz_lmt(), tz_lmt_exports))).then(({ default: table }) => byKey(Object.keys(table.eras)));
+    lmtNames2 = pending;
+    void pending.catch(() => {
+      if (lmtNames2 === pending) lmtNames2 = null;
+    });
+  }
+  return lmtNames2.then((names) => names.get(key));
+}
+async function pinnedName(key) {
+  const [bucket, excluded] = await Promise.all([
+    loadModule(() => globImport_data_tz_history_2025c_json2(`../../data/tz-history/2025c/${historyBucket(key)}.json`)),
+    loadModule(() => Promise.resolve().then(() => (init_excluded(), excluded_exports)))
+  ]);
+  const zones = Object.keys(bucket.default.zones);
+  return zones.find((zone) => nameKey2(zone) === key) ?? Object.keys(excluded.default.excluded).find((zone) => nameKey2(zone) === key);
+}
+async function canonicalZoneName(name) {
+  if (typeof name !== "string") return null;
+  const key = nameKey2(name);
+  if (key === null) return null;
+  return intlName(key) ?? await lmtName(key) ?? await pinnedName(key) ?? null;
+}
 export {
+  canonicalZoneName,
   loadZoneHistory,
   prepareLocalTime,
   resolveLocalToUtc

@@ -18,6 +18,8 @@ export interface LocalTimeModule {
   prepareLocalTime(date: string, timeZone: string): Promise<void>;
   resolveLocalToUtc(date: string, time: string, timeZone: string, options?: { longitude?: number }): LocalTimeResolution;
   loadZoneHistory(name: string): Promise<unknown>;
+  /** The tzdb spelling of a zone name given in any letter case, or null (src/lib/time/zone-names.ts). */
+  canonicalZoneName(name: string): Promise<string | null>;
 }
 
 export type LocalTimeFlag = LocalTimeResolution['flags'][number];

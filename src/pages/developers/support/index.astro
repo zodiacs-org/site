@@ -46,8 +46,9 @@ const engineRows = [
     <div class="prose">
       <p>
         <a href="/developers/">Developer tools</a> have different release states.
-        Public sky files, hosted embeds and the compute API are available now.
-        The local engine below is a downloadable review candidate.
+        Public sky files, hosted embeds and the compute API are available now;
+        the compute API answers only while its per-address rate limit is in
+        place. The local engine below is a downloadable review candidate.
       </p>
     </div>
 
@@ -179,11 +180,14 @@ const engineRows = [
         <a href="/developers/compute/">The compute API</a> runs the same engine
         on our server: six POST endpoints for a chart, positions, houses,
         events in a window, local time and sky facts, with no key. Birth data
-        goes in the request body; nothing from a request is stored or logged,
-        and no response is cached. Requests from one address are rate limited,
-        and each endpoint has published limits past which a request is refused
-        rather than computed. The public shared-sky files still take no birth
-        inputs.
+        goes in the request body; the function writes nothing from a request
+        to a log, a file or a database, and no response is cached, though the
+        host's request logs keep each request's web address and IP address.
+        Requests from one address are rate limited, and the endpoints answer
+        only while that limit is in place: until it is, and whenever it cannot
+        be checked, every endpoint answers 503. Each endpoint has published
+        limits past which a request is refused rather than computed. The
+        public shared-sky files still take no birth inputs.
       </p>
     </div>
 

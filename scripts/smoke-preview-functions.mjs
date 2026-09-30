@@ -165,8 +165,10 @@ const probes = [
     },
   },
   {
-    // A synthetic wall time in UTC: no one's birth. The compute function is
-    // on unless COMPUTE_API_ENABLED=0, which answers the designed 503.
+    // A synthetic wall time in UTC: no one's birth. The compute function
+    // answers 200 while its Firewall rules are in place; COMPUTE_API_ENABLED=0
+    // answers the designed 503 disabled, and a missing or unreadable rate
+    // limit the designed 503 rate-limit-unavailable (it fails closed).
     label: 'compute api time',
     path: '/api/v1/time',
     init: {
@@ -175,7 +177,7 @@ const probes = [
       body: JSON.stringify({ local: { date: '2000-01-01', time: '12:00', zone: 'UTC' } }),
     },
     accepts: (status) => status === 200 || status === 503,
-    expectation: 'HTTP 200, or the designed HTTP 503 when the API is switched off',
+    expectation: 'HTTP 200, or a designed HTTP 503 when the API is switched off or its rate limit is not in place',
     validate: (response, body) => {
       if ((response.headers.get('cache-control') ?? '') !== 'no-store') return 'a compute response is cacheable';
       if ((response.headers.get('access-control-allow-origin') ?? '') !== '*') return 'a compute response is not readable cross-origin';
@@ -185,7 +187,10 @@ const probes = [
       } catch {
         return 'the compute response is not valid JSON';
       }
-      if (response.status === 503) return answer?.error?.code === 'disabled' ? null : 'the 503 is not the designed disabled refusal';
+      if (response.status === 503) {
+        return ['disabled', 'rate-limit-unavailable'].includes(answer?.error?.code) && response.headers.get('retry-after')
+          ? null : 'the 503 is not a designed refusal with Retry-After';
+      }
       if (answer.schema !== 'zodiacs.compute-api.time.v1') return 'the time answer has the wrong schema';
       if (answer.result?.utc !== '2000-01-01T12:00:00.000Z') return 'the time answer resolved 12:00 UTC to another instant';
       if (answer.cite?.url !== 'https://zodiacs.org/developers/compute/#time') return 'the time answer does not cite its documentation';

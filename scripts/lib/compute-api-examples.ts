@@ -28,7 +28,7 @@ export interface ExampleSet {
 }
 
 export async function computeExamples(localTime: LocalTimeModule = sourceLocalTime): Promise<ExampleSet> {
-  const handler = createComputeApiHandler({ localTime, env: {}, isRateLimited: async () => false });
+  const handler = createComputeApiHandler({ localTime, env: {}, rateLimit: async () => 'allowed' });
   const success: ExampleSet['success'] = {};
   for (const [endpoint, examples] of Object.entries(SUCCESS_EXAMPLES)) {
     success[endpoint] = {};
@@ -45,7 +45,7 @@ export async function computeExamples(localTime: LocalTimeModule = sourceLocalTi
     const refusing = createComputeApiHandler({
       localTime: example.code === 'calculation-failed' ? FAILING_LOCAL_TIME : localTime,
       env: example.env ?? {},
-      isRateLimited: async () => example.rateLimited === true,
+      rateLimit: async () => example.rateLimit ?? 'allowed',
     });
     const response = await run(refusing, {
       endpoint: example.endpoint,

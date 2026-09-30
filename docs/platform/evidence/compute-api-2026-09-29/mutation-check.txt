@@ -1,4 +1,82 @@
-Mutation check of the compute API's negative control, 2026-09-29.
+Mutation checks of the compute API's negative control
+(tests/api/compute-api-privacy.test.ts). Leaks were planted one at a time and
+never committed.
+
+
+2026-09-30, after the review
+
+The review's two mutation scripts plant 20 leaks in src/lib/compute-api/
+handler.ts, endpoints.ts and validate.ts. The review ran the second script's
+five against all six compute test files; here all 20 ran against the negative
+control alone. The only change to the scripts: the dispatch call the second
+script plants after now takes the zone lookup as its fourth argument. After
+each run the file was written back, and after the last, all three files had
+the same SHA-256 as before the first plant.
+
+Command, for each plant:
+  NO_COLOR=1 node_modules/.bin/vitest run --reporter=verbose tests/api/compute-api-privacy.test.ts
+
+The test file's tests:
+  1  keeps every canary out of logs, output, errors, files, globals, headers
+     and error bodies, with the real Firewall SDK
+  2  keeps every canary out of the same places when the compatibility
+     function serves the request, as deployed
+  3  writes nothing at all to any console method, the output or a file when
+     the rate limit is not consulted
+  4  sees what a leak would look like: one planted leak of each kind is caught
+  (the other two check the canaries themselves, and that no page of the site
+  calls the API; neither failed under any plant)
+
+Every plant made at least one test fail. Findings are the lines of the
+failing tests' lists, from tests 1 and 2 together.
+
+  Plant                                      Failed   Findings
+  none (baseline)                            -        6 of 6 tests pass
+  console.log(body) after parsing            1 2 3    console carries a canary (218)
+  a header echoing the zone                  1 2 4    response headers carry a canary (32);
+                                                      headers differ from the fixed set (44)
+  statusMessage set from a global            1 2      set a status message of its own (62)
+  a string-type error repeating the value    1 2      error body carries a canary (6);
+                                                      message not a fixed sentence (2)
+  a latitude error repeating the value       1 2      error body carries a canary (6);
+                                                      message not a fixed sentence (2)
+  a log of the events window's end           3        console not silent ("events")
+  a log of latitude and longitude to 0.01    3        console not silent ("chart from local time")
+  a log of the instant's Julian day          3        console not silent ("chart from local time")
+  a log 50 ms later (setTimeout)             1 2 3    console carries a canary (86)
+  the body written to a file                 1 2 3 4  a file carries a canary (227);
+                                                      wrote to a file (44)
+  process.emitWarning with the body          1 2 3    stdout/stderr carries a canary (218)
+  the body kept in a global                  1 2 3 4  globalThis.__lastBody added (4)
+  a log of sky-fact requests only            1 2 3    console carries a canary (12)
+  a log of positions requests only           1 2 3    console carries a canary (8)
+  a log of the events found                  3        console not silent ("events")
+  statusMessage carrying the zone            1 2      status message carries a canary (14);
+                                                      set a status message of its own (24)
+  a latitude error repeating the number      1 2      error body carries a canary (6);
+                                                      message not a fixed sentence (2)
+  a longitude error repeating the number     1 2      error body carries a canary (6);
+                                                      message not a fixed sentence (2)
+  a date error repeating the date            1 2      error body carries a canary (2);
+                                                      message not a fixed sentence (2)
+  a header with latitude to one decimal      1 2      headers differ from the fixed set (10)
+
+The five plants the review found missed by the test of 2026-09-29 (a
+longitude error repeating the number, a header with latitude to one decimal,
+statusMessage carrying the zone, the body written to a file, the body kept in
+a global) are all caught, and test 4 plants each of them on every run.
+
+What the canary scan alone does not see: a value derived in a form it does not
+list. The window's end, coordinates to two decimals, a Julian day and the
+events found are none of the canaries, so tests 1 and 2 pass under those four
+plants; test 3, which allows no console output, the process's output or file
+writes at all, fails under each. A derived value in a header, the reason
+phrase or an error is caught by the fixed-set checks (headers exactly the set
+for the status, no status message of the handler's own, every error field from
+the catalogs), and in a global by the snapshot of global names.
+
+
+2026-09-29, before the review
 
 Planted in src/lib/compute-api/handler.ts, after the body is read (never committed):
 

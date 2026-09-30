@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 import Ajv2020 from 'ajv/dist/2020.js';
 import addFormats from 'ajv-formats';
 import { describe, expect, it } from 'vitest';
-import { COMPUTE_ENDPOINTS, computePath, type ComputeEndpoint } from '../../src/lib/compute-api/constants';
+import { COMPUTE_ENDPOINTS, PREFLIGHT_HEADERS, RETRY_AFTER_SECONDS, computePath, type ComputeEndpoint } from '../../src/lib/compute-api/constants';
 import { createComputeApiHandler } from '../../src/lib/compute-api/handler';
 import { REFUSAL_EXAMPLES, SUCCESS_EXAMPLES } from '../../src/lib/compute-api/examples';
 import * as localTime from '../../src/lib/compute-api/local-time-source';
@@ -46,9 +46,17 @@ describe('compute API in the OpenAPI document', () => {
   it('describes all six endpoints as POST operations with schemas and examples for every request and response', () => {
     expect(openapi.openapi).toBe('3.1.0');
     expect(openapi.tags.map((tag: any) => tag.name)).toContain('compute');
+    // OpenAPI 3.1: a licence names an SPDX identifier or a URL, never both.
+    expect(openapi.info.license).toEqual({ name: 'CC BY 4.0', identifier: 'CC-BY-4.0' });
     for (const endpoint of COMPUTE_ENDPOINTS) {
       const item = openapi.paths[computePath(endpoint)];
-      expect(Object.keys(item), endpoint).toEqual(['post']);
+      expect(Object.keys(item).sort(), endpoint).toEqual(['options', 'post']);
+      // The preflight: 204, no body, the CORS headers the handler sends.
+      expect(Object.keys(item.options.responses)).toEqual(['204']);
+      expect(item.options.responses['204'].content).toBeUndefined();
+      for (const [name, value] of Object.entries(PREFLIGHT_HEADERS)) {
+        if (name.startsWith('Access-Control-') || name === 'Cache-Control') expect(item.options.responses['204'].headers[name].schema.const).toBe(value);
+      }
       const operation = item.post;
       expect(operation.tags).toEqual(['compute']);
       expect(operation.description).toContain(`https://zodiacs.org/developers/compute/#${endpoint}`);
@@ -63,8 +71,23 @@ describe('compute API in the OpenAPI document', () => {
         expect(response.headers['Cache-Control'].schema.const).toBe('no-store');
       }
       expect(Object.keys(operation.responses).sort()).toEqual(
-        ['200', '400', '405', '413', '415', ...(['positions', 'events', 'sky-fact'].includes(endpoint) ? ['422'] : []), '429', '500', '503'].sort(),
+        ['200', '400', '404', '405', '413', '415', ...(['positions', 'events', 'sky-fact'].includes(endpoint) ? ['422'] : []), '429', '500', '503'].sort(),
       );
+      // The headers a client acts on are declared where they are sent.
+      expect(operation.responses['405'].headers.Allow.schema.const).toBe('POST, OPTIONS');
+      expect(operation.responses['429'].headers['Retry-After'].schema.enum).toEqual([RETRY_AFTER_SECONDS.rateLimited]);
+      expect(operation.responses['503'].headers['Retry-After'].schema.enum.sort())
+        .toEqual([RETRY_AFTER_SECONDS.rateLimitUnavailable, RETRY_AFTER_SECONDS.disabled].sort());
+      expect(Object.keys(operation.responses['503'].content['application/json'].examples).sort()).toEqual(['disabled', 'rate-limit-unavailable']);
+    }
+  });
+
+  it('shows every refusal example with the headers the handler sent with it', () => {
+    for (const [name, refusal] of Object.entries<any>(committed.refusals)) {
+      const expected: Record<string, string> = {};
+      if (refusal.status === 405) expected.allow = 'POST, OPTIONS';
+      if (refusal.status === 429 || refusal.status === 503) expected['retry-after'] = String(refusal.response.error.retryAfterSeconds);
+      expect(refusal.headers, name).toEqual(expected);
     }
   });
 
@@ -111,7 +134,7 @@ describe('compute API in the OpenAPI document', () => {
   });
 
   it('agrees with the handler about which requests are valid, where a schema can say so', async () => {
-    const handler = createComputeApiHandler({ localTime, env: {}, isRateLimited: async () => false });
+    const handler = createComputeApiHandler({ localTime, env: {}, rateLimit: async () => 'allowed' });
     const cases: Array<[ComputeEndpoint, unknown, boolean]> = [
       ['chart', { utc: '2000-01-01T12:00:00Z', latitude: 10, longitude: 10 }, true],
       ['chart', { utc: '2000-01-01T12:00:00Z', latitude: 90, longitude: 10 }, false],
@@ -130,6 +153,7 @@ describe('compute API in the OpenAPI document', () => {
       ['events', { from: '2026-01-01T00:00:00Z', to: '2026-01-02T00:00:00Z', kinds: [] }, false],
       ['events', { from: '2026-01-01T00:00:00Z' }, false],
       ['time', { local: { date: '2026-01-01', time: '12:00', zone: 'Asia/Tokyo' }, longitude: 139.7 }, true],
+      ['time', { local: { date: '2026-01-01', time: '12:00', zone: 'asia/tokyo' } }, true],
       ['time', { local: { date: '2026-01-01', time: '12:00' } }, false],
       ['sky-fact', { kind: 'sign', body: 'Sun', sign: 'libra', date: '2026-09-29' }, true],
       ['sky-fact', { kind: 'sign', body: 'Sun', sign: 'libra', instant: '2026-09-29T00:00:00Z', zone: 'UTC' }, false],

@@ -618,7 +618,7 @@
           "provenance": {
             "runtime": {
               "name": "node",
-              "tzdbVersion": "2025c"
+              "tzdbVersion": "2026c"
             },
             "status": "claimed"
           },
@@ -638,7 +638,7 @@
         },
         "cite": {
           "url": "https://zodiacs.org/developers/compute/#chart",
-          "receipt": "sha256:e53fc2a52dfe1e6752091c77ad6bcbf0b328884a262b986c411c8a262bff9601",
+          "receipt": "sha256:b0566c827755cc38115e4b53f969d3f4b1e1b249f272d305ba39ecf11f55e268",
           "engine": "@zodiacs/engine",
           "version": "0.1.1-rc.14"
         }
@@ -993,7 +993,7 @@
             },
             "bisections": 24,
             "samples": 514,
-            "maxSamples": 40000,
+            "maxSamples": 12000,
             "window": "start-exclusive-end-inclusive",
             "completeness": "tested-not-proven"
           }
@@ -1008,7 +1008,7 @@
         },
         "cite": {
           "url": "https://zodiacs.org/developers/compute/#events",
-          "receipt": "sha256:0fad2e2d89f19f815dcf94c79ec723e251d2053304a7a45b2d7379155fb5dcae",
+          "receipt": "sha256:24b98dc7103e0478de4c19df87cc5b1164dec903ab24b2386df99479d2a03b6d",
           "engine": "@zodiacs/engine",
           "version": "0.1.1-rc.14"
         }
@@ -1084,7 +1084,7 @@
               "appliesBefore": "1970-01-02",
               "requires": "longitude"
             },
-            "runtimeTzdb": "2025c"
+            "runtimeTzdb": "2026c"
           }
         },
         "backend": {
@@ -1097,7 +1097,7 @@
         },
         "cite": {
           "url": "https://zodiacs.org/developers/compute/#time",
-          "receipt": "sha256:992c381ddafb32eb2b2f471208c5eab9944f69fd4dec15f3a0adbb4aee3cf530",
+          "receipt": "sha256:f799411bc2a4e1819e5c4e0cd1427c34b411ffd8b3ebc3cb320446ba682f46cd",
           "engine": "@zodiacs/engine",
           "version": "0.1.1-rc.14"
         }
@@ -1173,7 +1173,7 @@
               "appliesBefore": "1970-01-02",
               "requires": "longitude"
             },
-            "runtimeTzdb": "2025c"
+            "runtimeTzdb": "2026c"
           }
         },
         "backend": {
@@ -1186,7 +1186,7 @@
         },
         "cite": {
           "url": "https://zodiacs.org/developers/compute/#time",
-          "receipt": "sha256:992c381ddafb32eb2b2f471208c5eab9944f69fd4dec15f3a0adbb4aee3cf530",
+          "receipt": "sha256:f799411bc2a4e1819e5c4e0cd1427c34b411ffd8b3ebc3cb320446ba682f46cd",
           "engine": "@zodiacs/engine",
           "version": "0.1.1-rc.14"
         }
@@ -1248,7 +1248,8 @@
                 "at": "2026-10-24T07:15:27.691Z",
                 "type": "retrograde"
               }
-            ]
+            ],
+            "flags": []
           }
         },
         "receipt": {
@@ -1301,7 +1302,7 @@
               "appliesBefore": "1970-01-02",
               "requires": "longitude"
             },
-            "runtimeTzdb": "2025c"
+            "runtimeTzdb": "2026c"
           },
           "search": {
             "solver": "engine-longitude-crossings",
@@ -1327,7 +1328,7 @@
         },
         "cite": {
           "url": "https://zodiacs.org/developers/compute/#sky-fact",
-          "receipt": "sha256:2d2895dce55975fcff5d91e921325f0dc35d6863623f527e9d6bba69a1271cbe",
+          "receipt": "sha256:dbcfa2d8ea6cce0e2eeaab1a387b292586f88339d771b8ca2ac9a91c5558bb14",
           "engine": "@zodiacs/engine",
           "version": "0.1.1-rc.14"
         }
@@ -1357,7 +1358,8 @@
                 "sign": "taurus",
                 "degree": 2.7615356511374216
               }
-            ]
+            ],
+            "flags": []
           }
         },
         "receipt": {
@@ -1518,6 +1520,16 @@
     }
   },
   "refusals": {
+    "not-found": {
+      "status": 404,
+      "headers": {},
+      "response": {
+        "error": {
+          "code": "not-found",
+          "message": "No compute endpoint is served at this address."
+        }
+      }
+    },
     "invalid-request": {
       "status": 400,
       "headers": {},
@@ -1579,9 +1591,9 @@
       "response": {
         "error": {
           "code": "budget-exhausted",
-          "message": "An events window is at most 366 days long.",
+          "message": "An events window is at most 92 days long.",
           "limit": "events.windowDays",
-          "max": 366
+          "max": 92
         }
       }
     },
@@ -1595,6 +1607,19 @@
           "code": "rate-limited",
           "message": "Too many requests from this address. Try again after the interval in Retry-After.",
           "retryAfterSeconds": 60
+        }
+      }
+    },
+    "rate-limit-unavailable": {
+      "status": 503,
+      "headers": {
+        "retry-after": "300"
+      },
+      "response": {
+        "error": {
+          "code": "rate-limit-unavailable",
+          "message": "The compute API answers only while its rate limit is in place, and the limit could not be checked. Try again after the interval in Retry-After.",
+          "retryAfterSeconds": 300
         }
       }
     },

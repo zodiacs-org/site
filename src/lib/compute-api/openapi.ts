@@ -9,13 +9,16 @@
  * schemas are open, because within v1 fields are added, never renamed or
  * removed. A schema cannot state every rule the server applies (a real
  * calendar date, an offset that keeps an instant inside the epoch, a zone the
- * server's time zone data knows); those are refused with invalid-request too.
+ * server's time zone data knows, an events window whose `to` is after its
+ * `from`); those are refused with invalid-request too.
  */
 import {
   COMPUTE_DOCS_URL,
   COMPUTE_RECEIPT_SCHEMA,
   COMPUTE_ENDPOINTS,
   ERROR_CODES,
+  PREFLIGHT_HEADERS,
+  RETRY_AFTER_SECONDS,
   EVENT_BODIES,
   EVENT_KINDS,
   HOUSE_SYSTEM_NAMES,
@@ -43,10 +46,26 @@ const OFFSET = '(?:Z|[+-](?:(?:0\\d|1[0-3]):[0-5]\\d|14:00))';
 
 const outputInstant = { type: 'string', format: 'date-time' };
 const bodyName = { enum: [...POSITION_BODIES] };
+const eventBody = { enum: [...EVENT_BODIES] };
 const sign = { enum: [...SIGN_SLUGS] };
 const num = { type: 'number' };
 const bool = { type: 'boolean' };
 const str = { type: 'string' };
+const ZONE_PATTERN = '^[A-Za-z][A-Za-z0-9_+-]*(?:/[A-Za-z0-9_+-]+){0,3}$';
+const requestZone = {
+  type: 'string',
+  maxLength: 64,
+  pattern: ZONE_PATTERN,
+  description: 'An IANA time zone name, such as Europe/Paris, in any letter case. The answer names it as tzdb spells it.',
+};
+const spanFlags = { type: 'array', items: { const: 'outside-reference-span' }, maxItems: 1 };
+const list = (items: Schema): Schema => ({ type: 'array', items });
+const object = (required: string[], properties: Record<string, unknown>, description?: string): Schema => ({
+  type: 'object',
+  required,
+  properties,
+  ...(description ? { description } : {}),
+});
 
 export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
   Instant: {
@@ -64,7 +83,7 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
     properties: {
       date: { type: 'string', pattern: `^${DATE}$`, description: 'A real proleptic Gregorian date, 1800-01-01 to 2199-12-31.' },
       time: { type: 'string', pattern: `^${CLOCK}$`, description: 'Hours and minutes, 00:00 to 23:59.' },
-      zone: { type: 'string', maxLength: 64, pattern: '^[A-Za-z][A-Za-z0-9_+-]*(?:/[A-Za-z0-9_+-]+){0,3}$', description: 'An IANA time zone name, such as Europe/Paris.' },
+      zone: requestZone,
     },
   },
   Latitude: { type: 'number', exclusiveMinimum: -90, exclusiveMaximum: 90, description: 'Degrees north. The poles are refused: the engine does not compute angles there.' },
@@ -98,7 +117,7 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
     type: 'object',
     additionalProperties: false,
     required: ['from', 'to'],
-    description: `A window of at most ${BUDGETS['events.windowDays']} days, from its start (excluded) to its end (included).`,
+    description: `A window of at most ${BUDGETS['events.windowDays']} days, from its start (excluded) to its end (included). The end must be later than the start, which the schema cannot state.`,
     properties: {
       from: ref('Instant'),
       to: ref('Instant'),
@@ -141,7 +160,7 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
       sign,
       instant: ref('Instant'),
       date: { type: 'string', pattern: `^${DATE}$` },
-      zone: { type: 'string', maxLength: 64, pattern: '^[A-Za-z][A-Za-z0-9_+-]*(?:/[A-Za-z0-9_+-]+){0,3}$' },
+      zone: requestZone,
     },
   },
   RetrogradeFact: {
@@ -157,7 +176,7 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
       body: { enum: [...EVENT_BODIES] },
       instant: ref('Instant'),
       date: { type: 'string', pattern: `^${DATE}$` },
-      zone: { type: 'string', maxLength: 64, pattern: '^[A-Za-z][A-Za-z0-9_+-]*(?:/[A-Za-z0-9_+-]+){0,3}$' },
+      zone: requestZone,
     },
   },
   IngressFact: {
@@ -169,7 +188,7 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
       body: { enum: [...EVENT_BODIES] },
       sign,
       date: { type: 'string', pattern: `^${DATE}$` },
-      zone: { type: 'string', maxLength: 64, pattern: '^[A-Za-z][A-Za-z0-9_+-]*(?:/[A-Za-z0-9_+-]+){0,3}$' },
+      zone: requestZone,
     },
   },
   PhaseFact: {
@@ -180,7 +199,7 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
       kind: { const: 'phase' },
       phase: { enum: [...PHASE_NAMES] },
       date: { type: 'string', pattern: `^${DATE}$` },
-      zone: { type: 'string', maxLength: 64, pattern: '^[A-Za-z][A-Za-z0-9_+-]*(?:/[A-Za-z0-9_+-]+){0,3}$' },
+      zone: requestZone,
     },
   },
 
@@ -232,6 +251,7 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
   LocalResolution: {
     type: 'object',
     required: ['offsetMinutes', 'flags', 'localMeanTime', 'zoneHistory', 'zoneUncertain'],
+    description: 'How a local time was read: the offset applied, the resolver\'s flags, the birthplace\'s own mean time if it was used, and which zone history gave the offset.',
     properties: {
       offsetMinutes: { type: 'number', description: 'Minutes east of UTC; fractional before standard time.' },
       flags: { type: 'array', items: { enum: ['dst-gap', 'dst-fold', 'lmt'] } },
@@ -311,7 +331,7 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
     type: 'object',
     additionalProperties: false,
     required: ['url', 'receipt', 'engine', 'version'],
-    description: 'What to quote: the documentation of this endpoint, a digest that identifies the receipt in this response (SHA-256 over its RFC 8785 canonical JSON), and the engine and its version.',
+    description: 'What to quote: the documentation of this endpoint, a digest that identifies the receipt in this response (SHA-256 over its RFC 8785 canonical JSON), and the engine and its version. For chart and houses the receipt holds the instant and the coordinates, so the digest identifies the birth details: anyone who knows the date and the place can find the time by trying times until the digest matches. Quote it only where the birth details may be known.',
     properties: {
       url: { type: 'string', format: 'uri' },
       receipt: { type: 'string', pattern: '^sha256:[0-9a-f]{64}$' },
@@ -401,7 +421,11 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
     properties: {
       utc: outputInstant,
       offsetMinutes: num,
-      flags: { type: 'array', items: { enum: ['dst-gap', 'dst-fold', 'lmt'] } },
+      flags: {
+        type: 'array',
+        items: { enum: ['dst-gap', 'dst-fold', 'lmt', 'outside-reference-span'] },
+        description: 'The resolver\'s flags, and outside-reference-span when a local time at the ends of the accepted dates falls outside the instant span.',
+      },
       localMeanTime: nullable({ type: 'object', required: ['longitude', 'zoneOffsetMinutes'], properties: { longitude: num, zoneOffsetMinutes: num } }),
       zoneHistory: { enum: ['pinned', 'runtime'] },
       zoneUncertain: bool,
@@ -409,17 +433,56 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
       deltaT: ref('DeltaT'),
     },
   },
+  BodyState: object(['lon', 'sign', 'degree', 'speed', 'retrograde'], {
+    lon: num, sign, degree: num, speed: num, retrograde: bool,
+  }, 'A body\'s longitude, sign, degree, speed and direction at one instant.'),
+  ZoneEdge: {
+    allOf: [ref('LocalResolution'), object(['utc'], { utc: outputInstant })],
+    description: 'A midnight of the day in its zone: the instant, and how the local time was read.',
+  },
+  SkyFactEcho: object(['kind', 'date', 'zone'], {
+    kind: { enum: ['sign', 'retrograde', 'ingress', 'phase'] },
+    body: eventBody,
+    sign,
+    phase: { enum: [...PHASE_NAMES] },
+    instant: nullable(outputInstant),
+    date: nullable({ type: 'string', pattern: `^${DATE}$` }),
+    zone: nullable({ type: 'string', description: 'The zone as tzdb spells it.' }),
+  }, 'The fact as the server read it, with the zone as tzdb spells it.'),
   SkyFactResult: {
     type: 'object',
     required: ['answer', 'basis', 'fact', 'instant', 'window', 'zone', 'facts'],
     properties: {
       answer: { enum: ['true', 'false', 'depends'] },
       basis: { enum: ['instant', 'local-day', 'any-zone-day'] },
-      fact: { type: 'object' },
-      instant: { anyOf: [outputInstant, { type: 'null' }] },
-      window: nullable({ type: 'object', required: ['from', 'to'], properties: { from: outputInstant, to: outputInstant } }),
-      zone: nullable({ type: 'object', required: ['start', 'end'] }),
-      facts: { type: 'object', description: 'The computed values that decide the answer; their fields depend on the kind and the basis.' },
+      fact: ref('SkyFactEcho'),
+      instant: nullable(outputInstant),
+      window: nullable(object(['from', 'to'], { from: outputInstant, to: outputInstant }, 'The day read: from its start (included) to its end (excluded).')),
+      zone: nullable(object(['start', 'end'], { start: ref('ZoneEdge'), end: ref('ZoneEdge') }, 'The two midnights of a day read in a zone.')),
+      facts: {
+        description: 'The computed values that decide the answer. At an instant: the body\'s state there. On a day: the state at its start and end with the sign changes or stations between, or the ingresses or lunations in it. flags holds outside-reference-span when the instant or the day reaches past the instant span.',
+        oneOf: [
+          object(['lon', 'sign', 'degree', 'speed', 'retrograde', 'deltaT', 'flags'], {
+            lon: num, sign, degree: num, speed: num, retrograde: bool, deltaT: ref('DeltaT'),
+            boundaryMarginArcsec: { type: 'number', minimum: 0, description: 'For a sign fact: the distance to the nearer sign boundary.' },
+            flags: spanFlags,
+          }, 'At an instant.'),
+          object(['atStart', 'atEnd', 'changes', 'flags'], {
+            atStart: ref('BodyState'), atEnd: ref('BodyState'), flags: spanFlags,
+            changes: list(object(['at', 'into', 'retrograde'], { at: outputInstant, into: sign, retrograde: bool })),
+          }, 'A sign on a day: the sign changes in the day.'),
+          object(['atStart', 'atEnd', 'stations', 'flags'], {
+            atStart: ref('BodyState'), atEnd: ref('BodyState'), flags: spanFlags,
+            stations: list(object(['at', 'type'], { at: outputInstant, type: { enum: ['retrograde', 'direct'] } })),
+          }, 'Retrograde on a day: the stations in the day.'),
+          object(['ingresses', 'flags'], {
+            ingresses: list(object(['at', 'retrograde'], { at: outputInstant, retrograde: bool })), flags: spanFlags,
+          }, 'An ingress on a day.'),
+          object(['lunations', 'flags'], {
+            lunations: list(object(['at', 'lon', 'sign', 'degree'], { at: outputInstant, lon: num, sign, degree: num })), flags: spanFlags,
+          }, 'A phase on a day.'),
+        ],
+      },
     },
   },
   ErrorResponse: {
@@ -506,13 +569,20 @@ const DESCRIPTIONS: Readonly<Record<ComputeEndpoint, string>> = {
   'sky-fact': 'A structured fact, never interpretive text, answered true, false or depends, with the computed values that decide it. A fact about a date is depends when the answer turns on the time of day or, with no zone given, on the zone.',
 };
 
-function errorResponse(description: string, names: readonly string[]): Schema {
+const RETRY_AFTER_HEADER = (seconds: readonly number[], what: string): Schema => ({
+  required: true,
+  description: `Seconds to wait before trying again: ${what}.`,
+  schema: { type: 'integer', enum: [...seconds] },
+});
+
+function errorResponse(description: string, names: readonly string[], headers: Record<string, Schema> = {}): Schema {
   const refusals = examples.refusals as Record<string, { response: unknown }>;
   return {
     description,
     headers: {
       'Cache-Control': { schema: { const: 'no-store' } },
       'Access-Control-Allow-Origin': { schema: { const: '*' } },
+      ...headers,
     },
     content: {
       'application/json': {
@@ -526,13 +596,29 @@ function errorResponse(description: string, names: readonly string[]): Schema {
   };
 }
 
+const operationName = (endpoint: ComputeEndpoint) => (endpoint === 'sky-fact' ? 'SkyFact' : endpoint.charAt(0).toUpperCase() + endpoint.slice(1));
+
 function operation(endpoint: ComputeEndpoint): Schema {
   const success = (examples.success as Record<string, Record<string, unknown>>)[endpoint];
   const requests = SUCCESS_EXAMPLES[endpoint];
   const budgeted = endpoint === 'positions' || endpoint === 'events' || endpoint === 'sky-fact';
   return {
+    options: {
+      operationId: `preflight${operationName(endpoint)}`,
+      summary: 'CORS preflight',
+      description: 'Answered before anything else is checked, with no body, so that a page on another site can POST to the endpoint.',
+      tags: ['compute'],
+      responses: {
+        204: {
+          description: 'The methods and headers a cross-origin POST may use.',
+          headers: Object.fromEntries(Object.entries(PREFLIGHT_HEADERS)
+            .filter(([name]) => name !== 'X-Content-Type-Options' && name !== 'X-Robots-Tag')
+            .map(([name, value]) => [name, { schema: { const: value } }])),
+        },
+      },
+    },
     post: {
-      operationId: `compute${endpoint === 'sky-fact' ? 'SkyFact' : endpoint.charAt(0).toUpperCase() + endpoint.slice(1)}`,
+      operationId: `compute${operationName(endpoint)}`,
       summary: SUMMARIES[endpoint],
       description: `${DESCRIPTIONS[endpoint]} Documentation: ${computeDocsUrl(endpoint)}`,
       tags: ['compute'],
@@ -560,13 +646,20 @@ function operation(endpoint: ComputeEndpoint): Schema {
           },
         },
         400: errorResponse('The body is not JSON, or a field is missing, unknown or invalid.', ['invalid-request', 'invalid-json']),
-        405: errorResponse('Only POST, and OPTIONS for a CORS preflight.', ['method-not-allowed']),
+        404: errorResponse('The request reached the compute function by a path that is not one of the six endpoints. The six paths never answer it.', ['not-found']),
+        405: errorResponse('Only POST, and OPTIONS for a CORS preflight.', ['method-not-allowed'], {
+          Allow: { required: true, description: 'The methods the endpoint takes.', schema: { const: 'POST, OPTIONS' } },
+        }),
         413: errorResponse(`The body is over ${MAX_BODY_BYTES} bytes.`, ['payload-too-large']),
         415: errorResponse('The body is not sent as application/json.', ['unsupported-media-type']),
         ...(budgeted ? { 422: errorResponse('The request is over one of the endpoint\'s compute budgets, which the error names.', ['budget-exhausted']) } : {}),
-        429: errorResponse('Over the per-address rate limit; Retry-After gives the seconds to wait.', ['rate-limited']),
+        429: errorResponse('Over a per-address rate limit; Retry-After gives the seconds to wait.', ['rate-limited'], {
+          'Retry-After': RETRY_AFTER_HEADER([RETRY_AFTER_SECONDS.rateLimited], 'the length of the rate limit\'s window'),
+        }),
         500: errorResponse('The engine could not complete the calculation.', ['calculation-failed']),
-        503: errorResponse('The compute endpoints are switched off; Retry-After gives the seconds to wait.', ['disabled']),
+        503: errorResponse('The compute endpoints are switched off, or their rate limit is not in place or could not be checked: they answer only while it is. Retry-After gives the seconds to wait.', ['disabled', 'rate-limit-unavailable'], {
+          'Retry-After': RETRY_AFTER_HEADER([RETRY_AFTER_SECONDS.rateLimitUnavailable, RETRY_AFTER_SECONDS.disabled], `${RETRY_AFTER_SECONDS.rateLimitUnavailable} when the rate limit could not be checked, ${RETRY_AFTER_SECONDS.disabled} when the API is switched off`),
+        }),
       },
     },
   };
@@ -574,7 +667,7 @@ function operation(endpoint: ComputeEndpoint): Schema {
 
 export const COMPUTE_TAG = Object.freeze({
   name: 'compute',
-  description: `Calculations from a POST body, on the vendored @zodiacs/engine. Birth data goes only in the body; any query string is ignored. Responses are not cached and nothing from a request is kept. Documentation: ${COMPUTE_DOCS_URL}`,
+  description: `Calculations from a POST body, on the vendored @zodiacs/engine. Birth data goes only in the body; any query string is ignored. The function writes nothing from a request or its result to a log, a file or a database, and responses are not cached; the host's request logs keep each request's web address and IP address. The endpoints answer only while their per-address rate limit is in place, and 503 otherwise. A body with a repeated key is read as JSON.parse reads it: the last value wins. Documentation: ${COMPUTE_DOCS_URL}`,
 });
 
 export function computeOpenApiPaths(): Record<string, Schema> {

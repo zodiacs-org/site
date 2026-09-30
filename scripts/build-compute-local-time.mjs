@@ -12,6 +12,12 @@
  * rather than a second implementation, with every table inlined. The bundle
  * imports nothing at run time, which the build asserts.
  *
+ * Each table is inlined as one JSON string, parsed when it is first imported,
+ * rather than as an object literal. The tables are nearly all of the bundle's
+ * bytes: as literals they were some 41,000 of its 49,732 syntax nodes, which
+ * every tool parsing the repository's sources paid for (the import-graph tests
+ * read api/), and V8 parses JSON text faster than the same data as code.
+ *
  * Source: src/lib/compute-api/local-time-source.ts. Output:
  * api/_compute/local-time.mjs and its declarations, local-time.d.mts. The
  * leading underscore keeps Vercel from deploying the directory as functions.
@@ -45,7 +51,20 @@ export declare function resolveLocalToUtc(
 export declare function loadZoneHistory(
   name: string,
 ): Promise<{ readonly t: readonly number[]; readonly o: readonly (number | null)[] } | null>;
+export declare function canonicalZoneName(name: string): Promise<string | null>;
 `;
+
+/** Every JSON table as one string literal, parsed at its first import. */
+const jsonAsText = {
+  name: 'json-as-text',
+  setup(build) {
+    // esbuild takes Go regular expressions: no u flag.
+    build.onLoad({ filter: /\.json$/ }, async (args) => {
+      const text = JSON.stringify(JSON.parse(await readFile(args.path, 'utf8')));
+      return { contents: `export default JSON.parse(${JSON.stringify(text)});\n`, loader: 'js' };
+    });
+  },
+};
 
 /**
  * Module loading in the output, read from its syntax tree rather than its
@@ -73,7 +92,11 @@ async function tableFiles() {
   const history = (await readdir(resolve(ROOT, 'src/data/tz-history/2025c')))
     .filter((name) => /^\d{2}\.json$/u.test(name))
     .sort();
-  return ['src/data/tz-lmt.json', ...history.map((name) => `src/data/tz-history/2025c/${name}`)];
+  return [
+    'src/data/tz-lmt.json',
+    'src/data/tz-history/2025c/excluded.json',
+    ...history.map((name) => `src/data/tz-history/2025c/${name}`),
+  ];
 }
 
 export async function buildLocalTimeBundle() {
@@ -96,6 +119,7 @@ export async function buildLocalTimeBundle() {
     minify: false,
     write: false,
     metafile: true,
+    plugins: [jsonAsText],
   });
   const [file] = result.outputFiles;
   const text = file.text;
@@ -104,7 +128,7 @@ export async function buildLocalTimeBundle() {
   for (const table of await tableFiles()) {
     if (!inputs.includes(table)) problems.push(`the bundle is missing ${table}`);
   }
-  for (const source of ['src/lib/time/localToUtc.ts', 'src/lib/time/birthplace-clock.ts', 'src/lib/time/tz-history-load.ts']) {
+  for (const source of ['src/lib/time/localToUtc.ts', 'src/lib/time/birthplace-clock.ts', 'src/lib/time/tz-history-load.ts', 'src/lib/time/zone-names.ts']) {
     if (!inputs.includes(source)) problems.push(`the bundle is missing ${source}`);
   }
   const imports = runtimeImports(text);

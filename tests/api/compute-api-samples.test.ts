@@ -24,14 +24,14 @@ vi.mock('../../src/lib/compute-api/constants', async (importOriginal) => {
   };
 });
 
-const handler = createComputeApiHandler({ localTime, env: {}, isRateLimited: async () => false });
+const handler = createComputeApiHandler({ localTime, env: {}, rateLimit: async () => 'allowed' });
 
 describe('compute API evaluation budgets', () => {
   it('refuses a whole events request whose searches would pass the budget, returning no events', async () => {
     const small = await run(handler, { endpoint: 'events', body: { from: '2026-10-01T00:00:00Z', to: '2026-10-02T00:00:00Z', bodies: ['Sun'], kinds: ['ingress'] } });
     expect(small.status).toBe(200);
     expect(small.json.receipt.search.samples).toBeLessThanOrEqual(200);
-    const large = await run(handler, { endpoint: 'events', body: { from: '2026-01-01T00:00:00Z', to: '2026-12-31T00:00:00Z' } });
+    const large = await run(handler, { endpoint: 'events', body: { from: '2026-01-01T00:00:00Z', to: '2026-03-31T00:00:00Z' } });
     expect(large.status).toBe(422);
     expect(large.json).toEqual({ error: {
       code: 'budget-exhausted',

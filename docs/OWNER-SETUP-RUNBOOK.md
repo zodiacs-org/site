@@ -256,17 +256,24 @@ would return 403 instead of letting the endpoint return 429 with `Retry-After`.
 | `registry-aura-holdings-v1` | `/api/aura-holdings` | 10 requests per 60 seconds |
 | `zodiacs-wallet-birth` | `/api/wallet-birth` | 10 requests per 60 seconds |
 | `zodiacs-transit-calendar` | `/api/calendar/transits` | 10 requests per 60 seconds |
-| `zodiacs-compute-api` | the six compute endpoints, `/api/v1/{chart,positions,houses,events,time,sky-fact}` (served by `api/compatibility.ts`) | 60 requests per 60 seconds |
+| `zodiacs-compute-api` | the six compute endpoints, `/api/v1/{chart,positions,houses,events,time,sky-fact}` (served by `api/compatibility.ts`) | 40 requests per 60 seconds |
+| `zodiacs-compute-events` | `/api/v1/events` only, counted in addition to `zodiacs-compute-api` | 10 requests per 60 seconds |
 
-The compute API's limit is higher because programs call it in batches and most
-requests take a few milliseconds; its largest request (a 366-day events window
-with every body) took about 0.6 s warm in the measurements in
-`docs/platform/evidence/compute-api-2026-09-29/`, so one address at the limit
-costs at most about 40 function-seconds a minute. Until the rule exists, the
-SDK reports `not-found` and the API fails open, as the transit calendar does.
-To switch the API off without removing it, set `COMPUTE_API_ENABLED=0` for
-Production and redeploy: every compute endpoint then answers 503 with
-`Retry-After`. Leave it unset, or anything but `0`, to keep it on.
+The compute API needs both rules, and unlike the four endpoints above it fails
+closed: until both exist (the SDK reports `not-found`), or whenever the check
+fails, every compute endpoint answers 503 `rate-limit-unavailable` with
+`Retry-After: 300` and computes nothing. Its general limit is higher than the
+others' because programs call it in batches and most requests take a few
+milliseconds. Events requests are the costly ones, so they have their own,
+lower limit: their window is at most 92 days, and the slowest such request
+took 377.3 ms of CPU in `docs/platform/evidence/compute-api-2026-09-29/`
+(p50 170.6 ms, p95 247.3 ms, over every year the API takes). One
+address at both limits costs at most about 8.5 CPU-seconds a minute on
+that machine: 10 events requests and 30 others at the slowest measured
+(`worst-case.json` shows the arithmetic). To switch the API off without
+removing it, set `COMPUTE_API_ENABLED=0` for Production and redeploy: every
+compute endpoint then answers 503 `disabled` with `Retry-After`. Leave it
+unset, or anything but `0`, to keep it on.
 
 After the owner explicitly authorizes and publishes the rules, verify the email
 rule without a recipient or email body:
@@ -286,6 +293,33 @@ done
 The final responses must visibly include an `HTTP/... 429` status line and a
 `Retry-After: 60` header. Without the `Origin` header the same-origin guard
 returns 403, which does not test the Firewall rule.
+
+Verify the compute rules with a synthetic request (a wall time in UTC, no
+one's birth). Before the rules exist every answer is 503; after, the first 40
+in a minute are 200 and the rest 429:
+
+```sh
+for attempt in $(seq 1 42); do
+  curl --silent --show-error --max-time 10 --output /dev/null \
+    --write-out '%{http_code}\n' --request POST \
+    --header 'Content-Type: application/json' \
+    --data '{"local":{"date":"2000-01-01","time":"12:00","zone":"UTC"}}' \
+    https://zodiacs.org/api/v1/time
+done | sort | uniq -c
+```
+
+Then, a minute later, 11 events requests: the first 10 are 200 and the 11th
+429, from the events rule.
+
+```sh
+for attempt in $(seq 1 11); do
+  curl --silent --show-error --max-time 10 --output /dev/null \
+    --write-out '%{http_code}\n' --request POST \
+    --header 'Content-Type: application/json' \
+    --data '{"from":"2026-01-01T00:00:00Z","to":"2026-01-08T00:00:00Z","bodies":["Sun"]}' \
+    https://zodiacs.org/api/v1/events
+done | sort | uniq -c
+```
 
 ### 3a. Sky data API: keep `/api/v1/` reachable for scripts and agents
 

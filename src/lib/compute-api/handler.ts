@@ -6,8 +6,9 @@
  * In order, every request is: routed by the rewrite's own parameter (the only
  * part of a query string read); answered at once if it is a CORS preflight;
  * refused unless it is a POST; refused while COMPUTE_API_ENABLED is "0";
- * counted against the per-address rate limit; read as at most 16 KB of JSON;
- * validated strictly; and calculated within its budget.
+ * counted against the per-address rate limits, and refused unless the
+ * Firewall counted and allowed it; read as at most 16 KB of JSON; validated
+ * strictly; and calculated within its budget.
  *
  * Nothing here writes to a log, a file or a store, and no error repeats a
  * value from the request: every refusal is a fixed sentence from errors.ts.
@@ -20,7 +21,11 @@ import {
   COMPUTE_ROUTE_PARAM,
   COMPUTE_SWITCH_ENV,
   MAX_BODY_BYTES,
+  PREFLIGHT_HEADERS,
+  RESPONSE_HEADERS,
+  rateLimitIds,
   type ComputeEndpoint,
+  type RateLimitVerdict,
 } from './constants.js';
 import {
   computeChart,
@@ -39,6 +44,7 @@ import {
   methodNotAllowed,
   notFound,
   payloadTooLarge,
+  rateLimitUnavailable,
   rateLimited,
   unsupportedMediaType,
 } from './errors.js';
@@ -49,49 +55,51 @@ import {
   parsePositionsRequest,
   parseSkyFactRequest,
   parseTimeRequest,
+  type ZoneNames,
 } from './validate.js';
 
-/** Sent with every response, success or refusal. */
-export const RESPONSE_HEADERS = Object.freeze({
-  'Content-Type': 'application/json; charset=utf-8',
-  'Cache-Control': 'no-store',
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Expose-Headers': 'Retry-After',
-  'X-Content-Type-Options': 'nosniff',
-  'X-Robots-Tag': 'noindex',
-});
+export { PREFLIGHT_HEADERS, RESPONSE_HEADERS };
 
-/** The answer to a CORS preflight, before anything else is checked. */
-export const PREFLIGHT_HEADERS = Object.freeze({
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type',
-  'Access-Control-Max-Age': '86400',
-  'Cache-Control': 'no-store',
-  'X-Content-Type-Options': 'nosniff',
-  'X-Robots-Tag': 'noindex',
-});
+export type { RateLimitVerdict };
 
 export interface ComputeHandlerOptions {
   localTime: LocalTimeModule;
   /** Defaults to process.env, read on each request. */
   env?: Readonly<Record<string, string | undefined>>;
-  /** Defaults to the Vercel Firewall check below. */
-  isRateLimited?: (req: any) => Promise<boolean>;
+  /** Defaults to the Vercel Firewall checks below, under every rule the endpoint is counted by. */
+  rateLimit?: (req: any, endpoint: ComputeEndpoint) => Promise<RateLimitVerdict>;
 }
 
 /**
- * The Firewall SDK check, failing open exactly as the transit calendar's does:
- * an unprovisioned rule (`not-found`) or any error lets the request through.
- * It sends the request's headers, never its body.
+ * One Firewall SDK check. Unlike the site's other endpoints, which let a
+ * request through when their rule is missing, the compute endpoints fail
+ * closed: a request is allowed only when the Firewall counted it under the
+ * rule and let it through. A rule not yet published (`not-found`), an error
+ * or an unexpected answer is `unavailable`, and so is any runtime where the
+ * SDK does not ask the Firewall at all: outside NODE_ENV=production it lets
+ * every request through without a count. The check sends the request's
+ * headers, never its body.
  */
-export async function computeApiRateLimited(req: any): Promise<boolean> {
+export async function computeApiRateLimit(req: any, id: string = COMPUTE_RATE_LIMIT_ID): Promise<RateLimitVerdict> {
+  if (process.env.NODE_ENV !== 'production') return 'unavailable';
   try {
-    const result = await checkRateLimit(COMPUTE_RATE_LIMIT_ID, { headers: req.headers });
-    return result?.rateLimited === true && result?.error !== 'not-found';
+    const result = await checkRateLimit(id, { headers: req.headers });
+    if (result?.error === 'not-found') return 'unavailable';
+    if (result?.rateLimited === true) return 'limited';
+    if (result?.rateLimited === false && result.error === undefined) return 'allowed';
+    return 'unavailable';
   } catch {
-    return false;
+    return 'unavailable';
   }
+}
+
+/** Every rule an endpoint is counted under, in order; the first that does not allow the request decides. */
+async function firewallVerdict(req: any, endpoint: ComputeEndpoint): Promise<RateLimitVerdict> {
+  for (const id of rateLimitIds(endpoint)) {
+    const verdict = await computeApiRateLimit(req, id);
+    if (verdict !== 'allowed') return verdict;
+  }
+  return 'allowed';
 }
 
 function header(req: any, name: string): string | null | 'ambiguous' {
@@ -236,14 +244,14 @@ async function readJsonBody(req: any): Promise<unknown> {
   }
 }
 
-function dispatch(endpoint: ComputeEndpoint, body: unknown, dependencies: ComputeDependencies): Promise<unknown> | unknown {
+async function dispatch(endpoint: ComputeEndpoint, body: unknown, dependencies: ComputeDependencies, zones: ZoneNames): Promise<unknown> {
   switch (endpoint) {
-    case 'chart': return computeChart(parsePlaceInstantRequest(body), dependencies);
-    case 'houses': return computeHouses(parsePlaceInstantRequest(body), dependencies);
+    case 'chart': return computeChart(await parsePlaceInstantRequest(body, zones), dependencies);
+    case 'houses': return computeHouses(await parsePlaceInstantRequest(body, zones), dependencies);
     case 'positions': return computePositions(parsePositionsRequest(body));
     case 'events': return computeEvents(parseEventsRequest(body));
-    case 'time': return computeTime(parseTimeRequest(body), dependencies);
-    case 'sky-fact': return computeSkyFact(parseSkyFactRequest(body), dependencies);
+    case 'time': return computeTime(await parseTimeRequest(body, zones), dependencies);
+    case 'sky-fact': return computeSkyFact(await parseSkyFactRequest(body, zones), dependencies);
   }
 }
 
@@ -255,7 +263,8 @@ function send(res: any, status: number, headers: Readonly<Record<string, string>
 
 export function createComputeApiHandler(options: ComputeHandlerOptions) {
   const dependencies: ComputeDependencies = { localTime: options.localTime };
-  const isRateLimited = options.isRateLimited ?? computeApiRateLimited;
+  const zones: ZoneNames = (name) => options.localTime.canonicalZoneName(name);
+  const rateLimit = options.rateLimit ?? firewallVerdict;
 
   return async function computeApiHandler(req: any, res: any): Promise<void> {
     let status = 200;
@@ -269,9 +278,12 @@ export function createComputeApiHandler(options: ComputeHandlerOptions) {
       }
       if (req?.method !== 'POST') throw methodNotAllowed();
       if ((options.env ?? process.env)[COMPUTE_SWITCH_ENV] === '0') throw disabled();
-      if (await isRateLimited(req)) throw rateLimited();
+      // Fail closed: without a count from the Firewall nothing is read or computed.
+      const verdict = await rateLimit(req, endpoint);
+      if (verdict === 'limited') throw rateLimited();
+      if (verdict !== 'allowed') throw rateLimitUnavailable();
       const body = await readJsonBody(req);
-      text = JSON.stringify(await dispatch(endpoint, body, dependencies));
+      text = JSON.stringify(await dispatch(endpoint, body, dependencies, zones));
     } catch (error) {
       const refusal = error instanceof ComputeApiError ? error : calculationFailed();
       status = refusal.status;

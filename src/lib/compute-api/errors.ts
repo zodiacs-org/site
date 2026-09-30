@@ -50,6 +50,7 @@ export const MESSAGES = Object.freeze({
   methodNotAllowed: 'This endpoint accepts POST with a JSON body, and OPTIONS.',
   disabled: 'The compute API is switched off. Try again later.',
   rateLimited: 'Too many requests from this address. Try again after the interval in Retry-After.',
+  rateLimitUnavailable: 'The compute API answers only while its rate limit is in place, and the limit could not be checked. Try again after the interval in Retry-After.',
   unsupportedMediaType: 'Send the body as application/json in UTF-8, without a content encoding.',
   payloadTooLarge: `The body is larger than ${MAX_BODY_BYTES} bytes.`,
   invalidJson: 'The body is not valid JSON in UTF-8.',
@@ -79,6 +80,14 @@ export function rateLimited(): ComputeApiError {
   const seconds = RETRY_AFTER_SECONDS.rateLimited;
   return new ComputeApiError(
     { code: 'rate-limited', message: MESSAGES.rateLimited, retryAfterSeconds: seconds },
+    { 'Retry-After': String(seconds) },
+  );
+}
+
+export function rateLimitUnavailable(): ComputeApiError {
+  const seconds = RETRY_AFTER_SECONDS.rateLimitUnavailable;
+  return new ComputeApiError(
+    { code: 'rate-limit-unavailable', message: MESSAGES.rateLimitUnavailable, retryAfterSeconds: seconds },
     { 'Retry-After': String(seconds) },
   );
 }

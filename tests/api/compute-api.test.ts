@@ -18,6 +18,7 @@ import { createNatalEnvelope } from '@zodiacs/engine/receipt';
 import {
   BUDGETS,
   COMPUTE_ENDPOINTS,
+  COMPUTE_EVENTS_RATE_LIMIT_ID,
   COMPUTE_FUNCTION_PATH,
   COMPUTE_RATE_LIMIT_ID,
   COMPUTE_ROUTE_PARAM,
@@ -32,15 +33,16 @@ import {
   SKY_FACT_KINDS,
   type ComputeEndpoint,
 } from '../../src/lib/compute-api/constants';
-import { computeApiRateLimited, createComputeApiHandler } from '../../src/lib/compute-api/handler';
+import { computeApiRateLimit, createComputeApiHandler } from '../../src/lib/compute-api/handler';
 import * as localTime from '../../src/lib/compute-api/local-time-source';
+import { VALIDATION_MESSAGES } from '../../src/lib/compute-api/validate';
 import { prepareLocalTime, resolveLocalToUtc } from '../../src/lib/time/localToUtc';
 import { run, type HarnessRequest } from '../../scripts/lib/compute-api-harness';
 import compatibilityHandler from '../../api/compatibility.js';
 
 vi.mock('@vercel/firewall', () => ({ checkRateLimit: vi.fn() }));
 
-const handler = createComputeApiHandler({ localTime, env: {}, isRateLimited: async () => false });
+const handler = createComputeApiHandler({ localTime, env: {}, rateLimit: async () => 'allowed' });
 const call = (endpoint: ComputeEndpoint | null, body?: unknown, extra: Partial<HarnessRequest> = {}) =>
   run(handler, { endpoint, body, ...extra });
 const DAY = 86_400_000;
@@ -74,6 +76,7 @@ const VALID: Record<ComputeEndpoint, Record<string, unknown>> = {
 
 beforeEach(() => {
   vi.mocked(checkRateLimit).mockReset();
+  vi.unstubAllEnvs();
 });
 
 describe('compute API routing, methods and CORS', () => {
@@ -131,7 +134,7 @@ describe('compute API routing, methods and CORS', () => {
 
 describe('compute API switch and rate limit', () => {
   it('turns off with COMPUTE_API_ENABLED=0 only, with 503 and Retry-After, and still answers preflights', async () => {
-    const off = createComputeApiHandler({ localTime, env: { COMPUTE_API_ENABLED: '0' }, isRateLimited: async () => false });
+    const off = createComputeApiHandler({ localTime, env: { COMPUTE_API_ENABLED: '0' }, rateLimit: async () => 'allowed' });
     const refused = await run(off, { endpoint: 'positions', body: VALID.positions });
     expect(refused.status).toBe(503);
     expect(refused.headers.get('retry-after')).toBe('3600');
@@ -140,13 +143,13 @@ describe('compute API switch and rate limit', () => {
     } });
     expect((await run(off, { endpoint: 'positions', method: 'OPTIONS', contentType: null })).status).toBe(204);
     for (const value of [undefined, '', '1', 'false', 'no', '00', ' 0']) {
-      const on = createComputeApiHandler({ localTime, env: value === undefined ? {} : { COMPUTE_API_ENABLED: value }, isRateLimited: async () => false });
+      const on = createComputeApiHandler({ localTime, env: value === undefined ? {} : { COMPUTE_API_ENABLED: value }, rateLimit: async () => 'allowed' });
       expect((await run(on, { endpoint: 'positions', body: VALID.positions })).status, String(value)).toBe(200);
     }
   });
 
   it('answers 429 with Retry-After when the Firewall rule limits the address', async () => {
-    const limited = createComputeApiHandler({ localTime, env: {}, isRateLimited: async () => true });
+    const limited = createComputeApiHandler({ localTime, env: {}, rateLimit: async () => 'limited' });
     const response = await run(limited, { endpoint: 'chart', body: CHART });
     expect(response.status).toBe(429);
     expect(response.headers.get('retry-after')).toBe('60');
@@ -157,25 +160,100 @@ describe('compute API switch and rate limit', () => {
     });
   });
 
-  it('checks the zodiacs-compute-api rule with the headers only, and fails open when it is missing or errors', async () => {
+  it('checks a rule with the headers only, and fails closed when it is missing, errors or is not consulted', async () => {
     const req = { headers: { host: 'zodiacs.org', 'x-real-ip': '203.0.113.9' } };
+    vi.stubEnv('NODE_ENV', 'production');
     vi.mocked(checkRateLimit).mockResolvedValueOnce({ rateLimited: true });
-    expect(await computeApiRateLimited(req)).toBe(true);
+    expect(await computeApiRateLimit(req)).toBe('limited');
     expect(checkRateLimit).toHaveBeenLastCalledWith(COMPUTE_RATE_LIMIT_ID, { headers: req.headers });
     expect(COMPUTE_RATE_LIMIT_ID).toBe('zodiacs-compute-api');
+    vi.mocked(checkRateLimit).mockResolvedValueOnce({ rateLimited: true, error: 'blocked' } as never);
+    expect(await computeApiRateLimit(req)).toBe('limited');
     vi.mocked(checkRateLimit).mockResolvedValueOnce({ rateLimited: false });
-    expect(await computeApiRateLimited(req)).toBe(false);
+    expect(await computeApiRateLimit(req)).toBe('allowed');
+    // The rule is not published: the SDK says so and lets the request through; the API does not.
+    vi.mocked(checkRateLimit).mockResolvedValueOnce({ rateLimited: false, error: 'not-found' } as never);
+    expect(await computeApiRateLimit(req)).toBe('unavailable');
     vi.mocked(checkRateLimit).mockResolvedValueOnce({ rateLimited: true, error: 'not-found' } as never);
-    expect(await computeApiRateLimited(req)).toBe(false);
+    expect(await computeApiRateLimit(req)).toBe('unavailable');
     vi.mocked(checkRateLimit).mockRejectedValueOnce(new Error('network'));
-    expect(await computeApiRateLimited(req)).toBe(false);
+    expect(await computeApiRateLimit(req)).toBe('unavailable');
+    vi.mocked(checkRateLimit).mockResolvedValueOnce(undefined as never);
+    expect(await computeApiRateLimit(req)).toBe('unavailable');
+    // Outside production the SDK would let everything through without asking the Firewall.
+    vi.stubEnv('NODE_ENV', 'development');
+    vi.mocked(checkRateLimit).mockClear();
+    expect(await computeApiRateLimit(req)).toBe('unavailable');
+    expect(checkRateLimit).not.toHaveBeenCalled();
   });
 
-  it('counts a request against the limit before reading its body, and passes the limiter no body', async () => {
-    vi.mocked(checkRateLimit).mockResolvedValue({ rateLimited: true });
+  it('answers 503 with Retry-After while the rate limit is not in place, and reads and computes nothing', async () => {
+    vi.stubEnv('NODE_ENV', 'production');
+    const calls: string[] = [];
+    const watched = {
+      ...localTime,
+      prepareLocalTime: async (date: string, zone: string) => { calls.push('prepare'); return localTime.prepareLocalTime(date, zone); },
+      canonicalZoneName: async (name: string) => { calls.push('zone'); return localTime.canonicalZoneName(name); },
+    };
+    const defaults = createComputeApiHandler({ localTime: watched, env: {} });
+    for (const failure of [
+      () => vi.mocked(checkRateLimit).mockResolvedValue({ rateLimited: false, error: 'not-found' } as never),
+      () => vi.mocked(checkRateLimit).mockRejectedValue(new Error('network')),
+    ]) {
+      failure();
+      for (const endpoint of COMPUTE_ENDPOINTS) {
+        const req = { endpoint, body: endpoint === 'time' ? VALID.time : VALID[endpoint] };
+        const response = await run(defaults, req);
+        expect(response.status, endpoint).toBe(503);
+        expect(response.headers.get('retry-after')).toBe('300');
+        expect(response.json).toEqual({ error: {
+          code: 'rate-limit-unavailable',
+          message: 'The compute API answers only while its rate limit is in place, and the limit could not be checked. Try again after the interval in Retry-After.',
+          retryAfterSeconds: 300,
+        } });
+      }
+    }
+    expect(calls).toEqual([]);
+    // The body is not read: a request stream that fails when read still gets the 503.
+    const unread: any = { method: 'POST', headers: { 'content-type': 'application/json' }, query: { [COMPUTE_ROUTE_PARAM]: 'chart' },
+      on: () => { throw new Error('the body was read'); } };
+    const res: any = { headers: new Map(), setHeader(k: string, v: string) { this.headers.set(k.toLowerCase(), v); }, end(t: string) { this.text = t; } };
+    await defaults(unread, res);
+    expect(res.statusCode).toBe(503);
+    // Outside production nothing is asked of the Firewall and nothing is answered.
+    vi.stubEnv('NODE_ENV', 'test');
+    vi.mocked(checkRateLimit).mockReset();
+    expect((await run(defaults, { endpoint: 'chart', body: CHART })).status).toBe(503);
+    expect(checkRateLimit).not.toHaveBeenCalled();
+  });
+
+  it('counts an events request under both rules and every other request under the first, before reading its body', async () => {
+    vi.stubEnv('NODE_ENV', 'production');
     const defaults = createComputeApiHandler({ localTime, env: {} });
-    const response = await run(defaults, { endpoint: 'time', body: VALID.time });
-    expect(response.status).toBe(429);
+    vi.mocked(checkRateLimit).mockResolvedValue({ rateLimited: false });
+    for (const endpoint of COMPUTE_ENDPOINTS) {
+      vi.mocked(checkRateLimit).mockClear();
+      expect((await run(defaults, { endpoint, body: VALID[endpoint] })).status, endpoint).toBe(200);
+      expect(vi.mocked(checkRateLimit).mock.calls.map(([id]) => id), endpoint)
+        .toEqual(endpoint === 'events' ? [COMPUTE_RATE_LIMIT_ID, COMPUTE_EVENTS_RATE_LIMIT_ID] : [COMPUTE_RATE_LIMIT_ID]);
+    }
+    expect(COMPUTE_EVENTS_RATE_LIMIT_ID).toBe('zodiacs-compute-events');
+    // The events rule refuses on its own; the first rule refuses before the second is counted.
+    vi.mocked(checkRateLimit).mockImplementation(async (id) => ({ rateLimited: id === COMPUTE_EVENTS_RATE_LIMIT_ID }));
+    expect((await run(defaults, { endpoint: 'events', body: VALID.events })).status).toBe(429);
+    expect((await run(defaults, { endpoint: 'chart', body: CHART })).status).toBe(200);
+    vi.mocked(checkRateLimit).mockReset();
+    vi.mocked(checkRateLimit).mockResolvedValue({ rateLimited: true });
+    expect((await run(defaults, { endpoint: 'events', body: VALID.events })).status).toBe(429);
+    expect(vi.mocked(checkRateLimit).mock.calls.map(([id]) => id)).toEqual([COMPUTE_RATE_LIMIT_ID]);
+    vi.mocked(checkRateLimit).mockReset();
+    vi.mocked(checkRateLimit).mockImplementation(async (id) => (id === COMPUTE_EVENTS_RATE_LIMIT_ID
+      ? { rateLimited: false, error: 'not-found' } as never : { rateLimited: false }));
+    expect((await run(defaults, { endpoint: 'events', body: VALID.events })).status).toBe(503);
+    // The limiter gets the headers, never the body.
+    vi.mocked(checkRateLimit).mockReset();
+    vi.mocked(checkRateLimit).mockResolvedValue({ rateLimited: true });
+    expect((await run(defaults, { endpoint: 'time', body: VALID.time })).status).toBe(429);
     const [, options] = vi.mocked(checkRateLimit).mock.calls[0];
     expect(Object.keys(options ?? {})).toEqual(['headers']);
     expect(JSON.stringify(options)).not.toContain('Europe/Paris');
@@ -288,8 +366,74 @@ describe('compute API validation', () => {
     expect(await refusal('chart', local({ zone: 'Europe/Atlantis' }))).toMatchObject({ pointer: '/local/zone', message: "Must be a time zone name the server's time zone data includes." });
     expect(await refusal('chart', local({ zone: '+05:30' }))).toMatchObject({ pointer: '/local/zone' });
     expect(await refusal('chart', local({ zone: 'Europe/Paris/../../etc' }))).toMatchObject({ pointer: '/local/zone' });
-    expect((await call('chart', local({ zone: 'europe/paris' }))).status).toBe(200);
+    // A zone in another letter case is accepted as the zone itself, and named as tzdb spells it.
+    const lower = await call('chart', local({ zone: 'europe/paris' }));
+    expect(lower.status).toBe(200);
+    expect(lower.json.receipt.localResolution.timeZone).toBe('Europe/Paris');
+    expect(lower.text).toBe((await call('chart', local({ zone: 'Europe/Paris' }))).text);
+    // A name Intl would read but tzdb no longer has is refused like any unknown zone.
+    expect(await refusal('chart', local({ zone: 'US/Pacific-New' }))).toMatchObject({ pointer: '/local/zone', message: VALIDATION_MESSAGES.zoneUnknown });
   });
+
+  it('reads a zone in any letter case as the zone itself: Buffalo in 1870 and west of Paris in 1880', async () => {
+    const cases = [
+      ['1870-06-15', 'America/New_York', 42.8864, -78.8784, '1870-06-15T17:15:31.000Z', ['america/new_york', 'AMERICA/NEW_YORK', 'America/NEW_york']],
+      ['1880-06-15', 'Europe/Paris', 48.3904, -4.4861, '1880-06-15T12:17:57.000Z', ['europe/paris', 'EUROPE/PARIS', 'eUROPE/pARIS']],
+    ] as const;
+    for (const [date, zone, latitude, longitude, utc, spellings] of cases) {
+      const exact = await call('time', { local: { date, time: '12:00', zone }, longitude });
+      expect(exact.json.result.utc).toBe(utc);
+      expect(exact.json.result.flags).toEqual(['lmt']);
+      const chart = await call('chart', { local: { date, time: '12:00', zone }, latitude, longitude });
+      expect(chart.json.result.instant).toBe(utc);
+      for (const spelling of spellings) {
+        expect((await call('time', { local: { date, time: '12:00', zone: spelling }, longitude })).text, spelling).toBe(exact.text);
+        const other = await call('chart', { local: { date, time: '12:00', zone: spelling }, latitude, longitude });
+        expect(other.json.receipt.localResolution.timeZone, spelling).toBe(zone);
+        expect(other.text, spelling).toBe(chart.text);
+      }
+    }
+    const fact = await call('sky-fact', { kind: 'phase', phase: 'full', date: '2026-10-26', zone: 'asia/tokyo' });
+    expect(fact.json.result.fact.zone).toBe('Asia/Tokyo');
+  });
+
+  it('passes the resolver one spelling of a zone: 5,000 case variants add no formatter', async () => {
+    const base = 'America/Argentina/ComodRivadavia';
+    const letters = [...base].flatMap((letter, index) => (/[a-z]/iu.test(letter) ? [index] : []));
+    const variant = (n: number) => {
+      const out = [...base];
+      letters.forEach((index, bit) => {
+        if ((n >> bit) & 1) out[index] = out[index] === out[index].toLowerCase() ? out[index].toUpperCase() : out[index].toLowerCase();
+      });
+      return out.join('');
+    };
+    const request = (zone: string) => ({ local: { date: '1990-06-15', time: '12:00', zone } });
+    const answer = (await call('time', request(base))).text;
+    // Every formatter the resolver builds is stored with Map.prototype.set.
+    const set = Map.prototype.set;
+    let stored = 0;
+    const spy = vi.spyOn(Map.prototype, 'set').mockImplementation(function (this: Map<unknown, unknown>, key: unknown, value: unknown) {
+      if (value instanceof Intl.DateTimeFormat) stored += 1;
+      return set.call(this, key, value);
+    });
+    const spellings = new Set<string>();
+    try {
+      // The count sees a zone the resolver has not read before.
+      expect((await call('time', request('Antarctica/Troll'))).status).toBe(200);
+      expect(stored).toBeGreaterThan(0);
+      stored = 0;
+      for (let n = 1; n <= 5000; n += 1) {
+        const zone = variant(n);
+        spellings.add(zone);
+        const response = await call('time', request(zone));
+        if (response.text !== answer) throw new Error(`${zone} was answered differently`);
+      }
+    } finally {
+      spy.mockRestore();
+    }
+    expect(spellings.size).toBe(5000);
+    expect(stored).toBe(0);
+  }, 120_000);
 
   it('refuses the poles, out-of-range coordinates, non-numbers and unknown house systems', async () => {
     for (const latitude of [90, -90, 90.5, '45', null]) {
@@ -318,6 +462,46 @@ describe('compute API validation', () => {
     expect(await refusal('sky-fact', { kind: 'ingress', body: 'Sun', sign: 'libra' })).toMatchObject({ pointer: '/date' });
     expect(await refusal('sky-fact', { kind: 'phase', phase: 'gibbous', date: '2026-09-29' })).toMatchObject({ pointer: '/phase' });
     expect(await refusal('sky-fact', { kind: 'phase', phase: 'full', date: '2026-09-29', instant: '2026-09-29T00:00:00Z' })).toMatchObject({ pointer: '' });
+  });
+
+  it('refuses a fact about a date its zone skipped, rather than answering for a day that did not happen', async () => {
+    // Samoa and Kiritimati crossed the date line by skipping a whole day.
+    for (const [date, zone] of [['2011-12-30', 'Pacific/Apia'], ['1994-12-31', 'Pacific/Kiritimati']] as const) {
+      for (const body of [
+        { kind: 'sign', body: 'Moon', sign: 'aries', date, zone },
+        { kind: 'retrograde', body: 'Sun', date, zone },
+        { kind: 'ingress', body: 'Moon', sign: 'aries', date, zone },
+        { kind: 'phase', phase: 'full', date, zone },
+      ]) {
+        expect(await refusal('sky-fact', body)).toEqual({ code: 'invalid-request', pointer: '/date', message: VALIDATION_MESSAGES.skippedDay });
+      }
+      // The days on either side are ordinary.
+      expect((await call('sky-fact', { kind: 'retrograde', body: 'Sun', date: date.replace(/-(\d\d)$/u, (_, day) => `-${String(Number(day) - 1).padStart(2, '0')}`), zone })).status).toBe(200);
+    }
+  });
+
+  it('flags a local time or a day at the ends of the accepted dates that reaches past the instant span', async () => {
+    const tokyo = await call('time', { local: { date: '1800-01-01', time: '00:00', zone: 'Asia/Tokyo' } });
+    expect(tokyo.json.result.utc).toBe('1799-12-31T14:41:01.000Z');
+    expect(tokyo.json.result.flags).toEqual(['lmt', 'outside-reference-span']);
+    const honolulu = await call('time', { local: { date: '2199-12-31', time: '23:59', zone: 'Pacific/Honolulu' } });
+    expect(honolulu.json.result.utc).toBe('2200-01-01T09:59:00.000Z');
+    expect(honolulu.json.result.flags).toEqual(['outside-reference-span']);
+    expect((await call('time', { local: { date: '1800-01-01', time: '12:00', zone: 'Asia/Tokyo' } })).json.result.flags).toEqual(['lmt']);
+    const chart = await call('chart', { local: { date: '1800-01-01', time: '00:00', zone: 'Asia/Tokyo' }, latitude: 35.68, longitude: 139.69 });
+    expect(chart.json.result.flags).toContain('outside-reference-span');
+    for (const [body, flagged] of [
+      [{ kind: 'sign', body: 'Sun', sign: 'capricorn', date: '1800-01-01' }, true],
+      [{ kind: 'sign', body: 'Sun', sign: 'capricorn', date: '2199-12-31' }, true],
+      [{ kind: 'phase', phase: 'full', date: '1800-01-01', zone: 'Asia/Tokyo' }, true],
+      [{ kind: 'phase', phase: 'full', date: '2199-12-31', zone: 'Pacific/Honolulu' }, true],
+      [{ kind: 'phase', phase: 'full', date: '1800-01-02', zone: 'UTC' }, false],
+      [{ kind: 'retrograde', body: 'Mars', date: '2026-09-29' }, false],
+    ] as const) {
+      const response = await call('sky-fact', body);
+      expect(response.status, JSON.stringify(body)).toBe(200);
+      expect(response.json.result.facts.flags, JSON.stringify(body)).toEqual(flagged ? ['outside-reference-span'] : []);
+    }
   });
 });
 
@@ -383,6 +567,20 @@ describe('compute API receipts, backend and citation', () => {
       runtimeTzdb: process.versions.tz,
     });
   });
+
+  it("identifies a chart's birth details through cite.receipt: its date and place give back its time", async () => {
+    // The documented example, a synthetic birth. A digest hides nothing: whoever
+    // knows the date and the place tries every minute of the day.
+    const example = { local: { date: '1990-06-15', time: '14:30', zone: 'Europe/Paris' }, latitude: 48.8566, longitude: 2.3522, houseSystem: 'whole' };
+    const target = (await call('chart', example)).json.cite.receipt;
+    const found: string[] = [];
+    for (let minute = 0; minute < 24 * 60; minute += 1) {
+      const time = `${String(Math.floor(minute / 60)).padStart(2, '0')}:${String(minute % 60).padStart(2, '0')}`;
+      const { json } = await call('chart', { ...example, local: { ...example.local, time } });
+      if (json.cite.receipt === target) found.push(time);
+    }
+    expect(found).toEqual(['14:30']);
+  }, 60_000);
 
   it('writes the same answer for the same request', async () => {
     for (const endpoint of COMPUTE_ENDPOINTS) {
@@ -496,8 +694,14 @@ describe('compute API parity with the engine and the site resolver', () => {
       ...month.lunations.map((row: any) => ({ key: `lunation ${row.type}`, at: Date.parse(row.at) })),
       ...month.ingresses.map((row: any) => ({ key: `ingress ${row.planet} ${row.sign}`, at: Date.parse(row.at) })),
     ]);
-    const { json } = await call('events', { from: '2026-01-01T00:00:00Z', to: '2027-01-01T00:00:00Z', bodies: EVENT_BODIES.filter((body) => body !== 'Moon') });
-    const found = json.result.events.map((event: any) => ({
+    // The year in quarters, each within the window limit: a window excludes its start and includes its end.
+    const quarters = ['2026-01-01', '2026-04-01', '2026-07-01', '2026-10-01', '2027-01-01'];
+    const events: any[] = [];
+    for (let index = 0; index < 4; index += 1) {
+      const { json } = await call('events', { from: `${quarters[index]}T00:00:00Z`, to: `${quarters[index + 1]}T00:00:00Z`, bodies: EVENT_BODIES.filter((body) => body !== 'Moon') });
+      events.push(...json.result.events);
+    }
+    const found = events.map((event: any) => ({
       key: event.kind === 'station' ? `station ${event.body} ${event.type}` : event.kind === 'lunation' ? `lunation ${event.type}` : `ingress ${event.body} ${event.sign}`,
       at: Date.parse(event.at),
     }));
@@ -579,6 +783,7 @@ describe('compute API parity with the engine and the site resolver', () => {
 
 describe('compute API through the compatibility function', () => {
   it('answers every compute route from api/compatibility.ts before any route of its own', async () => {
+    vi.stubEnv('NODE_ENV', 'production');
     vi.mocked(checkRateLimit).mockResolvedValue({ rateLimited: false });
     for (const endpoint of COMPUTE_ENDPOINTS) {
       const deployed = await run(compatibilityHandler, { endpoint, body: VALID[endpoint] });
@@ -594,7 +799,7 @@ describe('compute API through the compatibility function', () => {
     const unknown = await run(compatibilityHandler, { endpoint: 'natal' as ComputeEndpoint, body: CHART });
     expect(unknown.status).toBe(404);
     expect(unknown.json.error.code).toBe('not-found');
-    expect(vi.mocked(checkRateLimit).mock.calls.every(([id]) => id === COMPUTE_RATE_LIMIT_ID)).toBe(true);
+    expect(vi.mocked(checkRateLimit).mock.calls.every(([id]) => id === COMPUTE_RATE_LIMIT_ID || id === COMPUTE_EVENTS_RATE_LIMIT_ID)).toBe(true);
   });
 
   it("leaves the function's own routes alone when the compute parameter is absent", async () => {

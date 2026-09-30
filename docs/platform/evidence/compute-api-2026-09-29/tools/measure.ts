@@ -7,15 +7,17 @@
  * Each shape runs `runs` times after two warm-up requests; the output gives
  * the median, 95th percentile and maximum in milliseconds, the response size,
  * and, for the searches, the evaluations each request made. The worst shapes
- * are the budgets themselves: 100 instants for positions, and a 366-day window
- * with every body and kind for events, in years across the whole epoch.
+ * are the budgets themselves: 100 instants for positions, and a window at the
+ * limit with every body and kind for events, in years across the whole epoch.
+ * tools/worst-case.ts runs the budget shapes in every year.
  */
 import { cpus } from 'node:os';
 import { createComputeApiHandler } from '../../../../../src/lib/compute-api/handler';
+import { BUDGETS } from '../../../../../src/lib/compute-api/constants';
 import { run } from '../../../../../scripts/lib/compute-api-harness';
 import * as localTime from '../../../../../api/_compute/local-time.mjs';
 
-const handler = createComputeApiHandler({ localTime, env: {}, isRateLimited: async () => false });
+const handler = createComputeApiHandler({ localTime, env: {}, rateLimit: async () => 'allowed' });
 
 type Shape = { name: string; endpoint: any; body: (index: number) => unknown; runs: number };
 
@@ -32,7 +34,7 @@ const shapes: Shape[] = [
   { name: 'positions, 1 instant', endpoint: 'positions', runs: 60, body: (i) => ({ instants: [iso(spread(i, 60))] }) },
   { name: 'positions, 100 instants, all bodies (budget)', endpoint: 'positions', runs: 20, body: (i) => ({ instants: Array.from({ length: 100 }, (_, day) => iso(Date.UTC(1800 + i * 20, 0, 1) + day * DAY).replace('.000Z', 'Z')) }) },
   { name: 'events, 31 days, all bodies and kinds', endpoint: 'events', runs: 20, body: (i) => ({ from: iso(Date.UTC(1800 + i * 20, 0, 1)), to: iso(Date.UTC(1800 + i * 20, 1, 1)) }) },
-  ...YEARS.map((year): Shape => ({ name: `events, 366 days from ${year}-01-01, all bodies and kinds (budget)`, endpoint: 'events', runs: 3, body: () => ({ from: iso(Date.UTC(year, 0, 1)), to: iso(Math.min(Date.UTC(year, 0, 1) + 366 * DAY, Date.parse('2199-12-31T23:59:59.999Z'))) }) })),
+  ...YEARS.map((year): Shape => ({ name: `events, ${BUDGETS['events.windowDays']} days from ${year}-01-01, all bodies and kinds (budget)`, endpoint: 'events', runs: 3, body: () => ({ from: iso(Date.UTC(year, 0, 1)), to: iso(Math.min(Date.UTC(year, 0, 1) + BUDGETS['events.windowDays'] * DAY, Date.parse('2199-12-31T23:59:59.999Z'))) }) })),
   { name: 'time, after 1970', endpoint: 'time', runs: 60, body: (i) => ({ local: { date: `20${String(i % 100).padStart(2, '0')}-07-01`, time: '12:00', zone: 'America/New_York' } }) },
   { name: 'time, before 1970 with longitude', endpoint: 'time', runs: 60, body: (i) => ({ local: { date: `18${String(50 + (i % 50)).padStart(2, '0')}-06-01`, time: '12:00', zone: 'America/Mexico_City' }, longitude: -99.13 }) },
   { name: 'sky-fact sign at an instant', endpoint: 'sky-fact', runs: 60, body: (i) => ({ kind: 'sign', body: 'Moon', sign: 'aries', instant: iso(spread(i, 60)) }) },

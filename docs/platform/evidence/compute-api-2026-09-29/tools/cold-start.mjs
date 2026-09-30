@@ -12,6 +12,12 @@
  *
  * The request is replayed the way Vercel's Node helpers deliver one: the body
  * is read first and replayed through data and end listeners.
+ *
+ * The API fails closed without its Firewall rules (since 2026-09-30), so the
+ * request carries a client address and the Firewall's answer is stubbed
+ * (204, allowed) in the child process: the figures include the SDK's work
+ * but no network. cold-start.json was measured on 2026-09-29, when the
+ * handler still let a request through before any Firewall call.
  */
 import { spawnSync } from 'node:child_process';
 import { cpus } from 'node:os';
@@ -30,6 +36,7 @@ const EXAMPLES = {
 
 async function child(functionDir, endpoint) {
   const { PassThrough, Readable } = await import('node:stream');
+  globalThis.fetch = async () => new Response(null, { status: 204 });
   const started = performance.now();
   const handler = (await import(pathToFileURL(resolve(functionDir, 'api/compatibility.js')).href)).default;
   const importMs = performance.now() - started;
@@ -38,7 +45,7 @@ async function child(functionDir, endpoint) {
     const req = Readable.from([Buffer.from(text)]);
     req.method = 'POST';
     req.url = `/api/compatibility?__zodiacs_compute=${endpoint}`;
-    req.headers = { host: 'example.test', 'content-type': 'application/json', 'content-length': String(Buffer.byteLength(text)) };
+    req.headers = { host: 'example.test', 'x-real-ip': '203.0.113.7', 'content-type': 'application/json', 'content-length': String(Buffer.byteLength(text)) };
     Object.defineProperty(req, 'query', { value: { __zodiacs_compute: endpoint }, configurable: true });
     const chunks = [];
     for await (const chunk of req) chunks.push(chunk);

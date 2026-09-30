@@ -15,3 +15,4 @@ export declare function resolveLocalToUtc(
 export declare function loadZoneHistory(
   name: string,
 ): Promise<{ readonly t: readonly number[]; readonly o: readonly (number | null)[] } | null>;
+export declare function canonicalZoneName(name: string): Promise<string | null>;

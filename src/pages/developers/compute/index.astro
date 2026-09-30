@@ -17,7 +17,7 @@ import {
 
 const title = 'Compute API — Charts, Positions and Sky Facts over HTTP | Zodiacs.org';
 // A plain literal: scripts/build-assistant-context.mjs reads it from the source.
-const description = 'Six POST endpoints under /api/v1/ compute a chart, positions, houses, the events in a window, a local time as UTC and TT, and whether a stated sky fact holds. Every answer names the engine and carries a receipt. No key; birth data goes in the body, and nothing from a request is stored or logged.';
+const description = 'Six POST endpoints under /api/v1/ compute a chart, positions, houses, the events in a window, a local time as UTC and TT, and whether a stated sky fact holds. Every answer names the engine and carries a receipt. No key; birth data goes in the body, and the function writes nothing from a request to a log, a file or a database.';
 
 const backend = examples.success.chart.utc.backend;
 const number = (value: number) => value.toLocaleString('en-US');
@@ -56,12 +56,13 @@ const limits: Array<[string, string, string]> = [
   ['Length of an events window', `${number(BUDGETS['events.windowDays'])} days`, '422 budget-exhausted, limit events.windowDays'],
   ['Evaluations in one events request', number(BUDGETS['events.samples']), '422 budget-exhausted, limit events.samples'],
   ['Evaluations in one sky-fact request', number(BUDGETS['sky-fact.samples']), '422 budget-exhausted, limit sky-fact.samples'],
-  ['Requests from one IP address', 'set by the rate limit', `429 rate-limited, Retry-After: ${RETRY_AFTER_SECONDS.rateLimited}`],
+  ['Requests from one IP address', 'set by the rate limit; events requests count against a second, lower limit too', `429 rate-limited, Retry-After: ${RETRY_AFTER_SECONDS.rateLimited}`],
 ];
 
 const refusals: Array<[ErrorCode, string]> = [
   ['method-not-allowed', 'A method other than POST. OPTIONS is answered as a CORS preflight.'],
   ['disabled', `The API is switched off. Retry-After is ${RETRY_AFTER_SECONDS.disabled} seconds.`],
+  ['rate-limit-unavailable', `The rate limit is not in place, or could not be checked, so nothing was read or computed. Retry-After is ${RETRY_AFTER_SECONDS.rateLimitUnavailable} seconds.`],
   ['rate-limited', `Too many requests from one address. Retry-After is ${RETRY_AFTER_SECONDS.rateLimited} seconds.`],
   ['unsupported-media-type', 'The body is not declared as application/json in UTF-8, or it has a content encoding.'],
   ['payload-too-large', `The body is over ${number(MAX_BODY_BYTES)} bytes, declared or counted.`],
@@ -69,7 +70,7 @@ const refusals: Array<[ErrorCode, string]> = [
   ['invalid-request', 'A field is missing, out of range, of the wrong type, or not one the endpoint takes.'],
   ['budget-exhausted', 'The request is over one of the limits above; limit and max name it.'],
   ['calculation-failed', 'The engine could not complete the calculation.'],
-  ['not-found', 'The path is not one of the six endpoints.'],
+  ['not-found', 'The request reached the function by a path that is not one of the six endpoints.'],
 ];
 
 const jsonLd = [{
@@ -94,6 +95,12 @@ const jsonLd = [{
         {backend.ephemeris.name} {backend.ephemeris.version}, the engine this
         site's calculators run in the browser.
       </p>
+      <p>
+        The endpoints answer only while their per-address rate limit is in
+        place. Until it is, and whenever it cannot be checked, every endpoint
+        answers <code>503</code> with <code>Retry-After</code>, and nothing
+        is read or computed.
+      </p>
     </div>
     <ul class="compute-list">
       {endpoints.map(([endpoint, what]) => (
@@ -109,20 +116,28 @@ const jsonLd = [{
       <p>
         Put birth data in the body, and only there. The API takes the
         endpoint from the path and ignores the query string, but the host's
-        short-lived logs keep the full web address of every request, so birth
-        details put in a query string would be kept in them.
+        short-lived logs keep the full web address and the IP address of
+        every request, so birth details put in a query string would be kept
+        in them.
       </p>
       <p>
-        A request and its result are never logged or stored: the function
-        writes nothing from either to a log, a file or a database. An error
-        repeats nothing you sent: each refusal is a fixed sentence that names
-        at most the field it refuses. Every response carries{' '}
-        <code>Cache-Control: no-store</code>, so no cache keeps a copy.
-        Between requests a running instance holds in memory only
-        public tables it has loaded to answer: the time zone tables it has
-        read, by zone name, and working values of the ephemeris for the periods
-        asked about. They hold no request, but they show which zones and
-        periods were asked about until the instance is replaced.
+        The function writes nothing from a request or its result to a log, a
+        file or a database. An error repeats nothing you sent: each refusal
+        is a fixed sentence that names at most the field it refuses. Every
+        response carries <code>Cache-Control: no-store</code>, so no cache
+        keeps a copy.
+      </p>
+      <p>
+        Between requests a running instance keeps in memory the public tables
+        it has loaded to answer: the time zone tables it has read, by zone
+        name, and working values of the ephemeris for the periods asked about.
+        They show which zones and periods were asked about. The ephemeris
+        library also keeps two values from its last calculations, to reuse
+        them: sidereal time at the moment of the last chart or houses request,
+        and the Earth's tilt at the last moment any calculation used. So those
+        two moments stay in memory until later requests replace them, or the
+        instance is replaced. No place is kept, and none of this is written
+        anywhere.
       </p>
       <p>
         To apply the rate limit, the function sends the request's headers,
@@ -138,9 +153,11 @@ const jsonLd = [{
       <p>
         Send <code>Content-Type: application/json</code> and a UTF-8 body of at
         most {number(MAX_BODY_BYTES)} bytes, with no content encoding. A field an
-        endpoint does not take is refused rather than ignored. Answers allow any
-        origin and a browser's CORS preflight is answered, so a page on another
-        site can call the API directly.
+        endpoint does not take is refused rather than ignored. A key written
+        twice in one object is read as <code>JSON.parse</code> reads it: the
+        last value counts. Answers allow any origin and a browser's CORS
+        preflight is answered, so a page on another site can call the API
+        directly.
       </p>
       <p>
         An instant is ISO 8601 with <code>Z</code> or a numeric offset, to the
@@ -150,10 +167,14 @@ const jsonLd = [{
         site's own forms take. A local time is an object with a real{' '}
         <code>date</code>, a <code>time</code> in hours and minutes, and a{' '}
         <code>zone</code> named as in the IANA database, such as{' '}
-        <code>Europe/Paris</code>; its date runs from {EPOCH.firstYear}-01-01
-        to {EPOCH.lastYear}-12-31. That span is where requests are accepted,
+        <code>Europe/Paris</code>, in any letter case: the answer names the
+        zone as tzdb spells it. Its date runs from {EPOCH.firstYear}-01-01 to{' '}
+        {EPOCH.lastYear}-12-31. That span is where requests are accepted,
         not a span in which every date has been checked, and every receipt
-        states the engine's own coverage.
+        states the engine's own coverage. A local time at either end of it
+        can fall just outside the instant span, such as midnight on
+        1 January 1800 in Tokyo, which is still 31 December in UTC; it is
+        computed and flagged <code>outside-reference-span</code>.
       </p>
       <p>
         A latitude is degrees north, greater than −90 and less than 90: the
@@ -321,6 +342,15 @@ const jsonLd = [{
         zone: whether an ingress or a phase falls on a date always depends on
         where the date is read. At an instant the answer is true or false.
       </p>
+      <p>
+        A zone that moved across the date line skipped a whole date: Samoa
+        went from 29 to 31 December 2011. A fact about a date its zone
+        skipped is refused with <code>invalid-request</code> at{' '}
+        <code>/date</code>, since there was no such day to hold it. The
+        facts carry <code>flags</code>, with{' '}
+        <code>outside-reference-span</code> when the day read reaches past
+        the instant span, as the first and last accepted dates can.
+      </p>
     </div>
     <pre tabindex="0" role="region" aria-label="Sky fact request"><code>{request('sky-fact')}</code></pre>
     <details class="compute-example">
@@ -353,6 +383,13 @@ const jsonLd = [{
         names. A digest keeps the citation short enough to quote, which a
         second copy of the receipt would not.
       </p>
+      <p>
+        A digest does not hide what it identifies. For chart and houses the
+        receipt holds the instant and the coordinates, so the digest
+        identifies the birth details: anyone who knows the date and the place
+        can find the time by trying each minute of the day until the digest
+        matches. Quote it only where the birth details may be known.
+      </p>
     </div>
     <details class="compute-example">
       <summary>A whole answer, from the time example above</summary>
@@ -375,11 +412,13 @@ const jsonLd = [{
         A request over a limit is refused whole, before anything is computed,
         except the two evaluation limits, which are counted as the searches
         run: when one is spent the request is refused and nothing is returned.
-        The limits come from the measured cost of single requests: the largest
-        request each one allows took under a second on the machine it was
-        measured on. The measurements are in the{' '}
+        The limits come from the measured cost of requests in every year the
+        API takes: on the machine they were measured on, one address at its
+        rate limits can cost at most about 8.5 seconds of CPU time a minute.
+        The measurements are in the{' '}
         <a href="https://github.com/zodiacs-org/site/tree/main/docs/platform/evidence/compute-api-2026-09-29">site repository</a>.
-        When the API is switched off, every endpoint answers 503.
+        When the API is switched off, or its rate limit is not in place, every
+        endpoint answers 503.
       </p>
     </div>
 
@@ -413,9 +452,10 @@ const jsonLd = [{
         <a href="/api/v1/openapi.json"><code>/api/v1/openapi.json</code></a>,
         tagged <code>compute</code>, with a JSON Schema for every request and
         answer and an example of each that the handler itself produced. A
-        schema cannot state every rule, such as a real calendar date or a zone
-        the server knows, so a request the schema accepts can still be refused
-        with <code>invalid-request</code>.
+        schema cannot state every rule, such as a real calendar date, a zone
+        the server knows, or an events window whose <code>to</code> is after
+        its <code>from</code>, so a request the schema accepts can still be
+        refused with <code>invalid-request</code>.
       </p>
       <p>
         Within v1, fields are added, never renamed or removed. The engine is a

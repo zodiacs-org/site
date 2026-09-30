@@ -17,8 +17,8 @@ export type ComputeEndpoint = (typeof COMPUTE_ENDPOINTS)[number];
 /**
  * vercel.json rewrites each public path to the site's existing compatibility
  * function with this parameter set, and that function hands the request to
- * api/_compute/handler.ts before any route of its own: the plan's function
- * count is at its cap, as the Games and the chart previews found. The
+ * api/_compute/handler.ts before any route of its own, as the Games and the
+ * chart previews are served, so the API adds no deployed function. The
  * parameter is the only part of any query string the compute API reads.
  */
 export const COMPUTE_ROUTE_PARAM = '__zodiacs_compute';
@@ -39,13 +39,64 @@ export function computeDocsUrl(endpoint: ComputeEndpoint): string {
 
 /** Uses Vercel's per-address Firewall counters; the matching rule must use this exact ID. */
 export const COMPUTE_RATE_LIMIT_ID = 'zodiacs-compute-api';
+/** A second counter for the events endpoint alone, the costliest request; also a rule the owner publishes. */
+export const COMPUTE_EVENTS_RATE_LIMIT_ID = 'zodiacs-compute-events';
+
+/**
+ * The Firewall rules the owner publishes (docs/OWNER-SETUP-RUNBOOK.md §3):
+ * requests per address in each 60-second window. Every compute request is
+ * counted under the first; an events request under both. The endpoints answer
+ * only while both rules are in place: see computeApiRateLimit in handler.ts.
+ * The worst case these allow is worked out in
+ * docs/platform/evidence/compute-api-2026-09-29/README.md.
+ */
+export const RATE_LIMIT_RULES = Object.freeze({
+  [COMPUTE_RATE_LIMIT_ID]: Object.freeze({ requests: 40, windowSeconds: 60 }),
+  [COMPUTE_EVENTS_RATE_LIMIT_ID]: Object.freeze({ requests: 10, windowSeconds: 60 }),
+});
+
+/**
+ * What a rate-limit check found: the Firewall counted the request and let it
+ * through, counted it and refused it, or could not count it.
+ */
+export type RateLimitVerdict = 'allowed' | 'limited' | 'unavailable';
+
+/** The rules a request to each endpoint is counted under, in the order they are checked. */
+export function rateLimitIds(endpoint: ComputeEndpoint): readonly string[] {
+  return endpoint === 'events' ? [COMPUTE_RATE_LIMIT_ID, COMPUTE_EVENTS_RATE_LIMIT_ID] : [COMPUTE_RATE_LIMIT_ID];
+}
 
 /** `COMPUTE_API_ENABLED=0` turns the endpoints off; unset or any other value leaves them on. */
 export const COMPUTE_SWITCH_ENV = 'COMPUTE_API_ENABLED';
 
 export const RETRY_AFTER_SECONDS = Object.freeze({
   rateLimited: 60,
+  rateLimitUnavailable: 300,
   disabled: 3600,
+});
+
+/**
+ * Sent with every response, success or refusal; a refusal adds Allow (405)
+ * or Retry-After (429, 503), and nothing else.
+ */
+export const RESPONSE_HEADERS = Object.freeze({
+  'Content-Type': 'application/json; charset=utf-8',
+  'Cache-Control': 'no-store',
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Expose-Headers': 'Retry-After',
+  'X-Content-Type-Options': 'nosniff',
+  'X-Robots-Tag': 'noindex',
+});
+
+/** The answer to a CORS preflight, before anything else is checked. */
+export const PREFLIGHT_HEADERS = Object.freeze({
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type',
+  'Access-Control-Max-Age': '86400',
+  'Cache-Control': 'no-store',
+  'X-Content-Type-Options': 'nosniff',
+  'X-Robots-Tag': 'noindex',
 });
 
 /** Requests over this many bytes are refused with 413 before they are parsed. */
@@ -71,8 +122,8 @@ export const EPOCH = Object.freeze({
  */
 export const BUDGETS = Object.freeze({
   'positions.instants': 100,
-  'events.windowDays': 366,
-  'events.samples': 40_000,
+  'events.windowDays': 92,
+  'events.samples': 12_000,
   'sky-fact.samples': 1_000,
 });
 export type BudgetName = keyof typeof BUDGETS;
@@ -102,6 +153,7 @@ export const ERROR_CODES = Object.freeze([
   'method-not-allowed',
   'disabled',
   'rate-limited',
+  'rate-limit-unavailable',
   'unsupported-media-type',
   'payload-too-large',
   'invalid-json',
@@ -116,6 +168,7 @@ export const ERROR_STATUS: Readonly<Record<ErrorCode, number>> = Object.freeze({
   'method-not-allowed': 405,
   disabled: 503,
   'rate-limited': 429,
+  'rate-limit-unavailable': 503,
   'unsupported-media-type': 415,
   'payload-too-large': 413,
   'invalid-json': 400,

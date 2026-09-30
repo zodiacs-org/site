@@ -1462,10 +1462,13 @@
       "dependsOn": [
         "P3.2"
       ],
-      "status": "not-started",
-      "release": "none",
-      "evidence": [],
-      "notes": "decided 2026-09-28: free and anonymous on the existing Vercel plan, rate-limited, no additional spending (docs/platform/programme/DECISIONS-2026-09-28.md §5)"
+      "status": "implemented",
+      "release": "unmerged",
+      "evidence": [
+        "docs/platform/evidence/compute-api-2026-09-29/README.md",
+        "tests/api/compute-api-privacy.test.ts"
+      ],
+      "notes": "decided 2026-09-28: free and anonymous on the existing Vercel plan, rate-limited, no additional spending (docs/platform/programme/DECISIONS-2026-09-28.md §5). Implemented on the compute-api branch, not merged: six POST endpoints; the negative-control test and receipts that name the backend hold. The endpoints fail closed until the owner publishes the Firewall rules zodiacs-compute-api (40 a minute) and zodiacs-compute-events (10 a minute) (decisions of 2026-09-30). Gate still open: p50 and p95 latency, warm and cold, and the cost of 1,000 requests of each kind, on the deployed endpoints, measurable once the rules are published and the API is deployed. On one 4-core machine over every year from 1800 to 2199, a 92-day events window took CPU p50 170.6 ms, p95 247.3 ms, at most 377.3 ms, and one address at both limits can cost at most 8.5 CPU-seconds a minute (5.6 at the 95th percentiles) (docs/platform/evidence/compute-api-2026-09-29/README.md)"
     },
     {
       "id": "P3.4",

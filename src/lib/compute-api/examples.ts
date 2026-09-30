@@ -7,7 +7,7 @@
  * writes the responses to examples.json; tests/api/compute-api-openapi.test.ts
  * runs them again, compares, and validates both against the schemas.
  */
-import type { ComputeEndpoint, ErrorCode } from './constants.js';
+import type { ComputeEndpoint, ErrorCode, RateLimitVerdict } from './constants.js';
 
 export interface SuccessExample {
   summary: string;
@@ -72,7 +72,8 @@ export const SUCCESS_EXAMPLES: Readonly<Record<ComputeEndpoint, Readonly<Record<
 export interface RefusalExample {
   summary: string;
   code: ErrorCode;
-  endpoint: ComputeEndpoint;
+  /** null: the request reaches the function without one of the six endpoint names. */
+  endpoint: ComputeEndpoint | null;
   method: string;
   contentType: string | null;
   /** A JSON body, or raw text sent as it is. */
@@ -80,13 +81,22 @@ export interface RefusalExample {
   /** Declared Content-Length, when the example is about it. */
   contentLength?: number;
   env?: Record<string, string>;
-  rateLimited?: boolean;
+  /** What the Firewall answers; allowed when omitted. */
+  rateLimit?: RateLimitVerdict;
 }
 
 const json = 'application/json';
 
 /** One refusal per status code the operations document, each reproducible against the handler. */
 export const REFUSAL_EXAMPLES: Readonly<Record<string, RefusalExample>> = {
+  'not-found': {
+    summary: 'The function reached without an endpoint name',
+    code: 'not-found',
+    endpoint: null,
+    method: 'POST',
+    contentType: json,
+    body: { utc: '2000-01-01T12:00:00Z', latitude: 51.4779, longitude: -0.0015 },
+  },
   'invalid-request': {
     summary: 'A latitude at a pole',
     code: 'invalid-request',
@@ -129,12 +139,12 @@ export const REFUSAL_EXAMPLES: Readonly<Record<string, RefusalExample>> = {
     body: '{}',
   },
   'budget-exhausted': {
-    summary: 'An events window longer than 366 days',
+    summary: 'An events window longer than 92 days',
     code: 'budget-exhausted',
     endpoint: 'events',
     method: 'POST',
     contentType: json,
-    body: { from: '2026-01-01T00:00:00Z', to: '2027-03-01T00:00:00Z' },
+    body: { from: '2026-01-01T00:00:00Z', to: '2026-07-01T00:00:00Z' },
   },
   'rate-limited': {
     summary: 'Over the per-address rate limit',
@@ -143,7 +153,16 @@ export const REFUSAL_EXAMPLES: Readonly<Record<string, RefusalExample>> = {
     method: 'POST',
     contentType: json,
     body: { utc: '2026-06-21T12:00:00Z', latitude: -33.8688, longitude: 151.2093 },
-    rateLimited: true,
+    rateLimit: 'limited',
+  },
+  'rate-limit-unavailable': {
+    summary: 'The rate limit is not in place, or could not be checked',
+    code: 'rate-limit-unavailable',
+    endpoint: 'chart',
+    method: 'POST',
+    contentType: json,
+    body: { utc: '2026-06-21T12:00:00Z', latitude: -33.8688, longitude: 151.2093 },
+    rateLimit: 'unavailable',
   },
   disabled: {
     summary: 'The switch is off',

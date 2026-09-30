@@ -78,7 +78,7 @@ const jsonLd = [{
         <li>
           <p class="dev-status">Available · runs on our server</p>
           <h2><a href="/developers/compute/">Calculate on our server</a></h2>
-          <p>Six POST endpoints for a chart, positions, houses, the events in a window, a local time read as UTC, and whether a sky fact holds, each answer with a receipt and the engine's version. No key. Birth data goes in the request body, and nothing from a request is stored or logged.</p>
+          <p>Six POST endpoints for a chart, positions, houses, the events in a window, a local time read as UTC, and whether a sky fact holds, each answer with a receipt and the engine's version. No key. Birth data goes in the request body, and the function writes nothing from a request to a log, a file or a database. The endpoints answer only while their per-address rate limit is in place.</p>
         </li>
         <li>
           <p class="dev-status">Available · hosted embeds</p>
