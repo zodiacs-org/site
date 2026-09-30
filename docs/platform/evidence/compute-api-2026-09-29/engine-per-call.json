@@ -1,0 +1,38 @@
+{
+  "measured": "2026-09-30",
+  "what": "CPU time of 400 calls, one instant a year 1800-2199, the two releases alternating call by call; mean of three rounds",
+  "runtime": {
+    "node": "v22.22.2",
+    "cpu": "Intel(R) Xeon(R) Processor @ 2.10GHz",
+    "cores": 4
+  },
+  "rows": [
+    {
+      "call": "positions",
+      "calls": 400,
+      "cpuMsFor400Calls": {
+        "0.1.1-rc.14": 382.1,
+        "0.1.1-rc.15": 409
+      },
+      "ratio": 1.07
+    },
+    {
+      "call": "natalChart",
+      "calls": 400,
+      "cpuMsFor400Calls": {
+        "0.1.1-rc.14": 301.1,
+        "0.1.1-rc.15": 313.4
+      },
+      "ratio": 1.041
+    },
+    {
+      "call": "crossing search, 92 days",
+      "calls": 400,
+      "cpuMsFor400Calls": {
+        "0.1.1-rc.14": 167.9,
+        "0.1.1-rc.15": 171.5
+      },
+      "ratio": 1.022
+    }
+  ]
+}

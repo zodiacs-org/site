@@ -11,41 +11,41 @@
     {
       "eventsRequestsAlongside": 0,
       "smallRequestMs": {
-        "median": 0.9,
-        "max": 1.2
+        "median": 1.4,
+        "max": 1.8
       },
       "allAnsweredMs": {
-        "median": 0.9
+        "median": 1.4
       }
     },
     {
       "eventsRequestsAlongside": 1,
       "smallRequestMs": {
-        "median": 321.8,
-        "max": 472.6
+        "median": 286.7,
+        "max": 311.8
       },
       "allAnsweredMs": {
-        "median": 321.8
+        "median": 286.7
       }
     },
     {
       "eventsRequestsAlongside": 4,
       "smallRequestMs": {
-        "median": 883.9,
-        "max": 1199.4
+        "median": 1016.7,
+        "max": 1199
       },
       "allAnsweredMs": {
-        "median": 883.9
+        "median": 1016.7
       }
     },
     {
       "eventsRequestsAlongside": 10,
       "smallRequestMs": {
-        "median": 2347.7,
-        "max": 2564.5
+        "median": 1936.7,
+        "max": 2414.4
       },
       "allAnsweredMs": {
-        "median": 2347.7
+        "median": 1936.8
       }
     }
   ]

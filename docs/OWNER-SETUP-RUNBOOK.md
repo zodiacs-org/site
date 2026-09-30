@@ -267,20 +267,29 @@ the function and count against the same address. 120 a minute still holds one
 script to two requests a second.
 
 The compute API needs both rules, and unlike the four endpoints above it fails
-closed: until both exist (the SDK reports `not-found`), or whenever the check
-fails, every compute endpoint answers 503 `rate-limit-unavailable` with
-`Retry-After: 300` and computes nothing. Its general limit is higher than the
-others' because programs call it in batches and most requests take a few
-milliseconds. Events requests are the costly ones, so they have their own,
-lower limit: their window is at most 92 days, and the slowest such request
-took 377.3 ms of CPU in `docs/platform/evidence/compute-api-2026-09-29/`
-(p50 170.6 ms, p95 247.3 ms, over every year the API takes). One
-address at both limits costs at most about 8.5 CPU-seconds a minute on
-that machine: 10 events requests and 30 others at the slowest measured
-(`worst-case.json` shows the arithmetic). To switch the API off without
-removing it, set `COMPUTE_API_ENABLED=0` for Production and redeploy: every
-compute endpoint then answers 503 `disabled` with `Retry-After`. Leave it
-unset, or anything but `0`, to keep it on.
+closed: an endpoint answers 503 `rate-limit-unavailable` with
+`Retry-After: 300`, and computes nothing, until every rule it is counted under
+exists (the SDK reports `not-found` until then) and whenever the check fails.
+The events endpoint is counted under both rules, the other five under
+`zodiacs-compute-api` alone. The general limit is higher than the email, Aura
+and wallet limits because programs call the API in batches and most requests
+take a few milliseconds. Events requests are the costly ones, so they have
+their own, lower limit: their window is at most 92 days, and on engine rc.15
+the slowest such request took 359.2 ms of CPU in
+`docs/platform/evidence/compute-api-2026-09-29/` (p50 165.7 ms, p95
+244.0 ms, over every year the API takes). One address at both limits costs at
+most about 8.7 CPU-seconds a minute on that machine: 10 events requests and
+30 others at the slowest measured (`worst-case.json` shows the arithmetic).
+
+If `zodiacs-compute-api` is already published at 60 requests per 60 seconds,
+as this runbook first gave it, change its limit to 40 and publish
+`zodiacs-compute-events` at 10: at 60, one address could cost about 12.1
+CPU-seconds a minute. Until the events rule exists, the events endpoint
+answers 503 and the other five answer as usual.
+
+To switch the API off without removing it, set `COMPUTE_API_ENABLED=0` for
+Production and redeploy: every compute endpoint then answers 503 `disabled`
+with `Retry-After`. Leave it unset, or anything but `0`, to keep it on.
 
 After the owner explicitly authorizes and publishes the rules, verify the email
 rule without a recipient or email body:
@@ -302,8 +311,8 @@ The final responses must visibly include an `HTTP/... 429` status line and a
 returns 403, which does not test the Firewall rule.
 
 Verify the compute rules with a synthetic request (a wall time in UTC, no
-one's birth). Before the rules exist every answer is 503; after, the first 40
-in a minute are 200 and the rest 429:
+one's birth). Before `zodiacs-compute-api` exists every answer is 503; after,
+the first 40 in a minute are 200 and the rest 429:
 
 ```sh
 for attempt in $(seq 1 42); do
@@ -316,7 +325,7 @@ done | sort | uniq -c
 ```
 
 Then, a minute later, 11 events requests: the first 10 are 200 and the 11th
-429, from the events rule.
+429, from the events rule. Before that rule exists all 11 are 503.
 
 ```sh
 for attempt in $(seq 1 11); do

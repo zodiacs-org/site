@@ -4,8 +4,9 @@
  * here imports the engine or a Node module, so the developer page and the
  * OpenAPI builder can read it without pulling calculation code into a build.
  *
- * Decision record: docs/platform/programme/DECISIONS-2026-09-28.md §5 and the
- * record of 2026-09-29 §5. Budgets and the measurements behind them:
+ * Decision record: docs/platform/programme/DECISIONS-2026-09-28.md §5,
+ * DECISIONS-2026-09-29.md §5 and DECISIONS-2026-09-30.md §6 and §7. Budgets
+ * and the measurements behind them:
  * docs/platform/evidence/compute-api-2026-09-29/README.md.
  */
 
@@ -45,8 +46,9 @@ export const COMPUTE_EVENTS_RATE_LIMIT_ID = 'zodiacs-compute-events';
 /**
  * The Firewall rules the owner publishes (docs/OWNER-SETUP-RUNBOOK.md §3):
  * requests per address in each 60-second window. Every compute request is
- * counted under the first; an events request under both. The endpoints answer
- * only while both rules are in place: see computeApiRateLimit in handler.ts.
+ * counted under the first; an events request under both. An endpoint answers
+ * only while every rule it is counted under is in place: see
+ * computeApiRateLimit in handler.ts.
  * The worst case these allow is worked out in
  * docs/platform/evidence/compute-api-2026-09-29/README.md.
  */
