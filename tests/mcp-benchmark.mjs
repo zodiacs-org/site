@@ -198,9 +198,12 @@ const recordFor = async (input) => (await structured('calculate_natal_chart', { 
  * instant alone is refused. The edit therefore also carries `deltaT`: the ΔT a
  * genuine record of the declared instant has, read from the same server by the
  * caller. The model is public, so that is no obstacle to anyone rewriting a
- * record, and the values still come from the other moment.
+ * record, and the values still come from the other moment. From 0.1.1-rc.15 a
+ * record also carries its instant's time basis (`result.timeScale`: UT1 − UTC
+ * and TAI − UTC from 1972 to 2027-10-02), which the parser checks against the
+ * declared instant the same way, so the edit carries that too.
  */
-function editClaims(record, edit, deltaT) {
+function editClaims(record, edit, clock) {
   const parsed = JSON.parse(record);
   if (edit.engineVersion !== undefined) parsed.receipt.engine.version = edit.engineVersion;
   if (edit.buildMetadata !== undefined) {
@@ -209,7 +212,8 @@ function editClaims(record, edit, deltaT) {
   if (edit.declaredInstant !== undefined) {
     parsed.receipt.instant = new Date(edit.declaredInstant).toISOString();
     parsed.receipt.sourceInstant = edit.declaredInstant;
-    if (deltaT !== undefined) parsed.result.deltaT = deltaT;
+    if (clock?.deltaT !== undefined) parsed.result.deltaT = clock.deltaT;
+    if (clock?.timeScale !== undefined) parsed.result.timeScale = clock.timeScale;
   }
   // The same drift reached through the place instead of the moment. The parser
   // accepts a rewritten coordinate for the same reason it accepts a rewritten
@@ -226,9 +230,9 @@ try {
     let left = await recordFor(scenario.left);
     let right = await recordFor(scenario.right);
     for (const edit of scenario.mutate ? [scenario.mutate].flat() : []) {
-      const deltaT = edit.declaredInstant === undefined ? undefined
-        : JSON.parse(await recordFor({ utc: edit.declaredInstant })).result.deltaT;
-      const patched = editClaims(edit.side === 'right' ? right : left, edit, deltaT);
+      const clock = edit.declaredInstant === undefined ? undefined
+        : JSON.parse(await recordFor({ utc: edit.declaredInstant })).result;
+      const patched = editClaims(edit.side === 'right' ? right : left, edit, clock);
       if (edit.side === 'right') right = patched; else left = patched;
     }
     // Most scenarios read the default response. A scenario whose assertions
