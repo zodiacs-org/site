@@ -95,6 +95,21 @@ export function readBirthplace(tz: string, wallMs: number, longitude: number): {
 }
 
 /**
+ * Whether an instant falls in the zone's local mean time era (src/data/tz-lmt.json),
+ * where the clocks the birthplace clock reads showed a local mean time: the
+ * birthplace's own, or the zone's reference city's where the birthplace's was
+ * not used. A legal time that ran to seconds, such as Paris or Dublin Mean
+ * Time, comes after the era. Instants from 1953 on are never in one.
+ */
+export function inMeanTimeEra(tz: string, utcMs: number): boolean {
+  if (utcMs >= LOCAL_MEAN_TIME_ERAS_END_BEFORE) return false;
+  if (!lmtEraEnd) {
+    throw new Error('Local mean time eras are not loaded: await prepareLocalTime(date, timeZone) before resolving.');
+  }
+  return Object.prototype.hasOwnProperty.call(lmtEraEnd, tz) && utcMs < lmtEraEnd[tz] * 1000;
+}
+
+/**
  * A birthplace this far from its zone's own mean time is not in that zone.
  * The widest real case in the city index is Gar, in western Tibet, 165
  * minutes from Shanghai's mean time.

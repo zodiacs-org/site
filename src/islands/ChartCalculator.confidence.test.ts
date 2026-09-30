@@ -152,9 +152,12 @@ describe('ChartCalculator reference confidence', () => {
     ['1892-07-04', 'Pacific/Apia', '1892-07-03T23:26:56.000Z', ['dst-fold', 'lmt']],
   ])('keeps the zone clock for %s in %s, hours from the synthetic longitude', (date, zone, instant, flags) => {
     // Toronto's longitude is outside the bound on a birthplace's departure
-    // from the zone's mean time, so these controls keep the zone's clock.
+    // from the zone's mean time, so these controls keep the zone's clock. Only
+    // the reading with a longitude says which clock that was: the zone's own
+    // local mean time, `lmt` (the flag's meaning since engine rc.15).
     const actual = capture(input(date, zone));
-    expect(actual.resolved).toEqual(resolveLocalToUtc(date, '12:00', zone));
+    const zoneClock = resolveLocalToUtc(date, '12:00', zone);
+    expect({ ...actual.resolved, flags: actual.resolved.flags.filter((flag) => flag !== 'lmt') }).toEqual(zoneClock);
     expect(actual.resolved.utc.toISOString()).toBe(instant);
     expect(actual.resolved.flags).toEqual(flags);
     expect(actual.resolved.localMeanTime).toBeUndefined();

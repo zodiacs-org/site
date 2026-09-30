@@ -100,7 +100,9 @@ describe('the birthplace clock at the end of its local mean time era', () => {
       const [date, time] = wallParts(wall);
       const resolved = resolveLocalToUtc(date, time, zone, { longitude });
       const flag = resolved.flags.filter((f) => f !== 'lmt').join(',');
-      const lmtFlagAgrees = resolved.flags.includes('lmt') === (Math.abs(resolved.offsetMinutes % 1) > 1e-9);
+      // Since engine rc.15 `lmt` means a local mean time read the wall time: the
+      // town's, before the era ended. A legal clock that runs to seconds does not.
+      const lmtFlagAgrees = resolved.flags.includes('lmt') === (resolved.utc.getTime() < endMs);
       if (resolved.utc.getTime() !== expected.t || Math.abs(resolved.offsetMinutes - expected.offset) > 1e-9
         || flag !== expected.flag || !lmtFlagAgrees) {
         failures.push(`${date} ${time}: got ${resolved.utc.toISOString()} ${resolved.offsetMinutes} [${resolved.flags}], `

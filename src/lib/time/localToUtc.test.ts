@@ -10,10 +10,12 @@ describe('resolveLocalToUtc', () => {
 
   it('handles pre-standardization LMT with seconds (Mexico City 1907)', () => {
     // America/Mexico_City used LMT −6:36:36 until 1922. Without a birthplace
-    // longitude, that reference city's mean time is the clock.
+    // longitude, that reference city's mean time is the clock. Only a reading
+    // with a longitude says which clock it was (`lmt`), since the host's
+    // history cannot tell a mean time from a legal time at the same offset.
     const r = resolveLocalToUtc('1907-07-06', '08:30', 'America/Mexico_City');
     expect(r.utc.toISOString()).toBe('1907-07-06T15:06:36.000Z');
-    expect(r.flags).toContain('lmt');
+    expect(r.flags).toEqual([]);
   });
 
   it('shifts forward through a DST spring gap', () => {
