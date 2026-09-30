@@ -426,7 +426,7 @@
       "evidence": [
         "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md §1.15"
       ],
-      "notes": "no committed test decodes the instant (a code-only decoder recovers 100/100 to a median 6.28 s); time-unknown codes leak the birthplace (F-17); the region figure fails at high latitude (F-40); decided 2026-09-28: random opaque feed ids stored server-side, older token URLs retired after 60 days (docs/platform/programme/DECISIONS-2026-09-28.md §2); #599: timed codes and feeds carry the whole UTC minute and codes without a birth time 12:00 UTC on the date, with decoder and invariance tests (src/lib/share-positions.test.ts); the opaque feed ids decided on 2026-09-28 are not built yet"
+      "notes": "no committed test decodes the instant (a code-only decoder recovers 100/100 to a median 6.28 s); time-unknown codes leak the birthplace (F-17); the region figure fails at high latitude (F-40); decided 2026-09-28: random opaque feed ids stored server-side, older token URLs retired after 60 days (docs/platform/programme/DECISIONS-2026-09-28.md §2); #599: timed codes and feeds carry the whole UTC minute and codes without a birth time 12:00 UTC on the date, with decoder and invariance tests (src/lib/share-positions.test.ts); the opaque feed ids decided on 2026-09-28 are not built yet; the release's owner steps are done (2026-09-30): CALENDAR_FEED_SWEEP_SECRET in Vercel Production and in the GitHub environment calendar-feed-production, and PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are Production project variables"
     },
     {
       "id": "P1.M3a",
@@ -1390,7 +1390,7 @@
         "the registry's tarballs match their carried archive receipts byte for byte: 0.1.1-rc.14 adc9805e22cd2468fa3340a864d9c53b36ff91e8f1592fdb35d8da8b69f4476e, 0.1.1-rc.15 24eeb597b0157598c0faa26bb615c0cb5dfaaeac0393d62c73fbd37c5da4d348 (downloaded with npm pack, 2026-09-30)",
         "0.1.1-rc.14 was the one manual first upload, with two-factor authentication, because npm configures a trusted publisher only for a package that exists; publishing access now requires two-factor authentication and disallows tokens, and the GitHub environment npm allows main only"
       ],
-      "notes": "dist-tags on 2026-09-30: next 0.1.1-rc.15, latest 0.1.1-rc.14 (npm gave the first upload latest); a plain npm install selects rc.14, which has no provenance, until latest moves"
+      "notes": "on 2026-09-30 npm gave the manual first upload latest; the owner then moved latest to 0.1.1-rc.15, so a plain npm install selects the attested version (dist-tags latest and next both 0.1.1-rc.15)"
     },
     {
       "id": "P3.1b",
@@ -1466,7 +1466,7 @@
       "status": "not-started",
       "release": "none",
       "evidence": [],
-      "notes": "decided 2026-09-28: free and anonymous on the existing Vercel plan, rate-limited, no additional spending (docs/platform/programme/DECISIONS-2026-09-28.md §5)"
+      "notes": "decided 2026-09-28: free and anonymous on the existing Vercel plan, rate-limited, no additional spending (docs/platform/programme/DECISIONS-2026-09-28.md §5); the Firewall rule zodiacs-compute-api (60 a minute per address) is published since 2026-09-30, before the API is deployed"
     },
     {
       "id": "P3.4",
@@ -1578,7 +1578,7 @@
         "zodiacs-org/sdk main: the same files and .github/ISSUE_TEMPLATE/wrong-result.yml (zodiacs-org/sdk#14, merged 2026-09-29 as a95dc0cf)",
         "the public repositories of zodiacs-org are engine, sdk and site (app is private), as the GitHub API listed them on 2026-09-29; each file read back from each main branch that day"
       ],
-      "notes": "every SECURITY.md offers GitHub's private vulnerability reporting beside email; switching it on waits for the owner (STATUS.md, step 5)"
+      "notes": "every SECURITY.md offers GitHub's private vulnerability reporting beside email; the owner switched it on in site, engine and sdk on 2026-09-30"
     },
     {
       "id": "P4.1",
@@ -2004,7 +2004,7 @@
       "status": "partial",
       "release": "none",
       "evidence": [],
-      "notes": "zodiacs-org/engine exists (§10.2 decided); docs still at /sdk/engine/ (rc.1 TypeDoc with Registry links); no description/topics"
+      "notes": "zodiacs-org/engine exists (§10.2 decided), and its description and topics are set (read back through a GitHub search on 2026-09-30); the docs are still at /sdk/engine/ (rc.1 TypeDoc with Registry links)"
     },
     {
       "id": "G2",
@@ -2015,17 +2015,14 @@
       "weight": 0.5,
       "gate": "accurate description, topics and README",
       "dependsOn": [],
-      "status": "partial",
-      "release": "none",
+      "status": "accepted",
+      "release": "merged",
       "evidence": [
         "README.md rewritten: what the repository holds, how to build it, and all rights reserved (LICENSE)",
-        "repository description \"Source of zodiacs.org. All rights reserved.\" and website https://zodiacs.org, read back through the GitHub API on 2026-09-28"
+        "repository description \"Source of zodiacs.org. All rights reserved.\" and website https://zodiacs.org, read back through the GitHub API on 2026-09-28",
+        "topics astro, astrology, birth-chart, horoscope, natal-chart and typescript, set by the owner and read back through a GitHub search on 2026-09-30"
       ],
-      "notes": "decided 2026-09-28: all rights reserved for the site repository (docs/platform/programme/DECISIONS-2026-09-28.md §6); the description and website are set; the topics wait for the owner (STATUS.md, step 5)",
-      "blockedBy": {
-        "owner": true,
-        "action": "with the owner's GitHub login (the owner or Codex): add the site repository's topics, as STATUS.md lists; on 2026-09-30 a GitHub search finds none on zodiacs-org/site, while the engine's are set"
-      }
+      "notes": "decided 2026-09-28: all rights reserved for the site repository (docs/platform/programme/DECISIONS-2026-09-28.md §6)"
     },
     {
       "id": "G3",

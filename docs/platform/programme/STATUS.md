@@ -2,9 +2,9 @@
 
 Checkpoint 6: production serves engine rc.14, Swiss Ephemeris output is out of the site's tree, and the ΔT values carry their attribution, 2026-09-30. The next session should start here.
 
-Addendum, 2026-09-30: the owner's steps of the same day put `@zodiacs/engine` on npm, 0.1.1-rc.15 with provenance (P3.1a accepted), set up PyPI, JSR and Zenodo, sent the NAIF question and confirmed the assistant accounts. The list below keeps only what remains.
+Addendum, 2026-09-30: the owner's steps of the same day put `@zodiacs/engine` on npm, 0.1.1-rc.15 with provenance (P3.1a accepted), set up PyPI, JSR and Zenodo, sent the NAIF question and confirmed the assistant accounts. A second report the same day finished the repository settings, published the Firewall rules, moved npm's `latest` to rc.15 and set the calendar feeds' secret (G2 accepted). The list below keeps only what remains.
 
-**Overall delivery: 18%** — 33.75 of 182.45 weighted units accepted; blocked on owner or external action: 2% (4.5).
+**Overall delivery: 19%** — 34.25 of 182.45 weighted units accepted; blocked on owner or external action: 2% (4).
 
 The figure is computed by `node scripts/programme-ledger.mjs --summary` from [`acceptance-ledger.json`](acceptance-ledger.json). The method is in [README.md](README.md) and the unit list in [LEDGER.md](LEDGER.md).
 
@@ -49,39 +49,20 @@ Done on 2026-09-30, by the owner's report:
 - **NAIF.** The question was sent once, on 2026-09-30 at 10:54 UTC, to the manager the contact page names for general requests. No answer yet. Do not resend it.
 - **Assistants.** Free accounts exist on ChatGPT, Claude, Gemini and Perplexity for admin@zodiacs.org, with no payment method. Microsoft Copilot has no signed-in account.
 
+Done in the second report of 2026-09-30:
+- **npm's `latest` tag** points at 0.1.1-rc.15, so a plain install selects the attested version.
+- **Repository settings.** The site's topics (astro, astrology, birth-chart, horoscope, natal-chart, typescript). The engine allows merge commits only. Its `main` ruleset (24244836) blocks deletion and force pushes and requires the twelve checks, with no bypass and no required review. Private vulnerability reporting is on in site, engine and sdk.
+- **Vercel Firewall.** Version 5 is active with five SDK rate-limit rules, each a fixed 60-second window counted by IP: `zodiacs-email-subscribe`, `registry-aura-holdings-v1` and `zodiacs-wallet-birth` at 10, `zodiacs-transit-calendar` at 120 and `zodiacs-compute-api` at 60. Twelve empty requests to the email endpoint gave eleven 400s and then a 429 with `Retry-After: 60`. The eleventh passed because the loop crossed a window boundary.
+- **Calendar feeds.** `CALENDAR_FEED_SWEEP_SECRET` is in Vercel Production (sensitive) and in the GitHub environment `calendar-feed-production`, limited to `main`. `PUBLIC_SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are Production project variables.
+
 Remaining:
 
-1. **npm's `latest` tag.** It points at 0.1.1-rc.14, the manual first upload, so a plain `npm install @zodiacs/engine` installs the version without provenance. With the owner's authorization, move it: `npm dist-tag add @zodiacs/engine@0.1.1-rc.15 latest`, signed in with two-factor authentication. Until a stable version exists, `latest` should follow each reviewed, attested candidate.
-2. **Repository settings** on GitHub.
-   - `zodiacs-org/site`: add the topics (the gear beside About): astrology, birth-chart, natal-chart, horoscope, astro, typescript. On 2026-09-30 a GitHub search found none.
-   - `zodiacs-org/engine`:
-     - Settings, then General, then Pull Requests: keep "Allow merge commits", and turn off "Allow squash merging" and "Allow rebase merging". The archive record names source commits that only a merge commit keeps.
-     - Settings, then Rules, then Rulesets: a branch ruleset for the default branch that blocks force pushes and deletions, and requires these status checks to pass:
-       - Engine (Node 20), Engine (Node 22), Engine (Node 24);
-       - Every carried archive rebuilds from its source commit;
-       - Pack;
-       - Packed consumer (Node 20.19.0), Packed consumer (Node 22.7.0), Packed consumer (Node 22), Packed consumer (Node 24);
-       - Conformance suite; Conformance vectors rebuild from their sources;
-       - Time atlas checks.
-
-       All of them run on every pull request.
-   - In each public repository (`site`, `engine` and `sdk`): open Settings, then Code security, and turn on **Private vulnerability reporting**. Every SECURITY.md already offers its **Report a vulnerability** button beside email to admin@zodiacs.org.
-   - Report a screenshot of each.
-3. **The first GitHub release of the engine (G4).** A published GitHub release on `zodiacs-org/engine` makes Zenodo mint a DOI, and a DOI is permanent. With the owner's authorization, the first release is 0.1.1-rc.15, tagged at its merge commit, with its CHANGELOG entry as the notes.
-4. **JSR (P3.1c).** A publish workflow using GitHub's OIDC token is to be added to the engine. Its first run needs the owner's authorization.
-5. **Search and analytics baselines (P0.7b).** Add Bing's export when it is ready, then either attach `zodiacs-org/analytics-baselines` read-only to this work, or compute the aggregates on the owner's side. Only aggregates would be committed, to that private repository.
-6. **Vercel Firewall rate limits.** Four live endpoints call Vercel's rate-limit SDK, and no rule exists for any of them, so none is limited today. The site's runbook (§3) makes publishing them the owner's step. In the project's Firewall tab, add one custom rule per ID: If "@vercel/firewall" Rate limit ID equals the ID; Then Rate Limit, fixed window, 60 seconds, counted by IP.
-   - 10 requests: `zodiacs-email-subscribe`, `registry-aura-holdings-v1`, `zodiacs-wallet-birth`;
-   - 120 requests: `zodiacs-transit-calendar`, because calendar apps fetch many subscribers' feeds from a few shared addresses (runbook §3);
-   - 60 requests: `zodiacs-compute-api`, for the compute endpoints when they ship.
-
-   No Deny or Challenge rule, and no rule on a path. The team is on Pro, whose rate limiting is billed from the plan's monthly credit. Publish, then run the two checks in `docs/OWNER-SETUP-RUNBOOK.md` §3 and report their output.
-7. **Calendar feeds, before their release.** The opaque feed ids (P1.15) are ready on a branch. They need, in this order:
-   1. `CALENDAR_FEED_SWEEP_SECRET`, a random value of at least 32 characters, stored without printing it in Vercel Production and as a secret of a GitHub environment `calendar-feed-production` limited to `main`;
-   2. confirmation that Production has `PUBLIC_SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`.
-
-   On 2026-09-30 the project listed `PUBLIC_SUPABASE_URL` for Preview and Development only, and no production page bundle carried the Supabase address. Report where Production gets it, if anywhere, without its value.
-8. **Microsoft Copilot**, only if the monthly panel (A8) and the assistant benchmark (B4.b) are to cover five assistants: a free account for admin@zodiacs.org.
+1. **The first GitHub release of the engine (G4).** A published GitHub release on `zodiacs-org/engine` makes Zenodo mint a DOI, and a DOI is permanent. With the owner's authorization, the first release is 0.1.1-rc.15, tagged at its merge commit, with its CHANGELOG entry as the notes.
+2. **JSR (P3.1c).** A publish workflow using GitHub's OIDC token is to be added to the engine. Its first run needs the owner's authorization.
+3. **Search and analytics baselines (P0.7b).** Add Bing's export when it is ready, then either attach `zodiacs-org/analytics-baselines` read-only to this work, or compute the aggregates on the owner's side. Only aggregates would be committed, to that private repository.
+4. **Before the calendar feeds' release (P1.15).** Add one more SDK rule the same way: `zodiacs-calendar-feed-write`, 3 requests per 60 seconds, counted by IP, for creating and removing feeds. At most 3 a minute from one address makes at most 183 an hour, against the 500 all visitors share. Confirm in the project's settings that "Automatically expose System Environment Variables" is on, since the feed routes read `VERCEL_ENV`.
+5. **The compute API's rule** may change once its review fixes land. Its worst case is being bounded per address, and any new number will come with its arithmetic.
+6. **Microsoft Copilot**, only if the monthly panel (A8) and the assistant benchmark (B4.b) are to cover five assistants: a free account for admin@zodiacs.org.
 
 Later, once the site has rebuilt the MCP server on the published engine: the same manual first upload for `@zodiacs/mcp-server`, from its verified archive, since npm sets up a trusted publisher only for a package that exists.
 
