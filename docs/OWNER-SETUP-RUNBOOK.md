@@ -257,12 +257,43 @@ with `Retry-After`.
 | `registry-aura-holdings-v1` | `/api/aura-holdings` | 10 |
 | `zodiacs-wallet-birth` | `/api/wallet-birth` | 10 |
 | `zodiacs-transit-calendar` | `/api/calendar/transits` | 120 |
+| `zodiacs-compute-api` | the six compute endpoints, `/api/v1/{chart,positions,houses,events,time,sky-fact}` (served by `api/compatibility.ts`) | 40 |
+| `zodiacs-compute-events` | `/api/v1/events` only, counted in addition to `zodiacs-compute-api` | 10 |
 
 The calendar's limit is higher because calendar apps fetch subscribed feeds
 from a few shared server addresses. Every subscriber's feed has its own URL,
 and the CDN holds each for six hours, so most of a provider's fetches reach
 the function and count against the same address. 120 a minute still holds one
 script to two requests a second.
+
+The compute API needs both rules, and unlike the four endpoints above it fails
+closed: an endpoint answers 503 `rate-limit-unavailable` with
+`Retry-After: 300`, and computes nothing, until every rule it is counted under
+exists (the SDK reports `not-found` until then) and whenever the check fails.
+The events endpoint is counted under both rules, the other five under
+`zodiacs-compute-api` alone. The general limit is higher than the email, Aura
+and wallet limits because programs call the API in batches and most requests
+take a few milliseconds. Events requests are the costly ones, so they have
+their own, lower limit: their window is at most 92 days, and on engine rc.15
+the slowest such request took 359.2 ms of CPU in
+`docs/platform/evidence/compute-api-2026-09-29/` (p50 165.7 ms, p95
+244.0 ms, over every year the API takes). One address at both limits costs at
+most about 8.7 CPU-seconds a minute on that machine: 10 events requests and
+30 others at the slowest measured (`worst-case.json` shows the arithmetic).
+
+The owner first published `zodiacs-compute-api` at 60 requests per 60
+seconds, as this runbook first gave it; at 60, one address could cost about
+12.1 CPU-seconds a minute. On 2026-09-30 the owner published Firewall
+version 6, by the owner's report: `zodiacs-compute-api` at 40 and
+`zodiacs-compute-events` at 10, beside the four rules above and
+`zodiacs-calendar-feed-write` at 3 for the calendar feeds, each a fixed
+60-second window counted by IP with the `rate_limit` (429) action. Until the
+events rule exists in a project, its events endpoint answers 503 and the
+other five answer as usual.
+
+To switch the API off without removing it, set `COMPUTE_API_ENABLED=0` for
+Production and redeploy: every compute endpoint then answers 503 `disabled`
+with `Retry-After`. Leave it unset, or anything but `0`, to keep it on.
 
 After the owner explicitly authorizes and publishes the rules, verify the email
 rule without a recipient or email body:
@@ -282,6 +313,33 @@ done
 The final responses must visibly include an `HTTP/... 429` status line and a
 `Retry-After: 60` header. Without the `Origin` header the same-origin guard
 returns 403, which does not test the Firewall rule.
+
+Verify the compute rules with a synthetic request (a wall time in UTC, no
+one's birth). Before `zodiacs-compute-api` exists every answer is 503; after,
+the first 40 in a minute are 200 and the rest 429:
+
+```sh
+for attempt in $(seq 1 42); do
+  curl --silent --show-error --max-time 10 --output /dev/null \
+    --write-out '%{http_code}\n' --request POST \
+    --header 'Content-Type: application/json' \
+    --data '{"local":{"date":"2000-01-01","time":"12:00","zone":"UTC"}}' \
+    https://zodiacs.org/api/v1/time
+done | sort | uniq -c
+```
+
+Then, a minute later, 11 events requests: the first 10 are 200 and the 11th
+429, from the events rule. Before that rule exists all 11 are 503.
+
+```sh
+for attempt in $(seq 1 11); do
+  curl --silent --show-error --max-time 10 --output /dev/null \
+    --write-out '%{http_code}\n' --request POST \
+    --header 'Content-Type: application/json' \
+    --data '{"from":"2026-01-01T00:00:00Z","to":"2026-01-08T00:00:00Z","bodies":["Sun"]}' \
+    https://zodiacs.org/api/v1/events
+done | sort | uniq -c
+```
 
 ### 3a. Sky data API: keep `/api/v1/` reachable for scripts and agents
 
@@ -306,13 +364,18 @@ publish one custom rule:
 | Field | Value |
 | --- | --- |
 | Name | `sky-data-api-bypass` |
-| If | Request path starts with `/api/v1/` |
+| If | Request path matches the regular expression `^/api/v1/.*\.[^/]+$` |
 | Then | Bypass, with "bypass system-level mitigations" enabled |
 
-Bypass removes DDoS mitigation for the matched paths, so keep it scoped to
-`/api/v1/` (small, edge-cached static files) and keep the plan's bandwidth
-allowance in view; on a plan with rate limiting, a generous per-IP rate-limit
-rule for the same path can sit above it if abuse ever appears.
+Bypass removes DDoS mitigation for the matched paths, so keep it scoped to the
+static files under `/api/v1/` (small, edge-cached, every one named with an
+extension) and keep the plan's bandwidth allowance in view; on a plan with
+rate limiting, a generous per-IP rate-limit rule for the same paths can sit
+above it if abuse ever appears. Do not widen it to every path starting with
+`/api/v1/`: since 2026-09-29 that prefix also holds the six compute endpoints,
+which run a function on every request and must keep the platform's
+mitigations. The expression is the one `vercel.json` uses for the static
+files' cache header, which no compute path can match.
 
 Verify from any non-residential network after publishing:
 

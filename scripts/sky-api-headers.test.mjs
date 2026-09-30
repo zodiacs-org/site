@@ -5,6 +5,7 @@ import { describe, expect, it } from 'vitest';
 
 import { loadSkyApiSources } from '../src/lib/sky-api/sources.ts';
 import { buildSkyApi } from '../src/lib/sky-api/files.ts';
+import { effectiveHeaders as headersFor } from './lib/vercel-source-pattern.mjs';
 
 /**
  * The shared sky API is public data served as static files, so everything a
@@ -29,37 +30,13 @@ const advertised = build.payloads.get('index.json').endpoints;
 
 /**
  * Vercel's `source` is a path pattern, not a regular expression: every literal
- * character must be escaped before `(.*)` and `:param` are translated, or a `.`
- * in a filename silently matches anything. Verified against production, where
+ * character is escaped before parameters and groups are translated, or a `.`
+ * in a filename silently matches anything. scripts/lib/vercel-source-pattern.mjs
+ * compiles it as Vercel does. Verified against production, where
  * `/api/v1/sky/today.json` really does return `max-age=300` from its own rule
  * and inherits `noindex` from the family rule above it.
  */
-function sourcePattern(source) {
-  let out = '';
-  for (let index = 0; index < source.length;) {
-    if (source.startsWith('(.*)', index)) { out += '(.*)'; index += 4; continue; }
-    const param = /^:[A-Za-z_][A-Za-z0-9_]*(\*|\+|\?)?/u.exec(source.slice(index));
-    if (param) {
-      // `:path*` spans segments; a bare `:path` is one segment.
-      out += param[1] === '*' || param[1] === '+' ? '(.*)' : '[^/]+';
-      index += param[0].length;
-      continue;
-    }
-    out += source[index].replace(/[.*+?^${}()|[\]\\]/u, '\\$&');
-    index += 1;
-  }
-  return new RegExp(`^${out}$`, 'u');
-}
-
-/** Vercel applies every matching rule in order; a later rule wins on the same key. */
-function effectiveHeaders(path) {
-  const headers = new Map();
-  for (const rule of config.headers ?? []) {
-    if (!sourcePattern(rule.source).test(path)) continue;
-    for (const { key, value } of rule.headers) headers.set(key.toLowerCase(), value);
-  }
-  return headers;
-}
+const effectiveHeaders = (path) => headersFor(config, path);
 
 /**
  * The longest a cached copy may live, read from the endpoint's own `updates`

@@ -1158,7 +1158,8 @@ const sitemapPolicy = {
   // +1 for /developers/mcp/, the local MCP adapter's install and privacy page.
   // +1 for /developers/engine/, the engine's own product page.
   // +1 for /developers/conformance/, the conformance suite's results page.
-  total: 999 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
+  // +1 for /developers/compute/, the compute API's page.
+  total: 1000 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
     + publishedEventPaths.size + indexablePeoplePaths.size
     + Number(JSON.parse(await readFile(resolve(repo, 'src/data/people.json'), 'utf8')).directoryIndexable === true)
     + indexedRegistryResearchPaths.size,

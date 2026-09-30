@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "id": "consumer-cohesion-and-mobile-guide-2026-10-01",
-  "baseCommit": "acbfad2ead3424aa7f115f500f93a7587e05c91d",
+  "id": "celestial-profiles-and-consumer-cohesion-live-2026-10-01",
+  "baseCommit": "51242ba6304fdc13a82bd063c02ae099d6711d86",
   "protectedPaths": [
     "public/assets/app.js",
     "public/registry/aquarius/index.html",
@@ -29,5 +29,5 @@
     "src/pages/it/profile/index.astro",
     "src/pages/pt/profile/index.astro"
   ],
-  "authorization": "The owner expands the visual edit to the whole site, requests consumer-friendly cohesion and continuity, asks to fix the cutoff in the Registry preview, improve the personal profile and its discovery, and make Guide accessible, easy to hide, and smaller on mobile. This allowance covers the existing Registry profile treatment and shared navigation across all wing sources and generated output, including SDK, Terminal and localized profile styling. Profile facts, addresses, acquisition behavior, market logic, chart computations, account/storage boundaries and Guide privacy behavior are preserved."
+  "authorization": "The owner expands the visual edit to the whole site, requests consumer-friendly cohesion and continuity, asks to fix the cutoff in the Registry preview, improve the personal profile and its discovery, and make Guide accessible, easy to hide, and smaller on mobile. This allowance covers the existing Registry profile treatment and shared navigation across all wing sources and generated output, including SDK, Terminal and localized profile styling. Profile facts, addresses, acquisition behavior, market logic, chart computations, account/storage boundaries and Guide privacy behavior are preserved. The owner selected option B, the Celestial portrait with each sign\u2019s own constellation behind its original sculpture, and explicitly instructed: push B live. The shared sitewide polish and compact Guide are included in this approved release."
 }

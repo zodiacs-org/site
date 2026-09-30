@@ -188,6 +188,22 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   `report-bundles.mjs` never sees them. `--check` for drift; the site-check
   drift gate runs it
 - `i18n-additions.md` (repo root) ← `node scripts/build-i18n-additions.mjs`
+- `api/_compute/local-time.mjs` + `local-time.d.mts` ← `node
+  scripts/build-compute-local-time.mjs` (the site's local-time resolver from
+  `src/lib/compute-api/local-time-source.ts`, bundled with its tables for the
+  compute API's function; `--check` for drift, and
+  `tests/api/compute-api-local-time.test.ts` rebuilds it byte for byte)
+- `api/_compute/compute.mjs` + `compute.d.mts` ← `node
+  scripts/build-compute-handler.mjs` (the compute API's handler from
+  `src/lib/compute-api/handler.ts`, bundled with the engine and
+  astronomy-engine's ESM build so the function loads no engine module at run
+  time (F-58); `--check` for drift, and `tests/api/compute-api-bundle.test.ts`
+  rebuilds it byte for byte and loads it without module syntax detection)
+- `src/lib/compute-api/examples.json` ← `npx vite-node --script
+  scripts/build-compute-examples.mjs` (the compute API's documented answers,
+  run through the real handler; `tests/api/compute-api-openapi.test.ts` fails
+  while it is stale). Its `cite` digests cover receipts that name the
+  runtime's tzdb, so generate it on the Node major production runs (24.x)
 - `docs/platform/programme/LEDGER.md` ← `node scripts/programme-ledger.mjs`
   (source `docs/platform/programme/acceptance-ledger.json`; `--check` for drift,
   `--summary` for the completion figures)

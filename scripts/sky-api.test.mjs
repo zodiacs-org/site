@@ -80,7 +80,8 @@ describe('sky data API — coverage and contracts', () => {
       expect(matched, entry.path).toBe(true);
     }
     for (const name of SCHEMA_NAMES) expect(openapi.components.schemas[name]).toBeDefined();
-    const yearParams = Object.values(openapi.paths).flatMap((item) => item.get.parameters ?? []).filter((param) => param.name === 'year');
+    // The compute operations are POST-only; the static files are GET.
+    const yearParams = Object.values(openapi.paths).flatMap((item) => item.get?.parameters ?? []).filter((param) => param.name === 'year');
     expect(yearParams.length).toBe(YEAR_FAMILIES.length);
 
     const outputRoot = await mkdtemp(join(tmpdir(), 'sky-api-'));

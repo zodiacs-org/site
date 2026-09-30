@@ -1,0 +1,292 @@
+{
+  "measured": "2026-09-29",
+  "what": "warm single-request time through the handler, local-time bundle, no rate-limit call",
+  "runtime": {
+    "node": "v22.22.2",
+    "tzdb": "2025c",
+    "cpu": "Intel(R) Xeon(R) Processor @ 2.10GHz",
+    "cores": 4
+  },
+  "rows": [
+    {
+      "shape": "chart utc, Placidus, 1800-2199",
+      "endpoint": "chart",
+      "runs": 60,
+      "ms": {
+        "p50": 3,
+        "p95": 12.5,
+        "max": 15.5
+      },
+      "maxResponseBytes": 6236
+    },
+    {
+      "shape": "chart local before 1970, pinned history",
+      "endpoint": "chart",
+      "runs": 40,
+      "ms": {
+        "p50": 2.9,
+        "p95": 5.2,
+        "max": 6.6
+      },
+      "maxResponseBytes": 6160
+    },
+    {
+      "shape": "houses, each of the 13 systems",
+      "endpoint": "houses",
+      "runs": 65,
+      "ms": {
+        "p50": 1.9,
+        "p95": 4.4,
+        "max": 4.8
+      },
+      "maxResponseBytes": 2310
+    },
+    {
+      "shape": "positions, 1 instant",
+      "endpoint": "positions",
+      "runs": 60,
+      "ms": {
+        "p50": 1,
+        "p95": 1.9,
+        "max": 2.1
+      },
+      "maxResponseBytes": 3687
+    },
+    {
+      "shape": "positions, 366 instants, all bodies (budget)",
+      "endpoint": "positions",
+      "runs": 8,
+      "ms": {
+        "p50": 226.1,
+        "p95": 275.6,
+        "max": 275.6
+      },
+      "maxResponseBytes": 775473
+    },
+    {
+      "shape": "events, 31 days, all bodies and kinds",
+      "endpoint": "events",
+      "runs": 20,
+      "ms": {
+        "p50": 46.7,
+        "p95": 68.2,
+        "max": 69
+      },
+      "maxResponseBytes": 4388,
+      "maxSamples": 1951
+    },
+    {
+      "shape": "events, 366 days from 1800-01-01, all bodies and kinds (budget)",
+      "endpoint": "events",
+      "runs": 3,
+      "ms": {
+        "p50": 594.9,
+        "p95": 610.3,
+        "max": 610.3
+      },
+      "maxResponseBytes": 29432,
+      "maxSamples": 20030
+    },
+    {
+      "shape": "events, 366 days from 1850-01-01, all bodies and kinds (budget)",
+      "endpoint": "events",
+      "runs": 3,
+      "ms": {
+        "p50": 596.7,
+        "p95": 598.7,
+        "max": 598.7
+      },
+      "maxResponseBytes": 28702,
+      "maxSamples": 19841
+    },
+    {
+      "shape": "events, 366 days from 1900-01-01, all bodies and kinds (budget)",
+      "endpoint": "events",
+      "runs": 3,
+      "ms": {
+        "p50": 584.2,
+        "p95": 670.2,
+        "max": 670.2
+      },
+      "maxResponseBytes": 29106,
+      "maxSamples": 19910
+    },
+    {
+      "shape": "events, 366 days from 1950-01-01, all bodies and kinds (budget)",
+      "endpoint": "events",
+      "runs": 3,
+      "ms": {
+        "p50": 686.6,
+        "p95": 711,
+        "max": 711
+      },
+      "maxResponseBytes": 29303,
+      "maxSamples": 19936
+    },
+    {
+      "shape": "events, 366 days from 2000-01-01, all bodies and kinds (budget)",
+      "endpoint": "events",
+      "runs": 3,
+      "ms": {
+        "p50": 508.5,
+        "p95": 538.8,
+        "max": 538.8
+      },
+      "maxResponseBytes": 28960,
+      "maxSamples": 19956
+    },
+    {
+      "shape": "events, 366 days from 2026-01-01, all bodies and kinds (budget)",
+      "endpoint": "events",
+      "runs": 3,
+      "ms": {
+        "p50": 465,
+        "p95": 499.7,
+        "max": 499.7
+      },
+      "maxResponseBytes": 29060,
+      "maxSamples": 19910
+    },
+    {
+      "shape": "events, 366 days from 2050-01-01, all bodies and kinds (budget)",
+      "endpoint": "events",
+      "runs": 3,
+      "ms": {
+        "p50": 609,
+        "p95": 689.3,
+        "max": 689.3
+      },
+      "maxResponseBytes": 29655,
+      "maxSamples": 20053
+    },
+    {
+      "shape": "events, 366 days from 2100-01-01, all bodies and kinds (budget)",
+      "endpoint": "events",
+      "runs": 3,
+      "ms": {
+        "p50": 603.5,
+        "p95": 626.7,
+        "max": 626.7
+      },
+      "maxResponseBytes": 28783,
+      "maxSamples": 19885
+    },
+    {
+      "shape": "events, 366 days from 2150-01-01, all bodies and kinds (budget)",
+      "endpoint": "events",
+      "runs": 3,
+      "ms": {
+        "p50": 534.7,
+        "p95": 550.6,
+        "max": 550.6
+      },
+      "maxResponseBytes": 29126,
+      "maxSamples": 19936
+    },
+    {
+      "shape": "events, 366 days from 2198-01-01, all bodies and kinds (budget)",
+      "endpoint": "events",
+      "runs": 3,
+      "ms": {
+        "p50": 506.3,
+        "p95": 661.9,
+        "max": 661.9
+      },
+      "maxResponseBytes": 29484,
+      "maxSamples": 20006
+    },
+    {
+      "shape": "time, after 1970",
+      "endpoint": "time",
+      "runs": 60,
+      "ms": {
+        "p50": 0.4,
+        "p95": 0.8,
+        "max": 0.9
+      },
+      "maxResponseBytes": 2114
+    },
+    {
+      "shape": "time, before 1970 with longitude",
+      "endpoint": "time",
+      "runs": 60,
+      "ms": {
+        "p50": 0.5,
+        "p95": 0.7,
+        "max": 0.9
+      },
+      "maxResponseBytes": 2165
+    },
+    {
+      "shape": "sky-fact sign at an instant",
+      "endpoint": "sky-fact",
+      "runs": 60,
+      "ms": {
+        "p50": 0.9,
+        "p95": 1.7,
+        "max": 3.4
+      },
+      "maxResponseBytes": 2111
+    },
+    {
+      "shape": "sky-fact Moon sign on a date, any zone",
+      "endpoint": "sky-fact",
+      "runs": 60,
+      "ms": {
+        "p50": 1.6,
+        "p95": 2.5,
+        "max": 3
+      },
+      "maxResponseBytes": 2356,
+      "maxSamples": 33
+    },
+    {
+      "shape": "sky-fact Mercury retrograde on a date, any zone",
+      "endpoint": "sky-fact",
+      "runs": 60,
+      "ms": {
+        "p50": 3.1,
+        "p95": 4.7,
+        "max": 7
+      },
+      "maxResponseBytes": 2291,
+      "maxSamples": 4
+    },
+    {
+      "shape": "sky-fact Pluto retrograde on a date in a zone",
+      "endpoint": "sky-fact",
+      "runs": 60,
+      "ms": {
+        "p50": 3.2,
+        "p95": 5.9,
+        "max": 15.1
+      },
+      "maxResponseBytes": 2875,
+      "maxSamples": 26
+    },
+    {
+      "shape": "sky-fact full moon on a date, any zone",
+      "endpoint": "sky-fact",
+      "runs": 60,
+      "ms": {
+        "p50": 0.2,
+        "p95": 0.4,
+        "max": 1.9
+      },
+      "maxResponseBytes": 2115,
+      "maxSamples": 28
+    },
+    {
+      "shape": "sky-fact Moon ingress on a date, any zone",
+      "endpoint": "sky-fact",
+      "runs": 60,
+      "ms": {
+        "p50": 0.2,
+        "p95": 0.5,
+        "max": 1.3
+      },
+      "maxResponseBytes": 2078,
+      "maxSamples": 32
+    }
+  ]
+}

@@ -22,13 +22,16 @@ try {
       const response = await page.goto(`${baseURL}/developers/`, { waitUntil: 'networkidle' });
       assert.equal(response.status(), 200);
       const paths = page.getByRole('navigation', { name: 'Developer integration paths', exact: true });
-      // The five cards, in the order the hub presents them. The order is the
-      // point: an earlier version led with sky data and a hosted API that does
-      // not exist, so a first-time reader met the two things they could not use
-      // before the two they could. The conformance suite, which is for people
-      // writing an engine rather than using one, comes last.
+      // The six cards, in the order the hub presents them. The order is the
+      // point: an earlier version led with sky data and a hosted API that did
+      // not exist yet, so a first-time reader met the two things they could not
+      // use before the two they could. The two ways to calculate a chart come
+      // first, in your own process and then on our server; the conformance
+      // suite, which is for people writing an engine rather than using one,
+      // comes last.
       const cards = [
         ['Calculate a chart', '/developers/engine/'],
+        ['Calculate on our server', '/developers/compute/'],
         ['Embed a tool', '/widgets/'],
         ['Connect an AI assistant', '/developers/mcp/'],
         ['Compare two calculation records', '/developers/compare/'],
@@ -42,9 +45,7 @@ try {
         cards.map(([name]) => name),
         'the cards must stay in the order a first-time reader can act on',
       );
-      // The two things that are not yet usable are named, but below the cards.
-      assert.equal(await page.getByRole('link', { name: 'planned and does not exist yet', exact: true })
-        .getAttribute('href'), '/developers/support/#hosted');
+      // Shared sky data is named below the cards.
       assert.equal(await page.getByRole('link', { name: 'shared sky data', exact: true })
         .getAttribute('href'), '#sky-data');
       await page.screenshot({ path: resolve(output, `developer-entry-${width}.png`) });
@@ -96,7 +97,7 @@ try {
       assert.equal(await page.getByRole('link', { name: 'current candidate API guide', exact: true }).getAttribute('href'), `${engine.sourceRepository}/blob/${engine.sourceCommit}/${engine.sourcePackagePath ? `${engine.sourcePackagePath}/` : ''}README.md`);
       assert.equal(await page.getByRole('link', { name: 'archived rc.1 API reference', exact: true }).getAttribute('href'), '/sdk/engine/');
       assert.equal(await page.locator('footer.zfooter').count(), 1);
-      assert.equal(await page.locator('#hosted').textContent(), 'Personalized hosted computation · planned');
+      assert.equal(await page.locator('#hosted').textContent(), 'Hosted computation · available');
       await page.getByRole('link', { name: 'archived rc.1 API reference', exact: true }).focus();
       await page.keyboard.press('Tab');
       assert.equal(await matrix.evaluate((element) => element === document.activeElement), true);
