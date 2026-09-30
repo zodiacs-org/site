@@ -111,7 +111,9 @@ describe('the angles against the ERFA arbiter (rule 1b)', () => {
       return Math.abs(arcsec(chart([utc, latitude, longitude]).angles.asc, expected));
     }));
     expect(worst).toBeLessThan(1e-6);
-  });
+    // 3,128 charts, each with its clock: 2.4 s alone, past the default 5 s when
+    // the suite runs in parallel.
+  }, 30_000);
 });
 
 describe('Placidus near the polar circle (rule 1h)', () => {
