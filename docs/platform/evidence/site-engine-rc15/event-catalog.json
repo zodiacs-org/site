@@ -1,0 +1,144 @@
+{
+ "schema": "zodiacs-site-event-catalog-comparison/v1",
+ "generatedAt": "2026-09-30T08:35:58.002Z",
+ "node": "v22.22.2",
+ "esbuild": "0.28.1",
+ "old": {
+  "sourceCommit": "0448ed7446032a88045585dee7a21b2724352b51",
+  "archive": "vendor/zodiacs-engine-0.1.1-rc.14.tgz",
+  "archiveSha256": "adc9805e22cd2468fa3340a864d9c53b36ff91e8f1592fdb35d8da8b69f4476e",
+  "engineVersion": "0.1.1-rc.14",
+  "bundledPackageFiles": 7,
+  "events": 337,
+  "dumpSha256": "18c186d19fa6dc6c8ea80148846af7c201ad34675c1308c84a91bb985901778e"
+ },
+ "new": {
+  "engineVersion": "0.1.1-rc.15",
+  "bundledPackageFiles": 7,
+  "events": 337,
+  "dumpSha256": "fe237dc189103b296fcefbb8f0a70a312892d9a51c58b54d440ed774f449df62"
+ },
+ "byFamily": {
+  "retrograde": {
+   "events": 47,
+   "instantsMoved": 0,
+   "maxInstantShiftMs": 0,
+   "longitudesMoved": 37,
+   "maxLongitudeShiftArcsec": 1.98906e-7,
+   "examples": []
+  },
+  "lunation": {
+   "events": 124,
+   "instantsMoved": 31,
+   "maxInstantShiftMs": 248,
+   "longitudesMoved": 44,
+   "maxLongitudeShiftArcsec": 0.0469704,
+   "examples": [
+    {
+     "id": "full-moon-2026-01-03",
+     "field": "at",
+     "old": "2026-01-03T10:02:55.945Z",
+     "new": "2026-01-03T10:02:55.863Z",
+     "shiftMs": -82
+    },
+    {
+     "id": "new-moon-2026-01-18",
+     "field": "at",
+     "old": "2026-01-18T19:52:01.818Z",
+     "new": "2026-01-18T19:52:01.736Z",
+     "shiftMs": -82
+    },
+    {
+     "id": "full-moon-2026-02-01",
+     "field": "at",
+     "old": "2026-02-01T22:09:17.609Z",
+     "new": "2026-02-01T22:09:17.527Z",
+     "shiftMs": -82
+    },
+    {
+     "id": "new-moon-2026-02-17",
+     "field": "at",
+     "old": "2026-02-17T12:01:12.426Z",
+     "new": "2026-02-17T12:01:12.344Z",
+     "shiftMs": -82
+    },
+    {
+     "id": "full-moon-2026-03-03",
+     "field": "at",
+     "old": "2026-03-03T11:37:57.766Z",
+     "new": "2026-03-03T11:37:57.684Z",
+     "shiftMs": -82
+    }
+   ]
+  },
+  "aspect": {
+   "events": 40,
+   "instantsMoved": 10,
+   "maxInstantShiftMs": 248,
+   "longitudesMoved": 0,
+   "maxLongitudeShiftArcsec": 0,
+   "examples": [
+    {
+     "id": "saturn-sextile-uranus-2026-01-20",
+     "field": "at",
+     "old": "2026-01-20T05:44:16.300Z",
+     "new": "2026-01-20T05:44:16.218Z",
+     "shiftMs": -82
+    },
+    {
+     "id": "jupiter-trine-neptune-2026-07-20",
+     "field": "at",
+     "old": "2026-07-20T07:47:59.158Z",
+     "new": "2026-07-20T07:47:59.076Z",
+     "shiftMs": -82
+    },
+    {
+     "id": "uranus-trine-pluto-2026-11-29",
+     "field": "at",
+     "old": "2026-11-29T11:27:06.909Z",
+     "new": "2026-11-29T11:27:06.991Z",
+     "shiftMs": 82
+    },
+    {
+     "id": "uranus-sextile-neptune-2027-01-15",
+     "field": "at",
+     "old": "2027-01-15T07:21:23.697Z",
+     "new": "2027-01-15T07:21:23.862Z",
+     "shiftMs": 165
+    },
+    {
+     "id": "jupiter-trine-saturn-2027-04-03",
+     "field": "at",
+     "old": "2027-04-03T13:23:03.150Z",
+     "new": "2027-04-03T13:23:03.398Z",
+     "shiftMs": 248
+    }
+   ]
+  },
+  "ingress": {
+   "events": 10,
+   "instantsMoved": 0,
+   "maxInstantShiftMs": 0,
+   "longitudesMoved": 0,
+   "maxLongitudeShiftArcsec": 0,
+   "examples": []
+  },
+  "station": {
+   "events": 92,
+   "instantsMoved": 0,
+   "maxInstantShiftMs": 0,
+   "longitudesMoved": 74,
+   "maxLongitudeShiftArcsec": 3.78168e-7,
+   "examples": []
+  },
+  "eclipse": {
+   "events": 24,
+   "instantsMoved": 0,
+   "maxInstantShiftMs": 0,
+   "longitudesMoved": 0,
+   "maxLongitudeShiftArcsec": 0,
+   "examples": []
+  }
+ },
+ "otherChanges": []
+}

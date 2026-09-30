@@ -27,16 +27,19 @@ What rc.15 changes for this site:
 
 - From 1972 to 2027-10-02 a chart reads its instant as UTC: TT from the IERS
   leap seconds and UT1 from IERS UT1 − UTC. rc.14 read every instant as UT1
-  with the ΔT model, which it still does outside those years. Positions move
-  by up to about half an arcsecond (the Moon) and the angles by UT1 − UTC,
-  up to about 13″ in the midheaven. Charts report `timeScale`, and their
-  `deltaT.model` is `"iers-utc/1"` in those years.
+  with the ΔT model, which it still does outside those years. On the site's
+  comparison of its outputs on both, the Moon moved by up to 0.50″, the other
+  bodies by up to 0.070″, and the angles with UT1 − UTC: the midheaven by up
+  to 12.7″ and the ascendant by up to 62.7″ at 69.6° N. Charts report
+  `timeScale`, and their `deltaT.model` is `"iers-utc/1"` in those years.
 - Receipts gain a conventions set at index 0 of
   `NATAL_RECEIPT_CONVENTION_SETS`, recording the time basis; receipts of
   rc.8 to rc.14 still parse under the rc.8 set, now at index 1.
 - In `@zodiacs/engine/geo`, a wall time before 1970 needs `prepareLocalTime`
   first, unknown options throw, and `lmt` means a local-mean-time clock. The
-  site keeps its own resolver, `src/lib/time/localToUtc.ts`.
+  site keeps its own resolver, `src/lib/time/localToUtc.ts`, and gives `lmt`
+  the same meaning; with a longitude the two agree on 264,455 wall times from
+  1850 to 1969.
 - New entry points `@zodiacs/engine/timing` and `@zodiacs/engine/vedic`, which
   the root entry does not import.
 
