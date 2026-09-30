@@ -97,14 +97,14 @@ await withPreview({ port: 4396 }, async (baseURL) => {
               const title = document.querySelector('.lot__title');
               const icon = title.querySelector('.lot__title-icon').getBoundingClientRect();
               const box = title.getBoundingClientRect();
-              return { height: box.height, fontSize: parseFloat(getComputedStyle(title).fontSize), iconBottom: icon.bottom, bottom: box.bottom, iconTop: icon.top, top: box.top };
+              return { mastheadTop: title.closest('.lot').getBoundingClientRect().top, height: box.height, fontSize: parseFloat(getComputedStyle(title).fontSize), iconBottom: icon.bottom, bottom: box.bottom, iconTop: icon.top, top: box.top };
             })(),
           };
         });
-        check(`${record.slug} at ${width}px keeps its sign disc on the title line`,
+        check(`${record.slug} at ${width}px keeps its sign disc in the celestial masthead`,
           headerState.title.height <= headerState.title.fontSize * 1.15
-            && headerState.title.iconTop >= headerState.title.top
-            && headerState.title.iconBottom <= headerState.title.bottom,
+            && headerState.title.iconTop >= headerState.title.mastheadTop
+            && headerState.title.iconBottom <= headerState.title.top + 4,
           JSON.stringify(headerState.title));
         await page.locator('.standings__all summary').click();
         const state = await page.evaluate(() => {
