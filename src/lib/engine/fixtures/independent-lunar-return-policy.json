@@ -1,0 +1,216 @@
+{
+ "schemaVersion": 1,
+ "policyId": "lunar-return-independent-v1",
+ "preparedOnUTC": "2026-09-28",
+ "status": "Carries over the cases, supported interval, product scan contract, gates and conditioning of the Swiss lunar-return policy, which declared them before any application comparison on 2026-09-05, with a new arbiter. Only the arbiter and the L-wrap birth instant changed.",
+ "purpose": "Six representative independent complete natal-to-strict-next-lunar-return cases and separated component gates. These are engineering acceptance tests, not a published accuracy guarantee or an exhaustive certificate for the supported date range.",
+ "arbiter": "NASA JPL Horizons DE441 for the Moon and the chart bodies, the osculating node from Horizons state vectors, and ERFA for angles and cusps; see docs/engine-validation/independent-references/README.md. Swiss Ephemeris is no longer an arbiter: its values were removed from the tree under docs/platform/programme/DECISIONS-2026-09-28.md section 3.",
+ "supersedes": {
+  "policy": "src/lib/engine/fixtures/swiss-lunar-return-policy.json",
+  "sha256": "16c807cfb7374c340200064ba6f4332b98923f77b05f6f24f62ea5541d5aa146",
+  "lastCommit": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+  "unchanged": [
+   "definition",
+   "supportedTransportInterval",
+   "productScanContract",
+   "gates",
+   "conditioning",
+   "syntheticBirthPlaceForAllCases",
+   "productModelDisclosure.gateRationale",
+   "every case other than L-wrap's birthTransport and coverage"
+  ],
+  "changed": "The Swiss policy's L-wrap birth was the first 0-degree crossing of Swiss's Moon after 2000-01-01, a Swiss output; it is replaced by the same selection on the Horizons Moon. The Swiss-specific provider, clock-conversion and acquisition-recipe sections are replaced by the arbiter and clock records above, and the product-model disclosure names the new reference."
+ },
+ "definition": {
+  "body": "Moon",
+  "target": "The numeric tropical geocentric Moon longitude at the supplied natal instant, normalized to [0,360). The transiting Moon is evaluated in its own ecliptic/equinox-of-date frame; do not precess the natal numeric target forward.",
+  "selection": "The first crossing strictly later than afterMilliseconds and at or before upperMilliseconds. If after equals the supplied birth instant, the identity crossing there is excluded and the subsequent revolution is selected.",
+  "excludedSubstitutions": "No lunar phase, new/full Moon, sidereal return, fixed-period addition, topocentric target, nearest-return selection, local-noon target or sign-only target.",
+  "referenceClock": "Record afterMilliseconds once on submit. Calculation retry retains this recorded reference; a fresh calculation records a new reference. The completed model and exports identify the recorded reference rather than implying a continuously live next event.",
+  "inputPrecision": "A complete known timed natal input and resolvable birthplace/timezone are required. Reject ambiguous/nonexistent local civil time and unverifiable cached/noon/sign-only data before solving. Complete fixtures use synthetic UTC inputs; DST/IANA correctness is separate product testing."
+ },
+ "supportedTransportInterval": {
+  "calendar": "Proleptic Gregorian",
+  "minimumInclusive": "1800-01-02T00:00:00.000Z",
+  "maximumInclusive": "2199-12-31T23:59:59.999Z",
+  "birthMinimumInclusive": "1800-01-02T00:00:00.000Z",
+  "birthMaximumInclusive": "2199-12-31T23:59:59.999Z",
+  "afterMinimumInclusive": "1800-01-02T00:00:00.000Z",
+  "afterMaximumInclusive": "2199-11-21T23:59:59.999Z",
+  "chronology": "Require birthMilliseconds <= afterMilliseconds. Therefore a valid input pair's latest usable birth also cannot exceed afterMaximumInclusive.",
+  "earliestDayRationale": "The already pinned planetary file begins at 1800-01-01. January 2 retains an explicit day of coverage margin for apparent/speed calls; do not claim January 1 is validated or fetch a preceding file silently.",
+  "latestReferenceRationale": "upperMilliseconds = afterMilliseconds + 40*86400000 must remain inside the supported interval. Do not clip the scan, roll dates into 2200 or silently shorten its horizon.",
+  "clockMeaning": "Z is the application's millisecond transport. Only cases explicitly marked UTC claim the pinned UTC conversion; historical/future nominal-UT1 cases do not claim exact civil UTC."
+ },
+ "productScanContract": {
+  "stepDays": 0.25,
+  "horizonUniformDays": 40,
+  "interval": "(afterMilliseconds, afterMilliseconds + 40*86400000]",
+  "result": "Sort and deduplicate valid crossings, require strictly increasing instants, and select the first. Throw a bounded no-return/range error if none exists; do not extend the horizon.",
+  "invalidInputs": "Reject non-finite dates, target longitude, coordinates or steps; require range and chronology checks before iteration. Exact-zero, adjacent-window, 0/360 and antipodal rejection contracts remain separately covered with analytic inputs.",
+  "scopeLimit": "The fixed six-hour step and 40-day horizon are directly checked on these cases. Sparse validation does not prove these bounds at every instant from 1800 to 2199."
+ },
+ "clock": "Every reference is evaluated at the engine's own TT for its instant (UT is the instant; TT = UT + Delta T of the engine's model), so a comparison measures the Moon's position and the event timing it implies, not the two programs' Delta T. UTC cases and nominal-UT1 cases are both read that way; Z is the application's millisecond transport.",
+ "productModelDisclosure": {
+  "moonPath": "EclipticGeoMoon(MakeTime(date)) calculates the lunar state at that time and transforms it with precession/nutation to true ecliptic/equinox of date. It contains no explicit light-time, aberration or gravitational-deflection pass; the Horizons reference is the apparent position, with all three. Do not describe the two as correction-identical.",
+  "gateRationale": "Retain the site's pre-existing 0.15-degree Moon positional acceptance budget as an explicitly chosen conservative engineering contract for each endpoint, allowing lunar-state, correction and clock-model differences. This is not derived from old or new application residuals and is not a provider-published error bound. A natal-derived return contains two endpoint budgets, so its separately enforced timing band uses their 0.30-degree sum; no fixed number of minutes is inferred from the Moon gate.",
+  "carriedOver": "gateRationale is the Swiss policy's, verbatim; moonPath is its moonPath with the Horizons apparent reference named in place of the Swiss one. Its timePath described the Swiss clock and astronomy-engine's pre-rc.8 Delta T and is replaced by clock above."
+ },
+ "gates": {
+  "natalMoonCircularDegreesMaximum": 0.15,
+  "transitMoonAtIndependentInstantCircularDegreesMaximum": 0.15,
+  "fixedTargetTimeBandDegrees": 0.15,
+  "natalDerivedTimeBandDegrees": 0.3,
+  "returnedChartMoonCircularDegreesMaximum": 0.15,
+  "otherPlanetCircularDegreesMaximum": 0.05,
+  "nodeCircularDegreesMaximum": 0.1,
+  "nodeSpeedAbsoluteDegreesPerDayMaximum": 0.02,
+  "directionDeadbandDegreesPerDay": 0.02,
+  "ascendantCircularDegreesMaximum": 0.1,
+  "midheavenCircularDegreesMaximum": 0.1,
+  "houseCuspCircularDegreesMaximum": 0.2,
+  "oracleRootBracketSecondsMaximum": 0.1,
+  "timeBandFormattingPaddingSeconds": 1,
+  "productOwnTargetResidualDegreesMaximum": 1e-05,
+  "ownTargetResidualRationale": "A six-hour bracket refined 24 times is at most 1.29 ms; the declared sampled speed ceiling of 25 degrees/day makes 0.00001 degree a loose solver-residual check. This same-engine consistency check is separate from all external accuracy gates.",
+  "speedAndDirection": "Record Swiss analytic speed and a matching +/-6-hour Swiss finite difference at natal and selected-return instants. Planetary speed residuals are diagnostics, not a new tight cross-model speed test. Moon crossings must be direct; node direction comparison applies only when both absolute speeds exceed the existing deadband. Every product speed must be finite and its retrograde flag agree with its own speed sign.",
+  "latitudeDistanceScope": "Preserve all six raw values; no latitude, distance, aspect-orb, house-placement-boundary or uniformly precise event-time claim is introduced by these longitude/angle gates."
+ },
+ "conditioning": {
+  "sampledSpeedDegreesPerDayStrictlyBetween": [
+   5,
+   25
+  ],
+  "maximumSampledSixHourAdvanceDegreesExclusive": 10,
+  "minimumFortyDayUnwrappedAdvanceDegreesExclusive": 360,
+  "maximumFortyDayUnwrappedAdvanceDegreesExclusive": 720,
+  "maximumFirstReturnUniformDaysInclusive": 35,
+  "rootsPerCompleteWindowAllowed": [
+   1,
+   2
+  ],
+  "endpointMargins": "Every nonidentity search endpoint must lie more than 0.30 degree from any target level, and each materialized padded band must remain strictly inside its window and disjoint from all other bands. An after==birth lower endpoint is exempt only because target and initial Moon are the identical evaluation in each model; explicitly exclude that identity root. The following event's band must still be interior.",
+  "monotonicity": "Require increasing unwrapped Moon longitude, positive finite Moon analytic speed in the declared broad range at every Moon journal sample, and no Moon speed sign reversal or angular discontinuity. These directional conditions do not apply to other chart bodies. Record sampled extrema and six-hour advances. These are checked sample conditions, not a formal global derivative proof.",
+  "modernMotionContrastPair": [
+   "L-modern-a",
+   "L-modern-b"
+  ],
+  "modernMotionContrastScope": "Record the absolute difference between the independent selected-return analytic speeds and whether it reaches 1 degree/day. If it does, label faster/slower from the oracle. If it does not, report the coverage limitation as a diagnostic without failing otherwise valid fixed fixtures or silently replacing dates. Any new contrast case requires a separate source-only reviewed policy amendment.",
+  "wrapNatalDistanceFromZeroDegreesMaximum": 5,
+  "yearBoundary": "L-year-boundary starts at the last millisecond of 2025 by identity; its selected next event must be in 2026.",
+  "failurePolicy": "Stop and retain failures. Do not widen a tolerance, loosen a condition, switch flags/time models, replace dates, fetch different ephemerides, shorten a horizon or import application-derived expectations to make the acquisition pass. Root must review any separate revised policy before a new attempt.",
+  "modernMotionContrastDegreesPerDayDiagnosticThreshold": 1
+ },
+ "syntheticBirthPlaceForAllCases": {
+  "name": "Synthetic UTC input",
+  "latitudeDegrees": 0,
+  "longitudeDegreesEastPositive": 0,
+  "timeZone": "Etc/UTC",
+  "timeKnown": true,
+  "scope": "Deterministic complete test input, not a real person's documented birth or a claim of timezone-database accuracy."
+ },
+ "cases": [
+  {
+   "id": "L-modern-a",
+   "birthTransport": "1990-02-01T12:00:00.000Z",
+   "afterTransport": "2026-03-01T00:00:00.000Z",
+   "timeScale": "UTC",
+   "expectedBirthTTMinusNominalUTCSeconds": 57.184,
+   "expectedScanTTMinusNominalUTCSeconds": 69.184,
+   "returnLocation": {
+    "latitudeDegrees": 13.7563,
+    "longitudeDegreesEastPositive": 100.5018,
+    "requestedHouseSystem": "placidus"
+   },
+   "relocationAtSameInstant": {
+    "latitudeDegrees": 59.3293,
+    "longitudeDegreesEastPositive": 18.0686,
+    "requestedHouseSystem": "placidus"
+   },
+   "coverage": "Complete ordinary natal-to-strict-next result, modern motion pair A, and independently located/relocated chart components at one event clock."
+  },
+  {
+   "id": "L-modern-b",
+   "birthTransport": "2000-02-29T12:00:00.000Z",
+   "afterTransport": "2026-03-01T00:00:00.000Z",
+   "timeScale": "UTC",
+   "expectedBirthTTMinusNominalUTCSeconds": 64.184,
+   "expectedScanTTMinusNominalUTCSeconds": 69.184,
+   "returnLocation": {
+    "latitudeDegrees": -33.8688,
+    "longitudeDegreesEastPositive": 151.2093,
+    "requestedHouseSystem": "placidus"
+   },
+   "coverage": "Leap-day known birth, southern-hemisphere chart, and modern motion pair B."
+  },
+  {
+   "id": "L-wrap",
+   "birthTransport": "2000-01-12T18:48:22.487Z",
+   "afterTransport": "2026-03-01T00:00:00.000Z",
+   "timeScale": "UTC",
+   "expectedBirthTTMinusNominalUTCSeconds": 64.184,
+   "expectedScanTTMinusNominalUTCSeconds": 69.184,
+   "returnLocation": {
+    "latitudeDegrees": 19.4326,
+    "longitudeDegreesEastPositive": -99.1332,
+    "requestedHouseSystem": "placidus"
+   },
+   "coverage": "Natal instant at the first 0-degree crossing of the Horizons Moon after 2000-01-01, on the engine's clock, rounded to the millisecond (wrapSelection below). The natal target is the Moon's longitude at that rounded instant, within a hundredth of an arcsecond of 0 degrees, so the first return wraps through 360; no target or timestamp comes from product output."
+  },
+  {
+   "id": "L-year-boundary",
+   "birthTransport": "2025-12-31T23:59:59.999Z",
+   "afterTransport": "2025-12-31T23:59:59.999Z",
+   "timeScale": "UTC",
+   "expectedBirthTTMinusNominalUTCSeconds": 69.184,
+   "expectedScanTTMinusNominalUTCSeconds": 69.184,
+   "returnLocation": {
+    "latitudeDegrees": 51.4779,
+    "longitudeDegreesEastPositive": 0,
+    "requestedHouseSystem": "placidus"
+   },
+   "coverage": "Exact birth/after identity excludes the starting root; next event crosses the civil UTC year boundary into 2026."
+  },
+  {
+   "id": "L-range-start",
+   "birthTransport": "1800-01-02T00:00:00.000Z",
+   "afterTransport": "1800-01-02T00:00:00.000Z",
+   "timeScale": "nominal UT1",
+   "returnLocation": {
+    "latitudeDegrees": -0.1807,
+    "longitudeDegreesEastPositive": -78.4678,
+    "requestedHouseSystem": "placidus"
+   },
+   "coverage": "Exact lower supported birth/reference pair, coherent historical nominal-UT1 chronology and excluded identity root. No historical civil-UTC accuracy claim."
+  },
+  {
+   "id": "L-range-end",
+   "birthTransport": "2199-11-21T23:59:59.999Z",
+   "afterTransport": "2199-11-21T23:59:59.999Z",
+   "timeScale": "nominal UT1",
+   "returnLocation": {
+    "latitudeDegrees": 78.2232,
+    "longitudeDegreesEastPositive": 15.6267,
+    "requestedHouseSystem": "placidus",
+    "expectedProductHouseSystem": "whole"
+   },
+   "coverage": "Exact largest permitted birth/reference pair with excluded starting identity; complete scan ends at 2199-12-31T23:59:59.999. Retain raw Swiss Placidus failure/Porphyry arrays separately from valid Swiss whole-house cusps used for product fallback. No future civil-UTC prediction."
+  }
+ ],
+ "wrapSelection": {
+  "selectedCase": "L-wrap",
+  "searchAfterUTC": "2000-01-01T00:00:00.000Z",
+  "method": "The first root after 2000-01-01T00:00:00Z of the Horizons Moon's apparent longitude (hourly QUANTITIES 31 table, nine-point Lagrange interpolation, bisection to 1e-9 day), carried to UT on the engine's clock and rounded to the nearest millisecond: python3 tools/build.py select-wrap.",
+  "frozenSelectedBirthUTC": "2000-01-12T18:48:22.487Z",
+  "horizonsResponse": {
+   "file": "docs/engine-validation/independent-references/horizons/moon-wrap-selection.txt",
+   "sha256": "4c41df246170ca3403366860334ae1a5c8b96344e943ddec50824fe122aca302"
+  }
+ },
+ "sources": [
+  "https://ssd.jpl.nasa.gov/horizons/manual.html",
+  "https://ssd-api.jpl.nasa.gov/doc/horizons.html",
+  "https://github.com/liberfa/erfa",
+  "https://github.com/cosinekitty/astronomy/blob/master/source/js/README.md#EclipticGeoMoon"
+ ]
+}

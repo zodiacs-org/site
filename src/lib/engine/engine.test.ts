@@ -24,9 +24,9 @@ import { sunLongitude, moonLongitude, moonPhaseAngle } from './lite';
 import { prepareLocalTime, resolveLocalToUtc } from '../time/localToUtc';
 import { formatLongitude, signForLongitude } from '../signs';
 import type { BodyPosition } from './types';
-import independentSwiss from './fixtures/swiss-node-polar.fixture.json';
-import swissPolicy from './fixtures/swiss-node-polar-policy.json';
-import independentCases from './fixtures/swiss-eight-cases.fixture.json';
+import nodePolar from './fixtures/independent-node-polar.json';
+import nodePolarPolicy from './fixtures/swiss-node-polar-policy.json';
+import independentCases from './fixtures/independent-eight-cases.json';
 import independentPolicy from './fixtures/swiss-eight-cases-policy.json';
 import { expectIndependentPositions } from './fixtures/independent-validation.test-helpers';
 
@@ -38,24 +38,28 @@ const angleDiff = (a: number, b: number) => {
   return d > 180 ? 360 - d : d;
 };
 
-// Raw provider returns and the predeclared engineering gates are preserved
-// byte-for-byte. The offline generation recipe and conventions live in
-// docs/engine-validation/swiss-node-polar/README.md; no Swiss runtime is needed.
-describe('independent Swiss true node and polar references', () => {
-  it('retains the reviewed oracle and pre-comparison policy bytes', () => {
+// The true node against the ascending node of the Moon's osculating orbit
+// from NASA JPL Horizons (DE441) state vectors, and the polar angles against
+// ERFA, at the instants and places of the Swiss node/polar pack that was
+// removed on 2026-09-28 (docs/platform/programme/DECISIONS-2026-09-28.md §3).
+// The gates are that pack's, declared before any comparison and unchanged
+// (swiss-node-polar-policy.json). The references, their sources and the
+// command that rebuilds them are in docs/engine-validation/independent-references/.
+describe('independent true node and polar references', () => {
+  it('retains the reference and pre-comparison policy bytes', () => {
     const digest = (name: string) => createHash('sha256')
       .update(readFileSync(new URL(`./fixtures/${name}`, import.meta.url)))
       .digest('hex');
-    expect(digest('swiss-node-polar.fixture.json'))
-      .toBe('022fbc030185b84aa0954411aab266577cd75f50a1947dc4717e92d8a9db9260');
+    expect(digest('independent-node-polar.json'))
+      .toBe('7e969149c746c1cc1fb5a96a5405a5af04b6b319c918abb5f3dea4ca17385fcd');
     expect(digest('swiss-node-polar-policy.json'))
       .toBe('7742cb2bc7cd0932a344ddcb708e45dad07b91cb653ea1f55538c2d73fa18e96');
   });
 
-  it.each(independentSwiss.trueNode)('$id', (reference) => {
+  it.each(nodePolar.trueNode)('$id', (reference) => {
     const node = computeBodies(new Date(reference.input.utc))
       .find((body) => body.body === 'North Node')!;
-    const policy = swissPolicy.trueNode;
+    const policy = nodePolarPolicy.trueNode;
     expect(Number.isFinite(node.lon)).toBe(true);
     expect(Number.isFinite(node.speed)).toBe(true);
     expect(angleDiff(node.lon, reference.longitudeDegrees))
@@ -70,7 +74,7 @@ describe('independent Swiss true node and polar references', () => {
   });
 
   for (const houseSystem of ['whole', 'placidus'] as const) {
-    it.each(independentSwiss.polar)(`$id, requested ${houseSystem}`, (reference) => {
+    it.each(nodePolar.polar)(`$id, requested ${houseSystem}`, (reference) => {
       const chart = computeChart({
         utc: new Date(reference.input.utc),
         latitude: reference.latitudeDegrees,
@@ -78,7 +82,7 @@ describe('independent Swiss true node and polar references', () => {
         houseSystem,
         timeKnown: true,
       });
-      const policy = swissPolicy.polar;
+      const policy = nodePolarPolicy.polar;
       expect(chart.angles).not.toBeNull();
       expect(chart.houses?.system).toBe('whole');
       expect(chart.flags.includes('polar-fallback')).toBe(houseSystem === 'placidus');
@@ -91,21 +95,21 @@ describe('independent Swiss true node and polar references', () => {
         expect(angleDiff(cusp, reference.whole.cuspsDegrees[index]))
           .toBeLessThanOrEqual(policy.wholeHouseCuspCircularDifferenceDegreesMaximum);
       });
-      // Swiss reports Placidus failure and returns Porphyry arrays. They are
-      // evidence of that status, never expected product whole-house cusps.
-      expect(reference.placidusRequest.cStatus).toBe(-1);
-      expect(reference.whole.cStatus).toBe(0);
+      // Placidus has no cusps here: the latitude is at or past 90° minus the
+      // true obliquity of date (ERFA), where a degree's semi-arc can vanish.
+      expect(reference.placidusDefined).toBe(false);
+      expect(Math.abs(reference.latitudeDegrees)).toBeGreaterThanOrEqual(reference.placidusLimitDegrees);
     });
   }
 });
 
-describe('independent Swiss representative supported epochs', () => {
-  it('retains compact extraction and the pre-acquisition policy bytes', () => {
+describe('independent representative supported epochs', () => {
+  it('retains the reference and pre-acquisition policy bytes', () => {
     const digest = (name: string) => createHash('sha256')
       .update(readFileSync(new URL(`./fixtures/${name}`, import.meta.url)))
       .digest('hex');
-    expect(digest('swiss-eight-cases.fixture.json'))
-      .toBe('e51073b6c78ce721a4cd284d6626566c1c267c63075e6c81654302d6d5f9c7ed');
+    expect(digest('independent-eight-cases.json'))
+      .toBe('ba7ffe9619c4d248f5018e972d5afb35f1153c3ebe077a4dee11a7ea4e1b51fc');
     expect(digest('swiss-eight-cases-policy.json'))
       .toBe('9dfc069be7c6854da1f0dff578c0b213e64624e720d21e27c6301b7612fd79a4');
   });
@@ -113,92 +117,13 @@ describe('independent Swiss representative supported epochs', () => {
   it.each(independentCases.epochs)('$id', (reference) => {
     const input = independentPolicy.fixedEpochs.find((row) => row.id === reference.id)!;
     // E1800/E2199 Z strings transport nominal UT1, not historical/future UTC.
-    // Moon correction differences and differing Delta-T models are disclosed
-    // in the frozen policy; these points do not certify every supported date.
+    // The Horizons positions are taken at the engine's own TT for each
+    // transport, so the two programs' ΔT does not enter; the Moon's
+    // light-time difference is disclosed in the frozen policy. These points do
+    // not certify every supported date.
     expectIndependentPositions(computeBodies(new Date(input.productDateTransport)), reference.positions);
   });
 });
-
-/**
- * Independent angle/house vectors generated 2026-07-10 with Astrodienst's
- * Swiss Ephemeris 2.10.03 through the unmodified pyswisseph 2.10.3.2 wrapper.
- * For each UTC instant below the reference call was:
- *
- *   jd = swe.julday(year, month, day, decimalUtcHour, swe.GREG_CAL)
- *   cusps, ascmc = swe.houses_ex(jd, latitude, eastPositiveLongitude, b'P', 0)
- *
- * `b'P'` selects Placidus and flag 0 selects the tropical ecliptic of date;
- * `ascmc[0]` is ASC and `ascmc[1]` is MC. Constants are direct returned
- * degrees rounded to 9 decimal places, not output from this project's engine.
- * API contract: https://www.astro.com/swisseph/swephprg.htm (section 13).
- */
-const SWISS_HOUSE_VECTORS = [
-  {
-    name: 'NYC 1990',
-    utc: '1990-06-15T12:30:00Z',
-    latitude: 40.7128,
-    longitude: -74.0060,
-    asc: 122.577748878,
-    mc: 18.457835773,
-    cusps: [
-      122.577748878, 142.874013293, 167.446689884, 198.457835773,
-      235.135794644, 271.491695053, 302.577748878, 322.874013293,
-      347.446689884, 18.457835773, 55.135794644, 91.491695053,
-    ],
-  },
-  {
-    name: 'Tokyo 1985',
-    utc: '1985-03-21T04:15:00Z',
-    latitude: 35.6762,
-    longitude: 139.6503,
-    asc: 124.189836381,
-    mc: 23.798605462,
-    cusps: [
-      124.189836381, 146.057778606, 172.134943407, 203.798605462,
-      239.289316156, 273.753375166, 304.189836381, 326.057778606,
-      352.134943407, 23.798605462, 59.289316156, 93.753375166,
-    ],
-  },
-  {
-    name: 'Sydney 1970',
-    utc: '1970-09-23T18:45:00Z',
-    latitude: -33.8688,
-    longitude: 151.2093,
-    asc: 156.812448064,
-    mc: 75.871452802,
-    cusps: [
-      156.812448064, 199.630917386, 231.308710485, 255.871452802,
-      278.350303110, 303.221743887, 336.812448064, 19.630917386,
-      51.308710485, 75.871452802, 98.350303110, 123.221743887,
-    ],
-  },
-  {
-    name: 'Helsinki 2000',
-    utc: '2000-06-21T22:10:00Z',
-    latitude: 60.1699,
-    longitude: 24.9384,
-    asc: 350.431165002,
-    mc: 268.021716480,
-    cusps: [
-      350.431165002, 54.719871463, 74.620817722, 88.021716480,
-      100.981856435, 118.741378047, 170.431165002, 234.719871463,
-      254.620817722, 268.021716480, 280.981856435, 298.741378047,
-    ],
-  },
-  {
-    name: 'Quito 2010',
-    utc: '2010-12-21T05:55:00Z',
-    latitude: -0.1807,
-    longitude: -78.4678,
-    asc: 190.878598861,
-    mc: 99.177012595,
-    cusps: [
-      190.878598861, 222.464856523, 251.543940183, 279.177012595,
-      307.558439396, 338.328060538, 10.878598861, 42.464856523,
-      71.543940183, 99.177012595, 127.558439396, 158.328060538,
-    ],
-  },
-] as const;
 
 // ── 1. Modern vector: JPL Horizons, 2020-01-01 00:00 UTC ─────────────
 // The literals live in fixtures/horizons-reference.json, which
@@ -380,9 +305,16 @@ describe('houses', () => {
   });
 });
 
-describe('angles and Placidus houses vs Swiss Ephemeris', () => {
-  for (const reference of SWISS_HOUSE_VECTORS) {
-    it(`${reference.name} stays inside the external accuracy gate`, () => {
+// Five Placidus charts against ERFA: ASC and MC from ERFA's apparent sidereal
+// time (IAU 2006/2000A, UT1 taken as the instant, as the engine does) and true
+// obliquity of date, and the cusps by the conformance suite's Placidus
+// construction (docs/engine-validation/independent-references/). These are the
+// cases and the gates this block held to Swiss Ephemeris houses_ex until
+// 2026-09-28, when Swiss output was removed from the tree
+// (docs/platform/programme/DECISIONS-2026-09-28.md §3).
+describe('angles and Placidus houses vs ERFA', () => {
+  for (const reference of nodePolar.houses) {
+    it(`${reference.id} stays inside the external accuracy gate`, () => {
       const chart = computeChart({
         utc: new Date(reference.utc),
         latitude: reference.latitude,

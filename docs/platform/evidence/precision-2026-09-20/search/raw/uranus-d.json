@@ -164,8 +164,6 @@
         "recordedExactTopology": "resolved",
         "label": "de:D-component-1:exact-level",
         "levelDegrees": 32.6940395,
-        "fromUtc": "2019-02-27T03:30:13.194Z",
-        "toUtc": "2019-06-24T20:44:23.508Z",
         "epsilonDegrees": 0.001,
         "verdict": "crossing",
         "outcome": "certified",
@@ -207,8 +205,6 @@
         "recordedExactTopology": "uncertain",
         "label": "de:D-component-2:exact-level",
         "levelDegrees": 32.6940395,
-        "fromUtc": "2019-09-30T09:06:55.823Z",
-        "toUtc": "2020-04-10T15:17:01.450Z",
         "epsilonDegrees": 0.001,
         "verdict": "multiple-crossings",
         "outcome": "certified",
@@ -358,10 +354,6 @@
       "halves": [
         {
           "label": "de:crop-first-half:exact-level",
-          "recordedBoundaryOrbDegrees": [
-            4.0790711173083025,
-            0.000012636136148103105
-          ],
           "recordedExactCountAmbiguous": [
             false,
             true
@@ -416,10 +408,6 @@
         },
         {
           "label": "de:crop-second-half:exact-level",
-          "recordedBoundaryOrbDegrees": [
-            0.000012636136148103105,
-            4.117117256207564
-          ],
           "recordedExactCountAmbiguous": [
             true,
             false
@@ -477,13 +465,8 @@
         "boundaryUtc": "2020-01-01T00:00:00.000Z",
         "deOffsetFromLevelDegrees": 2.7286576198548573e-7,
         "deOffsetFromLevelArcsec": 0.0009823167431477486,
-        "swissOffsetFromLevelDegrees": 0.000012636136140997678,
-        "swissOffsetFromLevelArcsec": 0.04549009010759164,
-        "recordedCropBoundaryOrbDegrees": 0.000012636136148103105,
-        "deMinusSwissAtTheBoundaryArcsec": -0.04450777336444389,
         "slopeAtTheBoundaryDegPerDay": 0.008738431636913901,
         "rootOffsetFromBoundarySecondsDe": 2.6979214137185856,
-        "rootOffsetFromBoundarySecondsSwiss": 124.93799893910601,
         "epsilonBracketHalfWidthDays": 0.11443701130254123,
         "epsilonNeededToDecideWhichSideDegrees": 2.7286576198548573e-7,
         "measuredInterModelDisagreementOverTheRegionDegrees": 0.00003024085209091254,
@@ -859,5 +842,40 @@
       "The original v2/v3 contract is still failed-incomplete at its own budget. Its 0.044188-degree witness is reproduced here to 0.048 arcsec by a completely independent position source, which strengthens the original record rather than overturning it."
     ],
     "elapsedSeconds": 2.294
+  },
+  "swissOutputRemoved": {
+    "on": "2026-09-29",
+    "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2",
+    "what": "Swiss's figures for the D case that the DE-prototype search was run beside: the component ends it searched between, the crop-boundary orbs, and Swiss's offset from the level at the 2020-01-01 boundary (the DE figures, the margins and the verdicts stay)",
+    "removed": [
+      {
+        "path": ".results.perComponentExactLevel[].fromUtc|toUtc",
+        "count": 2,
+        "sha256": "5960af026c269213deb5eb0197e7b7c78d59a4255b88ceb2e77793cb75db1a78",
+        "bytes": 149,
+        "what": "Swiss's component ends, the ends of an hourly Swiss scan of the 3-degree orb, used as the searched intervals"
+      },
+      {
+        "path": ".results.crops.halves[].recordedBoundaryOrbDegrees",
+        "count": 2,
+        "sha256": "76beadaaef60d2ec0ff2942ffe9578483cb041f3df2d77b78c85231455efe6e6",
+        "bytes": 150,
+        "what": "Swiss's orb at each crop boundary"
+      },
+      {
+        "path": ".results.crops.theBoundaryEvent.swissOffsetFromLevelDegrees|swissOffsetFromLevelArcsec|recordedCropBoundaryOrbDegrees|deMinusSwissAtTheBoundaryArcsec|rootOffsetFromBoundarySecondsSwiss",
+        "count": 5,
+        "sha256": "3f05ab82ab163825c515eceaa1d47b03f760e661e98d1fabf9121e0397340c9d",
+        "bytes": 270,
+        "what": "Swiss's offset from the level at the crop boundary, in degrees, arcseconds and seconds of motion, and the DE prototype's difference from it"
+      }
+    ],
+    "fileBefore": {
+      "bytes": 35187,
+      "sha256": "7c3ea2bf602468bc2ff58a0f1fa7b429e0e68bc056268e48e52085c8fa2b36f9"
+    },
+    "lastCommitWithTheValues": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+    "regenerate": "python3 docs/platform/evidence/precision-2026-09-20/search/verify/swiss-station.py, and search/lib/swiss-longitudes.py through search/reproduce.mjs, decompose.mjs and uranus-d.mjs, each given the fixture of commit 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83 from outside the repository (SWISS_WINDOW_FIXTURE or its first argument) and writing outside it",
+    "record": "docs/engine-validation/SWISS-OUTPUT-REMOVAL.md"
   }
 }

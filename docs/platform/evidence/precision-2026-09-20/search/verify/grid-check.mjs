@@ -1,4 +1,7 @@
 import { execFileSync } from 'node:child_process';
+// Component 2's ends are Swiss's, from the removed transit-window fixture:
+// give it from outside the repository (../lib/backends.mjs, swissWindowFixture).
+import { swissDComponents } from '../lib/backends.mjs';
 import { DeBackend } from '/home/user/site/docs/platform/evidence/swiss-benchmark/prototype/apparent.mjs';
 const eng = new DeBackend('/tmp/claude-0/swisslab/de440s.bsp');
 const { bodyLongitude } = await import('@zodiacs/engine/internal');
@@ -12,7 +15,7 @@ function swiss(ms){
   return JSON.parse(out).rows.map(r=>r.lon);
 }
 for (const [label,g] of [['hourly 2019-12-23..2020-01-30', grid('2019-12-23T00:00:00Z','2020-01-30T00:00:00Z',3600000)],
-                          ['6-hourly component', grid('2019-09-30T09:06:55.823Z','2020-04-10T15:17:01.450Z',6*3600000)]]) {
+                          ['6-hourly component', grid(swissDComponents()[1].startUtc,swissDComponents()[1].endUtc,6*3600000)]]) {
   const S=swiss(g);
   const dS=[],cS=[];
   g.forEach((ms,i)=>{dS.push(circ(eng.apparentEclipticLongitude('Uranus',new Date(ms),69.184),S[i])*3600);

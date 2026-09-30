@@ -35,13 +35,14 @@ Ephemeris* for the Moon. Zodiacs did not write those models.
 | Positions | JPL Horizons vectors, in-suite (provider version unrecorded) | 14.77″ worst | `src/lib/engine/engine.test.ts` |
 | Positions | Swiss 2.10.03 / DE441, 6 frozen cases | 6.07″ node longitude | [`swiss-node-polar/`](swiss-node-polar/) |
 | Positions | Swiss 2.10.03 / DE441, 8 epoch and station cases | inside frozen gates (a pass, not a residual) | [`swiss-eight-cases/`](swiss-eight-cases/) |
+| Positions, angles, event times | JPL Horizons DE441 and ERFA on the Swiss packs' cases, in the suite since 2026-09-28 | inside the packs' frozen gates (a pass, not a residual) | [`independent-references/`](independent-references/) |
 | Positions | Swiss 2.10.03 / `.se1`, 180-measurement distribution | 18.64″ within 1801–2026 | [`../platform/evidence/swiss-benchmark/`](../platform/evidence/swiss-benchmark/) |
 | Positions | Swiss 2.10.03 / `.se1`, every tenth day 1800–2199, ten bodies and the true node | 22.92″ to 2026 at the same UT (Venus, 1878); 29.12″ to 2199 at the same TT (Pluto) | [`multiyear-1800-2199.json`](../platform/evidence/swiss-benchmark/multiyear-1800-2199.json) |
 | Clock (ΔT) | IERS EOP 20 C04 and finals2000A, twelve preregistered dates and every day from 1962 | 0.031 s on the twelve dates; 0.083 s worst day | [`../platform/evidence/deltat-2026-09-25/`](../platform/evidence/deltat-2026-09-25/) |
-| Angles and houses | Swiss `houses_ex`: three polar cases and five Placidus cases in the suite; the audit's latitude grid | 1.58″ worst angle and exact whole-sign cusps in the polar cases; ascendant within 6.4″ of an ERFA arbiter on the grid since rc.7 (up to 512″ near 66° before) | [`swiss-node-polar/`](swiss-node-polar/), [audit](../platform/evidence/engine-audit-2026-09-22/LEDGER.md) |
+| Angles and houses | Swiss `houses_ex`: three polar cases and five Placidus cases, in the suite until 2026-09-28; the audit's latitude grid | 1.58″ worst angle and exact whole-sign cusps in the polar cases; ascendant within 6.4″ of an ERFA arbiter on the grid since rc.7 (up to 512″ near 66° before) | [`swiss-node-polar/`](swiss-node-polar/), [audit](../platform/evidence/engine-audit-2026-09-22/LEDGER.md) |
 | Houses, twelve systems | Swiss 2.10.03 `swe_houses_armc` given the same sidereal time, latitude and obliquity: a 5,616-case ladder from 55° to 66.6° and 20,000 draws over every latitude; `swe_houses_ex` end to end | 0.0096″ given the same inputs (Placidus; the other eleven 0.00005″ or less); end to end from 1850 to 2049, 1.95″ broad and one Koch case of 353 on the ladder at 3.73″ | [`../platform/evidence/houses-2026-09-26/`](../platform/evidence/houses-2026-09-26/) |
 | Local time | host IANA/ICU, two Node majors and a browser | no disagreement in the cases run (a pass, not a residual) | [`../platform/evidence/site-engine-rc6/`](../platform/evidence/site-engine-rc6/) |
-| Event search | Swiss hourly scans, independent roots | one contract **failed-incomplete** | [`transit-windows/`](transit-windows/), [`swiss-lunar-return/`](swiss-lunar-return/) |
+| Event search | Swiss hourly scans, independent roots; JPL Horizons in the suite since 2026-09-28 | one contract **failed-incomplete** | [`transit-windows/`](transit-windows/), [`swiss-lunar-return/`](swiss-lunar-return/) |
 | Runtime support | Node 22.22.2 and Node 24.21.0 for rc.14; Node 22.22.2 and Node 24.19.0 for rc.10; Node 22.22.2 and Node 24.21.0 for rc.9, rc.8 and rc.7; Node 22.23.2, Node 24.19.0 and Chrome 152 for rc.6 | parity in the cases run (a pass, not a residual) | [`../platform/evidence/site-engine-rc14/`](../platform/evidence/site-engine-rc14/), [`../platform/evidence/site-engine-rc10/`](../platform/evidence/site-engine-rc10/), [`../platform/evidence/site-engine-rc9/`](../platform/evidence/site-engine-rc9/), [`../platform/evidence/site-engine-rc8/`](../platform/evidence/site-engine-rc8/), [`../platform/evidence/site-engine-rc7/`](../platform/evidence/site-engine-rc7/), [`../platform/evidence/site-engine-rc6/`](../platform/evidence/site-engine-rc6/) |
 
 ## 1. Positions
@@ -62,17 +63,24 @@ The gates themselves are looser than that on purpose: 0.05° for planets, 0.15°
 for the Moon, 0.2° for the 1907 Moon. They are engineering acceptance limits
 chosen to fail loudly on a real regression, not claims about typical error.
 
-**Frozen Swiss packs.** All four directories here hold Swiss Ephemeris 2.10.03
-oracles acquired through pinned, unmodified pyswisseph 2.10.3.2 against the
-official DE441 files, with an acceptance policy each pack records as written
+**Frozen Swiss packs.** The four pack directories here (`swiss-node-polar/`,
+`swiss-eight-cases/`, `swiss-lunar-return/` and `transit-windows/`) document
+Swiss Ephemeris 2.10.03 oracles acquired through pinned, unmodified
+pyswisseph 2.10.3.2 against the official DE441 files, with an acceptance policy each pack records as written
 and reviewed *before* the application was run, byte-hashed inputs, and
 extractors that perform no calculation of their own. The order is the packs'
 own record: the 2026-09-22 audit found the policies and fixtures first
 committed together, so it could not confirm it independently. The node/polar pack's measured maxima were
 0.001685457° (6.07″) in node longitude, 0.000350604°/day in node speed, and
 0.000434825° (1.57″) in polar angles — recorded against `@zodiacs/engine`
-0.1.0, not the rc.6 named at the top of this page. The fixtures are frozen and
-the current suite still passes them, but those maxima are that run's.
+0.1.0, not the rc.6 named at the top of this page, and those maxima are that
+run's. Since 2026-09-28 the fixtures are out of the tree, and since
+2026-09-29 so is every other per-case Swiss value kept as data, including the
+ones arithmetic on what remained gave back; statistics, digests and the
+figures dated records quote stay
+([`SWISS-OUTPUT-REMOVAL.md`](SWISS-OUTPUT-REMOVAL.md)). The suite holds the
+same cases to the same gates against JPL Horizons and ERFA
+([`independent-references/`](independent-references/)).
 
 **The distribution.** [`swiss-benchmark/`](../platform/evidence/swiss-benchmark/)
 answers a different question from the packs: not "did this case stay inside its
@@ -98,11 +106,14 @@ the whole span is 29.12″ (Pluto, 2199), and the Moon stays within 7.15″ from
 2150 to 2199, where at the same UT it reaches 20.47″: past the IERS
 predictions the two programs' clocks are two extrapolations.
 
-None of the 180 exceeds one arcminute on rc.8. The far-future Moon is 7.5″
-from Swiss at 2100 and 15.3″ at 2190, and the clock is still most of it: the
-two programs extrapolate ΔT past the IERS predictions differently — Swiss
-93.18 s at 2100, the engine 78.93 s with a 1-σ of 42.39 s, 14.25 s apart — and
-the Moon moves about 0.549″ per second of time, 7.8″ for that gap. Up to rc.7
+None of the 180 exceeds one arcminute on rc.8. For the far-future Moon the
+clock is most of the difference: the two programs extrapolate ΔT past the IERS
+predictions differently, and from 2100 to 2199 their values differ by 14.3
+to 36.7 s, inside the engine's own 1-σ of 42.4 to 103.4 s; at the Moon's 0.49
+to 0.64″ per second of time, that alone moves it 7.0″ to 23.4″
+([`deltat-gap-2100-2199.json`](../platform/evidence/swiss-benchmark/deltat-gap-2100-2199.json),
+statistics of a daily run, with Swiss's ΔT computed on demand by
+`tools/deltat_gap_swiss.py` beside it). Up to rc.7
 the engine's clock read 202.65 s at 2100, and two of the 180 exceeded one
 arcminute, both the Moon: 64.8″ at 2100 and 159.4″ at 2190. Pinning ΔT to the
 reference collapsed **the DE440s prototype's** 2100 case from 63.887″ to
@@ -180,8 +191,9 @@ obliquity or more, about 66.56° absolute latitude, Swiss returns C status −1
 and its conventional Porphyry fallback array. Since rc.7 this engine refuses
 Placidus at the same limit, but falls back to **whole sign** and sets
 `polar-fallback`; up to rc.6 it fell back above 66°.
-Both behaviours are compared against the same Swiss `W` tuples, so the
-fallback is checked rather than excused.
+Both behaviours were compared against the same Swiss `W` tuples, and since
+2026-09-28 against ERFA's whole-sign tuples, so the fallback is checked
+rather than excused.
 
 The rc.9 record below covers its twelve systems. Koch, Regiomontanus, Campanus,
 Topocentric (Polich–Page), Alcabitius, Equal, Vehlow, Meridian (axial
@@ -290,16 +302,16 @@ interval and policy defects are recorded as unresolved, not fixed.
 
 This is the weakest dimension and the honest place to say so.
 
-[`transit-windows/`](transit-windows/) compares nine A–I cases and 30 aspect
+[`transit-windows/`](transit-windows/) compared nine A–I cases and 30 aspect
 branches against Swiss hourly unwrapped scans with independently refined
-roots. It carries a **failure that has not been cleared**: the original v2/v3
+roots, and since 2026-09-28 the suite holds them to JPL Horizons instead. It carries a **failure that has not been cleared**: the original v2/v3
 Uranus D exact-topology contract remains `failed-incomplete`, its 0.044188°
 turning-point margin sits under the original 0.05° model budget, and the
 second period's exact-pass count cannot be certified. The v6 re-acquisition
 qualified period membership and the alignment region without retiring that.
 The second period must be described as having uncertain exact topology.
 
-[`swiss-lunar-return/`](swiss-lunar-return/) checks six lunar-return cases end
+[`swiss-lunar-return/`](swiss-lunar-return/) checked six lunar-return cases end
 to end — complete chronology, selected first event, chart components — against
 frozen ±0.15°/±0.30° branches. It also records a real model difference rather
 than papering over it: the reviewed `EclipticGeoMoon` path applies no explicit
@@ -383,23 +395,26 @@ finite matrix is a finite matrix.
 Each subdirectory's README carries its own pinned provider version, file
 hashes, acquisition receipts and exact commands. The benchmark directory
 carries its corpus, its per-call record of which Swiss backend answered, and
-its raw rows.
+the statistics of its rows; the rows left the tree on 2026-09-28 with the rest
+of Swiss's raw output, and its tools regenerate them.
 
-Three things here are not reproducible from the repository, and naming them is
+Two things here are not reproducible from the repository, and naming them is
 the point of the rest of it. The JPL Horizons values the suite checks
 (`src/lib/engine/fixtures/horizons-reference.json`) record their query, and
 the audit's re-fetch on 2026-09-22 (API version 1.2, DE441) matched six of
 the seven 2020 values exactly and Neptune to 0.004″, but the provider version
 of the original fetch is not recorded, and `swiss-eight-cases/README.md` says
-it "remains unknown". The Swiss ΔT of
-93.18 s at 2100 was transcribed from a run rather than committed as a receipt;
-since 2026-09-25 it is committed with the tool that reads it
-(`../platform/evidence/deltat-2026-09-25/outputs/swiss-deltat.json`, by
-`tools/moon/swiss_deltat.py`). And the benchmark's
+it "remains unknown". And the benchmark's
 performance table has no committed JSON; its `prototype, engine ΔT` row, which
 had none either, was recovered and committed on 2026-09-20
 (`precision-2026-09-20/raw/recovered-report-proto-engine-deltat.json`).
-Everything else can be re-derived.
+Everything else can be re-derived: from the committed files, or, where it
+compares with Swiss, by running Swiss again with the committed tools. Until
+2026-09-29 there was a third: section 1 quoted Swiss's ΔT at 2100, which was
+transcribed from a run and then kept only as the tool that reads it. Section 1
+now gives the two programs' ΔT difference over 2100–2199 as statistics, which
+`tools/deltat-gap-zodiacs.mjs` and `tools/deltat_gap_swiss.py` in
+`../platform/evidence/swiss-benchmark/` compute again, Swiss included.
 
 ## Corrections
 
@@ -459,6 +474,21 @@ earlier wording is kept here as the record:
 - the table's runtime row: "Node 22.22.2 and Node 24.21.0 for rc.8 and rc.7";
 - section 5: "for rc.8, Node 22.22.2 and 24.21.0 for the parity matrix and the
   public-download consumer check".
+
+Removing Swiss's raw output from the tree on 2026-09-28
+([DECISIONS-2026-09-28 §3](../platform/programme/DECISIONS-2026-09-28.md))
+corrected these in place. Their earlier wording is kept here as the record:
+
+- the table's angles row: "three polar cases and five Placidus cases in the
+  suite"; its event-search row: "Swiss hourly scans, independent roots";
+- section 1, on the frozen packs: "All four directories here hold Swiss
+  Ephemeris 2.10.03 oracles" and "The fixtures are frozen and the current
+  suite still passes them, but those maxima are that run's";
+- section 2: "Both behaviours are compared against the same Swiss `W`
+  tuples";
+- section 4: "compares nine A–I cases" and "checks six lunar-return cases";
+- reproducing it: "and its raw rows", "since 2026-09-25 it is committed with
+  the tool that reads it" and "Everything else can be re-derived".
 
 Vendoring engine 0.1.1-rc.14 on 2026-09-29 corrected these in place. Their
 earlier wording is kept here as the record:

@@ -20,6 +20,9 @@
  */
 import { createRequire } from 'node:module';
 import { execFileSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
+import { readFileSync, realpathSync } from 'node:fs';
+import { resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const require = createRequire(import.meta.url);
@@ -29,6 +32,40 @@ export const KERNEL = '/tmp/claude-0/swisslab/de440s.bsp';
 export const SWISS_PYTHON = '/tmp/claude-0/swisslab/venv/bin/python3';
 export const SWISS_EPHE = '/tmp/claude-0/swisslab/ephe';
 export const SWISS_BRIDGE = fileURLToPath(new URL('./swiss-longitudes.py', import.meta.url));
+
+/**
+ * The Swiss transit-window fixture this track read, which left the tree on
+ * 2026-09-28 (docs/platform/programme/DECISIONS-2026-09-28.md §3). Give a
+ * copy of `git show 2ca93d41:src/lib/engine/fixtures/transit-window-independent.json`
+ * kept outside the repository, as a .json argument or in SWISS_WINDOW_FIXTURE.
+ * A path inside the repository is refused, so the fixture is never read from
+ * src/ and never has to come back there; so is any other file.
+ */
+export const SWISS_WINDOW_FIXTURE_SHA256 = 'db4ddce1d2761ad0ada1ab7aaf456d74d2f79b6b6a3434b1b8f6b9895ad66c3a';
+export function swissWindowFixture(argv = process.argv.slice(2)) {
+  const given = argv.find((arg) => arg.endsWith('.json')) ?? process.env.SWISS_WINDOW_FIXTURE;
+  if (!given) {
+    throw new Error('Give the transit-window fixture of commit 2ca93d41, kept outside the repository, as an argument or in SWISS_WINDOW_FIXTURE');
+  }
+  const path = realpathSync(resolve(given));
+  const here = realpathSync(fileURLToPath(new URL('../../../../../../', import.meta.url)));
+  for (const repository of new Set([REPO, here])) {
+    if (path === repository || path.startsWith(repository + sep)) {
+      throw new Error(`${path} is inside the repository; keep the Swiss fixture outside it`);
+    }
+  }
+  const bytes = readFileSync(path);
+  if (createHash('sha256').update(bytes).digest('hex') !== SWISS_WINDOW_FIXTURE_SHA256) {
+    throw new Error(`${path} is not the transit-window fixture of commit 2ca93d41`);
+  }
+  return { path, bytes, fixture: JSON.parse(bytes) };
+}
+
+/** The D case's two components, as the fixture recorded them. */
+export function swissDComponents(argv) {
+  const D = swissWindowFixture(argv).fixture.cases.find((x) => x.id === 'D-Uranus2020');
+  return D.geometries[0].components;
+}
 
 /** TT - UTC over 2019-2020, seconds. Constant: no leap second fell in the window. */
 export const TT_MINUS_UTC = 69.184;

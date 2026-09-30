@@ -1,11 +1,14 @@
-import { coreBackend, deBackend, circular } from '../lib/backends.mjs';
+// The component ends are Swiss's, from the removed transit-window fixture:
+// give it from outside the repository (lib/backends.mjs, swissWindowFixture).
+import { coreBackend, deBackend, circular, swissDComponents } from '../lib/backends.mjs';
 import { measureDerivativeBounds } from '../lib/astro-harness.mjs';
 const h=600000;
 const core=await coreBackend(), de=await deBackend();
 function mk(lon,body,target){const c=new Map();return ms=>{const t=Math.round(ms);if(c.has(t))return c.get(t);const y=circular(lon(body,t),target);c.set(t,y);return y};}
+const [c1, c2] = swissDComponents();
 const windows = {
- 'component-2 (used for the reported verdicts)': ['2019-09-30T09:06:55.823Z','2020-04-10T15:17:01.450Z'],
- 'component-1': ['2019-02-27T03:30:13.194Z','2019-06-24T20:44:23.508Z'],
+ 'component-2 (used for the reported verdicts)': [c2.startUtc, c2.endUtc],
+ 'component-1': [c1.startUtc, c1.endUtc],
  'full declared window': ['2019-01-01T00:00:00Z','2020-12-31T00:00:00Z'],
 };
 for (const [wname,[fs,ts]] of Object.entries(windows)){

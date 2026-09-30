@@ -213,3 +213,14 @@ judged here.
   drawn again: `results/holdout-1.4.json` is the draw, and the tool scores it.
 - `results/` holds statistics only, with the provenance of every input in
   `provenance.json`.
+
+## Swiss output removed, 2026-09-28
+
+Under [DECISIONS-2026-09-28 §3](../../programme/DECISIONS-2026-09-28.md) `results/holdout-1.4-events.json` lost each drawn event's
+difference from Swiss (`minusSwissSeconds` for rc.8, `rc7MinusSwissSeconds`
+for rc.7), which with the published instants give Swiss's times back. Each
+event's rc.8-minus-rc.7 difference stays, and the table's figures above are
+unchanged. Commit `2ca93d41` still has the values, the file records the
+SHA-256 of what it lost under `swissOutputRemoved`, and
+`tools/holdout_events.py` regenerates them once both event comparisons have
+been regenerated. The record of everything removed is [`../../../engine-validation/SWISS-OUTPUT-REMOVAL.md`](../../../engine-validation/SWISS-OUTPUT-REMOVAL.md).

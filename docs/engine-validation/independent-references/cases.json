@@ -1,0 +1,281 @@
+{
+ "schemaVersion": 1,
+ "what": "Inputs of the independent references: instants, places and the transit-window cases. Every value here is an input (a civil instant, a place, a budget or an external literal); none is an output of any ephemeris except the four Horizons literals the A, D, E and F cases have always used as fixed targets.",
+ "sources": {
+  "nodePolar": "The instants and places of the Swiss node/polar pack (docs/engine-validation/swiss-node-polar/README.md), unchanged.",
+  "houses": "The five Placidus cases engine.test.ts has checked since 2026-07-10, unchanged.",
+  "transitWindows": "The nine A-I cases of the transit-window pack (docs/engine-validation/transit-windows/README.md): the same bodies, natal points, query spans, anchors, budgets and aspect branches. Targets: A, D, E and F keep their 2020-01-01 Horizons literals (src/lib/engine/fixtures/horizons-reference.json); B, C, G, H and I are now derived from the independent references (Horizons natal Saturn; the Horizons Saturn station of 2026 plus 1.5 deg; the Horizons natal Moon and the ERFA ascendant and midheaven at the coherent natal input)."
+ },
+ "nodePolar": {
+  "trueNode": [
+   {
+    "id": "true-node-2005-03-15",
+    "utc": "2005-03-15T00:00:00Z"
+   },
+   {
+    "id": "true-node-2020-01-01",
+    "utc": "2020-01-01T00:00:00Z"
+   },
+   {
+    "id": "true-node-2026-07-01",
+    "utc": "2026-07-01T00:00:00Z"
+   }
+  ],
+  "polar": [
+   {
+    "id": "polar-tromso",
+    "utc": "2001-12-21T09:30:00Z",
+    "latitude": 69.6492,
+    "longitude": 18.9553
+   },
+   {
+    "id": "polar-longyearbyen",
+    "utc": "2001-12-21T09:00:00Z",
+    "latitude": 78.2232,
+    "longitude": 15.6267
+   },
+   {
+    "id": "polar-southern-longyearbyen-mirror",
+    "utc": "2001-12-21T09:00:00Z",
+    "latitude": -78.2232,
+    "longitude": 15.6267
+   }
+  ]
+ },
+ "houses": [
+  {
+   "id": "NYC 1990",
+   "utc": "1990-06-15T12:30:00Z",
+   "latitude": 40.7128,
+   "longitude": -74.006
+  },
+  {
+   "id": "Tokyo 1985",
+   "utc": "1985-03-21T04:15:00Z",
+   "latitude": 35.6762,
+   "longitude": 139.6503
+  },
+  {
+   "id": "Sydney 1970",
+   "utc": "1970-09-23T18:45:00Z",
+   "latitude": -33.8688,
+   "longitude": 151.2093
+  },
+  {
+   "id": "Helsinki 2000",
+   "utc": "2000-06-21T22:10:00Z",
+   "latitude": 60.1699,
+   "longitude": 24.9384
+  },
+  {
+   "id": "Quito 2010",
+   "utc": "2010-12-21T05:55:00Z",
+   "latitude": -0.1807,
+   "longitude": -78.4678
+  }
+ ],
+ "transitWindows": {
+  "coherentNatalInput": {
+   "birthUTC": "1990-02-01T12:00:00Z",
+   "latitudeDegrees": 19.4326,
+   "longitudeDegreesEastPositive": -99.1332,
+   "houseSystem": "placidus"
+  },
+  "cases": [
+   {
+    "id": "A-Jupiter2020",
+    "movingBody": "Jupiter",
+    "natalPoint": "Jupiter",
+    "target": {
+     "kind": "literal",
+     "longitudeDegrees": 276.6703386,
+     "source": "horizons-reference.json 2020-01-01 Jupiter"
+    },
+    "angularBudgetDegrees": 0.05,
+    "natalComponentBudgetDegrees": null,
+    "fromUtc": "2019-01-01T00:00:00Z",
+    "toUtc": "2020-12-31T00:00:00Z",
+    "anchorUtc": "2020-01-01T00:00:00Z",
+    "aspects": [
+     "conjunction"
+    ],
+    "input": {
+     "clock": "UTC"
+    }
+   },
+   {
+    "id": "B-Saturn1990",
+    "movingBody": "Saturn",
+    "natalPoint": "Saturn",
+    "target": {
+     "kind": "natal-saturn"
+    },
+    "angularBudgetDegrees": 0.1,
+    "natalComponentBudgetDegrees": 0.05,
+    "fromUtc": "2018-07-01T00:00:00Z",
+    "toUtc": "2020-06-30T00:00:00Z",
+    "anchorUtc": "2019-07-01T00:00:00Z",
+    "aspects": [
+     "conjunction"
+    ],
+    "input": {
+     "clock": "nominal UT1",
+     "birthProductNumericTransport": "1990-02-01T12:00:00.000Z"
+    }
+   },
+   {
+    "id": "C-SaturnNearApproach2026",
+    "movingBody": "Saturn",
+    "natalPoint": "Saturn",
+    "target": {
+     "kind": "station-offset",
+     "offsetDegrees": 1.5,
+     "source": "the Horizons Saturn station of 2026 (independent-eight-cases.json Sstation) plus 1.5 deg"
+    },
+    "angularBudgetDegrees": 0.05,
+    "natalComponentBudgetDegrees": null,
+    "fromUtc": "2025-07-01T00:00:00Z",
+    "toUtc": "2027-07-01T00:00:00Z",
+    "anchorUtc": "2026-07-01T00:00:00Z",
+    "aspects": [
+     "conjunction"
+    ],
+    "input": {
+     "clock": "UTC, with no leap second after 2016"
+    }
+   },
+   {
+    "id": "D-Uranus2020",
+    "movingBody": "Uranus",
+    "natalPoint": "Uranus",
+    "target": {
+     "kind": "literal",
+     "longitudeDegrees": 32.6940395,
+     "source": "horizons-reference.json 2020-01-01 Uranus"
+    },
+    "angularBudgetDegrees": 0.05,
+    "natalComponentBudgetDegrees": null,
+    "fromUtc": "2019-01-01T00:00:00Z",
+    "toUtc": "2020-12-31T00:00:00Z",
+    "anchorUtc": "2020-01-01T00:00:00Z",
+    "aspects": [
+     "conjunction"
+    ],
+    "input": {
+     "clock": "UTC"
+    }
+   },
+   {
+    "id": "E-Neptune2020",
+    "movingBody": "Neptune",
+    "natalPoint": "Neptune",
+    "target": {
+     "kind": "literal",
+     "longitudeDegrees": 346.2645218,
+     "source": "horizons-reference.json 2020-01-01 Neptune"
+    },
+    "angularBudgetDegrees": 0.05,
+    "natalComponentBudgetDegrees": null,
+    "fromUtc": "2019-01-01T00:00:00Z",
+    "toUtc": "2020-12-31T00:00:00Z",
+    "anchorUtc": "2020-01-01T00:00:00Z",
+    "aspects": [
+     "conjunction"
+    ],
+    "input": {
+     "clock": "UTC"
+    }
+   },
+   {
+    "id": "F-Pluto2020",
+    "movingBody": "Pluto",
+    "natalPoint": "Pluto",
+    "target": {
+     "kind": "literal",
+     "longitudeDegrees": 292.3855818,
+     "source": "horizons-reference.json 2020-01-01 Pluto"
+    },
+    "angularBudgetDegrees": 0.05,
+    "natalComponentBudgetDegrees": null,
+    "fromUtc": "2019-01-01T00:00:00Z",
+    "toUtc": "2020-12-31T00:00:00Z",
+    "anchorUtc": "2020-01-01T00:00:00Z",
+    "aspects": [
+     "conjunction"
+    ],
+    "input": {
+     "clock": "UTC"
+    }
+   },
+   {
+    "id": "G-Solar1990Moon",
+    "movingBody": "Jupiter",
+    "natalPoint": "Moon",
+    "target": {
+     "kind": "coherent-natal"
+    },
+    "angularBudgetDegrees": 0.2,
+    "natalComponentBudgetDegrees": 0.15,
+    "fromUtc": "2019-01-01T00:00:00Z",
+    "toUtc": "2020-12-31T00:00:00Z",
+    "anchorUtc": "2020-01-01T00:00:00Z",
+    "aspects": [
+     "conjunction",
+     "sextile",
+     "square",
+     "trine",
+     "opposition"
+    ],
+    "input": {
+     "clock": "UTC"
+    }
+   },
+   {
+    "id": "H-Solar1990ASC",
+    "movingBody": "Jupiter",
+    "natalPoint": "ASC",
+    "target": {
+     "kind": "coherent-natal"
+    },
+    "angularBudgetDegrees": 0.15,
+    "natalComponentBudgetDegrees": 0.1,
+    "fromUtc": "2019-01-01T00:00:00Z",
+    "toUtc": "2020-12-31T00:00:00Z",
+    "anchorUtc": "2020-01-01T00:00:00Z",
+    "aspects": [
+     "conjunction",
+     "sextile",
+     "square",
+     "trine",
+     "opposition"
+    ],
+    "input": {
+     "clock": "UTC"
+    }
+   },
+   {
+    "id": "I-Solar1990MC",
+    "movingBody": "Jupiter",
+    "natalPoint": "MC",
+    "target": {
+     "kind": "coherent-natal"
+    },
+    "angularBudgetDegrees": 0.15,
+    "natalComponentBudgetDegrees": 0.1,
+    "fromUtc": "2019-01-01T00:00:00Z",
+    "toUtc": "2020-12-31T00:00:00Z",
+    "anchorUtc": "2020-01-01T00:00:00Z",
+    "aspects": [
+     "conjunction",
+     "sextile",
+     "square",
+     "trine",
+     "opposition"
+    ],
+    "input": {
+     "clock": "UTC"
+    }
+   }
+  ]
+ }
+}

@@ -43,8 +43,6 @@
       "caution": "Swiss and DE440s both descend from JPL development ephemerides. Agreement between them is CONSISTENCY, not independent observational accuracy, and nothing here is fitted to Swiss.",
       "overComponent": {
         "what": "second component, 6-hourly grid",
-        "fromUtc": "2019-09-30T09:06:55.823Z",
-        "toUtc": "2020-04-10T15:06:55.823Z",
         "allSwissFlagsWere258": true,
         "swissVersion": "2.10.03",
         "deMinusSwissArcsec": {
@@ -98,11 +96,8 @@
         }
       },
       "atTheTurningPointItself": {
-        "swissLongitude": 32.649851538274184,
         "deLongitude": 32.64986476685977,
-        "coreLongitude": 32.650713158437554,
-        "deMinusSwissArcsec": 0.04762290811299863,
-        "coreMinusSwissArcsec": 3.1018325881319697
+        "coreLongitude": 32.650713158437554
       },
       "marginDisagreement": {
         "what": "The quantity that actually decides the count: each source's own g*.",
@@ -119,8 +114,6 @@
       "thisWindowIsHistorical": {
         "ttMinusUtcSeconds": 69.184,
         "composition": "37 leap seconds + 32.184 s. No leap second falls inside 2019-01-01..2020-12-31, so the offset is constant and exactly known; no Delta-T extrapolation enters.",
-        "swissReturnedTtMinusUtcSeconds": 69.18401420116425,
-        "residualSeconds": 0.00001420116424810658,
         "residualNote": "Swiss's own Julian-day rounding, not a model disagreement. The policy guard allows 0.001 s.",
         "astronomyEngineDeltaTSeconds": 71.59251104167197,
         "astronomyEngineIsTtMinusUt1Note": "The shipped core engine applies TT - UT1, not TT - UTC. The two differ by the current DUT1, which is why the core backend cannot be clock-matched without the pinning hook the DE prototype has.",
@@ -393,10 +386,6 @@
         "toUtc": "2020-01-25T19:20:25.509Z",
         "widthDays": 29.48506796296296
       },
-      "recordedPossibleExactRegionUtc": [
-        "2019-12-27T07:43:29.465Z",
-        "2020-01-25T19:18:24.834Z"
-      ],
       "recordedPossibleExactRegionWidthDays": 29.482585289351853,
       "quadraticMinusRecordedDays": 0.15605143831304957,
       "levelSetMinusRecordedDays": 0.0024826736111087655,
@@ -583,5 +572,61 @@
         "howMeasured": "not an error: the declared allowance, 0.05 degrees, against |g*| = 0.0442 degrees"
       }
     ]
+  },
+  "swissOutputRemoved": {
+    "on": "2026-09-28",
+    "under": "docs/platform/programme/DECISIONS-2026-09-28.md §3",
+    "what": "Swiss's longitude of Uranus at the D turning point (the differences and the margin the analysis cites stay)",
+    "removed": [
+      {
+        "path": ".sources.ephemerisModel.atTheTurningPointItself.swissLongitude",
+        "count": 1,
+        "sha256": "320287a39039ed35a542ef84eeed9ce3f7dbf9fa5db3e2c990116aba44b57e61",
+        "bytes": 18
+      },
+      {
+        "path": ".sources.ephemerisModel.overComponent.fromUtc|toUtc",
+        "count": 2,
+        "sha256": "6d62d6ccce3fa659cc2e8302d0729d2029a420081613218c326371877b14da66",
+        "bytes": 73,
+        "what": "the 6-hourly grid over the second component, which starts at Swiss's component start and so ends at a fixed step from it",
+        "on": "2026-09-29",
+        "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2"
+      },
+      {
+        "path": ".sources.ephemerisModel.atTheTurningPointItself.deMinusSwissArcsec|coreMinusSwissArcsec",
+        "count": 2,
+        "sha256": "8d53b840e23d0d7bc4e0ff731f258f8e1f6a722498c7af066cb4c1adc9a67ecc",
+        "bytes": 84,
+        "what": "the DE prototype's and the engine's difference from Swiss at the turning point, which with their longitudes beside them give Swiss's back",
+        "on": "2026-09-29",
+        "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2"
+      },
+      {
+        "path": ".sources.timeModel.thisWindowIsHistorical.swissReturnedTtMinusUtcSeconds|residualSeconds",
+        "count": 2,
+        "sha256": "3f319d4c4ff7c6104f551b21bab754d0025c594d21dad4664cf6c9b01d914a11",
+        "bytes": 92,
+        "what": "Swiss's own TT - UTC for the window, and its difference from 69.184 s",
+        "on": "2026-09-29",
+        "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2"
+      },
+      {
+        "path": ".stationaryGeometryAudit.theRightTreatment.recordedPossibleExactRegionUtc",
+        "count": 2,
+        "sha256": "88c5d716e271f50e18cc2bd04b17c8bcd7a72be356803d17af0f7a5401741e58",
+        "bytes": 55,
+        "what": "the ends of the region Swiss's scan found the second component's exact passes possible in (its width and the DE level set's difference from it stay)",
+        "on": "2026-09-29",
+        "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2"
+      }
+    ],
+    "fileBefore": {
+      "bytes": 25724,
+      "sha256": "70308a57fe75a03e1178b7acb83f3042738fa290820c9ddb53a4336e0e7aa11f"
+    },
+    "lastCommitWithTheValues": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+    "regenerate": "python3 docs/platform/evidence/precision-2026-09-20/search/verify/swiss-station.py, and search/lib/swiss-longitudes.py through search/reproduce.mjs, decompose.mjs and uranus-d.mjs, each given the fixture of commit 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83 from outside the repository (SWISS_WINDOW_FIXTURE or its first argument) and writing outside it",
+    "record": "docs/engine-validation/SWISS-OUTPUT-REMOVAL.md"
   }
 }

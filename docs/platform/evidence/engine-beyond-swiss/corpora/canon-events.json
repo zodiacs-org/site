@@ -44,9 +44,29 @@
  ],
  "baseline": {
   "note": "TT residuals in seconds, found instant minus canon, from the audit (AUDIT.md, verification-honesty-3): the shipped engine 0.1.1-rc.6, the precision research runtime over the de440s pack, and Swiss Ephemeris 2.10.03.",
-  "eclipse-2017-08-21": { "engine": 1.51, "alpha": 1.15, "swiss": 1.14 },
-  "eclipse-2024-04-08": { "engine": 4.18, "alpha": 0.68, "swiss": 0.69 },
-  "venus-transit-2004-06-08": { "engine": 16.76, "alpha": 0.74, "swiss": 0.87 },
-  "venus-transit-2012-06-06": { "engine": 21.07, "alpha": 0.69, "swiss": 0.89 }
+  "eclipse-2017-08-21": { "engine": 1.51, "alpha": 1.15 },
+  "eclipse-2024-04-08": { "engine": 4.18, "alpha": 0.68 },
+  "venus-transit-2004-06-08": { "engine": 16.76, "alpha": 0.74 },
+  "venus-transit-2012-06-06": { "engine": 21.07, "alpha": 0.69 }
+ },
+ "swissOutputRemoved": {
+  "on": "2026-09-28",
+  "under": "docs/platform/programme/DECISIONS-2026-09-28.md §3",
+  "what": "Swiss's residual from the canon for each of the four events (the engine's and the alpha's stay)",
+  "removed": [
+   {
+    "path": ".baseline.<event>.swiss",
+    "count": 4,
+    "sha256": "24b82b33bd2c72d346953e89305734f288d752bd51e94f684debf6d951bc9cbf",
+    "bytes": 117
+   }
+  ],
+  "fileBefore": {
+   "bytes": 3251,
+   "sha256": "e5e1d89ef856e98aeadfc8c291196c4bd329de41b5217af0282190dd5447e316"
+  },
+  "lastCommitWithTheValues": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+  "regenerate": "no committed command: the engine audit located the four events in Swiss Ephemeris 2.10.03 with its swiss-anchors.py, which it did not commit (engine-audit-2026-09-22/LEDGER.md, verification-honesty-3, gives the method); the values are only in commit 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+  "record": "docs/engine-validation/SWISS-OUTPUT-REMOVAL.md"
  }
 }

@@ -8,7 +8,7 @@ import { describe, expect, it } from 'vitest';
 import { computeChart } from './full';
 import { groupIntoSeasons, saturnReturns } from './returns';
 import type { Crossing } from './returns';
-import independentCases from './fixtures/swiss-eight-cases.fixture.json';
+import independentCases from './fixtures/independent-eight-cases.json';
 import independentPolicy from './fixtures/swiss-eight-cases-policy.json';
 import { angularDifference, expectIndependentTime } from './fixtures/independent-validation.test-helpers';
 
@@ -38,7 +38,10 @@ describe('groupIntoSeasons', () => {
 describe('saturnReturns', () => {
   it('matches all independent nominal-UT1 return passes and three seasons', () => {
     // The complete birth/search chronology uses nominal UT1. Future ISO Z
-    // strings are numeric transport, not a civil-UTC prediction.
+    // strings are numeric transport, not a civil-UTC prediction. The natal
+    // longitude, every crossing and its ±0.1° band come from NASA JPL
+    // Horizons (DE441) at the engine's own TT
+    // (docs/engine-validation/independent-references/).
     const actual = saturnReturns(new Date(independentPolicy.saturn.productDateTransport));
     const reference = independentCases.saturn;
     expect(angularDifference(actual.natalLon, reference.natalLongitudeDegrees))

@@ -16,3 +16,9 @@ supabase/.temp/
 
 # Scratch checkouts the agent harness creates for isolated subagents.
 .claude/worktrees/
+
+# Python's bytecode caches beside the reference build and the Swiss output
+# removal tools. Not every __pycache__: one under docs/platform/evidence is a
+# committed record.
+docs/engine-validation/independent-references/tools/__pycache__/
+docs/engine-validation/swiss-output-removal/__pycache__/

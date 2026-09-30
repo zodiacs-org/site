@@ -82,6 +82,10 @@ const SHARE_IMAGE_REVIEW_ROUTES = [
   '/privacy/', '/es/privacy/', '/pt/privacy/', '/fr/privacy/', '/it/privacy/', '/ru/privacy/',
   '/solar-return/',
 ] as const;
+// The ΔT attribution of 2026-09-29 (finding F-50) changed what the terms and
+// methodology pages say about the ΔT values the chart code carries.
+const DELTAT_ATTRIBUTION_LASTMOD = '2026-09-29';
+const DELTAT_ATTRIBUTION_ROUTES = ['/methodology/', '/terms/'] as const;
 // The compute API of 2026-09-29: its own page, the developer pages that
 // called it planned, the birth chart FAQ that said no chart API exists, and
 // the privacy page's section on it.
@@ -213,9 +217,11 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...ENGINE_PHASE1_ROUTES.map((loc) => [loc, ENGINE_PHASE1_LASTMOD] as const),
   // After that, the privacy audit's fixes, which won over it for these.
   ...PRIVACY_AUDIT_ROUTES.map((loc) => [loc, PRIVACY_AUDIT_LASTMOD] as const),
-  // And the share-image review.
+  // Then the share-image review.
   ...SHARE_IMAGE_REVIEW_ROUTES.map((loc) => [loc, SHARE_IMAGE_REVIEW_LASTMOD] as const),
-  // Then the compute API, last of all.
+  // Then the ΔT attribution.
+  ...DELTAT_ATTRIBUTION_ROUTES.map((loc) => [loc, DELTAT_ATTRIBUTION_LASTMOD] as const),
+  // And the compute API, last of all.
   ...COMPUTE_API_ROUTES.map((loc) => [loc, COMPUTE_API_LASTMOD] as const),
 ]);
 

@@ -87,12 +87,13 @@ are independently asserted outside that station deadband case.
 
 ## Returned-chart clock applicability
 
-The original independent Solar root remains `2025-01-31T23:57:47.793Z`.
-The initial product return was `2025-01-31T23:57:48.787Z`, a +0.994-second
-residual, and its chart received a separate Swiss evaluation at that exact
-timestamp. Only the timestamp was supplied by the product; location came
-from the frozen input policy, and all expected coordinates came from Swiss.
-Both independent return-time checks remain separate from chart parity.
+The original independent Solar root remains as the pack recorded it (the
+instant left this file on 2026-09-29, below). The initial product return was
+`2025-01-31T23:57:48.787Z`, less than one second after it, and its chart
+received a separate Swiss evaluation at that exact timestamp. Only the
+timestamp was supplied by the product; location came from the frozen input
+policy, and all expected coordinates came from Swiss. Both independent
+return-time checks remain separate from chart parity.
 
 The test first verifies that this same-time reference applies to the actual
 returned timestamp. If solver output changes, even within the unchanged
@@ -139,3 +140,32 @@ compared at identical clocks: the product's chart computed at
 must equal the chart computed at its own instant, and the two instants may
 differ by at most 15 seconds; beyond that the exact rule above applies again.
 The independent timing band was not widened, and no raw receipt was changed.
+
+## Addition, 2026-09-28: the fixture left the tree
+
+Under [DECISIONS-2026-09-28 §3](../../platform/programme/DECISIONS-2026-09-28.md)
+the compact fixture `src/lib/engine/fixtures/swiss-eight-cases.fixture.json`,
+SHA-256 `e51073b6c78ce721a4cd284d6626566c1c267c63075e6c81654302d6d5f9c7ed`
+as in the table above, left the tree. Commit `2ca93d41` still has it, and
+`extract-fixture.py` regenerates it from the retained bundle as under
+Extraction, into a path outside the repository. The frozen policy stays and
+still gates the tests: `engine.test.ts`, `transit-scan.test.ts`,
+`solar-return.test.ts` and `returns.test.ts` read
+`independent-eight-cases.json`, the same cases, inputs and bands with NASA JPL
+Horizons and ERFA as the arbiter
+([`../independent-references/`](../independent-references/README.md)).
+`progressions.test.ts` takes its ten JPL longitudes from
+`horizons-reference.json`, which holds the same values. The Solar1990
+returned-chart reference is taken at the instant the product returns, under
+the same 15-second rule. The figures above are this pack's, measured against
+Swiss. The record of everything removed is
+[`../SWISS-OUTPUT-REMOVAL.md`](../SWISS-OUTPUT-REMOVAL.md).
+
+## Addition, 2026-09-29: the Swiss root left this file
+
+Under [DECISIONS-2026-09-29 §2](../../platform/programme/DECISIONS-2026-09-29.md)
+no per-case Swiss value stays as data, and the section on returned-chart
+clock applicability gave the Solar root's Swiss instant and the product's
+residual from it, which together gave it back. Both left; the root is in
+commit `2ca93d41`, in the fixture and in this file, and `extract-fixture.py`
+regenerates it outside the repository.

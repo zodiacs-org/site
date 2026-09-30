@@ -42,7 +42,6 @@
   },
   "swisseph": "2.10.03",
   "swissFileFallbacks": 0,
-  "swissDeltaTSeconds2026": 68.821,
   "slowEventMaxAbsSeconds": {
    "aspect with Uranus, Neptune or Pluto": 23029.228,
    "ingress with Uranus, Neptune or Pluto": 11039.908,
@@ -56,1742 +55,1478 @@
   {
    "id": "full-moon-2026-01-03",
    "family": "lunation",
-   "published": "2026-01-03T10:02:50.012Z",
-   "deltaSeconds": -4.792
+   "published": "2026-01-03T10:02:50.012Z"
   },
   {
    "id": "new-moon-2026-01-18",
    "family": "lunation",
-   "published": "2026-01-18T19:51:55.886Z",
-   "deltaSeconds": -3.321
+   "published": "2026-01-18T19:51:55.886Z"
   },
   {
    "id": "saturn-sextile-uranus-2026-01-20",
    "family": "aspect",
-   "published": "2026-01-20T05:44:10.286Z",
-   "deltaSeconds": 1524.767
+   "published": "2026-01-20T05:44:10.286Z"
   },
   {
    "id": "neptune-enters-aries-2026-01-26",
    "family": "ingress",
-   "published": "2026-01-26T14:30:38.567Z",
-   "deltaSeconds": -11039.908
+   "published": "2026-01-26T14:30:38.567Z"
   },
   {
    "id": "full-moon-2026-02-01",
    "family": "lunation",
-   "published": "2026-02-01T22:09:11.676Z",
-   "deltaSeconds": -3.313
+   "published": "2026-02-01T22:09:11.676Z"
   },
   {
    "id": "uranus-stations-direct-2026-02-04",
    "family": "station",
-   "published": "2026-02-04T02:17:17.109Z",
-   "deltaSeconds": -951.328
+   "published": "2026-02-04T02:17:17.109Z"
   },
   {
    "id": "saturn-enters-aries-2026-02-14",
    "family": "ingress",
-   "published": "2026-02-14T00:39:31.850Z",
-   "deltaSeconds": 1672.678
+   "published": "2026-02-14T00:39:31.850Z"
   },
   {
    "id": "new-moon-2026-02-17",
    "family": "lunation",
-   "published": "2026-02-17T12:01:06.411Z",
-   "deltaSeconds": -2.954
+   "published": "2026-02-17T12:01:06.411Z"
   },
   {
    "id": "eclipse-2026-02-17",
    "family": "eclipse",
-   "published": "2026-02-17T12:11:53.939Z",
-   "deltaSeconds": 0.67
+   "published": "2026-02-17T12:11:53.939Z"
   },
   {
    "id": "saturn-conjunction-neptune-2026-02-20",
    "family": "aspect",
-   "published": "2026-02-20T18:29:16.795Z",
-   "deltaSeconds": 5717.587
+   "published": "2026-02-20T18:29:16.795Z"
   },
   {
    "id": "mercury-stations-retrograde-2026-02-26",
    "family": "station",
-   "published": "2026-02-26T06:47:13.153Z",
-   "deltaSeconds": -56.845
+   "published": "2026-02-26T06:47:13.153Z"
   },
   {
    "id": "eclipse-2026-03-03",
    "family": "eclipse",
-   "published": "2026-03-03T11:33:40.289Z",
-   "deltaSeconds": -0.925
+   "published": "2026-03-03T11:33:40.289Z"
   },
   {
    "id": "full-moon-2026-03-03",
    "family": "lunation",
-   "published": "2026-03-03T11:37:51.752Z",
-   "deltaSeconds": -2.282
+   "published": "2026-03-03T11:37:51.752Z"
   },
   {
    "id": "jupiter-stations-direct-2026-03-11",
    "family": "station",
-   "published": "2026-03-11T03:26:43.125Z",
-   "deltaSeconds": -187.947
+   "published": "2026-03-11T03:26:43.125Z"
   },
   {
    "id": "new-moon-2026-03-19",
    "family": "lunation",
-   "published": "2026-03-19T01:23:27.869Z",
-   "deltaSeconds": -1.167
+   "published": "2026-03-19T01:23:27.869Z"
   },
   {
    "id": "mercury-stations-direct-2026-03-20",
    "family": "station",
-   "published": "2026-03-20T19:34:55.312Z",
-   "deltaSeconds": 125.232
+   "published": "2026-03-20T19:34:55.312Z"
   },
   {
    "id": "saturn-sextile-pluto-2026-03-28",
    "family": "aspect",
-   "published": "2026-03-28T22:34:30.097Z",
-   "deltaSeconds": 1402.385
+   "published": "2026-03-28T22:34:30.097Z"
   },
   {
    "id": "full-moon-2026-04-02",
    "family": "lunation",
-   "published": "2026-04-02T02:11:54.521Z",
-   "deltaSeconds": -3.788
+   "published": "2026-04-02T02:11:54.521Z"
   },
   {
    "id": "new-moon-2026-04-17",
    "family": "lunation",
-   "published": "2026-04-17T11:51:46.025Z",
-   "deltaSeconds": -2.532
+   "published": "2026-04-17T11:51:46.025Z"
   },
   {
    "id": "uranus-enters-gemini-2026-04-26",
    "family": "ingress",
-   "published": "2026-04-26T01:01:14.904Z",
-   "deltaSeconds": 582.149
+   "published": "2026-04-26T01:01:14.904Z"
   },
   {
    "id": "full-moon-2026-05-01",
    "family": "lunation",
-   "published": "2026-05-01T17:23:03.837Z",
-   "deltaSeconds": -7.187
+   "published": "2026-05-01T17:23:03.837Z"
   },
   {
    "id": "pluto-stations-retrograde-2026-05-06",
    "family": "station",
-   "published": "2026-05-06T15:44:37.587Z",
-   "deltaSeconds": 610.751
+   "published": "2026-05-06T15:44:37.587Z"
   },
   {
    "id": "new-moon-2026-05-16",
    "family": "lunation",
-   "published": "2026-05-16T20:00:58.227Z",
-   "deltaSeconds": -4.898
+   "published": "2026-05-16T20:00:58.227Z"
   },
   {
    "id": "full-moon-2026-05-31",
    "family": "lunation",
-   "published": "2026-05-31T08:45:04.009Z",
-   "deltaSeconds": -8.796
+   "published": "2026-05-31T08:45:04.009Z"
   },
   {
    "id": "new-moon-2026-06-15",
    "family": "lunation",
-   "published": "2026-06-15T02:54:05.277Z",
-   "deltaSeconds": -5.171
+   "published": "2026-06-15T02:54:05.277Z"
   },
   {
    "id": "mercury-stations-retrograde-2026-06-29",
    "family": "station",
-   "published": "2026-06-29T17:37:12.860Z",
-   "deltaSeconds": 77.575
+   "published": "2026-06-29T17:37:12.860Z"
   },
   {
    "id": "full-moon-2026-06-29",
    "family": "lunation",
-   "published": "2026-06-29T23:56:33.675Z",
-   "deltaSeconds": -7.858
+   "published": "2026-06-29T23:56:33.675Z"
   },
   {
    "id": "jupiter-enters-leo-2026-06-30",
    "family": "ingress",
-   "published": "2026-06-30T05:56:15.135Z",
-   "deltaSeconds": 233.041
+   "published": "2026-06-30T05:56:15.135Z"
   },
   {
    "id": "neptune-stations-retrograde-2026-07-07",
    "family": "station",
-   "published": "2026-07-07T11:21:05.184Z",
-   "deltaSeconds": 1588.748
+   "published": "2026-07-07T11:21:05.184Z"
   },
   {
    "id": "new-moon-2026-07-14",
    "family": "lunation",
-   "published": "2026-07-14T09:43:29.938Z",
-   "deltaSeconds": -7.335
+   "published": "2026-07-14T09:43:29.938Z"
   },
   {
    "id": "uranus-sextile-neptune-2026-07-15",
    "family": "aspect",
-   "published": "2026-07-15T22:22:54.580Z",
-   "deltaSeconds": 6431.571
+   "published": "2026-07-15T22:22:54.580Z"
   },
   {
    "id": "uranus-trine-pluto-2026-07-18",
    "family": "aspect",
-   "published": "2026-07-18T04:39:44.443Z",
-   "deltaSeconds": -232.697
+   "published": "2026-07-18T04:39:44.443Z"
   },
   {
    "id": "jupiter-trine-neptune-2026-07-20",
    "family": "aspect",
-   "published": "2026-07-20T07:47:52.896Z",
-   "deltaSeconds": 1465.654
+   "published": "2026-07-20T07:47:52.896Z"
   },
   {
    "id": "jupiter-opposition-pluto-2026-07-20",
    "family": "aspect",
-   "published": "2026-07-20T14:45:43.725Z",
-   "deltaSeconds": 58.738
+   "published": "2026-07-20T14:45:43.725Z"
   },
   {
    "id": "jupiter-sextile-uranus-2026-07-21",
    "family": "aspect",
-   "published": "2026-07-21T11:13:07.443Z",
-   "deltaSeconds": 164.159
+   "published": "2026-07-21T11:13:07.443Z"
   },
   {
    "id": "mercury-stations-direct-2026-07-23",
    "family": "station",
-   "published": "2026-07-23T22:56:19.394Z",
-   "deltaSeconds": -92.295
+   "published": "2026-07-23T22:56:19.394Z"
   },
   {
    "id": "neptune-sextile-pluto-2026-07-24",
    "family": "aspect",
-   "published": "2026-07-24T23:09:32.221Z",
-   "deltaSeconds": -22714.56
+   "published": "2026-07-24T23:09:32.221Z"
   },
   {
    "id": "saturn-stations-retrograde-2026-07-26",
    "family": "station",
-   "published": "2026-07-26T19:57:37.177Z",
-   "deltaSeconds": 67.204
+   "published": "2026-07-26T19:57:37.177Z"
   },
   {
    "id": "full-moon-2026-07-29",
    "family": "lunation",
-   "published": "2026-07-29T14:35:36.043Z",
-   "deltaSeconds": -7.751
+   "published": "2026-07-29T14:35:36.043Z"
   },
   {
    "id": "new-moon-2026-08-12",
    "family": "lunation",
-   "published": "2026-08-12T17:36:35.369Z",
-   "deltaSeconds": -9.967
+   "published": "2026-08-12T17:36:35.369Z"
   },
   {
    "id": "eclipse-2026-08-12",
    "family": "eclipse",
-   "published": "2026-08-12T17:45:46.794Z",
-   "deltaSeconds": -12.423
+   "published": "2026-08-12T17:45:46.794Z"
   },
   {
    "id": "eclipse-2026-08-28",
    "family": "eclipse",
-   "published": "2026-08-28T04:12:49.076Z",
-   "deltaSeconds": -8.894
+   "published": "2026-08-28T04:12:49.076Z"
   },
   {
    "id": "full-moon-2026-08-28",
    "family": "lunation",
-   "published": "2026-08-28T04:18:24.894Z",
-   "deltaSeconds": -7.511
+   "published": "2026-08-28T04:18:24.894Z"
   },
   {
    "id": "jupiter-trine-saturn-2026-08-31",
    "family": "aspect",
-   "published": "2026-08-31T22:05:16.185Z",
-   "deltaSeconds": -718.953
+   "published": "2026-08-31T22:05:16.185Z"
   },
   {
    "id": "uranus-stations-retrograde-2026-09-10",
    "family": "station",
-   "published": "2026-09-10T18:40:44.238Z",
-   "deltaSeconds": 809.3
+   "published": "2026-09-10T18:40:44.238Z"
   },
   {
    "id": "new-moon-2026-09-11",
    "family": "lunation",
-   "published": "2026-09-11T03:26:50.210Z",
-   "deltaSeconds": -10.072
+   "published": "2026-09-11T03:26:50.210Z"
   },
   {
    "id": "neptune-sextile-pluto-2026-09-16",
    "family": "aspect",
-   "published": "2026-09-16T08:31:12.865Z",
-   "deltaSeconds": 23029.228
+   "published": "2026-09-16T08:31:12.865Z"
   },
   {
    "id": "full-moon-2026-09-26",
    "family": "lunation",
-   "published": "2026-09-26T16:48:53.293Z",
-   "deltaSeconds": -9.485
+   "published": "2026-09-26T16:48:53.293Z"
   },
   {
    "id": "venus-stations-retrograde-2026-10-03",
    "family": "station",
-   "published": "2026-10-03T07:09:55.019Z",
-   "deltaSeconds": -359.044
+   "published": "2026-10-03T07:09:55.019Z"
   },
   {
    "id": "new-moon-2026-10-10",
    "family": "lunation",
-   "published": "2026-10-10T15:49:55.806Z",
-   "deltaSeconds": -9.627
+   "published": "2026-10-10T15:49:55.806Z"
   },
   {
    "id": "pluto-stations-direct-2026-10-16",
    "family": "station",
-   "published": "2026-10-16T02:23:34.159Z",
-   "deltaSeconds": -1003.663
+   "published": "2026-10-16T02:23:34.159Z"
   },
   {
    "id": "mercury-stations-retrograde-2026-10-24",
    "family": "station",
-   "published": "2026-10-24T07:14:20.009Z",
-   "deltaSeconds": 97.072
+   "published": "2026-10-24T07:14:20.009Z"
   },
   {
    "id": "full-moon-2026-10-26",
    "family": "lunation",
-   "published": "2026-10-26T04:11:38.674Z",
-   "deltaSeconds": -10.471
+   "published": "2026-10-26T04:11:38.674Z"
   },
   {
    "id": "new-moon-2026-11-09",
    "family": "lunation",
-   "published": "2026-11-09T07:01:58.843Z",
-   "deltaSeconds": -8.446
+   "published": "2026-11-09T07:01:58.843Z"
   },
   {
    "id": "mercury-stations-direct-2026-11-13",
    "family": "station",
-   "published": "2026-11-13T15:52:57.245Z",
-   "deltaSeconds": -55.514
+   "published": "2026-11-13T15:52:57.245Z"
   },
   {
    "id": "venus-stations-direct-2026-11-14",
    "family": "station",
-   "published": "2026-11-14T00:21:00.351Z",
-   "deltaSeconds": -387.396
+   "published": "2026-11-14T00:21:00.351Z"
   },
   {
    "id": "full-moon-2026-11-24",
    "family": "lunation",
-   "published": "2026-11-24T14:53:28.775Z",
-   "deltaSeconds": -5.317
+   "published": "2026-11-24T14:53:28.775Z"
   },
   {
    "id": "uranus-trine-pluto-2026-11-29",
    "family": "aspect",
-   "published": "2026-11-29T11:27:00.564Z",
-   "deltaSeconds": 250.927
+   "published": "2026-11-29T11:27:00.564Z"
   },
   {
    "id": "new-moon-2026-12-09",
    "family": "lunation",
-   "published": "2026-12-09T00:51:45.724Z",
-   "deltaSeconds": -5.762
+   "published": "2026-12-09T00:51:45.724Z"
   },
   {
    "id": "saturn-stations-direct-2026-12-10",
    "family": "station",
-   "published": "2026-12-10T23:23:24.931Z",
-   "deltaSeconds": -461.962
+   "published": "2026-12-10T23:23:24.931Z"
   },
   {
    "id": "neptune-stations-direct-2026-12-12",
    "family": "station",
-   "published": "2026-12-12T22:13:35.184Z",
-   "deltaSeconds": -231.306
+   "published": "2026-12-12T22:13:35.184Z"
   },
   {
    "id": "jupiter-stations-retrograde-2026-12-13",
    "family": "station",
-   "published": "2026-12-13T00:58:53.203Z",
-   "deltaSeconds": 132.956
+   "published": "2026-12-13T00:58:53.203Z"
   },
   {
    "id": "full-moon-2026-12-24",
    "family": "lunation",
-   "published": "2026-12-24T01:28:10.162Z",
-   "deltaSeconds": -4.33
+   "published": "2026-12-24T01:28:10.162Z"
   },
   {
    "id": "new-moon-2027-01-07",
    "family": "lunation",
-   "published": "2027-01-07T20:24:19.643Z",
-   "deltaSeconds": -3.968
+   "published": "2027-01-07T20:24:19.643Z"
   },
   {
    "id": "mars-stations-retrograde-2027-01-10",
    "family": "station",
-   "published": "2027-01-10T13:01:05.038Z",
-   "deltaSeconds": 107.887
+   "published": "2027-01-10T13:01:05.038Z"
   },
   {
    "id": "uranus-sextile-neptune-2027-01-15",
    "family": "aspect",
-   "published": "2027-01-15T07:21:17.351Z",
-   "deltaSeconds": -7511.988
+   "published": "2027-01-15T07:21:17.351Z"
   },
   {
    "id": "full-moon-2027-01-22",
    "family": "lunation",
-   "published": "2027-01-22T12:17:15.075Z",
-   "deltaSeconds": -8.389
+   "published": "2027-01-22T12:17:15.075Z"
   },
   {
    "id": "new-moon-2027-02-06",
    "family": "lunation",
-   "published": "2027-02-06T15:56:02.062Z",
-   "deltaSeconds": -5.573
+   "published": "2027-02-06T15:56:02.062Z"
   },
   {
    "id": "eclipse-2027-02-06",
    "family": "eclipse",
-   "published": "2027-02-06T15:59:32.957Z",
-   "deltaSeconds": -5.934
+   "published": "2027-02-06T15:59:32.957Z"
   },
   {
    "id": "uranus-stations-direct-2027-02-08",
    "family": "station",
-   "published": "2027-02-08T12:23:12.187Z",
-   "deltaSeconds": -375.962
+   "published": "2027-02-08T12:23:12.187Z"
   },
   {
    "id": "mercury-stations-retrograde-2027-02-09",
    "family": "station",
-   "published": "2027-02-09T17:35:36.620Z",
-   "deltaSeconds": -28.651
+   "published": "2027-02-09T17:35:36.620Z"
   },
   {
    "id": "eclipse-2027-02-20",
    "family": "eclipse",
-   "published": "2027-02-20T23:12:44.142Z",
-   "deltaSeconds": -8.698
+   "published": "2027-02-20T23:12:44.142Z"
   },
   {
    "id": "full-moon-2027-02-20",
    "family": "lunation",
-   "published": "2027-02-20T23:23:31.110Z",
-   "deltaSeconds": -8.395
+   "published": "2027-02-20T23:23:31.110Z"
   },
   {
    "id": "mercury-stations-direct-2027-03-03",
    "family": "station",
-   "published": "2027-03-03T12:35:34.422Z",
-   "deltaSeconds": 212.559
+   "published": "2027-03-03T12:35:34.422Z"
   },
   {
    "id": "new-moon-2027-03-08",
    "family": "lunation",
-   "published": "2027-03-08T09:29:24.458Z",
-   "deltaSeconds": -4.909
+   "published": "2027-03-08T09:29:24.458Z"
   },
   {
    "id": "full-moon-2027-03-22",
    "family": "lunation",
-   "published": "2027-03-22T10:43:41.666Z",
-   "deltaSeconds": -6.578
+   "published": "2027-03-22T10:43:41.666Z"
   },
   {
    "id": "mars-stations-direct-2027-04-01",
    "family": "station",
-   "published": "2027-04-01T14:10:38.964Z",
-   "deltaSeconds": 144.221
+   "published": "2027-04-01T14:10:38.964Z"
   },
   {
    "id": "jupiter-trine-saturn-2027-04-03",
    "family": "aspect",
-   "published": "2027-04-03T13:22:56.723Z",
-   "deltaSeconds": 1440.062
+   "published": "2027-04-03T13:22:56.723Z"
   },
   {
    "id": "new-moon-2027-04-06",
    "family": "lunation",
-   "published": "2027-04-06T23:51:05.486Z",
-   "deltaSeconds": -4.634
+   "published": "2027-04-06T23:51:05.486Z"
   },
   {
    "id": "jupiter-stations-direct-2027-04-13",
    "family": "station",
-   "published": "2027-04-13T02:13:13.212Z",
-   "deltaSeconds": 107.981
+   "published": "2027-04-13T02:13:13.212Z"
   },
   {
    "id": "full-moon-2027-04-20",
    "family": "lunation",
-   "published": "2027-04-20T22:27:05.233Z",
-   "deltaSeconds": -4.747
+   "published": "2027-04-20T22:27:05.233Z"
   },
   {
    "id": "new-moon-2027-05-06",
    "family": "lunation",
-   "published": "2027-05-06T10:58:33.371Z",
-   "deltaSeconds": -5.099
+   "published": "2027-05-06T10:58:33.371Z"
   },
   {
    "id": "pluto-stations-retrograde-2027-05-08",
    "family": "station",
-   "published": "2027-05-08T12:14:45.937Z",
-   "deltaSeconds": -2370.882
+   "published": "2027-05-08T12:14:45.937Z"
   },
   {
    "id": "full-moon-2027-05-20",
    "family": "lunation",
-   "published": "2027-05-20T10:58:57.926Z",
-   "deltaSeconds": -4.043
+   "published": "2027-05-20T10:58:57.926Z"
   },
   {
    "id": "new-moon-2027-06-04",
    "family": "lunation",
-   "published": "2027-06-04T19:40:16.001Z",
-   "deltaSeconds": -5.497
+   "published": "2027-06-04T19:40:16.001Z"
   },
   {
    "id": "uranus-sextile-neptune-2027-06-06",
    "family": "aspect",
-   "published": "2027-06-06T12:03:30.772Z",
-   "deltaSeconds": 6681.398
+   "published": "2027-06-06T12:03:30.772Z"
   },
   {
    "id": "mercury-stations-retrograde-2027-06-10",
    "family": "station",
-   "published": "2027-06-10T18:19:08.290Z",
-   "deltaSeconds": 234.143
+   "published": "2027-06-10T18:19:08.290Z"
   },
   {
    "id": "uranus-trine-pluto-2027-06-15",
    "family": "aspect",
-   "published": "2027-06-15T08:01:25.829Z",
-   "deltaSeconds": -555.946
+   "published": "2027-06-15T08:01:25.829Z"
   },
   {
    "id": "full-moon-2027-06-19",
    "family": "lunation",
-   "published": "2027-06-19T00:44:17.894Z",
-   "deltaSeconds": -3.831
+   "published": "2027-06-19T00:44:17.894Z"
   },
   {
    "id": "neptune-sextile-pluto-2027-06-28",
    "family": "aspect",
-   "published": "2027-06-28T20:34:21.803Z",
-   "deltaSeconds": -12123.304
+   "published": "2027-06-28T20:34:21.803Z"
   },
   {
    "id": "new-moon-2027-07-04",
    "family": "lunation",
-   "published": "2027-07-04T03:01:58.815Z",
-   "deltaSeconds": -6.86
+   "published": "2027-07-04T03:01:58.815Z"
   },
   {
    "id": "mercury-stations-direct-2027-07-04",
    "family": "station",
-   "published": "2027-07-04T19:40:02.489Z",
-   "deltaSeconds": 39.764
+   "published": "2027-07-04T19:40:02.489Z"
   },
   {
    "id": "neptune-stations-retrograde-2027-07-09",
    "family": "station",
-   "published": "2027-07-09T22:50:11.571Z",
-   "deltaSeconds": 537.131
+   "published": "2027-07-09T22:50:11.571Z"
   },
   {
    "id": "jupiter-trine-saturn-2027-07-11",
    "family": "aspect",
-   "published": "2027-07-11T22:45:48.310Z",
-   "deltaSeconds": -1823.302
+   "published": "2027-07-11T22:45:48.310Z"
   },
   {
    "id": "full-moon-2027-07-18",
    "family": "lunation",
-   "published": "2027-07-18T15:44:51.512Z",
-   "deltaSeconds": -4.507
+   "published": "2027-07-18T15:44:51.512Z"
   },
   {
    "id": "eclipse-2027-07-18",
    "family": "eclipse",
-   "published": "2027-07-18T16:02:54.880Z",
-   "deltaSeconds": -5.57
+   "published": "2027-07-18T16:02:54.880Z"
   },
   {
    "id": "jupiter-enters-virgo-2027-07-26",
    "family": "ingress",
-   "published": "2027-07-26T04:45:20.439Z",
-   "deltaSeconds": -230.925
+   "published": "2027-07-26T04:45:20.439Z"
   },
   {
    "id": "new-moon-2027-08-02",
    "family": "lunation",
-   "published": "2027-08-02T10:05:08.275Z",
-   "deltaSeconds": -6.497
+   "published": "2027-08-02T10:05:08.275Z"
   },
   {
    "id": "eclipse-2027-08-02",
    "family": "eclipse",
-   "published": "2027-08-02T10:06:34.636Z",
-   "deltaSeconds": -6.709
+   "published": "2027-08-02T10:06:34.636Z"
   },
   {
    "id": "saturn-stations-retrograde-2027-08-09",
    "family": "station",
-   "published": "2027-08-09T17:52:18.573Z",
-   "deltaSeconds": -813.692
+   "published": "2027-08-09T17:52:18.573Z"
   },
   {
    "id": "eclipse-2027-08-17",
    "family": "eclipse",
-   "published": "2027-08-17T07:13:44.931Z",
-   "deltaSeconds": -6.313
+   "published": "2027-08-17T07:13:44.931Z"
   },
   {
    "id": "full-moon-2027-08-17",
    "family": "lunation",
-   "published": "2027-08-17T07:28:35.460Z",
-   "deltaSeconds": -6.643
+   "published": "2027-08-17T07:28:35.460Z"
   },
   {
    "id": "new-moon-2027-08-31",
    "family": "lunation",
-   "published": "2027-08-31T17:41:06.127Z",
-   "deltaSeconds": -5.518
+   "published": "2027-08-31T17:41:06.127Z"
   },
   {
    "id": "jupiter-square-uranus-2027-09-10",
    "family": "aspect",
-   "published": "2027-09-10T16:36:52.892Z",
-   "deltaSeconds": -242.931
+   "published": "2027-09-10T16:36:52.892Z"
   },
   {
    "id": "uranus-stations-retrograde-2027-09-15",
    "family": "station",
-   "published": "2027-09-15T09:15:03.075Z",
-   "deltaSeconds": 348.702
+   "published": "2027-09-15T09:15:03.075Z"
   },
   {
    "id": "full-moon-2027-09-15",
    "family": "lunation",
-   "published": "2027-09-15T23:03:26.129Z",
-   "deltaSeconds": -5.774
+   "published": "2027-09-15T23:03:26.129Z"
   },
   {
    "id": "new-moon-2027-09-30",
    "family": "lunation",
-   "published": "2027-09-30T02:35:58.290Z",
-   "deltaSeconds": -7.089
+   "published": "2027-09-30T02:35:58.290Z"
   },
   {
    "id": "mercury-stations-retrograde-2027-10-07",
    "family": "station",
-   "published": "2027-10-07T14:39:07.557Z",
-   "deltaSeconds": 123.506
+   "published": "2027-10-07T14:39:07.557Z"
   },
   {
    "id": "full-moon-2027-10-15",
    "family": "lunation",
-   "published": "2027-10-15T13:46:52.664Z",
-   "deltaSeconds": -8.332
+   "published": "2027-10-15T13:46:52.664Z"
   },
   {
    "id": "neptune-sextile-pluto-2027-10-16",
    "family": "aspect",
-   "published": "2027-10-16T18:03:50.794Z",
-   "deltaSeconds": 12235.821
+   "published": "2027-10-16T18:03:50.794Z"
   },
   {
    "id": "pluto-stations-direct-2027-10-18",
    "family": "station",
-   "published": "2027-10-18T03:51:06.503Z",
-   "deltaSeconds": -85.034
+   "published": "2027-10-18T03:51:06.503Z"
   },
   {
    "id": "mercury-stations-direct-2027-10-28",
    "family": "station",
-   "published": "2027-10-28T14:11:09.286Z",
-   "deltaSeconds": 30.905
+   "published": "2027-10-28T14:11:09.286Z"
   },
   {
    "id": "new-moon-2027-10-29",
    "family": "lunation",
-   "published": "2027-10-29T13:36:25.865Z",
-   "deltaSeconds": -8.697
+   "published": "2027-10-29T13:36:25.865Z"
   },
   {
    "id": "full-moon-2027-11-14",
    "family": "lunation",
-   "published": "2027-11-14T03:25:46.434Z",
-   "deltaSeconds": -9.905
+   "published": "2027-11-14T03:25:46.434Z"
   },
   {
    "id": "new-moon-2027-11-28",
    "family": "lunation",
-   "published": "2027-11-28T03:24:17.774Z",
-   "deltaSeconds": -9.111
+   "published": "2027-11-28T03:24:17.774Z"
   },
   {
    "id": "full-moon-2027-12-13",
    "family": "lunation",
-   "published": "2027-12-13T16:08:41.191Z",
-   "deltaSeconds": -7.201
+   "published": "2027-12-13T16:08:41.191Z"
   },
   {
    "id": "neptune-stations-direct-2027-12-15",
    "family": "station",
-   "published": "2027-12-15T09:42:46.844Z",
-   "deltaSeconds": 2185.967
+   "published": "2027-12-15T09:42:46.844Z"
   },
   {
    "id": "saturn-stations-direct-2027-12-24",
    "family": "station",
-   "published": "2027-12-24T02:49:28.505Z",
-   "deltaSeconds": 147.921
+   "published": "2027-12-24T02:49:28.505Z"
   },
   {
    "id": "new-moon-2027-12-27",
    "family": "lunation",
-   "published": "2027-12-27T20:12:11.909Z",
-   "deltaSeconds": -8.305
+   "published": "2027-12-27T20:12:11.909Z"
   },
   {
    "id": "full-moon-2028-01-12",
    "family": "lunation",
-   "published": "2028-01-12T04:02:59.487Z",
-   "deltaSeconds": -6.105
+   "published": "2028-01-12T04:02:59.487Z"
   },
   {
    "id": "eclipse-2028-01-12",
    "family": "eclipse",
-   "published": "2028-01-12T04:13:00.859Z",
-   "deltaSeconds": -6.359
+   "published": "2028-01-12T04:13:00.859Z"
   },
   {
    "id": "jupiter-stations-retrograde-2028-01-12",
    "family": "station",
-   "published": "2028-01-12T08:48:39.726Z",
-   "deltaSeconds": -295.663
+   "published": "2028-01-12T08:48:39.726Z"
   },
   {
    "id": "uranus-trine-pluto-2028-01-13",
    "family": "aspect",
-   "published": "2028-01-13T06:52:32.442Z",
-   "deltaSeconds": 707.396
+   "published": "2028-01-13T06:52:32.442Z"
   },
   {
    "id": "mercury-stations-retrograde-2028-01-24",
    "family": "station",
-   "published": "2028-01-24T11:03:25.224Z",
-   "deltaSeconds": 59.239
+   "published": "2028-01-24T11:03:25.224Z"
   },
   {
    "id": "eclipse-2028-01-26",
    "family": "eclipse",
-   "published": "2028-01-26T15:07:42.381Z",
-   "deltaSeconds": -7.629
+   "published": "2028-01-26T15:07:42.381Z"
   },
   {
    "id": "new-moon-2028-01-26",
    "family": "lunation",
-   "published": "2028-01-26T15:12:23.883Z",
-   "deltaSeconds": -7.526
+   "published": "2028-01-26T15:12:23.883Z"
   },
   {
    "id": "full-moon-2028-02-10",
    "family": "lunation",
-   "published": "2028-02-10T15:03:39.011Z",
-   "deltaSeconds": -7.687
+   "published": "2028-02-10T15:03:39.011Z"
   },
   {
    "id": "uranus-stations-direct-2028-02-12",
    "family": "station",
-   "published": "2028-02-12T23:40:00.292Z",
-   "deltaSeconds": -564.223
+   "published": "2028-02-12T23:40:00.292Z"
   },
   {
    "id": "mercury-stations-direct-2028-02-14",
    "family": "station",
-   "published": "2028-02-14T12:39:29.091Z",
-   "deltaSeconds": 101.161
+   "published": "2028-02-14T12:39:29.091Z"
   },
   {
    "id": "new-moon-2028-02-25",
    "family": "lunation",
-   "published": "2028-02-25T10:37:17.940Z",
-   "deltaSeconds": -7.747
+   "published": "2028-02-25T10:37:17.940Z"
   },
   {
    "id": "full-moon-2028-03-11",
    "family": "lunation",
-   "published": "2028-03-11T01:05:56.066Z",
-   "deltaSeconds": -9.496
+   "published": "2028-03-11T01:05:56.066Z"
   },
   {
    "id": "new-moon-2028-03-26",
    "family": "lunation",
-   "published": "2028-03-26T04:31:13.910Z",
-   "deltaSeconds": -6.031
+   "published": "2028-03-26T04:31:13.910Z"
   },
   {
    "id": "full-moon-2028-04-09",
    "family": "lunation",
-   "published": "2028-04-09T10:26:29.885Z",
-   "deltaSeconds": -8.238
+   "published": "2028-04-09T10:26:29.885Z"
   },
   {
    "id": "saturn-enters-taurus-2028-04-13",
    "family": "ingress",
-   "published": "2028-04-13T04:04:56.223Z",
-   "deltaSeconds": 1511.165
+   "published": "2028-04-13T04:04:56.223Z"
   },
   {
    "id": "new-moon-2028-04-24",
    "family": "lunation",
-   "published": "2028-04-24T19:46:49.285Z",
-   "deltaSeconds": -7.477
+   "published": "2028-04-24T19:46:49.285Z"
   },
   {
    "id": "full-moon-2028-05-08",
    "family": "lunation",
-   "published": "2028-05-08T19:48:50.244Z",
-   "deltaSeconds": -6.869
+   "published": "2028-05-08T19:48:50.244Z"
   },
   {
    "id": "pluto-stations-retrograde-2028-05-09",
    "family": "station",
-   "published": "2028-05-09T08:48:27.860Z",
-   "deltaSeconds": -2459.512
+   "published": "2028-05-09T08:48:27.860Z"
   },
   {
    "id": "uranus-trine-pluto-2028-05-10",
    "family": "aspect",
-   "published": "2028-05-10T02:50:33.268Z",
-   "deltaSeconds": -806.472
+   "published": "2028-05-10T02:50:33.268Z"
   },
   {
    "id": "venus-stations-retrograde-2028-05-10",
    "family": "station",
-   "published": "2028-05-10T23:01:38.437Z",
-   "deltaSeconds": -67.976
+   "published": "2028-05-10T23:01:38.437Z"
   },
   {
    "id": "jupiter-stations-direct-2028-05-13",
    "family": "station",
-   "published": "2028-05-13T19:57:42.450Z",
-   "deltaSeconds": -150.227
+   "published": "2028-05-13T19:57:42.450Z"
   },
   {
    "id": "mercury-stations-retrograde-2028-05-21",
    "family": "station",
-   "published": "2028-05-21T08:39:48.427Z",
-   "deltaSeconds": -191.106
+   "published": "2028-05-21T08:39:48.427Z"
   },
   {
    "id": "new-moon-2028-05-24",
    "family": "lunation",
-   "published": "2028-05-24T08:16:11.932Z",
-   "deltaSeconds": -7.593
+   "published": "2028-05-24T08:16:11.932Z"
   },
   {
    "id": "full-moon-2028-06-07",
    "family": "lunation",
-   "published": "2028-06-07T06:08:42.645Z",
-   "deltaSeconds": -6.921
+   "published": "2028-06-07T06:08:42.645Z"
   },
   {
    "id": "neptune-sextile-pluto-2028-06-09",
    "family": "aspect",
-   "published": "2028-06-09T01:49:29.384Z",
-   "deltaSeconds": -9366.412
+   "published": "2028-06-09T01:49:29.384Z"
   },
   {
    "id": "mercury-stations-direct-2028-06-14",
    "family": "station",
-   "published": "2028-06-14T06:06:53.964Z",
-   "deltaSeconds": 54.856
+   "published": "2028-06-14T06:06:53.964Z"
   },
   {
    "id": "new-moon-2028-06-22",
    "family": "lunation",
-   "published": "2028-06-22T18:27:28.277Z",
-   "deltaSeconds": -5.615
+   "published": "2028-06-22T18:27:28.277Z"
   },
   {
    "id": "venus-stations-direct-2028-06-22",
    "family": "station",
-   "published": "2028-06-22T22:13:16.727Z",
-   "deltaSeconds": 36.511
+   "published": "2028-06-22T22:13:16.727Z"
   },
   {
    "id": "saturn-square-pluto-2028-06-24",
    "family": "aspect",
-   "published": "2028-06-24T03:18:51.151Z",
-   "deltaSeconds": 1146.268
+   "published": "2028-06-24T03:18:51.151Z"
   },
   {
    "id": "full-moon-2028-07-06",
    "family": "lunation",
-   "published": "2028-07-06T18:10:42.946Z",
-   "deltaSeconds": -6.693
+   "published": "2028-07-06T18:10:42.946Z"
   },
   {
    "id": "eclipse-2028-07-06",
    "family": "eclipse",
-   "published": "2028-07-06T18:19:38.379Z",
-   "deltaSeconds": -6.191
+   "published": "2028-07-06T18:19:38.379Z"
   },
   {
    "id": "neptune-stations-retrograde-2028-07-11",
    "family": "station",
-   "published": "2028-07-11T13:17:54.901Z",
-   "deltaSeconds": 818.395
+   "published": "2028-07-11T13:17:54.901Z"
   },
   {
    "id": "eclipse-2028-07-22",
    "family": "eclipse",
-   "published": "2028-07-22T02:55:24.627Z",
-   "deltaSeconds": -5.274
+   "published": "2028-07-22T02:55:24.627Z"
   },
   {
    "id": "new-moon-2028-07-22",
    "family": "lunation",
-   "published": "2028-07-22T03:01:37.639Z",
-   "deltaSeconds": -5.782
+   "published": "2028-07-22T03:01:37.639Z"
   },
   {
    "id": "full-moon-2028-08-05",
    "family": "lunation",
-   "published": "2028-08-05T08:09:41.779Z",
-   "deltaSeconds": -8.062
+   "published": "2028-08-05T08:09:41.779Z"
   },
   {
    "id": "new-moon-2028-08-20",
    "family": "lunation",
-   "published": "2028-08-20T10:43:44.715Z",
-   "deltaSeconds": -7.258
+   "published": "2028-08-20T10:43:44.715Z"
   },
   {
    "id": "saturn-stations-retrograde-2028-08-22",
    "family": "station",
-   "published": "2028-08-22T22:16:51.620Z",
-   "deltaSeconds": -10.975
+   "published": "2028-08-22T22:16:51.620Z"
   },
   {
    "id": "jupiter-enters-libra-2028-08-24",
    "family": "ingress",
-   "published": "2028-08-24T05:04:12.642Z",
-   "deltaSeconds": -256.307
+   "published": "2028-08-24T05:04:12.642Z"
   },
   {
    "id": "full-moon-2028-09-03",
    "family": "lunation",
-   "published": "2028-09-03T23:47:28.121Z",
-   "deltaSeconds": -8.083
+   "published": "2028-09-03T23:47:28.121Z"
   },
   {
    "id": "new-moon-2028-09-18",
    "family": "lunation",
-   "published": "2028-09-18T18:23:38.389Z",
-   "deltaSeconds": -7.51
+   "published": "2028-09-18T18:23:38.389Z"
   },
   {
    "id": "uranus-stations-retrograde-2028-09-19",
    "family": "station",
-   "published": "2028-09-19T00:06:05.184Z",
-   "deltaSeconds": 280.222
+   "published": "2028-09-19T00:06:05.184Z"
   },
   {
    "id": "mercury-stations-retrograde-2028-09-19",
    "family": "station",
-   "published": "2028-09-19T16:30:09.227Z",
-   "deltaSeconds": -220.166
+   "published": "2028-09-19T16:30:09.227Z"
   },
   {
    "id": "jupiter-trine-pluto-2028-09-24",
    "family": "aspect",
-   "published": "2028-09-24T07:39:28.212Z",
-   "deltaSeconds": -361.621
+   "published": "2028-09-24T07:39:28.212Z"
   },
   {
    "id": "jupiter-opposition-neptune-2028-09-28",
    "family": "aspect",
-   "published": "2028-09-28T19:29:29.594Z",
-   "deltaSeconds": 813.332
+   "published": "2028-09-28T19:29:29.594Z"
   },
   {
    "id": "full-moon-2028-10-03",
    "family": "lunation",
-   "published": "2028-10-03T16:24:53.810Z",
-   "deltaSeconds": -6.115
+   "published": "2028-10-03T16:24:53.810Z"
   },
   {
    "id": "mercury-stations-direct-2028-10-11",
    "family": "station",
-   "published": "2028-10-11T10:29:56.044Z",
-   "deltaSeconds": 144.954
+   "published": "2028-10-11T10:29:56.044Z"
   },
   {
    "id": "new-moon-2028-10-18",
    "family": "lunation",
-   "published": "2028-10-18T02:56:41.338Z",
-   "deltaSeconds": -7.977
+   "published": "2028-10-18T02:56:41.338Z"
   },
   {
    "id": "pluto-stations-direct-2028-10-19",
    "family": "station",
-   "published": "2028-10-19T04:19:43.007Z",
-   "deltaSeconds": 2009.224
+   "published": "2028-10-19T04:19:43.007Z"
   },
   {
    "id": "jupiter-trine-uranus-2028-10-27",
    "family": "aspect",
-   "published": "2028-10-27T09:03:26.568Z",
-   "deltaSeconds": -147.602
+   "published": "2028-10-27T09:03:26.568Z"
   },
   {
    "id": "full-moon-2028-11-02",
    "family": "lunation",
-   "published": "2028-11-02T09:17:13.922Z",
-   "deltaSeconds": -8.166
+   "published": "2028-11-02T09:17:13.922Z"
   },
   {
    "id": "neptune-sextile-pluto-2028-11-08",
    "family": "aspect",
-   "published": "2028-11-08T04:21:04.250Z",
-   "deltaSeconds": 9384.125
+   "published": "2028-11-08T04:21:04.250Z"
   },
   {
    "id": "saturn-square-pluto-2028-11-15",
    "family": "aspect",
-   "published": "2028-11-15T12:29:19.926Z",
-   "deltaSeconds": -1655.142
+   "published": "2028-11-15T12:29:19.926Z"
   },
   {
    "id": "new-moon-2028-11-16",
    "family": "lunation",
-   "published": "2028-11-16T13:17:52.182Z",
-   "deltaSeconds": -10.168
+   "published": "2028-11-16T13:17:52.182Z"
   },
   {
    "id": "full-moon-2028-12-02",
    "family": "lunation",
-   "published": "2028-12-02T01:40:03.559Z",
-   "deltaSeconds": -11.306
+   "published": "2028-12-02T01:40:03.559Z"
   },
   {
    "id": "new-moon-2028-12-16",
    "family": "lunation",
-   "published": "2028-12-16T02:06:09.359Z",
-   "deltaSeconds": -10.641
+   "published": "2028-12-16T02:06:09.359Z"
   },
   {
    "id": "neptune-stations-direct-2028-12-16",
    "family": "station",
-   "published": "2028-12-16T20:55:50.829Z",
-   "deltaSeconds": 745.263
+   "published": "2028-12-16T20:55:50.829Z"
   },
   {
    "id": "full-moon-2028-12-31",
    "family": "lunation",
-   "published": "2028-12-31T16:48:20.087Z",
-   "deltaSeconds": -11.795
+   "published": "2028-12-31T16:48:20.087Z"
   },
   {
    "id": "eclipse-2028-12-31",
    "family": "eclipse",
-   "published": "2028-12-31T16:51:54.549Z",
-   "deltaSeconds": -13.242
+   "published": "2028-12-31T16:51:54.549Z"
   },
   {
    "id": "saturn-stations-direct-2029-01-05",
    "family": "station",
-   "published": "2029-01-05T12:31:45.028Z",
-   "deltaSeconds": -426.094
+   "published": "2029-01-05T12:31:45.028Z"
   },
   {
    "id": "mercury-stations-retrograde-2029-01-07",
    "family": "station",
-   "published": "2029-01-07T07:57:13.446Z",
-   "deltaSeconds": 40.834
+   "published": "2029-01-07T07:57:13.446Z"
   },
   {
    "id": "eclipse-2029-01-14",
    "family": "eclipse",
-   "published": "2029-01-14T17:12:28.816Z",
-   "deltaSeconds": -13.84
+   "published": "2029-01-14T17:12:28.816Z"
   },
   {
    "id": "new-moon-2029-01-14",
    "family": "lunation",
-   "published": "2029-01-14T17:24:22.114Z",
-   "deltaSeconds": -9.412
+   "published": "2029-01-14T17:24:22.114Z"
   },
   {
    "id": "mercury-stations-direct-2029-01-27",
    "family": "station",
-   "published": "2029-01-27T18:37:56.806Z",
-   "deltaSeconds": -135.271
+   "published": "2029-01-27T18:37:56.806Z"
   },
   {
    "id": "full-moon-2029-01-30",
    "family": "lunation",
-   "published": "2029-01-30T06:03:27.887Z",
-   "deltaSeconds": -9.921
+   "published": "2029-01-30T06:03:27.887Z"
   },
   {
    "id": "jupiter-stations-retrograde-2029-02-10",
    "family": "station",
-   "published": "2029-02-10T13:08:38.554Z",
-   "deltaSeconds": 91.643
+   "published": "2029-02-10T13:08:38.554Z"
   },
   {
    "id": "new-moon-2029-02-13",
    "family": "lunation",
-   "published": "2029-02-13T10:31:23.385Z",
-   "deltaSeconds": -8.407
+   "published": "2029-02-13T10:31:23.385Z"
   },
   {
    "id": "mars-stations-retrograde-2029-02-14",
    "family": "station",
-   "published": "2029-02-14T08:13:39.579Z",
-   "deltaSeconds": -163.472
+   "published": "2029-02-14T08:13:39.579Z"
   },
   {
    "id": "uranus-stations-direct-2029-02-16",
    "family": "station",
-   "published": "2029-02-16T10:49:47.841Z",
-   "deltaSeconds": -114.763
+   "published": "2029-02-16T10:49:47.841Z"
   },
   {
    "id": "full-moon-2029-02-28",
    "family": "lunation",
-   "published": "2029-02-28T17:10:06.416Z",
-   "deltaSeconds": -9.48
+   "published": "2029-02-28T17:10:06.416Z"
   },
   {
    "id": "new-moon-2029-03-15",
    "family": "lunation",
-   "published": "2029-03-15T04:19:08.152Z",
-   "deltaSeconds": -7.729
+   "published": "2029-03-15T04:19:08.152Z"
   },
   {
    "id": "saturn-square-pluto-2029-03-29",
    "family": "aspect",
-   "published": "2029-03-29T23:20:55.378Z",
-   "deltaSeconds": 713.069
+   "published": "2029-03-29T23:20:55.378Z"
   },
   {
    "id": "full-moon-2029-03-30",
    "family": "lunation",
-   "published": "2029-03-30T02:26:17.471Z",
-   "deltaSeconds": -7.841
+   "published": "2029-03-30T02:26:17.471Z"
   },
   {
    "id": "new-moon-2029-04-13",
    "family": "lunation",
-   "published": "2029-04-13T21:40:04.357Z",
-   "deltaSeconds": -6.918
+   "published": "2029-04-13T21:40:04.357Z"
   },
   {
    "id": "full-moon-2029-04-28",
    "family": "lunation",
-   "published": "2029-04-28T10:36:43.911Z",
-   "deltaSeconds": -4.99
+   "published": "2029-04-28T10:36:43.911Z"
   },
   {
    "id": "mercury-stations-retrograde-2029-05-01",
    "family": "station",
-   "published": "2029-05-01T23:10:06.005Z",
-   "deltaSeconds": 276.219
+   "published": "2029-05-01T23:10:06.005Z"
   },
   {
    "id": "mars-stations-direct-2029-05-05",
    "family": "station",
-   "published": "2029-05-05T18:57:07.734Z",
-   "deltaSeconds": -166.057
+   "published": "2029-05-05T18:57:07.734Z"
   },
   {
    "id": "pluto-stations-retrograde-2029-05-11",
    "family": "station",
-   "published": "2029-05-11T04:11:53.671Z",
-   "deltaSeconds": -123.007
+   "published": "2029-05-11T04:11:53.671Z"
   },
   {
    "id": "new-moon-2029-05-13",
    "family": "lunation",
-   "published": "2029-05-13T13:42:01.635Z",
-   "deltaSeconds": -7.915
+   "published": "2029-05-13T13:42:01.635Z"
   },
   {
    "id": "neptune-sextile-pluto-2029-05-22",
    "family": "aspect",
-   "published": "2029-05-22T17:03:25.718Z",
-   "deltaSeconds": -7932.092
+   "published": "2029-05-22T17:03:25.718Z"
   },
   {
    "id": "mercury-stations-direct-2029-05-25",
    "family": "station",
-   "published": "2029-05-25T19:15:28.563Z",
-   "deltaSeconds": -319.15
+   "published": "2029-05-25T19:15:28.563Z"
   },
   {
    "id": "full-moon-2029-05-27",
    "family": "lunation",
-   "published": "2029-05-27T18:37:25.659Z",
-   "deltaSeconds": -5.325
+   "published": "2029-05-27T18:37:25.659Z"
   },
   {
    "id": "new-moon-2029-06-12",
    "family": "lunation",
-   "published": "2029-06-12T03:50:24.810Z",
-   "deltaSeconds": -8.646
+   "published": "2029-06-12T03:50:24.810Z"
   },
   {
    "id": "eclipse-2029-06-12",
    "family": "eclipse",
-   "published": "2029-06-12T04:04:55.151Z",
-   "deltaSeconds": -2.398
+   "published": "2029-06-12T04:04:55.151Z"
   },
   {
    "id": "jupiter-stations-direct-2029-06-13",
    "family": "station",
-   "published": "2029-06-13T21:07:42.743Z",
-   "deltaSeconds": 71.089
+   "published": "2029-06-13T21:07:42.743Z"
   },
   {
    "id": "eclipse-2029-06-26",
    "family": "eclipse",
-   "published": "2029-06-26T03:22:06.538Z",
-   "deltaSeconds": -5.416
+   "published": "2029-06-26T03:22:06.538Z"
   },
   {
    "id": "full-moon-2029-06-26",
    "family": "lunation",
-   "published": "2029-06-26T03:22:15.002Z",
-   "deltaSeconds": -6.27
+   "published": "2029-06-26T03:22:15.002Z"
   },
   {
    "id": "eclipse-2029-07-11",
    "family": "eclipse",
-   "published": "2029-07-11T15:36:03.870Z",
-   "deltaSeconds": 2.735
+   "published": "2029-07-11T15:36:03.870Z"
   },
   {
    "id": "new-moon-2029-07-11",
    "family": "lunation",
-   "published": "2029-07-11T15:50:58.757Z",
-   "deltaSeconds": -5.584
+   "published": "2029-07-11T15:50:58.757Z"
   },
   {
    "id": "neptune-stations-retrograde-2029-07-14",
    "family": "station",
-   "published": "2029-07-14T02:12:44.208Z",
-   "deltaSeconds": 117.333
+   "published": "2029-07-14T02:12:44.208Z"
   },
   {
    "id": "full-moon-2029-07-25",
    "family": "lunation",
-   "published": "2029-07-25T13:35:41.454Z",
-   "deltaSeconds": -4.701
+   "published": "2029-07-25T13:35:41.454Z"
   },
   {
    "id": "new-moon-2029-08-10",
    "family": "lunation",
-   "published": "2029-08-10T01:55:43.549Z",
-   "deltaSeconds": -4.309
+   "published": "2029-08-10T01:55:43.549Z"
   },
   {
    "id": "full-moon-2029-08-24",
    "family": "lunation",
-   "published": "2029-08-24T01:51:10.485Z",
-   "deltaSeconds": -3.692
+   "published": "2029-08-24T01:51:10.485Z"
   },
   {
    "id": "mercury-stations-retrograde-2029-09-02",
    "family": "station",
-   "published": "2029-09-02T12:14:23.524Z",
-   "deltaSeconds": -219.587
+   "published": "2029-09-02T12:14:23.524Z"
   },
   {
    "id": "saturn-stations-retrograde-2029-09-06",
    "family": "station",
-   "published": "2029-09-06T08:32:22.821Z",
-   "deltaSeconds": -137.942
+   "published": "2029-09-06T08:32:22.821Z"
   },
   {
    "id": "new-moon-2029-09-08",
    "family": "lunation",
-   "published": "2029-09-08T10:44:18.167Z",
-   "deltaSeconds": -5.354
+   "published": "2029-09-08T10:44:18.167Z"
   },
   {
    "id": "full-moon-2029-09-22",
    "family": "lunation",
-   "published": "2029-09-22T16:29:15.092Z",
-   "deltaSeconds": -4.17
+   "published": "2029-09-22T16:29:15.092Z"
   },
   {
    "id": "uranus-stations-retrograde-2029-09-23",
    "family": "station",
-   "published": "2029-09-23T16:16:34.481Z",
-   "deltaSeconds": -309.936
+   "published": "2029-09-23T16:16:34.481Z"
   },
   {
    "id": "jupiter-enters-scorpio-2029-09-24",
    "family": "ingress",
-   "published": "2029-09-24T06:27:10.150Z",
-   "deltaSeconds": 183.557
+   "published": "2029-09-24T06:27:10.150Z"
   },
   {
    "id": "mercury-stations-direct-2029-09-25",
    "family": "station",
-   "published": "2029-09-25T02:02:50.946Z",
-   "deltaSeconds": 62.909
+   "published": "2029-09-25T02:02:50.946Z"
   },
   {
    "id": "new-moon-2029-10-07",
    "family": "lunation",
-   "published": "2029-10-07T19:14:28.990Z",
-   "deltaSeconds": -4.883
+   "published": "2029-10-07T19:14:28.990Z"
   },
   {
    "id": "pluto-stations-direct-2029-10-21",
    "family": "station",
-   "published": "2029-10-21T03:58:07.059Z",
-   "deltaSeconds": 111.259
+   "published": "2029-10-21T03:58:07.059Z"
   },
   {
    "id": "full-moon-2029-10-22",
    "family": "lunation",
-   "published": "2029-10-22T09:27:31.490Z",
-   "deltaSeconds": -3.38
+   "published": "2029-10-22T09:27:31.490Z"
   },
   {
    "id": "jupiter-square-pluto-2029-11-01",
    "family": "aspect",
-   "published": "2029-11-01T00:42:37.286Z",
-   "deltaSeconds": -41.197
+   "published": "2029-11-01T00:42:37.286Z"
   },
   {
    "id": "new-moon-2029-11-06",
    "family": "lunation",
-   "published": "2029-11-06T04:24:01.735Z",
-   "deltaSeconds": -6.332
+   "published": "2029-11-06T04:24:01.735Z"
   },
   {
    "id": "full-moon-2029-11-21",
    "family": "lunation",
-   "published": "2029-11-21T04:02:53.473Z",
-   "deltaSeconds": -5.199
+   "published": "2029-11-21T04:02:53.473Z"
   },
   {
    "id": "neptune-sextile-pluto-2029-11-30",
    "family": "aspect",
-   "published": "2029-11-30T23:26:45.321Z",
-   "deltaSeconds": 8250.733
+   "published": "2029-11-30T23:26:45.321Z"
   },
   {
    "id": "new-moon-2029-12-05",
    "family": "lunation",
-   "published": "2029-12-05T14:51:59.621Z",
-   "deltaSeconds": -8.772
+   "published": "2029-12-05T14:51:59.621Z"
   },
   {
    "id": "eclipse-2029-12-05",
    "family": "eclipse",
-   "published": "2029-12-05T15:02:39.906Z",
-   "deltaSeconds": -11.03
+   "published": "2029-12-05T15:02:39.906Z"
   },
   {
    "id": "venus-stations-retrograde-2029-12-16",
    "family": "station",
-   "published": "2029-12-16T23:49:15.321Z",
-   "deltaSeconds": 98.86
+   "published": "2029-12-16T23:49:15.321Z"
   },
   {
    "id": "neptune-stations-direct-2029-12-19",
    "family": "station",
-   "published": "2029-12-19T08:17:50.068Z",
-   "deltaSeconds": -382.066
+   "published": "2029-12-19T08:17:50.068Z"
   },
   {
    "id": "eclipse-2029-12-20",
    "family": "eclipse",
-   "published": "2029-12-20T22:41:54.610Z",
-   "deltaSeconds": -9.472
+   "published": "2029-12-20T22:41:54.610Z"
   },
   {
    "id": "full-moon-2029-12-20",
    "family": "lunation",
-   "published": "2029-12-20T22:46:22.836Z",
-   "deltaSeconds": -8.575
+   "published": "2029-12-20T22:46:22.836Z"
   },
   {
    "id": "mercury-stations-retrograde-2029-12-22",
    "family": "station",
-   "published": "2029-12-22T05:49:44.325Z",
-   "deltaSeconds": -51.144
+   "published": "2029-12-22T05:49:44.325Z"
   },
   {
    "id": "jupiter-opposition-saturn-2029-12-22",
    "family": "aspect",
-   "published": "2029-12-22T07:02:47.787Z",
-   "deltaSeconds": -28.667
+   "published": "2029-12-22T07:02:47.787Z"
   },
   {
    "id": "new-moon-2030-01-04",
    "family": "lunation",
-   "published": "2030-01-04T02:49:25.785Z",
-   "deltaSeconds": -8.234
+   "published": "2030-01-04T02:49:25.785Z"
   },
   {
    "id": "mercury-stations-direct-2030-01-11",
    "family": "station",
-   "published": "2030-01-11T05:44:22.646Z",
-   "deltaSeconds": -66.73
+   "published": "2030-01-11T05:44:22.646Z"
   },
   {
    "id": "saturn-stations-direct-2030-01-19",
    "family": "station",
-   "published": "2030-01-19T03:50:03.222Z",
-   "deltaSeconds": -225.045
+   "published": "2030-01-19T03:50:03.222Z"
   },
   {
    "id": "full-moon-2030-01-19",
    "family": "lunation",
-   "published": "2030-01-19T15:54:13.956Z",
-   "deltaSeconds": -8.69
+   "published": "2030-01-19T15:54:13.956Z"
   },
   {
    "id": "venus-stations-direct-2030-01-26",
    "family": "station",
-   "published": "2030-01-26T21:33:30.497Z",
-   "deltaSeconds": 24.775
+   "published": "2030-01-26T21:33:30.497Z"
   },
   {
    "id": "new-moon-2030-02-02",
    "family": "lunation",
-   "published": "2030-02-02T16:07:25.302Z",
-   "deltaSeconds": -6.297
+   "published": "2030-02-02T16:07:25.302Z"
   },
   {
    "id": "full-moon-2030-02-18",
    "family": "lunation",
-   "published": "2030-02-18T06:19:42.320Z",
-   "deltaSeconds": -7.227
+   "published": "2030-02-18T06:19:42.320Z"
   },
   {
    "id": "uranus-stations-direct-2030-02-20",
    "family": "station",
-   "published": "2030-02-20T23:23:26.250Z",
-   "deltaSeconds": 48.366
+   "published": "2030-02-20T23:23:26.250Z"
   },
   {
    "id": "new-moon-2030-03-04",
    "family": "lunation",
-   "published": "2030-03-04T06:34:35.508Z",
-   "deltaSeconds": -5.285
+   "published": "2030-03-04T06:34:35.508Z"
   },
   {
    "id": "jupiter-stations-retrograde-2030-03-13",
    "family": "station",
-   "published": "2030-03-13T14:36:31.991Z",
-   "deltaSeconds": 190.343
+   "published": "2030-03-13T14:36:31.991Z"
   },
   {
    "id": "full-moon-2030-03-19",
    "family": "lunation",
-   "published": "2030-03-19T17:56:24.776Z",
-   "deltaSeconds": -5.624
+   "published": "2030-03-19T17:56:24.776Z"
   },
   {
    "id": "new-moon-2030-04-02",
    "family": "lunation",
-   "published": "2030-04-02T22:02:27.929Z",
-   "deltaSeconds": -5.293
+   "published": "2030-04-02T22:02:27.929Z"
   },
   {
    "id": "mercury-stations-retrograde-2030-04-13",
    "family": "station",
-   "published": "2030-04-13T02:27:47.284Z",
-   "deltaSeconds": -337.678
+   "published": "2030-04-13T02:27:47.284Z"
   },
   {
    "id": "full-moon-2030-04-18",
    "family": "lunation",
-   "published": "2030-04-18T03:19:55.502Z",
-   "deltaSeconds": -6.657
+   "published": "2030-04-18T03:19:55.502Z"
   },
   {
    "id": "jupiter-opposition-saturn-2030-04-24",
    "family": "aspect",
-   "published": "2030-04-24T01:53:07.324Z",
-   "deltaSeconds": -199.35
+   "published": "2030-04-24T01:53:07.324Z"
   },
   {
    "id": "new-moon-2030-05-02",
    "family": "lunation",
-   "published": "2030-05-02T14:12:06.799Z",
-   "deltaSeconds": -3.087
+   "published": "2030-05-02T14:12:06.799Z"
   },
   {
    "id": "neptune-sextile-pluto-2030-05-04",
    "family": "aspect",
-   "published": "2030-05-04T13:20:57.823Z",
-   "deltaSeconds": -7616.39
+   "published": "2030-05-04T13:20:57.823Z"
   },
   {
    "id": "mercury-stations-direct-2030-05-06",
    "family": "station",
-   "published": "2030-05-06T20:17:57.977Z",
-   "deltaSeconds": 188.048
+   "published": "2030-05-06T20:17:57.977Z"
   },
   {
    "id": "pluto-stations-retrograde-2030-05-12",
    "family": "station",
-   "published": "2030-05-12T23:10:45.556Z",
-   "deltaSeconds": -31.057
+   "published": "2030-05-12T23:10:45.556Z"
   },
   {
    "id": "full-moon-2030-05-17",
    "family": "lunation",
-   "published": "2030-05-17T11:19:01.505Z",
-   "deltaSeconds": -7.993
+   "published": "2030-05-17T11:19:01.505Z"
   },
   {
    "id": "saturn-enters-gemini-2030-06-01",
    "family": "ingress",
-   "published": "2030-06-01T02:32:34.953Z",
-   "deltaSeconds": -96.642
+   "published": "2030-06-01T02:32:34.953Z"
   },
   {
    "id": "new-moon-2030-06-01",
    "family": "lunation",
-   "published": "2030-06-01T06:21:16.171Z",
-   "deltaSeconds": -5.151
+   "published": "2030-06-01T06:21:16.171Z"
   },
   {
    "id": "eclipse-2030-06-01",
    "family": "eclipse",
-   "published": "2030-06-01T06:27:58.051Z",
-   "deltaSeconds": -5.229
+   "published": "2030-06-01T06:27:58.051Z"
   },
   {
    "id": "eclipse-2030-06-15",
    "family": "eclipse",
-   "published": "2030-06-15T18:33:14.732Z",
-   "deltaSeconds": -7.967
+   "published": "2030-06-15T18:33:14.732Z"
   },
   {
    "id": "full-moon-2030-06-15",
    "family": "lunation",
-   "published": "2030-06-15T18:40:53.053Z",
-   "deltaSeconds": -8.155
+   "published": "2030-06-15T18:40:53.053Z"
   },
   {
    "id": "new-moon-2030-06-30",
    "family": "lunation",
-   "published": "2030-06-30T21:34:20.346Z",
-   "deltaSeconds": -8.975
+   "published": "2030-06-30T21:34:20.346Z"
   },
   {
    "id": "jupiter-stations-direct-2030-07-15",
    "family": "station",
-   "published": "2030-07-15T01:25:54.784Z",
-   "deltaSeconds": -28.21
+   "published": "2030-07-15T01:25:54.784Z"
   },
   {
    "id": "full-moon-2030-07-15",
    "family": "lunation",
-   "published": "2030-07-15T02:11:51.474Z",
-   "deltaSeconds": -8.546
+   "published": "2030-07-15T02:11:51.474Z"
   },
   {
    "id": "neptune-stations-retrograde-2030-07-16",
    "family": "station",
-   "published": "2030-07-16T16:52:40.546Z",
-   "deltaSeconds": 1396.406
+   "published": "2030-07-16T16:52:40.546Z"
   },
   {
    "id": "new-moon-2030-07-30",
    "family": "lunation",
-   "published": "2030-07-30T11:10:51.735Z",
-   "deltaSeconds": -8.98
+   "published": "2030-07-30T11:10:51.735Z"
   },
   {
    "id": "full-moon-2030-08-13",
    "family": "lunation",
-   "published": "2030-08-13T10:44:17.178Z",
-   "deltaSeconds": -7.634
+   "published": "2030-08-13T10:44:17.178Z"
   },
   {
    "id": "mercury-stations-retrograde-2030-08-16",
    "family": "station",
-   "published": "2030-08-16T01:22:46.259Z",
-   "deltaSeconds": 155.18
+   "published": "2030-08-16T01:22:46.259Z"
   },
   {
    "id": "new-moon-2030-08-28",
    "family": "lunation",
-   "published": "2030-08-28T23:07:13.464Z",
-   "deltaSeconds": -9.098
+   "published": "2030-08-28T23:07:13.464Z"
   },
   {
    "id": "mercury-stations-direct-2030-09-08",
    "family": "station",
-   "published": "2030-09-08T09:22:14.179Z",
-   "deltaSeconds": -322.051
+   "published": "2030-09-08T09:22:14.179Z"
   },
   {
    "id": "full-moon-2030-09-11",
    "family": "lunation",
-   "published": "2030-09-11T21:17:49.270Z",
-   "deltaSeconds": -7.107
+   "published": "2030-09-11T21:17:49.270Z"
   },
   {
    "id": "saturn-stations-retrograde-2030-09-20",
    "family": "station",
-   "published": "2030-09-20T21:37:35.712Z",
-   "deltaSeconds": 464.31
+   "published": "2030-09-20T21:37:35.712Z"
   },
   {
    "id": "new-moon-2030-09-27",
    "family": "lunation",
-   "published": "2030-09-27T09:54:31.754Z",
-   "deltaSeconds": -9.652
+   "published": "2030-09-27T09:54:31.754Z"
   },
   {
    "id": "uranus-stations-retrograde-2030-09-28",
    "family": "station",
-   "published": "2030-09-28T08:21:53.964Z",
-   "deltaSeconds": -296.632
+   "published": "2030-09-28T08:21:53.964Z"
   },
   {
    "id": "full-moon-2030-10-11",
    "family": "lunation",
-   "published": "2030-10-11T10:46:42.776Z",
-   "deltaSeconds": -8.671
+   "published": "2030-10-11T10:46:42.776Z"
   },
   {
    "id": "jupiter-enters-sagittarius-2030-10-22",
    "family": "ingress",
-   "published": "2030-10-22T23:13:50.845Z",
-   "deltaSeconds": -29.172
+   "published": "2030-10-22T23:13:50.845Z"
   },
   {
    "id": "pluto-stations-direct-2030-10-23",
    "family": "station",
-   "published": "2030-10-23T03:06:09.140Z",
-   "deltaSeconds": 11.428
+   "published": "2030-10-23T03:06:09.140Z"
   },
   {
    "id": "new-moon-2030-10-26",
    "family": "lunation",
-   "published": "2030-10-26T20:16:50.411Z",
-   "deltaSeconds": -9.855
+   "published": "2030-10-26T20:16:50.411Z"
   },
   {
    "id": "full-moon-2030-11-10",
    "family": "lunation",
-   "published": "2030-11-10T03:30:11.177Z",
-   "deltaSeconds": -7.553
+   "published": "2030-11-10T03:30:11.177Z"
   },
   {
    "id": "jupiter-opposition-saturn-2030-11-20",
    "family": "aspect",
-   "published": "2030-11-20T01:08:03.040Z",
-   "deltaSeconds": 143.343
+   "published": "2030-11-20T01:08:03.040Z"
   },
   {
    "id": "new-moon-2030-11-25",
    "family": "lunation",
-   "published": "2030-11-25T06:46:22.149Z",
-   "deltaSeconds": -7.592
+   "published": "2030-11-25T06:46:22.149Z"
   },
   {
    "id": "eclipse-2030-11-25",
    "family": "eclipse",
-   "published": "2030-11-25T06:50:19.626Z",
-   "deltaSeconds": -7.686
+   "published": "2030-11-25T06:50:19.626Z"
   },
   {
    "id": "mercury-stations-retrograde-2030-12-06",
    "family": "station",
-   "published": "2030-12-06T02:44:21.328Z",
-   "deltaSeconds": -182.753
+   "published": "2030-12-06T02:44:21.328Z"
   },
   {
    "id": "jupiter-sextile-pluto-2030-12-08",
    "family": "aspect",
-   "published": "2030-12-08T06:37:26.484Z",
-   "deltaSeconds": -299.867
+   "published": "2030-12-08T06:37:26.484Z"
   },
   {
    "id": "eclipse-2030-12-09",
    "family": "eclipse",
-   "published": "2030-12-09T22:27:32.805Z",
-   "deltaSeconds": -8.307
+   "published": "2030-12-09T22:27:32.805Z"
   },
   {
    "id": "full-moon-2030-12-09",
    "family": "lunation",
-   "published": "2030-12-09T22:40:19.792Z",
-   "deltaSeconds": -8.18
+   "published": "2030-12-09T22:40:19.792Z"
   },
   {
    "id": "jupiter-trine-neptune-2030-12-10",
    "family": "aspect",
-   "published": "2030-12-10T08:13:23.182Z",
-   "deltaSeconds": 677.002
+   "published": "2030-12-10T08:13:23.182Z"
   },
   {
    "id": "neptune-stations-direct-2030-12-21",
    "family": "station",
-   "published": "2030-12-21T20:58:42.216Z",
-   "deltaSeconds": 1109.238
+   "published": "2030-12-21T20:58:42.216Z"
   },
   {
    "id": "new-moon-2030-12-24",
    "family": "lunation",
-   "published": "2030-12-24T17:32:06.587Z",
-   "deltaSeconds": -7.402
+   "published": "2030-12-24T17:32:06.587Z"
   },
   {
    "id": "mercury-stations-direct-2030-12-25",
    "family": "station",
-   "published": "2030-12-25T21:17:13.593Z",
-   "deltaSeconds": 170.631
+   "published": "2030-12-25T21:17:13.593Z"
   },
   {
    "id": "neptune-sextile-pluto-2030-12-26",
    "family": "aspect",
-   "published": "2030-12-26T17:10:03.120Z",
-   "deltaSeconds": 9247.75
+   "published": "2030-12-26T17:10:03.120Z"
   },
   {
    "id": "saturn-stations-direct-2031-02-02",
    "family": "station",
-   "published": "2031-02-02T02:21:17.050Z",
-   "deltaSeconds": -203.538
+   "published": "2031-02-02T02:21:17.050Z"
   },
   {
    "id": "uranus-stations-direct-2031-02-25",
    "family": "station",
-   "published": "2031-02-25T11:37:19.453Z",
-   "deltaSeconds": 786.824
+   "published": "2031-02-25T11:37:19.453Z"
   }
- ]
+ ],
+ "swissOutputRemoved": {
+  "on": "2026-09-28",
+  "under": "docs/platform/programme/DECISIONS-2026-09-28.md §3",
+  "what": "the published instant minus Swiss's, per event (deltaSeconds), and Swiss's Delta T in 2026",
+  "removed": [
+   {
+    "path": ".deltas[].deltaSeconds",
+    "count": 290,
+    "sha256": "b70803665c57a8ca301c408585f5126d7d364acd06072b6e05b2b1b4d665ae48",
+    "bytes": 7157
+   },
+   {
+    "path": ".summary.swissDeltaTSeconds2026",
+    "count": 1,
+    "sha256": "c0d106f34d96eabb6b53c588fc3b8411ae74fe144004f8bfd2a8608a53648e11",
+    "bytes": 6
+   }
+  ],
+  "fileBefore": {
+   "bytes": 42870,
+   "sha256": "09f4627ed69295d41f53348737e5b7bda1d77cf9b58a369f014a12a569ca4a2d"
+  },
+  "lastCommitWithTheValues": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+  "regenerate": "python3 docs/platform/evidence/events-vs-swiss-2026-09-23/tools/compare.py <catalog dump> <ephe> <out.json>, on the dump tools/dump-catalog.ts writes",
+  "record": "docs/engine-validation/SWISS-OUTPUT-REMOVAL.md"
+ }
 }

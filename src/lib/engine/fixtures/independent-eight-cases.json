@@ -1,0 +1,425 @@
+{
+  "schemaVersion": 1,
+  "what": "Independent references for the eight-case pack: three fixed epochs, two conditioned stations, a solar return with its charts and a Saturn return, on the inputs of swiss-eight-cases-policy.json.",
+  "arbiters": {
+    "positions": "NASA JPL Horizons API 1.2, DE441: observer-centred apparent ecliptic longitude of date (QUANTITIES 31, CENTER 500@399, airless, TIME_TYPE TT); Mars to Pluto as system barycentres (NAIF 4-9).",
+    "trueNode": "Ascending node of the Moon's osculating orbit from Horizons DE441 geometric geocentric state vectors (VECTORS, ICRF): h = r x v, rotated with ERFA pnm06a and the true obliquity into the true ecliptic and equinox of date; speed by central difference over +-0.001 day.",
+    "angles": "ERFA 2.0.1 (pyerfa 2.0.1.5): GAST = gst06a with UT1 taken as the instant, as the engine does; true obliquity = obl06 + Delta-epsilon of nut06a; ASC, MC and Placidus by the conformance suite's L2 construction (zodiacs-org/engine 8c4946b1, CC0); whole-sign cusps from the ASC where |latitude| >= 90 deg - true obliquity.",
+    "events": "Roots of the Horizons longitude interpolated from a uniform TT table (nine-point Lagrange), refined to 1e-9 day; each band is the connected set on the root's monotonic branch where the longitude is within the predeclared budget of its level, with 1 s of padding each side."
+  },
+  "clock": "Each instant is evaluated at the engine's own TT for it: UT is the instant, TT = UT + Delta T of model zodiacs-deltat/1 (table 6371988c510a1c6c), as astronomy-engine's MakeTime reads it with the engine's clock installed (tools/engine-clock.ts). A comparison therefore measures positions and angles, not Delta T; the clock is checked against the IERS in docs/platform/evidence/deltat-2026-09-25/.",
+  "engineClock": {
+    "engineVersion": "0.1.1-rc.14",
+    "deltaTModel": "zodiacs-deltat/1",
+    "deltaTTable": "2026-09-24",
+    "deltaTTableDigest": "6371988c510a1c6c"
+  },
+  "generator": {
+    "command": "python3 docs/engine-validation/independent-references/tools/build.py",
+    "sources": {
+      "docs/engine-validation/independent-references/cases.json": "eecfa25c5408b4c11baf5f2f73df93ba333850f7ba00c3ae0a1f0cab8d60520e",
+      "docs/engine-validation/independent-references/tools/build.py": "33ac83f46f24cf889ec570cbad1e37c7e9d61057111daf99478c157db4506184",
+      "docs/engine-validation/independent-references/tools/engine-clock.ts": "aa7f7724082b3798eb4728fa60b1e630612773e732bb236b97bc98348ce9d1a7",
+      "docs/engine-validation/independent-references/tools/geometry.py": "c7ec362ff44a7ffa7d88229695f6b9d9b5af74b8289b268888ed5b5342f7147c",
+      "docs/engine-validation/independent-references/tools/horizons.py": "344a4e4bce3bd6efb0d7db147e554af172a4fd59205fb290a6db209aed9c50d8",
+      "docs/engine-validation/independent-references/tools/series.py": "dfc0d9e14b417e534ca327ef92402fc0b0b4c42418154e9ee02be14682d35490"
+    },
+    "pyerfa": "2.0.1.5",
+    "erfa": "2.0.1"
+  },
+  "horizonsManifest": {
+    "path": "docs/engine-validation/independent-references/horizons/MANIFEST.json",
+    "sha256": "b4088ed1a8d7dbaab5f2fd2e2262cc9f99ff85cfcb75931bd715021e39bb4355"
+  },
+  "noSwiss": "No Swiss Ephemeris code or output is read or reproduced here.",
+  "gates": {
+    "path": "src/lib/engine/fixtures/swiss-eight-cases-policy.json",
+    "sha256": "9dfc069be7c6854da1f0dff578c0b213e64624e720d21e27c6301b7612fd79a4"
+  },
+  "epochs": [
+    {
+      "id": "E1800",
+      "positions": {
+        "Sun": {
+          "longitudeDegrees": 281.9585282
+        },
+        "Moon": {
+          "longitudeDegrees": 6.9285614
+        },
+        "Mercury": {
+          "longitudeDegrees": 267.2626565
+        },
+        "Venus": {
+          "longitudeDegrees": 235.2010129
+        },
+        "Mars": {
+          "longitudeDegrees": 245.3776222
+        },
+        "Jupiter": {
+          "longitudeDegrees": 84.3398278
+        },
+        "Saturn": {
+          "longitudeDegrees": 128.6979311
+        },
+        "Uranus": {
+          "longitudeDegrees": 177.1262135
+        },
+        "Neptune": {
+          "longitudeDegrees": 226.6582471
+        },
+        "Pluto": {
+          "longitudeDegrees": 331.4401983
+        }
+      }
+    },
+    {
+      "id": "E2000",
+      "positions": {
+        "Sun": {
+          "longitudeDegrees": 340.2058234
+        },
+        "Moon": {
+          "longitudeDegrees": 275.5361672
+        },
+        "Mercury": {
+          "longitudeDegrees": 342.5064963
+        },
+        "Venus": {
+          "longitudeDegrees": 313.956551
+        },
+        "Mars": {
+          "longitudeDegrees": 13.2215471
+        },
+        "Jupiter": {
+          "longitudeDegrees": 32.5770911
+        },
+        "Saturn": {
+          "longitudeDegrees": 42.3657696
+        },
+        "Uranus": {
+          "longitudeDegrees": 318.1229374
+        },
+        "Neptune": {
+          "longitudeDegrees": 305.3502211
+        },
+        "Pluto": {
+          "longitudeDegrees": 252.8379217
+        }
+      }
+    },
+    {
+      "id": "E2199",
+      "positions": {
+        "Sun": {
+          "longitudeDegrees": 279.8176928
+        },
+        "Moon": {
+          "longitudeDegrees": 90.5139273
+        },
+        "Mercury": {
+          "longitudeDegrees": 299.3107437
+        },
+        "Venus": {
+          "longitudeDegrees": 254.1493073
+        },
+        "Mars": {
+          "longitudeDegrees": 153.2720157
+        },
+        "Jupiter": {
+          "longitudeDegrees": 334.257387
+        },
+        "Saturn": {
+          "longitudeDegrees": 328.0060248
+        },
+        "Uranus": {
+          "longitudeDegrees": 87.0132938
+        },
+        "Neptune": {
+          "longitudeDegrees": 22.2989498
+        },
+        "Pluto": {
+          "longitudeDegrees": 144.7593289
+        }
+      }
+    }
+  ],
+  "stations": [
+    {
+      "id": "Mstation",
+      "targetLongitudeDegrees": 338.590744361,
+      "analyticStationMilliseconds": 1774035169494,
+      "analyticStationLongitudeDegrees": 338.490744361,
+      "finiteDifferenceStationMilliseconds": 1774035203164,
+      "crossings": [
+        {
+          "expectedMilliseconds": 1773913269960,
+          "timeScale": "UTC",
+          "allowedMilliseconds": [
+            1773886110443,
+            1773948785512
+          ],
+          "retrograde": true,
+          "speedDegreesPerDay": -0.1427922674
+        },
+        {
+          "expectedMilliseconds": 1774159193102,
+          "timeScale": "UTC",
+          "allowedMilliseconds": [
+            1774122617947,
+            1774187408849
+          ],
+          "retrograde": false,
+          "speedDegreesPerDay": 0.1379669819
+        }
+      ]
+    },
+    {
+      "id": "Sstation",
+      "targetLongitudeDegrees": 14.6499450015,
+      "analyticStationMilliseconds": 1785095777527,
+      "analyticStationLongitudeDegrees": 14.7499450015,
+      "finiteDifferenceStationMilliseconds": 1785095775684,
+      "crossings": [
+        {
+          "expectedMilliseconds": 1784158438596,
+          "timeScale": "UTC",
+          "allowedMilliseconds": [
+            1783948254200,
+            1784432845328
+          ],
+          "retrograde": false,
+          "speedDegreesPerDay": 0.0184680197
+        },
+        {
+          "expectedMilliseconds": 1786031956542,
+          "timeScale": "UTC",
+          "allowedMilliseconds": [
+            1785756899123,
+            1786243867485
+          ],
+          "retrograde": true,
+          "speedDegreesPerDay": -0.0183549453
+        }
+      ]
+    }
+  ],
+  "solar": {
+    "natalLongitudeDegrees": 312.3692793,
+    "nearest": {
+      "expectedMilliseconds": 1738367867550,
+      "timeScale": "UTC",
+      "allowedMilliseconds": [
+        1738359357289,
+        1738376378097
+      ]
+    },
+    "mostRecent": {
+      "expectedMilliseconds": 1738367867550,
+      "timeScale": "UTC",
+      "allowedMilliseconds": [
+        1738359357289,
+        1738376378097
+      ]
+    },
+    "independentChartUTC": "2025-01-31T23:57:47.550Z",
+    "independentChart": {
+      "positions": {
+        "Sun": {
+          "longitudeDegrees": 312.3692793
+        },
+        "Moon": {
+          "longitudeDegrees": 344.9370479
+        },
+        "Mercury": {
+          "longitudeDegrees": 306.3760533
+        },
+        "Venus": {
+          "longitudeDegrees": 357.4426743
+        },
+        "Mars": {
+          "longitudeDegrees": 110.4634933
+        },
+        "Jupiter": {
+          "longitudeDegrees": 71.2982639
+        },
+        "Saturn": {
+          "longitudeDegrees": 347.4232013
+        },
+        "Uranus": {
+          "longitudeDegrees": 53.2622396
+        },
+        "Neptune": {
+          "longitudeDegrees": 357.9680141
+        },
+        "Pluto": {
+          "longitudeDegrees": 302.0532496
+        },
+        "North Node": {
+          "longitudeDegrees": 358.1684805285,
+          "speedDegreesPerDay": -0.0294914622
+        }
+      },
+      "ascmc": [
+        126.2497957021,
+        34.0176317024
+      ],
+      "cuspsDegrees": [
+        126.2497957021,
+        152.3244666041,
+        181.8338842858,
+        214.0176317024,
+        246.2812320116,
+        276.9628338796,
+        306.2497957021,
+        332.3244666041,
+        1.8338842858,
+        34.0176317024,
+        66.2812320116,
+        96.9628338796
+      ],
+      "expectedProductHouseSystem": "placidus"
+    },
+    "returnedChartUTC": "2025-01-31T23:57:54.143Z",
+    "returnedChart": {
+      "positions": {
+        "Sun": {
+          "longitudeDegrees": 312.3693567
+        },
+        "Moon": {
+          "longitudeDegrees": 344.9381414
+        },
+        "Mercury": {
+          "longitudeDegrees": 306.3761804
+        },
+        "Venus": {
+          "longitudeDegrees": 357.4427349
+        },
+        "Mars": {
+          "longitudeDegrees": 110.4634707
+        },
+        "Jupiter": {
+          "longitudeDegrees": 71.298263
+        },
+        "Saturn": {
+          "longitudeDegrees": 347.4232096
+        },
+        "Uranus": {
+          "longitudeDegrees": 53.2622397
+        },
+        "Neptune": {
+          "longitudeDegrees": 357.9680163
+        },
+        "Pluto": {
+          "longitudeDegrees": 302.053252
+        },
+        "North Node": {
+          "longitudeDegrees": 358.1684782782,
+          "speedDegreesPerDay": -0.0294886773
+        }
+      },
+      "ascmc": [
+        126.2743669236,
+        34.0461672477
+      ],
+      "cuspsDegrees": [
+        126.2743669236,
+        152.3510206437,
+        181.8624471143,
+        214.0461672477,
+        246.3078647662,
+        276.9878361696,
+        306.2743669236,
+        332.3510206437,
+        1.8624471143,
+        34.0461672477,
+        66.3078647662,
+        96.9878361696
+      ],
+      "expectedProductHouseSystem": "placidus"
+    }
+  },
+  "saturn": {
+    "natalLongitudeDegrees": 289.2786878,
+    "natalRetrograde": false,
+    "seasons": [
+      {
+        "index": 1,
+        "crossings": [
+          {
+            "expectedMilliseconds": 1553183303748,
+            "timeScale": "nominal UT1; Z is product transport only",
+            "allowedMilliseconds": [
+              1553044636837,
+              1553327129408
+            ],
+            "retrograde": false
+          },
+          {
+            "expectedMilliseconds": 1560076706600,
+            "timeScale": "nominal UT1; Z is product transport only",
+            "allowedMilliseconds": [
+              1559923617047,
+              1560225047743
+            ],
+            "retrograde": true
+          },
+          {
+            "expectedMilliseconds": 1576226721658,
+            "timeScale": "nominal UT1; Z is product transport only",
+            "allowedMilliseconds": [
+              1576147266707,
+              1576305774239
+            ],
+            "retrograde": false
+          }
+        ]
+      },
+      {
+        "index": 2,
+        "crossings": [
+          {
+            "expectedMilliseconds": 2494370299855,
+            "timeScale": "nominal UT1; Z is product transport only",
+            "allowedMilliseconds": [
+              2494297124487,
+              2494443555406
+            ],
+            "retrograde": false
+          }
+        ]
+      },
+      {
+        "index": 3,
+        "crossings": [
+          {
+            "expectedMilliseconds": 3412907683545,
+            "timeScale": "nominal UT1; Z is product transport only",
+            "allowedMilliseconds": [
+              3412815199017,
+              3413001219765
+            ],
+            "retrograde": false
+          },
+          {
+            "expectedMilliseconds": 3424772562803,
+            "timeScale": "nominal UT1; Z is product transport only",
+            "allowedMilliseconds": [
+              3424655436214,
+              3424889692143
+            ],
+            "retrograde": true
+          },
+          {
+            "expectedMilliseconds": 3436484067258,
+            "timeScale": "nominal UT1; Z is product transport only",
+            "allowedMilliseconds": [
+              3436390272566,
+              3436576811868
+            ],
+            "retrograde": false
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -2,7 +2,11 @@
  * TASK 2 -- decompose the Uranus D uncertainty into four separate sources and
  * size each one. TASK 5 -- audit the stationary-geometry treatment.
  *
- *   node decompose.mjs > raw/decomposition.json
+ *   node decompose.mjs <fixture outside the repository> > <outside the repository>/decomposition.json
+ *
+ * Its output holds Swiss's own figures, which left raw/decomposition.json
+ * (docs/engine-validation/SWISS-OUTPUT-REMOVAL.md): write it outside the
+ * repository.
  *
  * The four sources are kept apart on purpose. They have different sizes,
  * different provenance and different remedies, and merging them into one error
@@ -20,11 +24,11 @@
  * because those two are not the same quantity and do not share a scale.
  */
 import { readFileSync } from 'node:fs';
-import { coreBackend, deBackend, swissLongitudes, REPO, DAY_MS, circular, iso, TT_MINUS_UTC } from './lib/backends.mjs';
+import { coreBackend, deBackend, swissLongitudes, swissWindowFixture, REPO, DAY_MS, circular, iso, TT_MINUS_UTC } from './lib/backends.mjs';
 import { buildLevelProblem, locateTurningPoint } from './lib/astro-harness.mjs';
 import { classifyInterval, stationaryTimeEnvelope } from './lib/interval-search.mjs';
 
-const fixture = JSON.parse(readFileSync(`${REPO}/src/lib/engine/fixtures/transit-window-independent.json`, 'utf8'));
+const { fixture } = swissWindowFixture();
 const policy = JSON.parse(readFileSync(`${REPO}/docs/engine-validation/transit-windows/wave24-d-qualified-policy.v6.json`, 'utf8'));
 const D = fixture.cases.find((x) => x.id === 'D-Uranus2020');
 const TARGET = D.targetLongitudeDegrees;

@@ -20,13 +20,20 @@ Swiss is the remainder. Four models are tried:
 
 The Horizons manual says it corrects IAU76/80 with the offsets in JPL's EOP
 file and holds the last values as constants outside the file. The corpus's
-banner names the file, eop.260922.p261219, "DATA-BASED 1962-JAN-20 TO
-2026-SEP-22. PREDICTS-> 2026-DEC-18", so both EOP models hold their offsets
-at 1962-01-20 and 2026-12-18. IERS predicts its offsets only to 2026-11-23,
-so eopIers holds that day's values instead.
+banner names the file. In the first run (results.json) it was
+eop.260922.p261219, "DATA-BASED 1962-JAN-20 TO 2026-SEP-22. PREDICTS->
+2026-DEC-18", so both EOP models held their offsets at 1962-01-20 and
+2026-12-18, and IERS, which predicted its offsets only to 2026-11-23, held
+that day's values instead. The span is now read from the banner, so the
+models hold wherever the kept responses' EOP file stops.
 
   venv/bin/python decompose.py <ephe-dir> latest_eop2.long \\
-      EOP_14_C04_IAU1980_one_file_1962-now.txt finals.all.iau1980.txt > results.json
+      EOP_14_C04_IAU1980_one_file_1962-now.txt finals.all.iau1980.txt <fetched> > results-<fetched>.json
+
+<fetched> is the day the three EOP files were fetched, which the output
+records (2026-09-23 for results.json, the default). The corpus was re-timed
+on 2026-09-29 (../corpora/README.md), and results-2026-09-29.json is this
+script on the re-timed corpus with the EOP files of that day.
 
 It needs pyswisseph 2.10.03 with the DE441-based .se1 files pinned in
 ../../swiss-benchmark/CONFIGURATION.md, and pyerfa. Swiss is evaluated at the
@@ -40,6 +47,7 @@ import hashlib
 import json
 import math
 import os
+import re
 import sys
 
 import erfa
@@ -50,8 +58,18 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 CORPUS = os.path.join(HERE, '..', 'corpora', 'horizons-24')
 MJD0 = 2400000.5
 MAS = math.pi / (180 * 3600 * 1000)
-EOP_FIRST = 37684.0  # 1962-01-20, the first day of Horizons's EOP file
-EOP_LAST = 61392.0   # 2026-12-18, its last prediction, per the corpus banner
+
+
+def eop_span():
+    """The first day and the last prediction of Horizons's EOP file, as MJD, from the corpus banner."""
+    banner = open(os.path.join(CORPUS, 'Sun.txt')).read()
+    m = re.search(r'EOP coverage\s*:\s*DATA-BASED (\d{4})-([A-Z]{3})-(\d{2}) TO .*?PREDICTS-> (\d{4})-([A-Z]{3})-(\d{2})', banner)
+    months = 'JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC'.split()
+    mjd = lambda y, mo, d: float(erfa.cal2jd(int(y), months.index(mo) + 1, int(d))[1])
+    return mjd(*m.group(1, 2, 3)), mjd(*m.group(4, 5, 6))
+
+
+EOP_FIRST, EOP_LAST = eop_span()  # 1962-01-20 and, for results.json, 2026-12-18
 
 # Horizons file per body; the outer planets as barycentres, as Swiss answers them.
 FILES = {
@@ -181,6 +199,7 @@ def sha256(path):
 
 def main():
     ephe, eop2_path, c04_path, finals_path = sys.argv[1:5]
+    fetched = sys.argv[5] if len(sys.argv) > 5 else '2026-09-23'
     swe.set_ephe_path(ephe)
     cases = json.load(open(os.path.join(CORPUS, 'corpus-tt.json')))['cases']
     horizons = {body: horizons_rows(name) for body, (name, _) in FILES.items()}
@@ -281,11 +300,11 @@ def main():
         'models': {
             'bare': 'R1(eraObl80 + deps80) x eraNutm80 x eraPmat76 applied to the ICRF direction as it is',
             'bias': 'the same after the frame bias of eraBp06',
-            'eopJpl': 'bare with dpsi, deps added to the IAU 1980 nutation: the offsets that put its pole on the IAU 2006/2000A pole plus JPL EOP2 dX, dY; held at 1962-01-20 and 2026-12-18',
+            'eopJpl': 'bare with dpsi, deps added to the IAU 1980 nutation: the offsets that put its pole on the IAU 2006/2000A pole plus JPL EOP2 dX, dY; held at %s and %s' % (day(EOP_FIRST), day(EOP_LAST)),
             'eopIers': 'bare with the IERS IAU 1980 dpsi, deps (14 C04, then finals.all Bulletin A); held at 1962-01-20 and at their last published day',
         },
         'eopSources': {
-            name: {'url': SOURCES[name], 'sha256': sha256(path), 'fetched': '2026-09-23'}
+            name: {'url': SOURCES[name], 'sha256': sha256(path), 'fetched': fetched}
             for name, path in (('eop2', eop2_path), ('c04', c04_path), ('finals', finals_path))
         },
         'eopHeldAt': {'first': day(EOP_FIRST), 'lastJpl': day(EOP_LAST), 'lastIers': day(iers_last)},

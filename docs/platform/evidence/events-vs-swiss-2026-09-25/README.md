@@ -72,3 +72,15 @@ its 481 ingresses in Swiss with `swe.mooncross_ut` and writes statistics only,
 [`moon-ingresses.json`](moon-ingresses.json): on rc.8 the site's instant is
 a median 0.86 s and at most 4.48 s from Swiss's, where the table committed
 with rc.7 was a median 6.26 s and at most 10.25 s from it, every one early.
+
+## Swiss output removed, 2026-09-28
+
+Under [DECISIONS-2026-09-28 §3](../../programme/DECISIONS-2026-09-28.md) the per-event differences left `deltas.json`. Each event keeps
+its id, family and published instant; the site-minus-Swiss seconds
+(`deltaSeconds`, 290 values) and `summary.swissDeltaTSeconds2026` were
+removed, because with the published instants they give Swiss's times back.
+The summary figures stay, and the file records the SHA-256 of what it lost
+under `swissOutputRemoved`. Commit `2ca93d41` still has the values, and
+`../events-vs-swiss-2026-09-23/tools/compare.py` regenerates them from the catalog dump; keep what it
+writes outside the repository. The record of everything removed is
+[`../../../engine-validation/SWISS-OUTPUT-REMOVAL.md`](../../../engine-validation/SWISS-OUTPUT-REMOVAL.md).

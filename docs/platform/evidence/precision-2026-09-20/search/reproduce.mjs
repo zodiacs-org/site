@@ -2,7 +2,11 @@
  * TASK 1 -- reproduce the recorded v2/v3 Uranus D failure before changing
  * anything, and state exactly what the original contract can and cannot decide.
  *
- *   node reproduce.mjs > raw/reproduction.json
+ *   node reproduce.mjs <fixture outside the repository> > <outside the repository>/reproduction.json
+ *
+ * Its output holds Swiss's own figures, which left raw/reproduction.json
+ * (docs/engine-validation/SWISS-OUTPUT-REMOVAL.md): write it outside the
+ * repository.
  *
  * Nothing in this file modifies the repository. The fixture, the v6 policy and
  * the README are read; the original contract's status and budget are taken
@@ -10,15 +14,12 @@
  */
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
-import { coreBackend, deBackend, swissLongitudes, REPO, DAY_MS, circular, iso } from './lib/backends.mjs';
+import { coreBackend, deBackend, swissLongitudes, swissWindowFixture, REPO, DAY_MS, circular, iso } from './lib/backends.mjs';
 import { buildLevelProblem, locateTurningPoint } from './lib/astro-harness.mjs';
 import { classifyInterval } from './lib/interval-search.mjs';
 
-const FIXTURE = `${REPO}/src/lib/engine/fixtures/transit-window-independent.json`;
+const { path: FIXTURE, bytes: fixtureBytes, fixture } = swissWindowFixture();
 const POLICY = `${REPO}/docs/engine-validation/transit-windows/wave24-d-qualified-policy.v6.json`;
-
-const fixtureBytes = readFileSync(FIXTURE);
-const fixture = JSON.parse(fixtureBytes);
 const policy = JSON.parse(readFileSync(POLICY, 'utf8'));
 const D = fixture.cases.find((x) => x.id === 'D-Uranus2020');
 const witness = policy.originalFailedWitness;

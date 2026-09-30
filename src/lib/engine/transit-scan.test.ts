@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { bodyLongitude, longitudeSpeed } from './full';
-import independentCases from './fixtures/swiss-eight-cases.fixture.json';
+import independentCases from './fixtures/independent-eight-cases.json';
 import independentPolicy from './fixtures/swiss-eight-cases-policy.json';
 import { angularDifference, expectIndependentTime } from './fixtures/independent-validation.test-helpers';
 import {
@@ -20,6 +20,10 @@ const utcMinute = (iso: string) => new Date(
   Math.round(new Date(iso).getTime() / 60_000) * 60_000,
 ).toISOString().slice(0, 16);
 
+// Each station, its target 0.1° inside the extremum and both crossings with
+// their ±0.05° bands come from NASA JPL Horizons (DE441) at the engine's own
+// TT (docs/engine-validation/independent-references/), on the windows of
+// swiss-eight-cases-policy.json.
 describe('independent conditioned station contacts', () => {
   it.each(independentCases.stations)('$id', (reference) => {
     const input = independentPolicy.stations.find((row) => row.id === reference.id)!;

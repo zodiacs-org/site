@@ -48,8 +48,12 @@ describe.skipIf(!present)('the experimental DE backend', () => {
     const de = new DeBackend(KERNEL);
     const far = new Date('2100-01-01T00:00:00Z');
     const engineDt = de.apparentEclipticLongitude('Moon', far);
-    const pinned = de.apparentEclipticLongitude('Moon', far, 93.182);   // the reference's own Delta-T
-    // ~109 s of Delta-T disagreement times the Moon's ~0.549"/s is ~60".
+    // A round 90 s, not any reference's value: until 2026-09-28 this pinned
+    // Swiss's own ΔT at 2100, which left the tree with the rest of Swiss's raw
+    // output (docs/platform/programme/DECISIONS-2026-09-28.md §3). What is
+    // tested is the mechanism, and astronomy-engine's own 202.65 s at 2100 is
+    // ~113 s from the pin, which times the Moon's ~0.549"/s is ~62".
+    const pinned = de.apparentEclipticLongitude('Moon', far, 90);
     const movedArcsec = Math.abs(engineDt - pinned) * 3600;
     expect(movedArcsec).toBeGreaterThan(40);
     expect(movedArcsec).toBeLessThan(90);
