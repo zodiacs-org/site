@@ -10,7 +10,8 @@ The figure is computed by `node scripts/programme-ledger.mjs --summary` from [`a
 
 The figure stays at 23% (42.5); no unit changes state.
 
-- **The compute API** (P3.3) merges with this record. It has six POST endpoints under `/api/v1/`, fails closed until its Firewall rules exist, and is bounded to about 8.7 CPU-seconds a minute per address ([`evidence/compute-api-2026-09-29/`](../evidence/compute-api-2026-09-29/README.md)). The unit stays implemented. Its gate still asks for the latency and cost of the deployed endpoints, and production had not been checked when this was written.
+- **The compute API** (P3.3) merges with this record. It has six POST endpoints under `/api/v1/`, fails closed until its Firewall rules exist, and is bounded to about 8.7 CPU-seconds a minute per address ([`evidence/compute-api-2026-09-29/`](../evidence/compute-api-2026-09-29/README.md)). The unit stays implemented. Its gate still asks for the latency and cost of the deployed endpoints.
+- **F-58: the compute API's first deploy answered 500 on every endpoint.** The function runs on Vercel's `nodejs22.x`, which does not detect module syntax, and there the engine's named imports from astronomy-engine fail to load. The PR after #605 bundles the handler with the engine into `api/_compute/compute.mjs`. A test loads the bundle with module syntax detection off, and uses the unbundled engine, which fails there, as the control. The function's other routes were not affected.
 - **The owner's third report** (below): Firewall version 6 with the compute limits at 40 and 10 and the calendar feeds' write limit at 3, and System Environment Variables exposed. Bing is still preparing its export.
 - **Work stopped for the handoff**, not on GitHub, delivered to the owner as git bundles ([HANDOFF-2026-09-30.md](HANDOFF-2026-09-30.md) §4 and §9):
   - the calendar feeds' release (P1.15), which nothing blocks now;
