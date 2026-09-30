@@ -21,6 +21,12 @@ After `npm run build`:
   Lighthouse CLS = 0; and TBT ≤ 200 ms. Set
   `LIGHTHOUSE_RUNS=1` for a faster local smoke
   test. Reports are written to `tests/visual/artifacts/lighthouse/`.
+  A sample that misses a performance, LCP or TBT budget while its trace shows
+  the page's main thread held off the CPU (a runner stall; see
+  `runner-stalls.mjs`) is set aside as `<route>-stalled-<n>.json` with its
+  trace and retaken in a fresh browser, up to three times per route. The gate
+  still needs `LIGHTHOUSE_RUNS` valid samples, held to the same budgets; a
+  route that cannot collect them within its retakes fails.
 - `npm run test:phase1:frames` measures the running horoscope sky animation
   across three 180-frame windows at 4× CPU slowdown on a 390px mobile
   viewport. It first proves the runner can sustain a 60Hz-class baseline,

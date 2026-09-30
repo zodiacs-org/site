@@ -1,0 +1,14 @@
+{
+  "description": "Hand-made. A load whose own long tasks are CPU work: 124.2 ms wall with 123.0 ms CPU, 249.6 ms with 242.6 ms and 515.9 ms with 491.9 ms, beside ordinary tasks. Modelled on a control page that runs fixed amounts of JavaScript, traced with the gate's Lighthouse settings on 2026-09-30 (95-99 % CPU in every such task).",
+  "traceEvents": [
+    { "args": { "name": "CrBrowserMain" }, "cat": "__metadata", "name": "thread_name", "ph": "M", "pid": 100, "tid": 100, "ts": 0 },
+    { "args": { "name": "CrRendererMain" }, "cat": "__metadata", "name": "thread_name", "ph": "M", "pid": 200, "tid": 200, "ts": 0 },
+    { "args": { "data": { "frameTreeNodeId": 2, "frames": [{ "frame": "F0", "isInPrimaryMainFrame": true, "isOutermostMainFrame": true, "name": "", "processId": 200, "url": "about:blank" }], "persistentIds": true } }, "cat": "disabled-by-default-devtools.timeline", "name": "TracingStartedInBrowser", "ph": "I", "pid": 100, "s": "t", "tid": 100, "ts": 1000000 },
+    { "args": { "data": { "frame": "F0", "isInPrimaryMainFrame": true, "isOutermostMainFrame": true, "name": "", "processId": 200, "url": "http://127.0.0.1:4342/" } }, "cat": "disabled-by-default-devtools.timeline", "name": "FrameCommittedInBrowser", "ph": "I", "pid": 100, "s": "t", "tid": 100, "ts": 1009000 },
+    { "args": {}, "cat": "disabled-by-default-devtools.timeline", "dur": 8100, "name": "RunTask", "ph": "X", "pid": 200, "tdur": 7900, "tid": 200, "ts": 1010000, "tts": 20000 },
+    { "args": {}, "cat": "disabled-by-default-devtools.timeline", "dur": 124200, "name": "RunTask", "ph": "X", "pid": 200, "tdur": 123000, "tid": 200, "ts": 1030000, "tts": 27900 },
+    { "args": {}, "cat": "disabled-by-default-devtools.timeline", "dur": 249600, "name": "RunTask", "ph": "X", "pid": 200, "tdur": 242600, "tid": 200, "ts": 1460000, "tts": 151000 },
+    { "args": {}, "cat": "disabled-by-default-devtools.timeline", "dur": 515900, "name": "RunTask", "ph": "X", "pid": 200, "tdur": 491900, "tid": 200, "ts": 2060000, "tts": 393700 },
+    { "args": {}, "cat": "disabled-by-default-devtools.timeline", "dur": 3100, "name": "RunTask", "ph": "X", "pid": 200, "tdur": 2900, "tid": 200, "ts": 2600000, "tts": 885700 }
+  ]
+}
