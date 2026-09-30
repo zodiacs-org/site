@@ -1,7 +1,7 @@
 {
   "version": 1,
   "id": "compute-api-birth-chart-faq-2026-09-30",
-  "baseCommit": "2197e6966d026561fce19c4bfcd0b975803e0b7f",
+  "baseCommit": "acbfad2ead3424aa7f115f500f93a7587e05c91d",
   "protectedPaths": [
     "src/pages/es/birth-chart/index.astro",
     "src/pages/fr/birth-chart/index.astro",
