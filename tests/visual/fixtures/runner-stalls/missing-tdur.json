@@ -1,0 +1,12 @@
+{
+  "description": "Hand-made. The same kind of load recorded where Chrome has no thread CPU clock: RunTask events carry wall time (dur) but no thread time (tdur, tts). One of them lasts 265.9 ms, the longest stalled task of Site Check run 36712798339 (#603, horoscope-love-3). Without tdur nothing can be called a stall.",
+  "traceEvents": [
+    { "args": { "name": "CrBrowserMain" }, "cat": "__metadata", "name": "thread_name", "ph": "M", "pid": 100, "tid": 100, "ts": 0 },
+    { "args": { "name": "CrRendererMain" }, "cat": "__metadata", "name": "thread_name", "ph": "M", "pid": 200, "tid": 200, "ts": 0 },
+    { "args": { "data": { "frameTreeNodeId": 2, "frames": [{ "frame": "F0", "isInPrimaryMainFrame": true, "isOutermostMainFrame": true, "name": "", "processId": 200, "url": "about:blank" }], "persistentIds": true } }, "cat": "disabled-by-default-devtools.timeline", "name": "TracingStartedInBrowser", "ph": "I", "pid": 100, "s": "t", "tid": 100, "ts": 1000000 },
+    { "args": { "data": { "frame": "F0", "isInPrimaryMainFrame": true, "isOutermostMainFrame": true, "name": "", "processId": 200, "url": "http://127.0.0.1:4328/horoscopes/aries/love/" } }, "cat": "disabled-by-default-devtools.timeline", "name": "FrameCommittedInBrowser", "ph": "I", "pid": 100, "s": "t", "tid": 100, "ts": 1009000 },
+    { "args": {}, "cat": "disabled-by-default-devtools.timeline", "dur": 8100, "name": "RunTask", "ph": "X", "pid": 200, "tid": 200, "ts": 1010000 },
+    { "args": {}, "cat": "disabled-by-default-devtools.timeline", "dur": 265900, "name": "RunTask", "ph": "X", "pid": 200, "tid": 200, "ts": 3452000 },
+    { "args": {}, "cat": "disabled-by-default-devtools.timeline", "dur": 61800, "name": "RunTask", "ph": "X", "pid": 200, "tid": 200, "ts": 3800000 }
+  ]
+}
