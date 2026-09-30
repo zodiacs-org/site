@@ -89,7 +89,7 @@ describe('Registry catalogue shell parity', () => {
     }
   });
 
-  it('inherits the main site sans stack without restoring editorial catalogue headings', async () => {
+  it('keeps the shared sans interface and gives profile display headings the site serif', async () => {
     const [hub, ...profiles] = await Promise.all([
       read('public/registry/index.html'),
       ...signs.map((sign) => read(`public/registry/${sign}/index.html`)),
@@ -105,9 +105,9 @@ describe('Registry catalogue shell parity', () => {
       expect(html).toContain("--sans: 'Instrument Sans', 'Instrument Sans Fallback', 'Instrument Sans Fallback Android', system-ui, -apple-system, sans-serif");
       expect(html).toContain('--serif: var(--sans);');
       expect(cssRule(html, 'html, body {')).toContain('font-family: var(--sans);');
-      expect(cssRule(html, '.lot__title {')).toContain('font-family: var(--sans);');
-      expect(cssRule(html, '.sec__title {')).toContain('font-family: var(--sans);');
-      expect(cssRule(html, '.record-detail__title {')).toContain('font-family: var(--sans);');
+      expect(cssRule(html, '.lot__title {')).toContain('font-family: var(--profile-display);');
+      expect(cssRule(html, '.sec__title {')).toContain('font-family: var(--profile-display);');
+      expect(cssRule(html, '.record-detail__title {')).toContain('font-family: var(--profile-display);');
       expectMainSiteNavType(html);
     }
   });

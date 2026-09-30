@@ -41,11 +41,14 @@ await withPreview({ port: 4396 }, async (baseURL) => {
   });
 
   try {
-    for (const width of [390, 728, 781]) {
+    for (const width of [320, 390, 728, 781]) {
       for (const record of [
         { slug: 'cancer', current: 'Cancer' },
         { slug: 'pisces', current: 'Pisces' },
         { slug: 'taurus', current: 'Taurus' },
+        { slug: 'virgo', current: 'Virgo' },
+        { slug: 'sagittarius', current: 'Sagittarius' },
+        { slug: 'capricorn', current: 'Capricorn' },
       ]) {
         const page = await browser.newPage({ viewport: { width, height: 844 } });
         const errors = [];
@@ -90,8 +93,19 @@ await withPreview({ port: 4396 }, async (baseURL) => {
             navBottom: navBox?.bottom ?? -1,
             navPosition: navWrap ? getComputedStyle(navWrap).position : '',
             scrollY,
+            title: (() => {
+              const title = document.querySelector('.lot__title');
+              const icon = title.querySelector('.lot__title-icon').getBoundingClientRect();
+              const box = title.getBoundingClientRect();
+              return { height: box.height, fontSize: parseFloat(getComputedStyle(title).fontSize), iconBottom: icon.bottom, bottom: box.bottom, iconTop: icon.top, top: box.top };
+            })(),
           };
         });
+        check(`${record.slug} at ${width}px keeps its sign disc on the title line`,
+          headerState.title.height <= headerState.title.fontSize * 1.15
+            && headerState.title.iconTop >= headerState.title.top
+            && headerState.title.iconBottom <= headerState.title.bottom,
+          JSON.stringify(headerState.title));
         await page.locator('.standings__all summary').click();
         const state = await page.evaluate(() => {
           const share = document.querySelector('[data-share-sign]');

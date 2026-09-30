@@ -480,10 +480,10 @@ describe('registry pastel polish', () => {
     expect(html).not.toContain('data-copy-identity');
     expect(html).toContain("@font-face { font-family: 'Instrument Sans';");
     expect(cssRule(html, 'html, body {')).toContain('font-family: var(--sans);');
-    expect(cssRule(html, '.lot__title {')).toContain('font-family: var(--sans);');
-    expect(cssRule(html, '.sec__title {')).toContain('font-family: var(--sans);');
+    expect(cssRule(html, '.lot__title {')).toContain('font-family: var(--profile-display);');
+    expect(cssRule(html, '.sec__title {')).toContain('font-family: var(--profile-display);');
     expect(cssRule(html, '.sec__title {')).toContain('text-transform: none;');
-    expect(cssRule(html, '.record-detail__title {')).toContain('font-family: var(--sans);');
+    expect(cssRule(html, '.record-detail__title {')).toContain('font-family: var(--profile-display);');
     expect(cssRule(html, '.ftr {')).toContain('font-family: var(--sans);');
     expect(cssRule(html, '.ftr {')).toContain('letter-spacing: 0;');
     expect(html).toContain('.lot__eyebrow, .lot__intro, .lot__dates, .sec__title,');
