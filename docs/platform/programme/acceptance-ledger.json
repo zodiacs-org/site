@@ -1,7 +1,7 @@
 {
   "version": 1,
   "brief": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md (version 2) with the version 1 rules it retains",
-  "asOf": "2026-09-30 (site main 23dd8cb7, production dpl_GhqWmtsbsk17JCsKC5ohHUtC5GFd; engine main 93ebae9f; sdk main a95dc0cf)",
+  "asOf": "2026-09-30 (site main 91cbb741, production dpl_AkpKhbZtdLghukbA47PAKEtx7kfn; engine main d5326a88; sdk main a95dc0cf; npm @zodiacs/engine 0.1.1-rc.15 under next)",
   "denominator": {
     "unit": "working days, from the brief's effort estimates (README.md)",
     "totalWeight": 182.45,
@@ -137,7 +137,7 @@
       "evidence": [],
       "blockedBy": {
         "owner": true,
-        "action": "with the owner's accounts (the owner or Codex): export the Search Console, Bing and Plausible baselines to the private repository zodiacs-org/analytics-baselines, as STATUS.md lists (docs/platform/programme/DECISIONS-2026-09-28.md §8)"
+        "action": "the Bing export, then read access: on 2026-09-30 the Search Console (16 months) and Plausible (12 months) exports are in the private zodiacs-org/analytics-baselines under 2026-09-28/, Bing's data were still being prepared, and the repository is not attached to this work; the baselines need its read access or aggregates computed on the owner's side (docs/platform/programme/DECISIONS-2026-09-28.md §8)"
       },
       "notes": "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md item 7: \"Not done; needs the owner's analytics\""
     },
@@ -1382,14 +1382,15 @@
       "weight": 1,
       "gate": "npm view shows the package with provenance",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": [],
-      "blockedBy": {
-        "owner": true,
-        "action": "with the owner's npm account (the owner or Codex): the first manual two-factor publish of @zodiacs/engine 0.1.1-rc.13 from the verified archive with the next tag, and the trusted-publisher setup, as STATUS.md lists; the scope was decided on 2026-09-28 (shared @zodiacs, docs/platform/programme/DECISIONS-2026-09-28.md §4)"
-      },
-      "notes": "npm view @zodiacs/engine returns 404 (2026-09-28)"
+      "status": "accepted",
+      "release": "released",
+      "evidence": [
+        "npm view @zodiacs/engine@0.1.1-rc.15 on 2026-09-30: dist.attestations names SLSA provenance v1, and the registry's attestations endpoint lists the npm publish attestation and the SLSA provenance",
+        "published by zodiacs-org/engine's release.yml from main at d5326a88 with npm trusted publishing (OIDC), run 36711081147; Sigstore log index 3017960470 (the owner's report of 2026-09-30, read back from the registry the same day)",
+        "the registry's tarballs match their carried archive receipts byte for byte: 0.1.1-rc.14 adc9805e22cd2468fa3340a864d9c53b36ff91e8f1592fdb35d8da8b69f4476e, 0.1.1-rc.15 24eeb597b0157598c0faa26bb615c0cb5dfaaeac0393d62c73fbd37c5da4d348 (downloaded with npm pack, 2026-09-30)",
+        "0.1.1-rc.14 was the one manual first upload, with two-factor authentication, because npm configures a trusted publisher only for a package that exists; publishing access now requires two-factor authentication and disallows tokens, and the GitHub environment npm allows main only"
+      ],
+      "notes": "dist-tags on 2026-09-30: next 0.1.1-rc.15, latest 0.1.1-rc.14 (npm gave the first upload latest); a plain npm install selects rc.14, which has no provenance, until latest moves"
     },
     {
       "id": "P3.1b",
@@ -1423,7 +1424,7 @@
       "status": "partial",
       "release": "none",
       "evidence": [],
-      "notes": "the byte-identical rebuild check runs in the engine's CI: scripts/verify-archive-binding.mjs on every pull request, and --rebuild-all rebuilds every carried archive from its source commit (zodiacs-org/engine#10 and later, green); no CycloneDX SBOM per release and no JSR entry yet"
+      "notes": "the byte-identical rebuild check runs in the engine's CI: scripts/verify-archive-binding.mjs on every pull request, and --rebuild-all rebuilds every carried archive from its source commit (zodiacs-org/engine#10 and later, green); no CycloneDX SBOM per release and no JSR entry yet; since 2026-09-30 the engine is on npm with provenance (P3.1a), and the JSR scope @zodiacs and package engine exist, linked to zodiacs-org/engine, with nothing published"
     },
     {
       "id": "P3.1d",
@@ -1495,13 +1496,12 @@
         "P3.4",
         "B1.a"
       ],
-      "status": "not-started",
+      "status": "partial",
       "release": "none",
-      "evidence": [],
-      "blockedBy": {
-        "owner": true,
-        "action": "with the owner's PyPI account (the owner or Codex): add the pending trusted publisher for the project zodiacs, as STATUS.md lists (docs/platform/programme/DECISIONS-2026-09-28.md §4)"
-      }
+      "evidence": [
+        "zodiacs 0.1.0a1 on PyPI (https://pypi.org/project/zodiacs/0.1.0a1/), published from zodiacs-org/engine's pypi.yml with trusted publishing after PR #21 (merged as d5326a88), run 36701023131 (the owner's report of 2026-09-30)"
+      ],
+      "notes": "the alpha is a Python API and CLI that bundle the rc.14 JavaScript engine and need Node; the gate needs the conformance vectors passing in Python, and the brief's offline engine without Node (WebAssembly) and NumPy"
     },
     {
       "id": "P3.6",
@@ -1876,7 +1876,7 @@
       "evidence": [],
       "blockedBy": {
         "owner": true,
-        "action": "with the owner's free assistant accounts (the owner or Codex): run the monthly panel, as STATUS.md lists (docs/platform/programme/DECISIONS-2026-09-28.md §9)"
+        "action": "with the owner's free assistant accounts (the owner or Codex): run the monthly panel once its prompts and method are committed; on 2026-09-30 ChatGPT, Claude, Gemini and Perplexity accounts exist for admin@zodiacs.org, and Microsoft Copilot has none (docs/platform/programme/DECISIONS-2026-09-28.md §9)"
       }
     },
     {
@@ -1961,7 +1961,7 @@
       "status": "partial",
       "release": "none",
       "evidence": [],
-      "notes": "Organization sameAs lists only the token-framed SDK repository"
+      "notes": "Organization sameAs lists only the token-framed SDK repository; the npm (@zodiacs/engine) and PyPI (zodiacs) entries exist since 2026-09-30 and the markup does not list them yet"
     },
     {
       "id": "S8",
@@ -1975,11 +1975,7 @@
       "status": "partial",
       "release": "none",
       "evidence": [],
-      "blockedBy": {
-        "owner": true,
-        "action": "with the owner's accounts (the owner or Codex): verify the site in Bing Webmaster Tools and confirm Search Console, as STATUS.md lists (docs/platform/programme/DECISIONS-2026-09-28.md §8)"
-      },
-      "notes": "IndexNow runs for daily pages only"
+      "notes": "IndexNow runs for daily pages only; Bing Webmaster Tools imported zodiacs.org from Search Console on 2026-09-30, and the Search Console domain property is the one the owner exported (the owner's report)"
     },
     {
       "id": "S9",
@@ -2028,7 +2024,7 @@
       "notes": "decided 2026-09-28: all rights reserved for the site repository (docs/platform/programme/DECISIONS-2026-09-28.md §6); the description and website are set; the topics wait for the owner (STATUS.md, step 5)",
       "blockedBy": {
         "owner": true,
-        "action": "with the owner's GitHub login (the owner or Codex): add the site repository's topics, as STATUS.md step 5 lists"
+        "action": "with the owner's GitHub login (the owner or Codex): add the site repository's topics, as STATUS.md lists; on 2026-09-30 a GitHub search finds none on zodiacs-org/site, while the engine's are set"
       }
     },
     {
@@ -2059,7 +2055,7 @@
       "evidence": [],
       "blockedBy": {
         "owner": true,
-        "action": "with the owner's GitHub login (the owner or Codex): connect Zenodo to zodiacs-org/engine, as STATUS.md lists (docs/platform/programme/DECISIONS-2026-09-28.md §10)"
+        "action": "the owner's authorization for the first GitHub release of zodiacs-org/engine, which mints a permanent Zenodo DOI; Zenodo's GitHub integration is on for the repository since 2026-09-30 (docs/platform/programme/DECISIONS-2026-09-28.md §10)"
       }
     },
     {
@@ -2273,7 +2269,7 @@
       "evidence": [],
       "blockedBy": {
         "owner": true,
-        "action": "with the owner's free assistant accounts (the owner or Codex): run the benchmark questions once B4.a exists (docs/platform/programme/DECISIONS-2026-09-28.md §9)"
+        "action": "with the owner's free assistant accounts (the owner or Codex): run the benchmark questions once B4.a exists; accounts exist on 2026-09-30 for ChatGPT, Claude, Gemini and Perplexity, not for Microsoft Copilot (docs/platform/programme/DECISIONS-2026-09-28.md §9)"
       }
     },
     {
