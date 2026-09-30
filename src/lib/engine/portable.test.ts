@@ -84,8 +84,10 @@ describe('optional portable calculation boundary', () => {
   });
 
   it('reads each raw birth setting once and does not reread getters for the snapshot', () => {
-    // The site never pins ΔT, so `deltaT` is the one birth field it does not pass.
-    const fields: Required<Omit<BirthInput, 'deltaT'>> = { ...base, utc: base.utc, latitude: 78.2232,
+    // The site never pins ΔT or gives an instant on another scale than UTC, so
+    // `deltaT` and `timeScale` (engine 0.1.1-rc.15 on) are the birth fields it
+    // does not pass.
+    const fields: Required<Omit<BirthInput, 'deltaT' | 'timeScale'>> = { ...base, utc: base.utc, latitude: 78.2232,
       longitude: 15.6267, houseSystem: 'placidus', timeKnown: false, flags: ['dst-fold', 'no-time'] };
     const reads = new Map<string, number>();
     const input = Object.fromEntries([]) as BirthInput;

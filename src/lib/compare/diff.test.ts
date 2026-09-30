@@ -1120,7 +1120,7 @@ describe('the time basis, which records carry from engine 0.1.1-rc.15 on', () =>
     const current = buildEnvelope(ORDINARY);
     const record = JSON.parse(JSON.stringify(current));
     record.receipt.engine = { ...record.receipt.engine, version: '0.1.1-rc.14' };
-    record.receipt.conventions = { ...NATAL_RECEIPT_CONVENTION_SETS.find((set) => set.deltaT === 'tt-minus-ut1;ut1-read-as-utc;value-in-result') };
+    record.receipt.conventions = { ...NATAL_RECEIPT_CONVENTION_SETS.find((set) => 'deltaT' in set && set.deltaT === 'tt-minus-ut1;ut1-read-as-utc;value-in-result') };
     delete record.receipt.timeScale;
     delete record.result.timeScale;
     record.result.deltaT = deltaTAt((Date.parse(ORDINARY.utc) - Date.UTC(2000, 0, 1, 12)) / 86_400_000);

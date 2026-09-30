@@ -281,7 +281,7 @@ function replayInputOf(envelope: NatalEnvelope): ReplayRequest | null {
   // So is the scale of the instant (engine 0.1.1-rc.15 on): read on UTC, a UT1
   // or TT instant is another moment.
   const scale = (receipt as { timeScale?: unknown }).timeScale;
-  const onScale = scale === 'ut1' || scale === 'tt' ? { timeScale: scale } : {};
+  const onScale: { timeScale?: 'ut1' | 'tt' } = scale === 'ut1' || scale === 'tt' ? { timeScale: scale } : {};
   return {
     utc: receipt.instant, latitude, longitude, houseSystem: receipt.houses.requested,
     timeKnown: receipt.timeKnown === true, ...pinned, ...onScale,
