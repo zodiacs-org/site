@@ -528,7 +528,7 @@ describe('registry pastel polish', () => {
     expect(html).not.toMatch(/href="https:\/\/jup\.ag\//u);
     expect(html).not.toContain('Continue to Jupiter');
     expect(html).toContain('View live chart');
-    expect(html).toContain('class="lot__meta"');
+    expect(html).toContain('class="profile-breadcrumb"');
     expect(html).toContain('min-height: 44px;');
     expect(html).toContain('.standings__list a { display: grid;');
     expect(html).toContain('min-height: 56px;');

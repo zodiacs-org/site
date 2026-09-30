@@ -1182,7 +1182,7 @@
         <div class="profile-celestial-art" aria-label="Gemini artwork">
           <img class="profile-art__sky" src="/assets/constellations/gemini.svg" alt="" aria-hidden="true" decoding="async" />
           <div class="card profile-art">
-            <div class="card__inner"><div class="stage"><img class="profile-art__sculpture" src="/assets/sculptures/512/gemini.webp" srcset="/assets/sculptures/512/gemini.webp 512w, /assets/sculptures/1024/gemini.webp 1024w" sizes="(max-width: 599px) 280px, 360px" width="1024" height="1024" alt="Gemini zodiac artwork" decoding="async" fetchpriority="high" /><span class="profile-art__light" aria-hidden="true"></span></div></div>
+            <div class="card__inner"><div class="stage"><img src="/assets/sculptures/512/gemini.webp" srcset="/assets/sculptures/512/gemini.webp 512w, /assets/sculptures/1024/gemini.webp 1024w" sizes="(max-width: 599px) 280px, 360px" width="1024" height="1024" alt="Gemini zodiac artwork" decoding="async" fetchpriority="high" /><span class="profile-art__light" aria-hidden="true"></span></div></div>
           </div>
         </div>
         <p class="lot__intro">Quick, curious, wired for conversation.</p>
@@ -1722,6 +1722,14 @@
     if(phone.addEventListener) phone.addEventListener('change', tick);
     wrap.addEventListener('focusin', function(){ set(false); });
   })();
+
+    // Section navigation exposes the requested sky record before scrolling.
+    document.querySelectorAll('.profile-sections a').forEach(function (link) {
+      link.addEventListener('click', function () {
+        var target = document.getElementById(link.hash.slice(1));
+        if (target && target.tagName === 'DETAILS') target.open = true;
+      });
+    });
 
     // Copy chips
     document.querySelectorAll('.copychip[data-copy]').forEach(function (chip) {

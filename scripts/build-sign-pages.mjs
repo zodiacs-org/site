@@ -1363,7 +1363,7 @@ ${JSON.stringify(jsonLd(m), null, 2)}
         <div class="profile-celestial-art" aria-label="${esc(m.name)} artwork">
           <img class="profile-art__sky" src="/assets/constellations/${m.slug}.svg" alt="" aria-hidden="true" decoding="async" />
           <div class="card profile-art">
-            <div class="card__inner"><div class="stage"><img class="profile-art__sculpture" src="/assets/sculptures/512/${m.slug}.webp" srcset="/assets/sculptures/512/${m.slug}.webp 512w, /assets/sculptures/1024/${m.slug}.webp 1024w" sizes="(max-width: 599px) 280px, 360px" width="1024" height="1024" alt="${esc(m.name)} zodiac artwork" decoding="async" fetchpriority="high" /><span class="profile-art__light" aria-hidden="true"></span></div></div>
+            <div class="card__inner"><div class="stage"><img src="/assets/sculptures/512/${m.slug}.webp" srcset="/assets/sculptures/512/${m.slug}.webp 512w, /assets/sculptures/1024/${m.slug}.webp 1024w" sizes="(max-width: 599px) 280px, 360px" width="1024" height="1024" alt="${esc(m.name)} zodiac artwork" decoding="async" fetchpriority="high" /><span class="profile-art__light" aria-hidden="true"></span></div></div>
           </div>
         </div>
         <p class="lot__intro">${esc(m.consumer.essence)}</p>
@@ -1570,6 +1570,14 @@ ${guideLoaderSource('en')}
 
     // Unified site nav (Part AA) — Signs dropdown + mobile burger (wing-nav.mjs)
     ${wingNavScript()}
+
+    // Section navigation exposes the requested sky record before scrolling.
+    document.querySelectorAll('.profile-sections a').forEach(function (link) {
+      link.addEventListener('click', function () {
+        var target = document.getElementById(link.hash.slice(1));
+        if (target && target.tagName === 'DETAILS') target.open = true;
+      });
+    });
 
     // Copy chips
     document.querySelectorAll('.copychip[data-copy]').forEach(function (chip) {
