@@ -1352,37 +1352,36 @@ ${JSON.stringify(jsonLd(m), null, 2)}
   ${wingNavHtml({ includeSearch: true })}
 
   <main class="pg" id="main">
-    <div class="profile-opening">
-    <section class="lot" aria-labelledby="lot-title">
-      <nav aria-label="Breadcrumb"><ol class="lot__crumbs"><li><a href="/registry/">All signs</a></li><li aria-current="page">${esc(m.name)}</li></ol></nav>
-      <span class="lot__eyebrow">Zodiac sign <span class="g">·</span> ${m.order} of 12</span>
-      <h1 class="lot__title" id="lot-title">${esc(m.name)} <picture class="lot__title-icon" aria-hidden="true"><source srcset="/assets/zodiac-icons/400/${m.slug}.avif" type="image/avif"/><img src="/assets/zodiac-icons/400/${m.slug}.webp" width="112" height="112" alt="" decoding="async" fetchpriority="high"/></picture></h1>
-      <p class="lot__intro">${esc(m.consumer.essence)}</p>
-      <div class="lot__meta">
-        <div class="lot__dates">${esc(m.consumer.dates)} · ${esc(titleCase(m.consumer.element))} sign</div>
-        <div class="identity-actions">
-          <button type="button" data-share-sign>Share ${esc(m.name)}</button>
-        </div>
+    <div class="profile-opening" data-profile-design="celestial">
+      <div class="profile-breadcrumb">
+        <nav aria-label="Breadcrumb"><ol class="lot__crumbs"><li><a href="/registry/">All signs</a></li><li aria-current="page">${esc(m.name)}</li></ol></nav>
+        <div class="identity-actions"><button type="button" data-share-sign>Share ${esc(m.name)}</button></div>
       </div>
-    </section>
-
-    <div class="split">
-      <div class="split__figure" aria-label="${esc(m.name)} artwork">
-        <div class="card profile-art" style="margin:0">
-          <div class="card__inner"><div class="stage"><img src="/assets/sculptures/512/${m.slug}.webp" srcset="/assets/sculptures/512/${m.slug}.webp 512w, /assets/sculptures/1024/${m.slug}.webp 1024w" sizes="(max-width: 540px) 260px, (max-width: 959px) 360px, 410px" width="1024" height="1024" alt="${esc(m.name)} zodiac artwork" decoding="async" fetchpriority="high" /><span class="profile-art__light" aria-hidden="true"></span></div></div>
+      <section class="lot" aria-labelledby="lot-title">
+        <span class="lot__eyebrow">Zodiac sign <span class="g">·</span> ${m.order} of 12</span>
+        <h1 class="lot__title" id="lot-title">${esc(m.name)} <picture class="lot__title-icon" aria-hidden="true"><source srcset="/assets/zodiac-icons/400/${m.slug}.avif" type="image/avif"/><img src="/assets/zodiac-icons/400/${m.slug}.webp" width="112" height="112" alt="" decoding="async"/></picture></h1>
+        <div class="profile-celestial-art" aria-label="${esc(m.name)} artwork">
+          <img class="profile-art__sky" src="/assets/constellations/${m.slug}.svg" alt="" aria-hidden="true" decoding="async" />
+          <div class="card profile-art">
+            <div class="card__inner"><div class="stage"><img class="profile-art__sculpture" src="/assets/sculptures/512/${m.slug}.webp" srcset="/assets/sculptures/512/${m.slug}.webp 512w, /assets/sculptures/1024/${m.slug}.webp 1024w" sizes="(max-width: 599px) 280px, 360px" width="1024" height="1024" alt="${esc(m.name)} zodiac artwork" decoding="async" fetchpriority="high" /><span class="profile-art__light" aria-hidden="true"></span></div></div>
+          </div>
         </div>
-      </div>
-
-      <div class="split__content">
+        <p class="lot__intro">${esc(m.consumer.essence)}</p>
         <section class="profile-panel glance" aria-labelledby="glance-title">
           <h2 id="glance-title">${esc(m.name)} at a glance</h2>
           <dl>
-${glanceRows.map(([key, value]) => `            <div><dt>${esc(key)}</dt><dd>${esc(value)}</dd></div>`).join('\n')}
+${glanceRows.slice(0, 3).map(([key, value]) => `            <div><dt>${esc(key)}</dt><dd${key === 'Type' ? ` aria-label="${esc(value)}"` : ''}>${esc(key === 'Type' ? titleCase(m.consumer.modality) : value)}</dd></div>`).join('\n')}
           </dl>
         </section>
-      </div>
+        <div class="profile-actions">
+          <a class="profile-explore" href="/${m.slug}/">Explore your sign <span aria-hidden="true">↗</span></a>
+          <a class="profile-record" href="#token">Public record <span aria-hidden="true">↓</span></a>
+        </div>
+      </section>
     </div>
-    </div>
+    <nav class="profile-sections" aria-label="Profile sections">
+      <a href="#identity">The sign</a><a href="#people">Shared birthdays</a><a href="#constellation">In the sky</a><a href="#token">The record</a>
+    </nav>
 
     <section class="sec reveal pride" id="identity" aria-labelledby="identity-title">
       <div class="sec__head"><h2 class="sec__title" id="identity-title">Born under ${esc(m.name)}</h2><span class="line"></span></div>
@@ -1392,7 +1391,7 @@ ${glanceRows.map(([key, value]) => `            <div><dt>${esc(key)}</dt><dd>${e
         <article class="attention-card" data-attention><span class="attention-card__label">Wikipedia views</span><strong>${m.attention.signViews.toLocaleString('en-US')} a day</strong><p>The English Wikipedia page for ${esc(m.name)} averaged ${m.attention.signViews.toLocaleString('en-US')} views a day from ${esc(m.attention.from)} to ${esc(m.attention.to)}.</p><small>Source: Wikimedia · updated ${esc(m.attention.capturedAt)}. One person may account for more than one view. This shows interest, not ownership or value. <a href="/thesis/#pulse">See the source</a>.</small></article>
       </div>
       <div class="people-block">
-        <div><span class="people-block__label">You’re in good company</span></div>
+        <div id="people"><span class="people-block__label">You’re in good company</span></div>
         <ul>
 ${m.people.map((person) => `          <li><a href="/people/${person.slug}/"${person.protectedLiving ? ' rel="nofollow"' : ''}><strong>${esc(person.name)}</strong><span>${esc(person.date)}</span></a></li>`).join('\n')}
         </ul>
