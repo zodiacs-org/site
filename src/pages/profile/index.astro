@@ -45,6 +45,12 @@ const savedRecordsSurfaceEnabled = savedRecordsEnabled({
 
     <ProfileIdentity accountBound={accountSyncV2Enabled} client:load />
 
+    <nav class="pf-page-nav" aria-label="On your page">
+      <a href="/today/">Today <span aria-hidden="true">↗</span></a>
+      <a href="#saved-charts">Saved charts <span aria-hidden="true">↓</span></a>
+      <a href="#living-chart">Timeline <span aria-hidden="true">↓</span></a>
+    </nav>
+
     <ProfileKeepClose accountBound={accountSyncV2Enabled} client:idle />
 
     <ProfileSunSignCapture client:load />

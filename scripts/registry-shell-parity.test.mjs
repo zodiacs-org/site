@@ -72,7 +72,8 @@ describe('Registry catalogue shell parity', () => {
 
       expect(html.match(/<nav class="wnav"/gu)).toHaveLength(1);
       expect(nav).not.toContain('wnav__pill');
-      expect(nav).toMatch(/<\/div>\s*<a class="wnav__search" href="\/\?search=1" aria-label="Search the site">/u);
+      expect(nav).toMatch(/<\/div>\s*<a class="wnav__profile-shortcut" href="\/profile\/" aria-label="Your profile"/u);
+      expect(nav).toContain('<a class="wnav__search" href="/?search=1" aria-label="Search the site">');
       expect(searchIndex).toBeGreaterThan(nav.indexOf('class="wnav__links"'));
       expect(chipIndex).toBeGreaterThan(searchIndex);
       expect(burgerIndex).toBeGreaterThan(chipIndex);

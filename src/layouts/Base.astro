@@ -512,7 +512,7 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
     <noscript><style>@import url('/assets/site-footer.css');</style></noscript>
 
     <script>
-      // Scroll reveal — heavy fade-up on viewport entry, once.
+      // A small heading entrance, once, before it enters the reading area.
       const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const reveals = document.querySelectorAll('.reveal');
       if (!reduced && 'IntersectionObserver' in window) {
@@ -528,7 +528,7 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
           // threshold 0: tall blocks (full articles) must still reveal —
           // a ratio threshold never fires for elements taller than the
           // viewport.
-          { threshold: 0, rootMargin: '0px 0px -8% 0px' }
+          { threshold: 0, rootMargin: '0px 0px 48px 0px' }
         );
         reveals.forEach((el) => io.observe(el));
       } else {
@@ -554,4 +554,8 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
 <style is:global>
   :root { --nav-space: 96px; }
   main { position: relative; z-index: var(--z-base); padding-top: var(--nav-space); }
+  @media (max-width: 599.5px) {
+    :root { --nav-space: calc(64px + env(safe-area-inset-top, 0px)); }
+    main > :is(.section, .section--tight):first-child { padding-top: 36px; }
+  }
 </style>

@@ -327,7 +327,10 @@ describe('Guide quick prompts', () => {
       source.indexOf('function prefillFromOpener('),
       source.indexOf('function prefillFromOpener(') + 600,
     );
-    expect(open).toContain('prefillFromOpener(from);\n  textarea!.focus();');
+    expect(open).toContain('prefillFromOpener(from);');
+    expect(open).toContain("window.matchMedia('(max-width: 560px)').matches && !keyboardOpen");
+    expect(open).toContain('panel!.focus({ preventScroll: true })');
+    expect(open).toContain('textarea!.focus({ preventScroll: true })');
     expect(prefill).toContain('from?.dataset?.assistantPrompt?.trim()');
     expect(prefill).toContain('textarea.value.trim()) return;');
     expect(prefill).toContain('textarea.value = prompt.slice(0, 280);');
@@ -533,7 +536,7 @@ describe('Guide typography boundary', () => {
     expect(proactiveSurfaces).not.toMatch(/['"](?:Instrument Sans|EB Garamond)['"]/u);
   });
 
-  it('labels the launcher on wide viewports and collapses it to the avatar on small ones', async () => {
+  it('keeps the launcher labelled with a full touch target on small viewports', async () => {
     const [drawerCss, shellCss, shellSource] = await Promise.all([
       readFile(new URL('./assistant.css', import.meta.url), 'utf8'),
       readFile(new URL('./guide-bootstrap.css', import.meta.url), 'utf8'),
@@ -545,9 +548,10 @@ describe('Guide typography boundary', () => {
     );
     expect(launcherRule).not.toContain('font-size: 0;');
     const collapse = shellCss.slice(shellCss.indexOf('@media (max-width: 560px)'));
-    expect(collapse).toContain('width: 48px;');
-    expect(collapse).toContain('height: 48px;');
-    expect(collapse).toContain('font-size: 0;');
+    expect(collapse).toContain('width: auto;');
+    expect(collapse).toContain('min-height: 44px;');
+    expect(collapse).toContain('font-size: 12px;');
+    expect(collapse).not.toContain('font-size: 0;');
     expect(shellSource).toContain("launcher.setAttribute('aria-label', currentCopy().open);");
     expect(shellSource).toContain('label.textContent = currentCopy().label;');
     expect(drawerCss).toContain('@media (max-width: 560px)');

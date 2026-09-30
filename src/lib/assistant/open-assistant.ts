@@ -300,6 +300,7 @@ let panel: HTMLDivElement | null = null;
 let title: HTMLHeadingElement | null = null;
 let closeButton: HTMLButtonElement | null = null;
 let clearButton: HTMLButtonElement | null = null;
+let expandButton: HTMLButtonElement | null = null;
 let intro: HTMLParagraphElement | null = null;
 let sourcesRegion: HTMLDivElement | null = null;
 let pageSourceChip: HTMLDivElement | null = null;
@@ -1217,6 +1218,7 @@ function scrollTranscript(): void {
 }
 
 function appendMessage(role: GuideAuthor, content: string): { article: HTMLElement; body: HTMLElement } {
+  transcript?.querySelector('.zassistant__welcome')?.remove();
   const article = document.createElement('article');
   article.className = `zassistant__message zassistant__message--${role === 'guide' ? 'assistant' : 'user'}`;
   const label = document.createElement('span');
@@ -1242,6 +1244,24 @@ function appendMessage(role: GuideAuthor, content: string): { article: HTMLEleme
 
 function renderTranscript(): void {
   transcript?.replaceChildren();
+  if (getSession().messages.length === 0 && transcript) {
+    const welcome = document.createElement('div');
+    welcome.className = 'zassistant__welcome';
+    for (const [label, prompt] of GUIDE_STARTERS[locale]) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.textContent = `${label} ↗`;
+      button.addEventListener('click', () => {
+        if (!textarea) return;
+        if (!textarea.value.trim()) textarea.value = prompt;
+        syncTextareaHeight();
+        syncSendState();
+        textarea.focus({ preventScroll: true });
+      });
+      welcome.append(button);
+    }
+    transcript.append(welcome);
+  }
   for (const message of getSession().messages) {
     const bubble = appendMessage(message.author, message.content);
     if (message.author === 'guide') {
@@ -1866,6 +1886,42 @@ function closeAssistant(): void {
   opener = null;
 }
 
+const PANEL_COPY = {
+  en: { hide: 'Hide', expand: 'Expand Guide', compact: 'Make Guide smaller' },
+  es: { hide: 'Ocultar', expand: 'Ampliar Guide', compact: 'Reducir Guide' },
+  pt: { hide: 'Ocultar', expand: 'Ampliar Guide', compact: 'Reduzir Guide' },
+  fr: { hide: 'Masquer', expand: 'Agrandir Guide', compact: 'Réduire Guide' },
+  it: { hide: 'Nascondi', expand: 'Espandi Guide', compact: 'Riduci Guide' },
+};
+
+// Suggestions only fill an editable draft. They never attach a chart or page,
+// start a request, or overwrite a question already being written.
+const GUIDE_STARTERS = {
+  en: [['Understand a birth chart', 'How should I start reading a birth chart?'], ['Find the right tool', 'Which astrology tool should I start with?']],
+  es: [['Entender una carta natal', '¿Cómo empiezo a leer una carta natal?'], ['Elegir una herramienta', '¿Con qué herramienta de astrología debería empezar?']],
+  pt: [['Entender um mapa astral', 'Como começo a ler um mapa astral?'], ['Escolher uma ferramenta', 'Com qual ferramenta de astrologia devo começar?']],
+  fr: [['Comprendre un thème natal', 'Comment commencer à lire un thème natal ?'], ['Choisir un outil', 'Par quel outil d’astrologie commencer ?']],
+  it: [['Capire un tema natale', 'Come inizio a leggere un tema natale?'], ['Scegliere uno strumento', 'Da quale strumento di astrologia dovrei iniziare?']],
+};
+
+function syncGuideViewport(): void {
+  if (!root || root.hidden) return;
+  const viewport = window.visualViewport;
+  const availableHeight = viewport?.height ?? window.innerHeight;
+  root.style.height = `${availableHeight}px`;
+  root.style.top = `${viewport?.offsetTop ?? 0}px`;
+  root.toggleAttribute('data-keyboard-visible', document.activeElement === textarea && availableHeight < 520);
+}
+
+function applyPanelCopy(): void {
+  const copy = PANEL_COPY[locale];
+  if (closeButton) closeButton.textContent = `${copy.hide} ⌄`;
+  const expanded = root?.hasAttribute('data-expanded') ?? false;
+  expandButton?.setAttribute('aria-label', expanded ? copy.compact : copy.expand);
+  expandButton?.setAttribute('aria-pressed', String(expanded));
+  if (expandButton) expandButton.textContent = expanded ? '↙' : '↗';
+}
+
 function clearConversation(): void {
   abortRequest();
   const state = getSession();
@@ -1884,6 +1940,7 @@ function clearConversation(): void {
 
 function applyCopy(): void {
   const copy = currentCopy();
+  applyPanelCopy();
   if (title) title.textContent = copy.title;
   launcher?.setAttribute('aria-label', copy.open);
   const launcherLabel = launcher?.querySelector('span');
@@ -1975,6 +2032,7 @@ function build(): void {
   });
   panel = document.createElement('div');
   panel.className = 'zassistant__panel';
+  panel.tabIndex = -1;
   panel.setAttribute('role', 'dialog');
   panel.setAttribute('aria-modal', 'true');
   panel.setAttribute('aria-labelledby', 'zassistant-title');
@@ -1998,7 +2056,14 @@ function build(): void {
   closeButton.className = 'zassistant__close';
   closeButton.textContent = '✕';
   closeButton.addEventListener('click', closeAssistant);
-  headerActions.append(clearButton, closeButton);
+  expandButton = document.createElement('button');
+  expandButton.type = 'button';
+  expandButton.className = 'zassistant__expand';
+  expandButton.addEventListener('click', () => {
+    root?.toggleAttribute('data-expanded');
+    applyPanelCopy();
+  });
+  headerActions.append(clearButton, expandButton, closeButton);
   header.append(headerIdentity, headerActions);
   intro = document.createElement('p');
   intro.className = 'zassistant__intro';
@@ -2041,6 +2106,8 @@ function build(): void {
   form.className = 'zassistant__form';
   form.addEventListener('submit', (event) => { event.preventDefault(); void submitQuestion(); });
   textarea = document.createElement('textarea');
+  textarea.addEventListener('focus', syncGuideViewport);
+  textarea.addEventListener('blur', syncGuideViewport);
   textarea.className = 'zassistant__input';
   textarea.rows = 2;
   textarea.maxLength = MAX_INPUT;
@@ -2074,7 +2141,10 @@ function build(): void {
   form.append(textarea, actions);
   privacy = document.createElement('p');
   privacy.className = 'zassistant__privacy';
-  panel.append(header, intro, sourcesRegion, transcript, status, form, privacy);
+  const reading = document.createElement('div');
+  reading.className = 'zassistant__reading';
+  reading.append(intro, sourcesRegion, transcript, status);
+  panel.append(header, reading, form, privacy);
   root.append(panel);
   document.body.append(root);
   const shellLauncher = document.querySelector<HTMLButtonElement>('[data-guide-launcher]');
@@ -2105,6 +2175,9 @@ function build(): void {
   window.addEventListener('storage', onGuideStorageChange);
   window.addEventListener('pagehide', suspendGuideForPageCache);
   window.addEventListener('pageshow', restoreGuideAfterPageCache);
+  window.visualViewport?.addEventListener('resize', syncGuideViewport);
+  window.visualViewport?.addEventListener('scroll', syncGuideViewport);
+  window.addEventListener('resize', syncGuideViewport);
 }
 
 /** Mount the default-visible launcher; Guide opens only on deliberate action. */
@@ -2131,11 +2204,17 @@ export async function openAssistant(requestedLocale?: string, from?: HTMLElement
     previousOverflow = document.documentElement.style.overflow;
   }
   root!.hidden = false;
+  const keyboardOpen = from?.matches(':focus-visible') ?? false;
+  root!.toggleAttribute('data-keyboard-open', keyboardOpen);
+  syncGuideViewport();
   launcher?.setAttribute('aria-expanded', 'true');
   document.documentElement.style.overflow = 'hidden';
   setStatus();
   prefillFromOpener(from);
-  textarea!.focus();
+  // A touch open shows the conversation first, without summoning the phone
+  // keyboard or scrolling the underlying page. Typing remains one tap away.
+  if (window.matchMedia('(max-width: 560px)').matches && !keyboardOpen) panel!.focus({ preventScroll: true });
+  else textarea!.focus({ preventScroll: true });
   track('guide_open');
 }
 
