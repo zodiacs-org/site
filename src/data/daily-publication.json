@@ -14,9 +14,9 @@
   },
   "facts": [
     {
-      "id": "derived:2026-09-30:solar-house:aquarius:h10:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio",
+      "id": "derived:2026-09-30:solar-house:aquarius:h10:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
+      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
       "body": "Mercury",
       "sign": "scorpio",
       "sunSign": "aquarius",
@@ -77,9 +77,9 @@
       "house": 7
     },
     {
-      "id": "derived:2026-09-30:solar-house:aries:h8:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio",
+      "id": "derived:2026-09-30:solar-house:aries:h8:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
+      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
       "body": "Mercury",
       "sign": "scorpio",
       "sunSign": "aries",
@@ -113,9 +113,9 @@
       "house": 4
     },
     {
-      "id": "derived:2026-09-30:solar-house:cancer:h5:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio",
+      "id": "derived:2026-09-30:solar-house:cancer:h5:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
+      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
       "body": "Mercury",
       "sign": "scorpio",
       "sunSign": "cancer",
@@ -131,9 +131,9 @@
       "house": 10
     },
     {
-      "id": "derived:2026-09-30:solar-house:capricorn:h11:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio",
+      "id": "derived:2026-09-30:solar-house:capricorn:h11:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
+      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
       "body": "Mercury",
       "sign": "scorpio",
       "sunSign": "capricorn",
@@ -185,9 +185,9 @@
       "house": 5
     },
     {
-      "id": "derived:2026-09-30:solar-house:gemini:h6:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio",
+      "id": "derived:2026-09-30:solar-house:gemini:h6:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
+      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
       "body": "Mercury",
       "sign": "scorpio",
       "sunSign": "gemini",
@@ -221,9 +221,9 @@
       "house": 3
     },
     {
-      "id": "derived:2026-09-30:solar-house:leo:h4:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio",
+      "id": "derived:2026-09-30:solar-house:leo:h4:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
+      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
       "body": "Mercury",
       "sign": "scorpio",
       "sunSign": "leo",
@@ -248,9 +248,9 @@
       "house": 11
     },
     {
-      "id": "derived:2026-09-30:solar-house:libra:h2:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio",
+      "id": "derived:2026-09-30:solar-house:libra:h2:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
+      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
       "body": "Mercury",
       "sign": "scorpio",
       "sunSign": "libra",
@@ -293,9 +293,9 @@
       "house": 8
     },
     {
-      "id": "derived:2026-09-30:solar-house:pisces:h9:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio",
+      "id": "derived:2026-09-30:solar-house:pisces:h9:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
+      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
       "body": "Mercury",
       "sign": "scorpio",
       "sunSign": "pisces",
@@ -311,9 +311,9 @@
       "house": 11
     },
     {
-      "id": "derived:2026-09-30:solar-house:sagittarius:h12:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio",
+      "id": "derived:2026-09-30:solar-house:sagittarius:h12:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
+      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
       "body": "Mercury",
       "sign": "scorpio",
       "sunSign": "sagittarius",
@@ -338,9 +338,9 @@
       "house": 9
     },
     {
-      "id": "derived:2026-09-30:solar-house:scorpio:h1:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio",
+      "id": "derived:2026-09-30:solar-house:scorpio:h1:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
+      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
       "body": "Mercury",
       "sign": "scorpio",
       "sunSign": "scorpio",
@@ -401,9 +401,9 @@
       "house": 6
     },
     {
-      "id": "derived:2026-09-30:solar-house:taurus:h7:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio",
+      "id": "derived:2026-09-30:solar-house:taurus:h7:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
+      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
       "body": "Mercury",
       "sign": "scorpio",
       "sunSign": "taurus",
@@ -428,9 +428,9 @@
       "house": 2
     },
     {
-      "id": "derived:2026-09-30:solar-house:virgo:h3:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio",
+      "id": "derived:2026-09-30:solar-house:virgo:h3:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
+      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
       "body": "Mercury",
       "sign": "scorpio",
       "sunSign": "virgo",
@@ -451,8 +451,8 @@
       "body": "Jupiter",
       "sign": "leo",
       "at": "2026-09-30T12:00:00.000Z",
-      "longitude": 139.50102954711366,
-      "degree": 19.50102954711366,
+      "longitude": 139.5010294993931,
+      "degree": 19.5010294993931,
       "retrograde": false
     },
     {
@@ -461,8 +461,8 @@
       "body": "Mars",
       "sign": "leo",
       "at": "2026-09-30T12:00:00.000Z",
-      "longitude": 121.39649951329358,
-      "degree": 1.396499513293577,
+      "longitude": 121.39649935814106,
+      "degree": 1.3964993581410567,
       "retrograde": false
     },
     {
@@ -471,8 +471,8 @@
       "body": "Mercury",
       "sign": "scorpio",
       "at": "2026-09-30T12:00:00.000Z",
-      "longitude": 210.0140804971879,
-      "degree": 0.01408049718793336,
+      "longitude": 210.01408014241105,
+      "degree": 0.014080142411103225,
       "retrograde": false
     },
     {
@@ -481,8 +481,8 @@
       "body": "Moon",
       "sign": "taurus",
       "at": "2026-09-30T12:00:00.000Z",
-      "longitude": 56.76904326176265,
-      "degree": 26.769043261762647,
+      "longitude": 56.76903946929201,
+      "degree": 26.76903946929201,
       "retrograde": false
     },
     {
@@ -491,8 +491,8 @@
       "body": "Neptune",
       "sign": "aries",
       "at": "2026-09-30T12:00:00.000Z",
-      "longitude": 2.8792221976739825,
-      "degree": 2.8792221976739825,
+      "longitude": 2.8792222049613656,
+      "degree": 2.8792222049613656,
       "retrograde": true
     },
     {
@@ -501,8 +501,8 @@
       "body": "Pluto",
       "sign": "aquarius",
       "at": "2026-09-30T12:00:00.000Z",
-      "longitude": 303.125556694851,
-      "degree": 3.1255566948509568,
+      "longitude": 303.12555669674987,
+      "degree": 3.125556696749868,
       "retrograde": true
     },
     {
@@ -511,8 +511,8 @@
       "body": "Saturn",
       "sign": "aries",
       "at": "2026-09-30T12:00:00.000Z",
-      "longitude": 11.614734383205587,
-      "degree": 11.614734383205587,
+      "longitude": 11.614734403963723,
+      "degree": 11.614734403963723,
       "retrograde": true
     },
     {
@@ -521,8 +521,8 @@
       "body": "Sun",
       "sign": "libra",
       "at": "2026-09-30T12:00:00.000Z",
-      "longitude": 187.34713042135726,
-      "degree": 7.347130421357292,
+      "longitude": 187.347130160259,
+      "degree": 7.347130160258985,
       "retrograde": false
     },
     {
@@ -531,8 +531,8 @@
       "body": "Uranus",
       "sign": "gemini",
       "at": "2026-09-30T12:00:00.000Z",
-      "longitude": 65.53389806011103,
-      "degree": 5.533898060111028,
+      "longitude": 65.5338980644143,
+      "degree": 5.533898064414302,
       "retrograde": true
     },
     {
@@ -541,17 +541,17 @@
       "body": "Venus",
       "sign": "scorpio",
       "at": "2026-09-30T12:00:00.000Z",
-      "longitude": 218.33713869866236,
-      "degree": 8.33713869866233,
+      "longitude": 218.33713867049673,
+      "degree": 8.337138670496756,
       "retrograde": false
     },
     {
-      "id": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
+      "id": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
       "kind": "sky-event",
       "eventKind": "ingress",
       "body": "Mercury",
       "sign": "scorpio",
-      "at": "2026-09-30T11:44:48.709Z",
+      "at": "2026-09-30T11:44:48.730Z",
       "retrograde": false
     }
   ],
@@ -569,8 +569,8 @@
           "templateId": "ingress-house.v1",
           "scope": "solar-house",
           "evidenceRefs": [
-            "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
-            "derived:2026-09-30:solar-house:aries:h8:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio"
+            "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
+            "derived:2026-09-30:solar-house:aries:h8:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio"
           ]
         },
         {
@@ -639,8 +639,8 @@
           "templateId": "ingress-house.v1",
           "scope": "solar-house",
           "evidenceRefs": [
-            "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
-            "derived:2026-09-30:solar-house:taurus:h7:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio"
+            "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
+            "derived:2026-09-30:solar-house:taurus:h7:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio"
           ]
         },
         {
@@ -709,8 +709,8 @@
           "templateId": "ingress-house.v1",
           "scope": "solar-house",
           "evidenceRefs": [
-            "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
-            "derived:2026-09-30:solar-house:gemini:h6:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio"
+            "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
+            "derived:2026-09-30:solar-house:gemini:h6:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio"
           ]
         },
         {
@@ -779,8 +779,8 @@
           "templateId": "ingress-house.v1",
           "scope": "solar-house",
           "evidenceRefs": [
-            "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
-            "derived:2026-09-30:solar-house:cancer:h5:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio"
+            "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
+            "derived:2026-09-30:solar-house:cancer:h5:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio"
           ]
         },
         {
@@ -849,8 +849,8 @@
           "templateId": "ingress-house.v1",
           "scope": "solar-house",
           "evidenceRefs": [
-            "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
-            "derived:2026-09-30:solar-house:leo:h4:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio"
+            "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
+            "derived:2026-09-30:solar-house:leo:h4:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio"
           ]
         },
         {
@@ -919,8 +919,8 @@
           "templateId": "ingress-house.v1",
           "scope": "solar-house",
           "evidenceRefs": [
-            "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
-            "derived:2026-09-30:solar-house:virgo:h3:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio"
+            "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
+            "derived:2026-09-30:solar-house:virgo:h3:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio"
           ]
         },
         {
@@ -989,8 +989,8 @@
           "templateId": "ingress-house.v1",
           "scope": "solar-house",
           "evidenceRefs": [
-            "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
-            "derived:2026-09-30:solar-house:libra:h2:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio"
+            "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
+            "derived:2026-09-30:solar-house:libra:h2:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio"
           ]
         },
         {
@@ -1059,8 +1059,8 @@
           "templateId": "ingress-house.v1",
           "scope": "solar-house",
           "evidenceRefs": [
-            "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
-            "derived:2026-09-30:solar-house:scorpio:h1:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio"
+            "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
+            "derived:2026-09-30:solar-house:scorpio:h1:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio"
           ]
         },
         {
@@ -1129,8 +1129,8 @@
           "templateId": "ingress-house.v1",
           "scope": "solar-house",
           "evidenceRefs": [
-            "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
-            "derived:2026-09-30:solar-house:sagittarius:h12:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio"
+            "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
+            "derived:2026-09-30:solar-house:sagittarius:h12:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio"
           ]
         },
         {
@@ -1199,8 +1199,8 @@
           "templateId": "ingress-house.v1",
           "scope": "solar-house",
           "evidenceRefs": [
-            "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
-            "derived:2026-09-30:solar-house:capricorn:h11:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio"
+            "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
+            "derived:2026-09-30:solar-house:capricorn:h11:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio"
           ]
         },
         {
@@ -1269,8 +1269,8 @@
           "templateId": "ingress-house.v1",
           "scope": "solar-house",
           "evidenceRefs": [
-            "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
-            "derived:2026-09-30:solar-house:aquarius:h10:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio"
+            "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
+            "derived:2026-09-30:solar-house:aquarius:h10:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio"
           ]
         },
         {
@@ -1339,8 +1339,8 @@
           "templateId": "ingress-house.v1",
           "scope": "solar-house",
           "evidenceRefs": [
-            "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
-            "derived:2026-09-30:solar-house:pisces:h9:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio"
+            "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
+            "derived:2026-09-30:solar-house:pisces:h9:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio"
           ]
         },
         {

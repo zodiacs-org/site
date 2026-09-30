@@ -5,72 +5,72 @@
   "bodies": [
     {
       "body": "Moon",
-      "lon": 56.76904326176265,
+      "lon": 56.76903946929201,
       "sign": "taurus",
-      "degree": 26.769043261762647,
+      "degree": 26.76903946929201,
       "retrograde": false
     },
     {
       "body": "Sun",
-      "lon": 187.34713042135726,
+      "lon": 187.347130160259,
       "sign": "libra",
-      "degree": 7.347130421357292,
+      "degree": 7.347130160258985,
       "retrograde": false
     },
     {
       "body": "Mercury",
-      "lon": 210.0140804971879,
+      "lon": 210.01408014241105,
       "sign": "scorpio",
-      "degree": 0.01408049718793336,
+      "degree": 0.014080142411103225,
       "retrograde": false
     },
     {
       "body": "Venus",
-      "lon": 218.33713869866236,
+      "lon": 218.33713867049673,
       "sign": "scorpio",
-      "degree": 8.33713869866233,
+      "degree": 8.337138670496756,
       "retrograde": false
     },
     {
       "body": "Mars",
-      "lon": 121.39649951329358,
+      "lon": 121.39649935814106,
       "sign": "leo",
-      "degree": 1.396499513293577,
+      "degree": 1.3964993581410567,
       "retrograde": false
     },
     {
       "body": "Jupiter",
-      "lon": 139.50102954711366,
+      "lon": 139.5010294993931,
       "sign": "leo",
-      "degree": 19.50102954711366,
+      "degree": 19.5010294993931,
       "retrograde": false
     },
     {
       "body": "Saturn",
-      "lon": 11.614734383205587,
+      "lon": 11.614734403963723,
       "sign": "aries",
-      "degree": 11.614734383205587,
+      "degree": 11.614734403963723,
       "retrograde": true
     },
     {
       "body": "Uranus",
-      "lon": 65.53389806011103,
+      "lon": 65.5338980644143,
       "sign": "gemini",
-      "degree": 5.533898060111028,
+      "degree": 5.533898064414302,
       "retrograde": true
     },
     {
       "body": "Neptune",
-      "lon": 2.8792221976739825,
+      "lon": 2.8792222049613656,
       "sign": "aries",
-      "degree": 2.8792221976739825,
+      "degree": 2.8792222049613656,
       "retrograde": true
     },
     {
       "body": "Pluto",
-      "lon": 303.125556694851,
+      "lon": 303.12555669674987,
       "sign": "aquarius",
-      "degree": 3.1255566948509568,
+      "degree": 3.125556696749868,
       "retrograde": true
     }
   ],
@@ -84,7 +84,7 @@
     {
       "kind": "ingress",
       "planet": "Mercury",
-      "at": "2026-09-30T11:44:48.709Z",
+      "at": "2026-09-30T11:44:48.730Z",
       "sign": "scorpio",
       "retrograde": false
     }
