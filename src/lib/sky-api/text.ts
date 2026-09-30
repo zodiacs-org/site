@@ -6,6 +6,7 @@
 import { API_BASE, API_ORIGIN, PLANET_NAMES, PLANET_SLUGS, CONVENTIONS } from './meta';
 import { UPCOMING_WINDOW_DAYS } from './build';
 import { formatDay } from './format';
+import { BUDGETS, COMPUTE_DOCS_URL } from '../compute-api/constants';
 
 type Payload = Record<string, any>;
 
@@ -19,7 +20,7 @@ export function renderAgentGuide(
     '',
     `Base URL: ${API_BASE}/ · Data as of ${dailyDate} (UTC) · Yearly data vintage ${vintage.slice(0, 10)}`,
     `License: CC BY 4.0 — credit "Zodiacs.org" with a link to ${API_ORIGIN} wherever the data is shown.`,
-    'Static JSON files, no key, no signup, open CORS on every endpoint. Nothing here involves anyone\'s birth data; these files describe the shared sky.',
+    'The files below are static JSON, with no key, no signup and open CORS. None of them involves anyone\'s birth data; they describe the shared sky. The compute endpoints further down calculate from a POST body instead.',
     '',
     '## How to use these files',
     '',
@@ -31,7 +32,7 @@ export function renderAgentGuide(
     `- ${CONVENTIONS.signs}`,
     `- ${CONVENTIONS.engine}`,
     `- ${CONVENTIONS.versioning}`,
-    '- Coordinates are geocentric and tropical. There are no houses, no aspects to the Moon, and no birth-chart calculations here; those stay on the visitor\'s device in the calculators at ' + API_ORIGIN + '/tools/. The site computes no asteroids.',
+    `- Coordinates are geocentric and tropical. The files have no houses, no aspects to the Moon and no birth charts; the site's own calculators at ${API_ORIGIN}/tools/ compute those on the visitor's device. The site computes no asteroids.`,
     '',
     '## Endpoints',
     '',
@@ -72,9 +73,21 @@ export function renderAgentGuide(
     '- Moon phase names describe the snapshot instant; a phase can change within the day.',
     '- Astronomical accuracy is tested; astrological interpretation is not a scientific claim. Present sign meanings as tradition.',
     '',
+    '## Compute endpoints',
+    '',
+    `Six endpoints calculate from a JSON body sent with POST, on the same engine. There is no key. Requests from one IP address are rate limited, and the endpoints answer only while that limit is in place; otherwise every endpoint answers 503. Birth data goes only in the body: any query string is ignored, and the host's request logs keep each request's web address and IP address. The function writes nothing from a request or its result to a log, a file or a database, and no response is cached. Documentation: ${COMPUTE_DOCS_URL} · Schemas and examples: ${API_BASE}/openapi.json (tag compute).`,
+    '',
+    `- POST ${API_BASE}/chart — bodies, angles, house cusps and aspects for an instant (utc) or a local time and IANA zone (local), a latitude and a longitude, in one of the engine's thirteen house systems.`,
+    `- POST ${API_BASE}/positions — positions and speeds of chosen bodies at up to ${BUDGETS['positions.instants']} instants.`,
+    `- POST ${API_BASE}/houses — angles and house cusps for an instant, a place and a house system.`,
+    `- POST ${API_BASE}/events — sign ingresses, stations and new and full moons in a window of up to ${BUDGETS['events.windowDays']} days.`,
+    `- POST ${API_BASE}/time — a local civil time as UTC and Terrestrial Time, with ΔT and flags for skipped and repeated clock times.`,
+    `- POST ${API_BASE}/sky-fact — whether a body is in a sign, is retrograde or enters a sign, or a lunar phase falls, at an instant or on a date: true, false or depends, with the computed values that decide it.`,
+    '- Every success carries result, receipt, backend and cite. cite.url is the endpoint\'s documentation and cite.receipt the SHA-256 of the receipt\'s canonical JSON. For chart and houses the receipt holds the instant and the coordinates, so cite.receipt identifies the birth details: anyone who knows the date and the place can find the time by trying times until it matches. Quote cite with a result; for chart and houses, only where the birth details may be known. A refusal is {"error": {"code", "message"}} with a stable code.',
+    '',
     '## Caching',
     '',
-    '- Current Cache-Control max-age values: sky/today.json 300 seconds; index.json 3600 seconds; all remaining API files 86400 seconds, including upcoming.json, planet files, signs.json, and Markdown twins. Yearly files are byte-stable between data refreshes.',
+    '- Current Cache-Control max-age values: sky/today.json 300 seconds; index.json 3600 seconds; all remaining API files 86400 seconds, including upcoming.json, planet files, signs.json, and Markdown twins. Yearly files are byte-stable between data refreshes. Compute responses are never cached.',
     '- Revalidate when you need a current edition, then check the consumed payload\'s edition date; HTTP success or a current index alone does not establish freshness.',
     '- Daily publication is scheduled from 00:00 UTC; jobs, deployment, and caching can delay availability. Positions are computed for 12:00 UTC of the edition date, so that snapshot may be later than the request time.',
     '',

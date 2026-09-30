@@ -1,3 +1,4 @@
+import { COMPUTE_ROUTE_PARAM } from '../src/lib/compute-api/constants.js';
 import { sendInviteJson } from '../src/lib/invite/api.js';
 import { handleGamesApi } from '../src/lib/games/server.js';
 import { handleRegistryNews } from './_registry/news-handler.js';
@@ -43,6 +44,14 @@ export function compatibilityInviteHandlerForAction(value: unknown): InviteHandl
 }
 
 export default async function handler(req: any, res: any): Promise<void> {
+  // The compute API (/api/v1/chart and five more) rewrites here (vercel.json)
+  // so it does not add a deployed function. Its handler owns everything past
+  // this line for those routes, and loads only when one is asked for.
+  if (req.query?.[COMPUTE_ROUTE_PARAM] !== undefined) {
+    const { default: computeApi } = await import('./_compute/handler.js');
+    await computeApi(req, res);
+    return;
+  }
   const previewRoute = req.query?.__zodiacs_og_route;
   if (previewRoute === 'link' || previewRoute === 'image') {
     await handleChartPreviewNodeRequest(req, res, previewRoute);

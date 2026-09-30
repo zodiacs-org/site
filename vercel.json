@@ -276,6 +276,30 @@
     {
       "source": "/api/compatibility/:action",
       "destination": "/api/compatibility?action=:action"
+    },
+    {
+      "source": "/api/v1/chart",
+      "destination": "/api/compatibility?__zodiacs_compute=chart"
+    },
+    {
+      "source": "/api/v1/positions",
+      "destination": "/api/compatibility?__zodiacs_compute=positions"
+    },
+    {
+      "source": "/api/v1/houses",
+      "destination": "/api/compatibility?__zodiacs_compute=houses"
+    },
+    {
+      "source": "/api/v1/events",
+      "destination": "/api/compatibility?__zodiacs_compute=events"
+    },
+    {
+      "source": "/api/v1/time",
+      "destination": "/api/compatibility?__zodiacs_compute=time"
+    },
+    {
+      "source": "/api/v1/sky-fact",
+      "destination": "/api/compatibility?__zodiacs_compute=sky-fact"
     }
   ],
   "headers": [
@@ -734,7 +758,7 @@
       ]
     },
     {
-      "source": "/api/v1/(.*)",
+      "source": "/api/v1/:file(.*\\.[^/]+)",
       "headers": [
         {
           "key": "Access-Control-Allow-Origin",

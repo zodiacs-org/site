@@ -25,22 +25,44 @@ let lmtEraEnd: Readonly<Record<string, number>> | null = null;
 let lmtOffsets: Readonly<Record<string, number>> = {};
 /** For eras that crossed the date line: each line's end (Unix seconds) and offset (seconds east). */
 let lmtDateLine: Readonly<Record<string, readonly (readonly number[])[]>> = {};
+/**
+ * The table's own spelling of each zone, by the lower-cased name. Intl reads
+ * a name in any letter case, so the table is read the same way: America/New_York
+ * and america/new_york are one zone with one local mean time era.
+ */
+let lmtNames: ReadonlyMap<string, string> = new Map();
 let lmtEraLoad: Promise<void> | null = null;
 
 /**
  * Offsets before 1970 from the pinned release, per lower-cased zone name once
  * loaded (Intl ignores the case of a name, so this does too); null where the
- * host's apply.
+ * host's apply. Only names Intl accepts are kept, so the map holds at most
+ * one entry per zone.
  */
 const zoneHistories = new Map<string, ZoneHistory | null>();
 const zoneHistoryLoads = new Map<string, Promise<void>>();
 /** The host's history applies from 1970-01-01T00:00:00Z. */
 const ZONE_HISTORY_END = 0;
 
+/** A zone name with its ASCII letters lower-cased, as Intl compares names. */
+function nameKey(name: string): string {
+  return name.replace(/[A-Z]/gu, (letter) => letter.toLowerCase());
+}
+
+function intlAccepts(name: string): boolean {
+  try {
+    offsetAt(name, 0);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 /**
  * Loads the local mean time era table for dates up to 1953 and the zone's
  * pinned history for dates up to 1970. A failed download rejects with a
- * ModuleLoadError and is not remembered: the next call tries again.
+ * ModuleLoadError and is not remembered: the next call tries again. A name
+ * Intl refuses loads no history; resolving it throws before one is needed.
  */
 export function prepare(date: string, timeZone: string): Promise<void> {
   const loads: Promise<void>[] = [];
@@ -49,6 +71,7 @@ export function prepare(date: string, timeZone: string): Promise<void> {
       const pending = loadModule(() => import('../../data/tz-lmt.json')).then(({ default: table }) => {
         lmtOffsets = table.offsets;
         lmtDateLine = table.dateLine;
+        lmtNames = new Map(Object.keys(table.eras).map((name) => [nameKey(name), name]));
         lmtEraEnd = table.eras;
       });
       lmtEraLoad = pending;
@@ -58,8 +81,8 @@ export function prepare(date: string, timeZone: string): Promise<void> {
     }
     loads.push(lmtEraLoad);
   }
-  const key = timeZone.toLowerCase();
-  if (birthplaceTimeCanApply(date) && !zoneHistories.has(key)) {
+  const key = nameKey(timeZone);
+  if (birthplaceTimeCanApply(date) && !zoneHistories.has(key) && intlAccepts(timeZone)) {
     let pending = zoneHistoryLoads.get(key);
     if (!pending) {
       const load = loadModule(async () => (await import('./tz-history-load')).loadZoneHistory(timeZone))
@@ -106,7 +129,9 @@ export function inMeanTimeEra(tz: string, utcMs: number): boolean {
   if (!lmtEraEnd) {
     throw new Error('Local mean time eras are not loaded: await prepareLocalTime(date, timeZone) before resolving.');
   }
-  return Object.prototype.hasOwnProperty.call(lmtEraEnd, tz) && utcMs < lmtEraEnd[tz] * 1000;
+  // The table's spelling of the zone, whatever case it was given in.
+  const era = lmtNames.get(nameKey(tz));
+  return era !== undefined && utcMs < lmtEraEnd[era] * 1000;
 }
 
 /**
@@ -152,7 +177,7 @@ function birthplaceClock(
   // offset reaches 24 hours), so later dates never need the pinned history.
   let history: ZoneHistory | null = null;
   if (wallMs < ZONE_HISTORY_END + 86_400_000) {
-    const key = tz.toLowerCase();
+    const key = nameKey(tz);
     if (!zoneHistories.has(key)) {
       throw new Error('Zone history is not loaded: await prepareLocalTime(date, timeZone) before resolving.');
     }
@@ -170,19 +195,21 @@ function birthplaceClock(
     if (!lmtEraEnd) {
       throw new Error('Local mean time eras are not loaded: await prepareLocalTime(date, timeZone) before resolving.');
     }
-    if (Object.prototype.hasOwnProperty.call(lmtEraEnd, tz) && wallMs - probe - lmtEraEnd[tz] * 1000 <= 0) {
-      const eraEnd = lmtEraEnd[tz] * 1000;
+    // The table's spelling of the zone, whatever case it was given in.
+    const era = lmtNames.get(nameKey(tz));
+    if (era !== undefined && wallMs - probe - lmtEraEnd[era] * 1000 <= 0) {
+      const eraEnd = lmtEraEnd[era] * 1000;
       // Mean solar time runs four minutes per degree of longitude, kept to
       // whole seconds as IANA offsets are.
       const meanSeconds = Math.round(longitude * 240);
       // The zone's own mean time during the era, from the table: it fixes
       // the side of the date line, which the host's data can get wrong (it
       // lacks Pohnpei's move in 1844 and puts Midway on the Asian date).
-      const own = (table: Readonly<Record<string, unknown>>) => Object.prototype.hasOwnProperty.call(table, tz);
-      const eraLines = own(lmtDateLine) ? lmtDateLine[tz] : null;
+      const own = (table: Readonly<Record<string, unknown>>) => Object.prototype.hasOwnProperty.call(table, era);
+      const eraLines = own(lmtDateLine) ? lmtDateLine[era] : null;
       const eraOffset = (utcMs: number): number => {
         if (eraLines) for (const [until, offset] of eraLines) if (utcMs < until * 1000) return offset / 60;
-        if (own(lmtOffsets)) return lmtOffsets[tz] / 60;
+        if (own(lmtOffsets)) return lmtOffsets[era] / 60;
         return zoneAt(utcMs);
       };
       const birthplaceOffset = (utcMs: number): number => {

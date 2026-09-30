@@ -160,8 +160,52 @@ const probes = [
       }
       if (typeof document.openapi !== 'string' || !document.openapi.startsWith('3.1')) return 'openapi.json is not OpenAPI 3.1';
       if (!document.paths?.['/api/v1/sky/today.json']) return 'openapi.json does not describe sky/today.json';
+      if (!document.paths?.['/api/v1/chart']?.post) return 'openapi.json does not describe the compute endpoints';
       return null;
     },
+  },
+  {
+    // A synthetic wall time in UTC: no one's birth. The compute function
+    // answers 200 while its Firewall rules are in place; COMPUTE_API_ENABLED=0
+    // answers the designed 503 disabled, and a missing or unreadable rate
+    // limit the designed 503 rate-limit-unavailable (it fails closed).
+    label: 'compute api time',
+    path: '/api/v1/time',
+    init: {
+      method: 'POST',
+      headers: { ...sameOriginHeaders, 'content-type': 'application/json' },
+      body: JSON.stringify({ local: { date: '2000-01-01', time: '12:00', zone: 'UTC' } }),
+    },
+    accepts: (status) => status === 200 || status === 503,
+    expectation: 'HTTP 200, or a designed HTTP 503 when the API is switched off or its rate limit is not in place',
+    validate: (response, body) => {
+      if ((response.headers.get('cache-control') ?? '') !== 'no-store') return 'a compute response is cacheable';
+      if ((response.headers.get('access-control-allow-origin') ?? '') !== '*') return 'a compute response is not readable cross-origin';
+      let answer;
+      try {
+        answer = JSON.parse(body);
+      } catch {
+        return 'the compute response is not valid JSON';
+      }
+      if (response.status === 503) {
+        return ['disabled', 'rate-limit-unavailable'].includes(answer?.error?.code) && response.headers.get('retry-after')
+          ? null : 'the 503 is not a designed refusal with Retry-After';
+      }
+      if (answer.schema !== 'zodiacs.compute-api.time.v1') return 'the time answer has the wrong schema';
+      if (answer.result?.utc !== '2000-01-01T12:00:00.000Z') return 'the time answer resolved 12:00 UTC to another instant';
+      if (answer.cite?.url !== 'https://zodiacs.org/developers/compute/#time') return 'the time answer does not cite its documentation';
+      if (!/^sha256:[0-9a-f]{64}$/u.test(answer.cite?.receipt ?? '')) return 'the time answer does not cite its receipt digest';
+      return null;
+    },
+  },
+  {
+    label: 'compute api method guard',
+    path: '/api/v1/chart',
+    init: { method: 'GET', headers: sameOriginHeaders },
+    accepts: (status) => status === 405,
+    expectation: 'HTTP 405',
+    validate: (response) => ((response.headers.get('cache-control') ?? '') === 'no-store'
+      ? null : 'the 405 from a compute path is cacheable'),
   },
 ];
 

@@ -116,6 +116,7 @@ export const SCOPE_ADD = Object.freeze([
 /** In the consumer surface, but not read here, each with its reason. */
 export const SCOPE_DROP = Object.freeze([
   { pattern: /^api\/_assistant\/context\.ts$/u, reason: 'generated from scripts/build-assistant-context.mjs, which is read instead' },
+  { pattern: /^api\/_compute\/local-time\.mjs$/u, reason: 'generated from src/lib/time/, which is read instead, and the time zone tables dropped below' },
   { pattern: /^src\/data\/(?:sky|ingresses|eclipses|birthdays)\.json$/u, reason: 'generated sky data with no prose' },
   { pattern: /^src\/data\/transits-\d{4}-\d{2}\.json$/u, reason: 'generated sky data with no prose' },
   { pattern: /^src\/data\/tz-(?:lmt\.json|history\/)/u, reason: 'generated time zone tables' },
@@ -142,6 +143,7 @@ export const TRUST_PATTERNS = Object.freeze([
   /^src\/pages\/developers\//u,
   /^src\/mcp\/[^/]+\.ts$/u,
   /^src\/lib\/sky-api\/[^/]+\.ts$/u,
+  /^src\/lib\/compute-api\/[^/]+\.ts$/u,
   /^scripts\/build-assistant-context\.mjs$/u,
 ]);
 

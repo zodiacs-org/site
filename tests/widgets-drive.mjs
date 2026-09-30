@@ -141,7 +141,7 @@ export async function verifyWidgetBuilder({ browser, baseURL, check, outDir = nu
     const textCases = [
       ['/widgets/', '.wdg-intro', ['published as machine-readable JSON.']],
       ['/developers/', 'main', [
-        'the shared sky, and chart calculation stays on the device.',
+        "the shared sky, and the site's own chart calculation stays on the device.",
         'a $schema link to its JSON Schema, and links to the related files.',
         'An agent should start at /api/v1/llms.txt: it lists every endpoint',
         'Tool-calling frameworks can load /api/v1/openapi.json directly, and the daily files',

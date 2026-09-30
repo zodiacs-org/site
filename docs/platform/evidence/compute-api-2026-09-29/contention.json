@@ -1,0 +1,52 @@
+{
+  "measured": "2026-09-30",
+  "what": "one local-time request started together with n events requests of 92 days, every body and kind, in one Node process; median and max of 7 trials",
+  "runtime": {
+    "node": "v22.22.2",
+    "tzdb": "2025c",
+    "cpu": "Intel(R) Xeon(R) Processor @ 2.10GHz",
+    "cores": 4
+  },
+  "rows": [
+    {
+      "eventsRequestsAlongside": 0,
+      "smallRequestMs": {
+        "median": 0.9,
+        "max": 1.2
+      },
+      "allAnsweredMs": {
+        "median": 0.9
+      }
+    },
+    {
+      "eventsRequestsAlongside": 1,
+      "smallRequestMs": {
+        "median": 321.8,
+        "max": 472.6
+      },
+      "allAnsweredMs": {
+        "median": 321.8
+      }
+    },
+    {
+      "eventsRequestsAlongside": 4,
+      "smallRequestMs": {
+        "median": 883.9,
+        "max": 1199.4
+      },
+      "allAnsweredMs": {
+        "median": 883.9
+      }
+    },
+    {
+      "eventsRequestsAlongside": 10,
+      "smallRequestMs": {
+        "median": 2347.7,
+        "max": 2564.5
+      },
+      "allAnsweredMs": {
+        "median": 2347.7
+      }
+    }
+  ]
+}
