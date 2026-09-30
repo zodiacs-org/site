@@ -51,16 +51,19 @@ function record(utc, houseSystem, edit) {
 }
 
 /**
- * Rewrites the instant a record declares, and the ΔT that goes with it. From
- * engine 0.1.1-rc.8 a record carries the ΔT it was computed with and the
- * parser checks a modelled one against the declared instant, so the instant
- * alone is refused. The model is public, so the second edit is no obstacle to
- * anyone, and the values still come from the other moment.
+ * Rewrites the instant a record declares, and the ΔT and time basis that go
+ * with it. From engine 0.1.1-rc.8 a record carries the ΔT it was computed
+ * with, and from rc.15 how its instant became UT1 and TT (result.timeScale);
+ * the parser checks both against the declared instant, so the instant alone
+ * is refused. Both are public arithmetic, so the extra edits are no obstacle
+ * to anyone, and the values still come from the other moment.
  */
 const declaring = (utc) => (o) => {
+  const declared = JSON.parse(record(utc, 'placidus')).result;
   o.receipt.instant = new Date(utc).toISOString();
   o.receipt.sourceInstant = utc;
-  o.result.deltaT = JSON.parse(record(utc, 'placidus')).result.deltaT;
+  o.result.deltaT = declared.deltaT;
+  o.result.timeScale = declared.timeScale;
 };
 
 const asFile = (name, text) => ({ name, mimeType: 'application/json', buffer: Buffer.from(text, 'utf8') });

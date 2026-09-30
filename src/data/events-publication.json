@@ -17,7 +17,7 @@
       "id": "full-moon-2026-01-03",
       "path": "/full-moon/2026-01-03/",
       "title": "Full moon in Cancer — January 3, 2026",
-      "anchor": "2026-01-03T10:02:55.945Z",
+      "anchor": "2026-01-03T10:02:55.863Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -35,7 +35,7 @@
       "id": "new-moon-2026-01-18",
       "path": "/new-moon/2026-01-18/",
       "title": "New moon in Capricorn — January 18, 2026",
-      "anchor": "2026-01-18T19:52:01.818Z",
+      "anchor": "2026-01-18T19:52:01.736Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -53,7 +53,7 @@
       "id": "saturn-sextile-uranus-2026-01-20",
       "path": "/events/saturn-sextile-uranus-2026-01-20/",
       "title": "Saturn sextile Uranus — January 20, 2026",
-      "anchor": "2026-01-20T05:44:16.300Z",
+      "anchor": "2026-01-20T05:44:16.218Z",
       "family": "aspect",
       "subtype": "sextile",
       "bodies": [
@@ -89,7 +89,7 @@
       "id": "full-moon-2026-02-01",
       "path": "/full-moon/2026-02-01/",
       "title": "Full moon in Leo — February 1, 2026",
-      "anchor": "2026-02-01T22:09:17.609Z",
+      "anchor": "2026-02-01T22:09:17.527Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -124,7 +124,7 @@
       "id": "new-moon-2026-02-17",
       "path": "/new-moon/2026-02-17/",
       "title": "New moon in Aquarius — February 17, 2026",
-      "anchor": "2026-02-17T12:01:12.426Z",
+      "anchor": "2026-02-17T12:01:12.344Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -214,7 +214,7 @@
       "id": "full-moon-2026-03-03",
       "path": "/full-moon/2026-03-03/",
       "title": "Full moon in Virgo — March 3, 2026",
-      "anchor": "2026-03-03T11:37:57.766Z",
+      "anchor": "2026-03-03T11:37:57.684Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -322,7 +322,7 @@
       "id": "full-moon-2026-05-01",
       "path": "/full-moon/2026-05-01/",
       "title": "Full moon in Scorpio — May 1, 2026",
-      "anchor": "2026-05-01T17:23:10.016Z",
+      "anchor": "2026-05-01T17:23:09.934Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -502,7 +502,7 @@
       "id": "jupiter-trine-neptune-2026-07-20",
       "path": "/events/jupiter-trine-neptune-2026-07-20/",
       "title": "Jupiter trine Neptune — July 20, 2026",
-      "anchor": "2026-07-20T07:47:59.158Z",
+      "anchor": "2026-07-20T07:47:59.076Z",
       "family": "aspect",
       "subtype": "trine",
       "bodies": [
@@ -760,7 +760,7 @@
       "id": "new-moon-2026-10-10",
       "path": "/new-moon/2026-10-10/",
       "title": "New moon in Libra — October 10, 2026",
-      "anchor": "2026-10-10T15:50:02.067Z",
+      "anchor": "2026-10-10T15:50:02.149Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -795,7 +795,7 @@
       "id": "full-moon-2026-10-26",
       "path": "/full-moon/2026-10-26/",
       "title": "Full moon in Taurus — October 26, 2026",
-      "anchor": "2026-10-26T04:11:44.937Z",
+      "anchor": "2026-10-26T04:11:45.019Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -813,7 +813,7 @@
       "id": "new-moon-2026-11-09",
       "path": "/new-moon/2026-11-09/",
       "title": "New moon in Scorpio — November 9, 2026",
-      "anchor": "2026-11-09T07:02:05.187Z",
+      "anchor": "2026-11-09T07:02:05.269Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -831,7 +831,7 @@
       "id": "full-moon-2026-11-24",
       "path": "/full-moon/2026-11-24/",
       "title": "Full moon in Gemini — November 24, 2026",
-      "anchor": "2026-11-24T14:53:35.038Z",
+      "anchor": "2026-11-24T14:53:35.120Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -849,7 +849,7 @@
       "id": "uranus-trine-pluto-2026-11-29",
       "path": "/events/uranus-trine-pluto-2026-11-29/",
       "title": "Uranus trine Pluto — November 29, 2026",
-      "anchor": "2026-11-29T11:27:06.909Z",
+      "anchor": "2026-11-29T11:27:06.991Z",
       "family": "aspect",
       "subtype": "trine",
       "bodies": [
@@ -868,7 +868,7 @@
       "id": "new-moon-2026-12-09",
       "path": "/new-moon/2026-12-09/",
       "title": "New moon in Sagittarius — December 9, 2026",
-      "anchor": "2026-12-09T00:51:52.069Z",
+      "anchor": "2026-12-09T00:51:52.151Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -886,7 +886,7 @@
       "id": "full-moon-2026-12-24",
       "path": "/full-moon/2026-12-24/",
       "title": "Full moon in Cancer — December 24, 2026",
-      "anchor": "2026-12-24T01:28:16.508Z",
+      "anchor": "2026-12-24T01:28:16.590Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -904,7 +904,7 @@
       "id": "new-moon-2027-01-07",
       "path": "/new-moon/2027-01-07/",
       "title": "New moon in Capricorn — January 7, 2027",
-      "anchor": "2027-01-07T20:24:25.986Z",
+      "anchor": "2027-01-07T20:24:26.069Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -940,7 +940,7 @@
       "id": "uranus-sextile-neptune-2027-01-15",
       "path": "/events/uranus-sextile-neptune-2027-01-15/",
       "title": "Uranus sextile Neptune — January 15, 2027",
-      "anchor": "2027-01-15T07:21:23.697Z",
+      "anchor": "2027-01-15T07:21:23.862Z",
       "family": "aspect",
       "subtype": "sextile",
       "bodies": [
@@ -959,7 +959,7 @@
       "id": "full-moon-2027-01-22",
       "path": "/full-moon/2027-01-22/",
       "title": "Full moon in Leo — January 22, 2027",
-      "anchor": "2027-01-22T12:17:21.420Z",
+      "anchor": "2027-01-22T12:17:21.585Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -977,7 +977,7 @@
       "id": "new-moon-2027-02-06",
       "path": "/new-moon/2027-02-06/",
       "title": "New moon in Aquarius — February 6, 2027",
-      "anchor": "2027-02-06T15:56:08.489Z",
+      "anchor": "2027-02-06T15:56:08.653Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -1049,7 +1049,7 @@
       "id": "full-moon-2027-02-20",
       "path": "/full-moon/2027-02-20/",
       "title": "Full moon in Virgo — February 20, 2027",
-      "anchor": "2027-02-20T23:23:37.537Z",
+      "anchor": "2027-02-20T23:23:37.619Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -1067,7 +1067,7 @@
       "id": "new-moon-2027-03-08",
       "path": "/new-moon/2027-03-08/",
       "title": "New moon in Pisces — March 8, 2027",
-      "anchor": "2027-03-08T09:29:30.885Z",
+      "anchor": "2027-03-08T09:29:31.050Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -1085,7 +1085,7 @@
       "id": "full-moon-2027-03-22",
       "path": "/full-moon/2027-03-22/",
       "title": "Full moon in Libra — March 22, 2027",
-      "anchor": "2027-03-22T10:43:48.093Z",
+      "anchor": "2027-03-22T10:43:48.340Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -1103,7 +1103,7 @@
       "id": "jupiter-trine-saturn-2027-04-03",
       "path": "/events/jupiter-trine-saturn-2027-04-03/",
       "title": "Jupiter trine Saturn — April 3, 2027",
-      "anchor": "2027-04-03T13:23:03.150Z",
+      "anchor": "2027-04-03T13:23:03.398Z",
       "family": "aspect",
       "subtype": "trine",
       "bodies": [
@@ -1122,7 +1122,7 @@
       "id": "new-moon-2027-04-06",
       "path": "/new-moon/2027-04-06/",
       "title": "New moon in Aries — April 6, 2027",
-      "anchor": "2027-04-06T23:51:11.913Z",
+      "anchor": "2027-04-06T23:51:12.161Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -1140,7 +1140,7 @@
       "id": "full-moon-2027-04-20",
       "path": "/full-moon/2027-04-20/",
       "title": "Full moon in Scorpio — April 20, 2027",
-      "anchor": "2027-04-20T22:27:11.744Z",
+      "anchor": "2027-04-20T22:27:11.909Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -1158,7 +1158,7 @@
       "id": "new-moon-2027-05-06",
       "path": "/new-moon/2027-05-06/",
       "title": "New moon in Taurus — May 6, 2027",
-      "anchor": "2027-05-06T10:58:39.881Z",
+      "anchor": "2027-05-06T10:58:40.128Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -1176,7 +1176,7 @@
       "id": "full-moon-2027-05-20",
       "path": "/full-moon/2027-05-20/",
       "title": "Full moon in Scorpio — May 20, 2027",
-      "anchor": "2027-05-20T10:59:04.434Z",
+      "anchor": "2027-05-20T10:59:04.599Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -1194,7 +1194,7 @@
       "id": "new-moon-2027-06-04",
       "path": "/new-moon/2027-06-04/",
       "title": "New moon in Gemini — June 4, 2027",
-      "anchor": "2027-06-04T19:40:22.511Z",
+      "anchor": "2027-06-04T19:40:22.676Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -1212,7 +1212,7 @@
       "id": "uranus-sextile-neptune-2027-06-06",
       "path": "/events/uranus-sextile-neptune-2027-06-06/",
       "title": "Uranus sextile Neptune — June 6, 2027",
-      "anchor": "2027-06-06T12:03:37.280Z",
+      "anchor": "2027-06-06T12:03:37.528Z",
       "family": "aspect",
       "subtype": "sextile",
       "bodies": [
@@ -1249,7 +1249,7 @@
       "id": "uranus-trine-pluto-2027-06-15",
       "path": "/events/uranus-trine-pluto-2027-06-15/",
       "title": "Uranus trine Pluto — June 15, 2027",
-      "anchor": "2027-06-15T08:01:32.338Z",
+      "anchor": "2027-06-15T08:01:32.585Z",
       "family": "aspect",
       "subtype": "trine",
       "bodies": [
@@ -1268,7 +1268,7 @@
       "id": "full-moon-2027-06-19",
       "path": "/full-moon/2027-06-19/",
       "title": "Full moon in Sagittarius — June 19, 2027",
-      "anchor": "2027-06-19T00:44:24.485Z",
+      "anchor": "2027-06-19T00:44:24.732Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -1286,7 +1286,7 @@
       "id": "neptune-sextile-pluto-2027-06-28",
       "path": "/events/neptune-sextile-pluto-2027-06-28/",
       "title": "Neptune sextile Pluto — June 28, 2027",
-      "anchor": "2027-06-28T20:34:28.395Z",
+      "anchor": "2027-06-28T20:34:28.560Z",
       "family": "aspect",
       "subtype": "sextile",
       "bodies": [
@@ -1305,7 +1305,7 @@
       "id": "new-moon-2027-07-04",
       "path": "/new-moon/2027-07-04/",
       "title": "New moon in Cancer — July 4, 2027",
-      "anchor": "2027-07-04T03:02:05.407Z",
+      "anchor": "2027-07-04T03:02:05.654Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -1323,7 +1323,7 @@
       "id": "jupiter-trine-saturn-2027-07-11",
       "path": "/events/jupiter-trine-saturn-2027-07-11/",
       "title": "Jupiter trine Saturn — July 11, 2027",
-      "anchor": "2027-07-11T22:45:54.902Z",
+      "anchor": "2027-07-11T22:45:55.067Z",
       "family": "aspect",
       "subtype": "trine",
       "bodies": [
@@ -1342,7 +1342,7 @@
       "id": "full-moon-2027-07-18",
       "path": "/full-moon/2027-07-18/",
       "title": "Full moon in Capricorn — July 18, 2027",
-      "anchor": "2027-07-18T15:44:58.186Z",
+      "anchor": "2027-07-18T15:44:58.351Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -1395,7 +1395,7 @@
       "id": "new-moon-2027-08-02",
       "path": "/new-moon/2027-08-02/",
       "title": "New moon in Leo — August 2, 2027",
-      "anchor": "2027-08-02T10:05:14.949Z",
+      "anchor": "2027-08-02T10:05:15.113Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -1449,7 +1449,7 @@
       "id": "full-moon-2027-08-17",
       "path": "/full-moon/2027-08-17/",
       "title": "Full moon in Aquarius — August 17, 2027",
-      "anchor": "2027-08-17T07:28:42.216Z",
+      "anchor": "2027-08-17T07:28:42.380Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -1467,7 +1467,7 @@
       "id": "new-moon-2027-08-31",
       "path": "/new-moon/2027-08-31/",
       "title": "New moon in Virgo — August 31, 2027",
-      "anchor": "2027-08-31T17:41:12.884Z",
+      "anchor": "2027-08-31T17:41:13.048Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -1485,7 +1485,7 @@
       "id": "jupiter-square-uranus-2027-09-10",
       "path": "/events/jupiter-square-uranus-2027-09-10/",
       "title": "Jupiter square Uranus — September 10, 2027",
-      "anchor": "2027-09-10T16:36:59.649Z",
+      "anchor": "2027-09-10T16:36:59.814Z",
       "family": "aspect",
       "subtype": "square",
       "bodies": [
@@ -1504,7 +1504,7 @@
       "id": "full-moon-2027-09-15",
       "path": "/full-moon/2027-09-15/",
       "title": "Full moon in Pisces — September 15, 2027",
-      "anchor": "2027-09-15T23:03:32.886Z",
+      "anchor": "2027-09-15T23:03:33.051Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -1522,7 +1522,7 @@
       "id": "new-moon-2027-09-30",
       "path": "/new-moon/2027-09-30/",
       "title": "New moon in Libra — September 30, 2027",
-      "anchor": "2027-09-30T02:36:05.130Z",
+      "anchor": "2027-09-30T02:36:05.212Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -1687,7 +1687,7 @@
       "id": "full-moon-2026-01-03",
       "path": "/full-moon/2026-01-03/",
       "title": "Full moon in Cancer — January 3, 2026",
-      "anchor": "2026-01-03T10:02:55.945Z",
+      "anchor": "2026-01-03T10:02:55.863Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -1704,7 +1704,7 @@
       "id": "new-moon-2026-01-18",
       "path": "/new-moon/2026-01-18/",
       "title": "New moon in Capricorn — January 18, 2026",
-      "anchor": "2026-01-18T19:52:01.818Z",
+      "anchor": "2026-01-18T19:52:01.736Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -1721,7 +1721,7 @@
       "id": "saturn-sextile-uranus-2026-01-20",
       "path": "/events/saturn-sextile-uranus-2026-01-20/",
       "title": "Saturn sextile Uranus — January 20, 2026",
-      "anchor": "2026-01-20T05:44:16.300Z",
+      "anchor": "2026-01-20T05:44:16.218Z",
       "family": "aspect",
       "subtype": "sextile",
       "bodies": [
@@ -1755,7 +1755,7 @@
       "id": "full-moon-2026-02-01",
       "path": "/full-moon/2026-02-01/",
       "title": "Full moon in Leo — February 1, 2026",
-      "anchor": "2026-02-01T22:09:17.609Z",
+      "anchor": "2026-02-01T22:09:17.527Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -1804,7 +1804,7 @@
       "id": "new-moon-2026-02-17",
       "path": "/new-moon/2026-02-17/",
       "title": "New moon in Aquarius — February 17, 2026",
-      "anchor": "2026-02-17T12:01:12.426Z",
+      "anchor": "2026-02-17T12:01:12.344Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -1889,7 +1889,7 @@
       "id": "full-moon-2026-03-03",
       "path": "/full-moon/2026-03-03/",
       "title": "Full moon in Virgo — March 3, 2026",
-      "anchor": "2026-03-03T11:37:57.766Z",
+      "anchor": "2026-03-03T11:37:57.684Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -2023,7 +2023,7 @@
       "id": "full-moon-2026-05-01",
       "path": "/full-moon/2026-05-01/",
       "title": "Full moon in Scorpio — May 1, 2026",
-      "anchor": "2026-05-01T17:23:10.016Z",
+      "anchor": "2026-05-01T17:23:09.934Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -2225,7 +2225,7 @@
       "id": "jupiter-trine-neptune-2026-07-20",
       "path": "/events/jupiter-trine-neptune-2026-07-20/",
       "title": "Jupiter trine Neptune — July 20, 2026",
-      "anchor": "2026-07-20T07:47:59.158Z",
+      "anchor": "2026-07-20T07:47:59.076Z",
       "family": "aspect",
       "subtype": "trine",
       "bodies": [
@@ -2516,7 +2516,7 @@
       "id": "new-moon-2026-10-10",
       "path": "/new-moon/2026-10-10/",
       "title": "New moon in Libra — October 10, 2026",
-      "anchor": "2026-10-10T15:50:02.067Z",
+      "anchor": "2026-10-10T15:50:02.149Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -2565,7 +2565,7 @@
       "id": "full-moon-2026-10-26",
       "path": "/full-moon/2026-10-26/",
       "title": "Full moon in Taurus — October 26, 2026",
-      "anchor": "2026-10-26T04:11:44.937Z",
+      "anchor": "2026-10-26T04:11:45.019Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -2582,7 +2582,7 @@
       "id": "new-moon-2026-11-09",
       "path": "/new-moon/2026-11-09/",
       "title": "New moon in Scorpio — November 9, 2026",
-      "anchor": "2026-11-09T07:02:05.187Z",
+      "anchor": "2026-11-09T07:02:05.269Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -2631,7 +2631,7 @@
       "id": "full-moon-2026-11-24",
       "path": "/full-moon/2026-11-24/",
       "title": "Full moon in Gemini — November 24, 2026",
-      "anchor": "2026-11-24T14:53:35.038Z",
+      "anchor": "2026-11-24T14:53:35.120Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -2648,7 +2648,7 @@
       "id": "uranus-trine-pluto-2026-11-29",
       "path": "/events/uranus-trine-pluto-2026-11-29/",
       "title": "Uranus trine Pluto — November 29, 2026",
-      "anchor": "2026-11-29T11:27:06.909Z",
+      "anchor": "2026-11-29T11:27:06.991Z",
       "family": "aspect",
       "subtype": "trine",
       "bodies": [
@@ -2666,7 +2666,7 @@
       "id": "new-moon-2026-12-09",
       "path": "/new-moon/2026-12-09/",
       "title": "New moon in Sagittarius — December 9, 2026",
-      "anchor": "2026-12-09T00:51:52.069Z",
+      "anchor": "2026-12-09T00:51:52.151Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -2731,7 +2731,7 @@
       "id": "full-moon-2026-12-24",
       "path": "/full-moon/2026-12-24/",
       "title": "Full moon in Cancer — December 24, 2026",
-      "anchor": "2026-12-24T01:28:16.508Z",
+      "anchor": "2026-12-24T01:28:16.590Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -2748,7 +2748,7 @@
       "id": "new-moon-2027-01-07",
       "path": "/new-moon/2027-01-07/",
       "title": "New moon in Capricorn — January 7, 2027",
-      "anchor": "2027-01-07T20:24:25.986Z",
+      "anchor": "2027-01-07T20:24:26.069Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -2781,7 +2781,7 @@
       "id": "uranus-sextile-neptune-2027-01-15",
       "path": "/events/uranus-sextile-neptune-2027-01-15/",
       "title": "Uranus sextile Neptune — January 15, 2027",
-      "anchor": "2027-01-15T07:21:23.697Z",
+      "anchor": "2027-01-15T07:21:23.862Z",
       "family": "aspect",
       "subtype": "sextile",
       "bodies": [
@@ -2799,7 +2799,7 @@
       "id": "full-moon-2027-01-22",
       "path": "/full-moon/2027-01-22/",
       "title": "Full moon in Leo — January 22, 2027",
-      "anchor": "2027-01-22T12:17:21.420Z",
+      "anchor": "2027-01-22T12:17:21.585Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -2816,7 +2816,7 @@
       "id": "new-moon-2027-02-06",
       "path": "/new-moon/2027-02-06/",
       "title": "New moon in Aquarius — February 6, 2027",
-      "anchor": "2027-02-06T15:56:08.489Z",
+      "anchor": "2027-02-06T15:56:08.653Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -2899,7 +2899,7 @@
       "id": "full-moon-2027-02-20",
       "path": "/full-moon/2027-02-20/",
       "title": "Full moon in Virgo — February 20, 2027",
-      "anchor": "2027-02-20T23:23:37.537Z",
+      "anchor": "2027-02-20T23:23:37.619Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -2932,7 +2932,7 @@
       "id": "new-moon-2027-03-08",
       "path": "/new-moon/2027-03-08/",
       "title": "New moon in Pisces — March 8, 2027",
-      "anchor": "2027-03-08T09:29:30.885Z",
+      "anchor": "2027-03-08T09:29:31.050Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -2949,7 +2949,7 @@
       "id": "full-moon-2027-03-22",
       "path": "/full-moon/2027-03-22/",
       "title": "Full moon in Libra — March 22, 2027",
-      "anchor": "2027-03-22T10:43:48.093Z",
+      "anchor": "2027-03-22T10:43:48.340Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -2982,7 +2982,7 @@
       "id": "jupiter-trine-saturn-2027-04-03",
       "path": "/events/jupiter-trine-saturn-2027-04-03/",
       "title": "Jupiter trine Saturn — April 3, 2027",
-      "anchor": "2027-04-03T13:23:03.150Z",
+      "anchor": "2027-04-03T13:23:03.398Z",
       "family": "aspect",
       "subtype": "trine",
       "bodies": [
@@ -3000,7 +3000,7 @@
       "id": "new-moon-2027-04-06",
       "path": "/new-moon/2027-04-06/",
       "title": "New moon in Aries — April 6, 2027",
-      "anchor": "2027-04-06T23:51:11.913Z",
+      "anchor": "2027-04-06T23:51:12.161Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -3033,7 +3033,7 @@
       "id": "full-moon-2027-04-20",
       "path": "/full-moon/2027-04-20/",
       "title": "Full moon in Scorpio — April 20, 2027",
-      "anchor": "2027-04-20T22:27:11.744Z",
+      "anchor": "2027-04-20T22:27:11.909Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -3050,7 +3050,7 @@
       "id": "new-moon-2027-05-06",
       "path": "/new-moon/2027-05-06/",
       "title": "New moon in Taurus — May 6, 2027",
-      "anchor": "2027-05-06T10:58:39.881Z",
+      "anchor": "2027-05-06T10:58:40.128Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -3083,7 +3083,7 @@
       "id": "full-moon-2027-05-20",
       "path": "/full-moon/2027-05-20/",
       "title": "Full moon in Scorpio — May 20, 2027",
-      "anchor": "2027-05-20T10:59:04.434Z",
+      "anchor": "2027-05-20T10:59:04.599Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -3100,7 +3100,7 @@
       "id": "new-moon-2027-06-04",
       "path": "/new-moon/2027-06-04/",
       "title": "New moon in Gemini — June 4, 2027",
-      "anchor": "2027-06-04T19:40:22.511Z",
+      "anchor": "2027-06-04T19:40:22.676Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -3117,7 +3117,7 @@
       "id": "uranus-sextile-neptune-2027-06-06",
       "path": "/events/uranus-sextile-neptune-2027-06-06/",
       "title": "Uranus sextile Neptune — June 6, 2027",
-      "anchor": "2027-06-06T12:03:37.280Z",
+      "anchor": "2027-06-06T12:03:37.528Z",
       "family": "aspect",
       "subtype": "sextile",
       "bodies": [
@@ -3151,7 +3151,7 @@
       "id": "uranus-trine-pluto-2027-06-15",
       "path": "/events/uranus-trine-pluto-2027-06-15/",
       "title": "Uranus trine Pluto — June 15, 2027",
-      "anchor": "2027-06-15T08:01:32.338Z",
+      "anchor": "2027-06-15T08:01:32.585Z",
       "family": "aspect",
       "subtype": "trine",
       "bodies": [
@@ -3169,7 +3169,7 @@
       "id": "full-moon-2027-06-19",
       "path": "/full-moon/2027-06-19/",
       "title": "Full moon in Sagittarius — June 19, 2027",
-      "anchor": "2027-06-19T00:44:24.485Z",
+      "anchor": "2027-06-19T00:44:24.732Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -3186,7 +3186,7 @@
       "id": "neptune-sextile-pluto-2027-06-28",
       "path": "/events/neptune-sextile-pluto-2027-06-28/",
       "title": "Neptune sextile Pluto — June 28, 2027",
-      "anchor": "2027-06-28T20:34:28.395Z",
+      "anchor": "2027-06-28T20:34:28.560Z",
       "family": "aspect",
       "subtype": "sextile",
       "bodies": [
@@ -3204,7 +3204,7 @@
       "id": "new-moon-2027-07-04",
       "path": "/new-moon/2027-07-04/",
       "title": "New moon in Cancer — July 4, 2027",
-      "anchor": "2027-07-04T03:02:05.407Z",
+      "anchor": "2027-07-04T03:02:05.654Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -3253,7 +3253,7 @@
       "id": "jupiter-trine-saturn-2027-07-11",
       "path": "/events/jupiter-trine-saturn-2027-07-11/",
       "title": "Jupiter trine Saturn — July 11, 2027",
-      "anchor": "2027-07-11T22:45:54.902Z",
+      "anchor": "2027-07-11T22:45:55.067Z",
       "family": "aspect",
       "subtype": "trine",
       "bodies": [
@@ -3271,7 +3271,7 @@
       "id": "full-moon-2027-07-18",
       "path": "/full-moon/2027-07-18/",
       "title": "Full moon in Capricorn — July 18, 2027",
-      "anchor": "2027-07-18T15:44:58.186Z",
+      "anchor": "2027-07-18T15:44:58.351Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -3321,7 +3321,7 @@
       "id": "new-moon-2027-08-02",
       "path": "/new-moon/2027-08-02/",
       "title": "New moon in Leo — August 2, 2027",
-      "anchor": "2027-08-02T10:05:14.949Z",
+      "anchor": "2027-08-02T10:05:15.113Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -3388,7 +3388,7 @@
       "id": "full-moon-2027-08-17",
       "path": "/full-moon/2027-08-17/",
       "title": "Full moon in Aquarius — August 17, 2027",
-      "anchor": "2027-08-17T07:28:42.216Z",
+      "anchor": "2027-08-17T07:28:42.380Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -3405,7 +3405,7 @@
       "id": "new-moon-2027-08-31",
       "path": "/new-moon/2027-08-31/",
       "title": "New moon in Virgo — August 31, 2027",
-      "anchor": "2027-08-31T17:41:12.884Z",
+      "anchor": "2027-08-31T17:41:13.048Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [
@@ -3422,7 +3422,7 @@
       "id": "jupiter-square-uranus-2027-09-10",
       "path": "/events/jupiter-square-uranus-2027-09-10/",
       "title": "Jupiter square Uranus — September 10, 2027",
-      "anchor": "2027-09-10T16:36:59.649Z",
+      "anchor": "2027-09-10T16:36:59.814Z",
       "family": "aspect",
       "subtype": "square",
       "bodies": [
@@ -3456,7 +3456,7 @@
       "id": "full-moon-2027-09-15",
       "path": "/full-moon/2027-09-15/",
       "title": "Full moon in Pisces — September 15, 2027",
-      "anchor": "2027-09-15T23:03:32.886Z",
+      "anchor": "2027-09-15T23:03:33.051Z",
       "family": "lunation",
       "subtype": "full",
       "bodies": [
@@ -3473,7 +3473,7 @@
       "id": "new-moon-2027-09-30",
       "path": "/new-moon/2027-09-30/",
       "title": "New moon in Libra — September 30, 2027",
-      "anchor": "2027-09-30T02:36:05.130Z",
+      "anchor": "2027-09-30T02:36:05.212Z",
       "family": "lunation",
       "subtype": "new",
       "bodies": [

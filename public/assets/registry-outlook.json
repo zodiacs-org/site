@@ -530,9 +530,9 @@
         },
         "summary": "A modest sky emphasis for this sign, without a strong directional tone. Signal: steady.",
         "primaryFactor": {
-          "id": "ingress:mercury:scorpio:2026-09-30T11:44:48.709Z",
+          "id": "ingress:mercury:scorpio:2026-09-30T11:44:48.730Z",
           "kind": "ingress",
-          "at": "2026-09-30T11:44:48.709Z",
+          "at": "2026-09-30T11:44:48.730Z",
           "bodies": [
             "Mercury"
           ],
@@ -555,9 +555,9 @@
         },
         "factors": [
           {
-            "id": "ingress:mercury:scorpio:2026-09-30T11:44:48.709Z",
+            "id": "ingress:mercury:scorpio:2026-09-30T11:44:48.730Z",
             "kind": "ingress",
-            "at": "2026-09-30T11:44:48.709Z",
+            "at": "2026-09-30T11:44:48.730Z",
             "bodies": [
               "Mercury"
             ],
@@ -1548,9 +1548,9 @@
             "source": "src/data/transits-2026-10.json"
           },
           {
-            "id": "ingress:mercury:scorpio:2026-09-30T11:44:48.709Z",
+            "id": "ingress:mercury:scorpio:2026-09-30T11:44:48.730Z",
             "kind": "ingress",
-            "at": "2026-09-30T11:44:48.709Z",
+            "at": "2026-09-30T11:44:48.730Z",
             "bodies": [
               "Mercury"
             ],

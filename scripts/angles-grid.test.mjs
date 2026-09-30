@@ -21,9 +21,11 @@ import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import './lib/deltat-install.mjs';
-import { e_tilt, MakeTime, SiderealTime } from 'astronomy-engine';
+import { deltaT } from '@zodiacs/engine/deltat';
+import { e_tilt, MakeTime, SetDeltaTFunction, SiderealTime } from 'astronomy-engine';
 import { describe, expect, it } from 'vitest';
 import { computeChart } from '../src/lib/engine/full';
+import { timeBasis } from '../src/lib/engine/time-basis.mjs';
 
 const corpora = resolve(import.meta.dirname, '../docs/platform/evidence/engine-beyond-swiss/corpora');
 const corpusBytes = readFileSync(resolve(corpora, 'angle-grid-inputs.json'));
@@ -42,6 +44,21 @@ const quantile = (values, p) => {
 const chart = ([utc, latitude, longitude]) => computeChart({
   utc: new Date(utc), latitude, longitude, houseSystem: 'placidus', timeKnown: true,
 });
+/**
+ * Sidereal time (hours) and the true obliquity at an instant, as the engine
+ * takes them: since 0.1.1-rc.15 at the UT1 of its time basis (for 1972 to
+ * 2027-10-02, UTC plus IERS UT1 − UTC), with the basis's ΔT held for the call.
+ */
+const onEngineClock = (utc) => {
+  const basis = timeBasis(Date.parse(utc), 'utc');
+  SetDeltaTFunction(() => basis.deltaT.seconds);
+  try {
+    const time = MakeTime(basis.ut1Days);
+    return { gastHours: SiderealTime(time), obliquity: e_tilt(time).tobl };
+  } finally {
+    SetDeltaTFunction(deltaT);
+  }
+};
 /** The ascendant for a sidereal time (hours) and obliquity (degrees), the arbiter's formula. */
 const ascendant = (gastHours, obliquity, latitude, longitude) => {
   const ramc = (gastHours * 15 + longitude) * RAD;
@@ -89,12 +106,14 @@ describe('the angles against the ERFA arbiter (rule 1b)', () => {
     // The engine's angles are the arbiter's formula on astronomy-engine's
     // sidereal time and true obliquity, so the two stay within 1e-6″.
     const worst = Math.max(...corpus.A.map(([utc, latitude, longitude]) => {
-      const time = MakeTime(new Date(utc));
-      const expected = ascendant(SiderealTime(time), e_tilt(time).tobl, latitude, longitude);
+      const { gastHours, obliquity } = onEngineClock(utc);
+      const expected = ascendant(gastHours, obliquity, latitude, longitude);
       return Math.abs(arcsec(chart([utc, latitude, longitude]).angles.asc, expected));
     }));
     expect(worst).toBeLessThan(1e-6);
-  });
+    // 3,128 charts, each with its clock: 2.4 s alone, past the default 5 s when
+    // the suite runs in parallel.
+  }, 30_000);
 });
 
 describe('Placidus near the polar circle (rule 1h)', () => {

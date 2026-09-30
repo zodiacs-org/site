@@ -199,10 +199,11 @@ describe('birthplace local mean time', () => {
   });
 
   it('treats a whole-minute mean time as local mean time too', () => {
-    // 38.75° E is exactly +2:35:00: no seconds, so no lmt flag, but still the birthplace clock.
+    // 38.75° E is exactly +2:35:00: no seconds, but still the birthplace clock, and since
+    // engine rc.15 `lmt` says a local mean time read the wall time, not that it ran to seconds.
     const resolved = resolveLocalToUtc('1860-06-15', '12:00', 'Africa/Addis_Ababa', { longitude: 38.75 });
     expect(resolved.offsetMinutes).toBe(155);
-    expect(resolved.flags).toEqual([]);
+    expect(resolved.flags).toEqual(['lmt']);
     expect(resolved.localMeanTime?.longitude).toBe(38.75);
   });
 
@@ -216,7 +217,11 @@ describe('birthplace local mean time', () => {
   it('ignores a longitude hours away from the zone, as a birthplace in another zone', () => {
     // Toronto's longitude under Juneau's zone is 3 h 40 min from Juneau's mean time.
     const resolved = resolveLocalToUtc('1867-10-18', '12:00', 'America/Juneau', { longitude: -79.38 });
-    expect(resolved).toEqual(resolveLocalToUtc('1867-10-18', '12:00', 'America/Juneau'));
+    // The zone's clock, with `lmt`: the zone's own mean time read the wall time,
+    // which only a reading with a longitude claims.
+    expect({ ...resolved, flags: resolved.flags.filter((flag) => flag !== 'lmt') })
+      .toEqual(resolveLocalToUtc('1867-10-18', '12:00', 'America/Juneau'));
+    expect(resolved.flags).toEqual(['lmt']);
     // The widest real case in the city index, Gar under Shanghai's zone, is kept.
     expect(resolveLocalToUtc('1890-06-15', '12:00', 'Asia/Shanghai', { longitude: 80.1 }).localMeanTime).toBeDefined();
   });

@@ -246,18 +246,25 @@ production Firewall changes. Do not execute it from this remediation PR.
 
 The API uses `@vercel/firewall` SDK rate-limit IDs. For each rule, the **If**
 condition must be `@vercel/firewall` with the exact Rate limit ID below, set to
-the limit in the table using the default client-IP key. Leave the rule's
-**Then** action at its SDK-rule default. A path-matched Deny rule is wrong: it
-would return 403 instead of letting the endpoint return 429 with `Retry-After`.
+the requests per 60 seconds the table gives, using the default client-IP key.
+Leave the rule's **Then** action at its SDK-rule default. A path-matched Deny
+rule is wrong: it would return 403 instead of letting the endpoint return 429
+with `Retry-After`.
 
-| Rate limit ID | Endpoint | Limit |
-| --- | --- | --- |
-| `zodiacs-email-subscribe` | `/api/email/subscribe` | 10 requests per 60 seconds |
-| `registry-aura-holdings-v1` | `/api/aura-holdings` | 10 requests per 60 seconds |
-| `zodiacs-wallet-birth` | `/api/wallet-birth` | 10 requests per 60 seconds |
-| `zodiacs-transit-calendar` | `/api/calendar/transits` | 10 requests per 60 seconds |
-| `zodiacs-compute-api` | the six compute endpoints, `/api/v1/{chart,positions,houses,events,time,sky-fact}` (served by `api/compatibility.ts`) | 40 requests per 60 seconds |
-| `zodiacs-compute-events` | `/api/v1/events` only, counted in addition to `zodiacs-compute-api` | 10 requests per 60 seconds |
+| Rate limit ID | Endpoint | Requests per 60 s |
+| --- | --- | ---: |
+| `zodiacs-email-subscribe` | `/api/email/subscribe` | 10 |
+| `registry-aura-holdings-v1` | `/api/aura-holdings` | 10 |
+| `zodiacs-wallet-birth` | `/api/wallet-birth` | 10 |
+| `zodiacs-transit-calendar` | `/api/calendar/transits` | 120 |
+| `zodiacs-compute-api` | the six compute endpoints, `/api/v1/{chart,positions,houses,events,time,sky-fact}` (served by `api/compatibility.ts`) | 40 |
+| `zodiacs-compute-events` | `/api/v1/events` only, counted in addition to `zodiacs-compute-api` | 10 |
+
+The calendar's limit is higher because calendar apps fetch subscribed feeds
+from a few shared server addresses. Every subscriber's feed has its own URL,
+and the CDN holds each for six hours, so most of a provider's fetches reach
+the function and count against the same address. 120 a minute still holds one
+script to two requests a second.
 
 The compute API needs both rules, and unlike the four endpoints above it fails
 closed: until both exist (the SDK reports `not-found`), or whenever the check

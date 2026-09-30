@@ -4,24 +4,27 @@
   "arbiters": {
     "positions": "NASA JPL Horizons API 1.2, DE441: observer-centred apparent ecliptic longitude of date (QUANTITIES 31, CENTER 500@399, airless, TIME_TYPE TT); Mars to Pluto as system barycentres (NAIF 4-9).",
     "trueNode": "Ascending node of the Moon's osculating orbit from Horizons DE441 geometric geocentric state vectors (VECTORS, ICRF): h = r x v, rotated with ERFA pnm06a and the true obliquity into the true ecliptic and equinox of date; speed by central difference over +-0.001 day.",
-    "angles": "ERFA 2.0.1 (pyerfa 2.0.1.5): GAST = gst06a with UT1 taken as the instant, as the engine does; true obliquity = obl06 + Delta-epsilon of nut06a; ASC, MC and Placidus by the conformance suite's L2 construction (zodiacs-org/engine 8c4946b1, CC0); whole-sign cusps from the ASC where |latitude| >= 90 deg - true obliquity.",
+    "angles": "ERFA 2.0.1 (pyerfa 2.0.1.5): GAST = gst06a at the engine's UT1 and TT for the instant; true obliquity = obl06 + Delta-epsilon of nut06a; ASC, MC and Placidus by the conformance suite's L2 construction (zodiacs-org/engine 8c4946b1, CC0); whole-sign cusps from the ASC where |latitude| >= 90 deg - true obliquity.",
     "events": "Roots of the Horizons longitude interpolated from a uniform TT table (nine-point Lagrange), refined to 1e-9 day; each band is the connected set on the root's monotonic branch where the longitude is within the predeclared budget of its level, with 1 s of padding each side."
   },
-  "clock": "Each instant is evaluated at the engine's own TT for it: UT is the instant, TT = UT + Delta T of model zodiacs-deltat/1 (table 6371988c510a1c6c), as astronomy-engine's MakeTime reads it with the engine's clock installed (tools/engine-clock.ts). A comparison therefore measures positions and angles, not Delta T; the clock is checked against the IERS in docs/platform/evidence/deltat-2026-09-25/.",
+  "clock": "Each instant is evaluated at the engine's own UT1 and TT for it, as the engine makes astronomy-engine's time (tools/engine-clock.ts): from 1972-01-01 to 2027-10-02 the instant is read as UTC, with TT = UTC + (TAI - UTC) + 32.184 s from the IERS leap seconds and UT1 = UTC + (UT1 - UTC) (basis iers-utc/1, table 064d98b4a531053a); at any other instant UT1 is the instant and TT = UT1 + Delta T of model zodiacs-deltat/1 (table 6371988c510a1c6c). A comparison therefore measures positions and angles, not the clock; the clock is checked against the IERS in docs/platform/evidence/deltat-2026-09-25/.",
   "engineClock": {
-    "engineVersion": "0.1.1-rc.14",
+    "engineVersion": "0.1.1-rc.15",
     "deltaTModel": "zodiacs-deltat/1",
     "deltaTTable": "2026-09-24",
-    "deltaTTableDigest": "6371988c510a1c6c"
+    "deltaTTableDigest": "6371988c510a1c6c",
+    "iersModel": "iers-utc/1",
+    "iersTable": "2026-09-24",
+    "iersTableDigest": "064d98b4a531053a"
   },
   "generator": {
     "command": "python3 docs/engine-validation/independent-references/tools/build.py",
     "sources": {
       "docs/engine-validation/independent-references/cases.json": "eecfa25c5408b4c11baf5f2f73df93ba333850f7ba00c3ae0a1f0cab8d60520e",
-      "docs/engine-validation/independent-references/tools/build.py": "33ac83f46f24cf889ec570cbad1e37c7e9d61057111daf99478c157db4506184",
-      "docs/engine-validation/independent-references/tools/engine-clock.ts": "aa7f7724082b3798eb4728fa60b1e630612773e732bb236b97bc98348ce9d1a7",
+      "docs/engine-validation/independent-references/tools/build.py": "de1138a4cad5da3644a9674605a9b0857e2fa5e1c08df3426bec2916776cc4f8",
+      "docs/engine-validation/independent-references/tools/engine-clock.ts": "37d5ccc0e744a88220c98249ae28207a760fbabcecd0b3f3c610ef2b2a97b408",
       "docs/engine-validation/independent-references/tools/geometry.py": "c7ec362ff44a7ffa7d88229695f6b9d9b5af74b8289b268888ed5b5342f7147c",
-      "docs/engine-validation/independent-references/tools/horizons.py": "344a4e4bce3bd6efb0d7db147e554af172a4fd59205fb290a6db209aed9c50d8",
+      "docs/engine-validation/independent-references/tools/horizons.py": "c734a652b01c8f78efe1ed696d0f1ffb28737e24debe47f9b3e60b1ec0478a85",
       "docs/engine-validation/independent-references/tools/series.py": "dfc0d9e14b417e534ca327ef92402fc0b0b4c42418154e9ee02be14682d35490"
     },
     "pyerfa": "2.0.1.5",
@@ -29,245 +32,245 @@
   },
   "horizonsManifest": {
     "path": "docs/engine-validation/independent-references/horizons/MANIFEST.json",
-    "sha256": "b4088ed1a8d7dbaab5f2fd2e2262cc9f99ff85cfcb75931bd715021e39bb4355"
+    "sha256": "3eb362a7eb57bb921d8519453ff03f94344dede7e86a8cd2c9722fce27fb3a8f"
   },
   "noSwiss": "No Swiss Ephemeris code or output is read or reproduced here.",
   "gates": {
     "path": "src/lib/engine/fixtures/independent-lunar-return-policy.json",
-    "sha256": "c61e4162d580dfce8cbebd90dfa08313a7b442c879a711787e93c293abb7877b"
+    "sha256": "5db9f2ef1491fc96896d2d610bbe91a84b0743dd30b449f923e8c2d7aafa5ba5"
   },
   "cases": [
     {
       "id": "L-modern-a",
-      "natalLongitudeDegrees": 25.5935981,
-      "independentChartUTC": "2026-03-20T23:14:55.147Z",
+      "natalLongitudeDegrees": 25.5936412,
+      "independentChartUTC": "2026-03-20T23:14:55.358Z",
       "chartAtIndependentInstant": {
         "positions": {
           "Sun": {
-            "longitudeDegrees": 0.351274
+            "longitudeDegrees": 0.3512769
           },
           "Moon": {
-            "longitudeDegrees": 25.5935982
+            "longitudeDegrees": 25.5936412
           },
           "Mercury": {
             "longitudeDegrees": 338.4919181
           },
           "Venus": {
-            "longitudeDegrees": 18.0222802
+            "longitudeDegrees": 18.0222839
           },
           "Mars": {
-            "longitudeDegrees": 344.466903
+            "longitudeDegrees": 344.4669054
           },
           "Jupiter": {
-            "longitudeDegrees": 105.2434981
+            "longitudeDegrees": 105.2434982
           },
           "Saturn": {
-            "longitudeDegrees": 4.1714423
+            "longitudeDegrees": 4.1714426
           },
           "Uranus": {
-            "longitudeDegrees": 58.31791
+            "longitudeDegrees": 58.3179102
           },
           "Neptune": {
-            "longitudeDegrees": 1.7869031
+            "longitudeDegrees": 1.7869032
           },
           "Pluto": {
-            "longitudeDegrees": 305.012771
+            "longitudeDegrees": 305.0127711
           },
           "North Node": {
-            "longitudeDegrees": 338.8919759682,
-            "speedDegreesPerDay": -0.0495757201
+            "longitudeDegrees": 338.89197582,
+            "speedDegreesPerDay": -0.0495757441
           }
         },
         "ascmc": [
-          357.2316513826,
-          267.9164713621
+          357.2330162243,
+          267.9174990778
         ],
         "cuspsDegrees": [
-          357.2316513826,
-          31.9117732749,
-          61.5902054831,
-          87.9164713621,
-          114.0163104033,
-          143.0888746279,
-          177.2316513826,
-          211.9117732749,
-          241.5902054831,
-          267.9164713621,
-          294.0163104033,
-          323.0888746279
+          357.2330162243,
+          31.9130163618,
+          61.5912963379,
+          87.9174990778,
+          114.0173865627,
+          143.0900968913,
+          177.2330162243,
+          211.9130163618,
+          241.5912963379,
+          267.9174990778,
+          294.0173865627,
+          323.0900968913
         ],
         "expectedProductHouseSystem": "placidus"
       },
       "crossings": [
         {
-          "expectedMilliseconds": 1774048495147,
+          "expectedMilliseconds": 1774048495358,
           "timeScale": "UTC",
           "fixedExternalTargetAllowedMilliseconds": [
-            1774047593767,
-            1774049396434
+            1774047593979,
+            1774049396646
           ],
           "natalDerivedAllowedMilliseconds": [
-            1774046693296,
-            1774050296630
+            1774046693508,
+            1774050296842
           ],
           "retrograde": false,
-          "speedDegreesPerDay": 14.3946771401
+          "speedDegreesPerDay": 14.3946775611
         }
       ],
       "relocatedChartAtIndependentInstant": {
         "positions": {
           "Sun": {
-            "longitudeDegrees": 0.351274
+            "longitudeDegrees": 0.3512769
           },
           "Moon": {
-            "longitudeDegrees": 25.5935982
+            "longitudeDegrees": 25.5936412
           },
           "Mercury": {
             "longitudeDegrees": 338.4919181
           },
           "Venus": {
-            "longitudeDegrees": 18.0222802
+            "longitudeDegrees": 18.0222839
           },
           "Mars": {
-            "longitudeDegrees": 344.466903
+            "longitudeDegrees": 344.4669054
           },
           "Jupiter": {
-            "longitudeDegrees": 105.2434981
+            "longitudeDegrees": 105.2434982
           },
           "Saturn": {
-            "longitudeDegrees": 4.1714423
+            "longitudeDegrees": 4.1714426
           },
           "Uranus": {
-            "longitudeDegrees": 58.31791
+            "longitudeDegrees": 58.3179102
           },
           "Neptune": {
-            "longitudeDegrees": 1.7869031
+            "longitudeDegrees": 1.7869032
           },
           "Pluto": {
-            "longitudeDegrees": 305.012771
+            "longitudeDegrees": 305.0127711
           },
           "North Node": {
-            "longitudeDegrees": 338.8919759682,
-            "speedDegreesPerDay": -0.0495757201
+            "longitudeDegrees": 338.89197582,
+            "speedDegreesPerDay": -0.0495757441
           }
         },
         "ascmc": [
-          239.522506679,
-          185.7692899251
+          239.5232244478,
+          185.7705085474
         ],
         "cuspsDegrees": [
-          239.522506679,
-          273.7498928963,
-          325.3412928872,
-          5.7692899251,
-          30.6090126989,
-          47.1417753103,
-          59.522506679,
-          93.7498928963,
-          145.3412928872,
-          185.7692899251,
-          210.6090126989,
-          227.1417753103
+          239.5232244478,
+          273.7509761569,
+          325.3427845845,
+          5.7705085474,
+          30.6099654929,
+          47.1425707654,
+          59.5232244478,
+          93.7509761569,
+          145.3427845845,
+          185.7705085474,
+          210.6099654929,
+          227.1425707654
         ],
         "expectedProductHouseSystem": "placidus"
       }
     },
     {
       "id": "L-modern-b",
-      "natalLongitudeDegrees": 275.5361672,
-      "independentChartUTC": "2026-03-12T15:11:55.242Z",
+      "natalLongitudeDegrees": 275.5362099,
+      "independentChartUTC": "2026-03-12T15:11:55.499Z",
       "chartAtIndependentInstant": {
         "positions": {
           "Sun": {
-            "longitudeDegrees": 352.0488037
+            "longitudeDegrees": 352.0488073
           },
           "Moon": {
-            "longitudeDegrees": 275.5361671
+            "longitudeDegrees": 275.5362099
           },
           "Mercury": {
-            "longitudeDegrees": 341.9300741
+            "longitudeDegrees": 341.9300712
           },
           "Venus": {
-            "longitudeDegrees": 7.6878672
+            "longitudeDegrees": 7.6878717
           },
           "Mars": {
-            "longitudeDegrees": 337.9084714
+            "longitudeDegrees": 337.9084742
           },
           "Jupiter": {
             "longitudeDegrees": 105.0908791
           },
           "Saturn": {
-            "longitudeDegrees": 3.1368424
+            "longitudeDegrees": 3.1368428
           },
           "Uranus": {
-            "longitudeDegrees": 58.0370987
+            "longitudeDegrees": 58.0370988
           },
           "Neptune": {
-            "longitudeDegrees": 1.4721245
+            "longitudeDegrees": 1.4721247
           },
           "Pluto": {
-            "longitudeDegrees": 304.8284817
+            "longitudeDegrees": 304.8284818
           },
           "North Node": {
-            "longitudeDegrees": 338.896650708,
-            "speedDegreesPerDay": 0.0116808854
+            "longitudeDegrees": 338.8966507495,
+            "speedDegreesPerDay": 0.0116809171
           }
         },
         "ascmc": [
-          292.9636849402,
-          190.3058045618
+          292.9648050658,
+          190.3072544681
         ],
         "cuspsDegrees": [
-          292.9636849402,
-          314.624241144,
-          339.7067005213,
-          10.3058045618,
-          45.7752101524,
-          81.3571051616,
-          112.9636849402,
-          134.624241144,
-          159.7067005213,
-          190.3058045618,
-          225.7752101524,
-          261.3571051616
+          292.9648050658,
+          314.6254119294,
+          339.7080093307,
+          10.3072544681,
+          45.7766529555,
+          81.3583792584,
+          112.9648050658,
+          134.6254119294,
+          159.7080093307,
+          190.3072544681,
+          225.7766529555,
+          261.3583792584
         ],
         "expectedProductHouseSystem": "placidus"
       },
       "crossings": [
         {
-          "expectedMilliseconds": 1773328315242,
+          "expectedMilliseconds": 1773328315499,
           "timeScale": "UTC",
           "fixedExternalTargetAllowedMilliseconds": [
-            1773327236327,
-            1773329393988
+            1773327236584,
+            1773329394244
           ],
           "natalDerivedAllowedMilliseconds": [
-            1773326158243,
-            1773330471561
+            1773326158500,
+            1773330471818
           ],
           "retrograde": false,
-          "speedDegreesPerDay": 12.0241583864
+          "speedDegreesPerDay": 12.0241589267
         },
         {
-          "expectedMilliseconds": 1775690059907,
+          "expectedMilliseconds": 1775690060176,
           "timeScale": "UTC",
           "fixedExternalTargetAllowedMilliseconds": [
-            1775688971247,
-            1775691148467
+            1775688971516,
+            1775691148736
           ],
           "natalDerivedAllowedMilliseconds": [
-            1775687883489,
-            1775692235925
+            1775687883757,
+            1775692236194
           ],
           "retrograde": false,
-          "speedDegreesPerDay": 11.9160398796
+          "speedDegreesPerDay": 11.9160401913
         }
       ]
     },
     {
       "id": "L-wrap",
-      "natalLongitudeDegrees": 360.0,
-      "independentChartUTC": "2026-03-19T04:02:58.498Z",
+      "natalLongitudeDegrees": 359.9999999,
+      "independentChartUTC": "2026-03-19T04:02:58.450Z",
       "chartAtIndependentInstant": {
         "positions": {
           "Sun": {
@@ -306,68 +309,68 @@
           }
         },
         "ascmc": [
-          224.876544025,
-          135.8745654868
+          224.8765847987,
+          135.8746109917
         ],
         "cuspsDegrees": [
-          224.876544025,
-          254.0845942572,
-          284.2840104311,
-          315.8745654868,
-          347.9264043054,
-          18.063326671,
-          44.876544025,
-          74.0845942572,
-          104.2840104311,
-          135.8745654868,
-          167.9264043054,
-          198.063326671
+          224.8765847987,
+          254.0846350818,
+          284.2840529792,
+          315.8746109917,
+          347.926450916,
+          18.0633708829,
+          44.8765847987,
+          74.0846350818,
+          104.2840529792,
+          135.8746109917,
+          167.926450916,
+          198.0633708829
         ],
         "expectedProductHouseSystem": "placidus"
       },
       "crossings": [
         {
-          "expectedMilliseconds": 1773892978498,
+          "expectedMilliseconds": 1773892978450,
           "timeScale": "UTC",
           "fixedExternalTargetAllowedMilliseconds": [
-            1773892051546,
-            1773893905245
+            1773892051497,
+            1773893905196
           ],
           "natalDerivedAllowedMilliseconds": [
-            1773891125387,
-            1773894830786
+            1773891125338,
+            1773894830737
           ],
           "retrograde": false,
-          "speedDegreesPerDay": 13.997961964
+          "speedDegreesPerDay": 13.997961962
         }
       ]
     },
     {
       "id": "L-year-boundary",
-      "natalLongitudeDegrees": 66.7156233,
-      "independentChartUTC": "2026-01-28T08:05:36.172Z",
+      "natalLongitudeDegrees": 66.7156362,
+      "independentChartUTC": "2026-01-28T08:05:36.184Z",
       "chartAtIndependentInstant": {
         "positions": {
           "Sun": {
-            "longitudeDegrees": 308.4058085
+            "longitudeDegrees": 308.4058094
           },
           "Moon": {
-            "longitudeDegrees": 66.7156233
+            "longitudeDegrees": 66.7156361
           },
           "Mercury": {
-            "longitudeDegrees": 313.0445783
+            "longitudeDegrees": 313.0445799
           },
           "Venus": {
-            "longitudeDegrees": 313.5800989
+            "longitudeDegrees": 313.5801001
           },
           "Mars": {
-            "longitudeDegrees": 303.8633282
+            "longitudeDegrees": 303.8633289
           },
           "Jupiter": {
-            "longitudeDegrees": 107.7817849
+            "longitudeDegrees": 107.7817848
           },
           "Saturn": {
-            "longitudeDegrees": 358.2868239
+            "longitudeDegrees": 358.286824
           },
           "Uranus": {
             "longitudeDegrees": 57.4795439
@@ -379,44 +382,44 @@
             "longitudeDegrees": 303.5801198
           },
           "North Node": {
-            "longitudeDegrees": 339.3649151247,
-            "speedDegreesPerDay": -0.0513802485
+            "longitudeDegrees": 339.364915079,
+            "speedDegreesPerDay": -0.0513802669
           }
         },
         "ascmc": [
-          314.8961969051,
-          250.6058003184
+          314.8968084601,
+          250.6061250832
         ],
         "cuspsDegrees": [
-          314.8961969051,
-          15.2953630041,
-          49.2580325751,
-          70.6058003184,
-          88.1801724427,
-          106.8275727049,
-          134.8961969051,
-          195.2953630041,
-          229.2580325751,
-          250.6058003184,
-          268.1801724427,
-          286.8275727049
+          314.8968084601,
+          15.2959428041,
+          49.2584300248,
+          70.6061250832,
+          88.1804883086,
+          106.8279453822,
+          134.8968084601,
+          195.2959428041,
+          229.2584300248,
+          250.6061250832,
+          268.1804883086,
+          286.8279453822
         ],
         "expectedProductHouseSystem": "placidus"
       },
       "crossings": [
         {
-          "expectedMilliseconds": 1769587536172,
+          "expectedMilliseconds": 1769587536184,
           "timeScale": "UTC",
           "fixedExternalTargetAllowedMilliseconds": [
-            1769586638681,
-            1769588433570
+            1769586638693,
+            1769588433582
           ],
           "natalDerivedAllowedMilliseconds": [
-            1769585742095,
-            1769589329873
+            1769585742108,
+            1769589329886
           ],
           "retrograde": false,
-          "speedDegreesPerDay": 14.4571236205
+          "speedDegreesPerDay": 14.4571237506
         }
       ]
     },
@@ -500,48 +503,48 @@
     },
     {
       "id": "L-range-end",
-      "natalLongitudeDegrees": 288.287031,
-      "independentChartUTC": "2199-12-19T09:09:14.508Z",
+      "natalLongitudeDegrees": 288.2870313,
+      "independentChartUTC": "2199-12-19T09:09:14.509Z",
       "chartAtIndependentInstant": {
         "positions": {
           "Sun": {
-            "longitudeDegrees": 267.4783734
+            "longitudeDegrees": 267.4783738
           },
           "Moon": {
-            "longitudeDegrees": 288.287031
+            "longitudeDegrees": 288.2870315
           },
           "Mercury": {
-            "longitudeDegrees": 282.4076746
+            "longitudeDegrees": 282.4076749
           },
           "Venus": {
-            "longitudeDegrees": 239.0668234
+            "longitudeDegrees": 239.0668238
           },
           "Mars": {
-            "longitudeDegrees": 151.9907416
+            "longitudeDegrees": 151.990742
           },
           "Jupiter": {
-            "longitudeDegrees": 332.1259096
+            "longitudeDegrees": 332.12591
           },
           "Saturn": {
-            "longitudeDegrees": 326.9529958
+            "longitudeDegrees": 326.9529962
           },
           "Uranus": {
-            "longitudeDegrees": 87.5263102
+            "longitudeDegrees": 87.5263106
           },
           "Neptune": {
-            "longitudeDegrees": 22.3549441
+            "longitudeDegrees": 22.3549444
           },
           "Pluto": {
-            "longitudeDegrees": 144.9206919
+            "longitudeDegrees": 144.9206922
           },
           "North Node": {
-            "longitudeDegrees": 219.1183362388,
-            "speedDegreesPerDay": -0.1323086207
+            "longitudeDegrees": 219.1183362374,
+            "speedDegreesPerDay": -0.1323086214
           }
         },
         "ascmc": [
-          23.711484744,
-          243.0634244465
+          23.7114825733,
+          243.0634284513
         ],
         "cuspsDegrees": [
           0.0,
@@ -561,18 +564,18 @@
       },
       "crossings": [
         {
-          "expectedMilliseconds": 7257028154508,
+          "expectedMilliseconds": 7257028154509,
           "timeScale": "nominal UT1",
           "fixedExternalTargetAllowedMilliseconds": [
-            7257027297290,
-            7257029011748
+            7257027297292,
+            7257029011749
           ],
           "natalDerivedAllowedMilliseconds": [
-            7257026441094,
-            7257029868011
+            7257026441096,
+            7257029868012
           ],
           "retrograde": false,
-          "speedDegreesPerDay": 15.1361497338
+          "speedDegreesPerDay": 15.136149733
         }
       ]
     }
@@ -581,61 +584,61 @@
     {
       "id": "L-modern-a:main",
       "caseId": "L-modern-a",
-      "utc": "2026-03-20T23:14:59.248Z",
+      "utc": "2026-03-20T23:14:59.460Z",
       "reference": {
         "positions": {
           "Sun": {
-            "longitudeDegrees": 0.3513211
+            "longitudeDegrees": 0.3513241
           },
           "Moon": {
-            "longitudeDegrees": 25.5942815
+            "longitudeDegrees": 25.5943246
           },
           "Mercury": {
-            "longitudeDegrees": 338.4919188
+            "longitudeDegrees": 338.4919189
           },
           "Venus": {
-            "longitudeDegrees": 18.0223389
+            "longitudeDegrees": 18.0223426
           },
           "Mars": {
-            "longitudeDegrees": 344.4669403
+            "longitudeDegrees": 344.4669427
           },
           "Jupiter": {
-            "longitudeDegrees": 105.2434996
+            "longitudeDegrees": 105.2434997
           },
           "Saturn": {
-            "longitudeDegrees": 4.1714482
+            "longitudeDegrees": 4.1714486
           },
           "Uranus": {
-            "longitudeDegrees": 58.3179118
+            "longitudeDegrees": 58.3179119
           },
           "Neptune": {
-            "longitudeDegrees": 1.7869049
+            "longitudeDegrees": 1.786905
           },
           "Pluto": {
-            "longitudeDegrees": 305.012772
+            "longitudeDegrees": 305.0127721
           },
           "North Node": {
-            "longitudeDegrees": 338.8919736151,
-            "speedDegreesPerDay": -0.0495761017
+            "longitudeDegrees": 338.8919734663,
+            "speedDegreesPerDay": -0.0495761258
           }
         },
         "ascmc": [
-          357.2525340238,
-          267.9321957554
+          357.2539039972,
+          267.9332273239
         ],
         "cuspsDegrees": [
-          357.2525340238,
-          31.9307924083,
-          61.6068955383,
-          87.9321957554,
-          114.0327764049,
-          143.1075762749,
-          177.2525340238,
-          211.9307924083,
-          241.6068955383,
-          267.9321957554,
-          294.0327764049,
-          323.1075762749
+          357.2539039972,
+          31.9320400836,
+          61.6079904282,
+          87.9332273239,
+          114.0338566555,
+          143.108803206,
+          177.2539039972,
+          211.9320400836,
+          241.6079904282,
+          267.9332273239,
+          294.0338566555,
+          323.108803206
         ],
         "expectedProductHouseSystem": "placidus"
       }
@@ -643,61 +646,61 @@
     {
       "id": "L-modern-a:relocation",
       "caseId": "L-modern-a",
-      "utc": "2026-03-20T23:14:59.248Z",
+      "utc": "2026-03-20T23:14:59.460Z",
       "reference": {
         "positions": {
           "Sun": {
-            "longitudeDegrees": 0.3513211
+            "longitudeDegrees": 0.3513241
           },
           "Moon": {
-            "longitudeDegrees": 25.5942815
+            "longitudeDegrees": 25.5943246
           },
           "Mercury": {
-            "longitudeDegrees": 338.4919188
+            "longitudeDegrees": 338.4919189
           },
           "Venus": {
-            "longitudeDegrees": 18.0223389
+            "longitudeDegrees": 18.0223426
           },
           "Mars": {
-            "longitudeDegrees": 344.4669403
+            "longitudeDegrees": 344.4669427
           },
           "Jupiter": {
-            "longitudeDegrees": 105.2434996
+            "longitudeDegrees": 105.2434997
           },
           "Saturn": {
-            "longitudeDegrees": 4.1714482
+            "longitudeDegrees": 4.1714486
           },
           "Uranus": {
-            "longitudeDegrees": 58.3179118
+            "longitudeDegrees": 58.3179119
           },
           "Neptune": {
-            "longitudeDegrees": 1.7869049
+            "longitudeDegrees": 1.786905
           },
           "Pluto": {
-            "longitudeDegrees": 305.012772
+            "longitudeDegrees": 305.0127721
           },
           "North Node": {
-            "longitudeDegrees": 338.8919736151,
-            "speedDegreesPerDay": -0.0495761017
+            "longitudeDegrees": 338.8919734663,
+            "speedDegreesPerDay": -0.0495761258
           }
         },
         "ascmc": [
-          239.5334890439,
-          185.7879351958
+          239.5342095405,
+          185.7891583785
         ],
         "cuspsDegrees": [
-          239.5334890439,
-          273.7664690446,
-          325.3641174687,
-          5.7879351958,
-          30.6235906283,
-          47.1539460698,
-          59.5334890439,
-          93.7664690446,
-          145.3641174687,
-          185.7879351958,
-          210.6235906283,
-          227.1539460698
+          239.5342095405,
+          273.7675566329,
+          325.3656149148,
+          5.7891583785,
+          30.6245469751,
+          47.1547445113,
+          59.5342095405,
+          93.7675566329,
+          145.3656149148,
+          185.7891583785,
+          210.6245469751,
+          227.1547445113
         ],
         "expectedProductHouseSystem": "placidus"
       }
@@ -705,61 +708,61 @@
     {
       "id": "L-modern-b:main",
       "caseId": "L-modern-b",
-      "utc": "2026-03-12T15:11:55.418Z",
+      "utc": "2026-03-12T15:11:55.674Z",
       "reference": {
         "positions": {
           "Sun": {
-            "longitudeDegrees": 352.0488058
+            "longitudeDegrees": 352.0488093
           },
           "Moon": {
-            "longitudeDegrees": 275.5361916
+            "longitudeDegrees": 275.5362342
           },
           "Mercury": {
-            "longitudeDegrees": 341.9300724
+            "longitudeDegrees": 341.9300695
           },
           "Venus": {
-            "longitudeDegrees": 7.6878698
+            "longitudeDegrees": 7.6878742
           },
           "Mars": {
-            "longitudeDegrees": 337.908473
+            "longitudeDegrees": 337.9084758
           },
           "Jupiter": {
             "longitudeDegrees": 105.0908791
           },
           "Saturn": {
-            "longitudeDegrees": 3.1368427
+            "longitudeDegrees": 3.1368431
           },
           "Uranus": {
-            "longitudeDegrees": 58.0370987
+            "longitudeDegrees": 58.0370989
           },
           "Neptune": {
-            "longitudeDegrees": 1.4721246
+            "longitudeDegrees": 1.4721247
           },
           "Pluto": {
             "longitudeDegrees": 304.8284818
           },
           "North Node": {
-            "longitudeDegrees": 338.8966507318,
-            "speedDegreesPerDay": 0.0116809035
+            "longitudeDegrees": 338.8966507731,
+            "speedDegreesPerDay": 0.0116809379
           }
         },
         "ascmc": [
-          292.9643010519,
-          190.3066020652
+          292.9654176554,
+          190.3080474132
         ],
         "cuspsDegrees": [
-          292.9643010519,
-          314.62488512,
-          339.7074204155,
-          10.3066020652,
-          45.7760037496,
-          81.3578059639,
-          112.9643010519,
-          134.62488512,
-          159.7074204155,
-          190.3066020652,
-          225.7760037496,
-          261.3578059639
+          292.9654176554,
+          314.6260522263,
+          339.7087251126,
+          10.3080474132,
+          45.7774420131,
+          81.3590760517,
+          112.9654176554,
+          134.6260522263,
+          159.7087251126,
+          190.3080474132,
+          225.7774420131,
+          261.3590760517
         ],
         "expectedProductHouseSystem": "placidus"
       }
@@ -767,14 +770,14 @@
     {
       "id": "L-wrap:main",
       "caseId": "L-wrap",
-      "utc": "2026-03-19T04:03:03.112Z",
+      "utc": "2026-03-19T04:03:03.065Z",
       "reference": {
         "positions": {
           "Sun": {
             "longitudeDegrees": 358.5616148
           },
           "Moon": {
-            "longitudeDegrees": 0.0007475
+            "longitudeDegrees": 0.0007477
           },
           "Mercury": {
             "longitudeDegrees": 338.6271248
@@ -783,7 +786,7 @@
             "longitudeDegrees": 15.7935634
           },
           "Mars": {
-            "longitudeDegrees": 343.0518942
+            "longitudeDegrees": 343.0518943
           },
           "Jupiter": {
             "longitudeDegrees": 105.1916579
@@ -801,27 +804,27 @@
             "longitudeDegrees": 304.9751279
           },
           "North Node": {
-            "longitudeDegrees": 338.961972866,
-            "speedDegreesPerDay": -0.0255428715
+            "longitudeDegrees": 338.9619728657,
+            "speedDegreesPerDay": -0.0255428718
           }
         },
         "ascmc": [
-          224.8939267494,
-          135.893966012
+          224.8939713114,
+          135.8940157488
         ],
         "cuspsDegrees": [
-          224.8939267494,
-          254.1019988922,
-          284.3021502892,
-          315.893966012,
-          347.9462758783,
-          18.0821751981,
-          44.8939267494,
-          74.1019988922,
-          104.3021502892,
-          135.893966012,
-          167.9462758783,
-          198.0821751981
+          224.8939713114,
+          254.1020435109,
+          284.3021967938,
+          315.8940157488,
+          347.9463268218,
+          18.0822235178,
+          44.8939713114,
+          74.1020435109,
+          104.3021967938,
+          135.8940157488,
+          167.9463268218,
+          198.0822235178
         ],
         "expectedProductHouseSystem": "placidus"
       }
@@ -829,26 +832,26 @@
     {
       "id": "L-year-boundary:main",
       "caseId": "L-year-boundary",
-      "utc": "2026-01-28T08:05:37.562Z",
+      "utc": "2026-01-28T08:05:37.574Z",
       "reference": {
         "positions": {
           "Sun": {
-            "longitudeDegrees": 308.4058249
+            "longitudeDegrees": 308.4058258
           },
           "Moon": {
-            "longitudeDegrees": 66.7158559
+            "longitudeDegrees": 66.7158687
           },
           "Mercury": {
-            "longitudeDegrees": 313.0446063
+            "longitudeDegrees": 313.0446079
           },
           "Venus": {
-            "longitudeDegrees": 313.5801191
+            "longitudeDegrees": 313.5801203
           },
           "Mars": {
-            "longitudeDegrees": 303.8633408
+            "longitudeDegrees": 303.8633415
           },
           "Jupiter": {
-            "longitudeDegrees": 107.781783
+            "longitudeDegrees": 107.7817829
           },
           "Saturn": {
             "longitudeDegrees": 358.2868255
@@ -863,27 +866,27 @@
             "longitudeDegrees": 303.5801203
           },
           "North Node": {
-            "longitudeDegrees": 339.3649142981,
-            "speedDegreesPerDay": -0.0513805819
+            "longitudeDegrees": 339.3649142524,
+            "speedDegreesPerDay": -0.0513806004
           }
         },
         "ascmc": [
-          314.9064392329,
-          250.6112391165
+          314.9070508685,
+          250.6115638777
         ],
         "cuspsDegrees": [
-          314.9064392329,
-          15.3050727643,
-          49.264688539,
-          70.6112391165,
-          88.18546229,
-          106.8338141071,
-          134.9064392329,
-          195.3050727643,
-          229.264688539,
-          250.6112391165,
-          268.18546229,
-          286.8338141071
+          314.9070508685,
+          15.3056525474,
+          49.2650859742,
+          70.6115638777,
+          88.1857781624,
+          106.834186808,
+          134.9070508685,
+          195.3056525474,
+          229.2650859742,
+          250.6115638777,
+          268.1857781624,
+          286.834186808
         ],
         "expectedProductHouseSystem": "placidus"
       }
@@ -957,34 +960,34 @@
       "reference": {
         "positions": {
           "Sun": {
-            "longitudeDegrees": 267.4783926
+            "longitudeDegrees": 267.478393
           },
           "Moon": {
-            "longitudeDegrees": 288.2873168
+            "longitudeDegrees": 288.2873171
           },
           "Mercury": {
-            "longitudeDegrees": 282.4077033
+            "longitudeDegrees": 282.4077036
           },
           "Venus": {
-            "longitudeDegrees": 239.0668469
+            "longitudeDegrees": 239.0668472
           },
           "Mars": {
-            "longitudeDegrees": 151.9907449
+            "longitudeDegrees": 151.9907452
           },
           "Jupiter": {
-            "longitudeDegrees": 332.1259127
+            "longitudeDegrees": 332.1259131
           },
           "Saturn": {
-            "longitudeDegrees": 326.9529973
+            "longitudeDegrees": 326.9529977
           },
           "Uranus": {
-            "longitudeDegrees": 87.5263094
+            "longitudeDegrees": 87.5263098
           },
           "Neptune": {
-            "longitudeDegrees": 22.3549439
+            "longitudeDegrees": 22.3549443
           },
           "Pluto": {
-            "longitudeDegrees": 144.9206917
+            "longitudeDegrees": 144.920692
           },
           "North Node": {
             "longitudeDegrees": 219.1183337412,

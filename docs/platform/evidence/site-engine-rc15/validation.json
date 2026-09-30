@@ -1,0 +1,622 @@
+{
+  "schema": "zodiacs-site-engine-adoption-validation/v1",
+  "recordedAtUTC": "2026-09-30T10:25:43.202179+00:00",
+  "scope": "Local automated validation of the rc.15 adoption on the local branch rc15-adoption. Not a push, merge, deployment, npm publication, external certification or general ephemeris accuracy claim.",
+  "runtime": {
+    "node": "v22.22.2",
+    "npm": "10.9.7",
+    "secondEngineConsumerNode": "v24.21.0",
+    "chromium": "Chromium 149.0.7827.55",
+    "playwright": "1.61.1",
+    "esbuild": "0.28.1",
+    "astro": "7.3.2",
+    "vitest": "3.2.7",
+    "python": "3.11.15",
+    "pyswissephDistributionVersion": "2.10.3.2",
+    "pyerfa": "2.0.1.5",
+    "numpy": "2.4.6"
+  },
+  "sourceIdentity": {
+    "siteBase": "0448ed7446032a88045585dee7a21b2724352b51",
+    "baseNote": "The head of #602 (Swiss output removal and independent references), which has site main at 23dd8cb7 merged in; this adoption rebuilds its references.",
+    "engineRepositoryMain": "93ebae9fa54597aeaafbb346873f7f51e3cc6cb6",
+    "validatedTree": "910de2d202ae331d7b772d05c7b149c64643b313",
+    "validatedTreeNote": "The local commit whose tree these checks ran on, before the commit that adds this file. The pin commit and the Phase 1 retake follow; neither changes what these checks read, apart from the evidence commit the support page links and the captures."
+  },
+  "engine": {
+    "version": "0.1.1-rc.15",
+    "sourceCommit": "104bd5a56ee00356eecc75f15f0aa946f5a39f41",
+    "artifactCommit": "cbad72cf075c1950bca1250dfd911085da3208d2",
+    "mergeCommit": "93ebae9fa54597aeaafbb346873f7f51e3cc6cb6",
+    "archive": "vendor/zodiacs-engine-0.1.1-rc.15.tgz",
+    "sha256": "24eeb597b0157598c0faa26bb615c0cb5dfaaeac0393d62c73fbd37c5da4d348",
+    "bytes": 190974,
+    "files": 54,
+    "unpackedBytes": 668343,
+    "integrity": "sha512-eezpBQ0NU73dsp519FZ54A1dJUNK7C+2YRtRHWmNeiKc8wDN9CHe8SIbQy37T0RqqlZIno/PfeF7Y2f8A24hsw==",
+    "license": "MIT AND CC-BY-4.0",
+    "engines": "^20.19.0 || >=22.7.0",
+    "bytesSource": "git objects of the engine repository at 93ebae9f; the anonymous raw.githubusercontent download at cbad72cf gave the same bytes on 2026-09-30."
+  },
+  "mcp": {
+    "version": "0.1.0-rc.15",
+    "archive": "public/examples/zodiacs-mcp-server-0.1.0-rc.15.tgz",
+    "sha256": "567054c6e66b65f1ae5b9ef0f80f274707f5a16049a3d06ccb6c1b477d5e9657",
+    "bytes": 86944,
+    "serverSha256": "938c8e62449aa2379d6a480c3e6988aa556ddbb5d784342196cfbc54563a9f76",
+    "serverBytes": 227835,
+    "tools": 3,
+    "toolsChangedSinceRc14": false,
+    "license": "MIT AND CC-BY-4.0",
+    "artifactCommit": "218de83961ac606d4156042b1faf6b36dc4d0da3",
+    "pinnedIn": "434403fa",
+    "checks": {
+      "protocolDrive": "87 of 87",
+      "benchmark": "18 scenarios, 112 of 112 assertions",
+      "namedHostDrive": "7 of 7 against Claude Code 2.1.285",
+      "publicArchiveInstall": "npm ci and its own 17 checks"
+    }
+  },
+  "checks": [
+    {
+      "name": "site-unit-and-contract-suite",
+      "command": "npm test",
+      "startedAtUTC": "2026-09-30T10:03:04Z",
+      "testFiles": "1 failed | 489 passed (490)",
+      "tests": "1 failed | 6259 passed (6260)",
+      "failures": [
+        "scripts/phase1-acceptance-evidence.test.mjs > Phase 1 durable acceptance evidence > contains exact 360px and 1280px captures for every new template"
+      ],
+      "named": [
+        {
+          "file": "scripts/swiss-output-guard.test.mjs",
+          "tests": 11,
+          "failed": 0
+        },
+        {
+          "file": "scripts/claims-ledger.test.mjs",
+          "tests": 11,
+          "failed": 0
+        },
+        {
+          "file": "scripts/claims-bindings.test.mjs",
+          "tests": 14,
+          "failed": 0
+        },
+        {
+          "file": "scripts/platform-candidate-docs.test.mjs",
+          "tests": 22,
+          "failed": 0
+        },
+        {
+          "file": "scripts/report-bundles.test.mjs",
+          "tests": 26,
+          "failed": 0
+        }
+      ],
+      "note": "The full run on the validated tree, with the default build of that tree in dist/, before the Phase 1 retake. The one failure is the Phase 1 evidence test, as it must be there: its template digest covers src/lib and the transit months, and the captures on record were taken on the base. The retake in the branch's last commit makes it pass."
+    },
+    {
+      "name": "astro-check",
+      "command": "npm run check",
+      "ranAt": "the validated tree",
+      "summary": {
+        "files": 1150,
+        "errors": 0,
+        "warnings": 0,
+        "hints": 17
+      }
+    },
+    {
+      "name": "production-flags-build",
+      "command": "npm run build",
+      "environmentSource": ".github/workflows/site-check.yml jobs.production-flags-build.env",
+      "exitCode": 0,
+      "ranAt": "c975048b",
+      "note": "Every chained gate passed, report-bundles --fail and check-dist among them. public/astrofolio/index.html and public/thesis/index.html, which the build stamps with the flags on, were restored; no flag-on output is committed. It ran on c975048b, whose tree differs from the validated one only by 910de2d2's type annotations; the default build, repeated on the validated tree, gave the same chunk names and gzip sizes as on c975048b."
+    },
+    {
+      "name": "default-build",
+      "command": "npm run build",
+      "environment": "PUBLIC_REGISTRY_COLLECTION_ENABLED unset",
+      "exitCode": 0,
+      "ranAt": "the validated tree",
+      "note": "Every chained gate passed: the daily verify, replay and freshness gates, the transit audit of every committed month, the events verify, check-dist (4,440 HTML files, 1,140 search entries, 9 feed items, registry intact), the schema checks, report-bundles --fail and the Phase 1 build receipt."
+    },
+    {
+      "name": "check-dist",
+      "command": "node scripts/check-dist.mjs",
+      "exitCode": 0,
+      "note": "Run again on its own over the default build of the validated tree: 4,440 HTML files, 1,140 search entries, 9 feed items, registry intact; 1,830 birthday pages and 60 sign guides match the record and cusp contract."
+    },
+    {
+      "name": "mcp-adapter",
+      "commands": [
+        "npm run mcp:build:check",
+        "npm run mcp:pack:check"
+      ],
+      "exitCode": 0,
+      "note": "server.mjs up to date (227,835 bytes, sha256 938c8e62…); the archive verified (86,944 bytes, sha256 567054c6…, commit 218de839)."
+    },
+    {
+      "name": "legacy-wing-drift",
+      "source": ".github/workflows/site-check.yml jobs.legacy-drift",
+      "commands": [
+        "npm run registry:hub:check",
+        "npm run mcp:pack:check",
+        "node scripts/build-time-basis.mjs --check",
+        "node scripts/build-app.mjs",
+        "node scripts/build-registry-token-chart.mjs",
+        "node scripts/build-sign-pages.mjs",
+        "node scripts/build-archive.mjs",
+        "node scripts/build-shelf.mjs",
+        "node scripts/build-trade.mjs",
+        "node scripts/build-exchange.mjs",
+        "node scripts/configure-registry-exchange.mjs",
+        "node scripts/build-precision-preview.mjs",
+        "git diff --exit-code -- public/"
+      ],
+      "exitCode": 0,
+      "note": "time-basis.mjs is current: engine 0.1.1-rc.15, checked against natalChart at 14,765 instants."
+    },
+    {
+      "name": "swiss-output-removal-and-references",
+      "source": ".github/workflows/site-check.yml jobs.swiss-output-removal",
+      "commands": [
+        "python3 docs/engine-validation/swiss-output-removal/strip.py --check",
+        "python docs/engine-validation/independent-references/tools/build.py (pyerfa 2.0.1.5, numpy 2.4.6)",
+        "git diff --exit-code -- src/lib/engine/fixtures/ docs/engine-validation/independent-references/"
+      ],
+      "exitCode": 0,
+      "note": "strip.py: 10 files removed, 133 stripped, 21 replaced; 40,597 value digests gone and 3,474 kept."
+    },
+    {
+      "name": "consumer-boundary",
+      "command": "npm run check:consumer-boundary",
+      "exitCode": 0,
+      "note": "1,574 source files checked."
+    },
+    {
+      "name": "wording-voice-and-authorship-greps",
+      "source": ".github/workflows/site-check.yml jobs.build-check, its three grep steps and its registry JSON parse",
+      "exitCode": 0
+    },
+    {
+      "name": "footer",
+      "command": "npm run footer:check",
+      "exitCode": 0
+    }
+  ],
+  "bundleBudgets": {
+    "productionFlags": {
+      "routes": {
+        "/": {
+          "limitKb": 42,
+          "limitBytes": 43008,
+          "rc15": 31725,
+          "headroom": 11283,
+          "rc14BeforeMerges": 31517,
+          "note": "rc.14 as measured before #600 merged #599; #599 and #602 changed pages since, and the base was not built again"
+        },
+        "/birth-chart/": {
+          "limitKb": 71,
+          "limitBytes": 72704,
+          "rc15": 72444,
+          "headroom": 260,
+          "rc14AfterReview": 72360,
+          "delta": 84
+        },
+        "/big-three/": {
+          "limitKb": 30,
+          "limitBytes": 30720,
+          "rc15": 30683,
+          "headroom": 37,
+          "rc14AfterReview": 30674,
+          "delta": 9
+        },
+        "/transits/": {
+          "limitKb": 30,
+          "limitBytes": 30720,
+          "rc15": 29433,
+          "headroom": 1287,
+          "rc14BeforeMerges": 29370,
+          "note": "rc.14 as measured before #600 merged #599; #599 and #602 changed pages since, and the base was not built again"
+        },
+        "/solar-return/": {
+          "limitKb": 30,
+          "limitBytes": 30720,
+          "rc15": 24443,
+          "headroom": 6277,
+          "rc14BeforeMerges": 24391,
+          "note": "rc.14 as measured before #600 merged #599; #599 and #602 changed pages since, and the base was not built again"
+        },
+        "/lunar-return/": {
+          "limitKb": 30,
+          "limitBytes": 30720,
+          "rc15": 24359,
+          "headroom": 6361,
+          "rc14BeforeMerges": 24334,
+          "note": "rc.14 as measured before #600 merged #599; #599 and #602 changed pages since, and the base was not built again"
+        },
+        "/numerology/": {
+          "limitKb": 30,
+          "limitBytes": 30720,
+          "rc15": 17744,
+          "headroom": 12976,
+          "rc14BeforeMerges": 17744,
+          "note": "rc.14 as measured before #600 merged #599; #599 and #602 changed pages since, and the base was not built again"
+        },
+        "/numerology/life-path/7/": {
+          "limitKb": 30,
+          "limitBytes": 30720,
+          "rc15": 17744,
+          "headroom": 12976,
+          "rc14BeforeMerges": 17744,
+          "note": "rc.14 as measured before #600 merged #599; #599 and #602 changed pages since, and the base was not built again"
+        },
+        "/void-of-course-moon/": {
+          "limitKb": 5,
+          "limitBytes": 5120,
+          "rc15": 0,
+          "headroom": 5120,
+          "rc14BeforeMerges": 0,
+          "note": "rc.14 as measured before #600 merged #599; #599 and #602 changed pages since, and the base was not built again"
+        },
+        "/today/": {
+          "limitKb": 21.5,
+          "limitBytes": 22016,
+          "rc15": 20907,
+          "headroom": 1109,
+          "rc14AfterReview": 20913,
+          "delta": -6
+        },
+        "/compatibility/": {
+          "limitKb": 36,
+          "limitBytes": 36864,
+          "rc15": 36747,
+          "headroom": 117,
+          "rc14AfterReview": 36751,
+          "delta": -4
+        },
+        "/aries/": {
+          "limitKb": 0,
+          "limitBytes": 0,
+          "rc15": 0,
+          "headroom": 0,
+          "rc14BeforeMerges": 0,
+          "note": "rc.14 as measured before #600 merged #599; #599 and #602 changed pages since, and the base was not built again"
+        },
+        "/almanac/": {
+          "limitKb": 0,
+          "limitBytes": 0,
+          "rc15": 0,
+          "headroom": 0,
+          "rc14BeforeMerges": 0,
+          "note": "rc.14 as measured before #600 merged #599; #599 and #602 changed pages since, and the base was not built again"
+        },
+        "/almanac/sky-2026-08/": {
+          "limitKb": 0,
+          "limitBytes": 0,
+          "rc15": 0,
+          "headroom": 0,
+          "rc14BeforeMerges": 0,
+          "note": "rc.14 as measured before #600 merged #599; #599 and #602 changed pages since, and the base was not built again"
+        },
+        "/almanac/reading-a-childs-chart/": {
+          "limitKb": 0,
+          "limitBytes": 0,
+          "rc15": 0,
+          "headroom": 0,
+          "rc14BeforeMerges": 0,
+          "note": "rc.14 as measured before #600 merged #599; #599 and #602 changed pages since, and the base was not built again"
+        },
+        "/registry/collection/": {
+          "limitKb": 48,
+          "limitBytes": 49152,
+          "rc15": 36621,
+          "headroom": 12531,
+          "rc14BeforeMerges": 36628,
+          "note": "rc.14 as measured before #600 merged #599; #599 and #602 changed pages since, and the base was not built again"
+        }
+      },
+      "engineChunk": {
+        "limitKb": 31.6,
+        "limitBytes": 32358,
+        "previousLimitBytes": 27648,
+        "rc14": 27303,
+        "rc15": 32108,
+        "delta": 4805,
+        "staticChunks": 7
+      },
+      "chunkMax": {
+        "limitKb": 60,
+        "largest": [
+          "/_astro/client.CuDwyYwN.js",
+          51328
+        ]
+      }
+    },
+    "defaultFlags": {
+      "routes": {
+        "/": {
+          "limitKb": 42,
+          "limitBytes": 43008,
+          "rc15": 31725,
+          "headroom": 11283,
+          "rc14BeforeMerges": 31517,
+          "note": "rc.14 as measured before #600 merged #599; #599 and #602 changed pages since, and the base was not built again"
+        },
+        "/birth-chart/": {
+          "limitKb": 71,
+          "limitBytes": 72704,
+          "rc15": 69258,
+          "headroom": 3446,
+          "rc14AfterReview": 69172,
+          "delta": 86
+        },
+        "/big-three/": {
+          "limitKb": 30,
+          "limitBytes": 30720,
+          "rc15": 30683,
+          "headroom": 37,
+          "rc14AfterReview": 30674,
+          "delta": 9
+        },
+        "/transits/": {
+          "limitKb": 30,
+          "limitBytes": 30720,
+          "rc15": 29433,
+          "headroom": 1287,
+          "rc14BeforeMerges": 29370,
+          "note": "rc.14 as measured before #600 merged #599; #599 and #602 changed pages since, and the base was not built again"
+        },
+        "/solar-return/": {
+          "limitKb": 30,
+          "limitBytes": 30720,
+          "rc15": 24443,
+          "headroom": 6277,
+          "rc14BeforeMerges": 24391,
+          "note": "rc.14 as measured before #600 merged #599; #599 and #602 changed pages since, and the base was not built again"
+        },
+        "/lunar-return/": {
+          "limitKb": 30,
+          "limitBytes": 30720,
+          "rc15": 24359,
+          "headroom": 6361,
+          "rc14BeforeMerges": 24334,
+          "note": "rc.14 as measured before #600 merged #599; #599 and #602 changed pages since, and the base was not built again"
+        },
+        "/numerology/": {
+          "limitKb": 30,
+          "limitBytes": 30720,
+          "rc15": 17744,
+          "headroom": 12976,
+          "rc14BeforeMerges": 17744,
+          "note": "rc.14 as measured before #600 merged #599; #599 and #602 changed pages since, and the base was not built again"
+        },
+        "/numerology/life-path/7/": {
+          "limitKb": 30,
+          "limitBytes": 30720,
+          "rc15": 17744,
+          "headroom": 12976,
+          "rc14BeforeMerges": 17744,
+          "note": "rc.14 as measured before #600 merged #599; #599 and #602 changed pages since, and the base was not built again"
+        },
+        "/void-of-course-moon/": {
+          "limitKb": 5,
+          "limitBytes": 5120,
+          "rc15": 0,
+          "headroom": 5120,
+          "rc14BeforeMerges": 0,
+          "note": "rc.14 as measured before #600 merged #599; #599 and #602 changed pages since, and the base was not built again"
+        },
+        "/today/": {
+          "limitKb": 21.5,
+          "limitBytes": 22016,
+          "rc15": 20905,
+          "headroom": 1111,
+          "rc14AfterReview": 20909,
+          "delta": -4
+        },
+        "/compatibility/": {
+          "limitKb": 36,
+          "limitBytes": 36864,
+          "rc15": 36295,
+          "headroom": 569,
+          "rc14AfterReview": 36299,
+          "delta": -4
+        },
+        "/aries/": {
+          "limitKb": 0,
+          "limitBytes": 0,
+          "rc15": 0,
+          "headroom": 0,
+          "rc14BeforeMerges": 0,
+          "note": "rc.14 as measured before #600 merged #599; #599 and #602 changed pages since, and the base was not built again"
+        },
+        "/almanac/": {
+          "limitKb": 0,
+          "limitBytes": 0,
+          "rc15": 0,
+          "headroom": 0,
+          "rc14BeforeMerges": 0,
+          "note": "rc.14 as measured before #600 merged #599; #599 and #602 changed pages since, and the base was not built again"
+        },
+        "/almanac/sky-2026-08/": {
+          "limitKb": 0,
+          "limitBytes": 0,
+          "rc15": 0,
+          "headroom": 0,
+          "rc14BeforeMerges": 0,
+          "note": "rc.14 as measured before #600 merged #599; #599 and #602 changed pages since, and the base was not built again"
+        },
+        "/almanac/reading-a-childs-chart/": {
+          "limitKb": 0,
+          "limitBytes": 0,
+          "rc15": 0,
+          "headroom": 0,
+          "rc14BeforeMerges": 0,
+          "note": "rc.14 as measured before #600 merged #599; #599 and #602 changed pages since, and the base was not built again"
+        },
+        "/registry/collection/": {
+          "limitKb": 48,
+          "limitBytes": 49152,
+          "rc15": 0,
+          "headroom": 49152,
+          "rc14BeforeMerges": 0,
+          "note": "rc.14 as measured before #600 merged #599; #599 and #602 changed pages since, and the base was not built again"
+        }
+      },
+      "engineChunk": {
+        "limitKb": 31.6,
+        "limitBytes": 32358,
+        "previousLimitBytes": 27648,
+        "rc14": 27303,
+        "rc15": 32108,
+        "delta": 4805,
+        "staticChunks": 7
+      },
+      "chunkMax": {
+        "limitKb": 60,
+        "largest": [
+          "/_astro/client.D6U9smGw.js",
+          51289
+        ]
+      }
+    },
+    "engineChunkBudgetChange": "From 27 KB to 31.6 KB (32,358 bytes), 4,710 bytes more, within the measured growth of 4,805 bytes, all of it the package: its time-basis chunk with the leap-second list and the UT1 − UTC table (commit 65a13591)."
+  },
+  "browserDrives": {
+    "target": "the default build of the validated tree, each drive on its own local preview server, with Playwright 1.61.1 and Chromium 149.0.7827.55",
+    "drives": [
+      {
+        "drive": "developers",
+        "command": "node tests/platform-developers-drive.mjs",
+        "exitCode": 0,
+        "pass": 2
+      },
+      {
+        "drive": "firstuse",
+        "command": "npm run test:firstuse:browser",
+        "exitCode": 0,
+        "pass": 2
+      },
+      {
+        "drive": "compare",
+        "command": "npm run test:compare:browser",
+        "exitCode": 0,
+        "pass": 2
+      },
+      {
+        "drive": "positions-share",
+        "command": "node tests/t17-positions-share.mjs",
+        "exitCode": 0,
+        "pass": 2
+      },
+      {
+        "drive": "sign-icons",
+        "command": "node tests/sign-icon-requests-drive.mjs",
+        "exitCode": 0,
+        "pass": 2
+      },
+      {
+        "drive": "share-boundary",
+        "command": "node tests/platform-share-boundary-drive.mjs",
+        "exitCode": 0,
+        "pass": 2
+      },
+      {
+        "drive": "moon-ownership",
+        "command": "node tests/moon-result-ownership-drive.mjs",
+        "exitCode": 0,
+        "pass": 1
+      },
+      {
+        "drive": "chart-ownership",
+        "command": "node tests/chart-ownership-drive.mjs",
+        "exitCode": 0,
+        "pass": 1
+      },
+      {
+        "drive": "post-chart",
+        "command": "node tests/post-chart-context-clear-drive.mjs",
+        "exitCode": 0,
+        "pass": 1
+      },
+      {
+        "drive": "local-date-intervals",
+        "command": "node tests/local-date-intervals-drive.mjs",
+        "exitCode": 0,
+        "pass": 1
+      },
+      {
+        "drive": "local-date-reference",
+        "command": "node tests/local-date-reference-drive.mjs",
+        "exitCode": 0,
+        "pass": 1
+      },
+      {
+        "drive": "reference-confidence",
+        "command": "node tests/chart-reference-confidence-drive.mjs",
+        "exitCode": 0,
+        "pass": 1
+      },
+      {
+        "drive": "reference-captions",
+        "command": "node tests/reference-caption-drive.mjs",
+        "exitCode": 0,
+        "pass": 1
+      },
+      {
+        "drive": "saved-storage",
+        "command": "node tests/saved-natal-storage-drive.mjs",
+        "exitCode": 0,
+        "pass": 1
+      },
+      {
+        "drive": "events",
+        "command": "npm run test:events:browser",
+        "exitCode": 0,
+        "pass": 1
+      },
+      {
+        "drive": "today",
+        "command": "npm run test:today:browser",
+        "exitCode": 0,
+        "pass": 1
+      },
+      {
+        "drive": "horoscopes",
+        "command": "npm run test:horoscopes:browser",
+        "exitCode": 0,
+        "pass": 1
+      },
+      {
+        "drive": "home-demo",
+        "command": "npm run test:home-demo:browser",
+        "exitCode": 0,
+        "pass": 1
+      },
+      {
+        "drive": "compatibility",
+        "command": "npm run test:compatibility:browser",
+        "exitCode": 0,
+        "pass": 2
+      }
+    ],
+    "passes": "Two passes on the same build and tree; each drive is listed with the pass it passed in. In the first, six drives could not start their preview server because a preview server orphaned by the earlier run still held astro's lock, and the compatibility drive (tests/relationship-wheel-drive.mjs), which waits a fixed 2.5 s for its own server, navigated before the server was up (net::ERR_CONNECTION_REFUSED) and left it running. With both servers stopped, all seven passed in the second pass. The compare drive rewrites docs/platform/evidence/chart-compare/browser-drive.json, the committed rc.8 acceptance record; it was restored from git.",
+    "earlierRun": "The same drives ran once before on this branch, on an earlier build. Three stopped. The compare drive's rewritten fixture records lacked rc.15's result.timeScale and were refused, and the chart-ownership drive counted rc.15's one-argument chart builder as a second natal builder; c975048b corrected both drives, and no site code changed for them. The compatibility drive navigated before its preview server was up, passed when run again, and left the server that held the lock in the first pass above."
+  },
+  "knownFailuresOutsideThisChange": [],
+  "loadSensitiveTests": "None failed in the final run. In an earlier full run on this branch (09:11 UTC), with the machine loaded, one or more tests in each of six files exceeded vitest's 5 s default: src/lib/engine/void-of-course.test.ts and scripts/angles-grid.test.mjs, which now have 30 s (913790fa; on rc.15 each engine call takes about a fifth longer than on rc.14), and scripts/precision-alpha-types.test.mjs, src/lib/profile/saved-record-inactive.test.ts, scripts/platform-candidate-docs.test.mjs and scripts/report-bundles.test.mjs, unchanged. rc.14's record names the precision-alpha and saved-record tests for the same reason; those two passed alone, and all six pass in the final run.",
+  "limits": [
+    "The site-output comparison is the site against itself on two archives, not a measurement against a reference.",
+    "The time basis's own accuracy is the engine's measurement; this record checks that the site uses it.",
+    "@zodiacs/engine/timing and @zodiacs/engine/vedic, which the site does not use, are not measured here.",
+    "No push, merge, deployment, npm release or model-spending approval is implied by these checks."
+  ],
+  "publication": {
+    "status": "pins in local commits",
+    "note": "The MCP artifactCommit names 218de839, which carries the archive, pinned in 434403fa. The engine evidenceCommit is pinned in the commit after the one that adds this file, to that commit. Both resolve once the branch is pushed as it stands; a rebase before the push means writing both pins again."
+  }
+}

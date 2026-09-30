@@ -44,11 +44,12 @@ describe('lunar return complete-input caller', () => {
     expect(result.natalLocalMeanTime).toBe(true);
     expect(result.chart).toEqual(lunarReturnChart({ utc: resolved.utc, latitude: birthplace.lat, longitude: birthplace.lon, houseSystem: 'placidus', timeKnown: true, flags: resolved.flags }, after));
   });
-  it('marks a whole-minute local mean time, which carries no lmt flag', () => {
-    // 31.25° E is exactly +2:05:00, so the receipt rule sets no `lmt` flag.
+  it('marks a whole-minute local mean time, which carries the lmt flag too', () => {
+    // 31.25° E is exactly +2:05:00. Since engine rc.15 `lmt` means a local mean time
+    // read the wall time, whether or not it ran to seconds.
     const birthplace = { name: 'Cairo', lat: 30.04, lon: 31.25, tz: 'Africa/Cairo' };
     const result = computeLunarReturn({ ...input(), birthDate: '1890-05-01', birthTime: '10:00', birthplace }, after);
-    expect(result.natalTimeFlags).toEqual([]);
+    expect(result.natalTimeFlags).toEqual(['lmt']);
     expect(result.natalLocalMeanTime).toBe(true);
     expect(computeLunarReturn(input(), after).natalLocalMeanTime).toBe(false);
   });

@@ -16,7 +16,7 @@ const policyBytes = read('swiss-node-polar-policy.json');
 const fixture = JSON.parse(fixtureBytes);
 const policy = JSON.parse(policyBytes);
 const digest = (bytes) => createHash('sha256').update(bytes).digest('hex');
-assert.equal(digest(fixtureBytes), '7e969149c746c1cc1fb5a96a5405a5af04b6b319c918abb5f3dea4ca17385fcd');
+assert.equal(digest(fixtureBytes), '75f667f192c43c1ee3a8be6c5379586621b5eaa26f32e21e2ec8afd6206e3800');
 assert.equal(digest(policyBytes), '7742cb2bc7cd0932a344ddcb708e45dad07b91cb653ea1f55538c2d73fa18e96');
 const distance = (a, b) => Math.abs(((a - b + 540) % 360) - 180);
 const nodes = fixture.trueNode.map((reference) => {
@@ -55,7 +55,7 @@ console.log(JSON.stringify({
   artifact, artifactSHA256: digest(readFileSync(new URL(`../${artifact}`, import.meta.url))),
   fixtureSHA256: digest(fixtureBytes), policySHA256: digest(policyBytes),
   scope: 'Three independent node epochs and three polar locations, both requested house systems. Finite corpus, not a complete error bound or human certification.',
-  conventions: 'References at the engine\'s own TT; true node from Horizons DE441 geometric state vectors (osculating node, true ecliptic of date); ASC, MC and whole-sign cusps from ERFA with UT1 taken as the instant; product Placidus fallback compared with whole-sign cusps. See docs/engine-validation/independent-references/README.md.',
+  conventions: 'References at the engine\'s own TT; true node from Horizons DE441 geometric state vectors (osculating node, true ecliptic of date); ASC, MC and whole-sign cusps from ERFA at the engine\'s UT1 for the instant; product Placidus fallback compared with whole-sign cusps. See docs/engine-validation/independent-references/README.md.',
   nodes, polar,
   maxima: {
     nodeLongitudeDegrees: Math.max(...nodes.map((value) => value.longitudeErrorDegrees)),

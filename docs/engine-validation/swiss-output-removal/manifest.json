@@ -3618,8 +3618,8 @@
  ],
  "valueDigests": {
   "path": "docs/engine-validation/swiss-output-removal/value-digests.json",
-  "sha256": "8c477bd745165478af53131f808f1d6d63e20eb5263a7d25704bb6000ffcb4d0",
-  "gone": 40604,
-  "kept": 3467
+  "sha256": "303ffbf745971b6da049f239a797ae029032798c4aac5323dac921d6322ca73f",
+  "gone": 40597,
+  "kept": 3474
  }
 }

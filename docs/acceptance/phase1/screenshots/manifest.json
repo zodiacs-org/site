@@ -6,28 +6,28 @@
     "script": "tests/phase1-acceptance-drive.mjs",
     "contractVersion": 4
   },
-  "capturedAt": "2026-09-30T14:01:52.552Z",
+  "capturedAt": "2026-09-30T10:32:33.884Z",
   "browser": "Chromium 149.0.7827.55",
   "dailyDate": "2026-09-30",
-  "publicationCanonicalSha256": "cfe61f0a386f3d0aeba010d4fd9f88301248f5ed0bafd26316425184bce4f60d",
-  "templateSourceSha256": "29d0b9a7f58b1ddd7ab8f4ebe88ea4f58f7c8ca0a020ad331b01b9146478b49f",
+  "publicationCanonicalSha256": "f1bfdd55d0ba040e0d80aa4f7da79ce7407d40040fc0a9be3f53401b08008063",
+  "templateSourceSha256": "326b3a436ebf8adf8cf77260350da4855af69fb3b0c38d3c78a15d957bc4f39c",
   "renderPayloadSha256": {
-    "daily": "717f9c65202b79a4c3e29444551ac13b3305dbc08df0aff76e2a5c01faaebdf2",
-    "dailyPublication": "703e27471932404fe20ad92a546d645c459b973365f1ecae1e14c47282a3fe53",
-    "dailyPublicationManifest": "b2a00a277bfbab93882c1de288e9f5f8ec2c30c9fbcd66706980cf1e36aab906",
-    "horoscopeProgram": "4d22582f0ec2b08af7e23cfdca943514f6b29e0748e8437a83b3756220ea5261"
+    "daily": "36c6ec7423eddc7dab47a7eb19f182669a6ac50fe8c7a6b4d0db35a788ad04a4",
+    "dailyPublication": "1a1d6ae125eff09b34bbc470b3380a4d5bcc90cdfc5b5d396fac11846d3a514b",
+    "dailyPublicationManifest": "7e04326b3ddd885aa8d06188b129d9b7d7d700e15e3eee7bd6248466f3e4b30a",
+    "horoscopeProgram": "2a0c80174560c5850edf6f9eb90f7855e74cea7faffa6d8bc593eb83ae9e89bb"
   },
   "buildReceipt": {
     "schema": "zodiacs.phase1-build-receipt.v1",
-    "builtAt": "2026-09-30T14:00:53.736Z",
-    "templateSourceSha256": "29d0b9a7f58b1ddd7ab8f4ebe88ea4f58f7c8ca0a020ad331b01b9146478b49f",
+    "builtAt": "2026-09-30T10:31:54.467Z",
+    "templateSourceSha256": "326b3a436ebf8adf8cf77260350da4855af69fb3b0c38d3c78a15d957bc4f39c",
     "dailyDate": "2026-09-30",
-    "publicationCanonicalSha256": "cfe61f0a386f3d0aeba010d4fd9f88301248f5ed0bafd26316425184bce4f60d",
+    "publicationCanonicalSha256": "f1bfdd55d0ba040e0d80aa4f7da79ce7407d40040fc0a9be3f53401b08008063",
     "renderPayloadSha256": {
-      "daily": "717f9c65202b79a4c3e29444551ac13b3305dbc08df0aff76e2a5c01faaebdf2",
-      "dailyPublication": "703e27471932404fe20ad92a546d645c459b973365f1ecae1e14c47282a3fe53",
-      "dailyPublicationManifest": "b2a00a277bfbab93882c1de288e9f5f8ec2c30c9fbcd66706980cf1e36aab906",
-      "horoscopeProgram": "4d22582f0ec2b08af7e23cfdca943514f6b29e0748e8437a83b3756220ea5261"
+      "daily": "36c6ec7423eddc7dab47a7eb19f182669a6ac50fe8c7a6b4d0db35a788ad04a4",
+      "dailyPublication": "1a1d6ae125eff09b34bbc470b3380a4d5bcc90cdfc5b5d396fac11846d3a514b",
+      "dailyPublicationManifest": "7e04326b3ddd885aa8d06188b129d9b7d7d700e15e3eee7bd6248466f3e4b30a",
+      "horoscopeProgram": "2a0c80174560c5850edf6f9eb90f7855e74cea7faffa6d8bc593eb83ae9e89bb"
     }
   },
   "captures": [

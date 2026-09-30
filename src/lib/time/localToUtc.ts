@@ -217,7 +217,14 @@ export function localDateContainsUtc(date: string, utc: Date, timeZone: string):
  * Ambiguous times (clocks fell back — two instants match) resolve to the
  * earlier instant with a `dst-fold` flag. Skipped times (clocks sprang
  * forward — no instant matches) shift forward by the gap with a
- * `dst-gap` flag. Sub-minute offsets (pre-standard LMT) add `lmt`.
+ * `dst-gap` flag. With a longitude, a wall time read on a local mean time
+ * adds `lmt`, as @zodiacs/engine defines the flag from 0.1.1-rc.15: the
+ * birthplace's own mean time, or the zone's, before the zone's local mean time
+ * era ended (src/data/tz-lmt.json). A legal time that ran to seconds, such as
+ * Paris Mean Time from 1891 or Madras time, does not, and a local mean time in
+ * whole minutes does. Without a longitude nothing is claimed: the host's
+ * history cannot tell a zone's local mean time from the national mean time
+ * that kept its offset (Paris 1891–1911, Dublin 1880–1916).
  *
  * Pass the birthplace's longitude whenever it is known: before the zone's
  * local mean time era ended, it replaces the reference city's mean time with
@@ -288,6 +295,7 @@ export function resolveLocalToUtc(
 
   let zoneOffset = chosen.offset;
   let inEra = false;
+  let readByBirthplace = false;
   const { longitude } = options;
   if (typeof longitude === 'number' && Number.isFinite(longitude) && Math.abs(longitude) <= 180
     && wallMs < BIRTHPLACE_WALL_END) {
@@ -298,10 +306,13 @@ export function resolveLocalToUtc(
     if (place) {
       ({ chosen, flags, inEra } = place);
       if (place.zoneOffset !== null) zoneOffset = place.zoneOffset;
+      readByBirthplace = true;
     }
   }
 
-  if (Math.abs(chosen.offset % 1) > 1e-9) flags.push('lmt');
+  // The birthplace clock read the wall time on a local mean time: before the
+  // zone's era ended in its table.
+  if (readByBirthplace && birthplace!.inMeanTimeEra(tz, chosen.utcMs)) flags.push('lmt');
 
   return {
     utc: new Date(chosen.utcMs),

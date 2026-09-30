@@ -40,7 +40,7 @@
       "at": "2029-12-16T23:49:22.489Z",
       "type": "retrograde",
       "sign": "capricorn",
-      "degree": 24.028160304119297
+      "degree": 24.02816030411941
     },
     {
       "planet": "Neptune",
@@ -54,7 +54,7 @@
       "at": "2029-12-22T05:49:51.328Z",
       "type": "retrograde",
       "sign": "capricorn",
-      "degree": 17.7064974357163
+      "degree": 17.706497435716983
     }
   ],
   "aspects": [
@@ -65,9 +65,9 @@
       "orb": 0,
       "at": "2029-12-02T05:54:42.274Z",
       "aSign": "capricorn",
-      "aDegree": 20.054327986090584,
+      "aDegree": 20.05432798609536,
       "bSign": "taurus",
-      "bDegree": 20.054327981534925
+      "bDegree": 20.054327981522192
     },
     {
       "a": "Sun",
@@ -76,9 +76,9 @@
       "orb": 0,
       "at": "2029-12-08T08:11:01.127Z",
       "aSign": "sagittarius",
-      "aDegree": 16.521690214220143,
+      "aDegree": 16.52169021424197,
       "bSign": "gemini",
-      "bDegree": 16.52168988206995
+      "bDegree": 16.52168988205358
     },
     {
       "a": "Mercury",
@@ -87,9 +87,9 @@
       "orb": 0,
       "at": "2029-12-10T03:48:33.819Z",
       "aSign": "capricorn",
-      "aDegree": 8.35880522200955,
+      "aDegree": 8.358805222037745,
       "bSign": "aries",
-      "bDegree": 8.358804128337397
+      "bDegree": 8.358804128334043
     },
     {
       "a": "Jupiter",
@@ -98,9 +98,9 @@
       "orb": 0,
       "at": "2029-12-22T07:02:55.781Z",
       "aSign": "scorpio",
-      "aDegree": 18.800279755891438,
+      "aDegree": 18.800279755915994,
       "bSign": "taurus",
-      "bDegree": 18.80027958351127
+      "bDegree": 18.800279583502515
     },
     {
       "a": "Mars",
@@ -109,9 +109,9 @@
       "orb": 0,
       "at": "2029-12-23T21:29:21.163Z",
       "aSign": "aquarius",
-      "aDegree": 8.340216281084622,
+      "aDegree": 8.340216281118046,
       "bSign": "aries",
-      "bDegree": 8.340215641121517
+      "bDegree": 8.340215641123052
     },
     {
       "a": "Mars",
@@ -120,9 +120,9 @@
       "orb": 0,
       "at": "2029-12-24T16:39:15.357Z",
       "aSign": "aquarius",
-      "aDegree": 8.966097022255894,
+      "aDegree": 8.966097022291024,
       "bSign": "aquarius",
-      "bDegree": 8.96609667447683
+      "bDegree": 8.966096674497294
     },
     {
       "a": "Sun",
@@ -131,9 +131,9 @@
       "orb": 0,
       "at": "2029-12-29T19:20:23.792Z",
       "aSign": "capricorn",
-      "aDegree": 8.365678198428668,
+      "aDegree": 8.365678198448904,
       "bSign": "aries",
-      "bDegree": 8.36567757599363
+      "bDegree": 8.365677575997267
     },
     {
       "a": "Venus",
@@ -142,9 +142,9 @@
       "orb": 0,
       "at": "2029-12-30T13:20:50.902Z",
       "aSign": "capricorn",
-      "aDegree": 20.318322165586324,
+      "aDegree": 20.318322165579275,
       "bSign": "scorpio",
-      "bDegree": 20.318322392680557
+      "bDegree": 20.31832239270318
     }
   ]
 }

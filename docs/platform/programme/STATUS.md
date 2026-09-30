@@ -2,7 +2,9 @@
 
 Checkpoint 6: production serves engine rc.14, Swiss Ephemeris output is out of the site's tree, and the ΔT values carry their attribution, 2026-09-30. The next session should start here.
 
-**Overall delivery: 18%** — 32.75 of 182.45 weighted units accepted; blocked on owner or external action: 5% (10).
+Addendum, 2026-09-30: the owner's steps of the same day put `@zodiacs/engine` on npm, 0.1.1-rc.15 with provenance (P3.1a accepted), set up PyPI, JSR and Zenodo, sent the NAIF question and confirmed the assistant accounts. The list below keeps only what remains.
+
+**Overall delivery: 18%** — 33.75 of 182.45 weighted units accepted; blocked on owner or external action: 2% (4.5).
 
 The figure is computed by `node scripts/programme-ledger.mjs --summary` from [`acceptance-ledger.json`](acceptance-ledger.json). The method is in [README.md](README.md) and the unit list in [LEDGER.md](LEDGER.md).
 
@@ -38,40 +40,21 @@ The figure is computed by `node scripts/programme-ledger.mjs --summary` from [`a
 
 The owner, or Codex working on the owner's computer, can do these. Each says what to report back. None needs a password or token to be shared.
 
-1. **npm: the first publish of `@zodiacs/engine`.** Ready. Publish this archive and no other file:
-   - `https://github.com/zodiacs-org/engine/raw/main/artifacts/zodiacs-engine-0.1.1-rc.14.tgz`
-   - SHA-256 `adc9805e22cd2468fa3340a864d9c53b36ff91e8f1592fdb35d8da8b69f4476e`
+Done on 2026-09-30, by the owner's report:
+- **npm.** `@zodiacs/engine` 0.1.1-rc.14 was uploaded by hand with two-factor authentication, and 0.1.1-rc.15 was published from `release.yml` on main with provenance (run 36711081147). The trusted publisher, the `npm` environment limited to main, and publishing access that requires two-factor authentication and disallows tokens are set. The registry's tarballs match their archive receipts.
+- **PyPI.** The trusted publisher exists, and `zodiacs` 0.1.0a1 was published from `pypi.yml` (run 36701023131).
+- **JSR.** The scope `@zodiacs` and the package `engine` exist, linked to `zodiacs-org/engine`. Nothing is published.
+- **Zenodo.** Its GitHub integration is on for `zodiacs-org/engine`. No release exists yet, so no DOI.
+- **Search and analytics.** The Search Console and Plausible exports are in the private `zodiacs-org/analytics-baselines` under `2026-09-28/`. Bing imported the site from Search Console; its export was not yet available.
+- **NAIF.** The question was sent once, on 2026-09-30 at 10:54 UTC, to the manager the contact page names for general requests. No answer yet. Do not resend it.
+- **Assistants.** Free accounts exist on ChatGPT, Claude, Gemini and Perplexity for admin@zodiacs.org, with no payment method. Microsoft Copilot has no signed-in account.
 
-   The steps:
-   1. Sign in at npmjs.com as `zodiacs`, the account that publishes `@zodiacs/sdk`. Under Account, confirm that two-factor authentication covers authorization and writes.
-   2. On any computer with Node 20.19 or later, download the archive, and check that `sha256sum` (on macOS, `shasum -a 256`) prints the value above. If it does not, stop.
-   3. Publish it:
-      - `npm login` (as `zodiacs`)
-      - `npm publish zodiacs-engine-0.1.1-rc.14.tgz --access public --tag next`, entering the one-time code when asked.
-   4. On GitHub, in `zodiacs-org/engine`, open Settings, then Environments, and create the environment `npm`. Under "Deployment branches and tags", choose "Selected branches and tags" and add `main`.
-   5. On npmjs.com, open `@zodiacs/engine`, then Settings.
-      - Under Trusted Publisher, choose GitHub Actions: organization or user `zodiacs-org`, repository `engine`, workflow `release.yml`, environment `npm`. Under Allowed actions, keep "npm stage publish" and also select "npm publish".
-      - Under Publishing access, choose "Require two-factor authentication and disallow tokens".
-   6. Report the output of `npm view @zodiacs/engine dist-tags` and of `npm view @zodiacs/engine@0.1.1-rc.14 dist.shasum dist.integrity`, a screenshot of each npm setting, and one of the GitHub environment.
+Remaining:
 
-   A correct publish reports `dist.shasum` `30498f08cc95550445ef2666e1324a5ac007d7d4` and `dist.integrity` `sha512-uOruhtGRmzAFnbaF+Kc8tPFDPZEk0cm77gLfF5Fdl78FjxkcZjvjyMrql/gTSkWFAniapdjpUoKxch4p/elc7Q==`.
-2. **PyPI: reserve `zodiacs`.**
-   1. Sign in at pypi.org, or create an account with admin@zodiacs.org and turn on two-factor authentication.
-   2. Under Your account, then Publishing, choose "Add a new pending publisher", then GitHub: project name `zodiacs`, owner `zodiacs-org`, repository `engine`, workflow `pypi.yml`, environment `pypi`.
-   3. Report a screenshot.
-3. **JSR: the `@zodiacs` scope.**
-   1. Sign in at jsr.io with the GitHub account that administers `zodiacs-org`.
-   2. Create the scope `zodiacs` and, in it, the package `engine`.
-   3. In the package settings, link the GitHub repository `zodiacs-org/engine`.
-   4. Report a screenshot.
-4. **Zenodo.**
-   1. Sign in at zenodo.org with the same GitHub account, and open Account, then GitHub.
-   2. If `zodiacs-org` is not listed, grant it: on GitHub, open Settings, then Applications, then Authorized OAuth Apps, then Zenodo, and grant access to `zodiacs-org`.
-   3. Turn on `zodiacs-org/engine`.
-   4. Report a screenshot.
-5. **Repository settings** on GitHub.
-   - `zodiacs-org/site`: its description and website are set. Add the topics (the gear beside About): astrology, birth-chart, natal-chart, horoscope, astro, typescript.
-   - `zodiacs-org/engine`: its About box is done. Two settings remain:
+1. **npm's `latest` tag.** It points at 0.1.1-rc.14, the manual first upload, so a plain `npm install @zodiacs/engine` installs the version without provenance. With the owner's authorization, move it: `npm dist-tag add @zodiacs/engine@0.1.1-rc.15 latest`, signed in with two-factor authentication. Until a stable version exists, `latest` should follow each reviewed, attested candidate.
+2. **Repository settings** on GitHub.
+   - `zodiacs-org/site`: add the topics (the gear beside About): astrology, birth-chart, natal-chart, horoscope, astro, typescript. On 2026-09-30 a GitHub search found none.
+   - `zodiacs-org/engine`:
      - Settings, then General, then Pull Requests: keep "Allow merge commits", and turn off "Allow squash merging" and "Allow rebase merging". The archive record names source commits that only a merge commit keeps.
      - Settings, then Rules, then Rulesets: a branch ruleset for the default branch that blocks force pushes and deletions, and requires these status checks to pass:
        - Engine (Node 20), Engine (Node 22), Engine (Node 24);
@@ -84,40 +67,23 @@ The owner, or Codex working on the owner's computer, can do these. Each says wha
        All of them run on every pull request.
    - In each public repository (`site`, `engine` and `sdk`): open Settings, then Code security, and turn on **Private vulnerability reporting**. Every SECURITY.md already offers its **Report a vulnerability** button beside email to admin@zodiacs.org.
    - Report a screenshot of each.
-6. **Search and analytics baselines.**
-   1. On GitHub, create the **private** repository `zodiacs-org/analytics-baselines`.
-   2. Export these, and commit the files unchanged under `2026-09-28/`:
-      - **Google Search Console** (property zodiacs.org): Performance, then Search results, with the date range "Last 16 months", then Export as CSV.
-      - **Bing Webmaster Tools:** add and verify zodiacs.org if needed ("Import from Google Search Console" is quickest), then export Search Performance for the longest range offered.
-      - **Plausible** (zodiacs.org): the last 12 months, exported as CSV.
-   3. Say when it is done, so the repository can be attached read-only.
-7. **NAIF.** Email the question below from admin@zodiacs.org to the general NAIF address listed at https://naif.jpl.nasa.gov/naif/contactinfo.html, and forward any answer.
-
-   > Subject: Redistributing a compact file derived from DE440
-   >
-   > Hello NAIF team,
-   >
-   > We maintain Zodiacs.org, a free astrology site, and an MIT-licensed calculation engine. We would like to offer, as an optional download, a compact file derived from DE440 (de440s.bsp): the Sun, Moon and planet segments over 1790–2210, re-expressed in our own format to a stated precision. Its header would name DE440 and its citation (Park et al. 2021, AJ 161, 105, doi:10.3847/1538-3881/abd414), give the source kernel's SHA-256, and say the data were modified.
-   >
-   > Before distributing anything like this we would like to ask: may we redistribute coefficients derived from DE440 in this way, and is there an attribution or wording you would like us to use? If you would rather we distribute the unmodified kernel and let users derive the file themselves, we will do that.
-   >
-   > Thank you,
-   > Zodiacs.org (admin@zodiacs.org)
-8. **The assistants.** Confirm that free accounts exist on ChatGPT, Claude, Gemini, Microsoft Copilot and Perplexity for admin@zodiacs.org, with no payment method added. The panel questions will be supplied with the first run.
-
-9. **Vercel Firewall rate limits.** Four live endpoints call Vercel's rate-limit SDK, and no rule exists for any of them, so none is limited today. The site's runbook (§3) makes publishing them the owner's step. In the project's Firewall tab, add one custom rule per ID: If "@vercel/firewall" Rate limit ID equals the ID; Then Rate Limit, fixed window, 60 seconds, counted by IP.
-   - 10 requests: `zodiacs-email-subscribe`, `registry-aura-holdings-v1`, `zodiacs-wallet-birth`, `zodiacs-transit-calendar`;
+3. **The first GitHub release of the engine (G4).** A published GitHub release on `zodiacs-org/engine` makes Zenodo mint a DOI, and a DOI is permanent. With the owner's authorization, the first release is 0.1.1-rc.15, tagged at its merge commit, with its CHANGELOG entry as the notes.
+4. **JSR (P3.1c).** A publish workflow using GitHub's OIDC token is to be added to the engine. Its first run needs the owner's authorization.
+5. **Search and analytics baselines (P0.7b).** Add Bing's export when it is ready, then either attach `zodiacs-org/analytics-baselines` read-only to this work, or compute the aggregates on the owner's side. Only aggregates would be committed, to that private repository.
+6. **Vercel Firewall rate limits.** Four live endpoints call Vercel's rate-limit SDK, and no rule exists for any of them, so none is limited today. The site's runbook (§3) makes publishing them the owner's step. In the project's Firewall tab, add one custom rule per ID: If "@vercel/firewall" Rate limit ID equals the ID; Then Rate Limit, fixed window, 60 seconds, counted by IP.
+   - 10 requests: `zodiacs-email-subscribe`, `registry-aura-holdings-v1`, `zodiacs-wallet-birth`;
+   - 120 requests: `zodiacs-transit-calendar`, because calendar apps fetch many subscribers' feeds from a few shared addresses (runbook §3);
    - 60 requests: `zodiacs-compute-api`, for the compute endpoints when they ship.
 
    No Deny or Challenge rule, and no rule on a path. The team is on Pro, whose rate limiting is billed from the plan's monthly credit. Publish, then run the two checks in `docs/OWNER-SETUP-RUNBOOK.md` §3 and report their output.
-10. **Calendar feeds, before their release.** The opaque feed ids (P1.15) are ready on a branch. They need, in this order:
-    1. `CALENDAR_FEED_SWEEP_SECRET`, a random value of at least 32 characters, stored without printing it in Vercel Production and as a secret of a GitHub environment `calendar-feed-production` limited to `main`;
-    2. confirmation that Production has `PUBLIC_SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`.
+7. **Calendar feeds, before their release.** The opaque feed ids (P1.15) are ready on a branch. They need, in this order:
+   1. `CALENDAR_FEED_SWEEP_SECRET`, a random value of at least 32 characters, stored without printing it in Vercel Production and as a secret of a GitHub environment `calendar-feed-production` limited to `main`;
+   2. confirmation that Production has `PUBLIC_SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`.
 
-    On 2026-09-30 the project listed `PUBLIC_SUPABASE_URL` for Preview and Development only, and no production page bundle carried the Supabase address. Report where Production gets it, if anywhere, without its value.
+   On 2026-09-30 the project listed `PUBLIC_SUPABASE_URL` for Preview and Development only, and no production page bundle carried the Supabase address. Report where Production gets it, if anywhere, without its value.
+8. **Microsoft Copilot**, only if the monthly panel (A8) and the assistant benchmark (B4.b) are to cover five assistants: a free account for admin@zodiacs.org.
 
-Later, once the site has rebuilt the MCP server on the published engine: the same first publish for `@zodiacs/mcp-server`, from its verified archive.
-
+Later, once the site has rebuilt the MCP server on the published engine: the same manual first upload for `@zodiacs/mcp-server`, from its verified archive, since npm sets up a trusted publisher only for a package that exists.
 
 ## Identities verified at this checkpoint
 

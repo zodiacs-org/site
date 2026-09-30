@@ -80,7 +80,7 @@ describe('Russian chart-result seams', () => {
     expect(run).toContain('runId === runChartIdRef.current');
     expect(run).toContain('accessGeneration === profileAccessGeneration.current');
     expect(run).toContain('const engine = await loadEngine();\n      if (!runIsCurrent()) return;');
-    // A whole-minute local mean time has no `lmt` flag; the notice still shows.
+    // The birthplace's own mean time shows the notice whatever the flags say.
     expect(run).toContain('setChart(result);\n      setOnMeanTime(resolved.localMeanTime !== undefined);');
     expect(source).toContain("{(chart.flags.includes('lmt') || onMeanTime) && (");
     expect(run).toContain('if (!runIsCurrent()) return;\n      runChartIdRef.current += 1;\n      clearResult();\n      setBusy(false);\n      setError');

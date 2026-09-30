@@ -110,9 +110,9 @@ function expectIndependentChart(actual: Chart, expected: typeof references.cases
 describe('independent lunar return references', () => {
   it('preserves the approved inputs, gates and applicability amendment', () => {
     expect(digest(new URL('./fixtures/independent-lunar-return-policy.json', import.meta.url)))
-      .toBe('c61e4162d580dfce8cbebd90dfa08313a7b442c879a711787e93c293abb7877b');
+      .toBe('5db9f2ef1491fc96896d2d610bbe91a84b0743dd30b449f923e8c2d7aafa5ba5');
     expect(digest(new URL('./fixtures/independent-lunar-returns.json', import.meta.url)))
-      .toBe('131439f21117b85b413974d5bd7ec3094baa087cc15b91248e9692178402dcab');
+      .toBe('2df5d1e2e64bfff8233b17ed5de224d15311c44bc5db6ae9162872ba5ad14798');
     expect(digest(new URL('./fixtures/swiss-lunar-fixed-target-applicability.json', import.meta.url)))
       .toBe('2f9056c0f93b22e3270bf1f496d804759a9057ac6b3e5a142604248ba1dddb1a');
     // The carried-over policy names the one it supersedes, and keeps its gates.

@@ -27,6 +27,9 @@ export const replay: Replay = (request: ReplayRequest): ReplayResult | null => {
       timeKnown: request.timeKnown,
       // The same goes for a pinned ΔT: without it this is a different chart.
       ...(request.deltaT === undefined ? {} : { deltaT: request.deltaT }),
+      // …and for the scale the instant is on (engine 0.1.1-rc.15 on): the same
+      // digits read on UTC are another moment.
+      ...(request.timeScale === undefined ? {} : { timeScale: request.timeScale }),
     } as Parameters<typeof natalChart>[0]) as unknown as ChartShape;
     return { angles: chart.angles, bodies: chart.bodies, cusps: chart.houses?.cusps ?? null };
   } catch {

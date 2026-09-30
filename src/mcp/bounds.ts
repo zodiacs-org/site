@@ -13,7 +13,7 @@
 import { NATAL_ENVELOPE_LIMITS } from '@zodiacs/engine/receipt';
 
 /** This adapter's own version, distinct from the engine's. */
-export const ADAPTER_VERSION = '0.1.0-rc.14';
+export const ADAPTER_VERSION = '0.1.0-rc.15';
 export const ADAPTER_NAME = 'zodiacs-mcp-server';
 
 /**
@@ -117,9 +117,12 @@ export type CompareOutputName = (typeof COMPARE_OUTPUTS)[number];
  * caller passed in, not out of a chart this adapter computed, so it adds
  * nothing the caller did not already send. Every other member carries a closed
  * enum, a boolean, an array length, or a frozen conventions value — verified
- * over the wire against the full row vocabulary, not a sample.
+ * over the wire against the full row vocabulary, not a sample. `time-scale`,
+ * which records carry from engine 0.1.1-rc.15, is the scale the caller gave the
+ * instant on: "utc", "ut1" or "tt". The time basis rows beside ΔT are not
+ * settings: they follow from the instant, and are withheld with it.
  */
-const SETTING_ROW = /^(time-known|reference|houses-|cusps-shape|angles-presence|engine-version|schema|result-flags|input-flags|convention-)/u;
+const SETTING_ROW = /^(time-known|time-scale$|reference|houses-|cusps-shape|angles-presence|engine-version|schema|result-flags|input-flags|convention-)/u;
 
 export function rowValueIsTheFinding(id: string): boolean {
   return SETTING_ROW.test(id);

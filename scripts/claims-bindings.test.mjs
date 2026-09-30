@@ -16,13 +16,13 @@ import { computeSolarReturn } from '../src/islands/solar-return/compute.ts';
  * the figure it states still covers what was measured.
  */
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
-const evidence = JSON.parse(read('docs/platform/evidence/events-vs-swiss-2026-09-25/deltas.json'));
+const evidence = JSON.parse(read('docs/platform/evidence/events-vs-swiss-2026-09-30/deltas.json'));
 const MINUTE = 60;
 const HOUR = 3600;
 
-// deltas.json keeps each event's id and published instant; its differences
-// from Swiss were removed on 2026-09-28 (DECISIONS-2026-09-28 §3), leaving the
-// summary statistics the copy is held to.
+// deltas.json keeps each event's id and published instant and the summary
+// statistics the copy is held to; the differences from Swiss stay out of the
+// repository (DECISIONS-2026-09-28 §3). Measured on engine rc.15's catalog.
 describe('event times against Swiss Ephemeris', () => {
   it('were measured on the catalog the site publishes now', () => {
     const published = eventsCatalog().events

@@ -185,12 +185,12 @@
       "house": 3
     },
     {
-      "id": "derived:2026-09-28:solar-house:aquarius:h7:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-301z-mars-leo:Mars",
+      "id": "derived:2026-09-28:solar-house:aquarius:h7:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-321z-mars-leo:Mars",
       "kind": "solar-house",
-      "sourceId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.301Z:mars-leo",
-      "sourceFactId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.301Z:mars-leo",
+      "sourceId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.321Z:mars-leo",
+      "sourceFactId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.321Z:mars-leo",
       "label": "Mars in Leo maps to Aquarius solar house 7",
-      "at": "2026-09-28T02:49:07.301Z",
+      "at": "2026-09-28T02:49:07.321Z",
       "body": "Mars",
       "eventKind": "ingress",
       "sign": "leo",
@@ -210,12 +210,12 @@
       "house": 1
     },
     {
-      "id": "derived:2026-09-28:solar-house:aries:h5:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-301z-mars-leo:Mars",
+      "id": "derived:2026-09-28:solar-house:aries:h5:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-321z-mars-leo:Mars",
       "kind": "solar-house",
-      "sourceId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.301Z:mars-leo",
-      "sourceFactId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.301Z:mars-leo",
+      "sourceId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.321Z:mars-leo",
+      "sourceFactId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.321Z:mars-leo",
       "label": "Mars in Leo maps to Aries solar house 5",
-      "at": "2026-09-28T02:49:07.301Z",
+      "at": "2026-09-28T02:49:07.321Z",
       "body": "Mars",
       "eventKind": "ingress",
       "sign": "leo",
@@ -235,12 +235,12 @@
       "house": 10
     },
     {
-      "id": "derived:2026-09-28:solar-house:cancer:h2:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-301z-mars-leo:Mars",
+      "id": "derived:2026-09-28:solar-house:cancer:h2:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-321z-mars-leo:Mars",
       "kind": "solar-house",
-      "sourceId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.301Z:mars-leo",
-      "sourceFactId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.301Z:mars-leo",
+      "sourceId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.321Z:mars-leo",
+      "sourceFactId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.321Z:mars-leo",
       "label": "Mars in Leo maps to Cancer solar house 2",
-      "at": "2026-09-28T02:49:07.301Z",
+      "at": "2026-09-28T02:49:07.321Z",
       "body": "Mars",
       "eventKind": "ingress",
       "sign": "leo",
@@ -260,12 +260,12 @@
       "house": 4
     },
     {
-      "id": "derived:2026-09-28:solar-house:capricorn:h8:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-301z-mars-leo:Mars",
+      "id": "derived:2026-09-28:solar-house:capricorn:h8:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-321z-mars-leo:Mars",
       "kind": "solar-house",
-      "sourceId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.301Z:mars-leo",
-      "sourceFactId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.301Z:mars-leo",
+      "sourceId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.321Z:mars-leo",
+      "sourceFactId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.321Z:mars-leo",
       "label": "Mars in Leo maps to Capricorn solar house 8",
-      "at": "2026-09-28T02:49:07.301Z",
+      "at": "2026-09-28T02:49:07.321Z",
       "body": "Mars",
       "eventKind": "ingress",
       "sign": "leo",
@@ -285,12 +285,12 @@
       "house": 11
     },
     {
-      "id": "derived:2026-09-28:solar-house:gemini:h3:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-301z-mars-leo:Mars",
+      "id": "derived:2026-09-28:solar-house:gemini:h3:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-321z-mars-leo:Mars",
       "kind": "solar-house",
-      "sourceId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.301Z:mars-leo",
-      "sourceFactId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.301Z:mars-leo",
+      "sourceId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.321Z:mars-leo",
+      "sourceFactId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.321Z:mars-leo",
       "label": "Mars in Leo maps to Gemini solar house 3",
-      "at": "2026-09-28T02:49:07.301Z",
+      "at": "2026-09-28T02:49:07.321Z",
       "body": "Mars",
       "eventKind": "ingress",
       "sign": "leo",
@@ -298,12 +298,12 @@
       "house": 3
     },
     {
-      "id": "derived:2026-09-28:solar-house:leo:h1:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-301z-mars-leo:Mars",
+      "id": "derived:2026-09-28:solar-house:leo:h1:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-321z-mars-leo:Mars",
       "kind": "solar-house",
-      "sourceId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.301Z:mars-leo",
-      "sourceFactId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.301Z:mars-leo",
+      "sourceId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.321Z:mars-leo",
+      "sourceFactId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.321Z:mars-leo",
       "label": "Mars in Leo maps to Leo solar house 1",
-      "at": "2026-09-28T02:49:07.301Z",
+      "at": "2026-09-28T02:49:07.321Z",
       "body": "Mars",
       "eventKind": "ingress",
       "sign": "leo",
@@ -323,12 +323,12 @@
       "house": 9
     },
     {
-      "id": "derived:2026-09-28:solar-house:libra:h11:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-301z-mars-leo:Mars",
+      "id": "derived:2026-09-28:solar-house:libra:h11:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-321z-mars-leo:Mars",
       "kind": "solar-house",
-      "sourceId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.301Z:mars-leo",
-      "sourceFactId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.301Z:mars-leo",
+      "sourceId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.321Z:mars-leo",
+      "sourceFactId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.321Z:mars-leo",
       "label": "Mars in Leo maps to Libra solar house 11",
-      "at": "2026-09-28T02:49:07.301Z",
+      "at": "2026-09-28T02:49:07.321Z",
       "body": "Mars",
       "eventKind": "ingress",
       "sign": "leo",
@@ -360,12 +360,12 @@
       "house": 2
     },
     {
-      "id": "derived:2026-09-28:solar-house:pisces:h6:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-301z-mars-leo:Mars",
+      "id": "derived:2026-09-28:solar-house:pisces:h6:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-321z-mars-leo:Mars",
       "kind": "solar-house",
-      "sourceId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.301Z:mars-leo",
-      "sourceFactId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.301Z:mars-leo",
+      "sourceId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.321Z:mars-leo",
+      "sourceFactId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.321Z:mars-leo",
       "label": "Mars in Leo maps to Pisces solar house 6",
-      "at": "2026-09-28T02:49:07.301Z",
+      "at": "2026-09-28T02:49:07.321Z",
       "body": "Mars",
       "eventKind": "ingress",
       "sign": "leo",
@@ -385,12 +385,12 @@
       "house": 5
     },
     {
-      "id": "derived:2026-09-28:solar-house:sagittarius:h9:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-301z-mars-leo:Mars",
+      "id": "derived:2026-09-28:solar-house:sagittarius:h9:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-321z-mars-leo:Mars",
       "kind": "solar-house",
-      "sourceId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.301Z:mars-leo",
-      "sourceFactId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.301Z:mars-leo",
+      "sourceId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.321Z:mars-leo",
+      "sourceFactId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.321Z:mars-leo",
       "label": "Mars in Leo maps to Sagittarius solar house 9",
-      "at": "2026-09-28T02:49:07.301Z",
+      "at": "2026-09-28T02:49:07.321Z",
       "body": "Mars",
       "eventKind": "ingress",
       "sign": "leo",
@@ -398,12 +398,12 @@
       "house": 9
     },
     {
-      "id": "derived:2026-09-28:solar-house:scorpio:h10:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-301z-mars-leo:Mars",
+      "id": "derived:2026-09-28:solar-house:scorpio:h10:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-321z-mars-leo:Mars",
       "kind": "solar-house",
-      "sourceId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.301Z:mars-leo",
-      "sourceFactId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.301Z:mars-leo",
+      "sourceId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.321Z:mars-leo",
+      "sourceFactId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.321Z:mars-leo",
       "label": "Mars in Leo maps to Scorpio solar house 10",
-      "at": "2026-09-28T02:49:07.301Z",
+      "at": "2026-09-28T02:49:07.321Z",
       "body": "Mars",
       "eventKind": "ingress",
       "sign": "leo",
@@ -435,12 +435,12 @@
       "house": 12
     },
     {
-      "id": "derived:2026-09-28:solar-house:taurus:h4:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-301z-mars-leo:Mars",
+      "id": "derived:2026-09-28:solar-house:taurus:h4:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-321z-mars-leo:Mars",
       "kind": "solar-house",
-      "sourceId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.301Z:mars-leo",
-      "sourceFactId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.301Z:mars-leo",
+      "sourceId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.321Z:mars-leo",
+      "sourceFactId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.321Z:mars-leo",
       "label": "Mars in Leo maps to Taurus solar house 4",
-      "at": "2026-09-28T02:49:07.301Z",
+      "at": "2026-09-28T02:49:07.321Z",
       "body": "Mars",
       "eventKind": "ingress",
       "sign": "leo",
@@ -448,12 +448,12 @@
       "house": 4
     },
     {
-      "id": "derived:2026-09-28:solar-house:virgo:h12:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-301z-mars-leo:Mars",
+      "id": "derived:2026-09-28:solar-house:virgo:h12:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-321z-mars-leo:Mars",
       "kind": "solar-house",
-      "sourceId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.301Z:mars-leo",
-      "sourceFactId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.301Z:mars-leo",
+      "sourceId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.321Z:mars-leo",
+      "sourceFactId": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.321Z:mars-leo",
       "label": "Mars in Leo maps to Virgo solar house 12",
-      "at": "2026-09-28T02:49:07.301Z",
+      "at": "2026-09-28T02:49:07.321Z",
       "body": "Mars",
       "eventKind": "ingress",
       "sign": "leo",
@@ -485,12 +485,12 @@
       "house": 10
     },
     {
-      "id": "derived:2026-09-30:solar-house:aquarius:h10:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio:Mercury",
+      "id": "derived:2026-09-30:solar-house:aquarius:h10:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio:Mercury",
       "kind": "solar-house",
-      "sourceId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
-      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
+      "sourceId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
+      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
       "label": "Mercury in Scorpio maps to Aquarius solar house 10",
-      "at": "2026-09-30T11:44:48.709Z",
+      "at": "2026-09-30T11:44:48.730Z",
       "body": "Mercury",
       "eventKind": "ingress",
       "sign": "scorpio",
@@ -594,12 +594,12 @@
       "house": 8
     },
     {
-      "id": "derived:2026-09-30:solar-house:aries:h8:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio:Mercury",
+      "id": "derived:2026-09-30:solar-house:aries:h8:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio:Mercury",
       "kind": "solar-house",
-      "sourceId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
-      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
+      "sourceId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
+      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
       "label": "Mercury in Scorpio maps to Aries solar house 8",
-      "at": "2026-09-30T11:44:48.709Z",
+      "at": "2026-09-30T11:44:48.730Z",
       "body": "Mercury",
       "eventKind": "ingress",
       "sign": "scorpio",
@@ -667,12 +667,12 @@
       "house": 5
     },
     {
-      "id": "derived:2026-09-30:solar-house:cancer:h5:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio:Mercury",
+      "id": "derived:2026-09-30:solar-house:cancer:h5:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio:Mercury",
       "kind": "solar-house",
-      "sourceId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
-      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
+      "sourceId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
+      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
       "label": "Mercury in Scorpio maps to Cancer solar house 5",
-      "at": "2026-09-30T11:44:48.709Z",
+      "at": "2026-09-30T11:44:48.730Z",
       "body": "Mercury",
       "eventKind": "ingress",
       "sign": "scorpio",
@@ -716,12 +716,12 @@
       "house": 11
     },
     {
-      "id": "derived:2026-09-30:solar-house:capricorn:h11:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio:Mercury",
+      "id": "derived:2026-09-30:solar-house:capricorn:h11:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio:Mercury",
       "kind": "solar-house",
-      "sourceId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
-      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
+      "sourceId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
+      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
       "label": "Mercury in Scorpio maps to Capricorn solar house 11",
-      "at": "2026-09-30T11:44:48.709Z",
+      "at": "2026-09-30T11:44:48.730Z",
       "body": "Mercury",
       "eventKind": "ingress",
       "sign": "scorpio",
@@ -789,12 +789,12 @@
       "house": 6
     },
     {
-      "id": "derived:2026-09-30:solar-house:gemini:h6:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio:Mercury",
+      "id": "derived:2026-09-30:solar-house:gemini:h6:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio:Mercury",
       "kind": "solar-house",
-      "sourceId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
-      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
+      "sourceId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
+      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
       "label": "Mercury in Scorpio maps to Gemini solar house 6",
-      "at": "2026-09-30T11:44:48.709Z",
+      "at": "2026-09-30T11:44:48.730Z",
       "body": "Mercury",
       "eventKind": "ingress",
       "sign": "scorpio",
@@ -850,12 +850,12 @@
       "house": 4
     },
     {
-      "id": "derived:2026-09-30:solar-house:leo:h4:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio:Mercury",
+      "id": "derived:2026-09-30:solar-house:leo:h4:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio:Mercury",
       "kind": "solar-house",
-      "sourceId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
-      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
+      "sourceId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
+      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
       "label": "Mercury in Scorpio maps to Leo solar house 4",
-      "at": "2026-09-30T11:44:48.709Z",
+      "at": "2026-09-30T11:44:48.730Z",
       "body": "Mercury",
       "eventKind": "ingress",
       "sign": "scorpio",
@@ -923,12 +923,12 @@
       "house": 2
     },
     {
-      "id": "derived:2026-09-30:solar-house:libra:h2:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio:Mercury",
+      "id": "derived:2026-09-30:solar-house:libra:h2:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio:Mercury",
       "kind": "solar-house",
-      "sourceId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
-      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
+      "sourceId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
+      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
       "label": "Mercury in Scorpio maps to Libra solar house 2",
-      "at": "2026-09-30T11:44:48.709Z",
+      "at": "2026-09-30T11:44:48.730Z",
       "body": "Mercury",
       "eventKind": "ingress",
       "sign": "scorpio",
@@ -1008,12 +1008,12 @@
       "house": 9
     },
     {
-      "id": "derived:2026-09-30:solar-house:pisces:h9:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio:Mercury",
+      "id": "derived:2026-09-30:solar-house:pisces:h9:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio:Mercury",
       "kind": "solar-house",
-      "sourceId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
-      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
+      "sourceId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
+      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
       "label": "Mercury in Scorpio maps to Pisces solar house 9",
-      "at": "2026-09-30T11:44:48.709Z",
+      "at": "2026-09-30T11:44:48.730Z",
       "body": "Mercury",
       "eventKind": "ingress",
       "sign": "scorpio",
@@ -1057,12 +1057,12 @@
       "house": 12
     },
     {
-      "id": "derived:2026-09-30:solar-house:sagittarius:h12:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio:Mercury",
+      "id": "derived:2026-09-30:solar-house:sagittarius:h12:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio:Mercury",
       "kind": "solar-house",
-      "sourceId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
-      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
+      "sourceId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
+      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
       "label": "Mercury in Scorpio maps to Sagittarius solar house 12",
-      "at": "2026-09-30T11:44:48.709Z",
+      "at": "2026-09-30T11:44:48.730Z",
       "body": "Mercury",
       "eventKind": "ingress",
       "sign": "scorpio",
@@ -1106,12 +1106,12 @@
       "house": 1
     },
     {
-      "id": "derived:2026-09-30:solar-house:scorpio:h1:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio:Mercury",
+      "id": "derived:2026-09-30:solar-house:scorpio:h1:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio:Mercury",
       "kind": "solar-house",
-      "sourceId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
-      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
+      "sourceId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
+      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
       "label": "Mercury in Scorpio maps to Scorpio solar house 1",
-      "at": "2026-09-30T11:44:48.709Z",
+      "at": "2026-09-30T11:44:48.730Z",
       "body": "Mercury",
       "eventKind": "ingress",
       "sign": "scorpio",
@@ -1203,12 +1203,12 @@
       "house": 7
     },
     {
-      "id": "derived:2026-09-30:solar-house:taurus:h7:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio:Mercury",
+      "id": "derived:2026-09-30:solar-house:taurus:h7:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio:Mercury",
       "kind": "solar-house",
-      "sourceId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
-      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
+      "sourceId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
+      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
       "label": "Mercury in Scorpio maps to Taurus solar house 7",
-      "at": "2026-09-30T11:44:48.709Z",
+      "at": "2026-09-30T11:44:48.730Z",
       "body": "Mercury",
       "eventKind": "ingress",
       "sign": "scorpio",
@@ -1252,12 +1252,12 @@
       "house": 3
     },
     {
-      "id": "derived:2026-09-30:solar-house:virgo:h3:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio:Mercury",
+      "id": "derived:2026-09-30:solar-house:virgo:h3:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio:Mercury",
       "kind": "solar-house",
-      "sourceId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
-      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
+      "sourceId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
+      "sourceFactId": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
       "label": "Mercury in Scorpio maps to Virgo solar house 3",
-      "at": "2026-09-30T11:44:48.709Z",
+      "at": "2026-09-30T11:44:48.730Z",
       "body": "Mercury",
       "eventKind": "ingress",
       "sign": "scorpio",
@@ -5616,16 +5616,16 @@
       "at": "2026-09-28T12:00:00.000Z",
       "body": "Moon",
       "sign": "aries",
-      "degree": 28.441500694021443,
+      "degree": 28.44149731657086,
       "moonPhase": "Waning Gibbous",
       "retrograde": false
     },
     {
-      "id": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.301Z:mars-leo",
+      "id": "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.321Z:mars-leo",
       "kind": "sky-event",
       "sourceId": "src/data/transits-2026-09.json",
       "label": "Mars enters Leo on September 28, 2026 at 02:49 UTC",
-      "at": "2026-09-28T02:49:07.301Z",
+      "at": "2026-09-28T02:49:07.321Z",
       "body": "Mars",
       "eventKind": "ingress",
       "sign": "leo",
@@ -5639,7 +5639,7 @@
       "at": "2026-09-30T12:00:00.000Z",
       "body": "Mars",
       "sign": "leo",
-      "degree": 1.396499513293577,
+      "degree": 1.3964993581410567,
       "retrograde": false
     },
     {
@@ -5650,7 +5650,7 @@
       "at": "2026-09-30T12:00:00.000Z",
       "body": "Mercury",
       "sign": "scorpio",
-      "degree": 0.01408049718793336,
+      "degree": 0.014080142411103225,
       "retrograde": false
     },
     {
@@ -5661,7 +5661,7 @@
       "at": "2026-09-30T12:00:00.000Z",
       "body": "Moon",
       "sign": "taurus",
-      "degree": 26.769043261762647,
+      "degree": 26.76903946929201,
       "moonPhase": "Waning Gibbous",
       "retrograde": false
     },
@@ -5673,7 +5673,7 @@
       "at": "2026-09-30T12:00:00.000Z",
       "body": "Saturn",
       "sign": "aries",
-      "degree": 11.614734383205587,
+      "degree": 11.614734403963723,
       "retrograde": true
     },
     {
@@ -5684,7 +5684,7 @@
       "at": "2026-09-30T12:00:00.000Z",
       "body": "Sun",
       "sign": "libra",
-      "degree": 7.347130421357292,
+      "degree": 7.347130160258985,
       "retrograde": false
     },
     {
@@ -5695,15 +5695,15 @@
       "at": "2026-09-30T12:00:00.000Z",
       "body": "Venus",
       "sign": "scorpio",
-      "degree": 8.33713869866233,
+      "degree": 8.337138670496756,
       "retrograde": false
     },
     {
-      "id": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
+      "id": "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
       "kind": "sky-event",
       "sourceId": "src/data/transits-2026-09.json",
       "label": "Mercury enters Scorpio on September 30, 2026 at 11:44 UTC",
-      "at": "2026-09-30T11:44:48.709Z",
+      "at": "2026-09-30T11:44:48.730Z",
       "body": "Mercury",
       "eventKind": "ingress",
       "sign": "scorpio",
@@ -5717,7 +5717,7 @@
       "at": "2026-10-01T12:00:00.000Z",
       "body": "Mars",
       "sign": "leo",
-      "degree": 1.9793651722307004,
+      "degree": 1.9793650103774212,
       "retrograde": false
     },
     {
@@ -5728,7 +5728,7 @@
       "at": "2026-10-01T12:00:00.000Z",
       "body": "Mercury",
       "sign": "scorpio",
-      "degree": 1.338593293945678,
+      "degree": 1.3385929283986115,
       "retrograde": false
     },
     {
@@ -5739,7 +5739,7 @@
       "at": "2026-10-01T12:00:00.000Z",
       "body": "Moon",
       "sign": "gemini",
-      "degree": 11.048039371566915,
+      "degree": 11.048035397116905,
       "moonPhase": "Waning Gibbous",
       "retrograde": false
     },
@@ -5751,7 +5751,7 @@
       "at": "2026-10-01T12:00:00.000Z",
       "body": "Saturn",
       "sign": "aries",
-      "degree": 11.536398841554274,
+      "degree": 11.536398863325871,
       "retrograde": true
     },
     {
@@ -5762,7 +5762,7 @@
       "at": "2026-10-01T12:00:00.000Z",
       "body": "Venus",
       "sign": "scorpio",
-      "degree": 8.42454705254022,
+      "degree": 8.424547033416161,
       "retrograde": false
     },
     {
@@ -5773,7 +5773,7 @@
       "at": "2026-10-04T12:00:00.000Z",
       "body": "Moon",
       "sign": "cancer",
-      "degree": 23.627834039453546,
+      "degree": 23.627829605532384,
       "moonPhase": "Last Quarter",
       "retrograde": false
     },
@@ -6121,8 +6121,8 @@
             {
               "text": "After separating the obligations, decide which commitment is actually yours to make. Mercury entering Scorpio brings shared money, debts, intimacy, and what gets merged into focus.",
               "evidenceRefs": [
-                "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
-                "derived:2026-09-30:solar-house:aries:h8:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio:Mercury"
+                "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
+                "derived:2026-09-30:solar-house:aries:h8:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio:Mercury"
               ]
             }
           ],
@@ -6206,8 +6206,8 @@
             {
               "text": "At the exact contact, notice whether pleasure or creative work received time rather than good intentions. Mars entering Leo brings pleasure, romance, children, and what you make for joy into focus.",
               "evidenceRefs": [
-                "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.301Z:mars-leo",
-                "derived:2026-09-28:solar-house:aries:h5:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-301z-mars-leo:Mars"
+                "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.321Z:mars-leo",
+                "derived:2026-09-28:solar-house:aries:h5:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-321z-mars-leo:Mars"
               ]
             },
             {
@@ -6461,8 +6461,8 @@
             {
               "text": "Once the unsettled term is stated, let the answer determine whether the agreement can proceed. Mercury entering Scorpio brings partners, the people directly across the table into focus.",
               "evidenceRefs": [
-                "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
-                "derived:2026-09-30:solar-house:taurus:h7:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio:Mercury"
+                "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
+                "derived:2026-09-30:solar-house:taurus:h7:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio:Mercury"
               ]
             }
           ],
@@ -6546,8 +6546,8 @@
             {
               "text": "At the exact contact, check whether the private conditions still support the week outside them. Mars entering Leo brings home, family, and the private floor of your life into focus.",
               "evidenceRefs": [
-                "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.301Z:mars-leo",
-                "derived:2026-09-28:solar-house:taurus:h4:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-301z-mars-leo:Mars"
+                "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.321Z:mars-leo",
+                "derived:2026-09-28:solar-house:taurus:h4:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-321z-mars-leo:Mars"
               ]
             },
             {
@@ -6801,8 +6801,8 @@
             {
               "text": "Remove one repeated snag from the routine before adding another task. Mercury entering Scorpio brings work in progress, health routines, and the daily load into focus.",
               "evidenceRefs": [
-                "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
-                "derived:2026-09-30:solar-house:gemini:h6:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio:Mercury"
+                "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
+                "derived:2026-09-30:solar-house:gemini:h6:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio:Mercury"
               ]
             }
           ],
@@ -6886,8 +6886,8 @@
             {
               "text": "At the exact contact, reread the message and correct the instruction or assumption that changed. Mars entering Leo brings errands, siblings, messages, and the near neighborhood into focus.",
               "evidenceRefs": [
-                "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.301Z:mars-leo",
-                "derived:2026-09-28:solar-house:gemini:h3:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-301z-mars-leo:Mars"
+                "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.321Z:mars-leo",
+                "derived:2026-09-28:solar-house:gemini:h3:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-321z-mars-leo:Mars"
               ]
             },
             {
@@ -7141,8 +7141,8 @@
             {
               "text": "Reserve a real block for the person, pleasure, or draft before it becomes optional. Mercury entering Scorpio brings pleasure, romance, children, and what you make for joy into focus.",
               "evidenceRefs": [
-                "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
-                "derived:2026-09-30:solar-house:cancer:h5:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio:Mercury"
+                "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
+                "derived:2026-09-30:solar-house:cancer:h5:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio:Mercury"
               ]
             }
           ],
@@ -7226,8 +7226,8 @@
             {
               "text": "At the exact contact, compare the available resources with what the plan now costs. Mars entering Leo brings money, possessions, and what steadies you into focus.",
               "evidenceRefs": [
-                "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.301Z:mars-leo",
-                "derived:2026-09-28:solar-house:cancer:h2:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-301z-mars-leo:Mars"
+                "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.321Z:mars-leo",
+                "derived:2026-09-28:solar-house:cancer:h2:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-321z-mars-leo:Mars"
               ]
             },
             {
@@ -7481,8 +7481,8 @@
             {
               "text": "Once the home condition is named, notice whether the boundary changes the demand placed on it. Mercury entering Scorpio brings home, family, and the private floor of your life into focus.",
               "evidenceRefs": [
-                "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
-                "derived:2026-09-30:solar-house:leo:h4:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio:Mercury"
+                "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
+                "derived:2026-09-30:solar-house:leo:h4:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio:Mercury"
               ]
             }
           ],
@@ -7566,8 +7566,8 @@
             {
               "text": "At the exact contact, compare the move you intended with the one you are actually making. Mars entering Leo brings how you look, start, and come across into focus.",
               "evidenceRefs": [
-                "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.301Z:mars-leo",
-                "derived:2026-09-28:solar-house:leo:h1:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-301z-mars-leo:Mars"
+                "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.321Z:mars-leo",
+                "derived:2026-09-28:solar-house:leo:h1:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-321z-mars-leo:Mars"
               ]
             },
             {
@@ -7821,8 +7821,8 @@
             {
               "text": "Once the message is sent, use the reply to decide which question still needs an answer. Mercury entering Scorpio brings errands, siblings, messages, and the near neighborhood into focus.",
               "evidenceRefs": [
-                "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
-                "derived:2026-09-30:solar-house:virgo:h3:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio:Mercury"
+                "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
+                "derived:2026-09-30:solar-house:virgo:h3:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio:Mercury"
               ]
             }
           ],
@@ -7906,8 +7906,8 @@
             {
               "text": "At the exact contact, notice what quiet resolved and what still needs a deliberate ending. Mars entering Leo brings rest, retreat, and what runs under the surface into focus.",
               "evidenceRefs": [
-                "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.301Z:mars-leo",
-                "derived:2026-09-28:solar-house:virgo:h12:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-301z-mars-leo:Mars"
+                "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.321Z:mars-leo",
+                "derived:2026-09-28:solar-house:virgo:h12:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-321z-mars-leo:Mars"
               ]
             },
             {
@@ -8161,8 +8161,8 @@
             {
               "text": "Put a number beside the cost and decide what you will not spend to force the result. Mercury entering Scorpio brings money, possessions, and what steadies you into focus.",
               "evidenceRefs": [
-                "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
-                "derived:2026-09-30:solar-house:libra:h2:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio:Mercury"
+                "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
+                "derived:2026-09-30:solar-house:libra:h2:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio:Mercury"
               ]
             }
           ],
@@ -8246,8 +8246,8 @@
             {
               "text": "At the exact contact, ask whether the group or future plan has acquired a real next step. Mars entering Leo brings friends, groups, and the future you are pointing at into focus.",
               "evidenceRefs": [
-                "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.301Z:mars-leo",
-                "derived:2026-09-28:solar-house:libra:h11:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-301z-mars-leo:Mars"
+                "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.321Z:mars-leo",
+                "derived:2026-09-28:solar-house:libra:h11:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-321z-mars-leo:Mars"
               ]
             },
             {
@@ -8501,8 +8501,8 @@
             {
               "text": "Choose one visible first move and make it before asking the room for permission. Mercury entering Scorpio brings how you look, start, and come across into focus.",
               "evidenceRefs": [
-                "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
-                "derived:2026-09-30:solar-house:scorpio:h1:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio:Mercury"
+                "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
+                "derived:2026-09-30:solar-house:scorpio:h1:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio:Mercury"
               ]
             }
           ],
@@ -8586,8 +8586,8 @@
             {
               "text": "At the exact contact, judge the visible work by the standard you said it would meet. Mars entering Leo brings career, reputation, and what the public sees into focus.",
               "evidenceRefs": [
-                "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.301Z:mars-leo",
-                "derived:2026-09-28:solar-house:scorpio:h10:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-301z-mars-leo:Mars"
+                "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.321Z:mars-leo",
+                "derived:2026-09-28:solar-house:scorpio:h10:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-321z-mars-leo:Mars"
               ]
             },
             {
@@ -8841,8 +8841,8 @@
             {
               "text": "After closing the open loop, notice whether the quiet restores capacity or reveals another ending. Mercury entering Scorpio brings rest, retreat, and what runs under the surface into focus.",
               "evidenceRefs": [
-                "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
-                "derived:2026-09-30:solar-house:sagittarius:h12:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio:Mercury"
+                "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
+                "derived:2026-09-30:solar-house:sagittarius:h12:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio:Mercury"
               ]
             }
           ],
@@ -8926,8 +8926,8 @@
             {
               "text": "At the exact contact, test the larger claim against a source or experience that could revise it. Mars entering Leo brings travel, study, belief, and the longer view into focus.",
               "evidenceRefs": [
-                "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.301Z:mars-leo",
-                "derived:2026-09-28:solar-house:sagittarius:h9:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-301z-mars-leo:Mars"
+                "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.321Z:mars-leo",
+                "derived:2026-09-28:solar-house:sagittarius:h9:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-321z-mars-leo:Mars"
               ]
             },
             {
@@ -9181,8 +9181,8 @@
             {
               "text": "Once the next step has an owner and time, judge the future plan by whether it moves. Mercury entering Scorpio brings friends, groups, and the future you are pointing at into focus.",
               "evidenceRefs": [
-                "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
-                "derived:2026-09-30:solar-house:capricorn:h11:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio:Mercury"
+                "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
+                "derived:2026-09-30:solar-house:capricorn:h11:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio:Mercury"
               ]
             }
           ],
@@ -9266,8 +9266,8 @@
             {
               "text": "At the exact contact, reconcile what is shared, owed, private, and still unresolved. Mars entering Leo brings shared money, debts, intimacy, and what gets merged into focus.",
               "evidenceRefs": [
-                "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.301Z:mars-leo",
-                "derived:2026-09-28:solar-house:capricorn:h8:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-301z-mars-leo:Mars"
+                "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.321Z:mars-leo",
+                "derived:2026-09-28:solar-house:capricorn:h8:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-321z-mars-leo:Mars"
               ]
             },
             {
@@ -9521,8 +9521,8 @@
             {
               "text": "Finish the work you are prepared to make visible and name the standard it meets. Mercury entering Scorpio brings career, reputation, and what the public sees into focus.",
               "evidenceRefs": [
-                "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
-                "derived:2026-09-30:solar-house:aquarius:h10:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio:Mercury"
+                "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
+                "derived:2026-09-30:solar-house:aquarius:h10:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio:Mercury"
               ]
             }
           ],
@@ -9606,8 +9606,8 @@
             {
               "text": "At the exact contact, compare the spoken agreement with what each person is actually doing. Mars entering Leo brings partners, the people directly across the table into focus.",
               "evidenceRefs": [
-                "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.301Z:mars-leo",
-                "derived:2026-09-28:solar-house:aquarius:h7:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-301z-mars-leo:Mars"
+                "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.321Z:mars-leo",
+                "derived:2026-09-28:solar-house:aquarius:h7:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-321z-mars-leo:Mars"
               ]
             },
             {
@@ -9861,8 +9861,8 @@
             {
               "text": "Test the larger idea against one source, journey, class, or lived example. Mercury entering Scorpio brings travel, study, belief, and the longer view into focus.",
               "evidenceRefs": [
-                "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.709Z:mercury-scorpio",
-                "derived:2026-09-30:solar-house:pisces:h9:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-709z-mercury-scorpio:Mercury"
+                "fact:2026-09-30:event:ingress:2026-09-30T11:44:48.730Z:mercury-scorpio",
+                "derived:2026-09-30:solar-house:pisces:h9:fact-2026-09-30-event-ingress-2026-09-30t11-44-48-730z-mercury-scorpio:Mercury"
               ]
             }
           ],
@@ -9946,8 +9946,8 @@
             {
               "text": "At the exact contact, inspect the recurring snag instead of treating effort as the only variable. Mars entering Leo brings work in progress, health routines, and the daily load into focus.",
               "evidenceRefs": [
-                "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.301Z:mars-leo",
-                "derived:2026-09-28:solar-house:pisces:h6:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-301z-mars-leo:Mars"
+                "fact:2026-09-28:event:ingress:2026-09-28T02:49:07.321Z:mars-leo",
+                "derived:2026-09-28:solar-house:pisces:h6:fact-2026-09-28-event-ingress-2026-09-28t02-49-07-321z-mars-leo:Mars"
               ]
             },
             {

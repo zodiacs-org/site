@@ -12,7 +12,10 @@ import { loadZoneHistory } from './tz-history-load';
  * exactly what resolving without a longitude gives: the same instant, offset
  * and flags, for every wall time around the change. Wall minutes are checked
  * one by one across the jump and an hour either side, and every two hours
- * elsewhere within 26 hours of the end.
+ * elsewhere within 26 hours of the end. Only the reading with a longitude
+ * says which clock it was: `lmt` there, before the era ended, and never
+ * without one, which cannot tell the zone's mean time from a legal clock at the
+ * same offset.
  */
 const table = lmtTable as unknown as {
   eras: Record<string, number>;
@@ -92,9 +95,12 @@ describe('the birthplace clock on its zone\'s own meridian', () => {
         const ownMeridian = resolveLocalToUtc(date, time, zone, { longitude });
         checked += 1;
         if (zoneClock.flags.some((flag) => flag === 'dst-gap' || flag === 'dst-fold')) jumps += 1;
+        const jumpsOnly = (flags: readonly string[]) => flags.filter((flag) => flag !== 'lmt').join();
         if (ownMeridian.utc.getTime() !== zoneClock.utc.getTime()
           || Math.abs(ownMeridian.offsetMinutes - zoneClock.offsetMinutes) > 1e-9
-          || ownMeridian.flags.join() !== zoneClock.flags.join()) {
+          || jumpsOnly(ownMeridian.flags) !== jumpsOnly(zoneClock.flags)
+          || zoneClock.flags.includes('lmt')
+          || ownMeridian.flags.includes('lmt') !== (ownMeridian.utc.getTime() < endMs)) {
           failures.push(`${zone} ${date} ${time}: ${ownMeridian.utc.toISOString()} [${ownMeridian.flags}] `
             + `where the zone clock gives ${zoneClock.utc.toISOString()} [${zoneClock.flags}]`);
         }

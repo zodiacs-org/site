@@ -51,7 +51,7 @@ describe('independent true node and polar references', () => {
       .update(readFileSync(new URL(`./fixtures/${name}`, import.meta.url)))
       .digest('hex');
     expect(digest('independent-node-polar.json'))
-      .toBe('7e969149c746c1cc1fb5a96a5405a5af04b6b319c918abb5f3dea4ca17385fcd');
+      .toBe('75f667f192c43c1ee3a8be6c5379586621b5eaa26f32e21e2ec8afd6206e3800');
     expect(digest('swiss-node-polar-policy.json'))
       .toBe('7742cb2bc7cd0932a344ddcb708e45dad07b91cb653ea1f55538c2d73fa18e96');
   });
@@ -109,7 +109,7 @@ describe('independent representative supported epochs', () => {
       .update(readFileSync(new URL(`./fixtures/${name}`, import.meta.url)))
       .digest('hex');
     expect(digest('independent-eight-cases.json'))
-      .toBe('ba7ffe9619c4d248f5018e972d5afb35f1153c3ebe077a4dee11a7ea4e1b51fc');
+      .toBe('85d694f34dbf46dff13a16c8c57c4891c14c2e4c043c78b87d0799ec49058225');
     expect(digest('swiss-eight-cases-policy.json'))
       .toBe('9dfc069be7c6854da1f0dff578c0b213e64624e720d21e27c6301b7612fd79a4');
   });
@@ -306,7 +306,8 @@ describe('houses', () => {
 });
 
 // Five Placidus charts against ERFA: ASC and MC from ERFA's apparent sidereal
-// time (IAU 2006/2000A, UT1 taken as the instant, as the engine does) and true
+// time (IAU 2006/2000A, at the engine's UT1 and TT for the instant: since
+// rc.15, UTC plus IERS UT1 − UTC from 1972 to 2027-10-02) and true
 // obliquity of date, and the cusps by the conformance suite's Placidus
 // construction (docs/engine-validation/independent-references/). These are the
 // cases and the gates this block held to Swiss Ephemeris houses_ex until

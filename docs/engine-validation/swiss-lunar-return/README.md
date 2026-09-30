@@ -206,7 +206,8 @@ compare them with `git show 2ca93d41:<path>` rather than with the paths the
 `independent-lunar-returns.json` under `independent-lunar-return-policy.json`,
 which carries this policy's cases, interval, scan contract, gates and
 conditioning unchanged and takes the L-wrap birth from the NASA JPL Horizons
-Moon instead, 2000-01-12T18:48:22.487Z
+Moon instead, 2000-01-12T18:48:22.487Z on engine rc.14's clock and
+2000-01-12T18:48:22.141Z on rc.15's, which reads that instant as UTC
 ([`../independent-references/`](../independent-references/README.md)). The
 applicability amendment stays. The figures above are this pack's, measured
 against Swiss. The record of everything removed is

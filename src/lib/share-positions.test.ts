@@ -19,10 +19,27 @@ import {
   untimedSharedPositions,
 } from './share-positions-noon';
 import { prepareLocalTime, resolveLocalToUtc } from './time/localToUtc';
+import { timeBasis } from './engine/time-basis.mjs';
 
 // Sidereal time and obliquity below are read on the engine's clock, as its
 // own angles are (scripts/deltat-install-guard.test.mjs).
 SetDeltaTFunction(deltaT);
+
+/**
+ * Sidereal time (hours) and the true obliquity at an instant, as the engine
+ * takes them: since 0.1.1-rc.15 at the UT1 of its time basis (for 1972 to
+ * 2027-10-02, UTC plus IERS UT1 − UTC), with the basis's ΔT held for the call.
+ */
+function onEngineClock(utc: Date): { gastHours: number; obliquity: number } {
+  const basis = timeBasis(utc.getTime(), 'utc');
+  SetDeltaTFunction(() => basis.deltaT.seconds);
+  try {
+    const time = MakeTime(basis.ut1Days);
+    return { gastHours: SiderealTime(time), obliquity: e_tilt(time).tobl };
+  } finally {
+    SetDeltaTFunction(deltaT);
+  }
+}
 
 function input(angles: PositionsShareInput['angles']): PositionsShareInput {
   return {
@@ -372,9 +389,7 @@ function placeRegion(utc: Date, latitude: number, longitude: number): PlaceRegio
 
   // Sidereal time and the true obliquity follow from the instant, which the
   // bodies give; the engine's own angles at the birthplace check them.
-  const time = MakeTime(utc);
-  const gastHours = SiderealTime(time);
-  const obliquity = e_tilt(time).tobl;
+  const { gastHours, obliquity } = onEngineClock(utc);
   const anglesAt = (lon: number, lat: number) => computeAngles({ gastHours, latitude: lat, longitude: signed(lon), obliquity });
   const own = anglesAt(longitude, latitude);
   expect(Math.abs(signed(own.asc - chart.angles!.asc))).toBeLessThan(1e-6);
@@ -472,9 +487,7 @@ function nearbyNorthSouthKm(utc: Date, latitude: number, longitude: number): num
   })!)!;
   const ascDegree = Math.floor(shared.angles!.asc);
   const mcDegree = Math.floor(shared.angles!.mc);
-  const time = MakeTime(utc);
-  const gastHours = SiderealTime(time);
-  const obliquity = e_tilt(time).tobl;
+  const { gastHours, obliquity } = onEngineClock(utc);
   const inAscDegree = (lon: number, lat: number) => Math.floor(computeAngles({
     gastHours, latitude: lat, longitude: signed(lon), obliquity,
   }).asc) === ascDegree;
@@ -571,7 +584,7 @@ describe('what a shared positions code leaves of the birthplace', () => {
     // itself, at 66.5°N, gives about 5 km; a fine scan at 66.56°N, 174.3°W on
     // 15 June 1990 found 0.42 km.)
     const noon = Date.UTC(1990, 11, 21, 12);
-    const localSiderealDegrees = norm(SiderealTime(MakeTime(new Date(noon))) * 15 + 25.73);
+    const localSiderealDegrees = norm(onEngineClock(new Date(noon)).gastHours * 15 + 25.73);
     const eighteenHours = noon - (signed(localSiderealDegrees - 270) / 360.9856) * DAY;
     const arctic = Array.from({ length: 41 }, (_, step) => nearbyNorthSouthKm(
       new Date(Math.round(eighteenHours + (step * 3 - 60) * 60_000)),

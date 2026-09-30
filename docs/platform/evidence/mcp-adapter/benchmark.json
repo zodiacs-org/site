@@ -1,14 +1,14 @@
 {
   "kind": "synthetic regression benchmark",
   "whatItIsNot": "Not a measured accuracy rate. Every pair here is built by the same engine from synthetic inputs, so this measures whether the comparison classifies the cases its rules describe. It says nothing about how often the tool is right about a disagreement between two independently authored astrology engines, and nothing about real-world users, because no such corpus exists here.",
-  "startedAt": "2026-09-29T06:59:35.423Z",
-  "completedAt": "2026-09-29T06:59:38.006Z",
+  "startedAt": "2026-09-30T08:08:43.143Z",
+  "completedAt": "2026-09-30T08:08:44.500Z",
   "node": "v22.22.2",
   "server": {
     "path": "examples/mcp-server/server.mjs",
-    "sha256": "6df2b010b745efe926afe44ec54a7b5239d709fa2373b20e5aae3cc8dedf0b2a"
+    "sha256": "938c8e62449aa2379d6a480c3e6988aa556ddbb5d784342196cfbc54563a9f76"
   },
-  "expectationsSha256": "70468ade20f70f4a59c141070b5957d43e3e32a96d911accb8a4e77c94d90235",
+  "expectationsSha256": "05c22a0ae56f0f6df08eb66d1bc1898962021c0438a43d4ad2d8be80db40c6ca",
   "scenarios": {
     "passed": 18,
     "of": 18
@@ -85,12 +85,12 @@
     {
       "id": "wraparound",
       "required": "circular wraparound",
-      "differences": 80,
+      "differences": 81,
       "explanations": [
         {
           "id": "instant",
           "evidence": "hypothesis",
-          "covers": 79
+          "covers": 80
         }
       ],
       "assertions": 8,
@@ -120,7 +120,7 @@
     {
       "id": "unrelated-simultaneous",
       "required": "unrelated simultaneous differences",
-      "differences": 85,
+      "differences": 86,
       "explanations": [
         {
           "id": "house-system",
@@ -130,7 +130,7 @@
         {
           "id": "instant",
           "evidence": "hypothesis",
-          "covers": 80
+          "covers": 81
         }
       ],
       "assertions": 6,
@@ -140,12 +140,12 @@
     {
       "id": "insufficient-evidence",
       "required": "insufficient evidence",
-      "differences": 112,
+      "differences": 116,
       "explanations": [
         {
           "id": "instant",
           "evidence": "hypothesis",
-          "covers": 110
+          "covers": 114
         },
         {
           "id": "location",
@@ -180,7 +180,7 @@
     {
       "id": "display-rounding",
       "required": "a difference smaller than the printed precision",
-      "differences": 79,
+      "differences": 80,
       "explanations": [
         {
           "id": "instant",
@@ -195,7 +195,7 @@
     {
       "id": "foreign-engine-but-matching-values",
       "required": "a receipt naming an engine this installation does not have, whose values nevertheless match",
-      "differences": 19,
+      "differences": 16,
       "explanations": [
         {
           "id": "house-system",
@@ -270,12 +270,12 @@
     {
       "id": "wraparound-in-the-default-response",
       "required": "the default response still carries the diagnosis",
-      "differences": 80,
+      "differences": 81,
       "explanations": [
         {
           "id": "instant",
           "evidence": "hypothesis",
-          "covers": 79
+          "covers": 80
         }
       ],
       "assertions": 6,

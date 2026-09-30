@@ -41,7 +41,8 @@ Swiss returned.
   the true obliquity, and the node's longitude is that of `z × h`. Its speed is
   a central difference over ±0.001 day.
 - **Angles and houses.** ERFA 2.0.1 through pyerfa 2.0.1.5: apparent sidereal
-  time `gst06a` (IAU 2006/2000A) and the true obliquity `obl06` plus the
+  time `gst06a` (IAU 2006/2000A), at the engine's UT1 and TT for the instant,
+  and the true obliquity `obl06` plus the
   nutation in obliquity of `nut06a`. The ascendant, midheaven and Placidus
   cusps follow the conformance suite's L2 construction, copied into
   `tools/geometry.py` from zodiacs-org/engine commit `8c4946b1`
@@ -68,23 +69,42 @@ count.
 
 The lunar pack's `L-wrap` case was born at the first 0° crossing of Swiss's
 Moon after 2000-01-01. That instant was Swiss output, so the carried-over
-policy takes the first 0° crossing of the Horizons Moon instead,
-2000-01-12T18:48:22.487Z (`python3 tools/build.py select-wrap`), and names the
-Horizons response it came from. Its cases, interval, scan contract, gates and
+policy takes the first 0° crossing of the Horizons Moon instead
+(`python3 tools/build.py select-wrap`), and names the Horizons response it
+came from: 2000-01-12T18:48:22.487Z on engine rc.14's clock, and
+2000-01-12T18:48:22.141Z since rc.15, which reads an instant in 2000 as UTC
+(TT − UTC = 64.184 s where the ΔT model gave 63.838 s). The Horizons root and
+its response did not change; the policy records the reselection
+(`wrapSelection.reselected`). Its cases, interval, scan contract, gates and
 conditioning are the Swiss policy's, which it names with its SHA-256; its
 arbiter, clock and product-model disclosure describe Horizons and ERFA.
 
 ## Clock
 
-Every reference is evaluated at the engine's own TT for its instant: UT is
-the instant, and TT = UT + ΔT from the engine's model (`zodiacs-deltat/1`),
-read through astronomy-engine's `MakeTime` with the engine's clock installed
-(`tools/engine-clock.ts`). The ERFA angle arbiter of
+Every reference is evaluated at the engine's own UT1 and TT for its instant,
+as the engine makes astronomy-engine's time (`tools/engine-clock.ts`, from the
+engine's own time basis, `src/lib/engine/time-basis.mjs`). Since engine
+0.1.1-rc.15 an instant from 1972-01-01 to 2027-10-02 is read as UTC: TT =
+UTC + (TAI − UTC) + 32.184 s from the IERS leap seconds, and UT1 = UTC +
+(UT1 − UTC) from the IERS tables (basis `iers-utc/1`). Any other instant is
+read as UT1, with TT = UT1 + ΔT from the engine's model (`zodiacs-deltat/1`).
+The ERFA angle arbiter of
 `../../platform/evidence/engine-beyond-swiss/corpora/angle-grid-erfa.json`
 works the same way. So these comparisons measure positions, angles and event
-geometry, not the two programs' ΔT; the clock is checked against the IERS in
+geometry, not the clock; the clock is checked against the IERS in
 [`../../platform/evidence/deltat-2026-09-25/`](../../platform/evidence/deltat-2026-09-25/).
-UT1 is taken as the instant, as the engine takes it.
+Until rc.15 the engine read every instant as UT1 with the model, and so did
+these references; they were rebuilt on rc.15's clock on 2026-09-30
+([`../../platform/evidence/site-engine-rc15/`](../../platform/evidence/site-engine-rc15/README.md)
+records what moved).
+
+Event instants are carried back from TT with the same clock:
+`tools/build.py` interpolates UT1 − instant and TT − UT1 between the nodes
+`tools/engine-clock.ts` gives each range, with nodes on both sides of every
+leap second and change of basis inside it, so TT is exact within each piece
+of the IERS basis. A TT that falls inside a leap second, or where the basis
+changes, has no single instant; the build then takes the earliest instant
+whose TT reaches it, and says so. None of the current events does.
 
 The returned-chart references, for the solar return and the seven lunar
 charts, are evaluated at the instants the product returned when the
@@ -92,13 +112,17 @@ references were built. Nothing else about them comes from the product. The
 tests allow those instants to drift by at most 15 seconds before they ask
 for a rebuild.
 
-Each file records the engine version and ΔT table it was built against
-(`engineClock`), the SHA-256 of every source that made it (`generator`), the
-Horizons responses it read (`horizonsManifest`) and the policy that gates it.
-`src/lib/engine/independent-references-clock.test.ts` fails when the
-installed engine carries a different ΔT model or table from the one a file
-records: every reference instant would have moved under it, so a new table
-means running `tools/build.py` again and committing the new files and pins.
+Each file records the engine version, ΔT model and IERS table it was built
+against (`engineClock`), the SHA-256 of every source that made it
+(`generator`), the Horizons responses it read (`horizonsManifest`) and the
+policy that gates it. `src/lib/engine/independent-references-clock.test.ts`
+fails when the installed engine carries a different ΔT model, IERS basis or
+table from the one a file records, or gives a node or polar reference's
+instant another TT than the one it was taken at: every reference instant
+would have moved under it, so that means running `tools/build.py` again and
+committing the new files and pins. (Before rc.15 the test compared the ΔT
+model and table alone, which rc.15 left unchanged while it moved the
+instants.)
 A new engine version with the same model and table changes only the version
 a file records, but Site Check rebuilds the files and fails on any changed
 byte, so it too means a rebuild and new pins.
@@ -110,17 +134,26 @@ their text. Taking the engine's clock instead changes two things.
 
 - **UTC-labelled cases.** The eight-case policy declares TT − UTC for the
   cases it labels UTC: 64.184 s for E2000 (2000-02-29T12:00Z), 57.184 s at
-  the Solar1990 birth and 69.184 s over its 2025 search. The engine takes the
-  instant as UT1 and adds its own ΔT, 63.872 s, 56.921 s and 69.137 s there,
-  so those references sit 0.312 s, 0.263 s and 0.047 s earlier in TT than the
-  policy's clock text: UT1 − UTC on those days, which the engine does not
-  apply. At the Moon's half an arcsecond per second that is at most 0.17″,
-  against a Moon gate of 0.15° and a planet gate of 0.05°.
+  the Solar1990 birth and 69.184 s over its 2025 search. Since rc.15 the
+  engine reads these instants as UTC, so the references now sit at exactly
+  the TT the policy declares. On rc.14's clock, which took the instant as UT1
+  and added the model's ΔT, they sat 0.312 s, 0.263 s and 0.047 s earlier in
+  TT: UT1 − UTC on those days, less the model's small error. The lunar
+  policy's UTC cases are read the same way.
+- **Nominal-UT1 cases from 1972 to 2027.** The one case the policies label
+  nominal UT1 inside those years is Saturn1990. Since rc.15 its birth,
+  1990-02-01T12:00Z, and its first return, in 2019, are read as UTC, as the
+  product reads them; the policy's nominal UT1 would put them UT1 − UTC
+  later (+0.27 s at the birth, −0.11 to −0.18 s in 2019). At Saturn's 0.11°
+  a day that is 0.0013″, against a planet gate of 0.05° and ±0.1° return
+  bands. Its later returns, in 2049 and 2078, and the cases at 1800 and
+  2199, are read as UT1, as their labels say.
 - **Event times.** A return, station or crossing is found on TT and carried
-  back to UT with the engine's ΔT, so the reference's UTC carries the
-  engine's clock, and far from the present, where ΔT is an extrapolation, it
-  carries the engine's extrapolation. The event tests therefore check the
-  engine's search and positions, not its clock. The clock is checked
+  back to the instant on the engine's clock: through the leap seconds from
+  1972 to 2027-10-02, and with the engine's ΔT elsewhere, so far from the
+  present, where ΔT is an extrapolation, it carries the engine's
+  extrapolation. The event tests therefore check the engine's search and
+  positions, not its clock. The clock is checked
   separately: `scripts/deltat-monitor.mjs` compares the engine's ΔT table
   with the IERS values every week, and
   [`../../platform/evidence/deltat-2026-09-25/`](../../platform/evidence/deltat-2026-09-25/)
@@ -137,6 +170,7 @@ repository's `node_modules` present:
 ```sh
 python3 tools/build.py             # the four reference files, from the kept responses
 python3 tools/build.py --refresh   # ask Horizons again and keep the new responses
+python3 tools/build.py --refresh-changed  # ask again only where a query changed
 python3 tools/build.py select-wrap # print the L-wrap birth the policy records
 ```
 

@@ -40,6 +40,11 @@ const ts = createRequire(resolve(root, 'package.json'))('typescript');
  * chartAt(input, pin); } ... }), which turns anything but an Error thrown by
  * the ephemeris into a RangeError. The builder's chart is then what the
  * wrapped function returns, so a call that wraps such a function counts too.
+ *
+ * Since engine 0.1.1-rc.15 the builder takes the input alone and reads the
+ * clock from it, evaluated(() => chartAt(input)), so it has the calculation's
+ * own shape. A builder that another one-argument function hands its input to
+ * is that function's inner step, not a second calculation, and is not counted.
  */
 const chunkDir = resolve(dist, '_astro');
 const natalCandidates = [];
@@ -88,12 +93,19 @@ for (const file of (await readdir(chunkDir)).filter((name) => name.endsWith('.js
     .filter((argument) => ts.isArrowFunction(argument) || ts.isFunctionExpression(argument))
     .flatMap((wrapped) => (ts.isBlock(wrapped.body) ? returnedExpressions(wrapped) : [wrapped.body]))
     .map(lastOperand);
+  const candidates = [];
   for (const fn of functions) {
     if (fn.parameters.length !== 1) continue;
     const input = fn.parameters[0].name.getText(ast);
-    const delegates = returnedExpressions(fn).some((expression) => buildsFrom(expression, input, fn.name.text)
-      || wrappedReturns(expression).some((wrapped) => buildsFrom(wrapped, input, fn.name.text)));
-    if (builders.has(fn.name.text) || delegates) natalCandidates.push({ file, function: fn.name.text });
+    const delegatesTo = returnedExpressions(fn)
+      .flatMap((expression) => [expression, ...wrappedReturns(expression)])
+      .filter((expression) => buildsFrom(expression, input, fn.name.text))
+      .map((expression) => expression.expression.text);
+    if (builders.has(fn.name.text) || delegatesTo.length > 0) candidates.push({ name: fn.name.text, delegatesTo });
+  }
+  const inner = new Set(candidates.flatMap((candidate) => candidate.delegatesTo));
+  for (const candidate of candidates) {
+    if (!inner.has(candidate.name)) natalCandidates.push({ file, function: candidate.name });
   }
 }
 assert.equal(natalCandidates.length, 1, `expected exactly one served natal calculation, found ${JSON.stringify(natalCandidates)}`);

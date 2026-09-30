@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { natalChart } from '@zodiacs/engine';
 import legacyPolar from '../engine/fixtures/legacy-polar-saved.json';
 import * as engine from '../engine/full';
 import { ENGINE_VERSION } from '../engine/types';
@@ -34,6 +35,19 @@ function freshChart(saved: SavedChart, houseSystem = saved.summary.houseSystem) 
   });
 }
 
+/**
+ * The current engine on the clock the frozen records used: the instant read as
+ * UT1. From 0.1.1-rc.15 the engine reads 1972 to 2027-10-02 as UTC, through
+ * IERS UT1 − UTC, which on 2001-12-21 was −0.12 s and turns the sidereal time
+ * by about 1.8″; the repair keeps the recorded clock, so it is compared on it.
+ */
+function onRecordedClock(saved: SavedChart) {
+  return natalChart({
+    utc: saved.summary.utcISO, latitude: saved.birth.place!.lat, longitude: saved.birth.place!.lon,
+    houseSystem: 'placidus', timeKnown: true, timeScale: 'ut1',
+  });
+}
+
 afterEach(() => vi.unstubAllGlobals());
 
 describe('legacy polar saved-chart repair', () => {
@@ -63,21 +77,25 @@ describe('legacy polar saved-chart repair', () => {
   // repair corrects the 180° axis error; the obliquity is not its concern.
   // Since 0.1.1-rc.8 the engine's clock is observed ΔT, which on these days
   // is within 0.01 s of the formula 0.1.0 used and moves a body by at most
-  // 0.005″ (the Moon); the repair keeps the recorded bodies.
+  // 0.005″ (the Moon); the repair keeps the recorded bodies. Since rc.15 the
+  // engine reads these instants as UTC, not UT1, so the angles and bodies are
+  // compared with it on the recorded clock (onRecordedClock), and the house
+  // system and flags with the chart the site now makes.
   const arcsecondsApart = (a: number, b: number) => Math.abs(((a - b + 540) % 360) - 180) * 3600;
 
-  it.each([78.2232, -78.2232])('matches the current natal/transit engine throughout a day at %s°', (latitude) => {
+  it.each([78.2232, -78.2232])('matches the current engine on the recorded clock throughout a day at %s°', (latitude) => {
     let repairedCount = 0;
     for (let hour = 0; hour < 24; hour += 1) {
       const saved = legacySaved(latitude, hour);
       const repaired = repairLegacyPolarChart(saved);
       const current = freshChart(saved, 'placidus');
+      const recorded = onRecordedClock(saved);
       if (repaired !== saved) repairedCount += 1;
-      expect(arcsecondsApart(repaired.summary.angles!.asc, current.angles!.asc)).toBeLessThan(0.5);
-      expect(arcsecondsApart(repaired.summary.angles!.mc, current.angles!.mc)).toBeLessThan(0.05);
+      expect(arcsecondsApart(repaired.summary.angles!.asc, recorded.angles!.asc)).toBeLessThan(0.5);
+      expect(arcsecondsApart(repaired.summary.angles!.mc, recorded.angles!.mc)).toBeLessThan(0.05);
       expect(repaired.summary.bodies.map(({ body, retrograde }) => ({ body, retrograde })))
         .toEqual(current.bodies.map(({ body, retrograde }) => ({ body, retrograde })));
-      repaired.summary.bodies.forEach(({ lon }, index) => expect(arcsecondsApart(lon, current.bodies[index].lon)).toBeLessThan(0.01));
+      repaired.summary.bodies.forEach(({ lon }, index) => expect(arcsecondsApart(lon, recorded.bodies[index].lon)).toBeLessThan(0.01));
       expect(repaired.summary.houseSystem).toBe(current.houses!.system);
       expect(repaired.summary.flags).toEqual(current.flags);
     }
