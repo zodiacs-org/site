@@ -7,9 +7,11 @@ matters most — what the result does not establish.
 Read it with one thing in mind: **every position comparison here is against
 another program, not against the sky.** No position in this directory was
 checked against an observation. The one observed quantity used is the Earth's
-rotation: ΔT, which the engine's clock takes from the IERS and US Naval
-Observatory records since 0.1.1-rc.8, and which section 1 checks against the
-IERS values. It checks the clock rather than a position.
+rotation, which the engine's clock takes from the IERS: since 0.1.1-rc.15 as
+UT1 − UTC for an instant from 1972 to 2 October 2027, and otherwise, since
+0.1.1-rc.8, as ΔT from the IERS and US Naval Observatory records, which
+section 1 checks against the IERS values. It checks the clock rather than a
+position.
 
 The shared lineage is real but not uniform, and the difference matters for the
 two bodies that produce the extremes below. Swiss Ephemeris and JPL Horizons
@@ -39,11 +41,12 @@ Ephemeris* for the Moon. Zodiacs did not write those models.
 | Positions | Swiss 2.10.03 / `.se1`, 180-measurement distribution | 18.64″ within 1801–2026 | [`../platform/evidence/swiss-benchmark/`](../platform/evidence/swiss-benchmark/) |
 | Positions | Swiss 2.10.03 / `.se1`, every tenth day 1800–2199, ten bodies and the true node | 22.92″ to 2026 at the same UT (Venus, 1878); 29.12″ to 2199 at the same TT (Pluto) | [`multiyear-1800-2199.json`](../platform/evidence/swiss-benchmark/multiyear-1800-2199.json) |
 | Clock (ΔT) | IERS EOP 20 C04 and finals2000A, twelve preregistered dates and every day from 1962 | 0.031 s on the twelve dates; 0.083 s worst day | [`../platform/evidence/deltat-2026-09-25/`](../platform/evidence/deltat-2026-09-25/) |
+| Clock (UT1 − UTC), since rc.15 | IERS EOP 20 C04 in 1972 and `finals2000A.all` of 2026-09-24 from 1973-01-02, every day to 2027-10-02 | the engine's table within 0.66 ms of C04 and 0.79 ms of `finals2000A.all` on every day (the engine's measurement) | the engine's `CHANGELOG.md`; [`../platform/evidence/site-engine-rc15/`](../platform/evidence/site-engine-rc15/) |
 | Angles and houses | Swiss `houses_ex`: three polar cases and five Placidus cases, in the suite until 2026-09-28; the audit's latitude grid | 1.58″ worst angle and exact whole-sign cusps in the polar cases; ascendant within 6.4″ of an ERFA arbiter on the grid since rc.7 (up to 512″ near 66° before) | [`swiss-node-polar/`](swiss-node-polar/), [audit](../platform/evidence/engine-audit-2026-09-22/LEDGER.md) |
 | Houses, twelve systems | Swiss 2.10.03 `swe_houses_armc` given the same sidereal time, latitude and obliquity: a 5,616-case ladder from 55° to 66.6° and 20,000 draws over every latitude; `swe_houses_ex` end to end | 0.0096″ given the same inputs (Placidus; the other eleven 0.00005″ or less); end to end from 1850 to 2049, 1.95″ broad and one Koch case of 353 on the ladder at 3.73″ | [`../platform/evidence/houses-2026-09-26/`](../platform/evidence/houses-2026-09-26/) |
 | Local time | host IANA/ICU, two Node majors and a browser | no disagreement in the cases run (a pass, not a residual) | [`../platform/evidence/site-engine-rc6/`](../platform/evidence/site-engine-rc6/) |
 | Event search | Swiss hourly scans, independent roots; JPL Horizons in the suite since 2026-09-28 | one contract **failed-incomplete** | [`transit-windows/`](transit-windows/), [`swiss-lunar-return/`](swiss-lunar-return/) |
-| Runtime support | Node 22.22.2 and Node 24.21.0 for rc.14; Node 22.22.2 and Node 24.19.0 for rc.10; Node 22.22.2 and Node 24.21.0 for rc.9, rc.8 and rc.7; Node 22.23.2, Node 24.19.0 and Chrome 152 for rc.6 | parity in the cases run (a pass, not a residual) | [`../platform/evidence/site-engine-rc14/`](../platform/evidence/site-engine-rc14/), [`../platform/evidence/site-engine-rc10/`](../platform/evidence/site-engine-rc10/), [`../platform/evidence/site-engine-rc9/`](../platform/evidence/site-engine-rc9/), [`../platform/evidence/site-engine-rc8/`](../platform/evidence/site-engine-rc8/), [`../platform/evidence/site-engine-rc7/`](../platform/evidence/site-engine-rc7/), [`../platform/evidence/site-engine-rc6/`](../platform/evidence/site-engine-rc6/) |
+| Runtime support | Node 22.22.2 and Node 24.21.0 for rc.15 and rc.14; Node 22.22.2 and Node 24.19.0 for rc.10; Node 22.22.2 and Node 24.21.0 for rc.9, rc.8 and rc.7; Node 22.23.2, Node 24.19.0 and Chrome 152 for rc.6 | parity in the cases run (a pass, not a residual) | [`../platform/evidence/site-engine-rc15/`](../platform/evidence/site-engine-rc15/), [`../platform/evidence/site-engine-rc14/`](../platform/evidence/site-engine-rc14/), [`../platform/evidence/site-engine-rc10/`](../platform/evidence/site-engine-rc10/), [`../platform/evidence/site-engine-rc9/`](../platform/evidence/site-engine-rc9/), [`../platform/evidence/site-engine-rc8/`](../platform/evidence/site-engine-rc8/), [`../platform/evidence/site-engine-rc7/`](../platform/evidence/site-engine-rc7/), [`../platform/evidence/site-engine-rc6/`](../platform/evidence/site-engine-rc6/) |
 
 ## 1. Positions
 
@@ -98,7 +101,9 @@ so the same configuration was run every tenth day from 1800 to 2199 at noon
 UTC, for the ten bodies and the true node
 ([`multiyear-1800-2199.json`](../platform/evidence/swiss-benchmark/multiyear-1800-2199.json),
 statistics only, by `tools/multiyear-zodiacs.mjs` and `tools/multiyear_swiss.py`
-beside it), first on 2026-09-23 and again on rc.8. Up to 2026, at the same
+beside it), first on 2026-09-23, again on rc.8, and again on rc.15, which
+gives Swiss the engine's own UT1 and TT for each instant; the figures here did
+not change on rc.15. Up to 2026, at the same
 UT, the 91,201 longitudes have a median difference of 1.96″, a 95th
 percentile of 11.90″ and a largest of 22.92″ (Venus, 1878), where the sample's
 worst was 18.64″. At the same TT, which takes the clock out, the largest over
@@ -144,6 +149,20 @@ Before about 1955 the Moon moves further from Swiss at the same UT than it
 was — a median of 3.9″ rather than 2.9″ over 1850–1899 — because rc.7's clock
 error there partly offset the analytic Moon's own; that is the Moon's error,
 now shown whole.
+
+*Addition, 2026-09-30.* From 0.1.1-rc.15 the engine reads an instant from
+1972 to 2 October 2027 as UTC: TT from the IERS leap seconds and UT1 from the
+IERS values of UT1 − UTC, which a chart reports as ΔT model `iers-utc/1`.
+Other instants it still reads as UT1 with `zodiacs-deltat/1`. At the same
+instant a chart's TT moved from rc.14's by up to 0.81 s, just after a leap
+second, and its UT1 by up to 0.81 s. On the site's comparison of its own
+outputs on rc.14 and rc.15, the Moon moved by up to 0.50″, the other bodies by
+up to 0.070″, the midheaven by up to 12.7″ and the ascendant by up to 62.7″
+at 69.6° N (24.8″ at London); outside those years the planets moved by less than 0.000003″ and the
+lunar nodes by up to 0.072″, from astronomy-engine's numerical Moon velocity,
+which rc.15 samples on a fixed ΔT
+([`site-engine-rc15/`](../platform/evidence/site-engine-rc15/)). The dense
+run above, run again on rc.15, gave the same figures.
 
 **Neptune is the worst modern body in both comparisons** — a single-epoch
 14.77″ against Horizons, a median of 11.5″ against Swiss. Those are different
@@ -232,9 +251,11 @@ all thirteen systems since rc.10; the site's own forms still offer whole sign an
 ## 3. Local time
 
 `@zodiacs/engine/geo` resolves a local wall time and IANA zone through the
-host's `Intl`/ICU data — never a hand-rolled offset table — and so does the
-site's `src/lib/time/localToUtc.ts` from 1970 on and wherever no birthplace is
-given; before 1970 the site reads the pinned tables described below. The
+host's `Intl`/ICU data from 1970 on, and since rc.15 through the tzdb 2025c
+history with backzone that it ships before 1970 — never a hand-rolled offset
+table. The site's `src/lib/time/localToUtc.ts` reads the host's data from 1970
+on and wherever no birthplace is given; before 1970 it reads the pinned tables
+described below. The
 2026-09-22 audit counted 326 tests on that path; more have been added since. The rc.6 evidence ledger
 records 16 historical receipts that became valid under the seconds-and-
 milliseconds comparison correction, nine civil controls that stayed valid, and
@@ -254,8 +275,9 @@ daily step and wider sampling: 42,861 changes and 1,675,757 wall minutes in
 418 zones. Neither finds a disagreement. Offsets with
 seconds survive (Mexico City's −6:36:36 before 1922 is a live case).
 
-Since 2026-09-23 the site, though not `@zodiacs/engine/geo`, reads a birth
-from before its place adopted a legal time on the birthplace's own local mean
+Since 2026-09-23 the site, and since rc.15 `@zodiacs/engine/geo` given a
+longitude, reads a birth from before its place adopted a legal time on the
+birthplace's own local mean
 time: 240 seconds of time per degree of longitude, rounded to the second. The
 time zone data records mean time only for each zone's reference city, so a
 Buffalo birth in 1870 had been read on New York's clock, 19 min 29 s early. The
@@ -271,7 +293,15 @@ model of the birthplace clock, with receipts validated; at each of the 338
 era ends (of 518) where the host's history agrees with the table, the zone's
 own meridian giving exactly the zone clock's answer around the change; the date-line days of
 Alaska, Manila, Pohnpei and Apia inside eras; a bound that ignores a longitude
-more than three hours from the zone's mean time. Not established:
+more than three hours from the zone's mean time. Since rc.15 the site's
+`lmt` flag means what the engine's does, that a local mean time read the wall
+time, where it had meant an offset with seconds. On 264,455 wall times from
+1850 to 1969 in 928 towns, the three largest of every zone in the city index,
+each given its longitude, the site's resolver and rc.15's give the same instant
+and the same flags every time
+([`../platform/evidence/site-engine-rc15/`](../platform/evidence/site-engine-rc15/)).
+Both read the same pinned release, so that agreement is consistency rather
+than corroboration. Not established:
 agreement with other programs' era ends.
 
 Since the same day, the legal offsets of a birthplace time before 1970 come
@@ -319,8 +349,8 @@ light-time, aberration or deflection pass, so the two correction paths are
 **not** claimed to be identical, only to agree inside the stated budget.
 
 The event times the site publishes were measured against Swiss Ephemeris on
-2026-09-23 and again on rc.8's catalog on 2026-09-25
-([`events-vs-swiss-2026-09-25/`](../platform/evidence/events-vs-swiss-2026-09-25/)):
+2026-09-23, again on rc.8's catalog on 2026-09-25 and on rc.15's on 2026-09-30
+([`events-vs-swiss-2026-09-30/`](../platform/evidence/events-vs-swiss-2026-09-30/)):
 from 2026 to 2030, all 124 new and full moons are within 5.2 seconds and the
 24 eclipse peaks within 10.5 seconds, the 92 stations within 41 minutes
 (Pluto), and the sign changes and exact aspects of Uranus, Neptune or Pluto
@@ -357,10 +387,10 @@ ESM only, TypeScript declarations included, no CommonJS export. Since rc.14
 the manifest declares Node `^20.19.0 || >=22.7.0`: astronomy-engine ships ES
 modules in a package without `"type": "module"`, which plain Node loads as ES
 modules only from those versions, and rc.13's `>=18` was false. What was
-actually executed is narrower: for rc.14, Node 22.22.2 and 24.21.0 for the
-parity matrix and clean packed-consumer check, plus the site acceptance
-captures on Chromium 149.0.7827.55, while the engine's own packed-consumer
-matrix adds Node 20.19.0 and 22.7.0; for rc.10,
+actually executed is narrower: for rc.15 and for rc.14, Node 22.22.2 and
+24.21.0 for the parity matrix and clean packed-consumer check, plus the site
+acceptance captures on Chromium 149.0.7827.55, while the engine's own
+packed-consumer matrix adds Node 20.19.0 and 22.7.0; for rc.10,
 Node 22.22.2 and 24.19.0 for the parity matrix and clean packed-consumer
 check, plus the site acceptance captures on Chromium 153.0.8010.0; for rc.9
 and rc.8, Node 22.22.2 and 24.21.0 for the parity matrix and public-download
@@ -496,3 +526,25 @@ earlier wording is kept here as the record:
 - section 1, on bounds: "And the package bounds nothing.";
 - section 5: "The manifest declares Node ≥18. What was actually executed is
   narrower: for rc.10,".
+
+Vendoring engine 0.1.1-rc.15 on 2026-09-30 corrected these in place, with the
+engine's new clock and the re-runs it needed. Their earlier wording is kept
+here as the record:
+
+- the introduction: "The one observed quantity used is the Earth's rotation:
+  ΔT, which the engine's clock takes from the IERS and US Naval Observatory
+  records since 0.1.1-rc.8, and which section 1 checks against the IERS
+  values.";
+- the table's runtime row: "Node 22.22.2 and Node 24.21.0 for rc.14";
+- section 1, the dense run: "first on 2026-09-23 and again on rc.8.";
+- section 3: "`@zodiacs/engine/geo` resolves a local wall time and IANA zone
+  through the host's `Intl`/ICU data — never a hand-rolled offset table — and
+  so does the site's `src/lib/time/localToUtc.ts` from 1970 on and wherever no
+  birthplace is given; before 1970 the site reads the pinned tables described
+  below." and "Since 2026-09-23 the site, though not `@zodiacs/engine/geo`,
+  reads a birth from before its place adopted a legal time on the birthplace's
+  own local mean time";
+- section 4, event times: "on 2026-09-23 and again on rc.8's catalog on
+  2026-09-25 (`events-vs-swiss-2026-09-25/`)";
+- section 5: "for rc.14, Node 22.22.2 and 24.21.0 for the parity matrix and
+  clean packed-consumer check".
