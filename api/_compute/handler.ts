@@ -3,11 +3,14 @@
 // the __zodiacs_compute parameter, and that function hands the request here
 // before any route of its own, so the six endpoints add no deployed function;
 // the underscore keeps this directory from deploying as one. The handler and
-// its limits are src/lib/compute-api/; the local-time resolver is the site's
-// own, bundled with its tables into ./local-time.mjs by
+// its limits are src/lib/compute-api/, bundled with the engine into
+// ./compute.mjs by scripts/build-compute-handler.mjs: on a Node that does not
+// detect module syntax, the engine's named imports from astronomy-engine fail
+// to load, as they did at the first deploy. The local-time resolver is the
+// site's own, bundled with its tables into ./local-time.mjs by
 // scripts/build-compute-local-time.mjs, because the function's file trace
 // does not carry the tables the resolver's source loads on demand.
-import { createComputeApiHandler } from '../../src/lib/compute-api/handler.js';
+import { createComputeApiHandler } from './compute.mjs';
 import * as localTime from './local-time.mjs';
 
 export default createComputeApiHandler({ localTime });

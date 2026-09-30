@@ -400,3 +400,10 @@ third-party dependency in all but name, which the review asked not to add
 just for this.
 `tests/api/compute-api-openapi.test.ts` validates every example against its
 schema with Ajv.
+
+## Production, 2026-09-30: the first deploy
+
+#605 deployed the API as `dpl_7dy6sHBVkeKAHdMPvjMfPP1VhSWm`, and every compute endpoint answered 500. The function's runtime, Vercel's `nodejs22.x`, does not detect module syntax. It read astronomy-engine's ESM build as CommonJS, and the engine's named imports from it failed before any request code ran. The cold start above had run the packaged function on this machine's Node, which does detect module syntax.
+
+The fix, in the PR after #605 (FINDINGS F-58), bundles the handler with the engine into `api/_compute/compute.mjs` (`scripts/build-compute-handler.mjs`). A new functions-only `vercel build` was then run with module syntax detection off in every process, and the packaged function loaded and answered all six documented examples with 200. `tests/api/compute-api-bundle.test.ts` makes the same check on every run.
+

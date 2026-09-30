@@ -190,6 +190,12 @@ owns that page.
   `src/lib/compute-api/local-time-source.ts`, bundled with its tables for the
   compute API's function; `--check` for drift, and
   `tests/api/compute-api-local-time.test.ts` rebuilds it byte for byte)
+- `api/_compute/compute.mjs` + `compute.d.mts` ← `node
+  scripts/build-compute-handler.mjs` (the compute API's handler from
+  `src/lib/compute-api/handler.ts`, bundled with the engine and
+  astronomy-engine's ESM build so the function loads no engine module at run
+  time (F-58); `--check` for drift, and `tests/api/compute-api-bundle.test.ts`
+  rebuilds it byte for byte and loads it without module syntax detection)
 - `src/lib/compute-api/examples.json` ← `npx vite-node --script
   scripts/build-compute-examples.mjs` (the compute API's documented answers,
   run through the real handler; `tests/api/compute-api-openapi.test.ts` fails
