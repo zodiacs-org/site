@@ -1,0 +1,15 @@
+{
+  "description": "Hand-made. A load whose page main thread was held off the CPU once: a RunTask of 119.3 ms wall time with 0.2 ms of thread CPU time, beside ordinary tasks. Modelled on the horoscopes-1 sample of Site Check run 36712798339 (#603). Browser pid 100, the page's renderer pid 200, a spare renderer pid 300.",
+  "traceEvents": [
+    { "args": { "name": "CrBrowserMain" }, "cat": "__metadata", "name": "thread_name", "ph": "M", "pid": 100, "tid": 100, "ts": 0 },
+    { "args": { "name": "CrRendererMain" }, "cat": "__metadata", "name": "thread_name", "ph": "M", "pid": 200, "tid": 200, "ts": 0 },
+    { "args": { "name": "Compositor" }, "cat": "__metadata", "name": "thread_name", "ph": "M", "pid": 200, "tid": 210, "ts": 0 },
+    { "args": { "name": "CrRendererMain" }, "cat": "__metadata", "name": "thread_name", "ph": "M", "pid": 300, "tid": 300, "ts": 0 },
+    { "args": { "data": { "frameTreeNodeId": 2, "frames": [{ "frame": "F0", "isInPrimaryMainFrame": true, "isOutermostMainFrame": true, "name": "", "processId": 200, "url": "about:blank" }], "persistentIds": true } }, "cat": "disabled-by-default-devtools.timeline", "name": "TracingStartedInBrowser", "ph": "I", "pid": 100, "s": "t", "tid": 100, "ts": 1000000 },
+    { "args": { "data": { "frame": "F0", "isInPrimaryMainFrame": true, "isOutermostMainFrame": true, "name": "", "processId": 200, "url": "http://127.0.0.1:4328/horoscopes/" } }, "cat": "disabled-by-default-devtools.timeline", "name": "FrameCommittedInBrowser", "ph": "I", "pid": 100, "s": "t", "tid": 100, "ts": 1009000 },
+    { "args": {}, "cat": "disabled-by-default-devtools.timeline", "dur": 8100, "name": "RunTask", "ph": "X", "pid": 200, "tdur": 7900, "tid": 200, "ts": 1010000, "tts": 20000 },
+    { "args": {}, "cat": "disabled-by-default-devtools.timeline", "dur": 22400, "name": "RunTask", "ph": "X", "pid": 200, "tdur": 21800, "tid": 200, "ts": 1040000, "tts": 27900 },
+    { "args": {}, "cat": "disabled-by-default-devtools.timeline", "dur": 119300, "name": "RunTask", "ph": "X", "pid": 200, "tdur": 200, "tid": 200, "ts": 1503000, "tts": 49700 },
+    { "args": {}, "cat": "disabled-by-default-devtools.timeline", "dur": 3100, "name": "RunTask", "ph": "X", "pid": 200, "tdur": 2900, "tid": 200, "ts": 1640000, "tts": 49900 }
+  ]
+}

@@ -48,7 +48,7 @@ const engineRows = [
         <a href="/developers/">Developer tools</a> have different release states.
         Public sky files, hosted embeds and the compute API are available now;
         the compute API answers only while its per-address rate limit is in
-        place. The local engine below is a downloadable review candidate.
+        place. The local engine below is on npm as a release candidate.
       </p>
     </div>
 
@@ -61,18 +61,22 @@ const engineRows = [
         file. This section is the reference behind it.
       </p>
       <p>
-        Evaluate <code>{`${candidate.name}@${candidate.version}`}</code> from the
-        exact public tarball below. It has been downloaded without credentials
-        and installed in a clean consumer. This archive identifies the local
-        package; hosted data and widgets are separate deployments.
+        <code>{`npm install ${candidate.name}`}</code> installs{' '}
+        <code>{`${candidate.name}@${candidate.version}`}</code>, the version npm
+        serves under both <code>latest</code> and <code>next</code>. It was
+        published from the <code>release.yml</code> workflow of the{' '}
+        <a href={candidate.sourceRepository}>engine repository</a> with SLSA
+        provenance, which names that repository, the workflow and the commit the
+        package was built from; <code>npm audit signatures</code> verifies it.
+        Provenance shows where the package was built. It does not show that its
+        results are correct.
       </p>
       <p>
-        It is not on npm yet: <code>{`npm view ${candidate.name}`}</code> returns
-        404. Two things are outstanding, and the candidate's own README and
-        changelog say so: an adversarial review of the engine and widgets
-        packages, which is still open, and the operator authority to publish.
-        The tarball below is therefore the whole evaluation route today, and it
-        is the same bytes a registry release would carry.
+        The exact public tarball below is the same package, byte for byte: npm
+        records the same SHA-1 and SHA-512 for it. It has been downloaded
+        without credentials and installed in a clean consumer. This archive
+        identifies the local package; hosted data and widgets are separate
+        deployments.
       </p>
       <p>
         <a href={candidate.artifactUrl}>Download engine {candidate.version} (.tgz)</a>.

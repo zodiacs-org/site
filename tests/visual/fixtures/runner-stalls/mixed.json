@@ -1,0 +1,22 @@
+{
+  "description": "Hand-made. One load with every kind of task. On the page's main thread (pid 200, tid 200): a stall of 195.8 ms wall / 12.6 ms CPU (the thesis-3 sample of Site Check run 36712798339, #603); the page's own 90.0 ms task at 88.1 ms CPU; a 36.7 ms task with no CPU; and three tasks at the thresholds: 50.0 ms with 12.49 ms CPU (a stall), 50.0 ms with 12.5 ms CPU (25 %, not a stall) and 49.999 ms with none (under 50 ms). The boundary stall is listed first but starts last. Off the page's main thread, where no task is ever a stall: the page renderer's compositor thread (tid 210), a spare renderer (pid 300) and the browser (pid 100), each with a 80-150 ms task at about 1 ms CPU.",
+  "traceEvents": [
+    { "args": { "name": "CrBrowserMain" }, "cat": "__metadata", "name": "thread_name", "ph": "M", "pid": 100, "tid": 100, "ts": 0 },
+    { "args": { "name": "CrRendererMain" }, "cat": "__metadata", "name": "thread_name", "ph": "M", "pid": 200, "tid": 200, "ts": 0 },
+    { "args": { "name": "Compositor" }, "cat": "__metadata", "name": "thread_name", "ph": "M", "pid": 200, "tid": 210, "ts": 0 },
+    { "args": { "name": "CrRendererMain" }, "cat": "__metadata", "name": "thread_name", "ph": "M", "pid": 300, "tid": 300, "ts": 0 },
+    { "args": { "data": { "frameTreeNodeId": 2, "frames": [{ "frame": "F0", "isInPrimaryMainFrame": true, "isOutermostMainFrame": true, "name": "", "processId": 200, "url": "about:blank" }], "persistentIds": true } }, "cat": "disabled-by-default-devtools.timeline", "name": "TracingStartedInBrowser", "ph": "I", "pid": 100, "s": "t", "tid": 100, "ts": 1000000 },
+    { "args": { "data": { "frame": "F0", "isInPrimaryMainFrame": true, "isOutermostMainFrame": true, "name": "", "processId": 200, "url": "http://127.0.0.1:4328/thesis/" } }, "cat": "disabled-by-default-devtools.timeline", "name": "FrameCommittedInBrowser", "ph": "I", "pid": 100, "s": "t", "tid": 100, "ts": 1009000 },
+    { "args": {}, "cat": "disabled-by-default-devtools.timeline", "dur": 50000, "name": "RunTask", "ph": "X", "pid": 200, "tdur": 12490, "tid": 200, "ts": 2000000, "tts": 160000 },
+    { "args": {}, "cat": "disabled-by-default-devtools.timeline", "dur": 8100, "name": "RunTask", "ph": "X", "pid": 200, "tdur": 7900, "tid": 200, "ts": 1010000, "tts": 20000 },
+    { "args": {}, "cat": "disabled-by-default-devtools.timeline", "dur": 195800, "name": "RunTask", "ph": "X", "pid": 200, "tdur": 12600, "tid": 200, "ts": 1032000, "tts": 28000 },
+    { "args": {}, "cat": "disabled-by-default-devtools.timeline", "dur": 90000, "name": "RunTask", "ph": "X", "pid": 200, "tdur": 88100, "tid": 200, "ts": 1300000, "tts": 41000 },
+    { "args": { "data": { "url": "http://127.0.0.1:4328/_astro/page.js" } }, "cat": "devtools.timeline", "dur": 86000, "name": "EvaluateScript", "ph": "X", "pid": 200, "tdur": 85200, "tid": 200, "ts": 1301000, "tts": 41100 },
+    { "args": {}, "cat": "disabled-by-default-devtools.timeline", "dur": 36700, "name": "RunTask", "ph": "X", "pid": 200, "tdur": 0, "tid": 200, "ts": 1500000, "tts": 129100 },
+    { "args": {}, "cat": "disabled-by-default-devtools.timeline", "dur": 50000, "name": "RunTask", "ph": "X", "pid": 200, "tdur": 12500, "tid": 200, "ts": 2100000, "tts": 172500 },
+    { "args": {}, "cat": "disabled-by-default-devtools.timeline", "dur": 49999, "name": "RunTask", "ph": "X", "pid": 200, "tdur": 0, "tid": 200, "ts": 2200000, "tts": 185000 },
+    { "args": {}, "cat": "disabled-by-default-devtools.timeline", "dur": 80000, "name": "RunTask", "ph": "X", "pid": 200, "tdur": 1000, "tid": 210, "ts": 1100000, "tts": 5000 },
+    { "args": {}, "cat": "disabled-by-default-devtools.timeline", "dur": 150000, "name": "RunTask", "ph": "X", "pid": 300, "tdur": 1000, "tid": 300, "ts": 1100000, "tts": 9000 },
+    { "args": {}, "cat": "disabled-by-default-devtools.timeline", "dur": 150000, "name": "RunTask", "ph": "X", "pid": 100, "tdur": 1000, "tid": 100, "ts": 1100000, "tts": 300000 }
+  ]
+}

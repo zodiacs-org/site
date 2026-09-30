@@ -343,3 +343,142 @@ after the pins, in the branch's last commit.
   the files `src/data/platform-engine-candidate.json` names.
 - `swiss-refresh.json`: the Swiss refresh, statistics and digests only.
 - `validation.json`: builds, budgets, tests, browser runs and scope.
+
+## In production, 2026-09-30
+
+#603 was merged into `main` as `2197e6966d026561fce19c4bfcd0b975803e0b7f`, a
+merge commit whose tree is that of the branch's head `4bc853e1`. Vercel built
+it as deployment `dpl_Ax6saHNV85duCvdExDz7LpSHrLD7`, target production: created
+at 13:26:42 UTC, building from 13:26:44, READY at 13:30:31, from commit
+`2197e696` (Vercel's deployment record, read at 13:43 UTC). Its aliases include
+`zodiacs.org` and `www.zodiacs.org` (the deployment's alias list). The checks
+below ran against https://zodiacs.org from 13:43 to 14:09 UTC. The session's
+proxy dropped some connections to zodiacs.org before any response; each was
+tried again, and none failed in the end.
+
+**The engine chunk carries rc.15.**
+
+```sh
+node docs/platform/evidence/site-engine-rc15/tools/production-engine-chunk.mjs https://zodiacs.org > production-engine-chunk.json
+```
+
+From `/birth-chart/`'s four entry scripts the walk reached 112 modules, and
+none failed (`production-engine-chunk.json`, 14:08 UTC; a first run at 13:48
+found the same). The one engine chunk is `/_astro/full.Dc14JBf_.js`, 434 bytes,
+SHA-256 `416c16ec6cb75c69e55785033aa92e73055f9a2e94a687f53b41311c54693cdb`. Of
+the seven modules in its static closure, one carries a version string:
+`/_astro/chunk-MFF3VKO3.DkBXfVur.js`, with `0.1.1-rc.15`, which is the package's
+`ENGINE_VERSION` in its `dist/chunk-MFF3VKO3.js`. No module the page reaches
+names rc.14. The receipt chunk names rc.15, rc.9 and rc.10, the versions its
+codec's version gates compare with.
+
+**The MCP archive.** `/developers/mcp/` installs
+`zodiacs-mcp-server-0.1.0-rc.15.tgz` from the site's commit `218de839` and
+checks it against the digest the page prints.
+
+```sh
+curl -sSfL 'https://raw.githubusercontent.com/zodiacs-org/site/218de83961ac606d4156042b1faf6b36dc4d0da3/public/examples/zodiacs-mcp-server-0.1.0-rc.15.tgz' | sha256sum
+curl -sSfL 'https://zodiacs.org/examples/zodiacs-mcp-server-0.1.0-rc.15.tgz' | sha256sum
+```
+
+Both give the same 86,944 bytes, SHA-256
+`567054c6e66b65f1ae5b9ef0f80f274707f5a16049a3d06ccb6c1b477d5e9657`. The
+archive's `package.json` is `zodiacs-mcp-server` `0.1.0-rc.15`,
+`MIT AND CC-BY-4.0`, and its `server.mjs` names engine `0.1.1-rc.15`.
+
+**The install lines.** `/developers/engine/` installs
+`zodiacs-engine-0.1.1-rc.15.tgz` from the engine's carrier `cbad72cf` and
+checks
+`24eeb597b0157598c0faa26bb615c0cb5dfaaeac0393d62c73fbd37c5da4d348`;
+`/developers/support/` links the same file and prints the same digest.
+
+```sh
+curl -sS https://zodiacs.org/developers/engine/ | grep -oE 'zodiacs-engine-0\.1\.1-rc\.[0-9]+\.tgz|\b24eeb597[0-9a-f]{56}\b' | sort | uniq -c
+curl -sSfL 'https://raw.githubusercontent.com/zodiacs-org/engine/cbad72cf075c1950bca1250dfd911085da3208d2/artifacts/zodiacs-engine-0.1.1-rc.15.tgz' | sha256sum
+npm view @zodiacs/engine dist-tags --json
+npm view @zodiacs/engine@0.1.1-rc.15 dist.shasum dist.integrity
+```
+
+The archive is 190,974 bytes with that digest. npm's `latest` and `next` are
+both `0.1.1-rc.15`, and the registry's SHA-1 for it,
+`e4a49148b2cedc1c21fdba324e83b76f6d6b4862`, and its SHA-512 integrity are
+those of the same bytes.
+
+**What production says that is no longer true.** npm has had the engine since
+2026-09-30 (the ledger's P3.1a), and production still says it has not:
+
+- `/developers/engine/`: "@zodiacs/engine is not on npm yet — npm view
+  @zodiacs/engine returns 404, and the support page says why."
+- `/developers/support/`: "Local engine · unpublished candidate" and "It is not
+  on npm yet: npm view @zodiacs/engine returns 404."
+- `/developers/`: "Unpublished candidate · engine 0.1.1-rc.15".
+- `/llms.txt`: "an unpublished release candidate distributed as a
+  digest-pinned archive, `npm view @zodiacs/engine` returns 404".
+- `/llms-full.txt`: "It is an unpublished candidate, not an npm release:
+  `npm view @zodiacs/engine` returns 404."
+
+They come from `releaseStatus` and `releaseLabel` in
+`src/data/platform-engine-candidate.json`, the two pages' own sentences and
+the llms files. `scripts/platform-candidate-docs.test.mjs` requires the
+"Unpublished candidate" label, and the claims ledger's `product.engine-package`
+still holds the llms sentences to "npm view returns 404", on a registry read of
+2026-09-23. FINDINGS.md records this as F-57. The MCP adapter is not on npm, so
+its own "Unpublished candidate" still holds.
+
+**Identities.** `git ls-remote` gives site `main` `2197e696`, engine `main`
+`d5326a88` and sdk `main` `a95dc0cf`.
+
+**The dasha comparison on the released archive.** The engine's evidence for its
+dashas, `docs/evidence/vedic-2026-09-28/results/dasha-independent.json` in its
+repository, was measured on the Vedic branch before it was integrated into
+rc.15. Its tool was run again, from an engine checkout at `d5326a88` (whose
+Vedic sources and evidence tools are rc.15's), on the rc.15 package this site
+installs, which is byte for byte the vendored archive:
+
+```sh
+python3 docs/evidence/vedic-2026-09-28/tools/dasha_independent.py \
+  --entry <site>/node_modules/@zodiacs/engine/dist/index.js --output dasha-independent-rc15.json
+```
+
+The output, `dasha-independent-rc15.json`, equals the committed one value for
+value apart from `engineVersion`: 402,240 periods, the largest difference
+2.26 µs against the gate's 5 s, and no lord or count mismatch.
+
+Files added:
+
+- `production-engine-chunk.json` and `tools/production-engine-chunk.mjs`: the
+  engine chunk check;
+- `dasha-independent-rc15.json`: the dasha comparison on the released archive.
+
+## The registry read, 2026-09-30
+
+F-57's fix rests on what npm records for the version the site vendors, read at
+14:24 UTC:
+
+```sh
+node docs/platform/evidence/site-engine-rc15/tools/npm-registry-read.mjs 0.1.1-rc.15 > npm-registry.json
+```
+
+- `latest` and `next` are both `0.1.1-rc.15`, published 2026-09-30 at 11:53
+  UTC.
+- npm's tarball has SHA-1 `e4a49148…4862` and the SHA-512 integrity
+  `sha512-eezpBQ0N…`, both the vendored archive's, 54 files.
+- Its SLSA provenance (`https://slsa.dev/provenance/v1`), for a subject whose
+  SHA-512 is the archive's, names the repository
+  `https://github.com/zodiacs-org/engine`, the workflow
+  `.github/workflows/release.yml` on `refs/heads/main`, the commit
+  `d5326a8869d0058c62b913b8bc1e007bb5a808c1` and run 36711081147. That commit
+  is engine `main` when the package was published; the tarball it built is
+  byte for byte the archive packed from `104bd5a`.
+- `npm audit signatures`, in a scratch project that installed the version from
+  the registry, verified the registry signatures of the engine and
+  astronomy-engine and the engine's attestation, and reported nothing invalid
+  or missing.
+
+The tool decodes the provenance without verifying it; `npm audit signatures`
+is the verification. Provenance says where the package was built. It does not
+test the results.
+
+Files added:
+
+- `npm-registry.json` and `tools/npm-registry-read.mjs`: the registry read.
