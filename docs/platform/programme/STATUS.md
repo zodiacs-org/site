@@ -1,12 +1,25 @@
 # Programme status
 
-Checkpoint 7: production serves engine rc.15 and the MCP adapter 0.1.0-rc.15, and the units rc.15 carries are judged on its evidence, 2026-09-30. The next session should start here.
+Checkpoint 8, 2026-09-30: the handoff. The compute API (P3.3) merges with this record, the owner's third report is in, and the programme passes to the next agent. **The next session should start with [HANDOFF-2026-09-30.md](HANDOFF-2026-09-30.md)**, then this file.
 
 **Overall delivery: 23%** — 42.5 of 182.45 weighted units accepted; blocked on owner or external action: 2% (4).
 
 The figure is computed by `node scripts/programme-ledger.mjs --summary` from [`acceptance-ledger.json`](acceptance-ledger.json). The method is in [README.md](README.md) and the unit list in [LEDGER.md](LEDGER.md).
 
-## What changed since checkpoint 6
+## What changed since checkpoint 7
+
+The figure stays at 23% (42.5); no unit changes state.
+
+- **The compute API** (P3.3) merges with this record. It has six POST endpoints under `/api/v1/`, fails closed until its Firewall rules exist, and is bounded to about 8.7 CPU-seconds a minute per address ([`evidence/compute-api-2026-09-29/`](../evidence/compute-api-2026-09-29/README.md)). The unit stays implemented. Its gate still asks for the latency and cost of the deployed endpoints, and production had not been checked when this was written.
+- **The owner's third report** (below): Firewall version 6 with the compute limits at 40 and 10 and the calendar feeds' write limit at 3, and System Environment Variables exposed. Bing is still preparing its export.
+- **Work stopped for the handoff**, not on GitHub, delivered to the owner as git bundles ([HANDOFF-2026-09-30.md](HANDOFF-2026-09-30.md) §4 and §9):
+  - the calendar feeds' release (P1.15), which nothing blocks now;
+  - about half of the site's adoption of engine rc.16;
+  - P4.5's version 3: FAIL on both corpora, with post-review fixes committed as work in progress;
+  - the engine's eclipse and topocentric entries for rc.17;
+  - the held-back Chinese-calendar entry.
+
+## Checkpoint 7: what changed since checkpoint 6
 
 The figure moves from 19% (34.25) to 23% (42.5).
 
@@ -62,7 +75,11 @@ Remaining:
 
 Later, once the site has rebuilt the MCP server on the published engine: the same manual first upload for `@zodiacs/mcp-server`, from its verified archive, since npm sets up a trusted publisher only for a package that exists.
 
-## Identities verified at this checkpoint
+## Identities verified
+
+At checkpoint 8, before this record merged: site `main` = `acbfad2e` (#604), served by `dpl_J8wQ2hr7RwQRDbT9unq5bUc6mHSC`, whose `/developers/engine/` says `npm install @zodiacs/engine` installs 0.1.1-rc.15; engine `main` = `6807f63` (PR #22, rc.16, archive `43a72d30…15d8`, not on npm and not adopted by the site).
+
+At checkpoint 7:
 
 **Site.** `main` = `2197e696` (#603, a merge commit whose tree is its head `4bc853e1`'s). Production serves it: `dpl_Ax6saHNV85duCvdExDz7LpSHrLD7`, READY since 13:30:31 UTC, with the aliases `zodiacs.org` and `www.zodiacs.org`. The site vendors engine rc.15, and its engine chunk, `/_astro/full.Dc14JBf_.js`, carries `0.1.1-rc.15`.
 
@@ -83,17 +100,6 @@ The earlier archives are as checkpoint 5 lists them. rc.15's three local builds 
 
 **MCP.** Production serves `0.1.0-rc.15`, `567054c6…9657`, 86,944 bytes, pinned to `218de839`; it bundles engine rc.15.
 
-## In progress
+## In progress and next
 
-- **Full IAU 2000B nutation**, on branch `feature-nutation` for rc.16. Against ERFA over 1800–2200, the nutation's share of every longitude falls from 0.252″ to 0.0037″ at most, and the ascendant's error from 0.824″ to 0.0063″. The planets' own series still dominate their longitudes, at up to about 19″. Against Swiss over 1850–2049 the ascendant is within 0.004″. The Koch ladder's worst case falls from 3.73″ to 0.035″ (F-33, P2.A.house.koch).
-- **The hosted compute API** (P3.3), in its own PR: six POST endpoints, a privacy negative-control test, budgets, a switch and receipts, per the decision of 2026-09-29 §5. Both of its Firewall rules are published.
-- **Opaque calendar feed ids** (P1.15), on branch `feed-ids`: the review's findings are fixed, and the owner's settings it waited for are in place.
-- **rc.16's pieces**, each on its own branch: the calculation API and frames, birth-time windows, the site's techniques in the package, house extras, and rise/set with planetary hours. The Chinese solar terms are left out of rc.16, and return with a Sun that is not derived from a JPL ephemeris or when NAIF answers (DECISIONS-2026-09-30.md §1).
-
-## Next
-
-1. The compute API PR, then its latency and cost on production.
-2. rc.16: integrate the branches onto rc.15 and review them. The units judged here also ask of a next candidate: an export for the time basis (F-53), declinations and sect from an entry point that loads no ephemeris (P2.E.declinations, P2.E.sect), the vargas' birth-time sensitivity (P2.B.vargas) and KP's ruling planets (P2.B.kp). Its README's release paragraph should say what the registry shows (F-57).
-3. The MCP adapter's next version, whose `get_capabilities`, README and `candidate.json` report the engine as published (F-57).
-4. Decide whether the site's forms resolve local times through `@zodiacs/engine/geo`, which P1.01b and P1.12b need; the two already agree on 264,455 wall times.
-5. The calendar feeds' release.
+[HANDOFF-2026-09-30.md](HANDOFF-2026-09-30.md) §4 lists the work in flight, with each branch's head and state, and §5 the next steps in order, each with its gate.
