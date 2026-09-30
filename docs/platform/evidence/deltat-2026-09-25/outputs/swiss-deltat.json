@@ -1,21 +1,11 @@
 {
  "swiss": "2.10.03",
  "flag": "FLG_SWIEPH",
- "seconds": {
-  "2026-09-22T00:00Z": 68.82,
-  "2050-01-01T00:00Z": 74.58,
-  "2100-01-01T00:00Z": 93.18
- },
  "before1962": {
   "grid": "1800.0 to 1961.5 every half year",
   "swissMinusS15_2016_1800to1940": {
    "maxAbs": 0.189,
    "at": 1800.0
-  },
-  "swissMinusS15_2016_at": {
-   "1800": 0.189,
-   "1850": 0.086,
-   "1900": 0.022
   },
   "swissMinusS15_2020_1800to1940": {
    "maxAbs": 0.536,
@@ -27,8 +17,36 @@
   },
   "swissMinusModel_1800to1961_rms": 0.098
  },
- "at1000": {
-  "swissMinusS15_2016": 7.239,
-  "swissMinusS15_2020": -175.5
+ "swissOutputRemoved": {
+  "on": "2026-09-28",
+  "under": "docs/platform/programme/DECISIONS-2026-09-28.md §3",
+  "what": "Swiss's Delta T at 2026-09-22, 2050 and 2100, and its differences from the S15 reconstructions at 1800, 1850, 1900 and 1000",
+  "removed": [
+   {
+    "path": ".seconds",
+    "count": 3,
+    "sha256": "c38cf2d6ed7143be269e06c29f06ef9744d292aa2beef0d7849ba4ce33979ef7",
+    "bytes": 79
+   },
+   {
+    "path": ".before1962.swissMinusS15_2016_at",
+    "count": 3,
+    "sha256": "51b545ab0b77bdd06e886af55bac6f3d706e0b9ec4ba73e8bce7b123602b2dd2",
+    "bytes": 40
+   },
+   {
+    "path": ".at1000",
+    "count": 2,
+    "sha256": "32bce87ba0c032f90fae6a96f7bf228a9f7365256a9229a878547ef87623a1e6",
+    "bytes": 56
+   }
+  ],
+  "fileBefore": {
+   "bytes": 660,
+   "sha256": "3b7ed8bd1204e57e9c8edc8d515a7d961d3f8f60eef28225cf1afb7c2771f0c2"
+  },
+  "lastCommitWithTheValues": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+  "regenerate": "DELTAT_SOURCES=<dir> python3 docs/platform/evidence/deltat-2026-09-25/tools/moon/swiss_deltat.py <ephe>",
+  "record": "docs/engine-validation/SWISS-OUTPUT-REMOVAL.md"
  }
 }

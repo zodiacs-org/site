@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
-import fixtures from './fixtures/transit-window-independent.json';
+import fixtures from './fixtures/transit-window-horizons.json';
 import { bodyLongitude, computeBodies, computeChart } from './full';
 import { createTransitWindowScanner, cropTransitWindows, type TransitWindow, type WindowNatalChart, type WindowNatalPoint, type SlowTransitBody, type WindowAspect } from './transit-window-core';
 
@@ -12,6 +12,7 @@ type Component = {
   entryBandMs: number[] | null; exitBandMs: number[] | null; exactBandsMs: number[][];
   exactTopology: string; globalMinimumKind: string; globalMinimum: Minimum | null; localMinima: Minimum[];
   possibleExactRegionMs?: number[] | null; possibleMinimumRegionMs?: number[] | null;
+  turningPointMarginDegrees?: number;
 };
 function inBand(value: string, band: number[], label: string) {
   const time = Date.parse(value);
@@ -59,13 +60,35 @@ function verifyWindow(window: TransitWindow, expected: Component, budget: number
   }
 }
 
-describe('immutable independent A–I source comparisons', () => {
-  it('retains the independently reviewed fixture bytes and failed original contract', () => {
-    const bytes = readFileSync(new URL('./fixtures/transit-window-independent.json', import.meta.url));
-    expect(createHash('sha256').update(bytes).digest('hex')).toBe('db4ddce1d2761ad0ada1ab7aaf456d74d2f79b6b6a3434b1b8f6b9895ad66c3a');
-    expect(fixtures.originalPackStatus).toBe('failed-incomplete');
+// The nine A–I cases against NASA JPL Horizons (DE441) and ERFA, made by
+// docs/engine-validation/independent-references/tools/build.py. They replace
+// the Swiss Ephemeris projection removed on 2026-09-28
+// (docs/platform/programme/DECISIONS-2026-09-28.md §3) with the same cases,
+// budgets, aspect branches and crops; only the arbiter changed.
+describe('independent A–I transit-window references', () => {
+  it('retains the reference bytes, and D’s second period keeps an unresolved exact topology', () => {
+    const bytes = readFileSync(new URL('./fixtures/transit-window-horizons.json', import.meta.url));
+    expect(createHash('sha256').update(bytes).digest('hex')).toBe('d4fa3f0c34f7ad73aa52860a722d0df38695807bdd19551ab778d1aa017b2906');
     expect(fixtures.cases).toHaveLength(9);
     expect(fixtures.cases.reduce((sum, item) => sum + item.geometries.length, 0)).toBe(30);
+    // Uranus turns 0.0442° from the D target, inside the 0.05° budget: no
+    // arbiter can certify how many exact passes that period has.
+    const d = fixtures.cases.find((item) => item.id === 'D-Uranus2020')!;
+    const [first, second] = d.geometries[0].components as Component[];
+    expect(first.exactTopology).toBe('resolved');
+    expect(second.exactTopology).toBe('uncertain');
+    expect(second.turningPointMarginDegrees).toBeLessThan(d.angularBudgetDegrees);
+  });
+  it('keeps the original pack failed-incomplete, as the removed Swiss fixture recorded it', () => {
+    // The Swiss fixture left the tree on 2026-09-28. The removal manifest keeps
+    // its fields that hold no Swiss value, read from its bytes by strip.py, whose
+    // --check derives them again from commit 2ca93d41; the digest is the one
+    // this test pinned while the fixture was here.
+    const manifest = JSON.parse(readFileSync(new URL('../../../docs/engine-validation/swiss-output-removal/manifest.json', import.meta.url), 'utf8'));
+    const removed = manifest.removedFiles.find((entry: { path: string }) => entry.path === 'src/lib/engine/fixtures/transit-window-independent.json');
+    expect(removed.sha256).toBe('db4ddce1d2761ad0ada1ab7aaf456d74d2f79b6b6a3434b1b8f6b9895ad66c3a');
+    expect(removed.nonSwissFields.originalPackStatus).toBe('failed-incomplete');
+    expect(removed.nonSwissFields.qualifiedDSourceAcceptedByRoot).toBe(true);
   });
   for (const source of fixtures.cases) it(source.id, () => {
     const point = source.natalPoint as WindowNatalPoint;

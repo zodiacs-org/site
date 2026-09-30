@@ -121,6 +121,16 @@ fitting target:
 
 The owner decision above covers these as well.
 
+*Decision, 2026-09-28.* The owner chose removal
+([`../../programme/DECISIONS-2026-09-28.md`](../../programme/DECISIONS-2026-09-28.md)
+§3). The three nutation files, `numerics/verify/v4-dense-diff.json` and the
+engine fixtures above left the tree; the per-row Swiss values in the reports,
+cells and deltas were stripped and their statistics kept; and the tests moved
+to NASA JPL Horizons and ERFA.
+[`../../../engine-validation/SWISS-OUTPUT-REMOVAL.md`](../../../engine-validation/SWISS-OUTPUT-REMOVAL.md)
+lists each file and field with its SHA-256 and the command that regenerates
+it. Commit `2ca93d41` still has them; history was not rewritten.
+
 ## What this does not block
 
 The runtime, the synthetic fixtures, the local compiler and the developer

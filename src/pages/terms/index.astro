@@ -6,8 +6,8 @@ const accountSyncV2Enabled = isAccountSyncV2Enabled({
   PUBLIC_ACCOUNT_SYNC_V2_ENABLED: process.env.PUBLIC_ACCOUNT_SYNC_V2_ENABLED,
   PUBLIC_ACCOUNT_SYNC_V2_PREVIEW_ACK: process.env.PUBLIC_ACCOUNT_SYNC_V2_PREVIEW_ACK,
 });
-const updated = '29 August 2026';
-const modifiedAt = '2026-08-29T00:00:00.000Z';
+const updated = '29 September 2026';
+const modifiedAt = '2026-09-29T00:00:00.000Z';
 
 const jsonLd = [
   {
@@ -211,8 +211,13 @@ const jsonLd = [
         noted otherwise. City data is from{' '}
         <a href="https://www.geonames.org/" rel="noopener noreferrer">GeoNames</a>{' '}
         under CC BY 4.0, and the fonts are used under the SIL Open Font License;
-        both are credited in the footer. You are welcome to quote and link to
-        pages with attribution.
+        both are credited in the footer. The chart calculations carry 32 values
+        of ΔT, rounded to 0.01 seconds, from Table S15 of Stephenson, Morrison
+        and Hohenkerk, "Measurement of the Earth's rotation: 720 BC to AD 2015",{' '}
+        <a href="https://doi.org/10.1098/rspa.2016.0404" rel="noopener noreferrer">Proceedings of the Royal Society A 472, 20160404</a>{' '}
+        (2016), published under{' '}
+        <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener noreferrer">CC BY 4.0</a>.
+        You are welcome to quote and link to pages with attribution.
       </p>
 
       <h2>Changes</h2>

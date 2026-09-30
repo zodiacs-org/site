@@ -63,3 +63,16 @@ It is an automated check run by the integrator, not an independent review.
 - Koch, like Placidus, is undefined inside the polar circle and falls back to whole sign there with the `polar-fallback` flag.
 - End to end, the site's houses carry the same sidereal-time and obliquity inputs as its angles. Those match ERFA's IAU 2006/2000A sidereal time to about 0.1″.
 - Swiss's sidereal time leaves the IAU model outside 1850–2050, so end-to-end comparisons with Swiss there measure Swiss's model rather than the houses.
+
+## Swiss output removed, 2026-09-28
+
+Under [DECISIONS-2026-09-28 §3](../../programme/DECISIONS-2026-09-28.md) the two parity reports here lost their per-case differences from
+the Swiss node/polar fixture (`nodes` and `polar`). Their maxima, which the
+figures above quote, stay, and each report records the SHA-256 of what it
+lost under `swissOutputRemoved`; the Node 22 and Node 24 digests are equal,
+as the values were. Commit `2ca93d41` still has the reports whole.
+`scripts/platform-engine-report.mjs` now measures against the NASA JPL
+Horizons and ERFA references
+([`../../../engine-validation/independent-references/`](../../../engine-validation/independent-references/README.md));
+run it at `2ca93d41` to measure against the Swiss fixture again. The record
+of everything removed is [`../../../engine-validation/SWISS-OUTPUT-REMOVAL.md`](../../../engine-validation/SWISS-OUTPUT-REMOVAL.md).

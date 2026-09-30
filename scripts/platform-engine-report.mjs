@@ -1,4 +1,9 @@
-// Report measured public-package residuals against the existing frozen corpus.
+// Report measured public-package residuals against the frozen independent
+// node/polar references: the true node against NASA JPL Horizons (DE441) state
+// vectors and the polar angles against ERFA, on the cases and predeclared
+// gates of the Swiss node/polar pack that was removed on 2026-09-28
+// (docs/platform/programme/DECISIONS-2026-09-28.md §3). Reports made before
+// then measured against Swiss Ephemeris and name its fixture's digest.
 // Never regenerates reference values or changes predeclared acceptance limits.
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
@@ -6,12 +11,12 @@ import { readFileSync } from 'node:fs';
 import { ENGINE_VERSION, natalChart, positions } from '@zodiacs/engine';
 
 const read = (name) => readFileSync(new URL(`../src/lib/engine/fixtures/${name}`, import.meta.url));
-const fixtureBytes = read('swiss-node-polar.fixture.json');
+const fixtureBytes = read('independent-node-polar.json');
 const policyBytes = read('swiss-node-polar-policy.json');
 const fixture = JSON.parse(fixtureBytes);
 const policy = JSON.parse(policyBytes);
 const digest = (bytes) => createHash('sha256').update(bytes).digest('hex');
-assert.equal(digest(fixtureBytes), '022fbc030185b84aa0954411aab266577cd75f50a1947dc4717e92d8a9db9260');
+assert.equal(digest(fixtureBytes), '7e969149c746c1cc1fb5a96a5405a5af04b6b319c918abb5f3dea4ca17385fcd');
 assert.equal(digest(policyBytes), '7742cb2bc7cd0932a344ddcb708e45dad07b91cb653ea1f55538c2d73fa18e96');
 const distance = (a, b) => Math.abs(((a - b + 540) % 360) - 180);
 const nodes = fixture.trueNode.map((reference) => {
@@ -50,7 +55,7 @@ console.log(JSON.stringify({
   artifact, artifactSHA256: digest(readFileSync(new URL(`../${artifact}`, import.meta.url))),
   fixtureSHA256: digest(fixtureBytes), policySHA256: digest(policyBytes),
   scope: 'Three independent node epochs and three polar locations, both requested house systems. Finite corpus, not a complete error bound or human certification.',
-  conventions: 'Existing Swiss UT1/TT conversion, tropical geocentric true node and whole houses; product Placidus fallback compared with Swiss whole houses. See docs/engine-validation/swiss-node-polar/README.md.',
+  conventions: 'References at the engine\'s own TT; true node from Horizons DE441 geometric state vectors (osculating node, true ecliptic of date); ASC, MC and whole-sign cusps from ERFA with UT1 taken as the instant; product Placidus fallback compared with whole-sign cusps. See docs/engine-validation/independent-references/README.md.',
   nodes, polar,
   maxima: {
     nodeLongitudeDegrees: Math.max(...nodes.map((value) => value.longitudeErrorDegrees)),

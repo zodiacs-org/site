@@ -1,0 +1,464 @@
+{
+ "what": "Horizons VECTORS (geometric, geocentric, ICRF, DE441) against the DE440s kernel the precision pack carries, same JDTDB",
+ "kernel": {
+  "file": "de440s.bsp",
+  "sha256": "c1c7feeab882263fc493a9d5a5b2ddd71b54826cdf65d8d17a76126b260a49f2"
+ },
+ "jplephem": "2.24",
+ "horizonsFiles": {
+  "Moon": "777855c468b90c4c5ca913b1e1b2c0a0417826619c488a38148f259ba10ca723",
+  "Mars": "614e3cece38fa36351219856c4c3dc166764394185462d04183343ae4d9aafea",
+  "MarsBary": "b54f1ff12bf8a7322babaf68fd50efd83834afb8cd1908e13682e48d95cc278a"
+ },
+ "summary": {
+  "Moon": {
+   "maxAngleMas": 10.2127,
+   "maxAt": "1851-03-14T04:37:00Z",
+   "medianAngleMas": 1.7925
+  },
+  "Mars": {
+   "maxAngleMas": 0.0008,
+   "maxAt": "1851-03-14T04:37:00Z",
+   "medianAngleMas": 0.0003
+  },
+  "MarsBary": {
+   "maxAngleMas": 0.0009,
+   "maxAt": "1851-03-14T04:37:00Z",
+   "medianAngleMas": 0.0001
+  }
+ },
+ "instants": [
+  {
+   "id": "A1",
+   "utc": "1851-03-14T04:37:00Z",
+   "jdTdb": "2397195.692473660",
+   "Moon": {
+    "angleMas": 10.2127,
+    "displacementM": 18.01
+   },
+   "Mars": {
+    "angleMas": 0.0008,
+    "displacementM": 1.31
+   },
+   "MarsBary": {
+    "angleMas": 0.0009,
+    "displacementM": 1.45
+   },
+   "horizonsMarsBodyMinusBarycentreM": 0.2
+  },
+  {
+   "id": "A2",
+   "utc": "1866-11-02T19:12:00Z",
+   "jdTdb": "2402908.300074380",
+   "Moon": {
+    "angleMas": 6.2267,
+    "displacementM": 11.87
+   },
+   "Mars": {
+    "angleMas": 0.0001,
+    "displacementM": 0.17
+   },
+   "MarsBary": {
+    "angleMas": 0.0,
+    "displacementM": 0.01
+   },
+   "horizonsMarsBodyMinusBarycentreM": 0.16
+  },
+  {
+   "id": "A3",
+   "utc": "1882-07-21T09:48:00Z",
+   "jdTdb": "2408647.908286300",
+   "Moon": {
+    "angleMas": 3.9917,
+    "displacementM": 7.82
+   },
+   "Mars": {
+    "angleMas": 0.0002,
+    "displacementM": 0.35
+   },
+   "MarsBary": {
+    "angleMas": 0.0001,
+    "displacementM": 0.16
+   },
+   "horizonsMarsBodyMinusBarycentreM": 0.19
+  },
+  {
+   "id": "A4",
+   "utc": "1897-01-09T22:05:00Z",
+   "jdTdb": "2413934.420087200",
+   "Moon": {
+    "angleMas": 2.6866,
+    "displacementM": 5.24
+   },
+   "Mars": {
+    "angleMas": 0.0004,
+    "displacementM": 0.25
+   },
+   "MarsBary": {
+    "angleMas": 0.0,
+    "displacementM": 0.18
+   },
+   "horizonsMarsBodyMinusBarycentreM": 0.19
+  },
+  {
+   "id": "B1",
+   "utc": "1908-05-30T15:23:00Z",
+   "jdTdb": "2418092.141078570",
+   "Moon": {
+    "angleMas": 1.9532,
+    "displacementM": 3.72
+   },
+   "Mars": {
+    "angleMas": 0.0002,
+    "displacementM": 0.37
+   },
+   "MarsBary": {
+    "angleMas": 0.0001,
+    "displacementM": 0.26
+   },
+   "horizonsMarsBodyMinusBarycentreM": 0.21
+  },
+  {
+   "id": "B2",
+   "utc": "1919-12-04T02:41:00Z",
+   "jdTdb": "2422296.612055240",
+   "Moon": {
+    "angleMas": 1.435,
+    "displacementM": 2.54
+   },
+   "Mars": {
+    "angleMas": 0.0004,
+    "displacementM": 0.57
+   },
+   "MarsBary": {
+    "angleMas": 0.0004,
+    "displacementM": 0.53
+   },
+   "horizonsMarsBodyMinusBarycentreM": 0.11
+  },
+  {
+   "id": "B3",
+   "utc": "1933-08-17T11:56:00Z",
+   "jdTdb": "2427301.997503140",
+   "Moon": {
+    "angleMas": 0.5874,
+    "displacementM": 1.15
+   },
+   "Mars": {
+    "angleMas": 0.0001,
+    "displacementM": 0.2
+   },
+   "MarsBary": {
+    "angleMas": 0.0,
+    "displacementM": 0.04
+   },
+   "horizonsMarsBodyMinusBarycentreM": 0.2
+  },
+  {
+   "id": "B4",
+   "utc": "1946-02-23T20:14:00Z",
+   "jdTdb": "2431875.343372030",
+   "Moon": {
+    "angleMas": 0.2441,
+    "displacementM": 0.48
+   },
+   "Mars": {
+    "angleMas": 0.0003,
+    "displacementM": 0.29
+   },
+   "MarsBary": {
+    "angleMas": 0.0,
+    "displacementM": 0.21
+   },
+   "horizonsMarsBodyMinusBarycentreM": 0.18
+  },
+  {
+   "id": "C1",
+   "utc": "1957-10-04T19:28:00Z",
+   "jdTdb": "2436116.311482080",
+   "Moon": {
+    "angleMas": 0.0484,
+    "displacementM": 0.1
+   },
+   "Mars": {
+    "angleMas": 0.0004,
+    "displacementM": 0.78
+   },
+   "MarsBary": {
+    "angleMas": 0.0005,
+    "displacementM": 0.93
+   },
+   "horizonsMarsBodyMinusBarycentreM": 0.17
+  },
+  {
+   "id": "C2",
+   "utc": "1969-07-20T20:17:00Z",
+   "jdTdb": "2440423.345598840",
+   "Moon": {
+    "angleMas": 0.0071,
+    "displacementM": 0.01
+   },
+   "Mars": {
+    "angleMas": 0.0001,
+    "displacementM": 0.05
+   },
+   "MarsBary": {
+    "angleMas": 0.0001,
+    "displacementM": 0.11
+   },
+   "horizonsMarsBodyMinusBarycentreM": 0.11
+  },
+  {
+   "id": "C3",
+   "utc": "1977-03-08T06:03:00Z",
+   "jdTdb": "2443210.752635460",
+   "Moon": {
+    "angleMas": 0.0215,
+    "displacementM": 0.04
+   },
+   "Mars": {
+    "angleMas": 0.0005,
+    "displacementM": 0.74
+   },
+   "MarsBary": {
+    "angleMas": 0.0003,
+    "displacementM": 0.54
+   },
+   "horizonsMarsBodyMinusBarycentreM": 0.2
+  },
+  {
+   "id": "C4",
+   "utc": "1986-11-13T13:47:00Z",
+   "jdTdb": "2446748.074945140",
+   "Moon": {
+    "angleMas": 0.1283,
+    "displacementM": 0.24
+   },
+   "Mars": {
+    "angleMas": 0.0002,
+    "displacementM": 0.17
+   },
+   "MarsBary": {
+    "angleMas": 0.0004,
+    "displacementM": 0.33
+   },
+   "horizonsMarsBodyMinusBarycentreM": 0.21
+  },
+  {
+   "id": "C5",
+   "utc": "1999-08-11T10:51:00Z",
+   "jdTdb": "2451401.952820470",
+   "Moon": {
+    "angleMas": 0.4012,
+    "displacementM": 0.73
+   },
+   "Mars": {
+    "angleMas": 0.0003,
+    "displacementM": 0.29
+   },
+   "MarsBary": {
+    "angleMas": 0.0002,
+    "displacementM": 0.17
+   },
+   "horizonsMarsBodyMinusBarycentreM": 0.13
+  },
+  {
+   "id": "D1",
+   "utc": "2003-08-27T09:51:00Z",
+   "jdTdb": "2452878.911163600",
+   "Moon": {
+    "angleMas": 0.5074,
+    "displacementM": 0.93
+   },
+   "Mars": {
+    "angleMas": 0.0003,
+    "displacementM": 0.22
+   },
+   "MarsBary": {
+    "angleMas": 0.0002,
+    "displacementM": 0.05
+   },
+   "horizonsMarsBodyMinusBarycentreM": 0.21
+  },
+  {
+   "id": "D2",
+   "utc": "2012-05-21T00:33:00Z",
+   "jdTdb": "2456068.523688880",
+   "Moon": {
+    "angleMas": 0.6504,
+    "displacementM": 1.28
+   },
+   "Mars": {
+    "angleMas": 0.0002,
+    "displacementM": 0.16
+   },
+   "MarsBary": {
+    "angleMas": 0.0003,
+    "displacementM": 0.31
+   },
+   "horizonsMarsBodyMinusBarycentreM": 0.21
+  },
+  {
+   "id": "D3",
+   "utc": "2020-12-21T18:20:00Z",
+   "jdTdb": "2459205.264691670",
+   "Moon": {
+    "angleMas": 0.942,
+    "displacementM": 1.83
+   },
+   "Mars": {
+    "angleMas": 0.0003,
+    "displacementM": 0.17
+   },
+   "MarsBary": {
+    "angleMas": 0.0,
+    "displacementM": 0.04
+   },
+   "horizonsMarsBodyMinusBarycentreM": 0.18
+  },
+  {
+   "id": "D4",
+   "utc": "2026-09-22T17:00:00Z",
+   "jdTdb": "2461306.209134250",
+   "Moon": {
+    "angleMas": 1.1794,
+    "displacementM": 2.27
+   },
+   "Mars": {
+    "angleMas": 0.0002,
+    "displacementM": 0.34
+   },
+   "MarsBary": {
+    "angleMas": 0.0001,
+    "displacementM": 0.18
+   },
+   "horizonsMarsBodyMinusBarycentreM": 0.2
+  },
+  {
+   "id": "D5",
+   "utc": "2038-01-19T03:14:07Z",
+   "jdTdb": "2465442.635618200",
+   "Moon": {
+    "angleMas": 1.7925,
+    "displacementM": 3.32
+   },
+   "Mars": {
+    "angleMas": 0.0001,
+    "displacementM": 0.11
+   },
+   "MarsBary": {
+    "angleMas": 0.0001,
+    "displacementM": 0.09
+   },
+   "horizonsMarsBodyMinusBarycentreM": 0.2
+  },
+  {
+   "id": "E1",
+   "utc": "2055-06-06T12:00:00Z",
+   "jdTdb": "2471790.000832750",
+   "Moon": {
+    "angleMas": 2.8604,
+    "displacementM": 5.11
+   },
+   "Mars": {
+    "angleMas": 0.0001,
+    "displacementM": 0.18
+   },
+   "MarsBary": {
+    "angleMas": 0.0,
+    "displacementM": 0.07
+   },
+   "horizonsMarsBodyMinusBarycentreM": 0.13
+  },
+  {
+   "id": "E2",
+   "utc": "2071-10-29T21:39:00Z",
+   "jdTdb": "2477779.402937640",
+   "Moon": {
+    "angleMas": 3.2166,
+    "displacementM": 6.3
+   },
+   "Mars": {
+    "angleMas": 0.0004,
+    "displacementM": 0.27
+   },
+   "MarsBary": {
+    "angleMas": 0.0001,
+    "displacementM": 0.11
+   },
+   "horizonsMarsBodyMinusBarycentreM": 0.2
+  },
+  {
+   "id": "E3",
+   "utc": "2088-04-02T05:26:00Z",
+   "jdTdb": "2483778.727273770",
+   "Moon": {
+    "angleMas": 4.6872,
+    "displacementM": 8.67
+   },
+   "Mars": {
+    "angleMas": 0.0003,
+    "displacementM": 0.53
+   },
+   "MarsBary": {
+    "angleMas": 0.0003,
+    "displacementM": 0.54
+   },
+   "horizonsMarsBodyMinusBarycentreM": 0.15
+  },
+  {
+   "id": "F1",
+   "utc": "2104-09-15T14:08:00Z",
+   "jdTdb": "2489788.089815590",
+   "Moon": {
+    "angleMas": 5.4691,
+    "displacementM": 10.44
+   },
+   "Mars": {
+    "angleMas": 0.0001,
+    "displacementM": 0.19
+   },
+   "MarsBary": {
+    "angleMas": 0.0002,
+    "displacementM": 0.33
+   },
+   "horizonsMarsBodyMinusBarycentreM": 0.21
+  },
+  {
+   "id": "F2",
+   "utc": "2125-02-11T23:45:00Z",
+   "jdTdb": "2497242.490579780",
+   "Moon": {
+    "angleMas": 7.3972,
+    "displacementM": 13.68
+   },
+   "Mars": {
+    "angleMas": 0.0002,
+    "displacementM": 0.38
+   },
+   "MarsBary": {
+    "angleMas": 0.0,
+    "displacementM": 0.2
+   },
+   "horizonsMarsBodyMinusBarycentreM": 0.2
+  },
+  {
+   "id": "F3",
+   "utc": "2148-12-30T07:31:00Z",
+   "jdTdb": "2505964.814300821",
+   "Moon": {
+    "angleMas": 8.5671,
+    "displacementM": 16.47
+   },
+   "Mars": {
+    "angleMas": 0.0005,
+    "displacementM": 0.53
+   },
+   "MarsBary": {
+    "angleMas": 0.0002,
+    "displacementM": 0.57
+   },
+   "horizonsMarsBodyMinusBarycentreM": 0.16
+  }
+ ]
+}

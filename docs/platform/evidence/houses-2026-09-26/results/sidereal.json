@@ -5,73 +5,87 @@
  "rows": [
   {
    "utc": "1820-06-15T07:13:00.000Z",
-   "engineMinusErfa": -0.056,
-   "swissMinusErfa": 0.34
+   "engineMinusErfa": -0.056
   },
   {
    "utc": "1860-06-15T07:13:00.000Z",
-   "engineMinusErfa": 0.056,
-   "swissMinusErfa": -0.0
+   "engineMinusErfa": 0.056
   },
   {
    "utc": "1900-06-15T07:13:00.000Z",
-   "engineMinusErfa": 0.018,
-   "swissMinusErfa": -0.0
+   "engineMinusErfa": 0.018
   },
   {
    "utc": "1950-06-15T07:13:00.000Z",
-   "engineMinusErfa": 0.02,
-   "swissMinusErfa": -0.001
+   "engineMinusErfa": 0.02
   },
   {
    "utc": "2000-06-15T07:13:00.000Z",
-   "engineMinusErfa": -0.085,
-   "swissMinusErfa": -0.0
+   "engineMinusErfa": -0.085
   },
   {
    "utc": "2040-06-15T07:13:00.000Z",
-   "engineMinusErfa": -0.009,
-   "swissMinusErfa": 0.001
+   "engineMinusErfa": -0.009
   },
   {
    "utc": "2049-06-15T07:13:00.000Z",
-   "engineMinusErfa": 0.019,
-   "swissMinusErfa": 0.0
+   "engineMinusErfa": 0.019
   },
   {
    "utc": "2051-06-15T07:13:00.000Z",
-   "engineMinusErfa": 0.007,
-   "swissMinusErfa": -1.908
+   "engineMinusErfa": 0.007
   },
   {
    "utc": "2060-06-15T07:13:00.000Z",
-   "engineMinusErfa": 0.059,
-   "swissMinusErfa": -1.902
+   "engineMinusErfa": 0.059
   },
   {
    "utc": "2080-06-15T07:13:00.000Z",
-   "engineMinusErfa": 0.113,
-   "swissMinusErfa": -1.865
+   "engineMinusErfa": 0.113
   },
   {
    "utc": "2100-06-15T07:13:00.000Z",
-   "engineMinusErfa": -0.003,
-   "swissMinusErfa": -1.792
+   "engineMinusErfa": -0.003
   },
   {
    "utc": "2130-06-15T07:13:00.000Z",
-   "engineMinusErfa": -0.069,
-   "swissMinusErfa": -1.609
+   "engineMinusErfa": -0.069
   },
   {
    "utc": "2160-06-15T07:13:00.000Z",
-   "engineMinusErfa": -0.058,
-   "swissMinusErfa": -1.306
+   "engineMinusErfa": -0.058
   },
   {
    "utc": "2190-06-15T07:13:00.000Z",
-   "engineMinusErfa": 0.084,
-   "swissMinusErfa": -0.864
+   "engineMinusErfa": 0.084
   }
- ]
+ ],
+ "swissMinusErfaStatistics": {
+  "what": "Swiss's apparent sidereal time minus ERFA's over the 14 dates, in arcseconds: the largest difference, with its date, which README.md quotes. The per-date differences were removed on 2026-09-28 (docs/platform/programme/DECISIONS-2026-09-28.md §3).",
+  "n": 14,
+  "largest": {
+   "utc": "2051-06-15T07:13:00.000Z",
+   "swissMinusErfa": -1.908
+  }
+ },
+ "swissOutputRemoved": {
+  "on": "2026-09-28",
+  "under": "docs/platform/programme/DECISIONS-2026-09-28.md §3",
+  "what": "Swiss's apparent sidereal time minus ERFA's, per date",
+  "removed": [
+   {
+    "path": ".rows[].swissMinusErfa",
+    "count": 14,
+    "sha256": "55584891877d64f6529b655154957c93ed650568f78cc8c9e5df658c94e46a8e",
+    "bytes": 353
+   }
+  ],
+  "fileBefore": {
+   "bytes": 1535,
+   "sha256": "63eebe00dc6960a46f24770dd5a45f7347a8b1ed4f6e5ff676ada01478e1adea"
+  },
+  "lastCommitWithTheValues": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+  "regenerate": "docs/platform/evidence/houses-2026-09-26/tools: node sidereal.mjs > sidereal.jsonl; python3 sidereal.py sidereal.jsonl (run-all.sh)",
+  "record": "docs/engine-validation/SWISS-OUTPUT-REMOVAL.md"
+ }
 }

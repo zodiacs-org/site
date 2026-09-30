@@ -166,11 +166,17 @@ curl -O https://eop2-external.jpl.nasa.gov/eop2/latest_eop2.long
 curl -O https://datacenter.iers.org/data/latestVersion/EOP_14_C04_IAU1980_one_file_1962-now.txt
 curl -O https://datacenter.iers.org/data/latestVersion/finals.all.iau1980.txt
 python decompose.py <ephe-dir> latest_eop2.long \
-    EOP_14_C04_IAU1980_one_file_1962-now.txt finals.all.iau1980.txt > results.json
+    EOP_14_C04_IAU1980_one_file_1962-now.txt finals.all.iau1980.txt \
+    <fetched> > results-<fetched>.json
 
 python vectors/fetch_vectors.py            # cached files are kept, not refetched
-python vectors/compare_vectors.py <path>/de440s.bsp > vectors/results.json
+python vectors/compare_vectors.py <path>/de440s.bsp > vectors/results-<fetched>.json
 ```
+
+`<fetched>` is the day the EOP files were fetched. The commands wrote
+`results.json` and `vectors/results.json` on the corpus as first fetched, and
+`results-2026-09-29.json` and `vectors/results-2026-09-29.json` on the
+re-timed one (below).
 
 The EOP files are not committed. `results.json` records:
 
@@ -183,3 +189,33 @@ predictions near the present differ.
 
 Only remainders, frame terms, offsets and statistics are written. No Swiss
 position is written.
+
+## The corpus re-timed, 2026-09-29
+
+This study ran on the corpus as first fetched, at TT = UT + Swiss's ΔT. Those
+TT instants, beside the UT instants, gave Swiss's ΔT back, so under
+[DECISIONS-2026-09-29 §2](../../../programme/DECISIONS-2026-09-29.md) the
+corpus was re-timed on the engine's own ΔT and fetched again
+([`../corpora/README.md`](../corpora/README.md)), and so were the three
+VECTORS files here. The figures above, `results.json` and
+`vectors/results.json` are the first run's and stay as written; commit
+`2ca93d41` has the responses they were made from. `vectors/results.json` lost
+the TT of each instant (`instants[].jdTdb`), which gave the same ΔT back.
+
+The same scripts on the re-timed corpus, with the EOP files of 2026-09-29
+(`eop.260928.p261225`, predicting to 2026-12-24), are
+`results-2026-09-29.json` and `vectors/results-2026-09-29.json`. They agree
+with the first run to within the rounding of Horizons's printed angles
+(1e-7°, 0.36 mas):
+
+| figure | first run | re-run |
+| --- | --- | --- |
+| `eopJpl` remainder in longitude, median / largest | 1.40 / 5.45 mas | 1.44 / 5.50 mas |
+| `eopIers` remainder in longitude, median / largest | 1.42 / 5.38 mas | 1.29 / 5.43 mas |
+| largest remainder in latitude, `eopJpl` | 1.86 mas | 1.86 mas |
+| Moon, DE440s against DE441, 1851-03-14 / 2148-12-30 / median | 10.24 / 8.60 / 1.78 mas | 10.21 / 8.57 / 1.79 mas |
+
+The largest `eopJpl` remainder is still Venus on 2012-05-21. Each instant's
+`eopJpl` frame term moved by at most 0.0001″. Its `eopIers` frame term
+moved by at most 0.0011″, and only at the seven instants after 2026, which
+hold the last IERS prediction; that prediction moved between the two days.

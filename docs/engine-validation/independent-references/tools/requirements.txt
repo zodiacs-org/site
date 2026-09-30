@@ -1,0 +1,10 @@
+# What tools/build.py imports, pinned with the hashes PyPI publishes, for
+#   python -m pip install --require-hashes --no-deps -r requirements.txt
+# The references were built with these versions on Python 3.11
+# (generator.pyerfa in each reference file); CI installs the same.
+pyerfa==2.0.1.5 \
+    --hash=sha256:0e43c7194e3242083f2350b46c09fd4bf8ba1bcc0ebd1460b98fc47fe2389906 \
+    --hash=sha256:17d6b24fe4846c65d5e7d8c362dcb08199dc63b30a236aedd73875cc83e1f6c0
+numpy==2.4.6 \
+    --hash=sha256:89cd468399cfd2504718f0ba50e410dca55a170b61a02ad92bb18c8a65186e93 \
+    --hash=sha256:f3a3570c4a2a16746ac2c31a7c7c7b0c186b95ce902e33db6f28094ed7387dda

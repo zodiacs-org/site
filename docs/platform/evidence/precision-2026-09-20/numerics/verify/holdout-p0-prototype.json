@@ -17,266 +17,54 @@
   {
    "id": "hold-01",
    "stratum": "ordinary",
-   "utc": "1969-07-20T20:17:00Z",
-   "bodies": {
-    "Sun": {
-     "lon": 117.91077097583822,
-     "lat": -0.00008954669340928187,
-     "speed": 0
-    },
-    "Moon": {
-     "lon": 187.87378936959416,
-     "lat": -1.3631495373911644,
-     "speed": 0
-    },
-    "Mercury": {
-     "lon": 115.84294903853433,
-     "lat": 1.4588045151280935,
-     "speed": 0
-    },
-    "Venus": {
-     "lon": 75.03745039455822,
-     "lat": -2.454223076984341,
-     "speed": 0
-    },
-    "Mars": {
-     "lon": 242.77332379470226,
-     "lat": -3.393029778767417,
-     "speed": 0
-    },
-    "Jupiter": {
-     "lon": 180.74626821516705,
-     "lat": 1.219171268432737,
-     "speed": 0
-    },
-    "Saturn": {
-     "lon": 38.09802786851767,
-     "lat": -2.4284294223593146,
-     "speed": 0
-    },
-    "Uranus": {
-     "lon": 180.6900497202268,
-     "lat": 0.7107017194556924,
-     "speed": 0
-    },
-    "Neptune": {
-     "lon": 236.0229501996667,
-     "lat": 1.729909370002466,
-     "speed": 0
-    },
-    "Pluto": {
-     "lon": 173.0072188043942,
-     "lat": 15.306073906679835,
-     "speed": 0
-    }
-   }
+   "utc": "1969-07-20T20:17:00Z"
   },
   {
    "id": "hold-02",
    "stratum": "ordinary",
-   "utc": "2010-10-10T10:10:00Z",
-   "bodies": {
-    "Sun": {
-     "lon": 197.00594605555366,
-     "lat": -0.000011110502892073213,
-     "speed": 0
-    },
-    "Moon": {
-     "lon": 233.03364632569665,
-     "lat": -3.438203958073108,
-     "speed": 0
-    },
-    "Mercury": {
-     "lon": 192.1004021962412,
-     "lat": 1.495949193010678,
-     "speed": 0
-    },
-    "Venus": {
-     "lon": 223.14369881799564,
-     "lat": -7.238317160623916,
-     "speed": 0
-    },
-    "Mars": {
-     "lon": 227.3811277705644,
-     "lat": -0.36354499746155045,
-     "speed": 0
-    },
-    "Jupiter": {
-     "lon": 355.9725727646602,
-     "lat": -1.5836861317514679,
-     "speed": 0
-    },
-    "Saturn": {
-     "lon": 188.90123565115888,
-     "lat": 2.170320659413591,
-     "speed": 0
-    },
-    "Uranus": {
-     "lon": 357.8744941725573,
-     "lat": -0.7838025549036901,
-     "speed": 0
-    },
-    "Neptune": {
-     "lon": 326.1252930514185,
-     "lat": -0.48908938959219656,
-     "speed": 0
-    },
-    "Pluto": {
-     "lon": 272.9682347183991,
-     "lat": 4.749786932555582,
-     "speed": 0
-    }
-   }
+   "utc": "2010-10-10T10:10:00Z"
   },
   {
    "id": "hold-03",
    "stratum": "historical",
    "utc": "1820-03-15T06:00:00Z",
-   "bodies": {
-    "Sun": null,
-    "Moon": null,
-    "Mercury": null,
-    "Venus": null,
-    "Mars": null,
-    "Jupiter": null,
-    "Saturn": null,
-    "Uranus": null,
-    "Neptune": null,
-    "Pluto": null
-   },
    "err": "et -5673909583.219239 outside segment coverage [-4734072000, 4735368000]"
   },
   {
    "id": "hold-04",
    "stratum": "future",
    "utc": "2150-08-08T08:08:00Z",
-   "bodies": {
-    "Sun": null,
-    "Moon": null,
-    "Mercury": null,
-    "Venus": null,
-    "Mars": null,
-    "Jupiter": null,
-    "Saturn": null,
-    "Uranus": null,
-    "Neptune": null,
-    "Pluto": null
-   },
    "err": "et 4752504602.074405 outside segment coverage [-4734072000, 4735368000]"
   },
   {
    "id": "hold-05",
    "stratum": "boundary",
-   "utc": "2025-12-21T15:03:00Z",
-   "bodies": {
-    "Sun": {
-     "lon": 269.9999529923474,
-     "lat": -0.00010185841568037008,
-     "speed": 0
-    },
-    "Moon": {
-     "lon": 287.28974833940447,
-     "lat": -4.078951689070509,
-     "speed": 0
-    },
-    "Mercury": {
-     "lon": 253.1882369637127,
-     "lat": 0.6864411586234945,
-     "speed": 0
-    },
-    "Venus": {
-     "lon": 266.1510663374045,
-     "lat": -0.10173039490475282,
-     "speed": 0
-    },
-    "Mars": {
-     "lon": 274.7757391940495,
-     "lat": -0.8222617610644082,
-     "speed": 0
-    },
-    "Jupiter": {
-     "lon": 112.64558436475546,
-     "lat": 0.21298369087008032,
-     "speed": 0
-    },
-    "Saturn": {
-     "lon": 355.6486485533315,
-     "lat": -2.293984730390603,
-     "speed": 0
-    },
-    "Uranus": {
-     "lon": 58.26793810014456,
-     "lat": -0.20036987088813682,
-     "speed": 0
-    },
-    "Neptune": {
-     "lon": 359.4087197228719,
-     "lat": -1.3391421776801984,
-     "speed": 0
-    },
-    "Pluto": {
-     "lon": 302.41694418487333,
-     "lat": -3.7653681917132134,
-     "speed": 0
-    }
-   }
+   "utc": "2025-12-21T15:03:00Z"
   },
   {
    "id": "hold-06",
    "stratum": "polar",
-   "utc": "2005-01-10T12:00:00Z",
-   "bodies": {
-    "Sun": {
-     "lon": 290.3501997227129,
-     "lat": -0.0001417570543057416,
-     "speed": 0
-    },
-    "Moon": {
-     "lon": 290.3221471308152,
-     "lat": -4.952854341872057,
-     "speed": 0
-    },
-    "Mercury": {
-     "lon": 270.44976922258087,
-     "lat": 0.3027311632192186,
-     "speed": 0
-    },
-    "Venus": {
-     "lon": 270.9954259283405,
-     "lat": 0.3366826660093342,
-     "speed": 0
-    },
-    "Mars": {
-     "lon": 250.91559765477695,
-     "lat": 0.05318523255344317,
-     "speed": 0
-    },
-    "Jupiter": {
-     "lon": 198.06930724911086,
-     "lat": 1.3332184739814126,
-     "speed": 0
-    },
-    "Saturn": {
-     "lon": 114.16434763630657,
-     "lat": 0.003219757498805024,
-     "speed": 0
-    },
-    "Uranus": {
-     "lon": 334.31364775440255,
-     "lat": -0.7395432041345601,
-     "speed": 0
-    },
-    "Neptune": {
-     "lon": 314.1719786515489,
-     "lat": -0.09288814249682194,
-     "speed": 0
-    },
-    "Pluto": {
-     "lon": 263.06046617847244,
-     "lat": 8.049222691545792,
-     "speed": 0
-    }
-   }
+   "utc": "2005-01-10T12:00:00Z"
   }
- ]
+ ],
+ "swissOutputRemoved": {
+  "on": "2026-09-29",
+  "under": "docs/platform/programme/DECISIONS-2026-09-29.md §2",
+  "what": "the DE prototype's positions at each hold-out case's UT + Swiss's Delta T, the clock of cell D on the hold-out set; the prototype run at each case's UT gives that Delta T back from them",
+  "removed": [
+   {
+    "path": ".cases[].bodies",
+    "count": 6,
+    "sha256": "641d6814eb95079f2dbd418405760e702be597a45102c8d433fbab20cafa13be",
+    "bytes": 3175
+   }
+  ],
+  "fileBefore": {
+   "bytes": 5646,
+   "sha256": "e49275011c9b42bfd2622e18cb97e74581c0949ffd039e04fdc6cb106c3f0327"
+  },
+  "lastCommitWithTheValues": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+  "regenerate": "docs/platform/evidence/precision-2026-09-20/numerics: node verify/v3-holdout.mjs, with Swiss's hold-out run at /tmp/claude-0/swisslab/swiss-hold.json from swiss-benchmark/tools/dump_swiss.py",
+  "record": "docs/engine-validation/SWISS-OUTPUT-REMOVAL.md"
+ }
 }

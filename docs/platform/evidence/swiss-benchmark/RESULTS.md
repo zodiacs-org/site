@@ -285,3 +285,19 @@ From 2150 to 2199 the Moon is within 7.15″ at the same TT and 20.47″ at the
 same UT, where rc.7 reached 183.12″. By half-century the Moon's median at the
 same UT moves from 4.78″ to 6.60″ over 1800–1849 and from 2.64″ to 0.67″ over
 2000–2049; the file has every body by half-century.
+
+## Swiss output removed, 2026-09-28
+
+Under [DECISIONS-2026-09-28 §3](../../programme/DECISIONS-2026-09-28.md) the
+per-row differences left the five `report-*.json` here: 180 rows each in
+`report-measure.json` and `report-measure-rc8.json`, 60 in
+`report-holdout-core.json`, 40 in `report-holdout-prototype.json` and 160 in
+`report-prototype-matched.json`. Their aggregates (overall, by body, by
+stratum, and the excluded list) stay, and each file records the SHA-256 of
+the rows it lost under `swissOutputRemoved`. `report-measure-rc8.json` also
+gained a `statistics` block: the figures the site's copy states, computed
+from its rows by the formulas its tests used, before the rows went. Commit
+`2ca93d41` still has the rows, and `tools/` regenerates them as above. The
+figures in this file are unchanged. `prototype/spk.test.mjs` no longer pins
+Swiss's ΔT at 2100; it pins a round 90 s. The record of everything removed is
+[`../../../engine-validation/SWISS-OUTPUT-REMOVAL.md`](../../../engine-validation/SWISS-OUTPUT-REMOVAL.md).

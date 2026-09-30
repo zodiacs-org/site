@@ -36,7 +36,7 @@ Three independent position sources, station located independently by each:
 
 | source | station (UTC) | \|g\*\| (deg) | vs recorded (arcsec) | clears the 0.050000001° gate |
 | --- | --- | --- | --- | --- |
-| Swiss 2.10.03, flags 258, v6 clock | 2020-01-11T01:48:09.210Z | 0.04418806605816883 | +0.0000036 | no |
+| Swiss 2.10.03, flags 258, v6 clock | not kept (below) | 0.04418806605816883 | +0.0000036 | no |
 | DE440s prototype, TT pinned to UTC+69.184 s | 2020-01-11T02:10:34.210Z | 0.044174733140231 | −0.0480 | no |
 | shipped core engine (`@zodiacs/engine/internal`) | 2020-01-11T02:10:47.833Z | 0.043326341573135 | −3.1022 | no |
 
@@ -128,8 +128,9 @@ choice, not the position series.
 
 **3. Time-model.** This window is historical, so TT − UTC is exactly 69.184 s
 (37 leap seconds + 32.184) throughout; no leap second falls inside it and no
-Delta-T extrapolation enters. Swiss returns 69.18401420 s, a 1.4e-5 s Julian-day
-rounding, well inside the policy's 0.001 s guard. Perturbing the pinned TT:
+Delta-T extrapolation enters. Swiss's own TT − UTC differs from it only by its
+Julian-day rounding, under 0.0001 s, well inside the policy's 0.001 s guard.
+Perturbing the pinned TT:
 
 | shift | station moves | g\* changes |
 | --- | --- | --- |
@@ -314,7 +315,7 @@ The correct treatment, and the check that the recorded envelope used it:
 | rise from g\* to the +B level | 0.09417° |
 | quadratic half-width √(2·rise/\|f''\|) | 14.819 days → 29.639 days full |
 | level set `{\|g\| ≤ B}` solved on the DE function | 2019-12-27T07:41:55Z .. 2020-01-25T19:20:25Z, **29.485 days** |
-| recorded v6 `possibleExactRegion` (Swiss) | 2019-12-27T07:43:29Z .. 2020-01-25T19:18:24Z, **29.483 days** |
+| recorded v6 `possibleExactRegion` (Swiss) | **29.483 days** (its ends are not kept, below) |
 
 The DE level set reproduces the recorded Swiss envelope to **0.0025 days** —
 about two minutes at each endpoint. The v6 policy states the level-set rule
@@ -470,9 +471,7 @@ on.** This is a real `boundary-event`, in real data:
 | | value |
 | --- | --- |
 | DE offset from the level at the boundary instant | 2.729e-7° = 0.00098 arcsec = 2.7 s of Uranus motion |
-| Swiss offset | 1.2636e-5° = 0.0455 arcsec = 125 s |
-| recorded v6 crop-boundary orb | 1.2636136148103105e-05° — the same Swiss value |
-| DE − Swiss here | 0.0445 arcsec |
+| Swiss offset, and the recorded v6 crop-boundary orb, which is the same Swiss value | not kept (below) |
 | measured DE-vs-Swiss disagreement over the region | 0.109 arcsec max, n = 913 |
 
 Both instruments place the pass just *after* the boundary, but they disagree
@@ -540,3 +539,48 @@ it.
 | `uranus-d.mjs` | task 6 and the new contract |
 | `run-all.sh` | regenerates everything in order |
 | `raw/*.json` | every figure above, with its denominator and the command that produced it |
+
+## Swiss output removed, 2026-09-28
+
+Under [DECISIONS-2026-09-28 §3](../../../programme/DECISIONS-2026-09-28.md)
+the fixture this analysis read, `src/lib/engine/fixtures/transit-window-independent.json`
+(SHA-256 `db4ddce1d2761ad0ada1ab7aaf456d74d2f79b6b6a3434b1b8f6b9895ad66c3a`),
+left the tree. So did Swiss's own figures for the D station in
+`raw/reproduction.json` and `verify/raw-original/reproduction.json`
+(`independentReproduction.swiss`: its instant, longitude and speed), and
+Swiss's longitude at the turning point in both `decomposition.json` files.
+The differences, margins and other figures this analysis cites stay, as the
+figures above do. `verify/swiss-station.py` and `lib/swiss-longitudes.py`
+regenerate the Swiss figures. The record of everything removed is
+[`../../../../engine-validation/SWISS-OUTPUT-REMOVAL.md`](../../../../engine-validation/SWISS-OUTPUT-REMOVAL.md).
+
+## Swiss output removed, 2026-09-29
+
+Under [DECISIONS-2026-09-29 §2](../../../programme/DECISIONS-2026-09-29.md)
+the rest of Swiss's figures for D left the raw files, because each gave a
+Swiss value back or was one:
+
+- `reproduction.json`: the two components' ends and possible-exact and
+  possible-minimum regions, which were Swiss's hourly scan; Swiss's station
+  minus the target, which with the target beside it gives Swiss's station
+  longitude; and Swiss's own TT − UTC;
+- `decomposition.json`: the DE prototype's and the engine's difference from
+  Swiss at the turning point, which with their longitudes beside them give
+  Swiss's; Swiss's TT − UTC and its difference from 69.184 s; the 6-hourly
+  grid over the second component, which starts at Swiss's component start;
+  and the ends of the recorded possible-exact region in the
+  stationary-geometry audit (its width, 29.483 days, stays);
+- `uranus-d.json`: the component ends it searched between, the crop-boundary
+  orbs, and Swiss's offset from the level at the 2020-01-01 boundary.
+
+The copies under `verify/raw-original/` lost the same. The tables above no
+longer carry Swiss's station instant, its possible-exact region or its
+boundary offset, and the verification scripts no longer hold the component
+ends or the region. Each margin stays: it is the smallest distance of a
+longitude from the target, the figure the analysis rests on.
+
+`reproduce.mjs`, `decompose.mjs`, `uranus-d.mjs` and the `verify/` scripts
+that need the fixture read it from outside the repository, as an argument or
+from `SWISS_WINDOW_FIXTURE`, and refuse a path inside it
+(`lib/backends.mjs`). `run-all.sh` writes their output to a directory outside
+the repository, because it holds Swiss's figures.

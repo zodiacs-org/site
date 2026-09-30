@@ -2,7 +2,12 @@
  * TASK 6 -- attempt the real Uranus D case with the DE prototype backend, and
  * say honestly whether it is resolvable.
  *
- *   node uranus-d.mjs > raw/uranus-d.json
+ *   node uranus-d.mjs <fixture outside the repository> > <outside the repository>/uranus-d.json
+ *
+ * It reads raw/decomposition.json beside it. Its output holds Swiss's own
+ * figures, which left raw/uranus-d.json
+ * (docs/engine-validation/SWISS-OUTPUT-REMOVAL.md): write it outside the
+ * repository.
  *
  * THE HARD RULE, restated so it governs this file.
  *
@@ -30,11 +35,11 @@
  */
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
-import { coreBackend, deBackend, swissLongitudes, KERNEL, REPO, DAY_MS, circular, iso, TT_MINUS_UTC } from './lib/backends.mjs';
+import { coreBackend, deBackend, swissLongitudes, swissWindowFixture, KERNEL, REPO, DAY_MS, circular, iso, TT_MINUS_UTC } from './lib/backends.mjs';
 import { buildLevelProblem, locateTurningPoint } from './lib/astro-harness.mjs';
 import { classifyInterval } from './lib/interval-search.mjs';
 
-const fixture = JSON.parse(readFileSync(`${REPO}/src/lib/engine/fixtures/transit-window-independent.json`, 'utf8'));
+const { fixture } = swissWindowFixture();
 const policy = JSON.parse(readFileSync(`${REPO}/docs/engine-validation/transit-windows/wave24-d-qualified-policy.v6.json`, 'utf8'));
 const decomposition = JSON.parse(readFileSync(new URL('./raw/decomposition.json', import.meta.url), 'utf8'));
 const D = fixture.cases.find((x) => x.id === 'D-Uranus2020');

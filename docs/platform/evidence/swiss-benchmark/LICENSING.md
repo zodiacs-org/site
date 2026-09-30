@@ -30,6 +30,17 @@ Two consequences, both acted on:
    [`../precision-2026-09-20/METADATA-CORRECTION.md`](../precision-2026-09-20/METADATA-CORRECTION.md)
    lists them with the owner decision they wait on (the engine audit,
    data-toolchain-packaging-6). None is used as a fitting target.
+
+   **Decision, 2026-09-28.** The owner decided that Swiss's raw output leaves
+   the current tree and that statistics and SHA-256 digests stay
+   ([`../../programme/DECISIONS-2026-09-28.md`](../../programme/DECISIONS-2026-09-28.md)
+   §3). That day the fixtures and the nutation files were removed, the
+   per-row values in the reports and deltas above were stripped, and the
+   tests moved to NASA JPL Horizons and ERFA.
+   [`../../../engine-validation/SWISS-OUTPUT-REMOVAL.md`](../../../engine-validation/SWISS-OUTPUT-REMOVAL.md)
+   lists every file and field with its SHA-256 and the command that
+   regenerates it. Commit `2ca93d41` still has them; history was not
+   rewritten.
 2. **No Swiss output is used as a fitting target.** Swiss appears here only as
    a *measuring instrument*. Fitting an approximation to Swiss output and then
    presenting the result as independent physical accuracy would be circular,

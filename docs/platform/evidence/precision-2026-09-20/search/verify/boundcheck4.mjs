@@ -1,10 +1,13 @@
-import { coreBackend, circular } from '../lib/backends.mjs';
+// Component 1's ends are Swiss's, from the removed transit-window fixture:
+// give it from outside the repository (lib/backends.mjs, swissWindowFixture).
+import { coreBackend, circular, swissDComponents } from '../lib/backends.mjs';
 import { measureDerivativeBounds } from '../lib/astro-harness.mjs';
 const h=600000;
 const core=await coreBackend();
 function mk(lon,body,target){const c=new Map();return ms=>{const t=Math.round(ms);if(c.has(t))return c.get(t);const y=circular(lon(body,t),target);c.set(t,y);return y};}
 const f=mk(core.lon,'Uranus',32.6940395);
-const a=Date.parse('2019-02-27T03:30:13.194Z'), b=Date.parse('2019-06-24T20:44:23.508Z');
+const [c1] = swissDComponents();
+const a=Date.parse(c1.startUtc), b=Date.parse(c1.endUtc);
 const g=measureDerivativeBounds({f,a,b,samples:400,h});
 console.log('declared 10x bounds  f\'\'\'',g.bounds.thirdDerivativeBound.toExponential(4),' f\'\'\'\'',g.bounds.fourthDerivativeBound.toExponential(4));
 for (const stepMin of [30, 10, 5, 1]){

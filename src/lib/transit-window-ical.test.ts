@@ -2,9 +2,11 @@ import { describe, expect, it } from 'vitest';
 import { calendarTransitWindows, serializeTransitWindows } from './transit-window-ical';
 import type { TransitWindow } from './engine/transit-window-core';
 
+// Shaped on the D case's second period, its ends as the independent
+// references give them (engine/fixtures/transit-window-horizons.json).
 const window = (patch: Partial<TransitWindow> = {}): TransitWindow => ({
   id: 'private-chart-id-must-not-be-exported', transitBody: 'Uranus', natalPoint: 'Sun', aspect: 'conjunction',
-  startUtc: '2019-09-30T09:06:55.823Z', endUtc: '2020-04-10T15:17:01.450Z',
+  startUtc: '2019-09-30T09:06:21.996Z', endUtc: '2020-04-10T15:17:21.363Z',
   startClipped: false, endClipped: false, membershipStatus: 'resolved', exactTopologyStatus: 'uncertain',
   exactPassesUtc: ['2020-01-01T00:00:00.000Z', '2020-01-21T00:00:00.000Z'],
   peak: { kind: 'uncertain', fromUtc: '2019-12-24T00:00:00.000Z', toUtc: '2020-01-29T00:00:00.000Z' }, ...patch,
@@ -15,7 +17,7 @@ const unfold = (text: string) => text.replace(/\r\n /g, '');
 describe('transit itinerary calendar', () => {
   it('exports a genuine positive window without fabricating an uncertain peak', () => {
     const text = unfold(serializeTransitWindows([window()], options));
-    expect(text).toContain('DTSTART:20190930T090655Z\r\nDTEND:20200410T151701Z');
+    expect(text).toContain('DTSTART:20190930T090621Z\r\nDTEND:20200410T151721Z');
     expect(text).toContain('exact timing and number of passes are unresolved');
     expect(text).not.toContain('2020-01-01');
     expect(text).not.toContain('2020-01-21');
@@ -25,7 +27,7 @@ describe('transit itinerary calendar', () => {
   it('filters uncertain boundaries, touches and invalid or sub-second periods', () => {
     expect(calendarTransitWindows([
       window({ membershipStatus: 'uncertain' }), window({ boundaryTouch: true }),
-      window({ endUtc: 'invalid' }), window({ endUtc: '2019-09-30T09:06:56.000Z' }),
+      window({ endUtc: 'invalid' }), window({ endUtc: '2019-09-30T09:06:22.000Z' }),
     ], true)).toEqual([]);
     expect(() => serializeTransitWindows([], options)).toThrow('No resolved positive-duration');
   });

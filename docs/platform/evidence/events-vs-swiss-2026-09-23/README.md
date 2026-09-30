@@ -84,3 +84,15 @@ catalog moved every instant. The same comparison on it is
 new and full moons within 5.2 s of Swiss instead of 11.8 s, eclipse peaks
 within 10.5 s instead of 13.8 s, the slow events as above. This record stays
 as it was measured, on rc.7's catalog.
+
+## Swiss output removed, 2026-09-28
+
+Under [DECISIONS-2026-09-28 §3](../../programme/DECISIONS-2026-09-28.md) the per-event differences left `deltas.json`. Each event keeps
+its id, family and published instant; the site-minus-Swiss seconds
+(`deltaSeconds`, 290 values) and `summary.swissDeltaTSeconds2026` were
+removed, because with the published instants they give Swiss's times back.
+The summary figures stay, and the file records the SHA-256 of what it lost
+under `swissOutputRemoved`. Commit `2ca93d41` still has the values, and
+`tools/compare.py` regenerates them from the catalog dump; keep what it
+writes outside the repository. The record of everything removed is
+[`../../../engine-validation/SWISS-OUTPUT-REMOVAL.md`](../../../engine-validation/SWISS-OUTPUT-REMOVAL.md).

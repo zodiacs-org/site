@@ -4,7 +4,11 @@ that the precision pack carries, read with jplephem at the JDTDB Horizons
 printed for each row. No precession, nutation, light-time or aberration is
 involved on either side, so what differs is the two ephemerides.
 
-  venv/bin/python compare_vectors.py path/to/de440s.bsp > results.json
+  venv/bin/python compare_vectors.py path/to/de440s.bsp > results-2026-09-29.json
+
+results.json is the first run, on the corpus as fetched on 2026-09-23; the
+corpus was re-timed on 2026-09-29 (../../corpora/README.md), and
+results-2026-09-29.json is this script on the responses fetched that day.
 
 DE440s has no Mars body centre (499), only the Mars system barycentre (4), so
 Horizons's 499 is compared with the kernel's 4 and Horizons's own 499 minus 4

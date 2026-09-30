@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { bodyLongitude, computeChart } from './full';
-import independentCases from './fixtures/swiss-eight-cases.fixture.json';
+import independentCases from './fixtures/independent-eight-cases.json';
 import independentPolicy from './fixtures/swiss-eight-cases-policy.json';
 import { angularDifference, expectIndependentChart, expectIndependentTime } from './fixtures/independent-validation.test-helpers';
 import {
@@ -49,18 +49,18 @@ describe('independent natal-to-solar return and chart', () => {
     expectIndependentTime(recent.input.utc, reference.mostRecent);
     // This input exercises both paths but selects the same event; it does not
     // independently distinguish nearest from most-recent selection behavior.
-    // The same-time Swiss chart was acquired at the instant the product
-    // returned up to engine 0.1.1-rc.7; rc.8's observed ΔT moved it 5.4 s,
-    // inside the unchanged independent timing band above. The Swiss chart is
-    // kept as acquired: the returned chart must be the chart at its own
-    // instant, the product's chart at the Swiss chart's instant is held to it,
-    // and the two instants may differ by at most 15 s. Beyond that, acquire a
-    // NEW same-time Swiss chart and retain all original evidence.
+    // The references are NASA JPL Horizons (DE441) positions and node and ERFA
+    // angles and cusps (docs/engine-validation/independent-references/): the
+    // natal Sun, the return and its ±0.1° band, and the chart at the instant
+    // the product returns, taken when the references were built. The returned
+    // chart must be the chart at its own instant, the product's chart at the
+    // reference's instant is held to it, and the two instants may differ by
+    // at most 15 s; beyond that, rebuild the references at the new instant.
     const place = { ...location, houseSystem: 'placidus' as const, timeKnown: true };
     const supplementUtc = new Date(reference.returnedChartUTC);
     for (const chart of [nearest, recent]) {
       expect(chart).toEqual(computeChart({ utc: chart.input.utc, ...place }));
-      expect(Math.abs(chart.input.utc.getTime() - supplementUtc.getTime()), 'Same-time Swiss fixture no longer applies; independent acquisition at the new product timestamp is required')
+      expect(Math.abs(chart.input.utc.getTime() - supplementUtc.getTime()), 'The returned-chart reference no longer applies; rebuild the independent references at the new product timestamp')
         .toBeLessThanOrEqual(15_000);
     }
     expectIndependentChart(computeChart({ utc: supplementUtc, ...place }), reference.returnedChart);

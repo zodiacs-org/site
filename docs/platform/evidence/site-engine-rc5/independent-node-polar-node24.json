@@ -11,81 +11,37 @@
   "policySHA256": "7742cb2bc7cd0932a344ddcb708e45dad07b91cb653ea1f55538c2d73fa18e96",
   "scope": "Three independent node epochs and three polar locations, both requested house systems. Finite corpus, not a complete error bound or human certification.",
   "conventions": "Existing Swiss UT1/TT conversion, tropical geocentric true node and whole houses; product Placidus fallback compared with Swiss whole houses. See docs/engine-validation/swiss-node-polar/README.md.",
-  "nodes": [
-    {
-      "id": "swiss-true-node-2005-03-15",
-      "longitudeErrorDegrees": 0.0016854563243668963,
-      "speedErrorDegreesPerDay": 0.00018287645549314863,
-      "directionCompared": true
-    },
-    {
-      "id": "swiss-true-node-2020-01-01",
-      "longitudeErrorDegrees": 0.0009224309885667026,
-      "speedErrorDegreesPerDay": 0.00004817401729232101,
-      "directionCompared": false
-    },
-    {
-      "id": "swiss-true-node-2026-07-01",
-      "longitudeErrorDegrees": 0.0008453338227809581,
-      "speedErrorDegreesPerDay": 0.00035060403237266446,
-      "directionCompared": true
-    }
-  ],
-  "polar": [
-    {
-      "id": "swiss-polar-tromso",
-      "requestedHouseSystem": "whole",
-      "actualHouseSystem": "whole",
-      "ascendantErrorDegrees": 0.0001874712900189479,
-      "midheavenErrorDegrees": 0.00042600729432251683,
-      "maximumCuspErrorDegrees": 0
-    },
-    {
-      "id": "swiss-polar-tromso",
-      "requestedHouseSystem": "placidus",
-      "actualHouseSystem": "whole",
-      "ascendantErrorDegrees": 0.0001874712900189479,
-      "midheavenErrorDegrees": 0.00042600729432251683,
-      "maximumCuspErrorDegrees": 0
-    },
-    {
-      "id": "swiss-polar-longyearbyen",
-      "requestedHouseSystem": "whole",
-      "actualHouseSystem": "whole",
-      "ascendantErrorDegrees": 0.00020016033363390306,
-      "midheavenErrorDegrees": 0.0004348240686340432,
-      "maximumCuspErrorDegrees": 0
-    },
-    {
-      "id": "swiss-polar-longyearbyen",
-      "requestedHouseSystem": "placidus",
-      "actualHouseSystem": "whole",
-      "ascendantErrorDegrees": 0.00020016033363390306,
-      "midheavenErrorDegrees": 0.0004348240686340432,
-      "maximumCuspErrorDegrees": 0
-    },
-    {
-      "id": "swiss-polar-southern-longyearbyen-mirror",
-      "requestedHouseSystem": "whole",
-      "actualHouseSystem": "whole",
-      "ascendantErrorDegrees": 0.0001512093469955289,
-      "midheavenErrorDegrees": 0.0004348240686340432,
-      "maximumCuspErrorDegrees": 0
-    },
-    {
-      "id": "swiss-polar-southern-longyearbyen-mirror",
-      "requestedHouseSystem": "placidus",
-      "actualHouseSystem": "whole",
-      "ascendantErrorDegrees": 0.0001512093469955289,
-      "midheavenErrorDegrees": 0.0004348240686340432,
-      "maximumCuspErrorDegrees": 0
-    }
-  ],
   "maxima": {
     "nodeLongitudeDegrees": 0.0016854563243668963,
     "nodeSpeedDegreesPerDay": 0.00035060403237266446,
     "polarAngleDegrees": 0.0004348240686340432,
     "wholeCuspDegrees": 0
   },
-  "result": "passed"
+  "result": "passed",
+  "swissOutputRemoved": {
+    "on": "2026-09-28",
+    "under": "docs/platform/programme/DECISIONS-2026-09-28.md §3",
+    "what": "per-case differences from the Swiss node/polar fixture (three node epochs, three polar places in two house systems); the maxima stay",
+    "removed": [
+      {
+        "path": ".nodes",
+        "count": 3,
+        "sha256": "70f1409edb00fcf4c924619e002ec73ba8cc0f97bfa90b4be6329d983d953a11",
+        "bytes": 469
+      },
+      {
+        "path": ".polar",
+        "count": 6,
+        "sha256": "7c141ab7b7843a05fdb8ca6e76f25b3d42e5f2d82f1713d2fe9d8dfb48b0f79e",
+        "bytes": 1312
+      }
+    ],
+    "fileBefore": {
+      "bytes": 3370,
+      "sha256": "fd4c4eaf1f7a465250e153e5be75bdae39dd7cf490534ba6fbc4a6cff9ad8728"
+    },
+    "lastCommitWithTheValues": "2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83",
+    "regenerate": "node scripts/platform-engine-report.mjs at commit 2ca93d4174822e2ba4b8fc3de0db6551d0c5ba83, with the engine version the file names installed",
+    "record": "docs/engine-validation/SWISS-OUTPUT-REMOVAL.md"
+  }
 }
