@@ -1,7 +1,7 @@
 {
   "version": 1,
   "brief": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md (version 2) with the version 1 rules it retains",
-  "asOf": "2026-09-29 (site main and production 15949ec0; engine main b0ddb886; sdk main a95dc0cf)",
+  "asOf": "2026-09-29 (site main 6cc4d477, production dpl_2JtJjuE2bU8CYTBMxKF3kco43qcN; engine main b0ddb886; sdk main a95dc0cf)",
   "denominator": {
     "unit": "working days, from the brief's effort estimates (README.md)",
     "totalWeight": 182.45,
@@ -872,12 +872,14 @@
       "weight": 1,
       "gate": "fixtures for every pattern definition; exact inclusive orb semantics as documented",
       "dependsOn": [],
-      "status": "failed",
-      "release": "merged",
+      "status": "partial",
+      "release": "deployed",
       "evidence": [
-        "engine rc.11 (537ecaf4); independent review 2026-09-28: the exact-orb claim fails on general decimal inputs (finding F-06)"
+        "engine rc.11 (537ecaf4); independent review 2026-09-28: the exact-orb claim fails on general decimal inputs (finding F-06)",
+        "engine rc.13 (f05ea02b) and rc.14 (8deda244): orb decisions exact on binary64 inputs; exact rational oracles report 0 mismatches over 50,600 decimal-grid, 1,497 multi-body and 3,640 declination cases, and 53,168 cases in Python fractions on the packed archive (engine docs/evidence/rc13-20260928/)",
+        "docs/platform/evidence/site-engine-rc14/ (site vendors engine rc.14 since #600, merged as 6cc4d477; production dpl_2JtJjuE2bU8CYTBMxKF3kco43qcN)"
       ],
-      "notes": "fix in progress as rc.13; then site adoption"
+      "notes": "the exact inclusive orb semantics now pass; the gate's fixtures for every aspect-pattern definition wait for the patterns to move into the package (rc.16)"
     },
     {
       "id": "P2.A.aspects.declination-oob",
@@ -888,12 +890,14 @@
       "weight": 0.75,
       "gate": "package functions with fixtures; OOB rule correct against a first-principles computation",
       "dependsOn": [],
-      "status": "merged",
-      "release": "merged",
+      "status": "accepted",
+      "release": "deployed",
       "evidence": [
-        "engine rc.11 (537ecaf4)"
+        "engine rc.11 (537ecaf4): declinationsForBodies, chartDeclinations and findDeclinationAspects with fixtures",
+        "engine rc.14 (zodiacs-org/engine#10, 8deda244): the chart's Sun defines the bound and is never flagged; sun-span.json flags none of the 7,995 solstices in the span; sun-solstices.json and declination-truth.json check the rule against ERFA (IAU 2006/2000A) and DE440s (engine docs/evidence/rc14-20260928/)",
+        "docs/platform/evidence/site-engine-rc14/ (site vendors engine rc.14 since #600, merged as 6cc4d477; production dpl_2JtJjuE2bU8CYTBMxKF3kco43qcN)"
       ],
-      "notes": "Sun flagged out of bounds at about half of solstices (F-07); not adopted by the site"
+      "notes": "the site still computes its own parallels (P2.E.declinations)"
     },
     {
       "id": "P2.A.aspects.declination-accuracy",
@@ -922,12 +926,14 @@
       "weight": 1,
       "gate": "fixtures from a cited worked example; site parity",
       "dependsOn": [],
-      "status": "merged",
-      "release": "merged",
+      "status": "accepted",
+      "release": "deployed",
       "evidence": [
-        "engine rc.12 merged df01d2d7 (PR #8); independent review reproduced every claim"
+        "engine rc.12 merged df01d2d7 (PR #8): the worked example of Estadella, Predictive Astrology, 3rd edition (2019), pp. 84–85, held to the book's own 4.73 s precision (engine docs/evidence/rc12-20260928/sources.md); independent review reproduced every claim",
+        "site parity on rc.14: the site's old code against the package, 1,422 cases identical; 121 mappings across the JavaScript Date range agree to the millisecond (docs/platform/evidence/site-engine-rc14/)",
+        "docs/platform/evidence/site-engine-rc14/ (site vendors engine rc.14 since #600, merged as 6cc4d477; production dpl_2JtJjuE2bU8CYTBMxKF3kco43qcN)"
       ],
-      "notes": "site adoption pending (P2.E.progressions)"
+      "notes": "progressed angles are not computed (no house-progression convention adopted)"
     },
     {
       "id": "P2.A.timing.returns",
@@ -1249,12 +1255,13 @@
       "weight": 0.5,
       "gate": "package function released; the site imports it and its own implementation is removed; parity recorded; deployed",
       "dependsOn": [],
-      "status": "merged",
-      "release": "merged",
+      "status": "accepted",
+      "release": "deployed",
       "evidence": [
-        "engine rc.12 df01d2d7"
-      ],
-      "notes": "site adoption pending"
+        "src/lib/engine/progressions.ts imports progressedInstant and progressedBodies from @zodiacs/engine; the site's own mapping and body computation are removed (#600)",
+        "parity: 1,422 cases identical, 121 mappings to the millisecond (docs/platform/evidence/site-engine-rc14/)",
+        "docs/platform/evidence/site-engine-rc14/ (site vendors engine rc.14 since #600, merged as 6cc4d477; production dpl_2JtJjuE2bU8CYTBMxKF3kco43qcN)"
+      ]
     },
     {
       "id": "P2.E.returns",
@@ -1416,7 +1423,7 @@
       "status": "partial",
       "release": "none",
       "evidence": [],
-      "notes": "packs reproduce byte for byte on Node 20/22/24 (audit 2026-09-28) but no CI job binds artifacts to source yet (F-02)"
+      "notes": "the byte-identical rebuild check runs in the engine's CI: scripts/verify-archive-binding.mjs on every pull request, and --rebuild-all rebuilds every carried archive from its source commit (zodiacs-org/engine#10 and later, green); no CycloneDX SBOM per release and no JSR entry yet"
     },
     {
       "id": "P3.1d",
@@ -1510,7 +1517,7 @@
       "status": "partial",
       "release": "none",
       "evidence": [],
-      "notes": "local stdio MCP adapter 0.1.0-rc.10 with three tools; no remote server, no registry entry"
+      "notes": "local stdio MCP adapter 0.1.0-rc.14 (bundling engine rc.14) with three tools; no remote server, no registry entry"
     },
     {
       "id": "P3.7",
