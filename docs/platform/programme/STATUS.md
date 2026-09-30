@@ -30,7 +30,7 @@ The figure is computed by `node scripts/programme-ledger.mjs --summary` from [`a
   3. published worked examples in tests;
   4. the IERS C04 values in the engine;
   5. the hosted compute API's first version.
-- **Engine rc.15 is in review** as [zodiacs-org/engine#20](https://github.com/zodiacs-org/engine/pull/20): the time basis, Hellenistic timing and the Vedic techniques.
+- **Engine rc.15 is on the engine's `main`** ([zodiacs-org/engine#20](https://github.com/zodiacs-org/engine/pull/20), merged as `93ebae9f`): the time basis, Hellenistic timing and the Vedic techniques.
   - A re-check found living people's birth data in commits of its local history. The history was rebuilt before the first push, so no commit carries it.
   - The archive is `24eeb597…d348`, 190,974 bytes, and every gate passes.
 
@@ -123,12 +123,12 @@ Later, once the site has rebuilt the MCP server on the published engine: the sam
 
 **Site.** `main` = `23dd8cb7` (the daily sky of 2026-09-30, after #600 `6cc4d477`). Production serves it: `dpl_GhqWmtsbsk17JCsKC5ohHUtC5GFd`, READY. The site vendors engine rc.14.
 
-**Engine.** `main` = `b0ddb886` (PR #12). rc.15 is open as #20 on the rebuilt history `104bd5a` (source), `cbad72c` (carrier) and `07ed236` (gate records).
+**Engine.** `main` = `93ebae9f` (PR #20): rc.15 on the rebuilt history `104bd5a` (source), `cbad72c` (carrier) and `07ed236` (gate records). CI passed every job on the PR's head.
 
 | archive | SHA-256 | source | status |
 | --- | --- | --- | --- |
 | rc.14 | `adc9805e…476e` | `03db4bb6`, carried by `b221534` (merge `8deda244`) | the site vendors it; production serves it; npm waits for step 1 |
-| rc.15 | `24eeb597…d348` | `104bd5a`, carried by `cbad72c` | in review (#20) |
+| rc.15 | `24eeb597…d348` | `104bd5a`, carried by `cbad72c` (merge `93ebae9f`) | merged; not adopted |
 
 The earlier archives are as checkpoint 5 lists them. rc.15's three local builds (`3651c525…`, `554ed7ea…`, `bddfb3b7…`) were never pushed; `artifacts/README.md` records them by digest.
 
@@ -140,7 +140,7 @@ The earlier archives are as checkpoint 5 lists them. rc.15's three local builds 
 
 ## In progress
 
-- **Engine rc.15** (#20): CI, then merge. Then the site adopts it. rc.15 grows the site's engine chunk by about 5 KB gzip over its 27,648-byte budget, from the time basis's tables; the adoption has to shrink that or raise the budget with its reason.
+- **The site's adoption of engine rc.15.** rc.15 grows the site's engine chunk by about 5 KB gzip over its 27,648-byte budget, from the time basis's tables; the adoption has to shrink that or raise the budget with its reason.
 - **Full IAU 2000B nutation**, on branch `feature-nutation` for rc.16. Against ERFA over 1800–2200, the nutation's share of every longitude falls from 0.252″ to 0.0037″ at most, and the ascendant's error from 0.824″ to 0.0063″. The planets' own series still dominate their longitudes, at up to about 19″. Against Swiss over 1850–2049 the ascendant is within 0.004″. The Koch ladder's worst case falls from 3.73″ to 0.035″ (F-33, P2.A.house.koch).
 - **The hosted compute API** (P3.3), on branch `compute-api`: six POST endpoints, a privacy negative-control test, budgets, a switch and receipts, per decision §5. Its PR follows this one.
 - **Opaque calendar feed ids** (P1.15), on branch `feed-ids`: the review's findings are fixed; the release waits for step 10.
@@ -149,7 +149,7 @@ The earlier archives are as checkpoint 5 lists them. rc.15's three local builds 
 ## Next
 
 1. Merge this PR and verify production.
-2. Merge engine rc.15, then the site's adoption of it, with the chunk-size decision.
+2. The site's adoption of engine rc.15, with the chunk-size decision.
 3. The compute API PR, then its latency and cost on production.
 4. rc.16: integrate the branches onto rc.15 and review them.
 5. The calendar feeds' release, once step 10 is done.

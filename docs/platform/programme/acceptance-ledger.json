@@ -1,7 +1,7 @@
 {
   "version": 1,
   "brief": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md (version 2) with the version 1 rules it retains",
-  "asOf": "2026-09-29 (site main 6cc4d477, production dpl_2JtJjuE2bU8CYTBMxKF3kco43qcN; engine main b0ddb886; sdk main a95dc0cf)",
+  "asOf": "2026-09-30 (site main 23dd8cb7, production dpl_GhqWmtsbsk17JCsKC5ohHUtC5GFd; engine main 93ebae9f; sdk main a95dc0cf)",
   "denominator": {
     "unit": "working days, from the brief's effort estimates (README.md)",
     "totalWeight": 182.45,
