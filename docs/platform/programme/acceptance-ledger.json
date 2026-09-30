@@ -1485,7 +1485,7 @@
       "status": "partial",
       "release": "none",
       "evidence": [],
-      "notes": "static /api/v1 OpenAPI 3.1 with 11 GET operations and no examples; no compute endpoints"
+      "notes": "static /api/v1 OpenAPI 3.1 with 11 GET operations and no examples, as main serves it. The compute-api branch (P3.3, not merged) adds the six compute endpoints to the same document: each a POST operation with its request and response schemas, the refusals it answers with and an example of each that the handler itself produced, and an OPTIONS operation for the CORS preflight; tests/api/compute-api-openapi.test.ts validates every compute example against its schema and holds the committed examples to the handler, and the whole document validated once against the OpenAPI Initiative's 3.1 schema, outside the repository (docs/platform/evidence/compute-api-2026-09-29/README.md). The GET operations still have no examples, and there are no TypeScript or Python clients and no Markdown twins"
     },
     {
       "id": "P3.5",
