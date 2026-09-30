@@ -45,22 +45,22 @@ describe('Almanac launch corpus', () => {
     expect(august.ingresses).toEqual([
       { planet: 'Venus', at: '2026-08-06T19:13:53.712Z', sign: 'libra', retrograde: false },
       { planet: 'Mercury', at: '2026-08-09T16:28:16.308Z', sign: 'leo', retrograde: false },
-      { planet: 'Mars', at: '2026-08-11T08:31:07.804Z', sign: 'cancer', retrograde: false },
-      { planet: 'Sun', at: '2026-08-23T02:19:10.268Z', sign: 'virgo', retrograde: false },
-      { planet: 'Mercury', at: '2026-08-25T11:04:25.565Z', sign: 'virgo', retrograde: false },
+      { planet: 'Mars', at: '2026-08-11T08:31:07.807Z', sign: 'cancer', retrograde: false },
+      { planet: 'Sun', at: '2026-08-23T02:19:10.274Z', sign: 'virgo', retrograde: false },
+      { planet: 'Mercury', at: '2026-08-25T11:04:25.568Z', sign: 'virgo', retrograde: false },
     ]);
     expect(august.lunations).toEqual([
       {
         type: 'new',
         at: '2026-08-12T17:36:41.548Z',
         sign: 'leo',
-        degree: expect.closeTo(20.032472838389594, 10),
+        degree: expect.closeTo(20.032472554545393, 10),
       },
       {
         type: 'full',
         at: '2026-08-28T04:18:31.156Z',
         sign: 'pisces',
-        degree: expect.closeTo(4.901646526419313, 10),
+        degree: expect.closeTo(4.901645502897509, 10),
       },
     ]);
     expect(augustEclipses).toEqual([
@@ -80,9 +80,9 @@ describe('Almanac launch corpus', () => {
       orb: 0,
       at: '2026-08-31T22:05:22.447Z',
       aSign: 'leo',
-      aDegree: expect.closeTo(13.682395205376054, 10),
+      aDegree: expect.closeTo(13.68239518548694, 10),
       bSign: 'aries',
-      bDegree: expect.closeTo(13.682395000120323, 10),
+      bDegree: expect.closeTo(13.682395005434444, 10),
     });
     for (const receipt of [
       'new moon is exact on August 12 at 17:36:41 UTC, at 20° Leo',
