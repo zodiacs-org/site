@@ -367,8 +367,9 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
   const [storedDate, setStoredDate] = useState('');
   const [houseSystem, setHouseSystem] = useState<HouseSystem>('whole');
   const [chart, setChart] = useState<Chart | null>(null);
-  // Read on a local mean time even when its offset is whole minutes, which
-  // the receipt's `lmt` flag (sub-minute offsets only) does not show.
+  // Read on the birthplace's own local mean time. Since engine rc.15 the
+  // `lmt` flag says so too, whole minutes included; before, it marked only an
+  // offset with seconds, which a whole-minute mean time lacked.
   const [onMeanTime, setOnMeanTime] = useState(false);
   const resultOwnerRef = useRef<ChartResultOwner | null>(null);
   const [receiptExport, setReceiptExport] = useState<ChartReceiptExport | null>(null);

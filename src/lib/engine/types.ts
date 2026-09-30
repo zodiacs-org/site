@@ -1,7 +1,7 @@
 /** Shared chart-engine types. Pure data — no ephemeris imports here. */
 
 export { ENGINE_VERSION } from '@zodiacs/engine/internal/math';
-import type { DeltaT } from '@zodiacs/engine';
+import type { DeltaT, TimeScale } from '@zodiacs/engine';
 
 export type BodyName =
   | 'Sun' | 'Moon' | 'Mercury' | 'Venus' | 'Mars'
@@ -73,6 +73,12 @@ export interface Chart {
   engineVersion: string;
   /** The ΔT (TT − UT1) the engine computed the chart with, and its source (0.1.1-rc.8 on). */
   deltaT?: DeltaT;
+  /**
+   * How the engine read the instant (0.1.1-rc.15 on): from 1972 to 2027-10-02
+   * as UTC, through the leap seconds and IERS UT1 − UTC; otherwise as UT1 with
+   * the ΔT model.
+   */
+  timeScale?: TimeScale;
   /** Caller-verified Moon signs across an unknown-time local birth date.
    * One sign is settled; two are alternatives; absent with no angles is unverified.
    * Presentation metadata only: never changes positions or the share-token wire format. */

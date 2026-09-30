@@ -41,5 +41,6 @@ export function adaptChart(chart: EngineChart, input: ChartInput): Chart {
     flags: [...chart.flags],
     engineVersion: chart.engineVersion,
     deltaT: chart.deltaT,
+    timeScale: chart.timeScale,
   };
 }

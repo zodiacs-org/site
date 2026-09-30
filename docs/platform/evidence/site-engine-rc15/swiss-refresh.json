@@ -1,0 +1,224 @@
+{
+  "schema": "zodiacs-site-engine-swiss-refresh/v1",
+  "recordedIn": "a0fbba814454362316e50f10753d829df88d8071",
+  "purpose": "Rerun of the every-tenth-day comparison and of the ΔT gap over 2100–2199 with the installed engine rc.15; the rc.14 statistics they replace are compared below.",
+  "status": "completed",
+  "engine": {
+    "version": "0.1.1-rc.15",
+    "archive": "vendor/zodiacs-engine-0.1.1-rc.15.tgz",
+    "archiveSHA256": "24eeb597b0157598c0faa26bb615c0cb5dfaaeac0393d62c73fbd37c5da4d348",
+    "astronomyEngineVersion": "2.1.19"
+  },
+  "runtime": {
+    "node": "v22.22.2",
+    "python": "3.11.15",
+    "pyswissephDistributionVersion": "2.10.3.2",
+    "swissLibraryVersion": "2.10.03",
+    "extensionSHA256": "3911614ca013be4520e355306620a3fcd27a39374a960a2063b056cfbd093338",
+    "installation": "The machine's Python 3.11.15 site-packages, the same build rc.14's refresh used; nothing was installed, rebuilt or downloaded."
+  },
+  "ephemeris": {
+    "directory": "<scratch>/swisslab/ephe",
+    "files": [
+      {
+        "name": "sepl_18.se1",
+        "bytes": 484061,
+        "sha256": "ca1393ceab3a44fbc895887cf789c68819ae6a1cbc9b22225872dbe4ccd99a66"
+      },
+      {
+        "name": "semo_18.se1",
+        "bytes": 1304771,
+        "sha256": "1ca07bd67c24374d77226180c20a4f9996cba013697894810518e7eb582ca4f7"
+      }
+    ],
+    "configuration": "docs/platform/evidence/swiss-benchmark/CONFIGURATION.md"
+  },
+  "tools": [
+    {
+      "path": "docs/platform/evidence/swiss-benchmark/tools/multiyear-zodiacs.mjs",
+      "sha256": "50f38b62dcd76720aa36779d0a7b2c89a166df23f6bf607c6fc533c0f458cc9f",
+      "sha256AtBase": "3307fd31562ee220fb1ea671c9001256e1194c0ff117dba1bc7e8262859b0825",
+      "change": "Writes each instant's UT1 and TT as the engine computes the bodies at them, from the engine's own time basis (src/lib/engine/time-basis.mjs); it wrote astronomy-engine's MakeTime reading of the instant, which is no longer the engine's clock from 1972 to 2027-10-02. \"Same UT\" is Swiss at the engine's UT1; \"same TT\" still isolates the positions."
+    },
+    {
+      "path": "docs/platform/evidence/swiss-benchmark/tools/multiyear_swiss.py",
+      "sha256": "bcf231a6d55c659b50f2b5e4ee95ecc2c297e3226dfa2efed566c4ffc2827a05",
+      "sha256AtBase": "bcf231a6d55c659b50f2b5e4ee95ecc2c297e3226dfa2efed566c4ffc2827a05"
+    },
+    {
+      "path": "docs/platform/evidence/swiss-benchmark/tools/deltat-gap-zodiacs.mjs",
+      "sha256": "1e5980e8b7e8f83e13cac9048c120d7c465612599d632c6a120167ad61514919",
+      "sha256AtBase": "1e5980e8b7e8f83e13cac9048c120d7c465612599d632c6a120167ad61514919"
+    },
+    {
+      "path": "docs/platform/evidence/swiss-benchmark/tools/deltat_gap_swiss.py",
+      "sha256": "73ba2e134f2589914161fbadc4822ffe2db1a9a452a6ec1a4fdb82eb3b8aad5c",
+      "sha256AtBase": "73ba2e134f2589914161fbadc4822ffe2db1a9a452a6ec1a4fdb82eb3b8aad5c"
+    }
+  ],
+  "corpus": {
+    "instants": 14610,
+    "cadenceDays": 10,
+    "from": "1800-01-01",
+    "to": "2199-12-31",
+    "timeUTC": "12:00",
+    "comparedBodyCount": 11,
+    "modes": [
+      "sameUt",
+      "sameTt"
+    ],
+    "swissCalculations": 321420,
+    "requestedFlags": 258,
+    "observedBackends": [
+      "SWIEPH"
+    ]
+  },
+  "engineDumps": {
+    "note": "The engine's side of the corpus, engine output only; not committed.",
+    "rc15": "6b13c8a8053fe19d538f777c3a4c1e88ea212532268f97f9bc6a07330a682924",
+    "rc14": "e170e5e75ac55481029a026b5fa9af2b1b3263140b85c4a770ecc7b9cce3261b",
+    "deltaTGap": {
+      "rc15": "86d33435d0b299d52a2c3462927d2cee799d70f572589d7acaed7a192f177f72",
+      "rc14": "71b452ff11dae75c3c4b900a4b13c8904b322242a782e373d35a14449b8366ee"
+    }
+  },
+  "prior": {
+    "path": "docs/platform/evidence/swiss-benchmark/multiyear-1800-2199.json",
+    "fileSHA256": "f56affd82616a6cb694c6715ca57748f2592527cb2c46ce3c33050d533d4ac96",
+    "engine": "0.1.1-rc.14"
+  },
+  "current": {
+    "path": "docs/platform/evidence/swiss-benchmark/multiyear-1800-2199.json",
+    "fileSHA256": "204cbf1e652cb6f8dff9fce0a48f8c6d302c500cca8eb9de08ba1f89e5adbf83",
+    "engine": "0.1.1-rc.15"
+  },
+  "comparison": {
+    "reportedStatisticalValuesCompared": 1914,
+    "reportedStatisticalValuesChanged": 19,
+    "largestChangeArcsec": 0.005,
+    "changed": [
+      {
+        "path": "sameUt.Sun.lon.byEra.1950-1999.p50",
+        "rc14": 0.405,
+        "rc15": 0.404
+      },
+      {
+        "path": "sameUt.Sun.lon.byEra.1950-1999.p95",
+        "rc14": 1.176,
+        "rc15": 1.177
+      },
+      {
+        "path": "sameUt.Sun.lon.byEra.2000-2049.p95",
+        "rc14": 1.238,
+        "rc15": 1.237
+      },
+      {
+        "path": "sameUt.Sun.lon.byEra.2000-2049.max",
+        "rc14": 2.323,
+        "rc15": 2.322
+      },
+      {
+        "path": "sameUt.Moon.lon.byEra.1950-1999.p50",
+        "rc14": 0.629,
+        "rc15": 0.63
+      },
+      {
+        "path": "sameUt.Moon.lon.byEra.1950-1999.p95",
+        "rc14": 1.853,
+        "rc15": 1.857
+      },
+      {
+        "path": "sameUt.Moon.lon.byEra.1950-1999.max",
+        "rc14": 4.951,
+        "rc15": 4.952
+      },
+      {
+        "path": "sameUt.Moon.lon.byEra.2000-2049.p50",
+        "rc14": 0.671,
+        "rc15": 0.669
+      },
+      {
+        "path": "sameUt.Moon.lat.byEra.1950-1999.p95",
+        "rc14": 0.674,
+        "rc15": 0.675
+      },
+      {
+        "path": "sameUt.Moon.lat.byEra.2000-2049.p50",
+        "rc14": 0.325,
+        "rc15": 0.326
+      },
+      {
+        "path": "sameUt.Mercury.lon.byEra.1950-1999.p50",
+        "rc14": 1.51,
+        "rc15": 1.511
+      },
+      {
+        "path": "sameUt.Mercury.lon.byEra.1950-1999.max",
+        "rc14": 12.168,
+        "rc15": 12.169
+      },
+      {
+        "path": "sameUt.Mars.lon.byEra.1950-1999.p50",
+        "rc14": 0.838,
+        "rc15": 0.837
+      },
+      {
+        "path": "sameUt.Mars.lon.byEra.2000-2049.p95",
+        "rc14": 4.95,
+        "rc15": 4.951
+      },
+      {
+        "path": "sameUt.North Node.lon.byEra.1800-1849.p50",
+        "rc14": 5.732,
+        "rc15": 5.727
+      },
+      {
+        "path": "sameUt.North Node.lon.byEra.1950-1999.p95",
+        "rc14": 9.43,
+        "rc15": 9.429
+      },
+      {
+        "path": "sameTt.Moon.lon.byEra.2000-2049.max",
+        "rc14": 3.558,
+        "rc15": 3.557
+      },
+      {
+        "path": "sameTt.North Node.lon.byEra.1800-1849.p50",
+        "rc14": 5.732,
+        "rc15": 5.727
+      },
+      {
+        "path": "sameTt.North Node.lon.byEra.1950-1999.p95",
+        "rc14": 9.43,
+        "rc15": 9.429
+      }
+    ],
+    "metadataChanged": [
+      "engine",
+      "zodiacsDumpSha256"
+    ],
+    "why": "Every changed value is a median, 95th percentile or maximum of the 1950–1999 or 2000–2049 era, where rc.15 reads the instant as UTC, or the North Node's 1800–1849 median, where rc.15 samples the Moon's velocity on a fixed ΔT. The figures the pages quote, over 1800–2026 and for 2150–2199, are unchanged.",
+    "deltaTGap": {
+      "path": "docs/platform/evidence/swiss-benchmark/deltat-gap-2100-2199.json",
+      "changed": [
+        "engine",
+        "zodiacsDumpSha256"
+      ],
+      "note": "Over 2100–2199 rc.15 reads the ΔT model as rc.14 did; every statistic is unchanged."
+    }
+  },
+  "committed": [
+    "docs/platform/evidence/swiss-benchmark/multiyear-1800-2199.json (statistics only)",
+    "docs/platform/evidence/swiss-benchmark/deltat-gap-2100-2199.json (statistics only)",
+    "this file (statistics, hashes and commands only)"
+  ],
+  "notCommitted": [
+    "the Swiss Ephemeris library, its Python binding and its .se1 data files",
+    "any per-instant Swiss value",
+    "the engine dumps (engine output, recorded above by digest)"
+  ],
+  "limits": [
+    "Consistency with Swiss Ephemeris, not observational accuracy: both descend from JPL development ephemerides.",
+    "The corpus is noon UTC every tenth day."
+  ]
+}

@@ -74,7 +74,10 @@ describe('void-of-course Moon', () => {
         }
       }
     }
-  });
+    // About 86,000 longitudes: 3.4 s alone on engine rc.15, where each call
+    // takes about a fifth longer than on rc.14, and past the default 5 s when
+    // the suite runs in parallel.
+  }, 30_000);
 
   it('builds one window per ingress, ending exactly at the ingress and starting at the last aspect', () => {
     const ending = ingresses.filter((i) => i.at > from);

@@ -38,9 +38,10 @@ describe('lunar result presentation', () => {
     const notice = (data: ReturnType<typeof result>) => nodes(LunarReturnResult({ result: data, Wheel }))
       .find((n) => n.type === 'p' && n.props.class === 'notice' && typeof n.props.children === 'string'
         && /local mean time|ran to seconds/.test(n.props.children))?.props.children;
-    // A legal mean time, such as Paris Mean Time, ran to seconds but was set by a time zone.
+    // Since engine rc.15 `lmt` means a local mean time read the wall time; without the
+    // birthplace's own, it was the zone's. A legal mean time such as Paris Mean Time carries no flag.
     const data = result(); data.natalTimeFlags = ['lmt']; const tree = nodes(LunarReturnResult({ result: data, Wheel }));
-    expect(notice(data)).toBe('The birth time is read on a historical clock that ran to seconds.');
+    expect(notice(data)).toBe('The birth time is read on the local mean time its time zone kept then.');
     expect(JSON.stringify(tree.find((n) => n.type === LunarReturnActions)!.props.model)).not.toContain('lmt');
     const wholeMinute = result(); wholeMinute.natalTimeFlags = []; wholeMinute.natalLocalMeanTime = true;
     expect(notice(wholeMinute)).toBe('The birth time is read on the birthplace\'s own local mean time, set by its longitude.');

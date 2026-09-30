@@ -96,8 +96,12 @@ describe('frozen browser inputs for legacy polar migration', () => {
     expect(resolved.summary.angles).toEqual({ asc: current.angles.asc, mc: current.angles.mc });
     // The same rising intersection as the repair. Since 0.1.1-rc.7 the engine
     // builds it on the true obliquity where 0.1.0 used the mean, so the two
-    // agree to 0.16″ here rather than to the last digit.
-    const arcsecondsApart = Math.abs(((resolved.summary.angles.asc - fixture.correctedAsc + 540) % 360) - 180) * 3600;
+    // agree to 0.16″ here rather than to the last digit, on the clock 0.1.0
+    // used. Since rc.15 the engine reads 2001 as UTC through IERS UT1 − UTC,
+    // −0.12 s that day, so the comparison reads the instant as UT1 as 0.1.0 did.
+    const onRecordedClock = computeChart({ utc: new Date(fixture.legacy.utcISO), latitude: frozen.input.latitude,
+      longitude: frozen.input.longitude, houseSystem: 'whole', timeKnown: true, timeScale: 'ut1' });
+    const arcsecondsApart = Math.abs(((onRecordedClock.angles.asc - fixture.correctedAsc + 540) % 360) - 180) * 3600;
     expect(arcsecondsApart).toBeLessThan(0.5);
     expect(resolved.summary.bodies).toEqual(current.bodies.map(({ body, lon, retrograde }) => ({ body, lon, retrograde })));
     expect(resolved.summary.houseSystem).toBe(current.houses.system);

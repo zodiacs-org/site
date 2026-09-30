@@ -133,6 +133,10 @@ owns that page.
   `now` receipt year — refresh yearly with sky.json)
 - `src/data/transits-YYYY-MM.json` ← `node scripts/build-transits.mjs`
   (monthly cron: transits-monthly.yml)
+- `src/lib/engine/time-basis.mjs` ← `node scripts/build-time-basis.mjs`
+  (the engine package's own compiled time basis, for the calendar
+  function's server adapter and its tools, until the package exports one;
+  `--check` runs in CI)
 - `api/_assistant/context.ts` ← `vite-node --script
   scripts/build-assistant-context.mjs` (committed assistant site guide)
 - `api/_assistant/persona.ts` is Fable-authored source; edit it only via Fable.

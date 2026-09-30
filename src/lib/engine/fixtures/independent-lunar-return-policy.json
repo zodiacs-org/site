@@ -50,7 +50,7 @@
   "invalidInputs": "Reject non-finite dates, target longitude, coordinates or steps; require range and chronology checks before iteration. Exact-zero, adjacent-window, 0/360 and antipodal rejection contracts remain separately covered with analytic inputs.",
   "scopeLimit": "The fixed six-hour step and 40-day horizon are directly checked on these cases. Sparse validation does not prove these bounds at every instant from 1800 to 2199."
  },
- "clock": "Every reference is evaluated at the engine's own TT for its instant (UT is the instant; TT = UT + Delta T of the engine's model), so a comparison measures the Moon's position and the event timing it implies, not the two programs' Delta T. UTC cases and nominal-UT1 cases are both read that way; Z is the application's millisecond transport.",
+ "clock": "Every reference is evaluated at the engine's own TT and UT1 for its instant, so a comparison measures the Moon's position and the event timing it implies, not the clock. Since engine 0.1.1-rc.15 an instant from 1972-01-01 to 2027-10-02 is read as UTC, with TT = UTC + (TAI - UTC) + 32.184 s from the IERS leap seconds and UT1 = UTC + (UT1 - UTC); any other instant is read as UT1, with TT = UT1 + Delta T of the engine's model. So the UTC cases here are read as UTC, at the TT - UTC they declare, and the nominal-UT1 cases, which lie outside those years, as UT1; Z is the application's millisecond transport.",
  "productModelDisclosure": {
   "moonPath": "EclipticGeoMoon(MakeTime(date)) calculates the lunar state at that time and transforms it with precession/nutation to true ecliptic/equinox of date. It contains no explicit light-time, aberration or gravitational-deflection pass; the Horizons reference is the apparent position, with all three. Do not describe the two as correction-identical.",
   "gateRationale": "Retain the site's pre-existing 0.15-degree Moon positional acceptance budget as an explicitly chosen conservative engineering contract for each endpoint, allowing lunar-state, correction and clock-model differences. This is not derived from old or new application residuals and is not a provider-published error bound. A natal-derived return contains two endpoint budgets, so its separately enforced timing band uses their 0.30-degree sum; no fixed number of minutes is inferred from the Moon gate.",
@@ -145,7 +145,7 @@
   },
   {
    "id": "L-wrap",
-   "birthTransport": "2000-01-12T18:48:22.487Z",
+   "birthTransport": "2000-01-12T18:48:22.141Z",
    "afterTransport": "2026-03-01T00:00:00.000Z",
    "timeScale": "UTC",
    "expectedBirthTTMinusNominalUTCSeconds": 64.184,
@@ -200,11 +200,16 @@
  "wrapSelection": {
   "selectedCase": "L-wrap",
   "searchAfterUTC": "2000-01-01T00:00:00.000Z",
-  "method": "The first root after 2000-01-01T00:00:00Z of the Horizons Moon's apparent longitude (hourly QUANTITIES 31 table, nine-point Lagrange interpolation, bisection to 1e-9 day), carried to UT on the engine's clock and rounded to the nearest millisecond: python3 tools/build.py select-wrap.",
-  "frozenSelectedBirthUTC": "2000-01-12T18:48:22.487Z",
+  "method": "The first root after 2000-01-01T00:00:00Z of the Horizons Moon's apparent longitude (hourly QUANTITIES 31 table, nine-point Lagrange interpolation, bisection to 1e-9 day), carried to the instant on the engine's clock and rounded to the nearest millisecond: python3 tools/build.py select-wrap.",
+  "frozenSelectedBirthUTC": "2000-01-12T18:48:22.141Z",
   "horizonsResponse": {
    "file": "docs/engine-validation/independent-references/horizons/moon-wrap-selection.txt",
    "sha256": "4c41df246170ca3403366860334ae1a5c8b96344e943ddec50824fe122aca302"
+  },
+  "reselected": {
+   "onUTC": "2026-09-30",
+   "previousFrozenSelectedBirthUTC": "2000-01-12T18:48:22.487Z",
+   "why": "Engine 0.1.1-rc.15 reads an instant in 2000 as UTC, with TT = UTC + 64.184 s from the leap seconds, where rc.14 read it as UT1 with its Delta T model, 63.838 s there. The Horizons root and its response are unchanged; on the new clock the same TT is the instant 0.346 s earlier, so the selection moved with it and the natal Moon stays at 0 degrees."
   }
  },
  "sources": [

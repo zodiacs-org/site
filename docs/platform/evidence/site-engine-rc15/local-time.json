@@ -1,0 +1,24 @@
+{
+ "schema": "zodiacs-site-local-time-comparison/v1",
+ "generatedAt": "2026-09-30T08:42:48.140Z",
+ "node": "v22.22.2",
+ "counts": {
+  "cities": 928,
+  "resolutions": 264455,
+  "sameInstant": 264455,
+  "instantDiffers": 0,
+  "flagsDiffer": 0,
+  "lmtDiffers": 0,
+  "siteOnlyLmt": 0,
+  "packageOnlyLmt": 0,
+  "errors": 0
+ },
+ "zonesSiteOnly": [],
+ "zonesPackageOnly": 0,
+ "examples": {
+  "instant": [],
+  "flags": [],
+  "lmt": [],
+  "error": []
+ }
+}

@@ -256,7 +256,7 @@ exports[`buildSceneModel parity > matches the committed Kahlo scene snapshot 1`]
       "speed": -0.0235344,
     },
   ],
-  "engineVersion": "0.1.1-rc.14",
+  "engineVersion": "0.1.1-rc.15",
   "flags": [
     "lmt",
   ],

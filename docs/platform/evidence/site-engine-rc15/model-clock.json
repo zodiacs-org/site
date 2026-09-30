@@ -1,0 +1,47 @@
+{
+ "schema": "zodiacs-site-model-clock-margins/v1",
+ "generatedAt": "2026-09-30T08:42:45.641Z",
+ "node": "v22.22.2",
+ "sets": {
+  "src/data/eclipses.json peaks": {
+   "times": 24,
+   "inIersSpan": 9,
+   "largestShiftSeconds": 0.186,
+   "minuteWouldChange": [],
+   "dateWouldChange": []
+  },
+  "src/data/ingresses.json window ends": {
+   "times": 920,
+   "inIersSpan": 374,
+   "largestShiftSeconds": 0.689,
+   "minuteWouldChange": [],
+   "dateWouldChange": []
+  },
+  "src/data/aura-moon-ingresses.json": {
+   "times": 481,
+   "inIersSpan": 281,
+   "largestShiftSeconds": 0.196,
+   "minuteWouldChange": [],
+   "dateWouldChange": []
+  },
+  "src/data/sky.json retrograde and shadow ends": {
+   "times": 184,
+   "inIersSpan": 61,
+   "largestShiftSeconds": 0.194,
+   "minuteWouldChange": [
+    {
+     "at": "2026-01-01T00:00:00.000Z",
+     "shiftSeconds": -0.074
+    },
+    {
+     "at": "2026-01-01T00:00:00.000Z",
+     "shiftSeconds": -0.074
+    }
+   ],
+   "dateWouldChange": [
+    "2026-01-01T00:00:00.000Z",
+    "2026-01-01T00:00:00.000Z"
+   ]
+  }
+ }
+}

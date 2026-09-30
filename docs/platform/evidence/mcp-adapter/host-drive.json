@@ -2,7 +2,7 @@
   "type": "named end-user host interoperability: the host launched the adapter and connected to it. Separate from the official-SDK protocol drive, and separate from the model-driven demonstration recorded by hand in host-interop.md.",
   "host": {
     "name": "Claude Code CLI",
-    "version": "2.1.284 (Claude Code)",
+    "version": "2.1.285 (Claude Code)",
     "mechanism": "claude mcp add/list/get/remove, stdio"
   },
   "notTested": [
@@ -16,36 +16,36 @@
   },
   "server": {
     "path": "examples/mcp-server/server.mjs",
-    "sha256": "6df2b010b745efe926afe44ec54a7b5239d709fa2373b20e5aae3cc8dedf0b2a"
+    "sha256": "938c8e62449aa2379d6a480c3e6988aa556ddbb5d784342196cfbc54563a9f76"
   },
-  "completedAt": "2026-09-29T06:59:53.883Z",
+  "completedAt": "2026-09-30T08:08:49.203Z",
   "checks": 7,
   "passed": 7,
   "results": [
     {
       "name": "the host accepts the server through its documented add command",
       "ok": true,
-      "detail": "Added stdio MCP server zodiacs with command: node /tmp/claude-0/-home-user-site/25475091-052a-53d7-9cd4-cf04ce09dc68/scratchpad/site-rc14/examples/mcp-server/server.mjs to local config\nFile modified: /tmp/zodiacs-mcp-host-cfzmn2/claude-config/.claude.json [project: /tmp/zodiacs-mcp-host-cfzmn2/project]"
+      "detail": "Added stdio MCP server zodiacs with command: node /tmp/claude-0/-home-user-site/25475091-052a-53d7-9cd4-cf04ce09dc68/scratchpad/site-rc15/examples/mcp-server/server.mjs to local config\nFile modified: /tmp/zodiacs-mcp-host-cSiD4R/claude-config/.claude.json [project: /tmp/zodiacs-mcp-host-cSiD4R/project]"
     },
     {
       "name": "the registration landed in the throwaway config, not the real one",
       "ok": true,
-      "detail": "Added stdio MCP server zodiacs with command: node /tmp/claude-0/-home-user-site/25475091-052a-53d7-9cd4-cf04ce09dc68/scratchpad/site-rc14/examples/mcp-server/server.mjs to local config\nFile modified: /tmp/zodiacs-mcp-host-cfzmn2/claude-config/.claude.json [project: /tmp/zodiacs-mcp-host-cfzmn2/project]"
+      "detail": "Added stdio MCP server zodiacs with command: node /tmp/claude-0/-home-user-site/25475091-052a-53d7-9cd4-cf04ce09dc68/scratchpad/site-rc15/examples/mcp-server/server.mjs to local config\nFile modified: /tmp/zodiacs-mcp-host-cSiD4R/claude-config/.claude.json [project: /tmp/zodiacs-mcp-host-cSiD4R/project]"
     },
     {
       "name": "the host launches the server and reports it connected",
       "ok": true,
-      "detail": "Checking MCP server health…\n\nzodiacs: node /tmp/claude-0/-home-user-site/25475091-052a-53d7-9cd4-cf04ce09dc68/scratchpad/site-rc14/examples/mcp-server/server.mjs - √ Connected"
+      "detail": "Checking MCP server health…\n\nzodiacs: node /tmp/claude-0/-home-user-site/25475091-052a-53d7-9cd4-cf04ce09dc68/scratchpad/site-rc15/examples/mcp-server/server.mjs - √ Connected"
     },
     {
       "name": "the host reports it as a connected stdio server",
       "ok": true,
-      "detail": "zodiacs:\n  Scope: Local config (private to you in this project)\n  Status: √ Connected\n  Type: stdio\n  Command: node\n  Args: /tmp/claude-0/-home-user-site/25475091-052a-53d7-9cd4-cf04ce09dc68/scratchpad/site-rc14/examples/mcp-server/server.mjs\n  Environment:\n\nTo remove this server, run: claude mcp remove zodiacs -s local"
+      "detail": "zodiacs:\n  Scope: Local config (private to you in this project)\n  Status: √ Connected\n  Type: stdio\n  Command: node\n  Args: /tmp/claude-0/-home-user-site/25475091-052a-53d7-9cd4-cf04ce09dc68/scratchpad/site-rc15/examples/mcp-server/server.mjs\n  Environment:\n\nTo remove this server, run: claude mcp remove zodiacs -s local"
     },
     {
       "name": "the documented removal command removes it",
       "ok": true,
-      "detail": "Removed MCP server zodiacs from local config\nFile modified: /tmp/zodiacs-mcp-host-cfzmn2/claude-config/.claude.json [project: /tmp/zodiacs-mcp-host-cfzmn2/project]"
+      "detail": "Removed MCP server zodiacs from local config\nFile modified: /tmp/zodiacs-mcp-host-cSiD4R/claude-config/.claude.json [project: /tmp/zodiacs-mcp-host-cSiD4R/project]"
     },
     {
       "name": "nothing is left configured after removal",
@@ -56,8 +56,8 @@
       "name": "the machine's own Claude Code configuration is byte-identical throughout",
       "ok": true,
       "detail": {
-        "before": "2ade447a26574d0c80bcf8531d8f9e3e80512533cc3d07c48930d6a4fa47b848",
-        "after": "2ade447a26574d0c80bcf8531d8f9e3e80512533cc3d07c48930d6a4fa47b848"
+        "before": "866f89401af3877c9568482a0528d20fa395dad675fd7924c022b5c125f96823",
+        "after": "866f89401af3877c9568482a0528d20fa395dad675fd7924c022b5c125f96823"
       }
     }
   ]

@@ -14,6 +14,11 @@
  * So each importer either loads scripts/lib/deltat-install.mjs, or installs
  * `deltaT` from @zodiacs/engine/deltat itself, or is listed below with the
  * reason it needs neither.
+ *
+ * Since 0.1.1-rc.15 the engine reads 1972 to 2027-10-02 as UTC through the
+ * leap seconds and IERS UT1 − UTC, which the model cannot express; there the
+ * helper's clock differs from the engine's by up to 0.81 s, and
+ * scripts/lib/deltat-install.mjs says what that leaves.
  */
 import { readdirSync, readFileSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';

@@ -45,7 +45,7 @@ export function LunarReturnResult({ result, Wheel }: LunarReturnResultProps) {
         {model.notes.slice(1).map((note) => <p class="notice" key={note}>{note}</p>)}
         {result.natalLocalMeanTime
           ? <p class="notice">The birth time is read on the birthplace's own local mean time, set by its longitude.</p>
-          : result.natalTimeFlags.includes('lmt') && <p class="notice">The birth time is read on a historical clock that ran to seconds.</p>}
+          : result.natalTimeFlags.includes('lmt') && <p class="notice">The birth time is read on the local mean time its time zone kept then.</p>}
         <h2>Return placements</h2>
         <div class="calc__table-wrap"><table class="calc__table">
           <caption class="sr-only">Lunar return placements</caption>
