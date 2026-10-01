@@ -46,7 +46,7 @@ export type {
 } from './horoscope-program-types';
 
 export const HOROSCOPE_PROGRAM_SCHEMA = 'zodiacs.horoscope-program.v1' as const;
-export const HOROSCOPE_PROGRAM_RENDERER = 'zodiacs.horoscope-program-renderer.v8' as const;
+export const HOROSCOPE_PROGRAM_RENDERER = 'zodiacs.horoscope-program-renderer.v9' as const;
 
 export const HOROSCOPE_WORD_BOUNDS: Record<HoroscopeSurface, { min: number; max: number }> = {
   today: { min: 90, max: 140 },
@@ -212,13 +212,13 @@ const HOUSE_ACTION: Record<number, string> = {
   3: 'clarify the message, route, or conversation closest to hand',
   4: 'protect the conditions that make home and private life workable',
   5: 'give play, romance, or creative work a defined place',
-  6: 'adjust the routine where the daily load repeatedly catches',
+  6: 'choose one change that would make your daily work easier',
   7: 'put the agreement or disagreement directly on the table',
   8: 'name what is shared, owed, private, or difficult to divide',
   9: 'test the larger belief against study, distance, or direct experience',
   10: 'choose what should be visible in your work and public role',
   11: 'ask which friendship, group, or future plan still has momentum',
-  12: 'leave room for rest, closure, and work that happens offstage',
+  12: 'leave time for rest and finishing something privately',
 };
 
 const LOVE_ACTION: Record<number, string> = {
@@ -411,14 +411,14 @@ const HOUSE_DECISION: Record<number, string> = {
   1: 'Decide what you want to begin, and what you are willing to be known for beginning.',
   2: 'Put a number beside the cost, the available capacity, and the value you expect in return.',
   3: 'Write the message plainly, confirm the route, and ask the question that would prevent avoidable confusion.',
-  4: 'Name the condition your home or family life needs before you volunteer another piece of your time.',
+  4: 'Before agreeing to another plan, check what you need at home and make time for it.',
   5: 'Reserve time for the person, pleasure, or creative draft before the calendar treats it as optional.',
   6: 'Remove one repeated snag from the routine before adding another promise to the week.',
   7: 'State the term that is still vague and give the other person a real chance to answer it.',
   8: 'List what is shared, what is owed, and what must remain private before making the next commitment.',
   9: 'Choose the course, journey, publication, or conversation that could test the larger idea in real life.',
   10: 'Choose the finished work, standard, or responsibility you are prepared to make visible.',
-  11: 'Notice which invitation has a real next step and which future plan survives an honest calendar check.',
+  11: 'Choose one friendship or group plan to follow up on, and agree on a time for the next step.',
   12: 'Close one open loop, protect a quiet block, and let unfinished background work stay out of public view.',
 };
 
@@ -944,7 +944,7 @@ function dailySurface(
           catalog.position(daily, moon, sign),
         ),
         passage(
-          `${HOUSE_DECISION[secondaryHouse].replace(/[.]$/u, '')}; ${secondary.body}${secondary.retrograde ? ' retrograde' : ''} in ${cap(secondary.sign)} gives ${HOUSE_THEME[secondaryHouse]} a second vote in the decision.`,
+          `${HOUSE_DECISION[secondaryHouse]} In this reading, ${secondary.body}${secondary.retrograde ? ' retrograde' : ''} in ${cap(secondary.sign)} brings attention to ${HOUSE_THEME[secondaryHouse]}.`,
           catalog.position(daily, secondary, sign),
         ),
       ]

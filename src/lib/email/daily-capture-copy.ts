@@ -1,6 +1,6 @@
 /** English-only Phase 3 capture copy; selected only while the daily flag is complete. */
 export const DAILY_CAPTURE_EN = {
-  kicker: 'Free daily forecast',
+  kicker: 'Free daily horoscope',
   title: 'Your day ahead.',
   personalTitle: 'Your {sign} day ahead.',
   copy: 'Each morning, the day’s reading for your sign — one email, free, unsubscribe anytime.',
@@ -9,10 +9,10 @@ export const DAILY_CAPTURE_EN = {
   signLegend: 'Your Sun sign',
   usingSign: 'Using your Sun sign: {sign}',
   changeSign: 'Change',
-  submit: 'Start my daily',
-  submitting: 'Starting…',
+  submit: 'Email my daily horoscope',
+  submitting: 'Subscribing…',
   success: 'You’re set. If confirmation or a change is needed, check your inbox.',
-  missingSign: 'Pick your sign first — the daily is written per sign.',
+  missingSign: 'Choose your Sun sign so we can send its daily horoscope.',
   invalidEmail: 'That email address doesn’t look complete.',
   error: "Couldn't start the subscription. Please try again.",
   privacy: 'We store your email and your chosen sign — nothing else. Never your birth details.',

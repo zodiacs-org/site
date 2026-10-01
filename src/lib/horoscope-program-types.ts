@@ -122,7 +122,7 @@ export interface HoroscopeProgram {
   policy: {
     id: 'org.zodiacs.horoscope-program.en';
     version: '1.0.0';
-    rendererVersion: 'zodiacs.horoscope-program-renderer.v8';
+    rendererVersion: 'zodiacs.horoscope-program-renderer.v9';
     mode: 'deterministic-template';
     model: null;
   };

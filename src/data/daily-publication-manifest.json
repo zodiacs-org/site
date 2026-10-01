@@ -24,20 +24,20 @@
   },
   "publication": {
     "path": "src/data/daily-publication.json",
-    "canonicalSha256": "5dea85a5140e762dae5a732bb8634fd04ba055e9d7cfe3bcf6f60a8c01cd13b7",
+    "canonicalSha256": "42cceeb8b40ecfe17599a6b8e80020ff53eb298934d2c3aff1b53b5954e35f16",
     "signCount": 12,
     "outputCount": 72
   },
   "generation": {
     "mode": "deterministic-template",
-    "generatorId": "zodiacs.daily-renderer.v1.1",
-    "generatorSha256": "28fc56ed603d42184eb6817a244a6c29a291521aead0a2b656c0b310a90c1520",
+    "generatorId": "zodiacs.daily-renderer.v1.2",
+    "generatorSha256": "889691a0f210c4558e6a9535389be6d5a95f360c48bd3cf2fa8f902814574e3c",
     "model": null,
     "freeformModelOutput": false
   },
   "verification": {
     "verifierId": "zodiacs.daily-verifier.v4",
-    "verifierSha256": "ee24d5adbbc7d8fa5dbb7d8818ee99717392b10888fd7ad5fa07bf40da2aff15",
+    "verifierSha256": "4e4635616d869b874edebccf48324f00b7afda158a389013701925e19f158573",
     "copyVerifierIndependentFromGenerator": true,
     "astronomyAudit": {
       "implementation": "zodiacs.daily-fact-audit.v2",
