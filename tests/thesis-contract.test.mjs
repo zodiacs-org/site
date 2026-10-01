@@ -395,7 +395,7 @@ describe('thesis catalogue icon contract', () => {
 
 describe('thesis Guide cache contract', () => {
   it('loads the quiet Guide shell from a versioned URL', () => {
-    expect(HTML).toContain("import('/assets/assistant-ui.js?v=ask-guide-4')");
+    expect(HTML).toContain("import('/assets/assistant-ui.js?v=icon-guide-5')");
     expect(HTML).not.toContain("import('/assets/assistant-ui.js')");
   });
 });
