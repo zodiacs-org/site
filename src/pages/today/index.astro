@@ -126,9 +126,10 @@ const livingChartCloudSyncEnabled = livingChartEnabled && livingChartSyncEnabled
       <h1 class="display"><EditionText current="Today" editionDate={publication.date} /></h1>
       <p>
         {livingChartEnabled
-          ? 'Start with the zodiac sign you know. Then choose which saved birth chart is yours to get a more personal comparison.'
-          : 'Start with the zodiac sign you know. If you have a saved birth chart, you’ll automatically get a more personal comparison.'}
+          ? 'Compare today’s sky with your birth chart, then save an observation to revisit in your timeline. Without a chart, start with a short reading for your Sun sign.'
+          : 'Compare today’s sky with your most recently saved birth chart. Without a chart, start with a short reading for your Sun sign.'}
       </p>
+      <p class="experience-note">Looking for your sign’s full reading? <a href="/horoscopes/">Open Horoscopes</a>.</p>
     </header>
 
     <!-- The complete no-chart brief is server-rendered. This island owns all

@@ -6,10 +6,10 @@
     "id": "org.zodiacs.daily.en",
     "version": "1.1.0"
   },
-  "rendererVersion": "zodiacs.daily-renderer.v1.1",
+  "rendererVersion": "zodiacs.daily-renderer.v1.2",
   "generation": {
     "mode": "deterministic-template",
-    "generatorId": "zodiacs.daily-renderer.v1.1",
+    "generatorId": "zodiacs.daily-renderer.v1.2",
     "model": null
   },
   "facts": [
@@ -549,10 +549,10 @@
   "signs": [
     {
       "sign": "aries",
-      "headline": "The Moon spends today in your third house — errands, siblings, messages, and the near neighborhood.",
+      "headline": "The Moon spends today in your third house — messages, errands, siblings, and your local community.",
       "lines": [
         {
-          "text": "The Moon spends today in your third house — errands, siblings, messages, and the near neighborhood.",
+          "text": "The Moon spends today in your third house — messages, errands, siblings, and your local community.",
           "receipt": "Moon 11.0° Gemini · house 3",
           "house": 3,
           "body": "Moon",
@@ -565,7 +565,7 @@
           ]
         },
         {
-          "text": "Mercury is working your eighth house — shared money, debts, intimacy, and what gets merged.",
+          "text": "Mercury is working your eighth house — shared finances, debts, intimacy, and trust.",
           "receipt": "Mercury 1.3° Scorpio · house 8",
           "house": 8,
           "body": "Mercury",
@@ -578,7 +578,7 @@
           ]
         },
         {
-          "text": "Mars is pushing on your fifth house — pleasure, romance, children, and what you make for joy.",
+          "text": "Mars is pushing on your fifth house — creativity, romance, children, and enjoyment.",
           "receipt": "Mars 2.0° Leo · house 5",
           "house": 5,
           "body": "Mars",
@@ -591,7 +591,7 @@
           ]
         },
         {
-          "text": "The Sun is moving through your seventh house — partners, the people directly across the table.",
+          "text": "The Sun is moving through your seventh house — partners and one-to-one relationships.",
           "receipt": "Sun 8.3° Libra · house 7",
           "house": 7,
           "body": "Sun",
@@ -605,7 +605,7 @@
         }
       ],
       "todayLine": {
-        "text": "Today may draw more attention to errands, siblings, messages, and the near neighborhood.",
+        "text": "Today may draw more attention to messages, errands, siblings, and your local community.",
         "receipt": "Moon 11.0° gemini · solar house 3",
         "house": 3,
         "body": "Moon",
@@ -619,10 +619,10 @@
     },
     {
       "sign": "taurus",
-      "headline": "The Moon spends today in your second house — money, possessions, and what steadies you.",
+      "headline": "The Moon spends today in your second house — your money, possessions, and priorities.",
       "lines": [
         {
-          "text": "The Moon spends today in your second house — money, possessions, and what steadies you.",
+          "text": "The Moon spends today in your second house — your money, possessions, and priorities.",
           "receipt": "Moon 11.0° Gemini · house 2",
           "house": 2,
           "body": "Moon",
@@ -635,7 +635,7 @@
           ]
         },
         {
-          "text": "Mercury is working your seventh house — partners, the people directly across the table.",
+          "text": "Mercury is working your seventh house — partners and one-to-one relationships.",
           "receipt": "Mercury 1.3° Scorpio · house 7",
           "house": 7,
           "body": "Mercury",
@@ -648,7 +648,7 @@
           ]
         },
         {
-          "text": "Mars is pushing on your fourth house — home, family, and the private floor of your life.",
+          "text": "Mars is pushing on your fourth house — home, family, and your private life.",
           "receipt": "Mars 2.0° Leo · house 4",
           "house": 4,
           "body": "Mars",
@@ -661,7 +661,7 @@
           ]
         },
         {
-          "text": "The Sun is moving through your sixth house — work in progress, health routines, and the daily load.",
+          "text": "The Sun is moving through your sixth house — daily work, health routines, and responsibilities.",
           "receipt": "Sun 8.3° Libra · house 6",
           "house": 6,
           "body": "Sun",
@@ -675,7 +675,7 @@
         }
       ],
       "todayLine": {
-        "text": "Today may draw more attention to money, possessions, and what steadies you.",
+        "text": "Today may draw more attention to your money, possessions, and priorities.",
         "receipt": "Moon 11.0° gemini · solar house 2",
         "house": 2,
         "body": "Moon",
@@ -689,10 +689,10 @@
     },
     {
       "sign": "gemini",
-      "headline": "The Moon spends today in your first house — how you look, start, and come across.",
+      "headline": "The Moon spends today in your first house — your identity and how you present yourself.",
       "lines": [
         {
-          "text": "The Moon spends today in your first house — how you look, start, and come across.",
+          "text": "The Moon spends today in your first house — your identity and how you present yourself.",
           "receipt": "Moon 11.0° Gemini · house 1",
           "house": 1,
           "body": "Moon",
@@ -705,7 +705,7 @@
           ]
         },
         {
-          "text": "Mercury is working your sixth house — work in progress, health routines, and the daily load.",
+          "text": "Mercury is working your sixth house — daily work, health routines, and responsibilities.",
           "receipt": "Mercury 1.3° Scorpio · house 6",
           "house": 6,
           "body": "Mercury",
@@ -718,7 +718,7 @@
           ]
         },
         {
-          "text": "Mars is pushing on your third house — errands, siblings, messages, and the near neighborhood.",
+          "text": "Mars is pushing on your third house — messages, errands, siblings, and your local community.",
           "receipt": "Mars 2.0° Leo · house 3",
           "house": 3,
           "body": "Mars",
@@ -731,7 +731,7 @@
           ]
         },
         {
-          "text": "The Sun is moving through your fifth house — pleasure, romance, children, and what you make for joy.",
+          "text": "The Sun is moving through your fifth house — creativity, romance, children, and enjoyment.",
           "receipt": "Sun 8.3° Libra · house 5",
           "house": 5,
           "body": "Sun",
@@ -745,7 +745,7 @@
         }
       ],
       "todayLine": {
-        "text": "Today may draw more attention to how you look, start, and come across.",
+        "text": "Today may draw more attention to your identity and how you present yourself.",
         "receipt": "Moon 11.0° gemini · solar house 1",
         "house": 1,
         "body": "Moon",
@@ -759,10 +759,10 @@
     },
     {
       "sign": "cancer",
-      "headline": "The Moon spends today in your twelfth house — rest, retreat, and what runs under the surface.",
+      "headline": "The Moon spends today in your twelfth house — rest, privacy, and unfinished matters.",
       "lines": [
         {
-          "text": "The Moon spends today in your twelfth house — rest, retreat, and what runs under the surface.",
+          "text": "The Moon spends today in your twelfth house — rest, privacy, and unfinished matters.",
           "receipt": "Moon 11.0° Gemini · house 12",
           "house": 12,
           "body": "Moon",
@@ -775,7 +775,7 @@
           ]
         },
         {
-          "text": "Mercury is working your fifth house — pleasure, romance, children, and what you make for joy.",
+          "text": "Mercury is working your fifth house — creativity, romance, children, and enjoyment.",
           "receipt": "Mercury 1.3° Scorpio · house 5",
           "house": 5,
           "body": "Mercury",
@@ -788,7 +788,7 @@
           ]
         },
         {
-          "text": "Mars is pushing on your second house — money, possessions, and what steadies you.",
+          "text": "Mars is pushing on your second house — your money, possessions, and priorities.",
           "receipt": "Mars 2.0° Leo · house 2",
           "house": 2,
           "body": "Mars",
@@ -801,7 +801,7 @@
           ]
         },
         {
-          "text": "The Sun is moving through your fourth house — home, family, and the private floor of your life.",
+          "text": "The Sun is moving through your fourth house — home, family, and your private life.",
           "receipt": "Sun 8.3° Libra · house 4",
           "house": 4,
           "body": "Sun",
@@ -815,7 +815,7 @@
         }
       ],
       "todayLine": {
-        "text": "Today may draw more attention to rest, retreat, and what runs under the surface.",
+        "text": "Today may draw more attention to rest, privacy, and unfinished matters.",
         "receipt": "Moon 11.0° gemini · solar house 12",
         "house": 12,
         "body": "Moon",
@@ -829,10 +829,10 @@
     },
     {
       "sign": "leo",
-      "headline": "The Moon spends today in your eleventh house — friends, groups, and the future you are pointing at.",
+      "headline": "The Moon spends today in your eleventh house — friends, groups, and plans for the future.",
       "lines": [
         {
-          "text": "The Moon spends today in your eleventh house — friends, groups, and the future you are pointing at.",
+          "text": "The Moon spends today in your eleventh house — friends, groups, and plans for the future.",
           "receipt": "Moon 11.0° Gemini · house 11",
           "house": 11,
           "body": "Moon",
@@ -845,7 +845,7 @@
           ]
         },
         {
-          "text": "Mercury is working your fourth house — home, family, and the private floor of your life.",
+          "text": "Mercury is working your fourth house — home, family, and your private life.",
           "receipt": "Mercury 1.3° Scorpio · house 4",
           "house": 4,
           "body": "Mercury",
@@ -858,7 +858,7 @@
           ]
         },
         {
-          "text": "Mars is pushing on your first house — how you look, start, and come across.",
+          "text": "Mars is pushing on your first house — your identity and how you present yourself.",
           "receipt": "Mars 2.0° Leo · house 1",
           "house": 1,
           "body": "Mars",
@@ -871,7 +871,7 @@
           ]
         },
         {
-          "text": "The Sun is moving through your third house — errands, siblings, messages, and the near neighborhood.",
+          "text": "The Sun is moving through your third house — messages, errands, siblings, and your local community.",
           "receipt": "Sun 8.3° Libra · house 3",
           "house": 3,
           "body": "Sun",
@@ -885,7 +885,7 @@
         }
       ],
       "todayLine": {
-        "text": "Today may draw more attention to friends, groups, and the future you are pointing at.",
+        "text": "Today may draw more attention to friends, groups, and plans for the future.",
         "receipt": "Moon 11.0° gemini · solar house 11",
         "house": 11,
         "body": "Moon",
@@ -899,10 +899,10 @@
     },
     {
       "sign": "virgo",
-      "headline": "The Moon spends today in your tenth house — career, reputation, and what the public sees.",
+      "headline": "The Moon spends today in your tenth house — career, reputation, and public responsibilities.",
       "lines": [
         {
-          "text": "The Moon spends today in your tenth house — career, reputation, and what the public sees.",
+          "text": "The Moon spends today in your tenth house — career, reputation, and public responsibilities.",
           "receipt": "Moon 11.0° Gemini · house 10",
           "house": 10,
           "body": "Moon",
@@ -915,7 +915,7 @@
           ]
         },
         {
-          "text": "Mercury is working your third house — errands, siblings, messages, and the near neighborhood.",
+          "text": "Mercury is working your third house — messages, errands, siblings, and your local community.",
           "receipt": "Mercury 1.3° Scorpio · house 3",
           "house": 3,
           "body": "Mercury",
@@ -928,7 +928,7 @@
           ]
         },
         {
-          "text": "Mars is pushing on your twelfth house — rest, retreat, and what runs under the surface.",
+          "text": "Mars is pushing on your twelfth house — rest, privacy, and unfinished matters.",
           "receipt": "Mars 2.0° Leo · house 12",
           "house": 12,
           "body": "Mars",
@@ -941,7 +941,7 @@
           ]
         },
         {
-          "text": "The Sun is moving through your second house — money, possessions, and what steadies you.",
+          "text": "The Sun is moving through your second house — your money, possessions, and priorities.",
           "receipt": "Sun 8.3° Libra · house 2",
           "house": 2,
           "body": "Sun",
@@ -955,7 +955,7 @@
         }
       ],
       "todayLine": {
-        "text": "Today may draw more attention to career, reputation, and what the public sees.",
+        "text": "Today may draw more attention to career, reputation, and public responsibilities.",
         "receipt": "Moon 11.0° gemini · solar house 10",
         "house": 10,
         "body": "Moon",
@@ -969,10 +969,10 @@
     },
     {
       "sign": "libra",
-      "headline": "The Moon spends today in your ninth house — travel, study, belief, and the longer view.",
+      "headline": "The Moon spends today in your ninth house — travel, learning, beliefs, and long-term plans.",
       "lines": [
         {
-          "text": "The Moon spends today in your ninth house — travel, study, belief, and the longer view.",
+          "text": "The Moon spends today in your ninth house — travel, learning, beliefs, and long-term plans.",
           "receipt": "Moon 11.0° Gemini · house 9",
           "house": 9,
           "body": "Moon",
@@ -985,7 +985,7 @@
           ]
         },
         {
-          "text": "Mercury is working your second house — money, possessions, and what steadies you.",
+          "text": "Mercury is working your second house — your money, possessions, and priorities.",
           "receipt": "Mercury 1.3° Scorpio · house 2",
           "house": 2,
           "body": "Mercury",
@@ -998,7 +998,7 @@
           ]
         },
         {
-          "text": "Mars is pushing on your eleventh house — friends, groups, and the future you are pointing at.",
+          "text": "Mars is pushing on your eleventh house — friends, groups, and plans for the future.",
           "receipt": "Mars 2.0° Leo · house 11",
           "house": 11,
           "body": "Mars",
@@ -1011,7 +1011,7 @@
           ]
         },
         {
-          "text": "The Sun is moving through your first house — how you look, start, and come across.",
+          "text": "The Sun is moving through your first house — your identity and how you present yourself.",
           "receipt": "Sun 8.3° Libra · house 1",
           "house": 1,
           "body": "Sun",
@@ -1025,7 +1025,7 @@
         }
       ],
       "todayLine": {
-        "text": "Today may draw more attention to travel, study, belief, and the longer view.",
+        "text": "Today may draw more attention to travel, learning, beliefs, and long-term plans.",
         "receipt": "Moon 11.0° gemini · solar house 9",
         "house": 9,
         "body": "Moon",
@@ -1039,10 +1039,10 @@
     },
     {
       "sign": "scorpio",
-      "headline": "The Moon spends today in your eighth house — shared money, debts, intimacy, and what gets merged.",
+      "headline": "The Moon spends today in your eighth house — shared finances, debts, intimacy, and trust.",
       "lines": [
         {
-          "text": "The Moon spends today in your eighth house — shared money, debts, intimacy, and what gets merged.",
+          "text": "The Moon spends today in your eighth house — shared finances, debts, intimacy, and trust.",
           "receipt": "Moon 11.0° Gemini · house 8",
           "house": 8,
           "body": "Moon",
@@ -1055,7 +1055,7 @@
           ]
         },
         {
-          "text": "Mercury is working your first house — how you look, start, and come across.",
+          "text": "Mercury is working your first house — your identity and how you present yourself.",
           "receipt": "Mercury 1.3° Scorpio · house 1",
           "house": 1,
           "body": "Mercury",
@@ -1068,7 +1068,7 @@
           ]
         },
         {
-          "text": "Mars is pushing on your tenth house — career, reputation, and what the public sees.",
+          "text": "Mars is pushing on your tenth house — career, reputation, and public responsibilities.",
           "receipt": "Mars 2.0° Leo · house 10",
           "house": 10,
           "body": "Mars",
@@ -1081,7 +1081,7 @@
           ]
         },
         {
-          "text": "The Sun is moving through your twelfth house — rest, retreat, and what runs under the surface.",
+          "text": "The Sun is moving through your twelfth house — rest, privacy, and unfinished matters.",
           "receipt": "Sun 8.3° Libra · house 12",
           "house": 12,
           "body": "Sun",
@@ -1095,7 +1095,7 @@
         }
       ],
       "todayLine": {
-        "text": "Today may draw more attention to shared money, debts, intimacy, and what gets merged.",
+        "text": "Today may draw more attention to shared finances, debts, intimacy, and trust.",
         "receipt": "Moon 11.0° gemini · solar house 8",
         "house": 8,
         "body": "Moon",
@@ -1109,10 +1109,10 @@
     },
     {
       "sign": "sagittarius",
-      "headline": "The Moon spends today in your seventh house — partners, the people directly across the table.",
+      "headline": "The Moon spends today in your seventh house — partners and one-to-one relationships.",
       "lines": [
         {
-          "text": "The Moon spends today in your seventh house — partners, the people directly across the table.",
+          "text": "The Moon spends today in your seventh house — partners and one-to-one relationships.",
           "receipt": "Moon 11.0° Gemini · house 7",
           "house": 7,
           "body": "Moon",
@@ -1125,7 +1125,7 @@
           ]
         },
         {
-          "text": "Mercury is working your twelfth house — rest, retreat, and what runs under the surface.",
+          "text": "Mercury is working your twelfth house — rest, privacy, and unfinished matters.",
           "receipt": "Mercury 1.3° Scorpio · house 12",
           "house": 12,
           "body": "Mercury",
@@ -1138,7 +1138,7 @@
           ]
         },
         {
-          "text": "Mars is pushing on your ninth house — travel, study, belief, and the longer view.",
+          "text": "Mars is pushing on your ninth house — travel, learning, beliefs, and long-term plans.",
           "receipt": "Mars 2.0° Leo · house 9",
           "house": 9,
           "body": "Mars",
@@ -1151,7 +1151,7 @@
           ]
         },
         {
-          "text": "The Sun is moving through your eleventh house — friends, groups, and the future you are pointing at.",
+          "text": "The Sun is moving through your eleventh house — friends, groups, and plans for the future.",
           "receipt": "Sun 8.3° Libra · house 11",
           "house": 11,
           "body": "Sun",
@@ -1165,7 +1165,7 @@
         }
       ],
       "todayLine": {
-        "text": "Today may draw more attention to partners, the people directly across the table.",
+        "text": "Today may draw more attention to partners and one-to-one relationships.",
         "receipt": "Moon 11.0° gemini · solar house 7",
         "house": 7,
         "body": "Moon",
@@ -1179,10 +1179,10 @@
     },
     {
       "sign": "capricorn",
-      "headline": "The Moon spends today in your sixth house — work in progress, health routines, and the daily load.",
+      "headline": "The Moon spends today in your sixth house — daily work, health routines, and responsibilities.",
       "lines": [
         {
-          "text": "The Moon spends today in your sixth house — work in progress, health routines, and the daily load.",
+          "text": "The Moon spends today in your sixth house — daily work, health routines, and responsibilities.",
           "receipt": "Moon 11.0° Gemini · house 6",
           "house": 6,
           "body": "Moon",
@@ -1195,7 +1195,7 @@
           ]
         },
         {
-          "text": "Mercury is working your eleventh house — friends, groups, and the future you are pointing at.",
+          "text": "Mercury is working your eleventh house — friends, groups, and plans for the future.",
           "receipt": "Mercury 1.3° Scorpio · house 11",
           "house": 11,
           "body": "Mercury",
@@ -1208,7 +1208,7 @@
           ]
         },
         {
-          "text": "Mars is pushing on your eighth house — shared money, debts, intimacy, and what gets merged.",
+          "text": "Mars is pushing on your eighth house — shared finances, debts, intimacy, and trust.",
           "receipt": "Mars 2.0° Leo · house 8",
           "house": 8,
           "body": "Mars",
@@ -1221,7 +1221,7 @@
           ]
         },
         {
-          "text": "The Sun is moving through your tenth house — career, reputation, and what the public sees.",
+          "text": "The Sun is moving through your tenth house — career, reputation, and public responsibilities.",
           "receipt": "Sun 8.3° Libra · house 10",
           "house": 10,
           "body": "Sun",
@@ -1235,7 +1235,7 @@
         }
       ],
       "todayLine": {
-        "text": "Today may draw more attention to work in progress, health routines, and the daily load.",
+        "text": "Today may draw more attention to daily work, health routines, and responsibilities.",
         "receipt": "Moon 11.0° gemini · solar house 6",
         "house": 6,
         "body": "Moon",
@@ -1249,10 +1249,10 @@
     },
     {
       "sign": "aquarius",
-      "headline": "The Moon spends today in your fifth house — pleasure, romance, children, and what you make for joy.",
+      "headline": "The Moon spends today in your fifth house — creativity, romance, children, and enjoyment.",
       "lines": [
         {
-          "text": "The Moon spends today in your fifth house — pleasure, romance, children, and what you make for joy.",
+          "text": "The Moon spends today in your fifth house — creativity, romance, children, and enjoyment.",
           "receipt": "Moon 11.0° Gemini · house 5",
           "house": 5,
           "body": "Moon",
@@ -1265,7 +1265,7 @@
           ]
         },
         {
-          "text": "Mercury is working your tenth house — career, reputation, and what the public sees.",
+          "text": "Mercury is working your tenth house — career, reputation, and public responsibilities.",
           "receipt": "Mercury 1.3° Scorpio · house 10",
           "house": 10,
           "body": "Mercury",
@@ -1278,7 +1278,7 @@
           ]
         },
         {
-          "text": "Mars is pushing on your seventh house — partners, the people directly across the table.",
+          "text": "Mars is pushing on your seventh house — partners and one-to-one relationships.",
           "receipt": "Mars 2.0° Leo · house 7",
           "house": 7,
           "body": "Mars",
@@ -1291,7 +1291,7 @@
           ]
         },
         {
-          "text": "The Sun is moving through your ninth house — travel, study, belief, and the longer view.",
+          "text": "The Sun is moving through your ninth house — travel, learning, beliefs, and long-term plans.",
           "receipt": "Sun 8.3° Libra · house 9",
           "house": 9,
           "body": "Sun",
@@ -1305,7 +1305,7 @@
         }
       ],
       "todayLine": {
-        "text": "Today may draw more attention to pleasure, romance, children, and what you make for joy.",
+        "text": "Today may draw more attention to creativity, romance, children, and enjoyment.",
         "receipt": "Moon 11.0° gemini · solar house 5",
         "house": 5,
         "body": "Moon",
@@ -1319,10 +1319,10 @@
     },
     {
       "sign": "pisces",
-      "headline": "The Moon spends today in your fourth house — home, family, and the private floor of your life.",
+      "headline": "The Moon spends today in your fourth house — home, family, and your private life.",
       "lines": [
         {
-          "text": "The Moon spends today in your fourth house — home, family, and the private floor of your life.",
+          "text": "The Moon spends today in your fourth house — home, family, and your private life.",
           "receipt": "Moon 11.0° Gemini · house 4",
           "house": 4,
           "body": "Moon",
@@ -1335,7 +1335,7 @@
           ]
         },
         {
-          "text": "Mercury is working your ninth house — travel, study, belief, and the longer view.",
+          "text": "Mercury is working your ninth house — travel, learning, beliefs, and long-term plans.",
           "receipt": "Mercury 1.3° Scorpio · house 9",
           "house": 9,
           "body": "Mercury",
@@ -1348,7 +1348,7 @@
           ]
         },
         {
-          "text": "Mars is pushing on your sixth house — work in progress, health routines, and the daily load.",
+          "text": "Mars is pushing on your sixth house — daily work, health routines, and responsibilities.",
           "receipt": "Mars 2.0° Leo · house 6",
           "house": 6,
           "body": "Mars",
@@ -1361,7 +1361,7 @@
           ]
         },
         {
-          "text": "The Sun is moving through your eighth house — shared money, debts, intimacy, and what gets merged.",
+          "text": "The Sun is moving through your eighth house — shared finances, debts, intimacy, and trust.",
           "receipt": "Sun 8.3° Libra · house 8",
           "house": 8,
           "body": "Sun",
@@ -1375,7 +1375,7 @@
         }
       ],
       "todayLine": {
-        "text": "Today may draw more attention to home, family, and the private floor of your life.",
+        "text": "Today may draw more attention to home, family, and your private life.",
         "receipt": "Moon 11.0° gemini · solar house 4",
         "house": 4,
         "body": "Moon",

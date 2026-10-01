@@ -175,7 +175,7 @@ export default function LivingChartTimeline({
         <header class="living-chart__head">
           <div>
             <h2 id="living-chart-heading" ref={headingRef} tabIndex={-1}>Living Chart</h2>
-            <p>Your forecasts and the moments you chose to remember, together in one timeline.</p>
+            <p>Your saved readings and observations, in date order. Open Today for a new reading, then return here to reflect on what you noticed.</p>
           </div>
           {syncEnabled && (
             <div class="living-chart__sync" data-living-chart-sync={syncStatus.phase}>
