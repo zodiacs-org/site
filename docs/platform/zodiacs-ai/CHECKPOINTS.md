@@ -73,6 +73,7 @@ host-account testing, public review and publication.
 | `npm run check` | Pass; zero errors/warnings, 18 existing hints |
 | `npm test -- --maxWorkers=3 --minWorkers=1` | 6,377 pass, four skipped, zero failures |
 | Existing Phase 1 browser acceptance | Refreshed; 18/18 exact-width captures pass |
+| Existing terminal/Registry navigation browser drive | Pass; stale centre assertion updated for the approved profile shortcut, with target and overlap checks |
 | Claims ledger and consumer boundary | Pass with new adapter coverage and evidence |
 | `git diff --check`; engine/sdk working trees | Clear; engine/sdk unchanged |
 
@@ -82,6 +83,13 @@ the latest approved navigation change from main (`450f0fd9`). Regenerating the a
 new developer route also resolves the stale generated-context failure observed
 during onboarding. Privacy-date and route-count assertions now reflect the
 reviewed change; no accuracy or browser privacy gate was removed.
+
+The first GitHub run passed 18 jobs, then exposed a second stale browser
+assertion: the mobile lockup was tested against the old two-action bar. The
+approved #606 profile shortcut adds a third action. The test now checks a 44px
+profile target, its accessible label/destination, nonoverlapping actions, and
+centering in the space between menu and profile. The complete terminal drive
+passes locally. Navigation source and styling are unchanged.
 
 `evidence/evaluation.json` includes local timing and explicitly excludes LLM
 routing, accuracy-reference, load, production cost and real-host acceptance.

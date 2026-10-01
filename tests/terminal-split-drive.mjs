@@ -376,6 +376,8 @@ try {
       const chipStyle = chip ? getComputedStyle(chip) : null;
       const burger = nav.querySelector('.wnav__burger');
       const burgerStyle = burger ? getComputedStyle(burger) : null;
+      const profile = nav.querySelector('.wnav__profile-shortcut');
+      const profileBox = profile?.getBoundingClientRect();
       return {
         overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
         left: box.left,
@@ -384,6 +386,14 @@ try {
         width: box.width,
         searchRight: search?.getBoundingClientRect().right ?? 0,
         burgerLeft: burger?.getBoundingClientRect().left ?? 0,
+        burgerRight: burger?.getBoundingClientRect().right ?? 0,
+        profileLeft: profileBox?.left ?? 0,
+        profileRight: profileBox?.right ?? 0,
+        profileWidth: profileBox?.width ?? 0,
+        profileHeight: profileBox?.height ?? 0,
+        profileHref: profile?.getAttribute('href'),
+        profileLabel: profile?.getAttribute('aria-label'),
+        searchLeft: search?.getBoundingClientRect().left ?? 0,
         markLeft: nav.querySelector('.wnav__mark')?.getBoundingClientRect().left ?? 0,
         chipLeft: chip?.getBoundingClientRect().left ?? 0,
         chipRight: chip?.getBoundingClientRect().right ?? 0,
@@ -408,7 +418,9 @@ try {
     assert.ok(compactNav.overflow <= 0, 'the 320px navigation does not create horizontal overflow');
     // Phones: the navigation is a full-width bar flush to the top edge, in the
     // same glass: the menu on the left, the ZODIACS | ASTROFOLIO lockup on the
-    // centre line, search on the right.
+    // available centre line, profile and search on the right. The profile
+    // shortcut added in #606 reserves another 44px action track; the lockup
+    // centres in the remaining space, rather than over that action.
     assert.ok(compactNav.left === 0 && compactNav.right === 320, `the phone bar spans the viewport (${compactNav.left}–${compactNav.right})`);
     assert.equal(Math.round(compactNav.top), 0, 'the phone bar sits at the top edge');
     assert.notEqual(compactNav.navBackground, 'rgba(0, 0, 0, 0)', 'the navigation keeps its liquid-glass tint');
@@ -417,7 +429,14 @@ try {
     assert.equal(compactNav.navRadius, '0px', 'the phone bar is flat, not a capsule');
     assert.ok(compactNav.burgerLeft >= 0 && compactNav.burgerLeft <= 8, `the menu opens the bar on the left (${compactNav.burgerLeft})`);
     assert.ok(compactNav.searchRight >= 312 && compactNav.searchRight <= 320, `search closes the bar on the right (${compactNav.searchRight})`);
-    assert.ok(Math.abs((compactNav.markLeft + compactNav.chipRight) / 2 - 160) <= 1, `ZODIACS | ASTROFOLIO sits on the centre line (${compactNav.markLeft}–${compactNav.chipRight})`);
+    assert.equal(compactNav.profileWidth, 44, 'profile keeps a 44px touch target');
+    assert.equal(compactNav.profileHeight, 44, 'profile keeps a 44px touch target');
+    assert.equal(compactNav.profileHref, '/profile/');
+    assert.equal(compactNav.profileLabel, 'Your profile');
+    assert.ok(compactNav.profileRight <= compactNav.searchLeft, 'profile and search do not overlap');
+    assert.ok(compactNav.markLeft >= compactNav.burgerRight && compactNav.chipRight <= compactNav.profileLeft, 'the lockup does not overlap the menu or profile');
+    const availableCentre = (compactNav.burgerRight + compactNav.profileLeft) / 2;
+    assert.ok(Math.abs((compactNav.markLeft + compactNav.chipRight) / 2 - availableCentre) <= 1, `ZODIACS | ASTROFOLIO centres between the menu and profile (${compactNav.markLeft}–${compactNav.chipRight})`);
     assert.equal(compactNav.markName, compactNav.chipFont, 'both words share one size');
     assert.deepEqual(compactNav.divider, { content: '""', width: '1px', height: '15px' }, 'a short hairline divides the two words');
     assert.equal(compactNav.middleLine, '0', 'the menu is a bare two-line mark');

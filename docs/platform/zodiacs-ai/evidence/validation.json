@@ -63,6 +63,11 @@
       "outputSchemas": "passed",
       "nativeCalendarLaunch": "passed",
       "uiResource": "passed"
+    },
+    "existingTerminalNavigationBrowserDrive": {
+      "passed": true,
+      "staleProfileShortcutAssertionUpdated": true,
+      "siteNavigationChanged": false
     }
   },
   "productionEnabled": false,
