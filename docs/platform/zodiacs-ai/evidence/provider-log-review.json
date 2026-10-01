@@ -20,7 +20,7 @@
   "fluidCompute": true,
   "region": "iad1",
   "observabilityEntitlementPresent": true,
-  "retentionPlusEntitlementMeaningUnconfirmed": true,
+  "retentionPlusEntitlementMeaningUnconfirmed": false,
   "documentedRetentionDays": {
     "pro": 1,
     "proWithObservabilityPlus": 30
@@ -29,5 +29,28 @@
     "https://vercel.com/docs/logs/runtime",
     "https://vercel.com/docs/observability/observability-plus"
   ],
-  "limitation": "No request-body canary observed; this does not prove absence in every host/provider layer or guarantee provider deletion."
+  "limitation": "No request-body canary observed; this does not prove absence in every host/provider layer or guarantee provider deletion.",
+  "observabilityPlusEnabledForProject": true,
+  "confirmedRuntimeRetentionDays": 30,
+  "dashboardReview": {
+    "date": "2026-10-02",
+    "authentication": "Existing account; owner completed required browser sign-in",
+    "entitlementEvidence": "Team Billing Observability Plus enabled; Manage projects lists zodiacs-org checked",
+    "previewFunction": {
+      "route": "/api/compatibility",
+      "range": "Last 12 hours",
+      "invocations": 209,
+      "averageDurationMs": 230,
+      "p75DurationMs": 270,
+      "p95DurationMs": 382,
+      "p75ActiveCpuMs": 153,
+      "averageMemoryMb": 221,
+      "p75TimeToFirstByteMs": 398,
+      "coldStartPercent": 6.2,
+      "scope": "All preview deployments and compatibility dispatches in the selected interval; includes negative and rollback tests, not isolated successful MCP completions"
+    },
+    "billingGranularity": "Project totals with region/runtime/type grouping; no per-request, deployment or cold/warm completion billing attribution on the inspected Usage screen",
+    "perCompletionCostMeasured": false,
+    "accountChangesMade": false
+  }
 }

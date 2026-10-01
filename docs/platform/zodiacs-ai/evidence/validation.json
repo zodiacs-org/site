@@ -143,9 +143,11 @@
       "runnerStallsSetAsideByExistingPolicy": 1
     },
     "finalSiteGate": {
-      "status": "required after reviewed Linux home baselines commit",
+      "status": "Exact-head rerun required after compatible serializer security patch",
       "precedingRun": "https://github.com/zodiacs-org/site/actions/runs/36896802116",
-      "precedingFailure": "Only three intentional homepage visual height differences; full Lighthouse skipped"
+      "precedingFailure": "Only three intentional homepage visual height differences; full Lighthouse skipped",
+      "additionalPrecedingRun": "https://github.com/zodiacs-org/site/actions/runs/36904296920",
+      "additionalPrecedingFailure": "Production devalue 5.9.2 security advisories; patched to 5.9.4 without weakening audit thresholds"
     },
     "httpsStaging": {
       "passed": 12,
@@ -159,13 +161,24 @@
       "evidence": "host-readiness.json",
       "cspEnforcedRetest": true,
       "duplicateHostCalendarSelectionObserved": true
+    },
+    "productionDependencyAudit": {
+      "passed": true,
+      "vulnerabilities": 0,
+      "devalue": "5.9.4",
+      "change": "Compatible patch; deterministic daily generator provenance hash refreshed because it includes package-lock.json"
+    },
+    "fullDependencyAudit": {
+      "highOrCritical": 0,
+      "moderate": 2,
+      "scope": "Existing Vitest 3 development-only advisory; existing high-severity CI threshold passes; no forced major upgrade"
     }
   },
   "productionEnabled": false,
   "realChatgptHostVerified": true,
   "realCodexPluginInstallVerified": true,
   "deploymentCostAndCapacityMeasured": false,
-  "hostingRetentionReviewed": "configuration inspected, exact Plus retention still unconfirmed",
+  "hostingRetentionReviewed": "Observability Plus enabled for zodiacs-org confirmed in authenticated Billing; documented runtime retention 30 days",
   "publicListingSubmitted": false,
-  "limitations": "Actual synthetic public-sky host acceptance is recorded. It is not scientific accuracy certification, human beta usefulness, cost/capacity acceptance or directory publication. Verified publisher identity, consenting beta, exact-head full CI, billing/retention and concurrent-quota assessment remain release gates."
+  "limitations": "Actual synthetic public-sky host acceptance is recorded. It is not scientific accuracy certification, human beta usefulness, cost/capacity acceptance or directory publication. Verified publisher identity, consenting beta, exact-head full CI, per-completion billing and concurrent-quota assessment remain release gates."
 }

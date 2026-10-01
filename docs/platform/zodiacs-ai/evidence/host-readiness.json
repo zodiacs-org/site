@@ -81,13 +81,17 @@
       "applicationMessages": 0,
       "syntheticBodyCanaryObserved": false,
       "observabilityEntitlementPresent": true,
-      "observabilityPlusRetentionConfirmed": false,
+      "observabilityPlusRetentionConfirmed": true,
       "documentedProDays": 1,
       "documentedProPlusDays": 30,
-      "scope": "Observed application/provider logs; absence of a body canary does not prove every provider layer or deletion policy."
+      "scope": "Observed application/provider logs; absence of a body canary does not prove every provider layer or deletion policy.",
+      "confirmedRuntimeRetentionDays": 30,
+      "evidence": "provider-log-review.json"
     },
     "rollbackEvidence": "staging-rollback.json",
-    "stagingRollbackVerified": true
+    "stagingRollbackVerified": true,
+    "providerAggregateColdStartMetricObserved": true,
+    "previewFunctionMetricsEvidence": "provider-log-review.json"
   },
   "chatgpt": {
     "developerModeSessionAvailable": true,

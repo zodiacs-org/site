@@ -40,7 +40,8 @@ legal links, manifests, SHA-256 members and generated bundles pass drift checks.
 | `ai:check`, `ai:test` | Pass; 26 unit/protocol checks, eight stdio tools and recipes |
 | `ai:eval` | 40/40 preselected synthetic cases; not LLM accuracy certification |
 | `ai:widget` | Pass desktop/mobile, injection, links, refusal recovery and both synthetic host bridges |
-| Build | Pass; 4,344 pages and dist/schema/bundle budgets |
+| Build | Pass after compatible devalue 5.9.4 security patch; 4,344 pages and dist/schema/bundle budgets |
+| Dependency audits | Zero production vulnerabilities and zero high/critical development advisories; two existing moderate Vitest development advisories remain |
 | Typecheck | Zero errors/warnings; 18 existing hints; Linux CI also passes |
 | Installed Codex plugins | Developer and sky enabled through the real CLI marketplace; pinned developer dependencies installed |
 | Installed developer server | All eight official-SDK tool calls and recipes pass |
@@ -57,6 +58,9 @@ The documented accessibility blocker is fixed. [REGRESSIONS.md](./REGRESSIONS.md
 records its historical reproduction, focused fix, reviewed Linux candidate
 provenance and macOS exact-fixture limitations. Full exact-head CI remains the
 site release authority; earlier local or historical results do not replace it.
+The current production advisory gate exposed devalue 5.9.2. The compatible 5.9.4
+patch passes that gate; only its lockfile entry and the deterministic daily
+generator provenance hash changed. Audit thresholds and engine pins are retained.
 
 Codex installation is no longer blocked by a read-only cache. The installed
 skills were read and followed while creating a disposable synthetic integration.
@@ -83,11 +87,18 @@ connection uses a deployment-bound share credential expiring after 23 hours.
 Those credentials remain outside the repository. The existing Firewall rules
 were inspected without changing their counters. Production is not activated.
 
+Authenticated Vercel Billing confirms Observability Plus is enabled for this
+project, so documented runtime-log retention is 30 days. Preview function metrics
+include cold starts, but encompass multiple deployments and deliberate refusal /
+rollback tests. Usage aggregates do not isolate cold/warm per-completion charges.
+[evidence/provider-log-review.json](./evidence/provider-log-review.json) records
+the scope without raw requests, credentials or private billing details.
+
 The authenticated publisher portal opens, but uploading is blocked by
 “Complete identity verification.” No exact domain challenge has been issued and
 no public submission, approved listing or publication exists. Consenting beta
 participants and feedback, reviewer video delivery, cold/warm billing evidence,
-capacity acceptance and resolved quota/retention observations remain release
+capacity acceptance and resolved concurrent-quota observations remain release
 gates. Follow [LAUNCH.md](./LAUNCH.md) and [BETA_REVIEW.md](./BETA_REVIEW.md).
 
 ## Official contracts inspected

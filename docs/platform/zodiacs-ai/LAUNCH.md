@@ -73,16 +73,21 @@ pins and existing Firewall counters. Host connections can be disconnected.
 ## Remaining release gates
 
 1. Require exact-head Site Check success after the three inspected Linux home
-   baselines are committed. The capture-only candidate run passed; the preceding
+   baselines and compatible devalue 5.9.4 security patch are committed. The capture-only candidate run passed; the preceding
    site run passed its unit and functional drives but stopped at those intentional
    screenshot height differences, before full Lighthouse and foreign-widget gates.
-2. Confirm hosting retention and actual cold/warm per-completion billing/capacity.
+2. Complete actual cold/warm per-completion billing/capacity measurements.
    Thirty-two inspected provider request rows contain no application message or
    synthetic private-body canary. Raw request metadata stays outside the repository.
    There are no configured log drains. The team is Pro with Fluid Compute in iad1;
-   Pro runtime retention is documented as one day, or thirty with Observability
-   Plus. The account's Plus entitlement has not been confirmed. Warm SDK elapsed
-   times include network and are not classified cold starts, cost or capacity.
+   Authenticated Billing confirms Observability Plus enabled and zodiacs-org
+   included, establishing the documented thirty-day runtime retention. Preview
+   compatibility-function metrics show 6.2% cold starts and 230ms average
+   duration across 209 invocations in twelve hours. That aggregate includes
+   multiple deployments and intentional negative/rollback tests; it is not an
+   isolated completion measurement. Usage exposes project totals, not per-request
+   or cold/warm billing. Warm SDK elapsed times include network and are not
+   classified cold starts, cost or capacity. See `evidence/provider-log-review.json`.
    See [runtime logs](https://vercel.com/docs/logs/runtime) and
    [Observability Plus](https://vercel.com/docs/observability/observability-plus).
 3. Resolve the concurrent event overshoot and assess provider-address sharing
