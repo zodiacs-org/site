@@ -1,5 +1,22 @@
 # Programme status
 
+Checkpoint 9, 2026-10-01: production compute verification and private-cache audit.
+
+**Overall delivery: 23%** — 42.5 of 182.45 weighted units accepted; blocked on owner or external action: 2% (4).
+
+- Both owner-supplied WIP bundles passed SHA-256, byte-count and prerequisite verification in current full-history clones. All five fetched branch heads match `BUNDLES.md`; no engine WIP branch was pushed.
+- Production now serves site `9cfafa3e742de943062c9174338472781724a4b5` through READY deployment `dpl_6uGzGxdgxboMZ5jeFwQMTL24demr`. All six compute endpoints returned 200 for twenty documented synthetic requests each, naming engine rc.15 and astronomy-engine 2.1.19. This verifies the deployed F-58 fix from #607.
+- [Production baseline](../evidence/compute-api-2026-09-29/production-2026-10-01/README.md): client p50/p95 milliseconds were chart 93.6/129.5, positions 89.6/147.9, houses 106.2/161.3, events 182.2/238.0, time 90.1/116.9 and sky-fact 118.0/140.4. The maximum chart sample was 6220.7 ms and remains included. These are unclassified client latencies, not proven warm/cold timings or an SLA.
+- Returned production logs corroborate all samples and show no application-output line or distinctive synthetic input value in the observed window. This is limited observation, not proof about every platform log.
+- **F-59:** an independent local probe recovered two synthetic input UTC timestamps from the bundled ephemeris's private cache after requests ended. Existing global-name checks missed it. The server-only lifetime fix and new direct cache regression are described in [the fix evidence](../evidence/compute-api-2026-10-01/README.md). Source fix `9d6d36ad`, together with this checkpoint’s generated-context and historical-claim binding repairs, passes the full required-Node-22 suite (6,352 tests; four skipped), build, check, scope, artifact checks and the packaged-function probe. Its release is still pending. No immutable engine archive is changed.
+- **F-60:** events returned ten 200s then 429 with `Retry-After: 60`; the aligned general-counter probe returned 41 200s within one minute. Its counted client identity/configuration is not visible, so the stated general 40-request limit is not verified and the production spending envelope is not established.
+- **P3.3 stays unaccepted.** It is now recorded as merged/deployed rather than unmerged, but the fixed-cache release and production warm/cold and metered-cost evidence remain outstanding. The available connection exposes no start type, active CPU or billed memory; no cost was invented from network elapsed. The denominator and all accepted units stay unchanged.
+- Baseline gate repairs: regenerate the assistant's stale monthly context from its source; bind the historical rc.15 browser claim to its dated rc.15 validation record rather than today's mutable screenshot manifest.
+- Next: finish the cache-fix release checks, record the remaining telemetry limit, then continue the opaque calendar-feed release from `wip/feed-ids`. No new owner action is requested outside handoff §6.
+
+## Earlier checkpoints
+
+
 Checkpoint 8, 2026-09-30: the handoff. The compute API (P3.3) merges with this record, the owner's third report is in, and the programme passes to the next agent. **The next session should start with [HANDOFF-2026-09-30.md](HANDOFF-2026-09-30.md)**, then this file.
 
 **Overall delivery: 23%** — 42.5 of 182.45 weighted units accepted; blocked on owner or external action: 2% (4).

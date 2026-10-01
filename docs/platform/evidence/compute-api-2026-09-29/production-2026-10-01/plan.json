@@ -1,0 +1,62 @@
+{
+  "source": "9cfafa3e742de943062c9174338472781724a4b5",
+  "deployment": "dpl_6uGzGxdgxboMZ5jeFwQMTL24demr",
+  "origin": "https://zodiacs.org",
+  "endpointCases": {
+    "chart": {
+      "utc": "2000-01-01T12:00:00Z",
+      "latitude": 51.4779,
+      "longitude": -0.0015,
+      "houseSystem": "placidus"
+    },
+    "positions": {
+      "instants": [
+        "2026-09-29T12:00:00Z",
+        "2026-12-31T00:00:00-05:00"
+      ],
+      "bodies": [
+        "Sun",
+        "Moon",
+        "Mercury"
+      ]
+    },
+    "houses": {
+      "utc": "2026-06-21T12:00:00Z",
+      "latitude": -33.8688,
+      "longitude": 151.2093,
+      "houseSystem": "koch"
+    },
+    "events": {
+      "from": "2026-10-01T00:00:00Z",
+      "to": "2026-11-01T00:00:00Z",
+      "bodies": [
+        "Sun",
+        "Mercury",
+        "Venus"
+      ],
+      "kinds": [
+        "ingress",
+        "station",
+        "lunation"
+      ]
+    },
+    "time": {
+      "local": {
+        "date": "1947-07-01",
+        "time": "12:00",
+        "zone": "Europe/Stockholm"
+      },
+      "longitude": 18.07
+    },
+    "sky-fact": {
+      "kind": "retrograde",
+      "body": "Mercury",
+      "date": "2026-10-24",
+      "zone": "America/New_York"
+    }
+  },
+  "rounds": 20,
+  "sample": "Sequential identical documented synthetic examples, rotating endpoint order by round; minimum 2200ms between starts; no claimed cold/warm classification without platform telemetry; client wall latency includes cloud egress/network and response body; nearest-rank percentiles; stop on any unexpected non-200 or response schema/backend mismatch. No actual birth data.",
+  "clientNode": "v24.19.0",
+  "started": "2026-10-01T06:04:59.255Z"
+}

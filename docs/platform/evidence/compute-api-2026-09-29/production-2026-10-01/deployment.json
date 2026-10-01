@@ -1,0 +1,40 @@
+{
+  "source": "Vercel get_deployment read 2026-10-01",
+  "selection": "Deployment identity and runtime metadata; irrelevant creator account metadata omitted",
+  "deployment": {
+    "id": "dpl_6uGzGxdgxboMZ5jeFwQMTL24demr",
+    "name": "zodiacs-org",
+    "url": "zodiacs-orunf2q8l-zodiacsofficial.vercel.app",
+    "type": "LAMBDAS",
+    "state": "READY",
+    "createdAt": 1790813269754,
+    "project": {
+      "id": "prj_nRTO3q3aNYLfaM3dotAowOc028fO",
+      "name": "zodiacs-org",
+      "framework": null
+    },
+    "meta": {
+      "githubCommitRef": "main",
+      "githubCommitSha": "9cfafa3e742de943062c9174338472781724a4b5",
+      "githubCommitMessage": "Daily sky: 2026-10-01",
+      "githubRepo": "site",
+      "githubOrg": "zodiacs-org"
+    },
+    "alias": [
+      "zodiacs.org",
+      "www.zodiacs.org",
+      "zodiacs-org.vercel.app",
+      "zodiacs-org-zodiacsofficial.vercel.app",
+      "zodiacs-org-git-main-zodiacsofficial.vercel.app"
+    ],
+    "target": "production",
+    "regions": [
+      "iad1"
+    ],
+    "buildingAt": 1790813271279,
+    "ready": 1790813496151,
+    "readyState": "READY",
+    "source": "git",
+    "aliasError": null
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "reason": "The prior fixed-cap invalid-body probe received eleven400s over multiple minute windows because each error took5–9seconds through this client path. Preserve that inconclusive result; this probe uses valid minimum-cost shapes to observe the same limits without expensive event windows. No client/address changes, no concurrency, no retries, hardcaps11events/41time, stop on first429. Wait65seconds before each.",
+  "cases": {
+    "events": {
+      "from": "2026-10-01T00:00:00Z",
+      "to": "2026-10-02T00:00:00Z",
+      "bodies": [
+        "Sun"
+      ],
+      "kinds": [
+        "ingress"
+      ]
+    },
+    "time": {
+      "local": {
+        "date": "2000-01-01",
+        "time": "12:00",
+        "zone": "UTC"
+      }
+    }
+  }
+}

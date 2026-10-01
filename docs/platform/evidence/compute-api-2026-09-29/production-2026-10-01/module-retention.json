@@ -1,0 +1,106 @@
+{
+  "sourceCommit": "9cfafa3e742de943062c9174338472781724a4b5",
+  "node": "v24.19.0",
+  "computeSha256": "ff3828bcc6933af04b7cd547c63be0f37431795019b1cc109da4a38e316c2c9a",
+  "localTimeSha256": "cca4bc4c243d289d72220d4056332f0d0f3a3a1cd870f0bf66c7823fbe6fa35e",
+  "instrumentation": "Only added read-only module-state snapshot functions; Firewall import resolves to installed SDK; limiter is an in-process allow stub; all synthetic input",
+  "networkCalls": 0,
+  "newGlobalNames": [],
+  "snapshots": [
+    {
+      "label": "before",
+      "tilt": null,
+      "zones": {
+        "offset": [],
+        "wall": [],
+        "histories": []
+      }
+    },
+    {
+      "label": "after-chart",
+      "syntheticInput": "2071-11-23T11:58:09Z",
+      "reconstructedUtcFromRetainedTtOnly": "2071-11-23T11:58:09.000Z",
+      "reconstructionErrorMs": 0,
+      "status": 200,
+      "tilt": {
+        "tt": 26258.999569693628,
+        "dpsi": -2.954652915547561,
+        "deps": -9.664438206265382,
+        "ee": -0.18073554094592,
+        "mobl": 23.42992616306336,
+        "tobl": 23.42724159689495
+      },
+      "tiltAsJ2000TT": "2071-11-23T11:59:22.821Z",
+      "responseDeltaTSeconds": 73.8215292230511,
+      "responseTimeScale": {
+        "input": "utc",
+        "basis": "delta-t",
+        "ut1MinusUtc": {
+          "seconds": 0,
+          "sigma": 0.9,
+          "source": "fallback"
+        },
+        "leapSeconds": null
+      },
+      "zones": {
+        "offset": [],
+        "wall": [],
+        "histories": []
+      }
+    },
+    {
+      "label": "after-chart",
+      "syntheticInput": "2082-03-14T05:29:17Z",
+      "reconstructedUtcFromRetainedTtOnly": "2082-03-14T05:29:17.000Z",
+      "reconstructionErrorMs": 0,
+      "status": 200,
+      "tilt": {
+        "tt": 30022.729541393714,
+        "dpsi": 7.626813632088729,
+        "deps": 8.946814024101789,
+        "ee": 0.46653542831176725,
+        "mobl": 23.428585615723513,
+        "tobl": 23.43107084184132
+      },
+      "tiltAsJ2000TT": "2082-03-14T05:30:32.376Z",
+      "responseDeltaTSeconds": 75.3764166841909,
+      "responseTimeScale": {
+        "input": "utc",
+        "basis": "delta-t",
+        "ut1MinusUtc": {
+          "seconds": 0,
+          "sigma": 0.9,
+          "source": "fallback"
+        },
+        "leapSeconds": null
+      },
+      "zones": {
+        "offset": [],
+        "wall": [],
+        "histories": []
+      }
+    },
+    {
+      "label": "after-time",
+      "tilt": {
+        "tt": 30022.729541393714,
+        "dpsi": 7.626813632088729,
+        "deps": 8.946814024101789,
+        "ee": 0.46653542831176725,
+        "mobl": 23.428585615723513,
+        "tobl": 23.43107084184132
+      },
+      "zones": {
+        "offset": [
+          "Australia/Lord_Howe"
+        ],
+        "wall": [
+          "Australia/Lord_Howe"
+        ],
+        "histories": [
+          "australia/lord_howe"
+        ]
+      }
+    }
+  ]
+}
