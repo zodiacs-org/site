@@ -11,6 +11,16 @@
 // scripts/build-compute-local-time.mjs, because the function's file trace
 // does not carry the tables the resolver's source loads on demand.
 import { createComputeApiHandler } from './compute.mjs';
-import * as localTime from './local-time.mjs';
+import { createLocalTimeModule } from './local-time.mjs';
 
-export default createComputeApiHandler({ localTime });
+// The async timezone resolver owns a fresh set of caches for each request.
+// Sharing and then clearing them would race another request between prepare
+// and resolve. The compute bundle separately clears its synchronous engine memos.
+export default async function computeApi(req: any, res: any): Promise<void> {
+  const localTime = createLocalTimeModule();
+  try {
+    await createComputeApiHandler({ localTime })(req, res);
+  } finally {
+    localTime.dispose();
+  }
+}

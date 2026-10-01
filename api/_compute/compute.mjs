@@ -6349,5 +6349,19 @@ export {
   PREFLIGHT_HEADERS,
   RESPONSE_HEADERS,
   computeApiRateLimit,
-  createComputeApiHandler
+  createStatelessComputeApiHandler as createComputeApiHandler
 };
+
+// Server-only lifetime boundary. No input-derived engine memo survives an answer,
+// including a refusal, a resolver failure or a response writer that throws.
+function createStatelessComputeApiHandler(options) {
+  const handler = createComputeApiHandler(options);
+  return async function statelessComputeApiHandler(req, res) {
+    try {
+      return await handler(req, res);
+    } finally {
+      cache_e_tilt = undefined;
+      pluto_cache.length = 0;
+    }
+  };
+}
