@@ -190,7 +190,7 @@ jobs:
         run: OUT_DIR=tests/visual/artifacts/phase5-people npm run test:phase5:people
 
       - name: Phase 6 Ask Zodiacs drive
-        run: npm run test:phase6:ask
+        run: OUT_DIR=tests/visual/artifacts/guide npm run test:phase6:ask
 
       - name: Today SSR and personalization
         run: npm run test:today:browser

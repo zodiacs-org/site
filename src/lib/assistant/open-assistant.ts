@@ -2027,7 +2027,9 @@ function build(): void {
     if (!controls.length) return;
     const first = controls[0];
     const last = controls[controls.length - 1];
-    if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+    // Touch opens focus the panel itself to avoid raising the virtual keyboard.
+    // Reverse traversal from that initial focus must stay in the modal too.
+    if (event.shiftKey && (document.activeElement === first || document.activeElement === panel)) { event.preventDefault(); last.focus(); }
     else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
   });
   panel = document.createElement('div');

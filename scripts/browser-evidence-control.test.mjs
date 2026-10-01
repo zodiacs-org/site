@@ -112,11 +112,13 @@ describe('browser evidence capture control', () => {
     const outcomes = sanitizedStepOutcomes({
       build: { outcome: 'success', outputs: { credentials: 'must-not-be-copied' } },
       visual: { outcome: 'failure', conclusion: 'success' },
+      guide: { outcome: 'failure', outputs: { requestBody: 'must-not-be-copied' } },
       lighthouse: { outcome: 'skipped' },
       unrelated: { outcome: 'success' },
     });
     expect(outcomes.build).toBe('success');
     expect(outcomes.visual).toBe('failure');
+    expect(outcomes.guide).toBe('failure');
     expect(outcomes.lighthouse).toBe('skipped');
     expect(outcomes.acceptance).toBe('unrecorded');
     expect(JSON.stringify(outcomes)).not.toContain('must-not-be-copied');

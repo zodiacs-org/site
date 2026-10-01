@@ -15,6 +15,15 @@ const OUT = process.env.OUT_DIR ?? null;
 const GUIDE_AVATAR_ONLY = process.env.GUIDE_AVATAR_ONLY === '1';
 const results = [];
 const check = (name, ok, detail = '') => results.push({ name, ok, detail });
+const near = (actual, expected) => Math.abs(actual - expected) <= 2;
+// #606 intentionally introduced a compact, inset panel. Measure after its
+// entrance transition, rather than accepting an intermediate translated frame.
+async function settledBoundingBox(locator) {
+  await locator.evaluate(async (node) => {
+    await Promise.all(node.getAnimations().map((animation) => animation.finished));
+  });
+  return locator.boundingBox();
+}
 if (OUT) await mkdir(OUT, { recursive: true });
 
 const ACCOUNT_ID = '11111111-1111-4111-8111-111111111111';
@@ -245,7 +254,7 @@ await withPreview({ port: 4404 }, async (baseURL) => {
       && await page.evaluate(() => window.__profileReads) === 0);
     check('quiet shell does not steal focus', await launcher.evaluate((node) => !node.contains(document.activeElement)));
 
-    await launcher.click();
+    await launcher.tap();
     const dialog = page.locator('.zassistant__panel');
     const input = page.locator('.zassistant__input');
     await dialog.waitFor({ state: 'visible' });
@@ -259,19 +268,63 @@ await withPreview({ port: 4404 }, async (baseURL) => {
         && document.querySelector('[data-guide-launcher]') === window.__initialGuideLauncher));
     check('drawer header carries the Guide identity avatar',
       await dialog.locator('.zassistant__avatar[src="/assets/guide-avatar.webp"]').count() === 1);
-    check('user action opens Guide and focuses the composer', await input.evaluate((node) => document.activeElement === node));
+    check('touch opening focuses the labelled modal without focusing the composer',
+      await dialog.evaluate((node) => document.activeElement === node
+        && node.getAttribute('role') === 'dialog'
+        && node.getAttribute('aria-modal') === 'true'
+        && Boolean(document.getElementById(node.getAttribute('aria-labelledby'))?.textContent?.trim())));
     if (!GUIDE_AVATAR_ONLY) {
       check('opening is the first saved-chart read', await page.evaluate(() => window.__profileReads) > 0);
     }
-    const mobileBox = await dialog.boundingBox();
-    check('mobile Guide is a bottom sheet', Boolean(mobileBox)
-      && Math.abs((mobileBox.y + mobileBox.height) - 844) <= 2
-      && mobileBox.width >= 389, JSON.stringify(mobileBox));
+    const mobileBox = await settledBoundingBox(dialog);
+    check('mobile Guide is a compact 66dvh panel with 10px insets', Boolean(mobileBox)
+      && near(mobileBox.x, 10) && near(mobileBox.width, 390 - 20)
+      && near(mobileBox.y + mobileBox.height, 844 - 10)
+      && near(mobileBox.height, Math.min(844 * 0.66, 600)), JSON.stringify(mobileBox));
     check('fixed current-page source ignores private query data',
       (await page.locator('.zassistant__source-chip').textContent() ?? '').includes('Guide')
       && !(await page.locator('.zassistant__source-chip').textContent() ?? '').includes('must-not-leak'));
 
+    // The panel is a deliberate accessible starting point, not a focus escape.
+    // With the empty composer, Send is disabled and the textarea is last.
+    await page.keyboard.press('Shift+Tab');
+    check('reverse Tab from the touch-opened panel stays in the modal',
+      await input.evaluate((node) => document.activeElement === node));
+    await page.keyboard.press('Tab');
+    check('Tab wraps from the last control to the first',
+      await dialog.locator('.zassistant__clear').evaluate((node) => document.activeElement === node));
+    await page.keyboard.press('Shift+Tab');
+    check('reverse Tab wraps from the first control to the last',
+      await input.evaluate((node) => document.activeElement === node));
+
+    await page.getByRole('button', { name: 'Expand Guide', exact: true }).tap();
+    const expandedMobileBox = await settledBoundingBox(dialog);
+    check('mobile Expand retains the inset panel and exposes its pressed state',
+      await page.getByRole('button', { name: 'Make Guide smaller', exact: true }).getAttribute('aria-pressed') === 'true'
+      && Boolean(expandedMobileBox) && near(expandedMobileBox.x, 10)
+      && near(expandedMobileBox.width, 390 - 20)
+      && near(expandedMobileBox.y + expandedMobileBox.height, 844 - 10)
+      && near(expandedMobileBox.height, Math.min(844 * 0.88, 760)), JSON.stringify(expandedMobileBox));
+    await page.getByRole('button', { name: 'Make Guide smaller', exact: true }).tap();
+    const compactAgainBox = await settledBoundingBox(dialog);
+    check('mobile Guide returns to its compact height',
+      await page.getByRole('button', { name: 'Expand Guide', exact: true }).getAttribute('aria-pressed') === 'false'
+      && Boolean(compactAgainBox) && near(compactAgainBox.height, Math.min(844 * 0.66, 600)), JSON.stringify(compactAgainBox));
+
+    await input.tap();
+    check('the mobile composer can be focused explicitly by touch',
+      await input.evaluate((node) => document.activeElement === node));
     await input.fill('What is a square aspect?');
+    await page.getByRole('button', { name: 'Close Guide' }).tap();
+    check('mobile Hide closes Guide and restores the launcher', await page.locator('.zassistant').isHidden()
+      && await launcher.evaluate((node) => document.activeElement === node));
+    await launcher.press('Enter');
+    await dialog.waitFor({ state: 'visible' });
+    check('keyboard opening focuses the mobile composer',
+      await page.locator('.zassistant').getAttribute('data-keyboard-open') !== null
+      && await input.evaluate((node) => document.activeElement === node));
+    check('Hide and keyboard reopen retain the editable draft without sending',
+      await input.inputValue() === 'What is a square aspect?' && requests.length === 0);
     await input.press('Enter');
     const cloud = page.locator('.zassistant__consent');
     await cloud.waitFor({ state: 'visible' });
@@ -422,10 +475,13 @@ await withPreview({ port: 4404 }, async (baseURL) => {
     await desktopPage.locator('[data-guide-launcher]').click();
     const desktopDialog = desktopPage.locator('.zassistant__panel');
     await desktopDialog.waitFor({ state: 'visible' });
-    const desktopBox = await desktopDialog.boundingBox();
-    check('desktop Guide is a right-side drawer', Boolean(desktopBox)
-      && desktopBox.x > 800 && desktopBox.width <= 440
-      && desktopBox.height >= 870, JSON.stringify(desktopBox));
+    const desktopBox = await settledBoundingBox(desktopDialog);
+    check('desktop Guide is a compact bottom-right panel with 16px insets', Boolean(desktopBox)
+      && near(desktopBox.x + desktopBox.width, 1280 - 16) && near(desktopBox.width, 440)
+      && near(desktopBox.y + desktopBox.height, 900 - 16)
+      && near(desktopBox.height, Math.min(680, 900 - 32)), JSON.stringify(desktopBox));
+    check('desktop opening focuses the composer',
+      await desktopPage.locator('.zassistant__input').evaluate((node) => document.activeElement === node));
     const close = desktopPage.getByRole('button', { name: 'Close Guide' });
     const closeBox = await close.boundingBox();
     check('Guide controls retain 44px targets', (closeBox?.width ?? 0) >= 44 && (closeBox?.height ?? 0) >= 44);
