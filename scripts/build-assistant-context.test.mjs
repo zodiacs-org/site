@@ -66,12 +66,13 @@ describe('assistant site context', () => {
       // The engine's own product page at /developers/engine/ adds one more.
       // The conformance suite's results page at /developers/conformance/ adds one more.
       // The compute API's page at /developers/compute/ adds the last one.
-      consumerRoutes: 697,
+      // The AI integration candidate review page adds one static route.
+      consumerRoutes: 698,
       glossary: 145,
       guides: 12,
       learn: 159,
       pairs: 78,
-      staticPages: 58,
+      staticPages: 59,
       tools: 20,
     });
     expect(context).toContain('- /birthday/february-29/ — Pisces birthday guide.');

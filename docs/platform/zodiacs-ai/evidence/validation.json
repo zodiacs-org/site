@@ -1,0 +1,75 @@
+{
+  "schema": "zodiacs.ai-local-validation.v1",
+  "date": "2026-10-01",
+  "engine": "0.1.1-rc.15",
+  "mcpSdk": "2.0.0",
+  "checks": {
+    "bundleAndContractDrift": "passed",
+    "unitAndHttpProtocolTests": {
+      "passed": 26
+    },
+    "stdioTools": {
+      "passed": 8,
+      "cleanTemporaryInstall": true,
+      "cleanExtractedZip": true
+    },
+    "syntheticAdapterEvaluation": {
+      "passed": 40,
+      "total": 40,
+      "llmRoutingEvaluated": false
+    },
+    "widgetBrowser": "passed",
+    "developmentHealthSdkAndQuota429": "passed",
+    "siteBuild": {
+      "passed": true,
+      "astroPages": 4344,
+      "distAndBundleBudgets": "passed"
+    },
+    "typecheck": {
+      "errors": 0,
+      "warnings": 0,
+      "existingHints": 18
+    },
+    "fullSuite": {
+      "passed": 6377,
+      "skipped": 4,
+      "failed": 0,
+      "filesPassed": 501,
+      "filesSkipped": 1
+    },
+    "existingPhase1VisualAcceptance": {
+      "passed": 18,
+      "total": 18,
+      "capturesRefreshed": true
+    },
+    "claimsLedgerAndConsumerBoundary": "passed",
+    "engineAndSdkWorkingTrees": "unchanged",
+    "diffWhitespace": "passed",
+    "portableManifestSchemas": {
+      "version": "1.0.0",
+      "validatedFiles": 4
+    },
+    "deterministicReviewZips": {
+      "passed": 2
+    },
+    "codexMarketplaceDiscovery": {
+      "recognized": 2,
+      "installed": 0
+    },
+    "calendarHostBridges": "Both synthetic host bridges passed; actual ChatGPT not tested",
+    "independentLegacySdk": {
+      "version": "1.29.0",
+      "toolsPassed": 5,
+      "outputSchemas": "passed",
+      "nativeCalendarLaunch": "passed",
+      "uiResource": "passed"
+    }
+  },
+  "productionEnabled": false,
+  "realChatgptHostVerified": false,
+  "realCodexPluginInstallVerified": false,
+  "deploymentCostAndCapacityMeasured": false,
+  "hostingRetentionReviewed": false,
+  "publicListingSubmitted": false,
+  "limitations": "SDK/browser and extracted-package checks are not real-host acceptance, scientific accuracy certification or adoption evidence. Hosted activation and public submission are blocked by missing Vercel/ChatGPT publisher access; Codex installation is blocked by a read-only plugin-cache mount."
+}

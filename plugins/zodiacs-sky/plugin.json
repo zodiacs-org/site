@@ -1,0 +1,49 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "zodiacs-sky",
+  "version": "0.1.0",
+  "description": "Explore upcoming sky events, exact-instant positions and astronomical fact checks with the Zodiacs public-sky tools.",
+  "author": { "name": "Zodiacs", "url": "https://zodiacs.org/" },
+  "homepage": "https://zodiacs.org/developers/ai/",
+  "repository": "https://github.com/zodiacs-org/site/tree/main/plugins/zodiacs-sky",
+  "license": "Proprietary",
+  "keywords": ["astrology", "astronomy", "moon", "calendar", "zodiacs"],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Zodiacs",
+        "shortDescription": "Sky events and fact checks",
+        "longDescription": "See what changes this week, explore new and full Moons, and check astronomical claims with explicit timezones and versioned calculation receipts. The sky calendar supports inline, sidebar and conversation panels. Public-sky tools need no account or birth information. Event windows are at most 31 days; supported searches cover sign ingresses, planetary stations and lunations, with tested but unproven completeness. No reminders, eclipse search, personal chart storage or predictions of outcomes are offered. This is a review candidate; the hosted connection and directory listing await release checks.",
+        "developerName": "Zodiacs",
+        "category": "Lifestyle",
+        "capabilities": ["Sky calendar", "Astronomical fact checks", "Calculator discovery"],
+        "websiteURL": "https://zodiacs.org/developers/ai/",
+        "supportURL": "https://zodiacs.org/developers/support/",
+        "privacyPolicyURL": "https://zodiacs.org/privacy/",
+        "termsOfServiceURL": "https://zodiacs.org/terms/",
+        "composerIcon": "./assets/icon.png",
+        "logo": "./assets/icon.png",
+        "defaultPrompt": ["What changes in the sky this week, displayed in Asia/Bangkok?", "Check whether the Sun entered Libra on September 23, 2026.", "Where is the Moon sign calculator?"]
+      },
+      "review": {
+        "test_cases": {
+          "positive": [
+            { "description": "Inspect versions and supported operations.", "prompt": "What can Zodiacs calculate and which engine version does it use?", "tools_triggered": "get_capabilities", "expected_behavior": "List the five operations, published engine version, limits and privacy." },
+            { "description": "Compute an explicit instant in Bangkok.", "prompt": "Show the sky at 06:00 UTC on October 1, 2026, displayed in Asia/Bangkok.", "tools_triggered": "get_sky", "expected_behavior": "Return computed positions and Moon phase, UTC and display timezone, calculation receipt and optional method links." },
+            { "description": "Find lunar events in a bounded week.", "prompt": "Find new and full Moons from October 1 to October 8, 2026, at midnight UTC, displayed in America/New_York.", "tools_triggered": "get_upcoming_events", "expected_behavior": "Return computed events or an honest empty window, local times and tested-not-proven coverage; render the sky calendar." },
+            { "description": "Preserve an ambiguous date-only ingress claim.", "prompt": "Did the Sun enter Libra on September 23, 2026? I haven't chosen a timezone.", "tools_triggered": "check_sky_fact", "expected_behavior": "Preserve depends when the crossing fits some local-day interpretations and explain the date/timezone basis." },
+            { "description": "Find a calculator with a canonical link.", "prompt": "Where is the Zodiacs Moon sign calculator?", "tools_triggered": "search_zodiacs", "expected_behavior": "Return the canonical Moon sign calculator link and explain its purpose; include no personal URL data.", "expected_output_url": "https://zodiacs.org/moon-sign/" }
+          ],
+          "negative": [
+            { "description": "No calendar account or scheduling capability; offer a suitable calendar tool.", "prompt": "Reschedule my work meeting tomorrow." },
+            { "description": "No prediction of investment outcomes; provide no astrology-based guarantee.", "prompt": "Tell me which stock will rise based on my horoscope." },
+            { "description": "No prediction or guarantee of relationship outcomes.", "prompt": "Guarantee that my partner and I will stay together." }
+          ]
+        },
+        "commerce": false,
+        "commerce_description": "The public-sky plugin sells no products and processes no payments."
+      },
+      "publication": { "release_notes": "Initial review candidate with five public-sky tools, a native sky calendar and one public-sky workflow. Real-host acceptance and a reviewer-accessible walkthrough remain launch gates." }
+    }
+  }
+}

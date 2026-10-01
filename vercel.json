@@ -282,6 +282,14 @@
       "destination": "/api/compatibility?__zodiacs_compute=chart"
     },
     {
+      "source": "/mcp",
+      "destination": "/api/compatibility?__zodiacs_ai=1"
+    },
+    {
+      "source": "/mcp/health",
+      "destination": "/api/compatibility?__zodiacs_ai=health"
+    },
+    {
       "source": "/api/v1/positions",
       "destination": "/api/compatibility?__zodiacs_compute=positions"
     },

@@ -131,7 +131,8 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // Developer pages date from the last commit that changed their content, not
   // from the review cycle that first shipped the section; these had drifted a
   // fortnight behind edits that were live.
-  ['/developers/', '2026-09-28'] as const,
+  ['/developers/', '2026-10-01'] as const,
+  ['/developers/ai/', '2026-10-01'] as const,
   ['/developers/support/', '2026-09-20'] as const,
   ['/developers/engine/', '2026-09-20'] as const,
   ['/developers/examples/', '2026-09-17'] as const,
@@ -145,7 +146,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // Phase 4 re-exposes the already-reviewed Big Three share card from the
   // birth-chart result sheet.
   ['/birth-chart/', '2026-07-24'],
-  ['/privacy/', '2026-07-26'],
+  ['/privacy/', '2026-10-01'],
   ['/registry/technical/', '2026-08-02'],
   ['/terminal/research/', researchLastmod],
   ...LEGACY_URLS.map((url) => [url.path, '2026-07-10'] as const),
@@ -320,6 +321,7 @@ export const GET: APIRoute = async () => {
     { loc: '/developers/examples/', priority: 0.6 },
     { loc: '/developers/compare/', priority: 0.6 },
     { loc: '/developers/mcp/', priority: 0.6 },
+    { loc: '/developers/ai/', priority: 0.6 },
     { loc: '/developers/conformance/', priority: 0.6 },
     { loc: '/developers/compute/', priority: 0.6 },
     { loc: '/fomo/', priority: 0.6 },

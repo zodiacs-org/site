@@ -142,6 +142,12 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   `--check` runs in CI)
 - `api/_assistant/context.ts` ← `vite-node --script
   scripts/build-assistant-context.mjs` (committed assistant site guide)
+- `api/_ai/runtime.mjs`, `plugins/zodiacs-developer/mcp/server.mjs` and the
+  developer's portable `plugin.json`/`mcp.json` ← `npm run ai:build` (sources
+  `src/ai-tools/` and the compatibility manifest). `integrations/packages/`
+  ZIPs and manifest ← `npm run ai:package`. `npm run ai:check` checks drift.
+  The hosted MCP defaults off; its exact optional staging hostname is configured
+  with `ZODIACS_MCP_STAGING_HOST`. See `docs/platform/zodiacs-ai/LAUNCH.md`.
 - `api/_assistant/persona.ts` is Fable-authored source; edit it only via Fable.
 - `public/assets/og/v2/` ← `node --experimental-strip-types
   scripts/build-og-void.mjs` (ALL share cards sitewide since Part Q — wing

@@ -344,6 +344,7 @@ These are outside this program and should remain off unless separately authorize
 | Surface | Flag/configuration | Off-state contract |
 | --- | --- | --- |
 | Daily static facts/prose | No secret or flag | Always builds from deterministic committed data. |
+| Public-sky MCP candidate | Server `ZODIACS_MCP_ENABLED=1`; exact optional `ZODIACS_MCP_STAGING_HOST`; existing compute/event Firewall rules | `/mcp` and `/mcp/health` are disabled by default. Use an authorized staging host for actual ChatGPT checks; unavailable counters fail closed. See `docs/platform/zodiacs-ai/LAUNCH.md`. |
 | Model-assisted daily prose | `DAILY_PROSE_ENABLED=true` + dedicated secret; reserved | Deterministic-template edition or held verified edition. |
 | Standalone email capture | `STANDALONE_WEEKLY_EMAIL_ENABLED=1` + complete provider adapter; Resend also requires `RESEND_SEGMENT_ID` | Capture component and standalone subscribe/confirm path are absent; pages remain complete. Keep off until a real sender and unsubscribe lifecycle exist. |
 | Weekly digest schedule | GitHub `DIGEST_ENABLED=true` + Vercel `PUBLIC_WEEKLY_DIGEST_ENABLED=1` for the profile opt-in checkbox | Workflow smoke test runs; no scheduled send and no opt-in checkbox. |

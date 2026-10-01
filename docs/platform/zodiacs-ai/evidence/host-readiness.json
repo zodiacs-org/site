@@ -1,0 +1,50 @@
+{
+  "schema": "zodiacs.ai-host-readiness.v1",
+  "date": "2026-10-01",
+  "openaiGuides": {
+    "extensions": "retrieved and inspected",
+    "connectionAndHostTesting": "retrieved and inspected",
+    "portablePackaging": "retrieved and inspected",
+    "submissionAndPublication": "retrieved and inspected",
+    "extensionSpecCommit": "900032d8bd7c1566202d0cb1666986584f932043",
+    "agentPluginsSchemas": {
+      "version": "1.0.0",
+      "validatedFiles": 4,
+      "validator": "jsonschema Draft202012Validator"
+    },
+    "legacySdkCompatibility": {
+      "version": "1.29.0",
+      "toolsPassed": 5,
+      "source": "tests/ai-legacy-sdk-drive.mjs",
+      "scope": "Local transport; not ChatGPT host acceptance"
+    }
+  },
+  "codex": {
+    "authenticated": true,
+    "marketplaceCandidatesDiscovered": 2,
+    "pluginInstallation": "blocked",
+    "reason": "The cloud environment's plugin cache is mounted read-only. The CLI cannot create its cache directory.",
+    "protectedHostConfigurationChanged": false,
+    "skillExecutionInInstalledHostVerified": false
+  },
+  "hosting": {
+    "githubAccessAvailable": true,
+    "vercelCredentialPresent": false,
+    "vercelProjectBindingPresent": false,
+    "productionHealthBeforeDeployment": {
+      "url": "https://zodiacs.org/mcp/health",
+      "httpStatus": 404
+    },
+    "mcpActivated": false,
+    "retentionReviewed": false,
+    "capacityAndCostMeasured": false
+  },
+  "chatgpt": {
+    "developerModeSessionAvailable": false,
+    "publisherSessionAvailable": false,
+    "modelToolSelectionVerified": false,
+    "nativeEntryPointsVerifiedInChatgpt": false,
+    "walkthroughRecordedInChatgpt": false,
+    "publicSubmissionCompleted": false
+  }
+}

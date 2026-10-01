@@ -110,7 +110,7 @@ describe('homepage first-paint assets', () => {
     expect(page).toContain('<h1 class="hero__title">Your whole chart, <em>not just your sign.</em></h1>');
     expect(page).toContain('Free birth charts, moon signs, compatibility, and horoscopes —');
     expect(page).toContain('Get your free birth chart');
-    expect(page).toContain('See your forecasts');
+    expect(page).toMatch(/<a\b[^>]*class="btn btn--ghost hero__ghost"[^>]*href="\/horoscopes\/"[^>]*><span>Your horoscope<\/span><\/a>/u);
     expect(page).toContain('Free · No signup · Calculated in your browser');
     expect(page).not.toContain('class="hero__story"');
     expect(page).not.toContain('class="hero__method"');
