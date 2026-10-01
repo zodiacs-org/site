@@ -169,7 +169,7 @@ await withPreview({ port: 4402 }, async (baseURL) => {
       await page.evaluate(() => window.dispatchEvent(new PointerEvent('pointerdown')));
       if (testCase.interruptedStart) {
         await page.waitForFunction(() => document.querySelector('[data-hero-video]')?.dataset.heroPlayback === 'loading');
-        await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+        await page.evaluate(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'instant' }));
         await page.waitForFunction(() => document.querySelector('[data-hero-video]')?.dataset.heroVisible === 'false');
         await page.waitForFunction(() => document.querySelector('[data-hero-video]')?.dataset.heroPlayback === 'paused');
         const interrupted = await video.evaluate((element) => ({
@@ -181,7 +181,7 @@ await withPreview({ port: 4402 }, async (baseURL) => {
           interrupted.attached && interrupted.playback === 'paused',
           JSON.stringify(interrupted),
         );
-        await page.evaluate(() => window.scrollTo(0, 0));
+        await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
         await page.waitForFunction(() => document.querySelector('[data-hero-video]')?.dataset.heroVisible === 'true');
         await page.waitForFunction(() => document.querySelector('[data-hero-video]')?.dataset.heroPlayback === 'playing');
         check('mobile-interrupted-start: playback resumes after returning onscreen', await page.evaluate(() => window.__heroPlayCount >= 2));
@@ -213,7 +213,7 @@ await withPreview({ port: 4402 }, async (baseURL) => {
 
       if (testCase.name === 'mobile-normal') {
         const countsBeforeScroll = await page.evaluate(() => ({ play: window.__heroPlayCount, pause: window.__heroPauseCount }));
-        await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+        await page.evaluate(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'instant' }));
         await page.waitForFunction(() => document.querySelector('[data-hero-video]')?.dataset.heroVisible === 'false');
         const offscreen = await video.evaluate((element) => ({
           playback: element.dataset.heroPlayback,
@@ -224,7 +224,7 @@ await withPreview({ port: 4402 }, async (baseURL) => {
         check('mobile-normal: video pauses offscreen', countsOffscreen.pause > countsBeforeScroll.pause && offscreen.playback === 'paused', `${countsBeforeScroll.pause} → ${countsOffscreen.pause}`);
         check('mobile-normal: poster motion pauses offscreen', offscreen.animation === 'paused', String(offscreen.animation));
 
-        await page.evaluate(() => window.scrollTo(0, 0));
+        await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
         await page.waitForFunction(() => document.querySelector('[data-hero-video]')?.dataset.heroVisible === 'true');
         await page.waitForFunction((previous) => window.__heroPlayCount > previous, countsOffscreen.play);
         const onscreenAnimation = await page.evaluate(() => document.querySelector('[data-hero-poster]')?.getAnimations().find((item) => item.animationName === 'hero-poster-drift')?.playState ?? null);
@@ -258,10 +258,11 @@ await withPreview({ port: 4402 }, async (baseURL) => {
 
       if (testCase.name === 'mobile-normal') {
         const control = page.locator('[data-hero-motion-toggle]');
-        check('mobile motion control remains tappable below navigation', await control.evaluate((element) => {
+        const tapTarget = await control.evaluate((element) => {
           const rect = element.getBoundingClientRect();
-          return rect.height >= 44 && rect.top >= 50 && element.contains(document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2));
-        }));
+          return { height: rect.height, top: rect.top, scrollY: window.scrollY, ownsCenter: element.contains(document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2)) };
+        });
+        check('mobile motion control remains tappable below navigation', tapTarget.height >= 44 && tapTarget.top >= 50 && tapTarget.ownsCenter, JSON.stringify(tapTarget));
       }
 
       if (testCase.name === 'desktop-normal') {
