@@ -92,7 +92,7 @@ const terminalMarketNotice = Boolean(Astro.props.terminalMarketNotice);
 
     <div class="zfooter__directory">
       <nav class="zfooter__group" aria-label={t(locale, 'navTools')}>
-        <span class="zfooter__label">{t(locale, 'navTools')}</span>
+        <details class="zfooter__fold" open data-footer-essential><summary class="zfooter__fold-label"><span class="zfooter__label">{t(locale, 'navTools')}</span></summary>
         <div class="zfooter__links">
           {FOOTER_TOOLS.map((tool) => (
             <a
@@ -105,10 +105,10 @@ const terminalMarketNotice = Boolean(Astro.props.terminalMarketNotice);
             </a>
           ))}
         </div>
-      </nav>
+      </details></nav>
 
       <nav class="zfooter__group" aria-label={t(locale, 'navLearn')}>
-        <span class="zfooter__label">{t(locale, 'navLearn')}</span>
+        <details class="zfooter__fold" open><summary class="zfooter__fold-label"><span class="zfooter__label">{t(locale, 'navLearn')}</span></summary>
         <div class="zfooter__links">
           <a href="/learn/" hreflang={englishHreflang} title={englishOnlyAria}>{t(locale, 'footerStartHere')}{englishSuffix}</a>
           <a href={localizePath(locale, '/horoscopes/')} hreflang={englishOnlyHref('/horoscopes/') ? 'en' : undefined} title={englishOnlyHref('/horoscopes/') ? englishOnlyAria : undefined}>{t(locale, 'navHoroscopes')}{englishOnlyHref('/horoscopes/') ? englishSuffix : ''}</a>
@@ -119,10 +119,10 @@ const terminalMarketNotice = Boolean(Astro.props.terminalMarketNotice);
           <a href={localizePath(locale, '/methodology/')}>{t(locale, 'footerCompute')}</a>
           <a href={localizePath(locale, '/profile/')}>{t(locale, 'navSavedCharts')}</a>
         </div>
-      </nav>
+      </details></nav>
 
       <nav class="zfooter__group zfooter__group--wide" aria-label={t(locale, 'footerRegistry')}>
-        <span class="zfooter__label">{t(locale, 'footerRegistry')}</span>
+        <details class="zfooter__fold" open><summary class="zfooter__fold-label"><span class="zfooter__label">{t(locale, 'footerRegistry')}</span></summary>
         <div class="zfooter__links">
           <a href="/astrofolio/" hreflang={englishHreflang} title={englishOnlyAria}>{t(locale, 'navCollect')}{englishSuffix}</a>
           <a href="/registry/" hreflang={englishHreflang} title={englishOnlyAria}>{t(locale, 'footerRegistry')}{englishSuffix}</a>
@@ -130,7 +130,7 @@ const terminalMarketNotice = Boolean(Astro.props.terminalMarketNotice);
           <a href={localizePath(locale, '/disclosure/')}>{t(locale, 'footerDisclosure')}</a>
         </div>
         {showAcquisitionDisclosure && <span class="zfooter__note">{t(locale, 'footerCollectNote')}</span>}
-      </nav>
+      </details></nav>
 
       <nav class="zfooter__group zfooter__twelve" aria-label={t(locale, 'navSigns')}>
         <span class="zfooter__label">{t(locale, 'navTwelve')}</span>
@@ -194,3 +194,7 @@ const terminalMarketNotice = Boolean(Astro.props.terminalMarketNotice);
 {!Astro.props.noAssistant && (
   <script is:inline data-guide-loader={GUIDE_LOADER_MARKER} set:html={guideLoaderSource(locale)} />
 )}
+
+<script is:inline>
+(function () { var mobile = window.matchMedia('(max-width: 620px)'); var groups = document.querySelectorAll('.zfooter__fold:not([data-footer-essential])'); var sync = function () { groups.forEach(function (group) { group.open = !mobile.matches; }); }; sync(); mobile.addEventListener && mobile.addEventListener('change', sync); })();
+</script>

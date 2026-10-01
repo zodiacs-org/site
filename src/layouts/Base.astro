@@ -2,6 +2,7 @@
 import '../styles/tokens.css';
 import '../styles/base.css';
 import '../styles/prose.css';
+import ArticleContents from '../components/ArticleContents.astro';
 import SEO from '../components/SEO.astro';
 import SiteNav from '../components/SiteNav.astro';
 import SiteFooter from '../components/SiteFooter.astro';
@@ -459,6 +460,7 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
 
     <main id="main">
       <slot />
+      <ArticleContents enabled={locale === 'en' && (props.path.startsWith('/learn/') || props.path === '/methodology/' || /^\/(aries|taurus|gemini|cancer|leo|virgo|libra|scorpio|sagittarius|capricorn|aquarius|pisces)\/$/.test(props.path)) && props.path !== '/learn/glossary/'} />
     </main>
 
     {(props.editorialLine ?? props.type === 'article') && <EditorialLine locale={locale} />}

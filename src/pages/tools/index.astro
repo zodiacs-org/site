@@ -73,7 +73,7 @@ const jsonLd = [
                     <ToolGlyph kind={t.kind} />
                     <h3>{t.title}</h3>
                     <p>{t.promise}</p>
-                    <span class="tool-card__go">Open →</span>
+                    <span class="tool-card__go">Explore {t.title} →</span>
                   </div>
                 </a>
               ))}
@@ -147,6 +147,8 @@ const jsonLd = [
   .tool-group__head p { margin: 0; color: var(--muted); font-size: var(--text-sm); line-height: 1.6; }
   @media (min-width: 700px) { .tools-grid { grid-template-columns: repeat(2, 1fr); } }
   @media (min-width: 1000px) { .tools-grid { grid-template-columns: repeat(3, 1fr); } }
+  .tools-grid .shell { padding: 0; border-radius: var(--r-lg); }
+  .tools-grid .core { margin: 0; border: 0; box-shadow: none; background: transparent; }
   .tool-card {
     display: flex;
     flex-direction: column;

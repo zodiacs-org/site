@@ -115,9 +115,7 @@ const description = 'Void-of-course Moon times for this month and the next two, 
       <em class="kicker">Moon calendar</em>
       <h1 class="display">When the Moon is void of course.</h1>
       <p>
-        Every void-of-course window from this month through the month after next, computed from the exact
-        aspects between the Moon and the Sun through Pluto. Each row gives the last aspect that starts the
-        void, the minute it begins, and the minute the Moon enters its next sign.
+        See the Moon’s next pause and every void-of-course window over the next three months. Times adjust to your time zone.
       </p>
     </div>
     <div class="voc-now tile" data-voc-now data-computed={buildNow.toISOString()}>
@@ -282,6 +280,8 @@ const description = 'Void-of-course Moon times for this month and the next two, 
   .voc-now { max-width: 62ch; padding: 18px 20px; display: grid; gap: 8px; }
   .voc-now__text { margin: 0; color: var(--text); font-size: var(--text-base); line-height: 1.55; text-wrap: pretty; }
   .voc-now__note { margin: 0; color: var(--faint); font-size: var(--text-xs); }
+  /* Reserve the timezone label so localization does not move the period. */
+  .section-head [data-voc-zone] { display: inline-block; min-width: 10ch; }
   .voc-table-wrap { overflow-x: auto; border: 1px solid var(--hair-1); border-radius: var(--r-md); background: var(--void-1); }
   /* Fixed columns: the browser rewrites the time cells in place, and a
      rewrite must never move a row. */

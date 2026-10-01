@@ -181,6 +181,7 @@ const tools = [
         <source data-src="/assets/hero/zodiacs-hero-av1.mp4" type='video/mp4; codecs="av01.0.08M.08"' />
         <source data-src="/assets/hero/zodiacs-hero.mp4" type="video/mp4" />
       </video>
+      <button class="hero-motion" type="button" data-hero-motion-toggle aria-pressed="false">Pause motion</button>
       <div class="hero__scrim" aria-hidden="true"></div>
       <div class="hero__content">
         <h1 class="hero__title">Your whole chart, <em>not just your sign.</em></h1>
@@ -213,6 +214,9 @@ const tools = [
           connection.saveData ||
           ['slow-2g', '2g'].indexOf(connection.effectiveType) !== -1
         );
+        var manuallyPaused = false;
+        try { manuallyPaused = sessionStorage.getItem('zodiacs:motion-paused') === '1'; } catch (_) {}
+        var toggle = document.querySelector('[data-hero-motion-toggle]');
         var visible = true;
         var interacted = false;
         var playbackRequested = false;
@@ -252,7 +256,7 @@ const tools = [
           detachSources();
         };
         var tryPlay = function () {
-          if (!playbackRequested || !visible || document.hidden || constrained || reducedQuery.matches || posterFallback || playPending) return;
+          if (manuallyPaused || !playbackRequested || !visible || document.hidden || constrained || reducedQuery.matches || posterFallback || playPending) return;
           attachSources();
           var attempt = ++playAttempt;
           playPending = true;
@@ -321,7 +325,18 @@ const tools = [
           tryPlay();
         };
 
-        v.dataset.heroMotion = reducedQuery.matches ? 'static' : 'drift';
+        if (toggle && manuallyPaused) { toggle.setAttribute('aria-pressed', 'true'); toggle.textContent = 'Resume motion'; }
+        toggle && toggle.addEventListener('click', function () {
+          manuallyPaused = !manuallyPaused;
+          try { sessionStorage.setItem('zodiacs:motion-paused', manuallyPaused ? '1' : '0'); } catch (_) {}
+          toggle.setAttribute('aria-pressed', String(manuallyPaused));
+          toggle.textContent = manuallyPaused ? 'Resume motion' : 'Pause motion';
+          v.dataset.heroMotion = manuallyPaused || reducedQuery.matches ? 'static' : 'drift';
+          p.dataset.heroMotion = v.dataset.heroMotion;
+          if (manuallyPaused) { playAttempt += 1; playPending = false; v.pause(); v.classList.remove('is-playing'); v.dataset.heroPlayback = 'paused'; }
+          else { playbackRequested = true; tryPlay(); }
+        });
+        v.dataset.heroMotion = reducedQuery.matches || manuallyPaused ? 'static' : 'drift';
         p.dataset.heroMotion = v.dataset.heroMotion;
         v.dataset.heroPlayback = 'poster';
         setVisible(!frame || frame.getBoundingClientRect().bottom > 0);
@@ -350,7 +365,7 @@ const tools = [
         });
 
         reducedQuery.addEventListener && reducedQuery.addEventListener('change', function () {
-          v.dataset.heroMotion = reducedQuery.matches ? 'static' : 'drift';
+          v.dataset.heroMotion = reducedQuery.matches || manuallyPaused ? 'static' : 'drift';
           p.dataset.heroMotion = v.dataset.heroMotion;
           if (reducedQuery.matches) {
             playAttempt += 1;
@@ -696,6 +711,9 @@ const tools = [
       0 30px 80px -40px rgba(0, 0, 0, 0.8);
     isolation: isolate;
   }
+  .hero-motion { position: absolute; z-index: 5; top: 14px; right: 14px; min-height: 44px; padding: 0 14px; border: 1px solid var(--hair-2); border-radius: 999px; background: rgba(6,7,9,.85); color: var(--text); font: 500 12px var(--font-sans); cursor: pointer; }
+  @media (max-width: 959px) { .hero-motion { top: calc(60px + env(safe-area-inset-top)); } }
+  @media (prefers-reduced-motion: reduce) { .hero-motion { display: none; } }
   .hero__poster,
   .hero__video {
     position: absolute;
@@ -1114,6 +1132,9 @@ const tools = [
     background: var(--bg); color: var(--text); font: inherit;
   }
   :global(.demo__selector select:focus-visible) { outline: 2px solid var(--text); outline-offset: 2px; }
+  :global(.demo > .demo__jumps) { grid-column: 2; grid-row: 1; align-self: start; }
+  @media (min-width: 960px) { :global(.demo__wheel) { grid-column: 1; grid-row: 1 / 3; } :global(.demo__guide) { grid-column: 2; grid-row: 2; } }
+  @media (max-width: 959px) { :global(.demo > .demo__jumps) { grid-column: 1; grid-row: auto; } }
   :global(.demo__jumps) { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
   :global(.demo__jump) {
     display: grid;
@@ -1134,6 +1155,7 @@ const tools = [
       color 160ms ease;
   }
   :global(.demo__jump strong) { font-size: 12.5px; font-weight: 600; line-height: 1.2; }
+  :global(.demo__jump .mono--label) { color: var(--muted); }
   :global(.demo__jump[aria-pressed='true']) {
     border-color: rgba(238, 241, 247, 0.5);
     background: rgba(238, 241, 247, 0.1);

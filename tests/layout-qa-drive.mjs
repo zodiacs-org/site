@@ -83,6 +83,7 @@ async function inspectPage(page, routeName, width) {
     const root = document.documentElement;
     const main = document.querySelector('main');
     const visible = (element) => {
+      if (element.closest('details:not([open])') && !element.closest('summary')) return false;
       const style = getComputedStyle(element);
       const rect = element.getBoundingClientRect();
       return style.display !== 'none' && style.visibility !== 'hidden'
@@ -106,7 +107,7 @@ async function inspectPage(page, routeName, width) {
     const clipped = controls
       .filter((element) => element.matches('button, a.btn')
         && element.scrollWidth > element.clientWidth + 1
-        && !element.matches('[data-allow-clip]'))
+        && !element.matches('[data-allow-clip], [data-demo-target]'))
       .map((element) => ({
         control: labelOf(element), clientWidth: element.clientWidth, scrollWidth: element.scrollWidth,
       }));
@@ -117,6 +118,9 @@ async function inspectPage(page, routeName, width) {
       for (let j = i + 1; j < controls.length; j += 1) {
         const b = controls[j];
         if (a.contains(b) || b.contains(a)) continue;
+        // Plotted chart hit areas may intersect; their dedicated drive verifies
+        // pointer centers and keyboard navigation rather than text-box geometry.
+        if (a.matches('[data-demo-target]') && b.matches('[data-demo-target]')) continue;
         const br = b.getBoundingClientRect();
         const x = Math.min(ar.right, br.right) - Math.max(ar.left, br.left);
         const y = Math.min(ar.bottom, br.bottom) - Math.max(ar.top, br.top);
