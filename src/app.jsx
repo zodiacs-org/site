@@ -5138,7 +5138,7 @@
                 setArtworkFailed(true);
               }}
             />
-            <span className="campaign-look__shine" aria-hidden="true" />
+            {active && artVisible && <span className="campaign-look__shine" aria-hidden="true" />}
             <span
               className="campaign-look__fallback"
               role={artworkFailed ? 'img' : undefined}
