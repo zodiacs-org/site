@@ -1,0 +1,97 @@
+{
+  "main": "450f0fd948d86d82c416bcbd51b3dace5196097e",
+  "localMerge": "32e3873e9406d86bfb77d078a19c529564eba7f1",
+  "postBuildVerified": true,
+  "paths": [
+    {
+      "path": "public/registry/aquarius/index.html",
+      "bytes": 159065,
+      "sha256": "c6f0d75954e3a1c05f8ba614b2cba800355f326a743d1a95aa9e4c0ae4a7c59c",
+      "matchesOwnerMain": true
+    },
+    {
+      "path": "public/registry/aries/index.html",
+      "bytes": 158900,
+      "sha256": "1ad663abd61580f6fbc6e2844df94a5600fc39efaa302631b59e5b49c2a20d72",
+      "matchesOwnerMain": true
+    },
+    {
+      "path": "public/registry/cancer/index.html",
+      "bytes": 159111,
+      "sha256": "22b10321c50f6d4fe86de4e8db5445879261ea8773a9472ece6a0522894b5686",
+      "matchesOwnerMain": true
+    },
+    {
+      "path": "public/registry/capricorn/index.html",
+      "bytes": 159179,
+      "sha256": "83e42333a591e6a98b92c546f00e087b1f292994b54626fb27a4ddeb8edf81cf",
+      "matchesOwnerMain": true
+    },
+    {
+      "path": "public/registry/gemini/index.html",
+      "bytes": 158888,
+      "sha256": "425723bce38bc036ea009620cf69ae57b9099e71a18295781582440784c73d15",
+      "matchesOwnerMain": true
+    },
+    {
+      "path": "public/registry/leo/index.html",
+      "bytes": 158749,
+      "sha256": "e2a66f58db7768a90cd3ac95a3b97bdcb6abba44a9606f9e31a8a4500dab78fe",
+      "matchesOwnerMain": true
+    },
+    {
+      "path": "public/registry/libra/index.html",
+      "bytes": 158922,
+      "sha256": "7fc81f41ac47a6c935eccce80e1f8f78dccde8cd7d029f9e6d837aad0bad03d5",
+      "matchesOwnerMain": true
+    },
+    {
+      "path": "public/registry/pisces/index.html",
+      "bytes": 158967,
+      "sha256": "f47a25227110d237dd3c08478602db29a15180b27a66b6d63edfabdd0685dbbc",
+      "matchesOwnerMain": true
+    },
+    {
+      "path": "public/registry/sagittarius/index.html",
+      "bytes": 159225,
+      "sha256": "9aaf24e03a76c5eb03c125ec84764a66443785af7b747db736c7ae35b40a783f",
+      "matchesOwnerMain": true
+    },
+    {
+      "path": "public/registry/scorpio/index.html",
+      "bytes": 159038,
+      "sha256": "c95eb957e3296996cb5cedbd953d726122ea200fb49a0bd5f3f7e753f4f49818",
+      "matchesOwnerMain": true
+    },
+    {
+      "path": "public/registry/taurus/index.html",
+      "bytes": 158950,
+      "sha256": "d22caa318ba5226d4c9ad1261bcf5d57eff23cd02830fe5d7552e8c23b0a158f",
+      "matchesOwnerMain": true
+    },
+    {
+      "path": "public/registry/virgo/index.html",
+      "bytes": 158894,
+      "sha256": "bb6e746f6e9c499f4a95185d828b2991d80c23f355c43c3c360cb615de15cd65",
+      "matchesOwnerMain": true
+    },
+    {
+      "path": "scripts/build-sign-pages.mjs",
+      "bytes": 116953,
+      "sha256": "c5abdb972dfb6dee7a8722df5e85f99d1594560b6b549aaff4e39c857dca4c63",
+      "matchesOwnerMain": true
+    },
+    {
+      "path": "src/pages/index.astro",
+      "bytes": 49228,
+      "sha256": "2bafecc73b0ccf8426dd843296c9e10fc55929f5d0d76ed121aea0549650ec05",
+      "matchesOwnerMain": true
+    },
+    {
+      "path": "tests/assistant-drive.mjs",
+      "bytes": 26144,
+      "sha256": "69570c7800150f44cfe83c246f3bce79e37ab546616b16905fc2a3e15c0cd2ad",
+      "matchesOwnerMain": true
+    }
+  ]
+}

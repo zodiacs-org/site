@@ -1,0 +1,95 @@
+{
+  "schema": "zodiacs.production-supabase-readonly-binding/v1",
+  "checkedAtUtc": "2026-10-01T10:56:50.574104+00:00",
+  "scope": "Nonsecret production public-browser binding plus live project/catalog metadata; server environment values were not retrieved",
+  "vercel": {
+    "projectId": "prj_nRTO3q3aNYLfaM3dotAowOc028fO",
+    "teamId": "team_Ue0ac8HT1b3TAzaDDZBTFhQt",
+    "deploymentId": "dpl_5z1dGu8CRDMwqkf7WATijtu2HRMz",
+    "state": "READY",
+    "target": "production",
+    "commit": "450f0fd948d86d82c416bcbd51b3dace5196097e",
+    "aliases": [
+      "zodiacs.org",
+      "www.zodiacs.org"
+    ],
+    "deploymentUrl": "https://zodiacs-hcxv8sqng-zodiacsofficial.vercel.app"
+  },
+  "publicBinding": {
+    "profileUrl": "https://zodiacs.org/profile/",
+    "httpStatus": 200,
+    "cspConnectSrcSupabaseOrigin": "https://mftpcdpttteuwbolobye.supabase.co",
+    "observedBundleChain": [
+      "https://zodiacs.org/_astro/AccountSyncV2Panel.CT16BZz1.js",
+      "https://zodiacs.org/_astro/sync.BoUJAvoX.js",
+      "https://zodiacs.org/_astro/client.BznKc0x4.js"
+    ],
+    "bundleStatuses": [
+      200,
+      200,
+      200
+    ],
+    "clientBundleSupabaseOrigin": "https://mftpcdpttteuwbolobye.supabase.co"
+  },
+  "documentaryBinding": {
+    "repository": "zodiacs-org/site",
+    "path": "docs/SUPABASE.md",
+    "projectRef": "mftpcdpttteuwbolobye",
+    "documentedRegion": "ap-northeast-1 (Tokyo)",
+    "regionFreshlyVerified": true,
+    "regionVerifiedAtUtc": "2026-10-01T11:24:01Z"
+  },
+  "excludedWrongTarget": {
+    "projectRef": "wlzzboekuffmagakvxaq",
+    "reason": "docs/SUPABASE.md explicitly identifies it as an unused test project not wired to production",
+    "earlierProductionReadinessConclusion": "withdrawn; cannot establish production table/migration absence"
+  },
+  "accessBlocker": {
+    "action": "Supabase get_project",
+    "target": "mftpcdpttteuwbolobye",
+    "result": "You do not have permission to perform this action",
+    "productionTableAndMigrationState": "unverified at the earlier denied read; superseded by liveMetadata below",
+    "status": "historical; superseded by the programme coordinator’s successful refreshed-connector reads at 2026-10-01T11:24:01Z"
+  },
+  "serverEnvironmentBinding": "requires authorized current Production metadata; no values decrypted or retrieved",
+  "reviewedMigration": {
+    "path": "supabase/migrations/20260929180000_calendar_feeds.sql",
+    "sha256": "a0bd1d713360f73ea3a53f53fb7592e0ae2b43c23205b506ec62a441b9e18438",
+    "ciCommit": "7a9c9fe52689fddf9338d706459bebc981e180ac",
+    "ciRun": 36850243233,
+    "ciJob": 110329914844,
+    "ciConclusion": "success",
+    "productionAppliedByThisTask": false
+  },
+  "credentialsCreated": false,
+  "permissionsChanged": false,
+  "productionMutationsPerformed": false,
+  "liveMetadata": {
+    "checkedAtUtc": "2026-10-01T11:24:01Z",
+    "file": "supabase-production-metadata.json",
+    "sha256": "b9798edbe2cd18f735f53ca28543c833479d48d0ab00e85ab4f9984b30d8c968",
+    "collectionSource": "Programme coordinator using the refreshed Supabase connector; imported byte-for-byte by the calendar worker. The calendar worker’s old connector routing remained denied and was not bypassed.",
+    "project": {
+      "ref": "mftpcdpttteuwbolobye",
+      "name": "Zodiacs.org",
+      "region": "ap-northeast-1",
+      "status": "ACTIVE_HEALTHY",
+      "postgresEngine": "17",
+      "projectPostgresVersion": "17.6.1.141"
+    },
+    "existingAccountRoleLabel": null,
+    "accountRoleNote": "Connector project metadata exposes no organization role label; SQL database_role is not an account role.",
+    "sqlDatabaseRole": "postgres",
+    "calendarTableExists": false,
+    "calendarMigrationVersion": "20260929180000",
+    "calendarMigrationListed": false,
+    "migrationVersionIds": [
+      "20260819050930",
+      "20260831190940"
+    ],
+    "calendarSecurityMetadataRows": 0,
+    "calendarColumnMetadataRows": 0,
+    "calendarFunctionMetadataRows": 0,
+    "meaning": "First valid live-target absence observation; it neither rehabilitates the wrong test-project measurement nor establishes deployment readiness."
+  }
+}

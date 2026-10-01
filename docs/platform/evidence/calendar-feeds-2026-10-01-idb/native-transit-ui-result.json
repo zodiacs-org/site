@@ -1,0 +1,158 @@
+{
+  "schema": "zodiacs.transit-calendar-ui-browser/v1",
+  "sourceCommit": "7a9c9fe52689fddf9338d706459bebc981e180ac",
+  "driverSha256": "6475fa5b468201fa24cdee7f806e3db131f285a14e778afa68d7f2aa9ae5d09b",
+  "buildReceiptSha256": "54615362fc20a24b05bce5e2b5b99f9f5343923ba4cd1602cdfdf1de6b1199ec",
+  "buildReceipt": {
+    "schema": "zodiacs.phase1-build-receipt.v1",
+    "builtAt": "2026-10-01T10:40:56.608Z",
+    "templateSourceSha256": "d861b489661f154f021c1ca5236acd88975d6ecb5abb0ad43d92ec90a344f28a",
+    "dailyDate": "2026-10-01",
+    "publicationCanonicalSha256": "5dea85a5140e762dae5a732bb8634fd04ba055e9d7cfe3bcf6f60a8c01cd13b7",
+    "renderPayloadSha256": {
+      "daily": "885a8cca4a41b7bd23f7b8255d3a65a5041558c9f1b92ff13c21587d4d518da9",
+      "dailyPublication": "b2d100468adb32ba7b9976fde423a63bf7a8405c7ce51e65b798a9f1f957d47b",
+      "dailyPublicationManifest": "d1e6cfdd27140023dd30de2a1c3fd6862dd2d5453bf4ad4bdb9253e60f94a0b7",
+      "horoscopeProgram": "0ad116953dd2521f365e801d53435f200c98fe4f39e6d389a9150d92e5b02990"
+    }
+  },
+  "startedAt": "2026-10-01T10:41:10.884Z",
+  "completedAt": "2026-10-01T10:41:30.107Z",
+  "node": "v22.23.3",
+  "browser": "149.0.7827.55",
+  "accountV2Flag": false,
+  "markerSelection": {
+    "index": 1,
+    "label": "Jupiter sextile Natal MC — Oct 8, 2025"
+  },
+  "controlledBoundary": "Existing synthetic calendar create/remove responses; unchanged historical saved-chart fixture and assertions",
+  "results": [
+    {
+      "name": "outer transit ring renders (≥9 bodies)",
+      "ok": true,
+      "detail": "10 marks"
+    },
+    {
+      "name": "contact chords render",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "natal ring hides South Node (11 bodies)",
+      "ok": true,
+      "detail": "11 natal marks"
+    },
+    {
+      "name": "positions strip renders all 10 transiting bodies",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "scrubbing moves the outer ring",
+      "ok": true,
+      "detail": "{\"x\":555,\"y\":1194}→{\"x\":855,\"y\":887}"
+    },
+    {
+      "name": "scrubbing changes the date label",
+      "ok": true,
+      "detail": "Oct 1, 2026, 10:41 UTC → Mar 30, 2027, 10:41 UTC"
+    },
+    {
+      "name": "Now resets the date",
+      "ok": true,
+      "detail": "Oct 1, 2026, 10:41 UTC"
+    },
+    {
+      "name": "tapping a contact opens its reading",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "the tapped row is marked focused",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "stale focus dissolves instead of ghosting the ring",
+      "ok": true,
+      "detail": "sun opacity 1"
+    },
+    {
+      "name": "exact-date markers render on the timeline",
+      "ok": true,
+      "detail": "54 markers"
+    },
+    {
+      "name": "the feed note keeps its approximate angle contacts to the feed",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "the download note says the file's times come from the exact chart",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "calendar file UIDs carry no time",
+      "ok": true,
+      "detail": "UID:transit-a34fa3175bb7c449@zodiacs.org UID:transit-b8d550179df01f9d@zodiacs.org"
+    },
+    {
+      "name": "calendar file keeps each contact to the second",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "clicking a marker jumps the sky to that date",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "calendar subscription button renders",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "nothing is sent before subscribing",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "subscribing sends only the positions code, once",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "calendar address carries only the random id",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "the key that removes it is kept in this browser",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "removing sends the key as a bearer and forgets it",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile: transit ring renders",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "reduced motion: stepper jumps instantly",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "steppers clamp to the one-year window",
+      "ok": true,
+      "detail": ""
+    }
+  ],
+  "passed": 25,
+  "failed": 0
+}

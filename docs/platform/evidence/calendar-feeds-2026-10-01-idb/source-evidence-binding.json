@@ -1,0 +1,274 @@
+{
+  "schema": "zodiacs.calendar-feed-idb-evidence/v1",
+  "coreCandidate": {
+    "localCommit": "54cedce894cfa05c46279f757b58d029256a98b5",
+    "tree": "eba7016ed46b7d4d9256d454775bc247056000a7",
+    "publishedCommit": "5a8c80ef3ab7653223fe76cba5ce0efd91d4c416",
+    "gates": {
+      "fullBuild": "passed at exact 54cedce8; all existing budgets unchanged",
+      "fullTypecheck": {
+        "status": "passed",
+        "files": 1185,
+        "errors": 0,
+        "warnings": 0,
+        "hints": 18
+      },
+      "fullSuite": {
+        "passed": 6545,
+        "failed": 3,
+        "skipped": 4,
+        "total": 6552,
+        "filesPassed": 509,
+        "filesFailed": 2,
+        "filesSkipped": 1,
+        "failures": [
+          "Known preserved generated Guide context September/October drift",
+          "Inherited Phase1 capture hash is stale",
+          "Transitive-evidence test exceeded its unchanged 5-second timeout under concurrent load; isolated rerun passed in 1490ms"
+        ]
+      },
+      "nativeCrossTab": "34 required, pending CI",
+      "nativeTransitUI": "25 required, pending final CI",
+      "sql": "passed earlier unchanged backend; final CI binding pending",
+      "scope": "passed against integrated main 4e600544: 84 changed paths, 4 protected paths covered; current-main integration/re-pin outstanding",
+      "ledger": "--check and --summary passed: 23% (42.5/182.45), blocked 2% (4), no acceptance advanced",
+      "captureFileRerun": {
+        "passed": 4,
+        "failed": 1,
+        "soleFailure": "Inherited Phase1 capture hash is stale",
+        "transitiveEvidenceMs": 1490
+      },
+      "nativeBundlePreflight": "passed under Node22.22.2; browser not run",
+      "nativeTransitBuildPreflight": "passed against exact-source standard build; browser not run"
+    },
+    "reviews": [
+      {
+        "reviewer": "parent independent review",
+        "testsPassed": 162,
+        "sourceBound": true
+      },
+      {
+        "reviewer": "independent boundary reviewer",
+        "testsPassed": 133,
+        "sourceBound": true
+      }
+    ],
+    "negativeControls": [
+      {
+        "name": "canonical read returns stale view cache under superseding refresh",
+        "failedBefore": 1,
+        "log": "/tmp/calendar-idb-stale-read-negative.log"
+      },
+      {
+        "name": "durable echo, volatile sibling preservation, automatic remount hydration",
+        "failedBefore": 3,
+        "log": "/tmp/calendar-idb-review-negative.log"
+      }
+    ]
+  },
+  "integratedCandidate": {
+    "localCommit": "32e3873e9406d86bfb77d078a19c529564eba7f1",
+    "publishedCommit": "7a9c9fe52689fddf9338d706459bebc981e180ac",
+    "tree": "290000b7ffcd7dad7090ea4b5ba4db2734c9644d",
+    "main": "450f0fd948d86d82c416bcbd51b3dace5196097e",
+    "publicParents": [
+      "5a8c80ef3ab7653223fe76cba5ce0efd91d4c416",
+      "450f0fd948d86d82c416bcbd51b3dace5196097e"
+    ],
+    "phase1SourceHash": "d861b489661f154f021c1ca5236acd88975d6ecb5abb0ad43d92ec90a344f28a",
+    "build": "passed unchanged budgets",
+    "typecheck": {
+      "files": 1185,
+      "errors": 0,
+      "warnings": 0,
+      "hints": 18
+    },
+    "fullSuite": {
+      "command": "npm test -- --maxWorkers=4",
+      "passed": 6545,
+      "failed": 3,
+      "skipped": 4,
+      "total": 6552,
+      "filesPassed": 508,
+      "filesFailed": 3,
+      "filesSkipped": 1,
+      "failures": [
+        "Preserved generated Guide context September/October drift",
+        "Inherited checked-in Phase1 captures are stale",
+        "Owner main450f home-first-paint test still expects See your forecasts after homepage navigation-copy update"
+      ],
+      "calendarFailures": 0,
+      "claimsFailures": 0,
+      "transitiveEvidenceTimeout": false
+    },
+    "native": {
+      "run": "https://github.com/zodiacs-org/site/actions/runs/36850243300",
+      "job": 110329913493,
+      "crossTabRequired": 34,
+      "transitRequired": 25,
+      "status": "passed",
+      "crossTabPassed": 34,
+      "crossTabFailed": 0,
+      "transitPassed": 25,
+      "transitFailed": 0,
+      "node": "v22.23.3",
+      "browser": "149.0.7827.55",
+      "artifactId": 11154819933,
+      "artifactName": "calendar-browser-7a9c9fe52689fddf9338d706459bebc981e180ac-36850243300",
+      "artifactZipSha256": "012cb64e806a16c9e503fc89132a903a1ed0096da5287667638006142aa81167",
+      "bundledSourceInputsVerified": 21,
+      "pageErrors": 0,
+      "externalRequests": 0
+    },
+    "scope": "passed; only 4 translated privacy paths; pinned to actual main450f",
+    "ledger": "23% (42.5/182.45), blocked2%(4); no acceptance advanced",
+    "sql": {
+      "status": "passed",
+      "run": 36850243233,
+      "job": 110329914844,
+      "url": "https://github.com/zodiacs-org/site/actions/runs/36850243233/job/110329914844",
+      "migrationSha256": "a0bd1d713360f73ea3a53f53fb7592e0ae2b43c23205b506ec62a441b9e18438",
+      "productionApplied": false,
+      "meaning": "PostgreSQL17 isolated replay/privacy/search-path/concurrency gate, not production installation"
+    },
+    "phase1Capture": {
+      "captureStep": "success",
+      "receiptValidationStep": "success",
+      "sourceHash": "d861b489661f154f021c1ca5236acd88975d6ecb5abb0ad43d92ec90a344f28a",
+      "run": 36850243300,
+      "job": 110329913493,
+      "artifactId": 11155943680,
+      "artifactName": "browser-evidence-compare-7a9c9fe52689fddf9338d706459bebc981e180ac-36850243300",
+      "artifactBytes": 105802958,
+      "githubReportedArtifactZipSha256": "ecfa8e17a5940d2b5c010d8c79406e8ad2209ef1534187752bd5e21b0f1a1c14",
+      "artifactLocallyHashVerified": false,
+      "perImageHashVerification": "not performed; combined archive exceeds file-helper32MiB and selective byte-range retrieval returnedHTTP403; route stopped",
+      "adopted": false,
+      "ownerVisualBaselinesReplaced": false
+    },
+    "broaderBrowserOutcomes": {
+      "visualComparison": "failure",
+      "lighthouse": "failure",
+      "explorer": "failure",
+      "provenance": "success",
+      "finalArtifactUpload": "success"
+    },
+    "independentSiteCheckCalendarSteps": {
+      "run": 36850243233,
+      "job": 110329914311,
+      "crossTab": "success",
+      "transitUi": "success",
+      "build": "success",
+      "typecheck": "success",
+      "laterEngineAccuracyVectorsStep": "failure",
+      "basis": "GitHub job-step metadata; the fully inspected native results in this packet are from the explicit-head BrowserEvidence job"
+    }
+  },
+  "priorNativeRuns": [
+    {
+      "name": "original",
+      "url": "https://github.com/zodiacs-org/site/actions/runs/36838706531",
+      "sourceCommit": "3594bd96043c2e80066bec3a8eea5ed0f90b18bb",
+      "browser": "149.0.7827.55",
+      "node": "v22.23.3",
+      "sha256": "32a9e3010f29184d36d9e24b74229af86b11e4de565cd1920dc3e0e4a317dad3",
+      "passed": 7,
+      "failed": 1
+    },
+    {
+      "name": "diagnostic",
+      "url": "https://github.com/zodiacs-org/site/actions/runs/36842497202",
+      "sourceCommit": "cb69bf6df9502e1181e2dabb7a4b9d56f65bfb37",
+      "browser": "149.0.7827.55",
+      "node": "v22.23.2",
+      "sha256": "1a75517c1b5b364aebca88f4f9c40481d4b16541f789a3908f94cb6d6d2d8eae",
+      "passed": 8,
+      "failed": 0
+    },
+    {
+      "name": "queued",
+      "url": "https://github.com/zodiacs-org/site/actions/runs/36843884429",
+      "sourceCommit": "502e12482eed20ca5ea4aecfd3832ca4ba52c715",
+      "browser": "149.0.7827.55",
+      "node": "v22.23.2",
+      "sha256": "aa8ba11e7aadbd9d4844086908a83895642bc8df24ea0ddd9467b2beca42c7e8",
+      "passed": 20,
+      "failed": 8
+    }
+  ],
+  "retainedStateContract": "After successful awaited clear, the canonical calendar row/fence is absent; no calendar retry marker. An empty schema may remain. Missed notifications plus unavailable canonical storage can leave only an existing document memory snapshot until a successful refresh or document exit; it cannot authorize persistence.",
+  "unpublishedCandidateDisposition": "No automatic import of the unpublished localStorage candidate. Repository main450f0fd9 has no opaque-feed module/API/migration/keys; preview/development participants retain their old localStorage records until clearing and must handle removal using their original candidate or the existing address-by-email owner procedure. The actual 60-day legacy-token API remains unchanged.",
+  "knownRemaining": [
+    "Final native and browser/capture gates must bind to the release head",
+    "Generated Guide context drift is unrelated and deliberately preserved from main",
+    "Production migration/deploy/live checks remain unperformed",
+    "PR616 G4 acceptance is not in main450f; preserve it at eventual current-main integration",
+    "Re-date the provisional 2026-10-01 release window if deployment slips",
+    "Live calendar schema absence is now verified; server Production env binding and the remaining release gates must be verified without decrypting values before any production SQL action"
+  ],
+  "productionReadiness": {
+    "bindingFile": "production-binding.json",
+    "browserProjectRef": "mftpcdpttteuwbolobye",
+    "privateMetadataAccess": "resolved for the programme coordinator’s refreshed Supabase connector; the old worker connector remains denied",
+    "calendarTableAndMigrationState": "public.calendar_feeds absent, migration version 20260929180000 not listed, and named calendar functions absent at the live project",
+    "wrongTargetMeasurement": "wlzzboekuffmagakvxaq was an unused test project; prior absence result withdrawn as production evidence",
+    "productionMutationsPerformed": false,
+    "metadataCheckedAtUtc": "2026-10-01T11:24:01Z",
+    "metadataFile": "supabase-production-metadata.json",
+    "metadataSha256": "b9798edbe2cd18f735f53ca28543c833479d48d0ab00e85ab4f9984b30d8c968",
+    "accountRoleLabel": null,
+    "accountRoleNote": "Connector project metadata exposes no organization role label; SQL database_role is not an account role.",
+    "migrationActionPlan": "MIGRATION-REVIEW.md; prepared only, not authorized for execution by this evidence update"
+  },
+  "artifacts": {
+    "nativeCrossTab": {
+      "path": "native-cross-tab-result.json",
+      "sha256": "aae2df2d6d92f1afce64b9ea6427576a7a480127c470ba99048cc16c8d958ea2",
+      "bytes": 601462
+    },
+    "nativeTransitUi": {
+      "path": "native-transit-ui-result.json",
+      "sha256": "6aa451d31ab926a571fde2b39a419f585f900f6fffb5de7ac6f118423c627e90",
+      "bytes": 4442
+    },
+    "productionMetadata": {
+      "path": "supabase-production-metadata.json",
+      "sha256": "b9798edbe2cd18f735f53ca28543c833479d48d0ab00e85ab4f9984b30d8c968",
+      "bytes": 1273,
+      "collectionSource": "Programme coordinator refreshed Supabase connector; exact exported bytes supplied to the calendar worker"
+    }
+  },
+  "verificationLogs": {
+    "build": {
+      "commandLogName": "calendar-idb-main450-build.log",
+      "sha256": "59fad404bb19329f1e53a37c54ae816b6db50dc8b4882809ef3cc0f6254ae870",
+      "bytes": 308484
+    },
+    "typecheck": {
+      "commandLogName": "calendar-idb-main450-check.log",
+      "sha256": "1c05a9f3aedd01aea37dd8ee74badc1eac2a374d0f66e97def5bde505ce2f005",
+      "bytes": 8201
+    },
+    "fullSuite": {
+      "commandLogName": "calendar-idb-main450-tests.log",
+      "sha256": "db0ff1af76df92f788c69f22ce4a5d7afac699467611258894d941719fa5c1a5",
+      "bytes": 215102
+    }
+  },
+  "ownerReadOnlyPacket": {
+    "file": "calendar-production-owner-readonly.zip",
+    "bytes": 4144,
+    "sha256": "26e55d8973b81b6b9fc8b6d7345e145c00d5c4dcb644ef3a4cea8f0869d89580",
+    "scope": "Existing authenticated live-target project/catalog metadata only; no secrets, rows, permission expansion or production mutations",
+    "deliveryOwner": "Parent task",
+    "status": "Historical handoff packet; completed by the programme coordinator through the refreshed connector at 2026-10-01T11:24:01Z; no further owner action needed for these metadata queries"
+  },
+  "publicationProvenance": {
+    "testedPublicCandidate": "7a9c9fe52689fddf9338d706459bebc981e180ac",
+    "priorLocalEvidenceCommit": "9fbb1e2982732fc55e6f7ad1c3d009541bf6ed24",
+    "metadataObservationAtUtc": "2026-10-01T11:24:01Z",
+    "meaning": "The later evidence commit records imported live metadata and an unapplied migration review plan. It does not claim that production metadata came from CI, that the local evidence commit has been published, or that a production migration/deployment occurred.",
+    "publicationOwner": "Programme coordinator; external publication is separate from local preparation",
+    "calendarAcceptanceAdvanced": false
+  }
+}

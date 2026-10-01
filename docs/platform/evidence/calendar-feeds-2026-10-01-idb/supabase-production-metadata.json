@@ -1,0 +1,38 @@
+{
+  "checkedAtUtc": "2026-10-01T11:24:01Z",
+  "project": {
+    "ref": "mftpcdpttteuwbolobye",
+    "name": "Zodiacs.org",
+    "region": "ap-northeast-1",
+    "status": "ACTIVE_HEALTHY",
+    "postgresEngine": "17",
+    "projectPostgresVersion": "17.6.1.141"
+  },
+  "existingAccountRoleLabel": null,
+  "accountRoleNote": "Connector project metadata exposes no organization role label; SQL database_role is not an account role.",
+  "queryA": [
+    {
+      "database_name": "postgres",
+      "database_role": "postgres",
+      "postgres_version": "17.6",
+      "calendar_feeds_exists": false,
+      "migration_history_exists": true
+    }
+  ],
+  "migrationVersions": [
+    {
+      "migration_version": "20260819050930"
+    },
+    {
+      "migration_version": "20260831190940"
+    }
+  ],
+  "tableSecurityMetadata": [],
+  "columns": [],
+  "functions": [],
+  "calendarMigrationListed": false,
+  "calendarMigrationVersion": "20260929180000",
+  "productionMutationsPerformed": false,
+  "scope": "Read-only project metadata and SELECT-only PostgreSQL catalogs/migration identifiers; no table rows, secrets, environment values or function bodies returned.",
+  "supersession": "First valid live-target metadata observation; prior wlzz test-project absence is not production evidence."
+}
