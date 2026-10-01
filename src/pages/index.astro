@@ -706,6 +706,7 @@ const tools = [
     isolation: isolate;
   }
   .hero-motion { position: absolute; z-index: 5; top: 14px; right: 14px; min-height: 44px; padding: 0 14px; border: 1px solid var(--hair-2); border-radius: 999px; background: rgba(6,7,9,.85); color: var(--text); font: 500 12px var(--font-sans); cursor: pointer; }
+  @media (max-width: 959px) { .hero-motion { top: calc(60px + env(safe-area-inset-top)); } }
   @media (prefers-reduced-motion: reduce) { .hero-motion { display: none; } }
   .hero__poster,
   .hero__video {

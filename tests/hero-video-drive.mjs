@@ -256,6 +256,14 @@ await withPreview({ port: 4402 }, async (baseURL) => {
         check(`${testCase.name}: rejected playback keeps the poster drifting`, fallback.playback === 'poster-fallback' && fallback.animation === 'running', `${fallback.playback} · ${fallback.animation}`);
       }
 
+      if (testCase.name === 'mobile-normal') {
+        const control = page.locator('[data-hero-motion-toggle]');
+        check('mobile motion control remains tappable below navigation', await control.evaluate((element) => {
+          const rect = element.getBoundingClientRect();
+          return rect.height >= 44 && rect.top >= 50 && element.contains(document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2));
+        }));
+      }
+
       if (testCase.name === 'desktop-normal') {
         const pause = page.locator('[data-hero-motion-toggle]');
         await pause.click();
