@@ -1,0 +1,75 @@
+{
+  "id": 23080134,
+  "doi": "10.5281/zenodo.23080134",
+  "conceptdoi": "10.5281/zenodo.23080133",
+  "created": "2026-10-01T10:13:57.901413+00:00",
+  "updated": "2026-10-01T10:13:58.071513+00:00",
+  "submitted": true,
+  "metadata": {
+    "title": "Zodiacs Engine (@zodiacs/engine)",
+    "doi": "10.5281/zenodo.23080134",
+    "publication_date": "2026-10-01",
+    "description": "TypeScript astrology calculations for browsers and Node.js: tropical planetary positions, natal charts with houses and aspects, transits, synastry, secondary progressions, Moon phase and Saturn returns; local birth times resolved on the tz database's history, and instants read as UTC, UT1 or TT; Hellenistic timing techniques; and the sidereal zodiac with Jyotish techniques. The repository also holds a conformance suite for astrology computation (test vectors, each decided by an independent arbiter with a stated tolerance, and a harness that runs any engine against them) and a historical time atlas of what civil clocks showed, where and when, with a primary source for every rule. Licences: the code is MIT; the \u0394T table values the package ships are CC BY 4.0, so the package as distributed is MIT AND CC-BY-4.0 (LICENSING.md); the conformance suite is dedicated to the public domain under CC0 1.0; the atlas's data and documentation are CC BY 4.0 and its tools MIT (atlas/LICENSING.md).",
+    "access_right": "open",
+    "creators": [
+      {
+        "name": "Zodiacs.org",
+        "affiliation": null
+      }
+    ],
+    "keywords": [
+      "astrology",
+      "ephemeris",
+      "natal chart",
+      "house systems",
+      "synastry",
+      "transits",
+      "TypeScript",
+      "conformance testing"
+    ],
+    "related_identifiers": [
+      {
+        "identifier": "https://github.com/zodiacs-org/engine",
+        "relation": "isSupplementTo",
+        "resource_type": "software",
+        "scheme": "url"
+      }
+    ],
+    "version": "v0.1.1-rc.15",
+    "custom": {
+      "code:codeRepository": "https://github.com/zodiacs-org/engine"
+    },
+    "resource_type": {
+      "title": "Software",
+      "type": "software"
+    },
+    "license": {
+      "id": "mit-license"
+    },
+    "relations": {
+      "version": [
+        {
+          "index": 0,
+          "is_last": true,
+          "parent": {
+            "pid_type": "recid",
+            "pid_value": "23080133"
+          }
+        }
+      ]
+    }
+  },
+  "files": [
+    {
+      "id": "a192d211-7ff6-4938-bbc7-fcf770dc7db4",
+      "key": "zodiacs-org/engine-v0.1.1-rc.15.zip",
+      "size": 3151916,
+      "checksum": "md5:f993fcd18500064ef8ad51155451fe9e",
+      "links": {
+        "self": "https://zenodo.org/api/records/23080134/files/zodiacs-org/engine-v0.1.1-rc.15.zip/content"
+      }
+    }
+  ],
+  "recordUrl": "https://zenodo.org/records/23080134",
+  "retrievedAt": "2026-10-01T10:15:56Z"
+}
