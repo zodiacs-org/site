@@ -4,6 +4,10 @@ This template is deployed only to a new, empty **private** repository. Never
 commit the prepared bundle or its `state/` directory to the public site.
 `frozen/` retains the original lockfile, engine archive and calculation files.
 Every CLI invocation verifies them against the original protocol receipt.
+Installation uses a separate minimal lockfile containing only the pinned
+engine and ephemeris. Website-only packages such as Astro/devalue are not
+installed. The archived original site lockfile remains unchanged for source
+verification; all installed engine/ephemeris bytes are still verified by v1.
 
 The workflow runs at 00:17 and 02:17 UTC daily. The second run retries source
 or timestamp outages without replacing existing decisions. Record precedes
@@ -30,8 +34,15 @@ Prepare from the site checkout:
 
 ```sh
 node scripts/prepare-market-lens-paper-ops.mjs \
-  --state /private/existing-study-v1 --out /private/new-bundle-directory
+  --state /private/existing-study-v1 --out /private/new-bundle-directory \
+  --runtime /private/original-frozen-runtime
 ```
+
+Use the retained original runtime for a live study after website dependency
+updates; the preparer runs that runtime's own verification before copying.
+Omit `--runtime` only for a study matching the current site's source hashes.
+Install from the prepared bundle with `bash ops/install-runtime.sh`, then run
+`node ops/run-cycle.mjs frozen state`. Do not run `npm ci` in `frozen/`.
 
 The owner must create `zodiacs-org/market-lens-paper` with private visibility
 and no initial files, then grant this session access. GitHub repository

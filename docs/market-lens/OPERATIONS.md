@@ -1,5 +1,29 @@
 # Operational handoff — 2026-10-01
 
+## Current dependency and private runtime follow-up
+
+The operations commit `9b66dd24` encountered a newly published high-severity
+`devalue` advisory in CI. Updating only this dependency to the compatible
+patched 5.9.4 clears the production audit. Current local validation and
+artifact hashes are in [security-followup.json](security-followup.json);
+the earlier `operations-acceptance.json` remains dated historical evidence.
+The existing protected preview below predates this patch.
+
+The current private transfer package uses `ops/install-runtime.sh` and the
+separate minimal `ops/runtime-deps/package-lock.json` to install only the
+immutable engine archive and astronomy-engine 2.1.19. Its audit has zero
+findings. The frozen original full-site lockfile is retained for v1 source
+verification; never install its website dependencies. Preparation after site
+updates must use the original frozen runtime via `--runtime`, as documented
+in [ops/README.md](../../research/market-lens/ops/README.md).
+
+Fresh minimal installation and two cycles pass. All original protocol,
+decision and witness files are byte-identical. The updated workflow parses,
+and manual controls reject a public output directory and a modified frozen
+lockfile. Remote activation and backup verification still need repository
+access; changing the installation path does not create a remote service.
+The reusable cloud startup instructions have been updated accordingly.
+
 ## Revised protected preview
 
 - Application source `bdda5cee` passes all 19 hosted CI checks; the two

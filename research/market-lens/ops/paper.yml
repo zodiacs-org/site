@@ -33,11 +33,10 @@ jobs:
         with:
           node-version: 22.22.2
           cache: npm
-          cache-dependency-path: frozen/package-lock.json
+          cache-dependency-path: ops/runtime-deps/package-lock.json
       - name: Install the frozen runtime
         if: steps.window.outputs.active == 'true'
-        working-directory: frozen
-        run: npm ci --omit=dev --ignore-scripts --no-audit --no-fund
+        run: bash ops/install-runtime.sh
       - name: Record, witness, settle and report
         if: steps.window.outputs.active == 'true'
         run: node ops/run-cycle.mjs frozen state

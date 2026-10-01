@@ -1,5 +1,26 @@
 # Market Lens launch checkpoint
 
+## Dependency security follow-up — 2026-10-01
+
+The operations commit's CI discovered a newly published high-severity
+`devalue` advisory. The site now pins the compatible patched version 5.9.4;
+the production audit has zero vulnerabilities. The full dependency audit
+has no high/critical findings and retains two moderate development-only
+Vitest findings. Daily provenance and all 18 visual captures were regenerated
+with the documented tools after the lockfile update.
+
+The paper study retains its original protocol, source lockfile, decision and
+signed witness. Its updated deployment template installs only the pinned
+engine and ephemeris from a separate minimal lockfile, with zero audit
+findings. Website packages from the archived lockfile are never installed.
+Fresh installation, two cycles and source/public-output refusal checks pass;
+the remote repository and scheduler still need access. Current validation
+and transfer-package hashes are in [security-followup.json](security-followup.json).
+
+The protected preview described below predates this dependency patch. Hosted
+Lens acceptance remains blocked by the absent automation bypass; no
+production deployment or public price display has occurred.
+
 ## Operational follow-up — 2026-10-01
 
 The revised protected preview is deployed; [OPERATIONS.md](OPERATIONS.md)

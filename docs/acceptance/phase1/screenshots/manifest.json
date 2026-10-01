@@ -6,27 +6,27 @@
     "script": "tests/phase1-acceptance-drive.mjs",
     "contractVersion": 4
   },
-  "capturedAt": "2026-10-01T16:09:10.627Z",
+  "capturedAt": "2026-10-01T18:04:05.935Z",
   "browser": "Chromium 151.0.7922.173",
   "dailyDate": "2026-10-01",
   "publicationCanonicalSha256": "5dea85a5140e762dae5a732bb8634fd04ba055e9d7cfe3bcf6f60a8c01cd13b7",
-  "templateSourceSha256": "c8fd4db0755ba1bb78a7cbf218abb4e7866ceec1a3c5a386973ba322949e53aa",
+  "templateSourceSha256": "0948e4244c81606d0af9438cd428e966df1c95c090633597f9ca3b2ee6302270",
   "renderPayloadSha256": {
     "daily": "885a8cca4a41b7bd23f7b8255d3a65a5041558c9f1b92ff13c21587d4d518da9",
     "dailyPublication": "b2d100468adb32ba7b9976fde423a63bf7a8405c7ce51e65b798a9f1f957d47b",
-    "dailyPublicationManifest": "7cfa553375b9f97d3d9e98b4bdfdc4f0905961e8b51743c07ad8484bfbcf9e31",
+    "dailyPublicationManifest": "c1b15f1f91fbe31f136f6104db1a2a1a657ce731f89f710ff7434a1357f71b5c",
     "horoscopeProgram": "0ad116953dd2521f365e801d53435f200c98fe4f39e6d389a9150d92e5b02990"
   },
   "buildReceipt": {
     "schema": "zodiacs.phase1-build-receipt.v1",
-    "builtAt": "2026-10-01T16:08:38.435Z",
-    "templateSourceSha256": "c8fd4db0755ba1bb78a7cbf218abb4e7866ceec1a3c5a386973ba322949e53aa",
+    "builtAt": "2026-10-01T17:58:21.377Z",
+    "templateSourceSha256": "0948e4244c81606d0af9438cd428e966df1c95c090633597f9ca3b2ee6302270",
     "dailyDate": "2026-10-01",
     "publicationCanonicalSha256": "5dea85a5140e762dae5a732bb8634fd04ba055e9d7cfe3bcf6f60a8c01cd13b7",
     "renderPayloadSha256": {
       "daily": "885a8cca4a41b7bd23f7b8255d3a65a5041558c9f1b92ff13c21587d4d518da9",
       "dailyPublication": "b2d100468adb32ba7b9976fde423a63bf7a8405c7ce51e65b798a9f1f957d47b",
-      "dailyPublicationManifest": "7cfa553375b9f97d3d9e98b4bdfdc4f0905961e8b51743c07ad8484bfbcf9e31",
+      "dailyPublicationManifest": "c1b15f1f91fbe31f136f6104db1a2a1a657ce731f89f710ff7434a1357f71b5c",
       "horoscopeProgram": "0ad116953dd2521f365e801d53435f200c98fe4f39e6d389a9150d92e5b02990"
     }
   },
