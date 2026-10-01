@@ -76,3 +76,11 @@ assertions now open the saved-chart disclosure and allow refresh of derived
 engine summaries while rejecting source/identity/house-system mutation. Closed
 disclosure descendants are excluded from painted-target overlap checks; actual
 hit-testing and 44px size checks remain.
+
+Merged-source Linux candidate run `36912932781` completed successfully, including
+Phase 1 build/capture receipt validation. Its source is `1d344ad8147527243ecbeb9bb62259782d233cb1`,
+Chromium 149.0.7827.55, template fingerprint `332bb24443994cd4c39ff12d269406747a887b7fb7bfd782302436eded23cd40`.
+The three actual homepage images were inspected and copied. All twelve other
+candidate images are byte-identical to the merged committed Linux baselines.
+Raw candidate provenance is retained in `evidence/linux-merged-candidate-provenance.json`.
+Homepage interaction also passes all 242 checks on the merged build.

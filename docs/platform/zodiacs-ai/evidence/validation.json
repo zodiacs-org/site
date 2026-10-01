@@ -109,7 +109,11 @@
         "pixelDiffRatio": 0,
         "sourceCommit": "a6947f71dce4adb7635060a6edfceb3ae7060e41",
         "run": "https://github.com/zodiacs-org/site/actions/runs/36906631805"
-      }
+      },
+      "mergedCandidateRun": "https://github.com/zodiacs-org/site/actions/runs/36912932781",
+      "mergedCandidateSource": "1d344ad8147527243ecbeb9bb62259782d233cb1",
+      "mergedCandidateOnlyHomeUpdated": true,
+      "mergedOtherTwelveByteIdentical": true
     },
     "existingForeignOriginWidgetBrowserDrive": "passed",
     "existingWidgetLighthouse": {
@@ -151,7 +155,7 @@
       "runnerStallsSetAsideByExistingPolicy": 1
     },
     "finalSiteGate": {
-      "status": "Exact-head CI required for merge of approved main db5bf574 and final source-bound evidence",
+      "status": "Latest exact-head Site Check attached to PR #618 is the release authority; earlier immutable source-bound results below do not replace it.",
       "precedingRun": "https://github.com/zodiacs-org/site/actions/runs/36896802116",
       "precedingFailure": "Only three intentional homepage visual height differences; full Lighthouse skipped",
       "additionalPrecedingRun": "https://github.com/zodiacs-org/site/actions/runs/36904296920",
@@ -196,13 +200,17 @@
     "navigationHelpersAfterMainMerge": {
       "passed": 185,
       "failed": 0,
-      "scope": "Actual locale-discovery and Moon browser helpers; preserves nine destinations, 44px hit targets, focus and sheet ownership. Full Linux driver remains exact-head authority."
+      "scope": "Historical focused locale/Moon helper review before consumer-copy main merge. Final helper retains approved seven secondary tools with primary destination checks separately; exact-head Linux driver is authoritative.",
+      "sourceCommit": "d192701f1bdeac6d44c2a57f014ac08fe8eccf6a"
     },
     "learningHelpersAfterMainMerge": {
       "passed": 84,
       "failed": 0,
       "unitTestsPassed": 33,
       "scope": "Actual search/learning and saved-chart practice browser flows, including native locks, cross-tab source edits and unknown-time refusals. Summary refresh permits no source or identity mutation."
+    },
+    "mergedHomepageBrowser": {
+      "passed": 242
     }
   },
   "productionEnabled": false,

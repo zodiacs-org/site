@@ -10,7 +10,7 @@ approved main `6ca4269a` and subsequent consumer-copy release `db5bf574` are mer
 | 0 | Repository, release and host contracts | Verified against official guides and portable 1.0.0 schemas |
 | 1 | Shared hosted tools and bounded remote MCP | Implemented; local protocol and authenticated HTTPS checks pass |
 | 2 | ChatGPT experience and developer plugin | Both installed; installed developer server and real ChatGPT tested |
-| 3 | Synthetic evaluation, build and review packages | Local checks pass; final exact-head site CI required |
+| 3 | Synthetic evaluation, build and review packages | Local checks pass; final head status is recorded in PR checks |
 | 4 | HTTPS, actual hosts, beta and directory release | Staging and host evidence recorded; remaining release gates below |
 
 ## Implemented contracts
@@ -57,7 +57,8 @@ legal links, manifests, SHA-256 members and generated bundles pass drift checks.
 The documented accessibility blocker is fixed. [REGRESSIONS.md](./REGRESSIONS.md)
 records its historical reproduction, focused fix, reviewed Linux candidate
 provenance and macOS exact-fixture limitations. Full exact-head CI remains the
-site release authority; earlier local or historical results do not replace it.
+site release authority; follow the latest Site Check attached to PR #618. Earlier
+local or historical results do not replace it.
 The current production advisory gate exposed devalue 5.9.2. The compatible 5.9.4
 patch passes that gate; only its lockfile entry and the deterministic daily
 generator provenance hash changed in application inputs. The lockfile also binds
