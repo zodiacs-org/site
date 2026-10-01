@@ -576,3 +576,11 @@ a.pf-chart__action { text-decoration: none; }
   .pf-quiet,
   .pf-keep__close { transition: none; }
 }
+
+.pf-introduction { margin-bottom: 24px; border: 1px solid var(--hair-2); border-radius: 24px; background: rgba(198,204,218,0.025); overflow: hidden; }
+.pf-introduction .pf-hero { border: 0; border-radius: 0; background: transparent; margin-bottom: 0; }
+.pf-introduction .pf-hero h1 { margin-top: 12px; }
+.pf-introduction .pf-choose { margin: 0; border-top: 1px solid var(--hair-1); }
+.pf-introduction .pf-choose__core { margin: 0; padding: 20px clamp(20px, 4vw, 32px); }
+.pf-choose .pf-chart__action { min-height: 44px; padding: 8px 12px; }
+@media (max-width: 599px) { .pf-introduction .pf-hero h1 { font-size: 34px; } .pf-introduction .pf-hero p { font-size: 14px; line-height: 1.5; } }

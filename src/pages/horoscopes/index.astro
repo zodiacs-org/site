@@ -66,6 +66,7 @@ const jsonLd = [
       <span class="horo-hero__stamp mono">Updated daily · {dateLabel}</span>
     </div>
 
+    <p class="horo-jump-label">Jump to your sign</p>
     <nav class="horo-picker" aria-label="Choose your horoscope sign">
       {cards.map(({ sign }) => (
         <a href={`/horoscopes/${sign.slug}/`} style={`--sign:${sign.hue}`}>
@@ -75,6 +76,7 @@ const jsonLd = [
       ))}
     </nav>
 
+    <h2 class="display horo-preview-title">A look at today’s readings</h2>
     <div class="horo-grid">
       {cards.map(({ sign, reading, teaser }) => (
         <a class="tile horo-card" href={`/horoscopes/${sign.slug}/`} style={`--sign:${sign.hue}`}>
@@ -122,6 +124,8 @@ const jsonLd = [
 
 <style>
   .horo-hero { max-width: 62ch; margin-bottom: clamp(26px, 5vw, 42px); }
+  .horo-jump-label { margin: 0 0 8px; font-size: 13px; color: var(--muted); }
+  .horo-preview-title { margin: 28px 0 18px; font-size: 30px; font-weight: 400; }
   .horo-hero h1 { margin: 14px 0; font-size: var(--text-2xl); line-height: 1.04; }
   .horo-hero p { margin: 0; color: var(--muted); font-size: var(--text-lg); text-wrap: pretty; }
   .horo-hero__stamp {
@@ -159,7 +163,7 @@ const jsonLd = [
   }
   .horo-card :global(img) { border-radius: 50%; }
   .horo-card__name { font-weight: 650; letter-spacing: -0.01em; }
-  .horo-card__dates { color: var(--faint); font-size: 10px; letter-spacing: 0.06em; }
+  .horo-card__dates { color: var(--faint); font-size: 12px; letter-spacing: 0.03em; }
   .horo-card__today {
     margin-top: 6px;
     padding-top: 10px;

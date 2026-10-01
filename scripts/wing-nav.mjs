@@ -285,7 +285,7 @@ export function wingNavCss() {
   @font-face { font-family: 'EB Garamond Fallback Android'; src: local('Noto Serif'); size-adjust: 79.64%; ascent-override: 126.44%; descent-override: 37.42%; line-gap-override: 0%; }
   @font-face { font-family: 'EB Garamond Fallback Times'; src: local('Times New Roman'), local('Liberation Serif'); size-adjust: 87.49%; ascent-override: 115.1%; descent-override: 34.06%; line-gap-override: 0%; }
   .wnav-wrap { --wing-sans: 'Instrument Sans', 'Instrument Sans Fallback', 'Instrument Sans Fallback Android', system-ui, -apple-system, sans-serif; --wing-serif: 'EB Garamond', 'EB Garamond Fallback', 'EB Garamond Fallback Android', 'EB Garamond Fallback Times', 'Iowan Old Style', Georgia, serif; position: fixed; top: 14px; left: 0; right: 0; z-index: 60; display: flex; flex-direction: column; align-items: center; pointer-events: none; padding-top: env(safe-area-inset-top); }
-  .wnav { pointer-events: auto; box-sizing: border-box; max-width: calc(100% - 32px); display: inline-flex; align-items: center; gap: 10px; height: 52px; padding: 0 10px 0 20px; border-radius: 999px; background: rgba(10,12,17,0.66); backdrop-filter: saturate(150%) blur(18px); -webkit-backdrop-filter: saturate(150%) blur(18px); border: 1px solid rgba(198,204,218,0.16); box-shadow: inset 0 1px 0 rgba(238,241,247,0.06), 0 12px 32px -14px rgba(0,0,0,0.7); }
+  .wnav { pointer-events: auto; box-sizing: border-box; max-width: calc(100% - 32px); display: inline-flex; align-items: center; gap: 10px; height: 52px; padding: 0 10px 0 20px; border-radius: 999px; background: rgba(10,12,17,0.96); backdrop-filter: saturate(150%) blur(18px); -webkit-backdrop-filter: saturate(150%) blur(18px); border: 1px solid rgba(198,204,218,0.16); box-shadow: inset 0 1px 0 rgba(238,241,247,0.06), 0 12px 32px -14px rgba(0,0,0,0.7); }
   @media (min-width: 920px) { .wnav { gap: 10px; } }
   @media (min-width: 900px) { .wnav { gap: 18px; } }
   .wnav__mark { display: inline-flex; align-items: center; gap: 9px; text-decoration: none; white-space: nowrap; }
@@ -356,10 +356,10 @@ export function wingNavCss() {
   .wnav-menu__link:last-child { border-bottom: 0; }
   .wnav-menu__registry { display: grid; gap: 5px; }
   .wnav-menu__registry small { color: var(--ink-mute, #8A93A6); font-family: var(--mono, 'JetBrains Mono', monospace); font-size: 9px; letter-spacing: 0.04em; line-height: 1.35; }
-  .wnav-menu__tools { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .wnav-menu__tools { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 18px; }
   .wnav-menu__tool { display: block; min-width: 0; padding: 11px 0; border-bottom: 1px solid var(--hair, rgba(198,204,218,0.10)); color: var(--ink, #EEF1F7); font-family: var(--wing-serif); font-size: clamp(18px, 5vw, 22px); line-height: 1.05; text-decoration: none; }
   .wnav-menu__tool:last-child { border-bottom: 0; }
-  .wnav-menu__signs { display: flex; flex-direction: column; }
+  .wnav-menu__signs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 16px; }
   .wnav-menu__sign { display: flex; flex-direction: row; align-items: center; gap: 13px; padding: 10px 0; text-decoration: none; font-family: var(--wing-serif); font-size: clamp(20px, 5.5vw, 26px); font-weight: 400; color: var(--ink, #EEF1F7); border-bottom: 1px solid var(--hair, rgba(198,204,218,0.10)); }
   .wnav-menu__sign:last-child { border-bottom: 0; }
   .wnav-menu__sign .wnav-disc { width: 30px; height: 30px; }

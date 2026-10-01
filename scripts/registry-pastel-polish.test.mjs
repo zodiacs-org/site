@@ -2,6 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
+import postcss from 'postcss';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const signs = [
@@ -205,7 +206,9 @@ describe('registry pastel polish', () => {
     expect(consumerReduced).toContain('.consumer-registry .vrf__example:active,');
     expect(consumerReduced).toContain('.consumer-registry .consumer-purpose__arrow,');
     expect(consumerReduced).toContain('.consumer-market-gateway__action:active { transform: none; }');
-    const campaignReduced = campaign.slice(campaign.lastIndexOf('@media (prefers-reduced-motion: reduce)'));
+    const reducedRules = [];
+    postcss.parse(campaign).walkAtRules('media', (rule) => { if (rule.params.includes('prefers-reduced-motion: reduce')) reducedRules.push(rule.toString()); });
+    const campaignReduced = reducedRules.join('\n');
     expect(campaignReduced).toContain('.static-campaign *,');
     expect(campaignReduced).toContain('animation: none !important;');
     expect(campaignReduced).toContain('transition: none !important;');

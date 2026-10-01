@@ -168,8 +168,9 @@ describe('Phase 1 layout and motion contract', () => {
     expect(icon).toContain('.sign-icon img { display: block; width: 100%; height: auto; aspect-ratio: 1;');
     expect(icon).toContain('fetchpriority={fetchPriority}');
     expect(program).toContain('fetchPriority="high"');
-    expect(program).toContain("webpOnly={surface === 'today'}");
-    expect(program).toContain("decoding={surface === 'today' ? 'sync' : 'async'}");
+    expect(program).toContain("const compactHeroIcon = surface === 'today' || surface === 'love' || surface === 'career';");
+    expect(program).toContain('webpOnly={compactHeroIcon}');
+    expect(program).toContain("decoding={compactHeroIcon ? 'sync' : 'async'}");
     expect(fallback).toContain('inline-size:${size}px;block-size:${size}px;aspect-ratio:1;contain:layout size');
     expect(fallback).toContain('decoding="sync"');
     expect(fallback).toContain('/assets/zodiac-icons/48/${sign.slug}.avif');

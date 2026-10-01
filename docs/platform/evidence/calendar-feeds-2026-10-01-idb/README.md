@@ -1,5 +1,7 @@
 # Calendar feed transaction evidence — 2026-10-01
 
+This is the historical evidence packet for source `7a9c9fe5` and checkpoint `3f47799e`. The [owner-main integration](../calendar-feeds-2026-10-01-owner617/README.md) preserves the later PR617 frontend and its new capture/baseline files; fresh integrated CI and captures are required. The unpushed local `14e71850` capture-import candidate is superseded and is not part of that integration.
+
 The calendar-owned native gates pass on public PR613 head `7a9c9fe52689fddf9338d706459bebc981e180ac`: **34/34 cross-tab cases and 25/25 transit/calendar UI checks**, with no page errors or external requests. PostgreSQL 17 replay/privacy/search-path/concurrency CI also passes. The release is still gated by unrelated frontend checks, final capture review/adoption, server Production target confirmation and the production runbook. This packet advances no calendar acceptance.
 
 ## Source binding
