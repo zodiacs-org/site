@@ -76,6 +76,10 @@ html[data-local-chrome-typography][lang='en'] {
 }
 .hero__video.is-playing { opacity: 1; }
 
+.hero-motion { position: absolute; z-index: 5; top: 14px; right: 14px; min-height: 44px; padding: 0 14px; border: 1px solid var(--hair-2); border-radius: 999px; background: rgba(6,7,9,.85); color: var(--text); font: 500 12px var(--font-sans); cursor: pointer; }
+@media (max-width: 959px) { .hero-motion { top: calc(60px + env(safe-area-inset-top)); } }
+@media (prefers-reduced-motion: reduce) { .hero-motion { display: none; } }
+
 @keyframes hero-poster-drift {
   0% { transform: scale(1.035) translate3d(0, 0, 0); }
   100% { transform: scale(1.06) translate3d(-0.55%, 0.4%, 0); }
