@@ -8,7 +8,8 @@
     "src/lib/i18n/ui/fr.ts",
     "src/lib/i18n/ui/it.ts",
     "src/lib/i18n/ui/pt.ts",
-    "src/lib/i18n/ui/ru.ts"
+    "src/lib/i18n/ui/ru.ts",
+    "src/pages/[sign]/index.astro"
   ],
-  "authorization": "The owner explicitly approved all nine consumer-experience recommendations and requested implementation and live publication: “agree. implement all and push live.” This one-time allowance covers the exact six shared locale catalogs for birthplace and unknown-time guidance, and the English chart-to-Today journey copy. Calculation, time coverage, consent, account sync, and unrelated programme behavior remain unchanged."
+  "authorization": "The owner explicitly approved all nine consumer-experience recommendations and requested implementation and live publication: “agree. implement all and push live.” This one-time allowance covers the exact six shared locale catalogs for birthplace and unknown-time guidance, and the English chart-to-Today journey copy. Calculation, time coverage, consent, account sync, and unrelated programme behavior remain unchanged. The sign-guide template also preloads its existing above-the-fold mono face to prevent a cold font layout shift, without changing its design."
 }

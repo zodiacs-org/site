@@ -33,11 +33,11 @@ const astrofolioLabel: Record<Locale, string> = {
 // Short explanations keep the navigation labels stable while making each destination clear.
 const destinationDescription: Record<Locale, { today: string; horoscope: string; saved: string }> = {
   en: { today: 'Today’s sky alongside your birth chart', horoscope: 'Daily readings for your zodiac sign', saved: 'Your birth chart and the people you’ve added' },
-  es: { today: 'El cielo de hoy junto a tu carta natal', horoscope: 'Lecturas diarias para tu signo', saved: 'Tu carta natal y las personas que has añadido' },
-  pt: { today: 'O céu de hoje junto ao seu mapa natal', horoscope: 'Leituras diárias para seu signo', saved: 'Seu mapa natal e as pessoas que você adicionou' },
-  fr: { today: 'Le ciel du jour et votre thème natal', horoscope: 'Lectures quotidiennes pour votre signe', saved: 'Votre thème natal et les personnes ajoutées' },
-  it: { today: 'Il cielo di oggi e il tuo tema natale', horoscope: 'Letture quotidiane per il tuo segno', saved: 'Il tuo tema natale e le persone che hai aggiunto' },
-  ru: { today: 'Небо сегодня в сравнении с вашей картой', horoscope: 'Ежедневные чтения для вашего знака', saved: 'Ваша карта рождения и добавленные люди' },
+  es: { today: 'Notas del cielo de hoy para cada signo', horoscope: 'Lecturas diarias para tu signo', saved: 'Tu carta natal y las personas que has añadido' },
+  pt: { today: 'Notas do céu de hoje para cada signo', horoscope: 'Leituras diárias para seu signo', saved: 'Seu mapa natal e as pessoas que você adicionou' },
+  fr: { today: 'Le ciel du jour, signe par signe', horoscope: 'Lectures quotidiennes pour votre signe', saved: 'Votre thème natal et les personnes ajoutées' },
+  it: { today: 'Il cielo di oggi, segno per segno', horoscope: 'Letture quotidiane per il tuo segno', saved: 'Il tuo tema natale e le persone che hai aggiunto' },
+  ru: { today: 'Небо сегодня для каждого знака', horoscope: 'Ежедневные чтения для вашего знака', saved: 'Ваша карта рождения и добавленные люди' },
 };
 const destination = destinationDescription[locale];
 const searchLabel: Record<Locale, string> = {
