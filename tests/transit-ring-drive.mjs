@@ -250,8 +250,14 @@ try {
   // Keep the checks already made when a later browser action fails.
   check('drive completed without an unhandled failure', false, error instanceof Error ? error.message : String(error));
 } finally {
-  await browser?.close();
-  await preview?.stop();
+  // A failed browser teardown must not strand the preview or suppress the
+  // failure receipt, since later evidence drives use the same checkout.
+  try { await browser?.close(); } catch (error) {
+    check('browser cleanup completed', false, error instanceof Error ? error.message : String(error));
+  }
+  try { await preview?.stop(); } catch (error) {
+    check('preview cleanup completed', false, error instanceof Error ? error.message : String(error));
+  }
 }
 
 let failed = 0;

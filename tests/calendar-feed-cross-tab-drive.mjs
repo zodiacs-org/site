@@ -39,6 +39,13 @@ function installFixture() {
   const set = Storage.prototype.setItem;
   const remove = Storage.prototype.removeItem;
   const faults = { reads: false, writes: false, removes: false, dropEvents: false };
+  // Observe native ordering without changing the production module or adding
+  // synchronization. Values are retained only for this fixture's random fence.
+  const trace = [];
+  const traceEvent = (kind, detail = {}) => {
+    if (trace.length < 500) trace.push({ at: performance.timeOrigin + performance.now(), kind, ...detail });
+  };
+  const fenceValue = (key, value) => key === client.CALENDAR_FEED_STORAGE_FENCE_KEY ? value : undefined;
   const pending = new Map();
   let next = 0;
   let stop;
@@ -47,24 +54,34 @@ function installFixture() {
   let heldClear = null;
   Storage.prototype.getItem = function (key) {
     if (this === local && faults.reads) throw new DOMException('Synthetic refused read', 'SecurityError');
-    return get.call(this, key);
+    const value = get.call(this, key);
+    if (this === local) traceEvent('get', { key, fence: fenceValue(key, value) });
+    return value;
   };
   Storage.prototype.setItem = function (key, value) {
     if (this === local && faults.writes) throw new DOMException('Synthetic refused write', 'QuotaExceededError');
+    if (this === local) traceEvent('set', { key, fence: fenceValue(key, value) });
     return set.call(this, key, value);
   };
   Storage.prototype.removeItem = function (key) {
     if (this === local && faults.removes) throw new DOMException('Synthetic refused remove', 'SecurityError');
+    if (this === local) traceEvent('remove', { key });
     return remove.call(this, key);
   };
   window.addEventListener('storage', (event) => {
     storageEvents += 1;
+    traceEvent('storage', { key: event.key, oldFence: fenceValue(event.key, event.oldValue), newFence: fenceValue(event.key, event.newValue), dropped: faults.dropEvents });
     if (faults.dropEvents) event.stopImmediatePropagation();
   }, true);
+  for (const kind of ['pageshow', 'pagehide', 'focus']) {
+    window.addEventListener(kind, (event) => traceEvent(kind, { persisted: event.persisted }));
+  }
+  document.addEventListener('visibilitychange', () => traceEvent('visibilitychange', { visibility: document.visibilityState }));
   const sanitize = (result) => ({ state: result.state, ...(result.state === 'created' ? { kept: result.kept } : {}) });
   window.fixture = {
     faults,
     client,
+    trace() { return [...trace]; },
     mount() {
       stop?.();
       const update = () => { observed = client.readAvailableCalendarFeeds().map((feed) => feed.id); };
@@ -74,17 +91,19 @@ function installFixture() {
     unmount() { stop?.(); stop = undefined; observed = []; },
     start(id) {
       const ticket = next++;
+      traceEvent('start', { ticket });
       const record = { resolve: null, result: null, settled: false };
       pending.set(ticket, record);
       record.promise = client.createCalendarFeed('2.synthetic-cross-tab-fixture', () => new Promise((resolve) => {
+        traceEvent('post', { ticket });
         record.resolve = () => resolve(new Response(JSON.stringify({
           id, url: 'https://zodiacs.org/api/calendar/feeds/' + id, secret: 'k'.repeat(42) + 'A',
         }), { status: 201 }));
-      })).then((result) => { record.result = sanitize(result); record.settled = true; return record.result; });
+      })).then((result) => { record.result = sanitize(result); record.settled = true; traceEvent('result', { ticket, ...record.result }); return record.result; });
       return ticket;
     },
     started(ticket) { return typeof pending.get(ticket)?.resolve === 'function'; },
-    finish(ticket) { pending.get(ticket).resolve(); },
+    finish(ticket) { traceEvent('finish', { ticket }); pending.get(ticket).resolve(); },
     result(ticket) { return pending.get(ticket).promise; },
     settled(ticket) { return pending.get(ticket).settled; },
     clear() {
@@ -175,7 +194,13 @@ async function group(name, run) {
     report.results.push({ name, passed: true, evidence });
   } catch (error) {
     report.results.push({ name, passed: false, error: String(error.stack ?? error) });
-  } finally { await context.close(); }
+  } finally {
+    report.results.at(-1).traces = await Promise.all([a, b].map(async (page, index) => ({
+      document: index === 0 ? 'a' : 'b',
+      events: await page.evaluate(() => window.fixture?.trace() ?? []).catch(() => []),
+    })));
+    await context.close();
+  }
   console.log(`${report.results.at(-1).passed ? 'PASS' : 'FAIL'} ${name}`);
   if (!report.results.at(-1).passed) console.log(report.results.at(-1).error);
 }

@@ -59,6 +59,30 @@ jobs:
         id: build
         run: npm run build
 
+      # Collect calendar-owned evidence before broader drives can leave a preview running.
+      - name: Calendar feed cross-tab clear-all fencing
+        id: calendar
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.request.outputs.mode == 'compare' }}
+        timeout-minutes: 3
+        run: node tests/calendar-feed-cross-tab-drive.mjs
+
+      - name: Full transit ring and calendar subscription UI
+        id: transitCalendar
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.request.outputs.mode == 'compare' }}
+        timeout-minutes: 5
+        run: node tests/transit-ring-drive.mjs
+
+      - name: Upload calendar evidence before broader drives
+        if: ${{ always() && steps.build.outcome == 'success' && steps.request.outputs.mode == 'compare' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: calendar-browser-${{ github.event.pull_request.head.sha }}-${{ github.run_id }}
+          path: |
+            tests/visual/artifacts/calendar-feed-cross-tab/
+            tests/visual/artifacts/transit-ring/
+          if-no-files-found: error
+          retention-days: 90
+
       - name: Capture Phase 1 at 360 and 1280 pixels
         id: acceptance
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
@@ -94,18 +118,6 @@ jobs:
         env:
           OUT_DIR: tests/visual/artifacts/explorer
         run: node tests/explorer-drive.mjs
-
-      - name: Calendar feed cross-tab clear-all fencing
-        id: calendar
-        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.request.outputs.mode == 'compare' }}
-        timeout-minutes: 3
-        run: node tests/calendar-feed-cross-tab-drive.mjs
-
-      - name: Full transit ring and calendar subscription UI
-        id: transitCalendar
-        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.request.outputs.mode == 'compare' }}
-        timeout-minutes: 5
-        run: node tests/transit-ring-drive.mjs
 
       - name: Record source, browser, outcomes and artifact hashes
         id: provenance
