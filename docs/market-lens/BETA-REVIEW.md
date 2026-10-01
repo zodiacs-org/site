@@ -1,7 +1,11 @@
 # Protected beta review
 
-The revised scope is ready at
-[the protected preview](https://zodiacs-2j7skv6o5-zodiacsofficial.vercel.app/terminal/lens/).
+The patched Lens application is ready at
+[the protected preview](https://zodiacs-org-git-codex-lens-preview-20261001-zodiacsofficial.vercel.app/terminal/lens/).
+It uses application `e7cbc8d5`, which passes all 19 hosted CI jobs. Main's
+subsequent consumer changes are integrated into the review branch; refresh
+this preview from that integrated source and verify hosted acceptance before
+inviting reviewers. See [OPERATIONS.md](OPERATIONS.md) for the current checkpoint.
 Vercel Authentication requires an authorized reviewer. Prices remain disabled
 while written display rights are unresolved. The calendar, private setup/risk
 planner and journal can be reviewed now. No production release occurred.

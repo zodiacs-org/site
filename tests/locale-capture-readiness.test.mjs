@@ -83,13 +83,13 @@ describe('selected-reading viewport evidence', () => {
 describe('native mobile tool menu evidence', () => {
   const state = () => ({ width: 390, height: 844, navBottom: 90, open: true, expanded: 'true',
     guide: { visibility: 'hidden', pointerEvents: 'none', opacity: 1 },
-    rows: Array.from({ length: 9 }, (_, index) => ({ href: index === 7 ? '/birthday/' : `/tool-${index}/`,
+    rows: Array.from({ length: 7 }, (_, index) => ({ href: index === 5 ? '/birthday/' : `/tool-${index}/`,
       visible: true, left: 24, right: 366, width: 342, height: 44, scrollWidth: 342, clientWidth: 342,
       // Rows below the viewport may be reached by the menu's native scrolling.
       top: 452 + index * 44, bottom: 496 + index * 44,
       textRects: [{ left: 24, right: 235, top: 468 + index * 44, bottom: 490 + index * 44 }],
-      focused: index === 7, fullyInView: index === 7,
-      hits: index === 7 ? [{ ownTarget: true, x: 220, y: 800 }] : [],
+      focused: index === 5, fullyInView: index === 5,
+      hits: index === 5 ? [{ ownTarget: true, x: 220, y: 800 }] : [],
     })) });
 
   it('allows natural wrapped lines and vertical menu scrolling without horizontal clipping', () => {
@@ -101,13 +101,13 @@ describe('native mobile tool menu evidence', () => {
 
   it('rejects the original 43.475px target without rounding it up to 44px', () => {
     const observed = state();
-    observed.rows[7].height = 43.475;
+    observed.rows[5].height = 43.475;
     expect(mobileToolMenuFailures(observed)).toContain('/birthday/: target smaller than 44px');
   });
 
   it('rejects text Range overflow even when scrollWidth and the anchor itself fit', () => {
     const observed = state();
-    observed.rows[7].textRects[0].right = 370;
+    observed.rows[5].textRects[0].right = 370;
     expect(mobileToolMenuFailures(observed)).toContain('/birthday/: text clipped horizontally');
   });
 
@@ -124,7 +124,7 @@ describe('native mobile tool menu evidence', () => {
   it('rejects a visible Guide and a Guide hit over otherwise visible Birthday text', () => {
     const observed = state();
     observed.guide = { visibility: 'visible', pointerEvents: 'auto', opacity: 1 };
-    observed.rows[7].hits.push({ ownTarget: false, hit: 'BUTTON.zguide-launcher' });
+    observed.rows[5].hits.push({ ownTarget: false, hit: 'BUTTON.zguide-launcher' });
     expect(mobileToolMenuFailures(observed, { requireBirthdayFocus: true })).toEqual([
       'Guide remains available over the menu', 'Birthday text or target is obstructed',
     ]);
@@ -132,7 +132,7 @@ describe('native mobile tool menu evidence', () => {
 
   it('requires actual native focus, full target visibility and hit observations', () => {
     const observed = state();
-    Object.assign(observed.rows[7], { focused: false, fullyInView: false, hits: [] });
+    Object.assign(observed.rows[5], { focused: false, fullyInView: false, hits: [] });
     expect(mobileToolMenuFailures(observed, { requireBirthdayFocus: true })).toEqual([
       'Birthday is not reachable by native Tab', 'Birthday is not fully visible after native focus',
       'Birthday text or target is obstructed',

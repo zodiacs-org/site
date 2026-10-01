@@ -1,4 +1,46 @@
-# Operational handoff — 2026-10-01
+# Market Lens operational handoff
+
+## Protected preview checkpoint — 2026-10-02 (Asia/Bangkok)
+
+The [patched protected preview](https://zodiacs-pexrfs7bk-zodiacsofficial.vercel.app/terminal/lens/)
+is ready from application `e7cbc8d5` and deployment `084d46bb`.
+That application passes all 19 hosted CI jobs (plus two event-gated skips):
+[Site Check](https://github.com/zodiacs-org/site/actions/runs/36904789968).
+Main-only Vercel controls are restored at `e2ebece1`; the review branch's
+controls were unchanged. This was one protected preview build and no
+production deployment. [patched-preview.json](patched-preview.json) records
+the source, deployment, restored controls and precise acceptance limits.
+
+The [trusted-main function smoke](https://github.com/zodiacs-org/site/actions/runs/36910669861)
+passes. The actual Lens driver receives HTTP 302 from authentication before
+the handler, so no hosted Lens acceptance is claimed. The secure bypass is
+still absent. Public prices remain disabled pending written display rights.
+
+Main subsequently merged consumer-navigation/daily-reading changes at
+`db5bf574`. The review branch integrates those changes and regenerates the
+conflicting provenance/captures; [main-integration.json](main-integration.json)
+records the fresh local validation. The preview above predates that
+integration. Refresh from the integrated source and complete hosted Lens
+acceptance before inviting reviewers.
+
+In cloud environment settings, add
+`zodiacs-org-git-codex-lens-preview-20261001-zodiacsofficial.vercel.app` to the
+existing bypass requirement's allowed domains and supply the value securely.
+Use this stable branch alias for subsequent preview checks; the individual
+deployment hostname changes on each build. The existing requirement has no
+saved value, and programmatic domain updates conflict with that requirement.
+
+```sh
+BASE_URL=https://zodiacs-org-git-codex-lens-preview-20261001-zodiacsofficial.vercel.app \
+  NODE_OPTIONS=--use-env-proxy node tests/market-lens-deployed-drive.mjs
+```
+
+The private paper seed/minimal runner remains verified outside the public
+checkout. GitHub still cannot access `zodiacs-org/market-lens-paper`; no remote
+schedule or backups are active. Create an empty private repository and grant
+this session write access. The owner must check the provider reply inbox;
+this session has no inbox connector. Beta invitation and feedback templates
+are prepared privately, with no invitations sent or feedback collected.
 
 ## Current dependency and private runtime follow-up
 

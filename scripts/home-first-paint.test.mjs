@@ -125,7 +125,8 @@ describe('homepage first-paint assets', () => {
     expect(page).toMatch(/\.hero__title\s*\{[^}]*font-family: 'Instrument Sans Hero'/su);
     expect(page).toMatch(/\.hero__trust\s*\{[^}]*font-family: 'JetBrains Mono Hero'/su);
     expect(page).toContain('<h1 class="hero__title">Your whole chart, <em>not just your sign.</em></h1>');
-    expect(page).toContain('Free birth charts, moon signs, compatibility, and horoscopes —');
+    expect(page).toContain('Birth charts calculated in your browser.');
+    expect(page).toContain('Clear astrology readings and tools, free to explore.');
     expect(page).toContain('Get your free birth chart');
     expect(page).toContain('href="/horoscopes/"><span>Your horoscope</span></a>');
     expect(page).toContain('Free · No signup · Calculated in your browser');

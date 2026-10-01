@@ -216,7 +216,8 @@ export default function LivingMomentCapture({
           {(syncStatus.phase === 'error' || syncStatus.phase === 'offline') && syncGranted && (
             <button class="living-chart__text-action" type="button" onClick={() => void retrySync()}>Retry sync</button>
           )}
-          <a href="/profile/#living-chart">View your timeline →</a>
+          <p>Return to Today for the next edition. Your timeline keeps this reading beside the observation you saved.</p>
+          <a href="/profile/#living-chart">Revisit your saved observations →</a>
         </div>
         {message && <p class="living-moment-composer__status" role="alert">{message}</p>}
       </div>
@@ -239,6 +240,7 @@ export default function LivingMomentCapture({
             <span>{loading ? 'Opening…' : 'Save this moment'}</span>
             <span class="orb" aria-hidden="true">+</span>
           </button>
+          <p class="field__help">Keep today’s reading with a short observation, then revisit it in your timeline. Saving starts on this device.</p>
         </div>
         {message && <p class="living-moment-composer__status" role="alert">{message}</p>}
       </div>

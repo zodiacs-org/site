@@ -47,7 +47,7 @@ function Intro() {
       </svg>
       <em class="kicker">Your astrology</em>
       <h1 class="display">Your charts, today and ahead.</h1>
-      <p>Return to your chart, see what is active now, and keep the forecasts and moments you choose in one timeline.</p>
+      <p>Keep your birth chart and the people you’ve added here. Today uses the chart you mark as yours; your timeline keeps the readings and observations you choose to save.</p>
       <a class="pf-hero__start" href="/birth-chart/">Make a birth chart <span aria-hidden="true">↗</span></a>
     </div>
   );

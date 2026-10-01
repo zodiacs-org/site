@@ -15,6 +15,13 @@ function rules(source, file) {
 }
 
 describe('consumer boundary source scanner', () => {
+  it('allows only the approved collection description in shared navigation', () => {
+    const copy = "---\nconst description = 'Official Zodiac token collection';\n---\n<p>{description}</p>";
+    expect(rules(copy, 'src/components/SiteNav.astro')).toEqual([]);
+    expect(rules(copy, 'src/pages/index.astro').length).toBeGreaterThan(0);
+    expect(rules(copy.replace('Official Zodiac token collection', 'Buy an official Zodiac token'), 'src/components/SiteNav.astro').length).toBeGreaterThan(0);
+  });
+
   it('reads visible Astro copy and frontmatter strings without treating comments as copy', () => {
     const source = `---
 const description = 'A free astrology calculator.';

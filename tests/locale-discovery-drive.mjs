@@ -265,7 +265,8 @@ export async function driveLocaleDiscovery({ browser, baseURL, check, outDir }) 
       await burger.click();
       await settleMenu();
       const today = page.locator(`.mobile-menu__link[href="${pathFor(locale, '/today/')}"]`);
-      record(`${locale.code} Today mobile discovery@${width}`, await today.isVisible() && (await today.textContent()).trim() === locale.today);
+      record(`${locale.code} Today mobile discovery@${width}`, await today.isVisible() && (await today.locator(':scope > span').innerText()).trim() === locale.today
+        && (await today.locator(':scope > small').innerText()).trim().length > 0);
       const initial = await measure('opened');
       const expected = BIRTHDAY[locale.code];
       const observed = initial.rows.find((row) => row.href === '/birthday/');

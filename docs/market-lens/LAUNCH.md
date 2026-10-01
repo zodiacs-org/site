@@ -1,5 +1,23 @@
 # Market Lens launch checkpoint
 
+## Preview and integration follow-up — 2026-10-02 (Asia/Bangkok)
+
+The patched application at `e7cbc8d5` passes all 19 hosted CI jobs. A refreshed
+protected preview is deployed, its main-only build controls restored, and its
+existing function smoke passes. Actual Lens acceptance remains blocked by
+Vercel Authentication and the absent secure bypass. [OPERATIONS.md](OPERATIONS.md)
+and [patched-preview.json](patched-preview.json) record the exact source and
+limits. Public prices remain disabled; no production deployment occurred.
+
+The review branch now integrates main's subsequent consumer changes at
+`db5bf574`. Generated provenance and visual captures are rebuilt using their
+normal tools; [main-integration.json](main-integration.json) records local
+verification. The protected preview predates that integration. The private
+paper v1 receipts/runtime are unchanged and remote activation still needs
+private repository access. Beta invitation/feedback templates are prepared
+privately; no reviewers have been contacted. The owner checks the licensing
+reply inbox because this session has no inbox connector.
+
 ## Dependency security follow-up — 2026-10-01
 
 The operations commit's CI discovered a newly published high-severity
