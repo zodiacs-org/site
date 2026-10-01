@@ -1,25 +1,21 @@
 {
   "version": 1,
-  "id": "icon-only-guide-sitewide-2026-10-01",
-  "baseCommit": "9cfafa3e742de943062c9174338472781724a4b5",
+  "id": "clearer-consumer-navigation-labels-2026-10-01",
+  "baseCommit": "dbec9397beeabf29e8ddc3ca307f6af200b899a8",
   "protectedPaths": [
     "public/registry/aquarius/index.html",
     "public/registry/aries/index.html",
     "public/registry/cancer/index.html",
     "public/registry/capricorn/index.html",
     "public/registry/gemini/index.html",
-    "public/registry/index.html",
     "public/registry/leo/index.html",
     "public/registry/libra/index.html",
     "public/registry/pisces/index.html",
     "public/registry/sagittarius/index.html",
     "public/registry/scorpio/index.html",
     "public/registry/taurus/index.html",
-    "public/registry/technical/index.html",
     "public/registry/virgo/index.html",
-    "public/sdk/examples/simastry-aura/index.html",
-    "public/sdk/index.html",
-    "public/terminal/markets/index.html"
+    "scripts/build-sign-pages.mjs"
   ],
-  "authorization": "The owner requested removing Ask Zodiacs text from the floating Zodiacs avatar throughout the website so it is its own icon. Generated Registry, SDK and Terminal pages change only the shared Guide asset version so existing visitors receive the icon-only launcher. Accessible localized labels, Guide opening, footer controls and privacy behavior remain intact."
+  "authorization": "The owner approved publishing Learn astrology and Astrology tools on the homepage and a sign-specific guide link on every Registry zodiac profile. This allowance covers only the shared sign-page generator and its twelve generated profile pages, replacing Explore your sign with the corresponding sign name followed by guide. Link destinations and all other behavior stay unchanged."
 }
