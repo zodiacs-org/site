@@ -1,0 +1,66 @@
+[
+  {
+    "_type": "https://in-toto.io/Statement/v0.1",
+    "subject": [
+      {
+        "name": "pkg:npm/%40zodiacs/engine@0.1.1-rc.16",
+        "digest": {
+          "sha512": "41e61bd6254e46a9fefdd58170827f5c5fa6cafce17fd02fc9bd4eacfff02084d391d7c0d9be9c1120908b2051c7ebbce0923adf05b7a9bf78e4f425e95fb11f"
+        }
+      }
+    ],
+    "predicateType": "https://github.com/npm/attestation/tree/main/specs/publish/v0.1",
+    "predicate": {
+      "name": "@zodiacs/engine",
+      "version": "0.1.1-rc.16",
+      "registry": "https://registry.npmjs.org"
+    }
+  },
+  {
+    "_type": "https://in-toto.io/Statement/v1",
+    "subject": [
+      {
+        "name": "pkg:npm/%40zodiacs/engine@0.1.1-rc.16",
+        "digest": {
+          "sha512": "41e61bd6254e46a9fefdd58170827f5c5fa6cafce17fd02fc9bd4eacfff02084d391d7c0d9be9c1120908b2051c7ebbce0923adf05b7a9bf78e4f425e95fb11f"
+        }
+      }
+    ],
+    "predicateType": "https://slsa.dev/provenance/v1",
+    "predicate": {
+      "buildDefinition": {
+        "buildType": "https://slsa-framework.github.io/github-actions-buildtypes/workflow/v1",
+        "externalParameters": {
+          "workflow": {
+            "ref": "refs/heads/main",
+            "repository": "https://github.com/zodiacs-org/engine",
+            "path": ".github/workflows/release.yml"
+          }
+        },
+        "internalParameters": {
+          "github": {
+            "event_name": "workflow_dispatch",
+            "repository_id": "1384113269",
+            "repository_owner_id": "289121529"
+          }
+        },
+        "resolvedDependencies": [
+          {
+            "uri": "git+https://github.com/zodiacs-org/engine@refs/heads/main",
+            "digest": {
+              "gitCommit": "6807f632fc5aad08999d97f61e50793c6ca9a0b4"
+            }
+          }
+        ]
+      },
+      "runDetails": {
+        "builder": {
+          "id": "https://github.com/actions/runner/github-hosted"
+        },
+        "metadata": {
+          "invocationId": "https://github.com/zodiacs-org/engine/actions/runs/36858851623/attempts/1"
+        }
+      }
+    }
+  }
+]

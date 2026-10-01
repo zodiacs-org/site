@@ -1,0 +1,79 @@
+{
+  "package": "@zodiacs/engine",
+  "version": "0.1.1-rc.16",
+  "entry": "./calc",
+  "documentedSyntheticExample": "docs/calc.md Mars TT2461306.5",
+  "status": "ok",
+  "finiteLongitude": true,
+  "receipt": {
+    "schema": "zodiacs.calc-receipt.draft-v1",
+    "request": {
+      "body": "Mars",
+      "time": {
+        "jd": 2461306.5,
+        "scale": "TT"
+      },
+      "frame": "equatorial-true-of-date",
+      "center": "geocentric",
+      "zodiac": "tropical",
+      "flags": {
+        "correction": "apparent",
+        "speeds": true,
+        "cartesian": true,
+        "units": "degrees",
+        "deflection": false
+      }
+    },
+    "instants": [
+      {
+        "utc": "2026-09-22T23:58:50.816Z",
+        "jdUt1": 2461306.4991991166,
+        "jdTt": 2461306.5,
+        "deltaT": {
+          "seconds": 69.19633276367188,
+          "sigma": 0.000817,
+          "model": "iers-utc/1",
+          "table": "2026-09-24",
+          "tableDigest": "064d98b4a531053a",
+          "segment": "observed"
+        },
+        "timeScale": {
+          "input": "tt",
+          "basis": "iers",
+          "ut1MinusUtc": {
+            "seconds": -0.012332799506168612,
+            "sigma": 0.000817,
+            "source": "observed"
+          },
+          "leapSeconds": {
+            "taiMinusUtc": 37,
+            "listed": true
+          }
+        }
+      }
+    ],
+    "conventions": [
+      "zodiac:tropical",
+      "frame:equatorial-true-of-date",
+      "center:geocentric",
+      "correction:apparent",
+      "light-time:newtonian",
+      "deflection:none",
+      "aberration:backdated-observer",
+      "precession:iau2006",
+      "nutation:iau2000b",
+      "speed:central-difference-0.001d",
+      "ephemeris:astronomy-engine@2.1.19",
+      "deltat:time-basis",
+      "time:tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise"
+    ],
+    "engine": {
+      "name": "@zodiacs/engine",
+      "version": "0.1.1-rc.16",
+      "ephemeris": {
+        "name": "astronomy-engine",
+        "version": "2.1.19"
+      }
+    }
+  }
+}

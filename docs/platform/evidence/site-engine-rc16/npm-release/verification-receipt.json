@@ -1,0 +1,45 @@
+{
+  "verifiedAtUtc": "2026-10-01T12:12:01.861770+00:00",
+  "package": "@zodiacs/engine",
+  "version": "0.1.1-rc.16",
+  "tags": {
+    "latest": "0.1.1-rc.15",
+    "next": "0.1.1-rc.16"
+  },
+  "registryTarball": {
+    "url": "https://registry.npmjs.org/@zodiacs/engine/-/engine-0.1.1-rc.16.tgz",
+    "bytes": 266934,
+    "sha256": "43a72d30e483d8ff22024e403c4bd0d86d81bb6e1d0ad138f857cd001ab015d8",
+    "sha1": "f57e312b313f78fe43817079a146fb72da823afa",
+    "integritySha512": "sha512-QeYb1iVORqn+/dWBcIJ/XF+myvzhf9Avyb1OrP/wIITTkdfA2b6cESCQiyBRx+u84JI63wW3qb945PQl6V+xHw==",
+    "fileCount": 69,
+    "unpackedSize": 923282,
+    "matchesCarriedArchive": true
+  },
+  "release": {
+    "repository": "zodiacs-org/engine",
+    "workflow": ".github/workflows/release.yml",
+    "ref": "refs/heads/main",
+    "head": "6807f632fc5aad08999d97f61e50793c6ca9a0b4",
+    "runId": 36858851623,
+    "runUrl": "https://github.com/zodiacs-org/engine/actions/runs/36858851623"
+  },
+  "attestation": {
+    "url": "https://registry.npmjs.org/-/npm/v1/attestations/@zodiacs%2fengine@0.1.1-rc.16",
+    "predicateType": "https://slsa.dev/provenance/v1",
+    "subjectDigestMatchesArchive": true,
+    "workflowAndHeadAndRunMatch": true,
+    "npmAuditSignaturesExitCode": 0,
+    "verifiedRegistrySignatures": 2,
+    "verifiedAttestations": 1,
+    "invalid": [],
+    "missing": []
+  },
+  "consumerSmoke": {
+    "npmLifecycleScriptsExecuted": false,
+    "documentedCalcExample": "ok",
+    "node": "v24.19.0",
+    "npm": "11.9.0"
+  },
+  "limits": "This confirms package distribution, integrity and provenance, not additional accuracy or site-deployment acceptance. Latest remains rc.15."
+}

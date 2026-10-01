@@ -5,72 +5,72 @@
   "bodies": [
     {
       "body": "Moon",
-      "lon": 71.0480353971169,
+      "lon": 71.04804637843188,
       "sign": "gemini",
-      "degree": 11.048035397116905,
+      "degree": 11.048046378431877,
       "retrograde": false
     },
     {
       "body": "Sun",
-      "lon": 188.32978948666377,
+      "lon": 188.32980046797874,
       "sign": "libra",
-      "degree": 8.329789486663799,
+      "degree": 8.329800467978771,
       "retrograde": false
     },
     {
       "body": "Mercury",
-      "lon": 211.33859292839864,
+      "lon": 211.3386039097136,
       "sign": "scorpio",
-      "degree": 1.3385929283986115,
+      "degree": 1.3386039097135836,
       "retrograde": false
     },
     {
       "body": "Venus",
-      "lon": 218.42454703341616,
+      "lon": 218.42455801473116,
       "sign": "scorpio",
-      "degree": 8.424547033416161,
+      "degree": 8.424558014731133,
       "retrograde": false
     },
     {
       "body": "Mars",
-      "lon": 121.97936501037742,
+      "lon": 121.9793759916924,
       "sign": "leo",
-      "degree": 1.9793650103774212,
+      "degree": 1.9793759916923932,
       "retrograde": false
     },
     {
       "body": "Jupiter",
-      "lon": 139.68012129298688,
+      "lon": 139.68013227430185,
       "sign": "leo",
-      "degree": 19.680121292986883,
+      "degree": 19.680132274301855,
       "retrograde": false
     },
     {
       "body": "Saturn",
-      "lon": 11.536398863325871,
+      "lon": 11.536409844640843,
       "sign": "aries",
-      "degree": 11.536398863325871,
+      "degree": 11.536409844640843,
       "retrograde": true
     },
     {
       "body": "Uranus",
-      "lon": 65.51724216006431,
+      "lon": 65.51725314137929,
       "sign": "gemini",
-      "degree": 5.517242160064313,
+      "degree": 5.517253141379285,
       "retrograde": true
     },
     {
       "body": "Neptune",
-      "lon": 2.8516254360928883,
+      "lon": 2.8516364174078603,
       "sign": "aries",
-      "degree": 2.8516254360928883,
+      "degree": 2.8516364174078603,
       "retrograde": true
     },
     {
       "body": "Pluto",
-      "lon": 303.1185704172026,
+      "lon": 303.11858139851756,
       "sign": "aquarius",
-      "degree": 3.1185704172025908,
+      "degree": 3.1185813985175628,
       "retrograde": true
     }
   ],

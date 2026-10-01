@@ -117,10 +117,13 @@ describe('saturnReturns', () => {
 });
 
 describe('natal Saturn direction', () => {
-  // Saturn stations retrograde on 2026-07-26. The chart's speed changes sign
-  // at 19:57:36.9Z; a ±1-day difference changes sign at 19:56:57.1Z, so for
-  // 40 s the Saturn page and the chart used to disagree.
+  // Saturn stations retrograde on 2026-07-26. Full IAU 2000B in rc.16
+  // changes the longitude derivative and moves the chart's ±0.001-day
+  // speed zero to about 19:53:14.040Z. Retain the earlier-version witnesses
+  // too: the Saturn page and chart must use the same speed on either side.
   it.each([
+    '2026-07-26T19:53:04.040Z',
+    '2026-07-26T19:53:24.040Z',
     '2026-07-26T19:57:16.990Z',
     '2026-07-26T19:57:26.921Z',
     '2026-07-26T19:57:46.921Z',
@@ -134,7 +137,7 @@ describe('natal Saturn direction', () => {
   });
 
   it('is direct just before the chart\'s station and retrograde just after', () => {
-    expect(saturnReturns(new Date('2026-07-26T19:57:26.921Z')).natalRetrograde).toBe(false);
-    expect(saturnReturns(new Date('2026-07-26T19:57:46.921Z')).natalRetrograde).toBe(true);
+    expect(saturnReturns(new Date('2026-07-26T19:53:04.040Z')).natalRetrograde).toBe(false);
+    expect(saturnReturns(new Date('2026-07-26T19:53:24.040Z')).natalRetrograde).toBe(true);
   });
 });

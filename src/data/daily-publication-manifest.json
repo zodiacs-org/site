@@ -10,28 +10,28 @@
   },
   "facts": {
     "path": "src/data/daily.json",
-    "fileSha256": "885a8cca4a41b7bd23f7b8255d3a65a5041558c9f1b92ff13c21587d4d518da9",
-    "canonicalSha256": "00369cdc25c6ba293e4c22fe8091104cbfa37e81d298c5693994a5a7f84f37b0",
+    "fileSha256": "437c1055ec6cf6b5b25983a1825e4d4b28ca16e20824dc6201d794d27cadee08",
+    "canonicalSha256": "f24515e3eb83e2c828bd76a53e55e9ce598b47cb0e14350a3bfe01ccfb1935de",
     "factCount": 58,
     "eventsCoverage": "complete",
     "eventsSource": "src/data/transits-2026-10.json",
-    "eventsSourceSha256": "1e573505a3a0d6da7b4017fa824fab265c835dac4180b5865ab9b7df0e79e90f",
-    "eventsSourceCanonicalSha256": "a55ee94bda6ee1adba46808203891c911fdca4cf3d515a031776622835c186a0",
+    "eventsSourceSha256": "d216bcb3ceda371b0725817894476755dcba8307fa32de990a3aa78eb776fff2",
+    "eventsSourceCanonicalSha256": "2a26fa0a7ee66ad5a8f8c86078cd3c6a14c2f9e81410cd8b68ff6197618e8472",
     "engine": {
       "name": "@zodiacs/engine",
-      "version": "0.1.1-rc.15"
+      "version": "0.1.1-rc.16"
     }
   },
   "publication": {
     "path": "src/data/daily-publication.json",
-    "canonicalSha256": "5dea85a5140e762dae5a732bb8634fd04ba055e9d7cfe3bcf6f60a8c01cd13b7",
+    "canonicalSha256": "83aff651d359ca4a753a0bd3f50fa799ca17078bef9f67479bc57cebab71695c",
     "signCount": 12,
     "outputCount": 72
   },
   "generation": {
     "mode": "deterministic-template",
     "generatorId": "zodiacs.daily-renderer.v1.1",
-    "generatorSha256": "648403eb6e19bbf8e9bdcb882030181d2f91e44c348e990ec3d26e5995d46da9",
+    "generatorSha256": "dbad83aff4b977079d05ee497bb78a13709392f4428740861ee604ab6c25b69e",
     "model": null,
     "freeformModelOutput": false
   },

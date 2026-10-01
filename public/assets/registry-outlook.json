@@ -1502,9 +1502,9 @@
         },
         "summary": "Elevated symbolic attention for this sign, with more friction than ease. Signal: watchful.",
         "primaryFactor": {
-          "id": "station:venus:retrograde:scorpio:2026-10-03T07:10:00.538Z",
+          "id": "station:venus:retrograde:scorpio:2026-10-03T07:10:24.846Z",
           "kind": "station",
-          "at": "2026-10-03T07:10:00.538Z",
+          "at": "2026-10-03T07:10:24.846Z",
           "bodies": [
             "Venus"
           ],
@@ -1527,9 +1527,9 @@
         },
         "factors": [
           {
-            "id": "station:venus:retrograde:scorpio:2026-10-03T07:10:00.538Z",
+            "id": "station:venus:retrograde:scorpio:2026-10-03T07:10:24.846Z",
             "kind": "station",
-            "at": "2026-10-03T07:10:00.538Z",
+            "at": "2026-10-03T07:10:24.846Z",
             "bodies": [
               "Venus"
             ],

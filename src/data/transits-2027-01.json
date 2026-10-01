@@ -3,19 +3,19 @@
   "ingresses": [
     {
       "planet": "Venus",
-      "at": "2027-01-07T08:53:41.635Z",
+      "at": "2027-01-07T08:53:40.737Z",
       "sign": "sagittarius",
       "retrograde": false
     },
     {
       "planet": "Mercury",
-      "at": "2027-01-13T06:06:28.835Z",
+      "at": "2027-01-13T06:06:29.368Z",
       "sign": "aquarius",
       "retrograde": false
     },
     {
       "planet": "Sun",
-      "at": "2027-01-20T07:30:01.127Z",
+      "at": "2027-01-20T07:30:01.310Z",
       "sign": "aquarius",
       "retrograde": false
     }
@@ -25,22 +25,22 @@
       "type": "new",
       "at": "2027-01-07T20:24:26.069Z",
       "sign": "capricorn",
-      "degree": 17.304304234884285
+      "degree": 17.30431183943267
     },
     {
       "type": "full",
       "at": "2027-01-22T12:17:21.585Z",
       "sign": "leo",
-      "degree": 2.237699363429897
+      "degree": 2.237731706570287
     }
   ],
   "stations": [
     {
       "planet": "Mars",
-      "at": "2027-01-10T13:01:10.312Z",
+      "at": "2027-01-10T13:00:54.408Z",
       "type": "retrograde",
       "sign": "virgo",
-      "degree": 10.429378691363581
+      "degree": 10.429373633715045
     }
   ],
   "aspects": [
@@ -51,9 +51,9 @@
       "orb": 0,
       "at": "2027-01-03T17:55:17.128Z",
       "aSign": "scorpio",
-      "aDegree": 26.26369343026215,
+      "aDegree": 26.263714196122578,
       "bSign": "leo",
-      "bDegree": 26.263692817187803
+      "bDegree": 26.26371358304823
     },
     {
       "a": "Venus",
@@ -62,9 +62,9 @@
       "orb": 0,
       "at": "2027-01-09T02:49:21.253Z",
       "aSign": "sagittarius",
-      "aDegree": 1.8291939059762399,
+      "aDegree": 1.8291939584069041,
       "bSign": "aries",
-      "bDegree": 1.8291930025770284
+      "bDegree": 1.8291930550076927
     },
     {
       "a": "Venus",
@@ -73,9 +73,9 @@
       "orb": 0,
       "at": "2027-01-09T08:19:36.689Z",
       "aSign": "sagittarius",
-      "aDegree": 2.0705875345415734,
+      "aDegree": 2.0705865012316735,
       "bSign": "gemini",
-      "bDegree": 2.070587230842534
+      "bDegree": 2.070586197532748
     },
     {
       "a": "Venus",
@@ -84,9 +84,9 @@
       "orb": 0,
       "at": "2027-01-11T19:25:48.604Z",
       "aSign": "sagittarius",
-      "aDegree": 4.67996338363514,
+      "aDegree": 4.679956134988174,
       "bSign": "aquarius",
-      "bDegree": 4.679962596999985
+      "bDegree": 4.679955348353133
     },
     {
       "a": "Mercury",
@@ -95,9 +95,9 @@
       "orb": 0,
       "at": "2027-01-14T09:32:28.121Z",
       "aSign": "aquarius",
-      "aDegree": 1.9184346183754997,
+      "aDegree": 1.9184192186517066,
       "bSign": "aries",
-      "bDegree": 1.918434039408055
+      "bDegree": 1.9184186396842051
     },
     {
       "a": "Mercury",
@@ -106,9 +106,9 @@
       "orb": 0,
       "at": "2027-01-14T10:02:42.679Z",
       "aSign": "aquarius",
-      "aDegree": 1.953735489757264,
+      "aDegree": 1.9537199698322638,
       "bSign": "gemini",
-      "bDegree": 1.9537353334639533
+      "bDegree": 1.9537198135390668
     },
     {
       "a": "Uranus",
@@ -117,9 +117,9 @@
       "orb": 0,
       "at": "2027-01-15T07:21:23.862Z",
       "aSign": "gemini",
-      "aDegree": 1.9352696563428822,
+      "aDegree": 1.9352483866746866,
       "bSign": "aries",
-      "bDegree": 1.9352696876681534
+      "bDegree": 1.9352484179999578
     },
     {
       "a": "Venus",
@@ -128,9 +128,9 @@
       "orb": 0,
       "at": "2027-01-15T21:35:56.917Z",
       "aSign": "sagittarius",
-      "aDegree": 9.07898474060778,
+      "aDegree": 9.078959335847912,
       "bSign": "aries",
-      "bDegree": 9.078983971856985
+      "bDegree": 9.078958567097118
     },
     {
       "a": "Mercury",
@@ -139,9 +139,9 @@
       "orb": 0,
       "at": "2027-01-16T02:49:22.654Z",
       "aSign": "aquarius",
-      "aDegree": 4.814773076683537,
+      "aDegree": 4.814746232076914,
       "bSign": "aquarius",
-      "bDegree": 4.814772693612895
+      "bDegree": 4.814745849006158
     },
     {
       "a": "Mercury",
@@ -150,9 +150,9 @@
       "orb": 0,
       "at": "2027-01-18T18:04:13.454Z",
       "aSign": "aquarius",
-      "aDegree": 9.263015812819162,
+      "aDegree": 9.262989783296803,
       "bSign": "aries",
-      "bDegree": 9.263014865197249
+      "bDegree": 9.26298883567489
     },
     {
       "a": "Sun",
@@ -161,9 +161,9 @@
       "orb": 0,
       "at": "2027-01-22T02:18:47.251Z",
       "aSign": "aquarius",
-      "aDegree": 1.814885408622331,
+      "aDegree": 1.8149135436216284,
       "bSign": "gemini",
-      "bDegree": 1.8148853559616214
+      "bDegree": 1.8149134909609757
     },
     {
       "a": "Sun",
@@ -172,9 +172,9 @@
       "orb": 0,
       "at": "2027-01-22T08:34:23.780Z",
       "aSign": "aquarius",
-      "aDegree": 2.080205175968672,
+      "aDegree": 2.080236136715712,
       "bSign": "aries",
-      "bDegree": 2.0802048336631174
+      "bDegree": 2.080235794410214
     },
     {
       "a": "Sun",
@@ -183,9 +183,9 @@
       "orb": 0,
       "at": "2027-01-25T08:00:46.444Z",
       "aSign": "aquarius",
-      "aDegree": 5.107022555846811,
+      "aDegree": 5.1070460032389065,
       "bSign": "aquarius",
-      "bDegree": 5.10702193008342
+      "bDegree": 5.107045377475515
     },
     {
       "a": "Mercury",
@@ -194,9 +194,9 @@
       "orb": 0,
       "at": "2027-01-27T16:37:56.668Z",
       "aSign": "aquarius",
-      "aDegree": 23.893420568783085,
+      "aDegree": 23.893432725391904,
       "bSign": "leo",
-      "bDegree": 23.89341925224062
+      "bDegree": 23.893431408849438
     },
     {
       "a": "Venus",
@@ -205,9 +205,9 @@
       "orb": 0,
       "at": "2027-01-29T02:13:03.736Z",
       "aSign": "sagittarius",
-      "aDegree": 23.72040335658255,
+      "aDegree": 23.72042187238651,
       "bSign": "leo",
-      "bDegree": 23.72040220923725
+      "bDegree": 23.72042072504115
     },
     {
       "a": "Sun",
@@ -216,9 +216,9 @@
       "orb": 0,
       "at": "2027-01-30T06:31:45.439Z",
       "aSign": "aquarius",
-      "aDegree": 10.1249232563855,
+      "aDegree": 10.124949708796748,
       "bSign": "aries",
-      "bDegree": 10.124922505368488
+      "bDegree": 10.124948957779566
     }
   ]
 }

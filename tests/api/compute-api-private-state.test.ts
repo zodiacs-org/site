@@ -29,9 +29,12 @@ describe('compute API private module lifetime', () => {
     try {
       let compute = read('api/_compute/compute.mjs');
       compute = once(compute, 'from "@vercel/firewall";', `from ${JSON.stringify(pathToFileURL(require.resolve('@vercel/firewall')).href)};`);
-      compute += `\nexport function auditEngineState() { return { tilt: cache_e_tilt ? structuredClone(cache_e_tilt) : null, plutoSegments: Object.keys(pluto_cache) }; }
+      compute += `\nexport function auditEngineState() { return { frame: last ? structuredClone(last) : null, deltaTReset: DeltaT === deltaT, moonCalls: CalcMoonCount, plutoSegments: Object.keys(pluto_cache) }; }
 export { createComputeApiHandler as auditUnwrappedHandler };
+export let auditFailFrame = false;
+export function auditSetFrameFailure(value) { auditFailFrame = value; }
 `;
+      compute = once(compute, '  return last;\n}', '  if (auditFailFrame) throw new Error(\"synthetic ephemeris failure\");\n  return last;\n}');
       writeFileSync(join(directory, 'compute.mjs'), compute);
       let local = read('api/_compute/local-time.mjs');
       local = once(local, 'return localTimeModule;', 'auditRuntimes.push(localTimeModule); return localTimeModule;');
@@ -48,9 +51,10 @@ dispose() {`);
       const basis = pathToFileURL(join(root, 'src/lib/engine/time-basis.mjs')).href;
       writeFileSync(join(directory, 'run.mjs'), `
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
 import { Readable } from 'node:stream';
 import handler from './handler.mjs';
-import { createComputeApiHandler, auditUnwrappedHandler, auditEngineState } from './compute.mjs';
+import { createComputeApiHandler, auditUnwrappedHandler, auditEngineState, auditSetFrameFailure } from './compute.mjs';
 import { createLocalTimeModule, auditRuntimes, auditPause } from './local-time.mjs';
 import { timeBasis } from ${JSON.stringify(basis)};
 process.env.NODE_ENV = 'production';
@@ -60,7 +64,7 @@ const utc = '2082-03-14T05:29:17Z';
 const chart = { utc, latitude: -31.55537, longitude: 159.07735 };
 const localChart = { local: { date: '1913-07-19', time: '04:37', zone: 'Australia/Lord_Howe' }, latitude: -31.55537, longitude: 159.07735 };
 const empty = { offset: [], wall: [], histories: [], pending: [] };
-const engineEmpty = () => assert.deepEqual(auditEngineState(), { tilt: null, plutoSegments: [] });
+const engineEmpty = () => assert.deepEqual(auditEngineState(), { frame: null, deltaTReset: true, moonCalls: 0, plutoSegments: [] });
 const allEmpty = () => { engineEmpty(); for (const runtime of auditRuntimes) assert.deepEqual(runtime.auditState(), empty); };
 async function run(entry, endpoint, body, extra = {}) {
   const bytes = Buffer.from(typeof body === 'string' ? body : JSON.stringify(body));
@@ -72,20 +76,37 @@ async function run(entry, endpoint, body, extra = {}) {
   await entry(req, res);
   return { status: res.statusCode, body: res.text ? JSON.parse(res.text) : null };
 }
+if (process.argv[2] === 'fresh') {
+  const { endpoint, body } = JSON.parse(process.argv[3]);
+  const result = await run(handler, endpoint, body);
+  allEmpty();
+  console.log(JSON.stringify(result));
+  process.exit(0);
+}
+function fresh(endpoint, body) {
+  const result = spawnSync(process.execPath, ['--no-experimental-detect-module', process.argv[1], 'fresh', JSON.stringify({ endpoint, body })], { encoding: 'utf8', timeout: 60000 });
+  assert.equal(result.status, 0, result.stderr);
+  return JSON.parse(result.stdout);
+}
 const options = { localTime: createLocalTimeModule(), env: {}, rateLimit: async () => 'allowed' };
 const old = auditUnwrappedHandler(options);
 // Prime the input-independent receipt conventions, then retain a new canary.
 await run(old, 'positions', { instants: ['2000-01-01T12:00:00Z'] });
 const oldResult = await run(old, 'chart', chart);
 const retained = auditEngineState();
-assert.notEqual(retained.tilt, null);
+assert.notEqual(retained.frame, null);
 assert.ok(retained.plutoSegments.length > 0);
-let reconstructed = Date.UTC(2000, 0, 1, 12) + retained.tilt.tt * 86400000;
-for (let n = 0; n < 6; n++) reconstructed += (retained.tilt.tt - timeBasis(reconstructed).ttDays) * 86400000;
-assert.equal(Math.round(reconstructed), Date.parse(utc));
+assert.ok(retained.moonCalls > 0);
+let reconstructed = Date.UTC(2000, 0, 1, 12) + retained.frame.tt * 86400000;
+for (let n = 0; n < 6; n++) reconstructed += (retained.frame.tt - timeBasis(reconstructed).ttDays) * 86400000;
+// The last frame is the positive central-difference node sample, 0.25
+// day after the request. Undo that documented sample offset to recover UTC.
+assert.equal(Math.round(reconstructed) - 0.25 * 86400000, Date.parse(utc));
+assert.equal(retained.frame.rows.length, 9);
+assert.deepEqual(Object.keys(retained.frame.tilt), ['dpsi', 'deps', 'mobl', 'tobl', 'ee']);
 // Same computation, new lifetime boundary. Inspect active state to ensure the
 // observer reads the real caches, then prove cleanup after return.
-const updated = await run(handler, 'chart', chart, { onEnd() { assert.notEqual(auditEngineState().tilt, null); } });
+const updated = await run(handler, 'chart', chart, { onEnd() { assert.notEqual(auditEngineState().frame, null); } });
 assert.deepEqual(updated, oldResult);
 allEmpty();
 const inputs = {
@@ -102,7 +123,21 @@ for (const [endpoint, body] of Object.entries(inputs)) {
   assert.equal(result.body.backend.name, '@zodiacs/engine');
   assert.equal(result.body.receipt.engine.name, '@zodiacs/engine');
   allEmpty();
+  // Same-runtime fresh process, exact response comparison including receipt
+  // and cite digest. This is regression parity, not independent accuracy.
+  assert.deepEqual(result, fresh(endpoint, body), endpoint + ' fresh process');
 }
+for (const instant of ['1800-01-01T12:00:00.002Z', '2082-03-14T05:29:17.002Z', '2199-12-31T12:00:00.002Z']) {
+  const body = { ...chart, utc: instant };
+  assert.deepEqual(await run(handler, 'chart', body), fresh('chart', body));
+  allEmpty();
+}
+// An engine failure after filling its frame must still restore DeltaT and
+// clear both caches through the adapter's outer finally.
+auditSetFrameFailure(true);
+assert.equal((await run(handler, 'chart', chart)).status, 500);
+allEmpty();
+auditSetFrameFailure(false);
 for (const [endpoint, body, extra, status] of [
   ['chart', chart, { method: 'GET' }, 405],
   ['chart', '{', {}, 400],
@@ -147,7 +182,7 @@ release();
 assert.deepEqual(await first, expected);
 auditPause(null);
 allEmpty();
-console.log(JSON.stringify({ positiveControl: 'exact UTC recovered from pre-cleanup module state', endpoints: Object.keys(inputs), refusalAndFailureCleanup: true, interleavedResolverParity: true, isolatedRuntimes: auditRuntimes.length }));
+console.log(JSON.stringify({ positiveControl: 'exact UTC recovered from pre-cleanup module state', endpoints: Object.keys(inputs), refusalAndFailureCleanup: true, interleavedResolverParity: true, freshProcessResponses: 9, engineExceptionCleanup: true, isolatedRuntimes: auditRuntimes.length }));
 `);
       const result = spawnSync(process.execPath, ['--no-experimental-detect-module', join(directory, 'run.mjs')], {
         cwd: root, encoding: 'utf8', timeout: 60_000,

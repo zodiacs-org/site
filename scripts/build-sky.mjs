@@ -10,13 +10,10 @@
  * lite Sun/Moon math covers the live positions. Re-run yearly (or wire
  * a cron) so the window stays ahead of the calendar.
  */
-import './lib/deltat-install.mjs';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
-import {
-  MakeTime, GeoVector, RotateVector, Rotation_EQJ_ECT,
-} from 'astronomy-engine';
+import { bodyLongitude } from '@zodiacs/engine/internal';
 import { searchLunations } from './lunation-search.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -43,12 +40,12 @@ const PLANETS = ['Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Nep
 const DAY = 86_400_000;
 const SHADOW_SCAN_DAYS = 730;
 
+// Product catalogue and monthly transit facts share the same apparent
+// geocentric ecliptic-of-date longitude and UTC/IERS time basis. Keep the
+// catalogue's ±0.25-day station derivative below; it is intentionally not
+// the engine's ±0.001-day body speed. See the dated rc.16 station decision.
 function lonAt(body, date) {
-  const t = MakeTime(date);
-  const vec = GeoVector(body, t, true);
-  const ecl = RotateVector(Rotation_EQJ_ECT(t), vec);
-  const lon = (Math.atan2(ecl.y, ecl.x) * 180) / Math.PI;
-  return ((lon % 360) + 360) % 360;
+  return bodyLongitude(body, date);
 }
 
 // Signed longitude speed (deg/day) via central difference.

@@ -258,6 +258,8 @@ describe('scanTransitContacts', () => {
   });
 
   it('keeps both close passes around a station instead of cancelling their signs', () => {
+    // Full IAU 2000B in rc.16 moves the second crossing of this fixed target
+    // from 09:26:10.066 to 09:26:34.570 UTC, across the nearest-minute boundary.
     const contacts = scanTransitContacts(
       { bodies: [at('Sun', 352.56407473871195)], angles: null },
       new Date('2026-01-01T00:00:00Z'),
@@ -267,7 +269,7 @@ describe('scanTransitContacts', () => {
 
     expect(contacts.map((contact) => utcMinute(contact.exactUtc))).toEqual([
       '2026-02-26T04:08',
-      '2026-02-26T09:26',
+      '2026-02-26T09:27',
       '2026-04-09T11:40',
     ]);
     expect(contacts.map(({ pass, passCount }) => ({ pass, passCount }))).toEqual([
@@ -278,9 +280,10 @@ describe('scanTransitContacts', () => {
   });
 
   it('resolves two contacts only seconds apart at the true station extremum', () => {
-    // Ten seconds past Mercury's station; both instants here moved 6.017 s
-    // later with engine 0.1.1-rc.8's observed ΔT, the same TT as before.
-    const nearStation = new Date('2026-02-26T06:47:17.925Z');
+    // About ten seconds past rc.16's Mercury station. Full IAU 2000B
+    // changes the derivative of longitude and moves the extremum; keeping
+    // rc.15's old instant made the two crossings only eight seconds apart.
+    const nearStation = new Date('2026-02-26T06:47:23.924Z');
     const targetLon = bodyLongitude('Mercury', nearStation);
     const contacts = scanTransitContacts(
       { bodies: [at('Sun', targetLon)], angles: null },
@@ -303,7 +306,9 @@ describe('scanTransitContacts', () => {
   });
 
   it('does not insert a synthetic station contact between two real roots', () => {
-    const station = new Date('2026-02-26T06:47:07.464Z');
+    // rc.16's full-nutation extremum, sampled at millisecond steps over
+    // 06:47:13–15 UTC. The old instant no longer exercises this near-tangent pair.
+    const station = new Date('2026-02-26T06:47:13.947Z');
     const stationLon = bodyLongitude('Mercury', station);
     const errorAt = (date: Date) => Math.abs(normalize(
       bodyLongitude('Mercury', date) - stationLon + 180,

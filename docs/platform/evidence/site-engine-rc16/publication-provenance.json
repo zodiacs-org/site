@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "publicationStatus": "partial-public-evidence; draft adoption",
+  "localOriginalSource": "40ec5f735df2ffacec529acd8b62b7a373cff4cc",
+  "localOriginalTree": "f83de02ce19600475ab17ac75034955cbf98b55d",
+  "localValidatedSource": "3e9011919094659f39660e7271c97f3075e30283",
+  "localMcpCarrier": "03142a4d9a78733876137f611586d7482793bee6",
+  "localEvidenceCarrier": "acb8feca785967670957ea9a2066a31f5bf6e08c",
+  "publicMcpCarrier": "e4d8c313e46433ca0b1beb7b30545762ae7e4f2a",
+  "publicPartialEvidenceCarrier": "16e8b52728ca1d10dcfd438a01ebec17402f89d2",
+  "publicPartialEvidenceExpectedTree": "950aeddd77c48d1d8bb4c3aa7f217bd783419096",
+  "newerPublicProgrammeCheckpoint": "be7b02db48bfa56a9c0a9ca735bc39c5f7f07b62",
+  "newerProgrammeTree": "2dccce164ecf4ad8e34b748851947e222bdecbda",
+  "programmeAcceptedWeight": 43.5,
+  "programmeTotalWeight": 182.45,
+  "engineSourceCommitUnchanged": "ddbbaa0b1d21e16834722f81e8708816849c6726",
+  "engineArtifactCommitUnchanged": "ef44477f85f28a57d5ec7f61ed6ea6a99c4be563",
+  "engineArchiveSha256Unchanged": "43a72d30e483d8ff22024e403c4bd0d86d81bb6e1d0ad138f857cd001ab015d8",
+  "npmVerificationReceiptSha256": "ff1626bc02c7465ff581baabeaf516ac4b1fc68dad34fd68c810e121270a741b",
+  "missingEvidence": "docs/platform/evidence/site-engine-rc16/PUBLICATION-MISSING.json",
+  "limits": "Original reports remain tied to their original local source. New current-status/docs/test metadata and G4/compute11 records are overlays, not a revalidation of runtime or numerical gates. The one omitted file and pending browser/capture/other release gates prevent complete public-reproducibility or release-readiness claims."
+}

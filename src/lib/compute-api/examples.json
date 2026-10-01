@@ -1,6 +1,6 @@
 {
   "generatedBy": "scripts/build-compute-examples.mjs",
-  "engine": "@zodiacs/engine 0.1.1-rc.15",
+  "engine": "@zodiacs/engine 0.1.1-rc.16",
   "success": {
     "chart": {
       "utc": {
@@ -11,134 +11,134 @@
           "bodies": [
             {
               "body": "Sun",
-              "lon": 280.36874261508103,
-              "lat": 0.0000011205048793344238,
-              "speed": 1.0194320945799973,
+              "lon": 280.3687723811323,
+              "lat": 0.0000011205048760998976,
+              "speed": 1.0194308605093738,
               "retrograde": false,
               "sign": "capricorn",
-              "degree": 10.368742615081032
+              "degree": 10.368772381132317
             },
             {
               "body": "Moon",
-              "lon": 223.3239380040941,
+              "lon": 223.32396777014543,
               "lat": 5.170788636029834,
-              "speed": 12.021414311277567,
+              "speed": 12.021413077249576,
               "retrograde": false,
               "sign": "scorpio",
-              "degree": 13.323938004094089
+              "degree": 13.323967770145373
             },
             {
               "body": "Mercury",
-              "lon": 271.88891813522855,
-              "lat": -0.9950670065449121,
-              "speed": 1.556287620473995,
+              "lon": 271.8889479012799,
+              "lat": -0.9950670065449166,
+              "speed": 1.5562863864317933,
               "retrograde": false,
               "sign": "capricorn",
-              "degree": 1.8889181352285505
+              "degree": 1.8889479012798347
             },
             {
               "body": "Venus",
-              "lon": 241.56523765502288,
-              "lat": 2.065996494880335,
-              "speed": 1.2090433730236327,
+              "lon": 241.5652674210742,
+              "lat": 2.0659964948803324,
+              "speed": 1.2090421389530093,
               "retrograde": false,
               "sign": "sagittarius",
-              "degree": 1.5652376550228837
+              "degree": 1.565267421074168
             },
             {
               "body": "Mars",
-              "lon": 327.9639021026948,
-              "lat": -1.06808198101585,
-              "speed": 0.7756789586039758,
+              "lon": 327.96393186874616,
+              "lat": -1.0680819810158533,
+              "speed": 0.7756777245333524,
               "retrograde": false,
               "sign": "aquarius",
-              "degree": 27.963902102694874
+              "degree": 27.963931868746158
             },
             {
               "body": "Jupiter",
-              "lon": 25.25420000380842,
-              "lat": -1.26045298778053,
-              "speed": 0.04075536634218224,
+              "lon": 25.254229769859705,
+              "lat": -1.2604529877805284,
+              "speed": 0.040754132243137065,
               "retrograde": false,
               "sign": "aries",
-              "degree": 25.25420000380842
+              "degree": 25.254229769859705
             },
             {
               "body": "Saturn",
-              "lon": 40.39612405941671,
-              "lat": -2.444809704836093,
-              "speed": -0.019939079379582836,
+              "lon": 40.39615382546799,
+              "lat": -2.44480970483609,
+              "speed": -0.019940313450206304,
               "retrograde": true,
               "sign": "taurus",
-              "degree": 10.396124059416707
+              "degree": 10.39615382546799
             },
             {
               "body": "Uranus",
-              "lon": 314.806104823545,
-              "lat": -0.6596606626376885,
-              "speed": 0.050345777651727985,
+              "lon": 314.8061345895963,
+              "lat": -0.6596606626376934,
+              "speed": 0.05034454358110452,
               "retrograde": false,
               "sign": "aquarius",
-              "degree": 14.806104823544956
+              "degree": 14.80613458959624
             },
             {
               "body": "Neptune",
-              "lon": 303.19544219824934,
-              "lat": 0.23714822339760555,
-              "speed": 0.03557127553222017,
+              "lon": 303.1954719643007,
+              "lat": 0.23714822339759897,
+              "speed": 0.03557004143317499,
               "retrograde": false,
               "sign": "aquarius",
-              "degree": 3.1954421982493386
+              "degree": 3.195471964300623
             },
             {
               "body": "Pluto",
-              "lon": 251.45473529706098,
-              "lat": 10.85521071059014,
-              "speed": 0.035153800283183045,
+              "lon": 251.4547650631123,
+              "lat": 10.855210710590136,
+              "speed": 0.03515256619834872,
               "retrograde": false,
               "sign": "sagittarius",
-              "degree": 11.454735297061006
+              "degree": 11.45476506311229
             },
             {
               "body": "North Node",
-              "lon": 123.952106757416,
+              "lon": 123.95213652346729,
               "lat": 0,
-              "speed": -0.05508517818987002,
+              "speed": -0.0550864209772044,
               "retrograde": true,
               "sign": "leo",
-              "degree": 3.9521067574160043
+              "degree": 3.9521365234672885
             },
             {
               "body": "South Node",
-              "lon": 303.952106757416,
+              "lon": 303.9521365234673,
               "lat": 0,
-              "speed": -0.05508517818987002,
+              "speed": -0.0550864209772044,
               "retrograde": true,
               "sign": "aquarius",
-              "degree": 3.9521067574160043
+              "degree": 3.9521365234672885
             }
           ],
           "angles": {
-            "asc": 24.266100700036873,
-            "mc": 279.611048302719,
-            "dsc": 204.26610070003687,
-            "ic": 99.61104830271898
+            "asc": 24.26615726733877,
+            "mc": 279.6110742467766,
+            "dsc": 204.2661572673387,
+            "ic": 99.61107424677658
           },
           "houses": {
             "system": "placidus",
             "cusps": [
-              24.266100700036873,
-              61.142353893093116,
-              82.02077578553957,
-              99.61104830271898,
-              119.06186153870453,
-              147.70058789295,
-              204.26610070003687,
-              241.14235389309306,
-              262.0207757855396,
-              279.611048302719,
-              299.06186153870453,
-              327.70058789295
+              24.26615726733877,
+              61.14238363670046,
+              82.02080045942967,
+              99.61107424677658,
+              119.06189357712822,
+              147.70063403413616,
+              204.2661572673387,
+              241.14238363670052,
+              262.02080045942967,
+              279.6110742467766,
+              299.0618935771282,
+              327.70063403413616
             ]
           },
           "aspects": [
@@ -153,7 +153,7 @@
               "a": "Moon",
               "b": "Uranus",
               "type": "square",
-              "orb": 1.4821668194509243,
+              "orb": 1.4821668194508675,
               "applying": true
             },
             {
@@ -167,7 +167,7 @@
               "a": "Mars",
               "b": "Jupiter",
               "type": "sextile",
-              "orb": 2.709702098886396,
+              "orb": 2.7097020988865097,
               "applying": false
             },
             {
@@ -181,21 +181,21 @@
               "a": "Sun",
               "b": "Moon",
               "type": "sextile",
-              "orb": 2.9551953890130562,
+              "orb": 2.955195389013113,
               "applying": false
             },
             {
               "a": "Uranus",
               "b": "Pluto",
               "type": "sextile",
-              "orb": 3.3513695264840635,
+              "orb": 3.3513695264840067,
               "applying": false
             },
             {
               "a": "Venus",
               "b": "Mars",
               "type": "square",
-              "orb": 3.6013355523280666,
+              "orb": 3.6013355523280097,
               "applying": false
             },
             {
@@ -223,7 +223,7 @@
               "a": "Sun",
               "b": "Mercury",
               "type": "conjunction",
-              "orb": 8.479824479852482,
+              "orb": 8.479824479852425,
               "applying": true
             }
           ],
@@ -259,7 +259,8 @@
             "localTime": "tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
             "longitudeUnit": "degrees-[0,360)",
             "moonNodes": "instantaneous-geocentric-moon-orbit-plane",
-            "moonPosition": "astronomy-engine-ecliptic-geo-moon;no-light-time;no-aberration",
+            "moonPosition": "astronomy-engine-geo-moon;no-light-time;no-aberration",
+            "nutation": "iau2000b;equation-of-equinoxes-with-two-complementary-terms",
             "planetPositions": "aberrated-geocentric-ecliptic-of-date;no-deflection",
             "speed": "degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
             "timeScale": "tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
@@ -281,7 +282,7 @@
               "version": "2.1.19"
             },
             "name": "@zodiacs/engine",
-            "version": "0.1.1-rc.15"
+            "version": "0.1.1-rc.16"
           },
           "houses": {
             "absenceReason": null,
@@ -301,7 +302,7 @@
         },
         "backend": {
           "name": "@zodiacs/engine",
-          "version": "0.1.1-rc.15",
+          "version": "0.1.1-rc.16",
           "ephemeris": {
             "name": "astronomy-engine",
             "version": "2.1.19"
@@ -309,9 +310,9 @@
         },
         "cite": {
           "url": "https://zodiacs.org/developers/compute/#chart",
-          "receipt": "sha256:33283e40ac7fa5f322932df3d3230c6db10299b6493a13cb51e2bea343fb2aea",
+          "receipt": "sha256:57b99943e9371e1f53681a88293dc07202fdb4b29b944af3758607e1be4e2d07",
           "engine": "@zodiacs/engine",
-          "version": "0.1.1-rc.15"
+          "version": "0.1.1-rc.16"
         }
       },
       "local": {
@@ -328,118 +329,118 @@
           "bodies": [
             {
               "body": "Sun",
-              "lon": 84.14928812963558,
-              "lat": -0.000018277038787882812,
-              "speed": 0.9551334400725864,
+              "lon": 84.14928002220142,
+              "lat": -0.00001827703878788282,
+              "speed": 0.9551305973047874,
               "retrograde": false,
               "sign": "gemini",
-              "degree": 24.14928812963558
+              "degree": 24.149280022201424
             },
             {
               "body": "Moon",
-              "lon": 345.63672700444613,
-              "lat": 3.150108951597779,
-              "speed": 13.369243714805634,
+              "lon": 345.6367188970119,
+              "lat": 3.1501089515977787,
+              "speed": 13.369240872094679,
               "retrograde": false,
               "sign": "pisces",
-              "degree": 15.63672700444613
+              "degree": 15.63671889701186
             },
             {
               "body": "Mercury",
-              "lon": 65.72654152736055,
-              "lat": -1.6591301441455806,
-              "speed": 1.717033450688632,
+              "lon": 65.7265334199264,
+              "lat": -1.659130144145581,
+              "speed": 1.7170306078924114,
               "retrograde": false,
               "sign": "gemini",
-              "degree": 5.726541527360553
+              "degree": 5.7265334199263975
             },
             {
               "body": "Venus",
-              "lon": 48.80187356528023,
+              "lon": 48.80186545784608,
               "lat": -1.9454777463945472,
-              "speed": 1.1760244524907648,
+              "speed": 1.1760216097229659,
               "retrograde": false,
               "sign": "taurus",
-              "degree": 18.801873565280232
+              "degree": 18.801865457846077
             },
             {
               "body": "Mars",
-              "lon": 11.056043552598055,
+              "lon": 11.0560354451639,
               "lat": -1.985442010929648,
-              "speed": 0.7189199438641936,
+              "speed": 0.7189171010963946,
               "retrograde": false,
               "sign": "aries",
-              "degree": 11.056043552598055
+              "degree": 11.0560354451639
             },
             {
               "body": "Jupiter",
-              "lon": 105.89400144525308,
-              "lat": 0.18682220954897247,
-              "speed": 0.21665555112804213,
+              "lon": 105.89399333781893,
+              "lat": 0.1868222095489725,
+              "speed": 0.2166527083602432,
               "retrograde": false,
               "sign": "cancer",
-              "degree": 15.894001445253082
+              "degree": 15.893993337818927
             },
             {
               "body": "Saturn",
-              "lon": 294.03064795082776,
-              "lat": 0.11719975460325135,
-              "speed": -0.05865971991170227,
+              "lon": 294.0306398433936,
+              "lat": 0.11719975460325133,
+              "speed": -0.0586625626510795,
               "retrograde": true,
               "sign": "capricorn",
-              "degree": 24.030647950827756
+              "degree": 24.0306398433936
             },
             {
               "body": "Uranus",
-              "lon": 278.1631287788913,
-              "lat": -0.3255654628085349,
-              "speed": -0.038931821222831786,
+              "lon": 278.16312067145714,
+              "lat": -0.3255654628085348,
+              "speed": -0.038934664019052434,
               "retrograde": true,
               "sign": "capricorn",
-              "degree": 8.163128778891291
+              "degree": 8.163120671457136
             },
             {
               "body": "Neptune",
-              "lon": 283.7163300513614,
-              "lat": 0.8770484012609029,
-              "speed": -0.025028642028246395,
+              "lon": 283.7163219439272,
+              "lat": 0.8770484012609031,
+              "speed": -0.025031484796045333,
               "retrograde": true,
               "sign": "capricorn",
-              "degree": 13.71633005136141
+              "degree": 13.716321943927142
             },
             {
               "body": "Pluto",
-              "lon": 225.40176208946352,
+              "lon": 225.40175398202936,
               "lat": 15.85358596624236,
-              "speed": -0.02016973694196622,
+              "speed": -0.02017257970976516,
               "retrograde": true,
               "sign": "scorpio",
-              "degree": 15.401762089463546
+              "degree": 15.40175398202939
             },
             {
               "body": "North Node",
-              "lon": 308.1218057000367,
+              "lon": 308.1217975926026,
               "lat": 0,
-              "speed": 0.013241043506809547,
+              "speed": 0.013238202005254607,
               "retrograde": false,
               "sign": "aquarius",
-              "degree": 8.121805700036703
+              "degree": 8.121797592602661
             },
             {
               "body": "South Node",
-              "lon": 128.1218057000367,
+              "lon": 128.1217975926026,
               "lat": 0,
-              "speed": 0.013241043506809547,
+              "speed": 0.013238202005254607,
               "retrograde": false,
               "sign": "leo",
-              "degree": 8.121805700036703
+              "degree": 8.121797592602604
             }
           ],
           "angles": {
-            "asc": 182.46512110224094,
-            "mc": 93.10546966521451,
-            "dsc": 2.4651211022409143,
-            "ic": 273.1054696652145
+            "asc": 182.4651150595028,
+            "mc": 93.10546207243345,
+            "dsc": 2.465115059502807,
+            "ic": 273.1054620724335
           },
           "houses": {
             "system": "whole",
@@ -470,7 +471,7 @@
               "a": "Moon",
               "b": "Jupiter",
               "type": "trine",
-              "orb": 0.25727444080689565,
+              "orb": 0.25727444080700934,
               "applying": true
             },
             {
@@ -498,14 +499,14 @@
               "a": "Jupiter",
               "b": "Neptune",
               "type": "opposition",
-              "orb": 2.1776713938916714,
+              "orb": 2.1776713938917283,
               "applying": false
             },
             {
               "a": "Mars",
               "b": "Neptune",
               "type": "square",
-              "orb": 2.660286498763355,
+              "orb": 2.6602864987632984,
               "applying": true
             },
             {
@@ -526,7 +527,7 @@
               "a": "Moon",
               "b": "Venus",
               "type": "sextile",
-              "orb": 3.165146560834046,
+              "orb": 3.1651465608341596,
               "applying": true
             },
             {
@@ -547,7 +548,7 @@
               "a": "Venus",
               "b": "Neptune",
               "type": "trine",
-              "orb": 5.085543513918822,
+              "orb": 5.0855435139188785,
               "applying": false
             },
             {
@@ -561,7 +562,7 @@
               "a": "Uranus",
               "b": "Neptune",
               "type": "conjunction",
-              "orb": 5.553201272470119,
+              "orb": 5.553201272470062,
               "applying": false
             },
             {
@@ -604,7 +605,8 @@
             "localTime": "tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
             "longitudeUnit": "degrees-[0,360)",
             "moonNodes": "instantaneous-geocentric-moon-orbit-plane",
-            "moonPosition": "astronomy-engine-ecliptic-geo-moon;no-light-time;no-aberration",
+            "moonPosition": "astronomy-engine-geo-moon;no-light-time;no-aberration",
+            "nutation": "iau2000b;equation-of-equinoxes-with-two-complementary-terms",
             "planetPositions": "aberrated-geocentric-ecliptic-of-date;no-deflection",
             "speed": "degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
             "timeScale": "tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
@@ -626,7 +628,7 @@
               "version": "2.1.19"
             },
             "name": "@zodiacs/engine",
-            "version": "0.1.1-rc.15"
+            "version": "0.1.1-rc.16"
           },
           "houses": {
             "absenceReason": null,
@@ -649,7 +651,7 @@
           "provenance": {
             "runtime": {
               "name": "node",
-              "tzdbVersion": "2026c"
+              "tzdbVersion": "2026b"
             },
             "status": "claimed"
           },
@@ -662,7 +664,7 @@
         },
         "backend": {
           "name": "@zodiacs/engine",
-          "version": "0.1.1-rc.15",
+          "version": "0.1.1-rc.16",
           "ephemeris": {
             "name": "astronomy-engine",
             "version": "2.1.19"
@@ -670,9 +672,9 @@
         },
         "cite": {
           "url": "https://zodiacs.org/developers/compute/#chart",
-          "receipt": "sha256:51486dbfe4686a6dfe2ccf4752925537e5e90bcf0fb2f1e41c3e0edf3fc393e3",
+          "receipt": "sha256:8b22d2eabd7b0ea6a291bbad442663fb1aa708c6654c08ef9f9d193ff4e507b9",
           "engine": "@zodiacs/engine",
-          "version": "0.1.1-rc.15"
+          "version": "0.1.1-rc.16"
         }
       }
     },
@@ -686,30 +688,30 @@
               "bodies": [
                 {
                   "body": "Sun",
-                  "lon": 186.36510292214544,
+                  "lon": 186.3650989852253,
                   "lat": 0.000040745528335972984,
-                  "speed": 0.9817149955893001,
+                  "speed": 0.981717214017408,
                   "retrograde": false,
                   "sign": "libra",
-                  "degree": 6.365102922145411
+                  "degree": 6.365098985225359
                 },
                 {
                   "body": "Moon",
-                  "lon": 42.54210931920164,
-                  "lat": 4.950806474193535,
-                  "speed": 14.176526701334069,
+                  "lon": 42.542105382281534,
+                  "lat": 4.950806474193532,
+                  "speed": 14.176528919762177,
                   "retrograde": false,
                   "sign": "taurus",
-                  "degree": 12.542109319201643
+                  "degree": 12.542105382281534
                 },
                 {
                   "body": "Mercury",
-                  "lon": 208.6691238803002,
-                  "lat": -1.5664060143340435,
-                  "speed": 1.3549243577983816,
+                  "lon": 208.66911994338005,
+                  "lat": -1.5664060143340448,
+                  "speed": 1.3549265762264895,
                   "retrograde": false,
                   "sign": "libra",
-                  "degree": 28.669123880300162
+                  "degree": 28.66911994338011
                 }
               ],
               "deltaT": {
@@ -740,30 +742,30 @@
               "bodies": [
                 {
                   "body": "Sun",
-                  "lon": 279.51344376954717,
+                  "lon": 279.513447355753,
                   "lat": 0.00005713042741092159,
-                  "speed": 1.019138996014135,
+                  "speed": 1.0191402134296368,
                   "retrograde": false,
                   "sign": "capricorn",
-                  "degree": 9.513443769547166
+                  "degree": 9.513447355752987
                 },
                 {
                   "body": "Moon",
-                  "lon": 194.499690644731,
-                  "lat": -4.135221345445716,
-                  "speed": 12.904041858803339,
+                  "lon": 194.49969423093685,
+                  "lat": -4.135221345445718,
+                  "speed": 12.904043076190419,
                   "retrograde": false,
                   "sign": "libra",
-                  "degree": 14.499690644731004
+                  "degree": 14.499694230936825
                 },
                 {
                   "body": "Mercury",
-                  "lon": 278.6336286217399,
-                  "lat": -1.6656442594625178,
-                  "speed": 1.5992625331193722,
+                  "lon": 278.6336322079457,
+                  "lat": -1.6656442594625183,
+                  "speed": 1.5992637505064522,
                   "retrograde": false,
                   "sign": "capricorn",
-                  "degree": 8.633628621739945
+                  "degree": 8.633632207945766
                 }
               ],
               "deltaT": {
@@ -796,7 +798,7 @@
           "endpoint": "positions",
           "engine": {
             "name": "@zodiacs/engine",
-            "version": "0.1.1-rc.15",
+            "version": "0.1.1-rc.16",
             "ephemeris": {
               "name": "astronomy-engine",
               "version": "2.1.19"
@@ -810,7 +812,8 @@
             "localTime": "tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
             "longitudeUnit": "degrees-[0,360)",
             "moonNodes": "instantaneous-geocentric-moon-orbit-plane",
-            "moonPosition": "astronomy-engine-ecliptic-geo-moon;no-light-time;no-aberration",
+            "moonPosition": "astronomy-engine-geo-moon;no-light-time;no-aberration",
+            "nutation": "iau2000b;equation-of-equinoxes-with-two-complementary-terms",
             "planetPositions": "aberrated-geocentric-ecliptic-of-date;no-deflection",
             "speed": "degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
             "timeScale": "tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
@@ -841,7 +844,7 @@
         },
         "backend": {
           "name": "@zodiacs/engine",
-          "version": "0.1.1-rc.15",
+          "version": "0.1.1-rc.16",
           "ephemeris": {
             "name": "astronomy-engine",
             "version": "2.1.19"
@@ -849,9 +852,9 @@
         },
         "cite": {
           "url": "https://zodiacs.org/developers/compute/#positions",
-          "receipt": "sha256:7c73e655b104f19d054c50862691e3bd13367888699c759d3f3c82afe14cb856",
+          "receipt": "sha256:27ca366458ec14dde6561fb68f864c79d08bf7e55d3143e7aa7e2aeffdb2b593",
           "engine": "@zodiacs/engine",
-          "version": "0.1.1-rc.15"
+          "version": "0.1.1-rc.16"
         }
       }
     },
@@ -862,26 +865,26 @@
           "instant": "2026-06-21T12:00:00.000Z",
           "local": null,
           "angles": {
-            "asc": 335.538860059695,
-            "mc": 242.95819054092098,
-            "dsc": 155.53886005969503,
-            "ic": 62.95819054092101
+            "asc": 335.5388722769363,
+            "mc": 242.95820528978106,
+            "dsc": 155.53887227693622,
+            "ic": 62.95820528978106
           },
           "houses": {
             "system": "koch",
             "cusps": [
-              335.538860059695,
-              4.91348875675925,
-              34.142165776173044,
-              62.95819054092101,
-              97.20365849857853,
-              126.66878984401257,
-              155.53886005969503,
-              184.9134887567593,
-              214.142165776173,
-              242.958190540921,
-              277.20365849857853,
-              306.6687898440125
+              335.5388722769362,
+              4.913502731650965,
+              34.14218077714588,
+              62.95820528978106,
+              97.20367206467239,
+              126.66880166130079,
+              155.53887227693622,
+              184.91350273165096,
+              214.14218077714588,
+              242.95820528978106,
+              277.20367206467245,
+              306.6688016613008
             ]
           },
           "flags": [],
@@ -916,7 +919,8 @@
             "localTime": "tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
             "longitudeUnit": "degrees-[0,360)",
             "moonNodes": "instantaneous-geocentric-moon-orbit-plane",
-            "moonPosition": "astronomy-engine-ecliptic-geo-moon;no-light-time;no-aberration",
+            "moonPosition": "astronomy-engine-geo-moon;no-light-time;no-aberration",
+            "nutation": "iau2000b;equation-of-equinoxes-with-two-complementary-terms",
             "planetPositions": "aberrated-geocentric-ecliptic-of-date;no-deflection",
             "speed": "degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
             "timeScale": "tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
@@ -938,7 +942,7 @@
               "version": "2.1.19"
             },
             "name": "@zodiacs/engine",
-            "version": "0.1.1-rc.15"
+            "version": "0.1.1-rc.16"
           },
           "houses": {
             "absenceReason": null,
@@ -958,7 +962,7 @@
         },
         "backend": {
           "name": "@zodiacs/engine",
-          "version": "0.1.1-rc.15",
+          "version": "0.1.1-rc.16",
           "ephemeris": {
             "name": "astronomy-engine",
             "version": "2.1.19"
@@ -966,9 +970,9 @@
         },
         "cite": {
           "url": "https://zodiacs.org/developers/compute/#houses",
-          "receipt": "sha256:4d00369397b0c689e40d851839cfcb8a4f508c69a109287e2f86b43549978110",
+          "receipt": "sha256:7b1047d675c59293bf22b0d7c6d7392adda6de44d5fdca2771b6740bf7b991a0",
           "engine": "@zodiacs/engine",
-          "version": "0.1.1-rc.15"
+          "version": "0.1.1-rc.16"
         }
       }
     },
@@ -982,40 +986,40 @@
             {
               "kind": "station",
               "body": "Venus",
-              "at": "2026-10-03T07:10:13.002Z",
+              "at": "2026-10-03T07:10:37.413Z",
               "type": "retrograde",
-              "lon": 218.48665989824488,
+              "lon": 218.4866929646145,
               "sign": "scorpio",
-              "degree": 8.486659898244852
+              "degree": 8.486692964614463
             },
             {
               "kind": "lunation",
               "type": "new",
               "at": "2026-10-10T15:50:02.099Z",
-              "lon": 197.3600967127593,
+              "lon": 197.36011327273553,
               "sign": "libra",
-              "degree": 17.360096712759287
+              "degree": 17.36011327273559
             },
             {
               "kind": "ingress",
               "body": "Sun",
-              "at": "2026-10-23T09:38:28.143Z",
+              "at": "2026-10-23T09:38:28.735Z",
               "sign": "scorpio",
               "retrograde": false
             },
             {
               "kind": "station",
               "body": "Mercury",
-              "at": "2026-10-24T07:15:27.755Z",
+              "at": "2026-10-24T07:15:23.404Z",
               "type": "retrograde",
-              "lon": 230.97960799993507,
+              "lon": 230.97959569296665,
               "sign": "scorpio",
-              "degree": 20.97960799993507
+              "degree": 20.979595692966654
             },
             {
               "kind": "ingress",
               "body": "Venus",
-              "at": "2026-10-25T08:57:04.055Z",
+              "at": "2026-10-25T08:57:01.352Z",
               "sign": "libra",
               "retrograde": true
             },
@@ -1023,9 +1027,9 @@
               "kind": "lunation",
               "type": "full",
               "at": "2026-10-26T04:11:44.973Z",
-              "lon": 32.76153623301718,
+              "lon": 32.76151378202928,
               "sign": "taurus",
-              "degree": 2.761536233017182
+              "degree": 2.761513782029283
             }
           ]
         },
@@ -1034,7 +1038,7 @@
           "endpoint": "events",
           "engine": {
             "name": "@zodiacs/engine",
-            "version": "0.1.1-rc.15",
+            "version": "0.1.1-rc.16",
             "ephemeris": {
               "name": "astronomy-engine",
               "version": "2.1.19"
@@ -1048,7 +1052,8 @@
             "localTime": "tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
             "longitudeUnit": "degrees-[0,360)",
             "moonNodes": "instantaneous-geocentric-moon-orbit-plane",
-            "moonPosition": "astronomy-engine-ecliptic-geo-moon;no-light-time;no-aberration",
+            "moonPosition": "astronomy-engine-geo-moon;no-light-time;no-aberration",
+            "nutation": "iau2000b;equation-of-equinoxes-with-two-complementary-terms",
             "planetPositions": "aberrated-geocentric-ecliptic-of-date;no-deflection",
             "speed": "degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
             "timeScale": "tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
@@ -1092,7 +1097,7 @@
         },
         "backend": {
           "name": "@zodiacs/engine",
-          "version": "0.1.1-rc.15",
+          "version": "0.1.1-rc.16",
           "ephemeris": {
             "name": "astronomy-engine",
             "version": "2.1.19"
@@ -1100,9 +1105,9 @@
         },
         "cite": {
           "url": "https://zodiacs.org/developers/compute/#events",
-          "receipt": "sha256:90701db70cb9942b1cbcd71597ade4afe4fac51937b5f5e36e1744a75c27a2c9",
+          "receipt": "sha256:81fd5e33c10ea89389ea8348c21eccd5957b3b5826320762581855e475202a22",
           "engine": "@zodiacs/engine",
-          "version": "0.1.1-rc.15"
+          "version": "0.1.1-rc.16"
         }
       }
     },
@@ -1137,7 +1142,7 @@
           "endpoint": "time",
           "engine": {
             "name": "@zodiacs/engine",
-            "version": "0.1.1-rc.15",
+            "version": "0.1.1-rc.16",
             "ephemeris": {
               "name": "astronomy-engine",
               "version": "2.1.19"
@@ -1151,7 +1156,8 @@
             "localTime": "tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
             "longitudeUnit": "degrees-[0,360)",
             "moonNodes": "instantaneous-geocentric-moon-orbit-plane",
-            "moonPosition": "astronomy-engine-ecliptic-geo-moon;no-light-time;no-aberration",
+            "moonPosition": "astronomy-engine-geo-moon;no-light-time;no-aberration",
+            "nutation": "iau2000b;equation-of-equinoxes-with-two-complementary-terms",
             "planetPositions": "aberrated-geocentric-ecliptic-of-date;no-deflection",
             "speed": "degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
             "timeScale": "tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
@@ -1191,12 +1197,12 @@
               "appliesBefore": "1970-01-02",
               "requires": "longitude"
             },
-            "runtimeTzdb": "2026c"
+            "runtimeTzdb": "2026b"
           }
         },
         "backend": {
           "name": "@zodiacs/engine",
-          "version": "0.1.1-rc.15",
+          "version": "0.1.1-rc.16",
           "ephemeris": {
             "name": "astronomy-engine",
             "version": "2.1.19"
@@ -1204,9 +1210,9 @@
         },
         "cite": {
           "url": "https://zodiacs.org/developers/compute/#time",
-          "receipt": "sha256:3d848ffef84f7b1768ba78ecc65d7d9ec7ac947e13ceecc653ff3c60ea21b78d",
+          "receipt": "sha256:5e6a031cd16069777cb736dfca6a10631c768f6ab79b3073931072b324a85ab9",
           "engine": "@zodiacs/engine",
-          "version": "0.1.1-rc.15"
+          "version": "0.1.1-rc.16"
         }
       },
       "gap": {
@@ -1248,7 +1254,7 @@
           "endpoint": "time",
           "engine": {
             "name": "@zodiacs/engine",
-            "version": "0.1.1-rc.15",
+            "version": "0.1.1-rc.16",
             "ephemeris": {
               "name": "astronomy-engine",
               "version": "2.1.19"
@@ -1262,7 +1268,8 @@
             "localTime": "tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
             "longitudeUnit": "degrees-[0,360)",
             "moonNodes": "instantaneous-geocentric-moon-orbit-plane",
-            "moonPosition": "astronomy-engine-ecliptic-geo-moon;no-light-time;no-aberration",
+            "moonPosition": "astronomy-engine-geo-moon;no-light-time;no-aberration",
+            "nutation": "iau2000b;equation-of-equinoxes-with-two-complementary-terms",
             "planetPositions": "aberrated-geocentric-ecliptic-of-date;no-deflection",
             "speed": "degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
             "timeScale": "tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
@@ -1302,12 +1309,12 @@
               "appliesBefore": "1970-01-02",
               "requires": "longitude"
             },
-            "runtimeTzdb": "2026c"
+            "runtimeTzdb": "2026b"
           }
         },
         "backend": {
           "name": "@zodiacs/engine",
-          "version": "0.1.1-rc.15",
+          "version": "0.1.1-rc.16",
           "ephemeris": {
             "name": "astronomy-engine",
             "version": "2.1.19"
@@ -1315,9 +1322,9 @@
         },
         "cite": {
           "url": "https://zodiacs.org/developers/compute/#time",
-          "receipt": "sha256:3d848ffef84f7b1768ba78ecc65d7d9ec7ac947e13ceecc653ff3c60ea21b78d",
+          "receipt": "sha256:5e6a031cd16069777cb736dfca6a10631c768f6ab79b3073931072b324a85ab9",
           "engine": "@zodiacs/engine",
-          "version": "0.1.1-rc.15"
+          "version": "0.1.1-rc.16"
         }
       }
     },
@@ -1359,22 +1366,22 @@
           },
           "facts": {
             "atStart": {
-              "lon": 230.97839204376257,
+              "lon": 230.97838063267932,
               "sign": "scorpio",
-              "degree": 20.978392043762597,
-              "speed": 0.017888278179611916,
+              "degree": 20.97838063267932,
+              "speed": 0.017881744440728653,
               "retrograde": false
             },
             "atEnd": {
-              "lon": 230.9292038226267,
+              "lon": 230.92918581450553,
               "sign": "scorpio",
-              "degree": 20.929203822626732,
-              "speed": -0.11771949399985715,
+              "degree": 20.92918581450556,
+              "speed": -0.11772560490896922,
               "retrograde": true
             },
             "stations": [
               {
-                "at": "2026-10-24T07:15:27.737Z",
+                "at": "2026-10-24T07:15:23.391Z",
                 "type": "retrograde"
               }
             ],
@@ -1386,7 +1393,7 @@
           "endpoint": "sky-fact",
           "engine": {
             "name": "@zodiacs/engine",
-            "version": "0.1.1-rc.15",
+            "version": "0.1.1-rc.16",
             "ephemeris": {
               "name": "astronomy-engine",
               "version": "2.1.19"
@@ -1400,7 +1407,8 @@
             "localTime": "tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
             "longitudeUnit": "degrees-[0,360)",
             "moonNodes": "instantaneous-geocentric-moon-orbit-plane",
-            "moonPosition": "astronomy-engine-ecliptic-geo-moon;no-light-time;no-aberration",
+            "moonPosition": "astronomy-engine-geo-moon;no-light-time;no-aberration",
+            "nutation": "iau2000b;equation-of-equinoxes-with-two-complementary-terms",
             "planetPositions": "aberrated-geocentric-ecliptic-of-date;no-deflection",
             "speed": "degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
             "timeScale": "tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
@@ -1440,7 +1448,7 @@
               "appliesBefore": "1970-01-02",
               "requires": "longitude"
             },
-            "runtimeTzdb": "2026c"
+            "runtimeTzdb": "2026b"
           },
           "search": {
             "solver": "engine-longitude-crossings",
@@ -1458,7 +1466,7 @@
         },
         "backend": {
           "name": "@zodiacs/engine",
-          "version": "0.1.1-rc.15",
+          "version": "0.1.1-rc.16",
           "ephemeris": {
             "name": "astronomy-engine",
             "version": "2.1.19"
@@ -1466,9 +1474,9 @@
         },
         "cite": {
           "url": "https://zodiacs.org/developers/compute/#sky-fact",
-          "receipt": "sha256:b09565d513241c2062d114d3c36fb16607218031b18d882543a2f527afa74e59",
+          "receipt": "sha256:a504aceddbdbee9db3af3ed0e71ac4ff63dcee96575b2e5df2150284bf97da6b",
           "engine": "@zodiacs/engine",
-          "version": "0.1.1-rc.15"
+          "version": "0.1.1-rc.16"
         }
       },
       "phase": {
@@ -1492,9 +1500,9 @@
             "lunations": [
               {
                 "at": "2026-10-26T04:11:44.971Z",
-                "lon": 32.76153590012575,
+                "lon": 32.76151344913791,
                 "sign": "taurus",
-                "degree": 2.7615359001257502
+                "degree": 2.761513449137908
               }
             ],
             "flags": []
@@ -1505,7 +1513,7 @@
           "endpoint": "sky-fact",
           "engine": {
             "name": "@zodiacs/engine",
-            "version": "0.1.1-rc.15",
+            "version": "0.1.1-rc.16",
             "ephemeris": {
               "name": "astronomy-engine",
               "version": "2.1.19"
@@ -1519,7 +1527,8 @@
             "localTime": "tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
             "longitudeUnit": "degrees-[0,360)",
             "moonNodes": "instantaneous-geocentric-moon-orbit-plane",
-            "moonPosition": "astronomy-engine-ecliptic-geo-moon;no-light-time;no-aberration",
+            "moonPosition": "astronomy-engine-geo-moon;no-light-time;no-aberration",
+            "nutation": "iau2000b;equation-of-equinoxes-with-two-complementary-terms",
             "planetPositions": "aberrated-geocentric-ecliptic-of-date;no-deflection",
             "speed": "degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
             "timeScale": "tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
@@ -1563,7 +1572,7 @@
         },
         "backend": {
           "name": "@zodiacs/engine",
-          "version": "0.1.1-rc.15",
+          "version": "0.1.1-rc.16",
           "ephemeris": {
             "name": "astronomy-engine",
             "version": "2.1.19"
@@ -1571,9 +1580,9 @@
         },
         "cite": {
           "url": "https://zodiacs.org/developers/compute/#sky-fact",
-          "receipt": "sha256:6971862a721a31606f98139271ca29fd1eafdf0e6701c977e8176b711266b263",
+          "receipt": "sha256:966ba91fcfe1d89606ac4b1e847b0b9e66ecd1295013190b0b4a930556c9d3cd",
           "engine": "@zodiacs/engine",
-          "version": "0.1.1-rc.15"
+          "version": "0.1.1-rc.16"
         }
       },
       "sign": {
@@ -1593,10 +1602,10 @@
           "window": null,
           "zone": null,
           "facts": {
-            "lon": 42.54210931920164,
+            "lon": 42.542105382281534,
             "sign": "taurus",
-            "degree": 12.542109319201643,
-            "speed": 14.176526701334069,
+            "degree": 12.542105382281534,
+            "speed": 14.176528919762177,
             "retrograde": false,
             "deltaT": {
               "seconds": 69.20533325195312,
@@ -1619,7 +1628,7 @@
                 "listed": true
               }
             },
-            "boundaryMarginArcsec": 45151.593549125915,
+            "boundaryMarginArcsec": 45151.57937621352,
             "flags": []
           }
         },
@@ -1628,7 +1637,7 @@
           "endpoint": "sky-fact",
           "engine": {
             "name": "@zodiacs/engine",
-            "version": "0.1.1-rc.15",
+            "version": "0.1.1-rc.16",
             "ephemeris": {
               "name": "astronomy-engine",
               "version": "2.1.19"
@@ -1642,7 +1651,8 @@
             "localTime": "tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
             "longitudeUnit": "degrees-[0,360)",
             "moonNodes": "instantaneous-geocentric-moon-orbit-plane",
-            "moonPosition": "astronomy-engine-ecliptic-geo-moon;no-light-time;no-aberration",
+            "moonPosition": "astronomy-engine-geo-moon;no-light-time;no-aberration",
+            "nutation": "iau2000b;equation-of-equinoxes-with-two-complementary-terms",
             "planetPositions": "aberrated-geocentric-ecliptic-of-date;no-deflection",
             "speed": "degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
             "timeScale": "tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
@@ -1673,7 +1683,7 @@
         },
         "backend": {
           "name": "@zodiacs/engine",
-          "version": "0.1.1-rc.15",
+          "version": "0.1.1-rc.16",
           "ephemeris": {
             "name": "astronomy-engine",
             "version": "2.1.19"
@@ -1681,9 +1691,9 @@
         },
         "cite": {
           "url": "https://zodiacs.org/developers/compute/#sky-fact",
-          "receipt": "sha256:f8490d83188d035999e24c2bcd64d202eb30b06d3198404487a4269c3f3da33c",
+          "receipt": "sha256:fe3f71fb8dccdbfbc5c4837c08c117ad2b8f01f72cfe9261b3b0d51d642c7056",
           "engine": "@zodiacs/engine",
-          "version": "0.1.1-rc.15"
+          "version": "0.1.1-rc.16"
         }
       }
     }

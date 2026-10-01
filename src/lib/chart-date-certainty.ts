@@ -1,29 +1,5 @@
 import type { BodyName, BodyPosition } from './engine/types';
 import { signForLongitude } from './signs';
-import { resolveLocalToUtc } from './time/localToUtc';
-
-export interface LocalDateEndpoints {
-  start: Date;
-  end: Date;
-}
-
-function nextIsoDate(date: string): string {
-  const [year, month, day] = date.split('-').map(Number);
-  return new Date(Date.UTC(year, month - 1, day + 1)).toISOString().slice(0, 10);
-}
-
-/**
- * Two samples derived from resolved local midnights. The end sample is one
- * millisecond before the resolved following midnight.
- *
- * These samples do not establish full date membership or coverage, especially
- * for gaps, repeated dates or dates with disconnected UTC intervals.
- */
-export function localDateEndpointsUtc(date: string, timeZone: string): LocalDateEndpoints {
-  const start = resolveLocalToUtc(date, '00:00', timeZone).utc;
-  const nextStart = resolveLocalToUtc(nextIsoDate(date), '00:00', timeZone).utc;
-  return { start, end: new Date(nextStart.getTime() - 1) };
-}
 
 /**
  * The shared sign at two supplied positions, or null if either is missing or
