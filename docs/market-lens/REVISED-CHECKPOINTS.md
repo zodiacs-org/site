@@ -191,7 +191,7 @@ settings and identical scores across all four browser views.
 ## Final verification and launch status
 
 Final verification evidence is recorded in `revised-acceptance.json` and
-LAUNCH.md: 6,469 tests pass, four skip; 30 built-browser checks and 18 current
+LAUNCH.md: 6,470 tests pass, four skip; 30 built-browser checks and 18 current
 Phase 1 captures pass; static checks have zero errors/warnings; production
 build and unchanged bundle budgets pass. Price-free synthetic calendar
 and setup screenshots are retained with this

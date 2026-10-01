@@ -626,6 +626,7 @@ export function createTerminal({ host }) {
         const up = quote.change24hPct > 0;
         row.change.textContent = `${up ? '+' : ''}${quote.change24hPct.toFixed(2)}%`;
         row.change.classList.toggle('zme__rail-change--up', up);
+        row.change.classList.toggle('zme__rail-change--down', quote.change24hPct < 0);
       }
     }
   }
@@ -639,10 +640,13 @@ export function createTerminal({ host }) {
     const liquidityText = quote?.liquidityUsd ? formatUsd(quote.liquidityUsd) : '—';
     statPrice.textContent = priceText;
     statChange.textContent = changeText;
+    statChange.classList.toggle('is-positive', Boolean(quote?.change24hPct > 0));
+    statChange.classList.toggle('is-negative', Boolean(quote?.change24hPct < 0));
     statLiquidity.textContent = liquidityText;
     mobilePrice.textContent = priceText;
     mobileChange.textContent = changeText;
     mobileChange.classList.toggle('is-positive', Boolean(quote?.change24hPct > 0));
+    mobileChange.classList.toggle('is-negative', Boolean(quote?.change24hPct < 0));
     mobileLiquidity.textContent = `Liquidity ${liquidityText}`;
   }
 

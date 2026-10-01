@@ -445,3 +445,17 @@
     padding-bottom: max(88px, calc(54px + env(safe-area-inset-bottom)));
   }
 }
+
+/* A compact mobile directory with native, keyboard-accessible groups. */
+.zfooter__fold { width: 100%; }
+.zfooter__fold > summary { cursor: pointer; list-style: none; }
+.zfooter__fold > summary::-webkit-details-marker { display: none; }
+@media (max-width: 620px) {
+  .zfooter__fold > summary { display: flex; align-items: center; justify-content: space-between; min-height: 44px; margin: 0; }
+  .zfooter__fold > summary::after { content: '+'; font: 400 18px var(--zf-sans); }
+  .zfooter__fold[open] > summary::after { content: '−'; }
+  .zfooter__fold .zfooter__links { padding-bottom: 12px; }
+  .zfooter__group--wide { grid-column: auto; }
+}
+
+.zfooter__fold > summary .zfooter__label { margin-bottom: 0; }

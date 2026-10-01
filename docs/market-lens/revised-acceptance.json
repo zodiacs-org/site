@@ -1,6 +1,6 @@
 {
   "schema": "zodiacs.market-lens.revised-acceptance.v1",
-  "verifiedAt": "2026-10-01T16:03:02.013Z",
+  "verifiedAt": "2026-10-01T16:16:58.635Z",
   "startingCommit": "95356b42d37a280ed989056288844d72f868108f",
   "sourceSha256": "efee63b3c0406a493444b779f292d52eeaf490691a7caadfb89313c54dc71ac0",
   "sourceFiles": 244,
@@ -19,25 +19,26 @@
   "staticCheck": {
     "errors": 0,
     "warnings": 0,
-    "hints": 18
+    "hints": 19
   },
   "fullTests": {
-    "passed": 6469,
+    "passed": 6470,
     "skipped": 4,
     "failed": 0,
     "passingFiles": 512,
     "skippedFiles": 1
   },
+  "integratedMain": "6ca4269a",
   "phase1": {
     "captures": 18,
     "passed": 18,
     "manifest": "../acceptance/phase1/screenshots/manifest.json",
-    "templateSourceSha256": "628132a1d87c3482bd2aad07560b3fcde4756a4d89cce9b818a32753d5fc9ff8"
+    "templateSourceSha256": "c8fd4db0755ba1bb78a7cbf218abb4e7866ceec1a3c5a386973ba322949e53aa"
   },
   "browser": {
     "kind": "Built production assets with the real same-origin local Coinbase adapter; not deployed Vercel acceptance",
     "legacy": {
-      "verifiedAt": "2026-10-01T15:54:56.665Z",
+      "verifiedAt": "2026-10-01T16:13:32.369Z",
       "checks": [
         "Real BTC/ETH hourly and daily API data and chart selection",
         "Fractional timezone and accessible indicator table",
@@ -55,7 +56,7 @@
       "errors": []
     },
     "revised": {
-      "at": "2026-10-01T15:55:37.671Z",
+      "at": "2026-10-01T16:14:12.395Z",
       "checks": [
         "Explicit own chart wins over newest other chart; actual Placidus houses, personal windows and separated event detail",
         "Cost-aware risk, private setup creation, revisions and original risk retained in journal",
@@ -77,7 +78,7 @@
         "No private birth or journal data in outbound API URLs/payloads"
       ],
       "errors": [],
-      "requestCount": 1238,
+      "requestCount": 1241,
       "privateApiLeakChecks": 9,
       "syntheticChart": true
     }
@@ -134,10 +135,10 @@
     "publicMarketForecastsEnabled": false
   },
   "logsSha256": {
-    "build": "1e056c991d9b14fc2f8101798c44b5015f1edb101faee21792309a619a17374a",
-    "check": "dc4310c44a8d1765bc2e296d740276c251c661c91ad53f95a6d94caef1522ce2",
-    "tests": "37baf94b08bed526a97ad155bdd05d7aeac3f02163a29fea63cb5cb188767747",
-    "phase1": "2d90248e538fd64da0ade7e620dc595b10588a01f4622d170ed74d4ae0d7b548",
+    "build": "a77a062796ed2c5716453fbf7bf3156354aeef2df04d65c39adf98214fcf3609",
+    "check": "5249513d6256914255f556031d47f98a8e5e22fffe96d5f66450d630ad2a90d7",
+    "tests": "49a88523ec74026a6c6bcbf8d179c3341d385e38c7698c408d19d15525b3a8cc",
+    "phase1": "f116185560edcd9079c3ab19899ce30b2b7596da8d3297f0fe63909cd2e53fd7",
     "production-browser": "53455224103f4687784ac7fff5086052a2b19eb18630c1c9d8472e6304b452c7"
   }
 }

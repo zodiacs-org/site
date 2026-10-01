@@ -10,11 +10,11 @@ describe('the terminal stylesheet', () => {
     expect(ZX_CSS).not.toMatch(/https?:/i);
   });
 
-  it('keeps the sign pastel as the only chroma — no gold, no red/green pair', () => {
+  it('keeps decorative colors neutral and uses approved semantic colors only for market movement', () => {
     // The Cosmic Void ramp is greys; every color-mix leans on --sign.
     expect(ZX_CSS).not.toMatch(/#E7C879|#D4AF37|gold/i);
     const hexes = ZX_CSS.match(/#[0-9A-Fa-f]{6}\b/g) ?? [];
-    const allowed = ['#EEF1F7', '#C6CCDA', '#8E96AB'];
+    const allowed = ['#EEF1F7', '#C6CCDA', '#8E96AB', '#8dd9ad', '#f28e87'];
     for (const hex of hexes) expect(allowed, hex).toContain(hex);
   });
 

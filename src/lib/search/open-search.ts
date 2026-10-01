@@ -189,7 +189,8 @@ function build() {
 
   const foot = document.createElement('p');
   foot.className = 'zsearch__foot mono';
-  foot.textContent = '↑↓ move · ↵ open · esc close';
+  foot.textContent = window.matchMedia('(pointer: coarse)').matches ? 'Search tools, signs or astrology terms' : '↑↓ move · ↵ open · esc close';
+  if (window.matchMedia('(pointer: coarse)').matches) esc.hidden = true;
 
   panel.append(head, list, status, foot);
   root.appendChild(panel);

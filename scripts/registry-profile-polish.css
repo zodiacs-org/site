@@ -101,3 +101,7 @@
       .identity-actions button, .people-block a, .strip a, .profile-explore span { transition: none; }
       .identity-actions button:active, .people-block a:active, .strip a:active, .profile-explore:active { transform: none; }
     }
+
+    .profile-interest-title { margin: 36px 0 16px; font-family: var(--profile-display); font-size: 26px; font-weight: 400; }
+    .attention-card__snapshot { display: block; margin-top: 8px; font-size: 12px; color: var(--ink-dim); }
+    .people-block > small, .attention-card > small, .lot__eyebrow { font-size: 12px; line-height: 1.5; }

@@ -9,8 +9,8 @@ comparisons, optional score and their verification/limitations.
 
 The final production build passes the unchanged route/chunk budgets: Lens
 26.9 KB gzip / 32 KB, chart 50.1 KB / 60 KB, engine closure 31.4 KB / 31.6 KB.
-Astro check reports 0 errors, 0 warnings and 18 hints. All 18 current Phase 1
-visual captures pass. Full suite: 6,469 passed, 4 skipped, 0 failed (512 passing
+Astro check reports 0 errors, 0 warnings and 19 hints. All 18 current Phase 1
+visual captures pass. Full suite: 6,470 passed, 4 skipped, 0 failed (512 passing
 files, one skipped file). Built production UI passes all 30 browser checks
 (12 original, 18 revised), including dense calendars, both supported assets /
 intervals, private source lifecycle, risk revisions and cross-tab conflicts.
