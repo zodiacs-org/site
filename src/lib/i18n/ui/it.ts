@@ -105,7 +105,7 @@ const it = {
   placeNoResults: "Non è nell’elenco? Scegli la città più vicina — pochi chilometri cambiano raramente il tema.",
   placeError:
     "Non è stato possibile caricare l’indice dei luoghi — controlla la connessione e riprova.",
-  searchGeo: "La ricerca include circa 34.000 luoghi · GeoNames (CC BY 4.0)",
+  searchGeo: "Inserisci la città dove sei nato. Dati: GeoNames (CC BY 4.0).",
   chartError:
     "Si è verificato un problema durante il calcolo del tema. Riprova.",
   moonError:
@@ -119,7 +119,7 @@ const it = {
     "Si è verificato un problema durante il confronto dei temi. Riprova.",
   noBirthTime: "Non la conosco",
   risingTimeHelp: "L’ascendente cambia ogni due ore — qui l’orario conta.",
-  chartTimeHelp: "Non conosci l’ora? Vedrai posizioni di riferimento senza ascendente né case; i possibili segni della Luna non sono verificati.",
+  chartTimeHelp: "Puoi continuare senza l’ora di nascita. Non possiamo mostrare l’ascendente o le case, e il tuo segno lunare potrebbe essere incerto.",
   chartSavedDevice: "Salvato · su questo dispositivo",
   saveThisChart: "Salva questo tema",
   chartSavedStatus: "Tema salvato su questo dispositivo.",

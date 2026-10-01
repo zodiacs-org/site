@@ -389,11 +389,26 @@ function isTechnicalState(fragment) {
   return /^(?:token|Token \$\{…\}|Invalid positions-only chart token\.|A positions-only chart token is required\.|Daily email reservation owner token is invalid\.|Daily sun confirmation token could not be verified\.|The invitation token generator returned an invalid value\.|<form[\s\S]*\bname="token"[\s\S]*<\/form>)$/u.test(fragment.text);
 }
 
+// Owner-approved destination descriptions (2026-10-01). These name the separate
+// collection before a visitor opens it; acquisition copy remains prohibited.
+function isAstrofolioNavigationDescription(fragment) {
+  return fragment.file === 'src/components/SiteNav.astro'
+    && new Set([
+    'Official Zodiac token collection',
+    'Colección oficial de tokens del Zodiaco — en inglés',
+    'Coleção oficial de tokens do Zodíaco — em inglês',
+    'Collection officielle de jetons du Zodiaque — en anglais',
+    'Collezione ufficiale di token zodiacali — in inglese',
+    'Официальная коллекция токенов Зодиака — на английском',
+  ]).has(fragment.text);
+}
+
 function vocabularyAllowed(fragment) {
   return isReadOnlyPosture(fragment)
     || isApprovedDisclosureFragment(fragment)
     || isLegalDefensiveFragment(fragment)
     || isWingCatalogFragment(fragment)
+    || isAstrofolioNavigationDescription(fragment)
     || isPureRouteOrState(fragment.text)
     || isTechnicalState(fragment);
 }

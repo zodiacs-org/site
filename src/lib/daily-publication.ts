@@ -16,7 +16,7 @@ import { SIGN_SLUGS, SIGNS } from './signs';
 type SignSlug = (typeof SIGNS)[number]['slug'];
 
 export const DAILY_PUBLICATION_SCHEMA = 'zodiacs.daily-publication.v1' as const;
-export const DAILY_RENDERER_VERSION = 'zodiacs.daily-renderer.v1.1' as const;
+export const DAILY_RENDERER_VERSION = 'zodiacs.daily-renderer.v1.2' as const;
 
 interface PatternRule {
   id: string;

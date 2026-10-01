@@ -110,7 +110,8 @@ export function mobileToolMenuFailures(state, { requireBirthdayFocus = false } =
   const failures = [
     state.open && state.expanded === 'true' || 'mobile menu is not open',
     state.guide?.visibility === 'hidden' && state.guide.pointerEvents === 'none' || 'Guide remains available over the menu',
-    state.rows.length === 9 || 'missing mobile tool rows',
+    // Approved compact navigation: six tools plus the All tools destination.
+    state.rows.length === 7 || 'missing mobile tool rows',
   ].filter((entry) => entry !== true);
   for (const row of state.rows) {
     if (!row.visible || !row.textRects.length) failures.push(`${row.href}: missing or hidden text`);

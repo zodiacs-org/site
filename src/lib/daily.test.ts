@@ -138,10 +138,10 @@ describe('dailyReading', () => {
     const r = dailyReading('aries', FIXTURE);
     expect(r.lines.map((l) => `${l.text} [${l.receipt}]`)).toMatchInlineSnapshot(`
       [
-        "Neptune stations retrograde in your first house — expect revisions in how you look, start, and come across. [Neptune stations retrograde 4.4° Aries · 11:21 UTC]",
-        "The Moon spends today in your twelfth house — rest, retreat, and what runs under the surface. [Moon 28.3° Pisces · house 12]",
-        "Mercury is working your fourth house — home, family, and the private floor of your life. [Mercury 24.6° Cancer, retrograde · house 4]",
-        "Venus is warming your fifth house — pleasure, romance, children, and what you make for joy. [Venus 26.4° Leo · house 5]",
+        "Neptune stations retrograde in your first house — expect revisions in your identity and how you present yourself. [Neptune stations retrograde 4.4° Aries · 11:21 UTC]",
+        "The Moon spends today in your twelfth house — rest, privacy, and unfinished matters. [Moon 28.3° Pisces · house 12]",
+        "Mercury is working your fourth house — home, family, and your private life. [Mercury 24.6° Cancer, retrograde · house 4]",
+        "Venus is warming your fifth house — creativity, romance, children, and enjoyment. [Venus 26.4° Leo · house 5]",
       ]
     `);
   });

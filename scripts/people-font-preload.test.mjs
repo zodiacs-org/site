@@ -22,12 +22,15 @@ function monoPreloads(html) {
 }
 
 describe('People profile mono font discovery', () => {
-  it('source: keeps full mono preloading an explicit People profile opt-in', async () => {
+  it('source: keeps full mono preloading an explicit People profile and sign guide opt-in', async () => {
     const pages = await astroPages(resolve(root, 'src/pages'));
     const optedIn = (await Promise.all(pages.map(async (path) => (
       /\bpreloadMonoFont\b/.test(await readFile(path, 'utf8')) ? path : null
     )))).filter(Boolean);
-    expect(optedIn).toEqual([resolve(root, 'src/pages/people/[slug].astro')]);
+    expect(optedIn).toEqual([
+      resolve(root, 'src/pages/[sign]/index.astro'),
+      resolve(root, 'src/pages/people/[slug].astro'),
+    ]);
     const base = await readFile(resolve(root, 'src/layouts/Base.astro'), 'utf8');
     expect(base).toContain('preloadMonoFont?: boolean;');
     expect(base.match(new RegExp(monoPath.replaceAll('.', '\\.'), 'g'))).toHaveLength(1);
