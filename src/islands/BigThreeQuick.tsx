@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
 import { BirthFields, birthDateForChart, calendarInPlay, type CalendarChoice } from './BirthFields';
 import type { City } from '../lib/geo/search';
-import { preloadIndex } from '../lib/geo/search';
 import { useEngine } from '../lib/hooks/useEngine';
 import CalculationReload, { calculationError } from './CalculationReload';
 import { loadModule } from '../lib/module-load';
@@ -68,7 +67,9 @@ export default function BigThreeQuick() {
   const cardSource = useRef<{ chart: Chart; run: number } | null>(null);
 
   useEffect(() => {
-    void preloadIndex();
+    // Warm the same index without placing the search module in the form's
+    // initial JavaScript closure; PlaceSearch also warms it on first focus.
+    void import('../lib/geo/search').then(({ preloadIndex }) => preloadIndex(), () => {});
     return () => { generation.current += 1; };
   }, []);
 
