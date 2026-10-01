@@ -5183,8 +5183,22 @@
       useEffect(() => {
         const dots = dotsRef.current;
         const selected = dots?.querySelector('[aria-pressed="true"]');
-        if (!dots || !selected || dots.scrollWidth <= dots.clientWidth) return;
-        dots.scrollTo({ left: selected.offsetLeft - (dots.clientWidth - selected.offsetWidth) / 2, behavior: 'instant' });
+        if (!dots || !selected) return undefined;
+        const centerSelected = () => {
+          if (dots.scrollWidth <= dots.clientWidth) return;
+          const strip = dots.getBoundingClientRect();
+          const choice = selected.getBoundingClientRect();
+          dots.scrollTo({ left: dots.scrollLeft + choice.left - strip.left - (dots.clientWidth - choice.width) / 2, behavior: 'instant' });
+        };
+        centerSelected();
+        if ('ResizeObserver' in window) {
+          const observer = new ResizeObserver(centerSelected);
+          observer.observe(dots);
+          observer.observe(selected);
+          return () => observer.disconnect();
+        }
+        window.addEventListener('resize', centerSelected);
+        return () => window.removeEventListener('resize', centerSelected);
       }, [active]);
 
 
