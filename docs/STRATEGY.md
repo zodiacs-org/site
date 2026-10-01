@@ -65,7 +65,7 @@ This document is the operating strategy for the Learn / Explore / Collect restru
 
 Conversion arc (layout rhythm inspired by ploy.ai; execution fully zodiac-native): sparse commanding hero → light-density live proof → tool cards → capability demonstration → full catalog → three pillars → persona doors → FAQ → minimal close.
 
-1. **Hero** — H1 **"Explore the stars behind your story."** · sub: "Free birth charts, moon signs, compatibility, and horoscopes — accurate, private, and easy to understand." · CTAs **"Get your free birth chart"** / **"See your forecasts"** · signature asset: the rounded zodiac video surface.
+1. **Hero** — H1 **"Explore the stars behind your story."** · sub: "Free birth charts, moon signs, compatibility, and horoscopes — accurate, private, and easy to understand." · CTAs **"Get your free birth chart"** / **"Your horoscope"** (owner-approved shorter destination label, PR #614) · signature asset: the rounded zodiac video surface.
 2. **Live sky ticker** — "Right now · Sun 13°41′ Cancer · Moon in Scorpio · Mercury direct · Full moon in 5 days." Real computation as credibility.
 3. **Tool cards** — Birth Chart ("what it means") · Moon Sign ("how you feel") · Rising Sign ("how people first meet you") · Compatibility. Only live features get cards.
 4. **Demo chart** — a real annotated chart (Frida Kahlo, public birth data), three plain-language callouts, "Yours takes about 20 seconds."

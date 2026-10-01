@@ -270,6 +270,10 @@
       "destination": "/api/compatibility?action=registry-news"
     },
     {
+      "source": "/api/registry/lens",
+      "destination": "/api/compatibility?action=registry-lens"
+    },
+    {
       "source": "/c/:token/",
       "destination": "/api/compatibility?action=invite-exchange&token=:token"
     },

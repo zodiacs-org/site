@@ -67,6 +67,11 @@ export default async function handler(req: any, res: any): Promise<void> {
     await handleRegistryNews(req, res);
     return;
   }
+  if (req.query?.action === 'registry-lens') {
+    const { handleLensMarket } = await import('./_registry/lens-handler.js');
+    await handleLensMarket(req, res);
+    return;
+  }
   const route = compatibilityInviteHandlerForAction(req.query?.action);
   if (!route) {
     sendInviteJson(res, 404, { error: 'not_found' });
