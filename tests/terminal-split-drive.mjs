@@ -965,7 +965,7 @@ try {
     for (const [width, height] of [[1024, 900], [1200, 900], [901, 900], [1280, 680]]) {
       await desktopPage.setViewportSize({ width, height });
       await desktopPage.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
-      await desktopPage.waitForTimeout(80);
+      await desktopPage.waitForFunction(() => window.scrollY <= 1 && Number.parseFloat(document.querySelector('.campaign-hero')?.style.getPropertyValue('--hero-out') || '0') === 0);
       await desktopPage.waitForFunction(() => !document.querySelector('.campaign-bag')?.classList.contains('is-hidden'));
       const geometry = await desktopPage.evaluate(() => ({
         client: document.documentElement.clientWidth,
@@ -1260,7 +1260,7 @@ try {
     assert.doesNotMatch(staticStoryStyle.filter, /grayscale/u);
     assert.ok(staticStoryStyle.pictureBottom <= staticStoryStyle.copyTop + 1, 'the no-JavaScript thesis image sits above its copy');
     await assertAlertStandsAlone(noJsPage, 'no-JavaScript 390px');
-    await noJsPage.evaluate(() => window.scrollTo(0, 0));
+    await noJsPage.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
     await assertStaticFirstScreen(noJsPage, { width: 390, height: 844, slug: expectedSeason.sign });
     await noJsPage.setViewportSize({ width: 375, height: 600 });
     await assertStaticFirstScreen(noJsPage, { width: 375, height: 600, slug: expectedSeason.sign });
