@@ -190,6 +190,12 @@ settings and identical scores across all four browser views.
 
 ## Final verification and launch status
 
+The subsequent [operational follow-up](OPERATIONS.md) records the revised
+protected deployment, independently timestamped first decision, tested private
+runner package and submitted licensing inquiry. The following is the dated
+implementation acceptance; its earlier deployment/contact status is superseded
+by that follow-up.
+
 Final verification evidence is recorded in `revised-acceptance.json` and
 LAUNCH.md: 6,470 tests pass, four skip; 30 built-browser checks and 18 current
 Phase 1 captures pass; static checks have zero errors/warnings; production

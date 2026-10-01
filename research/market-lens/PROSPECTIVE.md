@@ -45,11 +45,18 @@ BTC and ETH are correlated; do not pool them as independent evidence. Interim
 reports are descriptive, with no early efficacy decision or parameter tuning.
 Daily-close drawdown excludes intraday losses; costs are simulated assumptions.
 
-Local write-once hashes detect accidental edits; timestamps are not independent
-attestation. This session's files/processes cannot be assumed to persist for
-180 days. A durable private volume, daily scheduler, backup and independent
-decision-hash witness are **not configured** by this patch. The runner works;
-a local first decision is not a managed or independently witnessed study.
+Local write-once hashes detect accidental edits; device timestamps are not
+independent attestation. The first decision now has a verified signed FreeTSA
+timestamp before execution; [OPERATIONS.md](../../docs/market-lens/OPERATIONS.md)
+includes public request/response verification and its limits. It attests digest
+existence at the signed time, not the claimed earlier recording time or prices.
+
+This session's files/processes cannot be assumed to persist for 180 days.
+[ops/README.md](ops/README.md) describes a tested private deployment package
+with daily/retry scheduling, private Git state, recovery artifacts and daily
+signed witnesses. GitHub repository creation is denied in this session, so
+the remote repository, active schedule and durable backups remain unconfigured.
+A witnessed first decision is not a managed or complete prospective study.
 
 Arrange these before relying on the study as prospective evidence. Witness
 each decision hash before execution without publishing raw prices. The draft
