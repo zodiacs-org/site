@@ -1,7 +1,7 @@
 {
   "version": 1,
   "id": "consumer-experience-continuity-2026-10-01",
-  "baseCommit": "db5bf5744507605cf0007ed3bc760596e7818428",
+  "baseCommit": "6ca4269a5f536f11365d3ca9edfef05b215d2fa1",
   "protectedPaths": [
     "src/lib/i18n/ui/en.ts",
     "src/lib/i18n/ui/es.ts",
