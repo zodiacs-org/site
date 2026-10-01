@@ -1,0 +1,109 @@
+{
+  "schema": "zodiacs.registry-research-item.v1",
+  "sourceType": "zodiacs-research",
+  "publisher": "Zodiacs.org Research System",
+  "byline": "Zodiacs.org Research System",
+  "method": {
+    "id": "zodiacs.registry-research-method.v1",
+    "version": 1,
+    "generator": "zodiacs.registry-research.deterministic.v1",
+    "deterministicTemplatesOnly": true,
+    "modelAuthoredProse": false,
+    "scoreRule": "The disclosed Registry Outlook sky score is copied before market comparison. Market fields cannot alter that score or its wording.",
+    "observationRule": "Follow-ups use the first archived market snapshot at or after the requested elapsed interval and report the actual elapsed time.",
+    "causalityRule": "Market changes are observations, never evidence that a sky event caused a price or liquidity movement.",
+    "publicationRule": "During the pilot, an exact artifact hash and named reviewer are required before an item enters public feeds."
+  },
+  "riskStatement": "Symbolic research—not investment advice. Market observations never alter the sky score.",
+  "scienceNote": "Astrology has no established predictive relationship with asset prices. Crypto assets can lose all value.",
+  "revisions": [],
+  "id": "zrx-daily-market-brief-2026-10-01",
+  "slug": "daily-market-brief-2026-10-01",
+  "kind": "daily-market-brief",
+  "templateId": "daily-market-brief.v1",
+  "issuedAt": "2026-10-01T12:00:00.000Z",
+  "visibleAt": "2026-10-01T12:00:00.000Z",
+  "title": "Jupiter in Leo · daily market brief",
+  "summary": "Jupiter in Leo leads the disclosed symbolic index; Leo market measures are recorded separately.",
+  "url": "/terminal/research/daily-market-brief-2026-10-01/",
+  "signs": [
+    "leo"
+  ],
+  "topics": [
+    "markets",
+    "daily-sky",
+    "occupancy"
+  ],
+  "symbolicScore": {
+    "sign": "leo",
+    "attention": 15,
+    "tone": 0,
+    "eventIntensity": 0,
+    "calculation": "8 disclosed Jupiter occupancy-attention points",
+    "marketFieldsUsed": false
+  },
+  "sections": {
+    "skyFact": {
+      "heading": "Sky fact",
+      "body": "Jupiter in Leo is the highest-weighted named factor for Leo in the 2026-10-01 UTC edition. The disclosed score is attention 15/100, tone 0, and symbolic event intensity 0/100.",
+      "evidence": [
+        "src/data/ingresses.json",
+        "public/assets/registry-outlook.json"
+      ]
+    },
+    "traditionalReading": {
+      "heading": "Traditional reading",
+      "body": "A modest sky emphasis for this sign, without a strong directional tone. Signal: steady. This is a traditional symbolic reading, not a price direction or probability.",
+      "evidence": [
+        "src/data/ingresses.json",
+        "public/assets/registry-outlook.json"
+      ]
+    },
+    "marketObservation": {
+      "heading": "Market observation",
+      "body": "At 2026-10-01T00:07:31.906Z, Leo was indexed at $0.00008231, with -4.98% over 24 hours, $82.3K market cap, $82.3K FDV, $17.39K indexed liquidity, $411.28 24-hour volume, and 1 indexed pool. Market cap and FDV are kept separate. These descriptive fields did not alter the sky score.",
+      "evidence": [
+        "public/assets/data/registry-market-history.v1.json"
+      ]
+    }
+  },
+  "market": {
+    "available": true,
+    "snapshotId": "registry-market:2026-10-01:2026-10-01T00:07:31.906Z",
+    "observedAt": "2026-10-01T00:07:31.906Z",
+    "provider": "DexScreener",
+    "sign": "leo",
+    "priceUsd": 0.00008231,
+    "change24hPct": -4.98,
+    "marketCapUsd": 82302,
+    "fdvUsd": 82302,
+    "liquidityUsd": 17393.75,
+    "volume24hUsd": 411.28,
+    "indexedPoolCount": 1,
+    "deepestPoolUrl": "https://dexscreener.com/solana/48erbgmqizekyloccebd7cs5knqpzqr7qqak9mzapqgq"
+  },
+  "evidence": {
+    "dailyFacts": "src/data/daily.json#2026-10-01",
+    "outlookEdition": "public/assets/registry-outlook.json#daily:2026-10-01",
+    "marketSnapshotId": "registry-market:2026-10-01:2026-10-01T00:07:31.906Z",
+    "coverage": {
+      "overall": "complete",
+      "events": "complete",
+      "occupancies": "complete",
+      "expectedTransitMonths": [
+        "2026-10"
+      ],
+      "missingTransitMonths": [],
+      "missingOccupancyPlanets": []
+    }
+  },
+  "artifactHash": "8f5a716681606b86652a10970aa49f90165395dbb9a217b30240facbb4ccd742",
+  "publishedAt": "2026-10-01T12:00:00.000Z",
+  "publication": {
+    "mode": "post-pilot-deterministic-allowlist",
+    "publishedAt": "2026-10-01T12:00:00.000Z",
+    "reviewer": null,
+    "artifactSha256": "8f5a716681606b86652a10970aa49f90165395dbb9a217b30240facbb4ccd742"
+  },
+  "status": "approved"
+}
