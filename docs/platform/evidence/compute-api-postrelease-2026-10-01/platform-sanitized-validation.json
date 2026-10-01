@@ -1,0 +1,253 @@
+{
+  "schema": "zodiacs.compute-api.sanitized-independent-validation.v1",
+  "status": "PASS_SANITIZED_CONSISTENCY_ONLY",
+  "scope": "Independent implementation using only allowlisted sanitized input bytes; no private inputs, original analyzer, raw exports, or live provider access.",
+  "validatedAtUtc": "2026-10-01T21:05:38Z",
+  "auditTimeSource": "Caller-supplied UTC; not file mtimes or host clock",
+  "inputSha256": {
+    "platform-matched-sanitized.json": "da428714e128f724ceffff4b69dffabc6c7134f5a32ce91c8b2885a5ab68c60b",
+    "platform-summary.json": "10b05ac40b565cd3f5333d1a201644b5257aabb60ebcf8bf9154ae6065c312fc",
+    "platform-query-sanitized.json": "c55bfe82f1bfda8078efd9e510fa912fa6281fed34da9991d55ae09214bef01a",
+    "platform-deployment-binding.json": "a44fcfde0e35b11326683ef2931beeca033619e83ce969744e67a7694105ae83"
+  },
+  "optionalBinding": "supplied; sanitized identifiers, regions, and referenced SHA-256 consistent",
+  "checksPassed": [
+    "Sanitized JSON schemas, metadata/window consistency, and matched-artifact SHA-256",
+    "Optional sanitized deployment-binding identifiers and SHA-256; no live deployment recheck",
+    "120 unique sanitized IDs; six endpoints \u00d7 20 unique rounds; distinct 119 Hot / 1 Prewarmed / 0 Cold; timestamp and row-field consistency",
+    "Sanitized claimed export/join counts agree with rows only; raw joins and exclusivity remain unverified",
+    "First-chart ID, full sanitized sample, round/start label, and recorded detail/query URLs agree; response-finished assertion unverified",
+    "Seven route/start-type group counts, CPU/unit and GB-hour display conversions, nearest-rank execution/client summaries, and recorded-rate costs",
+    "Six route counts, nearest-rank execution/client/peak-memory summaries, independent group sums, and per-1,000 costs",
+    "Cohort CPU/GB-hour totals, direct and weighted cost arithmetic, and observed-cohort gross estimate",
+    "Sanitized instance/concurrency/memory metadata, message-empty flag consistency only, and unmeasured Cold metrics retained as null"
+  ],
+  "numericPolicy": "Nearest-rank p50/p95 use integer ceiling indices and exact selected sample values. Means allow max(1e-12 absolute, 1e-12 relative); other arithmetic max(1e-15 absolute, 1e-12 relative). Decimal arithmetic is applied to JSON decimal literals and rounded display values.",
+  "reproduced": {
+    "n": 120,
+    "uniqueRequestIds": 120,
+    "endpointCounts": {
+      "chart": 20,
+      "positions": 20,
+      "houses": 20,
+      "events": 20,
+      "time": 20,
+      "sky-fact": 20
+    },
+    "distinctStartTypeCounts": {
+      "hot": 119,
+      "prewarmed": 1,
+      "cold": 0
+    },
+    "firstChartRequestId": "4qxpn-1790886364519-db3f1d9862d4",
+    "firstChartExecutionDurationMs": 424,
+    "firstChartClientElapsedMs": 7853.239128,
+    "recordedRates": {
+      "currency": "USD",
+      "region": "iad1",
+      "activeCpuUsdPerHour": 0.128,
+      "provisionedMemoryUsdPerGbHour": 0.0106,
+      "invocationsUsdPerMillion": 0.6
+    },
+    "activeCpuSumMs": 5470,
+    "memoryDurationSumGbHours": 0.00481,
+    "costPerThousand": {
+      "activeCpuUsdPerThousand": 0.0016207407407407407,
+      "memoryUsdPerThousand": 0.00042488333333333335,
+      "invocationsUsdPerThousand": 0.0006,
+      "computeAndInvocationsUsdPerThousand": 0.002645624074074074
+    },
+    "grossObservedCohortUsd": 0.00031747488888888886,
+    "routeExecutionAndClientPercentiles": {
+      "chart": {
+        "executionMs": {
+          "p50": 53,
+          "p95": 75
+        },
+        "clientMs": {
+          "p50": 131.11399500002153,
+          "p95": 179.68488999997498
+        },
+        "costUsdPerThousand": 0.002716311111111111
+      },
+      "positions": {
+        "executionMs": {
+          "p50": 43,
+          "p95": 67
+        },
+        "clientMs": {
+          "p50": 113.04956099999254,
+          "p95": 240.32196299999487
+        },
+        "costUsdPerThousand": 0.0018462
+      },
+      "houses": {
+        "executionMs": {
+          "p50": 37,
+          "p95": 51
+        },
+        "clientMs": {
+          "p50": 111.85415600001579,
+          "p95": 142.41618400000152
+        },
+        "costUsdPerThousand": 0.0017504666666666668
+      },
+      "events": {
+        "executionMs": {
+          "p50": 123,
+          "p95": 176
+        },
+        "clientMs": {
+          "p50": 196.70770400000038,
+          "p95": 316.7598860000144
+        },
+        "costUsdPerThousand": 0.004968
+      },
+      "time": {
+        "executionMs": {
+          "p50": 37,
+          "p95": 86
+        },
+        "clientMs": {
+          "p50": 105.56715200000326,
+          "p95": 154.07048099999884
+        },
+        "costUsdPerThousand": 0.0013344
+      },
+      "sky-fact": {
+        "executionMs": {
+          "p50": 71,
+          "p95": 104
+        },
+        "clientMs": {
+          "p50": 138.051066,
+          "p95": 195.1306859999895
+        },
+        "costUsdPerThousand": 0.0032583666666666667
+      }
+    }
+  },
+  "portability": {
+    "status": "passed",
+    "directoryContentsBeforeAndAfter": [
+      "platform-deployment-binding.json",
+      "platform-matched-sanitized.json",
+      "platform-query-sanitized.json",
+      "platform-summary.json",
+      "validate-sanitized-platform.py"
+    ],
+    "externalDependencies": "Python standard library only",
+    "interpreterFlags": [
+      "-I",
+      "-B"
+    ],
+    "passedRuns": [
+      "default adjacent input directory",
+      "explicit directory argument",
+      "optional binding absent (three sanitized inputs only)"
+    ],
+    "testOutputs": "Captured in memory; no extra files were created in the isolated baseline directory"
+  },
+  "failClosedTests": {
+    "passed": 17,
+    "cases": [
+      {
+        "case": "missing required query file",
+        "result": "rejected",
+        "diagnostic": "FAIL_SANITIZED_VALIDATION: platform-query-sanitized.json: cannot read required input (No such file or directory)"
+      },
+      {
+        "case": "incorrect matched-file hash",
+        "result": "rejected",
+        "diagnostic": "FAIL_SANITIZED_VALIDATION: summary.matchedArtifactSha256: byte hash mismatch"
+      },
+      {
+        "case": "duplicate sanitized request ID",
+        "result": "rejected",
+        "diagnostic": "FAIL_SANITIZED_VALIDATION: samples[1]: duplicate request ID"
+      },
+      {
+        "case": "incorrect distinct start-label counts",
+        "result": "rejected",
+        "diagnostic": "FAIL_SANITIZED_VALIDATION: Expected distinct 119 Hot / 1 Prewarmed / 0 Cold labels"
+      },
+      {
+        "case": "wrong nearest-rank route percentile",
+        "result": "rejected",
+        "diagnostic": "FAIL_SANITIZED_VALIDATION: perRoute.chart.executionDurationMs.p95: nearest-rank/sample mismatch"
+      },
+      {
+        "case": "wrong exact first-chart URL ID",
+        "result": "rejected",
+        "diagnostic": "FAIL_SANITIZED_VALIDATION: first-chart: exact request-ID URL mismatch"
+      },
+      {
+        "case": "rounded CPU display/numeric mismatch",
+        "result": "rejected",
+        "diagnostic": "FAIL_SANITIZED_VALIDATION: groups.time/hot: CPU display conversion mismatch"
+      },
+      {
+        "case": "incorrect per-group cost",
+        "result": "rejected",
+        "diagnostic": "FAIL_SANITIZED_VALIDATION: groups.time/hot.cost.activeCpuUsdPerThousand: expected 0.000480000, found 0.7"
+      },
+      {
+        "case": "incorrect per-route GB-hour sum",
+        "result": "rejected",
+        "diagnostic": "FAIL_SANITIZED_VALIDATION: perRoute.chart.memoryDurationSumGbHours: expected 0.00084, found 0.00168"
+      },
+      {
+        "case": "incorrect cohort GB-hour sum",
+        "result": "rejected",
+        "diagnostic": "FAIL_SANITIZED_VALIDATION: cohortTotals.memoryDurationSumGbHours: expected 0.00481, found 0.00962"
+      },
+      {
+        "case": "incorrect cohort gross cost",
+        "result": "rejected",
+        "diagnostic": "FAIL_SANITIZED_VALIDATION: cohortTotals.grossComputeAndInvocationsUsdForObservedCohort: expected 0.0003174748888888888888888888888, found 0.1"
+      },
+      {
+        "case": "non-finite JSON value",
+        "result": "rejected",
+        "diagnostic": "FAIL_SANITIZED_VALIDATION: JSON non-finite constant encountered"
+      },
+      {
+        "case": "duplicate JSON key",
+        "result": "rejected",
+        "diagnostic": "FAIL_SANITIZED_VALIDATION: JSON duplicate key encountered"
+      },
+      {
+        "case": "unexpected sample field",
+        "result": "rejected",
+        "diagnostic": "FAIL_SANITIZED_VALIDATION: samples[1].platform: missing or unexpected fields"
+      },
+      {
+        "case": "inconsistent optional deployment binding",
+        "result": "rejected",
+        "diagnostic": "FAIL_SANITIZED_VALIDATION: binding.githubCommitSha: mismatch"
+      },
+      {
+        "case": "missing required percentile",
+        "result": "rejected",
+        "diagnostic": "FAIL_SANITIZED_VALIDATION: perRoute.chart.executionDurationMs: missing or unexpected fields"
+      },
+      {
+        "case": "boolean in numeric field",
+        "result": "rejected",
+        "diagnostic": "FAIL_SANITIZED_VALIDATION: cohortTotals.n: expected JSON number, not boolean/string"
+      }
+    ]
+  },
+  "notIndependentlyReconstructable": [
+    "Sanitized consistency does not independently reconstruct or prove the raw x-vercel-id-to-requestId join.",
+    "Raw export completeness/exclusivity, exact allowlist equality, or a closed live Query population cannot be independently reconstructed from this subset.",
+    "Hidden original fields, including internal rewrite fields, are unavailable; exposed function labels do not prove routing or rewrite behavior.",
+    "Actual underlying UI/private snapshots, live provider facts, deployment state, pricing verification, and start-label assignments cannot be independently authenticated here.",
+    "messageEmpty flags and allMatchedMessagesEmpty are checked only for sanitized self-consistency; the empty raw-message assertion cannot be reconstructed without raw messages.",
+    "The 611 ms first-chart response-finished assertion has no underlying detail/timing record in these inputs and is not independently verified.",
+    "CPU and memory-duration are rounded group display aggregates. Per-request CPU/memory are null, and raw precision/formatter policy are unavailable.",
+    "Cost arithmetic uses the recorded rates and group GB-hours once. It is not invoice allocation or actual billing verification and excludes unmodeled charges, discounts, credits, and tax.",
+    "Causal explanations, population/worst-case performance, and cold-start latency/cost cannot be inferred. There are zero Cold samples and one Prewarmed sample.",
+    "Only sanitized input byte hashes are recomputed. Private provenance references are not opened, hashed, reproduced, or treated as verified; hashes provide integrity, not authenticity."
+  ]
+}

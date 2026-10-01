@@ -1,0 +1,17 @@
+{
+  "source": "fd1ce88af66eca158c24a92569a9101281b964f7",
+  "observedAt": "2026-10-01T21:02:56Z",
+  "run": 36920792637,
+  "job": 110566034354,
+  "runUrl": "https://github.com/zodiacs-org/site/actions/runs/36920792637",
+  "passedJobs": 18,
+  "failedJobs": 1,
+  "step": "Horoscope templates, SSR, and responsive behavior",
+  "assertion": "DailyForYou 360px active: hydration has exactly zero CLS",
+  "observedCls": 0.00040552126200274344,
+  "expectedCls": 0,
+  "artifact": 11192966980,
+  "artifactBytes": 66626151,
+  "artifactSha256": "7bedd65ef3c7ab9aeb6fe1a9df0dc3e45f075c6d390ecfc58d37d3ed2929be6b",
+  "limitations": "Failure preserved; no cause or flakiness established. Owner frontend source and assertion unchanged. This does not invalidate separately joined successful compute API requests."
+}

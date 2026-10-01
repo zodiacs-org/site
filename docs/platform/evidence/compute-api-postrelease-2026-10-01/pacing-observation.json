@@ -1,0 +1,19 @@
+{
+  "timerTargetMs": 2200,
+  "minimumObservedUtcStartGapMs": 2198,
+  "qualification": "The script did not retain monotonic start timestamps, so timer scheduling and UTC clock contributions cannot be separated from these records. Do not claim a strict observed2200ms minimum.",
+  "maximumStartsInAny60Seconds": 28,
+  "perEndpointMaximumStartsIn60Seconds": {
+    "chart": 6,
+    "positions": 6,
+    "houses": 6,
+    "events": 6,
+    "time": 6,
+    "sky-fact": 6
+  },
+  "configuredGeneralLimit": 40,
+  "configuredEventsLimit": 10,
+  "additionalRateExhaustionProbe": false,
+  "requestsCompleted": 120,
+  "retries": 0
+}

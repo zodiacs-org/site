@@ -1,0 +1,27 @@
+{
+  "source": "fd1ce88af66eca158c24a92569a9101281b964f7",
+  "intendedDeployment": "dpl_AsJc5MrDgH4PpgoZSGMe7XTZePe4",
+  "origin": "https://zodiacs.org",
+  "fixtureSource": "docs/platform/evidence/compute-api-2026-09-29/tools/measure-production-20261001.mjs",
+  "fixtureSha256": "9de7091e48d5219cf57982f44748ba8cee67aea4effaf0541cb33d662d84e95c",
+  "endpoints": [
+    "chart",
+    "positions",
+    "houses",
+    "events",
+    "time",
+    "sky-fact"
+  ],
+  "rounds": 20,
+  "total": 120,
+  "minimumStartSpacingMs": 2200,
+  "timeoutMs": 30000,
+  "retries": 0,
+  "expectedEngine": "0.1.1-rc.15",
+  "node": "v22.22.2",
+  "mode": "--execute",
+  "startedAt": "2026-10-01T20:25:57.293Z",
+  "deploymentBinding": "Requires platform request-ID correlation; alias identity alone is not assigned to each response",
+  "temperature": "Unclassified until platform Start Type is observed",
+  "publicRecords": "No raw IPs, headers, request/response bodies or input-bearing receipt fields"
+}
