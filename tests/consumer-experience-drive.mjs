@@ -30,6 +30,16 @@ const shot = async (page, name) => {
 const mobile = { viewport: { width: 390, height: 844 }, isMobile: true,
   hasTouch: true, deviceScaleFactor: 1, reducedMotion: 'reduce', locale: 'en-US', timezoneId: 'UTC' };
 
+async function restore(context, origins) {
+  await context.addInitScript(saved => {
+    const own = saved.find(o => o.origin === location.origin);
+    if (own && !sessionStorage.getItem('consumer-test-restored')) {
+      for (const { name, value } of own.localStorage) localStorage.setItem(name, value);
+      sessionStorage.setItem('consumer-test-restored', '1');
+    }
+  }, origins);
+}
+
 async function fits(page, name) {
   check(`${name}: no horizontal page overflow`, await page.evaluate(() =>
     document.documentElement.scrollWidth <= innerWidth + 1));
@@ -192,13 +202,7 @@ try { await withPreview({ port: 8784 }, async baseURL => {
 
       await journey('returning-next-day', async (page, context) => {
         // Restore persisted storage into a new context after the first closes.
-        await context.addInitScript(origins => {
-          const own = origins.find(o => o.origin === location.origin);
-          if (own && !sessionStorage.getItem('consumer-test-restored')) {
-            for (const {name, value} of own.localStorage) localStorage.setItem(name, value);
-            sessionStorage.setItem('consumer-test-restored', '1');
-          }
-        }, savedState.origins);
+        await restore(context, savedState.origins);
         await page.clock.install({ time: new Date(`${daily.date}T12:00:00Z`) });
         await page.goto(baseURL);
         const card = page.locator('.wb-card');
@@ -219,10 +223,14 @@ try { await withPreview({ port: 8784 }, async baseURL => {
         await shot(page, `${engine}-returning-next-day`);
       });
 
-      await journey('friend-chart-identity', async page => {
-        await page.goto(`${baseURL}/birth-chart/someone-else/`, { waitUntil: 'networkidle' });
+      await journey('friend-chart-identity', async (page, context) => {
+        await restore(context, savedState.origins);
+        await page.goto(`${baseURL}/profile/`);
+        await page.locator('#saved-charts a').filter({ hasText: "Add someone's chart" }).click();
+        check(`${engine}: saved-chart Add someone reaches the correct flow`, new URL(page.url()).pathname === '/birth-chart/someone-else/');
+        await page.waitForFunction(() => !document.querySelector('#other-chart-name')?.closest('astro-island')?.hasAttribute('ssr'));
         await page.locator('#other-chart-name').fill('Simulated friend');
-        await page.locator('#other-birth-date').fill('1907-07-06');
+        await page.locator('#other-birth-date').fill('1990-01-01');
         await page.locator('#other-birth-time').fill('08:30');
         await page.locator('#other-birth-place').fill('Coyo');
         await page.locator('#other-birth-place-opt-0').waitFor({ state: 'visible' });
@@ -230,16 +238,19 @@ try { await withPreview({ port: 8784 }, async baseURL => {
         await page.locator('.other-chart__permission input').check();
         await page.locator('[data-entry-mode="details"] button[type="submit"]').click();
         await page.locator('.calc__result').waitFor();
-        await page.locator('[data-first-reading-dismiss]').click();
+        // Returning visitors already completed the beginner tour.
+        if (await page.locator('[data-first-reading-dismiss]').isVisible()) {
+          await page.locator('[data-first-reading-dismiss]').click();
+        }
         await page.locator('[data-save-chart]').click();
         await page.locator('[data-save-prompt]').waitFor();
         await page.locator('#chart-save-name').fill('Simulated friend');
         await page.locator('[data-save-prompt] button[type="submit"]').click();
         await page.locator('[data-primary-action="saved_charts"]').waitFor();
         await page.goto(baseURL);
-        await page.getByRole('link', { name: 'Choose my chart', exact: true }).waitFor();
-        check(`${engine}: saving a friend does not select them as the owner`, await page.locator('.wb-card').isVisible());
-        await shot(page, `${engine}-friend-only-home`);
+        await page.locator('.wb-card').waitFor({ state: 'visible' });
+        check(`${engine}: saving a friend does not replace the owner`, !(await page.locator('.wb-card h2').textContent()).includes('Simulated friend'));
+        await shot(page, `${engine}-saved-friend-home`);
         // Mixed-chart fixtures make the friend's edit newer to isolate
         // identity precedence independently of the calculator save flow.
         await runPersonalChartHandoff({ browser, baseURL,

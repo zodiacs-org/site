@@ -314,6 +314,11 @@ function HouseSystemReceipt({ locale, system }: { locale: Locale; system: HouseS
   );
 }
 
+/** Adopt server-form entries before hydration attaches controlled inputs. */
+function initialField(selector: string): HTMLInputElement | HTMLSelectElement | null | undefined {
+  return globalThis.document?.querySelector(selector) as HTMLInputElement | HTMLSelectElement | null | undefined;
+}
+
 export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Props) {
   const locale = normalizeCatalogLocale(rawLocale);
   const russianCopy = locale === 'ru' ? russianRuntime() : null;
@@ -357,13 +362,9 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
   const loadEngine = useEngine();
   // The server form is visible before idle hydration. Adopt anything already
   // entered instead of replacing it with the empty server defaults.
-  const [date, setDate] = useState(() => typeof document === 'undefined' ? ''
-    : (document.getElementById('birth-date') as HTMLInputElement | null)?.value ?? '');
-  const [time, setTime] = useState(() => typeof document === 'undefined' ? ''
-    : (document.getElementById('birth-time') as HTMLInputElement | null)?.value ?? '');
-  const [timeKnown, setTimeKnown] = useState(() => typeof document === 'undefined' ? true
-    : !(document.getElementById('birth-time')?.closest('.field')
-      ?.querySelector<HTMLInputElement>('input[type="checkbox"]')?.checked ?? false));
+  const [date, setDate] = useState(initialField('#birth-date')?.value ?? '');
+  const [time, setTime] = useState(initialField('#birth-time')?.value ?? '');
+  const [timeKnown, setTimeKnown] = useState(!(initialField('.calc__form [type=checkbox]') as HTMLInputElement | null)?.checked);
   const [city, setCity] = useState<City | null>(null);
   // The calendar the date was written in; a date filled in from a link or a
   // saved chart is Gregorian.
@@ -371,8 +372,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
   // That date, which was already charted: it gets no calendar note, which
   // could send it through the Old Style conversion a second time.
   const [storedDate, setStoredDate] = useState('');
-  const [houseSystem, setHouseSystem] = useState<HouseSystem>(() => typeof document !== 'undefined'
-    && (document.getElementById('house-system') as HTMLSelectElement | null)?.value === 'placidus'
+  const [houseSystem, setHouseSystem] = useState<HouseSystem>(initialField('#house-system')?.value === 'placidus'
     ? 'placidus' : 'whole');
   const [chart, setChart] = useState<Chart | null>(null);
   // Read on the birthplace's own local mean time. Since engine rc.15 the
@@ -2035,8 +2035,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
       ? t(locale, 'cardSaved')
       : shareActionLabel;
   const shareActionDisabled = card === 'busy';
-  const sharedReceiver = typeof document !== 'undefined'
-    && document.documentElement.hasAttribute('data-chart-share-receiver');
+  const sharedReceiver = !!globalThis.document?.documentElement.hasAttribute('data-chart-share-receiver');
   const registryRecord = registryRecordSlug ? signBySlug(registryRecordSlug) : null;
 
   useEffect(() => {
