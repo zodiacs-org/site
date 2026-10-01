@@ -688,8 +688,8 @@ main > :is(section, article):first-child :is(.tool-hero, .section-head, .compat-
   line-height: 1.06;
   letter-spacing: -0.025em;
 }
-main > .section:first-child { padding-top: clamp(104px, 10vw, 144px); }
-main > .section--tight:first-child { padding-top: clamp(100px, 9vw, 132px); }
+main > .section:first-child:where(:not(.aura-page)) { padding-top: clamp(104px, 10vw, 144px); }
+main > .section--tight:first-child:where(:not(.aura-page)) { padding-top: clamp(100px, 9vw, 132px); }
 .section-head h2 { font-weight: 400; }
 :where(main) [id] { scroll-margin-top: 100px; }
 

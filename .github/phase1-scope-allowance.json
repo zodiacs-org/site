@@ -21,6 +21,7 @@
     "public/sdk/index.html",
     "public/terminal/markets/index.html",
     "scripts/build-sign-pages.mjs",
+    "scripts/registry-consumer-contract.test.mjs",
     "scripts/registry-hub.test.mjs",
     "scripts/registry-pastel-polish.test.mjs",
     "src/app.jsx",
@@ -31,5 +32,5 @@
     "src/pages/learn/glossary/index.astro",
     "src/pages/pt/index.astro"
   ],
-  "authorization": "The owner explicitly approved implementation and live publication of the comprehensive 35-item consumer frontend audit: “approve. implmeent and push it live”. This one-time allowance covers the listed shared UI, Registry generators and generated profiles, locale homepage cohesion, navigation and footer styling, and related regression assertions. It does not authorize changes to calculation, financial transactions, privacy, account synchronization, or unrelated programme work."
+  "authorization": "The owner explicitly approved implementation and live publication of the comprehensive 35-item consumer frontend audit: \u201capprove. implmeent and push it live\u201d. This one-time allowance covers the listed shared UI, Registry generators and generated profiles, locale homepage cohesion, navigation and footer styling, and related regression assertions. It does not authorize changes to calculation, financial transactions, privacy, account synchronization, or unrelated programme work."
 }

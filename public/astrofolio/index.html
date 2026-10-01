@@ -10900,7 +10900,7 @@
     .campaign-motion { position: absolute; right: 14px; bottom: 14px; z-index: 5; min-height: 44px; padding: 0 14px; border: 1px solid var(--hair-2); border-radius: 999px; background: rgba(8,9,12,.9); color: var(--ink); font: 500 12px var(--sans); cursor: pointer; }
     .campaign-look__shine { grid-area: 1 / 1; position: absolute; width: 100%; height: 100%; max-height: 330px; pointer-events: none; overflow: hidden; -webkit-mask: var(--collectible-mask) center / contain no-repeat; mask: var(--collectible-mask) center / contain no-repeat; mix-blend-mode: screen; }
     .campaign-look__shine::after { content: ''; position: absolute; inset: -30% -90%; background: linear-gradient(110deg, transparent 42%, rgba(255,255,255,.08) 47%, rgba(255,255,255,.44) 50%, rgba(255,255,255,.08) 53%, transparent 58%); animation: collectible-shine 18s cubic-bezier(.45,0,.2,1) infinite paused; opacity: 0; }
-    .campaign-look__art[data-art-visible="true"][data-tab-visible="true"] .campaign-look__shine::after { animation-play-state: running; }
+    .campaign-look__art[data-art-visible="true"][data-tab-visible="true"]:not([data-motion-paused="true"]) .campaign-look__shine::after { animation-play-state: running; }
     .campaign-look__art.is-fallback .campaign-look__shine { display: none; }
     @keyframes collectible-shine { 0%, 6% { opacity: 0; transform: translateX(-45%); } 10%, 25% { opacity: .22; } 32%, 100% { opacity: 0; transform: translateX(45%); } }
     .campaign-look__figure { transition: transform 260ms cubic-bezier(.23,1,.32,1); }

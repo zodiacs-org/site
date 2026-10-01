@@ -4907,13 +4907,12 @@
       );
     }
 
-    function CampaignHero() {
+    function CampaignHero({ motionPaused, setMotionPaused }) {
       const season = useCurrentSeason()?.sign ?? SIGNS[0];
       const heroRef = useRef(null);
       const filmRef = useRef(null);
       const videoRef = useRef(null);
       const [filmControlsVisible, setFilmControlsVisible] = useState(false);
-      const [motionPaused, setMotionPaused] = useState(() => { try { return sessionStorage.getItem('zodiacs:motion-paused') === '1'; } catch { return false; } });
       const playing = useCampaignFilm(videoRef, filmRef, 0.01, motionPaused);
       useEffect(() => {
         const hero = heroRef.current;
@@ -5067,7 +5066,7 @@
       );
     }
 
-    function CampaignLook({ item, index, seasonTicker, batch, observations, active, onKeyboardFocus }) {
+    function CampaignLook({ item, index, seasonTicker, batch, observations, active, onKeyboardFocus, motionPaused }) {
       const slug = item.asset.sign;
       const [artworkFailed, setArtworkFailed] = useState(false);
       const inSeason = item.ticker === seasonTicker;
@@ -5102,7 +5101,7 @@
               : <span>{consumerSignDateLabel(item)}</span>}
           </p>
           <h3 id={`campaign-look-${slug}`}>{item.name}</h3>
-          <div className={'campaign-look__art' + (artworkFailed ? ' is-fallback' : '')} ref={artRef} data-art-visible={active && artVisible ? 'true' : 'false'} style={{ '--collectible-mask': `url(/assets/sculptures/512/${slug}.webp)` }}>
+          <div className={'campaign-look__art' + (artworkFailed ? ' is-fallback' : '')} ref={artRef} data-art-visible={active && artVisible ? 'true' : 'false'} data-motion-paused={motionPaused ? 'true' : 'false'} style={{ '--collectible-mask': `url(/assets/sculptures/512/${slug}.webp)` }}>
             <img
               className="campaign-look__stars"
               src={`/assets/constellations/${slug}.svg`}
@@ -5166,7 +5165,7 @@
       );
     }
 
-    function CampaignRunway({ anchorTicker, active, setActive, batch }) {
+    function CampaignRunway({ anchorTicker, active, setActive, batch, motionPaused }) {
       const seasonTicker = useCurrentSeason()?.sign.ticker ?? '';
       const order = useMemo(() => campaignOrder(anchorTicker), [anchorTicker]);
       const sectionRef = useRef(null);
@@ -5486,6 +5485,7 @@
                   observations={ledgers[item.asset.sign]}
                   active={item.ticker === active}
                   onKeyboardFocus={onKeyboardFocus}
+                  motionPaused={motionPaused}
                 />
               ))}
             </div>
@@ -7442,6 +7442,7 @@
     function Zodiacs() {
       const technical = REGISTRY_VIEW === 'technical';
       const pro = REGISTRY_VIEW === 'terminal-pro';
+      const [motionPaused, setMotionPaused] = useState(() => { try { return sessionStorage.getItem('zodiacs:motion-paused') === '1'; } catch { return false; } });
       const [activeTicker, setActiveTicker] = useState(
         () => {
           try {
@@ -7744,10 +7745,11 @@
           <Header />
           <main id="main" className="zd consumer-registry consumer-campaign">
             <div className="campaign-stack">
-              <CampaignHero />
+              <CampaignHero motionPaused={motionPaused} setMotionPaused={setMotionPaused} />
               <CampaignBag sign={sign} batch={consumerMarket} onPick={pickFromBag} />
               <CampaignRunway
                 anchorTicker={anchorTicker}
+                motionPaused={motionPaused}
                 active={activeTicker}
                 setActive={setActiveTicker}
                 batch={consumerMarket}
