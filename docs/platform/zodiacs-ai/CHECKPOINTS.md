@@ -10,7 +10,7 @@ host-account testing, public review and publication.
 | 1 | Shared hosted tools and bounded remote MCP | Implemented; local protocol/calculation checks pass |
 | 2 | ChatGPT experience and developer plugin | Implemented; local package/browser checks pass |
 | 3 | Synthetic evaluation, build and review packages | Implemented; local validation and extracted-package checks pass |
-| 4 | Actual hosts, HTTPS activation, beta and directory release | Blocked by host/account access; no launch claim |
+| 4 | Actual hosts, HTTPS activation, beta and directory release | Blocked by existing homepage accessibility and host/account access; no launch claim |
 
 ## Checkpoint 1
 
@@ -74,6 +74,11 @@ host-account testing, public review and publication.
 | `npm test -- --maxWorkers=3 --minWorkers=1` | 6,377 pass, four skipped, zero failures |
 | Existing Phase 1 browser acceptance | Refreshed; 18/18 exact-width captures pass |
 | Existing terminal/Registry navigation browser drive | Pass; stale centre assertion updated for the approved profile shortcut, with target and overlap checks |
+| Existing Markets mobile browser drive | 106/106 checks pass |
+| Existing mobile frame cadence | 3/3 pass at 60fps under 4× CPU throttling; no frames over 34ms |
+| Existing Linux visual regression | 15/15 pass against independently generated clean-main baselines; strict 0.1% threshold retained |
+| Existing foreign-origin widget browser and Lighthouse gates | Pass; all three embed routes exceed the 95 performance/accessibility floor |
+| Existing full Lighthouse gate | 29/30 routes pass across 90 samples; homepage accessibility fails identically on clean main |
 | Claims ledger and consumer boundary | Pass with new adapter coverage and evidence |
 | `git diff --check`; engine/sdk working trees | Clear; engine/sdk unchanged |
 
@@ -91,12 +96,22 @@ profile target, its accessible label/destination, nonoverlapping actions, and
 centering in the space between menu and profile. The complete terminal drive
 passes locally. Navigation source and styling are unchanged.
 
+The original 11 visual failures also match clean main pixel for pixel. Linux
+baselines were generated independently on main; the strict budget is preserved.
+The full Lighthouse gate exposes an existing homepage chart-demo accessibility
+failure, reproduced separately on clean main. See [REGRESSIONS.md](./REGRESSIONS.md)
+and its evidence for the site-wide CI blocker; local AI checks are not a claim
+that every existing site release gate passes.
+
 `evidence/evaluation.json` includes local timing and explicitly excludes LLM
 routing, accuracy-reference, load, production cost and real-host acceptance.
 `evidence/synthetic-personal-week.json` is an arbitrary unknown-time chart
 demonstration with four computed reference-chart contacts, not a personal release.
 
-## Checkpoint 4: external prerequisites
+## Checkpoint 4: release prerequisites
+
+Resolve the existing homepage accessibility failure described in
+[REGRESSIONS.md](./REGRESSIONS.md) before treating the site-wide CI gate as passed.
 
 Follow [LAUNCH.md](./LAUNCH.md) for owner-controlled HTTPS staging, actual ChatGPT
 and Codex installation, hosting retention, latency/cost, consenting beta and

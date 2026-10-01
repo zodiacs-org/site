@@ -9,6 +9,9 @@ Local passing tests are evidence for the adapter only.
 1. Review this diff and its generated bundles. Preserve the published rc.15 pin.
    Run `npm run ai:check`, `npm run ai:test`, `npm run ai:eval`,
    `npm run ai:widget`, `npm run build`, `npm run check` and `npm test`.
+   The existing full Lighthouse gate currently fails homepage accessibility on
+   clean main. Resolve that separately documented issue in
+   [REGRESSIONS.md](./REGRESSIONS.md), then require the complete site-wide CI gate.
 2. The current OpenAI extension, connection, package and submission guides were
    retrieved on 2026-10-01. Portable manifests and MCP files pass Agent Plugins
    1.0.0 schemas. Confirm the verified publisher account and workspace eligibility.

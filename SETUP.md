@@ -1,6 +1,6 @@
 # Zodiacs.org setup and operations
 
-Last updated: 2026-08-27
+Last updated: 2026-10-01
 
 This is the provisioning source of truth for the six-phase household-name program. It consolidates the live repository's external services, environment variables, feature flags, and scheduled jobs. It contains names and procedures only—never secrets or secret values.
 

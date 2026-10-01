@@ -1,0 +1,603 @@
+{
+  "schema": "zodiacs.ai-site-regression-review.v1",
+  "date": "2026-10-01",
+  "mainCommit": "450f0fd948d86d82c416bcbd51b3dace5196097e",
+  "sources": [
+    {
+      "path": "src/pages/index.astro",
+      "sha256": "2bafecc73b0ccf8426dd843296c9e10fc55929f5d0d76ed121aea0549650ec05",
+      "identicalToMain": true
+    },
+    {
+      "path": "src/islands/DemoChart.tsx",
+      "sha256": "f09b6c665165aa6e2d1789a046fcbb7b3694897544e6170f4dd1ed9162b3d42d",
+      "identicalToMain": true
+    },
+    {
+      "path": "src/components/SiteFooter.astro",
+      "sha256": "f4910f070a64af8801131e77b2f014bf5714c95baecb392ff8805680378936ec",
+      "identicalToMain": true
+    },
+    {
+      "path": "src/components/SiteNav.astro",
+      "sha256": "b4abc473609920db455127c764908fc3a768c09249b872cc6c06e3b716a9c782",
+      "identicalToMain": true
+    },
+    {
+      "path": "src/styles/base.css",
+      "sha256": "b5aacdb239ea53bbea6b62e60be98493ac50ec576e6370d22ca9e0a8fe6ba64e",
+      "identicalToMain": true
+    },
+    {
+      "path": "src/styles/tokens.css",
+      "sha256": "4ee3e929f656cf7e683adca7bf6fc1b9d4fdb3f7ab05a5d4cb02e95548a820a2",
+      "identicalToMain": true
+    },
+    {
+      "path": "scripts/wing-nav.mjs",
+      "sha256": "41d20264a6e7050cfa1d210d36168479ff02971b53b4b3f573032598f2590ecf",
+      "identicalToMain": true
+    }
+  ],
+  "visual": {
+    "platform": "linux",
+    "chromium": "151.0.7922.173",
+    "originalFailedCases": 11,
+    "allFailedCasesMatchCleanMain": true,
+    "verificationAfterRefresh": {
+      "passed": 15,
+      "total": 15,
+      "maximumPixelDiffRatio": 0.001
+    },
+    "cases": [
+      {
+        "case": "aries-mobile",
+        "oldDimensions": [
+          390,
+          10201
+        ],
+        "currentDimensions": [
+          390,
+          10169
+        ],
+        "branchPixelsEqualCleanMain": true,
+        "oldBaselineSha256": "17622734543378344127fb4c9f42a297d5fe3043c17d04abd0b8a2e63e56ba43",
+        "cleanMainCaptureSha256": "12d161ed556bcf6fc8e6de45ad79826d5750e823ebff77553b902c3837548292"
+      },
+      {
+        "case": "birth-chart-kahlo-mobile",
+        "oldDimensions": [
+          390,
+          13869
+        ],
+        "currentDimensions": [
+          390,
+          13817
+        ],
+        "branchPixelsEqualCleanMain": true,
+        "oldBaselineSha256": "f5e6f9342b564e098274be39aa3add64996d2fcdd7c6aaff8832b5a04a1138c6",
+        "cleanMainCaptureSha256": "e75651e3fe3303f3a117c801d0f88c84130ea82dfeda9e2b8c98bcb91717f88b"
+      },
+      {
+        "case": "event-full-moon-desktop-reduced-motion",
+        "oldDimensions": [
+          1440,
+          4753
+        ],
+        "currentDimensions": [
+          1440,
+          4753
+        ],
+        "branchPixelsEqualCleanMain": true,
+        "oldBaselineSha256": "e156a55254e9d3185b7665c9e4118bea96adaff973bb2d9d5c06beba98f91ef8",
+        "cleanMainCaptureSha256": "29be44586a91ef9425aa23df4c7dfc3978752edd0cbcbb2a775850953d97b551"
+      },
+      {
+        "case": "event-full-moon-desktop",
+        "oldDimensions": [
+          1440,
+          4753
+        ],
+        "currentDimensions": [
+          1440,
+          4753
+        ],
+        "branchPixelsEqualCleanMain": true,
+        "oldBaselineSha256": "e156a55254e9d3185b7665c9e4118bea96adaff973bb2d9d5c06beba98f91ef8",
+        "cleanMainCaptureSha256": "29be44586a91ef9425aa23df4c7dfc3978752edd0cbcbb2a775850953d97b551"
+      },
+      {
+        "case": "event-full-moon-mobile",
+        "oldDimensions": [
+          390,
+          6855
+        ],
+        "currentDimensions": [
+          390,
+          6823
+        ],
+        "branchPixelsEqualCleanMain": true,
+        "oldBaselineSha256": "09e49e9af4621c310d3fabd7d42f69b93450604df11a0d2abf4237f1a4441985",
+        "cleanMainCaptureSha256": "0e19f146992d8dcd81527dca9c78126f8ad2d8c73d04cd0e5a9831a6c697f5c5"
+      },
+      {
+        "case": "events-hub-desktop-reduced-motion",
+        "oldDimensions": [
+          1440,
+          16809
+        ],
+        "currentDimensions": [
+          1440,
+          16809
+        ],
+        "branchPixelsEqualCleanMain": true,
+        "oldBaselineSha256": "177945bf5724e0486f47c395e1bde616de60ce99251c06c86c4ba368075cc36c",
+        "cleanMainCaptureSha256": "c632af4d8822e99eecd9b21e4c4b13956557c672fcd087b94d25115fea9b48e5"
+      },
+      {
+        "case": "events-hub-desktop",
+        "oldDimensions": [
+          1440,
+          16809
+        ],
+        "currentDimensions": [
+          1440,
+          16809
+        ],
+        "branchPixelsEqualCleanMain": true,
+        "oldBaselineSha256": "177945bf5724e0486f47c395e1bde616de60ce99251c06c86c4ba368075cc36c",
+        "cleanMainCaptureSha256": "8bb2835d2ff264d06058ec9fccd976914683d8ff5c4ede22a5924c4a7304c333"
+      },
+      {
+        "case": "events-hub-mobile",
+        "oldDimensions": [
+          390,
+          21069
+        ],
+        "currentDimensions": [
+          390,
+          21037
+        ],
+        "branchPixelsEqualCleanMain": true,
+        "oldBaselineSha256": "67c0a9c73ec1d222288b842fc84e88a36ba4a9895da2d393f6b46444b235a338",
+        "cleanMainCaptureSha256": "d7cdb42a9f5d731aff36f1bb1912d450f532aa422e798b84f2f700eb27d36454"
+      },
+      {
+        "case": "home-desktop-reduced-motion",
+        "oldDimensions": [
+          1440,
+          6493
+        ],
+        "currentDimensions": [
+          1440,
+          6493
+        ],
+        "branchPixelsEqualCleanMain": true,
+        "oldBaselineSha256": "8d86011180c40151ef4ac1a8a6e222dc8724ee47c2562578f7d844dad220dc64",
+        "cleanMainCaptureSha256": "237ff06de3458550729577294d756bab1dcbe8ae2d289c905a42173f8ef4ea9e"
+      },
+      {
+        "case": "home-desktop",
+        "oldDimensions": [
+          1440,
+          6493
+        ],
+        "currentDimensions": [
+          1440,
+          6493
+        ],
+        "branchPixelsEqualCleanMain": true,
+        "oldBaselineSha256": "acd1f9e8ba9432cf51c4d65dfdc8313b5347f0550a4753ab84e26f27e8738152",
+        "cleanMainCaptureSha256": "1edf13c6bd16dc76053fa78f0986a8f914084c0c442bb2d86c7235b97230e208"
+      },
+      {
+        "case": "home-mobile",
+        "oldDimensions": [
+          390,
+          8121
+        ],
+        "currentDimensions": [
+          390,
+          8121
+        ],
+        "branchPixelsEqualCleanMain": true,
+        "oldBaselineSha256": "7559568901bafd84c0a205d64280c7599dd0c1bcc35df0d432c4558d77310bc0",
+        "cleanMainCaptureSha256": "40fb2839a71930740271c449962ff505c9f2333acca5c921a8ea48ccd07bd7f5"
+      }
+    ],
+    "refreshedBaselines": "Generated on clean main; strict 0.1% budget retained. Darwin was not captured or updated."
+  },
+  "lighthouse": {
+    "samplesPerRoute": 3,
+    "routes": 30,
+    "passed": 29,
+    "failed": 1,
+    "runnerStalls": 0,
+    "results": [
+      {
+        "passed": false,
+        "path": "/",
+        "minimumScores": {
+          "performance": 99,
+          "accessibility": 93,
+          "seo": 100
+        },
+        "maxLcpSeconds": 1.96,
+        "maxCls": 0,
+        "maxTbtMs": 0
+      },
+      {
+        "passed": true,
+        "path": "/birth-chart/",
+        "minimumScores": {
+          "performance": 96,
+          "accessibility": 100,
+          "seo": 100
+        },
+        "maxLcpSeconds": 2.56,
+        "maxCls": 0,
+        "maxTbtMs": 7
+      },
+      {
+        "passed": true,
+        "path": "/lunar-return/",
+        "minimumScores": {
+          "performance": 99,
+          "accessibility": 100,
+          "seo": 100
+        },
+        "maxLcpSeconds": 2.18,
+        "maxCls": 0,
+        "maxTbtMs": 0
+      },
+      {
+        "passed": true,
+        "path": "/numerology/",
+        "minimumScores": {
+          "performance": 98,
+          "accessibility": 100,
+          "seo": 100
+        },
+        "maxLcpSeconds": 2.25,
+        "maxCls": 0,
+        "maxTbtMs": 0
+      },
+      {
+        "passed": true,
+        "path": "/numerology/life-path/7/",
+        "minimumScores": {
+          "performance": 98,
+          "accessibility": 100,
+          "seo": 100
+        },
+        "maxLcpSeconds": 2.26,
+        "maxCls": 0,
+        "maxTbtMs": 0
+      },
+      {
+        "passed": true,
+        "path": "/void-of-course-moon/",
+        "minimumScores": {
+          "performance": 99,
+          "accessibility": 100,
+          "seo": 100
+        },
+        "maxLcpSeconds": 2.1,
+        "maxCls": 0,
+        "maxTbtMs": 0
+      },
+      {
+        "passed": true,
+        "path": "/aries/",
+        "minimumScores": {
+          "performance": 97,
+          "accessibility": 100,
+          "seo": 100
+        },
+        "maxLcpSeconds": 2.41,
+        "maxCls": 0,
+        "maxTbtMs": 0
+      },
+      {
+        "passed": true,
+        "path": "/thesis/",
+        "minimumScores": {
+          "performance": 97,
+          "accessibility": 100,
+          "seo": 100
+        },
+        "maxLcpSeconds": 2.49,
+        "maxCls": 0,
+        "maxTbtMs": 0
+      },
+      {
+        "passed": true,
+        "path": "/today/",
+        "minimumScores": {
+          "performance": 99,
+          "accessibility": 100,
+          "seo": 100
+        },
+        "maxLcpSeconds": 1.74,
+        "maxCls": 0,
+        "maxTbtMs": 83
+      },
+      {
+        "passed": true,
+        "path": "/horoscopes/",
+        "minimumScores": {
+          "performance": 100,
+          "accessibility": 100,
+          "seo": 100
+        },
+        "maxLcpSeconds": 1.88,
+        "maxCls": 0,
+        "maxTbtMs": 0
+      },
+      {
+        "passed": true,
+        "path": "/horoscopes/aries/",
+        "minimumScores": {
+          "performance": 99,
+          "accessibility": 100,
+          "seo": 100
+        },
+        "maxLcpSeconds": 2.11,
+        "maxCls": 0,
+        "maxTbtMs": 0
+      },
+      {
+        "passed": true,
+        "path": "/horoscopes/aries/tomorrow/",
+        "minimumScores": {
+          "performance": 97,
+          "accessibility": 100,
+          "seo": 100
+        },
+        "maxLcpSeconds": 2.41,
+        "maxCls": 0,
+        "maxTbtMs": 0
+      },
+      {
+        "passed": true,
+        "path": "/horoscopes/aries/weekly/",
+        "minimumScores": {
+          "performance": 97,
+          "accessibility": 100,
+          "seo": 100
+        },
+        "maxLcpSeconds": 2.41,
+        "maxCls": 0,
+        "maxTbtMs": 0
+      },
+      {
+        "passed": true,
+        "path": "/horoscopes/aries/monthly/",
+        "minimumScores": {
+          "performance": 97,
+          "accessibility": 100,
+          "seo": 100
+        },
+        "maxLcpSeconds": 2.41,
+        "maxCls": 0,
+        "maxTbtMs": 0
+      },
+      {
+        "passed": true,
+        "path": "/horoscopes/aries/love/",
+        "minimumScores": {
+          "performance": 97,
+          "accessibility": 100,
+          "seo": 100
+        },
+        "maxLcpSeconds": 2.41,
+        "maxCls": 0,
+        "maxTbtMs": 0
+      },
+      {
+        "passed": true,
+        "path": "/horoscopes/aries/career/",
+        "minimumScores": {
+          "performance": 97,
+          "accessibility": 100,
+          "seo": 100
+        },
+        "maxLcpSeconds": 2.48,
+        "maxCls": 0,
+        "maxTbtMs": 0
+      },
+      {
+        "passed": true,
+        "path": "/horoscopes/aries/2027/",
+        "minimumScores": {
+          "performance": 97,
+          "accessibility": 100,
+          "seo": 100
+        },
+        "maxLcpSeconds": 2.41,
+        "maxCls": 0,
+        "maxTbtMs": 0
+      },
+      {
+        "passed": true,
+        "path": "/events/",
+        "minimumScores": {
+          "performance": 99,
+          "accessibility": 100,
+          "seo": 100
+        },
+        "maxLcpSeconds": 1.96,
+        "maxCls": 0,
+        "maxTbtMs": 0
+      },
+      {
+        "passed": true,
+        "path": "/full-moon/2026-07-29/",
+        "minimumScores": {
+          "performance": 98,
+          "accessibility": 100,
+          "seo": 100
+        },
+        "maxLcpSeconds": 2.33,
+        "maxCls": 0,
+        "maxTbtMs": 0
+      },
+      {
+        "passed": true,
+        "path": "/eclipses/2026-08-12/",
+        "minimumScores": {
+          "performance": 98,
+          "accessibility": 100,
+          "seo": 100
+        },
+        "maxLcpSeconds": 2.25,
+        "maxCls": 0,
+        "maxTbtMs": 0
+      },
+      {
+        "passed": true,
+        "path": "/mercury-retrograde/2026-06-29/",
+        "minimumScores": {
+          "performance": 98,
+          "accessibility": 100,
+          "seo": 100
+        },
+        "maxLcpSeconds": 2.26,
+        "maxCls": 0,
+        "maxTbtMs": 0
+      },
+      {
+        "passed": true,
+        "path": "/events/saturn-enters-aries-2026-02-14/",
+        "minimumScores": {
+          "performance": 98,
+          "accessibility": 100,
+          "seo": 100
+        },
+        "maxLcpSeconds": 2.26,
+        "maxCls": 0,
+        "maxTbtMs": 0
+      },
+      {
+        "passed": true,
+        "path": "/events/jupiter-trine-saturn-2026-08-31/",
+        "minimumScores": {
+          "performance": 98,
+          "accessibility": 100,
+          "seo": 100
+        },
+        "maxLcpSeconds": 2.26,
+        "maxCls": 0,
+        "maxTbtMs": 0
+      },
+      {
+        "passed": true,
+        "path": "/people/",
+        "minimumScores": {
+          "performance": 100,
+          "accessibility": 100,
+          "seo": 100
+        },
+        "maxLcpSeconds": 1.65,
+        "maxCls": 0,
+        "maxTbtMs": 0
+      },
+      {
+        "passed": true,
+        "path": "/people/ada-lovelace/",
+        "minimumScores": {
+          "performance": 99,
+          "accessibility": 100,
+          "seo": 100
+        },
+        "maxLcpSeconds": 2.25,
+        "maxCls": 0,
+        "maxTbtMs": 0
+      },
+      {
+        "passed": true,
+        "path": "/people/marie-curie/",
+        "minimumScores": {
+          "performance": 99,
+          "accessibility": 100,
+          "seo": 100
+        },
+        "maxLcpSeconds": 2.26,
+        "maxCls": 0,
+        "maxTbtMs": 7
+      },
+      {
+        "passed": true,
+        "path": "/people/serena-williams/",
+        "minimumScores": {
+          "performance": 99,
+          "accessibility": 100,
+          "seo": 100
+        },
+        "maxLcpSeconds": 2.26,
+        "maxCls": 0,
+        "maxTbtMs": 0
+      },
+      {
+        "passed": true,
+        "path": "/ru/",
+        "minimumScores": {
+          "performance": 98,
+          "accessibility": 100,
+          "seo": 100
+        },
+        "maxLcpSeconds": 2.25,
+        "maxCls": 0,
+        "maxTbtMs": 0
+      },
+      {
+        "passed": true,
+        "path": "/ru/birth-chart/",
+        "minimumScores": {
+          "performance": 100,
+          "accessibility": 100,
+          "seo": 100
+        },
+        "maxLcpSeconds": 1.43,
+        "maxCls": 0,
+        "maxTbtMs": 28
+      },
+      {
+        "passed": true,
+        "path": "/ru/aries/",
+        "minimumScores": {
+          "performance": 99,
+          "accessibility": 100,
+          "seo": 100
+        },
+        "maxLcpSeconds": 2.11,
+        "maxCls": 0,
+        "maxTbtMs": 0
+      }
+    ],
+    "seoNote": "Protected routes exclude only intentional noindex, which is separately required. Existing performance calibrations remain unchanged.",
+    "cleanMainHomepage": {
+      "samples": 1,
+      "accessibility": 93,
+      "failedAudits": [
+        {
+          "audit": "color-contrast",
+          "title": "Background and foreground colors do not have a sufficient contrast ratio.",
+          "elements": 1,
+          "selectors": [
+            "div.demo__guide > div.demo__jumps > button.demo__jump > span.mono--label"
+          ]
+        },
+        {
+          "audit": "target-size",
+          "title": "Touch targets do not have sufficient size or spacing.",
+          "elements": 20,
+          "selectors": [
+            "div.core > div.demo__wheel-stage > div.demo__targets > button.demo__target"
+          ]
+        }
+      ]
+    },
+    "releaseBlocker": "Homepage demo touch-target size and selected Planet label contrast fail on clean main. No homepage or chart-demo source is changed by the AI integration."
+  }
+}

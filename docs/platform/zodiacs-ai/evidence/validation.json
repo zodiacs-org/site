@@ -68,6 +68,39 @@
       "passed": true,
       "staleProfileShortcutAssertionUpdated": true,
       "siteNavigationChanged": false
+    },
+    "existingMarketsMobileBrowserDrive": {
+      "passed": 106,
+      "total": 106
+    },
+    "existingMobileFrameCadence": {
+      "passed": 3,
+      "total": 3,
+      "fps": 60,
+      "cpuThrottle": 4
+    },
+    "existingLinuxVisualRegression": {
+      "passed": 15,
+      "total": 15,
+      "maximumPixelDiffRatio": 0.001,
+      "baselinesGeneratedOnCleanMain": true
+    },
+    "existingForeignOriginWidgetBrowserDrive": "passed",
+    "existingWidgetLighthouse": {
+      "passed": 3,
+      "total": 3,
+      "minimumPerformance": 100,
+      "minimumAccessibility": 96
+    },
+    "existingFullLighthouseGate": {
+      "passed": 29,
+      "total": 30,
+      "samples": 90,
+      "failedRoute": "/",
+      "accessibilityScore": 93,
+      "failureReproducedOnCleanMain": true,
+      "siteWideGatePassed": false,
+      "evidence": "site-regression-review.json"
     }
   },
   "productionEnabled": false,
