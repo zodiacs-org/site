@@ -226,7 +226,7 @@
       "permanent": true
     },
     {
-      "source": "/:path((?!api(?:/|$)|v1(?:/|$)|\\.well-known(?:/|$)|.*\\.[^/]+$).*[^/])",
+      "source": "/:path((?!api(?:/|$)|v1(?:/|$)|mcp(?:/|$)|\\.well-known(?:/|$)|.*\\.[^/]+$).*[^/])",
       "destination": "/:path/",
       "permanent": true
     },
@@ -286,7 +286,15 @@
       "destination": "/api/compatibility?__zodiacs_ai=1"
     },
     {
+      "source": "/mcp/",
+      "destination": "/api/compatibility?__zodiacs_ai=1"
+    },
+    {
       "source": "/mcp/health",
+      "destination": "/api/compatibility?__zodiacs_ai=health"
+    },
+    {
+      "source": "/mcp/health/",
       "destination": "/api/compatibility?__zodiacs_ai=health"
     },
     {

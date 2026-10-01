@@ -80,8 +80,8 @@ function collisionAwareHit(points: Point[], index: number, maximum: number) {
   const neighbours = points.filter((_, other) => other !== index);
   if (neighbours.length === 0) return maximum;
   const nearest = Math.min(...neighbours.map((other) => distance(points[index], other)));
-  // Keep every target inside its nearest-neighbour gap. The larger jump
-  // controls beside the wheel remain the accessible alternative on phones.
+  // Keep every target inside its nearest-neighbour gap. The labeled
+  // selector beside the wheel exposes every mark as a full-size control.
   return Math.min(maximum, nearest * 0.82);
 }
 
@@ -306,12 +306,11 @@ export default function DemoChart() {
                 />
               ))}
               {planetTargets.map((target) => (
-                <button
-                  type="button"
+                <span
                   class="demo__target demo__target--planet"
                   style={position(target.point, target.hue, target.hit)}
-                  aria-label={target.label}
-                  aria-pressed={target.id === sunTarget.id ? 'true' : 'false'}
+                  aria-hidden="true"
+                  data-selected={target.id === sunTarget.id ? 'true' : 'false'}
                   data-demo-target
                   data-demo-id={target.id}
                   data-demo-layer="planets"
@@ -323,12 +322,11 @@ export default function DemoChart() {
                 />
               ))}
               {houseTargets.map((target) => (
-                <button
-                  type="button"
+                <span
                   class="demo__target demo__target--house"
                   style={position(target.point, undefined, target.hit)}
-                  aria-label={target.label}
-                  aria-pressed="false"
+                  aria-hidden="true"
+                  data-selected="false"
                   data-demo-target
                   data-demo-id={target.id}
                   data-demo-layer="houses"
@@ -338,12 +336,11 @@ export default function DemoChart() {
                 />
               ))}
               {aspectTargets.map((target) => (
-                <button
-                  type="button"
+                <span
                   class="demo__target demo__target--aspect"
                   style={position(target.point, undefined, target.hit)}
-                  aria-label={target.label}
-                  aria-pressed="false"
+                  aria-hidden="true"
+                  data-selected="false"
                   data-demo-target
                   data-demo-id={target.id}
                   data-demo-layer="aspects"
@@ -370,6 +367,24 @@ export default function DemoChart() {
           <h3>Three ways into a chart</h3>
           <p>Choose a starting point below, or select any symbol on the wheel.</p>
         </div>
+
+        <label class="demo__selector">
+          Explore the chart
+          <select aria-label="Explore the chart" data-demo-select defaultValue={sunTarget.id}>
+            <optgroup label="Planets">
+              {planetTargets.map((target) => <option key={target.id} value={target.id}>{target.label}</option>)}
+            </optgroup>
+            <optgroup label="Signs">
+              {signTargets.map((target) => <option key={target.id} value={target.id}>{target.label}</option>)}
+            </optgroup>
+            <optgroup label="Life areas">
+              {houseTargets.map((target) => <option key={target.id} value={target.id}>{target.label}</option>)}
+            </optgroup>
+            <optgroup label="Connections">
+              {aspectTargets.map((target) => <option key={target.id} value={target.id}>{target.label}</option>)}
+            </optgroup>
+          </select>
+        </label>
 
         <div class="demo__jumps" role="group" aria-label="Preview chart features">
           {previewSteps.map((step, index) => (

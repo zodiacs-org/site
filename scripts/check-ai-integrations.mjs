@@ -45,7 +45,13 @@ for (const entry of submission.test_cases) assert.ok(names.includes(entry.tools_
 for (const entry of submission.negative_test_cases) assert.equal(entry.tools_triggered, null);
 assert.equal((await json('integrations/chatgpt/evaluation-cases.json')).length, 40);
 const vercel = await json('vercel.json');
-for (const [source, route] of [['/mcp', '1'], ['/mcp/health', 'health']]) assert.ok(vercel.rewrites.some(entry => entry.source === source && entry.destination === `/api/compatibility?__zodiacs_ai=${route}`));
+for (const [source, route] of [['/mcp', '1'], ['/mcp/', '1'], ['/mcp/health', 'health'], ['/mcp/health/', 'health']]) {
+  assert.ok(vercel.rewrites.some(entry => entry.source === source && entry.destination === `/api/compatibility?__zodiacs_ai=${route}`));
+}
+const slashRedirect = vercel.redirects.find(entry => entry.destination === '/:path/');
+const slashPattern = new RegExp(`^${slashRedirect.source.slice('/:path('.length, -1)}$`);
+for (const path of ['mcp', 'mcp/health']) assert.equal(slashPattern.test(path), false, `MCP must not redirect: /${path}`);
+assert.equal(slashPattern.test('moon-sign'), true, 'Consumer canonical redirects remain active');
 // Curated URLs must map to existing consumer pages; do not create dead referrals.
 const catalog = await readFile(new URL('src/ai-tools/catalog.ts', root), 'utf8');
 for (const match of catalog.matchAll(/path: '([^']+)'/g)) await access(new URL(`src/pages${match[1]}index.astro`, root));

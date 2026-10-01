@@ -476,6 +476,7 @@ const tools = [
           var targets = root.querySelectorAll('[data-demo-target]');
           var jumps = root.querySelectorAll('[data-demo-jump]');
           var highlights = root.querySelectorAll('[data-demo-highlight]');
+          var selector = root.querySelector('[data-demo-select]');
           var enterFrame = 0;
           var settleFrame = 0;
           if (!caption || !title || !kind || !targets.length) return;
@@ -497,8 +498,10 @@ const tools = [
             var nextHighlight = null;
 
             targets.forEach(function (item) {
-              item.setAttribute('aria-pressed', item === target ? 'true' : 'false');
+              item.dataset.selected = item === target ? 'true' : 'false';
+              if (item.tagName === 'BUTTON') item.setAttribute('aria-pressed', item === target ? 'true' : 'false');
             });
+            if (selector) selector.value = id;
             jumps.forEach(function (item) {
               item.setAttribute('aria-pressed', item.dataset.demoJump === id ? 'true' : 'false');
             });
@@ -528,6 +531,9 @@ const tools = [
 
           targets.forEach(function (target) {
             target.addEventListener('click', function (event) { activate(target, event); });
+          });
+          if (selector) selector.addEventListener('change', function () {
+            activate(targetFor(selector.value));
           });
           jumps.forEach(function (jump) {
             jump.addEventListener('click', function (event) {
@@ -1101,6 +1107,13 @@ const tools = [
     letter-spacing: -0.02em;
   }
   :global(.demo__guide-head p) { margin: 0; color: var(--text-2); font-size: var(--text-sm); line-height: 1.55; }
+  :global(.demo__selector) { display: grid; gap: 8px; color: var(--text-2); font-size: var(--text-sm); }
+  :global(.demo__selector select) {
+    width: 100%; min-height: 44px; padding: 10px 12px;
+    border: 1px solid var(--hair-1); border-radius: var(--r-md);
+    background: var(--bg); color: var(--text); font: inherit;
+  }
+  :global(.demo__selector select:focus-visible) { outline: 2px solid var(--text); outline-offset: 2px; }
   :global(.demo__jumps) { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
   :global(.demo__jump) {
     display: grid;
@@ -1126,6 +1139,7 @@ const tools = [
     background: rgba(238, 241, 247, 0.1);
     color: var(--text);
   }
+  :global(.demo__jump[aria-pressed='true'] .mono--label) { color: var(--text-2); }
   :global(.demo__jump:active) { transform: scale(0.97); }
   :global(.demo__jump:focus-visible) { outline: 2px solid var(--text); outline-offset: 2px; }
   @media (hover: hover) and (pointer: fine) {
