@@ -30,10 +30,28 @@ report and prospective paper runner. No public prediction or order execution.
 
 ## Preview verification
 
-The draft PR triggers the existing Vercel preview integration. Deployed API
-and non-price browser verification will be recorded here after that preview
-finishes; a local API proxy does not certify the deployed rewrite. Hosted
-prices remain disabled. The enabled upstream path still needs a display grant,
+[Draft PR #619](https://github.com/zodiacs-org/site/pull/619) has a successful
+[protected preview](https://zodiacs-n9fiyargf-zodiacsofficial.vercel.app/terminal/lens/).
+Application source is `3bf75a5f`; deployment source is `19913767`, which added
+only a temporary branch-specific preview allowance. The final commit restores
+the original main-only automatic-deployment and ignored-build cost controls.
+No production deployment occurred. See deployment.json for the full receipt.
+
+The existing [trusted-main function smoke](https://github.com/zodiacs-org/site/actions/runs/36863601046)
+passed against this deployment with its existing GitHub automation credential.
+It does **not** probe the new Lens route. This cloud runtime's direct Lens
+API/browser acceptance hit Vercel Authentication (HTTP 302) before the handler;
+no deployed Lens routing or browser pass is claimed. The secure environment
+draft now declares `VERCEL_AUTOMATION_BYPASS_SECRET` for the two specific
+preview hosts; its value is absent here. After it is supplied, run:
+
+```sh
+BASE_URL=https://zodiacs-n9fiyargf-zodiacsofficial.vercel.app \
+  NODE_OPTIONS=--use-env-proxy node tests/market-lens-deployed-drive.mjs
+```
+
+Hosted prices remain disabled. This driver verifies the disabled contract and
+calendar/journal; the enabled upstream path still needs a display grant,
 redeployment and real BTC/ETH hourly/daily acceptance.
 
 ## External requirements
