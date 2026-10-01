@@ -52,6 +52,7 @@ function installFixture() {
   let observed = [];
   let storageEvents = 0;
   let heldClear = null;
+  let heldStorage = null;
   Storage.prototype.getItem = function (key) {
     if (this === local && faults.reads) throw new DOMException('Synthetic refused read', 'SecurityError');
     const value = get.call(this, key);
@@ -119,6 +120,15 @@ function installFixture() {
     },
     clearEntered() { return heldClear?.entered === true; },
     releaseClear() { heldClear.release(); return heldClear.result; },
+    startHeldStorage() {
+      heldStorage = { entered: false, release: null, result: null };
+      heldStorage.result = navigator.locks.request('zodiacs-calendar-feed-storage-v1', { mode: 'exclusive' }, async () => {
+        heldStorage.entered = true;
+        await new Promise((resolve) => { heldStorage.release = resolve; });
+      });
+    },
+    storageEntered() { return heldStorage?.entered === true; },
+    releaseStorage() { heldStorage.release(); return heldStorage.result; },
     snapshot() {
       return {
         available: client.readAvailableCalendarFeeds().map((feed) => feed.id),
@@ -305,6 +315,35 @@ try {
     assert.deepEqual((await snapshot(a)).stored, [ID]);
     return { postStartedBeforeClearReleased: false, preflightLinearizedAfterClear: true, newSubscriptionKept: true };
   });
+  // Both documents have initialized an absent-fence cache before either
+  // preflight can run. Exercise native lock handoff in fresh contexts rather
+  // than trusting Playwright to schedule two page.evaluate calls together.
+  for (let attempt = 1; attempt <= 20; attempt += 1) {
+    await group(`queued independent subscriptions preserve both records (${attempt}/20)`, async ({ a, b }) => {
+      await a.evaluate(() => window.fixture.startHeldStorage());
+      await a.waitForFunction(() => window.fixture.storageEntered());
+      const [one, two] = await Promise.all([
+        a.evaluate((id) => window.fixture.start(id), ID),
+        b.evaluate((id) => window.fixture.start(id), OTHER_ID),
+      ]);
+      await a.waitForFunction(async () => (await navigator.locks.query()).pending
+        .filter((lock) => lock.name === 'zodiacs-calendar-feed-storage-v1' && lock.mode === 'exclusive').length === 2);
+      assert.equal(await a.evaluate((ticket) => window.fixture.started(ticket), one), false);
+      assert.equal(await b.evaluate((ticket) => window.fixture.started(ticket), two), false);
+      await a.evaluate(() => window.fixture.releaseStorage());
+      await Promise.all([
+        a.waitForFunction((ticket) => window.fixture.started(ticket), one),
+        b.waitForFunction((ticket) => window.fixture.started(ticket), two),
+      ]);
+      const results = await Promise.all([finish(a, one), finish(b, two)]);
+      assert.deepEqual(results, [{ state: 'created', kept: true }, { state: 'created', kept: true }]);
+      assert.deepEqual((await snapshot(a)).stored.sort(), [ID, OTHER_ID].sort());
+      assert.deepEqual((await snapshot(b)).stored.sort(), [ID, OTHER_ID].sort());
+      await cleared(b);
+      assert.deepEqual((await snapshot(a)).available, []);
+      return { preflightsQueuedBeforeRelease: 2, independentPosts: 2, storedFeeds: 2, postClearCalendarKeys: 0 };
+    });
+  }
   assert.deepEqual(report.pageErrors, []);
   assert.deepEqual(report.blockedExternalRequests, []);
   report.outcome = report.results.every((result) => result.passed) ? 'passed' : 'failed';

@@ -54,6 +54,7 @@ const startedAt = new Date().toISOString();
 let preview;
 let browser;
 let browserVersion;
+let markerSelection;
 const results = [];
 const check = (name, ok, detail = '') => { results.push({ name, ok, detail }); };
 const shot = async (t, p, o = {}) => { await t.screenshot({ path: `${OUT}/${p}`, ...o }); };
@@ -164,7 +165,19 @@ try {
   check('calendar file keeps each contact to the second',
     (calendarFile.match(/DTSTART:\d{8}T\d{6}Z/gu) ?? []).length === calendarUids.length);
   const dateBeforeJump = await page.locator('.tring__date').textContent();
-  await page.locator('[data-transit-mark]').first().click();
+  const markers = page.locator('[data-transit-mark]');
+  await markers.first().scrollIntoViewIfNeeded();
+  // Exact events can overlap on this small timeline. Exercise an ordinary
+  // pointer-accessible marker, rather than requesting the covered first one.
+  const markerIndex = await markers.evaluateAll((buttons) => buttons.findIndex((button) => {
+    const box = button.getBoundingClientRect();
+    return box.width > 0 && box.height > 0
+      && document.elementFromPoint(box.x + box.width / 2, box.y + box.height / 2) === button;
+  }));
+  assert.notEqual(markerIndex, -1, 'At least one transit marker must be reachable by an ordinary pointer click.');
+  const marker = markers.nth(markerIndex);
+  markerSelection = { index: markerIndex, label: await marker.getAttribute('aria-label') };
+  await marker.click();
   await wait(1200);
   check('clicking a marker jumps the sky to that date',
     (await page.locator('.tring__date').textContent()) !== dateBeforeJump);
@@ -272,7 +285,7 @@ await writeFile(resolve(OUT, 'result.json'), JSON.stringify({
   driverSha256: createHash('sha256').update(await readFile(new URL(import.meta.url))).digest('hex'),
   buildReceiptSha256: createHash('sha256').update(buildReceiptBytes).digest('hex'),
   buildReceipt, startedAt, completedAt: new Date().toISOString(), node: process.version,
-  browser: browserVersion ?? null, accountV2Flag: false,
+  browser: browserVersion ?? null, accountV2Flag: false, markerSelection,
   controlledBoundary: 'Existing synthetic calendar create/remove responses; unchanged historical saved-chart fixture and assertions',
   results, passed: results.length - failed, failed,
 }, null, 2) + '\n');
