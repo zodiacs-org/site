@@ -195,6 +195,10 @@ jobs:
       - name: Today SSR and personalization
         run: npm run test:today:browser
 
+      - name: Consumer mobile journeys and early form input
+        timeout-minutes: 5
+        run: OUT_DIR=tests/visual/artifacts/consumer-experience npm run test:consumer:browser
+
       - name: Horoscope templates, SSR, and responsive behavior
         run: OUT_DIR=tests/visual/artifacts/horoscope-program npm run test:horoscopes:browser
 

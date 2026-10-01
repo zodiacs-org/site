@@ -1765,12 +1765,12 @@
       const NAV_TOOLS = [
         { href: '/birth-chart/', name: 'Birth chart', description: 'See your sun, moon, rising, planets, houses, and what they mean.' },
         { href: '/compatibility/', name: 'Compatibility', description: 'Compare two charts and see where they click, clash, and grow.' },
-        { href: '/transits/', name: 'Transits', description: "See today's sky next to your chart." },
+        { href: '/transits/', name: 'Transits', description: 'Explore today’s planets and their connections to your chart.' },
         { href: '/moon-sign/', name: 'Moon sign', description: 'How you feel, and what settles you.' },
         { href: '/rising-sign/', name: 'Rising sign', description: 'Find the sign people meet first. Birth time helps.' },
         { href: '/moon-phase/', name: 'Moon phase', description: 'Tonight’s moon, and the moon of any date you care about.' },
         { href: '/saturn-return/', name: 'Saturn return', description: 'When yours hits, exactly, and what it tends to ask.' },
-        { href: '/birthday/', name: 'Birthday', description: 'Check the Zodiac sign for any birthday from 1940 to 2030, including birthdays close to a sign change.' },
+        { href: '/birthday/', name: 'Birthday', description: 'Find your Sun sign from your birthday, including dates near a sign change.' },
       ];
       const terminalNav = {
         href: '/astrofolio/',
