@@ -1,7 +1,7 @@
 {
   "version": 1,
   "brief": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md (version 2) with the version 1 rules it retains",
-  "asOf": "2026-09-30 (site main 2197e696, production dpl_Ax6saHNV85duCvdExDz7LpSHrLD7; engine main d5326a8; sdk main a95dc0cf; npm @zodiacs/engine 0.1.1-rc.15 latest)",
+  "asOf": "2026-10-01 calendar candidate checkpoint (G4 acceptance retained from checkpoint 10/e046111; public calendar source 7a9c9fe5; native/SQL/capture and live metadata evidence recorded; no new calendar acceptance)",
   "denominator": {
     "unit": "working days, from the brief's effort estimates (README.md)",
     "totalWeight": 182.45,
@@ -440,7 +440,7 @@
       "evidence": [
         "docs/platform/evidence/engine-beyond-swiss/PREREGISTRATION.md §1.15"
       ],
-      "notes": "no committed test decodes the instant (a code-only decoder recovers 100/100 to a median 6.28 s); time-unknown codes leak the birthplace (F-17); the region figure fails at high latitude (F-40); decided 2026-09-28: random opaque feed ids stored server-side, older token URLs retired after 60 days (docs/platform/programme/DECISIONS-2026-09-28.md §2); #599: timed codes and feeds carry the whole UTC minute and codes without a birth time 12:00 UTC on the date, with decoder and invariance tests (src/lib/share-positions.test.ts); the opaque feed ids decided on 2026-09-28 are implemented in a local release candidate, not deployed; its source, privacy and recovery evidence is in docs/platform/evidence/calendar-feeds-2026-10-01/README.md, with the cross-tab persistence and required browser-runner follow-up in docs/platform/evidence/calendar-feeds-2026-10-01-cross-tab/README.md; SQL CI, final captures, browser drives and production checks remain outstanding; the release's owner steps are done (2026-09-30): CALENDAR_FEED_SWEEP_SECRET in Vercel Production and in the GitHub environment calendar-feed-production, and PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are Production project variables"
+      "notes": "no committed test decodes the instant (a code-only decoder recovers 100/100 to a median 6.28 s); time-unknown codes leak the birthplace (F-17); the region figure fails at high latitude (F-40); decided 2026-09-28: random opaque feed ids stored server-side, older token URLs retired after 60 days (docs/platform/programme/DECISIONS-2026-09-28.md §2); #599: timed codes and feeds carry the whole UTC minute and codes without a birth time 12:00 UTC on the date, with decoder and invariance tests (src/lib/share-positions.test.ts); the opaque feed ids decided on 2026-09-28 are implemented in public candidate PR613, not deployed; prior source/recovery evidence remains in docs/platform/evidence/calendar-feeds-2026-10-01/README.md and calendar-feeds-2026-10-01-cross-tab/README.md; current canonical IndexedDB evidence is docs/platform/evidence/calendar-feeds-2026-10-01-idb/README.md: public 7a9c9fe5 passes 34 native cross-tab cases, 25 transit/calendar UI checks and PostgreSQL 17 replay/privacy/search-path/concurrency CI; all 18 Phase 1 image hashes/dimensions and source/build receipts were verified, without adopting active captures or owner baselines; live mftpcdpttteuwbolobye metadata at 2026-10-01T11:24:01Z confirms the calendar table, named functions and migration version 20260929180000 absent; overall frontend CI, final capture adoption, server Production binding, migration, deployment, sweep and live create/read/CDN/remove checks remain outstanding; no calendar acceptance is advanced; the release's owner steps are done (2026-09-30): CALENDAR_FEED_SWEEP_SECRET in Vercel Production and in the GitHub environment calendar-feed-production, and PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are Production project variables"
     },
     {
       "id": "P1.M3a",
@@ -1909,9 +1909,13 @@
       "weight": 0.5,
       "gate": "published SKILL.md bundle",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "implemented",
+      "release": "unmerged",
+      "evidence": [],
+      "blockedBy": {
+        "owner": true,
+        "action": "Provide the prior private birth-data pattern file required by engine history-check.mjs before pushing the prepared Agent Skill bundle; do not publish or reconstruct those patterns. The locally validated bundle remains unpublished and unaccepted."
+      }
     },
     {
       "id": "A5",
@@ -2126,13 +2130,11 @@
       "weight": 1,
       "gate": "tags and GitHub releases; Zenodo DOI minted",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": [],
-      "blockedBy": {
-        "owner": true,
-        "action": "the owner's authorization for the first GitHub release of zodiacs-org/engine, which mints a permanent Zenodo DOI; Zenodo's GitHub integration is on for the repository since 2026-09-30 (docs/platform/programme/DECISIONS-2026-09-28.md §10)"
-      }
+      "status": "accepted",
+      "release": "released",
+      "evidence": [
+        "docs/platform/evidence/engine-github-release-2026-10-01/README.md: GitHub release 400849502 at tag v0.1.1-rc.15, engine 93ebae9fa54597aeaafbb346873f7f51e3cc6cb6; full changelog matches approved text after CRLF normalization; permanent DOI 10.5281/zenodo.23080134 published; all 605 archived files byte-identical to the tagged commit."
+      ]
     },
     {
       "id": "G5",

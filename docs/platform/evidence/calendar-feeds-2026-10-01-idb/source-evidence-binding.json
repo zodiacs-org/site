@@ -141,10 +141,27 @@
       "artifactName": "browser-evidence-compare-7a9c9fe52689fddf9338d706459bebc981e180ac-36850243300",
       "artifactBytes": 105802958,
       "githubReportedArtifactZipSha256": "ecfa8e17a5940d2b5c010d8c79406e8ad2209ef1534187752bd5e21b0f1a1c14",
-      "artifactLocallyHashVerified": false,
-      "perImageHashVerification": "not performed; combined archive exceeds file-helper32MiB and selective byte-range retrieval returnedHTTP403; route stopped",
+      "artifactLocallyHashVerified": true,
+      "perImageHashVerification": "Passed: all 18 PNG SHA-256 values, byte counts and IHDR dimensions match the exact CI manifest; all recorded response statuses are 200 with no page errors",
       "adopted": false,
-      "ownerVisualBaselinesReplaced": false
+      "ownerVisualBaselinesReplaced": false,
+      "initialRetrieval": {
+        "artifactLocallyHashVerified": false,
+        "perImageHashVerification": "not performed; combined archive exceeds file-helper32MiB and selective byte-range retrieval returnedHTTP403; route stopped",
+        "status": "Historical limitation, superseded by laterVerification below; the earlier denied route was stopped"
+      },
+      "laterVerification": {
+        "checkedAtUtc": "2026-10-01T11:49:40Z",
+        "receiptFile": "capture-verification.json",
+        "receiptSha256": "80ffdbcd7602b4d01b035fdc451941b37c3649adfb9452af3180a8c03dedf694",
+        "manifestFile": "phase1-capture-manifest.json",
+        "manifestSha256": "ed0e6dc11c357f4355df157a51de553239f16cefd3bb2af929f2b7eaf830e4af",
+        "imagesVerified": 18,
+        "method": "The coordinator obtained a fresh authorized artifact URL and verified the complete ZIP. The calendar worker independently rehashed that ZIP and all 18 extracted PNGs, checked their IHDR dimensions and the manifest/build source binding.",
+        "visualApprovalClaimed": false,
+        "activeCaptureFilesChanged": false,
+        "ownerVisualBaselinesChanged": false
+      }
     },
     "broaderBrowserOutcomes": {
       "visualComparison": "failure",
@@ -202,7 +219,7 @@
     "Final native and browser/capture gates must bind to the release head",
     "Generated Guide context drift is unrelated and deliberately preserved from main",
     "Production migration/deploy/live checks remain unperformed",
-    "PR616 G4 acceptance is not in main450f; preserve it at eventual current-main integration",
+    "G4 proof e046111 is now merged locally as 967e6e10; preserve its accepted weight through eventual current-main integration",
     "Re-date the provisional 2026-10-01 release window if deployment slips",
     "Live calendar schema absence is now verified; server Production env binding and the remaining release gates must be verified without decrypting values before any production SQL action"
   ],
@@ -236,6 +253,16 @@
       "sha256": "b9798edbe2cd18f735f53ca28543c833479d48d0ab00e85ab4f9984b30d8c968",
       "bytes": 1273,
       "collectionSource": "Programme coordinator refreshed Supabase connector; exact exported bytes supplied to the calendar worker"
+    },
+    "captureVerification": {
+      "path": "capture-verification.json",
+      "sha256": "80ffdbcd7602b4d01b035fdc451941b37c3649adfb9452af3180a8c03dedf694",
+      "bytes": 4448
+    },
+    "phase1CaptureManifest": {
+      "path": "phase1-capture-manifest.json",
+      "sha256": "ed0e6dc11c357f4355df157a51de553239f16cefd3bb2af929f2b7eaf830e4af",
+      "bytes": 12353
     }
   },
   "verificationLogs": {
@@ -267,8 +294,22 @@
     "testedPublicCandidate": "7a9c9fe52689fddf9338d706459bebc981e180ac",
     "priorLocalEvidenceCommit": "9fbb1e2982732fc55e6f7ad1c3d009541bf6ed24",
     "metadataObservationAtUtc": "2026-10-01T11:24:01Z",
-    "meaning": "The later evidence commit records imported live metadata and an unapplied migration review plan. It does not claim that production metadata came from CI, that the local evidence commit has been published, or that a production migration/deployment occurred.",
+    "meaning": "The later local evidence commits record imported live metadata, an unapplied migration review plan, later capture verification and previously accepted G4 integration. They do not claim those live reads came from CI, that the local commits are published, or that a production migration/deployment occurred.",
     "publicationOwner": "Programme coordinator; external publication is separate from local preparation",
-    "calendarAcceptanceAdvanced": false
+    "calendarAcceptanceAdvanced": false,
+    "captureVerificationAtUtc": "2026-10-01T11:49:40Z"
+  },
+  "programmeIntegration": {
+    "g4PublicProofCommit": "e046111adb62244682ed3603e9ecbf86ff1009b2",
+    "localMergeCommit": "967e6e109f7da2f842bee78dce88e95837ffc9b1",
+    "mergeParents": [
+      "c654d7c36f64e4ae71aca5a5703c8178c28b3159",
+      "e046111adb62244682ed3603e9ecbf86ff1009b2"
+    ],
+    "acceptedWeight": 43.5,
+    "totalWeight": 182.45,
+    "acceptedPercentThreeDecimals": "23.842",
+    "blockedWeight": 3.5,
+    "meaning": "Preserves previously accepted G4 and upstream A4 status; no new calendar acceptance. P1.15 remains partial/deployed for the existing share-token work; the opaque feed release remains undeployed."
   }
 }

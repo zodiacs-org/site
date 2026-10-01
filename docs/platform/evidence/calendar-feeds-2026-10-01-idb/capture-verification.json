@@ -1,0 +1,142 @@
+{
+  "checkedAtUtc": "2026-10-01T11:49:40Z",
+  "artifactId": 11155943680,
+  "archiveSha256": "ecfa8e17a5940d2b5c010d8c79406e8ad2209ef1534187752bd5e21b0f1a1c14",
+  "sourceCommit": "7a9c9fe52689fddf9338d706459bebc981e180ac",
+  "manifestSha256": "ed0e6dc11c357f4355df157a51de553239f16cefd3bb2af929f2b7eaf830e4af",
+  "templateSourceSha256": "d861b489661f154f021c1ca5236acd88975d6ecb5abb0ad43d92ec90a344f28a",
+  "buildReceiptSourceSha256": "d861b489661f154f021c1ca5236acd88975d6ecb5abb0ad43d92ec90a344f28a",
+  "captures": [
+    {
+      "file": "today-360.png",
+      "bytes": 603215,
+      "width": 360,
+      "height": 6375,
+      "sha256": "bbdd08bcaa8e4c57fd9c3e4fc5f7c6f61d21f1dc48398471809f8aef45396243"
+    },
+    {
+      "file": "today-1280.png",
+      "bytes": 737350,
+      "width": 1280,
+      "height": 4024,
+      "sha256": "3f70c6ae9471c5c992785cf1bd787df4f664fbd0af524179300afd0c75b61669"
+    },
+    {
+      "file": "horoscopes-hub-360.png",
+      "bytes": 392404,
+      "width": 360,
+      "height": 5977,
+      "sha256": "093e5c85805e0a745ff8468a14bd78c26b5b8ec2c809a00101d2af087568c5e9"
+    },
+    {
+      "file": "horoscopes-hub-1280.png",
+      "bytes": 444108,
+      "width": 1280,
+      "height": 3014,
+      "sha256": "135e41df62b5bcebdf8c2077084859a5b525fc4e3fa2eaea04ba638f4acda751"
+    },
+    {
+      "file": "daily-360.png",
+      "bytes": 305912,
+      "width": 360,
+      "height": 4355,
+      "sha256": "e3e2822e55fdad4f06f6ac9d8fb8e358a5cb70246898a0f6de606db54a700045"
+    },
+    {
+      "file": "daily-1280.png",
+      "bytes": 388743,
+      "width": 1280,
+      "height": 3585,
+      "sha256": "e3d6df14c48904180c75c118072ffea19bd177293f12c46a93becaf6d283dac6"
+    },
+    {
+      "file": "tomorrow-360.png",
+      "bytes": 308926,
+      "width": 360,
+      "height": 4349,
+      "sha256": "58230f85fbc98b3ccd10b5655043a3829bfaa4e2c8af8d7e5507d9aeec794730"
+    },
+    {
+      "file": "tomorrow-1280.png",
+      "bytes": 391387,
+      "width": 1280,
+      "height": 3534,
+      "sha256": "51bfc1be2b75531a73e5e6f6ac5001b9ded04b582246c47b4bff5dc4478ec501"
+    },
+    {
+      "file": "weekly-360.png",
+      "bytes": 364227,
+      "width": 360,
+      "height": 5054,
+      "sha256": "d067551e8858f7c5fa094a732e27288959d5ba36f6cee7deac758b5cba96f270"
+    },
+    {
+      "file": "weekly-1280.png",
+      "bytes": 458421,
+      "width": 1280,
+      "height": 3890,
+      "sha256": "37f3f9760756215dd7622e18fb858c2134095f3988f52a29a4dfb4169d990d51"
+    },
+    {
+      "file": "monthly-360.png",
+      "bytes": 397252,
+      "width": 360,
+      "height": 4780,
+      "sha256": "42b306768417a65af4f4d663ebc3d09c4439e572cc33fedb13868abc2f437364"
+    },
+    {
+      "file": "monthly-1280.png",
+      "bytes": 497989,
+      "width": 1280,
+      "height": 3618,
+      "sha256": "7e9836d7c6236f16494d5dffffd28fb4822e4ca740f13793a0e4c2209933a01c"
+    },
+    {
+      "file": "love-360.png",
+      "bytes": 279607,
+      "width": 360,
+      "height": 4029,
+      "sha256": "c6c8113fd3e2ab9bfb645394982c8cd4702ec2f77b7987c69c2cdf95bbbb3149"
+    },
+    {
+      "file": "love-1280.png",
+      "bytes": 358167,
+      "width": 1280,
+      "height": 3245,
+      "sha256": "b95356413d8d940bab6b33d848a7530d2ce1d2a3b6862dec298c9fb62b9718b5"
+    },
+    {
+      "file": "career-360.png",
+      "bytes": 275598,
+      "width": 360,
+      "height": 3960,
+      "sha256": "cd42028aec0f7658b3ebb662e3d50fb0ab75d72ea97a313f563de4a9251eca11"
+    },
+    {
+      "file": "career-1280.png",
+      "bytes": 356531,
+      "width": 1280,
+      "height": 3264,
+      "sha256": "d357489fe711e0796ded0ce5ebb9ff17ef165b226451d40307ff787e9da8f76c"
+    },
+    {
+      "file": "yearly-360.png",
+      "bytes": 1055626,
+      "width": 360,
+      "height": 12548,
+      "sha256": "7c86f90c5e5f989c92dc5e1052cf1d8cd002cbb51c865d7939835879337219cd"
+    },
+    {
+      "file": "yearly-1280.png",
+      "bytes": 1272263,
+      "width": 1280,
+      "height": 7784,
+      "sha256": "cf1f98850f774af3020e41bd65f46bd63119b8f616c51acb8cb93ed2aa7ebc83"
+    }
+  ],
+  "allImageHashesAndDimensionsMatch": true,
+  "allRecordedStatuses200AndErrorsEmpty": true,
+  "visualBaselinesChanged": false,
+  "activeCaptureFilesChanged": false,
+  "limits": "This verifies captured image bytes, dimensions and CI receipt bindings; no visual approval or replacement of owner baselines is claimed. Fresh authorized download URL resolved earlier HTTP403; original limitation retained historically."
+}

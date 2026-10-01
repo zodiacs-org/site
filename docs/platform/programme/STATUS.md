@@ -1,5 +1,27 @@
 # Programme status
 
+Calendar candidate checkpoint, 2026-10-01: the transaction fix and current release evidence are recorded; the opaque feed release is not deployed.
+
+**Overall delivery: 24%** (23.842% to three decimals) — 43.5 of 182.45 weighted units accepted; blocked: 2% (3.5). The already accepted G4 proof from `e046111` is retained. This checkpoint adds no acceptance and changes no gate, weight or denominator.
+
+- [Calendar evidence](../evidence/calendar-feeds-2026-10-01-idb/README.md) binds to public PR613 source `7a9c9fe52689fddf9338d706459bebc981e180ac`: native cross-tab **34/34**, transit/calendar UI **25/25**, and PostgreSQL 17 replay/privacy/search-path/concurrency CI pass
+- The final CI archive and all 18 Phase 1 PNG hashes/dimensions match the manifest and source/build receipt. The later successful authorized download supersedes the original retrieval limitation, which remains historical. Active captures and owner visual baselines were not replaced; byte verification is not visual approval
+- Live read-only metadata at 11:24:01 UTC verifies `mftpcdpttteuwbolobye`, Tokyo, ACTIVE_HEALTHY, with no calendar table, named calendar functions or migration version `20260929180000`. This is the first valid live-target absence observation. The earlier unused-test-project result remains withdrawn; the refreshed connector resolves the prior access block. SQL `postgres` is not evidence of an account administrator role
+- P1.15 remains partial. Overall frontend CI, final capture adoption, current-main integration, server Production target confirmation and the migration/deploy/sweep/live CDN-removal checks remain release gates. The exact migration is prepared for later review and has not been applied. No production writes occurred
+- Actual command: `node scripts/programme-ledger.mjs --summary` → `Overall delivery: 24% (43.5 of 182.45); blocked 2% (3.5)`
+
+Checkpoint 10, 2026-10-01: the first tagged engine release and permanent DOI are verified.
+
+**Overall delivery: 24%** (23.842% to three decimals) — 43.5 of 182.45 weighted units accepted; blocked: 2% (3.5), or 1.918% to three decimals. These are derived ledger weights, not a forecast.
+
+- **G4 accepted, released:** [engine v0.1.1-rc.15](https://github.com/zodiacs-org/engine/releases/tag/v0.1.1-rc.15) points to the exact rc.15 merge commit, includes its complete changelog, and is archived under [DOI 10.5281/zenodo.23080134](https://doi.org/10.5281/zenodo.23080134). Independent verification matched all 605 archived files byte for byte. [Public evidence and reproduction](../evidence/engine-github-release-2026-10-01/README.md).
+- The owner explicitly approved the release and permanent DOI. The prerelease classification and existing license qualifications are preserved. No npm package or dist-tag changes were made.
+- **A4 remains unaccepted:** the locally reviewed Agent Skill bundle cannot be pushed until the prior private birth-data pattern file is supplied for the engine's mandatory history check. Its 0.5 weight is now recorded as blocked; the private patterns themselves must never be committed.
+- This checkpoint changes no other acceptance state, gate, weight or denominator. Compute privacy/production telemetry, calendar rollout and rc.16 adoption continue in separate checkpoints. The prior compute checkpoint is in [PR #610](https://github.com/zodiacs-org/site/pull/610); none of its rollout or accuracy gates is accepted here.
+- Actual command: `node scripts/programme-ledger.mjs --summary` → `Overall delivery: 24% (43.5 of 182.45); blocked 2% (3.5)`.
+
+## Earlier checkpoints
+
 Checkpoint 8, 2026-09-30: the handoff. The compute API (P3.3) merges with this record, the owner's third report is in, and the programme passes to the next agent. **The next session should start with [HANDOFF-2026-09-30.md](HANDOFF-2026-09-30.md)**, then this file.
 
 **Overall delivery: 23%** — 42.5 of 182.45 weighted units accepted; blocked on owner or external action: 2% (4).
@@ -67,9 +89,9 @@ Done in the third report of 2026-09-30:
 - **System Environment Variables.** "Automatically expose System Environment Variables" is on for the project, so the feed routes can read `VERCEL_ENV`. Nothing was changed.
 - **Bing.** Its Search Performance still said it was preparing the data, so there was no export yet.
 
-Remaining:
+Completed on 2026-10-01: the first GitHub release and permanent DOI (G4), independently verified above.
 
-1. **The first GitHub release of the engine (G4).** A published GitHub release on `zodiacs-org/engine` makes Zenodo mint a DOI, and a DOI is permanent. With the owner's authorization, the first release is 0.1.1-rc.15, tagged at its merge commit, with its CHANGELOG entry as the notes.
+Remaining:
 2. **JSR (P3.1c).** A publish workflow using GitHub's OIDC token is to be added to the engine. Its first run needs the owner's authorization.
 3. **Search and analytics baselines (P0.7b).** Add Bing's export when it is ready, then either attach `zodiacs-org/analytics-baselines` read-only to this work, or compute the aggregates on the owner's side. Only aggregates would be committed, to that private repository.
 4. **Microsoft Copilot**, only if the monthly panel (A8) and the assistant benchmark (B4.b) are to cover five assistants: a free account for admin@zodiacs.org.
