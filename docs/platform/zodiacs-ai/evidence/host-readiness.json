@@ -45,8 +45,8 @@
     "vercelCredentialPresent": true,
     "vercelProjectBindingPresent": true,
     "stagingHostname": "zodiacs-org-git-codex-zodiacs-ai-integrations-zodiacsofficial.vercel.app",
-    "enabledDeployment": "dpl_6tEgUKWfJngQpFtdZNdVxgHZmiE7",
-    "sourceCommit": "45b0d4ce39ef688b08786fd0c53354ee714e66ea",
+    "enabledDeployment": "dpl_2QWjfr3xzkNp2qt4xFg3Lpz2JUrg",
+    "sourceCommit": "a6947f71dce4adb7635060a6edfceb3ae7060e41",
     "previewSsoPreserved": true,
     "temporaryShareCredentialLifetimeHours": 23,
     "credentialsRecorded": false,
@@ -91,7 +91,9 @@
     "rollbackEvidence": "staging-rollback.json",
     "stagingRollbackVerified": true,
     "providerAggregateColdStartMetricObserved": true,
-    "previewFunctionMetricsEvidence": "provider-log-review.json"
+    "previewFunctionMetricsEvidence": "provider-log-review.json",
+    "previousEnabledDeployment": "dpl_6tEgUKWfJngQpFtdZNdVxgHZmiE7",
+    "patchedHttpsAcceptanceEvidence": "staging-acceptance-patched.json"
   },
   "chatgpt": {
     "developerModeSessionAvailable": true,
@@ -129,14 +131,21 @@
     "publicSubmissionCompleted": false,
     "publicListingPublished": false,
     "supersededTestAppsUninstalled": true,
-    "currentReviewAppId": "asdk_app_6abe9f58c6b88191885524782dc90939",
-    "currentReviewAppName": "Zodiacs Staging Acceptance",
+    "currentReviewAppId": "asdk_app_6abeac26b3708191b2fabbc6e2024f26",
+    "currentReviewAppName": "Zodiacs Staging Verified",
     "hostCspEnforcementEnabled": true,
     "cspRetest": "Native global and thread rendering, invalid-timezone refusal, zone update and recovery passed with enforcement enabled.",
     "threadModelCalendarRequestsObserved": 2,
     "duplicateModelToolSelectionPrevented": false,
     "widgetAutomaticCalculationRequests": 0,
-    "duplicateScope": "The final host conversation displays two opened calendars with server instants four seconds apart. Widget source requests computation only after form submission. Native rendering works, but single model invocation is not guaranteed."
+    "duplicateScope": "The final host conversation displays two opened calendars with server instants four seconds apart. Widget source requests computation only after form submission. Native rendering works, but single model invocation is not guaranteed.",
+    "patchedDeploymentNativeRetest": true,
+    "patchedDeploymentRetestEvidence": [
+      "chatgpt/patched-native-global.jpg",
+      "chatgpt/patched-widget-refusal.txt",
+      "chatgpt/patched-widget-recovery.jpg"
+    ],
+    "credentialPropagationScope": "An immediately issued credential connected but failed actual invocation after alias movement; a fresh credential after propagation passed native entry, refusal and recovery."
   },
   "beta": {
     "invited": 0,

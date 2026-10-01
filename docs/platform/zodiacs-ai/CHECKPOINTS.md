@@ -47,11 +47,11 @@ legal links, manifests, SHA-256 members and generated bundles pass drift checks.
 | Installed developer server | All eight official-SDK tool calls and recipes pass |
 | Three developer skills | Followed in this chat; disposable engine-only integration builds and passes five tests |
 | Homepage browser / contracts | 242 browser checks and 23 unit/layout checks pass |
-| Homepage Lighthouse | Three accepted samples; worst 99 performance / 100 accessibility / 100 SEO |
-| Phase 1 captures | 18/18 pass on merged source |
+| Full Lighthouse | 30/30 routes, 90 samples; minimum 97 performance / 100 accessibility / 100 SEO |
+| Phase 1 captures | 18/18 recaptured from patched build; five durable-receipt tests pass |
 | Darwin visual comparison | 15/15 pass after three reviewed homepage baseline updates |
-| Linux unit / acceptance drives | Pass on `93e6adcc`; full CI stopped at three intentional homepage baseline differences |
-| HTTPS staging | 12 checks and six official-SDK calls pass on deployed `45b0d4ce` |
+| Linux visual / navigation helpers | 15/15 comparisons at zero difference on `a6947f71`; corrected locale/Moon helpers pass 185 checks |
+| HTTPS staging | 12 checks and six official-SDK calls pass on patched deployment source `a6947f71` |
 | Actual ChatGPT | Five positive, three negative cases; ambiguity, unsupported events, native global/thread calendar, timezone and refusal recovery recorded |
 
 The documented accessibility blocker is fixed. [REGRESSIONS.md](./REGRESSIONS.md)
@@ -60,7 +60,9 @@ provenance and macOS exact-fixture limitations. Full exact-head CI remains the
 site release authority; earlier local or historical results do not replace it.
 The current production advisory gate exposed devalue 5.9.2. The compatible 5.9.4
 patch passes that gate; only its lockfile entry and the deterministic daily
-generator provenance hash changed. Audit thresholds and engine pins are retained.
+generator provenance hash changed in application inputs. The lockfile also binds
+Phase 1 screenshot provenance: all eighteen captures were regenerated from the
+patched build and five durable-receipt tests pass. Audit thresholds and engine pins are retained.
 
 Codex installation is no longer blocked by a read-only cache. The installed
 skills were read and followed while creating a disposable synthetic integration.
@@ -75,6 +77,8 @@ separately connected and exercised with actual ChatGPT tool selection.
 host results from SDK simulation. [evidence/chatgpt/](./evidence/chatgpt/) contains
 synthetic public-sky outputs and screenshots only. No credentials, birth details,
 private chat sidebar, invitation list or raw provider request log is included.
+
+The patched staging deployment also passes native entry, invalid-zone refusal and recovery (`patched-*` captures). A fresh credential issued after alias propagation was required; the Connected badge alone did not establish working invocation.
 
 Final native global/thread rendering and refusal recovery also pass with the
 host’s CSP enforcement enabled, which remains enabled. The final thread requested

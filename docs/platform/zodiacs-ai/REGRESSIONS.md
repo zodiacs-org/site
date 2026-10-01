@@ -49,3 +49,20 @@ On macOS ARM, the Node 22 full suite reports 6,374 passing, five skipped and thr
 failures confined to exact North/South Node numerical and SVG snapshots. The
 Linux suite passes on the same source. Linux engine fixtures remain unchanged;
 no accuracy assertion was weakened or regenerated for macOS rounding.
+
+The compatible devalue 5.9.4 patch invalidates the durable Phase 1 template
+receipt because its boundary includes package-lock.json. Site Check 36906631796
+passed 6,376 tests and failed only that stale receipt. All eighteen captures were
+regenerated from patched dist; seventeen PNGs remain byte-identical, while the
+inspected 360px tomorrow capture has 1,541 changed pixels out of 1,497,240 with a
+maximum channel delta of 20 and identical dimensions/layout. Five durable-evidence
+tests pass; the receipt contract is retained.
+
+The patched Linux browser evidence run also passes all thirty Lighthouse routes
+(ninety samples, minimum 97/100/100) and all fifteen visual comparisons with zero
+pixel difference. Its navigation drive exposed two assertions predating approved
+main: Birth chart/Compatibility moved to the primary menu group, and mobile
+calculators use inline Guide. The helpers now inspect all nine real destinations
+and the keyboard-accessible inline Guide while retaining sheet focus/pointer
+checks. Both helpers pass 185 focused browser checks. No product navigation or
+Guide styling was changed for those assertions.

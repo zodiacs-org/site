@@ -1,0 +1,59 @@
+Browser tab: 1, Title: "New chat", URL: "https://chatgpt.com/mcp-app/asdk_app_6abeac26b3708191b2fabbc6e2024f26/get_upcoming_events".
+1 AXWebArea New chat, URL: chatgpt.com/mcp-app/asdk_app_6abeac26b3708191b2fabbc6e2024f26/get_upcoming_events
+	2 container
+		3 container
+			4 link Description: Skip to content, Value: chatgpt.com/mcp-app/asdk_app_6abeac26b3708191b2fabbc6e2024f26/get_upcoming_events#_R_3ndjqctdbntccged79l75_
+			5 container
+				6 button (collapsed) Description: Show sidebar, Secondary Actions: Expand
+				7 container
+					8 heading Zodiacs Staging Verified, Value: 1
+						9 text Zodiacs Staging Verified
+		10 container Chat
+			11 container
+				12 splitter Description: Resize chat width, Value: 572
+				13 splitter Description: Resize chat width, Value: 572
+			14 container
+				15 button Minimize chat
+					16 image
+				17 container
+					18 button (collapsed) Description: Add files and more, Secondary Actions: Expand
+					19 text entry area (settable) Description: Work with ChatGPT, Value: 
+
+						20 container
+							21 text Work with ChatGPT
+					22 pop up button (collapsed) Description: Select ChatGPT model, ID: radix-_r_n_, Secondary Actions: Expand
+						23 container
+							24 text GPT-6.1 Sol Light
+					25 button Dictate
+					26 button (disabled) Send
+						27 image
+		28 container Zodiacs Staging Verified
+			29 AXWebArea sandbox, URL: mcp-app-0e6425beaf4b5789ea1fac8cc46003952d67078df742aad6.web-sandbox.oaiusercontent.com/?app=skybridge&locale=en-US&deviceType=desktop&unsafeSkipTargetOriginCheck=true&backgroundMode=transparent#initId=9be100e9-b24e-4f6f-89c1-a16da887f2e4&sandboxId=source-4704a98a883c33bf
+				30 AXWebArea Zodiacs sky events, URL: mcp-app-0e6425beaf4b5789ea1fac8cc46003952d67078df742aad6.web-sandbox.oaiusercontent.com/?app=skybridge&locale=en-US&deviceType=desktop&unsafeSkipTargetOriginCheck=true&backgroundMode=transparent
+					31 container
+						32 heading Sky calendar, Value: 1
+							33 text Sky calendar
+						72 text Must be a time zone name the server's time zone data includes.
+						35 container calendar
+							36 container
+								37 text Start date (UTC, exclusive)
+								38 date field (settable) Start date (UTC, exclusive), Value: 2026-10-01, ID: from
+									39 container
+										40 stepper
+										41 stepper
+										42 stepper
+									43 pop up button Show date picker Show date picker
+							44 container
+								45 text End date (UTC, inclusive)
+								46 date field (settable) End date (UTC, inclusive), Value: 2026-10-08, ID: to
+									47 container
+										48 stepper
+										49 stepper
+										50 stepper
+									51 pop up button Show date picker Show date picker
+							52 container
+								53 text Display timezone
+								54 text field (settable) Display timezone, Value: Invalid/Zone, ID: zone
+							55 button Update calendar, ID: update
+						56 text Windows are at most 31 days. Date controls use midnight UTC; the timezone changes the displayed event times.
+						71 container Description: Explore on Zodiacs, ID: links

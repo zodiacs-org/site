@@ -41,6 +41,12 @@ captures, combining the initial and corrected final review. It is explicitly a
 selected-state capture reel, not continuous screen recording or a portal-approved
 submission video. Its repository raw URL permits review without a host sign-in.
 
-The two superseded test apps were uninstalled after rollback invalidated their
-share credentials. “Zodiacs Staging Acceptance” is the current restored connected
-app; its refreshed credential expires after 23 hours and is not in this repository.
+“Zodiacs Staging Verified” is the current patched connected app on deployment
+`dpl_2QWjfr3xzkNp2qt4xFg3Lpz2JUrg` (source `a6947f71`). The `patched-native-global`,
+`patched-widget-refusal` and `patched-widget-recovery` captures show actual
+seven-day entry, stale-result clearing and New York recovery on that deployment.
+An immediately issued credential following alias movement produced an installed,
+Connected app whose real invocation failed Vercel authentication. A fresh
+credential after alias propagation passed real invocation. Connected status alone
+is insufficient. Temporary credentials expire after 23 hours and are not recorded.
+Superseded test apps are uninstalled recoverably; preexisting user apps are retained.

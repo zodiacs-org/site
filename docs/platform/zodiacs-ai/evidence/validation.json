@@ -50,7 +50,8 @@
     "existingPhase1VisualAcceptance": {
       "passed": 18,
       "total": 18,
-      "capturesRefreshed": true
+      "capturesRefreshed": true,
+      "scope": "Recaptured after compatible serializer lockfile patch; seventeen images byte-identical and one inspected minor raster difference, with updated actual source/build receipt"
     },
     "claimsLedgerAndConsumerBoundary": "passed",
     "engineAndSdkWorkingTrees": "unchanged",
@@ -101,7 +102,14 @@
       "onlyHomeBaselinesUpdated": true,
       "otherTwelveByteIdentical": true,
       "maximumPixelDiffRatio": 0.001,
-      "finalExactHeadComparison": "required"
+      "finalExactHeadComparison": "required",
+      "patchedSourceComparison": {
+        "passed": 15,
+        "total": 15,
+        "pixelDiffRatio": 0,
+        "sourceCommit": "a6947f71dce4adb7635060a6edfceb3ae7060e41",
+        "run": "https://github.com/zodiacs-org/site/actions/runs/36906631805"
+      }
     },
     "existingForeignOriginWidgetBrowserDrive": "passed",
     "existingWidgetLighthouse": {
@@ -143,16 +151,18 @@
       "runnerStallsSetAsideByExistingPolicy": 1
     },
     "finalSiteGate": {
-      "status": "Exact-head rerun required after compatible serializer security patch",
+      "status": "Exact-head rerun required after refreshed Phase 1 receipt and main-merge navigation assertions",
       "precedingRun": "https://github.com/zodiacs-org/site/actions/runs/36896802116",
       "precedingFailure": "Only three intentional homepage visual height differences; full Lighthouse skipped",
       "additionalPrecedingRun": "https://github.com/zodiacs-org/site/actions/runs/36904296920",
-      "additionalPrecedingFailure": "Production devalue 5.9.2 security advisories; patched to 5.9.4 without weakening audit thresholds"
+      "additionalPrecedingFailure": "Production devalue 5.9.2 security advisories; patched to 5.9.4 without weakening audit thresholds",
+      "additionalFollowingRun": "https://github.com/zodiacs-org/site/actions/runs/36906631796",
+      "additionalFollowingFailure": "6376 unit tests passed; one durable Phase 1 screenshot source receipt stale after lockfile patch. All 18 captures refreshed from patched dist; five receipt tests pass."
     },
     "httpsStaging": {
       "passed": 12,
       "toolCalls": 6,
-      "evidence": "staging-acceptance.json"
+      "evidence": "staging-acceptance-patched.json"
     },
     "realChatgpt": {
       "positive": 5,
@@ -172,6 +182,21 @@
       "highOrCritical": 0,
       "moderate": 2,
       "scope": "Existing Vitest 3 development-only advisory; existing high-severity CI threshold passes; no forced major upgrade"
+    },
+    "fullLighthouseAfterFix": {
+      "passed": 30,
+      "total": 30,
+      "samples": 90,
+      "minimumPerformance": 97,
+      "minimumAccessibility": 100,
+      "minimumSeo": 100,
+      "runnerStalls": 0,
+      "evidence": "full-lighthouse-after-fix.json"
+    },
+    "navigationHelpersAfterMainMerge": {
+      "passed": 185,
+      "failed": 0,
+      "scope": "Actual locale-discovery and Moon browser helpers; preserves nine destinations, 44px hit targets, focus and sheet ownership. Full Linux driver remains exact-head authority."
     }
   },
   "productionEnabled": false,

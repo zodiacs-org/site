@@ -34,11 +34,13 @@ from remaining acceptance requirements.
 
 Exact allowed hostname:
 `zodiacs-org-git-codex-zodiacs-ai-integrations-zodiacsofficial.vercel.app`.
-Enabled deployment `dpl_6tEgUKWfJngQpFtdZNdVxgHZmiE7` builds source
-`45b0d4ce39ef688b08786fd0c53354ee714e66ea`, including the reviewed main merge.
+Enabled deployment `dpl_2QWjfr3xzkNp2qt4xFg3Lpz2JUrg` builds source
+`a6947f71dce4adb7635060a6edfceb3ae7060e41`, including the reviewed main merge
+and devalue 5.9.4 production security patch. The MCP runtime bundles are unchanged.
 It sets `ZODIACS_MCP_ENABLED=1` and the exact `ZODIACS_MCP_STAGING_HOST` above.
 The reusable `tests/ai-staging-drive.mjs` requires HTTPS preview `/mcp` and a
-private cookie file; twelve checks and six calls pass. Health, both slash forms,
+private cookie file; twelve checks and six calls pass on the patched deployment
+(`evidence/staging-acceptance-patched.json`). Health, both slash forms,
 schemas, native empty arguments, UI resource, canary refusal, malformed JSON,
 16 KiB size refusal, Origin/query/method restrictions and recovery are covered.
 
@@ -72,10 +74,13 @@ pins and existing Firewall counters. Host connections can be disconnected.
 
 ## Remaining release gates
 
-1. Require exact-head Site Check success after the three inspected Linux home
-   baselines and compatible devalue 5.9.4 security patch are committed. The capture-only candidate run passed; the preceding
-   site run passed its unit and functional drives but stopped at those intentional
-   screenshot height differences, before full Lighthouse and foreign-widget gates.
+1. Require exact-head Site Check success after refreshed Phase 1 receipts and
+   the two browser assertions adjusted to the approved main UI. The patched
+   preceding browser run passes all fifteen Linux visual comparisons with zero
+   pixel difference and all thirty Lighthouse routes (ninety samples), minimum
+   97 performance / 100 accessibility / 100 SEO. The corrected locale/Moon
+   helpers pass 185 local browser checks. The complete Linux driver remains the
+   release authority; macOS native Home-key behavior does not replace it.
 2. Complete actual cold/warm per-completion billing/capacity measurements.
    Thirty-two inspected provider request rows contain no application message or
    synthetic private-body canary. Raw request metadata stays outside the repository.

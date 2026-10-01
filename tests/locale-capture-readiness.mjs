@@ -69,7 +69,9 @@ export function observeMobileToolMenu() {
     expanded: document.querySelector('[data-menu-toggle]')?.getAttribute('aria-expanded'),
     guide: guideStyle ? { visibility: guideStyle.visibility, pointerEvents: guideStyle.pointerEvents,
       opacity: Number(guideStyle.opacity) } : null,
-    rows: [...(menu?.querySelectorAll('.mobile-menu__tool') ?? [])].map((node) => {
+    // Birth chart and compatibility are promoted into the primary group.
+    // Keep verifying all nine destinations, including their real hit targets.
+    rows: [...(menu?.querySelectorAll('.mobile-menu__tool, .mobile-menu__link[href$="/birth-chart/"], .mobile-menu__link[href$="/compatibility/"]') ?? [])].map((node) => {
       const rect = bounds(node);
       const style = getComputedStyle(node);
       const textRects = [];

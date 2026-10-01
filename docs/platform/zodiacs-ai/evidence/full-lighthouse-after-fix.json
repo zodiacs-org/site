@@ -1,0 +1,219 @@
+{
+  "sourceCommit": "a6947f71dce4adb7635060a6edfceb3ae7060e41",
+  "workflow": "https://github.com/zodiacs-org/site/actions/runs/36906631805",
+  "passed": 30,
+  "samples": 90,
+  "runnerStalls": 0,
+  "routes": [
+    {
+      "route": "/",
+      "performance": 99,
+      "accessibility": 100,
+      "seo": 100,
+      "lcpSeconds": 1.96
+    },
+    {
+      "route": "/birth-chart/",
+      "performance": 97,
+      "accessibility": 100,
+      "seo": 100,
+      "lcpSeconds": 2.41
+    },
+    {
+      "route": "/lunar-return/",
+      "performance": 98,
+      "accessibility": 100,
+      "seo": 100,
+      "lcpSeconds": 2.26
+    },
+    {
+      "route": "/numerology/",
+      "performance": 98,
+      "accessibility": 100,
+      "seo": 100,
+      "lcpSeconds": 2.25
+    },
+    {
+      "route": "/numerology/life-path/7/",
+      "performance": 98,
+      "accessibility": 100,
+      "seo": 100,
+      "lcpSeconds": 2.26
+    },
+    {
+      "route": "/void-of-course-moon/",
+      "performance": 98,
+      "accessibility": 100,
+      "seo": 100,
+      "lcpSeconds": 2.25
+    },
+    {
+      "route": "/aries/",
+      "performance": 97,
+      "accessibility": 100,
+      "seo": 100,
+      "lcpSeconds": 2.41
+    },
+    {
+      "route": "/thesis/",
+      "performance": 97,
+      "accessibility": 100,
+      "seo": 100,
+      "lcpSeconds": 2.49
+    },
+    {
+      "route": "/today/",
+      "performance": 100,
+      "accessibility": 100,
+      "seo": 100,
+      "lcpSeconds": 1.74
+    },
+    {
+      "route": "/horoscopes/",
+      "performance": 100,
+      "accessibility": 100,
+      "seo": 100,
+      "lcpSeconds": 1.88
+    },
+    {
+      "route": "/horoscopes/aries/",
+      "performance": 98,
+      "accessibility": 100,
+      "seo": 100,
+      "lcpSeconds": 2.26
+    },
+    {
+      "route": "/horoscopes/aries/tomorrow/",
+      "performance": 97,
+      "accessibility": 100,
+      "seo": 100,
+      "lcpSeconds": 2.41
+    },
+    {
+      "route": "/horoscopes/aries/weekly/",
+      "performance": 97,
+      "accessibility": 100,
+      "seo": 100,
+      "lcpSeconds": 2.41
+    },
+    {
+      "route": "/horoscopes/aries/monthly/",
+      "performance": 97,
+      "accessibility": 100,
+      "seo": 100,
+      "lcpSeconds": 2.41
+    },
+    {
+      "route": "/horoscopes/aries/love/",
+      "performance": 98,
+      "accessibility": 100,
+      "seo": 100,
+      "lcpSeconds": 2.33
+    },
+    {
+      "route": "/horoscopes/aries/career/",
+      "performance": 98,
+      "accessibility": 100,
+      "seo": 100,
+      "lcpSeconds": 2.41
+    },
+    {
+      "route": "/horoscopes/aries/2027/",
+      "performance": 97,
+      "accessibility": 100,
+      "seo": 100,
+      "lcpSeconds": 2.41
+    },
+    {
+      "route": "/events/",
+      "performance": 99,
+      "accessibility": 100,
+      "seo": 100,
+      "lcpSeconds": 1.96
+    },
+    {
+      "route": "/full-moon/2026-07-29/",
+      "performance": 98,
+      "accessibility": 100,
+      "seo": 100,
+      "lcpSeconds": 2.33
+    },
+    {
+      "route": "/eclipses/2026-08-12/",
+      "performance": 98,
+      "accessibility": 100,
+      "seo": 100,
+      "lcpSeconds": 2.26
+    },
+    {
+      "route": "/mercury-retrograde/2026-06-29/",
+      "performance": 98,
+      "accessibility": 100,
+      "seo": 100,
+      "lcpSeconds": 2.26
+    },
+    {
+      "route": "/events/saturn-enters-aries-2026-02-14/",
+      "performance": 98,
+      "accessibility": 100,
+      "seo": 100,
+      "lcpSeconds": 2.26
+    },
+    {
+      "route": "/events/jupiter-trine-saturn-2026-08-31/",
+      "performance": 98,
+      "accessibility": 100,
+      "seo": 100,
+      "lcpSeconds": 2.26
+    },
+    {
+      "route": "/people/",
+      "performance": 100,
+      "accessibility": 100,
+      "seo": 100,
+      "lcpSeconds": 1.66
+    },
+    {
+      "route": "/people/ada-lovelace/",
+      "performance": 98,
+      "accessibility": 100,
+      "seo": 100,
+      "lcpSeconds": 2.26
+    },
+    {
+      "route": "/people/marie-curie/",
+      "performance": 98,
+      "accessibility": 100,
+      "seo": 100,
+      "lcpSeconds": 2.26
+    },
+    {
+      "route": "/people/serena-williams/",
+      "performance": 98,
+      "accessibility": 100,
+      "seo": 100,
+      "lcpSeconds": 2.26
+    },
+    {
+      "route": "/ru/",
+      "performance": 97,
+      "accessibility": 100,
+      "seo": 100,
+      "lcpSeconds": 2.41
+    },
+    {
+      "route": "/ru/birth-chart/",
+      "performance": 100,
+      "accessibility": 100,
+      "seo": 100,
+      "lcpSeconds": 1.43
+    },
+    {
+      "route": "/ru/aries/",
+      "performance": 99,
+      "accessibility": 100,
+      "seo": 100,
+      "lcpSeconds": 2.11
+    }
+  ]
+}
