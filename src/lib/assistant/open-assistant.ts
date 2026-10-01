@@ -115,7 +115,6 @@ interface GuideContextSource {
 interface Copy {
   title: string;
   open: string;
-  launcher: string;
   close: string;
   clear: string;
   intro: string;
@@ -161,7 +160,7 @@ interface Copy {
 
 const COPY: Record<AssistantLocale, Copy> = {
   en: {
-    title: 'Guide', open: 'Open Guide', launcher: 'Ask Guide', close: 'Close Guide', clear: "Clear today's conversation",
+    title: 'Guide', open: 'Open Guide', close: 'Close Guide', clear: "Clear today's conversation",
     intro: 'Ask about this page, astrology, or your birth chart.',
     log: 'Guide conversation',
     input: 'Your question', placeholder: 'What would you like help with?', send: 'Send', stop: 'Stop', retry: 'Retry',
@@ -184,7 +183,7 @@ const COPY: Record<AssistantLocale, Copy> = {
     contextUpdated: 'Source removed. Earlier messages remain visible, but Guide will not use them in future answers.',
   },
   es: {
-    title: 'Guide', open: 'Abrir Guide', launcher: 'Preguntar a Guide', close: 'Cerrar Guide', clear: 'Borrar la conversación de hoy',
+    title: 'Guide', open: 'Abrir Guide', close: 'Cerrar Guide', clear: 'Borrar la conversación de hoy',
     intro: 'Pregunta sobre esta página, astrología o tu carta natal.',
     log: 'Conversación con Guide',
     input: 'Tu pregunta', placeholder: '¿En qué te puedo ayudar?', send: 'Enviar', stop: 'Detener', retry: 'Reintentar',
@@ -206,7 +205,7 @@ const COPY: Record<AssistantLocale, Copy> = {
     contextUpdated: 'Fuente eliminada. Los mensajes anteriores siguen visibles, pero Guide no los usará en respuestas futuras.',
   },
   pt: {
-    title: 'Guide', open: 'Abrir Guide', launcher: 'Perguntar ao Guide', close: 'Fechar Guide', clear: 'Limpar a conversa de hoje',
+    title: 'Guide', open: 'Abrir Guide', close: 'Fechar Guide', clear: 'Limpar a conversa de hoje',
     intro: 'Pergunte sobre esta página, astrologia ou seu mapa natal.',
     log: 'Conversa com o Guide',
     input: 'Sua pergunta', placeholder: 'Como posso ajudar?', send: 'Enviar', stop: 'Parar', retry: 'Tentar de novo',
@@ -228,7 +227,7 @@ const COPY: Record<AssistantLocale, Copy> = {
     contextUpdated: 'Fonte removida. As mensagens anteriores continuam visíveis, mas o Guide não as usará nas próximas respostas.',
   },
   fr: {
-    title: 'Guide', open: 'Ouvrir Guide', launcher: 'Demander à Guide', close: 'Fermer Guide', clear: 'Effacer la conversation du jour',
+    title: 'Guide', open: 'Ouvrir Guide', close: 'Fermer Guide', clear: 'Effacer la conversation du jour',
     intro: 'Pose une question sur cette page, l’astrologie ou ton thème natal.',
     log: 'Conversation avec Guide',
     input: 'Ta question', placeholder: 'Comment puis-je aider ?', send: 'Envoyer', stop: 'Arrêter', retry: 'Réessayer',
@@ -250,7 +249,7 @@ const COPY: Record<AssistantLocale, Copy> = {
     contextUpdated: 'Source retirée. Les anciens messages restent visibles, mais Guide ne les utilisera plus dans ses réponses.',
   },
   it: {
-    title: 'Guide', open: 'Apri Guide', launcher: 'Chiedi a Guide', close: 'Chiudi Guide', clear: 'Cancella la conversazione di oggi',
+    title: 'Guide', open: 'Apri Guide', close: 'Chiudi Guide', clear: 'Cancella la conversazione di oggi',
     intro: 'Chiedi di questa pagina, astrologia o il tuo tema natale.',
     log: 'Conversazione con Guide',
     input: 'La tua domanda', placeholder: 'Come posso aiutarti?', send: 'Invia', stop: 'Interrompi', retry: 'Riprova',
@@ -279,7 +278,7 @@ const MAX_CHART_CONTEXT = 3_500;
 const SESSION_KEY = 'zodiacs.guide.daily-session.v1';
 const AUTH_BOUNDARY_KEY = 'zodiacs.guide.auth-boundary.v1';
 const CONSENT_POLICY_VERSION = 'guide-cloud-processing-2026-08-14.2';
-const STYLESHEET_HREF = '/assets/assistant-drawer.css?v=ask-guide-4';
+const STYLESHEET_HREF = '/assets/assistant-drawer.css?v=icon-guide-5';
 const GUIDE_AVATAR_SRC = '/assets/guide-avatar.webp';
 const STREAM_SCHEMA = 'zodiacs.guide.stream-event.draft.v1';
 const GUIDE_LINK_PATHS = new Set([
@@ -1943,8 +1942,6 @@ function applyCopy(): void {
   applyPanelCopy();
   if (title) title.textContent = copy.title;
   launcher?.setAttribute('aria-label', copy.open);
-  const launcherLabel = launcher?.querySelector('span');
-  if (launcherLabel) launcherLabel.textContent = copy.launcher;
   if (closeButton) closeButton.setAttribute('aria-label', copy.close);
   if (clearButton) clearButton.setAttribute('aria-label', copy.clear);
   if (intro) intro.textContent = copy.intro;
@@ -2159,9 +2156,7 @@ function build(): void {
     launcher.className = 'zguide-launcher';
     launcher.dataset.guideLauncher = '';
     launcher.setAttribute('aria-label', currentCopy().open);
-    const launcherLabel = document.createElement('span');
-    launcherLabel.textContent = currentCopy().launcher;
-    launcher.append(createGuideAvatar('zguide-launcher__avatar', 32), launcherLabel);
+    launcher.append(createGuideAvatar('zguide-launcher__avatar', 32));
     launcher.addEventListener('click', () => void openAssistant(undefined, launcher));
     document.body.append(launcher);
   }
