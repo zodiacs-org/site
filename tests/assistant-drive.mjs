@@ -219,9 +219,12 @@ await withPreview({ port: 4404 }, async (baseURL) => {
     const launcher = page.locator('[data-guide-launcher]');
     await launcher.waitFor({ state: 'visible', timeout: 15_000 });
     await page.evaluate(() => { window.__initialGuideLauncher = document.querySelector('[data-guide-launcher]'); });
-    check('Guide launcher is visible by default as an accessible labelled button',
-      (await launcher.textContent())?.trim() === 'Ask Guide'
-      && await launcher.getAttribute('aria-label') === 'Open Guide');
+    const launcherBox = await launcher.boundingBox();
+    check('Guide launcher is an accessible icon with a full circular touch target',
+      (await launcher.textContent())?.trim() === ''
+      && await launcher.getAttribute('aria-label') === 'Open Guide'
+      && Boolean(launcherBox) && launcherBox.width >= 44 && launcherBox.height >= 44
+      && Math.abs(launcherBox.width - launcherBox.height) <= 1, JSON.stringify(launcherBox));
     check('pre-action shell does not fetch the private drawer graph',
       !assistantAssets.some((path) => path === '/assets/assistant-drawer.js'
         || path === '/assets/assistant-drawer.css'
@@ -245,7 +248,7 @@ await withPreview({ port: 4404 }, async (baseURL) => {
       && await page.evaluate(() => window.__profileReads) === 0);
     check('quiet shell does not steal focus', await launcher.evaluate((node) => !node.contains(document.activeElement)));
 
-    await launcher.click();
+    await launcher.tap();
     const dialog = page.locator('.zassistant__panel');
     const input = page.locator('.zassistant__input');
     await dialog.waitFor({ state: 'visible' });
@@ -259,19 +262,50 @@ await withPreview({ port: 4404 }, async (baseURL) => {
         && document.querySelector('[data-guide-launcher]') === window.__initialGuideLauncher));
     check('drawer header carries the Guide identity avatar',
       await dialog.locator('.zassistant__avatar[src="/assets/guide-avatar.webp"]').count() === 1);
-    check('user action opens Guide and focuses the composer', await input.evaluate((node) => document.activeElement === node));
+    check('touch opening focuses the dialog without summoning the composer keyboard',
+      await dialog.evaluate((node) => document.activeElement === node)
+      && !await input.evaluate((node) => document.activeElement === node));
     if (!GUIDE_AVATAR_ONLY) {
       check('opening is the first saved-chart read', await page.evaluate(() => window.__profileReads) > 0);
     }
+    // Visibility begins during the entrance animation; measure the settled sheet.
+    await page.waitForFunction(() => {
+      const panel = document.querySelector('.zassistant__panel');
+      return panel && getComputedStyle(panel).transform === 'none';
+    });
     const mobileBox = await dialog.boundingBox();
-    check('mobile Guide is a bottom sheet', Boolean(mobileBox)
-      && Math.abs((mobileBox.y + mobileBox.height) - 844) <= 2
-      && mobileBox.width >= 389, JSON.stringify(mobileBox));
+    check('mobile Guide is an inset compact sheet that leaves the page visible', Boolean(mobileBox)
+      && mobileBox.x >= 8 && mobileBox.x + mobileBox.width <= 382
+      && mobileBox.y > 200 && mobileBox.height >= 844 * 0.5 && mobileBox.height <= 844 * 0.7
+      && Math.abs((mobileBox.y + mobileBox.height) - 834) <= 2, JSON.stringify(mobileBox));
+    const expand = page.getByRole('button', { name: 'Expand Guide', exact: true });
+    await expand.tap();
+    const expandedBox = await dialog.boundingBox();
+    check('mobile visitors can expand Guide while retaining a visible page margin', Boolean(expandedBox)
+      && expandedBox.height > mobileBox.height
+      && expandedBox.height >= 844 * 0.8 && expandedBox.height <= 844 * 0.9
+      && await page.locator('.zassistant__expand').getAttribute('aria-pressed') === 'true',
+      JSON.stringify(expandedBox));
+    await page.locator('.zassistant__expand').tap();
+    const compactBox = await dialog.boundingBox();
+    check('Guide can return to its compact height', Boolean(compactBox)
+      && Math.abs(compactBox.height - mobileBox.height) <= 2
+      && await expand.getAttribute('aria-pressed') === 'false');
     check('fixed current-page source ignores private query data',
       (await page.locator('.zassistant__source-chip').textContent() ?? '').includes('Guide')
       && !(await page.locator('.zassistant__source-chip').textContent() ?? '').includes('must-not-leak'));
 
     await input.fill('What is a square aspect?');
+    await page.getByRole('button', { name: 'Close Guide', exact: true }).tap();
+    check('Hide dismisses Guide and restores the same icon launcher',
+      await page.locator('.zassistant').isHidden()
+      && await launcher.evaluate((node) => document.activeElement === node)
+      && (await launcher.textContent())?.trim() === '');
+    await launcher.tap();
+    await dialog.waitFor({ state: 'visible' });
+    check('reopening keeps the draft without sending it or focusing the touch composer',
+      await input.inputValue() === 'What is a square aspect?' && requests.length === 0
+      && await dialog.evaluate((node) => document.activeElement === node));
     await input.press('Enter');
     const cloud = page.locator('.zassistant__consent');
     await cloud.waitFor({ state: 'visible' });
@@ -422,10 +456,18 @@ await withPreview({ port: 4404 }, async (baseURL) => {
     await desktopPage.locator('[data-guide-launcher]').click();
     const desktopDialog = desktopPage.locator('.zassistant__panel');
     await desktopDialog.waitFor({ state: 'visible' });
+    await desktopPage.waitForFunction(() => {
+      const panel = document.querySelector('.zassistant__panel');
+      return panel && getComputedStyle(panel).transform === 'none';
+    });
     const desktopBox = await desktopDialog.boundingBox();
-    check('desktop Guide is a right-side drawer', Boolean(desktopBox)
-      && desktopBox.x > 800 && desktopBox.width <= 440
-      && desktopBox.height >= 870, JSON.stringify(desktopBox));
+    check('desktop Guide is a compact inset drawer on the right', Boolean(desktopBox)
+      && desktopBox.x > 800 && desktopBox.width <= 440 && desktopBox.width >= 400
+      && desktopBox.y >= 180 && desktopBox.height >= 600 && desktopBox.height <= 700
+      && Math.abs(desktopBox.x + desktopBox.width - 1264) <= 2
+      && Math.abs(desktopBox.y + desktopBox.height - 884) <= 2, JSON.stringify(desktopBox));
+    check('desktop opening focuses the composer for typing',
+      await desktopPage.locator('.zassistant__input').evaluate((node) => document.activeElement === node));
     const close = desktopPage.getByRole('button', { name: 'Close Guide' });
     const closeBox = await close.boundingBox();
     check('Guide controls retain 44px targets', (closeBox?.width ?? 0) >= 44 && (closeBox?.height ?? 0) >= 44);
