@@ -201,7 +201,7 @@
   @font-face { font-family: 'EB Garamond Fallback Android'; src: local('Noto Serif'); size-adjust: 79.64%; ascent-override: 126.44%; descent-override: 37.42%; line-gap-override: 0%; }
   @font-face { font-family: 'EB Garamond Fallback Times'; src: local('Times New Roman'), local('Liberation Serif'); size-adjust: 87.49%; ascent-override: 115.1%; descent-override: 34.06%; line-gap-override: 0%; }
   .wnav-wrap { --wing-sans: 'Instrument Sans', 'Instrument Sans Fallback', 'Instrument Sans Fallback Android', system-ui, -apple-system, sans-serif; --wing-serif: 'EB Garamond', 'EB Garamond Fallback', 'EB Garamond Fallback Android', 'EB Garamond Fallback Times', 'Iowan Old Style', Georgia, serif; position: fixed; top: 14px; left: 0; right: 0; z-index: 60; display: flex; flex-direction: column; align-items: center; pointer-events: none; padding-top: env(safe-area-inset-top); }
-  .wnav { pointer-events: auto; box-sizing: border-box; max-width: calc(100% - 32px); display: inline-flex; align-items: center; gap: 10px; height: 52px; padding: 0 10px 0 20px; border-radius: 999px; background: rgba(10,12,17,0.66); backdrop-filter: saturate(150%) blur(18px); -webkit-backdrop-filter: saturate(150%) blur(18px); border: 1px solid rgba(198,204,218,0.16); box-shadow: inset 0 1px 0 rgba(238,241,247,0.06), 0 12px 32px -14px rgba(0,0,0,0.7); }
+  .wnav { pointer-events: auto; box-sizing: border-box; max-width: calc(100% - 32px); display: inline-flex; align-items: center; gap: 10px; height: 52px; padding: 0 10px 0 20px; border-radius: 999px; background: rgba(10,12,17,0.96); backdrop-filter: saturate(150%) blur(18px); -webkit-backdrop-filter: saturate(150%) blur(18px); border: 1px solid rgba(198,204,218,0.16); box-shadow: inset 0 1px 0 rgba(238,241,247,0.06), 0 12px 32px -14px rgba(0,0,0,0.7); }
   @media (min-width: 920px) { .wnav { gap: 10px; } }
   @media (min-width: 900px) { .wnav { gap: 18px; } }
   .wnav__mark { display: inline-flex; align-items: center; gap: 9px; text-decoration: none; white-space: nowrap; }
@@ -272,10 +272,10 @@
   .wnav-menu__link:last-child { border-bottom: 0; }
   .wnav-menu__registry { display: grid; gap: 5px; }
   .wnav-menu__registry small { color: var(--ink-mute, #8A93A6); font-family: var(--mono, 'JetBrains Mono', monospace); font-size: 9px; letter-spacing: 0.04em; line-height: 1.35; }
-  .wnav-menu__tools { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .wnav-menu__tools { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 18px; }
   .wnav-menu__tool { display: block; min-width: 0; padding: 11px 0; border-bottom: 1px solid var(--hair, rgba(198,204,218,0.10)); color: var(--ink, #EEF1F7); font-family: var(--wing-serif); font-size: clamp(18px, 5vw, 22px); line-height: 1.05; text-decoration: none; }
   .wnav-menu__tool:last-child { border-bottom: 0; }
-  .wnav-menu__signs { display: flex; flex-direction: column; }
+  .wnav-menu__signs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 16px; }
   .wnav-menu__sign { display: flex; flex-direction: row; align-items: center; gap: 13px; padding: 10px 0; text-decoration: none; font-family: var(--wing-serif); font-size: clamp(20px, 5.5vw, 26px); font-weight: 400; color: var(--ink, #EEF1F7); border-bottom: 1px solid var(--hair, rgba(198,204,218,0.10)); }
   .wnav-menu__sign:last-child { border-bottom: 0; }
   .wnav-menu__sign .wnav-disc { width: 30px; height: 30px; }
@@ -1113,6 +1113,10 @@
       .identity-actions button:active, .people-block a:active, .strip a:active, .profile-explore:active { transform: none; }
     }
 
+    .profile-interest-title { margin: 36px 0 16px; font-family: var(--profile-display); font-size: 26px; font-weight: 400; }
+    .attention-card__snapshot { display: block; margin-top: 8px; font-size: 12px; color: var(--ink-dim); }
+    .people-block > small, .attention-card > small, .lot__eyebrow { font-size: 12px; line-height: 1.5; }
+
   </style>
   <noscript><style>.reveal { opacity: 1 !important; transform: none !important; filter: none !important; }</style></noscript>
 </head>
@@ -1207,10 +1211,6 @@
     <section class="sec reveal pride" id="identity" aria-labelledby="identity-title">
       <div class="sec__head"><h2 class="sec__title" id="identity-title">Born under Libra</h2><span class="line"></span></div>
       <p class="pride__rally">Libra knows balance takes work.</p>
-      <div class="attention-grid">
-        <article class="attention-card"><span class="attention-card__label">People who share Libra</span><strong>Hundreds of millions</strong><p>A rough estimate based on one-twelfth of the world’s population. It describes the sign, not token ownership.</p></article>
-        <article class="attention-card" data-attention><span class="attention-card__label">Wikipedia views</span><strong>1,075 a day</strong><p>The English Wikipedia page for Libra averaged 1,075 views a day from Jul 25 to Aug 23, 2026.</p><small>Source: Wikimedia · updated Aug 24. One person may account for more than one view. This shows interest, not ownership or value. <a href="/thesis/#pulse">See the source</a>.</small></article>
-      </div>
       <div class="people-block">
         <div id="people"><span class="people-block__label">You’re in good company</span></div>
         <ul>
@@ -1220,6 +1220,11 @@
           <li><a href="/people/eleanor-roosevelt/"><strong>Eleanor Roosevelt</strong><span>Oct 11</span></a></li>
         </ul>
         <small>Birth dates are sourced. These people did not endorse Zodiacs.org.</small>
+      </div>
+      <h3 class="profile-interest-title">Public interest</h3>
+      <div class="attention-grid">
+        <article class="attention-card"><span class="attention-card__label">People who share Libra</span><strong>Hundreds of millions</strong><p>A rough estimate based on one-twelfth of the world’s population. It describes the sign, not token ownership.</p></article>
+        <article class="attention-card" data-attention><span class="attention-card__label">Wikipedia views</span><strong>1,075 a day</strong><span class="attention-card__snapshot">Snapshot updated Aug 24</span><p>The English Wikipedia page for Libra averaged 1,075 views a day from Jul 25 to Aug 23, 2026.</p><small>Source: Wikimedia · updated Aug 24. One person may account for more than one view. This shows interest, not ownership or value. <a href="/thesis/#pulse">See the source</a>.</small></article>
       </div>
     </section>
 
@@ -1379,17 +1384,17 @@
 
     <div class="zfooter__directory">
       <nav class="zfooter__group" aria-label="Explore">
-        <span class="zfooter__label">Explore</span>
+        <details class="zfooter__fold" open data-footer-essential><summary class="zfooter__fold-label"><span class="zfooter__label">Explore</span></summary>
         <div class="zfooter__links"><a href="/">Astrology</a><a href="/astrofolio/">Astrofolio</a><a href="/registry/">Official Registry</a><a href="/thesis/">Thesis</a><a href="/archive/">Archive</a></div>
-      </nav>
+      </details></nav>
       <nav class="zfooter__group" aria-label="Trust and policies">
-        <span class="zfooter__label">Trust</span>
+        <details class="zfooter__fold" open><summary class="zfooter__fold-label"><span class="zfooter__label">Trust</span></summary>
         <div class="zfooter__links"><a href="/astrofolio/#verify">Verify a token</a><a href="/registry/technical/">Methodology</a><a href="/disclosure/">Disclosure</a><a href="/sdk/">SDK</a></div>
-      </nav>
+      </details></nav>
       <nav class="zfooter__group zfooter__group--wide" aria-label="Official channels">
-        <span class="zfooter__label">Follow</span>
+        <details class="zfooter__fold" open><summary class="zfooter__fold-label"><span class="zfooter__label">Follow</span></summary>
         <div class="zfooter__links"><a href="https://x.com/astrofoliosol" rel="noopener noreferrer">X</a><a href="https://www.instagram.com/astrofolioonsol/" rel="noopener noreferrer">Instagram</a><a href="https://tiktok.com/@astrofolio" rel="noopener noreferrer">TikTok</a><a href="https://t.me/astrofoliosol" rel="noopener noreferrer">Telegram</a></div>
-      </nav>
+      </details></nav>
       <nav class="zfooter__group zfooter__twelve" aria-label="The twelve zodiac signs">
         <span class="zfooter__label">The Twelve</span>
         <div class="zfooter__signs">
@@ -1427,7 +1432,7 @@
       </div>
     </div>
   </div>
-</footer>
+</footer><script>(function () { var mobile = window.matchMedia('(max-width: 620px)'); var groups = document.querySelectorAll('.zfooter__fold:not([data-footer-essential])'); var sync = function () { groups.forEach(function (group) { group.open = !mobile.matches; }); }; sync(); mobile.addEventListener && mobile.addEventListener('change', sync); })();</script>
 
   <script data-guide-loader="zodiacs-guide-loader-v1">
 (function () {

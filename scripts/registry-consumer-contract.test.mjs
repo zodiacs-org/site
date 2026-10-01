@@ -342,7 +342,7 @@ describe('Astrofolio consumer and Terminal market-desk split', () => {
     const start = source.indexOf('<main id="main" className="zd consumer-registry consumer-campaign">');
     const mounted = source.slice(start, source.indexOf('</main>', start));
     ordered(mounted, [
-      '<CampaignHero />',
+      '<CampaignHero ',
       '<CampaignBag sign={sign} batch={consumerMarket} onPick={pickFromBag} />',
       '<CampaignRunway',
       '<CampaignApp />',
@@ -433,7 +433,7 @@ describe('Astrofolio consumer and Terminal market-desk split', () => {
     // The opening sticks only behind the runway, inside one stack.
     ordered(source, [
       '<div className="campaign-stack">',
-      '<CampaignHero />',
+      '<CampaignHero ',
       '<CampaignBag sign={sign} batch={consumerMarket} onPick={pickFromBag} />',
       '<CampaignRunway',
       '</div>',

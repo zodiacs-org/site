@@ -127,9 +127,7 @@ const id = `email-${placement}-${locale}`;
             required
           />
         </div>
-        <button class="btn btn--primary email-capture__submit" type="submit" data-label={capture.submit} data-busy-label={capture.submitting}>
-          {capture.submit}
-        </button>
+
       </div>
 
       <div
@@ -177,6 +175,10 @@ const id = `email-${placement}-${locale}`;
         </div>
       </fieldset>
 
+        <button class="btn btn--primary email-capture__submit" type="submit" data-label={capture.submit} data-busy-label={capture.submitting}>
+          {capture.submit}
+        </button>
+
       <p class="email-capture__privacy">{capture.privacy}</p>
       {postChartManaged && (
         <p class="email-capture__privacy email-capture__device-note" data-post-chart-device-note hidden>
@@ -215,7 +217,7 @@ const id = `email-${placement}-${locale}`;
   .email-capture__field label,
   .email-capture__signs legend {
     font-family: var(--font-mono);
-    font-size: 10px;
+    font-size: 12px;
     letter-spacing: 0.15em;
     text-transform: uppercase;
     color: var(--faint);
@@ -248,7 +250,7 @@ const id = `email-${placement}-${locale}`;
   .email-capture button:focus-visible,
   .email-capture__sign input:focus-visible + .email-capture__disc,
   .email-capture__skip input:focus-visible + span { outline: 2px solid var(--ink-0); outline-offset: 3px; }
-  .email-capture__submit { min-height: 46px; padding-inline: 18px; white-space: nowrap; }
+  .email-capture__submit { margin-top: 16px; min-height: 46px; padding-inline: 18px; white-space: nowrap; }
   .email-capture__submit:disabled { cursor: wait; }
   .email-capture__sign-summary {
     display: flex;
@@ -288,7 +290,7 @@ const id = `email-${placement}-${locale}`;
   .email-capture__skip { display: inline-flex; align-items: center; gap: 7px; margin: 0 0 10px; color: var(--muted); font-size: 12px; cursor: pointer; }
   .email-capture__skip input { accent-color: var(--ink-1); }
   .email-capture__sign-grid { display: flex; flex-wrap: wrap; gap: 6px; direction: ltr; }
-  .email-capture__sign { position: relative; display: grid; min-width: 44px; justify-items: center; gap: 3px; cursor: pointer; }
+  .email-capture__sign { position: relative; display: grid; min-width: 44px; min-height: 52px; justify-items: center; gap: 3px; cursor: pointer; }
   :global(html:lang(ar)) .email-capture__sign { direction: rtl; }
   .email-capture__sign input { position: absolute; opacity: 0; pointer-events: none; }
   .email-capture__disc {
@@ -303,10 +305,10 @@ const id = `email-${placement}-${locale}`;
     .email-capture__sign:hover .email-capture__disc { opacity: 0.88; }
   }
   .email-capture__sign input:checked + .email-capture__disc { opacity: 1; border-color: var(--ink-1); transform: translateY(-1px); }
-  .email-capture__sign-name { max-width: 58px; overflow: hidden; color: var(--faint); font-size: 9px; line-height: 1.2; text-overflow: ellipsis; white-space: nowrap; }
+  .email-capture__sign-name { max-width: 58px; overflow: hidden; color: var(--faint); font-size: 12px; line-height: 1.2; text-overflow: ellipsis; white-space: nowrap; }
   .email-capture__sign input:checked ~ .email-capture__sign-name { color: var(--text-2); }
   .email-capture__privacy,
-  .email-capture__status { margin: 10px 0 0; color: var(--faint); font-size: 11px; line-height: 1.5; }
+  .email-capture__status { margin: 10px 0 0; color: var(--faint); font-size: 12px; line-height: 1.5; }
   .email-capture__device-note { max-width: 62ch; }
   .email-capture__device-note a {
     color: var(--text-2);

@@ -226,6 +226,21 @@ export default function DemoChart() {
       data-active-id={sunTarget.id}
       data-demo-motion="instant"
     >
+        <div class="demo__jumps" role="group" aria-label="Preview chart features">
+          {previewSteps.map((step, index) => (
+            <button
+              type="button"
+              class="demo__jump"
+              aria-pressed={index === 0 ? 'true' : 'false'}
+              data-demo-jump={step.id}
+              key={step.id}
+            >
+              <span class="mono--label">{step.kind}</span>
+              <strong>{step.label}</strong>
+            </button>
+          ))}
+        </div>
+
       <div class="demo__wheel shell">
         <div class="core demo__wheel-core">
           <div class="demo__wheel-stage">
@@ -369,21 +384,6 @@ export default function DemoChart() {
           <em class="kicker">Try the preview</em>
           <h3>Three ways into a chart</h3>
           <p>Choose a starting point below, or select any symbol on the wheel.</p>
-        </div>
-
-        <div class="demo__jumps" role="group" aria-label="Preview chart features">
-          {previewSteps.map((step, index) => (
-            <button
-              type="button"
-              class="demo__jump"
-              aria-pressed={index === 0 ? 'true' : 'false'}
-              data-demo-jump={step.id}
-              key={step.id}
-            >
-              <span class="mono--label">{step.kind}</span>
-              <strong>{step.label}</strong>
-            </button>
-          ))}
         </div>
 
         <article class="demo__insight" aria-live="polite" aria-atomic="true">

@@ -265,7 +265,7 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
     padding-block: 0;
     padding-inline: 20px 10px;
     border-radius: var(--r-full);
-    background: rgba(10, 12, 17, 0.66);
+    background: rgba(10, 12, 17, 0.96);
     backdrop-filter: saturate(150%) blur(18px);
     -webkit-backdrop-filter: saturate(150%) blur(18px);
     border: 1px solid var(--hair-2);
@@ -697,8 +697,8 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
     line-height: 1.35;
   }
   .mobile-menu__tools {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
+    display: grid; gap: 0 18px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .mobile-menu__tool {
     display: block;
@@ -717,10 +717,10 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
   .mobile-menu__signs {
     direction: ltr;
     display: flex;
-    flex-direction: column;
+    flex-direction: row; flex-wrap: wrap; gap: 0 16px;
   }
   .mobile-menu__sign {
-    display: flex;
+    width: calc(50% - 8px); min-height: 44px; display: flex;
     flex-direction: row;
     align-items: center;
     gap: 13px;

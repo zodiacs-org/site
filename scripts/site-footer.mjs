@@ -74,17 +74,17 @@ export function renderStaticFooter({
 
     <div class="zfooter__directory">
       <nav class="zfooter__group" aria-label="Explore">
-        <span class="zfooter__label">Explore</span>
+        <details class="zfooter__fold" open data-footer-essential><summary class="zfooter__fold-label"><span class="zfooter__label">Explore</span></summary>
         <div class="zfooter__links">${renderLinks(exploreLinks)}</div>
-      </nav>
+      </details></nav>
       <nav class="zfooter__group" aria-label="Trust and policies">
-        <span class="zfooter__label">Trust</span>
+        <details class="zfooter__fold" open><summary class="zfooter__fold-label"><span class="zfooter__label">Trust</span></summary>
         <div class="zfooter__links">${renderLinks(trustLinks)}</div>
-      </nav>
+      </details></nav>
       <nav class="zfooter__group zfooter__group--wide" aria-label="Official channels">
-        <span class="zfooter__label">Follow</span>
+        <details class="zfooter__fold" open><summary class="zfooter__fold-label"><span class="zfooter__label">Follow</span></summary>
         <div class="zfooter__links">${renderLinks(CHANNELS, true)}</div>
-      </nav>
+      </details></nav>
       <nav class="zfooter__group zfooter__twelve" aria-label="The twelve zodiac signs">
         <span class="zfooter__label">The Twelve</span>
         <div class="zfooter__signs">
@@ -122,5 +122,5 @@ ${originLine ? `        ${originLine}\n` : ''}
       </div>
     </div>
   </div>
-</footer>`;
+</footer><script>(function () { var mobile = window.matchMedia('(max-width: 620px)'); var groups = document.querySelectorAll('.zfooter__fold:not([data-footer-essential])'); var sync = function () { groups.forEach(function (group) { group.open = !mobile.matches; }); }; sync(); mobile.addEventListener && mobile.addEventListener('change', sync); })();</script>`;
 }
