@@ -266,6 +266,18 @@
       "destination": "/api/account?action=:action"
     },
     {
+      "source": "/api/calendar/feeds",
+      "destination": "/api/calendar/transits?__zodiacs_calendar_route=create"
+    },
+    {
+      "source": "/api/calendar/feeds/:id",
+      "destination": "/api/calendar/transits?__zodiacs_calendar_route=feed&id=:id"
+    },
+    {
+      "source": "/api/calendar/feed-sweep",
+      "destination": "/api/calendar/transits?__zodiacs_calendar_route=sweep"
+    },
+    {
       "source": "/api/registry/news",
       "destination": "/api/compatibility?action=registry-news"
     },

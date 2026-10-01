@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import AccountSyncV2Panel, {
   accountDeletionCompletionMessage,
+  CLEAR_ALL_CALENDARS_NOTE,
   displayAccountV2Error,
   planSavedRecordErasure,
   RECORDS_BLOCKED_MESSAGE,
@@ -13,6 +14,9 @@ import AccountSyncV2Panel, {
   type SavedRecordAccessLoad,
 } from './AccountSyncV2Panel';
 import { AccountV2ClientError } from '../lib/account-v2/client';
+import type { AccountV2Storage } from '../lib/account-v2/local-state';
+import { clearAllZodiacsDataFromDevice } from '../lib/account-v2/profile-boundary';
+import { CALENDAR_FEEDS_STORAGE_KEY } from '../lib/calendar-feed/client';
 import type { AccountSyncMetadataV1 } from '../lib/account-v2/types';
 
 describe('AccountSyncV2Panel server-safe shell', () => {
@@ -184,6 +188,31 @@ describe('AccountSyncV2Panel server-safe shell', () => {
     expect(epoch).toBeLessThan(plan);
     expect(deletion).toContain("if (plan.status === 'blocked' || authEpoch.current !== epoch) return false;");
     expect(deletion).toContain('() => authEpoch.current === epoch');
+  });
+
+  it('says beside the sign-out that clears this browser that its calendars can then be removed only by email', async () => {
+    expect(CLEAR_ALL_CALENDARS_NOTE).toContain('“Sign out · clear all Zodiacs data”');
+    expect(CLEAR_ALL_CALENDARS_NOTE).toContain('only by sending its address to admin@zodiacs.org');
+    const source = await readFile(new URL('./AccountSyncV2Panel.tsx', import.meta.url), 'utf8');
+    const button = source.indexOf('onClick={() => void onSignOut(true)}>Sign out · clear all Zodiacs data</button>');
+    const note = source.indexOf('<p>{CLEAR_ALL_CALENDARS_NOTE}</p>');
+    expect(button).toBeGreaterThan(0);
+    expect(note).toBeGreaterThan(button);
+    expect(source.slice(button, note)).not.toContain('<section');
+
+    // Why the note is needed: that sign-out deletes the calendars' removal keys.
+    class MemoryStorage implements AccountV2Storage {
+      readonly values = new Map<string, string>();
+      get length() { return this.values.size; }
+      getItem(key: string) { return this.values.get(key) ?? null; }
+      key(index: number) { return [...this.values.keys()][index] ?? null; }
+      removeItem(key: string) { this.values.delete(key); }
+      setItem(key: string, value: string) { this.values.set(key, value); }
+    }
+    const local = new MemoryStorage();
+    local.setItem(CALENDAR_FEEDS_STORAGE_KEY, JSON.stringify({ version: 1, feeds: [] }));
+    expect(clearAllZodiacsDataFromDevice(local, new MemoryStorage()).ok).toBe(true);
+    expect(local.getItem(CALENDAR_FEEDS_STORAGE_KEY)).toBeNull();
   });
 
   it('keeps export, withdrawal, and permanent deletion reachable when sync bootstrap is unavailable', async () => {

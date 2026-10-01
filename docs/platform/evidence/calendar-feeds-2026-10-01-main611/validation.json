@@ -1,0 +1,99 @@
+{
+  "schema": "zodiacs.calendar-main-merge-validation/v1",
+  "checkedOnUtcDay": "2026-10-01",
+  "sourceCommit": "e9c6e1bfc2333442323e43d50790f2d840117ebc",
+  "parents": [
+    "fa9e156671b6426ddc985dd036b862f71d55d2bc",
+    "4e6005445e9ccf41cfccc1300a24d5533dc318e5"
+  ],
+  "mainRemoteObserved": "4e6005445e9ccf41cfccc1300a24d5533dc318e5",
+  "mainPreservation": {
+    "nonConflictPathsMatched": 47,
+    "receipt": "main-paths.json",
+    "matchedAgainAfterBuild": true,
+    "guideFilesMatchMainExactly": true,
+    "inheritedCapturesMatchMainExactly": true
+  },
+  "conflicts": {
+    "scopeAllowance": "Calendar-only four privacy paths retained and pinned to actual main; no union with retired Guide allowance.",
+    "claimsLedger": "Same immutable rc15 validation binding as main, with calendar’s extra explicit evidence entry retained."
+  },
+  "guideRepairAdded": false,
+  "scope": "Local API/engine/calendar programme preparation; separate owner Guide frontend work is excluded.",
+  "node": "v22.22.2",
+  "build": {
+    "command": "npm run build",
+    "exitCode": 0,
+    "pagesBuilt": 4343,
+    "distHtmlFiles": 4446,
+    "allBudgetsPassed": true,
+    "budgetsChanged": false
+  },
+  "typecheck": {
+    "command": "npm run check",
+    "exitCode": 0,
+    "files": 1183,
+    "errors": 0,
+    "warnings": 0,
+    "hints": 18
+  },
+  "test": {
+    "command": "npm test",
+    "exitCode": 1,
+    "files": {
+      "passed": 508,
+      "failed": 1,
+      "skipped": 1,
+      "total": 510
+    },
+    "tests": {
+      "passed": 6497,
+      "failed": 1,
+      "skipped": 4,
+      "total": 6502
+    },
+    "soleFailure": "scripts/phase1-acceptance-evidence.test.mjs: stale templateSourceSha256",
+    "requiredGateNotRelaxed": true
+  },
+  "independentReview": {
+    "result": "no merge blockers",
+    "focusedTestsPassed": 283,
+    "suites": 15,
+    "parentageVerified": true,
+    "mainPreservationVerified": true
+  },
+  "scopeGuard": {
+    "passed": true,
+    "baseCommit": "4e6005445e9ccf41cfccc1300a24d5533dc318e5",
+    "protectedPaths": 4
+  },
+  "capture": {
+    "sourceAndBuildSha256": "5b439b798af466d2a52ce780ae41f72eb974412ecb40d6456628a7eb7909a4f7",
+    "inheritedMainTemplateSourceSha256": "9bca416a1be803a78f73e16f74d6e5368aa27c7ff0f8228410e91d11c6dfb9a7",
+    "inheritedCapturedAt": "2026-10-01T07:43:37.459Z",
+    "inheritedBrowser": "Chromium 154.0.8037.58",
+    "locallyRecaptured": false,
+    "relabelled": false,
+    "stillRequired": true
+  },
+  "browserPreflight": {
+    "calendarNativeBundleOnly": "passed; browser cases not run",
+    "fullCalendarUiCheckBuild": "passed; browser cases not run",
+    "localNativeExecution": "not attempted again; known Unix-socket restriction"
+  },
+  "programme": {
+    "overallPercent": 23,
+    "acceptedWeight": 42.5,
+    "totalWeight": 182.45,
+    "blockedPercent": 2,
+    "blockedWeight": 4,
+    "statusChange": false
+  },
+  "stillRequired": [
+    "finish and merge scoped compute checkpoint, then re-pin calendar allowance",
+    "confirm actual UTC release day",
+    "final head-bound Phase 1 captures and required browser/SQL CI",
+    "authorized production migration, deployment and live runbook checks"
+  ],
+  "externalMutationsPerformed": []
+}

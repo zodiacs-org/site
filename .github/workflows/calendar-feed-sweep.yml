@@ -1,0 +1,91 @@
+name: Calendar Feed Sweep
+
+# Deletes transit calendar feeds that no calendar has fetched for 12 months
+# (supabase/migrations/20260929180000_calendar_feeds.sql, prune_calendar_feeds).
+# Daily is ample for a 12-month retention.
+#
+# The site makes no feed unless the same secret is set in Vercel
+# (canCreateCalendarFeeds in src/lib/calendar-feed/store.ts), and this job
+# fails rather than passing quietly when the secret or its environment is
+# missing, so the deletion cannot silently stop running.
+
+on:
+  schedule:
+    - cron: "41 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: calendar-feed-sweep
+  cancel-in-progress: false
+
+jobs:
+  sweep:
+    runs-on: ubuntu-latest
+    environment: calendar-feed-production
+    timeout-minutes: 10
+    steps:
+      - name: Delete calendar feeds with no fetch for 12 months
+        env:
+          CALENDAR_FEED_SWEEP_SECRET: ${{ secrets.CALENDAR_FEED_SWEEP_SECRET }}
+          SWEEP_URL: https://zodiacs.org/api/calendar/feed-sweep
+          SWEEP_MAX_CALLS: "10"
+        run: |
+          set -euo pipefail
+          if [ "${#CALENDAR_FEED_SWEEP_SECRET}" -lt 32 ]; then
+            echo "::error::CALENDAR_FEED_SWEEP_SECRET is missing or shorter than 32 characters, so calendar feeds are not being deleted after 12 months without a fetch. Set it as a secret of the GitHub environment calendar-feed-production (deployment branches: main only), with the same value as CALENDAR_FEED_SWEEP_SECRET in Vercel Production; see SETUP.md."
+            exit 1
+          fi
+          reply="$(mktemp)"
+          trap 'rm -f "$reply"' EXIT
+          call=0
+          while [ "$call" -lt "$SWEEP_MAX_CALLS" ]; do
+            call=$((call + 1))
+            if ! status="$(curl \
+              --silent \
+              --show-error \
+              --retry 2 \
+              --retry-all-errors \
+              --max-time 60 \
+              --output "$reply" \
+              --write-out '%{http_code}' \
+              --request POST \
+              --header "Authorization: Bearer $CALENDAR_FEED_SWEEP_SECRET" \
+              --header "Content-Type: application/json" \
+              --data '{}' \
+              "$SWEEP_URL")"; then
+              echo "::error::The sweep request to $SWEEP_URL could not be made."
+              exit 1
+            fi
+            if [ "$status" = "404" ]; then
+              echo "::error::The site answered 404: Vercel Production lacks CALENDAR_FEED_SWEEP_SECRET with this environment's value, or PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY; see SETUP.md."
+              exit 1
+            fi
+            if [ "$status" != "200" ]; then
+              echo "::error::The sweep answered HTTP $status."
+              exit 1
+            fi
+            if ! more="$(node -e '
+              let reply;
+              try {
+                reply = JSON.parse(require("node:fs").readFileSync(process.argv[1], "utf8"));
+              } catch {
+                process.exit(2);
+              }
+              if (!Number.isInteger(reply?.pruned) || reply.pruned < 0
+                || !Number.isInteger(reply.batches) || typeof reply.more !== "boolean") process.exit(2);
+              console.error(`Deleted ${reply.pruned} feeds in ${reply.batches} batches.`);
+              process.stdout.write(reply.more ? "more" : "done");
+            ' "$reply")"; then
+              echo "::error::The sweep answered with an unexpected body."
+              exit 1
+            fi
+            if [ "$more" = "done" ]; then
+              echo "No more feeds are due."
+              exit 0
+            fi
+          done
+          echo "::error::More feeds were due than $SWEEP_MAX_CALLS sweep requests delete. The next daily run continues; run this workflow again to finish sooner."
+          exit 1

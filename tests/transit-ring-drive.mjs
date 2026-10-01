@@ -7,13 +7,28 @@
  *   npm run build
  *   OUT_DIR=/tmp/shots node tests/transit-ring-drive.mjs
  */
-import { readFile } from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
+import { readFile, mkdir, writeFile } from 'node:fs/promises';
 import { chromium } from 'playwright-core';
-import { spawn } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 import { setTimeout as wait } from 'node:timers/promises';
+import { resolve } from 'node:path';
+import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
+import { startPreview } from './visual/preview-server.mjs';
+import { phase1TemplateSourceSha256 } from './visual/phase1-evidence-contract.mjs';
 
-const OUT = process.env.OUT_DIR ?? null;
-const CHROMIUM = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH ?? '/opt/pw-browsers/chromium';
+const root = resolve(import.meta.dirname, '..');
+const OUT = resolve(process.env.OUT_DIR ?? 'tests/visual/artifacts/transit-ring');
+const buildReceiptBytes = await readFile(resolve(root, 'dist/.phase1-build-receipt.json'));
+const buildReceipt = JSON.parse(buildReceiptBytes);
+assert.equal(buildReceipt.templateSourceSha256, await phase1TemplateSourceSha256(root), 'Build the current source before driving the calendar UI.');
+const transitHtml = await readFile(resolve(root, 'dist/transits/index.html'), 'utf8');
+assert.ok(!/<html\b[^>]*\bdata-account-sync-v2\b/u.test(transitHtml), 'This existing saved-chart fixture requires the standard account-v2 flag-off build.');
+if (process.argv.includes('--check-build')) {
+  console.log('Transit/calendar UI fixture matches the current standard build; browser cases not run.');
+  process.exit(0);
+}
 
 const profile = {
   version: 1,
@@ -34,20 +49,25 @@ const profile = {
   }],
 };
 
-const preview = spawn('npx', ['astro', 'preview', '--host', '127.0.0.1', '--port', '4399'], { stdio: 'ignore' });
-await wait(2500);
+await mkdir(OUT, { recursive: true });
+const startedAt = new Date().toISOString();
+let preview;
+let browser;
+let browserVersion;
 const results = [];
 const check = (name, ok, detail = '') => { results.push({ name, ok, detail }); };
-const shot = async (t, p, o = {}) => { if (OUT) await t.screenshot({ path: `${OUT}/${p}`, ...o }).catch(() => {}); };
+const shot = async (t, p, o = {}) => { await t.screenshot({ path: `${OUT}/${p}`, ...o }); };
 
 try {
-  const browser = await chromium.launch({ executablePath: CHROMIUM });
+  preview = await startPreview({ port: 4399 });
+  browser = await chromium.launch({ executablePath: await findChromium(), headless: true, args: STABLE_CHROMIUM_ARGS });
+  browserVersion = await browser.version();
 
   async function run(page) {
     await page.addInitScript((prof) => {
       localStorage.setItem('zodiacs.profile.v1', JSON.stringify(prof));
     }, profile);
-    await page.goto('http://127.0.0.1:4399/transits/', { waitUntil: 'networkidle' });
+    await page.goto(`${preview.baseURL}/transits/`, { waitUntil: 'networkidle' });
     // The saved chart preselects; compute.
     await page.waitForSelector('.calc__submit', { timeout: 15000 });
     await page.locator('.calc__submit').click();
@@ -150,25 +170,56 @@ try {
     (await page.locator('.tring__date').textContent()) !== dateBeforeJump);
   await shot(page, 'transit-ring-markers.png', { clip: { x: 0, y: 0, width: 1440, height: 1100 } });
 
-  // Integration: the durable calendar subscription carries only the v2
-  // positions token used by chart sharing — never the saved birth input.
+  // Integration: subscribing makes a feed by POST, and the calendar address
+  // carries only the random id the server returns. The API is answered here
+  // with synthetic values, so nothing leaves the machine.
+  const FEED_ID = 'Zq3xPq0Jr9Vb_Tm2-Ka5sA';
+  const FEED_KEY = `${'k'.repeat(42)}A`;
+  const created = [];
+  const removed = [];
+  await page.route('**/api/calendar/feeds', async (route) => {
+    created.push(route.request().postDataJSON());
+    await route.fulfill({
+      status: 201,
+      contentType: 'application/json',
+      body: JSON.stringify({ id: FEED_ID, url: `https://zodiacs.org/api/calendar/feeds/${FEED_ID}`, secret: FEED_KEY }),
+    });
+  });
+  await page.route(`**/api/calendar/feeds/${FEED_ID}`, async (route) => {
+    removed.push({ method: route.request().method(), authorization: route.request().headers().authorization });
+    await route.fulfill({ status: 200, contentType: 'application/json', body: '{"removed":true}' });
+  });
   const calBtn = page.locator('[data-calendar-subscribe]');
-  await page.waitForSelector('[data-calendar-subscribe][href^="webcal:"]', { timeout: 10000 });
+  await page.waitForSelector('[data-calendar-subscribe]:not([disabled])', { timeout: 10000 });
   check('calendar subscription button renders', (await calBtn.count()) === 1);
-  const calendarHref = await calBtn.getAttribute('href');
-  const calendarUrl = calendarHref ? new URL(calendarHref) : null;
-  const positionsToken = calendarUrl?.searchParams.get('token') ?? '';
-  const positionsWire = positionsToken.startsWith('2.')
-    ? JSON.parse(Buffer.from(positionsToken.slice(2), 'base64url').toString('utf8'))
+  check('nothing is sent before subscribing', created.length === 0);
+  await calBtn.click();
+  await page.waitForSelector('[data-calendar-feed-url]', { timeout: 10000 });
+  const feedUrl = await page.locator('[data-calendar-feed-url]').inputValue();
+  const openHref = await page.locator('[data-calendar-open]').getAttribute('href');
+  const positionsCode = created[0]?.positions ?? '';
+  const positionsWire = positionsCode.startsWith('2.')
+    ? JSON.parse(Buffer.from(positionsCode.slice(2), 'base64url').toString('utf8'))
     : null;
-  check('calendar uses a webcal feed URL', calendarUrl?.protocol === 'webcal:');
-  check('calendar URL has only the positions token',
-    calendarUrl != null
-      && [...calendarUrl.searchParams.keys()].join(',') === 'token'
+  check('subscribing sends only the positions code, once',
+    created.length === 1
+      && Object.keys(created[0] ?? {}).join(',') === 'positions'
       && positionsWire != null
-      && Object.keys(positionsWire).every((key) => ['b', 'a', 'h', 'v'].includes(key))
-      && !calendarHref?.includes('Coyoac')
-      && !calendarHref?.includes('1907-07-06'));
+      && Object.keys(positionsWire).every((key) => ['b', 'a', 'h', 'v'].includes(key)));
+  check('calendar address carries only the random id',
+    feedUrl === `https://zodiacs.org/api/calendar/feeds/${FEED_ID}`
+      && openHref === `webcal://zodiacs.org/api/calendar/feeds/${FEED_ID}`
+      && !openHref.includes('Coyoac')
+      && !openHref.includes('1907-07-06'));
+  check('the key that removes it is kept in this browser',
+    (await page.evaluate(() => localStorage.getItem('zodiacs.calendar-feeds.v1') ?? '')).includes(FEED_KEY));
+  await page.locator('[data-calendar-remove]').click();
+  await page.waitForSelector('[data-calendar-subscribe]', { timeout: 10000 });
+  check('removing sends the key as a bearer and forgets it',
+    removed.length === 1
+      && removed[0].method === 'DELETE'
+      && removed[0].authorization === `Bearer ${FEED_KEY}`
+      && !(await page.evaluate(() => localStorage.getItem('zodiacs.calendar-feeds.v1'))));
   await page.close();
 
   // ── Mobile ──
@@ -195,13 +246,12 @@ try {
   }
   check('steppers clamp to the one-year window', (await rm.locator('.tring__range').inputValue()) === '365');
   await rm.close();
-
-  await browser.close();
 } catch (error) {
   // Keep the checks already made when a later browser action fails.
   check('drive completed without an unhandled failure', false, error instanceof Error ? error.message : String(error));
 } finally {
-  preview.kill();
+  await browser?.close();
+  await preview?.stop();
 }
 
 let failed = 0;
@@ -210,4 +260,14 @@ for (const r of results) {
   console.log(`${r.ok ? 'PASS' : 'FAIL'}  ${r.name}${r.detail ? `  · ${r.detail.slice(0, 90)}` : ''}`);
 }
 console.log(failed ? `\n${failed} FAILURES` : '\nALL PASS');
+await writeFile(resolve(OUT, 'result.json'), JSON.stringify({
+  schema: 'zodiacs.transit-calendar-ui-browser/v1',
+  sourceCommit: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim(),
+  driverSha256: createHash('sha256').update(await readFile(new URL(import.meta.url))).digest('hex'),
+  buildReceiptSha256: createHash('sha256').update(buildReceiptBytes).digest('hex'),
+  buildReceipt, startedAt, completedAt: new Date().toISOString(), node: process.version,
+  browser: browserVersion ?? null, accountV2Flag: false,
+  controlledBoundary: 'Existing synthetic calendar create/remove responses; unchanged historical saved-chart fixture and assertions',
+  results, passed: results.length - failed, failed,
+}, null, 2) + '\n');
 process.exit(failed ? 1 : 0);

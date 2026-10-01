@@ -16,8 +16,8 @@ const walletChartEnabled = configuredWalletChains({
   PUBLIC_WALLET_CHART_ENABLED:
     import.meta.env.PUBLIC_WALLET_CHART_ENABLED ?? process.env.PUBLIC_WALLET_CHART_ENABLED,
 }).length > 0;
-const updated = '29 de setembro de 2026';
-const modifiedAt = '2026-09-29T00:00:00.000Z';
+const updated = '1 de outubro de 2026';
+const modifiedAt = '2026-10-01T00:00:00.000Z';
 
 const jsonLd = [
   {
@@ -508,8 +508,42 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         dispositivo.
       </p>
       <p>
-        Um feed de calendário de trânsitos leva no endereço web um código do
-        mapa só com posições. Nosso servidor, o cache dele e o seu serviço de
+        Quando você assina um calendário de trânsitos, a página envia uma
+        única vez ao nosso servidor o código do mapa só com posições, descrito
+        mais abaixo. Nosso servidor guarda apenas aquilo a partir do que o
+        calendário é calculado: as posições dos dez planetas, do Sol a Plutão,
+        com precisão de 0,001°, e o ascendente e o Meio do Céu em graus
+        inteiros ou, para um mapa sem hora de nascimento, as posições das
+        12:00 UTC da data de nascimento, sem ascendente nem Meio do Céu. Ele
+        não guarda nome, local, data nem hora de nascimento. O registro fica
+        no nosso banco de dados no Supabase, na região de Tóquio
+        (ap-northeast-1), com o momento em que foi criado e o da última
+        consulta ao nosso servidor. O endereço do calendário leva apenas um
+        identificador aleatório. Com hora de nascimento, as posições ainda
+        indicam sua data e hora de nascimento com precisão de minuto, e o
+        ascendente e o Meio do Céu restringem o seu local de nascimento à área
+        descrita mais abaixo para o código do mapa; sem ela, indicam a data e
+        nada sobre o local de nascimento. O seu serviço de calendário consulta
+        o endereço para manter o calendário atualizado, e os horários dos
+        eventos indicam o mesmo; qualquer pessoa que tenha o endereço pode
+        consultar o calendário.
+      </p>
+      <p>
+        Um calendário que ninguém consulta há 12 meses é apagado. Você pode
+        removê-lo antes com “Remover este calendário” onde assinou, no mesmo
+        navegador: esse navegador guarda a chave que o remove, e nosso
+        servidor guarda apenas um resumo irreversível da chave. Remover o
+        calendário apaga o registro na hora, e o endereço deixa de funcionar
+        em menos de uma hora. Se esse navegador não tiver mais a chave, remova
+        o calendário do seu app de calendário, para que nada o consulte e ele
+        seja apagado 12 meses depois, ou envie o endereço dele para <a href="mailto:admin@zodiacs.org">admin@zodiacs.org</a> e nós o
+        apagaremos. As cópias nos nossos backups semanais expiram em até 90
+        dias (veja a seção Backups).
+      </p>
+      <p>
+        Um endereço de calendário criado antes de o site dar aos calendários
+        endereços aleatórios leva, em vez disso, um código do mapa só com
+        posições. Nosso servidor, o cache dele e o seu serviço de
         calendário recebem esse código a cada atualização do calendário. O
         código não tem campos de nome, data, hora nem local. Ainda assim, as
         posições dos planetas no código permitem deduzir sua data e hora de
@@ -534,11 +568,14 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         nascimento, que restringe o local de nascimento a poucas faixas de cerca
         de 3 km de largura ou menos. Os endereços de calendário criados antes de
         23 de setembro de 2026 também levam o ascendente e o Meio do Céu com
-        mais precisão; nosso servidor agora os arredonda antes de usá-los. Um
-        endereço de calendário nunca muda sozinho, então, para substituir um
-        criado por uma versão anterior, como o de um mapa sem hora de nascimento
-        ou de um nascimento anterior à hora padrão, remova esse calendário e
-        assine novamente.
+        mais precisão; nosso servidor agora os arredonda antes de usá-los.
+      </p>
+      <p>
+        Esses endereços antigos continuam funcionando por 60 dias depois que o
+        site começou a dar aos calendários endereços aleatórios. Nesses dias,
+        o calendário mostra um evento pedindo que você assine novamente, e
+        depois o endereço deixa de funcionar. Para substituir um antes disso,
+        remova esse calendário do seu app de calendário e assine novamente.
       </p>
       <p>
         Um arquivo de calendário que você baixa da página de trânsitos é criado
@@ -602,10 +639,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         Como acontece com qualquer serviço de hospedagem na web, os servidores
         dela processam as solicitações feitas pelo seu navegador e podem manter
         registros técnicos de curta duração (como endereço IP e tipo de
-        navegador) para entregar o site e protegê-lo contra abusos. Esses
-        registros guardam o endereço web completo de cada solicitação, que num
-        calendário de trânsitos inclui o código do mapa e num link com prévia
-        inclui o Sol, a Lua e o Ascendente. Não
+        navegador) para entregar o site e protegê-lo contra abusos. Esses registros guardam o endereço web completo de cada solicitação. Num calendário de trânsitos, é o identificador aleatório dele ou, num endereço criado antes de o site dar aos calendários endereços aleatórios, o código do mapa; num link com prévia, inclui o Sol, a Lua e o Ascendente. Não
         veiculamos publicidade e não usamos cookies de rastreamento entre sites
         nem pixels de marketing de terceiros.
       </p>
@@ -655,11 +689,18 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         enquanto você usa um convite de compatibilidade. O restante é
         armazenamento do navegador próprio do site para os recursos que você
         usa: o que você salva (mapas, comparações, momentos do Living Chart,
-        progresso de aprendizado), o estado de trabalho das ferramentas que
-        você usa (como a conversa do Guide e cálculos em cache), dados de
-        sessão limitados do Aura, um endereço do Aura lembrado de forma
-        opcional, preferências do site, cópias dos próprios arquivos do site
-        para uso offline e, se você entrar, um token de acesso. Fora esses
+        progresso de aprendizado), os endereços dos calendários de trânsitos
+        que você assinou e as chaves que os removem, o estado de trabalho das
+        ferramentas que você usa (como a conversa do Guide e cálculos em
+        cache), dados de sessão limitados do Aura, um endereço do Aura lembrado
+        de forma opcional, preferências do site, cópias dos próprios arquivos
+        do site para uso offline e, se você entrar, um token de acesso. Para
+        cada calendário de trânsitos, o navegador em que você assinou guarda o
+        endereço dele, a chave que o remove e o momento em que foi criado. O
+        endereço permite que qualquer pessoa que o tenha leia o calendário, e
+        os três ficam até você remover o calendário ali ou apagar os dados
+        deste site nesse navegador,
+        mesmo depois que nosso servidor tiver apagado o calendário. Fora esses
         cookies e o que as seções acima descrevem, esse armazenamento fica no
         seu dispositivo, e nada dele é usado para rastrear você em outros
         sites.
@@ -683,6 +724,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
           ? <li>Exportar ou excluir uma conta na página de perfil; escolher separadamente se quer limpar este navegador.</li>
           : <li>Excluir uma conta e os dados sincronizados dela enviando um e-mail para nós.</li>}
         {weeklyDigestEnabled && <li>Desativar o e-mail semanal com um clique, a qualquer momento.</li>}
+        <li>Remover um calendário de trânsitos que você assinou, onde assinou, no mesmo navegador.</li>
         <li>Cancelar um convite de compatibilidade no seu perfil antes que ele seja usado.</li>
         <li>Pedir a correção, a ocultação ou a remoção de um perfil do diretório People.</li>
       </ul>

@@ -15,6 +15,22 @@ export interface TransitCalendarOptions {
    * given to the minute. Contacts to planets are unchanged.
    */
   natalAngles?: 'exact' | 'whole-degree';
+  /**
+   * One all-day event placed before the contacts, the same for every
+   * subscriber: the request to subscribe again on an older feed address.
+   */
+  notice?: CalendarNotice;
+}
+
+/** An all-day message event. It carries nothing about the subscriber. */
+export interface CalendarNotice {
+  /** Stable identifier fragment, e.g. `resubscribe-2026-11-28`. */
+  id: string;
+  /** The UTC day the event sits on. */
+  day: Date | string;
+  summary: string;
+  description: string;
+  url?: string;
 }
 
 /** Escape an RFC 5545 TEXT value. */
@@ -116,6 +132,29 @@ function eventLines(contact: TransitContact, dtstamp: string, exact: boolean): s
   ];
 }
 
+function formatIcalDate(value: Date): string {
+  return value.toISOString().slice(0, 10).replace(/-/g, '');
+}
+
+function noticeLines(notice: CalendarNotice, dtstamp: string): string[] {
+  const day = notice.day instanceof Date ? new Date(notice.day.getTime()) : new Date(notice.day);
+  if (!Number.isFinite(day.getTime())) throw new RangeError(`Invalid notice day: ${String(notice.day)}`);
+  const start = new Date(Date.UTC(day.getUTCFullYear(), day.getUTCMonth(), day.getUTCDate()));
+  const end = new Date(start.getTime() + 86_400_000);
+  return [
+    'BEGIN:VEVENT',
+    `UID:notice-${slug(notice.id)}@zodiacs.org`,
+    `DTSTAMP:${dtstamp}`,
+    `DTSTART;VALUE=DATE:${formatIcalDate(start)}`,
+    `DTEND;VALUE=DATE:${formatIcalDate(end)}`,
+    'TRANSP:TRANSPARENT',
+    `SUMMARY:${escapeIcalText(notice.summary)}`,
+    `DESCRIPTION:${escapeIcalText(notice.description)}`,
+    ...(notice.url ? [`URL:${notice.url}`] : []),
+    'END:VEVENT',
+  ];
+}
+
 /** Truncate an instant to its UTC minute, for a contact that is not exact. */
 function truncateToMinute(value: string): string {
   formatIcalUtc(value);
@@ -159,6 +198,7 @@ export function serializeTransitContacts(
     'PRODID:-//Zodiacs.org//Transit Contacts 1.0//EN',
     'CALSCALE:GREGORIAN',
     `X-WR-CALNAME:${escapeIcalText(options.calendarName ?? 'Zodiacs.org transit contacts')}`,
+    ...(options.notice ? noticeLines(options.notice, dtstamp) : []),
     ...prepared.flatMap(({ contact, exact }) => eventLines(contact, dtstamp, exact)),
     'END:VCALENDAR',
   ];

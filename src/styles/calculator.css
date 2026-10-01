@@ -567,6 +567,53 @@
   text-align: center;
 }
 .calendar-subscribe [aria-disabled='true'] { opacity: 0.5; pointer-events: none; }
+.calendar-subscribe__address {
+  display: grid;
+  flex-basis: 100%;
+  gap: 6px;
+  max-width: 68ch;
+}
+.calendar-subscribe__address .field__input {
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+.calendar-subscribe__status,
+.calendar-subscribe__error {
+  flex-basis: 100%;
+  max-width: 68ch;
+  margin: 0;
+  font-size: var(--text-sm);
+}
+.calendar-subscribe__status { color: var(--text-2); }
+.calendar-subscribe__error { color: var(--sign-aries); }
+.calendar-subscribe__others {
+  flex-basis: 100%;
+  max-width: 68ch;
+  color: var(--text-2);
+  font-size: var(--text-sm);
+}
+.calendar-subscribe__others summary { cursor: pointer; }
+.calendar-subscribe__others ul {
+  display: grid;
+  gap: 10px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.calendar-subscribe__others li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+}
+.calendar-subscribe__url {
+  flex-basis: 100%;
+  min-width: 0;
+  color: var(--faint);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
 
 /* Share block — quiet, sits under the save actions */
 .calc__share {

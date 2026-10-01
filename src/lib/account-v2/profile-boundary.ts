@@ -423,6 +423,11 @@ export function clearAllZodiacsDataFromDevice(
   // Record the IndexedDB deletion after enumerating localStorage. Otherwise
   // this same cleanup loop removes the durable retry marker it just created.
   clearLivingChartForBoundary(local, 'all');
+  // Calendar removal keys can also live only in this document when storage
+  // refused them. Clear those and fence late requests before sign-out/reload.
+  if (ok && isBrowserLocalStorage(local)) {
+    window.dispatchEvent(new Event('zodiacs:calendar-feeds-cleared'));
+  }
   return { ok, restoredPreviousArchive: false };
 }
 

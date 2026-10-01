@@ -69,7 +69,7 @@ These values may appear in client bundles. They must never contain a secret.
 
 | Variable | Required when | Meaning |
 | --- | --- | --- |
-| `PUBLIC_SUPABASE_URL` | Account sync, digest/daily-email/push backend, assistant quota | Supabase project origin. |
+| `PUBLIC_SUPABASE_URL` | Account sync, digest/daily-email/push backend, assistant quota, transit calendar feeds | Supabase project origin. |
 | `PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Account sync | Modern browser publishable key; preferred. |
 | `PUBLIC_SUPABASE_ANON_KEY` | Legacy fallback only | Older browser key name. Do not set when the publishable key is available. |
 | `PUBLIC_PLAUSIBLE_SCRIPT_URL` | Analytics enabled | Full cookieless analytics script URL. Unset means no provider script. |
@@ -93,6 +93,7 @@ These values may appear in client bundles. They must never contain a secret.
 | `COMPAT_INVITE_TEST_USER_IDS` | Vercel server configuration | Comma-separated list of exact Auth user UUIDs allowed to create invitations while public authorization is off. Missing or empty fails closed: nobody can create. Retain the approved canary owner after launch so disabling `COMPAT_INVITES_PUBLIC_ENABLED` restores the reviewed private boundary. Clearing this value never launches the feature. |
 | `COMPAT_INVITE_BASE_URL` | Vercel server configuration, optional | HTTPS site origin used in the one-time creation URL; defaults to `https://zodiacs.org`. |
 | `COMPAT_INVITE_SWEEP_SECRET` | Vercel + `compatibility-invite-production` environment secret | At least 32 characters. The same value authenticates the hourly cleanup workflow to the server endpoint. |
+| `CALENDAR_FEED_SWEEP_SECRET` | Vercel Production + `calendar-feed-production` environment secret | At least 32 characters. The same value authenticates the daily Calendar Feed Sweep workflow to `/api/calendar/feed-sweep`, which deletes transit calendar feeds that no calendar has fetched for 12 months. Without it in Vercel, `POST /api/calendar/feeds` makes no feed and answers 503, so no feed exists that the sweep cannot delete; without it in the environment, the sweep workflow fails. The calendar function also needs `PUBLIC_SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` in Production. |
 | `ACCOUNT_SYNC_V2_API_ENABLED` | Vercel server flag | Must equal exactly `1` for new enrollment and ordinary v2 sync. Missing or any other value fails closed. It is a sync-canary switch, not a privacy-rights switch: export, deletion recovery, consent withdrawal, and removal of an existing remote chart remain available during rollback. |
 | `ACCOUNT_SYNC_V2_CANARY_USER_IDS` | Vercel server configuration | Comma-separated list of 1–100 exact Auth user UUIDs admitted to the private sync canary. Missing, empty, malformed, or oversized configuration denies enrollment, upload, and read calls; it never creates public access. |
 | `ACCOUNT_SYNC_V2_ENCRYPTION_KEYS` | Vercel server secret | JSON object containing 1–16 positive numeric key versions mapped to canonical base64 32-byte service-managed encryption keys. Retain older keys until every envelope using them has been re-encrypted or deleted. Never use a `PUBLIC_` prefix. |
@@ -145,6 +146,7 @@ whose deployment policy selects the exact `main` branch:
 | Environment | Secrets |
 | --- | --- |
 | `account-cleanup-production` | `ACCOUNT_SYNC_V2_CLEANUP_SECRET` when account sync v2 is released |
+| `calendar-feed-production` | `CALENDAR_FEED_SWEEP_SECRET` |
 | `compatibility-invite-production` | `COMPAT_INVITE_SWEEP_SECRET` |
 | `database-backup-production` | `SUPABASE_DB_URL`, `BACKUP_PASSPHRASE` |
 | `daily-email-production` | daily hash/allowlist/unsubscribe secrets, both Resend keys, segment IDs, and `SUPABASE_SERVICE_ROLE_KEY` |

@@ -113,11 +113,15 @@ describe('browser evidence capture control', () => {
       build: { outcome: 'success', outputs: { credentials: 'must-not-be-copied' } },
       visual: { outcome: 'failure', conclusion: 'success' },
       lighthouse: { outcome: 'skipped' },
+      calendar: { outcome: 'failure', outputs: { arbitrary: 'must-not-be-copied' } },
+      transitCalendar: { outcome: 'success', outputs: { arbitrary: 'must-not-be-copied' } },
       unrelated: { outcome: 'success' },
     });
     expect(outcomes.build).toBe('success');
     expect(outcomes.visual).toBe('failure');
     expect(outcomes.lighthouse).toBe('skipped');
+    expect(outcomes.calendar).toBe('failure');
+    expect(outcomes.transitCalendar).toBe('success');
     expect(outcomes.acceptance).toBe('unrecorded');
     expect(JSON.stringify(outcomes)).not.toContain('must-not-be-copied');
     expect(outcomes).not.toHaveProperty('unrelated');

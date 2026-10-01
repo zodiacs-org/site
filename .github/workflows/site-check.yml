@@ -146,6 +146,25 @@ jobs:
         timeout-minutes: 3
         run: OUT_DIR=tests/visual/artifacts/saved-natal-storage node tests/saved-natal-storage-drive.mjs
 
+      - name: Calendar feed cross-tab clear-all fencing
+        timeout-minutes: 3
+        run: node tests/calendar-feed-cross-tab-drive.mjs
+
+      - name: Full transit ring and calendar subscription UI
+        timeout-minutes: 5
+        run: node tests/transit-ring-drive.mjs
+
+      - name: Upload calendar browser evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: calendar-browser-${{ github.run_id }}
+          path: |
+            tests/visual/artifacts/calendar-feed-cross-tab/
+            tests/visual/artifacts/transit-ring/
+          if-no-files-found: ignore
+          retention-days: 30
+
       - name: Engine accuracy vectors
         run: npm test
 
@@ -357,6 +376,17 @@ jobs:
 
       - name: PostgreSQL 17 migration, privacy, and concurrency gates
         run: bash scripts/test-phase4-compat-invites-sql.sh
+
+  calendar-feeds-sql:
+    name: Calendar feed SQL
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+
+      - name: PostgreSQL 17 migration, privacy, retention, and concurrency gates
+        run: bash scripts/test-calendar-feeds-sql.sh
 
   phase6-assistant-sql:
     name: Phase 6 assistant quota SQL

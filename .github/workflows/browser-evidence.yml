@@ -95,6 +95,18 @@ jobs:
           OUT_DIR: tests/visual/artifacts/explorer
         run: node tests/explorer-drive.mjs
 
+      - name: Calendar feed cross-tab clear-all fencing
+        id: calendar
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.request.outputs.mode == 'compare' }}
+        timeout-minutes: 3
+        run: node tests/calendar-feed-cross-tab-drive.mjs
+
+      - name: Full transit ring and calendar subscription UI
+        id: transitCalendar
+        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.request.outputs.mode == 'compare' }}
+        timeout-minutes: 5
+        run: node tests/transit-ring-drive.mjs
+
       - name: Record source, browser, outcomes and artifact hashes
         id: provenance
         if: ${{ always() && steps.request.outcome == 'success' }}

@@ -1,9 +1,10 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import handler, {
   buildTransitCalendar,
   handleTransitCalendar,
 } from '../../../api/calendar/transits';
-import { calendarToken, calendarWebcalUrl } from '../../islands/CalendarSubscribe';
+import { calendarToken } from '../../islands/CalendarSubscribe';
+import { calendarFeedWebcalUrl } from '../calendar-feed/shared';
 import { decodePositionsLink, encodePositionsLink, POSITION_BODY_ORDER } from '../share-positions';
 
 const CRLF = '\r\n';
@@ -17,7 +18,38 @@ function uidLines(calendar: string): string[] {
   return calendar.split(CRLF).filter((line) => line.startsWith('UID:'));
 }
 
+describe('legacy calendar failure privacy', () => {
+  it('never logs an exception that echoes the positions token', async () => {
+    const lines: string[] = [];
+    const spy = vi.spyOn(console, 'error').mockImplementation((...args) => { lines.push(args.map(String).join(' ')); });
+    try {
+      const response = {
+        statusCode: 0, body: '',
+        setHeader() {},
+        end(body: string) { this.body = body; },
+      };
+      await handleTransitCalendar(
+        { method: 'GET', query: { token: PINNED_TOKEN }, headers: {} }, response,
+        () => { throw new Error(`SYNTHETIC_PRIVATE_CALENDAR_PAYLOAD ${PINNED_TOKEN}`); },
+        { now: () => new Date('2026-10-01T12:00:00Z'), windowStart: null },
+      );
+      expect(response.statusCode).toBe(500);
+      expect(lines).toEqual(['Transit calendar build failed.']);
+      expect(response.body).not.toContain(PINNED_TOKEN);
+    } finally {
+      spy.mockRestore();
+    }
+  });
+});
+
 describe('subscribable transit calendar', () => {
+  // These legacy-format checks stay in their pre-release state. The separate
+  // legacy-window suite exercises the deployed window and its 410 boundary.
+  beforeEach(() => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date('2026-03-19T12:00:00Z'));
+  });
+  afterEach(() => { vi.useRealTimers(); });
   it('serializes a pinned positions-only token with stable UIDs and valid RFC 5545 lines', () => {
     const first = buildTransitCalendar(PINNED_TOKEN, {
       ...WINDOW,
@@ -97,15 +129,15 @@ describe('subscribable transit calendar', () => {
     expect(decoded?.houseSystem).toBe('placidus');
   });
 
-  it('builds webcal URLs with only the existing positions token', () => {
-    const value = calendarWebcalUrl('https://zodiacs.org', PINNED_TOKEN);
+  it('builds webcal URLs that carry only the random feed id', () => {
+    const value = calendarFeedWebcalUrl('https://zodiacs.org/api/calendar/feeds/Zq3xPq0Jr9Vb_Tm2-Ka5sA')!;
     const parsed = new URL(value);
     expect(parsed.protocol).toBe('webcal:');
     expect(parsed.host).toBe('zodiacs.org');
-    expect(parsed.pathname).toBe('/api/calendar/transits');
-    expect([...parsed.searchParams.keys()]).toEqual(['token']);
-    expect(parsed.searchParams.get('token')).toBe(PINNED_TOKEN);
-    expect(value).not.toMatch(/date|time|place|lat|lon|coord|name/i);
+    expect(parsed.pathname).toBe('/api/calendar/feeds/Zq3xPq0Jr9Vb_Tm2-Ka5sA');
+    expect([...parsed.searchParams.keys()]).toEqual([]);
+    expect(value).not.toContain(PINNED_TOKEN.slice(2, 12));
+    expect(calendarFeedWebcalUrl(`https://zodiacs.org/api/calendar/transits?token=${PINNED_TOKEN}`)).toBeNull();
   });
 
   it('rejects invalid tokens and non-GET requests without scanning', async () => {

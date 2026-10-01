@@ -1,26 +1,46 @@
-// Vercel serverless function for a durable, subscribable transit calendar.
-// The query carries the positions-only v2 share token: body longitudes to
-// 0.001° plus ASC/MC. The token has no name, birth date, time, place, or
-// coordinates field, but the positions still give the birth date and time.
-import { checkRateLimit } from '@vercel/firewall';
-import { scanTransitContacts } from '../../src/lib/engine/transit-scan-server.js';
-import { serializeTransitContacts } from '../../src/lib/ical.js';
+// Vercel serverless function for the subscribable transit calendar.
+//
+// A subscription made today is a stored feed addressed by a random id (owner
+// decision of 2026-09-28, §2): vercel.json rewrites /api/calendar/feeds and
+// /api/calendar/feeds/<id> here, and src/lib/calendar-feed/routes.ts makes,
+// serves and removes those feeds. Their URL carries only the id.
+//
+// An address made before then carries the positions-only v2 share code in
+// its query: body longitudes to 0.001° plus ASC/MC. The code has no name,
+// birth date, time, place, or coordinates field, but its positions still
+// give the birth date and time. Such addresses keep working for 60 days from
+// the release of feed ids, with one event asking the subscriber to subscribe
+// again, and then answer 410 Gone (src/lib/calendar-feed/legacy-window.ts).
 import { decodePositionsLink, wholeDegreeAngles } from '../../src/lib/share-positions.js';
+import { buildFeedCalendar, type CalendarBuildOptions } from '../../src/lib/calendar-feed/build.js';
+import {
+  LEGACY_FEED_GONE_TEXT,
+  LEGACY_FEED_WINDOW_START,
+  legacyFeedPhase,
+  resubscribeNotice,
+} from '../../src/lib/calendar-feed/legacy-window.js';
+import { transitCalendarRateLimited } from '../../src/lib/calendar-feed/rate-limit.js';
+import {
+  handleCalendarFeed,
+  handleCalendarFeedCreate,
+  handleCalendarFeedSweep,
+} from '../../src/lib/calendar-feed/routes.js';
 
-const DAY = 86_400_000;
-const BACK_DAYS = 31;
-const AHEAD_DAYS = 183;
+export {
+  CALENDAR_FEED_WRITE_RATE_LIMIT_ID,
+  TRANSIT_CALENDAR_RATE_LIMIT_ID,
+} from '../../src/lib/calendar-feed/rate-limit.js';
 
-interface CalendarBuildOptions {
-  generatedAt?: Date | string;
-  /** Focused windows are exposed for deterministic contract tests only. */
-  from?: Date;
-  to?: Date;
-}
-
-function validDate(value: Date): boolean {
-  return Number.isFinite(value.getTime());
-}
+/**
+ * bodyParser is a Next.js API-route option; Vercel's Node.js runtime ignores
+ * it. That runtime parses `req.body` only when code reads it, and no route
+ * here does: making a feed reads the raw bytes of the request stream and
+ * refuses a body past 512 bytes (src/lib/calendar-feed/body.ts), and every
+ * other route reads no body. The option is kept for a runtime that honours it.
+ */
+export const config = {
+  api: { bodyParser: false },
+};
 
 /**
  * Build the feed from the same v2 token used by chart share links. ASC and MC
@@ -35,28 +55,7 @@ export function buildTransitCalendar(
   const chart = decodePositionsLink(token);
   if (!chart) throw new RangeError('Invalid positions-only chart token.');
   const angles = chart.angles ? wholeDegreeAngles(chart.angles) : null;
-
-  const generatedAt = options.generatedAt == null
-    ? new Date()
-    : new Date(options.generatedAt);
-  if (!validDate(generatedAt)) throw new RangeError('Invalid calendar receipt time.');
-
-  const from = options.from ?? new Date(generatedAt.getTime() - BACK_DAYS * DAY);
-  const to = options.to ?? new Date(generatedAt.getTime() + AHEAD_DAYS * DAY);
-  if (!validDate(from) || !validDate(to) || from.getTime() > to.getTime()) {
-    throw new RangeError('Invalid transit calendar window.');
-  }
-
-  const contacts = scanTransitContacts(
-    { bodies: chart.bodies, angles },
-    from,
-    to,
-  );
-  return serializeTransitContacts(contacts, {
-    generatedAt,
-    calendarName: 'Zodiacs.org transit contacts',
-    natalAngles: 'whole-degree',
-  });
+  return buildFeedCalendar({ bodies: chart.bodies, angles }, options);
 }
 
 function send(res: any, status: number, type: string, body: string, cache: string): void {
@@ -67,26 +66,39 @@ function send(res: any, status: number, type: string, body: string, cache: strin
   res.end(body);
 }
 
-type TransitCalendarBuilder = (token: string) => string;
+const LEGACY_SHARED_MAX_AGE = 21_600;
+const LEGACY_STALE_WHILE_REVALIDATE = 43_200;
 
-/** Uses Vercel's per-region firewall counters; the matching WAF rule must use this exported ID. */
-export const TRANSIT_CALENDAR_RATE_LIMIT_ID = 'zodiacs-transit-calendar';
+/**
+ * The shared-cache policy of an older address: six hours, and twelve more
+ * while it revalidates, but never past the end of its window, so the cache
+ * cannot serve it once it answers 410.
+ */
+export function legacyFeedCacheControl(now: Date, endsAt: Date | null): string {
+  const left = endsAt === null
+    ? Number.POSITIVE_INFINITY
+    : Math.max(0, Math.floor((endsAt.getTime() - now.getTime()) / 1000));
+  const maxAge = Math.min(LEGACY_SHARED_MAX_AGE, left);
+  const stale = Math.min(LEGACY_STALE_WHILE_REVALIDATE, left - maxAge);
+  return `public, max-age=0, s-maxage=${maxAge}, stale-while-revalidate=${stale}`;
+}
 
-async function transitCalendarRateLimited(req: any): Promise<boolean> {
-  try {
-    const result = await checkRateLimit(TRANSIT_CALENDAR_RATE_LIMIT_ID, { headers: req.headers });
-    // CDN caching absorbs repeat tokens; the counter bounds an attacker
-    // minting unlimited distinct tokens. An unprovisioned rule never blocks.
-    return result?.rateLimited === true && result?.error !== 'not-found';
-  } catch {
-    return false;
-  }
+/** Once the window has closed, an older address is gone for good. */
+const LEGACY_GONE_CACHE_CONTROL = 'public, max-age=86400';
+
+type TransitCalendarBuilder = (token: string, options?: CalendarBuildOptions) => string;
+
+export interface LegacyFeedOptions {
+  now?: () => Date;
+  /** The release day the window opens on; LEGACY_FEED_WINDOW_START unless a test sets it. */
+  windowStart?: string | null;
 }
 
 export async function handleTransitCalendar(
   req: any,
   res: any,
   buildCalendar: TransitCalendarBuilder = buildTransitCalendar,
+  options: LegacyFeedOptions = {},
 ): Promise<void> {
   if (req.method !== 'GET') {
     res.setHeader('Allow', 'GET');
@@ -105,26 +117,46 @@ export async function handleTransitCalendar(
     return;
   }
 
+  const now = options.now?.() ?? new Date();
+  const window = legacyFeedPhase(
+    now,
+    options.windowStart === undefined ? LEGACY_FEED_WINDOW_START : options.windowStart,
+  );
+  if (window.phase === 'gone') {
+    send(res, 410, 'text/plain', LEGACY_FEED_GONE_TEXT, LEGACY_GONE_CACHE_CONTROL);
+    return;
+  }
+
   try {
-    const calendar = buildCalendar(token);
+    const calendar = buildCalendar(token, window.phase === 'window'
+      ? { generatedAt: now, notice: resubscribeNotice(now, window.endsAt) }
+      : { generatedAt: now });
     res.setHeader('Content-Disposition', 'inline; filename="zodiacs-transits.ics"');
     send(
       res,
       200,
       'text/calendar',
       calendar,
-      'public, max-age=0, s-maxage=21600, stale-while-revalidate=43200',
+      legacyFeedCacheControl(now, window.phase === 'window' ? window.endsAt : null),
     );
   } catch (error) {
     if (error instanceof RangeError && error.message.includes('token')) {
       send(res, 400, 'text/plain', 'Invalid positions-only chart token.', 'no-store');
       return;
     }
-    console.error(error);
+    // Exceptions may echo a positions token; the failure stage is sufficient.
+    console.error('Transit calendar build failed.');
     send(res, 500, 'text/plain', 'Could not build the transit calendar.', 'no-store');
   }
 }
 
+/** vercel.json sets this on the rewrites of the feed routes. */
+export const CALENDAR_ROUTE_PARAMETER = '__zodiacs_calendar_route';
+
 export default async function handler(req: any, res: any): Promise<void> {
+  const route = req.query?.[CALENDAR_ROUTE_PARAMETER];
+  if (route === 'create') return handleCalendarFeedCreate(req, res);
+  if (route === 'feed') return handleCalendarFeed(req, res);
+  if (route === 'sweep') return handleCalendarFeedSweep(req, res);
   return handleTransitCalendar(req, res);
 }

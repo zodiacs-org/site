@@ -63,7 +63,7 @@ const SHARED_ENCODERS: Record<string, readonly string[]> = {
 const EXACT_MODULE_IMPORTERS: Record<string, { takes: string[]; why: string }> = {
   'api/calendar/transits.ts': {
     takes: ['decodePositionsLink', 'wholeDegreeAngles'],
-    why: 'the calendar feed decodes the code in its URL and takes its angles to the whole degree',
+    why: 'a calendar address made before feed ids decodes the code in its URL and takes its angles to the whole degree',
   },
   'src/islands/CalendarSubscribe.tsx': {
     takes: ['encodeSharedPositionsLink'],
@@ -88,6 +88,10 @@ const EXACT_MODULE_IMPORTERS: Record<string, { takes: string[]; why: string }> =
   'src/islands/synastry/inviteClient.ts': {
     takes: ['decodePositionsLink', EXACT_ENCODER],
     why: 'checks the positions of an invitation the server returned (EXACT_CALLS)',
+  },
+  'src/lib/calendar-feed/positions.ts': {
+    takes: ['decodePositionsLink'],
+    why: 'a new calendar feed decodes the code the page sends when someone subscribes and stores only its planets and whole-degree angles; nothing is encoded',
   },
   'src/lib/account-v2/chart-wire.ts': {
     takes: ['POSITION_BODY_ORDER', 'decodePositionsLink', EXACT_ENCODER],

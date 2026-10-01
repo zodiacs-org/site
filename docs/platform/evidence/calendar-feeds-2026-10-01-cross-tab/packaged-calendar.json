@@ -1,0 +1,35 @@
+{
+  "schema": "zodiacs.calendar-feed-packaged-check/v1",
+  "sourceCommit": "339ecfc42c92e372f101289a6049370a16879f24",
+  "entrySha256": "6bb04f501e730298d27a1e79456224100b74399bbfa5c1b8f3d5790a284d598e",
+  "runtime": "v22.22.2",
+  "functionRuntime": "nodejs22.x",
+  "moduleSyntaxDetection": false,
+  "handler": ".vercel/output/functions/api/calendar/transits.func/api/calendar/transits.js",
+  "routeMethodGuards": [
+    {
+      "route": "create",
+      "method": "GET",
+      "status": 405,
+      "allow": "POST"
+    },
+    {
+      "route": "feed",
+      "method": "POST",
+      "status": 405,
+      "allow": "GET, DELETE"
+    },
+    {
+      "route": "sweep",
+      "method": "GET",
+      "status": 405,
+      "allow": "POST"
+    }
+  ],
+  "syntheticCalendar": {
+    "validEnvelope": true,
+    "events": 12
+  },
+  "fetchAttempts": 0,
+  "scope": "Packaged import, rejected method paths, and an in-process synthetic calendar only; no live-service checks."
+}

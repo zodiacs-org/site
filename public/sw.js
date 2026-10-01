@@ -190,11 +190,24 @@ function safeEventPath(value) {
   return value;
 }
 
+/**
+ * The site's API answers every request itself, and nothing under /api/ is
+ * cached here, navigations included. Opening a calendar feed's address in a
+ * tab is a navigation; the navigate branch below would otherwise keep the
+ * calendar in Cache Storage, where removing the calendar does not reach it.
+ */
+function siteApi(url) {
+  return url.pathname === '/api' || url.pathname.startsWith('/api/');
+}
+
 self.addEventListener('fetch', (event) => {
   const request = event.request;
   if (request.method !== 'GET') return;
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
+
+  // Straight to the network, as if no worker were installed.
+  if (siteApi(url)) return;
 
   // Registry identity and flag-stamped Terminal bytes are live authority.
   // Offline must fail honestly, never preserve an old mint or flag state.

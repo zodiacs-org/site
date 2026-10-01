@@ -104,6 +104,7 @@
     "test:phase3:post-chart": "node tests/post-chart-daily.mjs",
     "test:phase3:delivery-sql": "bash scripts/test-phase3-delivery-sql.sh",
     "test:phase4:invites-sql": "bash scripts/test-phase4-compat-invites-sql.sh",
+    "test:calendar:feeds-sql": "bash scripts/test-calendar-feeds-sql.sh",
     "test:phase4:sharing": "node tests/phase4-sharing.mjs",
     "test:phase5:people": "vitest run scripts/people-pilot.test.mjs && node tests/phase5-people-drive.mjs",
     "test:phase3:push": "node tests/push-drive.mjs",

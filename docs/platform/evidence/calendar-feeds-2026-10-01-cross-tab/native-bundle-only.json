@@ -1,0 +1,100 @@
+{
+  "schema": "zodiacs.calendar-feed-cross-tab-browser/v1",
+  "sourceCommit": "339ecfc42c92e372f101289a6049370a16879f24",
+  "startedAt": "2026-10-01T07:34:36.215Z",
+  "node": "v22.22.2",
+  "inputs": [
+    {
+      "path": "src/lib/account-v2/local-state.ts",
+      "sha256": "94133384e3e9184282c8350f038ab7cce5a95f815bd6e8f50d7778f5f916e345"
+    },
+    {
+      "path": "src/lib/account-v2/mutation-fingerprint.ts",
+      "sha256": "1c04d2a4f28215b713ce14ec8114719e742bfd457bbd943904e09ca5905c85a8"
+    },
+    {
+      "path": "src/lib/account-v2/profile-access-reader.ts",
+      "sha256": "2f163f1f29cc0a8ed72e39b0957480a2a04169eb5409635f8fb86927ce86c048"
+    },
+    {
+      "path": "src/lib/account-v2/profile-boundary.ts",
+      "sha256": "e2494ce52b5d56d60bfe8b279eba18e7d450b639513370ed0ffcc59ca4af76d3"
+    },
+    {
+      "path": "src/lib/account-v2/profile-lease.ts",
+      "sha256": "be434eba4d19ed65e439609dd627108538d15c12a78b36e999e6d75adc0a30ef"
+    },
+    {
+      "path": "src/lib/account-v2/storage-identity.ts",
+      "sha256": "fac153299e09bf775443e2ed71be9e81ad8de6ad911a87c85ac4fc42707675ab"
+    },
+    {
+      "path": "src/lib/account-v2/types.ts",
+      "sha256": "e9c448984990886832d1fd10b07f01dc995fa95d1ffed622d3c3f97709590810"
+    },
+    {
+      "path": "src/lib/calendar-feed/client.ts",
+      "sha256": "c2b778e373ad08f6896428808b2e8823c9d6fab6013a7b1c5c59487355648a5d"
+    },
+    {
+      "path": "src/lib/calendar-feed/shared.ts",
+      "sha256": "b1193256629b854653b1c49df690aabba9c60b65b633c982a655977a0e791a8b"
+    },
+    {
+      "path": "src/lib/living-chart/forecast-snapshot.ts",
+      "sha256": "d6beb01d92999434563196d6daf03479e9a0efc8b68d627501813da4620b7b24"
+    },
+    {
+      "path": "src/lib/living-chart/owner.ts",
+      "sha256": "d22af6676482d11d0c30ad5ac71ecc0b4fdc98cfba9f4e57b8f8b5b1d25e619a"
+    },
+    {
+      "path": "src/lib/living-chart/schema.ts",
+      "sha256": "bce0c78e775e7f889684defd9f345a45ed1e475fa7d682919f7a28d987d4f9ed"
+    },
+    {
+      "path": "src/lib/living-chart/store.ts",
+      "sha256": "47d7d834bff25a8d1b288a33bba72b5116bbf8c66fb54234c70573115b86c676"
+    },
+    {
+      "path": "src/lib/living-chart/sync-metadata.ts",
+      "sha256": "6c1df8efaca1d554820ae644b2477116e027cf1f6110b76d0e5a5139074a3d34"
+    },
+    {
+      "path": "src/lib/living-chart/types.ts",
+      "sha256": "8f79abb72f561be42bfc35e2e51160ed8993dd437aff53de842609161dd4681b"
+    },
+    {
+      "path": "src/lib/profile/deletions.ts",
+      "sha256": "ff6011e36ae422f154374973982c8e5d9840aafca12627554b3a1354ec5855ef"
+    },
+    {
+      "path": "src/lib/profile/page-keys.ts",
+      "sha256": "8c825dcb315323e0d7b36bb1b87e31b0649019da3720f561f95a8c7c6edad24d"
+    },
+    {
+      "path": "src/lib/profile/pairs.ts",
+      "sha256": "d65e900f510b30ea6e887a78c1c42d01243f8afa5d96c4cf8d1d12a9b7d41c18"
+    },
+    {
+      "path": "src/lib/profile/schema.ts",
+      "sha256": "cbbe3f11355458f162a1da37863b6bc9cb35c1cb53e24c20763f11e0d63e5789"
+    },
+    {
+      "path": "src/lib/share-positions.ts",
+      "sha256": "f35e2e004f2caeeee59200ad8544e2ea2e053464de3c5098a52c35c31e5b4a21"
+    }
+  ],
+  "bundleSha256": "efb7342b83e1c973a334fe08539a51f1df776b19b9dbd38ba0a01eb3f8b6a6e2",
+  "sourceInstrumented": false,
+  "controlledBoundaries": [
+    "synthetic POST response settlement",
+    "per-document native Storage method refusal",
+    "dropped native storage-event delivery"
+  ],
+  "storageAndLocks": "Native same-origin Storage and Web Locks in two real documents",
+  "results": [],
+  "pageErrors": [],
+  "blockedExternalRequests": [],
+  "outcome": "not-run"
+}

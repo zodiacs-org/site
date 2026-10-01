@@ -16,8 +16,8 @@ const walletChartEnabled = configuredWalletChains({
   PUBLIC_WALLET_CHART_ENABLED:
     import.meta.env.PUBLIC_WALLET_CHART_ENABLED ?? process.env.PUBLIC_WALLET_CHART_ENABLED,
 }).length > 0;
-const updated = '29 September 2026';
-const modifiedAt = '2026-09-29T00:00:00.000Z';
+const updated = '1 October 2026';
+const modifiedAt = '2026-10-01T00:00:00.000Z';
 
 const jsonLd = [
   {
@@ -473,12 +473,43 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         device.
       </p>
       <p>
-        A transit calendar feed carries a positions-only chart code in its web
-        address. Our server, its cache, and your calendar service receive that
-        code each time the calendar refreshes. The code has no name, date, time,
-        or place fields. Its planet positions still give your birth date and
-        time to the minute: they are taken at the birth time in UTC rounded to
-        the whole minute. The ascendant and midheaven are rounded to the degree,
+        When you subscribe to a transit calendar, the page sends our server the
+        chart's positions-only chart code, described below, once. Our server
+        keeps only what the calendar is computed from: the positions of the ten
+        planets from the Sun to Pluto, to 0.001°, and the ascendant and
+        midheaven to the whole degree, or, for a chart without a birth time,
+        the positions at 12:00 UTC on the birth date and no ascendant or
+        midheaven. It keeps no name, place, birth date, or birth time. The
+        record is kept in our database at Supabase, in its Tokyo region
+        (ap-northeast-1), with the time it was made and the time it was last
+        fetched from our server. The calendar's address carries only a random
+        identifier. With a birth time, the positions still give your birth date
+        and time to the minute, and the ascendant and midheaven narrow your
+        birthplace to the area described below for the chart code; without
+        one, they give the date and nothing about the birthplace. Your calendar
+        service fetches the address to keep the calendar current, and the times
+        of its events give the same; anyone who has the address can fetch the
+        calendar.
+      </p>
+      <p>
+        A calendar that no one has fetched for 12 months is deleted. You can
+        remove one sooner with “Remove this calendar” where you subscribed, in
+        the same browser: that browser keeps the key that removes it, and our
+        server keeps only a one-way digest of the key. Removing it deletes the
+        record at once, and the address stops working within the hour. If that
+        browser no longer has the key, remove the calendar from your calendar
+        app, so that nothing fetches it and it is deleted 12 months later, or
+        send its address to <a href="mailto:admin@zodiacs.org">admin@zodiacs.org</a>
+        and we will delete it. Copies in our weekly backups expire within 90
+        days (see Backups).
+      </p>
+      <p>
+        A calendar address made before the site gave calendars random addresses
+        carries a positions-only chart code instead. Our server, its cache, and
+        your calendar service receive that code each time the calendar
+        refreshes. The code has no name, date, time, or place fields. Its
+        planet positions still give your birth date and time to the minute:
+        they are taken at the birth time in UTC rounded to the whole minute. The ascendant and midheaven are rounded to the degree,
         which still narrows the birthplace to an area about one degree of
         longitude wide: about 110 km at the equator, 80 km at 45° north or
         south, and 55 km at 60°. From north to south the area is at least 400 km
@@ -496,10 +527,14 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         second of the birth, which narrows the birthplace to a few strips about
         3 km wide or less. Calendar addresses made before 23 September 2026 also
         carry the ascendant and midheaven more precisely; our server now rounds
-        them before use. A calendar address never changes by itself, so to
-        replace one made by an earlier version, such as one for a chart without
-        a birth time or for a birth before standard time, remove that calendar
-        and subscribe again.
+        them before use.
+      </p>
+      <p>
+        Those older addresses keep working for 60 days after the site started
+        giving calendars random addresses. During those days the calendar shows an
+        event asking you to subscribe again, and after them the address stops
+        working. To replace one sooner, remove that calendar from your calendar
+        app and subscribe again.
       </p>
       <p>
         A calendar file you download from the Transits page is built in your
@@ -582,9 +617,10 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         Like all web hosts, their servers process the requests your browser
         makes and may keep short-lived technical logs (such as IP address and
         browser type) to deliver the site and guard against abuse. Those logs
-        keep the full web address of each request, which for a transit
-        calendar includes its chart code and for a link with a preview image
-        includes the Sun, Moon, and rising sign. We do not run
+        keep the full web address of each request. For a transit calendar that
+        is its random identifier, or, for an address made before the site gave
+        calendars random addresses, its chart code; for a link with a preview
+        image it includes the Sun, Moon, and rising sign. We do not run
         advertising, and we use no cross-site tracking cookies or third-party
         marketing pixels.
       </p>
@@ -629,11 +665,17 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         invitation cookie, for up to 14 days while you use a compatibility
         invitation. The rest is first-party browser storage for features you
         use: what you save (charts, comparisons, Living Chart moments, learning
-        progress), working state for the tools you use (such as Guide's
-        conversation and cached calculations), bounded Aura session data, an
-        optional remembered Aura address, site preferences, copies of the site's
-        own files for offline use, and, if you sign in, a sign-in token. Apart
-        from these cookies and what the sections above describe, this storage
+        progress), the addresses of transit calendars you subscribed to and the
+        keys that remove them, working state for the tools you use (such as
+        Guide's conversation and cached calculations), bounded Aura session
+        data, an optional remembered Aura address, site preferences, copies of
+        the site's own files for offline use, and, if you sign in, a sign-in
+        token. For each transit calendar, the browser you subscribed in keeps
+        the calendar's address, the key that removes it, and when it was made.
+        The address lets anyone who has it read the calendar, and all three
+        stay until you remove the calendar there or clear this site's data in
+        that browser, even after our server has deleted the calendar. Apart from these cookies and what the
+        sections above describe, this storage
         stays on your device, and none of it is used to track you across other
         sites.
       </p>
@@ -656,6 +698,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
           ? <li>Export or delete an account from the profile page; choose separately whether to clear this browser.</li>
           : <li>Delete an account and its synced data by emailing us.</li>}
         {weeklyDigestEnabled && <li>Turn the weekly email off with one click, any time.</li>}
+        <li>Remove a transit calendar you subscribed to, where you subscribed, in the same browser.</li>
         <li>Withdraw a compatibility invitation from your profile before it is used.</li>
         <li>Request correction, withholding, or removal of a People profile.</li>
       </ul>

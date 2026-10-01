@@ -120,6 +120,13 @@ export type SavedRecordErasePlan =
 export const RECORDS_BLOCKED_MESSAGE = 'Calculation records on this device could not be prepared for removal safely, so nothing was removed. Try again, or clear this site’s data in browser settings.';
 
 /**
+ * "Clear all Zodiacs data" removes every zodiacs.* key, and with them the
+ * keys this browser keeps for removing the transit calendars it subscribed
+ * to (src/lib/calendar-feed/client.ts); the server keeps only their digests.
+ */
+export const CLEAR_ALL_CALENDARS_NOTE = '“Sign out · clear all Zodiacs data” also deletes the keys this browser keeps for removing the transit calendars you subscribed to here. After that, you can remove such a calendar only by sending its address to admin@zodiacs.org.';
+
+/**
  * Pins a records erasure before the exclusive transition. `none` means the
  * feature is not built in; an observed absence is carried into the transition
  * and re-checked there, never treated as proof that nothing needs removing.
@@ -1776,6 +1783,7 @@ export default function AccountSyncV2Panel({ enabled = false }: AccountSyncV2Pan
                 <button class="pf-chart__action" type="button" disabled={busy} onClick={() => void onSignOut(false)}>Sign out · keep this device</button>
                 <button class="pf-chart__action" type="button" disabled={busy} onClick={() => void onSignOut(true)}>Sign out · clear all Zodiacs data</button>
               </div>
+              <p>{CLEAR_ALL_CALENDARS_NOTE}</p>
               <details class="pf-account-v2__delete">
                 <summary>Delete Zodiacs account</summary>
                 <p>This permanently deletes cloud charts, consent records where legally permitted, and account access. Zodiacs also removes a linked Daily Sun subscription when it can confirm the match; otherwise it reports that manual unsubscribe may be needed. Apple subscriptions, when introduced, will require separate cancellation.</p>

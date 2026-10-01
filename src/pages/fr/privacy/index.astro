@@ -16,8 +16,8 @@ const walletChartEnabled = configuredWalletChains({
   PUBLIC_WALLET_CHART_ENABLED:
     import.meta.env.PUBLIC_WALLET_CHART_ENABLED ?? process.env.PUBLIC_WALLET_CHART_ENABLED,
 }).length > 0;
-const updated = '29 septembre 2026';
-const modifiedAt = '2026-09-29T00:00:00.000Z';
+const updated = '1 octobre 2026';
+const modifiedAt = '2026-10-01T00:00:00.000Z';
 
 const jsonLd = [
   {
@@ -522,8 +522,43 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         ton appareil.
       </p>
       <p>
-        Un flux de calendrier des transits contient un code de thème limité aux
-        positions dans son adresse web. Notre serveur, son cache et ton service
+        Quand tu t’abonnes à un calendrier des transits, la page envoie une
+        seule fois à notre serveur le code de thème limité aux positions,
+        décrit plus bas. Notre serveur ne garde que ce qui sert à calculer le
+        calendrier : les positions des dix planètes, du Soleil à Pluton, à
+        0,001° près, et l’ascendant et le milieu du ciel au degré entier, ou,
+        pour un thème sans heure de naissance, les positions de 12:00 UTC à la
+        date de naissance, sans ascendant ni milieu du ciel. Il ne garde aucun
+        nom, lieu, date ou heure de naissance. L’enregistrement est conservé
+        dans notre base de données chez Supabase, dans sa région de Tokyo
+        (ap-northeast-1), avec le moment où il a été créé et celui de sa
+        dernière consultation sur notre serveur. L’adresse du calendrier ne
+        contient qu’un identifiant aléatoire. Avec une heure de naissance, les
+        positions donnent quand même ta date et ton heure de naissance à la
+        minute près, et l’ascendant et le milieu du ciel situent ton lieu de
+        naissance dans la zone décrite plus bas pour le code de thème ; sans
+        heure, elles donnent la date et rien sur le lieu de naissance. Ton
+        service de calendrier consulte l’adresse pour garder le calendrier à
+        jour, et les heures de ses événements donnent la même chose ; toute
+        personne qui a l’adresse peut consulter le calendrier.
+      </p>
+      <p>
+        Un calendrier que personne n’a consulté depuis 12 mois est supprimé.
+        Tu peux le retirer plus tôt avec « Retirer ce calendrier » là où tu
+        t’es abonné, dans le même navigateur : ce navigateur garde la clé qui
+        le retire, et notre serveur ne garde qu’une empreinte irréversible de
+        cette clé. Le retirer supprime l’enregistrement aussitôt, et l’adresse
+        cesse de fonctionner dans l’heure. Si ce navigateur n’a plus la clé,
+        supprime le calendrier dans ton app de calendrier, pour que plus rien
+        ne le consulte et qu’il soit supprimé 12 mois plus tard, ou envoie son
+        adresse à <a href="mailto:admin@zodiacs.org">admin@zodiacs.org</a> et nous le supprimerons. Les copies présentes dans nos
+        sauvegardes hebdomadaires expirent dans un délai de 90 jours (voir la
+        section Sauvegardes).
+      </p>
+      <p>
+        Une adresse de calendrier créée avant que le site ne donne aux
+        calendriers des adresses aléatoires contient, elle, un code de thème
+        limité aux positions. Notre serveur, son cache et ton service
         de calendrier reçoivent ce code à chaque actualisation du calendrier. Le
         code ne comporte aucun champ de nom, de date, d’heure ou de lieu. Ses
         positions planétaires permettent encore de retrouver ta date et ton
@@ -550,10 +585,14 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         large ou moins. Les adresses de calendrier créées avant le 23 septembre
         2026 contiennent aussi l’ascendant et le milieu du ciel avec plus de
         précision ; notre serveur les arrondit désormais avant de les utiliser.
-        Une adresse de calendrier ne change jamais d’elle-même : pour remplacer
-        une adresse créée par une version antérieure, par exemple pour un thème
-        sans heure de naissance ou pour une naissance antérieure à l’heure
-        légale, supprime ce calendrier et abonne-toi de nouveau.
+      </p>
+      <p>
+        Ces anciennes adresses continuent de fonctionner pendant 60 jours
+        après que le site a commencé à donner aux calendriers des adresses
+        aléatoires. Pendant ces jours, le calendrier affiche un événement qui
+        te demande de t’abonner de nouveau, et ensuite l’adresse cesse de
+        fonctionner. Pour en remplacer une plus tôt, supprime ce calendrier
+        dans ton app de calendrier et abonne-toi de nouveau.
       </p>
       <p>
         Un fichier de calendrier que tu télécharges depuis la page des transits
@@ -618,9 +657,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         Comme chez tout hébergeur web, ses serveurs traitent les requêtes de ton
         navigateur et peuvent conserver de brefs journaux techniques (comme
         l’adresse IP et le type de navigateur) pour servir le site et le protéger
-        contre les abus. Ces journaux conservent l’adresse web complète de chaque
-        requête, qui pour un calendrier des transits contient son code de thème
-        et pour un lien avec aperçu contient le Soleil, la Lune et l’Ascendant.
+        contre les abus. Ces journaux conservent l’adresse web complète de chaque requête. Pour un calendrier des transits, c’est son identifiant aléatoire ou, pour une adresse créée avant que le site ne donne aux calendriers des adresses aléatoires, son code de thème ; pour un lien avec aperçu, elle contient le Soleil, la Lune et l’Ascendant.
         Nous ne diffusons pas de publicité et n’utilisons ni
         cookies de suivi intersite ni pixels marketing tiers.
       </p>
@@ -671,11 +708,19 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         invitation de compatibilité. Le reste relève du stockage du navigateur
         propre au site, pour les fonctions que tu utilises : ce que tu enregistres
         (thèmes, comparaisons, moments Living Chart, progression
-        d’apprentissage), l’état de travail des outils que tu utilises (comme la
-        conversation Guide et les calculs mis en cache), des données de session
-        Aura limitées, une adresse Aura mémorisée en option, les préférences du
-        site, des copies des fichiers du site lui-même pour une utilisation hors
-        ligne et, si tu te connectes, un jeton de connexion. En dehors de ces
+        d’apprentissage), les adresses des calendriers des transits auxquels
+        tu t’es abonné et les clés qui les retirent, l’état de travail des
+        outils que tu utilises (comme la conversation Guide et les calculs mis
+        en cache), des données de session Aura limitées, une adresse Aura
+        mémorisée en option, les préférences du site, des copies des fichiers
+        du site lui-même pour une utilisation hors ligne et, si tu te
+        connectes, un jeton de connexion. Pour chaque calendrier des transits,
+        le navigateur où tu t’es abonné garde son adresse, la clé qui le
+        retire et le moment où il a été créé. L’adresse permet à quiconque
+        l’a de lire le calendrier, et ces trois éléments y restent jusqu’à ce
+        que tu retires le calendrier ou que tu effaces les données de ce site
+        dans ce navigateur, même après
+        que notre serveur a supprimé le calendrier. En dehors de ces
         cookies et de ce que décrivent les sections ci-dessus, ce stockage reste
         sur ton appareil, et rien de tout cela ne sert à te suivre sur d’autres
         sites.
@@ -699,6 +744,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
           ? <li>Exporter ou supprimer un compte depuis la page de profil ; choisir séparément d’effacer ou non ce navigateur.</li>
           : <li>Faire supprimer un compte et ses données synchronisées en nous écrivant.</li>}
         {weeklyDigestEnabled && <li>Désactiver l’e-mail hebdomadaire en un clic, à tout moment.</li>}
+        <li>Retirer un calendrier des transits auquel tu t’es abonné, là où tu t’es abonné, dans le même navigateur.</li>
         <li>Retirer une invitation de compatibilité depuis ton profil avant qu’elle soit utilisée.</li>
         <li>Demander la correction, la non-publication ou la suppression d’un profil People.</li>
       </ul>

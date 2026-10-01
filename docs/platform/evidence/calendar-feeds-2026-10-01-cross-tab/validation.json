@@ -1,0 +1,176 @@
+{
+  "schema": "zodiacs.calendar-feed-cross-tab-validation/v1",
+  "checkedOnUtcDay": "2026-10-01",
+  "scope": "Local release follow-up only; no deployment, P1.15 acceptance, database mutation, firewall change or publication.",
+  "sourceCommit": "339ecfc42c92e372f101289a6049370a16879f24",
+  "mainMerged": "9cfafa3e742de943062c9174338472781724a4b5",
+  "candidateReleaseDay": "2026-10-01",
+  "mustRedateIfDeploymentSlips": true,
+  "priorCandidate": {
+    "commit": "e3d1cd97454abf7450ee7fbdcf29f0e9fbed1fd1",
+    "evidenceUnchanged": {
+      "README.md": "5bb9cf1a94046a0039f30934d63f315f1271d4f59a4e8288a51fb349340bbbc6",
+      "validation.json": "af1e18c93be9106520350ea54e530f3b4ebe297aff9a6c10366df8f4f6d896b2",
+      "packaged-calendar.json": "7638bcd2b41ac57de4c1daf241380058e0a20cc340418cc7b7d47fef08813d76"
+    }
+  },
+  "erasureContract": {
+    "clearAllImplementationChanged": false,
+    "postClearCalendarMarkerAdded": false,
+    "preSubscribeFence": "zodiacs.calendar-feeds.fence.v1",
+    "fenceContents": "Random UUID only; no chart, feed, account or timestamp data",
+    "fenceLifecycle": "Established under locks by an explicit subscribe only; removed by ordinary clear-all",
+    "localCommitLocks": [
+      "zodiacs-profile-boundary-v1 (shared)",
+      "zodiacs-calendar-feed-storage-v1 (exclusive)"
+    ],
+    "networkDurationLock": false,
+    "unestablishedFenceRule": "That request remains permanently nonpersisting, even after storage recovers",
+    "limits": [
+      "A never-fenced storage-inaccessible Document missing every erasure signal cannot prove another tab erased its volatile memory; no automatic persistence occurs.",
+      "A fresh preflight queued behind clear-all may establish its fence and start a new POST after erasure; the click timestamp is not the ordering boundary."
+    ]
+  },
+  "node": "v22.22.2",
+  "build": {
+    "command": "npm run build",
+    "exitCode": 0,
+    "pagesBuilt": 4343,
+    "distHtmlFiles": 4446,
+    "budgetsChanged": false,
+    "allBudgetsPassed": true
+  },
+  "typecheck": {
+    "command": "npm run check",
+    "exitCode": 0,
+    "files": 1183,
+    "errors": 0,
+    "warnings": 0,
+    "hints": 18
+  },
+  "test": {
+    "command": "npm test",
+    "exitCode": 1,
+    "files": {
+      "passed": 508,
+      "failed": 1,
+      "skipped": 1,
+      "total": 510
+    },
+    "tests": {
+      "passed": 6497,
+      "failed": 1,
+      "skipped": 4,
+      "total": 6502
+    },
+    "soleFailure": "scripts/phase1-acceptance-evidence.test.mjs: stale templateSourceSha256",
+    "failureRemainsRequiredReleaseGate": true
+  },
+  "focusedTests": {
+    "passed": 209,
+    "files": 12,
+    "newCrossDocumentTests": 17,
+    "initialNegativeControl": {
+      "failed": 5,
+      "total": 5,
+      "source": "e3d1cd97"
+    }
+  },
+  "capture": {
+    "state": "stale; not recaptured locally",
+    "committedTemplateSourceSha256": "0b53514a64e0e9a3fa6c7cae1be3ab70f274f1a13bcd8a2aafbf481c9e5a0cf6",
+    "builtTemplateSourceSha256": "c991ae05a65261bc90f021336b8c789e34d22cc7635bae7d3e274c6e93ae4f3b",
+    "supportedFallback": ".github/workflows/browser-evidence.yml at the exact PR head; after updated-main merge and final source change"
+  },
+  "nativeBrowser": {
+    "script": "tests/calendar-feed-cross-tab-drive.mjs",
+    "cases": 8,
+    "localStatus": "Syntax and --bundle-only passed; browser execution not run",
+    "localReceipt": "native-bundle-only.json",
+    "requiredCi": "Site Check and Browser Evidence compare",
+    "realBrowserPrimitives": [
+      "Two same-origin documents",
+      "Storage",
+      "Web Locks"
+    ],
+    "controlledBoundaries": [
+      "Synthetic POST response settlement",
+      "Native Storage method refusal",
+      "Dropped storage-event delivery"
+    ]
+  },
+  "fullCalendarUiBrowser": {
+    "script": "tests/transit-ring-drive.mjs",
+    "existingCheckCalls": 27,
+    "fixtureAndAssertionsChanged": false,
+    "localStatus": "Syntax and --check-build passed; browser execution not run",
+    "intendedBuild": "Standard account-v2 flag-off build, validated against current source hash",
+    "requiredCi": "Site Check and Browser Evidence compare",
+    "runnerChanges": [
+      "Shared Chromium discovery and preview readiness/cleanup",
+      "Build, source and outcome receipt",
+      "Screenshot failures fail the drive"
+    ]
+  },
+  "sql": {
+    "command": "npm run test:calendar:feeds-sql",
+    "exitCode": 1,
+    "state": "not run: Docker unavailable",
+    "requiredCiJob": "Calendar feed SQL (PostgreSQL 17)"
+  },
+  "claims": {
+    "unlisted": 0,
+    "orphans": 0,
+    "bindings": "passed in full suite"
+  },
+  "scopeGuard": {
+    "passed": true,
+    "protectedPaths": 4,
+    "baseCommit": "9cfafa3e742de943062c9174338472781724a4b5"
+  },
+  "independentReview": {
+    "sourceBase": "e3d1cd97",
+    "result": "no blockers in cross-tab source or final browser-driver/CI addition",
+    "clientSha256": "c2b778e373ad08f6896428808b2e8823c9d6fab6013a7b1c5c59487355648a5d",
+    "sourceFocusedTestsPassed": 112,
+    "finalEvidenceControlTestsPassed": 19,
+    "unchangedUiFixtureAndAssertionsVerifiedBy": "AST comparison",
+    "limits": [
+      "Native browser execution remains unverified locally"
+    ]
+  },
+  "programme": {
+    "overallPercent": 23,
+    "acceptedWeight": 42.5,
+    "totalWeight": 182.45,
+    "blockedPercent": 2,
+    "blockedWeight": 4,
+    "statusChange": false
+  },
+  "stillRequired": [
+    "merge updated main and re-pin allowance",
+    "confirm actual UTC release day",
+    "final head-bound Phase 1 captures, native cross-tab browser and full calendar UI drive",
+    "PostgreSQL 17 SQL CI and remaining required CI",
+    "authorized production migration and deployment",
+    "manual sweep, synthetic CDN removal and read/write rate checks, redacted logs"
+  ],
+  "externalMutationsPerformed": [],
+  "packagedRuntime": {
+    "receipt": "packaged-calendar.json",
+    "vercelCliVersion": "62.0.0",
+    "buildExitCode": 0,
+    "methodGuardsPassed": 3,
+    "syntheticEvents": 12,
+    "fetchAttempts": 0,
+    "moduleSyntaxDetection": false,
+    "entryMatchesPriorCandidate": true,
+    "limits": "Cached local packaging, not a live service check. CLI emitted pre-existing import/type diagnostics and an npm metadata lookup failure; separate npm run check passed cleanly."
+  },
+  "evidenceEditChecks": {
+    "programmeAndClaimsTestsPassed": 17,
+    "priorEvidenceHashComparison": "passed",
+    "sourceBuildHashComparison": "passed",
+    "diffWhitespace": "passed"
+  }
+}

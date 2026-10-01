@@ -241,6 +241,19 @@ describe('Vercel API runtime packaging', () => {
     });
   });
 
+  it('serves calendar feeds by id from the existing calendar function', () => {
+    const vercel = JSON.parse(readFileSync(join(ROOT, 'vercel.json'), 'utf8'));
+    for (const rule of [
+      { source: '/api/calendar/feeds', destination: '/api/calendar/transits?__zodiacs_calendar_route=create' },
+      { source: '/api/calendar/feeds/:id', destination: '/api/calendar/transits?__zodiacs_calendar_route=feed&id=:id' },
+      { source: '/api/calendar/feed-sweep', destination: '/api/calendar/transits?__zodiacs_calendar_route=sweep' },
+    ]) {
+      expect(vercel.rewrites).toContainEqual(rule);
+    }
+    expect(readFileSync(join(ROOT, 'api/calendar/transits.ts'), 'utf8'))
+      .toContain("export const CALENDAR_ROUTE_PARAMETER = '__zodiacs_calendar_route';");
+  });
+
   it('keeps account lifecycle actions on one scoped function route', () => {
     const vercel = JSON.parse(readFileSync(join(ROOT, 'vercel.json'), 'utf8'));
     expect(vercel.rewrites).toContainEqual({

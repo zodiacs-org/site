@@ -246,28 +246,42 @@ production Firewall changes. Do not execute it from this remediation PR.
 
 The API uses `@vercel/firewall` SDK rate-limit IDs. For each rule, the **If**
 condition must be `@vercel/firewall` with the exact Rate limit ID below, set to
-the requests per 60 seconds the table gives, using the default client-IP key.
-Leave the rule's **Then** action at its SDK-rule default. A path-matched Deny
-rule is wrong: it would return 403 instead of letting the endpoint return 429
-with `Retry-After`.
+the requests per 60 seconds the table gives (a fixed window of 60 seconds),
+using the default client-IP key. Leave the rule's **Then** action at its
+SDK-rule default. A path-matched Deny rule is wrong: it would return 403
+instead of letting the endpoint return 429 with `Retry-After`.
 
 | Rate limit ID | Endpoint | Requests per 60 s |
 | --- | --- | ---: |
 | `zodiacs-email-subscribe` | `/api/email/subscribe` | 10 |
 | `registry-aura-holdings-v1` | `/api/aura-holdings` | 10 |
 | `zodiacs-wallet-birth` | `/api/wallet-birth` | 10 |
-| `zodiacs-transit-calendar` | `/api/calendar/transits` | 120 |
+| `zodiacs-transit-calendar` | calendar reads: `GET /api/calendar/transits` and `GET /api/calendar/feeds/<id>` | 120 |
 | `zodiacs-compute-api` | the six compute endpoints, `/api/v1/{chart,positions,houses,events,time,sky-fact}` (served by `api/compatibility.ts`) | 40 |
 | `zodiacs-compute-events` | `/api/v1/events` only, counted in addition to `zodiacs-compute-api` | 10 |
+| `zodiacs-calendar-feed-write` | making and removing a calendar feed: `POST /api/calendar/feeds` and `DELETE /api/calendar/feeds/<id>` | 3 |
 
-The calendar's limit is higher because calendar apps fetch subscribed feeds
-from a few shared server addresses. Every subscriber's feed has its own URL,
-and the CDN holds each for six hours, so most of a provider's fetches reach
-the function and count against the same address. 120 a minute still holds one
-script to two requests a second.
+The calendar's read limit is higher because calendar apps fetch subscribed
+feeds from a few shared server addresses. Every subscriber's feed has its own
+URL, and the CDN holds a feed for an hour and an older address for six hours,
+so most of a provider's fetches reach the function and count against the same
+address. 120 a minute still holds one script to two requests a second. A read
+never counts against the write limit (`src/lib/calendar-feed/rate-limit.test.ts`).
 
-The compute API needs both rules, and unlike the four endpoints above it fails
-closed: an endpoint answers 503 `rate-limit-unavailable` with
+The write limit keeps one client from using up the database's limit on new
+feeds, which all visitors share: no feed is made while 500 made in the past
+hour exist (§8). Vercel's rate-limit window is at most 10 minutes on Pro and an
+hour only on Enterprise (Vercel's WAF rate-limiting limits, checked
+2026-09-30), so the rule counts per minute. An hour overlaps at most 61 of the
+rule's 60-second windows, so one client can make at most 3 × 61 = 183 feeds in
+any hour: fewer than two in five of the 500 places. Vercel keeps the counters
+per region, and a client whose requests reached two regions could make 366,
+still under 500. Filling the shared limit takes at least three clients making
+feeds as fast as the rule allows, while a person can still subscribe, remove
+the calendar and subscribe again within one minute.
+
+The compute API needs both rules, and unlike the email, Aura, wallet and
+calendar endpoints above it fails closed: an endpoint answers 503 `rate-limit-unavailable` with
 `Retry-After: 300`, and computes nothing, until every rule it is counted under
 exists (the SDK reports `not-found` until then) and whenever the check fails.
 The events endpoint is counted under both rules, the other five under
@@ -313,6 +327,41 @@ done
 The final responses must visibly include an `HTTP/... 429` status line and a
 `Retry-After: 60` header. Without the `Origin` header the same-origin guard
 returns 403, which does not test the Firewall rule.
+
+Verify the two calendar rules without making or removing anything. First the
+read rule, with an address that is no feed id (the function counts the request,
+then answers 404 without reading the database):
+
+```sh
+for attempt in $(seq 1 130); do
+  curl --silent --max-time 10 --output /dev/null --write-out '%{http_code}\n' \
+    https://zodiacs.org/api/calendar/feeds/not-a-feed
+done | sort | uniq -c
+```
+
+The counts must include some `429`: 120 requests a minute are answered, and
+the rest get 429 with `Retry-After: 60`. A loop that crossed into the next
+minute can show none; run it again. Then the write rule, with a removal that
+carries no key (the function counts it, then answers 404 without touching any
+feed):
+
+```sh
+for attempt in $(seq 1 5); do
+  curl --silent --show-error --max-time 10 \
+    --output /dev/null \
+    --dump-header - \
+    --request DELETE \
+    --header 'Origin: https://zodiacs.org' \
+    https://zodiacs.org/api/calendar/feeds/AAAAAAAAAAAAAAAAAAAAAA \
+    | grep -iE '^(HTTP/|retry-after)'
+done
+```
+
+The first three must print a `404` status line: the reads just made did not
+count against the write limit. The fourth and fifth must print a `429` status
+line and `retry-after: 60`. Without the `Origin` header, or from any origin but
+`https://zodiacs.org` and `https://www.zodiacs.org`, the function answers 403
+before it counts, which does not test the rule.
 
 Verify the compute rules with a synthetic request (a wall time in UTC, no
 one's birth). Before `zodiacs-compute-api` exists every answer is 503; after,
@@ -528,3 +577,154 @@ must use its feature-specific canary and rollback contract.
 - [ ] No secret, database URL, passphrase, private key, personalized email body,
       chart name, or unsubscribe capability appears in logs, chat, commits,
       screenshots, commands, or artifacts.
+
+## 8. Transit calendar feeds (F-20)
+
+A calendar subscription made on the site is a row in `public.calendar_feeds`
+(`supabase/migrations/20260929180000_calendar_feeds.sql`) under a random id.
+Its address is `https://zodiacs.org/api/calendar/feeds/<id>`, and anyone who
+has that address can read the calendar. §0 applies: every step below needs the
+owner's explicit instruction.
+
+### 8a. Release order
+
+1. Create the calendar's Firewall rules (§3): `zodiacs-calendar-feed-write`,
+   3 requests per 60 seconds, and `zodiacs-transit-calendar`, 120 per 60
+   seconds, unless it already exists. The code checks an ID only once it is
+   deployed, so a rule made first costs nothing, and the release never runs
+   with feeds limited only by the database's shared limit. Run §3's calendar
+   checks after the deploy.
+2. Generate one random value of at least 32 characters (for example
+   `openssl rand -base64 48`) and store it, without printing it, as
+   `CALENDAR_FEED_SWEEP_SECRET` in Vercel Production and as a secret of the
+   GitHub environment `calendar-feed-production`, whose deployment-branch
+   policy selects only `main` (SETUP.md). Without it in Vercel the site makes
+   no feed (`POST /api/calendar/feeds` answers 503); without it in the
+   environment the daily **Calendar Feed Sweep** workflow fails.
+3. Confirm that the calendar function sees both `PUBLIC_SUPABASE_URL` and
+   `SUPABASE_SERVICE_ROLE_KEY` in Production before relying on the feature. A
+   read-only check on 2026-09-29 found `PUBLIC_SUPABASE_URL` among the
+   project's Preview and Development variables but not its Production ones; it
+   may come from a team-level shared variable. Check where each comes from in
+   the dashboard without revealing the values. Confirm too that the project's
+   Environment Variables settings have **Enable access to System Environment
+   Variables** checked: the function reads `VERCEL_ENV` to know it is serving
+   Production, and without it every creation and removal answers 403.
+4. Make the release commit. Its chores, in this order:
+   1. Merge `main` into the branch.
+   2. Set `LEGACY_FEED_WINDOW_START` in
+      `src/lib/calendar-feed/legacy-window.ts` to the UTC day the release
+      reaches production, and the "updated" date (`updated` and `modifiedAt`)
+      of the six privacy pages: English (`src/pages/privacy/index.astro`) and
+      es, fr, it, pt and ru. Set `CALENDAR_FEEDS_LASTMOD` in
+      `src/pages/sitemap.xml.ts` to the same day, and update the privacy-date
+      expectations in `tests/legal-identity.test.ts`,
+      `scripts/how-to-buy.test.mjs` and `scripts/technical-audit-remediation.test.mjs`.
+      If deployment slips to another UTC day, re-date these together and
+      repeat the build and final captures. Until the constant is set,
+      addresses made before
+      feed ids never stop working, while the privacy pages and
+      `public/llms-full.txt` say they stop after 60 days;
+      `src/lib/calendar-feed/legacy-window-copy.test.ts` fails until it is
+      set.
+   3. Widen the authorization in `.github/phase1-scope-allowance.json` to
+      cover those date lines on the four protected pages (es, fr, it, pt), and
+      nothing more.
+   4. Re-pin its `baseCommit` to the `main` commit merged in step 1, the base
+      the scope guard compares against (§1b).
+   5. Build: `npm run build`, whose daily freshness gate needs the day's
+      edition from `main`, then `npm run check` and `npm test`. Everything
+      must pass except the Phase 1 capture test
+      (`scripts/phase1-acceptance-evidence.test.mjs`).
+   6. Retake the Phase 1 captures, last. `src/lib` is inside the capture hash
+      (`tests/visual/phase1-evidence-contract.mjs`), so setting the date in
+      step 2 moves the hash, as does any later change there; captures taken
+      before the last change are stale.
+5. Apply the migration to production, after the **Calendar feed SQL** job has
+   passed on the release commit. It is replay-safe, so a reviewed SQL Editor
+   retry is harmless.
+6. After the deploy, run the Calendar Feed Sweep workflow by hand: a green run
+   that ends with "No more feeds are due." shows that the function has the
+   store and the secret; "The site answered 404" means one of the three is
+   missing.
+7. Check the release once on the live site, with a chart that belongs to no
+   one:
+   1. In a private window on `https://zodiacs.org/birth-chart/`, calculate a
+      chart for a made-up birth (for example 1 January 2000 at 12:00 in
+      London) and choose "Add to your calendar". Copy the address it shows.
+      Like any feed's address it lets anyone read the calendar, so keep it out
+      of chat, issues and commits. If adding fails, the browser's network
+      panel shows why: 403 means the function does not see `VERCEL_ENV` (step
+      3), and 503 a missing store, secret or migration.
+   2. Fetch the feed twice:
+
+      ```sh
+      FEED='https://zodiacs.org/api/calendar/feeds/<id>'
+      for attempt in 1 2; do
+        curl --silent --show-error --max-time 30 --output /dev/null \
+          --dump-header - "$FEED" \
+          | grep -iE '^(HTTP/|content-type|x-vercel-cache)'
+      done
+      ```
+
+      Both must print a `200` status line and a `text/calendar` content
+      type. The second should print `x-vercel-cache: HIT`: the CDN now holds
+      a copy.
+   3. Choose "Remove this calendar" on the same page, in the same window. It
+      must say that the calendar was removed.
+   4. Fetch it again at once:
+      `curl --silent --output /dev/null --write-out '%{http_code}\n' "$FEED"`
+      must print `404`. A `200` means the CDN still serves its copy, so
+      clearing it did not work.
+   5. In the project's Logs, search the last hour for `Calendar feed`. No line
+      may say "Calendar feed cache clearing unavailable", which means the
+      function's request context offers no purge API, so a removed feed stays
+      readable from the CDN for up to an hour, or "Calendar feed cache
+      clearing failed". Report any such line, without the address.
+
+   Adding and removing on zodiacs.org also shows that the function sees
+   `VERCEL_ENV`: without it, both answer 403.
+
+Making and removing a feed are accepted in Production only from pages on
+`https://zodiacs.org` and `https://www.zodiacs.org`, and on a preview only from
+that deployment's own addresses (`src/lib/calendar-feed/origin.ts`), so a
+preview that holds the production service-role key takes no writes from
+another deployment's pages.
+
+### 8b. Deleting a feed on request
+
+The privacy page tells someone whose browser no longer has the removal key to
+send the calendar's address to admin@zodiacs.org. The address lets anyone read
+the calendar: keep it out of chat, issues, commits, and logs, and delete the
+message once the request is closed.
+
+1. Take the id from the address: the 22 characters after
+   `/api/calendar/feeds/` (letters, digits, `-` and `_`); a `webcal://` address
+   has the same path. An address containing `/api/calendar/transits?token=` is
+   an older one with no row: nothing on the server can switch it off before
+   its 60 days end, so ask the person to remove it from their calendar app.
+2. In the Supabase SQL Editor of the production project, which runs as
+   `postgres`, the table's owner:
+
+   ```sql
+   delete from public.calendar_feeds
+   where id = '<id>'
+   returning created_at, last_fetched_at;
+   ```
+
+   One row back means the feed is deleted. No row means there is no such feed:
+   it was removed already, deleted after 12 months without a fetch, or the id
+   was copied wrongly, so compare it with the address again.
+3. Clear the CDN's copies, which carry the cache tag `calendar-feed-<id>`,
+   from a checkout linked to the project and signed in to the team:
+   `vercel cache dangerously-delete --tag calendar-feed-<id> --yes`. The REST
+   form is `POST https://api.vercel.com/v1/edge-cache/dangerously-delete-by-tags?projectIdOrName=<project>`
+   with the body `{"tags":["calendar-feed-<id>"]}`. Without this step a cached
+   copy can be served for up to an hour.
+4. Confirm that the address answers 404:
+   `curl --silent --output /dev/null --write-out '%{http_code}\n' https://zodiacs.org/api/calendar/feeds/<id>`
+   must print `404`. A `200` means a cached copy is still served: repeat step
+   3, or check again after an hour.
+5. Reply that the calendar is deleted and its address no longer works, that
+   the subscription should also be removed from their calendar app, and that
+   the weekly encrypted backups keep a copy for up to 90 days (§2).

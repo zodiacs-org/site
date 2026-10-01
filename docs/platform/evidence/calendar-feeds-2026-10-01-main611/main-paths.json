@@ -1,0 +1,196 @@
+{
+  "mainCommit": "4e6005445e9ccf41cfccc1300a24d5533dc318e5",
+  "mergeCommit": "e9c6e1bfc2333442323e43d50790f2d840117ebc",
+  "comparedPaths": 47,
+  "allEqual": true,
+  "paths": [
+    {
+      "path": "docs/acceptance/phase1/screenshots/career-1280.png",
+      "sha256": "bed165de6917e95bf6f54ecc8f80b40446baf101ba927a472b1515bdaa36ae0e"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/career-360.png",
+      "sha256": "003631cd78b77d1f1101010195971bf2073368428bac54745c370fce79b594de"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/daily-1280.png",
+      "sha256": "e1bbf96455e2c29fa821bd72bff2b53431f88d214551fb6323a1fa1aa9f9a213"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/daily-360.png",
+      "sha256": "d1eae2721bafa744b91d52ab41efe6fceee2fecbd197d37da5d7568d7cfab8ed"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/horoscopes-hub-1280.png",
+      "sha256": "770eb72e094aff145707af24fd9cc933d89145af7d8e4b5ee9a7ece874e5da28"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/horoscopes-hub-360.png",
+      "sha256": "67085add593188538e4ed6c0dc4a7971ab028518d5d3f872db682c1f7943290c"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/love-1280.png",
+      "sha256": "5475fb387c607b4b98947f39dbad43e20265cb598799fe87ce999c169fb7d8af"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/love-360.png",
+      "sha256": "18f0ebe892e5f530813e4cc72638943ceb188d1c5789ec211af01385ec41ffe4"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/manifest.json",
+      "sha256": "e98d43f9615d5a1d20bf439cbec5db0f2ecb25a045fd8dc3af3e1109ed8bce26"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/monthly-1280.png",
+      "sha256": "4b5301df8edf5fa63aa6a43f11ba51cd7ea6e18a042b48510f0b6d6d118a6ef7"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/monthly-360.png",
+      "sha256": "63d3a9c35353a7dbcd7c333d259d29c0cb8c1e4c7beebb1810de5b07f5b519cd"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/today-1280.png",
+      "sha256": "0f7ac909033815e4b0ea4372ccfda520ec731d43b491a92481b434b6cd04633c"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/today-360.png",
+      "sha256": "0f7a68da79b58bc0562a0ff790a9e1cbf9ad2a68beffb97521f7f1d47527da5f"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/tomorrow-1280.png",
+      "sha256": "45b07ee3d10fa2ac4d81e1140e8ba4e520eb9c514fee1a2829cb212efb2be14c"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/tomorrow-360.png",
+      "sha256": "6688350a1f43da31336adfc22c68bc47041ccd331ee0654ede1c51351ca6a481"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/weekly-1280.png",
+      "sha256": "3d3f9c8e493a5599f2bc678fa89f23ff9480f7b4b410b306f34ba0ccda1022ea"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/weekly-360.png",
+      "sha256": "f5d73deafc5c55ac05c766b9d1eb0bf9d09c45f4313e9d91b04351c1b05b1c61"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/yearly-1280.png",
+      "sha256": "b10ec83ac6e37ded1157d9e31b0374e0eaf07666c446701626b371d20e7a4b0b"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/yearly-360.png",
+      "sha256": "06a76d72e18e68a5fbd32f7babdbe72d07bd5289b8c9fe311db714a7d8ab41fa"
+    },
+    {
+      "path": "public/archive/index.html",
+      "sha256": "dc222ad0341d1701a5eccbc82e4d686aa2c7ac4837e70ac4197e5aba13f47da9"
+    },
+    {
+      "path": "public/astrofolio/index.html",
+      "sha256": "c49106c42028a57e56edd3e56c8987f7327269c2bdaba6e5bf34029ff4f50422"
+    },
+    {
+      "path": "public/registry/aquarius/index.html",
+      "sha256": "0beb44b07876593cc5a279af9a8f510633dfe69170af795fc9128eb8b429dce0"
+    },
+    {
+      "path": "public/registry/aries/index.html",
+      "sha256": "022c91be9dbca898a5f95a08158c16d47bc2312637c4838574756a40ff0e27e9"
+    },
+    {
+      "path": "public/registry/cancer/index.html",
+      "sha256": "e88587887bfbc5e34a08fe318138218953054dc9a1b37b41686cbe8626081430"
+    },
+    {
+      "path": "public/registry/capricorn/index.html",
+      "sha256": "60baecf581591934ce48b87ea64c09a1df426b3ce6112fa86916ae8e38524562"
+    },
+    {
+      "path": "public/registry/gemini/index.html",
+      "sha256": "48bc20694b6912f194095ded799a663bbb37f08b651bcafcc6a59bc76371d088"
+    },
+    {
+      "path": "public/registry/index.html",
+      "sha256": "c467c494076bfa7eee90b5fa030af8fb27f97b731f3671aeb0d94e38a166c33c"
+    },
+    {
+      "path": "public/registry/leo/index.html",
+      "sha256": "3a9cae2a4905fde2d78d614be18322b458496b25356fe1fa2d5d5c68edcf26e9"
+    },
+    {
+      "path": "public/registry/libra/index.html",
+      "sha256": "0c68dd5a518ae70250d61411e171cf28608666db7767adc14be78effaeaa751a"
+    },
+    {
+      "path": "public/registry/pisces/index.html",
+      "sha256": "db79def32815184369466a2e83b8ad393ac103adfc2f08f41b9a5052bb79ca46"
+    },
+    {
+      "path": "public/registry/sagittarius/index.html",
+      "sha256": "2a3325774260c85727c832f5d466b4199249acc67d531761c55c888cf22fe509"
+    },
+    {
+      "path": "public/registry/scorpio/index.html",
+      "sha256": "88769cae2f24a864f194498825f10c326f24892dcc46de79c2ae79b44bc46515"
+    },
+    {
+      "path": "public/registry/taurus/index.html",
+      "sha256": "45d9e0f9582ba49bd591534421dbd855d98ef0e6f84aab3a34d40ef72d57cd72"
+    },
+    {
+      "path": "public/registry/technical/index.html",
+      "sha256": "f2b305a61ebb8c92b19f9770f1280f639a3e0fe67ffefc01ab8bb3977032c3aa"
+    },
+    {
+      "path": "public/registry/virgo/index.html",
+      "sha256": "c3160ab8d9d52ae751db95e4d67c3137501ca40f48bb63edc22209dcac88ce41"
+    },
+    {
+      "path": "public/sdk/examples/simastry-aura/index.html",
+      "sha256": "c63b1098549db1bb3c0840ed1c391a0572690c02c9879fb6ba549f563e1737a0"
+    },
+    {
+      "path": "public/sdk/index.html",
+      "sha256": "2d18bd374142ebd25343fe47a2bad093eea4901f66da66386d90f066318772d5"
+    },
+    {
+      "path": "public/terminal/index.html",
+      "sha256": "608050af7f7076079d58f5d904f1b1c0701e502271624b89880cff51f6d33a4b"
+    },
+    {
+      "path": "public/terminal/markets/index.html",
+      "sha256": "d2621da2e3d02992fa83f92779cfd0dac4bf1c044c35357446d53c1b9200ff8f"
+    },
+    {
+      "path": "public/thesis/index.html",
+      "sha256": "4282972f23b4dc349bb259d3826903488daa06bb12b68cce4d76021f0799e861"
+    },
+    {
+      "path": "src/lib/assistant/assistant.css",
+      "sha256": "326ed707de59b8a877570e54770ba110f05fec9592e12b457d9791dcbb1d881d"
+    },
+    {
+      "path": "src/lib/assistant/guide-bootstrap.css",
+      "sha256": "ed504d06b5b24bfad4e5ce643f5291b283551e3b9b26ad126d7394d27b7e8519"
+    },
+    {
+      "path": "src/lib/assistant/guide-bootstrap.ts",
+      "sha256": "8e51e15d5abb4798b31491077913fd0e022321a3148359202c109c1acd1cfb4c"
+    },
+    {
+      "path": "src/lib/assistant/guide-loader.mjs",
+      "sha256": "c252b64a5713316705fbc2778edfb7111aa82a7506ea92e448d85aa76f3d35fe"
+    },
+    {
+      "path": "src/lib/assistant/open-assistant.test.ts",
+      "sha256": "3588a82bd78157ea87381fae9d66e853387454c0e97f53885301b90980676ab4"
+    },
+    {
+      "path": "src/lib/assistant/open-assistant.ts",
+      "sha256": "9271f1fbbc159e0aef00c2699bc868711a450f063fd3cbcd29d73c8883770a7f"
+    },
+    {
+      "path": "tests/thesis-contract.test.mjs",
+      "sha256": "36361b8818bc140afeafada2afa28c916a8fd07dd63fa881a276589499b67ede"
+    }
+  ]
+}

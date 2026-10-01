@@ -45,6 +45,41 @@ const syntheticUnsubscribeToken = randomBytes(32).toString('base64url');
 if (syntheticUnsubscribeToken.length !== 43) {
   throw new Error('Failed to generate a valid synthetic unsubscribe token.');
 }
+// A well-formed calendar feed id that no feed has: the probes below make,
+// read and remove nothing, and never present a removal key or the sweep's
+// secret.
+const syntheticFeedId = randomBytes(16).toString('base64url');
+if (!/^[A-Za-z0-9_-]{21}[AQgw]$/u.test(syntheticFeedId)) {
+  throw new Error('Failed to generate a well-formed synthetic calendar feed id.');
+}
+
+/** The body as JSON, or undefined when it is not JSON. */
+function jsonBody(body) {
+  try {
+    return JSON.parse(body);
+  } catch {
+    return undefined;
+  }
+}
+
+/** Null when the response is the calendar function's own JSON answer, else what is wrong. */
+function calendarJson(response, body, expected) {
+  if (!(response.headers.get('content-type') ?? '').toLowerCase().includes('application/json')) {
+    return 'the answer is not the calendar function\'s JSON (is the rewrite in vercel.json deployed?)';
+  }
+  if (!(response.headers.get('cache-control') ?? '').toLowerCase().includes('no-store')) return 'the answer is cacheable';
+  if (JSON.stringify(jsonBody(body)) !== JSON.stringify(expected)) return `expected ${JSON.stringify(expected)}`;
+  return null;
+}
+
+/**
+ * The calendar function answers 403 {"error":"forbidden"} to a write from an
+ * origin it does not accept. From this deployment's own address that means it
+ * cannot tell which deployment it is, and would refuse every page as well.
+ */
+const CALENDAR_ORIGIN_REFUSED = 'the calendar function refused this deployment\'s own origin: it needs VERCEL_ENV and VERCEL_URL '
+  + '(project settings, Environment Variables, "Enable access to System Environment Variables"), '
+  + 'without which every calendar creation and removal answers 403';
 
 const probes = [
   {
@@ -111,6 +146,62 @@ const probes = [
     init: { method: 'POST', headers: sameOriginHeaders },
     accepts: (status) => status === 405,
     expectation: 'HTTP 405',
+  },
+  {
+    label: 'calendar feed creation method guard',
+    path: '/api/calendar/feeds',
+    init: { method: 'GET', headers: sameOriginHeaders },
+    accepts: (status) => status === 405,
+    expectation: 'HTTP 405 from the calendar function',
+    validate: (response, body) => ((response.headers.get('allow') ?? '') !== 'POST'
+      ? 'the answer does not allow POST'
+      : calendarJson(response, body, { error: 'method' })),
+  },
+  {
+    label: 'calendar feed creation from a malformed code',
+    path: '/api/calendar/feeds',
+    init: {
+      method: 'POST',
+      headers: { ...sameOriginHeaders, 'content-type': 'application/json' },
+      body: JSON.stringify({ positions: 'preview-smoke' }),
+    },
+    accepts: (status) => status === 400,
+    expectation: 'HTTP 400 without making a feed',
+    forbidden: CALENDAR_ORIGIN_REFUSED,
+    validate: (response, body) => calendarJson(response, body, { error: 'invalid_positions' }),
+  },
+  {
+    label: 'calendar feed by an id no feed has',
+    path: `/api/calendar/feeds/${syntheticFeedId}`,
+    init: { method: 'GET', headers: sameOriginHeaders },
+    accepts: (status) => status === 404 || status === 503,
+    expectation: 'HTTP 404, or the designed HTTP 503 where Preview has no feed store',
+    validate: (response, body) => {
+      const expected = response.status === 404
+        ? 'There is no calendar at this address.'
+        : 'The calendar is unavailable right now.';
+      if (body !== expected) return 'the answer is not the calendar function\'s (is the rewrite in vercel.json deployed?)';
+      if (!(response.headers.get('cache-control') ?? '').toLowerCase().includes('no-store')) return 'the answer is cacheable';
+      if (response.headers.get('vercel-cache-tag')) return 'the answer carries a feed cache tag';
+      return null;
+    },
+  },
+  {
+    label: 'calendar feed removal without its key',
+    path: `/api/calendar/feeds/${syntheticFeedId}`,
+    init: { method: 'DELETE', headers: sameOriginHeaders },
+    accepts: (status) => status === 404,
+    expectation: 'HTTP 404 without removing anything',
+    forbidden: CALENDAR_ORIGIN_REFUSED,
+    validate: (response, body) => calendarJson(response, body, { error: 'not_found' }),
+  },
+  {
+    label: 'calendar feed sweep without its secret',
+    path: '/api/calendar/feed-sweep',
+    init: { method: 'POST', headers: sameOriginHeaders },
+    accepts: (status) => status === 404,
+    expectation: 'HTTP 404 without sweeping',
+    validate: (response, body) => calendarJson(response, body, { error: 'not_found' }),
   },
   {
     label: 'assistant method guard',
@@ -266,6 +357,11 @@ for (const probe of probes) {
       `${probe.label}: preview redirected (${response.status}) to ${safeDiagnostic(probe, location || '(missing location)')}; `
       + protectionFailure,
     );
+    continue;
+  }
+  if (response.status === 403 && probe.forbidden
+    && JSON.stringify(jsonBody(body)) === JSON.stringify({ error: 'forbidden' })) {
+    failures.push(`${probe.label}: ${probe.forbidden}`);
     continue;
   }
   if (response.status === 401 || response.status === 403) {

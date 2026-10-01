@@ -48,6 +48,20 @@ as $$
   );
 $$;
 
+-- Supabase's automatic grants on schema public: API roles may use the schema,
+-- and every table, function and sequence that postgres creates there is
+-- granted to anon, authenticated and service_role. Projects made before the
+-- 2026 secure defaults still carry these grants, so a migration's tests run
+-- with them in place: a table or function that a migration forgets to revoke
+-- stays reachable here exactly as it would in such a project.
+grant usage on schema public to anon, authenticated, service_role;
+alter default privileges for role postgres in schema public
+  grant all on tables to anon, authenticated, service_role;
+alter default privileges for role postgres in schema public
+  grant all on functions to anon, authenticated, service_role;
+alter default privileges for role postgres in schema public
+  grant all on sequences to anon, authenticated, service_role;
+
 revoke all on schema auth from public;
 grant usage on schema auth to anon, authenticated, service_role;
 

@@ -16,8 +16,8 @@ const walletChartEnabled = configuredWalletChains({
   PUBLIC_WALLET_CHART_ENABLED:
     import.meta.env.PUBLIC_WALLET_CHART_ENABLED ?? process.env.PUBLIC_WALLET_CHART_ENABLED,
 }).length > 0;
-const updated = '29 settembre 2026';
-const modifiedAt = '2026-09-29T00:00:00.000Z';
+const updated = '1 ottobre 2026';
+const modifiedAt = '2026-10-01T00:00:00.000Z';
 
 const jsonLd = [
   {
@@ -523,8 +523,42 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         sul tuo dispositivo.
       </p>
       <p>
-        Il feed di un calendario dei transiti contiene nel suo indirizzo web un
-        codice del tema con le sole posizioni. Il nostro server, la sua cache e
+        Quando ti iscrivi a un calendario dei transiti, la pagina invia una
+        sola volta al nostro server il codice del tema con le sole posizioni,
+        descritto più sotto. Il nostro server conserva solo ciò da cui il
+        calendario viene calcolato: le posizioni dei dieci pianeti dal Sole a
+        Plutone, a 0,001°, e l’ascendente e il Medio Cielo al grado intero
+        oppure, per un tema senza ora di nascita, le posizioni delle 12:00 UTC
+        della data di nascita, senza ascendente né Medio Cielo. Non conserva
+        nome, luogo, data o ora di nascita. Il record è conservato nel nostro
+        database presso Supabase, nella sua regione di Tokyo (ap-northeast-1),
+        con il momento in cui è stato creato e quello dell’ultima
+        consultazione dal nostro server. L’indirizzo del calendario contiene
+        solo un identificativo casuale. Con l’ora di nascita, le posizioni
+        indicano comunque la tua data e la tua ora di nascita al minuto, e
+        l’ascendente e il Medio Cielo restringono il luogo di nascita alla
+        zona descritta più sotto per il codice del tema; senza, indicano la
+        data e nulla del luogo di nascita. Il tuo servizio di calendario
+        consulta l’indirizzo per tenere aggiornato il calendario, e gli orari
+        dei suoi eventi indicano le stesse cose; chiunque abbia l’indirizzo
+        può consultare il calendario.
+      </p>
+      <p>
+        Un calendario che nessuno consulta da 12 mesi viene eliminato. Puoi
+        rimuoverlo prima con “Rimuovi questo calendario” dove ti sei iscritto,
+        nello stesso browser: quel browser conserva la chiave che lo rimuove,
+        e il nostro server conserva solo un’impronta irreversibile della
+        chiave. Rimuoverlo elimina subito il record, e l’indirizzo smette di
+        funzionare entro un’ora. Se quel browser non ha più la chiave, rimuovi
+        il calendario dalla tua app di calendario, così che nulla lo consulti
+        e venga eliminato 12 mesi dopo, oppure invia il suo indirizzo a <a href="mailto:admin@zodiacs.org">admin@zodiacs.org</a> e lo
+        elimineremo. Le copie nei nostri backup settimanali scadono entro 90
+        giorni (vedi «Backup»).
+      </p>
+      <p>
+        Un indirizzo di calendario creato prima che il sito desse ai calendari
+        indirizzi casuali contiene invece un codice del tema con le sole
+        posizioni. Il nostro server, la sua cache e
         il tuo servizio di calendario ricevono quel codice ogni volta che il
         calendario si aggiorna. Il codice non ha campi per nome, data, ora o
         luogo. Le sue posizioni planetarie permettono comunque di ricavare la
@@ -549,11 +583,15 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         restringe il luogo di nascita a poche strisce larghe circa 3 km o meno.
         Gli indirizzi dei calendari creati prima del 23 settembre 2026
         contengono anche l’ascendente e il Medio Cielo con maggiore precisione;
-        ora il nostro server li arrotonda prima di usarli. Un indirizzo di
-        calendario non cambia mai da solo, quindi per sostituirne uno creato da
-        una versione precedente, come quello di un tema senza ora di nascita o
-        di una nascita precedente all’ora standard, rimuovi quel calendario e
-        iscriviti di nuovo.
+        ora il nostro server li arrotonda prima di usarli.
+      </p>
+      <p>
+        Questi indirizzi più vecchi continuano a funzionare per 60 giorni da
+        quando il sito ha iniziato a dare ai calendari indirizzi casuali. In
+        quei giorni il calendario mostra un evento che ti chiede di iscriverti
+        di nuovo, e dopo l’indirizzo smette di funzionare. Per sostituirne uno
+        prima, rimuovi quel calendario dalla tua app di calendario e iscriviti
+        di nuovo.
       </p>
       <p>
         Un file di calendario che scarichi dalla pagina dei transiti viene
@@ -617,9 +655,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         Come per qualsiasi servizio di hosting web, i suoi server elaborano le
         richieste fatte dal tuo browser e possono conservare log tecnici di
         breve durata (come indirizzo IP e tipo di browser) per fornire il sito e
-        proteggerlo dagli abusi. Quei log conservano l’indirizzo web completo di
-        ogni richiesta, che per un calendario dei transiti include il codice
-        del tema e per un link con anteprima include Sole, Luna e Ascendente.
+        proteggerlo dagli abusi. Quei log conservano l’indirizzo web completo di ogni richiesta. Per un calendario dei transiti è il suo identificativo casuale oppure, per un indirizzo creato prima che il sito desse ai calendari indirizzi casuali, il codice del tema; per un link con anteprima include Sole, Luna e Ascendente.
         Non mostriamo pubblicità e non usiamo cookie di
         tracciamento tra siti né pixel di marketing di terze parti.
       </p>
@@ -670,11 +706,18 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         cookie di invito, per un massimo di 14 giorni mentre usi un invito di
         compatibilità. Il resto è memoria del browser di prima parte per le
         funzioni che usi: ciò che salvi (temi, confronti, momenti Living Chart,
-        progressi di apprendimento), lo stato di lavoro degli strumenti che usi
-        (come la conversazione con Guide e i calcoli in cache), dati di sessione
-        di Aura limitati, l’eventuale indirizzo Aura memorizzato, le preferenze
-        del sito, copie dei file del sito stesso per l’uso offline e, se accedi,
-        un token di accesso. A parte questi cookie e quanto descritto nelle
+        progressi di apprendimento), gli indirizzi dei calendari dei transiti
+        a cui ti sei iscritto e le chiavi che li rimuovono, lo stato di lavoro
+        degli strumenti che usi (come la conversazione con Guide e i calcoli
+        in cache), dati di sessione di Aura limitati, l’eventuale indirizzo
+        Aura memorizzato, le preferenze del sito, copie dei file del sito
+        stesso per l’uso offline e, se accedi, un token di accesso. Per ogni
+        calendario dei transiti, il browser in cui ti sei iscritto conserva il
+        suo indirizzo, la chiave che lo rimuove e il momento in cui è stato
+        creato. L’indirizzo permette a chiunque lo abbia di leggere il
+        calendario, e tutti e tre restano finché non rimuovi lì il calendario
+        o non cancelli i dati di questo sito in quel browser, anche dopo che il nostro server ha eliminato il
+        calendario. A parte questi cookie e quanto descritto nelle
         sezioni precedenti, questa memoria resta sul tuo dispositivo, e nulla di
         tutto ciò viene usato per seguirti su altri siti.
       </p>
@@ -696,6 +739,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
           ? <li>Esportare o eliminare un account dalla pagina del profilo; scegliere separatamente se cancellare i dati di questo browser.</li>
           : <li>Eliminare un account e i suoi dati sincronizzati scrivendoci.</li>}
         {weeklyDigestEnabled && <li>Disattivare l’e-mail settimanale con un clic, in qualsiasi momento.</li>}
+        <li>Rimuovere un calendario dei transiti a cui ti sei iscritto, dove ti sei iscritto, nello stesso browser.</li>
         <li>Ritirare un invito di compatibilità dal tuo profilo prima che venga usato.</li>
         <li>Chiedere la correzione, l’oscuramento o la rimozione di un profilo di People.</li>
       </ul>

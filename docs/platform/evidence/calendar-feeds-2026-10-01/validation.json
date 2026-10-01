@@ -1,0 +1,92 @@
+{
+  "schema": "zodiacs.calendar-feed-release-validation/v1",
+  "checkedOnUtcDay": "2026-10-01",
+  "scope": "Local release preparation only; not deployed, not accepted P1.15, no production database or firewall changes.",
+  "sourceCommit": "250e205dfacd965a4cb391aa8df482a326929cb5",
+  "mainMerged": "9cfafa3e742de943062c9174338472781724a4b5",
+  "candidateReleaseDay": "2026-10-01",
+  "mustRedateIfDeploymentSlips": true,
+  "node": "v22.22.2",
+  "build": {
+    "command": "npm run build",
+    "exitCode": 0,
+    "pagesBuilt": 4343,
+    "distHtmlFiles": 4446,
+    "budgetsChanged": false,
+    "allBudgetsPassed": true
+  },
+  "typecheck": {
+    "command": "npm run check",
+    "exitCode": 0,
+    "files": 1182,
+    "errors": 0,
+    "warnings": 0,
+    "hints": 18
+  },
+  "test": {
+    "command": "npm test",
+    "exitCode": 1,
+    "files": {
+      "passed": 507,
+      "failed": 1,
+      "skipped": 1,
+      "total": 509
+    },
+    "tests": {
+      "passed": 6480,
+      "failed": 1,
+      "skipped": 4,
+      "total": 6485
+    },
+    "soleFailure": "scripts/phase1-acceptance-evidence.test.mjs: stale templateSourceSha256",
+    "failureRemainsRequiredReleaseGate": true
+  },
+  "capture": {
+    "state": "stale; not recaptured locally",
+    "committedTemplateSourceSha256": "0b53514a64e0e9a3fa6c7cae1be3ab70f274f1a13bcd8a2aafbf481c9e5a0cf6",
+    "builtTemplateSourceSha256": "293d4538f69326b5484c4623ffb705a25f485f348f988c07316eccb34bbc0b17",
+    "supportedFallback": ".github/workflows/browser-evidence.yml at the exact PR head"
+  },
+  "sql": {
+    "command": "npm run test:calendar:feeds-sql",
+    "exitCode": 1,
+    "state": "not run: Docker unavailable",
+    "requiredCiJob": "Calendar feed SQL (PostgreSQL 17)"
+  },
+  "claims": {
+    "unlisted": 0,
+    "orphans": 0,
+    "bindings": "passed in full suite"
+  },
+  "scopeGuard": {
+    "passed": true,
+    "protectedPaths": 4,
+    "baseCommit": "9cfafa3e742de943062c9174338472781724a4b5"
+  },
+  "independentReview": {
+    "sourceRange": "2458f0b6..250e205d",
+    "result": "no new blockers; remount/key-loss blocker resolved",
+    "focusedTestsPassed": 69,
+    "limits": [
+      "Hook harness with real client, not actual browser execution",
+      "Document-scoped fencing; cross-tab clear-all races remain outside these tests"
+    ]
+  },
+  "programme": {
+    "overallPercent": 23,
+    "acceptedWeight": 42.5,
+    "totalWeight": 182.45,
+    "blockedPercent": 2,
+    "blockedWeight": 4,
+    "statusChange": false
+  },
+  "stillRequired": [
+    "merge updated main and re-pin allowance",
+    "confirm actual UTC release day",
+    "final head-bound browser captures and calendar drive",
+    "PostgreSQL 17 SQL CI and remaining required CI",
+    "authorized production migration and deployment",
+    "manual sweep, synthetic CDN removal and read/write rate checks, redacted logs"
+  ],
+  "externalMutationsPerformed": []
+}

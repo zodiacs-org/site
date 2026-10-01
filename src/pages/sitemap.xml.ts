@@ -101,6 +101,12 @@ const COMPUTE_API_REVIEW_ROUTES = [
   '/developers/', '/developers/compute/', '/developers/support/', '/privacy/',
   '/es/birth-chart/', '/fr/birth-chart/', '/it/birth-chart/', '/pt/birth-chart/',
 ] as const;
+// Opaque feed subscriptions revise storage, removal and legacy-address terms
+// on all six privacy pages. Re-date with LEGACY_FEED_WINDOW_START if delayed.
+const CALENDAR_FEEDS_LASTMOD = '2026-10-01';
+const CALENDAR_FEEDS_ROUTES = [
+  '/privacy/', '/es/privacy/', '/fr/privacy/', '/it/privacy/', '/pt/privacy/', '/ru/privacy/',
+] as const;
 // Keep these dates source-controlled: build environments may have shallow or
 // absent Git history. When an evergreen page's rendered source changes, update
 // its entry here in the same commit.
@@ -231,6 +237,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // Then the compute API, and its review last of all.
   ...COMPUTE_API_ROUTES.map((loc) => [loc, COMPUTE_API_LASTMOD] as const),
   ...COMPUTE_API_REVIEW_ROUTES.map((loc) => [loc, COMPUTE_API_REVIEW_LASTMOD] as const),
+  ...CALENDAR_FEEDS_ROUTES.map((loc) => [loc, CALENDAR_FEEDS_LASTMOD] as const),
 ]);
 
 function getLastmod(loc: string): string {

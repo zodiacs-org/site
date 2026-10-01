@@ -138,6 +138,40 @@ describe('offline service worker posture', () => {
     expect(worker.caches.open).not.toHaveBeenCalled();
   });
 
+  it('leaves every /api/ request, navigations included, to the network and caches none of them', async () => {
+    // Opening a calendar feed's address in a tab is a navigation. Before
+    // this, the navigate branch kept the calendar in Cache Storage, where
+    // "Remove this calendar" does not reach it.
+    const worker = runWorker(await builtWorker(false));
+    const handler = worker.handlers.get('fetch');
+    const requests = [
+      ['navigate', '/api/calendar/feeds/Zq3xPq0Jr9Vb_Tm2-Ka5sA'],
+      ['navigate', '/api/calendar/transits?token=2.synthetic'],
+      ['navigate', '/api/v1/sky/today.json'],
+      ['navigate', '/api'],
+      ['no-cors', '/api/calendar/feeds/Zq3xPq0Jr9Vb_Tm2-Ka5sA'],
+      ['cors', '/api/v1/index.json'],
+    ];
+    for (const [mode, path] of requests) {
+      const respondWith = vi.fn();
+      handler({ request: { method: 'GET', mode, url: `https://zodiacs.org${path}` }, respondWith });
+      expect(respondWith, path).not.toHaveBeenCalled();
+    }
+    expect(worker.networkFetch).not.toHaveBeenCalled();
+    expect(worker.caches.open).not.toHaveBeenCalled();
+
+    // Only the /api/ path itself: a page whose name merely starts with the
+    // letters stays network-first with its offline copy.
+    let completion;
+    handler({
+      request: { method: 'GET', mode: 'navigate', url: 'https://zodiacs.org/apiary/' },
+      respondWith: (promise) => { completion = Promise.resolve(promise); },
+    });
+    await completion;
+    expect(worker.networkFetch).toHaveBeenCalledOnce();
+    expect(worker.caches.open).toHaveBeenCalledOnce();
+  });
+
   it('keeps non-authoritative Terminal pages network-first with an offline fallback', async () => {
     const worker = runWorker(await builtWorker(false));
     const handler = worker.handlers.get('fetch');

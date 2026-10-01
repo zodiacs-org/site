@@ -16,8 +16,8 @@ const walletChartEnabled = configuredWalletChains({
   PUBLIC_WALLET_CHART_ENABLED:
     import.meta.env.PUBLIC_WALLET_CHART_ENABLED ?? process.env.PUBLIC_WALLET_CHART_ENABLED,
 }).length > 0;
-const updated = '29 de septiembre de 2026';
-const modifiedAt = '2026-09-29T00:00:00.000Z';
+const updated = '1 de octubre de 2026';
+const modifiedAt = '2026-10-01T00:00:00.000Z';
 
 const jsonLd = [
   {
@@ -516,8 +516,42 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         en tu dispositivo.
       </p>
       <p>
-        Un calendario de tránsitos por suscripción lleva un código de carta solo
-        de posiciones en su dirección web. Nuestro servidor, su caché y tu
+        Cuando te suscribes a un calendario de tránsitos, la página envía una
+        vez a nuestro servidor el código de carta solo de posiciones, descrito
+        más abajo. Nuestro servidor guarda solo aquello con lo que se calcula
+        el calendario: las posiciones de los diez planetas del Sol a Plutón, a
+        0,001°, y el ascendente y el Medio Cielo al grado entero o, para una
+        carta sin hora de nacimiento, las posiciones de las 12:00 UTC de la
+        fecha de nacimiento, sin ascendente ni Medio Cielo. No guarda ningún
+        nombre, lugar, fecha ni hora de nacimiento. El registro se guarda en
+        nuestra base de datos de Supabase, en su región de Tokio
+        (ap-northeast-1), con el momento en que se creó y el de la última vez
+        que se consultó en nuestro servidor. La dirección del calendario solo
+        lleva un identificador aleatorio. Con hora de nacimiento, las
+        posiciones siguen dando tu fecha y hora de nacimiento al minuto, y el
+        ascendente y el Medio Cielo acotan tu lugar de nacimiento a la zona
+        que se describe más abajo para el código de carta; sin ella, dan la
+        fecha y nada sobre el lugar de nacimiento. Tu servicio de calendario
+        consulta la dirección para mantener el calendario al día, y las horas
+        de sus eventos dan lo mismo; cualquiera que tenga la dirección puede
+        consultar el calendario.
+      </p>
+      <p>
+        Un calendario que nadie ha consultado en 12 meses se borra. Puedes
+        quitarlo antes con «Quitar este calendario» donde te suscribiste, en
+        el mismo navegador: ese navegador guarda la clave que lo quita, y
+        nuestro servidor solo guarda un resumen irreversible de la clave. Al
+        quitarlo, el registro se borra en el acto, y la dirección deja de
+        funcionar en menos de una hora. Si ese navegador ya no tiene la clave,
+        quita el calendario de tu app de calendario, para que nada lo consulte
+        y se borre 12 meses después, o envía su dirección a <a href="mailto:admin@zodiacs.org">admin@zodiacs.org</a> y lo borraremos.
+        Lo que quede en nuestras copias de seguridad semanales caduca en un
+        plazo de 90 días (consulta «Copias de seguridad»).
+      </p>
+      <p>
+        Una dirección de calendario creada antes de que el sitio diera a los
+        calendarios direcciones aleatorias lleva, en cambio, un código de
+        carta solo de posiciones. Nuestro servidor, su caché y tu
         servicio de calendario reciben ese código cada vez que el calendario se
         actualiza. El código no tiene campos de nombre, fecha, hora ni lugar.
         Sus posiciones planetarias aún permiten deducir tu fecha y hora de
@@ -542,11 +576,15 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         nacimiento, que acota el lugar de nacimiento a unas pocas franjas de
         unos 3 km de ancho o menos. Las direcciones de calendario creadas antes
         del 23 de septiembre de 2026 también llevan el ascendente y el Medio
-        Cielo con más precisión; nuestro servidor ahora los redondea antes de
-        usarlos. Una dirección de calendario nunca cambia por sí sola, así que
-        para sustituir una creada con una versión anterior, como la de una carta
-        sin hora de nacimiento o la de un nacimiento anterior a la hora
-        estándar, elimina ese calendario y vuelve a suscribirte.
+        Cielo con más precisión; nuestro servidor ahora los redondea antes de usarlos.
+      </p>
+      <p>
+        Esas direcciones antiguas siguen funcionando durante 60 días desde que
+        el sitio empezó a dar a los calendarios direcciones aleatorias.
+        Durante esos días, el calendario muestra un evento que te pide volver
+        a suscribirte, y después la dirección deja de funcionar. Para
+        sustituir una antes, elimina ese calendario de tu app de calendario y
+        vuelve a suscribirte.
       </p>
       <p>
         Un archivo de calendario que descargas de la página de tránsitos se crea
@@ -611,10 +649,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         Como todos los servicios de alojamiento web, sus servidores procesan las
         solicitudes que hace tu navegador y pueden conservar registros técnicos
         de corta duración (como la dirección IP y el tipo de navegador) para
-        servir el sitio y protegerlo de abusos. Esos registros conservan la
-        dirección web completa de cada solicitud, que en un calendario de
-        tránsitos incluye su código de carta y en un enlace con vista previa
-        incluye el Sol, la Luna y el Ascendente. No mostramos publicidad y no
+        servir el sitio y protegerlo de abusos. Esos registros conservan la dirección web completa de cada solicitud. En un calendario de tránsitos es su identificador aleatorio o, en una dirección creada antes de que el sitio diera a los calendarios direcciones aleatorias, su código de carta; en un enlace con vista previa incluye el Sol, la Luna y el Ascendente. No mostramos publicidad y no
         usamos cookies de seguimiento entre sitios ni píxeles de marketing de
         terceros.
       </p>
@@ -664,12 +699,19 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         máximo de 14 días mientras usas una invitación de compatibilidad. El
         resto es almacenamiento propio del navegador para las funciones que
         usas: lo que guardas (cartas, comparaciones, momentos de Living Chart,
-        progreso de aprendizaje), el estado de trabajo de las herramientas que
-        usas (como la conversación de Guide y los cálculos en caché), datos de
-        sesión limitados de Aura, una dirección de Aura recordada de forma
-        opcional, preferencias del sitio, copias de los propios archivos del
-        sitio para usarlo sin conexión y, si inicias sesión, un token de
-        acceso. Aparte de estas cookies y de lo que describen las secciones
+        progreso de aprendizaje), las direcciones de los calendarios de
+        tránsitos a los que te suscribiste y las claves que los quitan, el
+        estado de trabajo de las herramientas que usas (como la conversación
+        de Guide y los cálculos en caché), datos de sesión limitados de Aura,
+        una dirección de Aura recordada de forma opcional, preferencias del
+        sitio, copias de los propios archivos del sitio para usarlo sin
+        conexión y, si inicias sesión, un token de acceso. Para cada
+        calendario de tránsitos, el navegador en el que te suscribiste guarda
+        su dirección, la clave que lo quita y el momento en que se creó. La
+        dirección permite a cualquiera que la tenga leer el calendario, y las
+        tres cosas se quedan hasta que quites el calendario allí o borres los
+        datos de este sitio en ese navegador, incluso después de que nuestro servidor haya borrado el
+        calendario. Aparte de estas cookies y de lo que describen las secciones
         anteriores, este almacenamiento permanece en tu dispositivo, y nada de
         ello se usa para seguirte por otros sitios.
       </p>
@@ -692,6 +734,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
           ? <li>Exportar o eliminar una cuenta desde la página de perfil; elegir por separado si también se borran los datos de este navegador.</li>
           : <li>Eliminar una cuenta y sus datos sincronizados escribiéndonos un correo.</li>}
         {weeklyDigestEnabled && <li>Desactivar el correo semanal con un clic, en cualquier momento.</li>}
+        <li>Quitar un calendario de tránsitos al que te suscribiste, donde te suscribiste, en el mismo navegador.</li>
         <li>Retirar una invitación de compatibilidad desde tu perfil antes de que se use.</li>
         <li>Solicitar la corrección, la ocultación o la eliminación de un perfil de People.</li>
       </ul>

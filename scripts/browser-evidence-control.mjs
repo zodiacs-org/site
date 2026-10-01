@@ -17,7 +17,7 @@ const artifactDirectories = [
 const provenancePath = 'tests/visual/artifacts/browser-evidence/provenance.json';
 const stepNames = [
   'checkout', 'node', 'request', 'install', 'browser', 'build',
-  'acceptance', 'receipt', 'visual', 'candidates', 'lighthouse', 'explorer',
+  'acceptance', 'receipt', 'visual', 'candidates', 'lighthouse', 'explorer', 'calendar', 'transitCalendar',
 ];
 
 export function captureMarker(headSha) {

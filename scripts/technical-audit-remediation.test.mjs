@@ -165,8 +165,9 @@ describe('technical audit remediation contracts', () => {
     expect(terms).toContain("const modifiedAt = '2026-09-29T00:00:00.000Z'");
     // Revised on 2026-09-23 (the claims ledger's corrections), on 2026-09-28
     // (the privacy audit's fixes) and on 2026-09-29 (the share-image review);
-    // the sitemap's SHARE_IMAGE_REVIEW_LASTMOD carries the last date for it.
-    expect(privacy).toContain("const modifiedAt = '2026-09-29T00:00:00.000Z'");
+    // the opaque calendar feed release then revised it on 2026-10-01.
+    expect(privacy).toContain("const modifiedAt = '2026-10-01T00:00:00.000Z'");
+    expect(sitemap).toContain("const CALENDAR_FEEDS_LASTMOD = '2026-10-01'");
     for (const page of [privacy, terms]) expect(page).toContain('dateModified: modifiedAt');
     expect(about).toContain("dateModified: '2026-09-28T00:00:00.000Z'");
     expect(sitemap).toContain("const ENGINE_PHASE1_LASTMOD = '2026-09-23'");

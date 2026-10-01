@@ -478,5 +478,20 @@ describe('account-bound local profile data', () => {
       targets: ['all'],
     });
     expect([...session.values.keys()].filter((key) => key.startsWith('zodiacs'))).toEqual([]);
+    expect(window.dispatchEvent).toHaveBeenCalledWith(expect.objectContaining({ type: 'zodiacs:calendar-feeds-cleared' }));
+  });
+
+  it('does not report volatile calendar erasure when local clearing fails', () => {
+    const local = new MemoryStorage();
+    const session = new MemoryStorage();
+    local.setItem('zodiacs.calendar-feeds.v1', 'private');
+    vi.stubGlobal('window', { localStorage: local, dispatchEvent: vi.fn() });
+    const original = local.removeItem.bind(local);
+    local.removeItem = (key) => {
+      if (key === 'zodiacs.calendar-feeds.v1') throw new Error('Storage refused');
+      original(key);
+    };
+    expect(clearAllZodiacsDataFromDevice(local, session).ok).toBe(false);
+    expect(vi.mocked(window.dispatchEvent).mock.calls.some(([event]) => event.type === 'zodiacs:calendar-feeds-cleared')).toBe(false);
   });
 });
