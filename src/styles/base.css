@@ -679,3 +679,19 @@ body:has(:focus-visible) .reveal { animation: none; }
   font-size: 10.5px;
   letter-spacing: 0.05em;
 }
+
+/* Functional pages share a reading rhythm; cinematic heroes keep their own scale. */
+main > :is(section, article):first-child :is(.tool-hero, .section-head, .compat-hero) > h1 {
+  font-family: var(--font-serif);
+  font-size: clamp(36px, 5vw, 56px);
+  font-weight: 400;
+  line-height: 1.06;
+  letter-spacing: -0.025em;
+}
+main > .section:first-child { padding-top: clamp(104px, 10vw, 144px); }
+main > .section--tight:first-child { padding-top: clamp(100px, 9vw, 132px); }
+.section-head h2 { font-weight: 400; }
+:where(main) [id] { scroll-margin-top: 100px; }
+
+.calendar-method { margin-top: 16px; color: var(--muted); font-size: 14px; }
+.calendar-method summary { cursor: pointer; min-height: 44px; line-height: 44px; }

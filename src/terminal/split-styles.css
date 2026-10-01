@@ -2392,7 +2392,7 @@
       max-height: 330px;
       object-fit: contain;
       filter: drop-shadow(0 26px 30px rgba(0,0,0,.75));
-      transition: transform 900ms var(--ease-soft);
+      transition: transform 260ms cubic-bezier(.23,1,.32,1);
     }
     .campaign-look__fallback { display: none; }
     .campaign-look__art.is-fallback .campaign-look__figure { display: none; }
@@ -2666,7 +2666,7 @@
       background:
         radial-gradient(circle at 50% 30%, rgba(255,255,255,.08), transparent 55%),
         rgba(238,241,247,.024);
-      transition: transform 900ms var(--ease-soft);
+      transition: transform 260ms cubic-bezier(.23,1,.32,1);
     }
     .consumer-campaign .consumer-shop__product.is-featured img { aspect-ratio: 4 / 5.4; }
     .consumer-campaign .consumer-shop__product span {
@@ -3098,3 +3098,36 @@
       .campaign-look:hover .campaign-look__figure,
       .consumer-campaign .consumer-shop__product:hover img { transform: none; }
     }
+
+    .campaign-motion { position: absolute; right: 14px; bottom: 14px; z-index: 5; min-height: 44px; padding: 0 14px; border: 1px solid var(--hair-2); border-radius: 999px; background: rgba(8,9,12,.9); color: var(--ink); font: 500 12px var(--sans); cursor: pointer; }
+    .campaign-look__shine { grid-area: 1 / 1; position: absolute; width: 100%; height: 100%; max-height: 330px; pointer-events: none; overflow: hidden; -webkit-mask: var(--collectible-mask) center / contain no-repeat; mask: var(--collectible-mask) center / contain no-repeat; mix-blend-mode: screen; }
+    .campaign-look__shine::after { content: ''; position: absolute; inset: -30% -90%; background: linear-gradient(110deg, transparent 42%, rgba(255,255,255,.08) 47%, rgba(255,255,255,.44) 50%, rgba(255,255,255,.08) 53%, transparent 58%); animation: collectible-shine 18s cubic-bezier(.45,0,.2,1) infinite paused; opacity: 0; }
+    .campaign-look__art[data-art-visible="true"][data-tab-visible="true"] .campaign-look__shine::after { animation-play-state: running; }
+    .campaign-look__art.is-fallback .campaign-look__shine { display: none; }
+    @keyframes collectible-shine { 0%, 6% { opacity: 0; transform: translateX(-45%); } 10%, 25% { opacity: .22; } 32%, 100% { opacity: 0; transform: translateX(45%); } }
+    .campaign-look__figure { transition: transform 260ms cubic-bezier(.23,1,.32,1); }
+    .campaign-look .vitrine-price { min-height: 44px; }
+    @media (hover: hover) and (pointer: fine) { .campaign-look:hover .campaign-look__figure { transform: translateY(-3px); } .campaign-look:hover .campaign-look__shine { transform: translateY(-3px); } }
+    @media (max-width: 900px) {
+      .campaign-runway__dots { display: flex; overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: thin; }
+      .campaign-dot { flex: 0 0 44px; scroll-snap-align: center; }
+      .campaign-look { grid-template-rows: auto minmax(0, 1fr) auto auto auto; }
+      .campaign-look__figure, .campaign-look__shine { max-height: none; }
+      .campaign-look h3 { position: relative; z-index: 2; margin-top: -20px; }
+      .campaign-look__explore { position: static; order: 4; z-index: 3; min-height: 44px; color: var(--ink-2); font-size: 13px; justify-content: space-between; text-decoration: none; }
+      .campaign-look__explore::after { content: ''; position: absolute; inset: 0; }
+      .campaign-look__explore:focus-visible { outline-offset: 2px; }
+    }
+    @media (prefers-reduced-motion: reduce) { .campaign-look__shine { display: none; } .campaign-motion { display: none; } .campaign-look__figure { transition: none; transform: none !important; } }
+
+.campaign-hero__pin > .campaign-motion { top: 80px; bottom: auto; right: 16px; z-index: 8; }
+@media (max-width: 599px) { .campaign-hero__pin > .campaign-motion { top: calc(60px + env(safe-area-inset-top)); } }
+
+.campaign-look__shine { transition: transform 260ms cubic-bezier(.23,1,.32,1); }
+body:has(:focus-visible) .campaign-look__shine::after { animation-play-state: paused !important; }
+@media (prefers-reduced-motion: reduce) { .campaign-look__shine { transition: none; } }
+
+.campaign-motion[hidden] { display: none; }
+@media (max-width: 900px) { .campaign-runway__dots { scrollbar-width: none; } .campaign-runway__dots::-webkit-scrollbar { display: none; } }
+
+@media (max-width: 900px) { .campaign-look__figure { object-position: center bottom; } .campaign-look__shine { -webkit-mask-position: center bottom; mask-position: center bottom; } }

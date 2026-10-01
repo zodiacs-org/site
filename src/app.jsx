@@ -4811,12 +4811,13 @@
     // load event and while the film is on screen, so the poster stays the
     // largest paint, and playback rests whenever the film leaves the screen
     // or the tab hides.
-    function useCampaignFilm(videoRef, stageRef, threshold = 0.01) {
+    function useCampaignFilm(videoRef, stageRef, threshold = 0.01, paused = false) {
       const [playing, setPlaying] = useState(false);
       useEffect(() => {
         const video = videoRef.current;
         const stage = stageRef.current;
         if (!video || !stage || !('IntersectionObserver' in window)) return undefined;
+        if (paused) { video.pause(); setPlaying(false); return undefined; }
         const connection = navigator.connection;
         const constrained = Boolean(connection && (
           connection.saveData || ['slow-2g', '2g'].includes(connection.effectiveType || '')
@@ -4885,7 +4886,7 @@
           document.removeEventListener('visibilitychange', onVisibility);
           motion?.removeEventListener?.('change', onMotion);
         };
-      }, [threshold]);
+      }, [threshold, paused]);
       return playing;
     }
 
@@ -4911,7 +4912,9 @@
       const heroRef = useRef(null);
       const filmRef = useRef(null);
       const videoRef = useRef(null);
-      const playing = useCampaignFilm(videoRef, filmRef);
+      const [filmControlsVisible, setFilmControlsVisible] = useState(false);
+      const [motionPaused, setMotionPaused] = useState(() => { try { return sessionStorage.getItem('zodiacs:motion-paused') === '1'; } catch { return false; } });
+      const playing = useCampaignFilm(videoRef, filmRef, 0.01, motionPaused);
       useEffect(() => {
         const hero = heroRef.current;
         const film = filmRef.current;
@@ -4919,6 +4922,8 @@
         let frame = 0;
         const paint = () => {
           frame = 0;
+          const runway = document.getElementById('the-twelve');
+          setFilmControlsVisible(!runway || runway.getBoundingClientRect().top > window.innerHeight * 0.8);
           if (!campaignStageActive()) {
             hero.style.removeProperty('--hero-scale');
             hero.style.removeProperty('--hero-out');
@@ -4988,7 +4993,9 @@
                 <source data-src={CAMPAIGN_FILM.h264} type="video/mp4" />
               </video>
               <span className="campaign-hero__shade" aria-hidden="true" />
+
             </div>
+              <button className="campaign-motion" hidden={!filmControlsVisible} type="button" aria-pressed={motionPaused} onClick={() => setMotionPaused((value) => { try { sessionStorage.setItem('zodiacs:motion-paused', value ? '0' : '1'); } catch {} return !value; })}>{motionPaused ? 'Resume motion' : 'Pause motion'}</button>
             <span className="campaign-hero__word campaign-hero__word--astro" aria-hidden="true">Astro</span>
             <span className="campaign-hero__word campaign-hero__word--folio" aria-hidden="true">folio</span>
             <div className="campaign-hero__foot" aria-hidden="true">
@@ -5064,6 +5071,18 @@
       const slug = item.asset.sign;
       const [artworkFailed, setArtworkFailed] = useState(false);
       const inSeason = item.ticker === seasonTicker;
+      const artRef = useRef(null);
+      const [artVisible, setArtVisible] = useState(false);
+      useEffect(() => {
+        const art = artRef.current;
+        if (!art || !('IntersectionObserver' in window)) return undefined;
+        const observer = new IntersectionObserver(([entry]) => setArtVisible(Boolean(entry?.isIntersecting)), { threshold: 0.2 });
+        const visibility = () => art.dataset.tabVisible = String(!document.hidden);
+        visibility();
+        observer.observe(art);
+        document.addEventListener('visibilitychange', visibility);
+        return () => { observer.disconnect(); document.removeEventListener('visibilitychange', visibility); };
+      }, []);
       return (
         <article
           className={'campaign-look' + (inSeason ? ' is-season' : '') + (active ? ' is-active' : '')}
@@ -5083,7 +5102,7 @@
               : <span>{consumerSignDateLabel(item)}</span>}
           </p>
           <h3 id={`campaign-look-${slug}`}>{item.name}</h3>
-          <div className={'campaign-look__art' + (artworkFailed ? ' is-fallback' : '')}>
+          <div className={'campaign-look__art' + (artworkFailed ? ' is-fallback' : '')} ref={artRef} data-art-visible={active && artVisible ? 'true' : 'false'} style={{ '--collectible-mask': `url(/assets/sculptures/512/${slug}.webp)` }}>
             <img
               className="campaign-look__stars"
               src={`/assets/constellations/${slug}.svg`}
@@ -5120,6 +5139,7 @@
                 setArtworkFailed(true);
               }}
             />
+            <span className="campaign-look__shine" aria-hidden="true" />
             <span
               className="campaign-look__fallback"
               role={artworkFailed ? 'img' : undefined}
@@ -5135,7 +5155,7 @@
           </div>
           <div className="campaign-look__actions">
             <FomoBuyButton item={item} source="runway" />
-            <a className="campaign-look__explore" href={registryProfilePath(item)}>Explore {item.name}</a>
+            <a className="campaign-look__explore" href={registryProfilePath(item)}><span>Explore {item.name}</span><span aria-hidden="true"> ↗</span></a>
           </div>
           <p className="vitrine-buy-options">
             <a href={howToBuyPath(item)}>Other ways to buy</a>
@@ -5161,6 +5181,13 @@
         marketHistoryForSign(history.data, item.asset.sign).observations,
       ])), [history.data]);
       const activeIndex = Math.max(0, SIGNS.findIndex((item) => item.ticker === active));
+      useEffect(() => {
+        const dots = dotsRef.current;
+        const selected = dots?.querySelector('[aria-pressed="true"]');
+        if (!dots || !selected || dots.scrollWidth <= dots.clientWidth) return;
+        dots.scrollTo({ left: selected.offsetLeft - (dots.clientWidth - selected.offsetWidth) / 2, behavior: 'instant' });
+      }, [active]);
+
 
       // The daily lines are the only extra read, fetched as the runway nears.
       useEffect(() => {
@@ -6752,8 +6779,8 @@
       const waiting = batch.status === 'loading' || batch.status === 'idle';
       const change = quote ? toFiniteNumber(quote.priceChange24h) : null;
       const direction = change === null ? 'flat' : change > 0 ? 'up' : change < 0 ? 'down' : 'flat';
-      const price = quote ? formatPriceUsd(quote.priceUsd) : waiting ? 'Fetching latest price' : 'Price unavailable';
-      const movement = quote ? plainMarketMovement(change) : waiting ? 'Updating market context' : 'Movement unavailable';
+      const price = quote ? formatPriceUsd(quote.priceUsd) : waiting ? 'Loading price…' : 'Price unavailable';
+      const movement = quote ? plainMarketMovement(change) : waiting ? '' : 'Movement unavailable';
       return (
         <p
           className={'vitrine-price' + (quote ? '' : ' is-pending')}
@@ -6762,7 +6789,7 @@
           aria-atomic={live ? 'true' : undefined}
         >
           <span className="vitrine-price__figure">{price}</span>
-          <span aria-hidden="true">·</span>
+          {quote && <span aria-hidden="true">·</span>}
           <span className={`vitrine-price__movement is-${direction}`}>{movement}</span>
         </p>
       );
@@ -7262,8 +7289,15 @@
     }
 
     function SiteEnd({ tagline, exploreLinks = FOOTER_EXPLORE, trustLinks = FOOTER_TRUST }) {
+      const footerRef = useRef(null);
+      useEffect(() => {
+        const mobile = window.matchMedia('(max-width: 620px)');
+        const sync = () => footerRef.current?.querySelectorAll('.zfooter__fold:not([data-footer-essential])').forEach((group) => group.open = !mobile.matches);
+        sync(); mobile.addEventListener?.('change', sync);
+        return () => mobile.removeEventListener?.('change', sync);
+      }, []);
       return (
-        <footer className="zfooter zfooter--static">
+        <footer className="zfooter zfooter--static" ref={footerRef}>
           <div className="zfooter__inner">
             <div className="zfooter__lead">
               <div>
@@ -7281,17 +7315,17 @@
 
             <div className="zfooter__directory">
               <nav className="zfooter__group" aria-label="Explore">
-                <span className="zfooter__label">Explore</span>
+                <details className="zfooter__fold" open data-footer-essential><summary className="zfooter__fold-label"><span className="zfooter__label">Explore</span></summary>
                 <div className="zfooter__links"><FooterLinks links={exploreLinks} /></div>
-              </nav>
+              </details></nav>
               <nav className="zfooter__group" aria-label="Trust and policies">
-                <span className="zfooter__label">Trust</span>
+                <details className="zfooter__fold" open><summary className="zfooter__fold-label"><span className="zfooter__label">Trust</span></summary>
                 <div className="zfooter__links"><FooterLinks links={trustLinks} /></div>
-              </nav>
+              </details></nav>
               <nav className="zfooter__group zfooter__group--wide" aria-label="Official channels">
-                <span className="zfooter__label">Follow</span>
+                <details className="zfooter__fold" open><summary className="zfooter__fold-label"><span className="zfooter__label">Follow</span></summary>
                 <div className="zfooter__links"><FooterLinks links={FOOTER_CHANNELS} external /></div>
-              </nav>
+              </details></nav>
               <nav className="zfooter__group zfooter__twelve" aria-label="The twelve zodiac signs">
                 <span className="zfooter__label">The Twelve</span>
                 <div className="zfooter__signs">

@@ -1,0 +1,31 @@
+---
+interface Props { enabled?: boolean; }
+const { enabled = false } = Astro.props;
+---
+{enabled && <nav class="article-contents" data-article-contents hidden aria-label="On this page"><details><summary>On this page</summary><ol></ol></details></nav>}
+{enabled && <script>
+  const nav = document.querySelector<HTMLElement>('[data-article-contents]');
+  const main = document.querySelector('main');
+  if (nav && main) {
+    const headings = [...main.querySelectorAll<HTMLHeadingElement>('h2[id]')].filter((heading) => !heading.closest('details, nav, [hidden]'));
+    if (headings.length >= 3) {
+      const list = nav.querySelector('ol')!;
+      headings.forEach((heading) => { const item = document.createElement('li'); const link = document.createElement('a'); link.href = '#' + heading.id; link.textContent = heading.textContent; item.append(link); list.append(item); });
+      const title = main.querySelector('h1');
+      const hero = title?.closest('header, .tool-hero, .section-head');
+      if (hero) { if (hero.classList.contains('container')) nav.classList.add('container'); hero.after(nav); } else title?.after(nav);
+      nav.hidden = false;
+      const disclosure = nav.querySelector('details')!;
+      disclosure.open = window.matchMedia('(min-width: 960px)').matches;
+      list.addEventListener('click', () => { if (window.matchMedia('(max-width: 959px)').matches) disclosure.open = false; });
+    }
+  }
+</script>}
+<style>
+.article-contents { margin: 24px 0; padding-block: 10px; border-block: 1px solid var(--hair-1); }
+.article-contents[hidden] { display: none; }
+.article-contents summary { min-height: 44px; cursor: pointer; color: var(--text); font-size: 14px; line-height: 44px; }
+.article-contents ol { display: grid; gap: 0 24px; padding-left: 20px; margin: 0 0 12px; }
+.article-contents a { display: inline-flex; align-items: center; min-height: 44px; color: var(--text-2); font-size: 14px; text-decoration-color: var(--hair-2); text-underline-offset: 4px; }
+@media (min-width: 720px) { .article-contents ol { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+</style>

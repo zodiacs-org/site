@@ -111,7 +111,7 @@ async function openReturn(page, baseURL) {
 
 async function cast(page) {
   await page.evaluate(() => { window.__srCardTexts = []; });
-  await page.getByRole('button', { name: 'Cast solar return', exact: true }).click();
+  await page.getByRole('button', { name: 'Find my solar return', exact: true }).click();
   await page.locator('[data-solar-return-result]').waitFor({ state: 'visible', timeout: TIMEOUT });
   await page.waitForFunction(() => document.querySelector('.calc__form')?.getAttribute('aria-busy') === 'false'
     && document.activeElement?.id === 'solar-return-reading-title');
@@ -300,7 +300,7 @@ export async function runSolarReturnChecks({ browser, baseURL, check, outDir }) 
     await page.locator('#sr-time').fill('08:30');
     await page.locator('#sr-place').fill('Mexico City');
     await page.locator('#sr-place-list button').first().click({ timeout: 15_000 });
-    check('Solar: manual birth fields become ready', await page.getByRole('button', { name: 'Cast solar return', exact: true }).isEnabled());
+    check('Solar: manual birth fields become ready', await page.getByRole('button', { name: 'Find my solar return', exact: true }).isEnabled());
     await page.locator('#sr-source').selectOption('kahlo-no-place-known');
     await cast(page);
     check('Solar: saved no-place chart never reuses the manual birthplace', await page.locator('[data-solar-return-result]').getAttribute('data-sr-no-place') === 'true' && await page.getByRole('columnheader', { name: 'House', includeHidden: true }).count() === 0);
@@ -380,10 +380,10 @@ export async function runSolarReturnChecks({ browser, baseURL, check, outDir }) 
     const page = await pending.newPage();
     await openReturn(page, baseURL);
     const computeRequested = page.waitForRequest((request) => computeModule.test(new URL(request.url()).pathname), { timeout: TIMEOUT });
-    await page.getByRole('button', { name: 'Cast solar return', exact: true }).click();
+    await page.getByRole('button', { name: 'Find my solar return', exact: true }).click();
     await computeRequested;
     await page.getByLabel('Custom return year').fill('2025');
-    check('Solar: editing a pending calculation releases the form without exposing old exports', await page.getByRole('button', { name: 'Cast solar return', exact: true }).isEnabled() && await page.locator('[data-sr-exports]').count() === 0);
+    check('Solar: editing a pending calculation releases the form without exposing old exports', await page.getByRole('button', { name: 'Find my solar return', exact: true }).isEnabled() && await page.locator('[data-sr-exports]').count() === 0);
     release();
     await page.waitForLoadState('networkidle');
     check('Solar: the cancelled module completion does not publish the old result', await page.locator('[data-solar-return-result]').count() === 0);

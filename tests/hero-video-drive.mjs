@@ -256,6 +256,18 @@ await withPreview({ port: 4402 }, async (baseURL) => {
         check(`${testCase.name}: rejected playback keeps the poster drifting`, fallback.playback === 'poster-fallback' && fallback.animation === 'running', `${fallback.playback} · ${fallback.animation}`);
       }
 
+      if (testCase.name === 'desktop-normal') {
+        const pause = page.locator('[data-hero-motion-toggle]');
+        await pause.click();
+        const stopped = await video.evaluate((element) => ({ paused: element.paused, state: element.dataset.heroPlayback, posterMotion: document.querySelector('[data-hero-poster]')?.dataset.heroMotion }));
+        check('manual pause stops film and poster', stopped.paused && stopped.state === 'paused' && stopped.posterMotion === 'static', JSON.stringify(stopped));
+        await page.reload({ waitUntil: 'networkidle' });
+        check('manual pause survives navigation in this tab', await pause.getAttribute('aria-pressed') === 'true' && await video.evaluate((element) => !element.dataset.sourcesAttached && element.dataset.heroMotion === 'static'));
+        await pause.click();
+        await page.waitForFunction(() => document.querySelector('[data-hero-video]')?.dataset.heroPlayback === 'playing');
+        check('manual resume restores eligible playback', await pause.getAttribute('aria-pressed') === 'false');
+      }
+
       if (OUT) await page.locator('.hero__frame').screenshot({ path: `${OUT}/hero-${testCase.name}.png` });
       await page.close();
     }

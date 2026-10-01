@@ -60,44 +60,52 @@ const jsonLd = [
         tabindex="-1"
         data-hero-video-es
       ></video>
+      <button class="hero-motion" type="button" data-home-film-toggle aria-pressed="false">Pausa animazione</button>
       <div class="hero-es__scrim" aria-hidden="true"></div>
       <div class="hero-es__content">
-        <h1>Esplora le stelle dietro la tua storia.</h1>
+        <h1>Il tuo tema completo, non solo il tuo segno.</h1>
         <div class="hero-es__foot">
           <p>Temi natali, segno lunare, compatibilità e oroscopi gratuiti: precisi, riservati e facili da capire.</p>
           <div class="hero-es__ctas">
             <a class="btn btn--primary" href={localizePath('it', '/birth-chart/')}><span>Calcola il tuo tema natale gratis</span><span class="orb">↗</span></a>
-            <a class="btn btn--ghost hero-es__ghost" href={localizePath('it', '/horoscopes/')} hreflang="en" title={englishOnly?.aria}><span>Vedi le previsioni{englishOnly?.suffix}</span></a>
+            <a class="btn btn--ghost hero-es__ghost" href={localizePath('it', '/horoscopes/')} hreflang="en" title={englishOnly?.aria}><span>Il tuo oroscopo{englishOnly?.suffix}</span></a>
           </div>
           <div class="hero-es__trustlines">
             <p class="hero-es__trust">Gratis · Senza registrazione · Calcolato nel tuo browser</p>
-            <p class="hero-es__trust">Posizioni verificate con NASA JPL Horizons · <a href={localizePath('it', '/methodology/')}>Come calcoliamo</a></p>
           </div>
         </div>
       </div>
     </div>
     <script is:inline>
-      // The footage animates on every screen unless the visitor prefers
-      // reduced motion. On phones the poster stays the LCP: the video
-      // only attaches after load, so it never competes with first paint.
       (function () {
-        var v = document.querySelector('[data-hero-video-es]');
-        if (!v) return;
+        var v = document.querySelector('[data-hero-video-it]');
+        var toggle = document.querySelector('[data-home-film-toggle]');
+        if (!v || !toggle) return;
+        var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+        var connection = navigator.connection;
+        var constrained = connection && (connection.saveData || ['slow-2g','2g'].indexOf(connection.effectiveType) !== -1);
+        var paused = false, visible = false;
+        try { paused = sessionStorage.getItem('zodiacs:motion-paused') === '1'; } catch (_) {}
+        if (paused) { toggle.setAttribute('aria-pressed', 'true'); toggle.textContent = 'Riprendi animazione'; }
+        var requested = window.matchMedia('(min-width: 720px)').matches;
         var play = function () {
-          if (!v.src) { v.src = v.dataset.src; v.preload = 'auto'; }
-          var p = v.play();
-          if (p && p.catch) p.catch(function () {});
+          if (paused || !visible || !requested || document.hidden || reduced.matches || constrained) { v.pause(); return; }
+          if (!v.getAttribute('src')) { v.src = v.dataset.src; v.preload = 'auto'; }
+          var promise = v.play();
+          if (promise && promise.catch) promise.catch(function () {});
         };
-        if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-          if (window.matchMedia('(min-width: 720px)').matches) {
-            play();
-          } else if (document.readyState === 'complete') {
-            play();
-          } else {
-            window.addEventListener('load', play, { once: true });
-          }
-          window.addEventListener('pageshow', function (e) { if (e.persisted) play(); });
-        }
+        toggle.addEventListener('click', function () {
+          paused = !paused;
+          try { sessionStorage.setItem('zodiacs:motion-paused', paused ? '1' : '0'); } catch (_) {}
+          toggle.setAttribute('aria-pressed', String(paused));
+          toggle.textContent = paused ? 'Riprendi animazione' : 'Pausa animazione';
+          if (paused) { v.pause(); v.removeAttribute('src'); v.load(); }
+          else { requested = true; play(); }
+        });
+        ['pointerdown','keydown'].forEach(function (name) { window.addEventListener(name, function () { requested = true; play(); }, { once:true, passive:true }); });
+        if ('IntersectionObserver' in window) new IntersectionObserver(function (entries) { visible = entries[0].isIntersecting; play(); }, { threshold:.01 }).observe(v);
+        document.addEventListener('visibilitychange', play);
+        reduced.addEventListener && reduced.addEventListener('change', play);
       })();
     </script>
 
@@ -119,6 +127,8 @@ const jsonLd = [
       </filter>
     </svg>
   </section>
+
+  <p class="container home-method-note">Posizioni verificate con NASA JPL Horizons · <a href={localizePath('it', '/methodology/')}>Come calcoliamo</a></p>
 
   <WelcomeBack client:idle locale="it" />
 
@@ -376,4 +386,9 @@ const jsonLd = [
     .hero-es p { max-width: 20.65em; font-size: 0.98rem; line-height: 1.52; }
     .hero-es__ctas .btn { flex: 1 1 auto; justify-content: center; }
   }
+  .hero-es__ctas .btn--primary, :global(html.zdx-lens) .hero-es__ctas .btn--primary { background: var(--text); color: var(--void-0); border-color: var(--text); backdrop-filter: none; filter: none; box-shadow: none; }
+  .hero-es__ctas .btn--primary:hover { background: #fff; }
+  .hero-motion { position: absolute; z-index: 5; top: 14px; right: 14px; min-height: 44px; padding: 0 14px; border: 1px solid var(--hair-2); border-radius: 999px; background: rgba(6,7,9,.85); color: var(--text); font: 500 12px var(--font-sans); cursor: pointer; }
+  @media (prefers-reduced-motion: reduce) { .hero-motion { display: none; } }
+  .home-method-note { margin-block: 24px 0; color: var(--muted); font-size: 12px; text-align: center; }
 </style>

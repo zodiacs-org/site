@@ -260,7 +260,7 @@ const skyMarkers = reading.skyStrip.markers;
       <div class="program__hero-copy">
         <em class="kicker">{meta.kicker} · {reading.label}</em>
         <h1 class="display">{sign.name} {reading.title}</h1>
-        <p>
+        <p class="program__description">
           {editionDate
             ? <EditionText current={reading.description} editionDate={editionDate} />
             : reading.description}
@@ -354,7 +354,7 @@ const skyMarkers = reading.skyStrip.markers;
         <span class="program__basis-close" aria-hidden="true">−</span>
       </summary>
       <div class="program__basis-body">
-        <p>
+        <p class="program__description">
           {editionDate ? <EditionText current={reading.sourceNote} editionDate={editionDate} /> : reading.sourceNote}
         </p>
         {reading.sections.some((section) => section.receipt) && (
@@ -452,7 +452,8 @@ const skyMarkers = reading.skyStrip.markers;
     line-height: 1.55;
     text-wrap: pretty;
   }
-  .program__dates { color: var(--faint); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; }
+  @media (max-width: 599px) { .program__description { display: none; } .program__hero h1 { margin-bottom: 8px; } }
+  .program__dates { color: var(--faint); font-size: 12px; letter-spacing: 0.03em; text-transform: uppercase; }
 
   .program__periods {
     display: flex;
@@ -463,7 +464,7 @@ const skyMarkers = reading.skyStrip.markers;
   }
   .program__period {
     flex: 0 0 auto;
-    padding: 7px 12px;
+    display: inline-flex; align-items: center; min-height: 44px; padding: 7px 14px;
     border: 1px solid var(--hair-1);
     border-radius: var(--r-full);
     color: var(--muted);
