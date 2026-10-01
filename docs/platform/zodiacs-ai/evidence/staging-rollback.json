@@ -1,0 +1,37 @@
+{
+  "schema": "zodiacs.ai-staging-rollback.v1",
+  "capturedAt": "2026-10-01T17:54:36.945Z",
+  "authentication": "Existing Vercel CLI project authentication; credentials excluded",
+  "enabledDeployment": "dpl_6tEgUKWfJngQpFtdZNdVxgHZmiE7",
+  "disabledDeployment": "dpl_AhUH4pKM7in4EeMBr3yuyYJmw79h",
+  "scope": "Preview alias only; production aliases and existing Firewall rules unchanged.",
+  "checks": [
+    {
+      "path": "/mcp/health",
+      "method": "GET",
+      "status": 503,
+      "code": "disabled",
+      "retryAfter": 3600,
+      "noStore": true
+    },
+    {
+      "path": "/mcp",
+      "method": "POST",
+      "status": 503,
+      "code": "disabled",
+      "retryAfter": 3600,
+      "noStore": true
+    },
+    {
+      "path": "/mcp/health",
+      "method": "GET",
+      "status": 200,
+      "ready": true,
+      "restored": true
+    }
+  ],
+  "observations": [
+    "Share credentials tied to the prior protected target do not authenticate the disabled target. CLI project authentication verifies the application result.",
+    "An immediate request after alias restore still reached the disabled deployment; a later request after propagation confirms enabled health 200."
+  ]
+}

@@ -1,85 +1,121 @@
 # Release gates and rollback
 
-Review candidate dated 2026-10-01. This implementation does not activate
-production, submit an app, publish a package or claim a marketplace listing.
-Local passing tests are evidence for the adapter only.
+Review candidate updated 2026-10-02. Staging and host testing have advanced;
+production remains disabled and no app directory submission or listing exists.
+[CHECKPOINTS.md](./CHECKPOINTS.md) and the evidence files distinguish tested work
+from remaining acceptance requirements.
 
-## Next concrete checkpoint: owner-controlled staging and real hosts
+## Completed continuation
 
-1. Review this diff and its generated bundles. Preserve the published rc.15 pin.
-   Run `npm run ai:check`, `npm run ai:test`, `npm run ai:eval`,
-   `npm run ai:widget`, `npm run build`, `npm run check` and `npm test`.
-   The existing full Lighthouse gate currently fails homepage accessibility on
-   clean main. Resolve that separately documented issue in
-   [REGRESSIONS.md](./REGRESSIONS.md), then require the complete site-wide CI gate.
-2. The current OpenAI extension, connection, package and submission guides were
-   retrieved on 2026-10-01. Portable manifests and MCP files pass Agent Plugins
-   1.0.0 schemas. Confirm the verified publisher account and workspace eligibility.
-3. Deploy only to an authorized HTTPS staging host. Explicitly allow that
-   hostname through `ZODIACS_MCP_STAGING_HOST`, publish the existing compute and
-   events Firewall counters, then
-   set `ZODIACS_MCP_ENABLED=1`. Test missing rules, shared provider-address quotas,
-   health, malformed requests and rollback before connecting ChatGPT.
-4. In ChatGPT Settings → Security and login, enable Developer mode. Add the
-   staging MCP connection in ChatGPT Plugins and refresh metadata after changes.
-   Complete all five
-   positive submission cases, three negative cases, timezone ambiguity, unsupported
-   kinds and widget errors. Record actual host outputs/screenshots. Confirm that
-   the host accepts the tool schemas, hints, noauth and UI resource metadata.
-   Open both native sidebar and thread entrypoints; confirm the initial seven-day
-   UTC result needs no duplicate request. Change a date window and display zone.
-5. Install the developer candidate in the actual Codex host. Current CLI help
-   confirms `codex plugin marketplace add /absolute/path/to/site` and
-   `codex plugin add zodiacs-developer@zodiacs-local-review`. Installation itself
-   is blocked here by a read-only plugin-cache mount. CLI discovery recognizes
-   both portable candidates. Install pinned runtime dependencies in the installed plugin
-   directory, check working-directory resolution, invoke each skill and produce
-   a tested integration in a disposable synthetic project.
-6. Inspect hosting/provider logging and retention with synthetic canaries.
-   Measure cold/warm latency and actual per-completion cost with representative
-   bounded searches. Local timing is not production capacity or cost evidence.
-7. Invite a small consenting panel only after these checks. Compare general sky
-   updates, claim checking, developer jobs and the synthetic Personal Week Ahead
-   demonstration. Collect aggregate usefulness and repeat-use feedback without
-   birth fields, charts or identifying activity trails.
-8. The packaged legal/support/privacy URLs and 512px icon pass local checks.
-   Record actual host screenshots and the required reviewer-accessible video.
-   Upload the sky ZIP, finish domain verification with the exact portal challenge,
-   resolve scans, submit, and publish only after platform approval. These portal
-   actions need access to the verified publisher's account. Local stdio MCP public
-   distribution needs an OpenAI-supported path; do not submit it as remote HTTP.
+- The homepage chart accessibility blocker is fixed without changing pinned
+  marker geometry. The 44px labelled selector exposes all 41 marks. Homepage
+  Lighthouse accessibility is 100; the 242-check browser drive passes.
+- Both Codex candidates are installed and enabled through the actual CLI local
+  marketplace. Pinned developer dependencies, all eight SDK tools and recipes
+  pass. The three installed skills were followed to build an engine-only
+  disposable synthetic project with five passing tests. Automatic skill routing
+  in a fresh Codex conversation remains unverified.
+- The sky ZIP imports in ChatGPT. The web host presents the portable plugin as
+  desktop-only; a separate connected MCP app exercises the five hosted tools.
+  Five positive and three negative cases, timezone ambiguity, unsupported kinds,
+  native global/thread seven-day UTC entrypoints, display-zone changes and
+  widget refusal recovery are recorded under `evidence/chatgpt/`.
+- Real host testing exposed misleading date-control labels. The generated widget
+  now accurately labels start-exclusive, end-inclusive UTC boundaries. The final
+  staging app accepts the refreshed schema/resource and corrected labels. The
+  host’s “Enforce CSP for custom apps” setting was enabled and remains enabled;
+  final rendering, timezone refusal and recovery pass under enforcement.
+- Vercel CLI and connector authentication are available for the existing Pro
+  project `prj_nRTO3q3aNYLfaM3dotAowOc028fO`. Preview SSO remains enabled. Short-lived
+  deployment-bound share authentication works in ChatGPT; no credential is
+  committed. No production alias or Firewall configuration was changed.
 
-The cloud environment has GitHub access but no Vercel token/project binding or
-ChatGPT publishing session. The existing production `/mcp/health` returned 404
-before deployment. No synthetic token, hosted screenshot, review result or
-retention/cost observation should be substituted for these missing inputs.
+## HTTPS staging
 
-## Distribution after acceptance
+Exact allowed hostname:
+`zodiacs-org-git-codex-zodiacs-ai-integrations-zodiacsofficial.vercel.app`.
+Enabled deployment `dpl_6tEgUKWfJngQpFtdZNdVxgHZmiE7` builds source
+`45b0d4ce39ef688b08786fd0c53354ee714e66ea`, including the reviewed main merge.
+It sets `ZODIACS_MCP_ENABLED=1` and the exact `ZODIACS_MCP_STAGING_HOST` above.
+The reusable `tests/ai-staging-drive.mjs` requires HTTPS preview `/mcp` and a
+private cookie file; twelve checks and six calls pass. Health, both slash forms,
+schemas, native empty arguments, UI resource, canary refusal, malformed JSON,
+16 KiB size refusal, Origin/query/method restrictions and recovery are covered.
 
-Use existing calendars, calculators, developer docs and source examples as
-optional follow-through. A chat answer remains complete without a click. Do not
-promise search-ranking gains, directory traffic or mandatory attribution.
-Keep developer integrations and consumer links separate from the Registry wing.
-Use relevant accepted fixes; never promotional commits in unrelated repositories.
-
-Establish an admissible aggregate baseline before activation: useful completions
-by operation/week, categorized error/refusal rates, latency/cost, aggregate
-contextual referrals, consenting panel's reported second use and functioning
-external integrations. No new user identifiers or event trails are implemented.
-Follow the existing growth measurement restrictions; no metrics here are a
-measured adoption or traffic baseline.
+Existing Firewall version 6 has active valid fixed-window compute (40/60s/IP)
+and events (10/60s/IP) rules. Two independent sequential clients observe shared
+compute 429 with Retry-After 60/no-store and event refusal after ten successes,
+including retryAfterSeconds 60 for both clients. A twelve-call concurrent event
+burst completed without refusal. This observed overshoot means the quota test
+is not a strict concurrency or public-capacity guarantee. Counters are also
+per-region under Vercel's documented contract. Missing/unavailable rules are
+covered by local fail-closed tests; active rules were not deleted to simulate it.
+See the two staging quota evidence files and the
+[Vercel SDK contract](https://vercel.com/docs/vercel-firewall/vercel-waf/rate-limiting-sdk).
 
 ## Rollback
 
-Set `ZODIACS_MCP_ENABLED=0` (or unset it): health and calculation requests return
-503 with Retry-After and no-store. Remove the connection in the host if needed.
-The existing compute API and local MCP adapter are unaffected. If reverting the
-candidate, remove only its two rewrites, compatibility dispatch and new files;
-do not change engine releases or existing compute Firewall rules.
+A second preview deployment with `ZODIACS_MCP_ENABLED=0` was built from the same
+source. Switching only the staging alias to that deployment must return 503
+`disabled`, Retry-After 3600 and no-store for both health and POST. Restore the
+alias to the enabled deployment and verify health 200. Alias changes can invalidate temporary credentials and require reconnecting the
+ChatGPT test app. An immediate request after restore still reached the disabled
+target; health was verified again after propagation. The recorded live result
+is in `evidence/staging-rollback.json`. Deployment-bound share credentials must
+match the target deployment; a stale token returns protection 401 before the
+application runs and is not application rollback evidence.
 
-## Personal release
+For production rollback, disable/unset the switch and redeploy. Existing compute
+API and local MCP remain unaffected. If removing this candidate, remove only its
+four MCP rewrites, compatibility dispatch and integration files; retain engine
+pins and existing Firewall counters. Host connections can be disconnected.
 
-The generated `evidence/synthetic-personal-week.json` uses an arbitrary chart,
-unknown time and no houses/angles. It tests concept output only. Real personal
-transit tools require accepted import/handoff, unknown-time behavior, privacy,
-host retention and consenting beta evidence before implementation or launch.
+## Remaining release gates
+
+1. Require exact-head Site Check success after the three inspected Linux home
+   baselines are committed. The capture-only candidate run passed; the preceding
+   site run passed its unit and functional drives but stopped at those intentional
+   screenshot height differences, before full Lighthouse and foreign-widget gates.
+2. Confirm hosting retention and actual cold/warm per-completion billing/capacity.
+   Thirty-two inspected provider request rows contain no application message or
+   synthetic private-body canary. Raw request metadata stays outside the repository.
+   There are no configured log drains. The team is Pro with Fluid Compute in iad1;
+   Pro runtime retention is documented as one day, or thirty with Observability
+   Plus. The account's Plus entitlement has not been confirmed. Warm SDK elapsed
+   times include network and are not classified cold starts, cost or capacity.
+   See [runtime logs](https://vercel.com/docs/logs/runtime) and
+   [Observability Plus](https://vercel.com/docs/observability/observability-plus).
+3. Resolve the concurrent event overshoot and assess provider-address sharing
+   before treating existing quotas as sufficient for directory traffic. The final
+   thread also requested the calendar twice although each widget renders its
+   supplied initial result without automatic computation; account for duplicate
+   host/model selection in capacity and cost acceptance. Do not
+   silently increase counters, activate production or invent usage/cost evidence.
+4. Run the [consenting beta kit](./BETA_REVIEW.md). No panel, consented contacts,
+   usefulness or repeat-use results exist yet. No invitations have been sent.
+5. The authenticated OpenAI portal blocks upload with “Complete identity
+   verification.” A verified developer identity and suitable publisher organization
+   are required. No domain challenge has been issued: implement the exact plain
+   challenge only after it appears. A labelled 40-second reel of actual host captures is available in
+   `evidence/chatgpt/host-capture-walkthrough.mp4`; it is not continuous screen
+   recording or a portal-approved submission video. Complete any stricter video
+   requirement shown by the portal and provide an accessible reviewer URL. Upload, scan, domain verify,
+   submit and publish only through the authorized verified publisher account and
+   after platform approval. Do not present local stdio as remote HTTP.
+   [Official submission requirements](https://developers.openai.com/plugins/deploy/submission).
+
+These are concrete unresolved release inputs, not a missing Vercel token or
+read-only local cache. Available sign-ins already worked without user intervention.
+
+## Personal release and measurement
+
+The existing synthetic Personal Week Ahead uses an arbitrary unknown-time chart
+with no houses/angles and tests concept output only. Real personal transit tools
+require accepted import/handoff, unknown-time semantics, privacy, host retention
+and consenting beta evidence before implementation or release.
+
+Before activation establish aggregate useful completions by operation/week,
+categorized refusals, elapsed time/cost, contextual referrals and reported repeat
+use. No new user identifiers or activity trails are implemented. A chat answer
+must remain useful without a site click; distribution and ranking benefits are
+not measured or promised.

@@ -1,0 +1,59 @@
+- link "Skip to content":
+  - /url: "#_r_3o_"
+- main:
+  - button "Show sidebar":
+  - heading "Zodiacs Staging Acceptance" [level=1]
+  - heading [level=3]: Outputs
+  - button:
+  - button:
+    - generic: Create file or site
+- status
+- status
+- status
+- textbox "Work with ChatGPT":
+  - paragraph: Work with ChatGPT
+- button "Add files and more":
+- button "Select ChatGPT model":
+  - generic: GPT-6.1 Sol
+  - generic: Light
+  - generic: None
+  - generic: Minimal
+  - generic: Light
+  - generic: Medium
+  - generic: High
+  - generic: Extra High
+  - generic: Max
+  - generic: Ultra
+  - generic: Persistent
+- button "Dictate":
+- button "Send" [disabled]:
+- iframe [active]:
+  - iframe [active] [id="root"]:
+    - main:
+      - heading "Sky calendar" [level=1]
+      - status: 2026-10-01T00:00:00.000Z to 2026-10-08T00:00:00.000Z · America/New_York
+      - text: Start date (UTC, exclusive)
+      - textbox "Start date (UTC, exclusive)"
+      - text: End date (UTC, inclusive)
+      - textbox "End date (UTC, inclusive)"
+      - text: Display timezone
+      - textbox "Display timezone"
+      - button "Update calendar"
+      - paragraph: Windows are at most 31 days. Date controls use midnight UTC; the timezone changes the displayed event times.
+      - list:
+        - text: Moon enters cancer
+        - time: 02/10/2026, 15:54:06 GMT-4 · UTC 2026-10-02T19:54:06.451Z
+        - text: Venus stations retrograde
+        - time: 03/10/2026, 03:10:13 GMT-4 · UTC 2026-10-03T07:10:13.002Z
+        - text: Moon enters leo
+        - time: 04/10/2026, 18:54:12 GMT-4 · UTC 2026-10-04T22:54:12.636Z
+        - text: Moon enters virgo
+        - time: 06/10/2026, 22:52:37 GMT-4 · UTC 2026-10-07T02:52:37.139Z
+      - paragraph: "Tropical geocentric · Engine 0.1.1-rc.15. Supported searches: sign ingresses, stations, new and full Moons. Completeness is tested, not proven."
+      - navigation "Explore on Zodiacs":
+        - link "Explore the lunar calendar":
+          - /url: https://zodiacs.org/full-moon-calendar/
+        - link "Explore retrogrades":
+          - /url: https://zodiacs.org/retrogrades/
+        - link "How these calculations work":
+          - /url: https://zodiacs.org/developers/compute/

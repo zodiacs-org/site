@@ -1,6 +1,6 @@
 {
   "schema": "zodiacs.ai-host-readiness.v1",
-  "date": "2026-10-01",
+  "date": "2026-10-02",
   "openaiGuides": {
     "extensions": "retrieved and inspected",
     "connectionAndHostTesting": "retrieved and inspected",
@@ -22,29 +22,122 @@
   "codex": {
     "authenticated": true,
     "marketplaceCandidatesDiscovered": 2,
-    "pluginInstallation": "blocked",
-    "reason": "The cloud environment's plugin cache is mounted read-only. The CLI cannot create its cache directory.",
-    "protectedHostConfigurationChanged": false,
-    "skillExecutionInInstalledHostVerified": false
+    "pluginInstallation": "installed and enabled",
+    "plugins": [
+      "zodiacs-developer@zodiacs-local-review",
+      "zodiacs-sky@zodiacs-local-review"
+    ],
+    "pinnedRuntimeDependenciesInstalled": true,
+    "installedStdioToolsPassed": 8,
+    "installedRecipesPassed": true,
+    "installedSkillsFollowedInThisConversation": [
+      "build-with-zodiacs",
+      "verify-astrology-output",
+      "test-astrology-integration"
+    ],
+    "disposableIntegrationTestsPassed": 5,
+    "disposableProject": "/tmp/zodiacs-ai-synthetic-project",
+    "freshConversationAutomaticSkillRoutingVerified": false,
+    "scope": "Actual CLI installation and installed-server SDK calls; skills followed by this conversation, not a separate model-routing trial."
   },
   "hosting": {
     "githubAccessAvailable": true,
-    "vercelCredentialPresent": false,
-    "vercelProjectBindingPresent": false,
-    "productionHealthBeforeDeployment": {
-      "url": "https://zodiacs.org/mcp/health",
-      "httpStatus": 404
+    "vercelCredentialPresent": true,
+    "vercelProjectBindingPresent": true,
+    "stagingHostname": "zodiacs-org-git-codex-zodiacs-ai-integrations-zodiacsofficial.vercel.app",
+    "enabledDeployment": "dpl_6tEgUKWfJngQpFtdZNdVxgHZmiE7",
+    "sourceCommit": "45b0d4ce39ef688b08786fd0c53354ee714e66ea",
+    "previewSsoPreserved": true,
+    "temporaryShareCredentialLifetimeHours": 23,
+    "credentialsRecorded": false,
+    "stagingMcpActivated": true,
+    "productionMcpActivated": false,
+    "httpsChecksPassed": 12,
+    "sharedComputeQuota429Verified": true,
+    "sequentialSharedEventQuotaVerified": true,
+    "concurrentEventQuotaStrictEnforcementVerified": false,
+    "concurrentEventsObserved": {
+      "requests": 12,
+      "allowed": 12,
+      "elapsedMs": 1832
     },
-    "mcpActivated": false,
-    "retentionReviewed": false,
-    "capacityAndCostMeasured": false
+    "activeFirewallVersion": 6,
+    "firewallRulesChanged": false,
+    "warmNetworkElapsedMs": {
+      "min": 310,
+      "median": 484.5,
+      "max": 599,
+      "sampleSize": 6
+    },
+    "coldStartsClassified": false,
+    "capacityAndCostMeasured": false,
+    "retention": {
+      "providerConfigurationInspected": true,
+      "teamPlan": "pro",
+      "fluidCompute": true,
+      "region": "iad1",
+      "configuredLogDrains": 0,
+      "runtimeRowsInspected": 32,
+      "applicationMessages": 0,
+      "syntheticBodyCanaryObserved": false,
+      "observabilityEntitlementPresent": true,
+      "observabilityPlusRetentionConfirmed": false,
+      "documentedProDays": 1,
+      "documentedProPlusDays": 30,
+      "scope": "Observed application/provider logs; absence of a body canary does not prove every provider layer or deletion policy."
+    },
+    "rollbackEvidence": "staging-rollback.json",
+    "stagingRollbackVerified": true
   },
   "chatgpt": {
-    "developerModeSessionAvailable": false,
-    "publisherSessionAvailable": false,
-    "modelToolSelectionVerified": false,
-    "nativeEntryPointsVerifiedInChatgpt": false,
-    "walkthroughRecordedInChatgpt": false,
-    "publicSubmissionCompleted": false
+    "developerModeSessionAvailable": true,
+    "portableSkyZipImported": true,
+    "portableSkyPluginWebAvailability": "desktop-only",
+    "hostedMcpAppConnected": true,
+    "initialReviewAppId": "asdk_app_6abe8eb75b5c81918063b5a494b6a925",
+    "finalReviewAppId": "asdk_app_6abe9b0cae0c8191a520be3a0badf78e",
+    "modelToolSelectionVerified": true,
+    "positiveCasesPassed": 5,
+    "negativeCasesPassed": 3,
+    "unsupportedEventKindRefused": true,
+    "dateTimezoneDependsPreserved": true,
+    "nativeEntryPointsVerifiedInChatgpt": [
+      "global",
+      "thread"
+    ],
+    "initialSevenDayUtcObserved": true,
+    "widgetTimezoneChangeVerified": true,
+    "widgetInvalidTimezoneRefused": true,
+    "widgetWindowLimitRefused": true,
+    "widgetRecoveryVerified": true,
+    "correctedBoundaryLabelsVerifiedOnFinalDeployment": true,
+    "hostOutputsAndScreenshots": "chatgpt/",
+    "reviewerWalkthroughVideo": {
+      "file": "chatgpt/host-capture-walkthrough.mp4",
+      "format": "MP4, 40 seconds, eight labelled actual UI captures",
+      "scope": "Selected captured states, not continuous screen recording or portal-accepted submission video",
+      "publicReviewerUrl": "https://raw.githubusercontent.com/zodiacs-org/site/codex/zodiacs-ai-integrations/docs/platform/zodiacs-ai/evidence/chatgpt/host-capture-walkthrough.mp4"
+    },
+    "publisherSessionAvailable": true,
+    "publisherIdentityVerified": false,
+    "publisherUploadBlockedBy": "Complete identity verification: verified developer identity required before upload",
+    "domainChallengeIssued": false,
+    "publicSubmissionCompleted": false,
+    "publicListingPublished": false,
+    "supersededTestAppsUninstalled": true,
+    "currentReviewAppId": "asdk_app_6abe9f58c6b88191885524782dc90939",
+    "currentReviewAppName": "Zodiacs Staging Acceptance",
+    "hostCspEnforcementEnabled": true,
+    "cspRetest": "Native global and thread rendering, invalid-timezone refusal, zone update and recovery passed with enforcement enabled.",
+    "threadModelCalendarRequestsObserved": 2,
+    "duplicateModelToolSelectionPrevented": false,
+    "widgetAutomaticCalculationRequests": 0,
+    "duplicateScope": "The final host conversation displays two opened calendars with server instants four seconds apart. Widget source requests computation only after form submission. Native rendering works, but single model invocation is not guaranteed."
+  },
+  "beta": {
+    "invited": 0,
+    "consentingParticipants": 0,
+    "feedbackRecorded": false,
+    "reviewKit": "../BETA_REVIEW.md"
   }
 }

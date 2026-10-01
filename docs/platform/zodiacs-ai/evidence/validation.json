@@ -1,6 +1,6 @@
 {
   "schema": "zodiacs.ai-local-validation.v1",
-  "date": "2026-10-01",
+  "date": "2026-10-02",
   "engine": "0.1.1-rc.15",
   "mcpSdk": "2.0.0",
   "checks": {
@@ -31,11 +31,21 @@
       "existingHints": 18
     },
     "fullSuite": {
-      "passed": 6377,
-      "skipped": 4,
-      "failed": 0,
-      "filesPassed": 501,
-      "filesSkipped": 1
+      "linux": {
+        "passed": 6377,
+        "skipped": 5,
+        "failed": 0,
+        "filesPassed": 501,
+        "filesSkipped": 1,
+        "sourceCommit": "93e6adcc696fe6fa16a8bcedc2237570da2d9762",
+        "run": "https://github.com/zodiacs-org/site/actions/runs/36896802116"
+      },
+      "macosArmNode22": {
+        "passed": 6374,
+        "skipped": 5,
+        "failed": 3,
+        "failureScope": "Three exact Node speed/SVG numerical fixtures; retained Linux fixtures unchanged"
+      }
     },
     "existingPhase1VisualAcceptance": {
       "passed": 18,
@@ -54,9 +64,10 @@
     },
     "codexMarketplaceDiscovery": {
       "recognized": 2,
-      "installed": 0
+      "installed": 2,
+      "enabled": 2
     },
-    "calendarHostBridges": "Both synthetic host bridges passed; actual ChatGPT not tested",
+    "calendarHostBridges": "Both synthetic bridges and actual ChatGPT global/thread entrypoints verified",
     "independentLegacySdk": {
       "version": "1.29.0",
       "toolsPassed": 5,
@@ -80,10 +91,17 @@
       "cpuThrottle": 4
     },
     "existingLinuxVisualRegression": {
-      "passed": 15,
-      "total": 15,
+      "precedingRun": {
+        "passed": 12,
+        "failed": 3,
+        "reason": "Intentional homepage selector adds 71px desktop/91px mobile"
+      },
+      "candidateRun": "https://github.com/zodiacs-org/site/actions/runs/36897758164",
+      "candidateSource": "93e6adcc696fe6fa16a8bcedc2237570da2d9762",
+      "onlyHomeBaselinesUpdated": true,
+      "otherTwelveByteIdentical": true,
       "maximumPixelDiffRatio": 0.001,
-      "baselinesGeneratedOnCleanMain": true
+      "finalExactHeadComparison": "required"
     },
     "existingForeignOriginWidgetBrowserDrive": "passed",
     "existingWidgetLighthouse": {
@@ -100,14 +118,54 @@
       "accessibilityScore": 93,
       "failureReproducedOnCleanMain": true,
       "siteWideGatePassed": false,
-      "evidence": "site-regression-review.json"
+      "evidence": "site-regression-review.json",
+      "scope": "Historical original pre-fix run; not final release acceptance"
+    },
+    "darwinVisualRegression": {
+      "passed": 15,
+      "total": 15,
+      "onlyHomeBaselinesUpdated": true
+    },
+    "homepageBrowser": {
+      "passed": 242
+    },
+    "homeContracts": {
+      "passed": 23
+    },
+    "homepageLighthouseAfterFix": {
+      "acceptedSamples": 3,
+      "minimumPerformance": 99,
+      "minimumAccessibility": 100,
+      "minimumSeo": 100,
+      "worstLcpSeconds": 2.12,
+      "cls": 0,
+      "tbt": 0,
+      "runnerStallsSetAsideByExistingPolicy": 1
+    },
+    "finalSiteGate": {
+      "status": "required after reviewed Linux home baselines commit",
+      "precedingRun": "https://github.com/zodiacs-org/site/actions/runs/36896802116",
+      "precedingFailure": "Only three intentional homepage visual height differences; full Lighthouse skipped"
+    },
+    "httpsStaging": {
+      "passed": 12,
+      "toolCalls": 6,
+      "evidence": "staging-acceptance.json"
+    },
+    "realChatgpt": {
+      "positive": 5,
+      "negative": 3,
+      "globalAndThreadEntryPoints": true,
+      "evidence": "host-readiness.json",
+      "cspEnforcedRetest": true,
+      "duplicateHostCalendarSelectionObserved": true
     }
   },
   "productionEnabled": false,
-  "realChatgptHostVerified": false,
-  "realCodexPluginInstallVerified": false,
+  "realChatgptHostVerified": true,
+  "realCodexPluginInstallVerified": true,
   "deploymentCostAndCapacityMeasured": false,
-  "hostingRetentionReviewed": false,
+  "hostingRetentionReviewed": "configuration inspected, exact Plus retention still unconfirmed",
   "publicListingSubmitted": false,
-  "limitations": "SDK/browser and extracted-package checks are not real-host acceptance, scientific accuracy certification or adoption evidence. Hosted activation and public submission are blocked by missing Vercel/ChatGPT publisher access; Codex installation is blocked by a read-only plugin-cache mount."
+  "limitations": "Actual synthetic public-sky host acceptance is recorded. It is not scientific accuracy certification, human beta usefulness, cost/capacity acceptance or directory publication. Verified publisher identity, consenting beta, exact-head full CI, billing/retention and concurrent-quota assessment remain release gates."
 }
