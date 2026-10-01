@@ -355,9 +355,15 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
         PUBLIC_REGISTRY_AURA_ENABLED: import.meta.env.PUBLIC_REGISTRY_AURA_ENABLED,
       });
   const loadEngine = useEngine();
-  const [date, setDate] = useState('');
-  const [time, setTime] = useState('');
-  const [timeKnown, setTimeKnown] = useState(true);
+  // The server form is visible before idle hydration. Adopt anything already
+  // entered instead of replacing it with the empty server defaults.
+  const [date, setDate] = useState(() => typeof document === 'undefined' ? ''
+    : (document.getElementById('birth-date') as HTMLInputElement | null)?.value ?? '');
+  const [time, setTime] = useState(() => typeof document === 'undefined' ? ''
+    : (document.getElementById('birth-time') as HTMLInputElement | null)?.value ?? '');
+  const [timeKnown, setTimeKnown] = useState(() => typeof document === 'undefined' ? true
+    : !(document.getElementById('birth-time')?.closest('.field')
+      ?.querySelector<HTMLInputElement>('input[type="checkbox"]')?.checked ?? false));
   const [city, setCity] = useState<City | null>(null);
   // The calendar the date was written in; a date filled in from a link or a
   // saved chart is Gregorian.
@@ -365,7 +371,9 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
   // That date, which was already charted: it gets no calendar note, which
   // could send it through the Old Style conversion a second time.
   const [storedDate, setStoredDate] = useState('');
-  const [houseSystem, setHouseSystem] = useState<HouseSystem>('whole');
+  const [houseSystem, setHouseSystem] = useState<HouseSystem>(() => typeof document !== 'undefined'
+    && (document.getElementById('house-system') as HTMLSelectElement | null)?.value === 'placidus'
+    ? 'placidus' : 'whole');
   const [chart, setChart] = useState<Chart | null>(null);
   // Read on the birthplace's own local mean time. Since engine rc.15 the
   // `lmt` flag says so too, whole minutes included; before, it marked only an
