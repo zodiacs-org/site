@@ -117,7 +117,8 @@ export const ZX_CSS = `
 }
 .zme__rail-price { color: var(--zx-ink); }
 .zme__rail-change { color: var(--zx-dim); }
-.zme__rail-change--up { color: color-mix(in srgb, var(--sign, #C6CCDA) 78%, #EEF1F7); }
+.zme__rail-change--up, .zme__stat-value.is-positive, .zme-mobile-summary__change.is-positive { color: #8dd9ad; }
+.zme__rail-change--down, .zme__stat-value.is-negative, .zme-mobile-summary__change.is-negative { color: #f28e87; }
 
 /* ── chart ────────────────────────────────────────────────────────────── */
 .zme__frames { display: inline-flex; gap: 2px; }
@@ -304,7 +305,7 @@ export const ZX_CSS = `
   }
   .zme-mobile-summary__price { color: var(--zx-ink); font-size: 18px; font-weight: 550; }
   .zme-mobile-summary__change { color: var(--zx-dim); font-size: 10px; }
-  .zme-mobile-summary__change.is-positive { color: color-mix(in srgb, var(--sign, #C6CCDA) 82%, #EEF1F7); }
+  .zme-mobile-summary__change.is-positive { color: #8dd9ad; }
   .zme-mobile-summary__liquidity {
     grid-column: 1 / -1;
     color: var(--zx-dim);

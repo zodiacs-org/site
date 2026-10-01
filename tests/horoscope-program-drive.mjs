@@ -483,7 +483,7 @@ async function inspectRenderedPage(page, route, viewportKey) {
     iconPath === `/assets/zodiac-icons/400/${route.sign}.webp`,
     iconPath ?? 'missing',
   );
-  if (route.key === 'daily') {
+  if (['daily', 'love', 'career'].includes(route.key)) {
     const selectedIconPath = await iconNode.evaluate((image) => new URL(image.currentSrc).pathname);
     check(
       `${route.key} ${viewportKey}: LCP selects the smaller WebP derivative`,

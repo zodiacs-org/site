@@ -208,7 +208,7 @@ const jsonLd = [
         )}
         <div class="person-identity__name">
           <div class="person-identity__top">
-            <SignIcon sign={person.sunSign.slug} size={48} loading="eager" />
+            <SignIcon sign={person.sunSign.slug} size={28} loading="eager" />
             <h1 class="display">{person.displayName}</h1>
           </div>
         </div>
@@ -223,8 +223,8 @@ const jsonLd = [
             <span>{person.sourceReview.note} <a href="#sources">Review the sources</a>.</span>
           </p>
         )}
-        <p class="person-quality">
-          <strong>{profileQualityNote}</strong>
+        <details class="person-quality person-quality--details">
+          <summary>{profileQualityNote}</summary>
           <span>
             {moonStatement}
             {openSignStatement && ` ${openSignStatement}`}
@@ -233,7 +233,7 @@ const jsonLd = [
               <>{' '}A <a href={publishedTimeRecord.href} target="_blank" rel="noopener noreferrer">separate published-time record</a> is documented in the source panel.</>
             )}
           </span>
-        </p>
+        </details>
       </header>
 
       <div class="person-reading">

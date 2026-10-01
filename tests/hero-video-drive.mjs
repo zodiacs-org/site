@@ -169,7 +169,7 @@ await withPreview({ port: 4402 }, async (baseURL) => {
       await page.evaluate(() => window.dispatchEvent(new PointerEvent('pointerdown')));
       if (testCase.interruptedStart) {
         await page.waitForFunction(() => document.querySelector('[data-hero-video]')?.dataset.heroPlayback === 'loading');
-        await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+        await page.evaluate(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'instant' }));
         await page.waitForFunction(() => document.querySelector('[data-hero-video]')?.dataset.heroVisible === 'false');
         await page.waitForFunction(() => document.querySelector('[data-hero-video]')?.dataset.heroPlayback === 'paused');
         const interrupted = await video.evaluate((element) => ({
@@ -181,7 +181,7 @@ await withPreview({ port: 4402 }, async (baseURL) => {
           interrupted.attached && interrupted.playback === 'paused',
           JSON.stringify(interrupted),
         );
-        await page.evaluate(() => window.scrollTo(0, 0));
+        await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
         await page.waitForFunction(() => document.querySelector('[data-hero-video]')?.dataset.heroVisible === 'true');
         await page.waitForFunction(() => document.querySelector('[data-hero-video]')?.dataset.heroPlayback === 'playing');
         check('mobile-interrupted-start: playback resumes after returning onscreen', await page.evaluate(() => window.__heroPlayCount >= 2));
@@ -213,7 +213,7 @@ await withPreview({ port: 4402 }, async (baseURL) => {
 
       if (testCase.name === 'mobile-normal') {
         const countsBeforeScroll = await page.evaluate(() => ({ play: window.__heroPlayCount, pause: window.__heroPauseCount }));
-        await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+        await page.evaluate(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'instant' }));
         await page.waitForFunction(() => document.querySelector('[data-hero-video]')?.dataset.heroVisible === 'false');
         const offscreen = await video.evaluate((element) => ({
           playback: element.dataset.heroPlayback,
@@ -224,7 +224,7 @@ await withPreview({ port: 4402 }, async (baseURL) => {
         check('mobile-normal: video pauses offscreen', countsOffscreen.pause > countsBeforeScroll.pause && offscreen.playback === 'paused', `${countsBeforeScroll.pause} → ${countsOffscreen.pause}`);
         check('mobile-normal: poster motion pauses offscreen', offscreen.animation === 'paused', String(offscreen.animation));
 
-        await page.evaluate(() => window.scrollTo(0, 0));
+        await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
         await page.waitForFunction(() => document.querySelector('[data-hero-video]')?.dataset.heroVisible === 'true');
         await page.waitForFunction((previous) => window.__heroPlayCount > previous, countsOffscreen.play);
         const onscreenAnimation = await page.evaluate(() => document.querySelector('[data-hero-poster]')?.getAnimations().find((item) => item.animationName === 'hero-poster-drift')?.playState ?? null);
@@ -254,6 +254,27 @@ await withPreview({ port: 4402 }, async (baseURL) => {
             .find((item) => item.animationName === 'hero-poster-drift')?.playState ?? null,
         }));
         check(`${testCase.name}: rejected playback keeps the poster drifting`, fallback.playback === 'poster-fallback' && fallback.animation === 'running', `${fallback.playback} · ${fallback.animation}`);
+      }
+
+      if (testCase.name === 'mobile-normal') {
+        const control = page.locator('[data-hero-motion-toggle]');
+        const tapTarget = await control.evaluate((element) => {
+          const rect = element.getBoundingClientRect();
+          return { height: rect.height, top: rect.top, scrollY: window.scrollY, ownsCenter: element.contains(document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2)) };
+        });
+        check('mobile motion control remains tappable below navigation', tapTarget.height >= 44 && tapTarget.top >= 50 && tapTarget.ownsCenter, JSON.stringify(tapTarget));
+      }
+
+      if (testCase.name === 'desktop-normal') {
+        const pause = page.locator('[data-hero-motion-toggle]');
+        await pause.click();
+        const stopped = await video.evaluate((element) => ({ paused: element.paused, state: element.dataset.heroPlayback, posterMotion: document.querySelector('[data-hero-poster]')?.dataset.heroMotion }));
+        check('manual pause stops film and poster', stopped.paused && stopped.state === 'paused' && stopped.posterMotion === 'static', JSON.stringify(stopped));
+        await page.reload({ waitUntil: 'networkidle' });
+        check('manual pause survives navigation in this tab', await pause.getAttribute('aria-pressed') === 'true' && await video.evaluate((element) => !element.dataset.sourcesAttached && element.dataset.heroMotion === 'static'));
+        await pause.click();
+        await page.waitForFunction(() => document.querySelector('[data-hero-video]')?.dataset.heroPlayback === 'playing');
+        check('manual resume restores eligible playback', await pause.getAttribute('aria-pressed') === 'false');
       }
 
       if (OUT) await page.locator('.hero__frame').screenshot({ path: `${OUT}/hero-${testCase.name}.png` });

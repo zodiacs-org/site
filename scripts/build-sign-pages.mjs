@@ -1386,16 +1386,17 @@ ${glanceRows.slice(0, 3).map(([key, value]) => `            <div><dt>${esc(key)}
     <section class="sec reveal pride" id="identity" aria-labelledby="identity-title">
       <div class="sec__head"><h2 class="sec__title" id="identity-title">Born under ${esc(m.name)}</h2><span class="line"></span></div>
       <p class="pride__rally">${esc(m.rallyLine)}</p>
-      <div class="attention-grid">
-        <article class="attention-card"><span class="attention-card__label">People who share ${esc(m.name)}</span><strong>Hundreds of millions</strong><p>A rough estimate based on one-twelfth of the world’s population. It describes the sign, not token ownership.</p></article>
-        <article class="attention-card" data-attention><span class="attention-card__label">Wikipedia views</span><strong>${m.attention.signViews.toLocaleString('en-US')} a day</strong><p>The English Wikipedia page for ${esc(m.name)} averaged ${m.attention.signViews.toLocaleString('en-US')} views a day from ${esc(m.attention.from)} to ${esc(m.attention.to)}.</p><small>Source: Wikimedia · updated ${esc(m.attention.capturedAt)}. One person may account for more than one view. This shows interest, not ownership or value. <a href="/thesis/#pulse">See the source</a>.</small></article>
-      </div>
       <div class="people-block">
         <div id="people"><span class="people-block__label">You’re in good company</span></div>
         <ul>
 ${m.people.map((person) => `          <li><a href="/people/${person.slug}/"${person.protectedLiving ? ' rel="nofollow"' : ''}><strong>${esc(person.name)}</strong><span>${esc(person.date)}</span></a></li>`).join('\n')}
         </ul>
         <small>Birth dates are sourced. These people did not endorse Zodiacs.org.</small>
+      </div>
+      <h3 class="profile-interest-title">Public interest</h3>
+      <div class="attention-grid">
+        <article class="attention-card"><span class="attention-card__label">People who share ${esc(m.name)}</span><strong>Hundreds of millions</strong><p>A rough estimate based on one-twelfth of the world’s population. It describes the sign, not token ownership.</p></article>
+        <article class="attention-card" data-attention><span class="attention-card__label">Wikipedia views</span><strong>${m.attention.signViews.toLocaleString('en-US')} a day</strong><span class="attention-card__snapshot">Snapshot updated ${esc(m.attention.capturedAt)}</span><p>The English Wikipedia page for ${esc(m.name)} averaged ${m.attention.signViews.toLocaleString('en-US')} views a day from ${esc(m.attention.from)} to ${esc(m.attention.to)}.</p><small>Source: Wikimedia · updated ${esc(m.attention.capturedAt)}. One person may account for more than one view. This shows interest, not ownership or value. <a href="/thesis/#pulse">See the source</a>.</small></article>
       </div>
     </section>
 

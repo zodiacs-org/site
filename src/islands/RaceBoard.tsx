@@ -279,8 +279,10 @@ export default function RaceBoard({
     <div class="race-board">
       <p class="race-board__lead" data-race-lead>
         {leader && runnerUp
-          ? `${signBySlug(leader.sign)?.name ?? leader.sign} leads. ${signBySlug(runnerUp.sign)?.name ?? runnerUp.sign} is ${(leader.points - runnerUp.points).toLocaleString('en')} points behind.`
-          : 'The board is open. Points come from people — the first joins set the order.'}
+          ? leader.points === runnerUp.points
+            ? 'Scores are level at the top. Every check-in counts.'
+            : `${signBySlug(leader.sign)?.name ?? leader.sign} leads. ${signBySlug(runnerUp.sign)?.name ?? runnerUp.sign} is ${(leader.points - runnerUp.points).toLocaleString('en')} points behind.`
+          : standings === null ? 'Reading the board…' : 'The season is open. All signs start level — the first points set the order.'}
       </p>
 
       <table class="race-board__table">
@@ -293,7 +295,7 @@ export default function RaceBoard({
             const isMine = membership?.sign === row.sign;
             return (
               <tr key={row.sign} data-mine={isMine ? 'true' : undefined} style={`--sign:${sign?.hue ?? 'var(--ink-dim)'}`}>
-                <td class="race-board__rank">{index + 1}</td>
+                <td class="race-board__rank">{standings === null || row.points === 0 ? '—' : board.findIndex((entry) => entry.points === row.points) + 1}</td>
                 <td class="race-board__sign">
                   {signIcon(row.sign, 24)}
                   {sign?.name ?? row.sign}
