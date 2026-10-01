@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "reviewedSource": "18fdf260b843cae1395d6edaf8113980c57e351a",
+  "integratedSource": "3e9011919094659f39660e7271c97f3075e30283",
+  "currentMain": "450f0fd948d86d82c416bcbd51b3dace5196097e",
+  "numericalApiPackageBoundaryPaths": [
+    "api",
+    "src/lib/engine",
+    "src/lib/compute-api",
+    "scripts/build-compute-handler.mjs",
+    "scripts/build-compute-local-time.mjs",
+    "scripts/build-time-basis.mjs",
+    "scripts/build-sky.mjs",
+    "src/lib/composite.ts",
+    "budgets.json",
+    "vendor",
+    "examples/mcp-server",
+    "public/examples"
+  ],
+  "changedPathsInBoundary": [],
+  "ledgerUnchangedFromComputePrerequisite": "7a026010",
+  "ledgerSha256": "54788f28093a0420bc55522e6a95e12247bacf37c2f485e9b1e8a5ddb36f40c6",
+  "limits": "Confirms these source boundaries remained byte-identical across the owner-main merge, not whole-PR review or accuracy/release acceptance."
+}

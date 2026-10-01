@@ -1,0 +1,373 @@
+{
+ "engine": "0.1.1-rc.16",
+ "corpusCases": 3708,
+ "originalSystems": [
+  "whole",
+  "placidus",
+  "porphyry",
+  "equal",
+  "vehlow",
+  "koch",
+  "regiomontanus",
+  "campanus",
+  "topocentric",
+  "alcabitius",
+  "morinus",
+  "meridian"
+ ],
+ "newSystemsOutsideOriginalScope": [
+  "equal-mc"
+ ],
+ "swisseph": "2.10.03",
+ "unit": "arcseconds, largest of the twelve cusps per case",
+ "windows": {
+  "1800-2199": {
+   "broad": {
+    "alcabitius": {
+     "compared": 3000,
+     "max": 31.411,
+     "p95": 5.351,
+     "p50": 0.714,
+     "over3": 274
+    },
+    "campanus": {
+     "compared": 3000,
+     "max": 31.411,
+     "p95": 5.726,
+     "p50": 0.74,
+     "over3": 342
+    },
+    "equal": {
+     "compared": 3000,
+     "max": 31.411,
+     "p95": 4.666,
+     "p50": 0.564,
+     "over3": 239
+    },
+    "koch": {
+     "compared": 3000,
+     "max": 44.064,
+     "p95": 5.929,
+     "p50": 0.752,
+     "over3": 337
+    },
+    "meridian": {
+     "compared": 3000,
+     "max": 13.073,
+     "p95": 4.82,
+     "p50": 0.674,
+     "over3": 239
+    },
+    "morinus": {
+     "compared": 3000,
+     "max": 13.073,
+     "p95": 4.82,
+     "p50": 0.674,
+     "over3": 239
+    },
+    "placidus": {
+     "compared": 3000,
+     "max": 31.411,
+     "p95": 5.613,
+     "p50": 0.725,
+     "over3": 322
+    },
+    "porphyry": {
+     "compared": 3000,
+     "max": 31.411,
+     "p95": 5.288,
+     "p50": 0.709,
+     "over3": 273
+    },
+    "regiomontanus": {
+     "compared": 3000,
+     "max": 31.411,
+     "p95": 5.928,
+     "p50": 0.747,
+     "over3": 363
+    },
+    "topocentric": {
+     "compared": 3000,
+     "max": 31.411,
+     "p95": 5.613,
+     "p50": 0.725,
+     "over3": 317
+    },
+    "vehlow": {
+     "compared": 3000,
+     "max": 31.411,
+     "p95": 4.666,
+     "p50": 0.564,
+     "over3": 239
+    },
+    "whole": {
+     "compared": 3000,
+     "max": 0.0,
+     "p95": 0.0,
+     "p50": 0.0,
+     "over3": 0
+    }
+   },
+   "ladder": {
+    "alcabitius": {
+     "compared": 708,
+     "max": 25.458,
+     "p95": 5.211,
+     "p50": 0.378,
+     "over3": 75
+    },
+    "campanus": {
+     "compared": 708,
+     "max": 25.458,
+     "p95": 5.529,
+     "p50": 0.63,
+     "over3": 116
+    },
+    "equal": {
+     "compared": 708,
+     "max": 25.458,
+     "p95": 3.789,
+     "p50": 0.297,
+     "over3": 58
+    },
+    "koch": {
+     "compared": 696,
+     "max": 82.677,
+     "p95": 7.207,
+     "p50": 0.57,
+     "over3": 114
+    },
+    "meridian": {
+     "compared": 708,
+     "max": 12.036,
+     "p95": 4.429,
+     "p50": 0.356,
+     "over3": 51
+    },
+    "morinus": {
+     "compared": 708,
+     "max": 12.036,
+     "p95": 4.429,
+     "p50": 0.356,
+     "over3": 51
+    },
+    "placidus": {
+     "compared": 696,
+     "max": 25.458,
+     "p95": 5.772,
+     "p50": 0.636,
+     "over3": 115
+    },
+    "porphyry": {
+     "compared": 708,
+     "max": 25.458,
+     "p95": 5.211,
+     "p50": 0.365,
+     "over3": 75
+    },
+    "regiomontanus": {
+     "compared": 708,
+     "max": 25.458,
+     "p95": 7.258,
+     "p50": 0.631,
+     "over3": 136
+    },
+    "topocentric": {
+     "compared": 708,
+     "max": 25.458,
+     "p95": 5.846,
+     "p50": 0.627,
+     "over3": 113
+    },
+    "vehlow": {
+     "compared": 708,
+     "max": 25.458,
+     "p95": 3.789,
+     "p50": 0.297,
+     "over3": 58
+    },
+    "whole": {
+     "compared": 708,
+     "max": 0.0,
+     "p95": 0.0,
+     "p50": 0.0,
+     "over3": 0
+    }
+   }
+  },
+  "1850-2049": {
+   "broad": {
+    "alcabitius": {
+     "compared": 1499,
+     "max": 19.711,
+     "p95": 7.716,
+     "p50": 0.001,
+     "over3": 240
+    },
+    "campanus": {
+     "compared": 1499,
+     "max": 19.961,
+     "p95": 8.154,
+     "p50": 0.001,
+     "over3": 258
+    },
+    "equal": {
+     "compared": 1499,
+     "max": 19.711,
+     "p95": 6.379,
+     "p50": 0.001,
+     "over3": 205
+    },
+    "koch": {
+     "compared": 1499,
+     "max": 44.064,
+     "p95": 8.072,
+     "p50": 0.001,
+     "over3": 252
+    },
+    "meridian": {
+     "compared": 1499,
+     "max": 13.073,
+     "p95": 7.218,
+     "p50": 0.001,
+     "over3": 239
+    },
+    "morinus": {
+     "compared": 1499,
+     "max": 13.073,
+     "p95": 7.218,
+     "p50": 0.001,
+     "over3": 239
+    },
+    "placidus": {
+     "compared": 1499,
+     "max": 19.711,
+     "p95": 7.961,
+     "p50": 0.001,
+     "over3": 253
+    },
+    "porphyry": {
+     "compared": 1499,
+     "max": 19.711,
+     "p95": 7.716,
+     "p50": 0.001,
+     "over3": 239
+    },
+    "regiomontanus": {
+     "compared": 1499,
+     "max": 19.711,
+     "p95": 8.213,
+     "p50": 0.001,
+     "over3": 258
+    },
+    "topocentric": {
+     "compared": 1499,
+     "max": 19.711,
+     "p95": 7.961,
+     "p50": 0.001,
+     "over3": 253
+    },
+    "vehlow": {
+     "compared": 1499,
+     "max": 19.711,
+     "p95": 6.379,
+     "p50": 0.001,
+     "over3": 205
+    },
+    "whole": {
+     "compared": 1499,
+     "max": 0.0,
+     "p95": 0.0,
+     "p50": 0.0,
+     "over3": 0
+    }
+   },
+   "ladder": {
+    "alcabitius": {
+     "compared": 361,
+     "max": 25.458,
+     "p95": 6.298,
+     "p50": 0.001,
+     "over3": 50
+    },
+    "campanus": {
+     "compared": 361,
+     "max": 25.458,
+     "p95": 7.398,
+     "p50": 0.001,
+     "over3": 51
+    },
+    "equal": {
+     "compared": 361,
+     "max": 25.458,
+     "p95": 3.929,
+     "p50": 0.001,
+     "over3": 33
+    },
+    "koch": {
+     "compared": 353,
+     "max": 82.677,
+     "p95": 7.032,
+     "p50": 0.002,
+     "over3": 48
+    },
+    "meridian": {
+     "compared": 361,
+     "max": 12.036,
+     "p95": 6.011,
+     "p50": 0.0,
+     "over3": 51
+    },
+    "morinus": {
+     "compared": 361,
+     "max": 12.036,
+     "p95": 6.011,
+     "p50": 0.0,
+     "over3": 51
+    },
+    "placidus": {
+     "compared": 353,
+     "max": 25.458,
+     "p95": 7.781,
+     "p50": 0.001,
+     "over3": 48
+    },
+    "porphyry": {
+     "compared": 361,
+     "max": 25.458,
+     "p95": 6.215,
+     "p50": 0.001,
+     "over3": 50
+    },
+    "regiomontanus": {
+     "compared": 361,
+     "max": 25.458,
+     "p95": 8.12,
+     "p50": 0.001,
+     "over3": 50
+    },
+    "topocentric": {
+     "compared": 361,
+     "max": 25.458,
+     "p95": 7.497,
+     "p50": 0.001,
+     "over3": 50
+    },
+    "vehlow": {
+     "compared": 361,
+     "max": 25.458,
+     "p95": 3.929,
+     "p50": 0.001,
+     "over3": 33
+    },
+    "whole": {
+     "compared": 361,
+     "max": 0.0,
+     "p95": 0.0,
+     "p50": 0.0,
+     "over3": 0
+    }
+   }
+  }
+ }
+}

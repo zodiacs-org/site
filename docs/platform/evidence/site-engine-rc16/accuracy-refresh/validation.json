@@ -1,0 +1,76 @@
+{
+  "schema": "zodiacs-rc16-accuracy-validation/v1",
+  "date": "2026-10-01",
+  "repeatRun": {
+    "command": "bash docs/platform/evidence/site-engine-rc16/accuracy-refresh/tools/run.sh",
+    "exitCode": 0,
+    "allSevenAggregateArtifactsByteIdentical": true,
+    "files": [
+      {
+        "file": "multiyear-1800-2199.json",
+        "firstSha256": "373d28e6810507bb9cf79be0640c8a1894886749782c631cbaa8dcc42054b571",
+        "secondSha256": "373d28e6810507bb9cf79be0640c8a1894886749782c631cbaa8dcc42054b571",
+        "byteIdentical": true
+      },
+      {
+        "file": "deltat-gap-2100-2199.json",
+        "firstSha256": "ea7d28f9e173473fe9ea1b4691d6b08756bb16fa1871e0cc1d745a3b5063985c",
+        "secondSha256": "ea7d28f9e173473fe9ea1b4691d6b08756bb16fa1871e0cc1d745a3b5063985c",
+        "byteIdentical": true
+      },
+      {
+        "file": "houses-default-utc.json",
+        "firstSha256": "34ebf66ec6ff2bce05b1bd4b4817365eff87e4b3d7099e325f630fa969cc8ce1",
+        "secondSha256": "34ebf66ec6ff2bce05b1bd4b4817365eff87e4b3d7099e325f630fa969cc8ce1",
+        "byteIdentical": true
+      },
+      {
+        "file": "houses-aligned-ut1.json",
+        "firstSha256": "e33ec66d9a6e5e3fe0da8d7716d5d5e48be225a4af05f06f67300ce676daef18",
+        "secondSha256": "e33ec66d9a6e5e3fe0da8d7716d5d5e48be225a4af05f06f67300ce676daef18",
+        "byteIdentical": true
+      },
+      {
+        "file": "houses-given.json",
+        "firstSha256": "66ce437aeb7618228e37e96a2f5c812731e5611e009232a8e87a47883eba37be",
+        "secondSha256": "66ce437aeb7618228e37e96a2f5c812731e5611e009232a8e87a47883eba37be",
+        "byteIdentical": true
+      },
+      {
+        "file": "p103.json",
+        "firstSha256": "5570d79b1f70cb4fab7221d414189d7e0e2816c305f07bd800a0441f61815790",
+        "secondSha256": "5570d79b1f70cb4fab7221d414189d7e0e2816c305f07bd800a0441f61815790",
+        "byteIdentical": true
+      },
+      {
+        "file": "statistical-changes.json",
+        "firstSha256": "a4bd7ed2bd1971d344baabb237d1a7399408d4fac5a9d76cea495f3647dc082c",
+        "secondSha256": "a4bd7ed2bd1971d344baabb237d1a7399408d4fac5a9d76cea495f3647dc082c",
+        "byteIdentical": true
+      }
+    ]
+  },
+  "sanity": {
+    "p103ModesRemainFailed": true,
+    "p103ExtraVectorExceedCounts": [
+      63,
+      44
+    ],
+    "sitePackageAndDiagnosticMismatches": 0,
+    "swissBackendFallbacks": 0
+  },
+  "swissOutputGuard": {
+    "command": "node node_modules/vitest/vitest.mjs run scripts/swiss-output-guard.test.mjs",
+    "node": "v22.22.2",
+    "exitCode": 0,
+    "testFilesPassed": 1,
+    "testsPassed": 11,
+    "log": "swiss-output-guard.log"
+  },
+  "scope": {
+    "filesChangedOnlyUnder": "docs/platform/evidence/site-engine-rc16/accuracy-refresh/",
+    "commitsCreated": false,
+    "externalActions": false,
+    "rawSwissValuesCommitted": false
+  }
+}

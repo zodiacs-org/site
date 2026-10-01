@@ -1,0 +1,169 @@
+{
+  "schemaVersion": 1,
+  "measured": "2026-10-01",
+  "cli": "Vercel CLI 62.0.0",
+  "node": "22.22.2",
+  "sourceHead": "18fdf260b843cae1395d6edaf8113980c57e351a",
+  "sourceBuild": "functions-only local build: committed vercel.json routes/functions; buildCommand/installCommand blank; framework null; disposable empty environment file and HOME; auth variables neither read nor inherited",
+  "packagedFunctions": 12,
+  "functionConfigs": {
+    "api/account.func/.vc-config.json": {
+      "handler": "api/account.js",
+      "runtime": "nodejs22.x",
+      "architecture": "x86_64",
+      "maxDuration": 60,
+      "environment": {},
+      "shouldDisableAutomaticFetchInstrumentation": false,
+      "launcherType": "Nodejs",
+      "shouldAddHelpers": true,
+      "shouldAddSourcemapSupport": true,
+      "awsLambdaHandler": ""
+    },
+    "api/assistant.func/.vc-config.json": {
+      "handler": "api/assistant.js",
+      "runtime": "nodejs22.x",
+      "architecture": "x86_64",
+      "maxDuration": 60,
+      "environment": {},
+      "supportsCancellation": true,
+      "shouldDisableAutomaticFetchInstrumentation": false,
+      "launcherType": "Nodejs",
+      "shouldAddHelpers": true,
+      "shouldAddSourcemapSupport": true,
+      "awsLambdaHandler": ""
+    },
+    "api/aura-holdings.func/.vc-config.json": {
+      "handler": "api/aura-holdings.js",
+      "runtime": "nodejs22.x",
+      "architecture": "x86_64",
+      "maxDuration": 15,
+      "environment": {},
+      "shouldDisableAutomaticFetchInstrumentation": false,
+      "launcherType": "Nodejs",
+      "shouldAddHelpers": true,
+      "shouldAddSourcemapSupport": true,
+      "awsLambdaHandler": ""
+    },
+    "api/calendar/transits.func/.vc-config.json": {
+      "handler": "api/calendar/transits.js",
+      "runtime": "nodejs22.x",
+      "architecture": "x86_64",
+      "environment": {},
+      "shouldDisableAutomaticFetchInstrumentation": false,
+      "launcherType": "Nodejs",
+      "shouldAddHelpers": true,
+      "shouldAddSourcemapSupport": true,
+      "awsLambdaHandler": ""
+    },
+    "api/compatibility.func/.vc-config.json": {
+      "handler": "api/compatibility.js",
+      "runtime": "nodejs22.x",
+      "architecture": "x86_64",
+      "environment": {},
+      "shouldDisableAutomaticFetchInstrumentation": false,
+      "launcherType": "Nodejs",
+      "shouldAddHelpers": true,
+      "shouldAddSourcemapSupport": true,
+      "awsLambdaHandler": ""
+    },
+    "api/email/admin-bootstrap.func/.vc-config.json": {
+      "handler": "api/email/admin-bootstrap.js",
+      "runtime": "nodejs22.x",
+      "architecture": "x86_64",
+      "environment": {},
+      "shouldDisableAutomaticFetchInstrumentation": false,
+      "launcherType": "Nodejs",
+      "shouldAddHelpers": true,
+      "shouldAddSourcemapSupport": true,
+      "awsLambdaHandler": ""
+    },
+    "api/email/chart-preference.func/.vc-config.json": {
+      "handler": "api/email/chart-preference.js",
+      "runtime": "nodejs22.x",
+      "architecture": "x86_64",
+      "environment": {},
+      "shouldDisableAutomaticFetchInstrumentation": false,
+      "launcherType": "Nodejs",
+      "shouldAddHelpers": true,
+      "shouldAddSourcemapSupport": true,
+      "awsLambdaHandler": ""
+    },
+    "api/email/subscribe.func/.vc-config.json": {
+      "handler": "api/email/subscribe.js",
+      "runtime": "nodejs22.x",
+      "architecture": "x86_64",
+      "environment": {},
+      "shouldDisableAutomaticFetchInstrumentation": false,
+      "launcherType": "Nodejs",
+      "shouldAddHelpers": true,
+      "shouldAddSourcemapSupport": true,
+      "awsLambdaHandler": ""
+    },
+    "api/guide.func/.vc-config.json": {
+      "handler": "api/guide.js",
+      "runtime": "nodejs22.x",
+      "architecture": "x86_64",
+      "maxDuration": 60,
+      "environment": {},
+      "supportsCancellation": true,
+      "shouldDisableAutomaticFetchInstrumentation": false,
+      "launcherType": "Nodejs",
+      "shouldAddHelpers": true,
+      "shouldAddSourcemapSupport": true,
+      "awsLambdaHandler": ""
+    },
+    "api/push/subscribe.func/.vc-config.json": {
+      "handler": "api/push/subscribe.js",
+      "runtime": "nodejs22.x",
+      "architecture": "x86_64",
+      "environment": {},
+      "shouldDisableAutomaticFetchInstrumentation": false,
+      "launcherType": "Nodejs",
+      "shouldAddHelpers": true,
+      "shouldAddSourcemapSupport": true,
+      "awsLambdaHandler": ""
+    },
+    "api/unsubscribe.func/.vc-config.json": {
+      "handler": "api/unsubscribe.js",
+      "runtime": "nodejs22.x",
+      "architecture": "x86_64",
+      "environment": {},
+      "shouldDisableAutomaticFetchInstrumentation": false,
+      "launcherType": "Nodejs",
+      "shouldAddHelpers": true,
+      "shouldAddSourcemapSupport": true,
+      "awsLambdaHandler": ""
+    },
+    "api/wallet-birth.func/.vc-config.json": {
+      "handler": "api/wallet-birth.js",
+      "runtime": "nodejs22.x",
+      "architecture": "x86_64",
+      "maxDuration": 60,
+      "environment": {},
+      "shouldDisableAutomaticFetchInstrumentation": false,
+      "launcherType": "Nodejs",
+      "shouldAddHelpers": true,
+      "shouldAddSourcemapSupport": true,
+      "awsLambdaHandler": ""
+    }
+  },
+  "computeBundleSha256": "7e2f1e5c36ae577b513bbc438c295c7499668e138d1a0a8fdab7d34949c2bab6",
+  "packagedComputeBundleSha256": "7e2f1e5c36ae577b513bbc438c295c7499668e138d1a0a8fdab7d34949c2bab6",
+  "probe": "docs/platform/evidence/compute-api-2026-09-29/tools/cold-start.mjs",
+  "probeSha256": "798c68866a8dcad38647d4f6b2164d27cbf26985749cf0b5ad0da278924b0e87",
+  "probeEnvironment": {
+    "NODE_OPTIONS": "--no-experimental-detect-module",
+    "PATH": "Node 22.22.2 plus system binaries only"
+  },
+  "probeResults": {
+    "freshProcesses": 60,
+    "requests": 120,
+    "sixEndpoints": true,
+    "allStatuses": 200,
+    "firewall": "fetch stub 204, no network"
+  },
+  "buildExitCode": 0,
+  "buildDiagnostics": "Build emits unrelated existing TypeScript NodeNext extension/typing errors while exiting 0 and packaging all functions. This is not a clean typecheck claim; npm run check is recorded separately.",
+  "packageLock": "CLI removed optional native dependency entries; pre-build byte-identical HEAD lockfile restored afterward. No lockfile changes retained.",
+  "limits": "Local packaged-import/regression proof only, not deployed behavior, platform cold start, live Firewall settings, cost or programme gate acceptance."
+}

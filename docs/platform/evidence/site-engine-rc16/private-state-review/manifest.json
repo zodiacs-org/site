@@ -1,0 +1,227 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-01",
+  "runtime": "v22.22.2",
+  "runtimeExecutable": "/workspace/scratch/8dfe85084616/npm-cache/_npx/5705de4b80ce9477/node_modules/node/bin/node",
+  "worktreeHead": "7a0260105a9ba1ca512b070a25c4e574df99f580",
+  "workingTreeSources": "Implementation changes uncommitted at review; source hashes identify reviewed bytes.",
+  "reviewedInputAggregateSha256": "025fc77deed9584f4d5f4c342f42483f1880fd3c5f4abe87af4cabd0584cc1ab",
+  "sourceFiles": [
+    {
+      "path": "api/_compute/compute.mjs",
+      "sha256": "7e2f1e5c36ae577b513bbc438c295c7499668e138d1a0a8fdab7d34949c2bab6",
+      "bytes": 245241
+    },
+    {
+      "path": "api/_compute/local-time.mjs",
+      "sha256": "6f9253009a83f84e755810ac5221eefd87811203e66aaef1933840be4e8571da",
+      "bytes": 275756
+    },
+    {
+      "path": "api/_compute/handler.ts",
+      "sha256": "fbf5f1d5e2fd252a44ff81a29a6b7c45b2e592ee425967d8b03f45239724a331",
+      "bytes": 1488
+    },
+    {
+      "path": "scripts/build-compute-handler.mjs",
+      "sha256": "7e010c1798bd8eff21dba4e3f1b7f58c4a28bcbb2b2a72ad035b608e70e10208",
+      "bytes": 9441
+    },
+    {
+      "path": "scripts/build-compute-local-time.mjs",
+      "sha256": "81b3a80289af02201835966743cde377b1b2338e8af7ac510e88e0651a98100b",
+      "bytes": 7798
+    },
+    {
+      "path": "src/lib/compute-api/handler.ts",
+      "sha256": "481f3d8d82f424e3b10ad56c8203cceec3a54d3536dc11fadc57d605ba054756",
+      "bytes": 11432
+    },
+    {
+      "path": "src/lib/compute-api/endpoints.ts",
+      "sha256": "897d04ae42c8b465e599408e8c1143c7f4101e9b3e9ab9610f82429dc113320e",
+      "bytes": 21264
+    },
+    {
+      "path": "src/lib/compute-api/receipt.ts",
+      "sha256": "0c55443f72c2cdeea25cba38543b194139a6b172582cb1c8b5819b1b497834d1",
+      "bytes": 6866
+    },
+    {
+      "path": "src/lib/compute-api/local-time.ts",
+      "sha256": "84a361e6c6b3e06d3192db7ce45be1800a516fe40da4a0e696f5bf4178bb3a69",
+      "bytes": 4969
+    },
+    {
+      "path": "src/lib/time/localToUtc.ts",
+      "sha256": "306a79d20361aade716a182ddfd2a4e765a78d52f28875f708c9ed9b6268299b",
+      "bytes": 14506
+    },
+    {
+      "path": "src/lib/time/tz-history-load.ts",
+      "sha256": "775f0428a286ae6b773f00e63200d9b846bfeadb1754f6e72ad522053b3037fc",
+      "bytes": 1771
+    },
+    {
+      "path": "src/lib/time/zone-names.ts",
+      "sha256": "dcd7173a8275fbfd853a8a2a0eae3ba0012ddfab19d9be909e8818a5822443d8",
+      "bytes": 3432
+    },
+    {
+      "path": "tests/api/compute-api-private-state.test.ts",
+      "sha256": "f4bd1cdad2a55dc649d8dfbda6fd51c062182c540d7ea4ef0e0b50c580a4e8f8",
+      "bytes": 11355
+    },
+    {
+      "path": "tests/api/compute-api-bundle.test.ts",
+      "sha256": "2c1d2015c9d75e0828790698c546a6b1240a19554956d0362fef379ee8068958",
+      "bytes": 4883
+    },
+    {
+      "path": "scripts/lib/compute-api-harness.ts",
+      "sha256": "1ada779ff57a91ab29d288cbf85017df2df50b3c0626f66e24c2d16478e64eb3",
+      "bytes": 4125
+    },
+    {
+      "path": "node_modules/@zodiacs/engine/dist/chunk-2OWGBT3O.js",
+      "sha256": "a987e24e2921d5fb4ea980e9c051e378d9fdecf0498d4ad2a546e4931b2e0c6d",
+      "bytes": 5263
+    },
+    {
+      "path": "node_modules/@zodiacs/engine/dist/chunk-4NV4ZEFZ.js",
+      "sha256": "218b7e37ae42dbc01e10f1fb8ec5758e5930143137224b3af824ceebd40bac89",
+      "bytes": 11577
+    },
+    {
+      "path": "node_modules/@zodiacs/engine/dist/chunk-AECKV73C.js",
+      "sha256": "a812be9882c25f67c9fa8dfe19eb0d950a3867a7cdbede4c746c226ca760480c",
+      "bytes": 9237
+    },
+    {
+      "path": "node_modules/@zodiacs/engine/dist/chunk-CPALRSPC.js",
+      "sha256": "9db1a3814ec9bd00a40d4bc295e348debd6108f62a322ed91d18610c81b9fb08",
+      "bytes": 1459
+    },
+    {
+      "path": "node_modules/@zodiacs/engine/dist/chunk-I7O5EGFV.js",
+      "sha256": "47ec9271d788e287d341ff0af1b47682f97907ddbed6aa598cfc971e66025af1",
+      "bytes": 672
+    },
+    {
+      "path": "node_modules/@zodiacs/engine/dist/chunk-KFTJMMG7.js",
+      "sha256": "a828a7b1802d8c61fc48bd1844cd12cbc60d54ad732014cae91413fe491c92a9",
+      "bytes": 2397
+    },
+    {
+      "path": "node_modules/@zodiacs/engine/dist/chunk-KHBLFXFG.js",
+      "sha256": "e690801ef7d6bf53efb744b4f92157797ce4c405b4c6ead0fda88facd29c3188",
+      "bytes": 13082
+    },
+    {
+      "path": "node_modules/@zodiacs/engine/dist/chunk-L6ZHWJZ6.js",
+      "sha256": "097cec8e1a039207c6b2b733f7ce46eaefaf19ddb681e9e532bf1f8d8d9130d2",
+      "bytes": 11712
+    },
+    {
+      "path": "node_modules/@zodiacs/engine/dist/chunk-ONBZ4HK7.js",
+      "sha256": "50f11205373c177c728ea8c7d50d41b19ff80cd9921eb51c6e907a8045f93308",
+      "bytes": 4807
+    },
+    {
+      "path": "node_modules/@zodiacs/engine/dist/chunk-PFGUCNOK.js",
+      "sha256": "6d9d38ab4606288700b0959e732a61dfa5b4cdc570be21d17b4ac9b9fe1c0eb4",
+      "bytes": 2929
+    },
+    {
+      "path": "node_modules/@zodiacs/engine/dist/chunk-WOU7JVD3.js",
+      "sha256": "cfd2a97efe894a1760c2c451441e8664d706bf7ff52b0f9da232ddf3d78ac992",
+      "bytes": 29796
+    },
+    {
+      "path": "node_modules/@zodiacs/engine/dist/index.js",
+      "sha256": "304618765bdf2aa8f27d86b9ed9e0e86cad6e384030bb63a6545630d9c443cef",
+      "bytes": 13003
+    },
+    {
+      "path": "node_modules/@zodiacs/engine/dist/receipt.js",
+      "sha256": "27a93c369404e3d8c92db9d211fda23f82e074126b894c05b12cb06e8a58bf70",
+      "bytes": 39572
+    },
+    {
+      "path": "node_modules/astronomy-engine/esm/astronomy.js",
+      "sha256": "068f1445ed0c636c94818fe6d20d7d125120e605e0bab9fc4675c3d531be5ad7",
+      "bytes": 412025
+    },
+    {
+      "path": "src/lib/engine/time-basis.mjs",
+      "sha256": "01d4387ab64481fc0b4b817966870b4af3a0a0e2345ea6dfc1d865707cdc047c",
+      "bytes": 27937
+    }
+  ],
+  "evidenceFiles": [
+    {
+      "path": "docs/platform/evidence/site-engine-rc16/private-state-review/README.md",
+      "sha256": "2b2291abb4ef9e2484527c434e1560ae10b3707495559780b4c47ea27585aec8",
+      "bytes": 10312
+    },
+    {
+      "path": "docs/platform/evidence/site-engine-rc16/private-state-review/audit-inventory.mjs",
+      "sha256": "6a4eabcf17c48fa2408da6bfd82aeccf12adbdebdfee14fd76556b3e79eb580a",
+      "bytes": 6820
+    },
+    {
+      "path": "docs/platform/evidence/site-engine-rc16/private-state-review/focused-tests.log",
+      "sha256": "061b6da6f4f08419b2220ca7e51940d2b12b78621eb7699201d80a39b60dbfbe",
+      "bytes": 2676
+    },
+    {
+      "path": "docs/platform/evidence/site-engine-rc16/private-state-review/generator-check.log",
+      "sha256": "2408f8eab26c5fd6b9845841297aed513f41beee3ee75bb0643d83b1ff67d8c6",
+      "bytes": 501
+    },
+    {
+      "path": "docs/platform/evidence/site-engine-rc16/private-state-review/inventory-result.json",
+      "sha256": "054ee84c978f2464a989877ef83f91e8f0b7a2020ea68bdd8cc4c27eebffb104",
+      "bytes": 53517
+    },
+    {
+      "path": "docs/platform/evidence/site-engine-rc16/private-state-review/nearby-overlap-result.json",
+      "sha256": "bef1b64fca74afcb090bca9f582f49cabd360b5ef445d5233b9d1f59c32b47a7",
+      "bytes": 2390
+    },
+    {
+      "path": "docs/platform/evidence/site-engine-rc16/private-state-review/probe-nearby-overlap.mjs",
+      "sha256": "c11cc534d7dd262cef72c0c57cd7cfee8cb77fb86499cf5775bda91b3dbf3b83",
+      "bytes": 5096
+    }
+  ],
+  "commands": [
+    "NODE22=/workspace/scratch/8dfe85084616/npm-cache/_npx/5705de4b80ce9477/node_modules/node/bin/node",
+    "EVIDENCE=docs/platform/evidence/site-engine-rc16/private-state-review",
+    "\"$NODE22\" \"$EVIDENCE/audit-inventory.mjs\" > \"$EVIDENCE/inventory-result.json\"",
+    "\"$NODE22\" \"$EVIDENCE/probe-nearby-overlap.mjs\" > \"$EVIDENCE/nearby-overlap-result.json\"",
+    "\"$NODE22\" node_modules/vitest/vitest.mjs run tests/api/compute-api-private-state.test.ts tests/api/compute-api-bundle.test.ts > \"$EVIDENCE/focused-tests.log\" 2>&1",
+    "\"$NODE22\" scripts/build-compute-handler.mjs --check > \"$EVIDENCE/generator-check.log\" 2>&1",
+    "\"$NODE22\" scripts/build-compute-local-time.mjs --check >> \"$EVIDENCE/generator-check.log\" 2>&1"
+  ],
+  "results": {
+    "focusedTestFiles": 2,
+    "focusedTests": 6,
+    "focusedTestsPassed": true,
+    "generatorDriftChecksPassed": 2,
+    "variableBindingsObserved": 315,
+    "directWriteSites": 33,
+    "unchangedSnapshotCases": 4,
+    "oneMillisecondPairExactWholeResponses": true,
+    "overlapCompletionsEmpty": 2,
+    "parentInputHashesCrosschecked": true
+  },
+  "limits": [
+    "One synthetic +1 ms pair in one Node runtime; no claim of universal bitwise history independence.",
+    "Fresh modules here share one process; nine fresh-process comparisons are in the independent focused Vitest run.",
+    "No rounding normalization, tolerance, field removal or receipt-digest removal was applied to full-response equality.",
+    "Recovered UTC uses binary64 TT inversion rounded to the API millisecond resolution and subtracts the documented +0.25-day node sample.",
+    "The rc.15 aggregate Moon counter was already documented as a non-time diagnostic. Resetting it is a bounded tightening, not discovery of a new critical time leak.",
+    "No independent accuracy, secure memory erasure or production-performance claim."
+  ]
+}

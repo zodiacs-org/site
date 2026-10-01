@@ -1,0 +1,49 @@
+(node:5) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+build-compute-handler: up to date (245241 bytes, sha256 7e2f1e5c36ae…)
+(node:29) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+build-compute-local-time: up to date (275756 bytes, sha256 6f9253009a83…)
+(node:52) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> zodiacs-org@1.0.0 mcp:build:check
+> node scripts/build-mcp-server.mjs --check
+
+(node:65) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+build-mcp-server: up to date (228145 bytes, sha256 a20ddbb5899f…)
+(node:88) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> zodiacs-org@1.0.0 mcp:pack:check
+> node scripts/pack-mcp-server.mjs --check
+
+(node:101) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+pack-mcp-server: verified zodiacs-mcp-server-0.1.0-rc.16.tgz (89871 bytes, sha256 dfc9177eb3e5…, commit 03142a4d9a78733876137f611586d7482793bee6)
+(node:137) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+programme-ledger: OK
+(node:145) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+Overall delivery: 23% (42.5 of 182.45); blocked 2% (4)
+  Phase 0: 80% (2 of 2.5)
+  Phase 1: 59% (8.5 of 14.5)
+  Phase 2 A Western: 33% (9.9 of 29.6)
+  Phase 2 B Sidereal/Vedic: 26% (2.5 of 9.5)
+  Phase 2 C Chinese: 0% (0 of 2)
+  Phase 2 D Frames: 0% (0 of 2)
+  Phase 2 E Techniques into packages: 11% (0.5 of 4.5)
+  Phase 3 Platform: 6% (1.5 of 24.5)
+  Phase 4 Precision: 0% (0 of 30.5)
+  Track A Agents: 0% (0 of 9.75)
+  Track S Search: 2% (0.1 of 5.6)
+  Track G GitHub: 10% (0.5 of 5)
+  Frontier bets (first slices): 41% (17 of 41)
+  Standards §4.4: 0% (0 of 1.5)
+(node:153) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+phase1-scope-guard: PASS — 360 changed path(s); 1 protected path(s) covered by the changed one-time allowance

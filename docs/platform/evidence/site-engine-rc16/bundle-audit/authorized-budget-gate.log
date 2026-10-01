@@ -1,0 +1,24 @@
+(node:17) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+route gzip sizes (initial transitive local JS):
+  /                  31.0 KB /   42 KB  (30 chunks)
+  /birth-chart/      67.7 KB /   71 KB  (43 chunks)
+  /big-three/        30.0 KB /   30 KB  (21 chunks)
+  /transits/         28.8 KB /   30 KB  (24 chunks)
+  /solar-return/     23.9 KB /   30 KB  (18 chunks)
+  /lunar-return/     23.9 KB /   30 KB  (18 chunks)
+  /numerology/       17.3 KB /   30 KB  (7 chunks)
+  /numerology/life-path/7/   17.3 KB /   30 KB  (7 chunks)
+  /void-of-course-moon/    0.0 KB /    5 KB  (0 chunks)
+  /today/            20.4 KB / 21.5 KB  (13 chunks)
+  /compatibility/    35.6 KB /   36 KB  (25 chunks)
+  /aries/             0.0 KB /    0 KB  (0 chunks)
+  /almanac/           0.0 KB /    0 KB  (0 chunks)
+  /almanac/sky-2026-08/    0.0 KB /    0 KB  (0 chunks)
+  /almanac/reading-a-childs-chart/    0.0 KB /    0 KB  (0 chunks)
+  /registry/collection/    0.0 KB /   48 KB  (0 chunks)
+chunk gates:
+  chunk-max          50.1 KB /   60 KB  (/_astro/client.D6U9smGw.js)
+  engine-chunk       32.4 KB / 32.621484375 KB  (/_astro/full.DlszcQ4H.js; 7 static chunks)
+engine isolation: package boundary clear; homepage markers clear
+report-bundles: budgets pass

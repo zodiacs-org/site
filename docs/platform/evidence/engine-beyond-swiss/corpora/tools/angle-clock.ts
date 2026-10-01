@@ -15,6 +15,7 @@
 import { readFileSync } from 'node:fs';
 import { MakeTime, SetDeltaTFunction } from 'astronomy-engine';
 import { deltaT } from '@zodiacs/engine/deltat';
+import { ENGINE_VERSION } from '@zodiacs/engine';
 import { timeBasis } from '../../../../../../src/lib/engine/time-basis.mjs';
 
 const corpus = JSON.parse(readFileSync(new URL('../angle-grid-inputs.json', import.meta.url), 'utf8'));
@@ -28,4 +29,4 @@ const clock = (rows: [string, number, number, string][]) => rows.map(([utc]) => 
     SetDeltaTFunction(deltaT);
   }
 });
-process.stdout.write(`${JSON.stringify({ A: clock(corpus.A), L: clock(corpus.L) })}\n`);
+process.stdout.write(`${JSON.stringify({ engineVersion: ENGINE_VERSION, A: clock(corpus.A), L: clock(corpus.L) })}\n`);

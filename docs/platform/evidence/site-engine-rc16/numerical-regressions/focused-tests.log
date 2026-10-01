@@ -1,0 +1,53 @@
+(node:57) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+ RUN  v3.2.7 /workspace/scratch/8dfe85084616/site-rc16
+
+(node:82) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:83) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:81) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:89) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:95) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:107) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:101) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:118) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/deltat-install-guard.test.mjs (4 tests) 6ms
+(node:251) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/engine/transit-scan.test.ts (15 tests) 359ms
+ ✓ src/lib/scene/scene.test.ts (15 tests) 69ms
+(node:275) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:281) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/compare/diff.test.ts (69 tests) 642ms
+(node:315) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/MoonPhaseTool.reference.test.ts (36 tests) 67ms
+(node:335) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/engine/returns.test.ts (14 tests) 1713ms
+   ✓ saturnReturns > first return begins between ages 27.5 and 30.5 for every fixture  327ms
+   ✓ saturnReturns > every season carries an odd number of crossings  333ms
+(node:355) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/share-positions.test.ts (12 tests) 6576ms
+   ✓ what the code of a chart without a birth time gives away > was the birthplace: its own positions give the zone offset, and before standard time the longitude  307ms
+   ✓ what a shared positions code leaves of the birthplace > leaves an area about a degree of longitude wide and, from north to south, at least 400 km within 15° of the equator, 200 km within 45° and 70 km within 60°  2533ms
+   ✓ what a shared positions code leaves of the birthplace > can leave much less far from the equator: tens of kilometres in the far north, and on the Arctic Circle a strip less than a kilometre from north to south  3446ms
+
+ Test Files  7 passed (7)
+      Tests  165 passed (165)
+   Start at  16:13:58
+   Duration  7.54s (transform 1.83s, setup 0ms, collect 4.39s, tests 9.43s, environment 1ms, prepare 742ms)
+
+(node:375) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)

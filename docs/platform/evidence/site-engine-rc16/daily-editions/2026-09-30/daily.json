@@ -1,0 +1,92 @@
+{
+  "schema": "zodiacs.daily-facts.v1",
+  "date": "2026-09-30",
+  "snapshotAt": "2026-09-30T12:00:00.000Z",
+  "bodies": [
+    {
+      "body": "Moon",
+      "lon": 56.769040531366386,
+      "sign": "taurus",
+      "degree": 26.769040531366386,
+      "retrograde": false
+    },
+    {
+      "body": "Sun",
+      "lon": 187.34713122233336,
+      "sign": "libra",
+      "degree": 7.34713122233336,
+      "retrograde": false
+    },
+    {
+      "body": "Mercury",
+      "lon": 210.0140812044854,
+      "sign": "scorpio",
+      "degree": 0.014081204485364651,
+      "retrograde": false
+    },
+    {
+      "body": "Venus",
+      "lon": 218.33713973257105,
+      "sign": "scorpio",
+      "degree": 8.337139732571018,
+      "retrograde": false
+    },
+    {
+      "body": "Mars",
+      "lon": 121.39650042021538,
+      "sign": "leo",
+      "degree": 1.396500420215375,
+      "retrograde": false
+    },
+    {
+      "body": "Jupiter",
+      "lon": 139.50103056146747,
+      "sign": "leo",
+      "degree": 19.501030561467473,
+      "retrograde": false
+    },
+    {
+      "body": "Saturn",
+      "lon": 11.614735466038098,
+      "sign": "aries",
+      "degree": 11.614735466038098,
+      "retrograde": true
+    },
+    {
+      "body": "Uranus",
+      "lon": 65.53389912648868,
+      "sign": "gemini",
+      "degree": 5.533899126488677,
+      "retrograde": true
+    },
+    {
+      "body": "Neptune",
+      "lon": 2.8792232670357407,
+      "sign": "aries",
+      "degree": 2.8792232670357407,
+      "retrograde": true
+    },
+    {
+      "body": "Pluto",
+      "lon": 303.1255577588242,
+      "sign": "aquarius",
+      "degree": 3.125557758824243,
+      "retrograde": true
+    }
+  ],
+  "moon": {
+    "phase": "Waning Gibbous",
+    "illumination": 0.825
+  },
+  "eventsCoverage": "complete",
+  "eventsSource": "src/data/transits-2026-09.json",
+  "events": [
+    {
+      "kind": "ingress",
+      "planet": "Mercury",
+      "at": "2026-09-30T11:44:48.668Z",
+      "sign": "scorpio",
+      "retrograde": false
+    }
+  ]
+}
