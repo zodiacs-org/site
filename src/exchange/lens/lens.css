@@ -121,3 +121,12 @@
   .lens-event-row { grid-template-columns: 115px minmax(0, 1fr); }
   .lens-segments button, .lens-button { min-height: 44px; }
 }
+
+.lens-personal {margin-block: 1rem}.lens-personal-detail {border-bottom:1px solid #292d3a;padding-bottom:1rem}.lens-event--personal {color:#a9cdb5;border-color:#a9cdb555}.lens-risk-grid {display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem}.lens-risk-grid input {width:100%}.lens-personal .living-self-chart {display:grid;gap:1rem}.lens-personal .living-self-chart .orb {display:none}
+
+.lens-event--economic {color:#e3c8a9;border-color:#e3c8a955}.lens-calendar-event.lens-event--economic {border-left:2px solid #e3c8a9}
+
+.lens-outlook--supportive {color:#a9cdb5}.lens-outlook--challenging {color:#d5a6ad}.lens-outlook--mixed {color:#c5b8e7}.lens-day-number [class^="lens-outlook"] {display:block;font-size:.75rem}
+.lens-calendar--month .lens-calendar-event,.lens-calendar--week .lens-calendar-event {white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lens-calendar-more {display:block;border:0;background:transparent;color:var(--lens-accent);font-size:11px;padding:6px 3px;min-height:32px;text-align:left;width:100%}
+.lens-form > fieldset {grid-column:1/-1;display:block}.lens-form > .lens-metrics {grid-column:1/-1}.lens-risk-grid {margin-top:16px}.lens-metrics strong {overflow-wrap:anywhere;font-variant-numeric:tabular-nums}

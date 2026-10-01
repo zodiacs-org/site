@@ -19,7 +19,7 @@ export function isEventManifest(value: unknown): value is EventManifest {
 export function isSkyEvent(value: unknown): value is SkyEvent {
   if (!value || typeof value !== 'object') return false;
   const x = value as SkyEvent;
-  return typeof x.id === 'string' && x.id.length > 0 && x.id.length < 240 && FAMILIES.has(x.family)
+  return typeof x.id === 'string' && x.id.length > 0 && x.id.length < 240 && FAMILIES.has(x.family as EventFamily)
     && typeof x.subtype === 'string' && typeof x.title === 'string' && validInstant(x.at)
     && (x.end === undefined || x.end === null || (validInstant(x.end) && Date.parse(x.end) > Date.parse(x.at)))
     && Array.isArray(x.bodies) && x.bodies.length > 0 && x.bodies.every((body) => typeof body === 'string')
@@ -113,7 +113,7 @@ export function eventICS(event: SkyEvent, generatedAt: Date = new Date()): strin
   if (!Number.isFinite(start.getTime()) || !Number.isFinite(generatedAt.getTime())) throw new Error('Calendar event time is invalid.');
   const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Zodiacs//Market Lens//EN', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', 'BEGIN:VEVENT',
     `UID:${encodeURIComponent(event.id)}@zodiacs.org`, `DTSTAMP:${icsDate(generatedAt)}`, `DTSTART:${icsDate(start)}`, 'DURATION:PT1M',
-    `SUMMARY:${icsText(event.title)}`, `DESCRIPTION:${icsText(`Exact astronomical instant: ${event.at}. Traditional interpretation: ${event.interpretation} Source: ${event.provenance.catalog}. ${event.provenance.convention}`)}`,
+    `SUMMARY:${icsText(event.title)}`, `DESCRIPTION:${icsText(event.economic ? `Official scheduled instant: ${event.at}. Last verified: ${event.economic.verifiedAt}. Schedule may change. Source: ${event.economic.sourceUrl}.` : `Astronomical model instant: ${event.at}. Traditional interpretation: ${event.interpretation} Source: ${event.provenance.catalog}. ${event.provenance.convention}`)}`,
     'TRANSP:TRANSPARENT', 'END:VEVENT', 'END:VCALENDAR'];
   return `${lines.map(foldICSLine).join('\r\n')}\r\n`;
 }

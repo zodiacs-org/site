@@ -34,4 +34,13 @@ describe('Market Lens committed sky projection', () => {
   it('committed projection has no generation drift', async () => {
     await expect(writeLensEvents({ check: true })).resolves.toBeDefined();
   });
+  it('reuses exact Moon ingresses only inside their authoritative source coverage', async () => {
+    const { events, manifest } = await buildLensEvents();
+    const moon = JSON.parse(await readFile('src/data/aura-moon-ingresses.json', 'utf8'));
+    const rows = events.filter(event => event.family === 'ingress' && event.bodies[0] === 'Moon');
+    expect(rows).toHaveLength(moon.ingresses.length);
+    expect(rows.map(row => [row.at, row.sign])).toEqual(moon.ingresses.map(row => [row.at, row.sign]));
+    expect(rows.every(row => row.at >= moon.from && row.at < moon.to)).toBe(true);
+    expect(manifest.limitations.some(text => text.includes('Moon ingresses are supported only'))).toBe(true);
+  });
 });

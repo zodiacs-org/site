@@ -104,13 +104,20 @@ export default function ChartPanel({ data, indicators, events, selectedEvent, ti
           }
         }
       }
-      const markers = events.map((event) => ({ event, bucket: Math.floor(Date.parse(event.at) / 1000 / seconds) * seconds }))
+      const windowIds = new Set<string>();
+      const markerEvents = events.flatMap(event => {
+        if (!event.personal || windowIds.has(event.personal.window.id)) return [event];
+        windowIds.add(event.personal.window.id);
+        const window = event.personal.window;
+        return [event, { ...event, at: window.startUtc, subtype: 'window-entry' }, { ...event, at: window.endUtc, subtype: 'window-exit' }];
+      });
+      const markers = markerEvents.map((event) => ({ event, bucket: Math.floor(Date.parse(event.at) / 1000 / seconds) * seconds }))
         .filter(({ bucket }) => byTime.has(bucket))
         .sort((a, b) => a.bucket - b.bucket || a.event.id.localeCompare(b.event.id));
       lib.createSeriesMarkers(series, markers.map(({ event, bucket }) => ({
-        time: bucket as UTCTimestamp, position: 'aboveBar', shape: 'circle',
-        color: event.family === 'lunation' ? '#c5b8e7' : event.family === 'eclipse' ? '#e5b6c1' : '#b1c4d5',
-        text: '',
+        time: bucket as UTCTimestamp, position: 'aboveBar', shape: event.economic ? 'square' : event.personal ? event.subtype === 'window-entry' ? 'arrowUp' : event.subtype === 'window-exit' ? 'arrowDown' : 'square' : 'circle',
+        color: event.economic ? '#e3c8a9' : event.personal ? '#a9cdb5' : event.family === 'lunation' ? '#c5b8e7' : event.family === 'eclipse' ? '#e5b6c1' : '#b1c4d5',
+        text: event.economic ? 'E' : event.personal ? event.subtype === 'window-entry' ? 'P start' : event.subtype === 'window-exit' ? 'P end' : 'P' : '',
       })));
       chart.subscribeClick((param) => {
         if (typeof param.time !== 'number') return;
@@ -135,7 +142,7 @@ export default function ChartPanel({ data, indicators, events, selectedEvent, ti
   const indicatorValues = [indicators.sma20, indicators.sma50, indicators.ema20, indicators.rsi14].map((points) => new Map(points.map((p) => [p.time, p.value])));
   return <section class="lens-panel lens-chart-panel" aria-labelledby="lens-chart-title">
     <div class="lens-section-head">
-      <div><h2 id="lens-chart-title">Price &amp; sky</h2><p class="lens-muted">Sky markers sit on their containing candle. Event details retain the exact time.</p></div>
+      <div><h2 id="lens-chart-title">Price &amp; sky</h2><p class="lens-muted">Shared markers are circles; personal contacts are green squares, with arrows at window entry and exit. Markers sit on their containing candle. Event details retain the exact time.</p></div>
       <div class="lens-inline">
         <label class="lens-check"><input type="checkbox" checked={showMA} onChange={() => setShowMA(!showMA)} /> Moving averages</label>
         <label class="lens-check"><input type="checkbox" checked={showRSI} onChange={() => setShowRSI(!showRSI)} /> RSI</label>

@@ -1,4 +1,5 @@
-import type { EventFamily, JournalEntry, JournalRevision, WatchRule } from './types';
+import type { EventFamily, JournalEntry, JournalRevision, SetupPlan, WatchRule } from './types';
+import { estimateRisk } from './risk';
 
 export const LENS_DATABASE_NAME = 'zodiacs-market-lens-v1';
 export const LENS_DATABASE_VERSION = 1;
@@ -159,6 +160,10 @@ export async function compareAndSaveStore(
   exportStore(after);
   if (!backend.compareAndWrite) throw new LensStorageError('This private-storage backend cannot save atomically. No changes were saved.');
   await backend.compareAndWrite(before, after);
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event('zodiacs:lens-workspace'));
+    try { const channel = new BroadcastChannel('zodiacs:lens-workspace'); channel.postMessage('changed'); channel.close(); } catch { /* CAS still protects writes. */ }
+  }
 }
 
 export function exportStore(store: LensStore, exportedAt = new Date().toISOString()): string {
@@ -222,8 +227,8 @@ export function importStore(payload: string, current: LensStore = emptyStore()):
   return { store: validated, importedRules, importedEntries, conflicts };
 }
 
-type JournalInput = Pick<JournalEntry, 'instrument' | 'eventIds' | 'horizonHours' | 'method' | 'hypothesis' | 'plan' | 'outcome'>;
-type JournalPatch = Partial<Pick<JournalEntry, 'hypothesis' | 'plan' | 'outcome'>>;
+type JournalInput = Pick<JournalEntry, 'instrument' | 'eventIds' | 'horizonHours' | 'method' | 'hypothesis' | 'plan' | 'outcome' | 'setup' | 'chartRef'>;
+type JournalPatch = Partial<Pick<JournalEntry, 'hypothesis' | 'plan' | 'outcome' | 'setup'>>;
 
 export function createJournalEntry(input: JournalInput, options: { at?: string; id?: string } = {}): JournalEntry {
   const at = timestamp(options.at ?? new Date().toISOString(), 'Journal time');
@@ -233,17 +238,17 @@ export function createJournalEntry(input: JournalInput, options: { at?: string; 
 
 export function updateJournalEntry(entry: JournalEntry, patch: JournalPatch, options: { at?: string } = {}): JournalEntry {
   const original = validateEntry(entry);
-  if (!isRecord(patch) || Object.keys(patch).some(key => !['hypothesis', 'plan', 'outcome'].includes(key))) throw new Error('Only journal text can be revised; the original instrument and methodology remain fixed.');
+  if (!isRecord(patch) || Object.keys(patch).some(key => !['hypothesis', 'plan', 'outcome', 'setup'].includes(key))) throw new Error('Only journal text and setup can be revised; the original instrument and methodology remain fixed.');
   const edited = { ...original, ...patch };
   const latest = original.revisions.at(-1)!;
-  if (edited.hypothesis === latest.hypothesis && edited.plan === latest.plan && edited.outcome === latest.outcome) return original;
+  if (edited.hypothesis === latest.hypothesis && edited.plan === latest.plan && edited.outcome === latest.outcome && JSON.stringify(edited.setup) === JSON.stringify(latest.setup)) return original;
   const at = timestamp(options.at ?? new Date(Math.max(Date.now(), Date.parse(original.updatedAt) + 1)).toISOString(), 'Revision time');
   if (Date.parse(at) <= Date.parse(original.updatedAt)) throw new Error('Revision time must follow the previous saved revision.');
   return validateEntry({ ...edited, updatedAt: at, revisions: [...original.revisions, revision(at, edited)] });
 }
 
-function revision(at: string, contents: Pick<JournalEntry, 'hypothesis' | 'plan' | 'outcome'>): JournalRevision {
-  return { at, hypothesis: contents.hypothesis, plan: contents.plan, outcome: contents.outcome };
+function revision(at: string, contents: Pick<JournalEntry, 'hypothesis' | 'plan' | 'outcome' | 'setup'>): JournalRevision {
+  return { at, hypothesis: contents.hypothesis, plan: contents.plan, outcome: contents.outcome, ...(contents.setup ? { setup: contents.setup } : {}) };
 }
 
 export function validateStore(value: unknown): LensStore {
@@ -280,13 +285,13 @@ function validateRule(value: unknown): WatchRule {
 
 function validateEntry(value: unknown): JournalEntry {
   const obj = record(value, 'Journal entry');
-  keys(obj, ['id', 'instrument', 'createdAt', 'updatedAt', 'eventIds', 'horizonHours', 'method', 'hypothesis', 'plan', 'outcome', 'revisions'], 'Journal entry');
+  keys(obj, ['id', 'instrument', 'createdAt', 'updatedAt', 'eventIds', 'horizonHours', 'method', 'hypothesis', 'plan', 'outcome', 'revisions', 'setup', 'chartRef'], 'Journal entry');
   const createdAt = timestamp(obj.createdAt, 'Journal creation time');
   const updatedAt = timestamp(obj.updatedAt, 'Journal update time');
   const revisions = array(obj.revisions, 100, 'Journal revisions').map(value => {
     const rev = record(value, 'Revision');
-    keys(rev, ['at', 'hypothesis', 'plan', 'outcome'], 'Revision');
-    return { at: timestamp(rev.at, 'Revision time'), hypothesis: text(rev.hypothesis, TEXT_LIMIT, 'Hypothesis'), plan: text(rev.plan, TEXT_LIMIT, 'Plan'), outcome: text(rev.outcome, TEXT_LIMIT, 'Outcome') };
+    keys(rev, ['at', 'hypothesis', 'plan', 'outcome', 'setup'], 'Revision');
+    return { at: timestamp(rev.at, 'Revision time'), hypothesis: text(rev.hypothesis, TEXT_LIMIT, 'Hypothesis'), plan: text(rev.plan, TEXT_LIMIT, 'Plan'), outcome: text(rev.outcome, TEXT_LIMIT, 'Outcome'), ...(rev.setup === undefined ? {} : { setup: validateSetup(rev.setup) }) };
   });
   if (revisions.length === 0 || revisions[0].at !== createdAt || revisions.at(-1)!.at !== updatedAt) throw new Error('Journal revisions must preserve the original creation and latest update timestamps.');
   if (revisions.some((rev, i) => i > 0 && Date.parse(rev.at) <= Date.parse(revisions[i - 1].at))) throw new Error('Journal revisions must be ordered with strictly increasing timestamps.');
@@ -294,6 +299,8 @@ function validateEntry(value: unknown): JournalEntry {
   const plan = text(obj.plan, TEXT_LIMIT, 'Plan');
   const outcome = text(obj.outcome, TEXT_LIMIT, 'Outcome');
   const latest = revisions.at(-1)!;
+  const setup = obj.setup === undefined ? undefined : validateSetup(obj.setup);
+  if (JSON.stringify(setup) !== JSON.stringify(latest.setup)) throw new Error('The latest setup must match its latest revision.');
   if (latest.hypothesis !== hypothesis || latest.plan !== plan || latest.outcome !== outcome) throw new Error('The latest journal text must match its latest revision.');
   const eventIds = array(obj.eventIds, 50, 'Linked event IDs').map(value => identifier(value, 'Event ID'));
   unique(eventIds, 'Linked event IDs');
@@ -302,8 +309,42 @@ function validateEntry(value: unknown): JournalEntry {
     instrument: oneOf(obj.instrument, ['BTC-USD', 'ETH-USD'], 'Instrument') as JournalEntry['instrument'],
     createdAt, updatedAt, eventIds, horizonHours: finite(obj.horizonHours, 0, 8_760, 'Journal horizon'),
     method: oneOf(obj.method, ['TA only', 'TA + astrology'], 'Journal method') as JournalEntry['method'],
-    hypothesis, plan, outcome, revisions,
+    hypothesis, plan, outcome, revisions, ...(obj.chartRef === undefined ? {} : { chartRef: validateChartRef(obj.chartRef) }), ...(setup ? { setup } : {}),
   };
+}
+
+function validateSetup(value: unknown): SetupPlan {
+  const obj = record(value, 'Setup');
+  keys(obj, ['interval', 'technicalSetup', 'confirmation', 'invalidation', 'risk', 'window'], 'Setup');
+  const raw = record(obj.risk, 'Risk');
+  keys(raw, ['equity', 'riskMode', 'riskValue', 'entry', 'stop', 'target', 'feeBps', 'slippageBps'], 'Risk');
+  const risk: SetupPlan['risk'] = { equity: finite(raw.equity, Number.MIN_VALUE, 1e12, 'Equity'), riskMode: oneOf(raw.riskMode, ['percent', 'usd'], 'Risk mode') as 'percent' | 'usd', riskValue: finite(raw.riskValue, Number.MIN_VALUE, 1e12, 'Risk value'), entry: finite(raw.entry, Number.MIN_VALUE, 1e12, 'Entry'), stop: finite(raw.stop, Number.MIN_VALUE, 1e12, 'Stop'), feeBps: finite(raw.feeBps, 0, 1000, 'Fees'), slippageBps: finite(raw.slippageBps, 0, 1000, 'Slippage'), ...(raw.target === undefined ? {} : { target: finite(raw.target, Number.MIN_VALUE, 1e12, 'Target') }) };
+  estimateRisk(risk);
+  const setup: SetupPlan = { interval: oneOf(obj.interval, ['1h', '1d'], 'Timeframe') as SetupPlan['interval'], technicalSetup: text(obj.technicalSetup, TEXT_LIMIT, 'Technical setup'), confirmation: text(obj.confirmation, TEXT_LIMIT, 'Confirmation'), invalidation: text(obj.invalidation, TEXT_LIMIT, 'Invalidation'), risk };
+  if (obj.window !== undefined) {
+    const window = record(obj.window, 'Setup window'); keys(window, ['kind', 'id', 'sourceId', 'sourceUpdatedAt', 'from', 'to'], 'Setup window');
+    const kind = oneOf(window.kind, ['shared', 'personal', 'economic'], 'Window kind') as NonNullable<SetupPlan['window']>['kind'];
+    const from = timestamp(window.from, 'Window start'), to = timestamp(window.to, 'Window end');
+    if (from > to) throw new Error('Window end must follow start.');
+    if (kind === 'personal' && window.sourceId === undefined) throw new Error('Personal context requires its canonical source reference.');
+    if (kind !== 'personal' && window.sourceId !== undefined) throw new Error('Public context cannot contain a chart reference.');
+    setup.window = { kind, id: identifier(window.id, 'Window ID'), from, to, ...(window.sourceId === undefined ? {} : { sourceId: identifier(window.sourceId, 'Chart reference'), ...(window.sourceUpdatedAt === undefined ? {} : { sourceUpdatedAt: timestamp(window.sourceUpdatedAt, 'Chart revision') }) }) };
+  }
+  return setup;
+}
+
+/** Remove derived personal context on edit/deletion/access changes; authored text stays. */
+function validateChartRef(value: unknown): { id: string; updatedAt: string } {
+  const obj = record(value, 'Chart reference'); keys(obj, ['id', 'updatedAt'], 'Chart reference');
+  return { id: identifier(obj.id, 'Chart ID'), updatedAt: timestamp(obj.updatedAt, 'Chart revision') };
+}
+export function clearPersonalContext(store: LensStore, validSourceId: string | null, updatedAt?: string): LensStore {
+  const valid = (id?: string, revision?: string) => Boolean(validSourceId && id === validSourceId && (updatedAt === undefined || revision === updatedAt));
+  const scrub = (setup?: SetupPlan) => setup?.window?.kind === 'personal' && !valid(setup.window.sourceId, setup.window.sourceUpdatedAt) ? { ...setup, window: undefined } : setup;
+  return { ...store, entries: store.entries.map(entry => {
+    const admitted = valid(entry.chartRef?.id, entry.chartRef?.updatedAt) || valid(entry.setup?.window?.sourceId, entry.setup?.window?.sourceUpdatedAt);
+    return { ...entry, ...(entry.chartRef && !admitted ? { chartRef: undefined } : {}), eventIds: entry.eventIds.filter(id => !id.startsWith('personal:') || admitted), ...(entry.setup ? { setup: scrub(entry.setup) } : {}), revisions: entry.revisions.map(rev => ({ ...rev, ...(rev.setup ? { setup: scrub(rev.setup) } : {}) })) };
+  }) };
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

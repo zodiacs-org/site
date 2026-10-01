@@ -32,6 +32,8 @@ export async function buildLensEvents(repo = root) {
     const text = await readFile(resolve(dataDir, name), 'utf8');
     sources.set(name, { value: JSON.parse(text), sha256: sha(text) });
   }
+  const moonText = await readFile(resolve(dataDir, 'aura-moon-ingresses.json'), 'utf8').catch(() => null);
+  if (moonText) sources.set('aura-moon-ingresses.json', { value: JSON.parse(moonText), sha256: sha(moonText) });
   const packageData = JSON.parse(await readFile(resolve(repo, 'package.json'), 'utf8'));
   const pinned = packageData.dependencies['@zodiacs/engine'];
   const engineVersion = pinned.match(/zodiacs-engine-(.+)\.tgz$/)?.[1];
@@ -76,6 +78,11 @@ export async function buildLensEvents(repo = root) {
   for (const entry of sources.get('eclipses.json').value.eclipses) {
     add('eclipses.json', 'eclipse', entry.type, entry.peak, ['Moon', 'Sun'], `${titleCase(entry.kind)} ${entry.type} eclipse`, { sign: entry.sign });
   }
+  const moon = sources.get('aura-moon-ingresses.json')?.value;
+  if (moon) {
+    if (!Array.isArray(moon.ingresses) || !Number.isFinite(Date.parse(moon.from)) || !Number.isFinite(Date.parse(moon.to))) throw new Error('Moon ingress coverage is invalid.');
+    for (const entry of moon.ingresses) add('aura-moon-ingresses.json', 'ingress', 'ingress', entry.at, ['Moon'], `Moon enters ${titleCase(entry.sign)}`, { sign: entry.sign });
+  }
   for (const entry of sky.retrogrades) {
     // An opening occupancy boundary is not a station or an exact cycle start.
     if (entry.from === sky.from) continue;
@@ -102,7 +109,7 @@ export async function buildLensEvents(repo = root) {
     limitations: [
       'Committed catalog covers January 2026 through December 2030; it is not a long-term historical research dataset.',
       'Major exact aspects are limited to fast–slow and slow–slow planet pairs in the monthly catalogs; fast–fast and Moon aspects are absent.',
-      'Sign ingresses cover Sun through Pluto; Moon ingresses are absent.',
+      moon ? `Sign ingresses cover Sun through Pluto across the catalog; Moon ingresses are supported only from ${moon.from.slice(0, 10)} to ${moon.to.slice(0, 10)} exclusive, using the committed exact Moon ingress catalog.` : 'Sign ingresses cover Sun through Pluto; Moon ingress source is unavailable.',
       'Opening retrograde periods clipped at the January 2026 boundary are omitted because their true start is outside coverage.',
       'Eclipses and their lunations are linked observations of the same event, not independent occurrences.',
       'Traditional interpretations do not establish price direction, probability, or a trading edge.',

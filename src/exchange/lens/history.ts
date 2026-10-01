@@ -11,6 +11,8 @@ export interface Occurrence {
   beforeReturnPct: number | null;
   returnPct: number | null;
   rangePct: number | null;
+  volatilityPct: number | null;
+  reversal: boolean | null;
   missingTimes: number[];
   overlappingIds: string[];
   linkedIds: string[];
@@ -27,6 +29,8 @@ export interface OccurrenceSummary {
   meanReturnPct: number | null;
   medianReturnPct: number | null;
   meanRangePct: number | null;
+  meanVolatilityPct: number | null;
+  reversalFraction: number | null;
   positiveFraction: number | null;
   returnDistribution: number[];
   convention: string;
@@ -39,10 +43,17 @@ export interface OccurrenceOptions {
   now?: number;
   /** Additional events to flag; aggregate matching is never broadened by these. */
   contextEvents?: SkyEvent[];
+  /** Event-source coverage for establishing absence; Unix seconds. */
+  controlCoverage?: { start: number; end: number };
 }
 
 /** Exact family/subtype/body pair/aspect stream; sign is also preserved for ingresses. */
 export function eventMatchKey(event: SkyEvent): string {
+  if (event.personal) return JSON.stringify([
+    'personal', event.personal.sourceId, event.personal.sourceUpdatedAt ?? '',
+    event.personal.window.transitBody, event.personal.window.natalPoint,
+    event.aspectType ?? '', event.personal.orb,
+  ]);
   return JSON.stringify([event.family, event.subtype, [...event.bodies].sort(), event.aspectType ?? '', event.family === 'ingress' ? event.sign ?? '' : '']);
 }
 
@@ -99,7 +110,7 @@ export function analyzeOccurrences(events: SkyEvent[], candles: Candle[], option
     const pending = windowEnd > now || unfinished;
     const status = pending ? 'pending' : missingTimes.length ? 'incomplete' : 'complete';
     const observation: Occurrence = { event, status, reason: pending ? 'Outcome window has not finalized.' : missingTimes.length ? 'Required UTC candles are missing.' : null,
-      anchor, windowStart, windowEnd, beforeReturnPct: null, returnPct: null, rangePct: null, missingTimes, overlappingIds: [], linkedIds: event.linkedIds ?? [] };
+      anchor, windowStart, windowEnd, beforeReturnPct: null, returnPct: null, rangePct: null, volatilityPct: null, reversal: null, missingTimes, overlappingIds: [], linkedIds: event.linkedIds ?? [] };
     if (status === 'complete') {
       const baseline = byTime.get(anchor - step)!.close;
       const past = byTime.get(windowStart - step)!.close;
@@ -108,6 +119,8 @@ export function analyzeOccurrences(events: SkyEvent[], candles: Candle[], option
       observation.beforeReturnPct = pct(baseline, past);
       observation.returnPct = pct(outcome, baseline);
       observation.rangePct = (Math.max(...after.map((candle) => candle.high)) - Math.min(...after.map((candle) => candle.low))) / baseline * 100;
+      observation.volatilityPct = Math.sqrt(after.reduce((sum, candle, index) => sum + Math.log(candle.close / (index ? after[index - 1].close : baseline)) ** 2, 0)) * 100;
+      observation.reversal = observation.beforeReturnPct !== 0 && observation.returnPct !== 0 ? Math.sign(observation.beforeReturnPct) !== Math.sign(observation.returnPct) : null;
     }
     return observation;
   });
@@ -127,8 +140,33 @@ export function analyzeOccurrences(events: SkyEvent[], candles: Candle[], option
     incomplete: occurrences.filter((row) => row.status === 'incomplete').length,
     independent: completed.filter((row) => row.overlappingIds.length === 0 && row.linkedIds.length === 0).length,
     meanReturnPct: mean(returns), medianReturnPct: median(returns), meanRangePct: mean(completed.map((row) => row.rangePct!)),
+    meanVolatilityPct: mean(completed.map(row => row.volatilityPct!)), reversalFraction: mean(completed.flatMap(row => row.reversal === null ? [] : [row.reversal ? 1 : 0])),
     positiveFraction: returns.length ? returns.filter((value) => value > 0).length / returns.length : null,
     returnDistribution: returns,
     convention: `UTC ${options.interval} bars; baseline is the finalized close before the bar containing the exact event. Before window: ${before / 3600} hours; after window: ${horizon / 3600} hours. Aggregates include complete windows only. Overlapping and linked observations are flagged; aggregate rows are not independent samples.`,
   };
+}
+
+export interface MatchedComparison { pairedEvents: Occurrence[]; eventMeanReturnPct: number | null; eventMeanRangePct: number | null; eventMeanVolatilityPct: number | null; eventReversalFraction: number | null; observations: Occurrence[]; matchedEvents: number; unmatchedEvents: number; uniqueControls: number; meanReturnPct: number | null; meanRangePct: number | null; meanVolatilityPct: number | null; reversalFraction: number | null; returnDistribution: number[]; convention: string }
+/** Deterministic descriptive matching, without optimization or future-filled candles. */
+export function matchedNonEventObservations(summary: OccurrenceSummary, candles: Candle[], options: OccurrenceOptions): MatchedComparison {
+  const horizon = (options.horizonHours ?? 24) * 3600, before = (options.beforeHours ?? options.horizonHours ?? 24) * 3600;
+  const step = options.interval === '1h' ? 3600 : 86400;
+  const qualifying = summary.occurrences;
+  const exclusions = options.contextEvents ?? qualifying.map(row => row.event);
+  const observations: Occurrence[] = []; const pairedEvents: Occurrence[] = []; let matchedEvents = 0;
+  for (const row of qualifying.filter(row => row.status === 'complete')) {
+    const candidates = Array.from({ length: 8 }, (_, i) => (i + 1) * 7 * 86400).flatMap(offset => [-offset, offset]);
+    let chosen: Occurrence | undefined;
+    for (const offset of candidates) {
+      const anchor = row.anchor + offset;
+      if (options.controlCoverage && (anchor - before - step < options.controlCoverage.start || anchor + horizon > options.controlCoverage.end)) continue;
+      if (exclusions.some(event => { const other = Math.floor(Date.parse(event.at) / 1000 / step) * step; return other - before < anchor + horizon && other + horizon > anchor - before; })) continue;
+      const event: SkyEvent = { ...row.event, id: `control:${row.event.id}:${anchor}`, at: new Date(anchor * 1000).toISOString(), end: undefined, personal: undefined, economic: undefined, linkedIds: [] };
+      const observation = analyzeOccurrences([event], candles, { ...options, contextEvents: [] }).occurrences[0];
+      if (observation.status === 'complete') { chosen = observation; break; }
+    }
+    if (chosen) { observations.push(chosen); pairedEvents.push(row); matchedEvents++; }
+  }
+  return { pairedEvents, eventMeanReturnPct: mean(pairedEvents.map(row => row.returnPct!)), eventMeanRangePct: mean(pairedEvents.map(row => row.rangePct!)), eventMeanVolatilityPct: mean(pairedEvents.map(row => row.volatilityPct!)), eventReversalFraction: mean(pairedEvents.flatMap(row => row.reversal === null ? [] : [row.reversal ? 1 : 0])), observations, matchedEvents, unmatchedEvents: summary.complete - matchedEvents, uniqueControls: new Set(observations.map(row => row.anchor)).size, meanReturnPct: mean(observations.map(row => row.returnPct!)), meanRangePct: mean(observations.map(row => row.rangePct!)), meanVolatilityPct: mean(observations.map(row => row.volatilityPct!)), reversalFraction: mean(observations.flatMap(row => row.reversal === null ? [] : [row.reversal ? 1 : 0])), returnDistribution: observations.map(row => row.returnPct!), convention: 'For each completed event, choose the nearest eligible same-weekday and UTC bucket-time window, within ±56 days in 7-day steps; earlier wins equal distance. Require declared event-source coverage for the whole comparison window and identical complete before/after candles and no overlap with any loaded comparison-context event window. No price, direction or volatility matching is tuned. Controls may be reused and are counted separately from unique controls; neither set is independent. Unmatched, pending and incomplete event rows remain visible. Realized window volatility is 100 × sqrt(sum of squared close-to-close log returns), unannualized. Reversal means opposite nonzero before/after return signs; it is distinct from return direction and volatility.' };
 }

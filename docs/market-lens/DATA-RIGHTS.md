@@ -44,14 +44,16 @@ intervals, with venue attribution and no order execution.
 
 Our server retrieves bounded histories (at most 900 requested buckets per
 interactive request), caches briefly, and sends candles to an interactive
-chart and accessible browser table. Users can inspect past event windows and
-save notes locally. We also run a private paper study; raw responses stay
+chart and accessible browser table. Users can inspect past event windows, keep private setups and risk estimates,
+and compare shared sky, browser-calculated personal transits and official
+economic schedules. Personal chart inputs and calculations stay on device;
+no personal data is sent to the market provider. We also run a private paper study; raw responses stay
 outside the public repository. Published study results would be aggregate
 strategy metrics, not a downloadable raw dataset.
 
 Please confirm in writing the permission and complete price for:
 
-1. Public browser display of hourly/daily OHLCV and derived SMA, EMA and RSI.
+1. Public browser display of hourly/daily OHLCV, derived SMA/EMA/RSI, event-window return/range/volatility statistics and matched non-event comparisons.
 2. Server caching and candle delivery to browsers, including any restriction
    on JSON endpoints or automated extraction.
 3. Private historical research storage, paper-study use and publication of

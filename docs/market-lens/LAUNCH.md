@@ -1,5 +1,41 @@
 # Market Lens launch checkpoint
 
+## Revised extension — 2026-10-01
+
+All seven revised checkpoints are implemented. See
+[REVISED-CHECKPOINTS.md](REVISED-CHECKPOINTS.md) for the chart lifecycle,
+transit/house conventions, private planner, official schedules, descriptive
+comparisons, optional score and their verification/limitations.
+
+The final production build passes the unchanged route/chunk budgets: Lens
+26.9 KB gzip / 32 KB, chart 50.1 KB / 60 KB, engine closure 31.4 KB / 31.6 KB.
+Astro check reports 0 errors, 0 warnings and 18 hints. All 18 current Phase 1
+visual captures pass. Full suite: 6,469 passed, 4 skipped, 0 failed (512 passing
+files, one skipped file). Built production UI passes all 30 browser checks
+(12 original, 18 revised), including dense calendars, both supported assets /
+intervals, private source lifecycle, risk revisions and cross-tab conflicts.
+Final evidence is in revised-acceptance.json; price-free synthetic calendar
+and setup screenshots are in screenshots/.
+
+The official schedule snapshot has 38 verified events, seven-day freshness,
+2026 coverage and an explicit unavailable Fed April period. Prices, economic
+releases and traditional scores provide different kinds of context; economic
+actuals/consensus and public market forecasts remain unavailable.
+
+The paper report at 2026-10-01T15:20:25.371Z still reports
+`awaiting-first-execution`: one recorded future decision, zero due/completed
+days or settled trades. Protocol hash remains
+`c9185d2a42d8fcbb2ba2a9358340406e03367f7b486ef773e3727fd513ad0ca5`.
+New personal hypotheses are not inserted into this frozen protocol.
+
+No new deployment, purchase or provider message occurred. The protected preview
+below contains the initial scope. Hosted prices remain disabled, the secure
+bypass value remains absent, and durable paper scheduling/storage/witnessing
+remains external work. The provider request now includes derived historical
+metrics and comparisons. Existing main-only deployment cost guards are intact.
+
+## Initial launch evidence
+
 Verified locally 2026-10-01. Scope: read-only research workspace, retrospective
 report and prospective paper runner. No public prediction or order execution.
 

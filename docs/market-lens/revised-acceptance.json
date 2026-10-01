@@ -1,0 +1,143 @@
+{
+  "schema": "zodiacs.market-lens.revised-acceptance.v1",
+  "verifiedAt": "2026-10-01T16:03:02.013Z",
+  "startingCommit": "95356b42d37a280ed989056288844d72f868108f",
+  "sourceSha256": "efee63b3c0406a493444b779f292d52eeaf490691a7caadfb89313c54dc71ac0",
+  "sourceFiles": 244,
+  "productionBuild": {
+    "passed": true,
+    "distIntegrity": true,
+    "budgetsRaised": false,
+    "lensGzipKB": 26.9,
+    "lensLimitKB": 32,
+    "largestChunkGzipKB": 50.1,
+    "chunkLimitKB": 60,
+    "engineClosureGzipKB": 31.4,
+    "engineLimitKB": 31.6,
+    "engineIsolation": true
+  },
+  "staticCheck": {
+    "errors": 0,
+    "warnings": 0,
+    "hints": 18
+  },
+  "fullTests": {
+    "passed": 6469,
+    "skipped": 4,
+    "failed": 0,
+    "passingFiles": 512,
+    "skippedFiles": 1
+  },
+  "phase1": {
+    "captures": 18,
+    "passed": 18,
+    "manifest": "../acceptance/phase1/screenshots/manifest.json",
+    "templateSourceSha256": "628132a1d87c3482bd2aad07560b3fcde4756a4d89cce9b818a32753d5fc9ff8"
+  },
+  "browser": {
+    "kind": "Built production assets with the real same-origin local Coinbase adapter; not deployed Vercel acceptance",
+    "legacy": {
+      "verifiedAt": "2026-10-01T15:54:56.665Z",
+      "checks": [
+        "Real BTC/ETH hourly and daily API data and chart selection",
+        "Fractional timezone and accessible indicator table",
+        "All calendar views, event selection, exact ICS export",
+        "Rule create, pause/resume without version reset, reload and deletion",
+        "Private journal save/revision/export/delete/import/reload and recovery after invalid import",
+        "Stale-tab conflicts preserve entries and drafts; deleted entries cannot silently reappear; drafts survive view changes",
+        "Real expanded historical data and complete/pending/incomplete occurrence rows",
+        "Provider outage retains previous prices and working calendar/journal",
+        "390px mobile all five views, default agenda and readable month-day alternative",
+        "No private note payload transmission, third-party analytics or page exceptions",
+        "Blocked private storage leaves public workspace usable",
+        "Instrument switches cannot evaluate ETH rules against preceding BTC candles"
+      ],
+      "errors": []
+    },
+    "revised": {
+      "at": "2026-10-01T15:55:37.671Z",
+      "checks": [
+        "Explicit own chart wins over newest other chart; actual Placidus houses, personal windows and separated event detail",
+        "Cost-aware risk, private setup creation, revisions and original risk retained in journal",
+        "Optional fixed interpretive score identical across four calendar views",
+        "Dense personal month previews stay bounded and expose every event in full day view",
+        "Separate official economics, timezone conversion and preparation brief",
+        "Cross-tab setup revision refuses a stale draft and retains it for review",
+        "Cross-tab source edits invalidate personal calculations and chart revision associations",
+        "Stale Moon worker completion cannot restore deleted-source timing",
+        "Own-chart deletion clears derived timing and journal associations while preserving authored notes",
+        "Unresolved multiple charts require the existing explicit chooser",
+        "Simulated v2 revocation and re-grant use the shared fail-closed access guard",
+        "Unknown time excludes Moon/angles/houses; mobile agenda and width verified",
+        "Ambiguous-clock flag excludes natal Moon, angles and houses",
+        "Existing full-chart fragment handoff is consumed privately; keyboard calendar navigation works",
+        "No chart has a usable shared calculator path",
+        "Missing birthplace opens shared editor with known date and time preserved",
+        "Existing place-less date/unknown-time handoff asks only for missing details through shared editor",
+        "No private birth or journal data in outbound API URLs/payloads"
+      ],
+      "errors": [],
+      "requestCount": 1238,
+      "privateApiLeakChecks": 9,
+      "syntheticChart": true
+    }
+  },
+  "screenshots": [
+    {
+      "path": "screenshots/calendar-month-sky-only.png",
+      "sha256": "f0b406c6695854a79034cd434ecc80140d62ca62d10a732ecd599504d09c9e1e",
+      "syntheticOnly": true,
+      "vendorPrices": false
+    },
+    {
+      "path": "screenshots/setup-synthetic-only.png",
+      "sha256": "28a4d66063c1a2864e998e4e719f1922f362772f49a74dbdd67f4ddbf77a957e",
+      "syntheticOnly": true,
+      "vendorPrices": false
+    }
+  ],
+  "economics": {
+    "events": 38,
+    "verifiedAt": "2026-10-01T13:17:47.652Z",
+    "coverage": {
+      "start": "2026-01-01",
+      "endExclusive": "2027-01-01"
+    },
+    "staleAfterDays": 7,
+    "unavailable": [
+      {
+        "provider": "fed",
+        "period": "2026-04",
+        "sourceUrl": "https://www.federalreserve.gov/newsevents/2026-april.htm",
+        "reason": "Official source retrieval failed; exact schedule not inferred."
+      }
+    ]
+  },
+  "paperStudy": {
+    "generatedAt": "2026-10-01T15:20:25.371Z",
+    "protocolHash": "c9185d2a42d8fcbb2ba2a9358340406e03367f7b486ef773e3727fd513ad0ca5",
+    "status": "awaiting-first-execution",
+    "recordedDecisions": 1,
+    "futureDecisions": 1,
+    "dueDays": 0,
+    "matchedDays": 0,
+    "durableSchedulerConfigured": false,
+    "independentWitnessConfigured": false
+  },
+  "launch": {
+    "hostedPricesEnabled": false,
+    "displayGrantHeld": false,
+    "providerRequestSent": false,
+    "paidServicePurchased": false,
+    "revisedScopeDeployed": false,
+    "previewBypassConfigured": false,
+    "publicMarketForecastsEnabled": false
+  },
+  "logsSha256": {
+    "build": "1e056c991d9b14fc2f8101798c44b5015f1edb101faee21792309a619a17374a",
+    "check": "dc4310c44a8d1765bc2e296d740276c251c661c91ad53f95a6d94caef1522ce2",
+    "tests": "37baf94b08bed526a97ad155bdd05d7aeac3f02163a29fea63cb5cb188767747",
+    "phase1": "2d90248e538fd64da0ade7e620dc595b10588a01f4622d170ed74d4ae0d7b548",
+    "production-browser": "53455224103f4687784ac7fff5086052a2b19eb18630c1c9d8472e6304b452c7"
+  }
+}

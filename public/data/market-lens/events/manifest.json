@@ -79,7 +79,7 @@
   "limitations": [
     "Committed catalog covers January 2026 through December 2030; it is not a long-term historical research dataset.",
     "Major exact aspects are limited to fast–slow and slow–slow planet pairs in the monthly catalogs; fast–fast and Moon aspects are absent.",
-    "Sign ingresses cover Sun through Pluto; Moon ingresses are absent.",
+    "Sign ingresses cover Sun through Pluto across the catalog; Moon ingresses are supported only from 2026-01-01 to 2029-01-01 exclusive, using the committed exact Moon ingress catalog.",
     "Opening retrograde periods clipped at the January 2026 boundary are omitted because their true start is outside coverage.",
     "Eclipses and their lunations are linked observations of the same event, not independent occurrences.",
     "Traditional interpretations do not establish price direction, probability, or a trading edge."

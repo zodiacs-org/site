@@ -1,5 +1,12 @@
 # Market Lens implementation checkpoints
 
+The revised seven-checkpoint extension is documented in
+[REVISED-CHECKPOINTS.md](REVISED-CHECKPOINTS.md). It adds canonical own-chart
+reuse, private personal timing, actual-house context, spot-risk setups,
+official economic schedules, matched historical observations and an optional
+interpretive outlook. The sections below retain the initial implementation
+record; current validation and deployment limits are in the revised record.
+
 Implemented 2026-10-01 in the site checkout, starting from
 `450f0fd948d86d82c416bcbd51b3dace5196097e`. The SDK, engine, and native app
 checkouts were not modified. The site keeps its pinned rc.15 engine archive.
@@ -21,9 +28,10 @@ evidence are recorded in LAUNCH.md. No provider subscription was purchased.
   public caching, and visibly stale fallback for the identical requested range.
 - Independently verified SMA20/50, SMA-seeded EMA20 and Wilder RSI14.
   Finalized candles only; gaps reset warm-up.
-- 1,323 source-backed sky events, 60 UTC month shards for 2026–2030, stable
+- 1,804 source-backed sky events, 60 UTC month shards for 2026–2030, stable
   IDs, source hashes, engine versions, conventions, linked eclipse/lunation
-  records and explicit limits. No Moon ingresses or unsupported aspect pairs.
+  records and explicit limits. Moon ingresses use the existing supported
+  2026–2028 catalog; unsupported shared aspect pairs remain excluded.
 - Live probes passed for both assets and intervals. The event drift check is
   included in the normal prebuild lifecycle.
 
@@ -125,6 +133,10 @@ npm run data:market-lens:check
 OUT_DIR=/tmp/lens-browser npm run test:market-lens:browser
 # Checks built production UI with the real local API behind a same-origin proxy.
 OUT_DIR=/tmp/lens-production node tests/market-lens-preview-drive.mjs
+# Personal calendar, risk, access and cross-tab acceptance against development.
+OUT_DIR=/tmp/lens-revised node tests/market-lens-revised-drive.mjs
+# Refresh official schedules manually; inspect changed sources before committing.
+python3 scripts/update-market-lens-economics.py --year 2026
 ```
 
 The dev adapter exercises the same public handler as production. Astro's static

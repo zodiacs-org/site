@@ -37,6 +37,7 @@ const saveNote = async (p, hypothesis, plan = 'Wait for a finalized candle; reco
 };
 try {
   await ready(page);
+  await page.getByLabel('Economics', { exact: true }).uncheck();
   assert.match(await page.locator('.lens-market-summary').innerText(), /Coinbase Exchange/);
   assert.equal(await page.getByLabel('Display timezone').inputValue(), 'America/New_York');
   for (const instrument of ['BTC-USD', 'ETH-USD']) {
@@ -133,10 +134,11 @@ try {
   const second = await context.newPage();
   await ready(second);
   await tab(second, 'journal');
+  await second.getByTestId('journal-hypothesis').fill('Second tab unsaved observation.');
+  await second.getByTestId('journal-plan').fill('Wait for a finalized candle; record my observation.');
   await saveNote(page, 'First tab saved observation.');
   await page.waitForFunction(() => document.querySelectorAll('[data-testid="journal-entry"]').length === 2);
-  await saveNote(second, 'Second tab unsaved observation.');
-  await second.getByRole('alert').filter({ hasText: /another tab/i }).waitFor();
+  await second.waitForFunction(() => document.querySelectorAll('[data-testid="journal-entry"]').length === 2);
   assert.equal(await second.getByTestId('journal-hypothesis').inputValue(), 'Second tab unsaved observation.');
   assert.equal((await store(second)).entries.length, 2);
   await second.getByTestId('journal-save').click();
@@ -213,6 +215,7 @@ try {
   await blockedPage.getByRole('alert').filter({ hasText: /storage is unavailable/i }).waitFor();
   assert.equal(await blockedPage.getByTestId('journal-save').isDisabled(), true);
   await tab(blockedPage, 'calendar');
+  await blockedPage.locator('.lens-calendar-day').first().waitFor();
   assert.ok(await blockedPage.locator('.lens-calendar-day').count() > 0);
   await blocked.close();
   checks.push('Blocked private storage leaves public workspace usable');

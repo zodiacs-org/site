@@ -41,8 +41,11 @@ export interface MarketDataset {
 }
 
 export interface SkyEvent {
+  /** Browser-only derived context. Public catalog loaders never supply this. */
+  personal?: import('./personal').PersonalContact;
+  economic?: import('./economics').EconomicEvent;
   id: string;
-  family: EventFamily;
+  family: EventFamily | 'economic';
   subtype: string;
   title: string;
   at: string;
@@ -98,6 +101,7 @@ export interface JournalRevision {
   hypothesis: string;
   plan: string;
   outcome: string;
+  setup?: SetupPlan;
 }
 export interface JournalEntry {
   id: string;
@@ -111,6 +115,17 @@ export interface JournalEntry {
   plan: string;
   outcome: string;
   revisions: JournalRevision[];
+  chartRef?: { id: string; updatedAt: string };
+  setup?: SetupPlan;
+}
+
+export interface SetupPlan {
+  interval: Interval;
+  technicalSetup: string;
+  confirmation: string;
+  invalidation: string;
+  risk: { equity: number; riskMode: 'percent' | 'usd'; riskValue: number; entry: number; stop: number; target?: number; feeBps: number; slippageBps: number };
+  window?: { kind: 'shared' | 'personal' | 'economic'; id: string; sourceId?: string; sourceUpdatedAt?: string; from: string; to: string };
 }
 
 export interface IndicatorPoint { time: number; value: number }

@@ -25,12 +25,14 @@ const proxy = createServer((req, res) => {
 try {
   await new Promise(resolve => proxy.listen(0, '127.0.0.1', resolve));
   const address = proxy.address();
-  const child = spawn(process.execPath, ['tests/market-lens-drive.mjs'], {
-    cwd: process.cwd(), stdio: 'inherit',
-    env: { ...process.env, BASE_URL: `http://127.0.0.1:${address.port}`, OUT_DIR: process.env.OUT_DIR ?? '/tmp/market-lens-production-browser' },
-  });
-  const code = await new Promise((resolve, reject) => { child.on('error', reject); child.on('exit', resolve); });
-  if (code !== 0) process.exitCode = code ?? 1;
+  for (const driver of ['tests/market-lens-drive.mjs', 'tests/market-lens-revised-drive.mjs']) {
+    const child = spawn(process.execPath, [driver], {
+      cwd: process.cwd(), stdio: 'inherit',
+      env: { ...process.env, BASE_URL: `http://127.0.0.1:${address.port}`, OUT_DIR: `${process.env.OUT_DIR ?? '/tmp/market-lens-production-browser'}/${driver.includes('revised') ? 'revised' : 'legacy'}` },
+    });
+    const code = await new Promise((resolve, reject) => { child.on('error', reject); child.on('exit', resolve); });
+    if (code !== 0) { process.exitCode = code ?? 1; break; }
+  }
 } finally {
   await new Promise(resolve => proxy.close(resolve));
   await preview.stop();

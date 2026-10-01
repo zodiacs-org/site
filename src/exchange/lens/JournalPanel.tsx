@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'preact/hooks';
 import type { InstrumentId, JournalEntry, SkyEvent } from './types';
+import { estimateRisk } from './risk';
 import { formatEventDate, formatEventTime } from './events';
 
 type JournalInput = {
   id?: string;
+  baseUpdatedAt?: string;
   instrument: InstrumentId;
   hypothesis: string;
   plan: string;
@@ -23,15 +25,17 @@ export interface JournalPanelProps {
   onExport: () => void;
   onImport: (file: File) => Promise<void>;
   storageError: string | null;
+  personalSourceKey: string;
 }
 
 function errorMessage(error: unknown): string {
   return error instanceof Error ? error.message : 'The journal could not be updated. Please try again.';
 }
 
-export default function JournalPanel({ entries, instrument, selectedEvent, timeZone, onSave, onDelete, onExport, onImport, storageError }: JournalPanelProps) {
+export default function JournalPanel({ entries, instrument, selectedEvent, timeZone, onSave, onDelete, onExport, onImport, storageError, personalSourceKey }: JournalPanelProps) {
   const timestamp = (value: string) => `${formatEventDate(value, timeZone)} · ${formatEventTime(value, timeZone)}`;
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [baseUpdatedAt, setBaseUpdatedAt] = useState<string | undefined>();
   const [hypothesis, setHypothesis] = useState('');
   const [plan, setPlan] = useState('');
   const [outcome, setOutcome] = useState('');
@@ -44,6 +48,7 @@ export default function JournalPanel({ entries, instrument, selectedEvent, timeZ
 
   function resetDraft() {
     setEditingId(null);
+    setBaseUpdatedAt(undefined);
     setHypothesis('');
     setPlan('');
     setOutcome('');
@@ -57,6 +62,10 @@ export default function JournalPanel({ entries, instrument, selectedEvent, timeZ
     setError(null);
     setMessage('');
   }, [instrument]);
+
+  useEffect(() => {
+    setEventIds(ids => ids.filter(id => !id.startsWith('personal:')));
+  }, [personalSourceKey]);
 
   const visibleEntries = entries.filter(entry => entry.instrument === instrument)
     .slice().sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
@@ -78,6 +87,7 @@ export default function JournalPanel({ entries, instrument, selectedEvent, timeZ
     try {
       await onSave({
         ...(editingId ? { id: editingId } : {}),
+        ...(editingId ? { baseUpdatedAt } : {}),
         instrument,
         hypothesis: hypothesis.trim(),
         plan: plan.trim(),
@@ -98,6 +108,7 @@ export default function JournalPanel({ entries, instrument, selectedEvent, timeZ
 
   function edit(entry: JournalEntry) {
     setEditingId(entry.id);
+    setBaseUpdatedAt(entry.updatedAt);
     setHypothesis(entry.hypothesis);
     setPlan(entry.plan);
     setOutcome(entry.outcome);
@@ -203,6 +214,7 @@ export default function JournalPanel({ entries, instrument, selectedEvent, timeZ
           <p class="lens-muted">Recorded <time dateTime={entry.createdAt}>{timestamp(entry.createdAt)}</time>{entry.updatedAt !== entry.createdAt && <> · Updated <time dateTime={entry.updatedAt}>{timestamp(entry.updatedAt)}</time></>}</p>
           <p><strong>Expectation</strong><br />{entry.hypothesis}</p>
           <p><strong>Plan</strong><br />{entry.plan}</p>
+          {entry.setup && <details><summary>Saved setup / risk context</summary><p>Timeframe {entry.setup.interval} · {entry.setup.technicalSetup}<br />Confirmation: {entry.setup.confirmation}<br />Invalidation: {entry.setup.invalidation}<br />Entry ${entry.setup.risk.entry} · stop ${entry.setup.risk.stop} · target {entry.setup.risk.target ?? 'none'}<br />{estimateRisk(entry.setup.risk).units.toFixed(8)} units · ${estimateRisk(entry.setup.risk).stopLossUSD.toFixed(2)} estimated loss incl. costs · fees {entry.setup.risk.feeBps} bps and slippage {entry.setup.risk.slippageBps} bps per side</p>{entry.setup.window && <p>Associated {entry.setup.window.kind} window · {entry.setup.window.from} to {entry.setup.window.to}</p>}</details>}
           {entry.outcome ? <p><strong>Outcome</strong><br />{entry.outcome}</p> : <p class="lens-muted">Outcome not recorded yet.</p>}
           {entry.eventIds.length > 0 && <details><summary>{entry.eventIds.length} attached sky {entry.eventIds.length === 1 ? 'event' : 'events'}</summary><ul>{entry.eventIds.map(id => <li key={id}>{selectedEvent?.id === id ? selectedEvent.title : id}</li>)}</ul></details>}
           {entry.revisions.length > 1 && <details data-testid="journal-revisions">
@@ -211,6 +223,7 @@ export default function JournalPanel({ entries, instrument, selectedEvent, timeZ
               <p class="lens-muted"><time dateTime={revision.at}>{timestamp(revision.at)}</time></p>
               <p><strong>Expectation</strong><br />{revision.hypothesis}</p>
               <p><strong>Plan</strong><br />{revision.plan}</p>
+              {revision.setup && <p>Saved risk version: entry ${revision.setup.risk.entry} · stop ${revision.setup.risk.stop} · risk {revision.setup.risk.riskValue} {revision.setup.risk.riskMode} · fees {revision.setup.risk.feeBps} / slippage {revision.setup.risk.slippageBps} bps per side. Confirmation: {revision.setup.confirmation}. Invalidation: {revision.setup.invalidation}.</p>}
               {revision.outcome && <p><strong>Outcome</strong><br />{revision.outcome}</p>}
             </div>)}</div>
           </details>}
