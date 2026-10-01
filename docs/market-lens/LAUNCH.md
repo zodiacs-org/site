@@ -17,6 +17,16 @@ intervals, private source lifecycle, risk revisions and cross-tab conflicts.
 Final evidence is in revised-acceptance.json; price-free synthetic calendar
 and setup screenshots are in screenshots/.
 
+CI follow-up: the first hosted Build & Check run stopped at the natal-engine
+discovery assertion in `tests/chart-ownership-drive.mjs`. Its whole-site scan
+counted the separate Lens worker alongside the calculator. Discovery now
+follows the built birth-chart calculator's static/literal dynamic module
+imports and still requires exactly one native calculation in that graph.
+All 17 native browser ownership cases pass against the unchanged built assets.
+A disposable-copy negative control adds a second calculation to the reachable
+entry and confirms that the assertion rejects it. This test-only correction
+does not change engine or product code; hosted CI must rerun on the new commit.
+
 The official schedule snapshot has 38 verified events, seven-day freshness,
 2026 coverage and an explicit unavailable Fed April period. Prices, economic
 releases and traditional scores provide different kinds of context; economic
