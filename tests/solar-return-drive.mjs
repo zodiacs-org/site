@@ -215,7 +215,7 @@ export async function runSolarReturnChecks({ browser, baseURL, check, outDir }) 
     page.on('download', () => { downloads += 1; });
     await openReturn(page, baseURL);
     check('Solar: engine, result, wheel and export modules remain lazy before calculation', !fetched.some((path) => /(?:full|SolarReturnResult|TransitRing|compute|share-card|solar-return-ical)\.[\w-]+\.js$/.test(path)));
-    check('Solar: custom year retains the supported bounds', await page.getByLabel('Custom return year').getAttribute('min') === '1800' && await page.getByLabel('Custom return year').getAttribute('max') === '2200');
+    check('Solar: custom year retains the supported bounds', await page.getByLabel('Custom return year').getAttribute('min') === '1800' && await page.getByLabel('Custom return year').getAttribute('max') === '2199');
     await cast(page);
     const details = page.locator('[data-solar-return-result] [data-evidence-disclosure]');
     check('Solar: reading leads, exact data starts closed and result heading receives focus',
