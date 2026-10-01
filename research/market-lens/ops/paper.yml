@@ -1,0 +1,66 @@
+name: Private Market Lens paper study
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 0,2 * * *'
+  push:
+    branches: [main]
+    paths: ['frozen/**', 'ops/**', '.github/workflows/paper.yml']
+permissions:
+  contents: write
+concurrency:
+  group: market-lens-paper-v1
+  cancel-in-progress: false
+jobs:
+  cycle:
+    if: github.event.repository.private == true
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+      - name: Study window
+        id: window
+        run: |
+          node --input-type=module - <<'JS'
+          import {readFileSync, appendFileSync} from 'node:fs';
+          const m = JSON.parse(readFileSync('frozen/research/market-lens/prospective-manifest.json'));
+          // Give final settlements a recovery week; then cease data acquisition.
+          const active = Date.now() < Date.parse(m.endExclusive) + 7 * 86400000;
+          appendFileSync(process.env.GITHUB_OUTPUT, `active=${active}\n`);
+          JS
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        if: steps.window.outputs.active == 'true'
+        with:
+          node-version: 22.22.2
+          cache: npm
+          cache-dependency-path: frozen/package-lock.json
+      - name: Install the frozen runtime
+        if: steps.window.outputs.active == 'true'
+        working-directory: frozen
+        run: npm ci --omit=dev --ignore-scripts --no-audit --no-fund
+      - name: Record, witness, settle and report
+        if: steps.window.outputs.active == 'true'
+        run: node ops/run-cycle.mjs frozen state
+      - name: Persist private append-only study state
+        if: always() && steps.window.outputs.active == 'true'
+        run: |
+          set -euo pipefail
+          changed=$(git diff --name-only --diff-filter=DM -- state/protocol.json state/decisions state/settlements state/witnesses)
+          if [ -n "$changed" ]; then
+            echo 'Existing immutable receipts changed; refuse persistence.' >&2
+            exit 1
+          fi
+          git add -- state
+          if git diff --cached --quiet; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Persist prospective paper receipts'
+          git push origin HEAD:main
+      - name: Private recovery backup
+        if: always() && steps.window.outputs.active == 'true'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: lens-paper-state-${{ github.run_id }}-${{ github.run_attempt }}
+          path: state/
+          if-no-files-found: error
+          retention-days: 90

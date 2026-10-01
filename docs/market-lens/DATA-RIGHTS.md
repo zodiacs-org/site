@@ -33,7 +33,11 @@ covering the underlying Coinbase Exchange source. Confirm permission before
 buying access. An alternate feed needs its own adapter, source receipts and
 a new prospective protocol if venue/candles change. No X API is needed here.
 
-## Draft provider request — owner sends
+## Provider request
+
+Submitted to CoinAPI on 2026-10-01 after the owner authorized contact and
+supplied a reply address. The request text is retained below; written display
+permission remains pending.
 
 Subject: BTC/ETH OHLCV display permission for zodiacs.org Market Lens
 
@@ -46,8 +50,8 @@ Our server retrieves bounded histories (at most 900 requested buckets per
 interactive request), caches briefly, and sends candles to an interactive
 chart and accessible browser table. Users can inspect past event windows, keep private setups and risk estimates,
 and compare shared sky, browser-calculated personal transits and official
-economic schedules. Personal chart inputs and calculations stay on device;
-no personal data is sent to the market provider. We also run a private paper study; raw responses stay
+economic schedules. Personal chart inputs and browser-calculated transits
+are never sent to the market provider. We also run a private paper study; raw responses stay
 outside the public repository. Published study results would be aggregate
 strategy metrics, not a downloadable raw dataset.
 
@@ -65,6 +69,19 @@ Please confirm in writing the permission and complete price for:
 
 Please identify all applicable documents and separate source agreements. We
 are seeking a display grant, not permission to execute transactions.
+
+## Contact readiness — 2026-10-01
+
+The owner supplied the reply address privately. Coinbase's institutional
+contact page returned HTTP 403 here. The complete request was submitted through
+CoinAPI's official [contact form](https://www.coinapi.io/contact-us), selecting
+Market Data API and using the site's normal CAPTCHA flow. Its form includes
+marketing-email consent. At 2026-10-01T17:27:19.349Z, `/api/contact-us` returned
+HTTP 200 and the page displayed “Success! Check your email!” The private
+receipt/screenshot retain the actual reply address; [provider-contact.json](provider-contact.json)
+records the redacted acknowledgment and request hash. Check the owner's inbox
+for confirmation/follow-up. No written grant, subscription or paid agreement
+was obtained. A sales acknowledgment does not authorize public display.
 
 ## Enablement after a grant
 

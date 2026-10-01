@@ -1,5 +1,18 @@
 # Market Lens launch checkpoint
 
+## Operational follow-up — 2026-10-01
+
+The revised protected preview is deployed; [OPERATIONS.md](OPERATIONS.md)
+records source/deployment hashes, restored main-only cost controls, successful
+existing function smoke and the authentication blocker for actual Lens
+acceptance. A private runner with daily/retry scheduling, backups and signed
+decision timestamps passes fresh installation and repeated local cycles.
+GitHub denies repository creation, so remote activation remains outstanding.
+The first decision now has a verified independent timestamp before execution;
+its signed evidence and precise limits are recorded. CoinAPI accepted the
+owner-authorized licensing inquiry; no license or purchase occurred. The sections below are
+the dated earlier implementation evidence, not current deployment status.
+
 ## Revised extension — 2026-10-01
 
 All seven revised checkpoints are implemented. See
