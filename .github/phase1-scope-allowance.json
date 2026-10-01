@@ -1,7 +1,7 @@
 {
   "version": 1,
   "id": "calendar-feed-ids-2026-09-29",
-  "baseCommit": "4e6005445e9ccf41cfccc1300a24d5533dc318e5",
+  "baseCommit": "450f0fd948d86d82c416bcbd51b3dace5196097e",
   "protectedPaths": [
     "src/pages/es/privacy/index.astro",
     "src/pages/fr/privacy/index.astro",

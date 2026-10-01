@@ -1374,7 +1374,7 @@ ${glanceRows.slice(0, 3).map(([key, value]) => `            <div><dt>${esc(key)}
           </dl>
         </section>
         <div class="profile-actions">
-          <a class="profile-explore" href="/${m.slug}/">Explore your sign <span aria-hidden="true">↗</span></a>
+          <a class="profile-explore" href="/${m.slug}/">${esc(m.name)} guide <span aria-hidden="true">↗</span></a>
           <a class="profile-record" href="#token">Public record <span aria-hidden="true">↓</span></a>
         </div>
       </section>
