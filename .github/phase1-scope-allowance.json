@@ -1,9 +1,8 @@
 {
   "version": 1,
-  "id": "celestial-profiles-and-consumer-cohesion-live-2026-10-01",
-  "baseCommit": "51242ba6304fdc13a82bd063c02ae099d6711d86",
+  "id": "icon-only-guide-sitewide-2026-10-01",
+  "baseCommit": "9cfafa3e742de943062c9174338472781724a4b5",
   "protectedPaths": [
-    "public/assets/app.js",
     "public/registry/aquarius/index.html",
     "public/registry/aries/index.html",
     "public/registry/cancer/index.html",
@@ -18,16 +17,9 @@
     "public/registry/taurus/index.html",
     "public/registry/technical/index.html",
     "public/registry/virgo/index.html",
+    "public/sdk/examples/simastry-aura/index.html",
     "public/sdk/index.html",
-    "public/terminal/markets/index.html",
-    "scripts/build-sign-pages.mjs",
-    "scripts/registry-pastel-polish.test.mjs",
-    "scripts/registry-shell-parity.test.mjs",
-    "src/app.jsx",
-    "src/pages/es/profile/index.astro",
-    "src/pages/fr/profile/index.astro",
-    "src/pages/it/profile/index.astro",
-    "src/pages/pt/profile/index.astro"
+    "public/terminal/markets/index.html"
   ],
-  "authorization": "The owner expands the visual edit to the whole site, requests consumer-friendly cohesion and continuity, asks to fix the cutoff in the Registry preview, improve the personal profile and its discovery, and make Guide accessible, easy to hide, and smaller on mobile. This allowance covers the existing Registry profile treatment and shared navigation across all wing sources and generated output, including SDK, Terminal and localized profile styling. Profile facts, addresses, acquisition behavior, market logic, chart computations, account/storage boundaries and Guide privacy behavior are preserved. The owner selected option B, the Celestial portrait with each sign\u2019s own constellation behind its original sculpture, and explicitly instructed: push B live. The shared sitewide polish and compact Guide are included in this approved release."
+  "authorization": "The owner requested removing Ask Zodiacs text from the floating Zodiacs avatar throughout the website so it is its own icon. Generated Registry, SDK and Terminal pages change only the shared Guide asset version so existing visitors receive the icon-only launcher. Accessible localized labels, Guide opening, footer controls and privacy behavior remain intact."
 }

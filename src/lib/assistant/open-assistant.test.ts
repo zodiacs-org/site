@@ -536,7 +536,7 @@ describe('Guide typography boundary', () => {
     expect(proactiveSurfaces).not.toMatch(/['"](?:Instrument Sans|EB Garamond)['"]/u);
   });
 
-  it('keeps the launcher labelled with a full touch target on small viewports', async () => {
+  it('keeps the icon launcher accessible with a full touch target on small viewports', async () => {
     const [drawerCss, shellCss, shellSource] = await Promise.all([
       readFile(new URL('./assistant.css', import.meta.url), 'utf8'),
       readFile(new URL('./guide-bootstrap.css', import.meta.url), 'utf8'),
@@ -548,12 +548,12 @@ describe('Guide typography boundary', () => {
     );
     expect(launcherRule).not.toContain('font-size: 0;');
     const collapse = shellCss.slice(shellCss.indexOf('@media (max-width: 560px)'));
-    expect(collapse).toContain('width: auto;');
+    expect(collapse).toContain('width: 44px;');
     expect(collapse).toContain('min-height: 44px;');
     expect(collapse).toContain('font-size: 12px;');
     expect(collapse).not.toContain('font-size: 0;');
     expect(shellSource).toContain("launcher.setAttribute('aria-label', currentCopy().open);");
-    expect(shellSource).toContain('label.textContent = currentCopy().label;');
+    expect(shellSource).not.toContain("document.createElement('span')");
     expect(drawerCss).toContain('@media (max-width: 560px)');
   });
 });
@@ -709,7 +709,7 @@ describe('assistant profile-access privacy fence', () => {
   it('refreshes previously cached Guide entrypoints and revalidates future updates', async () => {
     const config = JSON.parse(await readFile(new URL('../../../vercel.json', import.meta.url), 'utf8'));
     const shellUrl = new URL(GUIDE_SHELL_URL, 'https://zodiacs.org');
-    expect(shellUrl.searchParams.get('v')).toBe('ask-guide-4');
+    expect(shellUrl.searchParams.get('v')).toBe('icon-guide-5');
     expect(guideLoaderSource('en')).toContain(`import('${GUIDE_SHELL_URL}')`);
 
     for (const path of [
@@ -737,7 +737,7 @@ describe('assistant profile-access privacy fence', () => {
     const bootstrapStart = shell.indexOf('export async function bootstrapGuide(');
     const bootstrap = shell.slice(bootstrapStart);
 
-    expect(shell).toContain("const DRAWER_MODULE_HREF = '/assets/assistant-drawer.js?v=ask-guide-4';");
+    expect(shell).toContain("const DRAWER_MODULE_HREF = '/assets/assistant-drawer.js?v=icon-guide-5';");
     expect(shell).not.toContain('INVITE_DELAY_MS');
     expect(shell).not.toContain('INVITE_KEY');
     expect(shell).not.toContain('showInvite');
@@ -747,9 +747,9 @@ describe('assistant profile-access privacy fence', () => {
     expect(shell).toContain("canvas.setAttribute('aria-hidden', 'true');");
     expect(shell).toContain('drawerModulePromise ??= import(DRAWER_MODULE_HREF)');
     expect(loader).toContain('export const GUIDE_POST_LOAD_DELAY_MS = 500;');
-    expect(loader).toContain("export const GUIDE_SHELL_URL = '/assets/assistant-ui.js?v=ask-guide-4';");
+    expect(loader).toContain("export const GUIDE_SHELL_URL = '/assets/assistant-ui.js?v=icon-guide-5';");
     expect(loader).toContain("modulePromise = import('${GUIDE_SHELL_URL}')");
-    expect(shell).toContain("const STYLESHEET_HREF = '/assets/assistant-ui.css?v=ask-guide-4';");
+    expect(shell).toContain("const STYLESHEET_HREF = '/assets/assistant-ui.css?v=icon-guide-5';");
     expect(loader).toContain("window.addEventListener('load', scheduleGuide, { once: true });");
     expect(loader).toContain("document.addEventListener('click', onGuideIntent, true);");
     expect(loader).toContain('event.stopImmediatePropagation();');
@@ -760,7 +760,7 @@ describe('assistant profile-access privacy fence', () => {
     expect(bootstrap).not.toContain('.focus()');
     expect(shell).not.toContain('/v1/guide/turn');
     expect(shell).not.toContain('zodiacs.guide.daily-session.v1');
-    expect(drawer).toContain("const STYLESHEET_HREF = '/assets/assistant-drawer.css?v=ask-guide-4';");
+    expect(drawer).toContain("const STYLESHEET_HREF = '/assets/assistant-drawer.css?v=icon-guide-5';");
     expect(drawer).toContain("document.querySelector<HTMLButtonElement>('[data-guide-launcher]')");
     expect(drawer).not.toContain('function wireOpeners(');
     expect(buildScript).toContain("'assistant-ui': resolve(repo, 'src/lib/assistant/guide-bootstrap.ts')");
