@@ -353,11 +353,11 @@ describe('Today saved-chart transit loading', () => {
     const rows = nodes(view);
     expect(rows.some(node => node.type === 'p' && textContent(node) === 'Aries Sun-sign baseline')).toBe(timeKnown && !active);
     expect(rows.some(node => typeof node.props.children === 'string'
-      && node.props.children.includes('the Sun sign has not been verified across the whole birth date'))).toBe(!timeKnown);
+      && node.props.children.includes('the Sun sign has not been checked across the whole birth date'))).toBe(!timeKnown);
     const forecast = rows.find(node => node.props.forecast)?.props.forecast;
     expect(forecast).toBeTruthy();
     expect(forecast.lines.some((line: { id: string }) => line.id.startsWith('sun-sign:'))).toBe(timeKnown && !active);
-    expect(forecast.lines[0].text.includes('reference-moment positions')).toBe(!timeKnown);
+    expect(forecast.lines[0].text.includes('This comparison uses one time on your birth date')).toBe(!timeKnown);
     expect(forecast.lines[0].receipt).toBe(active ? 'Fixture contact receipt.' : 'Nearest checked contact · Fixture contact receipt.');
     const { createLivingForecastSnapshot, parseLivingForecastSnapshot } = await vi.importActual<typeof import('../../lib/living-chart/forecast-snapshot')>('../../lib/living-chart/forecast-snapshot');
     const accepted = createLivingForecastSnapshot(forecast);
@@ -378,7 +378,7 @@ describe('Today saved-chart transit loading', () => {
     await vi.dynamicImportSettled();
     const rows = nodes(render());
     const status = rows.find(node => typeof node.props.class === 'string' && node.props.class.includes('today-returning-chart-status'));
-    expect(status?.props.children).toContain('reference-moment positions');
+    expect(status?.props.children).toContain('This comparison uses one time on your birth date');
     expect(status?.props.children).not.toContain('Your Sun-sign baseline is ready');
   });
 });

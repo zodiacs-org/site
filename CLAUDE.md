@@ -62,7 +62,8 @@ The CONTENT boundary survives the visual merge:
    carry the wallet/provider/market-risk disclosures that the Registry
    features legally require — disclosure language there is compliance text,
    not a boundary breach. The wing's nav label is "Astrofolio" in every
-   locale; the footer column heading is "Registry". Wing URL topology (all
+   locale; the owner-approved navigation description names the official Zodiac token
+   collection before the click (2026-10-01, exact localized copy checked by the scanner); the footer column heading is "Registry". Wing URL topology (all
    permanent redirects, served by Vercel as 308): deep paths
    `/collect/:path` → `/registry/:path`, but bare `/collect/` →
    `/astrofolio/`; `/registry/exchange` → `/terminal/markets/`;

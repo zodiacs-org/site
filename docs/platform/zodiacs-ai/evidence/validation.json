@@ -151,7 +151,7 @@
       "runnerStallsSetAsideByExistingPolicy": 1
     },
     "finalSiteGate": {
-      "status": "Exact-head rerun required after refreshed Phase 1 receipt and main-merge navigation assertions",
+      "status": "Exact-head CI required for merge of approved main db5bf574 and final source-bound evidence",
       "precedingRun": "https://github.com/zodiacs-org/site/actions/runs/36896802116",
       "precedingFailure": "Only three intentional homepage visual height differences; full Lighthouse skipped",
       "additionalPrecedingRun": "https://github.com/zodiacs-org/site/actions/runs/36904296920",
@@ -197,6 +197,12 @@
       "passed": 185,
       "failed": 0,
       "scope": "Actual locale-discovery and Moon browser helpers; preserves nine destinations, 44px hit targets, focus and sheet ownership. Full Linux driver remains exact-head authority."
+    },
+    "learningHelpersAfterMainMerge": {
+      "passed": 84,
+      "failed": 0,
+      "unitTestsPassed": 33,
+      "scope": "Actual search/learning and saved-chart practice browser flows, including native locks, cross-tab source edits and unknown-time refusals. Summary refresh permits no source or identity mutation."
     }
   },
   "productionEnabled": false,

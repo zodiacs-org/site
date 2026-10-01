@@ -649,6 +649,9 @@ tr[data-selected='true'] td:last-child {
 .tour__future-grid { display: grid; gap: 8px; }
 .tour__future-card {
   display: grid;
+  width: 100%;
+  font: inherit;
+  text-align: start;
   gap: 4px;
   padding: 12px 13px;
   border: 1px solid var(--hair-1);

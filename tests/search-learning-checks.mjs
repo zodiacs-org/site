@@ -24,6 +24,17 @@ const PROFILE = JSON.stringify({
   }],
 });
 
+// Profile readers legitimately refresh derived engine summaries. The handoff
+// must preserve every source/identity field and the selected house system.
+function savedProfileSourceUnchanged(raw) {
+  try {
+    const source = (profile) => ({ ...profile, charts: profile.charts.map(({ summary, ...chart }) => (
+      { ...chart, summary: { houseSystem: summary.houseSystem } }
+    )) });
+    return JSON.stringify(source(JSON.parse(raw))) === JSON.stringify(source(JSON.parse(PROFILE)));
+  } catch { return false; }
+}
+
 export function savedChartContinuationFailures(state, prefix) {
   const saved = JSON.parse(PROFILE).charts[0];
   return [
@@ -34,7 +45,7 @@ export function savedChartContinuationFailures(state, prefix) {
       && state.subjectNotices[0].includes(saved.name) || 'named other-person result is missing',
     JSON.stringify(state.computedEvents) === JSON.stringify([{ mode: 'full', sunSign: 'cancer' }])
       || 'fresh full-chart computation did not finish with the expected Sun sign',
-    state.profile === PROFILE || 'saved private profile was changed',
+    savedProfileSourceUnchanged(state.profile) || 'saved private profile was changed',
   ].filter((failure) => failure !== true);
 }
 
@@ -74,7 +85,9 @@ export async function runSearchLearningChecks({ browser, baseURL, check, outDir 
         .filter((other) => {
           const style = getComputedStyle(other);
           const box = other.getBoundingClientRect();
-          return style.visibility === 'visible' && style.display !== 'none' && style.pointerEvents !== 'none'
+          // Closed details can retain descendant boxes without painted hit targets.
+          return !other.closest('details:not([open])')
+            && style.visibility === 'visible' && style.display !== 'none' && style.pointerEvents !== 'none'
             && Math.min(box.right, rect.right) > Math.max(box.left, rect.left)
             && Math.min(box.bottom, rect.bottom) > Math.max(box.top, rect.top);
         }).map((other) => ({ tag: other.tagName, class: other.className }));

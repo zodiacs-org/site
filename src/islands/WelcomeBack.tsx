@@ -29,7 +29,7 @@ export default function WelcomeBack({ locale: rawLocale = 'en' }: { locale?: Loc
           className="wb-card"
           cue={t(locale, 'recommendedNext')}
           title="Make today personal"
-          body="Choose which saved chart is yours to see your daily reading."
+          body="Choose your own birth chart once. Today will use it for your personal daily reading; other people’s charts stay separate."
           primary={<a class="btn btn--primary" href="/today/"><span>Choose my chart</span><span class="orb" aria-hidden="true">→</span></a>}
           secondary={<a class="next-action__quiet" href="/profile/">{t(locale, 'yourCharts')} ({count})</a>}
         />

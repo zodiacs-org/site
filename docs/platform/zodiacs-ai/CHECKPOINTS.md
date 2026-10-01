@@ -2,7 +2,7 @@
 
 Continuation dated 2026-10-02 on `codex/zodiacs-ai-integrations`,
 [PR #618](https://github.com/zodiacs-org/site/pull/618). Existing work is preserved;
-approved main `6ca4269a` is merged. The site and both candidates still use published
+approved main `6ca4269a` and subsequent consumer-copy release `db5bf574` are merged. The site and both candidates still use published
 `@zodiacs/engine` 0.1.1-rc.15. Engine and SDK source repositories are unchanged.
 
 | Checkpoint | Scope | Status |

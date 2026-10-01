@@ -66,3 +66,13 @@ calculators use inline Guide. The helpers now inspect all nine real destinations
 and the keyboard-accessible inline Guide while retaining sheet focus/pointer
 checks. Both helpers pass 185 focused browser checks. No product navigation or
 Guide styling was changed for those assertions.
+
+Main advanced to approved consumer release `db5bf574` during final verification.
+It is merged without rewriting plugin or engine implementation. Its revised home
+copy combines with the 44px accessibility selector; the actual Darwin mobile
+capture was reviewed and updated, leaving all comparison thresholds intact.
+New Phase 1 captures bind to the combined source. Additional stale learning
+assertions now open the saved-chart disclosure and allow refresh of derived
+engine summaries while rejecting source/identity/house-system mutation. Closed
+disclosure descendants are excluded from painted-target overlap checks; actual
+hit-testing and 44px size checks remain.

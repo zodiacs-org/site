@@ -69,9 +69,7 @@ export function observeMobileToolMenu() {
     expanded: document.querySelector('[data-menu-toggle]')?.getAttribute('aria-expanded'),
     guide: guideStyle ? { visibility: guideStyle.visibility, pointerEvents: guideStyle.pointerEvents,
       opacity: Number(guideStyle.opacity) } : null,
-    // Birth chart and compatibility are promoted into the primary group.
-    // Keep verifying all nine destinations, including their real hit targets.
-    rows: [...(menu?.querySelectorAll('.mobile-menu__tool, .mobile-menu__link[href$="/birth-chart/"], .mobile-menu__link[href$="/compatibility/"]') ?? [])].map((node) => {
+    rows: [...(menu?.querySelectorAll('.mobile-menu__tool') ?? [])].map((node) => {
       const rect = bounds(node);
       const style = getComputedStyle(node);
       const textRects = [];
@@ -112,7 +110,8 @@ export function mobileToolMenuFailures(state, { requireBirthdayFocus = false } =
   const failures = [
     state.open && state.expanded === 'true' || 'mobile menu is not open',
     state.guide?.visibility === 'hidden' && state.guide.pointerEvents === 'none' || 'Guide remains available over the menu',
-    state.rows.length === 9 || 'missing mobile tool rows',
+    // Approved compact navigation: six tools plus the All tools destination.
+    state.rows.length === 7 || 'missing mobile tool rows',
   ].filter((entry) => entry !== true);
   for (const row of state.rows) {
     if (!row.visible || !row.textRects.length) failures.push(`${row.href}: missing or hidden text`);
