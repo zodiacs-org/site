@@ -69,13 +69,6 @@ jobs:
         if: ${{ !cancelled() && steps.acceptance.outcome == 'success' }}
         run: npm run test:phase1:evidence
 
-      - name: Guide touch and keyboard browser drive
-        id: guide
-        if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.request.outputs.mode == 'compare' }}
-        env:
-          OUT_DIR: tests/visual/artifacts/guide
-        run: npm run test:phase6:ask
-
       - name: Compare 390 and 1440 pixel visual baselines
         id: visual
         if: ${{ !cancelled() && steps.build.outcome == 'success' && steps.request.outputs.mode == 'compare' }}

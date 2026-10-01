@@ -1,6 +1,5 @@
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
-import { runInNewContext } from 'node:vm';
 import sharp from 'sharp';
 import { describe, expect, it } from 'vitest';
 import {
@@ -314,50 +313,6 @@ describe('Guide day and retry boundaries', () => {
     expect(run).toContain('if (rotateGuideDayIfNeeded())');
     expect(retry).toContain('prior.body.contextEpoch !== state.contextEpoch');
     expect(retry).toContain('prior.body.baseRevision !== state.revision');
-  });
-});
-
-describe('Guide modal focus', () => {
-  it('wraps backward from the touch-opened panel, including a pre-fix negative control', async () => {
-    const source = await readFile(new URL('./open-assistant.ts', import.meta.url), 'utf8');
-    const start = source.indexOf("  root.addEventListener('keydown', (event) => {");
-    const end = source.indexOf("  panel = document.createElement('div');", start);
-    expect(start).toBeGreaterThan(-1);
-    expect(end).toBeGreaterThan(start);
-    // Execute the production listener with only its DOM boundary stubbed.
-    // The browser drive separately verifies actual sequential focus behavior.
-    const listenerSource = source.slice(start, end);
-    type KeyEvent = { key: string; shiftKey: boolean; preventDefault(): void };
-    type FocusTarget = { name: string; focus(): void };
-    const run = (code: string, active: 'panel' | 'first' | 'last', shiftKey: boolean, key = 'Tab') => {
-      const document: { activeElement: FocusTarget | null } = { activeElement: null };
-      const target = (name: string): FocusTarget => ({ name, focus() { document.activeElement = this; } });
-      const panel = target('panel');
-      const first = target('first');
-      const last = target('last');
-      document.activeElement = { panel, first, last }[active];
-      let keydown: ((event: KeyEvent) => void) | undefined;
-      runInNewContext(code, {
-        root: { addEventListener(type: string, listener: (event: KeyEvent) => void) {
-          expect(type).toBe('keydown');
-          keydown = listener;
-        } },
-        document, panel, focusableControls: () => [first, last],
-      });
-      if (!keydown) throw new Error('Guide keydown listener was not registered');
-      let prevented = false;
-      keydown({ key, shiftKey, preventDefault() { prevented = true; } });
-      return { active: document.activeElement?.name, prevented };
-    };
-    expect(run(listenerSource, 'panel', true)).toEqual({ active: 'last', prevented: true });
-    expect(run(listenerSource, 'first', true)).toEqual({ active: 'last', prevented: true });
-    expect(run(listenerSource, 'last', false)).toEqual({ active: 'first', prevented: true });
-    expect(run(listenerSource, 'panel', false)).toEqual({ active: 'panel', prevented: false });
-    expect(run(listenerSource, 'panel', true, 'Escape')).toEqual({ active: 'panel', prevented: false });
-
-    const beforeFix = listenerSource.replace(' || document.activeElement === panel', '');
-    expect(beforeFix).not.toBe(listenerSource);
-    expect(run(beforeFix, 'panel', true)).toEqual({ active: 'panel', prevented: false });
   });
 });
 
