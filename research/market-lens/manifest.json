@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "experimentId": "market-lens-lunar-direction-v1",
+  "declaredAt": "2026-10-01",
+  "purpose": "Private exploratory evaluation of incremental lunar phase information alongside technical analysis; no public forecast or trading policy.",
+  "data": {
+    "provider": "Coinbase Exchange",
+    "products": ["BTC-USD", "ETH-USD"],
+    "granularitySeconds": 86400,
+    "requestedStart": "2015-07-20T00:00:00.000Z",
+    "requestedEndExclusive": "2026-10-01T00:00:00.000Z",
+    "maxCandlesPerRequest": 300,
+    "licensing": "Private research only. Public display/redistribution rights have not been established. Raw vendor data is stored outside the checkout.",
+    "source": "https://docs.cdp.coinbase.com/api-reference/exchange-api/rest-api/products/get-product-candles"
+  },
+  "target": {
+    "name": "next_utc_daily_close_direction",
+    "cutoff": "Opening time of bar t plus 86400 seconds, when its close is finalized.",
+    "positive": "close[t+1] > close[t]",
+    "tie": "A zero return belongs to class 0.",
+    "horizonDays": 1,
+    "missing": "No filling. Require 61 consecutive daily bars through t and one complete next bar for the target."
+  },
+  "features": {
+    "ta": ["logReturn1", "logReturn7", "logReturn30", "sma20Gap", "sma50Gap", "returnStd20", "rsi14Centered", "logVolume20"],
+    "astro": ["lunarSin", "lunarCos", "nearNewMoon", "nearFullMoon"],
+    "lunarConvention": "Pinned @zodiacs/engine moonPhase at the forecast cutoff; Moon-minus-Sun geocentric ecliptic elongation. New/full flags use circular angular distance <=12 degrees. Flags are phase proximity, not exact event times.",
+    "scope": "Lunar features only. No feature selection, no slow-planet aspects, no natal features, no magnitude or profitability analysis."
+  },
+  "split": {
+    "developmentBefore": "2021-01-01T00:00:00.000Z",
+    "validationFolds": [
+      {"start": "2021-01-01T00:00:00.000Z", "endExclusive": "2022-01-01T00:00:00.000Z"},
+      {"start": "2022-01-01T00:00:00.000Z", "endExclusive": "2023-01-01T00:00:00.000Z"}
+    ],
+    "testStart": "2023-01-01T00:00:00.000Z",
+    "purge": "Training targetEnd must be strictly earlier than the next evaluation start. Validation labels ending at or after testStart are excluded. This removes boundary label overlaps.",
+    "scaling": "Mean and population standard deviation fit on training rows only, independently per asset/fold/model. Constant scales use 1."
+  },
+  "model": {
+    "kind": "Logistic regression, intercept unpenalized",
+    "objective": "Mean binary log loss + lambda/2 * sum(non-intercept weights squared)",
+    "l2Candidates": [0.01, 0.1, 1],
+    "selection": "Lowest sample-weighted validation log loss across the two expanding chronological folds. Exact ties favor higher regularization. Features and candidates freeze before final holdout evaluation.",
+    "optimizer": "Damped Newton, at most 60 iterations, gradient tolerance 1e-8",
+    "benchmarks": ["Training-only unconditional class frequency", "Training-only smoothed P(next direction | current direction), Beta(1,1) smoothing"],
+    "maxTriedCandidatesPerAsset": 9
+  },
+  "evaluation": {
+    "metrics": ["Brier score", "binary log loss", "accuracy at 0.5", "five-bin reliability", "class balance"],
+    "primaryComparison": "Combined minus TA-only final holdout Brier score; negative is improvement.",
+    "uncertainty": "Paired circular moving-block bootstrap of per-day score differences, block length 30 days, 1000 replicates, seeded PRNG. Report central 95% intervals and conservative 97.5% intervals for the two asset comparisons.",
+    "secondary": "Combined minus TA-only log loss interval and astro-only/baseline scores are exploratory.",
+    "independence": "Days and lunar observations are temporally dependent. BTC and ETH are correlated; no pooled independent-sample claim.",
+    "publicPredictionGate": "No public model prediction. Require independent methodological review and a prospectively timestamped paper-forecast period before any public forecast."
+  }
+}

@@ -112,7 +112,7 @@ describe('homepage first-paint assets', () => {
     expect(css).toContain(".hero__poster[data-hero-visible='false'] { animation-play-state: paused; }");
   });
 
-  it('keeps the pre-August 31 hero hierarchy on the real route fonts', async () => {
+  it('keeps the hero hierarchy and approved destination labels on the real route fonts', async () => {
     const [css, page] = await Promise.all([
       readFile(resolve(repositoryRoot, 'src/home/home-first-paint.css'), 'utf8'),
       readFile(resolve(repositoryRoot, 'src/pages/index.astro'), 'utf8'),
@@ -128,7 +128,7 @@ describe('homepage first-paint assets', () => {
     expect(page).toContain('Birth charts calculated in your browser.');
     expect(page).toContain('Clear astrology readings and tools, free to explore.');
     expect(page).toContain('Get your free birth chart');
-    expect(page).toContain('Your horoscope');
+    expect(page).toContain('href="/horoscopes/"><span>Your horoscope</span></a>');
     expect(page).toContain('Free · No signup · Calculated in your browser');
     expect(page).not.toContain('class="hero__story"');
     expect(page).not.toContain('class="hero__method"');

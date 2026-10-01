@@ -119,7 +119,9 @@ describe('Russian chart-result seams', () => {
     expect(branch.indexOf('clearFragment();')).toBeLessThan(branch.indexOf('profileAccessAllowed()'));
     expect(branch).toContain("window.addEventListener('zodiacs:profile-access', onProfileAccess);");
     expect(branch).toContain('accessGeneration !== profileAccessGeneration.current');
-    expect(branch).toContain('loadProfileChartRunInput(profileChartId)');
+    expect(branch).toContain('loadProfileChartEditInput(profileChartId)');
+    expect(branch).toContain('setDate(input.date);');
+    expect(branch).toContain('if (linkCity) void runChart({ ...input, city: linkCity }, false);');
     expect(branch).toContain('primaryProfileChartIdRef.current = profileChartId;');
     expect(branch).toContain('handoffId === profileHandoffIdRef.current');
   });

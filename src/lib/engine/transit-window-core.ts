@@ -1,4 +1,5 @@
 /** Bounded, injected-ephemeris transit intervals. No provider or browser import. */
+export type WindowTransitBody = 'Sun' | 'Moon' | 'Mercury' | 'Venus' | 'Mars' | SlowTransitBody;
 export type SlowTransitBody = 'Jupiter' | 'Saturn' | 'Uranus' | 'Neptune' | 'Pluto';
 export type WindowNatalPoint = 'Sun' | 'Moon' | 'Mercury' | 'Venus' | 'Mars' | SlowTransitBody | 'ASC' | 'MC';
 export type WindowAspect = 'conjunction' | 'sextile' | 'square' | 'trine' | 'opposition';
@@ -26,7 +27,7 @@ export interface TransitWindowCertainty {
 }
 export interface TransitWindow {
   id: string;
-  transitBody: SlowTransitBody;
+  transitBody: WindowTransitBody;
   natalPoint: WindowNatalPoint;
   aspect: WindowAspect;
   startUtc: string;
@@ -46,7 +47,9 @@ export interface TransitWindow {
   certainty?: TransitWindowCertainty;
 }
 export interface TransitWindowOptions {
-  transitBodies?: readonly SlowTransitBody[];
+  transitBodies?: readonly WindowTransitBody[];
+  /** Lens can narrow the documented 3° window; existing itinerary defaults stay fixed. */
+  orbDegrees?: number;
   natalPoints?: readonly WindowNatalPoint[];
   aspects?: readonly WindowAspect[];
   timeKnown: boolean;
@@ -92,7 +95,8 @@ interface Trajectory {
   regions(target: number, orb: number): Region[];
 }
 
-function makeTrajectory(body: SlowTransitBody, from: number, to: number, longitude: (body: SlowTransitBody, date: Date) => number): Trajectory {
+function makeTrajectory<T extends WindowTransitBody>(body: T, from: number, to: number, longitude: (body: T, date: Date) => number, samplingStep = STEP): Trajectory {
+  if (!Number.isFinite(samplingStep) || samplingStep <= 0 || samplingStep > STEP) throw new RangeError('Transit sampling must be positive and at most twelve hours.');
   const cache = new Map<number, number>();
   const raw = (input: number) => {
     const t = Math.round(input);
@@ -105,7 +109,7 @@ function makeTrajectory(body: SlowTransitBody, from: number, to: number, longitu
     cache.set(t, normalize(value));
     return normalize(value);
   };
-  const step = Math.min(STEP, Math.max(1, Math.floor((to - from) / 4)));
+  const step = Math.min(samplingStep, Math.max(1, Math.floor((to - from) / 4)));
   const grid: Sample[] = [{ t: from, value: raw(from) }];
   for (let t = from; t < to;) {
     t = Math.min(t + step, to);
@@ -246,44 +250,47 @@ function natalPoints(chart: WindowNatalChart, options: TransitWindowOptions): { 
   return POINTS.flatMap((name) => result.has(name) ? [{ name, lon: result.get(name)! }] : []);
 }
 
-export function createTransitWindowScanner(ephemeris: { bodyLongitude(body: SlowTransitBody, date: Date): number }) {
+export function createTransitWindowScanner<T extends WindowTransitBody = SlowTransitBody>(ephemeris: { bodyLongitude(body: T, date: Date): number }, configuration: { bodies?: readonly T[]; stepMs?: (body: T) => number } = {}) {
   return {
     scanTransitWindows(chart: WindowNatalChart, from: Date, to: Date, options: TransitWindowOptions): TransitWindow[] {
       const [start, end] = checkQuery(from, to);
       if (typeof options?.timeKnown !== 'boolean') throw new RangeError('Confirm whether the birth time is known.');
-      const bodies = [...new Set(options.transitBodies ?? WINDOW_SLOW_BODIES)];
+      const supported = configuration.bodies ?? WINDOW_SLOW_BODIES;
+      const bodies = [...new Set(options.transitBodies ?? supported)] as T[];
+      const orb = options.orbDegrees ?? 3;
+      if (!Number.isFinite(orb) || orb < 0.5 || orb > 3) throw new RangeError('Choose an orb between 0.5° and 3°.');
       const aspects = [...new Set(options.aspects ?? Object.keys(OFFSETS) as WindowAspect[])];
-      if (bodies.some((x) => !WINDOW_SLOW_BODIES.includes(x)) || aspects.some((x) => !(x in OFFSETS)) || options.natalPoints?.some((x) => !POINTS.includes(x))) throw new RangeError('Unsupported transit selection.');
+      if (bodies.some((x) => !(supported as readonly WindowTransitBody[]).includes(x)) || aspects.some((x) => !(x in OFFSETS)) || options.natalPoints?.some((x) => !POINTS.includes(x))) throw new RangeError('Unsupported transit selection.');
       if (options.angularBudgetDegrees !== undefined && (!Number.isFinite(options.angularBudgetDegrees) || options.angularBudgetDegrees <= 0 || options.angularBudgetDegrees > 0.2)) throw new RangeError('Invalid independent comparison budget.');
       const points = natalPoints(chart, options);
       const output: TransitWindow[] = [];
       if (!points.length || !bodies.length || !aspects.length) return output;
       for (const body of bodies) {
-        const track = makeTrajectory(body, start, end, ephemeris.bodyLongitude);
+        const track = makeTrajectory(body, start, end, ephemeris.bodyLongitude, configuration.stepMs?.(body));
         for (const point of points) for (const aspect of aspects) for (const offset of OFFSETS[aspect]) {
           // Production targets are natal calculations: combine natal and moving budgets.
           const budget = options.angularBudgetDegrees ?? (point.name === 'Moon' ? 0.20 : point.name === 'ASC' || point.name === 'MC' ? 0.15 : 0.10);
           const normalizedTarget = normalize(point.lon + offset);
-          for (let lap = Math.ceil((track.min - 3 - normalizedTarget) / 360); lap <= Math.floor((track.max + 3 - normalizedTarget) / 360); lap += 1) {
+          for (let lap = Math.ceil((track.min - orb - normalizedTarget) / 360); lap <= Math.floor((track.max + orb - normalizedTarget) / 360); lap += 1) {
             const target = normalizedTarget + lap * 360;
             const prefix = `${body}:${point.name}:${aspect}:${offset}:${lap}`;
             if (track.constant) {
-              const orb = Math.abs(track.at(start) - target);
+              const distance = Math.abs(track.at(start) - target);
               const fullRange = { fromUtc: iso(start), toUtc: iso(end) };
-              const certainty: TransitWindowCertainty = { angularBudgetDegrees: budget, queryFromUtc: iso(start), queryToUtc: iso(end), membershipCertainRanges: orb < 3 - budget - NUMERICAL_DEGREES ? [fullRange] : [], exactPossibleRanges: orb <= budget + NUMERICAL_DEGREES ? [fullRange] : [] };
-              if (orb <= 3) output.push({ id: `${prefix}:${point.lon}:plateau:${start}`, transitBody: body, natalPoint: point.name, aspect, startUtc: iso(start), endUtc: iso(end), startClipped: true, endClipped: true, exactPassesUtc: [], peak: { kind: 'plateau', fromUtc: iso(start), toUtc: iso(end), orbDegrees: orb }, membershipStatus: Math.abs(orb - 3) <= budget + NUMERICAL_DEGREES ? 'uncertain' : 'resolved', exactTopologyStatus: orb <= budget + NUMERICAL_DEGREES ? 'uncertain' : 'resolved', certainty });
+              const certainty: TransitWindowCertainty = { angularBudgetDegrees: budget, queryFromUtc: iso(start), queryToUtc: iso(end), membershipCertainRanges: distance < orb - budget - NUMERICAL_DEGREES ? [fullRange] : [], exactPossibleRanges: distance <= budget + NUMERICAL_DEGREES ? [fullRange] : [] };
+              if (distance <= orb) output.push({ id: `${prefix}:${point.lon}:plateau:${start}`, transitBody: body, natalPoint: point.name, aspect, startUtc: iso(start), endUtc: iso(end), startClipped: true, endClipped: true, exactPassesUtc: [], peak: { kind: 'plateau', fromUtc: iso(start), toUtc: iso(end), orbDegrees: distance }, membershipStatus: Math.abs(distance - orb) <= budget + NUMERICAL_DEGREES ? 'uncertain' : 'resolved', exactTopologyStatus: distance <= budget + NUMERICAL_DEGREES ? 'uncertain' : 'resolved', certainty });
               continue;
             }
             const exact = track.roots(target);
             // A turn just outside an actual component can create or close a gap
             // within the angular allowance. Qualify the geometry without merging it.
-            const geometryMembershipUncertain = track.turns.some((x) => Math.abs(Math.abs(x.value - target) - 3) <= 2 * budget + NUMERICAL_DEGREES);
+            const geometryMembershipUncertain = track.turns.some((x) => Math.abs(Math.abs(x.value - target) - orb) <= 2 * budget + NUMERICAL_DEGREES);
             const certainty: TransitWindowCertainty = {
               angularBudgetDegrees: budget, queryFromUtc: iso(start), queryToUtc: iso(end),
-              membershipCertainRanges: track.regions(target, 3 - budget - NUMERICAL_DEGREES).filter((x) => !x.touch).map((x) => ({ fromUtc: iso(x.entry?.hi ?? x.start), toUtc: iso(x.exit?.lo ?? x.end) })),
+              membershipCertainRanges: track.regions(target, orb - budget - NUMERICAL_DEGREES).filter((x) => !x.touch).map((x) => ({ fromUtc: iso(x.entry?.hi ?? x.start), toUtc: iso(x.exit?.lo ?? x.end) })),
               exactPossibleRanges: track.regions(target, budget + NUMERICAL_DEGREES).map((x) => ({ fromUtc: iso(x.entry?.lo ?? x.start), toUtc: iso(x.exit?.hi ?? x.end) })),
             };
-            for (const region of track.regions(target, 3)) {
+            for (const region of track.regions(target, orb)) {
               const insideTurns = track.turns.filter((x) => region.start < x.t && x.t < region.end);
               const contacts = exact.filter((x) => region.start <= x.at && x.at <= region.end).map((x) => x.at);
               const localMinima = insideTurns.filter((x) => {
@@ -292,9 +299,9 @@ export function createTransitWindowScanner(ephemeris: { bodyLongitude(body: Slow
               }).map((x) => ({ atUtc: iso(x.t), orbDegrees: Math.abs(x.value - target) }));
               const clippedOrbs = [!region.entry ? Math.abs(track.at(region.start) - target) : null, !region.exit ? Math.abs(track.at(region.end) - target) : null].filter((x): x is number => x !== null);
               const uncertainExact = insideTurns.some((x) => Math.abs(x.value - target) <= 2 * budget + NUMERICAL_DEGREES)
-                || clippedOrbs.some((orb) => orb <= budget + NUMERICAL_DEGREES);
+                || clippedOrbs.some((distance) => distance <= budget + NUMERICAL_DEGREES);
               const uncertainMembership = geometryMembershipUncertain
-                || clippedOrbs.some((orb) => Math.abs(orb - 3) <= budget + NUMERICAL_DEGREES);
+                || clippedOrbs.some((distance) => Math.abs(distance - orb) <= budget + NUMERICAL_DEGREES);
               let peak: TransitWindowPeak = { kind: 'none' };
               if (!region.touch && contacts.length) peak = contacts.length === 1 ? { kind: 'exact', atUtc: iso(contacts[0]), orbDegrees: 0 } : { kind: 'exact', fromUtc: iso(contacts[0]), toUtc: iso(contacts[contacts.length - 1]), orbDegrees: 0 };
               else if (!region.touch && localMinima.length) {
