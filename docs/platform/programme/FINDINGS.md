@@ -37,7 +37,7 @@ Severity follows the audit's scale:
 
 | id | severity | area | finding | disposition |
 | --- | --- | --- | --- | --- |
-| F-59 | major | privacy | Hosted ephemeris retains exact input time in a module-private warm-process cache | fixed locally with server-only lifetime cleanup; release pending |
+| F-59 | major | privacy | Hosted ephemeris retains exact input time in a module-private warm-process cache | deployed in fd1ce88a; scoped post-release verification complete |
 | F-60 | major | rate-limit verification | Aligned general-counter probe returned 41 successes without the expected refusal | open; counted identity/configuration not visible; no live 40-request spending bound established |
 | F-06 | major | engine rc.11 | Configured-aspect "exact orb" claim fails on general decimal inputs | fix in engine rc.13 (in progress); fixed in engine rc.14 (zodiacs-org/engine#10, merged 2026-09-29 as `8deda244`); reaches production when the site adopts it; in production since #600 (merged as `6cc4d477`, deployment `dpl_2JtJjuE2bU8CYTBMxKF3kco43qcN`) |
 | F-17 | major | privacy | Share code of a chart without a birth time reveals the birthplace's longitude or zone | open: code fix planned; copy wrong until then; fixed in #599: a chart without a birth time is shared as the sky at 12:00 UTC on its date, and the copy is corrected in six locales; in production since #599 (merged as `aca257ad`, deployment `dpl_AuGvEUL1oJPenrfbFq3FkGH5V9s9`) |
@@ -369,7 +369,7 @@ The fix is verified deployed at `9cfafa3e` / `dpl_6uGzGxdgxboMZ5jeFwQMTL24demr`:
 - **Scope.** Application-process memory retention, not an observed external disclosure. The prior global-name test did not inspect private module state. The probe did not measure all possible network/disk/log channels.
 - **Fix.** The server-only compute bundle clears the exact-time and epoch-selected Pluto memos in a `finally`. Each production request gets an isolated timezone resolver and disposes its selected-zone maps. Generated code comes from the build scripts; released engine archives and browser calculators remain unchanged.
 - **Regression.** `tests/api/compute-api-private-state.test.ts` exposes actual generated-module state in a local test, reconstructs the timestamp with cleanup bypassed as its positive control, then checks all six endpoints, refusals, resolver and writer failures and interleaved historical requests. Dependency byte pins require a fresh cache audit on upgrades. This is not a promise of cryptographic heap erasure.
-- **Disposition.** Fixed locally, pending reviewed release and live re-verification. The P3.3 unit remains unaccepted. See `evidence/compute-api-2026-10-01/README.md` for checked artifacts and remaining limits.
+- **Disposition, 2026-10-01 20:58 UTC.** The reviewed server-only fix was merged as fd1ce88a and is served by READY production deployment dpl_AsJc5MrDgH4PpgoZSGMe7XTZePe4. All120 post-release synthetic requests joined to this deployment and succeeded; their exported application-message fields are empty. This verifies release and bounded live behavior, not runtime heap inspection or comprehensive absence of sensitive data. The local private-state regression remains the direct cache-cleanup proof. P3.3 stays unaccepted because Cold measurements and F60 remain open. See `../evidence/compute-api-postrelease-2026-10-01/README.md`.
 
 ### F-60 — the expected general compute rate-limit refusal is not observed (major, verification)
 

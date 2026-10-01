@@ -1,0 +1,467 @@
+{
+  "matches": 120,
+  "startTypes": {
+    "hot": 119,
+    "prewarmed": 1,
+    "cold": 0
+  },
+  "perRoute": {
+    "chart": {
+      "n": 20,
+      "startTypeCounts": {
+        "prewarmed": 1,
+        "hot": 19
+      },
+      "executionDurationMs": {
+        "n": 20,
+        "min": 42,
+        "p50": 53,
+        "p95": 75,
+        "max": 424,
+        "mean": 73.5
+      },
+      "clientElapsedMs": {
+        "n": 20,
+        "min": 102.97741200000019,
+        "p50": 131.11399500002153,
+        "p95": 179.68488999997498,
+        "max": 7853.239128,
+        "mean": 515.6480951000012
+      },
+      "recordedPeakMemoryMb": {
+        "n": 20,
+        "min": 200,
+        "p50": 267,
+        "p95": 287,
+        "max": 287,
+        "mean": 262.7
+      },
+      "activeCpuSumMs": 940.0,
+      "memoryDurationSumGbHours": 0.0008399999999999999,
+      "cost": {
+        "activeCpuUsdPerThousand": 0.001671111111111111,
+        "memoryUsdPerThousand": 0.00044520000000000003,
+        "invocationsUsdPerThousand": 0.0006,
+        "computeAndInvocationsUsdPerThousand": 0.002716311111111111
+      }
+    },
+    "positions": {
+      "n": 20,
+      "startTypeCounts": {
+        "hot": 20
+      },
+      "executionDurationMs": {
+        "n": 20,
+        "min": 29,
+        "p50": 43,
+        "p95": 67,
+        "max": 109,
+        "mean": 47.65
+      },
+      "clientElapsedMs": {
+        "n": 20,
+        "min": 92.06729900001665,
+        "p50": 113.04956099999254,
+        "p95": 240.32196299999487,
+        "max": 371.4186090000003,
+        "mean": 139.13104104999874
+      },
+      "recordedPeakMemoryMb": {
+        "n": 20,
+        "min": 204,
+        "p50": 277,
+        "p95": 287,
+        "max": 287,
+        "mean": 262.8
+      },
+      "activeCpuSumMs": 540.0,
+      "memoryDurationSumGbHours": 0.00054,
+      "cost": {
+        "activeCpuUsdPerThousand": 0.0009599999999999999,
+        "memoryUsdPerThousand": 0.0002862,
+        "invocationsUsdPerThousand": 0.0006,
+        "computeAndInvocationsUsdPerThousand": 0.0018462
+      }
+    },
+    "houses": {
+      "n": 20,
+      "startTypeCounts": {
+        "hot": 20
+      },
+      "executionDurationMs": {
+        "n": 20,
+        "min": 31,
+        "p50": 37,
+        "p95": 51,
+        "max": 67,
+        "mean": 40.35
+      },
+      "clientElapsedMs": {
+        "n": 20,
+        "min": 93.09475499999826,
+        "p50": 111.85415600001579,
+        "p95": 142.41618400000152,
+        "max": 188.00904099999934,
+        "mean": 116.09892645000409
+      },
+      "recordedPeakMemoryMb": {
+        "n": 20,
+        "min": 204,
+        "p50": 277,
+        "p95": 287,
+        "max": 287,
+        "mean": 263.1
+      },
+      "activeCpuSumMs": 510.0,
+      "memoryDurationSumGbHours": 0.00046,
+      "cost": {
+        "activeCpuUsdPerThousand": 0.0009066666666666667,
+        "memoryUsdPerThousand": 0.00024380000000000002,
+        "invocationsUsdPerThousand": 0.0006,
+        "computeAndInvocationsUsdPerThousand": 0.0017504666666666668
+      }
+    },
+    "events": {
+      "n": 20,
+      "startTypeCounts": {
+        "hot": 20
+      },
+      "executionDurationMs": {
+        "n": 20,
+        "min": 101,
+        "p50": 123,
+        "p95": 176,
+        "max": 313,
+        "mean": 137.2
+      },
+      "clientElapsedMs": {
+        "n": 20,
+        "min": 167.0934419999976,
+        "p50": 196.70770400000038,
+        "p95": 316.7598860000144,
+        "max": 386.21856599999956,
+        "mean": 213.70126839999793
+      },
+      "recordedPeakMemoryMb": {
+        "n": 20,
+        "min": 221,
+        "p50": 251,
+        "p95": 287,
+        "max": 287,
+        "mean": 262.65
+      },
+      "activeCpuSumMs": 1980.0,
+      "memoryDurationSumGbHours": 0.0016,
+      "cost": {
+        "activeCpuUsdPerThousand": 0.00352,
+        "memoryUsdPerThousand": 0.000848,
+        "invocationsUsdPerThousand": 0.0006,
+        "computeAndInvocationsUsdPerThousand": 0.004968
+      }
+    },
+    "time": {
+      "n": 20,
+      "startTypeCounts": {
+        "hot": 20
+      },
+      "executionDurationMs": {
+        "n": 20,
+        "min": 21,
+        "p50": 37,
+        "p95": 86,
+        "max": 140,
+        "mean": 42.4
+      },
+      "clientElapsedMs": {
+        "n": 20,
+        "min": 82.38701199999196,
+        "p50": 105.56715200000326,
+        "p95": 154.07048099999884,
+        "max": 207.2294380000094,
+        "mean": 115.88097324999671
+      },
+      "recordedPeakMemoryMb": {
+        "n": 20,
+        "min": 212,
+        "p50": 252,
+        "p95": 287,
+        "max": 287,
+        "mean": 261.55
+      },
+      "activeCpuSumMs": 270.0,
+      "memoryDurationSumGbHours": 0.00048,
+      "cost": {
+        "activeCpuUsdPerThousand": 0.00047999999999999996,
+        "memoryUsdPerThousand": 0.0002544,
+        "invocationsUsdPerThousand": 0.0006,
+        "computeAndInvocationsUsdPerThousand": 0.0013344
+      }
+    },
+    "sky-fact": {
+      "n": 20,
+      "startTypeCounts": {
+        "hot": 20
+      },
+      "executionDurationMs": {
+        "n": 20,
+        "min": 53,
+        "p50": 71,
+        "p95": 104,
+        "max": 141,
+        "mean": 78.25
+      },
+      "clientElapsedMs": {
+        "n": 20,
+        "min": 111.77578900000663,
+        "p50": 138.051066,
+        "p95": 195.1306859999895,
+        "max": 245.8961190000009,
+        "mean": 149.9600726499988
+      },
+      "recordedPeakMemoryMb": {
+        "n": 20,
+        "min": 213,
+        "p50": 259,
+        "p95": 287,
+        "max": 287,
+        "mean": 262.8
+      },
+      "activeCpuSumMs": 1230.0,
+      "memoryDurationSumGbHours": 0.00089,
+      "cost": {
+        "activeCpuUsdPerThousand": 0.0021866666666666666,
+        "memoryUsdPerThousand": 0.0004717,
+        "invocationsUsdPerThousand": 0.0006,
+        "computeAndInvocationsUsdPerThousand": 0.0032583666666666663
+      }
+    }
+  },
+  "byRouteAndStartType": [
+    {
+      "endpoint": "time",
+      "startType": "hot",
+      "n": 20,
+      "activeCpuSumDisplay": "270ms",
+      "activeCpuSumMs": 270.0,
+      "memoryDurationSumDisplay": "0.00048 GB-hrs",
+      "memoryDurationSumGbHours": 0.00048,
+      "executionDurationMs": {
+        "n": 20,
+        "min": 21,
+        "p50": 37,
+        "p95": 86,
+        "max": 140,
+        "mean": 42.4
+      },
+      "clientElapsedMs": {
+        "n": 20,
+        "min": 82.38701199999196,
+        "p50": 105.56715200000326,
+        "p95": 154.07048099999884,
+        "max": 207.2294380000094,
+        "mean": 115.88097324999671
+      },
+      "cost": {
+        "activeCpuUsdPerThousand": 0.00047999999999999996,
+        "memoryUsdPerThousand": 0.0002544,
+        "invocationsUsdPerThousand": 0.0006,
+        "computeAndInvocationsUsdPerThousand": 0.0013344
+      }
+    },
+    {
+      "endpoint": "sky-fact",
+      "startType": "hot",
+      "n": 20,
+      "activeCpuSumDisplay": "1.23s",
+      "activeCpuSumMs": 1230.0,
+      "memoryDurationSumDisplay": "0.00089 GB-hrs",
+      "memoryDurationSumGbHours": 0.00089,
+      "executionDurationMs": {
+        "n": 20,
+        "min": 53,
+        "p50": 71,
+        "p95": 104,
+        "max": 141,
+        "mean": 78.25
+      },
+      "clientElapsedMs": {
+        "n": 20,
+        "min": 111.77578900000663,
+        "p50": 138.051066,
+        "p95": 195.1306859999895,
+        "max": 245.8961190000009,
+        "mean": 149.9600726499988
+      },
+      "cost": {
+        "activeCpuUsdPerThousand": 0.0021866666666666666,
+        "memoryUsdPerThousand": 0.0004717,
+        "invocationsUsdPerThousand": 0.0006,
+        "computeAndInvocationsUsdPerThousand": 0.0032583666666666663
+      }
+    },
+    {
+      "endpoint": "positions",
+      "startType": "hot",
+      "n": 20,
+      "activeCpuSumDisplay": "540ms",
+      "activeCpuSumMs": 540.0,
+      "memoryDurationSumDisplay": "0.00054 GB-hrs",
+      "memoryDurationSumGbHours": 0.00054,
+      "executionDurationMs": {
+        "n": 20,
+        "min": 29,
+        "p50": 43,
+        "p95": 67,
+        "max": 109,
+        "mean": 47.65
+      },
+      "clientElapsedMs": {
+        "n": 20,
+        "min": 92.06729900001665,
+        "p50": 113.04956099999254,
+        "p95": 240.32196299999487,
+        "max": 371.4186090000003,
+        "mean": 139.13104104999874
+      },
+      "cost": {
+        "activeCpuUsdPerThousand": 0.0009599999999999999,
+        "memoryUsdPerThousand": 0.0002862,
+        "invocationsUsdPerThousand": 0.0006,
+        "computeAndInvocationsUsdPerThousand": 0.0018462
+      }
+    },
+    {
+      "endpoint": "houses",
+      "startType": "hot",
+      "n": 20,
+      "activeCpuSumDisplay": "510ms",
+      "activeCpuSumMs": 510.0,
+      "memoryDurationSumDisplay": "0.00046 GB-hrs",
+      "memoryDurationSumGbHours": 0.00046,
+      "executionDurationMs": {
+        "n": 20,
+        "min": 31,
+        "p50": 37,
+        "p95": 51,
+        "max": 67,
+        "mean": 40.35
+      },
+      "clientElapsedMs": {
+        "n": 20,
+        "min": 93.09475499999826,
+        "p50": 111.85415600001579,
+        "p95": 142.41618400000152,
+        "max": 188.00904099999934,
+        "mean": 116.09892645000409
+      },
+      "cost": {
+        "activeCpuUsdPerThousand": 0.0009066666666666667,
+        "memoryUsdPerThousand": 0.00024380000000000002,
+        "invocationsUsdPerThousand": 0.0006,
+        "computeAndInvocationsUsdPerThousand": 0.0017504666666666668
+      }
+    },
+    {
+      "endpoint": "events",
+      "startType": "hot",
+      "n": 20,
+      "activeCpuSumDisplay": "1.98s",
+      "activeCpuSumMs": 1980.0,
+      "memoryDurationSumDisplay": "0.0016 GB-hrs",
+      "memoryDurationSumGbHours": 0.0016,
+      "executionDurationMs": {
+        "n": 20,
+        "min": 101,
+        "p50": 123,
+        "p95": 176,
+        "max": 313,
+        "mean": 137.2
+      },
+      "clientElapsedMs": {
+        "n": 20,
+        "min": 167.0934419999976,
+        "p50": 196.70770400000038,
+        "p95": 316.7598860000144,
+        "max": 386.21856599999956,
+        "mean": 213.70126839999793
+      },
+      "cost": {
+        "activeCpuUsdPerThousand": 0.00352,
+        "memoryUsdPerThousand": 0.000848,
+        "invocationsUsdPerThousand": 0.0006,
+        "computeAndInvocationsUsdPerThousand": 0.004968
+      }
+    },
+    {
+      "endpoint": "chart",
+      "startType": "hot",
+      "n": 19,
+      "activeCpuSumDisplay": "680ms",
+      "activeCpuSumMs": 680.0,
+      "memoryDurationSumDisplay": "0.00060 GB-hrs",
+      "memoryDurationSumGbHours": 0.0006,
+      "executionDurationMs": {
+        "n": 19,
+        "min": 42,
+        "p50": 53,
+        "p95": 75,
+        "max": 75,
+        "mean": 55.05263157894737
+      },
+      "clientElapsedMs": {
+        "n": 19,
+        "min": 102.97741200000019,
+        "p50": 131.11399500002153,
+        "p95": 179.68488999997498,
+        "max": 179.68488999997498,
+        "mean": 129.4590933684223
+      },
+      "cost": {
+        "activeCpuUsdPerThousand": 0.001272514619883041,
+        "memoryUsdPerThousand": 0.0003347368421052631,
+        "invocationsUsdPerThousand": 0.0006,
+        "computeAndInvocationsUsdPerThousand": 0.002207251461988304
+      }
+    },
+    {
+      "endpoint": "chart",
+      "startType": "prewarmed",
+      "n": 1,
+      "activeCpuSumDisplay": "260ms",
+      "activeCpuSumMs": 260.0,
+      "memoryDurationSumDisplay": "0.00024 GB-hrs",
+      "memoryDurationSumGbHours": 0.00024,
+      "executionDurationMs": {
+        "n": 1,
+        "min": 424,
+        "p50": 424,
+        "p95": 424,
+        "max": 424,
+        "mean": 424
+      },
+      "clientElapsedMs": {
+        "n": 1,
+        "min": 7853.239128,
+        "p50": 7853.239128,
+        "p95": 7853.239128,
+        "max": 7853.239128,
+        "mean": 7853.239128
+      },
+      "cost": {
+        "activeCpuUsdPerThousand": 0.009244444444444444,
+        "memoryUsdPerThousand": 0.0025440000000000003,
+        "invocationsUsdPerThousand": 0.0006,
+        "computeAndInvocationsUsdPerThousand": 0.012388444444444445
+      }
+    }
+  ],
+  "allMessagesEmpty": true,
+  "peakMemory": {
+    "n": 120,
+    "min": 200,
+    "p50": 277,
+    "p95": 287,
+    "max": 287,
+    "mean": 262.6
+  }
+}
