@@ -6,27 +6,27 @@
     "script": "tests/phase1-acceptance-drive.mjs",
     "contractVersion": 4
   },
-  "capturedAt": "2026-10-01T16:59:41.666Z",
+  "capturedAt": "2026-10-01T17:22:31.368Z",
   "browser": "Chromium 154.0.8037.58",
   "dailyDate": "2026-10-01",
   "publicationCanonicalSha256": "42cceeb8b40ecfe17599a6b8e80020ff53eb298934d2c3aff1b53b5954e35f16",
-  "templateSourceSha256": "cd56cc1cf856dab515b2975bf84a72ebec87a14bae4782ea5e90aeabb3782224",
+  "templateSourceSha256": "66d386ef3d0d46898c703f9311573a427dad9edd7aad8d1a8ee70c19f4ab4c81",
   "renderPayloadSha256": {
     "daily": "885a8cca4a41b7bd23f7b8255d3a65a5041558c9f1b92ff13c21587d4d518da9",
     "dailyPublication": "53b6d25641bf630f3b6c0a55ee925ddbfed7ab8afd73e06aec67fa1ae0025809",
-    "dailyPublicationManifest": "ff2cd7fd22100dbf0c979b508fe9378bfa8d34172e2b4ac88e38abbc809c32bc",
+    "dailyPublicationManifest": "22e04c46f1b998f02909fd34d10fdb274826a7e3b95eb69f815cee72b36314dd",
     "horoscopeProgram": "3d727887b856086541739c57a1be7c719cf2324acb71709088421c9101b350fd"
   },
   "buildReceipt": {
     "schema": "zodiacs.phase1-build-receipt.v1",
-    "builtAt": "2026-10-01T16:58:02.517Z",
-    "templateSourceSha256": "cd56cc1cf856dab515b2975bf84a72ebec87a14bae4782ea5e90aeabb3782224",
+    "builtAt": "2026-10-01T17:21:57.998Z",
+    "templateSourceSha256": "66d386ef3d0d46898c703f9311573a427dad9edd7aad8d1a8ee70c19f4ab4c81",
     "dailyDate": "2026-10-01",
     "publicationCanonicalSha256": "42cceeb8b40ecfe17599a6b8e80020ff53eb298934d2c3aff1b53b5954e35f16",
     "renderPayloadSha256": {
       "daily": "885a8cca4a41b7bd23f7b8255d3a65a5041558c9f1b92ff13c21587d4d518da9",
       "dailyPublication": "53b6d25641bf630f3b6c0a55ee925ddbfed7ab8afd73e06aec67fa1ae0025809",
-      "dailyPublicationManifest": "ff2cd7fd22100dbf0c979b508fe9378bfa8d34172e2b4ac88e38abbc809c32bc",
+      "dailyPublicationManifest": "22e04c46f1b998f02909fd34d10fdb274826a7e3b95eb69f815cee72b36314dd",
       "horoscopeProgram": "3d727887b856086541739c57a1be7c719cf2324acb71709088421c9101b350fd"
     }
   },
