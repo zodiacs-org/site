@@ -168,8 +168,8 @@ const CHART_BOOK_COPY = {
 } as const satisfies Record<ReleasedLocale, { label: string; save: string; skip: string }>;
 const REGISTRY_AURA_CHART_COPY = {
   en: {
-    discover: 'Your saved chart can meet the Registry records carried by a public address.',
-    discoverLink: 'Read this chart beside a public address →',
+    discover: 'Optional: compare this saved chart with the Zodiac records associated with a public address. Your birth details stay private unless you choose to share them.',
+    discoverLink: 'Explore the Registry comparison →',
     return: 'Your chart is saved.',
     returnLink: 'Return to Registry Collection →',
   },
@@ -2125,6 +2125,9 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                     <>
                       {/* Keep this sentence aligned with the houseSystemHelp catalog entry. */}
                       <p class="field__help">
+                        You can keep the default. Change this only if you prefer another house system.
+                      </p>
+                      <p class="field__help">
                         How the chart divides into twelve areas of life.{' '}
                         <AstroTerm term="whole-sign-houses" label="Whole sign" surface="birth-chart-form" /> gives
                         each sign one house; <AstroTerm term="placidus" label="Placidus" surface="birth-chart-form" />{' '}
@@ -2578,7 +2581,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                             saveLabel={saved === 'saved'
                               ? t(locale, 'chartSavedDevice')
                               : locale === 'en' && subjectMode === 'self'
-                                ? 'Save my chart'
+                                ? 'Save my chart for Today'
                                 : t(locale, 'saveThisChart')}
                             onSave={saved === 'saved' ? undefined : (trigger) => {
                               track('next_action_clicked', {
@@ -2704,12 +2707,12 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
               saved === 'saved' ? (
                 <a
                   class="btn btn--primary"
-                  href="/today/"
-                  title={russianCopy?.chart.englishOnlyTitle}
-                  onClick={() => track('next_action_clicked', { state: 'saved', action: 'today' })}
-                  data-primary-action="today"
+                  href={subjectMode === 'other' ? localizePath(locale, '/profile/') : '/today/'}
+                  title={subjectMode === 'other' ? undefined : russianCopy?.chart.englishOnlyTitle}
+                  onClick={() => track('next_action_clicked', { state: 'saved', action: subjectMode === 'other' ? 'saved_charts' : 'today' })}
+                  data-primary-action={subjectMode === 'other' ? 'saved_charts' : 'today'}
                 >
-                  <span>{t(locale, 'seeTodaySky')}{russianCopy?.chart.englishOnlySuffix ?? ''}</span>
+                  <span>{subjectMode === 'other' ? t(locale, 'navSavedCharts') : t(locale, 'seeTodaySky')}{subjectMode === 'other' ? '' : russianCopy?.chart.englishOnlySuffix ?? ''}</span>
                   <span class="orb">→</span>
                 </a>
               ) : null
@@ -2765,7 +2768,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
             && <p class="calc__saved">{t(locale, 'saveYearAheadNote')}</p>}
           {mode !== 'full' && saveError && <p class="calc__error" role="alert">{saveError}</p>}
           {saved === 'saved' && (subjectMode === 'self' && locale === 'en'
-            ? <p class="calc__saved" data-your-page-ready>Saved as your chart. <a href="/profile/">Open your page</a> — it’s at zodiacs.org/me whenever you come back.</p>
+            ? <p class="calc__saved" data-your-page-ready>Saved as your chart on this device. Use it with Today, or <a href="/profile/">open your saved charts</a>. Account sync is a separate choice.</p>
             : <p class="calc__saved">{t(locale, 'chartSavedBeforeLink')} <a href={localizePath(locale, '/profile/')}>{t(locale, 'chartSavedLink')}</a> {t(locale, 'chartSavedAfterLink')}</p>)}
           {mode === 'full' && shareInput && (
             <details class="calc__more" data-chart-more>

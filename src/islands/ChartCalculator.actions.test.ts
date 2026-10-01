@@ -78,7 +78,8 @@ describe('Chart result action contract', () => {
     expect(calculator).toContain("void commitSave(undefined, 'skip')");
     expect(calculator).toContain("const saveError = saved === 'full'");
     expect(calculator).toContain("mode !== 'full' && saveError");
-    expect(calculator).toContain('data-primary-action="today"');
+    expect(calculator).toContain("data-primary-action={subjectMode === 'other' ? 'saved_charts' : 'today'}");
+    expect(calculator).toContain("href={subjectMode === 'other' ? localizePath(locale, '/profile/') : '/today/'}");
     expect(dock).toContain('!tourOpen && saveLabel');
     expect(dock).toContain('aria-disabled={!onSave}');
     expect(dock).toContain('aria-live="polite"');

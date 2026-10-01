@@ -66,7 +66,7 @@ function LivingSelfChartPlaceholder() {
 }
 
 const WEB_PUSH_ENABLED = import.meta.env.PUBLIC_WEB_PUSH_ENABLED === '1';
-const REFERENCE_NOTICE = 'Birth time is unknown. These are reference-moment positions; the Sun sign has not been verified across the whole birth date.';
+const REFERENCE_NOTICE = 'Birth time is unknown. This comparison uses one time on your birth date; the Sun sign has not been checked across the whole birth date. Rising sign and houses are unavailable.';
 
 interface Props {
   editionDate: string;
@@ -178,7 +178,7 @@ export default function TodayBrief({
         ? 'This is the birth chart marked as yours on this device.'
         : 'This is the birth chart you saved most recently on this device.'}
       <span class="today-reading__source-mismatch"> Your quick-read Sun sign is different from this chart’s Sun; the chart is used here.</span>
-      {' '}<a href="/profile/">Change in Profile</a>
+      {' '}<a href="/profile/">Change in Saved charts</a>
     </p>
   );
   const comparisonUnavailable = (needsTransits && transitsFailed)
@@ -339,7 +339,7 @@ export default function TodayBrief({
                 {livingChartEnabled
                   ? livingChartSyncEnabled
                     ? 'Saved moments start on this device. Account sync is a separate choice you can make after saving.'
-                    : 'Saved moments stay on this device now. Existing account sync and privacy controls remain available from Profile.'
+                    : 'Saved moments stay on this device now. Existing account sync and privacy controls remain available in Saved charts.'
                   : 'Your saved chart and this comparison stay in this browser.'}
               </p>
               <details class="today-method-details">
@@ -454,7 +454,7 @@ export default function TodayBrief({
               {livingChartEnabled
                 ? livingChartSyncEnabled
                   ? 'Saved moments start on this device. You decide separately whether to sync them with your account.'
-                  : 'Saved moments stay on this device now. Existing account sync and privacy controls remain available from Profile.'
+                  : 'Saved moments stay on this device now. Existing account sync and privacy controls remain available in Saved charts.'
                 : 'Your saved chart and this comparison stay in this browser.'}
             </p>
             <details class="today-method-details">

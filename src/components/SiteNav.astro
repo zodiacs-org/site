@@ -23,13 +23,23 @@ const developersLabel: Record<Locale, string> = {
   en: 'Developers', es: 'Desarrolladores', pt: 'Desenvolvedores', fr: 'Développeurs', it: 'Sviluppatori', ru: 'Разработчикам',
 };
 const astrofolioLabel: Record<Locale, string> = {
-  en: 'The twelve Zodiac signs',
-  es: 'Los doce signos del Zodiaco — por ahora en inglés',
-  pt: 'Os doze signos do Zodíaco — por enquanto em inglês',
-  fr: 'Les douze signes du Zodiaque — pour l’instant en anglais',
-  it: 'I dodici segni zodiacali — per ora in inglese',
-  ru: 'Двенадцать знаков Зодиака, пока по-английски',
+  en: 'Official Zodiac token collection',
+  es: 'Colección oficial de tokens del Zodiaco — en inglés',
+  pt: 'Coleção oficial de tokens do Zodíaco — em inglês',
+  fr: 'Collection officielle de jetons du Zodiaque — en anglais',
+  it: 'Collezione ufficiale di token zodiacali — in inglese',
+  ru: 'Официальная коллекция токенов Зодиака — на английском',
 };
+// Short explanations keep the navigation labels stable while making each destination clear.
+const destinationDescription: Record<Locale, { today: string; horoscope: string; saved: string }> = {
+  en: { today: 'Today’s sky alongside your birth chart', horoscope: 'Daily readings for your zodiac sign', saved: 'Your birth chart and the people you’ve added' },
+  es: { today: 'El cielo de hoy junto a tu carta natal', horoscope: 'Lecturas diarias para tu signo', saved: 'Tu carta natal y las personas que has añadido' },
+  pt: { today: 'O céu de hoje junto ao seu mapa natal', horoscope: 'Leituras diárias para seu signo', saved: 'Seu mapa natal e as pessoas que você adicionou' },
+  fr: { today: 'Le ciel du jour et votre thème natal', horoscope: 'Lectures quotidiennes pour votre signe', saved: 'Votre thème natal et les personnes ajoutées' },
+  it: { today: 'Il cielo di oggi e il tuo tema natale', horoscope: 'Letture quotidiane per il tuo segno', saved: 'Il tuo tema natale e le persone che hai aggiunto' },
+  ru: { today: 'Небо сегодня в сравнении с вашей картой', horoscope: 'Ежедневные чтения для вашего знака', saved: 'Ваша карта рождения и добавленные люди' },
+};
+const destination = destinationDescription[locale];
 const searchLabel: Record<Locale, string> = {
   en: 'Search the site',
   es: 'Buscar en el sitio',
@@ -91,7 +101,7 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
           href={localizePath(locale, l.href)}
           hreflang={englishOnlyHref(l.href) ? 'en' : undefined}
           aria-current={path.startsWith(localizePath(locale, l.href)) ? 'page' : undefined}
-          title={englishOnlyHref(l.href) ? englishOnlyAria : undefined}
+          title={englishOnlyHref(l.href) ? englishOnlyAria : l.href === '/today/' ? destination.today : l.href === '/horoscopes/' ? destination.horoscope : undefined}
           aria-label={englishOnlyHref(l.href) ? `${l.label}. ${englishOnlyAria}` : undefined}
         >
           {englishOnlyHref(l.href) ? (
@@ -99,7 +109,7 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
           ) : l.label}
         </a>
       ))}
-      <a class="nav__link nav__saved" href={localizePath(locale, '/profile/')} aria-current={path.startsWith(localizePath(locale, '/profile/')) ? 'page' : undefined} data-profile-glyph><span class="nav__avatar" data-profile-avatar aria-hidden="true" hidden></span><span class="nav__saved-label">{t(locale, 'navSavedCharts')}</span></a>
+      <a class="nav__link nav__saved" href={localizePath(locale, '/profile/')} aria-current={path.startsWith(localizePath(locale, '/profile/')) ? 'page' : undefined} title={destination.saved} data-profile-glyph><span class="nav__avatar" data-profile-avatar aria-hidden="true" hidden></span><span class="nav__saved-label">{t(locale, 'navSavedCharts')}</span></a>
     </div>
 
     <a class="nav__profile-shortcut" href={localizePath(locale, '/profile/')} aria-label={profileLabel[locale]} title={profileLabel[locale]} aria-current={path.startsWith(localizePath(locale, '/profile/')) ? 'page' : undefined}>
@@ -127,7 +137,8 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
       href="/astrofolio/"
       hreflang={englishOnly ? 'en' : undefined}
       aria-current={path === '/astrofolio/' ? 'page' : undefined}
-      title={englishOnlyAria}
+      title={astrofolioLabel[locale]}
+      aria-description={astrofolioLabel[locale]}
       aria-label={englishOnly ? `${t(locale, 'navCollect')}. ${englishOnlyAria}` : undefined}
     >
       {englishOnly ? (
@@ -190,10 +201,10 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
       {visibleNavTools.filter((tool) => tool.href === '/birth-chart/' || tool.href === '/compatibility/').map((tool) => (
         <a class="mobile-menu__link" href={localizePath(locale, tool.href)} hreflang={englishOnlyHref(tool.href) ? 'en' : undefined} title={englishOnlyHref(tool.href) ? englishOnlyAria : undefined}>{t(locale, tool.label)}{toolNeedsEnglishCue(tool) ? englishOnly?.suffix : ''}</a>
       ))}
-      {hasDailyReading && <a class="mobile-menu__link" style="--i:0" href={localizePath(locale, '/today/')}>{todayLabel}</a>}
+      {hasDailyReading && <a class="mobile-menu__link mobile-menu__link--explained" style="--i:0" href={localizePath(locale, '/today/')}><span>{todayLabel}</span><small>{destination.today}</small></a>}
       <a class="mobile-menu__link" style={`--i:${hasDailyReading ? 1 : 0}`} href={localizePath(locale, '/learn/')} hreflang={englishOnlyHref('/learn/') ? 'en' : undefined} title={englishOnlyHref('/learn/') ? englishOnlyAria : undefined}>{t(locale, 'navLearn')}{englishOnlyHref('/learn/') ? englishOnly?.suffix : ''}</a>
-      <a class="mobile-menu__link" style={`--i:${hasDailyReading ? 2 : 1}`} href={localizePath(locale, '/horoscopes/')} hreflang={englishOnlyHref('/horoscopes/') ? 'en' : undefined} title={englishOnlyHref('/horoscopes/') ? englishOnlyAria : undefined}>{t(locale, 'navHoroscopes')}{englishOnlyHref('/horoscopes/') ? englishOnly?.suffix : ''}</a>
-      <a class="mobile-menu__link" style={`--i:${hasDailyReading ? 3 : 2}`} href={localizePath(locale, '/profile/')}><span class="nav__avatar" data-profile-avatar aria-hidden="true" hidden></span>{t(locale, 'navSavedCharts')}</a>
+      <a class="mobile-menu__link mobile-menu__link--explained" style={`--i:${hasDailyReading ? 2 : 1}`} href={localizePath(locale, '/horoscopes/')} hreflang={englishOnlyHref('/horoscopes/') ? 'en' : undefined} title={englishOnlyHref('/horoscopes/') ? englishOnlyAria : undefined}><span>{t(locale, 'navHoroscopes')}{englishOnlyHref('/horoscopes/') ? englishOnly?.suffix : ''}</span><small>{destination.horoscope}</small></a>
+      <a class="mobile-menu__link mobile-menu__link--explained" style={`--i:${hasDailyReading ? 3 : 2}`} href={localizePath(locale, '/profile/')}><span class="nav__avatar" data-profile-avatar aria-hidden="true" hidden></span><span>{t(locale, 'navSavedCharts')}</span><small>{destination.saved}</small></a>
     </div>
     <div class="mobile-menu__group">
       <span class="mobile-menu__label">{t(locale, 'navTools')}</span>
@@ -685,16 +696,17 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
     border-bottom: 1px solid var(--hair);
   }
   .mobile-menu__link:last-child { border-bottom: 0; }
+  .mobile-menu__link--explained,
   .mobile-menu__registry {
     display: grid;
     gap: 5px;
   }
-  .mobile-menu__registry small {
-    color: var(--faint);
-    font-family: var(--font-nav-mono);
-    font-size: 9px;
-    letter-spacing: 0.04em;
-    line-height: 1.35;
+  .mobile-menu__link small {
+    color: var(--muted);
+    font-family: var(--font-nav-sans);
+    font-size: 12px;
+    letter-spacing: 0;
+    line-height: 1.45;
   }
   .mobile-menu__tools {
     display: grid; gap: 0 18px;
