@@ -1,0 +1,196 @@
+{
+  "schema": "zodiacs.compute-api.f60-cdn-identity-supplement.v1",
+  "scope": "Supplement only; earlier export-level unknowns remain historical evidence. No unrelated export rows or raw IP/header/secret values included.",
+  "windowUtc": {
+    "startInclusive": "2026-10-01T06:24:00Z",
+    "endExclusive": "2026-10-01T06:25:00Z"
+  },
+  "cdnQueryObservation": {
+    "metric": "Requests Count",
+    "aggregation": "Sum",
+    "distinctDisplayedIpCount": 1,
+    "requestPath": "/api/v1/time",
+    "deploymentId": "dpl_6uGzGxdgxboMZ5jeFwQMTL24demr",
+    "httpStatus": 200,
+    "count": 41,
+    "additionalDisplayedRows": 0,
+    "inputIsParentRedacted": true
+  },
+  "populationReconciliation": {
+    "exactRequestIdSetEqualityOfPrivateExportWindowAndProbe": true,
+    "exportWindowRequests": 41,
+    "probeRequests": 41,
+    "matchingCdnAggregateCount": 41,
+    "perRequestCdnIpJoinAvailable": false,
+    "method": "Request-ID equality validates export/probe population; CDN aggregate reconciles by exact window/path/deployment/status/count. CDN snapshot contains no per-request IDs."
+  },
+  "sdkIncomingDistinctIpCount": null,
+  "effectiveSdkDerivedKeyCount": null,
+  "sdkDecisionRegionCount": null,
+  "sdkPathCdnObservation": {
+    "requestPath": "/.well-known/vercel/rate-limit-api/zodiacs-compute-api",
+    "deploymentId": "dpl_6uGzGxdgxboMZ5jeFwQMTL24demr",
+    "count": 41,
+    "httpStatus": 204,
+    "cdnRegions": [
+      "iad1"
+    ],
+    "distinctCdnRegionCount": 1,
+    "wafAction": "allow",
+    "wafRuleIdDisplay": "not set",
+    "individualSubrequestToApplicationRequestJoinAvailable": false,
+    "limit": "CDN region is observed for the SDK path. Internal counter-shard/decision-region and per-key/window values are not exposed. Aggregate correspondence has no per-request trace join."
+  },
+  "ruleConfigurationSnapshot": {
+    "sdkCondition": "@vercel/firewall",
+    "rateLimitId": "zodiacs-compute-api",
+    "algorithm": "Fixed Window",
+    "windowSeconds": 60,
+    "requestLimit": 40,
+    "countingKeysDisplay": [
+      "IP Address"
+    ],
+    "actionDisplay": "Too Many Requests (429)",
+    "configurationMismatchFound": false
+  },
+  "ruleFilteredUi": {
+    "ruleId": "rule_zodiacs_compute_api_kEzTOq",
+    "observed": "No Data",
+    "numericDecisionCount": null,
+    "limit": "No inspected source establishes complete allowed-SDK-call coverage for this rule-filtered view; dashes cannot prove zero SDK calls or failed counter increments."
+  },
+  "productionSourceFindings": [
+    "The compute route dispatches before other compatibility routes. api/_compute/handler.ts supplies only localTime, with no injected rateLimit override.",
+    "Generated production-source bundle awaits firewallVerdict before body parsing/dispatch. time uses the zodiacs-compute-api rate-limit ID.",
+    "NODE_ENV other than production, a missing key/rule, unexpected response or exception fails closed. Under the inspected installed SDK, the production allow branch follows a 204 response.",
+    "SDK uses x-real-ip by default; same headers and fixed environment yield a deterministic derived key. Function instance ID is not a key input.",
+    "Source imports SDK externally. Production lockfile selects 1.2.1; exact deployed SDK package bytes and runtime secret inputs were not inspected.",
+    "vercel.json has no rewrite matching the default SDK .well-known path; the general slash redirect explicitly excludes .well-known."
+  ],
+  "localReplay": {
+    "artifact": "f60-sdk-local-replay.json",
+    "sha256": "4684aa23fd6dd9f9fb49ba7fd6f627736edd2508785668c0b2bdc985e19d9df0",
+    "syntheticSequentialChecks": 41,
+    "interceptedFetchCalls": 41,
+    "distinctDerivedKeys": 1,
+    "decisionAwaited": true,
+    "statusVerdicts": {
+      "204": "allowed",
+      "403": "limited",
+      "404": "unavailable",
+      "429": "limited",
+      "500": "unavailable"
+    },
+    "limit": "Mocked local behavior only; no live root cause or live 204 observation established."
+  },
+  "updatedConclusions": {
+    "rotation": "No rotation is observed in CDN clientIp: one displayed source covers the matching 41-request aggregate. Along with documented x-real-ip/client-IP semantics, this materially weakens rotating client egress as an explanation. Runtime SDK header/key equality is still not directly captured.",
+    "failure": "The configured 40/60 rule has not been demonstrated to block this 41-success population. Exact cause remains unresolved. One CDN IP alone does not identify every internal SDK counting key/region/window or establish a platform counter defect.",
+    "noData": "Rule-filtered No Data cannot mean no SDK calls here: the unfiltered SDK-path table contains 41 HTTP 204/allow records. WAF Rule ID not set does not by itself establish whether a rate-limit counter matched or incremented.",
+    "source": "No source-level skip, per-instance key ingredient, or unawaited SDK decision was found in the inspected production-source path.",
+    "sdkResponse": "The same-window/deployment SDK-path aggregate directly records 41 HTTP 204/allow responses. This corroborates the production-source allow path. No per-request trace join was provided.",
+    "regions": "All 41 observed SDK-path CDN records are in iad1. This weakens cross-CDN-region splitting as an explanation; internal counter routing is not separately exposed.",
+    "configuration": "The rule snapshot has the exact SDK condition/ID, 40/60 fixed window, IP Address key and 429 action. No obvious condition/ID/threshold mismatch was found. Counter association and window state remain unresolved."
+  },
+  "smallestRemainingReadOnlyCheck": {
+    "completedCheck": "Existing SDK-path CDN query now establishes 41 HTTP 204/allow records in iad1, with WAF Rule ID not set.",
+    "remainingEvidence": "For those existing SDK requests: effective key distinct count and counter/rule/window association, including the rule configuration revision active during the probe if available.",
+    "purpose": "Distinguish identity/window/configuration association from a platform counter problem without guessing from UI rule-ID attribution.",
+    "ifUnavailable": "The supplied exports and aggregates do not expose those fields. Record this limit; provider-side existing-request trace/key/window correlation would be needed. No production probe, logging change, rule change or secret read is justified by this supplement."
+  },
+  "officialDocs": [
+    {
+      "url": "https://vercel.com/docs/headers/request-headers",
+      "retrieved": "2026-10-01",
+      "lastUpdated": "2025-12-13",
+      "sections": [
+        "x-forwarded-for",
+        "x-real-ip"
+      ],
+      "finding": "x-forwarded-for is the client public IP; Vercel ordinarily overwrites it to prevent spoofing. x-real-ip is documented as identical to x-forwarded-for. This is header semantics, not a captured header value for these requests."
+    },
+    {
+      "url": "https://vercel.com/docs/vercel-firewall/vercel-waf/rate-limiting-sdk",
+      "retrieved": "2026-10-01",
+      "finding": "Each unique key gets its own bucket; default key client IP; counters per region. No allowed-SDK traffic-log completeness guarantee found."
+    },
+    {
+      "url": "https://vercel.com/changelog/improved-analytics-experience-now-available-on-the-vercel-firewall",
+      "published": "2025-11-20",
+      "retrieved": "2026-10-01",
+      "finding": "Traffic supports grouping and allowed/logged/denied/challenged/rate-limited filters. It does not specify a complete SDK decision ledger."
+    }
+  ],
+  "retrievalLimits": [
+    "The dedicated Firewall Observability documentation page failed direct retrieval twice; SDK docs and official changelog do not settle allowed SDK decision completeness. Documentation-search connector returned no more specific coverage statement."
+  ],
+  "inputs": {
+    "vercel-general-test-ip-count.txt": {
+      "sha256": "606d7ae688673537c98802978e20f2f22e557a59143b477470bb36a10adacc8e",
+      "url": "https://vercel.com/zodiacsofficial/zodiacs-org/firewall/traffic?range=1790835840-1790835900&builder=true&by=clientIp%2CrequestPath&time=2026-10-01T06%3A24%3A00.000Z%2F2026-10-01T06%3A25%3A00.000Z&search=%2Fapi%2Fv1%2Ftime",
+      "displayedDataRows": 1,
+      "redaction": "Only displayed IP Address values replaced; one row/one distinct source IP,41requests, path/api/v1/time,06:24\u201306:25UTC"
+    },
+    "vercel-general-test-ip-deployment-count.txt": {
+      "sha256": "1b78259e9050fcdc3a3f85149805accdd0ed47ac0320f413f8fdbae8a75f8863",
+      "url": "https://vercel.com/zodiacsofficial/zodiacs-org/firewall/traffic?range=1790835840-1790835900&builder=true&by=clientIp%2CrequestPath%2CdeploymentId%2ChttpStatus&time=2026-10-01T06%3A24%3A00.000Z%2F2026-10-01T06%3A25%3A00.000Z&search=%2Fapi%2Fv1%2Ftime",
+      "displayedDataRows": 1,
+      "redaction": "Displayed IP Address values replaced with single source label; no other displayed query rows existed"
+    },
+    "vercel-general-limiter-no-decisions.txt": {
+      "sha256": "ad0c06445f5a0eafb6155b1aec2fe8bddd0e4d3b77d09271b5a1e4d83c10c18c",
+      "url": "https://vercel.com/zodiacsofficial/zodiacs-org/firewall/traffic?range=1790835840-1790835900&filter=rule_zodiacs_compute_api_kEzTOq",
+      "observation": "No Data; action counters display dashes, not numeric zero"
+    },
+    "vercel-general-limiter-sdk-decisions.txt": {
+      "sha256": "3e6596d1c6ef819fc92d3ff0b2941eb695ab3261009aaa3f0519b7760cabdc67",
+      "url": "https://vercel.com/zodiacsofficial/zodiacs-org/firewall/traffic?range=1790835840-1790835900&builder=true&by=requestPath%2CdeploymentId%2ChttpStatus%2CedgeNetworkRegion%2CwafAction%2CwafRuleId&time=2026-10-01T06%3A24%3A00.000Z%2F2026-10-01T06%3A25%3A00.000Z&search=%2F.well-known%2Fvercel%2Frate-limit-api%2Fzodiacs-compute-api",
+      "displayedDataRows": 1,
+      "observation": "41 SDK-path requests; 204; iad1; allow; WAF Rule ID not set"
+    },
+    "vercel-compute-rule.txt": {
+      "sha256": "f89f7392f70304d93d196187de3e71104a7173ab2770c333eaf919e33da58235",
+      "observation": "Matching SDK ID condition; Fixed Window; 60 seconds; 40 requests; IP Address key; 429 action. Active/no-bypass verification supplied separately by parent."
+    }
+  },
+  "sourceProvenance": {
+    "api/compatibility.ts": {
+      "sourceSha": "9cfafa3e742de943062c9174338472781724a4b5",
+      "sha256": "3e2f4d0789628df05aad5927fb36c4d8a592834c0c8534fb22f5a28b95460d30"
+    },
+    "api/_compute/handler.ts": {
+      "sourceSha": "9cfafa3e742de943062c9174338472781724a4b5",
+      "sha256": "0af19c0d21f42be3ce9de21a336f32d4d01a078678490283a128434a03cf36e0"
+    },
+    "api/_compute/compute.mjs": {
+      "sourceSha": "9cfafa3e742de943062c9174338472781724a4b5",
+      "sha256": "ff3828bcc6933af04b7cd547c63be0f37431795019b1cc109da4a38e316c2c9a"
+    },
+    "src/lib/compute-api/handler.ts": {
+      "sourceSha": "9cfafa3e742de943062c9174338472781724a4b5",
+      "sha256": "481f3d8d82f424e3b10ad56c8203cceec3a54d3536dc11fadc57d605ba054756"
+    },
+    "src/lib/compute-api/constants.ts": {
+      "sourceSha": "9cfafa3e742de943062c9174338472781724a4b5",
+      "sha256": "0175fc0249b2f2917912a4cf3c5ec9035f9885e52d2a169cd36fb9b6016fd245"
+    },
+    "vercel.json": {
+      "sourceSha": "9cfafa3e742de943062c9174338472781724a4b5",
+      "sha256": "58344b40b841520f7fadb1a8098cb20ad2c37fb9fe5f92313098db8e62dc597f"
+    }
+  },
+  "preservedArtifactHashes": {
+    "f60-counting-identity-diagnosis.json": "b86465c1e262fbcc3bd32290d2fcb98da1c3b82f0f21b42e7d09334addb0b410",
+    "f60-counting-identity-diagnosis.md": "17f021ff72a6b2ebafc20807c9385bc5734a3f0f983a68e51854cd6fd0ba2999",
+    "vercel-baseline-matched.json": "1017bd2a500c02e04d8bb259d1b81ac4764a1fa71c58b7fc62b800f3a9dc3376",
+    "vercel-baseline-summary.json": "2362b223da5fd57d27034ebc926edaacdd39d19b3be4a97eb5508547942c406b",
+    "vercel-baseline-methodology.md": "7d157810c6b515cdd55d14c226bdb06ee5b6d88d5b8d5d046fd45953353d360e"
+  },
+  "safety": {
+    "productionRequestsSent": 0,
+    "configurationChanges": 0,
+    "runtimeSecretsRead": false,
+    "rawIpsIncluded": false,
+    "overviewTotalUsed": false
+  }
+}

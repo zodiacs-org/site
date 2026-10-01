@@ -1,0 +1,331 @@
+{
+  "schema": "zodiacs.compute-api.synthetic-platform-join.v1",
+  "sourceSha": "9cfafa3e742de943062c9174338472781724a4b5",
+  "deploymentId": "dpl_6uGzGxdgxboMZ5jeFwQMTL24demr",
+  "projectId": "prj_nRTO3q3aNYLfaM3dotAowOc028fO",
+  "baselineRequestCount": 120,
+  "exactUniqueMatches": 120,
+  "provenance": {
+    "baseline": {
+      "relativePath": "production-2026-10-01/requests.jsonl",
+      "sha256": "f2b0a8b973b570914a3784628addf27a145cef84f72c6e6945a80c55d2e93b4f"
+    },
+    "plan": {
+      "relativePath": "production-2026-10-01/plan.json",
+      "sha256": "3d3b73fd3d192bd95c1639c3b3c17d5b47eaede67e35583be36a3ce207b3de06"
+    },
+    "privateExport": {
+      "sha256": "75cc8c2c44d1290e4a5560f24e0d5f57f1e97e860b9c2c8305e7a4cf3e7b697a",
+      "purpose": "Original retained privately; all nonbaseline records excluded from this artifact"
+    },
+    "metricSemanticsUiEvidence": {
+      "relativePath": "vercel-first-chart-detail.txt",
+      "sha256": "f3011b835b5f9fa1df92a04f363c8d9cd5cdc68b3f9efe031e3437580252105c",
+      "use": "Units and column meanings only; this separate sanity request is excluded from baseline statistics"
+    }
+  },
+  "sanitization": [
+    "Explicit baseline request-ID allow-list; no nonbaseline export rows included",
+    "Raw export message, user-agent, query, trace/session IDs, and invocation IDs omitted",
+    "Raw instance IDs replaced with per-artifact stable labels",
+    "Synthetic response bodies, receipts and input payloads omitted; response hashes and documented case provenance retained"
+  ],
+  "limitations": [
+    "durationMs is Vercel export execution duration, not active CPU or a demonstrated billed duration",
+    "No startType or cold-start field exists in supplied export; no cold/warm class inferred",
+    "Memory fields use Vercel UI MB labels; GB-hour billing and allocation sharing are not measured",
+    "maxMemoryUsed may represent instance peak state and must not be interpreted as isolated per-request allocation",
+    "concurrency is UI-labelled Peak Concurrency; it does not reconstruct complete scheduling or establish a start type",
+    "HTTP Date has one-second resolution; exact request-ID equality is the join key",
+    "All observations cover documented synthetic workloads, not worst-case budgets or population performance"
+  ],
+  "percentileMethod": "nearest rank: sorted[ceil(p*n)-1]; n=20, p50=10th, p95=19th observation",
+  "platformFirstTimestamp": "2026-10-01T06:05:07.477Z",
+  "platformLastTimestamp": "2026-10-01T06:09:27.255Z",
+  "regions": [
+    "iad1"
+  ],
+  "functionPaths": [
+    "/api/compatibility"
+  ],
+  "instanceCount": 1,
+  "concurrencyCounts": {
+    "1": 120
+  },
+  "allMatchedMessagesEmpty": true,
+  "executionDurationMs": {
+    "n": 120,
+    "min": 17,
+    "p50": 38,
+    "p95": 123,
+    "max": 254,
+    "mean": 50.875,
+    "sum": 6105
+  },
+  "memorySizeMbValues": [
+    2048
+  ],
+  "recordedPeakMemoryMb": {
+    "n": 120,
+    "min": 208,
+    "p50": 231,
+    "p95": 249,
+    "max": 249,
+    "mean": 233.575
+  },
+  "byEndpoint": {
+    "chart": {
+      "sampleCount": 20,
+      "executionDurationMs": {
+        "n": 20,
+        "min": 17,
+        "p50": 22,
+        "p95": 44,
+        "max": 63,
+        "mean": 27.85,
+        "sum": 557
+      },
+      "recordedPeakMemoryMb": {
+        "n": 20,
+        "min": 208,
+        "p50": 230,
+        "p95": 249,
+        "max": 249,
+        "mean": 233.35
+      },
+      "memorySizeMbValues": [
+        2048
+      ],
+      "concurrencyCounts": {
+        "1": 20
+      },
+      "instanceLabels": [
+        "instance-01"
+      ],
+      "clientElapsedMs": {
+        "n": 20,
+        "min": 78.30936300000758,
+        "p50": 93.56420100000105,
+        "p95": 129.47802399999637,
+        "max": 6220.699670000001,
+        "mean": 403.5203113499983,
+        "sum": 8070.406226999966
+      },
+      "platformFirstTimestamp": "2026-10-01T06:05:07.477Z",
+      "platformLastTimestamp": "2026-10-01T06:09:27.255Z",
+      "startType": null,
+      "costPerThousandUsd": null
+    },
+    "positions": {
+      "sampleCount": 20,
+      "executionDurationMs": {
+        "n": 20,
+        "min": 17,
+        "p50": 25,
+        "p95": 49,
+        "max": 55,
+        "mean": 27.75,
+        "sum": 555
+      },
+      "recordedPeakMemoryMb": {
+        "n": 20,
+        "min": 208,
+        "p50": 231,
+        "p95": 249,
+        "max": 249,
+        "mean": 233.1
+      },
+      "memorySizeMbValues": [
+        2048
+      ],
+      "concurrencyCounts": {
+        "1": 20
+      },
+      "instanceLabels": [
+        "instance-01"
+      ],
+      "clientElapsedMs": {
+        "n": 20,
+        "min": 75.95829599999706,
+        "p50": 89.63779499999873,
+        "p95": 147.85077000000456,
+        "max": 167.18541599999844,
+        "mean": 98.6470549499988,
+        "sum": 1972.941098999976
+      },
+      "platformFirstTimestamp": "2026-10-01T06:05:07.642Z",
+      "platformLastTimestamp": "2026-10-01T06:09:16.255Z",
+      "startType": null,
+      "costPerThousandUsd": null
+    },
+    "houses": {
+      "sampleCount": 20,
+      "executionDurationMs": {
+        "n": 20,
+        "min": 20,
+        "p50": 38,
+        "p95": 72,
+        "max": 74,
+        "mean": 40.5,
+        "sum": 810
+      },
+      "recordedPeakMemoryMb": {
+        "n": 20,
+        "min": 208,
+        "p50": 231,
+        "p95": 249,
+        "max": 249,
+        "mean": 233.1
+      },
+      "memorySizeMbValues": [
+        2048
+      ],
+      "concurrencyCounts": {
+        "1": 20
+      },
+      "instanceLabels": [
+        "instance-01"
+      ],
+      "clientElapsedMs": {
+        "n": 20,
+        "min": 79.36381099998835,
+        "p50": 106.20525899999484,
+        "p95": 161.26348500000313,
+        "max": 180.58814200002234,
+        "mean": 110.74386584999692,
+        "sum": 2214.8773169999386
+      },
+      "platformFirstTimestamp": "2026-10-01T06:05:09.850Z",
+      "platformLastTimestamp": "2026-10-01T06:09:18.455Z",
+      "startType": null,
+      "costPerThousandUsd": null
+    },
+    "events": {
+      "sampleCount": 20,
+      "executionDurationMs": {
+        "n": 20,
+        "min": 91,
+        "p50": 116,
+        "p95": 168,
+        "max": 254,
+        "mean": 126.5,
+        "sum": 2530
+      },
+      "recordedPeakMemoryMb": {
+        "n": 20,
+        "min": 209,
+        "p50": 230,
+        "p95": 249,
+        "max": 249,
+        "mean": 233.8
+      },
+      "memorySizeMbValues": [
+        2048
+      ],
+      "concurrencyCounts": {
+        "1": 20
+      },
+      "instanceLabels": [
+        "instance-01"
+      ],
+      "clientElapsedMs": {
+        "n": 20,
+        "min": 154.7635450000089,
+        "p50": 182.15974700000515,
+        "p95": 238.03313399999752,
+        "max": 302.42083300000013,
+        "mean": 191.6935103499991,
+        "sum": 3833.8702069999817
+      },
+      "platformFirstTimestamp": "2026-10-01T06:05:12.045Z",
+      "platformLastTimestamp": "2026-10-01T06:09:20.656Z",
+      "startType": null,
+      "costPerThousandUsd": null
+    },
+    "time": {
+      "sampleCount": 20,
+      "executionDurationMs": {
+        "n": 20,
+        "min": 18,
+        "p50": 26,
+        "p95": 45,
+        "max": 57,
+        "mean": 27.85,
+        "sum": 557
+      },
+      "recordedPeakMemoryMb": {
+        "n": 20,
+        "min": 210,
+        "p50": 230,
+        "p95": 249,
+        "max": 249,
+        "mean": 233.95
+      },
+      "memorySizeMbValues": [
+        2048
+      ],
+      "concurrencyCounts": {
+        "1": 20
+      },
+      "instanceLabels": [
+        "instance-01"
+      ],
+      "clientElapsedMs": {
+        "n": 20,
+        "min": 76.93084500000987,
+        "p50": 90.13079700000526,
+        "p95": 116.94121900000027,
+        "max": 137.87665299999935,
+        "mean": 94.96347519999782,
+        "sum": 1899.2695039999562
+      },
+      "platformFirstTimestamp": "2026-10-01T06:05:14.248Z",
+      "platformLastTimestamp": "2026-10-01T06:09:22.855Z",
+      "startType": null,
+      "costPerThousandUsd": null
+    },
+    "sky-fact": {
+      "sampleCount": 20,
+      "executionDurationMs": {
+        "n": 20,
+        "min": 41,
+        "p50": 47,
+        "p95": 76,
+        "max": 123,
+        "mean": 54.8,
+        "sum": 1096
+      },
+      "recordedPeakMemoryMb": {
+        "n": 20,
+        "min": 210,
+        "p50": 230,
+        "p95": 249,
+        "max": 249,
+        "mean": 234.15
+      },
+      "memorySizeMbValues": [
+        2048
+      ],
+      "concurrencyCounts": {
+        "1": 20
+      },
+      "instanceLabels": [
+        "instance-01"
+      ],
+      "clientElapsedMs": {
+        "n": 20,
+        "min": 102.24581300001591,
+        "p50": 118.04224700000486,
+        "p95": 140.35723599998164,
+        "max": 173.2962060000027,
+        "mean": 121.4602213500024,
+        "sum": 2429.204427000048
+      },
+      "platformFirstTimestamp": "2026-10-01T06:05:16.446Z",
+      "platformLastTimestamp": "2026-10-01T06:09:25.055Z",
+      "startType": null,
+      "costPerThousandUsd": null
+    }
+  },
+  "matchedArtifactSha256": "1017bd2a500c02e04d8bb259d1b81ac4764a1fa71c58b7fc62b800f3a9dc3376"
+}
