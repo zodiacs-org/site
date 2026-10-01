@@ -1,0 +1,536 @@
+{
+  "schema": "zodiacs.compute-api.f60-identity-diagnosis.v1",
+  "probeCount": 41,
+  "exactUniqueExportMatches": 41,
+  "firstPlatformTimestampUtc": "2026-10-01T06:24:33.688000+00:00",
+  "lastPlatformTimestampUtc": "2026-10-01T06:24:39.626000+00:00",
+  "platformSpanMs": 5938,
+  "statusCounts": {
+    "200": 41
+  },
+  "functionInstanceCount": 2,
+  "functionRegions": [
+    "iad1"
+  ],
+  "observedClientIpFields": [],
+  "distinctClientIpCount": null,
+  "distinctRateLimitKeyCount": null,
+  "rateLimitDecisionRegionCount": null,
+  "countingIdentityConclusion": "Not observable in the supplied export or captured response headers. Unknown, not zero.",
+  "sdk": {
+    "package": "@vercel/firewall",
+    "version": "1.2.1",
+    "officialRepository": "git+https://github.com/vercel/vercel.git",
+    "npmArchive": "https://registry.npmjs.org/@vercel/firewall/-/firewall-1.2.1.tgz",
+    "installedRateLimitJsSha256": "dd9a5d872e5073afe8f5dfb1bbec506ae4114e0bf510f76b055a517006ecd362",
+    "verifiedSemantics": [
+      "Handler passes only headers=req.headers, with no rateLimitKey override",
+      "SDK defaults logical key to x-real-ip and throws when it cannot determine that key",
+      "SDK adds a deterministic SHA-256 suffix based on logical key, rule ID and configured secret inputs; no timestamp/random/instance ID enters that expression",
+      "SDK sends rate-limit ID and derived key headers to a same-host .well-known endpoint; also forwards x-real-ip, x-forwarded-for and original headers under x-rr- names",
+      "SDK awaits the GET response: 204 allows, 429 rate-limits, 403 rate-limits with blocked, 404 not-found; handler fails closed on not-found or error"
+    ],
+    "localSourceLines": {
+      "dist/rate-limit.js": "25-113 (key 51-67, outbound headers 68-86, result 88-113)",
+      "handler.ts": "83-93",
+      "deployed compute.mjs": "6151-6161"
+    },
+    "runtimeSecretsRead": false,
+    "deployedPackageBytesDownloaded": false
+  },
+  "sourceProvenance": {
+    "src/lib/compute-api/handler.ts": {
+      "sourceSha": "9cfafa3e742de943062c9174338472781724a4b5",
+      "fileSha256": "481f3d8d82f424e3b10ad56c8203cceec3a54d3536dc11fadc57d605ba054756"
+    },
+    "src/lib/compute-api/constants.ts": {
+      "sourceSha": "9cfafa3e742de943062c9174338472781724a4b5",
+      "fileSha256": "0175fc0249b2f2917912a4cf3c5ec9035f9885e52d2a169cd36fb9b6016fd245"
+    },
+    "api/_compute/compute.mjs": {
+      "sourceSha": "9cfafa3e742de943062c9174338472781724a4b5",
+      "fileSha256": "ff3828bcc6933af04b7cd547c63be0f37431795019b1cc109da4a38e316c2c9a"
+    }
+  },
+  "officialDocs": [
+    {
+      "url": "https://vercel.com/docs/vercel-firewall/vercel-waf/rate-limiting-sdk",
+      "lastUpdated": "2026-07-23",
+      "retrieved": "2026-10-01",
+      "finding": "Each distinct key has its own bucket; default key is client IP. Counters are per-region, so one key hitting multiple regions can exceed a single-region threshold in aggregate."
+    },
+    {
+      "url": "https://vercel.com/docs/vercel-firewall/vercel-waf/rate-limiting",
+      "retrieved": "2026-10-01",
+      "retrievalLimit": "Search-index page text available; direct open returned internal error. Search text labels last update 2025-09-24.",
+      "finding": "Fixed Window supported on Pro; limit is stated for a common source in the selected window. No off-by-one or asynchronous counter tolerance is specified in the inspected text."
+    }
+  ],
+  "conclusions": {
+    "ipRotation": "Possible because distinct incoming x-real-ip values produce distinct default SDK keys/buckets. Whether rotation occurred is unverified.",
+    "counterFailure": "Not proved: the test does not establish one counting identity or the exact rate-limit decision region/window for all 41 requests.",
+    "twoInstances": "Two function instances are observed. Instance ID is not part of the SDK key expression, so this alone neither explains nor proves separate counters.",
+    "asyncOrOffByOne": "The local SDK awaits its network decision. No inspected official SDK/WAF documentation establishes a sanctioned one-request overrun or SDK fire-and-forget counting. Server internal consistency/rounding cannot be derived from this client code.",
+    "fixedWindow": "All application request timestamps are within 5.938 seconds in one UTC minute. The platform export has no bucket reset timestamp or remaining-count field; exact decision-window boundaries are not exported.",
+    "globalBudget": "A strict globally aggregated per-address cap is not established by a per-region rate-limit rule."
+  },
+  "minimumAdditionalEvidence": "For these existing probes, obtain only distinct counts of trusted client IP/default key and rate-limit decision region, plus same-key/window counters if available. Do not publish raw IPs, secrets or headers. No further probe or configuration change is authorized by this diagnostic.",
+  "inputHashes": {
+    "alignedProbeSha256": "09a3f439665dafe63940b68c7b0fb10c2160579596de46572ede635a85e770be",
+    "privateExportSha256": "75cc8c2c44d1290e4a5560f24e0d5f57f1e97e860b9c2c8305e7a4cf3e7b697a"
+  },
+  "matchedSyntheticProbes": [
+    {
+      "index": 1,
+      "endpoint": "time",
+      "requestId": "npbsh-1790835873688-85165eb55d1e",
+      "timestampInMs": 1790835873688,
+      "status": 200,
+      "region": "iad1",
+      "instanceLabel": "instance-01",
+      "peakConcurrency": 1,
+      "messageEmpty": true
+    },
+    {
+      "index": 2,
+      "endpoint": "time",
+      "requestId": "bz292-1790835873847-37fb7b463486",
+      "timestampInMs": 1790835873847,
+      "status": 200,
+      "region": "iad1",
+      "instanceLabel": "instance-01",
+      "peakConcurrency": 1,
+      "messageEmpty": true
+    },
+    {
+      "index": 3,
+      "endpoint": "time",
+      "requestId": "wq7xp-1790835873969-bcd049e86bb1",
+      "timestampInMs": 1790835873969,
+      "status": 200,
+      "region": "iad1",
+      "instanceLabel": "instance-01",
+      "peakConcurrency": 1,
+      "messageEmpty": true
+    },
+    {
+      "index": 4,
+      "endpoint": "time",
+      "requestId": "tswn9-1790835874191-fe10ce039e8f",
+      "timestampInMs": 1790835874191,
+      "status": 200,
+      "region": "iad1",
+      "instanceLabel": "instance-01",
+      "peakConcurrency": 1,
+      "messageEmpty": true
+    },
+    {
+      "index": 5,
+      "endpoint": "time",
+      "requestId": "9z446-1790835874335-03078f187cdc",
+      "timestampInMs": 1790835874335,
+      "status": 200,
+      "region": "iad1",
+      "instanceLabel": "instance-01",
+      "peakConcurrency": 1,
+      "messageEmpty": true
+    },
+    {
+      "index": 6,
+      "endpoint": "time",
+      "requestId": "2c65w-1790835874461-25fcb12b8064",
+      "timestampInMs": 1790835874461,
+      "status": 200,
+      "region": "iad1",
+      "instanceLabel": "instance-01",
+      "peakConcurrency": 1,
+      "messageEmpty": true
+    },
+    {
+      "index": 7,
+      "endpoint": "time",
+      "requestId": "c78kq-1790835874583-0b974c8aa4cf",
+      "timestampInMs": 1790835874583,
+      "status": 200,
+      "region": "iad1",
+      "instanceLabel": "instance-01",
+      "peakConcurrency": 1,
+      "messageEmpty": true
+    },
+    {
+      "index": 8,
+      "endpoint": "time",
+      "requestId": "rgcrs-1790835874720-742ab2f8edd1",
+      "timestampInMs": 1790835874720,
+      "status": 200,
+      "region": "iad1",
+      "instanceLabel": "instance-01",
+      "peakConcurrency": 1,
+      "messageEmpty": true
+    },
+    {
+      "index": 9,
+      "endpoint": "time",
+      "requestId": "qkn7l-1790835874845-b7b2eae1acc4",
+      "timestampInMs": 1790835874845,
+      "status": 200,
+      "region": "iad1",
+      "instanceLabel": "instance-01",
+      "peakConcurrency": 1,
+      "messageEmpty": true
+    },
+    {
+      "index": 10,
+      "endpoint": "time",
+      "requestId": "465rp-1790835874971-266da44a6232",
+      "timestampInMs": 1790835874971,
+      "status": 200,
+      "region": "iad1",
+      "instanceLabel": "instance-01",
+      "peakConcurrency": 1,
+      "messageEmpty": true
+    },
+    {
+      "index": 11,
+      "endpoint": "time",
+      "requestId": "5ccjb-1790835875098-76fde1b7a1ef",
+      "timestampInMs": 1790835875098,
+      "status": 200,
+      "region": "iad1",
+      "instanceLabel": "instance-01",
+      "peakConcurrency": 1,
+      "messageEmpty": true
+    },
+    {
+      "index": 12,
+      "endpoint": "time",
+      "requestId": "sjl6l-1790835875219-cc1772559c25",
+      "timestampInMs": 1790835875219,
+      "status": 200,
+      "region": "iad1",
+      "instanceLabel": "instance-01",
+      "peakConcurrency": 1,
+      "messageEmpty": true
+    },
+    {
+      "index": 13,
+      "endpoint": "time",
+      "requestId": "c7h7f-1790835875351-62435f31de36",
+      "timestampInMs": 1790835875351,
+      "status": 200,
+      "region": "iad1",
+      "instanceLabel": "instance-01",
+      "peakConcurrency": 1,
+      "messageEmpty": true
+    },
+    {
+      "index": 14,
+      "endpoint": "time",
+      "requestId": "wf727-1790835875503-b9bd27bec9d0",
+      "timestampInMs": 1790835875503,
+      "status": 200,
+      "region": "iad1",
+      "instanceLabel": "instance-01",
+      "peakConcurrency": 1,
+      "messageEmpty": true
+    },
+    {
+      "index": 15,
+      "endpoint": "time",
+      "requestId": "c9xmk-1790835875691-0fecb4411b55",
+      "timestampInMs": 1790835875691,
+      "status": 200,
+      "region": "iad1",
+      "instanceLabel": "instance-01",
+      "peakConcurrency": 1,
+      "messageEmpty": true
+    },
+    {
+      "index": 16,
+      "endpoint": "time",
+      "requestId": "c7h7f-1790835875854-1d18d34df16e",
+      "timestampInMs": 1790835875854,
+      "status": 200,
+      "region": "iad1",
+      "instanceLabel": "instance-01",
+      "peakConcurrency": 1,
+      "messageEmpty": true
+    },
+    {
+      "index": 17,
+      "endpoint": "time",
+      "requestId": "b5vr7-1790835875985-625e3f5b5bb9",
+      "timestampInMs": 1790835875985,
+      "status": 200,
+      "region": "iad1",
+      "instanceLabel": "instance-01",
+      "peakConcurrency": 1,
+      "messageEmpty": true
+    },
+    {
+      "index": 18,
+      "endpoint": "time",
+      "requestId": "t7b85-1790835876117-27754cf78aeb",
+      "timestampInMs": 1790835876117,
+      "status": 200,
+      "region": "iad1",
+      "instanceLabel": "instance-01",
+      "peakConcurrency": 1,
+      "messageEmpty": true
+    },
+    {
+      "index": 19,
+      "endpoint": "time",
+      "requestId": "dmxh7-1790835876262-90e889e6306a",
+      "timestampInMs": 1790835876262,
+      "status": 200,
+      "region": "iad1",
+      "instanceLabel": "instance-01",
+      "peakConcurrency": 1,
+      "messageEmpty": true
+    },
+    {
+      "index": 20,
+      "endpoint": "time",
+      "requestId": "tswn9-1790835876381-d39174dddaf3",
+      "timestampInMs": 1790835876381,
+      "status": 200,
+      "region": "iad1",
+      "instanceLabel": "instance-01",
+      "peakConcurrency": 1,
+      "messageEmpty": true
+    },
+    {
+      "index": 21,
+      "endpoint": "time",
+      "requestId": "dmxh7-1790835876498-817b0a4bc51a",
+      "timestampInMs": 1790835876498,
+      "status": 200,
+      "region": "iad1",
+      "instanceLabel": "instance-01",
+      "peakConcurrency": 1,
+      "messageEmpty": true
+    },
+    {
+      "index": 22,
+      "endpoint": "time",
+      "requestId": "n6qzw-1790835876668-c99f1ed4285a",
+      "timestampInMs": 1790835876668,
+      "status": 200,
+      "region": "iad1",
+      "instanceLabel": "instance-01",
+      "peakConcurrency": 1,
+      "messageEmpty": true
+    },
+    {
+      "index": 23,
+      "endpoint": "time",
+      "requestId": "d5pmc-1790835876834-c8ec876dfdc8",
+      "timestampInMs": 1790835876834,
+      "status": 200,
+      "region": "iad1",
+      "instanceLabel": "instance-01",
+      "peakConcurrency": 1,
+      "messageEmpty": true
+    },
+    {
+      "index": 24,
+      "endpoint": "time",
+      "requestId": "7jr5t-1790835876959-66dda17b3e0e",
+      "timestampInMs": 1790835876959,
+      "status": 200,
+      "region": "iad1",
+      "instanceLabel": "instance-01",
+      "peakConcurrency": 1,
+      "messageEmpty": true
+    },
+    {
+      "index": 25,
+      "endpoint": "time",
+      "requestId": "96gcv-1790835877078-335325c28bce",
+      "timestampInMs": 1790835877078,
+      "status": 200,
+      "region": "iad1",
+      "instanceLabel": "instance-01",
+      "peakConcurrency": 1,
+      "messageEmpty": true
+    },
+    {
+      "index": 26,
+      "endpoint": "time",
+      "requestId": "npbsh-1790835877215-47a8f5db4c55",
+      "timestampInMs": 1790835877215,
+      "status": 200,
+      "region": "iad1",
+      "instanceLabel": "instance-01",
+      "peakConcurrency": 1,
+      "messageEmpty": true
+    },
+    {
+      "index": 27,
+      "endpoint": "time",
+      "requestId": "d5pmc-1790835877331-5392361b2ce6",
+      "timestampInMs": 1790835877331,
+      "status": 200,
+      "region": "iad1",
+      "instanceLabel": "instance-01",
+      "peakConcurrency": 1,
+      "messageEmpty": true
+    },
+    {
+      "index": 28,
+      "endpoint": "time",
+      "requestId": "t7b85-1790835877458-7665844bd117",
+      "timestampInMs": 1790835877458,
+      "status": 200,
+      "region": "iad1",
+      "instanceLabel": "instance-01",
+      "peakConcurrency": 1,
+      "messageEmpty": true
+    },
+    {
+      "index": 29,
+      "endpoint": "time",
+      "requestId": "zwpm7-1790835877615-9f39bcf4cff6",
+      "timestampInMs": 1790835877615,
+      "status": 200,
+      "region": "iad1",
+      "instanceLabel": "instance-01",
+      "peakConcurrency": 1,
+      "messageEmpty": true
+    },
+    {
+      "index": 30,
+      "endpoint": "time",
+      "requestId": "jnfmj-1790835877739-1b55cac21b1a",
+      "timestampInMs": 1790835877739,
+      "status": 200,
+      "region": "iad1",
+      "instanceLabel": "instance-01",
+      "peakConcurrency": 1,
+      "messageEmpty": true
+    },
+    {
+      "index": 31,
+      "endpoint": "time",
+      "requestId": "sjl6l-1790835878037-2db9b525936d",
+      "timestampInMs": 1790835878037,
+      "status": 200,
+      "region": "iad1",
+      "instanceLabel": "instance-02",
+      "peakConcurrency": 1,
+      "messageEmpty": true
+    },
+    {
+      "index": 32,
+      "endpoint": "time",
+      "requestId": "cf7vw-1790835878490-fa547cab1383",
+      "timestampInMs": 1790835878490,
+      "status": 200,
+      "region": "iad1",
+      "instanceLabel": "instance-02",
+      "peakConcurrency": 1,
+      "messageEmpty": true
+    },
+    {
+      "index": 33,
+      "endpoint": "time",
+      "requestId": "t75mc-1790835878641-b561b22bc99d",
+      "timestampInMs": 1790835878641,
+      "status": 200,
+      "region": "iad1",
+      "instanceLabel": "instance-02",
+      "peakConcurrency": 1,
+      "messageEmpty": true
+    },
+    {
+      "index": 34,
+      "endpoint": "time",
+      "requestId": "7jr5t-1790835878746-da0ebcf609c6",
+      "timestampInMs": 1790835878746,
+      "status": 200,
+      "region": "iad1",
+      "instanceLabel": "instance-02",
+      "peakConcurrency": 1,
+      "messageEmpty": true
+    },
+    {
+      "index": 35,
+      "endpoint": "time",
+      "requestId": "88k7c-1790835878854-9960aa233c4e",
+      "timestampInMs": 1790835878854,
+      "status": 200,
+      "region": "iad1",
+      "instanceLabel": "instance-02",
+      "peakConcurrency": 1,
+      "messageEmpty": true
+    },
+    {
+      "index": 36,
+      "endpoint": "time",
+      "requestId": "5ccjb-1790835878970-a3ec9f6c2f16",
+      "timestampInMs": 1790835878970,
+      "status": 200,
+      "region": "iad1",
+      "instanceLabel": "instance-02",
+      "peakConcurrency": 1,
+      "messageEmpty": true
+    },
+    {
+      "index": 37,
+      "endpoint": "time",
+      "requestId": "6mqbn-1790835879074-31c0954a5ed2",
+      "timestampInMs": 1790835879074,
+      "status": 200,
+      "region": "iad1",
+      "instanceLabel": "instance-02",
+      "peakConcurrency": 1,
+      "messageEmpty": true
+    },
+    {
+      "index": 38,
+      "endpoint": "time",
+      "requestId": "c9xmk-1790835879238-3bbff0a851a0",
+      "timestampInMs": 1790835879238,
+      "status": 200,
+      "region": "iad1",
+      "instanceLabel": "instance-02",
+      "peakConcurrency": 1,
+      "messageEmpty": true
+    },
+    {
+      "index": 39,
+      "endpoint": "time",
+      "requestId": "f79k9-1790835879347-4f78a9ffe46e",
+      "timestampInMs": 1790835879347,
+      "status": 200,
+      "region": "iad1",
+      "instanceLabel": "instance-02",
+      "peakConcurrency": 1,
+      "messageEmpty": true
+    },
+    {
+      "index": 40,
+      "endpoint": "time",
+      "requestId": "bqw2p-1790835879508-07e282320911",
+      "timestampInMs": 1790835879508,
+      "status": 200,
+      "region": "iad1",
+      "instanceLabel": "instance-02",
+      "peakConcurrency": 1,
+      "messageEmpty": true
+    },
+    {
+      "index": 41,
+      "endpoint": "time",
+      "requestId": "t5hd8-1790835879626-4fdefe285d6f",
+      "timestampInMs": 1790835879626,
+      "status": 200,
+      "region": "iad1",
+      "instanceLabel": "instance-02",
+      "peakConcurrency": 1,
+      "messageEmpty": true
+    }
+  ],
+  "baselineArtifactsModified": false
+}

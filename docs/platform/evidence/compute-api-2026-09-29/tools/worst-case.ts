@@ -24,7 +24,8 @@ import { cpus } from 'node:os';
 import { createComputeApiHandler } from '../../../../../src/lib/compute-api/handler';
 import { BUDGETS, COMPUTE_EVENTS_RATE_LIMIT_ID, COMPUTE_RATE_LIMIT_ID, EPOCH, HOUSE_SYSTEM_NAMES, RATE_LIMIT_RULES } from '../../../../../src/lib/compute-api/constants';
 import { run } from '../../../../../scripts/lib/compute-api-harness';
-import * as localTime from '../../../../../api/_compute/local-time.mjs';
+import { createLocalTimeModule } from '../../../../../api/_compute/local-time.mjs';
+const localTime = createLocalTimeModule();
 
 const handler = createComputeApiHandler({ localTime, env: {}, rateLimit: async () => 'allowed' });
 

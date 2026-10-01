@@ -1,0 +1,96 @@
+{
+  "node": "v24.19.0",
+  "baseline": "9cfafa3e742de943062c9174338472781724a4b5",
+  "preceding": {
+    "utc": "2082-03-14T05:29:17.000Z",
+    "latitude": -31.55537,
+    "longitude": 159.07735
+  },
+  "target": {
+    "utc": "2082-03-14T05:29:17.001Z",
+    "latitude": -31.55537,
+    "longitude": 159.07735
+  },
+  "oldWarmedVersusUpdated": [
+    {
+      "path": "/result/bodies/0/lon",
+      "a": 354.06572483942796,
+      "b": 354.06572483942756,
+      "absolute": 3.979039320256561e-13
+    },
+    {
+      "path": "/result/bodies/0/lat",
+      "a": 0.00021837205894294578,
+      "b": 0.00021837205894374576,
+      "absolute": 7.999785729684294e-16
+    },
+    {
+      "path": "/result/bodies/0/degree",
+      "a": 24.065724839427958,
+      "b": 24.065724839427503,
+      "absolute": 4.547473508864641e-13
+    },
+    {
+      "path": "/result/aspects/6/orb",
+      "a": 5.855533957296757,
+      "b": 5.855533957296359,
+      "absolute": 3.979039320256561e-13
+    },
+    {
+      "path": "/result/aspects/8/orb",
+      "a": 6.667479564788209,
+      "b": 6.6674795647877545,
+      "absolute": 4.547473508864641e-13
+    }
+  ],
+  "updatedSequentialEqualsFreshBaseline": true,
+  "oldAndNewReceiptEqual": true,
+  "oldAndNewCiteEqual": true,
+  "maxRawAngularDeltaArcsec": 1.6370904631912708e-9,
+  "overlappingCurrentVersusFresh": [
+    {
+      "path": "/result/bodies/0/lon",
+      "a": 354.06572483942796,
+      "b": 354.06572483942756,
+      "absolute": 3.979039320256561e-13
+    },
+    {
+      "path": "/result/bodies/0/lat",
+      "a": 0.00021837205894294578,
+      "b": 0.00021837205894374576,
+      "absolute": 7.999785729684294e-16
+    },
+    {
+      "path": "/result/bodies/0/degree",
+      "a": 24.065724839427958,
+      "b": 24.065724839427503,
+      "absolute": 4.547473508864641e-13
+    },
+    {
+      "path": "/result/aspects/6/orb",
+      "a": 5.855533957296757,
+      "b": 5.855533957296359,
+      "absolute": 3.979039320256561e-13
+    },
+    {
+      "path": "/result/aspects/8/orb",
+      "a": 6.667479564788209,
+      "b": 6.6674795647877545,
+      "absolute": 4.547473508864641e-13
+    }
+  ],
+  "overlappingCompletionStates": [
+    {
+      "tilt": null,
+      "pluto": [],
+      "moonCounter": 18,
+      "deltaTFunction": "deltaT"
+    },
+    {
+      "tilt": null,
+      "pluto": [],
+      "moonCounter": 18,
+      "deltaTFunction": "deltaT"
+    }
+  ]
+}

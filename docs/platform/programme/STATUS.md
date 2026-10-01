@@ -1,5 +1,43 @@
 # Programme status
 
+Checkpoint 11, 2026-10-01: warm compute timing and usage-cost evidence recovered.
+
+**Overall delivery: 24%** (23.842% to three decimals) — 43.5 of 182.45 weighted units accepted; blocked 2% (3.5), or 1.918%. G4's independently verified release remains accepted; no new unit is accepted in this checkpoint.
+
+- The original 120 synthetic requests now have exact request-ID matches to platform execution records. Read-only dashboard queries identify all 120 as Hot: 20 per endpoint. [Observability supplement](../evidence/compute-api-2026-10-01/observability/README.md).
+- Hot execution p50/p95 milliseconds: chart 22/44, positions 25/49, houses 38/72, events 116/168, time 26/45, sky-fact 47/76. Original client latencies and the 6.2-second chart outlier remain unchanged; that chart executed in 42 ms on the platform.
+- Approximate gross compute plus invocation USD per 1,000, from rounded observed CPU/GB-hour aggregates at verified iad1 Fluid rates: chart 0.00118, positions 0.00120, houses 0.00131, events 0.00445, time 0.00114, sky-fact 0.00242. These exclude Firewall, network/transfer, routing, observability, base fees, tax and credits; they are not invoices or whole-request bills.
+- **P3.3 remains unaccepted:** no Cold samples were found, the general 40-request limiter's 41-success probe remains unresolved, and F59's reviewed cache cleanup has not been deployed. Required CI still has owner-managed frontend failures; this programme does not alter Guide/homepage source or tests to clear them.
+- The expanded read-only start-type query found 227 API requests, all Hot, over 06:00–10:40 UTC; its broader project/path scope is separate from the exact 120-request baseline. No cold sample, cost, counter behavior or acceptance is invented.
+- Historical connector/export evidence remains unchanged. Public records contain only matched synthetic observations and aggregates; private logs and dashboard authentication material are excluded.
+- Actual command: `node scripts/programme-ledger.mjs --summary` → `Overall delivery: 24% (43.5 of 182.45); blocked 2% (3.5)`.
+
+## Earlier checkpoints
+
+Checkpoint 10, 2026-10-01: the first tagged engine release and permanent DOI are verified.
+
+**Overall delivery: 24%** (23.842% to three decimals) — 43.5 of 182.45 weighted units accepted; blocked: 2% (3.5), or 1.918% to three decimals. These are derived ledger weights, not a forecast.
+
+- **G4 accepted, released:** [engine v0.1.1-rc.15](https://github.com/zodiacs-org/engine/releases/tag/v0.1.1-rc.15) points to the exact rc.15 merge commit, includes its complete changelog, and is archived under [DOI 10.5281/zenodo.23080134](https://doi.org/10.5281/zenodo.23080134). Independent verification matched all 605 archived files byte for byte. [Public evidence and reproduction](../evidence/engine-github-release-2026-10-01/README.md).
+- The owner explicitly approved the release and permanent DOI. The prerelease classification and existing license qualifications are preserved. No npm package or dist-tag changes were made.
+- **A4 remains unaccepted:** the locally reviewed Agent Skill bundle cannot be pushed until the prior private birth-data pattern file is supplied for the engine's mandatory history check. Its 0.5 weight is now recorded as blocked; the private patterns themselves must never be committed.
+- This checkpoint changes no other acceptance state, gate, weight or denominator. Compute privacy/production telemetry, calendar rollout and rc.16 adoption continue in separate checkpoints. The prior compute checkpoint is in [PR #610](https://github.com/zodiacs-org/site/pull/610); none of its rollout or accuracy gates is accepted here.
+- Actual command: `node scripts/programme-ledger.mjs --summary` → `Overall delivery: 24% (43.5 of 182.45); blocked 2% (3.5)`.
+
+Checkpoint 9, 2026-10-01: production compute verification and private-cache audit.
+
+**Overall delivery: 23%** — 42.5 of 182.45 weighted units accepted; blocked on owner or external action: 2% (4).
+
+- Both owner-supplied WIP bundles passed SHA-256, byte-count and prerequisite verification in current full-history clones. All five fetched branch heads match `BUNDLES.md`; no engine WIP branch was pushed.
+- Production now serves site `9cfafa3e742de943062c9174338472781724a4b5` through READY deployment `dpl_6uGzGxdgxboMZ5jeFwQMTL24demr`. All six compute endpoints returned 200 for twenty documented synthetic requests each, naming engine rc.15 and astronomy-engine 2.1.19. This verifies the deployed F-58 fix from #607.
+- [Production baseline](../evidence/compute-api-2026-09-29/production-2026-10-01/README.md): client p50/p95 milliseconds were chart 93.6/129.5, positions 89.6/147.9, houses 106.2/161.3, events 182.2/238.0, time 90.1/116.9 and sky-fact 118.0/140.4. The maximum chart sample was 6220.7 ms and remains included. These are unclassified client latencies, not proven warm/cold timings or an SLA.
+- Returned production logs corroborate all samples and show no application-output line or distinctive synthetic input value in the observed window. This is limited observation, not proof about every platform log.
+- **F-59:** an independent local probe recovered two synthetic input UTC timestamps from the bundled ephemeris's private cache after requests ended. Existing global-name checks missed it. The server-only lifetime fix and new direct cache regression are described in [the fix evidence](../evidence/compute-api-2026-10-01/README.md). Source fix `9d6d36ad`, together with this checkpoint’s generated-context and historical-claim binding repairs, passes the full required-Node-22 suite (6,352 tests; four skipped), build, check, scope, artifact checks and the packaged-function probe. Its release is still pending. No immutable engine archive is changed.
+- **F-60:** events returned ten 200s then 429 with `Retry-After: 60`; the aligned general-counter probe returned 41 200s within one minute. Its counted client identity/configuration is not visible, so the stated general 40-request limit is not verified and the production spending envelope is not established.
+- **P3.3 stays unaccepted.** It is now recorded as merged/deployed rather than unmerged, but the fixed-cache release and production warm/cold and metered-cost evidence remain outstanding. The available connection exposes no start type, active CPU or billed memory; no cost was invented from network elapsed. The denominator and all accepted units stay unchanged.
+- Baseline gate repairs: regenerate the assistant's stale monthly context from its source; bind the historical rc.15 browser claim to its dated rc.15 validation record rather than today's mutable screenshot manifest.
+- Next: finish the cache-fix release checks, record the remaining telemetry limit, then continue the opaque calendar-feed release from `wip/feed-ids`. No new owner action is requested outside handoff §6.
+
 Checkpoint 8, 2026-09-30: the handoff. The compute API (P3.3) merges with this record, the owner's third report is in, and the programme passes to the next agent. **The next session should start with [HANDOFF-2026-09-30.md](HANDOFF-2026-09-30.md)**, then this file.
 
 **Overall delivery: 23%** — 42.5 of 182.45 weighted units accepted; blocked on owner or external action: 2% (4).
@@ -67,9 +105,9 @@ Done in the third report of 2026-09-30:
 - **System Environment Variables.** "Automatically expose System Environment Variables" is on for the project, so the feed routes can read `VERCEL_ENV`. Nothing was changed.
 - **Bing.** Its Search Performance still said it was preparing the data, so there was no export yet.
 
-Remaining:
+Completed on 2026-10-01: the first GitHub release and permanent DOI (G4), independently verified above.
 
-1. **The first GitHub release of the engine (G4).** A published GitHub release on `zodiacs-org/engine` makes Zenodo mint a DOI, and a DOI is permanent. With the owner's authorization, the first release is 0.1.1-rc.15, tagged at its merge commit, with its CHANGELOG entry as the notes.
+Remaining:
 2. **JSR (P3.1c).** A publish workflow using GitHub's OIDC token is to be added to the engine. Its first run needs the owner's authorization.
 3. **Search and analytics baselines (P0.7b).** Add Bing's export when it is ready, then either attach `zodiacs-org/analytics-baselines` read-only to this work, or compute the aggregates on the owner's side. Only aggregates would be committed, to that private repository.
 4. **Microsoft Copilot**, only if the monthly panel (A8) and the assistant benchmark (B4.b) are to cover five assistants: a free account for admin@zodiacs.org.

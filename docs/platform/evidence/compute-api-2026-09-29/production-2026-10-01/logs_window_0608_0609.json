@@ -1,0 +1,20 @@
+{
+  "args": {
+    "projectId": "prj_nRTO3q3aNYLfaM3dotAowOc028fO",
+    "teamId": "team_Ue0ac8HT1b3TAzaDDZBTFhQt",
+    "deploymentId": "dpl_6uGzGxdgxboMZ5jeFwQMTL24demr",
+    "environment": "production",
+    "since": "2026-10-01T06:08:00Z",
+    "until": "2026-10-01T06:09:00Z",
+    "limit": 50
+  },
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "## Runtime Logs\n\n**Project:** prj_nRTO3q3aNYLfaM3dotAowOc028fO\n**Deployment:** dpl_6uGzGxdgxboMZ5jeFwQMTL24demr\n**Time range:** 2026-10-01T06:08:00.000Z → 2026-10-01T06:09:00.000Z\n\n### 06:08:58 POST /api/v1/events 200 [info/serverless]\ndep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS\n\n### 06:08:56 POST /api/v1/houses 200 [info/serverless]\ndep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS\n\n### 06:08:54 POST /api/v1/positions 200 [info/serverless]\ndep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS\n\n### 06:08:52 POST /api/v1/chart 200 [info/serverless]\ndep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS\n\n### 06:08:49 POST /api/v1/sky-fact 200 [info/serverless]\ndep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS\n\n### 06:08:47 POST /api/v1/events 200 [info/serverless]\ndep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS\n\n### 06:08:45 POST /api/v1/houses 200 [info/serverless]\ndep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS\n\n### 06:08:43 POST /api/v1/positions 200 [info/serverless]\ndep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS\n\n### 06:08:41 POST /api/v1/chart 200 [info/serverless]\ndep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS\n\n### 06:08:38 POST /api/v1/sky-fact 200 [info/serverless]\ndep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS\n\n### 06:08:36 POST /api/v1/time 200 [info/serverless]\ndep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS\n\n### 06:08:34 POST /api/v1/houses 200 [info/serverless]\ndep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS\n\n### 06:08:32 POST /api/v1/positions 200 [info/serverless]\ndep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS\n\n### 06:08:30 POST /api/v1/chart 200 [info/serverless]\ndep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS\n\n### 06:08:27 POST /api/v1/sky-fact 200 [info/serverless]\ndep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS\n\n### 06:08:25 POST /api/v1/time 200 [info/serverless]\ndep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS\n\n### 06:08:23 POST /api/v1/events 200 [info/serverless]\ndep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS\n\n### 06:08:21 POST /api/v1/positions 200 [info/serverless]\ndep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS\n\n### 06:08:19 POST /api/v1/chart 200 [info/serverless]\ndep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS\n\n### 06:08:16 POST /api/v1/sky-fact 200 [info/serverless]\ndep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS\n\n### 06:08:14 POST /api/v1/time 200 [info/serverless]\ndep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS\n\n### 06:08:12 POST /api/v1/events 200 [info/serverless]\ndep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS\n\n### 06:08:10 POST /api/v1/houses 200 [info/serverless]\ndep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS\n\n### 06:08:08 POST /api/v1/chart 200 [info/serverless]\ndep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS\n\n### 06:08:05 POST /api/v1/sky-fact 200 [info/serverless]\ndep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS\n\n### 06:08:03 POST /api/v1/time 200 [info/serverless]\ndep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS\n\n### 06:08:01 POST /api/v1/events 200 [info/serverless]\ndep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS\n"
+      }
+    ],
+    "isError": false
+  }
+}

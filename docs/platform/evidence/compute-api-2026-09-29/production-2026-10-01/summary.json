@@ -1,0 +1,168 @@
+{
+  "count": 120,
+  "classification": "unclassified server start state; client end-to-end wall milliseconds including response body",
+  "rows": [
+    {
+      "endpoint": "chart",
+      "count": 20,
+      "p50": 93.56420100000105,
+      "p95": 129.47802399999637,
+      "min": 78.30936300000758,
+      "max": 6220.699670000001,
+      "all200": true,
+      "receiptEngines": [
+        {
+          "ephemeris": {
+            "name": "astronomy-engine",
+            "version": "2.1.19"
+          },
+          "name": "@zodiacs/engine",
+          "version": "0.1.1-rc.15"
+        }
+      ],
+      "firstResponseBackend": {
+        "name": "@zodiacs/engine",
+        "version": "0.1.1-rc.15",
+        "ephemeris": {
+          "name": "astronomy-engine",
+          "version": "2.1.19"
+        }
+      }
+    },
+    {
+      "endpoint": "positions",
+      "count": 20,
+      "p50": 89.63779499999873,
+      "p95": 147.85077000000456,
+      "min": 75.95829599999706,
+      "max": 167.18541599999844,
+      "all200": true,
+      "receiptEngines": [
+        {
+          "name": "@zodiacs/engine",
+          "version": "0.1.1-rc.15",
+          "ephemeris": {
+            "name": "astronomy-engine",
+            "version": "2.1.19"
+          }
+        }
+      ],
+      "firstResponseBackend": {
+        "name": "@zodiacs/engine",
+        "version": "0.1.1-rc.15",
+        "ephemeris": {
+          "name": "astronomy-engine",
+          "version": "2.1.19"
+        }
+      }
+    },
+    {
+      "endpoint": "houses",
+      "count": 20,
+      "p50": 106.20525899999484,
+      "p95": 161.26348500000313,
+      "min": 79.36381099998835,
+      "max": 180.58814200002234,
+      "all200": true,
+      "receiptEngines": [
+        {
+          "ephemeris": {
+            "name": "astronomy-engine",
+            "version": "2.1.19"
+          },
+          "name": "@zodiacs/engine",
+          "version": "0.1.1-rc.15"
+        }
+      ],
+      "firstResponseBackend": {
+        "name": "@zodiacs/engine",
+        "version": "0.1.1-rc.15",
+        "ephemeris": {
+          "name": "astronomy-engine",
+          "version": "2.1.19"
+        }
+      }
+    },
+    {
+      "endpoint": "events",
+      "count": 20,
+      "p50": 182.15974700000515,
+      "p95": 238.03313399999752,
+      "min": 154.7635450000089,
+      "max": 302.42083300000013,
+      "all200": true,
+      "receiptEngines": [
+        {
+          "name": "@zodiacs/engine",
+          "version": "0.1.1-rc.15",
+          "ephemeris": {
+            "name": "astronomy-engine",
+            "version": "2.1.19"
+          }
+        }
+      ],
+      "firstResponseBackend": {
+        "name": "@zodiacs/engine",
+        "version": "0.1.1-rc.15",
+        "ephemeris": {
+          "name": "astronomy-engine",
+          "version": "2.1.19"
+        }
+      }
+    },
+    {
+      "endpoint": "time",
+      "count": 20,
+      "p50": 90.13079700000526,
+      "p95": 116.94121900000027,
+      "min": 76.93084500000987,
+      "max": 137.87665299999935,
+      "all200": true,
+      "receiptEngines": [
+        {
+          "name": "@zodiacs/engine",
+          "version": "0.1.1-rc.15",
+          "ephemeris": {
+            "name": "astronomy-engine",
+            "version": "2.1.19"
+          }
+        }
+      ],
+      "firstResponseBackend": {
+        "name": "@zodiacs/engine",
+        "version": "0.1.1-rc.15",
+        "ephemeris": {
+          "name": "astronomy-engine",
+          "version": "2.1.19"
+        }
+      }
+    },
+    {
+      "endpoint": "sky-fact",
+      "count": 20,
+      "p50": 118.04224700000486,
+      "p95": 140.35723599998164,
+      "min": 102.24581300001591,
+      "max": 173.2962060000027,
+      "all200": true,
+      "receiptEngines": [
+        {
+          "name": "@zodiacs/engine",
+          "version": "0.1.1-rc.15",
+          "ephemeris": {
+            "name": "astronomy-engine",
+            "version": "2.1.19"
+          }
+        }
+      ],
+      "firstResponseBackend": {
+        "name": "@zodiacs/engine",
+        "version": "0.1.1-rc.15",
+        "ephemeris": {
+          "name": "astronomy-engine",
+          "version": "2.1.19"
+        }
+      }
+    }
+  ]
+}

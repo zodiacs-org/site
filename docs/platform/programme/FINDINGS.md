@@ -37,6 +37,8 @@ Severity follows the audit's scale:
 
 | id | severity | area | finding | disposition |
 | --- | --- | --- | --- | --- |
+| F-59 | major | privacy | Hosted ephemeris retains exact input time in a module-private warm-process cache | fixed locally with server-only lifetime cleanup; release pending |
+| F-60 | major | rate-limit verification | Aligned general-counter probe returned 41 successes without the expected refusal | open; counted identity/configuration not visible; no live 40-request spending bound established |
 | F-06 | major | engine rc.11 | Configured-aspect "exact orb" claim fails on general decimal inputs | fix in engine rc.13 (in progress); fixed in engine rc.14 (zodiacs-org/engine#10, merged 2026-09-29 as `8deda244`); reaches production when the site adopts it; in production since #600 (merged as `6cc4d477`, deployment `dpl_2JtJjuE2bU8CYTBMxKF3kco43qcN`) |
 | F-17 | major | privacy | Share code of a chart without a birth time reveals the birthplace's longitude or zone | open: code fix planned; copy wrong until then; fixed in #599: a chart without a birth time is shared as the sky at 12:00 UTC on its date, and the copy is corrected in six locales; in production since #599 (merged as `aca257ad`, deployment `dpl_AuGvEUL1oJPenrfbFq3FkGH5V9s9`) |
 | F-18 | major | privacy | Sign-icon requests reveal Sun, Moon and rising signs to the server; privacy page silent | open: fix planned; fixed in #599: a chart's page asks for all twelve sign pictures of a size before showing its own; in production since #599 (merged as `aca257ad`, deployment `dpl_AuGvEUL1oJPenrfbFq3FkGH5V9s9`) |
@@ -355,3 +357,25 @@ They are now tracked by the units named, and will get a disposition when those u
   - it loads with module syntax detection off, while importing `@zodiacs/engine` there fails (the control);
   - it answers every documented example as the source handler does.
 - **Remaining risk.** A function that imports `@zodiacs/engine`'s root or `astronomy-engine` by name is exposed the same way. No file under `api/` does so now, and the calendar's server path loads astronomy-engine through `createRequire`. Before merging a change to what a function imports, run the packaged function on a Node without module syntax detection (HANDOFF-2026-09-30.md §8).
+
+
+### F-58 — production verification, 2026-10-01
+
+The fix is verified deployed at `9cfafa3e` / `dpl_6uGzGxdgxboMZ5jeFwQMTL24demr`: all six endpoints returned 200 for twenty documented synthetic requests each. See `evidence/compute-api-2026-09-29/production-2026-10-01/`. This closes the import failure, not the separate latency/cost or private-cache gates.
+
+### F-59 — the hosted ephemeris retains an exact request timestamp (major, privacy)
+
+- **Found.** A fresh-context source audit of site `9cfafa3e` recovered two synthetic input UTC timestamps with zero millisecond error from astronomy-engine's module-private `cache_e_tilt.tt`, after the handler returned and after an unrelated local-time request. The local-only probe reads committed bundles at that revision; see `evidence/compute-api-2026-09-29/tools/probe-module-retention-20261001.mjs` and the baseline's `module-retention.json`.
+- **Scope.** Application-process memory retention, not an observed external disclosure. The prior global-name test did not inspect private module state. The probe did not measure all possible network/disk/log channels.
+- **Fix.** The server-only compute bundle clears the exact-time and epoch-selected Pluto memos in a `finally`. Each production request gets an isolated timezone resolver and disposes its selected-zone maps. Generated code comes from the build scripts; released engine archives and browser calculators remain unchanged.
+- **Regression.** `tests/api/compute-api-private-state.test.ts` exposes actual generated-module state in a local test, reconstructs the timestamp with cleanup bypassed as its positive control, then checks all six endpoints, refusals, resolver and writer failures and interleaved historical requests. Dependency byte pins require a fresh cache audit on upgrades. This is not a promise of cryptographic heap erasure.
+- **Disposition.** Fixed locally, pending reviewed release and live re-verification. The P3.3 unit remains unaccepted. See `evidence/compute-api-2026-10-01/README.md` for checked artifacts and remaining limits.
+
+### F-60 — the expected general compute rate-limit refusal is not observed (major, verification)
+
+- **Found.** A bounded live probe of the deployed baseline, after more than 65 seconds idle and scheduled away from a minute boundary, received 41 HTTP 200 responses from the minimal `/api/v1/time` shape within one server minute. The expected 41st-request 429 under the stated 40/60-second rule was absent. Events separately gave ten 200s then 429 with `Retry-After: 60`.
+- **Evidence.** `evidence/compute-api-2026-09-29/production-2026-10-01/rate-aligned-requests.jsonl`, its plan, prior preserved inconclusive probes, and the README.
+- **Limits.** The response metadata does not reveal the Firewall's counted client address or active rule configuration. This fails the requested verification; it does not establish the actual threshold, a specific configuration error, or unbounded access. No higher-volume probing followed.
+- **Disposition.** Open: reconcile the live counted identity/rule and repeat a bounded check with verifiable identity before relying on the 40/10 production cost envelope. No Firewall/security settings were changed. P3.3 remains unaccepted.
+
+- **Read-only follow-up, checkpoint 11.** The active dashboard rule matches the stated SDK ID, fixed-window 40/60-second/IP/429 configuration. Exact request-ID joins place all 41 API successes inside 5.938 seconds. A CDN aggregate shows one source IP; the corresponding SDK path has 41 HTTP 204/allow responses in iad1 and the same deployment. This weakens simple client-IP rotation, missing SDK calls and observed CDN-region splitting, without revealing the effective derived key, counter or bucket boundary. An isolated offline replay confirms that the production-source guard awaits the installed SDK and fails closed, with stable synthetic keys; it does not identify a live provider defect. The rule-filtered view's No Data and SDK rows' unset WAF-rule attribution are not numeric zero counters. No extra probe or security setting change was made. See `evidence/compute-api-2026-10-01/observability/f60-cdn-identity-supplement.md`.
