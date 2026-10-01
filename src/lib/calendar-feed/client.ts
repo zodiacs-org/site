@@ -6,8 +6,8 @@
  *
  * This browser keeps, for each feed it made, the id, the address (which lets
  * anyone who has it read the calendar), the key that removes the feed and
- * when it was made, and nothing about the chart. They sit under one
- * `zodiacs.` key like the site's other local records. Removing a feed here
+ * when it was made, and nothing about the chart. A dedicated IndexedDB
+ * transaction keeps the removable fence and these records together. Removing a feed here
  * removes its entry; otherwise they stay until the site's data is cleared
  * (signing out with "clear all Zodiacs data" does that too, and says that a
  * calendar can then be removed only by email), even after the server has
@@ -23,12 +23,16 @@ import {
 } from './shared';
 import { ACCOUNT_V2_PROFILE_LOCK_NAME } from '../account-v2/profile-lease';
 import { ACCOUNT_V2_PROFILE_LEASE_REVOKE_KEY } from '../account-v2/storage-identity';
+import {
+  CALENDAR_FEED_CHANGE_CHANNEL, createCalendarFeedStore,
+  type CalendarFeedSnapshot,
+} from './browser-store';
 
+// Retired pre-release localStorage names are kept only for erasure checks.
 export const CALENDAR_FEEDS_STORAGE_KEY = 'zodiacs.calendar-feeds.v1';
-/** Content-free; established only on an explicit subscribe and removed by clear-all. */
 export const CALENDAR_FEED_STORAGE_FENCE_KEY = 'zodiacs.calendar-feeds.fence.v1';
 const CALENDAR_FEED_STORAGE_LOCK_NAME = 'zodiacs-calendar-feed-storage-v1';
-type FeedStorage = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>;
+export type CalendarFeedStorageState = 'loading' | 'ready' | 'unavailable';
 
 export interface KeptCalendarFeed {
   id: string;
@@ -48,118 +52,128 @@ export type RemoveCalendarFeedResult = 'removed' | 'unavailable' | 'offline' | '
 
 interface CalendarFeedSession {
   feeds: Map<string, KeptCalendarFeed>;
+  kept: Map<string, KeptCalendarFeed>;
   removed: Set<string>;
   pending: string | null;
   listeners: Set<() => void>;
-  storageEpoch: number;
   clearEpoch: number;
+  storageEpoch: number;
+  readEpoch: number;
   active: boolean;
-  storage: () => FeedStorage | undefined;
+  store: ReturnType<typeof createCalendarFeedStore>;
+  storageState: CalendarFeedStorageState;
   locks: LockManager | null;
+  channel: BroadcastChannel | null;
   fence: string | null | undefined;
-}
-
-function storageFor(session: CalendarFeedSession | null): FeedStorage | undefined {
-  try { return session ? session.storage() : localStorage; } catch { return undefined; }
-}
-
-function readFence(storage: FeedStorage | undefined): string | null | undefined {
-  try { return storage?.getItem(CALENDAR_FEED_STORAGE_FENCE_KEY); } catch { return undefined; }
 }
 
 function clearSession(session: CalendarFeedSession): void {
   session.clearEpoch += 1;
+  session.readEpoch += 1;
   session.feeds.clear();
+  session.kept.clear();
   session.removed.clear();
-  notify(session);
 }
 
-/** Read the source of truth, never a delayed event's old/newValue. No writes. */
-function reconcileFence(session: CalendarFeedSession): void {
-  const fence = readFence(storageFor(session));
-  if (fence === undefined) return;
-  const erased = session.fence != null && fence !== session.fence;
-  session.fence = fence;
-  if (erased) clearSession(session);
+function acceptSnapshot(session: CalendarFeedSession, snapshot: CalendarFeedSnapshot): void {
+  if (session.fence != null && snapshot.fence !== session.fence) clearSession(session);
+  session.fence = snapshot.fence;
+  session.kept = new Map(snapshot.feeds.map((feed) => [feed.id, feed]));
+  // Once the canonical store confirms a key, it is no longer a volatile
+  // fallback. A later authoritative removal must not be hidden by an echo.
+  snapshot.feeds.forEach((feed) => session.feeds.delete(feed.id));
+  session.storageState = 'ready';
 }
 
-// An island can disappear while its POST is still running. Keep approved
-// capabilities for this document, never chart codes or a server/SSR singleton.
-// A reload (including clear-all's reload) gets a new document and no fallback.
+// Only the canonical IndexedDB transaction authorizes persistence. These maps
+// are document-lifetime view snapshots and volatile recovery, never a second
+// durable authority or a source for automatically writing old keys back.
 const sessions = new WeakMap<Document, CalendarFeedSession>();
 function feedSession(): CalendarFeedSession | null {
   if (typeof document === 'undefined') return null;
   let session = sessions.get(document);
   if (!session) {
     const ownerWindow = window;
-    const storage = () => {
-      try { return ownerWindow.localStorage; } catch { return undefined; }
-    };
+    let indexedDB: IDBFactory | undefined;
     let locks: LockManager | null = null;
-    try { locks = navigator.locks ?? null; } catch { /* Memory-only recovery remains available. */ }
+    let channel: BroadcastChannel | null = null;
+    try { indexedDB = ownerWindow.indexedDB; } catch { /* Volatile recovery only. */ }
+    try { locks = ownerWindow.navigator?.locks ?? navigator.locks ?? null; } catch { /* Volatile recovery only. */ }
+    try { channel = ownerWindow.BroadcastChannel ? new ownerWindow.BroadcastChannel(CALENDAR_FEED_CHANGE_CHANNEL) : null; } catch { /* Focus refresh remains available. */ }
     session = {
-      feeds: new Map(), removed: new Set(), pending: null, listeners: new Set(),
-      storageEpoch: 0, clearEpoch: 0, active: true, storage, locks, fence: readFence(storage()),
+      feeds: new Map(), kept: new Map(), removed: new Set(), pending: null, listeners: new Set(),
+      clearEpoch: 0, storageEpoch: 0, readEpoch: 0, active: true, locks, channel, fence: undefined, storageState: 'loading',
+      store: createCalendarFeedStore({ indexedDB, validateFeed: keptFeed, randomUUID: () => crypto.randomUUID() }),
     };
     sessions.set(document, session);
     const current = session;
-    // Clear-all revokes leases before clearing storage, then awaits sign-out
-    // before reloading. A pre-transition request must not refill that storage.
-    window.addEventListener('zodiacs:profile-lease-revoke', () => { current.storageEpoch += 1; });
-    window.addEventListener('zodiacs:calendar-feeds-cleared', () => {
-      current.fence = readFence(storageFor(current));
-      clearSession(current);
-    });
-    window.addEventListener('storage', (event) => {
+    ownerWindow.addEventListener('zodiacs:profile-lease-revoke', () => { current.storageEpoch += 1; });
+    ownerWindow.addEventListener('storage', (event) => {
       if (event.key === ACCOUNT_V2_PROFILE_LEASE_REVOKE_KEY) current.storageEpoch += 1;
-      if (event.key === null || event.key === CALENDAR_FEED_STORAGE_FENCE_KEY) reconcileFence(current);
     });
-    window.addEventListener('pageshow', () => reconcileFence(current));
-    window.addEventListener('focus', () => reconcileFence(current));
-    document.addEventListener('visibilitychange', () => reconcileFence(current));
-    window.addEventListener('pagehide', (event) => {
+    ownerWindow.addEventListener('zodiacs:calendar-feeds-cleared', () => {
+      clearSession(current);
+      current.fence = null;
+      current.storageState = 'ready';
+      notify(current);
+    });
+    const refresh = () => { void refreshSession(current); };
+    if (channel) channel.onmessage = (event) => { if (event.data === 'changed') refresh(); };
+    ownerWindow.addEventListener('pageshow', refresh);
+    ownerWindow.addEventListener('focus', refresh);
+    document.addEventListener('visibilitychange', refresh);
+    ownerWindow.addEventListener('pagehide', (event) => {
       if (event.persisted) return;
       current.active = false;
+      current.readEpoch += 1;
       current.feeds.clear();
+      current.kept.clear();
       current.listeners.clear();
+      current.channel?.close();
     });
+    void refreshSession(current);
   }
-  reconcileFence(session);
   return session;
 }
 
-/** Only the local compare/write is locked; an offline POST cannot block erasure. */
+/** Only local transactions are locked; an offline POST cannot block erasure. */
 async function withFeedStorageLock<T>(
   session: CalendarFeedSession | null,
-  commit: () => T,
-  unavailable: () => T,
+  commit: () => T | Promise<T>,
+  unavailable: () => T | Promise<T>,
 ): Promise<T> {
-  if (!session) return commit();
-  const locks = session.locks;
-  if (!locks) return unavailable();
+  if (!session?.locks) return unavailable();
   try {
-    return await locks.request(ACCOUNT_V2_PROFILE_LOCK_NAME, { mode: 'shared' }, () =>
-      locks.request(CALENDAR_FEED_STORAGE_LOCK_NAME, { mode: 'exclusive' }, commit));
+    return await session.locks.request(ACCOUNT_V2_PROFILE_LOCK_NAME, { mode: 'shared' }, () =>
+      session.locks!.request(CALENDAR_FEED_STORAGE_LOCK_NAME, { mode: 'exclusive' }, commit));
   } catch {
     return unavailable();
   }
 }
 
-function establishFence(session: CalendarFeedSession, clearEpoch: number): string | null {
-  reconcileFence(session);
-  if (!session.active || session.clearEpoch !== clearEpoch) return null;
-  const storage = storageFor(session);
-  let fence = readFence(storage);
-  if (!storage || fence === undefined) return null;
-  if (fence === null) {
-    try {
-      fence = crypto.randomUUID();
-      storage.setItem(CALENDAR_FEED_STORAGE_FENCE_KEY, fence);
-      if (readFence(storage) !== fence) return null;
-    } catch { return null; }
-  }
-  session.fence = fence;
-  return fence;
+async function refreshSession(session: CalendarFeedSession): Promise<KeptCalendarFeed[] | null> {
+  const readEpoch = ++session.readEpoch;
+  return withFeedStorageLock(session, async () => {
+    const result = await session.store.read();
+    if (session.active && session.readEpoch === readEpoch) {
+      if (result.status === 'ready') acceptSnapshot(session, result.snapshot);
+      else session.storageState = 'unavailable';
+      notify(session);
+    }
+    // Explicit reads receive their own transaction's result, even if a newer
+    // refresh owns the view cache. They must never return a stale cache instead.
+    return result.status === 'ready' ? result.snapshot.feeds : null;
+  }, () => {
+    if (session.active && session.readEpoch === readEpoch) {
+      session.storageState = 'unavailable';
+      notify(session);
+    }
+    return null;
+  });
+}
+
+function announce(session: CalendarFeedSession): void {
+  try { session.channel?.postMessage('changed'); } catch { /* Advisory only. */ }
 }
 
 function notify(session: CalendarFeedSession | null): void {
@@ -182,21 +196,32 @@ export function calendarFeedClearEpoch(): number {
 export function watchCalendarFeeds(listener: () => void): () => void {
   const session = feedSession();
   session?.listeners.add(listener);
+  // A first hydration already owns a fresh read. A completed snapshot needs a
+  // new read on reattachment, even when every cross-document signal was missed.
+  if (session && session.storageState !== 'loading') {
+    session.storageState = 'loading';
+    notify(session);
+    void refreshSession(session);
+  }
   return () => { session?.listeners.delete(listener); };
 }
 
-/** Stored feeds plus capabilities retained only until this document is left. */
+/** Stored snapshot plus capabilities retained only until this document is left. */
 export function readAvailableCalendarFeeds(): KeptCalendarFeed[] {
   const session = feedSession();
-  const feeds = new Map(readStoredFeeds(storageFor(session)).map((feed) => [feed.id, feed]));
+  const feeds = new Map(session?.kept ?? []);
   session?.feeds.forEach((feed, id) => feeds.set(id, feed));
   session?.removed.forEach((id) => feeds.delete(id));
   return [...feeds.values()].sort((a, b) => b.madeAt - a.madeAt);
 }
 
+export function calendarFeedStorageState(): CalendarFeedStorageState {
+  return feedSession()?.storageState ?? 'unavailable';
+}
+
 /** These keys are removable here but will be lost when this document is left. */
 export function hasUnstoredCalendarFeeds(): boolean {
-  const stored = new Set(readKeptCalendarFeeds().map((feed) => feed.id));
+  const stored = feedSession()?.kept ?? new Map<string, KeptCalendarFeed>();
   return readAvailableCalendarFeeds().some((feed) => !stored.has(feed.id));
 }
 
@@ -216,50 +241,11 @@ function keptFeed(value: unknown): KeptCalendarFeed | null {
   return { id: row.id, url: row.url, secret: row.secret, madeAt: row.madeAt };
 }
 
-/** The feeds this browser made, newest first; malformed entries are dropped. */
-export function readKeptCalendarFeeds(): KeptCalendarFeed[] {
-  return readStoredFeeds(storageFor(null));
-}
-
-function readStoredFeeds(storage: FeedStorage | undefined): KeptCalendarFeed[] {
-  return readFeedSnapshot(storage) ?? [];
-}
-
-/** A failed read must not be mistaken for an empty record when writing. */
-function readFeedSnapshot(storage: FeedStorage | undefined): KeptCalendarFeed[] | null {
-  if (!storage) return null;
-  try {
-    const raw = storage.getItem(CALENDAR_FEEDS_STORAGE_KEY);
-    if (!raw) return [];
-    const value = JSON.parse(raw) as unknown;
-    if (!value || typeof value !== 'object' || (value as { version?: unknown }).version !== 1) return [];
-    const feeds = (value as { feeds?: unknown }).feeds;
-    if (!Array.isArray(feeds)) return [];
-    return feeds
-      .map(keptFeed)
-      .filter((feed): feed is KeptCalendarFeed => feed !== null)
-      .sort((a, b) => b.madeAt - a.madeAt);
-  } catch {
-    return null;
-  }
-}
-
-function writeKeptCalendarFeeds(feeds: KeptCalendarFeed[], storage: FeedStorage | undefined): boolean {
-  if (!storage) return false;
-  try {
-    if (feeds.length === 0) storage.removeItem(CALENDAR_FEEDS_STORAGE_KEY);
-    else storage.setItem(CALENDAR_FEEDS_STORAGE_KEY, JSON.stringify({ version: 1, feeds }));
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-function forgetCalendarFeed(id: string, storage: FeedStorage | undefined): void {
-  const kept = readFeedSnapshot(storage);
-  if (!kept) return;
-  const rest = kept.filter((feed) => feed.id !== id);
-  if (rest.length !== kept.length) writeKeptCalendarFeeds(rest, storage);
+/** Fresh canonical records; storageState distinguishes refusal from an empty store. */
+export async function readKeptCalendarFeeds(): Promise<KeptCalendarFeed[]> {
+  const session = feedSession();
+  if (!session) return [];
+  return await refreshSession(session) ?? [];
 }
 
 function offline(): boolean {
@@ -277,16 +263,25 @@ export async function createCalendarFeed(
   const session = feedSession();
   if (session?.pending) return { state: 'busy' };
   if (offline()) return { state: 'offline' };
-  const storageEpoch = session?.storageEpoch;
   const clearEpoch = session?.clearEpoch;
+  const storageEpoch = session?.storageEpoch;
   if (session) session.pending = 'adding';
   notify(session);
   try {
-    const fence = session
-      ? await withFeedStorageLock(session, () => establishFence(session, clearEpoch!), () => null)
-      : null;
-    if (session && (!session.active || session.clearEpoch !== clearEpoch)) return { state: 'cancelled' };
-    return await requestCalendarFeed(code, fetcher, session, storageEpoch, clearEpoch, fence);
+    let fence: string | null = null;
+    let cancelled = false;
+    if (session) await withFeedStorageLock(session, async () => {
+      const result = await session.store.establish(session.fence ?? null, () => session.active && session.clearEpoch === clearEpoch);
+      session.readEpoch += 1;
+      if (result.status === 'unavailable') session.storageState = 'unavailable';
+      else {
+        acceptSnapshot(session, result.snapshot);
+        cancelled = result.status === 'cancelled';
+        if (!cancelled) fence = result.snapshot.fence;
+      }
+    }, () => { session.storageState = 'unavailable'; });
+    if (cancelled || (session && (!session.active || session.clearEpoch !== clearEpoch))) return { state: 'cancelled' };
+    return await requestCalendarFeed(code, fetcher, session, clearEpoch, storageEpoch, fence);
   } finally {
     if (session) session.pending = null;
     notify(session);
@@ -297,8 +292,8 @@ async function requestCalendarFeed(
   code: string,
   fetcher: typeof fetch,
   session: CalendarFeedSession | null,
-  storageEpoch: number | undefined,
   clearEpoch: number | undefined,
+  storageEpoch: number | undefined,
   fence: string | null,
 ): Promise<CreateCalendarFeedResult> {
   if (offline()) return { state: 'offline' };
@@ -322,21 +317,33 @@ async function requestCalendarFeed(
     madeAt: Date.now(),
   });
   if (!feed) return { state: 'unavailable' };
-  const finish = (locked: boolean): CreateCalendarFeedResult => {
-    if (session) reconcileFence(session);
-    if (session && (!session.active || session.clearEpoch !== clearEpoch)) return { state: 'cancelled' };
-    if (session?.active) session.feeds.set(feed.id, feed);
-    const storage = storageFor(session);
-    // A request born without a verified non-null fence stays memory-only even
-    // if storage recovers. Never merge older volatile keys into persistence.
-    const mayStore = !session || (locked && fence !== null && readFence(storage) === fence
-      && session.storageEpoch === storageEpoch);
-    const previous = mayStore ? readFeedSnapshot(storage) : null;
-    const kept = previous !== null && writeKeptCalendarFeeds([feed, ...previous
-      .filter((other) => other.id !== feed.id && !session?.removed.has(other.id))], storage);
-    return { state: 'created', feed, kept };
+  const stillCurrent = () => !session || (session.active && session.clearEpoch === clearEpoch);
+  const volatile = (): CreateCalendarFeedResult => {
+    if (!stillCurrent()) return { state: 'cancelled' };
+    session?.feeds.set(feed.id, feed);
+    return { state: 'created', feed, kept: false };
   };
-  return withFeedStorageLock(session, () => finish(true), () => finish(false));
+  return withFeedStorageLock(session, async () => {
+    if (!session || !stillCurrent()) return { state: 'cancelled' };
+    // A request without a committed preflight fence never gains permission to
+    // persist later, even when IndexedDB becomes available before its reply.
+    const mayStore = fence !== null && session.storageEpoch === storageEpoch;
+    const result = !mayStore
+      ? await session.store.read()
+      : await session.store.commit(fence, feed, stillCurrent, session.removed);
+    session.readEpoch += 1;
+    if (result.status === 'unavailable') {
+      session.storageState = 'unavailable';
+      return volatile();
+    }
+    acceptSnapshot(session, result.snapshot);
+    if (result.status === 'cancelled' || !stillCurrent()) return { state: 'cancelled' };
+    if (mayStore) session.feeds.delete(feed.id);
+    else session.feeds.set(feed.id, feed);
+    if (mayStore) announce(session);
+    return { state: 'created', feed, kept: mayStore };
+  }, volatile);
+
 }
 
 /** The JSON body of a response, or undefined when it is not JSON. */
@@ -373,9 +380,13 @@ export async function removeCalendarFeed(
   try {
     const result = await requestCalendarFeedRemoval(feed, fetcher);
     if (result === 'removed') {
-      await withFeedStorageLock(session, () => forgetCalendarFeed(feed.id, storageFor(session)), () => {});
+      if (session) await withFeedStorageLock(session, async () => {
+        const result = await session.store.remove(feed.id);
+        session.readEpoch += 1;
+        if (result.status === 'ready') { acceptSnapshot(session, result.snapshot); announce(session); }
+        else session.storageState = 'unavailable';
+      }, () => {});
       if (session) {
-        reconcileFence(session);
         session.feeds.delete(feed.id);
         session.removed.add(feed.id);
       }

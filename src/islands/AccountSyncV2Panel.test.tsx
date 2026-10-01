@@ -211,7 +211,7 @@ describe('AccountSyncV2Panel server-safe shell', () => {
     }
     const local = new MemoryStorage();
     local.setItem(CALENDAR_FEEDS_STORAGE_KEY, JSON.stringify({ version: 1, feeds: [] }));
-    expect(clearAllZodiacsDataFromDevice(local, new MemoryStorage()).ok).toBe(true);
+    expect((await clearAllZodiacsDataFromDevice(local, new MemoryStorage())).ok).toBe(true);
     expect(local.getItem(CALENDAR_FEEDS_STORAGE_KEY)).toBeNull();
   });
 

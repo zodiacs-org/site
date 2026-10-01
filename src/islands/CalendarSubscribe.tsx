@@ -12,6 +12,8 @@ import {
   createCalendarFeed,
   calendarFeedClearEpoch,
   calendarFeedRequestPending,
+  calendarFeedStorageState,
+  type CalendarFeedStorageState,
   hasUnstoredCalendarFeeds,
   readAvailableCalendarFeeds,
   removeCalendarFeed,
@@ -38,6 +40,9 @@ export interface CalendarPositionsSource {
 
 const COPY = {
   en: {
+    changed: "The calendars in this browser changed. Add this calendar again.",
+    storageLoading: "Loading calendars kept in this browser…",
+    storageUnavailable: "Calendars kept in this browser could not be read. Their removal keys may be unavailable until browser storage works again.",
     action: 'Add to your calendar',
     unavailable: 'Calendar link unavailable',
     adding: 'Adding…',
@@ -62,6 +67,9 @@ const COPY = {
     downloadNote: 'The file is a snapshot of the exact dates shown here, built in your browser; the subscription above keeps itself current. The times in the file come from your exact chart, so anyone you share it with, or any online calendar you import it into, can work out your birth time from them, and your birthplace from those for your Ascendant or Midheaven.',
   },
   es: {
+    changed: "Los calendarios de este navegador han cambiado. Añade este calendario de nuevo.",
+    storageLoading: "Cargando los calendarios guardados en este navegador…",
+    storageUnavailable: "No se pudieron leer los calendarios guardados en este navegador. Sus claves de eliminación pueden no estar disponibles hasta que vuelva a funcionar el almacenamiento del navegador.",
     action: 'Añadir a tu calendario',
     unavailable: 'Enlace de calendario no disponible',
     adding: 'Añadiendo…',
@@ -86,6 +94,9 @@ const COPY = {
     downloadNote: 'El archivo es una instantánea de las fechas exactas que ves aquí, creada en tu navegador; la suscripción de arriba se mantiene al día por sí sola. Las horas del archivo salen de tu carta exacta, así que cualquiera con quien lo compartas, o cualquier calendario en línea al que lo importes, puede deducir de ellas tu hora de nacimiento y, de las de tu Ascendente o tu Medio Cielo, tu lugar de nacimiento.',
   },
   pt: {
+    changed: "Os calendários deste navegador mudaram. Adicione este calendário novamente.",
+    storageLoading: "A carregar os calendários guardados neste navegador…",
+    storageUnavailable: "Não foi possível ler os calendários guardados neste navegador. As chaves de remoção podem ficar indisponíveis até o armazenamento do navegador voltar a funcionar.",
     action: 'Adicionar ao seu calendário',
     unavailable: 'Link do calendário indisponível',
     adding: 'Adicionando…',
@@ -110,6 +121,9 @@ const COPY = {
     downloadNote: 'O arquivo é um retrato das datas exatas mostradas aqui, criado no seu navegador; a assinatura acima se mantém atualizada sozinha. Os horários do arquivo vêm do seu mapa exato, então qualquer pessoa com quem você o compartilhar, ou qualquer calendário on-line para o qual você o importar, pode descobrir por eles a sua hora de nascimento e, pelos do seu Ascendente ou Meio do Céu, o seu local de nascimento.',
   },
   fr: {
+    changed: "Les calendriers de ce navigateur ont changé. Ajoute à nouveau ce calendrier.",
+    storageLoading: "Chargement des calendriers conservés dans ce navigateur…",
+    storageUnavailable: "Les calendriers conservés dans ce navigateur n’ont pas pu être lus. Leurs clés de suppression peuvent rester indisponibles tant que le stockage du navigateur ne fonctionne pas.",
     action: 'Ajouter à ton calendrier',
     unavailable: 'Lien de calendrier indisponible',
     adding: 'Ajout…',
@@ -134,6 +148,9 @@ const COPY = {
     downloadNote: 'Le fichier est un instantané des dates exactes affichées ici, créé dans ton navigateur ; l’abonnement ci-dessus reste à jour tout seul. Ses heures viennent de ton thème exact : toute personne avec qui tu le partages, ou tout calendrier en ligne où tu l’importes, peut en déduire ton heure de naissance et, par celles de ton Ascendant ou de ton Milieu du Ciel, ton lieu de naissance.',
   },
   it: {
+    changed: "I calendari in questo browser sono cambiati. Aggiungi di nuovo questo calendario.",
+    storageLoading: "Caricamento dei calendari conservati in questo browser…",
+    storageUnavailable: "Impossibile leggere i calendari conservati in questo browser. Le chiavi per rimuoverli potrebbero non essere disponibili finché l’archiviazione del browser non torna a funzionare.",
     action: 'Aggiungi al tuo calendario',
     unavailable: 'Link al calendario non disponibile',
     adding: 'Aggiunta…',
@@ -158,6 +175,9 @@ const COPY = {
     downloadNote: 'Il file è un’istantanea delle date esatte mostrate qui, creata nel tuo browser; l’iscrizione qui sopra si tiene aggiornata da sola. I suoi orari vengono dal tuo tema esatto, quindi chiunque con cui lo condividi, o qualsiasi calendario online in cui lo importi, può ricavarne la tua ora di nascita e, da quelli del tuo Ascendente o Medio Cielo, il tuo luogo di nascita.',
   },
   ru: {
+    changed: "Календари в этом браузере изменились. Добавьте этот календарь ещё раз.",
+    storageLoading: "Загрузка календарей, сохранённых в этом браузере…",
+    storageUnavailable: "Не удалось прочитать календари, сохранённые в этом браузере. Ключи для их удаления могут быть недоступны, пока хранилище браузера не заработает снова.",
     action: 'Добавить в календарь',
     unavailable: 'Ссылка на календарь недоступна',
     adding: 'Добавляем…',
@@ -220,7 +240,7 @@ interface CalendarSubscribeProps {
 }
 
 type FeedMessage = keyof Pick<typeof COPY.en,
-  'removed' | 'addFailed' | 'removeFailed' | 'rateLimited' | 'offline' | 'notKept'>;
+  'changed' | 'removed' | 'addFailed' | 'removeFailed' | 'rateLimited' | 'offline' | 'notKept'>;
 
 /** Keep every removal key observed in this visit, even if storage is unavailable. */
 function mergeFeeds(...groups: KeptCalendarFeed[][]): KeptCalendarFeed[] {
@@ -316,6 +336,7 @@ export default function CalendarSubscribe({ locale, positions, birthDate, contac
   const mounted = useRef(true);
   const [message, setMessage] = useState<FeedMessage | null>(null);
   const [busy, setBusy] = useState(false);
+  const [storageState, setStorageState] = useState<CalendarFeedStorageState>('loading');
 
   useEffect(() => {
     mounted.current = true;
@@ -324,10 +345,12 @@ export default function CalendarSubscribe({ locale, positions, birthDate, contac
       setKept(feeds);
       setMade((previous) => previous && feeds.some((feed) => feed.id === previous.feed.id) ? previous : null);
       setPending(calendarFeedRequestPending());
+      setStorageState(calendarFeedStorageState());
       if (hasUnstoredCalendarFeeds()) setMessage('notKept');
       else setMessage((previous) => previous === 'notKept' ? null : previous);
     };
     const stop = watchCalendarFeeds(refresh);
+    setStorageState(calendarFeedStorageState());
     setKept((previous) => mergeFeeds(previous, readAvailableCalendarFeeds()));
     setPending(calendarFeedRequestPending());
     if (hasUnstoredCalendarFeeds()) setMessage('notKept');
@@ -347,13 +370,18 @@ export default function CalendarSubscribe({ locale, positions, birthDate, contac
     setMessage(null);
     try {
       const result = await createCalendarFeed(token);
-      if (!mounted.current || calendarFeedClearEpoch() !== clearEpoch) return;
+      if (!mounted.current) return;
+      if (result.state === 'cancelled') {
+        if (chart.current.revision === revision) setMessage('changed');
+        return;
+      }
+      if (calendarFeedClearEpoch() !== clearEpoch) return;
       if (result.state === 'created') {
         setKept((previous) => mergeFeeds([result.feed], previous, readAvailableCalendarFeeds()));
         if (chart.current.revision === revision) setMade({ feed: result.feed, revision });
         if (!result.kept) setMessage('notKept');
         track('calendar_subscribe');
-      } else if (result.state !== 'busy' && result.state !== 'cancelled') {
+      } else if (result.state !== 'busy') {
         setMessage(result.state === 'rate-limited'
           ? 'rateLimited'
           : result.state === 'offline' ? 'offline' : 'addFailed');
@@ -434,6 +462,11 @@ export default function CalendarSubscribe({ locale, positions, birthDate, contac
           <span>{!token ? copy.unavailable : pending === 'adding' ? copy.adding : copy.action}</span>
           <span class="orb">↗</span>
         </button>
+      )}
+      {storageState !== 'ready' && (
+        <p class="calendar-subscribe__status" role="status" data-calendar-storage-state={storageState}>
+          {storageState === 'loading' ? copy.storageLoading : copy.storageUnavailable}
+        </p>
       )}
       {message && (
         <p class={failure ? 'calendar-subscribe__error' : 'calendar-subscribe__status'} role={failure ? 'alert' : 'status'}>

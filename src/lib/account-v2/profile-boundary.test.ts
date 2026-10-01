@@ -1,3 +1,4 @@
+import { CalendarIdbBackend, CalendarIdbFactory } from '../../../tests/helpers/calendar-idb';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   ACCOUNT_V2_LOCAL_OWNER_KEY,
@@ -427,7 +428,7 @@ describe('account-bound local profile data', () => {
     expect(storage.getItem(ACCOUNT_V2_LOCAL_OWNER_KEY)).toContain(ACCOUNT_A);
   });
 
-  it('enumerates and removes all Zodiacs local and session keys only', () => {
+  it('enumerates and removes all Zodiacs local and session keys only', async () => {
     const local = new MemoryStorage();
     const session = new MemoryStorage();
     for (const key of [
@@ -442,7 +443,7 @@ describe('account-bound local profile data', () => {
     local.setItem('unrelated', 'keep-local');
     session.setItem('unrelated', 'keep-session');
 
-    expect(clearAllZodiacsDataFromDevice(local, session)).toEqual({
+    expect(await clearAllZodiacsDataFromDevice(local, session)).toEqual({
       ok: true,
       restoredPreviousArchive: false,
     });
@@ -452,11 +453,12 @@ describe('account-bound local profile data', () => {
     expect(session.getItem('unrelated')).toBe('keep-session');
   });
 
-  it('records the durable IndexedDB clear after removing all other Zodiacs keys', () => {
+  it('records the durable IndexedDB clear after removing all other Zodiacs keys', async () => {
     const local = new MemoryStorage();
     const session = new MemoryStorage();
     vi.stubGlobal('window', {
       localStorage: local,
+      indexedDB: new CalendarIdbFactory(new CalendarIdbBackend()).indexedDB,
       dispatchEvent: vi.fn(),
       zodiacsProfileAccess: { canRead: () => false },
     });
@@ -468,7 +470,7 @@ describe('account-bound local profile data', () => {
     local.setItem('zodiacs:today-sun-sign:v1', 'private');
     session.setItem('zodiacs.account-sync-v2.profile-access.v1', 'private');
 
-    expect(clearAllZodiacsDataFromDevice(local, session).ok).toBe(true);
+    expect((await clearAllZodiacsDataFromDevice(local, session)).ok).toBe(true);
     expect([...local.values.keys()].filter((key) => key.startsWith('zodiacs'))).toEqual([
       LIVING_CHART_CLEAR_REQUEST_KEY,
     ]);
@@ -481,17 +483,61 @@ describe('account-bound local profile data', () => {
     expect(window.dispatchEvent).toHaveBeenCalledWith(expect.objectContaining({ type: 'zodiacs:calendar-feeds-cleared' }));
   });
 
-  it('does not report volatile calendar erasure when local clearing fails', () => {
+  it('does not report volatile calendar erasure when local clearing fails', async () => {
     const local = new MemoryStorage();
     const session = new MemoryStorage();
     local.setItem('zodiacs.calendar-feeds.v1', 'private');
-    vi.stubGlobal('window', { localStorage: local, dispatchEvent: vi.fn() });
+    vi.stubGlobal('window', { localStorage: local, indexedDB: new CalendarIdbFactory(new CalendarIdbBackend()).indexedDB, dispatchEvent: vi.fn() });
     const original = local.removeItem.bind(local);
     local.removeItem = (key) => {
       if (key === 'zodiacs.calendar-feeds.v1') throw new Error('Storage refused');
       original(key);
     };
-    expect(clearAllZodiacsDataFromDevice(local, session).ok).toBe(false);
+    expect((await clearAllZodiacsDataFromDevice(local, session)).ok).toBe(false);
     expect(vi.mocked(window.dispatchEvent).mock.calls.some(([event]) => event.type === 'zodiacs:calendar-feeds-cleared')).toBe(false);
+  });
+
+  it('waits for the calendar transaction to commit before reporting whole-device erasure', async () => {
+    const local = new MemoryStorage();
+    const backend = new CalendarIdbBackend();
+    backend.seed({ fence: ACCOUNT_A, feeds: [] });
+    const factory = new CalendarIdbFactory(backend);
+    factory.holdCompletion = true;
+    vi.stubGlobal('window', { localStorage: local, indexedDB: factory.indexedDB, dispatchEvent: vi.fn() });
+    local.setItem('zodiacs.profile.v1', 'private');
+    let settled = false;
+    const clearing = clearAllZodiacsDataFromDevice(local, new MemoryStorage()).then((result) => {
+      settled = true;
+      return result;
+    });
+    await vi.waitFor(() => expect(factory.transactions).toBe(1));
+    expect(settled).toBe(false);
+    expect(local.getItem('zodiacs.profile.v1')).toBe('private');
+    expect(window.dispatchEvent).not.toHaveBeenCalled();
+    factory.holdCompletion = false;
+    factory.completeTransactions();
+    expect((await clearing).ok).toBe(true);
+    expect(backend.rows.size).toBe(0);
+    expect(local.getItem('zodiacs.profile.v1')).toBeNull();
+    expect(window.dispatchEvent).toHaveBeenCalledWith(expect.objectContaining({ type: 'zodiacs:calendar-feeds-cleared' }));
+  });
+
+  it.each(['write', 'abort', 'blocked'] as const)('does not report clear-all success when calendar deletion is %s', async (fault) => {
+    const local = new MemoryStorage();
+    const backend = new CalendarIdbBackend();
+    const before = { fence: ACCOUNT_A, feeds: [] };
+    backend.seed(before);
+    const factory = new CalendarIdbFactory(backend);
+    factory.faults[fault] = true;
+    vi.stubGlobal('window', { localStorage: local, indexedDB: factory.indexedDB, dispatchEvent: vi.fn() });
+    local.setItem('zodiacs.profile.v1', 'private');
+    expect((await clearAllZodiacsDataFromDevice(local, new MemoryStorage())).ok).toBe(false);
+    expect(backend.state()).toEqual(before);
+    expect(local.getItem('zodiacs.profile.v1')).toBe('private');
+    expect(window.dispatchEvent).not.toHaveBeenCalled();
+    factory.faults[fault] = false;
+    factory.releaseBlocked();
+    await backend.idle();
+    expect(backend.state()).toEqual(before);
   });
 });

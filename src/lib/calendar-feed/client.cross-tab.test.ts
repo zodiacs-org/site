@@ -1,13 +1,15 @@
+import { CalendarIdbBackend, CalendarIdbFactory } from '../../../tests/helpers/calendar-idb';
+import type { KeptCalendarFeed } from './client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
-  CALENDAR_FEEDS_STORAGE_KEY, CALENDAR_FEED_STORAGE_FENCE_KEY, createCalendarFeed, readAvailableCalendarFeeds,
-  readKeptCalendarFeeds, watchCalendarFeeds, calendarFeedClearEpoch,
+  createCalendarFeed, readAvailableCalendarFeeds,
+  readKeptCalendarFeeds, watchCalendarFeeds, calendarFeedClearEpoch, removeCalendarFeed,
 } from './client';
 import { clearAllZodiacsDataFromDevice } from '../account-v2/profile-boundary';
 import { ACCOUNT_V2_PROFILE_LOCK_NAME, runExclusiveAccountProfileTransition } from '../account-v2/profile-lease';
 
-// Two independently activated browser documents share storage and Web Locks.
-// Storage events are deliberately not delivered unless a test dispatches one.
+// Two independently activated documents share canonical IndexedDB and Web Locks.
+// Per-document factory failures are isolated. Advisory events may be dropped.
 class SharedStorage {
   values = new Map<string, string>();
   refuseReads = false;
@@ -62,15 +64,18 @@ const deferred = <T,>() => {
   return { promise, resolve };
 };
 let storage: SharedStorage;
+let backend: CalendarIdbBackend;
+const canonical = () => backend.state() as { fence: string; feeds: KeptCalendarFeed[] } | undefined;
 let locks: Locks;
 let first: ReturnType<typeof tab>;
 let second: ReturnType<typeof tab>;
 function tab() {
-  const navigator = { onLine: true, locks };
+  const navigator = { onLine: true, locks: locks as Locks | undefined };
+  const factory = new CalendarIdbFactory(backend);
   const local = Object.create(storage) as SharedStorage;
   return {
-    document: new EventTarget(), navigator, storage: local,
-    window: Object.assign(new EventTarget(), { localStorage: local, navigator }),
+    document: new EventTarget(), navigator, storage: local, factory,
+    window: Object.assign(new EventTarget(), { localStorage: local, navigator, indexedDB: factory.indexedDB }),
   };
 }
 function activate(context: ReturnType<typeof tab>) {
@@ -78,6 +83,7 @@ function activate(context: ReturnType<typeof tab>) {
   vi.stubGlobal('document', context.document);
   vi.stubGlobal('localStorage', context.storage);
   vi.stubGlobal('navigator', context.navigator);
+  vi.stubGlobal('indexedDB', context.factory.indexedDB);
 }
 async function clearInSecondTab() {
   activate(second);
@@ -86,7 +92,7 @@ async function clearInSecondTab() {
   expect(result).toMatchObject({ ok: true, value: { ok: true } });
 }
 beforeEach(() => {
-  storage = new SharedStorage(); locks = new Locks(); first = tab(); second = tab(); activate(first);
+  storage = new SharedStorage(); backend = new CalendarIdbBackend(); locks = new Locks(); first = tab(); second = tab(); activate(first);
 });
 afterEach(() => vi.unstubAllGlobals());
 
@@ -100,10 +106,32 @@ describe('cross-document calendar erasure fencing', () => {
     activate(first);
     pending.resolve(response());
     expect(await request).toEqual({ state: 'cancelled' });
-    expect(readKeptCalendarFeeds()).toEqual([]);
+    expect(await readKeptCalendarFeeds()).toEqual([]);
     expect(readAvailableCalendarFeeds()).toEqual([]);
     if (signals === 'delayed') first.window.dispatchEvent(Object.assign(new Event('storage'), { key: null }));
-    expect(storage.getItem(CALENDAR_FEEDS_STORAGE_KEY)).toBeNull();
+    expect((canonical()?.feeds ?? [])).toEqual([]);
+  });
+
+  it.each(['write', 'abort', 'blocked'] as const)('reports a failed clear with %s refusal and preserves canonical keys', async (fault) => {
+    await createCalendarFeed('synthetic-positions', (async () => response()) as typeof fetch);
+    const before = backend.state();
+    activate(second);
+    second.factory.faults[fault] = true;
+    const cleared = vi.fn();
+    second.window.addEventListener('zodiacs:calendar-feeds-cleared', cleared);
+    const result = await runExclusiveAccountProfileTransition(second.storage, () =>
+      clearAllZodiacsDataFromDevice(second.storage, new SharedStorage()), locks);
+    expect(result).toMatchObject({ ok: true, value: { ok: false } });
+    expect(cleared).not.toHaveBeenCalled();
+    expect(backend.state()).toEqual(before);
+    second.factory.faults[fault] = false;
+    second.factory.releaseBlocked();
+    await backend.idle();
+    expect(backend.state()).toEqual(before);
+    activate(first);
+    expect((await readKeptCalendarFeeds()).map((feed) => feed.id)).toEqual([ID]);
+    await clearInSecondTab();
+    expect(backend.rows.size).toBe(0);
   });
 
   it('reconciles cached keys on an unmounted offline document before remount, without an event', async () => {
@@ -114,7 +142,40 @@ describe('cross-document calendar erasure fencing', () => {
     first.navigator.onLine = false;
     await clearInSecondTab();
     activate(first);
-    expect(readAvailableCalendarFeeds()).toEqual([]);
+    const remount = watchCalendarFeeds(vi.fn());
+    await vi.waitFor(() => expect(readAvailableCalendarFeeds()).toEqual([]));
+    remount();
+  });
+
+  it('drops an authoritative removal from another document without retaining a durable echo', async () => {
+    await createCalendarFeed('synthetic-positions', (async () => response()) as typeof fetch);
+    activate(second);
+    const [feed] = await readKeptCalendarFeeds();
+    expect(await removeCalendarFeed(feed, (async () => new Response('{"removed":true}', { status: 200 })) as typeof fetch)).toBe('removed');
+    activate(first);
+    first.window.dispatchEvent(new Event('focus'));
+    await vi.waitFor(() => expect(readAvailableCalendarFeeds()).toEqual([]));
+    expect(canonical()?.feeds).toEqual([]);
+  });
+
+  it('keeps a genuinely volatile key when a later durable record is removed in another document', async () => {
+    first.factory.faults.write = true;
+    const volatile = await createCalendarFeed('volatile-positions', (async () => response()) as typeof fetch);
+    expect(volatile.state === 'created' && volatile.kept).toBe(false);
+    first.factory.faults.write = false;
+    const id = 'Ab3xPq0Jr9Vb_Tm2-Ka5sQ';
+    await createCalendarFeed('durable-positions', (async () => new Response(JSON.stringify({
+      ...fixture, id, url: `https://zodiacs.org/api/calendar/feeds/${id}`,
+    }), { status: 201 })) as typeof fetch);
+    expect(readAvailableCalendarFeeds()).toHaveLength(2);
+    activate(second);
+    const [feed] = await readKeptCalendarFeeds();
+    expect(feed.id).toBe(id);
+    await removeCalendarFeed(feed, (async () => new Response('{"removed":true}', { status: 200 })) as typeof fetch);
+    activate(first);
+    first.window.dispatchEvent(new Event('focus'));
+    await vi.waitFor(() => expect(readAvailableCalendarFeeds().map((feed) => feed.id)).toEqual([ID]));
+    expect(canonical()?.feeds).toEqual([]);
   });
 
   it('clears cached keys when a BFCache document resumes after missed signals', async () => {
@@ -126,7 +187,7 @@ describe('cross-document calendar erasure fencing', () => {
     activate(first);
     const previous = observer.mock.calls.length;
     first.window.dispatchEvent(Object.assign(new Event('pageshow'), { persisted: true }));
-    expect(observer.mock.calls.length).toBeGreaterThan(previous);
+    await vi.waitFor(() => expect(observer.mock.calls.length).toBeGreaterThan(previous));
     expect(readAvailableCalendarFeeds()).toEqual([]);
   });
 
@@ -135,6 +196,7 @@ describe('cross-document calendar erasure fencing', () => {
     const epoch = calendarFeedClearEpoch();
     await clearInSecondTab();
     activate(first);
+    await readKeptCalendarFeeds();
     expect(calendarFeedClearEpoch()).toBeGreaterThan(epoch);
   });
 
@@ -143,38 +205,38 @@ describe('cross-document calendar erasure fencing', () => {
     const started = vi.fn(() => pending.promise);
     const old = createCalendarFeed('old-synthetic-positions', started as typeof fetch);
     await vi.waitFor(() => expect(started).toHaveBeenCalledOnce());
-    const fence = storage.getItem(CALENDAR_FEED_STORAGE_FENCE_KEY);
+    const fence = (canonical()?.fence ?? null);
     expect(fence).toBeTruthy();
     await clearInSecondTab();
-    expect(storage.getItem(CALENDAR_FEED_STORAGE_FENCE_KEY)).toBeNull();
+    expect((canonical()?.fence ?? null)).toBeNull();
     const id = 'Ab3xPq0Jr9Vb_Tm2-Ka5sQ';
     const fresh = await createCalendarFeed('new-synthetic-positions', (async () => new Response(JSON.stringify({
       ...fixture, id, url: `https://zodiacs.org/api/calendar/feeds/${id}`,
     }), { status: 201 })) as typeof fetch);
     expect(fresh.state === 'created' && fresh.kept).toBe(true);
-    expect(storage.getItem(CALENDAR_FEED_STORAGE_FENCE_KEY)).not.toBe(fence);
+    expect((canonical()?.fence ?? null)).not.toBe(fence);
     activate(first);
     pending.resolve(response());
     expect(await old).toEqual({ state: 'cancelled' });
-    expect(readKeptCalendarFeeds().map((feed) => feed.id)).toEqual([id]);
+    expect((await readKeptCalendarFeeds()).map((feed) => feed.id)).toEqual([id]);
   });
 
   it.each(['reads', 'writes', 'locks'])('never upgrades an unfenced request after %s recover', async (fault) => {
-    if (fault === 'reads') first.storage.refuseReads = true;
-    if (fault === 'writes') first.storage.refuseWrites = true;
-    if (fault === 'locks') vi.stubGlobal('navigator', { onLine: true });
+    if (fault === 'reads') first.factory.faults.read = true;
+    if (fault === 'writes') first.factory.faults.write = true;
+    if (fault === 'locks') first.navigator.locks = undefined;
     const pending = deferred<Response>();
     const started = vi.fn(() => pending.promise);
     const request = createCalendarFeed('synthetic-positions', started as typeof fetch);
     await vi.waitFor(() => expect(started).toHaveBeenCalledOnce());
-    first.storage.refuseReads = false; first.storage.refuseWrites = false;
+    first.factory.faults.read = false; first.factory.faults.write = false;
     await clearInSecondTab();
     activate(first);
     pending.resolve(response());
     const result = await request;
     expect(result.state === 'created' && result.kept).toBe(false);
-    expect(readKeptCalendarFeeds()).toEqual([]);
-    expect(storage.getItem(CALENDAR_FEED_STORAGE_FENCE_KEY)).toBeNull();
+    expect(await readKeptCalendarFeeds()).toEqual([]);
+    expect((canonical()?.fence ?? null)).toBeNull();
     // No erasure was observable in this never-fenced document. Preserve only
     // its volatile removal key, rather than pretending it can be kept safely.
     expect(readAvailableCalendarFeeds()).toHaveLength(1);
@@ -185,45 +247,41 @@ describe('cross-document calendar erasure fencing', () => {
     const started = vi.fn(() => pending.promise);
     const request = createCalendarFeed('synthetic-positions', started as typeof fetch);
     await vi.waitFor(() => expect(started).toHaveBeenCalledOnce());
-    first.storage.refuseReads = true;
+    first.factory.faults.read = true;
     pending.resolve(response());
     const result = await request;
     expect(result.state === 'created' && result.kept).toBe(false);
-    first.storage.refuseReads = false;
+    first.factory.faults.read = false;
     first.window.dispatchEvent(new Event('focus'));
     expect(readAvailableCalendarFeeds()).toHaveLength(1);
-    expect(readKeptCalendarFeeds()).toEqual([]);
+    expect(await readKeptCalendarFeeds()).toEqual([]);
   });
 
   it('does not overwrite older keys when only the feed-record read is refused', async () => {
     await createCalendarFeed('first-synthetic-positions', (async () => response()) as typeof fetch);
-    const before = storage.getItem(CALENDAR_FEEDS_STORAGE_KEY);
-    const original = first.storage.getItem.bind(first.storage);
-    first.storage.getItem = (key) => {
-      if (key === CALENDAR_FEEDS_STORAGE_KEY) throw new Error('Feed-record read refused');
-      return original(key);
-    };
+    const before = backend.state();
+    first.factory.faults.read = true;
     const id = 'Ab3xPq0Jr9Vb_Tm2-Ka5sQ';
     const result = await createCalendarFeed('second-synthetic-positions', (async () => new Response(JSON.stringify({
       ...fixture, id, url: `https://zodiacs.org/api/calendar/feeds/${id}`,
     }), { status: 201 })) as typeof fetch);
     expect(result.state === 'created' && result.kept).toBe(false);
-    expect(storage.getItem(CALENDAR_FEEDS_STORAGE_KEY)).toBe(before);
-    first.storage.getItem = original;
+    expect(backend.state()).toEqual(before);
+    first.factory.faults.read = false;
     expect(readAvailableCalendarFeeds()).toHaveLength(2);
-    expect(readKeptCalendarFeeds().map((feed) => feed.id)).toEqual([ID]);
+    expect((await readKeptCalendarFeeds()).map((feed) => feed.id)).toEqual([ID]);
   });
 
   it('never persists an earlier unfenced volatile feed during a later successful subscribe', async () => {
-    first.storage.refuseWrites = true;
+    first.factory.faults.write = true;
     await createCalendarFeed('synthetic-positions', (async () => response()) as typeof fetch);
-    first.storage.refuseWrites = false;
+    first.factory.faults.write = false;
     const id = 'Ab3xPq0Jr9Vb_Tm2-Ka5sQ';
     await createCalendarFeed('new-synthetic-positions', (async () => new Response(JSON.stringify({
       ...fixture, id, url: `https://zodiacs.org/api/calendar/feeds/${id}`,
     }), { status: 201 })) as typeof fetch);
     expect(readAvailableCalendarFeeds()).toHaveLength(2);
-    expect(readKeptCalendarFeeds().map((feed) => feed.id)).toEqual([id]);
+    expect((await readKeptCalendarFeeds()).map((feed) => feed.id)).toEqual([id]);
   });
 
   it('waits for exclusive clear before the final compare-and-write', async () => {
@@ -244,12 +302,12 @@ describe('cross-document calendar erasure fencing', () => {
     activate(first);
     pending.resolve(response());
     await vi.waitFor(() => expect(locks.waiting(ACCOUNT_V2_PROFILE_LOCK_NAME)).toBeGreaterThan(0));
-    expect(storage.getItem(CALENDAR_FEEDS_STORAGE_KEY)).toBeNull();
+    expect((canonical()?.feeds ?? [])).toEqual([]);
     release.resolve();
     expect(await clearing).toMatchObject({ ok: true, value: { ok: true } });
     activate(first);
     expect(await request).toEqual({ state: 'cancelled' });
-    expect(storage.getItem(CALENDAR_FEEDS_STORAGE_KEY)).toBeNull();
+    expect((canonical()?.feeds ?? [])).toEqual([]);
   });
 
   it('does not recreate a vanished fence when an old preflight was queued behind clear-all', async () => {
@@ -270,6 +328,7 @@ describe('cross-document calendar erasure fencing', () => {
     activate(first);
     expect(await request).toEqual({ state: 'cancelled' });
     expect(fetcher).not.toHaveBeenCalled();
+    expect(backend.rows.size).toBe(0);
     expect([...storage.values.keys()].filter((key) => key.startsWith('zodiacs.calendar'))).toEqual([]);
   });
 
@@ -286,7 +345,7 @@ describe('cross-document calendar erasure fencing', () => {
     const request = createCalendarFeed('fresh-synthetic-positions', fetcher as typeof fetch);
     await vi.waitFor(() => expect(locks.waiting(ACCOUNT_V2_PROFILE_LOCK_NAME)).toBeGreaterThan(0));
     expect(fetcher).not.toHaveBeenCalled();
-    expect(storage.getItem(CALENDAR_FEED_STORAGE_FENCE_KEY)).toBeNull();
+    expect((canonical()?.fence ?? null)).toBeNull();
     release.resolve();
     expect(await clearing).toMatchObject({ ok: true, value: { ok: true } });
     activate(first);
@@ -309,8 +368,8 @@ describe('cross-document calendar erasure fencing', () => {
     two.resolve(new Response(JSON.stringify({ ...fixture, id, url: `https://zodiacs.org/api/calendar/feeds/${id}` }), { status: 201 }));
     const results = await Promise.all([firstRequest, secondRequest]);
     expect(results.every((result) => result.state === 'created' && result.kept)).toBe(true);
-    expect(readKeptCalendarFeeds().map((feed) => feed.id).sort()).toEqual([ID, id].sort());
-    const marker = storage.getItem(CALENDAR_FEED_STORAGE_FENCE_KEY)!;
+    expect((await readKeptCalendarFeeds()).map((feed) => feed.id).sort()).toEqual([ID, id].sort());
+    const marker = (canonical()?.fence ?? null)!;
     expect(marker).toMatch(/^[0-9a-f-]{36}$/);
     expect(marker).not.toContain(ID);
     expect(marker).not.toContain(SECRET);
@@ -319,11 +378,13 @@ describe('cross-document calendar erasure fencing', () => {
 
   it('never creates a fence from a getter or an offline subscribe', async () => {
     readAvailableCalendarFeeds(); calendarFeedClearEpoch(); watchCalendarFeeds(vi.fn());
-    expect(storage.getItem(CALENDAR_FEED_STORAGE_FENCE_KEY)).toBeNull();
+    expect((canonical()?.fence ?? null)).toBeNull();
     first.navigator.onLine = false;
     const fetcher = vi.fn(async () => response());
     expect(await createCalendarFeed('synthetic-positions', fetcher as typeof fetch)).toEqual({ state: 'offline' });
     expect(fetcher).not.toHaveBeenCalled();
-    expect(storage.getItem(CALENDAR_FEED_STORAGE_FENCE_KEY)).toBeNull();
+    expect((canonical()?.fence ?? null)).toBeNull();
+    await readKeptCalendarFeeds();
+    expect(backend.exists).toBe(false);
   });
 });

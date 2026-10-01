@@ -9,6 +9,7 @@ import {
   requestLivingChartClear,
 } from '../living-chart/store';
 import type { LivingChartOwnerScope } from '../living-chart/types';
+import { CALENDAR_FEED_CHANGE_CHANNEL, clearCalendarFeedStore } from '../calendar-feed/browser-store';
 import {
   ACCOUNT_V2_LOCAL_OWNER_KEY,
   ACCOUNT_V2_RETAINED_OWNER_KEY,
@@ -395,10 +396,18 @@ export function completeDeletedAccountLocalData(
 }
 
 /** Explicit sign-out cleanup: removes every Zodiacs-owned local/session key. */
-export function clearAllZodiacsDataFromDevice(
+export async function clearAllZodiacsDataFromDevice(
   local: AccountV2Storage,
   session: AccountV2Storage,
-): LocalProfileBoundaryResult {
+): Promise<LocalProfileBoundaryResult> {
+  const browserLocal = isBrowserLocalStorage(local);
+  if (browserLocal) {
+    // The caller holds the exclusive profile boundary. A successful result
+    // must include the canonical calendar fence/record transaction committing.
+    let cleared = false;
+    try { cleared = await clearCalendarFeedStore(window.indexedDB); } catch { /* Fail closed. */ }
+    if (!cleared) return { ok: false, restoredPreviousArchive: false };
+  }
   const stores = [local, session];
   let ok = true;
   for (const storage of stores) {
@@ -425,8 +434,17 @@ export function clearAllZodiacsDataFromDevice(
   clearLivingChartForBoundary(local, 'all');
   // Calendar removal keys can also live only in this document when storage
   // refused them. Clear those and fence late requests before sign-out/reload.
-  if (ok && isBrowserLocalStorage(local)) {
+  if (ok && browserLocal) {
     window.dispatchEvent(new Event('zodiacs:calendar-feeds-cleared'));
+    // Cross-document messages request an authoritative read; they never
+    // replace the transaction fence or leave a retained storage marker.
+    try {
+      if (window.BroadcastChannel) {
+        const channel = new window.BroadcastChannel(CALENDAR_FEED_CHANGE_CHANNEL);
+        channel.postMessage('changed');
+        channel.close();
+      }
+    } catch { /* A resumed document refreshes from IndexedDB directly. */ }
   }
   return { ok, restoredPreviousArchive: false };
 }

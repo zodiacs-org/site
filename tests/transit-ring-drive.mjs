@@ -224,15 +224,49 @@ try {
       && openHref === `webcal://zodiacs.org/api/calendar/feeds/${FEED_ID}`
       && !openHref.includes('Coyoac')
       && !openHref.includes('1907-07-06'));
+  const inspectCalendar = () => page.evaluate(() => new Promise((resolveInspection, reject) => {
+    const request = indexedDB.open('zodiacs.calendar-feeds.v1', 1);
+    request.onupgradeneeded = () => { request.transaction.abort(); reject(new Error('Subscribing did not create its canonical calendar store.')); };
+    request.onerror = () => reject(request.error);
+    request.onblocked = () => reject(new Error('Canonical calendar inspection was blocked.'));
+    request.onsuccess = () => {
+      const database = request.result;
+      const transaction = database.transaction('state', 'readonly');
+      const store = transaction.objectStore('state');
+      const read = store.get('current');
+      const count = store.count();
+      transaction.onabort = transaction.onerror = () => { database.close(); reject(transaction.error); };
+      transaction.oncomplete = () => {
+        database.close();
+        resolveInspection({ row: read.result ?? null, rowCount: count.result,
+          calendarKeys: Object.keys(localStorage).filter((key) => key.startsWith('zodiacs.calendar')) });
+      };
+    };
+  }));
+  const keptCalendar = await inspectCalendar();
   check('the key that removes it is kept in this browser',
-    (await page.evaluate(() => localStorage.getItem('zodiacs.calendar-feeds.v1') ?? '')).includes(FEED_KEY));
+    keptCalendar.rowCount === 1
+      && keptCalendar.calendarKeys.length === 0
+      && Object.keys(keptCalendar.row ?? {}).sort().join(',') === 'feeds,fence'
+      && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/iu.test(keptCalendar.row?.fence)
+      && keptCalendar.row.feeds.length === 1
+      && Object.keys(keptCalendar.row.feeds[0]).sort().join(',') === 'id,madeAt,secret,url'
+      && keptCalendar.row.feeds[0].id === FEED_ID
+      && keptCalendar.row.feeds[0].url === feedUrl
+      && keptCalendar.row.feeds[0].secret === FEED_KEY
+      && Number.isFinite(keptCalendar.row.feeds[0].madeAt));
   await page.locator('[data-calendar-remove]').click();
   await page.waitForSelector('[data-calendar-subscribe]', { timeout: 10000 });
+  const removedCalendar = await inspectCalendar();
   check('removing sends the key as a bearer and forgets it',
     removed.length === 1
       && removed[0].method === 'DELETE'
       && removed[0].authorization === `Bearer ${FEED_KEY}`
-      && !(await page.evaluate(() => localStorage.getItem('zodiacs.calendar-feeds.v1'))));
+      && removedCalendar.rowCount === 1
+      && removedCalendar.calendarKeys.length === 0
+      && removedCalendar.row?.fence === keptCalendar.row.fence
+      && Array.isArray(removedCalendar.row?.feeds)
+      && removedCalendar.row.feeds.length === 0);
   await page.close();
 
   // ── Mobile ──

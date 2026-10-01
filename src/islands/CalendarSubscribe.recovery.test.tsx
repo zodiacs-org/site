@@ -1,3 +1,4 @@
+import { CalendarIdbBackend, CalendarIdbFactory } from '../../tests/helpers/calendar-idb';
 import type { VNode } from 'preact';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { CreateCalendarFeedResult, KeptCalendarFeed } from '../lib/calendar-feed/client';
@@ -27,7 +28,8 @@ vi.mock('../lib/calendar-feed/client', async (importOriginal) => {
       harness.realClient ? original.createCalendarFeed(...args) : harness.create(...args),
     removeCalendarFeed: (...args: Parameters<typeof original.removeCalendarFeed>) =>
       harness.realClient ? original.removeCalendarFeed(...args) : harness.remove(...args),
-    readKeptCalendarFeeds: () => harness.realClient ? original.readKeptCalendarFeeds() : [...harness.persisted],
+    readKeptCalendarFeeds: () => harness.realClient ? original.readKeptCalendarFeeds() : Promise.resolve([...harness.persisted]),
+    calendarFeedStorageState: () => harness.realClient ? original.calendarFeedStorageState() : 'ready',
     readAvailableCalendarFeeds: () => harness.realClient ? original.readAvailableCalendarFeeds() : [...harness.persisted],
   };
 });
@@ -340,7 +342,8 @@ describe('calendar subscription request recovery', () => {
 
 describe('calendar subscriptions across real client unmount and remount', () => {
   let fetcher: ReturnType<typeof vi.fn>;
-  let refuse: boolean;
+  let factory: CalendarIdbFactory;
+  let backend: CalendarIdbBackend;
   let stored: Map<string, string>;
   function unmount() {
     harness.effects.forEach((effect) => effect.cleanup?.());
@@ -356,7 +359,8 @@ describe('calendar subscriptions across real client unmount and remount', () => 
   }
   beforeEach(() => {
     harness.realClient = true;
-    refuse = false;
+    backend = new CalendarIdbBackend();
+    factory = new CalendarIdbFactory(backend);
     stored = new Map();
     vi.spyOn(Date, 'now').mockReturnValue(firstFeed.madeAt);
     vi.stubGlobal('document', new EventTarget());
@@ -367,18 +371,73 @@ describe('calendar subscriptions across real client unmount and remount', () => 
       key: (index: number) => [...stored.keys()][index] ?? null,
       getItem: (key: string) => stored.get(key) ?? null,
       setItem: (key: string, value: string) => {
-        if (refuse) throw new Error('Storage refused');
         stored.set(key, value);
       },
       removeItem: (key: string) => stored.delete(key),
     });
-    Object.assign(window, { localStorage });
+    Object.assign(window, { localStorage, indexedDB: factory.indexedDB });
     fetcher = vi.fn();
     vi.stubGlobal('fetch', fetcher);
   });
 
+  it('distinguishes an unfinished initial read from an empty saved-calendar list', async () => {
+    backend.seed({ fence: '11111111-1111-4111-8111-111111111111', feeds: [firstFeed] });
+    factory.holdCompletion = true;
+    render();
+    await vi.waitFor(() => expect(factory.transactions).toBe(1));
+    expect(message()).toContain('Loading calendars');
+    expect(others()).toHaveLength(0);
+    factory.holdCompletion = false;
+    factory.completeTransactions();
+    await vi.waitFor(() => expect(others()).toHaveLength(1));
+    expect(message()).not.toContain('Loading calendars');
+  });
+
+  it('reports an unavailable initial read and recovers its existing keys on a fresh read', async () => {
+    backend.seed({ fence: '11111111-1111-4111-8111-111111111111', feeds: [firstFeed] });
+    factory.faults.read = true;
+    render();
+    await vi.waitFor(() => expect(message()).toContain('could not be read'));
+    expect(backend.state()).toMatchObject({ feeds: [firstFeed] });
+    factory.faults.read = false;
+    window.dispatchEvent(new Event('focus'));
+    await vi.waitFor(() => expect(others()).toHaveLength(1));
+    expect(message()).not.toContain('could not be read');
+  });
+
+  it('refreshes on remount after a missed cross-tab clear without an explicit read helper', async () => {
+    const { clearCalendarFeedStore } = await import('../lib/calendar-feed/browser-store');
+    fetcher.mockResolvedValueOnce(new Response(JSON.stringify(firstFeed), { status: 201 }));
+    find('data-calendar-subscribe')!.props.onClick();
+    await vi.waitFor(() => expect(own()).toEqual(firstFeed));
+    unmount();
+    expect(await clearCalendarFeedStore(new CalendarIdbFactory(backend).indexedDB)).toBe(true);
+    remount();
+    expect(message()).toContain('Loading calendars');
+    await vi.waitFor(() => expect(message()).not.toContain('Loading calendars'));
+    expect(others()).toHaveLength(0);
+    expect(backend.rows.size).toBe(0);
+  });
+
+  it('explains a stale-generation cancellation and requires an explicit fresh subscription', async () => {
+    const { clearCalendarFeedStore } = await import('../lib/calendar-feed/browser-store');
+    fetcher.mockResolvedValueOnce(new Response(JSON.stringify(firstFeed), { status: 201 }));
+    find('data-calendar-subscribe')!.props.onClick();
+    await vi.waitFor(() => expect(own()).toEqual(firstFeed));
+    expect(await clearCalendarFeedStore(new CalendarIdbFactory(backend).indexedDB)).toBe(true);
+    props = { ...props, positions: second };
+    find('data-calendar-subscribe')!.props.onClick();
+    await vi.waitFor(() => expect(message()).toContain('Add this calendar again'));
+    expect(fetcher).toHaveBeenCalledOnce();
+    expect(backend.rows.size).toBe(0);
+    fetcher.mockResolvedValueOnce(new Response(JSON.stringify(secondFeed), { status: 201 }));
+    find('data-calendar-subscribe')!.props.onClick();
+    await vi.waitFor(() => expect(own()).toEqual(secondFeed));
+    expect(fetcher).toHaveBeenCalledTimes(2);
+  });
+
   it.each([true, false])('keeps an already created feed removable after remount (stored: %s)', async (kept) => {
-    refuse = !kept;
+    factory.faults.write = !kept;
     fetcher.mockResolvedValueOnce(new Response(JSON.stringify(firstFeed), { status: 201 }));
     find('data-calendar-subscribe')!.props.onClick();
     await vi.waitFor(() => expect(own()).toEqual(firstFeed));
@@ -394,7 +453,7 @@ describe('calendar subscriptions across real client unmount and remount', () => 
   });
 
   it.each([true, false])('shows and removes a creation completed after remount (stored: %s)', async (kept) => {
-    refuse = !kept;
+    factory.faults.write = !kept;
     const pending = deferred<Response>();
     fetcher.mockReturnValueOnce(pending.promise);
     find('data-calendar-subscribe')!.props.onClick();
@@ -412,13 +471,14 @@ describe('calendar subscriptions across real client unmount and remount', () => 
   });
 
   it.each([true, false])('keeps a creation completed while no island is mounted (stored: %s)', async (kept) => {
-    refuse = !kept;
+    factory.faults.write = !kept;
     const pending = deferred<Response>();
     fetcher.mockReturnValueOnce(pending.promise);
     find('data-calendar-subscribe')!.props.onClick();
     unmount();
     pending.resolve(new Response(JSON.stringify(firstFeed), { status: 201 }));
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    const { calendarFeedRequestPending } = await import('../lib/calendar-feed/client');
+    await vi.waitFor(() => expect(calendarFeedRequestPending()).toBeNull());
     remount();
     expect(own()).toBeUndefined();
     expect(others()).toHaveLength(1);
@@ -444,7 +504,7 @@ describe('calendar subscriptions across real client unmount and remount', () => 
   });
 
   it('clears the primary feed in another still-mounted instance after accepted removal', async () => {
-    refuse = true;
+    factory.faults.write = true;
     fetcher.mockResolvedValueOnce(new Response(JSON.stringify(firstFeed), { status: 201 }));
     find('data-calendar-subscribe')!.props.onClick();
     await vi.waitFor(() => expect(own()).toEqual(firstFeed));
@@ -465,7 +525,7 @@ describe('calendar subscriptions across real client unmount and remount', () => 
 
   it('does not reinsert a late created feed into a still-mounted view after clear-all', async () => {
     const { clearAllZodiacsDataFromDevice } = await import('../lib/account-v2/profile-boundary');
-    refuse = true;
+    factory.faults.write = true;
     fetcher.mockResolvedValueOnce(new Response(JSON.stringify(firstFeed), { status: 201 }));
     find('data-calendar-subscribe')!.props.onClick();
     await vi.waitFor(() => expect(own()).toEqual(firstFeed));
@@ -475,8 +535,8 @@ describe('calendar subscriptions across real client unmount and remount', () => 
     find('data-calendar-subscribe')!.props.onClick();
     await vi.waitFor(() => expect(fetcher).toHaveBeenCalledTimes(2));
     window.dispatchEvent(new Event('zodiacs:profile-lease-revoke'));
-    refuse = false;
-    expect(clearAllZodiacsDataFromDevice(localStorage, localStorage).ok).toBe(true);
+    factory.faults.write = false;
+    expect((await clearAllZodiacsDataFromDevice(localStorage, localStorage)).ok).toBe(true);
     expect(others()).toHaveLength(0);
     pending.resolve(new Response(JSON.stringify(secondFeed), { status: 201 }));
     await finishRequest();
@@ -484,26 +544,29 @@ describe('calendar subscriptions across real client unmount and remount', () => 
     expect(others()).toHaveLength(0);
     expect(fetcher).toHaveBeenCalledTimes(2);
     expect(fetcher.mock.calls.every(([, init]) => init.method === 'POST')).toBe(true);
-    expect(stored.has('zodiacs.calendar-feeds.v1')).toBe(false);
+    expect(backend.rows.size).toBe(0);
   });
 
-  it('also fences a result cleared between client completion and the awaiting view callback', async () => {
+  it('does not restore the view after async erasure requested at client completion commits', async () => {
     const { clearAllZodiacsDataFromDevice } = await import('../lib/account-v2/profile-boundary');
     const { watchCalendarFeeds, calendarFeedRequestPending, readAvailableCalendarFeeds } = await import('../lib/calendar-feed/client');
     render();
     let cleared = false;
+    let clearResult: ReturnType<typeof clearAllZodiacsDataFromDevice> | undefined;
     const stop = watchCalendarFeeds(() => {
       if (!cleared && calendarFeedRequestPending() === null && readAvailableCalendarFeeds().length > 0) {
         cleared = true;
-        expect(clearAllZodiacsDataFromDevice(localStorage, localStorage).ok).toBe(true);
+        clearResult = clearAllZodiacsDataFromDevice(localStorage, localStorage);
       }
     });
     fetcher.mockResolvedValueOnce(new Response(JSON.stringify(firstFeed), { status: 201 }));
     find('data-calendar-subscribe')!.props.onClick();
     await vi.waitFor(() => expect(cleared).toBe(true));
+    expect((await clearResult!).ok).toBe(true);
+    await settle();
     stop();
     expect(own()).toBeUndefined();
     expect(others()).toHaveLength(0);
-    expect(stored.has('zodiacs.calendar-feeds.v1')).toBe(false);
+    expect(backend.rows.size).toBe(0);
   });
 });
