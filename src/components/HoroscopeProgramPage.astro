@@ -121,6 +121,9 @@ const ogImage = `/assets/og/v2/horoscope/${sign.slug}${meta.slug ? `-${meta.slug
 const canonicalUrl = `https://zodiacs.org${path}`;
 const hasEditorial = Astro.slots.has('editorial');
 const hasEnhancement = Astro.slots.has('enhancement');
+// These compact heroes make the sign icon the largest visible element on
+// phones. Use the smaller derivative on their first-paint path, as Daily does.
+const compactHeroIcon = surface === 'today' || surface === 'love' || surface === 'career';
 const editionDate = surface === 'today' ? reading.datePublished.slice(0, 10) : null;
 const displayText = (value: string) => editionDate ? datedEditionText(value, editionDate) : value;
 
@@ -186,7 +189,7 @@ const periodLinks = Object.entries(SURFACE_META).map(([key, item]) => ({
 const skyMarkers = reading.skyStrip.markers;
 ---
 <Base
-  inlineCriticalCss={surface === 'today'}
+  inlineCriticalCss={compactHeroIcon}
   stableTypography
   title={`${sign.name} ${reading.title} — ${reading.label} | Zodiacs.org`}
   description={displayText(reading.description)}
@@ -253,8 +256,8 @@ const skyMarkers = reading.skyStrip.markers;
         size={88}
         loading="eager"
         fetchPriority="high"
-        webpOnly={surface === 'today'}
-        decoding={surface === 'today' ? 'sync' : 'async'}
+        webpOnly={compactHeroIcon}
+        decoding={compactHeroIcon ? 'sync' : 'async'}
         class="program__icon"
       />
       <div class="program__hero-copy">
