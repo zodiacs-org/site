@@ -7,6 +7,7 @@ import AccountSyncV2Panel from '../../islands/AccountSyncV2Panel';
 import AccountBoundProfileSurface from '../../islands/AccountBoundProfileSurface';
 import ProfileSunSignCapture from '../../islands/ProfileSunSignCapture';
 import ProfileIdentity from '../../islands/ProfileIdentity';
+import ProfileSafety from '../../islands/ProfileSafety';
 import ProfileCardInbox from '../../islands/ProfileCardInbox';
 import ProfilePeople from '../../islands/ProfilePeople';
 import ProfileKeepClose from '../../islands/ProfileKeepClose';
@@ -20,6 +21,7 @@ import '../../styles/calculator.css';
 import '../../styles/profile-home.css';
 
 const dailyEmailEnabled = hasDailyChartEmailProvider(process.env);
+const syncConfigured = Boolean(import.meta.env.PUBLIC_SUPABASE_URL && (import.meta.env.PUBLIC_SUPABASE_PUBLISHABLE_KEY || import.meta.env.PUBLIC_SUPABASE_ANON_KEY));
 const inviteUiEnabled = process.env.PUBLIC_COMPAT_INVITES_ENABLED === '1';
 const accountSyncV2Enabled = isAccountSyncV2Enabled({
   PUBLIC_ACCOUNT_SYNC_V2_ENABLED: process.env.PUBLIC_ACCOUNT_SYNC_V2_ENABLED,
@@ -45,13 +47,14 @@ const savedRecordsSurfaceEnabled = savedRecordsEnabled({
 
     <ProfileIdentity accountBound={accountSyncV2Enabled} client:load />
 
+    <ProfileSafety syncConfigured={syncConfigured} accountBound={accountSyncV2Enabled} client:load />
+
     <nav class="pf-page-nav" aria-label="On your page">
       <a href="/today/">Today <span aria-hidden="true">↗</span></a>
       <a href="#saved-charts">Saved charts <span aria-hidden="true">↓</span></a>
       <a href="#living-chart">Timeline <span aria-hidden="true">↓</span></a>
     </nav>
 
-    <p class="experience-note">Charts save on this device first. Observations also start here, with separate sync controls. Clearing browser data removes local-only saves. Account sync is optional and has separate controls below.</p>
 
     <ProfileKeepClose accountBound={accountSyncV2Enabled} client:idle />
 
@@ -279,7 +282,7 @@ const savedRecordsSurfaceEnabled = savedRecordsEnabled({
   }
   @media (min-width: 680px) {
     .pf-sync__core {
-      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 310px);
       align-items: center;
     }
   }
@@ -428,7 +431,7 @@ const savedRecordsSurfaceEnabled = savedRecordsEnabled({
   .pf-sync__form {
     display: grid;
     gap: 10px;
-    min-width: min(100%, 310px);
+    min-width: 0;
   }
   .pf-sync__actions {
     display: flex;

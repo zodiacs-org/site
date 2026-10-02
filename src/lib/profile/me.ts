@@ -11,6 +11,7 @@
  */
 import { profileAccessAllowed } from '../account-v2/profile-access-reader';
 import { ME_KEY } from './page-keys';
+import { cleanProfilePhoto } from './photo';
 
 export { ME_KEY };
 /** Matches the name limit of shared chart links and saved comparisons. */
@@ -20,6 +21,8 @@ export interface MeSettings {
   version: 1;
   /** The name shown on your page and on a card you send; null means none chosen. */
   displayName: string | null;
+  /** Optional device-local photo; backups carry it, shared cards and chart sync do not. */
+  photo?: string;
   /** The keep-this-page-close note was dismissed on this device. */
   keepCloseDismissed: boolean;
 }
@@ -57,6 +60,7 @@ export function parseMe(raw: string | null): MeSettings {
     return {
       version: 1,
       displayName: cleanDisplayName(record.displayName),
+      ...(cleanProfilePhoto(record.photo) ? { photo: cleanProfilePhoto(record.photo)! } : {}),
       keepCloseDismissed: record.keepCloseDismissed === true,
     };
   } catch {

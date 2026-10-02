@@ -741,6 +741,23 @@ jobs:
       - name: Build, dist checks and route budgets (production flags on)
         run: npm run build
 
+      - name: Install profile test browsers
+        run: npx playwright-core install --with-deps chromium webkit
+
+      - name: Profile photo, backup and cross-device recovery
+        env:
+          OUT_DIR: tests/visual/artifacts/profile-recovery
+        run: node tests/profile-recovery-drive.mjs
+
+      - name: Upload profile recovery evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: profile-recovery-${{ github.run_id }}
+          path: tests/visual/artifacts/profile-recovery/
+          if-no-files-found: ignore
+          retention-days: 30
+
   # The birthplace clock's tables (src/data/tz-lmt.json and
   # src/data/tz-history/) must match the pinned tzdb release they are built
   # from. The generators download it (and check its SHA-256) and compile it
