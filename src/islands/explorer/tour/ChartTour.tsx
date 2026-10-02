@@ -552,7 +552,11 @@ export default function ChartTour({
       feature = (
         <div class="tour__feature">
           <div class="tour__future-grid">
-            <div class="tour__future-card tour__future-card--personal">
+            <button
+              class="tour__future-card tour__future-card--personal tour__future-card--link"
+              type="button"
+              onClick={() => { onComplete?.(); onOpenForecast?.(); }}
+            >
               <span>{tourText(locale, 'quickPersonalTimingLabel')}</span>
               <strong>{tourText(locale, hasBirthTime
                 ? 'quickPersonalTimingTitle'
@@ -560,7 +564,8 @@ export default function ChartTour({
               <p>{tourText(locale, hasBirthTime
                 ? 'quickPersonalTimingBody'
                 : 'quickPersonalTimingNoTimeBody')}</p>
-            </div>
+              <em>{tourText(locale, hasBirthTime ? 'quickFinish' : 'quickFinishNoTime')} →</em>
+            </button>
             <a
               class="tour__future-card tour__future-card--link"
               href={horoscopeHref}
@@ -651,7 +656,7 @@ export default function ChartTour({
       dotsLabel={tourText(locale, variant === 'quick' ? 'quickDotsLabel' : 'dotsLabel')}
       exitLabel={tourText(locale, variant === 'quick' ? 'quickExitAria' : 'exitAria')}
       finishLabel={tourText(locale, variant === 'quick'
-        ? hasBirthTime ? 'quickFinish' : 'quickFinishNoTime'
+        ? 'quickSave'
         : 'finish')}
       nextLabel={variant === 'quick'
         ? tourText(locale, chapterDef.id === 'first-big-three'
@@ -675,7 +680,7 @@ export default function ChartTour({
         onVisual(null);
         if (variant === 'quick') {
           onComplete?.();
-          onOpenForecast?.();
+          onSave();
         }
         else {
           onAnnounce(tourText(locale, 'ended'));

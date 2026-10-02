@@ -201,7 +201,7 @@
   @font-face { font-family: 'EB Garamond Fallback Android'; src: local('Noto Serif'); size-adjust: 79.64%; ascent-override: 126.44%; descent-override: 37.42%; line-gap-override: 0%; }
   @font-face { font-family: 'EB Garamond Fallback Times'; src: local('Times New Roman'), local('Liberation Serif'); size-adjust: 87.49%; ascent-override: 115.1%; descent-override: 34.06%; line-gap-override: 0%; }
   .wnav-wrap { --wing-sans: 'Instrument Sans', 'Instrument Sans Fallback', 'Instrument Sans Fallback Android', system-ui, -apple-system, sans-serif; --wing-serif: 'EB Garamond', 'EB Garamond Fallback', 'EB Garamond Fallback Android', 'EB Garamond Fallback Times', 'Iowan Old Style', Georgia, serif; position: fixed; top: 14px; left: 0; right: 0; z-index: 60; display: flex; flex-direction: column; align-items: center; pointer-events: none; padding-top: env(safe-area-inset-top); }
-  .wnav { pointer-events: auto; box-sizing: border-box; max-width: calc(100% - 32px); display: inline-flex; align-items: center; gap: 10px; height: 52px; padding: 0 10px 0 20px; border-radius: 999px; background: rgba(10,12,17,0.66); backdrop-filter: saturate(150%) blur(18px); -webkit-backdrop-filter: saturate(150%) blur(18px); border: 1px solid rgba(198,204,218,0.16); box-shadow: inset 0 1px 0 rgba(238,241,247,0.06), 0 12px 32px -14px rgba(0,0,0,0.7); }
+  .wnav { pointer-events: auto; box-sizing: border-box; max-width: calc(100% - 32px); display: inline-flex; align-items: center; gap: 10px; height: 52px; padding: 0 10px 0 20px; border-radius: 999px; background: rgba(10,12,17,0.96); backdrop-filter: saturate(150%) blur(18px); -webkit-backdrop-filter: saturate(150%) blur(18px); border: 1px solid rgba(198,204,218,0.16); box-shadow: inset 0 1px 0 rgba(238,241,247,0.06), 0 12px 32px -14px rgba(0,0,0,0.7); }
   @media (min-width: 920px) { .wnav { gap: 10px; } }
   @media (min-width: 900px) { .wnav { gap: 18px; } }
   .wnav__mark { display: inline-flex; align-items: center; gap: 9px; text-decoration: none; white-space: nowrap; }
@@ -272,10 +272,10 @@
   .wnav-menu__link:last-child { border-bottom: 0; }
   .wnav-menu__registry { display: grid; gap: 5px; }
   .wnav-menu__registry small { color: var(--ink-mute, #8A93A6); font-family: var(--mono, 'JetBrains Mono', monospace); font-size: 9px; letter-spacing: 0.04em; line-height: 1.35; }
-  .wnav-menu__tools { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .wnav-menu__tools { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 18px; }
   .wnav-menu__tool { display: block; min-width: 0; padding: 11px 0; border-bottom: 1px solid var(--hair, rgba(198,204,218,0.10)); color: var(--ink, #EEF1F7); font-family: var(--wing-serif); font-size: clamp(18px, 5vw, 22px); line-height: 1.05; text-decoration: none; }
   .wnav-menu__tool:last-child { border-bottom: 0; }
-  .wnav-menu__signs { display: flex; flex-direction: column; }
+  .wnav-menu__signs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 16px; }
   .wnav-menu__sign { display: flex; flex-direction: row; align-items: center; gap: 13px; padding: 10px 0; text-decoration: none; font-family: var(--wing-serif); font-size: clamp(20px, 5.5vw, 26px); font-weight: 400; color: var(--ink, #EEF1F7); border-bottom: 1px solid var(--hair, rgba(198,204,218,0.10)); }
   .wnav-menu__sign:last-child { border-bottom: 0; }
   .wnav-menu__sign .wnav-disc { width: 30px; height: 30px; }
@@ -1113,6 +1113,10 @@
       .identity-actions button:active, .people-block a:active, .strip a:active, .profile-explore:active { transform: none; }
     }
 
+    .profile-interest-title { margin: 36px 0 16px; font-family: var(--profile-display); font-size: 26px; font-weight: 400; }
+    .attention-card__snapshot { display: block; margin-top: 8px; font-size: 12px; color: var(--ink-dim); }
+    .people-block > small, .attention-card > small, .lot__eyebrow { font-size: 12px; line-height: 1.5; }
+
   </style>
   <noscript><style>.reveal { opacity: 1 !important; transform: none !important; filter: none !important; }</style></noscript>
 </head>
@@ -1143,7 +1147,7 @@
       </button>
     </nav>
     <div class="wnav-tools" id="wnav-tools" data-wnav-tools-menu hidden>
-      <div class="wnav-tools__grid"><a class="wnav-tools__item" href="/birth-chart/"><span class="wnav-tools__name">Birth chart</span><span class="wnav-tools__desc">See your sun, moon, rising, planets, houses, and what they mean.</span></a><a class="wnav-tools__item" href="/compatibility/"><span class="wnav-tools__name">Compatibility</span><span class="wnav-tools__desc">Compare two charts and see where they click, clash, and grow.</span></a><a class="wnav-tools__item" href="/transits/"><span class="wnav-tools__name">Transits</span><span class="wnav-tools__desc">See today's sky next to your chart.</span></a><a class="wnav-tools__item" href="/moon-sign/"><span class="wnav-tools__name">Moon sign</span><span class="wnav-tools__desc">How you feel, and what settles you.</span></a><a class="wnav-tools__item" href="/rising-sign/"><span class="wnav-tools__name">Rising sign</span><span class="wnav-tools__desc">Find the sign people meet first. Birth time helps.</span></a><a class="wnav-tools__item" href="/moon-phase/"><span class="wnav-tools__name">Moon phase</span><span class="wnav-tools__desc">Tonight’s moon, and the moon of any date you care about.</span></a><a class="wnav-tools__item" href="/saturn-return/"><span class="wnav-tools__name">Saturn return</span><span class="wnav-tools__desc">When yours hits, exactly, and what it tends to ask.</span></a><a class="wnav-tools__item" href="/birthday/"><span class="wnav-tools__name">Birthday</span><span class="wnav-tools__desc">Check the Zodiac sign for any birthday from 1940 to 2030, including birthdays close to a sign change.</span></a></div>
+      <div class="wnav-tools__grid"><a class="wnav-tools__item" href="/birth-chart/"><span class="wnav-tools__name">Birth chart</span><span class="wnav-tools__desc">See your sun, moon, rising, planets, houses, and what they mean.</span></a><a class="wnav-tools__item" href="/compatibility/"><span class="wnav-tools__name">Compatibility</span><span class="wnav-tools__desc">Compare two charts and see where they click, clash, and grow.</span></a><a class="wnav-tools__item" href="/transits/"><span class="wnav-tools__name">Transits</span><span class="wnav-tools__desc">Explore today’s planets and their connections to your chart.</span></a><a class="wnav-tools__item" href="/moon-sign/"><span class="wnav-tools__name">Moon sign</span><span class="wnav-tools__desc">How you feel, and what settles you.</span></a><a class="wnav-tools__item" href="/rising-sign/"><span class="wnav-tools__name">Rising sign</span><span class="wnav-tools__desc">Find the sign people meet first. Birth time helps.</span></a><a class="wnav-tools__item" href="/moon-phase/"><span class="wnav-tools__name">Moon phase</span><span class="wnav-tools__desc">Tonight’s moon, and the moon of any date you care about.</span></a><a class="wnav-tools__item" href="/saturn-return/"><span class="wnav-tools__name">Saturn return</span><span class="wnav-tools__desc">When yours hits, exactly, and what it tends to ask.</span></a><a class="wnav-tools__item" href="/birthday/"><span class="wnav-tools__name">Birthday</span><span class="wnav-tools__desc">Find your Sun sign from your birthday, including dates near a sign change.</span></a></div>
     </div>
     <div class="wnav-signs" id="wnav-signs" data-wnav-signs-menu hidden>
       <div class="wnav-signs__grid"><a class="wnav-signs__item" href="/aries/" style="--sign:#DE8E79"><picture class="wnav-disc"><source srcset="/assets/zodiac-icons/128/aries.avif" type="image/avif"/><img src="/assets/zodiac-icons/128/aries.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><span class="wnav-signs__name">Aries</span><span class="wnav-signs__dates">Mar 21 – Apr 19</span></a><a class="wnav-signs__item" href="/taurus/" style="--sign:#B9D4BE"><picture class="wnav-disc"><source srcset="/assets/zodiac-icons/128/taurus.avif" type="image/avif"/><img src="/assets/zodiac-icons/128/taurus.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><span class="wnav-signs__name">Taurus</span><span class="wnav-signs__dates">Apr 20 – May 20</span></a><a class="wnav-signs__item" href="/gemini/" style="--sign:#B29DD0"><picture class="wnav-disc"><source srcset="/assets/zodiac-icons/128/gemini.avif" type="image/avif"/><img src="/assets/zodiac-icons/128/gemini.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><span class="wnav-signs__name">Gemini</span><span class="wnav-signs__dates">May 21 – Jun 20</span></a><a class="wnav-signs__item" href="/cancer/" style="--sign:#B6D4E4"><picture class="wnav-disc"><source srcset="/assets/zodiac-icons/128/cancer.avif" type="image/avif"/><img src="/assets/zodiac-icons/128/cancer.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><span class="wnav-signs__name">Cancer</span><span class="wnav-signs__dates">Jun 21 – Jul 22</span></a><a class="wnav-signs__item" href="/leo/" style="--sign:#E0A9B4"><picture class="wnav-disc"><source srcset="/assets/zodiac-icons/128/leo.avif" type="image/avif"/><img src="/assets/zodiac-icons/128/leo.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><span class="wnav-signs__name">Leo</span><span class="wnav-signs__dates">Jul 23 – Aug 22</span></a><a class="wnav-signs__item" href="/virgo/" style="--sign:#B7D9B0"><picture class="wnav-disc"><source srcset="/assets/zodiac-icons/128/virgo.avif" type="image/avif"/><img src="/assets/zodiac-icons/128/virgo.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><span class="wnav-signs__name">Virgo</span><span class="wnav-signs__dates">Aug 23 – Sep 22</span></a><a class="wnav-signs__item" href="/libra/" style="--sign:#D3A9DE"><picture class="wnav-disc"><source srcset="/assets/zodiac-icons/128/libra.avif" type="image/avif"/><img src="/assets/zodiac-icons/128/libra.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><span class="wnav-signs__name">Libra</span><span class="wnav-signs__dates">Sep 23 – Oct 22</span></a><a class="wnav-signs__item" href="/scorpio/" style="--sign:#B9DCE8"><picture class="wnav-disc"><source srcset="/assets/zodiac-icons/128/scorpio.avif" type="image/avif"/><img src="/assets/zodiac-icons/128/scorpio.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><span class="wnav-signs__name">Scorpio</span><span class="wnav-signs__dates">Oct 23 – Nov 21</span></a><a class="wnav-signs__item" href="/sagittarius/" style="--sign:#E0B080"><picture class="wnav-disc"><source srcset="/assets/zodiac-icons/128/sagittarius.avif" type="image/avif"/><img src="/assets/zodiac-icons/128/sagittarius.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><span class="wnav-signs__name">Sagittarius</span><span class="wnav-signs__dates">Nov 22 – Dec 21</span></a><a class="wnav-signs__item" href="/capricorn/" style="--sign:#C0DEA8"><picture class="wnav-disc"><source srcset="/assets/zodiac-icons/128/capricorn.avif" type="image/avif"/><img src="/assets/zodiac-icons/128/capricorn.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><span class="wnav-signs__name">Capricorn</span><span class="wnav-signs__dates">Dec 22 – Jan 19</span></a><a class="wnav-signs__item" href="/aquarius/" style="--sign:#AE8FC9"><picture class="wnav-disc"><source srcset="/assets/zodiac-icons/128/aquarius.avif" type="image/avif"/><img src="/assets/zodiac-icons/128/aquarius.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><span class="wnav-signs__name">Aquarius</span><span class="wnav-signs__dates">Jan 20 – Feb 18</span></a><a class="wnav-signs__item" href="/pisces/" style="--sign:#A9D4C4"><picture class="wnav-disc"><source srcset="/assets/zodiac-icons/128/pisces.avif" type="image/avif"/><img src="/assets/zodiac-icons/128/pisces.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><span class="wnav-signs__name">Pisces</span><span class="wnav-signs__dates">Feb 19 – Mar 20</span></a></div>
@@ -1161,7 +1165,7 @@
       </div>
       <div class="wnav-menu__group">
         <span class="wnav-menu__label">Tools</span>
-        <div class="wnav-menu__tools"><a class="wnav-menu__tool" style="--i:0" href="/birth-chart/" aria-label="Birth chart. See your sun, moon, rising, planets, houses, and what they mean.">Birth chart</a><a class="wnav-menu__tool" style="--i:1" href="/compatibility/" aria-label="Compatibility. Compare two charts and see where they click, clash, and grow.">Compatibility</a><a class="wnav-menu__tool" style="--i:2" href="/transits/" aria-label="Transits. See today's sky next to your chart.">Transits</a><a class="wnav-menu__tool" style="--i:3" href="/moon-sign/" aria-label="Moon sign. How you feel, and what settles you.">Moon sign</a><a class="wnav-menu__tool" style="--i:4" href="/rising-sign/" aria-label="Rising sign. Find the sign people meet first. Birth time helps.">Rising sign</a><a class="wnav-menu__tool" style="--i:5" href="/moon-phase/" aria-label="Moon phase. Tonight’s moon, and the moon of any date you care about.">Moon phase</a><a class="wnav-menu__tool" style="--i:6" href="/saturn-return/" aria-label="Saturn return. When yours hits, exactly, and what it tends to ask.">Saturn return</a><a class="wnav-menu__tool" style="--i:7" href="/birthday/" aria-label="Birthday. Check the Zodiac sign for any birthday from 1940 to 2030, including birthdays close to a sign change.">Birthday</a></div>
+        <div class="wnav-menu__tools"><a class="wnav-menu__tool" style="--i:0" href="/birth-chart/" aria-label="Birth chart. See your sun, moon, rising, planets, houses, and what they mean.">Birth chart</a><a class="wnav-menu__tool" style="--i:1" href="/compatibility/" aria-label="Compatibility. Compare two charts and see where they click, clash, and grow.">Compatibility</a><a class="wnav-menu__tool" style="--i:2" href="/transits/" aria-label="Transits. Explore today’s planets and their connections to your chart.">Transits</a><a class="wnav-menu__tool" style="--i:3" href="/moon-sign/" aria-label="Moon sign. How you feel, and what settles you.">Moon sign</a><a class="wnav-menu__tool" style="--i:4" href="/rising-sign/" aria-label="Rising sign. Find the sign people meet first. Birth time helps.">Rising sign</a><a class="wnav-menu__tool" style="--i:5" href="/moon-phase/" aria-label="Moon phase. Tonight’s moon, and the moon of any date you care about.">Moon phase</a><a class="wnav-menu__tool" style="--i:6" href="/saturn-return/" aria-label="Saturn return. When yours hits, exactly, and what it tends to ask.">Saturn return</a><a class="wnav-menu__tool" style="--i:7" href="/birthday/" aria-label="Birthday. Find your Sun sign from your birthday, including dates near a sign change.">Birthday</a></div>
       </div>
       <div class="wnav-menu__group">
         <span class="wnav-menu__label">The twelve</span>
@@ -1207,10 +1211,6 @@
     <section class="sec reveal pride" id="identity" aria-labelledby="identity-title">
       <div class="sec__head"><h2 class="sec__title" id="identity-title">Born under Scorpio</h2><span class="line"></span></div>
       <p class="pride__rally">Scorpio never does anything halfway.</p>
-      <div class="attention-grid">
-        <article class="attention-card"><span class="attention-card__label">People who share Scorpio</span><strong>Hundreds of millions</strong><p>A rough estimate based on one-twelfth of the world’s population. It describes the sign, not token ownership.</p></article>
-        <article class="attention-card" data-attention><span class="attention-card__label">Wikipedia views</span><strong>1,260 a day</strong><p>The English Wikipedia page for Scorpio averaged 1,260 views a day from Jul 25 to Aug 23, 2026.</p><small>Source: Wikimedia · updated Aug 24. One person may account for more than one view. This shows interest, not ownership or value. <a href="/thesis/#pulse">See the source</a>.</small></article>
-      </div>
       <div class="people-block">
         <div id="people"><span class="people-block__label">You’re in good company</span></div>
         <ul>
@@ -1220,6 +1220,11 @@
           <li><a href="/people/leonardo-dicaprio/" rel="nofollow"><strong>Leonardo DiCaprio</strong><span>Nov 11</span></a></li>
         </ul>
         <small>Birth dates are sourced. These people did not endorse Zodiacs.org.</small>
+      </div>
+      <h3 class="profile-interest-title">Public interest</h3>
+      <div class="attention-grid">
+        <article class="attention-card"><span class="attention-card__label">People who share Scorpio</span><strong>Hundreds of millions</strong><p>A rough estimate based on one-twelfth of the world’s population. It describes the sign, not token ownership.</p></article>
+        <article class="attention-card" data-attention><span class="attention-card__label">Wikipedia views</span><strong>1,260 a day</strong><span class="attention-card__snapshot">Snapshot updated Aug 24</span><p>The English Wikipedia page for Scorpio averaged 1,260 views a day from Jul 25 to Aug 23, 2026.</p><small>Source: Wikimedia · updated Aug 24. One person may account for more than one view. This shows interest, not ownership or value. <a href="/thesis/#pulse">See the source</a>.</small></article>
       </div>
     </section>
 
@@ -1257,11 +1262,11 @@
         <div class="market__head"><p class="market__copy">The price can change quickly and can fall to zero.</p><a class="market__source" data-market-live-link href="https://dexscreener.com/solana/3d2KYuMgj2yotNC6SKX4HNoeSWp4n8zqZSQ9kFH81Yta" rel="noopener noreferrer external nofollow">View live chart ↗</a></div>
         <section class="quick" aria-labelledby="quick-title" data-live-quote>
           <span class="quick__label" id="quick-title" data-live-price-label>Latest recorded price</span>
-          <div class="quick__quote" aria-live="polite"><strong class="quick__price" data-live-price>$0.00008093</strong><span class="quick__change" data-live-change>Past 24 hours -4.63%</span><p class="quick__state" data-live-state>Showing the latest saved price. Checking for a newer one…</p></div>
+          <div class="quick__quote" aria-live="polite"><strong class="quick__price" data-live-price>$0.00007956</strong><span class="quick__change" data-live-change>Past 24 hours -1.88%</span><p class="quick__state" data-live-state>Showing the latest saved price. Checking for a newer one…</p></div>
         </section>
         <div class="market__grid" data-market-grid>
-          <div class="market__cell"><div class="market__k">Total market value</div><div class="market__v ">$80.9K</div></div>
-          <div class="market__cell"><div class="market__k">Traded in 24 hours</div><div class="market__v ">$278.61</div></div>
+          <div class="market__cell"><div class="market__k">Total market value</div><div class="market__v ">$79.6K</div></div>
+          <div class="market__cell"><div class="market__k">Traded in 24 hours</div><div class="market__v ">$53.18</div></div>
         </div>
         <p class="market__state" data-market-state>Loading price history…</p>
         <div class="market__chart" data-market-chart hidden>
@@ -1269,27 +1274,27 @@
           <div data-market-chart-canvas></div><dl class="chart-summary" data-chart-summary hidden></dl>
         </div>
         <noscript><p class="market__state">Price history is unavailable here. The latest recorded price and verified address are still shown.</p></noscript>
-        <div class="market__foot" data-market-foot>Updated Oct 1, 2026, 12:07 AM UTC</div>
+        <div class="market__foot" data-market-foot>Updated Oct 2, 2026, 12:07 AM UTC</div>
       </aside>
       <section class="standings" data-market-standings aria-labelledby="standings-title">
-        <div class="standings__head"><div><span>Market standings</span><h3 id="standings-title">7th of 12 by total market value</h3></div><p data-standings-summary>This rank only compares total market value. It does not show how many people support each sign.</p></div>
+        <div class="standings__head"><div><span>Market standings</span><h3 id="standings-title">6th of 12 by total market value</h3></div><p data-standings-summary>This rank only compares total market value. It does not show how many people support each sign.</p></div>
         <details class="standings__all"><summary>See all 12 market standings</summary>
           <ol class="standings__list" data-standings-list>
-          <li><a href="/registry/gemini/" style="--sign:#B29DD0"><span class="standings__rank">#1</span><picture><source srcset="/assets/zodiac-icons/48/gemini.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/gemini.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Gemini</strong><span>$164,517</span></a></li>
-          <li><a href="/registry/libra/" style="--sign:#D3A9DE"><span class="standings__rank">#2</span><picture><source srcset="/assets/zodiac-icons/48/libra.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/libra.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Libra</strong><span>$90,304</span></a></li>
-          <li><a href="/registry/aquarius/" style="--sign:#AE8FC9"><span class="standings__rank">#3</span><picture><source srcset="/assets/zodiac-icons/48/aquarius.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/aquarius.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Aquarius</strong><span>$84,240</span></a></li>
-          <li><a href="/registry/cancer/" style="--sign:#B6D4E4"><span class="standings__rank">#4</span><picture><source srcset="/assets/zodiac-icons/48/cancer.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/cancer.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Cancer</strong><span>$83,624</span></a></li>
-          <li><a href="/registry/taurus/" style="--sign:#B9D4BE"><span class="standings__rank">#5</span><picture><source srcset="/assets/zodiac-icons/48/taurus.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/taurus.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Taurus</strong><span>$82,562</span></a></li>
-          <li><a href="/registry/leo/" style="--sign:#E0A9B4"><span class="standings__rank">#6</span><picture><source srcset="/assets/zodiac-icons/48/leo.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/leo.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Leo</strong><span>$82,302</span></a></li>
-          <li class="is-current" aria-current="true"><a href="/registry/scorpio/" style="--sign:#B9DCE8"><span class="standings__rank">#7</span><picture><source srcset="/assets/zodiac-icons/48/scorpio.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/scorpio.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Scorpio</strong><span>$80,938</span></a></li>
-          <li><a href="/registry/aries/" style="--sign:#DE8E79"><span class="standings__rank">#8</span><picture><source srcset="/assets/zodiac-icons/48/aries.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/aries.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Aries</strong><span>$80,801</span></a></li>
-          <li><a href="/registry/capricorn/" style="--sign:#C0DEA8"><span class="standings__rank">#9</span><picture><source srcset="/assets/zodiac-icons/48/capricorn.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/capricorn.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Capricorn</strong><span>$78,917</span></a></li>
-          <li><a href="/registry/pisces/" style="--sign:#A9D4C4"><span class="standings__rank">#10</span><picture><source srcset="/assets/zodiac-icons/48/pisces.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/pisces.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Pisces</strong><span>$76,969</span></a></li>
-          <li><a href="/registry/virgo/" style="--sign:#B7D9B0"><span class="standings__rank">#11</span><picture><source srcset="/assets/zodiac-icons/48/virgo.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/virgo.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Virgo</strong><span>$75,122</span></a></li>
-          <li><a href="/registry/sagittarius/" style="--sign:#E0B080"><span class="standings__rank">#12</span><picture><source srcset="/assets/zodiac-icons/48/sagittarius.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/sagittarius.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Sagittarius</strong><span>$74,269</span></a></li>
+          <li><a href="/registry/gemini/" style="--sign:#B29DD0"><span class="standings__rank">#1</span><picture><source srcset="/assets/zodiac-icons/48/gemini.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/gemini.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Gemini</strong><span>$162,993</span></a></li>
+          <li><a href="/registry/libra/" style="--sign:#D3A9DE"><span class="standings__rank">#2</span><picture><source srcset="/assets/zodiac-icons/48/libra.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/libra.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Libra</strong><span>$89,502</span></a></li>
+          <li><a href="/registry/aquarius/" style="--sign:#AE8FC9"><span class="standings__rank">#3</span><picture><source srcset="/assets/zodiac-icons/48/aquarius.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/aquarius.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Aquarius</strong><span>$83,632</span></a></li>
+          <li><a href="/registry/leo/" style="--sign:#E0A9B4"><span class="standings__rank">#4</span><picture><source srcset="/assets/zodiac-icons/48/leo.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/leo.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Leo</strong><span>$81,474</span></a></li>
+          <li><a href="/registry/cancer/" style="--sign:#B6D4E4"><span class="standings__rank">#5</span><picture><source srcset="/assets/zodiac-icons/48/cancer.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/cancer.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Cancer</strong><span>$81,309</span></a></li>
+          <li class="is-current" aria-current="true"><a href="/registry/scorpio/" style="--sign:#B9DCE8"><span class="standings__rank">#6</span><picture><source srcset="/assets/zodiac-icons/48/scorpio.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/scorpio.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Scorpio</strong><span>$79,562</span></a></li>
+          <li><a href="/registry/taurus/" style="--sign:#B9D4BE"><span class="standings__rank">#7</span><picture><source srcset="/assets/zodiac-icons/48/taurus.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/taurus.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Taurus</strong><span>$78,458</span></a></li>
+          <li><a href="/registry/aries/" style="--sign:#DE8E79"><span class="standings__rank">#8</span><picture><source srcset="/assets/zodiac-icons/48/aries.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/aries.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Aries</strong><span>$78,186</span></a></li>
+          <li><a href="/registry/virgo/" style="--sign:#B7D9B0"><span class="standings__rank">#9</span><picture><source srcset="/assets/zodiac-icons/48/virgo.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/virgo.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Virgo</strong><span>$74,545</span></a></li>
+          <li><a href="/registry/capricorn/" style="--sign:#C0DEA8"><span class="standings__rank">#10</span><picture><source srcset="/assets/zodiac-icons/48/capricorn.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/capricorn.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Capricorn</strong><span>$74,415</span></a></li>
+          <li><a href="/registry/sagittarius/" style="--sign:#E0B080"><span class="standings__rank">#11</span><picture><source srcset="/assets/zodiac-icons/48/sagittarius.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/sagittarius.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Sagittarius</strong><span>$73,713</span></a></li>
+          <li><a href="/registry/pisces/" style="--sign:#A9D4C4"><span class="standings__rank">#12</span><picture><source srcset="/assets/zodiac-icons/48/pisces.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/pisces.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Pisces</strong><span>$73,290</span></a></li>
           </ol>
         </details>
-        <p class="standings__time" data-standings-time>Updated Oct 1, 2026, 12:07 AM UTC</p>
+        <p class="standings__time" data-standings-time>Updated Oct 2, 2026, 12:07 AM UTC</p>
         <details class="market-explainer"><summary>Where do these numbers come from?</summary><p>The source reports each sign’s price, trading activity and total market value. Zodiacs.org matches each sign by its verified address. Total market value is a comparison, not money held in a bank, and light trading can move it quickly. <a href="/registry/technical/#market-transparency">See sources and method details.</a></p></details>
       </section>
     </section>
@@ -1379,17 +1384,17 @@
 
     <div class="zfooter__directory">
       <nav class="zfooter__group" aria-label="Explore">
-        <span class="zfooter__label">Explore</span>
+        <details class="zfooter__fold" open data-footer-essential><summary class="zfooter__fold-label"><span class="zfooter__label">Explore</span></summary>
         <div class="zfooter__links"><a href="/">Astrology</a><a href="/astrofolio/">Astrofolio</a><a href="/registry/">Official Registry</a><a href="/thesis/">Thesis</a><a href="/archive/">Archive</a></div>
-      </nav>
+      </details></nav>
       <nav class="zfooter__group" aria-label="Trust and policies">
-        <span class="zfooter__label">Trust</span>
+        <details class="zfooter__fold" open><summary class="zfooter__fold-label"><span class="zfooter__label">Trust</span></summary>
         <div class="zfooter__links"><a href="/astrofolio/#verify">Verify a token</a><a href="/registry/technical/">Methodology</a><a href="/disclosure/">Disclosure</a><a href="/sdk/">SDK</a></div>
-      </nav>
+      </details></nav>
       <nav class="zfooter__group zfooter__group--wide" aria-label="Official channels">
-        <span class="zfooter__label">Follow</span>
+        <details class="zfooter__fold" open><summary class="zfooter__fold-label"><span class="zfooter__label">Follow</span></summary>
         <div class="zfooter__links"><a href="https://x.com/astrofoliosol" rel="noopener noreferrer">X</a><a href="https://www.instagram.com/astrofolioonsol/" rel="noopener noreferrer">Instagram</a><a href="https://tiktok.com/@astrofolio" rel="noopener noreferrer">TikTok</a><a href="https://t.me/astrofoliosol" rel="noopener noreferrer">Telegram</a></div>
-      </nav>
+      </details></nav>
       <nav class="zfooter__group zfooter__twelve" aria-label="The twelve zodiac signs">
         <span class="zfooter__label">The Twelve</span>
         <div class="zfooter__signs">
@@ -1427,7 +1432,7 @@
       </div>
     </div>
   </div>
-</footer>
+</footer><script>(function () { var mobile = window.matchMedia('(max-width: 620px)'); var groups = document.querySelectorAll('.zfooter__fold:not([data-footer-essential])'); var sync = function () { groups.forEach(function (group) { group.open = !mobile.matches; }); }; sync(); mobile.addEventListener && mobile.addEventListener('change', sync); })();</script>
 
   <script data-guide-loader="zodiacs-guide-loader-v1">
 (function () {

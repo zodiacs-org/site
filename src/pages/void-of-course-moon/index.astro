@@ -1,17 +1,19 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { SIGNS } from '../../lib/signs';
-import { voidOfCourseWindows, voidStatus, type VoidWindow } from '../../lib/engine/void-of-course';
+import { voidOfCourseAt, voidOfCourseWindows, type VoidOfCourseWindow } from '@zodiacs/engine/techniques';
+import { signBySlug } from '../../lib/signs';
 
 // Build-time: every void-of-course window from the start of this month to
-// the end of the month after next, computed in Node with the same engine
-// as every chart on the site. The browser only converts the instants to
+// the end of the month after next, computed in Node by @zodiacs/engine, the
+// same engine as every chart on the site, under its one named convention
+// (VOID_OF_COURSE_CONVENTION: the last exact Ptolemaic aspect in a sign to
+// the Moon's entry into the next). The browser only converts the instants to
 // the reader's time zone and marks the window in progress.
 const buildNow = new Date();
 const rangeFrom = new Date(Date.UTC(buildNow.getUTCFullYear(), buildNow.getUTCMonth(), 1));
 const rangeTo = new Date(Date.UTC(buildNow.getUTCFullYear(), buildNow.getUTCMonth() + 3, 1));
 const windows = voidOfCourseWindows(rangeFrom, rangeTo);
-const status = voidStatus(buildNow);
+const status = voidOfCourseAt(buildNow);
 
 const monthLabel = new Intl.DateTimeFormat('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' });
 const dayLabel = new Intl.DateTimeFormat('en-GB', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' });
@@ -22,14 +24,14 @@ const stampLabel = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'lo
 // table, so the browser's local rewrite never changes a cell's length.
 const clock = (date: Date) => `${dayLabel.format(date)} · ${clockLabel.format(date)}`;
 const utc = (date: Date) => `${clock(date)} UTC`;
-const signName = (index: number) => SIGNS[index].name;
+const signName = (slug: string) => signBySlug(slug).name;
 const ASPECT_VERB: Record<string, string> = {
   conjunction: 'conjunct', sextile: 'sextile', square: 'square', trine: 'trine', opposition: 'opposite',
 };
-const lastAspectLabel = (window: VoidWindow) => (
+const lastAspectLabel = (window: VoidOfCourseWindow) => (
   window.lastAspect ? `Moon ${ASPECT_VERB[window.lastAspect.aspect]} ${window.lastAspect.body}` : 'No Ptolemaic aspect in the sign'
 );
-const duration = (window: VoidWindow) => {
+const duration = (window: VoidOfCourseWindow) => {
   const minutes = Math.round((window.to.getTime() - window.from.getTime()) / 60_000);
   const hours = Math.floor(minutes / 60);
   const rest = minutes % 60;
@@ -47,17 +49,17 @@ const months = [...new Set(windows.map((w) => `${w.to.getUTCFullYear()}-${w.to.g
 // The same three sentence shapes the browser script writes, so a live
 // rewrite changes the timestamps and the zone label, not the layout.
 const statusLine = status.isVoid && status.current
-  ? `As of ${stampLabel.format(buildNow)} UTC: the Moon is void of course in ${signName(status.current.signIndex)}, until it enters ${signName(status.current.nextSignIndex)} at ${utc(status.current.to)}.`
+  ? `As of ${stampLabel.format(buildNow)} UTC: the Moon is void of course in ${signName(status.current.sign)}, until it enters ${signName(status.current.nextSign)} at ${utc(status.current.to)}.`
   : status.next
-    ? `As of ${stampLabel.format(buildNow)} UTC: the Moon is not void of course. The next void begins ${utc(status.next.from)} and ends when the Moon enters ${signName(status.next.nextSignIndex)} at ${utc(status.next.to)}.`
+    ? `As of ${stampLabel.format(buildNow)} UTC: the Moon is not void of course. The next void begins ${utc(status.next.from)} and ends when the Moon enters ${signName(status.next.nextSign)} at ${utc(status.next.to)}.`
     : `As of ${stampLabel.format(buildNow)} UTC: the Moon is not void of course.`;
 
 // Every window in range, for the browser's own "right now" reading.
 const windowsJson = JSON.stringify(windows.map((w) => ({
   from: w.from.toISOString(),
   to: w.to.toISOString(),
-  sign: signName(w.signIndex),
-  enters: signName(w.nextSignIndex),
+  sign: signName(w.sign),
+  enters: signName(w.nextSign),
 })));
 
 const faq = [
@@ -115,9 +117,7 @@ const description = 'Void-of-course Moon times for this month and the next two, 
       <em class="kicker">Moon calendar</em>
       <h1 class="display">When the Moon is void of course.</h1>
       <p>
-        Every void-of-course window from this month through the month after next, computed from the exact
-        aspects between the Moon and the Sun through Pluto. Each row gives the last aspect that starts the
-        void, the minute it begins, and the minute the Moon enters its next sign.
+        See the Moon’s next pause and every void-of-course window over the next three months. Times adjust to your time zone.
       </p>
     </div>
     <div class="voc-now tile" data-voc-now data-computed={buildNow.toISOString()}>
@@ -218,7 +218,7 @@ const description = 'Void-of-course Moon times for this month and the next two, 
                 <td class="mono" data-voc-time={window.from.toISOString()}>{clock(window.from)}</td>
                 <td>{lastAspectLabel(window)}</td>
                 <td class="mono" data-voc-time={window.to.toISOString()}>{clock(window.to)}</td>
-                <td>{signName(window.nextSignIndex)}</td>
+                <td>{signName(window.nextSign)}</td>
                 <td class="mono">{duration(window)}</td>
               </tr>
             ))}
@@ -282,6 +282,8 @@ const description = 'Void-of-course Moon times for this month and the next two, 
   .voc-now { max-width: 62ch; padding: 18px 20px; display: grid; gap: 8px; }
   .voc-now__text { margin: 0; color: var(--text); font-size: var(--text-base); line-height: 1.55; text-wrap: pretty; }
   .voc-now__note { margin: 0; color: var(--faint); font-size: var(--text-xs); }
+  /* Reserve the timezone label so localization does not move the period. */
+  .section-head [data-voc-zone] { display: inline-block; min-width: 10ch; }
   .voc-table-wrap { overflow-x: auto; border: 1px solid var(--hair-1); border-radius: var(--r-md); background: var(--void-1); }
   /* Fixed columns: the browser rewrites the time cells in place, and a
      rewrite must never move a row. */

@@ -89,6 +89,7 @@
     "test:registry-hub:browser": "node tests/registry-hub-drive.mjs",
     "test:registry-bridge:dist": "node scripts/check-registry-bridge-dist.mjs",
     "test:today:browser": "node tests/today-drive.mjs",
+    "test:consumer:browser": "node tests/consumer-experience-drive.mjs",
     "test:saved-records:browser": "node tests/saved-records-lifecycle-drive.mjs",
     "test:saved-records:account": "node tests/saved-records-account.mjs",
     "test:saved-records:rollback": "node tests/saved-records-rollback.mjs",

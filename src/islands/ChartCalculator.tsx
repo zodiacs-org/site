@@ -168,8 +168,8 @@ const CHART_BOOK_COPY = {
 } as const satisfies Record<ReleasedLocale, { label: string; save: string; skip: string }>;
 const REGISTRY_AURA_CHART_COPY = {
   en: {
-    discover: 'Your saved chart can meet the Registry records carried by a public address.',
-    discoverLink: 'Read this chart beside a public address →',
+    discover: 'Optional: compare this saved chart with the Zodiac records associated with a public address. Your birth details stay private unless you choose to share them.',
+    discoverLink: 'Explore the Registry comparison →',
     return: 'Your chart is saved.',
     returnLink: 'Return to Registry Collection →',
   },
@@ -314,6 +314,11 @@ function HouseSystemReceipt({ locale, system }: { locale: Locale; system: HouseS
   );
 }
 
+/** Adopt server-form entries before hydration attaches controlled inputs. */
+function initialField(selector: string): HTMLInputElement | HTMLSelectElement | null | undefined {
+  return globalThis.document?.querySelector(selector) as HTMLInputElement | HTMLSelectElement | null | undefined;
+}
+
 export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Props) {
   const locale = normalizeCatalogLocale(rawLocale);
   const russianCopy = locale === 'ru' ? russianRuntime() : null;
@@ -355,9 +360,11 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
         PUBLIC_REGISTRY_AURA_ENABLED: import.meta.env.PUBLIC_REGISTRY_AURA_ENABLED,
       });
   const loadEngine = useEngine();
-  const [date, setDate] = useState('');
-  const [time, setTime] = useState('');
-  const [timeKnown, setTimeKnown] = useState(true);
+  // The server form is visible before idle hydration. Adopt anything already
+  // entered instead of replacing it with the empty server defaults.
+  const [date, setDate] = useState(initialField('#birth-date')?.value ?? '');
+  const [time, setTime] = useState(initialField('#birth-time')?.value ?? '');
+  const [timeKnown, setTimeKnown] = useState(!(initialField('.calc__form [type=checkbox]') as HTMLInputElement | null)?.checked);
   const [city, setCity] = useState<City | null>(null);
   // The calendar the date was written in; a date filled in from a link or a
   // saved chart is Gregorian.
@@ -365,7 +372,8 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
   // That date, which was already charted: it gets no calendar note, which
   // could send it through the Old Style conversion a second time.
   const [storedDate, setStoredDate] = useState('');
-  const [houseSystem, setHouseSystem] = useState<HouseSystem>('whole');
+  const [houseSystem, setHouseSystem] = useState<HouseSystem>(initialField('#house-system')?.value === 'placidus'
+    ? 'placidus' : 'whole');
   const [chart, setChart] = useState<Chart | null>(null);
   // Read on the birthplace's own local mean time. Since engine rc.15 the
   // `lmt` flag says so too, whole minutes included; before, it marked only an
@@ -2027,8 +2035,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
       ? t(locale, 'cardSaved')
       : shareActionLabel;
   const shareActionDisabled = card === 'busy';
-  const sharedReceiver = typeof document !== 'undefined'
-    && document.documentElement.hasAttribute('data-chart-share-receiver');
+  const sharedReceiver = !!globalThis.document?.documentElement.hasAttribute('data-chart-share-receiver');
   const registryRecord = registryRecordSlug ? signBySlug(registryRecordSlug) : null;
 
   useEffect(() => {
@@ -2124,6 +2131,9 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                   {locale === 'en' ? (
                     <>
                       {/* Keep this sentence aligned with the houseSystemHelp catalog entry. */}
+                      <p class="field__help">
+                        You can keep the default. Change this only if you prefer another house system.
+                      </p>
                       <p class="field__help">
                         How the chart divides into twelve areas of life.{' '}
                         <AstroTerm term="whole-sign-houses" label="Whole sign" surface="birth-chart-form" /> gives
@@ -2578,7 +2588,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                             saveLabel={saved === 'saved'
                               ? t(locale, 'chartSavedDevice')
                               : locale === 'en' && subjectMode === 'self'
-                                ? 'Save my chart'
+                                ? 'Save my chart for Today'
                                 : t(locale, 'saveThisChart')}
                             onSave={saved === 'saved' ? undefined : (trigger) => {
                               track('next_action_clicked', {
@@ -2704,12 +2714,12 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
               saved === 'saved' ? (
                 <a
                   class="btn btn--primary"
-                  href="/today/"
-                  title={russianCopy?.chart.englishOnlyTitle}
-                  onClick={() => track('next_action_clicked', { state: 'saved', action: 'today' })}
-                  data-primary-action="today"
+                  href={subjectMode === 'other' ? localizePath(locale, '/profile/') : '/today/'}
+                  title={subjectMode === 'other' ? undefined : russianCopy?.chart.englishOnlyTitle}
+                  onClick={() => track('next_action_clicked', { state: 'saved', action: subjectMode === 'other' ? 'saved_charts' : 'today' })}
+                  data-primary-action={subjectMode === 'other' ? 'saved_charts' : 'today'}
                 >
-                  <span>{t(locale, 'seeTodaySky')}{russianCopy?.chart.englishOnlySuffix ?? ''}</span>
+                  <span>{subjectMode === 'other' ? t(locale, 'navSavedCharts') : t(locale, 'seeTodaySky')}{subjectMode === 'other' ? '' : russianCopy?.chart.englishOnlySuffix ?? ''}</span>
                   <span class="orb">→</span>
                 </a>
               ) : null
@@ -2765,7 +2775,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
             && <p class="calc__saved">{t(locale, 'saveYearAheadNote')}</p>}
           {mode !== 'full' && saveError && <p class="calc__error" role="alert">{saveError}</p>}
           {saved === 'saved' && (subjectMode === 'self' && locale === 'en'
-            ? <p class="calc__saved" data-your-page-ready>Saved as your chart. <a href="/profile/">Open your page</a> — it’s at zodiacs.org/me whenever you come back.</p>
+            ? <p class="calc__saved" data-your-page-ready>Saved as your chart on this device. Use it with Today, or <a href="/profile/">open your saved charts</a>. Account sync is a separate choice.</p>
             : <p class="calc__saved">{t(locale, 'chartSavedBeforeLink')} <a href={localizePath(locale, '/profile/')}>{t(locale, 'chartSavedLink')}</a> {t(locale, 'chartSavedAfterLink')}</p>)}
           {mode === 'full' && shareInput && (
             <details class="calc__more" data-chart-more>

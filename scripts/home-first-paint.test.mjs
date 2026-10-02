@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
+import postcss from 'postcss';
 
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const fontRoot = resolve(repositoryRoot, 'public/assets/home');
@@ -50,6 +51,22 @@ const fontContract = [
 const optionalHeroFaces = ['instrument-sans-home-nav-core.woff2', 'eb-garamond-home-400-core.woff2'];
 
 describe('homepage first-paint assets', () => {
+  it('keeps the motion control out of document flow before deferred styles load', async () => {
+    const critical = await readFile(resolve(repositoryRoot, 'src/home/home-first-paint.css'), 'utf8');
+    const page = await readFile(resolve(repositoryRoot, 'src/pages/index.astro'), 'utf8');
+    const canonical = page.match(/<style>([\s\S]*?)<\/style>/u)[1];
+    const controls = (css) => {
+      const rules = [];
+      postcss.parse(css).walkRules('.hero-motion', (rule) => {
+        rules.push({ media: rule.parent.type === 'atrule' ? rule.parent.params : '', declarations: Object.fromEntries(rule.nodes.filter((node) => node.type === 'decl').map((node) => [node.prop, node.value])) });
+      });
+      return rules;
+    };
+    const criticalControls = controls(critical);
+    expect(criticalControls).toEqual(controls(canonical));
+    expect(criticalControls[0].declarations.position).toBe('absolute');
+    expect(criticalControls[0].declarations['min-height']).toBe('44px');
+  });
   it.each(fontContract)('pins the deterministic $file subset', async ({ file, source, sha256 }) => {
     const [subset, full] = await Promise.all([
       readFile(resolve(fontRoot, file)),
@@ -108,9 +125,10 @@ describe('homepage first-paint assets', () => {
     expect(page).toMatch(/\.hero__title\s*\{[^}]*font-family: 'Instrument Sans Hero'/su);
     expect(page).toMatch(/\.hero__trust\s*\{[^}]*font-family: 'JetBrains Mono Hero'/su);
     expect(page).toContain('<h1 class="hero__title">Your whole chart, <em>not just your sign.</em></h1>');
-    expect(page).toContain('Free birth charts, moon signs, compatibility, and horoscopes —');
+    expect(page).toContain('Birth charts calculated in your browser.');
+    expect(page).toContain('Clear astrology readings and tools, free to explore.');
     expect(page).toContain('Get your free birth chart');
-    expect(page).toContain('See your forecasts');
+    expect(page).toContain('Your horoscope');
     expect(page).toContain('Free · No signup · Calculated in your browser');
     expect(page).not.toContain('class="hero__story"');
     expect(page).not.toContain('class="hero__method"');

@@ -87,12 +87,12 @@ const NAV_SUBLABELS = {
     ru: 'Сравните две карты и увидьте, где они совпадают, спорят и растут.',
   },
   transits: {
-    en: "See today's sky next to your chart.",
-    es: 'El cielo de hoy comparado con tu carta.',
-    pt: 'Veja o céu de hoje ao lado do seu mapa.',
-    fr: 'Observe le ciel d’aujourd’hui par rapport à ton thème.',
-    it: 'Il cielo di oggi a confronto con il tuo tema.',
-    ru: 'Посмотрите на сегодняшнее небо рядом со своей картой.',
+    en: 'Explore today’s planets and their connections to your chart.',
+    es: 'Explora los planetas de hoy y sus conexiones con tu carta.',
+    pt: 'Explore os planetas de hoje e suas conexões com seu mapa.',
+    fr: 'Explore les planètes du jour et leurs liens avec ton thème.',
+    it: 'Esplora i pianeti di oggi e i loro legami con il tuo tema.',
+    ru: 'Изучите планеты сегодня и их связи с вашей картой.',
   },
   moon: {
     en: 'How you feel, and what settles you.',
@@ -127,12 +127,12 @@ const NAV_SUBLABELS = {
     ru: 'Когда именно случится ваше возвращение и о чём оно обычно спрашивает.',
   },
   birthday: {
-    en: 'Pick your birthday and get the receipts: sun sign verified across 1940–2030, exact degree spans, decans with traditional rulers, and year-by-year cusp tables.',
-    es: 'Un cumpleaños, un aniversario, cualquier fecha.',
-    pt: 'Um aniversário, uma data especial, qualquer data.',
-    fr: 'Un anniversaire, une date marquante, n’importe quelle date.',
-    it: 'Un compleanno, un anniversario, una data qualsiasi.',
-    ru: 'Выберите дату рождения и получите точные данные о знаке, градусе и декане.',
+    en: 'Find your Sun sign from your birthday, including dates near a sign change.',
+    es: 'Encuentra tu signo solar por tu cumpleaños, incluso cerca de un cambio de signo.',
+    pt: 'Encontre seu signo solar pelo aniversário, inclusive perto de uma mudança de signo.',
+    fr: 'Trouve ton signe solaire avec ta date de naissance, même près d’un changement de signe.',
+    it: 'Trova il tuo segno solare dalla data di nascita, anche vicino a un cambio di segno.',
+    ru: 'Узнайте солнечный знак по дате рождения, в том числе на границе знаков.',
   },
 } as const satisfies Record<string, Record<Locale, string>>;
 

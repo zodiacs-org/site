@@ -615,3 +615,18 @@
     transition: none !important;
   }
 }
+
+/* Source certainty is visible; the complete explanation opens on request. */
+.person-quality--details summary { color: var(--text); cursor: pointer; min-height: 44px; display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.person-quality--details summary::after { content: '+'; margin-left: auto; }
+.person-quality--details[open] summary::after { content: '−'; }
+.person-quality--details > span { display: block; margin-top: 8px; }
+.person-credit, .person-identity__meta, .person-quality, .person-evidence__note { font-size: 12px; line-height: 1.5; }
+.person-identity { background: var(--void-1); }
+@media (max-width: 559px) {
+  .person-identity__name { grid-column: 2; grid-row: 1; }
+  .person-identity__top { flex-direction: column-reverse; gap: 8px; }
+  .person-identity__top .sign-icon { width: 26px; height: 26px; }
+  .person-identity h1 { font-size: clamp(28px, 7.5vw, 38px); line-height: 1.05; margin: 0; overflow-wrap: anywhere; }
+  .person-identity__description { font-size: 15px; }
+}

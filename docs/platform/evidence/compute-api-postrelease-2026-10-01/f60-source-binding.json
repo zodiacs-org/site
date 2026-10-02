@@ -1,0 +1,10 @@
+{
+  "observedAt": "2026-10-01T21:05:45Z",
+  "baselineSource": "9cfafa3e742de943062c9174338472781724a4b5",
+  "currentSource": "fd1ce88af66eca158c24a92569a9101281b964f7",
+  "file": "src/lib/compute-api/handler.ts",
+  "sha256": "481f3d8d82f424e3b10ad56c8203cceec3a54d3536dc11fadc57d605ba054756",
+  "exactSourceEqual": true,
+  "serverAdapterDelta": "Only request-owned local-time factory/disposal changed; no rateLimit override is supplied",
+  "result": "F60 remains open. The source contract and previous offline SDK replay remain applicable; deployment of F59 does not establish a general-counter fix. No new exhaustion test or security setting change."
+}

@@ -9,6 +9,7 @@ import * as localTime from '../../src/lib/compute-api/local-time-source';
 import { run, withoutRuntime } from '../../scripts/lib/compute-api-harness';
 import {
   ALLOWED_RUNTIME_IMPORTS,
+  addComputeLifetimeBoundary,
   BUNDLE_PATH,
   TYPES_PATH,
   buildComputeHandlerBundle,
@@ -34,6 +35,20 @@ describe("the compute API's handler bundle", () => {
     expect(read(BUNDLE_PATH).equals(bytes), 'stale: run node scripts/build-compute-handler.mjs').toBe(true);
     expect(read(TYPES_PATH).equals(types), 'stale: run node scripts/build-compute-handler.mjs').toBe(true);
   }, 60_000);
+
+  it('fails closed when reviewed private-state markers change or another frame is bundled', () => {
+    const source = read(BUNDLE_PATH).toString('utf8')
+      .split('// Server-only lifetime boundary.')[0]
+      .replace('  createStatelessComputeApiHandler as createComputeApiHandler\n};', '  createComputeApiHandler\n};');
+    expect(() => addComputeLifetimeBoundary(source)).not.toThrow();
+    for (const marker of ['var last;', 'var pluto_cache = [];', 'var CalcMoonCount = 0;']) {
+      expect(() => addComputeLifetimeBoundary(source.replace(marker, ''))).toThrow(/review cleanup/u);
+      expect(() => addComputeLifetimeBoundary(source + '\n' + marker)).toThrow(/review cleanup/u);
+    }
+    for (const declaration of ['var cache_e_tilt;', 'var sidereal_time_cache;', 'var last2;']) {
+      expect(() => addComputeLifetimeBoundary(source + '\n' + declaration)).toThrow(/review private-state cleanup/u);
+    }
+  });
 
   it("loads nothing at run time but Node's own modules and the Firewall SDK", () => {
     expect(externalImports(read(BUNDLE_PATH).toString('utf8'))).toEqual(ALLOWED_RUNTIME_IMPORTS);

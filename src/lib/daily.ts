@@ -134,18 +134,18 @@ export function wholeSignHouseFromAsc(planetSign: string, ascSign: string): numb
  * houses read as life areas, not fortunes; the verbs stay observational.
  */
 export const HOUSE_THEME: Record<number, string> = {
-  1: 'how you look, start, and come across',
-  2: 'money, possessions, and what steadies you',
-  3: 'errands, siblings, messages, and the near neighborhood',
-  4: 'home, family, and the private floor of your life',
-  5: 'pleasure, romance, children, and what you make for joy',
-  6: 'work in progress, health routines, and the daily load',
-  7: 'partners, the people directly across the table',
-  8: 'shared money, debts, intimacy, and what gets merged',
-  9: 'travel, study, belief, and the longer view',
-  10: 'career, reputation, and what the public sees',
-  11: 'friends, groups, and the future you are pointing at',
-  12: 'rest, retreat, and what runs under the surface',
+  1: 'your identity and how you present yourself',
+  2: 'your money, possessions, and priorities',
+  3: 'messages, errands, siblings, and your local community',
+  4: 'home, family, and your private life',
+  5: 'creativity, romance, children, and enjoyment',
+  6: 'daily work, health routines, and responsibilities',
+  7: 'partners and one-to-one relationships',
+  8: 'shared finances, debts, intimacy, and trust',
+  9: 'travel, learning, beliefs, and long-term plans',
+  10: 'career, reputation, and public responsibilities',
+  11: 'friends, groups, and plans for the future',
+  12: 'rest, privacy, and unfinished matters',
 };
 
 const PLANET_VERB: Record<string, string> = {

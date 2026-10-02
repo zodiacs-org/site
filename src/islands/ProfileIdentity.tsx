@@ -47,7 +47,7 @@ function Intro() {
       </svg>
       <em class="kicker">Your astrology</em>
       <h1 class="display">Your charts, today and ahead.</h1>
-      <p>Return to your chart, see what is active now, and keep the forecasts and moments you choose in one timeline.</p>
+      <p>Keep your birth chart and the people you’ve added here. Today uses the chart you mark as yours; your timeline keeps the readings and observations you choose to save.</p>
       <a class="pf-hero__start" href="/birth-chart/">Make a birth chart <span aria-hidden="true">↗</span></a>
     </div>
   );
@@ -58,8 +58,8 @@ function SelfChooser({ charts }: { charts: SavedChart[] }) {
   const [error, setError] = useState(false);
   const recent = [...charts].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)).slice(0, 6);
   return (
-    <section class="pf-choose shell" aria-labelledby="pf-choose-title">
-      <div class="core pf-choose__core">
+    <section class="pf-choose" aria-labelledby="pf-choose-title">
+      <div class="pf-choose__core">
         <div class="pf-card-head">
           <h2 id="pf-choose-title">Which of these charts is yours?</h2>
           <p>Choose one to make this page yours. The others stay with your people.</p>
@@ -71,7 +71,7 @@ function SelfChooser({ charts }: { charts: SavedChart[] }) {
               <span class="pf-row__text"><strong>{chartHandle(chart.name)}</strong></span>
               <span class="pf-row__actions">
                 <button class="pf-chart__action" type="button" onClick={() => setError(!markPrimarySelfChart(chart.id))}>
-                  This is me
+                  Use as my chart
                 </button>
               </span>
             </li>
@@ -167,10 +167,10 @@ export default function ProfileIdentity({ accountBound = false }: { accountBound
 
   if (!ready || !self) {
     return (
-      <>
+      <div class="pf-introduction">
         <Intro />
         {ready && !self && profile.charts.length > 0 && <SelfChooser charts={profile.charts} />}
-      </>
+      </div>
     );
   }
 

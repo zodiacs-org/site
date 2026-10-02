@@ -6,12 +6,14 @@ import { signDates } from '../src/lib/signs';
 const read = (path: string) => readFileSync(resolve(path), 'utf8');
 
 describe('localized discovery surfaces', () => {
-  it('gives each localized Tools page one H1 and second-level tool headings without restyling the title', () => {
+  it('gives localized Tools pages the shared larger H1 and second-level tool headings', () => {
     const heading = read('src/components/ToolsPageHeading.astro');
     const existingStyle = read('src/styles/base.css').match(/\.section-head h2\s*\{([^}]+)\}/u)?.[1];
     const headingStyle = heading.match(/\bh1\s*\{([^}]+)\}/u)?.[1];
     expect(heading).toContain('<h1><slot /></h1>');
-    expect(headingStyle?.replace(/\s+/gu, '')).toBe(existingStyle?.replace(/\s+/gu, ''));
+    expect(headingStyle).toContain('font-size: clamp(36px, 5vw, 56px)');
+    expect(headingStyle).toContain('font-family: var(--font-serif)');
+    expect(headingStyle).not.toBe(existingStyle);
     for (const locale of ['es', 'pt', 'fr', 'it', 'ru']) {
       const page = read(`src/pages/${locale}/tools/index.astro`);
       expect(page.match(/<ToolsPageHeading>/gu)).toHaveLength(1);

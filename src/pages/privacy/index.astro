@@ -561,15 +561,13 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         date, time and place, and nothing from the query string. Nothing from
         a request or its result is written to a log, a file or a database, no
         error repeats what was sent, and every response is marked so that no
-        cache stores it. While an instance of the API is running, it keeps in
-        memory the public time zone and ephemeris tables it has loaded to
-        answer, which show which time zones and periods have been asked
-        about. The ephemeris library it uses also keeps two values from its
-        last calculations, to reuse them: sidereal time at the moment of the
-        last chart or houses request, and the Earth's tilt at the last moment
-        any calculation used. So those two moments stay in that instance's
-        memory until later requests replace them or the instance stops; no
-        place is kept. To enforce the rate limit, the API sends the request's headers,
+        cache stores it. When a request ends, including a refused or failed
+        request, the server clears its last calculated frame and epoch-selected
+        ephemeris segments and discards that request's time zone lookup maps.
+        Fixed public tables remain available to later calculations. This removes
+        application-held references; it does not guarantee discarded memory is
+        overwritten or describe every log the hosting platform may keep.
+        To enforce the rate limit, the API sends the request's headers,
         which include your IP address, to Vercel's firewall, which counts the
         requests from each address; it never sends the body. Our host's logs,
         described below, keep the full web address of each request, so birth

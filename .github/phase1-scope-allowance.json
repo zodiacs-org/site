@@ -1,7 +1,7 @@
 {
   "version": 1,
   "id": "engine-rc16-local-adoption-20261001",
-  "baseCommit": "450f0fd948d86d82c416bcbd51b3dace5196097e",
+  "baseCommit": "faf44b3519dbfc884bb8285577dacf13be1f4b4d",
   "protectedPaths": [
     "scripts/registry-outlook.test.mjs"
   ],

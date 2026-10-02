@@ -1918,7 +1918,7 @@ function applyPanelCopy(): void {
   const expanded = root?.hasAttribute('data-expanded') ?? false;
   expandButton?.setAttribute('aria-label', expanded ? copy.compact : copy.expand);
   expandButton?.setAttribute('aria-pressed', String(expanded));
-  if (expandButton) expandButton.textContent = expanded ? '↙' : '↗';
+  if (expandButton) { expandButton.textContent = locale === 'en' ? (expanded ? 'Smaller' : 'Expand') : (expanded ? '↙' : '↗'); expandButton.title = expanded ? copy.compact : copy.expand; }
 }
 
 function clearConversation(): void {
@@ -1943,7 +1943,7 @@ function applyCopy(): void {
   if (title) title.textContent = copy.title;
   launcher?.setAttribute('aria-label', copy.open);
   if (closeButton) closeButton.setAttribute('aria-label', copy.close);
-  if (clearButton) clearButton.setAttribute('aria-label', copy.clear);
+  if (clearButton) { clearButton.setAttribute('aria-label', copy.clear); clearButton.title = copy.clear; clearButton.textContent = locale === 'en' ? 'Clear' : '⌫'; }
   if (intro) intro.textContent = copy.intro;
   if (sourcesRegion) sourcesRegion.setAttribute('aria-label', copy.context);
   if (pageSourceRemove) pageSourceRemove.setAttribute('aria-label', `${copy.removeSource}: ${copy.pageSource}`);

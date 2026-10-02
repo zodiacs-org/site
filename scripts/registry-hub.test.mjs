@@ -10,7 +10,7 @@ describe('Zodiacs Registry catalogue hub', () => {
     expect(html.match(/<h1\b/giu)).toHaveLength(1);
     expect(html).toContain('<title>The 12 Zodiac Profiles | Zodiacs.org</title>');
     expect(html).toContain('<h1>Find your sign.</h1>');
-    expect(html).toContain('Choose your Zodiac sign, meet famous people who share it, compare recent Wikipedia views, and see today’s market standings.');
+    expect(html).toContain('The twelve Zodiac signs, their stories, shared birthdays and verified public records.');
     expect(html).toContain('<dt>Famous birthdays</dt><dd>48</dd>');
     expect(html).toContain('<dt>Attention</dt><dd>30 days</dd>');
     expect(html).toContain('<dt>Market standings</dt><dd>Daily</dd>');

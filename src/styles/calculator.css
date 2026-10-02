@@ -4,7 +4,7 @@
 
 .calc { display: grid; gap: clamp(24px, 4vw, 40px); }
 
-.calc__core { padding: clamp(20px, 3.5vw, 34px); }
+.calc .calc__core { padding: clamp(20px, 3.5vw, 34px); border: 0; background: transparent; }
 .calc__fields {
   display: grid;
   gap: 20px;
@@ -2635,4 +2635,11 @@
 .calc__guide a { color: var(--text-2); text-underline-offset: 3px; }
 @media (max-width: 900px) {
   body:has(.calc__guide) .zguide-launcher { display: none; }
+}
+
+/* Keep one generous form boundary, with balanced fields on larger screens. */
+.calc > .shell { width: 100%; max-width: 880px; }
+.calc__context-cue, .calc__privacy { font-size: 12px; }
+@media (min-width: 720px) {
+  .calc__fields > .field:has(.geo), .calc__fields > .field:has([role="combobox"]) { grid-column: 1 / -1; }
 }

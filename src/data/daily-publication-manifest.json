@@ -1,7 +1,7 @@
 {
   "schema": "zodiacs.daily-publication-manifest.v2",
-  "date": "2026-10-01",
-  "snapshotAt": "2026-10-01T12:00:00.000Z",
+  "date": "2026-10-02",
+  "snapshotAt": "2026-10-02T12:00:00.000Z",
   "status": "verified",
   "policy": {
     "id": "org.zodiacs.daily.en",
@@ -10,9 +10,9 @@
   },
   "facts": {
     "path": "src/data/daily.json",
-    "fileSha256": "437c1055ec6cf6b5b25983a1825e4d4b28ca16e20824dc6201d794d27cadee08",
-    "canonicalSha256": "f24515e3eb83e2c828bd76a53e55e9ce598b47cb0e14350a3bfe01ccfb1935de",
-    "factCount": 58,
+    "fileSha256": "d6532129de384979d97841d7b161bd555dd8918e4e034273199961977723a21b",
+    "canonicalSha256": "04da5efb24741936d3acd6d8db3032f4c62464d542781b77184e2b422f52f2bd",
+    "factCount": 36,
     "eventsCoverage": "complete",
     "eventsSource": "src/data/transits-2026-10.json",
     "eventsSourceSha256": "d216bcb3ceda371b0725817894476755dcba8307fa32de990a3aa78eb776fff2",
@@ -24,20 +24,20 @@
   },
   "publication": {
     "path": "src/data/daily-publication.json",
-    "canonicalSha256": "83aff651d359ca4a753a0bd3f50fa799ca17078bef9f67479bc57cebab71695c",
+    "canonicalSha256": "6a6738fee3955321a3a9d09729535a9328df8d6fb2967bfb605acb7a46dfde8b",
     "signCount": 12,
     "outputCount": 72
   },
   "generation": {
     "mode": "deterministic-template",
-    "generatorId": "zodiacs.daily-renderer.v1.1",
-    "generatorSha256": "dbad83aff4b977079d05ee497bb78a13709392f4428740861ee604ab6c25b69e",
+    "generatorId": "zodiacs.daily-renderer.v1.2",
+    "generatorSha256": "9d6638d8bfbc24e6dd58219b27e5c688bf064ebee6a6d93fd4385b4bc19d28be",
     "model": null,
     "freeformModelOutput": false
   },
   "verification": {
     "verifierId": "zodiacs.daily-verifier.v4",
-    "verifierSha256": "ee24d5adbbc7d8fa5dbb7d8818ee99717392b10888fd7ad5fa07bf40da2aff15",
+    "verifierSha256": "4e4635616d869b874edebccf48324f00b7afda158a389013701925e19f158573",
     "copyVerifierIndependentFromGenerator": true,
     "astronomyAudit": {
       "implementation": "zodiacs.daily-fact-audit.v2",

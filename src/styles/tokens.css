@@ -324,3 +324,15 @@ html:lang(ru)[data-local-typography] {
   --font-sans: 'Instrument Sans Fallback', 'Instrument Sans Fallback Android', system-ui, sans-serif;
   --font-mono: ui-monospace, Menlo, Consolas, monospace;
 }
+
+/* Short guidance at the handoff between consumer experiences. */
+.experience-note {
+  max-width: 65ch;
+  margin: 12px 0;
+  color: var(--muted);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+.experience-note a { text-decoration: underline; text-underline-offset: 3px; }

@@ -270,6 +270,10 @@ async function assertSignPicker(page, { width, height }) {
     const bounds = node.getBoundingClientRect();
     return {
       columns: getComputedStyle(node).gridTemplateColumns.split(' ').length,
+      display: getComputedStyle(node).display,
+      overflowX: getComputedStyle(node).overflowX,
+      scrollWidth: node.scrollWidth,
+      clientWidth: node.clientWidth,
       left: bounds.left,
       right: bounds.right,
       choices: [...node.querySelectorAll('.campaign-dot')].map((choice) => {
@@ -290,16 +294,23 @@ async function assertSignPicker(page, { width, height }) {
       }),
     };
   });
-  // Phones and tablets keep the twelve discs in one slim row (owner request,
-  // so a look fits one screen): 44px tall, at least 24px wide (WCAG 2.5.8).
-  assert.equal(picker.columns, 12);
+  // Phones and tablets retain a slim, scrollable row with full 44px targets.
+  // Desktop exposes all twelve discs in the grid.
+  if (width <= 900) {
+    assert.equal(picker.display, 'flex');
+    assert.equal(picker.overflowX, 'auto');
+    assert.ok(picker.left >= -1 && picker.right <= width + 1, 'the scrollable sign strip stays inside the viewport');
+    if (width < 600) assert.ok(picker.scrollWidth > picker.clientWidth, 'small phones can scroll to all twelve signs');
+  } else {
+    assert.equal(picker.columns, 12);
+    assert.ok(picker.choices.every((choice) => choice.left >= -1 && choice.right <= width + 1), `every sign is fully exposed at ${width}x${height}`);
+  }
   assert.equal(picker.choices.length, 12);
-  const minWidth = width <= 900 ? 24 : 44;
-  assert.ok(picker.choices.every((choice) => choice.width >= minWidth && choice.height >= 44), `every sign remains touch-safe at ${width}x${height}`);
-  assert.ok(picker.choices.every((choice) => choice.left >= -1 && choice.right <= width + 1), `every sign is fully exposed at ${width}x${height}`);
+  assert.ok(picker.choices.every((choice) => choice.width >= 44 && choice.height >= 44), `every sign remains touch-safe at ${width}x${height}`);
   assert.ok(picker.choices.every(({ filter }) => filter === 'none'), 'all twelve discs stay pastel');
   const pressed = picker.choices.filter((choice) => choice.pressed === 'true');
   assert.equal(pressed.length, 1, 'exactly one sign is chosen');
+  assert.ok(pressed[0].left >= picker.left - 1 && pressed[0].right <= picker.right + 1, 'the selected sign is exposed without manual scrolling');
   assert.equal(pressed[0].ring, '1');
   assert.equal(pressed[0].ringBorder, '1px');
   assert.equal(pressed[0].ringRadius, '50%');
@@ -376,6 +387,7 @@ try {
       const chipStyle = chip ? getComputedStyle(chip) : null;
       const burger = nav.querySelector('.wnav__burger');
       const burgerStyle = burger ? getComputedStyle(burger) : null;
+      const profile = nav.querySelector('.wnav__profile-shortcut');
       return {
         overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
         left: box.left,
@@ -384,6 +396,12 @@ try {
         width: box.width,
         searchRight: search?.getBoundingClientRect().right ?? 0,
         burgerLeft: burger?.getBoundingClientRect().left ?? 0,
+        burgerRight: burger?.getBoundingClientRect().right ?? 0,
+        profileLeft: profile?.getBoundingClientRect().left ?? 0,
+        profileRight: profile?.getBoundingClientRect().right ?? 0,
+        profileHeight: profile?.getBoundingClientRect().height ?? 0,
+        profileHref: profile?.getAttribute('href'),
+        searchLeft: search?.getBoundingClientRect().left ?? 0,
         markLeft: nav.querySelector('.wnav__mark')?.getBoundingClientRect().left ?? 0,
         chipLeft: chip?.getBoundingClientRect().left ?? 0,
         chipRight: chip?.getBoundingClientRect().right ?? 0,
@@ -407,8 +425,8 @@ try {
     });
     assert.ok(compactNav.overflow <= 0, 'the 320px navigation does not create horizontal overflow');
     // Phones: the navigation is a full-width bar flush to the top edge, in the
-    // same glass: the menu on the left, the ZODIACS | ASTROFOLIO lockup on the
-    // centre line, search on the right.
+    // same glass: menu, lockup, profile and search. The profile shortcut
+    // occupies its own 44px track; the lockup centres in the remaining space.
     assert.ok(compactNav.left === 0 && compactNav.right === 320, `the phone bar spans the viewport (${compactNav.left}–${compactNav.right})`);
     assert.equal(Math.round(compactNav.top), 0, 'the phone bar sits at the top edge');
     assert.notEqual(compactNav.navBackground, 'rgba(0, 0, 0, 0)', 'the navigation keeps its liquid-glass tint');
@@ -417,7 +435,11 @@ try {
     assert.equal(compactNav.navRadius, '0px', 'the phone bar is flat, not a capsule');
     assert.ok(compactNav.burgerLeft >= 0 && compactNav.burgerLeft <= 8, `the menu opens the bar on the left (${compactNav.burgerLeft})`);
     assert.ok(compactNav.searchRight >= 312 && compactNav.searchRight <= 320, `search closes the bar on the right (${compactNav.searchRight})`);
-    assert.ok(Math.abs((compactNav.markLeft + compactNav.chipRight) / 2 - 160) <= 1, `ZODIACS | ASTROFOLIO sits on the centre line (${compactNav.markLeft}–${compactNav.chipRight})`);
+    assert.ok(Math.abs((compactNav.markLeft + compactNav.chipRight) / 2 - (compactNav.burgerRight + compactNav.profileLeft) / 2) <= 1, `ZODIACS | ASTROFOLIO centres between menu and profile (${compactNav.markLeft}–${compactNav.chipRight})`);
+    assert.equal(compactNav.profileHref, '/profile/', 'the profile shortcut remains discoverable');
+    assert.equal(compactNav.profileRight - compactNav.profileLeft, 44, 'profile keeps a 44px touch target');
+    assert.equal(compactNav.profileHeight, 44, 'profile keeps a 44px touch target');
+    assert.ok(compactNav.burgerRight <= compactNav.markLeft && compactNav.chipRight <= compactNav.profileLeft && compactNav.profileRight <= compactNav.searchLeft, 'all four navigation actions remain separate at 320px');
     assert.equal(compactNav.markName, compactNav.chipFont, 'both words share one size');
     assert.deepEqual(compactNav.divider, { content: '""', width: '1px', height: '15px' }, 'a short hairline divides the two words');
     assert.equal(compactNav.middleLine, '0', 'the menu is a bare two-line mark');
@@ -458,15 +480,15 @@ try {
     assert.match(activeLookText, /Pisces/u);
     assert.match(activeLookText, /\$0\.000012[\s\S]*down 11\.50% today/u);
     assert.match(activeLookText, /February 19 to March 20/u);
-    // Phones: each look is the figure, its numeral and dates, the name and a
-    // one-line price. The whole look opens its page, and buying is the bag's
-    // job; the look's own buttons stay in the markup for wider screens.
+    // Phones: the visible Explore cue has its own touch target and extends
+    // across the card via a pseudo-element. Buying stays in the Fomo bag.
     const exploreCta = activeLook.locator('.campaign-look__explore');
-    assert.equal((await exploreCta.textContent()).trim(), 'Explore Pisces');
+    assert.equal(await activeLook.getByRole('link', { name: 'Explore Pisces', exact: true }).count(), 1);
     assert.equal(await exploreCta.getAttribute('href'), '/registry/pisces/');
     const lookBox = await activeLook.boundingBox();
     const exploreBox = await exploreCta.boundingBox();
-    assert.ok(Math.abs(exploreBox.width - lookBox.width) <= 2 && Math.abs(exploreBox.height - lookBox.height) <= 2, 'the whole look opens its page');
+    assert.ok(exploreBox.height >= 44 && exploreBox.x >= lookBox.x && exploreBox.x + exploreBox.width <= lookBox.x + lookBox.width + 1, 'the visible Explore cue is a contained 44px touch target');
+    assert.equal(await exploreCta.evaluate((node) => getComputedStyle(node, '::after').inset), '0px', 'the Explore link still extends across the whole card');
     const fomoCta = activeLook.locator('.btn--fomo');
     assert.equal(await fomoCta.getAttribute('href'), 'https://fomo.family/coin?address=3JsSsmGzjWDNe9XCw2L9vznC5JU9wSqQeB6ns5pAkPeE&chainId=1399811149');
     assert.equal(await fomoCta.getAttribute('aria-label'), 'Open Fomo to buy Pisces');
@@ -943,7 +965,7 @@ try {
     for (const [width, height] of [[1024, 900], [1200, 900], [901, 900], [1280, 680]]) {
       await desktopPage.setViewportSize({ width, height });
       await desktopPage.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
-      await desktopPage.waitForTimeout(80);
+      await desktopPage.waitForFunction(() => window.scrollY <= 1 && Number.parseFloat(document.querySelector('.campaign-hero')?.style.getPropertyValue('--hero-out') || '0') === 0);
       await desktopPage.waitForFunction(() => !document.querySelector('.campaign-bag')?.classList.contains('is-hidden'));
       const geometry = await desktopPage.evaluate(() => ({
         client: document.documentElement.clientWidth,
@@ -955,7 +977,7 @@ try {
         foot: document.querySelector('.campaign-hero__foot p').getBoundingClientRect().toJSON(),
       }));
       assert.ok(geometry.scroll <= geometry.client, `${width}px desktop has no horizontal overflow`);
-      assert.ok(geometry.astroLeft >= 0 && geometry.folioRight <= geometry.client, `${width}px keeps the wordmark inside the screen`);
+      assert.ok(geometry.astroLeft >= 0 && geometry.folioRight <= geometry.client, `${width}px keeps the wordmark inside the screen: ${JSON.stringify(geometry)}`);
       assert.ok(geometry.bag.top >= geometry.film.bottom, `${width}px keeps the bag below the closed film`);
       assert.ok(geometry.foot.width === 0 || geometry.foot.right <= geometry.bag.left, `${width}px keeps the foot copy clear of the bag`);
       await assertSignPicker(desktopPage, { width, height });
@@ -1155,8 +1177,7 @@ try {
     assert.equal(await noJsPage.locator('#market-layer .consumer-market-leaderboard__identity strong').first().innerText(), 'Gemini');
     const seasonLook = noJsPage.locator(`#the-twelve [data-static-sign="${expectedSeason.sign}"]`);
     await seasonLook.scrollIntoViewIfNeeded();
-    // Phones: the no-JavaScript looks match the hydrated ones. The whole look
-    // opens its page, and the static bag carries the season's Fomo action.
+    // Phones: no-JavaScript keeps the visible Explore cue and the Fomo bag.
     const staticLookGeometry = await seasonLook.evaluate((node) => {
       const fomo = document.querySelector('.campaign-bag--static .btn--fomo');
       const explore = node.querySelector('.campaign-look__explore')?.getBoundingClientRect();
@@ -1172,7 +1193,7 @@ try {
       };
     });
     assert.equal(staticLookGeometry.lookFomoShown, false, 'the no-JavaScript look leaves buying to the bag on phones');
-    assert.ok(Math.abs(staticLookGeometry.exploreHeight - staticLookGeometry.lookHeight) <= 2, 'the whole no-JavaScript look opens its page');
+    assert.ok(staticLookGeometry.exploreHeight >= 44, 'the no-JavaScript Explore cue keeps a 44px target');
     assert.ok(Math.abs(staticLookGeometry.fomoHeight - 48) <= .5, 'the no-JavaScript Fomo action keeps its 48px target');
     assert.ok(staticLookGeometry.labelFits, 'the no-JavaScript Buy with Fomo label fits without clipping');
     assert.equal(staticLookGeometry.logoWidth, 34);
@@ -1239,7 +1260,7 @@ try {
     assert.doesNotMatch(staticStoryStyle.filter, /grayscale/u);
     assert.ok(staticStoryStyle.pictureBottom <= staticStoryStyle.copyTop + 1, 'the no-JavaScript thesis image sits above its copy');
     await assertAlertStandsAlone(noJsPage, 'no-JavaScript 390px');
-    await noJsPage.evaluate(() => window.scrollTo(0, 0));
+    await noJsPage.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
     await assertStaticFirstScreen(noJsPage, { width: 390, height: 844, slug: expectedSeason.sign });
     await noJsPage.setViewportSize({ width: 375, height: 600 });
     await assertStaticFirstScreen(noJsPage, { width: 375, height: 600, slug: expectedSeason.sign });

@@ -1076,7 +1076,7 @@ export default function ProfileManager({
       )}
 
       <div class="pf-foot">
-        <a class="btn btn--ghost" href={localizePath(locale, '/birth-chart/')}><span>{PF_BOOK_COPY[locale].add}</span><span class="orb">+</span></a>
+        <a class="btn btn--ghost" href={locale === 'en' ? '/birth-chart/someone-else/' : localizePath(locale, '/birth-chart/')}><span>{PF_BOOK_COPY[locale].add}</span><span class="orb">+</span></a>
       </div>
 
       {syncPanel}

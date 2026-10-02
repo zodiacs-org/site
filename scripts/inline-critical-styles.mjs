@@ -62,8 +62,14 @@ const targetPaths = [
   // The numerology hero sat a few hundredths over the LCP budget in CI with
   // calculator.css on the render path and an eagerly hydrated island.
   'numerology/index.html',
+  // Sign-guide icons need their existing geometry before the first paint;
+  // the two stylesheet round trips put a cold mobile LCP over the budget.
+  ...signs.map((sign) => `${sign}/index.html`),
   'today/index.html',
   ...signs.map((sign) => `horoscopes/${sign}/index.html`),
+  // Compact love/career heroes make the sign icon their mobile LCP. Keep
+  // their existing stylesheet contents on the same delivery path as Daily.
+  ...signs.flatMap((sign) => ['love', 'career'].map((surface) => `horoscopes/${sign}/${surface}/index.html`)),
   'ru/index.html',
   'ru/birth-chart/index.html',
 ];
@@ -400,9 +406,9 @@ async function main() {
     stylesheets += result.stylesheets;
     bytes += result.bytes;
   }
-  if (pages + alreadyInlined !== 19 || stylesheets !== 36) {
+  if (pages + alreadyInlined !== 55 || stylesheets !== 108) {
     throw new Error(
-      `inline-critical-styles: expected 19 pages / 36 inlined stylesheets, found ${pages + alreadyInlined} / ${stylesheets}`,
+      `inline-critical-styles: expected 55 pages / 108 inlined stylesheets, found ${pages + alreadyInlined} / ${stylesheets}`,
     );
   }
   const state = pages > 0

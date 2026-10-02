@@ -1,0 +1,28 @@
+{
+  "sourceCommit": "0ab3d5c22526b2e6cde9eb0242858750fe053bb9",
+  "publicEquivalent": "efdb885480cdf80f46bff793d2a8472e26a1a009",
+  "existingPackage": "prior Vercel62 local empty-environment fixture",
+  "files": [
+    {
+      "path": "api/_compute/compute.mjs",
+      "sha256": "2a2324f5742b756a6c03faafa340fcca21bffbcd3ae7b45e1d7ac218fa60c7df",
+      "exactPackagedMatch": true
+    },
+    {
+      "path": "api/_compute/local-time.mjs",
+      "sha256": "6f9253009a83f84e755810ac5221eefd87811203e66aaef1933840be4e8571da",
+      "exactPackagedMatch": true
+    },
+    {
+      "path": "api/compatibility.ts",
+      "sha256": "3e2f4d0789628df05aad5927fb36c4d8a592834c0c8534fb22f5a28b95460d30",
+      "unchangedSincePackagedSource": "9d6d36ad"
+    },
+    {
+      "path": "api/_compute/handler.ts",
+      "sha256": "fbf5f1d5e2fd252a44ff81a29a6b7c45b2e592ee425967d8b03f45239724a331",
+      "unchangedSincePackagedSource": "9d6d36ad"
+    }
+  ],
+  "limitation": "Reuses exact unchanged packaged compute inputs; does not claim a new deployment or platform cold start"
+}
