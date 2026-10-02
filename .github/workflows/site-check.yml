@@ -545,6 +545,15 @@ jobs:
       - name: Feature-off and fixture-enabled browser acceptance
         run: npm run test:phase4:sharing
 
+      - name: Upload sharing hydration evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: phase4-sharing-readiness-${{ github.sha }}-${{ github.run_id }}
+          path: tests/visual/artifacts/phase4-sharing/
+          if-no-files-found: warn
+          retention-days: 90
+
   phase3-post-chart-drive:
     name: Phase 3 post-chart drive
     runs-on: ubuntu-latest
