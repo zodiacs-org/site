@@ -49,6 +49,23 @@ describe('saved-chart continuation browser evidence', () => {
       .toContain('fresh full-chart computation did not finish with the expected Sun sign');
   });
 
+  it('permits refresh of derived summaries while preserving the saved source', () => {
+    const refreshed = JSON.parse(profile);
+    refreshed.charts[0].summary = { ...refreshed.charts[0].summary,
+      engineVersion: '0.1.1-rc.15', bodies: [], flags: ['lmt'] };
+    expect(savedChartContinuationFailures({ ...observed(), profile: JSON.stringify(refreshed) }, ''))
+      .toEqual([]);
+  });
+
+  it.each(['birth', 'name', 'relationship', 'houseSystem'])('rejects stored source mutation: %s', (field) => {
+    const changed = JSON.parse(profile);
+    if (field === 'birth') changed.charts[0].birth.time = '12:00';
+    else if (field === 'houseSystem') changed.charts[0].summary.houseSystem = 'placidus';
+    else changed.charts[0][field] = 'changed';
+    expect(savedChartContinuationFailures({ ...observed(), profile: JSON.stringify(changed) }, ''))
+      .toContain('saved private profile was changed');
+  });
+
   it('rejects changed birth input, locale fallback, private fragments, and profile mutation', () => {
     const state = { ...observed('/es'), pathname: '/birth-chart/', hash: '#profileChartId=fixture',
       time: '12:00', profile: '{}' };

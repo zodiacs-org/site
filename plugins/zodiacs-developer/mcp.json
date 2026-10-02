@@ -1,0 +1,13 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
+  "mcpServers": {
+    "zodiacs-developer": {
+      "type": "stdio",
+      "command": "node",
+      "cwd": "./",
+      "args": [
+        "${PLUGIN_ROOT}/mcp/server.mjs"
+      ]
+    }
+  }
+}

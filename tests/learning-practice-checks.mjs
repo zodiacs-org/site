@@ -27,6 +27,7 @@ export async function runLearningPracticeChecks({ browser, baseURL, check, outDi
       }, [chart(id, true), chart(unknownId, false)]);
       const page = await context.newPage();
       await page.goto(`${baseURL}/learn/`, { waitUntil: 'networkidle' });
+      await page.getByText('Practice with a saved chart', { exact: true }).click();
       await page.getByRole('button', { name: 'Choose a saved chart', exact: true }).click();
       await page.getByRole('button', { name: 'Practice with this saved chart', exact: true }).waitFor();
       check(`practice ${width}: ordinary five destinations remain`, await page.locator('[data-learning-step] a').count() === 5);

@@ -1,0 +1,22 @@
+{
+  "schema": "zodiacs.atomic-quota-rpc.v1",
+  "capturedAt": "2026-10-02T12:07:22.118Z",
+  "scope": "preview",
+  "budgets": [
+    {
+      "kind": "event",
+      "simultaneousRequests": 48,
+      "admitted": 10,
+      "refused": 38,
+      "elapsedMs": 1221
+    },
+    {
+      "kind": "request",
+      "simultaneousRequests": 48,
+      "admitted": 40,
+      "refused": 8,
+      "elapsedMs": 6988
+    }
+  ],
+  "limits": "Real concurrent REST requests to the shared database; preview-only aggregate counters. Separate SQL tests force contention in independent PostgreSQL sessions. No public capacity or per-user fairness claim."
+}

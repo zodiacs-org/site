@@ -1,0 +1,93 @@
+# Publisher review package
+
+Prepared 2026-10-02 for PR #618. This is a review packet, not permission to
+submit, merge, publish or enable production. The exact final commit and checks
+must be recorded before owner approval.
+
+## Files and proposed listing
+
+The proposed name is **Zodiacs**: public astronomical positions, bounded
+event calendars and sky fact checks with numerical receipts. It has no account
+access, personal predictions, reminders, purchase flow or hosted natal storage.
+
+- `integrations/chatgpt/chatgpt-app-submission.json`: proposed description,
+  five read-only tools, metadata, legal URLs and five positive/three negative cases.
+- `integrations/packages/zodiacs-sky-0.1.0.zip`: portable public-sky candidate.
+- `integrations/packages/zodiacs-developer-0.1.0.zip`: separate local stdio candidate,
+  three developer skills and eight tools, pinned published rc.16 dependency.
+- `integrations/packages/manifest.json`: package/member digests; run `ai:check`
+  against the exact files before upload.
+- `evidence/`: dated staging, native ChatGPT, routing and synthetic evaluations.
+- `BETA_REVIEW.md`: consent wording, tasks and aggregate feedback worksheet.
+- `QUOTAS.md`: atomic service ceiling, refusal behavior and concurrency evidence.
+- `COST.md`: measured latency, provider metrics and incremental rate-card estimate.
+
+Public legal/support destinations are the candidate's configured canonical
+Zodiacs URLs. Their HTTPS reachability and exact portal-required fields must be
+checked again on the submission commit. A protected 23-hour preview share is
+for testing, not a stable directory endpoint. Production remains disabled.
+
+## Walkthrough
+
+`evidence/chatgpt/host-capture-walkthrough.mp4` is a labelled 40-second reel of
+actual rc.15 ChatGPT captures: connected tool selection, astronomical result,
+timezone ambiguity, native calendar and refusal recovery. It is not a continuous
+screen recording. The rc.16 continuation preserves that dated evidence and adds
+new protocol/widget and staging results separately. Do not describe the reel as
+portal-approved or as evidence of an rc.16 host invocation.
+
+Proposed reviewer sequence: ask for the current sky in Bangkok; ask for a bounded
+seven-day calendar; open its native global and thread panels; change the display
+zone; check the Sun's Libra ingress date without a timezone and then with one;
+request an unsupported eclipse search and recover with a supported calendar.
+Show UTC, zone, receipt version, limits and “tested, not proven” completeness.
+If the verified portal requires a continuous video, record that sequence and
+provide the exact reviewer-accessible URL before submission.
+
+The packaged review URL points to the immutable rc.15 capture reel on commit
+`fca11967611ab4758dc616b871ce991f82cf1cd4`. Its anonymous HEAD check returns
+200 and 376,135 bytes (`application/octet-stream`, downloadable MP4). This
+establishes file access, not portal acceptance or an inline video player.
+Its version and selected-state scope are explicit in the packaged release notes.
+
+The canonical privacy, terms and developer-support URLs each return HTTP 200.
+
+## Domain challenge
+
+The signed-in publisher portal currently blocks upload on identity verification.
+No domain challenge has been supplied. No token or base domain is invented.
+
+When the portal supplies its challenge, record its exact hostname, path and
+token privately, check that the chosen hostname belongs to the owner and is the
+portal's eligible MCP domain or parent, and prepare a static response:
+
+1. Exact portal path, expected to be `/.well-known/openai-apps-challenge`.
+2. HTTP 200, `Content-Type: text/plain; charset=utf-8`.
+3. Body bytes exactly equal to the supplied challenge token, without JSON,
+   quotes, HTML, a list of tokens or an added newline.
+4. Confirm an existing challenge is not overwritten, and verify the exact
+   public URL, status and bytes after the owner approves its deployment.
+
+The exact response cannot be prepared until the portal issues the challenge.
+Preparing a local file is distinct from activating a production route.
+
+## Current package identity
+
+The current sky archive is 59,022 bytes, SHA-256
+`c36aa54266f2f2950018175b0cc55f7106333c621e6aa59f6ebdce76232d5c81`.
+The developer archive is 684,100 bytes, SHA-256
+`ce7bc4fd3a16c3e127487946b33f1a476004f6e0add6608f3844a1f9f786eb8d`.
+The manifest records every member digest. Current rc.16 runtime staging and
+complete Linux CI use source `5468423bac0675336949ab16839f40ac5def3e92`;
+the latest PR head identifies this supplementary evidence/package commit.
+Require its exact-head checks before approval. The ChatGPT development app needs
+its temporary connection refreshed after the staging alias moved; see LAUNCH.
+
+## Final owner approval
+
+Provide the exact commit, CI result, package SHA-256 values, final endpoint and
+domain proof, walkthrough URL, portal scan result, beta aggregates and measured
+capacity/cost limits. The owner handles identity documents, sign-in/2FA and all
+attestations. Ask for approval of that concrete packet before submitting,
+merging or activating production. A scan failure, unavailable challenge or
+missing beta acceptance keeps the release gate open.

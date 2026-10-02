@@ -29,6 +29,12 @@
     "engine:bundle": "node scripts/measure-engine-bundle.mjs",
     "engine:bundle:check": "node scripts/measure-engine-bundle.mjs --check",
     "mcp:build": "node scripts/build-mcp-server.mjs",
+    "ai:build": "node scripts/build-ai-integrations.mjs",
+    "ai:check": "node scripts/build-ai-integrations.mjs --check && node scripts/check-ai-integrations.mjs && python3 scripts/package-ai-integrations.py --check",
+    "ai:serve": "node scripts/serve-ai-integrations.mjs",
+    "ai:test": "vitest run src/ai-tools && node tests/ai-integrations-drive.mjs && npm test --prefix plugins/zodiacs-developer",
+    "ai:eval": "vite-node --script scripts/evaluate-ai-integrations.ts",
+    "ai:widget": "vite-node --script tests/ai-widget-drive.ts",
     "mcp:build:check": "node scripts/build-mcp-server.mjs --check",
     "mcp:pack": "node scripts/pack-mcp-server.mjs",
     "mcp:pack:check": "node scripts/pack-mcp-server.mjs --check",
@@ -141,7 +147,8 @@
     "check:thesis-links": "node scripts/check-thesis-links.mjs",
     "check:site:live": "node scripts/check-site.mjs",
     "i18n:parity:r0": "node scripts/check-i18n-r0-parity.mjs",
-    "i18n:parity:r2": "node scripts/check-i18n-r2-parity.mjs"
+    "i18n:parity:r2": "node scripts/check-i18n-r2-parity.mjs",
+    "ai:package": "python3 scripts/package-ai-integrations.py"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.111.0",

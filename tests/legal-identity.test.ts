@@ -50,7 +50,9 @@ describe('public legal identity', () => {
     expect(about).toContain("dateModified: '2026-09-28T00:00:00.000Z'");
     expect(terms).toContain("const updated = '29 September 2026'");
     expect(terms).toContain("const modifiedAt = '2026-09-29T00:00:00.000Z'");
-    expect(privacy).toContain("const updated = '29 September 2026'");
-    expect(privacy).toContain("const modifiedAt = '2026-09-29T00:00:00.000Z'");
+    // The AI integration candidate adds an explicit hosted/local boundary.
+    expect(privacy).toContain("const updated = '1 October 2026'");
+    expect(privacy).toContain("const modifiedAt = '2026-10-01T00:00:00.000Z'");
+    expect(privacy).toContain('AI integration candidates');
   });
 });

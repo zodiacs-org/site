@@ -1,0 +1,23 @@
+Copyright (c) Zodiacs.org. All rights reserved.
+
+This repository is published so that its work can be read and checked. No
+licence is granted to copy, modify, distribute or use its contents, except
+where a file or directory states other terms.
+
+Parts with their own terms:
+
+- The chart engine, @zodiacs/engine, is MIT AND CC-BY-4.0: its code is MIT,
+  and its ΔT module carries 32 values of Table S15 of Stephenson, Morrison
+  and Hohenkerk (2016) under CC BY 4.0, as its NOTICE says. It also carries
+  time data (the IANA time zone history before 1970 and the IERS leap-second
+  list, both public domain, and a UT1 − UTC table derived from IERS series)
+  and catalogue values for the stars of its Vedic ayanamsas; its NOTICE names
+  each source, and its LICENSING.md gives the terms and three questions about
+  them that are still open. Its source is at
+  https://github.com/zodiacs-org/engine, and the archive in vendor/ carries
+  its own licence files.
+- The shared sky data the site publishes under /api/v1/ is licensed under
+  CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/).
+- Place names and coordinates are from GeoNames (https://www.geonames.org/),
+  licensed under CC BY 4.0 and converted into the site's own format.
+- Third-party packages keep their own licences.

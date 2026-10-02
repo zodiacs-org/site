@@ -1,0 +1,109 @@
+{
+  "schema": "zodiacs.staging-resources.v1",
+  "phase": "event-concurrency",
+  "startedAt": "2026-10-02T12:47:09.926Z",
+  "url": "https://zodiacs-org-git-codex-zodiacs-ai-integrations-zodiacsofficial.vercel.app/mcp",
+  "sourceCommit": "5468423bac0675336949ab16839f40ac5def3e92",
+  "observations": [
+    {
+      "name": "get_upcoming_events",
+      "elapsedMs": 3028.92,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5644
+    },
+    {
+      "name": "get_upcoming_events",
+      "elapsedMs": 2501.06,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5644
+    },
+    {
+      "name": "get_upcoming_events",
+      "elapsedMs": 2284.65,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5644
+    },
+    {
+      "name": "get_upcoming_events",
+      "elapsedMs": 2825.28,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5644
+    },
+    {
+      "name": "get_upcoming_events",
+      "elapsedMs": 1978.2,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5644
+    },
+    {
+      "name": "get_upcoming_events",
+      "elapsedMs": 3032.17,
+      "ok": false,
+      "errorCode": "rate-limited",
+      "engine": null,
+      "resultBytes": 537
+    },
+    {
+      "name": "get_upcoming_events",
+      "elapsedMs": 1785.57,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5644
+    },
+    {
+      "name": "get_upcoming_events",
+      "elapsedMs": 3134.91,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5644
+    },
+    {
+      "name": "get_upcoming_events",
+      "elapsedMs": 3091.48,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5644
+    },
+    {
+      "name": "get_upcoming_events",
+      "elapsedMs": 2894.24,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5644
+    },
+    {
+      "name": "get_upcoming_events",
+      "elapsedMs": 1686.95,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5644
+    },
+    {
+      "name": "get_upcoming_events",
+      "elapsedMs": 3270.22,
+      "ok": false,
+      "errorCode": "rate-limited",
+      "engine": null,
+      "resultBytes": 537
+    }
+  ],
+  "admitted": 10,
+  "refused": 2,
+  "scope": "Quiet expired preview window. Existing per-address Firewall and global atomic budget both apply. SDK initialization also uses incoming slots, so general-call successes may be below 40. Exact 10/40 atomic counts are separately proved by PostgreSQL and REST contention tests.",
+  "finishedAt": "2026-10-02T12:47:15.596Z"
+}

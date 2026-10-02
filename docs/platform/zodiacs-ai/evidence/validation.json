@@ -1,0 +1,223 @@
+{
+  "schema": "zodiacs.ai-local-validation.v1",
+  "date": "2026-10-02",
+  "engine": "0.1.1-rc.15",
+  "mcpSdk": "2.0.0",
+  "checks": {
+    "bundleAndContractDrift": "passed",
+    "unitAndHttpProtocolTests": {
+      "passed": 26
+    },
+    "stdioTools": {
+      "passed": 8,
+      "cleanTemporaryInstall": true,
+      "cleanExtractedZip": true
+    },
+    "syntheticAdapterEvaluation": {
+      "passed": 40,
+      "total": 40,
+      "llmRoutingEvaluated": false
+    },
+    "widgetBrowser": "passed",
+    "developmentHealthSdkAndQuota429": "passed",
+    "siteBuild": {
+      "passed": true,
+      "astroPages": 4344,
+      "distAndBundleBudgets": "passed"
+    },
+    "typecheck": {
+      "errors": 0,
+      "warnings": 0,
+      "existingHints": 18
+    },
+    "fullSuite": {
+      "linux": {
+        "passed": 6377,
+        "skipped": 5,
+        "failed": 0,
+        "filesPassed": 501,
+        "filesSkipped": 1,
+        "sourceCommit": "93e6adcc696fe6fa16a8bcedc2237570da2d9762",
+        "run": "https://github.com/zodiacs-org/site/actions/runs/36896802116"
+      },
+      "macosArmNode22": {
+        "passed": 6374,
+        "skipped": 5,
+        "failed": 3,
+        "failureScope": "Three exact Node speed/SVG numerical fixtures; retained Linux fixtures unchanged"
+      }
+    },
+    "existingPhase1VisualAcceptance": {
+      "passed": 18,
+      "total": 18,
+      "capturesRefreshed": true,
+      "scope": "Recaptured after compatible serializer lockfile patch; seventeen images byte-identical and one inspected minor raster difference, with updated actual source/build receipt"
+    },
+    "claimsLedgerAndConsumerBoundary": "passed",
+    "engineAndSdkWorkingTrees": "unchanged",
+    "diffWhitespace": "passed",
+    "portableManifestSchemas": {
+      "version": "1.0.0",
+      "validatedFiles": 4
+    },
+    "deterministicReviewZips": {
+      "passed": 2
+    },
+    "codexMarketplaceDiscovery": {
+      "recognized": 2,
+      "installed": 2,
+      "enabled": 2
+    },
+    "calendarHostBridges": "Both synthetic bridges and actual ChatGPT global/thread entrypoints verified",
+    "independentLegacySdk": {
+      "version": "1.29.0",
+      "toolsPassed": 5,
+      "outputSchemas": "passed",
+      "nativeCalendarLaunch": "passed",
+      "uiResource": "passed"
+    },
+    "existingTerminalNavigationBrowserDrive": {
+      "passed": true,
+      "staleProfileShortcutAssertionUpdated": true,
+      "siteNavigationChanged": false
+    },
+    "existingMarketsMobileBrowserDrive": {
+      "passed": 106,
+      "total": 106
+    },
+    "existingMobileFrameCadence": {
+      "passed": 3,
+      "total": 3,
+      "fps": 60,
+      "cpuThrottle": 4
+    },
+    "existingLinuxVisualRegression": {
+      "precedingRun": {
+        "passed": 12,
+        "failed": 3,
+        "reason": "Intentional homepage selector adds 71px desktop/91px mobile"
+      },
+      "candidateRun": "https://github.com/zodiacs-org/site/actions/runs/36897758164",
+      "candidateSource": "93e6adcc696fe6fa16a8bcedc2237570da2d9762",
+      "onlyHomeBaselinesUpdated": true,
+      "otherTwelveByteIdentical": true,
+      "maximumPixelDiffRatio": 0.001,
+      "finalExactHeadComparison": "required",
+      "patchedSourceComparison": {
+        "passed": 15,
+        "total": 15,
+        "pixelDiffRatio": 0,
+        "sourceCommit": "a6947f71dce4adb7635060a6edfceb3ae7060e41",
+        "run": "https://github.com/zodiacs-org/site/actions/runs/36906631805"
+      },
+      "mergedCandidateRun": "https://github.com/zodiacs-org/site/actions/runs/36912932781",
+      "mergedCandidateSource": "1d344ad8147527243ecbeb9bb62259782d233cb1",
+      "mergedCandidateOnlyHomeUpdated": true,
+      "mergedOtherTwelveByteIdentical": true
+    },
+    "existingForeignOriginWidgetBrowserDrive": "passed",
+    "existingWidgetLighthouse": {
+      "passed": 3,
+      "total": 3,
+      "minimumPerformance": 100,
+      "minimumAccessibility": 96
+    },
+    "existingFullLighthouseGate": {
+      "passed": 29,
+      "total": 30,
+      "samples": 90,
+      "failedRoute": "/",
+      "accessibilityScore": 93,
+      "failureReproducedOnCleanMain": true,
+      "siteWideGatePassed": false,
+      "evidence": "site-regression-review.json",
+      "scope": "Historical original pre-fix run; not final release acceptance"
+    },
+    "darwinVisualRegression": {
+      "passed": 15,
+      "total": 15,
+      "onlyHomeBaselinesUpdated": true
+    },
+    "homepageBrowser": {
+      "passed": 242
+    },
+    "homeContracts": {
+      "passed": 23
+    },
+    "homepageLighthouseAfterFix": {
+      "acceptedSamples": 3,
+      "minimumPerformance": 99,
+      "minimumAccessibility": 100,
+      "minimumSeo": 100,
+      "worstLcpSeconds": 2.12,
+      "cls": 0,
+      "tbt": 0,
+      "runnerStallsSetAsideByExistingPolicy": 1
+    },
+    "finalSiteGate": {
+      "status": "Latest exact-head Site Check attached to PR #618 is the release authority; earlier immutable source-bound results below do not replace it.",
+      "precedingRun": "https://github.com/zodiacs-org/site/actions/runs/36896802116",
+      "precedingFailure": "Only three intentional homepage visual height differences; full Lighthouse skipped",
+      "additionalPrecedingRun": "https://github.com/zodiacs-org/site/actions/runs/36904296920",
+      "additionalPrecedingFailure": "Production devalue 5.9.2 security advisories; patched to 5.9.4 without weakening audit thresholds",
+      "additionalFollowingRun": "https://github.com/zodiacs-org/site/actions/runs/36906631796",
+      "additionalFollowingFailure": "6376 unit tests passed; one durable Phase 1 screenshot source receipt stale after lockfile patch. All 18 captures refreshed from patched dist; five receipt tests pass."
+    },
+    "httpsStaging": {
+      "passed": 12,
+      "toolCalls": 6,
+      "evidence": "staging-acceptance-patched.json"
+    },
+    "realChatgpt": {
+      "positive": 5,
+      "negative": 3,
+      "globalAndThreadEntryPoints": true,
+      "evidence": "host-readiness.json",
+      "cspEnforcedRetest": true,
+      "duplicateHostCalendarSelectionObserved": true
+    },
+    "productionDependencyAudit": {
+      "passed": true,
+      "vulnerabilities": 0,
+      "devalue": "5.9.4",
+      "change": "Compatible patch; deterministic daily generator provenance hash refreshed because it includes package-lock.json"
+    },
+    "fullDependencyAudit": {
+      "highOrCritical": 0,
+      "moderate": 2,
+      "scope": "Existing Vitest 3 development-only advisory; existing high-severity CI threshold passes; no forced major upgrade"
+    },
+    "fullLighthouseAfterFix": {
+      "passed": 30,
+      "total": 30,
+      "samples": 90,
+      "minimumPerformance": 97,
+      "minimumAccessibility": 100,
+      "minimumSeo": 100,
+      "runnerStalls": 0,
+      "evidence": "full-lighthouse-after-fix.json"
+    },
+    "navigationHelpersAfterMainMerge": {
+      "passed": 185,
+      "failed": 0,
+      "scope": "Historical focused locale/Moon helper review before consumer-copy main merge. Final helper retains approved seven secondary tools with primary destination checks separately; exact-head Linux driver is authoritative.",
+      "sourceCommit": "d192701f1bdeac6d44c2a57f014ac08fe8eccf6a"
+    },
+    "learningHelpersAfterMainMerge": {
+      "passed": 84,
+      "failed": 0,
+      "unitTestsPassed": 33,
+      "scope": "Actual search/learning and saved-chart practice browser flows, including native locks, cross-tab source edits and unknown-time refusals. Summary refresh permits no source or identity mutation."
+    },
+    "mergedHomepageBrowser": {
+      "passed": 242
+    }
+  },
+  "productionEnabled": false,
+  "realChatgptHostVerified": true,
+  "realCodexPluginInstallVerified": true,
+  "deploymentCostAndCapacityMeasured": false,
+  "hostingRetentionReviewed": "Observability Plus enabled for zodiacs-org confirmed in authenticated Billing; documented runtime retention 30 days",
+  "publicListingSubmitted": false,
+  "limitations": "Actual synthetic public-sky host acceptance is recorded. It is not scientific accuracy certification, human beta usefulness, cost/capacity acceptance or directory publication. Verified publisher identity, consenting beta, exact-head full CI, per-completion billing and concurrent-quota assessment remain release gates."
+}

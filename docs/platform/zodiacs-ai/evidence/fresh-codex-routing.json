@@ -1,0 +1,95 @@
+{
+  "schema": "zodiacs.fresh-codex-routing.v1",
+  "capturedAt": "2026-10-02T12:08:07.650Z",
+  "host": "Codex desktop, fresh projectless conversations; same installed plugin catalog",
+  "method": "Each task supplied natural intent without skill names; existing skill/tool selection observed in saved host turns. No forked history or manual skill injection.",
+  "records": [
+    {
+      "threadId": "01a0fc76-5734-70c0-bac3-c6f31777aaef",
+      "title": "Zodiacs sky routing acceptance",
+      "prompt": "Fresh-conversation plugin routing acceptance test. Tell me the planetary sky at 2026-10-01T06:00:00Z displayed in Asia/Bangkok, and explain why 'the Sun entered Libra on September 23' can depend on timezone. Use synthetic/public sky only. Use your normal automatic tool/skill selection; do not install plugins, contact anyone, change settings or repositories, or substitute invented astronomy. In your final answer state the exact skills/tools you actually selected, engine version, evidence and any blocker. Do not disclose credentials. This is a bounded verification request; finish this test in this chat.",
+      "status": "completed",
+      "startedAt": 1790942009,
+      "completedAt": 1790942068,
+      "skillsRead": [
+        "explore-the-sky"
+      ],
+      "toolCalls": [
+        {
+          "server": "codex_apps",
+          "tool": "zodiacs_staging_verified.get_capabilities",
+          "status": "completed"
+        },
+        {
+          "server": "codex_apps",
+          "tool": "zodiacs_staging_verified.check_sky_fact",
+          "status": "completed"
+        },
+        {
+          "server": "codex_apps",
+          "tool": "zodiacs_staging_verified.get_sky",
+          "status": "completed"
+        },
+        {
+          "server": "codex_apps",
+          "tool": "zodiacs_staging_verified.check_sky_fact",
+          "status": "completed"
+        }
+      ],
+      "final": "**2026-10-01T06:00:00Z is October 1, 2026 at 13:00 in Asia/Bangkok (UTC+7).** The returned tropical, geocentric positions are:\n\n| Body | Position within sign | Motion |\n|---|---:|---|\n| Sun | Libra 8.08° | Direct |\n| Moon | Gemini 7.48° | Direct |\n| Mercury | Scorpio 1.01° | Direct |\n| Venus | Scorpio 8.41° | Direct |\n| Mars | Leo 1.83° | Direct |\n| Jupiter | Leo 19.64° | Direct |\n| Saturn | Aries 11.56° | Retrograde |\n| Uranus | Gemini 5.52° | Retrograde |\n| Neptune | Aries 2.86° | Retrograde |\n| Pluto | Aquarius 3.12° | Retrograde |\n\nThe Moon was **waning gibbous, approximately 75.46% illuminated**. These are computed sky positions; the timezone controls their displayed timestamp.\n\nAssuming the Libra claim refers to **2026**, the engine found the Sun crossing tropical longitude 180° at approximately **September 23, 00:05:47 UTC**. That is **September 23, 07:05:47 in Bangkok**, but **September 22, 20:05:47 at UTC−4**. The physical event is the same; its calendar date changes with timezone. Accordingly, `check_sky_fact` returned **`depends` without a timezone** and **`true` for September 23 in Asia/Bangkok**.\n\nThe routing test completed with **no blocker**:\n\n- **Skill selected:** `zodiacs-sky:explore-the-sky`.\n- **Public-sky tools used:** `mcp__codex_apps__zodiacs_staging_verified_get_capabilities`, `mcp__codex_apps__zodiacs_staging_verified_get_sky`, and `mcp__codex_apps__zodiacs_staging_verified_check_sky_fact` (twice), from **Zodiacs Staging Verified**.\n- **Supporting tools:** `functions.exec` for discovery/orchestration and `exec_command` to read the skill.\n- **Engine:** `@zodiacs/engine` **0.1.1-rc.15**, using `astronomy-engine` **2.1.19**.\n- **Evidence:** all four sky-tool calls returned `ok: true`, with versioned calculation receipts. The [positions receipt](https://zodiacs.org/developers/compute/#positions) was `sha256:7c73e655b104f19d054c50862691e3bd13367888699c759d3f3c82afe14cb856`; the [Bangkok ingress-check receipt](https://zodiacs.org/developers/compute/#sky-fact) was `sha256:b31ff33fe8acec7d425f9c21ae818667edede07b5fadc503a4d58db2e8220c84`.\n\nEvent-search completeness is **tested, not proven**; receipt timestamps do not imply millisecond astronomical accuracy. Only public sky inputs were used, and no plugins, settings, repositories, or communications were changed."
+    },
+    {
+      "threadId": "01a0fc76-a6d7-7863-9f31-ffbc97a0fa3f",
+      "title": "Zodiacs developer routing acceptance",
+      "prompt": "Fresh-conversation plugin routing acceptance test. Build a tiny runnable synthetic astrology integration using the published @zodiacs/engine version already supported by the installed tooling: a Moon-position endpoint at 2026-10-01T06:00:00Z in Asia/Bangkok, no personal data. Reproduce and verify the returned astronomical result and receipt, then add meaningful tests covering explicit timezone, unsupported input, and version provenance. Work only in this chat's projectless output directory; do not change shared repositories, install plugins, contact anyone, or change settings. Select tools and skills automatically from the task without me naming them. Final answer must identify each skill/tool actually used, exact dependency/version, test results and blockers. Keep credentials out of outputs. Finish the bounded test here.",
+      "status": "completed",
+      "startedAt": 1790942030,
+      "completedAt": 1790942720,
+      "skillsRead": [
+        "verify-astrology-output",
+        "build-with-zodiacs",
+        "test-astrology-integration"
+      ],
+      "toolCalls": [
+        {
+          "server": "zodiacs-developer",
+          "tool": "get_capabilities",
+          "status": "completed"
+        },
+        {
+          "server": "zodiacs-developer",
+          "tool": "get_sky",
+          "status": "completed"
+        },
+        {
+          "server": "zodiacs-developer",
+          "tool": "check_sky_fact",
+          "status": "failed"
+        },
+        {
+          "server": "zodiacs-developer",
+          "tool": "check_sky_fact",
+          "status": "completed"
+        },
+        {
+          "server": "zodiacs-developer",
+          "tool": "get_local_chart_capabilities",
+          "status": "completed"
+        }
+      ],
+      "final": "Completed in the [runnable project](/Users/chiburashka/Documents/Codex/2026-10-02/zodiacs-routing-developer/outputs/moon-endpoint/README.md). Run `npm start` there.\n\nAt **2026-10-01 13:00 Asia/Bangkok**, the Moon is at **67.477171309° tropical longitude — 7.477171309° Gemini**. The calculation and receipt reproduced exactly. The independent JPL spot check differed by **0.792 arcseconds** in longitude; its corrections differ from the engine’s. [JPL conventions](https://ssd.jpl.nasa.gov/horizons/manual.html#observer-ecliptic-longitude--latitude)\n\n- **Dependencies:** `@zodiacs/engine@0.1.1-rc.15`; `astronomy-engine@2.1.19`, pinned and provenance checked.\n- **Tests:** 42 passed; plugin recipe checks and live HTTP verification passed.\n- **Skills used:** `zodiacs-developer:build-with-zodiacs`, `zodiacs-developer:verify-astrology-output`, `zodiacs-developer:test-astrology-integration`.\n- **Tools used:** `functions.exec`, `exec_command`, `apply_patch`, `web.run`, `mcp__zodiacs_developer__get_capabilities`, `mcp__zodiacs_developer__get_local_chart_capabilities`, `mcp__zodiacs_developer__get_sky`, `mcp__zodiacs_developer__check_sky_fact`.\n\n[Verification evidence](/Users/chiburashka/Documents/Codex/2026-10-02/zodiacs-routing-developer/outputs/moon-endpoint/verification/report.json) is saved. **Blockers: none.** This verifies the bounded local integration and one astronomical spot check. Credentials were kept out of outputs."
+    },
+    {
+      "threadId": "01a0fc76-aa74-79f1-a765-ed79bafb991c",
+      "title": "Zodiacs routing negative control",
+      "prompt": "Fresh-conversation routing negative control. Explain how to reverse the string 'hello' in JavaScript, with one short example. Do not install anything, edit files, contact anyone, or perform account actions. Use normal automatic skill selection. End by naming any skills actually invoked; if none, say none.",
+      "status": "completed",
+      "startedAt": 1790942030,
+      "completedAt": 1790942039,
+      "skillsRead": [],
+      "toolCalls": [],
+      "final": "Use `split('')` to turn the string into an array, `reverse()` to reverse it, and `join('')` to combine it again.\n\n```javascript\nconst reversed = 'hello'.split('').reverse().join('');\nconsole.log(reversed); // \"olleh\"\n```\n\nSkills invoked: none."
+    }
+  ],
+  "limits": "Three bounded conversations demonstrate selection for these intents, including a negative control. Not a statistical routing accuracy or marketplace certification."
+}
