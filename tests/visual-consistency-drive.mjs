@@ -58,7 +58,8 @@ await withPreview({ port: 8787 }, async baseURL => {
           try {
             if (state === 'unavailable') return await route.fulfill({ status: 503, body: 'Fixture unavailable' });
             const isPairs = route.request().url().includes('/latest/dex/pairs/solana/');
-            await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(isPairs ? { pairs } : pairs) });
+            const payload = state === 'partial' ? pairs.filter(pair => pair.pairAddress !== EXCHANGE_POOLS.sagittarius) : pairs;
+            await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(isPairs ? { pairs: payload } : payload) });
           } catch { /* the pending document was closed after measurement */ }
         });
         const page = await context.newPage();
@@ -78,7 +79,7 @@ await withPreview({ port: 8787 }, async baseURL => {
         assert.ok(brand.offset <= 3, `${engine}/${width}: brand mark and wordmark drifted`);
         assert.ok(brand.width <= width - 24);
         if (width === 390) await page.locator('.zfooter__brand').screenshot({ path: `${out}/${engine}-wordmark.png` });
-        for (const phase of ['pending', 'unavailable', 'quoted']) {
+        for (const phase of ['pending', 'unavailable', 'quoted', 'partial']) {
           state = phase;
           let first;
           for (const asset of registry.assets) {
@@ -86,7 +87,8 @@ await withPreview({ port: 8787 }, async baseURL => {
             const bag = page.locator('.campaign-bag:not(.is-hidden)');
             await bag.waitFor();
             await page.evaluate(() => document.fonts.ready);
-            if (phase === 'quoted') await bag.locator('.campaign-bag__move').waitFor();
+            if (phase === 'partial' && asset.sign === 'sagittarius') await bag.locator('small').filter({ hasText: 'Price not indexed' }).waitFor();
+            else if (phase === 'quoted' || phase === 'partial') await bag.locator('.campaign-bag__move').waitFor();
             const geometry = await bag.evaluate(el => {
               const box = el.getBoundingClientRect();
               const cta = el.querySelector('.btn--fomo').getBoundingClientRect();

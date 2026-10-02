@@ -5699,7 +5699,7 @@
                   <span>{formatPriceUsd(quote.priceUsd)}</span>
                   {change !== null && <span className={`campaign-bag__move is-${direction}`}>{formatPercent(change)}</span>}
                 </>
-              ) : <span>{batch.status === 'unavailable' ? 'Price unavailable' : 'Reading price…'}</span>}
+              ) : <span>{batch.status === 'ok' ? 'Price not indexed' : batch.status === 'unavailable' ? 'Price unavailable' : 'Reading price…'}</span>}
             </small>
           </span>
         </>
