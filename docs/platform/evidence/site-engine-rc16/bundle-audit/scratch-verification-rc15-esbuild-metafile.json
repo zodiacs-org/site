@@ -1,0 +1,163 @@
+{
+  "inputs": {
+    "../../../..audit-inputs/archive-inputs/rc15/package/dist/chunk-MFF3VKO3.js": {
+      "bytes": 5263,
+      "imports": [],
+      "format": "esm"
+    },
+    "../../../..audit-inputs/archive-inputs/rc15/package/dist/chunk-ZHVI3KWJ.js": {
+      "bytes": 11577,
+      "imports": [
+        {
+          "path": "../../../..audit-inputs/archive-inputs/rc15/package/dist/chunk-MFF3VKO3.js",
+          "kind": "import-statement",
+          "original": "./chunk-MFF3VKO3.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "../../../..audit-inputs/archive-inputs/rc15/package/dist/chunk-ONBZ4HK7.js": {
+      "bytes": 4807,
+      "imports": [],
+      "format": "esm"
+    },
+    "../../../..audit-inputs/archive-inputs/rc15/package/dist/chunk-KHBLFXFG.js": {
+      "bytes": 13082,
+      "imports": [
+        {
+          "path": "../../../..audit-inputs/archive-inputs/rc15/package/dist/chunk-ONBZ4HK7.js",
+          "kind": "import-statement",
+          "original": "./chunk-ONBZ4HK7.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "node_modules/astronomy-engine/esm/astronomy.js": {
+      "bytes": 412025,
+      "imports": [],
+      "format": "esm"
+    },
+    "../../../..audit-inputs/archive-inputs/rc15/package/dist/chunk-ZZPITHQS.js": {
+      "bytes": 23963,
+      "imports": [
+        {
+          "path": "../../../..audit-inputs/archive-inputs/rc15/package/dist/chunk-ZHVI3KWJ.js",
+          "kind": "import-statement",
+          "original": "./chunk-ZHVI3KWJ.js"
+        },
+        {
+          "path": "../../../..audit-inputs/archive-inputs/rc15/package/dist/chunk-KHBLFXFG.js",
+          "kind": "import-statement",
+          "original": "./chunk-KHBLFXFG.js"
+        },
+        {
+          "path": "../../../..audit-inputs/archive-inputs/rc15/package/dist/chunk-ONBZ4HK7.js",
+          "kind": "import-statement",
+          "original": "./chunk-ONBZ4HK7.js"
+        },
+        {
+          "path": "../../../..audit-inputs/archive-inputs/rc15/package/dist/chunk-MFF3VKO3.js",
+          "kind": "import-statement",
+          "original": "./chunk-MFF3VKO3.js"
+        },
+        {
+          "path": "node_modules/astronomy-engine/esm/astronomy.js",
+          "kind": "import-statement",
+          "original": "astronomy-engine"
+        }
+      ],
+      "format": "esm"
+    },
+    "../../../..audit-inputs/archive-inputs/rc15/package/dist/internal.js": {
+      "bytes": 305,
+      "imports": [
+        {
+          "path": "../../../..audit-inputs/archive-inputs/rc15/package/dist/chunk-ZZPITHQS.js",
+          "kind": "import-statement",
+          "original": "./chunk-ZZPITHQS.js"
+        },
+        {
+          "path": "../../../..audit-inputs/archive-inputs/rc15/package/dist/chunk-ZHVI3KWJ.js",
+          "kind": "import-statement",
+          "original": "./chunk-ZHVI3KWJ.js"
+        },
+        {
+          "path": "../../../..audit-inputs/archive-inputs/rc15/package/dist/chunk-KHBLFXFG.js",
+          "kind": "import-statement",
+          "original": "./chunk-KHBLFXFG.js"
+        },
+        {
+          "path": "../../../..audit-inputs/archive-inputs/rc15/package/dist/chunk-ONBZ4HK7.js",
+          "kind": "import-statement",
+          "original": "./chunk-ONBZ4HK7.js"
+        },
+        {
+          "path": "../../../..audit-inputs/archive-inputs/rc15/package/dist/chunk-MFF3VKO3.js",
+          "kind": "import-statement",
+          "original": "./chunk-MFF3VKO3.js"
+        }
+      ],
+      "format": "esm"
+    },
+    "src/lib/engine/chart-adapter.ts": {
+      "bytes": 1613,
+      "imports": [],
+      "format": "esm"
+    },
+    "src/lib/engine/full.ts": {
+      "bytes": 1251,
+      "imports": [
+        {
+          "path": "../../../..audit-inputs/archive-inputs/rc15/package/dist/internal.js",
+          "kind": "import-statement",
+          "original": "@zodiacs/engine/internal"
+        },
+        {
+          "path": "src/lib/engine/chart-adapter.ts",
+          "kind": "import-statement",
+          "original": "./chart-adapter"
+        }
+      ],
+      "format": "esm"
+    }
+  },
+  "outputs": {
+    "full.js": {
+      "imports": [],
+      "exports": [
+        "bodyLongitude",
+        "computeBodies",
+        "computeChart",
+        "longitudeSpeed"
+      ],
+      "entryPoint": "src/lib/engine/full.ts",
+      "inputs": {
+        "../../../..audit-inputs/archive-inputs/rc15/package/dist/chunk-MFF3VKO3.js": {
+          "bytesInOutput": 2747
+        },
+        "../../../..audit-inputs/archive-inputs/rc15/package/dist/chunk-ZHVI3KWJ.js": {
+          "bytesInOutput": 3998
+        },
+        "../../../..audit-inputs/archive-inputs/rc15/package/dist/chunk-ONBZ4HK7.js": {
+          "bytesInOutput": 2619
+        },
+        "../../../..audit-inputs/archive-inputs/rc15/package/dist/chunk-KHBLFXFG.js": {
+          "bytesInOutput": 8319
+        },
+        "node_modules/astronomy-engine/esm/astronomy.js": {
+          "bytesInOutput": 48102
+        },
+        "../../../..audit-inputs/archive-inputs/rc15/package/dist/chunk-ZZPITHQS.js": {
+          "bytesInOutput": 3414
+        },
+        "src/lib/engine/chart-adapter.ts": {
+          "bytesInOutput": 461
+        },
+        "src/lib/engine/full.ts": {
+          "bytesInOutput": 134
+        }
+      },
+      "bytes": 71463
+    }
+  }
+}

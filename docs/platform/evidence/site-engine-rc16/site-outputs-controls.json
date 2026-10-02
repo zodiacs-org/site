@@ -1,0 +1,44 @@
+{
+  "schema": "zodiacs-site-output-mechanism-controls/v1",
+  "node": "v22.22.2",
+  "baseline": "all tested mechanisms explained, zero failures",
+  "negativeControls": [
+    {
+      "name": "longitude perturbation",
+      "alteredPath": "chart.bodies[Sun].lon",
+      "result": "unexplained, correctly refused"
+    },
+    {
+      "name": "latitude perturbation",
+      "alteredPath": "chart.bodies[Sun].lat",
+      "result": "unexplained, correctly refused"
+    },
+    {
+      "name": "speed perturbation",
+      "alteredPath": "chart.bodies[Sun].speed",
+      "result": "unexplained, correctly refused"
+    },
+    {
+      "name": "angle perturbation",
+      "alteredPath": "chart.angles.asc",
+      "result": "unexplained, correctly refused"
+    },
+    {
+      "name": "cusp perturbation",
+      "alteredPath": "chart.houses(placidus).cusps[]",
+      "result": "unexplained, correctly refused"
+    },
+    {
+      "name": "aspect perturbation",
+      "alteredPath": "chart.aspects[].orb",
+      "result": "unexplained, correctly refused"
+    },
+    {
+      "name": "version perturbation",
+      "alteredPath": "chart.engineVersion",
+      "result": "unexplained, correctly refused"
+    }
+  ],
+  "unknownMetadata": "unexplained, correctly refused",
+  "pass": true
+}

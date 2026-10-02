@@ -1,0 +1,40 @@
+{
+  "schema": "zodiacs.rc16-sharing-readiness.v1",
+  "failure": {
+    "head": "e1d7b378c7210e4b90b4337f6c22f4f12f16d63b",
+    "run": 36998099044,
+    "job": 110809603405,
+    "assertion": "feature-off leaves the existing two-person calculator intact",
+    "failed": 1,
+    "checks": 8,
+    "domCountsRecorded": false,
+    "classification": "Readiness race remains a supported hypothesis, not proven cause of the original document."
+  },
+  "repair": {
+    "priorReviewedLocalCommit": "59d6b863bb5c2c1a760192906f4a5a242898abae",
+    "existingAssertionsByteIdentical": true,
+    "requiredSourceSelects": 2,
+    "requiredSubmitButtons": 1,
+    "deadlineMs": 30000,
+    "fixedDelayRemovedMs": 250,
+    "sourceHashes": {
+      "tests/phase4-sharing-drive.mjs": "8f5ecf799c07dc3a7bf0836308b7d81b5df263ff04ee0198725789295cefb8ba",
+      "tests/phase4-sharing-readiness.mjs": "f2598bfaa83d66d178fbca483f378104dd3de6b0adbfd8ed421fad0faf974df9",
+      "tests/phase4-sharing-readiness.test.mjs": "165499ded4e7f36804a0e2ce85e0ff7cd21c9c25284021730530d1536c9a9ece"
+    },
+    "authoredFrontendChanged": false,
+    "permissionsChanged": false
+  },
+  "priorNativeProof": {
+    "run": 36909229987,
+    "testedMergeCommit": "7a0b0212d764d415acbff2c28269f35745e00bbe",
+    "offChecksPassed": 14,
+    "enabledChecksPassed": 44,
+    "scope": "Prior independently reviewed implementation; not relabeled as current-head native execution."
+  },
+  "localChecks": {
+    "readinessAndWorkflowTestsPassed": 8,
+    "renderSourceUnchanged": "4a0ef64e3dd233b144eb4d28220d87baecffcc54777be2f6ba1ba551b9fd87ce"
+  },
+  "remaining": "Current-head CI must pass ordinary, delayed-real-module and never-arrival controls and fixture-enabled mode. No source or acceptance threshold is waived."
+}

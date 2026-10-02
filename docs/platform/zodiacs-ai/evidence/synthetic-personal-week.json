@@ -1,7 +1,7 @@
 {
   "synthetic": true,
   "description": "Concept demonstration only; arbitrary date, unknown time, no angles or houses. Contacts are numerical facts, not predictions. Scanner completeness is not proven.",
-  "engine": "0.1.1-rc.15",
+  "engine": "0.1.1-rc.16",
   "natal": {
     "receipt": {
       "conventions": {
@@ -12,7 +12,8 @@
         "localTime": "tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
         "longitudeUnit": "degrees-[0,360)",
         "moonNodes": "instantaneous-geocentric-moon-orbit-plane",
-        "moonPosition": "astronomy-engine-ecliptic-geo-moon;no-light-time;no-aberration",
+        "moonPosition": "astronomy-engine-geo-moon;no-light-time;no-aberration",
+        "nutation": "iau2000b;equation-of-equinoxes-with-two-complementary-terms",
         "planetPositions": "aberrated-geocentric-ecliptic-of-date;no-deflection",
         "speed": "degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
         "timeScale": "tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
@@ -31,7 +32,7 @@
           "version": "2.1.19"
         },
         "name": "@zodiacs/engine",
-        "version": "0.1.1-rc.15"
+        "version": "0.1.1-rc.16"
       },
       "houses": {
         "absenceReason": "unknown-time",
@@ -66,7 +67,7 @@
           "a": "Jupiter",
           "applying": false,
           "b": "Pluto",
-          "orb": 0.4873055349876836,
+          "orb": 0.48730553498765516,
           "type": "trine"
         },
         {
@@ -80,7 +81,7 @@
           "a": "Moon",
           "applying": false,
           "b": "Neptune",
-          "orb": 1.6414272018239444,
+          "orb": 1.6414272018238876,
           "type": "sextile"
         },
         {
@@ -94,14 +95,14 @@
           "a": "Jupiter",
           "applying": false,
           "b": "Neptune",
-          "orb": 2.1726364725493,
+          "orb": 2.172636472549243,
           "type": "opposition"
         },
         {
           "a": "Mars",
           "applying": true,
           "b": "Neptune",
-          "orb": 2.6757856277657197,
+          "orb": 2.6757856277657766,
           "type": "square"
         },
         {
@@ -115,14 +116,14 @@
           "a": "Venus",
           "applying": false,
           "b": "Jupiter",
-          "orb": 2.8878853453337,
+          "orb": 2.8878853453336433,
           "type": "sextile"
         },
         {
           "a": "Venus",
           "applying": false,
           "b": "Pluto",
-          "orb": 3.3751908803213837,
+          "orb": 3.3751908803212984,
           "type": "opposition"
         },
         {
@@ -143,21 +144,21 @@
           "a": "Venus",
           "applying": false,
           "b": "Neptune",
-          "orb": 5.060521817883,
+          "orb": 5.060521817882886,
           "type": "trine"
         },
         {
           "a": "Venus",
           "applying": true,
           "b": "Saturn",
-          "orb": 5.254496552896967,
+          "orb": 5.254496552897024,
           "type": "trine"
         },
         {
           "a": "Uranus",
           "applying": false,
           "b": "Neptune",
-          "orb": 5.552911630877304,
+          "orb": 5.552911630877361,
           "type": "conjunction"
         },
         {
@@ -171,111 +172,111 @@
       "bodies": [
         {
           "body": "Sun",
-          "degree": 24.129389495756186,
-          "lat": -0.000018272941650748862,
-          "lon": 84.12938949575619,
+          "degree": 24.129381446961702,
+          "lat": -0.00001827294165074886,
+          "lon": 84.1293814469617,
           "retrograde": false,
           "sign": "gemini",
-          "speed": 0.9551354133918721
+          "speed": 0.9551326267285276
         },
         {
           "body": "Moon",
-          "degree": 15.358278638543538,
-          "lat": 3.130171463903947,
-          "lon": 345.35827863854354,
+          "degree": 15.358270589749054,
+          "lat": 3.1301714639039475,
+          "lon": 345.358270589749,
           "retrograde": false,
           "sign": "pisces",
-          "speed": 13.361802280996926
+          "speed": 13.361799494333582
         },
         {
           "body": "Mercury",
-          "degree": 5.690779949594173,
+          "degree": 5.690771900799632,
           "lat": -1.662859018758755,
-          "lon": 65.69077994959417,
+          "lon": 65.69077190079963,
           "retrograde": false,
           "sign": "gemini",
-          "speed": 1.716077974720065
+          "speed": 1.7160751881135639
         },
         {
           "body": "Venus",
-          "degree": 18.777373254602594,
-          "lat": -1.945853192156682,
-          "lon": 48.777373254602594,
+          "degree": 18.777365205807996,
+          "lat": -1.9458531921566795,
+          "lon": 48.777365205807996,
           "retrograde": false,
           "sign": "taurus",
-          "speed": 1.176005370865596
+          "speed": 1.1760025842306732
         },
         {
           "body": "Mars",
-          "degree": 11.041065808953874,
+          "degree": 11.041057760159333,
           "lat": -1.9853232124665852,
-          "lon": 11.041065808953874,
+          "lon": 11.041057760159333,
           "retrograde": false,
           "sign": "aries",
-          "speed": 0.7189434432461894
+          "speed": 0.7189406566112666
         },
         {
           "body": "Jupiter",
-          "degree": 15.889487909268894,
-          "lat": 0.18679309998769494,
-          "lon": 105.8894879092689,
+          "degree": 15.889479860474353,
+          "lat": 0.18679309998769497,
+          "lon": 105.88947986047435,
           "retrograde": false,
           "sign": "cancer",
-          "speed": 0.21664390231990183
+          "speed": 0.21664111571340072
         },
         {
           "body": "Saturn",
-          "degree": 24.03186980749956,
-          "lat": 0.11722767269035177,
-          "lon": 294.03186980749956,
+          "degree": 24.031861758704963,
+          "lat": 0.11722767269035182,
+          "lon": 294.031861758705,
           "retrograde": true,
           "sign": "capricorn",
-          "speed": -0.05863851819754018
+          "speed": -0.05864130480404128
         },
         {
           "body": "Uranus",
-          "degree": 8.163939805842347,
-          "lat": -0.3255607846061125,
-          "lon": 278.1639398058423,
+          "degree": 8.163931757047749,
+          "lat": -0.32556078460611254,
+          "lon": 278.16393175704775,
           "retrograde": true,
           "sign": "capricorn",
-          "speed": -0.038926764574398476
+          "speed": -0.03892955118089958
         },
         {
           "body": "Neptune",
-          "degree": 13.716851436719594,
-          "lat": 0.8770482538919451,
-          "lon": 283.7168514367196,
+          "degree": 13.71684338792511,
+          "lat": 0.8770482538919453,
+          "lon": 283.7168433879251,
           "retrograde": true,
           "sign": "capricorn",
-          "speed": -0.025024351288038815
+          "speed": -0.02502713792296163
         },
         {
           "body": "Pluto",
-          "degree": 15.40218237428121,
-          "lat": 15.853722662867751,
-          "lon": 225.4021823742812,
+          "degree": 15.402174325486726,
+          "lat": 15.853722662867744,
+          "lon": 225.4021743254867,
           "retrograde": true,
           "sign": "scorpio",
-          "speed": -0.020177604511673053
+          "speed": -0.02018039116080672
         },
         {
           "body": "North Node",
-          "degree": 8.121522538823228,
+          "degree": 8.12151449002863,
           "lat": 0,
-          "lon": 308.1215225388232,
+          "lon": 308.12151449002863,
           "retrograde": false,
           "sign": "aquarius",
-          "speed": 0.013568392302545362
+          "speed": 0.013565608214776148
         },
         {
           "body": "South Node",
-          "degree": 8.121522538823228,
+          "degree": 8.12151449002863,
           "lat": 0,
-          "lon": 128.12152253882323,
+          "lon": 128.12151449002863,
           "retrograde": false,
           "sign": "leo",
-          "speed": 0.013568392302545362
+          "speed": 0.013565608214776148
         }
       ],
       "deltaT": {
@@ -310,7 +311,7 @@
       "transitBody": "Moon",
       "natalPoint": "Moon",
       "aspect": "square",
-      "exactUtc": "2026-10-01T19:14:39.899Z",
+      "exactUtc": "2026-10-01T19:14:39.763Z",
       "pass": 1,
       "passCount": 1
     },
@@ -318,7 +319,7 @@
       "transitBody": "Moon",
       "natalPoint": "Sun",
       "aspect": "conjunction",
-      "exactUtc": "2026-10-02T10:00:11.918Z",
+      "exactUtc": "2026-10-02T10:00:11.733Z",
       "pass": 1,
       "passCount": 1
     },
@@ -326,7 +327,7 @@
       "transitBody": "Moon",
       "natalPoint": "Moon",
       "aspect": "trine",
-      "exactUtc": "2026-10-03T21:54:38.976Z",
+      "exactUtc": "2026-10-03T21:54:38.687Z",
       "pass": 1,
       "passCount": 1
     },
@@ -334,7 +335,7 @@
       "transitBody": "Moon",
       "natalPoint": "Sun",
       "aspect": "sextile",
-      "exactUtc": "2026-10-06T16:36:54.676Z",
+      "exactUtc": "2026-10-06T16:36:54.372Z",
       "pass": 1,
       "passCount": 1
     }

@@ -5,8 +5,8 @@
  *   node tests/mcp-host-drive.mjs
  *
  * The host is the Claude Code CLI, which is what is actually installable here.
- * Claude Desktop is macOS and Windows only, so it cannot be exercised in this
- * Linux container and no claim is made about it.
+ * Only the installed Claude Code CLI is exercised here; no claim is made
+ * about the separate Claude Desktop application.
  *
  * The drive uses the host's own documented mechanism — `claude mcp add`,
  * `list`, `get`, `remove` — inside a throwaway CLAUDE_CONFIG_DIR and a
@@ -102,7 +102,7 @@ const evidence = {
     + ' demonstration recorded by hand in host-interop.md.',
   host: { name: 'Claude Code CLI', version: hostVersion, mechanism: 'claude mcp add/list/get/remove, stdio' },
   notTested: [
-    'Claude Desktop: macOS and Windows only, so it cannot run in this Linux container.',
+    'Claude Desktop: not exercised; this drive tests the installed CLI only.',
     'VS Code, Cursor and other hosts: not installed here. Their config files are documented in the README from their own docs, not from a run.',
   ],
   isolation: { claudeConfigDir: 'a throwaway directory', project: 'a throwaway directory', realConfigTouched: false },

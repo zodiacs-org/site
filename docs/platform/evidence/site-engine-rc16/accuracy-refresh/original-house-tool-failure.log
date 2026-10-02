@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "/workspace/scratch/8dfe85084616/site-rc16/docs/platform/evidence/houses-2026-09-26/tools/compare-end-to-end.py", line 31, in <module>
+    swiss, _ = swe.houses_ex(jd, case['lat'], case['lon'], CODES[name].encode())
+                                                           ~~~~~^^^^^^
+KeyError: 'equal-mc'
+exit=1

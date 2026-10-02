@@ -5,7 +5,6 @@
 import {
   computeAngles as engineComputeAngles,
   computeHouses as engineComputeHouses,
-  houseOf as engineHouseOf,
   meanObliquity,
   normalizeLongitude,
   placidusCusps as enginePlacidusCusps,
@@ -45,6 +44,4 @@ export function computeHouses(
 }
 
 /** House index (1–12) of an ecliptic longitude given cusp longitudes. */
-export function houseOf(longitude: number, cusps: number[]): number {
-  return engineHouseOf(longitude, cusps);
-}
+export { houseOf } from '@zodiacs/engine/internal/math';

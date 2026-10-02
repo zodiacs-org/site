@@ -6,19 +6,31 @@
  * CommonJS, so this boundary deliberately selects its `require` export and
  * avoids relying on synthetic named exports.
  *
- * It computes what the engine's ephemeris computes, on the engine's clock.
- * Since @zodiacs/engine 0.1.1-rc.15 that clock reads an instant from 1972 to
- * 2027-10-02 as UTC, with TT from the leap seconds and UT1 from IERS
- * UT1 − UTC, and any other instant as UT1 with the ΔT model. The package does
- * not export that time basis, so `time-basis.mjs` carries its own compiled
- * code, bundled by scripts/build-time-basis.mjs. Each sample is then taken as
- * the engine takes it: astronomy-engine's time at the basis's UT1, with the
- * basis's ΔT held for that call.
+ * It computes what the engine's ephemeris computes, on the engine's clock and
+ * in its frame. Since @zodiacs/engine 0.1.1-rc.15 that clock reads an instant
+ * from 1972 to 2027-10-02 as UTC, with TT from the leap seconds and UT1 from
+ * IERS UT1 − UTC, and any other instant as UT1 with the ΔT model. Since
+ * 0.1.1-rc.16 the engine turns astronomy-engine's apparent vectors to the
+ * ecliptic of date itself, with astronomy-engine's precession and its own
+ * IAU 2000B nutation, where astronomy-engine's rotation keeps 5 of that
+ * series' 77 terms. The package exports neither, so `time-basis.mjs` carries
+ * its compiled time basis, nutation and frame, bundled by
+ * scripts/build-time-basis.mjs. Each sample is then taken as the engine takes
+ * it: astronomy-engine's time at the basis's UT1, with the basis's ΔT held for
+ * that call, and its vector turned by the engine's frame.
  */
 import { createRequire } from 'node:module';
 import type * as AstronomyEngine from 'astronomy-engine';
 import { deltaT } from '@zodiacs/engine/deltat';
-import { EPHEMERIS_SPAN, elapsedDays, timeBasis, type TimeBasis } from './time-basis.mjs';
+import {
+  EPHEMERIS_SPAN,
+  eclipticFrame,
+  eclipticOfDate,
+  elapsedDays,
+  meanEcliptic,
+  timeBasis,
+  type TimeBasis,
+} from './time-basis.mjs';
 import type { BodyName } from './types';
 
 const require = createRequire(import.meta.url);
@@ -68,34 +80,36 @@ function onEngineClock<T>(run: () => T): T {
   }
 }
 
+/** A planet's apparent geocentric vector, turned to the ecliptic and equinox of date by the engine's frame. */
 function eclipticLongitude(body: AstronomyEngine.Body, time: AstronomyEngine.AstroTime): number {
   const equatorial = Astronomy.GeoVector(body, time, true);
-  const ecliptic = Astronomy.RotateVector(Astronomy.Rotation_EQJ_ECT(time), equatorial);
-  return normalizeLongitude(Math.atan2(ecliptic.y, ecliptic.x) * RAD);
+  return eclipticOfDate(equatorial.x, equatorial.y, equatorial.z, time.tt).lon;
 }
 
+/** astronomy-engine's lunar series, which GeoMoon gives on EQJ, turned the same way. */
+function moonLongitude(time: AstronomyEngine.AstroTime): number {
+  const equatorial = Astronomy.GeoMoon(time);
+  return eclipticOfDate(equatorial.x, equatorial.y, equatorial.z, time.tt).lon;
+}
+
+/** Ascending node of the Moon's instantaneous geocentric orbit plane, as the engine takes it. */
 function trueNodeLongitude(time: AstronomyEngine.AstroTime): number {
   const state = Astronomy.GeoMoonState(time);
-  const angularMomentum = {
-    x: state.y * state.vz - state.z * state.vy,
-    y: state.z * state.vx - state.x * state.vz,
-    z: state.x * state.vy - state.y * state.vx,
-  };
-  const eclipticMomentum = Astronomy.RotateVector(
-    Astronomy.Rotation_EQJ_ECT(time),
-    new Astronomy.Vector(
-      angularMomentum.x,
-      angularMomentum.y,
-      angularMomentum.z,
-      time,
-    ),
+  const frame = eclipticFrame(time.tt);
+  // The orbit's angular momentum on the mean ecliptic of date, whose
+  // longitudes gain Δψ on the true equinox.
+  const [x, y] = meanEcliptic(
+    frame,
+    state.y * state.vz - state.z * state.vy,
+    state.z * state.vx - state.x * state.vz,
+    state.x * state.vy - state.y * state.vx,
   );
-  return normalizeLongitude(Math.atan2(eclipticMomentum.x, -eclipticMomentum.y) * RAD);
+  return normalizeLongitude(Math.atan2(x, -y) * RAD + frame.tilt.dpsi / 3600);
 }
 
 function longitudeOn(body: BodyName, basis: TimeBasis): number {
   const time = timeOf(basis);
-  if (body === 'Moon') return normalizeLongitude(Astronomy.EclipticGeoMoon(time).lon);
+  if (body === 'Moon') return moonLongitude(time);
   if (body === 'North Node') return trueNodeLongitude(time);
   if (body === 'South Node') return normalizeLongitude(trueNodeLongitude(time) + 180);
 

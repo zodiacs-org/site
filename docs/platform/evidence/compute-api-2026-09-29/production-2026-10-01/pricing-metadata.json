@@ -1,0 +1,64 @@
+{
+  "inspectedAt": "2026-10-01T06:08:00Z",
+  "currency": "USD",
+  "deployment": {
+    "id": "dpl_6uGzGxdgxboMZ5jeFwQMTL24demr",
+    "source": "9cfafa3e742de943062c9174338472781724a4b5",
+    "executionRegions": [
+      "iad1"
+    ],
+    "observed": "connector get_deployment"
+  },
+  "billingMode": {
+    "fluidEnabled": null,
+    "proPlan": "reported in repository DECISIONS-2026-09-29 section 5; not live-verified by this task",
+    "memoryAllocationGb": null
+  },
+  "fluidRates": {
+    "region": "iad1",
+    "activeCpuPerHour": 0.128,
+    "provisionedMemoryPerGbHour": 0.0106,
+    "source": "https://vercel.com/docs/functions/usage-and-pricing",
+    "sourceUpdated": "2026-06-16"
+  },
+  "invocationRate": {
+    "perRequest": 6e-7,
+    "perThousand": 0.0006,
+    "source": "https://vercel.com/changelog/function-invocations-now-billed-per-unit",
+    "published": "2026-05-29",
+    "note": "Verified in official search result after open rendered only site chrome"
+  },
+  "rateLimitingRate": {
+    "perMillionAllowedRequests": 0.5,
+    "source": "https://vercel.com/docs/vercel-firewall/vercel-waf/usage-and-pricing",
+    "sourceUpdated": "2026-06-16",
+    "note": "Billable allowed-request count is not exposed; two SDK rule checks for events must not automatically be assumed to mean two billable units without usage evidence"
+  },
+  "formula": {
+    "computeOnlyUsdPerThousand": "(1000 / N) * ((sumActiveCpuMs / 3600000) * 0.128 + sumBillableProvisionedMemoryGbHours * 0.0106 + N * 0.0000006)",
+    "assumptions": [
+      "Confirm Fluid mode and iad1 execution",
+      "N counts actual invocations of one endpoint and one verified start class",
+      "Use metered CPU and billable memory, not network elapsed or peak memory",
+      "Memory allocation across concurrent requests must follow platform attribution; do not double count shared-instance lifetime",
+      "Exclude unrelated routes that share api/compatibility.ts",
+      "This is gross usage at published rates before plan credit/tax; not an invoice"
+    ],
+    "exclusions": [
+      "WAF rate limiting",
+      "CDN requests/routing CPU",
+      "Fast Origin Transfer",
+      "Fast Data Transfer",
+      "Any observability charges"
+    ]
+  },
+  "measuredCostPerThousand": {
+    "chart": null,
+    "positions": null,
+    "houses": null,
+    "events": null,
+    "time": null,
+    "sky-fact": null
+  },
+  "reason": "Connector log output lacks active CPU, provisioned-memory consumption, function duration and start type; billing mode/memory unavailable because get_project schema mismatch; dot cloud dashboard requires login"
+}

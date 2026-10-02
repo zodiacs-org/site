@@ -136,16 +136,18 @@ const tools = [
         <code>npm run verify</code> uses. <code>npm ci --omit=dev</code> installs
         the three and the server runs; only the verifier needs the rest. The engine
         ({manifest.engine.package} {manifest.engine.version}) and the comparison are
-        already inside <code>server.mjs</code>. The engine was not on npm when this
-        version was built; the comparison is not published, and bundling it keeps
-        one copy of the comparison rules rather than two.
+        already inside <code>server.mjs</code>. This archive was built before its
+        engine version was published; engine rc.16 is now on npm under
+        <code>next</code>, while <code>latest</code> remains rc.15. The MCP
+        adapter itself is still an unpublished candidate. Its archive bytes
+        remain unchanged; bundling keeps one copy of the comparison rules.
         Node {manifest.node}.
       </p>
     </div>
 
     <h2 id="connect">Connect it to a host</h2>
     <div class="prose">
-      <p>Claude Code is the host this was tested against, from the extracted directory:</p>
+      <p>Claude Code CLI connected to this rc.16 bundle in the named-host drive. From the extracted directory:</p>
     </div>
     <pre tabindex="0" role="region" aria-label="Claude Code commands"><code>{connect}</code></pre>
     <div class="prose">
@@ -187,8 +189,8 @@ const tools = [
         1988-03-21T06:45:00Z at latitude 40.7128, longitude -74.0060, with Placidus
         houses</em>. Those are round public coordinates for New York on an ordinary
         date — a synthetic chart, nobody's birth details. You should get twelve bodies,
-        four angles and twelve cusps, with the Sun at 0.873337° and the ascendant at
-        274.046910°, and <code>houses</code> reading
+        four angles and twelve cusps, with the Sun at 0.873331° and the ascendant at
+        274.044963°, and <code>houses</code> reading
         <code>{'{ requested: "placidus", actual: "placidus", absenceReason: null }'}</code>.
         Then drop the zone — ask for <code>1988-03-21T06:45:00</code> with no
         <code>Z</code> — and it refuses rather than guessing: <em>utc must be an ISO-8601
@@ -287,7 +289,8 @@ const tools = [
     <div class="prose">
       <p>
         Nothing is installed outside the directory you extracted and nothing is written
-        anywhere else — no config of its own, no cache, no database, no state. Remove
+        to disk elsewhere: no config of its own, cache file or database. The process
+        keeps in-memory calculation caches until it exits. Remove
         the entry from your host (<code>claude mcp remove zodiacs</code>, or delete it
         from the config file you added it to) and delete the directory.
       </p>
@@ -299,13 +302,19 @@ const tools = [
         Recorded in the repository under
         <code>docs/platform/evidence/mcp-adapter/</code>, kept as separate records
         because they establish separate things: the official client library against the
-        real server process; the Claude Code CLI launching it and reporting it
-        connected; a model actually calling the tools through that host; and a fixed
-        synthetic corpus of ten record pairs with the classification each should
+        real server process; historical Claude Code and model interoperability
+        records from earlier candidates; and a fixed synthetic corpus of eighteen
+        scenarios with the classification each should
         receive, written before the candidate ran against any of them. That last one is
         a regression corpus rather than an accuracy rate — both sides of every pair
         come from the same engine, so it says nothing about how often the tool is right
         about a disagreement between independently authored software.
+      </p>
+      <p>
+        The current rc.16 bundle passed the protocol, synthetic regression and
+        Claude Code CLI connection drives. The latter checks setup and stdio,
+        without a login or model turn. Model-driven records from earlier
+        candidates remain historical.
       </p>
       <p>
         Every chart in every test is synthetic: round coordinates for well-known cities

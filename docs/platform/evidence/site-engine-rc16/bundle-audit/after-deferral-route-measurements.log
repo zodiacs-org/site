@@ -1,0 +1,286 @@
+{
+  "route": "/compatibility/",
+  "gzip": 36763,
+  "limitBytes": 36864,
+  "headroomBytes": 101,
+  "passes": true,
+  "engineChunks": [],
+  "missing": [],
+  "closure": [
+    "/_astro/AstroTerm.astro_astro_type_script_index_0_lang.DB1iYTmP.js",
+    "/_astro/preload-helper.L5lOfJxi.js",
+    "/_astro/SynastryCalculator.B-b5jL57.js",
+    "/_astro/preact.module.Bjq9tLsx.js",
+    "/_astro/hooks.module.C0_8FjiD.js",
+    "/_astro/module-load.Bon2MfsC.js",
+    "/_astro/useEngine.DWsLy6bw.js",
+    "/_astro/profile-access-reader.DoQqlSjt.js",
+    "/_astro/useProfile.BUWA37OV.js",
+    "/_astro/schema.DqKqbGHb.js",
+    "/_astro/read-store.CQjgDq6O.js",
+    "/_astro/chunk-2OWGBT3O.Cw5cXswy.js",
+    "/_astro/signs.BMXPKoMF.js",
+    "/_astro/jsxRuntime.module.BG9KJlGc.js",
+    "/_astro/i18n.Cg_lCJuc.js",
+    "/_astro/CalculationReload.CHVnezqu.js",
+    "/_astro/pairs.VSaatg-O.js",
+    "/_astro/share-positions.BSDWSfM2.js",
+    "/_astro/useProfileAccessGeneration.w2JLb1F6.js",
+    "/_astro/BirthFields.wJaLxABT.js",
+    "/_astro/PlaceSearch.XYSJuxC8.js",
+    "/_astro/SignChip.1gtDT8UJ.js",
+    "/_astro/sign-icon.5AEtqUYO.js",
+    "/_astro/NextActionCard.eDMj-LSr.js",
+    "/_astro/client.DPkn9Lbl.js"
+  ],
+  "chunks": [
+    {
+      "file": "AstroTerm.astro_astro_type_script_index_0_lang.DB1iYTmP.js",
+      "gzip": 413,
+      "bytes": 773,
+      "sha256": "e5e0beef4df10d80ce52048ae4dde287d85081dc1ef43a7ae1d2b7cd0d9c57ca",
+      "imports": [
+        "./preload-helper.L5lOfJxi.js"
+      ]
+    },
+    {
+      "file": "preload-helper.L5lOfJxi.js",
+      "gzip": 764,
+      "bytes": 1402,
+      "sha256": "8bf772fcf734da4b451168642b9e1e058d1b50662c2a7d3898e381a93821e927",
+      "imports": []
+    },
+    {
+      "file": "SynastryCalculator.B-b5jL57.js",
+      "gzip": 11908,
+      "bytes": 37781,
+      "sha256": "8566dbe934e29caa7c9ee377f7fdfed7e4df6bc8364877c95223aab202b0270c",
+      "imports": [
+        "./preload-helper.L5lOfJxi.js",
+        "./preact.module.Bjq9tLsx.js",
+        "./hooks.module.C0_8FjiD.js",
+        "./module-load.Bon2MfsC.js",
+        "./useEngine.DWsLy6bw.js",
+        "./profile-access-reader.DoQqlSjt.js",
+        "./useProfile.BUWA37OV.js",
+        "./signs.BMXPKoMF.js",
+        "./jsxRuntime.module.BG9KJlGc.js",
+        "./i18n.Cg_lCJuc.js",
+        "./CalculationReload.CHVnezqu.js",
+        "./pairs.VSaatg-O.js",
+        "./useProfileAccessGeneration.w2JLb1F6.js",
+        "./BirthFields.wJaLxABT.js",
+        "./SignChip.1gtDT8UJ.js",
+        "./NextActionCard.eDMj-LSr.js"
+      ]
+    },
+    {
+      "file": "preact.module.Bjq9tLsx.js",
+      "gzip": 4422,
+      "bytes": 10499,
+      "sha256": "796cb24cfe472a03b823ebf5cfbded9e8a72d0b2ca7e9b664ac86f00a4ae5635",
+      "imports": []
+    },
+    {
+      "file": "hooks.module.C0_8FjiD.js",
+      "gzip": 1236,
+      "bytes": 2875,
+      "sha256": "70a0edc427ea0e3966f512ed162307b8a5afb48573954980940e3192514f706d",
+      "imports": [
+        "./preact.module.Bjq9tLsx.js"
+      ]
+    },
+    {
+      "file": "module-load.Bon2MfsC.js",
+      "gzip": 228,
+      "bytes": 310,
+      "sha256": "658363b5d93752ac19578525647f9ce3c21310b63d37db815888b99d059f15a1",
+      "imports": []
+    },
+    {
+      "file": "useEngine.DWsLy6bw.js",
+      "gzip": 379,
+      "bytes": 581,
+      "sha256": "422197fd0c1482797645207ae41305cdd2312197247175c1b7544a91de108c21",
+      "imports": [
+        "./preload-helper.L5lOfJxi.js",
+        "./module-load.Bon2MfsC.js"
+      ]
+    },
+    {
+      "file": "profile-access-reader.DoQqlSjt.js",
+      "gzip": 264,
+      "bytes": 438,
+      "sha256": "ac2ba400a524418b089be2106d34a11f9bb7643fefc6b64037c1e70817c95390",
+      "imports": []
+    },
+    {
+      "file": "useProfile.BUWA37OV.js",
+      "gzip": 301,
+      "bytes": 558,
+      "sha256": "736393ec7a3b756cecba685e60785a877762a2cb3a4cf1d2746cdebdfef59e2f",
+      "imports": [
+        "./hooks.module.C0_8FjiD.js",
+        "./schema.DqKqbGHb.js",
+        "./profile-access-reader.DoQqlSjt.js",
+        "./read-store.CQjgDq6O.js"
+      ]
+    },
+    {
+      "file": "schema.DqKqbGHb.js",
+      "gzip": 112,
+      "bytes": 99,
+      "sha256": "2d3a1ca10f5d7cb644905a1ee3d1dbd8a2dffdfaaad03cdd722453c51b4b4c53",
+      "imports": []
+    },
+    {
+      "file": "read-store.CQjgDq6O.js",
+      "gzip": 717,
+      "bytes": 1301,
+      "sha256": "26f8861009b9854adca8c36131e9cb95fff8c644836b53283a5efa8abdc45083",
+      "imports": [
+        "./schema.DqKqbGHb.js",
+        "./profile-access-reader.DoQqlSjt.js",
+        "./chunk-2OWGBT3O.Cw5cXswy.js"
+      ]
+    },
+    {
+      "file": "chunk-2OWGBT3O.Cw5cXswy.js",
+      "gzip": 1168,
+      "bytes": 2873,
+      "sha256": "316ad4f8724bc5f79e0a5a7f6a1fb35a394b7bdb1150deaeeec411fe3d731033",
+      "imports": []
+    },
+    {
+      "file": "signs.BMXPKoMF.js",
+      "gzip": 4271,
+      "bytes": 11693,
+      "sha256": "21b146a22aa299589f659504f61ab2104f8ad9b0e1ed7e157225846e1380b2bc",
+      "imports": []
+    },
+    {
+      "file": "jsxRuntime.module.BG9KJlGc.js",
+      "gzip": 306,
+      "bytes": 430,
+      "sha256": "7ddcbbccf1cc5b5de237799db0cae97c8f7fdd5d9165217bdb6589e1784c4daa",
+      "imports": [
+        "./preact.module.Bjq9tLsx.js"
+      ]
+    },
+    {
+      "file": "i18n.Cg_lCJuc.js",
+      "gzip": 2831,
+      "bytes": 6936,
+      "sha256": "70a9b92ff3baa35ed2be7696d32de5c76cae626de229e50c6487c25c2e18715d",
+      "imports": [
+        "./signs.BMXPKoMF.js"
+      ]
+    },
+    {
+      "file": "CalculationReload.CHVnezqu.js",
+      "gzip": 327,
+      "bytes": 492,
+      "sha256": "872933f1053675748066e73a66c682eb4e8ae9bb6c329be14d2c0beced03d9e2",
+      "imports": [
+        "./module-load.Bon2MfsC.js",
+        "./jsxRuntime.module.BG9KJlGc.js",
+        "./i18n.Cg_lCJuc.js"
+      ]
+    },
+    {
+      "file": "pairs.VSaatg-O.js",
+      "gzip": 1022,
+      "bytes": 2164,
+      "sha256": "00b85ff16ce85592ac4728ffa1f71ac9106cfa0cac0c7ee8fa6b31aa2c5be88a",
+      "imports": [
+        "./profile-access-reader.DoQqlSjt.js",
+        "./share-positions.BSDWSfM2.js"
+      ]
+    },
+    {
+      "file": "share-positions.BSDWSfM2.js",
+      "gzip": 1237,
+      "bytes": 2790,
+      "sha256": "5723a21bc0df70984c3bbce8f4e4a774d0878854778d6b70ff0f802f94d14bc5",
+      "imports": []
+    },
+    {
+      "file": "useProfileAccessGeneration.w2JLb1F6.js",
+      "gzip": 231,
+      "bytes": 340,
+      "sha256": "8ccce5b321237b4d1cecd2c69650d62e2860db72ce71fdd43e9ddc2310ede47f",
+      "imports": [
+        "./hooks.module.C0_8FjiD.js",
+        "./profile-access-reader.DoQqlSjt.js"
+      ]
+    },
+    {
+      "file": "BirthFields.wJaLxABT.js",
+      "gzip": 1314,
+      "bytes": 3055,
+      "sha256": "3c004fe06255358abead70641a28755e3d725d46f75f6140baf9b8d2ce7a2f05",
+      "imports": [
+        "./preload-helper.L5lOfJxi.js",
+        "./hooks.module.C0_8FjiD.js",
+        "./module-load.Bon2MfsC.js",
+        "./jsxRuntime.module.BG9KJlGc.js",
+        "./i18n.Cg_lCJuc.js",
+        "./PlaceSearch.XYSJuxC8.js"
+      ]
+    },
+    {
+      "file": "PlaceSearch.XYSJuxC8.js",
+      "gzip": 1628,
+      "bytes": 3615,
+      "sha256": "c0983c7b9892a678a740e695186f4e84220cf5ed14aced332bfbe2510d7d2621",
+      "imports": [
+        "./preload-helper.L5lOfJxi.js",
+        "./hooks.module.C0_8FjiD.js",
+        "./module-load.Bon2MfsC.js",
+        "./jsxRuntime.module.BG9KJlGc.js",
+        "./i18n.Cg_lCJuc.js",
+        "./CalculationReload.CHVnezqu.js"
+      ]
+    },
+    {
+      "file": "SignChip.1gtDT8UJ.js",
+      "gzip": 334,
+      "bytes": 484,
+      "sha256": "00c4bb23c0e0c227dd8fd3090116b2af03823b8872b5904f3fbd2b3a11ed171a",
+      "imports": [
+        "./signs.BMXPKoMF.js",
+        "./jsxRuntime.module.BG9KJlGc.js",
+        "./i18n.Cg_lCJuc.js",
+        "./sign-icon.5AEtqUYO.js"
+      ]
+    },
+    {
+      "file": "sign-icon.5AEtqUYO.js",
+      "gzip": 205,
+      "bytes": 228,
+      "sha256": "39d468bb1f315af50b366933ed854bb13a95ca6ab3989541c8f5d8d41e295614",
+      "imports": [
+        "./signs.BMXPKoMF.js"
+      ]
+    },
+    {
+      "file": "NextActionCard.eDMj-LSr.js",
+      "gzip": 323,
+      "bytes": 713,
+      "sha256": "896a238bdec6e2898c5ae225469345e9a1f931918c26b6e6963bd77b65fa42f7",
+      "imports": [
+        "./jsxRuntime.module.BG9KJlGc.js"
+      ]
+    },
+    {
+      "file": "client.DPkn9Lbl.js",
+      "gzip": 822,
+      "bytes": 1447,
+      "sha256": "d3be63c8d0105f6032306ace6829ffea98abed0096ddeb191582c25b21406999",
+      "imports": [
+        "./preload-helper.L5lOfJxi.js",
+        "./preact.module.Bjq9tLsx.js"
+      ]
+    }
+  ]
+}

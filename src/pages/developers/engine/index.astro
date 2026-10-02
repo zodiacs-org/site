@@ -87,14 +87,15 @@ const jsonLd = [{
     <h2 id="install">Install it</h2>
     <div class="prose">
       <p>
-        {candidate.name} is on npm. This installs {candidate.version}, the
-        version npm serves under both <code>latest</code> and <code>next</code>:
+        This revision vendors {candidate.version}. The verified registry read of
+        {candidate.registryObservedOn} records it under <code>next</code>;
+        <code>latest</code> remains 0.1.1-rc.15. Install this exact published version:
       </p>
     </div>
-    <pre tabindex="0" role="region" aria-label="Install from npm"><code>{`npm install ${candidate.name}`}</code></pre>
+    <pre tabindex="0" role="region" aria-label="Install from npm"><code>{`npm install ${candidate.name}@${candidate.version}`}</code></pre>
     <div class="prose">
       <p>
-        It was published from the engine repository's <code>release.yml</code>{' '}
+        The recorded npm release was published from the engine repository's <code>release.yml</code>{' '}
         workflow with SLSA provenance. The provenance names the source
         repository, the workflow and the commit the package was built from, and{' '}
         <code>npm audit signatures</code> verifies it. That shows where the
@@ -102,8 +103,8 @@ const jsonLd = [{
         <a href="#accuracy">How close it is</a> gives the measurements.
       </p>
       <p>
-        The pinned archive is the same package, byte for byte: npm records the
-        same SHA-1 and SHA-512 for its tarball. To install those exact bytes,
+        The pinned {candidate.version} archive below is byte-identical to the
+        verified npm tarball. To install the same bytes through its immutable carrier,
         paste this into a POSIX shell, in your project's directory; it refuses
         to install anything whose digest does not match. It also stops if that
         directory has no package.json, because npm would otherwise install into

@@ -61,9 +61,10 @@ const engineRows = [
         file. This section is the reference behind it.
       </p>
       <p>
-        <code>{`npm install ${candidate.name}`}</code> installs{' '}
-        <code>{`${candidate.name}@${candidate.version}`}</code>, the version npm
-        serves under both <code>latest</code> and <code>next</code>. It was
+        <code>{`npm install ${candidate.name}@${candidate.version}`}</code> installs
+        this exact published release. The verified registry read of
+        {candidate.registryObservedOn} records it under <code>next</code>;
+        <code>latest</code> remains 0.1.1-rc.15. That release was
         published from the <code>release.yml</code> workflow of the{' '}
         <a href={candidate.sourceRepository}>engine repository</a> with SLSA
         provenance, which names that repository, the workflow and the commit the
@@ -72,9 +73,9 @@ const engineRows = [
         results are correct.
       </p>
       <p>
-        The exact public tarball below is the same package, byte for byte: npm
-        records the same SHA-1 and SHA-512 for it. It has been downloaded
-        without credentials and installed in a clean consumer. This archive
+        This revision vendors the {candidate.version} archive below. Its bytes
+        match both the verified npm tarball and the engine repository carrier,
+        and passed clean-consumer checks on Node 22 and 24. This archive
         identifies the local package; hosted data and widgets are separate
         deployments.
       </p>

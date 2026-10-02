@@ -37,6 +37,8 @@ Severity follows the audit's scale:
 
 | id | severity | area | finding | disposition |
 | --- | --- | --- | --- | --- |
+| F-59 | major | privacy | Hosted ephemeris retains exact input time in a module-private warm-process cache | deployed in fd1ce88a; scoped post-release verification complete |
+| F-60 | major | rate-limit verification | Aligned general-counter probe returned 41 successes without the expected refusal | open; counted identity/configuration not visible; no live 40-request spending bound established |
 | F-06 | major | engine rc.11 | Configured-aspect "exact orb" claim fails on general decimal inputs | fix in engine rc.13 (in progress); fixed in engine rc.14 (zodiacs-org/engine#10, merged 2026-09-29 as `8deda244`); reaches production when the site adopts it; in production since #600 (merged as `6cc4d477`, deployment `dpl_2JtJjuE2bU8CYTBMxKF3kco43qcN`) |
 | F-17 | major | privacy | Share code of a chart without a birth time reveals the birthplace's longitude or zone | open: code fix planned; copy wrong until then; fixed in #599: a chart without a birth time is shared as the sky at 12:00 UTC on its date, and the copy is corrected in six locales; in production since #599 (merged as `aca257ad`, deployment `dpl_AuGvEUL1oJPenrfbFq3FkGH5V9s9`) |
 | F-18 | major | privacy | Sign-icon requests reveal Sun, Moon and rising signs to the server; privacy page silent | open: fix planned; fixed in #599: a chart's page asks for all twelve sign pictures of a size before showing its own; in production since #599 (merged as `aca257ad`, deployment `dpl_AuGvEUL1oJPenrfbFq3FkGH5V9s9`) |
@@ -355,3 +357,79 @@ They are now tracked by the units named, and will get a disposition when those u
   - it loads with module syntax detection off, while importing `@zodiacs/engine` there fails (the control);
   - it answers every documented example as the source handler does.
 - **Remaining risk.** A function that imports `@zodiacs/engine`'s root or `astronomy-engine` by name is exposed the same way. No file under `api/` does so now, and the calendar's server path loads astronomy-engine through `createRequire`. Before merging a change to what a function imports, run the packaged function on a Node without module syntax detection (HANDOFF-2026-09-30.md §8).
+
+
+### F-58 — production verification, 2026-10-01
+
+The fix is verified deployed at `9cfafa3e` / `dpl_6uGzGxdgxboMZ5jeFwQMTL24demr`: all six endpoints returned 200 for twenty documented synthetic requests each. See `evidence/compute-api-2026-09-29/production-2026-10-01/`. This closes the import failure, not the separate latency/cost or private-cache gates.
+
+### F-59 — the hosted ephemeris retains an exact request timestamp (major, privacy)
+
+- **Found.** A fresh-context source audit of site `9cfafa3e` recovered two synthetic input UTC timestamps with zero millisecond error from astronomy-engine's module-private `cache_e_tilt.tt`, after the handler returned and after an unrelated local-time request. The local-only probe reads committed bundles at that revision; see `evidence/compute-api-2026-09-29/tools/probe-module-retention-20261001.mjs` and the baseline's `module-retention.json`.
+- **Scope.** Application-process memory retention, not an observed external disclosure. The prior global-name test did not inspect private module state. The probe did not measure all possible network/disk/log channels.
+- **Fix.** The server-only compute bundle clears the exact-time and epoch-selected Pluto memos in a `finally`. Each production request gets an isolated timezone resolver and disposes its selected-zone maps. Generated code comes from the build scripts; released engine archives and browser calculators remain unchanged.
+- **Regression.** `tests/api/compute-api-private-state.test.ts` exposes actual generated-module state in a local test, reconstructs the timestamp with cleanup bypassed as its positive control, then checks all six endpoints, refusals, resolver and writer failures and interleaved historical requests. Dependency byte pins require a fresh cache audit on upgrades. This is not a promise of cryptographic heap erasure.
+- **Disposition, 2026-10-01 20:58 UTC.** The reviewed server-only fix was merged as fd1ce88a and is served by READY production deployment dpl_AsJc5MrDgH4PpgoZSGMe7XTZePe4. All120 post-release synthetic requests joined to this deployment and succeeded; their exported application-message fields are empty. This verifies release and bounded live behavior, not runtime heap inspection or comprehensive absence of sensitive data. The local private-state regression remains the direct cache-cleanup proof. P3.3 stays unaccepted because Cold measurements and F60 remain open. See `../evidence/compute-api-postrelease-2026-10-01/README.md`.
+
+### F-60 — the expected general compute rate-limit refusal is not observed (major, verification)
+
+- **Found.** A bounded live probe of the deployed baseline, after more than 65 seconds idle and scheduled away from a minute boundary, received 41 HTTP 200 responses from the minimal `/api/v1/time` shape within one server minute. The expected 41st-request 429 under the stated 40/60-second rule was absent. Events separately gave ten 200s then 429 with `Retry-After: 60`.
+- **Evidence.** `evidence/compute-api-2026-09-29/production-2026-10-01/rate-aligned-requests.jsonl`, its plan, prior preserved inconclusive probes, and the README.
+- **Limits.** The response metadata does not reveal the Firewall's counted client address or active rule configuration. This fails the requested verification; it does not establish the actual threshold, a specific configuration error, or unbounded access. No higher-volume probing followed.
+- **Disposition.** Open: reconcile the live counted identity/rule and repeat a bounded check with verifiable identity before relying on the 40/10 production cost envelope. No Firewall/security settings were changed. P3.3 remains unaccepted.
+
+- **Read-only follow-up, checkpoint 11.** The active dashboard rule matches the stated SDK ID, fixed-window 40/60-second/IP/429 configuration. Exact request-ID joins place all 41 API successes inside 5.938 seconds. A CDN aggregate shows one source IP; the corresponding SDK path has 41 HTTP 204/allow responses in iad1 and the same deployment. This weakens simple client-IP rotation, missing SDK calls and observed CDN-region splitting, without revealing the effective derived key, counter or bucket boundary. An isolated offline replay confirms that the production-source guard awaits the installed SDK and fails closed, with stable synthetic keys; it does not identify a live provider defect. The rule-filtered view's No Data and SDK rows' unset WAF-rule attribution are not numeric zero counters. No extra probe or security setting change was made. See `evidence/compute-api-2026-10-01/observability/f60-cdn-identity-supplement.md`.
+
+### F-54 addition — rc.16 composite needs a lightweight entry (2026-10-01)
+
+The local rc.16 composite port uses the package's single techniques entry.
+That makes the saved-chart RelationshipWheel acquire the shared ephemeris
+(52,000 → 96,188 gzip bytes in its static closure) and puts production-flags
+`/compatibility/` 51 bytes above its unchanged 36,864-byte route allowance.
+Initial-route ephemeris isolation remains intact, but the saved-chart view's
+existing no-ephemeris path does not. The bounded import audit found no safe
+trim preserving that published entry and lazy boundary.
+
+Under `DECISIONS-2026-10-01-rc16-composite.md`, only the composite adapter is
+restored to current main. Its prior package parity evidence is preserved;
+adoption waits for a lightweight published composite entry. No route allowance
+or immutable archive changes, and P2.E.composite remains unaccepted in the
+fixed denominator. This is local preparation, not a released change.
+
+
+### F-52 rc.16 local preparation update (2026-10-01)
+
+Only the product station/shadow catalogue now shares the monthly generator's
+engine longitude and UTC/IERS time basis, as recorded in
+`DECISIONS-2026-10-01-rc16-stations.md`. The ±0.25-day derivative and existing
+physical definition are unchanged; all 90 stations agree within 1,237 ms
+under the unchanged 2,000 ms gate. Independent Swiss statistics still show
+up to 419.451 s, so this does not accept a general accuracy claim.
+
+Other direct-astronomy generators remain unchanged. The fresh clock-only
+margin check (`evidence/site-engine-rc16/model-clock.json`) records maxima
+0.186 s for eclipse peaks, 0.689 s for ingress-window ends and 0.196 s for
+Aura Moon ingress times, with no minute/date moves. It does not measure
+full-nutation root displacement or authorize changes to protected tables.
+
+### F-53 rc.16 local preparation update (2026-10-01)
+
+rc.16 still lacks public time-basis, frame-of-date and nutation exports. The
+site's drift-checked generated module now carries the package's own frame
+and full nutation as well as its clock, so the server calendar and independent
+reference instruments can use the same defined inputs. The generator verifies
+14,765 instants / 177,180 longitudes. A supported package export remains the
+remedy; no immutable archive is patched. Separately, the compute-only bundle
+clears the new request-bearing frame memo in its server lifetime boundary;
+see the rc.16 private-state audit. This is local preparation, not deployment.
+
+### F-54 rc.16 dignities qualification (2026-10-01)
+
+Dignities also remain unadopted. The existing WIP experiment measures the
+techniques entry pulling ephemeris into eager code and its pure dignity
+portion exceeding the site's prior headroom. The bounded final integration
+therefore retains the site implementation rather than relaxing a route or
+lazy-load gate. Declinations and sect still need an ephemeris-free entry and
+resolution of their recorded convention differences. Composite is additionally
+deferred above. Only returns, void-of-course, aspect-patterns and Moon-sign
+candidates have locally integrated package adapters; none is accepted here.

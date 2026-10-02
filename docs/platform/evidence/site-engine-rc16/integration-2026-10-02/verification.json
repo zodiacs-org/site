@@ -1,0 +1,65 @@
+{
+  "schema": "zodiacs.rc16-integration-verification.v1",
+  "recordedAt": "2026-10-02T09:48:00Z",
+  "publicSourceCommit": "6a34a2f8b3b79b4f96cba0ebe6a96faceedb415a",
+  "sourceTree": "ac285c7a2acf35573e636a33077d1a64023ec322",
+  "reviewedLocalCommit": "ab75e78f914fa8b935b9a5ed07c524926174e2b6",
+  "integratedMain": "faf44b3519dbfc884bb8285577dacf13be1f4b4d",
+  "runtime": "Node22.22.2",
+  "archive": {
+    "version": "0.1.1-rc.16",
+    "bytes": 266934,
+    "sha256": "43a72d30e483d8ff22024e403c4bd0d86d81bb6e1d0ad138f857cd001ab015d8",
+    "installedFilesMatched": 69
+  },
+  "preliminarySource": {
+    "tree": "45122657d3a62f9d99b1d5dd7ec828f8865ac83a",
+    "defaultBuild": "passed",
+    "astroCheck": {
+      "errors": 0,
+      "warnings": 0,
+      "hints": 19
+    },
+    "fullSuite": {
+      "passed": 6361,
+      "failed": 1,
+      "skipped": 4,
+      "failure": "Existing Phase1 screenshot source binding is stale; fresh captures required."
+    }
+  },
+  "finalSource": {
+    "changeFromPreliminary": "Direct re-export of package houseOf; computeHouses shape adapter unchanged.",
+    "focusedTestsPassed": 251,
+    "focusedTestFiles": 10,
+    "productionFlagsBuild": "passed",
+    "allExistingBudgets": "passed",
+    "birthChartGzipBytes": 72562,
+    "birthChartBudgetBytes": 72704,
+    "initialChunks": 43,
+    "independentStaticReview": "passed; observed numeric callers preserve behavior; function identity and stack frames naturally differ"
+  },
+  "preserved": {
+    "ownerFrontendSource": true,
+    "devalueVersion": "5.9.4",
+    "nonEngineLockEntries": true,
+    "historicalScientificEvidence": true,
+    "archiveBytes": true,
+    "budgetThresholds": true
+  },
+  "historicalBudgetFailure": {
+    "preliminaryRc16Bytes": 72740,
+    "exactMainRc15Bytes": 72702,
+    "limitBytes": 72704,
+    "houseOfSimplificationReductionBytes": 178
+  },
+  "limits": [
+    "Local reports above retain their exact source bindings; final full-suite CI is not claimed by earlier results.",
+    "Final exact-head CI, source-bound capture review, ordinary merge and deployment verification remain required.",
+    "Known engine conformance:267passed,192failed,41unsupported. No independent scientific acceptance from adoption parity.",
+    "No accepted programme weight is added by this receipt."
+  ],
+  "localLogHashes": {
+    "focused-tests.log": "7958dc8efca92996c95d7bab390c09736d465c4964032cae9915ed0d7a899331",
+    "production-flags-build.log": "ff8624b5337491b5aca49c37c2151cea3d034322c212df1e6c9899646f5da17d"
+  }
+}

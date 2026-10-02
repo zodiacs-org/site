@@ -1,15 +1,9 @@
 {
   "version": 1,
-  "id": "consumer-experience-continuity-2026-10-01",
-  "baseCommit": "6ca4269a5f536f11365d3ca9edfef05b215d2fa1",
+  "id": "engine-rc16-local-adoption-20261001",
+  "baseCommit": "faf44b3519dbfc884bb8285577dacf13be1f4b4d",
   "protectedPaths": [
-    "src/lib/i18n/ui/en.ts",
-    "src/lib/i18n/ui/es.ts",
-    "src/lib/i18n/ui/fr.ts",
-    "src/lib/i18n/ui/it.ts",
-    "src/lib/i18n/ui/pt.ts",
-    "src/lib/i18n/ui/ru.ts",
-    "src/pages/[sign]/index.astro"
+    "scripts/registry-outlook.test.mjs"
   ],
-  "authorization": "The owner explicitly approved all nine consumer-experience recommendations and requested implementation and live publication: “agree. implement all and push live.” This one-time allowance covers the exact six shared locale catalogs for birthplace and unknown-time guidance, and the English chart-to-Today journey copy. Calculation, time coverage, consent, account sync, and unrelated programme behavior remain unchanged. The sign-guide template also preloads its existing above-the-fold mono face to prevent a cold font layout shift, without changing its design."
+  "authorization": "The incorporated rc16 adoption handoff step 1 requires engine-derived registry outlook regeneration and attributable numeric pins. This allowance covers only its existing test vector: the engine full IAU 2000B frame moves the Mercury ingress by 130 ms, with evidence in docs/platform/evidence/site-engine-rc16/registry-ingress-pin.json. It authorizes no Registry UI or Guide changes; current-main owner changes are preserved."
 }

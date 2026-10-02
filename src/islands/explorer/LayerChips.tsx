@@ -26,7 +26,7 @@ export default function LayerChips({
   const toggle = (type: AspectType) => {
     onAspectTypes(aspectTypes.includes(type)
       ? aspectTypes.filter((x) => x !== type)
-      : [...ALL_ASPECT_TYPES.filter((x) => x === type || aspectTypes.includes(x))]);
+      : ALL_ASPECT_TYPES.filter((x) => x === type || aspectTypes.includes(x)));
   };
   return (
     <div class="xplr-chips" role="group" aria-label={t(locale, 'layersLabel')}>

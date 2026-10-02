@@ -1,0 +1,16 @@
+(node:13) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+2026-10-01T09:16:56.776Z section positions
+2026-10-01T09:17:32.928Z section singleBody
+2026-10-01T09:17:57.844Z section charts
+file:///workspace/scratch/8dfe85084616/site-rc16/docs/platform/evidence/site-engine-rc16/tools/compare-site-outputs.mjs:234
+    const cause = attribution?.(path) ?? 'unexplained';
+                                ^
+
+ReferenceError: path is not defined
+    at countSigns (file:///workspace/scratch/8dfe85084616/site-rc16/docs/platform/evidence/site-engine-rc16/tools/compare-site-outputs.mjs:234:33)
+    at call (file:///workspace/scratch/8dfe85084616/site-rc16/docs/platform/evidence/site-engine-rc16/tools/compare-site-outputs.mjs:253:15)
+    at file:///workspace/scratch/8dfe85084616/site-rc16/docs/platform/evidence/site-engine-rc16/tools/compare-site-outputs.mjs:319:9
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Node.js v22.22.2

@@ -128,16 +128,12 @@ const jsonLd = [{
         keeps a copy.
       </p>
       <p>
-        Between requests a running instance keeps in memory the public tables
-        it has loaded to answer: the time zone tables it has read, by zone
-        name, and working values of the ephemeris for the periods asked about.
-        They show which zones and periods were asked about. The ephemeris
-        library also keeps two values from its last calculations, to reuse
-        them: sidereal time at the moment of the last chart or houses request,
-        and the Earth's tilt at the last moment any calculation used. So those
-        two moments stay in memory until later requests replace them, or the
-        instance is replaced. No place is kept, and none of this is written
-        anywhere.
+        When a request ends, including a refused or failed request, the server
+        clears its last calculated frame and epoch-selected ephemeris segments
+        and discards the request's time zone lookup maps. Fixed public tables
+        remain available to later calculations. This removes application-held
+        references; it does not guarantee discarded memory is overwritten or
+        describe every log the hosting platform may keep.
       </p>
       <p>
         To apply the rate limit, the function sends the request's headers,

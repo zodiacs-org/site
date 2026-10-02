@@ -19,7 +19,8 @@ import { createComputeApiHandler } from '../../src/lib/compute-api/handler';
 import type { LocalTimeModule } from '../../src/lib/compute-api/local-time';
 import * as sourceLocalTime from '../../src/lib/compute-api/local-time-source';
 import { INDEXED_POINTERS, VALIDATION_MESSAGES, VALIDATION_POINTERS } from '../../src/lib/compute-api/validate';
-import * as bundledLocalTime from '../../api/_compute/local-time.mjs';
+import { createLocalTimeModule } from '../../api/_compute/local-time.mjs';
+const bundledLocalTime = createLocalTimeModule();
 import { prepareLocalTime, resolveLocalToUtc } from '../../src/lib/time/localToUtc';
 import { run, type HarnessRequest } from '../../scripts/lib/compute-api-harness';
 import compatibilityHandler from '../../api/compatibility.js';
@@ -492,6 +493,7 @@ describe('the site and the compute API', () => {
       // send browser calculations to the hosted compute API.
       'src/ai-tools/contracts.ts', 'src/ai-tools/http.ts', 'src/ai-tools/local.ts', 'src/ai-tools/tools.ts',
       'src/ai-tools/http.test.ts', 'src/ai-tools/tools.test.ts',
+      'src/ai-tools/quota.ts',
     ]);
     const PATHS = /\/api\/(?:v1\/(?:chart|positions|houses|events|time|sky-fact)\b|compute\b)/u;
     const IMPORT = /\bfrom\s+['"][^'"]*compute-api\/|\bimport\s*\(\s*['"][^'"]*compute-api\//u;

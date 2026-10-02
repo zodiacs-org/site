@@ -1,0 +1,23 @@
+{
+  "schema": "zodiacs.compute-api.f60-local-sdk-replay.v1",
+  "sourceSha": "9cfafa3e742de943062c9174338472781724a4b5",
+  "productionBundleSha256": "ff3828bcc6933af04b7cd547c63be0f37431795019b1cc109da4a38e316c2c9a",
+  "installedSdkSha256": "dd9a5d872e5073afe8f5dfb1bbec506ae4114e0bf510f76b055a517006ecd362",
+  "networkCalls": 0,
+  "realEnvironmentRead": false,
+  "syntheticSequentialChecks": 41,
+  "interceptedFetchCallsForSequentialChecks": 41,
+  "distinctDerivedKeyCountForIdenticalSyntheticHeaders": 1,
+  "matchedExpectedRuleIdAndSameHostSdkPath": true,
+  "statusVerdicts": {
+    "204": "allowed",
+    "403": "limited",
+    "404": "unavailable",
+    "429": "limited",
+    "500": "unavailable"
+  },
+  "pendingDecisionAwaited": true,
+  "missingIpFailsClosedBeforeFetch": true,
+  "developmentGuardFailsClosedBeforeFetch": true,
+  "interpretation": "The production-source guard and installed SDK await every decision and keep a stable key for identical synthetic headers and fixed synthetic environment. A stubbed upstream 204 permits every request; there is no SDK-local threshold counter. This does not reproduce or identify the live platform cause, prove live response codes, or verify deployed SDK bytes."
+}

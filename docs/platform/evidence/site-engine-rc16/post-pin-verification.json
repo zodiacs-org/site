@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "validatedSource": "cddfa8cc61f8b057591b66de0d7d5b76742c044a",
+  "evidenceCarrier": "acb8feca785967670957ea9a2066a31f5bf6e08c",
+  "metadataPinOnly": true,
+  "targetedChecks": {
+    "files": 6,
+    "tests": 71,
+    "passed": 71,
+    "exitCode": 0,
+    "log": "final-checks/post-pin-targeted.log"
+  },
+  "defaultBuild": {
+    "exitCode": 0,
+    "log": "final-checks/post-pin-default-build.log",
+    "allRoutesAndEnginePass": true,
+    "everyMeasuredRouteChunkAndEngineWheelClosureByteIdenticalToBeforePin": true,
+    "measurements": "bundle-audit/post-pin-default-route-measurements.json"
+  },
+  "engineGzip": 33130,
+  "engineHeadroomBytes": 250.4,
+  "nativeCaptures": "Pending approved CI; old template digest remains failed",
+  "fullSuite": "Original integrated-source full suite remains 6357 pass, 3 fail, 4 skip; metadata pin changes no numerical/runtime source",
+  "whitespaceClarification": {
+    "record": "validation.json at acb8feca785967670957ea9a2066a31f5bf6e08c",
+    "clarification": "Its whitespace statement was too broad: verbatim process .log files also retain trailing spaces, in addition to official Horizons responses. The full source diff passes git diff --check when those two raw-record classes are excluded. No source whitespace issue is hidden and original record bytes are retained."
+  },
+  "releaseAcceptance": false,
+  "publicLocators": "Still the local carrier pins. Public read-only checks at 2026-10-01T10:23:40Z returned 404 for these site carriers; a verified byte-identical public carrier and explicit locator provenance remain publication work."
+}

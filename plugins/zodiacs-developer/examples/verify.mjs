@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { ENGINE_VERSION, natalChart, moonPhase, positions } from '@zodiacs/engine';
 import { execFileSync } from 'node:child_process';
-assert.equal(ENGINE_VERSION, '0.1.1-rc.15');
+assert.equal(ENGINE_VERSION, '0.1.1-rc.16');
 const utc = new Date('1990-06-15T13:30:00Z'), offset = new Date('1990-06-15T19:00:00+05:30');
 assert.deepEqual(positions(utc), positions(offset));
 const unknown = natalChart({ utc: new Date('1990-06-15T12:00:00Z'), timeKnown: false });

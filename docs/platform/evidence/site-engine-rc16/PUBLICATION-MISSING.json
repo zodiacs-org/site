@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "publicationStatus": "partial-public-evidence",
+  "localSourceCommit": "40ec5f735df2ffacec529acd8b62b7a373cff4cc",
+  "localEvidenceCarrier": "acb8feca785967670957ea9a2066a31f5bf6e08c",
+  "omitted": [
+    {
+      "path": "docs/platform/evidence/site-engine-rc16/mcp-readme-examples.json",
+      "gitBlobSha": "75bb8ec0088c8e07cbd05839249bf19feba4aa0a",
+      "sha256": "a8010ef13740daee864dc0fb75d5a44eda46c241767620e4d22498b2a3220b9d",
+      "bytes": 11398,
+      "category": "Generated MCP README example chart/comparison record",
+      "status": "not included in this public snapshot; pending owner-side completion"
+    }
+  ],
+  "limits": [
+    "Original historical measurement results remain unchanged.",
+    "Do not claim complete public reproduction or release readiness from this partial carrier.",
+    "No numerical/programme acceptance unit changes because a carrier is published.",
+    "No alternate encoding, embedded copy or substitute reproducer of the omitted file is published here."
+  ]
+}

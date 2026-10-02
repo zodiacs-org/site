@@ -1,0 +1,29 @@
+{
+ "schema": "zodiacs-site-model-clock-margins/v1",
+ "generatedAt": "2026-10-01T10:04:07.209Z",
+ "node": "v22.22.2",
+ "limits": "Clock-only counterfactual at unchanged direct-astronomy catalogue instants. Does not measure full-nutation root displacement. Sky stations now use the engine clock/frame and are measured separately in station-alignment/. Other generators remain unchanged.",
+ "sets": {
+  "src/data/eclipses.json peaks": {
+   "times": 24,
+   "inIersSpan": 9,
+   "largestShiftSeconds": 0.186,
+   "minuteWouldChange": [],
+   "dateWouldChange": []
+  },
+  "src/data/ingresses.json window ends": {
+   "times": 920,
+   "inIersSpan": 374,
+   "largestShiftSeconds": 0.689,
+   "minuteWouldChange": [],
+   "dateWouldChange": []
+  },
+  "src/data/aura-moon-ingresses.json": {
+   "times": 481,
+   "inIersSpan": 281,
+   "largestShiftSeconds": 0.196,
+   "minuteWouldChange": [],
+   "dateWouldChange": []
+  }
+ }
+}

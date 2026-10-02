@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest';
+import { moonSignCandidates } from '@zodiacs/engine/techniques';
 import type { BodyName, BodyPosition } from './engine/types';
 import { computeBodies } from './engine/full';
 import { signForLongitude } from './signs';
 import { resolveLocalToUtc } from './time/localToUtc';
 import {
   bodySignIsAmbiguous,
-  localDateEndpointsUtc,
   stableBodySignSlug,
 } from './chart-date-certainty';
 
@@ -13,15 +13,25 @@ function position(body: BodyName, lon: number): BodyPosition {
   return { body, lon, lat: 0, speed: 1, retrograde: false };
 }
 
-describe('localDateEndpointsUtc', () => {
+/**
+ * A local date's first and last instants, as @zodiacs/engine reads them since
+ * engine rc.16: its moonSignCandidates takes a date's midnights the way the
+ * site's own endpoint helper did (site-engine-rc16/techniques-parity.json, M-Z).
+ */
+function localDateEndpoints(date: string, timeZone: string) {
+  const span = moonSignCandidates(date, { timeZone });
+  return { start: span.from, end: span.to };
+}
+
+describe('a local date\'s endpoints', () => {
   it('covers the entire local date across an ordinary offset', () => {
-    const endpoints = localDateEndpointsUtc('2000-01-01', 'Asia/Tokyo');
+    const endpoints = localDateEndpoints('2000-01-01', 'Asia/Tokyo');
     expect(endpoints.start.toISOString()).toBe('1999-12-31T15:00:00.000Z');
     expect(endpoints.end.toISOString()).toBe('2000-01-01T14:59:59.999Z');
   });
 
   it('does not assume a DST transition date lasts 24 hours', () => {
-    const endpoints = localDateEndpointsUtc('2024-03-10', 'America/New_York');
+    const endpoints = localDateEndpoints('2024-03-10', 'America/New_York');
     expect(endpoints.start.toISOString()).toBe('2024-03-10T05:00:00.000Z');
     expect(endpoints.end.toISOString()).toBe('2024-03-11T03:59:59.999Z');
   });
@@ -51,7 +61,7 @@ describe('bodySignIsAmbiguous', () => {
 
 describe('real Sun certainty fixtures', () => {
   it('suppresses an unknown-time Bangkok date that spans the Pisces–Aries ingress', () => {
-    const endpoints = localDateEndpointsUtc('2026-03-20', 'Asia/Bangkok');
+    const endpoints = localDateEndpoints('2026-03-20', 'Asia/Bangkok');
     expect(stableBodySignSlug(
       'Sun',
       computeBodies(endpoints.start),
@@ -60,7 +70,7 @@ describe('real Sun certainty fixtures', () => {
   });
 
   it('keeps a stable unknown-time Bangkok date on its one Capricorn record', () => {
-    const endpoints = localDateEndpointsUtc('1990-01-04', 'Asia/Bangkok');
+    const endpoints = localDateEndpoints('1990-01-04', 'Asia/Bangkok');
     expect(stableBodySignSlug(
       'Sun',
       computeBodies(endpoints.start),

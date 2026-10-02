@@ -56,7 +56,7 @@ assert.equal(slashPattern.test('moon-sign'), true, 'Consumer canonical redirects
 const catalog = await readFile(new URL('src/ai-tools/catalog.ts', root), 'utf8');
 for (const match of catalog.matchAll(/path: '([^']+)'/g)) await access(new URL(`src/pages${match[1]}index.astro`, root));
 const packageInfo = await json('plugins/zodiacs-developer/package.json');
-assert.equal(packageInfo.dependencies['@zodiacs/engine'], '0.1.1-rc.15');
+assert.equal(packageInfo.dependencies['@zodiacs/engine'], '0.1.1-rc.16');
 assert.equal(packageInfo.dependencies['@modelcontextprotocol/server'], '2.0.0');
-const site = await json('package.json'); assert.equal(site.dependencies['@zodiacs/engine'], 'file:vendor/zodiacs-engine-0.1.1-rc.15.tgz');
+const site = await json('package.json'); assert.equal(site.dependencies['@zodiacs/engine'], 'file:vendor/zodiacs-engine-0.1.1-rc.16.tgz');
 console.log('AI package contracts: manifests, submission cases, versions, routes and canonical links verified.');

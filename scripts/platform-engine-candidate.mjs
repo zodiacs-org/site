@@ -2,6 +2,7 @@
 // it does not authenticate a source commit or fetch a remote artifact.
 const keys = [
   'schemaVersion', 'name', 'version', 'releaseStatus', 'releaseLabel',
+  'registryVersion', 'registryObservedOn',
   'artifactPath', 'artifactUrl', 'artifactRepository', 'artifactCommit',
   'artifactRepositoryPath', 'sha256', 'sourceRepository', 'sourceCommit',
   'sourcePackagePath', 'evidenceRepository', 'evidenceCommit', 'evidencePaths',
@@ -34,9 +35,12 @@ export function assertEngineCandidate(candidate) {
   if (candidate.schemaVersion !== 1 || candidate.name !== '@zodiacs/engine'
     || !matches(candidate.version, /^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)-rc\.(?:0|[1-9]\d*)$/u)
     || candidate.version.includes('\n')
-    // Published to npm on 2026-09-30 (docs/platform/evidence/site-engine-rc15/npm-registry.json).
-    || candidate.releaseStatus !== 'published'
-    || candidate.releaseLabel !== 'On npm'
+    // Vendoring a new archive does not publish it. The separately recorded
+    // registry version/date must stay explicit through an adoption.
+    || !matches(candidate.registryVersion, /^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)-rc\.(?:0|[1-9]\d*)$/u)
+    || !matches(candidate.registryObservedOn, /^\d{4}-\d{2}-\d{2}$/u)
+    || !(candidate.releaseStatus === 'published' && candidate.releaseLabel === 'On npm' && candidate.registryVersion === candidate.version
+      || candidate.releaseStatus === 'vendored-candidate' && candidate.releaseLabel === 'Vendored candidate' && candidate.registryVersion !== candidate.version)
     || !matches(candidate.sha256, /^[a-f0-9]{64}$/u) || candidate.sha256.length !== 64
     || !commit(candidate.sourceCommit) || !commit(candidate.artifactCommit) || !commit(candidate.evidenceCommit)
     || !SOURCE_PACKAGE_PATHS.has(candidate.sourceRepository)

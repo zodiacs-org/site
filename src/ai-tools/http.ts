@@ -1,7 +1,6 @@
 import { createMcpHandler } from '@modelcontextprotocol/server';
 import { COMPUTE_EVENTS_RATE_LIMIT_ID, COMPUTE_RATE_LIMIT_ID, type RateLimitVerdict } from '../lib/compute-api/constants';
 import { computeApiRateLimit } from '../lib/compute-api/handler';
-import * as localTime from '../../api/_compute/local-time.mjs';
 import { AI_ROUTE_PARAM, AI_SWITCH_ENV, AI_VERSION, MAX_HTTP_BYTES, ORIGIN } from './contracts';
 import { createAiServer } from './server';
 import type { AiDependencies } from './tools';
@@ -118,7 +117,7 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
       res.setHeader('Content-Type', 'application/json; charset=utf-8'); res.statusCode = 200;
       res.end(JSON.stringify({ jsonrpc: '2.0', id: typeof message.id === 'string' || typeof message.id === 'number' ? message.id : null, error: { code: -32601, message: 'This MCP operation is not supported.' } })); return;
     }
-    const dependencies: AiDependencies = { ...(options.dependencies ?? { localTime }), allowEvents: async () => {
+    const dependencies: AiDependencies = { ...(options.dependencies ?? {}), allowEvents: async () => {
       try {
         const addressVerdict = await rateLimit(req, COMPUTE_EVENTS_RATE_LIMIT_ID);
         return addressVerdict === 'allowed' ? await atomicQuota('event') : addressVerdict;

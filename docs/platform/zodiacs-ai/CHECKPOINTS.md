@@ -2,8 +2,9 @@
 
 Continuation dated 2026-10-02 on `codex/zodiacs-ai-integrations`,
 [PR #618](https://github.com/zodiacs-org/site/pull/618). Existing work is preserved;
-approved main `6ca4269a` and subsequent consumer-copy release `db5bf574` are merged. The site and both candidates still use published
-`@zodiacs/engine` 0.1.1-rc.15. Engine and SDK source repositories are unchanged.
+Approved main `65d800c5` (rc.16 and consumer release) is integrated. Active
+AI candidates use published `@zodiacs/engine` 0.1.1-rc.16. Dated rc.15 staging
+and host evidence is retained with its original version and source. Engine and SDK source repositories are unchanged.
 
 | Checkpoint | Scope | Status |
 | --- | --- | --- |
@@ -37,12 +38,12 @@ legal links, manifests, SHA-256 members and generated bundles pass drift checks.
 
 | Check | Result |
 | --- | --- |
-| `ai:check`, `ai:test` | Pass; 26 unit/protocol checks, eight stdio tools and recipes |
+| `ai:check`, `ai:test` | rc.16 passes; 35 unit/private-state checks, eight stdio tools and recipes |
 | `ai:eval` | 40/40 preselected synthetic cases; not LLM accuracy certification |
 | `ai:widget` | Pass desktop/mobile, injection, links, refusal recovery and both synthetic host bridges |
-| Build | Pass after compatible devalue 5.9.4 security patch; 4,344 pages and dist/schema/bundle budgets |
+| Build | rc.16 passes; 4,349 pages and dist/schema/bundle budgets |
 | Dependency audits | Zero production vulnerabilities and zero high/critical development advisories; two existing moderate Vitest development advisories remain |
-| Typecheck | Zero errors/warnings; 18 existing hints; Linux CI also passes |
+| Typecheck | Zero errors/warnings; 19 existing hints; Linux CI also passes |
 | Installed Codex plugins | Developer and sky enabled through the real CLI marketplace; pinned developer dependencies installed |
 | Installed developer server | All eight official-SDK tool calls and recipes pass |
 | Three developer skills | Followed in this chat; disposable engine-only integration builds and passes five tests |
@@ -67,8 +68,11 @@ patched build and five durable-receipt tests pass. Audit thresholds and engine p
 
 Codex installation is no longer blocked by a read-only cache. The installed
 skills were read and followed while creating a disposable synthetic integration.
-Automatic model routing to newly installed Codex skills in a fresh host session
-has not been independently exercised. The ChatGPT portable sky ZIP imports, but
+Three fresh desktop Codex chats exercised automatic routing: the sky skill,
+all three developer skills and an unrelated negative control. See
+[evidence/fresh-codex-routing.json](./evidence/fresh-codex-routing.json). Those
+trials used the installed rc.15 candidate; the continuation refreshes the local
+installation to rc.16 and tests its actual stdio bundle separately. The ChatGPT portable sky ZIP imports, but
 the web host offers that portable plugin as desktop-only; the hosted MCP app was
 separately connected and exercised with actual ChatGPT tool selection.
 
@@ -118,3 +122,19 @@ gates. Follow [LAUNCH.md](./LAUNCH.md) and [BETA_REVIEW.md](./BETA_REVIEW.md).
 
 Official SDK 2.0.0 supplies modern transport. The independent SDK 1.29.0 drive
 also accepts five output schemas, all tool calls and the native UI resource.
+
+## Current launch-gate continuation
+
+The atomic database quota reserves service-wide slots in one locked operation,
+with unchanged per-address Firewall checks. Real PostgreSQL 17 and live preview
+REST tests admit exactly 10/48 events and 40/48 requests. See [QUOTAS.md](./QUOTAS.md).
+Both generated rc.16 AI bundles clear inspected engine caches after success,
+refusal and injected failure; timezone resolvers are disposed per call.
+
+The signed-in publisher portal is open at organization verification; upload is
+still gated by owner identity documents/attestations. No domain challenge or
+submission exists. [SUBMISSION.md](./SUBMISSION.md) inventories the concrete
+packet and exact-byte domain response procedure. The expanded
+[BETA_REVIEW.md](./BETA_REVIEW.md) contains consent wording, task cards, an
+aggregate worksheet and proposed criteria. No contacts or consented results
+exist and no invitation has been sent. Production remains disabled.

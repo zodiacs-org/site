@@ -3,7 +3,6 @@
  */
 import { Transform } from 'node:stream';
 import { StdioServerTransport, serveStdio } from '@modelcontextprotocol/server/stdio';
-import * as localTime from '../../api/_compute/local-time.mjs';
 import { LIMITS } from '../mcp/bounds';
 import { CAPABILITIES_INPUT, COMPARE_INPUT, NATAL_INPUT, PRIVACY, calculateNatalChart, compareCalculationRecords, describeCapabilities, type ToolOutcome } from '../mcp/tools';
 import { AI_VERSION, READ_ONLY } from './contracts';
@@ -22,7 +21,7 @@ function respond(run: () => ToolOutcome) {
 }
 
 function build() {
-  const server = createAiServer({ localTime });
+  const server = createAiServer({});
   server.registerTool('get_local_chart_capabilities', { description: `Local natal and comparison conventions, bounds and privacy. ${PRIVACY.assistant}`, inputSchema: CAPABILITIES_INPUT, annotations: READ_ONLY }, () => respond(() => {
     const outcome = describeCapabilities();
     return outcome.ok ? { ok: true, value: { ...outcome.value, adapter: { name: 'zodiacs-developer', version: AI_VERSION, releaseStatus: 'unpublished-candidate', transport: 'stdio' }, engine: { name: '@zodiacs/engine', version: BACKEND.version, releaseStatus: 'published' } } } : outcome;

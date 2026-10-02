@@ -4,7 +4,6 @@ import { chromium } from 'playwright-core';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { WIDGET_HTML } from '../src/ai-tools/widget';
 import { executeAiTool } from '../src/ai-tools/tools';
-import * as localTime from '../api/_compute/local-time.mjs';
 
 const browser = await chromium.launch({ executablePath: await findChromium(), args: STABLE_CHROMIUM_ARGS, headless: true });
 const page = await browser.newPage({ viewport: { width: 780, height: 640 } });
@@ -12,7 +11,7 @@ const errors: string[] = []; page.on('pageerror', error => errors.push(error.mes
 let network = 0; page.on('request', () => { network++; });
 try {
   await page.setContent(WIDGET_HTML);
-  const result = await executeAiTool('get_upcoming_events', { from: '2026-10-01T00:00:00Z', to: '2026-10-31T00:00:00Z', zone: 'Asia/Bangkok', kinds: ['lunation'] }, { localTime });
+  const result = await executeAiTool('get_upcoming_events', { from: '2026-10-01T00:00:00Z', to: '2026-10-31T00:00:00Z', zone: 'Asia/Bangkok', kinds: ['lunation'] }, {});
   assert.equal(result.ok, true);
   await page.evaluate(result => {
     (window as any).openai = { callTool: async () => ({ structuredContent: result }) };
@@ -20,7 +19,7 @@ try {
   }, result);
   assert.ok(await page.locator('li').count() > 0);
   assert.match(await page.locator('#status').innerText(), /Asia\/Bangkok/);
-  assert.match(await page.locator('#coverage').innerText(), /0\.1\.1-rc\.15/);
+  assert.match(await page.locator('#coverage').innerText(), /0\.1\.1-rc\.16/);
   assert.match(await page.locator('#coverage').innerText(), /tested, not proven/);
   assert.equal(network, 0);
   const out = new URL('../docs/platform/zodiacs-ai/evidence/', import.meta.url);
@@ -36,7 +35,7 @@ try {
   assert.equal(await page.locator('img').count(), 0); assert.equal(await page.locator('a[href*="attacker"]').count(), 0); assert.equal(await page.locator('a[href*="birth="]').count(), 0);
   await page.evaluate(() => window.dispatchEvent(new CustomEvent('openai:set_globals', { detail: { globals: { toolOutput: { tool: 'get_upcoming_events', ok: false, error: { message: 'The search was refused.' } } } } })));
   assert.equal(await page.locator('li').count(), 0); assert.equal(await page.locator('a').count(), 0); assert.equal(await page.locator('#coverage').innerText(), '');
-  const changed = await executeAiTool('get_upcoming_events', { from: '2026-10-02T00:00:00Z', to: '2026-10-09T00:00:00Z', zone: 'America/New_York' }, { localTime });
+  const changed = await executeAiTool('get_upcoming_events', { from: '2026-10-02T00:00:00Z', to: '2026-10-09T00:00:00Z', zone: 'America/New_York' }, {});
   assert.equal(changed.ok, true);
   // Exercise the legacy host bridge with a real form submission, without fetch.
   await page.evaluate(result => {

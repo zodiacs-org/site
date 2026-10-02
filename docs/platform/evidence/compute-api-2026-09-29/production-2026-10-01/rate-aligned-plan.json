@@ -1,0 +1,11 @@
+{
+  "reason": "Prior general probe returned41x200 with first response at06:16:00, so counter-at-entry may straddle a fixed minute before response timestamp. New bounded probe starts10seconds into a fresh minute after>=65secondsidle. Same client/no concurrency/hardcap41, stopat429; no further automated retries.",
+  "scheduledClientAt": "2026-10-01T06:24:10.000Z",
+  "body": {
+    "local": {
+      "date": "2000-01-01",
+      "time": "12:00",
+      "zone": "UTC"
+    }
+  }
+}

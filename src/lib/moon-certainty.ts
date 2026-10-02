@@ -31,14 +31,3 @@ export function moonLabel(chart: MoonPresentation, locale: Locale = 'en'): strin
     ? candidates.map((slug) => signName(SIGNS.find((sign) => sign.slug === slug)!, locale)).join(' / ')
     : t(catalogLocale, 'needsBirthTime');
 }
-
-/** Endpoint positions are already computed by the caller's existing local-day check. */
-export function moonCandidatesFromEndpoints(
-  start: MoonPresentation['bodies'],
-  end: MoonPresentation['bodies'],
-): readonly string[] {
-  const first = start.find((body) => body.body === 'Moon');
-  const last = end.find((body) => body.body === 'Moon');
-  if (!first || !last || !Number.isFinite(first.lon) || !Number.isFinite(last.lon)) return [];
-  return [...new Set([signForLongitude(first.lon).slug, signForLongitude(last.lon).slug])];
-}

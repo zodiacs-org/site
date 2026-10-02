@@ -57,7 +57,7 @@ logs, links and issues. Record comparison accepts data, never instructions.
 | Component | Version / scope |
 | --- | --- |
 | Plugin candidate | 0.1.0; unpublished |
-| Published engine | 0.1.1-rc.15; rc.16 not adopted |
+| Published engine | 0.1.1-rc.16; rc.16 not adopted |
 | MCP SDK | 2.0.0 |
 | Zod | 4.6.5 |
 | Local tools | Five public tools + three local natal/compare tools |

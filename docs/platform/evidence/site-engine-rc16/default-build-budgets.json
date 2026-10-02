@@ -1,0 +1,98 @@
+{
+  "rc16EngineGzip": 33154,
+  "engineLimit": 32358.4,
+  "engineClosure": [
+    "/_astro/full.DlszcQ4H.js",
+    "/_astro/rolldown-runtime.DK3Fl9T5.js",
+    "/_astro/chart-adapter.D7gaZnvr.js",
+    "/_astro/chunk-WOU7JVD3.pnw1-4va.js",
+    "/_astro/chunk-2OWGBT3O.Cw5cXswy.js",
+    "/_astro/chunk-4NV4ZEFZ.sSniBhHx.js",
+    "/_astro/chunk-KHBLFXFG.DP9le7v-.js"
+  ],
+  "routes": [
+    {
+      "route": "/",
+      "gzip": 31702,
+      "limitBytes": 43008
+    },
+    {
+      "route": "/birth-chart/",
+      "gzip": 69319,
+      "limitBytes": 72704
+    },
+    {
+      "route": "/big-three/",
+      "gzip": 30709,
+      "limitBytes": 30720
+    },
+    {
+      "route": "/transits/",
+      "gzip": 29471,
+      "limitBytes": 30720
+    },
+    {
+      "route": "/solar-return/",
+      "gzip": 24523,
+      "limitBytes": 30720
+    },
+    {
+      "route": "/lunar-return/",
+      "gzip": 24433,
+      "limitBytes": 30720
+    },
+    {
+      "route": "/numerology/",
+      "gzip": 17744,
+      "limitBytes": 30720
+    },
+    {
+      "route": "/numerology/life-path/7/",
+      "gzip": 17744,
+      "limitBytes": 30720
+    },
+    {
+      "route": "/void-of-course-moon/",
+      "gzip": 0,
+      "limitBytes": 5120
+    },
+    {
+      "route": "/today/",
+      "gzip": 20916,
+      "limitBytes": 22016
+    },
+    {
+      "route": "/compatibility/",
+      "gzip": 36460,
+      "limitBytes": 36864
+    },
+    {
+      "route": "/aries/",
+      "gzip": 0,
+      "limitBytes": 0
+    },
+    {
+      "route": "/almanac/",
+      "gzip": 0,
+      "limitBytes": 0
+    },
+    {
+      "route": "/almanac/sky-2026-08/",
+      "gzip": 0,
+      "limitBytes": 0
+    },
+    {
+      "route": "/almanac/reading-a-childs-chart/",
+      "gzip": 0,
+      "limitBytes": 0
+    },
+    {
+      "route": "/registry/collection/",
+      "gzip": 0,
+      "limitBytes": 49152
+    }
+  ],
+  "failures": [
+    "engine-chunk: /_astro/full.DlszcQ4H.js is 32.4 KB gz (static closure) (limit 31.6 KB)"
+  ]
+}

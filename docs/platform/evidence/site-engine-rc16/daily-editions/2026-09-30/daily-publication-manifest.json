@@ -1,0 +1,80 @@
+{
+  "schema": "zodiacs.daily-publication-manifest.v2",
+  "date": "2026-09-30",
+  "snapshotAt": "2026-09-30T12:00:00.000Z",
+  "status": "verified",
+  "policy": {
+    "id": "org.zodiacs.daily.en",
+    "version": "1.1.0",
+    "sha256": "37ad35bbdd79003439e52bbe4a12b0e4d2f74fb5fbcc3c83b496244d479a05f4"
+  },
+  "facts": {
+    "path": "src/data/daily.json",
+    "fileSha256": "1dc6931c66daae32d5d73509ee5859ce0fc2ebb6761090f78c21b55a0ee35832",
+    "canonicalSha256": "6e2be7a000827e960e9c38ec6630492668568ffc3a1912d1c4a24f919994b2e4",
+    "factCount": 59,
+    "eventsCoverage": "complete",
+    "eventsSource": "src/data/transits-2026-09.json",
+    "eventsSourceSha256": "56c0c561d6f47b135050983a0e70ccf998f806bf48997733375f74acdfea67e8",
+    "eventsSourceCanonicalSha256": "b4b99cc8633f4ef21fa26e2ac524d0cdeecb9b598caf9e8765546a0df52b0342",
+    "engine": {
+      "name": "@zodiacs/engine",
+      "version": "0.1.1-rc.16"
+    }
+  },
+  "publication": {
+    "path": "src/data/daily-publication.json",
+    "canonicalSha256": "525d8b4ac100f94ba8b4fc230a06ae1035853ca0b22fe3c2d2b229cf731a4c92",
+    "signCount": 12,
+    "outputCount": 72
+  },
+  "generation": {
+    "mode": "deterministic-template",
+    "generatorId": "zodiacs.daily-renderer.v1.1",
+    "generatorSha256": "dbad83aff4b977079d05ee497bb78a13709392f4428740861ee604ab6c25b69e",
+    "model": null,
+    "freeformModelOutput": false
+  },
+  "verification": {
+    "verifierId": "zodiacs.daily-verifier.v4",
+    "verifierSha256": "ee24d5adbbc7d8fa5dbb7d8818ee99717392b10888fd7ad5fa07bf40da2aff15",
+    "copyVerifierIndependentFromGenerator": true,
+    "astronomyAudit": {
+      "implementation": "zodiacs.daily-fact-audit.v2",
+      "kind": "site-engine-parity-and-event-physics",
+      "sourceOfTruth": "@zodiacs/engine",
+      "independentFromSnapshotBuilder": true,
+      "independentAstronomyImplementation": false,
+      "status": "passed"
+    },
+    "copyCheck": {
+      "implementation": "zodiacs.independent-copy-verifier.v1",
+      "kind": "structure-fact-reference-length-voice-distinctness",
+      "independentImplementation": true,
+      "status": "passed"
+    },
+    "deterministicReplay": {
+      "kind": "exact-regeneration",
+      "independentImplementation": false,
+      "status": "passed"
+    },
+    "aiReview": {
+      "required": false,
+      "status": "not-run",
+      "reason": "The edition is reproduced byte-for-byte from versioned local templates; model-authored free text is not publishable."
+    }
+  },
+  "checks": {
+    "signCount": 12,
+    "factAudit": "site-engine-parity-and-event-physics-passed",
+    "exactRender": "passed",
+    "factReferences": "independent-verification-passed",
+    "distinctness": "passed",
+    "voiceAndSafety": "passed"
+  },
+  "fallback": {
+    "missingEvents": "positions-only-with-disclosure",
+    "factsFailure": "hold-current-dated-edition",
+    "staleContentMayBeRelabeled": false
+  }
+}

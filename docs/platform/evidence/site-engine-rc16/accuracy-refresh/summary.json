@@ -1,0 +1,266 @@
+{
+  "schema": "zodiacs-rc16-accuracy-refresh/v1",
+  "date": "2026-10-01",
+  "scope": "Local measurement only; no commit, publication, deployment, acceptance-ledger edit or reference-fixture creation",
+  "engine": {
+    "version": "0.1.1-rc.16",
+    "archive": "vendor/zodiacs-engine-0.1.1-rc.16.tgz",
+    "archiveSha256": "43a72d30e483d8ff22024e403c4bd0d86d81bb6e1d0ad138f857cd001ab015d8",
+    "astronomyEngineVersion": "2.1.19"
+  },
+  "runtime": {
+    "node": "v22.22.2",
+    "python": "3.11.15 (main, Aug  7 2026, 02:25:55) [Clang 22.1.3 ]",
+    "pyswissephDistributionVersion": "2.10.3.2",
+    "swissLibraryVersion": "2.10.03",
+    "swissExtensionSha256": "3911614ca013be4520e355306620a3fcd27a39374a960a2063b056cfbd093338",
+    "pyerfaDistributionVersion": "2.0.1.5"
+  },
+  "ephemeris": [
+    {
+      "name": "sepl_18.se1",
+      "bytes": 484061,
+      "sha256": "ca1393ceab3a44fbc895887cf789c68819ae6a1cbc9b22225872dbe4ccd99a66"
+    },
+    {
+      "name": "semo_18.se1",
+      "bytes": 1304771,
+      "sha256": "1ca07bd67c24374d77226180c20a4f9996cba013697894810518e7eb582ca4f7"
+    }
+  ],
+  "configuration": "docs/platform/evidence/swiss-benchmark/CONFIGURATION.md",
+  "measurements": {
+    "multiyearInstants": 14610,
+    "multiyearSwissCalls": 321420,
+    "deltaTDays": 36524,
+    "p103GridACasesPerMode": 3128,
+    "p103ExtraVectorCasesPerMode": 816,
+    "houseEndToEndCorpusCasesPerMode": 3708
+  },
+  "headline": {
+    "through2026SameUt": {
+      "n": 91201,
+      "p50": 1.96,
+      "p95": 11.894,
+      "max": 22.886,
+      "maxAt": "1878-03-03T12:00:00.000Z",
+      "maxBody": "Venus"
+    },
+    "moon2150to2199SameUt": {
+      "n": 1826,
+      "p50": 14.037,
+      "p95": 17.05,
+      "max": 20.454,
+      "maxAt": "2198-11-30T12:00:00.000Z"
+    },
+    "moon2150to2199SameTt": {
+      "n": 1826,
+      "p50": 2.941,
+      "p95": 4.78,
+      "max": 7.221,
+      "maxAt": "2188-10-23T12:00:00.000Z"
+    },
+    "deltaTGapSeconds": {
+      "min": 14.255,
+      "max": 36.749
+    },
+    "engineSigmaSeconds": {
+      "min": 42.39,
+      "max": 103.386
+    },
+    "moonDisplacementFromDeltaTArcsec": {
+      "min": 7.016,
+      "max": 23.362,
+      "what": "|Swiss minus engine| times the engine's Moon speed: how far the ΔT difference alone moves the Moon at the same UT"
+    },
+    "publicRoundedChanges": [],
+    "publicRoundedUnchanged": {
+      "through2026MedianArcsec": "2.0",
+      "through2026MaximumArcsec": "22.9",
+      "through2026SignEdgeArcsec": 23,
+      "moon2150to2199SameTtMaxArcsec": "7.2",
+      "moon2150to2199SameUtMaxArcsec": "20.5",
+      "deltaTGapSeconds": [
+        "14.3",
+        "36.7"
+      ],
+      "moonOffsetArcsec": [
+        "7.0",
+        "23.4"
+      ]
+    }
+  },
+  "koch": {
+    "givenInputs": {
+      "broad": {
+        "compared": 14801,
+        "max": 3.68e-09,
+        "p50": 2.05e-10,
+        "bothUndefined": 5199,
+        "onlyEngineUndefined": 0,
+        "onlySwissUndefined": 0
+      },
+      "ladder": {
+        "compared": 5568,
+        "max": 4.71e-09,
+        "p50": 2.05e-10,
+        "bothUndefined": 48,
+        "onlyEngineUndefined": 0,
+        "onlySwissUndefined": 0
+      }
+    },
+    "endToEnd": {
+      "default-utc": {
+        "1800-2199": {
+          "broad": {
+            "compared": 3000,
+            "max": 44.064,
+            "p95": 5.929,
+            "p50": 0.752,
+            "over3": 337
+          },
+          "ladder": {
+            "compared": 696,
+            "max": 82.677,
+            "p95": 7.207,
+            "p50": 0.57,
+            "over3": 114
+          }
+        },
+        "1850-2049": {
+          "broad": {
+            "compared": 1499,
+            "max": 44.064,
+            "p95": 8.072,
+            "p50": 0.001,
+            "over3": 252
+          },
+          "ladder": {
+            "compared": 353,
+            "max": 82.677,
+            "p95": 7.032,
+            "p50": 0.002,
+            "over3": 48
+          }
+        }
+      },
+      "aligned-ut1": {
+        "1800-2199": {
+          "broad": {
+            "compared": 3000,
+            "max": 31.411,
+            "p95": 2.473,
+            "p50": 0.013,
+            "over3": 85
+          },
+          "ladder": {
+            "compared": 696,
+            "max": 31.358,
+            "p95": 5.188,
+            "p50": 0.013,
+            "over3": 66
+          }
+        },
+        "1850-2049": {
+          "broad": {
+            "compared": 1499,
+            "max": 0.055,
+            "p95": 0.002,
+            "p50": 0.0,
+            "over3": 0
+          },
+          "ladder": {
+            "compared": 353,
+            "max": 0.035,
+            "p95": 0.007,
+            "p50": 0.001,
+            "over3": 0
+          }
+        }
+      }
+    },
+    "givenInputsGateArcsec": 0.01,
+    "endToEndGateArcsec": 3,
+    "givenInputsAndPolarStatusVerdict": "PASS",
+    "historic1850to2049LadderVerdicts": {
+      "default-utc": "FAIL",
+      "aligned-ut1": "PASS"
+    },
+    "full1800to2199LadderVerdicts": {
+      "default-utc": "FAIL",
+      "aligned-ut1": "FAIL"
+    },
+    "windowQualification": "The original 2026-09-26 record judges end-to-end agreement in 1850–2049, where Swiss uses its IAU sidereal-time model; full-span failures remain recorded and are not waived.",
+    "acceptance": "No unit marked accepted; package/site/MCP release and deployment conditions belong to the parent checkpoint."
+  },
+  "p103": {
+    "default-utc": {
+      "verdict": "FAIL",
+      "over5Of816": 63,
+      "maxArcsec": 160.637
+    },
+    "aligned-ut1": {
+      "verdict": "FAIL",
+      "over5Of816": 44,
+      "maxArcsec": 68.174
+    }
+  },
+  "recommendedBindings": {
+    "multiyear": "docs/platform/evidence/site-engine-rc16/accuracy-refresh/multiyear-1800-2199.json",
+    "deltaTGap": "docs/platform/evidence/site-engine-rc16/accuracy-refresh/deltat-gap-2100-2199.json",
+    "p103": "docs/platform/evidence/site-engine-rc16/accuracy-refresh/p103.json",
+    "koch": "docs/platform/evidence/site-engine-rc16/accuracy-refresh/summary.json"
+  },
+  "licensing": "Swiss is an instrument. Only aggregate statistics, extrema, input/artifact digests and regeneration tools are recorded. No raw Swiss values, Swiss source/data, fitted coefficients or reference fixtures are committed.",
+  "excludedWork": [
+    "Moon enclosure/P4.5 holdout",
+    "DE440",
+    "remote requests",
+    "new tokens",
+    "spending"
+  ],
+  "sourceInputs": {
+    "docs/platform/evidence/engine-beyond-swiss/corpora/angle-grid-inputs.json": "82a5466caefb919df66060dd46861ac4f68a678ef9ce3c16bfc423a94042cd9d",
+    "docs/platform/evidence/houses-2026-09-26/tools/compare-end-to-end.py": "4908d3422eb93419454b935b5b772cdac55ccfc40cff3e9416a8554641884c4d",
+    "docs/platform/evidence/houses-2026-09-26/tools/compare-given.py": "f0e735f56e679cd52144d00c87ecd1a6a0ab28fe03e316d23d0f8433f7852c18",
+    "docs/platform/evidence/houses-2026-09-26/tools/dump-end-to-end.mjs": "1d6c25c21da65418c373ad6dce1359530e648555d3191a2ff0de5fa604e0f22e",
+    "docs/platform/evidence/houses-2026-09-26/tools/dump-given.mjs": "fc38d2245355a1a21abd254c5e957cc8098bf76e936b43e236a901ed07c65638",
+    "docs/platform/evidence/phase1-verdicts-2026-09-25/tools/s13/compare13.py": "11a63b97bcacf2c3984f04496344dfd40c0e90efb8f3bdc6696ec3a11ba6b6e9",
+    "docs/platform/evidence/phase1-verdicts-2026-09-25/tools/s13/engine_grids.mjs": "d72e99c64a408d1519f34b8b99e23f8a93f338b429a9ec6bdf6afce2c91c669d",
+    "docs/platform/evidence/phase1-verdicts-2026-09-25/tools/s13/swiss_grids.py": "4c696c3364464fdefc01144fd9ad2dcc05914a7a6f723cfe39d9107ba78bca9a",
+    "docs/platform/evidence/swiss-benchmark/tools/deltat-gap-zodiacs.mjs": "1e5980e8b7e8f83e13cac9048c120d7c465612599d632c6a120167ad61514919",
+    "docs/platform/evidence/swiss-benchmark/tools/deltat_gap_swiss.py": "73ba2e134f2589914161fbadc4822ffe2db1a9a452a6ec1a4fdb82eb3b8aad5c",
+    "docs/platform/evidence/swiss-benchmark/tools/multiyear-zodiacs.mjs": "50f38b62dcd76720aa36779d0a7b2c89a166df23f6bf607c6fc533c0f458cc9f",
+    "docs/platform/evidence/swiss-benchmark/tools/multiyear_swiss.py": "bcf231a6d55c659b50f2b5e4ee95ecc2c297e3226dfa2efed566c4ffc2827a05",
+    "src/lib/engine/time-basis.mjs": "01d4387ab64481fc0b4b817966870b4af3a0a0e2345ea6dfc1d865707cdc047c"
+  },
+  "adaptedTools": {
+    "docs/platform/evidence/site-engine-rc16/accuracy-refresh/tools/angle-arbiter.py": "7acd7928622074a22bde71ee7daa32ccdcbb429937e48d624a66adae65eba092",
+    "docs/platform/evidence/site-engine-rc16/accuracy-refresh/tools/compare-houses-given.py": "914bf15b40bd407ac9e14cd8474ca80e235a27d7f5188c052e9cce45b5a713b2",
+    "docs/platform/evidence/site-engine-rc16/accuracy-refresh/tools/compare-houses.py": "c5770eb4e3e5bbb639a9f2235ba5a18f3b828756f77e5b87ef012fadbf60ed73",
+    "docs/platform/evidence/site-engine-rc16/accuracy-refresh/tools/compare13.py": "c01ce67d6a8f1c63a1114aaeec9bb3e4515fe3fcaf39c31f86709011f8eb1275",
+    "docs/platform/evidence/site-engine-rc16/accuracy-refresh/tools/dump-houses-aligned-ut1.mjs": "b4e377be5a2fb2cb44758a12471043b05af36ad6dd395736033ffb27049a57d8",
+    "docs/platform/evidence/site-engine-rc16/accuracy-refresh/tools/engine-grids.mjs": "4a3e236ae16bb5e596937edd030b2f5af3f68f9acfff85b0c76e05038651fda3",
+    "docs/platform/evidence/site-engine-rc16/accuracy-refresh/tools/run.sh": "a251595fc6fc79e8158d8f48cbc81a55f7c1e1af81727bddfdbdac822c69300b",
+    "docs/platform/evidence/site-engine-rc16/accuracy-refresh/tools/runtime.py": "d4c404977a96df3962db2e35ef87ce3fdbd44114104787e9b90981ec55888257",
+    "docs/platform/evidence/site-engine-rc16/accuracy-refresh/tools/summarize.py": "5bce33a45037ff0e7a74ef96389938fd1f2ed430328294b6a46c222a75b54b7e"
+  },
+  "outputSha256": {
+    "deltat-gap-2100-2199.json": "ea7d28f9e173473fe9ea1b4691d6b08756bb16fa1871e0cc1d745a3b5063985c",
+    "houses-aligned-ut1.json": "e33ec66d9a6e5e3fe0da8d7716d5d5e48be225a4af05f06f67300ce676daef18",
+    "houses-default-utc.json": "34ebf66ec6ff2bce05b1bd4b4817365eff87e4b3d7099e325f630fa969cc8ce1",
+    "houses-given.json": "66ce437aeb7618228e37e96a2f5c812731e5611e009232a8e87a47883eba37be",
+    "multiyear-1800-2199.json": "373d28e6810507bb9cf79be0640c8a1894886749782c631cbaa8dcc42054b571",
+    "p103.json": "5570d79b1f70cb4fab7221d414189d7e0e2816c305f07bd800a0441f61815790",
+    "runtime.json": "56c69fd711f0e9c4845efe6f4726f12cbcc55a347aabdf2bc9eb7d3740c404c5",
+    "statistical-changes.json": "a4bd7ed2bd1971d344baabb237d1a7399408d4fac5a9d76cea495f3647dc082c",
+    "validation.json": "2a9cad31d2c9625a79e1807e4a5866deb4ba95dfc4c6553b36f629b6ce7c8745"
+  },
+  "scratchInputDigests": {
+    "deltat-gap-zodiacs.jsonl": "55f21845013bc80fec6bead9a7036d11a77af0c31f229bd8f1395eb46bc26fd4",
+    "houses-aligned-ut1.jsonl": "429d6c7fa89c19039a33ae2961600c3675511dc5676a2abc3a50a7a90dbfe9d3",
+    "houses-default-utc.jsonl": "ed0abf6f46bab9a9db900e1a10c650905ef906706799f57f43e651110045fb6b",
+    "houses-given.jsonl": "1a8fced3e7c98376fe277bb9586ef04643eddafb64aa878b9bf75ebe8bae605b",
+    "multiyear-zodiacs.jsonl": "059acb3880c81c01146f4495417ec234a602119440a6979964c7456b7b73214a"
+  }
+}

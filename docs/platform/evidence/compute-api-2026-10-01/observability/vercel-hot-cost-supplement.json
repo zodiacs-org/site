@@ -1,0 +1,400 @@
+{
+  "schema": "zodiacs.compute-api.platform-query-supplement.v1",
+  "deploymentId": "dpl_6uGzGxdgxboMZ5jeFwQMTL24demr",
+  "sourceSha": "9cfafa3e742de943062c9174338472781724a4b5",
+  "projectId": "prj_nRTO3q3aNYLfaM3dotAowOc028fO",
+  "supersedes": "Earlier connector/export-only unknown start types and aggregate CPU/memory availability. The historical raw/evidence files and their null per-request metric fields remain unchanged.",
+  "queryScope": {
+    "projectPath": "/zodiacsofficial/zodiacs-org",
+    "utcWindow": "2026-10-01T06:05:00.000Z/2026-10-01T06:10:00.000Z",
+    "additionalFilters": null,
+    "note": "Queries are project-scoped, with no explicit deployment/environment filter. Independent exact export reconciliation establishes the 120 records in this window are the same production deployment baseline."
+  },
+  "populationReconciliation": {
+    "baselineCount": 120,
+    "privateExportWindowCount": 120,
+    "privateExportWindowIdsExactlyEqualBaselineIds": true,
+    "queryCountSum": 120,
+    "routes": 6,
+    "perRouteCount": 20,
+    "queryTablePageCount": 1,
+    "queryStartTypes": {
+      "hot": 120,
+      "cold": 0
+    },
+    "classificationMethod": "Closed-population route/window reconciliation with Count Sum grouped by Request Path and Function Start Type; not guessed from request order/instance reuse"
+  },
+  "pricing": {
+    "sourceUrl": "https://vercel.com/docs/functions/usage-and-pricing",
+    "sourceTitle": "Fluid compute pricing",
+    "retrievedUtc": "2026-10-01T10:37:39Z",
+    "sourceLastUpdated": "2026-06-16",
+    "currency": "USD",
+    "region": "iad1",
+    "plan": "Pro",
+    "mode": "Fluid",
+    "planModeEvidence": [
+      "Pro label visible in saved project Query snapshots",
+      "Fluid label in vercel-first-chart-detail.txt; parent verified project UI"
+    ],
+    "activeCpuUsdPerHour": 0.128,
+    "provisionedMemoryUsdPerGbHour": 0.0106,
+    "invocationsUsdPerMillion": 0.6,
+    "billingSemantics": "CPU bills actual execution; provisioned memory covers instance work including waits until last in-flight request finishes. Shared-instance memory must not be multiplied by overlapping request count. Invocations are separate; plan credits may offset gross charges.",
+    "rateVerification": "Independently re-opened official page and verified iad1 regional row and invocation-price example. Published rates, not an account-specific invoice."
+  },
+  "costFormula": "(1000/N) * [(CPU_sum_ms/3600000)*0.128 + (Duration_GBhrs_sum)*0.0106] + 1000*(0.60/1000000), with N=20 for each endpoint",
+  "memoryAccounting": "Use the measured Query GB-hour total once; do not multiply by memory size again. Exact baseline records report Peak Concurrency 1; no overlapping-request memory double-counting is introduced by this calculation.",
+  "precisionLimits": [
+    "CPU and GB-hour sums are saved UI strings; raw Query export did not complete",
+    "The exact UI rounding/formatting policy is not verified, so guaranteed numerical rounding intervals cannot be established",
+    "Three-significant-digit reporting is approximate; additional digits in JSON preserve arithmetic reproducibility, not measurement precision",
+    "Per-request active CPU remains unavailable; do not spread aggregate CPU uniformly across requests and call it measured"
+  ],
+  "firewallAccounting": "Firewall costs are excluded; two events SDK checks are not assumed to mean two billable units without separate usage evidence.",
+  "excludedCosts": [
+    "CDN requests/routing",
+    "Fast Data Transfer",
+    "Fast Origin Transfer",
+    "Firewall/rate limiting",
+    "Observability",
+    "Pro base subscription",
+    "Taxes",
+    "Credits or account-specific discounts"
+  ],
+  "remainingGaps": [
+    "No cold requests in the reconciled window; cold p50/p95 and cold cost remain unmeasured",
+    "This is observed synthetic-workload usage pricing, not actual invoice allocation or worst-case cost"
+  ],
+  "byEndpoint": {
+    "chart": {
+      "sampleCount": 20,
+      "observedStartType": "hot",
+      "hotCount": 20,
+      "coldCount": 0,
+      "hotExecutionDurationMs": {
+        "n": 20,
+        "min": 17,
+        "p50": 22,
+        "p95": 44,
+        "max": 63,
+        "mean": 27.85,
+        "sum": 557
+      },
+      "coldExecutionDurationMs": null,
+      "aggregateMeasuredInputs": {
+        "activeCpu": {
+          "metric": "serverlessFunctionInvocation.functionCpuTimeMs",
+          "label": "Active CPU Time",
+          "aggregation": "Sum",
+          "display": "230ms",
+          "approximateMs": 230.0
+        },
+        "memoryDuration": {
+          "metric": "serverlessFunctionInvocation.functionDurationGbhr",
+          "label": "Duration (Gb-hrs)",
+          "aggregation": "Sum",
+          "display": "0.00032 GB-hrs",
+          "approximateGbHours": 0.00032
+        },
+        "invocations": 20
+      },
+      "normalization": {
+        "requests": 1000,
+        "factorFrom20Samples": 50,
+        "approximateActiveCpuSeconds": 11.5,
+        "approximateMemoryDurationGbHours": 0.016
+      },
+      "grossComputeAndInvocationEstimateUsdPer1000": {
+        "cpu": 0.00040888888888888887,
+        "memoryDurationAtProvisionedMemoryRate": 0.0001696,
+        "invocations": 0.0006,
+        "total": 0.0011784888888888888,
+        "reportValue": "0.00118",
+        "description": "Approximate gross usage-cost estimate from observed aggregate CPU and memory-duration metrics at published Fluid rates, plus invocations. Not invoice/net bill.",
+        "guaranteedRoundingRange": null
+      }
+    },
+    "positions": {
+      "sampleCount": 20,
+      "observedStartType": "hot",
+      "hotCount": 20,
+      "coldCount": 0,
+      "hotExecutionDurationMs": {
+        "n": 20,
+        "min": 17,
+        "p50": 25,
+        "p95": 49,
+        "max": 55,
+        "mean": 27.75,
+        "sum": 555
+      },
+      "coldExecutionDurationMs": null,
+      "aggregateMeasuredInputs": {
+        "activeCpu": {
+          "metric": "serverlessFunctionInvocation.functionCpuTimeMs",
+          "label": "Active CPU Time",
+          "aggregation": "Sum",
+          "display": "240ms",
+          "approximateMs": 240.0
+        },
+        "memoryDuration": {
+          "metric": "serverlessFunctionInvocation.functionDurationGbhr",
+          "label": "Duration (Gb-hrs)",
+          "aggregation": "Sum",
+          "display": "0.00032 GB-hrs",
+          "approximateGbHours": 0.00032
+        },
+        "invocations": 20
+      },
+      "normalization": {
+        "requests": 1000,
+        "factorFrom20Samples": 50,
+        "approximateActiveCpuSeconds": 12.0,
+        "approximateMemoryDurationGbHours": 0.016
+      },
+      "grossComputeAndInvocationEstimateUsdPer1000": {
+        "cpu": 0.00042666666666666667,
+        "memoryDurationAtProvisionedMemoryRate": 0.0001696,
+        "invocations": 0.0006,
+        "total": 0.0011962666666666666,
+        "reportValue": "0.00120",
+        "description": "Approximate gross usage-cost estimate from observed aggregate CPU and memory-duration metrics at published Fluid rates, plus invocations. Not invoice/net bill.",
+        "guaranteedRoundingRange": null
+      }
+    },
+    "houses": {
+      "sampleCount": 20,
+      "observedStartType": "hot",
+      "hotCount": 20,
+      "coldCount": 0,
+      "hotExecutionDurationMs": {
+        "n": 20,
+        "min": 20,
+        "p50": 38,
+        "p95": 72,
+        "max": 74,
+        "mean": 40.5,
+        "sum": 810
+      },
+      "coldExecutionDurationMs": null,
+      "aggregateMeasuredInputs": {
+        "activeCpu": {
+          "metric": "serverlessFunctionInvocation.functionCpuTimeMs",
+          "label": "Active CPU Time",
+          "aggregation": "Sum",
+          "display": "260ms",
+          "approximateMs": 260.0
+        },
+        "memoryDuration": {
+          "metric": "serverlessFunctionInvocation.functionDurationGbhr",
+          "label": "Duration (Gb-hrs)",
+          "aggregation": "Sum",
+          "display": "0.00046 GB-hrs",
+          "approximateGbHours": 0.00046
+        },
+        "invocations": 20
+      },
+      "normalization": {
+        "requests": 1000,
+        "factorFrom20Samples": 50,
+        "approximateActiveCpuSeconds": 13.0,
+        "approximateMemoryDurationGbHours": 0.023
+      },
+      "grossComputeAndInvocationEstimateUsdPer1000": {
+        "cpu": 0.0004622222222222222,
+        "memoryDurationAtProvisionedMemoryRate": 0.0002438,
+        "invocations": 0.0006,
+        "total": 0.0013060222222222222,
+        "reportValue": "0.00131",
+        "description": "Approximate gross usage-cost estimate from observed aggregate CPU and memory-duration metrics at published Fluid rates, plus invocations. Not invoice/net bill.",
+        "guaranteedRoundingRange": null
+      }
+    },
+    "events": {
+      "sampleCount": 20,
+      "observedStartType": "hot",
+      "hotCount": 20,
+      "coldCount": 0,
+      "hotExecutionDurationMs": {
+        "n": 20,
+        "min": 91,
+        "p50": 116,
+        "p95": 168,
+        "max": 254,
+        "mean": 126.5,
+        "sum": 2530
+      },
+      "coldExecutionDurationMs": null,
+      "aggregateMeasuredInputs": {
+        "activeCpu": {
+          "metric": "serverlessFunctionInvocation.functionCpuTimeMs",
+          "label": "Active CPU Time",
+          "aggregation": "Sum",
+          "display": "1.75s",
+          "approximateMs": 1750.0
+        },
+        "memoryDuration": {
+          "metric": "serverlessFunctionInvocation.functionDurationGbhr",
+          "label": "Duration (Gb-hrs)",
+          "aggregation": "Sum",
+          "display": "0.0014 GB-hrs",
+          "approximateGbHours": 0.0014
+        },
+        "invocations": 20
+      },
+      "normalization": {
+        "requests": 1000,
+        "factorFrom20Samples": 50,
+        "approximateActiveCpuSeconds": 87.5,
+        "approximateMemoryDurationGbHours": 0.07
+      },
+      "grossComputeAndInvocationEstimateUsdPer1000": {
+        "cpu": 0.003111111111111111,
+        "memoryDurationAtProvisionedMemoryRate": 0.000742,
+        "invocations": 0.0006,
+        "total": 0.004453111111111111,
+        "reportValue": "0.00445",
+        "description": "Approximate gross usage-cost estimate from observed aggregate CPU and memory-duration metrics at published Fluid rates, plus invocations. Not invoice/net bill.",
+        "guaranteedRoundingRange": null
+      }
+    },
+    "time": {
+      "sampleCount": 20,
+      "observedStartType": "hot",
+      "hotCount": 20,
+      "coldCount": 0,
+      "hotExecutionDurationMs": {
+        "n": 20,
+        "min": 18,
+        "p50": 26,
+        "p95": 45,
+        "max": 57,
+        "mean": 27.85,
+        "sum": 557
+      },
+      "coldExecutionDurationMs": null,
+      "aggregateMeasuredInputs": {
+        "activeCpu": {
+          "metric": "serverlessFunctionInvocation.functionCpuTimeMs",
+          "label": "Active CPU Time",
+          "aggregation": "Sum",
+          "display": "210ms",
+          "approximateMs": 210.0
+        },
+        "memoryDuration": {
+          "metric": "serverlessFunctionInvocation.functionDurationGbhr",
+          "label": "Duration (Gb-hrs)",
+          "aggregation": "Sum",
+          "display": "0.00032 GB-hrs",
+          "approximateGbHours": 0.00032
+        },
+        "invocations": 20
+      },
+      "normalization": {
+        "requests": 1000,
+        "factorFrom20Samples": 50,
+        "approximateActiveCpuSeconds": 10.5,
+        "approximateMemoryDurationGbHours": 0.016
+      },
+      "grossComputeAndInvocationEstimateUsdPer1000": {
+        "cpu": 0.0003733333333333333,
+        "memoryDurationAtProvisionedMemoryRate": 0.0001696,
+        "invocations": 0.0006,
+        "total": 0.0011429333333333334,
+        "reportValue": "0.00114",
+        "description": "Approximate gross usage-cost estimate from observed aggregate CPU and memory-duration metrics at published Fluid rates, plus invocations. Not invoice/net bill.",
+        "guaranteedRoundingRange": null
+      }
+    },
+    "sky-fact": {
+      "sampleCount": 20,
+      "observedStartType": "hot",
+      "hotCount": 20,
+      "coldCount": 0,
+      "hotExecutionDurationMs": {
+        "n": 20,
+        "min": 41,
+        "p50": 47,
+        "p95": 76,
+        "max": 123,
+        "mean": 54.8,
+        "sum": 1096
+      },
+      "coldExecutionDurationMs": null,
+      "aggregateMeasuredInputs": {
+        "activeCpu": {
+          "metric": "serverlessFunctionInvocation.functionCpuTimeMs",
+          "label": "Active CPU Time",
+          "aggregation": "Sum",
+          "display": "840ms",
+          "approximateMs": 840.0
+        },
+        "memoryDuration": {
+          "metric": "serverlessFunctionInvocation.functionDurationGbhr",
+          "label": "Duration (Gb-hrs)",
+          "aggregation": "Sum",
+          "display": "0.00062 GB-hrs",
+          "approximateGbHours": 0.00062
+        },
+        "invocations": 20
+      },
+      "normalization": {
+        "requests": 1000,
+        "factorFrom20Samples": 50,
+        "approximateActiveCpuSeconds": 42.0,
+        "approximateMemoryDurationGbHours": 0.031
+      },
+      "grossComputeAndInvocationEstimateUsdPer1000": {
+        "cpu": 0.0014933333333333333,
+        "memoryDurationAtProvisionedMemoryRate": 0.0003286,
+        "invocations": 0.0006,
+        "total": 0.0024219333333333334,
+        "reportValue": "0.00242",
+        "description": "Approximate gross usage-cost estimate from observed aggregate CPU and memory-duration metrics at published Fluid rates, plus invocations. Not invoice/net bill.",
+        "guaranteedRoundingRange": null
+      }
+    }
+  },
+  "evidence": {
+    "vercel-start-types-query.txt": {
+      "url": "https://vercel.com/zodiacsofficial/zodiacs-org/observability/query?metric=serverlessFunctionInvocation.count&by=requestPath%2CfunctionStartType&time=2026-10-01T06%3A05%3A00.000Z%2F2026-10-01T06%3A10%3A00.000Z",
+      "sha256": "cdb73eb630a5fa0f7b481b55154de6fe13f2cd5fc7877d347d8eca5792c2def3",
+      "metric": "serverlessFunctionInvocation.count",
+      "groupBy": [
+        "requestPath",
+        "functionStartType"
+      ],
+      "aggregation": "Sum",
+      "displayLabel": "Count"
+    },
+    "vercel-cpu-query.txt": {
+      "url": "https://vercel.com/zodiacsofficial/zodiacs-org/observability/query?metric=serverlessFunctionInvocation.functionCpuTimeMs&by=requestPath&time=2026-10-01T06%3A05%3A00.000Z%2F2026-10-01T06%3A10%3A00.000Z",
+      "sha256": "fba9e682d4e83bcff92b0ffd819be1e2df4c227d9e5e8656ab8aa495b5320e93",
+      "metric": "serverlessFunctionInvocation.functionCpuTimeMs",
+      "groupBy": [
+        "requestPath"
+      ],
+      "aggregation": "Sum",
+      "displayLabel": "Active CPU Time"
+    },
+    "vercel-memory-query.txt": {
+      "url": "https://vercel.com/zodiacsofficial/zodiacs-org/observability/query?metric=serverlessFunctionInvocation.functionDurationGbhr&by=requestPath&time=2026-10-01T06%3A05%3A00.000Z%2F2026-10-01T06%3A10%3A00.000Z",
+      "sha256": "d2c1cd22464c3fc45835d4cadd0fbb8b3b8327bcf085eb41661fa79778f703f4",
+      "metric": "serverlessFunctionInvocation.functionDurationGbhr",
+      "groupBy": [
+        "requestPath"
+      ],
+      "aggregation": "Sum",
+      "displayLabel": "Duration (Gb-hrs)"
+    }
+  },
+  "historicalBaselineArtifacts": {
+    "vercel-baseline-matched.json": "1017bd2a500c02e04d8bb259d1b81ac4764a1fa71c58b7fc62b800f3a9dc3376",
+    "vercel-baseline-summary.json": "2362b223da5fd57d27034ebc926edaacdd39d19b3be4a97eb5508547942c406b",
+    "vercel-baseline-methodology.md": "7d157810c6b515cdd55d14c226bdb06ee5b6d88d5b8d5d046fd45953353d360e",
+    "analyze-vercel-baseline.py": "449b79493c8a4efdaf95042e5eded5c9cebb9c4f7f6f8610fd11d6e2d0daee68"
+  },
+  "privateExportSha256": "75cc8c2c44d1290e4a5560f24e0d5f57f1e97e860b9c2c8305e7a4cf3e7b697a",
+  "privacy": "Only six synthetic-baseline aggregate rows and existing sanitized baseline statistics are included; no nonbaseline traffic or raw IPs are published."
+}

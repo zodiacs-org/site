@@ -8,7 +8,7 @@ calculations also use `get_local_chart_capabilities`. Read the target repository
 instructions and make a small, reviewable integration in the user's authorized
 repository. Use GPT-6.1 Sol High; use xhigh for transport, privacy and time semantics.
 
-Choose `@zodiacs/engine@0.1.1-rc.15` for local deterministic calculation. The
+Choose `@zodiacs/engine@0.1.1-rc.16` for local deterministic calculation. The
 `@zodiacs/sdk` package is Registry ownership tooling. Do not substitute it.
 Hosted compute supports POST chart, positions, houses, events, time and sky-fact;
 see https://zodiacs.org/developers/compute/ for schemas and limits. A published

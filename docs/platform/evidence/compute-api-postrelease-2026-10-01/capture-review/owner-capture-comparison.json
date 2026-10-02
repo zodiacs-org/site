@@ -1,0 +1,304 @@
+{
+  "renderSource": "66d386ef3d0d46898c703f9311573a427dad9edd7aad8d1a8ee70c19f4ab4c81",
+  "freshBrowser": "Chromium 149.0.7827.55",
+  "ownerBrowser": "Chromium 154.0.8037.58",
+  "captures": [
+    {
+      "file": "today-360.png",
+      "sha256": "e790719b3ec615d82611cdff8f58cac3856429326bbe830897977e761e5e3fc4",
+      "sameBytes": false,
+      "freshSize": [
+        360,
+        6289
+      ],
+      "ownerSize": [
+        360,
+        6290
+      ]
+    },
+    {
+      "file": "today-1280.png",
+      "sha256": "53ea3cd447075afafe3b25b3162bed7444560397c55f4b6410950de96386a3da",
+      "sameBytes": false,
+      "freshSize": [
+        1280,
+        4056
+      ],
+      "ownerSize": [
+        1280,
+        4056
+      ],
+      "bbox": [
+        0,
+        0,
+        1280,
+        4021
+      ],
+      "changedPixels": 851211
+    },
+    {
+      "file": "horoscopes-hub-360.png",
+      "sha256": "2d420b516ccce5bdbdb058f1201a18a2e1cfecfcfd9bf4a9b64de2b549c60f5a",
+      "sameBytes": false,
+      "freshSize": [
+        360,
+        6033
+      ],
+      "ownerSize": [
+        360,
+        6034
+      ]
+    },
+    {
+      "file": "horoscopes-hub-1280.png",
+      "sha256": "b0a2ed4b6abb501b2266da14e342a65be4d82b776c1c43b1c5fe8d828c058ec9",
+      "sameBytes": false,
+      "freshSize": [
+        1280,
+        3101
+      ],
+      "ownerSize": [
+        1280,
+        3101
+      ],
+      "bbox": [
+        0,
+        0,
+        1280,
+        3067
+      ],
+      "changedPixels": 966676
+    },
+    {
+      "file": "daily-360.png",
+      "sha256": "4d192f4677ab5b410a82157a0e8b89c3301dfbfca10c79a9371a8d9eca87245e",
+      "sameBytes": false,
+      "freshSize": [
+        360,
+        4390
+      ],
+      "ownerSize": [
+        360,
+        4391
+      ]
+    },
+    {
+      "file": "daily-1280.png",
+      "sha256": "297a1f0d0a0d7a4df4d53a5d610e7550d4fd66b2bf56728a8d6345566e9675db",
+      "sameBytes": false,
+      "freshSize": [
+        1280,
+        3772
+      ],
+      "ownerSize": [
+        1280,
+        3772
+      ],
+      "bbox": [
+        0,
+        0,
+        1280,
+        3737
+      ],
+      "changedPixels": 530139
+    },
+    {
+      "file": "tomorrow-360.png",
+      "sha256": "9a717e830705bf0abd1e08ec3e2c7ff055fcf2a90ecbf0ce5dd03b7d714785ea",
+      "sameBytes": false,
+      "freshSize": [
+        360,
+        4333
+      ],
+      "ownerSize": [
+        360,
+        4334
+      ]
+    },
+    {
+      "file": "tomorrow-1280.png",
+      "sha256": "437dacaaf6b7b7373943e7af7b02bb311e663ba4713bd313b859484cca5cdfb3",
+      "sameBytes": false,
+      "freshSize": [
+        1280,
+        3721
+      ],
+      "ownerSize": [
+        1280,
+        3721
+      ],
+      "bbox": [
+        0,
+        0,
+        1280,
+        3686
+      ],
+      "changedPixels": 450260
+    },
+    {
+      "file": "weekly-360.png",
+      "sha256": "185d802a4dd83c70d842c167c6c243c384d699c41eb5607160a2ff20e2aed96b",
+      "sameBytes": false,
+      "freshSize": [
+        360,
+        5089
+      ],
+      "ownerSize": [
+        360,
+        5090
+      ]
+    },
+    {
+      "file": "weekly-1280.png",
+      "sha256": "96701dc496fb9833f7db9645633175413e93fcb0dc01a267f40b8e98531351ae",
+      "sameBytes": false,
+      "freshSize": [
+        1280,
+        4077
+      ],
+      "ownerSize": [
+        1280,
+        4077
+      ],
+      "bbox": [
+        0,
+        0,
+        1280,
+        4042
+      ],
+      "changedPixels": 490418
+    },
+    {
+      "file": "monthly-360.png",
+      "sha256": "6564a27a602537d9eace7f5361936bd02058761fb75e018cc0169f38abba7a67",
+      "sameBytes": false,
+      "freshSize": [
+        360,
+        4843
+      ],
+      "ownerSize": [
+        360,
+        4844
+      ]
+    },
+    {
+      "file": "monthly-1280.png",
+      "sha256": "95cba5409d18f5efa8d741118dde67cc368290287eb1bf4ba1130ea867691c1b",
+      "sameBytes": false,
+      "freshSize": [
+        1280,
+        3805
+      ],
+      "ownerSize": [
+        1280,
+        3805
+      ],
+      "bbox": [
+        0,
+        0,
+        1280,
+        3770
+      ],
+      "changedPixels": 486463
+    },
+    {
+      "file": "love-360.png",
+      "sha256": "13f18162220709b612319f74d651caa6d5946fede8b0a93ef174778509304774",
+      "sameBytes": false,
+      "freshSize": [
+        360,
+        4039
+      ],
+      "ownerSize": [
+        360,
+        4040
+      ]
+    },
+    {
+      "file": "love-1280.png",
+      "sha256": "a98d266656f1cf1de8bfea7a5aa4cd05294dc819a8bb83f192f213689bdc7e3d",
+      "sameBytes": false,
+      "freshSize": [
+        1280,
+        3432
+      ],
+      "ownerSize": [
+        1280,
+        3432
+      ],
+      "bbox": [
+        0,
+        0,
+        1280,
+        3397
+      ],
+      "changedPixels": 414693
+    },
+    {
+      "file": "career-360.png",
+      "sha256": "31b8301ca1d6b5043bf2e13c53f332c05740e3821c77fbf00cecada9bdc7731c",
+      "sameBytes": false,
+      "freshSize": [
+        360,
+        4022
+      ],
+      "ownerSize": [
+        360,
+        4023
+      ]
+    },
+    {
+      "file": "career-1280.png",
+      "sha256": "fa112ea57834bc4995025f01db2f88ae5319cc4d8b4df339de4f5bbe0ca9c56a",
+      "sameBytes": false,
+      "freshSize": [
+        1280,
+        3451
+      ],
+      "ownerSize": [
+        1280,
+        3451
+      ],
+      "bbox": [
+        0,
+        0,
+        1280,
+        3416
+      ],
+      "changedPixels": 426307
+    },
+    {
+      "file": "yearly-360.png",
+      "sha256": "84307ec01af43019a5a17eafc2f09bb7e86eeea6d26a6dd11a4844080a48a2c2",
+      "sameBytes": false,
+      "freshSize": [
+        360,
+        12476
+      ],
+      "ownerSize": [
+        360,
+        12477
+      ]
+    },
+    {
+      "file": "yearly-1280.png",
+      "sha256": "644c008e658af283ee587b3298a2afc5e4822904ab8ae80498d68afb44876c9d",
+      "sameBytes": false,
+      "freshSize": [
+        1280,
+        7891
+      ],
+      "ownerSize": [
+        1280,
+        7891
+      ],
+      "bbox": [
+        0,
+        0,
+        1280,
+        7856
+      ],
+      "changedPixels": 881834
+    }
+  ]
+}

@@ -45,7 +45,7 @@ try {
     const start = performance.now();
     const result = await client.callTool({ name, arguments: args });
     assert.equal(result.isError, false); assert.equal(result.structuredContent.ok, true);
-    if (name === 'get_sky') assert.equal(result.structuredContent.data.calculation.cite.version, '0.1.1-rc.15');
+    if (name === 'get_sky') assert.equal(result.structuredContent.data.calculation.cite.version, '0.1.1-rc.16');
     evidence.calls.push({ name, arguments: args, elapsedMs: Math.round(performance.now() - start), result: result.structuredContent });
   }
   record('all five tools, native empty-argument launch and bounded lunation window');

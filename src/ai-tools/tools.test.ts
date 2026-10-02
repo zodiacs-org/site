@@ -1,11 +1,10 @@
 import { describe, it, expect, vi } from 'vitest';
 import { positions, ENGINE_VERSION } from '@zodiacs/engine';
-import * as localTime from '../../api/_compute/local-time.mjs';
 import { computeEvents } from '../lib/compute-api/endpoints';
 import { parseEventsRequest } from '../lib/compute-api/validate';
 import { executeAiTool } from './tools';
 import { AI_TOOL_NAMES } from './contracts';
-const dependencies = { localTime, now: () => new Date('2026-10-01T06:00:00Z') };
+const dependencies = { now: () => new Date('2026-10-01T06:00:00Z') };
 
 describe('public AI tools', () => {
   it('advertises the published engine and bounded five-tool surface', async () => {
@@ -78,6 +77,11 @@ describe('public AI tools', () => {
       if (!result.ok) expect(result.error.code).toBe('rate-limit-unavailable');
       expect(log).not.toHaveBeenCalled(); expect(error).not.toHaveBeenCalled(); expect(fetchSpy).not.toHaveBeenCalled();
     } finally { vi.restoreAllMocks(); }
+  });
+  it('resolves a date-only fact within its requested civil timezone', async () => {
+    const result = await executeAiTool('check_sky_fact', { kind: 'ingress', body: 'Sun', sign: 'libra', date: '2026-09-23', zone: 'Asia/Bangkok' }, dependencies);
+    expect(result.ok).toBe(true);
+    if (result.ok && result.tool === 'check_sky_fact') expect(result.data.answer).toBe('true');
   });
   it('returns relevant, fixed consumer links without personal URL data', async () => {
     const result = await executeAiTool('search_zodiacs', { query: 'Moon sign' }, dependencies);

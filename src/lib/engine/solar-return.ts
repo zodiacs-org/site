@@ -1,9 +1,29 @@
-import { findLongitudeCrossings } from './returns';
+/**
+ * Solar returns. The instant is @zodiacs/engine's (`@zodiacs/engine/techniques`
+ * since engine rc.16, which ported this module's search into the package): the
+ * crossing solver at 1-day steps over ±200 days of `near`, the nearest return,
+ * or over the 370 days before `at`, the latest. The site keeps two things of
+ * its own: a return outside its reference span (1800–2200, reference-span.ts)
+ * is refused, where the package returns it with a flag, and the chart is cast
+ * by the site's adapter, as every chart here is.
+ *
+ * Only ever lazy-loaded beside full.ts: the package's search reads the same
+ * ephemeris chunk, never an eager bundle.
+ */
+import {
+  mostRecentSolarReturnInstant as engineMostRecentSolarReturnInstant,
+  solarReturnInstant as engineSolarReturnInstant,
+} from '@zodiacs/engine/techniques';
 import { computeChart } from './full';
-import { clipToReferenceSpan } from './reference-span';
+import { REFERENCE_SPAN_END_MS, REFERENCE_SPAN_START_MS } from './reference-span';
 import type { Chart, HouseSystem } from './types';
 
-const DAY_MS = 86_400_000;
+/** The site shows no return outside its reference span; the package would flag one. */
+function insideReferenceSpan(instant: Date, message: string): Date {
+  const at = instant.getTime();
+  if (!(at >= REFERENCE_SPAN_START_MS && at < REFERENCE_SPAN_END_MS)) throw new RangeError(message);
+  return instant;
+}
 
 /**
  * The instant the transiting Sun returns to the natal Sun longitude nearest
@@ -11,33 +31,15 @@ const DAY_MS = 86_400_000;
  * ~183 days of any date) and picks the crossing closest to it.
  */
 export function solarReturnInstant(natalSunLon: number, near: Date): Date {
-  const requested = { from: new Date(near.getTime() - 200 * DAY_MS), to: new Date(near.getTime() + 200 * DAY_MS) };
-  const window = clipToReferenceSpan(requested.from, requested.to);
-  const crossings = window ? findLongitudeCrossings('Sun', natalSunLon, window.from, window.to, 1) : [];
-  if (!window || crossings.length === 0) throw new RangeError('No solar return found in the scan window.');
-
-  const closest = crossings.reduce((best, crossing) =>
-    Math.abs(crossing.at.getTime() - near.getTime())
-      < Math.abs(best.at.getTime() - near.getTime())
-      ? crossing
-      : best).at;
-  // A clipped window can hide a nearer return beyond the span; refuse then.
-  const distance = Math.abs(closest.getTime() - near.getTime());
-  const edges = [
-    window.from.getTime() !== requested.from.getTime() ? near.getTime() - window.from.getTime() : Infinity,
-    window.to.getTime() !== requested.to.getTime() ? window.to.getTime() - near.getTime() : Infinity,
-  ];
-  if (distance > Math.min(...edges)) throw new RangeError('No solar return found in the scan window.');
-  return closest;
+  return insideReferenceSpan(engineSolarReturnInstant(natalSunLon, near), 'No solar return found in the scan window.');
 }
 
 /** The latest solar return at or before `at`, used for the birthday-year in progress. */
 export function mostRecentSolarReturnInstant(natalSunLon: number, at: Date): Date {
-  const window = clipToReferenceSpan(new Date(at.getTime() - 370 * DAY_MS), at);
-  const crossings = (window ? findLongitudeCrossings('Sun', natalSunLon, window.from, window.to, 1) : [])
-    .filter((crossing) => crossing.at.getTime() <= at.getTime());
-  if (crossings.length === 0) throw new RangeError('No previous solar return found in the scan window.');
-  return crossings[crossings.length - 1].at;
+  return insideReferenceSpan(
+    engineMostRecentSolarReturnInstant(natalSunLon, at),
+    'No previous solar return found in the scan window.',
+  );
 }
 
 /**

@@ -13,8 +13,10 @@ from remaining acceptance requirements.
 - Both Codex candidates are installed and enabled through the actual CLI local
   marketplace. Pinned developer dependencies, all eight SDK tools and recipes
   pass. The three installed skills were followed to build an engine-only
-  disposable synthetic project with five passing tests. Automatic skill routing
-  in a fresh Codex conversation remains unverified.
+  disposable synthetic project with five passing tests. Three fresh desktop Codex routing trials select the intended sky/developer
+  skills and avoid them for an unrelated JavaScript prompt; their dated rc.15
+  evidence is retained in `evidence/fresh-codex-routing.json`. The installed
+  candidate is refreshed to rc.16 with actual server checks.
 - The sky ZIP imports in ChatGPT. The web host presents the portable plugin as
   desktop-only; a separate connected MCP app exercises the five hosted tools.
   Five positive and three negative cases, timezone ambiguity, unsupported kinds,
@@ -129,3 +131,20 @@ categorized refusals, elapsed time/cost, contextual referrals and reported repea
 use. No new user identifiers or activity trails are implemented. A chat answer
 must remain useful without a site click; distribution and ranking benefits are
 not measured or promised.
+
+## Current atomic quota and submission packet
+
+Approved main `65d800c5` is integrated; active bundles and developer dependencies
+use published rc.16. The former twelve-call overshoot is reproduced in retained
+rc.15 evidence and addressed by a separate atomic service-wide database quota.
+Database-clock fixed windows admit at most 40 incoming and ten expensive calls
+per minute in each trusted preview/production scope. Real 48-way PostgreSQL and
+REST contention checks pass; see [QUOTAS.md](./QUOTAS.md). These low shared
+ceilings bound work, not per-user fairness or useful model completions.
+
+[SUBMISSION.md](./SUBMISSION.md) provides the proposed listing, file inventory,
+walkthrough scope and exact domain-response procedure. [BETA_REVIEW.md](./BETA_REVIEW.md)
+is ready for owner-directed consenting recruitment; no participant was contacted.
+Owner identity verification and attestations still block portal upload. No
+challenge has been issued. Production, directory submission and PR merge require
+owner approval of the final concrete packet and accepted release gates.

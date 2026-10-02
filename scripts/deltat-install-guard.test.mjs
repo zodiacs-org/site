@@ -76,9 +76,17 @@ describe('astronomy-engine and the engine\'s clock', () => {
 
   it('finds the importers it has to, including one that reaches it through require', () => {
     const paths = importers.map(({ path }) => path);
-    for (const path of ['scripts/build-sky.mjs', 'scripts/build-eclipses.mjs', 'src/lib/engine/server-ephemeris.ts']) {
+    for (const path of ['scripts/build-eclipses.mjs', 'src/lib/engine/server-ephemeris.ts']) {
       expect(paths).toContain(path);
     }
+  });
+
+  it('keeps the product station generator on the same package longitude as monthly facts', () => {
+    const source = readFileSync(resolve(root, 'scripts/build-sky.mjs'), 'utf8');
+    expect(IMPORTS_ENGINE.test(source)).toBe(false);
+    expect(source).toContain("import { bodyLongitude } from '@zodiacs/engine/internal';");
+    expect(source).toContain('return bodyLongitude(body, date);');
+    expect(source).toContain('const h = 0.25;');
   });
 
   it('installs the model, not the polynomial, when the helper is loaded', () => {

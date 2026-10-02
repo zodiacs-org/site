@@ -1,0 +1,1079 @@
+{
+  "schema": "zodiacs-rc16-p103-refresh/v1",
+  "modes": {
+    "default-utc": {
+      "engineVersion": "0.1.1-rc.16",
+      "clockMode": "default-utc",
+      "interpretation": "Original default UTC chart input vs Swiss reading the timestamp as UT1",
+      "corpusSha256": "82a5466caefb919df66060dd46861ac4f68a678ef9ce3c16bfc423a94042cd9d",
+      "packageMismatches": 0,
+      "diagnosticMismatches": 0,
+      "gastSourceSha256": "0621a8da5a86cd747d55582e547c346ebbf0f1bfaaa9ff8c7024030689fbfdb8",
+      "grids": {
+        "A": 3128,
+        "L": 336
+      },
+      "engineFallbacks": {
+        "A": 0,
+        "L": 16
+      },
+      "swissBackendChecks": {
+        "A": {
+          "cases": 3128,
+          "discardedNonSwieph": 0,
+          "status0": 3128,
+          "statusMinus1": 0,
+          "errors": [],
+          "cReturnCodes": [
+            0
+          ],
+          "cSerr": [],
+          "flagsSun": [
+            258
+          ],
+          "flagsMoon": [
+            258
+          ],
+          "flagsEclNut": [
+            2
+          ],
+          "maxArmcCheckArcsec": 9.208633855450898e-10,
+          "maxCVsPyArcsec": 0.0,
+          "maxCVsPorphyryArcsec": null,
+          "statusVsCrcAgree": true
+        },
+        "L": {
+          "cases": 336,
+          "discardedNonSwieph": 0,
+          "status0": 320,
+          "statusMinus1": 16,
+          "errors": [
+            "swisseph.houses_ex: error"
+          ],
+          "cReturnCodes": [
+            -1,
+            0
+          ],
+          "cSerr": [
+            "within polar circle, switched to Porphyry"
+          ],
+          "flagsSun": [
+            258
+          ],
+          "flagsMoon": [
+            258
+          ],
+          "flagsEclNut": [
+            2
+          ],
+          "maxArmcCheckArcsec": 1.4836132322670892e-08,
+          "maxCVsPyArcsec": 0.0,
+          "maxCVsPorphyryArcsec": 0.0,
+          "statusVsCrcAgree": true
+        }
+      },
+      "quantiles": "p50/p95 as the audit computed them (v[floor(p(n-1))]); *_site as scripts/angles-grid.test.mjs (v[floor(pn)])",
+      "a_vsSwiss": {
+        "asc": {
+          "n": 3128,
+          "p50": 0.6539,
+          "p95": 6.2163,
+          "max": 160.6371,
+          "p50_site": 0.6539,
+          "p95_site": 6.279
+        },
+        "asc_worst": [
+          {
+            "utc": "2000-03-21T18:00:00Z",
+            "lat": -66,
+            "value": 160.6371
+          },
+          {
+            "utc": "1975-03-21T18:00:00Z",
+            "lat": -66,
+            "value": 154.5958
+          },
+          {
+            "utc": "2000-03-21T06:00:00Z",
+            "lat": 66,
+            "value": 122.662
+          }
+        ],
+        "asc_lat_le45": {
+          "n": 1496,
+          "p50": 0.7091,
+          "p95": 6.0049,
+          "max": 13.9182,
+          "p50_site": 0.7112,
+          "p95_site": 6.0321
+        },
+        "asc_lat_50_60": {
+          "n": 816,
+          "p50": 0.6898,
+          "p95": 5.3651,
+          "max": 31.3822,
+          "p50_site": 0.6912,
+          "p95_site": 5.3718
+        },
+        "asc_lat_ge63": {
+          "n": 816,
+          "p50": 0.4875,
+          "p95": 13.7197,
+          "max": 160.6371,
+          "p50_site": 0.5659,
+          "p95_site": 13.8618
+        },
+        "asc_inside1850_2050": {
+          "n": 1472,
+          "p50": 0.001,
+          "p95": 7.18,
+          "max": 160.6371,
+          "p50_site": 0.001,
+          "p95_site": 7.2198
+        },
+        "asc_outside1850_2050": {
+          "n": 1656,
+          "p50": 1.0382,
+          "p95": 3.4507,
+          "max": 68.1737,
+          "p50_site": 1.0449,
+          "p95_site": 3.6128
+        },
+        "mc": {
+          "n": 3128,
+          "p50": 0.6785,
+          "p95": 6.6477,
+          "max": 7.9052,
+          "p50_site": 0.6884,
+          "p95_site": 6.6477
+        },
+        "mc_worst": [
+          {
+            "utc": "1975-03-21T00:00:00Z",
+            "lat": 0,
+            "value": 7.9052
+          }
+        ],
+        "placidusCuspsAll12": {
+          "n": 3128,
+          "p50": 1.0071,
+          "p95": 8.4019,
+          "max": 160.6371,
+          "p50_site": 1.0187,
+          "p95_site": 8.405
+        },
+        "placidusIntermediateCusps": {
+          "n": 3128,
+          "p50": 0.9083,
+          "p95": 6.9849,
+          "max": 20.4696,
+          "p50_site": 0.9089,
+          "p95_site": 7.0073
+        },
+        "swissMinusErfa_asc": {
+          "n": 3128,
+          "p50": 0.6534,
+          "p95": 6.216,
+          "max": 160.6712,
+          "p50_site": 0.6535,
+          "p95_site": 6.2802
+        },
+        "swissMinusErfa_ramc_inside": {
+          "n": 1472,
+          "p50": 0.0008,
+          "p95": 7.241,
+          "max": 7.2562,
+          "p50_site": 0.0008,
+          "p95_site": 7.241
+        },
+        "swissMinusErfa_ramc_outside": {
+          "n": 1656,
+          "p50": 1.4281,
+          "p95": 1.9082,
+          "max": 1.9083,
+          "p50_site": 1.4281,
+          "p95_site": 1.9082
+        },
+        "swissMinusErfa_eps": {
+          "n": 3128,
+          "p50": 0.0004,
+          "p95": 0.0007,
+          "max": 0.0008,
+          "p50_site": 0.0004,
+          "p95_site": 0.0007
+        },
+        "swissClockShare_ramc": {
+          "n": 3128,
+          "p50": 0.0,
+          "p95": 7.2247,
+          "max": 7.2548,
+          "p50_site": 0.0,
+          "p95_site": 7.2247
+        },
+        "swissClockShare_eps": {
+          "n": 3128,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 0.0,
+          "p50_site": 0.0,
+          "p95_site": 0.0
+        },
+        "gates": {
+          "p95_le_3": false,
+          "max_le_75": false
+        }
+      },
+      "b_vsERFA": {
+        "asc": {
+          "n": 3128,
+          "p50": 0.0007,
+          "p95": 0.0035,
+          "max": 0.0956,
+          "p50_site": 0.0007,
+          "p95_site": 0.0036
+        },
+        "asc_worst": [
+          {
+            "utc": "1850-03-21T18:00:00Z",
+            "lat": -66,
+            "value": -0.0956
+          },
+          {
+            "utc": "1850-03-21T06:00:00Z",
+            "lat": 66,
+            "value": -0.0847
+          },
+          {
+            "utc": "2100-03-21T18:00:00Z",
+            "lat": -66,
+            "value": 0.0749
+          }
+        ],
+        "asc_lat_le45": {
+          "n": 1496,
+          "p50": 0.0007,
+          "p95": 0.0022,
+          "max": 0.0038,
+          "p50_site": 0.0007,
+          "p95_site": 0.0022
+        },
+        "asc_lat_le45_worst": [
+          {
+            "utc": "1800-03-21T21:00:00Z",
+            "lat": -45,
+            "value": 0.0038
+          }
+        ],
+        "mc": {
+          "n": 3128,
+          "p50": 0.0007,
+          "p95": 0.0019,
+          "max": 0.0021,
+          "p50_site": 0.0007,
+          "p95_site": 0.0019
+        },
+        "mc_worst": [
+          {
+            "utc": "2200-03-21T15:00:00Z",
+            "lat": 0,
+            "value": -0.0021
+          }
+        ],
+        "formulaGapMaxArcsec": 6.548361852765083e-09,
+        "engineInputs": {
+          "dR": {
+            "n": 3128,
+            "p50": 0.0007,
+            "p95": 0.0019,
+            "max": 0.002,
+            "p50_site": 0.0007,
+            "p95_site": 0.0019
+          },
+          "dEps": {
+            "n": 3128,
+            "p50": 0.0003,
+            "p95": 0.0012,
+            "max": 0.0012,
+            "p50_site": 0.0003,
+            "p95_site": 0.0012
+          },
+          "dDpsi": {
+            "n": 3128,
+            "p50": 0.0007,
+            "p95": 0.002,
+            "max": 0.0022,
+            "p50_site": 0.0007,
+            "p95_site": 0.002
+          },
+          "dDeps": {
+            "n": 3128,
+            "p50": 0.0003,
+            "p95": 0.0012,
+            "max": 0.0012,
+            "p50_site": 0.0003,
+            "p95_site": 0.0012
+          },
+          "eeComplementary": {
+            "n": 3128,
+            "p50": 0.0017,
+            "p95": 0.0026,
+            "max": 0.0026,
+            "p50_site": 0.0017,
+            "p95_site": 0.0026
+          },
+          "dGmst": {
+            "n": 3128,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0,
+            "p50_site": 0.0,
+            "p95_site": 0.0
+          },
+          "dMobl": {
+            "n": 3128,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0,
+            "p50_site": 0.0,
+            "p95_site": 0.0
+          }
+        },
+        "gates": {
+          "max_le_8": true,
+          "lat_le45_max_le_0_5": true
+        }
+      },
+      "c_extraVectors": {
+        "gridA_63_65_66_all17epochs": {
+          "n": 816,
+          "maxAbs": {
+            "engVsSwiss": 160.637,
+            "engVsErfa": 0.096,
+            "swissVsErfa": 160.671
+          },
+          "byLatitude": {
+            "63": {
+              "engVsSwiss_inside": 51.554,
+              "engVsSwiss_outside": 13.862,
+              "engVsErfa_inside": 0.015,
+              "engVsErfa_outside": 0.014,
+              "swissVsErfa_inside": 51.563,
+              "swissVsErfa_outside": 13.863,
+              "mcEngVsSwiss": 7.905,
+              "cuspsEngVsSwiss_inside": 16.477,
+              "cuspsEngVsSwiss_outside": 4.286
+            },
+            "65": {
+              "engVsSwiss_inside": 99.765,
+              "engVsSwiss_outside": 28.887,
+              "engVsErfa_inside": 0.036,
+              "engVsErfa_outside": 0.03,
+              "swissVsErfa_inside": 99.781,
+              "swissVsErfa_outside": 28.887,
+              "mcEngVsSwiss": 7.905,
+              "cuspsEngVsSwiss_inside": 18.666,
+              "cuspsEngVsSwiss_outside": 4.851
+            },
+            "66": {
+              "engVsSwiss_inside": 160.637,
+              "engVsSwiss_outside": 68.174,
+              "engVsErfa_inside": 0.096,
+              "engVsErfa_outside": 0.075,
+              "swissVsErfa_inside": 160.671,
+              "swissVsErfa_outside": 68.163,
+              "mcEngVsSwiss": 7.905,
+              "cuspsEngVsSwiss_inside": 20.47,
+              "cuspsEngVsSwiss_outside": 5.327
+            }
+          },
+          "original5ArcsecondGate": {
+            "gateArcsec": 5,
+            "exceed": 63,
+            "exceedInsideSwissSidtWindow": 19,
+            "exceedOutsideSwissSidtWindow": 44,
+            "perLatitude": {
+              "-66": {
+                "n": 136,
+                "maxVsOracle": 160.637,
+                "gate": 5.0,
+                "exceed": 12
+              },
+              "-65": {
+                "n": 136,
+                "maxVsOracle": 99.765,
+                "gate": 5.0,
+                "exceed": 11
+              },
+              "-63": {
+                "n": 136,
+                "maxVsOracle": 51.554,
+                "gate": 5.0,
+                "exceed": 10
+              },
+              "63": {
+                "n": 136,
+                "maxVsOracle": 50.65,
+                "gate": 5.0,
+                "exceed": 9
+              },
+              "65": {
+                "n": 136,
+                "maxVsOracle": 91.446,
+                "gate": 5.0,
+                "exceed": 10
+              },
+              "66": {
+                "n": 136,
+                "maxVsOracle": 122.662,
+                "gate": 5.0,
+                "exceed": 11
+              }
+            },
+            "verdict": "FAIL"
+          }
+        },
+        "ledger_1800_1950_2200": {
+          "n": 144,
+          "maxAbs": {
+            "engVsSwiss": 19.956,
+            "engVsErfa": 0.033,
+            "swissVsErfa": 19.973
+          },
+          "byLatitude": {
+            "63": {
+              "engVsSwiss_inside": 0.002,
+              "engVsSwiss_outside": 4.872,
+              "engVsErfa_inside": 0.007,
+              "engVsErfa_outside": 0.012,
+              "swissVsErfa_inside": 0.006,
+              "swissVsErfa_outside": 4.884,
+              "mcEngVsSwiss": 0.739,
+              "cuspsEngVsSwiss_inside": 0.001,
+              "cuspsEngVsSwiss_outside": 1.528
+            },
+            "65": {
+              "engVsSwiss_inside": 0.006,
+              "engVsSwiss_outside": 9.862,
+              "engVsErfa_inside": 0.015,
+              "engVsErfa_outside": 0.021,
+              "swissVsErfa_inside": 0.01,
+              "swissVsErfa_outside": 9.883,
+              "mcEngVsSwiss": 0.739,
+              "cuspsEngVsSwiss_inside": 0.002,
+              "cuspsEngVsSwiss_outside": 1.729
+            },
+            "66": {
+              "engVsSwiss_inside": 0.021,
+              "engVsSwiss_outside": 19.956,
+              "engVsErfa_inside": 0.028,
+              "engVsErfa_outside": 0.033,
+              "swissVsErfa_inside": 0.007,
+              "swissVsErfa_outside": 19.973,
+              "mcEngVsSwiss": 0.739,
+              "cuspsEngVsSwiss_inside": 0.003,
+              "cuspsEngVsSwiss_outside": 1.895
+            }
+          },
+          "original5ArcsecondGate": {
+            "gateArcsec": 5,
+            "exceed": 7,
+            "exceedInsideSwissSidtWindow": 0,
+            "exceedOutsideSwissSidtWindow": 7,
+            "perLatitude": {
+              "-66": {
+                "n": 24,
+                "maxVsOracle": 19.956,
+                "gate": 5.0,
+                "exceed": 2
+              },
+              "-65": {
+                "n": 24,
+                "maxVsOracle": 9.862,
+                "gate": 5.0,
+                "exceed": 2
+              },
+              "-63": {
+                "n": 24,
+                "maxVsOracle": 4.872,
+                "gate": 5.0,
+                "exceed": 0
+              },
+              "63": {
+                "n": 24,
+                "maxVsOracle": 4.802,
+                "gate": 5.0,
+                "exceed": 0
+              },
+              "65": {
+                "n": 24,
+                "maxVsOracle": 9.239,
+                "gate": 5.0,
+                "exceed": 1
+              },
+              "66": {
+                "n": 24,
+                "maxVsOracle": 14.559,
+                "gate": 5.0,
+                "exceed": 2
+              }
+            },
+            "verdict": "FAIL"
+          }
+        }
+      },
+      "originalGates": {
+        "p95_le_3": false,
+        "max_le_75": false,
+        "max_le_8": true,
+        "lat_le45_max_le_0_5": true,
+        "extraVectorsAllWithin5ArcsecVsSwiss": false
+      },
+      "originalGateVerdict": "FAIL",
+      "rejectedAmendmentA1Applied": false,
+      "inputDigests": {
+        "engine-grids.json": "88586a6932998aea3dff58e9490f4116a3a2e84c36265d7dff1fa57af3aaf2e5",
+        "swiss-grids.json": "78a014b6110080935cb010ab6b1a062f5fe99d15995340eefcef2959f7c965b1",
+        "erfa-rebuild/angle-clock.json": "fc27081b641de1ecd4a2bcfb9944e2a7d2a66a1108a3e03e5c2eb070835b351b",
+        "erfa-rebuild/angle-grid-erfa.json": "6d37df671ebfd491a42c0912bb7fab0c035f25a04c922b474c5c15b39c0a514c"
+      },
+      "rawInstrumentDataCommitted": false
+    },
+    "aligned-ut1": {
+      "engineVersion": "0.1.1-rc.16",
+      "clockMode": "aligned-ut1",
+      "interpretation": "Same original timestamp explicitly read as UT1 on both sides",
+      "corpusSha256": "82a5466caefb919df66060dd46861ac4f68a678ef9ce3c16bfc423a94042cd9d",
+      "packageMismatches": 0,
+      "diagnosticMismatches": 0,
+      "gastSourceSha256": "0621a8da5a86cd747d55582e547c346ebbf0f1bfaaa9ff8c7024030689fbfdb8",
+      "grids": {
+        "A": 3128,
+        "L": 336
+      },
+      "engineFallbacks": {
+        "A": 0,
+        "L": 16
+      },
+      "swissBackendChecks": {
+        "A": {
+          "cases": 3128,
+          "discardedNonSwieph": 0,
+          "status0": 3128,
+          "statusMinus1": 0,
+          "errors": [],
+          "cReturnCodes": [
+            0
+          ],
+          "cSerr": [],
+          "flagsSun": [
+            258
+          ],
+          "flagsMoon": [
+            258
+          ],
+          "flagsEclNut": [
+            2
+          ],
+          "maxArmcCheckArcsec": 9.208633855450898e-10,
+          "maxCVsPyArcsec": 0.0,
+          "maxCVsPorphyryArcsec": null,
+          "statusVsCrcAgree": true
+        },
+        "L": {
+          "cases": 336,
+          "discardedNonSwieph": 0,
+          "status0": 320,
+          "statusMinus1": 16,
+          "errors": [
+            "swisseph.houses_ex: error"
+          ],
+          "cReturnCodes": [
+            -1,
+            0
+          ],
+          "cSerr": [
+            "within polar circle, switched to Porphyry"
+          ],
+          "flagsSun": [
+            258
+          ],
+          "flagsMoon": [
+            258
+          ],
+          "flagsEclNut": [
+            2
+          ],
+          "maxArmcCheckArcsec": 1.4836132322670892e-08,
+          "maxCVsPyArcsec": 0.0,
+          "maxCVsPorphyryArcsec": 0.0,
+          "statusVsCrcAgree": true
+        }
+      },
+      "quantiles": "p50/p95 as the audit computed them (v[floor(p(n-1))]); *_site as scripts/angles-grid.test.mjs (v[floor(pn)])",
+      "a_vsSwiss": {
+        "asc": {
+          "n": 3128,
+          "p50": 0.1913,
+          "p95": 2.096,
+          "max": 68.1737,
+          "p50_site": 0.1921,
+          "p95_site": 2.1032
+        },
+        "asc_worst": [
+          {
+            "utc": "2050-03-21T18:00:00Z",
+            "lat": -66,
+            "value": 68.1737
+          },
+          {
+            "utc": "2075-03-21T18:00:00Z",
+            "lat": -66,
+            "value": 64.9501
+          },
+          {
+            "utc": "2100-03-21T18:00:00Z",
+            "lat": -66,
+            "value": 60.4919
+          }
+        ],
+        "asc_lat_le45": {
+          "n": 1496,
+          "p50": 0.2321,
+          "p95": 2.0564,
+          "max": 3.6696,
+          "p50_site": 0.2378,
+          "p95_site": 2.065
+        },
+        "asc_lat_50_60": {
+          "n": 816,
+          "p50": 0.1801,
+          "p95": 2.0799,
+          "max": 8.3296,
+          "p50_site": 0.1815,
+          "p95_site": 2.096
+        },
+        "asc_lat_ge63": {
+          "n": 816,
+          "p50": 0.1427,
+          "p95": 6.9288,
+          "max": 68.1737,
+          "p50_site": 0.1428,
+          "p95_site": 7.8905
+        },
+        "asc_inside1850_2050": {
+          "n": 1472,
+          "p50": 0.0003,
+          "p95": 0.0019,
+          "max": 0.0663,
+          "p50_site": 0.0003,
+          "p95_site": 0.0019
+        },
+        "asc_outside1850_2050": {
+          "n": 1656,
+          "p50": 1.0382,
+          "p95": 3.4507,
+          "max": 68.1737,
+          "p50_site": 1.0449,
+          "p95_site": 3.6128
+        },
+        "mc": {
+          "n": 3128,
+          "p50": 0.2508,
+          "p95": 1.9077,
+          "max": 2.0794,
+          "p50_site": 0.2528,
+          "p95_site": 1.9077
+        },
+        "mc_worst": [
+          {
+            "utc": "2050-03-21T12:00:00Z",
+            "lat": 0,
+            "value": 2.0794
+          }
+        ],
+        "placidusCuspsAll12": {
+          "n": 3128,
+          "p50": 0.2881,
+          "p95": 3.2676,
+          "max": 68.1737,
+          "p50_site": 0.2921,
+          "p95_site": 3.272
+        },
+        "placidusIntermediateCusps": {
+          "n": 3128,
+          "p50": 0.2799,
+          "p95": 2.7328,
+          "max": 5.3273,
+          "p50_site": 0.2829,
+          "p95_site": 2.7348
+        },
+        "swissMinusErfa_asc": {
+          "n": 3128,
+          "p50": 0.1909,
+          "p95": 2.0969,
+          "max": 68.1629,
+          "p50_site": 0.1919,
+          "p95_site": 2.1035
+        },
+        "swissMinusErfa_ramc_inside": {
+          "n": 1472,
+          "p50": 0.0006,
+          "p95": 0.0012,
+          "max": 0.0014,
+          "p50_site": 0.0006,
+          "p95_site": 0.0012
+        },
+        "swissMinusErfa_ramc_outside": {
+          "n": 1656,
+          "p50": 1.4281,
+          "p95": 1.9082,
+          "max": 1.9083,
+          "p50_site": 1.4281,
+          "p95_site": 1.9082
+        },
+        "swissMinusErfa_eps": {
+          "n": 3128,
+          "p50": 0.0004,
+          "p95": 0.0007,
+          "max": 0.0008,
+          "p50_site": 0.0004,
+          "p95_site": 0.0007
+        },
+        "swissClockShare_ramc": {
+          "n": 3128,
+          "p50": 0.0,
+          "p95": 0.0001,
+          "max": 0.0001,
+          "p50_site": 0.0,
+          "p95_site": 0.0001
+        },
+        "swissClockShare_eps": {
+          "n": 3128,
+          "p50": 0.0,
+          "p95": 0.0,
+          "max": 0.0,
+          "p50_site": 0.0,
+          "p95_site": 0.0
+        },
+        "gates": {
+          "p95_le_3": true,
+          "max_le_75": true
+        }
+      },
+      "b_vsERFA": {
+        "asc": {
+          "n": 3128,
+          "p50": 0.0007,
+          "p95": 0.0035,
+          "max": 0.0956,
+          "p50_site": 0.0007,
+          "p95_site": 0.0036
+        },
+        "asc_worst": [
+          {
+            "utc": "1850-03-21T18:00:00Z",
+            "lat": -66,
+            "value": -0.0956
+          },
+          {
+            "utc": "1850-03-21T06:00:00Z",
+            "lat": 66,
+            "value": -0.0847
+          },
+          {
+            "utc": "2100-03-21T18:00:00Z",
+            "lat": -66,
+            "value": 0.0749
+          }
+        ],
+        "asc_lat_le45": {
+          "n": 1496,
+          "p50": 0.0007,
+          "p95": 0.0022,
+          "max": 0.0038,
+          "p50_site": 0.0007,
+          "p95_site": 0.0022
+        },
+        "asc_lat_le45_worst": [
+          {
+            "utc": "1800-03-21T21:00:00Z",
+            "lat": -45,
+            "value": 0.0038
+          }
+        ],
+        "mc": {
+          "n": 3128,
+          "p50": 0.0007,
+          "p95": 0.0019,
+          "max": 0.0021,
+          "p50_site": 0.0007,
+          "p95_site": 0.0019
+        },
+        "mc_worst": [
+          {
+            "utc": "2200-03-21T15:00:00Z",
+            "lat": 0,
+            "value": -0.0021
+          }
+        ],
+        "formulaGapMaxArcsec": 6.548361852765083e-09,
+        "engineInputs": {
+          "dR": {
+            "n": 3128,
+            "p50": 0.0007,
+            "p95": 0.0019,
+            "max": 0.002,
+            "p50_site": 0.0007,
+            "p95_site": 0.0019
+          },
+          "dEps": {
+            "n": 3128,
+            "p50": 0.0003,
+            "p95": 0.0012,
+            "max": 0.0012,
+            "p50_site": 0.0003,
+            "p95_site": 0.0012
+          },
+          "dDpsi": {
+            "n": 3128,
+            "p50": 0.0007,
+            "p95": 0.002,
+            "max": 0.0022,
+            "p50_site": 0.0007,
+            "p95_site": 0.002
+          },
+          "dDeps": {
+            "n": 3128,
+            "p50": 0.0003,
+            "p95": 0.0012,
+            "max": 0.0012,
+            "p50_site": 0.0003,
+            "p95_site": 0.0012
+          },
+          "eeComplementary": {
+            "n": 3128,
+            "p50": 0.0017,
+            "p95": 0.0026,
+            "max": 0.0026,
+            "p50_site": 0.0017,
+            "p95_site": 0.0026
+          },
+          "dGmst": {
+            "n": 3128,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0,
+            "p50_site": 0.0,
+            "p95_site": 0.0
+          },
+          "dMobl": {
+            "n": 3128,
+            "p50": 0.0,
+            "p95": 0.0,
+            "max": 0.0,
+            "p50_site": 0.0,
+            "p95_site": 0.0
+          }
+        },
+        "gates": {
+          "max_le_8": true,
+          "lat_le45_max_le_0_5": true
+        }
+      },
+      "c_extraVectors": {
+        "gridA_63_65_66_all17epochs": {
+          "n": 816,
+          "maxAbs": {
+            "engVsSwiss": 68.174,
+            "engVsErfa": 0.096,
+            "swissVsErfa": 68.163
+          },
+          "byLatitude": {
+            "63": {
+              "engVsSwiss_inside": 0.009,
+              "engVsSwiss_outside": 13.862,
+              "engVsErfa_inside": 0.015,
+              "engVsErfa_outside": 0.014,
+              "swissVsErfa_inside": 0.007,
+              "swissVsErfa_outside": 13.863,
+              "mcEngVsSwiss": 2.079,
+              "cuspsEngVsSwiss_inside": 0.004,
+              "cuspsEngVsSwiss_outside": 4.286
+            },
+            "65": {
+              "engVsSwiss_inside": 0.024,
+              "engVsSwiss_outside": 28.887,
+              "engVsErfa_inside": 0.036,
+              "engVsErfa_outside": 0.03,
+              "swissVsErfa_inside": 0.012,
+              "swissVsErfa_outside": 28.887,
+              "mcEngVsSwiss": 2.079,
+              "cuspsEngVsSwiss_inside": 0.005,
+              "cuspsEngVsSwiss_outside": 4.851
+            },
+            "66": {
+              "engVsSwiss_inside": 0.066,
+              "engVsSwiss_outside": 68.174,
+              "engVsErfa_inside": 0.096,
+              "engVsErfa_outside": 0.075,
+              "swissVsErfa_inside": 0.029,
+              "swissVsErfa_outside": 68.163,
+              "mcEngVsSwiss": 2.079,
+              "cuspsEngVsSwiss_inside": 0.007,
+              "cuspsEngVsSwiss_outside": 5.327
+            }
+          },
+          "original5ArcsecondGate": {
+            "gateArcsec": 5,
+            "exceed": 44,
+            "exceedInsideSwissSidtWindow": 0,
+            "exceedOutsideSwissSidtWindow": 44,
+            "perLatitude": {
+              "-66": {
+                "n": 136,
+                "maxVsOracle": 68.174,
+                "gate": 5.0,
+                "exceed": 9
+              },
+              "-65": {
+                "n": 136,
+                "maxVsOracle": 28.887,
+                "gate": 5.0,
+                "exceed": 8
+              },
+              "-63": {
+                "n": 136,
+                "maxVsOracle": 13.862,
+                "gate": 5.0,
+                "exceed": 6
+              },
+              "63": {
+                "n": 136,
+                "maxVsOracle": 13.72,
+                "gate": 5.0,
+                "exceed": 6
+              },
+              "65": {
+                "n": 136,
+                "maxVsOracle": 27.494,
+                "gate": 5.0,
+                "exceed": 7
+              },
+              "66": {
+                "n": 136,
+                "maxVsOracle": 51.094,
+                "gate": 5.0,
+                "exceed": 8
+              }
+            },
+            "verdict": "FAIL"
+          }
+        },
+        "ledger_1800_1950_2200": {
+          "n": 144,
+          "maxAbs": {
+            "engVsSwiss": 19.956,
+            "engVsErfa": 0.033,
+            "swissVsErfa": 19.973
+          },
+          "byLatitude": {
+            "63": {
+              "engVsSwiss_inside": 0.002,
+              "engVsSwiss_outside": 4.872,
+              "engVsErfa_inside": 0.007,
+              "engVsErfa_outside": 0.012,
+              "swissVsErfa_inside": 0.006,
+              "swissVsErfa_outside": 4.884,
+              "mcEngVsSwiss": 0.739,
+              "cuspsEngVsSwiss_inside": 0.001,
+              "cuspsEngVsSwiss_outside": 1.528
+            },
+            "65": {
+              "engVsSwiss_inside": 0.006,
+              "engVsSwiss_outside": 9.862,
+              "engVsErfa_inside": 0.015,
+              "engVsErfa_outside": 0.021,
+              "swissVsErfa_inside": 0.01,
+              "swissVsErfa_outside": 9.883,
+              "mcEngVsSwiss": 0.739,
+              "cuspsEngVsSwiss_inside": 0.002,
+              "cuspsEngVsSwiss_outside": 1.729
+            },
+            "66": {
+              "engVsSwiss_inside": 0.021,
+              "engVsSwiss_outside": 19.956,
+              "engVsErfa_inside": 0.028,
+              "engVsErfa_outside": 0.033,
+              "swissVsErfa_inside": 0.007,
+              "swissVsErfa_outside": 19.973,
+              "mcEngVsSwiss": 0.739,
+              "cuspsEngVsSwiss_inside": 0.003,
+              "cuspsEngVsSwiss_outside": 1.895
+            }
+          },
+          "original5ArcsecondGate": {
+            "gateArcsec": 5,
+            "exceed": 7,
+            "exceedInsideSwissSidtWindow": 0,
+            "exceedOutsideSwissSidtWindow": 7,
+            "perLatitude": {
+              "-66": {
+                "n": 24,
+                "maxVsOracle": 19.956,
+                "gate": 5.0,
+                "exceed": 2
+              },
+              "-65": {
+                "n": 24,
+                "maxVsOracle": 9.862,
+                "gate": 5.0,
+                "exceed": 2
+              },
+              "-63": {
+                "n": 24,
+                "maxVsOracle": 4.872,
+                "gate": 5.0,
+                "exceed": 0
+              },
+              "63": {
+                "n": 24,
+                "maxVsOracle": 4.802,
+                "gate": 5.0,
+                "exceed": 0
+              },
+              "65": {
+                "n": 24,
+                "maxVsOracle": 9.239,
+                "gate": 5.0,
+                "exceed": 1
+              },
+              "66": {
+                "n": 24,
+                "maxVsOracle": 14.559,
+                "gate": 5.0,
+                "exceed": 2
+              }
+            },
+            "verdict": "FAIL"
+          }
+        }
+      },
+      "originalGates": {
+        "p95_le_3": true,
+        "max_le_75": true,
+        "max_le_8": true,
+        "lat_le45_max_le_0_5": true,
+        "extraVectorsAllWithin5ArcsecVsSwiss": false
+      },
+      "originalGateVerdict": "FAIL",
+      "rejectedAmendmentA1Applied": false,
+      "inputDigests": {
+        "engine-grids.json": "4b29bc9b0ed9cdb39892d4309d3061af1b09bd67d3905fa46bd1a7937af55f3b",
+        "swiss-grids.json": "78a014b6110080935cb010ab6b1a062f5fe99d15995340eefcef2959f7c965b1",
+        "erfa-rebuild/angle-clock.json": "1a4f6898fda8979a66d850a2e3114e7c79a6282e1173f06e22a84d0d3b09ecb1",
+        "erfa-rebuild/angle-grid-erfa.json": "59ea67039327a8dbe2e173be662192b989e3e396f3e38dc23cf2300dd738f2f7"
+      },
+      "rawInstrumentDataCommitted": false
+    }
+  }
+}

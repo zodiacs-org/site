@@ -1,4 +1,5 @@
 import { moonPhase } from '@zodiacs/engine';
+import { createLocalTimeModule } from '../../api/_compute/local-time.mjs';
 import { ComputeApiError } from '../lib/compute-api/errors';
 import { BUDGETS, EPOCH, EVENT_KINDS } from '../lib/compute-api/constants';
 import { computeEvents, computePositions, computeSkyFact } from '../lib/compute-api/endpoints';
@@ -10,9 +11,9 @@ import { CONSUMER_CATALOG } from './catalog';
 import { AI_RESULT_SCHEMA, AI_TOOL_NAMES, AI_VERSION, INPUT_SCHEMAS, MAX_EVENT_DAYS, ORIGIN, OUTPUT_SCHEMAS, type AiToolName } from './contracts';
 
 export interface AiDependencies {
-  localTime: LocalTimeModule;
+  localTime?: LocalTimeModule;
   now?: () => Date;
-  /** Only the hosted boundary supplies a second events Firewall check. */
+  /** The hosted boundary supplies both Firewall and atomic event admission. */
   allowEvents?: () => Promise<'allowed' | 'limited' | 'unavailable'>;
 }
 
@@ -31,6 +32,9 @@ function failure(tool: AiToolName, code: string, message: string, retryAfterSeco
 
 /** One typed operation per call. No network, filesystem, persistence or logs. */
 export async function executeAiTool(tool: AiToolName, input: unknown, dependencies: AiDependencies) {
+  let ownedLocalTime: ReturnType<typeof createLocalTimeModule> | undefined;
+  const localTime = () => dependencies.localTime ?? (ownedLocalTime ??= createLocalTimeModule());
+  const resolveZone = (name: string) => localTime().canonicalZoneName(name);
   try {
     const parsed = INPUT_SCHEMAS[tool].safeParse(input);
     if (!parsed.success) return failure(tool, 'invalid-request', 'The arguments do not match the supported tool schema.');
@@ -44,7 +48,7 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
       }
       case 'get_sky': {
         const args = INPUT_SCHEMAS.get_sky.parse(input);
-        const zone = await zoneAt(args.zone ?? 'UTC', '/zone', name => dependencies.localTime.canonicalZoneName(name));
+        const zone = await zoneAt(args.zone ?? 'UTC', '/zone', resolveZone);
         const instant = args.instant ?? (dependencies.now?.() ?? new Date()).toISOString();
         const calculation = computePositions(parsePositionsRequest({ instants: [instant], ...(args.bodies ? { bodies: args.bodies } : {}) }));
         const utc = calculation.result.instants[0].instant;
@@ -58,7 +62,7 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
         const { zone: requestedZone, ...explicitRequest } = args;
         const now = args.from ? undefined : (dependencies.now?.() ?? new Date());
         const request = now ? { from: now.toISOString(), to: new Date(now.getTime() + 7 * 86_400_000).toISOString() } : explicitRequest;
-        const zone = await zoneAt(requestedZone ?? 'UTC', '/zone', name => dependencies.localTime.canonicalZoneName(name));
+        const zone = await zoneAt(requestedZone ?? 'UTC', '/zone', resolveZone);
         const parsedRequest = parseEventsRequest(request);
         if (parsedRequest.to.getTime() - parsedRequest.from.getTime() > MAX_EVENT_DAYS * 86_400_000) return failure(tool, 'budget-exhausted', 'An event window is at most 31 days long.');
         if (dependencies.allowEvents) {
@@ -72,13 +76,13 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
       }
       case 'check_sky_fact': {
         const args = INPUT_SCHEMAS.check_sky_fact.parse(input);
-        const request = await parseSkyFactRequest(args, name => dependencies.localTime.canonicalZoneName(name));
+        const request = await parseSkyFactRequest(args, resolveZone);
         // Date-based facts also run bounded searches; count them as events at the hosted boundary.
         if (args.date && dependencies.allowEvents) {
           const verdict = await dependencies.allowEvents();
           if (verdict !== 'allowed') return failure(tool, verdict === 'limited' ? 'rate-limited' : 'rate-limit-unavailable', 'Date-based fact computation is unavailable under its request limit. Try again later.', verdict === 'limited' ? 60 : 300);
         }
-        const calculation = await computeSkyFact(request, dependencies);
+        const calculation = await computeSkyFact(request, { localTime: localTime() });
         data = { answer: calculation.result.answer, calculation, interpretation: 'The verdict checks an astronomical proposition, not an astrological prediction.' };
         break;
       }
@@ -96,5 +100,5 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
   } catch (error) {
     if (error instanceof ComputeApiError) return failure(tool, error.detail.code, error.detail.message, error.detail.retryAfterSeconds);
     return failure(tool, 'calculation-failed', 'Zodiacs could not complete this operation. No partial result is returned.');
-  }
+  } finally { ownedLocalTime?.dispose(); }
 }

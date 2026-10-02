@@ -1,7 +1,6 @@
 import assert from 'node:assert/strict';
 import { readFile, mkdir, writeFile } from 'node:fs/promises';
 import { performance } from 'node:perf_hooks';
-import * as localTime from '../api/_compute/local-time.mjs';
 import { executeAiTool } from '../src/ai-tools/tools';
 import type { AiToolName } from '../src/ai-tools/contracts';
 import { natalChart, ENGINE_VERSION } from '@zodiacs/engine';
@@ -13,7 +12,7 @@ assert.equal(cases.length, 40);
 const timings: number[] = [], results = [];
 for (const entry of cases) {
   const start = performance.now();
-  const result = await executeAiTool(entry.tool as AiToolName, entry.args, { localTime, now: () => new Date('2026-10-01T06:00:00Z') });
+  const result = await executeAiTool(entry.tool as AiToolName, entry.args, { now: () => new Date('2026-10-01T06:00:00Z') });
   timings.push(performance.now() - start);
   assert.equal(result.ok, entry.ok, `${entry.id}: expected ${entry.ok}, received ${JSON.stringify(result)}`);
   assert.ok(!JSON.stringify(result).includes('private-canary'));
