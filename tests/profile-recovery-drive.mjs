@@ -3,11 +3,28 @@ import assert from 'node:assert/strict';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { chromium, webkit } from 'playwright-core';
 import sharp from 'sharp';
+import { createServer } from 'node:http';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { withPreview } from './visual/preview-server.mjs';
 
 const serviceURL = process.env.PUBLIC_SUPABASE_URL ?? 'https://mftpcdpttteuwbolobye.supabase.co';
 const authStorageKey = `sb-${new URL(serviceURL).hostname.split('.')[0]}-auth-token`;
+// Linux WebKit may issue preflight before route interception. A loopback-only
+// server handles that handshake; every data-bearing request must hit the mock.
+let preflightServer;
+if (new URL(serviceURL).hostname === '127.0.0.1') {
+  preflightServer = createServer((req, res) => {
+    res.setHeader('access-control-allow-origin', req.headers.origin ?? '*');
+    res.setHeader('access-control-allow-methods', 'GET,POST,DELETE,OPTIONS');
+    res.setHeader('access-control-allow-headers', req.headers['access-control-request-headers'] ?? '*');
+    res.setHeader('access-control-allow-credentials', 'true');
+    res.writeHead(req.method === 'OPTIONS' ? 204 : 500); res.end();
+  });
+  await new Promise((resolve, reject) => {
+    preflightServer.once('error', reject);
+    preflightServer.listen(Number(new URL(serviceURL).port), '127.0.0.1', resolve);
+  });
+}
 const out = process.env.OUT_DIR ?? '/tmp/zodiacs-profile-recovery';
 await mkdir(out, { recursive: true });
 const checks = [];
@@ -28,7 +45,7 @@ const session = { access_token: jwt, refresh_token: 'fixture-refresh', token_typ
   expires_at: Math.floor(Date.now() / 1000) + 7200, user };
 const photo = await sharp({ create: { width: 900, height: 600, channels: 3, background: '#B9D4BE' } }).png().toBuffer();
 
-await withPreview({ port: 8786 }, async base => {
+try { await withPreview({ port: 8786 }, async base => {
 for (const engine of (process.env.PROFILE_TEST_ENGINES ?? 'chromium,webkit').split(',')) {
   const browser = engine === 'webkit' ? await webkit.launch({ headless: true })
     : await chromium.launch({ headless: true, executablePath: await findChromium(), args: STABLE_CHROMIUM_ARGS });
@@ -159,3 +176,4 @@ for (const engine of (process.env.PROFILE_TEST_ENGINES ?? 'chromium,webkit').spl
 await writeFile(`${out}/results.json`, JSON.stringify({ checks, count: checks.length, simulatedCloud: true }, null, 2));
 console.log(`Profile recovery: ${checks.length} checks passed.`);
 });
+} finally { if (preflightServer) await new Promise(resolve => preflightServer.close(resolve)); }

@@ -712,7 +712,9 @@ jobs:
       PUBLIC_PLAUSIBLE_SCRIPT_URL: https://plausible.io/js/script.js
       SOLANA_RPC_URL: https://production-flags-ci.invalid/rpc
       BASE_RPC_URL: https://production-flags-ci.invalid/base
-      PUBLIC_SUPABASE_URL: https://production-flags-ci.invalid
+      # Linux WebKit resolves hosts before Playwright can intercept fetch.
+      # The recovery driver owns this loopback fixture; no live account service.
+      PUBLIC_SUPABASE_URL: http://127.0.0.1:54321
       SUPABASE_SERVICE_ROLE_KEY: ci_stand_in_service_role
       DAILY_EMAIL_ENABLED: "1"
       EMAIL_PROVIDER: resend
