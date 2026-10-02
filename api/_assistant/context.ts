@@ -24,7 +24,7 @@ These lines use each live page’s meta description to state what it computes or
 - /ask/ — Ask Guide about birth charts, astrology, or Zodiacs.org tools and guides. Signed-out conversations are not stored by Zodiacs.org.
 - /baby-zodiac/ — Enter a due date: the near-certain sun sign (cusp caveats computed, not guessed), the week's possible moon signs, and what has to wait for the birth minute. Free.
 - /birth-chart/ — Calculate your free birth chart: sun, moon, rising, planets, houses, and what they mean — computed privately, in your browser.
-- /birthday/ — Choose your birthday for a date-specific reading of character, relationships, work, and growth, with an exact Sun-sign answer when the birth year matters.
+- /birthday/ — Choose your birthday for a date-specific astrology reading, with Sun-sign information and year-by-year guidance for birthdays near a sign change.
 - /compatibility/ — Free astrology compatibility calculator: compare two birth charts privately in your browser, with clear readings and guides to all 78 sign pairings.
 - /eclipses/ — Every solar and lunar eclipse through 2028 with exact peak times and zodiac signs — including the August 12, 2026 total solar eclipse over Iceland and Spain.
 - /full-moon-calendar/ — Every full moon in 2026 and 2027: exact date and universal time, the Moon's zodiac sign and degree, and the traditional name — Wolf to Cold, blue moon included.
