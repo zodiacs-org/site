@@ -2826,9 +2826,11 @@
        bag on phones and tablets; it rises above the bag while the bag shows
        and settles back when the bag rests. */
     @media (max-width: 900px) {
+      body .zguide-launcher {
+        transition: opacity 180ms ease, transform 180ms ease, translate 320ms var(--ease);
+      }
       body:has(.campaign-bag:not(.is-hidden)) .zguide-launcher {
         translate: 0 -78px;
-        transition: opacity 180ms ease, transform 180ms ease, translate 320ms var(--ease);
       }
     }
     /* Phones: as the page moves on, the film stays in place and dims, the

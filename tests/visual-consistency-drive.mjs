@@ -130,6 +130,34 @@ await withPreview({ port: 8787 }, async baseURL => {
         }
         await context.close();
       }
+      for (const reducedMotion of ['no-preference', 'reduce']) {
+        const context = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion, serviceWorkers: 'block' });
+        await context.route('https://*.supabase.co/**', route => route.abort());
+        await context.route('https://api.dexscreener.com/**', route => route.fulfill({ status: 503, body: 'Fixture unavailable' }));
+        const page = await context.newPage();
+        await page.goto(`${baseURL}/astrofolio/?sign=leo`, { waitUntil: 'load' });
+        await page.locator('.campaign-bag:not(.is-hidden)').waitFor();
+        await page.locator('.zguide-launcher').waitFor();
+        await page.waitForTimeout(400);
+        // Exercise the same CSS state used when scrolling past the buy section.
+        const movement = await page.evaluate(async () => {
+          const guide = document.querySelector('.zguide-launcher');
+          const before = guide.getBoundingClientRect().y;
+          document.querySelector('.campaign-bag').classList.add('is-hidden');
+          const first = guide.getBoundingClientRect().y;
+          await new Promise(resolve => setTimeout(resolve, 120));
+          const middle = guide.getBoundingClientRect().y;
+          await new Promise(resolve => setTimeout(resolve, 400));
+          return { before, first, middle, end: guide.getBoundingClientRect().y };
+        });
+        assert.ok(Math.abs(movement.end - movement.before - 90) < 1, `${engine}: Guide return distance changed`);
+        if (reducedMotion === 'reduce') assert.ok(Math.abs(movement.first - movement.end) < 1, `${engine}: reduced motion must return immediately`);
+        else {
+          assert.ok(movement.first - movement.before < 45, `${engine}: Guide snaps on its first frame`);
+          assert.ok(movement.middle > movement.first + 1 && movement.middle < movement.end - 1, `${engine}: Guide needs a smooth return`);
+        }
+        await context.close();
+      }
       const context = await browser.newContext({ viewport: { width: 320, height: 844 }, reducedMotion: 'reduce', serviceWorkers: 'block' });
       await context.addInitScript(profile => localStorage.setItem('zodiacs.profile.v1', JSON.stringify(profile)), profile);
       await context.route('https://*.supabase.co/**', route => route.abort());
