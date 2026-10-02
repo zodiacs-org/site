@@ -50,7 +50,9 @@ for (const engine of (process.env.PROFILE_TEST_ENGINES ?? 'chromium,webkit').spl
   const browser = engine === 'webkit' ? await webkit.launch({ headless: true })
     : await chromium.launch({ headless: true, executablePath: await findChromium(), args: STABLE_CHROMIUM_ARGS });
   const cloud = { charts: [], settings: { houseSystem: 'whole' }, fail: false, otp: null, otpURL: null };
-  const options = { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 1, reducedMotion: 'reduce' };
+  // The PWA has its own drive. Keep these mocked account requests observable;
+  // service-worker-controlled requests can bypass Playwright interception.
+  const options = { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 1, reducedMotion: 'reduce', serviceWorkers: 'block' };
   async function context({ seed = false, signedIn = false, width = 390 } = {}) {
     const ctx = await browser.newContext({ ...options, viewport: { width, height: 844 } });
     await ctx.addInitScript(({ seed, signedIn, profile, session, authStorageKey }) => {
