@@ -42,7 +42,7 @@ function renderLinks(links, external = false) {
   )).join('');
 }
 
-export const SITE_FOOTER_STYLESHEET = '<link rel="stylesheet" href="/assets/site-footer.css" />';
+export const SITE_FOOTER_STYLESHEET = '<link rel="stylesheet" href="/assets/site-footer.css?v=20261003" />';
 
 export function renderStaticFooter({
   tagline = 'The official public Registry of the Twelve.',

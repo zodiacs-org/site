@@ -34,7 +34,7 @@ function observeNoscriptFooter() {
 async function footerState(page, allowNoscript = false) {
   const state = await page.evaluate(observeFooterStyles);
   const geometry = await page.evaluate(() => ({
-    links: document.querySelectorAll('link[href="/assets/site-footer.css"]').length,
+    links: document.querySelectorAll('link[href="/assets/site-footer.css?v=20261003"]').length,
     columns: getComputedStyle(document.querySelector('.zfooter__directory')).gridTemplateColumns.split(' ').filter(Boolean).length,
   }));
   const noscriptSheetLoaded = allowNoscript && await page.evaluate(observeNoscriptFooter);
@@ -88,7 +88,7 @@ async function recordTiming(context) {
     window.__footerWindowLoadAt = null;
     window.__footerLinkAt = null;
     const record = () => {
-      if (window.__footerLinkAt === null && document.querySelector('link[href="/assets/site-footer.css"]')) {
+      if (window.__footerLinkAt === null && document.querySelector('link[href="/assets/site-footer.css?v=20261003"]')) {
         window.__footerLinkAt = performance.now();
       }
     };
@@ -159,7 +159,7 @@ export async function runFooterStyleChecks({ browser, baseURL, check, outDir }) 
       // interval; the exact later250ms dedup race is covered by the real-IIFE unit.
       await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
       check(`Footer approach ${width}: completing load retains one applied stylesheet`,
-        await page.locator('link[href="/assets/site-footer.css"]').count() === 1 && observations.css.length === 1);
+        await page.locator('link[href="/assets/site-footer.css?v=20261003"]').count() === 1 && observations.css.length === 1);
       records.push({ label: 'approach-before-load', width, initial, beforeRelease, applied, portraitUrls, css: observations.css });
     } finally {
       release();

@@ -2159,10 +2159,13 @@
       z-index: 45;
       bottom: calc(16px + env(safe-area-inset-bottom, 0px));
       left: 50%;
+      width: min(440px, calc(100% - 24px));
+      min-height: 62px;
       max-width: calc(100% - 24px);
-      display: flex;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 180px;
       align-items: center;
-      gap: 14px;
+      gap: 10px;
       padding: 6px 6px 6px 8px;
       border: 1px solid var(--hair-2);
       border-radius: 999px;
@@ -2179,7 +2182,8 @@
       transform: translate(-50%, 140%);
       transition: transform 480ms var(--ease), opacity 360ms ease, visibility 0s linear 480ms;
     }
-    .campaign-bag__who { min-width: 0; display: flex; align-items: center; gap: 10px; padding-right: 2px; }
+    .campaign-bag__who { min-width: 0; display: flex; align-items: center; gap: 8px; padding-right: 2px; }
+    .campaign-bag > .btn--fomo { width: 100%; }
     .campaign-bag__who img {
       width: 40px;
       height: 40px;
@@ -2770,6 +2774,7 @@
         right: 12px;
         bottom: calc(12px + env(safe-area-inset-bottom, 0px));
         left: 12px;
+        width: auto;
         max-width: none;
         justify-content: space-between;
         transform: none;
@@ -2969,10 +2974,9 @@
       -webkit-tap-highlight-color: transparent;
     }
     .campaign-bag__pick:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
-    /* The caret rides beside the name, so the status line keeps its width.
-       Where a long name needs the room, the caret wraps onto a clipped
-       second line instead of cutting the name short. */
-    .campaign-bag__name { min-width: 0; height: 20px; display: flex; flex-wrap: wrap; align-items: center; column-gap: 6px; overflow: hidden; }
+    /* Keep the sign picker visible beside every name, including Sagittarius. */
+    .campaign-bag__name { min-width: 0; height: 20px; display: flex; align-items: center; column-gap: 4px; }
+    .campaign-bag__name strong { min-width: 0; }
     .campaign-bag__caret { flex: 0 0 12px; color: var(--ink-dim); }
     .campaign-sheet {
       width: min(100%, 560px);
@@ -3055,9 +3059,20 @@
       .campaign-bag { right: auto; left: 50%; width: min(560px, calc(100% - 24px)); transform: translateX(-50%); }
       .campaign-bag.is-hidden { transform: translate(-50%, 140%); }
     }
-    @media (max-width: 360px) {
-      .campaign-bag { gap: 10px; padding-left: 12px; }
+    @media (max-width: 600px) {
+      .campaign-bag { min-height: 74px; }
+      body:has(.campaign-bag:not(.is-hidden)) .zguide-launcher { translate: 0 -90px; }
+      .campaign-bag__who strong { font-size: 18px; }
+      /* Both the price and daily movement retain their own line. Reserve the
+         same space while loading, unavailable, or displaying sign dates. */
+      .campaign-bag__who small { display: grid; min-height: 28px; align-content: center; gap: 1px; }
+    }
+    @media (max-width: 380px) {
       .campaign-bag__who img { display: none; }
+    }
+    @media (max-width: 340px) {
+      .campaign-bag { grid-template-columns: minmax(0, 1fr) 178px; column-gap: 8px; }
+      .campaign-bag__who strong { font-size: 16px; }
     }
     @media (min-width: 901px) and (prefers-reduced-motion: reduce) {
       .campaign-hero { height: auto; }

@@ -5629,7 +5629,6 @@
     // bag stays over the runway, follows the look in view, and its sign opens
     // a sheet of all twelve. It rests over the closing notice and footer.
     function CampaignBag({ sign, batch, onPick }) {
-      const seasonTicker = useCurrentSeason()?.sign.ticker ?? '';
       const [shown, setShown] = useState(true);
       const phone = useMediaMatch(CAMPAIGN_PHONE_QUERY);
       const sheetRef = useRef(null);
@@ -5700,7 +5699,7 @@
                   <span>{formatPriceUsd(quote.priceUsd)}</span>
                   {change !== null && <span className={`campaign-bag__move is-${direction}`}>{formatPercent(change)}</span>}
                 </>
-              ) : <span>{sign.ticker === seasonTicker ? 'In season now' : consumerSignDateLabel(sign)}</span>}
+              ) : <span>{batch.status === 'unavailable' ? 'Price unavailable' : 'Reading price…'}</span>}
             </small>
           </span>
         </>
