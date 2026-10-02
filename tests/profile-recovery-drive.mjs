@@ -47,7 +47,12 @@ for (const engine of (process.env.PROFILE_TEST_ENGINES ?? 'chromium,webkit').spl
     }, { seed, signedIn, profile, session, authStorageKey });
     await ctx.route(`${serviceURL}/**`, async route => {
       const req = route.request(), url = new URL(req.url());
-      const reply = (json, status = 200) => route.fulfill({ status, contentType: 'application/json', body: JSON.stringify(json) });
+      const headers = { 'access-control-allow-origin': new URL(base).origin,
+        'access-control-allow-methods': 'GET,POST,DELETE,OPTIONS',
+        'access-control-allow-headers': 'apikey,authorization,content-type,x-client-info',
+        'access-control-allow-credentials': 'true' };
+      const reply = (json, status = 200) => route.fulfill({ status, headers, contentType: 'application/json', body: JSON.stringify(json) });
+      if (req.method() === 'OPTIONS') return route.fulfill({ status: 204, headers });
       if (url.pathname === '/auth/v1/otp') { cloud.otp = req.postDataJSON(); cloud.otpURL = url; return reply({}); }
       if (url.pathname === '/auth/v1/user') return reply(user);
       if (url.pathname === '/auth/v1/token') return reply(session);
@@ -74,7 +79,9 @@ for (const engine of (process.env.PROFILE_TEST_ENGINES ?? 'chromium,webkit').spl
   }
   try {
     const first = await context({ seed: true }); const page = await first.newPage(); const errors = [];
+    const consoleErrors = [];
     page.on('pageerror', e => errors.push(e.message));
+    page.on('console', m => { if (m.type() === 'error') consoleErrors.push(m.text()); });
     await page.goto(`${base}/profile/`);
     await page.getByRole('button', { name: 'Edit profile', exact: true }).waitFor();
     await page.getByRole('link', { name: 'Save across devices' }).waitFor();
@@ -126,7 +133,11 @@ for (const engine of (process.env.PROFILE_TEST_ENGINES ?? 'chromium,webkit').spl
     await page.getByRole('link', { name: 'Save across devices' }).click();
     await page.getByRole('textbox', { name: 'Email for profile sync' }).fill(user.email);
     await page.getByRole('button', { name: 'Send sign-in link ↗' }).click();
-    await page.waitForFunction(() => document.querySelector('.pf-sync__message')?.textContent?.includes('Check'));
+    await page.waitForFunction(() => document.querySelector('.pf-sync__message')?.textContent?.includes('Check')).catch(async error => {
+      console.log(`${engine}: email fixture diagnostics`, { requested: Boolean(cloud.otp),
+        message: await page.locator('.pf-sync__message').allTextContents(), errors, consoleErrors });
+      throw error;
+    });
     check(`${engine}: email sign-in requests the correct return URL`, cloud.otp?.email === user.email && cloud.otpURL?.searchParams.get('redirect_to') === `${base}/profile/`);
     const cloudFirst = await context({ seed: true, signedIn: true }); const signed = await cloudFirst.newPage(); await signed.goto(`${base}/profile/`);
     await signed.getByText('Charts synced to your account', { exact: true }).waitFor();
