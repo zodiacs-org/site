@@ -1,0 +1,499 @@
+{
+  "schema": "zodiacs-site-engine-adoption-validation/v1",
+  "recordedAtUTC": "2026-10-01T10:18:44.650497+00:00",
+  "scope": "Local engine/API/package preparation only. Not release-ready while the named gates fail or remain pending; no push, publication, merge to remote main, deployment, broad accuracy acceptance or owner signoff.",
+  "sourceIdentity": {
+    "validatedSource": "3e9011919094659f39660e7271c97f3075e30283",
+    "currentMain": "450f0fd948d86d82c416bcbd51b3dace5196097e",
+    "outputComparisonBase": "ed55dacb449ada6e4893676c80bd0d9ba73db576",
+    "startingWip": "4f5df85400fb520d7a5d78a7c6a2a0b4b3d8cbcb",
+    "computePrerequisite": "458b6ab9edbf82cf31a560d08c898c57bbdcf8c0",
+    "integrationBinding": "final-checks/integration-binding.json",
+    "boundedReviewSource": "18fdf260b843cae1395d6edaf8113980c57e351a",
+    "note": "This evidence carrier follows the validated source. A separate metadata-only commit pins it; native captures must follow the final build. Owner Guide/homepage/navigation changes are preserved through source ancestry, with no adoption-authored frontend repair."
+  },
+  "runtime": {
+    "node": "22.22.2",
+    "secondPackedConsumerNode": "24.19.0",
+    "pyerfa": "2.0.1.5",
+    "pyswissephDistribution": "2.10.3.2",
+    "swissLibrary": "2.10.03",
+    "hostCli": "Claude Code 2.1.286",
+    "packagingCli": "Vercel 62.0.0"
+  },
+  "engine": {
+    "version": "0.1.1-rc.16",
+    "sourceCommit": "ddbbaa0b1d21e16834722f81e8708816849c6726",
+    "artifactCommit": "ef44477f85f28a57d5ec7f61ed6ea6a99c4be563",
+    "path": "vendor/zodiacs-engine-0.1.1-rc.16.tgz",
+    "sha256": "43a72d30e483d8ff22024e403c4bd0d86d81bb6e1d0ad138f857cd001ab015d8",
+    "bytes": 266934,
+    "files": 69,
+    "unpackedBytes": 923282,
+    "installedFilesIndependentlyBound": 69,
+    "archiveMutated": false,
+    "registryRecord": "Dated 2026-09-30 rc.15 record retained; rc.16 labeled vendored candidate, not published"
+  },
+  "mcp": {
+    "version": "0.1.0-rc.16",
+    "path": "public/examples/zodiacs-mcp-server-0.1.0-rc.16.tgz",
+    "sha256": "dfc9177eb3e5e1a02163fdd0084dd88e426d13355103156213ccf8fc36f9aeb9",
+    "bytes": 89871,
+    "artifactCommit": "03142a4d9a78733876137f611586d7482793bee6",
+    "protocol": "87/87",
+    "regression": "18 scenarios / 112 assertions",
+    "namedHost": "7/7",
+    "hostLimits": "Disposable HOME/config/project; official pinned CLI; no login, model turn, auth-variable inheritance, new credential/grant, paid use or external agent conversation",
+    "hostSetup": "host-validation/setup.json"
+  },
+  "compute": {
+    "bundleBytes": 245241,
+    "sha256": "7e2f1e5c36ae577b513bbc438c295c7499668e138d1a0a8fdab7d34949c2bab6",
+    "privateStateEvidence": "PRIVATE-STATE.md",
+    "independentReview": "private-state-review/README.md",
+    "exactFreshProcessResponseComparisons": 9,
+    "packagedFreshProcesses": 60,
+    "packagedSuccessfulResponses": 120,
+    "packagedEvidence": "packaged-functions/validation.json",
+    "limits": "Server cleanup of audited request-bearing memos and resolver maps, not cryptographic erasure or universal platform-log assurance. Fixed public tables remain."
+  },
+  "outputAttribution": {
+    "schema": "zodiacs-site-output-evidence-validation/v1",
+    "node": "v22.22.2",
+    "pass": true,
+    "checks": [
+      "full original comparison call coverage retained",
+      "extra compared values are exactly the expanded time-scale leaves",
+      "exact intended versions, base and immutable archives",
+      "installed rc.16 byte-identical to every file in archive",
+      "exact comparison and witness source hashes match current tools",
+      "all differences accounted for exactly once by passing numerical witnesses",
+      "longitude latitude speed replays remain exact, no tolerance widening",
+      "negative controls prevent path-only explanations"
+    ],
+    "installedArchiveFilesChecked": 69,
+    "reportSha256": "44a943e754ac7a39ad4a68ceaa9789c22dbaa5574ccf377a3727c9c563af6023",
+    "sourceBindings": {
+      "compare-site-outputs.mjs": "94b3f8675fc7950ee4813e55881c3463eefba441bdce2a5063f0ff0b247abc40",
+      "output-mechanisms.mjs": "bfff6aa6a2a807b7af1261450c979d28d37fe619a8976e194aec154674d6e793"
+    },
+    "calls": 574961,
+    "comparedValues": 34189944,
+    "differingValues": 10131398,
+    "unexplainedValues": 0,
+    "mechanismFailures": 0,
+    "accuracyGateAcceptance": "No gate accepted or weakened; this is migration equivalence evidence only."
+  },
+  "numericalGates": {
+    "p103OriginalUtc": "FAIL: 63/816 over 5 arcseconds, maximum 160.637 arcseconds",
+    "p103AlignedUt1": "FAIL: 44/816 over 5 arcseconds, maximum 68.174 arcseconds",
+    "kochOriginal1850to2049Ladder": "FAIL: 48/353 over 3 arcseconds, maximum 82.677 arcseconds",
+    "kochAlignedUt1HistoricLadder": "PASS: 0/353, maximum 0.035 arcseconds; does not replace the original comparison",
+    "kochGivenInputAndPolar": "PASS; full-span end-to-end failures retained",
+    "conformance": {
+      "pass": 267,
+      "fail": 192,
+      "unsupported": 41
+    },
+    "evidence": "accuracy-refresh/summary.json",
+    "noAccuracyGateAcceptedOrWeakened": true
+  },
+  "stationConsistency": {
+    "changedPrimitiveOnly": "build-sky lonAt now imports bodyLongitude",
+    "unchangedDerivativeDays": 0.25,
+    "monthlyStations": 90,
+    "maxAgreementMs": 1237,
+    "unchangedGateMs": 2000,
+    "previousMaxDisagreementSeconds": 2651.961,
+    "swissMatchedEvents": 290,
+    "swissFallbacks": 0,
+    "swissStationMaxSeconds": 419.451,
+    "priorSwissStationMaxSeconds": 2454.39,
+    "evidence": "station-alignment/validation.json",
+    "noAccuracyAcceptance": true
+  },
+  "bundleBudgets": {
+    "default": {
+      "evidence": "docs/platform/evidence/site-engine-rc16/bundle-audit/latest-main-default-route-measurements.json",
+      "engineGzip": 33130,
+      "engineAllowanceBytes": 33380.4,
+      "headroomBytes": 250.4,
+      "rc15BaselineBytes": 32108,
+      "growthBytes": 1022,
+      "all16RoutesPass": true,
+      "routeAllowancesChanged": false,
+      "initialRoutesContainEphemeris": false,
+      "relationshipWheelGzip": 52151,
+      "relationshipWheelContainsEphemeris": false,
+      "routes": [
+        {
+          "route": "/",
+          "gzip": 31702,
+          "limitBytes": 43008,
+          "headroomBytes": 11306,
+          "passes": true
+        },
+        {
+          "route": "/birth-chart/",
+          "gzip": 69324,
+          "limitBytes": 72704,
+          "headroomBytes": 3380,
+          "passes": true
+        },
+        {
+          "route": "/big-three/",
+          "gzip": 30707,
+          "limitBytes": 30720,
+          "headroomBytes": 13,
+          "passes": true
+        },
+        {
+          "route": "/transits/",
+          "gzip": 29473,
+          "limitBytes": 30720,
+          "headroomBytes": 1247,
+          "passes": true
+        },
+        {
+          "route": "/solar-return/",
+          "gzip": 24522,
+          "limitBytes": 30720,
+          "headroomBytes": 6198,
+          "passes": true
+        },
+        {
+          "route": "/lunar-return/",
+          "gzip": 24429,
+          "limitBytes": 30720,
+          "headroomBytes": 6291,
+          "passes": true
+        },
+        {
+          "route": "/numerology/",
+          "gzip": 17744,
+          "limitBytes": 30720,
+          "headroomBytes": 12976,
+          "passes": true
+        },
+        {
+          "route": "/numerology/life-path/7/",
+          "gzip": 17744,
+          "limitBytes": 30720,
+          "headroomBytes": 12976,
+          "passes": true
+        },
+        {
+          "route": "/void-of-course-moon/",
+          "gzip": 0,
+          "limitBytes": 5120,
+          "headroomBytes": 5120,
+          "passes": true
+        },
+        {
+          "route": "/today/",
+          "gzip": 20916,
+          "limitBytes": 22016,
+          "headroomBytes": 1100,
+          "passes": true
+        },
+        {
+          "route": "/compatibility/",
+          "gzip": 36307,
+          "limitBytes": 36864,
+          "headroomBytes": 557,
+          "passes": true
+        },
+        {
+          "route": "/aries/",
+          "gzip": 0,
+          "limitBytes": 0,
+          "headroomBytes": 0,
+          "passes": true
+        },
+        {
+          "route": "/almanac/",
+          "gzip": 0,
+          "limitBytes": 0,
+          "headroomBytes": 0,
+          "passes": true
+        },
+        {
+          "route": "/almanac/sky-2026-08/",
+          "gzip": 0,
+          "limitBytes": 0,
+          "headroomBytes": 0,
+          "passes": true
+        },
+        {
+          "route": "/almanac/reading-a-childs-chart/",
+          "gzip": 0,
+          "limitBytes": 0,
+          "headroomBytes": 0,
+          "passes": true
+        },
+        {
+          "route": "/registry/collection/",
+          "gzip": 0,
+          "limitBytes": 49152,
+          "headroomBytes": 49152,
+          "passes": true
+        }
+      ]
+    },
+    "production": {
+      "evidence": "docs/platform/evidence/site-engine-rc16/bundle-audit/latest-main-production-route-measurements.json",
+      "engineGzip": 33130,
+      "engineAllowanceBytes": 33380.4,
+      "headroomBytes": 250.4,
+      "rc15BaselineBytes": 32108,
+      "growthBytes": 1022,
+      "all16RoutesPass": true,
+      "routeAllowancesChanged": false,
+      "initialRoutesContainEphemeris": false,
+      "relationshipWheelGzip": 52151,
+      "relationshipWheelContainsEphemeris": false,
+      "routes": [
+        {
+          "route": "/",
+          "gzip": 31702,
+          "limitBytes": 43008,
+          "headroomBytes": 11306,
+          "passes": true
+        },
+        {
+          "route": "/birth-chart/",
+          "gzip": 72512,
+          "limitBytes": 72704,
+          "headroomBytes": 192,
+          "passes": true
+        },
+        {
+          "route": "/big-three/",
+          "gzip": 30707,
+          "limitBytes": 30720,
+          "headroomBytes": 13,
+          "passes": true
+        },
+        {
+          "route": "/transits/",
+          "gzip": 29473,
+          "limitBytes": 30720,
+          "headroomBytes": 1247,
+          "passes": true
+        },
+        {
+          "route": "/solar-return/",
+          "gzip": 24522,
+          "limitBytes": 30720,
+          "headroomBytes": 6198,
+          "passes": true
+        },
+        {
+          "route": "/lunar-return/",
+          "gzip": 24429,
+          "limitBytes": 30720,
+          "headroomBytes": 6291,
+          "passes": true
+        },
+        {
+          "route": "/numerology/",
+          "gzip": 17744,
+          "limitBytes": 30720,
+          "headroomBytes": 12976,
+          "passes": true
+        },
+        {
+          "route": "/numerology/life-path/7/",
+          "gzip": 17744,
+          "limitBytes": 30720,
+          "headroomBytes": 12976,
+          "passes": true
+        },
+        {
+          "route": "/void-of-course-moon/",
+          "gzip": 0,
+          "limitBytes": 5120,
+          "headroomBytes": 5120,
+          "passes": true
+        },
+        {
+          "route": "/today/",
+          "gzip": 20919,
+          "limitBytes": 22016,
+          "headroomBytes": 1097,
+          "passes": true
+        },
+        {
+          "route": "/compatibility/",
+          "gzip": 36763,
+          "limitBytes": 36864,
+          "headroomBytes": 101,
+          "passes": true
+        },
+        {
+          "route": "/aries/",
+          "gzip": 0,
+          "limitBytes": 0,
+          "headroomBytes": 0,
+          "passes": true
+        },
+        {
+          "route": "/almanac/",
+          "gzip": 0,
+          "limitBytes": 0,
+          "headroomBytes": 0,
+          "passes": true
+        },
+        {
+          "route": "/almanac/sky-2026-08/",
+          "gzip": 0,
+          "limitBytes": 0,
+          "headroomBytes": 0,
+          "passes": true
+        },
+        {
+          "route": "/almanac/reading-a-childs-chart/",
+          "gzip": 0,
+          "limitBytes": 0,
+          "headroomBytes": 0,
+          "passes": true
+        },
+        {
+          "route": "/registry/collection/",
+          "gzip": 36637,
+          "limitBytes": 49152,
+          "headroomBytes": 12515,
+          "passes": true
+        }
+      ]
+    }
+  },
+  "checks": [
+    {
+      "name": "full-suite",
+      "command": "npm test -- --maxWorkers=4 --minWorkers=1",
+      "exitCode": 1,
+      "files": {
+        "passed": 497,
+        "failed": 3,
+        "skipped": 1
+      },
+      "tests": {
+        "passed": 6357,
+        "failed": 3,
+        "skipped": 4
+      },
+      "log": "final-checks/latest-main-tests.log",
+      "failures": [
+        {
+          "path": "scripts/build-assistant-context.test.mjs",
+          "reason": "Committed Guide context differs from its generator; owner-managed frontend work, excluded from this task."
+        },
+        {
+          "path": "scripts/home-first-paint.test.mjs",
+          "reason": "Old See your forecasts expectation no longer matches owner homepage copy; excluded from this task."
+        },
+        {
+          "path": "scripts/phase1-acceptance-evidence.test.mjs",
+          "reason": "Old native captures have stale template digest; approved CI/native retake required."
+        }
+      ],
+      "notes": "All assertions and timeouts unchanged. Earlier default-concurrency run plus simultaneous Astro check had three additional five-second timeouts, preserved in pre-latest-main-tests.log; all three pass in this serial-validation/four-worker run. No full-suite success is claimed."
+    },
+    {
+      "name": "astro-check",
+      "command": "npm run check",
+      "exitCode": 0,
+      "files": 1162,
+      "errors": 0,
+      "warnings": 0,
+      "hints": 18,
+      "log": "final-checks/latest-main-astro-check.log"
+    },
+    {
+      "name": "default-build",
+      "command": "ASTRO_TELEMETRY_DISABLED=1 npm run build",
+      "exitCode": 0,
+      "log": "final-checks/latest-main-default-build.log",
+      "includes": [
+        "prebuild",
+        "check-dist",
+        "report-bundles --fail",
+        "widget checks",
+        "schema checks",
+        "localization checks",
+        "static disclosure"
+      ]
+    },
+    {
+      "name": "production-flags-build",
+      "command": "npm run build with the 23 committed CI stand-ins",
+      "exitCode": 0,
+      "log": "final-checks/latest-main-production-build.log",
+      "flags": "production-build-fixture-flags.json",
+      "trackedFlagOnOutputsRestored": true
+    },
+    {
+      "name": "compute/local-time/MCP drift checks",
+      "exitCode": 0,
+      "log": "final-checks/artifact-checks.log"
+    },
+    {
+      "name": "independent-reference removal check",
+      "exitCode": 0,
+      "log": "final-checks/swiss-removal-check.log"
+    },
+    {
+      "name": "programme-ledger and protected-scope guard",
+      "exitCode": 0,
+      "base": "450f0fd948d86d82c416bcbd51b3dace5196097e",
+      "protectedPathAllowance": [
+        "scripts/registry-outlook.test.mjs"
+      ],
+      "goldenWitness": "registry-ingress-pin.json"
+    },
+    {
+      "name": "browser drives and final native captures",
+      "status": "NOT RUN",
+      "blocker": "Chromium launch denied by Unix-socket policy. No alternate route or escalation bypass attempted; approved CI required."
+    }
+  ],
+  "eligibleTechniqueUnits": [
+    "P2.E.returns",
+    "P2.E.void-of-course",
+    "P2.E.aspect-patterns",
+    "P2.E.moon-sign-candidates"
+  ],
+  "deferredTechniqueUnits": {
+    "P2.E.composite": "Adapter restored exactly to owner main; needs a lightweight package entry preserving ephemeris-free saved-chart view. Parity evidence retained.",
+    "P2.E.dignities": "Current shared entry conflicts with eager/lazy budget boundary.",
+    "P2.E.declinations": "Ephemeris-free entry and convention resolution still required.",
+    "P2.E.sect": "Ephemeris-free entry and convention resolution still required."
+  },
+  "programme": {
+    "ledgerByteIdenticalSinceReviewedPrerequisiteMerge": "7a026010",
+    "denominatorWeight": 182.45,
+    "acceptedWeight": 42.5,
+    "exactThreeDecimalPercent": "23.294%",
+    "reportedRoundedPercent": 23,
+    "blockedWeight": 4,
+    "summary": "final-checks/ledger-summary.log",
+    "newlyAcceptedUnits": []
+  },
+  "remaining": [
+    "Owner-managed Guide-context and homepage test fixes outside this task",
+    "Native browser drives and final Phase 1 captures on approved CI",
+    "Final remote review, engine/package release state, site/MCP adoption publication and deployment checks",
+    "Earlier P3.3/P1.15 checkpoints and unresolved accuracy gates remain separate"
+  ],
+  "restrictions": {
+    "moonEnclosureHoldoutRerun": false,
+    "rawSwissCodeDataValuesAdded": false,
+    "de440CoefficientsAdded": false,
+    "remoteMutations": false,
+    "secretDecryption": false,
+    "newCredentialsOrGrants": false,
+    "spending": false
+  },
+  "evidenceWhitespaceException": "Official Horizons response trailing spaces retained to preserve source bytes; all other diff whitespace checks pass."
+}

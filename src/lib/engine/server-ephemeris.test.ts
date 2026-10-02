@@ -22,7 +22,10 @@ describe('serverless ephemeris boundary', () => {
   // several arcseconds today and by minutes of arc at the span's ends. Since
   // engine rc.15 that clock reads 1972 to 2027-10-02 as UTC through the leap
   // seconds and IERS UT1 − UTC; on the ΔT model alone the server would differ
-  // there by up to UT1 − UTC, about half an arcsecond in the Moon.
+  // there by up to UT1 − UTC, about half an arcsecond in the Moon. Since
+  // engine rc.16 both also take the engine's frame of date and IAU 2000B
+  // nutation; on astronomy-engine's own rotation, which keeps 5 of its 77
+  // terms, every server longitude would differ by up to 0.27″.
   it('matches the browser SDK for every supported body across pinned instants', () => {
     for (const date of [
       new Date('1800-06-01T00:00:00Z'),

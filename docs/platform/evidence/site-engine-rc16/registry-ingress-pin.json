@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "node": "v22.22.2",
+  "generator": "scripts/build-transits.mjs",
+  "generatorSha256": "cc10f41747684625ac43964f97efc1bcabe6904815bbb3ca6c2c0e0ace1eef9f",
+  "sameGeneratorAsBase": "ed55dacb449ada6e4893676c80bd0d9ba73db576",
+  "test": "scripts/registry-outlook.test.mjs exact toEqual timestamp golden",
+  "sides": [
+    {
+      "version": "0.1.1-rc.15",
+      "archiveSha256": "24eeb597b0157598c0faa26bb615c0cb5dfaaeac0393d62c73fbd37c5da4d348",
+      "ingress": {
+        "planet": "Mercury",
+        "at": "2026-08-09T16:28:16.308Z",
+        "sign": "leo",
+        "retrograde": false
+      }
+    },
+    {
+      "version": "0.1.1-rc.16",
+      "archiveSha256": "43a72d30e483d8ff22024e403c4bd0d86d81bb6e1d0ad138f857cd001ab015d8",
+      "ingress": {
+        "planet": "Mercury",
+        "at": "2026-08-09T16:28:16.438Z",
+        "sign": "leo",
+        "retrograde": false
+      }
+    }
+  ],
+  "reportedShiftMs": 130,
+  "witness": {
+    "utc": "2026-08-09T16:28:16.308Z",
+    "oldLongitude": 120.00000000355635,
+    "newLongitude": 119.99999766881092,
+    "observedDeltaDegrees": -0.000002334745431653573,
+    "nutationDeltaDegrees": -0.000002334745511731246,
+    "residualDegrees": 8.007767278794624e-14
+  },
+  "limits": "Reported timestamps are the unchanged hourly-bracket/20-bisection generator output, rounded to JavaScript milliseconds. 130 ms is the exact golden-output shift, not a claimed exact mathematical-root displacement or new tolerance. No accuracy gate changed."
+}

@@ -89,6 +89,10 @@ describe('buildSceneModel parity', () => {
   });
 
   it('matches the committed Kahlo scene snapshot', () => {
+    // rc.16: +0.0739717″ in all longitudes from full IAU 2000B; speeds
+    // follow its derivative, and ASC/MC follow its obliquity and sidereal time.
+    // The attribution is recorded in site-engine-rc16/numerical-regressions.
+    // Scene structure, signs, houses, aspects and the seven-decimal gate stay fixed.
     expect(stableSnapshot(buildSceneModel(kahlo()))).toMatchSnapshot();
   });
 });

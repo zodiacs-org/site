@@ -1,0 +1,196 @@
+{
+  "schema": "zodiacs.rc16-browser-verification.v1",
+  "capturedSourceCommit": "4ecc62271a6cbdc632b6074e59bfb168fe44a2af",
+  "capturedSourceTree": "a06564751183b15a86313430fc9d4c3c19a0b818",
+  "renderSourceSha256": "4a0ef64e3dd233b144eb4d28220d87baecffcc54777be2f6ba1ba551b9fd87ce",
+  "runtime": {
+    "node": "v22.23.3",
+    "browser": "149.0.7827.55"
+  },
+  "compareRun": 36992327646,
+  "compareArtifact": 11221295381,
+  "compareZipSha256": "7ec44ac59333c49185394ca0da26d04668ae376869fb066ad1f0c6ff46da5682",
+  "compareManifestSha256": "609c8ba570ebf35b6897d94c8b5ea4810d0bed71646a297ce04e88bd9cd610c7",
+  "compareManifestFilesVerified": 742,
+  "phase1Captures": [
+    {
+      "file": "today-360.png",
+      "width": 360,
+      "height": 6289,
+      "sha256": "9fd10d74b612a6e9a95930ab1a136f6ce4a16fb25929b674c7bd05f55dd13402"
+    },
+    {
+      "file": "today-1280.png",
+      "width": 1280,
+      "height": 4056,
+      "sha256": "92ff23484dd314ce431add9cedccf0169f7fa6d93bdcbc0a0c3a31da2fd4e077"
+    },
+    {
+      "file": "horoscopes-hub-360.png",
+      "width": 360,
+      "height": 6033,
+      "sha256": "db955dd1c31bcc616533fcea3f5f75559019edea43aaa824f85b65729de137ae"
+    },
+    {
+      "file": "horoscopes-hub-1280.png",
+      "width": 1280,
+      "height": 3101,
+      "sha256": "c15b589fd98f952d30163f74ee2634711af02d34cbd14e9a5895cafd6b02fa46"
+    },
+    {
+      "file": "daily-360.png",
+      "width": 360,
+      "height": 4417,
+      "sha256": "6467f9b34955f2e1c4c59f6da4f34b75185812ed11cc04bb82fbf8e52d8ee6d0"
+    },
+    {
+      "file": "daily-1280.png",
+      "width": 1280,
+      "height": 3814,
+      "sha256": "ae8daee1ed2973a6e8d3288805b0f0bfd8bd0d5aa369b917ccce442b36ff9662"
+    },
+    {
+      "file": "tomorrow-360.png",
+      "width": 360,
+      "height": 4322,
+      "sha256": "7acefd478bfacfc9f9e0c0e33a064ae99ca5e30a67589a0573aa997b737b3ccd"
+    },
+    {
+      "file": "tomorrow-1280.png",
+      "width": 1280,
+      "height": 3694,
+      "sha256": "a9a2e6ee2db0568e4eaa934e8a7e307219a5e92d16d6b2025334ec2a85dedc3f"
+    },
+    {
+      "file": "weekly-360.png",
+      "width": 360,
+      "height": 5089,
+      "sha256": "185d802a4dd83c70d842c167c6c243c384d699c41eb5607160a2ff20e2aed96b"
+    },
+    {
+      "file": "weekly-1280.png",
+      "width": 1280,
+      "height": 4077,
+      "sha256": "96701dc496fb9833f7db9645633175413e93fcb0dc01a267f40b8e98531351ae"
+    },
+    {
+      "file": "monthly-360.png",
+      "width": 360,
+      "height": 4843,
+      "sha256": "6564a27a602537d9eace7f5361936bd02058761fb75e018cc0169f38abba7a67"
+    },
+    {
+      "file": "monthly-1280.png",
+      "width": 1280,
+      "height": 3805,
+      "sha256": "95cba5409d18f5efa8d741118dde67cc368290287eb1bf4ba1130ea867691c1b"
+    },
+    {
+      "file": "love-360.png",
+      "width": 360,
+      "height": 4039,
+      "sha256": "d05c0a4f4eafc8c5a05ec146d295acc440b7668da86c54ba8ae49a459fbb0baf"
+    },
+    {
+      "file": "love-1280.png",
+      "width": 1280,
+      "height": 3432,
+      "sha256": "3d231e290a73b3c37aebc78aa82ab4f15e808eba1a1aff8a3d5387eca3204c2c"
+    },
+    {
+      "file": "career-360.png",
+      "width": 360,
+      "height": 4022,
+      "sha256": "46828ee4cbfaaf0408cc337aa19843b4e24920b29a2ca7a94e7b5e1956ef2cf3"
+    },
+    {
+      "file": "career-1280.png",
+      "width": 1280,
+      "height": 3451,
+      "sha256": "51b66718966b644cc0a8647d5df71010f12e53c203f396e9e55c3d3290484688"
+    },
+    {
+      "file": "yearly-360.png",
+      "width": 360,
+      "height": 12476,
+      "sha256": "27706420b015b850df91224f4cc37b398524ce6d7267cf3a7e00a076d714fbc3"
+    },
+    {
+      "file": "yearly-1280.png",
+      "width": 1280,
+      "height": 7891,
+      "sha256": "bff598800dc98aceb6435c0c1aa3ac21ad74ae2f1b9c14707c671036f6163af3"
+    }
+  ],
+  "compareOutcomes": {
+    "checkout": "success",
+    "node": "success",
+    "request": "success",
+    "install": "success",
+    "browser": "success",
+    "build": "success",
+    "acceptance": "success",
+    "receipt": "success",
+    "visual": "failure",
+    "candidates": "skipped",
+    "lighthouse": "success",
+    "explorer": "failure"
+  },
+  "visualComparison": {
+    "passed": 13,
+    "failed": 2,
+    "failedCases": [
+      "events-hub-desktop",
+      "events-hub-desktop-reduced-motion"
+    ],
+    "oldHeight": 16743,
+    "newHeight": 16776,
+    "reviewedDifference": "The evidence-bound seven-minute station timing copy adds one desktop line. Full-page sections, calendar blocks and footer remain present without observed new clipping or geometry regression. This review is not independent numerical validation of every displayed catalogue value."
+  },
+  "candidateRun": 36994955743,
+  "candidateArtifact": 11221421848,
+  "candidateZipSha256": "70b65c92f620406326048e79101ee4de328448a94c126d6101ce91ac3fd00337",
+  "candidateManifestFilesVerified": 35,
+  "candidatePhase1ImageMatches": 18,
+  "updatedVisualBaselines": [
+    {
+      "path": "tests/visual/baselines/linux/events-hub-desktop.png",
+      "bytes": 1665010,
+      "sha256": "8920f26410862e93a3cc759ecc70b0058713e6adecaabd067989d06c011ffbb4",
+      "dimensions": [
+        1440,
+        16776
+      ],
+      "byteIdenticalToReviewedComparisonActual": true,
+      "comparisonActualSha256": "8920f26410862e93a3cc759ecc70b0058713e6adecaabd067989d06c011ffbb4"
+    },
+    {
+      "path": "tests/visual/baselines/linux/events-hub-desktop-reduced-motion.png",
+      "bytes": 1664346,
+      "sha256": "ae93afbc08d5bfa88b1d34386d850b4cd3cd2f09b6b1ce2f36b3017794dd295b",
+      "dimensions": [
+        1440,
+        16776
+      ],
+      "byteIdenticalToReviewedComparisonActual": true,
+      "comparisonActualSha256": "ae93afbc08d5bfa88b1d34386d850b4cd3cd2f09b6b1ce2f36b3017794dd295b"
+    }
+  ],
+  "review": {
+    "phase1": "Independent review of all18 paired full-page sheets; edition-dependent date/copy changes and small expected daily/tomorrow heights observed. No gross clipping, missing sections or geometry regression. Yearly360 review at overview scale does not claim text-level typography inspection.",
+    "events": "Readable hero crop and all12 full-page bands covering both complete candidates reviewed. Independent overview review agrees on section completeness and continuous vertical offset.",
+    "scope": "Only the18 source-bound Phase1 PNGs plus their original manifest and these two Events visual baselines are imported. All other visual baselines, source and thresholds are unchanged."
+  },
+  "remaining": [
+    "Four previously documented owner-lane Explorer failures remain; neither original failed comparison nor Explorer is relabeled green.",
+    "Exact-head CI and comparison on the evidence commit, ordinary merge, deployment and live verification remain required.",
+    "No programme acceptance credit is asserted."
+  ],
+  "postImportEvidenceTest": {
+    "runtime": "Node22.22.2",
+    "command": "node node_modules/vitest/vitest.mjs run scripts/phase1-acceptance-evidence.test.mjs",
+    "passed": 5,
+    "failed": 0,
+    "scope": "Local imported evidence only; does not replace final-head CI."
+  }
+}

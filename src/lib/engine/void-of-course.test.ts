@@ -1,17 +1,35 @@
 import { describe, expect, it } from 'vitest';
+import {
+  moonAspects,
+  moonIngresses,
+  VOID_OF_COURSE_CONVENTION,
+  voidOfCourseAt,
+  voidOfCourseWindows,
+} from '@zodiacs/engine/techniques';
 import { bodyLongitude } from './full';
 import auraIngresses from '../../data/aura-moon-ingresses.json';
 import { SIGN_SLUGS } from '../signs';
-import {
-  ASPECT_OFFSETS,
-  moonAspects,
-  moonIngresses,
-  PTOLEMAIC_ASPECTS,
-  VOID_BODIES_MODERN,
-  VOID_BODIES_TRADITIONAL,
-  voidOfCourseWindows,
-  voidStatus,
-} from './void-of-course';
+
+/*
+ * The void-of-course calendar (src/pages/void-of-course-moon/) takes its
+ * windows from @zodiacs/engine/techniques since engine rc.16, which ported the
+ * site's own search (docs/platform/evidence/site-engine-rc16/: the two agree
+ * on every window and status of the parity corpus). These tests hold the
+ * package to what the page needs of it, on the site's own ephemeris.
+ */
+
+/** The five Ptolemaic aspects, each as the Moon meets it from either side. */
+const PTOLEMAIC_ASPECTS = [
+  { type: 'conjunction', angle: 0 },
+  { type: 'sextile', angle: 60 },
+  { type: 'square', angle: 90 },
+  { type: 'trine', angle: 120 },
+  { type: 'opposition', angle: 180 },
+] as const;
+const ASPECT_OFFSETS = PTOLEMAIC_ASPECTS.flatMap<{ type: typeof PTOLEMAIC_ASPECTS[number]['type']; offset: number }>(({ type, angle }) => (
+  angle === 0 || angle === 180 ? [{ type, offset: angle }] : [{ type, offset: angle }, { type, offset: 360 - angle }]
+));
+const VOID_BODIES_MODERN = ['Sun', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto'] as const;
 
 const DAY = 86_400_000;
 const from = new Date('2026-09-01T00:00:00Z');
@@ -33,7 +51,7 @@ describe('void-of-course Moon', () => {
     expect(expected.length).toBeGreaterThan(30);
     expect(ingresses).toHaveLength(expected.length);
     ingresses.forEach((ingress, index) => {
-      expect(SIGN_SLUGS[ingress.signIndex]).toBe(expected[index].sign);
+      expect(ingress.sign).toBe(expected[index].sign);
       expect(Math.abs(ingress.at.getTime() - new Date(expected[index].at).getTime())).toBeLessThan(1000);
     });
   });
@@ -80,12 +98,14 @@ describe('void-of-course Moon', () => {
   }, 30_000);
 
   it('builds one window per ingress, ending exactly at the ingress and starting at the last aspect', () => {
+    expect(VOID_OF_COURSE_CONVENTION.name).toBe('last-exact-ptolemaic-aspect-to-sign-exit');
+    expect(VOID_OF_COURSE_CONVENTION.aspects).toEqual(PTOLEMAIC_ASPECTS.map(({ type }) => type));
     const ending = ingresses.filter((i) => i.at > from);
     expect(windows).toHaveLength(ending.length);
     windows.forEach((window, index) => {
       expect(window.to.getTime()).toBe(ending[index].at.getTime());
-      expect(window.nextSignIndex).toBe(ending[index].signIndex);
-      expect(window.signIndex).toBe((ending[index].signIndex + 11) % 12);
+      expect(window.nextSign).toBe(ending[index].sign);
+      expect(window.sign).toBe(SIGN_SLUGS[(SIGN_SLUGS.indexOf(ending[index].sign) + 11) % 12]);
       expect(window.from.getTime()).toBeLessThan(window.to.getTime());
       if (window.lastAspect) {
         expect(window.from.getTime()).toBe(window.lastAspect.at.getTime());
@@ -99,7 +119,7 @@ describe('void-of-course Moon', () => {
   });
 
   it('reports the traditional Sun-to-Saturn variant with voids that start no earlier than the modern ones', () => {
-    const traditional = voidOfCourseWindows(from, new Date('2026-09-30T00:00:00Z'), { bodies: VOID_BODIES_TRADITIONAL });
+    const traditional = voidOfCourseWindows(from, new Date('2026-09-30T00:00:00Z'), { bodies: 'traditional' });
     const modern = windows.filter((w) => w.to <= new Date('2026-09-30T00:00:00Z'));
     expect(traditional).toHaveLength(modern.length);
     traditional.forEach((window, index) => {
@@ -111,7 +131,7 @@ describe('void-of-course Moon', () => {
   it('answers the status question consistently with the window list', () => {
     const inside = windows[3];
     const midpoint = new Date((inside.from.getTime() + inside.to.getTime()) / 2);
-    const status = voidStatus(midpoint);
+    const status = voidOfCourseAt(midpoint);
     expect(status.isVoid).toBe(true);
     // Bisection endpoints differ by a millisecond between scans that start at different instants.
     expect(Math.abs(status.current!.from.getTime() - inside.from.getTime())).toBeLessThan(1000);
@@ -119,7 +139,7 @@ describe('void-of-course Moon', () => {
     expect(Math.abs(status.next!.from.getTime() - windows[4].from.getTime())).toBeLessThan(1000);
 
     const justAfter = new Date(inside.to.getTime() + 60_000);
-    const after = voidStatus(justAfter);
+    const after = voidOfCourseAt(justAfter);
     expect(after.isVoid).toBe(false);
     expect(after.current).toBeNull();
     expect(Math.abs(after.next!.to.getTime() - windows[4].to.getTime())).toBeLessThan(1000);

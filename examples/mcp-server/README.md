@@ -57,7 +57,7 @@ happen against the `.tgz` you still have:
 ```sh
 # from the directory holding the archive, against the SHA-256 on the page above
 node -e 'const e=process.argv[2];const a=require("crypto").createHash("sha256").update(require("fs").readFileSync(process.argv[1])).digest("hex");if(a!==e){console.error("Mismatch. Delete this copy and install again from the page.\n  expected "+e+"\n  got      "+a);process.exit(1)}console.log("Archive verified: "+a)' \
-  zodiacs-mcp-server-0.1.0-rc.15.tgz '<the SHA-256 published on the page>'
+  zodiacs-mcp-server-0.1.0-rc.16.tgz '<the SHA-256 published on the page>'
 ```
 
 Then, inside the extracted directory:
@@ -213,19 +213,57 @@ original: the cause stays a hypothesis and the limit is stated.
 ```
 
 ```json
-{ "engine": { "name": "@zodiacs/engine", "version": "0.1.1-rc.15",
-              "ephemeris": { "name": "astronomy-engine", "version": "2.1.19" } },
+{
+  "engine": {
+    "ephemeris": {
+      "name": "astronomy-engine",
+      "version": "2.1.19"
+    },
+    "name": "@zodiacs/engine",
+    "version": "0.1.1-rc.16"
+  },
   "timeKnown": true,
-  "houses": { "requested": "placidus", "actual": "placidus", "absenceReason": null },
-  "inputFlags": [], "resultFlags": [],
-  "bodies": [ { "body": "Sun", "lon": 84.18908527436764, "lat": -0.000018285232616151122,
-                "speed": 0.9551295117944392, "retrograde": false,
-                "sign": "gemini", "degree": 24.189085274367642 }, "…11 more" ],
-  "angles": { "asc": 191.23954826620667, "mc": 104.68849392708933,
-              "dsc": 11.239548266206668, "ic": 284.6884939270893 },
-  "cusps": [ 191.23954826620667, 216.40904162782272, "…10 more" ],
-  "aspects": [ { "a": "Moon", "b": "Jupiter", "type": "trine",
-                 "orb": 0.29106046772665195, "applying": false }, "…16 more" ] }
+  "houses": {
+    "absenceReason": null,
+    "actual": "placidus",
+    "requested": "placidus"
+  },
+  "inputFlags": [],
+  "resultFlags": [],
+  "bodies": [
+    {
+      "body": "Sun",
+      "degree": 24.189077046148668,
+      "lat": -0.000018285232619282298,
+      "lon": 84.18907704614867,
+      "retrograde": false,
+      "sign": "gemini",
+      "speed": 0.95512655695984
+    },
+    "…11 more"
+  ],
+  "angles": {
+    "asc": 191.23954148521,
+    "dsc": 11.239541485209998,
+    "ic": 284.68848532286995,
+    "mc": 104.68848532286995
+  },
+  "cusps": [
+    191.23954148521,
+    216.40903277974905,
+    "…10 more"
+  ],
+  "aspects": [
+    {
+      "a": "Moon",
+      "applying": false,
+      "b": "Jupiter",
+      "orb": 0.29106046772676564,
+      "type": "trine"
+    },
+    "…16 more"
+  ]
+}
 ```
 
 **2. The same chart at 78° north, asking for Placidus.**
@@ -248,27 +286,85 @@ are separate fields, so a fallback is visible rather than silent.
 ```
 
 ```json
-{ "identical": false,
-  "counts": { "differences": 15, "substantive": 15, "displayOnly": 0, "explanations": 1 },
+{
+  "identical": false,
+  "counts": {
+    "differences": 15,
+    "substantive": 15,
+    "displayOnly": 0,
+    "explanations": 1
+  },
   "output": "summary",
   "differences": [
-    { "id": "houses-requested", "area": "Houses", "label": "House system requested",
-      "left": "placidus", "right": "whole", "delta": null, "kind": "metadata" },
-    { "id": "houses-actual", "…": "same two values" },
-    { "id": "houses-system", "…": "same two values" },
-    { "id": "cusp-1", "area": "Houses", "label": "House 1 cusp",
-      "delta": -11.239548266206612, "kind": "numeric", "valuesWithheld": true },
-    "…cusp-2 through cusp-12" ],
+    {
+      "id": "houses-requested",
+      "area": "Houses",
+      "label": "House system requested",
+      "left": "placidus",
+      "right": "whole",
+      "delta": null,
+      "kind": "metadata"
+    },
+    {
+      "id": "houses-actual",
+      "area": "Houses",
+      "label": "House system actually used",
+      "left": "placidus",
+      "right": "whole",
+      "delta": null,
+      "kind": "metadata"
+    },
+    {
+      "id": "houses-system",
+      "area": "Houses",
+      "label": "House system in the result",
+      "left": "placidus",
+      "right": "whole",
+      "delta": null,
+      "kind": "metadata"
+    },
+    {
+      "id": "cusp-1",
+      "area": "Houses",
+      "label": "House 1 cusp",
+      "delta": -11.239541485209998,
+      "kind": "numeric",
+      "valuesWithheld": true
+    },
+    "…cusp-2 through cusp-12"
+  ],
   "explanations": [
-    { "id": "house-system", "evidence": "reproduced",
+    {
+      "id": "house-system",
+      "evidence": "reproduced",
       "statement": "The different house system accounts for the house cusps.",
-      "covers": [ "cusp-1", "…cusp-12", "houses-requested", "houses-actual", "houses-system" ],
-      "detail": "Each chart's own recorded values were reproduced from its own declared inputs on engine 0.1.1-rc.15, and changing only the house system turns each one into the other, in both directions." } ],
+      "covers": [
+        "cusp-1",
+        "cusp-2",
+        "cusp-3",
+        "cusp-4",
+        "cusp-5",
+        "cusp-6",
+        "cusp-7",
+        "cusp-8",
+        "cusp-9",
+        "cusp-10",
+        "cusp-11",
+        "cusp-12",
+        "houses-requested",
+        "houses-actual",
+        "houses-system"
+      ],
+      "detail": "Each chart's own recorded values were reproduced from its own declared inputs on engine 0.1.1-rc.16, and changing only the house system turns each one into the other, in both directions."
+    }
+  ],
   "limits": [
     "Only the house system is re-run here. A different moment or place is never promoted past a hypothesis, even when both records name the same engine.",
-    "Both receipts name the same engine, so agreement between them would show consistency, not independent astronomical accuracy." ],
-  "disclosure": "A comparison reports the exact difference between two charts. …not anonymous.",
-  "withheld": "By default a comparison names which fields differ and by how much, …" }
+    "Both receipts name the same engine, so agreement between them would show consistency, not independent astronomical accuracy."
+  ],
+  "disclosure": "A comparison reports the exact difference between two charts. Anyone holding one of the two can reconstruct the other from it, so that output is safer to pass on than a full record but it is not anonymous.",
+  "withheld": "By default a comparison names which fields differ and by how much, and leaves out the values of rows carrying birth details or computed positions — you supplied both records to this call, so repeating their contents back tells you nothing you did not have, while adding a second copy to whatever this result travels through. Ask for output: \"full\" when you need those values. This shortens what travels onward; it hides nothing from the assistant you are talking to, which already received both records as arguments."
+}
 ```
 
 The house-system rows keep their values; the twelve cusp rows do not, because a
@@ -286,8 +382,8 @@ not settle, and it is worth reading even when everything else looks resolved.
 
 | | |
 | --- | --- |
-| adapter | `0.1.0-rc.15`, unpublished candidate |
-| engine | `@zodiacs/engine` `0.1.1-rc.15`, unpublished candidate, bundled into `server.mjs` |
+| adapter | `0.1.0-rc.16`, unpublished candidate |
+| engine | `@zodiacs/engine` `0.1.1-rc.16`, unpublished candidate, bundled into `server.mjs` |
 | ephemeris | `astronomy-engine` 2.1.19, inside the engine |
 | MCP SDK | `@modelcontextprotocol/server` 2.0.0, pinned exactly, installed from npm |
 | validation | `zod` 4.6.5, pinned exactly |
@@ -325,14 +421,15 @@ the engine artifact's own SHA-256 and the source paths every part was built from
 - **1800 to 2199.** The engine's own records state
   `broadDateRange: "not-certified"`; this is the range the rest of Zodiacs
   supports and the adapter adopts it rather than inventing a wider one.
-- **Not published.** Neither this adapter nor the engine is on npm. Both are
+- **Not published.** Neither this adapter rc.16 nor the engine rc.16 is on npm. The
+  recorded 2026-09-30 registry read serves engine rc.15. These candidates are
   labelled `unpublished-candidate` in `get_capabilities`, and will keep saying
   so until that changes.
 
 ## Uninstall
 
-The server writes nothing anywhere: no config of its own, no cache, no database,
-no state. `npm install` does use npm's own cache under `~/.npm`, as any install
+The server writes no config, cache or database to disk. Its process keeps
+in-memory calculation caches until it exits. `npm install` does use npm's own cache under `~/.npm`, as any install
 does, and that survives deleting this directory. Removal is two steps.
 
 ```sh
@@ -346,9 +443,11 @@ clean up.
 
 ## How this was tested
 
-Recorded in the site repository under
-`docs/platform/evidence/mcp-adapter/`, kept as three separate records because
-they establish three different things:
+The current protocol and regression results are recorded under
+`docs/platform/evidence/mcp-adapter/`. Named-host and model-interoperability
+records from earlier candidates remain historical until rerun for this bundle;
+this rc.16 local preparation has no fresh named-host or model result. The
+records establish different things:
 
 - **`protocol-drive.json`** — the official SDK client against the real server
   process: initialize, list, all three tools, eighteen malformed or refused
@@ -370,7 +469,7 @@ on dates chosen for what they exercise.
 ## Licence
 
 MIT AND CC-BY-4.0. The adapter's own code is MIT. `server.mjs` bundles
-`@zodiacs/engine` 0.1.1-rc.15, whose ΔT module contains 32 values of Table S15
+`@zodiacs/engine` 0.1.1-rc.16, whose ΔT module contains 32 values of Table S15
 of Stephenson, Morrison and Hohenkerk (2016) under CC BY 4.0, and whose time
 basis carries the IERS leap-second list and a UT1 − UTC table derived from
 IERS data. `NOTICE` gives the attributions; keep it if you redistribute the

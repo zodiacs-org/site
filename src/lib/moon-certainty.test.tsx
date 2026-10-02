@@ -1,11 +1,11 @@
 import { h } from 'preact';
 import { render } from 'preact-render-to-string';
 import { describe, expect, it } from 'vitest';
-import { computeBodies, computeChart } from './engine/full';
+import { moonSignCandidates, moonSignsBetween } from '@zodiacs/engine/techniques';
+import { computeChart } from './engine/full';
 import type { Chart } from './engine/types';
-import { localDateEndpointsUtc } from './chart-date-certainty';
 import { resolveLocalToUtc } from './time/localToUtc';
-import { moonCandidates, moonCandidatesFromEndpoints, moonIsUncertain, moonLabel } from './moon-certainty';
+import { moonCandidates, moonIsUncertain, moonLabel } from './moon-certainty';
 import { chartSignature } from './chart-signature';
 import { communicationRead } from './communication';
 import { approachRead } from './approach';
@@ -20,13 +20,17 @@ import ChartShareDialog from '../islands/ChartShareDialog';
 import ChartTour, { type ChartTourProps } from '../islands/explorer/tour/ChartTour';
 import { deriveChapters, flattenStops } from './scene/chapters';
 
+/**
+ * A chart without a birth time, with the Moon signs possible over its local
+ * date: @zodiacs/engine's moonSignCandidates since engine rc.16, which ported
+ * the site's endpoint rule (site-engine-rc16/techniques-parity.json, M-Z).
+ */
 function unknownTimeChart(date = '1990-01-01', zone = 'Europe/London'): Chart {
-  const endpoints = localDateEndpointsUtc(date, zone);
   const chart = computeChart({
     utc: resolveLocalToUtc(date, '12:00', zone).utc,
     timeKnown: false, houseSystem: 'whole', latitude: 51.5074, longitude: -0.1278,
   });
-  chart.moonSignCandidates = moonCandidatesFromEndpoints(computeBodies(endpoints.start), computeBodies(endpoints.end));
+  chart.moonSignCandidates = [...moonSignCandidates(date, { timeZone: zone }).signs];
   return chart;
 }
 
@@ -65,10 +69,8 @@ describe('local-day Moon uncertainty', () => {
     expect(approachRead(chart).moon?.sign).toBe('pisces');
   });
 
-  it('does not infer another sign when endpoint data is absent', () => {
+  it('does not infer another sign when the candidates are absent', () => {
     const chart = unknownTimeChart();
-    expect(moonCandidatesFromEndpoints([], chart.bodies)).toEqual([]);
-    expect(moonCandidatesFromEndpoints(chart.bodies, [])).toEqual([]);
     delete chart.moonSignCandidates;
     expect(moonCandidates(chart)).toEqual([]);
     expect(moonLabel(chart)).toBe('Needs a birth time');
@@ -101,8 +103,11 @@ describe('local-day Moon uncertainty', () => {
   });
 
   it('preserves the Pisces-to-Aries wrap as two alternatives', () => {
-    expect(moonCandidatesFromEndpoints([{ body: 'Moon', lon: 359.99 }], [{ body: 'Moon', lon: 0.01 }]))
-      .toEqual(['pisces', 'aries']);
+    // The Moon entered Aries at 10:56 UTC on 1990-01-03.
+    expect(moonSignsBetween('1990-01-03T00:00:00Z', '1990-01-03T23:59:59.999Z')).toEqual(['pisces', 'aries']);
+    const chart = unknownTimeChart('1990-01-03', 'UTC');
+    expect(moonCandidates(chart)).toEqual(['pisces', 'aries']);
+    expect(moonLabel(chart)).toBe('Pisces / Aries');
   });
 
   it('carries evidence into the scene without moving any astronomical position', () => {

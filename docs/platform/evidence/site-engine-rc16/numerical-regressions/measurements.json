@@ -1,0 +1,2099 @@
+{
+  "schema": "rc16-numerical-regressions/1",
+  "node": "v22.22.2",
+  "engines": [
+    {
+      "version": "0.1.1-rc.15",
+      "sha256": "24eeb597b0157598c0faa26bb615c0cb5dfaaeac0393d62c73fbd37c5da4d348"
+    },
+    {
+      "version": "0.1.1-rc.16",
+      "sha256": "43a72d30e483d8ff22024e403c4bd0d86d81bb6e1d0ad138f857cd001ab015d8"
+    }
+  ],
+  "method": "Separately bundled archived rc.15 and rc.16 with the same site adapters. Longitude changes attributed to full-minus-five-term Δψ on the same TT; speed changes to its sampled derivative; angle changes to true obliquity and equation of equinoxes. No external reference ephemeris.",
+  "stationCases": [
+    {
+      "body": "Mercury",
+      "before": {
+        "utc": "2026-02-26T06:47:07.817Z",
+        "ms": 1772088427817,
+        "beforeSpeed": 0.00001898317236737057,
+        "afterSpeed": -0.000018990533590113046
+      },
+      "after": {
+        "utc": "2026-02-26T06:47:13.924Z",
+        "ms": 1772088433924,
+        "beforeSpeed": 0.00001898513346532127,
+        "afterSpeed": -0.000018985389260706143
+      },
+      "deltaMilliseconds": 6107,
+      "attribution": {
+        "body": "Mercury",
+        "utc": "2026-02-26T06:47:07.817Z",
+        "before": -3.723243935382925e-9,
+        "after": 0.000011593414228627807,
+        "deltaDegreesPerDay": 0.00001159713747256319,
+        "expectedDeltaDegreesPerDay": 0.000011597131048689459,
+        "residualDegreesPerDay": 6.423873731537617e-12
+      }
+    },
+    {
+      "body": "Saturn",
+      "before": {
+        "utc": "2026-07-26T19:57:45.828Z",
+        "ms": 1785095865828,
+        "beforeSpeed": 1.9736035028472543e-7,
+        "afterSpeed": -1.9736035028472543e-7
+      },
+      "after": {
+        "utc": "2026-07-26T19:53:14.040Z",
+        "ms": 1785095594040,
+        "beforeSpeed": 1.9741719370358624e-7,
+        "afterSpeed": -1.9733192857529502e-7
+      },
+      "deltaMilliseconds": -271788,
+      "attribution": {
+        "body": "Saturn",
+        "utc": "2026-07-26T19:57:45.828Z",
+        "before": 0,
+        "after": -0.000005363602895158692,
+        "deltaDegreesPerDay": -0.000005363602895158692,
+        "expectedDeltaDegreesPerDay": -0.000005363608909853677,
+        "residualDegreesPerDay": 6.01469498460864e-12
+      }
+    }
+  ],
+  "mercury": {
+    "fixedTarget": 352.56407473871195,
+    "before": [
+      "2026-02-26T04:08:09.487Z",
+      "2026-02-26T09:26:10.066Z",
+      "2026-04-09T11:40:23.847Z"
+    ],
+    "after": [
+      "2026-02-26T04:07:57.210Z",
+      "2026-02-26T09:26:34.570Z",
+      "2026-04-09T11:40:26.018Z"
+    ],
+    "nearStation": "2026-02-26T06:47:23.924Z",
+    "nearContacts": [
+      "2026-02-26T06:47:03.921Z",
+      "2026-02-26T06:47:23.929Z"
+    ],
+    "crossingAttribution": [
+      {
+        "body": "Mercury",
+        "utc": "2026-02-26T04:08:09.487Z",
+        "before": 352.56407473878085,
+        "after": 352.5640773170613,
+        "deltaDegrees": 0.0000025782803731999593,
+        "dpsiDeltaDegrees": 0.000002578280426902434,
+        "residualDegrees": -5.370247457920567e-14
+      },
+      {
+        "body": "Mercury",
+        "utc": "2026-02-26T09:26:10.066Z",
+        "before": 352.56407473848196,
+        "after": 352.5640798763552,
+        "deltaDegrees": 0.0000051378732450757525,
+        "dpsiDeltaDegrees": 0.000005137873219675824,
+        "residualDegrees": 2.539992870843671e-14
+      },
+      {
+        "body": "Mercury",
+        "utc": "2026-04-09T11:40:23.847Z",
+        "before": 352.56407475536645,
+        "after": 352.5640441137873,
+        "deltaDegrees": -0.00003064157908738707,
+        "dpsiDeltaDegrees": -0.00003064157913499862,
+        "residualDegrees": 4.7611545782311193e-14
+      },
+      {
+        "body": "Mercury",
+        "utc": "2026-02-26T04:07:57.210Z",
+        "before": 352.56407216239757,
+        "after": 352.5640747390023,
+        "deltaDegrees": 0.0000025766047428987804,
+        "dpsiDeltaDegrees": 0.0000025766047680083246,
+        "residualDegrees": -2.5109544214777782e-14
+      },
+      {
+        "body": "Mercury",
+        "utc": "2026-02-26T09:26:34.570Z",
+        "before": 352.56406959714866,
+        "after": 352.56407473824385,
+        "deltaDegrees": 0.000005141095243743621,
+        "dpsiDeltaDegrees": 0.000005141095169540755,
+        "residualDegrees": 7.42028661416096e-14
+      },
+      {
+        "body": "Mercury",
+        "utc": "2026-04-09T11:40:26.018Z",
+        "before": 352.5641053917208,
+        "after": 352.5640747500872,
+        "deltaDegrees": -0.00003064163365706918,
+        "dpsiDeltaDegrees": -0.00003064163361001768,
+        "residualDegrees": -4.7051501150113806e-14
+      }
+    ],
+    "maximumLongitudeSamples": [
+      {
+        "utc": "2026-02-26T06:47:13.947Z",
+        "lon": 352.56507860996845
+      }
+    ],
+    "nearTangentContacts": [
+      "2026-02-26T06:47:13.463Z",
+      "2026-02-26T06:47:14.461Z"
+    ],
+    "nearTangentSeparationMilliseconds": 998
+  },
+  "phase": {
+    "moon": {
+      "body": "Moon",
+      "utc": "2024-01-16T10:18:00.000Z",
+      "before": 3.2715009589996953,
+      "after": 3.271515249695085,
+      "deltaDegrees": 0.000014290695389718167,
+      "dpsiDeltaDegrees": 0.000014290695386497532,
+      "residualDegrees": 3.2206344118294525e-15
+    },
+    "sun": {
+      "body": "Sun",
+      "utc": "2024-01-16T10:18:00.000Z",
+      "before": 295.76521172306724,
+      "after": 295.76522601376263,
+      "deltaDegrees": 0.000014290695389718167,
+      "dpsiDeltaDegrees": 0.000014290695386497532,
+      "residualDegrees": 3.2206344118294525e-15
+    },
+    "angleBefore": 67.50628923593246,
+    "angleAfter": 67.50628923593246
+  },
+  "rounding": [
+    {
+      "version": "0.1.1-rc.15",
+      "comparisons": [
+        {
+          "milliseconds": -1,
+          "rows": [
+            {
+              "id": "body-Sun-lon",
+              "area": "Positions",
+              "label": "Sun longitude",
+              "left": "84.189085",
+              "right": "84.189085",
+              "delta": -1.1055135473725386e-8,
+              "kind": "display"
+            },
+            {
+              "id": "body-Moon-lon",
+              "area": "Positions",
+              "label": "Moon longitude",
+              "left": "346.194090",
+              "right": "346.194090",
+              "delta": -1.5490991245314945e-7,
+              "kind": "display"
+            },
+            {
+              "id": "body-Mercury-lon",
+              "area": "Positions",
+              "label": "Mercury longitude",
+              "left": "65.798124",
+              "right": "65.798124",
+              "delta": -1.9895310288120527e-8,
+              "kind": "display"
+            },
+            {
+              "id": "body-Venus-lon",
+              "area": "Positions",
+              "label": "Venus longitude",
+              "left": "48.850875",
+              "right": "48.850875",
+              "delta": -1.361263457511086e-8,
+              "kind": "display"
+            },
+            {
+              "id": "body-Mars-lon",
+              "area": "Positions",
+              "label": "Mars longitude",
+              "left": "11.085998",
+              "right": "11.085998",
+              "delta": -8.320398592331912e-9,
+              "kind": "display"
+            },
+            {
+              "id": "body-Jupiter-lon",
+              "area": "Positions",
+              "label": "Jupiter longitude",
+              "left": "105.903029",
+              "right": "105.903029",
+              "delta": -2.5079316401388496e-9,
+              "kind": "display"
+            },
+            {
+              "id": "body-Saturn-lon",
+              "area": "Positions",
+              "label": "Saturn longitude",
+              "left": "294.028203",
+              "right": "294.028203",
+              "delta": 6.79506229062099e-10,
+              "kind": "display"
+            },
+            {
+              "id": "body-Uranus-lon",
+              "area": "Positions",
+              "label": "Uranus longitude",
+              "left": "278.161506",
+              "right": "278.161506",
+              "delta": 4.5088199840392917e-10,
+              "kind": "display"
+            },
+            {
+              "id": "body-Neptune-lon",
+              "area": "Positions",
+              "label": "Neptune longitude",
+              "left": "283.715287",
+              "right": "283.715287",
+              "delta": 2.8978774935239926e-10,
+              "kind": "display"
+            },
+            {
+              "id": "body-Pluto-lon",
+              "area": "Positions",
+              "label": "Pluto longitude",
+              "left": "225.400922",
+              "right": "225.400922",
+              "delta": 2.332853910047561e-10,
+              "kind": "display"
+            },
+            {
+              "id": "body-North Node-lon",
+              "area": "Positions",
+              "label": "North Node longitude",
+              "left": "308.122348",
+              "right": "308.122348",
+              "delta": -1.1927340892725624e-8,
+              "kind": "display"
+            },
+            {
+              "id": "body-South Node-lon",
+              "area": "Positions",
+              "label": "South Node longitude",
+              "left": "128.122348",
+              "right": "128.122348",
+              "delta": -1.1927340892725624e-8,
+              "kind": "display"
+            }
+          ]
+        },
+        {
+          "milliseconds": 2,
+          "rows": [
+            {
+              "id": "body-Sun-lon",
+              "area": "Positions",
+              "label": "Sun longitude",
+              "left": "84.189085",
+              "right": "84.189085",
+              "delta": 2.2109816200099885e-8,
+              "kind": "display"
+            },
+            {
+              "id": "body-Moon-lon",
+              "area": "Positions",
+              "label": "Moon longitude",
+              "left": "346.194090",
+              "right": "346.194090",
+              "delta": 3.0981539111962775e-7,
+              "kind": "display"
+            },
+            {
+              "id": "body-Mercury-lon",
+              "area": "Positions",
+              "label": "Mercury longitude",
+              "left": "65.798124",
+              "right": "65.798124",
+              "delta": 3.979107532359194e-8,
+              "kind": "display"
+            },
+            {
+              "id": "body-Venus-lon",
+              "area": "Positions",
+              "label": "Venus longitude",
+              "left": "48.850875",
+              "right": "48.850875",
+              "delta": 2.722322278714273e-8,
+              "kind": "display"
+            },
+            {
+              "id": "body-Mars-lon",
+              "area": "Positions",
+              "label": "Mars longitude",
+              "left": "11.085998",
+              "right": "11.085998",
+              "delta": 1.6640683497826103e-8,
+              "kind": "display"
+            },
+            {
+              "id": "body-Jupiter-lon",
+              "area": "Positions",
+              "label": "Jupiter longitude",
+              "left": "105.903029",
+              "right": "105.903029",
+              "delta": 5.015635906602256e-9,
+              "kind": "display"
+            },
+            {
+              "id": "body-Saturn-lon",
+              "area": "Positions",
+              "label": "Saturn longitude",
+              "left": "294.028203",
+              "right": "294.028203",
+              "delta": -1.3587850844487548e-9,
+              "kind": "display"
+            },
+            {
+              "id": "body-Uranus-lon",
+              "area": "Positions",
+              "label": "Uranus longitude",
+              "left": "278.161506",
+              "right": "278.161506",
+              "delta": -9.014229362946935e-10,
+              "kind": "display"
+            },
+            {
+              "id": "body-Neptune-lon",
+              "area": "Positions",
+              "label": "Neptune longitude",
+              "left": "283.715287",
+              "right": "283.715287",
+              "delta": -5.794618118670769e-10,
+              "kind": "display"
+            },
+            {
+              "id": "body-Pluto-lon",
+              "area": "Positions",
+              "label": "Pluto longitude",
+              "left": "225.400922",
+              "right": "225.400922",
+              "delta": -4.665707820095122e-10,
+              "kind": "display"
+            },
+            {
+              "id": "body-North Node-lon",
+              "area": "Positions",
+              "label": "North Node longitude",
+              "left": "308.122348",
+              "right": "308.122348",
+              "delta": 5.092335868539521e-7,
+              "kind": "display"
+            },
+            {
+              "id": "body-South Node-lon",
+              "area": "Positions",
+              "label": "South Node longitude",
+              "left": "128.122348",
+              "right": "128.122348",
+              "delta": 5.092335868539521e-7,
+              "kind": "display"
+            }
+          ]
+        },
+        {
+          "milliseconds": 6,
+          "rows": [
+            {
+              "id": "body-Sun-lon",
+              "area": "Positions",
+              "label": "Sun longitude",
+              "left": "84.189085",
+              "right": "84.189085",
+              "delta": 6.632922122662421e-8,
+              "kind": "display"
+            },
+            {
+              "id": "body-Moon-lon",
+              "area": "Positions",
+              "label": "Moon longitude",
+              "left": "346.194090",
+              "right": "346.194091",
+              "delta": 9.294556093664141e-7,
+              "kind": "numeric"
+            },
+            {
+              "id": "body-Mercury-lon",
+              "area": "Positions",
+              "label": "Mercury longitude",
+              "left": "65.798124",
+              "right": "65.798125",
+              "delta": 1.1937186172872316e-7,
+              "kind": "numeric"
+            },
+            {
+              "id": "body-Venus-lon",
+              "area": "Positions",
+              "label": "Venus longitude",
+              "left": "48.850875",
+              "right": "48.850875",
+              "delta": 8.167103260348085e-8,
+              "kind": "display"
+            },
+            {
+              "id": "body-Mars-lon",
+              "area": "Positions",
+              "label": "Mars longitude",
+              "left": "11.085998",
+              "right": "11.085998",
+              "delta": 4.992227786715375e-8,
+              "kind": "display"
+            },
+            {
+              "id": "body-Jupiter-lon",
+              "area": "Positions",
+              "label": "Jupiter longitude",
+              "left": "105.903029",
+              "right": "105.903029",
+              "delta": 1.504713509348221e-8,
+              "kind": "display"
+            },
+            {
+              "id": "body-Saturn-lon",
+              "area": "Positions",
+              "label": "Saturn longitude",
+              "left": "294.028203",
+              "right": "294.028203",
+              "delta": -4.076355253346264e-9,
+              "kind": "display"
+            },
+            {
+              "id": "body-Uranus-lon",
+              "area": "Positions",
+              "label": "Uranus longitude",
+              "left": "278.161506",
+              "right": "278.161506",
+              "delta": -2.704382495721802e-9,
+              "kind": "display"
+            },
+            {
+              "id": "body-Neptune-lon",
+              "area": "Positions",
+              "label": "Neptune longitude",
+              "left": "283.715287",
+              "right": "283.715287",
+              "delta": -1.7384991224389523e-9,
+              "kind": "display"
+            },
+            {
+              "id": "body-Pluto-lon",
+              "area": "Positions",
+              "label": "Pluto longitude",
+              "left": "225.400922",
+              "right": "225.400922",
+              "delta": -1.399598659190815e-9,
+              "kind": "display"
+            },
+            {
+              "id": "body-North Node-lon",
+              "area": "Positions",
+              "label": "North Node longitude",
+              "left": "308.122348",
+              "right": "308.122348",
+              "delta": 5.119197794556385e-7,
+              "kind": "display"
+            },
+            {
+              "id": "body-South Node-lon",
+              "area": "Positions",
+              "label": "South Node longitude",
+              "left": "128.122348",
+              "right": "128.122348",
+              "delta": 5.119197794556385e-7,
+              "kind": "display"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "version": "0.1.1-rc.16",
+      "comparisons": [
+        {
+          "milliseconds": -1,
+          "rows": [
+            {
+              "id": "body-Sun-lon",
+              "area": "Positions",
+              "label": "Sun longitude",
+              "left": "84.189077",
+              "right": "84.189077",
+              "delta": -1.1054908100049943e-8,
+              "kind": "display"
+            },
+            {
+              "id": "body-Moon-lon",
+              "area": "Positions",
+              "label": "Moon longitude",
+              "left": "346.194081",
+              "right": "346.194081",
+              "delta": -1.5490991245314945e-7,
+              "kind": "display"
+            },
+            {
+              "id": "body-Mercury-lon",
+              "area": "Positions",
+              "label": "Mercury longitude",
+              "left": "65.798116",
+              "right": "65.798116",
+              "delta": -1.9895196601282805e-8,
+              "kind": "display"
+            },
+            {
+              "id": "body-Venus-lon",
+              "area": "Positions",
+              "label": "Venus longitude",
+              "left": "48.850867",
+              "right": "48.850867",
+              "delta": -1.3612520888273139e-8,
+              "kind": "display"
+            },
+            {
+              "id": "body-Mars-lon",
+              "area": "Positions",
+              "label": "Mars longitude",
+              "left": "11.085989",
+              "right": "11.085989",
+              "delta": -8.32028490549419e-9,
+              "kind": "display"
+            },
+            {
+              "id": "body-Jupiter-lon",
+              "area": "Positions",
+              "label": "Jupiter longitude",
+              "left": "105.903021",
+              "right": "105.903021",
+              "delta": -2.5079316401388496e-9,
+              "kind": "display"
+            },
+            {
+              "id": "body-Saturn-lon",
+              "area": "Positions",
+              "label": "Saturn longitude",
+              "left": "294.028195",
+              "right": "294.028195",
+              "delta": 6.79506229062099e-10,
+              "kind": "display"
+            },
+            {
+              "id": "body-Uranus-lon",
+              "area": "Positions",
+              "label": "Uranus longitude",
+              "left": "278.161498",
+              "right": "278.161498",
+              "delta": 4.5088199840392917e-10,
+              "kind": "display"
+            },
+            {
+              "id": "body-Neptune-lon",
+              "area": "Positions",
+              "label": "Neptune longitude",
+              "left": "283.715279",
+              "right": "283.715279",
+              "delta": 2.899014361901209e-10,
+              "kind": "display"
+            },
+            {
+              "id": "body-Pluto-lon",
+              "area": "Positions",
+              "label": "Pluto longitude",
+              "left": "225.400914",
+              "right": "225.400914",
+              "delta": 2.332853910047561e-10,
+              "kind": "display"
+            },
+            {
+              "id": "body-North Node-lon",
+              "area": "Positions",
+              "label": "North Node longitude",
+              "left": "308.122340",
+              "right": "308.122340",
+              "delta": -1.1927340892725624e-8,
+              "kind": "display"
+            },
+            {
+              "id": "body-South Node-lon",
+              "area": "Positions",
+              "label": "South Node longitude",
+              "left": "128.122340",
+              "right": "128.122340",
+              "delta": -1.1927340892725624e-8,
+              "kind": "display"
+            }
+          ]
+        },
+        {
+          "milliseconds": 2,
+          "rows": [
+            {
+              "id": "body-Sun-lon",
+              "area": "Positions",
+              "label": "Sun longitude",
+              "left": "84.189077",
+              "right": "84.189077",
+              "delta": 2.2109247765911277e-8,
+              "kind": "display"
+            },
+            {
+              "id": "body-Moon-lon",
+              "area": "Positions",
+              "label": "Moon longitude",
+              "left": "346.194081",
+              "right": "346.194082",
+              "delta": 3.0981527743279e-7,
+              "kind": "numeric"
+            },
+            {
+              "id": "body-Mercury-lon",
+              "area": "Positions",
+              "label": "Mercury longitude",
+              "left": "65.798116",
+              "right": "65.798116",
+              "delta": 3.979107532359194e-8,
+              "kind": "display"
+            },
+            {
+              "id": "body-Venus-lon",
+              "area": "Positions",
+              "label": "Venus longitude",
+              "left": "48.850867",
+              "right": "48.850867",
+              "delta": 2.722322278714273e-8,
+              "kind": "display"
+            },
+            {
+              "id": "body-Mars-lon",
+              "area": "Positions",
+              "label": "Mars longitude",
+              "left": "11.085989",
+              "right": "11.085989",
+              "delta": 1.664056981098838e-8,
+              "kind": "display"
+            },
+            {
+              "id": "body-Jupiter-lon",
+              "area": "Positions",
+              "label": "Jupiter longitude",
+              "left": "105.903021",
+              "right": "105.903021",
+              "delta": 5.015635906602256e-9,
+              "kind": "display"
+            },
+            {
+              "id": "body-Saturn-lon",
+              "area": "Positions",
+              "label": "Saturn longitude",
+              "left": "294.028195",
+              "right": "294.028195",
+              "delta": -1.3587850844487548e-9,
+              "kind": "display"
+            },
+            {
+              "id": "body-Uranus-lon",
+              "area": "Positions",
+              "label": "Uranus longitude",
+              "left": "278.161498",
+              "right": "278.161498",
+              "delta": -9.015366231324151e-10,
+              "kind": "display"
+            },
+            {
+              "id": "body-Neptune-lon",
+              "area": "Positions",
+              "label": "Neptune longitude",
+              "left": "283.715279",
+              "right": "283.715279",
+              "delta": -5.795754987047985e-10,
+              "kind": "display"
+            },
+            {
+              "id": "body-Pluto-lon",
+              "area": "Positions",
+              "label": "Pluto longitude",
+              "left": "225.400914",
+              "right": "225.400914",
+              "delta": -4.665707820095122e-10,
+              "kind": "display"
+            },
+            {
+              "id": "body-North Node-lon",
+              "area": "Positions",
+              "label": "North Node longitude",
+              "left": "308.122340",
+              "right": "308.122340",
+              "delta": 5.092334731671144e-7,
+              "kind": "display"
+            },
+            {
+              "id": "body-South Node-lon",
+              "area": "Positions",
+              "label": "South Node longitude",
+              "left": "128.122340",
+              "right": "128.122340",
+              "delta": 5.092334731671144e-7,
+              "kind": "display"
+            }
+          ]
+        },
+        {
+          "milliseconds": 6,
+          "rows": [
+            {
+              "id": "body-Sun-lon",
+              "area": "Positions",
+              "label": "Sun longitude",
+              "left": "84.189077",
+              "right": "84.189077",
+              "delta": 6.632842541876016e-8,
+              "kind": "display"
+            },
+            {
+              "id": "body-Moon-lon",
+              "area": "Positions",
+              "label": "Moon longitude",
+              "left": "346.194081",
+              "right": "346.194082",
+              "delta": 9.294553819927387e-7,
+              "kind": "numeric"
+            },
+            {
+              "id": "body-Mercury-lon",
+              "area": "Positions",
+              "label": "Mercury longitude",
+              "left": "65.798116",
+              "right": "65.798116",
+              "delta": 1.1937174804188544e-7,
+              "kind": "display"
+            },
+            {
+              "id": "body-Venus-lon",
+              "area": "Positions",
+              "label": "Venus longitude",
+              "left": "48.850867",
+              "right": "48.850867",
+              "delta": 8.167080522980541e-8,
+              "kind": "display"
+            },
+            {
+              "id": "body-Mars-lon",
+              "area": "Positions",
+              "label": "Mars longitude",
+              "left": "11.085989",
+              "right": "11.085989",
+              "delta": 4.992205049347831e-8,
+              "kind": "display"
+            },
+            {
+              "id": "body-Jupiter-lon",
+              "area": "Positions",
+              "label": "Jupiter longitude",
+              "left": "105.903021",
+              "right": "105.903021",
+              "delta": 1.5046907719806768e-8,
+              "kind": "display"
+            },
+            {
+              "id": "body-Saturn-lon",
+              "area": "Positions",
+              "label": "Saturn longitude",
+              "left": "294.028195",
+              "right": "294.028195",
+              "delta": -4.076582627021708e-9,
+              "kind": "display"
+            },
+            {
+              "id": "body-Uranus-lon",
+              "area": "Positions",
+              "label": "Uranus longitude",
+              "left": "278.161498",
+              "right": "278.161498",
+              "delta": -2.7046098693972453e-9,
+              "kind": "display"
+            },
+            {
+              "id": "body-Neptune-lon",
+              "area": "Positions",
+              "label": "Neptune longitude",
+              "left": "283.715279",
+              "right": "283.715279",
+              "delta": -1.7387264961143956e-9,
+              "kind": "display"
+            },
+            {
+              "id": "body-Pluto-lon",
+              "area": "Positions",
+              "label": "Pluto longitude",
+              "left": "225.400914",
+              "right": "225.400914",
+              "delta": -1.3998260328662582e-9,
+              "kind": "display"
+            },
+            {
+              "id": "body-North Node-lon",
+              "area": "Positions",
+              "label": "North Node longitude",
+              "left": "308.122340",
+              "right": "308.122340",
+              "delta": 5.119197794556385e-7,
+              "kind": "display"
+            },
+            {
+              "id": "body-South Node-lon",
+              "area": "Positions",
+              "label": "South Node longitude",
+              "left": "128.122340",
+              "right": "128.122340",
+              "delta": 5.119197794556385e-7,
+              "kind": "display"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "roundingAttribution": [
+    {
+      "body": "Sun",
+      "utc": "1990-06-15T13:29:59.999Z",
+      "before": 84.18908526331245,
+      "after": 84.1890770350937,
+      "deltaDegrees": -0.000008228218803196796,
+      "dpsiDeltaDegrees": -0.000008228218925129877,
+      "residualDegrees": 1.2193308123983112e-13
+    },
+    {
+      "body": "Moon",
+      "utc": "1990-06-15T13:29:59.999Z",
+      "before": 346.19408955779284,
+      "after": 346.1940813295741,
+      "deltaDegrees": -0.000008228218803196796,
+      "dpsiDeltaDegrees": -0.000008228218925129877,
+      "residualDegrees": 1.2193308123983112e-13
+    },
+    {
+      "body": "Mercury",
+      "utc": "1990-06-15T13:29:59.999Z",
+      "before": 65.79812436773011,
+      "after": 65.79811613951136,
+      "deltaDegrees": -0.000008228218803196796,
+      "dpsiDeltaDegrees": -0.000008228218925129877,
+      "residualDegrees": 1.2193308123983112e-13
+    },
+    {
+      "body": "Venus",
+      "utc": "1990-06-15T13:29:59.999Z",
+      "before": 48.850875365295394,
+      "after": 48.85086713707665,
+      "deltaDegrees": -0.000008228218803196796,
+      "dpsiDeltaDegrees": -0.000008228218925129877,
+      "residualDegrees": 1.2193308123983112e-13
+    },
+    {
+      "body": "Mars",
+      "utc": "1990-06-15T13:29:59.999Z",
+      "before": 11.085997561991235,
+      "after": 11.085989333772488,
+      "deltaDegrees": -0.000008228218803196796,
+      "dpsiDeltaDegrees": -0.000008228218925129877,
+      "residualDegrees": 1.2193308123983112e-13
+    },
+    {
+      "body": "Jupiter",
+      "utc": "1990-06-15T13:29:59.999Z",
+      "before": 105.90302924246805,
+      "after": 105.9030210142493,
+      "deltaDegrees": -0.000008228218803196796,
+      "dpsiDeltaDegrees": -0.000008228218925129877,
+      "residualDegrees": 1.2193308123983112e-13
+    },
+    {
+      "body": "Saturn",
+      "utc": "1990-06-15T13:29:59.999Z",
+      "before": 294.02820291379555,
+      "after": 294.02819468557675,
+      "deltaDegrees": -0.000008228218803196796,
+      "dpsiDeltaDegrees": -0.000008228218925129877,
+      "residualDegrees": 1.2193308123983112e-13
+    },
+    {
+      "body": "Uranus",
+      "utc": "1990-06-15T13:29:59.999Z",
+      "before": 278.16150640989895,
+      "after": 278.1614981816802,
+      "deltaDegrees": -0.000008228218803196796,
+      "dpsiDeltaDegrees": -0.000008228218925129877,
+      "residualDegrees": 1.2193308123983112e-13
+    },
+    {
+      "body": "Neptune",
+      "utc": "1990-06-15T13:29:59.999Z",
+      "before": 283.7152870131048,
+      "after": 283.71527878488604,
+      "deltaDegrees": -0.000008228218803196796,
+      "dpsiDeltaDegrees": -0.000008228218925129877,
+      "residualDegrees": 1.2193308123983112e-13
+    },
+    {
+      "body": "Pluto",
+      "utc": "1990-06-15T13:29:59.999Z",
+      "before": 225.40092201210547,
+      "after": 225.4009137838867,
+      "deltaDegrees": -0.000008228218803196796,
+      "dpsiDeltaDegrees": -0.000008228218925129877,
+      "residualDegrees": 1.2193308123983112e-13
+    },
+    {
+      "body": "North Node",
+      "utc": "1990-06-15T13:29:59.999Z",
+      "before": 308.1223478508507,
+      "after": 308.1223396226319,
+      "deltaDegrees": -0.000008228218803196796,
+      "dpsiDeltaDegrees": -0.000008228218925129877,
+      "residualDegrees": 1.2193308123983112e-13
+    },
+    {
+      "body": "South Node",
+      "utc": "1990-06-15T13:29:59.999Z",
+      "before": 128.1223478508507,
+      "after": 128.1223396226319,
+      "deltaDegrees": -0.000008228218803196796,
+      "dpsiDeltaDegrees": -0.000008228218925129877,
+      "residualDegrees": 1.2193308123983112e-13
+    },
+    {
+      "body": "Sun",
+      "utc": "1990-06-15T13:30:00.000Z",
+      "before": 84.18908527436764,
+      "after": 84.18907704614867,
+      "deltaDegrees": -0.000008228219030570472,
+      "dpsiDeltaDegrees": -0.000008228219118796688,
+      "residualDegrees": 8.822621656140971e-14
+    },
+    {
+      "body": "Moon",
+      "utc": "1990-06-15T13:30:00.000Z",
+      "before": 346.19408971270286,
+      "after": 346.19408148448395,
+      "deltaDegrees": -0.000008228218916883634,
+      "dpsiDeltaDegrees": -0.000008228219118796688,
+      "residualDegrees": 2.0191305428302574e-13
+    },
+    {
+      "body": "Mercury",
+      "utc": "1990-06-15T13:30:00.000Z",
+      "before": 65.79812438762559,
+      "after": 65.79811615940662,
+      "deltaDegrees": -0.000008228219030570472,
+      "dpsiDeltaDegrees": -0.000008228219118796688,
+      "residualDegrees": 8.822621656140971e-14
+    },
+    {
+      "body": "Venus",
+      "utc": "1990-06-15T13:30:00.000Z",
+      "before": 48.85087537890814,
+      "after": 48.85086715068917,
+      "deltaDegrees": -0.000008228219030570472,
+      "dpsiDeltaDegrees": -0.000008228219118796688,
+      "residualDegrees": 8.822621656140971e-14
+    },
+    {
+      "body": "Mars",
+      "utc": "1990-06-15T13:30:00.000Z",
+      "before": 11.085997570311804,
+      "after": 11.08598934209283,
+      "deltaDegrees": -0.000008228219030570472,
+      "dpsiDeltaDegrees": -0.000008228219118796688,
+      "residualDegrees": 8.822621656140971e-14
+    },
+    {
+      "body": "Jupiter",
+      "utc": "1990-06-15T13:30:00.000Z",
+      "before": 105.90302924497621,
+      "after": 105.90302101675724,
+      "deltaDegrees": -0.000008228219030570472,
+      "dpsiDeltaDegrees": -0.000008228219118796688,
+      "residualDegrees": 8.822621656140971e-14
+    },
+    {
+      "body": "Saturn",
+      "utc": "1990-06-15T13:30:00.000Z",
+      "before": 294.0282029131162,
+      "after": 294.02819468489724,
+      "deltaDegrees": -0.000008228219030570472,
+      "dpsiDeltaDegrees": -0.000008228219118796688,
+      "residualDegrees": 8.822621656140971e-14
+    },
+    {
+      "body": "Uranus",
+      "utc": "1990-06-15T13:30:00.000Z",
+      "before": 278.1615064094483,
+      "after": 278.1614981812293,
+      "deltaDegrees": -0.000008228219030570472,
+      "dpsiDeltaDegrees": -0.000008228219118796688,
+      "residualDegrees": 8.822621656140971e-14
+    },
+    {
+      "body": "Neptune",
+      "utc": "1990-06-15T13:30:00.000Z",
+      "before": 283.71528701281517,
+      "after": 283.7152787845962,
+      "deltaDegrees": -0.000008228219030570472,
+      "dpsiDeltaDegrees": -0.000008228219118796688,
+      "residualDegrees": 8.822621656140971e-14
+    },
+    {
+      "body": "Pluto",
+      "utc": "1990-06-15T13:30:00.000Z",
+      "before": 225.40092201187238,
+      "after": 225.4009137836534,
+      "deltaDegrees": -0.000008228219030570472,
+      "dpsiDeltaDegrees": -0.000008228219118796688,
+      "residualDegrees": 8.822621656140971e-14
+    },
+    {
+      "body": "North Node",
+      "utc": "1990-06-15T13:30:00.000Z",
+      "before": 308.12234786277827,
+      "after": 308.1223396345593,
+      "deltaDegrees": -0.000008228219030570472,
+      "dpsiDeltaDegrees": -0.000008228219118796688,
+      "residualDegrees": 8.822621656140971e-14
+    },
+    {
+      "body": "South Node",
+      "utc": "1990-06-15T13:30:00.000Z",
+      "before": 128.12234786277827,
+      "after": 128.1223396345593,
+      "deltaDegrees": -0.000008228219030570472,
+      "dpsiDeltaDegrees": -0.000008228219118796688,
+      "residualDegrees": 8.822621656140971e-14
+    },
+    {
+      "body": "Sun",
+      "utc": "1990-06-15T13:30:00.002Z",
+      "before": 84.18908529647723,
+      "after": 84.18907706825792,
+      "deltaDegrees": -0.000008228219257944147,
+      "dpsiDeltaDegrees": -0.00000822821950611008,
+      "residualDegrees": 2.481659321128867e-13
+    },
+    {
+      "body": "Moon",
+      "utc": "1990-06-15T13:30:00.002Z",
+      "before": 346.1940900225186,
+      "after": 346.1940817942992,
+      "deltaDegrees": -0.000008228219371630985,
+      "dpsiDeltaDegrees": -0.00000822821950611008,
+      "residualDegrees": 1.344790943912707e-13
+    },
+    {
+      "body": "Mercury",
+      "utc": "1990-06-15T13:30:00.002Z",
+      "before": 65.79812442741695,
+      "after": 65.79811619919764,
+      "deltaDegrees": -0.000008228219257944147,
+      "dpsiDeltaDegrees": -0.00000822821950611008,
+      "residualDegrees": 2.481659321128867e-13
+    },
+    {
+      "body": "Venus",
+      "utc": "1990-06-15T13:30:00.002Z",
+      "before": 48.850875406131706,
+      "after": 48.850867177912335,
+      "deltaDegrees": -0.000008228219371630985,
+      "dpsiDeltaDegrees": -0.00000822821950611008,
+      "residualDegrees": 1.344790943912707e-13
+    },
+    {
+      "body": "Mars",
+      "utc": "1990-06-15T13:30:00.002Z",
+      "before": 11.085997586952828,
+      "after": 11.085989358733457,
+      "deltaDegrees": -0.000008228219371630985,
+      "dpsiDeltaDegrees": -0.00000822821950611008,
+      "residualDegrees": 1.344790943912707e-13
+    },
+    {
+      "body": "Jupiter",
+      "utc": "1990-06-15T13:30:00.002Z",
+      "before": 105.90302924999213,
+      "after": 105.90302102177282,
+      "deltaDegrees": -0.000008228219257944147,
+      "dpsiDeltaDegrees": -0.00000822821950611008,
+      "residualDegrees": 2.481659321128867e-13
+    },
+    {
+      "body": "Saturn",
+      "utc": "1990-06-15T13:30:00.002Z",
+      "before": 294.0282029117578,
+      "after": 294.02819468353846,
+      "deltaDegrees": -0.000008228219257944147,
+      "dpsiDeltaDegrees": -0.00000822821950611008,
+      "residualDegrees": 2.481659321128867e-13
+    },
+    {
+      "body": "Uranus",
+      "utc": "1990-06-15T13:30:00.002Z",
+      "before": 278.1615064085472,
+      "after": 278.16149818032784,
+      "deltaDegrees": -0.000008228219371630985,
+      "dpsiDeltaDegrees": -0.00000822821950611008,
+      "residualDegrees": 1.344790943912707e-13
+    },
+    {
+      "body": "Neptune",
+      "utc": "1990-06-15T13:30:00.002Z",
+      "before": 283.715287012236,
+      "after": 283.7152787840167,
+      "deltaDegrees": -0.000008228219257944147,
+      "dpsiDeltaDegrees": -0.00000822821950611008,
+      "residualDegrees": 2.481659321128867e-13
+    },
+    {
+      "body": "Pluto",
+      "utc": "1990-06-15T13:30:00.002Z",
+      "before": 225.40092201140615,
+      "after": 225.4009137831868,
+      "deltaDegrees": -0.000008228219371630985,
+      "dpsiDeltaDegrees": -0.00000822821950611008,
+      "residualDegrees": 1.344790943912707e-13
+    },
+    {
+      "body": "North Node",
+      "utc": "1990-06-15T13:30:00.002Z",
+      "before": 308.1223483720121,
+      "after": 308.12234014379277,
+      "deltaDegrees": -0.000008228219257944147,
+      "dpsiDeltaDegrees": -0.00000822821950611008,
+      "residualDegrees": 2.481659321128867e-13
+    },
+    {
+      "body": "South Node",
+      "utc": "1990-06-15T13:30:00.002Z",
+      "before": 128.12234837201208,
+      "after": 128.12234014379277,
+      "deltaDegrees": -0.000008228219257944147,
+      "dpsiDeltaDegrees": -0.00000822821950611008,
+      "residualDegrees": 2.481659321128867e-13
+    },
+    {
+      "body": "Sun",
+      "utc": "1990-06-15T13:30:00.006Z",
+      "before": 84.1890853406972,
+      "after": 84.1890771124771,
+      "deltaDegrees": -0.000008228220167438849,
+      "dpsiDeltaDegrees": -0.000008228220280695414,
+      "residualDegrees": 1.1325656531320158e-13
+    },
+    {
+      "body": "Moon",
+      "utc": "1990-06-15T13:30:00.006Z",
+      "before": 346.1940906421594,
+      "after": 346.19408241393927,
+      "deltaDegrees": -0.000008228220167438849,
+      "dpsiDeltaDegrees": -0.000008228220280695414,
+      "residualDegrees": 1.1325656531320158e-13
+    },
+    {
+      "body": "Mercury",
+      "utc": "1990-06-15T13:30:00.006Z",
+      "before": 65.79812450699848,
+      "after": 65.79811627877837,
+      "deltaDegrees": -0.000008228220167438849,
+      "dpsiDeltaDegrees": -0.000008228220280695414,
+      "residualDegrees": 1.1325656531320158e-13
+    },
+    {
+      "body": "Venus",
+      "utc": "1990-06-15T13:30:00.006Z",
+      "before": 48.850875460580085,
+      "after": 48.850867232359974,
+      "deltaDegrees": -0.000008228220167438849,
+      "dpsiDeltaDegrees": -0.000008228220280695414,
+      "residualDegrees": 1.1325656531320158e-13
+    },
+    {
+      "body": "Mars",
+      "utc": "1990-06-15T13:30:00.006Z",
+      "before": 11.085997620234991,
+      "after": 11.08598939201488,
+      "deltaDegrees": -0.000008228220167438849,
+      "dpsiDeltaDegrees": -0.000008228220280695414,
+      "residualDegrees": 1.1325656531320158e-13
+    },
+    {
+      "body": "Jupiter",
+      "utc": "1990-06-15T13:30:00.006Z",
+      "before": 105.90302926002431,
+      "after": 105.9030210318042,
+      "deltaDegrees": -0.000008228220167438849,
+      "dpsiDeltaDegrees": -0.000008228220280695414,
+      "residualDegrees": 1.1325656531320158e-13
+    },
+    {
+      "body": "Saturn",
+      "utc": "1990-06-15T13:30:00.006Z",
+      "before": 294.0282029090408,
+      "after": 294.02819468082066,
+      "deltaDegrees": -0.000008228220167438849,
+      "dpsiDeltaDegrees": -0.000008228220280695414,
+      "residualDegrees": 1.1325656531320158e-13
+    },
+    {
+      "body": "Uranus",
+      "utc": "1990-06-15T13:30:00.006Z",
+      "before": 278.1615064067449,
+      "after": 278.16149817852477,
+      "deltaDegrees": -0.000008228220167438849,
+      "dpsiDeltaDegrees": -0.000008228220280695414,
+      "residualDegrees": 1.1325656531320158e-13
+    },
+    {
+      "body": "Neptune",
+      "utc": "1990-06-15T13:30:00.006Z",
+      "before": 283.7152870110776,
+      "after": 283.71527878285747,
+      "deltaDegrees": -0.000008228220167438849,
+      "dpsiDeltaDegrees": -0.000008228220280695414,
+      "residualDegrees": 1.1325656531320158e-13
+    },
+    {
+      "body": "Pluto",
+      "utc": "1990-06-15T13:30:00.006Z",
+      "before": 225.40092201047372,
+      "after": 225.40091378225358,
+      "deltaDegrees": -0.000008228220167438849,
+      "dpsiDeltaDegrees": -0.000008228220280695414,
+      "residualDegrees": 1.1325656531320158e-13
+    },
+    {
+      "body": "North Node",
+      "utc": "1990-06-15T13:30:00.006Z",
+      "before": 308.12234837469896,
+      "after": 308.122340146479,
+      "deltaDegrees": -0.000008228219940065173,
+      "dpsiDeltaDegrees": -0.000008228220280695414,
+      "residualDegrees": 3.4063024075643364e-13
+    },
+    {
+      "body": "South Node",
+      "utc": "1990-06-15T13:30:00.006Z",
+      "before": 128.12234837469896,
+      "after": 128.12234014647902,
+      "deltaDegrees": -0.000008228219940065173,
+      "dpsiDeltaDegrees": -0.000008228220280695414,
+      "residualDegrees": 3.4063024075643364e-13
+    }
+  ],
+  "pinnedSpeeds": [
+    {
+      "version": "0.1.1-rc.15",
+      "deltaT": 57.197125,
+      "speeds": [
+        {
+          "body": "Sun",
+          "modelled": 0.9551295117944392,
+          "pinned": 0.9551294899097229,
+          "printedModelled": "0.955130",
+          "printedPinned": "0.955129"
+        },
+        {
+          "body": "Moon",
+          "modelled": 13.384177573527722,
+          "pinned": 13.384177266800634,
+          "printedModelled": "13.384178",
+          "printedPinned": "13.384177"
+        },
+        {
+          "body": "Mercury",
+          "modelled": 1.7189436810838288,
+          "pinned": 1.7189436420039783,
+          "printedModelled": "1.718944",
+          "printedPinned": "1.718944"
+        },
+        {
+          "body": "Venus",
+          "modelled": 1.1760625978354255,
+          "pinned": 1.1760625710337536,
+          "printedModelled": "1.176063",
+          "printedPinned": "1.176063"
+        },
+        {
+          "body": "Mars",
+          "modelled": 0.7188728961864399,
+          "pinned": 0.7188728797871136,
+          "printedModelled": "0.718873",
+          "printedPinned": "0.718873"
+        },
+        {
+          "body": "Jupiter",
+          "modelled": 0.21667883186182735,
+          "pinned": 0.2166788268880282,
+          "printedModelled": "0.216679",
+          "printedPinned": "0.216679"
+        },
+        {
+          "body": "Saturn",
+          "modelled": -0.05870208073588401,
+          "pinned": -0.05870207940006367,
+          "printedModelled": "-0.058702",
+          "printedPinned": "-0.058702"
+        },
+        {
+          "body": "Uranus",
+          "modelled": -0.03894190589903701,
+          "pinned": -0.03894190501796402,
+          "printedModelled": "-0.038942",
+          "printedPinned": "-0.038942"
+        },
+        {
+          "body": "Neptune",
+          "modelled": -0.025037203869260338,
+          "pinned": -0.02503720327240444,
+          "printedModelled": "-0.025037",
+          "printedPinned": "-0.025037"
+        },
+        {
+          "body": "Pluto",
+          "modelled": -0.02015398337107399,
+          "pinned": -0.020153982902115786,
+          "printedModelled": "-0.020154",
+          "printedPinned": "-0.020154"
+        },
+        {
+          "body": "North Node",
+          "modelled": 0.012568826069355055,
+          "pinned": 0.01256884884548981,
+          "printedModelled": "0.012569",
+          "printedPinned": "0.012569"
+        },
+        {
+          "body": "South Node",
+          "modelled": 0.012568826069355055,
+          "pinned": 0.01256884884548981,
+          "printedModelled": "0.012569",
+          "printedPinned": "0.012569"
+        }
+      ]
+    },
+    {
+      "version": "0.1.1-rc.16",
+      "deltaT": 57.197125,
+      "speeds": [
+        {
+          "body": "Sun",
+          "modelled": 0.95512655695984,
+          "pinned": 0.9551265350751237,
+          "printedModelled": "0.955127",
+          "printedPinned": "0.955127"
+        },
+        {
+          "body": "Moon",
+          "modelled": 13.384174618693123,
+          "pinned": 13.384174311937613,
+          "printedModelled": "13.384175",
+          "printedPinned": "13.384174"
+        },
+        {
+          "body": "Mercury",
+          "modelled": 1.7189407262492296,
+          "pinned": 1.7189406871409574,
+          "printedModelled": "1.718941",
+          "printedPinned": "1.718941"
+        },
+        {
+          "body": "Venus",
+          "modelled": 1.1760596429724046,
+          "pinned": 1.1760596161707326,
+          "printedModelled": "1.176060",
+          "printedPinned": "1.176060"
+        },
+        {
+          "body": "Mars",
+          "modelled": 0.7188699413518407,
+          "pinned": 0.7188699249525143,
+          "printedModelled": "0.718870",
+          "printedPinned": "0.718870"
+        },
+        {
+          "body": "Jupiter",
+          "modelled": 0.2166758769703847,
+          "pinned": 0.21667587202500727,
+          "printedModelled": "0.216676",
+          "printedPinned": "0.216676"
+        },
+        {
+          "body": "Saturn",
+          "modelled": -0.05870503557048323,
+          "pinned": -0.05870503423466289,
+          "printedModelled": "-0.058705",
+          "printedPinned": "-0.058705"
+        },
+        {
+          "body": "Uranus",
+          "modelled": -0.03894486076205794,
+          "pinned": -0.03894485988098495,
+          "printedModelled": "-0.038945",
+          "printedPinned": "-0.038945"
+        },
+        {
+          "body": "Neptune",
+          "modelled": -0.02504015873228127,
+          "pinned": -0.025040158135425372,
+          "printedModelled": "-0.025040",
+          "printedPinned": "-0.025040"
+        },
+        {
+          "body": "Pluto",
+          "modelled": -0.02015693821988407,
+          "pinned": -0.020156937765136718,
+          "printedModelled": "-0.020157",
+          "printedPinned": "-0.020157"
+        },
+        {
+          "body": "North Node",
+          "modelled": 0.01256587329089598,
+          "pinned": 0.012565896066917048,
+          "printedModelled": "0.012566",
+          "printedPinned": "0.012566"
+        },
+        {
+          "body": "South Node",
+          "modelled": 0.01256587329089598,
+          "pinned": 0.012565896066917048,
+          "printedModelled": "0.012566",
+          "printedPinned": "0.012566"
+        }
+      ]
+    }
+  ],
+  "speedAttribution": [
+    {
+      "body": "Sun",
+      "utc": "1990-06-15T13:30:00.000Z",
+      "before": 0.9551295117944392,
+      "after": 0.95512655695984,
+      "deltaDegreesPerDay": -0.0000029548345992225222,
+      "expectedDeltaDegreesPerDay": -0.000002954859517562178,
+      "residualDegreesPerDay": 2.4918339655945806e-11
+    },
+    {
+      "body": "Moon",
+      "utc": "1990-06-15T13:30:00.000Z",
+      "before": 13.384177573527722,
+      "after": 13.384174618693123,
+      "deltaDegreesPerDay": -0.0000029548345992225222,
+      "expectedDeltaDegreesPerDay": -0.000002954859517562178,
+      "residualDegreesPerDay": 2.4918339655945806e-11
+    },
+    {
+      "body": "Mercury",
+      "utc": "1990-06-15T13:30:00.000Z",
+      "before": 1.7189436810838288,
+      "after": 1.7189407262492296,
+      "deltaDegreesPerDay": -0.0000029548345992225222,
+      "expectedDeltaDegreesPerDay": -0.000002954859517562178,
+      "residualDegreesPerDay": 2.4918339655945806e-11
+    },
+    {
+      "body": "Venus",
+      "utc": "1990-06-15T13:30:00.000Z",
+      "before": 1.1760625978354255,
+      "after": 1.1760596429724046,
+      "deltaDegreesPerDay": -0.0000029548630209319526,
+      "expectedDeltaDegreesPerDay": -0.000002954859517562178,
+      "residualDegreesPerDay": -3.5033697744582017e-12
+    },
+    {
+      "body": "Mars",
+      "utc": "1990-06-15T13:30:00.000Z",
+      "before": 0.7188728961864399,
+      "after": 0.7188699413518407,
+      "deltaDegreesPerDay": -0.0000029548345992225222,
+      "expectedDeltaDegreesPerDay": -0.000002954859517562178,
+      "residualDegreesPerDay": 2.4918339655945806e-11
+    },
+    {
+      "body": "Jupiter",
+      "utc": "1990-06-15T13:30:00.000Z",
+      "before": 0.21667883186182735,
+      "after": 0.2166758769703847,
+      "deltaDegreesPerDay": -0.000002954891442641383,
+      "expectedDeltaDegreesPerDay": -0.000002954859517562178,
+      "residualDegreesPerDay": -3.192507920486221e-11
+    },
+    {
+      "body": "Saturn",
+      "utc": "1990-06-15T13:30:00.000Z",
+      "before": -0.05870208073588401,
+      "after": -0.05870503557048323,
+      "deltaDegreesPerDay": -0.0000029548345992225222,
+      "expectedDeltaDegreesPerDay": -0.000002954859517562178,
+      "residualDegreesPerDay": 2.4918339655945806e-11
+    },
+    {
+      "body": "Uranus",
+      "utc": "1990-06-15T13:30:00.000Z",
+      "before": -0.03894190589903701,
+      "after": -0.03894486076205794,
+      "deltaDegreesPerDay": -0.0000029548630209319526,
+      "expectedDeltaDegreesPerDay": -0.000002954859517562178,
+      "residualDegreesPerDay": -3.5033697744582017e-12
+    },
+    {
+      "body": "Neptune",
+      "utc": "1990-06-15T13:30:00.000Z",
+      "before": -0.025037203869260338,
+      "after": -0.02504015873228127,
+      "deltaDegreesPerDay": -0.0000029548630209319526,
+      "expectedDeltaDegreesPerDay": -0.000002954859517562178,
+      "residualDegreesPerDay": -3.5033697744582017e-12
+    },
+    {
+      "body": "Pluto",
+      "utc": "1990-06-15T13:30:00.000Z",
+      "before": -0.02015398337107399,
+      "after": -0.02015693821988407,
+      "deltaDegreesPerDay": -0.0000029548488100772374,
+      "expectedDeltaDegreesPerDay": -0.000002954859517562178,
+      "residualDegreesPerDay": 1.0707484940743802e-11
+    },
+    {
+      "body": "North Node",
+      "utc": "1990-06-15T13:30:00.000Z",
+      "before": 0.012568826069355055,
+      "after": 0.01256587329089598,
+      "deltaDegreesPerDay": -0.000002952778459075489,
+      "expectedDeltaDegreesPerDay": -0.0000029527784414342932,
+      "residualDegreesPerDay": -1.764119585004678e-14
+    },
+    {
+      "body": "South Node",
+      "utc": "1990-06-15T13:30:00.000Z",
+      "before": 0.012568826069355055,
+      "after": 0.01256587329089598,
+      "deltaDegreesPerDay": -0.000002952778459075489,
+      "expectedDeltaDegreesPerDay": -0.0000029527784414342932,
+      "residualDegreesPerDay": -1.764119585004678e-14
+    }
+  ],
+  "scene": {
+    "input": {
+      "utc": "1907-07-06T15:06:36.000Z",
+      "latitude": 19.35,
+      "longitude": -99.16,
+      "houseSystem": "whole",
+      "timeKnown": true,
+      "flags": [
+        "lmt"
+      ]
+    },
+    "frame": {
+      "dpsiDeltaDegrees": 0.000020547680800051538,
+      "obliquityBefore": 23.450139302416165,
+      "obliquityAfter": 23.4501467822154,
+      "gastBefore": 10.00636477335881,
+      "gastAfter": 10.006366073886603
+    },
+    "anglesBefore": {
+      "asc": 143.5128205395194,
+      "mc": 53.328127980045224,
+      "dsc": 323.51282053951945,
+      "ic": 233.32812798004522
+    },
+    "anglesAfter": {
+      "asc": 143.5128384138946,
+      "mc": 53.32814863209552,
+      "dsc": 323.51283841389454,
+      "ic": 233.32814863209546
+    },
+    "longitudes": [
+      {
+        "body": "Sun",
+        "utc": "1907-07-06T15:06:36.000Z",
+        "before": 103.37552067323685,
+        "after": 103.37554122091763,
+        "deltaDegrees": 0.00002054768083326053,
+        "dpsiDeltaDegrees": 0.000020547680800051538,
+        "residualDegrees": 3.3208990570486596e-14
+      },
+      {
+        "body": "Moon",
+        "utc": "1907-07-06T15:06:36.000Z",
+        "before": 59.712263522231694,
+        "after": 59.71228406991247,
+        "deltaDegrees": 0.00002054768083326053,
+        "dpsiDeltaDegrees": 0.000020547680800051538,
+        "residualDegrees": 3.3208990570486596e-14
+      },
+      {
+        "body": "Mercury",
+        "utc": "1907-07-06T15:06:36.000Z",
+        "before": 126.33595264530226,
+        "after": 126.33597319298303,
+        "deltaDegrees": 0.00002054768083326053,
+        "dpsiDeltaDegrees": 0.000020547680800051538,
+        "residualDegrees": 3.3208990570486596e-14
+      },
+      {
+        "body": "Venus",
+        "utc": "1907-07-06T15:06:36.000Z",
+        "before": 84.33932072771512,
+        "after": 84.3393412753959,
+        "deltaDegrees": 0.00002054768083326053,
+        "dpsiDeltaDegrees": 0.000020547680800051538,
+        "residualDegrees": 3.3208990570486596e-14
+      },
+      {
+        "body": "Mars",
+        "utc": "1907-07-06T15:06:36.000Z",
+        "before": 283.39625403004516,
+        "after": 283.396274577726,
+        "deltaDegrees": 0.00002054768083326053,
+        "dpsiDeltaDegrees": 0.000020547680800051538,
+        "residualDegrees": 3.3208990570486596e-14
+      },
+      {
+        "body": "Jupiter",
+        "utc": "1907-07-06T15:06:36.000Z",
+        "before": 110.43522317562065,
+        "after": 110.43524372330148,
+        "deltaDegrees": 0.00002054768083326053,
+        "dpsiDeltaDegrees": 0.000020547680800051538,
+        "residualDegrees": 3.3208990570486596e-14
+      },
+      {
+        "body": "Saturn",
+        "utc": "1907-07-06T15:06:36.000Z",
+        "before": 357.4452316377388,
+        "after": 357.4452521854196,
+        "deltaDegrees": 0.00002054768083326053,
+        "dpsiDeltaDegrees": 0.000020547680800051538,
+        "residualDegrees": 3.3208990570486596e-14
+      },
+      {
+        "body": "Uranus",
+        "utc": "1907-07-06T15:06:36.000Z",
+        "before": 280.6122136402043,
+        "after": 280.6122341878851,
+        "deltaDegrees": 0.00002054768083326053,
+        "dpsiDeltaDegrees": 0.000020547680800051538,
+        "residualDegrees": 3.3208990570486596e-14
+      },
+      {
+        "body": "Neptune",
+        "utc": "1907-07-06T15:06:36.000Z",
+        "before": 102.39898539694855,
+        "after": 102.39900594462932,
+        "deltaDegrees": 0.00002054768083326053,
+        "dpsiDeltaDegrees": 0.000020547680800051538,
+        "residualDegrees": 3.3208990570486596e-14
+      },
+      {
+        "body": "Pluto",
+        "utc": "1907-07-06T15:06:36.000Z",
+        "before": 83.74678484296669,
+        "after": 83.74680539064752,
+        "deltaDegrees": 0.00002054768083326053,
+        "dpsiDeltaDegrees": 0.000020547680800051538,
+        "residualDegrees": 3.3208990570486596e-14
+      },
+      {
+        "body": "North Node",
+        "utc": "1907-07-06T15:06:36.000Z",
+        "before": 113.41314437992202,
+        "after": 113.41316492760279,
+        "deltaDegrees": 0.00002054768083326053,
+        "dpsiDeltaDegrees": 0.000020547680800051538,
+        "residualDegrees": 3.3208990570486596e-14
+      },
+      {
+        "body": "South Node",
+        "utc": "1907-07-06T15:06:36.000Z",
+        "before": 293.41314437992196,
+        "after": 293.4131649276028,
+        "deltaDegrees": 0.00002054768083326053,
+        "dpsiDeltaDegrees": 0.000020547680800051538,
+        "residualDegrees": 3.3208990570486596e-14
+      }
+    ],
+    "speeds": [
+      {
+        "body": "Sun",
+        "utc": "1907-07-06T15:06:36.000Z",
+        "before": 0.9536201595778948,
+        "after": 0.953614260708946,
+        "deltaDegreesPerDay": -0.000005898868948861491,
+        "expectedDeltaDegreesPerDay": -0.000005898882387494903,
+        "residualDegreesPerDay": 1.3438633411915098e-11
+      },
+      {
+        "body": "Moon",
+        "utc": "1907-07-06T15:06:36.000Z",
+        "before": 12.023104067878876,
+        "after": 12.023098169009927,
+        "deltaDegreesPerDay": -0.000005898868948861491,
+        "expectedDeltaDegreesPerDay": -0.000005898882387494903,
+        "residualDegreesPerDay": 1.3438633411915098e-11
+      },
+      {
+        "body": "Mercury",
+        "utc": "1907-07-06T15:06:36.000Z",
+        "before": 0.3728529448210338,
+        "after": 0.37284704595208495,
+        "deltaDegreesPerDay": -0.000005898868948861491,
+        "expectedDeltaDegreesPerDay": -0.000005898882387494903,
+        "residualDegreesPerDay": 1.3438633411915098e-11
+      },
+      {
+        "body": "Venus",
+        "utc": "1907-07-06T15:06:36.000Z",
+        "before": 1.2165151419480935,
+        "after": 1.2165092430791447,
+        "deltaDegreesPerDay": -0.000005898868948861491,
+        "expectedDeltaDegreesPerDay": -0.000005898882387494903,
+        "residualDegreesPerDay": 1.3438633411915098e-11
+      },
+      {
+        "body": "Mars",
+        "utc": "1907-07-06T15:06:36.000Z",
+        "before": -0.29430130462060333,
+        "after": -0.2943072035463956,
+        "deltaDegreesPerDay": -0.000005898925792280352,
+        "expectedDeltaDegreesPerDay": -0.000005898882387494903,
+        "residualDegreesPerDay": -4.340478544889292e-11
+      },
+      {
+        "body": "Jupiter",
+        "utc": "1907-07-06T15:06:36.000Z",
+        "before": 0.2231620263444256,
+        "after": 0.22315612744705504,
+        "deltaDegreesPerDay": -0.000005898897370570921,
+        "expectedDeltaDegreesPerDay": -0.000005898882387494903,
+        "residualDegreesPerDay": -1.498307601848891e-11
+      },
+      {
+        "body": "Saturn",
+        "utc": "1907-07-06T15:06:36.000Z",
+        "before": 0.005565342718227839,
+        "after": 0.005559443849278978,
+        "deltaDegreesPerDay": -0.000005898868948861491,
+        "expectedDeltaDegreesPerDay": -0.000005898882387494903,
+        "residualDegreesPerDay": 1.3438633411915098e-11
+      },
+      {
+        "body": "Uranus",
+        "utc": "1907-07-06T15:06:36.000Z",
+        "before": -0.04041665877707601,
+        "after": -0.04042255761760316,
+        "deltaDegreesPerDay": -0.0000058988405271520605,
+        "expectedDeltaDegreesPerDay": -0.000005898882387494903,
+        "residualDegreesPerDay": 4.1860342842319105e-11
+      },
+      {
+        "body": "Neptune",
+        "utc": "1907-07-06T15:06:36.000Z",
+        "before": 0.037223542250330865,
+        "after": 0.037217643381382004,
+        "deltaDegreesPerDay": -0.000005898868948861491,
+        "expectedDeltaDegreesPerDay": -0.000005898882387494903,
+        "residualDegreesPerDay": 1.3438633411915098e-11
+      },
+      {
+        "body": "Pluto",
+        "utc": "1907-07-06T15:06:36.000Z",
+        "before": 0.0224985130330424,
+        "after": 0.02249261413567183,
+        "deltaDegreesPerDay": -0.000005898897370570921,
+        "expectedDeltaDegreesPerDay": -0.000005898882387494903,
+        "residualDegreesPerDay": -1.498307601848891e-11
+      },
+      {
+        "body": "North Node",
+        "utc": "1907-07-06T15:06:36.000Z",
+        "before": -0.023534445399718606,
+        "after": -0.023540340657859815,
+        "deltaDegreesPerDay": -0.000005895258141208615,
+        "expectedDeltaDegreesPerDay": -0.000005895258138974352,
+        "residualDegreesPerDay": -2.2342628506859252e-15
+      },
+      {
+        "body": "South Node",
+        "utc": "1907-07-06T15:06:36.000Z",
+        "before": -0.02353444539994598,
+        "after": -0.02354034065774613,
+        "deltaDegreesPerDay": -0.0000058952578001481015,
+        "expectedDeltaDegreesPerDay": -0.000005895258138974352,
+        "residualDegreesPerDay": 3.3882625031416216e-13
+      }
+    ],
+    "snapshotDifferences": [
+      {
+        "path": "engineVersion",
+        "before": "0.1.1-rc.15",
+        "after": "0.1.1-rc.16"
+      },
+      {
+        "path": "anchor.lon",
+        "before": 143.5128205,
+        "after": 143.5128384
+      },
+      {
+        "path": "bodies.0.lon",
+        "before": 103.3755207,
+        "after": 103.3755412
+      },
+      {
+        "path": "bodies.0.drawLon",
+        "before": 464.9696494,
+        "after": 464.96967
+      },
+      {
+        "path": "bodies.0.signDegree",
+        "before": 13.3755207,
+        "after": 13.3755412
+      },
+      {
+        "path": "bodies.0.speed",
+        "before": 0.9536202,
+        "after": 0.9536143
+      },
+      {
+        "path": "bodies.1.lon",
+        "before": 59.7122635,
+        "after": 59.7122841
+      },
+      {
+        "path": "bodies.1.drawLon",
+        "before": 408.9696494,
+        "after": 408.96967
+      },
+      {
+        "path": "bodies.1.signDegree",
+        "before": 29.7122635,
+        "after": 29.7122841
+      },
+      {
+        "path": "bodies.1.speed",
+        "before": 12.0231041,
+        "after": 12.0230982
+      },
+      {
+        "path": "bodies.2.lon",
+        "before": 126.3359526,
+        "after": 126.3359732
+      },
+      {
+        "path": "bodies.2.drawLon",
+        "before": 506.9696494,
+        "after": 506.96967
+      },
+      {
+        "path": "bodies.2.signDegree",
+        "before": 6.3359526,
+        "after": 6.3359732
+      },
+      {
+        "path": "bodies.2.speed",
+        "before": 0.3728529,
+        "after": 0.372847
+      },
+      {
+        "path": "bodies.3.lon",
+        "before": 84.3393207,
+        "after": 84.3393413
+      },
+      {
+        "path": "bodies.3.drawLon",
+        "before": 436.9696494,
+        "after": 436.96967
+      },
+      {
+        "path": "bodies.3.signDegree",
+        "before": 24.3393207,
+        "after": 24.3393413
+      },
+      {
+        "path": "bodies.3.speed",
+        "before": 1.2165151,
+        "after": 1.2165092
+      },
+      {
+        "path": "bodies.4.lon",
+        "before": 283.396254,
+        "after": 283.3962746
+      },
+      {
+        "path": "bodies.4.drawLon",
+        "before": 289.0042338,
+        "after": 289.0042544
+      },
+      {
+        "path": "bodies.4.signDegree",
+        "before": 13.396254,
+        "after": 13.3962746
+      },
+      {
+        "path": "bodies.4.speed",
+        "before": -0.2943013,
+        "after": -0.2943072
+      },
+      {
+        "path": "bodies.5.lon",
+        "before": 110.4352232,
+        "after": 110.4352437
+      },
+      {
+        "path": "bodies.5.drawLon",
+        "before": 478.9696494,
+        "after": 478.96967
+      },
+      {
+        "path": "bodies.5.signDegree",
+        "before": 20.4352232,
+        "after": 20.4352437
+      },
+      {
+        "path": "bodies.5.speed",
+        "before": 0.223162,
+        "after": 0.2231561
+      },
+      {
+        "path": "bodies.6.lon",
+        "before": 357.4452316,
+        "after": 357.4452522
+      },
+      {
+        "path": "bodies.6.drawLon",
+        "before": 357.4452316,
+        "after": 357.4452522
+      },
+      {
+        "path": "bodies.6.signDegree",
+        "before": 27.4452316,
+        "after": 27.4452522
+      },
+      {
+        "path": "bodies.6.speed",
+        "before": 0.0055653,
+        "after": 0.0055594
+      },
+      {
+        "path": "bodies.7.lon",
+        "before": 280.6122136,
+        "after": 280.6122342
+      },
+      {
+        "path": "bodies.7.drawLon",
+        "before": 275.0042338,
+        "after": 275.0042544
+      },
+      {
+        "path": "bodies.7.signDegree",
+        "before": 10.6122136,
+        "after": 10.6122342
+      },
+      {
+        "path": "bodies.7.speed",
+        "before": -0.0404167,
+        "after": -0.0404226
+      },
+      {
+        "path": "bodies.8.lon",
+        "before": 102.3989854,
+        "after": 102.3990059
+      },
+      {
+        "path": "bodies.8.drawLon",
+        "before": 450.9696494,
+        "after": 450.96967
+      },
+      {
+        "path": "bodies.8.signDegree",
+        "before": 12.3989854,
+        "after": 12.3990059
+      },
+      {
+        "path": "bodies.8.speed",
+        "before": 0.0372235,
+        "after": 0.0372176
+      },
+      {
+        "path": "bodies.9.lon",
+        "before": 83.7467848,
+        "after": 83.7468054
+      },
+      {
+        "path": "bodies.9.drawLon",
+        "before": 422.9696494,
+        "after": 422.96967
+      },
+      {
+        "path": "bodies.9.signDegree",
+        "before": 23.7467848,
+        "after": 23.7468054
+      },
+      {
+        "path": "bodies.9.speed",
+        "before": 0.0224985,
+        "after": 0.0224926
+      },
+      {
+        "path": "bodies.10.lon",
+        "before": 113.4131444,
+        "after": 113.4131649
+      },
+      {
+        "path": "bodies.10.drawLon",
+        "before": 492.9696494,
+        "after": 492.96967
+      },
+      {
+        "path": "bodies.10.signDegree",
+        "before": 23.4131444,
+        "after": 23.4131649
+      },
+      {
+        "path": "bodies.10.speed",
+        "before": -0.0235344,
+        "after": -0.0235403
+      },
+      {
+        "path": "angles.asc",
+        "before": 143.5128205,
+        "after": 143.5128384
+      },
+      {
+        "path": "angles.mc",
+        "before": 53.328128,
+        "after": 53.3281486
+      },
+      {
+        "path": "angles.dsc",
+        "before": 323.5128205,
+        "after": 323.5128384
+      },
+      {
+        "path": "angles.ic",
+        "before": 233.328128,
+        "after": 233.3281486
+      }
+    ]
+  },
+  "shareFrame": {
+    "samples": 435,
+    "oldMaximumErrorDegrees": 0.00019945353096773033,
+    "correctedMaximumErrorDegrees": 4.547473508864641e-13,
+    "gateDegrees": 0.000001
+  }
+}

@@ -1,0 +1,232 @@
+{
+  "schema": "zodiacs-site-reference-refresh/v1",
+  "on": "2026-10-01",
+  "scope": "Local rc.16 adoption: independent references, ERFA angle arbiter and committed conformance snapshot only; no acceptance-ledger gate changed.",
+  "engineVersion": "0.1.1-rc.16",
+  "engineCommit": "6807f632fc5aad08999d97f61e50793c6ca9a0b4",
+  "runtime": {
+    "node": "22.22.2",
+    "pyerfa": "2.0.1.5",
+    "erfa": "2.0.1"
+  },
+  "independentReferences": {
+    "generator": "docs/engine-validation/independent-references/tools/build.py",
+    "refreshCommand": "python3 docs/engine-validation/independent-references/tools/build.py --refresh-changed",
+    "offlineCommand": "python3 docs/engine-validation/independent-references/tools/build.py",
+    "offlineRebuilds": 2,
+    "offlineByteIdentity": true,
+    "verifiedFiles": 47,
+    "changedResponseCount": 11,
+    "changedResponseNames": [
+      "points-b-jupiter",
+      "points-b-mars",
+      "points-b-mercury",
+      "points-b-moon",
+      "points-b-neptune",
+      "points-b-pluto",
+      "points-b-saturn",
+      "points-b-sun",
+      "points-b-uranus",
+      "points-b-venus",
+      "vectors-b"
+    ],
+    "horizonsManifest": {
+      "path": "docs/engine-validation/independent-references/horizons/MANIFEST.json",
+      "before": {
+        "bytes": 34360,
+        "sha256": "3eb362a7eb57bb921d8519453ff03f94344dede7e86a8cd2c9722fce27fb3a8f"
+      },
+      "after": {
+        "bytes": 34360,
+        "sha256": "b57e6f93e4fb96979e4be3d971da6ed1c25f42ba7ee450415bebc1f969400f1a"
+      }
+    },
+    "referenceFiles": [
+      {
+        "path": "src/lib/engine/fixtures/independent-node-polar.json",
+        "before": {
+          "bytes": 9246,
+          "sha256": "75f667f192c43c1ee3a8be6c5379586621b5eaa26f32e21e2ec8afd6206e3800"
+        },
+        "after": {
+          "bytes": 9246,
+          "sha256": "b65d3ee3058eb13f9fe84b2a7770663dd20866deefdc09aae023b594d8a38c3a"
+        }
+      },
+      {
+        "path": "src/lib/engine/fixtures/independent-eight-cases.json",
+        "before": {
+          "bytes": 13297,
+          "sha256": "85d694f34dbf46dff13a16c8c57c4891c14c2e4c043c78b87d0799ec49058225"
+        },
+        "after": {
+          "bytes": 13295,
+          "sha256": "d5f193da1de9bb4d9e7303a038f1fe88589c67dc8b6c266e902a3bba1b8f9527"
+        }
+      },
+      {
+        "path": "src/lib/engine/fixtures/independent-lunar-returns.json",
+        "before": {
+          "bytes": 28677,
+          "sha256": "2df5d1e2e64bfff8233b17ed5de224d15311c44bc5db6ae9162872ba5ad14798"
+        },
+        "after": {
+          "bytes": 28671,
+          "sha256": "cbe8d916f84770eb65d10adc66dce5d5393619c05a8463db1f4d65e924c02c56"
+        }
+      },
+      {
+        "path": "src/lib/engine/fixtures/transit-window-horizons.json",
+        "before": {
+          "bytes": 72120,
+          "sha256": "571b5819ee39a67cfcdd796f7856d20d4c661d6b1ed8e2bf52ac5c20a4bbabf3"
+        },
+        "after": {
+          "bytes": 72120,
+          "sha256": "778b9ce1de9763d16541fdf32dc5b9660d9c601fbfac9df6229e20cbc222d5d8"
+        }
+      }
+    ],
+    "changedSha256Assertions": 5,
+    "cause": "The rc.16 full IAU 2000B nutation moves the product return instants. The ten points-b responses and vectors-b were refreshed only because their TT queries changed; their official response bytes are retained unchanged. Returned-chart references were evaluated at the new product instants. Node/polar and transit-window numerical references, independent return roots, input policies and all gates are unchanged. Engine-version and shared manifest identities update in every reference file.",
+    "returnedChartInstants": [
+      {
+        "id": "solar:nearest",
+        "before": "2025-01-31T23:57:54.359Z",
+        "after": "2025-01-31T23:57:52.850Z"
+      },
+      {
+        "id": "L-modern-a:main",
+        "before": "2026-03-20T23:14:59.460Z",
+        "after": "2026-03-20T23:14:59.649Z"
+      },
+      {
+        "id": "L-modern-a:relocation",
+        "before": "2026-03-20T23:14:59.460Z",
+        "after": "2026-03-20T23:14:59.649Z"
+      },
+      {
+        "id": "L-modern-b:main",
+        "before": "2026-03-12T15:11:55.674Z",
+        "after": "2026-03-12T15:11:55.737Z"
+      },
+      {
+        "id": "L-wrap:main",
+        "before": "2026-03-19T04:03:03.065Z",
+        "after": "2026-03-19T04:03:03.357Z"
+      },
+      {
+        "id": "L-year-boundary:main",
+        "before": "2026-01-28T08:05:37.574Z",
+        "after": "2026-01-28T08:05:37.533Z"
+      },
+      {
+        "id": "L-range-start:main",
+        "before": "1800-01-29T08:53:08.235Z",
+        "after": "1800-01-29T08:53:08.228Z"
+      },
+      {
+        "id": "L-range-end:main",
+        "before": "2199-12-19T09:09:16.139Z",
+        "after": "2199-12-19T09:09:16.113Z"
+      }
+    ],
+    "allOtherReferenceDataUnchanged": true,
+    "noSwissReadByGenerator": true
+  },
+  "angleArbiter": {
+    "clockCommand": "npx vite-node --script docs/platform/evidence/engine-beyond-swiss/corpora/tools/angle-clock.ts > angle-clock.json",
+    "arbiterCommand": "python3 docs/platform/evidence/engine-beyond-swiss/corpora/tools/angle-arbiter.py angle-clock.json > angle-grid-erfa.json",
+    "file": {
+      "path": "docs/platform/evidence/engine-beyond-swiss/corpora/angle-grid-erfa.json",
+      "before": {
+        "bytes": 96806,
+        "sha256": "e6b86854223019cdde7da7c96bdd663acaf36e819ce20832c9803143b3b86973"
+      },
+      "after": {
+        "bytes": 96806,
+        "sha256": "aad53212d42c3e56d04dfe76fc019573db1f65334286b4ed620c901a05c27c8b"
+      }
+    },
+    "twoRebuildsByteIdentical": true,
+    "independentNumericalValuesUnchanged": true,
+    "cause": "Clock provenance now takes the engine version from angle-clock.ts instead of hard-coding rc.15. The formula-consistency test uses the package full IAU 2000B equation of equinoxes and true obliquity; the independent ERFA values and preregistered gates are unchanged.",
+    "ascendantAndMidheavenResidualsArcsec": {
+      "worst": {
+        "id": "1850-03-21T18:00:00Z -66°",
+        "latitude": -66,
+        "asc": 0.09557456332913716,
+        "mc": 0.001475972112530144
+      },
+      "p95": 0.0035745448712987127,
+      "p50": 0.0006683593710476998,
+      "midMax": 0.003780933684538468,
+      "mcMax": 0.0021232952803984517
+    },
+    "gridACases": 3128,
+    "placidusLadder": {
+      "total": 336,
+      "computable": 320,
+      "refused": 16
+    },
+    "unchangedGates": {
+      "ascendantArcsec": 8,
+      "ascendantAbsLatitudeAtMost45Arcsec": 0.5,
+      "midheavenArcsec": 0.21,
+      "formulaConsistencyArcsec": 1e-06
+    }
+  },
+  "conformance": {
+    "source": {
+      "note": "summary.json is conformance/results/summary.json from the engine repository at the commit below, copied unchanged. Refresh both together.",
+      "repository": "https://github.com/zodiacs-org/engine",
+      "commit": "6807f632fc5aad08999d97f61e50793c6ca9a0b4",
+      "path": "conformance/results/summary.json",
+      "sha256": "849df9f680e470e9fb8b363e7dc74bfc6f83e6b3846752d10eb7c7394aa0bb8f"
+    },
+    "copiedCommittedBytesUnchanged": true,
+    "vectorsAndSuiteMetadataUnchanged": true,
+    "zodiacs": {
+      "count": 500,
+      "pass": 267,
+      "fail": 192,
+      "unsupported": 41,
+      "error": 0
+    },
+    "swiss": {
+      "count": 500,
+      "pass": 403,
+      "fail": 47,
+      "unsupported": 50,
+      "error": 0,
+      "values": "none"
+    },
+    "changedVerdicts": [
+      {
+        "id": "L1-POS-0041",
+        "before": "fail",
+        "after": "pass"
+      }
+    ]
+  },
+  "checks": {
+    "targetedVitest": {
+      "passedFiles": 7,
+      "passedTests": 143,
+      "failed": 0,
+      "log": "targeted-tests.log",
+      "command": "npx vitest run scripts/angles-grid.test.mjs src/data/conformance/conformance-data.test.ts src/lib/engine/independent-references-clock.test.ts src/lib/engine/engine.test.ts src/lib/engine/lunar-return.test.ts src/lib/engine/transit-window-independent.test.ts scripts/swiss-output-guard.test.mjs --maxWorkers=1"
+    },
+    "swissRemoval": {
+      "command": "python3 docs/engine-validation/swiss-output-removal/strip.py --check",
+      "passed": true,
+      "removedFiles": 10,
+      "strippedFiles": 133,
+      "replacedFiles": 21,
+      "goneValueDigests": 40597,
+      "keptValueDigests": 3474
+    },
+    "fullBuildAndSuite": "not run in this subtask"
+  },
+  "retainedResponseWhitespace": "Official Horizons responses contain trailing spaces; retain their bytes and manifest digests unchanged rather than normalizing them for git diff --check."
+}

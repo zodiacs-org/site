@@ -1,15 +1,25 @@
-import { findLongitudeCrossingsWith } from '@zodiacs/engine/crossings';
+/**
+ * Lunar returns. The instant is @zodiacs/engine's (`@zodiacs/engine/techniques`
+ * since engine rc.16, which ported this module's search into the package): the
+ * first crossing of the natal Moon's longitude in (after, after + 40 days], at
+ * 6-hour steps. The site keeps its own contract around it: a reference that
+ * leaves a full 40-day scan inside the supported dates, a known and
+ * unambiguous birth time, a birthplace, its two house systems, and the chart
+ * cast by the site's adapter, as every chart here is.
+ *
+ * Only ever lazy-loaded beside full.ts: the package's search reads the same
+ * ephemeris chunk, never an eager bundle.
+ */
+import { lunarReturnInstant as engineLunarReturnInstant } from '@zodiacs/engine/techniques';
 import { bodyLongitude, computeChart } from './full';
 import type { Chart, ChartInput } from './types';
 
-/** Explicit lunar scan constants; do not inherit the slow-body default step. */
-export const LUNAR_RETURN_STEP_DAYS = 0.25;
-export const LUNAR_RETURN_HORIZON_DAYS = 40;
+/** The package's scan contract, which the site's policy file records. */
+export { LUNAR_RETURN_HORIZON_DAYS, LUNAR_RETURN_STEP_DAYS } from '@zodiacs/engine/techniques';
 export const LUNAR_RETURN_MIN_UTC = '1800-01-02T00:00:00.000Z';
 export const LUNAR_RETURN_MAX_UTC = '2199-12-31T23:59:59.999Z';
 export const LUNAR_RETURN_MAX_AFTER_UTC = '2199-11-21T23:59:59.999Z';
 
-const DAY_MS = 86_400_000;
 const MIN_MS = Date.parse(LUNAR_RETURN_MIN_UTC);
 const MAX_MS = Date.parse(LUNAR_RETURN_MAX_UTC);
 const MAX_AFTER_MS = Date.parse(LUNAR_RETURN_MAX_AFTER_UTC);
@@ -60,23 +70,7 @@ function moonLongitude(date: Date): number {
 export function lunarReturnInstant(natalMoonLongitude: number, afterUtc: Date): Date {
   if (!Number.isFinite(natalMoonLongitude)) throw new RangeError('The natal Moon longitude must be finite.');
   const after = validReference(afterUtc);
-  const upper = after + LUNAR_RETURN_HORIZON_DAYS * DAY_MS;
-  // Preserve an already-normalized natal value bit for bit: adding 360 can
-  // round it slightly and break the exact birth/after identity at the start.
-  const target = natalMoonLongitude >= 0 && natalMoonLongitude < 360
-    ? natalMoonLongitude : ((natalMoonLongitude % 360) + 360) % 360;
-  const crossings = findLongitudeCrossingsWith(
-    (_body, date) => moonLongitude(date),
-    'Moon', target, new Date(after), new Date(upper), LUNAR_RETURN_STEP_DAYS,
-  );
-  if (crossings.some((crossing) => !Number.isFinite(crossing.at.getTime()) || crossing.retrograde)) {
-    throw new RangeError('The Moon crossing could not be calculated.');
-  }
-  const instants = [...new Set(crossings.map((crossing) => crossing.at.getTime()))]
-    .filter((instant) => instant > after && instant <= upper)
-    .sort((a, b) => a - b);
-  if (!instants.length) throw new RangeError('No lunar return was found in the 40-day scan.');
-  return new Date(instants[0]);
+  return engineLunarReturnInstant(natalMoonLongitude, new Date(after));
 }
 
 /**

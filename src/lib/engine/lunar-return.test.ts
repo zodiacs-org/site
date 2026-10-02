@@ -111,8 +111,10 @@ describe('independent lunar return references', () => {
   it('preserves the approved inputs, gates and applicability amendment', () => {
     expect(digest(new URL('./fixtures/independent-lunar-return-policy.json', import.meta.url)))
       .toBe('5db9f2ef1491fc96896d2d610bbe91a84b0743dd30b449f923e8c2d7aafa5ba5');
+    // rc.16 nutation moves returned-chart instants; rebuild their Horizons/ERFA
+    // references at those instants, retaining the independent crossings and gates.
     expect(digest(new URL('./fixtures/independent-lunar-returns.json', import.meta.url)))
-      .toBe('2df5d1e2e64bfff8233b17ed5de224d15311c44bc5db6ae9162872ba5ad14798');
+      .toBe('cbe8d916f84770eb65d10adc66dce5d5393619c05a8463db1f4d65e924c02c56');
     expect(digest(new URL('./fixtures/swiss-lunar-fixed-target-applicability.json', import.meta.url)))
       .toBe('2f9056c0f93b22e3270bf1f496d804759a9057ac6b3e5a142604248ba1dddb1a');
     // The carried-over policy names the one it supersedes, and keeps its gates.
@@ -251,21 +253,23 @@ describe('lunar input and strict-next contracts', () => {
     expect(() => lunarReturnChart(known(), after, { latitude: 0, longitude: NaN })).toThrow(RangeError);
   });
 
-  it('rejects a failed Moon evaluation and bounded no-crossing result', () => {
+  it('rejects a failed natal Moon evaluation before it searches', () => {
+    // The site reads the natal Moon itself; the search and its own failure
+    // paths (a non-finite Moon, no crossing in 40 days) are the package's since
+    // engine rc.16 and are tested there, and the parity record holds the search
+    // to this module's former one (site-engine-rc16/techniques-parity.json, R-LI).
     const position = vi.spyOn(ephemeris, 'bodyLongitude').mockReturnValue(NaN);
-    expect(() => lunarReturnInstant(0, after)).toThrow('Moon position');
-    position.mockReturnValue(42);
-    expect(() => lunarReturnInstant(0, after)).toThrow('40-day scan');
-    expect(position.mock.calls.every(([, date]) => date.getTime() <= after.getTime() + 40 * DAY_MS)).toBe(true);
+    expect(() => lunarReturnChart(known(), after)).toThrow('Moon position');
+    expect(position).toHaveBeenCalled();
   });
 
-  it('excludes an exact lower identity and includes an exact upper crossing', () => {
-    const start = new Date('2000-01-01T00:00:00Z');
-    const position = vi.spyOn(ephemeris, 'bodyLongitude').mockImplementation((_body, date) =>
-      (((date.getTime() - start.getTime()) / DAY_MS) * 12) % 360);
-    expect(lunarReturnInstant(360, start)).toEqual(new Date('2000-01-31T00:00:00Z'));
-    position.mockImplementation((_body, date) => (((date.getTime() - start.getTime()) / DAY_MS) * 9) % 360);
-    expect(lunarReturnInstant(0, start)).toEqual(new Date('2000-02-10T00:00:00Z'));
+  it('excludes an exact lower identity: a search that starts on a return finds the next', () => {
+    const at = lunarReturnInstant(123.4, after);
+    expect(at.getTime()).toBeGreaterThan(after.getTime());
+    expect(at.getTime() - after.getTime()).toBeLessThanOrEqual(40 * DAY_MS);
+    const next = lunarReturnInstant(ephemeris.bodyLongitude('Moon', at), at);
+    expect((next.getTime() - at.getTime()) / DAY_MS).toBeGreaterThan(26);
+    expect((next.getTime() - at.getTime()) / DAY_MS).toBeLessThan(29);
   });
 
   it('does not retain mutable natal/reference Date objects in the return chart', () => {

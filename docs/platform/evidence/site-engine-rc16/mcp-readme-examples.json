@@ -1,0 +1,437 @@
+{
+  "chart": {
+    "engine": {
+      "ephemeris": {
+        "name": "astronomy-engine",
+        "version": "2.1.19"
+      },
+      "name": "@zodiacs/engine",
+      "version": "0.1.1-rc.16"
+    },
+    "timeKnown": true,
+    "houses": {
+      "absenceReason": null,
+      "actual": "placidus",
+      "requested": "placidus"
+    },
+    "inputFlags": [],
+    "resultFlags": [],
+    "bodies": [
+      {
+        "body": "Sun",
+        "degree": 24.189077046148668,
+        "lat": -0.000018285232619282298,
+        "lon": 84.18907704614867,
+        "retrograde": false,
+        "sign": "gemini",
+        "speed": 0.95512655695984
+      },
+      {
+        "body": "Moon",
+        "degree": 16.194081484483945,
+        "lat": 3.189792076035173,
+        "lon": 346.19408148448395,
+        "retrograde": false,
+        "sign": "pisces",
+        "speed": 13.384174618693123
+      },
+      {
+        "body": "Mercury",
+        "degree": 5.798116159406618,
+        "lat": -1.6516666295575901,
+        "lon": 65.79811615940662,
+        "retrograde": false,
+        "sign": "gemini",
+        "speed": 1.7189407262492296
+      },
+      {
+        "body": "Venus",
+        "degree": 18.85086715068917,
+        "lat": -1.944725220356252,
+        "lon": 48.85086715068917,
+        "retrograde": false,
+        "sign": "taurus",
+        "speed": 1.1760596429724046
+      },
+      {
+        "body": "Mars",
+        "degree": 11.08598934209283,
+        "lat": -1.98567937149476,
+        "lon": 11.08598934209283,
+        "retrograde": false,
+        "sign": "aries",
+        "speed": 0.7188699413518407
+      },
+      {
+        "body": "Jupiter",
+        "degree": 15.903021016757236,
+        "lat": 0.18688043196291462,
+        "lon": 105.90302101675724,
+        "retrograde": false,
+        "sign": "cancer",
+        "speed": 0.2166758769703847
+      },
+      {
+        "body": "Saturn",
+        "degree": 24.028194684897244,
+        "lat": 0.11714391094004722,
+        "lon": 294.02819468489724,
+        "retrograde": true,
+        "sign": "capricorn",
+        "speed": -0.05870503557048323
+      },
+      {
+        "body": "Uranus",
+        "degree": 8.161498181229263,
+        "lat": -0.3255748127578505,
+        "lon": 278.1614981812293,
+        "retrograde": true,
+        "sign": "capricorn",
+        "speed": -0.03894486076205794
+      },
+      {
+        "body": "Neptune",
+        "degree": 13.715278784596194,
+        "lat": 0.877048685273947,
+        "lon": 283.7152787845962,
+        "retrograde": true,
+        "sign": "capricorn",
+        "speed": -0.02504015873228127
+      },
+      {
+        "body": "Pluto",
+        "degree": 15.400913783653436,
+        "lat": 15.853312417806816,
+        "lon": 225.4009137836534,
+        "retrograde": true,
+        "sign": "scorpio",
+        "speed": -0.02015693821988407
+      },
+      {
+        "body": "North Node",
+        "degree": 8.12233963455924,
+        "lat": 0,
+        "lon": 308.1223396345593,
+        "retrograde": false,
+        "sign": "aquarius",
+        "speed": 0.01256587329089598
+      },
+      {
+        "body": "South Node",
+        "degree": 8.122339634559296,
+        "lat": 0,
+        "lon": 128.1223396345593,
+        "retrograde": false,
+        "sign": "leo",
+        "speed": 0.01256587329089598
+      }
+    ],
+    "angles": {
+      "asc": 191.23954148521,
+      "dsc": 11.239541485209998,
+      "ic": 284.68848532286995,
+      "mc": 104.68848532286995
+    },
+    "cusps": [
+      191.23954148521,
+      216.40903277974905,
+      247.7692743485036,
+      284.68848532286995,
+      320.0105031050125,
+      348.77616467783366,
+      11.239541485209998,
+      36.409032779749054,
+      67.76927434850359,
+      104.68848532286995,
+      140.01050310501245,
+      168.77616467783366
+    ],
+    "aspects": [
+      {
+        "a": "Moon",
+        "applying": false,
+        "b": "Jupiter",
+        "orb": 0.29106046772676564,
+        "type": "trine"
+      },
+      {
+        "a": "Jupiter",
+        "applying": false,
+        "b": "Pluto",
+        "orb": 0.5021072331038283,
+        "type": "trine"
+      },
+      {
+        "a": "Moon",
+        "applying": false,
+        "b": "Pluto",
+        "orb": 0.7931677008305087,
+        "type": "trine"
+      },
+      {
+        "a": "Neptune",
+        "applying": false,
+        "b": "Pluto",
+        "orb": 1.6856349990572426,
+        "type": "sextile"
+      },
+      {
+        "a": "Jupiter",
+        "applying": false,
+        "b": "Neptune",
+        "orb": 2.1877422321610425,
+        "type": "opposition"
+      },
+      {
+        "a": "Moon",
+        "applying": false,
+        "b": "Neptune",
+        "orb": 2.4788026998877513,
+        "type": "sextile"
+      },
+      {
+        "a": "Mars",
+        "applying": true,
+        "b": "Neptune",
+        "orb": 2.6292894425033637,
+        "type": "square"
+      },
+      {
+        "a": "Moon",
+        "applying": true,
+        "b": "Venus",
+        "orb": 2.6567856662052236,
+        "type": "sextile"
+      },
+      {
+        "a": "Mars",
+        "applying": false,
+        "b": "Uranus",
+        "orb": 2.9244911608635107,
+        "type": "square"
+      },
+      {
+        "a": "Venus",
+        "applying": false,
+        "b": "Jupiter",
+        "orb": 2.9478461339319324,
+        "type": "sextile"
+      },
+      {
+        "a": "Venus",
+        "applying": false,
+        "b": "Pluto",
+        "orb": 3.4499533670357607,
+        "type": "opposition"
+      },
+      {
+        "a": "Mars",
+        "applying": true,
+        "b": "Jupiter",
+        "orb": 4.817031674664406,
+        "type": "square"
+      },
+      {
+        "a": "Venus",
+        "applying": false,
+        "b": "Neptune",
+        "orb": 5.135588366092975,
+        "type": "trine"
+      },
+      {
+        "a": "Venus",
+        "applying": true,
+        "b": "Saturn",
+        "orb": 5.177327534208075,
+        "type": "trine"
+      },
+      {
+        "a": "Uranus",
+        "applying": false,
+        "b": "Neptune",
+        "orb": 5.553780603366874,
+        "type": "conjunction"
+      },
+      {
+        "a": "Jupiter",
+        "applying": false,
+        "b": "Uranus",
+        "orb": 7.741522835527917,
+        "type": "opposition"
+      },
+      {
+        "a": "Sun",
+        "applying": true,
+        "b": "Moon",
+        "orb": 7.994995561664723,
+        "type": "square"
+      }
+    ]
+  },
+  "comparison": {
+    "identical": false,
+    "counts": {
+      "differences": 15,
+      "substantive": 15,
+      "displayOnly": 0,
+      "explanations": 1
+    },
+    "output": "summary",
+    "differences": [
+      {
+        "id": "houses-requested",
+        "area": "Houses",
+        "label": "House system requested",
+        "left": "placidus",
+        "right": "whole",
+        "delta": null,
+        "kind": "metadata"
+      },
+      {
+        "id": "houses-actual",
+        "area": "Houses",
+        "label": "House system actually used",
+        "left": "placidus",
+        "right": "whole",
+        "delta": null,
+        "kind": "metadata"
+      },
+      {
+        "id": "houses-system",
+        "area": "Houses",
+        "label": "House system in the result",
+        "left": "placidus",
+        "right": "whole",
+        "delta": null,
+        "kind": "metadata"
+      },
+      {
+        "id": "cusp-1",
+        "area": "Houses",
+        "label": "House 1 cusp",
+        "delta": -11.239541485209998,
+        "kind": "numeric",
+        "valuesWithheld": true
+      },
+      {
+        "id": "cusp-2",
+        "area": "Houses",
+        "label": "House 2 cusp",
+        "delta": -6.4090327797490545,
+        "kind": "numeric",
+        "valuesWithheld": true
+      },
+      {
+        "id": "cusp-3",
+        "area": "Houses",
+        "label": "House 3 cusp",
+        "delta": -7.769274348503586,
+        "kind": "numeric",
+        "valuesWithheld": true
+      },
+      {
+        "id": "cusp-4",
+        "area": "Houses",
+        "label": "House 4 cusp",
+        "delta": -14.688485322869951,
+        "kind": "numeric",
+        "valuesWithheld": true
+      },
+      {
+        "id": "cusp-5",
+        "area": "Houses",
+        "label": "House 5 cusp",
+        "delta": -20.010503105012504,
+        "kind": "numeric",
+        "valuesWithheld": true
+      },
+      {
+        "id": "cusp-6",
+        "area": "Houses",
+        "label": "House 6 cusp",
+        "delta": -18.776164677833663,
+        "kind": "numeric",
+        "valuesWithheld": true
+      },
+      {
+        "id": "cusp-7",
+        "area": "Houses",
+        "label": "House 7 cusp",
+        "delta": -11.239541485209998,
+        "kind": "numeric",
+        "valuesWithheld": true
+      },
+      {
+        "id": "cusp-8",
+        "area": "Houses",
+        "label": "House 8 cusp",
+        "delta": -6.4090327797490545,
+        "kind": "numeric",
+        "valuesWithheld": true
+      },
+      {
+        "id": "cusp-9",
+        "area": "Houses",
+        "label": "House 9 cusp",
+        "delta": -7.769274348503586,
+        "kind": "numeric",
+        "valuesWithheld": true
+      },
+      {
+        "id": "cusp-10",
+        "area": "Houses",
+        "label": "House 10 cusp",
+        "delta": -14.688485322869951,
+        "kind": "numeric",
+        "valuesWithheld": true
+      },
+      {
+        "id": "cusp-11",
+        "area": "Houses",
+        "label": "House 11 cusp",
+        "delta": -20.010503105012504,
+        "kind": "numeric",
+        "valuesWithheld": true
+      },
+      {
+        "id": "cusp-12",
+        "area": "Houses",
+        "label": "House 12 cusp",
+        "delta": -18.776164677833663,
+        "kind": "numeric",
+        "valuesWithheld": true
+      }
+    ],
+    "explanations": [
+      {
+        "id": "house-system",
+        "evidence": "reproduced",
+        "statement": "The different house system accounts for the house cusps.",
+        "covers": [
+          "cusp-1",
+          "cusp-2",
+          "cusp-3",
+          "cusp-4",
+          "cusp-5",
+          "cusp-6",
+          "cusp-7",
+          "cusp-8",
+          "cusp-9",
+          "cusp-10",
+          "cusp-11",
+          "cusp-12",
+          "houses-requested",
+          "houses-actual",
+          "houses-system"
+        ],
+        "detail": "Each chart's own recorded values were reproduced from its own declared inputs on engine 0.1.1-rc.16, and changing only the house system turns each one into the other, in both directions."
+      }
+    ],
+    "limits": [
+      "Only the house system is re-run here. A different moment or place is never promoted past a hypothesis, even when both records name the same engine.",
+      "Both receipts name the same engine, so agreement between them would show consistency, not independent astronomical accuracy."
+    ],
+    "disclosure": "A comparison reports the exact difference between two charts. Anyone holding one of the two can reconstruct the other from it, so that output is safer to pass on than a full record but it is not anonymous.",
+    "withheld": "By default a comparison names which fields differ and by how much, and leaves out the values of rows carrying birth details or computed positions — you supplied both records to this call, so repeating their contents back tells you nothing you did not have, while adding a second copy to whatever this result travels through. Ask for output: \"full\" when you need those values. This shortens what travels onward; it hides nothing from the assistant you are talking to, which already received both records as arguments."
+  }
+}

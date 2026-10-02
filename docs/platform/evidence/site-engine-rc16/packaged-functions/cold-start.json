@@ -1,0 +1,132 @@
+{
+  "measured": "2026-10-01",
+  "what": "fresh Node process per run: import of the packaged function, then the documented example twice; the platform start is not included",
+  "runtime": {
+    "node": "v22.22.2",
+    "tzdb": "2025c",
+    "cpu": "AMD EPYC 9V74 80-Core Processor",
+    "cores": 9
+  },
+  "rows": [
+    {
+      "endpoint": "chart",
+      "runs": 10,
+      "importMs": {
+        "p50": 29.6,
+        "max": 38.7
+      },
+      "firstRequestMs": {
+        "p50": 82.3,
+        "max": 87.7
+      },
+      "secondRequestMs": {
+        "p50": 15.9,
+        "max": 18.4
+      },
+      "wholeProcessMs": {
+        "p50": 164.9,
+        "max": 181.4
+      }
+    },
+    {
+      "endpoint": "positions",
+      "runs": 10,
+      "importMs": {
+        "p50": 30.7,
+        "max": 37.5
+      },
+      "firstRequestMs": {
+        "p50": 81.9,
+        "max": 89.2
+      },
+      "secondRequestMs": {
+        "p50": 12.1,
+        "max": 13.7
+      },
+      "wholeProcessMs": {
+        "p50": 161.2,
+        "max": 173.7
+      }
+    },
+    {
+      "endpoint": "houses",
+      "runs": 10,
+      "importMs": {
+        "p50": 32.3,
+        "max": 37.4
+      },
+      "firstRequestMs": {
+        "p50": 67.1,
+        "max": 74.7
+      },
+      "secondRequestMs": {
+        "p50": 13.6,
+        "max": 16
+      },
+      "wholeProcessMs": {
+        "p50": 147.8,
+        "max": 161.7
+      }
+    },
+    {
+      "endpoint": "events",
+      "runs": 10,
+      "importMs": {
+        "p50": 32.1,
+        "max": 36.2
+      },
+      "firstRequestMs": {
+        "p50": 160.9,
+        "max": 182.8
+      },
+      "secondRequestMs": {
+        "p50": 67.1,
+        "max": 75.6
+      },
+      "wholeProcessMs": {
+        "p50": 296.1,
+        "max": 320.8
+      }
+    },
+    {
+      "endpoint": "time",
+      "runs": 10,
+      "importMs": {
+        "p50": 32.6,
+        "max": 44.8
+      },
+      "firstRequestMs": {
+        "p50": 100.9,
+        "max": 110.1
+      },
+      "secondRequestMs": {
+        "p50": 3.3,
+        "max": 4.2
+      },
+      "wholeProcessMs": {
+        "p50": 173.1,
+        "max": 193.4
+      }
+    },
+    {
+      "endpoint": "sky-fact",
+      "runs": 10,
+      "importMs": {
+        "p50": 33.6,
+        "max": 75.4
+      },
+      "firstRequestMs": {
+        "p50": 132.4,
+        "max": 151.9
+      },
+      "secondRequestMs": {
+        "p50": 38.2,
+        "max": 41.4
+      },
+      "wholeProcessMs": {
+        "p50": 246.6,
+        "max": 310
+      }
+    }
+  ]
+}

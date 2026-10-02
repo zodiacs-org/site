@@ -96,7 +96,7 @@ await withPreview({ port: Number(process.env.FIRST_USE_DRIVE_PORT ?? 4461) }, as
       check(`${tag}: the download is pinned to the commit that holds the archive`,
         install.includes(MANIFEST.artifactCommit) && install.includes("--proto '=https'"));
       check(`${tag}: a synthetic request and its expected result are shown`,
-        body.includes('1988-03-21T06:45:00Z') && body.includes('274.046910'));
+        body.includes('1988-03-21T06:45:00Z') && body.includes('274.044963'));
       check(`${tag}: the accepted record format is named`, body.includes('zodiacs.natal-envelope.draft-v1'));
       // The reply carries the record in a field. Saying "output: record returns
       // the record" sent readers to hand the whole reply to the comparison,

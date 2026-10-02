@@ -1,4 +1,5 @@
-import { detectAspectPatterns, type AspectPattern, type PatternBody, type PatternDetection, type PatternEdgeInput, type PatternKind, type PatternPoint } from './engine/aspect-patterns';
+import { patternContainment } from '@zodiacs/engine/techniques';
+import { detectAspectPatterns, type AspectPattern, type PatternBody, type PatternDetection, type PatternEdgeInput, type PatternPoint } from './engine/aspect-patterns';
 import { patternReading, PATTERN_NAMES } from '../islands/aspect-patterns/copy';
 
 export interface AspectPatternInput {
@@ -31,20 +32,12 @@ export interface SelectedPatternCard {
   readonly receipt: readonly string[];
 }
 
-const kinds: PatternKind[] = ['grand-cross', 'kite', 'grand-trine', 't-square'];
-const presentationOrder = (a: AspectPattern, b: AspectPattern) => b.members.length - a.members.length || kinds.indexOf(a.kind) - kinds.indexOf(b.kind) || a.id.localeCompare(b.id);
-export function patternContainment(patterns: readonly AspectPattern[]) {
-  const sorted = [...patterns].sort(presentationOrder);
-  const included: Record<string, AspectPattern[]> = {};
-  const contained = new Set<string>();
-  for (const outer of sorted) {
-    const keys = new Set(outer.edges.map((e) => e.key));
-    included[outer.id] = sorted.filter((inner) => inner.members.length < outer.members.length
-      && inner.members.every((b) => outer.members.includes(b)) && inner.edges.every((e) => keys.has(e.key)));
-    included[outer.id].forEach((p) => contained.add(p.id));
-  }
-  return { roots: sorted.filter((p) => !contained.has(p.id)), included };
-}
+/**
+ * Which patterns lie inside which: @zodiacs/engine's, sorted by size, kind and
+ * then id in code-unit order (the site sorted ids with localeCompare, which no
+ * body name makes differ).
+ */
+export { patternContainment };
 
 export function buildAspectPatternModel(input: AspectPatternInput): AspectPatternModel {
   const points = input.points.filter((p) => input.timeKnown || p.body !== 'Moon');

@@ -1,25 +1,9 @@
 {
   "version": 1,
-  "id": "consumer-journey-simulation-2026-10-02",
-  "baseCommit": "fd1ce88af66eca158c24a92569a9101281b964f7",
+  "id": "engine-rc16-local-adoption-20261001",
+  "baseCommit": "faf44b3519dbfc884bb8285577dacf13be1f4b4d",
   "protectedPaths": [
-    "public/assets/app.js",
-    "public/registry/aquarius/index.html",
-    "public/registry/aries/index.html",
-    "public/registry/cancer/index.html",
-    "public/registry/capricorn/index.html",
-    "public/registry/gemini/index.html",
-    "public/registry/index.html",
-    "public/registry/leo/index.html",
-    "public/registry/libra/index.html",
-    "public/registry/pisces/index.html",
-    "public/registry/sagittarius/index.html",
-    "public/registry/scorpio/index.html",
-    "public/registry/taurus/index.html",
-    "public/registry/virgo/index.html",
-    "public/sdk/index.html",
-    "public/terminal/markets/index.html",
-    "src/app.jsx"
+    "scripts/registry-outlook.test.mjs"
   ],
-  "authorization": "The owner approved the remaining consumer clarity recommendations and requested implementation plus simulated testing: “approved go. pretend you’re a tester or simulate it”. This one-time allowance covers only mirrored Transits and Birthday navigation descriptions in the Registry application and generated shared navigation pages and bundle. No Registry behavior, calculations, consent, storage, account sync, or design changes are authorized by this allowance."
+  "authorization": "The incorporated rc16 adoption handoff step 1 requires engine-derived registry outlook regeneration and attributable numeric pins. This allowance covers only its existing test vector: the engine full IAU 2000B frame moves the Mercury ingress by 130 ms, with evidence in docs/platform/evidence/site-engine-rc16/registry-ingress-pin.json. It authorizes no Registry UI or Guide changes; current-main owner changes are preserved."
 }

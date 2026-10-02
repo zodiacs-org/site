@@ -19,7 +19,7 @@ import {
   untimedSharedPositions,
 } from './share-positions-noon';
 import { prepareLocalTime, resolveLocalToUtc } from './time/localToUtc';
-import { timeBasis } from './engine/time-basis.mjs';
+import { tilt, timeBasis } from './engine/time-basis.mjs';
 
 // Sidereal time and obliquity below are read on the engine's clock, as its
 // own angles are (scripts/deltat-install-guard.test.mjs).
@@ -29,13 +29,17 @@ SetDeltaTFunction(deltaT);
  * Sidereal time (hours) and the true obliquity at an instant, as the engine
  * takes them: since 0.1.1-rc.15 at the UT1 of its time basis (for 1972 to
  * 2027-10-02, UTC plus IERS UT1 − UTC), with the basis's ΔT held for the call.
+ * rc.16 also uses full IAU 2000B: replace astronomy-engine's five-term
+ * equation of equinoxes and obliquity, while retaining its sidereal polynomial.
  */
 function onEngineClock(utc: Date): { gastHours: number; obliquity: number } {
   const basis = timeBasis(utc.getTime(), 'utc');
   SetDeltaTFunction(() => basis.deltaT.seconds);
   try {
     const time = MakeTime(basis.ut1Days);
-    return { gastHours: SiderealTime(time), obliquity: e_tilt(time).tobl };
+    const full = tilt(time.tt);
+    const gastHours = ((SiderealTime(time) + (full.ee / 15 - e_tilt(time).ee) / 3600) % 24 + 24) % 24;
+    return { gastHours, obliquity: full.tobl };
   } finally {
     SetDeltaTFunction(deltaT);
   }

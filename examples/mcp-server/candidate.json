@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "package": "zodiacs-mcp-server",
-  "version": "0.1.0-rc.15",
+  "version": "0.1.0-rc.16",
   "status": "Unpublished release candidate. Not on npm, under this or any other name. Install from the versioned archive at https://zodiacs.org/examples/, whose SHA-256 is published beside it.",
   "sourceRepository": "https://github.com/zodiacs-org/site",
   "sourcePaths": [
@@ -14,14 +14,14 @@
     "scripts/build-mcp-server.mjs"
   ],
   "bundled": {
-    "note": "Inlined into server.mjs by esbuild because neither is published: the engine is an unpublished candidate, and the comparison is TypeScript in the site repository. Bundling is what keeps one copy of the comparison rules rather than two.",
+    "note": "The verified rc.16 engine candidate and the site comparison are inlined into server.mjs. npm currently serves the earlier engine rc.15, as recorded on 2026-09-30; this local candidate does not change registry tags. Bundling keeps one copy of the comparison rules.",
     "engine": {
       "package": "@zodiacs/engine",
-      "version": "0.1.1-rc.15",
+      "version": "0.1.1-rc.16",
       "releaseStatus": "unpublished-candidate",
       "sourceRepository": "https://github.com/zodiacs-org/engine",
       "sourcePackagePath": "",
-      "artifactSha256": "24eeb597b0157598c0faa26bb615c0cb5dfaaeac0393d62c73fbd37c5da4d348"
+      "artifactSha256": "43a72d30e483d8ff22024e403c4bd0d86d81bb6e1d0ad138f857cd001ab015d8"
     },
     "ephemeris": {
       "name": "astronomy-engine",
@@ -63,6 +63,6 @@
     "receipt": "zodiacs.calculation-receipt.draft-v1",
     "note": "Zodiacs-owned draft vocabulary, not an industry interoperability standard."
   },
-  "supersedes": "0.1.0-rc.14",
-  "changedSince": "rc.1 through rc.14 remain unchanged as separate archives. This candidate bundles engine 0.1.1-rc.15 in place of rc.14. Its three tools and their arguments are rc.14's; its answers change where the engine's do. From 1972 to 2027-10-02 the engine reads an instant as UTC, with TT from the IERS leap seconds and UT1 from IERS UT1 - UTC, where rc.14 read it as UT1 with its Delta T model, so in those years the sidereal time moves by UT1 - UTC: in the site's comparison the midheaven by up to 12.7 arcseconds and the ascendant by up to 62.7 (at 69.6 degrees north; more nearer the poles), and the bodies by up to 0.5 arcseconds (the Moon). In other years only the true nodes move, by under 0.1 arcseconds (docs/platform/evidence/site-engine-rc15/ in the site repository). The records it writes use the engine's time-basis conventions set and carry the time basis (receipt.timeScale and result.timeScale); records of the rc.8 set, which rc.8 to rc.14 wrote, are still read. The comparison reports a record's time scale among its inputs and its time basis beside Delta T, and replays a record on its own scale. This adapter still takes an instant in UTC or with an explicit offset and resolves no time zones, so the engine's new local-time history before 1970 does not reach it, and it exposes none of the engine's timing or Vedic functions, nor chartPoints. The engine's Node requirement, 20.19.0 or a later 20.x, or 22.7.0 or later, is for importing the package unbundled; server.mjs carries the engine bundled, and this adapter still requires Node 22 or later. A record naming another engine version is not reproduced on this engine; its differences remain hypotheses."
+  "supersedes": "0.1.0-rc.15",
+  "changedSince": "rc.1 through rc.15 remain unchanged as separate archives. This candidate bundles engine 0.1.1-rc.16 in place of rc.15. Its three tools and their arguments are unchanged. The engine uses full IAU 2000B nutation; returned positions, angles, cusps and derived values follow that frame. New receipts name nutation and the GeoMoon reduction in moonPosition; earlier supported convention sets remain readable, but a record naming another engine version is not reproduced on this engine and differences remain hypotheses. The adapter still resolves no time zones, performs no searches, and exposes none of the new opt-in calc, window, techniques, houses or sky entry points. Engine and adapter remain unpublished rc.16 candidates; the npm engine version recorded on 2026-09-30 is rc.15."
 }

@@ -1,0 +1,3002 @@
+{
+  "multiyear": {
+    "priorPath": "docs/platform/evidence/swiss-benchmark/multiyear-1800-2199.json",
+    "priorSha256": "204cbf1e652cb6f8dff9fce0a48f8c6d302c500cca8eb9de08ba1f89e5adbf83",
+    "reportedStatisticalValuesCompared": 1528,
+    "reportedStatisticalValuesChanged": 597,
+    "changed": [
+      {
+        "path": "allBodiesLongitude.sameTt.1800-2026.max",
+        "rc15": 22.922,
+        "rc16": 22.885
+      },
+      {
+        "path": "allBodiesLongitude.sameTt.1800-2026.p50",
+        "rc15": 1.963,
+        "rc16": 1.96
+      },
+      {
+        "path": "allBodiesLongitude.sameTt.1800-2026.p95",
+        "rc15": 11.898,
+        "rc16": 11.894
+      },
+      {
+        "path": "allBodiesLongitude.sameTt.2027-2199.max",
+        "rc15": 29.122,
+        "rc16": 29.129
+      },
+      {
+        "path": "allBodiesLongitude.sameTt.2027-2199.p50",
+        "rc15": 2.193,
+        "rc16": 2.191
+      },
+      {
+        "path": "allBodiesLongitude.sameTt.2027-2199.p95",
+        "rc15": 15.026,
+        "rc16": 15.024
+      },
+      {
+        "path": "allBodiesLongitude.sameUt.1800-2026.max",
+        "rc15": 22.922,
+        "rc16": 22.886
+      },
+      {
+        "path": "allBodiesLongitude.sameUt.1800-2026.p50",
+        "rc15": 1.962,
+        "rc16": 1.96
+      },
+      {
+        "path": "allBodiesLongitude.sameUt.1800-2026.p95",
+        "rc15": 11.898,
+        "rc16": 11.894
+      },
+      {
+        "path": "allBodiesLongitude.sameUt.2027-2199.max",
+        "rc15": 29.102,
+        "rc16": 29.108
+      },
+      {
+        "path": "allBodiesLongitude.sameUt.2027-2199.p50",
+        "rc15": 2.874,
+        "rc16": 2.873
+      },
+      {
+        "path": "allBodiesLongitude.sameUt.2027-2199.p95",
+        "rc15": 15.424,
+        "rc16": 15.429
+      },
+      {
+        "path": "sameTt.Jupiter.lon.all.max",
+        "rc15": 10.576,
+        "rc16": 10.618
+      },
+      {
+        "path": "sameTt.Jupiter.lon.all.p50",
+        "rc15": 2.279,
+        "rc16": 2.28
+      },
+      {
+        "path": "sameTt.Jupiter.lon.all.p95",
+        "rc15": 6.557,
+        "rc16": 6.558
+      },
+      {
+        "path": "sameTt.Jupiter.lon.byEra.1800-1849.max",
+        "rc15": 10.576,
+        "rc16": 10.618
+      },
+      {
+        "path": "sameTt.Jupiter.lon.byEra.1800-1849.p50",
+        "rc15": 2.183,
+        "rc16": 2.196
+      },
+      {
+        "path": "sameTt.Jupiter.lon.byEra.1800-1849.p95",
+        "rc15": 6.799,
+        "rc16": 6.752
+      },
+      {
+        "path": "sameTt.Jupiter.lon.byEra.1850-1899.max",
+        "rc15": 10.15,
+        "rc16": 10.183
+      },
+      {
+        "path": "sameTt.Jupiter.lon.byEra.1850-1899.p50",
+        "rc15": 1.995,
+        "rc16": 1.993
+      },
+      {
+        "path": "sameTt.Jupiter.lon.byEra.1850-1899.p95",
+        "rc15": 6.794,
+        "rc16": 6.761
+      },
+      {
+        "path": "sameTt.Jupiter.lon.byEra.1900-1949.max",
+        "rc15": 9.958,
+        "rc16": 9.904
+      },
+      {
+        "path": "sameTt.Jupiter.lon.byEra.1900-1949.p50",
+        "rc15": 1.989,
+        "rc16": 1.998
+      },
+      {
+        "path": "sameTt.Jupiter.lon.byEra.1900-1949.p95",
+        "rc15": 5.749,
+        "rc16": 5.783
+      },
+      {
+        "path": "sameTt.Jupiter.lon.byEra.1950-1999.max",
+        "rc15": 8.152,
+        "rc16": 8.141
+      },
+      {
+        "path": "sameTt.Jupiter.lon.byEra.1950-1999.p50",
+        "rc15": 2.694,
+        "rc16": 2.676
+      },
+      {
+        "path": "sameTt.Jupiter.lon.byEra.1950-1999.p95",
+        "rc15": 6.301,
+        "rc16": 6.295
+      },
+      {
+        "path": "sameTt.Jupiter.lon.byEra.2000-2049.max",
+        "rc15": 10.249,
+        "rc16": 10.142
+      },
+      {
+        "path": "sameTt.Jupiter.lon.byEra.2000-2049.p50",
+        "rc15": 2.372,
+        "rc16": 2.348
+      },
+      {
+        "path": "sameTt.Jupiter.lon.byEra.2000-2049.p95",
+        "rc15": 6.626,
+        "rc16": 6.698
+      },
+      {
+        "path": "sameTt.Jupiter.lon.byEra.2050-2099.max",
+        "rc15": 9.661,
+        "rc16": 9.619
+      },
+      {
+        "path": "sameTt.Jupiter.lon.byEra.2050-2099.p50",
+        "rc15": 2.555,
+        "rc16": 2.562
+      },
+      {
+        "path": "sameTt.Jupiter.lon.byEra.2050-2099.p95",
+        "rc15": 6.871,
+        "rc16": 6.829
+      },
+      {
+        "path": "sameTt.Jupiter.lon.byEra.2100-2149.max",
+        "rc15": 10.156,
+        "rc16": 10.057
+      },
+      {
+        "path": "sameTt.Jupiter.lon.byEra.2100-2149.p50",
+        "rc15": 2.503,
+        "rc16": 2.508
+      },
+      {
+        "path": "sameTt.Jupiter.lon.byEra.2100-2149.p95",
+        "rc15": 6.493,
+        "rc16": 6.483
+      },
+      {
+        "path": "sameTt.Jupiter.lon.byEra.2150-2199.max",
+        "rc15": 10.528,
+        "rc16": 10.568
+      },
+      {
+        "path": "sameTt.Jupiter.lon.byEra.2150-2199.p50",
+        "rc15": 2.058,
+        "rc16": 2.052
+      },
+      {
+        "path": "sameTt.Jupiter.lon.byEra.2150-2199.p95",
+        "rc15": 6.714,
+        "rc16": 6.749
+      },
+      {
+        "path": "sameTt.Mars.lon.all.max",
+        "rc15": 13.503,
+        "rc16": 13.588
+      },
+      {
+        "path": "sameTt.Mars.lon.all.p50",
+        "rc15": 0.922,
+        "rc16": 0.921
+      },
+      {
+        "path": "sameTt.Mars.lon.all.p95",
+        "rc15": 4.541,
+        "rc16": 4.538
+      },
+      {
+        "path": "sameTt.Mars.lon.byEra.1800-1849.max",
+        "rc15": 13.503,
+        "rc16": 13.588
+      },
+      {
+        "path": "sameTt.Mars.lon.byEra.1800-1849.p50",
+        "rc15": 0.966,
+        "rc16": 0.956
+      },
+      {
+        "path": "sameTt.Mars.lon.byEra.1800-1849.p95",
+        "rc15": 4.355,
+        "rc16": 4.337
+      },
+      {
+        "path": "sameTt.Mars.lon.byEra.1850-1899.max",
+        "rc15": 13.251,
+        "rc16": 13.288
+      },
+      {
+        "path": "sameTt.Mars.lon.byEra.1850-1899.p50",
+        "rc15": 0.984,
+        "rc16": 0.975
+      },
+      {
+        "path": "sameTt.Mars.lon.byEra.1850-1899.p95",
+        "rc15": 4.682,
+        "rc16": 4.715
+      },
+      {
+        "path": "sameTt.Mars.lon.byEra.1900-1949.max",
+        "rc15": 9.632,
+        "rc16": 9.547
+      },
+      {
+        "path": "sameTt.Mars.lon.byEra.1900-1949.p50",
+        "rc15": 0.975,
+        "rc16": 0.98
+      },
+      {
+        "path": "sameTt.Mars.lon.byEra.1900-1949.p95",
+        "rc15": 3.934,
+        "rc16": 3.892
+      },
+      {
+        "path": "sameTt.Mars.lon.byEra.1950-1999.max",
+        "rc15": 12.392,
+        "rc16": 12.426
+      },
+      {
+        "path": "sameTt.Mars.lon.byEra.1950-1999.p50",
+        "rc15": 0.839,
+        "rc16": 0.841
+      },
+      {
+        "path": "sameTt.Mars.lon.byEra.1950-1999.p95",
+        "rc15": 4.918,
+        "rc16": 4.916
+      },
+      {
+        "path": "sameTt.Mars.lon.byEra.2000-2049.max",
+        "rc15": 11.898,
+        "rc16": 11.951
+      },
+      {
+        "path": "sameTt.Mars.lon.byEra.2000-2049.p50",
+        "rc15": 0.843,
+        "rc16": 0.834
+      },
+      {
+        "path": "sameTt.Mars.lon.byEra.2000-2049.p95",
+        "rc15": 4.918,
+        "rc16": 4.849
+      },
+      {
+        "path": "sameTt.Mars.lon.byEra.2050-2099.max",
+        "rc15": 12.356,
+        "rc16": 12.388
+      },
+      {
+        "path": "sameTt.Mars.lon.byEra.2050-2099.p50",
+        "rc15": 0.945,
+        "rc16": 0.946
+      },
+      {
+        "path": "sameTt.Mars.lon.byEra.2050-2099.p95",
+        "rc15": 4.625,
+        "rc16": 4.57
+      },
+      {
+        "path": "sameTt.Mars.lon.byEra.2100-2149.max",
+        "rc15": 10.906,
+        "rc16": 10.982
+      },
+      {
+        "path": "sameTt.Mars.lon.byEra.2100-2149.p50",
+        "rc15": 0.961,
+        "rc16": 0.965
+      },
+      {
+        "path": "sameTt.Mars.lon.byEra.2100-2149.p95",
+        "rc15": 4.558,
+        "rc16": 4.596
+      },
+      {
+        "path": "sameTt.Mars.lon.byEra.2150-2199.max",
+        "rc15": 11.183,
+        "rc16": 11.294
+      },
+      {
+        "path": "sameTt.Mars.lon.byEra.2150-2199.p50",
+        "rc15": 0.887,
+        "rc16": 0.86
+      },
+      {
+        "path": "sameTt.Mars.lon.byEra.2150-2199.p95",
+        "rc15": 4.484,
+        "rc16": 4.529
+      },
+      {
+        "path": "sameTt.Mercury.lon.all.max",
+        "rc15": 13.957,
+        "rc16": 14.121
+      },
+      {
+        "path": "sameTt.Mercury.lon.all.p50",
+        "rc15": 1.709,
+        "rc16": 1.703
+      },
+      {
+        "path": "sameTt.Mercury.lon.all.p95",
+        "rc15": 5.774,
+        "rc16": 5.766
+      },
+      {
+        "path": "sameTt.Mercury.lon.byEra.1800-1849.max",
+        "rc15": 12.562,
+        "rc16": 12.624
+      },
+      {
+        "path": "sameTt.Mercury.lon.byEra.1800-1849.p50",
+        "rc15": 2.074,
+        "rc16": 2.101
+      },
+      {
+        "path": "sameTt.Mercury.lon.byEra.1800-1849.p95",
+        "rc15": 6.302,
+        "rc16": 6.3
+      },
+      {
+        "path": "sameTt.Mercury.lon.byEra.1850-1899.max",
+        "rc15": 11.578,
+        "rc16": 11.537
+      },
+      {
+        "path": "sameTt.Mercury.lon.byEra.1850-1899.p50",
+        "rc15": 1.809,
+        "rc16": 1.805
+      },
+      {
+        "path": "sameTt.Mercury.lon.byEra.1850-1899.p95",
+        "rc15": 5.758,
+        "rc16": 5.756
+      },
+      {
+        "path": "sameTt.Mercury.lon.byEra.1900-1949.max",
+        "rc15": 11.306,
+        "rc16": 11.337
+      },
+      {
+        "path": "sameTt.Mercury.lon.byEra.1900-1949.p50",
+        "rc15": 1.635,
+        "rc16": 1.632
+      },
+      {
+        "path": "sameTt.Mercury.lon.byEra.1900-1949.p95",
+        "rc15": 5.141,
+        "rc16": 5.128
+      },
+      {
+        "path": "sameTt.Mercury.lon.byEra.1950-1999.max",
+        "rc15": 12.168,
+        "rc16": 12.17
+      },
+      {
+        "path": "sameTt.Mercury.lon.byEra.1950-1999.p50",
+        "rc15": 1.51,
+        "rc16": 1.512
+      },
+      {
+        "path": "sameTt.Mercury.lon.byEra.1950-1999.p95",
+        "rc15": 5.236,
+        "rc16": 5.241
+      },
+      {
+        "path": "sameTt.Mercury.lon.byEra.2000-2049.max",
+        "rc15": 10.941,
+        "rc16": 11.068
+      },
+      {
+        "path": "sameTt.Mercury.lon.byEra.2000-2049.p50",
+        "rc15": 1.557,
+        "rc16": 1.564
+      },
+      {
+        "path": "sameTt.Mercury.lon.byEra.2000-2049.p95",
+        "rc15": 5.017,
+        "rc16": 4.98
+      },
+      {
+        "path": "sameTt.Mercury.lon.byEra.2050-2099.max",
+        "rc15": 11.168,
+        "rc16": 11.182
+      },
+      {
+        "path": "sameTt.Mercury.lon.byEra.2050-2099.p50",
+        "rc15": 1.623,
+        "rc16": 1.619
+      },
+      {
+        "path": "sameTt.Mercury.lon.byEra.2050-2099.p95",
+        "rc15": 5.325,
+        "rc16": 5.302
+      },
+      {
+        "path": "sameTt.Mercury.lon.byEra.2100-2149.max",
+        "rc15": 13.957,
+        "rc16": 14.121
+      },
+      {
+        "path": "sameTt.Mercury.lon.byEra.2100-2149.p50",
+        "rc15": 1.672,
+        "rc16": 1.654
+      },
+      {
+        "path": "sameTt.Mercury.lon.byEra.2100-2149.p95",
+        "rc15": 6.078,
+        "rc16": 6.1
+      },
+      {
+        "path": "sameTt.Mercury.lon.byEra.2150-2199.max",
+        "rc15": 13.337,
+        "rc16": 13.284
+      },
+      {
+        "path": "sameTt.Mercury.lon.byEra.2150-2199.p50",
+        "rc15": 1.856,
+        "rc16": 1.857
+      },
+      {
+        "path": "sameTt.Mercury.lon.byEra.2150-2199.p95",
+        "rc15": 6.508,
+        "rc16": 6.513
+      },
+      {
+        "path": "sameTt.Moon.lon.all.max",
+        "rc15": 10.923,
+        "rc16": 10.824
+      },
+      {
+        "path": "sameTt.Moon.lon.all.p50",
+        "rc15": 1.424,
+        "rc16": 1.419
+      },
+      {
+        "path": "sameTt.Moon.lon.all.p95",
+        "rc15": 7.036,
+        "rc16": 7.013
+      },
+      {
+        "path": "sameTt.Moon.lon.byEra.1800-1849.max",
+        "rc15": 10.923,
+        "rc16": 10.824
+      },
+      {
+        "path": "sameTt.Moon.lon.byEra.1800-1849.p50",
+        "rc15": 6.67,
+        "rc16": 6.672
+      },
+      {
+        "path": "sameTt.Moon.lon.byEra.1800-1849.p95",
+        "rc15": 8.841,
+        "rc16": 8.819
+      },
+      {
+        "path": "sameTt.Moon.lon.byEra.1850-1899.max",
+        "rc15": 7.25,
+        "rc16": 7.192
+      },
+      {
+        "path": "sameTt.Moon.lon.byEra.1850-1899.p50",
+        "rc15": 3.908,
+        "rc16": 3.909
+      },
+      {
+        "path": "sameTt.Moon.lon.byEra.1850-1899.p95",
+        "rc15": 5.798,
+        "rc16": 5.796
+      },
+      {
+        "path": "sameTt.Moon.lon.byEra.1900-1949.max",
+        "rc15": 4.861,
+        "rc16": 4.796
+      },
+      {
+        "path": "sameTt.Moon.lon.byEra.1900-1949.p50",
+        "rc15": 1.343,
+        "rc16": 1.357
+      },
+      {
+        "path": "sameTt.Moon.lon.byEra.1900-1949.p95",
+        "rc15": 3.007,
+        "rc16": 3.011
+      },
+      {
+        "path": "sameTt.Moon.lon.byEra.1950-1999.max",
+        "rc15": 4.958,
+        "rc16": 4.971
+      },
+      {
+        "path": "sameTt.Moon.lon.byEra.1950-1999.p50",
+        "rc15": 0.623,
+        "rc16": 0.62
+      },
+      {
+        "path": "sameTt.Moon.lon.byEra.1950-1999.p95",
+        "rc15": 1.839,
+        "rc16": 1.816
+      },
+      {
+        "path": "sameTt.Moon.lon.byEra.2000-2049.max",
+        "rc15": 3.557,
+        "rc16": 3.514
+      },
+      {
+        "path": "sameTt.Moon.lon.byEra.2000-2049.p50",
+        "rc15": 0.562,
+        "rc16": 0.568
+      },
+      {
+        "path": "sameTt.Moon.lon.byEra.2000-2049.p95",
+        "rc15": 1.656,
+        "rc16": 1.657
+      },
+      {
+        "path": "sameTt.Moon.lon.byEra.2050-2099.max",
+        "rc15": 3.026,
+        "rc16": 3.07
+      },
+      {
+        "path": "sameTt.Moon.lon.byEra.2050-2099.p50",
+        "rc15": 0.544,
+        "rc16": 0.538
+      },
+      {
+        "path": "sameTt.Moon.lon.byEra.2050-2099.p95",
+        "rc15": 1.632,
+        "rc16": 1.618
+      },
+      {
+        "path": "sameTt.Moon.lon.byEra.2100-2149.max",
+        "rc15": 3.932,
+        "rc16": 3.993
+      },
+      {
+        "path": "sameTt.Moon.lon.byEra.2100-2149.p50",
+        "rc15": 1.042,
+        "rc16": 1.044
+      },
+      {
+        "path": "sameTt.Moon.lon.byEra.2100-2149.p95",
+        "rc15": 2.447,
+        "rc16": 2.46
+      },
+      {
+        "path": "sameTt.Moon.lon.byEra.2150-2199.max",
+        "rc15": 7.151,
+        "rc16": 7.221
+      },
+      {
+        "path": "sameTt.Moon.lon.byEra.2150-2199.p50",
+        "rc15": 2.946,
+        "rc16": 2.941
+      },
+      {
+        "path": "sameTt.Moon.lon.byEra.2150-2199.p95",
+        "rc15": 4.773,
+        "rc16": 4.78
+      },
+      {
+        "path": "sameTt.Neptune.lon.all.max",
+        "rc15": 19.816,
+        "rc16": 19.708
+      },
+      {
+        "path": "sameTt.Neptune.lon.all.p50",
+        "rc15": 9.676,
+        "rc16": 9.675
+      },
+      {
+        "path": "sameTt.Neptune.lon.all.p95",
+        "rc15": 17.427,
+        "rc16": 17.419
+      },
+      {
+        "path": "sameTt.Neptune.lon.byEra.1800-1849.max",
+        "rc15": 19.816,
+        "rc16": 19.708
+      },
+      {
+        "path": "sameTt.Neptune.lon.byEra.1800-1849.p50",
+        "rc15": 14.563,
+        "rc16": 14.535
+      },
+      {
+        "path": "sameTt.Neptune.lon.byEra.1800-1849.p95",
+        "rc15": 18.964,
+        "rc16": 18.998
+      },
+      {
+        "path": "sameTt.Neptune.lon.byEra.1850-1899.max",
+        "rc15": 17.341,
+        "rc16": 17.466
+      },
+      {
+        "path": "sameTt.Neptune.lon.byEra.1850-1899.p50",
+        "rc15": 2.914,
+        "rc16": 2.926
+      },
+      {
+        "path": "sameTt.Neptune.lon.byEra.1850-1899.p95",
+        "rc15": 14.582,
+        "rc16": 14.62
+      },
+      {
+        "path": "sameTt.Neptune.lon.byEra.1900-1949.max",
+        "rc15": 14.699,
+        "rc16": 14.633
+      },
+      {
+        "path": "sameTt.Neptune.lon.byEra.1900-1949.p50",
+        "rc15": 8.058,
+        "rc16": 8.065
+      },
+      {
+        "path": "sameTt.Neptune.lon.byEra.1900-1949.p95",
+        "rc15": 13.855,
+        "rc16": 13.847
+      },
+      {
+        "path": "sameTt.Neptune.lon.byEra.1950-1999.max",
+        "rc15": 17.982,
+        "rc16": 17.908
+      },
+      {
+        "path": "sameTt.Neptune.lon.byEra.1950-1999.p50",
+        "rc15": 10.741,
+        "rc16": 10.747
+      },
+      {
+        "path": "sameTt.Neptune.lon.byEra.1950-1999.p95",
+        "rc15": 16.612,
+        "rc16": 16.654
+      },
+      {
+        "path": "sameTt.Neptune.lon.byEra.2000-2049.max",
+        "rc15": 18.504,
+        "rc16": 18.373
+      },
+      {
+        "path": "sameTt.Neptune.lon.byEra.2000-2049.p50",
+        "rc15": 11.406,
+        "rc16": 11.402
+      },
+      {
+        "path": "sameTt.Neptune.lon.byEra.2000-2049.p95",
+        "rc15": 17.52,
+        "rc16": 17.527
+      },
+      {
+        "path": "sameTt.Neptune.lon.byEra.2050-2099.max",
+        "rc15": 18.943,
+        "rc16": 18.867
+      },
+      {
+        "path": "sameTt.Neptune.lon.byEra.2050-2099.p50",
+        "rc15": 10.558,
+        "rc16": 10.594
+      },
+      {
+        "path": "sameTt.Neptune.lon.byEra.2050-2099.p95",
+        "rc15": 17.505,
+        "rc16": 17.524
+      },
+      {
+        "path": "sameTt.Neptune.lon.byEra.2100-2149.max",
+        "rc15": 17.481,
+        "rc16": 17.411
+      },
+      {
+        "path": "sameTt.Neptune.lon.byEra.2100-2149.p50",
+        "rc15": 10.42,
+        "rc16": 10.421
+      },
+      {
+        "path": "sameTt.Neptune.lon.byEra.2100-2149.p95",
+        "rc15": 16.152,
+        "rc16": 16.157
+      },
+      {
+        "path": "sameTt.Neptune.lon.byEra.2150-2199.max",
+        "rc15": 14.463,
+        "rc16": 14.335
+      },
+      {
+        "path": "sameTt.Neptune.lon.byEra.2150-2199.p50",
+        "rc15": 9.691,
+        "rc16": 9.693
+      },
+      {
+        "path": "sameTt.Neptune.lon.byEra.2150-2199.p95",
+        "rc15": 13.823,
+        "rc16": 13.799
+      },
+      {
+        "path": "sameTt.North Node.lon.all.max",
+        "rc15": 26.901,
+        "rc16": 27.008
+      },
+      {
+        "path": "sameTt.North Node.lon.all.p50",
+        "rc15": 6.374,
+        "rc16": 6.372
+      },
+      {
+        "path": "sameTt.North Node.lon.all.p95",
+        "rc15": 15.954,
+        "rc16": 15.959
+      },
+      {
+        "path": "sameTt.North Node.lon.byEra.1800-1849.max",
+        "rc15": 20.617,
+        "rc16": 20.57
+      },
+      {
+        "path": "sameTt.North Node.lon.byEra.1800-1849.p50",
+        "rc15": 5.727,
+        "rc16": 5.715
+      },
+      {
+        "path": "sameTt.North Node.lon.byEra.1800-1849.p95",
+        "rc15": 11.642,
+        "rc16": 11.551
+      },
+      {
+        "path": "sameTt.North Node.lon.byEra.1850-1899.max",
+        "rc15": 14.787,
+        "rc16": 14.751
+      },
+      {
+        "path": "sameTt.North Node.lon.byEra.1850-1899.p50",
+        "rc15": 3.378,
+        "rc16": 3.364
+      },
+      {
+        "path": "sameTt.North Node.lon.byEra.1850-1899.p95",
+        "rc15": 8.814,
+        "rc16": 8.817
+      },
+      {
+        "path": "sameTt.North Node.lon.byEra.1900-1949.max",
+        "rc15": 12.153,
+        "rc16": 12.12
+      },
+      {
+        "path": "sameTt.North Node.lon.byEra.1900-1949.p50",
+        "rc15": 2.435,
+        "rc16": 2.432
+      },
+      {
+        "path": "sameTt.North Node.lon.byEra.1900-1949.p95",
+        "rc15": 7.141,
+        "rc16": 7.156
+      },
+      {
+        "path": "sameTt.North Node.lon.byEra.1950-1999.max",
+        "rc15": 15.394,
+        "rc16": 15.481
+      },
+      {
+        "path": "sameTt.North Node.lon.byEra.1950-1999.p50",
+        "rc15": 3.642,
+        "rc16": 3.668
+      },
+      {
+        "path": "sameTt.North Node.lon.byEra.1950-1999.p95",
+        "rc15": 9.429,
+        "rc16": 9.453
+      },
+      {
+        "path": "sameTt.North Node.lon.byEra.2000-2049.max",
+        "rc15": 19.043,
+        "rc16": 19.132
+      },
+      {
+        "path": "sameTt.North Node.lon.byEra.2000-2049.p50",
+        "rc15": 5.792,
+        "rc16": 5.797
+      },
+      {
+        "path": "sameTt.North Node.lon.byEra.2000-2049.p95",
+        "rc15": 11.937,
+        "rc16": 11.977
+      },
+      {
+        "path": "sameTt.North Node.lon.byEra.2050-2099.max",
+        "rc15": 23.814,
+        "rc16": 23.565
+      },
+      {
+        "path": "sameTt.North Node.lon.byEra.2050-2099.p50",
+        "rc15": 8.728,
+        "rc16": 8.719
+      },
+      {
+        "path": "sameTt.North Node.lon.byEra.2050-2099.p95",
+        "rc15": 14.514,
+        "rc16": 14.476
+      },
+      {
+        "path": "sameTt.North Node.lon.byEra.2100-2149.max",
+        "rc15": 23.552,
+        "rc16": 23.649
+      },
+      {
+        "path": "sameTt.North Node.lon.byEra.2100-2149.p50",
+        "rc15": 11.017,
+        "rc16": 11.027
+      },
+      {
+        "path": "sameTt.North Node.lon.byEra.2100-2149.p95",
+        "rc15": 16.688,
+        "rc16": 16.675
+      },
+      {
+        "path": "sameTt.North Node.lon.byEra.2150-2199.max",
+        "rc15": 26.901,
+        "rc16": 27.008
+      },
+      {
+        "path": "sameTt.North Node.lon.byEra.2150-2199.p50",
+        "rc15": 14.354,
+        "rc16": 14.369
+      },
+      {
+        "path": "sameTt.North Node.lon.byEra.2150-2199.p95",
+        "rc15": 19.931,
+        "rc16": 19.921
+      },
+      {
+        "path": "sameTt.Pluto.lon.all.max",
+        "rc15": 29.122,
+        "rc16": 29.129
+      },
+      {
+        "path": "sameTt.Pluto.lon.all.p50",
+        "rc15": 6.072,
+        "rc16": 6.077
+      },
+      {
+        "path": "sameTt.Pluto.lon.all.p95",
+        "rc15": 20.194,
+        "rc16": 20.196
+      },
+      {
+        "path": "sameTt.Pluto.lon.byEra.1800-1849.max",
+        "rc15": 19.302,
+        "rc16": 19.32
+      },
+      {
+        "path": "sameTt.Pluto.lon.byEra.1800-1849.p50",
+        "rc15": 12.007,
+        "rc16": 12.024
+      },
+      {
+        "path": "sameTt.Pluto.lon.byEra.1800-1849.p95",
+        "rc15": 18.109,
+        "rc16": 18.082
+      },
+      {
+        "path": "sameTt.Pluto.lon.byEra.1850-1899.max",
+        "rc15": 9.89,
+        "rc16": 9.935
+      },
+      {
+        "path": "sameTt.Pluto.lon.byEra.1850-1899.p50",
+        "rc15": 5.933,
+        "rc16": 5.93
+      },
+      {
+        "path": "sameTt.Pluto.lon.byEra.1850-1899.p95",
+        "rc15": 9.334,
+        "rc16": 9.322
+      },
+      {
+        "path": "sameTt.Pluto.lon.byEra.1900-1949.max",
+        "rc15": 3.465,
+        "rc16": 3.42
+      },
+      {
+        "path": "sameTt.Pluto.lon.byEra.1900-1949.p50",
+        "rc15": 1.578,
+        "rc16": 1.582
+      },
+      {
+        "path": "sameTt.Pluto.lon.byEra.1900-1949.p95",
+        "rc15": 3.095,
+        "rc16": 3.078
+      },
+      {
+        "path": "sameTt.Pluto.lon.byEra.1950-1999.max",
+        "rc15": 3.355,
+        "rc16": 3.19
+      },
+      {
+        "path": "sameTt.Pluto.lon.byEra.1950-1999.p50",
+        "rc15": 2.13,
+        "rc16": 2.127
+      },
+      {
+        "path": "sameTt.Pluto.lon.byEra.1950-1999.p95",
+        "rc15": 3.082,
+        "rc16": 3.059
+      },
+      {
+        "path": "sameTt.Pluto.lon.byEra.2000-2049.max",
+        "rc15": 5.044,
+        "rc16": 4.978
+      },
+      {
+        "path": "sameTt.Pluto.lon.byEra.2000-2049.p50",
+        "rc15": 1.285,
+        "rc16": 1.294
+      },
+      {
+        "path": "sameTt.Pluto.lon.byEra.2000-2049.p95",
+        "rc15": 4.462,
+        "rc16": 4.47
+      },
+      {
+        "path": "sameTt.Pluto.lon.byEra.2050-2099.max",
+        "rc15": 8.434,
+        "rc16": 8.251
+      },
+      {
+        "path": "sameTt.Pluto.lon.byEra.2050-2099.p50",
+        "rc15": 6.1,
+        "rc16": 6.103
+      },
+      {
+        "path": "sameTt.Pluto.lon.byEra.2050-2099.p95",
+        "rc15": 7.745,
+        "rc16": 7.747
+      },
+      {
+        "path": "sameTt.Pluto.lon.byEra.2100-2149.max",
+        "rc15": 14.552,
+        "rc16": 14.492
+      },
+      {
+        "path": "sameTt.Pluto.lon.byEra.2100-2149.p50",
+        "rc15": 11.049,
+        "rc16": 11.059
+      },
+      {
+        "path": "sameTt.Pluto.lon.byEra.2150-2199.max",
+        "rc15": 29.122,
+        "rc16": 29.129
+      },
+      {
+        "path": "sameTt.Pluto.lon.byEra.2150-2199.p95",
+        "rc15": 27.063,
+        "rc16": 27.043
+      },
+      {
+        "path": "sameTt.Saturn.lon.all.max",
+        "rc15": 13.182,
+        "rc16": 13.08
+      },
+      {
+        "path": "sameTt.Saturn.lon.all.p50",
+        "rc15": 2.79,
+        "rc16": 2.791
+      },
+      {
+        "path": "sameTt.Saturn.lon.all.p95",
+        "rc15": 8.377,
+        "rc16": 8.371
+      },
+      {
+        "path": "sameTt.Saturn.lon.byEra.1800-1849.max",
+        "rc15": 12.9,
+        "rc16": 12.794
+      },
+      {
+        "path": "sameTt.Saturn.lon.byEra.1800-1849.p50",
+        "rc15": 4.661,
+        "rc16": 4.643
+      },
+      {
+        "path": "sameTt.Saturn.lon.byEra.1800-1849.p95",
+        "rc15": 9.027,
+        "rc16": 9.124
+      },
+      {
+        "path": "sameTt.Saturn.lon.byEra.1850-1899.max",
+        "rc15": 8.596,
+        "rc16": 8.6
+      },
+      {
+        "path": "sameTt.Saturn.lon.byEra.1850-1899.p50",
+        "rc15": 2.808,
+        "rc16": 2.82
+      },
+      {
+        "path": "sameTt.Saturn.lon.byEra.1850-1899.p95",
+        "rc15": 6.878,
+        "rc16": 6.869
+      },
+      {
+        "path": "sameTt.Saturn.lon.byEra.1900-1949.max",
+        "rc15": 10.677,
+        "rc16": 10.713
+      },
+      {
+        "path": "sameTt.Saturn.lon.byEra.1900-1949.p50",
+        "rc15": 3.574,
+        "rc16": 3.602
+      },
+      {
+        "path": "sameTt.Saturn.lon.byEra.1900-1949.p95",
+        "rc15": 8.574,
+        "rc16": 8.601
+      },
+      {
+        "path": "sameTt.Saturn.lon.byEra.1950-1999.max",
+        "rc15": 11.548,
+        "rc16": 11.559
+      },
+      {
+        "path": "sameTt.Saturn.lon.byEra.1950-1999.p50",
+        "rc15": 1.779,
+        "rc16": 1.796
+      },
+      {
+        "path": "sameTt.Saturn.lon.byEra.1950-1999.p95",
+        "rc15": 6.7,
+        "rc16": 6.706
+      },
+      {
+        "path": "sameTt.Saturn.lon.byEra.2000-2049.max",
+        "rc15": 12.909,
+        "rc16": 12.815
+      },
+      {
+        "path": "sameTt.Saturn.lon.byEra.2000-2049.p50",
+        "rc15": 2.588,
+        "rc16": 2.586
+      },
+      {
+        "path": "sameTt.Saturn.lon.byEra.2000-2049.p95",
+        "rc15": 9.384,
+        "rc16": 9.382
+      },
+      {
+        "path": "sameTt.Saturn.lon.byEra.2050-2099.max",
+        "rc15": 9.521,
+        "rc16": 9.519
+      },
+      {
+        "path": "sameTt.Saturn.lon.byEra.2050-2099.p50",
+        "rc15": 3.667,
+        "rc16": 3.65
+      },
+      {
+        "path": "sameTt.Saturn.lon.byEra.2050-2099.p95",
+        "rc15": 7.598,
+        "rc16": 7.584
+      },
+      {
+        "path": "sameTt.Saturn.lon.byEra.2100-2149.max",
+        "rc15": 13.182,
+        "rc16": 13.08
+      },
+      {
+        "path": "sameTt.Saturn.lon.byEra.2100-2149.p50",
+        "rc15": 2.359,
+        "rc16": 2.362
+      },
+      {
+        "path": "sameTt.Saturn.lon.byEra.2100-2149.p95",
+        "rc15": 9.9,
+        "rc16": 9.966
+      },
+      {
+        "path": "sameTt.Saturn.lon.byEra.2150-2199.max",
+        "rc15": 9.768,
+        "rc16": 9.687
+      },
+      {
+        "path": "sameTt.Saturn.lon.byEra.2150-2199.p50",
+        "rc15": 1.84,
+        "rc16": 1.85
+      },
+      {
+        "path": "sameTt.Saturn.lon.byEra.2150-2199.p95",
+        "rc15": 8.039,
+        "rc16": 8.044
+      },
+      {
+        "path": "sameTt.Sun.lon.all.max",
+        "rc15": 2.322,
+        "rc16": 2.345
+      },
+      {
+        "path": "sameTt.Sun.lon.all.p50",
+        "rc15": 0.416,
+        "rc16": 0.414
+      },
+      {
+        "path": "sameTt.Sun.lon.all.p95",
+        "rc15": 1.217,
+        "rc16": 1.203
+      },
+      {
+        "path": "sameTt.Sun.lon.byEra.1800-1849.max",
+        "rc15": 2.146,
+        "rc16": 2.064
+      },
+      {
+        "path": "sameTt.Sun.lon.byEra.1800-1849.p50",
+        "rc15": 0.418,
+        "rc16": 0.412
+      },
+      {
+        "path": "sameTt.Sun.lon.byEra.1800-1849.p95",
+        "rc15": 1.25,
+        "rc16": 1.242
+      },
+      {
+        "path": "sameTt.Sun.lon.byEra.1850-1899.max",
+        "rc15": 2.188,
+        "rc16": 2.177
+      },
+      {
+        "path": "sameTt.Sun.lon.byEra.1850-1899.p50",
+        "rc15": 0.406,
+        "rc16": 0.407
+      },
+      {
+        "path": "sameTt.Sun.lon.byEra.1850-1899.p95",
+        "rc15": 1.216,
+        "rc16": 1.219
+      },
+      {
+        "path": "sameTt.Sun.lon.byEra.1900-1949.max",
+        "rc15": 1.879,
+        "rc16": 2.03
+      },
+      {
+        "path": "sameTt.Sun.lon.byEra.1900-1949.p50",
+        "rc15": 0.396,
+        "rc16": 0.394
+      },
+      {
+        "path": "sameTt.Sun.lon.byEra.1900-1949.p95",
+        "rc15": 1.218,
+        "rc16": 1.195
+      },
+      {
+        "path": "sameTt.Sun.lon.byEra.1950-1999.max",
+        "rc15": 2.067,
+        "rc16": 1.977
+      },
+      {
+        "path": "sameTt.Sun.lon.byEra.1950-1999.p50",
+        "rc15": 0.405,
+        "rc16": 0.399
+      },
+      {
+        "path": "sameTt.Sun.lon.byEra.1950-1999.p95",
+        "rc15": 1.176,
+        "rc16": 1.152
+      },
+      {
+        "path": "sameTt.Sun.lon.byEra.2000-2049.max",
+        "rc15": 2.322,
+        "rc16": 2.345
+      },
+      {
+        "path": "sameTt.Sun.lon.byEra.2000-2049.p50",
+        "rc15": 0.43,
+        "rc16": 0.431
+      },
+      {
+        "path": "sameTt.Sun.lon.byEra.2000-2049.p95",
+        "rc15": 1.203,
+        "rc16": 1.198
+      },
+      {
+        "path": "sameTt.Sun.lon.byEra.2050-2099.max",
+        "rc15": 2.062,
+        "rc16": 2.177
+      },
+      {
+        "path": "sameTt.Sun.lon.byEra.2050-2099.p50",
+        "rc15": 0.429,
+        "rc16": 0.43
+      },
+      {
+        "path": "sameTt.Sun.lon.byEra.2050-2099.p95",
+        "rc15": 1.226,
+        "rc16": 1.205
+      },
+      {
+        "path": "sameTt.Sun.lon.byEra.2100-2149.max",
+        "rc15": 2.08,
+        "rc16": 2.075
+      },
+      {
+        "path": "sameTt.Sun.lon.byEra.2100-2149.p50",
+        "rc15": 0.434,
+        "rc16": 0.428
+      },
+      {
+        "path": "sameTt.Sun.lon.byEra.2100-2149.p95",
+        "rc15": 1.18,
+        "rc16": 1.19
+      },
+      {
+        "path": "sameTt.Sun.lon.byEra.2150-2199.max",
+        "rc15": 1.83,
+        "rc16": 1.868
+      },
+      {
+        "path": "sameTt.Sun.lon.byEra.2150-2199.p50",
+        "rc15": 0.413,
+        "rc16": 0.412
+      },
+      {
+        "path": "sameTt.Sun.lon.byEra.2150-2199.p95",
+        "rc15": 1.227,
+        "rc16": 1.207
+      },
+      {
+        "path": "sameTt.Uranus.lon.all.max",
+        "rc15": 12.135,
+        "rc16": 12.067
+      },
+      {
+        "path": "sameTt.Uranus.lon.all.p50",
+        "rc15": 2.918,
+        "rc16": 2.917
+      },
+      {
+        "path": "sameTt.Uranus.lon.all.p95",
+        "rc15": 6.902,
+        "rc16": 6.894
+      },
+      {
+        "path": "sameTt.Uranus.lon.byEra.1800-1849.max",
+        "rc15": 7.649,
+        "rc16": 7.513
+      },
+      {
+        "path": "sameTt.Uranus.lon.byEra.1800-1849.p50",
+        "rc15": 3.393,
+        "rc16": 3.394
+      },
+      {
+        "path": "sameTt.Uranus.lon.byEra.1800-1849.p95",
+        "rc15": 6.575,
+        "rc16": 6.581
+      },
+      {
+        "path": "sameTt.Uranus.lon.byEra.1850-1899.max",
+        "rc15": 6.552,
+        "rc16": 6.449
+      },
+      {
+        "path": "sameTt.Uranus.lon.byEra.1850-1899.p50",
+        "rc15": 1.987,
+        "rc16": 1.988
+      },
+      {
+        "path": "sameTt.Uranus.lon.byEra.1850-1899.p95",
+        "rc15": 5.396,
+        "rc16": 5.408
+      },
+      {
+        "path": "sameTt.Uranus.lon.byEra.1900-1949.max",
+        "rc15": 7.308,
+        "rc16": 7.294
+      },
+      {
+        "path": "sameTt.Uranus.lon.byEra.1900-1949.p50",
+        "rc15": 2.833,
+        "rc16": 2.813
+      },
+      {
+        "path": "sameTt.Uranus.lon.byEra.1900-1949.p95",
+        "rc15": 6.12,
+        "rc16": 6.042
+      },
+      {
+        "path": "sameTt.Uranus.lon.byEra.1950-1999.max",
+        "rc15": 12.135,
+        "rc16": 12.067
+      },
+      {
+        "path": "sameTt.Uranus.lon.byEra.1950-1999.p50",
+        "rc15": 3.855,
+        "rc16": 3.859
+      },
+      {
+        "path": "sameTt.Uranus.lon.byEra.1950-1999.p95",
+        "rc15": 8.947,
+        "rc16": 9.005
+      },
+      {
+        "path": "sameTt.Uranus.lon.byEra.2000-2049.max",
+        "rc15": 11.564,
+        "rc16": 11.488
+      },
+      {
+        "path": "sameTt.Uranus.lon.byEra.2000-2049.p50",
+        "rc15": 2.825,
+        "rc16": 2.848
+      },
+      {
+        "path": "sameTt.Uranus.lon.byEra.2000-2049.p95",
+        "rc15": 7.338,
+        "rc16": 7.296
+      },
+      {
+        "path": "sameTt.Uranus.lon.byEra.2050-2099.max",
+        "rc15": 5.236,
+        "rc16": 5.146
+      },
+      {
+        "path": "sameTt.Uranus.lon.byEra.2050-2099.p50",
+        "rc15": 1.332,
+        "rc16": 1.313
+      },
+      {
+        "path": "sameTt.Uranus.lon.byEra.2050-2099.p95",
+        "rc15": 3.94,
+        "rc16": 3.934
+      },
+      {
+        "path": "sameTt.Uranus.lon.byEra.2100-2149.max",
+        "rc15": 9.183,
+        "rc16": 9.142
+      },
+      {
+        "path": "sameTt.Uranus.lon.byEra.2100-2149.p50",
+        "rc15": 3.767,
+        "rc16": 3.768
+      },
+      {
+        "path": "sameTt.Uranus.lon.byEra.2150-2199.max",
+        "rc15": 9.456,
+        "rc16": 9.396
+      },
+      {
+        "path": "sameTt.Uranus.lon.byEra.2150-2199.p50",
+        "rc15": 3.074,
+        "rc16": 3.078
+      },
+      {
+        "path": "sameTt.Uranus.lon.byEra.2150-2199.p95",
+        "rc15": 6.074,
+        "rc16": 6.057
+      },
+      {
+        "path": "sameTt.Venus.lon.all.max",
+        "rc15": 22.922,
+        "rc16": 22.885
+      },
+      {
+        "path": "sameTt.Venus.lon.all.p95",
+        "rc15": 6.196,
+        "rc16": 6.209
+      },
+      {
+        "path": "sameTt.Venus.lon.byEra.1800-1849.max",
+        "rc15": 19.608,
+        "rc16": 19.497
+      },
+      {
+        "path": "sameTt.Venus.lon.byEra.1800-1849.p50",
+        "rc15": 1.103,
+        "rc16": 1.104
+      },
+      {
+        "path": "sameTt.Venus.lon.byEra.1800-1849.p95",
+        "rc15": 6.095,
+        "rc16": 6.09
+      },
+      {
+        "path": "sameTt.Venus.lon.byEra.1850-1899.max",
+        "rc15": 22.922,
+        "rc16": 22.885
+      },
+      {
+        "path": "sameTt.Venus.lon.byEra.1850-1899.p50",
+        "rc15": 1.019,
+        "rc16": 1.025
+      },
+      {
+        "path": "sameTt.Venus.lon.byEra.1850-1899.p95",
+        "rc15": 5.604,
+        "rc16": 5.643
+      },
+      {
+        "path": "sameTt.Venus.lon.byEra.1900-1949.max",
+        "rc15": 19.09,
+        "rc16": 19.102
+      },
+      {
+        "path": "sameTt.Venus.lon.byEra.1900-1949.p50",
+        "rc15": 1.113,
+        "rc16": 1.114
+      },
+      {
+        "path": "sameTt.Venus.lon.byEra.1900-1949.p95",
+        "rc15": 5.946,
+        "rc16": 5.957
+      },
+      {
+        "path": "sameTt.Venus.lon.byEra.1950-1999.max",
+        "rc15": 18.595,
+        "rc16": 18.703
+      },
+      {
+        "path": "sameTt.Venus.lon.byEra.1950-1999.p50",
+        "rc15": 0.981,
+        "rc16": 0.973
+      },
+      {
+        "path": "sameTt.Venus.lon.byEra.1950-1999.p95",
+        "rc15": 6.483,
+        "rc16": 6.418
+      },
+      {
+        "path": "sameTt.Venus.lon.byEra.2000-2049.max",
+        "rc15": 20.521,
+        "rc16": 20.439
+      },
+      {
+        "path": "sameTt.Venus.lon.byEra.2000-2049.p50",
+        "rc15": 1.015,
+        "rc16": 1.023
+      },
+      {
+        "path": "sameTt.Venus.lon.byEra.2000-2049.p95",
+        "rc15": 6.116,
+        "rc16": 6.1
+      },
+      {
+        "path": "sameTt.Venus.lon.byEra.2050-2099.max",
+        "rc15": 15.691,
+        "rc16": 15.495
+      },
+      {
+        "path": "sameTt.Venus.lon.byEra.2050-2099.p50",
+        "rc15": 1.003,
+        "rc16": 0.995
+      },
+      {
+        "path": "sameTt.Venus.lon.byEra.2050-2099.p95",
+        "rc15": 6.042,
+        "rc16": 6.129
+      },
+      {
+        "path": "sameTt.Venus.lon.byEra.2100-2149.max",
+        "rc15": 19.882,
+        "rc16": 19.777
+      },
+      {
+        "path": "sameTt.Venus.lon.byEra.2100-2149.p50",
+        "rc15": 1.083,
+        "rc16": 1.091
+      },
+      {
+        "path": "sameTt.Venus.lon.byEra.2100-2149.p95",
+        "rc15": 6.565,
+        "rc16": 6.614
+      },
+      {
+        "path": "sameTt.Venus.lon.byEra.2150-2199.max",
+        "rc15": 18.353,
+        "rc16": 18.422
+      },
+      {
+        "path": "sameTt.Venus.lon.byEra.2150-2199.p50",
+        "rc15": 1.037,
+        "rc16": 1.047
+      },
+      {
+        "path": "sameTt.Venus.lon.byEra.2150-2199.p95",
+        "rc15": 6.432,
+        "rc16": 6.382
+      },
+      {
+        "path": "sameUt.Jupiter.lon.all.max",
+        "rc15": 10.654,
+        "rc16": 10.634
+      },
+      {
+        "path": "sameUt.Jupiter.lon.all.p50",
+        "rc15": 2.285,
+        "rc16": 2.282
+      },
+      {
+        "path": "sameUt.Jupiter.lon.all.p95",
+        "rc15": 6.545,
+        "rc16": 6.547
+      },
+      {
+        "path": "sameUt.Jupiter.lon.byEra.1800-1849.max",
+        "rc15": 10.576,
+        "rc16": 10.619
+      },
+      {
+        "path": "sameUt.Jupiter.lon.byEra.1800-1849.p50",
+        "rc15": 2.183,
+        "rc16": 2.196
+      },
+      {
+        "path": "sameUt.Jupiter.lon.byEra.1800-1849.p95",
+        "rc15": 6.8,
+        "rc16": 6.752
+      },
+      {
+        "path": "sameUt.Jupiter.lon.byEra.1850-1899.max",
+        "rc15": 10.15,
+        "rc16": 10.183
+      },
+      {
+        "path": "sameUt.Jupiter.lon.byEra.1850-1899.p50",
+        "rc15": 1.995,
+        "rc16": 1.993
+      },
+      {
+        "path": "sameUt.Jupiter.lon.byEra.1850-1899.p95",
+        "rc15": 6.794,
+        "rc16": 6.761
+      },
+      {
+        "path": "sameUt.Jupiter.lon.byEra.1900-1949.max",
+        "rc15": 9.958,
+        "rc16": 9.905
+      },
+      {
+        "path": "sameUt.Jupiter.lon.byEra.1900-1949.p50",
+        "rc15": 1.989,
+        "rc16": 1.999
+      },
+      {
+        "path": "sameUt.Jupiter.lon.byEra.1900-1949.p95",
+        "rc15": 5.749,
+        "rc16": 5.783
+      },
+      {
+        "path": "sameUt.Jupiter.lon.byEra.1950-1999.max",
+        "rc15": 8.152,
+        "rc16": 8.141
+      },
+      {
+        "path": "sameUt.Jupiter.lon.byEra.1950-1999.p50",
+        "rc15": 2.694,
+        "rc16": 2.676
+      },
+      {
+        "path": "sameUt.Jupiter.lon.byEra.1950-1999.p95",
+        "rc15": 6.301,
+        "rc16": 6.294
+      },
+      {
+        "path": "sameUt.Jupiter.lon.byEra.2000-2049.max",
+        "rc15": 10.249,
+        "rc16": 10.142
+      },
+      {
+        "path": "sameUt.Jupiter.lon.byEra.2000-2049.p50",
+        "rc15": 2.371,
+        "rc16": 2.345
+      },
+      {
+        "path": "sameUt.Jupiter.lon.byEra.2000-2049.p95",
+        "rc15": 6.627,
+        "rc16": 6.698
+      },
+      {
+        "path": "sameUt.Jupiter.lon.byEra.2050-2099.max",
+        "rc15": 9.642,
+        "rc16": 9.6
+      },
+      {
+        "path": "sameUt.Jupiter.lon.byEra.2050-2099.p50",
+        "rc15": 2.556,
+        "rc16": 2.558
+      },
+      {
+        "path": "sameUt.Jupiter.lon.byEra.2050-2099.p95",
+        "rc15": 6.867,
+        "rc16": 6.865
+      },
+      {
+        "path": "sameUt.Jupiter.lon.byEra.2100-2149.max",
+        "rc15": 10.266,
+        "rc16": 10.18
+      },
+      {
+        "path": "sameUt.Jupiter.lon.byEra.2100-2149.p50",
+        "rc15": 2.563,
+        "rc16": 2.565
+      },
+      {
+        "path": "sameUt.Jupiter.lon.byEra.2100-2149.p95",
+        "rc15": 6.421,
+        "rc16": 6.381
+      },
+      {
+        "path": "sameUt.Jupiter.lon.byEra.2150-2199.max",
+        "rc15": 10.654,
+        "rc16": 10.634
+      },
+      {
+        "path": "sameUt.Jupiter.lon.byEra.2150-2199.p50",
+        "rc15": 2.031,
+        "rc16": 2.015
+      },
+      {
+        "path": "sameUt.Jupiter.lon.byEra.2150-2199.p95",
+        "rc15": 6.69,
+        "rc16": 6.694
+      },
+      {
+        "path": "sameUt.Mars.lon.all.max",
+        "rc15": 13.504,
+        "rc16": 13.589
+      },
+      {
+        "path": "sameUt.Mars.lon.all.p50",
+        "rc15": 0.999,
+        "rc16": 0.996
+      },
+      {
+        "path": "sameUt.Mars.lon.all.p95",
+        "rc15": 4.548,
+        "rc16": 4.538
+      },
+      {
+        "path": "sameUt.Mars.lon.byEra.1800-1849.max",
+        "rc15": 13.504,
+        "rc16": 13.589
+      },
+      {
+        "path": "sameUt.Mars.lon.byEra.1800-1849.p50",
+        "rc15": 0.965,
+        "rc16": 0.958
+      },
+      {
+        "path": "sameUt.Mars.lon.byEra.1800-1849.p95",
+        "rc15": 4.353,
+        "rc16": 4.338
+      },
+      {
+        "path": "sameUt.Mars.lon.byEra.1850-1899.max",
+        "rc15": 13.251,
+        "rc16": 13.288
+      },
+      {
+        "path": "sameUt.Mars.lon.byEra.1850-1899.p50",
+        "rc15": 0.982,
+        "rc16": 0.973
+      },
+      {
+        "path": "sameUt.Mars.lon.byEra.1850-1899.p95",
+        "rc15": 4.681,
+        "rc16": 4.715
+      },
+      {
+        "path": "sameUt.Mars.lon.byEra.1900-1949.max",
+        "rc15": 9.631,
+        "rc16": 9.547
+      },
+      {
+        "path": "sameUt.Mars.lon.byEra.1900-1949.p50",
+        "rc15": 0.975,
+        "rc16": 0.98
+      },
+      {
+        "path": "sameUt.Mars.lon.byEra.1900-1949.p95",
+        "rc15": 3.934,
+        "rc16": 3.892
+      },
+      {
+        "path": "sameUt.Mars.lon.byEra.1950-1999.max",
+        "rc15": 12.392,
+        "rc16": 12.426
+      },
+      {
+        "path": "sameUt.Mars.lon.byEra.1950-1999.p50",
+        "rc15": 0.837,
+        "rc16": 0.841
+      },
+      {
+        "path": "sameUt.Mars.lon.byEra.1950-1999.p95",
+        "rc15": 4.918,
+        "rc16": 4.915
+      },
+      {
+        "path": "sameUt.Mars.lon.byEra.2000-2049.max",
+        "rc15": 11.903,
+        "rc16": 11.955
+      },
+      {
+        "path": "sameUt.Mars.lon.byEra.2000-2049.p50",
+        "rc15": 0.832,
+        "rc16": 0.838
+      },
+      {
+        "path": "sameUt.Mars.lon.byEra.2000-2049.p95",
+        "rc15": 4.951,
+        "rc16": 4.893
+      },
+      {
+        "path": "sameUt.Mars.lon.byEra.2050-2099.max",
+        "rc15": 12.437,
+        "rc16": 12.469
+      },
+      {
+        "path": "sameUt.Mars.lon.byEra.2050-2099.p50",
+        "rc15": 0.985,
+        "rc16": 0.979
+      },
+      {
+        "path": "sameUt.Mars.lon.byEra.2050-2099.p95",
+        "rc15": 4.682,
+        "rc16": 4.646
+      },
+      {
+        "path": "sameUt.Mars.lon.byEra.2100-2149.max",
+        "rc15": 11.037,
+        "rc16": 11.113
+      },
+      {
+        "path": "sameUt.Mars.lon.byEra.2100-2149.p50",
+        "rc15": 1.089,
+        "rc16": 1.072
+      },
+      {
+        "path": "sameUt.Mars.lon.byEra.2100-2149.p95",
+        "rc15": 4.384,
+        "rc16": 4.417
+      },
+      {
+        "path": "sameUt.Mars.lon.byEra.2150-2199.max",
+        "rc15": 10.981,
+        "rc16": 11.007
+      },
+      {
+        "path": "sameUt.Mars.lon.byEra.2150-2199.p50",
+        "rc15": 1.279,
+        "rc16": 1.269
+      },
+      {
+        "path": "sameUt.Mars.lon.byEra.2150-2199.p95",
+        "rc15": 4.56,
+        "rc16": 4.544
+      },
+      {
+        "path": "sameUt.Mercury.lon.all.max",
+        "rc15": 14.392,
+        "rc16": 14.556
+      },
+      {
+        "path": "sameUt.Mercury.lon.all.p50",
+        "rc15": 1.813,
+        "rc16": 1.817
+      },
+      {
+        "path": "sameUt.Mercury.lon.all.p95",
+        "rc15": 5.917,
+        "rc16": 5.912
+      },
+      {
+        "path": "sameUt.Mercury.lon.byEra.1800-1849.max",
+        "rc15": 12.569,
+        "rc16": 12.631
+      },
+      {
+        "path": "sameUt.Mercury.lon.byEra.1800-1849.p50",
+        "rc15": 2.079,
+        "rc16": 2.106
+      },
+      {
+        "path": "sameUt.Mercury.lon.byEra.1800-1849.p95",
+        "rc15": 6.302,
+        "rc16": 6.301
+      },
+      {
+        "path": "sameUt.Mercury.lon.byEra.1850-1899.max",
+        "rc15": 11.581,
+        "rc16": 11.539
+      },
+      {
+        "path": "sameUt.Mercury.lon.byEra.1850-1899.p50",
+        "rc15": 1.81,
+        "rc16": 1.802
+      },
+      {
+        "path": "sameUt.Mercury.lon.byEra.1850-1899.p95",
+        "rc15": 5.756,
+        "rc16": 5.757
+      },
+      {
+        "path": "sameUt.Mercury.lon.byEra.1900-1949.max",
+        "rc15": 11.306,
+        "rc16": 11.337
+      },
+      {
+        "path": "sameUt.Mercury.lon.byEra.1900-1949.p50",
+        "rc15": 1.637,
+        "rc16": 1.631
+      },
+      {
+        "path": "sameUt.Mercury.lon.byEra.1900-1949.p95",
+        "rc15": 5.141,
+        "rc16": 5.128
+      },
+      {
+        "path": "sameUt.Mercury.lon.byEra.1950-1999.max",
+        "rc15": 12.169,
+        "rc16": 12.17
+      },
+      {
+        "path": "sameUt.Mercury.lon.byEra.1950-1999.p50",
+        "rc15": 1.511,
+        "rc16": 1.51
+      },
+      {
+        "path": "sameUt.Mercury.lon.byEra.1950-1999.p95",
+        "rc15": 5.236,
+        "rc16": 5.241
+      },
+      {
+        "path": "sameUt.Mercury.lon.byEra.2000-2049.max",
+        "rc15": 10.941,
+        "rc16": 11.067
+      },
+      {
+        "path": "sameUt.Mercury.lon.byEra.2000-2049.p50",
+        "rc15": 1.542,
+        "rc16": 1.559
+      },
+      {
+        "path": "sameUt.Mercury.lon.byEra.2000-2049.p95",
+        "rc15": 4.999,
+        "rc16": 4.958
+      },
+      {
+        "path": "sameUt.Mercury.lon.byEra.2050-2099.max",
+        "rc15": 11.392,
+        "rc16": 11.494
+      },
+      {
+        "path": "sameUt.Mercury.lon.byEra.2050-2099.p50",
+        "rc15": 1.632,
+        "rc16": 1.623
+      },
+      {
+        "path": "sameUt.Mercury.lon.byEra.2050-2099.p95",
+        "rc15": 5.582,
+        "rc16": 5.541
+      },
+      {
+        "path": "sameUt.Mercury.lon.byEra.2100-2149.max",
+        "rc15": 14.392,
+        "rc16": 14.556
+      },
+      {
+        "path": "sameUt.Mercury.lon.byEra.2100-2149.p50",
+        "rc15": 1.947,
+        "rc16": 1.957
+      },
+      {
+        "path": "sameUt.Mercury.lon.byEra.2100-2149.p95",
+        "rc15": 6.436,
+        "rc16": 6.399
+      },
+      {
+        "path": "sameUt.Mercury.lon.byEra.2150-2199.max",
+        "rc15": 13.666,
+        "rc16": 13.683
+      },
+      {
+        "path": "sameUt.Mercury.lon.byEra.2150-2199.p50",
+        "rc15": 2.626,
+        "rc16": 2.65
+      },
+      {
+        "path": "sameUt.Mercury.lon.byEra.2150-2199.p95",
+        "rc15": 7.298,
+        "rc16": 7.26
+      },
+      {
+        "path": "sameUt.Moon.lon.all.max",
+        "rc15": 20.469,
+        "rc16": 20.454
+      },
+      {
+        "path": "sameUt.Moon.lon.all.p50",
+        "rc15": 4.073,
+        "rc16": 4.072
+      },
+      {
+        "path": "sameUt.Moon.lon.all.p95",
+        "rc15": 14.51,
+        "rc16": 14.522
+      },
+      {
+        "path": "sameUt.Moon.lon.byEra.1800-1849.max",
+        "rc15": 10.82,
+        "rc16": 10.72
+      },
+      {
+        "path": "sameUt.Moon.lon.byEra.1800-1849.p50",
+        "rc15": 6.6,
+        "rc16": 6.597
+      },
+      {
+        "path": "sameUt.Moon.lon.byEra.1800-1849.p95",
+        "rc15": 8.742,
+        "rc16": 8.728
+      },
+      {
+        "path": "sameUt.Moon.lon.byEra.1850-1899.max",
+        "rc15": 7.206,
+        "rc16": 7.16
+      },
+      {
+        "path": "sameUt.Moon.lon.byEra.1850-1899.p50",
+        "rc15": 3.886,
+        "rc16": 3.881
+      },
+      {
+        "path": "sameUt.Moon.lon.byEra.1850-1899.p95",
+        "rc15": 5.761,
+        "rc16": 5.755
+      },
+      {
+        "path": "sameUt.Moon.lon.byEra.1900-1949.max",
+        "rc15": 4.853,
+        "rc16": 4.793
+      },
+      {
+        "path": "sameUt.Moon.lon.byEra.1900-1949.p50",
+        "rc15": 1.334,
+        "rc16": 1.341
+      },
+      {
+        "path": "sameUt.Moon.lon.byEra.1900-1949.p95",
+        "rc15": 2.994,
+        "rc16": 2.999
+      },
+      {
+        "path": "sameUt.Moon.lon.byEra.1950-1999.max",
+        "rc15": 4.952,
+        "rc16": 4.965
+      },
+      {
+        "path": "sameUt.Moon.lon.byEra.1950-1999.p50",
+        "rc15": 0.63,
+        "rc16": 0.625
+      },
+      {
+        "path": "sameUt.Moon.lon.byEra.1950-1999.p95",
+        "rc15": 1.857,
+        "rc16": 1.828
+      },
+      {
+        "path": "sameUt.Moon.lon.byEra.2000-2049.max",
+        "rc15": 4.697,
+        "rc16": 4.717
+      },
+      {
+        "path": "sameUt.Moon.lon.byEra.2000-2049.p50",
+        "rc15": 0.669,
+        "rc16": 0.663
+      },
+      {
+        "path": "sameUt.Moon.lon.byEra.2000-2049.p95",
+        "rc15": 2.484,
+        "rc16": 2.436
+      },
+      {
+        "path": "sameUt.Moon.lon.byEra.2050-2099.max",
+        "rc15": 10.123,
+        "rc16": 9.999
+      },
+      {
+        "path": "sameUt.Moon.lon.byEra.2050-2099.p50",
+        "rc15": 4.518,
+        "rc16": 4.492
+      },
+      {
+        "path": "sameUt.Moon.lon.byEra.2050-2099.p95",
+        "rc15": 7.49,
+        "rc16": 7.488
+      },
+      {
+        "path": "sameUt.Moon.lon.byEra.2100-2149.max",
+        "rc15": 15.793,
+        "rc16": 15.825
+      },
+      {
+        "path": "sameUt.Moon.lon.byEra.2100-2149.p50",
+        "rc15": 9.956,
+        "rc16": 9.945
+      },
+      {
+        "path": "sameUt.Moon.lon.byEra.2100-2149.p95",
+        "rc15": 13.182,
+        "rc16": 13.179
+      },
+      {
+        "path": "sameUt.Moon.lon.byEra.2150-2199.max",
+        "rc15": 20.469,
+        "rc16": 20.454
+      },
+      {
+        "path": "sameUt.Moon.lon.byEra.2150-2199.p95",
+        "rc15": 17.053,
+        "rc16": 17.05
+      },
+      {
+        "path": "sameUt.Neptune.lon.all.max",
+        "rc15": 19.816,
+        "rc16": 19.708
+      },
+      {
+        "path": "sameUt.Neptune.lon.all.p50",
+        "rc15": 9.676,
+        "rc16": 9.679
+      },
+      {
+        "path": "sameUt.Neptune.lon.all.p95",
+        "rc15": 17.424,
+        "rc16": 17.418
+      },
+      {
+        "path": "sameUt.Neptune.lon.byEra.1800-1849.max",
+        "rc15": 19.816,
+        "rc16": 19.708
+      },
+      {
+        "path": "sameUt.Neptune.lon.byEra.1800-1849.p50",
+        "rc15": 14.563,
+        "rc16": 14.535
+      },
+      {
+        "path": "sameUt.Neptune.lon.byEra.1800-1849.p95",
+        "rc15": 18.965,
+        "rc16": 18.999
+      },
+      {
+        "path": "sameUt.Neptune.lon.byEra.1850-1899.max",
+        "rc15": 17.341,
+        "rc16": 17.466
+      },
+      {
+        "path": "sameUt.Neptune.lon.byEra.1850-1899.p50",
+        "rc15": 2.914,
+        "rc16": 2.926
+      },
+      {
+        "path": "sameUt.Neptune.lon.byEra.1850-1899.p95",
+        "rc15": 14.582,
+        "rc16": 14.62
+      },
+      {
+        "path": "sameUt.Neptune.lon.byEra.1900-1949.max",
+        "rc15": 14.699,
+        "rc16": 14.633
+      },
+      {
+        "path": "sameUt.Neptune.lon.byEra.1900-1949.p50",
+        "rc15": 8.058,
+        "rc16": 8.065
+      },
+      {
+        "path": "sameUt.Neptune.lon.byEra.1900-1949.p95",
+        "rc15": 13.855,
+        "rc16": 13.847
+      },
+      {
+        "path": "sameUt.Neptune.lon.byEra.1950-1999.max",
+        "rc15": 17.982,
+        "rc16": 17.908
+      },
+      {
+        "path": "sameUt.Neptune.lon.byEra.1950-1999.p50",
+        "rc15": 10.741,
+        "rc16": 10.747
+      },
+      {
+        "path": "sameUt.Neptune.lon.byEra.1950-1999.p95",
+        "rc15": 16.612,
+        "rc16": 16.654
+      },
+      {
+        "path": "sameUt.Neptune.lon.byEra.2000-2049.max",
+        "rc15": 18.504,
+        "rc16": 18.373
+      },
+      {
+        "path": "sameUt.Neptune.lon.byEra.2000-2049.p50",
+        "rc15": 11.406,
+        "rc16": 11.403
+      },
+      {
+        "path": "sameUt.Neptune.lon.byEra.2000-2049.p95",
+        "rc15": 17.52,
+        "rc16": 17.527
+      },
+      {
+        "path": "sameUt.Neptune.lon.byEra.2050-2099.max",
+        "rc15": 18.952,
+        "rc16": 18.88
+      },
+      {
+        "path": "sameUt.Neptune.lon.byEra.2050-2099.p50",
+        "rc15": 10.548,
+        "rc16": 10.582
+      },
+      {
+        "path": "sameUt.Neptune.lon.byEra.2050-2099.p95",
+        "rc15": 17.488,
+        "rc16": 17.516
+      },
+      {
+        "path": "sameUt.Neptune.lon.byEra.2100-2149.max",
+        "rc15": 17.453,
+        "rc16": 17.382
+      },
+      {
+        "path": "sameUt.Neptune.lon.byEra.2100-2149.p50",
+        "rc15": 10.437,
+        "rc16": 10.435
+      },
+      {
+        "path": "sameUt.Neptune.lon.byEra.2100-2149.p95",
+        "rc15": 16.179,
+        "rc16": 16.178
+      },
+      {
+        "path": "sameUt.Neptune.lon.byEra.2150-2199.max",
+        "rc15": 14.436,
+        "rc16": 14.347
+      },
+      {
+        "path": "sameUt.Neptune.lon.byEra.2150-2199.p50",
+        "rc15": 9.692,
+        "rc16": 9.693
+      },
+      {
+        "path": "sameUt.Neptune.lon.byEra.2150-2199.p95",
+        "rc15": 13.817,
+        "rc16": 13.805
+      },
+      {
+        "path": "sameUt.North Node.lon.all.max",
+        "rc15": 26.614,
+        "rc16": 26.721
+      },
+      {
+        "path": "sameUt.North Node.lon.all.p50",
+        "rc15": 6.362,
+        "rc16": 6.36
+      },
+      {
+        "path": "sameUt.North Node.lon.all.p95",
+        "rc15": 15.885,
+        "rc16": 15.891
+      },
+      {
+        "path": "sameUt.North Node.lon.byEra.1800-1849.max",
+        "rc15": 20.618,
+        "rc16": 20.571
+      },
+      {
+        "path": "sameUt.North Node.lon.byEra.1800-1849.p50",
+        "rc15": 5.727,
+        "rc16": 5.715
+      },
+      {
+        "path": "sameUt.North Node.lon.byEra.1800-1849.p95",
+        "rc15": 11.642,
+        "rc16": 11.551
+      },
+      {
+        "path": "sameUt.North Node.lon.byEra.1850-1899.max",
+        "rc15": 14.787,
+        "rc16": 14.752
+      },
+      {
+        "path": "sameUt.North Node.lon.byEra.1850-1899.p50",
+        "rc15": 3.378,
+        "rc16": 3.364
+      },
+      {
+        "path": "sameUt.North Node.lon.byEra.1850-1899.p95",
+        "rc15": 8.814,
+        "rc16": 8.817
+      },
+      {
+        "path": "sameUt.North Node.lon.byEra.1900-1949.max",
+        "rc15": 12.153,
+        "rc16": 12.12
+      },
+      {
+        "path": "sameUt.North Node.lon.byEra.1900-1949.p50",
+        "rc15": 2.435,
+        "rc16": 2.433
+      },
+      {
+        "path": "sameUt.North Node.lon.byEra.1900-1949.p95",
+        "rc15": 7.141,
+        "rc16": 7.156
+      },
+      {
+        "path": "sameUt.North Node.lon.byEra.1950-1999.max",
+        "rc15": 15.394,
+        "rc16": 15.481
+      },
+      {
+        "path": "sameUt.North Node.lon.byEra.1950-1999.p50",
+        "rc15": 3.642,
+        "rc16": 3.668
+      },
+      {
+        "path": "sameUt.North Node.lon.byEra.1950-1999.p95",
+        "rc15": 9.429,
+        "rc16": 9.453
+      },
+      {
+        "path": "sameUt.North Node.lon.byEra.2000-2049.max",
+        "rc15": 19.024,
+        "rc16": 19.113
+      },
+      {
+        "path": "sameUt.North Node.lon.byEra.2000-2049.p95",
+        "rc15": 11.935,
+        "rc16": 11.976
+      },
+      {
+        "path": "sameUt.North Node.lon.byEra.2050-2099.max",
+        "rc15": 23.818,
+        "rc16": 23.57
+      },
+      {
+        "path": "sameUt.North Node.lon.byEra.2050-2099.p50",
+        "rc15": 8.694,
+        "rc16": 8.703
+      },
+      {
+        "path": "sameUt.North Node.lon.byEra.2050-2099.p95",
+        "rc15": 14.478,
+        "rc16": 14.444
+      },
+      {
+        "path": "sameUt.North Node.lon.byEra.2100-2149.max",
+        "rc15": 23.478,
+        "rc16": 23.575
+      },
+      {
+        "path": "sameUt.North Node.lon.byEra.2100-2149.p50",
+        "rc15": 10.992,
+        "rc16": 10.983
+      },
+      {
+        "path": "sameUt.North Node.lon.byEra.2100-2149.p95",
+        "rc15": 16.618,
+        "rc16": 16.62
+      },
+      {
+        "path": "sameUt.North Node.lon.byEra.2150-2199.max",
+        "rc15": 26.614,
+        "rc16": 26.721
+      },
+      {
+        "path": "sameUt.North Node.lon.byEra.2150-2199.p50",
+        "rc15": 14.274,
+        "rc16": 14.296
+      },
+      {
+        "path": "sameUt.North Node.lon.byEra.2150-2199.p95",
+        "rc15": 19.82,
+        "rc16": 19.865
+      },
+      {
+        "path": "sameUt.Pluto.lon.all.max",
+        "rc15": 29.102,
+        "rc16": 29.108
+      },
+      {
+        "path": "sameUt.Pluto.lon.all.p50",
+        "rc15": 6.075,
+        "rc16": 6.078
+      },
+      {
+        "path": "sameUt.Pluto.lon.all.p95",
+        "rc15": 20.202,
+        "rc16": 20.192
+      },
+      {
+        "path": "sameUt.Pluto.lon.byEra.1800-1849.max",
+        "rc15": 19.302,
+        "rc16": 19.32
+      },
+      {
+        "path": "sameUt.Pluto.lon.byEra.1800-1849.p50",
+        "rc15": 12.007,
+        "rc16": 12.024
+      },
+      {
+        "path": "sameUt.Pluto.lon.byEra.1800-1849.p95",
+        "rc15": 18.109,
+        "rc16": 18.082
+      },
+      {
+        "path": "sameUt.Pluto.lon.byEra.1850-1899.max",
+        "rc15": 9.89,
+        "rc16": 9.935
+      },
+      {
+        "path": "sameUt.Pluto.lon.byEra.1850-1899.p50",
+        "rc15": 5.933,
+        "rc16": 5.929
+      },
+      {
+        "path": "sameUt.Pluto.lon.byEra.1850-1899.p95",
+        "rc15": 9.334,
+        "rc16": 9.322
+      },
+      {
+        "path": "sameUt.Pluto.lon.byEra.1900-1949.max",
+        "rc15": 3.465,
+        "rc16": 3.42
+      },
+      {
+        "path": "sameUt.Pluto.lon.byEra.1900-1949.p50",
+        "rc15": 1.578,
+        "rc16": 1.582
+      },
+      {
+        "path": "sameUt.Pluto.lon.byEra.1900-1949.p95",
+        "rc15": 3.095,
+        "rc16": 3.078
+      },
+      {
+        "path": "sameUt.Pluto.lon.byEra.1950-1999.max",
+        "rc15": 3.355,
+        "rc16": 3.19
+      },
+      {
+        "path": "sameUt.Pluto.lon.byEra.1950-1999.p50",
+        "rc15": 2.13,
+        "rc16": 2.127
+      },
+      {
+        "path": "sameUt.Pluto.lon.byEra.1950-1999.p95",
+        "rc15": 3.082,
+        "rc16": 3.059
+      },
+      {
+        "path": "sameUt.Pluto.lon.byEra.2000-2049.max",
+        "rc15": 5.042,
+        "rc16": 4.977
+      },
+      {
+        "path": "sameUt.Pluto.lon.byEra.2000-2049.p50",
+        "rc15": 1.285,
+        "rc16": 1.293
+      },
+      {
+        "path": "sameUt.Pluto.lon.byEra.2000-2049.p95",
+        "rc15": 4.464,
+        "rc16": 4.468
+      },
+      {
+        "path": "sameUt.Pluto.lon.byEra.2050-2099.max",
+        "rc15": 8.426,
+        "rc16": 8.241
+      },
+      {
+        "path": "sameUt.Pluto.lon.byEra.2050-2099.p50",
+        "rc15": 6.099,
+        "rc16": 6.103
+      },
+      {
+        "path": "sameUt.Pluto.lon.byEra.2050-2099.p95",
+        "rc15": 7.744,
+        "rc16": 7.754
+      },
+      {
+        "path": "sameUt.Pluto.lon.byEra.2100-2149.max",
+        "rc15": 14.531,
+        "rc16": 14.472
+      },
+      {
+        "path": "sameUt.Pluto.lon.byEra.2100-2149.p95",
+        "rc15": 13.803,
+        "rc16": 13.806
+      },
+      {
+        "path": "sameUt.Pluto.lon.byEra.2150-2199.max",
+        "rc15": 29.102,
+        "rc16": 29.108
+      },
+      {
+        "path": "sameUt.Pluto.lon.byEra.2150-2199.p50",
+        "rc15": 18.887,
+        "rc16": 18.868
+      },
+      {
+        "path": "sameUt.Pluto.lon.byEra.2150-2199.p95",
+        "rc15": 27.048,
+        "rc16": 27.029
+      },
+      {
+        "path": "sameUt.Saturn.lon.all.max",
+        "rc15": 13.122,
+        "rc16": 13.028
+      },
+      {
+        "path": "sameUt.Saturn.lon.all.p50",
+        "rc15": 2.79,
+        "rc16": 2.789
+      },
+      {
+        "path": "sameUt.Saturn.lon.all.p95",
+        "rc15": 8.373,
+        "rc16": 8.367
+      },
+      {
+        "path": "sameUt.Saturn.lon.byEra.1800-1849.max",
+        "rc15": 12.9,
+        "rc16": 12.794
+      },
+      {
+        "path": "sameUt.Saturn.lon.byEra.1800-1849.p50",
+        "rc15": 4.661,
+        "rc16": 4.644
+      },
+      {
+        "path": "sameUt.Saturn.lon.byEra.1800-1849.p95",
+        "rc15": 9.027,
+        "rc16": 9.124
+      },
+      {
+        "path": "sameUt.Saturn.lon.byEra.1850-1899.max",
+        "rc15": 8.596,
+        "rc16": 8.6
+      },
+      {
+        "path": "sameUt.Saturn.lon.byEra.1850-1899.p50",
+        "rc15": 2.808,
+        "rc16": 2.82
+      },
+      {
+        "path": "sameUt.Saturn.lon.byEra.1850-1899.p95",
+        "rc15": 6.878,
+        "rc16": 6.869
+      },
+      {
+        "path": "sameUt.Saturn.lon.byEra.1900-1949.max",
+        "rc15": 10.677,
+        "rc16": 10.713
+      },
+      {
+        "path": "sameUt.Saturn.lon.byEra.1900-1949.p50",
+        "rc15": 3.574,
+        "rc16": 3.603
+      },
+      {
+        "path": "sameUt.Saturn.lon.byEra.1900-1949.p95",
+        "rc15": 8.575,
+        "rc16": 8.601
+      },
+      {
+        "path": "sameUt.Saturn.lon.byEra.1950-1999.max",
+        "rc15": 11.548,
+        "rc16": 11.559
+      },
+      {
+        "path": "sameUt.Saturn.lon.byEra.1950-1999.p50",
+        "rc15": 1.779,
+        "rc16": 1.796
+      },
+      {
+        "path": "sameUt.Saturn.lon.byEra.1950-1999.p95",
+        "rc15": 6.7,
+        "rc16": 6.706
+      },
+      {
+        "path": "sameUt.Saturn.lon.byEra.2000-2049.max",
+        "rc15": 12.909,
+        "rc16": 12.815
+      },
+      {
+        "path": "sameUt.Saturn.lon.byEra.2000-2049.p50",
+        "rc15": 2.587,
+        "rc16": 2.586
+      },
+      {
+        "path": "sameUt.Saturn.lon.byEra.2000-2049.p95",
+        "rc15": 9.384,
+        "rc16": 9.381
+      },
+      {
+        "path": "sameUt.Saturn.lon.byEra.2050-2099.max",
+        "rc15": 9.565,
+        "rc16": 9.563
+      },
+      {
+        "path": "sameUt.Saturn.lon.byEra.2050-2099.p50",
+        "rc15": 3.671,
+        "rc16": 3.657
+      },
+      {
+        "path": "sameUt.Saturn.lon.byEra.2050-2099.p95",
+        "rc15": 7.563,
+        "rc16": 7.565
+      },
+      {
+        "path": "sameUt.Saturn.lon.byEra.2100-2149.max",
+        "rc15": 13.122,
+        "rc16": 13.028
+      },
+      {
+        "path": "sameUt.Saturn.lon.byEra.2100-2149.p50",
+        "rc15": 2.363,
+        "rc16": 2.354
+      },
+      {
+        "path": "sameUt.Saturn.lon.byEra.2100-2149.p95",
+        "rc15": 9.875,
+        "rc16": 9.944
+      },
+      {
+        "path": "sameUt.Saturn.lon.byEra.2150-2199.max",
+        "rc15": 9.866,
+        "rc16": 9.797
+      },
+      {
+        "path": "sameUt.Saturn.lon.byEra.2150-2199.p50",
+        "rc15": 1.854,
+        "rc16": 1.845
+      },
+      {
+        "path": "sameUt.Saturn.lon.byEra.2150-2199.p95",
+        "rc15": 7.962,
+        "rc16": 7.969
+      },
+      {
+        "path": "sameUt.Sun.lon.all.max",
+        "rc15": 3.238,
+        "rc16": 3.209
+      },
+      {
+        "path": "sameUt.Sun.lon.all.p50",
+        "rc15": 0.584,
+        "rc16": 0.581
+      },
+      {
+        "path": "sameUt.Sun.lon.all.p95",
+        "rc15": 1.821,
+        "rc16": 1.814
+      },
+      {
+        "path": "sameUt.Sun.lon.byEra.1800-1849.max",
+        "rc15": 2.138,
+        "rc16": 2.057
+      },
+      {
+        "path": "sameUt.Sun.lon.byEra.1800-1849.p50",
+        "rc15": 0.415,
+        "rc16": 0.411
+      },
+      {
+        "path": "sameUt.Sun.lon.byEra.1800-1849.p95",
+        "rc15": 1.248,
+        "rc16": 1.236
+      },
+      {
+        "path": "sameUt.Sun.lon.byEra.1850-1899.max",
+        "rc15": 2.185,
+        "rc16": 2.174
+      },
+      {
+        "path": "sameUt.Sun.lon.byEra.1850-1899.p50",
+        "rc15": 0.407,
+        "rc16": 0.406
+      },
+      {
+        "path": "sameUt.Sun.lon.byEra.1850-1899.p95",
+        "rc15": 1.215,
+        "rc16": 1.219
+      },
+      {
+        "path": "sameUt.Sun.lon.byEra.1900-1949.max",
+        "rc15": 1.878,
+        "rc16": 2.031
+      },
+      {
+        "path": "sameUt.Sun.lon.byEra.1900-1949.p50",
+        "rc15": 0.396,
+        "rc16": 0.392
+      },
+      {
+        "path": "sameUt.Sun.lon.byEra.1900-1949.p95",
+        "rc15": 1.218,
+        "rc16": 1.195
+      },
+      {
+        "path": "sameUt.Sun.lon.byEra.1950-1999.max",
+        "rc15": 2.067,
+        "rc16": 1.977
+      },
+      {
+        "path": "sameUt.Sun.lon.byEra.1950-1999.p50",
+        "rc15": 0.404,
+        "rc16": 0.399
+      },
+      {
+        "path": "sameUt.Sun.lon.byEra.1950-1999.p95",
+        "rc15": 1.177,
+        "rc16": 1.152
+      },
+      {
+        "path": "sameUt.Sun.lon.byEra.2000-2049.max",
+        "rc15": 2.322,
+        "rc16": 2.345
+      },
+      {
+        "path": "sameUt.Sun.lon.byEra.2000-2049.p50",
+        "rc15": 0.449,
+        "rc16": 0.44
+      },
+      {
+        "path": "sameUt.Sun.lon.byEra.2000-2049.p95",
+        "rc15": 1.237,
+        "rc16": 1.229
+      },
+      {
+        "path": "sameUt.Sun.lon.byEra.2050-2099.max",
+        "rc15": 2.277,
+        "rc16": 2.236
+      },
+      {
+        "path": "sameUt.Sun.lon.byEra.2050-2099.p50",
+        "rc15": 0.658,
+        "rc16": 0.652
+      },
+      {
+        "path": "sameUt.Sun.lon.byEra.2050-2099.p95",
+        "rc15": 1.476,
+        "rc16": 1.471
+      },
+      {
+        "path": "sameUt.Sun.lon.byEra.2100-2149.max",
+        "rc15": 3.037,
+        "rc16": 2.989
+      },
+      {
+        "path": "sameUt.Sun.lon.byEra.2100-2149.p50",
+        "rc15": 1.025,
+        "rc16": 1.03
+      },
+      {
+        "path": "sameUt.Sun.lon.byEra.2100-2149.p95",
+        "rc15": 1.883,
+        "rc16": 1.887
+      },
+      {
+        "path": "sameUt.Sun.lon.byEra.2150-2199.max",
+        "rc15": 3.238,
+        "rc16": 3.209
+      },
+      {
+        "path": "sameUt.Sun.lon.byEra.2150-2199.p50",
+        "rc15": 1.49,
+        "rc16": 1.483
+      },
+      {
+        "path": "sameUt.Sun.lon.byEra.2150-2199.p95",
+        "rc15": 2.509,
+        "rc16": 2.489
+      },
+      {
+        "path": "sameUt.Uranus.lon.all.max",
+        "rc15": 12.135,
+        "rc16": 12.067
+      },
+      {
+        "path": "sameUt.Uranus.lon.all.p50",
+        "rc15": 2.917,
+        "rc16": 2.913
+      },
+      {
+        "path": "sameUt.Uranus.lon.all.p95",
+        "rc15": 6.903,
+        "rc16": 6.884
+      },
+      {
+        "path": "sameUt.Uranus.lon.byEra.1800-1849.max",
+        "rc15": 7.65,
+        "rc16": 7.513
+      },
+      {
+        "path": "sameUt.Uranus.lon.byEra.1800-1849.p95",
+        "rc15": 6.575,
+        "rc16": 6.581
+      },
+      {
+        "path": "sameUt.Uranus.lon.byEra.1850-1899.max",
+        "rc15": 6.552,
+        "rc16": 6.449
+      },
+      {
+        "path": "sameUt.Uranus.lon.byEra.1850-1899.p50",
+        "rc15": 1.987,
+        "rc16": 1.989
+      },
+      {
+        "path": "sameUt.Uranus.lon.byEra.1850-1899.p95",
+        "rc15": 5.396,
+        "rc16": 5.408
+      },
+      {
+        "path": "sameUt.Uranus.lon.byEra.1900-1949.max",
+        "rc15": 7.308,
+        "rc16": 7.294
+      },
+      {
+        "path": "sameUt.Uranus.lon.byEra.1900-1949.p50",
+        "rc15": 2.833,
+        "rc16": 2.813
+      },
+      {
+        "path": "sameUt.Uranus.lon.byEra.1900-1949.p95",
+        "rc15": 6.12,
+        "rc16": 6.042
+      },
+      {
+        "path": "sameUt.Uranus.lon.byEra.1950-1999.max",
+        "rc15": 12.135,
+        "rc16": 12.067
+      },
+      {
+        "path": "sameUt.Uranus.lon.byEra.1950-1999.p50",
+        "rc15": 3.855,
+        "rc16": 3.859
+      },
+      {
+        "path": "sameUt.Uranus.lon.byEra.1950-1999.p95",
+        "rc15": 8.947,
+        "rc16": 9.005
+      },
+      {
+        "path": "sameUt.Uranus.lon.byEra.2000-2049.max",
+        "rc15": 11.564,
+        "rc16": 11.488
+      },
+      {
+        "path": "sameUt.Uranus.lon.byEra.2000-2049.p50",
+        "rc15": 2.824,
+        "rc16": 2.848
+      },
+      {
+        "path": "sameUt.Uranus.lon.byEra.2000-2049.p95",
+        "rc15": 7.337,
+        "rc16": 7.296
+      },
+      {
+        "path": "sameUt.Uranus.lon.byEra.2050-2099.max",
+        "rc15": 5.241,
+        "rc16": 5.151
+      },
+      {
+        "path": "sameUt.Uranus.lon.byEra.2050-2099.p50",
+        "rc15": 1.331,
+        "rc16": 1.319
+      },
+      {
+        "path": "sameUt.Uranus.lon.byEra.2050-2099.p95",
+        "rc15": 3.93,
+        "rc16": 3.935
+      },
+      {
+        "path": "sameUt.Uranus.lon.byEra.2100-2149.max",
+        "rc15": 9.22,
+        "rc16": 9.181
+      },
+      {
+        "path": "sameUt.Uranus.lon.byEra.2100-2149.p50",
+        "rc15": 3.771,
+        "rc16": 3.759
+      },
+      {
+        "path": "sameUt.Uranus.lon.byEra.2100-2149.p95",
+        "rc15": 7.341,
+        "rc16": 7.335
+      },
+      {
+        "path": "sameUt.Uranus.lon.byEra.2150-2199.max",
+        "rc15": 9.499,
+        "rc16": 9.439
+      },
+      {
+        "path": "sameUt.Uranus.lon.byEra.2150-2199.p50",
+        "rc15": 3.058,
+        "rc16": 3.049
+      },
+      {
+        "path": "sameUt.Uranus.lon.byEra.2150-2199.p95",
+        "rc15": 6.082,
+        "rc16": 6.079
+      },
+      {
+        "path": "sameUt.Venus.lon.all.max",
+        "rc15": 22.922,
+        "rc16": 22.886
+      },
+      {
+        "path": "sameUt.Venus.lon.all.p50",
+        "rc15": 1.208,
+        "rc16": 1.204
+      },
+      {
+        "path": "sameUt.Venus.lon.all.p95",
+        "rc15": 6.217,
+        "rc16": 6.238
+      },
+      {
+        "path": "sameUt.Venus.lon.byEra.1800-1849.max",
+        "rc15": 19.611,
+        "rc16": 19.5
+      },
+      {
+        "path": "sameUt.Venus.lon.byEra.1800-1849.p50",
+        "rc15": 1.098,
+        "rc16": 1.106
+      },
+      {
+        "path": "sameUt.Venus.lon.byEra.1800-1849.p95",
+        "rc15": 6.098,
+        "rc16": 6.085
+      },
+      {
+        "path": "sameUt.Venus.lon.byEra.1850-1899.max",
+        "rc15": 22.922,
+        "rc16": 22.886
+      },
+      {
+        "path": "sameUt.Venus.lon.byEra.1850-1899.p50",
+        "rc15": 1.021,
+        "rc16": 1.027
+      },
+      {
+        "path": "sameUt.Venus.lon.byEra.1850-1899.p95",
+        "rc15": 5.604,
+        "rc16": 5.642
+      },
+      {
+        "path": "sameUt.Venus.lon.byEra.1900-1949.max",
+        "rc15": 19.09,
+        "rc16": 19.102
+      },
+      {
+        "path": "sameUt.Venus.lon.byEra.1900-1949.p50",
+        "rc15": 1.116,
+        "rc16": 1.114
+      },
+      {
+        "path": "sameUt.Venus.lon.byEra.1900-1949.p95",
+        "rc15": 5.945,
+        "rc16": 5.957
+      },
+      {
+        "path": "sameUt.Venus.lon.byEra.1950-1999.max",
+        "rc15": 18.592,
+        "rc16": 18.701
+      },
+      {
+        "path": "sameUt.Venus.lon.byEra.1950-1999.p50",
+        "rc15": 0.981,
+        "rc16": 0.973
+      },
+      {
+        "path": "sameUt.Venus.lon.byEra.1950-1999.p95",
+        "rc15": 6.483,
+        "rc16": 6.418
+      },
+      {
+        "path": "sameUt.Venus.lon.byEra.2000-2049.max",
+        "rc15": 20.528,
+        "rc16": 20.446
+      },
+      {
+        "path": "sameUt.Venus.lon.byEra.2000-2049.p50",
+        "rc15": 1.036,
+        "rc16": 1.051
+      },
+      {
+        "path": "sameUt.Venus.lon.byEra.2000-2049.p95",
+        "rc15": 6.122,
+        "rc16": 6.109
+      },
+      {
+        "path": "sameUt.Venus.lon.byEra.2050-2099.max",
+        "rc15": 15.836,
+        "rc16": 15.64
+      },
+      {
+        "path": "sameUt.Venus.lon.byEra.2050-2099.p50",
+        "rc15": 1.053,
+        "rc16": 1.058
+      },
+      {
+        "path": "sameUt.Venus.lon.byEra.2050-2099.p95",
+        "rc15": 6.059,
+        "rc16": 6.024
+      },
+      {
+        "path": "sameUt.Venus.lon.byEra.2100-2149.max",
+        "rc15": 20.152,
+        "rc16": 20.139
+      },
+      {
+        "path": "sameUt.Venus.lon.byEra.2100-2149.p50",
+        "rc15": 1.644,
+        "rc16": 1.635
+      },
+      {
+        "path": "sameUt.Venus.lon.byEra.2150-2199.max",
+        "rc15": 19.022,
+        "rc16": 19.091
+      },
+      {
+        "path": "sameUt.Venus.lon.byEra.2150-2199.p50",
+        "rc15": 1.927,
+        "rc16": 1.934
+      },
+      {
+        "path": "sameUt.Venus.lon.byEra.2150-2199.p95",
+        "rc15": 6.468,
+        "rc16": 6.494
+      }
+    ]
+  },
+  "deltaTGap": {
+    "priorPath": "docs/platform/evidence/swiss-benchmark/deltat-gap-2100-2199.json",
+    "priorSha256": "01bc66387da89b6c60e98fc8d4908820e1542270812d763fd5401d7664d2a16c",
+    "reportedStatisticalValuesCompared": 9,
+    "reportedStatisticalValuesChanged": 0,
+    "changed": []
+  }
+}
