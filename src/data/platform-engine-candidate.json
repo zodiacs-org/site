@@ -11,9 +11,9 @@
   "sourceCommit": "ddbbaa0b1d21e16834722f81e8708816849c6726",
   "sourcePackagePath": "",
   "evidenceRepository": "https://github.com/zodiacs-org/site",
-  "evidenceCommit": "16e8b52728ca1d10dcfd438a01ebec17402f89d2",
+  "evidenceCommit": "c592cec5ca83c39ada03527529da57a0e8dfe3c7",
   "evidencePaths": {
-    "ledger": "docs/platform/evidence/site-engine-rc16/PUBLICATION-STATUS.md",
+    "ledger": "docs/platform/evidence/site-engine-rc16/integration-2026-10-02/PUBLICATION.md",
     "node22": "docs/platform/evidence/site-engine-rc16/node22-parity.json",
     "node24": "docs/platform/evidence/site-engine-rc16/node24-parity.json",
     "publicConsumer": "docs/platform/evidence/site-engine-rc16/public-candidate-consumer.log"
