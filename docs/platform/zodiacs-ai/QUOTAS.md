@@ -14,7 +14,7 @@ configuration, permissions, malformed RPC replies, timeout or network failure
 refuse computation. A timeout may consume a slot without returning success;
 there is no retry or refund that could admit duplicate work.
 
-The service-wide ceilings are 40 incoming requests and ten expensive event/date
+The service-wide ceilings are 40 admitted MCP requests and ten expensive event/date
 fact computations per 60-second window. A window starts at the first admission;
 the first request after expiry resets it. These are fixed windows, so adjacent
 windows can admit two bursts around expiry. Preview and production have distinct
@@ -32,7 +32,7 @@ The additive migration is applied to the existing project. No production quota
 row or enabled production endpoint has been created by this continuation.
 
 Disposable PostgreSQL 17 tests force 48 independent backends to contend together:
-exactly ten event and forty incoming slots are admitted, with reset, transaction
+exactly ten event and forty admitted request slots are admitted, with reset, transaction
 rollback, scope separation and permissions also checked. The same test is wired
 into the existing Phase 6 SQL CI job. Real preview REST tests additionally admit
 10/48 and 40/48 concurrent requests; see `evidence/atomic-quota-rpc.json`.

@@ -20,6 +20,7 @@ access, personal predictions, reminders, purchase flow or hosted natal storage.
 - `evidence/`: dated staging, native ChatGPT, routing and synthetic evaluations.
 - `BETA_REVIEW.md`: consent wording, tasks and aggregate feedback worksheet.
 - `QUOTAS.md`: atomic service ceiling, refusal behavior and concurrency evidence.
+- `COST.md`: measured latency, provider metrics and incremental rate-card estimate.
 
 Public legal/support destinations are the candidate's configured canonical
 Zodiacs URLs. Their HTTPS reachability and exact portal-required fields must be
@@ -43,6 +44,14 @@ Show UTC, zone, receipt version, limits and “tested, not proven” completenes
 If the verified portal requires a continuous video, record that sequence and
 provide the exact reviewer-accessible URL before submission.
 
+The packaged review URL points to the immutable rc.15 capture reel on commit
+`fca11967611ab4758dc616b871ce991f82cf1cd4`. Its anonymous HEAD check returns
+200 and 376,135 bytes (`application/octet-stream`, downloadable MP4). This
+establishes file access, not portal acceptance or an inline video player.
+Its version and selected-state scope are explicit in the packaged release notes.
+
+The canonical privacy, terms and developer-support URLs each return HTTP 200.
+
 ## Domain challenge
 
 The signed-in publisher portal currently blocks upload on identity verification.
@@ -61,6 +70,18 @@ portal's eligible MCP domain or parent, and prepare a static response:
 
 The exact response cannot be prepared until the portal issues the challenge.
 Preparing a local file is distinct from activating a production route.
+
+## Current package identity
+
+The current sky archive is 59,022 bytes, SHA-256
+`c36aa54266f2f2950018175b0cc55f7106333c621e6aa59f6ebdce76232d5c81`.
+The developer archive is 684,100 bytes, SHA-256
+`ce7bc4fd3a16c3e127487946b33f1a476004f6e0add6608f3844a1f9f786eb8d`.
+The manifest records every member digest. Current rc.16 runtime staging and
+complete Linux CI use source `5468423bac0675336949ab16839f40ac5def3e92`;
+the latest PR head identifies this supplementary evidence/package commit.
+Require its exact-head checks before approval. The ChatGPT development app needs
+its temporary connection refreshed after the staging alias moved; see LAUNCH.
 
 ## Final owner approval
 

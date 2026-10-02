@@ -107,8 +107,8 @@ The authenticated publisher portal opens, but uploading is blocked by
 “Complete identity verification.” No exact domain challenge has been issued and
 no public submission, approved listing or publication exists. Consenting beta
 participants and feedback, reviewer video delivery, cold/warm billing evidence,
-capacity acceptance and resolved concurrent-quota observations remain release
-gates. Follow [LAUNCH.md](./LAUNCH.md) and [BETA_REVIEW.md](./BETA_REVIEW.md).
+public-capacity acceptance remain release gates. The concurrent overshoot
+is addressed by the atomic quota and measured staging bursts. Follow [LAUNCH.md](./LAUNCH.md) and [BETA_REVIEW.md](./BETA_REVIEW.md).
 
 ## Official contracts inspected
 
@@ -138,3 +138,14 @@ packet and exact-byte domain response procedure. The expanded
 [BETA_REVIEW.md](./BETA_REVIEW.md) contains consent wording, task cards, an
 aggregate worksheet and proposed criteria. No contacts or consented results
 exist and no invitation has been sent. Production remains disabled.
+
+
+[Staging resource measurements](./COST.md) record eighteen successful serial
+calls, a matching 21-invocation provider window and separate concurrent bursts.
+The staged event burst admits 10/12; the general burst admits 38/48 plus two
+SDK protocol requests. The provider reports hot/prewarmed serial starts and
+60% cold starts in the calendar burst. Estimated function-only marginal cost
+is about $0.0092 per 1,000 successful tools for this serial mix, with protocol
+amortization; database/network/model costs and credits remain unallocated.
+Twelve HTTPS acceptance checks and six SDK calls pass on the rc.16 preview.
+Production `/mcp/` is still 404 and no production activation occurred.

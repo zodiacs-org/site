@@ -6,8 +6,8 @@
       "name": "zodiacs-sky",
       "version": "0.1.0",
       "file": "zodiacs-sky-0.1.0.zip",
-      "bytes": 57983,
-      "sha256": "0725fa338a4a078eecfa728533e37da91795ab0384db5273dfd2d2647b6787bf",
+      "bytes": 59022,
+      "sha256": "c36aa54266f2f2950018175b0cc55f7106333c621e6aa59f6ebdce76232d5c81",
       "members": [
         {
           "path": "LICENSE",
@@ -36,8 +36,8 @@
         },
         {
           "path": "plugin.json",
-          "bytes": 4715,
-          "sha256": "be5435d328b71eff6204bb9bf8adfcf028bd26a4dba9c461784bdd4541e73ae0"
+          "bytes": 5754,
+          "sha256": "93e3126c9a3e4cd229cd7109bc3280ebf7daed0681954151eeb6ddeb4d15f0a2"
         },
         {
           "path": "skills/explore-the-sky/SKILL.md",

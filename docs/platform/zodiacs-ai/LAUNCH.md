@@ -5,7 +5,7 @@ production remains disabled and no app directory submission or listing exists.
 [CHECKPOINTS.md](./CHECKPOINTS.md) and the evidence files distinguish tested work
 from remaining acceptance requirements.
 
-## Completed continuation
+## Completed continuation (dated rc.15 host evidence retained)
 
 - The homepage chart accessibility blocker is fixed without changing pinned
   marker geometry. The 44px labelled selector exposes all 41 marks. Homepage
@@ -32,7 +32,25 @@ from remaining acceptance requirements.
   deployment-bound share authentication works in ChatGPT; no credential is
   committed. No production alias or Firewall configuration was changed.
 
-## HTTPS staging
+## Current rc.16 staging
+
+The stable staging alias now targets `dpl_CSFWTPqDyZ3ZF4e32wSXsFnMfspM`,
+source `5468423bac0675336949ab16839f40ac5def3e92`. Twelve HTTPS acceptance
+checks and six SDK tool calls pass; concurrency and measured resources are in
+`evidence/staging-*-rc16.json` and [COST.md](./COST.md). Complete Site Check
+and Browser Evidence on that runtime source both pass.
+
+The existing ChatGPT development app still stores the earlier deployment-bound
+share token. After this staging alias update, its native entrypoint reports
+“App unavailable” and Refresh tools reports “Couldn't update the app. Try again”.
+The settings expose name/description edits, not server-URL edits. No replacement
+app was created: that form requires a new user acknowledgement, which the owner
+reserved. The earlier five/three host tests and capture reel remain dated rc.15
+evidence; rc.16 protocol/widget tests do not establish a new actual ChatGPT host
+invocation. Reconnect with the current temporary preview credential and repeat
+the native calendar/version check before presenting rc.16 host evidence.
+
+## Historical rc.15 HTTPS staging
 
 Exact allowed hostname:
 `zodiacs-org-git-codex-zodiacs-ai-integrations-zodiacsofficial.vercel.app`.
@@ -76,48 +94,32 @@ pins and existing Firewall counters. Host connections can be disconnected.
 
 ## Remaining release gates
 
-1. Require exact-head Site Check success after refreshed Phase 1 receipts and
-   the two browser assertions adjusted to the approved main UI. The patched
-   preceding browser run passes all fifteen Linux visual comparisons with zero
-   pixel difference and all thirty Lighthouse routes (ninety samples), minimum
-   97 performance / 100 accessibility / 100 SEO. The corrected locale/Moon
-   helpers pass 185 local browser checks. The complete Linux driver remains the
-   release authority; macOS native Home-key behavior does not replace it.
-2. Complete actual cold/warm per-completion billing/capacity measurements.
-   Thirty-two inspected provider request rows contain no application message or
-   synthetic private-body canary. Raw request metadata stays outside the repository.
-   There are no configured log drains. The team is Pro with Fluid Compute in iad1;
-   Authenticated Billing confirms Observability Plus enabled and zodiacs-org
-   included, establishing the documented thirty-day runtime retention. Preview
-   compatibility-function metrics show 6.2% cold starts and 230ms average
-   duration across 209 invocations in twelve hours. That aggregate includes
-   multiple deployments and intentional negative/rollback tests; it is not an
-   isolated completion measurement. Usage exposes project totals, not per-request
-   or cold/warm billing. Warm SDK elapsed times include network and are not
-   classified cold starts, cost or capacity. See `evidence/provider-log-review.json`.
-   See [runtime logs](https://vercel.com/docs/logs/runtime) and
-   [Observability Plus](https://vercel.com/docs/observability/observability-plus).
-3. Resolve the concurrent event overshoot and assess provider-address sharing
-   before treating existing quotas as sufficient for directory traffic. The final
-   thread also requested the calendar twice although each widget renders its
-   supplied initial result without automatic computation; account for duplicate
-   host/model selection in capacity and cost acceptance. Do not
-   silently increase counters, activate production or invent usage/cost evidence.
-4. Run the [consenting beta kit](./BETA_REVIEW.md). No panel, consented contacts,
-   usefulness or repeat-use results exist yet. No invitations have been sent.
-5. The authenticated OpenAI portal blocks upload with “Complete identity
-   verification.” A verified developer identity and suitable publisher organization
-   are required. No domain challenge has been issued: implement the exact plain
-   challenge only after it appears. A labelled 40-second reel of actual host captures is available in
-   `evidence/chatgpt/host-capture-walkthrough.mp4`; it is not continuous screen
-   recording or a portal-approved submission video. Complete any stricter video
-   requirement shown by the portal and provide an accessible reviewer URL. Upload, scan, domain verify,
-   submit and publish only through the authorized verified publisher account and
-   after platform approval. Do not present local stdio as remote HTTP.
-   [Official submission requirements](https://developers.openai.com/plugins/deploy/submission).
-
-These are concrete unresolved release inputs, not a missing Vercel token or
-read-only local cache. Available sign-ins already worked without user intervention.
+1. Require complete exact-head Site Check and Browser Evidence success. The
+   rc.16 source commit and final documentation/package commits are recorded
+   separately in the evidence. Historical or scoped macOS checks do not replace
+   complete Linux CI.
+2. Review measured representative latency, marginal cost and the small shared
+   capacity in [COST.md](./COST.md). Eighteen serial calls pass; provider start
+   types distinguish the hot/prewarmed serial sample from a 60%-cold calendar
+   burst. The quota overshoot is fixed by atomic admission; staged bursts
+   admit 10/12 events and 38/48 general tools, with SDK protocol overhead.
+   These measurements do not accept a public SLA, per-user fairness or a total
+   spend limit. Provider-average rate-card estimates are distinct from invoices
+   and individual cold-call attribution.
+3. Run the [consenting beta packet](./BETA_REVIEW.md) after owner-directed
+   recruitment. Consent, usefulness and repeat-use aggregates do not exist yet;
+   no participant has been contacted. The prepared worksheet is not feedback.
+4. Owner identity documents and attestations still block OpenAI publisher
+   upload. No domain challenge has been issued. Prepare its exact-byte response
+   only when supplied and verify the eligible hostname without replacing an
+   existing plugin token. [SUBMISSION.md](./SUBMISSION.md) inventories the
+   proposed listing, packaged five/three cases, dated recording URL, version
+   scope and final approval record. Confirm any stricter video requirement in
+   the verified portal, then finish connection, scans and review details.
+5. Obtain final owner approval of the concrete packet before submitting,
+   merging or activating production. A protected 23-hour preview share does
+   not provide a stable directory-review endpoint. Keep production disabled
+   until the accepted gates and reviewer access are ready.
 
 ## Personal release and measurement
 
@@ -137,7 +139,7 @@ not measured or promised.
 Approved main `65d800c5` is integrated; active bundles and developer dependencies
 use published rc.16. The former twelve-call overshoot is reproduced in retained
 rc.15 evidence and addressed by a separate atomic service-wide database quota.
-Database-clock fixed windows admit at most 40 incoming and ten expensive calls
+Database-clock fixed windows admit at most 40 admitted MCP and ten expensive calls
 per minute in each trusted preview/production scope. Real 48-way PostgreSQL and
 REST contention checks pass; see [QUOTAS.md](./QUOTAS.md). These low shared
 ceilings bound work, not per-user fairness or useful model completions.

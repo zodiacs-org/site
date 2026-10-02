@@ -50,6 +50,15 @@ failures confined to exact North/South Node numerical and SVG snapshots. The
 Linux suite passes on the same source. Linux engine fixtures remain unchanged;
 no accuracy assertion was weakened or regenerated for macOS rounding.
 
+The rc.16 continuation on macOS ARM (Node 22.23.3 and a focused repeat on
+22.22.2) again differs in the same three exact Node-speed/scene/SVG fixtures.
+The newly merged main fixtures are preserved. With those three files excluded,
+502 files pass 6,379 tests with five skipped; this scoped local result is not
+the complete release gate. The combined commit's full Linux CI is authoritative.
+The npm-prefix test additionally needs the canonical `/private/tmp` temporary
+directory on macOS because `/tmp` and `/var` are symlinks; that focused test
+passes under that environment without changing its assertion.
+
 The compatible devalue 5.9.4 patch invalidates the durable Phase 1 template
 receipt because its boundary includes package-lock.json. Site Check 36906631796
 passed 6,376 tests and failed only that stale receipt. All eighteen captures were
