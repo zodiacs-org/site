@@ -698,7 +698,10 @@ jobs:
   production-flags-build:
     name: Build with production's feature flags
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    # WebKit's Ubuntu dependencies used almost the previous 20-minute job
+    # allowance before either browser drive started. Individual drive limits
+    # remain unchanged; allow installation plus both acceptance drives.
+    timeout-minutes: 30
     env:
       PUBLIC_COMPAT_INVITES_ENABLED: "1"
       PUBLIC_REGISTRY_AURA_ENABLED: "1"

@@ -13,7 +13,7 @@ import { effectiveHeaders, matchingHeaderRules, sourcePattern, sourceRegexSource
  * own `Cache-Control: no-store` is the only cache header on its answers.
  */
 const config = JSON.parse(readFileSync(new URL('../../vercel.json', import.meta.url), 'utf8'));
-const recorded = JSON.parse(readFileSync(new URL('../../docs/platform/evidence/compute-api-2026-09-29/vercel-build-routes.json', import.meta.url), 'utf8'));
+const recorded = JSON.parse(readFileSync(new URL('../../docs/acceptance/consumer-polish/2026-10-03/vercel-routes.json', import.meta.url), 'utf8'));
 const COMPUTE_PATHS = COMPUTE_ENDPOINTS.map(computePath);
 
 describe('vercel.json for the compute API', () => {
@@ -61,7 +61,7 @@ describe('vercel.json for the compute API', () => {
     }
   });
 
-  it('compiles each source as `vercel build` did for this vercel.json', () => {
+  it('compiles each current source as the official Vercel route compiler does', () => {
     expect(recorded.headers.map((rule: any) => rule.source)).toEqual(config.headers.map((rule: any) => rule.source));
     for (const rule of recorded.headers) expect(sourceRegexSource(rule.source), rule.source).toBe(rule.src);
     for (const rule of recorded.computeRewrites) {
