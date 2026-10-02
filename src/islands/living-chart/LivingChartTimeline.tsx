@@ -222,7 +222,7 @@ export default function LivingChartTimeline({
             Living Chart storage is unavailable in this browser.
           </p>
         ) : moments.length === 0 ? (
-          <div>
+          <div class="living-chart__empty-state">
             <p class="living-chart__empty">
               No moments saved yet. Your first moment begins with a personal forecast in Today—no account setup needed.
               Markdown and JSON export appear here once a moment is saved.

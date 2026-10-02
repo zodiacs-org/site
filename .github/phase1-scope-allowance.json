@@ -1,9 +1,29 @@
 {
   "version": 1,
-  "id": "engine-rc16-local-adoption-20261001",
-  "baseCommit": "faf44b3519dbfc884bb8285577dacf13be1f4b4d",
+  "id": "owner-visual-consistency-sweep-20261003",
+  "baseCommit": "8d9d5285e6ef3168b8f1f954409ccf8ac988c82e",
   "protectedPaths": [
-    "scripts/registry-outlook.test.mjs"
+    "public/assets/app.js",
+    "public/registry/aquarius/index.html",
+    "public/registry/aries/index.html",
+    "public/registry/cancer/index.html",
+    "public/registry/capricorn/index.html",
+    "public/registry/gemini/index.html",
+    "public/registry/index.html",
+    "public/registry/leo/index.html",
+    "public/registry/libra/index.html",
+    "public/registry/pisces/index.html",
+    "public/registry/sagittarius/index.html",
+    "public/registry/scorpio/index.html",
+    "public/registry/taurus/index.html",
+    "public/registry/technical/index.html",
+    "public/registry/virgo/index.html",
+    "public/sdk/examples/simastry-aura/index.html",
+    "public/sdk/index.html",
+    "public/terminal/markets/index.html",
+    "scripts/registry-pastel-polish.test.mjs",
+    "src/app.jsx",
+    "src/pages/[sign]/index.astro"
   ],
-  "authorization": "The incorporated rc16 adoption handoff step 1 requires engine-derived registry outlook regeneration and attributable numeric pins. This allowance covers only its existing test vector: the engine full IAU 2000B frame moves the Mercury ingress by 130 ms, with evidence in docs/platform/evidence/site-engine-rc16/registry-ingress-pin.json. It authorizes no Registry UI or Guide changes; current-main owner changes are preserved."
+  "authorization": "The owner requested fixes for the Astrofolio purchase pill changing size when switching zodiac signs, plus a whole-site visual consistency sweep. This bounded allowance covers only the purchase bar loading/unavailable price label in its application source and regenerated browser bundle. No token identity, market source, trading, or Registry profile behavior changes. The existing source contract is updated to retain the picker beside long sign names, replacing its old requirement to clip the caret. The same requested whole-site sweep found a 320px Gemini article overflow; its shared English sign-template grid is constrained without changing content. The shared footer alignment fix also needs a versioned stylesheet URL because the old URL is cached immutable for a year. The listed Registry, Terminal-market and SDK HTML changes only update that stylesheet reference; all generated Registry pages were rebuilt from the canonical footer generator."
 }

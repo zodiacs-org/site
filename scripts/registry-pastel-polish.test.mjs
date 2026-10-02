@@ -275,9 +275,9 @@ describe('registry pastel polish', () => {
     expect(phone).toContain('.campaign-look .campaign-spark { display: none; }');
     const sheet = campaign.slice(campaign.indexOf('/* The bag\'s sign opens a sheet of all twelve (phones). */'), campaign.indexOf('@media (min-width: 601px) and (max-width: 900px)'));
     expect(sheet).toContain('.campaign-bag__pick {\n      min-height: 48px;');
-    // The caret rides beside the name and steps aside for a long one, so
-    // neither the name nor the status line gives up width to it.
-    expect(sheet).toContain('.campaign-bag__name { min-width: 0; height: 20px; display: flex; flex-wrap: wrap; align-items: center; column-gap: 6px; overflow: hidden; }');
+    // The picker remains beside long names instead of wrapping into a
+    // hidden line. Real geometry is covered by visual-consistency-drive.
+    expect(sheet).toContain('.campaign-bag__name { min-width: 0; height: 20px; display: flex; align-items: center; column-gap: 4px; }');
     expect(sheet).toContain('.campaign-sheet__grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; }');
     expect(sheet).toContain('.campaign-sheet__sign {\n      min-height: 84px;');
     expect(sheet).toContain('.campaign-sheet__close {\n      width: 44px;\n      height: 44px;');
