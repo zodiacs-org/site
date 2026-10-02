@@ -12,7 +12,7 @@ assert.equal(sdk.name, '@modelcontextprotocol/sdk'); assert.equal(sdk.version, '
 const { Client } = await import(pathToFileURL(resolve(sdkRoot, 'dist/esm/client/index.js')).href);
 const { StreamableHTTPClientTransport } = await import(pathToFileURL(resolve(sdkRoot, 'dist/esm/client/streamableHttp.js')).href);
 let host;
-const server = createServer((req, res) => createAiNodeHandler({ env: { ZODIACS_MCP_ENABLED: '1' }, allowedHosts: [host], rateLimit: async () => 'allowed' })(req, res));
+const server = createServer((req, res) => createAiNodeHandler({ env: { ZODIACS_MCP_ENABLED: '1' }, allowedHosts: [host], atomicQuota: async () => 'allowed', rateLimit: async () => 'allowed' })(req, res));
 await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
 host = `127.0.0.1:${server.address().port}`;
 const client = new Client({ name: 'zodiacs-legacy-sdk-review', version: '1' });

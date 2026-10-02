@@ -45,7 +45,7 @@ def main():
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
     OUT.mkdir(parents=True, exist_ok=True)
-    manifest = {"schema": "zodiacs.ai-review-packages.v1", "status": "Unpublished review candidates; real-host acceptance pending", "packages": []}
+    manifest = {"schema": "zodiacs.ai-review-packages.v1", "status": "Unpublished review candidates; bounded host evidence recorded, release gates pending", "packages": []}
     for name in FILES:
         version = json.loads((ROOT / "plugins" / name / "plugin.json").read_text())["version"]
         filename = f"{name}-{version}.zip"

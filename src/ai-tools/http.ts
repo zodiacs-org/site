@@ -6,14 +6,18 @@ import { AI_ROUTE_PARAM, AI_SWITCH_ENV, AI_VERSION, MAX_HTTP_BYTES, ORIGIN } fro
 import { createAiServer } from './server';
 import type { AiDependencies } from './tools';
 import { sanitizeProtocolMessage } from './sanitize';
+import { reserveAiQuota, type QuotaKind } from './quota';
 
 const ALLOWED_ORIGINS = new Set(['https://chatgpt.com', 'https://chat.openai.com', ORIGIN]);
 const SECURITY_HEADERS = { 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff', 'X-Robots-Tag': 'noindex' };
+let handledPreviewRequests = 0;
 
 export interface AiHttpOptions {
   env?: Readonly<Record<string, string | undefined>>;
   /** Local tests/dev explicitly inject limits; production uses the existing Firewall. */
   rateLimit?: (req: any, id: string) => Promise<RateLimitVerdict>;
+  /** Explicit injection for loopback tests only; deployment always uses atomic RPC. */
+  atomicQuota?: (kind: QuotaKind) => Promise<RateLimitVerdict>;
   dependencies?: AiDependencies;
   /** Explicit loopback/preview hostnames for local tests. Production defaults to zodiacs.org. */
   allowedHosts?: readonly string[];
@@ -50,6 +54,14 @@ async function readBody(req: any): Promise<string> {
 export function createAiNodeHandler(options: AiHttpOptions = {}) {
   return async (req: any, res: any): Promise<void> => {
     const env = options.env ?? process.env;
+    // Opt-in preview diagnostics contain only enum names and measurements.
+    // Process CPU is attributable only during an isolated sequential drive.
+    const measure = env.VERCEL_ENV === 'preview' && env.ZODIACS_MCP_MEASURE === '1';
+    const started = measure ? performance.now() : 0;
+    const cpu = measure ? process.cpuUsage() : undefined;
+    const firstHandledRequest = measure ? handledPreviewRequests++ === 0 : false;
+    let operation = 'protocol';
+    try {
     const method = req.method ?? 'GET';
     const host = req.headers?.host;
     // Staging is an exact administrator-configured hostname, never a header-derived wildcard.
@@ -76,9 +88,12 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
       res.setHeader('Allow', 'POST, OPTIONS'); return send(res, 405, 'method-not-allowed');
     }
     if (env[AI_SWITCH_ENV] !== '1') return send(res, 503, 'disabled', 3600);
+    const atomicQuota = options.atomicQuota ?? (kind => reserveAiQuota(kind, env));
     const rateLimit = options.rateLimit ?? computeApiRateLimit;
     let verdict: RateLimitVerdict;
     try { verdict = await rateLimit(req, COMPUTE_RATE_LIMIT_ID); } catch { verdict = 'unavailable'; }
+    if (verdict !== 'allowed') return send(res, verdict === 'limited' ? 429 : 503, verdict === 'limited' ? 'rate-limited' : 'rate-limit-unavailable', verdict === 'limited' ? 60 : 300);
+    try { verdict = await atomicQuota('request'); } catch { verdict = 'unavailable'; }
     if (verdict !== 'allowed') return send(res, verdict === 'limited' ? 429 : 503, verdict === 'limited' ? 'rate-limited' : 'rate-limit-unavailable', verdict === 'limited' ? 60 : 300);
     if (method === 'GET') {
       res.setHeader('Content-Type', 'application/json; charset=utf-8'); res.statusCode = 200;
@@ -95,12 +110,19 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
     catch (error) { return send(res, error instanceof Error && error.message === 'payload-too-large' ? 413 : 400, error instanceof Error && error.message === 'payload-too-large' ? 'payload-too-large' : 'invalid-json'); }
     if (!body || typeof body !== 'object' || Array.isArray(body)) return send(res, 400, 'invalid-json-rpc');
     const message = body as Record<string, unknown>;
+    if (message.method === 'tools/call' && message.params && typeof message.params === 'object') {
+      const name = (message.params as Record<string, unknown>).name;
+      if (['get_capabilities', 'get_sky', 'get_upcoming_events', 'check_sky_fact', 'search_zodiacs'].includes(String(name))) operation = String(name);
+    }
     if (!['initialize', 'notifications/initialized', 'ping', 'server/discover', 'tools/list', 'tools/call', 'resources/list', 'resources/read', 'resources/templates/list'].includes(String(message.method))) {
       res.setHeader('Content-Type', 'application/json; charset=utf-8'); res.statusCode = 200;
       res.end(JSON.stringify({ jsonrpc: '2.0', id: typeof message.id === 'string' || typeof message.id === 'number' ? message.id : null, error: { code: -32601, message: 'This MCP operation is not supported.' } })); return;
     }
     const dependencies: AiDependencies = { ...(options.dependencies ?? { localTime }), allowEvents: async () => {
-      try { return await rateLimit(req, COMPUTE_EVENTS_RATE_LIMIT_ID); } catch { return 'unavailable'; }
+      try {
+        const addressVerdict = await rateLimit(req, COMPUTE_EVENTS_RATE_LIMIT_ID);
+        return addressVerdict === 'allowed' ? await atomicQuota('event') : addressVerdict;
+      } catch { return 'unavailable'; }
     } };
     const sdk = createMcpHandler(() => createAiServer(dependencies), { legacy: 'stateless', responseMode: 'auto', onerror: () => {} });
     try {
@@ -129,5 +151,11 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
       res.end();
     } catch { if (!res.headersSent) send(res, 500, 'protocol-failed'); else res.end(); }
     finally { await sdk.close().catch(() => {}); }
+    } finally {
+      if (measure && cpu) {
+        const used = process.cpuUsage(cpu);
+        console.info(JSON.stringify({ measurement: 'zodiacs.mcp.resources.v1', operation, elapsedMs: Math.round((performance.now() - started) * 100) / 100, processCpuMs: Math.round((used.user + used.system) / 10) / 100, firstHandledRequest, status: res.statusCode }));
+      }
+    }
   };
 }

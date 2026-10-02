@@ -1,6 +1,6 @@
 {
   "schema": "zodiacs.ai-review-packages.v1",
-  "status": "Unpublished review candidates; real-host acceptance pending",
+  "status": "Unpublished review candidates; bounded host evidence recorded, release gates pending",
   "packages": [
     {
       "name": "zodiacs-sky",

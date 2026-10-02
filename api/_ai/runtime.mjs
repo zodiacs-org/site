@@ -7700,9 +7700,35 @@ function sanitizeProtocolMessage(message) {
   return message;
 }
 
+// src/ai-tools/quota.ts
+async function reserveAiQuota(kind, env, fetcher = fetch) {
+  const url = env.PUBLIC_SUPABASE_URL;
+  const key = env.SUPABASE_SERVICE_ROLE_KEY;
+  const scope = env.VERCEL_ENV;
+  if (!url || !/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(url) || !key || key.length < 24 || key.length > 2048 || !["preview", "production"].includes(scope ?? "")) return "unavailable";
+  const headers = { apikey: key, "Content-Type": "application/json", "Cache-Control": "no-store" };
+  if (!key.startsWith("sb_secret_")) headers.Authorization = `Bearer ${key}`;
+  try {
+    const response = await fetcher(`${url}/rest/v1/rpc/zodiacs_mcp_quota_reserve_v1`, {
+      method: "POST",
+      headers,
+      cache: "no-store",
+      redirect: "error",
+      signal: AbortSignal.timeout(3e3),
+      body: JSON.stringify({ quota_scope: scope, quota_kind: kind })
+    });
+    if (!response.ok) return "unavailable";
+    const result = await response.json();
+    return result === true ? "allowed" : result === false ? "limited" : "unavailable";
+  } catch {
+    return "unavailable";
+  }
+}
+
 // src/ai-tools/http.ts
 var ALLOWED_ORIGINS = /* @__PURE__ */ new Set(["https://chatgpt.com", "https://chat.openai.com", ORIGIN]);
 var SECURITY_HEADERS = { "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff", "X-Robots-Tag": "noindex" };
+var handledPreviewRequests = 0;
 function send(res, status, code, retry) {
   res.statusCode = status;
   for (const [key, value] of Object.entries(SECURITY_HEADERS)) res.setHeader(key, value);
@@ -7735,115 +7761,139 @@ async function readBody(req) {
 function createAiNodeHandler(options = {}) {
   return async (req, res) => {
     const env = options.env ?? process.env;
-    const method = req.method ?? "GET";
-    const host = req.headers?.host;
-    const stagingHost = env.ZODIACS_MCP_STAGING_HOST;
-    const validStagingHost = stagingHost && stagingHost.length <= 253 && stagingHost.includes(".") && stagingHost.split(".").every((label) => /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/.test(label));
-    const allowedHosts = options.allowedHosts ?? ["zodiacs.org", "www.zodiacs.org", ...validStagingHost ? [stagingHost] : []];
-    if (typeof host !== "string" || !allowedHosts.includes(host.toLowerCase())) return send(res, 403, "host-not-allowed");
-    const origin = req.headers?.origin;
-    if (origin !== void 0 && (typeof origin !== "string" || !ALLOWED_ORIGINS.has(origin))) return send(res, 403, "origin-not-allowed");
-    for (const [key, value] of Object.entries(SECURITY_HEADERS)) res.setHeader(key, value);
-    if (origin) {
-      res.setHeader("Access-Control-Allow-Origin", origin);
-      res.setHeader("Vary", "Origin");
-    }
-    if (method === "OPTIONS") {
-      res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-      res.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept, MCP-Protocol-Version, MCP-Session-Id, MCP-Method, MCP-Name");
-      res.statusCode = 204;
-      res.end();
-      return;
-    }
-    let rawQuery;
+    const measure = env.VERCEL_ENV === "preview" && env.ZODIACS_MCP_MEASURE === "1";
+    const started = measure ? performance.now() : 0;
+    const cpu = measure ? process.cpuUsage() : void 0;
+    const firstHandledRequest = measure ? handledPreviewRequests++ === 0 : false;
+    let operation = "protocol";
     try {
-      rawQuery = new URL(req.url ?? "/mcp", ORIGIN).searchParams;
-    } catch {
-      return send(res, 400, "invalid-query");
-    }
-    if ([...rawQuery.keys()].some((key) => key !== AI_ROUTE_PARAM) || rawQuery.getAll(AI_ROUTE_PARAM).length > 1) return send(res, 400, "invalid-query");
-    const query = req.query ?? Object.fromEntries(rawQuery);
-    if (Object.keys(query).some((key) => key !== AI_ROUTE_PARAM) || query[AI_ROUTE_PARAM] !== void 0 && !["1", "health"].includes(query[AI_ROUTE_PARAM])) return send(res, 400, "invalid-query");
-    if (method !== "POST" && !(method === "GET" && query[AI_ROUTE_PARAM] === "health")) {
-      res.setHeader("Allow", "POST, OPTIONS");
-      return send(res, 405, "method-not-allowed");
-    }
-    if (env[AI_SWITCH_ENV] !== "1") return send(res, 503, "disabled", 3600);
-    const rateLimit = options.rateLimit ?? computeApiRateLimit;
-    let verdict;
-    try {
-      verdict = await rateLimit(req, COMPUTE_RATE_LIMIT_ID);
-    } catch {
-      verdict = "unavailable";
-    }
-    if (verdict !== "allowed") return send(res, verdict === "limited" ? 429 : 503, verdict === "limited" ? "rate-limited" : "rate-limit-unavailable", verdict === "limited" ? 60 : 300);
-    if (method === "GET") {
-      res.setHeader("Content-Type", "application/json; charset=utf-8");
-      res.statusCode = 200;
-      res.end(JSON.stringify({ service: "zodiacs-mcp", version: AI_VERSION, transport: "stateless-streamable-http", ready: true }));
-      return;
-    }
-    const contentType = req.headers?.["content-type"];
-    if (typeof contentType !== "string" || !/^application\/json(?:\s*;\s*charset\s*=\s*(?:utf-8|"utf-8"))?\s*$/i.test(contentType) || req.headers?.["content-encoding"] && req.headers["content-encoding"] !== "identity") return send(res, 415, "unsupported-media-type");
-    const length = req.headers?.["content-length"];
-    if (length !== void 0 && (typeof length !== "string" || !/^\d+$/.test(length))) return send(res, 400, "invalid-length");
-    if (length !== void 0 && Number(length) > MAX_HTTP_BYTES) return send(res, 413, "payload-too-large");
-    let text2;
-    let body2;
-    try {
-      text2 = await readBody(req);
-      body2 = JSON.parse(text2);
-    } catch (error) {
-      return send(res, error instanceof Error && error.message === "payload-too-large" ? 413 : 400, error instanceof Error && error.message === "payload-too-large" ? "payload-too-large" : "invalid-json");
-    }
-    if (!body2 || typeof body2 !== "object" || Array.isArray(body2)) return send(res, 400, "invalid-json-rpc");
-    const message = body2;
-    if (!["initialize", "notifications/initialized", "ping", "server/discover", "tools/list", "tools/call", "resources/list", "resources/read", "resources/templates/list"].includes(String(message.method))) {
-      res.setHeader("Content-Type", "application/json; charset=utf-8");
-      res.statusCode = 200;
-      res.end(JSON.stringify({ jsonrpc: "2.0", id: typeof message.id === "string" || typeof message.id === "number" ? message.id : null, error: { code: -32601, message: "This MCP operation is not supported." } }));
-      return;
-    }
-    const dependencies = { ...options.dependencies ?? { localTime: local_time_exports }, allowEvents: async () => {
+      const method = req.method ?? "GET";
+      const host = req.headers?.host;
+      const stagingHost = env.ZODIACS_MCP_STAGING_HOST;
+      const validStagingHost = stagingHost && stagingHost.length <= 253 && stagingHost.includes(".") && stagingHost.split(".").every((label) => /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/.test(label));
+      const allowedHosts = options.allowedHosts ?? ["zodiacs.org", "www.zodiacs.org", ...validStagingHost ? [stagingHost] : []];
+      if (typeof host !== "string" || !allowedHosts.includes(host.toLowerCase())) return send(res, 403, "host-not-allowed");
+      const origin = req.headers?.origin;
+      if (origin !== void 0 && (typeof origin !== "string" || !ALLOWED_ORIGINS.has(origin))) return send(res, 403, "origin-not-allowed");
+      for (const [key, value] of Object.entries(SECURITY_HEADERS)) res.setHeader(key, value);
+      if (origin) {
+        res.setHeader("Access-Control-Allow-Origin", origin);
+        res.setHeader("Vary", "Origin");
+      }
+      if (method === "OPTIONS") {
+        res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+        res.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept, MCP-Protocol-Version, MCP-Session-Id, MCP-Method, MCP-Name");
+        res.statusCode = 204;
+        res.end();
+        return;
+      }
+      let rawQuery;
       try {
-        return await rateLimit(req, COMPUTE_EVENTS_RATE_LIMIT_ID);
+        rawQuery = new URL(req.url ?? "/mcp", ORIGIN).searchParams;
       } catch {
-        return "unavailable";
+        return send(res, 400, "invalid-query");
       }
-    } };
-    const sdk = createMcpHandler(() => createAiServer(dependencies), { legacy: "stateless", responseMode: "auto", onerror: () => {
-    } });
-    try {
-      const headers = new Headers();
-      for (const key of ["content-type", "accept", "mcp-protocol-version", "mcp-session-id", "mcp-method", "mcp-name"]) {
-        if (typeof req.headers?.[key] === "string") headers.set(key, req.headers[key]);
+      if ([...rawQuery.keys()].some((key) => key !== AI_ROUTE_PARAM) || rawQuery.getAll(AI_ROUTE_PARAM).length > 1) return send(res, 400, "invalid-query");
+      const query = req.query ?? Object.fromEntries(rawQuery);
+      if (Object.keys(query).some((key) => key !== AI_ROUTE_PARAM) || query[AI_ROUTE_PARAM] !== void 0 && !["1", "health"].includes(query[AI_ROUTE_PARAM])) return send(res, 400, "invalid-query");
+      if (method !== "POST" && !(method === "GET" && query[AI_ROUTE_PARAM] === "health")) {
+        res.setHeader("Allow", "POST, OPTIONS");
+        return send(res, 405, "method-not-allowed");
       }
-      const request = new Request(`${ORIGIN}/mcp`, { method: "POST", headers, body: text2 });
-      const response = await sdk.fetch(request, { parsedBody: body2 });
-      res.statusCode = response.status;
-      response.headers.forEach((value, key) => {
-        if (!["cache-control", "content-length", "access-control-allow-origin"].includes(key)) res.setHeader(key, value);
-      });
-      if (response.body) {
-        let sanitize2 = function(text3) {
-          return JSON.stringify(sanitizeProtocolMessage(JSON.parse(text3)));
-        };
-        var sanitize = sanitize2;
-        const reply = await response.text();
-        if (Buffer.byteLength(reply) > 262144) throw new Error("output-budget");
-        let safeReply = reply;
-        if (response.headers.get("content-type")?.includes("text/event-stream")) {
-          safeReply = reply.split("\n").map((line) => line.startsWith("data: ") ? `data: ${sanitize2(line.slice(6))}` : line).join("\n");
-        } else if (reply.trim()) safeReply = sanitize2(reply);
-        res.write(safeReply);
+      if (env[AI_SWITCH_ENV] !== "1") return send(res, 503, "disabled", 3600);
+      const atomicQuota = options.atomicQuota ?? ((kind) => reserveAiQuota(kind, env));
+      const rateLimit = options.rateLimit ?? computeApiRateLimit;
+      let verdict;
+      try {
+        verdict = await rateLimit(req, COMPUTE_RATE_LIMIT_ID);
+      } catch {
+        verdict = "unavailable";
       }
-      res.end();
-    } catch {
-      if (!res.headersSent) send(res, 500, "protocol-failed");
-      else res.end();
+      if (verdict !== "allowed") return send(res, verdict === "limited" ? 429 : 503, verdict === "limited" ? "rate-limited" : "rate-limit-unavailable", verdict === "limited" ? 60 : 300);
+      try {
+        verdict = await atomicQuota("request");
+      } catch {
+        verdict = "unavailable";
+      }
+      if (verdict !== "allowed") return send(res, verdict === "limited" ? 429 : 503, verdict === "limited" ? "rate-limited" : "rate-limit-unavailable", verdict === "limited" ? 60 : 300);
+      if (method === "GET") {
+        res.setHeader("Content-Type", "application/json; charset=utf-8");
+        res.statusCode = 200;
+        res.end(JSON.stringify({ service: "zodiacs-mcp", version: AI_VERSION, transport: "stateless-streamable-http", ready: true }));
+        return;
+      }
+      const contentType = req.headers?.["content-type"];
+      if (typeof contentType !== "string" || !/^application\/json(?:\s*;\s*charset\s*=\s*(?:utf-8|"utf-8"))?\s*$/i.test(contentType) || req.headers?.["content-encoding"] && req.headers["content-encoding"] !== "identity") return send(res, 415, "unsupported-media-type");
+      const length = req.headers?.["content-length"];
+      if (length !== void 0 && (typeof length !== "string" || !/^\d+$/.test(length))) return send(res, 400, "invalid-length");
+      if (length !== void 0 && Number(length) > MAX_HTTP_BYTES) return send(res, 413, "payload-too-large");
+      let text2;
+      let body2;
+      try {
+        text2 = await readBody(req);
+        body2 = JSON.parse(text2);
+      } catch (error) {
+        return send(res, error instanceof Error && error.message === "payload-too-large" ? 413 : 400, error instanceof Error && error.message === "payload-too-large" ? "payload-too-large" : "invalid-json");
+      }
+      if (!body2 || typeof body2 !== "object" || Array.isArray(body2)) return send(res, 400, "invalid-json-rpc");
+      const message = body2;
+      if (message.method === "tools/call" && message.params && typeof message.params === "object") {
+        const name = message.params.name;
+        if (["get_capabilities", "get_sky", "get_upcoming_events", "check_sky_fact", "search_zodiacs"].includes(String(name))) operation = String(name);
+      }
+      if (!["initialize", "notifications/initialized", "ping", "server/discover", "tools/list", "tools/call", "resources/list", "resources/read", "resources/templates/list"].includes(String(message.method))) {
+        res.setHeader("Content-Type", "application/json; charset=utf-8");
+        res.statusCode = 200;
+        res.end(JSON.stringify({ jsonrpc: "2.0", id: typeof message.id === "string" || typeof message.id === "number" ? message.id : null, error: { code: -32601, message: "This MCP operation is not supported." } }));
+        return;
+      }
+      const dependencies = { ...options.dependencies ?? { localTime: local_time_exports }, allowEvents: async () => {
+        try {
+          const addressVerdict = await rateLimit(req, COMPUTE_EVENTS_RATE_LIMIT_ID);
+          return addressVerdict === "allowed" ? await atomicQuota("event") : addressVerdict;
+        } catch {
+          return "unavailable";
+        }
+      } };
+      const sdk = createMcpHandler(() => createAiServer(dependencies), { legacy: "stateless", responseMode: "auto", onerror: () => {
+      } });
+      try {
+        const headers = new Headers();
+        for (const key of ["content-type", "accept", "mcp-protocol-version", "mcp-session-id", "mcp-method", "mcp-name"]) {
+          if (typeof req.headers?.[key] === "string") headers.set(key, req.headers[key]);
+        }
+        const request = new Request(`${ORIGIN}/mcp`, { method: "POST", headers, body: text2 });
+        const response = await sdk.fetch(request, { parsedBody: body2 });
+        res.statusCode = response.status;
+        response.headers.forEach((value, key) => {
+          if (!["cache-control", "content-length", "access-control-allow-origin"].includes(key)) res.setHeader(key, value);
+        });
+        if (response.body) {
+          let sanitize2 = function(text3) {
+            return JSON.stringify(sanitizeProtocolMessage(JSON.parse(text3)));
+          };
+          var sanitize = sanitize2;
+          const reply = await response.text();
+          if (Buffer.byteLength(reply) > 262144) throw new Error("output-budget");
+          let safeReply = reply;
+          if (response.headers.get("content-type")?.includes("text/event-stream")) {
+            safeReply = reply.split("\n").map((line) => line.startsWith("data: ") ? `data: ${sanitize2(line.slice(6))}` : line).join("\n");
+          } else if (reply.trim()) safeReply = sanitize2(reply);
+          res.write(safeReply);
+        }
+        res.end();
+      } catch {
+        if (!res.headersSent) send(res, 500, "protocol-failed");
+        else res.end();
+      } finally {
+        await sdk.close().catch(() => {
+        });
+      }
     } finally {
-      await sdk.close().catch(() => {
-      });
+      if (measure && cpu) {
+        const used = process.cpuUsage(cpu);
+        console.info(JSON.stringify({ measurement: "zodiacs.mcp.resources.v1", operation, elapsedMs: Math.round((performance.now() - started) * 100) / 100, processCpuMs: Math.round((used.user + used.system) / 10) / 100, firstHandledRequest, status: res.statusCode }));
+      }
     }
   };
 }

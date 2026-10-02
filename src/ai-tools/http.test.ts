@@ -8,9 +8,12 @@ import { COMPUTE_EVENTS_RATE_LIMIT_ID, COMPUTE_RATE_LIMIT_ID } from '../lib/comp
 let server: Server, base: string;
 let enabled: string | undefined = '1'; let verdict: 'allowed' | 'limited' | 'unavailable' = 'allowed';
 let allowedHost: string; const counted: string[] = [];
+let atomicRequest: 'allowed' | 'limited' | 'unavailable' = 'allowed';
+let atomicEvent: 'allowed' | 'limited' | 'unavailable' = 'allowed';
+const atomicCounted: string[] = [];
 const env = { get ZODIACS_MCP_ENABLED() { return enabled; } };
 beforeAll(async () => {
-  server = createServer((req, res) => { void createAiNodeHandler({ env, allowedHosts: [allowedHost], rateLimit: async (_req, id) => { counted.push(id); return verdict; } })(req, res); });
+  server = createServer((req, res) => { void createAiNodeHandler({ env, allowedHosts: [allowedHost], atomicQuota: async kind => { atomicCounted.push(kind); return kind === 'request' ? atomicRequest : atomicEvent; }, rateLimit: async (_req, id) => { counted.push(id); return verdict; } })(req, res); });
   await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve));
   base = `http://127.0.0.1:${(server.address() as { port: number }).port}/mcp`;
   allowedHost = new URL(base).host;
@@ -25,6 +28,29 @@ async function readMessage(response: Response) {
 }
 
 describe('stateless MCP HTTP boundary', () => {
+  it('refuses exhausted or unavailable global budgets even when the Firewall allows', async () => {
+    try {
+      for (const [budget, status, retry] of [['limited', 429, '60'], ['unavailable', 503, '300']] as const) {
+        atomicRequest = budget; atomicCounted.length = 0;
+        const response = await post(rpc('tools/list'));
+        expect(response.status).toBe(status);
+        expect(response.headers.get('retry-after')).toBe(retry);
+        expect(response.headers.get('cache-control')).toBe('no-store');
+        expect(atomicCounted).toEqual(['request']);
+      }
+    } finally { atomicRequest = 'allowed'; }
+  });
+  it('reserves a global event slot for a date fact and refuses before returning computation', async () => {
+    try {
+      atomicEvent = 'limited'; atomicCounted.length = 0;
+      const message = await readMessage(await post(rpc('tools/call', { name: 'check_sky_fact', arguments: { kind: 'phase', phase: 'new', date: '2026-10-10', zone: 'UTC' } }), { 'MCP-Protocol-Version': '2025-06-18' }));
+      expect(message.result.isError).toBe(true);
+      expect(message.result.structuredContent.ok).toBe(false);
+      expect(message.result.structuredContent.error.retryAfterSeconds).toBe(60);
+      expect(message.result.structuredContent).not.toHaveProperty('data');
+      expect(atomicCounted).toEqual(['request', 'event']);
+    } finally { atomicEvent = 'allowed'; }
+  });
   it('works with the official SDK client: list, call, widget read and close', async () => {
     const client = new Client({ name: 'zodiacs-ai-test', version: '1.0.0' });
     await client.connect(new StreamableHTTPClientTransport(new URL(base)));

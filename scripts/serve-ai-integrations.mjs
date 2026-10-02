@@ -5,7 +5,7 @@ import { createAiNodeHandler } from '../api/_ai/runtime.mjs';
 const port = Number(process.env.ZODIACS_MCP_DEV_PORT ?? 8787);
 if (!Number.isInteger(port) || port < 1024 || port > 65535) throw new Error('Invalid development port.');
 const counts = new Map();
-const handler = createAiNodeHandler({ env: { ZODIACS_MCP_ENABLED: '1' }, allowedHosts: [`127.0.0.1:${port}`, `localhost:${port}`], rateLimit: async (_req, id) => {
+const handler = createAiNodeHandler({ env: { ZODIACS_MCP_ENABLED: '1' }, atomicQuota: async () => 'allowed', allowedHosts: [`127.0.0.1:${port}`, `localhost:${port}`], rateLimit: async (_req, id) => {
   const minute = Math.floor(Date.now() / 60000);
   const previous = counts.get(id);
   const count = previous?.minute === minute ? previous.count + 1 : 1;
