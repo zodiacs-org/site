@@ -1,3 +1,4 @@
+import SaturnCountdown from './SaturnCountdown';
 import { CheckOurMath, ResultOpening } from './ChartTrust';
 /**
  * Saturn return calculator: birth date in, return seasons out. The
@@ -49,6 +50,8 @@ export default function SaturnReturnCalculator({ locale: rawLocale = 'en' }: { l
   useEffect(() => () => { generation.current += 1; }, []);
 
   const approximate = resultReceipt?.reference ?? true;
+
+  function invalidate() { generation.current++; setBusy(false); setResult(null); setResultReceipt(null); setError(''); focusAfterComputeRef.current = false; }
 
   async function compute(e: Event) {
     e.preventDefault();
@@ -109,14 +112,14 @@ export default function SaturnReturnCalculator({ locale: rawLocale = 'en' }: { l
           <div class="calc__fields">
             <BirthDateField
               locale={locale} id="sr-date" date={date} city={showDetail ? city : null}
-              onDateChange={setDate} calendar={calendar} onCalendarChange={setCalendar}
+              onDateChange={(value) => { invalidate(); setDate(value); }} calendar={calendar} onCalendarChange={(value) => { invalidate(); setCalendar(value); }}
               onFocus={() => { void loadReturns(); }}
               help={<p class="field__help">{t(locale, 'saturnDateHelp')}</p>}
             />
           </div>
 
           {!showDetail ? (
-            <button class="sr__more" type="button" onClick={() => setShowDetail(true)}>
+            <button class="sr__more" type="button" onClick={() => { invalidate(); setShowDetail(true); }}>
               {t(locale, 'addBirthDetails')}
             </button>
           ) : (
@@ -125,12 +128,12 @@ export default function SaturnReturnCalculator({ locale: rawLocale = 'en' }: { l
                 <label class="field__label" for="sr-time">{t(locale, 'birthTime')}</label>
                 <input
                   id="sr-time" class="field__input" type="time" value={time}
-                  onInput={(e) => setTime((e.target as HTMLInputElement).value)}
+                  onInput={(e) => { invalidate(); setTime((e.target as HTMLInputElement).value); }}
                 />
               </div>
               <div class="field">
                 <label class="field__label" for="sr-place">{t(locale, 'birthplace')}</label>
-                <PlaceSearch id="sr-place" selected={city} onSelect={setCity} locale={locale} />
+                <PlaceSearch id="sr-place" selected={city} onSelect={(value) => { invalidate(); setCity(value); }} locale={locale} />
               </div>
             </div>
           )}
@@ -168,6 +171,8 @@ export default function SaturnReturnCalculator({ locale: rawLocale = 'en' }: { l
               {t(locale, 'returnApprox')}
             </p>
           )}
+
+          <SaturnCountdown result={result} approximate={approximate} locale={locale} />
 
           <div class="sr__seasons">
             {result.seasons.map((season, i) => {

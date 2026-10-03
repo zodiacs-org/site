@@ -1,12 +1,21 @@
 {
   "version": 1,
-  "id": "owner-sharing-private-surface-20261003",
-  "baseCommit": "e9833d9469befcc94822231656c310f24faa9dba",
+  "id": "owner-phase3-return-visits-20261004",
+  "baseCommit": "076540b69123b353b6cdbac9054b3c60fb438846",
   "protectedPaths": [
-    "src/pages/es/compatibility/index.astro",
-    "src/pages/fr/compatibility/index.astro",
-    "src/pages/it/compatibility/index.astro",
-    "src/pages/pt/compatibility/index.astro"
+    "src/lib/i18n/index.ts",
+    "src/pages/es/profile/index.astro",
+    "src/pages/es/saturn-return/index.astro",
+    "src/pages/es/tools/index.astro",
+    "src/pages/fr/profile/index.astro",
+    "src/pages/fr/saturn-return/index.astro",
+    "src/pages/fr/tools/index.astro",
+    "src/pages/it/profile/index.astro",
+    "src/pages/it/saturn-return/index.astro",
+    "src/pages/it/tools/index.astro",
+    "src/pages/pt/profile/index.astro",
+    "src/pages/pt/saturn-return/index.astro",
+    "src/pages/pt/tools/index.astro"
   ],
-  "authorization": "The owner authorized Phase 2 sharing and requires birth details to remain in the browser unless account sync is explicitly enabled. Live WebKit verification identified a ResizeObserver notification from the third-party Plausible script. This bounded follow-up uses the existing privateSurface setting on all sharing and compatibility forms in all six languages to omit third-party analytics at runtime, with privacy checks and refreshed evidence. It adds no feature or legal copy and does not authorize Phase 3."
+  "authorization": "The owner explicitly said Start phase 3 on October 4, 2026, authorizing calendar subscription, Saturn countdown, client chart PDF, and saved-chart year review in all six languages. These bounded edits add localized route availability and tool discovery and suppress third-party scripts on Saturn birth forms. They do not authorize publication of any Chart of the day figure without its separate owner approval."
 }

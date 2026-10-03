@@ -1,0 +1,8 @@
+---
+import ChartOfDayPage from '../../../components/return-visits/ChartOfDayPage.astro';
+import { dailyEditions } from '../../../lib/return-visits/chart-of-day';
+import { CATALOG_LOCALES } from '../../../lib/i18n/core';
+export function getStaticPaths() { return CATALOG_LOCALES.filter((locale) => locale !== 'en').flatMap((locale) => dailyEditions.map((edition) => ({ params: { returnLocale: locale, day: edition.day }, props: { edition, locale } }))); }
+const { edition, locale } = Astro.props;
+---
+<ChartOfDayPage edition={edition} locale={locale} />

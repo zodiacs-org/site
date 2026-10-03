@@ -1,4 +1,5 @@
 ---
+import ReturnToolLinks from "../../../components/return-visits/ReturnToolLinks.astro";
 import Base from '../../../layouts/Base.astro';
 import ProfileDashboard from '../../../islands/ProfileDashboard';
 import SavedRecordsPanel from '../../../islands/SavedRecordsPanel';
@@ -58,6 +59,7 @@ const jsonLd = [
         : 'Si tu effaces les données du navigateur, les thèmes enregistrés uniquement en local seront supprimés. Connecte-toi pour synchroniser tes thèmes et répercuter leur suppression sur tes autres appareils.'}</p>
     </aside>
   </section>
+<section class="section--tight container"><ReturnToolLinks locale="fr" /></section>
 </Base>
 
 <style is:global>

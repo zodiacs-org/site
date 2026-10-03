@@ -59,6 +59,10 @@ const CORE_LOCALIZED_PATHS = [
   '/compatibility/invite/',
   '/group-charts/',
   '/chart-twins/',
+  '/sky-calendar/',
+  '/astrologer-kit/',
+  '/your-sky-wrapped/',
+  '/chart-of-the-day/',
   '/birth-chart/',
   '/compatibility/',
   '/moon-sign/',
@@ -149,6 +153,7 @@ function isLocalizedBirthdayPath(path: string): boolean {
 
 export function availableLocalesForPath(path: string): readonly Locale[] | undefined {
   const canonical = stripLocale(path);
+  if (/^\/chart-of-the-day\/\d{4}-\d{2}-\d{2}\/$/.test(canonical)) return CORE_ROUTE_LOCALES;
   return LOCALIZED_PATHS.get(canonical)
     ?? (isLocalizedChineseZodiacPath(canonical) ? PROGRAMMATIC_ROUTE_LOCALES : undefined)
     ?? (isLocalizedBirthdayPath(canonical) ? [DEFAULT_LOCALE] : undefined);
@@ -157,7 +162,7 @@ export function availableLocalesForPath(path: string): readonly Locale[] | undef
 /** Internal rendering availability; never use this for discovery metadata. */
 export function renderableLocalesForPath(path: string): readonly Locale[] | undefined {
   const canonical = stripLocale(path);
-  if (CORE_LOCALIZED_PATHS.includes(canonical)) {
+  if (CORE_LOCALIZED_PATHS.includes(canonical) || /^\/chart-of-the-day\/\d{4}-\d{2}-\d{2}\/$/.test(canonical)) {
     return [...CORE_ROUTE_LOCALES, ...STAGED_CORE_ROUTE_LOCALES];
   }
   if (DAILY_READING_PATHS.includes(canonical)) return DAILY_READING_ROUTE_LOCALES;

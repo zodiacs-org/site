@@ -22,6 +22,10 @@ Use these labels from docs/STRATEGY.md §4 when they fit:
 TOOLS AND UTILITIES
 These lines use each live page’s meta description to state what it computes or provides:
 - /ask/ — Ask Guide about birth charts, astrology, or Zodiacs.org tools and guides. Signed-out conversations are not stored by Zodiacs.org.
+- /sky-calendar/ — New and full moons, eclipse peaks, and planetary retrograde windows in your calendar. These events are the same for everyone.
+- /astrologer-kit/ — A clean chart, placement and aspect tables, and the calculation receipt. Made on your device, free, with no account needed.
+- /your-sky-wrapped/ — Look back at selected Jupiter and Saturn transits to a saved chart, and make a share card. Available now for December’s year review.
+- /chart-of-the-day/ — A sourced public figure’s chart, with a clear account of what is known and what is uncertain.
 - /baby-zodiac/ — Enter a due date: the near-certain sun sign (cusp caveats computed, not guessed), the week's possible moon signs, and what has to wait for the birth minute. Free.
 - /big-three/ — Enter a birth date, time, and place and get your Sun, Moon, and Rising signs with exact degrees, a card to share, and one tap into the full birth chart. Free, computed in your browser.
 - /chart-twins/ — Compare your signs with the sourced people directory. A shared sign is a conversation starter, not proof of a similar personality.

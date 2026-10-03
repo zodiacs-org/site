@@ -82,6 +82,7 @@ const LISTED: Record<string, string> = {
   'src/lib/share-card.ts': 'card discs come from allDiscs, all twelve in zodiac order',
   'src/lib/compatibility-card.ts': 'loads all twelve discs in zodiac order',
   'src/lib/lunar-return-card.ts': 'embeds all twelve discs in zodiac order',
+  'src/lib/return-visits/chart-pdf.tsx': 'fetches and embeds all twelve discs in zodiac order, regardless of the client chart',
   'src/lib/share-card-pastel-icons.ts': 'embeds all twelve discs in zodiac order',
   'src/lib/wheel/Wheel.tsx': 'draws all twelve discs in zodiac order',
   'src/lib/wheel/TechnicalWheel.tsx': 'draws all twelve discs in zodiac order',
