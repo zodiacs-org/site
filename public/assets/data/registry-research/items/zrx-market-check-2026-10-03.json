@@ -1,0 +1,113 @@
+{
+  "schema": "zodiacs.registry-research-item.v1",
+  "sourceType": "zodiacs-research",
+  "publisher": "Zodiacs.org Research System",
+  "byline": "Zodiacs.org Research System",
+  "method": {
+    "id": "zodiacs.registry-research-method.v1",
+    "version": 1,
+    "generator": "zodiacs.registry-research.deterministic.v1",
+    "deterministicTemplatesOnly": true,
+    "modelAuthoredProse": false,
+    "scoreRule": "The disclosed Registry Outlook sky score is copied before market comparison. Market fields cannot alter that score or its wording.",
+    "observationRule": "Follow-ups use the first archived market snapshot at or after the requested elapsed interval and report the actual elapsed time.",
+    "causalityRule": "Market changes are observations, never evidence that a sky event caused a price or liquidity movement.",
+    "publicationRule": "During the pilot, an exact artifact hash and named reviewer are required before an item enters public feeds."
+  },
+  "riskStatement": "Symbolic research—not investment advice. Market observations never alter the sky score.",
+  "scienceNote": "Astrology has no established predictive relationship with asset prices. Crypto assets can lose all value.",
+  "revisions": [],
+  "id": "zrx-market-check-2026-10-03",
+  "slug": "market-check-2026-10-03",
+  "kind": "market-check",
+  "templateId": "market-check.v1",
+  "issuedAt": "2026-10-03T00:07:10.700Z",
+  "visibleAt": "2026-10-03T00:07:10.700Z",
+  "title": "Leo market check · 2026-10-03",
+  "summary": "Leo price, market cap, liquidity, volume, and collection medians at one archived observation.",
+  "url": "/terminal/research/market-check-2026-10-03/",
+  "signs": [
+    "leo"
+  ],
+  "topics": [
+    "markets",
+    "market-check"
+  ],
+  "symbolicScore": {
+    "sign": "leo",
+    "attention": 31,
+    "tone": -11,
+    "eventIntensity": 13,
+    "calculation": "18 attention / -12 tone / 15 event intensity × 0.8892 horizon multiplier",
+    "marketFieldsUsed": false
+  },
+  "sections": {
+    "skyFact": {
+      "heading": "Sky fact",
+      "body": "Leo is the highest-ranked attention entry in the separately published 2026-10-03 daily outlook.",
+      "evidence": [
+        "public/assets/registry-outlook.json"
+      ]
+    },
+    "traditionalReading": {
+      "heading": "Traditional reading",
+      "body": "Elevated symbolic attention for this sign, without a strong directional tone. Signal: active. The symbolic score was fixed before this market comparison.",
+      "evidence": [
+        "public/assets/registry-outlook.json"
+      ]
+    },
+    "marketObservation": {
+      "heading": "Market observation",
+      "body": "At 2026-10-03T00:07:10.700Z, Leo was indexed at $0.00008288, with +1.26% over 24 hours, $82.87K market cap, $82.87K FDV, $17.42K indexed liquidity, $24.53 24-hour volume, and 1 indexed pool. Market cap and FDV are kept separate. These descriptive fields did not alter the sky score. Leo market cap was 1.024× the collection median and indexed liquidity was 1.034× the collection median.",
+      "evidence": [
+        "public/assets/data/registry-market-history.v1.json"
+      ]
+    }
+  },
+  "market": {
+    "available": true,
+    "snapshotId": "registry-market:2026-10-03:2026-10-03T00:07:10.700Z",
+    "observedAt": "2026-10-03T00:07:10.700Z",
+    "provider": "DexScreener",
+    "sign": "leo",
+    "priceUsd": 0.00008288,
+    "change24hPct": 1.26,
+    "marketCapUsd": 82873,
+    "fdvUsd": 82873,
+    "liquidityUsd": 17424.36,
+    "volume24hUsd": 24.53,
+    "indexedPoolCount": 1,
+    "deepestPoolUrl": "https://dexscreener.com/solana/48erbgmqizekyloccebd7cs5knqpzqr7qqak9mzapqgq",
+    "collectionMedian": {
+      "marketCapUsd": 80901,
+      "liquidityUsd": 16859.47
+    },
+    "vsCollectionMedian": {
+      "marketCap": 1.024,
+      "liquidity": 1.034
+    }
+  },
+  "evidence": {
+    "outlookEdition": "public/assets/registry-outlook.json#daily:2026-10-03",
+    "marketSnapshotId": "registry-market:2026-10-03:2026-10-03T00:07:10.700Z",
+    "coverage": {
+      "overall": "complete",
+      "events": "complete",
+      "occupancies": "complete",
+      "expectedTransitMonths": [
+        "2026-10"
+      ],
+      "missingTransitMonths": [],
+      "missingOccupancyPlanets": []
+    }
+  },
+  "artifactHash": "852fc709ee8a35d07d5c5108242d17d2440263b0c16e10558da37916062f52ae",
+  "publishedAt": "2026-10-03T00:07:10.700Z",
+  "publication": {
+    "mode": "post-pilot-deterministic-allowlist",
+    "publishedAt": "2026-10-03T00:07:10.700Z",
+    "reviewer": null,
+    "artifactSha256": "852fc709ee8a35d07d5c5108242d17d2440263b0c16e10558da37916062f52ae"
+  },
+  "status": "approved"
+}

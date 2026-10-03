@@ -1,14 +1,35 @@
 {
   "schema": "zodiacs.registry-research-feed.v1",
-  "generatedAt": "2026-10-02T00:07:34.988Z",
+  "generatedAt": "2026-10-03T00:07:10.700Z",
   "publisher": "Zodiacs.org Research System",
   "window": {
     "previousDays": 30,
     "futureDays": 7,
-    "startsAt": "2026-09-02T00:00:00.000Z",
-    "endsBefore": "2026-10-10T00:00:00.000Z"
+    "startsAt": "2026-09-03T00:00:00.000Z",
+    "endsBefore": "2026-10-11T00:00:00.000Z"
   },
   "items": [
+    {
+      "id": "zrx-event-brief-lunation-2026-10-10t15-50-02-149z-new-moon-libra",
+      "slug": "event-brief-lunation-2026-10-10t15-50-02-149z-new-moon-libra",
+      "kind": "event-brief",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-03T12:00:00.000Z",
+      "visibleAt": "2026-10-10T15:50:02.149Z",
+      "title": "New Moon in Libra · event brief",
+      "summary": "New Moon in Libra becomes exact at 2026-10-10T15:50:02.149Z. Its symbolic reading and later market observations remain separate.",
+      "url": "/terminal/research/event-brief-lunation-2026-10-10t15-50-02-149z-new-moon-libra/",
+      "signs": [
+        "libra"
+      ],
+      "topics": [
+        "calendar",
+        "astrology",
+        "lunation"
+      ],
+      "status": "scheduled"
+    },
     {
       "id": "zrx-event-brief-aspect-2026-10-07t10-41-21-014z-mars-sextile-uranus",
       "slug": "event-brief-aspect-2026-10-07t10-41-21-014z-mars-sextile-uranus",
@@ -49,6 +70,28 @@
       "topics": [
         "calendar",
         "astrology",
+        "aspect"
+      ],
+      "status": "scheduled"
+    },
+    {
+      "id": "zrx-daily-market-brief-2026-10-03",
+      "slug": "daily-market-brief-2026-10-03",
+      "kind": "daily-market-brief",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-03T12:00:00.000Z",
+      "visibleAt": "2026-10-03T12:00:00.000Z",
+      "title": "Mars opposition Pluto · daily market brief",
+      "summary": "Mars opposition Pluto leads the disclosed symbolic index; Leo market measures are recorded separately.",
+      "url": "/terminal/research/daily-market-brief-2026-10-03/",
+      "signs": [
+        "leo",
+        "aquarius"
+      ],
+      "topics": [
+        "markets",
+        "daily-sky",
         "aspect"
       ],
       "status": "scheduled"
@@ -97,6 +140,46 @@
       "status": "scheduled"
     },
     {
+      "id": "zrx-market-check-2026-09-25-observation-168h",
+      "slug": "market-check-2026-09-25-observation-168h",
+      "kind": "observation-update",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-03T00:07:10.700Z",
+      "visibleAt": "2026-10-03T00:07:10.700Z",
+      "title": "Libra 7-day observation update",
+      "summary": "7-day follow-up using the first qualifying archived snapshot (191.97 actual hours elapsed).",
+      "url": "/terminal/research/market-check-2026-09-25-observation-168h/",
+      "signs": [
+        "libra"
+      ],
+      "topics": [
+        "markets",
+        "observation-update"
+      ],
+      "status": "published"
+    },
+    {
+      "id": "zrx-market-check-2026-10-03",
+      "slug": "market-check-2026-10-03",
+      "kind": "market-check",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-03T00:07:10.700Z",
+      "visibleAt": "2026-10-03T00:07:10.700Z",
+      "title": "Leo market check · 2026-10-03",
+      "summary": "Leo price, market cap, liquidity, volume, and collection medians at one archived observation.",
+      "url": "/terminal/research/market-check-2026-10-03/",
+      "signs": [
+        "leo"
+      ],
+      "topics": [
+        "markets",
+        "market-check"
+      ],
+      "status": "published"
+    },
+    {
       "id": "zrx-event-brief-aspect-2026-10-02t22-25-53-877z-mars-trine-neptune",
       "slug": "event-brief-aspect-2026-10-02t22-25-53-877z-mars-trine-neptune",
       "kind": "event-brief",
@@ -116,7 +199,7 @@
         "astrology",
         "aspect"
       ],
-      "status": "scheduled"
+      "status": "published"
     },
     {
       "id": "zrx-event-brief-aspect-2026-10-02t20-43-00-330z-mercury-square-pluto",
@@ -138,7 +221,7 @@
         "astrology",
         "aspect"
       ],
-      "status": "scheduled"
+      "status": "published"
     },
     {
       "id": "zrx-daily-market-brief-2026-10-02",
@@ -160,7 +243,7 @@
         "daily-sky",
         "aspect"
       ],
-      "status": "scheduled"
+      "status": "published"
     },
     {
       "id": "zrx-market-check-2026-09-24-observation-168h",
