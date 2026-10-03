@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { readFileSync } from 'node:fs';
 import { SHARING_COPY, sharingText } from './copy';
 import { groupReading, validGroupSize } from './group';
 import { matchTwins, twinSigns } from './twins';
@@ -65,6 +66,14 @@ describe('fragment-only compatibility invitations', () => {
   });
 });
 describe('six-language sharing copy and tool boundaries', () => {
+  it('uses the existing third-party-script boundary on sharing and compatibility forms', () => {
+    const pages = ['components/sharing/SharingToolPage.astro', 'pages/big-three/index.astro',
+      ...['', 'es/', 'pt/', 'fr/', 'it/', 'ru/'].map((locale) => `pages/${locale}compatibility/index.astro`)];
+    for (const page of pages) {
+      const source = readFileSync(new URL(`../../${page}`, import.meta.url), 'utf8');
+      expect(source, page).toMatch(/<Base\s+privateSurface\b/);
+    }
+  });
   it('has exact keys and interpolation placeholders in all six languages', () => {
     const keys = Object.keys(SHARING_COPY.en).sort();
     for (const [locale,catalog] of Object.entries(SHARING_COPY)) {

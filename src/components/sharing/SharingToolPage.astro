@@ -20,7 +20,7 @@ const route = localizePath(locale, path);
 const directory = kind === 'twins' ? DIRECTORY_PEOPLE.map((person) => ({ slug: person.slug, name: person.displayName, sun: person.sunSign.slug, moon: person.moon.uncertain ? null : person.moon.sign })) : [];
 const jsonLd = [{ '@type': 'WebApplication', name: s(locale, titleKey), description: s(locale, ledeKey), url: `https://zodiacs.org${route}`, applicationCategory: 'LifestyleApplication', operatingSystem: 'Web', offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' } }];
 ---
-<Base clientUi locale={locale} path={route} title={`${s(locale, titleKey)} | Zodiacs.org`} description={s(locale, ledeKey)} image={locale === 'ru' ? ruOgImageForPath(route) ?? '/assets/og/v2/ru/share.png' : '/assets/og/v2/tool/birth-chart.png'} imageAlt={s(locale, titleKey)} jsonLd={jsonLd} glass>
+<Base privateSurface clientUi locale={locale} path={route} title={`${s(locale, titleKey)} | Zodiacs.org`} description={s(locale, ledeKey)} image={locale === 'ru' ? ruOgImageForPath(route) ?? '/assets/og/v2/ru/share.png' : '/assets/og/v2/tool/birth-chart.png'} imageAlt={s(locale, titleKey)} jsonLd={jsonLd} glass>
   <section class:list={['section--tight', 'container', 'sharing-page', { 'container--narrow': kind !== 'group' }]}>
     <header class="tool-hero sharing-hero"><h1 class="display">{s(locale, titleKey)}</h1><p>{s(locale, ledeKey)}</p></header>
     {kind === 'big' && <BigThreeQuick locale={locale} copy={SHARING_COPY[locale]} client:load />}

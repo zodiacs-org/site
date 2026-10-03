@@ -41,11 +41,18 @@ await withPreview({ port: 8791 }, async (base) => {
     const response = await fetch(`${base}/${locale}${route}/`);
     assert.equal(response.status, 200);
     const html = await response.text();
+    assert(!/remoteScript\.src\s*=|insights\.src\s*=/.test(html), `${locale}${route}: third-party analytics runtime`);
     assert.match(html, /rel="canonical"/);
     assert(!/href="\/astrofolio\//.test(html), `${locale}${route}: collection navigation`);
     assert.match(html, /hreflang="ru"/);
   }
   record('all 24 localized tools resolve with reciprocating locale metadata and no collection navigation');
+  for (const locale of locales) {
+    const response = await fetch(`${base}/${locale}compatibility/`);
+    assert.equal(response.status, 200);
+    assert(!/remoteScript\.src\s*=|insights\.src\s*=/.test(await response.text()), `${locale}compatibility: third-party analytics runtime`);
+  }
+  record('sharing and recipient forms omit third-party analytics in all six languages');
   const engines = [{ name: 'chromium', type: chromium, options: { executablePath: await findChromium(), args: STABLE_CHROMIUM_ARGS } }, { name: 'webkit', type: webkit, options: {} }];
   for (const engine of engines) {
     const browser = await engine.type.launch({ ...engine.options, headless: true });

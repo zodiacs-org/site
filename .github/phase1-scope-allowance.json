@@ -1,18 +1,12 @@
 {
   "version": 1,
-  "id": "owner-sharing-phase2-20261003",
-  "baseCommit": "250d62af0323feac450e9dfce3275bd7ddb384d7",
+  "id": "owner-sharing-private-surface-20261003",
+  "baseCommit": "e9833d9469befcc94822231656c310f24faa9dba",
   "protectedPaths": [
-    "src/lib/aura-share-card.test.ts",
-    "src/lib/i18n/index.ts",
     "src/pages/es/compatibility/index.astro",
-    "src/pages/es/tools/index.astro",
     "src/pages/fr/compatibility/index.astro",
-    "src/pages/fr/tools/index.astro",
     "src/pages/it/compatibility/index.astro",
-    "src/pages/it/tools/index.astro",
-    "src/pages/pt/compatibility/index.astro",
-    "src/pages/pt/tools/index.astro"
+    "src/pages/pt/compatibility/index.astro"
   ],
-  "authorization": "The owner authorized Phase 2 sharing on 2026-10-03 after reviewing Phase 1, and expressly chose sourced Sun/Moon chart-twin matches while explaining that rising signs cannot be compared without verified birth times. This bounded allowance covers 1080×1920 browser-generated Big Three cards, fragment-only positions invitations, free three-to-eight-person symbolic group readings and browser-generated group cards, verified directory sign matching, six-language routes and copy, and their discovery, release metadata, tests and evidence. It does not authorize Phase 3. Birth inputs remain in the browser unless account sync is explicitly enabled."
+  "authorization": "The owner authorized Phase 2 sharing and requires birth details to remain in the browser unless account sync is explicitly enabled. Live WebKit verification identified a ResizeObserver notification from the third-party Plausible script. This bounded follow-up uses the existing privateSurface setting on all sharing and compatibility forms in all six languages to omit third-party analytics at runtime, with privacy checks and refreshed evidence. It adds no feature or legal copy and does not authorize Phase 3."
 }
