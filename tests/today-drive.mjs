@@ -124,7 +124,14 @@ async function measuredCls(page) {
   await page.evaluate(() => new Promise((resolvePaint) => {
     requestAnimationFrame(() => requestAnimationFrame(() => resolvePaint()));
   }));
-  return page.evaluate(() => globalThis.__zdxLayoutShifts.reduce((sum, value) => sum + value, 0));
+  const cls = await page.evaluate(() => globalThis.__zdxLayoutShifts.reduce((sum, value) => sum + value, 0));
+  if (cls !== 0) {
+    const failureDir = OUT ?? 'tests/visual/artifacts/today';
+    await mkdir(failureDir, { recursive: true });
+    const shifts = await page.evaluate(() => globalThis.__zdxLayoutShiftDetails);
+    await writeFile(`${failureDir}/layout-shifts-${Date.now()}.json`, JSON.stringify(shifts, null, 2));
+  }
+  return cls;
 }
 
 async function inspectReturningMobile(BASE, browser, fixtureProfile, state, expectedContacts) {
@@ -179,6 +186,12 @@ async function inspectReturningMobile(BASE, browser, fixtureProfile, state, expe
       });
     }));
   }));
+  if (evidence.cls !== 0) {
+    const failureDir = OUT ?? 'tests/visual/artifacts/today';
+    await mkdir(failureDir, { recursive: true });
+    const shifts = await page.evaluate(() => globalThis.__zdxLayoutShiftDetails);
+    await writeFile(`${failureDir}/returning-${state}-360-layout-shifts.json`, JSON.stringify(shifts, null, 2));
+  }
   check(`360px returning ${state}: hydration has exactly zero CLS`, evidence.cls === 0, JSON.stringify(evidence));
   check(
     `360px returning ${state}: resolved reading has no outer fallback reservation or dead tail`,
