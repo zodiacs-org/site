@@ -1,3 +1,4 @@
+import { CheckOurMath } from '../ChartTrust';
 /**
  * The Transit Ring — the animated bi-wheel. The natal chart is the fixed
  * inner wheel (the Wheel's pinned static path); the transiting sky is an
@@ -425,6 +426,7 @@ export default function TransitRing({ locale, natal, computeSky, nowMs, focusReq
 
   return (
     <div class="tring">
+      <CheckOurMath locale={locale} utc={when} />
       <p class="tring__caption mono">{c.outerRing}</p>
 
       <div class="tring__wheelbox">

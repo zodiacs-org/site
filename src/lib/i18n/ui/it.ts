@@ -2,6 +2,36 @@ import { GROWTH_UI_EN } from "./growth.js";
 import type { UiCatalog } from "./schema";
 
 const it = {
+    trustDueIntro: "La data prevista offre uno sguardo al cielo intorno all’arrivo del tuo bambino, senza definirne il tema natale.",
+    buyWithFomo: "Acquista con Fomo",
+    trustSkyReference: "Istante UTC di riferimento — nessuna ora fornita",
+    trustRecordInstant: "Istante UTC del registro pubblico",
+    trustAddressGuide: "Come acquistare un Zodiac",
+    trustAddressIntro: "Scegli un segno per verificare il suo indirizzo pubblico ufficiale. L’acquisto avviene presso un servizio indipendente.",
+
+    trustQuestions: "Domande frequenti",
+    trustFreeQuestion: "È gratis?",
+    trustFreeAnswer: "I nostri strumenti e le guide di astrologia sono gratuiti e non richiedono registrazione. Zodiacs.org gestisce anche Astrofolio, la collezione di token zodiacali.",
+    trustDisclosure: "Leggi la nostra dichiarazione",
+    trustAccuracyQuestion: "Quanto sono precisi i temi?",
+    trustAccuracyAnswer: "Verifichiamo i calcoli planetari con dati astronomici di riferimento. La precisione del tuo tema dipende anche dai dati di nascita inseriti; l’astrologia è una pratica interpretativa, non una previsione convalidata scientificamente.",
+    trustMethodology: "Come calcoliamo i temi",
+    trustMath: "Verifica i nostri calcoli",
+    trustInstant: "Istante UTC calcolato",
+    trustReference: "Istante UTC di riferimento — ora di nascita sconosciuta; senza ascendente né case",
+    trustMissingInstant: "L’istante UTC originale non è stato condiviso con queste posizioni.",
+    trustReturnInstant: "Istante UTC del ritorno",
+    trustApproxReturn: "Istante UTC approssimativo del ritorno — basato su un’ora di nascita di riferimento",
+    trustIntro: "Il tuo tema può aiutarti a riflettere sui tuoi bisogni, punti di forza e relazioni.",
+    trustOtherIntro: "Questo tema può aiutarti a riflettere sui bisogni, punti di forza e relazioni di questa persona.",
+    trustPairIntro: "Le vostre differenze possono essere un punto di partenza per capirvi.",
+    trustReturnIntro: "Il tuo tema di ritorno offre un momento per riflettere su cosa vuoi coltivare in futuro.",
+    trustSaturnIntro: "Il tuo ritorno di Saturno è un’occasione per riflettere sugli impegni che vuoi mantenere.",
+    trustGamesTitle: "Giochi dello Zodiaco",
+    trustGamesScore: "Dodici squadre zodiacali competono per punti di partecipazione: 100 alla prima adesione, poi 25 per una presenza a settimana UTC. Condivisioni e acquisti di token non danno punti.",
+    trustGamesLink: "Vedi la classifica",
+    trustGamesIndependent: "Partecipare è gratis. Il possesso di token e i loro prezzi non influenzano il punteggio.",
+
   chartDepthOpen: 'Vedilo in tre dimensioni',
   chartDepthClose: 'Nascondi la terza dimensione',
   calculationLoadError: 'Impossibile caricare i file di calcolo. Controlla la connessione e riprova.',
@@ -501,6 +531,8 @@ const it = {
   emailConfirmInvalidBody:
     "Il link di conferma non è valido o è scaduto. Torna su Zodiacs.org per richiederne un altro.",
   emailReturnHome: "Torna su Zodiacs.org",
+  trustWalletNotice: "Zodiacs.org non collega wallet, richiede firme o invia transazioni. Le ricerche di indirizzi pubblici usano un indirizzo che incolli. I link di acquisto aprono servizi indipendenti con le proprie condizioni e i propri rischi.",
+  trustGuideNotice: "Guide invia le domande che scrivi, i messaggi recenti di Guide e il contesto pubblico attivato della pagina o del cielo al nostro servizio cloud. Non allega automaticamente il tema natale salvato o le tue posizioni personali. Evita di inserire dati di nascita privati in Guide.",
 } satisfies UiCatalog;
 
 export default it;

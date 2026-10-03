@@ -423,7 +423,7 @@ export async function extractBlocks(file, source) {
  * Versioned with the ledger: a change here changes which sentences must be
  * listed, so scripts/claims-ledger.test.mjs pins it.
  */
-export const LEXICON_VERSION = 1;
+export const LEXICON_VERSION = 2;
 
 const BRANDS = /(?:\bOpenAI\b|\bSupabase\b|\bPlausible\b|\bPII\b|\bJPL\b|\bNASA\b|\bHorizons\b|\bSwiss Ephemeris\b|\bIANA\b|\bICU\b)/u;
 
@@ -436,8 +436,9 @@ export const FULL = Object.freeze({
 
 export const HARD = Object.freeze({
   names: BRANDS,
+  product: /\bparticipation points\b/u,
   accuracy: /(?:\baccura(?:te|cy) (?:to|within)\b|\bprecis(?:e|ion) (?:to|within)\b|\barc-?(?:second|minute)s?\b|\d\s?″|\bephemer(?:is|ides)\b|\b(?:tested|verified|validated|checked|compared) against\b|ΔT|\bdelta-?T\b|\bto the (?:minute|second)\b|\bprofessional software\b)/iu,
-  time: /(?:\btzdb\b|\bbackzone\b|\blocal mean time\b|\bLMT\b|\bleap seconds?\b|\bUT1\b|\bOld Style\b)/u,
+  time: /(?:\b(?:Computed|Reference|Return|Approximate return|Public record) UTC instant\b|\btzdb\b|\bbackzone\b|\blocal mean time\b|\bLMT\b|\bleap seconds?\b|\bUT1\b|\bOld Style\b)/u,
   privacy: /(?:\bon (?:your|this|the visitor's|the user's) (?:own )?(?:device|machine)\b|\bin (?:your|the visitor's|the user's|this) (?:own )?browser\b|\bon-device\b|\bleaves? (?:your|the|this) (?:device|browser)\b|\bnever (?:leaves? (?:your|the|this) (?:device|browser)|sent|stored|shared|logged)\b|\bnothing (?:is|gets) (?:sent|stored|uploaded)\b|\bno (?:tracking|cookies|analytics|network request|chart server)\b|\bcookieless\b|\bstore:\s?false\b|\bpersonal (?:data|information)\b|\bfingerprinting\b|\bIP address\b|\bchart(?:-calculation)? (?:server|API)\b|\bpositions[- ]only\b)/iu,
 });
 

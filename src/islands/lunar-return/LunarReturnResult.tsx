@@ -1,3 +1,4 @@
+import { CheckOurMath, ResultOpening } from '../ChartTrust';
 import { useEffect, useMemo, useRef } from 'preact/hooks';
 import type { ComponentType } from 'preact';
 import type { WheelProps } from '../../lib/wheel/Wheel';
@@ -19,6 +20,8 @@ export function LunarReturnResult({ result, Wheel }: LunarReturnResultProps) {
   const heading = useRef<HTMLHeadingElement>(null);
   useEffect(() => { heading.current?.focus(); }, [model]);
   return <div class="sr-result" data-lunar-return-result data-lr-instant={model.instantUtc} data-lr-reference={model.referenceUtc} data-lr-asc={wheel.angles!.asc}>
+    <ResultOpening kind="return" />
+    <CheckOurMath utc={model.instantUtc} basis="return" />
     <section class="shell sr-result__reading" aria-labelledby="lunar-return-reading-title">
       <div class="core sr-result__core">
         <p class="kicker">Your next lunar return</p>

@@ -54,6 +54,7 @@ export interface SlotState {
 }
 
 interface Person {
+  computedUtc?: Date | string;
   label: string;
   bodies: MinimalBody[];
   asc: number | null;
@@ -257,6 +258,7 @@ export async function resolveSaved(chart: SavedChart, loadEngine: EngineLoader):
       houseSystem: summary.houseSystem,
       engineVersion: summary.engineVersion,
     },
+    computedUtc: summary.utcISO,
     ...(resolved.timeKnown ? { utc: summary.utcISO } : { untimedDate: chart.birth.date }),
   };
 }
@@ -299,6 +301,7 @@ export async function resolveLink(link: { input: ShareChartInput; label: string 
       houseSystem: result.input.houseSystem,
       engineVersion: result.engineVersion,
     },
+    computedUtc: resolved.utc,
     ...(input.timeKnown ? { utc: resolved.utc } : { untimedDate: input.date }),
   };
 }
@@ -336,6 +339,7 @@ export async function resolveForm(slot: SlotState, fallbackLabel: string, loadEn
       houseSystem: result.input.houseSystem,
       engineVersion: result.engineVersion,
     },
+    computedUtc: resolved.utc,
     ...(timeKnown ? { utc: resolved.utc } : { untimedDate: slot.date }),
     oldStyle: slot.oldStyle,
   };
@@ -1508,6 +1512,8 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
       {result && (
         <div class={`calc__result syn-meet${meetingSettled ? ' is-settled' : ''}`}>
           <h2 class="sr-only" tabIndex={-1} ref={resultHeadingRef}>{t(locale, 'compatibility')}</h2>
+          {wheelMod && <wheelMod.ResultOpening locale={locale} kind="pair" />}
+          {wheelMod && [result.a, result.b].map((person, index) => <wheelMod.CheckOurMath key={index} locale={locale} subject={person.label} utc={person.computedUtc ?? person.utc} basis={person.timeKnown ? 'birth' : 'reference'} />)}
           {(!result.a.timeKnown || !result.b.timeKnown) && (
             <p class="notice" role="status">
               {t(locale, 'compareNoTimeNotice')} {new Intl.ListFormat(listLocale(locale), {

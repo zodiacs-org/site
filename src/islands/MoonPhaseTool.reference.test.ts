@@ -24,7 +24,7 @@ if (functions.size !== 2) throw new Error('Moon lookup functions not found');
 const execute = new Function('context', `with(context){${ts.transpile([...functions.values()].join('\n'), {
   target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext,
 })};return lookup({preventDefault(){}});}`);
-type Result = { phase: ReturnType<typeof moonPhaseName>; angle: number; illum: number; lon: number; caption: string };
+type Result = { computedUtc: Date; reference: boolean; phase: ReturnType<typeof moonPhaseName>; angle: number; illum: number; lon: number; caption: string };
 type Input = { date: string; time: string; zone: string | null; locale?: CatalogLocale };
 async function capture({ date, time, zone, locale = 'en' }: Input, longitudes?: { Moon: number; Sun: number }, assess = assessLocalDateReference) {
   const calls: Array<{ body: string; utc: string; value: number }> = [];
@@ -121,7 +121,7 @@ describe('Moon phase reference result', () => {
     expect(moonPhaseName(new Date('1990-01-04T12:00:00Z'))).toBe('First Quarter');
     const actual = await capture(input, { Moon: 180, Sun: 0 });
     expect(actual.result).toEqual({ phase: 'Full Moon', angle: 180, illum: 1,
-      lon: 180, caption: t('en', 'utcTimeCaption') });
+      lon: 180, computedUtc: new Date('1990-01-04T12:00:00Z'), reference: false, caption: t('en', 'utcTimeCaption') });
     expect(actual.calls.map(call => call.body)).toEqual(['Moon', 'Sun']);
   });
 
@@ -133,7 +133,9 @@ describe('Moon phase reference result', () => {
     const angle = (((lon - sun) % 360) + 360) % 360;
     expect(actual.error).toBe('');
     expect(actual.busy).toBe(false);
-    const { caption, ...numerical } = actual.result!;
+    const { caption, computedUtc, reference, ...numerical } = actual.result!;
+    expect(computedUtc.toISOString()).toBe(utc.toISOString());
+    expect(reference).toBe(!input.time);
     expect(JSON.stringify(numerical)).toBe(JSON.stringify({ phase: moonPhaseNameFromAngle(angle), angle,
       illum: (1 - Math.cos((angle * Math.PI) / 180)) / 2, lon }));
     expect(actual.calls).toEqual([{ body: 'Moon', utc: utc.toISOString(), value: lon }, { body: 'Sun', utc: utc.toISOString(), value: sun }]);

@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import { homeTrustFaq } from '../lib/home-trust';
 import AstroTerm from '../components/AstroTerm.astro';
 import RaceRamp from '../components/RaceRamp.astro';
 import SignIcon from '../components/SignIcon.astro';
@@ -16,14 +17,7 @@ import homeFirstPaintCss from '../home/home-first-paint.css?inline';
 import '../styles/today.css';
 
 const faq = [
-  {
-    q: 'Is it free?',
-    a: 'Yes. Every calculator and guide is free, with no account and no paywall. Charts are computed in your own browser, so there is nothing to sell you.',
-  },
-  {
-    q: 'How accurate are the charts?',
-    a: 'Planetary positions come from an astronomical engine tested automatically against NASA JPL reference data to within a few hundredths of a degree. Historical clock changes from 1970 on use the IANA/ICU history supplied by your browser or device runtime; earlier ones come from a pinned release of the IANA database, including the older records it keeps apart for places whose clocks later matched another city’s, which its maintainers consider less reliable. A birth from before its place adopted a legal time uses the local mean time of the birthplace itself. Every chart lists its computed UTC instant so you can check the conversion.',
-  },
+  ...homeTrustFaq('en'),
   {
     q: 'What happens to my birth data?',
     a: 'The calculation runs entirely in your browser. Saving a chart stores it on this device first; if you choose account sync, your saved charts upload to your account (stored with row-level security) so they can follow you across devices.',
@@ -63,7 +57,7 @@ const jsonLd = [
   },
   {
     '@type': 'FAQPage',
-    mainEntity: faq.map(({ q, a }) => ({
+    mainEntity: faq.map(({ q, a, ...rest }) => ({
       '@type': 'Question',
       name: q,
       acceptedAnswer: { '@type': 'Answer', text: a },
@@ -644,10 +638,10 @@ const tools = [
   <section class="container container--narrow pace-sec">
     <div class="section-head reveal"><h2>Common questions</h2></div>
     <div class="faq reveal">
-      {faq.map(({ q, a }) => (
+      {faq.map(({ q, a, ...rest }) => (
         <details class="faq__item">
           <summary>{q}</summary>
-          <p>{a}</p>
+          <p>{a} {'href' in rest && <a href={rest.href as string}>{rest.link}</a>}</p>
         </details>
       ))}
     </div>

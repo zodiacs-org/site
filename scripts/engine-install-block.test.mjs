@@ -40,7 +40,7 @@
  * refusing to get that far.
  */
 import { execFileSync } from 'node:child_process';
-import { mkdtempSync, mkdirSync, symlinkSync, lstatSync, writeFileSync, readFileSync, existsSync, rmSync } from 'node:fs';
+import { mkdtempSync, realpathSync, mkdirSync, symlinkSync, lstatSync, writeFileSync, readFileSync, existsSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { createHash } from 'node:crypto';
@@ -222,9 +222,9 @@ describe('the install commands the engine page publishes', () => {
     writeFileSync(join(parent, 'package.json'), PROJECT);
     const prefix = (cwd) => execFileSync('npm', ['prefix'], { cwd, env, encoding: 'utf8' }).trim();
     try {
-      expect(prefix(child), 'npm would install into the parent project').toBe(parent);
+      expect(prefix(child), 'npm would install into the parent project').toBe(realpathSync(parent));
       writeFileSync(join(child, 'package.json'), PROJECT);
-      expect(prefix(child), 'with a package.json here, npm installs here').toBe(child);
+      expect(prefix(child), 'with a package.json here, npm installs here').toBe(realpathSync(child));
     } finally {
       discard(parent);
     }

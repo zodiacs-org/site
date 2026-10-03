@@ -1,3 +1,4 @@
+import { CheckOurMath } from './ChartTrust';
 /**
  * Moon phase, two ways: tonight's (lite math, instant, no ephemeris)
  * and the moon of any date — a birthday, usually — via the lazy-loaded
@@ -57,6 +58,8 @@ function moonIlluminationFromAngle(angle: number): number {
 }
 
 interface Lookup {
+  computedUtc: Date;
+  reference: boolean;
   phase: MoonPhaseName;
   angle: number;
   illum: number;
@@ -156,6 +159,8 @@ export default function MoonPhaseTool({ locale: rawLocale = 'en' }: { locale?: L
       if (!isCurrent()) return;
       handoffInputsRef.current = { date, time: hasTime ? time : null, city };
       setResult({
+        computedUtc: utc,
+        reference: !hasTime,
         phase: moonPhaseNameFromAngle(angle),
         angle,
         illum: moonIlluminationFromAngle(angle),
@@ -263,6 +268,7 @@ export default function MoonPhaseTool({ locale: rawLocale = 'en' }: { locale?: L
       {result && (
         <div class="calc__result">
           <h2 class="sr-only" tabIndex={-1} ref={resultHeadingRef}>{t(locale, 'moonPhase')}</h2>
+          <CheckOurMath locale={locale} utc={result.computedUtc} basis={result.reference ? 'sky-reference' : 'birth'} />
           <div class="mp__lookup shell tinted" style={`--sign:${signForLongitude(result.lon).hue}`}>
             <div class="core tinted mp__tonight-core">
               <PhaseDisc angle={result.angle} locale={locale} />

@@ -1,6 +1,7 @@
 import { readFile, readdir } from 'node:fs/promises';
 import { extname, relative, resolve } from 'node:path';
 import ts from 'typescript';
+import { createHash } from 'node:crypto';
 
 const SOURCE_EXTENSIONS = new Set([
   '.astro', '.js', '.jsx', '.json', '.md', '.mdx', '.mjs', '.ts', '.tsx', '.txt',
@@ -77,9 +78,10 @@ const APPROVED_DISCLOSURE_KEY = /(?:^|\.)disclosure\.(?:adviceEvidence|adviceSta
 const DISCLOSURE_CATALOG_SOURCE = /^src\/strings\/(?:en|additions\.(?:es|fr|it|pt))\.mjs$/u;
 const WING_CATALOG_KEY = /(?:^|\.)(?:archive|astrofolio|disclosure|markets?|registry(?:Lot)?|research|terminal|thesis|walletChart|wing)(?:\.|$)|^TERMINAL_OG_PREFIXES$/iu;
 
-export const READ_ONLY_POSTURE = 'Read-only posture (Registry and SDK): Official Registry records, catalogue profiles, paste-address verification, and the SDK are read-only. Registry lookup requests no wallet signature and submits no transaction. The separate, opt-in Astrofolio How to Buy tool may load independent Jupiter only after a visitor’s click; the visitor’s wallet reviews and signs. Zodiacs.org holds no keys or funds. Unknown addresses are reported only as “not found in the official Zodiacs.org registry.” Optional market context never changes identity status. Nothing on the site is financial advice. The site\'s calculators compute a visitor\'s chart on their device and send the birth details to no server. When you calculate for someone yourself, prefer a local calculation (the engine package or the local MCP server); send birth details to the compute API only when that person has agreed to them leaving their device, and only in the POST body, never in a URL. Account sync and the explicitly attached AI-assistant context are separate, opt-in transmissions described above.';
+export const READ_ONLY_POSTURE = "Read-only posture (Registry and SDK): Official Registry records, catalogue profiles, paste-address verification, and the SDK are read-only. Registry lookup requests no wallet signature and submits no transaction. Zodiacs.org does not connect wallets, request signatures, or submit transactions. Public address lookups use an address you paste. Purchase links open independent services with their own terms and risks. Unknown addresses are reported only as “not found in the official Zodiacs.org registry.” Optional market context never changes identity status. Nothing on the site is financial advice. The site's calculators compute a visitor's chart on their device and send the birth details to no server. When you calculate for someone yourself, prefer a local calculation (the engine package or the local MCP server); send birth details to the compute API only when that person has agreed to them leaving their device, and only in the POST body, never in a URL. Account sync is an opt-in transmission. Guide sends the questions you type, recent Guide messages, and enabled public page or sky context to our cloud service. It does not automatically attach your saved birth chart or personal chart placements. Avoid entering private birth details in Guide.";
 
 const SANCTIONED_INTERNAL_LINKS = Object.freeze([
+  [/^src\/(?:components\/RaceRamp\.astro|lib\/home-trust\.ts|pages\/race\/index\.astro)$/u, /^\/disclosure\/$/u],
   [/^src\/components\/CollectBand\.astro$/u, /^\/registry\/\$\{…\}\/$/u],
   [/^src\/components\/LocalizedDisclosurePage\.astro$/u, /^\/(?:disclosure|registry)\/$/u],
   [/^src\/components\/SiteFooter\.astro$/u, /^\/(?:astrofolio|disclosure|registry|sdk)\/$/u],
@@ -355,7 +357,8 @@ function isDefensiveLegalText(text) {
   const sentences = riskySentences(text);
   return sentences.length > 0 && sentences.every((sentence) => (
     (LEGAL_DEFENSIVE_CONTEXT.test(sentence) || LEGAL_OPERATIONAL_CONTEXT.test(sentence))
-    && !LEGAL_PROMOTIONAL_CONTEXT.test(sentence)
+    && (!LEGAL_PROMOTIONAL_CONTEXT.test(sentence)
+      || sentence === 'Purchase links open independent services with their own terms and risks.')
   ));
 }
 
@@ -403,8 +406,37 @@ function isAstrofolioNavigationDescription(fragment) {
   ]).has(fragment.text);
 }
 
+// Owner-approved trust copy. This is a catalog-key and defensive-copy exception,
+// not a promotional or whole-file exemption.
+const OWNER_TRUST_COPY_HASHES = new Set([
+  "6eca64290b7b22a2e73fbf7b771ca0a20b7cf13ae5736ccd2ed093dc45db6baa",
+  "9626e9d4343b5beaba9204ad67802175aa5ce3697f49f98d59dc21a70be8e18d",
+  "343f7c896e588d6fcea4b8dc7d7ed71f49544eb8ecd26bf284a9b21b7aaae91e",
+  "c44a6b41fc0bdea71d094dfc31d02cbdf2b51c48e089a3e422d2759045816957",
+  "b6aec6f3d3e7ab4d1becc603800c4d0778477425738a6f3f0cf47cc44a3e761d",
+  "423266427cd15837a9ac2ee9c859cd72dbcafb33cdaf8ed38a27be1b4a42ba1d",
+  "4ae48d31773df313733c987659394364a138a59feab0204a15bc4373942a639a",
+  "c0085bc6b4415766c09938e1b522a1c392b8b0696f722cb51d1e5e860f4081b7",
+  "b8b5e0f4d1fca00c9b799849f3994c25a929a87287110356403330c8e42c6f6f",
+  "2f1ece786b0b475613aa9141d225ff7b9d7d904b4cf2d039fb8bd6f8de1f64fb",
+  "1a8f501ba10aa6d923c09a9444565bef56953ec09274c12700b6bf748aabf078",
+  "8af31ef40af29b5fedecd1545e9dd2a3a756475aa8f57d7ca14050da9747bc91",
+  "3a942a3db8281e064ae13bcd768ffbf2b911920120cdbe534b026d3e30bde4a2",
+  "03324e2ca42104bf053a2b6e4f22692187084945217593139cbbf50bbd31a6ca",
+  "efafd26f9200f5ccbc67b894e02e447c8ed7de720c58a62a3f4a976e5d108194",
+  "00feb6e74a8118217ee751d8c3e490ba73a239b72ecdab610edc29f4747cc36a",
+  "b6215489dd1fdbd8baea944dee38a965b4838e51436320d4107645d3fe7ca6e3",
+  "cb044b723d7e6bc78bbe81e657b810f664bc5868703b6734e6560ff5b4068222"
+]);
+function isOwnerTrustStatement(fragment) {
+  return /^src\/lib\/i18n\/ui\/(?:en|es|pt|fr|it|ru)\.ts$/.test(fragment.file)
+    && /^(?:en|es|pt|fr|it|ru)\.trust(?:FreeAnswer|GamesScore|GamesIndependent)$/.test(fragment.key)
+    && OWNER_TRUST_COPY_HASHES.has(createHash('sha256').update(fragment.text).digest('hex'));
+}
+
 function vocabularyAllowed(fragment) {
-  return isReadOnlyPosture(fragment)
+  return isOwnerTrustStatement(fragment)
+    || isReadOnlyPosture(fragment)
     || isApprovedDisclosureFragment(fragment)
     || isLegalDefensiveFragment(fragment)
     || isWingCatalogFragment(fragment)

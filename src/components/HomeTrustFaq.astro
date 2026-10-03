@@ -1,0 +1,21 @@
+---
+import RaceRamp from './RaceRamp.astro';
+import { homeTrustFaq } from '../lib/home-trust';
+import { t, type CatalogLocale } from '../lib/i18n';
+interface Props { locale?: CatalogLocale }
+const locale = Astro.props.locale ?? 'en';
+---
+<section class="container container--narrow home-trust-faq">
+  <RaceRamp locale={locale} gap="24px" />
+  <h2>{t(locale, 'trustQuestions')}</h2>
+  {homeTrustFaq(locale).map(({q,a,href,link}) => <details>
+    <summary>{q}</summary><p>{a} <a href={href}>{link}</a>.</p>
+  </details>)}
+</section>
+<style>
+.home-trust-faq { margin-block: var(--space-12, 48px); }
+h2 { margin-block-end: 20px; }
+details { border-block-start: 1px solid var(--hair-1); padding-block: 12px; }
+summary { cursor: pointer; font-weight: 550; color: var(--text); }
+p { margin: 12px 0; color: var(--text-2); font-size: var(--text-sm); line-height: 1.65; }
+</style>

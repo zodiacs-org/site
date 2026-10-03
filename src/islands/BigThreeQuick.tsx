@@ -3,7 +3,7 @@ import { BirthFields, birthDateForChart, calendarInPlay, type CalendarChoice } f
 import type { City } from '../lib/geo/search';
 import { useEngine } from '../lib/hooks/useEngine';
 import CalculationReload, { calculationError } from './CalculationReload';
-import { loadModule } from '../lib/module-load';
+import { createModuleLoader, loadModule } from '../lib/module-load';
 import { prepareLocalTime, resolveLocalToUtc } from '../lib/time/localToUtc';
 import { SIGNS, formatLongitude, signForLongitude, signName } from '../lib/signs';
 import { bigThree } from '../lib/interpretations';
@@ -21,6 +21,8 @@ import type { PreparedChartCard } from '../lib/share-card';
  */
 
 type CardModule = typeof import('../lib/share-card');
+const loadResultTrust = createModuleLoader(() => import('./ChartTrust'));
+type ResultTrust = typeof import('./ChartTrust');
 
 interface Placement {
   kind: 'sun' | 'moon' | 'rising';
@@ -57,6 +59,8 @@ export default function BigThreeQuick() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [placements, setPlacements] = useState<Placement[] | null>(null);
+  const [resultTrust, setResultTrust] = useState<ResultTrust | null>(null);
+  const [resultUtc, setResultUtc] = useState<Date | null>(null);
   const [handoff, setHandoff] = useState('');
   const [card, setCard] = useState<{ module: CardModule; prepared: PreparedChartCard; run: number } | null>(null);
   const [cardState, setCardState] = useState<'idle' | 'preparing' | 'ready' | 'sharing' | 'shared' | 'downloaded' | 'failed'>('idle');
@@ -127,7 +131,7 @@ export default function BigThreeQuick() {
       }
       await prepareLocalTime(day, city.tz);
       const resolution = resolveLocalToUtc(day, time, city.tz, { longitude: city.lon });
-      const engine = await loadEngine();
+      const [engine, trust] = await Promise.all([loadEngine(), loadResultTrust()]);
       if (run !== generation.current) return;
       const chart: Chart = engine.computeChart({
         utc: resolution.utc,
@@ -143,6 +147,8 @@ export default function BigThreeQuick() {
       if (!sun || !moon || !chart.angles) throw new Error('incomplete chart');
       cardSource.current = { chart, run };
       requestAllDiscs();
+      setResultTrust(trust);
+      setResultUtc(chart.input.utc);
       setPlacements([
         { kind: 'sun', title: TITLES.sun, lon: sun.lon },
         { kind: 'moon', title: TITLES.moon, lon: moon.lon },
@@ -252,6 +258,7 @@ export default function BigThreeQuick() {
 
       {placements && (
         <div class="big-three__result" ref={resultRef} data-big-three-result>
+          {resultTrust && <><resultTrust.ResultOpening /><resultTrust.CheckOurMath utc={resultUtc} /></>}
           <div class="calc__three calc__three--3">
             {placements.map(({ kind, title, lon }) => {
               const s = signForLongitude(lon);
