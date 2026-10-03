@@ -1,0 +1,134 @@
+{
+  "date": "2026-10-03",
+  "base": "076540b69123b353b6cdbac9054b3c60fb438846",
+  "node": "v22.22.2",
+  "typescript": "5.9.3",
+  "typedoc": "0.28.20",
+  "chromium": "151.0.7922.173",
+  "sourceBinding": {
+    "exitCode": 0,
+    "files": 69,
+    "mismatches": 0
+  },
+  "reproducibility": {
+    "exitCode": 0,
+    "files": 530,
+    "publicAndDistIdentical": true,
+    "inventorySha256": "e60e692684070d9e705d905e60bb7e47b14ca42b2465caf447d4c852e16a06fb",
+    "toolingLockSha256": "fc6934555426c7ac21c3d538fcba1b2ec34926c68300c9db23229f33385e1a10"
+  },
+  "tests": {
+    "exitCode": 0,
+    "files": 5,
+    "passed": 162,
+    "authorshipPassed": 91
+  },
+  "build": {
+    "exitCode": 0,
+    "htmlFiles": 4992,
+    "postbuildCompleted": true
+  },
+  "check": {
+    "exitCode": 0,
+    "errors": 0,
+    "warnings": 0,
+    "hints": 39
+  },
+  "referenceOutput": {
+    "exitCode": 0,
+    "pages": 514
+  },
+  "authorshipOutput": {
+    "exitCode": 0,
+    "documents": 676
+  },
+  "referenceBrowser": {
+    "exitCode": 0,
+    "routeViewportChecks": 12,
+    "widths": [
+      1280,
+      390,
+      320
+    ],
+    "landingAndModuleIndexLinks": true,
+    "pageErrors": 0,
+    "horizontalOverflow": false
+  },
+  "platformBrowser": {
+    "exitCode": 0,
+    "widths": [
+      1280,
+      390,
+      320
+    ]
+  },
+  "firstUseBrowser": {
+    "exitCode": 1,
+    "chromiumChecksPassed": 44,
+    "firefox": "Not run: executable unavailable; no Firefox pass claimed"
+  },
+  "preservation": {
+    "filesCompared": 131,
+    "mismatches": 0,
+    "record": "preservation.json"
+  },
+  "liveHTTP": "Unavailable: proxy rejected CONNECT with 403; no retry or bypass",
+  "ledgerSummary": "Overall delivery: 24% (43.5 of 182.45); blocked 2% (3.5)",
+  "scope": "phase1-scope-guard: PASS — 557 changed path(s), protected scope untouched",
+  "releaseState": "Local review only. No push, PR, metadata mutation, merge, deployment or ledger acceptance.",
+  "fullLogsDirectory": "/workspace/g1-review/logs",
+  "logReceipts": {
+    "source-build": {
+      "bytes": 3802,
+      "sha256": "9bfad388f82d733176db64afc78b1989aedb2985666c030eb1c405e1683aa5c5"
+    },
+    "generate": {
+      "bytes": 189,
+      "sha256": "38e69ec3712269dea28757b30ae30115d1f1ec732ddb7aa866e60da5d88f67cd"
+    },
+    "tools-ci": {
+      "bytes": 25,
+      "sha256": "506022904250793de36c46f6f7e7a8efd9324fc48efa6107e5a33ffc5792bdb2"
+    },
+    "drift": {
+      "bytes": 190,
+      "sha256": "6b18841a0b24486a816691c14b8b17eadc4155c15f1fbcb9de8fdae7a49dfbb1"
+    },
+    "tests": {
+      "bytes": 642,
+      "sha256": "ac640ebb5622ce607aa3a887573c0742159e248b6c7788d9d1b9a05bd89a01a0"
+    },
+    "site-build": {
+      "bytes": 299046,
+      "sha256": "097a3ad5a44f298fd3b9ea1190afab414c0a5c37e9604929dfe1a3f3c57c9e45"
+    },
+    "check": {
+      "bytes": 13207,
+      "sha256": "250538c40a89d419657512578b8e7a2ae7b7137a4c04699e93b2afea42f88bad"
+    },
+    "browser": {
+      "bytes": 136,
+      "sha256": "418a8d91be2950c4e019a2495672c7c057745fdf98e10d0086c869515ab09c0d"
+    },
+    "output": {
+      "bytes": 116,
+      "sha256": "3250e616173f7c8fb3d92727aa75eaa4bfc2638b27aab0944f5447980b5207a8"
+    },
+    "authorship": {
+      "bytes": 77,
+      "sha256": "be0dc51dc257a8219bf2a82f10eecf28aae250b82f8d011a06316761ff4b6ae5"
+    },
+    "platform-browser": {
+      "bytes": 3670,
+      "sha256": "d267f3c5d447f9f49f9124d08c0717e0f5d3a59c29d1823ae37c9c3eb7c71639"
+    },
+    "firstuse-browser": {
+      "bytes": 4151,
+      "sha256": "093f5d5332ee2b369521ad2047f9f095cd6a4106e324306788c4218f16e66416"
+    },
+    "scope": {
+      "bytes": 76,
+      "sha256": "1de2b4cb361fda99a2420bbc4f6c29db0c4a647f538cd2490310a4158e667dae"
+    }
+  }
+}

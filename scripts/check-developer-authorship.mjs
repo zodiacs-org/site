@@ -10,6 +10,12 @@ const documentExtensions = new Set(['.html', '.md', '.txt', '.json']);
 export const requiredDocuments = [
   ...['', 'compare/', 'compute/', 'conformance/', 'engine/', 'examples/',
     'mcp/', 'precision-preview/', 'support/'].map((route) => `developers/${route}index.html`),
+  'developers/engine/reference/index.html', 'developers/engine/reference/modules.html',
+  'developers/engine/reference/provenance.json',
+  'developers/engine/reference/release/LICENSE.txt',
+  'developers/engine/reference/release/LICENSING.txt',
+  'developers/engine/reference/release/NOTICE.txt',
+  'developers/engine/reference/release/README.txt',
   'sdk/index.html', 'sdk/examples/simastry-aura/index.html',
   'sdk/engine/index.html', 'sdk/engine/modules.html',
   'llms.txt', 'llms-full.txt', 'api/v1/llms.txt', 'api/v1/index.json',

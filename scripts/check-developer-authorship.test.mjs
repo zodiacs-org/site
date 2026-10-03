@@ -38,6 +38,8 @@ describe('served developer documentation authorship', () => {
   });
 
   const surfaces = [
+    'developers/engine/reference/functions/calc.calc.html',
+    'developers/engine/reference/release/NOTICE.txt',
     'developers/engine/index.html', 'developers/new/deep/topic/index.html',
     'sdk/engine/functions/nested/example.html', 'sdk/engine/media/new.md',
     'sdk/examples/new/index.html', 'llms.txt', 'llms-full.txt',

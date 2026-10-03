@@ -1,0 +1,10 @@
+[info] html generated at /tmp/zodiacs-reference-KuU3rU/output
+Engine reference: drift PASS (12 public entry points; archive 43a72d30e483d8ff22024e403c4bd0d86d81bb6e1d0ad138f857cd001ab015d8)
+
+Engine reference output: PASS (514 pages; canonical, links, version, source identity, licences, notices and footer)
+
+Developer authorship: PASS (676 documentation files in /workspace/site/dist)
+
+Engine reference browser: PASS (12 route/viewport checks; landing link, canonicals, licences, no horizontal overflow or browser errors)
+
+phase1-scope-guard: PASS — 557 changed path(s), protected scope untouched

@@ -1,0 +1,14 @@
+
+ RUN  v3.2.7 /workspace/site
+
+ ✓ scripts/engine-reference.test.mjs (10 tests) 244ms
+ ✓ scripts/engine-demo.test.mjs (4 tests) 154ms
+ ✓ scripts/consumer-copy-lib.test.mjs (6 tests) 11ms
+ ✓ scripts/engine-install-block.test.mjs (51 tests) 1974ms
+   ✓ the install commands the engine page publishes > guards against what npm really does without a package.json here (F-04)  643ms
+ ✓ scripts/check-developer-authorship.test.mjs (91 tests) 2284ms
+
+ Test Files  5 passed (5)
+      Tests  162 passed (162)
+   Start at  20:12:10
+   Duration  2.78s (transform 184ms, setup 0ms, collect 330ms, tests 4.67s, environment 1ms, prepare 507ms)
