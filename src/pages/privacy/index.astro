@@ -1,4 +1,5 @@
 ---
+import { t } from '../../lib/i18n';
 import Base from '../../layouts/Base.astro';
 import { webAnalyticsEnabled as vercelWebAnalyticsFlag } from '../../lib/web-analytics.mjs';
 import { accountSyncV2Enabled as isAccountSyncV2Enabled } from '../../lib/account-v2/feature-flags';
@@ -16,8 +17,8 @@ const walletChartEnabled = configuredWalletChains({
   PUBLIC_WALLET_CHART_ENABLED:
     import.meta.env.PUBLIC_WALLET_CHART_ENABLED ?? process.env.PUBLIC_WALLET_CHART_ENABLED,
 }).length > 0;
-const updated = '29 September 2026';
-const modifiedAt = '2026-09-29T00:00:00.000Z';
+const updated = '3 October 2026';
+const modifiedAt = '2026-10-03T00:00:00.000Z';
 
 const jsonLd = [
   {
@@ -42,21 +43,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
     <h1 class="method-title display">Your birth details leave your device only when you send them.</h1>
 
     <div class="prose">
-      <p class="lede">
-        Chart calculation runs in your browser. Birth fields
-        are not sent as part of calculation or a Cabinet of Twelve lookup; they
-        leave your device only if you sign in to sync saved charts, share a link
-        that carries them, or type them into an assistant message. A transit
-        calendar or a compatibility invitation sends chart positions instead,
-        and those positions still give your birth date and time. If you
-        explicitly attach a chart to the assistant,
-        a placements-only summary also leaves the device; saved names and raw
-        birth fields are not attached, though its positions still give your
-        birth date and time. Aura sends one public wallet address—not your birth or chart
-        data—to a blockchain-data provider for a read-only lookup. Accounts{weeklyDigestEnabled ? ',' : ' and'}
-        remembered Aura data{weeklyDigestEnabled ? ', and the weekly email' : ''} are optional and off by
-        default. We show no ads and use no cross-site tracking.
-      </p>
+      <p class="lede"> Chart calculation runs in your browser. Birth fields are not sent as part of calculation or a Cabinet of Twelve lookup; they leave your device only if you sign in to sync saved charts, share a link that carries them, or type them into an assistant message. Aura sends one public wallet address—not your birth or chart data—to a blockchain-data provider for a read-only lookup. Accounts{weeklyDigestEnabled ? ',' : ' and'} remembered Aura data{weeklyDigestEnabled ? ', and the weekly email' : ''} are optional and off by default. We show no ads and use no cross-site tracking. </p>
 
       <h2>Who operates this site</h2>
       <p>
@@ -92,62 +79,20 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
       </p>
 
       <h2>Guide</h2>
-      <p>
-        When you send a question to Guide, that message, recent Guide messages,
-        and the visible Guide context are sent to OpenAI for an input safety
-        check and to generate a draft reply. That generated draft reply is then
-        sent back to OpenAI for a second safety check before you see it.
-        Every Responses API request uses <code>store: false</code>. The current web Guide conversation stays only
-        in this browser session, is not synced to an account, and is not stored
-        as text on Zodiacs.org servers, whether or not you are signed in.
-        OpenAI states that API data is not used to train its models by default,
-        and that its abuse-monitoring logs keep submitted content for up to 30
-        days, or longer where the law requires it or where that is needed to
-        protect its services or others from harm. Guide offers to attach a
-        chart only in the encrypted sync preview, which is off on the public
-        site, and only the one chart you marked there as your own. It is
-        included only after you press “Attach my chart”; the consent screen
-        shows the placements-only summary before it is sent. That summary
-        accompanies each question while “Using my chart” remains on; you can
-        turn it off. Guide never attaches your saved name, birth date, time,
-        birthplace, or coordinates, but the summary's planet positions still
-        give your birth date and time, and its ascendant and midheaven, kept
-        to the whole degree, give your birthplace roughly. For a chart without
-        a birth time, the summary is the sky at 12:00 UTC on the birth date,
-        without the Moon, which gives the date but nothing about the
-        birthplace. Anything you type into chat is part of the message you
-        send.
-        To enforce the daily limit, we keep a salted one-way identifier derived
-        from your IP address, never the raw IP, with its daily count and a
-        record of each request. Each later quota check deletes counts older than
-        the previous UTC day and request records older than 48 hours. We do not send
-        that identifier to OpenAI or put conversation text in provider metadata.
-        Guide also sets a session cookie holding a random, signed identifier. It
-        is used to limit simultaneous requests from one browser, lasts until the
-        browser session ends, and is not stored with your messages.
-      </p>
+      <p>{t('en', 'trustGuideNotice')}</p>
+      <p> When you send a question to Guide, that message, recent Guide messages, and the visible Guide context are sent to OpenAI for an input safety check and to generate a draft reply. That generated draft reply is then sent back to OpenAI for a second safety check before you see it. Every Responses API request uses <code>store: false</code>. The current web Guide conversation stays only in this browser session, is not synced to an account, and is not stored as text on Zodiacs.org servers, whether or not you are signed in. OpenAI states that API data is not used to train its models by default, and that its abuse-monitoring logs keep submitted content for up to 30 days, or longer where the law requires it or where that is needed to protect its services or others from harm. To enforce the daily limit, we keep a salted one-way identifier derived from your IP address, never the raw IP, with its daily count and a record of each request. Each later quota check deletes counts older than the previous UTC day and request records older than 48 hours. We do not send that identifier to OpenAI or put conversation text in provider metadata. Guide also sets a session cookie holding a random, signed identifier. It is used to limit simultaneous requests from one browser, lasts until the browser session ends, and is not stored with your messages. </p>
 
       <h2>Charts you save</h2>
       <p>
         When you save a chart, it is stored in your browser's local storage —
         on your device, under your control. It is not sent anywhere unless you
-        sign in to an account (below), share it or subscribe to its transit
-        calendar (below), or attach it to Guide (above).
+        sign in to an account (below) or share it.
         Clearing your browser's site data removes saved charts. Unless you sign
         in, we cannot see them and cannot recover them for you.
       </p>
 
       <h2>Share links and invitations</h2>
-      <p>
-        Share links keep chart data after the “#” in the address, which browsers
-        do not send to servers. A full-details link carries the chart's name,
-        birth date, time, place, and coordinates. A positions-only link carries
-        the chart code described under “Daily brief, calendar, and
-        notifications” instead. Anyone who has either link can open it,
-        including anyone it is forwarded to. A link with a preview image also
-        puts the Sun, Moon, and rising sign, to the degree, in the address, so
-        our server and any app that shows the preview receive them.
-      </p>
+      <p> Share links keep chart data after the “#” in the address, which browsers do not send to servers. A full-details link carries the chart's name, birth date, time, place, and coordinates. A positions-only link carries the chart code described under “Daily brief, calendar, and notifications” instead. Anyone who has either link can open it, including anyone it is forwarded to. </p>
       <p>
         Every image you can make of a chart, a pair of charts or a return — the
         chart sheet and chart cards, the images of a reading, an aspect pattern
@@ -263,16 +208,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
           to a day. No birth or chart data is sent.
         </p>
       )}
-      <p>
-        You can paste a public address without connecting a wallet. If you
-        choose Connect, compatible third-party wallet software is invoked only
-        after your click. It may return the public accounts you authorize to
-        this browser; Aura selects one compatible address and forwards only that
-        address for the lookup. Aura does not request a recovery phrase, private
-        key, message signature, token approval, transaction, or network switch.
-        Your wallet provider's own privacy terms apply to its software and
-        connection prompt.
-      </p>
+      <p>{t('en', 'trustWalletNotice')}</p>
       <p>
         A public address is public but not necessarily anonymous. Its on-chain
         holdings and history may be visible and may become linked with a person
@@ -288,26 +224,13 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
       <p>
         When a relevant Zodiac Terminal or Registry market panel is displayed, your browser may request
         public market data from Dex Screener, public chart data from GeckoTerminal,
-        or public attention data from Wikimedia, and opening a Terminal market asks
-        independent Jupiter for a price quote on a sample amount. Those automatic requests do not include a wallet address,
+        or public attention data from Wikimedia. Those automatic requests do not include a wallet address,
         birth fields, chart data, or Aura results. The independent service still
         receives ordinary web-request metadata, such as your IP address,
         browser information, and request time, and its own privacy terms and
         retention practices apply.
       </p>
-      <p>
-        On the Astrofolio How to Buy page, opening the page or changing the selected sign does not load
-        Jupiter, contact wallet software, or request a quote. After you explicitly load the optional
-        convenience tool, your browser sends the selected token mint and requested amount as quote parameters
-        to independent Jupiter and requests indexed-liquidity context from Dex Screener. Those display requests
-        do not include a wallet address. If you choose to review a direct swap, the compatible wallet you select
-        supplies its public Solana address to Jupiter so Jupiter can build the exact transaction for your review.
-        Your wallet signs locally. Your browser then sends the signed transaction and Jupiter request identifier
-        to Jupiter's execution endpoint. Neither the public address nor the signed transaction is sent to a
-        Zodiacs.org server, and Zodiacs.org never asks for or receives a recovery phrase or private key. Jupiter,
-        Dex Screener, and your wallet service may receive ordinary web-request metadata such as your IP address,
-        browser information, and request time; their own privacy terms and retention practices apply.
-      </p>
+      <p>{t('en', 'trustWalletNotice')}</p>
       <p>
         Each sign&rsquo;s Registry profile is read-only. It shows public market data
         and verified token addresses, but it contains no purchase route or link
@@ -472,35 +395,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         The daily brief reads computed positions from a chart saved on your
         device.
       </p>
-      <p>
-        A transit calendar feed carries a positions-only chart code in its web
-        address. Our server, its cache, and your calendar service receive that
-        code each time the calendar refreshes. The code has no name, date, time,
-        or place fields. Its planet positions still give your birth date and
-        time to the minute: they are taken at the birth time in UTC rounded to
-        the whole minute. The ascendant and midheaven are rounded to the degree,
-        which still narrows the birthplace to an area about one degree of
-        longitude wide: about 110 km at the equator, 80 km at 45° north or
-        south, and 55 km at 60°. From north to south the area is at least 400 km
-        within 15° of the equator, 200 km within 45°, and 70 km within 60°;
-        further north it can be narrower, and near the Arctic Circle it can be a
-        strip less than a kilometre from north to south. A chart without a birth
-        time has no ascendant or midheaven, and its code carries the sky at
-        12:00 UTC on the birth date, which gives the date but nothing about the
-        birthplace. Codes made by an earlier version of the site can carry more.
-        For a chart without a birth time they carry noon at the birthplace,
-        which gives its time zone or, before standard time, its longitude, and a
-        picture of two charts made with such a code draws that chart from those
-        positions, not from the sky at 12:00 UTC. For a birth before standard
-        time, when a chart keeps the birthplace's own mean time, they carry the
-        second of the birth, which narrows the birthplace to a few strips about
-        3 km wide or less. Calendar addresses made before 23 September 2026 also
-        carry the ascendant and midheaven more precisely; our server now rounds
-        them before use. A calendar address never changes by itself, so to
-        replace one made by an earlier version, such as one for a chart without
-        a birth time or for a birth before standard time, remove that calendar
-        and subscribe again.
-      </p>
+
       <p>
         A calendar file you download from the Transits page is built in your
         browser from your chart as calculated there, not from the chart code,
@@ -575,17 +470,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
       </p>
 
       <h2>Hosting, logs, and analytics</h2>
-      <p>
-        The site is hosted on <a href="https://vercel.com/" rel="noopener noreferrer">Vercel</a>.
-        Like all web hosts, their servers process the requests your browser
-        makes and may keep short-lived technical logs (such as IP address and
-        browser type) to deliver the site and guard against abuse. Those logs
-        keep the full web address of each request, which for a transit
-        calendar includes its chart code and for a link with a preview image
-        includes the Sun, Moon, and rising sign. We do not run
-        advertising, and we use no cross-site tracking cookies or third-party
-        marketing pixels.
-      </p>
+      <p> The site is hosted on <a href="https://vercel.com/" rel="noopener noreferrer">Vercel</a>. Like all web hosts, their servers process the requests your browser makes and may keep short-lived technical logs (such as IP address and browser type) to deliver the site and guard against abuse. We do not run advertising, and we use no cross-site tracking cookies or third-party marketing pixels. </p>
       {accountSyncV2Enabled ? (
         <p>
           Third-party analytics are disabled throughout the access-controlled
@@ -645,7 +530,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
 
       <h2>Your choices</h2>
       <ul>
-        <li>Use every calculator with no account; nothing you enter is stored off your device unless you sign in, share a chart, or subscribe to its calendar.</li>
+        <li>Use every calculator with no account; nothing you enter is stored off your device unless you sign in or share a chart.</li>
         <li>Use the Aura example without a chart, address, wallet connection, or purchase.</li>
         <li>Paste a public address instead of connecting third-party wallet software.</li>
         <li>Leave Aura's “Remember” option unchecked and clear its browser data at any time.</li>

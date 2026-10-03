@@ -30,47 +30,15 @@ describe('Astrofolio beginner buying guide', () => {
     }
   });
 
-  it('teaches wallet and network safety before the executable convenience tool', async () => {
+  it('offers canonical public addresses and independent links without wallet or signing code', async () => {
     const source = await read('src/pages/astrofolio/how-to-buy/index.astro');
-    const wallet = source.indexOf('id="wallet"');
-    const funding = source.indexOf('id="fund-wallet"');
-    const verify = source.indexOf('id="verify"');
-    const review = source.indexOf('id="review"');
-    const jupiter = source.indexOf('id="jupiter"');
-    expect(wallet).toBeGreaterThan(-1);
-    expect(funding).toBeGreaterThan(wallet);
-    expect(verify).toBeGreaterThan(funding);
-    expect(review).toBeGreaterThan(verify);
-    expect(jupiter).toBeGreaterThan(review);
-    expect(source).toContain('Public wallet address');
-    expect(source).toContain('Recovery phrase or private key');
-    expect(source).toContain('Choose USDC and the Solana network.');
-    expect(source).toContain('Send a small test amount first.');
-    expect(source).toContain('Keep a little SOL for fees.');
-    expect(source).toContain('Transactions are generally irreversible.');
-    expect(source).toContain('can lose all of its market value');
-    expect(source).toContain('Copy verified address');
-  });
-
-  it('loads the existing Jupiter runtime only after an explicit click', async () => {
-    const source = await read('src/pages/astrofolio/how-to-buy/index.astro');
-    expect(source).toContain('Nothing has connected and no quote has been requested.');
-    expect(source).toContain('data-eligibility-confirm');
-    expect(source).toContain('I am at least 18 and may lawfully use a third-party swap service where I live.');
-    expect(source).toContain('href="/terms/"');
+    expect(source).toContain('{defaultRecord.mint}');
+    expect(source).toContain('encodeURIComponent(defaultRecord.mint)');
+    expect(source).toContain('chainId=1399811149');
+    expect(source).toContain('href={`/registry/${defaultRecord.slug}/`}');
+    expect(source).toContain("t('en', 'trustFreeAnswer')");
     expect(source).toContain('href="/disclosure/"');
-    expect(source).toContain('Astrofolio at zodiacs.org/astrofolio is the official Zodiacs.org consumer page.');
-    expect(source).toContain('Jupiter and your wallet remain independent services.');
-    expect(source).toContain("loadButton?.addEventListener('click', revealTrade)");
-    expect(source).toContain("script.src = '/assets/trade.js'");
-    expect(source).toContain('window as TradeWindow).zodiacsTrade?.mount');
-    expect(source).not.toContain('<script src="/assets/trade.js"');
-    expect(source).not.toContain('plugin.jup.ag');
-    expect(source).not.toMatch(/referralAccount|referralFee|platformFeeBps/u);
-    expect(source).toContain('receives no referral or trading fee');
-    expect(source).toContain('loadButton.disabled = true');
-    expect(source).toContain("setLoadButtonLabel('retry')");
-    expect(source).toContain('tradeInstance?.destroy?.()');
+    expect(source).not.toMatch(/<script|loadTradeBundle|zodiacsTrade|connectWallet|signTransaction|requestAccounts/);
   });
 
   it('makes Fomo primary while keeping the selected guide as an alternative', async () => {
@@ -121,27 +89,13 @@ describe('Astrofolio beginner buying guide', () => {
     expect(siteMap).not.toContain('only `/terminal/markets/` may reach');
   });
 
-  it('uses an execution-aware footer and accurately discloses the direct venue flow', async () => {
-    const [base, footer, privacy] = await Promise.all([
-      read('src/layouts/Base.astro'),
-      read('src/components/SiteFooter.astro'),
-      read('src/pages/privacy/index.astro'),
+  it('keeps the operator relationship alongside public token choices', async () => {
+    const [guide, ui] = await Promise.all([
+      read('src/pages/astrofolio/how-to-buy/index.astro'),
+      read('src/lib/i18n/ui/en.ts'),
     ]);
-
-    const guide = await read('src/pages/astrofolio/how-to-buy/index.astro');
-    expect(guide).toContain('terminalMarketNotice');
-    expect(guide).toContain(':global(body:has(.buy-guide) .zfooter .email-capture--footer)');
-    expect(guide).toContain(':global(body:has(.buy-guide) .zfooter__note) { display: none; }');
-    expect(base).toContain('<SiteFooter locale={locale} terminalMarketNotice={props.terminalMarketNotice} noAssistant={props.noAssistant} />');
-    expect(footer).toContain('const terminalMarketNotice = Boolean(Astro.props.terminalMarketNotice)');
-    expect(privacy).toContain("const updated = '29 September 2026'");
-    expect(privacy).toContain('selected token mint and requested amount as quote parameters');
-    expect(privacy).toContain('public Solana address to Jupiter');
-    expect(privacy).toContain('signed transaction and Jupiter request identifier');
-    expect(privacy).toContain('Neither the public');
-    expect(privacy).toContain('Zodiacs.org server');
-    expect(privacy).toContain('recovery phrase or private key');
-    expect(privacy).toContain('your wallet service may receive ordinary web-request metadata');
-    expect(privacy).toContain('your IP address');
+    expect(guide).toContain("t('en', 'trustFreeAnswer')");
+    expect(ui).toContain('Zodiacs.org also operates Astrofolio');
+    expect(guide).toContain('href="/disclosure/"');
   });
 });

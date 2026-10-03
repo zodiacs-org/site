@@ -4,6 +4,7 @@
  * palettes ship in the page and key on `data-theme`; the one inline script
  * applies the host's `?theme=` / `?accent=` parameters and nothing else.
  */
+import { t } from '../lib/i18n';
 import MiniBirthChartWidget from '../islands/MiniBirthChartWidget';
 import { WIDGET_THEME_SCRIPT } from '../lib/widget-theme';
 import { WIDGET_EN } from '../strings/widgets';
@@ -26,7 +27,7 @@ const theme = Astro.props.theme ?? 'dark';
   </head>
   <body style="margin:0;background:var(--widget-bg);color:var(--widget-text);font:13px/1.45 system-ui,-apple-system,sans-serif;">
     <main class="widget-shell">
-      <MiniBirthChartWidget client:load />
+      <MiniBirthChartWidget trustCopy={{ intro: t('en', 'trustIntro'), math: t('en', 'trustMath'), instant: t('en', 'trustInstant') }} client:load />
       <footer>
         <a href="https://zodiacs.org/?utm_source=embed&amp;utm_medium=widget&amp;utm_campaign=chart" target="_blank" rel="noopener noreferrer">{WIDGET_EN.poweredBy} →</a>
       </footer>
@@ -60,6 +61,11 @@ const theme = Astro.props.theme ?? 'dark';
   :global(.mini-chart__submit) { grid-column: 1 / -1; min-height: 40px; border: 1px solid var(--widget-accent); border-radius: 8px; background: transparent; color: var(--widget-text); font: 650 12px/1 system-ui,-apple-system,sans-serif; cursor: pointer; }
   :global(.mini-chart__submit:disabled) { opacity: .6; cursor: wait; }
   :global(.mini-chart__result) { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; }
+  :global(.mini-chart__opening), :global(.mini-chart__receipt) { grid-column: 1 / -1; margin: 4px 0; }
+  :global(.mini-chart__receipt) { padding-block: 8px; border-block: 1px solid var(--widget-hair); font-size: 11px; }
+  :global(.mini-chart__receipt a) { display: inline-flex; align-items: center; min-height: 44px; color: var(--widget-text); }
+  :global(.mini-chart__receipt p) { margin: 0; color: var(--widget-muted); }
+  :global(.mini-chart__receipt time) { display: block; overflow-wrap: anywhere; }
   :global(.mini-chart__result article) { min-width: 0; padding: 8px 5px; border: 1px solid var(--widget-hair); border-radius: 10px; background: var(--widget-surface); text-align: center; }
   :global(.mini-chart__result img) { display: block; width: 42px; height: 42px; margin: 0 auto 4px; }
   :global(.mini-chart__result small), :global(.mini-chart__result strong), :global(.mini-chart__result span) { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

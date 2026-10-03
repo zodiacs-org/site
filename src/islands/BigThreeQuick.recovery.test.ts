@@ -56,6 +56,7 @@ import { ModuleLoadError } from '../lib/module-load';
 
 const paris: City = { name: 'Paris', admin1: '', country: 'France', lat: 48.86, lon: 2.35, tz: 'Europe/Paris', pop: 2000000 };
 const chart = {
+  input: { utc: new Date('1989-12-12T12:00:00Z'), timeKnown: true },
   bodies: [{ body: 'Sun', lon: 261 }, { body: 'Moon', lon: 42 }],
   angles: { asc: 120, mc: 30 },
   engineVersion: 'test',

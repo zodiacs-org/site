@@ -3,7 +3,6 @@ import type { Chart } from '../lib/engine/types';
 import { t, type CatalogLocale as Locale } from '../lib/i18n';
 import { encodeSharedPositionsLink, type PositionsShareInput } from '../lib/share-positions';
 import { loadTimedSharedPositions, loadUntimedSharedPositions } from '../lib/share-positions-untimed';
-import { previewPlacements, previewQuery } from '../lib/share-preview';
 import {
   prepareBigThreeCard,
   prepareChartCard,
@@ -44,16 +43,15 @@ interface Props {
 
 const LINK_COPY = {
   en: {
-    copied: 'Link copied', preview: 'Copy link with preview', details: 'Copy link with birth details',
+    copied: 'Link copied', details: 'Copy link with birth details',
     detailsNote: 'Includes your birth details.',
-    previewNote: 'Both links keep the chart code after the # sign, which browsers do not send to servers. The preview link also sends the Sun, Moon and Rising, to the whole degree, to our preview service.',
     sheet: 'Share chart sheet',
   },
-  es: { copied: 'Enlace copiado', preview: 'Copiar enlace con vista previa', details: 'Copiar enlace con datos de nacimiento', detailsNote: 'Incluye tus datos de nacimiento.', previewNote: 'Ambos enlaces guardan el código de la carta después del signo #, que los navegadores no envían a los servidores. El enlace con vista previa también envía el Sol, la Luna y el Ascendente, al grado entero, a nuestro servicio de vista previa.', sheet: 'Compartir hoja de la carta' },
-  pt: { copied: 'Link copiado', preview: 'Copiar link com prévia', details: 'Copiar link com dados de nascimento', detailsNote: 'Inclui seus dados de nascimento.', previewNote: 'Os dois links guardam o código do mapa depois do sinal #, que os navegadores não enviam aos servidores. O link com prévia também envia o Sol, a Lua e o Ascendente, em graus inteiros, ao nosso serviço de prévia.', sheet: 'Compartilhar folha do mapa' },
-  fr: { copied: 'Lien copié', preview: 'Copier le lien avec aperçu', details: 'Copier le lien avec données de naissance', detailsNote: 'Inclut tes données de naissance.', previewNote: 'Les deux liens gardent le code du thème après le signe #, que les navigateurs n’envoient pas aux serveurs. Le lien avec aperçu envoie aussi le Soleil, la Lune et l’Ascendant, au degré entier, à notre service d’aperçu.', sheet: 'Partager la feuille du thème' },
-  it: { copied: 'Link copiato', preview: 'Copia il link con anteprima', details: 'Copia il link con dati di nascita', detailsNote: 'Include i tuoi dati di nascita.', previewNote: 'Entrambi i link tengono il codice del tema dopo il segno #, che i browser non inviano ai server. Il link con anteprima invia anche Sole, Luna e Ascendente, al grado intero, al nostro servizio di anteprima.', sheet: 'Condividi il foglio del tema' },
-  ru: { copied: 'Ссылка скопирована', preview: 'Скопировать ссылку с превью', details: 'Скопировать ссылку с данными рождения', detailsNote: 'Включает ваши данные рождения.', previewNote: 'Обе ссылки хранят код карты после знака #, который браузеры не отправляют на серверы. Ссылка с превью также отправляет нашему сервису превью Солнце, Луну и Асцендент с точностью до целого градуса.', sheet: 'Поделиться листом карты' },
+  es: { copied: 'Enlace copiado', details: 'Copiar enlace con datos de nacimiento', detailsNote: 'Incluye tus datos de nacimiento.', sheet: 'Compartir hoja de la carta' },
+  pt: { copied: 'Link copiado', details: 'Copiar link com dados de nascimento', detailsNote: 'Inclui seus dados de nascimento.', sheet: 'Compartilhar folha do mapa' },
+  fr: { copied: 'Lien copié', details: 'Copier le lien avec données de naissance', detailsNote: 'Inclut tes données de naissance.', sheet: 'Partager la feuille du thème' },
+  it: { copied: 'Link copiato', details: 'Copia il link con dati di nascita', detailsNote: 'Include i tuoi dati di nascita.', sheet: 'Condividi il foglio del tema' },
+  ru: { copied: 'Ссылка скопирована', details: 'Скопировать ссылку с данными рождения', detailsNote: 'Включает ваши данные рождения.', sheet: 'Поделиться листом карты' },
 } as const;
 
 function trackShare(variant: 'details_link' | 'positions_link' | 'big_three_card' | 'full_chart_card' | 'signature_card'): void {
@@ -84,9 +82,9 @@ export default function ChartShareDialog({
   });
   const preparationRef = useRef(new Map<Choice, number>());
   const [hideBirthDetails, setHideBirthDetails] = useState(true);
-  const [links, setLinks] = useState<{ positions: string; preview: string } | null>(null);
-  const [linkState, setLinkState] = useState<Record<'positions' | 'preview' | 'details', CopyLinkState>>({
-    positions: 'idle', preview: 'idle', details: 'idle',
+  const [links, setLinks] = useState<{ positions: string } | null>(null);
+  const [linkState, setLinkState] = useState<Record<'positions' | 'details', CopyLinkState>>({
+    positions: 'idle', details: 'idle',
   });
   const [prepared, setPrepared] = useState<Partial<Record<Choice, PreparedChartCard>>>({});
   const [states, setStates] = useState<Record<Choice, PreparedState>>({
@@ -144,13 +142,9 @@ export default function ChartShareDialog({
     void ready.then((shared) => {
       if (!current || !shared) return;
       const token = encodeSharedPositionsLink(shared);
-      const placements = previewPlacements(shared);
-      if (!token || !placements) return;
+      if (!token) return;
       const positions = `${window.location.origin}${receiverPath}#p=${token}`;
-      // The preview service gets the Sun, Moon and Rising to the whole degree;
-      // the full code stays in the fragment.
-      const preview = `${window.location.origin}/api/og/chart?${previewQuery(placements)}#p=${token}`;
-      setLinks({ positions, preview });
+      setLinks({ positions });
     }, (error) => console.error(error));
     return () => { current = false; };
   }, [chart, receiverPath, birthDate]);
@@ -299,19 +293,6 @@ export default function ChartShareDialog({
             <p class="calc-share-dialog__note" data-positions-share-note>
               {shareText(locale, chart.input.timeKnown ? 'positionsShareNote' : 'positionsShareNoteNoTime')}
             </p>
-            <CopyLinkButton
-              url={links.preview}
-              state={linkState.preview}
-              onStateChange={(state) => setLinkState((current) => ({ ...current, preview: state }))}
-              idleLabel={copy.preview}
-              copiedLabel={copy.copied}
-              ariaLabel={copy.preview}
-              buttonClass="btn btn--ghost"
-              dataHook="preview"
-              onCopied={() => trackShare('positions_link')}
-            >
-              <p class="calc-share-dialog__note">{copy.previewNote}</p>
-            </CopyLinkButton>
             {mode === 'full' && detailsUrl && (
               <CopyLinkButton
                 url={detailsUrl}

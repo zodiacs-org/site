@@ -1,4 +1,5 @@
 ---
+import { t } from '../../../lib/i18n';
 import Base from '../../../layouts/Base.astro';
 import { webAnalyticsEnabled as vercelWebAnalyticsFlag } from '../../../lib/web-analytics.mjs';
 import { accountSyncV2Enabled as isAccountSyncV2Enabled } from '../../../lib/account-v2/feature-flags';
@@ -16,8 +17,8 @@ const walletChartEnabled = configuredWalletChains({
   PUBLIC_WALLET_CHART_ENABLED:
     import.meta.env.PUBLIC_WALLET_CHART_ENABLED ?? process.env.PUBLIC_WALLET_CHART_ENABLED,
 }).length > 0;
-const updated = '29 settembre 2026';
-const modifiedAt = '2026-09-29T00:00:00.000Z';
+const updated = '3 ottobre 2026';
+const modifiedAt = '2026-10-03T00:00:00.000Z';
 
 const jsonLd = [
   {
@@ -44,26 +45,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
     <h1 class="method-title display">I tuoi dati di nascita lasciano il dispositivo solo quando li invii tu.</h1>
 
     <div class="prose">
-      <p class="lede">
-        Il calcolo del tema avviene nel tuo browser. I dati di nascita non
-        vengono inviati nell’ambito del calcolo né di una consultazione di
-        The Cabinet of Twelve; lasciano il dispositivo solo se accedi per
-        sincronizzare i temi salvati, se condividi un link che li contiene o se
-        li scrivi in un messaggio all’assistente. Un calendario dei transiti o
-        un invito di compatibilità invia invece le posizioni del tema, e da
-        quelle posizioni si possono comunque ricavare la tua data e la tua ora
-        di nascita. Se alleghi esplicitamente un tema all’assistente, lascia il
-        dispositivo anche un riepilogo delle sole posizioni; i nomi salvati e i
-        dati di nascita grezzi non vengono allegati, anche se dalle sue
-        posizioni si possono comunque ricavare la tua data e la tua ora di
-        nascita. Aura invia un indirizzo
-        pubblico del wallet — non i tuoi dati di nascita o del tema — a un
-        fornitore di dati blockchain per una consultazione di sola lettura.
-        Gli account{weeklyDigestEnabled ? ',' : ' e'}
-        i dati Aura memorizzati{weeklyDigestEnabled ? ' e l’e-mail settimanale' : ''} sono
-        facoltativi e disattivati per impostazione predefinita. Non mostriamo
-        pubblicità e non usiamo il tracciamento tra siti.
-      </p>
+      <p class="lede"> Il calcolo del tema avviene nel tuo browser. I dati di nascita non vengono inviati nell’ambito del calcolo né di una consultazione di The Cabinet of Twelve; lasciano il dispositivo solo se accedi per sincronizzare i temi salvati, se condividi un link che li contiene o se li scrivi in un messaggio all’assistente. Aura invia un indirizzo pubblico del wallet — non i tuoi dati di nascita o del tema — a un fornitore di dati blockchain per una consultazione di sola lettura. Gli account{weeklyDigestEnabled ? ',' : ' e'} i dati Aura memorizzati{weeklyDigestEnabled ? ' e l’e-mail settimanale' : ''} sono facoltativi e disattivati per impostazione predefinita. Non mostriamo pubblicità e non usiamo il tracciamento tra siti. </p>
 
       <h2>Chi gestisce questo sito</h2>
       <p>
@@ -99,72 +81,21 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
       </p>
 
       <h2>Guide</h2>
-      <p>
-        Quando invii una domanda a Guide, quel messaggio, i messaggi recenti di
-        Guide e il contesto visibile di Guide vengono inviati a OpenAI per un
-        controllo di sicurezza dell’input e per generare una bozza di risposta.
-        Quella bozza generata viene poi inviata di nuovo a
-        OpenAI per un secondo controllo di sicurezza prima che tu la veda.
-        Ogni richiesta all’API Responses usa <code>store: false</code>. La
-        conversazione web in corso con Guide resta soltanto in questa sessione
-        del browser, non viene sincronizzata con un account e non viene
-        archiviata come testo sui server di Zodiacs.org, che tu abbia effettuato
-        l’accesso o no. OpenAI dichiara che per impostazione predefinita i dati
-        dell’API non vengono usati per addestrare i suoi modelli, e che i suoi
-        log di monitoraggio degli abusi conservano i contenuti inviati fino a 30
-        giorni, o più a lungo quando la legge lo richiede o quando è necessario
-        per proteggere i suoi servizi o altre persone da danni. Guide propone
-        di allegare un tema solo nell’anteprima della sincronizzazione cifrata,
-        disattivata sul sito pubblico, e solo il tema che lì hai indicato come
-        tuo. Viene incluso solo dopo che premi “Allega il mio tema”; la
-        schermata di consenso mostra il riepilogo delle sole posizioni prima
-        che venga inviato. Quel riepilogo accompagna ogni domanda finché “Con il
-        mio tema” resta attivo; puoi disattivarlo. Guide non allega mai il nome,
-        la data e l’ora di nascita, il luogo di nascita o le coordinate che hai
-        salvato, ma dalle posizioni dei pianeti del riepilogo si possono
-        comunque ricavare la tua data e la tua ora di nascita, e dal suo
-        ascendente e dal suo Medio Cielo, al grado intero, il luogo di nascita
-        in modo approssimativo. Per un tema senza ora di nascita, il riepilogo
-        è il cielo delle 12:00 UTC della data di nascita, senza la Luna, che
-        indica la data ma nulla del luogo di nascita. Tutto ciò che scrivi
-        nella chat fa parte del messaggio che invii.
-        Per applicare il limite giornaliero conserviamo un identificativo
-        irreversibile con sale derivato dal tuo indirizzo IP, mai l’IP
-        originale, insieme al suo conteggio giornaliero e a una traccia di ogni
-        richiesta. Ogni successivo controllo del limite elimina i conteggi
-        anteriori al giorno UTC precedente e le tracce delle richieste più
-        vecchie di 48 ore. Non inviamo quell’identificativo a OpenAI e non
-        inseriamo il testo delle conversazioni nei metadati del fornitore.
-        Guide imposta anche un cookie di sessione che contiene un identificativo
-        casuale e firmato. Serve a limitare le richieste simultanee da uno
-        stesso browser, dura fino alla fine della sessione del browser e non
-        viene conservato insieme ai tuoi messaggi.
-      </p>
+      <p>{t('it', 'trustGuideNotice')}</p>
+      <p> Quando invii una domanda a Guide, quel messaggio, i messaggi recenti di Guide e il contesto visibile di Guide vengono inviati a OpenAI per un controllo di sicurezza dell’input e per generare una bozza di risposta. Quella bozza generata viene poi inviata di nuovo a OpenAI per un secondo controllo di sicurezza prima che tu la veda. Ogni richiesta all’API Responses usa <code>store: false</code>. La conversazione web in corso con Guide resta soltanto in questa sessione del browser, non viene sincronizzata con un account e non viene archiviata come testo sui server di Zodiacs.org, che tu abbia effettuato l’accesso o no. OpenAI dichiara che per impostazione predefinita i dati dell’API non vengono usati per addestrare i suoi modelli, e che i suoi log di monitoraggio degli abusi conservano i contenuti inviati fino a 30 giorni, o più a lungo quando la legge lo richiede o quando è necessario per proteggere i suoi servizi o altre persone da danni. Per applicare il limite giornaliero conserviamo un identificativo irreversibile con sale derivato dal tuo indirizzo IP, mai l’IP originale, insieme al suo conteggio giornaliero e a una traccia di ogni richiesta. Ogni successivo controllo del limite elimina i conteggi anteriori al giorno UTC precedente e le tracce delle richieste più vecchie di 48 ore. Non inviamo quell’identificativo a OpenAI e non inseriamo il testo delle conversazioni nei metadati del fornitore. Guide imposta anche un cookie di sessione che contiene un identificativo casuale e firmato. Serve a limitare le richieste simultanee da uno stesso browser, dura fino alla fine della sessione del browser e non viene conservato insieme ai tuoi messaggi. </p>
 
       <h2>I temi che salvi</h2>
       <p>
         Quando salvi un tema, viene conservato nella memoria locale del tuo
         browser — sul tuo dispositivo, sotto il tuo controllo. Non viene inviato
-        da nessuna parte, a meno che tu non acceda a un account (vedi sotto), lo
-        condivida o ti iscriva al suo calendario dei transiti (vedi sotto),
-        oppure lo alleghi a Guide (vedi sopra).
+        da nessuna parte, a meno che tu non acceda a un account (vedi sotto) o lo
+        condivida.
         Cancellare i dati del sito nel tuo browser elimina i temi salvati. Se
         non accedi, non possiamo vederli e non possiamo recuperarli per te.
       </p>
 
       <h2>Link di condivisione e inviti</h2>
-      <p>
-        I link di condivisione tengono i dati del tema dopo il «#»
-        nell’indirizzo, una parte che i browser non inviano ai server. Un link
-        con tutti i dati contiene il nome del tema, la data, l’ora e il luogo di
-        nascita, oltre alle coordinate. Un link con le sole posizioni contiene
-        invece il codice del tema descritto in «Riepilogo quotidiano,
-        calendario e notifiche». Chiunque abbia l’uno o l’altro link può
-        aprirlo, anche chi lo riceve inoltrato. Un link con un’immagine di
-        anteprima inserisce nell’indirizzo anche il Sole, la Luna e
-        l’ascendente, precisi al grado, quindi li ricevono il nostro server e
-        qualsiasi app che mostri l’anteprima.
-      </p>
+      <p> I link di condivisione tengono i dati del tema dopo il «#» nell’indirizzo, una parte che i browser non inviano ai server. Un link con tutti i dati contiene il nome del tema, la data, l’ora e il luogo di nascita, oltre alle coordinate. Un link con le sole posizioni contiene invece il codice del tema descritto in «Riepilogo quotidiano, calendario e notifiche». Chiunque abbia l’uno o l’altro link può aprirlo, anche chi lo riceve inoltrato. </p>
       <p>
         Ogni immagine che puoi creare di un tema, di una coppia di temi o di una
         rivoluzione — il foglio del tema e le carte del tema, le immagini di una
@@ -273,17 +204,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
           vengono inviati dati di nascita o del tema.
         </p>
       )}
-      <p>
-        Puoi incollare un indirizzo pubblico senza collegare un wallet. Se
-        scegli “Connect”, un software di wallet compatibile di terze parti viene
-        avviato solo dopo il tuo clic. Può restituire a questo browser gli
-        account pubblici che autorizzi; Aura seleziona un indirizzo compatibile
-        e inoltra solo quell’indirizzo per la consultazione. Aura non richiede
-        frase di recupero, chiave privata, firma di un messaggio, approvazione
-        di token, transazione o cambio di rete. Le condizioni sulla privacy del
-        fornitore del tuo wallet si applicano al suo software e alla sua
-        richiesta di connessione.
-      </p>
+      <p>{t('it', 'trustWalletNotice')}</p>
       <p>
         Un indirizzo pubblico è pubblico, ma non necessariamente anonimo. Le sue
         disponibilità e la sua cronologia on-chain possono essere visibili e
@@ -297,41 +218,8 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
       </p>
 
       <h2>Fonti di dati pubbliche di Astrofolio, del Terminal e del Registro</h2>
-      <p>
-        Quando viene mostrato un pannello di mercato pertinente di
-        Zodiac Terminal o del Registro, il tuo browser può richiedere dati
-        pubblici di mercato a Dex Screener, dati pubblici dei grafici a
-        GeckoTerminal o dati pubblici sull’attenzione a Wikimedia, e l’apertura
-        di un mercato del Terminal chiede al servizio indipendente Jupiter una
-        quotazione di prezzo per un importo di esempio. Queste richieste
-        automatiche non includono un indirizzo di wallet, dati di nascita, dati
-        del tema o risultati di Aura. Il servizio indipendente riceve comunque i
-        normali metadati di una richiesta web, come il tuo indirizzo IP, le
-        informazioni sul browser e l’ora della richiesta, e si applicano le sue
-        condizioni sulla privacy e le sue pratiche di conservazione.
-      </p>
-      <p>
-        Nella pagina Come acquistare di Astrofolio, aprire la pagina o cambiare
-        il segno selezionato non carica Jupiter, non contatta il software del
-        wallet e non richiede una quotazione. Dopo che hai caricato
-        esplicitamente lo strumento pratico facoltativo, il tuo browser invia al
-        servizio indipendente Jupiter il mint del token selezionato e l’importo
-        richiesto come parametri di quotazione, e chiede a Dex Screener il
-        contesto di liquidità indicizzata. Queste richieste di visualizzazione
-        non includono un indirizzo di wallet. Se scegli di esaminare uno scambio
-        diretto, il wallet compatibile che selezioni fornisce a Jupiter il
-        proprio indirizzo pubblico Solana, così che Jupiter possa costruire la
-        transazione esatta che esaminerai. Il tuo wallet firma localmente. Il
-        tuo browser invia poi la transazione firmata e l’identificativo della
-        richiesta Jupiter all’endpoint di esecuzione di Jupiter. Né l’indirizzo
-        pubblico né la transazione firmata vengono inviati a un server di
-        Zodiacs.org, e Zodiacs.org non chiede né riceve mai una frase di
-        recupero o una chiave privata. Jupiter, Dex Screener e il tuo servizio
-        di wallet possono ricevere i normali metadati di una richiesta web, come
-        il tuo indirizzo IP, le informazioni sul browser e l’ora della
-        richiesta; si applicano le loro condizioni sulla privacy e le loro
-        pratiche di conservazione.
-      </p>
+      <p> Quando viene mostrato un pannello di mercato pertinente di Zodiac Terminal o del Registro, il tuo browser può richiedere dati pubblici di mercato a Dex Screener, dati pubblici dei grafici a GeckoTerminal o dati pubblici sull’attenzione a Wikimedia. Queste richieste automatiche non includono un indirizzo di wallet, dati di nascita, dati del tema o risultati di Aura. Il servizio indipendente riceve comunque i normali metadati di una richiesta web, come il tuo indirizzo IP, le informazioni sul browser e l’ora della richiesta, e si applicano le sue condizioni sulla privacy e le sue pratiche di conservazione. </p>
+      <p>{t('it', 'trustWalletNotice')}</p>
       <p>
         Il profilo di ogni segno nel Registro è di sola lettura. Mostra dati
         pubblici di mercato e indirizzi verificati dei token, ma non contiene un
@@ -522,39 +410,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         Il riepilogo quotidiano legge le posizioni calcolate di un tema salvato
         sul tuo dispositivo.
       </p>
-      <p>
-        Il feed di un calendario dei transiti contiene nel suo indirizzo web un
-        codice del tema con le sole posizioni. Il nostro server, la sua cache e
-        il tuo servizio di calendario ricevono quel codice ogni volta che il
-        calendario si aggiorna. Il codice non ha campi per nome, data, ora o
-        luogo. Le sue posizioni planetarie permettono comunque di ricavare la
-        tua data e la tua ora di nascita al minuto: sono prese all’ora di
-        nascita in UTC arrotondata al minuto intero. L’ascendente e il Medio
-        Cielo sono arrotondati al grado, il che restringe comunque il luogo di
-        nascita a una zona larga circa un grado di longitudine: circa 110 km
-        all’equatore, 80 km a 45° nord o sud e 55 km a 60°. Da nord a sud la
-        zona misura almeno 400 km entro 15° dall’equatore, 200 km entro 45° e 70
-        km entro 60°; più a nord può essere più stretta, e vicino al Circolo
-        polare artico può essere una striscia di meno di un chilometro da nord a
-        sud. Un tema senza ora di nascita non ha ascendente né Medio Cielo, e il
-        suo codice contiene il cielo delle 12:00 UTC della data di nascita, che
-        indica la data ma nulla del luogo di nascita. I codici creati da una
-        versione precedente del sito possono contenere di più. Per un tema senza
-        ora di nascita contengono il mezzogiorno nel luogo di nascita, che ne
-        indica il fuso orario o, prima dell’ora standard, la longitudine, e
-        un’immagine di due temi fatta con uno di questi codici disegna quel tema
-        da quelle posizioni, non dal cielo delle 12:00 UTC. Per una nascita
-        precedente all’ora standard, quando il tema segue il tempo medio del
-        luogo di nascita stesso, contengono il secondo della nascita, che
-        restringe il luogo di nascita a poche strisce larghe circa 3 km o meno.
-        Gli indirizzi dei calendari creati prima del 23 settembre 2026
-        contengono anche l’ascendente e il Medio Cielo con maggiore precisione;
-        ora il nostro server li arrotonda prima di usarli. Un indirizzo di
-        calendario non cambia mai da solo, quindi per sostituirne uno creato da
-        una versione precedente, come quello di un tema senza ora di nascita o
-        di una nascita precedente all’ora standard, rimuovi quel calendario e
-        iscriviti di nuovo.
-      </p>
+
       <p>
         Un file di calendario che scarichi dalla pagina dei transiti viene
         creato nel tuo browser dal tuo tema così come vi è calcolato, non dal
@@ -612,17 +468,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
       </p>
 
       <h2>Hosting, log e analisi</h2>
-      <p>
-        Il sito è ospitato su <a href="https://vercel.com/" rel="noopener noreferrer">Vercel</a>.
-        Come per qualsiasi servizio di hosting web, i suoi server elaborano le
-        richieste fatte dal tuo browser e possono conservare log tecnici di
-        breve durata (come indirizzo IP e tipo di browser) per fornire il sito e
-        proteggerlo dagli abusi. Quei log conservano l’indirizzo web completo di
-        ogni richiesta, che per un calendario dei transiti include il codice
-        del tema e per un link con anteprima include Sole, Luna e Ascendente.
-        Non mostriamo pubblicità e non usiamo cookie di
-        tracciamento tra siti né pixel di marketing di terze parti.
-      </p>
+      <p> Il sito è ospitato su <a href="https://vercel.com/" rel="noopener noreferrer">Vercel</a>. Come per qualsiasi servizio di hosting web, i suoi server elaborano le richieste fatte dal tuo browser e possono conservare log tecnici di breve durata (come indirizzo IP e tipo di browser) per fornire il sito e proteggerlo dagli abusi. Non mostriamo pubblicità e non usiamo cookie di tracciamento tra siti né pixel di marketing di terze parti. </p>
       {accountSyncV2Enabled ? (
         <p>
           Gli strumenti di analisi di terze parti sono disattivati durante tutta
@@ -687,7 +533,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
 
       <h2>Le tue scelte</h2>
       <ul>
-        <li>Usare ogni calcolatore senza account; nulla di ciò che inserisci viene conservato fuori dal tuo dispositivo, a meno che tu non acceda, condivida un tema o ti abboni al suo calendario.</li>
+        <li>Usare ogni calcolatore senza account; nulla di ciò che inserisci viene conservato fuori dal tuo dispositivo, a meno che tu non acceda, condivida un tema.</li>
         <li>Usare l’esempio di Aura senza tema, indirizzo, collegamento di un wallet o acquisto.</li>
         <li>Incollare un indirizzo pubblico invece di collegare il software di un wallet di terze parti.</li>
         <li>Lasciare non selezionata l’opzione “Remember” di Aura e cancellarne i dati nel browser in qualsiasi momento.</li>

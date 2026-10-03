@@ -1,3 +1,4 @@
+import { readFile } from 'node:fs/promises';
 import { describe, expect, it, vi } from 'vitest';
 import {
   EXCHANGE_ANALYTICS_CONTRACT,
@@ -43,13 +44,10 @@ describe('Exchange operating analytics', () => {
       .toBe(false);
   });
 
-  it('uses controller hooks rather than scraping trade-panel DOM classes', async () => {
-    const terminal = await import('node:fs/promises')
-      .then(({ readFile }) => readFile(new URL('../src/exchange/terminal.mjs', import.meta.url), 'utf8'));
-    expect(terminal).toContain('onStateChange:');
-    expect(terminal).not.toContain('onTradeIntent:');
-    expect(terminal).not.toContain("closest('.tp__go')");
-    expect(terminal).not.toContain("closest('.ramp')");
+  it('does not load or operate a transaction panel', async () => {
+    const source = await readFile(new URL('../src/exchange/terminal.mjs', import.meta.url), 'utf8');
+    expect(source).not.toMatch(/loadTradeBundle|trade\.mount|state\.state === 'signing'/);
+    expect(source).toContain('link.href = `/registry/${selected}/`');
   });
 
   it('arms regular polling before an immediate load can schedule a provider retry', async () => {

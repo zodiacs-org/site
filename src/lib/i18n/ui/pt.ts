@@ -2,6 +2,36 @@ import type { UiCatalog } from './schema';
 import { GROWTH_UI_EN } from './growth.js';
 
 const pt = {
+    trustDueIntro: "A data prevista oferece uma ideia do céu perto da chegada do seu bebê, sem definir seu mapa natal.",
+    buyWithFomo: "Comprar com Fomo",
+    trustSkyReference: "Instante UTC de referência — nenhuma hora foi informada",
+    trustRecordInstant: "Instante UTC do registro público",
+    trustAddressGuide: "Como comprar um Zodiac",
+    trustAddressIntro: "Escolha um signo para conferir seu endereço público oficial. A compra acontece em um serviço independente.",
+
+    trustQuestions: "Perguntas frequentes",
+    trustFreeQuestion: "É grátis?",
+    trustFreeAnswer: "Nossas ferramentas e guias de astrologia são gratuitos e não exigem cadastro. Zodiacs.org também opera Astrofolio, a coleção de tokens do Zodíaco.",
+    trustDisclosure: "Leia nossa declaração",
+    trustAccuracyQuestion: "Qual é a precisão dos mapas?",
+    trustAccuracyAnswer: "Testamos os cálculos planetários com dados astronômicos de referência. A precisão do seu mapa também depende dos dados de nascimento que você informa; a astrologia é uma prática interpretativa, não uma previsão validada cientificamente.",
+    trustMethodology: "Como calculamos os mapas",
+    trustMath: "Confira nossos cálculos",
+    trustInstant: "Instante UTC calculado",
+    trustReference: "Instante UTC de referência — hora de nascimento desconhecida; sem ascendente nem casas",
+    trustMissingInstant: "O instante UTC original não foi compartilhado com estas posições.",
+    trustReturnInstant: "Instante UTC do retorno",
+    trustApproxReturn: "Instante UTC aproximado do retorno — baseado em uma hora de nascimento de referência",
+    trustIntro: "Seu mapa pode ajudar você a refletir sobre suas necessidades, qualidades e relações.",
+    trustOtherIntro: "Este mapa pode ajudar você a refletir sobre as necessidades, qualidades e relações desta pessoa.",
+    trustPairIntro: "As diferenças entre vocês podem ser um ponto de partida para se entenderem.",
+    trustReturnIntro: "Seu mapa de retorno oferece um momento para pensar no que você quer cultivar a seguir.",
+    trustSaturnIntro: "Seu retorno de Saturno é uma oportunidade para pensar nos compromissos que você quer manter.",
+    trustGamesTitle: "Jogos do Zodíaco",
+    trustGamesScore: "Doze equipes zodiacais competem por pontos de participação: 100 na primeira adesão e 25 por um check-in a cada semana UTC. Compartilhamentos e compras de tokens não dão pontos.",
+    trustGamesLink: "Ver a classificação",
+    trustGamesIndependent: "Participar é grátis. A posse de tokens e seus preços não afetam a pontuação.",
+
   chartDepthOpen: 'Ver em três dimensões',
   chartDepthClose: 'Ocultar a terceira dimensão',
   calculationLoadError: 'Não foi possível carregar os arquivos de cálculo. Verifique sua conexão e tente novamente.',
@@ -425,6 +455,8 @@ const pt = {
   emailConfirmInvalidTitle: 'Este link não é válido.',
   emailConfirmInvalidBody: 'O link de confirmação é inválido ou expirou. Volte ao Zodiacs.org para solicitar outro.',
   emailReturnHome: 'Voltar ao Zodiacs.org',
+  trustWalletNotice: "O Zodiacs.org não conecta carteiras, solicita assinaturas nem envia transações. As consultas de endereços públicos usam um endereço que você cola. Os links de compra abrem serviços independentes com seus próprios termos e riscos.",
+  trustGuideNotice: "O Guide envia as perguntas que você digita, as mensagens recentes do Guide e o contexto público ativado da página ou do céu ao nosso serviço na nuvem. Ele não anexa automaticamente seu mapa natal salvo nem suas posições pessoais. Evite inserir dados de nascimento privados no Guide.",
 } satisfies UiCatalog;
 
 export default pt;

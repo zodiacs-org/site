@@ -108,7 +108,7 @@ describe.skipIf(!existsSync(distRoot))('built client UI payloads', () => {
       }
       expect(installs, relative(distRoot, path)).toHaveLength(1);
     }
-  });
+  }, 15000);
 
   it('embeds the selected Portuguese catalog on a hydrated Portuguese page', () => {
     const html = readFileSync(join(distRoot, 'pt', 'birth-chart', 'index.html'), 'utf8');

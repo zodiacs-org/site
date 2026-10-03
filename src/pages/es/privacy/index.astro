@@ -1,4 +1,5 @@
 ---
+import { t } from '../../../lib/i18n';
 import Base from '../../../layouts/Base.astro';
 import { webAnalyticsEnabled as vercelWebAnalyticsFlag } from '../../../lib/web-analytics.mjs';
 import { accountSyncV2Enabled as isAccountSyncV2Enabled } from '../../../lib/account-v2/feature-flags';
@@ -16,8 +17,8 @@ const walletChartEnabled = configuredWalletChains({
   PUBLIC_WALLET_CHART_ENABLED:
     import.meta.env.PUBLIC_WALLET_CHART_ENABLED ?? process.env.PUBLIC_WALLET_CHART_ENABLED,
 }).length > 0;
-const updated = '29 de septiembre de 2026';
-const modifiedAt = '2026-09-29T00:00:00.000Z';
+const updated = '3 de octubre de 2026';
+const modifiedAt = '2026-10-03T00:00:00.000Z';
 
 const jsonLd = [
   {
@@ -44,25 +45,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
     <h1 class="method-title display">Tus datos de nacimiento solo salen de tu dispositivo cuando tú los envías.</h1>
 
     <div class="prose">
-      <p class="lede">
-        El cálculo de las cartas se ejecuta en tu navegador. Los datos de
-        nacimiento no se envían como parte del cálculo ni de una consulta de
-        The Cabinet of Twelve; solo salen de tu dispositivo si inicias sesión
-        para sincronizar cartas guardadas, compartes un enlace que los lleva o
-        los escribes en un mensaje al asistente. Un calendario de tránsitos o
-        una invitación de compatibilidad envía, en su lugar, las posiciones de
-        la carta, y esas posiciones aún permiten deducir tu fecha y hora de
-        nacimiento. Si adjuntas explícitamente una carta al asistente, también
-        sale del dispositivo un resumen solo de posiciones; no se adjuntan los
-        nombres guardados ni los datos de nacimiento en bruto, aunque sus
-        posiciones aún permiten deducir tu fecha y hora de nacimiento. Aura envía una
-        dirección pública de billetera —no tus datos de nacimiento ni de la
-        carta— a un proveedor de datos de blockchain para una consulta de solo
-        lectura. Las cuentas{weeklyDigestEnabled ? ',' : ' y'}
-        los datos recordados de Aura{weeklyDigestEnabled ? ' y el correo semanal' : ''} son
-        opcionales y están desactivados de forma predeterminada. No mostramos
-        anuncios ni usamos seguimiento entre sitios.
-      </p>
+      <p class="lede"> El cálculo de las cartas se ejecuta en tu navegador. Los datos de nacimiento no se envían como parte del cálculo ni de una consulta de The Cabinet of Twelve; solo salen de tu dispositivo si inicias sesión para sincronizar cartas guardadas, compartes un enlace que los lleva o los escribes en un mensaje al asistente. Aura envía una dirección pública de billetera —no tus datos de nacimiento ni de la carta— a un proveedor de datos de blockchain para una consulta de solo lectura. Las cuentas{weeklyDigestEnabled ? ',' : ' y'} los datos recordados de Aura{weeklyDigestEnabled ? ' y el correo semanal' : ''} son opcionales y están desactivados de forma predeterminada. No mostramos anuncios ni usamos seguimiento entre sitios. </p>
 
       <h2>Quién opera este sitio</h2>
       <p>
@@ -98,73 +81,21 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
       </p>
 
       <h2>Guide</h2>
-      <p>
-        Cuando envías una pregunta a Guide, ese mensaje, los mensajes recientes
-        de Guide y el contexto visible de Guide se envían a OpenAI para una
-        revisión de seguridad de la entrada y para generar un borrador de
-        respuesta. Ese borrador generado se envía después de nuevo a OpenAI
-        para una segunda revisión de seguridad antes de que lo veas. Cada
-        solicitud a la API Responses usa <code>store: false</code>. La
-        conversación actual con Guide en la web permanece solo en esta sesión
-        del navegador, no se sincroniza con una cuenta y no se almacena como
-        texto en los servidores de Zodiacs.org, hayas iniciado sesión o no.
-        OpenAI indica que, de forma predeterminada, los datos de la API no se
-        usan para entrenar sus modelos, y que sus registros de supervisión de
-        abusos conservan el contenido enviado hasta 30 días, o más tiempo
-        cuando la ley lo exige o cuando es necesario para proteger de daños sus
-        servicios o a terceros. Guide ofrece adjuntar una carta solo en la
-        vista previa de sincronización cifrada, que está desactivada en el
-        sitio público, y solo la carta que marcaste allí como tuya. Se incluye
-        solo después de que pulses «Adjuntar mi carta»; la pantalla de
-        consentimiento muestra el resumen solo de posiciones antes de enviarlo.
-        Ese resumen acompaña cada pregunta mientras «Usando mi carta» siga
-        activo; puedes desactivarlo. Guide nunca adjunta el nombre, la fecha de
-        nacimiento, la hora, el lugar de nacimiento ni las coordenadas que
-        tengas guardados, pero las posiciones planetarias del resumen aún
-        permiten deducir tu fecha y hora de nacimiento, y su ascendente y su
-        Medio Cielo, al grado entero, tu lugar de nacimiento de forma
-        aproximada. Para una carta sin hora de nacimiento, el resumen es el
-        cielo de las 12:00 UTC de la fecha de nacimiento, sin la Luna, que da
-        la fecha pero nada sobre el lugar de nacimiento. Todo lo que escribes
-        en el chat forma parte del mensaje que envías.
-        Para aplicar el límite diario, conservamos un identificador
-        unidireccional con sal derivado de tu dirección IP, nunca la IP
-        original, junto con su recuento diario y un registro de cada solicitud.
-        Cada comprobación de cuota posterior borra los recuentos anteriores al
-        día UTC previo y los registros de solicitudes de más de 48 horas. No
-        enviamos ese identificador a OpenAI ni incluimos texto de la
-        conversación en los metadatos del proveedor. Guide también establece
-        una cookie de sesión que contiene un identificador aleatorio y firmado.
-        Sirve para limitar las solicitudes simultáneas desde un mismo
-        navegador, dura hasta que termina la sesión del navegador y no se
-        almacena con tus mensajes.
-      </p>
+      <p>{t('es', 'trustGuideNotice')}</p>
+      <p> Cuando envías una pregunta a Guide, ese mensaje, los mensajes recientes de Guide y el contexto visible de Guide se envían a OpenAI para una revisión de seguridad de la entrada y para generar un borrador de respuesta. Ese borrador generado se envía después de nuevo a OpenAI para una segunda revisión de seguridad antes de que lo veas. Cada solicitud a la API Responses usa <code>store: false</code>. La conversación actual con Guide en la web permanece solo en esta sesión del navegador, no se sincroniza con una cuenta y no se almacena como texto en los servidores de Zodiacs.org, hayas iniciado sesión o no. OpenAI indica que, de forma predeterminada, los datos de la API no se usan para entrenar sus modelos, y que sus registros de supervisión de abusos conservan el contenido enviado hasta 30 días, o más tiempo cuando la ley lo exige o cuando es necesario para proteger de daños sus servicios o a terceros. Para aplicar el límite diario, conservamos un identificador unidireccional con sal derivado de tu dirección IP, nunca la IP original, junto con su recuento diario y un registro de cada solicitud. Cada comprobación de cuota posterior borra los recuentos anteriores al día UTC previo y los registros de solicitudes de más de 48 horas. No enviamos ese identificador a OpenAI ni incluimos texto de la conversación en los metadatos del proveedor. Guide también establece una cookie de sesión que contiene un identificador aleatorio y firmado. Sirve para limitar las solicitudes simultáneas desde un mismo navegador, dura hasta que termina la sesión del navegador y no se almacena con tus mensajes. </p>
 
       <h2>Cartas que guardas</h2>
       <p>
         Cuando guardas una carta, queda en el almacenamiento local de tu
         navegador: en tu dispositivo y bajo tu control. No se envía a ningún
-        sitio salvo que inicies sesión en una cuenta (más abajo), la compartas
-        o te suscribas a su calendario de tránsitos (más abajo), o la adjuntes
-        a Guide (más arriba). Borrar los datos del sitio en tu navegador
+        sitio salvo que inicies sesión en una cuenta (más abajo) o la compartas.
+        Borrar los datos del sitio en tu navegador
         elimina las cartas guardadas. Salvo que inicies sesión, no podemos
         verlas ni recuperarlas por ti.
       </p>
 
       <h2>Enlaces para compartir e invitaciones</h2>
-      <p>
-        Los enlaces para compartir guardan los datos de la carta después del
-        «#» de la dirección, una parte que los navegadores no envían a los
-        servidores. Un enlace con todos los datos lleva el nombre de la carta,
-        la fecha, la hora y el lugar de nacimiento, y las coordenadas. Un
-        enlace solo de posiciones lleva, en cambio, el código de carta descrito
-        en «Resumen diario, calendario y notificaciones». Cualquiera que tenga
-        uno de los dos enlaces puede abrirlo, incluida cualquier persona a la
-        que se le reenvíe. Un enlace con imagen de vista previa también pone en
-        la dirección el Sol, la Luna y el ascendente, con precisión de grado,
-        así que los reciben nuestro servidor y cualquier aplicación que muestre
-        la vista previa.
-      </p>
+      <p> Los enlaces para compartir guardan los datos de la carta después del «#» de la dirección, una parte que los navegadores no envían a los servidores. Un enlace con todos los datos lleva el nombre de la carta, la fecha, la hora y el lugar de nacimiento, y las coordenadas. Un enlace solo de posiciones lleva, en cambio, el código de carta descrito en «Resumen diario, calendario y notificaciones». Cualquiera que tenga uno de los dos enlaces puede abrirlo, incluida cualquier persona a la que se le reenvíe. </p>
       <p>
         Toda imagen que puedes crear de una carta, de un par de cartas o de un
         retorno —la hoja de la carta y las tarjetas de la carta, las imágenes de
@@ -271,17 +202,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
           nacimiento ni de la carta.
         </p>
       )}
-      <p>
-        Puedes pegar una dirección pública sin conectar una billetera. Si
-        eliges «Conectar», el software de billetera compatible de terceros solo
-        se invoca después de tu clic. Puede devolver a este navegador las
-        cuentas públicas que autorices; Aura elige una dirección compatible y
-        solo reenvía esa dirección para la consulta. Aura no solicita ninguna
-        frase de recuperación, clave privada, firma de mensaje, aprobación de
-        token, transacción ni cambio de red. Las condiciones de privacidad del
-        propio proveedor de tu billetera se aplican a su software y a su
-        solicitud de conexión.
-      </p>
+      <p>{t('es', 'trustWalletNotice')}</p>
       <p>
         Una dirección pública es pública, pero no necesariamente anónima. Sus
         tenencias y su historial on-chain pueden ser visibles y pueden llegar a
@@ -295,40 +216,8 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
       </p>
 
       <h2>Fuentes de datos públicas de Astrofolio, la Terminal y el Registro</h2>
-      <p>
-        Cuando se muestra un panel de mercado pertinente de Zodiac Terminal o
-        del Registro, tu navegador puede pedir datos públicos de mercado a
-        Dex Screener, datos públicos de gráficos a GeckoTerminal o datos
-        públicos de audiencia a Wikimedia, y abrir un mercado de la Terminal
-        pide al servicio independiente Jupiter una cotización de precio para un
-        importe de muestra. Esas solicitudes automáticas no incluyen una
-        dirección de billetera, datos de nacimiento, datos de la carta ni
-        resultados de Aura. Aun así, el servicio independiente recibe metadatos
-        ordinarios de la solicitud web, como tu dirección IP, datos del
-        navegador y la hora de la solicitud, y se aplican sus propias
-        condiciones de privacidad y prácticas de conservación.
-      </p>
-      <p>
-        En la página Cómo comprar de Astrofolio, abrir la página o cambiar el
-        signo seleccionado no carga Jupiter, no contacta con el software de
-        billetera ni solicita una cotización. Después de que cargues
-        explícitamente la herramienta auxiliar opcional, tu navegador envía el
-        mint del token seleccionado y el importe solicitado como parámetros de
-        cotización al servicio independiente Jupiter, y pide contexto de
-        liquidez indexada a Dex Screener. Esas solicitudes de visualización no
-        incluyen una dirección de billetera. Si decides revisar un intercambio
-        directo, la billetera compatible que elijas proporciona su dirección
-        pública de Solana a Jupiter para que Jupiter construya la transacción
-        exacta que revisarás. Tu billetera firma localmente. Después, tu
-        navegador envía la transacción firmada y el identificador de solicitud
-        de Jupiter al endpoint de ejecución de Jupiter. Ni la dirección pública
-        ni la transacción firmada se envían a un servidor de Zodiacs.org, y
-        Zodiacs.org nunca pide ni recibe una frase de recuperación ni una clave
-        privada. Jupiter, Dex Screener y tu servicio de billetera pueden recibir
-        metadatos ordinarios de la solicitud web, como tu dirección IP, datos
-        del navegador y la hora de la solicitud; se aplican sus propias
-        condiciones de privacidad y prácticas de conservación.
-      </p>
+      <p> Cuando se muestra un panel de mercado pertinente de Zodiac Terminal o del Registro, tu navegador puede pedir datos públicos de mercado a Dex Screener, datos públicos de gráficos a GeckoTerminal o datos públicos de audiencia a Wikimedia. Esas solicitudes automáticas no incluyen una dirección de billetera, datos de nacimiento, datos de la carta ni resultados de Aura. Aun así, el servicio independiente recibe metadatos ordinarios de la solicitud web, como tu dirección IP, datos del navegador y la hora de la solicitud, y se aplican sus propias condiciones de privacidad y prácticas de conservación. </p>
+      <p>{t('es', 'trustWalletNotice')}</p>
       <p>
         El perfil de cada signo en el Registro es de solo lectura. Muestra datos
         públicos de mercado y direcciones de token verificadas, pero no contiene
@@ -515,39 +404,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         El resumen diario lee las posiciones calculadas de una carta guardada
         en tu dispositivo.
       </p>
-      <p>
-        Un calendario de tránsitos por suscripción lleva un código de carta solo
-        de posiciones en su dirección web. Nuestro servidor, su caché y tu
-        servicio de calendario reciben ese código cada vez que el calendario se
-        actualiza. El código no tiene campos de nombre, fecha, hora ni lugar.
-        Sus posiciones planetarias aún permiten deducir tu fecha y hora de
-        nacimiento al minuto: se toman en la hora de nacimiento en UTC
-        redondeada al minuto entero. El ascendente y el Medio Cielo se redondean
-        al grado, lo que aun así acota el lugar de nacimiento a una zona de un
-        grado de longitud de ancho, aproximadamente: unos 110 km en el ecuador,
-        80 km a 45° norte o sur y 55 km a 60°. De norte a sur, la zona mide al
-        menos 400 km a menos de 15° del ecuador, 200 km a menos de 45° y 70 km a
-        menos de 60°; más al norte puede ser más estrecha, y cerca del círculo
-        polar ártico puede ser una franja de menos de un kilómetro de norte a
-        sur. Una carta sin hora de nacimiento no tiene ascendente ni Medio
-        Cielo, y su código lleva el cielo de las 12:00 UTC de la fecha de
-        nacimiento, que da la fecha pero nada sobre el lugar de nacimiento. Los
-        códigos creados con una versión anterior del sitio pueden llevar más.
-        Para una carta sin hora de nacimiento llevan el mediodía en el lugar de
-        nacimiento, que da su zona horaria o, antes de la hora estándar, su
-        longitud, y una imagen de dos cartas hecha con uno de esos códigos
-        dibuja esa carta con esas posiciones, no con el cielo de las 12:00 UTC.
-        Para un nacimiento anterior a la hora estándar, cuando la carta usa la
-        hora media del propio lugar de nacimiento, llevan el segundo del
-        nacimiento, que acota el lugar de nacimiento a unas pocas franjas de
-        unos 3 km de ancho o menos. Las direcciones de calendario creadas antes
-        del 23 de septiembre de 2026 también llevan el ascendente y el Medio
-        Cielo con más precisión; nuestro servidor ahora los redondea antes de
-        usarlos. Una dirección de calendario nunca cambia por sí sola, así que
-        para sustituir una creada con una versión anterior, como la de una carta
-        sin hora de nacimiento o la de un nacimiento anterior a la hora
-        estándar, elimina ese calendario y vuelve a suscribirte.
-      </p>
+
       <p>
         Un archivo de calendario que descargas de la página de tránsitos se crea
         en tu navegador a partir de tu carta tal como se calcula allí, no a
@@ -606,18 +463,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
       </p>
 
       <h2>Alojamiento, registros y analítica</h2>
-      <p>
-        El sitio está alojado en <a href="https://vercel.com/" rel="noopener noreferrer">Vercel</a>.
-        Como todos los servicios de alojamiento web, sus servidores procesan las
-        solicitudes que hace tu navegador y pueden conservar registros técnicos
-        de corta duración (como la dirección IP y el tipo de navegador) para
-        servir el sitio y protegerlo de abusos. Esos registros conservan la
-        dirección web completa de cada solicitud, que en un calendario de
-        tránsitos incluye su código de carta y en un enlace con vista previa
-        incluye el Sol, la Luna y el Ascendente. No mostramos publicidad y no
-        usamos cookies de seguimiento entre sitios ni píxeles de marketing de
-        terceros.
-      </p>
+      <p> El sitio está alojado en <a href="https://vercel.com/" rel="noopener noreferrer">Vercel</a>. Como todos los servicios de alojamiento web, sus servidores procesan las solicitudes que hace tu navegador y pueden conservar registros técnicos de corta duración (como la dirección IP y el tipo de navegador) para servir el sitio y protegerlo de abusos. No mostramos publicidad y no usamos cookies de seguimiento entre sitios ni píxeles de marketing de terceros. </p>
       {accountSyncV2Enabled ? (
         <p>
           La analítica de terceros está desactivada en toda la versión
@@ -683,7 +529,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
 
       <h2>Tus opciones</h2>
       <ul>
-        <li>Usar todas las calculadoras sin cuenta; nada de lo que introduces se almacena fuera de tu dispositivo, salvo que inicies sesión, compartas una carta o te suscribas a su calendario.</li>
+        <li>Usar todas las calculadoras sin cuenta; nada de lo que introduces se almacena fuera de tu dispositivo, salvo que inicies sesión, compartas una carta.</li>
         <li>Usar el ejemplo de Aura sin carta, dirección, conexión de billetera ni compra.</li>
         <li>Pegar una dirección pública en lugar de conectar software de billetera de terceros.</li>
         <li>Dejar desmarcada la opción «Recordar» de Aura y borrar sus datos del navegador cuando quieras.</li>

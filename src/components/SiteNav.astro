@@ -1,4 +1,5 @@
 ---
+import { isAstrologyToolPath } from '../lib/trust-boundary';
 /**
  * Floating pill navigation. The Signs item opens a 12-icon pastel grid —
  * the icons are the navigation. The profile glyph fills once the visitor
@@ -11,6 +12,7 @@ import { ALL_TOOLS_LABEL, NAV_TOOLS, navToolLabelHasEnglishCue, type NavTool } f
 
 interface Props { locale?: Locale }
 const locale = normalizeCatalogLocale(Astro.props.locale);
+const isTool = isAstrologyToolPath(Astro.url.pathname);
 const path = Astro.url.pathname;
 const hasDailyReading = availableLocalesForPath('/today/')?.includes(locale) ?? false;
 const todayLabel = t(locale, 'today').replace(/^./u, (letter) => letter.toLocaleUpperCase(locale));
@@ -132,6 +134,7 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
       </a>
     )}
 
+    {!isTool && (
     <a
       class:list={['nav__chip', { 'nav__chip--deferred': Boolean(englishOnly) }]}
       href="/astrofolio/"
@@ -145,6 +148,8 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
         <><span>{t(locale, 'navCollect')}</span><small class="nav__deferred">{englishOnlyBadge}</small></>
       ) : t(locale, 'navCollect')}
     </a>
+
+    )}
 
     <button
       class="nav__burger"
@@ -228,10 +233,12 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
     </div>
     <div class="mobile-menu__group">
       <a class="mobile-menu__link" style={`--i:${hasDailyReading ? 4 : 3}`} href="/developers/" hreflang={englishOnly ? 'en' : undefined} title={englishOnlyAria}>{developersLabel[locale]}{englishOnly?.suffix ?? ''}</a>
+      {!isTool && (
       <a class="mobile-menu__link mobile-menu__registry" style={`--i:${hasDailyReading ? 5 : 4}`} href="/astrofolio/" hreflang={englishOnly ? 'en' : undefined} title={englishOnlyAria}>
         <span>{t(locale, 'navCollect')}</span>
         <small>{astrofolioLabel[locale]}</small>
       </a>
+      )}
     </div>
     <div class="mobile-menu__group">
       <span class="mobile-menu__label">{t(locale, 'navTwelve')}</span>

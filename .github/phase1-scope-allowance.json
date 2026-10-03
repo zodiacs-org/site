@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "id": "owner-visual-consistency-sweep-20261003",
-  "baseCommit": "8d9d5285e6ef3168b8f1f954409ccf8ac988c82e",
+  "id": "owner-trust-phase1-20261003",
+  "baseCommit": "6012cdb577e8a7f221815c54c5fbc825d393ad13",
   "protectedPaths": [
     "public/assets/app.js",
     "public/registry/aquarius/index.html",
@@ -21,9 +21,34 @@
     "public/sdk/examples/simastry-aura/index.html",
     "public/sdk/index.html",
     "public/terminal/markets/index.html",
-    "scripts/registry-pastel-polish.test.mjs",
+    "scripts/registry-consumer-contract.test.mjs",
     "src/app.jsx",
-    "src/pages/[sign]/index.astro"
+    "src/islands/RegistryAura.tsx",
+    "src/islands/WalletChart.tsx",
+    "src/lib/i18n/index.test.ts",
+    "src/lib/i18n/ui/build-audit.test.ts",
+    "src/lib/i18n/ui/en.ts",
+    "src/lib/i18n/ui/es.ts",
+    "src/lib/i18n/ui/fr.ts",
+    "src/lib/i18n/ui/it.ts",
+    "src/lib/i18n/ui/pt.ts",
+    "src/lib/i18n/ui/ru.test.ts",
+    "src/lib/i18n/ui/ru.ts",
+    "src/lib/wallet/aura-connectors.test.ts",
+    "src/lib/wallet/aura-connectors.ts",
+    "src/pages/es/index.astro",
+    "src/pages/es/privacy/index.astro",
+    "src/pages/fr/index.astro",
+    "src/pages/fr/privacy/index.astro",
+    "src/pages/it/index.astro",
+    "src/pages/it/privacy/index.astro",
+    "src/pages/pt/index.astro",
+    "src/pages/pt/privacy/index.astro",
+    "src/pages/registry/wallet-chart/index.astro",
+    "src/strings/additions.es.mjs",
+    "src/strings/additions.fr.mjs",
+    "src/strings/additions.it.mjs",
+    "src/strings/additions.pt.mjs"
   ],
-  "authorization": "The owner requested fixes for the Astrofolio purchase pill changing size when switching zodiac signs, plus a whole-site visual consistency sweep. This bounded allowance covers only the purchase bar loading/unavailable price label in its application source and regenerated browser bundle. No token identity, market source, trading, or Registry profile behavior changes. The existing source contract is updated to retain the picker beside long sign names, replacing its old requirement to clip the caret. The same requested whole-site sweep found a 320px Gemini article overflow; its shared English sign-template grid is constrained without changing content. The shared footer alignment fix also needs a versioned stylesheet URL because the old URL is cached immutable for a year. The listed Registry, Terminal-market and SDK HTML changes only update that stylesheet reference; all generated Registry pages were rebuilt from the canonical footer generator."
+  "authorization": "The owner approved Phase 1 trust fixes and standing privacy rules on 2026-10-03, then explicitly approved both the Guide cloud-processing notice and the no-wallet, paste-address, independent-service disclosure wording. This bounded allowance covers six-language trust copy, actual computed UTC receipts, human result openings, removal of Astrofolio branding from tools, retirement of wallet connection and transaction signing/submission, personal Guide attachments, server chart-preview links and personal calendar feeds, plus their matching notices and tests. Browser-generated images, fragment share links, and local calendar downloads remain available. Shared/generated footers state the operator relationship and link disclosure. This does not authorize Phases 2 or 3."
 }

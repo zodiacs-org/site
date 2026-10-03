@@ -1,4 +1,6 @@
 ---
+import HomeTrustFaq from '../../components/HomeTrustFaq.astro';
+import { homeTrustSchema } from '../../lib/home-trust';
 import Base from '../../layouts/Base.astro';
 import SignIcon from '../../components/SignIcon.astro';
 import ToolGlyph from '../../components/ToolGlyph.astro';
@@ -16,6 +18,7 @@ const tools = [
 ];
 
 const jsonLd = [
+  homeTrustSchema('ru'),
   {
     '@type': 'WebSite',
     '@id': 'https://zodiacs.org/#site',
@@ -356,6 +359,7 @@ const jsonLd = [
       <a class="btn btn--primary" href="/ru/birth-chart/"><span>Постройте бесплатную натальную карту</span><span class="orb">↗</span></a>
     </div>
   </section>
+  <HomeTrustFaq locale="ru" />
 </Base>
 
 <style>

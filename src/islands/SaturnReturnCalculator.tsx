@@ -1,3 +1,4 @@
+import { CheckOurMath, ResultOpening } from './ChartTrust';
 /**
  * Saturn return calculator: birth date in, return seasons out. The
  * engine and the return-scanner lazy-load together on submit; a date
@@ -37,6 +38,7 @@ export default function SaturnReturnCalculator({ locale: rawLocale = 'en' }: { l
   const [city, setCity] = useState<City | null>(null);
   const [showDetail, setShowDetail] = useState(false);
   const [result, setResult] = useState<SaturnReturnResult | null>(null);
+  const [resultReceipt, setResultReceipt] = useState<{ utc: Date; reference: boolean } | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const resultHeadingRef = useRef<HTMLHeadingElement>(null);
@@ -46,7 +48,7 @@ export default function SaturnReturnCalculator({ locale: rawLocale = 'en' }: { l
 
   useEffect(() => () => { generation.current += 1; }, []);
 
-  const approximate = !showDetail || time === '' || city === null;
+  const approximate = resultReceipt?.reference ?? true;
 
   async function compute(e: Event) {
     e.preventDefault();
@@ -72,7 +74,9 @@ export default function SaturnReturnCalculator({ locale: rawLocale = 'en' }: { l
       const utc = showDetail && city
         ? resolveLocalToUtc(day, time || '12:00', city.tz, { longitude: city.lon }).utc
         : new Date(`${day}T12:00:00Z`);
-      setResult(returns.saturnReturns(utc));
+      const nextResult = returns.saturnReturns(utc);
+      setResultReceipt({ utc, reference: !showDetail || !city || !time });
+      setResult(nextResult);
     } catch (err) {
       if (run !== generation.current) return;
       setError(calculationError(err, locale, t(locale, 'returnError')));
@@ -144,6 +148,8 @@ export default function SaturnReturnCalculator({ locale: rawLocale = 'en' }: { l
       {result && natalSign && (
         <div class="calc__result">
           <h2 class="sr-only" tabIndex={-1} ref={resultHeadingRef}>{t(locale, 'saturnReturn')}</h2>
+          <ResultOpening locale={locale} kind="saturn" />
+          <CheckOurMath locale={locale} utc={resultReceipt?.utc} basis={resultReceipt?.reference ? 'reference' : 'birth'} />
           <div class="sr__natal shell tinted" style={`--sign:${natalSign.hue}`}>
             <div class="core tinted sr__natal-core">
               <span class="mono--label">{t(locale, 'natalSaturn')}</span>

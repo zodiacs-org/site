@@ -1,6 +1,36 @@
 import { GROWTH_UI_EN } from './growth.js';
 
 const en = {
+    trustDueIntro: "A due date offers a glimpse of the sky around your baby’s arrival, rather than a fixed birth chart.",
+    buyWithFomo: "Buy with Fomo",
+    trustSkyReference: "Reference UTC instant — no time was supplied",
+    trustRecordInstant: "Public record UTC instant",
+    trustAddressGuide: "How to buy a Zodiac",
+    trustAddressIntro: "Choose a sign below to check its official public address. Purchasing takes place in an independent service.",
+
+    trustQuestions: "Common questions",
+    trustFreeQuestion: "Is it free?",
+    trustFreeAnswer: "Our astrology tools and guides are free, with no signup required. Zodiacs.org also operates Astrofolio, the Zodiac token collection.",
+    trustDisclosure: "Read our disclosure",
+    trustAccuracyQuestion: "How accurate are the charts?",
+    trustAccuracyAnswer: "We test our planetary calculations against astronomical reference data. The precision of your chart also depends on the birth details you enter; astrology is an interpretive practice, not a scientifically validated prediction.",
+    trustMethodology: "How we calculate charts",
+    trustMath: "Check our math",
+    trustInstant: "Computed UTC instant",
+    trustReference: "Reference UTC instant — birth time unknown; no rising sign or houses",
+    trustMissingInstant: "The original UTC instant was not shared with these positions.",
+    trustReturnInstant: "Return UTC instant",
+    trustApproxReturn: "Approximate return UTC instant — based on a reference birth time",
+    trustIntro: "Your chart can help you reflect on your needs, strengths, and relationships.",
+    trustOtherIntro: "This chart can help you reflect on this person’s needs, strengths, and relationships.",
+    trustPairIntro: "Your differences can be a starting point for understanding each other.",
+    trustReturnIntro: "Your return chart offers a moment to reflect on what you want to nurture next.",
+    trustSaturnIntro: "Your Saturn return is a chance to reflect on the commitments you want to keep.",
+    trustGamesTitle: "Zodiac Games",
+    trustGamesScore: "Twelve zodiac teams compete for participation points: 100 for your first join, then 25 for one check-in per UTC week. Shares and token purchases earn no points.",
+    trustGamesLink: "See the standings",
+    trustGamesIndependent: "Participation is free. Token ownership and prices do not affect the score.",
+
     chartDepthOpen: 'See it in three dimensions',
     chartDepthClose: 'Hide the third dimension',
     calculationLoadError: 'The calculation files could not load. Check your connection and try again.',
@@ -393,6 +423,8 @@ const en = {
     compareThese: 'Compare these two charts',
     addAnotherChart: 'Add another chart',
     ...GROWTH_UI_EN,
+  trustWalletNotice: "Zodiacs.org does not connect wallets, request signatures, or submit transactions. Public address lookups use an address you paste. Purchase links open independent services with their own terms and risks.",
+  trustGuideNotice: "Guide sends the questions you type, recent Guide messages, and enabled public page or sky context to our cloud service. It does not automatically attach your saved birth chart or personal chart placements. Avoid entering private birth details in Guide.",
 } as const;
 
 export default en;

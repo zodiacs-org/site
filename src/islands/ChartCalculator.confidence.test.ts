@@ -35,7 +35,7 @@ if (first < 0 || end <= first) throw Error('Chart calculation block not found');
 const calculation = statements.slice(first, end).map(node => node.getText(ast)).join('\n');
 const execute = new Function('context', `with(context){${ts.transpile(calculation, {
   target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext,
-})}; return {result, portable, resolved, nextMoonAmbiguous, nextRegistryRecordSlug};}`);
+})}; return {result, portable, resolved, nextMoonAmbiguous};}`);
 const input = (date: string, zone: string, known = false) => ({ date, time: '12:00', timeKnown: known,
   city: { name: 'Synthetic place', tz: zone, lat: 43.65, lon: -79.38 }, houseSystem: 'whole' });
 function capture(value: ReturnType<typeof input>, mode = 'full', fallback = false, assess = assessLocalDateReference) {
@@ -51,7 +51,7 @@ function capture(value: ReturnType<typeof input>, mode = 'full', fallback = fals
     localDateReferenceFailure: new Error('local-date reference refused'),
   });
   return { ...result, calls } as { result: Chart; portable: ReturnType<typeof actualReceipt.computeCalculatorReceipt>;
-    resolved: ReturnType<typeof resolveLocalToUtc>; nextMoonAmbiguous: boolean; nextRegistryRecordSlug: string | null; calls: typeof calls };
+    resolved: ReturnType<typeof resolveLocalToUtc>; nextMoonAmbiguous: boolean; calls: typeof calls };
 }
 function reference(value: ReturnType<typeof input>) {
   const resolved = resolveLocalToUtc(value.date, value.timeKnown ? value.time : '12:00', value.city.tz, { longitude: value.city.lon });
@@ -91,7 +91,7 @@ describe('ChartCalculator reference confidence', () => {
     expect(actual.portable!.envelopeJson).toBe(expected.envelopeJson);
     expect(positions(actual.result)).toBe(positions(expected.chart));
     expect(actual.result.moonSignCandidates).toEqual([]);
-    expect(actual.nextRegistryRecordSlug).toBeNull();
+
     expect(actual.result).not.toHaveProperty('coverage');
     expect(actual.calls).toEqual({ publicNatal: 1, legacyNatal: 0, endpoints: 0 });
   });
@@ -128,7 +128,7 @@ describe('ChartCalculator reference confidence', () => {
     expect(positions(actual.result)).toBe(positions(expected.chart));
     expect(moonSignCandidates).toEqual([]);
     expect(actual.nextMoonAmbiguous).toBe(true);
-    expect(actual.nextRegistryRecordSlug).toBeNull();
+
     expect(actual.calls).toEqual({ publicNatal: 1, legacyNatal: 0, endpoints: 0 });
     expect(moonLabel(actual.result)).toBe('Needs a birth time');
     const context = buildChartContext({ ...actual.result, timeKnown: false });
@@ -177,7 +177,7 @@ describe('ChartCalculator reference confidence', () => {
     else expect(actual.portable).toBeUndefined();
     expect(actual.nextMoonAmbiguous).toBe(false);
     expect(moonCandidates(actual.result)).toHaveLength(1);
-    expect(actual.nextRegistryRecordSlug).toBe(mode === 'full' ? 'gemini' : null);
+
     expect(actual.calls).toEqual({ publicNatal: mode === 'full' ? 1 : 0, legacyNatal: mode === 'full' ? 0 : 1, endpoints: 0 });
   });
 

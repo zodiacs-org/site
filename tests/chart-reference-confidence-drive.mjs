@@ -175,7 +175,7 @@ try{
  });
  for(const mode of ['full','moon','rising'])await group('known-time preserved '+mode,async()=>{
   const observations={};for(const variant of bundles.keys()){
-   const s=await setup(variant,'en',mode);try{await fill(s,'1990-06-15','America/Toronto',true);await submit(s);const value=await data(s);assert.equal(value.result,true);assert.equal(value.hero,null);assert.equal(value.registry,mode==='full'?'gemini':null);assert.equal(value.events.filter(row=>row.kind==='publicNatal').length,mode==='full'?1:0);assert.equal(value.events.filter(row=>row.kind==='legacyNatal').length,mode==='full'?0:1);assert.equal(value.events.filter(row=>['endpoints','bodies'].includes(row.kind)).length,0);assert.deepEqual(s.errors,[]);observations[variant]=value;}finally{await s.context.close();}
+   const s=await setup(variant,'en',mode);try{await fill(s,'1990-06-15','America/Toronto',true);await submit(s);const value=await data(s);assert.equal(value.result,true);assert.equal(value.hero,null);assert.equal(value.registry,variant==='baseline' && mode==='full'?'gemini':null);assert.equal(value.events.filter(row=>row.kind==='publicNatal').length,mode==='full'?1:0);assert.equal(value.events.filter(row=>row.kind==='legacyNatal').length,mode==='full'?0:1);assert.equal(value.events.filter(row=>['endpoints','bodies'].includes(row.kind)).length,0);assert.deepEqual(s.errors,[]);observations[variant]=value;}finally{await s.context.close();}
   }if(observations.baseline)assert.deepEqual(observations.candidate.outputs,observations.baseline.outputs);return observations;
  });
  await group('C014 skipped-date clearing and recovery',async()=>{

@@ -1,3 +1,4 @@
+import { CheckOurMath, ResultOpening } from './ChartTrust';
 /**
  * The transit page's island: birth input in, the animated Transit Ring out.
  * The natal side resolves once (from a saved chart or the form); the ring
@@ -57,6 +58,7 @@ interface SlotState {
 }
 
 interface NatalWheel {
+  computedUtc?: Date | string;
   bodies: { body: string; lon: number; retrograde?: boolean }[];
   asc: number | null;
   mc: number | null;
@@ -86,6 +88,7 @@ function wheelFromChart(
   houseSystem: CalendarPositionsSource['houseSystem'] = r.houses?.system ?? 'whole',
 ): NatalWheel {
   return {
+    computedUtc: utc,
     // South Node stays off the drawn wheel — the site-wide convention
     // (share card, demo chart, calculator scene all hide it). `minimal`
     // keeps every body; the aspect search filters by ASPECT_BODIES itself.
@@ -156,6 +159,7 @@ function natalFromSaved(chart: SavedChart, engine: Engine): NatalWheel {
   // No stored place — draw from the summary (bodies + ascendant), no house ring.
   const timeKnown = chart.birth.timeKnown && Boolean(chart.birth.time);
   return {
+    computedUtc: chart.summary.utcISO,
     bodies: chart.summary.bodies
       .filter((b) => b.body !== 'South Node')
       .map(({ body, lon, retrograde }) => ({ body, lon, retrograde })),
@@ -458,6 +462,8 @@ export default function TransitTracker({ locale: rawLocale = 'en' }: { locale?: 
       {result && RingComponent && (
         <div class="calc__result">
           <h2 class="sr-only" tabIndex={-1} ref={resultHeadingRef}>{t(locale, 'transits')}</h2>
+          <ResultOpening locale={locale} />
+          <CheckOurMath locale={locale} utc={result.natal.computedUtc} basis={result.natal.timeKnown ? 'birth' : 'reference'} />
           {!result.natal.timeKnown && (
             <p class="notice" role="status">{EVENT_COPY[locale].unknownTime}</p>
           )}

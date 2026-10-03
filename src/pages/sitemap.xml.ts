@@ -104,6 +104,9 @@ const COMPUTE_API_REVIEW_ROUTES = [
 // Keep these dates source-controlled: build environments may have shallow or
 // absent Git history. When an evergreen page's rendered source changes, update
 // its entry here in the same commit.
+const OWNER_TRUST_LASTMOD = '2026-10-03';
+const OWNER_TRUST_ROUTES = ['/', '/privacy/', '/terms/', '/methodology/', '/astrofolio/how-to-buy/'] as const;
+
 const EVERGREEN_LASTMOD = new Map<string, string>([
   [eventsPublication.hub.path, eventsPublication.lastModified] as const,
   ...[
@@ -231,6 +234,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // Then the compute API, and its review last of all.
   ...COMPUTE_API_ROUTES.map((loc) => [loc, COMPUTE_API_LASTMOD] as const),
   ...COMPUTE_API_REVIEW_ROUTES.map((loc) => [loc, COMPUTE_API_REVIEW_LASTMOD] as const),
+  ...OWNER_TRUST_ROUTES.map((loc) => [loc, OWNER_TRUST_LASTMOD] as const),
 ]);
 
 function getLastmod(loc: string): string {

@@ -14,6 +14,7 @@
  * XMLSerializer; attribute order is stable in both.)
  */
 import { describe, expect, it } from 'vitest';
+import { createRequire } from 'node:module';
 import { h } from 'preact';
 import { render } from 'preact-render-to-string';
 import Wheel from './Wheel';
@@ -43,7 +44,22 @@ function shareCardProps() {
 describe('Wheel share-card serialization', () => {
   it('renders byte-identically with interaction props omitted', () => {
     const markup = render(h(Wheel as any, shareCardProps()));
-    expect(markup).toMatchSnapshot();
+    const frozen = createRequire(import.meta.url)('./__snapshots__/wheel-serialization.test.ts.snap')
+      ['Wheel share-card serialization > renders byte-identically with interaction props omitted 1'];
+    // libm can shift the final trig coordinate by ~3e-14 pixels on macOS.
+    // Compare coordinates to 1e-10 px; every other byte remains pinned to the
+    // original snapshot, which is deliberately not regenerated.
+    const pattern = /\b(x1|x2|y1|y2|cx|cy)="(-?\d+\.\d+)"/g;
+    const reference = [...frozen.slice(1, -1).matchAll(pattern)];
+    let index = 0;
+    const canonical = markup.replace(pattern, (_match, name, value) => {
+      const expected = reference[index++];
+      expect(name).toBe(expected?.[1]);
+      expect(Math.abs(Number(value) - Number(expected[2]))).toBeLessThanOrEqual(1e-10);
+      return expected[0];
+    });
+    expect(index).toBe(reference.length);
+    expect(canonical).toMatchSnapshot();
   });
 
   it('renders the no-angles fallback identically (0° Aries anchor, no spokes)', () => {

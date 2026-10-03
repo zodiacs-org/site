@@ -6,10 +6,13 @@
  * sign-specific where the surface knows the sign; scoring language stays
  * the approved sentence — free participation only.
  */
-import { daysLeftInSeason, seasonInstanceAt } from '../lib/games/season';
+import { isAstrologyToolPath } from '../lib/trust-boundary';
+import { seasonInstanceAt } from '../lib/games/season';
+import { normalizeCatalogLocale, localizePath, t, englishOnlyCue, type CatalogLocale } from '../lib/i18n';
 
 interface Props {
   signName?: string;
+  locale?: CatalogLocale;
   /** Extra classes for the band (e.g. `reveal`); applied only when it renders. */
   class?: string;
   /** Space above the band, applied only when it renders (e.g. '28px'). */
@@ -20,9 +23,9 @@ const enabled = (import.meta.env.PUBLIC_ZODIAC_GAMES_ENABLED
   ?? process.env.PUBLIC_ZODIAC_GAMES_ENABLED) === '1';
 const { signName, class: className, gap } = Astro.props;
 const buildInstant = new Date();
-const season = enabled ? seasonInstanceAt(buildInstant) : null;
-const daysLeft = season ? daysLeftInSeason(season, buildInstant) : 0;
-const daysWord = daysLeft === 1 ? 'day' : 'days';
+const season = enabled && !isAstrologyToolPath(Astro.url.pathname) ? seasonInstanceAt(buildInstant) : null;
+const locale = normalizeCatalogLocale(Astro.props.locale);
+const englishCue = englishOnlyCue(locale);
 ---
 {season && (
   <aside
@@ -32,14 +35,12 @@ const daysWord = daysLeft === 1 ? 'day' : 'days';
       signName ? null : `--sign:${season.sign.hue}`,
     ].filter(Boolean).join(';') || undefined}
   >
-    <span class="race-ramp__label mono">The Zodiac Games</span>
-    <span class="race-ramp__text">
-      {signName
-        ? `Team ${signName} is in The Race. Joins and weekly check-ins score the points — nothing else counts.`
-        : `All twelve signs are racing. ${season.sign.name} Season closes in ${daysLeft} ${daysWord}.`}
+    <span class="race-ramp__label mono">{t(locale, 'trustGamesTitle')}</span>
+    <span class="race-ramp__text">{t(locale, 'trustGamesScore')}
+      <span class="race-ramp__disclosure">{t(locale, 'trustFreeAnswer')} <a href={localizePath(locale, '/disclosure/')}>{t(locale, 'trustDisclosure')}</a>.</span>
     </span>
-    <a class="race-ramp__link" href="/race/">
-      {signName ? `Join Team ${signName} — it’s free` : 'See the standings'} →
+    <a class="race-ramp__link" href="/race/" hreflang={englishCue ? 'en' : undefined} title={englishCue?.aria}>
+      {t(locale, 'trustGamesLink')}{englishCue?.suffix ?? ''} →
     </a>
   </aside>
 )}
@@ -59,7 +60,7 @@ const daysWord = daysLeft === 1 ? 'day' : 'days';
   .race-ramp__label {
     font-size: 9.5px;
     letter-spacing: 0.22em;
-    text-transform: uppercase;
+    text-transform: none;
     color: var(--faint);
   }
   .race-ramp__text {
@@ -67,6 +68,7 @@ const daysWord = daysLeft === 1 ? 'day' : 'days';
     font-size: 13px;
     color: var(--muted);
   }
+  .race-ramp__disclosure { display: block; margin-block-start: 6px; font-size: 12px; }
   .race-ramp__link {
     margin-inline-start: auto;
     font-size: 13px;

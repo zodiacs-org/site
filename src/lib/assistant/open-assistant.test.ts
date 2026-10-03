@@ -248,15 +248,12 @@ describe('saved-chart assistant context', () => {
     expect(await placementSummaryForChart(selfChart(JSON.stringify(noInstant))!)).toBeNull();
   });
 
-  it('asks consent for a chart without a birth time in words true of its noon-UTC lines, in every locale', async () => {
+  it('never offers a saved natal attachment, with or without a birth time', async () => {
     const source = await readFile(new URL('./open-assistant.ts', import.meta.url), 'utf8');
-    const noTime = [...source.matchAll(/consentBodyNoTime: '([^'\n]+)'/gu)].map((match) => match[1] ?? '');
-    expect(noTime).toHaveLength(5);
-    for (const body of noTime) {
-      expect(body).toContain('12:00 UTC');
-      expect(body).toContain('OpenAI');
-    }
-    expect(source).toContain('const body = chart.birth.timeKnown ? copy.consentBody : copy.consentBodyNoTime;');
+    expect(source).not.toContain('requestChartConsent');
+    expect(source).not.toContain('consentBodyNoTime');
+    expect(source).toContain('const ownerChart = null;');
+    expect(source).toContain('chartButton.hidden = true;');
   });
 
   it('gives a Placidus chart no house numbers, which would need the exact angles', async () => {
@@ -309,7 +306,8 @@ describe('Guide day and retry boundaries', () => {
       source.indexOf('async function submitQuestion()'),
     );
     expect(submit).toContain('if (!await requestCloudConsent()) return;\n    if (rotateGuideDayIfNeeded()) return;');
-    expect(submit).toContain('await requestChartConsent(expectedGeneration);\n    }\n    if (rotateGuideDayIfNeeded()) return;');
+    expect(submit).not.toContain('requestChartConsent');
+    expect(submit).not.toContain('placementSummary');
     expect(run).toContain('if (rotateGuideDayIfNeeded())');
     expect(retry).toContain('prior.body.contextEpoch !== state.contextEpoch');
     expect(retry).toContain('prior.body.baseRevision !== state.revision');
@@ -344,7 +342,7 @@ describe('Guide cloud-processing disclosure', () => {
   it('keeps the browser consent version aligned with the server after the disclosure change', async () => {
     const source = await readFile(new URL('./open-assistant.ts', import.meta.url), 'utf8');
     expect(GUIDE_CLOUD_DISCLOSURE_POLICY_VERSION)
-      .toBe('guide-cloud-processing-2026-08-14.2');
+      .toBe('guide-cloud-processing-2026-10-03.1');
     expect(source).toContain(
       `const CONSENT_POLICY_VERSION = '${GUIDE_CLOUD_DISCLOSURE_POLICY_VERSION}';`,
     );
@@ -353,7 +351,7 @@ describe('Guide cloud-processing disclosure', () => {
 
   it('discloses both safety passes, generated draft processing, and local-only state in all locales', async () => {
     const source = await readFile(new URL('./open-assistant.ts', import.meta.url), 'utf8');
-    const cloudBodies = [...source.matchAll(/cloudBody: '([^'\n]+)'/gu)]
+    const cloudBodies = [...source.matchAll(/cloudBody: "([^"\n]+)"/gu)]
       .map((match) => match[1] ?? '');
     expect(cloudBodies).toHaveLength(5);
 
@@ -595,7 +593,7 @@ describe('assistant profile-access privacy fence', () => {
     const source = await readFile(new URL('./open-assistant.ts', import.meta.url), 'utf8');
     const clearStart = source.indexOf('function clearAssistantForProfileRevocation()');
     const handlerStart = source.indexOf('function onProfileAccessChange()');
-    const consentStart = source.indexOf('async function requestChartConsent(');
+    const consentStart = source.indexOf('function appendSourcesRow(');
     const clear = source.slice(clearStart, handlerStart);
     const handler = source.slice(handlerStart, consentStart);
 
@@ -657,21 +655,18 @@ describe('assistant profile-access privacy fence', () => {
 
   it('fences consent, network send, stream paint, and completion state to one access generation', async () => {
     const source = await readFile(new URL('./open-assistant.ts', import.meta.url), 'utf8');
-    const consentStart = source.indexOf('async function requestChartConsent(');
+    const consentStart = source.indexOf('function appendSourcesRow(');
     const submitStart = source.indexOf('async function submitQuestion()');
     const focusStart = source.indexOf('function focusableControls()');
     const consent = source.slice(consentStart, submitStart);
     const submit = source.slice(submitStart, focusStart);
 
-    expect(consent).toContain('expectedGeneration = profileAccessGeneration');
-    expect(consent).toContain('!currentProfileAccessGeneration(expectedGeneration)');
-    expect(consent.indexOf('const summary = await chartSummaryPromise;'))
-      .toBeLessThan(consent.indexOf('savedChart !== chart'));
-    expect(consent).toContain('return current && granted;');
+    expect(source).not.toContain('requestChartConsent');
+    expect(source).toContain('const ownerChart = null;');
 
     expect(submit).toContain('const expectedGeneration = profileAccessGeneration;');
     expect(submit).toContain('await requestCloudConsent()');
-    expect(submit).toContain('requestChartConsent(expectedGeneration)');
+    expect(submit).not.toContain('requestChartConsent');
     expect(submit).toContain('!currentProfileAccessGeneration(expectedGeneration)');
 
     const runStart = source.indexOf('async function runTurn(');
@@ -690,8 +685,9 @@ describe('assistant profile-access privacy fence', () => {
     const toggleStart = source.indexOf('function toggleChart()');
     const buildStart = source.indexOf('function build()');
     const toggle = source.slice(toggleStart, buildStart);
-    expect(toggle).toContain('requestChartConsent(expectedGeneration)');
-    expect(toggle).toContain('invalidateContext(true);');
+    expect(toggle).not.toContain('requestChartConsent');
+    expect(toggle).toContain('chartEnabled = false;');
+    expect(toggle).toContain('syncSourceControls();');
   });
 
   it('limits page context to a fixed public catalog and never reads private URL surfaces', async () => {

@@ -1,4 +1,6 @@
 ---
+import HomeTrustFaq from '../../components/HomeTrustFaq.astro';
+import { homeTrustSchema } from '../../lib/home-trust';
 import Base from '../../layouts/Base.astro';
 import SignIcon from '../../components/SignIcon.astro';
 import ToolGlyph from '../../components/ToolGlyph.astro';
@@ -19,6 +21,7 @@ const tools = [
 ];
 
 const jsonLd = [
+  homeTrustSchema('fr'),
   {
     '@type': 'WebSite',
     '@id': 'https://zodiacs.org/#site',
@@ -183,6 +186,7 @@ const jsonLd = [
       <a class="btn btn--primary" href={localizePath('fr', '/birth-chart/')}><span>Obtiens ton thème astral gratuit</span><span class="orb">↗</span></a>
     </div>
   </section>
+  <HomeTrustFaq locale="fr" />
 </Base>
 
 <style>

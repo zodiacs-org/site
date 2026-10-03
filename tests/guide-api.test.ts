@@ -17,7 +17,14 @@ import {
   GUIDE_SAFETY_RESPONSE_MODEL,
   GUIDE_SAFETY_RESPONSE_VERSION,
 } from '../src/lib/guide-server/policy';
-import { ephemeralTurn, GUIDE_TEST_IDS } from '../src/lib/guide-protocol/test-fixtures';
+import { ephemeralTurn as privateEphemeralTurn, GUIDE_TEST_IDS } from '../src/lib/guide-protocol/test-fixtures';
+
+// API fixtures carry only public context. Private fixtures remain in protocol tests.
+function ephemeralTurn(overrides: Partial<GuideEphemeralTurnRequestDraftV1> = {}) {
+  const turn = privateEphemeralTurn(overrides);
+  turn.ephemeralContext.baseContext.ownerChart = { slot: 'owner_chart', state: 'unavailable', source: null };
+  return turn;
+}
 
 const ENV = {
   OPENAI_API_KEY: 'sk-server-only-example-value',
@@ -285,6 +292,22 @@ function quotaFetcher(
 }
 
 describe('POST /v1/guide/turn protected web endpoint', () => {
+  it('rejects personal chart context from stale clients before authorization or provider calls', async () => {
+    const turn = privateEphemeralTurn();
+    turn.consent.policyVersion = GUIDE_CLOUD_DISCLOSURE_POLICY_VERSION;
+    turn.consent.contextScopeDigest = await createGuideEphemeralContextScopeDigestDraftV1(turn) ?? '0'.repeat(64);
+    const authorizeTurn = vi.fn();
+    const streamProvider = vi.fn();
+    const fetcher = vi.fn();
+    const handler = createGuideHandler({ env: ENV, authorizeTurn, streamProvider, fetcher });
+    const response = new MockResponse();
+    await handler(request(turn), response);
+    expect(response.statusCode).toBe(400);
+    expect(authorizeTurn).not.toHaveBeenCalled();
+    expect(streamProvider).not.toHaveBeenCalled();
+    expect(fetcher).not.toHaveBeenCalled();
+  });
+
   it('is default-on without legacy positive interlocks', async () => {
     const authorizeTurn = vi.fn(async () => allowedTurn());
     const streamProvider = vi.fn(async () => completion());

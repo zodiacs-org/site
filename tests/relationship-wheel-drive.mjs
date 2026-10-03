@@ -11,7 +11,7 @@
  */
 import { mkdir } from 'node:fs/promises';
 import { chromium } from 'playwright-core';
-import { spawn } from 'node:child_process';
+import { startPreview } from './visual/preview-server.mjs';
 import { setTimeout as wait } from 'node:timers/promises';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { driveLegacyPolarProfile } from './legacy-polar-profile-drive.mjs';
@@ -19,7 +19,6 @@ import { runCompositeBrowserChecks } from './composite-browser-checks.mjs';
 
 const OUT = process.env.OUT_DIR ?? null;
 const PORT = 4399;
-const BASE = `http://127.0.0.1:${PORT}`;
 const CURATED_SUN_MOON = 'One of you runs on purpose, the other on feeling, and here they agree — what one wants to do is what the other wants to come home to. This is the classic ease that makes a relationship feel inevitable in retrospect.';
 const FALLBACK_NEPTUNE_URANUS = 'Frida’s imagination pushes against Diego’s independence — friction that forces growth or starts fights, depending on the week.';
 const COMPOSITE_NOTE = "A composite chart is the midpoint of two charts — a portrait of the relationship itself rather than either person. Composite houses need a location convention we won't fake, so this chart is shown without houses.";
@@ -56,12 +55,8 @@ const profile = {
   ],
 };
 
-const preview = spawn(
-  process.execPath,
-  ['node_modules/astro/bin/astro.mjs', 'preview', '--host', '127.0.0.1', '--port', String(PORT)],
-  { stdio: 'ignore' },
-);
-await wait(2500);
+const preview = await startPreview({ port: PORT });
+const BASE = preview.baseURL;
 if (OUT) await mkdir(OUT, { recursive: true });
 const results = [];
 const check = (name, ok, detail = '') => { results.push({ name, ok, detail }); };
@@ -88,6 +83,15 @@ try {
   await page.locator('.calc__submit').click();
   await page.waitForSelector('.rwheel', { timeout: 20000 });
   await page.waitForSelector('.wheel__transit', { timeout: 15000 });
+
+  check('both locally computed charts show their UTC math receipts',
+    await page.locator('[data-check-our-math] time').count() === 2
+      && await page.locator('[data-check-our-math] a').first().getAttribute('href') === '/methodology/');
+  const openings = page.locator('[data-result-opening]');
+  check('the comparison begins with a human sentence before placements',
+    await openings.count() === 1 && await openings.isVisible());
+  check('astrology tools carry no Astrofolio navigation or footer brand',
+    !/Astrofolio/.test(await page.locator('.znav, .zfooter').allTextContents().then(parts => parts.join(' '))));
 
   // Both rings render: inner natal marks (South Node hidden ⇒ 11) and the
   // outer partner ring (11, Moon included, South Node hidden).
@@ -425,7 +429,7 @@ try {
   await runCompositeBrowserChecks({ browser, baseURL: BASE, check, outDir: OUT, profile });
   await browser.close();
 } finally {
-  preview.kill();
+  await preview.stop();
 }
 
 let failed = 0;
