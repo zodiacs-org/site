@@ -105,8 +105,8 @@ export const PROGRAMMATIC_ROUTE_LOCALES = ['en', 'es', 'pt', 'fr', 'it'] as cons
 /** Byte-compatible locale-home fallback; future locales never join it. */
 export const LEGACY_HOME_SELECTOR_LOCALES = ['en', 'es', 'pt', 'fr', 'it'] as const satisfies readonly Locale[];
 
-/** Locales in which each translated route is actually available. */
-export const LOCALIZED_PATHS: ReadonlyMap<string, readonly Locale[]> = new Map<string, readonly Locale[]>([
+/** Discovery metadata has no side effects; client navigation can omit this map. */
+export const LOCALIZED_PATHS: ReadonlyMap<string, readonly Locale[]> = /*#__PURE__*/ (() => new Map<string, readonly Locale[]>([
   ...CORE_LOCALIZED_PATHS.map((path) => [
     path,
     SIGN_SLUGS.some((slug) => path === `/${slug}/`)
@@ -114,7 +114,7 @@ export const LOCALIZED_PATHS: ReadonlyMap<string, readonly Locale[]> = new Map<s
       : CORE_ROUTE_LOCALES,
   ] as const),
   ...DAILY_READING_PATHS.map((path) => [path, DAILY_READING_ROUTE_LOCALES] as const),
-]);
+]))();
 
 const BIRTHDAY_MONTH_LENGTHS: Readonly<Record<string, number>> = Object.freeze({
   january: 31,

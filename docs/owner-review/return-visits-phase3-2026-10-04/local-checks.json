@@ -3,8 +3,8 @@
   "baseCommit": "076540b69123b353b6cdbac9054b3c60fb438846",
   "buildReceipt": {
     "schema": "zodiacs.phase1-build-receipt.v1",
-    "builtAt": "2026-10-03T19:34:54.403Z",
-    "templateSourceSha256": "be1b372c10ac818fbcb497e0fc42b9ef78ab4aef62abf84e03fb05cdc83f065e",
+    "builtAt": "2026-10-03T19:52:03.809Z",
+    "templateSourceSha256": "d63f74985b26a4908097bbbd169342fb95bec8e4852f0c7045b8c21d72899906",
     "dailyDate": "2026-10-03",
     "publicationCanonicalSha256": "ee0304898bb69f2224063a30fa4bf1fb987b5de6f2e672af91555ca1433ae5d1",
     "renderPayloadSha256": {
@@ -60,5 +60,14 @@
       "sha256": "0e2a22e689ac63457b5514e17522870a029a7cb79d009bc35ff28427c2c0867d",
       "bytes": 616350
     }
-  ]
+  ],
+  "productionFlagsBuild": {
+    "passed": true,
+    "standIns": "Exact CI production feature-flag environment",
+    "birthChartGzipKB": 68.9,
+    "compatibilityGzipKBDisplayed": 36.0,
+    "compatibilityLimitKB": 36,
+    "initialBudgetsChanged": false,
+    "serverOnlyLocaleMapRemovedFromBrowser": true
+  }
 }
