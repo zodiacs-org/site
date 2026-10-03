@@ -23,6 +23,10 @@ TOOLS AND UTILITIES
 These lines use each live page’s meta description to state what it computes or provides:
 - /ask/ — Ask Guide about birth charts, astrology, or Zodiacs.org tools and guides. Signed-out conversations are not stored by Zodiacs.org.
 - /baby-zodiac/ — Enter a due date: the near-certain sun sign (cusp caveats computed, not guessed), the week's possible moon signs, and what has to wait for the birth minute. Free.
+- /big-three/ — Enter a birth date, time, and place and get your Sun, Moon, and Rising signs with exact degrees, a card to share, and one tap into the full birth chart. Free, computed in your browser.
+- /chart-twins/ — Compare your signs with the sourced people directory. A shared sign is a conversation starter, not proof of a similar personality.
+- /compatibility/invite/ — Add your chart first. Send the link, and your friend adds theirs to see your compatibility.
+- /group-charts/ — Add three to eight people and explore what each might bring to the group. Use birth details with their permission.
 - /birth-chart/ — Calculate your free birth chart: sun, moon, rising, planets, houses, and what they mean — computed privately, in your browser.
 - /birthday/ — Choose your birthday for a date-specific reading of character, relationships, work, and growth, with an exact Sun-sign answer when the birth year matters.
 - /compatibility/ — Free astrology compatibility calculator: compare two birth charts privately in your browser, with clear readings and guides to all 78 sign pairings.
@@ -56,7 +60,6 @@ PAGE INVENTORY — EVERGREEN PAGES AND HUBS
 - / — Free birth charts calculated in your…
 - /about/ — Who runs Zodiacs.org and why.
 - /almanac/ — Long-form notes on the month's computed…
-- /big-three/ — Enter a birth date, time, and place and…
 - /birth-chart/someone-else/ — Open someone else’s astrology chart with…
 - /birth-chart/three-dimensions/ — What the flat chart wheel leaves out.
 - /corrections/ — Material corrections to astronomical…

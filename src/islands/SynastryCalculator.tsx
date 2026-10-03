@@ -6,7 +6,6 @@
  */
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { BirthFields, birthDateForChart, type CalendarChoice } from './BirthFields';
-import type { CopyLinkState } from './CopyLinkButton';
 import SignChip from './SignChip';
 import { NextActionCard } from '../components/NextActionCard';
 import {
@@ -25,7 +24,7 @@ import type { MinimalBody, PairSummary } from '../lib/engine/synastry';
 import type { ShareChartInput } from '../lib/share';
 import type { PositionsShareChart, PositionsShareInput } from '../lib/share-positions';
 import type { City } from '../lib/geo/search';
-import { LOCALE_META, localizePath, normalizeCatalogLocale, t, tf, type CatalogLocale as Locale } from '../lib/i18n';
+import { LOCALE_META, localizePath, normalizeCatalogLocale, t, type CatalogLocale as Locale } from '../lib/i18n';
 import { useEngine, type EngineLoader } from '../lib/hooks/useEngine';
 import CalculationReload, { calculationError } from './CalculationReload';
 import { loadModule } from '../lib/module-load';
@@ -79,8 +78,6 @@ interface Person {
 }
 
 type WheelModule = typeof import('./synastry/RelationshipWheel');
-type CopyLinkModule = typeof import('./CopyLinkButton');
-type ShareModule = typeof import('../lib/share');
 type CompatibilityShareModule = typeof import('./CompatibilityShareControl');
 type PrefilledPairModule = typeof import('./PrefilledPairNotice');
 type InviteExperienceModule = typeof import('./synastry/InviteExperience');
@@ -364,13 +361,14 @@ function resolvePositions(
   received: { chart: PositionsShareChart; label: string },
 ): Person {
   const { chart } = received;
+  const bodies = chart.angles ? chart.bodies : chart.bodies.filter((body) => body.body !== 'Moon');
   return {
     label: received.label,
-    bodies: chart.bodies,
+    bodies,
     asc: chart.angles?.asc ?? null,
     timeKnown: chart.angles !== null,
     wheel: {
-      bodies: chart.bodies,
+      bodies,
       mc: chart.angles?.mc ?? null,
       cusps: null,
     },
@@ -411,7 +409,7 @@ function SlotForm({
               onClick={() => setSlot(() => emptySlot())}
             >×</button>
           </span>
-          <p class="field__help">This side arrived as chart positions, with no birth details.</p>
+          <p class="field__help">{t(locale, 'trustMissingInstant')}</p>
         </div>
       </div>
     );
@@ -541,9 +539,8 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
     source: ComparisonResultSource;
   } | null>(null);
   const [wheelMod, setWheelMod] = useState<WheelModule | null>(null);
-  const [copyLinkMod, setCopyLinkMod] = useState<CopyLinkModule | null>(null);
-  const [shareMod, setShareMod] = useState<ShareModule | null>(null);
   const [compatShareMod, setCompatShareMod] = useState<CompatibilityShareModule | null>(null);
+  const [privateNotice, setPrivateNotice] = useState('');
   const [prefilledPairMod, setPrefilledPairMod] = useState<PrefilledPairModule | null>(null);
   const [inviteExperienceMod, setInviteExperienceMod] = useState<InviteExperienceModule | null>(null);
   const [sendBackMod, setSendBackMod] = useState<SendBackExperienceModule | null>(null);
@@ -569,8 +566,6 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [autoRan, setAutoRan] = useState(false);
-  const [invite, setInvite] = useState<ShareChartInput | null>(null);
-  const [inviteState, setInviteState] = useState<CopyLinkState>('idle');
   const [pairs, setPairs] = useState<SavedPair[]>([]);
   const [pairSave, setPairSave] = useState<PairSaveState>('idle');
   const [pairAnnounce, setPairAnnounce] = useState('');
@@ -601,8 +596,6 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
     setSlotA(emptySlot());
     setSlotB(emptySlot());
     setResult(null);
-    setInvite(null);
-    setInviteState('idle');
     setInvitePanelExpanded(false);
     setPairs([]);
     setPairSave('idle');
@@ -662,8 +655,6 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
     };
     setSharingLoadError('');
     void Promise.all([
-      install(copyLinkMod ? Promise.resolve(copyLinkMod) : loadModule(() => import('./CopyLinkButton')), setCopyLinkMod),
-      install(shareMod ? Promise.resolve(shareMod) : loadModule(() => import('../lib/share')), setShareMod),
       install(compatShareMod ? Promise.resolve(compatShareMod) : loadModule(() => import('./CompatibilityShareControl')), setCompatShareMod),
       install(sendBackMod ? Promise.resolve(sendBackMod) : loadModule(() => import('./synastry/SendBackExperience')), setSendBackMod),
     ]).catch((cause) => {
@@ -862,6 +853,38 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
     };
   }, [result?.at]);
 
+  async function openPrivateInvite(raw: string, stillActive: () => boolean = () => true): Promise<void> {
+    const request = ++requestRef.current;
+    const access = profileAccessGeneration.current;
+    const current = () => stillActive() && requestIsCurrent(request, access);
+    history.replaceState(null, '', window.location.pathname + window.location.search);
+    compareInFlightRef.current = false;
+    setBusy(false); setResult(null); setError(''); setPrivateNotice('');
+    setSlotA(emptySlot()); setSlotB(emptySlot()); setArrival({ state: 'idle' });
+    setPrefilledPairMod(null);
+    try {
+      const [codec, copy] = await Promise.all([import('../lib/sharing/private-invite'), import('../lib/sharing/copy')]);
+      if (!current()) return;
+      const chart = codec.readPrivateInvite(raw);
+      if (!chart) { focusAfterComputeRef.current = true; setError(copy.sharingText(locale, 'invalidInvite')); return; }
+      setSlotA({ ...emptySlot(), source: 'positions', positions: { chart, label: t(locale, 'sharedChart') } });
+      setPrivateNotice(copy.sharingText(locale, 'inviteArrival'));
+    } catch { if (current()) setError(t(locale, 'compareError')); }
+  }
+
+  // A second fragment invitation may arrive without a document navigation.
+  useEffect(() => {
+    if (!profileReady) return;
+    let active = true;
+    const receive = () => {
+      if (new URLSearchParams(window.location.hash.slice(1)).has('p')) {
+        void openPrivateInvite(window.location.hash, () => active);
+      }
+    };
+    window.addEventListener('hashchange', receive);
+    return () => { active = false; window.removeEventListener('hashchange', receive); };
+  }, [profileReady, locale]);
+
   useEffect(() => {
     if (!profileReady || profileLinksReadRef.current) return;
     let active = true;
@@ -901,6 +924,10 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
     // an invite with one open side and the permission-first other-person
     // flow with both sides ready. Details and labels never enter the query.
     const fragment = new URLSearchParams(window.location.hash.slice(1));
+    if (fragment.has('p')) {
+      void openPrivateInvite(window.location.hash, () => active);
+      return () => { active = false; };
+    }
     const valuesA = fragment.getAll('a');
     const valuesB = fragment.getAll('b');
     const tokenA = valuesA.length === 1 ? valuesA[0] : null;
@@ -908,7 +935,6 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
     if (fragment.has('a') || fragment.has('b')) {
       void import('../lib/share').then((module) => {
         if (!active) return;
-        setShareMod(module);
         const decodedA = tokenA ? module.decodeChartLink(tokenA) : null;
         const decodedB = tokenB ? module.decodeChartLink(tokenB) : null;
         if (decodedA) {
@@ -989,7 +1015,6 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
     && slotB.positions === null;
   const showQuickFill = profileReady && latestChart !== null
     && slotAIsUntouched && !quickFillDismissed;
-  const CopyLinkButton = copyLinkMod?.CopyLinkButton;
 
   const slotReady = (slot: SlotState) =>
     slot.source === 'saved' ? charts.some((c) => c.id === slot.savedId)
@@ -1002,47 +1027,6 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
     && slotA.savedId !== '' && slotA.savedId === slotB.savedId;
 
   const canCompare = slotReady(slotA) && slotReady(slotB) && !sameSaved && !busy;
-
-  // Only the inviter's own side rides in an invite link — a chart that
-  // itself arrived by link is someone else's data and never re-shared.
-  // A side restored from a saved comparison is this device's own data.
-  function inviteFromSlot(slot: SlotState): ShareChartInput | null {
-    if (slot.source === 'positions') return null;
-    if (slot.source === 'link') {
-      return slot.link && slot.link.received !== true ? slot.link.input : null;
-    }
-    if (slot.source === 'saved') {
-      const c = charts.find((x) => x.id === slot.savedId);
-      if (!c || !c.birth.place) return null;
-      return {
-        date: c.birth.date,
-        time: c.birth.time,
-        timeKnown: c.birth.timeKnown,
-        lat: c.birth.place.lat,
-        lon: c.birth.place.lon,
-        tz: c.birth.place.tz,
-        name: handleOf(c.name),
-        place: c.birth.place.name,
-        houseSystem: 'whole',
-      };
-    }
-    if (slot.date === '' || slot.city === null) return null;
-    const timeKnown = slot.timeKnown && slot.time !== '';
-    return {
-      date: slot.date,
-      time: timeKnown ? slot.time : null,
-      timeKnown,
-      lat: slot.city.lat,
-      lon: slot.city.lon,
-      tz: slot.city.tz,
-      name: slot.name.trim() || undefined,
-      place: slot.city.name,
-      houseSystem: 'whole',
-    };
-  }
-
-  const inviteUrl = () =>
-    `${window.location.origin}${localizePath(locale, '/compatibility/')}#a=${shareMod!.encodeChartLink(invite!)}`;
 
   const track = (name: string, props: Record<string, string> = {}) => {
     (window as unknown as {
@@ -1324,8 +1308,6 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
         sides: [sideFromSlot(sideA, a.label), sideFromSlot(sideB, b.label)],
         source: resultSource,
       });
-      setInvite(inviteFromSlot(sideA));
-      setInviteState('idle');
       setInvitePanelExpanded(false);
       setPairSave('idle');
       setPairAnnounce(''); // same-text re-announcements need a mutation
@@ -1460,6 +1442,7 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
               </div>
             </div>
           )}
+          {privateNotice && slotA.source === 'positions' && <p class="notice" data-private-invite-arrival>{privateNotice}</p>}
           <div class="syn__slots">
             <SlotForm
               slot={slotA}
@@ -1676,28 +1659,10 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
               : <p class="calc__error" role="alert" data-pair-status>{t(locale, 'chartSaveError')}</p>
           )}
 
-          {/* Invite: A's side rides in the link; B fills their own */}
-          {invite && CopyLinkButton && shareMod && (
-            <div class="calc__share">
-              <CopyLinkButton
-                url={inviteUrl()}
-                state={inviteState}
-                onStateChange={setInviteState}
-                idleLabel={tf(locale, 'inviteWith', { name: result.a.label })}
-                copiedLabel={t(locale, 'linkCopied')}
-                ariaLabel={t(locale, 'inviteLink')}
-                buttonClass="btn btn--ghost"
-                dataHook="invite"
-              >
-                <p class="calc__share-note">
-                  {tf(locale, 'inviteNamedNote', { name: result.a.label })}
-                </p>
-                {inviteState === 'copied' && (
-                  <p class="sr-only" role="status">{t(locale, 'inviteCopied')}</p>
-                )}
-              </CopyLinkButton>
-            </div>
-          )}
+          {wheelMod && result.source === 'plain' && slotA.source !== 'positions'
+            && !(slotA.source === 'link' && slotA.link?.received) && (
+              <wheelMod.PrivateInviteResultControl person={result.a} locale={locale} />
+            )}
           {inviteUiActive
             && inviteExperienceMod
             && result.source === 'plain'

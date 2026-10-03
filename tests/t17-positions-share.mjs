@@ -297,7 +297,7 @@ try {
         'the hidden chart sheet must give the twelve bodies to the arcminute');
       assert.equal(sheetValues.filter((value) => /^[A-Z][a-z]+ \d{2}°$/u.test(value)).length, 4,
         'the hidden chart sheet must give ASC, DSC, MC and IC only to the whole degree');
-      const sheetWordmarks = preparedSheet.text.filter((entry) => entry.value === 'zodiacs.org');
+      const sheetWordmarks = preparedSheet.text.filter((entry) => entry.value === 'Zodiacs.org');
       assert.deepEqual(sheetWordmarks.map(({ align, x, y }) => ({ align, x, y })), [
         { align: 'right', x: 1708, y: 104 },
       ], 'chart sheet must carry one legible corner wordmark');
@@ -578,7 +578,7 @@ try {
       }
       assert.equal(approachText.includes(`Engine ${ENGINE_VERSION}`), true,
         'approach PNG must carry only its engine receipt');
-      const approachWordmark = contextualPrepared.approach.find((entry) => entry.value === 'zodiacs.org');
+      const approachWordmark = contextualPrepared.approach.find((entry) => entry.value === 'Zodiacs.org');
       assert.deepEqual(
         { align: approachWordmark?.align, x: approachWordmark?.x, y: approachWordmark?.y },
         { align: 'right', x: 1014, y: 1290 },
@@ -728,7 +728,7 @@ try {
       assert.equal(communicationText.includes(`Engine ${ENGINE_VERSION}`), true,
         'communication PNG must carry only its engine receipt');
       const communicationWordmark = contextualPrepared.communication
-        .find((entry) => entry.value === 'zodiacs.org');
+        .find((entry) => entry.value === 'Zodiacs.org');
       assert.deepEqual(
         { align: communicationWordmark?.align, x: communicationWordmark?.x, y: communicationWordmark?.y },
         { align: 'right', x: 1014, y: 1290 },

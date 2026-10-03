@@ -16,6 +16,7 @@ const core = [
   '/', '/tools/', '/birth-chart/', '/compatibility/', '/moon-sign/',
   '/rising-sign/', '/moon-phase/', '/saturn-return/', '/transits/',
   '/baby-zodiac/', '/profile/', '/methodology/', '/privacy/', '/disclosure/',
+  '/big-three/', '/compatibility/invite/', '/group-charts/', '/chart-twins/',
   ...signs.map((sign) => `/${sign}/`),
 ];
 const signPaths = new Set(signs.map((sign) => `/${sign}/`));
@@ -337,4 +338,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log(`i18n-r2-ru: OK — 14 indexable routes + 12 noindex sign guides + noindex 404, reciprocal discovery, ${fontBytes} font bytes, ${heroPosterBytes}/${mobileHeroPosterBytes} byte desktop/mobile homepage posters`);
+console.log(`i18n-r2-ru: OK — 18 indexable routes + 12 noindex sign guides + noindex 404, reciprocal discovery, ${fontBytes} font bytes, ${heroPosterBytes}/${mobileHeroPosterBytes} byte desktop/mobile homepage posters`);

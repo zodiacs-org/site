@@ -1,4 +1,5 @@
 ---
+import SharingToolLinks from '../../components/sharing/SharingToolLinks.astro';
 import Base from '../../layouts/Base.astro';
 import Faq from '../../components/Faq.astro';
 import RaceRamp from '../../components/RaceRamp.astro';
@@ -114,6 +115,7 @@ const inviteUiEnabled = import.meta.env.PUBLIC_COMPAT_INVITES_ENABLED === '1';
     <Faq items={faq} heading="Compatibility questions" />
     <RaceRamp gap="28px" />
   </section>
+<section class="section--tight container"><SharingToolLinks locale="en" /></section>
 </Base>
 
 <style>

@@ -24,6 +24,8 @@ const SIGN_PATTERN = SIGNS.join('|');
 const TOOL_ROOTS = new Set([
   'baby-zodiac',
   'big-three',
+  'group-charts',
+  'chart-twins',
   'birth-chart',
   'birthday',
   'compatibility',

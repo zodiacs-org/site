@@ -61,6 +61,7 @@ const RUSSIAN_INDEXED_PATHS = new Set([
   '/ru/moon-sign/', '/ru/rising-sign/', '/ru/moon-phase/',
   '/ru/saturn-return/', '/ru/transits/', '/ru/baby-zodiac/',
   '/ru/profile/', '/ru/methodology/', '/ru/privacy/', '/ru/disclosure/',
+  '/ru/big-three/', '/ru/compatibility/invite/', '/ru/group-charts/', '/ru/chart-twins/',
 ]);
 const LOCALIZED_404_PATHS = new Set([
   '/404.html', '/es/404/', '/pt/404/', '/fr/404/', '/it/404/', '/ru/404/',
@@ -1159,7 +1160,8 @@ const sitemapPolicy = {
   // +1 for /developers/engine/, the engine's own product page.
   // +1 for /developers/conformance/, the conformance suite's results page.
   // +1 for /developers/compute/, the compute API's page.
-  total: 1000 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
+  // +23 for three six-language sharing tools and five Big Three translations.
+  total: 1023 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
     + publishedEventPaths.size + indexablePeoplePaths.size
     + Number(JSON.parse(await readFile(resolve(repo, 'src/data/people.json'), 'utf8')).directoryIndexable === true)
     + indexedRegistryResearchPaths.size,
@@ -1172,7 +1174,7 @@ const sitemapPolicy = {
   eventPages: publishedEventPaths.size,
   peoplePages: indexablePeoplePaths.size,
   registryResearchPages: indexedRegistryResearchPaths.size,
-  translatedBlocks: 617,
+  translatedBlocks: 641,
 };
 const indexedFamilies = [
   { label: 'compatibility pairs', pattern: /^\/compatibility\/[a-z]+-[a-z]+\/$/, expected: sitemapPolicy.compatibilityPairs, localized: false },

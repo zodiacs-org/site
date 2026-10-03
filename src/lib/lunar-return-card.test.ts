@@ -97,7 +97,7 @@ describe('dedicated lunar image content', () => {
     expect(text).toContain('Next after: 2026-09-05 10:00 UTC'); expect(text).not.toMatch(/13:14:15|\.678/u);
     card.reading.forEach((row) => expect(text).toContain(row.text));
     [...card.readingBasis, ...card.notes].forEach((value) => expect(text).toContain(value));
-    expect(text).toContain('zodiacs.org'); expect(text).not.toContain('NEVER_PAINT_PRIVATE');
+    expect(text).toContain('Zodiacs.org'); expect(text).not.toContain('NEVER_PAINT_PRIVATE');
     const node = hooks.render.mock.calls[0][0] as VNode<{ signImageHrefs: Record<string, string> }>;
     // The angles at the middle of their whole degree, as a chart's link keeps them.
     expect(node.props).toMatchObject({ bodies: card.wheel.bodies, asc: 15.5, mc: 105.5, dsc: 195.5, ic: 285.5, cusps: card.wheel.houses!.cusps, aspects: card.wheel.aspects });

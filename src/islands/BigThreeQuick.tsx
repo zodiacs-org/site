@@ -6,10 +6,11 @@ import CalculationReload, { calculationError } from './CalculationReload';
 import { createModuleLoader, loadModule } from '../lib/module-load';
 import { prepareLocalTime, resolveLocalToUtc } from '../lib/time/localToUtc';
 import { SIGNS, formatLongitude, signForLongitude, signName } from '../lib/signs';
-import { bigThree } from '../lib/interpretations';
 import { chartHandoffFragment } from '../lib/chart-handoff';
 import type { Chart } from '../lib/engine/types';
 import type { PreparedChartCard } from '../lib/share-card';
+import { formatSharingCopy, type SharingCopy, type SharingKey } from '../lib/sharing/copy-en';
+import { localizePath, t, type CatalogLocale } from '../lib/i18n';
 
 /**
  * Three fields, one answer: Sun, Moon, and Rising from the same client-side
@@ -21,6 +22,7 @@ import type { PreparedChartCard } from '../lib/share-card';
  */
 
 type CardModule = typeof import('../lib/share-card');
+const loadReading = createModuleLoader(() => import('../lib/interpretations'));
 const loadResultTrust = createModuleLoader(() => import('./ChartTrust'));
 type ResultTrust = typeof import('./ChartTrust');
 
@@ -30,7 +32,6 @@ interface Placement {
   lon: number;
 }
 
-const TITLES: Record<Placement['kind'], string> = { sun: 'Sun', moon: 'Moon', rising: 'Rising' };
 let heldDiscs: HTMLImageElement[] | undefined;
 
 /**
@@ -50,7 +51,8 @@ function track(name: string, props: Record<string, string>): void {
   analytics?.track?.(name, props);
 }
 
-export default function BigThreeQuick() {
+export default function BigThreeQuick({ locale = 'en', copy }: { locale?: CatalogLocale; copy: SharingCopy }) {
+  const s = (_locale: CatalogLocale, key: SharingKey, values: Record<string, string | number> = {}) => formatSharingCopy(copy, key, values);
   const loadEngine = useEngine();
   const [date, setDate] = useState('');
   const [calendar, setCalendar] = useState<CalendarChoice>('gregorian');
@@ -58,6 +60,7 @@ export default function BigThreeQuick() {
   const [city, setCity] = useState<City | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const [readingModule, setReadingModule] = useState<typeof import('../lib/interpretations') | null>(null);
   const [placements, setPlacements] = useState<Placement[] | null>(null);
   const [resultTrust, setResultTrust] = useState<ResultTrust | null>(null);
   const [resultUtc, setResultUtc] = useState<Date | null>(null);
@@ -73,9 +76,15 @@ export default function BigThreeQuick() {
   useEffect(() => {
     // Warm the same index without placing the search module in the form's
     // initial JavaScript closure; PlaceSearch also warms it on first focus.
-    void import('../lib/geo/search').then(({ preloadIndex }) => preloadIndex(), () => {});
+    void import('../lib/geo/search').then(({ preloadIndex }) => preloadIndex()).catch(() => {});
     return () => { generation.current += 1; };
   }, []);
+
+  function edit<T>(setter: (value: T) => void, value: T): void {
+    generation.current += 1; cardAttempt.current += 1;
+    setter(value); setBusy(false); setPlacements(null); setHandoff('');
+    cardSource.current = null; setCard(null); setCardState('idle'); setCardError(''); setError('');
+  }
 
   async function prepareCard(): Promise<void> {
     const source = cardSource.current;
@@ -90,14 +99,14 @@ export default function BigThreeQuick() {
       const { chart } = source;
       const prepared = await module.prepareBigThreeCard(
         { bodies: chart.bodies, angles: chart.angles, engineVersion: chart.engineVersion, utc: chart.input?.utc },
-        'en',
+        locale,
       );
       if (!isCurrent()) return;
       setCard({ module, prepared, run: source.run });
       setCardState('ready');
     } catch (cause) {
       if (!isCurrent()) return;
-      setCardError(calculationError(cause, 'en', 'The share card could not be prepared. Try again.'));
+      setCardError(calculationError(cause, locale, s(locale, 'cardError')));
       setCardState('failed');
     }
   }
@@ -105,7 +114,7 @@ export default function BigThreeQuick() {
   async function compute(event: Event): Promise<void> {
     event.preventDefault();
     if (!date || !time || !city) {
-      setError('Enter a birth date, a birth time, and a birthplace.');
+      setError(s(locale, 'required'));
       return;
     }
     const run = ++generation.current;
@@ -119,7 +128,7 @@ export default function BigThreeQuick() {
       let day = date;
       if (calendarInPlay(date, calendar)) {
         // A date before 1924 is read in its calendar; the chart and the handoff use the Gregorian date.
-        const entry = await birthDateForChart('en', date, calendar);
+        const entry = await birthDateForChart(locale, date, calendar);
         if (run !== generation.current) return;
         if ('error' in entry) {
           setError(entry.error);
@@ -131,7 +140,8 @@ export default function BigThreeQuick() {
       }
       await prepareLocalTime(day, city.tz);
       const resolution = resolveLocalToUtc(day, time, city.tz, { longitude: city.lon });
-      const [engine, trust] = await Promise.all([loadEngine(), loadResultTrust()]);
+      const [engine, trust, reading] = await Promise.all([loadEngine(), loadResultTrust(), locale === 'en' ? loadReading().catch(() => null) : Promise.resolve(null)]);
+      if (run === generation.current) setReadingModule(reading);
       if (run !== generation.current) return;
       const chart: Chart = engine.computeChart({
         utc: resolution.utc,
@@ -150,11 +160,11 @@ export default function BigThreeQuick() {
       setResultTrust(trust);
       setResultUtc(chart.input.utc);
       setPlacements([
-        { kind: 'sun', title: TITLES.sun, lon: sun.lon },
-        { kind: 'moon', title: TITLES.moon, lon: moon.lon },
-        { kind: 'rising', title: TITLES.rising, lon: chart.angles.asc },
+        { kind: 'sun', title: t(locale, 'sun'), lon: sun.lon },
+        { kind: 'moon', title: t(locale, 'moon'), lon: moon.lon },
+        { kind: 'rising', title: t(locale, 'rising'), lon: chart.angles.asc },
       ]);
-      setHandoff(`/birth-chart/#${chartHandoffFragment({
+      setHandoff(`${localizePath(locale, '/birth-chart/')}#${chartHandoffFragment({
         date: day,
         time,
         timeKnown: true,
@@ -175,8 +185,8 @@ export default function BigThreeQuick() {
       });
     } catch (cause) {
       if (run !== generation.current) return;
-      if (cause instanceof RangeError) setError('That date or time is not valid.');
-      else setError(calculationError(cause, 'en', 'The chart could not be computed. Check the date, time, and place and try again.'));
+      if (cause instanceof RangeError) setError(s(locale, 'required'));
+      else setError(calculationError(cause, locale, s(locale, 'computeError')));
       setPlacements(null);
       setHandoff('');
       cardSource.current = null;
@@ -204,7 +214,7 @@ export default function BigThreeQuick() {
     setCardState('sharing');
     const fail = () => {
       if (!isCurrent()) return;
-      setCardError('The card could not be shared or saved. Try again.');
+      setCardError(s(locale, 'cardError'));
       setCardState('failed');
     };
     try {
@@ -227,7 +237,7 @@ export default function BigThreeQuick() {
     <div class="big-three" id="big-three">
       <form class="big-three__form calc__form" onSubmit={compute} noValidate>
         <BirthFields
-          locale="en"
+          locale={locale}
           dateId="bt-date"
           timeId="bt-time"
           placeId="bt-place"
@@ -235,46 +245,46 @@ export default function BigThreeQuick() {
           time={time}
           timeKnown={true}
           city={city}
-          onDateChange={setDate}
+          onDateChange={(value) => edit(setDate, value)}
           calendar={calendar}
-          onCalendarChange={setCalendar}
-          onTimeChange={setTime}
+          onCalendarChange={(value) => edit(setCalendar, value)}
+          onTimeChange={(value) => edit(setTime, value)}
           onTimeKnownChange={() => {}}
-          onCityChange={setCity}
+          onCityChange={(value) => edit(setCity, value)}
           onWarm={() => { void loadEngine(); }}
           showUnknownTime={false}
           requireKnownTime
-          timeHelp="Rising needs the time; the Sun and Moon usually don't."
+          timeHelp={<a href={localizePath(locale, '/birth-chart/')}>{s(locale, 'bigHelp')}</a>}
         />
         <div class="big-three__actions">
           <button type="submit" class="btn btn--primary" disabled={busy} data-big-three-submit>
-            <span>{busy ? 'Computing…' : 'Show my Big Three'}</span>
+            <span>{s(locale, busy ? 'computing' : 'bigSubmit')}</span>
             <span class="orb">→</span>
           </button>
           {error && <p class="field__error big-three__error" role="alert">{error}</p>}
-          <CalculationReload error={error} locale="en" />
+          <CalculationReload error={error} locale={locale} />
         </div>
       </form>
 
       {placements && (
         <div class="big-three__result" ref={resultRef} data-big-three-result>
-          {resultTrust && <><resultTrust.ResultOpening /><resultTrust.CheckOurMath utc={resultUtc} /></>}
+          {resultTrust && <><resultTrust.ResultOpening locale={locale} /><resultTrust.CheckOurMath utc={resultUtc} locale={locale} /></>}
           <div class="calc__three calc__three--3">
             {placements.map(({ kind, title, lon }) => {
-              const s = signForLongitude(lon);
+              const sign = signForLongitude(lon);
               return (
-                <div class="three-card shell tinted" style={`--sign:${s.hue}`} key={kind}>
+                <div class="three-card shell tinted" style={`--sign:${sign.hue}`} key={kind}>
                   <div class="core tinted three-card__core">
                     <span class="mono--label">{title}</span>
                     <span class="three-card__sign">
                       <picture class="three-card__icon">
-                        <img src={`/assets/zodiac-icons/128/${s.slug}.webp`} width="44" height="44" alt="" decoding="async" />
+                        <img src={`/assets/zodiac-icons/128/${sign.slug}.webp`} width="44" height="44" alt="" decoding="async" />
                       </picture>
-                      {signName(s, 'en')}
+                      {signName(sign, locale)}
                     </span>
-                    <span class="mono three-card__deg">{formatLongitude(lon, 'en')}</span>
-                    <p class="three-card__read">{bigThree(kind, s.slug)}</p>
-                    <a class="three-card__more" href={`/${s.slug}/`}>Read {signName(s, 'en')} →</a>
+                    <span class="mono three-card__deg">{formatLongitude(lon, locale)}</span>
+                    {locale === 'en' && readingModule && <p class="three-card__read">{readingModule.bigThree(kind, sign.slug)}</p>}
+                    <a class="three-card__more" href={localizePath(locale, `/${sign.slug}/`)}>{s(locale, 'readSign', { sign: signName(sign, locale) })} →</a>
                   </div>
                 </div>
               );
@@ -283,7 +293,7 @@ export default function BigThreeQuick() {
 
           <div class="big-three__next">
             <a class="btn btn--primary" href={handoff} data-big-three-full>
-              <span>See the whole chart</span>
+              <span>{s(locale, 'fullChart')}</span>
               <span class="orb">↗</span>
             </a>
             <button
@@ -294,21 +304,14 @@ export default function BigThreeQuick() {
               data-big-three-share
             >
               <span>
-                {cardState === 'preparing' ? 'Preparing your card…'
-                  : cardState === 'sharing' ? 'Sharing…'
-                    : cardState === 'shared' ? 'Shared'
-                      : cardState === 'downloaded' ? 'Saved'
-                        : cardState === 'failed' ? (card ? 'Try sharing again' : 'Retry card')
-                          : 'Share your Big Three'}
+                {s(locale, cardState === 'preparing' ? 'cardPreparing' : cardState === 'sharing' ? 'sharing' : cardState === 'shared' ? 'shared' : cardState === 'downloaded' ? 'saved' : cardState === 'failed' ? 'retry' : 'bigShare')}
               </span>
               <span class="orb">↑</span>
             </button>
           </div>
-          {cardError && <p class="field__error big-three__error" role="alert">Your Big Three are ready. {cardError}</p>}
-          <CalculationReload error={cardError} locale="en" />
-          <p class="big-three__note">
-            The full chart adds every planet, the houses, and the aspects between them. Your birth details travel in the
-            link's fragment, so they stay in this browser.
+          {cardError && <p class="field__error big-three__error" role="alert">{cardError}</p>}
+          <CalculationReload error={cardError} locale={locale} />
+          <p class="big-three__note">{s(locale, 'cardNote')}
           </p>
         </div>
       )}

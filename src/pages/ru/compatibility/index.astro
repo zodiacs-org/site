@@ -1,4 +1,5 @@
 ---
+import SharingToolLinks from '../../../components/sharing/SharingToolLinks.astro';
 import Base from '../../../layouts/Base.astro';
 import Faq from '../../../components/Faq.astro';
 import SignIcon from '../../../components/SignIcon.astro';
@@ -95,6 +96,7 @@ const jsonLd = [
   <section class="section--tight container container--narrow">
     <Faq items={faq} heading="Вопросы о совместимости" />
   </section>
+<section class="section--tight container"><SharingToolLinks locale="ru" /></section>
 </Base>
 
 <style>

@@ -3,19 +3,19 @@
  * TypeScript locale union never changes this release policy.
  */
 export const HREFLANG_LOCALE_POLICY = Object.freeze([
-  { locale: 'en', hreflang: 'en', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'birthday', 'daily-reading'], expectedBlocks: 617 },
-  { locale: 'es', hreflang: 'es', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'daily-reading'], expectedBlocks: 251 },
-  { locale: 'pt', hreflang: 'pt-BR', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'daily-reading'], expectedBlocks: 251 },
-  { locale: 'fr', hreflang: 'fr', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac'], expectedBlocks: 209 },
-  { locale: 'it', hreflang: 'it', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac'], expectedBlocks: 209 },
-  { locale: 'ru', hreflang: 'ru', indexEligible: true, routeFamilies: ['core'], expectedBlocks: 84 },
+  { locale: 'en', hreflang: 'en', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'birthday', 'daily-reading'], expectedBlocks: 641 },
+  { locale: 'es', hreflang: 'es', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'daily-reading'], expectedBlocks: 275 },
+  { locale: 'pt', hreflang: 'pt-BR', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'daily-reading'], expectedBlocks: 275 },
+  { locale: 'fr', hreflang: 'fr', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac'], expectedBlocks: 233 },
+  { locale: 'it', hreflang: 'it', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac'], expectedBlocks: 233 },
+  { locale: 'ru', hreflang: 'ru', indexEligible: true, routeFamilies: ['core'], expectedBlocks: 108 },
   { locale: 'ar', hreflang: 'ar', indexEligible: false, routeFamilies: [], expectedBlocks: 0 },
 ]);
 
 export const X_DEFAULT_HREFLANG = Object.freeze({
   hreflang: 'x-default',
   locale: 'en',
-  expectedBlocks: 617,
+  expectedBlocks: 641,
 });
 
 export const ACTIVE_HREFLANGS = Object.freeze(
@@ -42,6 +42,7 @@ const CORE_PATHS = new Set([
   '/', '/tools/', '/birth-chart/', '/compatibility/', '/moon-sign/',
   '/rising-sign/', '/moon-phase/', '/saturn-return/', '/transits/',
   '/baby-zodiac/', '/profile/', '/methodology/', '/privacy/', '/disclosure/',
+  '/big-three/', '/compatibility/invite/', '/group-charts/', '/chart-twins/',
 ]);
 const SIGN_GUIDE_PATHS = new Set(SIGN_SLUGS.map((slug) => `/${slug}/`));
 const DAILY_READING_PATHS = new Set([

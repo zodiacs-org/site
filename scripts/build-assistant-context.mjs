@@ -14,6 +14,7 @@ import { GLOSSARY } from '../src/data/glossary.ts';
 import { CHINESE_ZODIAC_COPY } from '../src/data/chinese-zodiac.ts';
 import { DEFAULT_LOCALE, LOCALES } from '../src/lib/i18n/core.ts';
 import { EN } from '../src/strings/en.mjs';
+import { SHARING_EN } from '../src/lib/sharing/copy-en.ts';
 import { WIDGET_EN } from '../src/strings/widgets.ts';
 import { currentHoroscopeMonth, utcMonth } from '../src/lib/horoscope-month.mjs';
 
@@ -29,6 +30,10 @@ export const MAX_CONTEXT_BYTES = 60 * 1024;
 export const TOOL_ROUTES = Object.freeze([
   '/ask/',
   '/baby-zodiac/',
+  '/big-three/',
+  '/chart-twins/',
+  '/compatibility/invite/',
+  '/group-charts/',
   '/birth-chart/',
   '/birthday/',
   '/compatibility/',
@@ -164,6 +169,8 @@ function signName(sign) {
 }
 
 function staticDescription(route, source, { ingresses, latestHoroscopeMonth }) {
+  const sharingKind = source.match(/<SharingToolPage\b[^>]*\bkind="(big|invite|group|twins)"/)?.[1];
+  if (sharingKind) return clean(SHARING_EN[({ big: 'bigLede', invite: 'inviteLede', group: 'groupLede', twins: 'twinsLede' })[sharingKind]]);
   const literal = source.match(/<Base\b[\s\S]*?\bdescription="([^"]+)"/i)?.[1];
   if (literal) return clean(literal);
 

@@ -30,6 +30,10 @@ describe('assistant site context', () => {
     expect(TOOL_ROUTES).toEqual([
       '/ask/',
       '/baby-zodiac/',
+      '/big-three/',
+      '/chart-twins/',
+      '/compatibility/invite/',
+      '/group-charts/',
       '/birth-chart/',
       '/birthday/',
       '/compatibility/',
@@ -66,13 +70,13 @@ describe('assistant site context', () => {
       // The engine's own product page at /developers/engine/ adds one more.
       // The conformance suite's results page at /developers/conformance/ adds one more.
       // The compute API's page at /developers/compute/ adds the last one.
-      consumerRoutes: 697,
+      consumerRoutes: 700,
       glossary: 145,
       guides: 12,
       learn: 159,
       pairs: 78,
-      staticPages: 58,
-      tools: 20,
+      staticPages: 61,
+      tools: 24,
     });
     expect(context).toContain('- /birthday/february-29/ — Pisces birthday guide.');
     expect(context).toContain('- /compatibility/aries-pisces/ — Aries and Pisces in love and the long run.');

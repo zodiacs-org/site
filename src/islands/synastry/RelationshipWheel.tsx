@@ -1,3 +1,4 @@
+export { default as PrivateInviteResultControl } from '../PrivateInviteResultControl';
 export { RelationshipTrust } from '../ChartTrust';
 /**
  * The Relationship Wheel's lazy result module. It owns all three comparison

@@ -1,8 +1,8 @@
 /**
  * Russian Open Graph catalogue for the bounded R2 route family.
  *
- * Every consumer-facing title and description below is copied byte-for-byte
- * from RU-COPY-DECK.md §15. Keeping this data independent from the Astro
+ * Existing route copy comes from RU-COPY-DECK.md §15; the four sharing
+ * routes use the six-language Phase 2 sharing catalogue. Keeping this data independent from the Astro
  * templates lets the committed cards, rendered metadata, and release verifier
  * share one deterministic source without scraping generated HTML.
  */
@@ -23,6 +23,26 @@ const RU_SIGN_NAMES = Object.freeze({
 });
 
 const STATIC_ROUTES = [
+  {
+    key: 'big-three', kind: 'tool', contentPath: '/big-three/', publicPath: '/ru/big-three/', card: 'tool/big-three.png',
+    title: 'Ваше Солнце, Луна и асцендент',
+    description: 'Узнайте три своих знака и поделитесь вертикальной карточкой, созданной в браузере. Для асцендента нужно время рождения.',
+  },
+  {
+    key: 'compatibility-private-invite', kind: 'tool', contentPath: '/compatibility/invite/', publicPath: '/ru/compatibility/invite/', card: 'tool/compatibility-private-invite.png',
+    title: 'Пригласите друга сравнить карты',
+    description: 'Сначала добавьте свою карту. Отправьте ссылку: друг добавит свою и увидит совместимость.',
+  },
+  {
+    key: 'group-charts', kind: 'tool', contentPath: '/group-charts/', publicPath: '/ru/group-charts/', card: 'tool/group-charts.png',
+    title: 'Изучите карты вашей группы',
+    description: 'Добавьте от трёх до восьми человек и исследуйте возможный вклад каждого. Используйте данные рождения с их разрешения.',
+  },
+  {
+    key: 'chart-twins', kind: 'tool', contentPath: '/chart-twins/', publicPath: '/ru/chart-twins/', card: 'tool/chart-twins.png',
+    title: 'Найдите астрологических близнецов',
+    description: 'Сравните свои знаки с каталогом людей с указанными источниками. Общий знак — повод для разговора, а не доказательство сходства характеров.',
+  },
   {
     key: 'share',
     kind: 'share',

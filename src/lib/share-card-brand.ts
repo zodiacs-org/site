@@ -1,7 +1,7 @@
 import { BRAND_ICON_PATHS } from "./brand-icons.mjs";
 
 export const SHARE_CARD_BRAND_INK = "#8E96AB";
-export const SHARE_CARD_BRAND_WORDMARK = "zodiacs.org";
+export const SHARE_CARD_BRAND_WORDMARK = "Zodiacs.org";
 
 /**
  * Canonical bottom-right lockup for the site's 1080 x 1350 portrait cards.
@@ -78,7 +78,7 @@ export async function withShareBrandIcon<T>(
   }
 }
 
-/** Paints the approved profile-image + lowercase wordmark export lockup. */
+/** Paints the approved profile-image + sentence-case wordmark export lockup. */
 export function drawShareBrandLockup(
   context: CanvasRenderingContext2D,
   icon: LoadedShareBrandIcon | null,
