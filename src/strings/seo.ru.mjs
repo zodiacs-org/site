@@ -23,6 +23,11 @@ const RU_SIGN_NAMES = Object.freeze({
 });
 
 const STATIC_ROUTES = [
+  { key: 'sky-calendar', kind: 'tool', contentPath: '/sky-calendar/', publicPath: '/ru/sky-calendar/', card: 'tool/sky-calendar.png', title: "Подпишитесь на небесный календарь", description: "Новолуния, полнолуния, максимумы затмений и периоды ретроградности в вашем календаре. События одинаковы для всех." },
+  { key: 'astrologer-kit', kind: 'tool', contentPath: '/astrologer-kit/', publicPath: '/ru/astrologer-kit/', card: 'tool/astrologer-kit.png', title: "Создайте PDF карты для клиента", description: "Натальная карта, положения и аспекты, с проверяемым моментом расчёта UTC. Бесплатно в вашем браузере." },
+  { key: 'your-sky-wrapped', kind: 'tool', contentPath: '/your-sky-wrapped/', publicPath: '/ru/your-sky-wrapped/', card: 'tool/your-sky-wrapped.png', title: "Ваше небо: итоги года", description: "Избранные транзиты Юпитера и Сатурна к сохранённой карте. Расчёт и изображение для публикации на вашем устройстве." },
+  { key: 'chart-of-the-day', kind: 'tool', contentPath: '/chart-of-the-day/', publicPath: '/ru/chart-of-the-day/', card: 'tool/chart-of-the-day.png', title: "Карта дня", description: "Карта публичной личности с источниками и ясным объяснением известных и неопределённых данных." },
+
   {
     key: 'big-three', kind: 'tool', contentPath: '/big-three/', publicPath: '/ru/big-three/', card: 'tool/big-three.png',
     title: 'Ваше Солнце, Луна и асцендент',

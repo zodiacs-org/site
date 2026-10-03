@@ -13,7 +13,7 @@ import { effectiveHeaders, matchingHeaderRules, sourcePattern, sourceRegexSource
  * own `Cache-Control: no-store` is the only cache header on its answers.
  */
 const config = JSON.parse(readFileSync(new URL('../../vercel.json', import.meta.url), 'utf8'));
-const recorded = JSON.parse(readFileSync(new URL('../../docs/acceptance/consumer-polish/2026-10-03/vercel-routes.json', import.meta.url), 'utf8'));
+const recorded = JSON.parse(readFileSync(new URL('../../docs/owner-review/return-visits-phase3-2026-10-04/vercel-routes.json', import.meta.url), 'utf8'));
 const COMPUTE_PATHS = COMPUTE_ENDPOINTS.map(computePath);
 
 describe('vercel.json for the compute API', () => {
@@ -58,6 +58,17 @@ describe('vercel.json for the compute API', () => {
     for (const path of COMPUTE_PATHS) {
       const redirected = config.redirects.filter((rule: any) => !rule.has && sourcePattern(rule.source).test(path));
       expect(redirected, path).toEqual([]);
+    }
+  });
+
+  it('serves public calendar feeds with calendar MIME and bounded caching only on their six routes', () => {
+    for (const prefix of ['', '/es', '/pt', '/fr', '/it', '/ru']) {
+      const headers = effectiveHeaders(config, `${prefix}/sky-calendar.ics`);
+      expect(headers.get('content-type')).toBe('text/calendar; charset=utf-8');
+      expect(headers.get('cache-control')).toBe('public, max-age=3600, s-maxage=86400');
+    }
+    for (const path of ['/ru/astrologer-kit/', '/your-sky-wrapped/', '/api/v1/chart', '/ar/sky-calendar.ics', '/sky-calendar.ics/extra']) {
+      expect(effectiveHeaders(config, path).get('content-type')).not.toBe('text/calendar; charset=utf-8');
     }
   });
 

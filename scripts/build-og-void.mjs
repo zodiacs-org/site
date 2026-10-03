@@ -731,6 +731,8 @@ const page = await browser.newPage({ viewport: { width: 1200, height: 630 }, dev
 const onlyHoroscopes = process.argv.includes('--only-horoscopes');
 const onlyInvite = process.argv.includes('--only-compatibility-invite');
 const onlyRussian = process.argv.includes('--only-ru');
+const onlyReturnRussian = process.argv.includes('--only-return-visits-ru');
+const returnRussianCards = new Set(['tool/sky-calendar.png', 'tool/astrologer-kit.png', 'tool/your-sky-wrapped.png', 'tool/chart-of-the-day.png']);
 const onlySharingRussian = process.argv.includes('--only-sharing-ru');
 const sharingRussianCards = new Set(['tool/big-three.png', 'tool/compatibility-private-invite.png', 'tool/group-charts.png', 'tool/chart-twins.png']);
 const onlyPeople = process.argv.includes('--only-people');
@@ -811,7 +813,7 @@ async function shoot(html, outPath, outputRoot = OUT) {
   // Re-quantize People and the new Russian sharing cards from the full-colour capture. Reprocessing the
   // already-indexed first pass can preserve its larger palette in libvips,
   // which defeats this small family's tighter launch budget.
-  const sharingRussian = outPath.startsWith('ru/') && sharingRussianCards.has(outPath.slice(3));
+  const sharingRussian = outPath.startsWith('ru/') && (sharingRussianCards.has(outPath.slice(3)) || returnRussianCards.has(outPath.slice(3)));
   const compactInput = outPath.startsWith('people/') || sharingRussian ? raw : firstPass;
   const buf = compactPalette
     ? await sharp(compactInput).png({
@@ -854,15 +856,15 @@ async function writeRussianManifest() {
   }, null, 2)}\n`);
 }
 
-async function renderRussianCards(sharingOnly = false) {
-  for (const entry of RU_OG_ROUTES.filter((entry) => !sharingOnly || sharingRussianCards.has(entry.card))) {
+async function renderRussianCards(sharingOnly = false, returnOnly = false) {
+  for (const entry of RU_OG_ROUTES.filter((entry) => (!sharingOnly || sharingRussianCards.has(entry.card)) && (!returnOnly || returnRussianCards.has(entry.card)))) {
     await shoot(russianCard(entry), `ru/${entry.card}`);
   }
   await writeRussianManifest();
   // A bounded refresh still checks the whole committed Russian family.
   russianTotal = (await Promise.all(RU_OG_REQUIRED_CARDS.map(async (card) => (await readFile(resolve(OUT, 'ru', card))).length))).reduce((a, b) => a + b, 0);
-  if (russianTotal > 600 * 1024) {
-    throw new Error(`Russian OG family is ${(russianTotal / 1024).toFixed(1)}KiB; budget is 600KiB`);
+  if (russianTotal > 700 * 1024) {
+    throw new Error(`Russian OG family is ${(russianTotal / 1024).toFixed(1)}KiB; budget is 700KiB`);
   }
 }
 
@@ -921,9 +923,9 @@ if (onlyHomepage) {
   process.exit(0);
 }
 
-if (onlyRussian || onlySharingRussian) {
+if (onlyRussian || onlySharingRussian || onlyReturnRussian) {
   console.log('Rendering Russian OG cards…');
-  await renderRussianCards(onlySharingRussian);
+  await renderRussianCards(onlySharingRussian, onlyReturnRussian);
   console.log(`Done: ${count} Russian cards, ${(russianTotal / 1024).toFixed(1)}KiB.`);
   await browser.close();
   process.exit(0);

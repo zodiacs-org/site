@@ -1,21 +1,24 @@
+import { readFileSync } from 'node:fs';
+const approvedDailyDays = JSON.parse(readFileSync(new URL('../src/data/chart-of-the-day.json', import.meta.url), 'utf8')).editions.filter((edition) => edition.ownerApproval?.approved === true).map((edition) => edition.day);
+const dailyBlocks = approvedDailyDays.length * 6;
 /**
  * Hreflang activation is explicit and per locale. Declaring metadata in the
  * TypeScript locale union never changes this release policy.
  */
 export const HREFLANG_LOCALE_POLICY = Object.freeze([
-  { locale: 'en', hreflang: 'en', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'birthday', 'daily-reading'], expectedBlocks: 641 },
-  { locale: 'es', hreflang: 'es', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'daily-reading'], expectedBlocks: 275 },
-  { locale: 'pt', hreflang: 'pt-BR', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'daily-reading'], expectedBlocks: 275 },
-  { locale: 'fr', hreflang: 'fr', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac'], expectedBlocks: 233 },
-  { locale: 'it', hreflang: 'it', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac'], expectedBlocks: 233 },
-  { locale: 'ru', hreflang: 'ru', indexEligible: true, routeFamilies: ['core'], expectedBlocks: 108 },
+  { locale: 'en', hreflang: 'en', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'birthday', 'daily-reading'], expectedBlocks: 659 + dailyBlocks },
+  { locale: 'es', hreflang: 'es', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'daily-reading'], expectedBlocks: 293 + dailyBlocks },
+  { locale: 'pt', hreflang: 'pt-BR', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'daily-reading'], expectedBlocks: 293 + dailyBlocks },
+  { locale: 'fr', hreflang: 'fr', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac'], expectedBlocks: 251 + dailyBlocks },
+  { locale: 'it', hreflang: 'it', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac'], expectedBlocks: 251 + dailyBlocks },
+  { locale: 'ru', hreflang: 'ru', indexEligible: true, routeFamilies: ['core'], expectedBlocks: 126 + dailyBlocks },
   { locale: 'ar', hreflang: 'ar', indexEligible: false, routeFamilies: [], expectedBlocks: 0 },
 ]);
 
 export const X_DEFAULT_HREFLANG = Object.freeze({
   hreflang: 'x-default',
   locale: 'en',
-  expectedBlocks: 641,
+  expectedBlocks: 659 + dailyBlocks,
 });
 
 export const ACTIVE_HREFLANGS = Object.freeze(
@@ -43,6 +46,8 @@ const CORE_PATHS = new Set([
   '/rising-sign/', '/moon-phase/', '/saturn-return/', '/transits/',
   '/baby-zodiac/', '/profile/', '/methodology/', '/privacy/', '/disclosure/',
   '/big-three/', '/compatibility/invite/', '/group-charts/', '/chart-twins/',
+  '/sky-calendar/', '/astrologer-kit/', '/your-sky-wrapped/', '/chart-of-the-day/',
+  ...approvedDailyDays.map((day) => `/chart-of-the-day/${day}/`),
 ]);
 const SIGN_GUIDE_PATHS = new Set(SIGN_SLUGS.map((slug) => `/${slug}/`));
 const DAILY_READING_PATHS = new Set([

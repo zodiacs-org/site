@@ -1,0 +1,13 @@
+---
+import { localizePath, type CatalogLocale } from '../../lib/i18n';
+import { returnText as s } from '../../lib/return-visits/copy';
+interface Props { locale?: CatalogLocale; current?: string }
+const { locale = 'en', current = '' } = Astro.props;
+const links = [{ path: '/sky-calendar/', key: 'calendarTitle' }, { path: '/saturn-return/', key: 'saturn' }, { path: '/astrologer-kit/', key: 'kitTitle' }, { path: '/your-sky-wrapped/', key: 'wrappedTitle' }, { path: '/chart-of-the-day/', key: 'dayTitle' }] as const;
+import { t } from '../../lib/i18n';
+import '../../styles/return-visits.css';
+---
+<nav class="return-discovery" aria-label={s(locale, 'discovery')}>
+  <h2>{s(locale, 'discovery')}</h2>
+  <ul>{links.filter((link) => link.path !== current).map((link) => <li><a href={localizePath(locale, link.path)}>{link.key === 'saturn' ? t(locale, 'saturnReturn') : s(locale, link.key)} <span aria-hidden="true">↗</span></a></li>)}</ul>
+</nav>
