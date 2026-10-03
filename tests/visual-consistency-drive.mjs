@@ -152,19 +152,36 @@ await withPreview({ port: 8787 }, async baseURL => {
         await page.goto(`${baseURL}/astrofolio/?sign=leo`, { waitUntil: 'load' });
         await page.locator('.campaign-bag:not(.is-hidden)').waitFor();
         await page.locator('.zguide-launcher').waitFor();
-        await page.waitForTimeout(400);
-        // Exercise the same CSS state used when scrolling past the buy section.
+        await page.locator('.campaign-bag small').getByText('Price unavailable', { exact: true }).waitFor();
+        // The launcher mounts asynchronously. Begin only when its initial
+        // translated position has settled, then sample the native transition
+        // clock so a busy WebKit runner cannot substitute delayed frames.
+        await page.waitForFunction(() => {
+          const guide = document.querySelector('.zguide-launcher');
+          return guide && getComputedStyle(guide).translate === '0px -90px';
+        });
         const movement = await page.evaluate(async () => {
           const guide = document.querySelector('.zguide-launcher');
           const before = guide.getBoundingClientRect().y;
           document.querySelector('.campaign-bag').classList.add('is-hidden');
+          guide.getBoundingClientRect(); // Commit the real CSS state change.
+          const transition = guide.getAnimations().find(animation => animation.transitionProperty === 'translate');
+          if (!transition) {
+            const end = guide.getBoundingClientRect().y;
+            return { before, first: end, middle: end, end, transition: false };
+          }
+          transition.pause();
+          await transition.ready;
+          transition.currentTime = 0;
           const first = guide.getBoundingClientRect().y;
-          await new Promise(resolve => setTimeout(resolve, 120));
+          transition.currentTime = 120;
           const middle = guide.getBoundingClientRect().y;
-          await new Promise(resolve => setTimeout(resolve, 400));
-          return { before, first, middle, end: guide.getBoundingClientRect().y };
+          transition.finish();
+          return { before, first, middle, end: guide.getBoundingClientRect().y, transition: true };
         });
-        assert.ok(Math.abs(movement.end - movement.before - 90) < 1, `${engine}: Guide return distance changed`);
+        await writeFile(`${out}/${engine}-${reducedMotion}-guide-movement.json`, JSON.stringify(movement, null, 2));
+        assert.ok(Math.abs(movement.end - movement.before - 90) < 1, `${engine}: Guide return distance changed ${JSON.stringify(movement)}`);
+        assert.equal(movement.transition, reducedMotion === 'no-preference', `${engine}: Guide must honor motion preference`);
         if (reducedMotion === 'reduce') assert.ok(Math.abs(movement.first - movement.end) < 1, `${engine}: reduced motion must return immediately`);
         else {
           assert.ok(movement.first - movement.before < 45, `${engine}: Guide snaps on its first frame`);

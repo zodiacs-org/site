@@ -42,3 +42,5 @@ The cache dependency now resolves to a local, explicitly named fork containing t
 The comparison receipt markup is moved into the existing lazy result module. The 36 KB route limit stays unchanged. No calculation or visible result behavior changes.
 
 A subsequent run exposed a legacy known-time test expecting the removed collection bridge and a below-fold geometry measurement taken before the profile section was scrolled into view. Tests now require collection links to stay absent from chart tools for known and unknown times, and measure the visible empty-state spacing after font layout. The original minimum 20-pixel spacing and stable purchase-control dimensions remain enforced. Chromium and WebKit pass all 336 purchase-bar measurements, with profile spacing and brand alignment intact.
+
+The final motion drive also waits for the initial purchase/launcher state and samples the browser's native CSS transition clock. This avoids treating delayed WebKit rendering frames as a changed animation distance. The 90-pixel movement, interpolated intermediate position and immediate reduced-motion behavior are still required.
