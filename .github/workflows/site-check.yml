@@ -87,6 +87,11 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Developer documentation authorship
+        run: |
+          npx vitest run scripts/check-developer-authorship.test.mjs
+          node scripts/check-developer-authorship.mjs
+
       - name: Typecheck
         run: npm run check
 
