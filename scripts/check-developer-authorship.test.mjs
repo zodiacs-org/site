@@ -1,4 +1,4 @@
-import { mkdtemp, mkdir, readdir, readFile, rm, symlink, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, readdir, readFile, rename, rm, symlink, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { spawnSync } from 'node:child_process';
@@ -16,7 +16,10 @@ beforeEach(async () => {
     await put(path, '<a href="/about/#editorial">Editorial policy</a> {"@type": "Organization"}');
   }
 });
-afterEach(async () => { await rm(root, { recursive: true, force: true }); });
+afterEach(async () => {
+  await rm(root, { recursive: true, force: true });
+  await rm(`${root}-outside`, { recursive: true, force: true });
+});
 
 describe('served developer documentation authorship', () => {
   it('accepts current editorial anchors and Organization markup', async () => {
@@ -68,7 +71,9 @@ describe('served developer documentation authorship', () => {
     expect((await checkDeveloperAuthorship(root)).errors)
       .toContain('llms.txt: missing or empty required documentation output');
     await rm(root, { recursive: true });
-    expect((await checkDeveloperAuthorship(root)).errors.length).toBeGreaterThan(requiredDocuments.length);
+    expect(await checkDeveloperAuthorship(root)).toEqual({
+      files: [], errors: ['.: missing or non-regular documentation directory'],
+    });
   });
 
   it('does not sweep historical evidence, immutable archives, or unrelated pages', async () => {
@@ -96,6 +101,59 @@ describe('served developer documentation authorship', () => {
     await symlink(join(root, 'llms.txt'), join(root, 'developers', 'linked.txt'));
     expect((await checkDeveloperAuthorship(root)).errors)
       .toContain('developers/linked.txt: unexpected documentation symlink');
+  });
+
+  it.each([
+    '{"@context":"https://schema.org","@type":["Thing","Person"]}',
+    '{"@type":"https://schema.org/Person"}',
+    '{"@type":"http://schema.org/Person"}',
+    '{"@type":["Thing","https://schema.org/Person"]}',
+    '<div itemscope itemtype="https://schema.org/Person"></div>',
+    "<div itemscope itemtype='http://schema.org/Person'></div>",
+    '<div itemscope itemtype="https://schema.org/Thing https://schema.org/Person"></div>',
+  ])('rejects ordinary Person type forms: %s', async (text) => {
+    await put('developers/engine/index.html', text);
+    expect((await checkDeveloperAuthorship(root)).errors)
+      .toContain('developers/engine/index.html:1: Person markup');
+  });
+
+  it('accepts Organization arrays/IRIs/microdata and unrelated Person text', async () => {
+    await put('developers/engine/index.html', `
+      {"@type":["Thing","Organization"],"description":"Person"}
+      {"@type":"https://schema.org/Organization"}
+      <div itemscope itemtype="https://schema.org/Organization"></div>
+      {"@type":"https://example.org/Person"}
+      <a href="/about/#editorial">Editorial policy</a>
+    `);
+    expect((await checkDeveloperAuthorship(root)).errors).toEqual([]);
+  });
+
+  it('rejects a symlinked output root without scanning its target', async () => {
+    await rename(root, `${root}-outside`);
+    await symlink(`${root}-outside`, root);
+    expect(await checkDeveloperAuthorship(root)).toEqual({
+      files: [], errors: ['.: missing or non-regular documentation directory'],
+    });
+  });
+
+  it.each(['developers', 'sdk', 'api', 'api/v1', 'sdk/engine'])('rejects symlinked directory %s without scanning its target', async (path) => {
+    await rename(join(root, path), `${root}-outside`);
+    await writeFile(join(`${root}-outside`, 'forbidden.txt'), 'Rowan Vale');
+    await symlink(`${root}-outside`, join(root, path));
+    const result = await checkDeveloperAuthorship(root);
+    expect(result.errors.length).toBeGreaterThan(0);
+    expect(result.files.some((file) => file.startsWith(`${path}/`))).toBe(false);
+    expect(result.errors.some((error) => error.includes('retired persona'))).toBe(false);
+  });
+
+  it.each(['llms.txt', 'llms-full.txt'])('rejects %s symlinks without reading their targets', async (path) => {
+    await writeFile(`${root}-outside`, 'Rowan Vale');
+    await rm(join(root, path));
+    await symlink(`${root}-outside`, join(root, path));
+    const result = await checkDeveloperAuthorship(root);
+    expect(result.errors).toContain(`${path}: missing or empty required documentation output`);
+    expect(result.files).not.toContain(path);
+    expect(result.errors.some((error) => error.includes('retired persona'))).toBe(false);
   });
 
   it('keeps the original src guard and runs controls and output guard after ordinary Build', async () => {

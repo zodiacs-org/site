@@ -16,26 +16,50 @@ export const requiredDocuments = [
   'api/v1/openapi.json', 'api/v1/sky/today.md', 'api/v1/sky/upcoming.md',
 ];
 
-// Same case-sensitive constructs as Site Check's existing src grep.
+// Preserve the source guard's case-sensitive persona and anchor constructs.
 // Keep the #editorial exception; Organization markup is valid.
 const forbidden = [
   ['retired persona', /Rowan Vale/],
   ['retired editor anchor', /about\/#editor([^i]|$)/m],
-  ['Person markup', /"@type"\s*:\s*"Person"/],
 ];
 
-export async function checkDeveloperAuthorship(root) {
-  const files = new Set(['llms.txt', 'llms-full.txt']);
-  const errors = [];
-  for (const path of requiredDocuments) {
+// Inspect ordinary JSON-LD type values, including arrays and expanded schema IRIs.
+// This is intentionally a type-value check, not a general JSON-LD processor.
+function findPersonType(content) {
+  for (const match of content.matchAll(/"@type"\s*:\s*("(?:\\.|[^"\\])*"|\[[^\]]*\])/g)) {
     try {
-      const stat = await lstat(resolve(root, path));
-      if (!stat.isFile() || stat.size === 0) throw new Error('not a nonempty regular file');
+      const value = JSON.parse(match[1]);
+      const types = Array.isArray(value) ? value : [value];
+      if (types.some((type) => typeof type === 'string'
+        && /^(?:https?:\/\/schema\.org\/)?Person$/.test(type))) return match;
     } catch {
-      errors.push(`${path}: missing or empty required documentation output`);
+      // Not an ordinary valid JSON type value.
     }
   }
+  return null;
+}
+
+function findPersonMicrodata(content) {
+  for (const match of content.matchAll(/\bitemtype\s*=\s*(["'])([\s\S]*?)\1/gi)) {
+    if (match[2].split(/\s+/).some((type) => /^https?:\/\/schema\.org\/Person$/.test(type))) return match;
+  }
+  return null;
+}
+
+export async function checkDeveloperAuthorship(root) {
+  const files = new Set();
+  const errors = [];
+  async function directory(path) {
+    try {
+      if ((await lstat(resolve(root, path))).isDirectory()) return true;
+    } catch { /* Missing output is a gate failure too. */ }
+    errors.push(`${path || '.'}: missing or non-regular documentation directory`);
+    return false;
+  }
+  if (!await directory('')) return { files: [], errors };
+
   async function walk(path) {
+    if (!await directory(path)) return;
     let entries;
     try {
       entries = await readdir(resolve(root, path), { withFileTypes: true });
@@ -50,7 +74,25 @@ export async function checkDeveloperAuthorship(root) {
       else if (entry.isFile() && documentExtensions.has(extname(entry.name))) files.add(child);
     }
   }
-  for (const tree of trees) await walk(tree);
+  for (const tree of trees) {
+    // Check intermediate directories too: api must not redirect api/v1 elsewhere.
+    const parts = tree.split('/');
+    let safe = true;
+    for (let i = 1; i < parts.length; i++) {
+      if (!await directory(parts.slice(0, i).join('/'))) { safe = false; break; }
+    }
+    if (safe) await walk(tree);
+  }
+  for (const path of ['llms.txt', 'llms-full.txt']) {
+    try {
+      if ((await lstat(resolve(root, path))).isFile()) files.add(path);
+    } catch { /* The required-output check below reports this. */ }
+  }
+  for (const path of requiredDocuments) {
+    if (!files.has(path) || (await lstat(resolve(root, path))).size === 0) {
+      errors.push(`${path}: missing or empty required documentation output`);
+    }
+  }
   for (const path of [...files].sort()) {
     let content;
     try {
@@ -59,8 +101,9 @@ export async function checkDeveloperAuthorship(root) {
       errors.push(`${path}: cannot read documentation output`);
       continue;
     }
-    for (const [label, pattern] of forbidden) {
-      const match = pattern.exec(content);
+    const matches = forbidden.map(([label, pattern]) => [label, pattern.exec(content)]);
+    matches.push(['Person markup', findPersonType(content) ?? findPersonMicrodata(content)]);
+    for (const [label, match] of matches) {
       if (match) {
         const line = content.slice(0, match.index).split('\n').length;
         errors.push(`${path}:${line}: ${label}`);
