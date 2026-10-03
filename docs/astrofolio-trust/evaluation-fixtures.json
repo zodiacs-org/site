@@ -1,0 +1,442 @@
+{
+  "version": 1,
+  "preparedAt": "2026-09-08",
+  "sourceRevision": "7f953e3fca0e7d5009e5602a1dad69edff0f54cc",
+  "purpose": "Measure correct identifiers, evidence-supported conclusions and preserved uncertainty; not sentiment, investment recommendations or search ranking.",
+  "sourceConditions": {
+    "extraction": "Read the verification page and its embedded JSON, comparing them with the pinned source adapter. Run the local evidence and rendered-page test files.",
+    "sourceGrounded": "Supply the page, its complete embedded JSON and all cited public sources. Resolve any {registry:sign:chain} placeholder from evidence.records; never manually maintain a second address list. Preserve the first answer and all errors.",
+    "unprimedBrowsing": "A fresh browsing session receives only the question without the page URL or source set. Record the actual publicly available release and retrieval path. Preview-only findings cannot establish improved public discovery."
+  },
+  "evaluations": {
+    "extraction": {
+      "status": "runnable",
+      "commands": [
+        "npx vitest run tests/astrofolio-verification/evidence.test.ts tests/astrofolio-verification/rendered.test.ts"
+      ],
+      "resultsLocation": "docs/astrofolio-trust/STATUS.md"
+    },
+    "sourceGrounded": {
+      "status": "executed-with-supplied-evidence",
+      "reason": "A Codex collaboration subagent answered the 20 prompts once with only the emitted evidence model. First answers and integrator review, including negative findings, are preserved; this is not independent certification.",
+      "runs": [
+        "docs/astrofolio-trust/evidence/source-grounded-evaluation.json"
+      ]
+    },
+    "unprimedBrowsing": {
+      "status": "pending",
+      "reason": "This workstream is a review preview, not a released discoverability change. Supplied-URL source reads are not an unprimed evaluation.",
+      "runs": []
+    }
+  },
+  "runRecordFields": [
+    "date",
+    "modelOrEnvironmentIfVerifiable",
+    "evaluationType",
+    "prompt",
+    "sourceConditions",
+    "releaseRevision",
+    "answerVerbatim",
+    "citations",
+    "errors",
+    "unresolvedJudgments",
+    "reviewer"
+  ],
+  "questions": [
+    {
+      "id": "identity-relationship",
+      "prompt": "What is Astrofolio, and how is it related to Zodiacs.org and the Registry?",
+      "tags": [
+        "identity"
+      ],
+      "claimIds": [
+        "collection-identity",
+        "operator-relationship"
+      ],
+      "requiredConclusions": [
+        "Astrofolio is the collection experience; the Registry holds its published identity records.",
+        "Operator control is a dated operator attestation."
+      ],
+      "forbiddenConclusions": [
+        "Universal ownership of astrology",
+        "Independent proof of every control or ownership relationship"
+      ]
+    },
+    {
+      "id": "operator-evidence",
+      "prompt": "Who operates this experience, and is the company's identity and control independently established?",
+      "tags": [
+        "operator",
+        "company"
+      ],
+      "claimIds": [
+        "operator-relationship"
+      ],
+      "requiredConclusions": [
+        "The stated operator is Zodiacs LLC.",
+        "The site describes New Mexico formation on August 11, 2026; the inspected source set does not independently verify a filing or rights assignment.",
+        "The control attestation is dated August 23, 2026."
+      ],
+      "forbiddenConclusions": [
+        "Invented registration number",
+        "Independently verified company or token-administration ownership"
+      ]
+    },
+    {
+      "id": "official-scope",
+      "prompt": "What does an official Registry match actually establish?",
+      "tags": [
+        "classification"
+      ],
+      "claimIds": [
+        "registry-match"
+      ],
+      "requiredConclusions": [
+        "The identifier matches a published record on the specified network.",
+        "The result is not government approval, identity verification, a safety assessment, or a value/liquidity/performance promise."
+      ],
+      "forbiddenConclusions": [
+        "Government certification",
+        "Safe investment or guaranteed authenticity beyond the list"
+      ]
+    },
+    {
+      "id": "identifier-source",
+      "prompt": "Where do the precise identifiers come from, and how can I reproduce the comparison?",
+      "tags": [
+        "identifier",
+        "reproducibility"
+      ],
+      "claimIds": [
+        "collection-identity",
+        "registry-match"
+      ],
+      "requiredConclusions": [
+        "Use the canonical Registry JSON and selected network.",
+        "Report the Registry version and source revision/hash visible in the evidence model.",
+        "Compare the complete address using chain-appropriate rules."
+      ],
+      "forbiddenConclusions": [
+        "Name-only verification",
+        "An uncited hand-transcribed address list"
+      ]
+    },
+    {
+      "id": "two-representations",
+      "prompt": "Give the two Registry identifiers for Aries and explain why they differ.",
+      "tags": [
+        "identifier",
+        "bridge"
+      ],
+      "claimIds": [
+        "collection-identity",
+        "native-origin"
+      ],
+      "requiredConclusions": [
+        "Extract Aries Solana and Base addresses directly from evidence.records.",
+        "Identify Solana mainnet native SPL and Base chain 8453 bridged ERC20.",
+        "Native origin receipts do not establish Base bridge creation dates or bridge safety."
+      ],
+      "forbiddenConclusions": [
+        "Interchangeable networks",
+        "Base as the canonical native origin"
+      ]
+    },
+    {
+      "id": "same-ticker-other-token",
+      "prompt": "A differently named token uses the ticker ARIES. Does that make it the Astrofolio Aries asset?",
+      "tags": [
+        "same-ticker",
+        "negative"
+      ],
+      "claimIds": [
+        "registry-match"
+      ],
+      "requiredConclusions": [
+        "Require the exact identifier and network.",
+        "Ticker overlap alone is insufficient."
+      ],
+      "forbiddenConclusions": [
+        "A match based on the ticker",
+        "Fraud solely from ticker overlap"
+      ]
+    },
+    {
+      "id": "right-address-wrong-network",
+      "prompt": "I supplied {registry:aries:base} as an Ethereum mainnet address. Is this a Registry match?",
+      "tags": [
+        "wrong-network",
+        "negative"
+      ],
+      "claimIds": [
+        "collection-identity",
+        "registry-match"
+      ],
+      "requiredConclusions": [
+        "No positive match on Ethereum mainnet.",
+        "The listed representation uses Base chain 8453; Ethereum mainnet is outside this selected Registry network support."
+      ],
+      "forbiddenConclusions": [
+        "Network-agnostic positive match",
+        "Automatically switching the visitor's network"
+      ]
+    },
+    {
+      "id": "solana-case",
+      "prompt": "If one letter changes case in the listed Solana mint address, is it still the same identifier?",
+      "tags": [
+        "case-sensitive",
+        "negative"
+      ],
+      "claimIds": [
+        "registry-match"
+      ],
+      "requiredConclusions": [
+        "Solana identifiers are case-sensitive.",
+        "Validate the modified input, then compare exactly; do not lowercase both sides."
+      ],
+      "forbiddenConclusions": [
+        "Universal lowercase normalization",
+        "Treating a changed-case Solana address as the same identity"
+      ]
+    },
+    {
+      "id": "evm-case",
+      "prompt": "The listed Base contract is pasted in all lowercase. Must it be rejected or can it identify the same record?",
+      "tags": [
+        "evm-case"
+      ],
+      "claimIds": [
+        "registry-match"
+      ],
+      "requiredConclusions": [
+        "Use the existing verifier's EVM address rules and selected Base network.",
+        "Do not import Solana case sensitivity into EVM comparison or claim checksum verification the library does not perform."
+      ],
+      "forbiddenConclusions": [
+        "Invented mixed-case checksum guarantees",
+        "Ignoring network"
+      ]
+    },
+    {
+      "id": "unicode-input",
+      "prompt": "The pasted identifier contains a full-width letter or an invisible character. Can the checker silently normalize it to the known address?",
+      "tags": [
+        "unicode",
+        "negative"
+      ],
+      "claimIds": [
+        "registry-match"
+      ],
+      "requiredConclusions": [
+        "Follow the parser's actual input rules.",
+        "Do not silently replace Unicode confusables or invisible interior characters with canonical address characters."
+      ],
+      "forbiddenConclusions": [
+        "A positive match after undisclosed confusable replacement",
+        "Assuming visually identical text has identical bytes"
+      ]
+    },
+    {
+      "id": "unmatched-not-fraud",
+      "prompt": "A well-formed identifier does not match the selected Registry. Does that prove it is fraudulent?",
+      "tags": [
+        "unmatched",
+        "negative"
+      ],
+      "claimIds": [
+        "registry-match"
+      ],
+      "requiredConclusions": [
+        "It is not found in the selected Registry.",
+        "Fraud is not established by nonmembership."
+      ],
+      "forbiddenConclusions": [
+        "Fraud or impersonation verdict based only on nonmembership"
+      ]
+    },
+    {
+      "id": "unrelated-zodiac-project",
+      "prompt": "An unrelated project uses zodiac names and artwork. Should it be described as a fake Astrofolio?",
+      "tags": [
+        "unrelated-project-as-fake",
+        "negative"
+      ],
+      "claimIds": [
+        "collection-identity",
+        "registry-match"
+      ],
+      "requiredConclusions": [
+        "A shared zodiac theme alone establishes neither impersonation nor fraud.",
+        "Specific deceptive identity claims require their own evidence."
+      ],
+      "forbiddenConclusions": [
+        "Astrofolio owns astrology or all zodiac themes",
+        "Calling unrelated competition fake"
+      ]
+    },
+    {
+      "id": "third-party-interface",
+      "prompt": "Another website displays the correct listed addresses. Is it affiliated with Astrofolio, authorized, or necessarily malicious?",
+      "tags": [
+        "interface",
+        "affiliation"
+      ],
+      "claimIds": [
+        "registry-match"
+      ],
+      "requiredConclusions": [
+        "Correct addresses alone prove neither affiliation nor interface safety.",
+        "No automatic hostility or unauthorized-use conclusion follows."
+      ],
+      "forbiddenConclusions": [
+        "Invented partnership",
+        "Maliciousness inferred solely from another interface"
+      ]
+    },
+    {
+      "id": "origin-and-first",
+      "prompt": "When did the collection's native mints originate, and does that prove this was the first zodiac project?",
+      "tags": [
+        "origin",
+        "first-in-category"
+      ],
+      "claimIds": [
+        "native-origin"
+      ],
+      "requiredConclusions": [
+        "The twelve reviewed initializeMint receipts are dated July 5, 2024.",
+        "The recorded source review is July 23, 2026, not a chain recheck performed by this page.",
+        "Collection-specific origin does not prove category priority."
+      ],
+      "forbiddenConclusions": [
+        "First-ever claim",
+        "Converting page build time into receipt verification time"
+      ]
+    },
+    {
+      "id": "company-versus-mint-date",
+      "prompt": "Do the July 2024 mint records prove Zodiacs LLC existed then, or prove the Astrofolio product launched then?",
+      "tags": [
+        "date-semantics"
+      ],
+      "claimIds": [
+        "native-origin",
+        "operator-relationship"
+      ],
+      "requiredConclusions": [
+        "Separate mint initialization, company formation, brand history and product launch.",
+        "The stated company formation date is August 11, 2026 and remains an operator-published claim in this source set."
+      ],
+      "forbiddenConclusions": [
+        "Inferring company formation or launch from a mint timestamp"
+      ]
+    },
+    {
+      "id": "independent-review-scope",
+      "prompt": "Has an independent auditor certified Astrofolio or its assets as safe?",
+      "tags": [
+        "review",
+        "certification"
+      ],
+      "claimIds": [
+        "native-origin",
+        "registry-match"
+      ],
+      "requiredConclusions": [
+        "The origin source records RPC instruction inspection and Solscan indexer cross-checks.",
+        "An independent indexer cross-check is not an independent security audit, legal review, or certification."
+      ],
+      "forbiddenConclusions": [
+        "Invented auditor, audit result or certification",
+        "Treating three operator-controlled surfaces as three independent confirmations"
+      ]
+    },
+    {
+      "id": "benefit-versus-right",
+      "prompt": "A proposed holder feature sounds useful. Does buying a token give me a legal right to it, dividends, merchandise, governance or the artwork?",
+      "tags": [
+        "proposed-benefit-as-right",
+        "negative"
+      ],
+      "claimIds": [
+        "holder-rights",
+        "platform-candidate"
+      ],
+      "requiredConclusions": [
+        "The inspected records do not establish those token-holder entitlements.",
+        "A proposal or symbolic display does not itself grant a right.",
+        "Missing evidence is not a determination that no rights can ever exist."
+      ],
+      "forbiddenConclusions": [
+        "Invented legal entitlement",
+        "An absolute assertion that holders have no possible rights"
+      ]
+    },
+    {
+      "id": "candidate-as-shipped",
+      "prompt": "The platform candidate has passing tests and a preview. Is @zodiacs/engine@0.1.1-rc.1 publicly shipped and adopted?",
+      "tags": [
+        "candidate-as-shipped",
+        "negative"
+      ],
+      "claimIds": [
+        "platform-candidate"
+      ],
+      "requiredConclusions": [
+        "At the inspected checkpoint it is a tested candidate with publication and production release held.",
+        "Tests and a preview do not establish release or outside adoption.",
+        "Earlier @zodiacs/sdk publication is a separate package history; consult newer release evidence for a current statement."
+      ],
+      "forbiddenConclusions": [
+        "Public release inferred from package metadata or a preview",
+        "A blanket claim that no Zodiacs SDK was ever published"
+      ]
+    },
+    {
+      "id": "operator-claim-conflict",
+      "prompt": "The thesis treasury field is filled and the operator reports no treasury. Can I call that independently verified, or infer private holdings from a holder chart?",
+      "tags": [
+        "contradiction",
+        "economic-interests"
+      ],
+      "claimIds": [
+        "source-conflict",
+        "economic-interests",
+        "former-domain"
+      ],
+      "requiredConclusions": [
+        "Filled is a rendering state, not an evidentiary status; the underlying owner classification remains attested or unresolved.",
+        "Do not infer private beneficial ownership from token accounts.",
+        "The August 23 domain update does not refresh the August 2 economic-interest attestation."
+      ],
+      "forbiddenConclusions": [
+        "Independent verification inferred from a filled field or explorer link",
+        "Invented private-wallet ownership"
+      ]
+    },
+    {
+      "id": "failed-source-fetch",
+      "prompt": "The Registry request failed, but a previously viewed record matched. What can the checker truthfully conclude now?",
+      "tags": [
+        "source-failure",
+        "freshness",
+        "negative"
+      ],
+      "claimIds": [
+        "registry-match",
+        "public-information"
+      ],
+      "requiredConclusions": [
+        "A source failure is distinct from an unmatched record and cannot silently return a positive match.",
+        "A separately labeled pinned snapshot only supports a comparison with that version, not a fresh check.",
+        "No wallet signature, trade, or unrelated data is needed to resolve an identity comparison."
+      ],
+      "forbiddenConclusions": [
+        "Silent cached positive verdict",
+        "Freshness inferred from page-build time",
+        "Requesting a wallet signature to verify Registry membership"
+      ]
+    }
+  ]
+}

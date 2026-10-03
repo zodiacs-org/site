@@ -1,0 +1,121 @@
+{
+  "recordedAt": "2026-09-07T20:37:59.306Z",
+  "baseURL": "http://127.0.0.1:4397",
+  "sourceCommit": "4704acc5c7a0625dedd7601009b9c17207892ba9",
+  "servedPageSha256": "3b3ad38c6ad766cfc455444bef9a38779697b555405990c97b749d36ac0506d0",
+  "harnessSha256": "17646cf129ccf4975302380d3e8f22e90474051085fc8cbb3ee846f22b6b6708",
+  "node": "v22.23.2",
+  "chromium": "152.0.7977.83",
+  "fixture": "public/registry/zodiacs.registry.json",
+  "viewportWidths": [
+    1280,
+    390,
+    320
+  ],
+  "results": [
+    {
+      "scenario": "layout-1280",
+      "status": "passed",
+      "serviceWorkers": "block",
+      "expectedNetworkFailures": []
+    },
+    {
+      "scenario": "layout-390",
+      "status": "passed",
+      "serviceWorkers": "block",
+      "expectedNetworkFailures": []
+    },
+    {
+      "scenario": "layout-320",
+      "status": "passed",
+      "serviceWorkers": "block",
+      "expectedNetworkFailures": []
+    },
+    {
+      "scenario": "keyboard-and-privacy",
+      "status": "passed",
+      "serviceWorkers": "block",
+      "expectedNetworkFailures": []
+    },
+    {
+      "scenario": "identity-results",
+      "status": "passed",
+      "serviceWorkers": "block",
+      "expectedNetworkFailures": []
+    },
+    {
+      "scenario": "no-javascript-evidence",
+      "status": "passed",
+      "serviceWorkers": "block",
+      "expectedNetworkFailures": []
+    },
+    {
+      "scenario": "source-failure-after-success-and-retry",
+      "status": "passed",
+      "serviceWorkers": "block",
+      "expectedNetworkFailures": [
+        {
+          "text": "Failed to load resource: net::ERR_FAILED",
+          "url": "http://127.0.0.1:4397/registry/zodiacs.registry.json"
+        }
+      ]
+    },
+    {
+      "scenario": "changed-source-never-matches",
+      "status": "passed",
+      "serviceWorkers": "block",
+      "expectedNetworkFailures": []
+    },
+    {
+      "scenario": "pending-input-edit-invalidates-result",
+      "status": "passed",
+      "serviceWorkers": "block",
+      "expectedNetworkFailures": []
+    },
+    {
+      "scenario": "copy-rejection-is-accessible",
+      "status": "passed",
+      "serviceWorkers": "block",
+      "expectedNetworkFailures": []
+    },
+    {
+      "scenario": "real-service-worker-offline-never-reuses-match",
+      "status": "passed",
+      "serviceWorkers": "allow",
+      "expectedNetworkFailures": [
+        {
+          "text": "Failed to load resource: net::ERR_FAILED",
+          "url": "http://127.0.0.1:4397/registry/zodiacs.registry.json"
+        },
+        {
+          "text": "Failed to load resource: net::ERR_INTERNET_DISCONNECTED",
+          "url": "http://127.0.0.1:4397/assets/app-icons/v3/favicon.svg"
+        },
+        {
+          "text": "Failed to load resource: net::ERR_INTERNET_DISCONNECTED",
+          "url": "http://127.0.0.1:4397/assets/app-icons/v3/favicon-32.png"
+        },
+        {
+          "text": "Failed to load resource: net::ERR_INTERNET_DISCONNECTED",
+          "url": "http://127.0.0.1:4397/assets/app-icons/v3/favicon-16.png"
+        },
+        {
+          "text": "Failed to load resource: net::ERR_INTERNET_DISCONNECTED",
+          "url": "http://127.0.0.1:4397/assets/app-icons/v3/favicon-96.png"
+        },
+        {
+          "text": "Failed to load resource: net::ERR_INTERNET_DISCONNECTED",
+          "url": "http://127.0.0.1:4397/assets/site-footer.css"
+        },
+        {
+          "text": "Failed to load resource: net::ERR_INTERNET_DISCONNECTED",
+          "url": "http://127.0.0.1:4397/assets/assistant-ui.js?v=ask-guide-3"
+        },
+        {
+          "text": "Failed to load resource: net::ERR_FAILED",
+          "url": "http://127.0.0.1:4397/registry/zodiacs.registry.json"
+        }
+      ]
+    }
+  ]
+}

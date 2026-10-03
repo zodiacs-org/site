@@ -1,0 +1,25 @@
+--- a/.github/phase1-scope-allowance.json
++++ b/.github/phase1-scope-allowance.json
+@@ -1,19 +1,8 @@
+ {
+   "version": 1,
+-  "id": "advanced-astrology-and-personal-continuity",
+-  "baseCommit": "4d1f9085c83a2acb2f1a096331b9be7ff64a46f7",
++  "id": "astrofolio-verification-review",
++  "baseCommit": "7f953e3fca0e7d5009e5602a1dad69edff0f54cc",
+   "protectedPaths": [
+-    "src/lib/i18n/dates.ts",
+-    "src/pages/es/index.astro",
+-    "src/pages/fr/index.astro",
+-    "src/pages/it/index.astro",
+-    "src/pages/learn/aspects/index.astro",
+-    "src/pages/learn/chinese-zodiac/[animal]/index.astro",
+-    "src/pages/learn/chinese-zodiac/index.astro",
+-    "src/pages/learn/houses/index.astro",
+-    "src/pages/learn/index.astro",
+-    "src/pages/learn/placements/index.astro",
+-    "src/pages/learn/planets/index.astro",
+-    "src/pages/pt/index.astro"
++    "src/pages/registry/verify/index.astro"
+   ]
+ }

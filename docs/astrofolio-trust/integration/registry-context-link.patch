@@ -1,0 +1,10 @@
+--- a/scripts/build-registry-hub.mjs
++++ b/scripts/build-registry-hub.mjs
+@@ -439,6 +439,7 @@
+               <p class="eyebrow">Token safety</p>
+               <h2 id="verify-title">Check a token address.</h2>
+               <p class="verifier__copy">Every token has a long address, like an account number. Paste one here and we’ll check whether it matches the official list.</p>
++              <p class="verifier__copy"><a href="/registry/verify/">Inspect Astrofolio identifiers and evidence →</a></p>
+             </div>
+             <div>
+               <form class="verify-form" action="/registry/" method="get" role="search" data-address-verifier>

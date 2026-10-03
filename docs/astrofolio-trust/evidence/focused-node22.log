@@ -1,0 +1,10 @@
+
+ RUN  v3.2.6 <site>
+
+ ✓ tests/astrofolio-verification/evidence.test.ts (22 tests) 11ms
+ ✓ tests/astrofolio-verification/checker.test.ts (48 tests) 33ms
+
+ Test Files  2 passed (2)
+      Tests  70 passed (70)
+   Start at  03:34:53
+   Duration  614ms (transform 90ms, setup 0ms, collect 289ms, tests 44ms, environment 0ms, prepare 79ms)

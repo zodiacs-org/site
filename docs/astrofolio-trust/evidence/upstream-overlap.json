@@ -1,0 +1,29 @@
+{
+  "refreshedAt": "2026-09-07T20:44:28Z",
+  "method": "Live GitHub API metadata and complete paginated file lists; final refresh by the evidence-audit subagent.",
+  "base": "7f953e3fca0e7d5009e5602a1dad69edff0f54cc",
+  "implementation": "4704acc5c7a0625dedd7601009b9c17207892ba9",
+  "pullRequests": [
+    {
+      "number": 415,
+      "head": "4bb0d70eaaf21ea950a8fe708a0e1a91f8fb1f4f",
+      "changedFileCount": 211,
+      "overlap": []
+    },
+    {
+      "number": 417,
+      "head": "8343f173e4db2e8ab6628bd04590e41b056872ce",
+      "changedFileCount": 83,
+      "overlap": []
+    }
+  ],
+  "sdkPullRequest": {
+    "repository": "ZodiacsOfficial/sdk",
+    "number": 6,
+    "head": "03bf77990f3014b9125eed4976d7a41200aac80d",
+    "state": "OPEN",
+    "isDraft": true,
+    "changedFileCount": 106,
+    "releaseHoldUnchanged": true
+  }
+}
