@@ -168,7 +168,7 @@
     "@mcp-b/webmcp-polyfill": "4.0.0",
     "@modelcontextprotocol/client": "2.0.0",
     "@modelcontextprotocol/server": "2.0.0",
-    "@types/node": "^22.20.0",
+    "@types/node": "^26.5.1",
     "@zodiacs/sdk": "1.0.1",
     "ajv": "^8.20.0",
     "ajv-formats": "^3.0.1",
