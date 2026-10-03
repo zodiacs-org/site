@@ -23,7 +23,7 @@ Scope: the owner's approved five trust fixes and standing privacy rules. Stop fo
 
 - Production build passes dist integrity, 1,322 JSON-LD documents, locale links, widget checks and route bundle budgets.
 - Type check: 0 errors, 0 warnings, 39 non-blocking hints.
-- Unit suite: 6,358 passed, 5 intentionally skipped, 0 failed.
+- Unit suite: 6,368 passed, 5 intentionally skipped, 0 failed.
 - Guide: 46 checks passed. Exchange: 110 checks passed. Sharing, relationships, foreign-origin widgets and local transit-calendar drives passed.
 - All 18 required exact-width acceptance captures pass and match the current build fingerprint.
 - Three numerical snapshot comparisons were already failing on an untouched base checkout on macOS. Tests now explicitly bound nodal velocity roundoff to 1e-7 / 1e-8 degrees per day and SVG coordinate roundoff to 1e-10 pixels; original reference fixtures, snapshots and engine code remain unchanged.
@@ -32,3 +32,11 @@ Scope: the owner's approved five trust fixes and standing privacy rules. Stop fo
 ## Follow-up for owner review
 
 Dense transit timeline dates can share pointer positions. The foreground marker is clickable and every marker is keyboard-accessible; exact-date links provide another route. The layout is unchanged in this trust release. A later polish pass could separate clustered targets without changing dates or calculations.
+
+## Release-gate remediation
+
+The first CI run passed 17 of 19 jobs. It exposed an upstream HTTP-cache advisory (CVE-2026-93748, no published fixed release on 3 October) and the compatibility route slightly over its existing 36 KB initial-JS limit under production feature flags.
+
+The cache dependency now resolves to a local, explicitly named fork containing the narrow upstream PR #58 patch, pinned to its exact source hash with the original BSD license and provenance. It is not represented as an upstream-approved release. Ten regression checks cover restricted cookie/private/revalidation responses, serialization/restoration and ordinary public/ private caching. The zero-advisory production gate and high/critical development gate stay unchanged. Replace the local override when a verified fixed upstream release exists.
+
+The comparison receipt markup is moved into the existing lazy result module. The 36 KB route limit stays unchanged. No calculation or visible result behavior changes.

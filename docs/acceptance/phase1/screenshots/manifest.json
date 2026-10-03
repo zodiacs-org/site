@@ -6,27 +6,27 @@
     "script": "tests/phase1-acceptance-drive.mjs",
     "contractVersion": 4
   },
-  "capturedAt": "2026-10-03T09:29:56.088Z",
+  "capturedAt": "2026-10-03T09:52:32.750Z",
   "browser": "Chromium 154.0.8037.97",
   "dailyDate": "2026-10-03",
   "publicationCanonicalSha256": "ee0304898bb69f2224063a30fa4bf1fb987b5de6f2e672af91555ca1433ae5d1",
-  "templateSourceSha256": "d90ecb9874e43bdddc40bcc148a2d86ec0f1d4ebbf2727fc36e6049c57426b52",
+  "templateSourceSha256": "4a08ca7f909939a747220c3c0883e685f202276156c4b4557f7b17c00a1dec39",
   "renderPayloadSha256": {
     "daily": "36bb1f6917bea7cf3c33f08f2d91fab0bf9e4a1e22585331f2db968924f7bb25",
     "dailyPublication": "9b999234c3f3403f4670546804ef61c5afdd13e370e49c162de6ad0965424509",
-    "dailyPublicationManifest": "73d0cec356659e8665089f4b74a223fd27b25eb05f411f5e758ea1dd2c019631",
+    "dailyPublicationManifest": "7adba6910aad25f16fe97971a2654b8794fef59d37a9b5974e9129ec84ecf54c",
     "horoscopeProgram": "051b07f375bd68756c78d552321bca344dc96cbe0f782d5894b084cddfd9e06a"
   },
   "buildReceipt": {
     "schema": "zodiacs.phase1-build-receipt.v1",
-    "builtAt": "2026-10-03T09:29:07.531Z",
-    "templateSourceSha256": "d90ecb9874e43bdddc40bcc148a2d86ec0f1d4ebbf2727fc36e6049c57426b52",
+    "builtAt": "2026-10-03T09:50:37.926Z",
+    "templateSourceSha256": "4a08ca7f909939a747220c3c0883e685f202276156c4b4557f7b17c00a1dec39",
     "dailyDate": "2026-10-03",
     "publicationCanonicalSha256": "ee0304898bb69f2224063a30fa4bf1fb987b5de6f2e672af91555ca1433ae5d1",
     "renderPayloadSha256": {
       "daily": "36bb1f6917bea7cf3c33f08f2d91fab0bf9e4a1e22585331f2db968924f7bb25",
       "dailyPublication": "9b999234c3f3403f4670546804ef61c5afdd13e370e49c162de6ad0965424509",
-      "dailyPublicationManifest": "73d0cec356659e8665089f4b74a223fd27b25eb05f411f5e758ea1dd2c019631",
+      "dailyPublicationManifest": "7adba6910aad25f16fe97971a2654b8794fef59d37a9b5974e9129ec84ecf54c",
       "horoscopeProgram": "051b07f375bd68756c78d552321bca344dc96cbe0f782d5894b084cddfd9e06a"
     }
   },

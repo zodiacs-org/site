@@ -1512,8 +1512,7 @@ export default function SynastryCalculator({ locale: rawLocale = 'en' }: { local
       {result && (
         <div class={`calc__result syn-meet${meetingSettled ? ' is-settled' : ''}`}>
           <h2 class="sr-only" tabIndex={-1} ref={resultHeadingRef}>{t(locale, 'compatibility')}</h2>
-          {wheelMod && <wheelMod.ResultOpening locale={locale} kind="pair" />}
-          {wheelMod && [result.a, result.b].map((person, index) => <wheelMod.CheckOurMath key={index} locale={locale} subject={person.label} utc={person.computedUtc ?? person.utc} basis={person.timeKnown ? 'birth' : 'reference'} />)}
+          {wheelMod && <wheelMod.RelationshipTrust locale={locale} people={[result.a, result.b]} />}
           {(!result.a.timeKnown || !result.b.timeKnown) && (
             <p class="notice" role="status">
               {t(locale, 'compareNoTimeNotice')} {new Intl.ListFormat(listLocale(locale), {

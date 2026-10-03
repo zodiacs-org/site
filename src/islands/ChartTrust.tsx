@@ -35,3 +35,13 @@ export function ResultOpening({ locale = 'en', kind = 'self' }: {
     return: 'trustReturnIntro', saturn: 'trustSaturnIntro' } as const)[kind];
   return <p class="chart-trust__opening" data-result-opening>{t(locale, key)}</p>;
 }
+
+/** Kept in the lazy comparison result module, outside its initial form bundle. */
+export function RelationshipTrust({ locale, people }: {
+  locale: CatalogLocale;
+  people: readonly { label: string; computedUtc?: Date | string; utc?: Date | string; timeKnown: boolean }[];
+}) {
+  return <><ResultOpening locale={locale} kind="pair" />{people.map((person, index) =>
+    <CheckOurMath key={index} locale={locale} subject={person.label} utc={person.computedUtc ?? person.utc}
+      basis={person.timeKnown ? 'birth' : 'reference'} />)}</>;
+}
