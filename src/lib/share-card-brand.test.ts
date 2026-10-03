@@ -114,7 +114,7 @@ describe("share-card brand asset", () => {
 
 describe("approved export lockup", () => {
   it("pins a 2:1 icon/type lockup inside the portrait frame safe area", () => {
-    expect(SHARE_CARD_BRAND_WORDMARK).toBe("zodiacs.org");
+    expect(SHARE_CARD_BRAND_WORDMARK).toBe("Zodiacs.org");
     expect(PORTRAIT_SHARE_CARD_BRAND_LAYOUT.iconSize)
       .toBe(PORTRAIT_SHARE_CARD_BRAND_LAYOUT.fontSize * 2);
     expect(PORTRAIT_SHARE_CARD_BRAND_LAYOUT.gap).toBe(0);
@@ -135,7 +135,7 @@ describe("approved export lockup", () => {
     expect(harness.raw.restore).toHaveBeenCalledOnce();
     expect(harness.raw.drawImage).toHaveBeenCalledWith(icon, 874, 1268, 44, 44);
     expect(harness.painted).toEqual([expect.objectContaining({
-      text: "zodiacs.org",
+      text: "Zodiacs.org",
       x: 1014,
       y: 1290,
       fillStyle: SHARE_CARD_BRAND_INK,
@@ -149,6 +149,6 @@ describe("approved export lockup", () => {
     const harness = canvasHarness();
     drawShareBrandLockup(harness.context, null, PORTRAIT_SHARE_CARD_BRAND_LAYOUT);
     expect(harness.raw.drawImage).not.toHaveBeenCalled();
-    expect(harness.painted.map(({ text }) => text)).toEqual(["zodiacs.org"]);
+    expect(harness.painted.map(({ text }) => text)).toEqual(["Zodiacs.org"]);
   });
 });

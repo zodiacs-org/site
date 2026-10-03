@@ -1,3 +1,4 @@
+import { SHARING_COPY } from '../lib/sharing/copy';
 import type { VNode } from 'preact';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { City } from '../lib/geo/search';
@@ -66,7 +67,7 @@ const prepared: PreparedChartCard = { blob: new Blob(['card']), filename: 'big-t
 function render() {
   harness.cursor = 0;
   harness.effectCursor = 0;
-  return BigThreeQuick();
+  return BigThreeQuick({ copy: SHARING_COPY.en });
 }
 function nodes(value: unknown): VNode<Record<string, any>>[] {
   if (Array.isArray(value)) return value.flatMap(nodes);
@@ -146,12 +147,11 @@ describe('Big Three optional card recovery', () => {
     await settle();
     expect(find('data-big-three-result')).toBeDefined();
     expect(find('data-big-three-full').props.href).toBe(href);
-    expect(alerts()).toContain('The share card could not be prepared');
+    expect(alerts()).toContain('The card could not be prepared or saved');
     expect(alerts()).not.toContain('date or time');
     const retry = find('data-big-three-share');
     expect(retry.props.disabled).toBe(false);
-    expect(text(retry)).toContain('Retry card');
-    fill('1990-01-01');
+    expect(text(retry)).toContain('Try again');
     retry.props.onClick();
     await settle();
     expect(harness.computeChart).toHaveBeenCalledOnce();
@@ -160,6 +160,16 @@ describe('Big Three optional card recovery', () => {
     expect(find('data-big-three-full').props.href).toBe(href);
     expect(alerts()).toBe('');
     expect(find('data-big-three-share').props.disabled).toBe(false);
+  });
+
+  it('clears results and rejects the old share action as soon as the form changes', async () => {
+    fill(); await submit(); await settle();
+    const share = find('data-big-three-share');
+    fill('1990-01-01');
+    expect(find('data-big-three-result')).toBeUndefined();
+    share.props.onClick(); await settle();
+    expect(harness.save).not.toHaveBeenCalled();
+    expect(harness.computeChart).toHaveBeenCalledOnce();
   });
 
   it('wraps missing card code as a module failure, keeps the chart, and offers retry plus explicit reload', async () => {
@@ -190,7 +200,7 @@ describe('Big Three optional card recovery', () => {
     expect(harness.save).toHaveBeenCalledOnce();
     await settle();
     expect(find('data-big-three-result')).toBeDefined();
-    expect(alerts()).toContain('could not be shared or saved');
+    expect(alerts()).toContain('could not be prepared or saved');
     const retry = find('data-big-three-share');
     expect(retry.props.disabled).toBe(false);
     retry.props.onClick();
@@ -211,7 +221,7 @@ describe('Big Three optional card recovery', () => {
     await settle();
     expect(alerts()).toBe('');
     expect(find('data-big-three-share').props.disabled).toBe(false);
-    expect(text(find('data-big-three-share'))).toContain('Share your Big Three');
+    expect(text(find('data-big-three-share'))).toContain('Share your big three');
   });
 
   it.each(['new chart', 'unmount'])('does not start card rendering after a late import following %s', async (boundary) => {

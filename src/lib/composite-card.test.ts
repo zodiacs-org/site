@@ -60,7 +60,7 @@ describe('dedicated composite image receipts', () => {
     expect(fixture.context.drawImage).toHaveBeenCalledOnce();
     const text = fixture.painted.map((row) => row.value).join(' ').replace(/\s+/gu, ' ');
     expect(text).toContain(COMPOSITE_COPY[locale].imageTitle);
-    expect(text).toContain('zodiacs.org');
+    expect(text).toContain('Zodiacs.org');
     expect(text).toContain(COMPOSITE_COPY[locale].imageReceipt);
     for (const point of input.points) {
       expect(text).toContain(`${planetLabel(locale, point.body)}${point.body === 'Moon' ? ' *' : ''} · ${formatLongitude(point.lon, locale)}`);

@@ -749,6 +749,21 @@ jobs:
       - name: Install profile test browsers
         run: npx playwright-core install --with-deps chromium webkit
 
+      - name: Free sharing and sourced matches in Chromium and WebKit
+        timeout-minutes: 8
+        env:
+          OUT_DIR: tests/visual/artifacts/sharing-phase2
+        run: node tests/sharing-phase2-drive.mjs
+
+      - name: Upload sharing evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: sharing-phase2-${{ github.run_id }}
+          path: tests/visual/artifacts/sharing-phase2/
+          if-no-files-found: ignore
+          retention-days: 30
+
       - name: Profile photo, backup and cross-device recovery
         env:
           OUT_DIR: tests/visual/artifacts/profile-recovery

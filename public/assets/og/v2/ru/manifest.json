@@ -5,7 +5,7 @@
   "height": 630,
   "iconSource": "/assets/zodiac-icons/128/{sign}.webp",
   "fallback": "/assets/og/v2/ru/share.png",
-  "copyDigest": "618d6d02962b4324f7a1e5d5564e47055dd72818c66ad925f0b17e37bb12a807",
+  "copyDigest": "378b639b0396e8a8b87887bee6c4508975b626b0818ced2a34c438745db175c3",
   "requiredCards": [
     "404.png",
     "disclosure.png",
@@ -26,8 +26,12 @@
     "sign/taurus.png",
     "sign/virgo.png",
     "tool/baby-zodiac.png",
+    "tool/big-three.png",
     "tool/birth-chart.png",
+    "tool/chart-twins.png",
+    "tool/compatibility-private-invite.png",
     "tool/compatibility.png",
+    "tool/group-charts.png",
     "tool/moon-phase.png",
     "tool/moon-sign.png",
     "tool/rising-sign.png",
@@ -36,6 +40,10 @@
     "tool/transits.png"
   ],
   "routeCards": {
+    "/ru/big-three/": "tool/big-three.png",
+    "/ru/compatibility/invite/": "tool/compatibility-private-invite.png",
+    "/ru/group-charts/": "tool/group-charts.png",
+    "/ru/chart-twins/": "tool/chart-twins.png",
     "/ru/": "share.png",
     "/ru/tools/": "tool/tools.png",
     "/ru/birth-chart/": "tool/birth-chart.png",

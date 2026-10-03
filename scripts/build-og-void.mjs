@@ -15,7 +15,7 @@
  *   placements/{planet}.png  one per planet, shared by its 12 placement pages
  *   rising/{slug}.png      the 12 rising-sign profiles
  *   almanac/{slug}.png     the Almanac hub + published articles
- *   ru/{...}.png           the bounded 27-route Russian release set
+ *   ru/{...}.png           the bounded 31-route Russian release set
  *
  * The legacy gilt cards at assets/og/*.png stay byte-identical — the
  * frozen originals remain available. This script never touches those files
@@ -25,6 +25,7 @@
  *   npm run data:og -- --only-horoscopes  # refresh the horoscope family
  *   npm run data:og -- --only-homepage    # refresh the cache-busted homepage card
  *   npm run data:og -- --only-wing        # refresh the shared Astrofolio / Terminal card
+ *   npm run data:og -- --only-sharing-ru # refresh the four Russian sharing cards
  *   npm run data:og -- --only-fomo        # refresh the /fomo/ card
  *   npm run data:og -- --review-people-identities # three A20 candidates, artifacts only
  *
@@ -320,7 +321,7 @@ function russianCard(entry) {
   <div class="stage">
     <div class="left">
       <div class="display" style="font-size:${russianTitleSize(entry.title)}px">${title}</div>
-      <div class="sub">${description}</div>
+      ${sharingRussianCards.has(entry.card) ? '' : `<div class="sub">${description}</div>`}
     </div>
     ${accent}
   </div>`;
@@ -730,6 +731,8 @@ const page = await browser.newPage({ viewport: { width: 1200, height: 630 }, dev
 const onlyHoroscopes = process.argv.includes('--only-horoscopes');
 const onlyInvite = process.argv.includes('--only-compatibility-invite');
 const onlyRussian = process.argv.includes('--only-ru');
+const onlySharingRussian = process.argv.includes('--only-sharing-ru');
+const sharingRussianCards = new Set(['tool/big-three.png', 'tool/compatibility-private-invite.png', 'tool/group-charts.png', 'tool/chart-twins.png']);
 const onlyPeople = process.argv.includes('--only-people');
 const onlyHomepage = process.argv.includes('--only-homepage');
 // --only-terminal remains an undocumented compatibility alias for release
@@ -764,11 +767,13 @@ async function shoot(html, outPath, outputRoot = OUT) {
   }
   await page.waitForTimeout(120);
   if (outPath.startsWith('ru/')) {
+    // Title-only sharing cards still verify the full Russian font family.
+    await page.evaluate(() => document.fonts.load('24px \"Golos Text\"', '\u041d\u0430\u0442\u0430\u043b\u044c\u043d\u0430\u044f \u043a\u0430\u0440\u0442\u0430'));
     const layout = await page.evaluate(() => {
       const stage = document.querySelector('.stage')?.getBoundingClientRect();
       const left = document.querySelector('.left')?.getBoundingClientRect();
       const display = document.querySelector('.display')?.getBoundingClientRect();
-      const sub = document.querySelector('.sub')?.getBoundingClientRect();
+      const sub = (document.querySelector('.sub') ?? document.querySelector('.display'))?.getBoundingClientRect();
       return {
         stage: stage ? { left: stage.left, right: stage.right, top: stage.top, bottom: stage.bottom } : null,
         left: left ? { left: left.left, right: left.right, top: left.top, bottom: left.bottom } : null,
@@ -803,15 +808,16 @@ async function shoot(html, outPath, outputRoot = OUT) {
     || outPath.startsWith('people/')
     || outPath.startsWith('ru/');
   const compactColors = outPath.startsWith('people/') ? 32 : 64;
-  // Re-quantize People cards from the full-colour capture. Reprocessing the
+  // Re-quantize People and the new Russian sharing cards from the full-colour capture. Reprocessing the
   // already-indexed first pass can preserve its larger palette in libvips,
   // which defeats this small family's tighter launch budget.
-  const compactInput = outPath.startsWith('people/') ? raw : firstPass;
+  const sharingRussian = outPath.startsWith('ru/') && sharingRussianCards.has(outPath.slice(3));
+  const compactInput = outPath.startsWith('people/') || sharingRussian ? raw : firstPass;
   const buf = compactPalette
     ? await sharp(compactInput).png({
         palette: true,
-        colors: compactColors,
-        dither: 0.6,
+        colors: sharingRussian ? 32 : compactColors,
+        dither: sharingRussian ? 0 : 0.6,
         compressionLevel: 9,
         effort: 10,
       }).toBuffer()
@@ -848,11 +854,13 @@ async function writeRussianManifest() {
   }, null, 2)}\n`);
 }
 
-async function renderRussianCards() {
-  for (const entry of RU_OG_ROUTES) {
+async function renderRussianCards(sharingOnly = false) {
+  for (const entry of RU_OG_ROUTES.filter((entry) => !sharingOnly || sharingRussianCards.has(entry.card))) {
     await shoot(russianCard(entry), `ru/${entry.card}`);
   }
   await writeRussianManifest();
+  // A bounded refresh still checks the whole committed Russian family.
+  russianTotal = (await Promise.all(RU_OG_REQUIRED_CARDS.map(async (card) => (await readFile(resolve(OUT, 'ru', card))).length))).reduce((a, b) => a + b, 0);
   if (russianTotal > 600 * 1024) {
     throw new Error(`Russian OG family is ${(russianTotal / 1024).toFixed(1)}KiB; budget is 600KiB`);
   }
@@ -913,9 +921,9 @@ if (onlyHomepage) {
   process.exit(0);
 }
 
-if (onlyRussian) {
+if (onlyRussian || onlySharingRussian) {
   console.log('Rendering Russian OG cards…');
-  await renderRussianCards();
+  await renderRussianCards(onlySharingRussian);
   console.log(`Done: ${count} Russian cards, ${(russianTotal / 1024).toFixed(1)}KiB.`);
   await browser.close();
   process.exit(0);

@@ -61,6 +61,10 @@ const SHARED_ENCODERS: Record<string, readonly string[]> = {
  * it takes from it and why.
  */
 const EXACT_MODULE_IMPORTERS: Record<string, { takes: string[]; why: string }> = {
+  'src/lib/sharing/private-invite.ts': {
+    takes: ['decodePositionsLink', 'encodeSharedPositionsLink'],
+    why: 'makes fragment-only invitations through the reviewed minute/noon privacy paths, and decodes strict arrivals',
+  },
   'api/calendar/transits.ts': {
     takes: ['decodePositionsLink', 'wholeDegreeAngles'],
     why: 'the calendar feed decodes the code in its URL and takes its angles to the whole degree',
@@ -130,6 +134,11 @@ const EXACT_MODULE_IMPORTERS: Record<string, { takes: string[]; why: string }> =
  * only the exact encoder (EXACT_CALLS).
  */
 const PRODUCERS: Record<string, { how: string; calls: string[]; mustUse: string[] }> = {
+  'src/lib/sharing/private-invite.ts': {
+    how: 'uses the engine at the rounded UTC minute or noon UTC on the civil date before the shared encoder',
+    calls: ['encodeSharedPositionsLink(shared)'],
+    mustUse: ['timedSharedPositions(input, instant.utc, computeBodies)', 'untimedSharedPositions(input, instant.birthDate, computeBodies)'],
+  },
   'src/islands/ChartShareDialog.tsx': {
     how: 'a chart with a birth time is linked from loadTimedSharedPositions at its instant, one without from loadUntimedSharedPositions on its birth date',
     calls: ['encodeSharedPositionsLink(shared)'],

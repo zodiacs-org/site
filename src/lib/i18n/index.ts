@@ -55,6 +55,10 @@ export function showsEnglishOnlyInterpretation(locale: Locale): boolean {
 const CORE_LOCALIZED_PATHS = [
   '/',
   '/tools/',
+  '/big-three/',
+  '/compatibility/invite/',
+  '/group-charts/',
+  '/chart-twins/',
   '/birth-chart/',
   '/compatibility/',
   '/moon-sign/',
