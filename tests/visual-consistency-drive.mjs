@@ -66,8 +66,22 @@ await withPreview({ port: 8787 }, async baseURL => {
         await page.goto(`${baseURL}/profile/`, { waitUntil: 'load' });
         const empty = page.locator('.living-chart__empty-state');
         await empty.waitFor();
-        const gap = await empty.evaluate(el => el.querySelector('.btn').getBoundingClientRect().top - el.querySelector('p').getBoundingClientRect().bottom);
-        assert.ok(gap >= 20, `${engine}/${width}: Open Today needs a clear paragraph gap (${gap})`);
+        // Measure the section as a visitor sees it, after scrolling and font
+        // layout, rather than sampling below-fold geometry during hydration.
+        await empty.scrollIntoViewIfNeeded();
+        await page.evaluate(() => document.fonts.ready);
+        const spacing = await empty.evaluate(el => {
+          const button = el.querySelector('.btn').getBoundingClientRect();
+          const paragraph = el.querySelector('p').getBoundingClientRect();
+          const style = getComputedStyle(el);
+          return { gap: button.top - paragraph.bottom, display: style.display,
+            cssGap: style.gap, buttonHeight: button.height, paragraphHeight: paragraph.height };
+        });
+        if (spacing.gap < 20) {
+          await empty.screenshot({ path: `${out}/${engine}-${width}-living-chart-failure.png` });
+          await writeFile(`${out}/${engine}-${width}-spacing-failure.json`, JSON.stringify(spacing, null, 2));
+        }
+        assert.ok(spacing.gap >= 20, `${engine}/${width}: Open Today needs a clear paragraph gap (${JSON.stringify(spacing)})`);
         if (width === 390) await empty.screenshot({ path: `${out}/${engine}-living-chart.png` });
         await settleFooter(page);
         await page.evaluate(() => document.fonts.ready);
