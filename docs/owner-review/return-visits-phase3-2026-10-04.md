@@ -1,5 +1,7 @@
 # Phase 3: return visits and search
 
+**October 4 update:** the owner subsequently approved the first dated Jannik Sinner edition. Its approval and publication validation are recorded in the [edition follow-up](chart-of-the-day-2026-10-04.md). The original release account below describes the earlier, unpublished state.
+
 The owner said “Start phase 3.” Four tools are ready to release in all six languages. The Chart of the day publishing framework is ready, but the first real figure remains unpublished pending the owner's approval of that dated edition. No account, payment, wallet connection or signature is required for these tools.
 
 | Item | What changed | Validation | Limits and uncertainty |
