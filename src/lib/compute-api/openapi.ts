@@ -350,7 +350,7 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
     type: 'object',
     additionalProperties: false,
     required: ['url', 'receipt', 'engine', 'version'],
-    description: 'What to quote: the documentation of this endpoint, a digest that identifies the receipt in this response (SHA-256 over its RFC 8785 canonical JSON), and the engine and its version. For chart and houses the receipt holds the instant and the coordinates, so the digest identifies the birth details: anyone who knows the date and the place can find the time by trying times until the digest matches. Quote it only where the birth details may be known.',
+    description: 'What to quote: the documentation of this endpoint, a digest that identifies the receipt in this response (SHA-256 over its RFC 8785 canonical JSON), and the engine and its version. For chart and houses the receipt holds the instant and the coordinates, so the digest identifies the birth details from either side: with the date and the place, trying times finds the time, and with the date and the time, trying places from a list of towns finds the place. Quote it only where the birth details may be known.',
     properties: {
       url: { type: 'string', format: 'uri' },
       receipt: { type: 'string', pattern: '^sha256:[0-9a-f]{64}$' },
