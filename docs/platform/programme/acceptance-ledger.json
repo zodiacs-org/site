@@ -1,7 +1,7 @@
 {
   "version": 1,
   "brief": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md (version 2) with the version 1 rules it retains",
-  "asOf": "2026-10-01 checkpoint 11 (compute source baseline 9cfafa3e, measured 06:05–06:10 UTC; current checkpoint source integrates main 450f and G4 release proof e046111; engine release v0.1.1-rc.15 at 93ebae9, DOI 23080134; other units retain prior evidence)",
+  "asOf": "2026-10-04 checkpoint 12 (source b1636359; seven evidenced acceptances: S6, A4, four rc16 technique adoptions and G1; other units retain prior evidence)",
   "denominator": {
     "unit": "working days, from the brief's effort estimates (README.md)",
     "totalWeight": 182.45,
@@ -1347,9 +1347,18 @@
       "weight": 0.5,
       "gate": "package function released; the site imports it and its own implementation is removed; parity recorded; deployed",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/programme-acceptance-2026-10-04/README.md",
+        "https://github.com/zodiacs-org/site/pull/620",
+        "https://github.com/zodiacs-org/site/actions/runs/37003714196",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/docs/platform/evidence/site-engine-rc16/techniques-parity.json",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/docs/platform/evidence/site-engine-rc16/integration-2026-10-02/PUBLICATION.md",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/src/lib/engine/solar-return.ts",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/src/lib/engine/lunar-return.ts"
+      ],
+      "notes": "Solar/lunar return instant searches are imported from package techniques; site chart adapters preserve their existing output shape. Parity sections R-SI/R-SY/R-SM/R-SC/R-LI/R-LC record agreement; R-E retains span differences. Finite product-parity/adoption gate only; not independent astronomical accuracy or general completeness. Existing package and convention limitations remain. Recorded parity: 1980 cases, 1930 agree, 50 differ. Differences: returns-span 50. Released rc16 source ddbbaa0b1d21e16834722f81e8708816849c6726, archive 43a72d30e483d8ff22024e403c4bd0d86d81bb6e1d0ad138f857cd001ab015d8; production dpl_4LmaXAGm8YJFF6vastJQ5WWXSTE8 at b1636359. Original October 2 six-request live receipt and private acceptance commit remain missing; neither is reconstructed or credited."
     },
     {
       "id": "P2.E.void-of-course",
@@ -1360,9 +1369,18 @@
       "weight": 0.5,
       "gate": "package function released; the site imports it and its own implementation is removed; parity recorded; deployed",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/programme-acceptance-2026-10-04/README.md",
+        "https://github.com/zodiacs-org/site/pull/620",
+        "https://github.com/zodiacs-org/site/actions/runs/37003714196",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/docs/platform/evidence/site-engine-rc16/techniques-parity.json",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/docs/platform/evidence/site-engine-rc16/integration-2026-10-02/PUBLICATION.md",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/src/pages/void-of-course-moon/index.astro",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/src/lib/engine/void-of-course.test.ts"
+      ],
+      "notes": "Page directly imports package windows/status and calls them at build time; old engine/void-of-course.ts is deleted. Parity sections V-W/V-P/V-S cover finite window/status cases. Finite product-parity/adoption gate only; not independent astronomical accuracy or general completeness. Existing package and convention limitations remain. Recorded parity: 156 cases, 156 agree, 0 differ. Released rc16 source ddbbaa0b1d21e16834722f81e8708816849c6726, archive 43a72d30e483d8ff22024e403c4bd0d86d81bb6e1d0ad138f857cd001ab015d8; production dpl_4LmaXAGm8YJFF6vastJQ5WWXSTE8 at b1636359. Original October 2 six-request live receipt and private acceptance commit remain missing; neither is reconstructed or credited."
     },
     {
       "id": "P2.E.declinations",
@@ -1389,9 +1407,17 @@
       "weight": 0.5,
       "gate": "package function released; the site imports it and its own implementation is removed; parity recorded; deployed",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/programme-acceptance-2026-10-04/README.md",
+        "https://github.com/zodiacs-org/site/pull/620",
+        "https://github.com/zodiacs-org/site/actions/runs/37003714196",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/docs/platform/evidence/site-engine-rc16/techniques-parity.json",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/docs/platform/evidence/site-engine-rc16/integration-2026-10-02/PUBLICATION.md",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/src/lib/engine/aspect-patterns.ts"
+      ],
+      "notes": "Adapter imports package aspectPatterns rather than site detection implementation. P-D/P-C parity records preserve constructed/chart cases and malformed-input coverage. Finite product-parity/adoption gate only; not independent astronomical accuracy or general completeness. Existing package and convention limitations remain. Recorded parity: 1840 cases, 1840 agree, 0 differ. Released rc16 source ddbbaa0b1d21e16834722f81e8708816849c6726, archive 43a72d30e483d8ff22024e403c4bd0d86d81bb6e1d0ad138f857cd001ab015d8; production dpl_4LmaXAGm8YJFF6vastJQ5WWXSTE8 at b1636359. Original October 2 six-request live receipt and private acceptance commit remain missing; neither is reconstructed or credited."
     },
     {
       "id": "P2.E.composite",
@@ -1444,9 +1470,17 @@
       "weight": 0.5,
       "gate": "package function released; the site imports it and its own implementation is removed; parity recorded; deployed",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/programme-acceptance-2026-10-04/README.md",
+        "https://github.com/zodiacs-org/site/pull/620",
+        "https://github.com/zodiacs-org/site/actions/runs/37003714196",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/docs/platform/evidence/site-engine-rc16/techniques-parity.json",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/docs/platform/evidence/site-engine-rc16/integration-2026-10-02/PUBLICATION.md",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/src/lib/share-card.ts"
+      ],
+      "notes": "Active sharing helper dynamically imports package moonSignCandidates; preview/download callers remain. M-A/M-Z/M-P parity records preserve date-form, skipped-date and historical-zone differences. The main calculator deliberately leaves unknown-time Moon certainty unresolved; that predates PR620 and is not counted as a new candidate inference. Finite product-parity/adoption gate only; not independent astronomical accuracy or general completeness. Existing package and convention limitations remain. Recorded parity: 5147 cases, 5134 agree, 13 differ. Differences: moon-date-form 3, moon-skipped-date 1, moon-before-1970 9. Released rc16 source ddbbaa0b1d21e16834722f81e8708816849c6726, archive 43a72d30e483d8ff22024e403c4bd0d86d81bb6e1d0ad138f857cd001ab015d8; production dpl_4LmaXAGm8YJFF6vastJQ5WWXSTE8 at b1636359. Original October 2 six-request live receipt and private acceptance commit remain missing; neither is reconstructed or credited."
     },
     {
       "id": "P3.1a",
@@ -1913,13 +1947,17 @@
       "weight": 0.5,
       "gate": "published SKILL.md bundle",
       "dependsOn": [],
-      "status": "implemented",
-      "release": "unmerged",
-      "evidence": [],
-      "blockedBy": {
-        "owner": true,
-        "action": "Provide the prior private birth-data pattern file required by engine history-check.mjs before pushing the prepared Agent Skill bundle; do not publish or reconstruct those patterns. The locally validated bundle remains unpublished and unaccepted."
-      }
+      "status": "accepted",
+      "release": "merged",
+      "evidence": [
+        "docs/platform/evidence/programme-acceptance-2026-10-04/README.md",
+        "https://github.com/zodiacs-org/engine/pull/23",
+        "https://github.com/zodiacs-org/engine/blob/c8a390ee1f3ad1f6883a0b986d66a31bf010ddd7/skills/zodiacs-compute/SKILL.md",
+        "https://github.com/zodiacs-org/engine/blob/c8a390ee1f3ad1f6883a0b986d66a31bf010ddd7/docs/evidence/agent-skill-20261001/bundle.json",
+        "https://github.com/zodiacs-org/engine/blob/c8a390ee1f3ad1f6883a0b986d66a31bf010ddd7/docs/evidence/agent-skill-20261001/local-validation.json",
+        "https://api.github.com/repos/zodiacs-org/engine/commits/c8a390ee1f3ad1f6883a0b986d66a31bf010ddd7/check-runs?per_page=100"
+      ],
+      "notes": "Public merged bundle content verified; all three file hashes independently match the manifest; 21 successful postmerge checks are directly recoverable. Tool selection, uncertainty, citation and non-accuracy claims covered. No package publication required by this unit. Committed record contains initial scan aggregates and missing optional-example input limitation. Final local rescan receipt is not recovered here; no claim of a recovered raw scan log. This reconciliation publishes no engine source change and does not rerun or reconstruct private patterns."
     },
     {
       "id": "A5",
@@ -2029,10 +2067,18 @@
       "weight": 0.5,
       "gate": "persona/editor/Person-markup blocks cover developer docs",
       "dependsOn": [],
-      "status": "partial",
-      "release": "none",
-      "evidence": [],
-      "notes": "CI blocks the retired persona in src/; developer docs not covered"
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/programme-acceptance-2026-10-04/README.md",
+        "https://github.com/zodiacs-org/site/pull/632",
+        "https://github.com/zodiacs-org/site/actions/runs/37143121771",
+        "https://github.com/zodiacs-org/site/actions/runs/37146059723",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/scripts/check-developer-authorship.mjs",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/scripts/check-developer-authorship.test.mjs",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/.github/workflows/site-check.yml"
+      ],
+      "notes": "Reviewed scanner and negative controls are committed and active after build; exact merge 076540b6 had 19 premerge and 19 postmerge Site Check successes and READY canonical deployment. Current main retains it. Bounded served developer-doc scanner and existing src guard; not a complete arbitrary JSON-LD semantic processor."
     },
     {
       "id": "S7",
@@ -2088,10 +2134,19 @@
       "weight": 1,
       "gate": "engine docs at a home outside /sdk/; repository description and topics set; no token framing",
       "dependsOn": [],
-      "status": "partial",
-      "release": "none",
-      "evidence": [],
-      "notes": "zodiacs-org/engine exists (§10.2 decided), and its description and topics are set (read back through a GitHub search on 2026-09-30); the docs are still at /sdk/engine/ (rc.1 TypeDoc with Registry links)"
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/programme-acceptance-2026-10-04/README.md",
+        "https://github.com/zodiacs-org/site/pull/635",
+        "https://github.com/zodiacs-org/site/actions/runs/37186581567",
+        "https://github.com/zodiacs-org/site/actions/runs/37191270664",
+        "https://github.com/zodiacs-org/site/actions/runs/37193751725",
+        "https://zodiacs.org/developers/engine/reference/",
+        "https://zodiacs.org/developers/engine/reference/provenance.json",
+        "https://github.com/zodiacs-org/engine"
+      ],
+      "notes": "PR635 merged normally as b1636359 after all 19 exact-head checks passed. All 19 postmerge checks passed. Canonical production is READY at that source. Live overview/module/function routes returned200 with correct canonicals, noindex and both-license notices; live provenance and LICENSE/LICENSING/NOTICE match committed text. The engine landing links to the reference. Engine repository description and topics are neutral and its homepage points outside /sdk. Generated declaration documentation describes the implementation, not proof of astronomical accuracy or completeness. Known conformance failures and both license obligations remain. Local Firefox was unavailable and its HTTP proxy refusal remains historical; live canonical GET verification subsequently succeeded through the authorized Vercel connector. Historical SDK bytes remain unchanged. Distribution obligations remain MIT AND CC-BY-4.0."
     },
     {
       "id": "G2",
