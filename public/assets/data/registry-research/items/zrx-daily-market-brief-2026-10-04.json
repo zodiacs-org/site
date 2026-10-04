@@ -1,0 +1,110 @@
+{
+  "schema": "zodiacs.registry-research-item.v1",
+  "sourceType": "zodiacs-research",
+  "publisher": "Zodiacs.org Research System",
+  "byline": "Zodiacs.org Research System",
+  "method": {
+    "id": "zodiacs.registry-research-method.v1",
+    "version": 1,
+    "generator": "zodiacs.registry-research.deterministic.v1",
+    "deterministicTemplatesOnly": true,
+    "modelAuthoredProse": false,
+    "scoreRule": "The disclosed Registry Outlook sky score is copied before market comparison. Market fields cannot alter that score or its wording.",
+    "observationRule": "Follow-ups use the first archived market snapshot at or after the requested elapsed interval and report the actual elapsed time.",
+    "causalityRule": "Market changes are observations, never evidence that a sky event caused a price or liquidity movement.",
+    "publicationRule": "During the pilot, an exact artifact hash and named reviewer are required before an item enters public feeds."
+  },
+  "riskStatement": "Symbolic research—not investment advice. Market observations never alter the sky score.",
+  "scienceNote": "Astrology has no established predictive relationship with asset prices. Crypto assets can lose all value.",
+  "revisions": [],
+  "id": "zrx-daily-market-brief-2026-10-04",
+  "slug": "daily-market-brief-2026-10-04",
+  "kind": "daily-market-brief",
+  "templateId": "daily-market-brief.v1",
+  "issuedAt": "2026-10-04T12:00:00.000Z",
+  "visibleAt": "2026-10-04T12:00:00.000Z",
+  "title": "Sun opposition Saturn · daily market brief",
+  "summary": "Sun opposition Saturn leads the disclosed symbolic index; Aries market measures are recorded separately.",
+  "url": "/terminal/research/daily-market-brief-2026-10-04/",
+  "signs": [
+    "libra",
+    "aries"
+  ],
+  "topics": [
+    "markets",
+    "daily-sky",
+    "aspect"
+  ],
+  "symbolicScore": {
+    "sign": "aries",
+    "attention": 27,
+    "tone": -10,
+    "eventIntensity": 13,
+    "calculation": "18 attention / -12 tone / 15 event intensity × 0.8705 horizon multiplier",
+    "marketFieldsUsed": false
+  },
+  "sections": {
+    "skyFact": {
+      "heading": "Sky fact",
+      "body": "Sun opposition Saturn is the highest-weighted named factor for Aries in the 2026-10-04 UTC edition. The disclosed score is attention 27/100, tone -10, and symbolic event intensity 13/100.",
+      "evidence": [
+        "src/data/transits-2026-10.json",
+        "public/assets/registry-outlook.json"
+      ]
+    },
+    "traditionalReading": {
+      "heading": "Traditional reading",
+      "body": "Elevated symbolic attention for this sign, without a strong directional tone. Signal: active. This is a traditional symbolic reading, not a price direction or probability.",
+      "evidence": [
+        "src/data/transits-2026-10.json",
+        "public/assets/registry-outlook.json"
+      ]
+    },
+    "marketObservation": {
+      "heading": "Market observation",
+      "body": "At 2026-10-04T00:07:19.389Z, Aries was indexed at $0.00007938, with -0.39% over 24 hours, $79.37K market cap, $79.37K FDV, $16.58K indexed liquidity, $25.55 24-hour volume, and 1 indexed pool. Market cap and FDV are kept separate. These descriptive fields did not alter the sky score.",
+      "evidence": [
+        "public/assets/data/registry-market-history.v1.json"
+      ]
+    }
+  },
+  "market": {
+    "available": true,
+    "snapshotId": "registry-market:2026-10-04:2026-10-04T00:07:19.389Z",
+    "observedAt": "2026-10-04T00:07:19.389Z",
+    "provider": "DexScreener",
+    "sign": "aries",
+    "priceUsd": 0.00007938,
+    "change24hPct": -0.39,
+    "marketCapUsd": 79367,
+    "fdvUsd": 79367,
+    "liquidityUsd": 16582.88,
+    "volume24hUsd": 25.55,
+    "indexedPoolCount": 1,
+    "deepestPoolUrl": "https://dexscreener.com/solana/hrn98ylgigp475es1gaqyrmbqk1v4dkv6tdkylhvh2is"
+  },
+  "evidence": {
+    "dailyFacts": "src/data/daily.json#2026-10-04",
+    "outlookEdition": "public/assets/registry-outlook.json#daily:2026-10-04",
+    "marketSnapshotId": "registry-market:2026-10-04:2026-10-04T00:07:19.389Z",
+    "coverage": {
+      "overall": "complete",
+      "events": "complete",
+      "occupancies": "complete",
+      "expectedTransitMonths": [
+        "2026-10"
+      ],
+      "missingTransitMonths": [],
+      "missingOccupancyPlanets": []
+    }
+  },
+  "artifactHash": "a1632f00f7ffbab49c767b24692f326746b49069bc5deb6856f784ca0ad05909",
+  "publishedAt": "2026-10-04T12:00:00.000Z",
+  "publication": {
+    "mode": "post-pilot-deterministic-allowlist",
+    "publishedAt": "2026-10-04T12:00:00.000Z",
+    "reviewer": null,
+    "artifactSha256": "a1632f00f7ffbab49c767b24692f326746b49069bc5deb6856f784ca0ad05909"
+  },
+  "status": "approved"
+}
