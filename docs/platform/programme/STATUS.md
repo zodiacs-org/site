@@ -1,5 +1,53 @@
 # Programme status
 
+Checkpoint 14, 2026-10-04: engine rc.16's capability gates judged, the
+co-ascendants measured end to end and the house systems rerun on rc.16, against
+main `67aa32d8b3f112a08aebe5f7b52db9a331ecbaf1` (#639).
+
+**Overall delivery: 30%** (29.570% to three decimals) — 53.95 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%. Up 6.95 from checkpoint 13.
+Gates, weights and the denominator are unchanged.
+[Gate record](../evidence/rc16-gates-2026-10-04/README.md).
+
+- **Accepted (6.95).**
+  - B2.a (4), the birth-time window partition: the engine's preregistered
+    1,000-window check, rerun on rc.16's build, matched all 24,188 one-second
+    transitions and missed none.
+  - P2.D.frames (2): the uniform API's twelve frame-transform checks pass
+    against an independent pyerfa chain, and the engine's 25 round-trip
+    fixtures replay exactly on the released archive.
+  - P2.A.houses.co-ascendants (0.25): the engine's evidence covered only
+    Swiss's given-inputs half. Measured here end to end, after a
+    preregistration, they are within 0.021″ of Swiss on the ladder
+    ([record](../evidence/co-ascendants-2026-10-04/README.md)).
+  - P2.A.house.koch (0.2): failed on rc.9 at 3.73″, where Koch magnified the
+    two programs' small difference in sidereal time near the polar circle.
+    Rerun on rc.16 with all thirteen systems, after a preregistration, it is
+    within 0.035″ ([record](../evidence/houses-2026-10-04/README.md)).
+  - P2.E.returns (0.5), again: production `dpl_Av6FTWYa2iFZzT2WZuWeCsRDg2oV`
+    serves #639, and the year ahead on `/profile/` takes its solar returns from
+    the package (F-67).
+- **Partial.** P3.2 (3): `calc()` types the sidereal zodiac but refuses it,
+  while Phase 2 ships it in `@zodiacs/engine/vedic`. Planetary returns (0.75):
+  complete verdicts and agreement with JPL Horizons, but no cited worked
+  example beyond the Sun.
+- **Failed as worded.** House positions (0.75): Porphyry and Topocentric over
+  0.01″. Cusp speeds (0.75): five systems against Swiss's speeds, though they
+  agree with the engine's own derivatives. Rise and set (1.5): 192 events of
+  Uranus over 5 s, and 2 events over USNO's 30 s. Planetary hours (0.75): they
+  divide the rise and set times exactly, and those fail.
+- **Held.** The other twelve house systems pass both halves on rc.16, the
+  engine the site and the MCP adapter run.
+- Actual command: `node scripts/programme-ledger.mjs --summary` →
+  `Overall delivery: 30% (53.95 of 182.45); blocked 2% (3)`.
+- Next: the engine work behind the partial and failed units: the sidereal
+  zodiac in `calc()` (P3.2), rise and set at grazing crossings and at USNO's
+  margin (with planetary hours), and house positions for Porphyry and
+  Topocentric. They need a candidate after rc.16, whose publication needs the
+  owner's approval.
+
+## Earlier checkpoints
+
 Checkpoint 13, 2026-10-04: an independent audit of checkpoints 9 to 12, and its
 corrections, against main `9d7dd31daa673fd1a21675ce359f9f4a69eac1cd` (#637).
 
@@ -47,8 +95,6 @@ unchanged. [Audit record](../evidence/programme-audit-2026-10-04/README.md).
   `Overall delivery: 26% (47 of 182.45); blocked 2% (3)`.
 - Next: once production serves this change, accept P2.E.returns again; then
   judge the nine rc.16 capability units against their own gates.
-
-## Earlier checkpoints
 
 Checkpoint 12, 2026-10-04: seven published or deployed gates reconciled against
 current main `b1636359d7f79351b5fb2b477a57e6dafb7c0a3c`.
