@@ -104,9 +104,10 @@ ratifies it, Koch is recorded as **validated**, pending the owner's decision on
 the reading (FINDINGS F-71).
 
 The other twelve systems keep their acceptance, which rests on the rc.9 and
-rc.10 records, where both programs read the UTC instant as UT1. On rc.16 they
-too stay within 3″ end to end only under the shared reading; F-71 puts that to
-the owner as well.
+rc.10 records, where both programs read the UTC instant as UT1. On rc.16, whole
+sign is within 3″ under either reading, and Equal-MC was not measured with
+Swiss reading the UTC instant as UT1. The other ten stay within 3″ end to end
+only under the shared reading; F-71 puts that to the owner as well.
 
 **Repeated draws.** The tools' generator, inherited from the rc.9 record,
 computes `(seed × 1103515245 + 12345) mod 2³¹` in double precision, which loses

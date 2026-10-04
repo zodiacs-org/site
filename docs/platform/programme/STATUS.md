@@ -38,17 +38,19 @@ Gates, weights and the denominator are unchanged.
   but no cited worked example.
 - **Failed.** House positions (0.75) and cusp speeds (0.75) fail as worded,
   where Swiss's own values are off the exact ones. Rise and set (1.5): 192
-  events of Uranus over 5 s, and 2 events just over USNO's 30 s. Planetary
-  hours (0.75): one of those USNO misses is a sunset.
+  events of Uranus over 5 s, and 2 events over USNO's 30 s, by 0.058 s and
+  0.149 s. Planetary hours (0.75): one of those USNO misses is a sunset.
 - **Held.** The other twelve house systems keep their acceptance on the rc.9
-  and rc.10 records; on rc.16 they too pass end to end only with the shared
-  UT1, which F-71 puts to the owner.
+  and rc.10 records. On rc.16 whole sign passes end to end under either clock
+  reading, Equal-MC was not measured under the other one, and the remaining ten
+  pass only with the shared UT1, which F-71 puts to the owner.
 - Actual command: `node scripts/programme-ledger.mjs --summary` →
   `Overall delivery: 30% (54.5 of 182.45); blocked 2% (3)`.
 - **Owner decision needed (F-71).** Should end-to-end comparisons with an
   engine that applies UT1 − UTC give Swiss the engine's UT1? And does the
-  1850–2049 window apply to the co-ascendants? Ratifying both adds 0.45; the
-  programme recommends both.
+  1850–2049 window apply to the co-ascendants? A yes to the first accepts Koch
+  (0.2); yes to both also accepts the co-ascendants (0.25). The programme
+  recommends both.
 - **Next.**
   - **Engine work, in a candidate after rc.16** (whose publication needs the
     owner's approval):
@@ -58,9 +60,10 @@ Gates, weights and the denominator are unchanged.
     Meeting them as worded would mean reproducing Swiss's departures from the
     exact values.
   - **Rise and set (with planetary hours):** the Uranus events are an
-    ephemeris limit, which the DE440 backend (P4.1) addresses. The two USNO
-    misses are within 0.15 s of the allowance, against times published to
-    the minute.
+    ephemeris limit, for the DE440 backend (P4.1). The two USNO misses, the
+    Moon's rise and the Sun's set at 34.60° S, decide both units: they need
+    engine examination in the next candidate, or a decision on how the gate
+    treats USNO's times, which are published to the minute.
 
 ## Earlier checkpoints
 

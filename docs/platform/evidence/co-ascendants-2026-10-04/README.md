@@ -67,9 +67,10 @@ magnified by the ascendant's sensitivity near the polar circle.
 **The preregistered criterion holds: from 1850 to 2049 every point is within
 0.021″ of Swiss on the ladder,** with both programs given the same UT1.
 
-Outside 1850–2049 the inputs drift apart: the RAMC differs by up to 1.9″, and
-on the ladder Koch's co-ascendant and the polar ascendant reach 63″ (22 of 708
-cases over 3″); broad, Munkasey's co-ascendant reaches 84″. As
+Outside 1850–2049 the inputs drift apart: the RAMC differs by up to 1.91″, and
+on the ladder Koch's co-ascendant and the polar ascendant reach 63″ (22 of the
+389 ladder cases outside the window over 3″); broad, Munkasey's co-ascendant
+reaches 84″. As
 [`../houses-2026-09-26/`](../houses-2026-09-26/README.md) found, Swiss
 switches to a long-term sidereal time outside 1850–2050, so no point is judged
 against Swiss there.
@@ -82,11 +83,13 @@ Added after two independent reviews of this record, before it was merged.
 `PREREGISTRATION.md` was written, a scratch comparison made while judging
 rc.16's gates compared the four points with `swe_houses_ex` on 400 cases from
 1900 to 2100, latitudes up to 66°, Swiss given the engine's UT1. By era it
-printed Munkasey's co-ascendant within 0.0085″ of Swiss and the two RAMCs
-within 0.0009″ before 2050, and 6.07″ and 1.91″ from 2050 to 2100. Over all
+printed Munkasey's co-ascendant within 0.0086″ of Swiss and the two RAMCs
+within 0.00091″ before 2050, and 6.07″ and 1.91″ from 2050 to 2100. Over all
 400 cases the largest differences were 6.07″ (Munkasey's co-ascendant), 4.28″
 (Koch's and the polar ascendant) and 2.05″ (the equatorial ascendant). Its
-scripts and output stayed in the session's scratch directory. `PREREGISTRATION.md` says that the end-to-end
+scripts stayed in the session's scratch directory, outside the repository;
+rerunning them reproduces every figure quoted here, as an independent review
+did. `PREREGISTRATION.md` says that the end-to-end
 half "has not been measured", which was not true of that comparison. The
 window it then fixed, 1850–2049, is the one the house systems and points were
 judged in, but it was chosen with those numbers known.
@@ -98,11 +101,11 @@ UT1. `tools/compare-clock-readings.py` (`results/clock-readings.json`, not
 preregistered, not judged) compares the same engine values from 1850 to 2049
 under three readings:
 
-| Swiss is given | Ladder cases over 3″ (of 319) | Ladder, largest | RAMC differs by up to |
+| Swiss is given | Ladder cases over 3″ (of 319) | Ladder, largest | Largest RAMC difference |
 | --- | ---: | ---: | ---: |
-| the engine's UT1 Julian day (preregistered) | 0 | 0.020″ | 0.0014″ |
-| the UTC instant's Julian day, read as UT1, as the rc.9 houses record's tool did | 40 to 48, by point | 88.5″ | 11.7″ |
-| the UT1 of Swiss's own `swe_utc_to_jd` | 13 | 14.6″ | 14.9″ |
+| the engine's UT1 Julian day (preregistered) | 0 | 0.02002″ | 0.001404″ |
+| the UTC instant's Julian day, read as UT1, as the rc.9 houses record's tool did | 40 to 48, by point | 88.51″ | 11.66″ |
+| the UT1 of Swiss's own `swe_utc_to_jd` | 13 | 14.61″ | 14.87″ |
 
 On 2026-10-01 the rc.16 accuracy refresh
 ([`../site-engine-rc16/accuracy-refresh/`](../site-engine-rc16/accuracy-refresh/README.md))

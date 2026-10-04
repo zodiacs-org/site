@@ -58,16 +58,17 @@ build it ran on.
 
 Engine
 [`docs/evidence/birth-window/`](https://github.com/zodiacs-org/engine/tree/ddbbaa0b1d21e16834722f81e8708816849c6726/docs/evidence/birth-window):
-the preregistration, committed in
+the preregistration, in
 [`d03f60c0`](https://github.com/zodiacs-org/engine/commit/d03f60c0f69d4dd4e7dc722876fd704b6cfde665)
-(2026-09-28T17:29:42Z) before the run; the first run's PASS in `RESULTS.md`,
-committed in
+(authored 2026-09-28T17:29:42Z); the first run's PASS in `RESULTS.md`, in its
+child
 [`09f8aa18`](https://github.com/zodiacs-org/engine/commit/09f8aa1813551bd8a9b61ff0e16b0135fc44aebf)
-(19:10:39Z); and the rerun on rc.16's build, unchanged in method
-(`rc16/README.md`, `rc16/summary.json`). `RESULTS.md` names the
-preregistration and the measured build as `d1000e66` and `670db8a6`, hashes
-from before the branch was rebased, which are in no published history (FINDINGS
-F-73). The rerun on `704cadc` stands on its own:
+(authored 19:10:39Z); and the rerun on rc.16's build, unchanged in method
+(`rc16/README.md`, `rc16/summary.json`). A rebase committed both commits at
+2026-09-30T06:46:40Z, so their order shows in the parent line and the author
+times. `RESULTS.md` names the preregistration, the measured build and four
+later commits of its review rounds by hashes from before that rebase, which
+are in no published history (FINDINGS F-73). The rerun on `704cadc` stands on its own:
 
 - 1,000 of 1,000 windows pass;
 - 12,259,372 whole-second samples hold 24,188 transitions, and every one
@@ -94,8 +95,8 @@ The gate asks for the 1,000-window rule recorded as PASS or FAIL. The engine's
 run, and `rc16/README.md` records it again as PASS on rc.16's build, with the
 counts above in `rc16/summary.json`. The records are on the engine's `main`
 (`23660f5`). The unit is recorded `merged`, as the ledger records the other
-records it accepts, such as the conformance suite and the time atlas's first
-slice.
+records it accepts, such as the preregistration file, the appended corrections
+and the recorded premises of Phase 0 (P0.1 to P0.3).
 
 ## P2.D.frames: met
 
@@ -107,10 +108,19 @@ slice.
   engine's output in another frame. The four that pass through the nutation
   agree within 0.0023″ (tolerance 0.005″), IAU 2000B's own difference from
   IAU 2000A. The other angles agree within 0.0000007″, and cartesian against
-  spherical distances to 4.4 × 10⁻¹⁶. Its part (b), the positions against
-  ERFA frames built from JPL Horizons's ICRF vectors, sets bounds rather than
-  a pass: median 3.00″, largest 24.6″, geocentric and apparent. That is the
-  ephemeris's accuracy, which other units judge.
+  spherical distances to 4.4 × 10⁻¹⁶. Part (a) runs on the ten geocentric
+  apparent bodies and the true node; it has no rate check and no other
+  centre. Its part (b) compares positions, distances and speeds for every
+  centre against ERFA frames built from JPL Horizons's ICRF vectors, and by
+  its preregistration reports them without a pass or fail: geocentric
+  apparent positions median 3.00″, largest 24.6″; heliocentric positions up
+  to 24.32″ and heliocentric speeds up to 5.38″ a day; geocentric speeds up to
+  2.10″ a day. That is the ephemeris's accuracy, which other units judge.
+  The barycentric Sun, which the unit's title does not name, is 87.2″ from
+  Horizons's at the median and 519″ at most, and 2.66° near its closest
+  approach to the barycentre: astronomy-engine's barycentre is the Sun and
+  the four giant planets. Its bounds are derived from the barycentre's error
+  rather than measured (the engine's Deviation 8).
 - **Round trip.** `tools/replay-calc-roundtrip.mjs` replays the engine's
   fixture file `src/fixtures/calc-roundtrip.json` (SHA-256 `b56ba1cf…e874`,
   the same at the release and at engine `main` `23660f5`) against the
@@ -119,6 +129,13 @@ slice.
   refusals of four kinds. Every result, and each of the 16 receipts' requests
   replayed, equals the fixture exactly: worst relative difference 0
   (`results/calc-roundtrip-replay.json`).
+
+The gate names no tolerance. This record reads its pyerfa clause as the
+engine's preregistered comparison: part (a), which passes, and part (b), the
+title's heliocentric positions and speeds, reported as bounds as the
+preregistration fixed before any result. A stricter reading would want a
+pass for the heliocentric positions and the speeds too; that would be the
+owner's to set.
 
 The unit depends on P3.2, which stays partial (below). The brief asks for these
 outputs through the uniform API, and they go through `calc()`, released. The
@@ -142,8 +159,9 @@ after 2050. The clock reading: with Swiss reading the UTC instant as UT1, as
 the rc.9 houses tool did, 40 to 48 of the 319 ladder cases from 1850 to 2049
 exceed 3″. Under the programme's rule, a gate that passes only under a change
 adopted after its residual was seen is validated until the owner ratifies the
-change, so the unit is **validated**, pending the owner's decision (FINDINGS
-F-71). It ships as `coAscendants` in `@zodiacs/engine/houses`.
+change, so the unit is **validated**, pending the owner's answers to both
+questions of FINDINGS F-71, the reading and the window. It ships as
+`coAscendants` in `@zodiacs/engine/houses`.
 
 ## P2.A.house.koch: validated
 
@@ -158,8 +176,8 @@ aligned clock, also measured it with Swiss reading the UTC instant as UT1: 48
 of 353 cases over 3″, the largest 82.677″. The site's rc.16 record kept Koch
 failed: "an aligned-clock pass does not substitute for the original failed
 comparison". Under the same rule as the co-ascendants, Koch is **validated**
-until the owner ratifies the shared-UT1 reading (F-71), and fails if the owner
-does not.
+until the owner ratifies the shared-UT1 reading (F-71's first question; its
+window is the rc.9 record's), and fails if the owner does not.
 
 ## P3.2: partial
 
@@ -200,7 +218,7 @@ reaches a circumpolar body.
 
 The engine's diagnostics, not preregistered, explain both. Porphyry: the exact
 positions of each body's longitude plus 0.001″ reproduce Swiss's to
-5 × 10⁻⁹″, and the 11 cases are those whose smaller quadrant is 1.78° to
+5.01 × 10⁻⁹″, and the 11 cases are those whose smaller quadrant is 1.78° to
 8.67° wide, where that 0.001″ is magnified. Topocentric: the engine's
 positions satisfy the equation of their position circle to 1.13 × 10⁻⁹″;
 Swiss's leave a median of 0.00205″ and up to 0.445″. Swiss's positions are
