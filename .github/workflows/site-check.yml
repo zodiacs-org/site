@@ -80,7 +80,8 @@ jobs:
 
       - name: Authorship stays transparent
         run: |
-          ! grep -RInE 'Rowan Vale|about/#editor([^i]|$)|"@type"[[:space:]]*:[[:space:]]*"Person"' src
+          npx vitest run scripts/check-source-authorship.test.mjs
+          node scripts/check-source-authorship.mjs
 
       # npm's prebuild already verifies the package and replays 30 editions.
       # Keep that release gate, without running it twice in this same job.
