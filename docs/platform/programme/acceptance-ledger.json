@@ -1,7 +1,7 @@
 {
   "version": 1,
   "brief": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md (version 2) with the version 1 rules it retains",
-  "asOf": "2026-10-04 checkpoint 12 (source b1636359; seven evidenced acceptances: S6, A4, four rc16 technique adoptions and G1; other units retain prior evidence)",
+  "asOf": "2026-10-04 checkpoint 13 (source 9d7dd31d; independent audit of checkpoints 9 to 12: P2.E.returns returns to validated until production serves its completed adoption (F-67); other units retain prior evidence)",
   "denominator": {
     "unit": "working days, from the brief's effort estimates (README.md)",
     "totalWeight": 182.45,
@@ -979,7 +979,7 @@
       "status": "partial",
       "release": "none",
       "evidence": [],
-      "notes": "site-only implementation (src/lib/engine returns); package has Saturn returns and a longitude-crossing search"
+      "notes": "site-only implementation (src/lib/engine returns); package has Saturn returns and a longitude-crossing search. Update 2026-10-04 (checkpoint 13; FINDINGS F-69): since engine rc.16 the package has solar and lunar returns (@zodiacs/engine/techniques) and planetary returns (@zodiacs/engine/timing); the site imports the first two (P2.E.returns). This unit's gate is not re-judged here."
     },
     {
       "id": "P2.A.timing.solar-arc",
@@ -1117,7 +1117,7 @@
       "status": "partial",
       "release": "none",
       "evidence": [],
-      "notes": "composite exists in the site only; no Davison"
+      "notes": "composite exists in the site only; no Davison. Update 2026-10-04 (checkpoint 13; FINDINGS F-69): since engine rc.16 the package exports compositeChart and davisonChart (@zodiacs/engine/techniques); the site still casts its own composite (P2.E.composite). This unit's gate is not re-judged here."
     },
     {
       "id": "P2.A.eclipses",
@@ -1347,8 +1347,8 @@
       "weight": 0.5,
       "gate": "package function released; the site imports it and its own implementation is removed; parity recorded; deployed",
       "dependsOn": [],
-      "status": "accepted",
-      "release": "deployed",
+      "status": "validated",
+      "release": "merged",
       "evidence": [
         "docs/platform/evidence/programme-acceptance-2026-10-04/README.md",
         "https://github.com/zodiacs-org/site/pull/620",
@@ -1356,9 +1356,11 @@
         "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/docs/platform/evidence/site-engine-rc16/techniques-parity.json",
         "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/docs/platform/evidence/site-engine-rc16/integration-2026-10-02/PUBLICATION.md",
         "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/src/lib/engine/solar-return.ts",
-        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/src/lib/engine/lunar-return.ts"
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/src/lib/engine/lunar-return.ts",
+        "docs/platform/evidence/programme-audit-2026-10-04/README.md",
+        "docs/platform/evidence/programme-audit-2026-10-04/year-scan-parity.json"
       ],
-      "notes": "Solar/lunar return instant searches are imported from package techniques; site chart adapters preserve their existing output shape. Parity sections R-SI/R-SY/R-SM/R-SC/R-LI/R-LC record agreement; R-E retains span differences. Finite product-parity/adoption gate only; not independent astronomical accuracy or general completeness. Existing package and convention limitations remain. Recorded parity: 1980 cases, 1930 agree, 50 differ. Differences: returns-span 50. Released rc16 source ddbbaa0b1d21e16834722f81e8708816849c6726, archive 43a72d30e483d8ff22024e403c4bd0d86d81bb6e1d0ad138f857cd001ab015d8; production dpl_4LmaXAGm8YJFF6vastJQ5WWXSTE8 at b1636359. Original October 2 six-request live receipt and private acceptance commit remain missing; neither is reconstructed or credited."
+      "notes": "Solar/lunar return instant searches are imported from package techniques; site chart adapters preserve their existing output shape. Parity sections R-SI/R-SY/R-SM/R-SC/R-LI/R-LC record agreement; R-E retains span differences. Finite product-parity/adoption gate only; not independent astronomical accuracy or general completeness. Existing package and convention limitations remain. Recorded parity: 1980 cases, 1930 agree, 50 differ. Differences: returns-span 50. Released rc16 source ddbbaa0b1d21e16834722f81e8708816849c6726, archive 43a72d30e483d8ff22024e403c4bd0d86d81bb6e1d0ad138f857cd001ab015d8; production dpl_4LmaXAGm8YJFF6vastJQ5WWXSTE8 at b1636359. Original October 2 six-request live receipt and private acceptance commit remain missing; neither is reconstructed or credited. Audit 2026-10-04 (checkpoint 13; FINDINGS F-67): the removal clause was not met at 9d7dd31d. src/lib/engine/year-scan.ts, the year ahead on /profile/, still found solar returns with the site's own Sun crossing scan, the construction PR620 removed from solar-return.ts; production served it. The audit routes it through the package's mostRecentSolarReturnInstant: on 1,000 seeded synthetic windows every window has the same returns as the replaced scan, 999 of 1,002 to the millisecond and none more than 3 ms apart (year-scan-parity.json); src/lib/engine/year-scan-returns.test.ts fails if the site scans the Sun itself again. Validated, not accepted, until production serves the change; the recorded rc16 parity above is unchanged."
     },
     {
       "id": "P2.E.void-of-course",
@@ -1415,9 +1417,10 @@
         "https://github.com/zodiacs-org/site/actions/runs/37003714196",
         "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/docs/platform/evidence/site-engine-rc16/techniques-parity.json",
         "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/docs/platform/evidence/site-engine-rc16/integration-2026-10-02/PUBLICATION.md",
-        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/src/lib/engine/aspect-patterns.ts"
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/src/lib/engine/aspect-patterns.ts",
+        "docs/platform/evidence/programme-audit-2026-10-04/README.md"
       ],
-      "notes": "Adapter imports package aspectPatterns rather than site detection implementation. P-D/P-C parity records preserve constructed/chart cases and malformed-input coverage. Finite product-parity/adoption gate only; not independent astronomical accuracy or general completeness. Existing package and convention limitations remain. Recorded parity: 1840 cases, 1840 agree, 0 differ. Released rc16 source ddbbaa0b1d21e16834722f81e8708816849c6726, archive 43a72d30e483d8ff22024e403c4bd0d86d81bb6e1d0ad138f857cd001ab015d8; production dpl_4LmaXAGm8YJFF6vastJQ5WWXSTE8 at b1636359. Original October 2 six-request live receipt and private acceptance commit remain missing; neither is reconstructed or credited."
+      "notes": "Adapter imports package aspectPatterns rather than site detection implementation. P-D/P-C parity records preserve constructed/chart cases and malformed-input coverage. Finite product-parity/adoption gate only; not independent astronomical accuracy or general completeness. Existing package and convention limitations remain. Recorded parity: 1840 cases, 1840 agree, 0 differ. Released rc16 source ddbbaa0b1d21e16834722f81e8708816849c6726, archive 43a72d30e483d8ff22024e403c4bd0d86d81bb6e1d0ad138f857cd001ab015d8; production dpl_4LmaXAGm8YJFF6vastJQ5WWXSTE8 at b1636359. Original October 2 six-request live receipt and private acceptance commit remain missing; neither is reconstructed or credited. Audit 2026-10-04 (checkpoint 13; FINDINGS F-70): the People pilot's frozen copy generator (docs/phase5/people-pilot/tools/compose-copy.mjs) detects grand trines and T-squares itself, from aspects that hold for the whole civil day; it is outside the brief's src/lib scope and its released copy is frozen. Acceptance unchanged."
     },
     {
       "id": "P2.E.composite",
@@ -1478,9 +1481,10 @@
         "https://github.com/zodiacs-org/site/actions/runs/37003714196",
         "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/docs/platform/evidence/site-engine-rc16/techniques-parity.json",
         "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/docs/platform/evidence/site-engine-rc16/integration-2026-10-02/PUBLICATION.md",
-        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/src/lib/share-card.ts"
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/src/lib/share-card.ts",
+        "docs/platform/evidence/programme-audit-2026-10-04/README.md"
       ],
-      "notes": "Active sharing helper dynamically imports package moonSignCandidates; preview/download callers remain. M-A/M-Z/M-P parity records preserve date-form, skipped-date and historical-zone differences. The main calculator deliberately leaves unknown-time Moon certainty unresolved; that predates PR620 and is not counted as a new candidate inference. Finite product-parity/adoption gate only; not independent astronomical accuracy or general completeness. Existing package and convention limitations remain. Recorded parity: 5147 cases, 5134 agree, 13 differ. Differences: moon-date-form 3, moon-skipped-date 1, moon-before-1970 9. Released rc16 source ddbbaa0b1d21e16834722f81e8708816849c6726, archive 43a72d30e483d8ff22024e403c4bd0d86d81bb6e1d0ad138f857cd001ab015d8; production dpl_4LmaXAGm8YJFF6vastJQ5WWXSTE8 at b1636359. Original October 2 six-request live receipt and private acceptance commit remain missing; neither is reconstructed or credited."
+      "notes": "Active sharing helper dynamically imports package moonSignCandidates; preview/download callers remain. M-A/M-Z/M-P parity records preserve date-form, skipped-date and historical-zone differences. The main calculator deliberately leaves unknown-time Moon certainty unresolved; that predates PR620 and is not counted as a new candidate inference. Finite product-parity/adoption gate only; not independent astronomical accuracy or general completeness. Existing package and convention limitations remain. Recorded parity: 5147 cases, 5134 agree, 13 differ. Differences: moon-date-form 3, moon-skipped-date 1, moon-before-1970 9. Released rc16 source ddbbaa0b1d21e16834722f81e8708816849c6726, archive 43a72d30e483d8ff22024e403c4bd0d86d81bb6e1d0ad138f857cd001ab015d8; production dpl_4LmaXAGm8YJFF6vastJQ5WWXSTE8 at b1636359. Original October 2 six-request live receipt and private acceptance commit remain missing; neither is reconstructed or credited. Audit 2026-10-04 (checkpoint 13; FINDINGS F-68): the parity of the adopted sharing path is section M-A, 3,005 cases, 3,002 agree; its 3 differences are dates in years 0 to 99, which the site's own date guard refuses. Sections M-Z and M-P (2,142 cases, 10 differences) compare helpers no production path has called since 9d180c9f. The People pilot's frozen generator samples the Moon's sign at both ends of the civil day itself; it is outside the brief's src/lib scope, and an audit check found its signs, verdicts and day bounds equal to the package's on all 501 pages (F-70). Acceptance unchanged."
     },
     {
       "id": "P3.1a",
@@ -1533,8 +1537,10 @@
       ],
       "status": "partial",
       "release": "none",
-      "evidence": [],
-      "notes": "the byte-identical rebuild check runs in the engine's CI: scripts/verify-archive-binding.mjs on every pull request, and --rebuild-all rebuilds every carried archive from its source commit (zodiacs-org/engine#10 and later, green); no CycloneDX SBOM per release and no JSR entry yet; since 2026-09-30 the engine is on npm with provenance (P3.1a), and the JSR scope @zodiacs and package engine exist, linked to zodiacs-org/engine, with nothing published"
+      "evidence": [
+        "docs/platform/evidence/programme-audit-2026-10-04/README.md"
+      ],
+      "notes": "the byte-identical rebuild check runs in the engine's CI: scripts/verify-archive-binding.mjs on every pull request, and --rebuild-all rebuilds every carried archive from its source commit (zodiacs-org/engine#10 and later, green); no CycloneDX SBOM per release and no JSR entry yet; since 2026-09-30 the engine is on npm with provenance (P3.1a), and the JSR scope @zodiacs and package engine exist, linked to zodiacs-org/engine, with nothing published. Update 2026-10-04 (checkpoint 13): the OIDC publish workflow exists (zodiacs-org/engine#24 and #25, 23660f5). With the owner's authorization its dry run 37111251733 passed on 2026-10-03, and the publish run 37111638537 failed at its publish step; jsr-io/jsr#1563 reports JSR's invalidLicense answer to the SPDX expression MIT AND CC-BY-4.0. JSR lists no version of @zodiacs/engine. No retry until JSR accepts an expression that states both licences or the owner decides a faithful alternative; the package is never labelled MIT alone. No CycloneDX SBOM per release yet."
     },
     {
       "id": "P3.1d",
@@ -1581,9 +1587,10 @@
         "docs/platform/evidence/compute-api-2026-09-29/production-2026-10-01/README.md",
         "docs/platform/evidence/compute-api-2026-10-01/README.md",
         "tests/api/compute-api-private-state.test.ts",
-        "docs/platform/evidence/compute-api-2026-10-01/observability/README.md"
+        "docs/platform/evidence/compute-api-2026-10-01/observability/README.md",
+        "docs/platform/evidence/compute-api-postrelease-2026-10-01/README.md"
       ],
-      "notes": "decided 2026-09-28: free and anonymous on the existing Vercel plan, rate-limited, no additional spending (docs/platform/programme/DECISIONS-2026-09-28.md §5). Implemented on the compute-api branch, not merged, on @zodiacs/engine 0.1.1-rc.15 since main's adoption of it: six POST endpoints; the negative-control test and receipts that name the backend hold. Each endpoint fails closed until every Firewall rule it is counted under is published: zodiacs-compute-api at 40 a minute for all six, and zodiacs-compute-events at 10 a minute for events (DECISIONS-2026-09-30.md §6 and §7). On 2026-09-30 the owner published Firewall version 6, with zodiacs-compute-api at 40 and zodiacs-compute-events at 10 a minute per address, so every endpoint can answer once deployed. Gate still open: p50 and p95 latency, warm and cold, and the cost of 1,000 requests of each kind, on the deployed endpoints, measurable once the API is deployed. On one 4-core machine over every year from 1800 to 2199, on rc.15, a 92-day events window took CPU p50 165.7 ms, p95 244.0 ms, at most 359.2 ms, and one address at both limits can cost at most 8.7 CPU-seconds a minute (5.2 at the 95th percentiles) (docs/platform/evidence/compute-api-2026-09-29/README.md) Update 2026-10-01: the six endpoints are deployed at site 9cfafa3e / dpl_6uGzGxdgxboMZ5jeFwQMTL24demr and all 120 synthetic sample requests succeeded. Client latency is recorded without a warm/cold label. Metered cost and actual start-type telemetry remain unavailable; P3.3 is not accepted. F-59 found exact synthetic input time in a private warm-process ephemeris cache. A server-only cache-lifetime fix is locally tested in this checkpoint but is not yet deployed; do not read release=deployed as this fix being live. Historical failed/inconclusive measurements remain preserved. Checkpoint 11: exact 120-request platform/export and Query reconciliation observes 20 Hot requests per endpoint and recorded execution p50/p95 plus rounded aggregate CPU/memory usage-cost estimates. No Cold samples; F60 remains unresolved; cache-fix deployment and post-deploy verification still outstanding. No acceptance."
+      "notes": "decided 2026-09-28: free and anonymous on the existing Vercel plan, rate-limited, no additional spending (docs/platform/programme/DECISIONS-2026-09-28.md §5). Implemented on the compute-api branch, not merged, on @zodiacs/engine 0.1.1-rc.15 since main's adoption of it: six POST endpoints; the negative-control test and receipts that name the backend hold. Each endpoint fails closed until every Firewall rule it is counted under is published: zodiacs-compute-api at 40 a minute for all six, and zodiacs-compute-events at 10 a minute for events (DECISIONS-2026-09-30.md §6 and §7). On 2026-09-30 the owner published Firewall version 6, with zodiacs-compute-api at 40 and zodiacs-compute-events at 10 a minute per address, so every endpoint can answer once deployed. Gate still open: p50 and p95 latency, warm and cold, and the cost of 1,000 requests of each kind, on the deployed endpoints, measurable once the API is deployed. On one 4-core machine over every year from 1800 to 2199, on rc.15, a 92-day events window took CPU p50 165.7 ms, p95 244.0 ms, at most 359.2 ms, and one address at both limits can cost at most 8.7 CPU-seconds a minute (5.2 at the 95th percentiles) (docs/platform/evidence/compute-api-2026-09-29/README.md) Update 2026-10-01: the six endpoints are deployed at site 9cfafa3e / dpl_6uGzGxdgxboMZ5jeFwQMTL24demr and all 120 synthetic sample requests succeeded. Client latency is recorded without a warm/cold label. Metered cost and actual start-type telemetry remain unavailable; P3.3 is not accepted. F-59 found exact synthetic input time in a private warm-process ephemeris cache. A server-only cache-lifetime fix is locally tested in this checkpoint but is not yet deployed; do not read release=deployed as this fix being live. Historical failed/inconclusive measurements remain preserved. Checkpoint 11: exact 120-request platform/export and Query reconciliation observes 20 Hot requests per endpoint and recorded execution p50/p95 plus rounded aggregate CPU/memory usage-cost estimates. No Cold samples; F60 remains unresolved; cache-fix deployment and post-deploy verification still outstanding. No acceptance. Correction 2026-10-04 (checkpoint 13): the two sentences above about the F-59 fix were written before it shipped. FINDINGS F-59 records it merged as fd1ce88a and live in production deployment dpl_AsJc5MrDgH4PpgoZSGMe7XTZePe4 from 2026-10-01 20:23 UTC, with the scoped post-release verification in docs/platform/evidence/compute-api-postrelease-2026-10-01/README.md. P3.3 stays unaccepted for the Cold observations and F-60."
     },
     {
       "id": "P3.4",
@@ -1599,7 +1606,7 @@
       "status": "partial",
       "release": "none",
       "evidence": [],
-      "notes": "static /api/v1 OpenAPI 3.1 with 11 GET operations and no examples, as main serves it. The compute-api branch (P3.3, not merged) adds the six compute endpoints to the same document: each a POST operation with its request and response schemas, the refusals it answers with and an example of each that the handler itself produced, and an OPTIONS operation for the CORS preflight; tests/api/compute-api-openapi.test.ts validates every compute example against its schema and holds the committed examples to the handler, and the whole document validated once against the OpenAPI Initiative's 3.1 schema, outside the repository (docs/platform/evidence/compute-api-2026-09-29/README.md). The GET operations still have no examples, and there are no TypeScript or Python clients and no Markdown twins"
+      "notes": "static /api/v1 OpenAPI 3.1 with 11 GET operations and no examples, as main serves it. The compute-api branch (P3.3, not merged) adds the six compute endpoints to the same document: each a POST operation with its request and response schemas, the refusals it answers with and an example of each that the handler itself produced, and an OPTIONS operation for the CORS preflight; tests/api/compute-api-openapi.test.ts validates every compute example against its schema and holds the committed examples to the handler, and the whole document validated once against the OpenAPI Initiative's 3.1 schema, outside the repository (docs/platform/evidence/compute-api-2026-09-29/README.md). The GET operations still have no examples, and there are no TypeScript or Python clients and no Markdown twins. Update 2026-10-04 (checkpoint 13): the compute endpoints and their OpenAPI operations are on main and in production since #605 and #607; the GET operations, clients and Markdown twins are as stated above."
     },
     {
       "id": "P3.5",
@@ -1634,7 +1641,7 @@
       "status": "partial",
       "release": "none",
       "evidence": [],
-      "notes": "local stdio MCP adapter 0.1.0-rc.15 (bundling engine rc.15; production serves it since #603) with three tools; no remote server, no registry entry"
+      "notes": "local stdio MCP adapter 0.1.0-rc.15 (bundling engine rc.15; production serves it since #603) with three tools; no remote server, no registry entry. Update 2026-10-04 (checkpoint 13): the site now serves the stdio adapter archive 0.1.0-rc.16 (sha256 dfc9177e…aeb9, 89,871 bytes, bundling engine rc.16), which /developers/mcp/ installs; still three tools, no remote server and no registry entry."
     },
     {
       "id": "P3.7",
@@ -1955,9 +1962,10 @@
         "https://github.com/zodiacs-org/engine/blob/c8a390ee1f3ad1f6883a0b986d66a31bf010ddd7/skills/zodiacs-compute/SKILL.md",
         "https://github.com/zodiacs-org/engine/blob/c8a390ee1f3ad1f6883a0b986d66a31bf010ddd7/docs/evidence/agent-skill-20261001/bundle.json",
         "https://github.com/zodiacs-org/engine/blob/c8a390ee1f3ad1f6883a0b986d66a31bf010ddd7/docs/evidence/agent-skill-20261001/local-validation.json",
-        "https://api.github.com/repos/zodiacs-org/engine/commits/c8a390ee1f3ad1f6883a0b986d66a31bf010ddd7/check-runs?per_page=100"
+        "https://api.github.com/repos/zodiacs-org/engine/commits/c8a390ee1f3ad1f6883a0b986d66a31bf010ddd7/check-runs?per_page=100",
+        "docs/platform/evidence/programme-audit-2026-10-04/a4-history-rescan.json"
       ],
-      "notes": "Public merged bundle content verified; all three file hashes independently match the manifest; 21 successful postmerge checks are directly recoverable. Tool selection, uncertainty, citation and non-accuracy claims covered. No package publication required by this unit. Committed record contains initial scan aggregates and missing optional-example input limitation. Final local rescan receipt is not recovered here; no claim of a recovered raw scan log. This reconciliation publishes no engine source change and does not rerun or reconstruct private patterns."
+      "notes": "Public merged bundle content verified; all three file hashes independently match the manifest; 21 successful postmerge checks are directly recoverable. Tool selection, uncertainty, citation and non-accuracy claims covered. No package publication required by this unit. Committed record contains initial scan aggregates and missing optional-example input limitation. Final local rescan receipt is not recovered here; no claim of a recovered raw scan log. This reconciliation publishes no engine source change and does not rerun or reconstruct private patterns. Update 2026-10-04 (checkpoint 13): a new post-publication history check with the owner's private patterns, outside every repository, found no birth data in 6807f632..c8a390ee (2 commits; tree of c8a390ee, 1,080 files) or in everything published since rc.16, 6807f632..23660f5 (6 commits; tree of 23660f5, 1,092 files); the optional published-example check, not run before publication, found every file holding such data citing its source. Only aggregates are recorded (docs/platform/evidence/programme-audit-2026-10-04/a4-history-rescan.json). This is a new check, not the missing receipt of 2026-10-01."
     },
     {
       "id": "A5",
@@ -2076,9 +2084,10 @@
         "https://github.com/zodiacs-org/site/actions/runs/37146059723",
         "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/scripts/check-developer-authorship.mjs",
         "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/scripts/check-developer-authorship.test.mjs",
-        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/.github/workflows/site-check.yml"
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/.github/workflows/site-check.yml",
+        "docs/platform/evidence/programme-audit-2026-10-04/README.md"
       ],
-      "notes": "Reviewed scanner and negative controls are committed and active after build; exact merge 076540b6 had 19 premerge and 19 postmerge Site Check successes and READY canonical deployment. Current main retains it. Bounded served developer-doc scanner and existing src guard; not a complete arbitrary JSON-LD semantic processor."
+      "notes": "Reviewed scanner and negative controls are committed and active after build; exact merge 076540b6 had 19 premerge and 19 postmerge Site Check successes and READY canonical deployment. Current main retains it. Bounded served developer-doc scanner and existing src guard; not a complete arbitrary JSON-LD semantic processor. Audit 2026-10-04 (checkpoint 13; FINDINGS F-62): the cited runs scanned 156 files with the scanner as of a7ecab9a, and PR635 extended it to the 514 reference pages (676 files, run 37193751725). The audit found realistic bypasses: the persona wrapped across lines or capitalised, other spellings of the editor anchor, single-quoted Person markup in src/ (where the People template carries one subject Person), and a source guard that passed when grep errored. They are closed with shared bounded detectors and scripts/check-source-authorship.mjs, with one recorded People-subject allowance; 210 tests; 702 served text files and 2,102 src files scanned; the known limits are in F-62. The gate's coverage of developer docs held for the forms CI checked; acceptance unchanged."
     },
     {
       "id": "S7",
@@ -2144,9 +2153,10 @@
         "https://github.com/zodiacs-org/site/actions/runs/37193751725",
         "https://zodiacs.org/developers/engine/reference/",
         "https://zodiacs.org/developers/engine/reference/provenance.json",
-        "https://github.com/zodiacs-org/engine"
+        "https://github.com/zodiacs-org/engine",
+        "docs/platform/evidence/programme-audit-2026-10-04/README.md"
       ],
-      "notes": "PR635 merged normally as b1636359 after all 19 exact-head checks passed. All 19 postmerge checks passed. Canonical production is READY at that source. Live overview/module/function routes returned200 with correct canonicals, noindex and both-license notices; live provenance and LICENSE/LICENSING/NOTICE match committed text. The engine landing links to the reference. Engine repository description and topics are neutral and its homepage points outside /sdk. Generated declaration documentation describes the implementation, not proof of astronomical accuracy or completeness. Known conformance failures and both license obligations remain. Local Firefox was unavailable and its HTTP proxy refusal remains historical; live canonical GET verification subsequently succeeded through the authorized Vercel connector. Historical SDK bytes remain unchanged. Distribution obligations remain MIT AND CC-BY-4.0."
+      "notes": "PR635 merged normally as b1636359 after all 19 exact-head checks passed. All 19 postmerge checks passed. Canonical production is READY at that source. Live overview/module/function routes returned200 with correct canonicals, noindex and both-license notices; live provenance and LICENSE/LICENSING/NOTICE match committed text. The engine landing links to the reference. Engine repository description and topics are neutral and its homepage points outside /sdk. Generated declaration documentation describes the implementation, not proof of astronomical accuracy or completeness. Known conformance failures and both license obligations remain. Local Firefox was unavailable and its HTTP proxy refusal remains historical; live canonical GET verification subsequently succeeded through the authorized Vercel connector. Historical SDK bytes remain unchanged. Distribution obligations remain MIT AND CC-BY-4.0. Audit 2026-10-04 (checkpoint 13): the repository description reads \"MIT-licensed astrology calculation engine\" and .zenodo.json \"mit\", which the acceptance called neutral without noting (FINDINGS F-63; owner action, prepared wording). The reference's overview linked http://LICENSING.md, a renderer autolink; it is removed, and the checker now resolves every link: one to zodiacs.org must reach a file in the build, any other must be HTTPS to one of three named hosts; it also rejects token wording (F-64). The gate's three clauses hold; acceptance unchanged."
     },
     {
       "id": "G2",

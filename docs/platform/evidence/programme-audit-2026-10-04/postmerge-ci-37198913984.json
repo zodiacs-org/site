@@ -1,0 +1,43 @@
+{
+  "schema": "zodiacs.programme-audit.ci-observation.v1",
+  "run": "https://github.com/zodiacs-org/site/actions/runs/37198913984",
+  "workflow": "Site Check (.github/workflows/site-check.yml), push to main",
+  "head": "9d7dd31daa673fd1a21675ce359f9f4a69eac1cd",
+  "change": "PR637 merge; it changes six documentation and evidence files and no source, test or workflow",
+  "premerge": { "run": "https://github.com/zodiacs-org/site/actions/runs/37196814758", "head": "4a08bb1ef7c24b85dbeb3acde572838dc017e3f0", "conclusion": "success" },
+  "attempt1": {
+    "completed": "2026-10-04T12:11:23Z",
+    "conclusion": "failure",
+    "jobsSucceeded": 18,
+    "jobs": 19,
+    "failedJob": {
+      "id": 111426380320,
+      "name": "Build with production's feature flags",
+      "step": "Free sharing and sourced matches in Chromium and WebKit",
+      "command": "node tests/sharing-phase2-drive.mjs",
+      "assertion": "tests/sharing-phase2-drive.mjs:147 assert.deepEqual(errors, [])",
+      "logLines": [
+        "2026-10-04T11:35:43.9292803Z PASS: webkit 1280: friend opens positions-only invitation and adds their chart without signup",
+        "2026-10-04T11:35:44.1313679Z Browser error at http://127.0.0.1:8791/compatibility/ ttp://127.0.0.1:8791/d3bf2b7f-9013-42b0-8b0e-e4c496fa3eea due to access control checks. Cannot load blob:http://127.0.0.1:8791/d3bf2b7f-9013-42b0-8b0e-e4c496fa3eea due to access control checks.",
+        "2026-10-04T11:35:44.1417010Z     at o (http://127.0.0.1:8791/_astro/share-card-brand.SvWVt-Dl.js:1:838)",
+        "2026-10-04T11:35:47.5685280Z     at file:///home/runner/work/site/site/tests/sharing-phase2-drive.mjs:147:16"
+      ],
+      "artifact": { "name": "sharing-phase2-37198913984", "id": 11301863009, "bytes": 8645663, "zipSha256": "44e512b1c228c3645c7933aa45116773ab6dca7af0f00e9a10789f1b78191721" }
+    }
+  },
+  "retry": {
+    "policy": "one unchanged re-run of the failed job, issued after the run completed and after confirming no earlier retry",
+    "issued": "2026-10-04T12:13Z",
+    "attempt": 2,
+    "job": 111433598359,
+    "conclusion": "success",
+    "runConclusion": "success"
+  },
+  "diagnosis": {
+    "location": "Column 838 of the built share-card-brand chunk is the createImageBitmap(blob) call in loadShareBrandIcon (src/lib/share-card-brand.ts). A local build at the same source produces the same chunk name.",
+    "mechanism": "Playwright's WebKit driver reports a console message of level error and source javascript as a page error, cutting its text at the first colon, which is why the message starts 'ttp://'. The page code catches the failed decode and does not throw.",
+    "probableCause": "SendBackExperience (src/islands/synastry/SendBackExperience.tsx) prepares share cards in the background after the comparison result appears; the drive navigates away immediately after its screenshot, and a blob read still in flight in the departing document is refused. Not reproduced locally: no WebKit is installed in this environment.",
+    "owner": "the sharing feature (PRs 630 and 631); not engine or programme code",
+    "disposition": "a handoff with the evidence above was prepared for the frontend session; no assertion, test or frontend file changed by this programme"
+  }
+}
