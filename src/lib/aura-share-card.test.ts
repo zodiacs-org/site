@@ -37,7 +37,7 @@ interface CanvasHarness {
   context: Record<string, unknown>;
   fetch: ReturnType<typeof vi.fn>;
   decodedIcons: Array<{ close: ReturnType<typeof vi.fn> }>;
-  fallbackImages: Array<{ src: string }>;
+  images: Array<{ src: string }>;
   share: ReturnType<typeof vi.fn>;
   anchor: {
     href: string;
@@ -134,10 +134,11 @@ function installCanvas(
     ),
   }));
   const decodedIcons: Array<{ close: ReturnType<typeof vi.fn> }> = [];
-  const fallbackImages: Array<{ src: string }> = [];
+  const images: Array<{ src: string }> = [];
   vi.stubGlobal("fetch", fetch);
-  vi.stubGlobal("createImageBitmap", vi.fn(async (blob: Blob) => {
-    if (options.brandBitmap === false && blob.type === "image/png") {
+  vi.stubGlobal("createImageBitmap", vi.fn(async (source: Blob | { src: string }) => {
+    const png = source instanceof Blob ? source.type === "image/png" : source.src.endsWith(".png");
+    if (options.brandBitmap === false && png) {
       throw new Error("bitmap_decode_failed");
     }
     const bitmap = { close: vi.fn() };
@@ -145,18 +146,19 @@ function installCanvas(
     return bitmap;
   }));
   vi.stubGlobal("Image", class {
-    onload: (() => void) | null = null;
-    onerror: (() => void) | null = null;
     private value = "";
 
     set src(value: string) {
       this.value = value;
-      fallbackImages.push(this);
-      queueMicrotask(() => this.onload?.());
+      images.push(this);
     }
 
     get src(): string {
       return this.value;
+    }
+
+    decode(): Promise<void> {
+      return Promise.resolve();
     }
   });
   return {
@@ -165,7 +167,7 @@ function installCanvas(
     context,
     fetch,
     decodedIcons,
-    fallbackImages,
+    images,
     share,
     anchor,
     appendChild,
@@ -515,8 +517,8 @@ describe("Registry Aura talisman PNG", () => {
       "/assets/zodiac-icons/128/capricorn.webp",
       "/assets/zodiac-icons/128/aquarius.webp",
       "/assets/zodiac-icons/128/pisces.webp",
-      "/assets/app-icons/v3/icon-512.png",
     ]);
+    expect(harness.images.map(({ src }) => src)).toEqual(["/assets/app-icons/v3/icon-512.png"]);
     expect(harness.context.drawImage).toHaveBeenCalledTimes(16);
     expect(harness.painted.filter(({ text }) => text.includes("×3"))).toHaveLength(1);
     const brand = harness.painted.find(({ text }) => text === "Zodiacs.org");
@@ -551,7 +553,7 @@ describe("Registry Aura talisman PNG", () => {
     const harness = installCanvas({ brandBitmap: false });
     await drawAuraShareCard(input);
 
-    expect(harness.fallbackImages).toHaveLength(1);
+    expect(harness.images).toHaveLength(1);
     expect(harness.context.drawImage).toHaveBeenCalledTimes(16);
     expect(harness.decodedIcons).toHaveLength(12);
     harness.decodedIcons.forEach((icon) => expect(icon.close).toHaveBeenCalledOnce());

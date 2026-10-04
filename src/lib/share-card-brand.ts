@@ -26,40 +26,35 @@ export interface ShareCardBrandLayout {
 
 export type LoadedShareBrandIcon = CanvasImageSource & { close?: () => void };
 
-async function imageElementFromBlob(blob: Blob): Promise<HTMLImageElement | null> {
+/**
+ * Decodes one of the site's own pictures for a card, or gives null. Cards are
+ * prepared in the background, so a visitor can leave while one is half drawn.
+ * WebKit reports a fetch or a Blob read that a leaving page starts as a page
+ * error; an image element's load simply fails. So an image element loads the
+ * picture, and the bitmap is made from the decoded element.
+ */
+export async function loadShareCardImage(path: string): Promise<LoadedShareBrandIcon | null> {
   if (typeof Image === "undefined") return null;
-  const url = URL.createObjectURL(blob);
+  const image = new Image();
+  image.src = path;
   try {
-    return await new Promise<HTMLImageElement>((resolve, reject) => {
-      const image = new Image();
-      image.onload = () => resolve(image);
-      image.onerror = () => reject(new Error("brand_icon_load_failed"));
-      image.src = url;
-    });
+    await image.decode();
   } catch {
     return null;
-  } finally {
-    URL.revokeObjectURL(url);
   }
+  if (typeof createImageBitmap === "function") {
+    try {
+      return await createImageBitmap(image);
+    } catch {
+      // The decoded element draws as well where no bitmap can be made of it.
+    }
+  }
+  return image;
 }
 
 /** Loads the canonical twelve-sign profile image used by exported charts. */
-export async function loadShareBrandIcon(): Promise<LoadedShareBrandIcon | null> {
-  try {
-    const response = await fetch(BRAND_ICON_PATHS.icon512);
-    if (!response.ok) return null;
-    const blob = await response.blob();
-    if (typeof createImageBitmap === "function") {
-      try {
-        return await createImageBitmap(blob);
-      } catch {
-        // WebKit can expose createImageBitmap without decoding every PNG.
-      }
-    }
-    return await imageElementFromBlob(blob);
-  } catch {
-    return null;
-  }
+export function loadShareBrandIcon(): Promise<LoadedShareBrandIcon | null> {
+  return loadShareCardImage(BRAND_ICON_PATHS.icon512);
 }
 
 /**

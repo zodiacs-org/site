@@ -5,6 +5,7 @@ import {
   SHARE_CARD_BRAND_WORDMARK,
   drawShareBrandLockup,
   loadShareBrandIcon,
+  loadShareCardImage,
   withShareBrandIcon,
 } from "./share-card-brand";
 
@@ -42,67 +43,68 @@ function canvasHarness(wordmarkWidth = 96) {
   };
 }
 
+/** Image elements that record their address and decode as `decode` says. */
+function stubImages(decode: () => Promise<void> = async () => {}) {
+  const images: Array<{ src: string }> = [];
+  vi.stubGlobal("Image", class {
+    src = "";
+
+    constructor() {
+      images.push(this);
+    }
+
+    decode() {
+      return decode();
+    }
+  });
+  return images;
+}
+
 describe("share-card brand asset", () => {
-  it("loads the canonical profile image as a bitmap", async () => {
-    const blob = new Blob(["brand"], { type: "image/png" });
+  it("loads the canonical profile image as a bitmap of a decoded image element", async () => {
+    const images = stubImages();
     const bitmap = { close: vi.fn() };
-    const fetch = vi.fn(async () => ({ ok: true, blob: async () => blob }));
+    const fetch = vi.fn();
     const createImageBitmap = vi.fn(async () => bitmap);
     vi.stubGlobal("fetch", fetch);
     vi.stubGlobal("createImageBitmap", createImageBitmap);
 
     await expect(loadShareBrandIcon()).resolves.toBe(bitmap);
-    expect(fetch).toHaveBeenCalledWith("/assets/app-icons/v3/icon-512.png");
-    expect(createImageBitmap).toHaveBeenCalledWith(blob);
+    expect(images.map(({ src }) => src)).toEqual(["/assets/app-icons/v3/icon-512.png"]);
+    expect(createImageBitmap).toHaveBeenCalledWith(images[0]);
+    // A page left while a card is prepared makes WebKit report a refused
+    // fetch or Blob read as a page error; an image element's load only fails.
+    expect(fetch).not.toHaveBeenCalled();
   });
 
-  it("falls back to an image element when WebKit cannot bitmap-decode the PNG", async () => {
-    const revokeObjectURL = vi.fn();
-    vi.stubGlobal("URL", {
-      createObjectURL: vi.fn(() => "blob:brand"),
-      revokeObjectURL,
-    });
-    vi.stubGlobal("fetch", vi.fn(async () => ({
-      ok: true,
-      blob: async () => new Blob(["brand"], { type: "image/png" }),
-    })));
+  it("falls back to the image element when WebKit cannot make a bitmap of it", async () => {
+    const images = stubImages();
     vi.stubGlobal("createImageBitmap", vi.fn(async () => {
       throw new Error("decode failed");
     }));
-    const images: Array<{ src: string }> = [];
-    vi.stubGlobal("Image", class {
-      onload: (() => void) | null = null;
-      onerror: (() => void) | null = null;
-      private value = "";
 
-      set src(value: string) {
-        this.value = value;
-        images.push(this);
-        queueMicrotask(() => this.onload?.());
-      }
-
-      get src(): string {
-        return this.value;
-      }
-    });
-
-    const icon = await loadShareBrandIcon();
-    expect(icon).toBe(images[0]);
-    expect(images[0]?.src).toBe("blob:brand");
-    expect(revokeObjectURL).toHaveBeenCalledWith("blob:brand");
+    await expect(loadShareBrandIcon()).resolves.toBe(images[0]);
   });
 
   it("returns null without throwing when the canonical asset is unavailable", async () => {
-    vi.stubGlobal("fetch", vi.fn(async () => ({ ok: false })));
+    stubImages(async () => {
+      throw new DOMException("The source image cannot be decoded.", "EncodingError");
+    });
+    const createImageBitmap = vi.fn();
+    vi.stubGlobal("createImageBitmap", createImageBitmap);
+
     await expect(loadShareBrandIcon()).resolves.toBeNull();
+    expect(createImageBitmap).not.toHaveBeenCalled();
+  });
+
+  it("returns null where there is no image element", async () => {
+    expect(typeof Image).toBe("undefined");
+    await expect(loadShareCardImage("/assets/zodiac-icons/128/leo.webp")).resolves.toBeNull();
   });
 
   it("closes a decoded bitmap when the renderer throws", async () => {
     const close = vi.fn();
-    vi.stubGlobal("fetch", vi.fn(async () => ({
-      ok: true,
-      blob: async () => new Blob(["brand"], { type: "image/png" }),
-    })));
+    stubImages();
     vi.stubGlobal("createImageBitmap", vi.fn(async () => ({ close })));
 
     await expect(withShareBrandIcon(() => {

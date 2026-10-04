@@ -29,6 +29,7 @@ import {
   chartSheetContent,
   imageChart,
   imagePositions,
+  loadDisc,
   prepareChartCard,
   timedImageChart,
   untimedMoonSign,
@@ -36,7 +37,7 @@ import {
 } from './share-card';
 import type { Chart } from './engine/types';
 import { bodyLongitude, computeBodies, computeChart } from './engine/full';
-import { signForLongitude } from './signs';
+import { SIGNS, signForLongitude } from './signs';
 import { decodePositionsLink, encodeSharedPositionsLink, wholeDegreeAngle } from './share-positions';
 import { sharedTimedInstant, timedSharedPositions } from './share-positions-noon';
 import { prepareLocalTime, resolveLocalToUtc } from './time/localToUtc';
@@ -100,6 +101,27 @@ describe('prepared image handoff', () => {
     expect(anchor.remove).toHaveBeenCalledOnce();
     vi.runAllTimers();
     expect(URL.revokeObjectURL).toHaveBeenCalledOnce();
+  });
+});
+
+describe('card discs', () => {
+  afterEach(() => { vi.unstubAllGlobals(); });
+
+  it('asks for all twelve through image elements, in zodiac order, whichever disc a card shows', async () => {
+    const requested: string[] = [];
+    vi.stubGlobal('Image', class {
+      private value = '';
+      set src(value: string) { this.value = value; requested.push(value); }
+      get src() { return this.value; }
+      decode() { return Promise.resolve(); }
+    });
+    vi.stubGlobal('createImageBitmap', vi.fn(async (image: { src: string }) => ({ from: image.src })));
+    const fetch = vi.fn();
+    vi.stubGlobal('fetch', fetch);
+
+    await expect(loadDisc('leo')).resolves.toEqual({ from: '/assets/zodiac-icons/128/leo.webp' });
+    expect(requested).toEqual(SIGNS.map(({ slug }) => `/assets/zodiac-icons/128/${slug}.webp`));
+    expect(fetch).not.toHaveBeenCalled();
   });
 });
 
