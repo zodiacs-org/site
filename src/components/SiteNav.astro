@@ -230,9 +230,6 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
             <span>{t(locale, tool.label)}{toolNeedsEnglishCue(tool) ? englishOnly?.suffix : ''}</span>
           </a>
         ))}
-        {NAV_MORE.map((item, i) => (
-          <a class="mobile-menu__tool" style={`--i:${visibleNavTools.length + i}`} href={localizePath(locale, item.href)}><span>{item.label[locale]}</span></a>
-        ))}
         <a class="mobile-menu__tool mobile-menu__tool--all" href={localizePath(locale, '/tools/')}>
           {ALL_TOOLS_LABEL[locale]} <span aria-hidden="true">→</span>
         </a>

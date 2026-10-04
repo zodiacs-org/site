@@ -14,7 +14,7 @@ const tools = [
   { path: '/compatibility/invite/', title: 'inviteTitle', promise: 'homeInvitePromise', hue: 'var(--sign-libra)', kind: 'invite' },
 ] as const;
 ---
-<section class="container pace-act home-share" data-home-share>
+<section class="container home-share" data-home-share>
   <div class="section-head reveal">
     <h2>{s(locale, 'sharingTools')}</h2>
     <p>{s(locale, 'homeShareLede')}</p>
@@ -34,6 +34,8 @@ const tools = [
 </section>
 
 <style is:inline>
+  /* Homepage section spacing is scoped to each locale page, so this band carries its own. */
+  .home-share { padding-top: clamp(56px, 7.5vw, 104px); }
   .home-share__grid { display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr); }
   @media (min-width: 760px) { .home-share__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
   .home-share__grid > a { text-decoration: none; color: inherit; }
