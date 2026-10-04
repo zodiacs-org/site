@@ -9,7 +9,7 @@ import { skyCalendar, skyCalendarEvents } from './sky-calendar';
 import { saturnCountdown } from './countdown';
 import { wrappedTargets, wrappedWindow } from './wrapped';
 import { assembleChartPdf } from './pdf';
-import { dailyManifestSchema, dailyEditions } from './chart-of-day';
+import { dailyManifestSchema, dailyEditions, editionForDay } from './chart-of-day';
 import { computeChart, bodyLongitude } from '../engine/full';
 import { scanTransitContacts } from '../engine/transit-scan';
 import { findLongitudeCrossings } from '../engine/returns';
@@ -72,7 +72,20 @@ describe('Phase 3 owner programme', () => {
     const edition = { day: '2026-10-04', name: 'Synthetic public figure', birthDate: '1990-01-01', birthTime: null, timeQuality: 'unknown', birthSource: 'https://example.com/record', birthSourceTitle: 'Synthetic source', newsSource: 'https://example.com/news', newsSourceTitle: 'Synthetic news', newsDate: '2026-10-03', reliability: translated, reason: translated, ownerApproval: { approved: true, approvedAt: '2026-10-04T00:00:00Z', evidence: 'Synthetic owner approval fixture only.' } };
     const manifest = { version: 1, editions: [edition] }; expect(dailyManifestSchema.safeParse(manifest).success).toBe(true);
     for (const change of [{ ownerApproval: null }, { ownerApproval: { ...edition.ownerApproval, approved: false } }, { birthSource: '' }, { birthTime: '12:00' }, { birthDate: '2001-02-30' }, { birthDate: '2027-01-01' }, { newsDate: '2026-09-01' }, { reliability: { en: 'only' } }]) expect(dailyManifestSchema.safeParse({ ...manifest, editions: [{ ...edition, ...change }] }).success).toBe(false);
-    expect(dailyEditions).toEqual([]);
+    expect(dailyManifestSchema.safeParse({ ...manifest, editions: [edition, edition] }).success).toBe(false);
+    for (const approved of dailyEditions) expect(approved.ownerApproval.approved).toBe(true);
+  });
+  it('publishes only the reviewed October 4 Sinner record with an unknown birth time', () => {
+    const edition = editionForDay('2026-10-04');
+    expect(edition?.name).toBe('Jannik Sinner');
+    expect(edition?.birthDate).toBe('2001-08-16');
+    expect(edition?.birthTime).toBeNull();
+    expect(edition?.timeQuality).toBe('unknown');
+    expect(edition?.birthSource).toBe('https://www.nittoatpfinals.com/en/players/singles/jannik-sinner');
+    expect(edition?.newsSource).toBe('https://en.rolexshanghaimasters.com/en/media/news/sinner-shanghai-2026-withdrawal');
+    expect(edition?.newsDate).toBe('2026-10-03');
+    expect(edition?.ownerApproval.evidence).toContain('dated edition only');
+    expect(editionForDay('2026-10-05')).toBeNull();
   });
   it('all new tools use consumer navigation in six languages', () => { for (const locale of CATALOG_LOCALES) for (const path of ['/sky-calendar/', '/astrologer-kit/', '/your-sky-wrapped/', '/chart-of-the-day/']) expect(isAstrologyToolPath(`${locale === 'en' ? '' : '/' + locale}${path}`)).toBe(true); });
   it('personal surfaces omit analytics and export counts never accept birth inputs', () => {

@@ -11,6 +11,7 @@ import { buildSkyApi } from '../src/lib/sky-api/files.ts';
 import { SCHEMAS, SCHEMA_NAMES, schemaNameForFile } from '../src/lib/sky-api/schemas.ts';
 import {
   LUNATION_JOIN_TOLERANCE_MS,
+  buildUpcoming,
   completeTransitYears,
   joinLunationDetail,
   lunationRecords,
@@ -196,7 +197,7 @@ describe('sky data API — daily payloads', () => {
     for (const key of ['nextFullMoon', 'nextNewMoon']) {
       const next = today.moon[key];
       expect(Date.parse(next.at)).toBeGreaterThan(Date.parse(daily.snapshotAt));
-      expect(next.daysAway).toBeGreaterThan(0);
+      expect(next.daysAway).toBe(Math.round((Date.parse(next.at) - Date.parse(daily.snapshotAt)) / 86_400_000 * 10) / 10);
       expect(next.sign).toMatch(/^[a-z]+$/);
     }
     expect(today.moon.nextFullMoon.name).toBeTruthy();
@@ -215,7 +216,7 @@ describe('sky data API — daily payloads', () => {
       expect(at).toBeGreaterThan(start);
       expect(at).toBeLessThanOrEqual(end);
       expect(at).toBeGreaterThanOrEqual(previous);
-      expect(event.daysAway).toBeGreaterThan(0);
+      expect(event.daysAway).toBe(Math.round((at - start) / 86_400_000 * 10) / 10);
       expect(event.label.length).toBeGreaterThan(3);
       previous = at;
     }
@@ -232,6 +233,16 @@ describe('sky data API — daily payloads', () => {
     const mercury = payload('planets/mercury.json');
     expect(nextByKind.mercuryRetrograde).toEqual({ current: mercury.retrograde.current, next: mercury.retrograde.next });
     expect(upcoming.summary).toContain(`${upcoming.windowDays} days`);
+  });
+
+  it('keeps an event thirty minutes ahead even when tenths of a day round to zero', () => {
+    const eventAt = Date.parse(payload('sky/upcoming.json').events[0].at);
+    const snapshotAt = new Date(eventAt - 30 * 60_000).toISOString();
+    const upcoming = buildUpcoming({ ...sources, daily: { ...daily, snapshotAt }, generatedAt: GENERATED_AT });
+    const event = upcoming.events.find((entry) => Date.parse(entry.at) === eventAt);
+    expect(event).toBeDefined();
+    expect(Date.parse(event.at)).toBeGreaterThan(Date.parse(upcoming.from));
+    expect(event.daysAway).toBe(0);
   });
 
   it('describes every body from the same snapshot as today', () => {
