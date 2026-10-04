@@ -1,12 +1,12 @@
 {
   "schema": "zodiacs.registry-research-feed.v1",
-  "generatedAt": "2026-10-03T00:07:10.700Z",
+  "generatedAt": "2026-10-04T00:07:19.389Z",
   "publisher": "Zodiacs.org Research System",
   "window": {
     "previousDays": 30,
     "futureDays": 7,
-    "startsAt": "2026-09-03T00:00:00.000Z",
-    "endsBefore": "2026-10-11T00:00:00.000Z"
+    "startsAt": "2026-09-04T00:00:00.000Z",
+    "endsBefore": "2026-10-12T00:00:00.000Z"
   },
   "items": [
     {
@@ -75,6 +75,108 @@
       "status": "scheduled"
     },
     {
+      "id": "zrx-daily-market-brief-2026-10-04",
+      "slug": "daily-market-brief-2026-10-04",
+      "kind": "daily-market-brief",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-04T12:00:00.000Z",
+      "visibleAt": "2026-10-04T12:00:00.000Z",
+      "title": "Sun opposition Saturn · daily market brief",
+      "summary": "Sun opposition Saturn leads the disclosed symbolic index; Aries market measures are recorded separately.",
+      "url": "/terminal/research/daily-market-brief-2026-10-04/",
+      "signs": [
+        "libra",
+        "aries"
+      ],
+      "topics": [
+        "markets",
+        "daily-sky",
+        "aspect"
+      ],
+      "status": "scheduled"
+    },
+    {
+      "id": "zrx-market-check-2026-09-26-observation-168h",
+      "slug": "market-check-2026-09-26-observation-168h",
+      "kind": "observation-update",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-04T00:07:19.389Z",
+      "visibleAt": "2026-10-04T00:07:19.389Z",
+      "title": "Aries 7-day observation update",
+      "summary": "7-day follow-up using the first qualifying archived snapshot (192 actual hours elapsed).",
+      "url": "/terminal/research/market-check-2026-09-26-observation-168h/",
+      "signs": [
+        "aries"
+      ],
+      "topics": [
+        "markets",
+        "observation-update"
+      ],
+      "status": "published"
+    },
+    {
+      "id": "zrx-market-check-2026-10-02-observation-24h",
+      "slug": "market-check-2026-10-02-observation-24h",
+      "kind": "observation-update",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-04T00:07:19.389Z",
+      "visibleAt": "2026-10-04T00:07:19.389Z",
+      "title": "Leo 24-hour observation update",
+      "summary": "24-hour follow-up using the first qualifying archived snapshot (48 actual hours elapsed).",
+      "url": "/terminal/research/market-check-2026-10-02-observation-24h/",
+      "signs": [
+        "leo"
+      ],
+      "topics": [
+        "markets",
+        "observation-update"
+      ],
+      "status": "published"
+    },
+    {
+      "id": "zrx-market-check-2026-10-03-observation-24h",
+      "slug": "market-check-2026-10-03-observation-24h",
+      "kind": "observation-update",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-04T00:07:19.389Z",
+      "visibleAt": "2026-10-04T00:07:19.389Z",
+      "title": "Leo 24-hour observation update",
+      "summary": "24-hour follow-up using the first qualifying archived snapshot (24 actual hours elapsed).",
+      "url": "/terminal/research/market-check-2026-10-03-observation-24h/",
+      "signs": [
+        "leo"
+      ],
+      "topics": [
+        "markets",
+        "observation-update"
+      ],
+      "status": "published"
+    },
+    {
+      "id": "zrx-market-check-2026-10-04",
+      "slug": "market-check-2026-10-04",
+      "kind": "market-check",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-04T00:07:19.389Z",
+      "visibleAt": "2026-10-04T00:07:19.389Z",
+      "title": "Aries market check · 2026-10-04",
+      "summary": "Aries price, market cap, liquidity, volume, and collection medians at one archived observation.",
+      "url": "/terminal/research/market-check-2026-10-04/",
+      "signs": [
+        "aries"
+      ],
+      "topics": [
+        "markets",
+        "market-check"
+      ],
+      "status": "published"
+    },
+    {
       "id": "zrx-daily-market-brief-2026-10-03",
       "slug": "daily-market-brief-2026-10-03",
       "kind": "daily-market-brief",
@@ -94,7 +196,7 @@
         "daily-sky",
         "aspect"
       ],
-      "status": "scheduled"
+      "status": "published"
     },
     {
       "id": "zrx-event-brief-aspect-2026-10-03t10-38-05-485z-mars-opposition-pluto",
@@ -116,7 +218,7 @@
         "astrology",
         "aspect"
       ],
-      "status": "scheduled"
+      "status": "published"
     },
     {
       "id": "zrx-event-brief-station-2026-10-03t07-09-54-194z-venus-retrograde-scorpio",
@@ -137,7 +239,7 @@
         "astrology",
         "station"
       ],
-      "status": "scheduled"
+      "status": "published"
     },
     {
       "id": "zrx-market-check-2026-09-25-observation-168h",

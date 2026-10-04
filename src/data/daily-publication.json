@@ -1,6 +1,6 @@
 {
   "schema": "zodiacs.daily-publication.v1",
-  "date": "2026-10-03",
+  "date": "2026-10-04",
   "locale": "en",
   "policy": {
     "id": "org.zodiacs.daily.en",
@@ -14,1257 +14,1247 @@
   },
   "facts": [
     {
-      "id": "derived:2026-10-03:solar-house:aquarius:h10:fact-2026-10-03-event-station-2026-10-03t07-10-24-846z-venus-retrograde",
+      "id": "derived:2026-10-04:solar-house:aquarius:h10:fact-2026-10-04-body-mercury-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-03:event:station:2026-10-03T07:10:24.846Z:venus-retrograde",
-      "body": "Venus",
+      "sourceFactId": "fact:2026-10-04:body:mercury:1200z",
+      "body": "Mercury",
       "sign": "scorpio",
       "sunSign": "aquarius",
       "house": 10
     },
     {
-      "id": "derived:2026-10-03:solar-house:aquarius:h6:fact-2026-10-03-body-moon-1200z",
+      "id": "derived:2026-10-04:solar-house:aquarius:h6:fact-2026-10-04-body-moon-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-03:body:moon:1200z",
+      "sourceFactId": "fact:2026-10-04:body:moon:1200z",
       "body": "Moon",
       "sign": "cancer",
       "sunSign": "aquarius",
       "house": 6
     },
     {
-      "id": "derived:2026-10-03:solar-house:aquarius:h7:fact-2026-10-03-body-mars-1200z",
+      "id": "derived:2026-10-04:solar-house:aquarius:h7:fact-2026-10-04-body-mars-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-03:body:mars:1200z",
+      "sourceFactId": "fact:2026-10-04:body:mars:1200z",
       "body": "Mars",
       "sign": "leo",
       "sunSign": "aquarius",
       "house": 7
     },
     {
-      "id": "derived:2026-10-03:solar-house:aries:h4:fact-2026-10-03-body-moon-1200z",
+      "id": "derived:2026-10-04:solar-house:aries:h4:fact-2026-10-04-body-moon-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-03:body:moon:1200z",
+      "sourceFactId": "fact:2026-10-04:body:moon:1200z",
       "body": "Moon",
       "sign": "cancer",
       "sunSign": "aries",
       "house": 4
     },
     {
-      "id": "derived:2026-10-03:solar-house:aries:h5:fact-2026-10-03-body-mars-1200z",
+      "id": "derived:2026-10-04:solar-house:aries:h5:fact-2026-10-04-body-mars-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-03:body:mars:1200z",
+      "sourceFactId": "fact:2026-10-04:body:mars:1200z",
       "body": "Mars",
       "sign": "leo",
       "sunSign": "aries",
       "house": 5
     },
     {
-      "id": "derived:2026-10-03:solar-house:aries:h8:fact-2026-10-03-event-station-2026-10-03t07-10-24-846z-venus-retrograde",
+      "id": "derived:2026-10-04:solar-house:aries:h8:fact-2026-10-04-body-mercury-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-03:event:station:2026-10-03T07:10:24.846Z:venus-retrograde",
-      "body": "Venus",
+      "sourceFactId": "fact:2026-10-04:body:mercury:1200z",
+      "body": "Mercury",
       "sign": "scorpio",
       "sunSign": "aries",
       "house": 8
     },
     {
-      "id": "derived:2026-10-03:solar-house:cancer:h1:fact-2026-10-03-body-moon-1200z",
+      "id": "derived:2026-10-04:solar-house:cancer:h1:fact-2026-10-04-body-moon-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-03:body:moon:1200z",
+      "sourceFactId": "fact:2026-10-04:body:moon:1200z",
       "body": "Moon",
       "sign": "cancer",
       "sunSign": "cancer",
       "house": 1
     },
     {
-      "id": "derived:2026-10-03:solar-house:cancer:h2:fact-2026-10-03-body-mars-1200z",
+      "id": "derived:2026-10-04:solar-house:cancer:h2:fact-2026-10-04-body-mars-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-03:body:mars:1200z",
+      "sourceFactId": "fact:2026-10-04:body:mars:1200z",
       "body": "Mars",
       "sign": "leo",
       "sunSign": "cancer",
       "house": 2
     },
     {
-      "id": "derived:2026-10-03:solar-house:cancer:h5:fact-2026-10-03-event-station-2026-10-03t07-10-24-846z-venus-retrograde",
+      "id": "derived:2026-10-04:solar-house:cancer:h5:fact-2026-10-04-body-mercury-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-03:event:station:2026-10-03T07:10:24.846Z:venus-retrograde",
-      "body": "Venus",
+      "sourceFactId": "fact:2026-10-04:body:mercury:1200z",
+      "body": "Mercury",
       "sign": "scorpio",
       "sunSign": "cancer",
       "house": 5
     },
     {
-      "id": "derived:2026-10-03:solar-house:capricorn:h11:fact-2026-10-03-event-station-2026-10-03t07-10-24-846z-venus-retrograde",
+      "id": "derived:2026-10-04:solar-house:capricorn:h11:fact-2026-10-04-body-mercury-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-03:event:station:2026-10-03T07:10:24.846Z:venus-retrograde",
-      "body": "Venus",
+      "sourceFactId": "fact:2026-10-04:body:mercury:1200z",
+      "body": "Mercury",
       "sign": "scorpio",
       "sunSign": "capricorn",
       "house": 11
     },
     {
-      "id": "derived:2026-10-03:solar-house:capricorn:h7:fact-2026-10-03-body-moon-1200z",
+      "id": "derived:2026-10-04:solar-house:capricorn:h7:fact-2026-10-04-body-moon-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-03:body:moon:1200z",
+      "sourceFactId": "fact:2026-10-04:body:moon:1200z",
       "body": "Moon",
       "sign": "cancer",
       "sunSign": "capricorn",
       "house": 7
     },
     {
-      "id": "derived:2026-10-03:solar-house:capricorn:h8:fact-2026-10-03-body-mars-1200z",
+      "id": "derived:2026-10-04:solar-house:capricorn:h8:fact-2026-10-04-body-mars-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-03:body:mars:1200z",
+      "sourceFactId": "fact:2026-10-04:body:mars:1200z",
       "body": "Mars",
       "sign": "leo",
       "sunSign": "capricorn",
       "house": 8
     },
     {
-      "id": "derived:2026-10-03:solar-house:gemini:h2:fact-2026-10-03-body-moon-1200z",
+      "id": "derived:2026-10-04:solar-house:gemini:h2:fact-2026-10-04-body-moon-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-03:body:moon:1200z",
+      "sourceFactId": "fact:2026-10-04:body:moon:1200z",
       "body": "Moon",
       "sign": "cancer",
       "sunSign": "gemini",
       "house": 2
     },
     {
-      "id": "derived:2026-10-03:solar-house:gemini:h3:fact-2026-10-03-body-mars-1200z",
+      "id": "derived:2026-10-04:solar-house:gemini:h3:fact-2026-10-04-body-mars-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-03:body:mars:1200z",
+      "sourceFactId": "fact:2026-10-04:body:mars:1200z",
       "body": "Mars",
       "sign": "leo",
       "sunSign": "gemini",
       "house": 3
     },
     {
-      "id": "derived:2026-10-03:solar-house:gemini:h6:fact-2026-10-03-event-station-2026-10-03t07-10-24-846z-venus-retrograde",
+      "id": "derived:2026-10-04:solar-house:gemini:h6:fact-2026-10-04-body-mercury-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-03:event:station:2026-10-03T07:10:24.846Z:venus-retrograde",
-      "body": "Venus",
+      "sourceFactId": "fact:2026-10-04:body:mercury:1200z",
+      "body": "Mercury",
       "sign": "scorpio",
       "sunSign": "gemini",
       "house": 6
     },
     {
-      "id": "derived:2026-10-03:solar-house:leo:h1:fact-2026-10-03-body-mars-1200z",
+      "id": "derived:2026-10-04:solar-house:leo:h1:fact-2026-10-04-body-mars-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-03:body:mars:1200z",
+      "sourceFactId": "fact:2026-10-04:body:mars:1200z",
       "body": "Mars",
       "sign": "leo",
       "sunSign": "leo",
       "house": 1
     },
     {
-      "id": "derived:2026-10-03:solar-house:leo:h12:fact-2026-10-03-body-moon-1200z",
+      "id": "derived:2026-10-04:solar-house:leo:h12:fact-2026-10-04-body-moon-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-03:body:moon:1200z",
+      "sourceFactId": "fact:2026-10-04:body:moon:1200z",
       "body": "Moon",
       "sign": "cancer",
       "sunSign": "leo",
       "house": 12
     },
     {
-      "id": "derived:2026-10-03:solar-house:leo:h4:fact-2026-10-03-event-station-2026-10-03t07-10-24-846z-venus-retrograde",
+      "id": "derived:2026-10-04:solar-house:leo:h4:fact-2026-10-04-body-mercury-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-03:event:station:2026-10-03T07:10:24.846Z:venus-retrograde",
-      "body": "Venus",
+      "sourceFactId": "fact:2026-10-04:body:mercury:1200z",
+      "body": "Mercury",
       "sign": "scorpio",
       "sunSign": "leo",
       "house": 4
     },
     {
-      "id": "derived:2026-10-03:solar-house:libra:h10:fact-2026-10-03-body-moon-1200z",
+      "id": "derived:2026-10-04:solar-house:libra:h10:fact-2026-10-04-body-moon-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-03:body:moon:1200z",
+      "sourceFactId": "fact:2026-10-04:body:moon:1200z",
       "body": "Moon",
       "sign": "cancer",
       "sunSign": "libra",
       "house": 10
     },
     {
-      "id": "derived:2026-10-03:solar-house:libra:h11:fact-2026-10-03-body-mars-1200z",
+      "id": "derived:2026-10-04:solar-house:libra:h11:fact-2026-10-04-body-mars-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-03:body:mars:1200z",
+      "sourceFactId": "fact:2026-10-04:body:mars:1200z",
       "body": "Mars",
       "sign": "leo",
       "sunSign": "libra",
       "house": 11
     },
     {
-      "id": "derived:2026-10-03:solar-house:libra:h2:fact-2026-10-03-event-station-2026-10-03t07-10-24-846z-venus-retrograde",
+      "id": "derived:2026-10-04:solar-house:libra:h2:fact-2026-10-04-body-mercury-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-03:event:station:2026-10-03T07:10:24.846Z:venus-retrograde",
-      "body": "Venus",
+      "sourceFactId": "fact:2026-10-04:body:mercury:1200z",
+      "body": "Mercury",
       "sign": "scorpio",
       "sunSign": "libra",
       "house": 2
     },
     {
-      "id": "derived:2026-10-03:solar-house:pisces:h5:fact-2026-10-03-body-moon-1200z",
+      "id": "derived:2026-10-04:solar-house:pisces:h5:fact-2026-10-04-body-moon-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-03:body:moon:1200z",
+      "sourceFactId": "fact:2026-10-04:body:moon:1200z",
       "body": "Moon",
       "sign": "cancer",
       "sunSign": "pisces",
       "house": 5
     },
     {
-      "id": "derived:2026-10-03:solar-house:pisces:h6:fact-2026-10-03-body-mars-1200z",
+      "id": "derived:2026-10-04:solar-house:pisces:h6:fact-2026-10-04-body-mars-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-03:body:mars:1200z",
+      "sourceFactId": "fact:2026-10-04:body:mars:1200z",
       "body": "Mars",
       "sign": "leo",
       "sunSign": "pisces",
       "house": 6
     },
     {
-      "id": "derived:2026-10-03:solar-house:pisces:h9:fact-2026-10-03-event-station-2026-10-03t07-10-24-846z-venus-retrograde",
+      "id": "derived:2026-10-04:solar-house:pisces:h9:fact-2026-10-04-body-mercury-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-03:event:station:2026-10-03T07:10:24.846Z:venus-retrograde",
-      "body": "Venus",
+      "sourceFactId": "fact:2026-10-04:body:mercury:1200z",
+      "body": "Mercury",
       "sign": "scorpio",
       "sunSign": "pisces",
       "house": 9
     },
     {
-      "id": "derived:2026-10-03:solar-house:sagittarius:h12:fact-2026-10-03-event-station-2026-10-03t07-10-24-846z-venus-retrograde",
+      "id": "derived:2026-10-04:solar-house:sagittarius:h12:fact-2026-10-04-body-mercury-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-03:event:station:2026-10-03T07:10:24.846Z:venus-retrograde",
-      "body": "Venus",
+      "sourceFactId": "fact:2026-10-04:body:mercury:1200z",
+      "body": "Mercury",
       "sign": "scorpio",
       "sunSign": "sagittarius",
       "house": 12
     },
     {
-      "id": "derived:2026-10-03:solar-house:sagittarius:h8:fact-2026-10-03-body-moon-1200z",
+      "id": "derived:2026-10-04:solar-house:sagittarius:h8:fact-2026-10-04-body-moon-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-03:body:moon:1200z",
+      "sourceFactId": "fact:2026-10-04:body:moon:1200z",
       "body": "Moon",
       "sign": "cancer",
       "sunSign": "sagittarius",
       "house": 8
     },
     {
-      "id": "derived:2026-10-03:solar-house:sagittarius:h9:fact-2026-10-03-body-mars-1200z",
+      "id": "derived:2026-10-04:solar-house:sagittarius:h9:fact-2026-10-04-body-mars-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-03:body:mars:1200z",
+      "sourceFactId": "fact:2026-10-04:body:mars:1200z",
       "body": "Mars",
       "sign": "leo",
       "sunSign": "sagittarius",
       "house": 9
     },
     {
-      "id": "derived:2026-10-03:solar-house:scorpio:h1:fact-2026-10-03-event-station-2026-10-03t07-10-24-846z-venus-retrograde",
+      "id": "derived:2026-10-04:solar-house:scorpio:h1:fact-2026-10-04-body-mercury-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-03:event:station:2026-10-03T07:10:24.846Z:venus-retrograde",
-      "body": "Venus",
+      "sourceFactId": "fact:2026-10-04:body:mercury:1200z",
+      "body": "Mercury",
       "sign": "scorpio",
       "sunSign": "scorpio",
       "house": 1
     },
     {
-      "id": "derived:2026-10-03:solar-house:scorpio:h10:fact-2026-10-03-body-mars-1200z",
+      "id": "derived:2026-10-04:solar-house:scorpio:h10:fact-2026-10-04-body-mars-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-03:body:mars:1200z",
+      "sourceFactId": "fact:2026-10-04:body:mars:1200z",
       "body": "Mars",
       "sign": "leo",
       "sunSign": "scorpio",
       "house": 10
     },
     {
-      "id": "derived:2026-10-03:solar-house:scorpio:h9:fact-2026-10-03-body-moon-1200z",
+      "id": "derived:2026-10-04:solar-house:scorpio:h9:fact-2026-10-04-body-moon-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-03:body:moon:1200z",
+      "sourceFactId": "fact:2026-10-04:body:moon:1200z",
       "body": "Moon",
       "sign": "cancer",
       "sunSign": "scorpio",
       "house": 9
     },
     {
-      "id": "derived:2026-10-03:solar-house:taurus:h3:fact-2026-10-03-body-moon-1200z",
+      "id": "derived:2026-10-04:solar-house:taurus:h3:fact-2026-10-04-body-moon-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-03:body:moon:1200z",
+      "sourceFactId": "fact:2026-10-04:body:moon:1200z",
       "body": "Moon",
       "sign": "cancer",
       "sunSign": "taurus",
       "house": 3
     },
     {
-      "id": "derived:2026-10-03:solar-house:taurus:h4:fact-2026-10-03-body-mars-1200z",
+      "id": "derived:2026-10-04:solar-house:taurus:h4:fact-2026-10-04-body-mars-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-03:body:mars:1200z",
+      "sourceFactId": "fact:2026-10-04:body:mars:1200z",
       "body": "Mars",
       "sign": "leo",
       "sunSign": "taurus",
       "house": 4
     },
     {
-      "id": "derived:2026-10-03:solar-house:taurus:h7:fact-2026-10-03-event-station-2026-10-03t07-10-24-846z-venus-retrograde",
+      "id": "derived:2026-10-04:solar-house:taurus:h7:fact-2026-10-04-body-mercury-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-03:event:station:2026-10-03T07:10:24.846Z:venus-retrograde",
-      "body": "Venus",
+      "sourceFactId": "fact:2026-10-04:body:mercury:1200z",
+      "body": "Mercury",
       "sign": "scorpio",
       "sunSign": "taurus",
       "house": 7
     },
     {
-      "id": "derived:2026-10-03:solar-house:virgo:h11:fact-2026-10-03-body-moon-1200z",
+      "id": "derived:2026-10-04:solar-house:virgo:h11:fact-2026-10-04-body-moon-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-03:body:moon:1200z",
+      "sourceFactId": "fact:2026-10-04:body:moon:1200z",
       "body": "Moon",
       "sign": "cancer",
       "sunSign": "virgo",
       "house": 11
     },
     {
-      "id": "derived:2026-10-03:solar-house:virgo:h12:fact-2026-10-03-body-mars-1200z",
+      "id": "derived:2026-10-04:solar-house:virgo:h12:fact-2026-10-04-body-mars-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-03:body:mars:1200z",
+      "sourceFactId": "fact:2026-10-04:body:mars:1200z",
       "body": "Mars",
       "sign": "leo",
       "sunSign": "virgo",
       "house": 12
     },
     {
-      "id": "derived:2026-10-03:solar-house:virgo:h3:fact-2026-10-03-event-station-2026-10-03t07-10-24-846z-venus-retrograde",
+      "id": "derived:2026-10-04:solar-house:virgo:h3:fact-2026-10-04-body-mercury-1200z",
       "kind": "solar-house",
-      "sourceFactId": "fact:2026-10-03:event:station:2026-10-03T07:10:24.846Z:venus-retrograde",
-      "body": "Venus",
+      "sourceFactId": "fact:2026-10-04:body:mercury:1200z",
+      "body": "Mercury",
       "sign": "scorpio",
       "sunSign": "virgo",
       "house": 3
     },
     {
-      "id": "fact:2026-10-03:body:jupiter:1200z",
+      "id": "fact:2026-10-04:body:jupiter:1200z",
       "kind": "body-position",
       "body": "Jupiter",
       "sign": "leo",
-      "at": "2026-10-03T12:00:00.000Z",
-      "longitude": 140.03410015124132,
-      "degree": 20.03410015124132,
+      "at": "2026-10-04T12:00:00.000Z",
+      "longitude": 140.20888917008165,
+      "degree": 20.208889170081648,
       "retrograde": false
     },
     {
-      "id": "fact:2026-10-03:body:mars:1200z",
+      "id": "fact:2026-10-04:body:mars:1200z",
       "kind": "body-position",
       "body": "Mars",
       "sign": "leo",
-      "at": "2026-10-03T12:00:00.000Z",
-      "longitude": 123.13914099653505,
-      "degree": 3.1391409965350476,
+      "at": "2026-10-04T12:00:00.000Z",
+      "longitude": 123.71593790244526,
+      "degree": 3.715937902445262,
       "retrograde": false
     },
     {
-      "id": "fact:2026-10-03:body:mercury:1200z",
+      "id": "fact:2026-10-04:body:mercury:1200z",
       "kind": "body-position",
       "body": "Mercury",
       "sign": "scorpio",
-      "at": "2026-10-03T12:00:00.000Z",
-      "longitude": 213.9227762936505,
-      "degree": 3.922776293650486,
+      "at": "2026-10-04T12:00:00.000Z",
+      "longitude": 215.18028230606043,
+      "degree": 5.180282306060462,
       "retrograde": false
     },
     {
-      "id": "fact:2026-10-03:body:moon:1200z",
+      "id": "fact:2026-10-04:body:moon:1200z",
       "kind": "body-position",
       "body": "Moon",
       "sign": "cancer",
-      "at": "2026-10-03T12:00:00.000Z",
-      "longitude": 99.51902045747823,
-      "degree": 9.519020457478234,
+      "at": "2026-10-04T12:00:00.000Z",
+      "longitude": 113.62787260554313,
+      "degree": 23.627872605543132,
       "retrograde": false
     },
     {
-      "id": "fact:2026-10-03:body:neptune:1200z",
+      "id": "fact:2026-10-04:body:neptune:1200z",
       "kind": "body-position",
       "body": "Neptune",
       "sign": "aries",
-      "at": "2026-10-03T12:00:00.000Z",
-      "longitude": 2.7966608758489997,
-      "degree": 2.7966608758489997,
+      "at": "2026-10-04T12:00:00.000Z",
+      "longitude": 2.769275698725778,
+      "degree": 2.769275698725778,
       "retrograde": true
     },
     {
-      "id": "fact:2026-10-03:body:pluto:1200z",
+      "id": "fact:2026-10-04:body:pluto:1200z",
       "kind": "body-position",
       "body": "Pluto",
       "sign": "aquarius",
-      "at": "2026-10-03T12:00:00.000Z",
-      "longitude": 303.1059778319743,
-      "degree": 3.1059778319743145,
+      "at": "2026-10-04T12:00:00.000Z",
+      "longitude": 303.10033988292554,
+      "degree": 3.100339882925482,
       "retrograde": true
     },
     {
-      "id": "fact:2026-10-03:body:saturn:1200z",
+      "id": "fact:2026-10-04:body:saturn:1200z",
       "kind": "body-position",
       "body": "Saturn",
       "sign": "aries",
-      "at": "2026-10-03T12:00:00.000Z",
-      "longitude": 11.379400080009304,
-      "degree": 11.379400080009304,
+      "at": "2026-10-04T12:00:00.000Z",
+      "longitude": 11.300781927100275,
+      "degree": 11.300781927100275,
       "retrograde": true
     },
     {
-      "id": "fact:2026-10-03:body:sun:1200z",
+      "id": "fact:2026-10-04:body:sun:1200z",
       "kind": "body-position",
       "body": "Sun",
       "sign": "libra",
-      "at": "2026-10-03T12:00:00.000Z",
-      "longitude": 190.29706412788585,
-      "degree": 10.297064127885847,
+      "at": "2026-10-04T12:00:00.000Z",
+      "longitude": 191.281652662335,
+      "degree": 11.281652662334977,
       "retrograde": false
     },
     {
-      "id": "fact:2026-10-03:body:uranus:1200z",
+      "id": "fact:2026-10-04:body:uranus:1200z",
       "kind": "body-position",
       "body": "Uranus",
       "sign": "gemini",
-      "at": "2026-10-03T12:00:00.000Z",
-      "longitude": 65.48165040720966,
-      "degree": 5.481650407209656,
+      "at": "2026-10-04T12:00:00.000Z",
+      "longitude": 65.46268689681949,
+      "degree": 5.462686896819491,
       "retrograde": true
     },
     {
-      "id": "fact:2026-10-03:body:venus:1200z",
+      "id": "fact:2026-10-04:body:venus:1200z",
       "kind": "body-position",
       "body": "Venus",
       "sign": "scorpio",
-      "at": "2026-10-03T12:00:00.000Z",
-      "longitude": 218.48590984430996,
-      "degree": 8.485909844309958,
+      "at": "2026-10-04T12:00:00.000Z",
+      "longitude": 218.4586031968025,
+      "degree": 8.458603196802528,
       "retrograde": true
     },
     {
-      "id": "fact:2026-10-03:event:aspect:2026-10-03T10:38:11.747Z:mars-opposition-pluto",
+      "id": "fact:2026-10-04:event:aspect:2026-10-04T12:25:54.014Z:sun-opposition-saturn",
       "kind": "sky-event",
       "eventKind": "aspect",
-      "body": "Mars",
-      "at": "2026-10-03T10:38:11.747Z",
+      "body": "Sun",
+      "at": "2026-10-04T12:25:54.014Z",
       "eventType": "opposition",
-      "a": "Mars",
-      "b": "Pluto",
-      "aSign": "leo",
-      "aDegree": 3.1063113555721884,
-      "bSign": "aquarius",
-      "bDegree": 3.106311298238097,
+      "a": "Sun",
+      "b": "Saturn",
+      "aSign": "libra",
+      "aDegree": 11.299367524852528,
+      "bSign": "aries",
+      "bDegree": 11.29936750571187,
       "orb": 0
-    },
-    {
-      "id": "fact:2026-10-03:event:station:2026-10-03T07:10:24.846Z:venus-retrograde",
-      "kind": "sky-event",
-      "eventKind": "station",
-      "body": "Venus",
-      "sign": "scorpio",
-      "at": "2026-10-03T07:10:24.846Z",
-      "degree": 8.4866929641953,
-      "eventType": "retrograde"
     }
   ],
   "signs": [
     {
       "sign": "aries",
-      "headline": "Venus stations retrograde in your eighth house — expect revisions in shared finances, debts, intimacy, and trust.",
+      "headline": "The Moon spends today in your fourth house — home, family, and your private life.",
       "lines": [
         {
-          "text": "Venus stations retrograde in your eighth house — expect revisions in shared finances, debts, intimacy, and trust.",
-          "receipt": "Venus stations retrograde 8.5° Scorpio · 07:10 UTC",
-          "house": 8,
-          "body": "Venus",
-          "hue": "#B9DCE8",
-          "templateId": "station-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-03:event:station:2026-10-03T07:10:24.846Z:venus-retrograde",
-            "derived:2026-10-03:solar-house:aries:h8:fact-2026-10-03-event-station-2026-10-03t07-10-24-846z-venus-retrograde"
-          ]
-        },
-        {
-          "text": "Mars opposition Pluto is exact today — sky-wide weather, worth knowing the hour.",
-          "receipt": "Mars opposition Pluto · exact 10:38 UTC",
-          "body": "Mars",
+          "text": "Sun opposition Saturn is exact today — sky-wide weather, worth knowing the hour.",
+          "receipt": "Sun opposition Saturn · exact 12:25 UTC",
+          "body": "Sun",
           "templateId": "aspect-collective.v1",
           "scope": "collective",
           "evidenceRefs": [
-            "fact:2026-10-03:event:aspect:2026-10-03T10:38:11.747Z:mars-opposition-pluto"
+            "fact:2026-10-04:event:aspect:2026-10-04T12:25:54.014Z:sun-opposition-saturn"
           ]
         },
         {
           "text": "The Moon spends today in your fourth house — home, family, and your private life.",
-          "receipt": "Moon 9.5° Cancer · house 4",
+          "receipt": "Moon 23.6° Cancer · house 4",
           "house": 4,
           "body": "Moon",
           "hue": "#B6D4E4",
           "templateId": "body-house.v1",
           "scope": "solar-house",
           "evidenceRefs": [
-            "fact:2026-10-03:body:moon:1200z",
-            "derived:2026-10-03:solar-house:aries:h4:fact-2026-10-03-body-moon-1200z"
+            "fact:2026-10-04:body:moon:1200z",
+            "derived:2026-10-04:solar-house:aries:h4:fact-2026-10-04-body-moon-1200z"
+          ]
+        },
+        {
+          "text": "Mercury is working your eighth house — shared finances, debts, intimacy, and trust.",
+          "receipt": "Mercury 5.2° Scorpio · house 8",
+          "house": 8,
+          "body": "Mercury",
+          "hue": "#B9DCE8",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-04:body:mercury:1200z",
+            "derived:2026-10-04:solar-house:aries:h8:fact-2026-10-04-body-mercury-1200z"
           ]
         },
         {
           "text": "Mars is pushing on your fifth house — creativity, romance, children, and enjoyment.",
-          "receipt": "Mars 3.1° Leo · house 5",
+          "receipt": "Mars 3.7° Leo · house 5",
           "house": 5,
           "body": "Mars",
           "hue": "#E0A9B4",
           "templateId": "body-house.v1",
           "scope": "solar-house",
           "evidenceRefs": [
-            "fact:2026-10-03:body:mars:1200z",
-            "derived:2026-10-03:solar-house:aries:h5:fact-2026-10-03-body-mars-1200z"
+            "fact:2026-10-04:body:mars:1200z",
+            "derived:2026-10-04:solar-house:aries:h5:fact-2026-10-04-body-mars-1200z"
           ]
         }
       ],
       "todayLine": {
         "text": "Today may draw more attention to home, family, and your private life.",
-        "receipt": "Moon 9.5° cancer · solar house 4",
+        "receipt": "Moon 23.6° cancer · solar house 4",
         "house": 4,
         "body": "Moon",
         "templateId": "today-moon-theme.v1",
         "scope": "solar-house",
         "evidenceRefs": [
-          "fact:2026-10-03:body:moon:1200z",
-          "derived:2026-10-03:solar-house:aries:h4:fact-2026-10-03-body-moon-1200z"
+          "fact:2026-10-04:body:moon:1200z",
+          "derived:2026-10-04:solar-house:aries:h4:fact-2026-10-04-body-moon-1200z"
         ]
       }
     },
     {
       "sign": "taurus",
-      "headline": "Venus stations retrograde in your seventh house — expect revisions in partners and one-to-one relationships.",
+      "headline": "The Moon spends today in your third house — messages, errands, siblings, and your local community.",
       "lines": [
         {
-          "text": "Venus stations retrograde in your seventh house — expect revisions in partners and one-to-one relationships.",
-          "receipt": "Venus stations retrograde 8.5° Scorpio · 07:10 UTC",
-          "house": 7,
-          "body": "Venus",
-          "hue": "#B9DCE8",
-          "templateId": "station-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-03:event:station:2026-10-03T07:10:24.846Z:venus-retrograde",
-            "derived:2026-10-03:solar-house:taurus:h7:fact-2026-10-03-event-station-2026-10-03t07-10-24-846z-venus-retrograde"
-          ]
-        },
-        {
-          "text": "Mars opposition Pluto is exact today — sky-wide weather, worth knowing the hour.",
-          "receipt": "Mars opposition Pluto · exact 10:38 UTC",
-          "body": "Mars",
+          "text": "Sun opposition Saturn is exact today — sky-wide weather, worth knowing the hour.",
+          "receipt": "Sun opposition Saturn · exact 12:25 UTC",
+          "body": "Sun",
           "templateId": "aspect-collective.v1",
           "scope": "collective",
           "evidenceRefs": [
-            "fact:2026-10-03:event:aspect:2026-10-03T10:38:11.747Z:mars-opposition-pluto"
+            "fact:2026-10-04:event:aspect:2026-10-04T12:25:54.014Z:sun-opposition-saturn"
           ]
         },
         {
           "text": "The Moon spends today in your third house — messages, errands, siblings, and your local community.",
-          "receipt": "Moon 9.5° Cancer · house 3",
+          "receipt": "Moon 23.6° Cancer · house 3",
           "house": 3,
           "body": "Moon",
           "hue": "#B6D4E4",
           "templateId": "body-house.v1",
           "scope": "solar-house",
           "evidenceRefs": [
-            "fact:2026-10-03:body:moon:1200z",
-            "derived:2026-10-03:solar-house:taurus:h3:fact-2026-10-03-body-moon-1200z"
+            "fact:2026-10-04:body:moon:1200z",
+            "derived:2026-10-04:solar-house:taurus:h3:fact-2026-10-04-body-moon-1200z"
+          ]
+        },
+        {
+          "text": "Mercury is working your seventh house — partners and one-to-one relationships.",
+          "receipt": "Mercury 5.2° Scorpio · house 7",
+          "house": 7,
+          "body": "Mercury",
+          "hue": "#B9DCE8",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-04:body:mercury:1200z",
+            "derived:2026-10-04:solar-house:taurus:h7:fact-2026-10-04-body-mercury-1200z"
           ]
         },
         {
           "text": "Mars is pushing on your fourth house — home, family, and your private life.",
-          "receipt": "Mars 3.1° Leo · house 4",
+          "receipt": "Mars 3.7° Leo · house 4",
           "house": 4,
           "body": "Mars",
           "hue": "#E0A9B4",
           "templateId": "body-house.v1",
           "scope": "solar-house",
           "evidenceRefs": [
-            "fact:2026-10-03:body:mars:1200z",
-            "derived:2026-10-03:solar-house:taurus:h4:fact-2026-10-03-body-mars-1200z"
+            "fact:2026-10-04:body:mars:1200z",
+            "derived:2026-10-04:solar-house:taurus:h4:fact-2026-10-04-body-mars-1200z"
           ]
         }
       ],
       "todayLine": {
         "text": "Today may draw more attention to messages, errands, siblings, and your local community.",
-        "receipt": "Moon 9.5° cancer · solar house 3",
+        "receipt": "Moon 23.6° cancer · solar house 3",
         "house": 3,
         "body": "Moon",
         "templateId": "today-moon-theme.v1",
         "scope": "solar-house",
         "evidenceRefs": [
-          "fact:2026-10-03:body:moon:1200z",
-          "derived:2026-10-03:solar-house:taurus:h3:fact-2026-10-03-body-moon-1200z"
+          "fact:2026-10-04:body:moon:1200z",
+          "derived:2026-10-04:solar-house:taurus:h3:fact-2026-10-04-body-moon-1200z"
         ]
       }
     },
     {
       "sign": "gemini",
-      "headline": "Venus stations retrograde in your sixth house — expect revisions in daily work, health routines, and responsibilities.",
+      "headline": "The Moon spends today in your second house — your money, possessions, and priorities.",
       "lines": [
         {
-          "text": "Venus stations retrograde in your sixth house — expect revisions in daily work, health routines, and responsibilities.",
-          "receipt": "Venus stations retrograde 8.5° Scorpio · 07:10 UTC",
-          "house": 6,
-          "body": "Venus",
-          "hue": "#B9DCE8",
-          "templateId": "station-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-03:event:station:2026-10-03T07:10:24.846Z:venus-retrograde",
-            "derived:2026-10-03:solar-house:gemini:h6:fact-2026-10-03-event-station-2026-10-03t07-10-24-846z-venus-retrograde"
-          ]
-        },
-        {
-          "text": "Mars opposition Pluto is exact today — sky-wide weather, worth knowing the hour.",
-          "receipt": "Mars opposition Pluto · exact 10:38 UTC",
-          "body": "Mars",
+          "text": "Sun opposition Saturn is exact today — sky-wide weather, worth knowing the hour.",
+          "receipt": "Sun opposition Saturn · exact 12:25 UTC",
+          "body": "Sun",
           "templateId": "aspect-collective.v1",
           "scope": "collective",
           "evidenceRefs": [
-            "fact:2026-10-03:event:aspect:2026-10-03T10:38:11.747Z:mars-opposition-pluto"
+            "fact:2026-10-04:event:aspect:2026-10-04T12:25:54.014Z:sun-opposition-saturn"
           ]
         },
         {
           "text": "The Moon spends today in your second house — your money, possessions, and priorities.",
-          "receipt": "Moon 9.5° Cancer · house 2",
+          "receipt": "Moon 23.6° Cancer · house 2",
           "house": 2,
           "body": "Moon",
           "hue": "#B6D4E4",
           "templateId": "body-house.v1",
           "scope": "solar-house",
           "evidenceRefs": [
-            "fact:2026-10-03:body:moon:1200z",
-            "derived:2026-10-03:solar-house:gemini:h2:fact-2026-10-03-body-moon-1200z"
+            "fact:2026-10-04:body:moon:1200z",
+            "derived:2026-10-04:solar-house:gemini:h2:fact-2026-10-04-body-moon-1200z"
+          ]
+        },
+        {
+          "text": "Mercury is working your sixth house — daily work, health routines, and responsibilities.",
+          "receipt": "Mercury 5.2° Scorpio · house 6",
+          "house": 6,
+          "body": "Mercury",
+          "hue": "#B9DCE8",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-04:body:mercury:1200z",
+            "derived:2026-10-04:solar-house:gemini:h6:fact-2026-10-04-body-mercury-1200z"
           ]
         },
         {
           "text": "Mars is pushing on your third house — messages, errands, siblings, and your local community.",
-          "receipt": "Mars 3.1° Leo · house 3",
+          "receipt": "Mars 3.7° Leo · house 3",
           "house": 3,
           "body": "Mars",
           "hue": "#E0A9B4",
           "templateId": "body-house.v1",
           "scope": "solar-house",
           "evidenceRefs": [
-            "fact:2026-10-03:body:mars:1200z",
-            "derived:2026-10-03:solar-house:gemini:h3:fact-2026-10-03-body-mars-1200z"
+            "fact:2026-10-04:body:mars:1200z",
+            "derived:2026-10-04:solar-house:gemini:h3:fact-2026-10-04-body-mars-1200z"
           ]
         }
       ],
       "todayLine": {
         "text": "Today may draw more attention to your money, possessions, and priorities.",
-        "receipt": "Moon 9.5° cancer · solar house 2",
+        "receipt": "Moon 23.6° cancer · solar house 2",
         "house": 2,
         "body": "Moon",
         "templateId": "today-moon-theme.v1",
         "scope": "solar-house",
         "evidenceRefs": [
-          "fact:2026-10-03:body:moon:1200z",
-          "derived:2026-10-03:solar-house:gemini:h2:fact-2026-10-03-body-moon-1200z"
+          "fact:2026-10-04:body:moon:1200z",
+          "derived:2026-10-04:solar-house:gemini:h2:fact-2026-10-04-body-moon-1200z"
         ]
       }
     },
     {
       "sign": "cancer",
-      "headline": "Venus stations retrograde in your fifth house — expect revisions in creativity, romance, children, and enjoyment.",
+      "headline": "The Moon spends today in your first house — your identity and how you present yourself.",
       "lines": [
         {
-          "text": "Venus stations retrograde in your fifth house — expect revisions in creativity, romance, children, and enjoyment.",
-          "receipt": "Venus stations retrograde 8.5° Scorpio · 07:10 UTC",
-          "house": 5,
-          "body": "Venus",
-          "hue": "#B9DCE8",
-          "templateId": "station-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-03:event:station:2026-10-03T07:10:24.846Z:venus-retrograde",
-            "derived:2026-10-03:solar-house:cancer:h5:fact-2026-10-03-event-station-2026-10-03t07-10-24-846z-venus-retrograde"
-          ]
-        },
-        {
-          "text": "Mars opposition Pluto is exact today — sky-wide weather, worth knowing the hour.",
-          "receipt": "Mars opposition Pluto · exact 10:38 UTC",
-          "body": "Mars",
+          "text": "Sun opposition Saturn is exact today — sky-wide weather, worth knowing the hour.",
+          "receipt": "Sun opposition Saturn · exact 12:25 UTC",
+          "body": "Sun",
           "templateId": "aspect-collective.v1",
           "scope": "collective",
           "evidenceRefs": [
-            "fact:2026-10-03:event:aspect:2026-10-03T10:38:11.747Z:mars-opposition-pluto"
+            "fact:2026-10-04:event:aspect:2026-10-04T12:25:54.014Z:sun-opposition-saturn"
           ]
         },
         {
           "text": "The Moon spends today in your first house — your identity and how you present yourself.",
-          "receipt": "Moon 9.5° Cancer · house 1",
+          "receipt": "Moon 23.6° Cancer · house 1",
           "house": 1,
           "body": "Moon",
           "hue": "#B6D4E4",
           "templateId": "body-house.v1",
           "scope": "solar-house",
           "evidenceRefs": [
-            "fact:2026-10-03:body:moon:1200z",
-            "derived:2026-10-03:solar-house:cancer:h1:fact-2026-10-03-body-moon-1200z"
+            "fact:2026-10-04:body:moon:1200z",
+            "derived:2026-10-04:solar-house:cancer:h1:fact-2026-10-04-body-moon-1200z"
+          ]
+        },
+        {
+          "text": "Mercury is working your fifth house — creativity, romance, children, and enjoyment.",
+          "receipt": "Mercury 5.2° Scorpio · house 5",
+          "house": 5,
+          "body": "Mercury",
+          "hue": "#B9DCE8",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-04:body:mercury:1200z",
+            "derived:2026-10-04:solar-house:cancer:h5:fact-2026-10-04-body-mercury-1200z"
           ]
         },
         {
           "text": "Mars is pushing on your second house — your money, possessions, and priorities.",
-          "receipt": "Mars 3.1° Leo · house 2",
+          "receipt": "Mars 3.7° Leo · house 2",
           "house": 2,
           "body": "Mars",
           "hue": "#E0A9B4",
           "templateId": "body-house.v1",
           "scope": "solar-house",
           "evidenceRefs": [
-            "fact:2026-10-03:body:mars:1200z",
-            "derived:2026-10-03:solar-house:cancer:h2:fact-2026-10-03-body-mars-1200z"
+            "fact:2026-10-04:body:mars:1200z",
+            "derived:2026-10-04:solar-house:cancer:h2:fact-2026-10-04-body-mars-1200z"
           ]
         }
       ],
       "todayLine": {
         "text": "Today may draw more attention to your identity and how you present yourself.",
-        "receipt": "Moon 9.5° cancer · solar house 1",
+        "receipt": "Moon 23.6° cancer · solar house 1",
         "house": 1,
         "body": "Moon",
         "templateId": "today-moon-theme.v1",
         "scope": "solar-house",
         "evidenceRefs": [
-          "fact:2026-10-03:body:moon:1200z",
-          "derived:2026-10-03:solar-house:cancer:h1:fact-2026-10-03-body-moon-1200z"
+          "fact:2026-10-04:body:moon:1200z",
+          "derived:2026-10-04:solar-house:cancer:h1:fact-2026-10-04-body-moon-1200z"
         ]
       }
     },
     {
       "sign": "leo",
-      "headline": "Venus stations retrograde in your fourth house — expect revisions in home, family, and your private life.",
+      "headline": "The Moon spends today in your twelfth house — rest, privacy, and unfinished matters.",
       "lines": [
         {
-          "text": "Venus stations retrograde in your fourth house — expect revisions in home, family, and your private life.",
-          "receipt": "Venus stations retrograde 8.5° Scorpio · 07:10 UTC",
-          "house": 4,
-          "body": "Venus",
-          "hue": "#B9DCE8",
-          "templateId": "station-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-03:event:station:2026-10-03T07:10:24.846Z:venus-retrograde",
-            "derived:2026-10-03:solar-house:leo:h4:fact-2026-10-03-event-station-2026-10-03t07-10-24-846z-venus-retrograde"
-          ]
-        },
-        {
-          "text": "Mars opposition Pluto is exact today — sky-wide weather, worth knowing the hour.",
-          "receipt": "Mars opposition Pluto · exact 10:38 UTC",
-          "body": "Mars",
+          "text": "Sun opposition Saturn is exact today — sky-wide weather, worth knowing the hour.",
+          "receipt": "Sun opposition Saturn · exact 12:25 UTC",
+          "body": "Sun",
           "templateId": "aspect-collective.v1",
           "scope": "collective",
           "evidenceRefs": [
-            "fact:2026-10-03:event:aspect:2026-10-03T10:38:11.747Z:mars-opposition-pluto"
+            "fact:2026-10-04:event:aspect:2026-10-04T12:25:54.014Z:sun-opposition-saturn"
           ]
         },
         {
           "text": "The Moon spends today in your twelfth house — rest, privacy, and unfinished matters.",
-          "receipt": "Moon 9.5° Cancer · house 12",
+          "receipt": "Moon 23.6° Cancer · house 12",
           "house": 12,
           "body": "Moon",
           "hue": "#B6D4E4",
           "templateId": "body-house.v1",
           "scope": "solar-house",
           "evidenceRefs": [
-            "fact:2026-10-03:body:moon:1200z",
-            "derived:2026-10-03:solar-house:leo:h12:fact-2026-10-03-body-moon-1200z"
+            "fact:2026-10-04:body:moon:1200z",
+            "derived:2026-10-04:solar-house:leo:h12:fact-2026-10-04-body-moon-1200z"
+          ]
+        },
+        {
+          "text": "Mercury is working your fourth house — home, family, and your private life.",
+          "receipt": "Mercury 5.2° Scorpio · house 4",
+          "house": 4,
+          "body": "Mercury",
+          "hue": "#B9DCE8",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-04:body:mercury:1200z",
+            "derived:2026-10-04:solar-house:leo:h4:fact-2026-10-04-body-mercury-1200z"
           ]
         },
         {
           "text": "Mars is pushing on your first house — your identity and how you present yourself.",
-          "receipt": "Mars 3.1° Leo · house 1",
+          "receipt": "Mars 3.7° Leo · house 1",
           "house": 1,
           "body": "Mars",
           "hue": "#E0A9B4",
           "templateId": "body-house.v1",
           "scope": "solar-house",
           "evidenceRefs": [
-            "fact:2026-10-03:body:mars:1200z",
-            "derived:2026-10-03:solar-house:leo:h1:fact-2026-10-03-body-mars-1200z"
+            "fact:2026-10-04:body:mars:1200z",
+            "derived:2026-10-04:solar-house:leo:h1:fact-2026-10-04-body-mars-1200z"
           ]
         }
       ],
       "todayLine": {
         "text": "Today may draw more attention to rest, privacy, and unfinished matters.",
-        "receipt": "Moon 9.5° cancer · solar house 12",
+        "receipt": "Moon 23.6° cancer · solar house 12",
         "house": 12,
         "body": "Moon",
         "templateId": "today-moon-theme.v1",
         "scope": "solar-house",
         "evidenceRefs": [
-          "fact:2026-10-03:body:moon:1200z",
-          "derived:2026-10-03:solar-house:leo:h12:fact-2026-10-03-body-moon-1200z"
+          "fact:2026-10-04:body:moon:1200z",
+          "derived:2026-10-04:solar-house:leo:h12:fact-2026-10-04-body-moon-1200z"
         ]
       }
     },
     {
       "sign": "virgo",
-      "headline": "Venus stations retrograde in your third house — expect revisions in messages, errands, siblings, and your local community.",
+      "headline": "The Moon spends today in your eleventh house — friends, groups, and plans for the future.",
       "lines": [
         {
-          "text": "Venus stations retrograde in your third house — expect revisions in messages, errands, siblings, and your local community.",
-          "receipt": "Venus stations retrograde 8.5° Scorpio · 07:10 UTC",
-          "house": 3,
-          "body": "Venus",
-          "hue": "#B9DCE8",
-          "templateId": "station-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-03:event:station:2026-10-03T07:10:24.846Z:venus-retrograde",
-            "derived:2026-10-03:solar-house:virgo:h3:fact-2026-10-03-event-station-2026-10-03t07-10-24-846z-venus-retrograde"
-          ]
-        },
-        {
-          "text": "Mars opposition Pluto is exact today — sky-wide weather, worth knowing the hour.",
-          "receipt": "Mars opposition Pluto · exact 10:38 UTC",
-          "body": "Mars",
+          "text": "Sun opposition Saturn is exact today — sky-wide weather, worth knowing the hour.",
+          "receipt": "Sun opposition Saturn · exact 12:25 UTC",
+          "body": "Sun",
           "templateId": "aspect-collective.v1",
           "scope": "collective",
           "evidenceRefs": [
-            "fact:2026-10-03:event:aspect:2026-10-03T10:38:11.747Z:mars-opposition-pluto"
+            "fact:2026-10-04:event:aspect:2026-10-04T12:25:54.014Z:sun-opposition-saturn"
           ]
         },
         {
           "text": "The Moon spends today in your eleventh house — friends, groups, and plans for the future.",
-          "receipt": "Moon 9.5° Cancer · house 11",
+          "receipt": "Moon 23.6° Cancer · house 11",
           "house": 11,
           "body": "Moon",
           "hue": "#B6D4E4",
           "templateId": "body-house.v1",
           "scope": "solar-house",
           "evidenceRefs": [
-            "fact:2026-10-03:body:moon:1200z",
-            "derived:2026-10-03:solar-house:virgo:h11:fact-2026-10-03-body-moon-1200z"
+            "fact:2026-10-04:body:moon:1200z",
+            "derived:2026-10-04:solar-house:virgo:h11:fact-2026-10-04-body-moon-1200z"
+          ]
+        },
+        {
+          "text": "Mercury is working your third house — messages, errands, siblings, and your local community.",
+          "receipt": "Mercury 5.2° Scorpio · house 3",
+          "house": 3,
+          "body": "Mercury",
+          "hue": "#B9DCE8",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-04:body:mercury:1200z",
+            "derived:2026-10-04:solar-house:virgo:h3:fact-2026-10-04-body-mercury-1200z"
           ]
         },
         {
           "text": "Mars is pushing on your twelfth house — rest, privacy, and unfinished matters.",
-          "receipt": "Mars 3.1° Leo · house 12",
+          "receipt": "Mars 3.7° Leo · house 12",
           "house": 12,
           "body": "Mars",
           "hue": "#E0A9B4",
           "templateId": "body-house.v1",
           "scope": "solar-house",
           "evidenceRefs": [
-            "fact:2026-10-03:body:mars:1200z",
-            "derived:2026-10-03:solar-house:virgo:h12:fact-2026-10-03-body-mars-1200z"
+            "fact:2026-10-04:body:mars:1200z",
+            "derived:2026-10-04:solar-house:virgo:h12:fact-2026-10-04-body-mars-1200z"
           ]
         }
       ],
       "todayLine": {
         "text": "Today may draw more attention to friends, groups, and plans for the future.",
-        "receipt": "Moon 9.5° cancer · solar house 11",
+        "receipt": "Moon 23.6° cancer · solar house 11",
         "house": 11,
         "body": "Moon",
         "templateId": "today-moon-theme.v1",
         "scope": "solar-house",
         "evidenceRefs": [
-          "fact:2026-10-03:body:moon:1200z",
-          "derived:2026-10-03:solar-house:virgo:h11:fact-2026-10-03-body-moon-1200z"
+          "fact:2026-10-04:body:moon:1200z",
+          "derived:2026-10-04:solar-house:virgo:h11:fact-2026-10-04-body-moon-1200z"
         ]
       }
     },
     {
       "sign": "libra",
-      "headline": "Venus stations retrograde in your second house — expect revisions in your money, possessions, and priorities.",
+      "headline": "The Moon spends today in your tenth house — career, reputation, and public responsibilities.",
       "lines": [
         {
-          "text": "Venus stations retrograde in your second house — expect revisions in your money, possessions, and priorities.",
-          "receipt": "Venus stations retrograde 8.5° Scorpio · 07:10 UTC",
-          "house": 2,
-          "body": "Venus",
-          "hue": "#B9DCE8",
-          "templateId": "station-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-03:event:station:2026-10-03T07:10:24.846Z:venus-retrograde",
-            "derived:2026-10-03:solar-house:libra:h2:fact-2026-10-03-event-station-2026-10-03t07-10-24-846z-venus-retrograde"
-          ]
-        },
-        {
-          "text": "Mars opposition Pluto is exact today — sky-wide weather, worth knowing the hour.",
-          "receipt": "Mars opposition Pluto · exact 10:38 UTC",
-          "body": "Mars",
+          "text": "Sun opposition Saturn is exact today — sky-wide weather, worth knowing the hour.",
+          "receipt": "Sun opposition Saturn · exact 12:25 UTC",
+          "body": "Sun",
           "templateId": "aspect-collective.v1",
           "scope": "collective",
           "evidenceRefs": [
-            "fact:2026-10-03:event:aspect:2026-10-03T10:38:11.747Z:mars-opposition-pluto"
+            "fact:2026-10-04:event:aspect:2026-10-04T12:25:54.014Z:sun-opposition-saturn"
           ]
         },
         {
           "text": "The Moon spends today in your tenth house — career, reputation, and public responsibilities.",
-          "receipt": "Moon 9.5° Cancer · house 10",
+          "receipt": "Moon 23.6° Cancer · house 10",
           "house": 10,
           "body": "Moon",
           "hue": "#B6D4E4",
           "templateId": "body-house.v1",
           "scope": "solar-house",
           "evidenceRefs": [
-            "fact:2026-10-03:body:moon:1200z",
-            "derived:2026-10-03:solar-house:libra:h10:fact-2026-10-03-body-moon-1200z"
+            "fact:2026-10-04:body:moon:1200z",
+            "derived:2026-10-04:solar-house:libra:h10:fact-2026-10-04-body-moon-1200z"
+          ]
+        },
+        {
+          "text": "Mercury is working your second house — your money, possessions, and priorities.",
+          "receipt": "Mercury 5.2° Scorpio · house 2",
+          "house": 2,
+          "body": "Mercury",
+          "hue": "#B9DCE8",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-04:body:mercury:1200z",
+            "derived:2026-10-04:solar-house:libra:h2:fact-2026-10-04-body-mercury-1200z"
           ]
         },
         {
           "text": "Mars is pushing on your eleventh house — friends, groups, and plans for the future.",
-          "receipt": "Mars 3.1° Leo · house 11",
+          "receipt": "Mars 3.7° Leo · house 11",
           "house": 11,
           "body": "Mars",
           "hue": "#E0A9B4",
           "templateId": "body-house.v1",
           "scope": "solar-house",
           "evidenceRefs": [
-            "fact:2026-10-03:body:mars:1200z",
-            "derived:2026-10-03:solar-house:libra:h11:fact-2026-10-03-body-mars-1200z"
+            "fact:2026-10-04:body:mars:1200z",
+            "derived:2026-10-04:solar-house:libra:h11:fact-2026-10-04-body-mars-1200z"
           ]
         }
       ],
       "todayLine": {
         "text": "Today may draw more attention to career, reputation, and public responsibilities.",
-        "receipt": "Moon 9.5° cancer · solar house 10",
+        "receipt": "Moon 23.6° cancer · solar house 10",
         "house": 10,
         "body": "Moon",
         "templateId": "today-moon-theme.v1",
         "scope": "solar-house",
         "evidenceRefs": [
-          "fact:2026-10-03:body:moon:1200z",
-          "derived:2026-10-03:solar-house:libra:h10:fact-2026-10-03-body-moon-1200z"
+          "fact:2026-10-04:body:moon:1200z",
+          "derived:2026-10-04:solar-house:libra:h10:fact-2026-10-04-body-moon-1200z"
         ]
       }
     },
     {
       "sign": "scorpio",
-      "headline": "Venus stations retrograde in your first house — expect revisions in your identity and how you present yourself.",
+      "headline": "The Moon spends today in your ninth house — travel, learning, beliefs, and long-term plans.",
       "lines": [
         {
-          "text": "Venus stations retrograde in your first house — expect revisions in your identity and how you present yourself.",
-          "receipt": "Venus stations retrograde 8.5° Scorpio · 07:10 UTC",
-          "house": 1,
-          "body": "Venus",
-          "hue": "#B9DCE8",
-          "templateId": "station-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-03:event:station:2026-10-03T07:10:24.846Z:venus-retrograde",
-            "derived:2026-10-03:solar-house:scorpio:h1:fact-2026-10-03-event-station-2026-10-03t07-10-24-846z-venus-retrograde"
-          ]
-        },
-        {
-          "text": "Mars opposition Pluto is exact today — sky-wide weather, worth knowing the hour.",
-          "receipt": "Mars opposition Pluto · exact 10:38 UTC",
-          "body": "Mars",
+          "text": "Sun opposition Saturn is exact today — sky-wide weather, worth knowing the hour.",
+          "receipt": "Sun opposition Saturn · exact 12:25 UTC",
+          "body": "Sun",
           "templateId": "aspect-collective.v1",
           "scope": "collective",
           "evidenceRefs": [
-            "fact:2026-10-03:event:aspect:2026-10-03T10:38:11.747Z:mars-opposition-pluto"
+            "fact:2026-10-04:event:aspect:2026-10-04T12:25:54.014Z:sun-opposition-saturn"
           ]
         },
         {
           "text": "The Moon spends today in your ninth house — travel, learning, beliefs, and long-term plans.",
-          "receipt": "Moon 9.5° Cancer · house 9",
+          "receipt": "Moon 23.6° Cancer · house 9",
           "house": 9,
           "body": "Moon",
           "hue": "#B6D4E4",
           "templateId": "body-house.v1",
           "scope": "solar-house",
           "evidenceRefs": [
-            "fact:2026-10-03:body:moon:1200z",
-            "derived:2026-10-03:solar-house:scorpio:h9:fact-2026-10-03-body-moon-1200z"
+            "fact:2026-10-04:body:moon:1200z",
+            "derived:2026-10-04:solar-house:scorpio:h9:fact-2026-10-04-body-moon-1200z"
+          ]
+        },
+        {
+          "text": "Mercury is working your first house — your identity and how you present yourself.",
+          "receipt": "Mercury 5.2° Scorpio · house 1",
+          "house": 1,
+          "body": "Mercury",
+          "hue": "#B9DCE8",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-04:body:mercury:1200z",
+            "derived:2026-10-04:solar-house:scorpio:h1:fact-2026-10-04-body-mercury-1200z"
           ]
         },
         {
           "text": "Mars is pushing on your tenth house — career, reputation, and public responsibilities.",
-          "receipt": "Mars 3.1° Leo · house 10",
+          "receipt": "Mars 3.7° Leo · house 10",
           "house": 10,
           "body": "Mars",
           "hue": "#E0A9B4",
           "templateId": "body-house.v1",
           "scope": "solar-house",
           "evidenceRefs": [
-            "fact:2026-10-03:body:mars:1200z",
-            "derived:2026-10-03:solar-house:scorpio:h10:fact-2026-10-03-body-mars-1200z"
+            "fact:2026-10-04:body:mars:1200z",
+            "derived:2026-10-04:solar-house:scorpio:h10:fact-2026-10-04-body-mars-1200z"
           ]
         }
       ],
       "todayLine": {
         "text": "Today may draw more attention to travel, learning, beliefs, and long-term plans.",
-        "receipt": "Moon 9.5° cancer · solar house 9",
+        "receipt": "Moon 23.6° cancer · solar house 9",
         "house": 9,
         "body": "Moon",
         "templateId": "today-moon-theme.v1",
         "scope": "solar-house",
         "evidenceRefs": [
-          "fact:2026-10-03:body:moon:1200z",
-          "derived:2026-10-03:solar-house:scorpio:h9:fact-2026-10-03-body-moon-1200z"
+          "fact:2026-10-04:body:moon:1200z",
+          "derived:2026-10-04:solar-house:scorpio:h9:fact-2026-10-04-body-moon-1200z"
         ]
       }
     },
     {
       "sign": "sagittarius",
-      "headline": "Venus stations retrograde in your twelfth house — expect revisions in rest, privacy, and unfinished matters.",
+      "headline": "The Moon spends today in your eighth house — shared finances, debts, intimacy, and trust.",
       "lines": [
         {
-          "text": "Venus stations retrograde in your twelfth house — expect revisions in rest, privacy, and unfinished matters.",
-          "receipt": "Venus stations retrograde 8.5° Scorpio · 07:10 UTC",
-          "house": 12,
-          "body": "Venus",
-          "hue": "#B9DCE8",
-          "templateId": "station-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-03:event:station:2026-10-03T07:10:24.846Z:venus-retrograde",
-            "derived:2026-10-03:solar-house:sagittarius:h12:fact-2026-10-03-event-station-2026-10-03t07-10-24-846z-venus-retrograde"
-          ]
-        },
-        {
-          "text": "Mars opposition Pluto is exact today — sky-wide weather, worth knowing the hour.",
-          "receipt": "Mars opposition Pluto · exact 10:38 UTC",
-          "body": "Mars",
+          "text": "Sun opposition Saturn is exact today — sky-wide weather, worth knowing the hour.",
+          "receipt": "Sun opposition Saturn · exact 12:25 UTC",
+          "body": "Sun",
           "templateId": "aspect-collective.v1",
           "scope": "collective",
           "evidenceRefs": [
-            "fact:2026-10-03:event:aspect:2026-10-03T10:38:11.747Z:mars-opposition-pluto"
+            "fact:2026-10-04:event:aspect:2026-10-04T12:25:54.014Z:sun-opposition-saturn"
           ]
         },
         {
           "text": "The Moon spends today in your eighth house — shared finances, debts, intimacy, and trust.",
-          "receipt": "Moon 9.5° Cancer · house 8",
+          "receipt": "Moon 23.6° Cancer · house 8",
           "house": 8,
           "body": "Moon",
           "hue": "#B6D4E4",
           "templateId": "body-house.v1",
           "scope": "solar-house",
           "evidenceRefs": [
-            "fact:2026-10-03:body:moon:1200z",
-            "derived:2026-10-03:solar-house:sagittarius:h8:fact-2026-10-03-body-moon-1200z"
+            "fact:2026-10-04:body:moon:1200z",
+            "derived:2026-10-04:solar-house:sagittarius:h8:fact-2026-10-04-body-moon-1200z"
+          ]
+        },
+        {
+          "text": "Mercury is working your twelfth house — rest, privacy, and unfinished matters.",
+          "receipt": "Mercury 5.2° Scorpio · house 12",
+          "house": 12,
+          "body": "Mercury",
+          "hue": "#B9DCE8",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-04:body:mercury:1200z",
+            "derived:2026-10-04:solar-house:sagittarius:h12:fact-2026-10-04-body-mercury-1200z"
           ]
         },
         {
           "text": "Mars is pushing on your ninth house — travel, learning, beliefs, and long-term plans.",
-          "receipt": "Mars 3.1° Leo · house 9",
+          "receipt": "Mars 3.7° Leo · house 9",
           "house": 9,
           "body": "Mars",
           "hue": "#E0A9B4",
           "templateId": "body-house.v1",
           "scope": "solar-house",
           "evidenceRefs": [
-            "fact:2026-10-03:body:mars:1200z",
-            "derived:2026-10-03:solar-house:sagittarius:h9:fact-2026-10-03-body-mars-1200z"
+            "fact:2026-10-04:body:mars:1200z",
+            "derived:2026-10-04:solar-house:sagittarius:h9:fact-2026-10-04-body-mars-1200z"
           ]
         }
       ],
       "todayLine": {
         "text": "Today may draw more attention to shared finances, debts, intimacy, and trust.",
-        "receipt": "Moon 9.5° cancer · solar house 8",
+        "receipt": "Moon 23.6° cancer · solar house 8",
         "house": 8,
         "body": "Moon",
         "templateId": "today-moon-theme.v1",
         "scope": "solar-house",
         "evidenceRefs": [
-          "fact:2026-10-03:body:moon:1200z",
-          "derived:2026-10-03:solar-house:sagittarius:h8:fact-2026-10-03-body-moon-1200z"
+          "fact:2026-10-04:body:moon:1200z",
+          "derived:2026-10-04:solar-house:sagittarius:h8:fact-2026-10-04-body-moon-1200z"
         ]
       }
     },
     {
       "sign": "capricorn",
-      "headline": "Venus stations retrograde in your eleventh house — expect revisions in friends, groups, and plans for the future.",
+      "headline": "The Moon spends today in your seventh house — partners and one-to-one relationships.",
       "lines": [
         {
-          "text": "Venus stations retrograde in your eleventh house — expect revisions in friends, groups, and plans for the future.",
-          "receipt": "Venus stations retrograde 8.5° Scorpio · 07:10 UTC",
-          "house": 11,
-          "body": "Venus",
-          "hue": "#B9DCE8",
-          "templateId": "station-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-03:event:station:2026-10-03T07:10:24.846Z:venus-retrograde",
-            "derived:2026-10-03:solar-house:capricorn:h11:fact-2026-10-03-event-station-2026-10-03t07-10-24-846z-venus-retrograde"
-          ]
-        },
-        {
-          "text": "Mars opposition Pluto is exact today — sky-wide weather, worth knowing the hour.",
-          "receipt": "Mars opposition Pluto · exact 10:38 UTC",
-          "body": "Mars",
+          "text": "Sun opposition Saturn is exact today — sky-wide weather, worth knowing the hour.",
+          "receipt": "Sun opposition Saturn · exact 12:25 UTC",
+          "body": "Sun",
           "templateId": "aspect-collective.v1",
           "scope": "collective",
           "evidenceRefs": [
-            "fact:2026-10-03:event:aspect:2026-10-03T10:38:11.747Z:mars-opposition-pluto"
+            "fact:2026-10-04:event:aspect:2026-10-04T12:25:54.014Z:sun-opposition-saturn"
           ]
         },
         {
           "text": "The Moon spends today in your seventh house — partners and one-to-one relationships.",
-          "receipt": "Moon 9.5° Cancer · house 7",
+          "receipt": "Moon 23.6° Cancer · house 7",
           "house": 7,
           "body": "Moon",
           "hue": "#B6D4E4",
           "templateId": "body-house.v1",
           "scope": "solar-house",
           "evidenceRefs": [
-            "fact:2026-10-03:body:moon:1200z",
-            "derived:2026-10-03:solar-house:capricorn:h7:fact-2026-10-03-body-moon-1200z"
+            "fact:2026-10-04:body:moon:1200z",
+            "derived:2026-10-04:solar-house:capricorn:h7:fact-2026-10-04-body-moon-1200z"
+          ]
+        },
+        {
+          "text": "Mercury is working your eleventh house — friends, groups, and plans for the future.",
+          "receipt": "Mercury 5.2° Scorpio · house 11",
+          "house": 11,
+          "body": "Mercury",
+          "hue": "#B9DCE8",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-04:body:mercury:1200z",
+            "derived:2026-10-04:solar-house:capricorn:h11:fact-2026-10-04-body-mercury-1200z"
           ]
         },
         {
           "text": "Mars is pushing on your eighth house — shared finances, debts, intimacy, and trust.",
-          "receipt": "Mars 3.1° Leo · house 8",
+          "receipt": "Mars 3.7° Leo · house 8",
           "house": 8,
           "body": "Mars",
           "hue": "#E0A9B4",
           "templateId": "body-house.v1",
           "scope": "solar-house",
           "evidenceRefs": [
-            "fact:2026-10-03:body:mars:1200z",
-            "derived:2026-10-03:solar-house:capricorn:h8:fact-2026-10-03-body-mars-1200z"
+            "fact:2026-10-04:body:mars:1200z",
+            "derived:2026-10-04:solar-house:capricorn:h8:fact-2026-10-04-body-mars-1200z"
           ]
         }
       ],
       "todayLine": {
         "text": "Today may draw more attention to partners and one-to-one relationships.",
-        "receipt": "Moon 9.5° cancer · solar house 7",
+        "receipt": "Moon 23.6° cancer · solar house 7",
         "house": 7,
         "body": "Moon",
         "templateId": "today-moon-theme.v1",
         "scope": "solar-house",
         "evidenceRefs": [
-          "fact:2026-10-03:body:moon:1200z",
-          "derived:2026-10-03:solar-house:capricorn:h7:fact-2026-10-03-body-moon-1200z"
+          "fact:2026-10-04:body:moon:1200z",
+          "derived:2026-10-04:solar-house:capricorn:h7:fact-2026-10-04-body-moon-1200z"
         ]
       }
     },
     {
       "sign": "aquarius",
-      "headline": "Venus stations retrograde in your tenth house — expect revisions in career, reputation, and public responsibilities.",
+      "headline": "The Moon spends today in your sixth house — daily work, health routines, and responsibilities.",
       "lines": [
         {
-          "text": "Venus stations retrograde in your tenth house — expect revisions in career, reputation, and public responsibilities.",
-          "receipt": "Venus stations retrograde 8.5° Scorpio · 07:10 UTC",
-          "house": 10,
-          "body": "Venus",
-          "hue": "#B9DCE8",
-          "templateId": "station-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-03:event:station:2026-10-03T07:10:24.846Z:venus-retrograde",
-            "derived:2026-10-03:solar-house:aquarius:h10:fact-2026-10-03-event-station-2026-10-03t07-10-24-846z-venus-retrograde"
-          ]
-        },
-        {
-          "text": "Mars opposition Pluto is exact today — sky-wide weather, worth knowing the hour.",
-          "receipt": "Mars opposition Pluto · exact 10:38 UTC",
-          "body": "Mars",
+          "text": "Sun opposition Saturn is exact today — sky-wide weather, worth knowing the hour.",
+          "receipt": "Sun opposition Saturn · exact 12:25 UTC",
+          "body": "Sun",
           "templateId": "aspect-collective.v1",
           "scope": "collective",
           "evidenceRefs": [
-            "fact:2026-10-03:event:aspect:2026-10-03T10:38:11.747Z:mars-opposition-pluto"
+            "fact:2026-10-04:event:aspect:2026-10-04T12:25:54.014Z:sun-opposition-saturn"
           ]
         },
         {
           "text": "The Moon spends today in your sixth house — daily work, health routines, and responsibilities.",
-          "receipt": "Moon 9.5° Cancer · house 6",
+          "receipt": "Moon 23.6° Cancer · house 6",
           "house": 6,
           "body": "Moon",
           "hue": "#B6D4E4",
           "templateId": "body-house.v1",
           "scope": "solar-house",
           "evidenceRefs": [
-            "fact:2026-10-03:body:moon:1200z",
-            "derived:2026-10-03:solar-house:aquarius:h6:fact-2026-10-03-body-moon-1200z"
+            "fact:2026-10-04:body:moon:1200z",
+            "derived:2026-10-04:solar-house:aquarius:h6:fact-2026-10-04-body-moon-1200z"
+          ]
+        },
+        {
+          "text": "Mercury is working your tenth house — career, reputation, and public responsibilities.",
+          "receipt": "Mercury 5.2° Scorpio · house 10",
+          "house": 10,
+          "body": "Mercury",
+          "hue": "#B9DCE8",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-04:body:mercury:1200z",
+            "derived:2026-10-04:solar-house:aquarius:h10:fact-2026-10-04-body-mercury-1200z"
           ]
         },
         {
           "text": "Mars is pushing on your seventh house — partners and one-to-one relationships.",
-          "receipt": "Mars 3.1° Leo · house 7",
+          "receipt": "Mars 3.7° Leo · house 7",
           "house": 7,
           "body": "Mars",
           "hue": "#E0A9B4",
           "templateId": "body-house.v1",
           "scope": "solar-house",
           "evidenceRefs": [
-            "fact:2026-10-03:body:mars:1200z",
-            "derived:2026-10-03:solar-house:aquarius:h7:fact-2026-10-03-body-mars-1200z"
+            "fact:2026-10-04:body:mars:1200z",
+            "derived:2026-10-04:solar-house:aquarius:h7:fact-2026-10-04-body-mars-1200z"
           ]
         }
       ],
       "todayLine": {
         "text": "Today may draw more attention to daily work, health routines, and responsibilities.",
-        "receipt": "Moon 9.5° cancer · solar house 6",
+        "receipt": "Moon 23.6° cancer · solar house 6",
         "house": 6,
         "body": "Moon",
         "templateId": "today-moon-theme.v1",
         "scope": "solar-house",
         "evidenceRefs": [
-          "fact:2026-10-03:body:moon:1200z",
-          "derived:2026-10-03:solar-house:aquarius:h6:fact-2026-10-03-body-moon-1200z"
+          "fact:2026-10-04:body:moon:1200z",
+          "derived:2026-10-04:solar-house:aquarius:h6:fact-2026-10-04-body-moon-1200z"
         ]
       }
     },
     {
       "sign": "pisces",
-      "headline": "Venus stations retrograde in your ninth house — expect revisions in travel, learning, beliefs, and long-term plans.",
+      "headline": "The Moon spends today in your fifth house — creativity, romance, children, and enjoyment.",
       "lines": [
         {
-          "text": "Venus stations retrograde in your ninth house — expect revisions in travel, learning, beliefs, and long-term plans.",
-          "receipt": "Venus stations retrograde 8.5° Scorpio · 07:10 UTC",
-          "house": 9,
-          "body": "Venus",
-          "hue": "#B9DCE8",
-          "templateId": "station-house.v1",
-          "scope": "solar-house",
-          "evidenceRefs": [
-            "fact:2026-10-03:event:station:2026-10-03T07:10:24.846Z:venus-retrograde",
-            "derived:2026-10-03:solar-house:pisces:h9:fact-2026-10-03-event-station-2026-10-03t07-10-24-846z-venus-retrograde"
-          ]
-        },
-        {
-          "text": "Mars opposition Pluto is exact today — sky-wide weather, worth knowing the hour.",
-          "receipt": "Mars opposition Pluto · exact 10:38 UTC",
-          "body": "Mars",
+          "text": "Sun opposition Saturn is exact today — sky-wide weather, worth knowing the hour.",
+          "receipt": "Sun opposition Saturn · exact 12:25 UTC",
+          "body": "Sun",
           "templateId": "aspect-collective.v1",
           "scope": "collective",
           "evidenceRefs": [
-            "fact:2026-10-03:event:aspect:2026-10-03T10:38:11.747Z:mars-opposition-pluto"
+            "fact:2026-10-04:event:aspect:2026-10-04T12:25:54.014Z:sun-opposition-saturn"
           ]
         },
         {
           "text": "The Moon spends today in your fifth house — creativity, romance, children, and enjoyment.",
-          "receipt": "Moon 9.5° Cancer · house 5",
+          "receipt": "Moon 23.6° Cancer · house 5",
           "house": 5,
           "body": "Moon",
           "hue": "#B6D4E4",
           "templateId": "body-house.v1",
           "scope": "solar-house",
           "evidenceRefs": [
-            "fact:2026-10-03:body:moon:1200z",
-            "derived:2026-10-03:solar-house:pisces:h5:fact-2026-10-03-body-moon-1200z"
+            "fact:2026-10-04:body:moon:1200z",
+            "derived:2026-10-04:solar-house:pisces:h5:fact-2026-10-04-body-moon-1200z"
+          ]
+        },
+        {
+          "text": "Mercury is working your ninth house — travel, learning, beliefs, and long-term plans.",
+          "receipt": "Mercury 5.2° Scorpio · house 9",
+          "house": 9,
+          "body": "Mercury",
+          "hue": "#B9DCE8",
+          "templateId": "body-house.v1",
+          "scope": "solar-house",
+          "evidenceRefs": [
+            "fact:2026-10-04:body:mercury:1200z",
+            "derived:2026-10-04:solar-house:pisces:h9:fact-2026-10-04-body-mercury-1200z"
           ]
         },
         {
           "text": "Mars is pushing on your sixth house — daily work, health routines, and responsibilities.",
-          "receipt": "Mars 3.1° Leo · house 6",
+          "receipt": "Mars 3.7° Leo · house 6",
           "house": 6,
           "body": "Mars",
           "hue": "#E0A9B4",
           "templateId": "body-house.v1",
           "scope": "solar-house",
           "evidenceRefs": [
-            "fact:2026-10-03:body:mars:1200z",
-            "derived:2026-10-03:solar-house:pisces:h6:fact-2026-10-03-body-mars-1200z"
+            "fact:2026-10-04:body:mars:1200z",
+            "derived:2026-10-04:solar-house:pisces:h6:fact-2026-10-04-body-mars-1200z"
           ]
         }
       ],
       "todayLine": {
         "text": "Today may draw more attention to creativity, romance, children, and enjoyment.",
-        "receipt": "Moon 9.5° cancer · solar house 5",
+        "receipt": "Moon 23.6° cancer · solar house 5",
         "house": 5,
         "body": "Moon",
         "templateId": "today-moon-theme.v1",
         "scope": "solar-house",
         "evidenceRefs": [
-          "fact:2026-10-03:body:moon:1200z",
-          "derived:2026-10-03:solar-house:pisces:h5:fact-2026-10-03-body-moon-1200z"
+          "fact:2026-10-04:body:moon:1200z",
+          "derived:2026-10-04:solar-house:pisces:h5:fact-2026-10-04-body-moon-1200z"
         ]
       }
     }
