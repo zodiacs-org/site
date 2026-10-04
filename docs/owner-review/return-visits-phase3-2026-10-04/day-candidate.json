@@ -1,5 +1,5 @@
 {
-  "status": "awaiting-owner-approval",
+  "status": "approved-for-publication",
   "day": "2026-10-04",
   "name": "Jannik Sinner",
   "birthDate": "2001-08-16",
@@ -12,7 +12,11 @@
   "newsDate": "2026-10-03",
   "reason": "The tournament reported his withdrawal from Shanghai on October 3. The chart does not explain or predict injuries.",
   "reliability": "The official tour profile documents his birth date and San Candido, Italy. It gives no birth time. No rising sign or houses will be published; noon UTC is a reference moment only.",
-  "ownerApproval": null,
+  "ownerApproval": {
+    "approved": true,
+    "approvedAt": "2026-10-04T07:31:18.000Z",
+    "evidence": "The owner replied “approved” in task 01a0c34a-73b0-7091-911b-046a6f96fc8c on October 4, 2026, after the Phase 3 release report identified the October 4 Jannik Sinner draft as awaiting approval. This approval covers this dated edition only; future figures still require individual approval."
+  },
   "previewReference": {
     "utc": "2001-08-16T12:00:00.000Z",
     "engine": "0.1.1-rc.16",

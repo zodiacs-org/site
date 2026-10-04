@@ -301,6 +301,16 @@ describe('sky data API — daily payloads', () => {
     }
   });
 
+  it('keeps an event thirty minutes ahead even when tenths of a day round to zero', () => {
+    const eventAt = Date.parse(payload('sky/upcoming.json').events[0].at);
+    const snapshotAt = new Date(eventAt - 30 * 60_000).toISOString();
+    const upcoming = buildUpcoming({ ...sources, daily: { ...daily, snapshotAt }, generatedAt: GENERATED_AT });
+    const event = upcoming.events.find((entry) => Date.parse(entry.at) === eventAt);
+    expect(event).toBeDefined();
+    expect(Date.parse(event.at)).toBeGreaterThan(Date.parse(upcoming.from));
+    expect(event.daysAway).toBe(0);
+  });
+
   it('describes every body from the same snapshot as today', () => {
     const today = payload('sky/today.json');
     for (const slug of PLANET_SLUGS) {

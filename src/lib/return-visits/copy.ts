@@ -70,6 +70,7 @@ export const RETURN_EN = {
   "dayTimeUnknown": "Birth time unknown. No rising or houses are shown.",
   "dayNews": "Why this person today",
   "dayOpening": "A public chart is a way to explore astrology, not a claim about someone’s private life.",
+  "dayError": "The chart could not load. Please try again.",
   "details": "Calculation details",
   "birthDetails": "Birth details",
   "cancel": "Cancel"
@@ -148,6 +149,7 @@ es: {
   "dayTimeUnknown": "Hora natal desconocida. Sin ascendente ni casas.",
   "dayNews": "Por qué esta persona hoy",
   "dayOpening": "Una carta pública permite explorar la astrología, sin afirmar nada sobre la vida privada de alguien.",
+  "dayError": "No se pudo cargar la carta. Inténtalo de nuevo.",
   "details": "Detalles del cálculo",
   "birthDetails": "Datos natales",
   "cancel": "Cancelar"
@@ -222,6 +224,7 @@ pt: {
   "dayTimeUnknown": "Horário de nascimento desconhecido. Sem ascendente nem casas.",
   "dayNews": "Por que esta pessoa hoje",
   "dayOpening": "Um mapa público permite explorar astrologia, sem afirmar nada sobre a vida privada de alguém.",
+  "dayError": "Não foi possível carregar o mapa. Tente novamente.",
   "details": "Detalhes do cálculo",
   "birthDetails": "Dados de nascimento",
   "cancel": "Cancelar"
@@ -296,6 +299,7 @@ fr: {
   "dayTimeUnknown": "Heure de naissance inconnue. Ni ascendant ni maisons.",
   "dayNews": "Pourquoi cette personne aujourd’hui",
   "dayOpening": "Un thème public permet d’explorer l’astrologie, sans rien affirmer sur la vie privée de quelqu’un.",
+  "dayError": "Le thème n’a pas pu charger. Réessaie.",
   "details": "Détails du calcul",
   "birthDetails": "Données de naissance",
   "cancel": "Annuler"
@@ -370,6 +374,7 @@ it: {
   "dayTimeUnknown": "Ora di nascita sconosciuta. Senza ascendente né case.",
   "dayNews": "Perché questa persona oggi",
   "dayOpening": "Un tema pubblico permette di esplorare l’astrologia, senza affermare nulla sulla vita privata di qualcuno.",
+  "dayError": "Impossibile caricare il tema. Riprova.",
   "details": "Dettagli del calcolo",
   "birthDetails": "Dati di nascita",
   "cancel": "Annulla"
@@ -444,6 +449,7 @@ ru: {
   "dayTimeUnknown": "Время рождения неизвестно. Асцендент и дома не показаны.",
   "dayNews": "Почему эта личность сегодня",
   "dayOpening": "Публичная карта помогает изучать астрологию, не утверждая ничего о частной жизни человека.",
+  "dayError": "Не удалось загрузить карту. Попробуйте снова.",
   "details": "Сведения о расчёте",
   "birthDetails": "Данные рождения",
   "cancel": "Отмена"

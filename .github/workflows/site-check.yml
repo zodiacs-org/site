@@ -169,6 +169,13 @@ jobs:
           OUT_DIR: tests/visual/artifacts/return-visits
         run: node tests/return-visits-drive.mjs
 
+      - name: Approved dated charts, translations and download recovery
+        timeout-minutes: 6
+        env:
+          RETURN_VISITS_BROWSERS: chromium
+          OUT_DIR: tests/visual/artifacts/return-visits/daily
+        run: node tests/chart-of-day-drive.mjs
+
       - name: Upload return visit evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2

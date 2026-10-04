@@ -1,0 +1,57 @@
+{
+  "baseCommit": "a7ecab9a745f9735e191aeae8466469c8d4d3794",
+  "approvedDay": "2026-10-04",
+  "buildReceipt": {
+    "schema": "zodiacs.phase1-build-receipt.v1",
+    "builtAt": "2026-10-04T07:40:11.955Z",
+    "templateSourceSha256": "644834f56e56f3bb64462e5bd2a79c97985cc237219a9f42fe3be4c9a0dc364b",
+    "dailyDate": "2026-10-04",
+    "publicationCanonicalSha256": "25887fbd8dcc1c3cc3ca0380c55dd1b68d0372d14bb6d22bfaecbaf7d0e1416e",
+    "renderPayloadSha256": {
+      "daily": "d5fd6c275e3c2b0e574e96668a98853c0f31fa13970a2e000528a1285eb0f01c",
+      "dailyPublication": "cfddc6e31b83c6c705ad8aa16cb100ad81a8d34967cd1c96bc9c251c5f361236",
+      "dailyPublicationManifest": "af95d9f6588a48178bdcc7ce35a7b346a569fb470b9969fc6766c6ec4d223931",
+      "horoscopeProgram": "bf0efa475b151b2db529e03957628dd7499b48f712a58229241b1aa6d459f410"
+    }
+  },
+  "typecheck": {
+    "errors": 0,
+    "warnings": 0,
+    "existingHints": 39
+  },
+  "vitest": {
+    "passed": 6478,
+    "skipped": 5,
+    "passedFiles": 510,
+    "skippedFiles": 1
+  },
+  "browser": {
+    "passedGroups": 24,
+    "engines": [
+      "Chromium",
+      "WebKit"
+    ],
+    "widths": [
+      360,
+      390,
+      1280
+    ],
+    "languages": [
+      "en",
+      "es",
+      "pt",
+      "fr",
+      "it",
+      "ru"
+    ],
+    "transport": "HTTPS",
+    "resourcePolicy": "Unmodified production CSP",
+    "sixFailedDownloadRecoveryJourneys": true,
+    "unapprovedDayReturns404": true
+  },
+  "readerCapturesPassed": 18,
+  "sourcesVerifiedOn": "2026-10-04",
+  "birthTime": null,
+  "referenceUtc": "2001-08-16T12:00:00.000Z",
+  "futureFigureApprovalRequired": true
+}
