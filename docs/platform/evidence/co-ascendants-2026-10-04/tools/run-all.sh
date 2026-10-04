@@ -11,4 +11,6 @@ export PYTHONDONTWRITEBYTECODE=1
 node "$HERE/tools/dump-end-to-end.mjs" > "$WORK/end-to-end.jsonl"
 python3 "$HERE/tools/compare-end-to-end.py" "$WORK/end-to-end.jsonl" "$WORK/worst-case.json" > "$HERE/results/end-to-end.json"
 node "$HERE/tools/worst-case.mjs" "$WORK/worst-case.json" > "$HERE/results/worst-case.json"
+# Added after review, not preregistered: the same engine values under three clock readings.
+python3 "$HERE/tools/compare-clock-readings.py" "$WORK/end-to-end.jsonl" > "$HERE/results/clock-readings.json"
 echo "done: $HERE/results"

@@ -1,50 +1,66 @@
 # Programme status
 
-Checkpoint 14, 2026-10-04: engine rc.16's capability gates judged, the
-co-ascendants measured end to end and the house systems rerun on rc.16, against
-main `67aa32d8b3f112a08aebe5f7b52db9a331ecbaf1` (#639).
+Checkpoint 14, 2026-10-04: engine rc.16's capability gates judged against
+main `67aa32d8b3f112a08aebe5f7b52db9a331ecbaf1` (#639), with two new Swiss
+comparisons, and revised after two independent reviews before merging.
 
-**Overall delivery: 30%** (29.570% to three decimals) — 53.95 of 182.45
-weighted units accepted; blocked 2% (3), or 1.644%. Up 6.95 from checkpoint 13.
+**Overall delivery: 30%** (29.871% to three decimals) — 54.5 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%. Up 7.5 from checkpoint 13.
 Gates, weights and the denominator are unchanged.
 [Gate record](../evidence/rc16-gates-2026-10-04/README.md).
 
-- **Accepted (6.95).**
+- **Accepted (7.5).**
   - B2.a (4), the birth-time window partition: the engine's preregistered
     1,000-window check, rerun on rc.16's build, matched all 24,188 one-second
-    transitions and missed none.
-  - P2.D.frames (2): the uniform API's twelve frame-transform checks pass
-    against an independent pyerfa chain, and the engine's 25 round-trip
-    fixtures replay exactly on the released archive.
-  - P2.A.houses.co-ascendants (0.25): the engine's evidence covered only
-    Swiss's given-inputs half. Measured here end to end, after a
-    preregistration, they are within 0.021″ of Swiss on the ladder
-    ([record](../evidence/co-ascendants-2026-10-04/README.md)).
-  - P2.A.house.koch (0.2): failed on rc.9 at 3.73″, where Koch magnified the
-    two programs' small difference in sidereal time near the polar circle.
-    Rerun on rc.16 with all thirteen systems, after a preregistration, it is
-    within 0.035″ ([record](../evidence/houses-2026-10-04/README.md)).
+    transitions and missed none. "In the engine/API" is read as the engine's
+    own interface; neither the birth chart tool (B2.b) nor the hosted API
+    offers windows yet.
+  - B2.c (1): that rule run is recorded as PASS, preregistered, and again on
+    rc.16's build.
+  - P2.D.frames (2): the uniform API's twelve frame-transform checks against
+    ERFA pass, and the engine's 25 round-trip fixtures replay exactly on the
+    released archive. It depends on P3.2, which stays partial for the
+    sidereal zodiac, an option none of these outputs uses.
   - P2.E.returns (0.5), again: production `dpl_Av6FTWYa2iFZzT2WZuWeCsRDg2oV`
-    serves #639, and the year ahead on `/profile/` takes its solar returns from
-    the package (F-67).
+    serves #639, and the year ahead on `/profile/` takes its solar returns
+    from the package (F-67).
+- **Validated, pending the owner (F-71).** The co-ascendants (0.25) and Koch
+  (0.2) are within 3″ of Swiss end to end on the ladder from 1850 to 2049
+  (largest 0.020″ and 0.035″) only when both programs are given the same UT1.
+  With Swiss reading the UTC instant as UT1, as the rc.9 tool did, Koch reaches
+  82.677″ and the co-ascendants 88.5″. That reading, and for the co-ascendants
+  the window, were chosen with residuals already seen, and the two
+  preregistrations did not say so. Under the programme's rule they count only
+  once the owner ratifies them.
 - **Partial.** P3.2 (3): `calc()` types the sidereal zodiac but refuses it,
-  while Phase 2 ships it in `@zodiacs/engine/vedic`. Planetary returns (0.75):
-  complete verdicts and agreement with JPL Horizons, but no cited worked
-  example beyond the Sun.
-- **Failed as worded.** House positions (0.75): Porphyry and Topocentric over
-  0.01″. Cusp speeds (0.75): five systems against Swiss's speeds, though they
-  agree with the engine's own derivatives. Rise and set (1.5): 192 events of
-  Uranus over 5 s, and 2 events over USNO's 30 s. Planetary hours (0.75): they
-  divide the rise and set times exactly, and those fail.
-- **Held.** The other twelve house systems pass both halves on rc.16, the
-  engine the site and the MCP adapter run.
+  and does not type user-defined ayanamsas, both of which Phase 2 ships.
+  Planetary returns (0.75): complete verdicts and agreement with JPL Horizons,
+  but no cited worked example.
+- **Failed.** House positions (0.75) and cusp speeds (0.75) fail as worded,
+  where Swiss's own values are off the exact ones. Rise and set (1.5): 192
+  events of Uranus over 5 s, and 2 events just over USNO's 30 s. Planetary
+  hours (0.75): one of those USNO misses is a sunset.
+- **Held.** The other twelve house systems keep their acceptance on the rc.9
+  and rc.10 records; on rc.16 they too pass end to end only with the shared
+  UT1, which F-71 puts to the owner.
 - Actual command: `node scripts/programme-ledger.mjs --summary` →
-  `Overall delivery: 30% (53.95 of 182.45); blocked 2% (3)`.
-- Next: the engine work behind the partial and failed units: the sidereal
-  zodiac in `calc()` (P3.2), rise and set at grazing crossings and at USNO's
-  margin (with planetary hours), and house positions for Porphyry and
-  Topocentric. They need a candidate after rc.16, whose publication needs the
-  owner's approval.
+  `Overall delivery: 30% (54.5 of 182.45); blocked 2% (3)`.
+- **Owner decision needed (F-71).** Should end-to-end comparisons with an
+  engine that applies UT1 − UTC give Swiss the engine's UT1? And does the
+  1850–2049 window apply to the co-ascendants? Ratifying both adds 0.45; the
+  programme recommends both.
+- **Next.**
+  - **Engine work, in a candidate after rc.16** (whose publication needs the
+    owner's approval):
+    - the sidereal zodiac and user-defined ayanamsas in `calc()` (P3.2);
+    - a cited worked example for planetary returns.
+  - **Gate decisions, not engine work:** house positions and cusp speeds.
+    Meeting them as worded would mean reproducing Swiss's departures from the
+    exact values.
+  - **Rise and set (with planetary hours):** the Uranus events are an
+    ephemeris limit, which the DE440 backend (P4.1) addresses. The two USNO
+    misses are within 0.15 s of the allowance, against times published to
+    the minute.
 
 ## Earlier checkpoints
 

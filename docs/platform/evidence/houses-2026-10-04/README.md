@@ -6,6 +6,11 @@ tarball's bytes), against Swiss Ephemeris 2.10.03 (pyswisseph 2.10.03) as an
 instrument. Nothing Swiss computed is committed: `results/` holds statistics,
 and the worst Koch case keeps its instant, place and two differences.
 
+**Verdict for the ledger: Koch is validated, not accepted.** It meets its
+criterion only with Swiss given the engine's own UT1, a reading chosen with
+both outcomes already on main; see
+[*What this record does not settle*](#what-this-record-does-not-settle).
+
 [`PREREGISTRATION.md`](PREREGISTRATION.md) fixed the method before any tool
 was written. It reruns the rc.9 record,
 [`../houses-2026-09-26/`](../houses-2026-09-26/README.md), with its seeds,
@@ -52,22 +57,77 @@ at 65.6° N, 71.56° W (`results/worst-koch.json`): 3.73″ on rc.9, 0.035″ on
 rc.16. Given Swiss's own RAMC and true obliquity there, the engine's Koch
 cusps are within 0.000000003″ of Swiss's, so what remains is the two programs'
 inputs, which now agree far more closely: the co-ascendants record of the same
-day found the engine's RAMC within 0.0015″ of Swiss's from 1850 to 2049.
+day found the engine's RAMC within 0.0016″ of Swiss's from 1850 to 2049.
 
-**End to end, 1850–2049: PASS for all thirteen systems on the ladder.** Koch,
-which failed on rc.9, passes.
+**End to end, 1850–2049, with both programs given the same UT1: all thirteen
+systems within 3″ on the ladder.** Koch, which failed on rc.9, is within 3″.
 
-Outside 1850–2049 the differences reach 15.6″ on the ladder and 31.4″ broad,
-every system that uses the ascendant, as on rc.9 (13″ and 33″). As the rc.9
-record found, Swiss switches to a long-term sidereal time outside 1850–2050,
-and no system is judged against it there.
+Outside 1850–2049 the ladder differences reach 31.4″ for Koch, 15.6″ for
+Regiomontanus and 13.4″ for the other systems that use the ascendant, and the
+broad ones 31.4″. On rc.9 the ladder reached 31.6″ for Koch, 15.2″ for
+Regiomontanus and 13.2″ for the others, and the broad set 32.9″ (the rc.9
+README gives only the 13″). As the rc.9 record found, Swiss switches to a
+long-term sidereal time outside 1850–2050, and no system is judged against it
+there.
 
 ## What this changes
 
-Koch now meets its gate in the release the site and the adapter run: within
-0.01″ of Swiss given its inputs, within 3″ end to end on the ladder, and polar
-status agreeing. The other twelve systems pass both halves on rc.16 as they
-did on rc.9 and rc.10.
+Given Swiss's inputs, all thirteen systems meet the 0.01″ half on rc.16, the
+release the site and the adapter run, with polar status agreeing. End to end,
+all thirteen are within 3″ on the ladder from 1850 to 2049 with Swiss given the
+engine's UT1. Koch had failed that half on rc.9. Under the programme's rules
+the shared-UT1 result counts for Koch as validated, not accepted; see below.
+
+## What this record does not settle
+
+Added after two independent reviews of this record, before it was merged.
+
+**This had been measured on rc.16 before.** The rc.16 accuracy refresh of
+2026-10-01,
+[`../site-engine-rc16/accuracy-refresh/`](../site-engine-rc16/accuracy-refresh/README.md),
+already on main, ran these cases on rc.16 both ways. With the aligned clock its
+figures are this record's: 47 of the 48 end-to-end statistics of the twelve
+rc.9 systems are identical (Campanus's ladder 95th percentile differs by
+0.001″), and so are all of its given-input statistics. `PREREGISTRATION.md`
+says it was committed before any measurement on rc.16 was run, and it did not
+cite that record.
+
+**The clock reading.** The preregistration gives Swiss the engine's UT1 Julian
+day. With the rc.9 tool's own reading, Swiss reading the UTC instant as UT1,
+the same refresh found every system but whole sign over 3″ on the 1850–2049
+ladder in 33 to 51 of its cases, Koch in 48 of 353 with 82.677″ the largest
+(`houses-default-utc.json` there). The site's rc.16 record then kept Koch
+failed: "an aligned-clock pass does not substitute for the original failed
+comparison". Under the programme's rule that a gate passing only under a change
+adopted after its residual was seen counts as validated until the owner
+ratifies it, Koch is recorded as **validated**, pending the owner's decision on
+the reading (FINDINGS F-71).
+
+The other twelve systems keep their acceptance, which rests on the rc.9 and
+rc.10 records, where both programs read the UTC instant as UT1. On rc.16 they
+too stay within 3″ end to end only under the shared reading; F-71 puts that to
+the owner as well.
+
+**Repeated draws.** The tools' generator, inherited from the rc.9 record,
+computes `(seed × 1103515245 + 12345) mod 2³¹` in double precision, which loses
+digits and falls into a cycle of 10,466 draws. Of the given-input set's 20,000
+broad draws, 12,515 are distinct, and of its 5,199 broad cases undefined on
+both sides, 3,258. The rc.9 record's sets are the same. The verdicts rest on
+the largest differences and on agreement in every case, so repeats change
+none; they shrink the coverage the counts suggest. The end-to-end sets stay
+within one cycle: all 3,708 cases are distinct.
+
+**Departures from the preregistration.** `results/given.json` gives the median
+and the largest difference but not the 95th percentile the preregistration
+listed. `tools/worst-koch.mjs` calls `kochCusps`, the function
+`computeHouses` runs for Koch outside the polar case, rather than
+`computeHouses`; the worst case is not polar. The end-to-end instants stop at
+2199-12-31T00:00Z rather than at the end of 2199.
+
+**Commits.** The preregistration (author time 2026-10-04T15:55:10Z) was
+committed before the tools and the run (15:57:24Z). Rebasing onto main
+`67aa32d8` set both commits' committer time to 17:53:01Z and changed no
+content.
 
 ## Rerun
 

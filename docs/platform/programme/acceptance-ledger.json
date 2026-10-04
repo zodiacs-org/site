@@ -1,7 +1,7 @@
 {
   "version": 1,
   "brief": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md (version 2) with the version 1 rules it retains",
-  "asOf": "2026-10-04 checkpoint 14 (source 67aa32d8; engine rc.16's nine capability gates judged against their own wording, the co-ascendants measured end to end and the house systems rerun on rc.16, Koch included; P2.E.returns accepted again on production dpl_Av6FTWYa2iFZzT2WZuWeCsRDg2oV)",
+  "asOf": "2026-10-04 checkpoint 14 (source 67aa32d8; engine rc.16's capability gates judged against their own wording, with B2.c; P2.E.returns accepted again on production dpl_Av6FTWYa2iFZzT2WZuWeCsRDg2oV; the co-ascendants and Koch validated, not accepted, pending the owner's ratification of the shared-UT1 reading and window (F-71))",
   "denominator": {
     "unit": "working days, from the brief's effort estimates (README.md)",
     "totalWeight": 182.45,
@@ -542,7 +542,7 @@
         "docs/platform/evidence/houses-2026-09-26/README.md (given Swiss inputs: PASS for all twelve rc.9 systems; end to end on the ladder 1850–2049: eleven PASS, Koch 3.73″ in 1 of 353)",
         "docs/platform/evidence/site-engine-rc10/ (site vendors engine rc.10 since f2bd0dd4; production dpl_GNiCYhHNi5daRWqT3ra4qSzT8XZf at 817132f7)",
         "MCP 0.1.0-rc.10 offers the system (src/mcp/bounds.ts)",
-        "docs/platform/evidence/houses-2026-10-04/README.md (preregistered rerun on rc.16, the engine the site and the MCP adapter 0.1.0-rc.16 run: given Swiss inputs and end to end on the ladder from 1850 to 2049, PASS)"
+        "docs/platform/evidence/houses-2026-10-04/README.md (preregistered rerun on rc.16, the engine the site and the MCP adapter 0.1.0-rc.16 run, with Swiss given the engine's UT1 Julian day: given Swiss inputs within 0.01″ and end to end within 3″ on the ladder from 1850 to 2049; with Swiss reading the UTC instant as UT1 instead, every original system but whole sign exceeds 3″ on rc.16 (site-engine-rc16/accuracy-refresh/houses-default-utc.json); the reading is put to the owner in FINDINGS F-71)"
       ],
       "notes": "consumer forms still offer whole sign and Placidus only; that is site exposure (§4.6), not this gate"
     },
@@ -561,7 +561,7 @@
         "docs/platform/evidence/houses-2026-09-26/README.md (given Swiss inputs: PASS for all twelve rc.9 systems; end to end on the ladder 1850–2049: eleven PASS, Koch 3.73″ in 1 of 353)",
         "docs/platform/evidence/site-engine-rc10/ (site vendors engine rc.10 since f2bd0dd4; production dpl_GNiCYhHNi5daRWqT3ra4qSzT8XZf at 817132f7)",
         "MCP 0.1.0-rc.10 offers the system (src/mcp/bounds.ts)",
-        "docs/platform/evidence/houses-2026-10-04/README.md (preregistered rerun on rc.16, the engine the site and the MCP adapter 0.1.0-rc.16 run: given Swiss inputs and end to end on the ladder from 1850 to 2049, PASS)"
+        "docs/platform/evidence/houses-2026-10-04/README.md (preregistered rerun on rc.16, the engine the site and the MCP adapter 0.1.0-rc.16 run, with Swiss given the engine's UT1 Julian day: given Swiss inputs within 0.01″ and end to end within 3″ on the ladder from 1850 to 2049; with Swiss reading the UTC instant as UT1 instead, every original system but whole sign exceeds 3″ on rc.16 (site-engine-rc16/accuracy-refresh/houses-default-utc.json); the reading is put to the owner in FINDINGS F-71)"
       ],
       "notes": "consumer forms still offer whole sign and Placidus only; that is site exposure (§4.6), not this gate"
     },
@@ -580,7 +580,7 @@
         "docs/platform/evidence/houses-2026-09-26/README.md (given Swiss inputs: PASS for all twelve rc.9 systems; end to end on the ladder 1850–2049: eleven PASS, Koch 3.73″ in 1 of 353)",
         "docs/platform/evidence/site-engine-rc10/ (site vendors engine rc.10 since f2bd0dd4; production dpl_GNiCYhHNi5daRWqT3ra4qSzT8XZf at 817132f7)",
         "MCP 0.1.0-rc.10 offers the system (src/mcp/bounds.ts)",
-        "docs/platform/evidence/houses-2026-10-04/README.md (preregistered rerun on rc.16, the engine the site and the MCP adapter 0.1.0-rc.16 run: given Swiss inputs and end to end on the ladder from 1850 to 2049, PASS)"
+        "docs/platform/evidence/houses-2026-10-04/README.md (preregistered rerun on rc.16, the engine the site and the MCP adapter 0.1.0-rc.16 run, with Swiss given the engine's UT1 Julian day: given Swiss inputs within 0.01″ and end to end within 3″ on the ladder from 1850 to 2049; with Swiss reading the UTC instant as UT1 instead, every original system but whole sign exceeds 3″ on rc.16 (site-engine-rc16/accuracy-refresh/houses-default-utc.json); the reading is put to the owner in FINDINGS F-71)"
       ],
       "notes": "consumer forms still offer whole sign and Placidus only; that is site exposure (§4.6), not this gate"
     },
@@ -593,14 +593,15 @@
       "weight": 0.2,
       "gate": "≤ 0.01″ from Swiss houses_armc given its inputs and ≤ 3″ end to end on the 55–66.6° ladder; polar status agrees; in a released engine adopted by the site and MCP",
       "dependsOn": [],
-      "status": "accepted",
+      "status": "validated",
       "release": "deployed",
       "evidence": [
         "docs/platform/evidence/houses-2026-09-26/README.md (given Swiss inputs: PASS for all twelve rc.9 systems; end to end on the ladder 1850–2049: eleven PASS, Koch 3.73″ in 1 of 353)",
-        "docs/platform/evidence/houses-2026-10-04/README.md (preregistered rerun on rc.16: given Swiss inputs within 0.000000005″ and polar status agreeing in every case; end to end on the ladder from 1850 to 2049 within 0.035″, the rc.9 failing case included)",
+        "docs/platform/evidence/site-engine-rc16/accuracy-refresh/README.md (2026-10-01, rc.16: with Swiss reading the UTC instant as UT1, 48 of 353 ladder cases over 3″ from 1850 to 2049, the largest 82.677″; with the aligned clock, the largest 0.035″; given Swiss inputs 4.71e-9″; the site's rc.16 record kept Koch failed)",
+        "docs/platform/evidence/houses-2026-10-04/README.md (preregistered rerun on rc.16 with Swiss given the engine's UT1 Julian day: given Swiss inputs within 0.000000005″ and polar status agreeing in every case; end to end on the ladder from 1850 to 2049 the largest 0.035″, the rc.9 failing case included)",
         "production dpl_Av6FTWYa2iFZzT2WZuWeCsRDg2oV (READY 2026-10-04T17:54:58Z, aliased to zodiacs.org) serves site 67aa32d8, which vendors the rc.16 archive 43a72d30…15d8; its engine chunk names 0.1.1-rc.16; MCP 0.1.0-rc.16 offers the system (src/mcp/bounds.ts)"
       ],
-      "notes": "end to end 3.73″ > 3″ in one ladder case at 65.6° N; given Swiss inputs it agrees to 4e-10″, so the excess is the sidereal-time input difference Koch magnifies. FAIL stands until the input agreement improves (Phase 4). Accepted at checkpoint 14 (2026-10-04): on rc.16, whose RAMC is within 0.0015″ of Swiss's from 1850 to 2049 (rc.15's UT1 and rc.16's IAU 2000B nutation), the same case is 0.035″ end to end and 0.000000003″ given Swiss's own inputs; the input agreement this note waited for came with rc.16, not Phase 4."
+      "notes": "end to end 3.73″ > 3″ in one ladder case at 65.6° N; given Swiss inputs it agrees to 4e-10″, so the excess is the sidereal-time input difference Koch magnifies. FAIL stands until the input agreement improves (Phase 4). Checkpoint 14 (2026-10-04): validated, not accepted. On rc.16, with both programs given the same UT1, the RAMCs agree within 0.0016″ from 1850 to 2049 and Koch is within 3″ end to end (largest 0.035″). With Swiss reading the UTC instant as UT1, as the rc.9 tool did, it is not (48 of 353 over 3″, 82.677″): since rc.15 the engine applies UT1 − UTC and the two readings differ by it. The site's rc.16 record kept Koch failed (\"an aligned-clock pass does not substitute for the original failed comparison\"), and the shared reading was chosen with both results on main. Under README *Status and release* a gate that passes only under a change adopted after its residual was seen is validated until the owner ratifies the change (FINDINGS F-71); Koch fails if the owner does not."
     },
     {
       "id": "P2.A.house.regiomontanus",
@@ -617,7 +618,7 @@
         "docs/platform/evidence/houses-2026-09-26/README.md (given Swiss inputs: PASS for all twelve rc.9 systems; end to end on the ladder 1850–2049: eleven PASS, Koch 3.73″ in 1 of 353)",
         "docs/platform/evidence/site-engine-rc10/ (site vendors engine rc.10 since f2bd0dd4; production dpl_GNiCYhHNi5daRWqT3ra4qSzT8XZf at 817132f7)",
         "MCP 0.1.0-rc.10 offers the system (src/mcp/bounds.ts)",
-        "docs/platform/evidence/houses-2026-10-04/README.md (preregistered rerun on rc.16, the engine the site and the MCP adapter 0.1.0-rc.16 run: given Swiss inputs and end to end on the ladder from 1850 to 2049, PASS)"
+        "docs/platform/evidence/houses-2026-10-04/README.md (preregistered rerun on rc.16, the engine the site and the MCP adapter 0.1.0-rc.16 run, with Swiss given the engine's UT1 Julian day: given Swiss inputs within 0.01″ and end to end within 3″ on the ladder from 1850 to 2049; with Swiss reading the UTC instant as UT1 instead, every original system but whole sign exceeds 3″ on rc.16 (site-engine-rc16/accuracy-refresh/houses-default-utc.json); the reading is put to the owner in FINDINGS F-71)"
       ],
       "notes": "consumer forms still offer whole sign and Placidus only; that is site exposure (§4.6), not this gate"
     },
@@ -636,7 +637,7 @@
         "docs/platform/evidence/houses-2026-09-26/README.md (given Swiss inputs: PASS for all twelve rc.9 systems; end to end on the ladder 1850–2049: eleven PASS, Koch 3.73″ in 1 of 353)",
         "docs/platform/evidence/site-engine-rc10/ (site vendors engine rc.10 since f2bd0dd4; production dpl_GNiCYhHNi5daRWqT3ra4qSzT8XZf at 817132f7)",
         "MCP 0.1.0-rc.10 offers the system (src/mcp/bounds.ts)",
-        "docs/platform/evidence/houses-2026-10-04/README.md (preregistered rerun on rc.16, the engine the site and the MCP adapter 0.1.0-rc.16 run: given Swiss inputs and end to end on the ladder from 1850 to 2049, PASS)"
+        "docs/platform/evidence/houses-2026-10-04/README.md (preregistered rerun on rc.16, the engine the site and the MCP adapter 0.1.0-rc.16 run, with Swiss given the engine's UT1 Julian day: given Swiss inputs within 0.01″ and end to end within 3″ on the ladder from 1850 to 2049; with Swiss reading the UTC instant as UT1 instead, every original system but whole sign exceeds 3″ on rc.16 (site-engine-rc16/accuracy-refresh/houses-default-utc.json); the reading is put to the owner in FINDINGS F-71)"
       ],
       "notes": "consumer forms still offer whole sign and Placidus only; that is site exposure (§4.6), not this gate"
     },
@@ -655,7 +656,7 @@
         "docs/platform/evidence/houses-2026-09-26/README.md (given Swiss inputs: PASS for all twelve rc.9 systems; end to end on the ladder 1850–2049: eleven PASS, Koch 3.73″ in 1 of 353)",
         "docs/platform/evidence/site-engine-rc10/ (site vendors engine rc.10 since f2bd0dd4; production dpl_GNiCYhHNi5daRWqT3ra4qSzT8XZf at 817132f7)",
         "MCP 0.1.0-rc.10 offers the system (src/mcp/bounds.ts)",
-        "docs/platform/evidence/houses-2026-10-04/README.md (preregistered rerun on rc.16, the engine the site and the MCP adapter 0.1.0-rc.16 run: given Swiss inputs and end to end on the ladder from 1850 to 2049, PASS)"
+        "docs/platform/evidence/houses-2026-10-04/README.md (preregistered rerun on rc.16, the engine the site and the MCP adapter 0.1.0-rc.16 run, with Swiss given the engine's UT1 Julian day: given Swiss inputs within 0.01″ and end to end within 3″ on the ladder from 1850 to 2049; with Swiss reading the UTC instant as UT1 instead, every original system but whole sign exceeds 3″ on rc.16 (site-engine-rc16/accuracy-refresh/houses-default-utc.json); the reading is put to the owner in FINDINGS F-71)"
       ],
       "notes": "consumer forms still offer whole sign and Placidus only; that is site exposure (§4.6), not this gate"
     },
@@ -674,7 +675,7 @@
         "docs/platform/evidence/houses-2026-09-26/README.md (given Swiss inputs: PASS for all twelve rc.9 systems; end to end on the ladder 1850–2049: eleven PASS, Koch 3.73″ in 1 of 353)",
         "docs/platform/evidence/site-engine-rc10/ (site vendors engine rc.10 since f2bd0dd4; production dpl_GNiCYhHNi5daRWqT3ra4qSzT8XZf at 817132f7)",
         "MCP 0.1.0-rc.10 offers the system (src/mcp/bounds.ts)",
-        "docs/platform/evidence/houses-2026-10-04/README.md (preregistered rerun on rc.16, the engine the site and the MCP adapter 0.1.0-rc.16 run: given Swiss inputs and end to end on the ladder from 1850 to 2049, PASS)"
+        "docs/platform/evidence/houses-2026-10-04/README.md (preregistered rerun on rc.16, the engine the site and the MCP adapter 0.1.0-rc.16 run, with Swiss given the engine's UT1 Julian day: given Swiss inputs within 0.01″ and end to end within 3″ on the ladder from 1850 to 2049; with Swiss reading the UTC instant as UT1 instead, every original system but whole sign exceeds 3″ on rc.16 (site-engine-rc16/accuracy-refresh/houses-default-utc.json); the reading is put to the owner in FINDINGS F-71)"
       ],
       "notes": "consumer forms still offer whole sign and Placidus only; that is site exposure (§4.6), not this gate"
     },
@@ -693,7 +694,7 @@
         "docs/platform/evidence/houses-2026-09-26/README.md (given Swiss inputs: PASS for all twelve rc.9 systems; end to end on the ladder 1850–2049: eleven PASS, Koch 3.73″ in 1 of 353)",
         "docs/platform/evidence/site-engine-rc10/ (site vendors engine rc.10 since f2bd0dd4; production dpl_GNiCYhHNi5daRWqT3ra4qSzT8XZf at 817132f7)",
         "MCP 0.1.0-rc.10 offers the system (src/mcp/bounds.ts)",
-        "docs/platform/evidence/houses-2026-10-04/README.md (preregistered rerun on rc.16, the engine the site and the MCP adapter 0.1.0-rc.16 run: given Swiss inputs and end to end on the ladder from 1850 to 2049, PASS)"
+        "docs/platform/evidence/houses-2026-10-04/README.md (preregistered rerun on rc.16, the engine the site and the MCP adapter 0.1.0-rc.16 run, with Swiss given the engine's UT1 Julian day: given Swiss inputs within 0.01″ and end to end within 3″ on the ladder from 1850 to 2049; with Swiss reading the UTC instant as UT1 instead, every original system but whole sign exceeds 3″ on rc.16 (site-engine-rc16/accuracy-refresh/houses-default-utc.json); the reading is put to the owner in FINDINGS F-71)"
       ],
       "notes": "consumer forms still offer whole sign and Placidus only; that is site exposure (§4.6), not this gate"
     },
@@ -711,7 +712,7 @@
       "evidence": [
         "docs/platform/evidence/points-2026-09-26/ (re-run 2026-09-28 on the deployed rc.10 archive a377cdc8…; every result file reproduced byte for byte): given inputs max 4.09e-10″ (ladder and broad); end to end 1850–2049 ladder max 0.229″",
         "docs/platform/evidence/site-engine-rc10/ (site vendors engine rc.10 since f2bd0dd4; production dpl_GNiCYhHNi5daRWqT3ra4qSzT8XZf at 817132f7)",
-        "docs/platform/evidence/houses-2026-10-04/README.md (preregistered rerun on rc.16, the engine the site and the MCP adapter 0.1.0-rc.16 run: given Swiss inputs and end to end on the ladder from 1850 to 2049, PASS)"
+        "docs/platform/evidence/houses-2026-10-04/README.md (preregistered rerun on rc.16, the engine the site and the MCP adapter 0.1.0-rc.16 run, with Swiss given the engine's UT1 Julian day: given Swiss inputs within 0.01″ and end to end within 3″ on the ladder from 1850 to 2049; not measured with Swiss reading the UTC instant as UT1; the reading is put to the owner in FINDINGS F-71)"
       ]
     },
     {
@@ -729,7 +730,7 @@
         "docs/platform/evidence/houses-2026-09-26/README.md (given Swiss inputs: PASS for all twelve rc.9 systems; end to end on the ladder 1850–2049: eleven PASS, Koch 3.73″ in 1 of 353)",
         "docs/platform/evidence/site-engine-rc10/ (site vendors engine rc.10 since f2bd0dd4; production dpl_GNiCYhHNi5daRWqT3ra4qSzT8XZf at 817132f7)",
         "MCP 0.1.0-rc.10 offers the system (src/mcp/bounds.ts)",
-        "docs/platform/evidence/houses-2026-10-04/README.md (preregistered rerun on rc.16, the engine the site and the MCP adapter 0.1.0-rc.16 run: given Swiss inputs and end to end on the ladder from 1850 to 2049, PASS)"
+        "docs/platform/evidence/houses-2026-10-04/README.md (preregistered rerun on rc.16, the engine the site and the MCP adapter 0.1.0-rc.16 run, with Swiss given the engine's UT1 Julian day: given Swiss inputs within 0.01″ and end to end within 3″ on the ladder from 1850 to 2049; with Swiss reading the UTC instant as UT1 instead, every original system but whole sign exceeds 3″ on rc.16 (site-engine-rc16/accuracy-refresh/houses-default-utc.json); the reading is put to the owner in FINDINGS F-71)"
       ],
       "notes": "consumer forms still offer whole sign and Placidus only; that is site exposure (§4.6), not this gate"
     },
@@ -748,7 +749,7 @@
         "docs/platform/evidence/houses-2026-09-26/README.md (given Swiss inputs: PASS for all twelve rc.9 systems; end to end on the ladder 1850–2049: eleven PASS, Koch 3.73″ in 1 of 353)",
         "docs/platform/evidence/site-engine-rc10/ (site vendors engine rc.10 since f2bd0dd4; production dpl_GNiCYhHNi5daRWqT3ra4qSzT8XZf at 817132f7)",
         "MCP 0.1.0-rc.10 offers the system (src/mcp/bounds.ts)",
-        "docs/platform/evidence/houses-2026-10-04/README.md (preregistered rerun on rc.16, the engine the site and the MCP adapter 0.1.0-rc.16 run: given Swiss inputs and end to end on the ladder from 1850 to 2049, PASS)"
+        "docs/platform/evidence/houses-2026-10-04/README.md (preregistered rerun on rc.16, the engine the site and the MCP adapter 0.1.0-rc.16 run, with Swiss given the engine's UT1 Julian day: given Swiss inputs within 0.01″ and end to end within 3″ on the ladder from 1850 to 2049; with Swiss reading the UTC instant as UT1 instead, every original system but whole sign exceeds 3″ on rc.16 (site-engine-rc16/accuracy-refresh/houses-default-utc.json); the reading is put to the owner in FINDINGS F-71)"
       ],
       "notes": "consumer forms still offer whole sign and Placidus only; that is site exposure (§4.6), not this gate"
     },
@@ -767,7 +768,7 @@
         "docs/platform/evidence/houses-2026-09-26/README.md (given Swiss inputs: PASS for all twelve rc.9 systems; end to end on the ladder 1850–2049: eleven PASS, Koch 3.73″ in 1 of 353)",
         "docs/platform/evidence/site-engine-rc10/ (site vendors engine rc.10 since f2bd0dd4; production dpl_GNiCYhHNi5daRWqT3ra4qSzT8XZf at 817132f7)",
         "MCP 0.1.0-rc.10 offers the system (src/mcp/bounds.ts)",
-        "docs/platform/evidence/houses-2026-10-04/README.md (preregistered rerun on rc.16, the engine the site and the MCP adapter 0.1.0-rc.16 run: given Swiss inputs and end to end on the ladder from 1850 to 2049, PASS)"
+        "docs/platform/evidence/houses-2026-10-04/README.md (preregistered rerun on rc.16, the engine the site and the MCP adapter 0.1.0-rc.16 run, with Swiss given the engine's UT1 Julian day: given Swiss inputs within 0.01″ and end to end within 3″ on the ladder from 1850 to 2049; with Swiss reading the UTC instant as UT1 instead, every original system but whole sign exceeds 3″ on rc.16 (site-engine-rc16/accuracy-refresh/houses-default-utc.json); the reading is put to the owner in FINDINGS F-71)"
       ],
       "notes": "consumer forms still offer whole sign and Placidus only; that is site exposure (§4.6), not this gate"
     },
@@ -797,12 +798,13 @@
       "gate": "vs Swiss house_pos on a grid",
       "dependsOn": [],
       "status": "failed",
-      "release": "released",
+      "release": "deployed",
       "evidence": [
         "docs/platform/evidence/rc16-gates-2026-10-04/README.md",
-        "https://github.com/zodiacs-org/engine/tree/ddbbaa0b1d21e16834722f81e8708816849c6726/docs/evidence/houses-extra-2026-09-29 (gate P against swe_house_pos at 0.01″, rerun on rc.16's build)"
+        "https://github.com/zodiacs-org/engine/tree/ddbbaa0b1d21e16834722f81e8708816849c6726/docs/evidence/houses-extra-2026-09-29 (gate P against swe_house_pos at 0.01″, rerun on rc.16's build)",
+        "production dpl_Av6FTWYa2iFZzT2WZuWeCsRDg2oV (READY 2026-10-04T17:54:58Z, aliased to zodiacs.org) serves site 67aa32d8, which vendors the rc.16 archive 43a72d30…15d8; its engine chunk names 0.1.1-rc.16"
       ],
-      "notes": "Checkpoint 14 (2026-10-04): 11 of 13 systems pass. Porphyry fails in 11 of 20,000 broad cases (up to 0.0507″); Topocentric in 444 ladder and 301 broad cases (up to 0.465″), and is undefined in the engine alone in 519 and 979."
+      "notes": "Checkpoint 14 (2026-10-04): 11 of 13 systems pass. Porphyry fails in 11 of 20,000 broad cases (up to 0.0507″); Topocentric in 444 ladder and 301 broad cases (up to 0.465″), and is undefined in the engine alone in 519 and 979. The engine's diagnostics (not preregistered): Swiss's Porphyry positions are the exact ones for each longitude plus 0.001″, magnified in narrow quadrants, and Swiss's Topocentric positions are near the exact solution, not on it, where the engine's satisfy their circle's equation to 1.13e-9″. Meeting the gate as worded would mean reproducing Swiss's departures, which the brief's third non-negotiable rules out; it needs a decision on the gate, not an engine fix."
     },
     {
       "id": "P2.A.houses.vertex-east-point",
@@ -830,15 +832,16 @@
       "weight": 0.25,
       "gate": "vs Swiss houses_ex ascmc",
       "dependsOn": [],
-      "status": "accepted",
-      "release": "released",
+      "status": "validated",
+      "release": "deployed",
       "evidence": [
         "docs/platform/evidence/rc16-gates-2026-10-04/README.md",
-        "https://github.com/zodiacs-org/engine/tree/ddbbaa0b1d21e16834722f81e8708816849c6726/docs/evidence/houses-extra-2026-09-29 (gate A, rerun on rc.16's build: within 0.0000000047″ of swe_houses_armc's ascmc[4..7] given its inputs, 25,616 cases)",
-        "docs/platform/evidence/co-ascendants-2026-10-04/README.md (preregistered; end to end from an instant and a place: within 0.021″ of swe_houses_ex on the 55–66.6° ladder from 1850 to 2049, 3″ allowed)",
-        "coAscendants in @zodiacs/engine/houses; released in @zodiacs/engine 0.1.1-rc.16, on npm under next since 2026-10-01 with SLSA provenance from the trusted publisher; the site vendors the same bytes (43a72d30…15d8)"
+        "https://github.com/zodiacs-org/engine/tree/ddbbaa0b1d21e16834722f81e8708816849c6726/docs/evidence/houses-extra-2026-09-29 (gate A, rerun on rc.16's build: within 0.000000005″ (4.71e-9″) of swe_houses_armc's ascmc[4..7] given its inputs, 25,616 cases)",
+        "docs/platform/evidence/co-ascendants-2026-10-04/README.md (preregistered; end to end from an instant and a place with Swiss given the engine's UT1 Julian day: within 0.021″ of swe_houses_ex on the 55–66.6° ladder from 1850 to 2049, 3″ allowed; results/clock-readings.json, added after review: with Swiss reading the UTC instant as UT1, 40 to 48 of 319 ladder cases over 3″, the largest 88.5″; a scratch comparison earlier the same day had found up to 6.07″ after 2050)",
+        "coAscendants in @zodiacs/engine/houses; released in @zodiacs/engine 0.1.1-rc.16, on npm under next since 2026-10-01 with SLSA provenance built from 6807f632 (the merge of engine #22, whose package source is the release source ddbbaa0); the site vendors the same bytes (43a72d30…15d8)",
+        "production dpl_Av6FTWYa2iFZzT2WZuWeCsRDg2oV (READY 2026-10-04T17:54:58Z, aliased to zodiacs.org) serves site 67aa32d8, which vendors the rc.16 archive 43a72d30…15d8; its engine chunk names 0.1.1-rc.16"
       ],
-      "notes": "Accepted at checkpoint 14 (2026-10-04) under M5's rule for the points beside the houses: within 0.01″ of Swiss given its inputs and within 3″ end to end on the ladder. The engine's gate A measured only the first half, against houses_armc; the gate names houses_ex, the end-to-end form, which co-ascendants-2026-10-04 measured. Outside 1850–2049 Swiss's long-term sidereal time is not judged."
+      "notes": "Checkpoint 14 (2026-10-04): validated, not accepted. Given Swiss's inputs the four points meet M5's 0.01″; end to end they are within 3″ on the ladder from 1850 to 2049 only with Swiss given the engine's UT1 Julian day. Both that reading and the window were chosen with residuals known: the rc.16 accuracy refresh on main had measured the house systems both ways, and a scratch comparison earlier the same day had found up to 6.07″ after 2050, though the preregistration said the end-to-end half had not been measured. Under README *Status and release* the unit is validated until the owner ratifies the reading and the window (FINDINGS F-71); it fails if the owner does not."
     },
     {
       "id": "P2.A.houses.cusp-speeds",
@@ -850,12 +853,13 @@
       "gate": "vs Swiss houses_ex2 speeds",
       "dependsOn": [],
       "status": "failed",
-      "release": "released",
+      "release": "deployed",
       "evidence": [
         "docs/platform/evidence/rc16-gates-2026-10-04/README.md",
-        "https://github.com/zodiacs-org/engine/tree/ddbbaa0b1d21e16834722f81e8708816849c6726/docs/evidence/houses-extra-2026-09-29 (gates S and F, rerun on rc.16's build)"
+        "https://github.com/zodiacs-org/engine/tree/ddbbaa0b1d21e16834722f81e8708816849c6726/docs/evidence/houses-extra-2026-09-29 (gates S and F, rerun on rc.16's build)",
+        "production dpl_Av6FTWYa2iFZzT2WZuWeCsRDg2oV (READY 2026-10-04T17:54:58Z, aliased to zodiacs.org) serves site 67aa32d8, which vendors the rc.16 archive 43a72d30…15d8; its engine chunk names 0.1.1-rc.16"
       ],
-      "notes": "Checkpoint 14 (2026-10-04): against swe_houses_armc_ex2 at 0.004°/day + 1e-6|v| the ascendant, the midheaven and eight systems pass; Koch, Placidus, Porphyry, whole sign and Alcabitius fail. Against a central difference of the engine's own cusps every system passes (largest 0.000348°/day), and the engine's record finds Swiss's speeds disagreeing with a central difference of Swiss's own cusps in the same values. The gate names Swiss's speeds, so it stands failed; judging against a derivative instead would be a gate change, not made here."
+      "notes": "Checkpoint 14 (2026-10-04): against swe_houses_armc_ex2 at 0.004°/day + 1e-6|v| the ascendant, the midheaven and eight systems pass; Koch, Placidus, Porphyry, whole sign and Alcabitius fail. Against a central difference of the engine's own cusps every system passes (largest 0.000348°/day), and the engine's record finds Swiss's speeds disagreeing with a central difference of Swiss's own cusps in the same values. The gate names Swiss's speeds, so it stands failed; judging against a derivative instead would be a decision on the gate, not made here."
     },
     {
       "id": "P2.A.points.mean-node-lilith",
@@ -1104,12 +1108,13 @@
       "gate": "cited worked examples; completeness verdict",
       "dependsOn": [],
       "status": "partial",
-      "release": "released",
+      "release": "deployed",
       "evidence": [
         "docs/platform/evidence/rc16-gates-2026-10-04/README.md",
-        "https://github.com/zodiacs-org/engine/tree/ddbbaa0b1d21e16834722f81e8708816849c6726/docs/evidence/houses-extra-2026-09-29 (gate R, rerun on rc.16's build)"
+        "https://github.com/zodiacs-org/engine/tree/ddbbaa0b1d21e16834722f81e8708816849c6726/docs/evidence/houses-extra-2026-09-29 (gate R, rerun on rc.16's build)",
+        "production dpl_Av6FTWYa2iFZzT2WZuWeCsRDg2oV (READY 2026-10-04T17:54:58Z, aliased to zodiacs.org) serves site 67aa32d8, which vendors the rc.16 archive 43a72d30…15d8; its engine chunk names 0.1.1-rc.16"
       ],
-      "notes": "Checkpoint 14 (2026-10-04): every result carries its completeness verdict (complete); for each of the ten bodies the returns match JPL Horizons's crossings in number and direction within the body's tolerance; an equinox-born native's solar returns fall within 50 s of USNO's published equinoxes (210 s allowed). Not met: cited worked examples. The Horizons fixtures are computed, and only the Sun has a published reference."
+      "notes": "Checkpoint 14 (2026-10-04): every result carries its completeness verdict (complete); for each of the ten bodies the returns match JPL Horizons's crossings in number and direction within the body's tolerance; an invented native's solar returns fall within 50 s of USNO's published equinoxes (210 s allowed). Not met: cited worked examples. The Horizons fixtures are computed, and the Sun's check applies a published reference to an invented native; no return is checked against a cited worked example."
     },
     {
       "id": "P2.A.timing.planetary-hours",
@@ -1121,13 +1126,14 @@
       "gate": "cited worked examples; sunrise/sunset per rise-set rule",
       "dependsOn": [],
       "status": "failed",
-      "release": "released",
+      "release": "deployed",
       "evidence": [
         "docs/platform/evidence/rc16-gates-2026-10-04/README.md",
         "https://github.com/zodiacs-org/engine/tree/ddbbaa0b1d21e16834722f81e8708816849c6726/src/sky/hours.test.ts (cited worked examples)",
-        "https://github.com/zodiacs-org/engine/tree/ddbbaa0b1d21e16834722f81e8708816849c6726/docs/evidence/sky-chinese-2026-09-29/rc16 (S4)"
+        "https://github.com/zodiacs-org/engine/tree/ddbbaa0b1d21e16834722f81e8708816849c6726/docs/evidence/sky-chinese-2026-09-29/rc16 (S4)",
+        "production dpl_Av6FTWYa2iFZzT2WZuWeCsRDg2oV (READY 2026-10-04T17:54:58Z, aliased to zodiacs.org) serves site 67aa32d8, which vendors the rc.16 archive 43a72d30…15d8; its engine chunk names 0.1.1-rc.16"
       ],
-      "notes": "Checkpoint 14 (2026-10-04): the cited worked examples pass (Chaucer, Astrolabe II.12; Skeat's notes to II.7–10; Heindel 1919, pp. 155–156; Cassius Dio 37.19), and the hours divide the rise/set function's sunrises and sunsets exactly (227,880 hours, 0 failures at 1 ms). The gate takes sunrise and sunset per the rise-set rule, which fails, one of its USNO failures a sunset; the unit stands failed until rise and set pass."
+      "notes": "Checkpoint 14 (2026-10-04): the cited worked examples pass (Chaucer, Astrolabe II.12; Skeat's notes to II.7–10; Heindel 1919, pp. 155–156; Cassius Dio 37.19), and the hours divide the rise/set function's sunrises and sunsets exactly (227,880 hours, 0 failures at 1 ms). The gate takes sunrise and sunset per the rise-set rule. The Sun's rises and sets meet its 5 s comparisons, but one of the rule's two USNO misses is the Sun's set at 34.60° S on 2024-06-21 (−30.149 s), so the unit stands failed while that sunset misses; the Uranus events do not bear on the hours."
     },
     {
       "id": "P2.A.rise-set",
@@ -1139,12 +1145,13 @@
       "gate": "≤ 5 s from Swiss rise_trans and a first-principles computation on a site grid; USNO ±30 s check",
       "dependsOn": [],
       "status": "failed",
-      "release": "released",
+      "release": "deployed",
       "evidence": [
         "docs/platform/evidence/rc16-gates-2026-10-04/README.md",
-        "https://github.com/zodiacs-org/engine/tree/ddbbaa0b1d21e16834722f81e8708816849c6726/docs/evidence/sky-chinese-2026-09-29/rc16 (S1 to S3, on rc.16's build)"
+        "https://github.com/zodiacs-org/engine/tree/ddbbaa0b1d21e16834722f81e8708816849c6726/docs/evidence/sky-chinese-2026-09-29/rc16 (S1 to S3, on rc.16's build)",
+        "production dpl_Av6FTWYa2iFZzT2WZuWeCsRDg2oV (READY 2026-10-04T17:54:58Z, aliased to zodiacs.org) serves site 67aa32d8, which vendors the rc.16 archive 43a72d30…15d8; its engine chunk names 0.1.1-rc.16"
       ],
-      "notes": "Checkpoint 14 (2026-10-04): 192 of 189,491 events over 5 s against skyfield with DE440s (largest 11.603 s) and the same 192 against Swiss rise_trans (largest 11.609 s), all rises and sets of Uranus in 1950 at 65° N and S; 2 of 467 over 30 s against USNO (the Moon's rise at 34.60° S on 1950-03-20, −30.058 s; the Sun's set there on 2024-06-21, −30.149 s)."
+      "notes": "Checkpoint 14 (2026-10-04): 192 of 189,491 events over 5 s against skyfield with DE440s (largest 11.603 s) and the same 192 against Swiss rise_trans (largest 11.609 s), all rises and sets of Uranus in 1950 at 65° N and S, where astronomy-engine's Uranus is 15″ to 18″ of altitude from DE440s at a grazing crossing (an ephemeris limit; the DE440 backend, P4.1, is the route); 2 of 467 over 30 s against USNO, which publishes to the minute (the Moon's rise at 34.60° S on 1950-03-20, −30.058 s; the Sun's set there on 2024-06-21, −30.149 s)."
     },
     {
       "id": "P2.A.composite-davison",
@@ -1358,14 +1365,15 @@
         "P3.2"
       ],
       "status": "accepted",
-      "release": "released",
+      "release": "deployed",
       "evidence": [
         "docs/platform/evidence/rc16-gates-2026-10-04/README.md",
-        "https://github.com/zodiacs-org/engine/tree/ddbbaa0b1d21e16834722f81e8708816849c6726/docs/evidence/calc-api (PREREGISTRATION.md; rc16/README.md on rc.16's build: all twelve frame-transform checks against an independent pyerfa 2.0.1.5 / ERFA 2.0.1 chain built from JPL Horizons ICRF vectors pass, the four through the nutation within 0.0023″ of 0.005″)",
+        "https://github.com/zodiacs-org/engine/tree/ddbbaa0b1d21e16834722f81e8708816849c6726/docs/evidence/calc-api (PREREGISTRATION.md; rc16/README.md on rc.16's build: all twelve frame-transform checks of part (a) pass, each turning the engine's own output with ERFA (pyerfa 2.0.1.5, ERFA 2.0.1) and comparing it with the engine's output in another frame, the four through the nutation within 0.0023″ of 0.005″; part (b), the positions against ERFA frames built from JPL Horizons ICRF vectors, sets bounds rather than a pass)",
         "docs/platform/evidence/rc16-gates-2026-10-04/results/calc-roundtrip-replay.json (the engine's 25 round-trip fixtures, SHA-256 b56ba1cf…e874, replayed against the vendored rc.16 archive: every result and the 16 receipts' requests exact, in all eight frames, four centres and three corrections, with nine typed refusals)",
-        "calc in @zodiacs/engine/calc; released in @zodiacs/engine 0.1.1-rc.16, on npm under next since 2026-10-01 with SLSA provenance from the trusted publisher; the site vendors the same bytes (43a72d30…15d8)"
+        "calc in @zodiacs/engine/calc; released in @zodiacs/engine 0.1.1-rc.16, on npm under next since 2026-10-01 with SLSA provenance built from 6807f632 (the merge of engine #22, whose package source is the release source ddbbaa0); the site vendors the same bytes (43a72d30…15d8)",
+        "production dpl_Av6FTWYa2iFZzT2WZuWeCsRDg2oV (READY 2026-10-04T17:54:58Z, aliased to zodiacs.org) serves site 67aa32d8, which vendors the rc.16 archive 43a72d30…15d8; its engine chunk names 0.1.1-rc.16; the site does not call calc()"
       ],
-      "notes": "Accepted at checkpoint 14 (2026-10-04). Equatorial, J2000 and ICRS frames, heliocentric and barycentric centres, distances, and speeds in every coordinate (cartesian rates included) through calc(). Positions against Horizons are bounded per body and frame (median 3.00″, largest 24.6″, geocentric and apparent); that is the ephemeris, which other units judge. It depends on P3.2, which stays partial: the brief asks for these outputs through the uniform API (3.2), and they go through calc(), released; the clause P3.2 misses is the sidereal option, which none of these outputs uses. The earlier note (rc.11, vector-derived equatorial coordinates, no uniform API) described the package before rc.16."
+      "notes": "Accepted at checkpoint 14 (2026-10-04). Equatorial, J2000 and ICRS frames, heliocentric and barycentric centres, distances, and speeds in every coordinate (cartesian rates included) through calc(). Positions against Horizons are bounded per body and frame (median 3.00″, largest 24.6″, geocentric and apparent); that is the ephemeris, which other units judge. It depends on P3.2, which stays partial: the brief asks for these outputs through the uniform API (3.2), and they go through calc(), released; the clause P3.2 misses is the sidereal zodiac, which none of these outputs uses. The ledger's rules do not define dependsOn, and this is the first accepted unit whose dependency is not accepted. The earlier note (rc.11, vector-derived equatorial coordinates, no uniform API) described the package before rc.16."
     },
     {
       "id": "P2.E.progressions",
@@ -1405,7 +1413,7 @@
         "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/src/lib/engine/lunar-return.ts",
         "docs/platform/evidence/programme-audit-2026-10-04/README.md",
         "docs/platform/evidence/programme-audit-2026-10-04/year-scan-parity.json",
-        "production dpl_Av6FTWYa2iFZzT2WZuWeCsRDg2oV (READY 2026-10-04T17:54:58Z, aliased to zodiacs.org) serves site 67aa32d8, which vendors the rc.16 archive 43a72d30…15d8; its engine chunk names 0.1.1-rc.16; /profile/ loads ProfileDashboard.DWK6Ee01.js, then ProfileDashboard.AoOmDIeV.js, then year-scan.BK5ZoljG.js, which imports the package's techniques.AoBtvjde.js; both of the last two are byte-identical to a local build of the merged tree (checked 2026-10-04)"
+        "production dpl_Av6FTWYa2iFZzT2WZuWeCsRDg2oV (READY 2026-10-04T17:54:58Z, aliased to zodiacs.org) serves site 67aa32d8, which vendors the rc.16 archive 43a72d30…15d8; its engine chunk names 0.1.1-rc.16; /profile/ loads ProfileDashboard.DWK6Ee01.js, then ProfileDashboard.AoOmDIeV.js, then year-scan.BK5ZoljG.js, which imports the package's techniques.AoBtvjde.js; production's year-scan.BK5ZoljG.js (SHA-256 39dda0a94f93248856bf3bd15fe2f43e9c08daaf8f108b089f855356d49ba43b) and techniques.AoBtvjde.js (1e15aec5d8149126637376696676ddcf3ae686c8ffda1a8328753cf4bf46f4f8) equal a local build of the merged tree byte for byte (checked 2026-10-04)"
       ],
       "notes": "Solar/lunar return instant searches are imported from package techniques; site chart adapters preserve their existing output shape. Parity sections R-SI/R-SY/R-SM/R-SC/R-LI/R-LC record agreement; R-E retains span differences. Finite product-parity/adoption gate only; not independent astronomical accuracy or general completeness. Existing package and convention limitations remain. Recorded parity: 1980 cases, 1930 agree, 50 differ. Differences: returns-span 50. Released rc16 source ddbbaa0b1d21e16834722f81e8708816849c6726, archive 43a72d30e483d8ff22024e403c4bd0d86d81bb6e1d0ad138f857cd001ab015d8; production dpl_4LmaXAGm8YJFF6vastJQ5WWXSTE8 at b1636359. Original October 2 six-request live receipt and private acceptance commit remain missing; neither is reconstructed or credited. Audit 2026-10-04 (checkpoint 13; FINDINGS F-67): the removal clause was not met at 9d7dd31d. src/lib/engine/year-scan.ts, the year ahead on /profile/, still found solar returns with the site's own Sun crossing scan, the construction PR620 removed from solar-return.ts; production served it. The audit routes it through the package's mostRecentSolarReturnInstant: on 1,000 seeded synthetic windows every window has the same returns as the replaced scan, 999 of 1,002 to the millisecond and none more than 3 ms apart (year-scan-parity.json); src/lib/engine/year-scan-returns.test.ts fails if the site scans the Sun itself again. Validated, not accepted, until production serves the change; the recorded rc16 parity above is unchanged. Accepted again at checkpoint 14 (2026-10-04): production dpl_Av6FTWYa2iFZzT2WZuWeCsRDg2oV (READY 2026-10-04T17:54:58Z, aliased to zodiacs.org) serves site 67aa32d8, which vendors the rc.16 archive 43a72d30…15d8; its engine chunk names 0.1.1-rc.16, and the year ahead's solar returns come from the package."
     },
@@ -1612,13 +1620,14 @@
       "gate": ".d.ts covers every calc_ut option Phase 2 ships; round-trip fixtures; typed refusals",
       "dependsOn": [],
       "status": "partial",
-      "release": "released",
+      "release": "deployed",
       "evidence": [
         "docs/platform/evidence/rc16-gates-2026-10-04/README.md",
         "https://github.com/zodiacs-org/engine/tree/ddbbaa0b1d21e16834722f81e8708816849c6726/docs/calc.md (Swiss Ephemeris calc_ut flags)",
-        "docs/platform/evidence/rc16-gates-2026-10-04/results/calc-roundtrip-replay.json"
+        "docs/platform/evidence/rc16-gates-2026-10-04/results/calc-roundtrip-replay.json",
+        "production dpl_Av6FTWYa2iFZzT2WZuWeCsRDg2oV (READY 2026-10-04T17:54:58Z, aliased to zodiacs.org) serves site 67aa32d8, which vendors the rc.16 archive 43a72d30…15d8; its engine chunk names 0.1.1-rc.16"
       ],
-      "notes": "Checkpoint 14 (2026-10-04): calc(), houses(), events() and chart() are typed in @zodiacs/engine/calc, refusals are typed, and the round-trip fixtures replay exactly. Not met: the engine's own map of calc_ut flags gives SEFLG_SIDEREAL as typed in but refused (not-in-this-version), while Phase 2 ships the sidereal zodiac through @zodiacs/engine/vedic, on which the nakshatra and dasha units are accepted."
+      "notes": "Checkpoint 14 (2026-10-04): calc(), houses(), events() and chart() are typed in @zodiacs/engine/calc, refusals are typed, and the round-trip fixtures replay exactly, though none exercises chart(). Not met, the first clause, for two options Phase 2 ships: the engine's own map of calc_ut flags gives SEFLG_SIDEREAL as typed in but refused (not-in-this-version), while @zodiacs/engine/vedic gives sidereal longitudes, on which the nakshatra and dasha units are accepted; and CalcAyanamsa names the nine built-in ayanamsas only, while vedic also ships userAyanamsa, the counterpart of SE_SIDM_USER."
     },
     {
       "id": "P3.3",
@@ -2352,13 +2361,14 @@
       "gate": "switch instants agree with dense 1 s sampling on 1,000 random windows, zero missed",
       "dependsOn": [],
       "status": "accepted",
-      "release": "released",
+      "release": "deployed",
       "evidence": [
         "docs/platform/evidence/rc16-gates-2026-10-04/README.md",
-        "https://github.com/zodiacs-org/engine/tree/ddbbaa0b1d21e16834722f81e8708816849c6726/docs/evidence/birth-window (PREREGISTRATION.md committed d1000e66 before the run; RESULTS.md PASS on 670db8a6; rc16/README.md and rc16/summary.json, the same method on rc.16's build 704cadc: 1,000 of 1,000 windows pass, 24,188 one-second transitions all matched, 0 missed, 0 extra, 0 cell disagreements, 1,487,520 millisecond checks with 0 failures)",
-        "birthWindow in @zodiacs/engine/window; released in @zodiacs/engine 0.1.1-rc.16, on npm under next since 2026-10-01 with SLSA provenance from the trusted publisher; the site vendors the same bytes (43a72d30…15d8)"
+        "https://github.com/zodiacs-org/engine/tree/ddbbaa0b1d21e16834722f81e8708816849c6726/docs/evidence/birth-window (PREREGISTRATION.md, committed in d03f60c0 at 2026-09-28T17:29:42Z before the run; RESULTS.md, PASS, committed in 09f8aa18 at 19:10:39Z; rc16/README.md and rc16/summary.json, the same method on rc.16's build 704cadc: 1,000 of 1,000 windows pass, 24,188 one-second transitions all matched, 0 missed, 0 extra, 0 cell disagreements, 1,487,520 millisecond checks with 0 failures)",
+        "birthWindow in @zodiacs/engine/window; released in @zodiacs/engine 0.1.1-rc.16, on npm under next since 2026-10-01 with SLSA provenance built from 6807f632 (the merge of engine #22, whose package source is the release source ddbbaa0); the site vendors the same bytes (43a72d30…15d8)",
+        "production dpl_Av6FTWYa2iFZzT2WZuWeCsRDg2oV (READY 2026-10-04T17:54:58Z, aliased to zodiacs.org) serves site 67aa32d8, which vendors the rc.16 archive 43a72d30…15d8; its engine chunk names 0.1.1-rc.16; the site does not call birthWindow"
       ],
-      "notes": "Accepted at checkpoint 14 (2026-10-04) on the engine's own preregistered check, rerun on rc.16's build; from that build to the release the window code changed only in comments. Limits stay: near the true node's ingresses a window can leave a stretch unresolved (flag node-unresolved, the node's cells null; none of the 1,000 did), and neither the site nor the hosted compute API calls birthWindow yet. The earlier note named only the site's Moon-sign candidates and research interval machinery."
+      "notes": "Accepted at checkpoint 14 (2026-10-04) on the engine's own preregistered check, rerun on rc.16's build; from that build to the release the window code changed only in comments. The title's \"engine/API\" is read as the engine's own interface, as the programme's handoff of 2026-09-30 read it (the calc, window, houses and sky capabilities); the brief's first slice also names the birth chart tool (B2.b) and the API, and neither the tool nor the hosted compute API offers windows yet. Near the true node's ingresses a window can leave a stretch unresolved (flag node-unresolved, the node's cells null; none of the 1,000 did). RESULTS.md names the preregistration and the measured build as d1000e66 and 670db8a6, hashes from before a rebase that are in no published history (FINDINGS F-73); the rc.16 rerun on 704cadc stands on its own. The earlier note named only the site's Moon-sign candidates and research interval machinery."
     },
     {
       "id": "B2.b",
@@ -2386,9 +2396,13 @@
       "dependsOn": [
         "B2.a"
       ],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "accepted",
+      "release": "merged",
+      "evidence": [
+        "docs/platform/evidence/rc16-gates-2026-10-04/README.md",
+        "https://github.com/zodiacs-org/engine/tree/ddbbaa0b1d21e16834722f81e8708816849c6726/docs/evidence/birth-window (RESULTS.md: the 1,000-window rule recorded as PASS, committed in 09f8aa18 after the preregistration d03f60c0; rc16/README.md: PASS again on rc.16's build 704cadc, with rc16/summary.json; both on the engine's main, 23660f5)"
+      ],
+      "notes": "Accepted at checkpoint 14 (2026-10-04): the gate asks for the rule run recorded as PASS or FAIL, and the engine's records give PASS, preregistered, and PASS again on rc.16's build. Recorded merged, as the ledger records the other records it accepts (B1.a, B1.b, B3.a)."
     },
     {
       "id": "B3.a",
