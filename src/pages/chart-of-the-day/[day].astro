@@ -1,0 +1,7 @@
+---
+import ChartOfDayPage from '../../components/return-visits/ChartOfDayPage.astro';
+import { dailyEditions } from '../../lib/return-visits/chart-of-day';
+export function getStaticPaths() { return dailyEditions.map((edition) => ({ params: { day: edition.day }, props: { edition } })); }
+const { edition } = Astro.props;
+---
+<ChartOfDayPage edition={edition} />

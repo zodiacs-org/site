@@ -1,4 +1,5 @@
 ---
+import ReturnToolLinks from "../../components/return-visits/ReturnToolLinks.astro";
 import Base from '../../layouts/Base.astro';
 import ProfileDashboard from '../../islands/ProfileDashboard';
 import ProfileInvites from '../../islands/ProfileInvites';
@@ -95,6 +96,7 @@ const savedRecordsSurfaceEnabled = savedRecordsEnabled({
       </p>
     </aside>
   </section>
+<section class="section--tight container"><ReturnToolLinks locale="en" /></section>
 </Base>
 
 <style is:global>

@@ -1,0 +1,35 @@
+---
+import { ruOgImageForPath } from '../../strings/seo.ru.mjs';
+import Base from '../../layouts/Base.astro';
+import ReturnToolLinks from './ReturnToolLinks.astro';
+import DailyEditionHome from '../../islands/DailyEditionHome';
+import { dailyEditions } from '../../lib/return-visits/chart-of-day';
+import DailyPublicChart from '../../islands/DailyPublicChart';
+import { localizePath, type CatalogLocale } from '../../lib/i18n';
+import { returnText as s } from '../../lib/return-visits/copy';
+import { sharingText } from '../../lib/sharing/copy';
+import { englishOnlyCue } from '../../lib/i18n/english-only';
+import type { DailyEdition } from '../../lib/return-visits/chart-of-day';
+import '../../styles/sharing-tools.css';
+import '../../styles/return-visits.css';
+interface Props { locale?: CatalogLocale; edition?: DailyEdition | null }
+const { locale = 'en', edition = null } = Astro.props;
+const path = localizePath(locale, '/chart-of-the-day/');
+const route = edition ? `${path}${edition.day}/` : path;
+const englishCue = englishOnlyCue(locale);
+---
+<Base clientUi locale={locale} path={route} title={`${s(locale, 'dayTitle')}${edition ? ` · ${edition.name}` : ''} | Zodiacs.org`} description={s(locale, 'dayLede')} image={locale === 'ru' ? ruOgImageForPath(path) ?? '/assets/og/v2/ru/share.png' : '/assets/og/v2/tool/birth-chart.png'} imageAlt={s(locale, 'dayTitle')} noindex={!edition} glass>
+  <section class="section--tight container return-page">
+    <header class="tool-hero sharing-hero"><h1 class="display">{s(locale, 'dayTitle')}</h1><p>{s(locale, 'dayLede')}</p></header>
+    {edition ? <article class="return-panel">
+      <h2>{edition.name}</h2><time datetime={edition.day}>{edition.day} · UTC</time>
+      <p data-result-opening>{s(locale, 'dayOpening')}</p>
+      <h3>{s(locale, 'dayNews')}</h3><p>{edition.reason[locale]}</p><a href={edition.newsSource} rel="noopener noreferrer">{edition.newsSourceTitle}</a>
+      <h3>{s(locale, 'daySource')}</h3><p>{edition.birthDate} · {s(locale, 'dayTimeUnknown')}</p><a href={edition.birthSource} rel="noopener noreferrer">{edition.birthSourceTitle}</a>
+      <h3>{s(locale, 'dayReliability')}</h3><p>{edition.reliability[locale]}</p>
+      <DailyPublicChart date={edition.birthDate} locale={locale} client:load />
+      <noscript><p>{sharingText(locale, 'jsRequired')}</p></noscript>
+    </article> : <><DailyEditionHome locale={locale} editions={dailyEditions.map(({ day, name }) => ({ day, name }))} client:load /><a href="/people/" hreflang="en">{sharingText(locale, 'directory')}{englishCue?.suffix} →</a></>}
+    <ReturnToolLinks locale={locale} current="/chart-of-the-day/" />
+  </section>
+</Base>

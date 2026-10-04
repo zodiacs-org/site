@@ -1,0 +1,27 @@
+.return-countdown { margin-block: 28px; padding: 24px; border: 1px solid var(--hair-1); border-radius: var(--r-md); background: var(--void-1); }
+.return-countdown h2 { margin: 0 0 12px; font-size: 18px; font-weight: 500; }
+.return-countdown__count { font-family: var(--font-serif); font-size: clamp(28px, 5vw, 44px); line-height: 1.1; color: var(--sign-capricorn); margin: 0 0 14px; }
+.return-countdown time { font-size: 14px; font-family: var(--font-mono); }
+.return-page { max-width: 850px; }
+.return-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-block: 26px; }
+.return-panel { margin-block: 26px; padding: clamp(20px, 4vw, 32px); border: 1px solid var(--hair-1); border-radius: var(--r-md); background: var(--void-1); }
+.return-panel h2 { margin: 0 0 16px; font-family: var(--font-serif); font-weight: 400; font-size: 32px; }
+.return-panel p { color: var(--text-2); max-width: 65ch; }
+.return-panel .btn { margin-top: 16px; }
+.return-url { display: block; overflow-wrap: anywhere; font-size: 14px; margin-block: 12px; }
+.return-personal { display: grid; gap: 20px; }
+.return-personal select { width: 100%; }
+.return-personal .btn { justify-self: start; }
+.return-contact-list { padding: 0; list-style: none; display: grid; gap: 14px; }
+.return-contact-list li { padding-block: 14px; border-bottom: 1px solid var(--hair-1); display: grid; gap: 8px; }
+.return-contact-list time { font-family: var(--font-mono); font-size: 13px; color: var(--muted); }
+.return-upcoming { color: var(--sign-gemini); font-size: 13px; }
+.return-card-preview { display: block; width: min(100%, 270px); height: auto; margin-top: 24px; border: 1px solid var(--hair-1); border-radius: var(--r-md); }
+.return-personal fieldset { min-width: 0; display: grid; gap: 16px; padding: 22px; border: 1px solid var(--hair-1); border-radius: var(--r-md); }
+.return-result { margin-top: 32px; scroll-margin-top: 90px; }
+.return-result h2 { margin-bottom: 18px; }
+.return-result .chart-trust time { overflow-wrap: anywhere; }
+.return-discovery ul { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 22px; }
+.return-discovery a { min-height: 44px; display: inline-flex; align-items: center; text-underline-offset: 4px; }
+.return-discovery { border-top: 1px solid var(--hair-1); margin-block: 32px 20px; padding-top: 22px; }
+.return-discovery h2 { font-family: var(--font-serif); font-weight: 400; font-size: 27px; margin-bottom: 14px; }

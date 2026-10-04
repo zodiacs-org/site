@@ -162,6 +162,22 @@ jobs:
       - name: Engine accuracy vectors
         run: npm test
 
+      - name: Return visits, browser PDF and private sharing
+        timeout-minutes: 6
+        env:
+          RETURN_VISITS_BROWSERS: chromium
+          OUT_DIR: tests/visual/artifacts/return-visits
+        run: node tests/return-visits-drive.mjs
+
+      - name: Upload return visit evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: return-visits-browser-${{ github.run_id }}
+          path: tests/visual/artifacts/return-visits/
+          if-no-files-found: ignore
+          retention-days: 30
+
       # The precision alpha's own suite is node:test, not vitest, so the
       # line above does not reach it -- and it is where the aliasing
       # counterexamples, the proven-completeness cases and the result

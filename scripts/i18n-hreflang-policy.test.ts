@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { LOCALES, LOCALE_META, alternatePathEntries } from '../src/lib/i18n';
 import { SIGN_SLUGS } from '../src/lib/signs';
+import { dailyEditions } from '../src/lib/return-visits/chart-of-day';
 import {
   ABSENT_LOCALES,
   ACTIVE_HREFLANGS,
@@ -25,7 +26,7 @@ describe('hreflang release policy', () => {
     expect(STAGED_NOINDEX_LOCALES).toEqual([]);
     expect(ABSENT_LOCALES).toEqual(['ar']);
     expect(X_DEFAULT_HREFLANG).toEqual({
-      hreflang: 'x-default', locale: 'en', expectedBlocks: 641,
+      hreflang: 'x-default', locale: 'en', expectedBlocks: 659 + dailyEditions.length * 6,
     });
     expect(hreflangRouteFamily('/fr/tools/')).toBe('core');
     expect(hreflangRouteFamily('/birthday/february-29/')).toBe('birthday');
@@ -51,10 +52,10 @@ describe('hreflang release policy', () => {
         expect([...expectedHreflangsForPath(`${prefix}${path}`)]).toEqual([...expected, 'x-default']);
       }
     }
-    // Fourteen daily route families plus four sharing tools in six languages.
-    expect(HREFLANG_LOCALE_POLICY.find(({ locale }) => locale === 'en')?.expectedBlocks).toBe(575 + 14 * 3 + 24);
+    // Fourteen daily families, four sharing tools, three indexed return tools and owner-approved dated editions.
+    expect(HREFLANG_LOCALE_POLICY.find(({ locale }) => locale === 'en')?.expectedBlocks).toBe(575 + 14 * 3 + 24 + 18 + dailyEditions.length * 6);
     for (const locale of ['es', 'pt']) {
-      expect(HREFLANG_LOCALE_POLICY.find((entry) => entry.locale === locale)?.expectedBlocks).toBe(209 + 14 * 3 + 24);
+      expect(HREFLANG_LOCALE_POLICY.find((entry) => entry.locale === locale)?.expectedBlocks).toBe(209 + 14 * 3 + 24 + 18 + dailyEditions.length * 6);
     }
   });
 });
