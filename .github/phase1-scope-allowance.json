@@ -1,7 +1,7 @@
 {
   "version": 1,
   "id": "owner-review-fixes-20261004",
-  "baseCommit": "9d7dd31daa673fd1a21675ce359f9f4a69eac1cd",
+  "baseCommit": "67aa32d8b3f112a08aebe5f7b52db9a331ecbaf1",
   "protectedPaths": [
     "src/pages/es/index.astro",
     "src/pages/es/saturn-return/index.astro",
