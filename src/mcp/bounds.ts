@@ -13,8 +13,8 @@
 import { NATAL_ENVELOPE_LIMITS } from '@zodiacs/engine/receipt';
 
 /** This adapter's own version, distinct from the engine's. */
-export const ADAPTER_VERSION = '0.1.0-rc.16';
-export const ADAPTER_NAME = 'zodiacs-mcp-server';
+export const ADAPTER_VERSION = '0.1.0-rc.16.1';
+export const ADAPTER_NAME = 'zodiacs-mcp-server' as const;
 
 /**
  * The epoch the site supports everywhere else — every date input on

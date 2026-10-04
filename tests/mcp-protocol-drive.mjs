@@ -6,10 +6,12 @@
  *
  * Nothing here is mocked: the drive spawns `examples/mcp-server/server.mjs` as
  * a child process, speaks MCP over its stdio, and reads what comes back. It
- * initializes, lists the tools, calls all three, drives eighteen malformed or
- * refused requests, checks that a valid request still works after every one of
- * them, probes four raw line shapes the SDK client cannot express, and closes
- * the process.
+ * initializes, lists the tools and their output schemas, calls all three —
+ * the client itself checks every result against the schema the server
+ * advertised — checks what each result cites, lists and reads the two
+ * resources, drives eighteen malformed or refused requests, checks that a
+ * valid request still works after every one of them, probes raw line shapes
+ * the SDK client cannot express, and closes the process.
  *
  * Every chart in here is synthetic: round coordinates for well-known cities on
  * dates chosen for what they exercise. No real person's birth details are used
@@ -35,6 +37,18 @@ import { LATEST_PROTOCOL_VERSION, SUPPORTED_PROTOCOL_VERSIONS } from '@modelcont
 const ROOT = fileURLToPath(new URL('../', import.meta.url));
 const SERVER = resolve(ROOT, 'examples/mcp-server/server.mjs');
 const OUT = resolve(ROOT, 'docs/platform/evidence/mcp-adapter');
+const PACKAGE_VERSION = JSON.parse(await readFile(resolve(ROOT, 'examples/mcp-server/package.json'), 'utf8')).version;
+const DOCS = 'https://zodiacs.org/developers/mcp/';
+
+/** RFC 8785 canonical JSON and its SHA-256, written out here, as a client citing a result would. */
+const canonical = (value) => {
+  if (Array.isArray(value)) return `[${value.map(canonical).join(',')}]`;
+  if (value !== null && typeof value === 'object') {
+    return `{${Object.keys(value).sort().map((key) => `${JSON.stringify(key)}:${canonical(value[key])}`).join(',')}}`;
+  }
+  return JSON.stringify(value);
+};
+const digest = (value) => `sha256:${createHash('sha256').update(canonical(value), 'utf8').digest('hex')}`;
 
 /** Synthetic birth details, reused so the drive is deterministic. */
 const LONDON = { utc: '1990-06-15T13:30:00Z', latitude: 51.5074, longitude: -0.1278 };
@@ -172,7 +186,11 @@ try {
   // ---- connection ----
   const info = client.getServerVersion();
   check('initialize succeeds and names the adapter', info?.name === 'zodiacs-mcp-server', info);
-  check('server version is the adapter candidate', /^\d+\.\d+\.\d+-rc\.\d+$/.test(info?.version ?? ''), info?.version);
+  // The packaged version, and still a release candidate's: a fourth part marks
+  // a revision of a candidate that keeps its engine (0.1.0-rc.16.1).
+  check('server version is the packaged adapter candidate version',
+    info?.version === PACKAGE_VERSION && /^\d+\.\d+\.\d+-rc\.\d+(?:\.\d+)?$/.test(PACKAGE_VERSION),
+    { server: info?.version, package: PACKAGE_VERSION });
   check('server declares the tools capability', Boolean(client.getServerCapabilities()?.tools));
 
   // ---- tools/list ----
@@ -185,6 +203,11 @@ try {
   check('every tool is annotated read-only, non-destructive and closed-world', listed.tools.every((tool) =>
     tool.annotations?.readOnlyHint === true && tool.annotations.destructiveHint === false
     && tool.annotations.openWorldHint === false));
+  // The client checks each result against these before handing it back, so
+  // every call below that succeeds has also matched its advertised schema.
+  check('every tool advertises an object output schema', listed.tools.every((tool) =>
+    tool.outputSchema?.type === 'object'), listed.tools.map((tool) => [tool.name, tool.outputSchema?.type ?? null]));
+  check('the server declares the resources capability', Boolean(client.getServerCapabilities()?.resources));
   check('the natal schema bounds the epoch, coordinates and options', (() => {
     const schema = listed.tools.find((tool) => tool.name === 'calculate_natal_chart')?.inputSchema;
     const p = schema?.properties ?? {};
@@ -209,9 +232,14 @@ try {
   const capabilities = await ok('get_capabilities', {});
   check('capabilities name the pinned engine', capabilities.engine?.name === '@zodiacs/engine'
     && /^\d+\.\d+\.\d+-rc\.\d+$/.test(capabilities.engine.version), capabilities.engine);
-  check('capabilities label both releases as unpublished candidates',
+  // The engine has been on npm since 2026-10-01; the adapter is not on npm.
+  check('capabilities label the engine published on npm and the adapter an unpublished candidate',
     capabilities.adapter?.releaseStatus === 'unpublished-candidate'
-    && capabilities.engine?.releaseStatus === 'unpublished-candidate');
+    && capabilities.engine?.releaseStatus === 'published' && capabilities.engine.registry === 'npm',
+    { adapter: capabilities.adapter, engine: capabilities.engine });
+  check('capabilities cite the receipt they carry', capabilities.cite?.url === `${DOCS}#get_capabilities`
+    && capabilities.cite.receipt === digest(capabilities.receipt)
+    && capabilities.cite.version === capabilities.engine.version, capabilities.cite);
   check('capabilities state the privacy distinction in full', Boolean(capabilities.privacy?.calculation)
     && /not a local AI experience/.test(capabilities.privacy?.assistant ?? '')
     && /not anonymous/.test(capabilities.privacy?.output ?? '')
@@ -264,9 +292,12 @@ try {
   // the record in a named field beside two labels. The reply as a whole is not
   // a record and the comparison refuses it, so the wording has to send readers
   // to the field.
-  check('the record reply is the record in a field, beside the two labels',
-    JSON.stringify(Object.keys(record).sort()) === '["engine","record","schema"]',
+  check('the record reply is the record in a field, beside its two labels and what to cite',
+    JSON.stringify(Object.keys(record).sort()) === '["cite","engine","record","schema"]',
     Object.keys(record));
+  check('a chart and its record cite one digest, the record receipt\'s', chart.cite?.url === `${DOCS}#calculate_natal_chart`
+    && record.cite?.receipt === digest(JSON.parse(record.record).receipt)
+    && chart.cite.receipt === record.cite.receipt, { chart: chart.cite, record: record.cite });
   const wrapper = await attempt('compare_calculation_records', {
     left: JSON.stringify(record), right: JSON.stringify(record),
   });
@@ -294,6 +325,23 @@ try {
     houses.explanations.map((row) => [row.id, row.evidence]));
   check('a comparison labels its own output as not anonymous',
     /not anonymous/.test(houses.disclosure ?? ''));
+  check('a comparison cites its own receipt, which carries nothing from either record',
+    houses.cite?.url === `${DOCS}#compare_calculation_records` && houses.cite.receipt === digest(houses.receipt)
+    && !JSON.stringify(houses.receipt).includes('1990') && !JSON.stringify(houses.receipt).includes('51.5074'),
+    houses.receipt);
+
+  // ---- resources ----
+  const resources = (await client.listResources()).resources;
+  check('lists the conventions and methodology resources', JSON.stringify(resources.map((row) => row.uri))
+    === JSON.stringify(['zodiacs://conventions', 'zodiacs://methodology']), resources.map((row) => row.uri));
+  const conventions = JSON.parse((await client.readResource({ uri: 'zodiacs://conventions' })).contents[0]?.text ?? '{}');
+  check('the conventions resource is the vocabulary the records carry',
+    canonical(conventions.sets?.[0]?.conventions ?? null) === canonical(JSON.parse(record.record).receipt.conventions)
+    && conventions.sets.length === 5, conventions.sets?.map((set) => set.writtenBy));
+  const methodology = (await client.readResource({ uri: 'zodiacs://methodology' })).contents[0]?.text ?? '';
+  check('the methodology resource names the engine and the site\'s methodology page',
+    methodology.includes(`@zodiacs/engine ${capabilities.engine.version}`)
+    && methodology.includes('https://zodiacs.org/methodology/'), methodology.slice(0, 200));
 
   // On the wire, not only in the handler: the default response must not carry
   // the birth details the caller already supplied as arguments.

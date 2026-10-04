@@ -35,9 +35,9 @@ const entry = `{
 }`;
 
 const tools = [
-  ['get_capabilities', 'No arguments. The engine and adapter versions, the record schemas, every limit a request must respect, and the list of what this adapter does not do. Worth calling before the other two rather than guessing at supported options.'],
+  ['get_capabilities', 'No arguments. The engine and adapter versions, the record schemas, every limit a request must respect, the two resources, and the list of what this adapter does not do. Worth calling before the other two rather than guessing at supported options.'],
   ['calculate_natal_chart', 'One chart from an instant and, optionally, coordinates. Returns the bodies, angles, cusps and aspects, plus whether the time was known and which house system was requested against which one was actually used. The full calculation record is a separate, explicit request.'],
-  ['compare_calculation_records', 'Two records, passed as content. Names every field that differs, then what accounts for it — reproduced by a local recalculation, reported by the records, a hypothesis that fits, or unresolved. By default it leaves out the values of rows carrying birth details or computed positions, keeping their labels and their numeric differences; ask for the values explicitly when you need to read them.'],
+  ['compare_calculation_records', 'Two records, passed as content. Names where they differ, from the inputs and settings to the computed values, then what accounts for it — reproduced by a local recalculation, reported by the records, a hypothesis that fits, or unresolved. By default it leaves out the values of rows carrying birth details or computed positions, keeping their labels and their numeric differences; ask for the values explicitly when you need to read them.'],
 ];
 ---
 
@@ -115,7 +115,8 @@ const tools = [
         second integrity check: it launches the server as a real process, speaks MCP to
         it with the official client library, calls all three tools with synthetic
         charts, refuses two bad requests, and confirms the session still works
-        afterwards. Seventeen checks, one line each, exit 0 when they all pass. It
+        afterwards; the client checks every result other than a refusal against
+        the output schema the server declares. Eighteen checks, one line each, exit 0 when they all pass. It
         tests behaviour rather than identity, so a tampered archive can pass it — the
         digest comparison above is what establishes you have the published bytes.
       </p>
@@ -136,18 +137,16 @@ const tools = [
         <code>npm run verify</code> uses. <code>npm ci --omit=dev</code> installs
         the three and the server runs; only the verifier needs the rest. The engine
         ({manifest.engine.package} {manifest.engine.version}) and the comparison are
-        already inside <code>server.mjs</code>. This archive was built before its
-        engine version was published; engine rc.16 is now on npm under
-        <code>next</code>, while <code>latest</code> remains rc.15. The MCP
-        adapter itself is still an unpublished candidate. Its archive bytes
-        remain unchanged; bundling keeps one copy of the comparison rules.
-        Node {manifest.node}.
+        already inside <code>server.mjs</code>; bundling keeps one copy of the
+        comparison rules. That engine version was published to npm on 1 October
+        2026 under the <code>next</code> tag, and <code>get_capabilities</code>
+        says it is published; the MCP adapter itself is not on npm. Node {manifest.node}.
       </p>
     </div>
 
     <h2 id="connect">Connect it to a host</h2>
     <div class="prose">
-      <p>Claude Code CLI connected to this rc.16 bundle in the named-host drive. From the extracted directory:</p>
+      <p>Claude Code CLI connected to this bundle in the named-host drive. From the extracted directory:</p>
     </div>
     <pre tabindex="0" role="region" aria-label="Claude Code commands"><code>{connect}</code></pre>
     <div class="prose">
@@ -178,11 +177,21 @@ const tools = [
     <dl class="mcp-tools">
       {tools.map(([name, summary]) => (
         <div>
-          <dt><code>{name}</code></dt>
+          <dt id={name}><code>{name}</code></dt>
           <dd>{summary}</dd>
         </div>
       ))}
     </dl>
+    <div class="prose">
+      <p>
+        Each tool declares an output schema beside its arguments, which a host reads
+        before it calls. The server checks every result other than a refusal
+        against that schema before sending it, so a result that did not match would
+        come back as an error
+        rather than as data the schema does not describe. The site's tests hold every
+        result over a seeded synthetic corpus to these schemas.
+      </p>
+    </div>
     <div class="prose">
       <p>
         Ask your assistant, in your own words: <em>calculate a natal chart for
@@ -259,6 +268,52 @@ const tools = [
       </p>
     </div>
 
+    <h2 id="cite">Citing a result</h2>
+    <div class="prose">
+      <p>
+        Every result other than a refusal carries <code>cite</code>, the same four
+        fields the
+        <a href="/developers/compute/">compute API</a> puts on its answers:
+        <code>url</code>, the tool's entry on this page; <code>receipt</code>,
+        <code>sha256:</code> and the SHA-256 of a receipt's RFC 8785 canonical JSON;
+        and the engine and its version.
+      </p>
+      <p>
+        A chart cites the engine's calculation receipt, the one inside the record
+        that <code>output: "record"</code> returns for the same arguments, so a summary
+        and a record of one calculation cite one digest, and anyone given the record
+        can recompute it. That receipt holds the instant as it was written, offset
+        included, the coordinates and the settings, so the digest identifies the
+        birth details from either side. With the date and the place, trying each
+        time of day finds the time. With the instant, which the positions give away,
+        trying places from a list of towns finds the place, even for a chart with no
+        known time, whose summary shows no angle, cusp or coordinate. With
+        <code>timeKnown: false</code> the coordinates change nothing else in the
+        result, so leaving them out keeps them out of the receipt. Quote the digest
+        only where the birth details may be known.
+      </p>
+      <p>
+        The other two tools cite the adapter's own receipt, which the reply carries:
+        the adapter and the engine that answered, and for a comparison its output. It
+        holds nothing from either record, so a comparison's citation says how the
+        comparison was made, not which records it read.
+      </p>
+    </div>
+
+    <h2 id="resources">Two resources</h2>
+    <div class="prose">
+      <p>
+        <code>zodiacs://conventions</code> is the conventions vocabulary of the
+        calculation records the server writes and reads: every conventions set a
+        record may carry, taken from the engine, with the engine versions that wrote
+        it, what each key covers, the coverage statement the engine's receipts carry,
+        and what each chart flag reports. <code>zodiacs://methodology</code> says how
+        the server calculates, with links to the
+        <a href="/methodology/">methodology page</a>. Both are built into
+        <code>server.mjs</code>: reading one opens no file and makes no request.
+      </p>
+    </div>
+
     <h2 id="limits">Known limits</h2>
     <div class="prose">
       <ul>
@@ -276,8 +331,6 @@ const tools = [
           one engine agreeing shows consistency, not independent accuracy.</li>
         <li>No body-to-house mapping. The summary returns the cusps and the body
           longitudes; which house a body falls in is left to the caller.</li>
-        <li>No <code>outputSchema</code> on the tools. Arguments are schema-bounded;
-          result shapes are documented rather than declared.</li>
         <li>A single request longer than 1 MB is dropped rather than answered. The
           stdio framing is one JSON message per line, so a line that cannot be buffered
           cannot be refused with a reply; it is discarded at the next newline and the
@@ -302,8 +355,9 @@ const tools = [
         Recorded in the repository under
         <code>docs/platform/evidence/mcp-adapter/</code>, kept as separate records
         because they establish separate things: the official client library against the
-        real server process; historical Claude Code and model interoperability
-        records from earlier candidates; and a fixed synthetic corpus of eighteen
+        real server process; the Claude Code CLI connecting to it; model-driven
+        interoperability records from earlier candidates; and a fixed synthetic
+        corpus of eighteen
         scenarios with the classification each should
         receive, written before the candidate ran against any of them. That last one is
         a regression corpus rather than an accuracy rate — both sides of every pair
@@ -311,10 +365,10 @@ const tools = [
         about a disagreement between independently authored software.
       </p>
       <p>
-        The current rc.16 bundle passed the protocol, synthetic regression and
-        Claude Code CLI connection drives. The latter checks setup and stdio,
-        without a login or model turn. Model-driven records from earlier
-        candidates remain historical.
+        The current bundle passed the protocol, synthetic regression and Claude
+        Code CLI connection drives. The latter checks setup and stdio, without a
+        login or model turn. Model-driven records from earlier candidates remain
+        historical.
       </p>
       <p>
         Every chart in every test is synthetic: round coordinates for well-known cities

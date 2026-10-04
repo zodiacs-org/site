@@ -17,7 +17,7 @@
  * requires it before the artifact may be advertised.
  */
 import { createHash } from 'node:crypto';
-import { mkdtempSync } from 'node:fs';
+import { mkdtempSync, rmSync } from 'node:fs';
 import { copyFile, readFile, readdir, writeFile } from 'node:fs/promises';
 import { spawnSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
@@ -73,6 +73,14 @@ export async function packMcpServer({ check = false, artifactCommit = undefined 
   }
 
   const staging = mkdtempSync(join(tmpdir(), 'zodiacs-mcp-pack-'));
+  try {
+    return await packFrom(staging, { check, artifactCommit });
+  } finally {
+    rmSync(staging, { recursive: true, force: true });
+  }
+}
+
+async function packFrom(staging, { check, artifactCommit }) {
   const { file, bytes } = await packInto(staging);
   const existing = await readFile(MANIFEST, 'utf8').then(JSON.parse).catch(() => null);
   const commit = artifactCommit ?? existing?.artifactCommit ?? null;
@@ -94,6 +102,13 @@ export async function packMcpServer({ check = false, artifactCommit = undefined 
   if (!/^[0-9a-f]{40}$/.test(manifest.artifactCommit ?? '')) {
     throw new Error('public/examples/mcp-server.json has no artifactCommit;'
       + ' run node scripts/pack-mcp-server.mjs --artifact-commit <sha> once the archive is committed');
+  }
+  // The all-zero commit is the placeholder the first of the two commits
+  // carries. A production build refuses it, so it must not reach main: CI
+  // fails here instead, on the pull request, before the merge.
+  if (/^0{40}$/.test(manifest.artifactCommit)) {
+    throw new Error('public/examples/mcp-server.json still names the placeholder commit 0000…;'
+      + ' run node scripts/pack-mcp-server.mjs --artifact-commit <sha> with the commit that holds the archive');
   }
   return { manifest, wrote: false };
 }

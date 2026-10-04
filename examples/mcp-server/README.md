@@ -5,8 +5,8 @@ charts with the Zodiacs engine, and compare two calculation records to find out
 why they disagree.
 
 It speaks MCP over stdio. It opens no listener, binds no port, makes no outbound
-request, and reads and writes no files. Three tools, one process, started by
-whatever host you point at it.
+request, and reads and writes no files. Three tools and two resources, one
+process, started by whatever host you point at it.
 
 **Unpublished release candidate.** There is no `npm install zodiacs-mcp-server`:
 the package is not on npm under this or any other name, and an install command
@@ -57,7 +57,7 @@ happen against the `.tgz` you still have:
 ```sh
 # from the directory holding the archive, against the SHA-256 on the page above
 node -e 'const e=process.argv[2];const a=require("crypto").createHash("sha256").update(require("fs").readFileSync(process.argv[1])).digest("hex");if(a!==e){console.error("Mismatch. Delete this copy and install again from the page.\n  expected "+e+"\n  got      "+a);process.exit(1)}console.log("Archive verified: "+a)' \
-  zodiacs-mcp-server-0.1.0-rc.16.tgz '<the SHA-256 published on the page>'
+  zodiacs-mcp-server-0.1.0-rc.16.1.tgz '<the SHA-256 published on the page>'
 ```
 
 Then, inside the extracted directory:
@@ -77,8 +77,10 @@ disk, `npm ci --omit=dev` installs the three and `npm start` works; only
 
 `npm run verify` launches `server.mjs` as a real child process, speaks MCP to it
 with the official client SDK, calls all three tools with synthetic charts,
-refuses two bad requests, and confirms the session still works afterwards. It
-prints one line per check and exits 0 when they all pass. That is the
+refuses two bad requests, and confirms the session still works afterwards. The
+client checks every result other than a refusal against the output schema the
+server declares. It
+prints one line per check, eighteen in all, and exits 0 when they all pass. That is the
 clean-environment verification: if it passes in a directory you just extracted,
 the install is good.
 
@@ -130,12 +132,21 @@ it.
 
 ## The three tools
 
+Each tool declares an output schema, which a host reads in `tools/list`
+beside the arguments. The server checks every result other than a refusal
+against its schema before sending it, so a result that did not match would come
+back as an error rather than as data the schema does not describe; the
+repository's tests hold every result over a seeded synthetic corpus to these
+schemas. A refusal is an error with its reason, and carries no data. Every other
+result says what to cite, under [Citing a result](#citing-a-result).
+
 ### `get_capabilities`
 
 Takes no arguments. Returns the engine and adapter versions and their release
-status, the record schemas, every limit a request must respect, the list of what
-this adapter deliberately does not do, and the privacy text above. Worth calling
-first rather than guessing at supported options.
+status, the record schemas, every limit a request must respect, the two
+resources, the list of what this adapter deliberately does not do, and the
+privacy text above. Worth calling first rather than guessing at supported
+options.
 
 ### `calculate_natal_chart`
 
@@ -145,20 +156,23 @@ first rather than guessing at supported options.
 | `latitude` | number | −90 to 90. Supply both coordinates or neither. Exactly 90 or −90 needs `timeKnown: false`: the engine does not compute angles at the poles, which its own records state as `angleExclusions`. |
 | `longitude` | number | −180 to 180. |
 | `houseSystem` | `placidus` \| `whole` \| `porphyry` \| `equal` \| `vehlow` \| `koch` \| `regiomontanus` \| `campanus` \| `topocentric` \| `alcabitius` \| `morinus` \| `meridian` \| `equal-mc` | Default `placidus`. Placidus and Koch fall back to whole sign inside the polar circle. |
-| `timeKnown` | boolean | Default `true`. `false` makes `utc` a reference instant and suppresses angles and houses. It does not imply noon. |
+| `timeKnown` | boolean | Default `true`. `false` makes `utc` a reference instant and suppresses angles and houses. It does not imply noon. With `false` the coordinates change nothing in the result, but the calculation record holds them and `cite.receipt` identifies them: leave them out unless the record should carry them. |
 | `reference` | `supplied-instant` \| `utc-noon` | Recorded in the calculation record, not in the summary. Omitting it is the usual case and infers nothing. `utc-noon` means no birth time was known and midday UTC stands in, so it needs `timeKnown: false` and `utc` at exactly `12:00:00Z`. The envelope's third value, `local-noon`, is not offered: it requires a captured local date, wall time, zone and offset, and this adapter resolves no timezones. |
 | `output` | `summary` \| `record` | Default `summary`. |
 
 `summary` returns the computed chart — twelve bodies, four angles, twelve cusps,
 the aspect list — plus the four fields you need to read it: whether the time was
 known, which house system was requested, which one the engine could actually
-use, and why one is absent. It does not repeat your birth details back at you.
+use, and why one is absent. It does not echo the request, but it is not
+anonymous: with a known time, the positions and the angles are enough to work
+out the instant and the place, and `cite.receipt` identifies the birth details
+whether or not the time is known.
 
-`output: "record"` returns `{ engine, schema, record }`. The record itself is
-the `record` field, as text — the full `zodiacs.natal-envelope.draft-v1` record,
-which does contain every input — and the two keys beside it name the engine that
-produced it and the vocabulary it speaks. **Pass the field, not the reply around
-it:** `compare_calculation_records` takes record text, and the reply as a whole
+`output: "record"` returns `{ engine, schema, record, cite }`. The record itself
+is the `record` field, as text — the full `zodiacs.natal-envelope.draft-v1`
+record, which does contain every input — and the keys beside it name the engine
+that produced it, the vocabulary it speaks and what to cite. **Pass the field,
+not the reply around it:** `compare_calculation_records` takes record text, and the reply as a whole
 is a different object, so it is refused. Asking for the record is the explicit
 choice: make it when the record is what you need, which in practice means
 feeding two of them to the comparison below.
@@ -169,8 +183,10 @@ Takes `left` and `right`: the **content** of two calculation records, as JSON
 text. Not paths, not URLs, not identifiers — this adapter reads no files and
 fetches nothing. At most 65536 bytes each.
 
-Names every field that differs, and then what accounts for it, labelled by the
-evidence behind each claim:
+Names where the two records differ — the inputs, the house settings, the
+conventions, the flags, ΔT and the time basis, and the computed values — and
+then what accounts for each difference, labelled by the evidence behind each
+claim:
 
 - **reproduced** — recalculated here, changing one setting and nothing else, and
   the result matched.
@@ -178,6 +194,9 @@ evidence behind each claim:
 - **hypothesis** — fits the evidence, not demonstrated. Several can fit one
   difference, and all of them are listed.
 - **unresolved** — nothing in either record accounts for it.
+
+A record's extensions are not compared, and nor is what it says about its own
+origin, apart from its engine version.
 
 A cause reaches **reproduced** only when three things hold: both records name a
 version this installation actually has, each record's own recorded values —
@@ -262,7 +281,13 @@ original: the cause stays a hypothesis and the limit is stated.
       "type": "trine"
     },
     "…16 more"
-  ]
+  ],
+  "cite": {
+    "url": "https://zodiacs.org/developers/mcp/#calculate_natal_chart",
+    "receipt": "sha256:fdb90bb253e2af007680ba1afe1629c27ef7f8c0c2a616cad555f1211951fdfe",
+    "engine": "@zodiacs/engine",
+    "version": "0.1.1-rc.16"
+  }
 }
 ```
 
@@ -363,7 +388,24 @@ are separate fields, so a fallback is visible rather than silent.
     "Both receipts name the same engine, so agreement between them would show consistency, not independent astronomical accuracy."
   ],
   "disclosure": "A comparison reports the exact difference between two charts. Anyone holding one of the two can reconstruct the other from it, so that output is safer to pass on than a full record but it is not anonymous.",
-  "withheld": "By default a comparison names which fields differ and by how much, and leaves out the values of rows carrying birth details or computed positions — you supplied both records to this call, so repeating their contents back tells you nothing you did not have, while adding a second copy to whatever this result travels through. Ask for output: \"full\" when you need those values. This shortens what travels onward; it hides nothing from the assistant you are talking to, which already received both records as arguments."
+  "withheld": "By default a comparison names which fields differ and by how much, and leaves out the values of rows carrying birth details or computed positions — you supplied both records to this call, so repeating their contents back tells you nothing you did not have, while adding a second copy to whatever this result travels through. Ask for output: \"full\" when you need those values. This shortens what travels onward; it hides nothing from the assistant you are talking to, which already received both records as arguments.",
+  "receipt": {
+    "schema": "zodiacs.mcp-receipt.v1",
+    "tool": "compare_calculation_records",
+    "adapter": { "name": "zodiacs-mcp-server", "version": "0.1.0-rc.16.1" },
+    "engine": {
+      "name": "@zodiacs/engine",
+      "version": "0.1.1-rc.16",
+      "ephemeris": { "name": "astronomy-engine", "version": "2.1.19" }
+    },
+    "output": "summary"
+  },
+  "cite": {
+    "url": "https://zodiacs.org/developers/mcp/#compare_calculation_records",
+    "receipt": "sha256:a16b44c7db00e6186c63bc20271e5fca4929e7e5103514f05c1d120fd04cc1ea",
+    "engine": "@zodiacs/engine",
+    "version": "0.1.1-rc.16"
+  }
 }
 ```
 
@@ -378,18 +420,63 @@ either, for the same reason.
 `limits` is not an error channel. It is where the comparison says what it could
 not settle, and it is worth reading even when everything else looks resolved.
 
+## Citing a result
+
+Every result other than a refusal carries `cite`, the shape the hosted compute
+API uses on each of its answers:
+
+- `url`: the tool's entry on <https://zodiacs.org/developers/mcp/>, an anchor
+  that does not move;
+- `receipt`: `sha256:` and the SHA-256 of a receipt's RFC 8785 canonical JSON;
+- `engine` and `version`: the engine that calculated, `@zodiacs/engine`
+  0.1.1-rc.16.
+
+A chart cites the engine's calculation receipt, the `receipt` inside the record
+that `output: "record"` returns for the same arguments, so a summary and a
+record of one calculation cite one digest, and anyone given the record can
+recompute it. That receipt holds the instant as it was written, offset
+included, the coordinates and the settings, so the digest identifies the birth
+details from either side. With the date and the place, trying each time of day
+finds the time. With the instant, which the positions give away, trying places
+from a list of towns finds the place, even for a chart with no known time, whose
+summary shows no angle, cusp or coordinate. With `timeKnown: false` the
+coordinates change nothing else in the result, so leaving them out keeps them
+out of the receipt. Quote the digest only where the birth details may be known.
+
+`get_capabilities` and `compare_calculation_records` cite the adapter's own
+receipt, which the reply carries in full: the adapter and the engine that
+answered, and for a comparison its output. It holds nothing from either record,
+so a comparison's citation says how the comparison was made, not which records
+it read.
+
+## Resources
+
+Two resources, built into `server.mjs`; reading one opens no file and makes no
+request.
+
+- `zodiacs://conventions` (JSON): the conventions vocabulary of the calculation
+  records this server writes and reads. Every conventions set a record may
+  carry, taken from the engine, with the engine versions that wrote it; a
+  sentence on what each key covers; the coverage statement the engine's
+  receipts carry; and what each chart flag reports.
+- `zodiacs://methodology` (Markdown): what a chart holds, how an instant is
+  read, unknown birth times, house systems, aspects, comparisons, the accepted
+  dates, and what a result cites, with links to the site's methodology page and
+  the engine's measured agreement with other software.
+
 ## Versions
 
 | | |
 | --- | --- |
-| adapter | `0.1.0-rc.16`, unpublished candidate |
-| engine | `@zodiacs/engine` `0.1.1-rc.16`, unpublished candidate, bundled into `server.mjs` |
+| adapter | `0.1.0-rc.16.1`, unpublished candidate |
+| engine | `@zodiacs/engine` `0.1.1-rc.16`, published to npm on 2026-10-01 under the `next` tag, bundled into `server.mjs` |
 | ephemeris | `astronomy-engine` 2.1.19, inside the engine |
 | MCP SDK | `@modelcontextprotocol/server` 2.0.0, pinned exactly, installed from npm |
 | validation | `zod` 4.6.5, pinned exactly |
 | protocol | stdio. Negotiated on the wire in testing: 2025-11-25, 2025-06-18, 2025-03-26, 2024-11-05, 2024-10-07 |
 | node | built for and tested on Node 22 (v22.22.2). `package.json` requires `>=22` |
 | record schema | `zodiacs.natal-envelope.draft-v1` — Zodiacs-owned draft vocabulary, not an industry interoperability standard |
+| adapter receipt | `zodiacs.mcp-receipt.v1`, carried by `get_capabilities` and `compare_calculation_records` |
 
 `candidate.json` carries the same identities in machine-readable form, including
 the engine artifact's own SHA-256 and the source paths every part was built from.
@@ -414,17 +501,15 @@ the engine artifact's own SHA-256 and the source paths every part was built from
   longitudes; which house a body falls in is left to the caller, and getting it
   right needs the same wraparound care as everything else here. Worth adding;
   not in this first integration.
-- **No `outputSchema` on the tools.** Arguments are schema-bounded and a host
-  reads those; results come back as `structuredContent` with their shapes
-  documented here rather than declared, so a shape that drifted from the handler
-  could not turn a correct result into a protocol error.
 - **1800 to 2199.** The engine's own records state
   `broadDateRange: "not-certified"`; this is the range the rest of Zodiacs
   supports and the adapter adopts it rather than inventing a wider one.
-- **Not published.** Neither this adapter rc.16 nor the engine rc.16 is on npm. The
-  recorded 2026-09-30 registry read serves engine rc.15. These candidates are
-  labelled `unpublished-candidate` in `get_capabilities`, and will keep saying
-  so until that changes.
+- **Not on npm.** This adapter is not published under any name, and
+  `get_capabilities` labels it `unpublished-candidate`. The engine it bundles,
+  `@zodiacs/engine` 0.1.1-rc.16, was published to npm on 2026-10-01 under the
+  `next` tag, and `get_capabilities` labels it `published`. On that day `latest`
+  still named 0.1.1-rc.15, so ask npm for the exact version,
+  `@zodiacs/engine@0.1.1-rc.16`, rather than for `latest`.
 
 ## Uninstall
 
@@ -443,16 +528,18 @@ clean up.
 
 ## How this was tested
 
-The current protocol and regression results are recorded under
-`docs/platform/evidence/mcp-adapter/`. Named-host and model-interoperability
-records from earlier candidates remain historical until rerun for this bundle;
-this rc.16 local preparation has no fresh named-host or model result. The
-records establish different things:
+The current protocol, regression and named-host results are recorded under
+`docs/platform/evidence/mcp-adapter/`, each against this bundle. The
+model-interoperability record is from an earlier candidate and stays
+historical until rerun. The records establish different things:
 
 - **`protocol-drive.json`** — the official SDK client against the real server
-  process: initialize, list, all three tools, eighteen malformed or refused
-  requests each followed by a valid one, the diagnostic channel, a clean close,
-  and a raw handshake at every protocol revision the SDK supports.
+  process: initialize, list the tools and their output schemas, all three tools
+  with every result other than a refusal checked against its schema by the
+  client, what each result
+  cites, the two resources, eighteen malformed or refused requests each
+  followed by a valid one, the diagnostic channel, a clean close, and a raw
+  handshake at every protocol revision the SDK supports.
 - **`host-drive.json`** — the Claude Code CLI launching the adapter and
   reporting it connected, inside a throwaway config directory, with the
   machine's real configuration proved byte-identical afterwards.

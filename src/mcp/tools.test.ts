@@ -65,8 +65,10 @@ describe('get_capabilities', () => {
   })();
 
   it('names the engine actually bundled, and labels both releases honestly', () => {
+    // The engine has been on npm since 2026-10-01; the adapter is not on npm.
     expect(value.engine.version).toBe(ENGINE_VERSION);
-    expect(value.engine.releaseStatus).toBe('unpublished-candidate');
+    expect(value.engine.releaseStatus).toBe('published');
+    expect(value.engine.registry).toBe('npm');
     expect(value.adapter.releaseStatus).toBe('unpublished-candidate');
     expect(value.adapter.transport).toBe('stdio');
   });
@@ -146,7 +148,8 @@ describe('calculate_natal_chart', () => {
   it('returns the full record only when asked, and then only the record', () => {
     const outcome = natal({ ...LONDON, output: 'record' });
     const value = outcome.ok ? (outcome.value as Record<string, any>) : {};
-    expect(Object.keys(value).sort()).toEqual(['engine', 'record', 'schema']);
+    // From 0.1.0-rc.16.1 the record sits beside its two labels and what to cite.
+    expect(Object.keys(value).sort()).toEqual(['cite', 'engine', 'record', 'schema']);
     const parsed = parseNatalEnvelope(value.record);
     expect(parsed.ok).toBe(true);
   });
