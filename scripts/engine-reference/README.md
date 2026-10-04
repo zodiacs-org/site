@@ -31,7 +31,7 @@ Archive SHA-256: `{{SHA256}}`.
 The distribution's licence expression is **MIT AND CC-BY-4.0**: both apply.
 Keep the unchanged [LICENSE](/developers/engine/reference/release/LICENSE.txt),
 [LICENSING.md](/developers/engine/reference/release/LICENSING.txt) and [NOTICE](/developers/engine/reference/release/NOTICE.txt).
-LICENSING.md preserves the release's authority condition and unsettled data
+`LICENSING.md` preserves the release's authority condition and unsettled data
 terms; this reference does not resolve them. NOTICE includes Astronomy Engine
 by Don Cross, the ΔT data attribution and the other named sources.
 
