@@ -1,0 +1,468 @@
+{
+  "schema": "zodiacs.narrow-acceptance-reconciliation.v1",
+  "date": "2026-10-04T10:34:25Z",
+  "source": "b1636359d7f79351b5fb2b477a57e6dafb7c0a3c",
+  "decisionStatus": "Prepared for independent review; no ledger mutation or publication",
+  "actualLedger": {
+    "command": "node scripts/programme-ledger.mjs --summary",
+    "summary": "Overall delivery: 24% (43.5 of 182.45); blocked 2% (3.5)",
+    "acceptedWeight": 43.5,
+    "totalWeight": 182.45,
+    "blockedWeight": 3.5,
+    "sourceAndCalculatorVerifiedUnchanged": true,
+    "source": "b1636359d7f79351b5fb2b477a57e6dafb7c0a3c",
+    "executedAt": "2026-10-04T10:33:43Z"
+  },
+  "units": [
+    {
+      "id": "S6",
+      "weight": 0.5,
+      "gate": "persona/editor/Person-markup blocks cover developer docs",
+      "recommendation": "accept",
+      "release": "deployed",
+      "proof": [
+        "https://github.com/zodiacs-org/site/pull/632",
+        "https://github.com/zodiacs-org/site/actions/runs/37143121771",
+        "https://github.com/zodiacs-org/site/actions/runs/37146059723",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/scripts/check-developer-authorship.mjs",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/scripts/check-developer-authorship.test.mjs",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/.github/workflows/site-check.yml"
+      ],
+      "assessment": "Reviewed scanner and negative controls are committed and active after build; exact merge 076540b6 had 19 premerge and 19 postmerge Site Check successes and READY canonical deployment. Current main retains it.",
+      "limits": "Bounded served developer-doc scanner and existing src guard; not a complete arbitrary JSON-LD semantic processor."
+    },
+    {
+      "id": "A4",
+      "weight": 0.5,
+      "gate": "published SKILL.md bundle",
+      "recommendation": "accept",
+      "release": "merged",
+      "proof": [
+        "https://github.com/zodiacs-org/engine/pull/23",
+        "https://github.com/zodiacs-org/engine/blob/c8a390ee1f3ad1f6883a0b986d66a31bf010ddd7/skills/zodiacs-compute/SKILL.md",
+        "https://github.com/zodiacs-org/engine/blob/c8a390ee1f3ad1f6883a0b986d66a31bf010ddd7/docs/evidence/agent-skill-20261001/bundle.json",
+        "https://github.com/zodiacs-org/engine/blob/c8a390ee1f3ad1f6883a0b986d66a31bf010ddd7/docs/evidence/agent-skill-20261001/local-validation.json",
+        "https://api.github.com/repos/zodiacs-org/engine/commits/c8a390ee1f3ad1f6883a0b986d66a31bf010ddd7/check-runs?per_page=100"
+      ],
+      "assessment": "Public merged bundle content verified; all three file hashes independently match the manifest; 21 successful postmerge checks are directly recoverable. Tool selection, uncertainty, citation and non-accuracy claims covered. No package publication required by this unit.",
+      "limits": "Committed record contains initial scan aggregates and missing optional-example input limitation. Final local rescan receipt is not recovered here; no claim of a recovered raw scan log. This reconciliation publishes no engine source change and does not rerun or reconstruct private patterns."
+    },
+    {
+      "id": "P2.E.returns",
+      "weight": 0.5,
+      "gate": "package function released; the site imports it and its own implementation is removed; parity recorded; deployed",
+      "recommendation": "accept",
+      "release": "deployed",
+      "proof": [
+        "https://github.com/zodiacs-org/site/pull/620",
+        "https://github.com/zodiacs-org/site/actions/runs/37003714196",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/docs/platform/evidence/site-engine-rc16/techniques-parity.json",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/docs/platform/evidence/site-engine-rc16/integration-2026-10-02/PUBLICATION.md",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/src/lib/engine/solar-return.ts",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/src/lib/engine/lunar-return.ts"
+      ],
+      "assessment": "Solar/lunar return instant searches are imported from package techniques; site chart adapters preserve their existing output shape. Parity sections R-SI/R-SY/R-SM/R-SC/R-LI/R-LC record agreement; R-E retains span differences.",
+      "limits": "Finite product-parity/adoption gate only; not independent astronomical accuracy or general completeness. Existing package and convention limitations remain.",
+      "parity": {
+        "cases": 1980,
+        "agree": 1930,
+        "differ": 50,
+        "causes": {
+          "returns-span": 50
+        }
+      }
+    },
+    {
+      "id": "P2.E.void-of-course",
+      "weight": 0.5,
+      "gate": "package function released; the site imports it and its own implementation is removed; parity recorded; deployed",
+      "recommendation": "accept",
+      "release": "deployed",
+      "proof": [
+        "https://github.com/zodiacs-org/site/pull/620",
+        "https://github.com/zodiacs-org/site/actions/runs/37003714196",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/docs/platform/evidence/site-engine-rc16/techniques-parity.json",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/docs/platform/evidence/site-engine-rc16/integration-2026-10-02/PUBLICATION.md",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/src/pages/void-of-course-moon/index.astro",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/src/lib/engine/void-of-course.test.ts"
+      ],
+      "assessment": "Page directly imports package windows/status and calls them at build time; old engine/void-of-course.ts is deleted. Parity sections V-W/V-P/V-S cover finite window/status cases.",
+      "limits": "Finite product-parity/adoption gate only; not independent astronomical accuracy or general completeness. Existing package and convention limitations remain.",
+      "parity": {
+        "cases": 156,
+        "agree": 156,
+        "differ": 0,
+        "causes": {}
+      }
+    },
+    {
+      "id": "P2.E.aspect-patterns",
+      "weight": 0.5,
+      "gate": "package function released; the site imports it and its own implementation is removed; parity recorded; deployed",
+      "recommendation": "accept",
+      "release": "deployed",
+      "proof": [
+        "https://github.com/zodiacs-org/site/pull/620",
+        "https://github.com/zodiacs-org/site/actions/runs/37003714196",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/docs/platform/evidence/site-engine-rc16/techniques-parity.json",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/docs/platform/evidence/site-engine-rc16/integration-2026-10-02/PUBLICATION.md",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/src/lib/engine/aspect-patterns.ts"
+      ],
+      "assessment": "Adapter imports package aspectPatterns rather than site detection implementation. P-D/P-C parity records preserve constructed/chart cases and malformed-input coverage.",
+      "limits": "Finite product-parity/adoption gate only; not independent astronomical accuracy or general completeness. Existing package and convention limitations remain.",
+      "parity": {
+        "cases": 1840,
+        "agree": 1840,
+        "differ": 0,
+        "causes": {}
+      }
+    },
+    {
+      "id": "P2.E.moon-sign-candidates",
+      "weight": 0.5,
+      "gate": "package function released; the site imports it and its own implementation is removed; parity recorded; deployed",
+      "recommendation": "accept",
+      "release": "deployed",
+      "proof": [
+        "https://github.com/zodiacs-org/site/pull/620",
+        "https://github.com/zodiacs-org/site/actions/runs/37003714196",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/docs/platform/evidence/site-engine-rc16/techniques-parity.json",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/docs/platform/evidence/site-engine-rc16/integration-2026-10-02/PUBLICATION.md",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/src/lib/share-card.ts"
+      ],
+      "assessment": "Active sharing helper dynamically imports package moonSignCandidates; preview/download callers remain. M-A/M-Z/M-P parity records preserve date-form, skipped-date and historical-zone differences. The main calculator deliberately leaves unknown-time Moon certainty unresolved; that predates PR620 and is not counted as a new candidate inference.",
+      "limits": "Finite product-parity/adoption gate only; not independent astronomical accuracy or general completeness. Existing package and convention limitations remain.",
+      "parity": {
+        "cases": 5147,
+        "agree": 5134,
+        "differ": 13,
+        "causes": {
+          "moon-date-form": 3,
+          "moon-skipped-date": 1,
+          "moon-before-1970": 9
+        }
+      }
+    },
+    {
+      "id": "G1",
+      "weight": 1,
+      "gate": "engine docs at a home outside /sdk/; repository description and topics set; no token framing",
+      "recommendation": "accept",
+      "release": "deployed",
+      "proof": [
+        "https://github.com/zodiacs-org/site/pull/635",
+        "https://github.com/zodiacs-org/site/actions/runs/37186581567",
+        "https://github.com/zodiacs-org/site/actions/runs/37191270664",
+        "https://github.com/zodiacs-org/site/actions/runs/37193751725",
+        "https://zodiacs.org/developers/engine/reference/",
+        "https://zodiacs.org/developers/engine/reference/provenance.json",
+        "https://github.com/zodiacs-org/engine"
+      ],
+      "assessment": "PR635 merged normally as b1636359 after all 19 exact-head checks passed. All 19 postmerge checks passed. Canonical production is READY at that source. Live overview/module/function routes returned200 with correct canonicals, noindex and both-license notices; live provenance and LICENSE/LICENSING/NOTICE match committed text. The engine landing links to the reference. Engine repository description and topics are neutral and its homepage points outside /sdk.",
+      "limits": "Generated declaration documentation describes the implementation, not proof of astronomical accuracy or completeness. Known conformance failures and both license obligations remain. Local Firefox was unavailable and its HTTP proxy refusal remains historical; live canonical GET verification subsequently succeeded through the authorized Vercel connector. Historical SDK bytes remain unchanged."
+    }
+  ],
+  "commonRc16Proof": {
+    "packageVersion": "0.1.1-rc.16",
+    "sourceCommit": "ddbbaa0b1d21e16834722f81e8708816849c6726",
+    "archiveSha256": "43a72d30e483d8ff22024e403c4bd0d86d81bb6e1d0ad138f857cd001ab015d8",
+    "npmReleaseRun": "https://github.com/zodiacs-org/engine/actions/runs/36858851623",
+    "siteMerge": "65d800c5fbdb4e0c9e7d010df44d953b3d296c20",
+    "currentProduction": {
+      "deployment": "dpl_4LmaXAGm8YJFF6vastJQ5WWXSTE8",
+      "source": "b1636359d7f79351b5fb2b477a57e6dafb7c0a3c",
+      "state": "READY",
+      "aliases": [
+        "zodiacs.org",
+        "www.zodiacs.org"
+      ],
+      "observedAt": "2026-10-04T10:34:25Z"
+    },
+    "missingOriginals": [
+      "Original October 2 six-request local live receipt not recovered after workspace reset; no reconstructed original request record or invented timestamps.",
+      "Final private ledger/acceptance commit from October 2 not recovered; its percentage is not imported."
+    ],
+    "scopeLimit": "Current source and provider metadata bind the released package/adapters to production. This is not a new live computation replay; old raw smoke receipt remains missing."
+  },
+  "proposal": {
+    "acceptedWeightIfSevenSupportedUnitsRecorded": 47.5,
+    "deliveryPercentIfRecorded": 26.034530008221434,
+    "addedWeight": 4,
+    "unitCount": 7,
+    "totalWeightUnchanged": 182.45,
+    "blockedByChange": "Only remove the stale A4 private-pattern/publication blocker when recording its evidenced acceptance; assess exact remaining blocked total mechanically. Do not silently change other blockers.",
+    "excluded": "No credit for composite, dignities, declinations, sect, P3.3/F60/cold telemetry, JSR or the shelved calendar unit; no broad historical reconciliation."
+  },
+  "releaseProof": {
+    "source": "b1636359d7f79351b5fb2b477a57e6dafb7c0a3c",
+    "pr": 635,
+    "reviewedHead": "a5d66b99b7970127f57d580ef7eedffba4b5c9b7",
+    "ownerBase": "2cce48e65b9b9353d7f2dc51edf06dd4cd95b181",
+    "premerge": {
+      "run": 37191270664,
+      "jobs": [
+        {
+          "id": 111403789791,
+          "name": "Legacy wing drift",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 111403789920,
+          "name": "Build & Check",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 111403789922,
+          "name": "Phase 6 assistant quota SQL",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 111403789976,
+          "name": "Phase 4 compatibility invite SQL",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 111403789990,
+          "name": "Phase 7 Living Chart drive",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 111403789996,
+          "name": "Swiss output removal and independent references",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 111403790023,
+          "name": "Saved calculation records under the real account coordinator",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 111403790077,
+          "name": "Account Sync v2 SQL",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 111403790121,
+          "name": "Phase 7 Living Chart sync SQL",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 111403790134,
+          "name": "Phase 3 delivery SQL",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 111403790148,
+          "name": "Phase 3 PWA drive",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 111403790167,
+          "name": "Build with production's feature flags",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 111403790169,
+          "name": "Phase 3 post-chart drive",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 111403790183,
+          "name": "Saved calculation records lifecycle drive",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 111403790186,
+          "name": "Phase 4 sharing drive",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 111403790207,
+          "name": "Phase 3 push drive",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 111403790216,
+          "name": "Zodiac Games SQL",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 111403790222,
+          "name": "Registry Aura drive",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 111403790266,
+          "name": "Time zone data drift",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    "postmerge": {
+      "run": 37193751725,
+      "jobs": [
+        {
+          "id": 111411204612,
+          "name": "Build & Check",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 111411204789,
+          "name": "Phase 3 delivery SQL",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 111411204831,
+          "name": "Account Sync v2 SQL",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 111411204858,
+          "name": "Phase 4 compatibility invite SQL",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 111411204860,
+          "name": "Legacy wing drift",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 111411204865,
+          "name": "Swiss output removal and independent references",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 111411204945,
+          "name": "Time zone data drift",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 111411204949,
+          "name": "Registry Aura drive",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 111411204954,
+          "name": "Phase 3 PWA drive",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 111411204956,
+          "name": "Saved calculation records lifecycle drive",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 111411204959,
+          "name": "Saved calculation records under the real account coordinator",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 111411204964,
+          "name": "Phase 7 Living Chart drive",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 111411204966,
+          "name": "Build with production's feature flags",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 111411204967,
+          "name": "Phase 6 assistant quota SQL",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 111411204988,
+          "name": "Zodiac Games SQL",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 111411205006,
+          "name": "Phase 7 Living Chart sync SQL",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 111411205015,
+          "name": "Phase 4 sharing drive",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 111411205023,
+          "name": "Phase 3 push drive",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 111411205049,
+          "name": "Phase 3 post-chart drive",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    "live": {
+      "observedFrom": "2026-10-04T09:59:52Z",
+      "observedTo": "2026-10-04T10:01:07Z",
+      "routes200": [
+        "/developers/engine/",
+        "/developers/engine/reference/",
+        "/developers/engine/reference/modules.html",
+        "/developers/engine/reference/modules/calc.html",
+        "/developers/engine/reference/functions/calc.calc.html",
+        "/developers/engine/reference/provenance.json",
+        "/developers/engine/reference/release/LICENSE.txt",
+        "/developers/engine/reference/release/LICENSING.txt",
+        "/developers/engine/reference/release/NOTICE.txt"
+      ],
+      "provenanceExactToCommitted": true,
+      "licenseNoticeTextExactToCommitted": true,
+      "canonicalAndNoindexOnFourReferenceHtmlPages": true,
+      "landingReferenceLinkPresent": true
+    },
+    "historicalFailure": {
+      "run": 37186581567,
+      "test": "scripts/sky-api.test.mjs:218",
+      "cause": "Strictly future event may round to daysAway0 at one decimal day",
+      "repair": "80a577ca639fce12d7a342b1b90ec99937d493bc",
+      "ownerTestPreservedIn": "a5d66b99b7970127f57d580ef7eedffba4b5c9b7",
+      "productionOutputChanged": false
+    },
+    "visualReview": "Independently inspected committed overview desktop/mobile pixels: readable rc16 branding, licenses and limitations; no visible clipping/overlap. Other routes covered by automated browser checks; not a page-by-page visual audit."
+  }
+}

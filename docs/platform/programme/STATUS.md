@@ -1,5 +1,48 @@
 # Programme status
 
+Checkpoint 12, 2026-10-04: seven published or deployed gates reconciled against
+current main `b1636359d7f79351b5fb2b477a57e6dafb7c0a3c`.
+
+**Overall delivery: 26%** (26.035% to three decimals) — 47.5 of 182.45 weighted
+units accepted; blocked 2% (3), or 1.644%. The denominator, weights and calculator
+are unchanged. This adds exactly 4.0, without importing the missing October 2
+private acceptance checkpoint. [Evidence and limits](../evidence/programme-acceptance-2026-10-04/README.md)
+and the [verified producer input](../evidence/programme-acceptance-2026-10-04/reconciliation.json).
+
+- **S6 accepted, deployed (+0.5):** PR632 extended the existing persona/editor/
+  Person-markup guard to served developer docs, with post-build CI and negative
+  controls. It remains a bounded scanner, not a general JSON-LD semantic processor.
+- **A4 accepted, merged (+0.5):** engine PR23 published the skill bundle. Three
+  manifest hashes match; the producer recovered 21 successful postmerge checks.
+  Only its stale 0.5 publication blocker is removed. The final private rescan
+  receipt remains unavailable; no private patterns or logs are reconstructed.
+- **Four rc16 adoptions accepted, deployed (+2.0):** returns, void-of-course,
+  aspect patterns and Moon candidates in sharing. Package imports/removals,
+  recorded parity, npm release and production source binding meet these adoption
+  gates. Returns retains 50 span discrepancies; Moon retains 13 differences
+  (date-form 3, skipped-date 1, before-1970 9). The main calculator still leaves
+  unknown-time Moon certainty unresolved. This is not new accuracy evidence.
+- **G1 accepted, deployed (+1.0):** PR635 merged as `b1636359`, with all 19 premerge
+  and all 19 postmerge checks passing. READY deployment
+  `dpl_4LmaXAGm8YJFF6vastJQ5WWXSTE8` serves the linked rc16 reference outside
+  `/sdk/`; the producer verified live canonical, provenance and license bytes and
+  neutral repository metadata. Historical SDK bytes and both MIT AND CC-BY-4.0
+  obligations remain unchanged.
+- The original October 2 six-request live receipt and private acceptance commit
+  remain missing. Current source/provider evidence is not a reconstructed
+  original receipt or a fresh computation replay. Known conformance results
+  remain 267 passed, 192 failed and 41 unsupported.
+- **Still unaccepted:** JSR (license issue; no retry), P3.3/F60 and cold telemetry,
+  and the shelved calendar unit. No new credit for composite, dignities,
+  declinations or sect. No frontend, Guide, package or runtime work is included.
+- Actual command: `node scripts/programme-ledger.mjs --summary` →
+  `Overall delivery: 26% (47.5 of 182.45); blocked 2% (3)`.
+- Next: independently review this bounded accounting diff, publish its PR and
+  run required CI before normal merge. Other historical blockers below retain
+  their dated context; they are not silently treated as current accomplishments.
+
+## Earlier checkpoints
+
 Checkpoint 11, 2026-10-01: warm compute timing and usage-cost evidence recovered.
 
 **Overall delivery: 24%** (23.842% to three decimals) — 43.5 of 182.45 weighted units accepted; blocked 2% (3.5), or 1.918%. G4's independently verified release remains accepted; no new unit is accepted in this checkpoint.
@@ -11,8 +54,6 @@ Checkpoint 11, 2026-10-01: warm compute timing and usage-cost evidence recovered
 - The expanded read-only start-type query found 227 API requests, all Hot, over 06:00–10:40 UTC; its broader project/path scope is separate from the exact 120-request baseline. No cold sample, cost, counter behavior or acceptance is invented.
 - Historical connector/export evidence remains unchanged. Public records contain only matched synthetic observations and aggregates; private logs and dashboard authentication material are excluded.
 - Actual command: `node scripts/programme-ledger.mjs --summary` → `Overall delivery: 24% (43.5 of 182.45); blocked 2% (3.5)`.
-
-## Earlier checkpoints
 
 Checkpoint 10, 2026-10-01: the first tagged engine release and permanent DOI are verified.
 
