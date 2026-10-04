@@ -713,13 +713,19 @@
     "sign/virgo.png",
     "thesis.png",
     "tool/ask.png",
+    "tool/astrologer-kit.png",
     "tool/baby-zodiac.png",
+    "tool/big-three.png",
     "tool/birth-chart.png",
     "tool/birthday.png",
+    "tool/chart-of-the-day.png",
+    "tool/chart-twins.png",
     "tool/compatibility-invite.png",
+    "tool/compatibility-private-invite.png",
     "tool/compatibility.png",
     "tool/eclipses.png",
     "tool/full-moon-calendar.png",
+    "tool/group-charts.png",
     "tool/horoscopes.png",
     "tool/how-to-read-a-birth-chart.png",
     "tool/learn.png",
@@ -729,8 +735,10 @@
     "tool/retrogrades.png",
     "tool/rising-sign.png",
     "tool/saturn-return.png",
+    "tool/sky-calendar.png",
     "tool/today.png",
     "tool/tools.png",
-    "tool/transits.png"
+    "tool/transits.png",
+    "tool/your-sky-wrapped.png"
   ]
 }

@@ -1,5 +1,6 @@
 ---
 import Base from '../../../layouts/Base.astro';
+import ReturnToolLinks from '../../../components/return-visits/ReturnToolLinks.astro';
 import Faq from '../../../components/Faq.astro';
 import SaturnReturnCalculator from '../../../islands/SaturnReturnCalculator';
 import '../../../styles/calculator.css';
@@ -74,6 +75,7 @@ const jsonLd = [
   <section class="section--tight container container--narrow">
     <Faq items={faq} heading="Domande sul ritorno di Saturno" />
   </section>
+  <section class="section--tight container container--narrow"><ReturnToolLinks locale="it" current="/saturn-return/" /></section>
 </Base>
 
 <style>

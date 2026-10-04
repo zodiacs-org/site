@@ -8,7 +8,7 @@
  */
 import { isAstrologyToolPath } from '../lib/trust-boundary';
 import { seasonInstanceAt } from '../lib/games/season';
-import { normalizeCatalogLocale, localizePath, t, englishOnlyCue, type CatalogLocale } from '../lib/i18n';
+import { normalizeCatalogLocale, t, englishOnlyCue, type CatalogLocale } from '../lib/i18n';
 
 interface Props {
   signName?: string;
@@ -36,9 +36,7 @@ const englishCue = englishOnlyCue(locale);
     ].filter(Boolean).join(';') || undefined}
   >
     <span class="race-ramp__label mono">{t(locale, 'trustGamesTitle')}</span>
-    <span class="race-ramp__text">{t(locale, 'trustGamesScore')}
-      <span class="race-ramp__disclosure">{t(locale, 'trustFreeAnswer')} <a href={localizePath(locale, '/disclosure/')}>{t(locale, 'trustDisclosure')}</a>.</span>
-    </span>
+    <span class="race-ramp__text">{t(locale, 'trustGamesScore')}</span>
     <a class="race-ramp__link" href="/race/" hreflang={englishCue ? 'en' : undefined} title={englishCue?.aria}>
       {t(locale, 'trustGamesLink')}{englishCue?.suffix ?? ''} →
     </a>
@@ -68,7 +66,6 @@ const englishCue = englishOnlyCue(locale);
     font-size: 13px;
     color: var(--muted);
   }
-  .race-ramp__disclosure { display: block; margin-block-start: 6px; font-size: 12px; }
   .race-ramp__link {
     margin-inline-start: auto;
     font-size: 13px;

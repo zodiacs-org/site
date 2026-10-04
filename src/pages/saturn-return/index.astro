@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import ReturnToolLinks from '../../components/return-visits/ReturnToolLinks.astro';
 import SaturnReturnCalculator from '../../islands/SaturnReturnCalculator';
 import '../../styles/calculator.css';
 
@@ -110,6 +111,7 @@ const jsonLd = [
       ))}
     </div>
   </section>
+  <section class="section--tight container container--narrow"><ReturnToolLinks locale="en" current="/saturn-return/" /></section>
 </Base>
 
 <style>

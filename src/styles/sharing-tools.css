@@ -47,3 +47,26 @@
 }
 
 .sharing-page .mono--label { text-transform: none; letter-spacing: .04em; }
+
+/* Build-time sample results drawn from the sourced people directory. */
+.sharing-sample { margin: 0 0 clamp(28px, 5vw, 40px); padding: 20px 0 4px; border-top: 1px solid var(--hair-1); }
+.sharing-sample > .sharing-note { margin: 8px 0 14px; max-width: 70ch; }
+.sample-group, .sample-twins, .sample-contacts { list-style: none; margin: 0 0 12px; padding: 0; display: grid; gap: 10px; }
+.sample-group { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.sample-twins { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+.sample-contacts { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.sample-group li, .sample-twins li, .sample-contacts li { min-width: 0; padding: 14px 16px; display: grid; gap: 4px; align-content: start; }
+.sample-group a, .sample-twins a { color: var(--text); font-size: 15px; overflow-wrap: anywhere; }
+.sample-group__role { font-family: var(--font-serif); font-size: 24px; line-height: 1.15; color: var(--role-hue, var(--sign-cancer)); }
+.sample-group .sharing-note, .sample-contacts .sharing-note { font-size: 12px; }
+.sample-twins__signs { margin: 0 0 12px; color: var(--text-2); font-size: 14px; }
+.sample-contacts li span { color: var(--muted); font-size: 14px; }
+.sample-contacts li strong { font-family: var(--font-serif); font-weight: 400; font-size: 22px; color: var(--text); }
+@media (max-width: 700px) {
+  .sample-group { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sample-contacts { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .sample-contacts li { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; padding: 11px 14px; }
+  .sample-contacts li strong { font-size: 18px; }
+  .sample-contacts li .sharing-note { flex-basis: 100%; }
+  .sample-group__role { font-size: 21px; }
+}
