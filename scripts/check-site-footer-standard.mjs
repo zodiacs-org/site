@@ -184,7 +184,10 @@ for (const permanentCompactPage of [
   await requireMarkers(permanentCompactPage, ['data-footer-guide']);
 }
 
-const engineDocumentationPages = await nestedHtmlFiles('public/sdk/engine');
+const engineDocumentationPages = [
+  ...await nestedHtmlFiles('public/sdk/engine'),
+  ...await nestedHtmlFiles('public/developers/engine/reference'),
+];
 if (engineDocumentationPages.length === 0) failures.push('public/sdk/engine: no TypeDoc pages found');
 for (const enginePage of engineDocumentationPages) {
   await requireMarkers(enginePage, [

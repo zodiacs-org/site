@@ -92,6 +92,14 @@ jobs:
           npx vitest run scripts/check-developer-authorship.test.mjs
           node scripts/check-developer-authorship.mjs
 
+      - name: Released engine reference
+        run: |
+          npm ci --prefix scripts/engine-reference --ignore-scripts
+          node scripts/build-engine-reference.mjs --check
+          node scripts/check-engine-reference.mjs dist
+          npx vitest run scripts/engine-reference.test.mjs
+          node tests/engine-reference-drive.mjs
+
       - name: Typecheck
         run: npm run check
 

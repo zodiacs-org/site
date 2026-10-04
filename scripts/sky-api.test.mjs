@@ -11,6 +11,7 @@ import { buildSkyApi } from '../src/lib/sky-api/files.ts';
 import { SCHEMAS, SCHEMA_NAMES, schemaNameForFile } from '../src/lib/sky-api/schemas.ts';
 import {
   LUNATION_JOIN_TOLERANCE_MS,
+  buildToday,
   buildUpcoming,
   completeTransitYears,
   joinLunationDetail,
@@ -233,6 +234,71 @@ describe('sky data API — daily payloads', () => {
     const mercury = payload('planets/mercury.json');
     expect(nextByKind.mercuryRetrograde).toEqual({ current: mercury.retrograde.current, next: mercury.retrograde.next });
     expect(upcoming.summary).toContain(`${upcoming.windowDays} days`);
+  });
+
+  it('includes strictly future events even when daysAway rounds to zero, with an inclusive window end', () => {
+    const snapshotAt = '2026-10-04T12:00:00.000Z';
+    const atOffset = (ms) => new Date(Date.parse(snapshotAt) + ms).toISOString();
+    // One decimal day rounds up at 72 minutes; the October 4 opposition
+    // was only 25m 54.014s after the snapshot and correctly displayed zero.
+    const expected = [
+      [1, 0],
+      [1_554_014, 0],
+      [4_319_999, 0],
+      [4_320_000, 0.1],
+      [4_320_001, 0.1],
+      [86_400_000, 1],
+    ];
+    const offsets = [-1, 0, ...expected.map(([ms]) => ms), 86_400_001];
+    const upcoming = buildUpcoming({
+      ...sources,
+      daily: { ...daily, date: '2026-10-04', snapshotAt },
+      sky: { ...sky, moons: [], retrogrades: [] },
+      eclipses: { ...sources.eclipses, eclipses: [] },
+      months: [{
+        month: '2026-10', lunations: [], ingresses: [], stations: [],
+        aspects: offsets.toReversed().map((ms) => ({
+          a: 'Sun', b: 'Saturn', type: 'opposition', orb: 0, at: atOffset(ms),
+          aSign: 'libra', aDegree: 11, bSign: 'aries', bDegree: 11,
+        })),
+      }],
+      generatedAt: GENERATED_AT,
+      windowDays: 1,
+    });
+    // Exact membership and order exclude both past/equal instants and the
+    // first millisecond beyond the window, regardless of rounded daysAway.
+    expect(upcoming.events.map(({ at, daysAway }) => ({ at, daysAway }))).toEqual(
+      expected.map(([ms, daysAway]) => ({ at: atOffset(ms), daysAway })),
+    );
+    expect(upcoming.counts.aspect).toBe(expected.length);
+    expect(upcoming.from).toBe(snapshotAt);
+    expect(upcoming.to).toBe(atOffset(86_400_000));
+  });
+
+  it.each([
+    [1, 0],
+    [4_319_999, 0],
+    [4_320_000, 0.1],
+    [4_320_001, 0.1],
+  ])('selects strictly future lunations at +%i ms with daysAway %s', (offset, daysAway) => {
+    const snapshotAt = '2026-10-04T12:00:00.000Z';
+    const atOffset = (ms) => new Date(Date.parse(snapshotAt) + ms).toISOString();
+    const today = buildToday({
+      daily: { ...daily, date: '2026-10-04', snapshotAt },
+      sky: {
+        ...sky, retrogrades: [],
+        // Deliberately unordered; past and exactly-at-snapshot lunations
+        // must not mask the first future record of either kind.
+        moons: ['new', 'full'].flatMap((type) =>
+          [86_400_000, 0, offset, -1].map((ms) => ({ type, at: atOffset(ms) }))),
+      },
+      months: [],
+      generatedAt: GENERATED_AT,
+    });
+    for (const [key, type] of [['nextNewMoon', 'new'], ['nextFullMoon', 'full']]) {
+      expect(today.moon[key]).toMatchObject({ type, at: atOffset(offset), daysAway });
+      expect(Date.parse(today.moon[key].at)).toBeGreaterThan(Date.parse(snapshotAt));
+    }
   });
 
   it('keeps an event thirty minutes ahead even when tenths of a day round to zero', () => {
