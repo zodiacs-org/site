@@ -24,6 +24,24 @@ const PROFILE = JSON.stringify({
   }],
 });
 
+/**
+ * The app may recompute a saved chart's cached summary when it is opened
+ * (src/lib/profile/refresh.ts): that is a refreshed cache, not an edit. What
+ * must never change is everything the person entered — the birth input, name,
+ * relationship, ids, timestamps and settings.
+ */
+function privateProfileInput(value) {
+  try {
+    const profile = JSON.parse(value);
+    return JSON.stringify({
+      ...profile,
+      charts: profile.charts.map(({ summary: _recomputedCache, ...entered }) => entered),
+    });
+  } catch {
+    return null;
+  }
+}
+
 export function savedChartContinuationFailures(state, prefix) {
   const saved = JSON.parse(PROFILE).charts[0];
   return [
@@ -34,7 +52,8 @@ export function savedChartContinuationFailures(state, prefix) {
       && state.subjectNotices[0].includes(saved.name) || 'named other-person result is missing',
     JSON.stringify(state.computedEvents) === JSON.stringify([{ mode: 'full', sunSign: 'cancer' }])
       || 'fresh full-chart computation did not finish with the expected Sun sign',
-    state.profile === PROFILE || 'saved private profile was changed',
+    (privateProfileInput(state.profile) !== null
+      && privateProfileInput(state.profile) === privateProfileInput(PROFILE)) || 'saved private profile was changed',
   ].filter((failure) => failure !== true);
 }
 
@@ -74,7 +93,9 @@ export async function runSearchLearningChecks({ browser, baseURL, check, outDir 
         .filter((other) => {
           const style = getComputedStyle(other);
           const box = other.getBoundingClientRect();
-          return style.visibility === 'visible' && style.display !== 'none' && style.pointerEvents !== 'none'
+          // Controls inside a collapsed disclosure still report a layout box,
+          // but they are not rendered and cannot cover anything.
+          return other.checkVisibility() && style.visibility === 'visible' && style.display !== 'none' && style.pointerEvents !== 'none'
             && Math.min(box.right, rect.right) > Math.max(box.left, rect.left)
             && Math.min(box.bottom, rect.bottom) > Math.max(box.top, rect.top);
         }).map((other) => ({ tag: other.tagName, class: other.className }));
