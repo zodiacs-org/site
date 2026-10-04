@@ -136,7 +136,7 @@ await withPreview({ port: 8791 }, async (base) => {
         await fillPerson(page, 'share-person-1');
         await page.locator('[data-twins-submit]').click();
         await page.locator('[data-twins-result]').waitFor();
-        assert.match(await page.locator('.sharing-tool > .notice').innerText(), /cannot.*rising|cannot.*three-sign/i);
+        assert.match(await page.locator('.sharing-tool > .notice').innerText(), /Rising signs are not compared/i);
         await overflow(page);
         await page.screenshot({ path: resolve(out, `twins-${engine.name}-${width}.png`), fullPage: true });
         await page.locator('#share-person-1-time').locator('..').getByRole('checkbox').check();

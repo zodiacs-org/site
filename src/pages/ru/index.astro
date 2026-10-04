@@ -1,5 +1,6 @@
 ---
 import HomeTrustFaq from '../../components/HomeTrustFaq.astro';
+import HomeShareTools from '../../components/sharing/HomeShareTools.astro';
 import { homeTrustSchema } from '../../lib/home-trust';
 import Base from '../../layouts/Base.astro';
 import SignIcon from '../../components/SignIcon.astro';
@@ -334,6 +335,8 @@ const jsonLd = [
       ))}
     </div>
   </section>
+
+  <HomeShareTools locale="ru" />
 
   <section class="container pace-tight" id="signs">
     <div class="section-head reveal">

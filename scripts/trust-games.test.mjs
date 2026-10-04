@@ -12,7 +12,10 @@ describe('Games scoring explanation', () => {
     expect(race).toContain("t('en', 'trustGamesScore')");
     const ramp = await read('src/components/RaceRamp.astro');
     expect(ramp).toContain("t(locale, 'trustGamesScore')");
-    expect(ramp).toContain("localizePath(locale, '/disclosure/')");
+    // The operator disclosure lives in the footer and FAQ; the banner stays on scoring.
+    expect(ramp).not.toContain('trustFreeAnswer');
+    const footer = await read('src/components/SiteFooter.astro');
+    expect(footer).toContain("t(locale, 'trustFreeAnswer')");
     for (const locale of ['en', 'es', 'pt', 'fr', 'it', 'ru']) {
       const catalog = await read(`src/lib/i18n/ui/${locale}.ts`);
       expect(catalog).toMatch(/trustGamesScore:.*100.*25/);

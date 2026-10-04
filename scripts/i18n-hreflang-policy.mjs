@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 const approvedDailyDays = JSON.parse(readFileSync(new URL('../src/data/chart-of-the-day.json', import.meta.url), 'utf8')).editions.filter((edition) => edition.ownerApproval?.approved === true).map((edition) => edition.day);
-const dailyBlocks = approvedDailyDays.length * 6;
+// Each approved edition, plus the chart-of-the-day index once any edition exists, in six languages.
+const dailyBlocks = (approvedDailyDays.length + (approvedDailyDays.length ? 1 : 0)) * 6;
 /**
  * Hreflang activation is explicit and per locale. Declaring metadata in the
  * TypeScript locale union never changes this release policy.

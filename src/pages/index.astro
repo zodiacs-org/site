@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import HomeShareTools from '../components/sharing/HomeShareTools.astro';
 import { homeTrustFaq } from '../lib/home-trust';
 import AstroTerm from '../components/AstroTerm.astro';
 import RaceRamp from '../components/RaceRamp.astro';
@@ -585,6 +586,8 @@ const tools = [
       </ul>
     </div>
   </section>
+
+  <HomeShareTools locale="en" />
 
   <!-- 05 · The Twelve -->
   <section class="container pace-tight" id="signs">

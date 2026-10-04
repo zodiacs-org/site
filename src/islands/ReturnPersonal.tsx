@@ -56,7 +56,7 @@ export default function ReturnPersonal({ kind, locale }: { kind: 'kit' | 'wrappe
     const chosen = kind === 'wrapped' ? loadProfile().charts.find((chart) => chart.id === selected && chart.birth.place) : null;
     const input: ChartEntry = chosen ? { id: 3, name: chosen.name, date: chosen.birth.date, time: chosen.birth.time ?? '', timeKnown: chosen.birth.timeKnown && !!chosen.birth.time, city: chosen.birth.place as ChartEntry['city'], calendar: 'gregorian' } : entry;
     try {
-      if (kind === 'wrapped' && !chosen) throw new Error('saved chart missing');
+      if (kind === 'wrapped' && selected && !chosen) throw new Error('saved chart missing');
       const [mod, trust] = await Promise.all([engine(), loadTrust()]);
       const { chart, date } = await calculateEntry(input, mod, locale);
       if (chart.flags.includes('outside-reference-span')) throw new RangeError(t(locale, 'birthDateRange'));
@@ -91,13 +91,14 @@ export default function ReturnPersonal({ kind, locale }: { kind: 'kit' | 'wrappe
   return <div>
     <form class="return-personal" onSubmit={compute} aria-busy={busy}>
       {kind === 'kit' ? <SharingBirthForm named locale={locale} entry={entry} warm={engine} onChange={(patch) => { clear(); setEntry((current) => ({ ...current, ...patch })); }} /> : <>
-        <div class="field"><label class="field__label" for="wrapped-chart">{s(locale, 'savedChart')}</label>
-          <select id="wrapped-chart" class="field__input" value={selected} required onChange={(event) => { clear(); setSelected(event.currentTarget.value); }}><option value="">{s(locale, 'chooseChart')}</option>{saved.map((chart) => <option key={chart.id} value={chart.id}>{chart.name}</option>)}</select>
-        </div>
-        {!saved.length && <p class="sharing-note">{s(locale, 'noSaved')} <a href={localizePath(locale, '/birth-chart/')}>{s(locale, 'saveChart')} →</a></p>}
+        {saved.length > 0 && <div class="field"><label class="field__label" for="wrapped-chart">{s(locale, 'savedChart')}</label>
+          <select id="wrapped-chart" class="field__input" value={selected} onChange={(event) => { clear(); setSelected(event.currentTarget.value); }}><option value="">{s(locale, 'enterDetails')}</option>{saved.map((chart) => <option key={chart.id} value={chart.id}>{chart.name}</option>)}</select>
+        </div>}
+        {!selected && <SharingBirthForm locale={locale} entry={entry} warm={engine} onChange={(patch) => { clear(); setEntry((current) => ({ ...current, ...patch })); }} />}
+        {!saved.length && <p class="sharing-note">{s(locale, 'wrappedSaveHint')} <a href={localizePath(locale, '/birth-chart/')}>{s(locale, 'saveChart')} →</a></p>}
         <div class="field"><label class="field__label" for="wrapped-year">{s(locale, 'year')}</label><select id="wrapped-year" class="field__input" value={year} onChange={(event) => { clear(); setYear(Number(event.currentTarget.value)); }}>{Array.from({ length: 5 }, (_, i) => currentYear - i).filter((year) => year >= 1800 && year <= 2199).map((year) => <option value={year}>{year}</option>)}</select></div>
       </>}
-      <button class="btn btn--primary" disabled={busy || (kind === 'wrapped' && !selected)} data-return-submit><span>{s(locale, busy ? 'generating' : kind === 'kit' ? 'makePdf' : 'makeWrapped')}</span><span class="orb">↗</span></button>
+      <button class="btn btn--primary" disabled={busy} data-return-submit><span>{s(locale, busy ? 'generating' : kind === 'kit' ? 'makePdf' : 'makeWrapped')}</span><span class="orb">↗</span></button>
       {busy && <button class="btn btn--ghost" type="button" onClick={clear}>{s(locale, 'cancel')}</button>}
       <p class="sharing-note">{sharingText(locale, 'privacy')}</p>
       {error && <p class="field__error" role="alert">{error}</p>}<CalculationReload error={error} locale={locale} />

@@ -15,6 +15,8 @@ const signs = [
 const approvedDailyDays = JSON.parse(await readFile(resolve(repo, 'src/data/chart-of-the-day.json'), 'utf8')).editions.filter((edition) => edition.ownerApproval?.approved === true).map((edition) => edition.day);
 const core = [
   ...approvedDailyDays.map((day) => `/chart-of-the-day/${day}/`),
+  // The index is indexable once at least one owner-approved edition exists.
+  ...(approvedDailyDays.length ? ['/chart-of-the-day/'] : []),
   '/', '/tools/', '/birth-chart/', '/compatibility/', '/moon-sign/',
   '/rising-sign/', '/moon-phase/', '/saturn-return/', '/transits/',
   '/baby-zodiac/', '/profile/', '/methodology/', '/privacy/', '/disclosure/',
@@ -26,8 +28,8 @@ const signPaths = new Set(signs.map((sign) => `/${sign}/`));
 const indexedRoutes = core.filter((path) => !signPaths.has(path)).map((path) => `/ru${path}`);
 const noindexSignRoutes = new Set(signs.map((sign) => `/ru/${sign}/`));
 const notFoundRoute = '/ru/404/';
-const withheldDailyRoute = '/ru/chart-of-the-day/';
-const expectedRoutes = [...indexedRoutes, ...noindexSignRoutes, notFoundRoute, withheldDailyRoute];
+const withheldDailyRoute = approvedDailyDays.length ? null : '/ru/chart-of-the-day/';
+const expectedRoutes = [...indexedRoutes, ...noindexSignRoutes, notFoundRoute, ...(withheldDailyRoute ? [withheldDailyRoute] : [])];
 const expectedFiles = new Map(expectedRoutes.map((route) => [
   route,
   resolve(dist, route.replace(/^\//, ''), 'index.html'),

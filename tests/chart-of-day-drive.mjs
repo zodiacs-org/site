@@ -107,10 +107,11 @@ await withPreview({ port: 8792 }, (preview) => withSecurePreview(preview, async 
         const context = await browser.newContext({ viewport: { width: 390, height: 844 }, ignoreHTTPSErrors: localTls });
         await pageSetup(context, nextDay); const page = await context.newPage();
         await page.goto(`${base}/chart-of-the-day/`); await page.locator('astro-island:not([ssr])').first().waitFor();
-        assert.equal(await page.locator('.return-panel .btn').count(), 0, 'Yesterday is not silently promoted as today');
+        // Yesterday stays featured, but labelled as the latest edition rather than today's.
+        assert.match(await page.locator('.return-panel .btn').innerText(), /^Latest chart · /);
         assert.equal(await page.locator(`.return-panel a[href$="/${edition.day}/"]`).count(), 1);
         assert.equal((await page.goto(`${base}/chart-of-the-day/${nextDay}/`)).status(), 404);
-        record('unapproved next day stays unpublished; the approved edition remains an archive link');
+        record('unapproved next day stays unpublished; the approved edition stays featured as the latest');
         await context.close();
       }
     } finally { await browser.close(); }

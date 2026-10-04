@@ -923,6 +923,19 @@ if (onlyHomepage) {
   process.exit(0);
 }
 
+const onlyToolsArg = process.argv.find((arg) => arg.startsWith('--only-tools='));
+if (onlyToolsArg) {
+  const keys = new Set(onlyToolsArg.slice('--only-tools='.length).split(',').filter(Boolean));
+  const chosen = TOOLS.filter((tool) => keys.has(tool.key));
+  if (chosen.length !== keys.size) throw new Error(`Unknown tool card key in ${onlyToolsArg}`);
+  console.log(`Rendering ${chosen.length} tool card(s)…`);
+  for (const tool of chosen) await shoot(toolCard(tool), `tool/${tool.key}.png`);
+  await writeEnglishManifest();
+  console.log(`Done: ${count} card(s), ${(total / 1024).toFixed(0)}KB.`);
+  await browser.close();
+  process.exit(0);
+}
+
 if (onlyRussian || onlySharingRussian || onlyReturnRussian) {
   console.log('Rendering Russian OG cards…');
   await renderRussianCards(onlySharingRussian, onlyReturnRussian);
