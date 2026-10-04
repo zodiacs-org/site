@@ -114,3 +114,12 @@ stay, and so does Swiss's largest, 1.908″ at 2051, with its date
 lost under `swissOutputRemoved`, and `tools/sidereal.mjs` with
 `tools/sidereal.py` regenerates them (`tools/run-all.sh`). The record of
 everything removed is [`../../../engine-validation/SWISS-OUTPUT-REMOVAL.md`](../../../engine-validation/SWISS-OUTPUT-REMOVAL.md).
+
+## Note appended 2026-10-04
+
+The figure above for the ladder outside 1850–2049, 13″, is that of the other
+systems that use the ascendant: this record's own `results/end-to-end.json`
+has, on the ladder from 1800 to 2199, Koch at 31.6″, Regiomontanus at 15.2″,
+the other systems that use the ascendant at 13.2″, Meridian and Morinus at
+2.2″ and whole sign at 0; broad, 32.9″. No verdict changes, since nothing
+outside 1850–2049 is judged. See FINDINGS F-73.

@@ -1,0 +1,49 @@
+{
+ "schema": "zodiacs.calc-roundtrip-replay.v1",
+ "fixture": {
+  "path": "src/fixtures/calc-roundtrip.json",
+  "sha256": "b56ba1cf93f0cb0ac5a9abe0e3158fd7ddf222ab09726c66c65dc79eb687e874",
+  "engineCommits": [
+   "ddbbaa0b1d21e16834722f81e8708816849c6726",
+   "23660f509fd9552d596966419fc982544fe06019"
+  ]
+ },
+ "engine": "0.1.1-rc.16",
+ "cases": 25,
+ "byFunction": {
+  "calc": 22,
+  "houses": 1,
+  "events": 2
+ },
+ "receiptReplays": 16,
+ "refusals": {
+  "not-in-this-version": 2,
+  "unsupported-combination": 4,
+  "out-of-range": 2,
+  "sample-budget": 1
+ },
+ "frames": [
+  "ecliptic-icrs",
+  "ecliptic-j2000",
+  "ecliptic-mean-of-date",
+  "ecliptic-true-of-date",
+  "equatorial-icrs",
+  "equatorial-j2000",
+  "equatorial-mean-of-date",
+  "equatorial-true-of-date"
+ ],
+ "centers": [
+  "barycentric",
+  "geocentric",
+  "heliocentric",
+  "topocentric"
+ ],
+ "corrections": [
+  "apparent",
+  "astrometric",
+  "geometric"
+ ],
+ "tolerance": "relative 1e-12, and the same keys",
+ "worstRelativeDifference": 0,
+ "mismatches": 0
+}
