@@ -9,6 +9,12 @@ import SharingToolLinks from './SharingToolLinks.astro';
 import { localizePath, type CatalogLocale } from '../../lib/i18n';
 import { SHARING_COPY, sharingText as s } from '../../lib/sharing/copy';
 import { DIRECTORY_PEOPLE } from '../../lib/people';
+import { sampleGroup, sampleTwins, sampleContacts, SAMPLE_PAIR_SLUGS, SAMPLE_TWIN_SIGNS } from '../../lib/sharing/samples';
+import { ROLE_HUES, ROLE_KEYS } from '../../lib/sharing/group';
+import { t } from '../../lib/i18n';
+import { planetLabel, aspectLabel } from '../../lib/i18n/astrology';
+import { signBySlug, signName } from '../../lib/signs';
+import { englishOnlyCue } from '../../lib/i18n/english-only';
 import '../../styles/calculator.css';
 import '../../styles/sharing-tools.css';
 interface Props { kind: 'big' | 'invite' | 'group' | 'twins'; locale?: CatalogLocale }
@@ -18,11 +24,34 @@ const ledeKey = ({ big: 'bigLede', invite: 'inviteLede', group: 'groupLede', twi
 const path = ({ big: '/big-three/', invite: '/compatibility/invite/', group: '/group-charts/', twins: '/chart-twins/' })[kind];
 const route = localizePath(locale, path);
 const directory = kind === 'twins' ? DIRECTORY_PEOPLE.map((person) => ({ slug: person.slug, name: person.displayName, sun: person.sunSign.slug, moon: person.moon.uncertain ? null : person.moon.sign })) : [];
+const headlineKey = kind === 'group' ? 'groupHeadline' : titleKey;
+const englishCue = englishOnlyCue(locale);
+const groupSample = kind === 'group' ? sampleGroup(DIRECTORY_PEOPLE) : [];
+const twinSample = kind === 'twins' ? sampleTwins(directory) : null;
+const pair = kind === 'invite' ? SAMPLE_PAIR_SLUGS.map((slug) => DIRECTORY_PEOPLE.find((person) => person.slug === slug)) : [];
+const pairContacts = pair.length === 2 && pair[0] && pair[1] ? sampleContacts(pair[0], pair[1]) : [];
+const personHref = (slug: string) => `/people/${slug}/`;
+const cardImage = ({ big: '/assets/og/v2/tool/big-three.png', invite: '/assets/og/v2/tool/compatibility-private-invite.png', group: '/assets/og/v2/tool/group-charts.png', twins: '/assets/og/v2/tool/chart-twins.png' })[kind];
 const jsonLd = [{ '@type': 'WebApplication', name: s(locale, titleKey), description: s(locale, ledeKey), url: `https://zodiacs.org${route}`, applicationCategory: 'LifestyleApplication', operatingSystem: 'Web', offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' } }];
 ---
-<Base privateSurface clientUi locale={locale} path={route} title={`${s(locale, titleKey)} | Zodiacs.org`} description={s(locale, ledeKey)} image={locale === 'ru' ? ruOgImageForPath(route) ?? '/assets/og/v2/ru/share.png' : '/assets/og/v2/tool/birth-chart.png'} imageAlt={s(locale, titleKey)} jsonLd={jsonLd} glass>
+<Base privateSurface clientUi locale={locale} path={route} title={`${s(locale, titleKey)} | Zodiacs.org`} description={s(locale, ledeKey)} image={locale === 'ru' ? ruOgImageForPath(route) ?? '/assets/og/v2/ru/share.png' : cardImage} imageAlt={s(locale, titleKey)} jsonLd={jsonLd} glass>
   <section class:list={['section--tight', 'container', 'sharing-page', { 'container--narrow': kind !== 'group' }]}>
-    <header class="tool-hero sharing-hero"><h1 class="display">{s(locale, titleKey)}</h1><p>{s(locale, ledeKey)}</p></header>
+    <header class="tool-hero sharing-hero"><h1 class="display">{s(locale, headlineKey)}</h1><p>{s(locale, ledeKey)}</p></header>
+    {groupSample.length > 0 && <aside class="sharing-sample" aria-label={s(locale, 'sampleLabel')} data-sharing-sample="group">
+      <em class="kicker">{s(locale, 'sampleLabel')}</em><p class="sharing-note">{s(locale, 'groupSampleIntro')}</p>
+      <ul class="sample-group">{groupSample.map((row) => <li class="tile" style={`--role-hue:${ROLE_HUES[row.reading.role]}`}><a href={personHref(row.slug)} hreflang="en" title={englishCue?.aria}>{row.name}</a><span class="sample-group__role">{s(locale, ROLE_KEYS[row.reading.role])}</span><span class="sharing-note">{s(locale, 'groupCount', { n: row.reading.winningCount, total: row.reading.total })}</span></li>)}</ul>
+    </aside>}
+    {twinSample && <aside class="sharing-sample" aria-label={s(locale, 'sampleLabel')} data-sharing-sample="twins">
+      <em class="kicker">{s(locale, 'sampleLabel')}</em><p class="sharing-note">{s(locale, 'twinsSampleIntro')}</p>
+      <p class="sample-twins__signs">{t(locale, 'sun')}: {signName(signBySlug(SAMPLE_TWIN_SIGNS.sun), locale)} · {t(locale, 'moon')}: {signName(signBySlug(SAMPLE_TWIN_SIGNS.moon), locale)}</p>
+      <ul class="sample-twins">{twinSample.both.map((match) => <li class="tile"><a href={personHref(match.person.slug)} hreflang="en" title={englishCue?.aria}>{match.person.name}</a><span class="sample-group__role">{s(locale, 'twinsBoth')}</span></li>)}</ul>
+      <p class="sharing-note">{s(locale, 'twinsSamplePartial', { n: twinSample.partial })}</p>
+    </aside>}
+    {pairContacts.length > 0 && pair[0] && pair[1] && <aside class="sharing-sample" aria-label={s(locale, 'sampleLabel')} data-sharing-sample="invite">
+      <em class="kicker">{s(locale, 'sampleLabel')}</em><p class="sharing-note">{s(locale, 'inviteSampleIntro')}</p>
+      <ul class="sample-contacts">{pairContacts.map((contact) => <li class="tile"><span>{pair[0]!.displayName.split(' ').at(-1)} · {planetLabel(locale, contact.a)}</span><strong>{aspectLabel(locale, contact.type)}</strong><span>{pair[1]!.displayName.split(' ').at(-1)} · {planetLabel(locale, contact.b)}</span><span class="sharing-note mono">{s(locale, 'sampleOrb', { n: new Intl.NumberFormat(locale === 'pt' ? 'pt-BR' : locale, { maximumFractionDigits: 1 }).format(contact.orb) })}</span></li>)}</ul>
+      <p class="sharing-note">{s(locale, 'inviteSampleNote')}</p>
+    </aside>}
     {kind === 'big' && <BigThreeQuick locale={locale} copy={SHARING_COPY[locale]} client:load />}
     {kind === 'invite' && <PrivateCompatibilityInvite locale={locale} client:load />}
     {kind === 'group' && <GroupCharts locale={locale} client:load />}

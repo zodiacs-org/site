@@ -86,7 +86,14 @@ await withPreview({ port: 8791 }, async (plainBase) => {
         await overflow(page); await screenshot(page, resolve(out, `${driver.name}-${width}-kit.png`));
         record(`${driver.name} ${width}: browser PDF and actual UTC receipt`, { bytes: pdf.length });
         await page.locator('#share-person-3-name').fill('Changed'); assert.equal(await page.locator('[data-return-result]').count(), 0);
-        await page.goto(`${base}/your-sky-wrapped/`); await hydrate(page); assert.equal(await page.locator('[data-return-submit]').isDisabled(), true);
+        await page.goto(`${base}/your-sky-wrapped/`); await hydrate(page);
+        // With nothing saved, Wrapped takes birth details directly instead of dead-ending.
+        assert.equal(await page.locator('#wrapped-chart').count(), 0); assert.equal(await page.locator('[data-return-submit]').isDisabled(), false);
+        await page.locator('#share-person-3-date').fill(canary); await page.locator('#share-person-3-time').fill('12:00');
+        await page.locator('#share-person-3-place').fill('London'); await page.getByRole('option').filter({ hasText: /London/ }).first().click();
+        await page.locator('[data-return-submit]').click(); await page.locator('[data-share-wrapped]').waitFor({ timeout: 30000 });
+        assert((await page.locator('.return-contact-list li').count()) > 0);
+        record(`${driver.name} ${width}: Wrapped works from typed birth details with no saved chart`);
         await seed(page); await page.locator('#wrapped-chart').selectOption('00000000-0000-4000-8000-000000000001');
         await page.locator('[data-return-submit]').click(); await page.locator('[data-share-wrapped]').waitFor({ timeout: 30000 });
         assert((await page.locator('.return-contact-list li').count()) > 0);
@@ -98,7 +105,7 @@ await withPreview({ port: 8791 }, async (plainBase) => {
         record(`${driver.name} ${width}: saved-chart recomputation, worker scan, active share tap and portrait export`);
         await seed(page, false); assert.equal(await page.locator('[data-return-result]').count(),0); await page.locator('#wrapped-chart').selectOption('00000000-0000-4000-8000-000000000001'); await page.locator('[data-return-submit]').click(); await page.locator('[data-share-wrapped]').waitFor({ timeout: 30000 });
         assert.equal(await page.locator('[data-check-our-math]').getAttribute('data-instant-basis'),'reference'); assert(!/Moon|Rising/.test(await page.locator('.return-contact-list').innerText()));
-        await page.evaluate(() => { localStorage.removeItem('zodiacs.profile.v1'); window.dispatchEvent(new Event('zodiacs:profile')); }); assert.equal(await page.locator('[data-return-result]').count(),0); assert.equal(await page.locator('[data-return-submit]').isDisabled(),true);
+        await page.evaluate(() => { localStorage.removeItem('zodiacs.profile.v1'); window.dispatchEvent(new Event('zodiacs:profile')); }); assert.equal(await page.locator('[data-return-result]').count(),0); assert.equal(await page.locator('#wrapped-chart').count(),0);
         record(`${driver.name} ${width}: unknown time omits Moon and rising; deletion clears prepared exports`);
         if (width === 360) {
           await seed(page); await page.locator('#wrapped-chart').selectOption('00000000-0000-4000-8000-000000000001');

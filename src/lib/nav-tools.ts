@@ -14,7 +14,11 @@ export type ToolGlyphKind =
   | 'fullmoon'
   | 'eclipse'
   | 'baby'
-  | 'numerology';
+  | 'numerology'
+  | 'group'
+  | 'invite'
+  | 'calendar'
+  | 'document';
 
 interface ToolHubCard {
   order: number;
@@ -156,6 +160,34 @@ export const TOOL_CATALOG: readonly ToolCatalogEntry[] = [
     hub: { order: 16, title: 'Big Three calculator', promise: 'Sun, Moon, and Rising in seconds, with a card to share and one tap into the full chart.', hue: 'var(--sign-leo)', kind: 'birth', group: 'start' },
   },
   {
+    href: '/group-charts/',
+    hub: { order: 20, title: 'Group charts', promise: 'Three to eight people: who brings the spark, the anchor, the connector, and the glue.', hue: 'var(--sign-aries)', kind: 'group', group: 'start' },
+  },
+  {
+    href: '/compatibility/invite/',
+    hub: { order: 21, title: 'Invite a friend to compare', promise: 'Send a link; your friend adds their chart and the comparison opens for both of you.', hue: 'var(--sign-libra)', kind: 'invite', group: 'start' },
+  },
+  {
+    href: '/chart-twins/',
+    hub: { order: 22, title: 'Chart twins', promise: 'Public figures in the sourced directory who share your Sun and Moon signs.', hue: 'var(--sign-gemini)', kind: 'compat', group: 'start' },
+  },
+  {
+    href: '/astrologer-kit/',
+    hub: { order: 23, title: 'Chart PDF', promise: 'A clean chart with placement and aspect tables, made on your device to print or send.', hue: 'var(--sign-virgo)', kind: 'document', group: 'start' },
+  },
+  {
+    href: '/sky-calendar/',
+    hub: { order: 24, title: 'Sky calendar', promise: 'New and full moons, eclipses, and retrogrades in your own calendar app.', hue: 'var(--sign-aquarius)', kind: 'calendar', group: 'sky' },
+  },
+  {
+    href: '/chart-of-the-day/',
+    hub: { order: 25, title: 'Chart of the day', promise: 'A public figure in the news, with sourced birth data and its limits stated.', hue: 'var(--sign-sagittarius)', kind: 'birth', group: 'sky' },
+  },
+  {
+    href: '/your-sky-wrapped/',
+    hub: { order: 26, title: 'Your sky, wrapped', promise: 'The year’s Jupiter and Saturn contacts to your chart, with a card to share.', hue: 'var(--sign-capricorn)', kind: 'transit', group: 'milestones' },
+  },
+  {
     href: '/today/', label: 'today', footerOrder: 2, footerUsesLocalizedPath: true,
     footerLabel: {
       en: 'Today', es: 'Hoy', pt: 'Hoje',
@@ -265,4 +297,23 @@ export const ALL_TOOLS_LABEL = {
   fr: 'Tous les outils',
   it: 'Tutti gli strumenti',
   ru: 'Все инструменты',
+} as const satisfies Record<Locale, string>;
+
+/**
+ * Newer sharing and return-visit tools, listed under the main eight in the
+ * Tools menu with short labels. Every one has a route in all six locales.
+ */
+export const NAV_MORE: readonly { href: string; label: Record<Locale, string> }[] = [
+  { href: '/group-charts/', label: { en: 'Group charts', es: 'Cartas de grupo', pt: 'Mapas do grupo', fr: 'Thèmes de groupe', it: 'Temi di gruppo', ru: 'Карты группы' } },
+  { href: '/chart-twins/', label: { en: 'Chart twins', es: 'Gemelos astrales', pt: 'Gêmeos astrais', fr: 'Jumeaux astrologiques', it: 'Gemelli astrologici', ru: 'Астрологические близнецы' } },
+  { href: '/big-three/', label: { en: 'Big three card', es: 'Tus tres signos', pt: 'Seus três signos', fr: 'Tes trois signes', it: 'I tuoi tre segni', ru: 'Три главных знака' } },
+  { href: '/compatibility/invite/', label: { en: 'Invite a friend', es: 'Invitar a un amigo', pt: 'Convidar alguém', fr: 'Inviter un ami', it: 'Invita un amico', ru: 'Пригласить друга' } },
+  { href: '/sky-calendar/', label: { en: 'Sky calendar', es: 'Calendario del cielo', pt: 'Calendário do céu', fr: 'Calendrier du ciel', it: 'Calendario del cielo', ru: 'Календарь неба' } },
+  { href: '/chart-of-the-day/', label: { en: 'Chart of the day', es: 'Carta del día', pt: 'Mapa do dia', fr: 'Thème du jour', it: 'Tema del giorno', ru: 'Карта дня' } },
+  { href: '/your-sky-wrapped/', label: { en: 'Your sky, wrapped', es: 'Tu cielo, en retrospectiva', pt: 'Seu céu em retrospectiva', fr: 'Votre ciel, en rétrospective', it: 'Il tuo cielo, in retrospettiva', ru: 'Ваше небо: итоги года' } },
+  { href: '/astrologer-kit/', label: { en: 'Chart PDF', es: 'PDF de la carta', pt: 'PDF do mapa', fr: 'PDF du thème', it: 'PDF del tema', ru: 'PDF карты' } },
+];
+
+export const NAV_MORE_LABEL = {
+  en: 'More to explore', es: 'Más para explorar', pt: 'Mais para explorar', fr: 'À explorer aussi', it: 'Altro da esplorare', ru: 'Ещё стоит посмотреть',
 } as const satisfies Record<Locale, string>;

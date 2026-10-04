@@ -17,8 +17,9 @@ const { locale = 'en', edition = null } = Astro.props;
 const path = localizePath(locale, '/chart-of-the-day/');
 const route = edition ? `${path}${edition.day}/` : path;
 const englishCue = englishOnlyCue(locale);
+const buildDay = new Date().toISOString().slice(0, 10);
 ---
-<Base clientUi locale={locale} path={route} title={`${s(locale, 'dayTitle')}${edition ? ` · ${edition.name}` : ''} | Zodiacs.org`} description={s(locale, 'dayLede')} image={locale === 'ru' ? ruOgImageForPath(path) ?? '/assets/og/v2/ru/share.png' : '/assets/og/v2/tool/birth-chart.png'} imageAlt={s(locale, 'dayTitle')} noindex={!edition} glass>
+<Base clientUi locale={locale} path={route} title={`${s(locale, 'dayTitle')}${edition ? ` · ${edition.name}` : ''} | Zodiacs.org`} description={s(locale, 'dayLede')} image={locale === 'ru' ? ruOgImageForPath(path) ?? '/assets/og/v2/ru/share.png' : '/assets/og/v2/tool/chart-of-the-day.png'} imageAlt={s(locale, 'dayTitle')} noindex={!edition && dailyEditions.length === 0} glass>
   <section class="section--tight container return-page">
     <header class="tool-hero sharing-hero"><h1 class="display">{s(locale, 'dayTitle')}</h1><p>{s(locale, 'dayLede')}</p></header>
     {edition ? <article class="return-panel">
@@ -29,7 +30,7 @@ const englishCue = englishOnlyCue(locale);
       <h3>{s(locale, 'dayReliability')}</h3><p>{edition.reliability[locale]}</p>
       <DailyPublicChart date={edition.birthDate} locale={locale} client:load />
       <noscript><p>{sharingText(locale, 'jsRequired')}</p></noscript>
-    </article> : <><DailyEditionHome locale={locale} editions={dailyEditions.map(({ day, name }) => ({ day, name }))} client:load /><a href="/people/" hreflang="en">{sharingText(locale, 'directory')}{englishCue?.suffix} →</a></>}
+    </article> : <><DailyEditionHome locale={locale} buildDay={buildDay} editions={dailyEditions.map(({ day, name }) => ({ day, name }))} client:load /><a href="/people/" hreflang="en">{sharingText(locale, 'directory')}{englishCue?.suffix} →</a></>}
     <ReturnToolLinks locale={locale} current="/chart-of-the-day/" />
   </section>
 </Base>

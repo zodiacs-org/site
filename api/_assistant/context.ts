@@ -24,13 +24,13 @@ These lines use each live page’s meta description to state what it computes or
 - /ask/ — Ask Guide about birth charts, astrology, or Zodiacs.org tools and guides. Signed-out conversations are not stored by Zodiacs.org.
 - /sky-calendar/ — New and full moons, eclipse peaks, and planetary retrograde windows in your calendar. These events are the same for everyone.
 - /astrologer-kit/ — A clean chart, placement and aspect tables, and the calculation receipt. Made on your device, free, with no account needed.
-- /your-sky-wrapped/ — Look back at selected Jupiter and Saturn transits to a saved chart, and make a share card. Available now for December’s year review.
+- /your-sky-wrapped/ — See when Jupiter and Saturn touched your Sun, Moon, and rising this year, then make a card to share. Use a saved chart or enter birth details.
 - /chart-of-the-day/ — A sourced public figure’s chart, with a clear account of what is known and what is uncertain.
 - /baby-zodiac/ — Enter a due date: the near-certain sun sign (cusp caveats computed, not guessed), the week's possible moon signs, and what has to wait for the birth minute. Free.
 - /big-three/ — Enter a birth date, time, and place and get your Sun, Moon, and Rising signs with exact degrees, a card to share, and one tap into the full birth chart. Free, computed in your browser.
 - /chart-twins/ — Compare your signs with the sourced people directory. A shared sign is a conversation starter, not proof of a similar personality.
 - /compatibility/invite/ — Add your chart first. Send the link, and your friend adds theirs to see your compatibility.
-- /group-charts/ — Add three to eight people and explore what each might bring to the group. Use birth details with their permission.
+- /group-charts/ — Add three to eight people and see what each might bring to the group: the spark, the anchor, the connector, or the glue. Use birth details with their permission.
 - /birth-chart/ — Calculate your free birth chart: sun, moon, rising, planets, houses, and what they mean — computed privately, in your browser.
 - /birthday/ — Choose your birthday for a date-specific reading of character, relationships, work, and growth, with an exact Sun-sign answer when the birth year matters.
 - /compatibility/ — Free astrology compatibility calculator: compare two birth charts privately in your browser, with clear readings and guides to all 78 sign pairings.

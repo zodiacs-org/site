@@ -59,6 +59,7 @@ const ZODIAC_SIGN_SLUGS = [
 const dailyPublishedDays = JSON.parse(await readFile(resolve(repo, 'src/data/chart-of-the-day.json'), 'utf8')).editions.filter((edition) => edition.ownerApproval?.approved === true).map((edition) => edition.day);
 const RUSSIAN_INDEXED_PATHS = new Set([
   ...dailyPublishedDays.map((day) => `/ru/chart-of-the-day/${day}/`),
+  ...(dailyPublishedDays.length ? ['/ru/chart-of-the-day/'] : []),
   '/ru/', '/ru/tools/', '/ru/birth-chart/', '/ru/compatibility/',
   '/ru/moon-sign/', '/ru/rising-sign/', '/ru/moon-phase/',
   '/ru/saturn-return/', '/ru/transits/', '/ru/baby-zodiac/',
@@ -1169,7 +1170,7 @@ const sitemapPolicy = {
   // +1 for /developers/compute/, the compute API's page.
   // +23 for three six-language sharing tools and five Big Three translations.
   // +18 for three six-language return-visit tools.
-  total: 1041 + dailyPublishedDays.length * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
+  total: 1041 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
     + publishedEventPaths.size + indexablePeoplePaths.size
     + Number(JSON.parse(await readFile(resolve(repo, 'src/data/people.json'), 'utf8')).directoryIndexable === true)
     + indexedRegistryResearchPaths.size,
