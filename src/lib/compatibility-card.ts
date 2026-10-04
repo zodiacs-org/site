@@ -23,6 +23,7 @@ import { savePngBlob, type CardOutcome } from './share-card';
 import {
   PORTRAIT_SHARE_CARD_BRAND_LAYOUT,
   drawShareBrandLockup,
+  loadShareCardImage,
   withShareBrandIcon,
 } from './share-card-brand';
 
@@ -167,14 +168,8 @@ export function compatibilityHeadline(summary: Pick<PairSummary, 'easeful' | 'ch
   return shareCardText(locale, 'compatibilityBalance');
 }
 
-async function loadIcon(slug: string): Promise<ImageBitmap | null> {
-  try {
-    const response = await fetch(`/assets/zodiac-icons/128/${slug}.webp`);
-    if (!response.ok) return null;
-    return createImageBitmap(await response.blob());
-  } catch {
-    return null;
-  }
+function loadIcon(slug: string): Promise<CanvasImageSource | null> {
+  return loadShareCardImage(`/assets/zodiac-icons/128/${slug}.webp`);
 }
 
 function fitText(

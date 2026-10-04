@@ -35,6 +35,7 @@ import { t } from './i18n';
 import {
   PORTRAIT_SHARE_CARD_BRAND_LAYOUT,
   drawShareBrandLockup,
+  loadShareCardImage,
   withShareBrandIcon,
 } from './share-card-brand';
 
@@ -329,23 +330,19 @@ function loadSvg(xml: string): Promise<HTMLImageElement> {
   });
 }
 
-let discBatch: Promise<Map<string, Blob | null>> | null = null;
+let discBatch: Promise<Map<string, CanvasImageSource | null>> | null = null;
 
 /**
- * All twelve 128px discs, fetched in zodiac order, for the card being made:
- * fetching only the discs a card shows would give our host the chart's signs.
+ * All twelve 128px discs, requested in zodiac order, for the card being made:
+ * requesting only the discs a card shows would give our host the chart's signs.
  * Discs a card asks for at once share one batch, which ends when it settles.
  * A disc that fails to arrive is left off its card alone.
  */
-function allDiscs(): Promise<Map<string, Blob | null>> {
+function allDiscs(): Promise<Map<string, CanvasImageSource | null>> {
   if (!discBatch) {
     const batch = Promise.all(SIGNS.map(async ({ slug }) => {
-      try {
-        const res = await fetch(`/assets/zodiac-icons/128/${slug}.webp`);
-        return [slug, res.ok ? await res.blob() : null] as const;
-      } catch {
-        return [slug, null] as const;
-      }
+      const disc = await loadShareCardImage(`/assets/zodiac-icons/128/${slug}.webp`);
+      return [slug, disc] as const;
     })).then((entries) => new Map(entries));
     discBatch = batch;
     const settle = () => { if (discBatch === batch) discBatch = null; };
@@ -355,14 +352,9 @@ function allDiscs(): Promise<Map<string, Blob | null>> {
 }
 
 /** Shared by every card builder; the 128px discs are the canonical card art. */
-export async function loadDisc(slug: string): Promise<ImageBitmap | null> {
+export async function loadDisc(slug: string): Promise<CanvasImageSource | null> {
   if (!slug) return null;
-  try {
-    const blob = (await allDiscs()).get(slug);
-    return blob ? await createImageBitmap(blob) : null;
-  } catch {
-    return null;
-  }
+  return (await allDiscs()).get(slug) ?? null;
 }
 
 export interface BigThreePlacement {
@@ -970,7 +962,7 @@ async function drawSignatureCard(
     ctx.stroke();
   }
 
-  const shownDiscs = signatureDiscs.filter((disc): disc is ImageBitmap => disc != null);
+  const shownDiscs = signatureDiscs.filter((disc): disc is CanvasImageSource => disc != null);
   const signatureDiscSize = 154;
   const signatureGap = 24;
   const discRowWidth = shownDiscs.length * signatureDiscSize

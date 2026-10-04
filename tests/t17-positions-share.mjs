@@ -140,15 +140,23 @@ try {
       globalThis.__t17NextCanvasId = 1;
       globalThis.__t17DownloadClicks = [];
       globalThis.__t17ShareCalls = 0;
-      globalThis.__t17IconFetches = [];
-      globalThis.__t17BrandIconFetches = [];
+      globalThis.__t17IconLoads = [];
+      globalThis.__t17BrandIconLoads = [];
+      const recordArt = (url) => {
+        const path = new URL(url, location.href).pathname;
+        if (path.includes('/assets/zodiac-icons/')) globalThis.__t17IconLoads.push(path);
+        if (path === '/assets/app-icons/v3/icon-512.png') globalThis.__t17BrandIconLoads.push(path);
+      };
       const originalFetch = globalThis.fetch;
       globalThis.fetch = function (input, init) {
-        const url = input instanceof Request ? input.url : String(input);
-        const path = new URL(url, location.href).pathname;
-        if (path.includes('/assets/zodiac-icons/')) globalThis.__t17IconFetches.push(path);
-        if (path === '/assets/app-icons/v3/icon-512.png') globalThis.__t17BrandIconFetches.push(path);
+        recordArt(input instanceof Request ? input.url : String(input));
         return originalFetch.call(this, input, init);
+      };
+      // Card pictures are decoded through image elements (share-card-brand).
+      const decode = HTMLImageElement.prototype.decode;
+      HTMLImageElement.prototype.decode = function () {
+        recordArt(this.src);
+        return decode.call(this);
       };
       const fillText = CanvasRenderingContext2D.prototype.fillText;
       CanvasRenderingContext2D.prototype.fillText = function (value, x, y, maxWidth) {
@@ -249,7 +257,7 @@ try {
         'the approach image must be prepared before its final share tap');
       assert.ok(contextualPrepared.communication.length > 0,
         'the communication image must be prepared before its final share tap');
-      await source.evaluate(() => { globalThis.__t17IconFetches = []; });
+      await source.evaluate(() => { globalThis.__t17IconLoads = []; });
 
       assert.equal(await source.locator('[data-share-card]').count(), 1, 'the prepared chart-sheet action must stay unique');
       assert.equal(await source.locator('[data-share-link]').count(), 0,
@@ -266,7 +274,7 @@ try {
         return {
           text: all.filter((entry) => entry.canvasId === canvasId),
           events: globalThis.__t17Events.slice(),
-          brandIconFetches: globalThis.__t17BrandIconFetches.slice(),
+          brandIconLoads: globalThis.__t17BrandIconLoads.slice(),
         };
       });
       const preparedSheetText = preparedSheet.text.map((entry) => entry.value).join(' | ');
@@ -302,7 +310,7 @@ try {
         { align: 'right', x: 1708, y: 104 },
       ], 'chart sheet must carry one legible corner wordmark');
       assert.equal(
-        preparedSheet.brandIconFetches.includes('/assets/app-icons/v3/icon-512.png'),
+        preparedSheet.brandIconLoads.includes('/assets/app-icons/v3/icon-512.png'),
         true,
         'chart sheet must pair the wordmark with the canonical site profile image',
       );
@@ -507,7 +515,7 @@ try {
         'a cancelled share sheet must not fire chart_share or share_card_downloaded');
       assert.equal(await source.evaluate(() => globalThis.__t17DownloadClicks.length), 0,
         'a cancelled share sheet must not fall through to download');
-      const cardIconRequests = await source.evaluate(() => globalThis.__t17IconFetches.slice());
+      const cardIconRequests = await source.evaluate(() => globalThis.__t17IconLoads.slice());
       // A signature may feature one to three distinct signs, followed by the
       // three Big Three discs. The fixture currently selects a one-sign
       // dignity signature, so four calls is the contractual floor.
