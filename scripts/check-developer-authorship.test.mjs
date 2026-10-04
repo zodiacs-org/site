@@ -44,7 +44,10 @@ describe('served developer documentation authorship', () => {
     'sdk/engine/functions/nested/example.html', 'sdk/engine/media/new.md',
     'sdk/examples/new/index.html', 'llms.txt', 'llms-full.txt',
     'api/v1/llms.txt', 'api/v1/sky/today.md', 'api/v1/sky/upcoming.md',
-    'api/v1/schema/nested/example.json',
+    'api/v1/schema/nested/example.json', 'widgets/index.html', 'widgets/new/embed.md',
+    'examples/new-manifest.json', 'examples/new-NOTICE.txt', 'assets/README.md',
+    'developers/engine/reference/assets/new.js', 'developers/new/UPPER.HTML',
+    'developers/new/graph.jsonld', 'developers/new/openapi.yaml', 'sdk/engine/media/NOTICE',
   ];
   for (const [label, text] of [
     ['retired persona', 'Rowan Vale'],
@@ -56,6 +59,74 @@ describe('served developer documentation authorship', () => {
       expect((await checkDeveloperAuthorship(root)).errors).toContain(`${path}:1: ${label}`);
     });
   }
+
+  // Generated pages wrap prose between words (the reference keeps the engine's
+  // comment line breaks); escapes and letter case do not change the name.
+  it.each([
+    'Maintained by Rowan\n    Vale', 'Rowan\r\nVale', 'Rowan  Vale', 'Rowan\tVale', 'Rowan&nbsp;Vale',
+    'Rowan&#160;Vale', 'Rowan&#xA0;Vale', 'Rowan Vale', '{"author":"Rowan\\u00a0Vale"}',
+    'ROWAN VALE', 'rowan vale', 'Rowan&#32;Vale', 'Rowan&ensp;Vale', 'Rowan&shy;Vale',
+    `Rowan${String.fromCharCode(0x200b)}Vale`, `Rowan${String.fromCharCode(0xad)}Vale`,
+    '<b>Rowan</b> Vale', 'Rowan<span class="name"> Vale</span>', '{"author":"Rowan\\u0020Vale"}',
+  ])('rejects the persona however its words are separated or cased: %j', async (text) => {
+    await put('developers/engine/reference/functions/calc.calc.html', text);
+    expect((await checkDeveloperAuthorship(root)).errors)
+      .toContain('developers/engine/reference/functions/calc.calc.html:1: retired persona');
+  });
+
+  // A slug, a file name, an address or a handle joins the words; a citation
+  // inverts them.
+  it.each([
+    '<a href="/authors/rowan-vale/">', 'rowan_vale.jpg', 'rowan.vale@zodiacs.org', '@RowanVale',
+    'Vale, Rowan', 'VALE,&nbsp;ROWAN', 'Rowan - Vale',
+  ])('rejects the persona joined or inverted: %j', async (text) => {
+    await put('developers/support/index.html', text);
+    expect((await checkDeveloperAuthorship(root)).errors)
+      .toContain('developers/support/index.html:1: retired persona');
+  });
+
+  it('leaves other names that share a word alone', async () => {
+    await put('developers/support/index.html',
+      'Rowan Atkinson visited the Vale of Glamorgan. Vale of Leven, Rowanberry and Valerie.');
+    expect((await checkDeveloperAuthorship(root)).errors).toEqual([]);
+  });
+
+  // /about redirects to /about/ with its fragment; these are the same link.
+  it.each([
+    '<a href="/about#editor">', '<a href="/about/index.html#editor">', '<a href="/about/?ref=nav#editor">',
+    '<a href="https://zodiacs.org/about#editor">', '[editor](/es/about#editor)',
+    '<a href="/about/&#35;editor">', '<a href="/about/&#x23;editor">', '<a href="/about/&num;editor">',
+    '{"url":"https:\\/\\/zodiacs.org\\/about\\/#editor"}',
+    '<a href="/about/./#editor">', '<a href="/about/#%65ditor">',
+  ])('rejects the editor anchor however the about page is spelled: %s', async (text) => {
+    await put('developers/support/index.html', text);
+    expect((await checkDeveloperAuthorship(root)).errors)
+      .toContain('developers/support/index.html:1: retired editor anchor');
+  });
+
+  it('keeps accepting the editorial anchor in every spelling', async () => {
+    await put('developers/support/index.html',
+      '<a href="/about#editorial"> <a href="/about/index.html#editorial"> <a href="/about/?x=1#editorial">'
+      + ' <a href="/about/&#35;editorial"> <a href="/about/#%65ditorial"> <a href="/About/#editor">');
+    expect((await checkDeveloperAuthorship(root)).errors).toEqual([]);
+  });
+
+  // The first two inputs made the earlier patterns quadratic (about eleven
+  // seconds each at this size), because every repeated start rescanned the rest
+  // of the line; each start must now give up within a bounded stretch.
+  it.each([
+    ['unclosed type arrays', '"@type":['],
+    ['about-page queries', 'about?'],
+    ['persona starts', 'Rowan<'],
+    ['joined persona starts', 'Rowan-'],
+    ['inverted persona starts', 'Vale,'],
+    ['type attributes', 'itemtype="'],
+  ])('scans 40,000 repeated %s in bounded time', async (_, start) => {
+    await put('developers/engine/index.html', start.repeat(40_000));
+    const started = performance.now();
+    expect((await checkDeveloperAuthorship(root)).errors).toEqual([]);
+    expect(performance.now() - started).toBeLessThan(2_000);
+  });
 
   it('rejects an editor anchor at end of file', async () => {
     await put('llms.txt', '/about/#editor');
@@ -113,6 +184,15 @@ describe('served developer documentation authorship', () => {
     '<div itemscope itemtype="https://schema.org/Person"></div>',
     "<div itemscope itemtype='http://schema.org/Person'></div>",
     '<div itemscope itemtype="https://schema.org/Thing https://schema.org/Person"></div>',
+    '{"@type":"\\u0050erson"}',
+    '{"@type":"https:\\/\\/schema.org\\/Person"}',
+    '{"@type":"schema:Person"}',
+    "{ '@type': 'Person' }",
+    '{ "@type": `Person` }',
+    "{ '@type': [\n  'Thing',\n  'Person',\n] }",
+    '{"\\u0040type":"Person"}', "node['@type'] = 'Person';", "{ ['@type']: 'Person' }",
+    '<div vocab="https://schema.org/" typeof="Person"></div>', '<div typeof="schema:Person"></div>',
+    "<div typeof='Thing Person'></div>", '<div itemscope itemtype=https://schema.org/Person></div>',
   ])('rejects ordinary Person type forms: %s', async (text) => {
     await put('developers/engine/index.html', text);
     expect((await checkDeveloperAuthorship(root)).errors)
@@ -126,8 +206,40 @@ describe('served developer documentation authorship', () => {
       <div itemscope itemtype="https://schema.org/Organization"></div>
       {"@type":"https://example.org/Person"}
       <a href="/about/#editorial">Editorial policy</a>
+      <div typeof="Organization"></div>
+      if (typeof value === "string" && typeof other == 'object') {}
+      {"@type":"\\u{110000}"}
     `);
     expect((await checkDeveloperAuthorship(root)).errors).toEqual([]);
+  });
+
+  // Every regular file is read, whatever its extension; only binary files are skipped.
+  it.each(['developers/new/types.d.ts', 'sdk/engine/assets/app.js.map', 'developers/new/data.cjs', 'api/v1/new/readme'])(
+    'reads %s whatever its extension', async (path) => {
+      await put(path, 'Rowan Vale');
+      expect((await checkDeveloperAuthorship(root)).errors).toContain(`${path}:1: retired persona`);
+    });
+
+  it('skips a binary file and says nothing about its bytes', async () => {
+    await put('developers/new/image.png', Buffer.concat([Buffer.from([0x89, 0x50, 0x4e, 0x47, 0]), Buffer.from('Rowan Vale')]));
+    const result = await checkDeveloperAuthorship(root);
+    expect(result.errors).toEqual([]);
+    expect(result.files).not.toContain('developers/new/image.png');
+  });
+
+  it('rejects a special file in a documentation tree', async () => {
+    expect(spawnSync('mkfifo', [join(root, 'developers', 'pipe')]).status).toBe(0);
+    expect((await checkDeveloperAuthorship(root)).errors)
+      .toContain('developers/pipe: unexpected non-regular documentation entry');
+  });
+
+  it('rejects a symlinked assets/README.md rather than skipping it', async () => {
+    await writeFile(`${root}-outside`, 'Rowan Vale');
+    await mkdir(join(root, 'assets'), { recursive: true });
+    await symlink(`${root}-outside`, join(root, 'assets', 'README.md'));
+    const result = await checkDeveloperAuthorship(root);
+    expect(result.errors).toContain('assets/README.md: unexpected documentation symlink');
+    expect(result.errors.some((error) => error.includes('retired persona'))).toBe(false);
   });
 
   it('rejects a symlinked output root without scanning its target', async () => {
@@ -158,10 +270,12 @@ describe('served developer documentation authorship', () => {
     expect(result.errors.some((error) => error.includes('retired persona'))).toBe(false);
   });
 
-  it('keeps the original src guard and runs controls and output guard after ordinary Build', async () => {
+  it('keeps the src guard (scripts/check-source-authorship.mjs) and runs controls and output guard after ordinary Build', async () => {
     const workflow = await readFile('.github/workflows/site-check.yml', 'utf8');
-    expect(workflow).toContain(String.raw`! grep -RInE 'Rowan Vale|about/#editor([^i]|$)|"@type"[[:space:]]*:[[:space:]]*"Person"' src`);
     const ordinaryJob = workflow.split('  legacy-drift:')[0];
+    expect(ordinaryJob).toMatch(/- name: Authorship stays transparent\s+run: \|\s+npx vitest run scripts\/check-source-authorship.test.mjs\s+node scripts\/check-source-authorship.mjs/);
     expect(ordinaryJob).toMatch(/run: npm run build\s+- name: Developer documentation authorship\s+run: \|\s+npx vitest run scripts\/check-developer-authorship.test.mjs\s+node scripts\/check-developer-authorship.mjs/);
+    const step = ordinaryJob.match(/- name: Developer documentation authorship\n([\s\S]*?)\n\s*(?=- name:|#)/)?.[1] ?? '';
+    expect(step).not.toMatch(/continue-on-error|if:/);
   });
 });

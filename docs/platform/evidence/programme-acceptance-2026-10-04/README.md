@@ -89,3 +89,15 @@ to:
 ```text
 Overall delivery: 26% (47.5 of 182.45); blocked 2% (3)
 ```
+
+## Correction, checkpoint 13 (4 October 2026)
+
+The independent audit of this checkpoint ([record](../programme-audit-2026-10-04/README.md))
+found one gate clause unmet. "Current source retains the package imports and
+removals" was not true for returns: `src/lib/engine/year-scan.ts`, the year
+ahead on `/profile/`, still found solar returns with the site's own Sun crossing
+scan, the construction PR620 removed from `solar-return.ts` (FINDINGS F-67).
+The audit routes it through the package and returns P2.E.returns to validated
+until production serves the change: 47 of 182.45 (25.760%). The other six
+acceptances stand. The recorded parity of the Moon candidates' adopted sharing
+path is section M-A, 3,002 of 3,005 (F-68). The text above is left as written.

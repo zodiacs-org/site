@@ -231,6 +231,32 @@ describe('sky data API — daily payloads', () => {
     }
     expect(nextByKind.nextSunIngress.planet).toBe('Sun');
     expect(nextByKind.nextNewMoon.type).toBe('new');
+    // Each entry is an event of its own kind, and the first one: when the
+    // window holds such an event, it is that event.
+    const kindOf = {
+      nextNewMoon: (event) => event.kind === 'lunation' && event.type === 'new',
+      nextFullMoon: (event) => event.kind === 'lunation' && event.type === 'full',
+      nextSolarEclipse: (event) => event.kind === 'eclipse' && event.type === 'solar',
+      nextLunarEclipse: (event) => event.kind === 'eclipse' && event.type === 'lunar',
+      nextIngress: (event) => event.kind === 'ingress',
+      nextSunIngress: (event) => event.kind === 'ingress' && event.planet === 'Sun',
+      nextStation: (event) => event.kind === 'station',
+    };
+    // The first of each kind among every event the data hold after the snapshot,
+    // so the eclipses, which can fall beyond the 60-day window, are held too.
+    const horizon = buildUpcoming({ ...sources, generatedAt: GENERATED_AT, windowDays: 36_500 }).events;
+    for (const [key, isKind] of Object.entries(kindOf)) {
+      expect(isKind(nextByKind[key]), key).toBe(true);
+      expect(nextByKind[key], key).toEqual(horizon.find(isKind));
+      const firstInWindow = upcoming.events.find(isKind);
+      if (firstInWindow) expect(nextByKind[key], key).toEqual(firstInWindow);
+    }
+    for (const [key, type] of [['nextSolarEclipse', 'solar'], ['nextLunarEclipse', 'lunar']]) {
+      const peaks = sources.eclipses.eclipses.filter((eclipse) => eclipse.type === type)
+        .map((eclipse) => eclipse.peak).filter((peak) => Date.parse(peak) > start).sort();
+      expect(nextByKind[key].at, key).toBe(peaks[0]);
+    }
+    expect(upcoming.events.some(kindOf.nextFullMoon), 'the window holds a full Moon').toBe(true);
     const mercury = payload('planets/mercury.json');
     expect(nextByKind.mercuryRetrograde).toEqual({ current: mercury.retrograde.current, next: mercury.retrograde.next });
     expect(upcoming.summary).toContain(`${upcoming.windowDays} days`);
@@ -298,6 +324,27 @@ describe('sky data API — daily payloads', () => {
     for (const [key, type] of [['nextNewMoon', 'new'], ['nextFullMoon', 'full']]) {
       expect(today.moon[key]).toMatchObject({ type, at: atOffset(offset), daysAway });
       expect(Date.parse(today.moon[key].at)).toBeGreaterThan(Date.parse(snapshotAt));
+    }
+  });
+
+  it('documents daysAway as tenths of a day wherever a schema or the OpenAPI document declares it', () => {
+    const declared = [];
+    const visit = (node, where) => {
+      if (Array.isArray(node)) node.forEach((item, index) => visit(item, `${where}[${index}]`));
+      else if (node && typeof node === 'object') {
+        for (const [key, value] of Object.entries(node)) {
+          if (key === 'daysAway' && value && typeof value === 'object' && value.type === 'number') declared.push({ where, value });
+          visit(value, `${where}.${key}`);
+        }
+      }
+    };
+    for (const path of jsonFiles.filter((file) => file.startsWith('schema/') || file === 'openapi.json')) {
+      visit(JSON.parse(build.files.get(path)), path);
+    }
+    expect(declared.length).toBeGreaterThanOrEqual(4);
+    for (const { where, value } of declared) {
+      expect(value.description, where).toMatch(/nearest tenth of a day/);
+      expect(value.description, where).toMatch(/0 means it is less than 72 minutes ahead/);
     }
   });
 

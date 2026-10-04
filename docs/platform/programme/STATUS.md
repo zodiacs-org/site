@@ -1,5 +1,55 @@
 # Programme status
 
+Checkpoint 13, 2026-10-04: an independent audit of checkpoints 9 to 12, and its
+corrections, against main `9d7dd31daa673fd1a21675ce359f9f4a69eac1cd` (#637).
+
+**Overall delivery: 26%** (25.760% to three decimals) — 47 of 182.45 weighted
+units accepted; blocked 2% (3), or 1.644%. Down 0.5 from checkpoint 12: one of
+its acceptances was premature (F-67). Gates, weights and the denominator are
+unchanged. [Audit record](../evidence/programme-audit-2026-10-04/README.md).
+
+- **Withdrawn (F-67).** P2.E.returns requires the site's own return search to
+  be gone, but the year ahead on `/profile/` still found solar returns with
+  the site's own Sun crossing scan. This change moves it to the package's
+  search: on 1,000 synthetic windows it finds the same returns, none more than
+  3 ms apart. The unit is validated, not accepted, until production serves it.
+- **What held.** The other six acceptances of checkpoint 12, their CI runs,
+  the production deployment, rc.16's identity on npm and in production, the
+  rerun adoption parity, the A4 skill manifest, the API reference's
+  byte-identical rebuild, and that the sky API repair changed tests only. A new
+  private history check for A4, run outside every repository, found no birth
+  data in the engine commits and trees published since rc.16 (`6807f632` to
+  `23660f5`); it is not the missing receipt of 1 October.
+- **Fixed here.** F-62: the authorship guards now catch the retired persona
+  split by line breaks, entities, invisible characters or tags in any case, or
+  joined or inverted, the editor link however its path and fragment are
+  commonly written, and Person
+  markup in JSON-LD, microdata and RDFa; they read every text file, and the
+  `src/` guard is a tested script that fails closed, with one recorded
+  allowance for the People template's subject. F-64: the reference's dead
+  `http://LICENSING.md` link is gone, its checker resolves every link and
+  accepts one off zodiacs.org only over HTTPS to a named host, and the llms
+  files and the support page point at the rc.16 reference. F-65: the sky API's
+  tests hold every `nextByKind` entry to the first event of its kind, eclipses
+  included, and `daysAway`'s rounding is documented; no computed value
+  changes.
+- **Owner action (F-63).** The engine repository's description says
+  "MIT-licensed" and its `.zenodo.json` says `mit`; the package is MIT AND
+  CC-BY-4.0. Wording that names both licences is prepared.
+- **Frontend (F-61).** One WebKit sharing-drive failure in main's post-merge
+  run is preserved; one unchanged retry passed, and a handoff is prepared for
+  the frontend session. No assertion was changed.
+- **Records (F-66, F-68, F-69, F-70).** Dated notes correct this file's living
+  sections and ledger notes that described 30 September or the package before
+  rc.16, and state the Moon candidates' parity for the path actually adopted
+  (3,002 of 3,005).
+- Actual command: `node scripts/programme-ledger.mjs --summary` →
+  `Overall delivery: 26% (47 of 182.45); blocked 2% (3)`.
+- Next: once production serves this change, accept P2.E.returns again; then
+  judge the nine rc.16 capability units against their own gates.
+
+## Earlier checkpoints
+
 Checkpoint 12, 2026-10-04: seven published or deployed gates reconciled against
 current main `b1636359d7f79351b5fb2b477a57e6dafb7c0a3c`.
 
@@ -40,8 +90,6 @@ and the [verified producer input](../evidence/programme-acceptance-2026-10-04/re
 - Next: independently review this bounded accounting diff, publish its PR and
   run required CI before normal merge. Other historical blockers below retain
   their dated context; they are not silently treated as current accomplishments.
-
-## Earlier checkpoints
 
 Checkpoint 11, 2026-10-01: warm compute timing and usage-cost evidence recovered.
 
@@ -150,12 +198,15 @@ Completed on 2026-10-01: the first GitHub release and permanent DOI (G4), indepe
 
 Remaining:
 2. **JSR (P3.1c).** A publish workflow using GitHub's OIDC token is to be added to the engine. Its first run needs the owner's authorization.
+   *Update 2026-10-04:* the OIDC publish workflow exists (engine #24 and #25, `23660f5`). With the owner's authorization, its dry run [37111251733](https://github.com/zodiacs-org/engine/actions/runs/37111251733) passed on 2026-10-03, and the publish run [37111638537](https://github.com/zodiacs-org/engine/actions/runs/37111638537) failed at its publish step. The owner's report to JSR, [jsr-io/jsr#1563](https://github.com/jsr-io/jsr/issues/1563), says JSR answered `invalidLicense` to the SPDX expression `MIT AND CC-BY-4.0`. On 2026-10-04 that issue was open, untriaged and without comments, and JSR's API listed no version of `@zodiacs/engine`. There is no retry until JSR accepts an expression that states both licences, or the owner decides on a faithful alternative. The package is never to be labelled MIT alone.
 3. **Search and analytics baselines (P0.7b).** Add Bing's export when it is ready, then either attach `zodiacs-org/analytics-baselines` read-only to this work, or compute the aggregates on the owner's side. Only aggregates would be committed, to that private repository.
 4. **Microsoft Copilot**, only if the monthly panel (A8) and the assistant benchmark (B4.b) are to cover five assistants: a free account for admin@zodiacs.org.
 
 Later, once the site has rebuilt the MCP server on the published engine: the same manual first upload for `@zodiacs/mcp-server`, from its verified archive, since npm sets up a trusted publisher only for a package that exists.
 
 ## Identities verified
+
+At checkpoint 13, 2026-10-04, before this record merged: site `main` = `9d7dd31d` (#637), served by READY production deployment `dpl_9pVLB8brkRDrtKu2cA5zLMnf6eKM`; its post-merge Site Check [37198913984](https://github.com/zodiacs-org/site/actions/runs/37198913984) passed on its second attempt after one WebKit failure in a sharing drive (F-61). Engine `main` = `23660f5` (#25). npm `@zodiacs/engine`: `latest` 0.1.1-rc.15, `next` 0.1.1-rc.16, whose registry SHA-1 `f57e312b…3afa` and SHA-512 integrity are those of the archive the site vendors, `43a72d30…15d8`, published by the trusted publisher with SLSA provenance. JSR: no version. PyPI: `zodiacs` 0.1.0a1. `@zodiacs/mcp-server` is not on npm; the site serves the MCP archive 0.1.0-rc.16, `dfc9177e…aeb9`, 89,871 bytes. The tag `v0.1.1-rc.15` points at `93ebae9`, and DOI 10.5281/zenodo.23080134 resolves.
 
 At checkpoint 8, before this record merged: site `main` = `acbfad2e` (#604), served by `dpl_J8wQ2hr7RwQRDbT9unq5bUc6mHSC`, whose `/developers/engine/` says `npm install @zodiacs/engine` installs 0.1.1-rc.15; engine `main` = `6807f63` (PR #22, rc.16, archive `43a72d30…15d8`, not on npm and not adopted by the site).
 
@@ -183,3 +234,12 @@ The earlier archives are as checkpoint 5 lists them. rc.15's three local builds 
 ## In progress and next
 
 [HANDOFF-2026-09-30.md](HANDOFF-2026-09-30.md) §4 lists the work in flight, with each branch's head and state, and §5 the next steps in order, each with its gate.
+
+*Update 2026-10-04:* that list describes 30 September. The state of the same work on 4 October:
+
+- The compute API is deployed and the F-59 cache fix is live (`fd1ce88a`). P3.3 stays unaccepted: no Cold sample has been observed, and F-60 is open.
+- The calendar feeds (`feed-ids`, then #613) are shelved: #613 was closed unmerged on 2026-10-03 after the owner's #628 retired personal calendar feeds and kept local calendar downloads. Server-side personal subscriptions are not to be revived without a new owner decision.
+- The rc.16 adoption landed in #620. Void-of-course, aspect patterns and Moon candidates are accepted (checkpoint 12); returns is validated until production serves the year-ahead change of checkpoint 13 (F-67); composite waits for a lightweight entry (F-54); dignities, declinations and sect are not adopted.
+- Engine rc.16 is on npm under `next`; G4 is done; the JSR publish failed on the licence expression (above); `@zodiacs/mcp-server` is not published.
+- `moon-enclosure`, `feature-eclipses` and `chinese-heldback` exist only in the owner's bundles, unchanged.
+- Next: accept P2.E.returns again once production serves its completed adoption; then judge the rc.16 capability units (P3.2, P2.D.frames, B2.a, house positions, co-ascendants, cusp speeds, planetary returns and hours, rise and set) against their gates, now that rc.16 is released and served.

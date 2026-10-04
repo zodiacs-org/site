@@ -7,6 +7,7 @@
  * (the returns.ts precedent); the phrasing layer in ../year-ahead.ts is
  * engine-free.
  */
+import { mostRecentSolarReturnInstant } from '@zodiacs/engine/techniques';
 import { clipToReferenceSpan } from './reference-span';
 import { findLongitudeCrossings, groupIntoSeasons, saturnReturns } from './returns';
 import type { BodyName } from './types';
@@ -32,6 +33,8 @@ export interface YearScanResult {
   rangeClipped?: boolean;
 }
 
+const DAY_MS = 86_400_000;
+
 const ASPECT_OFFSETS: { aspect: ScanAspectEvent['aspect']; offsets: number[] }[] = [
   { aspect: 'conjunction', offsets: [0] },
   { aspect: 'square', offsets: [90, 270] },
@@ -39,9 +42,28 @@ const ASPECT_OFFSETS: { aspect: ScanAspectEvent['aspect']; offsets: number[] }[]
 ];
 
 /**
- * Scan the year for one chart. ~26 longitude-crossing scans plus one
- * Saturn-return sweep — a couple of seconds of arithmetic at worst,
- * cached by the caller.
+ * The solar returns in a window (from, to], from @zodiacs/engine's search
+ * (`@zodiacs/engine/techniques` since engine rc.16, as solar-return.ts uses):
+ * the latest at or before the window's end, then the one before it, until one
+ * falls at or before the start. Returns are a year apart, so a twelve-month
+ * window holds one, or two when it spans a whole year.
+ */
+function solarReturnsIn(natalSunLon: number, window: { from: Date; to: Date }): string[] {
+  const instants: string[] = [];
+  for (let at = window.to; ;) {
+    const instant = mostRecentSolarReturnInstant(natalSunLon, at);
+    if (instant.getTime() <= window.from.getTime()) return instants;
+    instants.unshift(instant.toISOString());
+    // A day back, not a millisecond: a search ending elsewhere can settle a few
+    // milliseconds earlier on the same crossing, and returns are a year apart.
+    at = new Date(instant.getTime() - DAY_MS);
+  }
+}
+
+/**
+ * Scan the year for one chart. The package's solar-return search, up to 24
+ * longitude-crossing scans and one Saturn-return sweep — a couple of
+ * seconds of arithmetic at worst, cached by the caller.
  */
 export function yearScan(
   natal: { sunLon: number; moonLon: number | null; ascLon: number | null; birthUtc: Date },
@@ -51,8 +73,7 @@ export function yearScan(
   const window = clipToReferenceSpan(from, to);
   const scan = (body: BodyName, lon: number, step?: number) =>
     (window ? findLongitudeCrossings(body, lon, window.from, window.to, step) : []);
-  const solarReturns = scan('Sun', natal.sunLon, 1)
-    .map((c) => c.at.toISOString());
+  const solarReturns = window ? solarReturnsIn(natal.sunLon, window) : [];
 
   const points: { name: ScanAspectEvent['natal']; lon: number }[] = [
     { name: 'Sun', lon: natal.sunLon },
