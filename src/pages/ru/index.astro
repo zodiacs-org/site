@@ -15,7 +15,7 @@ const tools = [
   { href: '/ru/birth-chart/', title: 'Натальная карта', promise: 'Солнце, Луна, асцендент, планеты, дома и их значение.', hue: 'var(--sign-cancer)', kind: 'birth' as const },
   { href: '/ru/moon-sign/', title: 'Лунный знак', promise: 'Как вы чувствуете, что вас успокаивает и что даёт ощущение дома.', hue: 'var(--sign-pisces)', kind: 'moon' as const },
   { href: '/ru/rising-sign/', title: 'Асцендент', promise: 'Первое впечатление и то, как выстроена вся карта.', hue: 'var(--sign-libra)', kind: 'rising' as const },
-  { href: '/ru/compatibility/', title: 'Совместимость', promise: 'Сравните две карты и увидьте, где они сходятся, спорят и растут.', hue: 'var(--sign-leo)', kind: 'compat' as const },
+  { href: '/ru/compatibility/', title: 'Совместимость', promise: 'Сравните две карты: где они сходятся, где спорят и где помогают друг другу расти.', hue: 'var(--sign-leo)', kind: 'compat' as const },
 ];
 
 const jsonLd = [
@@ -320,7 +320,7 @@ const jsonLd = [
   <section class="container pace-act">
     <div class="section-head reveal">
       <h2>Начните со своей карты</h2>
-      <p>Найдите натальную карту, лунный знак, асцендент и совместимость, а затем посмотрите на сегодняшнее небо.</p>
+      <p>Постройте натальную карту, узнайте лунный знак, асцендент и совместимость, а затем посмотрите на сегодняшнее небо.</p>
     </div>
     <div class="home-tools-ru">
       {tools.map((tool, i) => (

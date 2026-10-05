@@ -9,7 +9,7 @@ import { ENGLISH_ONLY_COPY, localizePath } from '../../../lib/i18n';
 const englishOnly = ENGLISH_ONLY_COPY.pt;
 const tools = [
   { href: '/birth-chart/', title: 'Calculadora de mapa astral', promise: 'Veja seu Sol, sua Lua, seu ascendente, seus planetas, suas casas e o que tudo isso significa.', hue: 'var(--sign-cancer)', kind: 'birth' as const },
-  { href: '/birth-chart/someone-else/', title: 'Mapa de outra pessoa (em inglês)', promise: 'Use os dados de nascimento, os três signos principais ou um link do Zodiacs, com a permissão dela.', hue: 'var(--sign-pisces)', kind: 'birth' as const, englishOnly: true },
+  { href: '/birth-chart/someone-else/', title: 'Mapa de outra pessoa (em inglês)', promise: 'Use os dados de nascimento, os três signos ou um link do Zodiacs, com a permissão dela.', hue: 'var(--sign-pisces)', kind: 'birth' as const, englishOnly: true },
   { href: '/today/', title: 'Hoje', promise: 'O céu de hoje, lido para os doze signos solares.', hue: 'var(--sign-cancer)', kind: 'transit' as const },
   { href: '/compatibility/', title: 'Compatibilidade', promise: 'Compare dois mapas e veja onde eles se conectam, entram em conflito e crescem.', hue: 'var(--sign-libra)', kind: 'compat' as const },
   { href: '/moon-sign/', title: 'Calculadora de signo lunar', promise: 'Como você vive as emoções e o que ajuda a voltar ao seu centro.', hue: 'var(--sign-pisces)', kind: 'moon' as const },
@@ -32,7 +32,7 @@ const jsonLd = [
 ---
 <Base
   title="Ferramentas gratuitas de astrologia | Zodiacs.org"
-  description="Calculadoras gratuitas de astrologia: mapa astral, compatibilidade, signo lunar, ascendente, fase da Lua, retorno de Saturno e trânsitos, com privacidade no seu navegador."
+  description="Calculadoras gratuitas de astrologia: mapa astral, compatibilidade, signo lunar, ascendente, fase da Lua e trânsitos — privadas, no seu navegador."
   path="/pt/tools/"
   locale="pt"
   image="/assets/og/v2/tool/tools.png"

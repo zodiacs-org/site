@@ -79,7 +79,7 @@ const TRANSIT_EVENT_LABELS = {
     station: (event) =>
       `${planetLabel('es', event.planet)} estaciona ${event.type === 'retrograde' ? 'retrógrado' : 'directo'} a ${Math.round(event.degree)}° de ${sn(event.sign, 'es')}`,
     aspect: (event) =>
-      `${planetLabel('es', event.a)} ${aspectLabel('es', event.type)} ${planetLabel('es', event.b)} (${sn(event.aSign, 'es')}–${sn(event.bSign, 'es')})`,
+      `${planetLabel('es', event.a)} en ${aspectLabel('es', event.type)} con ${planetLabel('es', event.b)} (${sn(event.aSign, 'es')}–${sn(event.bSign, 'es')})`,
   },
   pt: {
     ingress: (event) =>
@@ -117,9 +117,9 @@ const TRANSIT_EVENT_LABELS = {
     lunation: (event) =>
       `${event.type === 'new' ? 'Новолуние' : 'Полнолуние'} · ${Math.round(event.degree)}° · ${sn(event.sign, 'ru')}`,
     station: (event) =>
-      `${planetLabel('ru', event.planet)} становится ${event.type === 'retrograde' ? 'ретроградным' : 'директным'} · ${Math.round(event.degree)}° · ${sn(event.sign, 'ru')}`,
+      `${planetLabel('ru', event.planet)}: стационар, далее ${event.type === 'retrograde' ? 'ретроградное' : 'директное'} движение · ${Math.round(event.degree)}° · ${sn(event.sign, 'ru')}`,
     aspect: (event) =>
-      `${planetLabel('ru', event.a)} ${aspectLabel('ru', event.type)} ${planetLabel('ru', event.b)} (${sn(event.aSign, 'ru')}–${sn(event.bSign, 'ru')})`,
+      `${planetLabel('ru', event.a)} и ${planetLabel('ru', event.b)}: ${aspectLabel('ru', event.type)} (${sn(event.aSign, 'ru')}–${sn(event.bSign, 'ru')})`,
   },
 } satisfies Record<Locale, TransitEventLabels>;
 

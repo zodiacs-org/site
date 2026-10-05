@@ -9,7 +9,7 @@ import {
   setPushPreference,
   vapidKeyBytes,
 } from '../lib/push';
-import { PUSH_CAP_EN, PUSH_COPY, PUSH_REOFFER_EN } from '../strings/push';
+import { PUSH_CAP, PUSH_COPY, PUSH_REOFFER } from '../strings/push';
 import '../styles/push.css';
 
 interface Props {
@@ -216,8 +216,8 @@ export default function PushOptIn({ locale = 'en', context = 'chart-save' }: Pro
         ? copy.denied
         : view === 'error'
           ? copy.error
-          : view === 'reoffer' && locale === 'en'
-            ? PUSH_REOFFER_EN
+          : view === 'reoffer'
+            ? PUSH_REOFFER[locale]
             : copy.body;
 
   if (context === 'profile') {
@@ -270,8 +270,8 @@ export default function PushOptIn({ locale = 'en', context = 'chart-save' }: Pro
       <div class="push-optin__copy">
         {view !== 'subscribed' && <strong>{copy.heading}</strong>}
         <span>{message}</span>
-        {locale === 'en' && (view === 'offer' || view === 'reoffer' || view === 'subscribed') && (
-          <small>{PUSH_CAP_EN}</small>
+        {(view === 'offer' || view === 'reoffer' || view === 'subscribed') && (
+          <small>{PUSH_CAP[locale]}</small>
         )}
       </div>
       <div class="push-optin__actions">

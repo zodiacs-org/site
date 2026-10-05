@@ -13,7 +13,7 @@ import { SIGNS, signName } from '../../lib/signs';
   <section class="section container nf">
     <em class="kicker">Erreur 404</em>
     <h1 class="display">Cette page n’existe pas.</h1>
-    <p>Ce que tu cherchais a été déplacé, ou n’a jamais existé. Les douze signes sont toujours là :</p>
+    <p>Ce que tu cherchais a été déplacé, ou n’a jamais existé. Les douze signes sont toujours là :</p>
     <div class="nf__signs">
       {SIGNS.map((s) => (
         <a href={`/fr/${s.slug}/`} aria-label={signName(s, 'fr')} style={`--sign:${s.hue}`}>

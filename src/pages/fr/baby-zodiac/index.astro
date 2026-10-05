@@ -7,11 +7,11 @@ import '../../../styles/calculator.css';
 const faq = [
   {
     q: 'Quel sera le signe de mon bébé ?',
-    a: 'Indique la date prévue de l’accouchement. Le signe solaire à cette date est presque certain, car le Soleil reste près d’un mois dans chaque signe. Les vraies exceptions se trouvent aux limites : une date proche d’un changement de signe ou une naissance quelques semaines avant ou après peut modifier la réponse. L’outil calcule les deux cas au lieu de les deviner.',
+    a: 'Indique la date prévue de l’accouchement. Le signe solaire à cette date est presque certain, car le Soleil reste près d’un mois dans chaque signe. Les vraies exceptions se trouvent aux limites : une date proche d’un changement de signe ou une naissance quelques semaines avant ou après peut modifier la réponse. L’outil calcule les deux cas au lieu de les deviner.',
   },
   {
     q: 'Puis-je connaître le signe lunaire avant la naissance ?',
-    a: 'Seulement sous la forme d’une courte liste. La Lune change de signe tous les deux ou trois jours : la semaine prévue de l’accouchement couvre donc souvent deux ou trois signes lunaires. L’outil montre les intervalles de cette semaine avec leurs dates ; le jour et l’heure de la naissance détermineront le bon signe.',
+    a: 'Seulement sous la forme d’une courte liste. La Lune change de signe tous les deux ou trois jours : la semaine prévue de l’accouchement couvre donc souvent deux ou trois signes lunaires. L’outil montre les intervalles de cette semaine avec leurs dates ; le jour et l’heure de la naissance détermineront le bon signe.',
   },
   {
     q: 'Et l’ascendant ?',
@@ -19,18 +19,18 @@ const faq = [
   },
   {
     q: 'Une planète rétrograde à la naissance annonce-t-elle quelque chose de mauvais ?',
-    a: 'Non. Les rétrogradations sont normales : Mercure est rétrograde environ un cinquième du temps, et tout le monde naît avec certaines planètes dans cet état. Dans un thème astral, une planète rétrograde est généralement interprétée comme une expression plus intérieure que d’habitude ; c’est une nuance, pas un défaut.',
+    a: 'Non. Les périodes rétrogrades sont normales : Mercure est rétrograde environ un cinquième du temps, et tout le monde naît avec certaines planètes dans cet état. Dans un thème astral, une planète rétrograde est généralement interprétée comme une expression plus intérieure que d’habitude ; c’est une nuance, pas un défaut.',
   },
   {
     q: 'Quand dois-je calculer le vrai thème ?',
-    a: 'Quand tu disposes de l’heure de naissance par écrit. La date, l’heure exacte et le lieu permettent de calculer le thème complet : signe lunaire exact, ascendant, maisons et aspects. Le calculateur le fait sur ton appareil en une vingtaine de secondes.',
+    a: 'Quand tu disposes de l’heure de naissance par écrit. La date, l’heure exacte et le lieu permettent de calculer le thème complet : signe lunaire exact, ascendant, maisons et aspects. Le calculateur le fait sur ton appareil en une vingtaine de secondes.',
   },
 ];
 
 const jsonLd = [
   {
     '@type': 'WebPage',
-    name: 'Zodiaque du bébé : quel sera son signe ?',
+    name: 'Zodiaque du bébé : quel sera son signe ?',
     url: 'https://zodiacs.org/fr/baby-zodiac/',
     description: 'Indique une date prévue d’accouchement pour voir le signe solaire presque certain, les signes lunaires possibles de la semaine et ce qui restera inconnu jusqu’à la minute de la naissance.',
     inLanguage: 'fr',
@@ -49,8 +49,8 @@ const jsonLd = [
 ---
 <Base
   clientUi
-  title="Quel sera le signe de mon bébé ? Calculateur par date prévue | Zodiacs.org"
-  description="Indique la date prévue d’accouchement : signe solaire presque certain avec limites calculées, signes lunaires possibles de la semaine et ce qui restera inconnu jusqu’à la naissance."
+  title="Quel sera le signe de mon bébé ? Calculateur | Zodiacs.org"
+  description="Indique la date prévue d’accouchement : signe solaire presque certain, signes lunaires possibles et ce qui restera inconnu jusqu’à la naissance."
   path="/fr/baby-zodiac/"
   locale="fr"
   image="/assets/og/v2/tool/baby-zodiac.png"
@@ -62,25 +62,25 @@ const jsonLd = [
       <h1 class="display">Quel sera le signe du bébé ?</h1>
       <p>
         Indique la date prévue de l’accouchement pour obtenir une réponse
-        honnête : le signe solaire est presque certain, le signe lunaire se
+        honnête : le signe solaire est presque certain, le signe lunaire se
         réduit à une courte liste que le jour de naissance départagera, et
         l’ascendant doit attendre l’heure exacte. Le calcul reste sur ton appareil.
       </p>
     </div>
     <BabyZodiac locale="fr" client:load />
     <noscript>
-      <p>Ce calculateur du zodiaque du bébé nécessite JavaScript. Active JavaScript et recharge la page pour voir les possibilités du Soleil, la plage lunaire et les rétrogradations proches de la date prévue.</p>
+      <p>Ce calculateur du zodiaque du bébé nécessite JavaScript. Active JavaScript et recharge la page pour voir les possibilités du Soleil, la plage lunaire et les planètes rétrogrades proches de la date prévue.</p>
     </noscript>
   </section>
 
   <section class="section--tight container container--narrow">
     <div class="prose reveal">
       <p>
-        Le Soleil passe un mois dans chaque signe : la date prévue permet donc
+        Le Soleil passe un mois dans chaque signe : la date prévue permet donc
         de le déterminer avec beaucoup de confiance. Les exceptions — dates
         à la limite d’un signe ou bébés qui arrivent plus tôt — sont calculées
         ci-dessus au lieu d’être devinées. La Lune change de signe tous les deux
-        ou trois jours, et l’ascendant toutes les deux heures : celui-ci dépend
+        ou trois jours, et l’ascendant toutes les deux heures : celui-ci dépend
         de la minute de naissance. Après l’accouchement, le{' '}
         <a href="/fr/birth-chart/">thème complet</a> calcule tout.
       </p>

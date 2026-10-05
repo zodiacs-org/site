@@ -7,19 +7,19 @@ import '../../../styles/calculator.css';
 const faq = [
   {
     q: 'Qu’est-ce que le signe lunaire ?',
-    a: 'Ton signe lunaire est le signe du zodiaque qu’occupait la Lune à ta naissance. Alors que ton signe solaire décrit ton identité centrale, ton signe lunaire parle de ta vie émotionnelle : ta manière de ressentir, ce qui t’apaise et ce dont tu as besoin pour te sentir en sécurité. Beaucoup de personnes se reconnaissent davantage dans leur Lune que dans leur Soleil.',
+    a: 'Ton signe lunaire est le signe du zodiaque qu’occupait la Lune à ta naissance. Alors que ton signe solaire décrit ton identité centrale, ton signe lunaire parle de ta vie émotionnelle : ta manière de ressentir, ce qui t’apaise et ce dont tu as besoin pour te sentir en sécurité. Beaucoup de personnes se reconnaissent davantage dans leur Lune que dans leur Soleil.',
   },
   {
     q: 'Ai-je besoin de mon heure de naissance pour connaître mon signe lunaire ?',
-    a: 'En général, non : la Lune reste environ deux jours et demi dans chaque signe, si bien qu’elle n’en occupe qu’un pendant la plupart des journées. Elle change toutefois de signe toutes les 60 heures environ ; l’heure compte donc les jours de transition. Sans heure, ce calculateur affiche un résultat de référence et marque le signe lunaire comme non vérifié au lieu de deviner.',
+    a: 'En général, non : la Lune reste environ deux jours et demi dans chaque signe, si bien qu’elle n’en occupe qu’un pendant la plupart des journées. Elle change toutefois de signe toutes les 60 heures environ ; l’heure compte donc les jours de transition. Sans heure, ce calculateur affiche un résultat de référence et marque le signe lunaire comme non vérifié au lieu de deviner.',
   },
   {
     q: 'Pourquoi un autre site m’a-t-il donné un signe lunaire différent ?',
     a: 'Une différence de fuseau horaire en est souvent la cause, surtout pour les dates anciennes ou les lieux dont l’heure a changé au fil de l’histoire. Ce calculateur utilise une version figée de l’historique horaire IANA pour les naissances avant 1970 et, ensuite, l’historique IANA/ICU fourni par le navigateur ou le système de l’appareil, et affiche l’instant UTC calculé pour que tu puisses le vérifier.',
   },
   {
-    q: 'Soleil, Lune et ascendant : quelle différence ?',
-    a: 'Voici le résumé classique : le Soleil décrit qui tu es, la Lune ta manière de ressentir et l’ascendant la façon dont on te perçoit au premier abord. Ensemble, ils forment le trio de base, le résumé le plus rapide et le plus utile d’un thème astral.',
+    q: 'Soleil, Lune et ascendant : quelle différence ?',
+    a: 'Voici le résumé classique : le Soleil décrit qui tu es, la Lune ta manière de ressentir et l’ascendant la façon dont on te perçoit au premier abord. Ensemble, ils forment le trio de base, le résumé le plus rapide et le plus utile d’un thème astral.',
   },
 ];
 
@@ -48,7 +48,7 @@ const jsonLd = [
 <Base
   clientUi
   title="Calculateur gratuit de signe lunaire | Zodiacs.org"
-  description="Découvre gratuitement ton signe lunaire : ta manière de ressentir, ce qui t’apaise et ce dont tu as besoin. Calculé sur ton appareil, sans compte."
+  description="Découvre gratuitement ton signe lunaire : ta manière de ressentir, ce qui t’apaise et ce dont tu as besoin. Calculé sur ton appareil, sans compte."
   path="/fr/moon-sign/"
   locale="fr"
   image="/assets/og/v2/tool/moon-sign.png"
@@ -58,7 +58,7 @@ const jsonLd = [
   <section class="section--tight container">
     <div class="tool-hero">
       <h1 class="display">Découvre ton signe lunaire.</h1>
-      <p>La Lune décrit ton monde émotionnel : ce qui t’apaise, ce dont tu as besoin et ce qui t’aide à te sentir chez toi.</p>
+      <p>La Lune décrit ton monde émotionnel : ce qui t’apaise, ce dont tu as besoin et ce qui t’aide à te sentir chez toi.</p>
     </div>
     <ChartCalculator mode="moon" locale="fr" client:load />
     <noscript>

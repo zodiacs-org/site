@@ -184,7 +184,7 @@ const en = {
     todayBySignPrompt: 'Tap your Sun sign for a clear reading for today — no birth time needed.',
     todaySolarNote: 'read from your sign’s solar houses',
     whyThisReading: 'Why this reading',
-    todayHoroscopeLink: 'horoscope',
+    todayHoroscopeLink: '{sign} horoscope',
     or: 'or',
     chartSavedBeforeLink: 'Saved to your charts. Sign in',
     chartSavedLink: 'here',
