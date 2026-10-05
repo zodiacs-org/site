@@ -1,5 +1,54 @@
 # Programme status
 
+Checkpoint 19, 2026-10-05: the election search, judged against main
+`51b64f3cb67c2026a18772297ec6b367ed2ca183` (#655), which production
+`dpl_5hEgWFChgos3USWviHWVFEwHBeVW` serves (READY 2026-10-05T18:05:51Z).
+
+**Overall delivery: 33%** (33.434% to three decimals) — 61 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%. Up from 31.790% at
+checkpoint 18 by B5.b's weight of 3. Gates, weights and the denominator are
+unchanged. [Election search record](../evidence/election-search-v0/README.md).
+
+- **Accepted (1).**
+  - B5.b (3): `POST /api/v1/elections` returns the stretches of a window of
+    at most 31 days in which one to five conditions all hold: the Moon
+    waxing or waning or void of course, a body in a sign, a planet
+    retrograde, a body in an angular house at a place within 60° of the
+    equator, each of them negatable. Every boundary is narrowed to a second,
+    and a request is refused whole past 6,000 evaluations. It counts under
+    both existing Firewall rules, so no rule and no spending were added. The
+    gate's evaluation was preregistered and run once: all 100 random
+    queries agreed with a brute force that reads every condition every 10
+    seconds, 206 windows, the largest difference 5.4 seconds. 28 faults
+    planted in a copy of the search were each caught but one, in a branch
+    no request reaches. Production answers the London example with the
+    body the build recorded, and refuses a window a second over 31 days.
+  - The search is tested, not proven complete.
+- **The MCP adapter, 0.1.0-rc.16.3.** It inlines the compute API's shared
+  modules, which the search changed, so it was rebuilt and re-cut in the
+  same pull request; rc.16.2's archive keeps its bytes. No tool changed:
+  `get_capabilities` lists only its three sky tools' four limits, as it
+  did, rather than the compute API's whole table. Protocol drive 106/106,
+  host drive 7/7, benchmark 18/18.
+- **Findings.** F-78, recorded with B5.b: on engine rc.16, one address at
+  both of the compute API's rate limits can cost 10.7 to 13.2 CPU-seconds a
+  minute at the slowest requests, in three runs on one machine, against the
+  10 that DECISIONS-2026-09-30 §7 allows; on rc.15, 7.8. The election search
+  does not raise it. The options are in FINDINGS.md; only the events rule at
+  6 with the general rule at 30 stays under 10 in all three runs.
+- Actual command: `node scripts/programme-ledger.mjs --summary` →
+  `Overall delivery: 33% (61 of 182.45); blocked 2% (3)`.
+- **Owner decisions needed.** F-78's Firewall rules; as in checkpoint 18:
+  what "raw answers" means for B4.a, a licence for the benchmark's files
+  (the programme recommends CC0 1.0) and its name; F-71; the readings that
+  leave A6 partial; F-77; and an engine release for eclipses and the
+  sidereal zodiac in the MCP tools. And whether to send the external-builder
+  trial.
+- **Next.** The core 1.0, the documentation and quickstarts, the clients
+  and the remote MCP, ahead of further precision work.
+
+## Earlier checkpoints
+
 Checkpoint 18, 2026-10-05: structured data on the developer pages, judged
 against main `a1217c39c4cfb6e32a4d1c9c3cffa68ad0ce9f73` (#653), which
 production `dpl_6f2JNEQFegyBkAhxp4PYBLgn7i7N` serves (READY
@@ -38,8 +87,6 @@ unchanged. [Structured data record](../evidence/structured-data-2026-10-05/READM
   address at both of the compute API's rate limits can cost more than the
   10 CPU-seconds a minute DECISIONS-2026-09-30 §7 allows, and changing the
   Firewall rules is the owner's decision.
-
-## Earlier checkpoints
 
 Checkpoint 17, 2026-10-05: the sky-fact benchmark v0, judged against main
 `e20d5f4027ff7800a6cf494a3f1702bb142d49f0` (#648), which production

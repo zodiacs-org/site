@@ -1,7 +1,7 @@
 {
   "version": 1,
   "brief": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md (version 2) with the version 1 rules it retains",
-  "asOf": "2026-10-05 checkpoint 18 (source a1217c39; structured data on the developer pages on production dpl_6f2JNEQFegyBkAhxp4PYBLgn7i7N: S1 accepted)",
+  "asOf": "2026-10-05 checkpoint 19 (source 51b64f3c; the election search on production dpl_5hEgWFChgos3USWviHWVFEwHBeVW: B5.b accepted)",
   "denominator": {
     "unit": "working days, from the brief's effort estimates (README.md)",
     "totalWeight": 182.45,
@@ -1712,7 +1712,7 @@
       "status": "partial",
       "release": "none",
       "evidence": [],
-      "notes": "local stdio MCP adapter 0.1.0-rc.15 (bundling engine rc.15; production serves it since #603) with three tools; no remote server, no registry entry. Update 2026-10-04 (checkpoint 13): the site now serves the stdio adapter archive 0.1.0-rc.16 (sha256 dfc9177e…aeb9, 89,871 bytes, bundling engine rc.16), which /developers/mcp/ installs; still three tools, no remote server and no registry entry. Update 2026-10-05 (checkpoint 15): the site serves the stdio adapter 0.1.0-rc.16.1 (a44aea72…, 97,630 bytes, same engine rc.16), with output schemas, citations and two resources; still no remote server and no registry entry. Update 2026-10-05 (checkpoint 16): the site serves the stdio adapter 0.1.0-rc.16.2 (2fc976c9…, 123,817 bytes, same engine rc.16), with three more tools that run the compute API's calculations; still no remote server and no registry entry."
+      "notes": "local stdio MCP adapter 0.1.0-rc.15 (bundling engine rc.15; production serves it since #603) with three tools; no remote server, no registry entry. Update 2026-10-04 (checkpoint 13): the site now serves the stdio adapter archive 0.1.0-rc.16 (sha256 dfc9177e…aeb9, 89,871 bytes, bundling engine rc.16), which /developers/mcp/ installs; still three tools, no remote server and no registry entry. Update 2026-10-05 (checkpoint 15): the site serves the stdio adapter 0.1.0-rc.16.1 (a44aea72…, 97,630 bytes, same engine rc.16), with output schemas, citations and two resources; still no remote server and no registry entry. Update 2026-10-05 (checkpoint 16): the site serves the stdio adapter 0.1.0-rc.16.2 (2fc976c9…, 123,817 bytes, same engine rc.16), with three more tools that run the compute API's calculations; still no remote server and no registry entry. Update 2026-10-05 (checkpoint 19): the site serves the stdio adapter 0.1.0-rc.16.3 (dde8e475…, 124,924 bytes, same engine rc.16), re-cut for the compute API's elections endpoint with no tool changed; still no remote server and no registry entry."
     },
     {
       "id": "P3.7",
@@ -1938,9 +1938,10 @@
         "docs/platform/evidence/mcp-adapter/README.md, section \"0.1.0-rc.16.2, 2026-10-05\"",
         "src/mcp/sky-tools.ts: get_positions and find_events parse with the compute API's parsers and calculate with its functions; each declares an output schema (src/mcp/outputs.ts) and readOnlyHint/openWorldHint (src/mcp/create-server.ts); find_events' receipt records the search step, the evaluations and that the search is tested, not proven complete",
         "src/mcp/sky-tools.test.ts: a seeded synthetic corpus of 252 requests run through each tool and through the compute API's own handler, 17 refusals and 43 requests at the ends of the accepted dates, every result checked against the output schema, the OpenAPI components and the SDK client; docs/platform/evidence/mcp-adapter/protocol-drive.json 106/106 against server.mjs 7209455d…",
-        "production dpl_94a4kV72vzpEWurR5dFHe4ES9uUy (READY 2026-10-05T02:16:43Z, aliased to zodiacs.org) serves site 3f09711a, whose /examples/mcp-server.json names zodiacs-mcp-server-0.1.0-rc.16.2.tgz (123,817 bytes, SHA-256 2fc976c9…) pinned to commit 3acfae47, the archive /developers/mcp/ installs"
+        "production dpl_94a4kV72vzpEWurR5dFHe4ES9uUy (READY 2026-10-05T02:16:43Z, aliased to zodiacs.org) serves site 3f09711a, whose /examples/mcp-server.json names zodiacs-mcp-server-0.1.0-rc.16.2.tgz (123,817 bytes, SHA-256 2fc976c9…) pinned to commit 3acfae47, the archive /developers/mcp/ installs",
+        "production dpl_5hEgWFChgos3USWviHWVFEwHBeVW (READY 2026-10-05T18:05:51Z, aliased to zodiacs.org) serves site 51b64f3c, whose /examples/mcp-server.json names zodiacs-mcp-server-0.1.0-rc.16.3.tgz (124,924 bytes, SHA-256 dde8e475…) pinned to commit dcb51a16, the archive /developers/mcp/ installs; docs/platform/evidence/mcp-adapter/README.md, section \"0.1.0-rc.16.3, 2026-10-05\""
       ],
-      "notes": "Checkpoint 16 (2026-10-05): partial. Both tools exist with output schemas, annotations, tests and a completeness verdict, which is the gate as written. The brief's Track A1 also asks for frame and zodiac options on get_positions and aspects, eclipses and void-of-course periods in find_events; none is in 0.1.0-rc.16.2. Eclipses and the sidereal zodiac need an engine release, which needs the owner's approval to publish."
+      "notes": "Checkpoint 16 (2026-10-05): partial. Both tools exist with output schemas, annotations, tests and a completeness verdict, which is the gate as written. The brief's Track A1 also asks for frame and zodiac options on get_positions and aspects, eclipses and void-of-course periods in find_events; none is in 0.1.0-rc.16.2. Eclipses and the sidereal zodiac need an engine release, which needs the owner's approval to publish. Checkpoint 19 (2026-10-05): still partial. The site now serves the MCP adapter 0.1.0-rc.16.3, re-cut in PR #655 because the compute API's elections endpoint changed the modules the adapter inlines. No tool changed: an independent drive of 3,275 calls against the rc.16.2 and rc.16.3 archives found no difference beyond the adapter's version and the citation of its own receipt."
     },
     {
       "id": "A1.b",
@@ -1957,9 +1958,10 @@
         "docs/platform/evidence/mcp-adapter/README.md, section \"0.1.0-rc.16.2, 2026-10-05\"",
         "src/mcp/sky-tools.ts: check_sky_fact runs the compute API's sky-fact calculation and answers true, false or depends with the computed values that decide it and a receipt; it interprets nothing",
         "src/mcp/sky-tools.test.ts (166 sky facts of the seeded corpus against the compute API's handler); docs/platform/evidence/mcp-adapter/protocol-drive.json 106/106",
-        "production dpl_94a4kV72vzpEWurR5dFHe4ES9uUy (READY 2026-10-05T02:16:43Z, aliased to zodiacs.org) serves site 3f09711a, whose /examples/mcp-server.json names zodiacs-mcp-server-0.1.0-rc.16.2.tgz (123,817 bytes, SHA-256 2fc976c9…) pinned to commit 3acfae47, the archive /developers/mcp/ installs"
+        "production dpl_94a4kV72vzpEWurR5dFHe4ES9uUy (READY 2026-10-05T02:16:43Z, aliased to zodiacs.org) serves site 3f09711a, whose /examples/mcp-server.json names zodiacs-mcp-server-0.1.0-rc.16.2.tgz (123,817 bytes, SHA-256 2fc976c9…) pinned to commit 3acfae47, the archive /developers/mcp/ installs",
+        "production dpl_5hEgWFChgos3USWviHWVFEwHBeVW (READY 2026-10-05T18:05:51Z, aliased to zodiacs.org) serves site 51b64f3c, whose /examples/mcp-server.json names zodiacs-mcp-server-0.1.0-rc.16.3.tgz (124,924 bytes, SHA-256 dde8e475…) pinned to commit dcb51a16, the archive /developers/mcp/ installs; docs/platform/evidence/mcp-adapter/README.md, section \"0.1.0-rc.16.3, 2026-10-05\""
       ],
-      "notes": "Checkpoint 16 (2026-10-05): partial. check_sky_fact answers true, false or depends with the computed facts and a receipt, never interpretively, which is the gate as written; it covers a sign at an instant or on a date, retrograde, an ingress on a date and a lunation on a date. The brief's Track A1 also asks for aspect facts, which it does not check."
+      "notes": "Checkpoint 16 (2026-10-05): partial. check_sky_fact answers true, false or depends with the computed facts and a receipt, never interpretively, which is the gate as written; it covers a sign at an instant or on a date, retrograde, an ingress on a date and a lunation on a date. The brief's Track A1 also asks for aspect facts, which it does not check. Checkpoint 19 (2026-10-05): still partial. The site now serves the MCP adapter 0.1.0-rc.16.3, re-cut in PR #655 because the compute API's elections endpoint changed the modules the adapter inlines. No tool changed: an independent drive of 3,275 calls against the rc.16.2 and rc.16.3 archives found no difference beyond the adapter's version and the citation of its own receipt."
     },
     {
       "id": "A1.c",
@@ -2558,9 +2560,16 @@
       "weight": 3,
       "gate": "query results against brute force at 10 s on 100 random queries",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/election-search-v0/README.md",
+        "docs/platform/evidence/election-search-v0/PREREGISTRATION.md, committed before the seed was drawn; the run's results were committed after it, as they came out (PR #655)",
+        "docs/platform/evidence/election-search-v0/results.json: 100 random queries answered and held against a brute force that reads every condition every 10 seconds with its own void-of-course code; all 100 passed, 206 windows compared, the largest boundary difference 5.4 seconds; one query refused for its allowance and replaced, as preregistered",
+        "tests/api/compute-api-elections.test.ts, with the privacy, private-state, OpenAPI, rate-limit and routing tests; 28 faults planted one at a time in a copy of the search, every reachable one caught (README, \"Faults\")",
+        "production dpl_5hEgWFChgos3USWviHWVFEwHBeVW (READY 2026-10-05T18:05:51Z, aliased to zodiacs.org) serves site 51b64f3c; fetched after READY: POST /api/v1/elections answers the OpenAPI London example with the body the build recorded (seven windows, the same receipt and cite), a window a second over 31 days is refused 422 with limit elections.windowDays, and the OpenAPI document, /developers/compute/#elections and /api/v1/llms.txt list the endpoint"
+      ],
+      "notes": "Checkpoint 19 (2026-10-05): accepted. POST /api/v1/elections answers a window of at most 31 days and one to five conditions (the Moon's phase or void of course, a body's sign, a planet retrograde, a body in an angular house, each negatable) with the stretches in which all hold, every boundary to a second, within an allowance of 6,000 evaluations; it counts under both existing Firewall rules, so no rule or spending was added. The gate's evaluation was preregistered and run once: 100 of 100 queries agreed with the 10-second brute force. The search is tested, not proven complete. F-78, the compute API's per-address cost on rc.16, is the owner's to decide and is not part of this gate. The local MCP adapter was re-cut as 0.1.0-rc.16.3 in the same PR because it inlines the compute API's shared modules; no MCP tool changed."
     },
     {
       "id": "R44",
