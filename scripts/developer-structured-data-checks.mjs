@@ -21,7 +21,7 @@ export { OPENAPI_URL };
 
 /**
  * For each developer page: the types it must carry, the licence each states
- * (null where it states none, as for a release whose licence is not chosen),
+ * (null where it states none, as for an API that licenses no data of its own),
  * and the name its breadcrumb ends with.
  */
 export const DEVELOPER_PAGES = Object.freeze({
@@ -52,7 +52,8 @@ export const DEVELOPER_PAGES = Object.freeze({
   '/developers/sky-benchmark/': {
     types: ['Dataset'],
     breadcrumb: 'Sky-fact benchmark',
-    licenses: { Dataset: null },
+    // CC0 1.0, as for the conformance vectors (docs/platform/programme/DECISIONS-2026-10-05.md §3).
+    licenses: { Dataset: [CONFORMANCE_LICENSE] },
   },
 });
 

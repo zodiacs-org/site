@@ -1,7 +1,7 @@
 {
   "version": 1,
   "brief": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md (version 2) with the version 1 rules it retains",
-  "asOf": "2026-10-05 checkpoint 19 (source 51b64f3c; the election search on production dpl_5hEgWFChgos3USWviHWVFEwHBeVW: B5.b accepted)",
+  "asOf": "2026-10-05 checkpoint 20 (the owner's delegated decisions of 2026-10-05, DECISIONS-2026-10-05.md; no unit's status changes)",
   "denominator": {
     "unit": "working days, from the brief's effort estimates (README.md)",
     "totalWeight": 182.45,
@@ -2123,7 +2123,7 @@
         "docs/platform/evidence/structured-data-2026-10-05/vocab-check.txt: every JSON-LD node on the six built pages held to schema.org's vocabulary (V30.1, 2026-10-05), 97 typed nodes of eleven types, 0 errors",
         "production dpl_6f2JNEQFegyBkAhxp4PYBLgn7i7N (READY 2026-10-05T15:08:18Z, aliased to zodiacs.org) serves site a1217c39; the six developer pages it serves carry JSON-LD identical to the build that validate-schema passed, fetched after READY"
       ],
-      "notes": "Checkpoint 18 (2026-10-05): accepted. The six developer pages carry SoftwareApplication, SoftwareSourceCode, WebAPI and Dataset markup with breadcrumbs, the site's validator holds every value to its source on every build, and schema.org's vocabulary finds no error. Google's Rich Results Test was not run. The sky-fact benchmark's Dataset names no licence, because none has been chosen."
+      "notes": "Checkpoint 18 (2026-10-05): accepted. The six developer pages carry SoftwareApplication, SoftwareSourceCode, WebAPI and Dataset markup with breadcrumbs, the site's validator holds every value to its source on every build, and schema.org's vocabulary finds no error. Google's Rich Results Test was not run. The sky-fact benchmark's Dataset names no licence, because none has been chosen. Checkpoint 20 (2026-10-05): the sky-fact benchmark's Dataset now names CC0 1.0 (DECISIONS-2026-10-05 §3), and scripts/developer-structured-data-checks.mjs holds it to that licence."
     },
     {
       "id": "S2",
@@ -2513,7 +2513,7 @@
         "docs/platform/evidence/sky-benchmark-v0/horizons-check.json: every answer in the key agrees with NASA JPL Horizons (300 of 300)",
         "production dpl_Aab4BCHqNeL2wK6w3A1AQaQ7wh28 (READY 2026-10-05T12:58:32Z, aliased to zodiacs.org) serves site e20d5f40, which serves /developers/sky-benchmark/ and the four files"
       ],
-      "notes": "Checkpoint 17 (2026-10-05): validated. The items, the scorer and check_sky_fact's own replies are published, and check_sky_fact agrees with the engine on every item. In the brief's B4 risk line \"raw answers\" means the assistants' answers, which DECISIONS-2026-09-28 §9 sends to the private baselines repository and B4.b scores; this record publishes the tool's replies in their place, a reading the owner confirms or rejects. No licence has been chosen for the files; the programme recommends CC0 1.0, as for the conformance vectors."
+      "notes": "Checkpoint 17 (2026-10-05): validated. The items, the scorer and check_sky_fact's own replies are published, and check_sky_fact agrees with the engine on every item. In the brief's B4 risk line \"raw answers\" means the assistants' answers, which DECISIONS-2026-09-28 §9 sends to the private baselines repository and B4.b scores; this record publishes the tool's replies in their place, a reading the owner confirms or rejects. No licence has been chosen for the files; the programme recommends CC0 1.0, as for the conformance vectors. Checkpoint 20 (2026-10-05): under the owner's delegation the files are dedicated to the public domain under CC0 1.0 (DECISIONS-2026-10-05 §3), which the page, its Dataset markup and llms-full.txt now say; the reading of \"raw answers\" is not ratified under the delegation (§4), so B4.a stays validated."
     },
     {
       "id": "B4.b",

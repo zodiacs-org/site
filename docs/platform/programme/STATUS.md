@@ -1,5 +1,57 @@
 # Programme status
 
+Checkpoint 20, 2026-10-05: the owner's decisions of 2026-10-05, made by the
+programme under the owner's delegation, recorded on main
+`3e79936aa6715c197b97999ba959101727dc0e08` (#658).
+
+**Overall delivery: 33%** (33.434% to three decimals) — 61 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%. Unchanged from
+checkpoint 19: no unit's status changes. Gates, weights and the denominator
+are unchanged. [Decisions](DECISIONS-2026-10-05.md).
+
+- **Decided, with the reason for each in the record.**
+  - F-78: the compute API's Firewall rules come down to 6 events requests
+    and 30 requests a minute per address, the only pair under 10
+    CPU-seconds a minute in all three runs. A Firewall rule is a security
+    setting the programme cannot read or change, so the owner applies it;
+    F-78 stays open until then.
+  - The sky-fact benchmark's files are dedicated to the public domain under
+    CC0 1.0, as the conformance vectors are, and keep their name. The page,
+    its Dataset markup and `llms-full.txt` now say so; the files' bytes did
+    not change.
+  - The external-builder trial waits for the remote MCP server, with its
+    packet measured again against it.
+  - The sidereal zodiac goes into the MCP tools once engine rc.17 is
+    adopted; eclipses wait behind the core 1.0, the documentation, the
+    clients and the remote MCP.
+  - No npm release of rc.17; the next publication is the 1.0 candidate, for
+    which the owner's approval is asked once. The core 1.0 is a frozen
+    public API with a changelog and a deprecation policy.
+  - F-77: no retake rule for the Lighthouse gate; the fix is in the page,
+    which belongs to the frontend session.
+- **Not ratified under the delegation.** F-71's two readings of the
+  end-to-end house comparisons, B4.a's "raw answers" as the tool's replies,
+  and A6's "API" as the compute API alone would each count the programme's
+  own work as accepted on a reading it proposed after seeing the results;
+  that judgement stays the owner's. Koch and the co-ascendants stay
+  validated, B4.a validated and A6 partial; A6 will be met without a
+  reading, by a `cite` on the static sky API's responses.
+- **Engine rc.17, in progress.** The sidereal zodiac in the calc entry, which
+  P3.2 lacks. Its second independent review found the near-Sun bounds
+  exceeded in years the dense comparison had not sampled; every star
+  definition is now compared with ERFA in every year from 1800 to 2199,
+  1,647,452 comparisons, and the bounds are set from that. Not yet merged.
+- Actual command: `node scripts/programme-ledger.mjs --summary` →
+  `Overall delivery: 33% (61 of 182.45); blocked 2% (3)`.
+- **Owner actions.** Apply F-78's two numbers in the Vercel Firewall; attach
+  zodiacs-org/site to the programme's session if pull request events should
+  reach it (the session's permission check refused it as an access grant).
+- **Next.** Engine rc.17's merge and its adoption on the site, which
+  P3.2's acceptance needs; then the core 1.0, the documentation and
+  quickstarts, the clients and the remote MCP.
+
+## Earlier checkpoints
+
 Checkpoint 19, 2026-10-05: the election search, judged against main
 `51b64f3cb67c2026a18772297ec6b367ed2ca183` (#655), which production
 `dpl_5hEgWFChgos3USWviHWVFEwHBeVW` serves (READY 2026-10-05T18:05:51Z).
@@ -46,8 +98,6 @@ unchanged. [Election search record](../evidence/election-search-v0/README.md).
   trial.
 - **Next.** The core 1.0, the documentation and quickstarts, the clients
   and the remote MCP, ahead of further precision work.
-
-## Earlier checkpoints
 
 Checkpoint 18, 2026-10-05: structured data on the developer pages, judged
 against main `a1217c39c4cfb6e32a4d1c9c3cffa68ad0ce9f73` (#653), which
