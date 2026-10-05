@@ -1,0 +1,110 @@
+{
+  "sourceCommit": "40a37b52ea08a17f1512fd7ec48a71211204eaf9",
+  "previousReviewCommit": "1004eb2b1b6d4ac1e1c914c55e90a7e88c016b10",
+  "runtime": {
+    "node": "v22.22.2",
+    "npm": "10.9.7"
+  },
+  "status": "pass",
+  "sources": {
+    "scripts/mcp-independent-consumer.mjs": {
+      "bytes": 31368,
+      "sha256": "20f93bfeda15519d8ba58543f5b7212d3e6837cd11753b54da4129f313137b84"
+    },
+    "scripts/mcp-independent-consumer.selftest.mjs": {
+      "bytes": 14486,
+      "sha256": "6d4bce5f2c58977d002ca7dce3413e7e7ebb72fedff25de41ce5b5541bea190c"
+    }
+  },
+  "changes": {
+    "rawHttpBeforeParse": true,
+    "headerLimitBytes": 16384,
+    "bodyLimitBytes": 262144,
+    "outputPolicy": "atomic new directory only; existing directories/files/symlinks rejected without deletion"
+  },
+  "results": {
+    "parityCases": 6,
+    "packagedVerify": 21,
+    "selftests": 12,
+    "capturedRejections": 18,
+    "targetedExistingTests": 56,
+    "localHttpRequests": 10,
+    "liveHttpRequests": 0,
+    "liveParity": "inconclusive"
+  },
+  "httpEvidence": {
+    "records": 10,
+    "allParsed": true,
+    "maxCapturedBodyBytes": 2736,
+    "maxCapturedHeaderBytes": 270
+  },
+  "isolation": {
+    "consumerCwd": "/tmp/zodiacs-mcp-consumer-T7QTfs/package",
+    "installPath": "/tmp/zodiacs-mcp-consumer-T7QTfs/package",
+    "checkoutRootExcluded": "/workspace/mcp-consumer-review",
+    "workerEnvironment": {
+      "HTTP_PROXY": "<platform network setting; value omitted>",
+      "HTTPS_PROXY": "<platform network setting; value omitted>",
+      "NO_PROXY": "<platform network setting; value omitted>",
+      "NODE_EXTRA_CA_CERTS": "<platform network setting; value omitted>",
+      "PATH": "/tmp/zodiacs-node22-review/node-v22.22.2-linux-x64/bin:/home/agent/.local/bin:/opt/codex/runtimes/codex-primary-runtime/dependencies/bin/override:/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin:/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin:/opt/codex/runtimes/codex-primary-runtime/dependencies/bin:/opt/codex/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/home/agent/.local/bin:/opt/codex/runtimes/codex-primary-runtime/dependencies/bin/fallback",
+      "TMPDIR": "/tmp",
+      "LANG": "C.UTF-8",
+      "NODE_ENV": "development",
+      "npm_config_cache": "/tmp/zodiacs-consumer-npm-cache",
+      "npm_config_userconfig": "/dev/null"
+    },
+    "serverLaunch": {
+      "command": "/tmp/zodiacs-node22-review/node-v22.22.2-linux-x64/bin/node",
+      "args": [
+        "/tmp/zodiacs-mcp-consumer-T7QTfs/package/server.mjs"
+      ],
+      "cwd": "/tmp/zodiacs-mcp-consumer-T7QTfs/package",
+      "environment": {
+        "HTTP_PROXY": "<platform network setting; value omitted>",
+        "HTTPS_PROXY": "<platform network setting; value omitted>",
+        "NO_PROXY": "<platform network setting; value omitted>",
+        "NODE_EXTRA_CA_CERTS": "<platform network setting; value omitted>",
+        "PATH": "/tmp/zodiacs-node22-review/node-v22.22.2-linux-x64/bin:/home/agent/.local/bin:/opt/codex/runtimes/codex-primary-runtime/dependencies/bin/override:/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin:/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin:/opt/codex/runtimes/codex-primary-runtime/dependencies/bin:/opt/codex/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/home/agent/.local/bin:/opt/codex/runtimes/codex-primary-runtime/dependencies/bin/fallback",
+        "TMPDIR": "/tmp",
+        "LANG": "C.UTF-8",
+        "NODE_ENV": "development",
+        "npm_config_cache": "/tmp/zodiacs-consumer-npm-cache",
+        "npm_config_userconfig": "/dev/null"
+      }
+    },
+    "ancestorPackageOrNodeModules": "absent; checked again in consumer process",
+    "moduleResolution": "SDK entry realpaths are inside this consumer/node_modules; NODE_PATH and NODE_OPTIONS absent",
+    "observedServer": {
+      "pid": 4773,
+      "cwd": "/tmp/zodiacs-mcp-consumer-T7QTfs/package",
+      "environment": {
+        "PATH": "/tmp/zodiacs-node22-review/node-v22.22.2-linux-x64/bin:/home/agent/.local/bin:/opt/codex/runtimes/codex-primary-runtime/dependencies/bin/override:/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin:/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin:/opt/codex/runtimes/codex-primary-runtime/dependencies/bin:/opt/codex/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/home/agent/.local/bin:/opt/codex/runtimes/codex-primary-runtime/dependencies/bin/fallback",
+        "HTTP_PROXY": "<platform network setting; value omitted>",
+        "HTTPS_PROXY": "<platform network setting; value omitted>",
+        "NO_PROXY": "<platform network setting; value omitted>",
+        "NODE_EXTRA_CA_CERTS": "<platform network setting; value omitted>",
+        "TMPDIR": "/tmp",
+        "LANG": "C.UTF-8",
+        "NODE_ENV": "development",
+        "npm_config_cache": "/tmp/zodiacs-consumer-npm-cache",
+        "npm_config_userconfig": "/dev/null"
+      },
+      "proof": "read-only /proc observation after SDK initialization"
+    }
+  },
+  "consumer": {
+    "packageVersion": "0.1.0-rc.16.3",
+    "license": "MIT AND CC-BY-4.0",
+    "shrinkwrapSha256": "4c30e34d30f64f4a7255aafb67a00f7277ce51d7578f41d6225f82a98c9b4759",
+    "serverSha256": "a59382d0fbe5b3f9afc9ff788ce92a1dd406a3ef2c59d98d77a41c7e0f598312",
+    "nodeModules": "fresh npm ci inside extracted package",
+    "inheritedNodeModules": false,
+    "installPath": "/tmp/zodiacs-mcp-consumer-T7QTfs/package",
+    "lockPath": "/tmp/zodiacs-mcp-consumer-T7QTfs/package/npm-shrinkwrap.json"
+  },
+  "originalEvidence": "all previous files and SHA256SUMS preserved unchanged",
+  "knownFailures": "original 0600 repack failure and pre-existing conformance/accuracy/resource observations preserved",
+  "licenses": "MIT AND CC-BY-4.0",
+  "credit": "none; integration evidence only"
+}

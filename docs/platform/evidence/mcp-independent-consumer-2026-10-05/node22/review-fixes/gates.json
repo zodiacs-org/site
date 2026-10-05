@@ -1,0 +1,74 @@
+{
+  "sourceCommit": "40a37b52ea08a17f1512fd7ec48a71211204eaf9",
+  "node": "v22.22.2",
+  "npm": "10.9.7",
+  "sources": {
+    "scripts/mcp-independent-consumer.mjs": {
+      "bytes": 31368,
+      "sha256": "20f93bfeda15519d8ba58543f5b7212d3e6837cd11753b54da4129f313137b84"
+    },
+    "scripts/mcp-independent-consumer.selftest.mjs": {
+      "bytes": 14486,
+      "sha256": "6d4bce5f2c58977d002ca7dce3413e7e7ebb72fedff25de41ce5b5541bea190c"
+    }
+  },
+  "checks": [
+    {
+      "command": "node --test scripts/mcp-independent-consumer.selftest.mjs",
+      "status": "PASS",
+      "tests": 12,
+      "rejections": 18
+    },
+    {
+      "command": "node scripts/mcp-independent-consumer.mjs --pin docs/platform/evidence/mcp-independent-consumer-2026-10-05/pin.json --archive public/examples/zodiacs-mcp-server-0.1.0-rc.16.3.tgz --out /tmp/zodiacs-consumer-review-fix-gates/consumer",
+      "status": "PASS",
+      "localRequests": 10,
+      "liveRequests": 0,
+      "packagedVerify": 21
+    },
+    {
+      "command": "node node_modules/vitest/vitest.mjs run scripts/mcp-artifact.test.mjs tests/api/compute-api-bundle.test.ts tests/api/compute-api-openapi.test.ts",
+      "status": "PASS",
+      "tests": 56
+    },
+    {
+      "command": "node scripts/build-compute-handler.mjs --check",
+      "status": "PASS"
+    },
+    {
+      "command": "node scripts/build-compute-local-time.mjs --check",
+      "status": "PASS"
+    },
+    {
+      "command": "node scripts/build-mcp-server.mjs --check",
+      "status": "PASS"
+    },
+    {
+      "command": "node scripts/programme-ledger.mjs --check",
+      "status": "PASS"
+    },
+    {
+      "command": "PHASE1_SCOPE_BASE=51b64f3cb67c2026a18772297ec6b367ed2ca183 node scripts/phase1-scope-guard.mjs",
+      "status": "PASS",
+      "stdout": "phase1-scope-guard: PASS \u2014 44 changed path(s), protected scope untouched\n"
+    },
+    {
+      "command": "node --check scripts/mcp-independent-consumer.mjs",
+      "status": "PASS"
+    },
+    {
+      "command": "node --check scripts/mcp-independent-consumer.selftest.mjs",
+      "status": "PASS"
+    },
+    {
+      "command": "sha256sum -c docs/platform/evidence/mcp-independent-consumer-2026-10-05/SHA256SUMS (from its directory)",
+      "status": "PASS",
+      "files": 25
+    },
+    {
+      "command": "git diff --check 51b64f3cb67c2026a18772297ec6b367ed2ca183 and git diff --cached --check",
+      "status": "PASS"
+    }
+  ],
+  "notRun": "Full Astro/build/browser/audit/site CI; unchanged application graph/dependencies/CI and prebuild rewrites protected generated surfaces. Original repack diagnosis not repeated; all historical evidence preserved."
+}
