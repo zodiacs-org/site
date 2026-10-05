@@ -1,5 +1,5 @@
 /**
- * The hosted compute API's fixed vocabulary: its six endpoints, the limits
+ * The hosted compute API's fixed vocabulary: its seven endpoints, the limits
  * every request crosses, and the names its errors and receipts use. Nothing
  * here imports the engine or a Node module, so the developer page and the
  * OpenAPI builder can read it without pulling calculation code into a build.
@@ -11,7 +11,7 @@
  */
 
 export const COMPUTE_ENDPOINTS = Object.freeze([
-  'chart', 'positions', 'houses', 'events', 'time', 'sky-fact',
+  'chart', 'positions', 'houses', 'events', 'time', 'sky-fact', 'elections',
 ] as const);
 export type ComputeEndpoint = (typeof COMPUTE_ENDPOINTS)[number];
 
@@ -40,13 +40,16 @@ export function computeDocsUrl(endpoint: ComputeEndpoint): string {
 
 /** Uses Vercel's per-address Firewall counters; the matching rule must use this exact ID. */
 export const COMPUTE_RATE_LIMIT_ID = 'zodiacs-compute-api';
-/** A second counter for the events endpoint alone, the costliest request; also a rule the owner publishes. */
+/**
+ * A second counter for the costliest requests, events and elections, which
+ * share it; also a rule the owner publishes.
+ */
 export const COMPUTE_EVENTS_RATE_LIMIT_ID = 'zodiacs-compute-events';
 
 /**
  * The Firewall rules the owner publishes (docs/OWNER-SETUP-RUNBOOK.md §3):
  * requests per address in each 60-second window. Every compute request is
- * counted under the first; an events request under both. An endpoint answers
+ * counted under the first; an events or elections request under both. An endpoint answers
  * only while every rule it is counted under is in place: see
  * computeApiRateLimit in handler.ts.
  * The worst case these allow is worked out in
@@ -65,7 +68,9 @@ export type RateLimitVerdict = 'allowed' | 'limited' | 'unavailable';
 
 /** The rules a request to each endpoint is counted under, in the order they are checked. */
 export function rateLimitIds(endpoint: ComputeEndpoint): readonly string[] {
-  return endpoint === 'events' ? [COMPUTE_RATE_LIMIT_ID, COMPUTE_EVENTS_RATE_LIMIT_ID] : [COMPUTE_RATE_LIMIT_ID];
+  return endpoint === 'events' || endpoint === 'elections'
+    ? [COMPUTE_RATE_LIMIT_ID, COMPUTE_EVENTS_RATE_LIMIT_ID]
+    : [COMPUTE_RATE_LIMIT_ID];
 }
 
 /** `COMPUTE_API_ENABLED=0` turns the endpoints off; unset or any other value leaves them on. */
@@ -119,14 +124,16 @@ export const EPOCH = Object.freeze({
 /**
  * Compute budgets. A request over one is refused whole with a
  * `budget-exhausted` error naming the limit, before any calculation runs,
- * except `events.samples` and `sky-fact.samples`, which bound the crossing
- * searches as they run and refuse the whole request when spent.
+ * except the `.samples` budgets, which bound the searches as they run and
+ * refuse the whole request when spent.
  */
 export const BUDGETS = Object.freeze({
   'positions.instants': 100,
   'events.windowDays': 92,
   'events.samples': 12_000,
   'sky-fact.samples': 1_000,
+  'elections.windowDays': 31,
+  'elections.samples': 6_000,
 });
 export type BudgetName = keyof typeof BUDGETS;
 
@@ -136,6 +143,8 @@ export const BUDGET_MESSAGES: Readonly<Record<BudgetName, string>> = Object.free
   'events.windowDays': `An events window is at most ${BUDGETS['events.windowDays']} days long.`,
   'events.samples': `The event searches would need more than ${BUDGETS['events.samples']} evaluations.`,
   'sky-fact.samples': `The fact's searches would need more than ${BUDGETS['sky-fact.samples']} evaluations.`,
+  'elections.windowDays': `An elections window is at most ${BUDGETS['elections.windowDays']} days long.`,
+  'elections.samples': `The searches would need more than ${BUDGETS['elections.samples']} evaluations; shorten the window or add a condition that rules out more of it.`,
 });
 
 /**
@@ -226,6 +235,54 @@ export const PHASE_NAMES = Object.freeze(Object.keys(PHASES) as PhaseName[]);
 
 export const SKY_FACT_KINDS = Object.freeze(['sign', 'retrograde', 'ingress', 'phase'] as const);
 export type SkyFactKind = (typeof SKY_FACT_KINDS)[number];
+
+/**
+ * The election search's five kinds of condition (the brief's B5.b grammar).
+ * Each can be negated with `not`; a request holds one to five of them, and
+ * the windows are where all hold.
+ */
+export const ELECTION_CONDITION_KINDS = Object.freeze(['phase', 'void-of-course', 'sign', 'retrograde', 'angular'] as const);
+export type ElectionConditionKind = (typeof ELECTION_CONDITION_KINDS)[number];
+export const MAX_ELECTION_CONDITIONS = 5;
+
+/** The Moon's two halves: waxing while the Moon–Sun elongation is in [0°, 180°), waning in [180°, 360°). */
+export const MOON_HALVES = Object.freeze(['waxing', 'waning'] as const);
+export type MoonHalf = (typeof MOON_HALVES)[number];
+
+/** The houses an angular condition asks about. */
+export const ANGULAR_HOUSES = Object.freeze([1, 4, 7, 10] as const);
+
+/**
+ * An angular condition takes a place no further than this from the equator,
+ * where no house system the engine offers falls back and every house change
+ * is sampled (docs/platform/evidence/election-search-v0/).
+ */
+export const ANGULAR_MAX_ABS_LATITUDE = 60;
+
+/**
+ * The election search's steps: house changes are sampled every hour inside
+ * the windows the other conditions leave, more finely wherever a body passes
+ * more than one house between samples, and narrowed to a second.
+ */
+export const ELECTION_STEPS = Object.freeze({
+  houseSampleMinutes: 60,
+  houseBoundarySeconds: 1,
+  /**
+   * Every boundary is within a second, so two less than 2 seconds apart may be
+   * one instant found twice: a gap shorter than this between windows is
+   * closed, and a window shorter than it is not listed.
+   */
+  resolutionSeconds: 2,
+});
+
+/**
+ * What a full calculation counts for against elections.samples: all the
+ * positions at an instant, or a natalChart for a house, each 0.9 to 1.5
+ * milliseconds of CPU, against 0.06 to 0.1 milliseconds for a step of a
+ * crossing search, which counts once. So the allowance bounds the search's
+ * time whatever the conditions ask for (docs/platform/evidence/election-search-v0/).
+ */
+export const FULL_CALCULATION_COST = 25;
 
 /**
  * With no zone, a date is read in every UTC offset in use today, from −12:00

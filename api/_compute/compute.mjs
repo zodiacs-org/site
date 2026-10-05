@@ -15,7 +15,8 @@ var COMPUTE_ENDPOINTS = Object.freeze([
   "houses",
   "events",
   "time",
-  "sky-fact"
+  "sky-fact",
+  "elections"
 ]);
 var COMPUTE_ROUTE_PARAM = "__zodiacs_compute";
 var COMPUTE_ORIGIN = "https://zodiacs.org";
@@ -30,7 +31,7 @@ var RATE_LIMIT_RULES = Object.freeze({
   [COMPUTE_EVENTS_RATE_LIMIT_ID]: Object.freeze({ requests: 10, windowSeconds: 60 })
 });
 function rateLimitIds(endpoint) {
-  return endpoint === "events" ? [COMPUTE_RATE_LIMIT_ID, COMPUTE_EVENTS_RATE_LIMIT_ID] : [COMPUTE_RATE_LIMIT_ID];
+  return endpoint === "events" || endpoint === "elections" ? [COMPUTE_RATE_LIMIT_ID, COMPUTE_EVENTS_RATE_LIMIT_ID] : [COMPUTE_RATE_LIMIT_ID];
 }
 var COMPUTE_SWITCH_ENV = "COMPUTE_API_ENABLED";
 var RETRY_AFTER_SECONDS = Object.freeze({
@@ -66,13 +67,17 @@ var BUDGETS = Object.freeze({
   "positions.instants": 100,
   "events.windowDays": 92,
   "events.samples": 12e3,
-  "sky-fact.samples": 1e3
+  "sky-fact.samples": 1e3,
+  "elections.windowDays": 31,
+  "elections.samples": 6e3
 });
 var BUDGET_MESSAGES = Object.freeze({
   "positions.instants": `A positions request takes at most ${BUDGETS["positions.instants"]} instants.`,
   "events.windowDays": `An events window is at most ${BUDGETS["events.windowDays"]} days long.`,
   "events.samples": `The event searches would need more than ${BUDGETS["events.samples"]} evaluations.`,
-  "sky-fact.samples": `The fact's searches would need more than ${BUDGETS["sky-fact.samples"]} evaluations.`
+  "sky-fact.samples": `The fact's searches would need more than ${BUDGETS["sky-fact.samples"]} evaluations.`,
+  "elections.windowDays": `An elections window is at most ${BUDGETS["elections.windowDays"]} days long.`,
+  "elections.samples": `The searches would need more than ${BUDGETS["elections.samples"]} evaluations; shorten the window or add a condition that rules out more of it.`
 });
 var SEARCH_STEP_DAYS = Object.freeze({
   default: 5,
@@ -170,6 +175,22 @@ var PHASES = Object.freeze({
 });
 var PHASE_NAMES = Object.freeze(Object.keys(PHASES));
 var SKY_FACT_KINDS = Object.freeze(["sign", "retrograde", "ingress", "phase"]);
+var ELECTION_CONDITION_KINDS = Object.freeze(["phase", "void-of-course", "sign", "retrograde", "angular"]);
+var MAX_ELECTION_CONDITIONS = 5;
+var MOON_HALVES = Object.freeze(["waxing", "waning"]);
+var ANGULAR_HOUSES = Object.freeze([1, 4, 7, 10]);
+var ANGULAR_MAX_ABS_LATITUDE = 60;
+var ELECTION_STEPS = Object.freeze({
+  houseSampleMinutes: 60,
+  houseBoundarySeconds: 1,
+  /**
+   * Every boundary is within a second, so two less than 2 seconds apart may be
+   * one instant found twice: a gap shorter than this between windows is
+   * closed, and a window shorter than it is not listed.
+   */
+  resolutionSeconds: 2
+});
+var FULL_CALCULATION_COST = 25;
 var ANY_ZONE_DAY = Object.freeze({
   startHoursBeforeUtcMidnight: 14,
   endHoursAfterUtcMidnight: 36
@@ -1193,6 +1214,18 @@ function computeHouses(system, input, angles) {
     default:
       throw new RangeError(`Unknown house system ${String(system)}.`);
   }
+}
+function houseOf(longitude2, cusps) {
+  if (cusps.length !== 12) throw new RangeError("House cusps must contain 12 longitudes.");
+  for (let index = 0; index < 12; index += 1) {
+    const start = cusps[index];
+    const end = cusps[(index + 1) % 12];
+    if (start === void 0 || end === void 0) continue;
+    const span = normalizeLongitude(end - start);
+    const offset = normalizeLongitude(longitude2 - start);
+    if (offset < span || span === 0) return index + 1;
+  }
+  return 12;
 }
 
 // node_modules/astronomy-engine/esm/astronomy.js
@@ -2786,9 +2819,9 @@ function AdjustBarycenterPosVel(ssb, tt, body, planet_gm) {
   return planet;
 }
 function AccelerationIncrement(small_pos, gm, major_pos) {
-  const delta = major_pos.sub(small_pos);
-  const r2 = delta.quadrature();
-  return delta.mul(gm / (r2 * Math.sqrt(r2)));
+  const delta2 = major_pos.sub(small_pos);
+  const r2 = delta2.quadrature();
+  return delta2.mul(gm / (r2 * Math.sqrt(r2)));
 }
 var major_bodies_t = class {
   constructor(tt) {
@@ -3565,7 +3598,7 @@ function solve(longitudeAt3, targetLongitude, { fromTime, toTime, step }, count)
     keep(bisect(low, extremum, maximize), !maximize);
     keep(bisect(extremum, high, !maximize), maximize);
   };
-  const signChange = (previous2, current) => {
+  const signChange2 = (previous2, current) => {
     if (current.offset === 0 && previous2.offset !== 0 && Math.abs(previous2.offset) < 90) {
       found.push({ at: new Date(current.time), retrograde: previous2.offset > 0 });
     } else if (previous2.offset !== 0 && current.offset !== 0 && Math.sign(current.offset) !== Math.sign(previous2.offset) && Math.abs(current.offset) < 90 && Math.abs(previous2.offset) < 90) {
@@ -3602,7 +3635,7 @@ function solve(longitudeAt3, targetLongitude, { fromTime, toTime, step }, count)
   let last2 = sampleAt(fromTime);
   for (let index = 1; index < count; index += 1) {
     const current = sampleAt(index === count - 1 ? toTime : fromTime + index * step);
-    signChange(last2, current);
+    signChange2(last2, current);
     if (secondLast) {
       interiorTurn(secondLast, last2, current);
       if (index === 2 || index === count - 1) {
@@ -5555,7 +5588,8 @@ function computeReceipt(endpoint, extra = {}) {
     referenceSpan: { from: REFERENCE_SPAN.from, to: REFERENCE_SPAN.to },
     deltaT: deltaT2,
     ...extra.timeResolution ? { timeResolution: extra.timeResolution } : {},
-    ...extra.search ? { search: extra.search } : {}
+    ...extra.search ? { search: extra.search } : {},
+    ...extra.electionSearch ? { electionSearch: extra.electionSearch } : {}
   };
 }
 function citeFor(endpoint, receipt) {
@@ -5629,7 +5663,16 @@ var TEXT = Object.freeze({
   phase: `Must be one of: ${PHASE_NAMES.join(", ")}.`,
   instantOrDate: "Give exactly one of instant and date.",
   zoneNeedsDate: "A zone goes with a date, not with an instant.",
-  skippedDay: "This date did not happen in this zone: its clocks went from the day before straight to the day after."
+  skippedDay: "This date did not happen in this zone: its clocks went from the day before straight to the day after.",
+  conditions: `Must be an array of one to ${MAX_ELECTION_CONDITIONS} conditions.`,
+  conditionKind: `Must be one of: ${ELECTION_CONDITION_KINDS.join(", ")}.`,
+  moonHalf: `Must be one of: ${MOON_HALVES.join(", ")}.`,
+  stationBody: `Must be one of: ${STATION_BODIES.join(", ")}; the Sun and the Moon are never retrograde.`,
+  not: "Must be true or false.",
+  repeatedCondition: "Must not repeat a condition.",
+  placeRequired: "An angular condition needs a place.",
+  placeWithoutAngular: "A place goes with an angular condition.",
+  angularLatitude: `Must be a number from -${ANGULAR_MAX_ABS_LATITUDE} to ${ANGULAR_MAX_ABS_LATITUDE}: an angular condition is searched within ${ANGULAR_MAX_ABS_LATITUDE}\xB0 of the equator.`
 });
 var VALIDATION_POINTERS = Object.freeze([
   "",
@@ -5652,9 +5695,15 @@ var VALIDATION_POINTERS = Object.freeze([
   "/phase",
   "/instant",
   "/date",
-  "/zone"
+  "/zone",
+  "/conditions",
+  "/place",
+  "/place/latitude",
+  "/place/longitude",
+  "/place/houseSystem"
 ]);
-var INDEXED_POINTERS = Object.freeze(["/instants", "/bodies", "/kinds"]);
+var INDEXED_POINTERS = Object.freeze(["/instants", "/bodies", "/kinds", "/conditions"]);
+var CONDITION_FIELD_POINTERS = Object.freeze(["kind", "phase", "body", "sign", "not"]);
 var ZONE_NAME = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/u;
 var INSTANT = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{1,3}))?)?(Z|[+-]\d{2}:\d{2})$/u;
 var EPOCH_FROM = Date.parse(EPOCH.from);
@@ -5866,6 +5915,74 @@ async function parseSkyFactRequest(value, zones) {
     }
   }
 }
+var CONDITION_FIELDS = Object.freeze({
+  phase: ["kind", "phase", "not"],
+  "void-of-course": ["kind", "not"],
+  sign: ["kind", "body", "sign", "not"],
+  retrograde: ["kind", "body", "not"],
+  angular: ["kind", "body", "not"]
+});
+function conditionAt(value, pointer) {
+  const object = objectAt(value, pointer);
+  const kind = oneOf(required(object, "kind", pointer), child(pointer, "kind"), ELECTION_CONDITION_KINDS, TEXT.conditionKind);
+  onlyFields(object, CONDITION_FIELDS[kind], pointer);
+  if (has(object, "not") && typeof object.not !== "boolean") throw invalidRequest(child(pointer, "not"), TEXT.not);
+  const not = object.not === true;
+  switch (kind) {
+    case "phase":
+      return { kind, phase: oneOf(required(object, "phase", pointer), child(pointer, "phase"), MOON_HALVES, TEXT.moonHalf), not };
+    case "void-of-course":
+      return { kind, not };
+    case "sign":
+      return {
+        kind,
+        body: oneOf(required(object, "body", pointer), child(pointer, "body"), EVENT_BODIES, TEXT.eventBody),
+        sign: oneOf(required(object, "sign", pointer), child(pointer, "sign"), SIGN_SLUGS, TEXT.sign),
+        not
+      };
+    case "retrograde":
+      return { kind, body: oneOf(required(object, "body", pointer), child(pointer, "body"), STATION_BODIES, TEXT.stationBody), not };
+    case "angular":
+      return { kind, body: oneOf(required(object, "body", pointer), child(pointer, "body"), EVENT_BODIES, TEXT.eventBody), not };
+  }
+}
+function parseElectionsRequest(value) {
+  const object = bodyObject(value);
+  onlyFields(object, ["from", "to", "conditions", "place"], "");
+  const from = instantAt(required(object, "from", ""), "/from").date;
+  const to = instantAt(required(object, "to", ""), "/to").date;
+  if (to.getTime() <= from.getTime()) throw invalidRequest("/to", TEXT.window);
+  const list = required(object, "conditions", "");
+  if (!Array.isArray(list) || list.length === 0 || list.length > MAX_ELECTION_CONDITIONS) {
+    throw invalidRequest("/conditions", TEXT.conditions);
+  }
+  const seen = /* @__PURE__ */ new Set();
+  const conditions = list.map((item, index) => {
+    const condition = conditionAt(item, child("/conditions", index));
+    const key = JSON.stringify(condition);
+    if (seen.has(key)) throw invalidRequest(child("/conditions", index), TEXT.repeatedCondition);
+    seen.add(key);
+    return condition;
+  });
+  const angular = conditions.some((condition) => condition.kind === "angular");
+  let place = null;
+  if (has(object, "place")) {
+    if (!angular) throw invalidRequest("/place", TEXT.placeWithoutAngular);
+    const fields2 = objectAt(object.place, "/place");
+    onlyFields(fields2, ["latitude", "longitude", "houseSystem"], "/place");
+    const latitude = latitudeAt(required(fields2, "latitude", "/place"), "/place/latitude");
+    if (Math.abs(latitude) > ANGULAR_MAX_ABS_LATITUDE) throw invalidRequest("/place/latitude", TEXT.angularLatitude);
+    place = {
+      latitude,
+      longitude: longitudeAt2(required(fields2, "longitude", "/place"), "/place/longitude"),
+      houseSystem: has(fields2, "houseSystem") ? oneOf(fields2.houseSystem, "/place/houseSystem", HOUSE_SYSTEMS, TEXT.houseSystem) : "placidus"
+    };
+  } else if (angular) {
+    throw invalidRequest("/place", TEXT.placeRequired);
+  }
+  if (to.getTime() - from.getTime() > BUDGETS["elections.windowDays"] * DAY_MS) throw budgetExhausted("elections.windowDays");
+  return { from, to, conditions, place };
+}
 var VALIDATION_MESSAGES = TEXT;
 
 // src/lib/compute-api/endpoints.ts
@@ -5913,6 +6030,15 @@ var SampleBudget = class {
     if (result.status === "refused") throw budgetExhausted(this.limit);
     this.used += result.samples;
     return result.crossings;
+  }
+  /** Counts evaluations made outside the crossing search, refusing the request once the allowance is spent. */
+  spend(count) {
+    this.reserve(count);
+    this.used += count;
+  }
+  /** Refuses the request now if `count` more evaluations would pass the allowance, before any is made. */
+  reserve(count) {
+    if (this.used + count > this.max) throw budgetExhausted(this.limit);
   }
   facts() {
     return {
@@ -6220,6 +6346,351 @@ function factEcho(request) {
   }
 }
 
+// src/lib/compute-api/elections.ts
+var SECOND_MS = 1e3;
+var MINUTE_MS = 6e4;
+var HOUR_MS2 = 36e5;
+var DAY_MS3 = 864e5;
+var SECANT_ROUNDS = 6;
+function normalizeSpans(spans) {
+  const sorted = spans.filter((span) => span.to > span.from).sort((a, b) => a.from - b.from);
+  const out = [];
+  for (const span of sorted) {
+    const last2 = out[out.length - 1];
+    if (last2 && span.from <= last2.to) last2.to = Math.max(last2.to, span.to);
+    else out.push({ ...span });
+  }
+  return out;
+}
+function intersectSpans(a, b) {
+  const out = [];
+  let i = 0;
+  let j = 0;
+  while (i < a.length && j < b.length) {
+    const from = Math.max(a[i].from, b[j].from);
+    const to = Math.min(a[i].to, b[j].to);
+    if (to > from) out.push({ from, to });
+    if (a[i].to < b[j].to) i += 1;
+    else j += 1;
+  }
+  return out;
+}
+function complementSpans(spans, within) {
+  const out = [];
+  let cursor = within.from;
+  for (const span of spans) {
+    if (span.to <= within.from || span.from >= within.to) continue;
+    if (span.from > cursor) out.push({ from: cursor, to: span.from });
+    cursor = Math.max(cursor, span.to);
+  }
+  if (cursor < within.to) out.push({ from: cursor, to: within.to });
+  return out;
+}
+function resolveSpans(spans, ms) {
+  const joined = [];
+  for (const span of normalizeSpans(spans)) {
+    const last2 = joined[joined.length - 1];
+    if (last2 && span.from - last2.to < ms) last2.to = span.to;
+    else joined.push({ ...span });
+  }
+  return joined.filter((span) => span.to - span.from >= ms);
+}
+function spansFromChanges(initial, changes, window) {
+  const out = [];
+  let state = initial;
+  let since = window.from;
+  for (const change of [...changes].sort((a, b) => a.at - b.at)) {
+    if (change.at <= window.from || change.at >= window.to) continue;
+    if (change.to === state) continue;
+    if (state) out.push({ from: since, to: change.at });
+    state = change.to;
+    since = change.at;
+  }
+  if (state) out.push({ from: since, to: window.to });
+  return normalizeSpans(out);
+}
+function budgetedRows(budget) {
+  const memo = /* @__PURE__ */ new Map();
+  return (ms) => {
+    let rows = memo.get(ms);
+    if (!rows) {
+      budget.spend(FULL_CALCULATION_COST);
+      rows = positions(new Date(ms));
+      memo.set(ms, rows);
+    }
+    return rows;
+  };
+}
+function searchEnds(window) {
+  return { from: new Date(window.from - 1), to: new Date(window.to - 1) };
+}
+function signSpans(body, sign, window, budget, rowsAt) {
+  const index = SIGN_SLUGS.indexOf(sign);
+  const ends = searchEnds(window);
+  const start = index * 30;
+  const end = (index + 1) % 12 * 30;
+  const changes = [
+    // Its first boundary: crossed moving forward it enters the sign, moving backward it leaves.
+    ...signCrossings(body, start, ends.from, ends.to, budget).map((crossing) => ({ at: crossing.at.getTime(), to: !crossing.retrograde })),
+    // Its second: crossed moving forward it leaves, moving backward it enters.
+    ...signCrossings(body, end, ends.from, ends.to, budget).map((crossing) => ({ at: crossing.at.getTime(), to: crossing.retrograde }))
+  ];
+  return spansFromChanges(rowOf(rowsAt(window.from), body).sign === sign, changes, window);
+}
+function retrogradeSpans(body, window, budget, rowsAt) {
+  const initial = rowOf(rowsAt(window.from), body).speed < 0;
+  if (body === "Sun" || body === "Moon") return initial ? [{ ...window }] : [];
+  const ends = searchEnds(window);
+  const changes = stationCrossings(body, ends.from, ends.to, budget, (date) => rowsAt(date.getTime())).map((crossing) => ({ at: crossing.at.getTime(), to: crossing.retrograde }));
+  return spansFromChanges(initial, changes, window);
+}
+function waxingSpans(window, budget) {
+  const ends = searchEnds(window);
+  const changes = [
+    ...phaseCrossings(PHASES.new, ends.from, ends.to, budget).map((crossing) => ({ at: crossing.at.getTime(), to: true })),
+    ...phaseCrossings(PHASES.full, ends.from, ends.to, budget).map((crossing) => ({ at: crossing.at.getTime(), to: false }))
+  ];
+  return spansFromChanges(moonPhase(new Date(window.from)).angle < 180, changes, window);
+}
+var VOID_BODIES_MODERN = Object.freeze(["Sun", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"]);
+var ASPECT_OFFSETS = Object.freeze([0, 60, 300, 90, 270, 120, 240, 180]);
+var VOID_SCAN_MS = 3 * HOUR_MS2;
+var VOID_REACH_BEFORE_MS = 4 * DAY_MS3;
+var VOID_REACH_AFTER_MS = 3 * DAY_MS3;
+function delta(a, b) {
+  const d = ((b - a) % 360 + 360) % 360;
+  return d > 180 ? d - 360 : d;
+}
+function separation2(rows, body, offset) {
+  return delta(rowOf(rows, body).lon + offset, rowOf(rows, "Moon").lon);
+}
+function moonIngressInstants(from, to, budget) {
+  const out = [];
+  for (let index = 0; index < 12; index += 1) {
+    for (const crossing of signCrossings("Moon", index * 30, new Date(from), new Date(to - 1), budget)) {
+      if (!crossing.retrograde) out.push(crossing.at.getTime());
+    }
+  }
+  return out.sort((a, b) => a - b);
+}
+function signChange(lo, hi, flo, fhi, f) {
+  let a = lo;
+  let b = hi;
+  let fa = flo;
+  let fb = fhi;
+  const before2 = flo > 0;
+  for (let round = 0; b - a > SECOND_MS; round += 1) {
+    let t = round < SECANT_ROUNDS && fb !== fa ? b - fb * (b - a) / (fb - fa) : (a + b) / 2;
+    if (!(t > a && t < b)) t = (a + b) / 2;
+    const probes = round < SECANT_ROUNDS ? [Math.floor(t - SECOND_MS / 2), Math.ceil(t + SECOND_MS / 2)] : [Math.floor(t)];
+    for (const probe of probes) {
+      if (probe <= a || probe >= b) continue;
+      const value = f(probe);
+      if (value > 0 === before2) {
+        a = probe;
+        fa = value;
+      } else {
+        b = probe;
+        fb = value;
+      }
+    }
+  }
+  return b;
+}
+function lastAspectBefore(entered, leaving, rowsAt) {
+  let hi = leaving;
+  while (hi > entered) {
+    const lo = Math.max(entered, hi - VOID_SCAN_MS);
+    const before2 = rowsAt(lo);
+    const after = rowsAt(hi);
+    let latest = null;
+    for (const body of VOID_BODIES_MODERN) {
+      for (const offset of ASPECT_OFFSETS) {
+        const s0 = separation2(before2, body, offset);
+        const s1 = separation2(after, body, offset);
+        if (Math.abs(s0) >= 90 || Math.abs(s1) >= 90) continue;
+        if (s1 === 0 && s0 !== 0) {
+          latest = Math.max(latest ?? hi, hi);
+          continue;
+        }
+        if (s0 === 0 || s1 === 0 || Math.sign(s0) === Math.sign(s1)) continue;
+        const at = signChange(lo, hi, s0, s1, (ms) => separation2(rowsAt(ms), body, offset));
+        latest = Math.max(latest ?? at, at);
+      }
+    }
+    if (latest !== null && latest < leaving) return latest;
+    hi = lo;
+  }
+  return null;
+}
+function voidSpans(window, budget, rowsAt) {
+  const ingresses = moonIngressInstants(window.from - VOID_REACH_BEFORE_MS, window.to + VOID_REACH_AFTER_MS, budget);
+  const out = [];
+  for (let i = 1; i < ingresses.length; i += 1) {
+    const entered = ingresses[i - 1];
+    const leaving = ingresses[i];
+    if (leaving <= window.from || entered >= window.to) continue;
+    const last2 = lastAspectBefore(entered, leaving, rowsAt);
+    out.push({ from: Math.max(window.from, last2 ?? entered), to: Math.min(window.to, leaving) });
+  }
+  return normalizeSpans(out);
+}
+function houseSampleAt(body, place, ms, budget) {
+  budget.spend(FULL_CALCULATION_COST);
+  const chart = natalChart({ utc: new Date(ms), latitude: place.latitude, longitude: place.longitude, houseSystem: place.houseSystem });
+  if (!chart.houses || chart.flags.includes("polar-fallback")) return null;
+  const { cusps } = chart.houses;
+  const lon = rowOf(chart.bodies, body).lon;
+  return { house: houseOf(lon, cusps), past: (cusp) => delta(cusps[cusp], lon) };
+}
+var isAngular = (house) => ANGULAR_HOUSES.includes(house);
+function housesPassed(before2, after) {
+  return ((before2 - after) % 12 + 12) % 12;
+}
+var HOUSE_STEP_MS = ELECTION_STEPS.houseSampleMinutes * MINUTE_MS;
+function houseSamplesAtLeast(stretches, step = HOUSE_STEP_MS) {
+  return stretches.reduce((sum, stretch) => sum + Math.ceil((stretch.to - stretch.from) / step) + 1, 0);
+}
+function angularSpans(body, place, stretch, budget, step = HOUSE_STEP_MS) {
+  const precision = ELECTION_STEPS.houseBoundarySeconds * SECOND_MS;
+  const changes = [];
+  const samples = /* @__PURE__ */ new Map();
+  const sample2 = (ms) => {
+    let found = samples.get(ms);
+    if (found === void 0) {
+      const value = houseSampleAt(body, place, ms, budget);
+      if (value === null) throw new Error("The houses fell back inside the latitudes an angular condition accepts.");
+      found = value;
+      samples.set(ms, found);
+    }
+    return found;
+  };
+  const at = (ms) => sample2(ms).house;
+  const rounds = place.houseSystem === "whole" ? 0 : SECANT_ROUNDS;
+  const crossing = (lo, hi, h0, h1) => {
+    const cusp = h1 === (h0 + 10) % 12 + 1 ? h0 - 1 : h0 % 12;
+    let a = lo;
+    let b = hi;
+    for (let round = 0; b - a > precision; round += 1) {
+      const fa = sample2(a).past(cusp);
+      const fb = sample2(b).past(cusp);
+      let t = round < rounds && fb !== fa ? b - fb * (b - a) / (fb - fa) : (a + b) / 2;
+      if (!(t > a && t < b)) t = (a + b) / 2;
+      const probes = round < rounds ? [Math.floor(t - precision / 2), Math.ceil(t + precision / 2)] : [Math.floor(t)];
+      for (const probe of probes) {
+        if (probe <= a || probe >= b) continue;
+        const house = at(probe);
+        if (house === h0) a = probe;
+        else if (house === h1) b = probe;
+        else {
+          while (b - a > precision) {
+            const mid = Math.floor((a + b) / 2);
+            if (at(mid) === h0) a = mid;
+            else b = mid;
+          }
+          return b;
+        }
+      }
+    }
+    return b;
+  };
+  const resolve = (lo, hi) => {
+    const h0 = at(lo);
+    const h1 = at(hi);
+    if (h0 === h1) return;
+    if (hi - lo <= precision) {
+      if (isAngular(h0) !== isAngular(h1)) changes.push({ at: hi, to: isAngular(h1) });
+      return;
+    }
+    if (housesPassed(h0, h1) === 1) {
+      if (isAngular(h0) !== isAngular(h1)) changes.push({ at: crossing(lo, hi, h0, h1), to: isAngular(h1) });
+      return;
+    }
+    const mid = Math.floor((lo + hi) / 2);
+    resolve(lo, mid);
+    resolve(mid, hi);
+  };
+  for (let lo = stretch.from; lo < stretch.to; lo += step) resolve(lo, Math.min(lo + step, stretch.to));
+  return spansFromChanges(isAngular(at(stretch.from)), changes, stretch);
+}
+function negate(spans, condition, within) {
+  return condition.not ? complementSpans(spans, within) : spans;
+}
+function searchElections(request, budget = new SampleBudget("elections.samples")) {
+  const window = { from: request.from.getTime(), to: request.to.getTime() };
+  const rowsAt = budgetedRows(budget);
+  let candidates = [{ ...window }];
+  for (const condition of request.conditions) {
+    if (condition.kind === "angular") continue;
+    let spans;
+    switch (condition.kind) {
+      case "phase": {
+        const waxing = waxingSpans(window, budget);
+        spans = condition.phase === "waxing" ? waxing : complementSpans(waxing, window);
+        break;
+      }
+      case "void-of-course":
+        spans = voidSpans(window, budget, rowsAt);
+        break;
+      case "sign":
+        spans = signSpans(condition.body, condition.sign, window, budget, rowsAt);
+        break;
+      case "retrograde":
+        spans = retrogradeSpans(condition.body, window, budget, rowsAt);
+        break;
+    }
+    candidates = intersectSpans(candidates, negate(spans, condition, window));
+  }
+  for (const condition of request.conditions) {
+    if (condition.kind !== "angular") continue;
+    if (!request.place) throw new Error("An angular condition reached the search without a place.");
+    const place = request.place;
+    budget.reserve(houseSamplesAtLeast(candidates) * FULL_CALCULATION_COST);
+    candidates = candidates.flatMap((stretch) => intersectSpans([stretch], negate(angularSpans(condition.body, place, stretch, budget), condition, stretch)));
+  }
+  return { windows: resolveSpans(candidates, ELECTION_STEPS.resolutionSeconds * SECOND_MS), samples: budget.used, maxSamples: budget.max };
+}
+function conditionEcho(condition) {
+  switch (condition.kind) {
+    case "phase":
+      return { kind: condition.kind, phase: condition.phase, not: condition.not };
+    case "void-of-course":
+      return { kind: condition.kind, not: condition.not };
+    case "sign":
+      return { kind: condition.kind, body: condition.body, sign: condition.sign, not: condition.not };
+    case "retrograde":
+    case "angular":
+      return { kind: condition.kind, body: condition.body, not: condition.not };
+  }
+}
+function computeElections(request) {
+  const { windows, samples, maxSamples } = searchElections(request);
+  const flags = outsideReferenceSpan(request.from) || outsideReferenceSpan(new Date(request.to.getTime() - 1)) ? ["outside-reference-span"] : [];
+  return successBody("elections", {
+    from: iso(request.from),
+    to: iso(request.to),
+    conditions: request.conditions.map(conditionEcho),
+    place: request.place,
+    windows: windows.map((span) => ({ from: iso(new Date(span.from)), to: iso(new Date(span.to)) })),
+    flags
+  }, computeReceipt("elections", { electionSearch: electionSearchFacts(samples, maxSamples) }));
+}
+function electionSearchFacts(samples, maxSamples) {
+  return {
+    solver: "engine-longitude-crossings-and-sampled-houses",
+    stepDays: { ...SEARCH_STEP_DAYS },
+    voidOfCourse: { convention: "last-exact-ptolemaic-aspect-to-sign-exit", bodies: "modern", scanHours: VOID_SCAN_MS / HOUR_MS2 },
+    houseSampleMinutes: ELECTION_STEPS.houseSampleMinutes,
+    boundarySeconds: ELECTION_STEPS.houseBoundarySeconds,
+    resolutionSeconds: ELECTION_STEPS.resolutionSeconds,
+    fullCalculationCost: FULL_CALCULATION_COST,
+    samples,
+    maxSamples,
+    window: "start-inclusive-end-exclusive",
+    completeness: "tested-not-proven"
+  };
+}
+
 // src/lib/compute-api/handler.ts
 async function computeApiRateLimit(req, id = COMPUTE_RATE_LIMIT_ID) {
   if (process.env.NODE_ENV !== "production") return "unavailable";
@@ -6381,6 +6852,8 @@ async function dispatch(endpoint, body, dependencies, zones) {
       return computeTime(await parseTimeRequest(body, zones), dependencies);
     case "sky-fact":
       return computeSkyFact(await parseSkyFactRequest(body, zones), dependencies);
+    case "elections":
+      return computeElections(parseElectionsRequest(body));
   }
 }
 function send(res, status, headers, body) {

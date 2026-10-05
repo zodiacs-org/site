@@ -53,6 +53,22 @@ export const SUCCESS_EXAMPLES: Readonly<Record<ComputeEndpoint, Readonly<Record<
       body: { local: { date: '2026-03-29', time: '02:30', zone: 'Europe/Paris' } },
     },
   },
+  elections: {
+    london: {
+      summary: 'Three days in London with the Moon waxing and not void of course, Mercury direct and Jupiter in an angular house',
+      body: {
+        from: '2026-12-09T00:00:00Z',
+        to: '2026-12-12T00:00:00Z',
+        conditions: [
+          { kind: 'phase', phase: 'waxing' },
+          { kind: 'void-of-course', not: true },
+          { kind: 'retrograde', body: 'Mercury', not: true },
+          { kind: 'angular', body: 'Jupiter' },
+        ],
+        place: { latitude: 51.5072, longitude: -0.1276, houseSystem: 'placidus' },
+      },
+    },
+  },
   'sky-fact': {
     retrograde: {
       summary: 'Is Mercury retrograde on a date in a zone? It stations that day.',
@@ -72,7 +88,7 @@ export const SUCCESS_EXAMPLES: Readonly<Record<ComputeEndpoint, Readonly<Record<
 export interface RefusalExample {
   summary: string;
   code: ErrorCode;
-  /** null: the request reaches the function without one of the six endpoint names. */
+  /** null: the request reaches the function without one of the seven endpoint names. */
   endpoint: ComputeEndpoint | null;
   method: string;
   contentType: string | null;
