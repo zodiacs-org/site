@@ -317,57 +317,75 @@ try {
     browser, baseURL: 'http://127.0.0.1:4399', check, outDir: OUT,
   });
 
-  let navBreakpointsPass = true;
-  const navBreakpointsDetail = [];
-  for (const [prefix, desktopBreakpoint, englishOnlyCue] of [
-    ['', 920, ''],
-    ['/es', 1040, '— por ahora en inglés'],
-    ['/pt', 1040, '— por enquanto em inglês'],
-    ['/fr', 1040, '— pour l’instant en anglais'],
-    ['/it', 1040, '— per ora in inglese'],
+  // Editorial pages keep the Astrofolio door at every boundary. Tool pages
+  // (owner rule since #633: no Astrofolio branding on tools) keep the same
+  // reserved shell with the door removed from both the bar and the menu.
+  for (const [surface, route, expectsDoor] of [
+    ['editorial', '/learn/', true],
+    ['tool', '/birth-chart/', false],
   ]) {
-    // Retain the old 819/820 checks as compact-layout regressions, and check
-    // both sides of the new reserved-shell desktop thresholds independently.
-    for (const width of [819, 820, desktopBreakpoint - 1, desktopBreakpoint]) {
-      const desktop = width >= desktopBreakpoint;
-      const navPage = await browser.newPage({ viewport: { width, height: 844 } });
-      await navPage.goto(`http://127.0.0.1:4399${prefix}/birth-chart/`, { waitUntil: 'domcontentloaded' });
-      const state = await navPage.evaluate(() => {
-        const nav = document.querySelector('[data-nav]')?.getBoundingClientRect();
-        const chip = document.querySelector('.nav__chip');
-        const burger = document.querySelector('[data-menu-toggle]');
-        const links = document.querySelector('.nav__links');
-        return {
-          navFits: Boolean(nav && nav.left >= 16 && nav.right <= innerWidth - 16),
-          navWidth: nav?.width,
-          chipVisible: Boolean(chip && getComputedStyle(chip).display !== 'none'),
-          chipHref: chip?.getAttribute('href'),
-          chipText: (chip?.querySelector(':scope > span') ?? chip)?.textContent?.trim(),
-          chipCue: chip?.querySelector('small')?.textContent?.trim() ?? '',
-          burgerVisible: Boolean(burger && getComputedStyle(burger).display !== 'none'),
-          linksVisible: Boolean(links && getComputedStyle(links).display !== 'none'),
-        };
-      });
-      if (!desktop) {
-        await navPage.locator('[data-menu-toggle]').click();
-        const mobileRegistryVisible = await navPage.locator('.mobile-menu__registry').isVisible();
-        state.mobileRegistryVisible = mobileRegistryVisible;
+    let navBreakpointsPass = true;
+    const navBreakpointsDetail = [];
+    for (const [prefix, desktopBreakpoint, englishOnlyCue] of [
+      ['', 920, ''],
+      ['/es', 1040, '— por ahora en inglés'],
+      ['/pt', 1040, '— por enquanto em inglês'],
+      ['/fr', 1040, '— pour l’instant en anglais'],
+      ['/it', 1040, '— per ora in inglese'],
+    ]) {
+      // Retain the old 819/820 checks as compact-layout regressions, and check
+      // both sides of the new reserved-shell desktop thresholds independently.
+      for (const width of [819, 820, desktopBreakpoint - 1, desktopBreakpoint]) {
+        const desktop = width >= desktopBreakpoint;
+        const navPage = await browser.newPage({ viewport: { width, height: 844 } });
+        await navPage.goto(`http://127.0.0.1:4399${prefix}${route}`, { waitUntil: 'domcontentloaded' });
+        const state = await navPage.evaluate(() => {
+          const nav = document.querySelector('[data-nav]')?.getBoundingClientRect();
+          const chip = document.querySelector('.nav__chip');
+          const burger = document.querySelector('[data-menu-toggle]');
+          const links = document.querySelector('.nav__links');
+          return {
+            navFits: Boolean(nav && nav.left >= 16 && nav.right <= innerWidth - 16),
+            navWidth: nav?.width,
+            chipPresent: Boolean(chip),
+            chipVisible: Boolean(chip && getComputedStyle(chip).display !== 'none'),
+            chipHref: chip?.getAttribute('href'),
+            chipText: (chip?.querySelector(':scope > span') ?? chip)?.textContent?.trim(),
+            chipCue: chip?.querySelector('small')?.textContent?.trim() ?? '',
+            wingLinks: document.querySelectorAll('[data-nav] a[href^="/astrofolio/"], .mobile-menu a[href^="/astrofolio/"]').length,
+            burgerVisible: Boolean(burger && getComputedStyle(burger).display !== 'none'),
+            linksVisible: Boolean(links && getComputedStyle(links).display !== 'none'),
+          };
+        });
+        if (!desktop) {
+          await navPage.locator('[data-menu-toggle]').click();
+          state.mobileRegistryVisible = await navPage.locator('.mobile-menu__registry').count() > 0
+            && await navPage.locator('.mobile-menu__registry').isVisible();
+        }
+        const door = expectsDoor
+          ? state.chipVisible
+            && state.chipHref === '/astrofolio/'
+            && state.chipText === 'Astrofolio'
+            && state.chipCue === englishOnlyCue
+            && (desktop || state.mobileRegistryVisible === true)
+          : !state.chipPresent
+            && state.wingLinks === 0
+            && (desktop || state.mobileRegistryVisible === false);
+        const pass = state.navFits
+          && door
+          && Math.abs(state.navWidth - (desktop ? (prefix ? 992 : 884) : 336)) <= 0.1
+          && state.burgerVisible === !desktop
+          && state.linksVisible === desktop;
+        navBreakpointsPass &&= pass;
+        navBreakpointsDetail.push(`${prefix || '/en'}@${width}:${pass ? 'ok' : JSON.stringify(state)}`);
+        await navPage.close();
       }
-      const pass = state.navFits
-        && state.chipVisible
-        && state.chipHref === '/astrofolio/'
-        && state.chipText === 'Astrofolio'
-        && state.chipCue === englishOnlyCue
-        && Math.abs(state.navWidth - (desktop ? (prefix ? 992 : 884) : 336)) <= 0.1
-        && state.burgerVisible === !desktop
-        && state.linksVisible === desktop
-        && (desktop || state.mobileRegistryVisible === true);
-      navBreakpointsPass &&= pass;
-      navBreakpointsDetail.push(`${prefix || '/en'}@${width}:${pass ? 'ok' : JSON.stringify(state)}`);
-      await navPage.close();
     }
+    check(expectsDoor
+      ? 'navigation: reserved shells and Astrofolio persist at compact and desktop boundaries in all five locales'
+      : `navigation: ${surface} pages keep the reserved shells without any Astrofolio link in all five locales`,
+    navBreakpointsPass, navBreakpointsDetail.join(' · '));
   }
-  check('navigation: reserved shells and Astrofolio persist at compact and desktop boundaries in all five locales', navBreakpointsPass, navBreakpointsDetail.join(' · '));
 
   // A shared-chart receiver intentionally removes every wing link. Its head
   // marker must reserve the shorter shell before hydration, with no empty
