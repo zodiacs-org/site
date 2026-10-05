@@ -4,7 +4,7 @@
  * chart and houses carry the engine's own calculation receipt
  * (`zodiacs.calculation-receipt.draft-v1`, from `createNatalEnvelope`). The
  * engine writes no receipt for the other calculations, so positions, events,
- * time and sky-fact carry `zodiacs.compute-receipt.v1`: the same engine
+ * time, sky-fact and elections carry `zodiacs.compute-receipt.v1`: the same engine
  * identity, conventions and coverage statement the engine writes into its own
  * receipts, read from one it writes, plus what the request used (the ΔT
  * sources of the engine's time basis, searches, time zone data).
@@ -94,6 +94,28 @@ export interface SearchFacts {
   completeness: 'tested-not-proven';
 }
 
+/**
+ * How an election search ran: the crossing search's steps for sign changes,
+ * stations and phases, the void-of-course rule and its scan, the house
+ * sampling, and the evaluations it made. Boundaries are within a second.
+ */
+export interface ElectionSearchFacts {
+  solver: 'engine-longitude-crossings-and-sampled-houses';
+  stepDays: { default: number; moon: number; elongation: number };
+  voidOfCourse: { convention: 'last-exact-ptolemaic-aspect-to-sign-exit'; bodies: 'modern'; scanHours: number };
+  houseSampleMinutes: number;
+  boundarySeconds: number;
+  /** Gaps shorter than this between windows are closed, and windows shorter than it are not listed. */
+  resolutionSeconds: number;
+  /** What one full calculation (all positions, or a natalChart) counts for in samples; a crossing step counts once. */
+  fullCalculationCost: number;
+  samples: number;
+  maxSamples: number;
+  /** Each window holds its start and not its end, as the request's window does. */
+  window: 'start-inclusive-end-exclusive';
+  completeness: 'tested-not-proven';
+}
+
 export interface ComputeReceipt {
   schema: typeof COMPUTE_RECEIPT_SCHEMA;
   endpoint: ComputeEndpoint;
@@ -105,11 +127,12 @@ export interface ComputeReceipt {
   deltaT: readonly [DeltaTSource, DeltaTSource];
   timeResolution?: TimeResolutionFacts;
   search?: SearchFacts;
+  electionSearch?: ElectionSearchFacts;
 }
 
 export function computeReceipt(
   endpoint: ComputeEndpoint,
-  extra: { timeResolution?: TimeResolutionFacts; search?: SearchFacts } = {},
+  extra: { timeResolution?: TimeResolutionFacts; search?: SearchFacts; electionSearch?: ElectionSearchFacts } = {},
 ): ComputeReceipt {
   const { conventions, coverage, deltaT } = engineStatements();
   return {
@@ -122,6 +145,7 @@ export function computeReceipt(
     deltaT,
     ...(extra.timeResolution ? { timeResolution: extra.timeResolution } : {}),
     ...(extra.search ? { search: extra.search } : {}),
+    ...(extra.electionSearch ? { electionSearch: extra.electionSearch } : {}),
   };
 }
 

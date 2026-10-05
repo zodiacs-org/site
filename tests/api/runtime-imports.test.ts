@@ -193,9 +193,9 @@ describe('Vercel API runtime packaging', () => {
     expect(EXPECTED_HANDLERS).toHaveLength(12);
   });
 
-  it('routes the six compute endpoints through the existing compatibility function', () => {
+  it('routes the seven compute endpoints through the existing compatibility function', () => {
     const vercel = JSON.parse(readFileSync(join(ROOT, 'vercel.json'), 'utf8'));
-    for (const endpoint of ['chart', 'positions', 'houses', 'events', 'time', 'sky-fact']) {
+    for (const endpoint of ['chart', 'positions', 'houses', 'events', 'time', 'sky-fact', 'elections']) {
       expect(vercel.rewrites).toContainEqual({
         source: `/api/v1/${endpoint}`,
         destination: `/api/compatibility?__zodiacs_compute=${endpoint}`,

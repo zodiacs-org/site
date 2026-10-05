@@ -108,13 +108,19 @@ const OWNER_TRUST_LASTMOD = '2026-10-03';
 const OWNER_TRUST_ROUTES = ['/', '/privacy/', '/terms/', '/methodology/', '/astrofolio/how-to-buy/'] as const;
 // MCP adapter 0.1.0-rc.16.2 of 2026-10-05: its page gains the three tools
 // that run the compute API's calculations, and the compute API's page now
-// says which UTC offsets a date without a zone is read in.
+// says which UTC offsets a date without a zone is read in. rc.16.3, the same
+// day, changes only the version and download the MCP page names.
 const MCP_COMPUTE_TOOLS_LASTMOD = '2026-10-05';
 const MCP_COMPUTE_TOOLS_ROUTES = ['/developers/mcp/', '/developers/compute/'] as const;
 // The sky-fact benchmark of 2026-10-05: its own page, and the developer hub's
 // card for it.
 const SKY_BENCHMARK_LASTMOD = '2026-10-05';
 const SKY_BENCHMARK_ROUTES = ['/developers/', '/developers/sky-benchmark/'] as const;
+// The elections endpoint of 2026-10-05: its section on the compute API's page,
+// the endpoints the developer hub and support page list, and what the privacy
+// page says the compute API calculates.
+const ELECTIONS_LASTMOD = '2026-10-05';
+const ELECTIONS_ROUTES = ['/developers/', '/developers/compute/', '/developers/support/', '/privacy/'] as const;
 
 const EVERGREEN_LASTMOD = new Map<string, string>([
   [eventsPublication.hub.path, eventsPublication.lastModified] as const,
@@ -249,6 +255,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...OWNER_TRUST_ROUTES.map((loc) => [loc, OWNER_TRUST_LASTMOD] as const),
   ...MCP_COMPUTE_TOOLS_ROUTES.map((loc) => [loc, MCP_COMPUTE_TOOLS_LASTMOD] as const),
   ...SKY_BENCHMARK_ROUTES.map((loc) => [loc, SKY_BENCHMARK_LASTMOD] as const),
+  ...ELECTIONS_ROUTES.map((loc) => [loc, ELECTIONS_LASTMOD] as const),
 ]);
 
 function getLastmod(loc: string): string {

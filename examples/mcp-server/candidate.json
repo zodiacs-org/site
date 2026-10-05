@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "package": "zodiacs-mcp-server",
-  "version": "0.1.0-rc.16.2",
+  "version": "0.1.0-rc.16.3",
   "status": "Unpublished release candidate. Not on npm, under this or any other name. Install from the versioned archive at https://zodiacs.org/examples/, whose SHA-256 is published beside it.",
   "sourceRepository": "https://github.com/zodiacs-org/site",
   "sourcePaths": [
@@ -85,6 +85,6 @@
     "note": "Zodiacs-owned vocabulary, not an industry interoperability standard. The record and receipt schemas are drafts.",
     "computeReceipt": "zodiacs.compute-receipt.v1"
   },
-  "supersedes": "0.1.0-rc.16.1",
-  "changedSince": "rc.1 to rc.10, rc.14, rc.15, rc.16 and rc.16.1 remain unchanged as separate archives; there were no rc.11 to rc.13 archives. The engine is the same 0.1.1-rc.16, so every position, angle, cusp and comparison is rc.16's. New in rc.16.2: three tools, get_positions, find_events and check_sky_fact, which run the hosted compute API's own parsers and calculations, so each returns the compute API's body for the same request, with the same receipt and so the same cite.receipt; only cite.url names the tool. find_events finds sign ingresses, stations and new and full moons in a window of at most 92 days, and its receipt says its search is tested, not proven complete. check_sky_fact answers true, false or depends with the values that decide it; this adapter looks up no time zone, so it has no zone argument and reads a date as that day in every UTC offset in use today at once. Each new tool declares an output schema and the same read-only, closed-world annotations. The three existing tools' names and arguments are unchanged. The adapter itself is still not on npm."
+  "supersedes": "0.1.0-rc.16.2",
+  "changedSince": "rc.1 to rc.10, rc.14, rc.15, rc.16, rc.16.1 and rc.16.2 remain unchanged as separate archives; there were no rc.11 to rc.13 archives. The engine is the same 0.1.1-rc.16. New in rc.16.3: nothing a tool does. The compute API gained POST /api/v1/elections, and the modules of src/lib/compute-api/ that this adapter inlines hold the compute API's list of endpoints, its limits, its validation sentences, its receipt and the allowance its searches share, which changed with it, so the bundle changed. get_capabilities lists under sky.limits the same four limits as before, the ones its three sky tools use: it had copied the compute API's whole table of limits, which now also holds the elections endpoint's, and this adapter has no tool for it. Apart from the adapter's version, which the server, get_capabilities, this adapter's own receipts and so the cite.receipt over them, and the methodology resource name, every tool's arguments, results and receipts are rc.16.2's. The README's example comparison now prints the digest of the receipt it shows; rc.16.2's printed rc.16.1's. The adapter itself is still not on npm."
 }

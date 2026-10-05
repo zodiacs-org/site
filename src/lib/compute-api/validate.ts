@@ -19,16 +19,23 @@
 import { HOUSE_SYSTEMS, type HouseSystem } from '@zodiacs/engine';
 import { parseCivilDate, parseCivilTime } from '../time/civil-date.js';
 import {
+  ANGULAR_MAX_ABS_LATITUDE,
   BUDGETS,
+  ELECTION_CONDITION_KINDS,
   EPOCH,
   EVENT_BODIES,
   EVENT_KINDS,
+  MAX_ELECTION_CONDITIONS,
+  MOON_HALVES,
   PHASE_NAMES,
   POSITION_BODIES,
   SIGN_SLUGS,
   SKY_FACT_KINDS,
+  STATION_BODIES,
+  type ElectionConditionKind,
   type EventBody,
   type EventKind,
+  type MoonHalf,
   type PhaseName,
   type PositionBody,
   type SignSlug,
@@ -86,6 +93,27 @@ export type SkyFactRequest =
   | { kind: 'ingress'; body: EventBody; sign: SignSlug; day: FactDay }
   | { kind: 'phase'; phase: PhaseName; day: FactDay };
 
+export type ElectionCondition =
+  | { kind: 'phase'; phase: MoonHalf; not: boolean }
+  | { kind: 'void-of-course'; not: boolean }
+  | { kind: 'sign'; body: EventBody; sign: SignSlug; not: boolean }
+  | { kind: 'retrograde'; body: EventBody; not: boolean }
+  | { kind: 'angular'; body: EventBody; not: boolean };
+
+export interface ElectionPlace {
+  latitude: number;
+  longitude: number;
+  houseSystem: HouseSystem;
+}
+
+export interface ElectionsRequest {
+  from: Date;
+  to: Date;
+  conditions: ElectionCondition[];
+  /** Set exactly when a condition is angular. */
+  place: ElectionPlace | null;
+}
+
 type JsonObject = Record<string, unknown>;
 
 const TEXT = Object.freeze({
@@ -119,6 +147,15 @@ const TEXT = Object.freeze({
   instantOrDate: 'Give exactly one of instant and date.',
   zoneNeedsDate: 'A zone goes with a date, not with an instant.',
   skippedDay: 'This date did not happen in this zone: its clocks went from the day before straight to the day after.',
+  conditions: `Must be an array of one to ${MAX_ELECTION_CONDITIONS} conditions.`,
+  conditionKind: `Must be one of: ${ELECTION_CONDITION_KINDS.join(', ')}.`,
+  moonHalf: `Must be one of: ${MOON_HALVES.join(', ')}.`,
+  stationBody: `Must be one of: ${STATION_BODIES.join(', ')}; the Sun and the Moon are never retrograde.`,
+  not: 'Must be true or false.',
+  repeatedCondition: 'Must not repeat a condition.',
+  placeRequired: 'An angular condition needs a place.',
+  placeWithoutAngular: 'A place goes with an angular condition.',
+  angularLatitude: `Must be a number from -${ANGULAR_MAX_ABS_LATITUDE} to ${ANGULAR_MAX_ABS_LATITUDE}: an angular condition is searched within ${ANGULAR_MAX_ABS_LATITUDE}° of the equator.`,
 });
 
 /**
@@ -129,9 +166,12 @@ const TEXT = Object.freeze({
 export const VALIDATION_POINTERS = Object.freeze([
   '', '/utc', '/local', '/local/date', '/local/time', '/local/zone', '/latitude', '/longitude',
   '/houseSystem', '/instants', '/bodies', '/from', '/to', '/kinds', '/kind', '/body', '/sign',
-  '/phase', '/instant', '/date', '/zone',
+  '/phase', '/instant', '/date', '/zone', '/conditions', '/place', '/place/latitude',
+  '/place/longitude', '/place/houseSystem',
 ] as const);
-export const INDEXED_POINTERS = Object.freeze(['/instants', '/bodies', '/kinds'] as const);
+export const INDEXED_POINTERS = Object.freeze(['/instants', '/bodies', '/kinds', '/conditions'] as const);
+/** The fields of a condition a pointer may name after its index: /conditions/2/body. */
+export const CONDITION_FIELD_POINTERS = Object.freeze(['kind', 'phase', 'body', 'sign', 'not'] as const);
 
 const ZONE_NAME = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/u;
 const INSTANT = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{1,3}))?)?(Z|[+-]\d{2}:\d{2})$/u;
@@ -392,6 +432,81 @@ export async function parseSkyFactRequest(value: unknown, zones: ZoneNames): Pro
       return { kind, phase, day: await factDay(object, zones) };
     }
   }
+}
+
+/** The fields each kind of election condition takes. */
+const CONDITION_FIELDS: Readonly<Record<ElectionConditionKind, readonly string[]>> = Object.freeze({
+  phase: ['kind', 'phase', 'not'],
+  'void-of-course': ['kind', 'not'],
+  sign: ['kind', 'body', 'sign', 'not'],
+  retrograde: ['kind', 'body', 'not'],
+  angular: ['kind', 'body', 'not'],
+});
+
+function conditionAt(value: unknown, pointer: string): ElectionCondition {
+  const object = objectAt(value, pointer);
+  const kind = oneOf(required(object, 'kind', pointer), child(pointer, 'kind'), ELECTION_CONDITION_KINDS, TEXT.conditionKind);
+  onlyFields(object, CONDITION_FIELDS[kind], pointer);
+  if (has(object, 'not') && typeof object.not !== 'boolean') throw invalidRequest(child(pointer, 'not'), TEXT.not);
+  const not = object.not === true;
+  switch (kind) {
+    case 'phase':
+      return { kind, phase: oneOf(required(object, 'phase', pointer), child(pointer, 'phase'), MOON_HALVES, TEXT.moonHalf), not };
+    case 'void-of-course':
+      return { kind, not };
+    case 'sign':
+      return {
+        kind,
+        body: oneOf(required(object, 'body', pointer), child(pointer, 'body'), EVENT_BODIES, TEXT.eventBody),
+        sign: oneOf(required(object, 'sign', pointer), child(pointer, 'sign'), SIGN_SLUGS, TEXT.sign),
+        not,
+      };
+    case 'retrograde':
+      return { kind, body: oneOf(required(object, 'body', pointer), child(pointer, 'body'), STATION_BODIES, TEXT.stationBody), not };
+    case 'angular':
+      return { kind, body: oneOf(required(object, 'body', pointer), child(pointer, 'body'), EVENT_BODIES, TEXT.eventBody), not };
+  }
+}
+
+/** elections: a window, one to five conditions, and a place when one of them is angular. */
+export function parseElectionsRequest(value: unknown): ElectionsRequest {
+  const object = bodyObject(value);
+  onlyFields(object, ['from', 'to', 'conditions', 'place'], '');
+  const from = instantAt(required(object, 'from', ''), '/from').date;
+  const to = instantAt(required(object, 'to', ''), '/to').date;
+  if (to.getTime() <= from.getTime()) throw invalidRequest('/to', TEXT.window);
+  const list = required(object, 'conditions', '');
+  if (!Array.isArray(list) || list.length === 0 || list.length > MAX_ELECTION_CONDITIONS) {
+    throw invalidRequest('/conditions', TEXT.conditions);
+  }
+  const seen = new Set<string>();
+  const conditions = list.map((item, index) => {
+    const condition = conditionAt(item, child('/conditions', index));
+    const key = JSON.stringify(condition);
+    if (seen.has(key)) throw invalidRequest(child('/conditions', index), TEXT.repeatedCondition);
+    seen.add(key);
+    return condition;
+  });
+  const angular = conditions.some((condition) => condition.kind === 'angular');
+  let place: ElectionPlace | null = null;
+  if (has(object, 'place')) {
+    if (!angular) throw invalidRequest('/place', TEXT.placeWithoutAngular);
+    const fields = objectAt(object.place, '/place');
+    onlyFields(fields, ['latitude', 'longitude', 'houseSystem'], '/place');
+    const latitude = latitudeAt(required(fields, 'latitude', '/place'), '/place/latitude');
+    if (Math.abs(latitude) > ANGULAR_MAX_ABS_LATITUDE) throw invalidRequest('/place/latitude', TEXT.angularLatitude);
+    place = {
+      latitude,
+      longitude: longitudeAt(required(fields, 'longitude', '/place'), '/place/longitude'),
+      houseSystem: has(fields, 'houseSystem')
+        ? oneOf(fields.houseSystem, '/place/houseSystem', HOUSE_SYSTEMS as readonly HouseSystem[], TEXT.houseSystem)
+        : 'placidus',
+    };
+  } else if (angular) {
+    throw invalidRequest('/place', TEXT.placeRequired);
+  }
+  if (to.getTime() - from.getTime() > BUDGETS['elections.windowDays'] * DAY_MS) throw budgetExhausted('elections.windowDays');
+  return { from, to, conditions, place };
 }
 
 /** The fixed sentences above, for the documentation and the tests. */
