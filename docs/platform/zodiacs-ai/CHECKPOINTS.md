@@ -9,7 +9,7 @@ source. Local build (4,416 pages), typecheck (zero errors/warnings), 35 AI unit
 tests, eight stdio tools/recipes, 40/40 synthetic cases, both widget bridges and
 242 homepage browser checks pass. The complete local suite passes 6,743 tests
 with five skipped (520 files pass, one skipped). All eighteen Phase 1 captures were refreshed
-and their five receipt tests pass. The three reviewed Darwin homepage comparisons
+and their five receipt tests pass. All fifteen Darwin visual comparisons
 pass at zero pixel difference. Current complete CI and staging evidence
 must be checked on the new PR head; the evidence below remains dated history.
 
@@ -25,6 +25,28 @@ machine-default Git author was outside the project's permitted deployers.
 The authenticated Vercel account confirms the existing project identity
 `Zodiacs <admin@zodiacs.org>`. Follow-up commits use that verified identity;
 the blocked upload is not staging validation evidence.
+
+Fresh protected staging `dpl_6FVWjbUkCMM3Wengo4vf8ssb65aH`, source
+`39f36c57bbeb8f4910fc1ff26712490fcb840c53`, passes twelve HTTPS boundary
+checks and six official-SDK calls. The existing server quota credential was
+restored as a deployment-only secret after a fail-closed preview reported
+unavailable quota configuration. No database schema, Firewall rule or production
+environment was changed. See
+[staging-acceptance-2026-10-05.json](./evidence/staging-acceptance-2026-10-05.json).
+
+Linux Site Check `37301466821` passes eighteen jobs and all preceding tests in
+Build & Check, then fails only the three intended homepage height differences.
+The independent comparison run `37300746001` passes all eighteen Phase 1
+captures/receipt validation, thirty Lighthouse routes (ninety samples), navigation
+and all twelve other screenshots at zero difference. Its source-bound homepage
+images and SHA-256 provenance were inspected before requesting new candidates.
+This expected comparison failure is not a completed release gate.
+
+Candidate run `37304690134` passes on the current source. Its three homepage
+PNGs exactly match the inspected comparison captures; the other twelve hashes
+match the existing baselines. Only those three reviewed Linux baselines are
+updated. The comparison's Lighthouse minima are 97/96/100, with homepage
+accessibility 100. Final exact-head checks remain the release authority.
 
 ## Historical continuation — 2026-10-02
 

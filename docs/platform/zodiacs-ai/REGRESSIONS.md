@@ -14,6 +14,23 @@ captures bind to current combined-source fingerprint
 their five durable-receipt tests pass. Historical results below keep their
 original versions, browser and source scope.
 
+Linux comparison `37300746001` confirms that the accessible selector adds only
+71px on desktop/reduced motion and 90px on mobile to the current main layout.
+The other twelve screenshots compare at zero difference. All thirty Lighthouse
+routes (ninety samples) and the navigation drive pass; current minima are
+97 performance, 96 accessibility and 100 SEO, with homepage accessibility 100.
+The `/events/` accessibility score is 96 under the existing route gate.
+
+Candidate run `37304690134` succeeds on source
+`39f36c57bbeb8f4910fc1ff26712490fcb840c53`, Node 22.23.3 and pinned Chromium
+149.0.7827.55. Its template fingerprint matches the combined source above.
+All three candidate homepage PNGs are byte-identical to the inspected comparison
+captures. The other twelve candidate hashes match the committed baselines.
+Only the three reviewed homepage PNGs were copied; no threshold or mask changed.
+Comparison and candidate provenance are retained under
+`evidence/linux-recovery-*-provenance.json`. Final exact-head comparison and
+complete Site Check are still required.
+
 The original candidate recorded an existing homepage accessibility failure on
 clean main `450f0fd948d86d82c416bcbd51b3dace5196097e`. That historical reproduction
 remains in [site-regression-review.json](./evidence/site-regression-review.json).

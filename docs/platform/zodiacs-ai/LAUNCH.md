@@ -11,6 +11,14 @@ has expired preview authentication and needs an owner acknowledgement before
 replacement. Production remains disabled. Final owner approval is required
 before submitting, merging or activating it.
 
+The refreshed stable staging alias targets `dpl_6FVWjbUkCMM3Wengo4vf8ssb65aH`,
+source `39f36c57bbeb8f4910fc1ff26712490fcb840c53`. Twelve HTTPS checks and six
+official-SDK calls pass in `evidence/staging-acceptance-2026-10-05.json`.
+Its original server quota credential is a deployment-only secret; no persistent
+production configuration or schema changed. A new 23-hour protected share is
+prepared privately in the replacement ChatGPT form. The owner's acknowledgement
+remains pending, so no new actual-host invocation is claimed.
+
 ## Historical review status — 2026-10-02
 
 Review candidate updated 2026-10-02. Staging and host testing have advanced;
