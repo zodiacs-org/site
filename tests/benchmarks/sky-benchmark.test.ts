@@ -103,7 +103,7 @@ const V0_SHA256: Record<string, string> = {
   'items.json': '8521a288178929e18f9598bda34d7c70f975e9b168a4b7107920ee657f6fe532',
   'key.json': '4d1ec5f76cce20830962d9bb0c876ad03fc85a9ace8a24a78f28ff4bd36abcb2',
   'tool-answers.json': '7477701a8aeb90b23fe5102b66696017f02a47c1a7f131a91937c536f8ac092c',
-  'scorer.mjs': 'edeb2c52849a4d580dd258a5ac58cb0f10066a959f35ff72c644fc74f9ea31b4',
+  'scorer.mjs': 'a9b28efc1ca53c2e062b0a9a857f8b472b30fc18d326e8366a9ad819e548393e',
 };
 
 /** The engine and ΔT tables v0 was drawn with, and whether the installed engine is the same. */
@@ -139,6 +139,7 @@ describe('the sky-fact benchmark, v0', () => {
       drawnWith(key, null), drawnWith(key, { answers: null }), drawnWith(key, { answers: [null] }),
       drawnWith(key, { answers: [{ reply: {} }] }), drawnWith({}, tool), drawnWith(null, tool),
       { ...drawn, deltaT: [] }, { ...drawn, deltaT: [null] }, { ...drawn, deltaT: drawn.deltaT.map(({ tableDigest, ...table }: any) => table) },
+      { ...drawn, engine: '' }, { ...drawn, deltaT: drawn.deltaT.map((table: any) => ({ ...table, model: '' })) },
     ];
     for (const files of unsaid) {
       expect(redrawRefusal(files, drawn), JSON.stringify(files)).toMatch(/v0's files do not say which engine and ΔT tables drew it: .*v0 is frozen: restore its files/su);
@@ -170,7 +171,11 @@ describe('the sky-fact benchmark, v0', () => {
         await expect(writeOrCheck('v0', { check: true, root }), text).rejects.toThrow(text === '' ? /tool-answers\.json does not read as JSON/u : /v0's files do not say which engine and ΔT tables drew it/u);
       }
       copyFileSync(fileURLToPath(new URL('tool-answers.json', DIR)), join(dir, 'tool-answers.json'));
+      // A drawn file that cannot be read stops the generator, which names it.
       rmSync(join(dir, 'items.json'));
+      mkdirSync(join(dir, 'items.json'));
+      await expect(writeOrCheck('v0', { check: true, root })).rejects.toThrow(/v0's items\.json cannot be read: EISDIR/u);
+      rmSync(join(dir, 'items.json'), { recursive: true });
       symlinkSync(join(root, 'nowhere.json'), join(dir, 'items.json'));
       await expect(writeOrCheck('v0', { check: true, root })).rejects.toThrow(/v0 is published, but items\.json is missing\. items\.json is a link to a file that is not there\. v0 is frozen: restore it/u);
       for (const name of DRAWN_FILES.slice(1)) {
@@ -199,7 +204,7 @@ describe('the sky-fact benchmark, v0', () => {
       rmSync(dir, { recursive: true });
       // A folder that cannot be read is neither published nor unpublished: the generator stops.
       writeFileSync(dir, '');
-      for (const check of [true, false]) await expect(writeOrCheck('v0', { check, root }), `check ${check}`).rejects.toThrow(/ENOTDIR/u);
+      for (const check of [true, false]) await expect(writeOrCheck('v0', { check, root }), `check ${check}`).rejects.toThrow(/v0's folder cannot be read: ENOTDIR/u);
       rmSync(dir);
       // A version the generator does not draw: a later one is drawn by raising VERSION, and an earlier one is held by its pins.
       await expect(writeOrCheck('v1', { check: true, root })).rejects.toThrow(/this generator draws v0, not v1\. Raise VERSION to draw v1\./u);
@@ -306,6 +311,9 @@ describe('the sky-fact benchmark, v0', () => {
     expect(replyDifferences(null, tool)).toEqual(['the header or the counts of facts', 'the replies are not a list']);
     expect(replyDifferences(tool, null)).toEqual(['the header or the counts of facts', 'the replies are not a list']);
     expect(replyDifferences(null, null)).toEqual([]);
+    for (const [published, current] of [[{ file: 5 }, 5], [[], { file: [] }], [{ file: null }, null]]) {
+      expect(replyDifferences(published, current), JSON.stringify([published, current])).toEqual(['the header or the counts of facts', 'the replies are not a list']);
+    }
     expect(both((next) => { next.answers[instant] = 5; }, (next) => { next.answers[instant] = 'x'; })).toEqual([`reply ${instant + 1}: the request`]);
     expect(both((next) => { next.answers[instant] = null; })).toEqual([]);
     expect(both((next) => { next.answers[instant].reply = 'x'; }, (next) => { next.answers[instant].reply = 7; })).toEqual([`${id(instant)}: the answer or the facts behind it`]);
@@ -944,17 +952,21 @@ describe("the benchmark's scorer", () => {
     expect(readReply('date', 'It falls on 2041-3-18 or 19.')).toEqual({ value: null, reading: 'unparsed' });
     for (const one of ['It enters at 2041-03-18 to 19:00 UTC.', 'It enters on 2041-03-18, and 2 days later the Moon follows.', 'On 2041-03-18 - 19-hour days.',
       'It enters on 2041-03-18 – 12 h after the new moon.', 'It enters at 2041-03-18 to 10 am.', 'It enters on 2041-03-18 - 4° past the node.',
-      'It enters on 2041-03-18 / 20 minutes after sunrise in London.', 'It enters on 2041-03-18 and 3 weeks later the Sun follows.']) {
+      'It enters on 2041-03-18 / 20 minutes after sunrise in London.', 'It enters on 2041-03-18 and 3 weeks later the Sun follows.',
+      'It enters on 2041-03-18 – 12.5 h after the new moon.', 'It enters on 2041-03-18, and 2.5 days later the Moon follows.',
+      'It enters on 2041-03-18 – 9.30 am in London.', 'It enters on 2041-03-18 - 4.5° past the node.']) {
       expect(readReply('date', one), one).toEqual({ value: '2041-03-18', reading: 'lenient' });
     }
+    // A decimal counts as a count only before a unit, so a date written with points after a YYYY-MM-DD date is still a second day.
+    expect(readReply('date', '2041-03-18 or 19.03.2041')).toEqual({ value: null, reading: 'unparsed' });
     // A date the calendar does not have is still a date the reply names, in every form, and never right; alone, it reads as nothing.
     for (const hedge of ['It falls on 28 or 29 February 2041.', 'February 28 or 29, 2041', '30 or 31 April 2041', 'April 30 or 31, 2041',
       '2041-02-28 or 2041-02-29', '28 February 2041 or 29 February 2041', 'February 28, 2041 or February 29, 2041', '2041/02/28 or 2041/02/29',
       '2041-04-30 or 2041-04-31', '29 February 2041 or 1 March 2041', '2041-02-28/29', '2041-02-29', 'On 31 April 2041.']) {
       expect(readReply('date', hedge), hedge).toEqual({ value: null, reading: 'unparsed' });
     }
-    // A number after a letter, a digit, a colon, a full stop, a plus, a hyphen, a minus sign, # or a dash after a letter or a
-    // digit is not a hedge's first day.
+    // A number after a letter, a digit, a colon, a full stop, a plus, a hyphen, a minus sign, # or a dash after UTC, GMT or UT
+    // is not a hedge's first day.
     const after: Array<[string, string]> = [
       ['At 14:30 – 19 March 2041.', '2041-03-19'],
       ['At 14.30 – 19 March 2041.', '2041-03-19'],
@@ -963,6 +975,8 @@ describe("the benchmark's scorer", () => {
       ['In UTC-10 – 8 March 2023.', '2023-03-08'],
       ['In UTC–10 – 8 March 2023.', '2023-03-08'],
       ['In UTC—10 – 8 March 2023.', '2023-03-08'],
+      ['In GMT–5 – 8 March 2023.', '2023-03-08'],
+      ['In UT—3 – 8 March 2023.', '2023-03-08'],
       ['GMT+1 - 19 March 2041', '2041-03-19'],
       ['Ingress #2 – 7 March 2023', '2023-03-07'],
       ['Room B12 – 7 March 2023', '2023-03-07'],
@@ -970,7 +984,10 @@ describe("the benchmark's scorer", () => {
     ];
     for (const [text, date] of after) expect(readReply('date', text), text).toEqual({ value: date, reading: 'lenient' });
     // After anything else it is.
-    for (const hedge of ['~18–19 March 2041', '≈18 or 19 March 2041', '—18 or 19 March 2041', '…18 or 19 March 2041', '$18 or 19 March 2041', ',18 or 19 March 2041']) {
+    // Among them a dash closed up to the word before it, as is common.
+    for (const hedge of ['~18–19 March 2041', '≈18 or 19 March 2041', '—18 or 19 March 2041', '…18 or 19 March 2041', '$18 or 19 March 2041', ',18 or 19 March 2041',
+      'The date—18 or 19 March 2041—depends on your zone.', 'It falls on—18 or 19 March 2041.', 'The answer–18 or 19 March 2041.',
+      'Mercury enters Aries in 2041—18 or 19 March 2041, depending on the zone.']) {
       expect(readReply('date', hedge), hedge).toEqual({ value: null, reading: 'unparsed' });
     }
     // A reply that only echoes the question scores nothing on any question.

@@ -105,7 +105,7 @@
 {"id": "sd-058", "reply": "`Libra`!"}
 {"id": "sd-059", "reply": "Yes and no."}
 {"id": "sd-060", "reply": "I am Gemini, and the answer is unclear."}
-{"id": "rd-001", "reply": "NO"}
+{"id": "rd-001", "reply": "No, at first; yes later on."}
 {"id": "rd-002", "reply": "Yes… and no really."}
 {"id": "rd-003", "reply": "I can't give a definitive yes/no answer without ephemeris data."}
 {"id": "rd-004", "reply": "Short answer: yes. Long answer: yes and no really."}
@@ -119,12 +119,12 @@
 {"id": "rd-013", "reply": "The answer is yes (in Tokyo) but no (in London)."}
 {"id": "rd-014", "reply": "No. Mercury was direct all day, so a yes would be wrong."}
 {"id": "rd-016", "reply": "Mercury stationed that day: yes (retrograde) before 14:00 UTC and no (direct) after."}
-{"id": "rd-017", "reply": "NO"}
+{"id": "rd-017", "reply": "Yes, though no station falls on that date."}
 {"id": "rd-018", "reply": "There is no (direct) way to tell without your time zone."}
 {"id": "rd-019", "reply": "Was Saturn retrograde on 4 April 1978? If the answer depends on the time of day or the time zone, answer DEPENDS; otherwise answer YES or NO.\nYES"}
 {"id": "rd-020", "reply": "Yes, until noon; no afterwards."}
 {"id": "rd-021", "reply": "I have no… certainty here without an ephemeris."}
-{"id": "rd-022", "reply": "`YES`!"}
+{"id": "rd-022", "reply": "No, and yes too."}
 {"id": "rd-023", "reply": "It is not yes (retrograde) or no (direct): it depends."}
 {"id": "rd-025", "reply": "YES"}
 {"id": "rd-026", "reply": "Yes, though no is possible."}
@@ -173,14 +173,14 @@
 {"id": "in-014", "reply": "Let me work it out.\n\n**2020-05-10**."}
 {"id": "in-015", "reply": "In the tropical zodiac, on what date in November 1983 did the Moon enter Pisces? Answer with only the date, as YYYY-MM-DD.\n1983-11-13"}
 {"id": "in-016", "reply": "I think it is 24 February 1973, roughly."}
-{"id": "in-017", "reply": "No idea."}
+{"id": "in-017", "reply": "The date—16 or 17 February 1950—depends on your zone."}
 {"id": "in-019", "reply": "1969-11-08 or 7, depending on the zone"}
 {"id": "in-020", "reply": "I am Gemini, and the answer is unclear."}
 {"id": "in-021", "reply": "2041-07-25"}
 {"id": "in-022", "reply": "Let me work it out.\n\n**8 January 1975**."}
 {"id": "in-023", "reply": "In the tropical zodiac, on what date in 1944 did Mercury enter Virgo? Answer with only the date, as YYYY-MM-DD.\n1944-07-28"}
 {"id": "in-024", "reply": "I think it is 2017-09-30, roughly."}
-{"id": "in-025", "reply": "No idea."}
+{"id": "in-025", "reply": "It enters on 2033-04-11 – 12.5 h after the new moon."}
 {"id": "in-026", "reply": "`2001-08-14`!"}
 {"id": "in-028", "reply": "I am Gemini, and the answer is unclear."}
 {"id": "in-029", "reply": "2030-04-05"}
@@ -217,14 +217,14 @@
 {"id": "lu-004", "reply": "I think it is 26 April 2017, roughly."}
 {"id": "lu-005", "reply": "1950-02-29"}
 {"id": "lu-006", "reply": "`1965-05-23`!"}
-{"id": "lu-007", "reply": "Yes and no."}
+{"id": "lu-007", "reply": "In GMT–5 – 4 December 1926."}
 {"id": "lu-008", "reply": "It enters on 1995-09-08 – 12 h after the new moon."}
 {"id": "lu-009", "reply": "1924-01-13"}
 {"id": "lu-010", "reply": "Let me work it out.\n\n**8 September 1953**."}
 {"id": "lu-011", "reply": "On what date was the full moon in August 1968? Answer with only the date, as YYYY-MM-DD.\n1968-08-08"}
 {"id": "lu-013", "reply": "2014-10-23 or 2014-04-31"}
 {"id": "lu-014", "reply": "`1964-04-26`!"}
-{"id": "lu-015", "reply": "Yes and no."}
+{"id": "lu-015", "reply": "It enters on 2035-02-15, and 2.5 days later the Moon follows."}
 {"id": "lu-016", "reply": "In UTC–10 – 27 December 2008."}
 {"id": "lu-017", "reply": "2025-06-11"}
 {"id": "lu-018", "reply": "Let me work it out.\n\n**2004-07-09**."}

@@ -88,9 +88,9 @@ and no station in those periods comes within 133″ of a sign boundary (the
 nearest, Mercury's on 2001-06-04, is 133.7″ from Cancer), so an engine within
 30″ of v0's finds the same entries. That was simulated on 2026-10-05 in a
 throwaway copy, with the installed engine named 0.1.1-rc.17 and then with new
-ΔT tables: with the sixth review's fixes, the seventh's and the eighth's,
-21 of the 22 tests passed and the rules test was skipped, each time, as 20
-of the 21 had after the fourth and fifth reviews.
+ΔT tables: with the sixth review's fixes, the seventh's, the eighth's and
+the ninth's, 21 of the 22 tests passed and the rules test was skipped, each
+time, as 20 of the 21 had after the fourth and fifth reviews.
 
 | family | questions | answers |
 | --- | --- | --- |
@@ -214,28 +214,29 @@ bodies at 1,500 instants from 1900 to 2049.
   Tokyo, yes", and every word the header lists as joining an answer word
   to another case), a "yes" that is no hedge ("No, so a yes would be
   wrong"), line separators, dates written out, two days hedged between, as
-  in "18 or 19 March 2041", "2041-03-18/19", "2041-03-21 or 20" and "18
-  and/or 19 March 2041", dates the calendar does not have, in every form,
-  and a number that is not a hedge's first or second day, as in "UTC+10 –
-  8 March 2023", "UTC–10 – 8 March 2023" and "2041-03-18 – 12 h after the
-  new moon". A question with no reply counts as unparsed, and so as wrong.
+  in "18 or 19 March 2041", "The date—18 or 19 March 2041", "2041-03-18/19",
+  "2041-03-21 or 20" and "18 and/or 19 March 2041", dates the calendar does
+  not have, in every form, and a number that is not a hedge's first or
+  second day, as in "UTC+10 – 8 March 2023", "UTC–10 – 8 March 2023" and
+  "2041-03-18 – 12.5 h after the new moon". A question with no reply counts
+  as unparsed, and so as wrong.
   The test also holds the scorer to reading each of ten replies of 70,000
   characters, built from the runs of spaces, marks and line separators
   behind the slow cases of the sixth and seventh reviews and of a draft of
-  the eighth's fixes, in under a second. On 2026-10-05 it took 4 to 9
+  the eighth's fixes, in under a second. On 2026-10-05 it took 4 to 12
   milliseconds on each, and the patterns it replaced took 3 to 82 seconds,
   as the fourth, fifth and sixth tables of faults show.
 - **The scorer under three versions of Node.js.** On 2026-10-05 the scorer
-  as published (SHA-256 `edeb2c52…`), copied into a folder with
+  as published (SHA-256 `a9b28efc…`), copied into a folder with
   `items.json` and `key.json`, scored `scorer-check-replies.jsonl` in this
   folder under Node.js 18.20.8, 22.22.2 and 24.21.0 with byte-identical
-  output (SHA-256 `0d678fe9ad28e7d8…`) and the same warning. The file holds
+  output (SHA-256 `2f92cda4d8288437…`) and the same warning. The file holds
   293 replies: 292 to questions, in the forms of the earlier runs, 26 that
-  use the rules the sixth review changed, 32 that use the seventh's and 23
-  that use the eighth's, twelve of them thousands of characters long,
-  strict and lenient, with 8 questions left without a reply, and one reply
-  to no question. That is what the page's "Node.js 18 or later" rests on;
-  no test runs Node.js 18.
+  use the rules the sixth review changed, 32 that use the seventh's, 23
+  that use the eighth's and 7 that use the ninth's, twelve of them between
+  1,500 and 3,400 characters long, strict and lenient, with 8 questions
+  left without a reply, and one reply to no question. That is what the
+  page's "Node.js 18 or later" rests on; no test runs Node.js 18.
 
 ## Deliberate faults
 
@@ -446,7 +447,7 @@ test failing.
 | any other "yes" naming YES beside a NO, as before | `scorer.mjs` | scorer ("No. Mercury was direct all day, so a yes would be wrong." read as nothing) |
 | no "yes" naming YES beside a NO | `scorer.mjs` | scorer ("Maybe yes… maybe no…" read as NO) |
 | no hedge after "but", "though", "although" or "yet" | `scorer.mjs` | scorer ("I think no (it was direct), but yes is possible." read as NO) |
-| the look back for a word after "but" or the like run at every character, as in a draft of these fixes | `scorer.mjs` | slow ("Yes, though", 70,000 spaces and "x": 3.3 seconds) |
+| the look back for a word after "but" or the like run at every character, as in a draft of these fixes | `scorer.mjs` | slow ("Yes, though", 70,000 spaces and "x": 3.3 seconds in the test; "no (", 70,000 quotes and "x" took 18 seconds alone) |
 | hedges read on a question about a sign | `scorer.mjs` | scorer ("Yes and no: the Sun was in Leo all day." read as nothing) |
 | no aside after a later word of a list of choices * | `scorer.mjs` | scorer ("Of yes (retrograde), no (direct) or depends (a station), the answer is depends." read as nothing) |
 | a hyphen allowed before a hedge's first day * | `scorer.mjs` | scorer ("In UTC-10 – 8 March 2023." read as nothing) |
@@ -465,14 +466,30 @@ test failing.
 | a drawn file that does not read as JSON not refused | generator | frozen ("Unexpected end of JSON input" in place of the refusal) |
 | tables without a model, a table or a digest read as tables | generator | engine (a null table threw) |
 
+After the ninth review, each fault below undid one of its fixes in a
+throwaway copy of the tree with them, on 2026-10-05, and was run as after
+the eighth; the unchanged copy passed all 22 tests.
+
+| fault | where | caught as a wrong reading, refusal or difference |
+| --- | --- | --- |
+| a dash after any letter or digit taken for a minus, as before | `scorer.mjs` | scorer ("The date—18 or 19 March 2041—depends on your zone." read as the 19th) |
+| no dash taken for a minus | `scorer.mjs` | scorer ("In UTC–10 – 8 March 2023." read as nothing) |
+| a dash after GMT not taken for a minus | `scorer.mjs` | scorer ("In GMT–5 – 8 March 2023." read as nothing) |
+| a dash after UT not taken for a minus | `scorer.mjs` | scorer ("In UT—3 – 8 March 2023." read as nothing) |
+| no decimal part before a unit, as before | `scorer.mjs` | scorer ("It enters on 2041-03-18 – 12.5 h after the new moon." read as nothing) |
+| any decimal after a second day taken for a count | `scorer.mjs` | scorer ("2041-03-18 or 19.03.2041" read as the 18th) |
+| a file that is not an object wrapped as one, as before | generator | replies drift (`{"file": 5}` and the number 5 compared as the same) |
+| an empty engine version taken as one | generator | engine (an empty version named as the engine that drew v0) |
+| a drawn file that cannot be read left unnamed, as before | generator | frozen ("EISDIR: illegal operation on a directory, read" in place of the refusal naming `items.json`) |
+
 ## Corrections made before publication
 
-Eight independent reviews read this record before publication: two read the
+Nine independent reviews read this record before publication: two read the
 first build, a third read the second, a fourth the third, a fifth the
-fourth, a sixth the fifth, a seventh the sixth and an eighth the seventh.
-The machine the eighth ran on restarted before it wrote its report, so what
-is fixed here from it comes from the probes it had saved, run again. What
-they found is fixed here:
+fourth, a sixth the fifth, a seventh the sixth, an eighth the seventh and a
+ninth the eighth's fixes. The machine the eighth ran on restarted before it
+wrote its report, so what is fixed here from it comes from the probes it
+had saved, run again. What they found is fixed here:
 
 - **The margin for slow planets was 2″.** In the first draw, Neptune's entry
   into Scorpio in 1957 came 5 hours 7 minutes later in the engine than in
@@ -713,8 +730,26 @@ they found is fixed here:
   a part of one in another form than the tool's is now compared as it is,
   a reply without a result whole apart from its receipt, and an event that
   is not an object has no time to read, so it differs even from itself. A
-  drawn file that does not read as JSON, and files that do not say which
-  engine and ΔT tables drew them, are refused with a message.
+  `key.json` or `tool-answers.json` that does not read as JSON, and files
+  that do not say which engine and ΔT tables drew them, are refused with a
+  message.
+- **A dash closed up to a word hid a hedge's first day.** The eighth
+  review's fix took any dash after a letter or a digit for a minus, so "The
+  date—18 or 19 March 2041—depends on your zone." read as the 19th. A dash
+  now stands for a minus only after UTC, GMT or UT.
+- **A decimal after a YYYY-MM-DD date read as a second day.** "It enters on
+  2041-03-18 – 12.5 h after the new moon." read as nothing, since the 12
+  counted as the 12th. A count of time or of degrees may now have a decimal
+  part before its unit; "2041-03-18 or 19.03.2041" still names two dates.
+- **Smaller fixes.** A file that is not an object no longer compares as the
+  same as an object holding it, the generator refuses an empty engine
+  version or table name, and a drawn file or folder it cannot read is named
+  in the message. The record said every drawn file that does not read as
+  JSON is refused, where only `key.json` and `tool-answers.json` are read as
+  JSON and `items.json` is compared byte for byte; it said the twelve long
+  check replies were thousands of characters long, where they are 1,513 to
+  3,315; and it gives both times of the slow draft's fault. The header says
+  "the word standing alone" for what a hedged word may come before.
 
 ## Not done, and not claimed
 
@@ -742,7 +777,8 @@ they found is fixed here:
   an abbreviation's full stop starts a sentence, so "e.g. no (known)
   station" reads as NO; a "not" is no hedge, so "Yes, in Tokyo, but not in
   London." reads as YES; and some hedges still read as one answer, among
-  them "Yes, at first; no later on.", "Yes, mostly; no near midnight.",
+  them "Yes, at first; no later on." and its mirror, "No, at first; yes
+  later on.", "No, and yes too.", "Yes, mostly; no near midnight.",
   "Yes, depending on your time zone.", "No — except in Tokyo, where it is
   retrograde.", "c.18–19 March 2041", "Tuesday 18 or Wednesday 19 March
   2041" and "2041-03-20 (March 21 in Tokyo)". Others lose credit: "Yes /
@@ -752,12 +788,16 @@ they found is fixed here:
   (a) (b).", with two asides, and a table written without spaces,
   "|NO|NO|", which reads as a list; a "yes" or a "no" in a hedge's form
   makes a reply name both, so "I see no (obvious) reason to say otherwise:
-  yes.", "Yes, but no more than that.", "Yes — there's no in-between." and
-  "Yes. No (other) planet stationed that day." read as nothing, as does a
+  yes.", "Yes, though no station falls on that date.", "Yes, but no more
+  than that.", "Yes — there's no in-between." and "Yes. No (other) planet
+  stationed that day." read as nothing, as does a
   reply with the other word standing alone anywhere, such as "No. (Yes, I
   checked the ephemeris.)" or "Yes, it was retrograde; no, it did not
   station.", and so do "It depends: in Tokyo, yes; in London, no." and "The
   answer is not yes but no."; a sentence does not start after an ellipsis,
-  so "Hmm... As Gemini, I think the Moon was in Leo." names two signs; and
+  so "Hmm... As Gemini, I think the Moon was in Leo." names two signs;
   "there is no 29 February 2041; the date is 2041-03-01" and "Ingress 2 – 7
-  March 2023" name two dates.
+  March 2023" name two dates; and so does a YYYY-MM-DD date followed by a
+  number that is not a day in a form the scorer does not know, as in "– 12
+  noon UTC", "– 6 o'clock", "– 14 UTC", "/ 1st quarter moon", "& 2 more
+  ingresses follow" and "and 2 other planets follow".

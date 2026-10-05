@@ -624,9 +624,11 @@ export function drawnWith(key, tool) {
   return { engine: key?.engine?.version, deltaT: tool?.answers?.[0]?.reply?.receipt?.deltaT };
 }
 
+/** Text that is not empty. */
+const filled = (value) => typeof value === 'string' && value !== '';
 /** Whether the files name an engine and ΔT tables a refusal can compare: a version, and tables each with a model, table and digest. */
-const readable = ({ engine, deltaT }) => typeof engine === 'string' && Array.isArray(deltaT) && deltaT.length > 0
-  && deltaT.every((entry) => isRecord(entry) && ['model', 'table', 'tableDigest'].every((field) => typeof entry[field] === 'string'));
+const readable = ({ engine, deltaT }) => filled(engine) && Array.isArray(deltaT) && deltaT.length > 0
+  && deltaT.every((entry) => isRecord(entry) && ['model', 'table', 'tableDigest'].every((field) => filled(entry[field])));
 
 /** The ΔT tables as the refusal names them: model, table and digest of each, in any order. */
 const tablesOf = (deltaT) => deltaT.map(({ model, table, tableDigest }) => `${model} ${table} ${tableDigest}`).sort().join(', ');
@@ -711,9 +713,11 @@ const timeOf = (at) => (typeof at === 'string' ? Date.parse(at) : NaN);
  * as one differs from any time, itself included.
  */
 export function replyDifferences(published, current) {
-  const split = (file) => (isRecord(file) ? file : { file });
-  const { answers: before, ...headBefore } = split(published);
-  const { answers: after, ...headAfter } = split(current);
+  if (!isRecord(published) || !isRecord(current)) {
+    return same(published, current) ? [] : ['the header or the counts of facts', 'the replies are not a list'];
+  }
+  const { answers: before, ...headBefore } = published;
+  const { answers: after, ...headAfter } = current;
   const differences = same(headBefore, headAfter) ? [] : ['the header or the counts of facts'];
   if (!Array.isArray(before) || !Array.isArray(after)) return same(before, after) ? differences : [...differences, 'the replies are not a list'];
   if (before.length !== after.length) return [...differences, `${before.length} replies published, ${after.length} now`];
@@ -751,13 +755,13 @@ export function replyDifferences(published, current) {
  */
 export async function writeOrCheck(version = VERSION, { check = false, root = ROOT } = {}) {
   const dir = resolve(root, folderOf(version));
-  // Only a folder or a file that is not there counts as absent; any other failure to read one stops the generator.
-  const absent = (error) => {
+  // Only a folder or a file that is not there counts as absent; any other failure to read one stops the generator, naming it.
+  const absent = (what) => (error) => {
     if (error?.code === 'ENOENT') return null;
-    throw error;
+    throw new Error(`build-sky-benchmark: ${version}'s ${what} cannot be read: ${error?.message ?? error}`, { cause: error });
   };
-  const entries = (await readdir(dir).catch(absent)) ?? [];
-  const texts = await Promise.all(DRAWN_FILES.map((name) => readFile(resolve(dir, name), 'utf8').catch(absent)));
+  const entries = (await readdir(dir).catch(absent('folder'))) ?? [];
+  const texts = await Promise.all(DRAWN_FILES.map((name) => readFile(resolve(dir, name), 'utf8').catch(absent(name))));
   const published = entries.length > 0 || texts.some((text) => text !== null);
   if (version !== VERSION) {
     throw new Error(`build-sky-benchmark: this generator draws ${VERSION}, not ${version}. `

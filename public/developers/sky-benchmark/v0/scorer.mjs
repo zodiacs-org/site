@@ -66,9 +66,9 @@
  *            with or without an ellipsis or an aside in brackets after the
  *            first word. So does a reply with one of YES and NO standing
  *            alone and the other in a hedge: before an ellipsis, a bracket,
- *            the first word, or one of and, or, but, if, unless, except, in,
- *            for, at, on, by, when, while, whereas, before, after,
- *            afterwards, thereafter, until, from, since, once, during,
+ *            the word standing alone, or one of and, or, but, if, unless,
+ *            except, in, for, at, on, by, when, while, whereas, before,
+ *            after, afterwards, thereafter, until, from, since, once, during,
  *            outside, under, beyond, around, west, east, elsewhere,
  *            otherwise, though, although, depending, maybe and perhaps; or
  *            after "but", "though", "although" or "yet". So "yes... and no
@@ -85,17 +85,18 @@
  *            19 March 2041", "March 19–20, 2041"), or when the first is a
  *            YYYY-MM-DD or YYYY/MM/DD date and the second a day not followed
  *            by a digit, a colon, a hyphen or a unit such as days, hours, h,
- *            am or degrees ("2041-03-18/19" and "2041-03-21 or 20", but not
- *            "2041-03-18 to 19:00" or "2041-03-05, and 7 days later"). The
- *            first of two days before a month may not follow a letter, a
- *            digit, a colon, a full stop, a plus, a hyphen, a minus sign, #,
- *            or a dash after a letter or a digit, so "UTC+10 – 8 March 2023"
- *            and "UTC–10 – 8 March 2023" name 8 March and "~18–19 March 2041"
- *            names two dates. A date the calendar does not have,
- *            such as 29 February 2041, still counts as a date the reply
- *            names, and is never right: "2041-02-28 or 2041-02-29" and "28 or
- *            29 February 2041" read as nothing, and so does a reply whose
- *            only date is such a date.
+ *            am or degrees, with or without a decimal part before the unit
+ *            ("2041-03-18/19" and "2041-03-21 or 20", but not "2041-03-18 to
+ *            19:00", "2041-03-05, and 7 days later" or "2041-03-18 – 12.5 h
+ *            after"). The first of two days before a month may not follow a
+ *            letter, a digit, a colon, a full stop, a plus, a hyphen, a minus
+ *            sign, #, or a dash after UTC, GMT or UT, so "UTC+10 – 8 March
+ *            2023" and "UTC–10 – 8 March 2023" name 8 March, and "~18–19
+ *            March 2041" and "The date—18 or 19 March 2041" name two dates. A
+ *            date the calendar does not have, such as 29 February 2041, still
+ *            counts as a date the reply names, and is never right:
+ *            "2041-02-28 or 2041-02-29" and "28 or 29 February 2041" read as
+ *            nothing, and so does a reply whose only date is such a date.
  *
  * A reply neither reading parses is unparsed, and counts as wrong. Letter
  * case never matters. The strict score is the benchmark's score. The lenient
@@ -178,8 +179,8 @@ const MONTH_NAMES = `(${MONTHS.map((name) => (name === 'september' ? 'september|
 const monthNumber = (word) => MONTHS.findIndex((name) => word.toLowerCase().startsWith(name.slice(0, 3))) + 1;
 /** What joins two days: "or", "and", "and/or", "&", "to", "through" or "thru", a dash or a slash. */
 const JOINED = '(?:\\s*,?\\s+(?:and\\/or|or|and|&|to|through|thru)\\s+(?:the\\s+)?|\\s*[-–—/&]\\s*)';
-/** What a number after a date may be instead of a day: a count of time or of degrees, or a part of a time of day. */
-const NOT_A_DAY = '(?![\\d:\\-]|(?:st|nd|rd|th)?\\s?(?:(?:days?|nights?|hours?|hrs?|h|minutes?|mins?|m|seconds?|secs?|s|weeks?|wks?|months?|years?|yrs?|degrees?|am|pm)\\b|a\\.m\\.|p\\.m\\.|[°′″%]))';
+/** What a number after a date may be instead of a day: a count of time or of degrees, or a part of a time of day, perhaps with a decimal part. */
+const NOT_A_DAY = '(?![\\d:\\-]|(?:\\.\\d+)?(?:st|nd|rd|th)?\\s?(?:(?:days?|nights?|hours?|hrs?|h|minutes?|mins?|m|seconds?|secs?|s|weeks?|wks?|months?|years?|yrs?|degrees?|am|pm)\\b|a\\.m\\.|p\\.m\\.|[°′″%]))';
 /** A date the calendar does not have: still a date the reply names, and never a right one. */
 const NO_SUCH_DAY = 'no such day';
 
@@ -196,9 +197,10 @@ function datesIn(text) {
     add(match[3], monthNumber(match[1]), match[2]);
   }
   // Two days before one month and year: "18 or 19 March 2041" and "18 March or 19 March 2041" name both days. The first
-  // may not follow a letter, a digit, a colon, a full stop, a plus, a hyphen, a minus, # or a dash after a letter or a
-  // digit, so "UTC+10 – 8 March 2023" and "UTC–10 – 8 March 2023" name only the 8th, and "~18–19 March 2041" names both.
-  for (const match of text.matchAll(new RegExp(`(?:^|[^\\p{L}\\p{N}:.+\\-−#])(?<![\\p{L}\\p{N}][–—])(\\d{1,2})(?:st|nd|rd|th)?(?:\\s+(?:of\\s+)?${MONTH_NAMES})?${JOINED}(\\d{1,2})(?:st|nd|rd|th)?\\s+(?:of\\s+)?${MONTH_NAMES}\\s*,?\\s+(\\d{4})\\b`, 'giu'))) {
+  // may not follow a letter, a digit, a colon, a full stop, a plus, a hyphen, a minus, # or a dash after UTC, GMT or UT,
+  // so "UTC+10 – 8 March 2023" and "UTC–10 – 8 March 2023" name only the 8th, and "~18–19 March 2041" and "The
+  // date—18 or 19 March 2041" name both.
+  for (const match of text.matchAll(new RegExp(`(?:^|[^\\p{L}\\p{N}:.+\\-−#])(?<!\\b(?:utc|gmt|ut)[–—])(\\d{1,2})(?:st|nd|rd|th)?(?:\\s+(?:of\\s+)?${MONTH_NAMES})?${JOINED}(\\d{1,2})(?:st|nd|rd|th)?\\s+(?:of\\s+)?${MONTH_NAMES}\\s*,?\\s+(\\d{4})\\b`, 'giu'))) {
     add(match[5], monthNumber(match[2] ?? match[4]), match[1]);
     add(match[5], monthNumber(match[4]), match[3]);
   }
