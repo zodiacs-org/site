@@ -151,24 +151,23 @@ function isLocalizedBirthdayPath(path: string): boolean {
   return Boolean(maxDay && birthday[2] === String(day) && day >= 1 && day <= maxDay);
 }
 
-/** Families translated for es, pt, fr and it only (rising-sign profiles, sky calendars); Russian links to English. */
-export const RISING_PROFILE_LOCALES = ['en', 'es', 'pt', 'fr', 'it'] as const satisfies readonly Locale[];
-
-/** The four sky-calendar hubs are translated for es, pt, fr and it; their year and event pages stay English. */
-const SKY_CALENDAR_PATHS: readonly string[] = ['/full-moon-calendar/', '/eclipses/', '/mercury-retrograde/', '/retrogrades/'];
-
-function isRisingProfilePath(path: string): boolean {
-  const sign = path.match(/^\/rising-sign\/([a-z]+)\/$/)?.[1];
-  return Boolean(sign && SIGN_SLUGS.includes(sign));
+/**
+ * Rising-sign profiles and the four sky-calendar hubs are translated for es,
+ * pt, fr and it (the same set as PROGRAMMATIC_ROUTE_LOCALES); Russian links to
+ * the English pages.
+ */
+function isTranslatedFamilyPath(path: string): boolean {
+  const rising = /^\/rising-sign\/([a-z]+)\/$/.exec(path)?.[1];
+  return rising
+    ? SIGN_SLUGS.includes(rising)
+    : /^\/(?:full-moon-calendar|eclipses|mercury-retrograde|retrogrades)\/$/.test(path);
 }
 
 export function availableLocalesForPath(path: string): readonly Locale[] | undefined {
   const canonical = stripLocale(path);
   if (/^\/chart-of-the-day\/\d{4}-\d{2}-\d{2}\/$/.test(canonical)) return CORE_ROUTE_LOCALES;
   return LOCALIZED_PATHS.get(canonical)
-    ?? (isLocalizedChineseZodiacPath(canonical) ? PROGRAMMATIC_ROUTE_LOCALES : undefined)
-    ?? (isRisingProfilePath(canonical) ? RISING_PROFILE_LOCALES : undefined)
-    ?? (SKY_CALENDAR_PATHS.includes(canonical) ? RISING_PROFILE_LOCALES : undefined)
+    ?? (isLocalizedChineseZodiacPath(canonical) || isTranslatedFamilyPath(canonical) ? PROGRAMMATIC_ROUTE_LOCALES : undefined)
     ?? (isLocalizedBirthdayPath(canonical) ? [DEFAULT_LOCALE] : undefined);
 }
 
@@ -179,9 +178,12 @@ export function renderableLocalesForPath(path: string): readonly Locale[] | unde
     return [...CORE_ROUTE_LOCALES, ...STAGED_CORE_ROUTE_LOCALES];
   }
   if (DAILY_READING_PATHS.includes(canonical)) return DAILY_READING_ROUTE_LOCALES;
-  if (isRisingProfilePath(canonical)) return RISING_PROFILE_LOCALES;
-  if (SKY_CALENDAR_PATHS.includes(canonical)) return RISING_PROFILE_LOCALES;
+  // The translated families resolve on the server only: every link to them is
+  // server-rendered, and this function's browser copy sits inside route budgets
+  // with a few bytes of headroom. A browser component that links to them must
+  // take the localized href as a prop rather than call localizePath.
   return isLocalizedChineseZodiacPath(canonical) || isLocalizedBirthdayPath(canonical)
+    || (import.meta.env.SSR && isTranslatedFamilyPath(canonical))
     ? PROGRAMMATIC_ROUTE_LOCALES
     : undefined;
 }
