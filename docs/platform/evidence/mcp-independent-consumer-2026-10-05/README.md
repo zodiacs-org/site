@@ -1,217 +1,219 @@
 # Pinned MCP archive consumer against source-bound HTTP, 2026-10-05
 
-**PASS for the local integration seam. Live parity is inconclusive. No
-delivery credit is claimed.** The new runner downloads the pinned archive,
-installs its shrinkwrap in a fresh consumer outside the checkout, runs its
-unchanged `verify.mjs`, then compares its stdio sky tools with an actual
-loopback HTTP server over the committed compute bundle. It uses the official
-MCP client and its advertised-output-schema validation. It does not implement
-a second protocol driver.
+**PASS for this local integration seam on Node 22.22.2/npm 10.9.7. Live parity
+is inconclusive. No delivery credit is claimed.** The runner installs the
+pinned archive outside checkout dependencies, reuses its unchanged verifier
+and official MCP client, and compares its stdio sky tools against real
+loopback HTTP requests to the source-bound compute bundle.
 
-This is integration evidence. The two wrappers share calculation code. Their
-agreement establishes neither independent astronomical accuracy nor astrology
-prediction validity, search completeness, production deployment parity,
-production rate-limit behavior, privacy guarantees, or assistant-host support.
+Both wrappers share calculation code. Their agreement is integration
+evidence, not independent astronomical accuracy, astrology prediction
+validation, search completeness or production deployment evidence.
 
-## Source identities and scope
+The original Node 24 run and first repack failure remain in this directory's
+root files and in commit `9d8586232891463ba4dd049d724de1da094c4346`. Final-source
+Node 22 results are under [node22/](node22/). The source-only review checkpoint
+is `06b44ca482061d59a51faa9f1deb539fa8da3b59`; the evidence commit is reported
+separately to avoid a circular self-pin.
 
-The saved environment initially contained site `550c6768`. A fresh fetch on
-2026-10-05 found site main `51b64f3cb67c2026a18772297ec6b367ed2ca183`, the
-merge of election-search PR #655. The isolated branch is
-`codex/mcp-independent-consumer-2026-10-05`, based on that commit. Engine main
-was separately fetched and remained
-`23660f509fd9552d596966419fc982544fe06019`. It is not the vendored engine's
-release identity; the vendored archive is pinned separately below.
+## Scope and the missing seam
 
-Read: `AGENTS.md`, `CLAUDE.md`, programme `HANDOFF-2026-09-30.md` §§6–7,
-`STATUS.md`, engine `AGENTS.md`, and the relevant source/test/packaging files.
-The two repository-local `.agents/skills` concern visual design and are not
-applicable to this runner. No platform/engine/frontend development was taken
-over. This change adds only a runner, its selftests and this dated evidence.
-No existing source, runtime, runner, package, lockfile, CI or ledger is changed.
+Fresh site main was `51b64f3cb67c2026a18772297ec6b367ed2ca183` (merged #655),
+not the saved `550c6768`. Separately fetched engine main remained
+`23660f509fd9552d596966419fc982544fe06019`; it is not the vendored engine's
+release identity. Branch: `codex/mcp-independent-consumer-2026-10-05`.
+Repository instructions, HANDOFF §§6–7, STATUS and relevant source/tests
+were read. Local `.agents/skills` concern visual design and do not apply.
 
-| Independent binding | Exact pin |
+Only the new runner, its selftests and dated evidence changed. No owner
+source, engine, runtime, frontend, existing runner, package, lock, CI or
+ledger changed. Nothing was pushed, published or merged. This is
+agent-authored test tooling, not a human/customer trial.
+
+Existing coverage was inspected before implementation:
+
+- [Protocol driver](../../../../tests/mcp-protocol-drive.mjs): repository
+  server and checkout client; owns low-level protocol probing, unchanged.
+- [Sky-tools tests](../../../../src/mcp/sky-tools.test.ts): 252 seeded cases
+  through in-memory MCP and in-process handler parity, not installed archive/TCP.
+- [Output matrices](../../../../src/mcp/outputs.test.ts) and
+  [artifact tests](../../../../scripts/mcp-artifact.test.mjs): schemas,
+  manifests, source bundles and examples, including the checkout verifier.
+- [Adapter evidence](../mcp-adapter/README.md): the rc.16.3 fresh extraction
+  ran its verifier, but was not compared with HTTP.
+
+The uncovered combination is an independently installed archive process
+versus source-bound HTTP. The new runner reuses `verify.mjs` and the SDK;
+it does not duplicate the existing wire-protocol driver.
+
+## Independent bindings
+
+[pin.json](pin.json) is fixed. Different MCP/API versions are never silently
+accepted as equivalent, and execution does not follow a mutable manifest.
+
+| Binding | Exact value |
 | --- | --- |
-| MCP archive source | `dcb51a1669f78de7942930d9b72479e3450b3edb` |
-| MCP adapter | `0.1.0-rc.16.3`, unpublished candidate |
-| Archive bytes | 124924 |
-| Archive SHA-256 | `dde8e475a43d1ef9f7563281996aef8a4f53d89b99d5c387ba708f8878e034a4` |
-| Manifest SHA-256 | `e6a2ee81b6b97ed7c12ba50867a20fd9bb2ca483f17adc3d7351734ffeb4defe` |
-| Bundled server SHA-256 | `a59382d0fbe5b3f9afc9ff788ce92a1dd406a3ef2c59d98d77a41c7e0f598312` |
-| Engine archive SHA-256 | `43a72d30e483d8ff22024e403c4bd0d86d81bb6e1d0ad138f857cd001ab015d8` |
+| Archive source | `dcb51a1669f78de7942930d9b72479e3450b3edb` |
+| Adapter | `0.1.0-rc.16.3`, unpublished candidate |
+| Archive bytes / SHA256 | 124924 / `dde8e475a43d1ef9f7563281996aef8a4f53d89b99d5c387ba708f8878e034a4` |
+| Manifest SHA256 | `e6a2ee81b6b97ed7c12ba50867a20fd9bb2ca483f17adc3d7351734ffeb4defe` |
+| Extracted server SHA256 | `a59382d0fbe5b3f9afc9ff788ce92a1dd406a3ef2c59d98d77a41c7e0f598312` |
 | Engine / ephemeris | `@zodiacs/engine 0.1.1-rc.16` / `astronomy-engine 2.1.19` |
+| Engine archive SHA256 | `43a72d30e483d8ff22024e403c4bd0d86d81bb6e1d0ad138f857cd001ab015d8` |
 | HTTP source | `51b64f3cb67c2026a18772297ec6b367ed2ca183` |
 | HTTP source tree | `21a259f71e0796dcc6e282d29fecfd4215910442` |
-| Committed HTTP bundle SHA-256 | `662dd5105a5ee65bd058e28b01397a9e19d04a9d9e33fe0cdeb0c311332ccef1` |
-| OpenAPI bytes / SHA-256 | 369971 / `911e663d40aa63c17f868a517f2cbb4a591e304fac077851003a42747ecb16c2` |
-| Live HTTP source / deployment | Unestablished; no live HTTP request made |
+| HTTP bundle SHA256 | `662dd5105a5ee65bd058e28b01397a9e19d04a9d9e33fe0cdeb0c311332ccef1` |
+| OpenAPI bytes / SHA256 | 369971 / `911e663d40aa63c17f868a517f2cbb4a591e304fac077851003a42747ecb16c2` |
+| Live source / deployment | Unestablished; zero live compute requests |
 
-[pin.json](pin.json) fixes these identities; it does not follow a mutable
-manifest during execution. The runner checks the source inputs against the
-pinned Git commit, requires the archive source to be its ancestor, checks the
-manifest hash, downloads the immutable raw GitHub archive, and checks its hash
-and length **before extraction**. The OpenAPI bytes come from the existing
-`buildSkyApi` publication builder at the pinned source; no schema or API
-version is inferred from the MCP version. Old rc.16.2 pins were superseded by
-fresh main, not treated as equivalent.
+The first run downloaded the immutable raw GitHub URL in `pin.json`, checking
+hash/length before extraction. The Node 22 retake used identical cached bytes,
+again checking both. Source inputs are checked against the HTTP Git commit;
+the archive source must be its ancestor. OpenAPI is separately pinned output
+of the existing `buildSkyApi` builder at that source; exact publication bytes
+are retained in [openapi.json](openapi.json). Backend, receipt and citation
+versions are checked. Equality permits only the independently checked
+`cite.url` difference; no numbers, digests or metadata are masked.
 
-## Why this is additional coverage
+## Results and consumer isolation
 
-Existing coverage was inspected before adding this check:
+Site CI specifies Node 22; root engines specifies 22.x. It does not pin an
+exact npm version. The candidate records Node 22.22.2. Its official Linux
+x64 distribution was verified against the
+[official checksum list](https://nodejs.org/download/release/v22.22.2/SHASUMS256.txt):
+31065656 bytes, SHA256
+`88fd1ce767091fd8d4a99fdb2356e98c819f93f3b1f8663853a2dee9b438068a`.
+Bundled npm: 10.9.7. See [runtime.json](node22/runtime.json).
 
-- [tests/mcp-protocol-drive.mjs](../../../../tests/mcp-protocol-drive.mjs)
-  launches the repository's `examples/mcp-server/server.mjs`, uses the client
-  from checkout dependencies, and owns protocol negotiation/malformed-wire
-  coverage. Its fixed server and evidence paths are unchanged.
-- [src/mcp/sky-tools.test.ts](../../../../src/mcp/sky-tools.test.ts)
-  compares MCP with the handler through `InMemoryTransport` and the in-process
-  HTTP harness, over 252 seeded cases and additional edge/refusal cases. It
-  does not extract/install the pinned archive or send TCP HTTP requests.
-- [src/mcp/outputs.test.ts](../../../../src/mcp/outputs.test.ts) covers schema
-  matrices; [scripts/mcp-artifact.test.mjs](../../../../scripts/mcp-artifact.test.mjs)
-  covers archive/manifest contents, source bundle equality, examples and the
-  checkout bundle's verifier.
-- [The rc.16.3 adapter record](../mcp-adapter/README.md#010-rc163-2026-10-05)
-  records 106 protocol checks, host/benchmark checks and a fresh extraction's
-  21 verifier checks. The fresh extraction was not compared with HTTP.
-
-These are useful existing checks. The missing combination was the downloaded
-archive's independently installed stdio consumer against source-bound HTTP.
-The packaged verifier is reused unchanged. Low-level protocol probing stays
-with the existing protocol driver.
-
-## Results
-
-The final runner's SHA-256, exact source/package pins, SDK resolution paths,
-timestamps, scratch directory and outcomes are in [report.json](report.json)
-and [mcp.json](mcp.json). Runtime: Node `v24.19.0`, npm `11.9.0`, locked client
-`2.0.0`. The consumer was created below `/tmp`, with no ancestor `package.json`
-or `node_modules`; its SDK resolves inside its own installed directory.
-`npm ci --ignore-scripts --no-audit --no-fund` installed 14 packages, preserved
-the shrinkwrap hash, and did not link checkout dependencies. Application
-credentials and Node preload/module-path variables are not passed to it;
-platform proxy/CA settings are retained for normal registry access.
-
-| Check | Result |
+| Final-source check | Result |
 | --- | --- |
-| Download hash/size, manifest and source guards | PASS |
-| Both archive licences and NOTICE | PASS: `MIT AND CC-BY-4.0` retained |
-| Packaged `verify.mjs` | 21/21 checks passed; [log](packaged-verify.log) |
-| Advertised six tool schemas and annotations | PASS; actual declarations retained in `mcp.json` |
-| Adapter/engine/ephemeris versions and capability citation | PASS |
-| Six fixed parity cases below | 6/6 PASS, MCP output and HTTP 200 schemas checked |
-| Two shared parser refusals | 2/2 PASS, HTTP 400 and exact pointer/message agreement |
-| Unsupported zone and eclipse event kind | Both refused; original messages retained |
-| Valid positions request after each MCP refusal | 4/4 PASS |
-| Valid positions request after each shared HTTP refusal | 2/2 PASS |
-| Negative-control selftests | 8/8 PASS, including all six requested controls; [log](selftests.log) |
-| Existing compute/MCP/OpenAPI targeted tests | 56/56 PASS; [supporting checks](supporting-checks.log) |
-| Existing compute, local-time and MCP bundle source checks | PASS |
-| Existing archive repack check under npm 11.9.0 | **FAIL**, retained below |
+| Fixed parity corpus | 6/6 PASS |
+| Packaged verifier | 21/21 PASS |
+| Shared parser refusals / HTTP recovery | 2/2 / 2/2 PASS |
+| Unsupported zone/eclipse kind / MCP recovery | Refused / 4/4 PASS after all refusals |
+| Selftests / captured exact rejections | 8/8 PASS / 11 |
+| Existing targeted tests | 56/56 PASS: artifact 46, bundle 5, OpenAPI 5 |
+| Compute/local-time/MCP source-bundle checks | PASS |
+| Scope / ledger / syntax / whitespace checks | PASS |
+| Node 22 local / live HTTP requests | 10 sequential / 0 |
 
-| Fixed synthetic case | Observed behavior, identical beyond the citation URL |
-| --- | --- |
-| Positions at `2000-01-01T12:00:00Z` | Sun, Moon and Mars rows; backend and receipt present |
-| Moon lunation, `2026-03-01`–`2026-03-05` | One full moon, in the requested window; receipt says `tested-not-proven` |
-| Sun retrograde at the same instant | `false` |
-| Sun in Capricorn at the same instant | `true` |
-| Full moon on unzoned `2026-03-03` | `depends`, `any-zone-day`, null zone, 50-hour window |
-| Sun retrograde on unzoned `1800-01-01` | `false`, with `outside-reference-span` |
+Fixed cases: Sun/Moon/Mars positions at 2000-01-01 12:00 UTC; one Moon
+lunation in a four-day March 2026 window; Sun retrograde false; Sun in
+Capricorn true; unzoned full-Moon date `depends` in a 50-hour window; and an
+1800 date retaining `outside-reference-span`. Search remains `tested-not-proven`.
+Shared refusals are an invalid civil date and a reversed event window, with
+exact HTTP/MCP pointer-message agreement. Every carried citation digest is
+independently recomputed using the new canonical-JSON/SHA256 implementation.
 
-The independently written canonical-JSON/SHA-256 implementation recomputes
-each carried receipt's citation. Exact digests are in the report's case
-matrix. Both sides' citation URLs are checked against their exact documented
-anchors before substituting that field alone for equality. No number,
-receipt field, completeness label, version, time basis, search sample count,
-coverage flag or digest is masked.
+[Node 22 report](node22/report.json), [MCP](node22/mcp.json) and
+[HTTP](node22/http.json) retain source/code pins, declarations, exact replies,
+headers, digests, refusals and recoveries. [Review summary](node22/review-summary.json)
+is a compact index. Original Node 24 evidence remains unchanged.
 
-[http.json](http.json) retains response status, headers, exact response text,
-parsed values and requests; [mcp.json](mcp.json) retains declarations,
-capabilities, structured values, refusal messages and recovery values.
-[openapi.json](openapi.json) retains the exact source-built publication bytes.
-There were **10 sequential local HTTP requests, zero live compute requests**.
-The loopback fixture uses real `IncomingMessage`/`ServerResponse` and mirrors
-the route rewrite into the committed handler. Its rate-limit dependency is
-the explicit test verdict `allowed`; no production security/configuration
-change or rate-limit/exhaustion test occurred.
+The actual install, worker and server cwd was
+`/tmp/zodiacs-mcp-consumer-U2r9GM/package`, outside the checkout
+`/workspace/mcp-consumer-review`. Standard
+`npm ci --ignore-scripts --no-audit --no-fund` installed 14 locked packages
+there. Its unchanged `npm-shrinkwrap.json` has SHA256
+`4c30e34d30f64f4a7255aafb67a00f7277ce51d7578f41d6225f82a98c9b4759`.
+The source lock is separately hashed in the report.
 
-The negative controls reject altered archive bytes, stale adapter/engine
-versions, a missing receipt, an invalid citation digest, lost `depends` even
-when both wrappers agree on the incorrect answer, and inflated completeness
-even when both wrappers recompute their citations over the altered receipt.
-Additional controls check canonical digest bytes and forbid hiding arbitrary
-result differences or accepting an arbitrary citation URL. They import the
-same guards used in the runner and require the expected failure, not just
-any thrown error.
+The copied worker imports only builtins at startup. It resolves the two SDK
+entrypoints relative to the extracted package and checks realpaths inside its
+own `node_modules`, then imports absolute file URLs. Every consumer ancestor
+was checked for `package.json` and `node_modules`: none existed. `NODE_PATH`
+and `NODE_OPTIONS` were absent. Node resolution walks ancestors of those
+files, not the unrelated checkout. The independent
+[installed-tree observation](node22/consumer-install-tree.json) records all
+14 unique package paths inside the consumer, including transitive dependencies.
 
-## Failures and limits preserved
+Absolute Node/server paths and explicit cwd/env launch the server. Read-only
+`/proc/2971/cwd` and `/proc/2971/environ` confirmed its actual cwd and exact
+expected environment. Keys: PATH (official Node 22 bin first; no checkout bin),
+TMPDIR=/tmp, LANG=C.UTF-8, NODE_ENV=development,
+npm_config_cache=/tmp/zodiacs-consumer-npm-cache, npm_config_userconfig=/dev/null,
+and platform HTTP/HTTPS proxy, NO_PROXY and CA settings. Network values are
+omitted from evidence. No application credential, home config, preload hook
+or module-path variable was inherited. `mcp.json:isolation` retains configured
+and actual process evidence; these conditions are asserted.
 
-- On this environment, the first source `npm ci` failed because its default
-  cache `/home/agent/.npm/_cacache` was outside the writable paths. A normal
-  rerun with `--cache /tmp/zodiacs-consumer-npm-cache` succeeded. No dependency
-  integrity, manifest or lockfile was bypassed or changed.
-- Native Node `fetch` initially failed when downloading the raw archive
-  through the environment's network setup. The runner uses standard `curl`
-  with the platform's proxy/CA configuration, bounded download time/size, and
-  the same mandatory pre-extraction digest guard. The final default download
-  succeeded; no alternative archive identity was accepted.
-- `npm_config_cache=/tmp/zodiacs-consumer-npm-cache node
-  scripts/pack-mcp-server.mjs --check` reported
-  `public/examples/zodiacs-mcp-server-0.1.0-rc.16.3.tgz differs from a fresh pack
-  of examples/mcp-server`. This existing gate failed under npm 11.9.0. Its
-  cause is not established here. The immutable archive was not overwritten,
-  repacked for distribution or retuned to this npm version. Its pinned bytes,
-  extracted server and installed behavior passed. Exact repack reproducibility
-  remains unverified in the candidate's original Node/npm environment.
-- The root site declares Node 22.x; this saved environment provides Node
-  24.x. Source installation emitted `EBADENGINE`; the narrow checks above
-  ran successfully on Node 24.19.0, which the MCP package supports. Full site
-  Node-22 CI, Astro build/check and frontend/browser gates were not run and
-  are not claimed. No existing runtime/frontend file changed.
-- Local transport parity does not establish a matching live deployment. No
-  live source binding was established, so live parity remains inconclusive.
-- The search remains `tested-not-proven`. Unsupported sidereal/eclipse work
-  and partial Track A acceptance remain as in STATUS. The existing physical
-  declination failure F-08, Koch/shared-UT1 owner decision F-71, Moon
-  enclosure failed/partial records and other independent accuracy failures
-  remain untouched. This runner is not their oracle or resolution.
-- Fresh main's [F-78](../../programme/FINDINGS.md#f-78--on-engine-rc16-one-address-can-cost-more-than-the-10-cpu-seconds-a-minute-the-compute-apis-limits-allow-major-cost)
-  preserves 10.7 CPU-seconds/minute and earlier 12.8/13.2 runs against the
-  ceiling of 10. No load, limit, capacity, firewall or quota probe was run.
-- No credentials, external messages, paid services, access changes, private
-  birth data, raw Swiss values or restricted packs were used or added.
+[Negative controls](node22/negative-controls.json) retain exact assertions,
+expected messages and actual `ERR_ASSERTION` messages. Required failures begin
+`archive SHA-256`, `backend version`/`MCP handshake version`, `missing receipt`,
+`citation digest`, `date-depends: answer` and `search completeness`. Stale-engine
+and lost-depends controls alter both wrappers; inflated completeness alters
+both and recomputes their citations. The collector rejects any wrong failure
+type/message. Extra controls cover size, non-finite JSON, result differences
+and incorrect citation URLs. Counts alone are not the evidence.
 
-## Reproduction and review
+## Repack failure diagnosis
 
-From a checkout containing the new files with the protected inputs still at
-the pinned commit (Git history must include the archive source commit):
+The first npm 11.9.0 failure remains in [supporting-checks.log](supporting-checks.log).
+The saved worktree also fails under Node 22.22.2/npm 10.9.7. Its umask is 0077
+and all seven source files have mode 0600, whereas the released tar has 0644.
+All seven payloads match source byte-for-byte.
+
+Both npm versions produce the same diagnostic 0600 archive: 124922 bytes,
+SHA256 `032992f181a265c06f32d7354fac7fed2fbad68af5f29f1b55efd7efa56ca427`.
+The uncompressed tar differs in 22 bytes: mode fields and header checksums
+only. Payloads, order, names, sizes, uid/gid and timestamps match.
+
+A separate pinned `git archive` export extracted under /tmp with umask 022
+retained Git's 0644 modes. After normal locked `npm ci`, the unchanged
+`pack-mcp-server.mjs --check` passed under both Node 22/npm 10 and Node 24/npm
+11, reproducing the exact released 124924-byte archive. See
+[full comparison and outputs](node22/repack-diagnosis.json).
+
+No archive, lock, owner-file contents or owner-file permissions changed.
+Diagnostic packs stayed temporary and were not distributed. This establishes
+an environment file-mode mismatch, not payload drift or an npm-major defect.
+The unmodified gate still fails in the original 0600 worktree.
+
+## Gate limits and reproduction
+
+These additive files enter no application/runtime/frontend import graph and
+change no dependency or CI configuration. Necessary local gates were Node 22
+syntax/selftests, isolated consumer execution, schema/digest checks,
+source-bundle equality, archive reproduction diagnosis, relevant existing
+tests, protected scope, ledger and whitespace checks. Full Astro build/check,
+browser drives, dependency audits and the complete site CI matrix were not
+run or claimed. Existing `prebuild` rewrites public generators; such existing
+runtime/frontend work is outside this lane. Full site gates remain required
+before separately authorized publication/merge; no release acceptance follows.
+
+The loopback fixture uses actual HTTP streams but explicitly supplies
+`rateLimit: allowed` and mirrors the rewrite. It proves no production
+firewall/quota behavior. Live source binding is absent, hence inconclusive.
+No additional live compute requests, load probes, access changes, private
+birth data, raw Swiss outputs, restricted packs or paid services occurred.
+`MIT AND CC-BY-4.0` and NOTICE survive. F-08/F-71 accuracy failures/decisions,
+Moon-enclosure failed/partial records and F-78's 10.7/12.8/13.2 observations
+remain untouched.
 
 ```sh
+# Put the verified official Node 22 distribution's bin first on PATH.
 npm ci --cache /tmp/zodiacs-consumer-npm-cache --ignore-scripts --no-audit --no-fund
-node --test scripts/mcp-independent-consumer.selftest.mjs
+ZODIACS_NEGATIVE_CONTROL_OUT=/tmp/negative-controls.json \
+  node --test scripts/mcp-independent-consumer.selftest.mjs
 node scripts/mcp-independent-consumer.mjs \
   --pin docs/platform/evidence/mcp-independent-consumer-2026-10-05/pin.json \
+  --archive public/examples/zodiacs-mcp-server-0.1.0-rc.16.3.tgz \
   --out /tmp/zodiacs-consumer-reproduction
 node scripts/programme-ledger.mjs --summary
 ```
 
-The default command downloads the archive from its immutable source URL.
-`--archive /absolute/path/to/candidate.tgz` permits an already downloaded
-archive with exactly the same pinned hash/length. Results go to the specified
-output directory. The consumer scratch remains under `/tmp` for inspection;
-neither the archive nor `node_modules` is copied into this evidence directory.
-Use a new output directory to preserve earlier attempts. On failure the report
-and available MCP/HTTP answers are retained, the command exits nonzero, and
-no further HTTP calls are made.
+Omit `--archive` to download the immutable URL; supplied archives must match
+hash/length. Use new output directories to preserve attempts. Failure retains
+available reports/replies, exits nonzero and stops HTTP calls. Linux records
+actual child cwd/env; other platforms retain configured launch evidence.
+Initial cache/native-fetch setup failures remain in the first review commit;
+no identity or lock integrity was bypassed.
 
-Supporting reproducible commands and their recorded outcomes are in
-[supporting-checks.log](supporting-checks.log). [programme-summary.log](programme-summary.log)
-is actual read-only output of `node scripts/programme-ledger.mjs --summary`:
+For pack diagnosis, export the pinned source into a new scratch directory:
+`git archive 51b64f3cb67c2026a18772297ec6b367ed2ca183 | (umask 022; tar -x -C DIR)`;
+run locked `npm ci` and unchanged `node scripts/pack-mcp-server.mjs --check`
+there. Leave owner files and immutable artifacts untouched.
 
-```text
-Overall delivery: 32% (58 of 182.45); blocked 2% (3)
-```
-
-58/182.45 is 31.790% to three decimals. No delivery acceptance, denominator,
-gate or finding disposition was changed. The local commit is for independent
-parent review; no push, PR or merge was performed.
+Actual read-only [programme-summary.log](programme-summary.log):
+`Overall delivery: 32% (58 of 182.45); blocked 2% (3)`.
+58/182.45 = 31.790% to three decimals. No ledger credit was added.

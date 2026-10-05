@@ -1,0 +1,58 @@
+TAP version 13
+# Subtest: canonical digest has fixed independently known bytes; finite JSON only
+ok 1 - canonical digest has fixed independently known bytes; finite JSON only
+  ---
+  duration_ms: 2.153157
+  type: 'test'
+  ...
+# Subtest: altered archive hash fails before extraction
+ok 2 - altered archive hash fails before extraction
+  ---
+  duration_ms: 0.925336
+  type: 'test'
+  ...
+# Subtest: stale engine and adapter versions fail even when wrappers agree
+ok 3 - stale engine and adapter versions fail even when wrappers agree
+  ---
+  duration_ms: 2.233216
+  type: 'test'
+  ...
+# Subtest: missing receipt is refused
+ok 4 - missing receipt is refused
+  ---
+  duration_ms: 0.387834
+  type: 'test'
+  ...
+# Subtest: bad citation digest fails independent recomputation
+ok 5 - bad citation digest fails independent recomputation
+  ---
+  duration_ms: 0.380089
+  type: 'test'
+  ...
+# Subtest: lost depends fails even after BOTH wrappers collapse it to true
+ok 6 - lost depends fails even after BOTH wrappers collapse it to true
+  ---
+  duration_ms: 0.533987
+  type: 'test'
+  ...
+# Subtest: inflated completeness fails even when BOTH wrappers recite the altered receipt
+ok 7 - inflated completeness fails even when BOTH wrappers recite the altered receipt
+  ---
+  duration_ms: 0.877597
+  type: 'test'
+  ...
+# Subtest: parity allows only exact documentation URL substitution
+ok 8 - parity allows only exact documentation URL substitution
+  ---
+  duration_ms: 0.994676
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 92.72271
