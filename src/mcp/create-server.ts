@@ -12,8 +12,13 @@
  */
 import { McpServer } from '@modelcontextprotocol/server';
 import { ADAPTER_NAME, ADAPTER_VERSION } from './bounds';
-import { CAPABILITIES_OUTPUT, COMPARE_OUTPUT, NATAL_OUTPUT } from './outputs';
+import {
+  CAPABILITIES_OUTPUT, COMPARE_OUTPUT, EVENTS_OUTPUT, NATAL_OUTPUT, POSITIONS_OUTPUT, SKY_FACT_OUTPUT,
+} from './outputs';
 import { RESOURCES } from './resources';
+import {
+  ANY_ZONE_DAY_TEXT, EVENTS_INPUT, POSITIONS_INPUT, SKY_FACT_INPUT, checkSkyFact, findEvents, getPositions,
+} from './sky-tools';
 import {
   CAPABILITIES_INPUT, COMPARE_INPUT, NATAL_INPUT, PRIVACY,
   calculateNatalChart, compareCalculationRecords, describeCapabilities, type ToolOutcome,
@@ -39,15 +44,28 @@ function respond(outcome: ToolOutcome) {
  * error's class and not its message, because a message from an unknown throw
  * may quote the argument that caused it.
  */
+function failed(note: Note, error: unknown) {
+  note(`a tool handler failed with ${error instanceof Error ? error.name : 'a non-error throw'}`);
+  return {
+    isError: true as const,
+    content: [{ type: 'text' as const, text: 'The adapter could not complete this call. The connection is still open and the next request is unaffected.' }],
+  };
+}
+
 function guard(note: Note, run: () => ToolOutcome) {
   try {
     return respond(run());
   } catch (error) {
-    note(`a tool handler failed with ${error instanceof Error ? error.name : 'a non-error throw'}`);
-    return {
-      isError: true as const,
-      content: [{ type: 'text' as const, text: 'The adapter could not complete this call. The connection is still open and the next request is unaffected.' }],
-    };
+    return failed(note, error);
+  }
+}
+
+/** The same guard for a handler that returns a promise, which a rejection does not escape. */
+async function guardAsync(note: Note, run: () => Promise<ToolOutcome>) {
+  try {
+    return respond(await run());
+  } catch (error) {
+    return failed(note, error);
   }
 }
 
@@ -66,7 +84,7 @@ export function createServer(note: Note): McpServer {
     title: 'Zodiacs engine capabilities',
     description: [
       'What this adapter can calculate, the exact engine and schema versions behind it, every limit a request must respect, the resources it offers, and what it deliberately does not do.',
-      'Read this before the other two tools rather than guessing at supported options.',
+      'Read this before the other tools rather than guessing at supported options.',
       PRIVACY.assistant,
     ].join(' '),
     inputSchema: CAPABILITIES_INPUT,
@@ -104,6 +122,47 @@ export function createServer(note: Note): McpServer {
     outputSchema: COMPARE_OUTPUT,
     annotations: READ_ONLY,
   }, (args) => guard(note, () => compareCalculationRecords(args)));
+
+  // The compute API's own calculations: the same parser, function and receipt as
+  // POST /api/v1/positions, /events and /sky-fact, run here.
+  server.registerTool('get_positions', {
+    title: 'Body positions at given instants',
+    description: [
+      'The positions of the Sun, the Moon, the planets and the two lunar nodes at up to 100 instants: tropical ecliptic longitude, latitude, daily motion, sign and degree, with the ΔT and time scale the engine used.',
+      'The same calculation, result and receipt as POST https://zodiacs.org/api/v1/positions for the same request, computed on this machine by the pinned Zodiacs engine.',
+      PRIVACY.assistant,
+    ].join(' '),
+    inputSchema: POSITIONS_INPUT,
+    outputSchema: POSITIONS_OUTPUT,
+    annotations: READ_ONLY,
+  }, (args) => guard(note, () => getPositions(args)));
+
+  server.registerTool('find_events', {
+    title: 'Find sign ingresses, stations and lunations',
+    description: [
+      'Sign ingresses, stations and new and full moons in a window of up to 92 days, in time order, found by the engine\'s crossing search.',
+      'The search is tested, not proven to miss nothing: the receipt says so in search.completeness, beside how it searched and how many evaluations it made.',
+      'The same calculation, result and receipt as POST https://zodiacs.org/api/v1/events for the same request, computed on this machine.',
+      PRIVACY.assistant,
+    ].join(' '),
+    inputSchema: EVENTS_INPUT,
+    outputSchema: EVENTS_OUTPUT,
+    annotations: READ_ONLY,
+  }, (args) => guard(note, () => findEvents(args)));
+
+  server.registerTool('check_sky_fact', {
+    title: 'Check a stated sky fact',
+    description: [
+      'Whether a stated fact holds: a body in a sign or retrograde at an instant or on a date, a body entering a sign on a date, or the Moon reaching a phase on a date.',
+      'Answers true, false or depends, with the computed values that decide it and a receipt. It never interprets.',
+      ANY_ZONE_DAY_TEXT,
+      'The same calculation, result and receipt as POST https://zodiacs.org/api/v1/sky-fact for the same request without a zone, computed on this machine.',
+      PRIVACY.assistant,
+    ].join(' '),
+    inputSchema: SKY_FACT_INPUT,
+    outputSchema: SKY_FACT_OUTPUT,
+    annotations: READ_ONLY,
+  }, (args) => guardAsync(note, () => checkSkyFact(args)));
 
   // Static text built into the bundle: a read opens no file and makes no request.
   for (const resource of RESOURCES) {

@@ -1,18 +1,27 @@
 {
   "schemaVersion": 1,
   "package": "zodiacs-mcp-server",
-  "version": "0.1.0-rc.16.1",
+  "version": "0.1.0-rc.16.2",
   "status": "Unpublished release candidate. Not on npm, under this or any other name. Install from the versioned archive at https://zodiacs.org/examples/, whose SHA-256 is published beside it.",
   "sourceRepository": "https://github.com/zodiacs-org/site",
   "sourcePaths": [
     "src/mcp/server.ts",
     "src/mcp/create-server.ts",
     "src/mcp/tools.ts",
+    "src/mcp/sky-tools.ts",
     "src/mcp/outputs.ts",
     "src/mcp/resources.ts",
     "src/mcp/cite.ts",
     "src/mcp/bounds.ts",
     "src/lib/receipt-digest.ts",
+    "src/lib/compute-api/endpoints.ts",
+    "src/lib/compute-api/validate.ts",
+    "src/lib/compute-api/receipt.ts",
+    "src/lib/compute-api/constants.ts",
+    "src/lib/compute-api/errors.ts",
+    "src/lib/compute-api/local-time.ts",
+    "src/lib/engine/time-basis.mjs",
+    "src/lib/time/civil-date.ts",
     "src/lib/compare/diff.ts",
     "src/lib/compare/angles.ts",
     "src/lib/compare/replay.ts",
@@ -36,6 +45,10 @@
     "comparison": {
       "module": "src/lib/compare/diff.ts",
       "note": "The same module the browser tool at https://zodiacs.org/developers/compare/ runs."
+    },
+    "computeApi": {
+      "modules": "src/lib/compute-api/",
+      "note": "The hosted compute API's parsers and positions, events and sky-fact calculations, inlined into server.mjs, so get_positions, find_events and check_sky_fact return what POST https://zodiacs.org/api/v1/positions, /events and /sky-fact return for the same request, without a zone."
     }
   },
   "dependencies": {
@@ -69,8 +82,9 @@
     "receipt": "zodiacs.calculation-receipt.draft-v1",
     "adapterReceipt": "zodiacs.mcp-receipt.v1",
     "conventions": "zodiacs.conventions-vocabulary.v1",
-    "note": "Zodiacs-owned vocabulary, not an industry interoperability standard. The record and receipt schemas are drafts."
+    "note": "Zodiacs-owned vocabulary, not an industry interoperability standard. The record and receipt schemas are drafts.",
+    "computeReceipt": "zodiacs.compute-receipt.v1"
   },
-  "supersedes": "0.1.0-rc.16",
-  "changedSince": "rc.1 to rc.10, rc.14, rc.15 and rc.16 remain unchanged as separate archives; there were no rc.11 to rc.13 archives. The engine is the same 0.1.1-rc.16, so every position, angle, cusp and comparison is rc.16's. New in rc.16.1: each of the three tools declares an output schema, and the server checks every result other than a refusal against it before sending it; every such result carries cite, the url of the tool's entry on the developer page, the SHA-256 of a receipt's RFC 8785 canonical JSON, and the engine and its version, the shape the compute API uses; get_capabilities and compare_calculation_records carry the adapter's own receipt, which holds nothing from a record; two resources, zodiacs://conventions and zodiacs://methodology, give the conventions vocabulary of the records and how the server calculates; and get_capabilities labels the engine as published on npm (since 2026-10-01, under the next tag), where rc.16 said unpublished-candidate. The tools' names and arguments are unchanged. The adapter itself is still not on npm."
+  "supersedes": "0.1.0-rc.16.1",
+  "changedSince": "rc.1 to rc.10, rc.14, rc.15, rc.16 and rc.16.1 remain unchanged as separate archives; there were no rc.11 to rc.13 archives. The engine is the same 0.1.1-rc.16, so every position, angle, cusp and comparison is rc.16's. New in rc.16.2: three tools, get_positions, find_events and check_sky_fact, which run the hosted compute API's own parsers and calculations, so each returns the compute API's body for the same request, with the same receipt and so the same cite.receipt; only cite.url names the tool. find_events finds sign ingresses, stations and new and full moons in a window of at most 92 days, and its receipt says its search is tested, not proven complete. check_sky_fact answers true, false or depends with the values that decide it; this adapter looks up no time zone, so it has no zone argument and reads a date as that day in every UTC offset in use today at once. Each new tool declares an output schema and the same read-only, closed-world annotations. The three existing tools' names and arguments are unchanged. The adapter itself is still not on npm."
 }

@@ -1,11 +1,12 @@
 # zodiacs-mcp-server
 
 A local MCP server that lets an AI assistant you connect it to calculate natal
-charts with the Zodiacs engine, and compare two calculation records to find out
-why they disagree.
+charts with the Zodiacs engine, compare two calculation records to find out why
+they disagree, find positions, sign ingresses, stations and lunations, and check
+whether a stated sky fact holds.
 
 It speaks MCP over stdio. It opens no listener, binds no port, makes no outbound
-request, and reads and writes no files. Three tools and two resources, one
+request, and reads and writes no files. Six tools and two resources, one
 process, started by whatever host you point at it.
 
 **Unpublished release candidate.** There is no `npm install zodiacs-mcp-server`:
@@ -57,7 +58,7 @@ happen against the `.tgz` you still have:
 ```sh
 # from the directory holding the archive, against the SHA-256 on the page above
 node -e 'const e=process.argv[2];const a=require("crypto").createHash("sha256").update(require("fs").readFileSync(process.argv[1])).digest("hex");if(a!==e){console.error("Mismatch. Delete this copy and install again from the page.\n  expected "+e+"\n  got      "+a);process.exit(1)}console.log("Archive verified: "+a)' \
-  zodiacs-mcp-server-0.1.0-rc.16.1.tgz '<the SHA-256 published on the page>'
+  zodiacs-mcp-server-0.1.0-rc.16.2.tgz '<the SHA-256 published on the page>'
 ```
 
 Then, inside the extracted directory:
@@ -76,11 +77,11 @@ disk, `npm ci --omit=dev` installs the three and `npm start` works; only
 `npm run verify` needs the rest.
 
 `npm run verify` launches `server.mjs` as a real child process, speaks MCP to it
-with the official client SDK, calls all three tools with synthetic charts,
-refuses two bad requests, and confirms the session still works afterwards. The
-client checks every result other than a refusal against the output schema the
-server declares. It
-prints one line per check, eighteen in all, and exits 0 when they all pass. That is the
+with the official client SDK, calls all six tools with synthetic charts and
+dates, refuses two bad requests, and confirms the session still works
+afterwards. The client checks every result other than a refusal against the
+output schema the server declares. It prints one line per check, twenty-one in
+all, and exits 0 when they all pass. That is the
 clean-environment verification: if it passes in a directory you just extracted,
 the install is good.
 
@@ -130,7 +131,7 @@ key, credential or secret anywhere in this package. What a host passes it is the
 host's business — most pass their whole environment — but nothing here looks at
 it.
 
-## The three tools
+## The six tools
 
 Each tool declares an output schema, which a host reads in `tools/list`
 beside the arguments. The server checks every result other than a refusal
@@ -221,6 +222,54 @@ called a rounding difference rather than a different calculation, decided on wha
 they print rather than on a tolerance. A record naming an engine version other
 than the one bundled here is not re-run on this engine and offered as the
 original: the cause stays a hypothesis and the limit is stated.
+
+### `get_positions`
+
+Takes `instants`, one to 100 instants written in ISO 8601 with `Z` or a numeric
+offset, and optionally `bodies`, the rows to return. Returns, for each instant,
+the twelve rows of a chart, each body's tropical longitude, latitude, daily
+motion, sign and degree, with the ΔT and the time scale the engine used. They
+are the chart's rows: `calculate_natal_chart` at the same instant returns the
+same bodies.
+
+### `find_events`
+
+Takes a window, `from` and `to`, of at most 92 days, and optionally `bodies`
+and `kinds`. Returns the sign ingresses, the stations of Mercury to Pluto, and
+the new and full moons in it, in time order. The window excludes its start and
+includes its end. The search samples each motion at a fixed step, 5 days for
+most bodies and 1 day for the Moon and for the Moon–Sun elongation behind every
+lunation, and bisects each crossing it sees 24 times. It is tested, not proven
+to miss nothing, and every reply's receipt says so in `search.completeness`,
+beside the number of evaluations it made, at most 12,000.
+
+### `check_sky_fact`
+
+Takes a `kind` and what it needs: `sign`, a body in a sign, or `retrograde`, a
+body moving backward, each at an `instant` or on a `date`; `ingress`, a body
+entering a sign on a `date`; or `phase`, the Moon reaching `new`,
+`first-quarter`, `full` or `last-quarter` on a `date`. It answers `true`,
+`false` or `depends`, with the computed values that decide the answer. It
+never interprets.
+
+This adapter looks up no time zone, so there is no `zone` argument. A date is
+read as that day in every UTC offset in use today, −12:00 to +14:00, at once:
+from 14 hours before its midnight UTC to 36 hours after. `depends` means the
+answer turns on the time of day or on the offset. When the ingress or the phase
+asked about falls in that span, the answer is always `depends`, because some
+offsets' dates hold it and others' do not, so neither is ever `true` here. For a
+definite answer to a sign or retrograde fact, ask at an instant; for an ingress
+or a phase, `find_events` gives the instant.
+
+These three run the hosted compute API's own calculations: the same parser and
+the same function as `POST https://zodiacs.org/api/v1/positions`, `/events` and
+`/sky-fact` without a zone. For the same request each returns the compute API's
+body, with the same `result` and the same `receipt`, so the same
+`cite.receipt`; only `cite.url` names the tool here. A request the compute
+API's parser refuses gets its sentence, after the field it names:
+`/to: Must be later than from.` One the input schema refuses first, such as an
+unknown argument like `zone`, more than 100 instants or a value outside a list,
+gets the MCP SDK's validation message instead.
 
 ## Three requests, and what comes back
 
@@ -392,7 +441,7 @@ are separate fields, so a fallback is visible rather than silent.
   "receipt": {
     "schema": "zodiacs.mcp-receipt.v1",
     "tool": "compare_calculation_records",
-    "adapter": { "name": "zodiacs-mcp-server", "version": "0.1.0-rc.16.1" },
+    "adapter": { "name": "zodiacs-mcp-server", "version": "0.1.0-rc.16.2" },
     "engine": {
       "name": "@zodiacs/engine",
       "version": "0.1.1-rc.16",
@@ -449,6 +498,13 @@ answered, and for a comparison its output. It holds nothing from either record,
 so a comparison's citation says how the comparison was made, not which records
 it read.
 
+`get_positions`, `find_events` and `check_sky_fact` cite the compute API's
+receipt for the same calculation, which the reply carries in full: the engine,
+its conventions and coverage, the reference span, the two sources of ΔT, and
+for a search how it searched and how many evaluations it made. It holds no
+instant, date or body from the request, and the compute API cites the same
+digest for the same request.
+
 ## Resources
 
 Two resources, built into `server.mjs`; reading one opens no file and makes no
@@ -460,15 +516,16 @@ request.
   sentence on what each key covers; the coverage statement the engine's
   receipts carry; and what each chart flag reports.
 - `zodiacs://methodology` (Markdown): what a chart holds, how an instant is
-  read, unknown birth times, house systems, aspects, comparisons, the accepted
-  dates, and what a result cites, with links to the site's methodology page and
-  the engine's measured agreement with other software.
+  read, unknown birth times, house systems, aspects, comparisons, positions,
+  events and sky facts, the accepted dates, and what a result cites, with links
+  to the site's methodology page and the engine's measured agreement with other
+  software.
 
 ## Versions
 
 | | |
 | --- | --- |
-| adapter | `0.1.0-rc.16.1`, unpublished candidate |
+| adapter | `0.1.0-rc.16.2`, unpublished candidate |
 | engine | `@zodiacs/engine` `0.1.1-rc.16`, published to npm on 2026-10-01 under the `next` tag, bundled into `server.mjs` |
 | ephemeris | `astronomy-engine` 2.1.19, inside the engine |
 | MCP SDK | `@modelcontextprotocol/server` 2.0.0, pinned exactly, installed from npm |
@@ -477,22 +534,32 @@ request.
 | node | built for and tested on Node 22 (v22.22.2). `package.json` requires `>=22` |
 | record schema | `zodiacs.natal-envelope.draft-v1` — Zodiacs-owned draft vocabulary, not an industry interoperability standard |
 | adapter receipt | `zodiacs.mcp-receipt.v1`, carried by `get_capabilities` and `compare_calculation_records` |
+| compute receipt | `zodiacs.compute-receipt.v1`, the hosted compute API's, carried by `get_positions`, `find_events` and `check_sky_fact` |
 
 `candidate.json` carries the same identities in machine-readable form, including
 the engine artifact's own SHA-256 and the source paths every part was built from.
 
 ## Known limits
 
-- **One chart at a time, no searches.** No transits, progressions, returns or
-  eclipses; nothing that scans a date range.
+- **Narrow searches only.** `find_events` finds sign ingresses, stations and
+  new and full moons in a window of at most 92 days. No transits,
+  progressions, returns or eclipses.
 - **No interpretation.** Positions and differences, no readings.
 - **No timezone resolution.** Supply an instant with an explicit offset. This
-  adapter does not turn a place name and a wall clock into a moment.
+  adapter does not turn a place name and a wall clock into a moment, and
+  `check_sky_fact` reads a date without a zone as that day in every UTC offset
+  in use today at once.
 - **No file access and no fetching.** Records are passed as content. The adapter
   imports no filesystem, process or network module at all.
 - **No cancellation and no timeout.** A calculation is synchronous, so a timer
-  could not interrupt it mid-way. The work is bounded by refusing unbounded
-  operations: one chart per call, no searches, no date ranges.
+  could not interrupt it mid-way. The work is bounded instead: one chart per
+  call, at most 100 instants, a window of at most 92 days, and at most 12,000
+  evaluations for an events request, or 1,000 for a fact on a date.
+- **Large replies.** The largest `get_positions` answer the limits allow, a
+  hundred instants of twelve rows, is about 230 KB of JSON, and the reply
+  carries it twice, as structured content and as text. A host may warn about a
+  reply that size or keep it out of the conversation, so ask for the instants
+  you need.
 - **No authentication of anything.** Not of a record, not of an engine version,
   not of the claim that two records came from independent software. Two records
   from one engine agreeing shows consistency, not independent astronomical
@@ -534,12 +601,16 @@ model-interoperability record is from an earlier candidate and stays
 historical until rerun. The records establish different things:
 
 - **`protocol-drive.json`** — the official SDK client against the real server
-  process: initialize, list the tools and their output schemas, all three tools
+  process: initialize, list the tools and their output schemas, all six tools
   with every result other than a refusal checked against its schema by the
   client, what each result
   cites, the two resources, eighteen malformed or refused requests each
   followed by a valid one, the diagnostic channel, a clean close, and a raw
   handshake at every protocol revision the SDK supports.
+- **`src/mcp/sky-tools.test.ts`**, in the repository — for 252 synthetic
+  requests, `get_positions`, `find_events` and `check_sky_fact` return the body
+  the compute API's own handler answers for the same JSON, apart from
+  `cite.url`, and each of 17 refused requests gets the handler's own sentence.
 - **`host-drive.json`** — the Claude Code CLI launching the adapter and
   reporting it connected, inside a throwaway config directory, with the
   machine's real configuration proved byte-identical afterwards.

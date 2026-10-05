@@ -106,6 +106,11 @@ const COMPUTE_API_REVIEW_ROUTES = [
 // its entry here in the same commit.
 const OWNER_TRUST_LASTMOD = '2026-10-03';
 const OWNER_TRUST_ROUTES = ['/', '/privacy/', '/terms/', '/methodology/', '/astrofolio/how-to-buy/'] as const;
+// MCP adapter 0.1.0-rc.16.2 of 2026-10-05: its page gains the three tools
+// that run the compute API's calculations, and the compute API's page now
+// says which UTC offsets a date without a zone is read in.
+const MCP_COMPUTE_TOOLS_LASTMOD = '2026-10-05';
+const MCP_COMPUTE_TOOLS_ROUTES = ['/developers/mcp/', '/developers/compute/'] as const;
 
 const EVERGREEN_LASTMOD = new Map<string, string>([
   [eventsPublication.hub.path, eventsPublication.lastModified] as const,
@@ -238,6 +243,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...COMPUTE_API_ROUTES.map((loc) => [loc, COMPUTE_API_LASTMOD] as const),
   ...COMPUTE_API_REVIEW_ROUTES.map((loc) => [loc, COMPUTE_API_REVIEW_LASTMOD] as const),
   ...OWNER_TRUST_ROUTES.map((loc) => [loc, OWNER_TRUST_LASTMOD] as const),
+  ...MCP_COMPUTE_TOOLS_ROUTES.map((loc) => [loc, MCP_COMPUTE_TOOLS_LASTMOD] as const),
 ]);
 
 function getLastmod(loc: string): string {
