@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "zodiacs-sky",
-  "version": "0.1.1",
-  "description": "Explore upcoming sky events, exact-instant positions and astronomical fact checks with the Zodiacs public-sky tools.",
+  "version": "0.2.0",
+  "description": "Explore sky events and astronomical facts, or open Chart Studio to inspect an interactive chart calculated in the browser.",
   "author": {
     "name": "Zodiacs LLC",
     "email": "admin@zodiacs.org",
@@ -22,14 +22,15 @@
     "com.openai": {
       "interface": {
         "displayName": "Zodiacs",
-        "shortDescription": "Sky events and fact checks",
-        "longDescription": "Developed by Zodiacs LLC, the operator of Zodiacs.org. See what changes this week, explore new and full Moons, and check astronomical claims with explicit timezones and versioned calculation receipts. The sky calendar supports inline, sidebar and conversation panels. Public-sky tools need no account or birth information. Event windows are at most 31 days; supported searches cover sign ingresses, planetary stations and lunations, with tested but unproven completeness. No reminders, eclipse search, personal chart storage or predictions of outcomes are offered. This is a review candidate; dated staging host evidence is recorded, while production and directory listing await release checks.\n\nOfficial website: https://zodiacs.org/ . Company and contact: https://zodiacs.org/about/ . Support: admin@zodiacs.org . Methods and developer documentation: https://zodiacs.org/developers/ . Privacy and terms are linked in this profile.",
+        "shortDescription": "Sky events and Chart Studio",
+        "longDescription": "Developed by Zodiacs LLC, the operator of Zodiacs.org. See what changes this week, explore new and full Moons, and check astronomical claims with explicit timezones and versioned calculation receipts. The sky calendar supports inline, sidebar and conversation panels. Public-sky tools need no account or birth information. Chart Studio starts with a synthetic example and calculates personal UTC inputs in the browser. Inspect placements and aspects, compare Placidus and whole-sign houses, and download a calculation record. Only reviewed selections are shared with the assistant; derived chart facts can reveal personal information. Event windows are at most 31 days; supported searches cover sign ingresses, planetary stations and lunations, with tested but unproven completeness. No reminders, eclipse search, personal chart storage or predictions of outcomes are offered. This is a review candidate; dated staging host evidence is recorded, while production and directory listing await release checks.\n\nOfficial website: https://zodiacs.org/ . Company and contact: https://zodiacs.org/about/ . Support: admin@zodiacs.org . Methods and developer documentation: https://zodiacs.org/developers/ . Privacy and terms are linked in this profile.",
         "developerName": "Zodiacs LLC",
         "category": "Lifestyle",
         "capabilities": [
           "Sky calendar",
           "Astronomical fact checks",
-          "Calculator discovery"
+          "Calculator discovery",
+          "Interactive Chart Studio"
         ],
         "websiteURL": "https://zodiacs.org/",
         "supportURL": "https://zodiacs.org/about/",
@@ -40,7 +41,8 @@
         "defaultPrompt": [
           "What changes in the sky this week, displayed in Asia/Bangkok?",
           "Check whether the Sun entered Libra on September 23, 2026.",
-          "Where is the Moon sign calculator?"
+          "Where is the Moon sign calculator?",
+          "Open Chart Studio so I can explore an example chart"
         ]
       },
       "review": {
@@ -50,7 +52,7 @@
               "description": "Inspect versions and supported operations.",
               "prompt": "What can Zodiacs calculate and which engine version does it use?",
               "tools_triggered": "get_capabilities",
-              "expected_behavior": "List the five operations, published engine version, limits and privacy."
+              "expected_behavior": "List the six operations, published engine version, limits and privacy."
             },
             {
               "description": "Compute an explicit instant in Bangkok.",
@@ -76,6 +78,12 @@
               "tools_triggered": "search_zodiacs",
               "expected_behavior": "Return the canonical Moon sign calculator link and explain its purpose; include no personal URL data.",
               "expected_output_url": "https://zodiacs.org/moon-sign/"
+            },
+            {
+              "description": "Open an interactive chart without sending birth data as tool arguments.",
+              "prompt": "Open Chart Studio so I can compare house systems.",
+              "tools_triggered": "open_chart_studio",
+              "expected_behavior": "Call with {}, render the synthetic example, allow local calculation and house comparison, and share only after explicit preview and confirmation."
             }
           ],
           "negative": [
@@ -98,7 +106,7 @@
         "demo_recording_url": "https://raw.githubusercontent.com/zodiacs-org/site/fca11967611ab4758dc616b871ce991f82cf1cd4/docs/platform/zodiacs-ai/evidence/chatgpt/host-capture-walkthrough.mp4"
       },
       "publication": {
-        "release_notes": "0.1.1 updates publisher metadata, website, support contact and policy links. The engine, tools and release gates are unchanged. Initial unpublished review candidate: five public-sky tools and native calendar. Active candidate engine rc.16, atomic hosted quota and bounded staging acceptance recorded. The linked 40-second selected-state reel shows dated actual rc.15 ChatGPT UI; it is not a continuous recording or portal-approved video. Public production/listing and consenting beta acceptance remain release gates."
+        "release_notes": "0.2.0 adds Chart Studio: a self-contained browser calculation panel, placement/aspect inspection, Placidus/whole-sign comparison, record download and explicit reviewed selection sharing. Six public tool entrypoints; the five sky operations retain their limits. Engine rc.16. Prior staging/calendar evidence does not establish Chart Studio host acceptance. Public production/listing, updated host acceptance and consenting beta acceptance remain release gates. The existing demo link is historical calendar evidence, not a Chart Studio recording."
       }
     }
   }

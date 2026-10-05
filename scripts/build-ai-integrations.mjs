@@ -3,10 +3,12 @@ import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { build } from 'esbuild';
+import { buildChartStudio } from './build-chart-studio.mjs';
 import { addAiLifetimeBoundary } from './ai-runtime-lifetime.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const check = process.argv.includes('--check');
+await buildChartStudio(check);
 const outputs = [
   ['src/ai-tools/http.ts', 'api/_ai/runtime.mjs', ['@modelcontextprotocol/server', '@modelcontextprotocol/core', 'zod', '@vercel/firewall']],
   ['src/ai-tools/local.ts', 'plugins/zodiacs-developer/mcp/server.mjs', ['@modelcontextprotocol/server', '@modelcontextprotocol/core', 'zod']],
@@ -31,5 +33,18 @@ for (const [output, data] of [['plugins/zodiacs-developer/plugin.json', portable
   const bytes = Buffer.from(JSON.stringify(data, null, 2) + '\n');
   if (check) { if (!bytes.equals(await readFile(resolve(root, output)))) throw new Error(`${output} is stale; run npm run ai:build`); }
   else await writeFile(resolve(root, output), bytes);
+  console.log(`${check ? 'Verified' : 'Built'} ${output}`);
+}
+// Sky's portable manifest is authoritative; also package the compatibility files
+// read by current local-marketplace clients so upgrades retain version and MCP.
+const sky = JSON.parse(await readFile(resolve(root, 'plugins/zodiacs-sky/plugin.json'), 'utf8'));
+const skyCompatibility = Object.fromEntries(['name', 'version', 'description', 'author', 'homepage', 'repository', 'license', 'keywords'].map(key => [key, sky[key]]));
+Object.assign(skyCompatibility, { skills: './skills/', mcpServers: './.mcp.json', interface: sky.extensions['com.openai'].interface });
+const skyMcp = { mcpServers: { 'zodiacs-sky': { url: 'https://zodiacs.org/mcp' } } };
+for (const [output, data] of [['plugins/zodiacs-sky/.codex-plugin/plugin.json', skyCompatibility], ['plugins/zodiacs-sky/.mcp.json', skyMcp]]) {
+  const bytes = Buffer.from(JSON.stringify(data, null, 2) + '\n');
+  const path = resolve(root, output);
+  if (check) { if (!bytes.equals(await readFile(path))) throw new Error(`${output} is stale; run npm run ai:build`); }
+  else { await mkdir(dirname(path), { recursive: true }); await writeFile(path, bytes); }
   console.log(`${check ? 'Verified' : 'Built'} ${output}`);
 }

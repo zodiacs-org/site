@@ -1,7 +1,7 @@
 import { createMcpHandler } from '@modelcontextprotocol/server';
 import { COMPUTE_EVENTS_RATE_LIMIT_ID, COMPUTE_RATE_LIMIT_ID, type RateLimitVerdict } from '../lib/compute-api/constants';
 import { computeApiRateLimit } from '../lib/compute-api/handler';
-import { AI_ROUTE_PARAM, AI_SWITCH_ENV, AI_VERSION, MAX_HTTP_BYTES, ORIGIN } from './contracts';
+import { AI_TOOL_NAMES, STUDIO_URI, AI_ROUTE_PARAM, AI_SWITCH_ENV, AI_VERSION, MAX_HTTP_BYTES, ORIGIN } from './contracts';
 import { createAiServer } from './server';
 import type { AiDependencies } from './tools';
 import { sanitizeProtocolMessage } from './sanitize';
@@ -111,7 +111,7 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
     const message = body as Record<string, unknown>;
     if (message.method === 'tools/call' && message.params && typeof message.params === 'object') {
       const name = (message.params as Record<string, unknown>).name;
-      if (['get_capabilities', 'get_sky', 'get_upcoming_events', 'check_sky_fact', 'search_zodiacs'].includes(String(name))) operation = String(name);
+      if ((AI_TOOL_NAMES as readonly string[]).includes(String(name))) operation = String(name);
     }
     if (!['initialize', 'notifications/initialized', 'ping', 'server/discover', 'tools/list', 'tools/call', 'resources/list', 'resources/read', 'resources/templates/list'].includes(String(message.method))) {
       res.setHeader('Content-Type', 'application/json; charset=utf-8'); res.statusCode = 200;
@@ -137,7 +137,9 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
         // Single-result JSON/SSE responses let us suppress SDK validation diagnostics
         // which may repeat unknown property names. Neither logs nor refusals quote inputs.
         const reply = await response.text();
-        if (Buffer.byteLength(reply) > 262144) throw new Error('output-budget');
+        // Only the fixed, self-contained Studio resource has a larger response budget.
+        const studioResource = message.method === 'resources/read' && (message.params as { uri?: unknown })?.uri === STUDIO_URI;
+        if (Buffer.byteLength(reply) > (studioResource ? 2_100_000 : 262144)) throw new Error('output-budget');
         function sanitize(text: string) {
           return JSON.stringify(sanitizeProtocolMessage(JSON.parse(text)));
         }

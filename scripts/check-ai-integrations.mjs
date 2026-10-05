@@ -28,15 +28,19 @@ for (const name of ['zodiacs-developer', 'zodiacs-sky']) {
   assert.equal(Object.keys(mcp.mcpServers).length, 1);
 }
 const sky = await json('plugins/zodiacs-sky/plugin.json');
+const skyCompatibility = await json('plugins/zodiacs-sky/.codex-plugin/plugin.json');
+assert.equal(skyCompatibility.version, sky.version);
+assert.deepEqual(skyCompatibility.interface, sky.extensions['com.openai'].interface);
+assert.deepEqual((await json('plugins/zodiacs-sky/.mcp.json')).mcpServers['zodiacs-sky'], { url: 'https://zodiacs.org/mcp' });
 const review = sky.extensions['com.openai'].review;
-assert.equal(review.test_cases.positive.length, 5); assert.equal(review.test_cases.negative.length, 3);
+assert.equal(review.test_cases.positive.length, 6); assert.equal(review.test_cases.negative.length, 3);
 assert.deepEqual((await json('plugins/zodiacs-sky/mcp.json')).mcpServers['zodiacs-sky'], { type: 'streamable-http', url: 'https://zodiacs.org/mcp' });
 assert.deepEqual((await json('plugins/zodiacs-developer/mcp.json')).mcpServers['zodiacs-developer'], { type: 'stdio', command: 'node', cwd: './', args: ['${PLUGIN_ROOT}/mcp/server.mjs'] });
 const submission = await json('integrations/chatgpt/chatgpt-app-submission.json');
-const names = ['get_capabilities', 'get_sky', 'get_upcoming_events', 'check_sky_fact', 'search_zodiacs'];
+const names = ['get_capabilities', 'get_sky', 'get_upcoming_events', 'check_sky_fact', 'search_zodiacs', 'open_chart_studio'];
 assert.deepEqual(Object.keys(submission.tools), names);
 assert.equal(submission.schema_version, 1); assert.ok(submission.app_info.subtitle.length <= 30);
-assert.equal(submission.test_cases.length, 5); assert.equal(submission.negative_test_cases.length, 3);
+assert.equal(submission.test_cases.length, 6); assert.equal(submission.negative_test_cases.length, 3);
 for (const name of names) {
   assert.deepEqual(submission.tools[name].annotations, { readOnlyHint: true, openWorldHint: false, destructiveHint: false });
   for (const key of ['read_only_justification', 'open_world_justification', 'destructive_justification']) assert.ok(submission.tools[name].justifications[key]);

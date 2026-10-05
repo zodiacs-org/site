@@ -2,7 +2,7 @@ import { beforeAll, afterAll, describe, it, expect } from 'vitest';
 import { createServer, request, type Server } from 'node:http';
 import { Client, LATEST_PROTOCOL_VERSION, StreamableHTTPClientTransport } from '@modelcontextprotocol/client';
 import { createAiNodeHandler } from './http';
-import { AI_TOOL_NAMES, MAX_HTTP_BYTES, OUTPUT_SCHEMAS, WIDGET_URI } from './contracts';
+import { AI_TOOL_NAMES, MAX_HTTP_BYTES, OUTPUT_SCHEMAS, WIDGET_URI, STUDIO_URI } from './contracts';
 import { COMPUTE_EVENTS_RATE_LIMIT_ID, COMPUTE_RATE_LIMIT_ID } from '../lib/compute-api/constants';
 
 let server: Server, base: string;
@@ -63,6 +63,16 @@ describe('stateless MCP HTTP boundary', () => {
       const opened = await client.callTool({ name: 'get_upcoming_events', arguments: {} });
       expect(opened.isError).toBe(false);
       expect(OUTPUT_SCHEMAS.get_upcoming_events.parse(opened.structuredContent).ok).toBe(true);
+      const studio = tools.tools.find(tool => tool.name === 'open_chart_studio')!;
+      expect(studio._meta?.['openai/ui']).toEqual({ entrypoints: [{ type: 'global' }, { type: 'thread' }] });
+      const launch = await client.callTool({ name: 'open_chart_studio', arguments: {} });
+      expect(launch.isError).toBe(false); expect(OUTPUT_SCHEMAS.open_chart_studio.parse(launch.structuredContent).ok).toBe(true);
+      const refused = await client.callTool({ name: 'open_chart_studio', arguments: { birth: 'private-canary' } });
+      expect(refused.isError).toBe(true); expect(JSON.stringify(refused)).not.toContain('private-canary');
+      const panel = await client.readResource({ uri: STUDIO_URI });
+      expect(panel.contents[0]._meta?.ui).toMatchObject({ csp: { connectDomains: [], resourceDomains: [] } });
+      expect(panel.contents[0]._meta?.['openai/ui']).toMatchObject({ preferredDisplayMode: 'fullscreen' });
+      expect(panel.contents[0]).toHaveProperty('text', expect.stringContaining('Chart Studio'));
       const result = await client.callTool({ name: 'get_sky', arguments: { instant: '2026-10-01T06:00:00Z', zone: 'Asia/Bangkok' } });
       expect(result.isError).toBe(false); expect(OUTPUT_SCHEMAS.get_sky.parse(result.structuredContent).ok).toBe(true);
       const widget = await client.readResource({ uri: WIDGET_URI });

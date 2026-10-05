@@ -1,5 +1,15 @@
 # Release gates and rollback
 
+## Chart Studio implementation — 2026-10-05
+
+Version 0.2.0 adds a browser-local interactive chart panel, explicit reviewed
+selection sharing and record export. Six public entrypoints and nine developer
+tools are packaged. Both local candidates are installed/enabled at 0.2.0;
+full local checks pass. [Chart Studio review](./CHART_STUDIO.md) records the
+scope, screenshots, 6,762 passing tests and remaining live-host/download checks.
+The protected staging app still serves the calendar build described below.
+Chart Studio is not yet a verified ChatGPT release; production remains disabled.
+
 ## Recovery status — 2026-10-05
 
 Main `3491e8e9` is integrated. Complete Site Check (all nineteen jobs) and

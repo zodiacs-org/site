@@ -1,0 +1,47 @@
+{
+  "name": "zodiacs-sky",
+  "version": "0.2.0",
+  "description": "Explore sky events and astronomical facts, or open Chart Studio to inspect an interactive chart calculated in the browser.",
+  "author": {
+    "name": "Zodiacs LLC",
+    "email": "admin@zodiacs.org",
+    "url": "https://zodiacs.org/"
+  },
+  "homepage": "https://zodiacs.org/",
+  "repository": "https://github.com/zodiacs-org/site/tree/main/plugins/zodiacs-sky",
+  "license": "Proprietary",
+  "keywords": [
+    "astrology",
+    "astronomy",
+    "moon",
+    "calendar",
+    "zodiacs"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Zodiacs",
+    "shortDescription": "Sky events and Chart Studio",
+    "longDescription": "Developed by Zodiacs LLC, the operator of Zodiacs.org. See what changes this week, explore new and full Moons, and check astronomical claims with explicit timezones and versioned calculation receipts. The sky calendar supports inline, sidebar and conversation panels. Public-sky tools need no account or birth information. Chart Studio starts with a synthetic example and calculates personal UTC inputs in the browser. Inspect placements and aspects, compare Placidus and whole-sign houses, and download a calculation record. Only reviewed selections are shared with the assistant; derived chart facts can reveal personal information. Event windows are at most 31 days; supported searches cover sign ingresses, planetary stations and lunations, with tested but unproven completeness. No reminders, eclipse search, personal chart storage or predictions of outcomes are offered. This is a review candidate; dated staging host evidence is recorded, while production and directory listing await release checks.\n\nOfficial website: https://zodiacs.org/ . Company and contact: https://zodiacs.org/about/ . Support: admin@zodiacs.org . Methods and developer documentation: https://zodiacs.org/developers/ . Privacy and terms are linked in this profile.",
+    "developerName": "Zodiacs LLC",
+    "category": "Lifestyle",
+    "capabilities": [
+      "Sky calendar",
+      "Astronomical fact checks",
+      "Calculator discovery",
+      "Interactive Chart Studio"
+    ],
+    "websiteURL": "https://zodiacs.org/",
+    "supportURL": "https://zodiacs.org/about/",
+    "privacyPolicyURL": "https://zodiacs.org/privacy/",
+    "termsOfServiceURL": "https://zodiacs.org/terms/",
+    "composerIcon": "./assets/icon.png",
+    "logo": "./assets/icon.png",
+    "defaultPrompt": [
+      "What changes in the sky this week, displayed in Asia/Bangkok?",
+      "Check whether the Sun entered Libra on September 23, 2026.",
+      "Where is the Moon sign calculator?",
+      "Open Chart Studio so I can explore an example chart"
+    ]
+  }
+}

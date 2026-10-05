@@ -3,27 +3,158 @@
   "schema_version": 1,
   "app_info": {
     "display_name": "Zodiacs",
-    "subtitle": "Sky events and fact checks",
-    "description": "Zodiacs computes sky positions, upcoming sign ingresses, planetary stations and new/full Moons with explicit timezones and versioned calculation receipts. Check astronomical claims and find relevant astrology calculators and learning guides. No account or birth information is needed for public-sky tools. Interpretations are separate from astronomical facts.",
+    "subtitle": "Sky events and Chart Studio",
+    "description": "Zodiacs computes sky positions, upcoming sign ingresses, planetary stations and new/full Moons with explicit timezones and versioned calculation receipts. Check astronomical claims and find relevant astrology calculators and learning guides. No account or birth information is needed for public-sky tools. Interpretations are separate from astronomical facts. Chart Studio offers an interactive browser calculation panel with placement inspection, house comparison and downloadable records. Users review a selection before sharing it with the assistant.",
     "category": "LIFESTYLE"
   },
   "tools": {
-    "get_capabilities": { "annotations": { "readOnlyHint": true, "openWorldHint": false, "destructiveHint": false }, "justifications": { "read_only_justification": "Returns fixed versions, limits, conventions and privacy without mutation.", "open_world_justification": "Uses local definitions and does not publish or modify external state.", "destructive_justification": "Deletes, overwrites and revokes nothing." } },
-    "get_sky": { "annotations": { "readOnlyHint": true, "openWorldHint": false, "destructiveHint": false }, "justifications": { "read_only_justification": "Computes sky positions and Moon phase without saving requests or results.", "open_world_justification": "Uses the bundled engine and no arbitrary external resources.", "destructive_justification": "No account, file or external state is modified." } },
-    "get_upcoming_events": { "annotations": { "readOnlyHint": true, "openWorldHint": false, "destructiveHint": false }, "justifications": { "read_only_justification": "Returns bounded computed events without creating calendar entries or reminders.", "open_world_justification": "Searches a bundled ephemeris; optional canonical links perform no publication.", "destructive_justification": "No event or user data is removed or changed." } },
-    "check_sky_fact": { "annotations": { "readOnlyHint": true, "openWorldHint": false, "destructiveHint": false }, "justifications": { "read_only_justification": "Evaluates one astronomical proposition with true, false or depends and no persistence.", "open_world_justification": "Computes from local engine and timezone data; does not edit the supplied claim.", "destructive_justification": "No irreversible action is available." } },
-    "search_zodiacs": { "annotations": { "readOnlyHint": true, "openWorldHint": false, "destructiveHint": false }, "justifications": { "read_only_justification": "Reads a small curated consumer catalogue and returns fixed links.", "open_world_justification": "Does not fetch arbitrary URLs or write to internet state.", "destructive_justification": "No catalogue or user content is edited or removed." } }
+    "get_capabilities": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Returns fixed versions, limits, conventions and privacy without mutation.",
+        "open_world_justification": "Uses local definitions and does not publish or modify external state.",
+        "destructive_justification": "Deletes, overwrites and revokes nothing."
+      }
+    },
+    "get_sky": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Computes sky positions and Moon phase without saving requests or results.",
+        "open_world_justification": "Uses the bundled engine and no arbitrary external resources.",
+        "destructive_justification": "No account, file or external state is modified."
+      }
+    },
+    "get_upcoming_events": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Returns bounded computed events without creating calendar entries or reminders.",
+        "open_world_justification": "Searches a bundled ephemeris; optional canonical links perform no publication.",
+        "destructive_justification": "No event or user data is removed or changed."
+      }
+    },
+    "check_sky_fact": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Evaluates one astronomical proposition with true, false or depends and no persistence.",
+        "open_world_justification": "Computes from local engine and timezone data; does not edit the supplied claim.",
+        "destructive_justification": "No irreversible action is available."
+      }
+    },
+    "search_zodiacs": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Reads a small curated consumer catalogue and returns fixed links.",
+        "open_world_justification": "Does not fetch arbitrary URLs or write to internet state.",
+        "destructive_justification": "No catalogue or user content is edited or removed."
+      }
+    },
+    "open_chart_studio": {
+      "annotations": {
+        "readOnlyHint": true,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Launches a fixed browser panel; it accepts no birth inputs and saves no records on the server.",
+        "open_world_justification": "Returns a bundled resource with no external network dependencies. Optional selection sharing is a separate explicit UI action.",
+        "destructive_justification": "Does not delete or overwrite any chart or account data."
+      }
+    }
   },
   "test_cases": [
-    { "description": "Inspect supported operations before a calculation.", "user_prompt": "What can Zodiacs calculate and which engine version does it use?", "file_attachment_urls": null, "tools_triggered": "get_capabilities", "expected_output": "Lists the five operations, pinned engine, limits, privacy and numerical limitations.", "expected_output_url": null },
-    { "description": "Compute an explicit instant in Bangkok.", "user_prompt": "Show the sky at 06:00 UTC on October 1, 2026, displayed in Asia/Bangkok.", "file_attachment_urls": null, "tools_triggered": "get_sky", "expected_output": "Returns positions and Moon phase at that instant, explicit timezone and UTC, receipt and optional method links.", "expected_output_url": null },
-    { "description": "Find lunar events in a bounded week.", "user_prompt": "Find new and full Moons from October 1 to October 8, 2026, at midnight UTC, displayed in America/New_York.", "file_attachment_urls": null, "tools_triggered": "get_upcoming_events", "expected_output": "Returns the computed events or an honest empty window, localized times and tested-not-proven search coverage.", "expected_output_url": null },
-    { "description": "Preserve an ambiguous date-only ingress claim.", "user_prompt": "Did the Sun enter Libra on September 23, 2026? I haven't chosen a timezone.", "file_attachment_urls": null, "tools_triggered": "check_sky_fact", "expected_output": "Returns depends when the crossing fits some local-day interpretations, explains the date/timezone basis and preserves the receipt.", "expected_output_url": null },
-    { "description": "Find a useful calculator without a required click.", "user_prompt": "Where is the Zodiacs Moon sign calculator?", "file_attachment_urls": null, "tools_triggered": "search_zodiacs", "expected_output": "Returns the canonical Moon sign calculator link and explains its purpose; no personal data appears in the URL.", "expected_output_url": "https://zodiacs.org/moon-sign/" }
+    {
+      "description": "Inspect supported operations before a calculation.",
+      "user_prompt": "What can Zodiacs calculate and which engine version does it use?",
+      "file_attachment_urls": null,
+      "tools_triggered": "get_capabilities",
+      "expected_output": "Lists the six operations, pinned engine, limits, privacy and numerical limitations.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Compute an explicit instant in Bangkok.",
+      "user_prompt": "Show the sky at 06:00 UTC on October 1, 2026, displayed in Asia/Bangkok.",
+      "file_attachment_urls": null,
+      "tools_triggered": "get_sky",
+      "expected_output": "Returns positions and Moon phase at that instant, explicit timezone and UTC, receipt and optional method links.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Find lunar events in a bounded week.",
+      "user_prompt": "Find new and full Moons from October 1 to October 8, 2026, at midnight UTC, displayed in America/New_York.",
+      "file_attachment_urls": null,
+      "tools_triggered": "get_upcoming_events",
+      "expected_output": "Returns the computed events or an honest empty window, localized times and tested-not-proven search coverage.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Preserve an ambiguous date-only ingress claim.",
+      "user_prompt": "Did the Sun enter Libra on September 23, 2026? I haven't chosen a timezone.",
+      "file_attachment_urls": null,
+      "tools_triggered": "check_sky_fact",
+      "expected_output": "Returns depends when the crossing fits some local-day interpretations, explains the date/timezone basis and preserves the receipt.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Find a useful calculator without a required click.",
+      "user_prompt": "Where is the Zodiacs Moon sign calculator?",
+      "file_attachment_urls": null,
+      "tools_triggered": "search_zodiacs",
+      "expected_output": "Returns the canonical Moon sign calculator link and explains its purpose; no personal data appears in the URL.",
+      "expected_output_url": "https://zodiacs.org/moon-sign/"
+    },
+    {
+      "description": "Launch Chart Studio with empty arguments.",
+      "user_prompt": "Open Chart Studio so I can inspect a chart and compare house systems.",
+      "file_attachment_urls": null,
+      "tools_triggered": "open_chart_studio",
+      "expected_output": "Renders a labeled synthetic example. Inputs are calculated in the browser. Supports placement/aspect selection, house comparison and record export; no selected facts are shared before review and confirmation.",
+      "expected_output_url": null
+    }
   ],
   "negative_test_cases": [
-    { "description": "A non-astrology calendar task.", "user_prompt": "Reschedule my work meeting tomorrow.", "file_attachment_urls": null, "tools_triggered": null, "expected_output": "Does not invoke Zodiacs; it has no calendar account or scheduling capability.", "expected_output_url": null },
-    { "description": "A financial outcome request.", "user_prompt": "Tell me which stock will rise based on my horoscope.", "file_attachment_urls": null, "tools_triggered": null, "expected_output": "Does not invoke Zodiacs to predict investment outcomes.", "expected_output_url": null },
-    { "description": "A relationship outcome request.", "user_prompt": "Guarantee that my partner and I will stay together.", "file_attachment_urls": null, "tools_triggered": null, "expected_output": "Does not invoke Zodiacs to predict or guarantee relationship outcomes.", "expected_output_url": null }
+    {
+      "description": "A non-astrology calendar task.",
+      "user_prompt": "Reschedule my work meeting tomorrow.",
+      "file_attachment_urls": null,
+      "tools_triggered": null,
+      "expected_output": "Does not invoke Zodiacs; it has no calendar account or scheduling capability.",
+      "expected_output_url": null
+    },
+    {
+      "description": "A financial outcome request.",
+      "user_prompt": "Tell me which stock will rise based on my horoscope.",
+      "file_attachment_urls": null,
+      "tools_triggered": null,
+      "expected_output": "Does not invoke Zodiacs to predict investment outcomes.",
+      "expected_output_url": null
+    },
+    {
+      "description": "A relationship outcome request.",
+      "user_prompt": "Guarantee that my partner and I will stay together.",
+      "file_attachment_urls": null,
+      "tools_triggered": null,
+      "expected_output": "Does not invoke Zodiacs to predict or guarantee relationship outcomes.",
+      "expected_output_url": null
+    }
   ]
 }

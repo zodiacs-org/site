@@ -11,10 +11,10 @@ ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "integrations" / "packages"
 COMMON = ["plugin.json", "mcp.json", "README.md", "LICENSE", "NOTICE"]
 FILES = {
-    "zodiacs-sky": COMMON,
+    "zodiacs-sky": COMMON + [".mcp.json"],
     "zodiacs-developer": COMMON + ["package.json", "package-lock.json", ".mcp.json", "ENGINE-LICENSE", "ENGINE-NOTICE", "ENGINE-LICENSING"],
 }
-DIRS = {"zodiacs-sky": ["assets", "skills"], "zodiacs-developer": ["assets", "skills", "examples", "mcp", ".codex-plugin"]}
+DIRS = {"zodiacs-sky": ["assets", "skills", ".codex-plugin"], "zodiacs-developer": ["assets", "skills", "examples", "mcp", ".codex-plugin"]}
 
 
 def archive(name):

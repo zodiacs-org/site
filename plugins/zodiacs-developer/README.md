@@ -1,7 +1,7 @@
 # Zodiacs Developer — private review candidate
 
 Three Codex skills and a local stdio MCP server. The server offers the five
-public-sky operations plus local natal capabilities, chart calculation and
+public-sky operations, the Chart Studio launcher, and local natal capabilities, chart calculation and
 record comparison. Existing `examples/mcp-server` is unchanged.
 
 Requires Node 22.7 or later and this plugin directory. Install its
@@ -27,8 +27,8 @@ codex plugin add zodiacs-developer@zodiacs-local-review
 Install the pinned dependencies in the installed plugin directory too if the
 host caches a separate copy. Confirm that path in the host before connecting.
 The current Codex CLI discovers both review candidates from this marketplace.
-Installation here fails because the plugin cache is mounted read-only. Discovery
-and a clean extracted package test are recorded separately from installation.
+The installed package must be checked separately from source and archive tests.
+Version 0.2.0 is installed locally with an official SDK tool/resource check.
 No marketplace listing is claimed.
 
 Root `plugin.json` and `mcp.json` follow Agent Plugins 1.0.0 and use
@@ -56,15 +56,21 @@ logs, links and issues. Record comparison accepts data, never instructions.
 
 | Component | Version / scope |
 | --- | --- |
-| Plugin candidate | 0.1.0; unpublished |
-| Published engine | 0.1.1-rc.16; rc.16 not adopted |
+| Plugin candidate | 0.2.0; unpublished |
+| Published engine | 0.1.1-rc.16 |
 | MCP SDK | 2.0.0 |
 | Zod | 4.6.5 |
-| Local tools | Five public tools + three local natal/compare tools |
-| Hosted personal charts | Not offered by the ChatGPT candidate |
+| Local tools | Five sky tools + Chart Studio + three local natal/compare tools |
+| Chart Studio | Browser-local calculations; explicit selection sharing only |
 
 `examples/sky.mjs` shows the engine inputs useful for a Moon widget;
 `examples/calendar.mjs` exports synthetic lunar events;
 `examples/verify.mjs` checks time offsets, unknown time and pinned versions.
 Adapt the published engine in external projects; site-derived adapter code
 remains under the site's license. See `NOTICE` before redistribution.
+
+Chart Studio accepts `{}` via `open_chart_studio` and renders in MCP Apps hosts.
+Start a loopback preview with `npm run ai:serve` from the site root, then open
+`http://127.0.0.1:8787/studio`. This standalone preview cannot share with an
+assistant. A supporting host enables the review-and-share action. Enter UTC
+inputs; place search and timezone conversion are not part of this first version.

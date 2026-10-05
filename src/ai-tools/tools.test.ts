@@ -7,7 +7,7 @@ import { AI_TOOL_NAMES } from './contracts';
 const dependencies = { now: () => new Date('2026-10-01T06:00:00Z') };
 
 describe('public AI tools', () => {
-  it('advertises the published engine and bounded five-tool surface', async () => {
+  it('advertises the published engine and bounded tool surface', async () => {
     const result = await executeAiTool('get_capabilities', {}, dependencies);
     expect(result.ok).toBe(true);
     if (result.ok && result.tool === 'get_capabilities') {

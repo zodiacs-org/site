@@ -17,7 +17,7 @@ export interface AiDependencies {
   allowEvents?: () => Promise<'allowed' | 'limited' | 'unavailable'>;
 }
 
-const PRIVACY = 'Public-sky tools need no birth details and save no request or result. The assistant provider can receive tool arguments and results. Hosted calculations run on Zodiacs infrastructure; the local developer server runs on its own machine. Hosting-layer request metadata has a separate retention policy.';
+const PRIVACY = 'Public-sky tools need no birth details and save no request or result. The assistant provider can receive tool arguments and results. Hosted calculations run on Zodiacs infrastructure; the local developer server runs on its own machine. Chart Studio calculates in the browser; only explicitly reviewed selections are sent to the assistant, and downloaded records contain personal chart data. Hosting-layer request metadata has a separate retention policy.';
 const methodLink = { title: 'How these calculations work', url: `${ORIGIN}/developers/compute/` };
 const moonLink = { title: 'Explore Moon phases', url: `${ORIGIN}/moon-phase/` };
 const LIMITS = { from: EPOCH.from, to: EPOCH.to, eventWindowDays: MAX_EVENT_DAYS, eventKinds: [...EVENT_KINDS], samples: BUDGETS['events.samples'], factSamples: BUDGETS['sky-fact.samples'], searchResults: 5 };
@@ -41,6 +41,11 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
     let data: unknown;
     let links = [methodLink];
     switch (tool) {
+      case 'open_chart_studio': {
+        data = { title: 'Chart Studio', calculation: 'browser-local', initialChart: 'synthetic-example', sharing: 'user-reviewed-selection-only' };
+        links = [];
+        break;
+      }
       case 'get_capabilities': {
         const statements = engineStatements();
         data = { name: 'Zodiacs', version: AI_VERSION, engine: BACKEND, tools: [...AI_TOOL_NAMES], limits: LIMITS, conventions: statements.conventions, coverage: statements.coverage, privacy: PRIVACY, limitations: ['Tropical geocentric positions; supported reference span is stated in each receipt.', 'Event completeness is tested, not proven. Budget exhaustion refuses the whole search.', 'No eclipse or aspect search, birth-time rectification, predictions, reminders or account access.', 'Search covers curated consumer guides, not the full website.', 'Current means the server instant; daily sky files are separate noon-UTC snapshots.'] };

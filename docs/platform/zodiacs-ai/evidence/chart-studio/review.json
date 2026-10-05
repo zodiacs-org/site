@@ -1,0 +1,87 @@
+{
+  "schema": "zodiacs.chart-studio-review.v1",
+  "reviewedAt": "2026-10-05T16:51:59.577927+00:00",
+  "baseCommit": "4ec54ff318a7e4d36dc08b9f42a69abbc756d25a",
+  "scope": "Local implementation, official MCP clients, in-app browser and synthetic host only. No live ChatGPT Studio acceptance.",
+  "engine": "0.1.1-rc.16",
+  "pluginVersion": "0.2.0",
+  "sourceHashes": {
+    "src/ai-tools/studio/app.tsx": "1ba887533290a13b64a275bf305527fa7d969881a7c4a3ec3378843cccd2121e",
+    "src/ai-tools/studio/style.css": "b233324a5be8b3cb528350af1caa758570af3ba4e78ef3b3826bb98eca555ecd",
+    "src/ai-tools/studio/model.ts": "574d1fd3db9fe2a8e5e28b5bda802d965c79f9862623bac9e4c19ccc3d4ab232",
+    "src/ai-tools/studio/bridge.ts": "2ae860805612ed076fe75307b96d16cab6c30951cccc3f02225335a591fac660",
+    "integrations/generated/chart-studio.mjs": "bbf41d7af90405ec74a5a01a7716096bb6f25c447056c3a46786a9725710d7e6",
+    "integrations/packages/zodiacs-sky-0.2.0.zip": "e158c1853ae7d67404bb76e79050c07b85c975be5376984dfcd7d212ededd31b",
+    "integrations/packages/zodiacs-developer-0.2.0.zip": "bfc3b1b18b58c2aa96f0c16ec38e5effcbbf57a42e023c13a358e57a51e7036e"
+  },
+  "checks": {
+    "build": "pass; 4416 pages and postbuild gates",
+    "typecheck": {
+      "errors": 0,
+      "warnings": 0,
+      "hints": 40
+    },
+    "fullSuite": {
+      "passed": 6762,
+      "skipped": 5,
+      "filesPassed": 522
+    },
+    "aiTests": 54,
+    "adapterEvaluations": {
+      "passed": 40,
+      "total": 40
+    },
+    "stdioTools": 9,
+    "installedBundle": "pass, nine tools and Studio resource",
+    "packages": "reproducible bundle/manifest/member checks pass"
+  },
+  "browser": {
+    "viewports": [
+      {
+        "width": 1280,
+        "height": 900
+      },
+      {
+        "width": 360,
+        "height": 780,
+        "documentWidth": 345
+      }
+    ],
+    "observedConsoleErrors": [],
+    "passed": [
+      "twelve embedded sign images",
+      "house comparison",
+      "unknown-time form and absence of houses/angles",
+      "pointer Sun selection",
+      "keyboard Venus selection",
+      "receipt view",
+      "zero facts shared before confirmation",
+      "context attachment after explicit action",
+      "message fallback after explicit action",
+      "host refusal displayed"
+    ]
+  },
+  "notVerified": [
+    "Live ChatGPT Chart Studio resource, CSP and entrypoints",
+    "Completed saved-file download: in-app browser download event timed out",
+    "Human beta acceptance",
+    "Public release"
+  ],
+  "captures": [
+    {
+      "file": "chart-studio-desktop-full.jpg",
+      "bytes": 141718,
+      "sha256": "83ec7cf9268dbce813b2d84ddcb49d70ac06ac5cf0e264b6f0ddb43964c70ea7"
+    },
+    {
+      "file": "chart-studio-desktop.jpg",
+      "bytes": 64727,
+      "sha256": "b3caa0b476d972f342eece21c4ccb60f54a5ea2a8ca9f26ce95eed480903330d"
+    },
+    {
+      "file": "chart-studio-mobile.jpg",
+      "bytes": 86984,
+      "sha256": "92f9127086601ae798fb5df1e1080deb3765b71a0a90de331610301dc21e4c43"
+    }
+  ]
+}

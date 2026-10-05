@@ -147,6 +147,10 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   `--check` runs in CI)
 - `api/_assistant/context.ts` ← `vite-node --script
   scripts/build-assistant-context.mjs` (committed assistant site guide)
+- `plugins/zodiacs-sky/.codex-plugin/plugin.json` and `plugins/zodiacs-sky/.mcp.json` ← `scripts/build-ai-integrations.mjs` from the portable Sky manifest.
+- `integrations/generated/chart-studio.mjs` ← `scripts/build-chart-studio.mjs`
+  through `npm run ai:build`; standalone browser bundle with inline fonts/icons.
+  Its sources are `src/ai-tools/studio/`; never edit the generated HTML string.
 - `api/_ai/runtime.mjs`, `plugins/zodiacs-developer/mcp/server.mjs` and the
   developer's portable `plugin.json`/`mcp.json` ← `npm run ai:build` (sources
   `src/ai-tools/` and the compatibility manifest). `integrations/packages/`

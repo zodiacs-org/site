@@ -25,11 +25,16 @@ const client = new Client({ name: 'zodiacs-plugin-review', version: '1.0.0' });
 await client.connect(transport);
 let stderr = ''; transport.stderr?.on('data', data => { stderr += data; });
 try {
-  const tools = await client.listTools(); assert.equal(tools.tools.length, 8);
+  const tools = await client.listTools(); assert.equal(tools.tools.length, 9);
   for (const tool of tools.tools) assert.equal(tool.annotations.readOnlyHint, true);
   const call = async (name, args = {}) => {
     const result = await client.callTool({ name, arguments: args }); assert.equal(result.isError ?? false, false, `${name}: ${JSON.stringify(result)}`); return result.structuredContent;
   };
+  const studio = await call('open_chart_studio'); assert.equal(studio.data.calculation, 'browser-local');
+  const panel = await client.readResource({ uri: 'ui://zodiacs/chart-studio-v1.html' });
+  assert.equal(panel.contents[0].mimeType, 'text/html;profile=mcp-app');
+  assert.ok(panel.contents[0].text.includes('Chart Studio'));
+  assert.ok(panel.contents[0].text.length > 100_000);
   await call('get_capabilities'); const local = await call('get_local_chart_capabilities'); assert.equal(local.engine.releaseStatus, 'published');
   const sky = await call('get_sky', { instant: '2026-10-01T06:00:00Z' }); assert.equal(sky.data.calculation.cite.version, '0.1.1-rc.16');
   await call('get_upcoming_events', { from: '2026-10-01T00:00:00Z', to: '2026-10-08T00:00:00Z', kinds: ['lunation'] });
@@ -42,5 +47,5 @@ try {
   assert.equal(refusal.isError, true); assert.ok(!JSON.stringify(refusal).includes('private-canary'));
   await call('get_capabilities');
   assert.ok(!stderr.includes('private-canary'));
-  console.log('Developer bundle: manifest, three skills, eight MCP tools, synthetic record comparison and privacy recovery passed.');
+  console.log('Developer bundle: manifest, three skills, nine MCP tools, synthetic record comparison and privacy recovery passed.');
 } finally { await client.close(); }

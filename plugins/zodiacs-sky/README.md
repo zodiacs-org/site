@@ -12,7 +12,7 @@ hosting metadata retention still require review.
 
 From the site checkout, `npm run ai:package` creates deterministic review ZIPs.
 The ZIP contains root `plugin.json`, `mcp.json`, its skill, icon and notices.
-Its five positive and three negative review cases are proposed expectations;
+Its six positive and three negative review cases are proposed expectations;
 real ChatGPT tool selection, screenshots and the required walkthrough remain
 launch gates. Credentials and domain-verification tokens belong outside the ZIP.
 
@@ -21,3 +21,11 @@ server first. Refresh metadata after changes. Then install the complete package
 from the local marketplace and test the skill and native calendar in a new
 conversation. Public upload, domain verification, review and publication require
 the verified publisher's account. See `docs/platform/zodiacs-ai/LAUNCH.md`.
+
+Version 0.2.0 also declares a Chart Studio entrypoint (`open_chart_studio`, `{}`).
+Its self-contained panel calculates in the browser, supports Placidus/whole-sign
+comparison, and exports versioned chart records. Only a reviewed selection is
+shared on an explicit user action. The panel starts with synthetic inputs and
+requires UTC date/time; unknown time uses a labeled noon reference with no
+houses or angles. Personal records are not stored. Prior calendar host acceptance
+does not establish Chart Studio acceptance; verify this version in ChatGPT.
