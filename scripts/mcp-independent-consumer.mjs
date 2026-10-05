@@ -129,6 +129,88 @@ function option(name) {
 }
 async function jsonFile(path) { return JSON.parse(await readFile(path, 'utf8')); }
 async function save(path, value) { await writeFile(path, `${JSON.stringify(value, null, 2)}\n`); }
+export async function prepareOutputDirectory(out) {
+  await mkdir(dirname(out), { recursive: true });
+  try { await mkdir(out); }
+  catch (error) {
+    if (error.code !== 'EEXIST') throw error;
+    assert.fail('output directory already exists; use a new output directory');
+  }
+}
+export const HTTP_EVIDENCE_LIMITS = Object.freeze({ bodyBytes: 256 * 1024, headerBytes: 16 * 1024 });
+function failureDetail(error) {
+  return { name: error.name, message: error.message, ...(error.code ? { code: error.code } : {}),
+    ...(error.cause ? { cause: { name: error.cause.name, message: error.cause.message,
+      ...(error.cause.code ? { code: error.cause.code } : {}) } } : {}) };
+}
+export async function captureHttpResponse(row, origin, records, evidencePath, fetchImpl = fetch) {
+  const record = { ...row, status: null, headers: Object.create(null), headersBytes: 0, headersTruncated: false,
+    text: '', body: { limitBytes: HTTP_EVIDENCE_LIMITS.bodyBytes, capturedBytes: 0, observedBytes: 0, truncated: false },
+    state: 'fetching' };
+  records.push(record);
+  await save(evidencePath, records);
+  let stage = 'fetch', reader;
+  const chunks = [];
+  const snapshotBody = () => {
+    const bytes = Buffer.concat(chunks);
+    record.text = bytes.toString('utf8');
+    record.body.capturedBytes = bytes.length;
+    record.body.capturedSha256 = sha256(bytes);
+  };
+  try {
+    const response = await fetchImpl(`${origin}/api/v1/${row.endpoint}`, { method: 'POST',
+      headers: { 'content-type': 'application/json' }, body: JSON.stringify(row.args),
+      signal: AbortSignal.timeout(10000), redirect: 'error' });
+    record.status = response.status;
+    stage = 'headers';
+    for (const [name, value] of response.headers) {
+      const size = Buffer.byteLength(name) + Buffer.byteLength(value);
+      if (record.headersBytes + size > HTTP_EVIDENCE_LIMITS.headerBytes) {
+        record.headersTruncated = true;
+        break;
+      }
+      record.headers[name] = value;
+      record.headersBytes += size;
+    }
+    record.state = 'reading-body';
+    await save(evidencePath, records);
+    assert(!record.headersTruncated, 'HTTP headers exceed evidence byte limit; stopping');
+    stage = 'body';
+    reader = response.body?.getReader();
+    while (reader) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      const bytes = Buffer.from(value);
+      const remaining = HTTP_EVIDENCE_LIMITS.bodyBytes - record.body.capturedBytes;
+      record.body.observedBytes += bytes.length;
+      chunks.push(bytes.subarray(0, Math.max(0, remaining)));
+      record.body.capturedBytes += Math.min(bytes.length, Math.max(0, remaining));
+      if (bytes.length > remaining) {
+        record.body.truncated = true;
+        // Cancellation is best effort; preserve the byte-limit failure itself.
+        await reader.cancel('HTTP evidence byte limit').catch(() => {});
+        assert.fail('HTTP body exceeds evidence byte limit; stopping');
+      }
+    }
+    snapshotBody();
+    record.state = 'parse-pending';
+    // Raw status, bounded headers and body are durable BEFORE JSON.parse.
+    await save(evidencePath, records);
+    stage = 'status';
+    assert(![429, 500, 503].includes(response.status), `unexpected HTTP ${response.status}; stopping`);
+    stage = 'parse';
+    record.value = JSON.parse(record.text);
+    record.state = 'parsed';
+    await save(evidencePath, records);
+    return record;
+  } catch (error) {
+    snapshotBody();
+    record.state = 'failed';
+    record.failure = { stage, ...failureDetail(error) };
+    await save(evidencePath, records);
+    throw error;
+  } finally { reader?.releaseLock(); }
+}
 function cleanEnv() {
   // Do not hand the consumer credentials, NODE_PATH, preload hooks or repo env.
   const network = Object.fromEntries(['HTTP_PROXY', 'HTTPS_PROXY', 'ALL_PROXY', 'NO_PROXY', 'NODE_EXTRA_CA_CERTS']
@@ -270,7 +352,9 @@ async function generateOpenApi(out) {
 async function main(pinPath, out) {
   assert(pinPath && out, 'usage: node scripts/mcp-independent-consumer.mjs --pin FILE --out DIRECTORY [--archive FILE]');
   const pin = await jsonFile(resolve(pinPath));
-  await mkdir(out, { recursive: true });
+  // Atomic creation rejects even empty existing directories and symlinks.
+  // Never overwrite or remove evidence from a prior run.
+  await prepareOutputDirectory(out);
   const report = { schema: 'zodiacs.independent-consumer-evidence.v1', startedAt: new Date().toISOString(),
     node: process.version, pin, status: 'running', checks: [], httpRequests: 0,
     live: { status: 'inconclusive', requests: 0, reason: 'No live deployment source binding was established; selected source-bound loopback HTTP.' },
@@ -381,15 +465,7 @@ async function main(pinPath, out) {
     report.cases = [];
     const post = async row => {
       report.httpRequests += 1;
-      const response = await fetch(`${origin}/api/v1/${row.endpoint}`, { method: 'POST',
-        headers: { 'content-type': 'application/json' }, body: JSON.stringify(row.args), signal: AbortSignal.timeout(10000), redirect: 'error' });
-      const text = await response.text();
-      const record = { ...row, status: response.status, headers: Object.fromEntries(response.headers), text, value: JSON.parse(text) };
-      http.push(record);
-      // Preserve raw evidence even if validation below fails.
-      await save(join(out, 'http.json'), http);
-      assert(![429, 500, 503].includes(response.status), `unexpected HTTP ${response.status}; stopping`);
-      return record;
+      return captureHttpResponse(row, origin, http, join(out, 'http.json'));
     };
     for (const row of CORPUS) {
       const response = await post(row);

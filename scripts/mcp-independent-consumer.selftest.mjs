@@ -1,8 +1,13 @@
 import assert from 'node:assert/strict';
 import { after, test } from 'node:test';
 import { writeFileSync } from 'node:fs';
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { spawnSync } from 'node:child_process';
+import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import {
   assertArchive, assertBackend, assertCapabilities, assertParity, assertReply, canonical, CORPUS, digest, sha256,
+  captureHttpResponse, HTTP_EVIDENCE_LIMITS, prepareOutputDirectory,
 } from './mcp-independent-consumer.mjs';
 
 const pin = { adapterVersion: '0.1.0-rc.16.3', engineVersion: '0.1.1-rc.16', ephemerisVersion: '2.1.19' };
@@ -26,6 +31,16 @@ function mustReject(id, fn, pattern, assertion) {
     assert.match(error.message, pattern, `${id}: wrong failure message`);
     rejectionEvidence.push({ id, assertion, expectedMessage: pattern.source,
       actualCode: error.code, actualMessage: error.message });
+    return true;
+  });
+}
+async function mustRejectAsync(id, fn, pattern, assertion, name = 'AssertionError') {
+  await assert.rejects(fn, error => {
+    assert.equal(error.name, name, `${id}: wrong failure type`);
+    if (name === 'AssertionError') assert.equal(error.code, 'ERR_ASSERTION');
+    assert.match(error.message, pattern, `${id}: wrong failure message`);
+    rejectionEvidence.push({ id, assertion, expectedMessage: pattern.source,
+      actualCode: error.code ?? null, actualName: error.name, actualMessage: error.message });
     return true;
   });
 }
@@ -114,4 +129,106 @@ test('parity allows only exact documentation URL substitution', () => {
   http.cite.url = 'https://example.invalid/';
   mustReject('wrong-citation-url', () => assertParity(mcp, http, row, pin), /citation URL/,
     'assert.equal(value.cite?.url, exact transport documentation anchor, "citation URL")');
+});
+
+test('malformed and non-JSON HTTP bodies survive failed parsing alongside earlier evidence', async () => {
+  const scratch = await mkdtemp('/tmp/zodiacs-http-parse-control-');
+  try {
+    const path = join(scratch, 'http.json');
+    const records = [{ id: 'earlier-evidence', text: 'unchanged' }];
+    for (const [id, text] of [['malformed-json', '{"unfinished":'], ['non-json', '<html>gateway</html>']]) {
+      const previous = clone(records);
+      await mustRejectAsync(id, () => captureHttpResponse({ id, endpoint: 'positions', args: {} },
+        'http://synthetic.invalid', records, path, async () => new Response(text, {
+          status: 200, headers: { 'content-type': 'text/html', 'x-control': id },
+        })), /JSON/, 'record.value = JSON.parse(record.text), after save(raw evidence)', 'SyntaxError');
+      const saved = JSON.parse(await readFile(path, 'utf8'));
+      assert.deepEqual(saved.slice(0, -1), previous, 'prior HTTP records must survive');
+      const record = saved.at(-1);
+      assert.equal(record.status, 200);
+      assert.equal(record.headers['x-control'], id);
+      assert.equal(record.text, text);
+      assert.equal(record.body.capturedSha256, sha256(text));
+      assert.equal(record.state, 'failed');
+      assert.equal(record.failure.stage, 'parse');
+      assert.equal(record.failure.name, 'SyntaxError');
+      assert.equal(Object.hasOwn(record, 'value'), false, 'failed parse cannot invent a result');
+    }
+  } finally { await rm(scratch, { recursive: true, force: true }); }
+});
+
+test('fetch and interrupted-body failures retain honest status and partial bytes', async () => {
+  const scratch = await mkdtemp('/tmp/zodiacs-http-transport-control-');
+  try {
+    const path = join(scratch, 'http.json'), records = [];
+    await mustRejectAsync('http-fetch-failure', () => captureHttpResponse(CORPUS[0], 'http://synthetic.invalid', records, path,
+      async () => { throw new TypeError('synthetic fetch failure', { cause: Object.assign(new Error('synthetic reset'), { code: 'ECONNRESET' }) }); }),
+    /synthetic fetch failure/, 'fetch failure saved with null response status', 'TypeError');
+    let saved = JSON.parse(await readFile(path, 'utf8'));
+    assert.equal(saved[0].status, null);
+    assert.deepEqual(saved[0].headers, {});
+    assert.equal(saved[0].failure.stage, 'fetch');
+    assert.equal(saved[0].failure.cause.code, 'ECONNRESET');
+    const prefix = '{"partial":';
+    let reads = 0, released = false;
+    await mustRejectAsync('http-body-failure', () => captureHttpResponse(CORPUS[0], 'http://synthetic.invalid', records, path,
+      async () => ({ status: 200, headers: new Headers({ 'content-type': 'application/json' }), body: { getReader: () => ({
+        async read() { if (!reads++) return { done: false, value: Buffer.from(prefix) }; throw new TypeError('synthetic body failure'); },
+        releaseLock() { released = true; },
+      }) } })), /synthetic body failure/, 'body failure saved with received status and partial raw body', 'TypeError');
+    saved = JSON.parse(await readFile(path, 'utf8'));
+    assert.deepEqual(saved[0], clone(records[0]), 'prior transport failure remains intact');
+    assert.equal(saved[1].status, 200);
+    assert.equal(saved[1].text, prefix);
+    assert.equal(saved[1].body.capturedSha256, sha256(prefix));
+    assert.equal(saved[1].failure.stage, 'body');
+    assert.equal(Object.hasOwn(saved[1], 'value'), false);
+    assert(released);
+  } finally { await rm(scratch, { recursive: true, force: true }); }
+});
+
+test('oversized HTTP body and headers stop with explicitly bounded evidence', async () => {
+  const scratch = await mkdtemp('/tmp/zodiacs-http-bound-control-');
+  try {
+    const path = join(scratch, 'http.json'), records = [];
+    await mustRejectAsync('http-body-byte-limit', () => captureHttpResponse(CORPUS[0], 'http://synthetic.invalid', records, path,
+      async () => new Response('x'.repeat(HTTP_EVIDENCE_LIMITS.bodyBytes + 1))), /HTTP body exceeds evidence byte limit/,
+    'assert.fail("HTTP body exceeds evidence byte limit; stopping")');
+    let saved = JSON.parse(await readFile(path, 'utf8'));
+    assert.equal(saved[0].body.capturedBytes, HTTP_EVIDENCE_LIMITS.bodyBytes);
+    assert.equal(Buffer.byteLength(saved[0].text), HTTP_EVIDENCE_LIMITS.bodyBytes);
+    assert.equal(saved[0].body.observedBytes, HTTP_EVIDENCE_LIMITS.bodyBytes + 1);
+    assert(saved[0].body.truncated);
+    assert.equal(saved[0].failure.stage, 'body');
+    await mustRejectAsync('http-header-byte-limit', () => captureHttpResponse(CORPUS[0], 'http://synthetic.invalid', records, path,
+      async () => new Response('{}', { headers: { 'x-large': 'x'.repeat(HTTP_EVIDENCE_LIMITS.headerBytes + 1) } })),
+    /HTTP headers exceed evidence byte limit/, 'assert(!record.headersTruncated, "HTTP headers exceed evidence byte limit; stopping")');
+    saved = JSON.parse(await readFile(path, 'utf8'));
+    assert(saved[1].headersBytes <= HTTP_EVIDENCE_LIMITS.headerBytes);
+    assert(saved[1].headersTruncated);
+    assert.equal(saved[1].failure.stage, 'headers');
+    assert.equal(saved[1].text, '');
+  } finally { await rm(scratch, { recursive: true, force: true }); }
+});
+
+test('stale output directory is rejected by helper and CLI without changing original evidence', async () => {
+  const scratch = await mkdtemp('/tmp/zodiacs-output-control-');
+  try {
+    const out = join(scratch, 'evidence');
+    await prepareOutputDirectory(out);
+    const originals = { 'mcp.json': '{"old":"MCP"}\n', 'http.json': '{"old":"HTTP"}\n',
+      'report.json': '{"old":"report"}\n', 'unrelated.txt': 'owner content\n' };
+    for (const [name, text] of Object.entries(originals)) await writeFile(join(out, name), text);
+    await mustRejectAsync('stale-output-directory', () => prepareOutputDirectory(out), /output directory already exists/,
+      'atomic mkdir(out) rejects EEXIST before any evidence write');
+    const pinPath = join(scratch, 'pin.json');
+    await writeFile(pinPath, '{}');
+    const runner = fileURLToPath(new URL('./mcp-independent-consumer.mjs', import.meta.url));
+    const result = spawnSync(process.execPath, [runner, '--pin', pinPath, '--out', out], { encoding: 'utf8' });
+    assert.equal(result.status, 1, 'CLI must fail before source checks or requests');
+    assert.match(result.stderr, /output directory already exists/);
+    assert.equal(result.stdout, '', 'CLI must not claim a new report was written');
+    for (const [name, text] of Object.entries(originals)) assert.equal(await readFile(join(out, name), 'utf8'), text,
+      `${name}: original evidence must remain byte-identical`);
+  } finally { await rm(scratch, { recursive: true, force: true }); }
 });
