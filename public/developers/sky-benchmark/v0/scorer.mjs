@@ -48,14 +48,12 @@
  *            closing emphasis or quote, any space and any aside in brackets
  *            on the same line, by one of , ! ? ; : ) ] | — –, by a full stop
  *            that does not begin an ellipsis, by a hyphen with a space or
- *            another hyphen after it, by an ellipsis that ends the line (or,
- *            for YES, by any ellipsis, since "yes" never comes before a noun
- *            as "no" does), or by the end of a line; or, at the start of a
- *            line or a sentence, by ( or an ellipsis. So "no idea", "no-one",
- *            "there is no station", "no... certainty" and "no (direct) way"
- *            are not NO, and "No (it was direct) all day" opening a line,
- *            "the answer is no (it was direct)." and "the answer is no..."
- *            are, as "the answer is yes... I think" is YES.
+ *            another hyphen after it, by an ellipsis that ends the line, or
+ *            by the end of a line; or, at the start of a line or a sentence,
+ *            by ( or an ellipsis. So "no idea", "no-one", "there is no
+ *            station", "no... certainty" and "no (direct) way" are not NO,
+ *            and "No (it was direct) all day" opening a line, "the answer is
+ *            no (it was direct)." and "the answer is no..." are.
  *            YES, NO and DEPENDS joined by "or", "nor", a slash or a bar with
  *            no space around it, with commas before the last, any quotes or
  *            emphasis around each and any aside in brackets after each, only
@@ -64,27 +62,36 @@
  *            (retrograde) or no (direct)". A "no" before such a list is not
  *            NO either: "there is no yes/no". A table's cells, "| NO | NO |",
  *            are not a list.
- *            A hedge names both YES and NO: a reply with NO standing alone
- *            names YES too if it says "yes" anywhere else, and one with YES
- *            standing alone names NO too if it has a "no" before an ellipsis,
- *            a bracket, or one of and, or, but, if, in, for, at, on, when,
- *            before, after, until, from, depending, elsewhere, otherwise,
- *            maybe, perhaps and yes. So "yes and no", "yes... and no", "yes
- *            (in Tokyo) but no (in London)", "In London, no... in Tokyo,
- *            yes" and "Yes, before noon; no after" name nothing.
+ *            A hedge names both YES and NO. "Yes and no" and "no and yes" do,
+ *            with or without an ellipsis or an aside in brackets after the
+ *            first word. So does a reply with one of YES and NO standing
+ *            alone and the other in a hedge: before an ellipsis, a bracket,
+ *            the first word, or one of and, or, but, if, unless, except, in,
+ *            for, at, on, by, when, while, whereas, before, after,
+ *            afterwards, thereafter, until, from, since, once, during,
+ *            outside, under, beyond, around, west, east, elsewhere,
+ *            otherwise, though, although, depending, maybe and perhaps; or
+ *            after "but", "though", "although" or "yet". So "yes... and no
+ *            really", "yes (in Tokyo) but no (in London)", "In London, no...
+ *            in Tokyo, yes" and "Yes, before noon; no after" name nothing,
+ *            while "No, so a yes would be wrong" is NO and "Yes, with no
+ *            station that day" is YES.
  *            DEPENDS counts as the word "depends". A date may also be written
  *            as 7 March 2023, 7th of March 2023, March 7, 2023, Mar. 7 2023,
  *            7 Sept 2023 or 2023/03/07, and a YYYY-MM-DD date may run on into
- *            a time. Two days joined by "or", "and", "to", "through", a dash
- *            or a slash name two dates when one month and year follow them
- *            ("18 or 19 March 2041", "18 March or 19 March 2041", "March
- *            19–20, 2041") or when the first is a YYYY-MM-DD date and the
- *            second a later day not followed by a digit, a colon or a hyphen
- *            ("2041-03-18/19", "2041-03-18 or 19", but not "2041-03-18 to
- *            19:00"). The first of two days before a month may not follow a
- *            letter, a digit, a colon, a full stop, a plus, a hyphen, a minus
- *            sign or #, so "UTC+10 – 8 March 2023" names 8 March and "~18–19
- *            March 2041" names two dates. A date the calendar does not have,
+ *            a time. Two days joined by "or", "and", "and/or", "&", "to",
+ *            "through", "thru", a dash or a slash name two dates when one
+ *            month and year follow them ("18 or 19 March 2041", "18 March or
+ *            19 March 2041", "March 19–20, 2041"), or when the first is a
+ *            YYYY-MM-DD or YYYY/MM/DD date and the second a day not followed
+ *            by a digit, a colon, a hyphen or a unit such as days, hours, h,
+ *            am or degrees ("2041-03-18/19" and "2041-03-21 or 20", but not
+ *            "2041-03-18 to 19:00" or "2041-03-05, and 7 days later"). The
+ *            first of two days before a month may not follow a letter, a
+ *            digit, a colon, a full stop, a plus, a hyphen, a minus sign, #,
+ *            or a dash after a letter or a digit, so "UTC+10 – 8 March 2023"
+ *            and "UTC–10 – 8 March 2023" name 8 March and "~18–19 March 2041"
+ *            names two dates. A date the calendar does not have,
  *            such as 29 February 2041, still counts as a date the reply
  *            names, and is never right: "2041-02-28 or 2041-02-29" and "28 or
  *            29 February 2041" read as nothing, and so does a reply whose
@@ -169,8 +176,10 @@ function strictValue(kind, line) {
 
 const MONTH_NAMES = `(${MONTHS.map((name) => (name === 'september' ? 'september|sept\\.?|sep\\.?' : `${name}|${name.slice(0, 3)}\\.?`)).join('|')})`;
 const monthNumber = (word) => MONTHS.findIndex((name) => word.toLowerCase().startsWith(name.slice(0, 3))) + 1;
-/** What joins two days: "or", "and", "to" or "through", a dash or a slash. */
-const JOINED = '(?:\\s*,?\\s+(?:or|and|to|through)\\s+(?:the\\s+)?|\\s*[-–—/]\\s*)';
+/** What joins two days: "or", "and", "and/or", "&", "to", "through" or "thru", a dash or a slash. */
+const JOINED = '(?:\\s*,?\\s+(?:and\\/or|or|and|&|to|through|thru)\\s+(?:the\\s+)?|\\s*[-–—/&]\\s*)';
+/** What a number after a date may be instead of a day: a count of time or of degrees, or a part of a time of day. */
+const NOT_A_DAY = '(?![\\d:\\-]|(?:st|nd|rd|th)?\\s?(?:(?:days?|nights?|hours?|hrs?|h|minutes?|mins?|m|seconds?|secs?|s|weeks?|wks?|months?|years?|yrs?|degrees?|am|pm)\\b|a\\.m\\.|p\\.m\\.|[°′″%]))';
 /** A date the calendar does not have: still a date the reply names, and never a right one. */
 const NO_SUCH_DAY = 'no such day';
 
@@ -187,9 +196,9 @@ function datesIn(text) {
     add(match[3], monthNumber(match[1]), match[2]);
   }
   // Two days before one month and year: "18 or 19 March 2041" and "18 March or 19 March 2041" name both days. The first
-  // may not follow a letter, a digit, a colon, a full stop, a plus, a hyphen, a minus or #, so "UTC+10 – 8 March 2023"
-  // names only the 8th, and "~18–19 March 2041" names both.
-  for (const match of text.matchAll(new RegExp(`(?:^|[^\\p{L}\\p{N}:.+\\-−#])(\\d{1,2})(?:st|nd|rd|th)?(?:\\s+(?:of\\s+)?${MONTH_NAMES})?${JOINED}(\\d{1,2})(?:st|nd|rd|th)?\\s+(?:of\\s+)?${MONTH_NAMES}\\s*,?\\s+(\\d{4})\\b`, 'giu'))) {
+  // may not follow a letter, a digit, a colon, a full stop, a plus, a hyphen, a minus, # or a dash after a letter or a
+  // digit, so "UTC+10 – 8 March 2023" and "UTC–10 – 8 March 2023" name only the 8th, and "~18–19 March 2041" names both.
+  for (const match of text.matchAll(new RegExp(`(?:^|[^\\p{L}\\p{N}:.+\\-−#])(?<![\\p{L}\\p{N}][–—])(\\d{1,2})(?:st|nd|rd|th)?(?:\\s+(?:of\\s+)?${MONTH_NAMES})?${JOINED}(\\d{1,2})(?:st|nd|rd|th)?\\s+(?:of\\s+)?${MONTH_NAMES}\\s*,?\\s+(\\d{4})\\b`, 'giu'))) {
     add(match[5], monthNumber(match[2] ?? match[4]), match[1]);
     add(match[5], monthNumber(match[4]), match[3]);
   }
@@ -198,10 +207,11 @@ function datesIn(text) {
     add(match[5], monthNumber(match[1]), match[2]);
     add(match[5], monthNumber(match[3] ?? match[1]), match[4]);
   }
-  // A YYYY-MM-DD date and a later day of its month: "2041-03-18/19" and "2041-03-18 or 19" name both days, and
-  // "2041-03-18 to 19:00" and "2041-03-18 and 2 days later" name one.
-  for (const match of text.matchAll(new RegExp(`\\b(\\d{4})-(\\d{2})-(\\d{2})${JOINED}(\\d{1,2})(?![\\d:\\-])`, 'giu'))) {
-    if (Number(match[4]) > Number(match[3])) add(match[1], match[2], match[4]);
+  // A YYYY-MM-DD or YYYY/MM/DD date and another day of its month: "2041-03-18/19", "2041-03-18 or 19" and "2041-03-21 or
+  // 20" name both days, and "2041-03-18 to 19:00" and "2041-03-05, and 7 days later" name one.
+  for (const match of text.matchAll(new RegExp(`\\b(\\d{4})([-/])(\\d{1,2})\\2(\\d{1,2})${JOINED}(\\d{1,2})${NOT_A_DAY}`, 'giu'))) {
+    if (match[2] === '-' && (match[3].length !== 2 || match[4].length !== 2)) continue;
+    add(match[1], match[3], match[5]);
   }
   return found;
 }
@@ -255,19 +265,15 @@ const ASSISTANT_NAME = new RegExp([
 /** After YES or NO, on its line: closing emphasis or quotes, spaces, and perhaps an aside in brackets. */
 const TRAIL = `${CLOSE}${GAP}*(?:${ASIDE}${CLOSE}${GAP}*)?`;
 /**
- * What may follow NO standing alone: one of these marks, a full stop that
- * does not begin an ellipsis, a hyphen before a space or another hyphen, an
- * ellipsis (… or two or more full stops) that ends the line, or the end of
- * the line. YES may also stand before any ellipsis, since "yes", unlike
- * "no", never comes before a noun.
+ * What may follow YES or NO standing alone: one of these marks, a full stop
+ * that does not begin an ellipsis, a hyphen before a space or another hyphen,
+ * an ellipsis (… or two or more full stops) that ends the line, or the end of
+ * the line.
  */
-const ENDS = {
-  YES: '(?:[,!?;:)\\]|—–.…]|-[-\\s]|$)',
-  NO: `(?:[,!?;:)\\]|—–]|\\.(?!\\.)|-[-\\s]|(?:…|\\.{2,})${CLOSE}${GAP}*$|$)`,
-};
+const ENDS = `(?:[,!?;:)\\]|—–]|\\.(?!\\.)|-[-\\s]|(?:…|\\.{2,})${CLOSE}${GAP}*$|$)`;
 /** YES or NO standing alone, as the header says; at the start of a line or a sentence, also before ( or an ellipsis. */
 const STANDALONE = (word) => new RegExp(
-  `\\b${word}\\b(?=${TRAIL}${ENDS[word]})|${STARTS}${word}\\b(?=${CLOSE}\\s*(?:[(…]|\\.\\.))`,
+  `\\b${word}\\b(?=${TRAIL}${ENDS})|${STARTS}${word}\\b(?=${CLOSE}\\s*(?:[(…]|\\.\\.))`,
   'imu',
 );
 
@@ -285,14 +291,25 @@ const CHOICES = new RegExp(
     + `(?:\\s*,\\s*${WORD})*(?:(?:\\s*\\/\\s*|\\|)${WORD}|(?:\\s*,\\s+|\\s+)n?or\\s+${WORD})+`,
   'giu',
 );
+/** "Yes and no" or "no and yes", with or without an ellipsis or an aside after the first word: both. */
+const PAUSE = `(?:${GAP}*(?:…|\\.{2,}|${ASIDE})${CLOSE})?`;
+const YES_AND_NO = new RegExp(`\\b(?:yes${CLOSE}${PAUSE}\\s+and\\s+${OPEN}no|no${CLOSE}${PAUSE}\\s+and\\s+${OPEN}yes)\\b`, 'iu');
+/** The words that join an answer word to another case: "yes in Tokyo", "no after 14:00 UTC". */
+const JOINS = 'and|or|but|if|unless|except|in|for|at|on|by|when|while|whereas|before|after|afterwards|thereafter|until|from|since|once|during|outside|under|beyond|around|west|east|elsewhere|otherwise|though|although|depending|maybe|perhaps';
 /**
- * A "no" in a hedge: before an ellipsis, a bracket, or a word that joins it
- * to another case. With a YES standing alone, it names NO too.
+ * YES or NO in a hedge: before an ellipsis, a bracket, one of the joining
+ * words or the other answer word, or after "but", "though", "although" or
+ * "yet". Beside the other word standing alone, it names both. The word comes
+ * before the look back, so that the look back runs only where the word is,
+ * and a long run of spaces or marks is read once.
  */
-const HEDGED_NO = new RegExp(
-  `\\bno\\b(?=${CLOSE}${GAP}*(?:…|\\.\\.|\\(|(?:and|or|but|if|in|for|at|on|when|before|after|until|from|depending|elsewhere|otherwise|maybe|perhaps|yes)\\b))`,
+const HEDGED = (word, other) => new RegExp(
+  `\\b${word}\\b(?=${CLOSE}${GAP}*(?:…|\\.\\.|\\(|(?:${JOINS}|${other})\\b))`
+    + `|\\b${word}\\b(?<=\\b(?:but|though|although|yet)(?:,${GAP}*|${GAP}+)${OPEN}${word})`,
   'iu',
 );
+const HEDGED_YES = HEDGED('yes', 'no');
+const HEDGED_NO = HEDGED('no', 'yes');
 
 function lenientValue(kind, text, echoes) {
   const spec = KINDS[kind];
@@ -306,10 +323,13 @@ function lenientValue(kind, text, echoes) {
     for (const word of spec.words) {
       if (word === 'DEPENDS' ? /\bdepends\b/iu.test(unasked) : STANDALONE(word).test(unasked)) found.add(word);
     }
-    // A hedge names the other answer too: NO standing alone with "yes" anywhere else, as in "yes... and no", and YES
-    // standing alone with a "no" in a hedge, as in "In London, no... in Tokyo, yes".
-    if (found.has('NO') && /\byes\b/iu.test(unasked)) found.add('YES');
-    if (found.has('YES') && HEDGED_NO.test(unasked)) found.add('NO');
+    // A hedge names both: "yes and no", "yes... and no", and either word standing alone beside the other in a hedge, as
+    // in "In London, no... in Tokyo, yes" and "yes (in Tokyo) but no (in London)".
+    if (spec.words.includes('YES') && (YES_AND_NO.test(unasked)
+      || (found.has('NO') && HEDGED_YES.test(unasked)) || (found.has('YES') && HEDGED_NO.test(unasked)))) {
+      found.add('YES');
+      found.add('NO');
+    }
     if (spec.signs) {
       const named = collapse(lines.replace(ASSISTANT_NAME, ' '));
       SIGNS.forEach((sign, index) => {

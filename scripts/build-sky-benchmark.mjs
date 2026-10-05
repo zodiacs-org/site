@@ -612,10 +612,21 @@ export async function toolAnswers(items, key, checkSkyFact) {
   };
 }
 
-/** What a version's files were drawn with: the engine, and the ΔT tables its replies' receipts name. */
+/** A value with named fields: an object that is not a list. */
+const isRecord = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
+
+/**
+ * What a version's files were drawn with: the engine, and the ΔT tables its
+ * replies' receipts name, as the files write them, with undefined for what
+ * the files do not say.
+ */
 export function drawnWith(key, tool) {
-  return { engine: key.engine.version, deltaT: tool.answers[0].reply.receipt.deltaT };
+  return { engine: key?.engine?.version, deltaT: tool?.answers?.[0]?.reply?.receipt?.deltaT };
 }
+
+/** Whether the files name an engine and ΔT tables a refusal can compare: a version, and tables each with a model, table and digest. */
+const readable = ({ engine, deltaT }) => typeof engine === 'string' && Array.isArray(deltaT) && deltaT.length > 0
+  && deltaT.every((entry) => isRecord(entry) && ['model', 'table', 'tableDigest'].every((field) => typeof entry[field] === 'string'));
 
 /** The ΔT tables as the refusal names them: model, table and digest of each, in any order. */
 const tablesOf = (deltaT) => deltaT.map(({ model, table, tableDigest }) => `${model} ${table} ${tableDigest}`).sort().join(', ');
@@ -626,9 +637,14 @@ const tablesOf = (deltaT) => deltaT.map(({ model, table, tableDigest }) => `${mo
  * table could move its answers, so it draws the next version in its own
  * folder. Only what the refusal names is compared, so the way a receipt
  * writes the same engine and tables, or the order it lists the tables in,
- * does not count as another engine.
+ * does not count as another engine. Files that do not say which engine and
+ * tables drew them are refused too.
  */
 export function redrawRefusal(published, installed, version = VERSION) {
+  if (!readable(published)) {
+    return `build-sky-benchmark: ${version}'s files do not say which engine and ΔT tables drew it: key.json names the engine, `
+      + `and the first reply's receipt in tool-answers.json the tables. ${version} is frozen: restore its files rather than draw ${version} again.`;
+  }
   if (published.engine === installed.engine && tablesOf(published.deltaT) === tablesOf(installed.deltaT)) return null;
   return `build-sky-benchmark: ${version} was drawn with @zodiacs/engine ${published.engine} (ΔT ${tablesOf(published.deltaT)}), `
     + `and the installed engine is ${installed.engine} (ΔT ${tablesOf(installed.deltaT)}). ${version} is frozen: raise VERSION to draw the next version in its own folder.`;
@@ -642,73 +658,83 @@ export async function installedEngine() {
 /** How far apart the same event may be in two replies, in milliseconds. */
 const EVENT_TOLERANCE_MS = 2_000;
 
-const isObject = (value) => value !== null && typeof value === 'object';
 /**
  * An object's fields that decide a reply, or the value as it is when it is
  * not an object, so that a malformed reply differs rather than throws.
  */
-const fieldsOf = (value, names) => (isObject(value) ? Object.fromEntries(names.map((name) => [name, value[name]])) : value);
-/** A list of events by their deciding fields, or the value as it is when it is not a list. */
-const eventsOf = (events, names) => (Array.isArray(events) ? events.map((event) => fieldsOf(event, names)) : events);
+const fieldsOf = (value, names) => (isRecord(value) ? Object.fromEntries(names.map((name) => [name, value[name]])) : value);
+const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
-/** The part of a reply that decides its answer: the question as read, the answer, and the facts behind it. */
-function decisive(result) {
-  if (!isObject(result)) return { result };
+/** The fields that decide each kind of event, apart from its time. */
+const EVENT_FIELDS = Object.freeze({ changes: ['into', 'retrograde'], stations: ['type'], ingresses: ['retrograde'], lunations: ['sign'] });
+
+/**
+ * The part of a reply that decides its answer, in two parts: what must stay
+ * the same (the question as read, the answer, and the facts behind it, each
+ * event without its time), and each event's time, which may move within the
+ * tolerance. A reply without a result is taken whole, its receipt aside, and
+ * facts that are not an object are taken as they are.
+ */
+function decisive(reply) {
+  const result = isRecord(reply) ? reply.result : undefined;
+  if (!isRecord(result)) return { same: { unread: isRecord(reply) ? { ...reply, receipt: undefined } : [reply] }, times: {} };
   const { answer, basis, fact, instant, window, zone, facts } = result;
-  if (!isObject(facts)) return { answer, basis, fact, instant, window, zone, facts };
-  return {
+  if (!isRecord(facts)) return { same: { answer, basis, fact, instant, window, zone, facts: [facts] }, times: {} };
+  const kept = {
     answer, basis, fact, instant, window, zone,
     sign: facts.sign,
     retrograde: facts.retrograde,
     atStart: fieldsOf(facts.atStart, ['sign', 'retrograde']),
-    changes: eventsOf(facts.changes, ['at', 'into', 'retrograde']),
-    stations: eventsOf(facts.stations, ['at', 'type']),
-    ingresses: eventsOf(facts.ingresses, ['at', 'retrograde']),
-    lunations: eventsOf(facts.lunations, ['at', 'sign']),
   };
+  const times = {};
+  for (const [list, names] of Object.entries(EVENT_FIELDS)) {
+    const events = facts[list];
+    kept[list] = Array.isArray(events) ? events.map((event) => fieldsOf(event, names)) : events;
+    if (Array.isArray(events)) times[list] = events.map((event) => (isRecord(event) ? event.at : undefined));
+  }
+  return { same: kept, times };
 }
 
 /** A time as a message shows it: as written when it is a string, and as JSON otherwise. */
 const shown = (at) => (at === undefined || at === null ? 'missing' : typeof at === 'string' ? at : JSON.stringify(at));
-
-const EVENT_LISTS = Object.freeze(['changes', 'stations', 'ingresses', 'lunations']);
+/** A time in milliseconds, or NaN when it is not a string that reads as one. */
+const timeOf = (at) => (typeof at === 'string' ? Date.parse(at) : NaN);
 
 /**
  * Where check_sky_fact's replies now differ from a version's published ones,
  * in what the benchmark rests on: each request, its answer, and the facts
  * that decide it, with every event within 2 seconds of where it was. The
  * receipts, and anything else a reply reports, may differ: the published
- * replies are what the tool returned when the version was drawn.
+ * replies are what the tool returned when the version was drawn. A file, a
+ * reply or a part of one in another form than the tool's is compared as it
+ * is, so that it differs rather than throws, and a time that does not read
+ * as one differs from any time, itself included.
  */
 export function replyDifferences(published, current) {
-  const differences = [];
-  const { answers: before, ...headBefore } = published;
-  const { answers: after, ...headAfter } = current;
-  if (JSON.stringify(headBefore) !== JSON.stringify(headAfter)) differences.push('the header or the counts of facts');
-  if (!Array.isArray(before) || !Array.isArray(after)) return [...differences, 'the replies are not a list'];
+  const split = (file) => (isRecord(file) ? file : { file });
+  const { answers: before, ...headBefore } = split(published);
+  const { answers: after, ...headAfter } = split(current);
+  const differences = same(headBefore, headAfter) ? [] : ['the header or the counts of facts'];
+  if (!Array.isArray(before) || !Array.isArray(after)) return same(before, after) ? differences : [...differences, 'the replies are not a list'];
   if (before.length !== after.length) return [...differences, `${before.length} replies published, ${after.length} now`];
   before.forEach((was, index) => {
     const is = after[index];
-    if (is?.id !== was?.id || JSON.stringify(is?.request) !== JSON.stringify(was?.request)) {
-      differences.push(`${was?.id ?? is?.id}: the request`);
+    const name = [was, is].map((entry) => (isRecord(entry) ? entry.id : undefined)).find((id) => typeof id === 'string') ?? `reply ${index + 1}`;
+    const asked = (entry) => (isRecord(entry) ? { id: entry.id, request: entry.request } : [entry]);
+    if (!same(asked(was), asked(is))) {
+      differences.push(`${name}: the request`);
       return;
     }
-    const a = decisive(was.reply?.result);
-    const b = decisive(is.reply?.result);
-    const withoutInstants = (value) => JSON.stringify(value, (name, inner) => (name === 'at' ? undefined : inner));
-    if (withoutInstants(a) !== withoutInstants(b)) {
-      differences.push(`${was.id}: the answer or the facts behind it`);
+    const a = decisive(isRecord(was) ? was.reply : undefined);
+    const b = decisive(isRecord(is) ? is.reply : undefined);
+    if (!same(a.same, b.same)) {
+      differences.push(`${name}: the answer or the facts behind it`);
       return;
     }
-    for (const list of EVENT_LISTS) {
-      if (!Array.isArray(a[list])) continue;
-      a[list].forEach((event, n) => {
-        // A time missing or unreadable on either side is a difference too: NaN is never within the tolerance.
-        const then = event?.at;
-        const now = b[list]?.[n]?.at;
-        if (!(Math.abs(Date.parse(then) - Date.parse(now)) <= EVENT_TOLERANCE_MS)) {
-          differences.push(`${was.id}: ${list} ${shown(then)} is now ${shown(now)}`);
-        }
+    for (const [list, times] of Object.entries(a.times)) {
+      times.forEach((then, n) => {
+        const now = b.times[list]?.[n];
+        if (!(Math.abs(timeOf(then) - timeOf(now)) <= EVENT_TOLERANCE_MS)) differences.push(`${name}: ${list} ${shown(then)} is now ${shown(now)}`);
       });
     }
   });
@@ -740,6 +766,7 @@ export async function writeOrCheck(version = VERSION, { check = false, root = RO
   if (check && !published) {
     throw new Error(`build-sky-benchmark: ${version} is not published, so there is nothing to check. Draw it without --check.`);
   }
+  let publishedTool;
   if (published) {
     const missing = DRAWN_FILES.filter((_, index) => texts[index] === null);
     if (missing.length > 0) {
@@ -752,7 +779,16 @@ export async function writeOrCheck(version = VERSION, { check = false, root = RO
       const links = broken.length > 0 ? ` ${listed(broken)} ${broken.length > 1 ? 'links to files that are' : 'a link to a file that is'} not there.` : '';
       throw new Error(`build-sky-benchmark: ${version} is published${holds}, but ${listed(missing)} missing.${links} ${version} is frozen: restore ${missing.length > 1 ? 'them' : 'it'} rather than draw ${version} again.`);
     }
-    const refusal = redrawRefusal(drawnWith(JSON.parse(texts[1]), JSON.parse(texts[2])), await installedEngine(), version);
+    const parsed = (name) => {
+      try {
+        return JSON.parse(texts[DRAWN_FILES.indexOf(name)]);
+      } catch (error) {
+        throw new Error(`build-sky-benchmark: ${version}'s ${name} does not read as JSON (${error.message}). ${version} is frozen: restore it rather than draw ${version} again.`);
+      }
+    };
+    const publishedKey = parsed('key.json');
+    publishedTool = parsed('tool-answers.json');
+    const refusal = redrawRefusal(drawnWith(publishedKey, publishedTool), await installedEngine(), version);
     if (refusal) throw new Error(refusal);
     if (!check) {
       throw new Error(`build-sky-benchmark: ${version} is published. ${version} is frozen: check it with --check, or raise VERSION to draw the next version in its own folder.`);
@@ -775,7 +811,7 @@ export async function writeOrCheck(version = VERSION, { check = false, root = RO
     return [];
   }
   const stale = ['items.json', 'key.json'].filter((name) => texts[DRAWN_FILES.indexOf(name)] !== files[name]);
-  if (replyDifferences(JSON.parse(texts[2]), tool).length > 0) stale.push('tool-answers.json');
+  if (replyDifferences(publishedTool, tool).length > 0) stale.push('tool-answers.json');
   return stale;
 }
 

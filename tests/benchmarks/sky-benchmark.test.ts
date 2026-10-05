@@ -103,7 +103,7 @@ const V0_SHA256: Record<string, string> = {
   'items.json': '8521a288178929e18f9598bda34d7c70f975e9b168a4b7107920ee657f6fe532',
   'key.json': '4d1ec5f76cce20830962d9bb0c876ad03fc85a9ace8a24a78f28ff4bd36abcb2',
   'tool-answers.json': '7477701a8aeb90b23fe5102b66696017f02a47c1a7f131a91937c536f8ac092c',
-  'scorer.mjs': 'f672c796fa046d841ed1494e5b7ae8ad95fe3d6b32dcffedc939823f711f1a9d',
+  'scorer.mjs': 'edeb2c52849a4d580dd258a5ac58cb0f10066a959f35ff72c644fc74f9ea31b4',
 };
 
 /** The engine and ΔT tables v0 was drawn with, and whether the installed engine is the same. */
@@ -134,6 +134,15 @@ describe('the sky-fact benchmark, v0', () => {
     expect(redrawRefusal(drawn, { ...drawn, deltaT: reordered })).toBeNull();
     expect(redrawRefusal(drawn, { ...drawn, deltaT: drawn.deltaT.map((table: any) => ({ ...table, note: 'added' })) })).toBeNull();
     expect(redrawRefusal(drawn, { ...drawn, deltaT: [...drawn.deltaT].reverse() })).toBeNull();
+    // Files that do not say which engine and tables drew them are refused, not read as another engine and not thrown on.
+    const unsaid = [
+      drawnWith(key, null), drawnWith(key, { answers: null }), drawnWith(key, { answers: [null] }),
+      drawnWith(key, { answers: [{ reply: {} }] }), drawnWith({}, tool), drawnWith(null, tool),
+      { ...drawn, deltaT: [] }, { ...drawn, deltaT: [null] }, { ...drawn, deltaT: drawn.deltaT.map(({ tableDigest, ...table }: any) => table) },
+    ];
+    for (const files of unsaid) {
+      expect(redrawRefusal(files, drawn), JSON.stringify(files)).toMatch(/v0's files do not say which engine and ΔT tables drew it: .*v0 is frozen: restore its files/su);
+    }
   });
 
   it('is never drawn again: not with a file missing, not over the published files, and not once the generator draws another version', async () => {
@@ -152,6 +161,15 @@ describe('the sky-fact benchmark, v0', () => {
         copyFileSync(fileURLToPath(new URL(name, DIR)), join(dir, name));
       }
       // A drawn file that is a link to a file that is not there is missing too, and the refusal says so.
+      // A drawn file that does not read as JSON, or files that do not say which engine drew them, are refused rather than thrown on.
+      writeFileSync(join(dir, 'key.json'), '{"engine":');
+      await expect(writeOrCheck('v0', { check: true, root })).rejects.toThrow(/v0's key\.json does not read as JSON \(.+\)\. v0 is frozen: restore it/u);
+      copyFileSync(fileURLToPath(new URL('key.json', DIR)), join(dir, 'key.json'));
+      for (const text of ['', 'null', '{"answers":[null]}']) {
+        writeFileSync(join(dir, 'tool-answers.json'), text);
+        await expect(writeOrCheck('v0', { check: true, root }), text).rejects.toThrow(text === '' ? /tool-answers\.json does not read as JSON/u : /v0's files do not say which engine and ΔT tables drew it/u);
+      }
+      copyFileSync(fileURLToPath(new URL('tool-answers.json', DIR)), join(dir, 'tool-answers.json'));
       rmSync(join(dir, 'items.json'));
       symlinkSync(join(root, 'nowhere.json'), join(dir, 'items.json'));
       await expect(writeOrCheck('v0', { check: true, root })).rejects.toThrow(/v0 is published, but items\.json is missing\. items\.json is a link to a file that is not there\. v0 is frozen: restore it/u);
@@ -277,6 +295,32 @@ describe('the sky-fact benchmark, v0', () => {
     const unlisted = copy();
     unlisted.answers = null;
     expect(replyDifferences(tool, unlisted)).toEqual(['the replies are not a list']);
+    // A file, a reply or a part of one in another form is compared as it is: unlike values differ, and like ones do not.
+    const both = (change: (next: any) => void, other: (next: any) => void = change) => {
+      const published = copy();
+      const next = copy();
+      change(published);
+      other(next);
+      return replyDifferences(published, next);
+    };
+    expect(replyDifferences(null, tool)).toEqual(['the header or the counts of facts', 'the replies are not a list']);
+    expect(replyDifferences(tool, null)).toEqual(['the header or the counts of facts', 'the replies are not a list']);
+    expect(replyDifferences(null, null)).toEqual([]);
+    expect(both((next) => { next.answers[instant] = 5; }, (next) => { next.answers[instant] = 'x'; })).toEqual([`reply ${instant + 1}: the request`]);
+    expect(both((next) => { next.answers[instant] = null; })).toEqual([]);
+    expect(both((next) => { next.answers[instant].reply = 'x'; }, (next) => { next.answers[instant].reply = 7; })).toEqual([`${id(instant)}: the answer or the facts behind it`]);
+    expect(both((next) => { next.answers[instant].reply = { error: 'a' }; }, (next) => { next.answers[instant].reply = { error: 'b' }; })).toEqual([`${id(instant)}: the answer or the facts behind it`]);
+    expect(both((next) => { next.answers[instant].reply = { error: 'a' }; })).toEqual([]);
+    expect(both((next) => { delete next.answers[instant].reply; }, (next) => { next.answers[instant].reply = { result: {} }; })).toEqual([`${id(instant)}: the answer or the facts behind it`]);
+    const at = (next: any) => next.answers[ingress].reply.result.facts.ingresses[0].at;
+    expect(both((next) => { next.answers[ingress].reply.result.facts.ingresses = { at: at(next) }; }, (next) => { next.answers[ingress].reply.result.facts.ingresses = { at: 'soon' }; }))
+      .toEqual([`${id(ingress)}: the answer or the facts behind it`]);
+    // A time that is not a string does not read as one, so it differs even from itself.
+    expect(both((next) => { next.answers[ingress].reply.result.facts.ingresses[0].at = 2041; })).toEqual([`${id(ingress)}: ingresses 2041 is now 2041`]);
+    // An event that is not an object has no time to read, so it differs even from itself.
+    for (const event of ['x', [1, 2], 7]) {
+      expect(both((next) => { next.answers[ingress].reply.result.facts.ingresses[0] = event; }), JSON.stringify(event)).toEqual([`${id(ingress)}: ingresses missing is now missing`]);
+    }
     // A time that is not a string is shown as JSON.
     expect(changed(ingress, (result) => { result.facts.ingresses[0].at = { when: 'soon' }; }))
       .toEqual([expect.stringMatching(new RegExp(`^${id(ingress)}: ingresses \\S+ is now \\{"when":"soon"\\}$`, 'u'))]);
@@ -757,16 +801,17 @@ describe("the benchmark's scorer", () => {
       ['The Sun was in Gemini\u2028Pro tip: check an ephemeris.', 'Gemini'],
       ['The Sun was in Gemini 2\u2029Pro tip: use a table.', 'Gemini'],
       ['Sign: Gemini\nModel answer: Leo.', null],
-      // A version at the end of the reply, after any spaces, is the assistant's.
+      // A version at the end of the reply, after any spaces, is the assistant's; the mark after one must be on its line.
       ['The Moon was in Leo, says Gemini 2  \n', 'Leo'],
+      ['The Sun was in Gemini 2\n. The Moon was in Leo.', null],
       // A sentence does not start after an ellipsis, so "As Gemini, I" there is the sign.
       ['Hmm... As Gemini, I think the Moon was in Leo.', null],
     ];
     for (const [text, sign] of geminiNumbers) expect(readReply('sign', text).value, text).toBe(sign);
     // YES and NO before the marks the header lists, also after an aside in brackets on the same line, and before a bracket or
-    // an ellipsis only where a line or a sentence starts, which an ellipsis does not end; YES before any ellipsis. The answer
-    // words joined by "or", "nor", a slash or a bar with no space around it, each perhaps with an aside, only list the choices
-    // and name none of them, nor does a "no" before them; a table's cells are not a list. A hedge names both YES and NO.
+    // an ellipsis only where a line or a sentence starts, which an ellipsis does not end. The answer words joined by "or",
+    // "nor", a slash or a bar with no space around it, each perhaps with an aside, only list the choices and name none of
+    // them, nor does a "no" before them; a table's cells are not a list. A hedge names both YES and NO.
     const standing: Array<[string, string | null]> = [
       ['No (Mercury was direct all day).', 'NO'],
       ['Mercury was direct. No (it never stationed).', 'NO'],
@@ -805,16 +850,18 @@ describe("the benchmark's scorer", () => {
       ["There is no 'yes or no' — it's complicated.", null],
       ['Answer (yes|no): NO', 'NO'],
       ['| Retrograde | Station |\n| NO | NO |', 'NO'],
-      // YES before an ellipsis anywhere, since "yes" never comes before a noun; NO only where the ellipsis ends the line.
-      ['The answer is yes... I think.', 'YES'],
-      ['Probably yes… but check an ephemeris.', 'YES'],
+      // An ellipsis in mid-line is a pause, not the end of an answer, for YES as for NO.
+      ['The answer is yes... I think.', null],
       ['So no... it was not retrograde.', null],
+      ["It's yes... and no too.", null],
+      ['no though yes... really.', null],
       // Lists of choices with an aside after each word, so the DEPENDS that follows them stands alone.
       ['It is not yes (retrograde) or no (direct): it depends.', 'DEPENDS'],
       ['It is neither yes (retrograde) nor no (direct); it depends on the zone.', 'DEPENDS'],
       ['Is it yes (retrograde), no (direct) or depends (a station)?', null],
-      // A hedge names both: a NO standing alone with "yes" anywhere else, and a YES standing alone with a "no" before an
-      // ellipsis, a bracket, or a word that joins it to another case.
+      ['Of yes (retrograde), no (direct) or depends (a station), the answer is depends.', 'DEPENDS'],
+      // A hedge names both: "yes and no", with or without a pause after "yes", and one word standing alone beside the other
+      // before an ellipsis, a bracket or a word that joins it to another case, or after a contrast.
       ['The honest answer is yes... and no.', null],
       ['Maybe yes… maybe no…', null],
       ['In London, yes... in Tokyo, no.', null],
@@ -834,18 +881,51 @@ describe("the benchmark's scorer", () => {
       ['Yes. No before 14:00 UTC, though.', null],
       ['Yes and no.', null],
       ['**Yes** and **no**', null],
+      ['Short answer: yes. Long answer: yes and no really.', null],
+      ['Short answer: yes. Long answer: no and yes really.', null],
+      ['Yes… and no really.', null],
+      ['Short answer: yes. Long answer: yes... and no really.', null],
+      ['Short answer: yes. Long answer: yes (mostly) and no really.', null],
+      ['Yes and no really; it depends on the zone.', null],
+      ['Yes. Yes (in Tokyo) and no.', null],
       ["I can't say yes (or no) for sure.", null],
       ['I think no (it was direct), but yes is possible.', null],
-      // A "no" before a noun, with or without a pause, does not name NO beside a YES.
+      ['I think yes (it was direct), but no is possible.', null],
+      ['No in London, yes in Tokyo.', null],
+      ['No, not in London; yes in Tokyo.', null],
+      // A "no" before a noun, with or without a pause, does not name NO beside a YES, nor a "yes" in passing YES beside a NO.
       ['Yes. There is no doubt: Mercury was retrograde all day.', 'YES'],
+      ['Yes, and no station falls on that date.', 'YES'],
       ['Yes, though there is no... certainty without an ephemeris.', null],
+      ['No. Mercury was direct all day, so a yes would be wrong.', 'NO'],
+      ['NO — Mercury was direct. (It would be YES only if Mercury had stationed before that date.)', 'NO'],
+      ['The answer is no, not yes as some tables say.', 'NO'],
+      ['No. Yes-or-no questions like this are easy to check in an ephemeris.', 'NO'],
       // A line ends at a line separator or a carriage return too, and an aside in brackets does not run past one.
       ['No\u2028It was direct all day.', 'NO'],
       ['No\rIt was direct all day.', 'NO'],
       ['The answer is no (it was\rdirect).', null],
       ['The answer is no (it was\u2028direct).', null],
+      ['The answer is no (it was\ndirect).', null],
+      ['The answer is no (it was\u2029direct).', null],
     ];
     for (const [text, word] of standing) expect(readReply('yes-no-depends', text, [rd]).value, text).toBe(word);
+    // Every word the header lists as joining a "yes" or a "no" to another case, and every contrast before one.
+    const joins = ['and', 'or', 'but', 'if', 'unless', 'except', 'in', 'for', 'at', 'on', 'by', 'when', 'while', 'whereas', 'before', 'after',
+      'afterwards', 'thereafter', 'until', 'from', 'since', 'once', 'during', 'outside', 'under', 'beyond', 'around', 'west', 'east',
+      'elsewhere', 'otherwise', 'though', 'although', 'depending', 'maybe', 'perhaps'];
+    for (const join of joins) {
+      expect(readReply('yes-no-depends', `Yes, mostly. No ${join} that, though.`, [rd]).value, `no ${join}`).toBe(null);
+      expect(readReply('yes-no-depends', `No, mostly. Yes ${join} that, though.`, [rd]).value, `yes ${join}`).toBe(null);
+    }
+    // On a question that asks for a sign, a "yes and no" names nothing, and the sign stands.
+    expect(readReply('sign-or-depends', 'Yes and no: the Sun was in Leo all day.', [sd]).value).toBe('Leo');
+    expect(readReply('yes-no-depends', 'Yes, mostly. No yes about it.', [rd]).value).toBe(null);
+    expect(readReply('yes-no-depends', 'No, mostly. Yes no about it.', [rd]).value).toBe(null);
+    for (const contrast of ['but', 'though', 'although', 'yet']) {
+      expect(readReply('yes-no-depends', `No, ${contrast} yes is possible.`, [rd]).value, `${contrast} yes`).toBe(null);
+      expect(readReply('yes-no-depends', `Yes, ${contrast}, no is possible.`, [rd]).value, `${contrast} no`).toBe(null);
+    }
     expect(readReply('date', 'It happened at 2023-03-07T10:00Z.')).toEqual({ value: '2023-03-07', reading: 'lenient' });
     expect(readReply('date', 'Sept. 7, 2023')).toEqual({ value: '2023-09-07', reading: 'lenient' });
     expect(readReply('date', 'On 7 Sept 2023.')).toEqual({ value: '2023-09-07', reading: 'lenient' });
@@ -853,11 +933,18 @@ describe("the benchmark's scorer", () => {
     for (const hedge of ['It falls on 18 or 19 March 2041, depending on the time zone.', '19–20 March 2041', 'Between 19 and 20 March 2041.', 'March 19 or 20, 2041', 'March 19 or March 20, 2041', 'The 18th or the 19th of March 2041.', 'The night of 18/19 March 2041.']) {
       expect(readReply('date', hedge), hedge).toEqual({ value: null, reading: 'unparsed' });
     }
-    // So do a YYYY-MM-DD date and a later day of its month, but not one that runs on into a time or another number.
-    for (const hedge of ['2041-03-18/19', 'It falls on 2041-03-18 or 19, depending on the zone.', '2041-03-18–19', '2041-03-18 through 19']) {
+    // So do a YYYY-MM-DD or YYYY/MM/DD date and another day of its month, but not a number that runs on into a time, a count
+    // or degrees; and the days may also be joined by "&", "thru" or "and/or".
+    for (const hedge of ['2041-03-18/19', 'It falls on 2041-03-18 or 19, depending on the zone.', '2041-03-18–19', '2041-03-18 through 19',
+      '2041-03-21 or 20, depending on the zone', '2041/03/20 or 21', '2041/03/20–21', '18 & 19 March 2041', '18, & 19 March 2041', '18 thru 19 March 2041',
+      '18th and/or 19th March 2041']) {
       expect(readReply('date', hedge), hedge).toEqual({ value: null, reading: 'unparsed' });
     }
-    for (const one of ['It enters at 2041-03-18 to 19:00 UTC.', 'It enters on 2041-03-18, and 2 days later the Moon follows.', 'On 2041-03-18 - 19-hour days.']) {
+    // A date with a hyphen and a one-digit month or day is in no accepted form, so the day after it names nothing either.
+    expect(readReply('date', 'It falls on 2041-3-18 or 19.')).toEqual({ value: null, reading: 'unparsed' });
+    for (const one of ['It enters at 2041-03-18 to 19:00 UTC.', 'It enters on 2041-03-18, and 2 days later the Moon follows.', 'On 2041-03-18 - 19-hour days.',
+      'It enters on 2041-03-18 – 12 h after the new moon.', 'It enters at 2041-03-18 to 10 am.', 'It enters on 2041-03-18 - 4° past the node.',
+      'It enters on 2041-03-18 / 20 minutes after sunrise in London.', 'It enters on 2041-03-18 and 3 weeks later the Sun follows.']) {
       expect(readReply('date', one), one).toEqual({ value: '2041-03-18', reading: 'lenient' });
     }
     // A date the calendar does not have is still a date the reply names, in every form, and never right; alone, it reads as nothing.
@@ -866,12 +953,16 @@ describe("the benchmark's scorer", () => {
       '2041-04-30 or 2041-04-31', '29 February 2041 or 1 March 2041', '2041-02-28/29', '2041-02-29', 'On 31 April 2041.']) {
       expect(readReply('date', hedge), hedge).toEqual({ value: null, reading: 'unparsed' });
     }
-    // A number after a letter, a digit, a colon, a full stop, a plus, a hyphen, a minus sign or # is not a hedge's first day.
+    // A number after a letter, a digit, a colon, a full stop, a plus, a hyphen, a minus sign, # or a dash after a letter or a
+    // digit is not a hedge's first day.
     const after: Array<[string, string]> = [
       ['At 14:30 – 19 March 2041.', '2041-03-19'],
       ['At 14.30 – 19 March 2041.', '2041-03-19'],
       ['In UTC+10 – 8 March 2023.', '2023-03-08'],
       ['In UTC−10 – 8 March 2023.', '2023-03-08'],
+      ['In UTC-10 – 8 March 2023.', '2023-03-08'],
+      ['In UTC–10 – 8 March 2023.', '2023-03-08'],
+      ['In UTC—10 – 8 March 2023.', '2023-03-08'],
       ['GMT+1 - 19 March 2041', '2041-03-19'],
       ['Ingress #2 – 7 March 2023', '2023-03-07'],
       ['Room B12 – 7 March 2023', '2023-03-07'],
@@ -903,6 +994,10 @@ describe("the benchmark's scorer", () => {
       ['yes-no-depends', `${'\u2028'.repeat(n)}x`],
       ['sign', `${'\u2029'.repeat(n)}x`],
       ['yes-no-depends', 'no (x), '.repeat(n / 8)],
+      // The look back for a word after "but", "though", "although" or "yet" ran at every character, so a run after a YES or a
+      // NO standing alone was read again from each of its characters.
+      ['yes-no-depends', `Yes, though${' '.repeat(n)}x`],
+      ['yes-no-depends', `no (${'"'.repeat(n)}x`],
     ];
     for (const [kind, reply] of long) {
       const started = performance.now();
