@@ -1641,6 +1641,7 @@
       const [toolsOpen, setToolsOpen] = useState(false);
       const toolsButtonRef = useRef(null);
       const signsButtonRef = useRef(null);
+      const menuButtonRef = useRef(null);
       const focusDropdownItem = (id, last = false) => {
         window.requestAnimationFrame(() => {
           const items = [...document.querySelectorAll(`#${id} a`)];
@@ -1671,7 +1672,22 @@
       };
       useEffect(() => {
         if (!menuOpen) return undefined;
-        const onKey = (e) => { if (e.key === 'Escape') setMenuOpen(false); };
+        const menu = document.getElementById('wnav-menu');
+        const items = () => [...(menu?.querySelectorAll('a[href],button:not([disabled])') || [])]
+          .filter((item) => item.getClientRects().length);
+        items()[0]?.focus();
+        const onKey = (e) => {
+          if (e.key === 'Escape') {
+            e.preventDefault();
+            setMenuOpen(false);
+            menuButtonRef.current?.focus();
+          } else if (e.key === 'Tab') {
+            const links = items();
+            const first = links[0], last = links[links.length - 1];
+            if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last?.focus(); }
+            else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); }
+          }
+        };
         document.addEventListener('keydown', onKey);
         const prev = document.documentElement.style.overflow;
         document.documentElement.style.overflow = 'hidden';
@@ -1798,7 +1814,7 @@
                   <kbd className="wnav__search-kbd" aria-hidden="true">/</kbd>
                 </a>
                 <a className="wnav__chip" href={terminalNav.href} aria-current={REGISTRY_VIEW === 'terminal' ? 'page' : undefined}>{terminalNav.label}</a>
-                <button type="button" className="wnav__burger" data-wnav-burger="" aria-expanded={menuOpen} aria-controls="wnav-menu" aria-label={menuOpen ? 'Close menu' : 'Open menu'} onClick={() => { setToolsOpen(false); setSignsOpen(false); setMenuOpen((v) => !v); }}>
+                <button ref={menuButtonRef} type="button" className="wnav__burger" data-wnav-burger="" aria-expanded={menuOpen} aria-controls="wnav-menu" aria-label={menuOpen ? 'Close menu' : 'Open menu'} onClick={() => { setToolsOpen(false); setSignsOpen(false); if (menuOpen) menuButtonRef.current?.focus(); setMenuOpen((v) => !v); }}>
                   <span className="wnav__burger-line" /><span className="wnav__burger-line" /><span className="wnav__burger-line" />
                 </button>
             </nav>

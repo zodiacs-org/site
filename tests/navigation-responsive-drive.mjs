@@ -65,6 +65,14 @@ await withPreview({ port: 8794 }, async (baseURL) => {
             if (test.width === 612 && !test.receiver) {
               const burger = page.locator(test.wing ? '[data-wnav-burger]' : '[data-menu-toggle]');
               await burger.click(); assert.equal(await burger.getAttribute('aria-expanded'), 'true');
+              const menuSelector = test.wing ? '[data-wnav-mobile]' : '[data-mobile-menu]';
+              await page.waitForFunction(selector => document.querySelector(selector)?.contains(document.activeElement), menuSelector);
+              const menu = page.locator(menuSelector);
+              const links = menu.locator('a[href],button:not([disabled])');
+              await page.keyboard.press('Shift+Tab');
+              assert(await links.last().evaluate(node => document.activeElement === node));
+              await page.keyboard.press('Tab');
+              assert(await links.first().evaluate(node => document.activeElement === node));
               await page.keyboard.press('Escape'); assert.equal(await burger.getAttribute('aria-expanded'), 'false');
               assert(await burger.evaluate(node => document.activeElement === node));
               // A keyboard-focused header deliberately stays available.
