@@ -47,13 +47,15 @@ await withPreview({ port: 8794 }, async (baseURL) => {
               return { className: child.className, left: r.left, right: r.right, width: r.width, height: r.height, hit: hit === child || child.contains(hit) };
             });
             return { left: box.left, right: box.right, width: box.width, top: box.top, radius: style.borderRadius,
-              controls, overflow: document.documentElement.scrollWidth > innerWidth + 1,
+              controls, viewportWidth: document.documentElement.clientWidth, overflow: document.documentElement.scrollWidth > innerWidth + 1,
               away: node.parentElement.classList.contains('is-away') };
           });
           const compact = test.width < test.desktop;
           assert.equal(geometry.overflow, false, `${test.path}@${test.width}: overflow`);
           if (compact) {
-            assert.equal(geometry.width, test.width);
+            // Classic WebKit scrollbars reserve layout width; the bar must fill
+            // the content viewport, not paint over the scrollbar.
+            assert.equal(geometry.width, geometry.viewportWidth);
             assert.equal(geometry.left, 0); assert.equal(geometry.top, 0);
             assert.equal(geometry.radius, '0px');
             assert.equal(geometry.away, false);

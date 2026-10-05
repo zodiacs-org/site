@@ -217,7 +217,7 @@ export default function ProfileIdentity({ accountBound = false }: { accountBound
         </div>
       </div>
 
-      {lead && (
+      {lead && panel === null && (
         <p class="pf-me__today" data-today-lead>
           <span class="mono mono--label">
             <time dateTime={lead.date}>{lead.date}</time>

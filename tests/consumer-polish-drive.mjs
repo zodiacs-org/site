@@ -43,7 +43,7 @@ await withPreview({port:8907},async base=>{
        await button.scrollIntoViewIfNeeded();await page.screenshot({path:`${out}/today-save-and-spacing.png`});
        await button.click();await page.locator('.living-moment-composer textarea').waitFor();
        await page.getByRole('button',{name:'Cancel',exact:true}).click();await button.waitFor();
-       assert(await button.evaluate(n=>document.activeElement===n),'Cancel restores focus');
+       await page.waitForFunction(()=>document.activeElement===document.querySelector('[data-living-moment-open]'),null,{timeout:2000});
       }
      }
      if(engine==='chromium'&&width===390&&route==='/profile/') await page.screenshot({path:`${out}/profile-navigation.png`});
