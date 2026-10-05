@@ -19,6 +19,7 @@ in the review dataset. Keep any contact list outside this repository.
 | Ambiguous sky claim | `depends` preserved and timezone ambiguity explained |
 | Developer integration | Published engine dependency, local capability check, synthetic example, runnable tests |
 | Native calendar | Open global/thread panels, change display zone, refuse an invalid zone and recover |
+| Chart Studio | Explore the synthetic chart, compare houses, inspect a receipt and explicitly review a selected fact before sharing |
 | Unsupported request | Clear limit or refusal without an invented calculation |
 
 Ask each participant whether the answer completed their task, whether they would
@@ -49,6 +50,12 @@ The local developer server calculates on your machine, while your assistant
 provider can still receive its arguments/results. Temporary staging access
 expires after 23 hours and should not be forwarded.
 
+“Chart Studio starts with a labeled synthetic example and calculates in the
+panel. It sends selected facts to the assistant only after you preview and
+confirm them. A downloaded receipt contains the chart inputs; use the supplied
+example and do not upload a personal receipt. Previously shared facts remain
+in the conversation even after resetting the panel.
+
 “Your contact details will remain outside the repository. The review record
 contains task totals and coarse issue categories, with no names, participant
 IDs, raw chats or personal chart data. Tell the organizer before aggregation if
@@ -77,6 +84,14 @@ who declines is not asked to complete tasks.
    engine. Use a synthetic timestamp, reproduce its receipt, test malformed
    inputs and unknown-time semantics. Do not call the hosted compute API
    or publish a real person's chart.
+6. Open Chart Studio with its labeled synthetic example from both the global
+   and conversation entrypoints. Select the Sun with a pointer and Venus with
+   the keyboard menu. Compare Placidus and whole sign. Set time unknown and
+   verify the noon-reference label and absence of houses/angles. Inspect and
+   download the synthetic receipt. Preview a selected fact, verify nothing has
+   been sent yet, then explicitly share and check that only the reviewed facts
+   appear in context. Record panel opening, selection, unknown time, sharing and
+   saved-file download separately. Do not replace this with a simulator result.
 
 The synthetic personal-week file remains an offline concept, not a shipped
 personal tool or a participant task. Stagger testing within the global preview
@@ -90,6 +105,7 @@ an astronomical or UI error. Do not increase counters to hide it.
 | Consented/completed panel totals | Not measured |
 | Per-task attempted/completed/useful totals | Not measured |
 | Conversation/native/developer totals | Not measured |
+| Chart Studio open / selection / unknown-time / share / download totals | Not measured |
 | Voluntarily reported second use within seven days | Not measured |
 | Capacity refusals / calculation / UI / routing issues | Not measured |
 | Open reproducible defects and fixes | Not measured |

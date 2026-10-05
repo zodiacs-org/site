@@ -7,8 +7,13 @@ selection sharing and record export. Six public entrypoints and nine developer
 tools are packaged. Both local candidates are installed/enabled at 0.2.0;
 full local checks pass. [Chart Studio review](./CHART_STUDIO.md) records the
 scope, screenshots, 6,796 passing tests and remaining live-host/download checks.
-The protected staging app still serves the calendar build described below.
-Chart Studio is not yet a verified ChatGPT release; production remains disabled.
+The separate protected Chart Studio deployment is ready; 15 HTTPS checks and
+seven SDK calls pass against source `f8110d7132cbd4bb305eeae0ebd331d8b2009d9e`.
+Its Browser Evidence workflow passes. The earlier ChatGPT calendar connection
+retains its deployment. The new branded `Zodiacs Chart Studio Preview` form
+awaits the owner's reserved acknowledgement and creation before live host
+acceptance. Chart Studio is not yet a verified ChatGPT release; production has
+not been activated.
 
 ## Recovery status — 2026-10-05
 

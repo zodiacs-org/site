@@ -71,9 +71,18 @@ comparisons, and Lighthouse across 30 routes (90 samples). Its explorer drive
 reported two focus timing failures. The manual Moon-return toggle retained
 its value and restored calculation; the browser drivers now wait for the
 existing selected-place focus transfer and inspector animation-frame focus
-before continuing. Their assertions remain intact. A fresh CI run validates
-those bounded waits; the original failed provenance remains recorded in
+before continuing. Their assertions remain intact. Browser Evidence run
+37349538899 passes on `f8110d7132cbd4bb305eeae0ebd331d8b2009d9e`, including
+the full navigation/explorer drive. The original failed provenance remains in
 `evidence/chart-studio/merged-browser-evidence.json`.
+
+The separately protected HTTPS preview deploys that same source as
+`dpl_GqZf1PE5SX7v299CPtcftsSjaXuZ`. The official SDK passes 15 staging checks
+and seven successful calls across all six tools. The Studio resource matches
+the committed HTML byte-for-byte; both entrypoints, empty-only launcher input,
+self-contained CSP, personal-argument refusal and recovery pass. See
+`evidence/chart-studio/https-staging.json`. Unauthenticated access redirects
+to Vercel SSO; temporary access credentials are excluded from this repository.
 
 ## Try it
 
@@ -92,10 +101,12 @@ The builder caps JSON-encoded HTML at 2 MB.
 
 ## Release state
 
-This is implemented and locally reviewed, not accepted in live ChatGPT yet.
-The current protected ChatGPT staging connection still serves the earlier
-calendar build. Its dated acceptance does not cover Chart Studio. Refresh the
-protected preview and host connection, verify CSP/fonts, both entrypoints,
+This is implemented and verified locally and over protected HTTPS, not accepted
+in live ChatGPT yet. A separate `Zodiacs Chart Studio Preview` connection is
+prepared with its branded icon, company, website, support, privacy and terms.
+Its final acknowledgement and creation remain the owner's reserved action.
+The earlier calendar connection retains its original deployment and evidence.
+After creating the preview connection, verify CSP/fonts, both entrypoints,
 reviewed sharing, refusal recovery and saved-file downloads, then record fresh
-host evidence before release. The production switch remains off. Existing
+host evidence before release. Production has not been activated. Existing
 publisher, consenting-beta and final owner approval gates still apply.
