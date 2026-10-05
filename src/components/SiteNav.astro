@@ -785,27 +785,27 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
     .nav-menu { transition: none; }
   }
 
-  /* Phones: the pill becomes a full-width bar at the top edge, in the same
+  /* Below the full-link desktop layout, the pill becomes a full-width bar at the top edge, in the same
      colour (owner request, after rolex.com): the menu on the left, the
      ZODIACS | ASTROFOLIO lockup on the centre line, search on the right. It
      slides away as the page scrolls down and returns as it scrolls up; the
-     inline script below sets .is-away. Shared-chart receivers keep their
-     compact pill. */
-  @media (max-width: 599.5px) {
-    :global(html:not([data-chart-share-receiver])) .nav-wrap {
+     inline script below sets .is-away. Shared-chart receivers use the same bar and keep it visible during
+     their automatic result scroll. */
+  @media (max-width: 919.5px) {
+    :global(html[lang]) .nav-wrap {
       top: 0;
       padding-top: 0;
       transition: transform 360ms cubic-bezier(0.22, 1, 0.36, 1), opacity 260ms ease;
     }
-    :global(html:not([data-chart-share-receiver])) .nav-wrap.is-away { transform: translateY(-100%); opacity: 0; }
-    :global(html:not([data-chart-share-receiver])) .nav-wrap.is-away .nav { pointer-events: none; }
+    :global(html[lang]) .nav-wrap.is-away { transform: translateY(-100%); opacity: 0; }
+    :global(html[lang]) .nav-wrap.is-away .nav { pointer-events: none; }
     /* .nav-wrap .nav outranks the homepages' lens pill rules. The two outer
        tracks match, so the lockup centres on the bar with or without search.
        Its two tracks are reserved from EB Garamond's measured advances at
        0.2em tracking (ZODIACS 5.697em, ASTROFOLIO 8.265em), never from the
        text itself: the words sit still while later children stream in and
        while the face loads. */
-    :global(html:not([data-chart-share-receiver])) .nav-wrap .nav {
+    :global(html[lang]) .nav-wrap .nav {
       --nav-lockup: clamp(10px, 3.2vw, 13px);
       width: 100%;
       max-width: none;
@@ -818,21 +818,21 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
       grid-template-areas: 'menu . mark chip . profile search';
       grid-template-columns: 44px minmax(0, 1fr) calc(var(--nav-lockup) * 5.7 + 13px) calc(var(--nav-lockup) * 8.27 + 13px) minmax(0, 1fr) 44px 44px;
     }
-    :global(html:not([data-chart-share-receiver])) .nav-wrap .nav--without-search {
+    :global(html[lang]) .nav-wrap .nav--without-search {
       grid-template-areas: 'menu . mark chip . profile .';
     }
-    :global(html:not([data-chart-share-receiver])) .nav__profile-shortcut { display: inline-grid; }
+    :global(html[lang]) .nav__profile-shortcut { display: inline-grid; }
     /* Both words share one size and tracking. The mark leads with the same
        0.2em that trails the last letter, and the hairline gets 13px of room
        on either side. */
-    :global(html:not([data-chart-share-receiver])) .nav__mark {
+    :global(html[lang]) .nav__mark {
       min-height: 44px;
       gap: 0;
       padding-inline: 0.2em calc(13px - 0.2em);
       font-size: var(--nav-lockup);
     }
-    :global(html:not([data-chart-share-receiver])) .nav__name { font-size: 1em; letter-spacing: 0.2em; }
-    :global(html:not([data-chart-share-receiver])) .nav__chip {
+    :global(html[lang]) .nav__name { font-size: 1em; letter-spacing: 0.2em; }
+    :global(html[lang]) .nav__chip {
       position: relative;
       padding-inline: 13px 0;
       border-inline-start: 0;
@@ -840,7 +840,7 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
       letter-spacing: 0.2em;
       line-height: 1;
     }
-    :global(html:not([data-chart-share-receiver])) .nav__chip::before {
+    :global(html[lang]) .nav__chip::before {
       content: '';
       position: absolute;
       inset-inline-start: 0;
@@ -851,21 +851,99 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
       transform: translateY(-50%);
     }
     /* The English-only cue hangs under the word, so both words keep one line. */
-    :global(html:not([data-chart-share-receiver])) .nav__chip--deferred .nav__deferred {
+    :global(html[lang]) .nav__chip--deferred .nav__deferred {
       position: absolute;
       inset-inline: 13px 0;
       top: calc(50% + 10px);
       text-align: center;
     }
     /* A bare two-line menu mark that still folds into the X. */
-    :global(html:not([data-chart-share-receiver])) .nav__burger { border-color: transparent; }
-    :global(html:not([data-chart-share-receiver])) .nav__burger-line { width: 20px; }
-    :global(html:not([data-chart-share-receiver])) .nav__burger:not([aria-expanded='true']) .nav__burger-line:first-child { transform: translate(-50%, calc(-50% - 3.5px)); }
-    :global(html:not([data-chart-share-receiver])) .nav__burger:not([aria-expanded='true']) .nav__burger-line:nth-child(2) { opacity: 0; }
-    :global(html:not([data-chart-share-receiver])) .nav__burger:not([aria-expanded='true']) .nav__burger-line:last-child { transform: translate(-50%, calc(-50% + 3.5px)); }
+    :global(html[lang]) .nav__burger { border-color: transparent; }
+    :global(html[lang]) .nav__burger-line { width: 20px; }
+    :global(html[lang]) .nav__burger:not([aria-expanded='true']) .nav__burger-line:first-child { transform: translate(-50%, calc(-50% - 3.5px)); }
+    :global(html[lang]) .nav__burger:not([aria-expanded='true']) .nav__burger-line:nth-child(2) { opacity: 0; }
+    :global(html[lang]) .nav__burger:not([aria-expanded='true']) .nav__burger-line:last-child { transform: translate(-50%, calc(-50% + 3.5px)); }
   }
-  @media (max-width: 599.5px) and (prefers-reduced-motion: reduce) {
-    :global(html:not([data-chart-share-receiver])) .nav-wrap { transition: none; }
+  @media (max-width: 919.5px) and (prefers-reduced-motion: reduce) {
+    :global(html[lang]) .nav-wrap { transition: none; }
+  }
+
+  /* Localized desktop labels need the existing 1040px tier. */
+  @media (min-width: 920px) and (max-width: 1039.5px) {
+    :global(html:not(:lang(en))) .nav-wrap {
+      top: 0;
+      padding-top: 0;
+      transition: transform 360ms cubic-bezier(0.22, 1, 0.36, 1), opacity 260ms ease;
+    }
+    :global(html:not(:lang(en))) .nav-wrap.is-away { transform: translateY(-100%); opacity: 0; }
+    :global(html:not(:lang(en))) .nav-wrap.is-away .nav { pointer-events: none; }
+    /* .nav-wrap .nav outranks the homepages' lens pill rules. The two outer
+       tracks match, so the lockup centres on the bar with or without search.
+       Its two tracks are reserved from EB Garamond's measured advances at
+       0.2em tracking (ZODIACS 5.697em, ASTROFOLIO 8.265em), never from the
+       text itself: the words sit still while later children stream in and
+       while the face loads. */
+    :global(html:not(:lang(en))) .nav-wrap .nav {
+      --nav-lockup: clamp(10px, 3.2vw, 13px);
+      width: 100%;
+      max-width: none;
+      height: calc(52px + env(safe-area-inset-top, 0px));
+      padding: env(safe-area-inset-top, 0px) 6px 0;
+      gap: 0;
+      border-width: 0 0 1px;
+      border-radius: 0;
+      box-shadow: none;
+      grid-template-areas: 'menu . mark chip . profile search';
+      grid-template-columns: 44px minmax(0, 1fr) calc(var(--nav-lockup) * 5.7 + 13px) calc(var(--nav-lockup) * 8.27 + 13px) minmax(0, 1fr) 44px 44px;
+    }
+    :global(html:not(:lang(en))) .nav-wrap .nav--without-search {
+      grid-template-areas: 'menu . mark chip . profile .';
+    }
+    :global(html:not(:lang(en))) .nav__profile-shortcut { display: inline-grid; }
+    /* Both words share one size and tracking. The mark leads with the same
+       0.2em that trails the last letter, and the hairline gets 13px of room
+       on either side. */
+    :global(html:not(:lang(en))) .nav__mark {
+      min-height: 44px;
+      gap: 0;
+      padding-inline: 0.2em calc(13px - 0.2em);
+      font-size: var(--nav-lockup);
+    }
+    :global(html:not(:lang(en))) .nav__name { font-size: 1em; letter-spacing: 0.2em; }
+    :global(html:not(:lang(en))) .nav__chip {
+      position: relative;
+      padding-inline: 13px 0;
+      border-inline-start: 0;
+      font-size: var(--nav-lockup);
+      letter-spacing: 0.2em;
+      line-height: 1;
+    }
+    :global(html:not(:lang(en))) .nav__chip::before {
+      content: '';
+      position: absolute;
+      inset-inline-start: 0;
+      top: 50%;
+      width: 1px;
+      height: 15px;
+      background: var(--hair-3);
+      transform: translateY(-50%);
+    }
+    /* The English-only cue hangs under the word, so both words keep one line. */
+    :global(html:not(:lang(en))) .nav__chip--deferred .nav__deferred {
+      position: absolute;
+      inset-inline: 13px 0;
+      top: calc(50% + 10px);
+      text-align: center;
+    }
+    /* A bare two-line menu mark that still folds into the X. */
+    :global(html:not(:lang(en))) .nav__burger { border-color: transparent; }
+    :global(html:not(:lang(en))) .nav__burger-line { width: 20px; }
+    :global(html:not(:lang(en))) .nav__burger:not([aria-expanded='true']) .nav__burger-line:first-child { transform: translate(-50%, calc(-50% - 3.5px)); }
+    :global(html:not(:lang(en))) .nav__burger:not([aria-expanded='true']) .nav__burger-line:nth-child(2) { opacity: 0; }
+    :global(html:not(:lang(en))) .nav__burger:not([aria-expanded='true']) .nav__burger-line:last-child { transform: translate(-50%, calc(-50% + 3.5px)); }
+  }
+  @media (min-width: 920px) and (max-width: 1039.5px) and (prefers-reduced-motion: reduce) {
+    :global(html:not(:lang(en))) .nav-wrap { transition: none; }
   }
 </style>
 
@@ -1155,7 +1233,7 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
 </script>
 
 <script is:inline>
-  /* Phones: the bar slides away as the page scrolls down and returns as it
+  /* Compact layouts: the bar slides away as the page scrolls down and returns as it
      scrolls up. It always shows near the top, while a menu is open, and
      while it holds keyboard focus. A classic inline script, so the nav
      module above stays small enough to be inlined. */
@@ -1164,7 +1242,8 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
     var wrap = nav && nav.parentElement;
     var root = document.documentElement;
     if (!wrap || !window.matchMedia || root.hasAttribute('data-chart-share-receiver')) return;
-    var phone = window.matchMedia('(max-width: 599.5px)');
+    var phone = window.matchMedia(nav.classList.contains('nav--localized')
+      ? '(max-width: 1039.5px)' : '(max-width: 919.5px)');
     var last = Math.max(0, window.scrollY);
     var away = false;
     var frame = 0;

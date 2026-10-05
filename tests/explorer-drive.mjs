@@ -392,10 +392,10 @@ try {
   // destination track and no later movement of the surviving controls.
   const receiverDetails = [];
   let receiverPass = true;
-  for (const [prefix, desktopBreakpoint, compactWidth, mobileWidth, desktopWidth] of [
-    ['', 920, 180, 210, 746],
-    ['/es', 1040, 184, 210, 854],
-    ['/ru', 1040, 132, 166, 854],
+  for (const [prefix, desktopBreakpoint, desktopWidth] of [
+    ['', 920, 746],
+    ['/es', 1040, 854],
+    ['/ru', 1040, 854],
   ]) {
     for (const width of [320, 390, desktopBreakpoint, ...(prefix === '' ? [1440] : [])]) {
       const desktop = width >= desktopBreakpoint;
@@ -455,14 +455,14 @@ try {
         return Math.abs(scrollY - target) <= 1 && Math.abs(scrollY - before) <= 0.1;
       });
       const settled = await receiverGeometry();
-      const expectedWidth = desktop ? desktopWidth : width <= 360 ? compactWidth : mobileWidth;
+      const expectedWidth = desktop ? desktopWidth : width;
       const pass = [early, settled].every((state) => state.receiver
         && state.visible
         && state.wingLinks === 0
         && Math.abs(state.width - expectedWidth) <= 0.1
-        && state.left >= 16 && state.right <= width - 16
+        && state.left >= (desktop ? 16 : 0) && state.right <= width - (desktop ? 16 : 0)
         && Math.abs(state.left - (width - expectedWidth) / 2) <= 0.1
-        && Math.abs(state.endGap - (width <= 360 ? 5 : 11)) <= 0.1
+        && Math.abs(state.endGap - (desktop ? 11 : prefix === '/ru' ? 50 : 6)) <= 0.1
         && state.children.every((child) => child.left >= state.left && child.right <= state.right)
         && state.controls.length === (desktop ? (prefix === '/ru' ? 0 : 1) : (prefix === '/ru' ? 1 : 2))
         && (desktop || state.controls.every((control) => control.width === 44 && control.height === 44)))
