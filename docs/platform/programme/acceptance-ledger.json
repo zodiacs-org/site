@@ -1,7 +1,7 @@
 {
   "version": 1,
   "brief": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md (version 2) with the version 1 rules it retains",
-  "asOf": "2026-10-05 checkpoint 17 (source e20d5f40; sky-fact benchmark v0 on production dpl_Aab4BCHqNeL2wK6w3A1AQaQ7wh28: B4.a validated, pending the owner's reading of raw answers)",
+  "asOf": "2026-10-05 checkpoint 18 (source a1217c39; structured data on the developer pages on production dpl_6f2JNEQFegyBkAhxp4PYBLgn7i7N: S1 accepted)",
   "denominator": {
     "unit": "working days, from the brief's effort estimates (README.md)",
     "totalWeight": 182.45,
@@ -2113,9 +2113,15 @@
       "weight": 1,
       "gate": "markup validates; listed on the developer pages",
       "dependsOn": [],
-      "status": "partial",
-      "release": "none",
-      "evidence": []
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/structured-data-2026-10-05/README.md",
+        "scripts/validate-schema.mjs, which CI runs over the production build (\"Structured data validation\", npm run schema:check), holds each of the six developer pages to its contract in scripts/developer-structured-data-checks.mjs: SoftwareApplication for the engine and the MCP server, SoftwareSourceCode for the engine's repository, WebAPI for the static sky data and the compute API, Dataset for the sky data, the conformance vectors and the sky-fact benchmark, with every value held to the record it comes from (versions, downloads, licences, commits, spans, file lists, URLs the build serves) and a breadcrumb on each page; scripts/developer-structured-data-checks.test.mjs tests the check in 10 cases, and 15 faults planted in a built copy of the pages each failed it (PR #653)",
+        "docs/platform/evidence/structured-data-2026-10-05/vocab-check.txt: every JSON-LD node on the six built pages held to schema.org's vocabulary (V30.1, 2026-10-05), 97 typed nodes of eleven types, 0 errors",
+        "production dpl_6f2JNEQFegyBkAhxp4PYBLgn7i7N (READY 2026-10-05T15:08:18Z, aliased to zodiacs.org) serves site a1217c39; the six developer pages it serves carry JSON-LD identical to the build that validate-schema passed, fetched after READY"
+      ],
+      "notes": "Checkpoint 18 (2026-10-05): accepted. The six developer pages carry SoftwareApplication, SoftwareSourceCode, WebAPI and Dataset markup with breadcrumbs, the site's validator holds every value to its source on every build, and schema.org's vocabulary finds no error. Google's Rich Results Test was not run. The sky-fact benchmark's Dataset names no licence, because none has been chosen."
     },
     {
       "id": "S2",
