@@ -1,5 +1,54 @@
 # Programme status
 
+Checkpoint 17, 2026-10-05: the sky-fact benchmark v0, judged against main
+`e20d5f4027ff7800a6cf494a3f1702bb142d49f0` (#648), which production
+`dpl_Aab4BCHqNeL2wK6w3A1AQaQ7wh28` serves (READY 2026-10-05T12:58:32Z).
+
+**Overall delivery: 31%** (31.241% to three decimals) — 57 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%. Unchanged from
+checkpoint 16. Gates, weights and the denominator are unchanged.
+[Benchmark record](../evidence/sky-benchmark-v0/README.md).
+
+- **Validated (1).**
+  - B4.a (3): `/developers/sky-benchmark/` publishes 300 questions, 60 in
+    each of five families, the engine's answer to each, a scorer with no
+    dependencies, and `check_sky_fact`'s reply to each question when v0 was
+    drawn. `check_sky_fact` gives the key's answer on all 300 questions and
+    on 2,022 facts around them, and every answer in the key agrees with NASA
+    JPL Horizons. Production serves the four files with the SHA-256s the
+    test pins: `items.json` `8521a288…`, `key.json` `4d1ec5f7…`,
+    `tool-answers.json` `7477701a…` and `scorer.mjs` `728355f2…`.
+  - It is validated, not accepted. In the brief's B4 risk line "raw
+    answers" means the assistants' answers, which DECISIONS-2026-09-28 §9
+    sends to the private baselines repository and B4.b scores. This release
+    publishes the tool's replies in their place, a reading the owner
+    confirms or rejects.
+- **Findings.** None new at this checkpoint. Measuring the election
+  search's cost found one, below, which is recorded with that work.
+- Actual command: `node scripts/programme-ledger.mjs --summary` →
+  `Overall delivery: 31% (57 of 182.45); blocked 2% (3)`.
+- **Owner decisions needed.**
+  - New, for the benchmark: what "raw answers" means for B4.a; a licence
+    for its files, where the programme recommends CC0 1.0, as for the
+    conformance vectors; and its name, before assistants are scored on it.
+  - As in checkpoint 16: F-71; the readings that leave A6 partial; F-77;
+    and an engine release for eclipses and the sidereal zodiac in the MCP
+    tools.
+- **Next.**
+  - S1: structured data on the developer pages, checked over the built
+    site.
+  - B5.b: the election search on the compute API, with its preregistered
+    comparison against a brute-force scan. Measuring its cost, one quiet
+    machine ran every endpoint's costliest requests on engine rc.15 and
+    rc.16 in turn: at the slowest requests one address at both rate limits
+    costs 7.8 CPU-seconds a minute on rc.15 and 10.7 on rc.16, which
+    production runs. DECISIONS-2026-09-30 §7 allows 10, and the compute page
+    still says about 8.7. The election search does not raise the figure. It
+    is recorded as F-78, with the evidence and the owner's options, in the
+    election search's pull request.
+
+## Earlier checkpoints
+
 Checkpoint 16, 2026-10-05: the MCP adapter 0.1.0-rc.16.2, judged against main
 `3f09711a8bde37cec855bd33aad80de72ca9eed4` (#646), which production
 `dpl_94a4kV72vzpEWurR5dFHe4ES9uUy` serves (READY 2026-10-05T02:16:43Z).
@@ -43,8 +92,6 @@ checkpoint 15. Gates, weights and the denominator are unchanged.
   - Aspects and void-of-course periods in `find_events`, aspect facts in
     `check_sky_fact` and frame options in `get_positions`, in the compute API
     first.
-
-## Earlier checkpoints
 
 Checkpoint 15, 2026-10-05: the MCP adapter 0.1.0-rc.16.1 and three more of
 engine rc.16's units, judged against main
