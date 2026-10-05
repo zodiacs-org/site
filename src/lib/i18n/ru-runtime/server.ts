@@ -86,10 +86,10 @@ export const RUSSIAN_RUNTIME = {
       return: 'Карта сохранена.',
       returnLink: 'Вернуться в Registry Collection — пока по-английски →',
     },
-    personChartTemplate: 'Карта {name}: ниже «вы» означает {name}.',
+    personChartTemplate: 'Карта «{name}»: ниже «вы» относится к этому человеку.',
     otherSubject: {
       unnamed: 'Вы читаете карту другого человека. Ниже «вы» означает человека, чьи данные рождения вы ввели.',
-      namedTemplate: 'Вы читаете карту {name}. Ниже «вы» означает {name}.',
+      namedTemplate: 'Вы читаете карту «{name}». Ниже «вы» относится к этому человеку.',
       headingTemplate: 'Натальная карта: {name}',
       headingUnnamed: 'Натальная карта другого человека',
       submit: 'Обновить эту карту',

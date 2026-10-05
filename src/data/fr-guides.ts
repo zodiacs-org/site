@@ -335,8 +335,8 @@ function buildGuide(slug: string, p: Profile): FrenchGuide {
   ];
   return {
     sign: slug,
-    title: `${p.name} : dates, personnalité, compatibilité et signification`,
-    description: `Guide français ${deName} : dates, personnalité, amour, compatibilité et signification dans ton thème astral. ${EDGE_COPY}`,
+    title: `${p.name} : dates, personnalité, compatibilité`,
+    description: `Guide ${deName} : dates, personnalité, amour et compatibilité dans ton thème astral. Né·e près d’un changement de signe ? Calcule ton thème pour savoir.`,
     intro,
     sections,
     faq,

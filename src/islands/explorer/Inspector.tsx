@@ -10,7 +10,7 @@ import AspectGlyph from '../../components/AspectGlyph';
 import AstroTerm from '../AstroTerm';
 import {
   formatLongitude, signBySlug, signDates, signEssence, signForLongitude,
-  signName, elementLabel, modalityLabel,
+  signName, signPrepositional, elementLabel, modalityLabel,
 } from '../../lib/signs';
 import { signIcon } from '../../lib/sign-icon';
 import { NATAL_HOUSE_THEME, natalAspectLine, planetInHouseLine } from '../../lib/natal';
@@ -280,7 +280,7 @@ export default function Inspector({ scene, selection, onSelect, locale, banner }
           {exact}
           {sb.house != null && locale !== 'ru' && <p class="insp__read">{planetInHouseLine(sb.body, sb.house)}</p>}
           <div class="insp__related-actions">{related}</div>
-          {!node && learn(`/learn/placements/${sb.body.toLowerCase().replace(' ', '-')}-in-${sb.sign}/`, `${bodyLabel} ${t(locale, 'readIn')} ${signName(sign, locale)}`)}
+          {!node && learn(`/learn/placements/${sb.body.toLowerCase().replace(' ', '-')}-in-${sb.sign}/`, `${bodyLabel} ${t(locale, 'readIn')} ${locale === 'ru' ? signPrepositional(sign) : signName(sign, locale)}`)}
         </>
       );
       break;
@@ -484,7 +484,7 @@ export default function Inspector({ scene, selection, onSelect, locale, banner }
           {selection.angle === 'asc' && learn(localizePath(locale, '/rising-sign/'), `${signName(sign, locale)} ${t(locale, 'rising').toLowerCase()}`, false)}
         </>
       ) : (
-        <>{exact}<p class="insp__read">{t(locale, KEY[selection.angle])}</p>{selection.angle === 'asc' && learn(localizePath(locale, '/rising-sign/'), `${signName(sign, locale)} ${t(locale, 'rising').toLowerCase()}`, false)}</>
+        <>{exact}<p class="insp__read">{t(locale, KEY[selection.angle])}</p>{selection.angle === 'asc' && learn(localizePath(locale, '/rising-sign/'), locale === 'ru' ? `${t(locale, 'rising')} в ${signPrepositional(sign)}` : `${signName(sign, locale)} ${t(locale, 'rising').toLowerCase()}`, false)}</>
       );
       break;
     }

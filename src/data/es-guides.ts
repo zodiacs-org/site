@@ -10,12 +10,13 @@ export interface SpanishGuide {
 }
 
 const edgeCopy = 'Si naciste cerca del límite, calcula tu carta natal: el Sol no cambia de signo a la misma hora todos los años.';
+const edgeShort = 'Si naciste cerca del límite, calcula tu carta natal gratis.';
 
 export const ES_GUIDES: Record<string, SpanishGuide> = {
   aries: {
     sign: 'aries',
-    title: 'Aries: fechas, personalidad, compatibilidad y significado',
-    description: `Aries explicado en español: fechas, personalidad, amor, compatibilidad y qué significa Aries en tu carta. ${edgeCopy}`,
+    title: 'Aries: fechas, personalidad y compatibilidad',
+    description: `Aries: fechas, personalidad, amor y compatibilidad, y qué significa Aries en tu carta. ${edgeShort}`,
     intro: [
       'Aries abre la rueda zodiacal. Es el impulso de empezar, la chispa que aparece antes del plan perfecto y la valentía de moverse aunque todavía no estén todas las respuestas.',
       'En una carta natal, Aries muestra dónde actúas con más franqueza. No siempre es paciencia; muchas veces es honestidad, deseo y una necesidad muy clara de sentir que la vida avanza.',
@@ -50,8 +51,8 @@ export const ES_GUIDES: Record<string, SpanishGuide> = {
   },
   taurus: {
     sign: 'taurus',
-    title: 'Tauro: fechas, personalidad, compatibilidad y significado',
-    description: `Tauro explicado en español: fechas, personalidad, amor, compatibilidad y qué significa Tauro en tu carta. ${edgeCopy}`,
+    title: 'Tauro: fechas, personalidad y compatibilidad',
+    description: `Tauro: fechas, personalidad, amor y compatibilidad, y qué significa Tauro en tu carta. ${edgeShort}`,
     intro: [
       'Tauro llega cuando la primavera deja de prometer y empieza a sostener. Es el signo de lo que se cuida con tiempo: cuerpo, placer, estabilidad, recursos y amor que se demuestra en hechos.',
       'En una carta natal, Tauro muestra dónde necesitas seguridad real. No solo comodidad: también ritmo propio, buenos límites y la paciencia de construir algo que dure.',
@@ -86,8 +87,8 @@ export const ES_GUIDES: Record<string, SpanishGuide> = {
   },
   gemini: {
     sign: 'gemini',
-    title: 'Géminis: fechas, personalidad, compatibilidad y significado',
-    description: `Géminis explicado en español: fechas, personalidad, amor, compatibilidad y qué significa Géminis en tu carta. ${edgeCopy}`,
+    title: 'Géminis: fechas, personalidad y compatibilidad',
+    description: `Géminis: fechas, personalidad, amor y compatibilidad, y qué significa Géminis en tu carta. ${edgeShort}`,
     intro: [
       'Géminis es aire en movimiento: preguntas, conversaciones, conexiones y la rapidez de una mente que necesita variedad para sentirse viva.',
       'En una carta natal, Géminis muestra dónde aprendes probando, hablando, leyendo, cambiando de ángulo y reuniendo información antes de quedarte con una sola respuesta.',
@@ -122,8 +123,8 @@ export const ES_GUIDES: Record<string, SpanishGuide> = {
   },
   cancer: {
     sign: 'cancer',
-    title: 'Cáncer: fechas, personalidad, compatibilidad y significado',
-    description: `Cáncer explicado en español: fechas, personalidad, amor, compatibilidad y qué significa Cáncer en tu carta. ${edgeCopy}`,
+    title: 'Cáncer: fechas, personalidad y compatibilidad',
+    description: `Cáncer: fechas, personalidad, amor y compatibilidad, y qué significa Cáncer en tu carta. ${edgeShort}`,
     intro: [
       'Cáncer empieza con el solsticio de junio: mucha luz, mucha memoria y una vuelta hacia lo íntimo. Es el signo del cuidado, la pertenencia y la sensibilidad que protege.',
       'En una carta natal, Cáncer muestra dónde sientes antes de explicar. También dónde necesitas hogar, confianza y una forma de seguridad que no sea solo material.',
@@ -158,8 +159,8 @@ export const ES_GUIDES: Record<string, SpanishGuide> = {
   },
   leo: {
     sign: 'leo',
-    title: 'Leo: fechas, personalidad, compatibilidad y significado',
-    description: `Leo explicado en español: fechas, personalidad, amor, compatibilidad y qué significa Leo en tu carta. ${edgeCopy}`,
+    title: 'Leo: fechas, personalidad y compatibilidad',
+    description: `Leo: fechas, personalidad, amor y compatibilidad, y qué significa Leo en tu carta. ${edgeShort}`,
     intro: [
       'Leo es el corazón del verano: presencia, calor, creatividad y el deseo de ser visto por lo que realmente se es.',
       'En una carta natal, Leo muestra dónde necesitas expresarte con orgullo sano. No se trata solo de atención; se trata de autoría, juego y generosidad visible.',
@@ -194,8 +195,8 @@ export const ES_GUIDES: Record<string, SpanishGuide> = {
   },
   virgo: {
     sign: 'virgo',
-    title: 'Virgo: fechas, personalidad, compatibilidad y significado',
-    description: `Virgo explicado en español: fechas, personalidad, amor, compatibilidad y qué significa Virgo en tu carta. ${edgeCopy}`,
+    title: 'Virgo: fechas, personalidad y compatibilidad',
+    description: `Virgo: fechas, personalidad, amor y compatibilidad, y qué significa Virgo en tu carta. ${edgeShort}`,
     intro: [
       'Virgo llega con la cosecha: mirar de cerca, separar lo útil de lo que sobra y hacer que las cosas funcionen mejor.',
       'En una carta natal, Virgo muestra dónde mejoras la vida con atención. Su magia no es la perfección; es la capacidad de notar lo que necesita ajuste.',
@@ -230,8 +231,8 @@ export const ES_GUIDES: Record<string, SpanishGuide> = {
   },
   libra: {
     sign: 'libra',
-    title: 'Libra: fechas, personalidad, compatibilidad y significado',
-    description: `Libra explicado en español: fechas, personalidad, amor, compatibilidad y qué significa Libra en tu carta. ${edgeCopy}`,
+    title: 'Libra: fechas, personalidad y compatibilidad',
+    description: `Libra: fechas, personalidad, amor y compatibilidad, y qué significa Libra en tu carta. ${edgeShort}`,
     intro: [
       'Libra empieza cerca del equinoccio de septiembre, cuando día y noche se equilibran. Su tema central es la relación: proporción, belleza, justicia y elección mutua.',
       'En una carta natal, Libra muestra dónde piensas mejor con otro espejo. También dónde necesitas armonía, pero no a costa de tu propia voz.',
@@ -266,8 +267,8 @@ export const ES_GUIDES: Record<string, SpanishGuide> = {
   },
   scorpio: {
     sign: 'scorpio',
-    title: 'Escorpio: fechas, personalidad, compatibilidad y significado',
-    description: `Escorpio explicado en español: fechas, personalidad, amor, compatibilidad y qué significa Escorpio en tu carta. ${edgeCopy}`,
+    title: 'Escorpio: fechas, carácter y compatibilidad',
+    description: `Escorpio: fechas, personalidad, amor y compatibilidad, y qué significa Escorpio en tu carta. ${edgeShort}`,
     intro: [
       'Escorpio aparece cuando el año entra en profundidad. Es el signo de lo que no se dice en voz alta: deseo, pérdida, confianza, transformación y verdad emocional.',
       'En una carta natal, Escorpio muestra dónde no te conformas con la superficie. Allí necesitas honestidad, intimidad y una forma de poder que no sea control.',
@@ -302,8 +303,8 @@ export const ES_GUIDES: Record<string, SpanishGuide> = {
   },
   sagittarius: {
     sign: 'sagittarius',
-    title: 'Sagitario: fechas, personalidad, compatibilidad y significado',
-    description: `Sagitario explicado en español: fechas, personalidad, amor, compatibilidad y qué significa Sagitario en tu carta. ${edgeCopy}`,
+    title: 'Sagitario: fechas, carácter y compatibilidad',
+    description: `Sagitario: fechas, personalidad, amor y compatibilidad, y qué significa Sagitario en tu carta. ${edgeShort}`,
     intro: [
       'Sagitario mira hacia el horizonte. Es búsqueda, verdad, viaje, humor y la necesidad de que la vida tenga sentido más allá de la rutina.',
       'En una carta natal, Sagitario muestra dónde creces al explorar: lugares, ideas, creencias, estudios o conversaciones que ensanchan el mundo.',
@@ -338,8 +339,8 @@ export const ES_GUIDES: Record<string, SpanishGuide> = {
   },
   capricorn: {
     sign: 'capricorn',
-    title: 'Capricornio: fechas, personalidad, compatibilidad y significado',
-    description: `Capricornio explicado en español: fechas, personalidad, amor, compatibilidad y qué significa Capricornio en tu carta. ${edgeCopy}`,
+    title: 'Capricornio: fechas, carácter y compatibilidad',
+    description: `Capricornio: fechas, personalidad, amor y compatibilidad, y qué significa en tu carta. ${edgeShort}`,
     intro: [
       'Capricornio empieza con el solsticio de diciembre: poco ruido, mucha estructura y la paciencia de construir cuando todavía hace frío.',
       'En una carta natal, Capricornio muestra dónde tomas responsabilidad, mides el tiempo y quieres que algo sea real, no solo inspirador.',
@@ -374,8 +375,8 @@ export const ES_GUIDES: Record<string, SpanishGuide> = {
   },
   aquarius: {
     sign: 'aquarius',
-    title: 'Acuario: fechas, personalidad, compatibilidad y significado',
-    description: `Acuario explicado en español: fechas, personalidad, amor, compatibilidad y qué significa Acuario en tu carta. ${edgeCopy}`,
+    title: 'Acuario: fechas, personalidad y compatibilidad',
+    description: `Acuario: fechas, personalidad, amor y compatibilidad, y qué significa Acuario en tu carta. ${edgeShort}`,
     intro: [
       'Acuario mira el sistema desde afuera. Es pensamiento independiente, futuro, comunidad, diferencia y la pregunta de si una regla todavía sirve.',
       'En una carta natal, Acuario muestra dónde necesitas aire, visión y permiso para no encajar del todo.',
@@ -410,8 +411,8 @@ export const ES_GUIDES: Record<string, SpanishGuide> = {
   },
   pisces: {
     sign: 'pisces',
-    title: 'Piscis: fechas, personalidad, compatibilidad y significado',
-    description: `Piscis explicado en español: fechas, personalidad, amor, compatibilidad y qué significa Piscis en tu carta. ${edgeCopy}`,
+    title: 'Piscis: fechas, personalidad y compatibilidad',
+    description: `Piscis: fechas, personalidad, amor y compatibilidad, y qué significa Piscis en tu carta. ${edgeShort}`,
     intro: [
       'Piscis cierra la rueda zodiacal. Es sensibilidad, imaginación, compasión y esa parte de la vida que no cabe del todo en palabras.',
       'En una carta natal, Piscis muestra dónde sientes los bordes más suaves: intuición, arte, sueño, fe, cansancio ajeno y deseo de conexión profunda.',

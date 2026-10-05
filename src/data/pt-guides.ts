@@ -9,13 +9,13 @@ export interface PortugueseGuide {
   faq: { q: string; a: string }[];
 }
 
-const edgeCopy = 'Se você nasceu perto da mudança de signo, calcule seu mapa astral: o Sol não muda de signo no mesmo horário todos os anos.';
+const edgeCopy = 'Nasceu na cúspide? Calcule seu mapa astral.';
 
 export const PT_GUIDES: Record<string, PortugueseGuide> = {
   aries: {
     sign: 'aries',
-    title: 'Áries: datas, personalidade, compatibilidade e significado',
-    description: `Áries explicado em português: datas, personalidade, amor, compatibilidade e o que Áries significa no seu mapa. ${edgeCopy}`,
+    title: 'Áries: datas, personalidade e compatibilidade',
+    description: `Áries: datas, personalidade, amor, compatibilidade e o queÁries significa no seu mapa. ${edgeCopy}`,
     intro: [
       'Áries abre a roda do zodíaco. É o impulso de começar, a faísca que surge antes do plano perfeito e a coragem de agir mesmo quando ainda faltam respostas.',
       'Em um mapa astral, Áries mostra onde você age com mais franqueza. Nem sempre é paciência; muitas vezes é honestidade, desejo e uma necessidade muito clara de sentir que a vida está avançando.',
@@ -50,8 +50,8 @@ export const PT_GUIDES: Record<string, PortugueseGuide> = {
   },
   taurus: {
     sign: 'taurus',
-    title: 'Touro: datas, personalidade, compatibilidade e significado',
-    description: `Touro explicado em português: datas, personalidade, amor, compatibilidade e o que Touro significa no seu mapa. ${edgeCopy}`,
+    title: 'Touro: datas, personalidade e compatibilidade',
+    description: `Touro: datas, personalidade, amor, compatibilidade e o queTouro significa no seu mapa. ${edgeCopy}`,
     intro: [
       'Touro chega quando a primavera deixa de prometer e começa a sustentar. É o signo do que se cuida com tempo: corpo, prazer, estabilidade, recursos e amor demonstrado por atitudes.',
       'Em um mapa astral, Touro mostra onde você precisa de segurança concreta. Não apenas conforto, mas também ritmo próprio, bons limites e paciência para construir algo duradouro.',
@@ -86,8 +86,8 @@ export const PT_GUIDES: Record<string, PortugueseGuide> = {
   },
   gemini: {
     sign: 'gemini',
-    title: 'Gêmeos: datas, personalidade, compatibilidade e significado',
-    description: `Gêmeos explicado em português: datas, personalidade, amor, compatibilidade e o que Gêmeos significa no seu mapa. ${edgeCopy}`,
+    title: 'Gêmeos: datas, personalidade e compatibilidade',
+    description: `Gêmeos: datas, personalidade, amor, compatibilidade e o queGêmeos significa no seu mapa. ${edgeCopy}`,
     intro: [
       'Gêmeos é ar em movimento: perguntas, conversas, conexões e a rapidez de uma mente que precisa de variedade para se sentir viva.',
       'Em um mapa astral, Gêmeos mostra onde você aprende testando, falando, lendo, mudando de perspectiva e reunindo informações antes de escolher uma única resposta.',
@@ -122,8 +122,8 @@ export const PT_GUIDES: Record<string, PortugueseGuide> = {
   },
   cancer: {
     sign: 'cancer',
-    title: 'Câncer: datas, personalidade, compatibilidade e significado',
-    description: `Câncer explicado em português: datas, personalidade, amor, compatibilidade e o que Câncer significa no seu mapa. ${edgeCopy}`,
+    title: 'Câncer: datas, personalidade e compatibilidade',
+    description: `Câncer: datas, personalidade, amor, compatibilidade e o queCâncer significa no seu mapa. ${edgeCopy}`,
     intro: [
       'Câncer começa no solstício de junho: muita luz, muita memória e um retorno ao íntimo. É o signo do cuidado, do pertencimento e da sensibilidade que protege.',
       'Em um mapa astral, Câncer mostra onde você sente antes de explicar. Também mostra onde precisa de lar, confiança e uma forma de segurança que não seja apenas material.',
@@ -158,8 +158,8 @@ export const PT_GUIDES: Record<string, PortugueseGuide> = {
   },
   leo: {
     sign: 'leo',
-    title: 'Leão: datas, personalidade, compatibilidade e significado',
-    description: `Leão explicado em português: datas, personalidade, amor, compatibilidade e o que Leão significa no seu mapa. ${edgeCopy}`,
+    title: 'Leão: datas, personalidade e compatibilidade',
+    description: `Leão: datas, personalidade, amor, compatibilidade e o queLeão significa no seu mapa. ${edgeCopy}`,
     intro: [
       'Leão é o coração do verão: presença, calor, criatividade e o desejo de ser visto pelo que realmente é.',
       'Em um mapa astral, Leão mostra onde você precisa se expressar com orgulho saudável. Não se trata apenas de atenção, mas de autoria, diversão e generosidade visível.',
@@ -194,8 +194,8 @@ export const PT_GUIDES: Record<string, PortugueseGuide> = {
   },
   virgo: {
     sign: 'virgo',
-    title: 'Virgem: datas, personalidade, compatibilidade e significado',
-    description: `Virgem explicado em português: datas, personalidade, amor, compatibilidade e o que Virgem significa no seu mapa. ${edgeCopy}`,
+    title: 'Virgem: datas, personalidade e compatibilidade',
+    description: `Virgem: datas, personalidade, amor, compatibilidade e o queVirgem significa no seu mapa. ${edgeCopy}`,
     intro: [
       'Virgem chega com a colheita: observar de perto, separar o que é útil do que sobra e fazer as coisas funcionarem melhor.',
       'Em um mapa astral, Virgem mostra onde você melhora a vida com atenção. Sua magia não é a perfeição, mas a capacidade de perceber o que precisa de ajuste.',
@@ -230,8 +230,8 @@ export const PT_GUIDES: Record<string, PortugueseGuide> = {
   },
   libra: {
     sign: 'libra',
-    title: 'Libra: datas, personalidade, compatibilidade e significado',
-    description: `Libra explicado em português: datas, personalidade, amor, compatibilidade e o que Libra significa no seu mapa. ${edgeCopy}`,
+    title: 'Libra: datas, personalidade e compatibilidade',
+    description: `Libra: datas, personalidade, amor, compatibilidade e o queLibra significa no seu mapa. ${edgeCopy}`,
     intro: [
       'Libra começa no equinócio: o instante em que luz e escuridão encontram equilíbrio. É o signo da relação, da proporção, da beleza e das escolhas feitas com outra pessoa em mente.',
       'Em um mapa astral, Libra mostra onde você busca reciprocidade e justiça. Também mostra onde pode demorar a decidir porque percebe muitos lados de uma mesma questão.',
@@ -266,8 +266,8 @@ export const PT_GUIDES: Record<string, PortugueseGuide> = {
   },
   scorpio: {
     sign: 'scorpio',
-    title: 'Escorpião: datas, personalidade, compatibilidade e significado',
-    description: `Escorpião explicado em português: datas, personalidade, amor, compatibilidade e o que Escorpião significa no seu mapa. ${edgeCopy}`,
+    title: 'Escorpião: datas, personalidade e compatibilidade',
+    description: `Escorpião: datas, personalidade, amor, compatibilidade e o queEscorpião significa no seu mapa. ${edgeCopy}`,
     intro: [
       'Escorpião é água profunda: intimidade, desejo, poder, perda e tudo o que se transforma quando deixamos de olhar apenas a superfície.',
       'Em um mapa astral, Escorpião mostra onde você não aceita meias verdades. Ali, a confiança custa caro, mas, quando existe, o compromisso pode ser enorme.',
@@ -302,8 +302,8 @@ export const PT_GUIDES: Record<string, PortugueseGuide> = {
   },
   sagittarius: {
     sign: 'sagittarius',
-    title: 'Sagitário: datas, personalidade, compatibilidade e significado',
-    description: `Sagitário explicado em português: datas, personalidade, amor, compatibilidade e o que Sagitário significa no seu mapa. ${edgeCopy}`,
+    title: 'Sagitário: datas, personalidade e compatibilidade',
+    description: `Sagitário: datas, personalidade, amor, compatibilidade e o queSagitário significa no seu mapa. ${edgeCopy}`,
     intro: [
       'Sagitário é fogo em movimento: horizonte, viagem, verdade, humor e a necessidade de encontrar um sentido maior do que a rotina.',
       'Em um mapa astral, Sagitário mostra onde você cresce ao explorar. Ali, a vida pede perspectiva, experiência e liberdade para formular perguntas maiores.',
@@ -338,8 +338,8 @@ export const PT_GUIDES: Record<string, PortugueseGuide> = {
   },
   capricorn: {
     sign: 'capricorn',
-    title: 'Capricórnio: datas, personalidade, compatibilidade e significado',
-    description: `Capricórnio explicado em português: datas, personalidade, amor, compatibilidade e o que Capricórnio significa no seu mapa. ${edgeCopy}`,
+    title: 'Capricórnio: datas, personalidade e compatibilidade',
+    description: `Capricórnio: datas, personalidade, amor, compatibilidade e o queCapricórnio significa no seu mapa. ${edgeCopy}`,
     intro: [
       'Capricórnio começa no solstício: a noite mais longa e o primeiro movimento da luz de volta. É o signo do tempo, da responsabilidade e do que se constrói degrau por degrau.',
       'Em um mapa astral, Capricórnio mostra onde você leva a vida a sério. Ali, quer competência, estrutura e resultados que resistam ao tempo.',
@@ -374,8 +374,8 @@ export const PT_GUIDES: Record<string, PortugueseGuide> = {
   },
   aquarius: {
     sign: 'aquarius',
-    title: 'Aquário: datas, personalidade, compatibilidade e significado',
-    description: `Aquário explicado em português: datas, personalidade, amor, compatibilidade e o que Aquário significa no seu mapa. ${edgeCopy}`,
+    title: 'Aquário: datas, personalidade e compatibilidade',
+    description: `Aquário: datas, personalidade, amor, compatibilidade e o queAquário significa no seu mapa. ${edgeCopy}`,
     intro: [
       'Aquário é ar fixo: ideias que se sustentam, sistemas vistos de fora e a pergunta incômoda sobre se uma regra ainda faz sentido.',
       'Em um mapa astral, Aquário mostra onde você precisa pensar por conta própria. Ali, pertencer só funciona quando existe espaço para ser diferente.',
@@ -410,8 +410,8 @@ export const PT_GUIDES: Record<string, PortugueseGuide> = {
   },
   pisces: {
     sign: 'pisces',
-    title: 'Peixes: datas, personalidade, compatibilidade e significado',
-    description: `Peixes explicado em português: datas, personalidade, amor, compatibilidade e o que Peixes significa no seu mapa. ${edgeCopy}`,
+    title: 'Peixes: datas, personalidade e compatibilidade',
+    description: `Peixes: datas, personalidade, amor, compatibilidade e o quePeixes significa no seu mapa. ${edgeCopy}`,
     intro: [
       'Peixes encerra a roda do zodíaco: imaginação, compaixão, sonho e a percepção de que nem tudo que é real pode ser medido.',
       'Em um mapa astral, Peixes mostra onde seus limites ficam mais porosos. Ali, você capta atmosferas, símbolos e emoções que talvez ainda não tenham palavras.',
