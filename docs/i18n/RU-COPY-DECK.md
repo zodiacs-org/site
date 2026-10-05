@@ -1,13 +1,17 @@
 # Russian copy deck — zodiacs.org (`ru`, `/ru/`)
 
 Author: Fable · 2026-07-22 · Final copy for the RU launch surfaces.
+Key tables (§1–§11, §18) regenerated from `src/lib/i18n/ui/ru.ts` on
+2026-10-05 after the localization audit; the catalog is the authority when
+the two differ.
 Source of truth for keys: `src/lib/i18n/ui/en.ts` (+ `growth.ts` spread),
 `src/lib/i18n/astrology.ts`, `src/lib/signs.ts` overrides. Every
 `{token}` is preserved byte-for-byte. `Zodiacs.org` is never translated.
 
 Conventions: contemporary standard Russian; «ёлочки» for quotes; spaced
-em dash ( — ) matching the house style; no «ё» except where ambiguity
-demands; sentence case everywhere (no Latin-style Title Case); calm,
+em dash ( — ) matching the house style; «ё» is used everywhere it is
+pronounced (ещё, её, всё, расчёт, надёжный) — in the catalog, the pages and
+the sign guides alike; sentence case everywhere (no Latin-style Title Case); calm,
 non-deterministic astrology voice — the sky «подсказывает», never
 «гарантирует». Dates/times/degrees/UTC/coordinates/URLs/emails keep Latin
 digits and existing formats. The reflective register: no promises of fate,
@@ -20,9 +24,9 @@ health, money, or relationships — describe patterns, invite reflection.
 | navPrimary | Основное |
 | navSigns | Знаки |
 | navTools | Инструменты |
-| navLearn | Разбор |
+| navLearn | Основы |
 | navHoroscopes | Гороскопы |
-| navCollect | Реестр |
+| navCollect | Astrofolio |
 | navSavedCharts | Сохранённые карты |
 | navMenu | Меню |
 | navSite | О сайте |
@@ -46,11 +50,11 @@ health, money, or relationships — describe patterns, invite reflection.
 | footerZodiacDates | Даты знаков |
 | footerGlossary | Глоссарий |
 | footerCompute | Как мы считаем |
-| footerRegistry | Обзор |
+| footerRegistry | Registry |
 | footerThesis | Манифест |
 | footerArchive | Архив |
 | footerSdk | SDK |
-| footerCollectNote | Коллекционное крыло доступно только для чтения: без хранения ключей, подписей и транзакций. Ничто там не является финансовым советом. |
+| footerCollectNote | Записи, поиск, страницы каталога и SDK Registry работают только на чтение. Необязательный инструмент покупки Astrofolio использует независимый сервис Jupiter и ваш кошелёк; Zodiacs.org не хранит ключи или средства. Ничто из этого не является финансовой рекомендацией. |
 | footerMethodology | Методология |
 | footerAbout | О проекте |
 | footerPrivacy | Конфиденциальность |
@@ -79,7 +83,7 @@ linked with `hreflang="ru"`). It sits in the same «·»-separated row.
 | sun | Солнце |
 | moon | Луна |
 | rising | Асцендент |
-| body | Тело |
+| body | Объект |
 | position | Положение |
 | sign | Знак |
 | house | Дом |
@@ -127,9 +131,9 @@ linked with `hreflang="ru"`). It sits in the same «·»-separated row.
 | privacyDevice | Приватно по умолчанию. Данные рождения остаются в этом браузере. |
 | placePlaceholder | Начните вводить город… |
 | placeChange | Изменить место рождения |
-| placeNoResults | Ничего не найдено |
+| placeNoResults | Нет в списке? Выберите ближайший город — несколько километров редко меняют карту. |
 | placeError | Не удалось загрузить справочник мест — проверьте соединение и попробуйте ещё раз. |
-| searchGeo | Поиск по ~34 000 мест · GeoNames (CC BY 4.0) |
+| searchGeo | Введите город, где вы родились. Данные: GeoNames (CC BY 4.0). |
 | chartError | Не получилось рассчитать карту. Попробуйте ещё раз. |
 | moonError | Не получилось рассчитать эту Луну. Попробуйте ещё раз. |
 | returnError | Не получилось рассчитать возвращение. Попробуйте ещё раз. |
@@ -137,7 +141,7 @@ linked with `hreflang="ru"`). It sits in the same «·»-separated row.
 | compareError | Не получилось сравнить карты. Попробуйте ещё раз. |
 | noBirthTime | Не знаю время |
 | risingTimeHelp | Асцендент меняется каждые два часа — здесь важны именно часы. |
-| chartTimeHelp | Нет времени рождения? Солнце и Луну вы всё равно получите — асценденту нужны часы. |
+| chartTimeHelp | Можно продолжить без времени рождения. Асцендент и дома будут недоступны, а знак Луны может быть неопределённым. |
 | chartSavedDevice | Сохранено · на этом устройстве |
 | saveThisChart | Сохранить эту карту |
 | chartSavedStatus | Карта сохранена на этом устройстве. |
@@ -154,9 +158,20 @@ linked with `hreflang="ru"`). It sits in the same «·»-separated row.
 | chartLinkCopied | Ссылка на карту скопирована в буфер обмена. |
 | chartCardSaved | Карточка карты сохранена. |
 | cardError | Не удалось нарисовать карточку в этом браузере — колесо выше отлично снимается и скриншотом. |
-| shareNote | Ссылка содержит введённые данные рождения — нам ничего не отправляется, открыть её смогут только те, кому вы её передадите. Карточка — изображение 1080×1350, создаётся на вашем устройстве. |
+| shareNote | Ссылка содержит введённые данные рождения. Нам они не отправляются, но открыть ссылку может любой, у кого она есть, в том числе тот, кому её переслали. Карточка — изображение 1080×1350, создаётся на вашем устройстве. |
 | needsBirthTime | Нужно время рождения |
 | chartName | Название карты |
+| birthDateRequired | Укажите дату рождения. |
+| birthDateRange | Выберите дату рождения с 1800 по 2199 год. |
+| birthTimeRequired | Укажите время рождения. |
+| houseSystemHelp | Как карта делится на двенадцать сфер жизни. В системе целых знаков каждый знак — один дом; в системе Плацидуса размер домов зависит от точного времени и места. Планеты остаются на месте: меняются только границы домов. |
+| placePickHint | Выберите место рождения из списка. |
+| placeSearching | Поиск мест… |
+| localDateReferenceError | Не удалось определить время для расчёта в пределах этой местной даты. Проверьте дату и место. |
+| calculationLoadError | Не удалось загрузить файлы расчёта. Проверьте подключение и попробуйте снова. |
+| calculationReload | Перезагрузить страницу |
+| calculationReloadWarning | При перезагрузке несохранённые данные будут удалены. |
+| calculationRetry | Попробовать снова |
 
 ## 5. Chart result and guided reading
 
@@ -177,10 +192,10 @@ linked with `hreflang="ru"`). It sits in the same «·»-separated row.
 | readInOrder | Читаем по порядку |
 | readIntro | Сверху вниз — так карту читал бы астролог. Таблицы выше — данные; здесь — что они значат. |
 | readBigThree | Начните с большой тройки |
-| readBigThreeBody | Солнце, Луна, асцендент — три карточки наверху. Личность, инстинкт, вход. Всё, что ниже, уточняет их; ничто их не заменяет. |
+| readBigThreeBody | Солнце, Луна, асцендент — три карточки наверху. Личность, инстинкт, первое впечатление. Всё, что ниже, уточняет их; ничто их не заменяет. |
 | readRooms | Планеты, комната за комнатой |
 | readNoHouses | Без времени рождения нет домов, поэтому каждая планета читается только по знаку. Добавьте время — и раздел обретёт свои комнаты. |
-| readAspects | Аспекты, которые работают больше всего |
+| readAspects | Аспекты, которые задают тон |
 | readWeather | Погода карты |
 | readIn | в |
 | dignityDomicile | обитель |
@@ -204,13 +219,13 @@ linked with `hreflang="ru"`). It sits in the same «·»-separated row.
 | selectionCleared | Выбор снят. |
 | inspectorClose | Закрыть детали |
 | tourStart | Пройти экскурсию |
-| firstReadingLabel | Ваше чтение за 2 минуты |
-| firstReadingTitle | Что ваша карта говорит о вас — и что дальше? |
-| firstReadingBody | Посмотрите свой характерный расклад, где он разворачивается, один узнаваемый паттерн — и как астрология превращает карту в прогноз. |
+| firstReadingLabel | Разберитесь в карте за 2 минуты |
+| firstReadingTitle | Начните с Солнца, Луны и асцендента |
+| firstReadingBody | Узнайте, что значат ваши положения, рассмотрите один паттерн и сохраните карту, чтобы читать её с сегодняшним небом. |
 | firstReadingResumeTitle | Ваше чтение ждёт |
 | firstReadingResumeBody | Продолжите с того места, где остановились на этом устройстве. |
 | firstReadingStart | Прочитать мою карту |
-| firstReadingExplore | Разберусь сам(а) |
+| firstReadingExplore | Посмотрю самостоятельно |
 | firstReadingResume | Продолжить чтение |
 | firstReadingStep | Шаг |
 | firstReadingFullTour | Как устроена карта — расширенная экскурсия |
@@ -221,24 +236,47 @@ linked with `hreflang="ru"`). It sits in the same «·»-separated row.
 | editorialHow | редакционные стандарты |
 | howWeCompute | Как мы считаем |
 | whyThisReading | Почему такое чтение |
-| todayHoroscopeLink | гороскоп |
+| todayHoroscopeLink | {sign}: гороскоп |
 | editedBy | Публикует |
+| referenceChartName | Ориентир |
+| chartDepthOpen | Показать в трёх измерениях — пока по-английски |
+| chartDepthClose | Скрыть третье измерение — пока по-английски |
+| chartWheelActions | Действия с картой |
+| chartWheelGuide | Пройти экскурсию |
+| chartWheelReplay | Повторить экскурсию |
+| chartWheelAnother | Прочитать другую карту — пока по-английски |
+| chartWheelSignatureSelf | Характерный рисунок вашей карты |
+| chartWheelSignatureOther | Характерный рисунок этой карты |
+| chartWheelCompareMine | Сравнить с моей — пока по-английски |
+| chartWheelCompareAdd | Добавить мою карту для сравнения — пока по-английски |
+| chartWheelShareOther | Поделиться этой картой |
+| explorerSelectPart | Выберите часть карты |
+| explorerNoSelection | Ничего не выбрано |
+| explorerAngles | Углы |
+| explorerControlsLoading | Загрузка интерпретаций и элементов управления картой… |
+| explorerControlsError | Карта готова, но её интерпретации и элементы управления не загрузились. Проверьте подключение и попробуйте снова. |
+| explorerKeyHint | Стрелки влево и вправо переключают положения; Enter открывает панель подробностей. |
+| chartReceiptDownload | Скачать запись расчёта (.json) |
+| chartReceiptPrivacy | Файл содержит личные данные о рождении и данные карты. Храните его в безопасном месте. |
+| chartReceiptError | Не удалось скачать файл. Попробуйте ещё раз. |
+| chartReceiptUnavailable | Запись расчёта для этой карты недоступна. |
 
 ## 6. Notices (time, DST, poles)
 
 | Key | Русский |
 | --- | --- |
-| dstGapNotice | Это время попало в «прыжок» перевода часов и формально не существовало — мы сдвинули его вперёд через разрыв, как принято. |
+| dstGapNotice | Это время пропустили, когда часы перевели вперёд, и формально его не существовало — мы сдвинули его вперёд через разрыв, как принято. |
 | dstFoldNotice | В месте рождения этот час прошёл дважды; мы взяли первый проход. Если вы знаете, что был второй, карта почти не изменится — Луна проходит около полуградуса в час. |
 | lmtNotice | Рождение до введения часовых поясов — мы использовали местное среднее время той эпохи, ту же конвенцию, что и профессиональные программы. |
 | polarNotice | Так близко к полюсу дома Плацидуса не определены, поэтому карта использует дома целых знаков. |
-| noTimeNotice | Без времени рождения считаем на полдень: планеты точны в пределах дня, а асценденту и домам нужны часы. |
+| noTimeNotice | Без времени рождения показываем опорные положения и не показываем асцендент, углы и дома. |
 | moonAmbiguousNotice | В этот день Луна сменила знак — пока время не найдено, честно читать обоих соседей. |
 | fromLinkNotice | Открыто по ссылке — данные рождения пришли в самой ссылке, и карта только что рассчитана на вашем устройстве. |
-| moonChangedNotice | В этот день Луна сменила знак, и без времени нельзя сказать, по какую сторону границы вы родились. Фаза не страдает — она движется слишком медленно, чтобы часы имели значение. |
 | noTransitTimeNotice | У этой карты нет времени рождения, так что её Луна — полуденная оценка: она может отстоять до шести градусов, и транзит к Луне у края орбиса может появиться или исчезнуть с настоящим временем. |
 | compareNoTimeNotice | Нет времени рождения у |
 | moonMiddayEstimate | поэтому эта Луна — полуденная оценка: она может отстоять до шести градусов, и лунный аспект у края орбиса может появиться или исчезнуть с настоящим временем. |
+| unknownTimeSunReference | Время рождения неизвестно. Это положения на опорный момент; знак Солнца не проверен для всей даты рождения. |
+| moonUnverifiedNotice | Возможные знаки Луны в течение этой даты рождения не проверены. Укажите время рождения, чтобы получить результат для конкретного момента. |
 
 ## 7. Sky strip, moon pages, dates
 
@@ -246,7 +284,7 @@ linked with `hreflang="ru"`). It sits in the same «·»-separated row.
 | --- | --- |
 | skyMercuryRetrograde | Ретроградный Меркурий |
 | skyMercuryDirect | Меркурий директный |
-| skyPlanetRetrograde | Ретроградный {planet} |
+| skyPlanetRetrograde | Ретроградность: {planet} |
 | skyFullMoon | Полнолуние |
 | skyNewMoon | Новолуние |
 | skyMoonOn | {event} · {date} |
@@ -255,18 +293,22 @@ linked with `hreflang="ru"`). It sits in the same «·»-separated row.
 | moonDiscAria | Луна, освещено {percent}% |
 | moonReadingSky | Читаем небо… |
 | illuminated | освещено |
-| moonIn | Луна в: |
+| moonIn | Луна в |
 | findThatMoon | Найти эту Луну |
 | dateHelp | День рождения, годовщина — любая дата. |
-| placeHelpMoon | Уточняет пересчёт часов; фазе это почти не нужно. |
-| middayLocalCaption | Считано на полдень местного времени — точное время суток закрепит градус. |
+| placeHelpMoon | Переводит местные дату и время во всемирное время. |
 | utcTimeCaption | Время читается как всемирное — добавьте место рождения, чтобы пересчитать ваши часы. |
-| middayUtcCaption | Считано на полдень всемирного времени — время и место закрепят градус точно. |
 | birthChartForDate | Построить натальную карту на эту дату |
+| referenceLocalCaption | Опорный результат для этой местной даты. В другие моменты дня знак и фаза Луны могут отличаться. Добавьте время рождения для расчёта на конкретный момент. |
+| referenceUtcCaption | Опорный результат для этой даты по UTC. В другие моменты дня знак и фаза Луны могут отличаться. Добавьте время и место для расчёта на местный момент. |
+| moonPhaseAtReference | Фаза Луны на опорный момент |
+| todayBySignTitle | Небо сегодня — для каждого знака |
+| todayBySignPrompt | Выберите свой солнечный знак, чтобы прочитать ясный прогноз на сегодня — время рождения не нужно. |
+| todaySolarNote | читается по солнечным домам вашего знака |
 
 Note (`moonIn`): Russian needs the prepositional case after «в»
-(«Луна в Овне»). The current `t()` concatenation `moonIn + name` cannot
-inflect — see deck §12 (grammar table `signPrepositional`).
+(«Луна в Овне»). Call sites pair `moonIn` with `signPrepositional()` —
+see §12; the key itself carries no colon.
 
 ## 8. Saturn return, transits, compatibility
 
@@ -286,7 +328,7 @@ inflect — see deck §12 (grammar table `signPrepositional`).
 | seeSaturnChart | Сатурн в вашей натальной карте |
 | whatSaturnMeans | Что значит Сатурн |
 | planetReturn | Возвращение: {planet} |
-| natalPlanet | Натальный {planet} |
+| natalPlanet | {planet} в натальной карте |
 | yourChart | Ваша карта |
 | theSky | Небо |
 | transitRingLede | Постройте карту, затем двигайте ползунок и смотрите, как планеты идут по ней — вперёд или назад, до года. |
@@ -305,7 +347,7 @@ inflect — see deck §12 (grammar table `signPrepositional`).
 | personA | Человек A |
 | personB | Человек B |
 | sharedChart | Присланная карта |
-| sharedWithYou | вам поделились |
+| sharedWithYou | поделились с вами |
 | removeSharedChart | Убрать присланную карту |
 | sharedSideHelp | Эта сторона пришла в ссылке — очистите её, чтобы ввести другого человека. |
 | name | Имя |
@@ -320,13 +362,14 @@ inflect — see deck §12 (grammar table `signPrepositional`).
 | inviteLink | Ссылка-приглашение |
 | inviteNote | Ссылка содержит данные рождения этого человека и открывает страницу с заполненной стороной — нам ничего не отправляется. Если это не вы, стоит спросить его согласия. |
 | inviteCopied | Ссылка-приглашение скопирована в буфер обмена. |
-| inviteWith | Пригласить кого-то сравниться с {name} |
-| inviteNamedNote | Ссылка содержит данные рождения {name} и открывает эту страницу с заполненной стороной — нам ничего не отправляется. Если это не вы, стоит спросить согласия. |
+| inviteWith | Пригласить кого-то сравнить карту с «{name}» |
+| inviteNamedNote | Ссылка содержит данные рождения «{name}» и открывает эту страницу с заполненной стороной — нам ничего не отправляется. Если это не вы, стоит спросить согласия. |
 | pairingCta | Читать пару {a} и {b} |
 | compareSavedHeading | Сравнить: {a} и {b} |
-| compareSavedPitch | Две сохранённые карты — это готовое сравнение: каждый межкартный аспект, честно рассчитанный на этом устройстве. |
+| compareSavedPitch | Две сохранённые карты — уже готовое сравнение: все аспекты между ними считаются на этом устройстве. |
 | compareThese | Сравнить эти две карты |
 | addAnotherChart | Добавить ещё карту |
+| openDailyBrief | Открыть полный выпуск на сегодня — пока по-английски |
 
 ## 9. Baby zodiac
 
@@ -337,10 +380,10 @@ inflect — see deck §12 (grammar table `signPrepositional`).
 | babyNeedDate | Сначала введите дату. |
 | babyError | Не получилось рассчитать небо. Попробуйте ещё раз. |
 | babySunHead | Солнечный знак — почти наверняка |
-| babySunSingle | Рождение в этот день даёт Солнце в |
-| babySunNearEdge | Дата стоит у самой границы знака, так что приход на день с лишним раньше или позже может сместить в |
+| babySunSingle | Рождение в этот день даёт Солнце в знаке |
+| babySunNearEdge | Дата стоит у самой границы знака, так что рождение на день-другой раньше или позже может сместить Солнце в знак |
 | babySunNearEdgeTail | — решает дата рождения. |
-| babySunSplitA | В этот день Солнце меняет знак: рождение выходит |
+| babySunSplitA | В этот день Солнце меняет знак: ребёнок родится под знаком |
 | babySunSplitOr | или |
 | babySunSplitTail | в зависимости от часа. Решает точный момент рождения. |
 | babyNoonNote | знаки читаются на полдень всемирного времени |
@@ -364,15 +407,15 @@ inflect — see deck §12 (grammar table `signPrepositional`).
 | todayAgainstChart | Сегодня на фоне вашей карты |
 | yourCharts | Ваши карты |
 | recommendedNext | Что дальше |
-| todayForName | Что сегодня значит для {name} |
-| savedChartTodayBody | Ваша карта не меняется. Сегодняшнее небо — меняется: начните с того, что движется для вас сейчас. |
+| todayForName | Сегодня для карты «{name}» |
+| savedChartTodayBody | Прочитайте сегодняшнее небо рядом с сохранённой картой. Если что-то откликнулось, сохраните наблюдение и вернитесь к нему в своей ленте. |
 | openSavedChart | Открыть сохранённую карту |
 | pfdToday | Сегодня для этой карты |
 | pfdComing | Что впереди у этой карты |
 | pfdYearAhead | Год вперёд для этой карты |
 | pfdYearBusy | Считаем год на вашем устройстве — несколько секунд… |
 | pfdYearNote | Рассчитано по вашей сохранённой карте: точные даты на ближайшие двенадцать месяцев. |
-| saveYearAheadNote | Для сохранённых карт профиль считает год вперёд — солнечное возвращение, даты Юпитера и Сатурна, попадания затмений. |
+| saveYearAheadNote | Сохраните карту, чтобы открывать её в «Сегодня» и возвращаться без повторного ввода данных рождения. |
 | pfdChartPick | Карта |
 | pfdQuietSky | Тихое небо для этой карты сегодня — ничего в пределах 3° от натальных точек. |
 | pfdQuietAhead | На горизонте этой карты в рассчитанном окне нет крупного. |
@@ -405,12 +448,17 @@ inflect — see deck §12 (grammar table `signPrepositional`).
 | removeChartConfirm | Удалить «{name}» с этого устройства? |
 | chartSavedBeforeLink | Сохранено в ваши карты. Войдите |
 | chartSavedLink | здесь |
-| chartSavedAfterLink | когда захотите видеть их на всех устройствах. |
+| chartSavedAfterLink | — когда захотите видеть их на всех устройствах. |
 | weeklyDigestTitle | Еженедельное письмо о небе |
 | weeklyDigestCopy | Одно письмо в неделю: небо на фоне ваших сохранённых карт. Отписаться можно в любой момент. |
 | weeklyDigestAria | Подписка на еженедельный дайджест |
 | digestSaved | Настройка дайджеста сохранена. |
 | digestFailed | Не удалось обновить настройку дайджеста. Попробуйте ещё раз. |
+| pfdYearError | Не удалось завершить разбор на год вперёд. Попробуйте снова. |
+| chartSingular | карта |
+| chartPlural | карты |
+| savedChartSingular | сохранённая карта |
+| savedChartPlural | сохранённые карты |
 
 Counting forms (see §12): `chartSingular` карта · `chartPlural` карты/карт ·
 `savedChartSingular` сохранённая карта · `savedChartPlural` сохранённые
@@ -422,8 +470,8 @@ correctly; the plural helper decides (1 карта · 2 карты · 5 карт
 | Key | Русский |
 | --- | --- |
 | emailCaptureKicker | Бесплатный еженедельный прогноз |
-| emailCaptureTitle | Ваша неделя впереди. |
-| emailCapturePersonalTitle | Ваша неделя {sign} впереди. |
+| emailCaptureTitle | Неделя вперёд. |
+| emailCapturePersonalTitle | {sign}: ваша неделя впереди. |
 | emailCaptureCopy | Еженедельный прогноз для вашего знака. Бесплатно, отписка в любой момент. |
 | emailCaptureEmailLabel | Адрес почты |
 | emailCaptureEmailPlaceholder | you@example.com |
@@ -431,7 +479,7 @@ correctly; the plural helper decides (1 карта · 2 карты · 5 карт
 | emailCaptureNoSign | Без знака |
 | emailCaptureUsingSign | Ваш солнечный знак: {sign} |
 | emailCaptureChangeSign | Изменить |
-| emailCaptureSubmit | Прислать мою неделю |
+| emailCaptureSubmit | Прислать мне прогноз |
 | emailCaptureSubmitting | Подключаем… |
 | emailCaptureSuccess | Проверьте почту, чтобы подтвердить подписку. |
 | emailCaptureErrorTitle | Подписка недоступна |
@@ -472,7 +520,18 @@ capture module is EN-only by design today.
    case: Овне, Тельце, Близнецах, Раке, Льве, Деве, Весах, Скорпионе,
    Стрельце, Козероге, Водолее, Рыбах. Contract: a
    `signPrepositional` map beside `SIGN_NAME_OVERRIDES.ru` — never
-   string-concatenate the nominative into «в …».
+   string-concatenate the nominative into «в …». Where a call site cannot
+   inflect, the copy puts the sign after «в знаке» / «под знаком» /
+   «в знак» so the nominative is correct (`babySunSingle`,
+   `babySunSplitA`, `babySunNearEdge`). Automatic chart names read
+   «Солнце в Раке · 1990-01-01» (`autoNameSunTemplate`).
+4. **Names in templates.** A chart or person name arrives in the
+   nominative and cannot be declined, so `{name}` is always set in
+   «ёлочки» as a label («Сегодня для карты «{name}»», «Карта «{name}»: …»)
+   instead of being placed in a governed case.
+5. **Gendered planet names.** «Ретроградный {planet}» and «Натальный
+   {planet}» break on Луна and Венера; the catalog uses the gender-neutral
+   «Ретроградность: {planet}» and «{planet} в натальной карте».
 3. **Ordinal returns.** `saturnReturnHeading` «{ordinal} возвращение»
    works with the provided Первое/Второе/Третье/Четвёртое (neuter
    agreement with «возвращение») — the EN First/Second keys map 1:1.
@@ -521,6 +580,10 @@ with Arabic.
 
 ## 15. Route metadata (title · description)
 
+This table is the Open Graph card copy, pinned in `src/strings/seo.ru.mjs`
+(the committed cards in `public/assets/og/v2/ru/` are rendered from it, so a
+change here means regenerating the cards).
+
 | Route | Title | Description |
 | --- | --- | --- |
 | /ru/ | Zodiacs.org — натальные карты и астрология без мистики | Бесплатные натальные карты, совместимость и гиды по знакам. Всё считается приватно в вашем браузере и объясняется простым языком. |
@@ -539,6 +602,22 @@ with Arabic.
 | /ru/disclosure/ | Раскрытие информации | Открытые сведения о проекте, источниках данных и коллекционном крыле. |
 | /ru/404/ | Страница не найдена | Такой страницы нет. Начните с главной или с инструментов. |
 | /ru/{sign}/ | {Знак}: даты, характер, совместимость | Гид по знаку {Знак}: даты, стихия, управитель, сильные стороны и как знак ведёт себя в отношениях. |
+
+Page `<title>` and meta description are set in `src/pages/ru/**` and, since
+the 2026-10-05 audit, lead with the search phrase on the tool routes. Where
+they differ from the card copy above:
+
+| Route | Page title | Page description (if different) |
+| --- | --- | --- |
+| /ru/tools/ | Астрологические калькуляторы — натальная карта, транзиты | — |
+| /ru/birth-chart/ | Натальная карта онлайн бесплатно — Солнце, Луна, асцендент | — |
+| /ru/compatibility/ | Совместимость по натальным картам — синастрия онлайн | — |
+| /ru/moon-sign/ | Лунный знак по дате рождения — рассчитать онлайн | — |
+| /ru/rising-sign/ | Асцендент по времени и месту рождения — рассчитать | — |
+| /ru/moon-phase/ | Фаза Луны сегодня и в день рождения — калькулятор | — |
+| /ru/saturn-return/ | Возвращение Сатурна: калькулятор дат — когда и что это | Годы и точные даты вашего возвращения Сатурна по эфемеридам, с тремя проходами. Введите дату рождения — расчёт в браузере, без регистрации. |
+| /ru/transits/ | Транзиты планет сегодня — к вашей натальной карте | — |
+| /ru/baby-zodiac/ | Какой знак зодиака будет у ребёнка — по дате родов | — |
 
 ## 16. English-only destination labels (deferred seams)
 
@@ -568,3 +647,48 @@ keeps its RU label and carries one quiet suffix, comma-set, small:
 Never state or imply native-speaker/human review; never mention internal
 tooling in consumer copy. The trust register is the work itself: receipts,
 UTC times, degrees.
+
+## 18. Trust lines and Registry cross-links (catalog keys)
+
+These keys joined the catalog after the launch deck. The wing is named
+«Реестр» in running Russian copy; the brand tokens `Astrofolio`
+(`navCollect`) and `Registry` (`footerRegistry`) stay in Latin script.
+
+| Key | Русский |
+| --- | --- |
+| trustIntro | Ваша карта может помочь вам задуматься о своих потребностях, сильных сторонах и отношениях. |
+| trustOtherIntro | Эта карта может помочь вам задуматься о потребностях, сильных сторонах и отношениях этого человека. |
+| trustPairIntro | Ваши различия могут стать отправной точкой для понимания друг друга. |
+| trustReturnIntro | Карта возвращения даёт повод задуматься о том, что вы хотите развивать дальше. |
+| trustSaturnIntro | Возвращение Сатурна — повод задуматься об обязательствах, которые вы хотите сохранить. |
+| trustDueIntro | Предполагаемая дата родов даёт представление о небе около рождения ребёнка, но не определяет его натальную карту. |
+| trustQuestions | Частые вопросы |
+| trustFreeQuestion | Это бесплатно? |
+| trustFreeAnswer | Наши астрологические инструменты и гиды бесплатны и не требуют регистрации. Zodiacs.org также управляет Astrofolio, коллекцией токенов Зодиака. |
+| trustDisclosure | Читайте наше раскрытие информации |
+| trustAccuracyQuestion | Насколько точны карты? |
+| trustAccuracyAnswer | Мы сверяем расчёты положений планет с эталонными астрономическими данными. Точность карты также зависит от введённых данных рождения; астрология — интерпретационная практика, а не научно подтверждённый прогноз. |
+| trustMethodology | Как мы рассчитываем карты |
+| trustMath | Проверьте наши расчёты |
+| trustInstant | Рассчитанный момент UTC |
+| trustReference | Опорный момент UTC — время рождения неизвестно; без асцендента и домов |
+| trustSkyReference | Опорный момент UTC — время не указано |
+| trustRecordInstant | Момент публичной записи в UTC |
+| trustMissingInstant | Исходный момент UTC не был передан вместе с этими положениями. |
+| trustReturnInstant | Момент возвращения в UTC |
+| trustApproxReturn | Приблизительный момент возвращения в UTC — на основе опорного времени рождения |
+| trustGuideNotice | Guide отправляет ваши вопросы, недавние сообщения Guide и включённый публичный контекст страницы или неба в наш облачный сервис. Он не прикрепляет автоматически вашу сохранённую натальную карту или личные положения планет. Не вводите в Guide личные данные рождения. |
+| trustWalletNotice | Zodiacs.org не подключает кошельки, не запрашивает подписи и не отправляет транзакции. Для проверки публичного адреса используется адрес, который вы вставляете. Ссылки для покупки открывают независимые сервисы с собственными условиями и рисками. |
+| trustGamesTitle | Игры Зодиака |
+| trustGamesScore | Двенадцать команд знаков соревнуются за очки участия: 100 за первое вступление, затем 25 за одну отметку в неделю UTC. Репосты и покупки токенов не дают очков. |
+| trustGamesLink | Смотреть таблицу |
+| trustGamesIndependent | Участие бесплатно. Владение токенами и их цены не влияют на счёт. |
+| trustAddressGuide | Как купить Zodiac |
+| trustAddressIntro | Выберите знак, чтобы проверить его официальный публичный адрес. Покупка происходит в независимом сервисе. |
+| buyWithFomo | Купить через Fomo |
+| recordLabel | Реестр |
+| recordOneOfTwelve | также есть среди Двенадцати — это каноническая запись в Реестре, пока по-английски. |
+| recordViewLink | Посмотреть запись — пока по-английски → |
+| recordChartSun | Ваш солнечный знак — {sign}. |
+| recordChartBody | {sign} входит в число Двенадцати — со своим образом, историей и официальной записью в Реестре, пока по-английски. |
+| recordChartLink | Открыть Реестр: {sign} — пока по-английски → |

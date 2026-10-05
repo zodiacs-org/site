@@ -73,13 +73,13 @@ describe('assistant site context', () => {
       // The local MCP adapter's page at /developers/mcp/ adds one more again.
       // The engine's own product page at /developers/engine/ adds one more.
       // The conformance suite's results page at /developers/conformance/ adds one more.
-      // The compute API's page at /developers/compute/ adds the last one.
-      consumerRoutes: 705,
+      // The compute API, AI integrations and sky benchmark each add a page.
+      consumerRoutes: 706,
       glossary: 145,
       guides: 12,
       learn: 159,
       pairs: 78,
-      staticPages: 66,
+      staticPages: 67,
       tools: 28,
     });
     expect(context).toContain('- /birthday/february-29/ — Pisces birthday guide.');

@@ -6,13 +6,13 @@ const it = {
     buyWithFomo: "Acquista con Fomo",
     trustSkyReference: "Istante UTC di riferimento — nessuna ora fornita",
     trustRecordInstant: "Istante UTC del registro pubblico",
-    trustAddressGuide: "Come acquistare un Zodiac",
+    trustAddressGuide: "Come acquistare uno Zodiac",
     trustAddressIntro: "Scegli un segno per verificare il suo indirizzo pubblico ufficiale. L’acquisto avviene presso un servizio indipendente.",
 
     trustQuestions: "Domande frequenti",
     trustFreeQuestion: "È gratis?",
     trustFreeAnswer: "I nostri strumenti e le guide di astrologia sono gratuiti e non richiedono registrazione. Zodiacs.org gestisce anche Astrofolio, la collezione di token zodiacali.",
-    trustDisclosure: "Leggi la nostra dichiarazione",
+    trustDisclosure: "Leggi la nostra informativa",
     trustAccuracyQuestion: "Quanto sono precisi i temi?",
     trustAccuracyAnswer: "Verifichiamo i calcoli planetari con dati astronomici di riferimento. La precisione del tuo tema dipende anche dai dati di nascita inseriti; l’astrologia è una pratica interpretativa, non una previsione convalidata scientificamente.",
     trustMethodology: "Come calcoliamo i temi",
@@ -52,7 +52,7 @@ const it = {
   navPrimary: "Navigazione principale",
   navSigns: "Segni",
   navTools: "Strumenti",
-  navLearn: "Capire",
+  navLearn: "Impara",
   navHoroscopes: "Oroscopi",
   navCollect: "Astrofolio",
   navSavedCharts: "Temi salvati",
@@ -61,7 +61,7 @@ const it = {
   navTwelve: "I Dodici",
   footerTag:
     "Strumenti astrologici gratuiti e guide ai segni, con temi calcolati in privato nel tuo browser.",
-  footerStartHere: "Inizia qui",
+  footerStartHere: "Impara l’astrologia",
   footerPlanets: "I pianeti",
   footerHouses: "Le case",
   footerZodiacDates: "Date dei segni",
@@ -72,13 +72,13 @@ const it = {
   footerArchive: "Archivio",
   footerSdk: "SDK",
   footerCollectNote:
-    "I record, le ricerche, i profili del catalogo e l’SDK del Registry sono in sola lettura. Lo strumento di acquisto facoltativo di Astrofolio usa Jupiter, un servizio indipendente, e il tuo portafoglio; Zodiacs.org non custodisce chiavi né fondi. Nulla di tutto ciò costituisce una consulenza finanziaria.",
+    "I record, le ricerche, i profili del catalogo e l’SDK del Registro sono in sola lettura. Lo strumento di acquisto facoltativo di Astrofolio usa Jupiter, un servizio indipendente, e il tuo portafoglio; Zodiacs.org non custodisce chiavi né fondi. Nulla di tutto ciò costituisce una consulenza finanziaria.",
   footerMethodology: "Metodologia",
   footerAbout: "Il progetto",
   footerPrivacy: "Privacy",
   footerTerms: "Termini",
   footerPlaceData: "Dati sui luoghi",
-  footerFonts: "Font con licenza",
+  footerFonts: "Font distribuiti con licenza",
   skipContent: "Vai al contenuto",
   open: "Apri",
   birthChart: "Tema natale",
@@ -112,7 +112,7 @@ const it = {
   houseSystem: "Sistema di case",
   wholeSignDefault: "Case a segno intero (predefinito)",
   placidus: "Placidus",
-  houseSystemHelp: "Come la carta si divide in dodici aree della vita. Con le case a segno intero ogni segno è una casa intera; Placidus varia l’ampiezza delle case secondo l’ora e il luogo esatti. I pianeti non si spostano: cambiano solo i confini delle case.",
+  houseSystemHelp: "Come il tema si divide in dodici aree della vita. Con le case a segno intero ogni segno è una casa intera; Placidus varia l’ampiezza delle case secondo l’ora e il luogo esatti. I pianeti non si spostano: cambiano solo i confini delle case.",
   computing: "Calcolo in corso…",
   checking: "Verifica in corso…",
   comparing: "Confronto in corso…",
@@ -135,7 +135,7 @@ const it = {
   placeNoResults: "Non è nell’elenco? Scegli la città più vicina — pochi chilometri cambiano raramente il tema.",
   placeError:
     "Non è stato possibile caricare l’indice dei luoghi — controlla la connessione e riprova.",
-  searchGeo: "Inserisci la città dove sei nato. Dati: GeoNames (CC BY 4.0).",
+  searchGeo: "Inserisci la tua città di nascita. Dati: GeoNames (CC BY 4.0).",
   chartError:
     "Si è verificato un problema durante il calcolo del tema. Riprova.",
   moonError:
@@ -149,7 +149,7 @@ const it = {
     "Si è verificato un problema durante il confronto dei temi. Riprova.",
   noBirthTime: "Non la conosco",
   risingTimeHelp: "L’ascendente cambia ogni due ore — qui l’orario conta.",
-  chartTimeHelp: "Puoi continuare senza l’ora di nascita. Non possiamo mostrare l’ascendente o le case, e il tuo segno lunare potrebbe essere incerto.",
+  chartTimeHelp: "Puoi continuare senza l’ora di nascita. Non possiamo mostrare l’ascendente né le case, e il tuo segno lunare potrebbe essere incerto.",
   chartSavedDevice: "Salvato · su questo dispositivo",
   saveThisChart: "Salva questo tema",
   chartSavedStatus: "Tema salvato su questo dispositivo.",
@@ -160,7 +160,7 @@ const it = {
     "Salvato tra i tuoi temi. Accedi qui quando vorrai ritrovarli su ogni dispositivo.",
   linkCopied: "Link copiato",
   copyChartLink: "Copia un link a questo tema",
-  rendering: "Creazione in corso…",
+  rendering: "Disegno in corso…",
   cardSaved: "Immagine salvata",
   saveChartCard: "Salva un’immagine del tema",
   shareChart: "Condividi il tuo tema",
@@ -179,7 +179,7 @@ const it = {
   planetSteering: "il pianeta che governa il tuo ascendente.",
   aspectsFound: "Aspetti",
   found: "trovati",
-  applying: "applicativo",
+  applying: "applicante",
   wholeSignHouses: "Case a segno intero",
   placidusHouses: "Case Placidus",
   engine: "motore v",
@@ -201,7 +201,7 @@ const it = {
     "Tocca il tuo segno solare per una lettura chiara di oggi — non serve l’ora di nascita.",
   todaySolarNote: "letto dalle case solari del tuo segno",
   whyThisReading: 'Perché questa lettura',
-  todayHoroscopeLink: "oroscopo",
+  todayHoroscopeLink: "Oroscopo {sign}",
   or: "oppure",
   chartSavedBeforeLink: "Salvato tra i tuoi temi. Accedi",
   chartSavedLink: "qui",
@@ -210,7 +210,7 @@ const it = {
   removeChartConfirm: "Rimuovere “{name}” da questo dispositivo?",
   compareSavedHeading: "Confronta {a} e {b}",
   compareSavedPitch:
-    "Due temi salvati aspettano solo di essere confrontati: tutti gli aspetti fra i due, letti con sincerità e calcolati su questo dispositivo.",
+    "Due temi salvati aspettano solo di essere confrontati: tutti gli aspetti fra i due temi, letti senza sconti e calcolati su questo dispositivo.",
   saturnDateHelp:
     "La sola data individua gli anni del tuo ritorno. Ora e luogo precisano le date di qualche giorno, senza cambiare mai l’anno.",
   saturnReturnHeading: "{ordinal} ritorno",
@@ -239,7 +239,7 @@ const it = {
   pfdYearNote:
     "Calcolato dal tuo tema salvato: date esatte per i prossimi dodici mesi.",
   saveYearAheadNote:
-    "Nella pagina del profilo, i temi salvati ricevono il calcolo dei prossimi dodici mesi — ritorno solare, date di Giove e Saturno, contatti con le eclissi.",
+    "Salva il tema per usarlo con Oggi e tornare senza reinserire i dati di nascita.",
   recordLabel: "Ala della collezione",
   recordOneOfTwelve:
     "esiste anche come uno dei Dodici — una scheda di riferimento nel registro.",
@@ -268,7 +268,7 @@ const it = {
     "La Luna cambia segno ogni due o tre giorni, quindi la settimana prevista di solito comprende due o tre segni lunari. Chi nasce nella stessa settimana può avere un segno lunare diverso — decidono il giorno e l’ora di nascita.",
   babyRetroHead: "Retrogradi alla nascita",
   babyRetroBody:
-    "questi pianeti attraversano il loro periodo retrogrado intorno alla data prevista. In un tema natale, un pianeta retrogrado si interpreta come più rivolto all’interno del solito — è comune e non c’è nulla da correggere.",
+    "questi pianeti attraversano il loro periodo retrogrado intorno alla data prevista. In un tema natale, un pianeta retrogrado si interpreta come più introspettivo del solito — è comune e non c’è nulla da correggere.",
   babyRisingHead: "Ascendente — impossibile saperlo fino al minuto esatto",
   babyRisingBody:
     "L’ascendente cambia all’incirca ogni due ore, quindi nessuna data prevista può predirlo. È l’unico elemento che deve aspettare il certificato di nascita.",
@@ -303,7 +303,7 @@ const it = {
   speed: "Velocità",
   day: "giorno",
   dignity: "Dignità",
-  separating: "separativo",
+  separating: "separante",
   dates: "Date",
   element: "Elemento",
   ruler: "Governatore",
@@ -312,11 +312,11 @@ const it = {
   cusp: "Cuspide",
   span: "Ampiezza",
   emptyHouseNote:
-    "Nessun pianeta qui. Una casa vuota non è uno spazio bianco — i suoi temi passano attraverso il pianeta che la governa.",
+    "Nessun pianeta qui. Una casa vuota non è un vuoto — i suoi temi passano attraverso il pianeta che la governa.",
   angleAscNote:
-    "L’Ascendente — il grado che sorge all’orizzonte orientale al momento della nascita. È il punto di riferimento dell’intera ruota.",
+    "L’ascendente — il grado che sorge all’orizzonte orientale al momento della nascita. È il punto di riferimento dell’intera ruota.",
   angleDscNote:
-    "Il Discendente — il grado che tramonta a ovest, opposto all’Ascendente. La porta tradizionale verso le relazioni.",
+    "Il Discendente — il grado che tramonta a ovest, opposto all’ascendente. La porta tradizionale verso le relazioni.",
   angleMcNote:
     "Il Medio Cielo — il grado che culmina sopra di te alla nascita. Carriera, reputazione, vita visibile.",
   angleIcNote:
@@ -326,14 +326,14 @@ const it = {
   editedBy: "Pubblicato da",
   tourStart: "Inizia il tour",
   firstReadingLabel: "La tua lettura in 2 minuti",
-  firstReadingTitle: "Cosa dice il tuo tema di te — e di ciò che viene dopo?",
-  firstReadingBody: "Scopri la tua combinazione personale, dove emerge, uno schema che potresti riconoscere e come l’astrologia trasforma un tema natale in una previsione.",
+  firstReadingTitle: "Inizia da Sole, Luna e ascendente",
+  firstReadingBody: "Leggi che cosa significano le tue posizioni, esplora uno schema, poi salva il tema per usarlo con la lettura di oggi.",
   firstReadingResumeTitle: "La tua lettura ti aspetta",
-  firstReadingResumeBody: "Continua da dove eri rimasto su questo dispositivo.",
+  firstReadingResumeBody: "Riprendi da dove avevi lasciato su questo dispositivo.",
   firstReadingStart: "Leggi il mio tema",
   firstReadingExplore: "Esplora in autonomia",
   firstReadingResume: "Continua la mia lettura",
-  firstReadingStep: "Passaggio",
+  firstReadingStep: "Passo",
   firstReadingFullTour: "Scopri come funziona il tema — tour avanzato",
   firstReadingReplay: "Rivedi la storia del mio tema",
   chartActionsMore: "Altri modi per usare questo tema",
@@ -341,7 +341,7 @@ const it = {
   chartReceiptPrivacy: "Questo file contiene dati di nascita sensibili e dati del tema. Conservalo in privato.",
   chartReceiptError: "Non è stato possibile scaricare il file. Riprova.",
   chartReceiptUnavailable: "Non è disponibile un resoconto del calcolo per questo tema.",
-  seeTodaySky: "Vedi il cielo di oggi",
+  seeTodaySky: "Apri la mia lettura di oggi",
   contextHelpCue: "Tocca i termini sottolineati con puntini per una spiegazione semplice.",
   editorialHow: "standard editoriali",
   dstGapNotice:
@@ -361,13 +361,13 @@ const it = {
   fromLinkNotice:
     "Aperto da un link condiviso — i dati di nascita erano nel link e il tema è stato appena calcolato sul tuo dispositivo.",
   howWeCompute: "Come calcoliamo",
-  welcomeBack: "Che bello rivederti.",
+  welcomeBack: "Felici di rivederti.",
   savedChartAria: "Il tuo tema salvato",
   todayAgainstChart: "Il cielo di oggi rispetto al tuo tema",
   yourCharts: "I tuoi temi",
-  recommendedNext: "Passaggio consigliato",
+  recommendedNext: "Prossimo passo consigliato",
   todayForName: "Scopri cosa significa oggi per {name}",
-  savedChartTodayBody: "Il tuo tema non cambia. Il cielo di oggi sì: inizia da ciò che sta cambiando per te adesso.",
+  savedChartTodayBody: "Leggi il cielo di oggi accanto al tuo tema salvato. Se qualcosa ti colpisce, salva un’osservazione e ritrovala nella tua cronologia.",
   openSavedChart: "Apri il tema salvato",
   moonReadingSky: "Lettura del cielo…",
   illuminated: "illuminata",
@@ -409,7 +409,7 @@ const it = {
   savedChartHelp:
     "I temi che calcoli e salvi compaiono qui come scelte immediate, così al controllo successivo non dovrai reinserire i dati.",
   noTransitTimeNotice:
-    "Questo tema non ha un’ora di nascita, quindi la sua Luna è una stima di mezzogiorno — la posizione può essere imprecisa fino a sei gradi e un transito alla Luna vicino al limite dell’orbita può comparire o scomparire con l’ora reale.",
+    "Questo tema non ha un’ora di nascita, quindi la sua Luna è una stima di mezzogiorno — la posizione può essere imprecisa fino a sei gradi e un transito alla Luna vicino al limite dell’orbe può comparire o scomparire con l’ora reale.",
   skyAt: "Cielo del",
   noTransitsWithin: "Nessun transito entro",
   activeTransitsWithin: "transiti attivi entro",
@@ -418,10 +418,10 @@ const it = {
   transitMoonOmitted:
     "Luna in transito esclusa — attraversa l’intero tema ogni mese",
   quietSky:
-    "Un cielo tranquillo entro l’orbita stretta usata in questa pagina. Nulla di urgente — torna fra qualche giorno oppure allarga la lettura agli eventi del mese qui sotto.",
+    "Un cielo tranquillo entro l’orbe stretto usato in questa pagina. Nulla di urgente — torna fra qualche giorno oppure allarga la lettura agli eventi del mese qui sotto.",
   natal: "Natale",
   forYourChart: "Per il tuo tema",
-  orb: "orbita",
+  orb: "orbe",
   openDailyBrief: "Apri il mio riepilogo quotidiano completo",
   allTransits: "Tutti i tuoi transiti",
   personA: "Persona A",
@@ -439,7 +439,7 @@ const it = {
     "I temi che calcoli e salvi compaiono qui come scelte immediate, così il secondo confronto sarà più rapido del primo.",
   compareNoTimeNotice: "Ora di nascita assente per",
   moonMiddayEstimate:
-    "quindi quella Luna è una stima di mezzogiorno — la posizione può essere imprecisa fino a sei gradi e un aspetto alla Luna vicino al limite dell’orbita può comparire o scomparire con l’ora reale.",
+    "quindi quella Luna è una stima di mezzogiorno — la posizione può essere imprecisa fino a sei gradi e un aspetto alla Luna vicino al limite dell’orbe può comparire o scomparire con l’ora reale.",
   crossChartAspects: "aspetti fra i due temi",
   easeful: "armonici",
   charged: "intensi",
@@ -496,7 +496,7 @@ const it = {
   emailCapturePersonalTitle: "La tua settimana da {sign}.",
   emailCaptureCopy:
     "Una previsione settimanale per il tuo segno. Gratuita, puoi annullare l’iscrizione quando vuoi.",
-  emailCaptureEmailLabel: "Indirizzo e-mail",
+  emailCaptureEmailLabel: "Indirizzo email",
   emailCaptureEmailPlaceholder: "tu@esempio.it",
   emailCaptureSignLegend: "Il tuo segno solare (facoltativo)",
   emailCaptureNoSign: "Salta il segno",
@@ -509,7 +509,7 @@ const it = {
   emailCaptureError:
     "Non è stato possibile avviare l’iscrizione. Riprova.",
   emailCapturePrivacy:
-    "Conserviamo solo il tuo indirizzo e-mail e il segno scelto — mai i tuoi dati di nascita.",
+    "Conserviamo solo il tuo indirizzo email e il segno scelto — mai i tuoi dati di nascita.",
   emailCaptureHoneypot: "Lascia vuoto questo campo",
   emailPendingTitle: "Controlla la posta.",
   emailPendingBody:
@@ -519,7 +519,7 @@ const it = {
   emailConfirmMessage:
     "Conferma di voler ricevere la previsione settimanale gratuita di Zodiacs.org:",
   emailConfirmIgnore:
-    "Se non hai fatto tu questa richiesta, ignora l’e-mail. Non verrà attivata alcuna iscrizione.",
+    "Se non hai fatto tu questa richiesta, ignora l’email. Non verrà attivata alcuna iscrizione.",
   emailConfirmTitle: "Un’ultima verifica.",
   emailConfirmBody:
     "Conferma questa iscrizione per iniziare a ricevere la previsione settimanale gratuita. Fino ad allora non sarà attiva alcuna iscrizione settimanale.",

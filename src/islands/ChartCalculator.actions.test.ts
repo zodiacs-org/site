@@ -11,7 +11,7 @@ const wheelActionKeys = [
 // Freeze the released wording while moving it out of the eager island bundle.
 const wheelActionCopy = {
   en: ['Chart actions', 'Take the guided tour', 'Replay the tour', 'Read another chart', 'Your chart signature', 'Their chart signature', 'Compare with mine', 'Add my chart to compare', 'Share this chart'],
-  es: ['Acciones de la carta', 'Hacer el recorrido guiado', 'Repetir el recorrido', 'Leer otra carta', 'La firma de tu carta', 'La firma de su carta', 'Comparar con la mía', 'Añadir mi carta para comparar', 'Compartir esta carta'],
+  es: ['Acciones de la carta', 'Hacer el recorrido guiado', 'Repetir el recorrido', 'Leer otra carta', 'La firma de tu carta', 'La firma de su carta', 'Comparar con la mía', 'Agregar mi carta para comparar', 'Compartir esta carta'],
   pt: ['Ações do mapa', 'Fazer o tour guiado', 'Repetir o tour', 'Ler outro mapa', 'A assinatura do seu mapa', 'A assinatura deste mapa', 'Comparar com o meu', 'Adicionar meu mapa para comparar', 'Compartilhar este mapa'],
   fr: ['Actions du thème', 'Faire la visite guidée', 'Rejouer la visite', 'Lire un autre thème', 'La signature de ton thème', 'La signature de son thème', 'Comparer avec le mien', 'Ajouter mon thème pour comparer', 'Partager ce thème'],
   it: ['Azioni del tema', 'Inizia il tour guidato', 'Ripeti il tour', 'Leggi un altro tema', 'La firma del tuo tema', 'La firma del suo tema', 'Confronta con il mio', 'Aggiungi il mio tema per confrontare', 'Condividi questo tema'],
@@ -40,7 +40,7 @@ describe('Chart result action contract', () => {
       ['Ver em três dimensões', 'Ocultar a terceira dimensão'],
       ['Voir en trois dimensions', 'Masquer la troisième dimension'],
       ['Vedilo in tre dimensioni', 'Nascondi la terza dimensione'],
-      ['See it in three dimensions — пока по-английски', 'Hide the third dimension — пока по-английски'],
+      ['Показать в трёх измерениях — пока по-английски', 'Скрыть третье измерение — пока по-английски'],
     ]);
   });
 

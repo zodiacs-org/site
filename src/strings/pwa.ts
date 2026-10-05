@@ -12,16 +12,16 @@ export const PWA_PROMPT_EN = {
 export const PWA_PROMPT_COPY = {
   en: PWA_PROMPT_EN,
   es: {
-    heading: '¿Quieres tener tus herramientas a mano?',
-    body: 'Instala Zodiacs para volver más rápido a tus herramientas privadas, calculadas en el navegador.',
-    ios: 'En iPhone o iPad, toca Compartir y luego Añadir a pantalla de inicio.',
+    heading: '¿Tener Zodiacs a mano?',
+    body: 'Instala Zodiacs para volver más rápido a tus cartas, la astrología de cada día y tus herramientas guardadas.',
+    ios: 'En iPhone o iPad, toca Compartir y luego Agregar a inicio.',
     install: 'Instalar Zodiacs',
     dismiss: 'No, no volver a preguntar',
     icons: 'Los doce signos del zodiaco',
   },
   pt: {
     heading: 'Quer manter suas ferramentas por perto?',
-    body: 'Instale o Zodiacs para voltar mais rápido às suas ferramentas privadas, calculadas no navegador.',
+    body: 'Instale o Zodiacs para voltar mais rápido aos seus mapas, à astrologia de cada dia e às ferramentas salvas.',
     ios: 'No iPhone ou iPad, toque em Compartilhar e depois em Adicionar à Tela de Início.',
     install: 'Instalar o Zodiacs',
     dismiss: 'Não, não perguntar novamente',
@@ -29,7 +29,7 @@ export const PWA_PROMPT_COPY = {
   },
   fr: {
     heading: 'Garder tes outils à portée de main ?',
-    body: 'Installe Zodiacs pour retrouver plus vite tes outils privés, calculés dans le navigateur.',
+    body: 'Installe Zodiacs pour retrouver plus vite tes thèmes, l’astrologie du jour et tes outils enregistrés.',
     ios: 'Sur iPhone ou iPad, touche Partager, puis Sur l’écran d’accueil.',
     install: 'Installer Zodiacs',
     dismiss: 'Non, ne plus me le demander',
@@ -37,7 +37,7 @@ export const PWA_PROMPT_COPY = {
   },
   it: {
     heading: 'Vuoi tenere gli strumenti a portata di mano?',
-    body: 'Installa Zodiacs per tornare più rapidamente ai tuoi strumenti privati, calcolati nel browser.',
+    body: 'Installa Zodiacs per tornare più in fretta ai tuoi temi, all’astrologia di oggi e agli strumenti salvati.',
     ios: 'Su iPhone o iPad, tocca Condividi e poi Aggiungi alla schermata Home.',
     install: 'Installa Zodiacs',
     dismiss: 'No, non chiederlo più',

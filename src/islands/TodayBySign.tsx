@@ -9,7 +9,7 @@ import { SIGNS, signName } from '../lib/signs';
 import PlanetGlyph from '../components/PlanetGlyph';
 import EvidenceDisclosure from './EvidenceDisclosure';
 import type { Daily } from '../lib/daily';
-import { englishOnlyCue, localizePath, normalizeCatalogLocale, t, type CatalogLocale as Locale } from '../lib/i18n';
+import { englishOnlyCue, localizePath, normalizeCatalogLocale, t, tf, type CatalogLocale as Locale } from '../lib/i18n';
 import { formatDate } from '../lib/i18n/dates';
 import { moonPhaseLabel } from '../lib/i18n/astrology';
 import { dailyReadingForLocale } from '../lib/i18n/daily-reading';
@@ -90,7 +90,7 @@ export default function TodayBySign({ locale: rawLocale = 'en' }: Props) {
               </ul>
             </EvidenceDisclosure>
             <a class="tbs__more" href={horoscopeHref} hreflang={englishOnly ? 'en' : undefined} title={englishOnly?.aria}>
-              {signName(active, locale)} {t(locale, 'todayHoroscopeLink')}{englishOnly?.suffix} →
+              {tf(locale, 'todayHoroscopeLink', { sign: signName(active, locale) })}{englishOnly?.suffix} →
             </a>
           </div>
         ) : (

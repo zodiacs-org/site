@@ -76,7 +76,7 @@ describe('astrology localization', () => {
     expect(july).toContain('Mercurio estaciona directo');
     expect(july).toContain('Luna nueva a 22° de Cáncer');
     expect(july).toContain('Neptuno estaciona retrógrado a 4° de Aries');
-    expect(august).toContain('Mercurio conjunción Júpiter');
+    expect(august).toContain('Mercurio en conjunción con Júpiter');
     expect(`${july} ${august}`).not.toMatch(
       /\b(?:Sun|Moon|Mercury|Mars|Jupiter|Saturn|Uranus|Neptune|Pluto|retrograde|direct|conjunction|sextile|square|trine|opposition)\b/,
     );

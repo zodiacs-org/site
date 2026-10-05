@@ -22,11 +22,11 @@ const ORDINAL_ES = [
 const HOUSE_THEME_ES: Record<number, string> = {
   1: 'tu imagen, tus comienzos y la impresión que causas',
   2: 'el dinero, las posesiones y lo que te da estabilidad',
-  3: 'los recados, los hermanos, los mensajes y tu entorno cercano',
+  3: 'las diligencias, los hermanos, los mensajes y tu entorno cercano',
   4: 'el hogar, la familia y la base privada de tu vida',
   5: 'el placer, el romance, los hijos y lo que creas por gusto',
   6: 'el trabajo en curso, los hábitos de salud y la carga diaria',
-  7: 'la pareja y las personas que se sientan frente a ti',
+  7: 'la pareja y las personas con quienes tratas de igual a igual',
   8: 'el dinero compartido, las deudas, la intimidad y lo que se fusiona',
   9: 'los viajes, el estudio, las creencias y la mirada de largo alcance',
   10: 'la carrera, la reputación y lo que ve el público',
@@ -93,7 +93,7 @@ const HOUSE_THEME_FR: Record<number, string> = {
   5: 'le plaisir, les histoires d’amour, les enfants et ce que tu crées par goût',
   6: 'le travail en cours, les habitudes de santé et la charge quotidienne',
   7: 'les relations et les personnes qui te font face',
-  8: 'l’argent partagé, les dettes, l’intimité et ce qui se mêle',
+  8: 'l’argent partagé, les dettes, l’intimité et ce qui s’entremêle',
   9: 'les voyages, les études, les croyances et la vision à long terme',
   10: 'la carrière, la réputation et ce que voit le public',
   11: 'les amitiés, les groupes et l’avenir que tu vises',
@@ -236,7 +236,7 @@ function eventLineEs(event: DailyEvent, sunSign: string, date: string): DailyLin
     const b = planetLabel('es', event.b);
     const aspect = aspectLabel('es', event.type);
     return {
-      text: `${a} en ${aspect} con ${b} alcanza hoy su punto exacto: es un aspecto de alcance general y el recibo muestra la hora.`,
+      text: `${a} en ${aspect} con ${b} alcanza hoy su punto exacto: es un aspecto de alcance general y el comprobante muestra la hora.`,
       receipt: `${a} ${aspect} ${b} · exacto ${utcTime(event.at)}`,
       body: event.a,
       templateId: 'aspect-collective.v1',

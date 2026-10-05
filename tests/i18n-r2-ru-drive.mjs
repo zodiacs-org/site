@@ -213,7 +213,7 @@ await withPreview({ port: 4418 }, async (baseURL) => {
     chart.on('pageerror', (error) => chartErrors.push(error.message));
     await chart.goto(`${baseURL}/ru/birth-chart/`, { waitUntil: 'networkidle' });
     check(await chart.getByLabel('Дата рождения').count() === 1, 'Russian birth-date label is missing');
-    check(await chart.getByLabel('Время рождения').count() === 1, 'Russian birth-time label is missing');
+    check(await chart.getByLabel('Время рождения', { exact: true }).count() === 1, 'Russian birth-time label is missing');
     check(await chart.getByLabel('Место рождения').count() === 1, 'Russian birthplace label is missing');
     await chart.locator('#birth-date').fill('1990-06-15');
     await chart.locator('#birth-time').fill('08:30');

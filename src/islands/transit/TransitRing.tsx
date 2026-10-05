@@ -165,7 +165,7 @@ const COPY = {
     eventDate: 'Date de l’événement',
     back1m: '−1 mois',
     fwd1m: '+1 mois',
-    outerRing: 'Anneau extérieur : le ciel à cette date. Roue intérieure : ton thème natal.',
+    outerRing: 'Anneau extérieur : le ciel à cette date. Roue intérieure : ton thème astral.',
     tapHint: 'Touche une planète en mouvement ou une ligne de liaison pour lire ce transit.',
     moonOmitted: 'la Lune va trop vite pour figurer dans la liste, mais tu peux la suivre sur la roue',
     announce: 'Ciel du',

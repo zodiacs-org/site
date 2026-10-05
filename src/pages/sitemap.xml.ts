@@ -111,6 +111,10 @@ const OWNER_TRUST_ROUTES = ['/', '/privacy/', '/terms/', '/methodology/', '/astr
 // says which UTC offsets a date without a zone is read in.
 const MCP_COMPUTE_TOOLS_LASTMOD = '2026-10-05';
 const MCP_COMPUTE_TOOLS_ROUTES = ['/developers/mcp/', '/developers/compute/'] as const;
+// The sky-fact benchmark of 2026-10-05: its own page, and the developer hub's
+// card for it.
+const SKY_BENCHMARK_LASTMOD = '2026-10-05';
+const SKY_BENCHMARK_ROUTES = ['/developers/', '/developers/sky-benchmark/'] as const;
 
 const EVERGREEN_LASTMOD = new Map<string, string>([
   [eventsPublication.hub.path, eventsPublication.lastModified] as const,
@@ -245,6 +249,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...COMPUTE_API_REVIEW_ROUTES.map((loc) => [loc, COMPUTE_API_REVIEW_LASTMOD] as const),
   ...OWNER_TRUST_ROUTES.map((loc) => [loc, OWNER_TRUST_LASTMOD] as const),
   ...MCP_COMPUTE_TOOLS_ROUTES.map((loc) => [loc, MCP_COMPUTE_TOOLS_LASTMOD] as const),
+  ...SKY_BENCHMARK_ROUTES.map((loc) => [loc, SKY_BENCHMARK_LASTMOD] as const),
 ]);
 
 function getLastmod(loc: string): string {
@@ -340,6 +345,7 @@ export const GET: APIRoute = async () => {
     { loc: '/developers/ai/', priority: 0.6 },
     { loc: '/developers/conformance/', priority: 0.6 },
     { loc: '/developers/compute/', priority: 0.6 },
+    { loc: '/developers/sky-benchmark/', priority: 0.6 },
     { loc: '/fomo/', priority: 0.6 },
     { loc: '/disclosure/', priority: 0.5 },
     // Locale variants and hreflang blocks are added below through the same

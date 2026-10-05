@@ -50,7 +50,7 @@ describe('Russian staged catalog', () => {
     expect(ru.navTools).toBe('Инструменты');
     expect(ru.privacyDevice).toBe('Приватно по умолчанию. Данные рождения остаются в этом браузере.');
     expect(ru.skyAsOf).toBe('{date} · 12 UTC');
-    expect(ru.emailCapturePersonalTitle).toBe('Ваша неделя {sign} впереди.');
+    expect(ru.emailCapturePersonalTitle).toBe('{sign}: ваша неделя впереди.');
     expect(ru.emailConfirmIgnore).toContain('Ссылка действует 48 часов.');
   });
 

@@ -1168,10 +1168,11 @@ const sitemapPolicy = {
   // +1 for /developers/engine/, the engine's own product page.
   // +1 for /developers/conformance/, the conformance suite's results page.
   // +1 for /developers/compute/, the compute API's page.
+  // +1 for /developers/sky-benchmark/, the sky-fact benchmark's page.
   // +23 for three six-language sharing tools and five Big Three translations.
   // +18 for three six-language return-visit tools.
   // +1 for /developers/ai/, the AI integration candidates review page.
-  total: 1042 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
+  total: 1043 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
     + publishedEventPaths.size + indexablePeoplePaths.size
     + Number(JSON.parse(await readFile(resolve(repo, 'src/data/people.json'), 'utf8')).directoryIndexable === true)
     + indexedRegistryResearchPaths.size,

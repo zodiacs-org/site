@@ -3,6 +3,7 @@ import packageDocument from '../../../../package.json';
 import Base from '../../../layouts/Base.astro';
 import summary from '../../../data/conformance/summary.json';
 import source from '../../../data/conformance/source.json';
+import { CONFORMANCE_LICENSE, ORGANIZATION, developerBreadcrumb } from '../../../lib/developer-structured-data.mjs';
 
 const suiteTree = `${source.repository}/tree/${source.commit}/conformance`;
 const suiteFile = (path: string) => `${source.repository}/blob/${source.commit}/conformance/${path}`;
@@ -81,17 +82,22 @@ const runs = summary.runs.map((run) => ({
   tags: Object.entries((run.summary.byTag ?? {}) as Record<string, Bucket>),
 }));
 
-const jsonLd = [{
-  '@type': 'Dataset',
-  name: 'Zodiacs.org conformance suite for astrology computation',
-  description,
-  url: 'https://zodiacs.org/developers/conformance/',
-  version: summary.suiteVersion,
-  license: 'https://creativecommons.org/publicdomain/zero/1.0/',
-  isAccessibleForFree: true,
-  creator: { '@type': 'Organization', name: 'Zodiacs.org', url: 'https://zodiacs.org/' },
-  distribution: [{ '@type': 'DataDownload', encodingFormat: 'application/json', contentUrl: `${source.repository}/tree/${source.commit}/conformance/vectors` }],
-}];
+// Each level's vectors file, from the commit summary.json was copied from.
+const vectorFile = (path: string) => `${source.repository.replace('https://github.com/', 'https://raw.githubusercontent.com/')}/${source.commit}/conformance/${path}`;
+const jsonLd = [
+  {
+    '@type': 'Dataset',
+    name: 'Zodiacs.org conformance suite for astrology computation',
+    description,
+    url: 'https://zodiacs.org/developers/conformance/',
+    version: summary.suiteVersion,
+    license: CONFORMANCE_LICENSE,
+    isAccessibleForFree: true,
+    creator: ORGANIZATION,
+    distribution: summary.levels.map((level) => ({ '@type': 'DataDownload', name: `${level.level}: ${level.title}`, encodingFormat: 'application/json', contentUrl: vectorFile(level.file) })),
+  },
+  developerBreadcrumb('/developers/conformance/', 'Conformance suite'),
+];
 ---
 <Base title={title} description={description} path="/developers/conformance/" jsonLd={jsonLd}>
   <section class="section container container--narrow conformance-page">
