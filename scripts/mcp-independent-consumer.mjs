@@ -1,0 +1,414 @@
+/**
+ * Archive-to-HTTP integration check. No astronomical accuracy claim.
+ * See docs/platform/evidence/mcp-independent-consumer-2026-10-05/README.md.
+ * Uses the archive's locked SDK and verify.mjs; protocol coverage stays in
+ * tests/mcp-protocol-drive.mjs. Only the citation URL may differ in parity.
+ */
+import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
+import { createServer } from 'node:http';
+import { createRequire } from 'node:module';
+import { access, copyFile, lstat, mkdir, mkdtemp, readFile, realpath, writeFile } from 'node:fs/promises';
+import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+
+const exec = promisify(execFile);
+const FILE = fileURLToPath(import.meta.url);
+const ROOT = resolve(dirname(FILE), '..');
+const DOCS = 'https://zodiacs.org/developers/';
+const SOURCE_PATHS = [
+  'src/mcp', 'src/lib/compute-api', 'src/lib/sky-api', 'src/lib/receipt-digest.ts',
+  'src/lib/engine/time-basis.mjs', 'src/lib/time', 'src/lib/compare', 'src/data',
+  'api/_compute', 'examples/mcp-server', 'public/examples/mcp-server.json',
+  'public/examples/zodiacs-mcp-server-0.1.0-rc.16.3.tgz', 'vendor',
+  'scripts/build-compute-handler.mjs', 'scripts/build-compute-local-time.mjs',
+  'scripts/build-mcp-server.mjs', 'scripts/pack-mcp-server.mjs',
+  'package.json', 'package-lock.json',
+];
+
+export const CORPUS = Object.freeze([
+  { id: 'positions', tool: 'get_positions', endpoint: 'positions',
+    args: { instants: ['2000-01-01T12:00:00Z'], bodies: ['Sun', 'Moon', 'Mars'] } },
+  { id: 'short-lunation', tool: 'find_events', endpoint: 'events',
+    args: { from: '2026-03-01T00:00:00Z', to: '2026-03-05T00:00:00Z', bodies: ['Moon'], kinds: ['lunation'] }, nonempty: true },
+  { id: 'sun-never-retrograde', tool: 'check_sky_fact', endpoint: 'sky-fact',
+    args: { kind: 'retrograde', body: 'Sun', instant: '2000-01-01T12:00:00Z' }, answer: 'false' },
+  { id: 'instant-sign', tool: 'check_sky_fact', endpoint: 'sky-fact',
+    args: { kind: 'sign', body: 'Sun', sign: 'capricorn', instant: '2000-01-01T12:00:00Z' }, answer: 'true' },
+  { id: 'date-depends', tool: 'check_sky_fact', endpoint: 'sky-fact',
+    args: { kind: 'phase', phase: 'full', date: '2026-03-03' }, answer: 'depends', basis: 'any-zone-day' },
+  { id: 'reference-edge', tool: 'check_sky_fact', endpoint: 'sky-fact',
+    args: { kind: 'retrograde', body: 'Sun', date: '1800-01-01' }, answer: 'false', flag: 'outside-reference-span' },
+]);
+const REFUSALS = [
+  { id: 'invalid-civil-date', tool: 'get_positions', endpoint: 'positions', args: { instants: ['2001-02-29T00:00:00Z'] } },
+  { id: 'reversed-event-window', tool: 'find_events', endpoint: 'events',
+    args: { from: '2026-03-05T00:00:00Z', to: '2026-03-01T00:00:00Z' } },
+];
+
+// Independent implementation: never import the application's receipt helper.
+export function canonical(value) {
+  if (value === null || ['string', 'boolean'].includes(typeof value)) return JSON.stringify(value);
+  if (typeof value === 'number') {
+    assert(Number.isFinite(value), 'non-finite canonical number');
+    return JSON.stringify(value);
+  }
+  if (Array.isArray(value)) return `[${value.map(canonical).join(',')}]`;
+  assert(value && typeof value === 'object', 'canonical value must be JSON');
+  return `{${Object.keys(value).sort().map(key => `${JSON.stringify(key)}:${canonical(value[key])}`).join(',')}}`;
+}
+export const sha256 = bytes => createHash('sha256').update(bytes).digest('hex');
+export const digest = value => `sha256:${sha256(canonical(value))}`;
+
+export function assertArchive(bytes, pin) {
+  assert.equal(sha256(bytes), pin.sha256, 'archive SHA-256');
+  assert.equal(bytes.length, pin.bytes, 'archive bytes');
+}
+export function assertBackend(backend, pin) {
+  assert.equal(backend?.name, '@zodiacs/engine', 'backend name');
+  assert.equal(backend?.version, pin.engineVersion, 'backend version');
+  assert.deepEqual(backend?.ephemeris, { name: 'astronomy-engine', version: pin.ephemerisVersion }, 'ephemeris');
+}
+export function assertCapabilities(value, info, pin) {
+  assert.deepEqual(info, { name: 'zodiacs-mcp-server', version: pin.adapterVersion }, 'MCP handshake version');
+  assert.equal(value?.adapter?.version, pin.adapterVersion, 'capabilities adapter version');
+  assert.equal(value?.receipt?.adapter?.version, pin.adapterVersion, 'receipt adapter version');
+  assertBackend(value?.receipt?.engine, pin);
+  assert.equal(value?.engine?.version, pin.engineVersion, 'capabilities engine version');
+  assert.equal(value?.cite?.receipt, digest(value.receipt), 'capabilities citation digest');
+  assert.equal(value?.cite?.version, pin.engineVersion, 'capabilities citation version');
+  assert(value.unsupported.some(line => /eclipse/i.test(line)), 'unsupported eclipse search is disclosed');
+  assert(value.unsupported.some(line => /no timeout/.test(line)), 'no interruptible timeout is disclosed');
+}
+export function assertReply(value, row, pin, transport) {
+  assert.equal(value?.schema, `zodiacs.compute-api.${row.endpoint}.v1`, 'response schema');
+  assert(value.receipt && typeof value.receipt === 'object', 'missing receipt');
+  assert.equal(value.receipt.schema, 'zodiacs.compute-receipt.v1', 'receipt schema');
+  assert.equal(value.receipt.endpoint, row.endpoint, 'receipt endpoint');
+  assertBackend(value.backend, pin);
+  assertBackend(value.receipt.engine, pin);
+  assert.equal(value.cite?.engine, '@zodiacs/engine', 'citation engine');
+  assert.equal(value.cite?.version, pin.engineVersion, 'citation version');
+  assert.equal(value.cite?.receipt, digest(value.receipt), 'citation digest');
+  assert.equal(value.cite?.url, `${DOCS}${transport === 'mcp' ? `mcp/#${row.tool}` : `compute/#${row.endpoint}`}`, 'citation URL');
+  if (row.answer) assert.equal(value.result?.answer, row.answer, `${row.id}: answer`);
+  if (row.basis) {
+    assert.equal(value.result.basis, row.basis, 'date basis');
+    assert.equal(value.result.zone, null, 'no assumed zone');
+    assert.equal(Date.parse(value.result.window.to) - Date.parse(value.result.window.from), 50 * 3600000, 'date span');
+  }
+  if (row.flag) assert(value.result.facts.flags.includes(row.flag), 'coverage flag');
+  if (row.endpoint === 'events') {
+    assert(value.receipt.search, 'search receipt');
+    if (row.nonempty) assert(value.result.events.length > 0, 'fixed event window must exercise a result');
+    for (const [index, event] of value.result.events.entries()) {
+      assert(row.args.kinds.includes(event.kind), 'requested event kinds');
+      assert(Date.parse(event.at) > Date.parse(row.args.from) && Date.parse(event.at) <= Date.parse(row.args.to), 'event window membership');
+      if (index) assert(value.result.events[index - 1].at <= event.at, 'event time order');
+    }
+  }
+  if (value.receipt.search) {
+    const search = value.receipt.search;
+    assert.equal(search.completeness, 'tested-not-proven', 'search completeness');
+    assert.equal(search.window, 'start-exclusive-end-inclusive', 'search window');
+    assert(Number.isInteger(search.samples) && search.samples >= 0 && search.samples <= search.maxSamples, 'search samples');
+  }
+}
+export function assertParity(mcp, http, row, pin) {
+  assertReply(mcp, row, pin, 'mcp');
+  assertReply(http, row, pin, 'http');
+  const normalized = value => ({ ...value, cite: { ...value.cite, url: '<transport documentation URL>' } });
+  assert.equal(canonical(normalized(mcp)), canonical(normalized(http)), `${row.id}: parity beyond citation URL`);
+}
+
+function option(name) {
+  const index = process.argv.indexOf(name);
+  return index < 0 ? undefined : process.argv[index + 1];
+}
+async function jsonFile(path) { return JSON.parse(await readFile(path, 'utf8')); }
+async function save(path, value) { await writeFile(path, `${JSON.stringify(value, null, 2)}\n`); }
+function cleanEnv() {
+  // Do not hand the consumer credentials, NODE_PATH, preload hooks or repo env.
+  const network = Object.fromEntries(['HTTP_PROXY', 'HTTPS_PROXY', 'ALL_PROXY', 'NO_PROXY', 'NODE_EXTRA_CA_CERTS']
+    .filter(name => process.env[name] !== undefined).map(name => [name, process.env[name]]));
+  return { ...network, PATH: process.env.PATH, TMPDIR: '/tmp', LANG: 'C.UTF-8', NODE_ENV: 'development',
+    npm_config_cache: '/tmp/zodiacs-consumer-npm-cache', npm_config_userconfig: '/dev/null' };
+}
+async function runLogged(command, args, cwd, path, env = cleanEnv()) {
+  try {
+    const result = await exec(command, args, { cwd, env, timeout: 180000, maxBuffer: 4 * 1024 * 1024 });
+    await writeFile(path, `${result.stdout}${result.stderr}`);
+    return { command: [command, ...args], exitCode: 0, log: path };
+  } catch (error) {
+    await writeFile(path, `${error.stdout ?? ''}${error.stderr ?? ''}`);
+    throw new Error(`${command} exited ${error.code}: see ${path}`);
+  }
+}
+async function assertIsolation(consumer) {
+  assert(!isAbsolute(relative(ROOT, consumer)) && relative(ROOT, consumer).startsWith(`..${sep}`), 'consumer must be outside checkout');
+  for (let parent = dirname(consumer); ; parent = dirname(parent)) {
+    for (const name of ['node_modules', 'package.json']) {
+      await access(join(parent, name)).then(() => { throw new Error(`consumer inherits ${join(parent, name)}`); }, error => {
+        if (error.code !== 'ENOENT') throw error;
+      });
+    }
+    if (dirname(parent) === parent) break;
+  }
+}
+
+// This branch runs as a child from a copy of THIS file in the extracted package.
+// Both SDK and its transitive dependencies resolve in that consumer alone.
+async function consume(pinPath, out) {
+  const consumer = dirname(FILE);
+  const pin = await jsonFile(pinPath);
+  const require = createRequire(join(consumer, 'package.json'));
+  const resolved = {};
+  for (const name of ['@modelcontextprotocol/client', '@modelcontextprotocol/client/stdio']) {
+    const path = await realpath(require.resolve(name));
+    assert(path.startsWith(join(consumer, 'node_modules') + sep), `SDK escaped consumer: ${path}`);
+    resolved[name] = { path: relative(consumer, path), sha256: sha256(await readFile(path)) };
+  }
+  const { Client } = await import(pathToFileURL(require.resolve('@modelcontextprotocol/client')));
+  const { StdioClientTransport } = await import(pathToFileURL(require.resolve('@modelcontextprotocol/client/stdio')));
+  const client = new Client({ name: 'zodiacs-independent-consumer', version: '1.0.0' });
+  const transport = new StdioClientTransport({ command: process.execPath, args: [join(consumer, 'server.mjs')],
+    cwd: consumer, env: cleanEnv(), stderr: 'pipe' });
+  const result = { status: 'running', resolved, cases: [], refusals: [], unsupported: [], stderr: '' };
+  result.clientVersion = (await jsonFile(join(consumer, 'node_modules/@modelcontextprotocol/client/package.json'))).version;
+  assert.equal(result.clientVersion, '2.0.0', 'locked consumer client');
+  try {
+    await client.connect(transport);
+    transport.stderr?.on('data', data => { result.stderr += data.toString(); });
+    result.server = client.getServerVersion();
+    result.tools = (await client.listTools()).tools;
+    assert.deepEqual(result.tools.map(tool => tool.name).sort(),
+      ['calculate_natal_chart', 'check_sky_fact', 'compare_calculation_records', 'find_events', 'get_capabilities', 'get_positions']);
+    for (const tool of result.tools) {
+      assert.equal(tool.inputSchema.type, 'object', `${tool.name} input schema`);
+      assert.equal(tool.outputSchema?.type, 'object', `${tool.name} output schema`);
+      assert.deepEqual(tool.annotations && {
+        readOnlyHint: tool.annotations.readOnlyHint, destructiveHint: tool.annotations.destructiveHint,
+        openWorldHint: tool.annotations.openWorldHint, idempotentHint: tool.annotations.idempotentHint,
+      }, { readOnlyHint: true, destructiveHint: false, openWorldHint: false, idempotentHint: true });
+    }
+    // Client.callTool checks the output against the schema advertised by tools/list.
+    const call = async row => {
+      const answer = await client.callTool({ name: row.tool, arguments: row.args });
+      assert(!answer.isError, `${row.id}: ${JSON.stringify(answer.content)}`);
+      assert(answer.structuredContent, 'missing structuredContent');
+      return answer.structuredContent;
+    };
+    result.capabilities = await call({ tool: 'get_capabilities', args: {} });
+    assertCapabilities(result.capabilities, result.server, pin);
+    for (const row of CORPUS) {
+      const value = await call(row);
+      assertReply(value, row, pin, 'mcp');
+      result.cases.push({ ...row, value });
+    }
+    for (const row of [...REFUSALS,
+      { id: 'zone-unsupported', tool: 'check_sky_fact', args: { kind: 'phase', phase: 'full', date: '2026-03-03', zone: 'Europe/Paris' } },
+      { id: 'eclipse-unsupported', tool: 'find_events', args: { from: '2026-03-01T00:00:00Z', to: '2026-03-05T00:00:00Z', kinds: ['eclipse'] } },
+    ]) {
+      let refusal;
+      try {
+        const answer = await client.callTool({ name: row.tool, arguments: row.args });
+        assert(answer.isError, `${row.id}: request was silently accepted`);
+        refusal = { layer: 'tool', message: answer.content[0].text };
+      } catch (error) {
+        // Only a protocol invalid-params rejection counts; assertion/transport failures do not.
+        assert.equal(error.code, -32602, `${row.id}: unexpected failure`);
+        refusal = { layer: 'sdk-input-schema', message: error.message };
+      }
+      if (row.id === 'zone-unsupported') assert.match(refusal.message, /zone/i);
+      if (row.id === 'eclipse-unsupported') assert.match(refusal.message, /kind|eclipse/i);
+      const recovery = await call(CORPUS[0]);
+      assert.deepEqual(recovery, result.cases[0].value, `${row.id}: recovery`);
+      (row.endpoint ? result.refusals : result.unsupported).push({ ...row, refusal, recovery });
+    }
+    result.status = 'pass';
+  } catch (error) {
+    result.status = 'fail';
+    result.failure = error.stack ?? String(error);
+    throw error;
+  } finally {
+    await client.close();
+    await save(out, result);
+  }
+}
+
+async function generateOpenApi(out) {
+  // Run this mode with the source checkout's locked vite-node, as the existing
+  // publication builder does. The resulting bytes match buildSkyApi's output.
+  const { loadSkyApiSources } = await import('../src/lib/sky-api/sources.ts');
+  const { buildSkyApi } = await import('../src/lib/sky-api/files.ts');
+  const build = buildSkyApi(await loadSkyApiSources(ROOT), { generatedAt: '2000-01-01T00:00:00.000Z' });
+  await writeFile(out, build.files.get('openapi.json'));
+}
+
+async function main(pinPath, out) {
+  assert(pinPath && out, 'usage: node scripts/mcp-independent-consumer.mjs --pin FILE --out DIRECTORY [--archive FILE]');
+  const pin = await jsonFile(resolve(pinPath));
+  await mkdir(out, { recursive: true });
+  const report = { schema: 'zodiacs.independent-consumer-evidence.v1', startedAt: new Date().toISOString(),
+    node: process.version, pin, status: 'running', checks: [], httpRequests: 0,
+    live: { status: 'inconclusive', requests: 0, reason: 'No live deployment source binding was established; selected source-bound loopback HTTP.' },
+    credit: 'No delivery credit. Integration evidence, not independent astronomical accuracy or astrology prediction validation.' };
+  let server;
+  try {
+    const git = async (...args) => (await exec('git', args, { cwd: ROOT })).stdout.trim();
+    report.runner = { path: 'scripts/mcp-independent-consumer.mjs', sha256: sha256(await readFile(FILE)) };
+    report.npm = (await exec('npm', ['--version'])).stdout.trim();
+    report.sourceLockSha256 = sha256(await readFile(join(ROOT, 'package-lock.json')));
+    assert.equal(await git('rev-parse', `${pin.http.sourceCommit}^{commit}`), pin.http.sourceCommit);
+    await git('merge-base', '--is-ancestor', pin.archive.sourceCommit, pin.http.sourceCommit);
+    await git('diff', '--exit-code', pin.http.sourceCommit, '--', ...SOURCE_PATHS);
+    assert.equal(await git('ls-files', '--others', '--exclude-standard', '--', ...SOURCE_PATHS), '', 'untracked source inputs');
+    report.source = { httpCommit: pin.http.sourceCommit, httpTree: await git('rev-parse', `${pin.http.sourceCommit}^{tree}`),
+      archiveSourceCommit: pin.archive.sourceCommit, sourcePaths: SOURCE_PATHS };
+    const manifestBytes = await readFile(join(ROOT, 'public/examples/mcp-server.json'));
+    assert.equal(sha256(manifestBytes), pin.manifestSha256, 'manifest SHA-256');
+    const manifest = JSON.parse(manifestBytes);
+    assert.equal(manifest.version, pin.adapterVersion);
+    assert.equal(manifest.sha256, pin.archive.sha256);
+    assert.equal(manifest.artifactCommit, pin.archive.sourceCommit);
+    assert.equal(manifest.bytes, pin.archive.bytes);
+    const archiveOverride = option('--archive');
+    // curl follows the environment's supported proxy/CA configuration. Native
+    // Node fetch does not do so by default on every supported Node release.
+    const archiveBytes = archiveOverride ? await readFile(resolve(archiveOverride)) : (await exec('curl',
+      ['--fail', '--silent', '--show-error', '--location', '--max-redirs', '3', '--proto', '=https',
+        '--max-time', '30', '--max-filesize', String(pin.archive.bytes), pin.archive.url],
+      { encoding: 'buffer', timeout: 35000, maxBuffer: pin.archive.bytes + 4096 })).stdout;
+    assertArchive(archiveBytes, pin.archive);
+    report.archive = { origin: archiveOverride ? 'explicit local archive' : pin.archive.url, bytes: archiveBytes.length, sha256: sha256(archiveBytes) };
+    report.checks.push('source and archive bindings');
+
+    const scratch = await mkdtemp('/tmp/zodiacs-mcp-consumer-');
+    const consumer = join(scratch, 'package');
+    report.scratch = scratch;
+    await assertIsolation(consumer);
+    const archivePath = join(scratch, 'candidate.tgz');
+    await writeFile(archivePath, archiveBytes);
+    // Validate tar member names/types before extracting the pinned archive.
+    const members = (await exec('tar', ['-tzf', archivePath])).stdout.trim().split('\n');
+    assert(members.every(name => name.startsWith('package/') && !name.split('/').includes('..')), 'unexpected archive path');
+    const types = (await exec('tar', ['-tvzf', archivePath])).stdout.trim().split('\n');
+    assert(types.every(line => /^[d-]/.test(line)), 'archive links or special files');
+    await exec('tar', ['-xzf', archivePath, '-C', scratch]);
+    const pkg = await jsonFile(join(consumer, 'package.json'));
+    const candidate = await jsonFile(join(consumer, 'candidate.json'));
+    assert.equal(pkg.version, pin.adapterVersion);
+    assert.equal(candidate.version, pin.adapterVersion);
+    assert.equal(pkg.license, 'MIT AND CC-BY-4.0', 'both licences retained');
+    assert.match(await readFile(join(consumer, 'NOTICE'), 'utf8'), /MIT AND CC-BY-4\.0/);
+    assert.equal(candidate.bundled.engine.version, pin.engineVersion);
+    assert.equal(candidate.bundled.engine.artifactSha256, pin.engineArchiveSha256);
+    assert.equal(candidate.bundled.ephemeris.version, pin.ephemerisVersion);
+    const lockBefore = sha256(await readFile(join(consumer, 'npm-shrinkwrap.json')));
+    report.install = await runLogged('npm', ['ci', '--ignore-scripts', '--no-audit', '--no-fund'], consumer, join(out, 'consumer-install.log'));
+    assert.equal(sha256(await readFile(join(consumer, 'npm-shrinkwrap.json'))), lockBefore, 'consumer lock changed');
+    assert(!(await lstat(join(consumer, 'node_modules'))).isSymbolicLink(), 'consumer node_modules link');
+    report.consumer = { packageVersion: pkg.version, license: pkg.license, shrinkwrapSha256: lockBefore,
+      serverSha256: sha256(await readFile(join(consumer, 'server.mjs'))), nodeModules: 'fresh npm ci inside extracted package', inheritedNodeModules: false };
+    report.verify = await runLogged(process.execPath, ['verify.mjs'], consumer, join(out, 'packaged-verify.log'));
+    report.checks.push('locked fresh consumer and packaged verify.mjs');
+    const consumerPin = join(scratch, 'pin.json');
+    await save(consumerPin, pin);
+    await copyFile(FILE, join(consumer, 'consumer-check.mjs'));
+    await runLogged(process.execPath, ['consumer-check.mjs', '--consumer', '--pin', consumerPin, '--out', join(out, 'mcp.json')], consumer, join(out, 'consumer-check.log'));
+    const mcp = await jsonFile(join(out, 'mcp.json'));
+    report.checks.push('advertised MCP schemas, versions, citations, unsupported requests and recovery');
+
+    await runLogged(process.execPath, [join(ROOT, 'node_modules/vite-node/vite-node.mjs'), '--script', FILE,
+      '--openapi-out', join(out, 'openapi.json')], ROOT, join(out, 'openapi-build.log'));
+    const openapiBytes = await readFile(join(out, 'openapi.json'));
+    assert.equal(sha256(openapiBytes), pin.openapi.sha256, 'OpenAPI bytes');
+    assert.equal(openapiBytes.length, pin.openapi.bytes, 'OpenAPI length');
+    report.openapi = { ...pin.openapi, origin: 'source buildSkyApi bytes', sourceCommit: pin.http.sourceCommit };
+    const openapi = JSON.parse(openapiBytes);
+    const { default: Ajv } = await import('ajv/dist/2020.js');
+    const { default: addFormats } = await import('ajv-formats');
+    const ajv = new Ajv({ strict: false, allErrors: true });
+    addFormats(ajv);
+    const OPENAPI_ID = 'https://zodiacs.org/api/v1/openapi.json';
+    ajv.addSchema({ $id: OPENAPI_ID, ...openapi });
+    const validate = (value, endpoint, status = 200) => {
+      const schema = openapi.paths[`/api/v1/${endpoint}`].post.responses[status].content['application/json'].schema;
+      const check = ajv.compile({ ...schema, $ref: schema.$ref?.replace(/^#/, OPENAPI_ID + '#') });
+      assert(check(value), `${endpoint} OpenAPI ${status}: ${ajv.errorsText(check.errors)}`);
+    };
+    const modulePath = join(ROOT, 'api/_compute/compute.mjs');
+    assert.equal(sha256(await readFile(modulePath)), pin.http.bundleSha256, 'HTTP bundle SHA-256');
+    const { createComputeApiHandler } = await import(pathToFileURL(modulePath));
+    const { createLocalTimeModule } = await import(pathToFileURL(join(ROOT, 'api/_compute/local-time.mjs')));
+    server = createServer(async (req, res) => {
+      // Test fixture for the public path rewrite; no production environment or
+      // firewall configuration is used. Actual IncomingMessage/ServerResponse.
+      req.query = { __zodiacs_compute: req.url.slice('/api/v1/'.length) };
+      const localTime = createLocalTimeModule();
+      try { await createComputeApiHandler({ localTime, env: {}, rateLimit: async () => 'allowed' })(req, res); }
+      catch { res.statusCode = 500; res.end('{}'); }
+      finally { localTime.dispose(); }
+    });
+    await new Promise((yes, no) => { server.once('error', no); server.listen(0, '127.0.0.1', yes); });
+    const origin = `http://127.0.0.1:${server.address().port}`;
+    report.http = { ...pin.http, mode: 'local-loopback', origin, rateLimitFixture: 'allowed', deployment: null };
+    const http = [];
+    report.cases = [];
+    const post = async row => {
+      report.httpRequests += 1;
+      const response = await fetch(`${origin}/api/v1/${row.endpoint}`, { method: 'POST',
+        headers: { 'content-type': 'application/json' }, body: JSON.stringify(row.args), signal: AbortSignal.timeout(10000), redirect: 'error' });
+      const text = await response.text();
+      const record = { ...row, status: response.status, headers: Object.fromEntries(response.headers), text, value: JSON.parse(text) };
+      http.push(record);
+      // Preserve raw evidence even if validation below fails.
+      await save(join(out, 'http.json'), http);
+      assert(![429, 500, 503].includes(response.status), `unexpected HTTP ${response.status}; stopping`);
+      return record;
+    };
+    for (const row of CORPUS) {
+      const response = await post(row);
+      assert.equal(response.status, 200, `${row.id}: HTTP status`);
+      validate(response.value, row.endpoint);
+      validate(mcp.cases.find(item => item.id === row.id).value, row.endpoint);
+      assertParity(mcp.cases.find(item => item.id === row.id).value, response.value, row, pin);
+      report.cases.push({ id: row.id, schema: response.value.schema, result: 'pass',
+        receiptDigest: digest(response.value.receipt), onlyAllowedDifference: 'cite.url',
+        ...(row.answer ? { answer: response.value.result.answer } : {}),
+        ...(row.endpoint === 'events' ? { events: response.value.result.events.length, completeness: response.value.receipt.search.completeness } : {}) });
+    }
+    for (const row of REFUSALS) {
+      const response = await post(row);
+      assert.equal(response.status, 400, `${row.id}: refusal status`);
+      validate(response.value, row.endpoint, 400);
+      const refusal = mcp.refusals.find(item => item.id === row.id).refusal;
+      assert.equal(refusal.layer, 'tool', 'parser refusal layer');
+      const detail = response.value.error;
+      assert.equal(refusal.message, `${detail.pointer ? `${detail.pointer}: ` : ''}${detail.message}`, 'shared parser refusal sentence');
+      const recovery = await post({ ...CORPUS[0], id: `${row.id}-recovery` });
+      assert.equal(recovery.status, 200, 'HTTP recovery');
+      validate(recovery.value, 'positions');
+      assertParity(mcp.cases[0].value, recovery.value, CORPUS[0], pin);
+    }
+    report.checks.push('six fixed source-bound HTTP parity cases, two parser refusals and recovery');
+    report.status = 'pass';
+  } catch (error) {
+    report.status = 'fail';
+    report.failure = error.stack ?? String(error);
+    process.exitCode = 1;
+  } finally {
+    if (server) await new Promise(yes => server.close(yes));
+    report.finishedAt = new Date().toISOString();
+    await save(join(out, 'report.json'), report);
+    console.log(`${report.status}: ${report.checks.length} stages, ${report.httpRequests} local HTTP requests, 0 live HTTP requests. ${join(out, 'report.json')}`);
+  }
+}
+
+if (process.argv[1] && resolve(process.argv[1]) === FILE) {
+  if (process.argv.includes('--consumer')) await consume(option('--pin'), option('--out'));
+  else if (option('--openapi-out')) await generateOpenApi(option('--openapi-out'));
+  else await main(option('--pin'), resolve(option('--out') ?? '/tmp/zodiacs-mcp-consumer-results'));
+}
