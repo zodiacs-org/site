@@ -1,7 +1,7 @@
 {
   "version": 1,
   "brief": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md (version 2) with the version 1 rules it retains",
-  "asOf": "2026-10-04 checkpoint 14 (source 67aa32d8; engine rc.16's capability gates judged against their own wording, with B2.c; P2.E.returns accepted again on production dpl_Av6FTWYa2iFZzT2WZuWeCsRDg2oV; the co-ascendants and Koch validated, not accepted, pending the owner's ratification of the shared-UT1 reading and window (F-71))",
+  "asOf": "2026-10-05 checkpoint 15 (source af91b52c; MCP adapter 0.1.0-rc.16.1 on production dpl_3qPGVCFQh9Qjt7UCqiT68ZCaa3AZ: A1.e accepted; A6 partial for the static sky API; aspect patterns and composite/Davison accepted on disclosed readings; returns partial; the co-ascendants and Koch still validated pending F-71)",
   "denominator": {
     "unit": "working days, from the brief's effort estimates (README.md)",
     "totalWeight": 182.45,
@@ -936,14 +936,17 @@
       "weight": 1,
       "gate": "fixtures for every pattern definition; exact inclusive orb semantics as documented",
       "dependsOn": [],
-      "status": "partial",
+      "status": "accepted",
       "release": "deployed",
       "evidence": [
         "engine rc.11 (537ecaf4); independent review 2026-09-28: the exact-orb claim fails on general decimal inputs (finding F-06)",
         "engine rc.13 (f05ea02b) and rc.14 (8deda244): orb decisions exact on binary64 inputs; exact rational oracles report 0 mismatches over 50,600 decimal-grid, 1,497 multi-body and 3,640 declination cases, and 53,168 cases in Python fractions on the packed archive (engine docs/evidence/rc13-20260928/)",
-        "docs/platform/evidence/site-engine-rc14/ (site vendors engine rc.14 since #600, merged as 6cc4d477; production dpl_2JtJjuE2bU8CYTBMxKF3kco43qcN)"
+        "docs/platform/evidence/site-engine-rc14/ (site vendors engine rc.14 since #600, merged as 6cc4d477; production dpl_2JtJjuE2bU8CYTBMxKF3kco43qcN)",
+        "docs/platform/evidence/rc16-units-2026-10-04/README.md",
+        "engine 6807f632 src/techniques/aspect-patterns.test.ts: a fixture for each of the four pattern definitions and a removed-edge negative for each (23 tests pass); the rational oracle on the rc.16 archive 43a72d30…15d8: 53,168 cases, 0 mismatches (rc16-units-2026-10-04/results/exact-oracle-rc16.json)",
+        "production dpl_Av6FTWYa2iFZzT2WZuWeCsRDg2oV and later serve the vendored rc.16 archive (checkpoint 14); the site's patterns parity P-D 840/840 and P-C 1000/1000 (site-engine-rc16/techniques-parity.json)"
       ],
-      "notes": "the exact inclusive orb semantics now pass; the gate's fixtures for every aspect-pattern definition wait for the patterns to move into the package (rc.16)"
+      "notes": "the exact inclusive orb semantics now pass; the gate's fixtures for every aspect-pattern definition wait for the patterns to move into the package (rc.16). Checkpoint 15 (2026-10-05): accepted on the reading that \"every pattern definition\" is every pattern the package defines: the grand trine, T-square, grand cross and kite, as Hand defines them. Hand's grand sextile, mystic rectangle, minor grand trine and yod are not defined; on the reading that the gate means every pattern in Hand's chapter it is not met, and the owner can overrule this reading."
     },
     {
       "id": "P2.A.aspects.declination-oob",
@@ -1010,8 +1013,11 @@
       "dependsOn": [],
       "status": "partial",
       "release": "none",
-      "evidence": [],
-      "notes": "site-only implementation (src/lib/engine returns); package has Saturn returns and a longitude-crossing search. Update 2026-10-04 (checkpoint 13; FINDINGS F-69): since engine rc.16 the package has solar and lunar returns (@zodiacs/engine/techniques) and planetary returns (@zodiacs/engine/timing); the site imports the first two (P2.E.returns). This unit's gate is not re-judged here."
+      "evidence": [
+        "docs/platform/evidence/rc16-units-2026-10-04/README.md",
+        "site parity on rc.16: R-SI, R-SY, R-SM and R-LI 400/400, R-SC and R-LC 160/160, R-E 50 of 60 different by design (returns-span) (site-engine-rc16/techniques-parity.json)"
+      ],
+      "notes": "site-only implementation (src/lib/engine returns); package has Saturn returns and a longitude-crossing search. Update 2026-10-04 (checkpoint 13; FINDINGS F-69): since engine rc.16 the package has solar and lunar returns (@zodiacs/engine/techniques) and planetary returns (@zodiacs/engine/timing); the site imports the first two (P2.E.returns). This unit's gate is not re-judged here. Checkpoint 15 (2026-10-05): judged partial. Site parity is met; there are no fixtures from a cited worked example of a solar or lunar return: USNO's season times and Horizons positions are reference values, not worked examples (as checkpoint 14 judged planetary returns)."
     },
     {
       "id": "P2.A.timing.solar-arc",
@@ -1162,10 +1168,14 @@
       "weight": 0.75,
       "gate": "definitions cited; fixtures",
       "dependsOn": [],
-      "status": "partial",
-      "release": "none",
-      "evidence": [],
-      "notes": "composite exists in the site only; no Davison. Update 2026-10-04 (checkpoint 13; FINDINGS F-69): since engine rc.16 the package exports compositeChart and davisonChart (@zodiacs/engine/techniques); the site still casts its own composite (P2.E.composite). This unit's gate is not re-judged here."
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/rc16-units-2026-10-04/README.md",
+        "engine 6807f632 docs/techniques.md, Composite charts and Davison charts (Townley 1973, Hand 1975, Davison 1977, quoted from The Astrology Podcast ep. 128); src/techniques/relationship.test.ts, 11 tests pass; the composite parity C-M 500/500 and C-R 500/500",
+        "compositeChart and davisonChart in @zodiacs/engine/techniques, released in 0.1.1-rc.16; the site vendors the archive and production serves it; the site does not call davisonChart"
+      ],
+      "notes": "composite exists in the site only; no Davison. Update 2026-10-04 (checkpoint 13; FINDINGS F-69): since engine rc.16 the package exports compositeChart and davisonChart (@zodiacs/engine/techniques); the site still casts its own composite (P2.E.composite). This unit's gate is not re-judged here. Checkpoint 15 (2026-10-05): accepted on the reading that \"definitions cited\" means each definition cites the source it was taken from and names its origin. The engine says none of the three books was read and that its Davison place conventions are its own; read as the brief's M5 rule, definitions from the original books with every formula cited, it is not met, and the owner can overrule this reading."
     },
     {
       "id": "P2.A.eclipses",
@@ -1702,7 +1712,7 @@
       "status": "partial",
       "release": "none",
       "evidence": [],
-      "notes": "local stdio MCP adapter 0.1.0-rc.15 (bundling engine rc.15; production serves it since #603) with three tools; no remote server, no registry entry. Update 2026-10-04 (checkpoint 13): the site now serves the stdio adapter archive 0.1.0-rc.16 (sha256 dfc9177e…aeb9, 89,871 bytes, bundling engine rc.16), which /developers/mcp/ installs; still three tools, no remote server and no registry entry."
+      "notes": "local stdio MCP adapter 0.1.0-rc.15 (bundling engine rc.15; production serves it since #603) with three tools; no remote server, no registry entry. Update 2026-10-04 (checkpoint 13): the site now serves the stdio adapter archive 0.1.0-rc.16 (sha256 dfc9177e…aeb9, 89,871 bytes, bundling engine rc.16), which /developers/mcp/ installs; still three tools, no remote server and no registry entry. Update 2026-10-05 (checkpoint 15): the site serves the stdio adapter 0.1.0-rc.16.1 (a44aea72…, 97,630 bytes, same engine rc.16), with output schemas, citations and two resources; still no remote server and no registry entry."
     },
     {
       "id": "P3.7",
@@ -1974,10 +1984,15 @@
       "weight": 0.75,
       "gate": "every tool annotated with an output schema",
       "dependsOn": [],
-      "status": "partial",
-      "release": "none",
-      "evidence": [],
-      "notes": "the three stdio tools carry readOnlyHint/openWorldHint; no output schemas"
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/mcp-adapter/README.md, section \"0.1.0-rc.16.1, 2026-10-04\"",
+        "src/mcp/outputs.ts (an output schema for each tool), src/mcp/create-server.ts (readOnlyHint, destructiveHint, idempotentHint and openWorldHint on each), src/mcp/resources.ts (zodiacs://conventions and zodiacs://methodology); src/mcp/outputs.test.ts holds all 520 charts and 170 comparisons of a seeded corpus to the schemas in zod and as the advertised JSON Schema, through the SDK client",
+        "docs/platform/evidence/mcp-adapter/protocol-drive.json: 95/95 against server.mjs b061f266…, including tools/list output schemas and annotations, resources/list and resources/read",
+        "production dpl_3qPGVCFQh9Qjt7UCqiT68ZCaa3AZ (READY 2026-10-05T00:28:56Z, aliased to zodiacs.org) serves site af91b52c, whose /examples/mcp-server.json names zodiacs-mcp-server-0.1.0-rc.16.1.tgz (97,630 bytes, SHA-256 a44aea72…) pinned to commit fcc41d97, the archive /developers/mcp/ installs"
+      ],
+      "notes": "the three stdio tools carry readOnlyHint/openWorldHint; no output schemas. Checkpoint 15 (2026-10-05): accepted. All three tools of 0.1.0-rc.16.1 declare an output schema beside their annotations, and the two resources give the conventions vocabulary and the methodology. \"Every tool\" is the three tools that exist; A1.a to A1.d's tools carry the same requirement in their own gates. Three reviews of the first build were acted on before release (FINDINGS F-74)."
     },
     {
       "id": "A2",
@@ -2053,8 +2068,12 @@
       "dependsOn": [],
       "status": "partial",
       "release": "none",
-      "evidence": [],
-      "notes": "MCP results carry receipts; no cite object"
+      "evidence": [
+        "src/lib/compute-api/ and tests/api/compute-api.test.ts: every compute API success carries cite {url, receipt, engine, version} (P3.3)",
+        "docs/platform/evidence/mcp-adapter/README.md, section \"0.1.0-rc.16.1, 2026-10-04\": every MCP result other than a refusal carries cite {url, receipt, engine, version}; src/mcp/outputs.test.ts recomputes every digest",
+        "production dpl_3qPGVCFQh9Qjt7UCqiT68ZCaa3AZ (READY 2026-10-05T00:28:56Z, aliased to zodiacs.org) serves site af91b52c"
+      ],
+      "notes": "MCP results carry receipts; no cite object. Checkpoint 15 (2026-10-05): still partial. The compute API and, from 0.1.0-rc.16.1, the MCP adapter cite every result; a refusal carries none, which this record reads as within \"results\" (the brief's A6: \"API and MCP results carry cite\"). The static sky API under /api/v1/ carries source, docs, licence and attribution but no cite, and the brief calls it an API (\"a static sky API\", §1). On the reading that A6's API is the hosted compute API alone the gate is met; the owner can rule on it."
     },
     {
       "id": "A8",

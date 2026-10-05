@@ -1,5 +1,61 @@
 # Programme status
 
+Checkpoint 15, 2026-10-05: the MCP adapter 0.1.0-rc.16.1 and three more of
+engine rc.16's units, judged against main
+`af91b52cfadac174bf1788a5b5335f447eb4cea5` (#643), which production
+`dpl_3qPGVCFQh9Qjt7UCqiT68ZCaa3AZ` serves (READY 2026-10-05T00:28:56Z).
+
+**Overall delivery: 31%** (31.241% to three decimals) — 57 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%. Up 2.5 from checkpoint 14.
+Gates, weights and the denominator are unchanged.
+[Unit record](../evidence/rc16-units-2026-10-04/README.md).
+
+- **Accepted (2.5).**
+  - A1.e (0.75): each of the adapter's three tools declares an output schema
+    beside its annotations, and two resources give the conventions vocabulary
+    and the methodology. Production serves the archive `/developers/mcp/`
+    installs, 97,630 bytes, SHA-256 `a44aea72…`, pinned to commit `fcc41d97`.
+    Three reviews of its first build were acted on before release (F-74).
+  - P2.A.aspects.configurable (1): a fixture for each of the four patterns the
+    package defines, with a negative for each, and the exact inclusive orb
+    semantics against a rational oracle on the released archive, 53,168 cases
+    without a mismatch. Accepted on the reading that "every pattern
+    definition" means every pattern the package defines.
+  - P2.A.composite-davison (0.75): the definitions cite their sources and the
+    fixtures and parity pass. Accepted on the reading that "definitions cited"
+    means each definition cites the source it was taken from; the engine says
+    none of the three books was read.
+- **Partial.**
+  - A6 (0.5): the compute API and, from rc.16.1, the MCP adapter cite every
+    result other than a refusal. The static sky API under `/api/v1/` carries
+    no `cite`. On the reading that A6's API is the hosted compute API alone,
+    the gate is met.
+  - P2.A.timing.returns (1.5): site parity is met; there is no fixture from a
+    cited worked example of a solar or lunar return.
+- **Findings.** F-74 (major, privacy): a chart's citation digest identifies
+  the place as well as the time. Fixed in #643, before the adapter's release
+  and in the compute API's documents. F-75 to F-77 (minor): a capture run one
+  pixel off, two major-aspect patterns listed as minor in the engine's
+  documentation, and a Lighthouse simulation race on `/birth-chart/`.
+- Actual command: `node scripts/programme-ledger.mjs --summary` →
+  `Overall delivery: 31% (57 of 182.45); blocked 2% (3)`.
+- **Owner decisions needed.**
+  - F-71, as in checkpoint 14.
+  - The readings above: aspect patterns and composite and Davison charts are
+    accepted on them, and A6 is left partial on its own; each can be
+    overruled.
+  - F-77: a retake rule like F-51's for the Lighthouse gate, or loading the
+    chart form's scripts after the first paint, which is frontend work.
+- **Next.**
+  - MCP adapter 0.1.0-rc.16.2: `get_positions`, `find_events` and
+    `check_sky_fact`, reviewed twice, with every finding fixed. A1.a and A1.b
+    stay partial when it ships, because the brief also asks for frame and
+    zodiac options, aspects, eclipses and void-of-course periods, and aspect
+    facts. Eclipses and the sidereal zodiac need an engine release.
+  - The sky benchmark v0 (B4.a), which check_sky_fact makes possible.
+
+## Earlier checkpoints
+
 Checkpoint 14, 2026-10-04: engine rc.16's capability gates judged against
 main `67aa32d8b3f112a08aebe5f7b52db9a331ecbaf1` (#639), with two new Swiss
 comparisons, and revised after two independent reviews before merging.
@@ -64,8 +120,6 @@ Gates, weights and the denominator are unchanged.
     Moon's rise and the Sun's set at 34.60° S, decide both units: they need
     engine examination in the next candidate, or a decision on how the gate
     treats USNO's times, which are published to the minute.
-
-## Earlier checkpoints
 
 Checkpoint 13, 2026-10-04: an independent audit of checkpoints 9 to 12, and its
 corrections, against main `9d7dd31daa673fd1a21675ce359f9f4a69eac1cd` (#637).
