@@ -13,21 +13,23 @@
  * engine, by other steps. The scorer reads replies as its header says.
  *
  * v0 was drawn with engine 0.1.1-rc.16 and the ΔT tables of 24 September
- * 2026. With another engine the generator refuses to draw v0 again, and the
- * tests that need v0's own engine (the entries while retrograde and the rules
- * derived again) do not run. check_sky_fact is still held to every answer,
- * since v0's margins keep the answers from turning on the engine's error.
+ * 2026. With another engine the generator refuses to draw or check v0 again,
+ * and the one test that needs v0's own engine, the rules derived again and
+ * held to its instants, does not run. check_sky_fact is still held to every
+ * answer, since v0's margins keep the answers from turning on the engine's
+ * error, and to every entry into a sign while retrograde in the ingress
+ * questions' periods, found again in the installed engine.
  */
 import { createHash } from 'node:crypto';
-import { copyFileSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
+import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import {
-  ANY_OFFSET_DAY, ENGINE_ERROR_ARCSEC, REFERENCE_DATE, SIGNS, datesHolding, drawnWith, factFor, installedEngine, periodReach,
-  redrawRefusal, windowOf, writeOrCheck,
+  ANY_OFFSET_DAY, DRAWN_FILES, ENGINE_ERROR_ARCSEC, REFERENCE_DATE, SIGNS, VERSION, datesHolding, drawnWith, factFor, folderOf,
+  installedEngine, periodReach, redrawRefusal, replyDifferences, windowOf, writeOrCheck,
 } from '../../scripts/build-sky-benchmark.mjs';
 import {
   INSTRUCTIONS as SCORER_INSTRUCTIONS, SIGNS as SIGN_NAMES, readReply, scoreReply, scoreRun,
@@ -60,12 +62,48 @@ const wrap180 = (angle: number) => ((((angle + 180) % 360) + 360) % 360) - 180;
 const near = (a: string | number, b: string | number, ms = 2000) => Math.abs((typeof a === 'string' ? Date.parse(a) : a) - (typeof b === 'string' ? Date.parse(b) : b)) <= ms;
 const iso = (ms: number) => new Date(ms).toISOString();
 
+/** The installed engine's longitudes and speeds, scanned here by steps of the test's own, not the generator's. */
+const lon = (body: string, ms: number) => bodyLongitude(body as any, new Date(ms));
+const speed = (body: string, ms: number) => longitudeSpeed(body as any, new Date(ms));
+const narrow = (lo: number, hi: number, holds: (t: number) => boolean) => {
+  while (hi - lo > 500) {
+    const mid = Math.floor((lo + hi) / 2);
+    if (holds(mid)) lo = mid;
+    else hi = mid;
+  }
+  return hi;
+};
+/** Every sign change in [from, to), each narrowed to half a second, and whether the body was moving backward. */
+const changes = (body: string, from: number, to: number, step: number) => {
+  const found: Array<{ at: number; into: string; retrograde: boolean }> = [];
+  for (let t = from; t < to; t += step) {
+    const end = Math.min(t + step, to);
+    const before = signIndex(lon(body, t));
+    const after = signIndex(lon(body, end));
+    if (before === after) continue;
+    const at = narrow(t, end, (u) => signIndex(lon(body, u)) === before);
+    if (at < to) found.push({ at, into: SIGNS[after], retrograde: wrap180(lon(body, end) - lon(body, t)) < 0 });
+  }
+  return found;
+};
+/** Every station in [from, to), each narrowed to half a second. */
+const turns = (body: string, from: number, to: number, step: number) => {
+  const found: Array<{ at: number; type: string }> = [];
+  for (let t = from; t < to; t += step) {
+    const end = Math.min(t + step, to);
+    const before = speed(body, t) < 0;
+    if (before === (speed(body, end) < 0)) continue;
+    found.push({ at: narrow(t, end, (u) => (speed(body, u) < 0) === before), type: before ? 'direct' : 'retrograde' });
+  }
+  return found;
+};
+
 /** The bytes v0 was published with. A change to the generator or the engine that moves them is a new version, not a new v0. */
 const V0_SHA256: Record<string, string> = {
   'items.json': '8521a288178929e18f9598bda34d7c70f975e9b168a4b7107920ee657f6fe532',
   'key.json': '4d1ec5f76cce20830962d9bb0c876ad03fc85a9ace8a24a78f28ff4bd36abcb2',
   'tool-answers.json': '7477701a8aeb90b23fe5102b66696017f02a47c1a7f131a91937c536f8ac092c',
-  'scorer.mjs': '0519b207b36cddc60d511356caa45c6b50f7095261acae55e6636634da6cb9a2',
+  'scorer.mjs': '6d07b3d23098afd3e9b84f148a2e37f9fe9c5a94466430b0d94ff5ed92dc086e',
 };
 
 /** The engine and ΔT tables v0 was drawn with, and whether the installed engine is the same. */
@@ -73,9 +111,10 @@ const drawn = drawnWith(key, tool);
 const sameEngine = redrawRefusal(drawn, await installedEngine()) === null;
 
 describe('the sky-fact benchmark, v0', () => {
-  it('is what the generator writes, from the engine and from check_sky_fact, and with another engine the generator refuses to draw it again', async () => {
-    if (sameEngine) expect(await writeOrCheck({ check: true })).toEqual([]);
-    else await expect(writeOrCheck({ check: true })).rejects.toThrow(/v0 is frozen: raise VERSION/u);
+  it("is what the generator draws, the questions and key byte for byte and check_sky_fact's answers and facts, and with another engine the generator refuses to draw it again", async () => {
+    // Once the generator draws a later version, v0 is held by its pinned bytes alone.
+    if (sameEngine && VERSION === 'v0') expect(await writeOrCheck('v0', { check: true })).toEqual([]);
+    else await expect(writeOrCheck('v0', { check: true })).rejects.toThrow(/v0 is frozen/u);
   }, 300_000);
 
   it('names the engine and the ΔT tables it was drawn with, and the generator draws it only with those', () => {
@@ -90,6 +129,82 @@ describe('the sky-fact benchmark, v0', () => {
       .toMatch(/drawn with @zodiacs\/engine 0\.1\.1-rc\.16 .*installed engine is 0\.1\.1-rc\.17 .*v0 is frozen: raise VERSION/su);
     const refreshed = drawn.deltaT.map((table: any) => ({ ...table, table: '2026-12-31', tableDigest: '0123456789abcdef' }));
     expect(redrawRefusal(drawn, { ...drawn, deltaT: refreshed })).toMatch(/2026-12-31 0123456789abcdef.*v0 is frozen/su);
+    // The same engine and tables, written in another order or with more beside them, are not another engine.
+    const reordered = drawn.deltaT.map((table: any) => Object.fromEntries(Object.entries(table).reverse()));
+    expect(redrawRefusal(drawn, { ...drawn, deltaT: reordered })).toBeNull();
+    expect(redrawRefusal(drawn, { ...drawn, deltaT: drawn.deltaT.map((table: any) => ({ ...table, note: 'added' })) })).toBeNull();
+  });
+
+  it('is never drawn again: not with a file missing, not over the published files, and not once the generator draws another version', async () => {
+    // Every refusal comes before any drawing. The time allowed is for a generator that draws anyway, so that it fails on the assertion.
+    const root = mkdtempSync(join(tmpdir(), 'zodiacs-sky-benchmark-frozen-'));
+    try {
+      const dir = join(root, folderOf('v0'));
+      mkdirSync(dir, { recursive: true });
+      for (const name of DRAWN_FILES) copyFileSync(fileURLToPath(new URL(name, DIR)), join(dir, name));
+      // Over the published files, with or without the engine they name.
+      await expect(writeOrCheck('v0', { root })).rejects.toThrow(sameEngine ? /v0 is published\. v0 is frozen: check it with --check/u : /v0 is frozen: raise VERSION/u);
+      for (const name of DRAWN_FILES) {
+        rmSync(join(dir, name));
+        await expect(writeOrCheck('v0', { root }), name).rejects.toThrow(new RegExp(`${name.replace('.', '\\.')} is missing\\. v0 is frozen: restore it`, 'u'));
+        await expect(writeOrCheck('v0', { check: true, root }), name).rejects.toThrow(/is missing\. v0 is frozen/u);
+        copyFileSync(fileURLToPath(new URL(name, DIR)), join(dir, name));
+      }
+      // A version the generator does not draw: a later one is drawn by raising VERSION, and an earlier one is held by its pins.
+      await expect(writeOrCheck('v1', { check: true, root })).rejects.toThrow(/this generator draws v0, not v1\. Raise VERSION to draw v1\./u);
+      const earlier = join(root, folderOf('v9'));
+      mkdirSync(earlier, { recursive: true });
+      copyFileSync(fileURLToPath(new URL('items.json', DIR)), join(earlier, 'items.json'));
+      await expect(writeOrCheck('v9', { check: true, root })).rejects.toThrow(/this generator draws v0, not v9\. v9 is frozen: its pinned bytes hold it\./u);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  }, 300_000);
+
+  it("holds check_sky_fact's replies to what decides them, and not to the receipts beside them", () => {
+    const copy = () => structuredClone(tool);
+    expect(replyDifferences(tool, copy())).toEqual([]);
+    // Receipts and anything else a reply reports may change.
+    const receipts = copy();
+    for (const entry of receipts.answers) {
+      entry.reply.receipt = { added: true, ...entry.reply.receipt, deltaT: [...entry.reply.receipt.deltaT].reverse() };
+      entry.reply.result.facts.flags = ['added'];
+      entry.reply.cite.url = 'https://zodiacs.org/elsewhere/';
+    }
+    expect(replyDifferences(tool, receipts)).toEqual([]);
+    // An answer, a sign, a station's type, an event lost or found, or an event more than 2 seconds away may not.
+    const changed = (index: number, change: (result: any) => void) => {
+      const next = copy();
+      change(next.answers[index].reply.result);
+      return replyDifferences(tool, next);
+    };
+    const first = (family: string, holds: (result: any) => boolean = () => true) =>
+      tool.answers.findIndex((entry: any, index: number) => items.items[index].family === family && holds(entry.reply.result));
+    const instant = first('sign-at-instant');
+    const changes_ = first('sign-on-date', (result) => result.facts.changes.length > 0);
+    const station = first('retrograde-on-date', (result) => result.facts.stations.length > 0);
+    const ingress = first('ingress-date');
+    const lunation = first('lunation-date');
+    const id = (index: number) => tool.answers[index].id;
+    expect(changed(instant, (result) => { result.answer = 'false'; })).toEqual([`${id(instant)}: the answer or the facts behind it`]);
+    expect(changed(instant, (result) => { result.facts.sign = 'leo'; })).toEqual([`${id(instant)}: the answer or the facts behind it`]);
+    expect(changed(changes_, (result) => { result.facts.changes[0].into = 'leo'; })).toEqual([`${id(changes_)}: the answer or the facts behind it`]);
+    expect(changed(station, (result) => { result.facts.stations[0].type = result.facts.stations[0].type === 'direct' ? 'retrograde' : 'direct'; })).toEqual([`${id(station)}: the answer or the facts behind it`]);
+    expect(changed(ingress, (result) => { result.facts.ingresses = []; })).toEqual([`${id(ingress)}: the answer or the facts behind it`]);
+    expect(changed(lunation, (result) => { result.facts.lunations.push({ ...result.facts.lunations[0] }); })).toEqual([`${id(lunation)}: the answer or the facts behind it`]);
+    const moved = (ms: number) => changed(ingress, (result) => { result.facts.ingresses[0].at = iso(Date.parse(result.facts.ingresses[0].at) + ms); });
+    expect(moved(1_999)).toEqual([]);
+    expect(moved(-1_999)).toEqual([]);
+    expect(moved(2_001)).toEqual([expect.stringMatching(new RegExp(`^${id(ingress)}: ingresses `, 'u'))]);
+    const asked = copy();
+    asked.answers[0].request = { ...asked.answers[0].request, body: 'Moon' };
+    expect(replyDifferences(tool, asked)).toEqual([`${id(0)}: the request`]);
+    const counted = copy();
+    counted.checks.facts += 1;
+    expect(replyDifferences(tool, counted)).toEqual(['the header or the counts of facts']);
+    const fewer = copy();
+    fewer.answers.pop();
+    expect(replyDifferences(tool, fewer)).toEqual(['300 replies published, 299 now']);
   });
 
   it('keeps the bytes it was published with', () => {
@@ -198,27 +313,41 @@ describe('the sky-fact benchmark, v0', () => {
     expect(claims).toBe(1986);
   }, 300_000);
 
-  it.runIf(sameEngine)("check_sky_fact finds every entry into a sign while retrograde in the ingress questions' periods, on every date that holds it", async () => {
-    // These entries are not answers, and no margin keeps them from the edge of a date, so they are asked only of v0's own engine.
+  it("check_sky_fact finds every entry into a sign while retrograde in the ingress questions' periods, on every date that holds it", async () => {
+    // The entries are found again here, in the installed engine, so this runs with any engine; with v0's own they are the key's.
     let entries = 0;
     let dates = 0;
     for (const [index, item] of items.items.entries()) {
       if (item.family !== 'ingress-date') continue;
       const { facts } = key.items[index];
-      for (const other of facts.others.filter((entry: any) => entry.retrograde)) {
-        const at = Date.parse(other.at);
+      const reach = periodReach(Date.parse(`${facts.period.from}T00:00:00Z`), Date.parse(`${facts.period.to}T00:00:00Z`));
+      const found = changes(facts.body, reach.from, reach.to, facts.body === 'Moon' ? 20 * MINUTE : 4 * HOUR).filter(({ retrograde }) => retrograde);
+      if (sameEngine) {
+        const keyed = facts.others.filter((other: any) => other.retrograde);
+        expect(found.map(({ into }) => into), item.id).toEqual(keyed.map((other: any) => other.into));
+        found.forEach(({ at }, n) => expect(near(at, keyed[n].at), item.id).toBe(true));
+      }
+      for (const { at, into } of found) {
         entries += 1;
-        for (const date of datesHolding(at)) {
-          const result = await reply({ kind: 'ingress', body: facts.body, sign: other.into, date });
-          expect(result.answer, `${item.id} ${other.at} ${date}`).toBe('depends');
-          expect(result.facts.ingresses.some((entry: any) => entry.retrograde && near(entry.at, at)), `${item.id} ${other.at}`).toBe(true);
+        // The dates whose window holds the entry a minute either way, so this scan and the tool's search fall on the same side of every edge.
+        const held = datesHolding(at - MINUTE).filter((date) => datesHolding(at + MINUTE).includes(date));
+        if (sameEngine) expect(held, `${item.id} ${iso(at)}`).toEqual(datesHolding(at));
+        for (const date of held) {
+          const result = await reply({ kind: 'ingress', body: facts.body, sign: into, date });
+          expect(result.answer, `${item.id} ${iso(at)} ${date}`).toBe('depends');
+          expect(result.facts.ingresses.some((entry: any) => entry.retrograde && near(entry.at, at)), `${item.id} ${iso(at)} ${date}`).toBe(true);
           dates += 1;
         }
       }
     }
-    // The counts the published replies state, which the page quotes, with the 1,986 answers above: 2,022 facts.
-    expect([entries, dates]).toEqual([tool.checks.retrogradeEntries, tool.checks.retrogradeEntryDates]);
-    expect([entries, dates, tool.checks.facts]).toEqual([18, 36, 2022]);
+    // With v0's engine, the counts the published replies state, which the page quotes, with the 1,986 answers above: 2,022 facts.
+    if (sameEngine) {
+      expect([entries, dates]).toEqual([tool.checks.retrogradeEntries, tool.checks.retrogradeEntryDates]);
+      expect([entries, dates, tool.checks.facts]).toEqual([18, 36, 2022]);
+    } else {
+      expect(entries).toBeGreaterThan(0);
+      expect(dates).toBeGreaterThanOrEqual(entries);
+    }
   }, 300_000);
 
   it('samples the same longitudes and speeds that positions() reports', () => {
@@ -338,8 +467,6 @@ describe('the sky-fact benchmark, v0', () => {
     // The page and the evidence record say 30″. The generator's constant is held to that here, not read from it.
     const PUBLISHED_ERROR_ARCSEC = 30;
     expect(ENGINE_ERROR_ARCSEC).toBe(PUBLISHED_ERROR_ARCSEC);
-    const lon = (body: string, ms: number) => bodyLongitude(body as any, new Date(ms));
-    const speed = (body: string, ms: number) => longitudeSpeed(body as any, new Date(ms));
     const margin = (body: string, at: number) => Math.max(10 * MINUTE, ((PUBLISHED_ERROR_ARCSEC / 3600) / Math.abs(speed(body, at))) * DAY);
     const planet = (body: string) => body !== 'Sun' && body !== 'Moon';
     /** Arcseconds from a longitude to the nearest of `boundaries`, or to the nearest sign boundary. */
@@ -347,36 +474,6 @@ describe('the sky-fact benchmark, v0', () => {
       if (boundaries) return Math.min(...boundaries.map((boundary) => Math.abs(wrap180(l - boundary)))) * 3600;
       const within = ((l % 30) + 30) % 30;
       return Math.min(within, 30 - within) * 3600;
-    };
-    const narrow = (lo: number, hi: number, holds: (t: number) => boolean) => {
-      while (hi - lo > 500) {
-        const mid = Math.floor((lo + hi) / 2);
-        if (holds(mid)) lo = mid;
-        else hi = mid;
-      }
-      return hi;
-    };
-    const changes = (body: string, from: number, to: number, step: number) => {
-      const found: Array<{ at: number; into: string; retrograde: boolean }> = [];
-      for (let t = from; t < to; t += step) {
-        const end = Math.min(t + step, to);
-        const before = signIndex(lon(body, t));
-        const after = signIndex(lon(body, end));
-        if (before === after) continue;
-        const at = narrow(t, end, (u) => signIndex(lon(body, u)) === before);
-        if (at < to) found.push({ at, into: SIGNS[after], retrograde: wrap180(lon(body, end) - lon(body, t)) < 0 });
-      }
-      return found;
-    };
-    const turns = (body: string, from: number, to: number, step: number) => {
-      const found: Array<{ at: number; type: string }> = [];
-      for (let t = from; t < to; t += step) {
-        const end = Math.min(t + step, to);
-        const before = speed(body, t) < 0;
-        if (before === (speed(body, end) < 0)) continue;
-        found.push({ at: narrow(t, end, (u) => (speed(body, u) < 0) === before), type: before ? 'direct' : 'retrograde' });
-      }
-      return found;
     };
     const clearOfEdges = (at: number, ms: number) => {
       const timeOfDay = ((at % DAY) + DAY) % DAY;
@@ -560,6 +657,34 @@ describe("the benchmark's scorer", () => {
       expect(readReply('sign', sign), sign).toEqual({ value: 'Gemini', reading: 'lenient' });
     }
     expect(readReply('sign', 'Mars was at Taurus 12° that morning.')).toEqual({ value: 'Taurus', reading: 'lenient' });
+    // A number after "Gemini" makes it the assistant only as a version: one digit, perhaps a point and one or two more,
+    // then a model's name or the end of a clause. Otherwise "Gemini" is the sign, and a reply naming another sign too names two.
+    const geminiNumbers: Array<[string, string | null]> = [
+      ['Venus moved from Taurus into Gemini 3 days later.', null],
+      ['The Moon was in Gemini 2 hours before it entered Cancer.', null],
+      ['Uranus was in Gemini, 1942 to 1949.', 'Gemini'],
+      ['The Moon was in Gemini at 14:30 UTC, still Gemini 14:30 by the clock.', 'Gemini'],
+      ['Mars was at Gemini 12th degree.', 'Gemini'],
+      ['The Sun was in Gemini 5 June that year.', 'Gemini'],
+      ['Mars was in Gemini 2.5 days before it stationed.', 'Gemini'],
+      ['Gemini 2.5 Flash-Lite says Leo.', 'Leo'],
+      ['I asked Gemini 3. It said the Moon was in Leo.', 'Leo'],
+      ['(Gemini 2.0) The Moon was in Leo.', 'Leo'],
+    ];
+    for (const [text, sign] of geminiNumbers) expect(readReply('sign', text).value, text).toBe(sign);
+    // YES and NO before the marks the header lists; "yes or no" repeats the question and names neither, "yes and no" names both.
+    const standing: Array<[string, string | null]> = [
+      ['No (Mercury was direct all day).', 'NO'],
+      ['No -- it was direct', 'NO'],
+      ['Yes--it was retrograde.', 'YES'],
+      ['No… it was direct.', 'NO'],
+      ["It's not a simple yes/no.", null],
+      ['Is it yes or no? No.', 'NO'],
+      ['You asked for YES or NO: NO', 'NO'],
+      ['Either yes or no.', null],
+      ['No and yes, depending on the zone.', null],
+    ];
+    for (const [text, word] of standing) expect(readReply('yes-no-depends', text, [rd]).value, text).toBe(word);
     expect(readReply('date', 'It happened at 2023-03-07T10:00Z.')).toEqual({ value: '2023-03-07', reading: 'lenient' });
     expect(readReply('date', 'Sept. 7, 2023')).toEqual({ value: '2023-09-07', reading: 'lenient' });
     expect(readReply('date', 'On 7 Sept 2023.')).toEqual({ value: '2023-09-07', reading: 'lenient' });

@@ -125,15 +125,16 @@ const jsonLd = [{
         margin: a body within 1′ of a sign boundary at the instant asked
         about, or the Moon within 30′; an event within 10 minutes of the edge
         of a date, or within the time the body takes to move 30″, more than
-        the engine's largest measured error for any planet; a station within
-        6 hours of one. Where the answer is that a planet stays in one sign,
-        or enters a sign once, a station within 30″ of that sign's boundaries
-        also leaves the question out, as does another entry into the sign, or
-        another lunation of the phase, within those margins outside the
-        period. ΔT is observed to 24 September 2026, predicted to 2 October
-        2027 and extrapolated after that. The engine's estimate of its
-        uncertainty reaches about 12 seconds by 2049, far inside these
-        margins.
+        the engine's largest measured error for any planet; a station within 6
+        hours of one. Where the answer is that a planet stays in one sign on a
+        date, or enters a sign once in a period, a station within 30″ of that
+        sign's boundaries also leaves the question out. So does another entry
+        of the body into the sign within those margins outside the period, for
+        the Sun and the Moon too, and for a lunation, another of the same
+        phase within 10 minutes outside it. ΔT is observed to 24 September
+        2026, predicted to 2 October 2027 and extrapolated after that. The
+        engine's estimate of its uncertainty reaches about 12 seconds by 2049,
+        far inside these margins.
       </p>
     </div>
 
@@ -143,17 +144,18 @@ const jsonLd = [{
         <a href={`${FILES}/scorer.mjs`}>The scorer</a> reads each reply
         strictly and, only when that fails, leniently. Strictly, the reply's
         last line that is not empty, without quotes, backticks or emphasis
-        around it and without full stops or exclamation marks at its end,
-        must be one answer in the asked-for form: a sign's name or symbol,
-        YES, NO or DEPENDS where the question allows them, or a date written
+        around it and without full stops or exclamation marks at its end, must
+        be one answer in the asked-for form: a sign's name or symbol, YES, NO
+        or DEPENDS where the question allows them, or a date written
         YYYY-MM-DD. Failing that, the whole reply, with any copy of the
-        question or its instruction taken out, and with "Gemini" ignored
-        where it names Google's assistant, must name exactly one such answer.
-        A date may then also be written as 7 March 2023, as March 7, 2023 or
-        as 2023/03/07, and YES or NO counts only as a word on its own, so "no
-        idea" and "no-one" are not NO. Letter case never matters, and a reply
-        that neither reading parses counts as wrong, as does a question with
-        no reply.
+        question or its instruction taken out, and with "Gemini" ignored where
+        it names Google's assistant in the forms the scorer lists, must name
+        exactly one such answer. A date may then also be written as 7 March
+        2023, as March 7, 2023 or as 2023/03/07, and YES or NO counts only as
+        a word on its own, so "no idea" and "no-one" are not NO; "yes and no"
+        names both, and "yes or no" neither. Letter case never matters, and a
+        reply that neither reading parses counts as wrong, as does a question
+        with no reply.
       </p>
       <p>
         The strict score is the benchmark's score. The lenient one counts a
@@ -186,17 +188,19 @@ const jsonLd = [{
       <ul>
         <li><a href={`${FILES}/items.json`}>items.json</a>: the questions, word for word, and the form each answer takes.</li>
         <li><a href={`${FILES}/key.json`}>key.json</a>: the engine's answer to each, every answer accepted, and the values that decide it.</li>
-        <li><a href={`${FILES}/tool-answers.json`}>tool-answers.json</a>: what <code>check_sky_fact</code> returns for each question, with its receipt.</li>
+        <li><a href={`${FILES}/tool-answers.json`}>tool-answers.json</a>: what <code>check_sky_fact</code> returned for each question when the version was drawn, with its receipt.</li>
         <li><a href={`${FILES}/scorer.mjs`}>scorer.mjs</a>: the scorer.</li>
       </ul>
       <p>
         <a href={`${SOURCE}/scripts/build-sky-benchmark.mjs`}>The generator</a>{' '}
         draws the questions from fixed rules with a seeded random number
-        generator, so with {key.engine.name} {key.engine.version} it writes the
-        same files on every run, and the site's tests fail if the published
-        files differ from what it writes. No licence has been chosen for these
-        files yet; until one is, they fall under the site's all-rights-reserved
-        notice.
+        generator, so with {key.engine.name} {key.engine.version} it draws the
+        same questions and key on every run. The site's tests fail if they
+        differ from the published files, or if <code>check_sky_fact</code> no
+        longer gives the published replies' answers, or the facts behind them;
+        the receipts beside the replies may change. No licence has been chosen
+        for these files yet; until one is, they fall under the site's
+        all-rights-reserved notice.
       </p>
     </div>
 

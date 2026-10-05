@@ -4,8 +4,8 @@
  * that a calculation answers, the engine's answer to each, and
  * check_sky_fact's own reply to each.
  *
- *   npx vite-node --script scripts/build-sky-benchmark.mjs          write the three files
- *   npx vite-node --script scripts/build-sky-benchmark.mjs --check  fail if any differs from what this writes
+ *   npx vite-node --script scripts/build-sky-benchmark.mjs          write the three files of a version not yet published
+ *   npx vite-node --script scripts/build-sky-benchmark.mjs --check  fail if a published version differs from what this draws
  *
  * It writes, under public/developers/sky-benchmark/<VERSION>/ (v0 so far):
  *   items.json         the questions, each worded so that a reply can be scored
@@ -35,10 +35,15 @@
  * margins.
  *
  * A version is frozen once published: tests/benchmarks/sky-benchmark.test.ts
- * pins the bytes of its files, and this refuses to draw a published version
- * again with an engine or ΔT tables other than those its files name. A change
- * in the engine or in these rules is a new version in a new folder (raise
- * VERSION), and v0 stays as it is.
+ * pins the bytes of its files, this writes only a version whose folder is
+ * empty, and it refuses to check a published version with an engine or ΔT
+ * tables other than those its files name, or with one of its files missing.
+ * --check compares the questions and the key byte for byte, and
+ * check_sky_fact's replies by what decides them: the request, the answer and
+ * the facts behind it, each event within 2 seconds. The receipts beside the
+ * replies say how each was made when the version was drawn, and may differ
+ * from today's. A change in the engine or in these rules is a new version in
+ * a new folder (raise VERSION), and v0 stays as it is.
  */
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
@@ -49,7 +54,11 @@ import { bodyLongitude, longitudeSpeed } from '@zodiacs/engine/internal';
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 export const NAME = 'Zodiacs sky-fact benchmark';
 export const VERSION = 'v0';
-export const OUT_DIR = `public/developers/sky-benchmark/${VERSION}`;
+/** Where a version's files are published. */
+export const folderOf = (version) => `public/developers/sky-benchmark/${version}`;
+export const OUT_DIR = folderOf(VERSION);
+/** The files the generator writes; scorer.mjs is written by hand. */
+export const DRAWN_FILES = Object.freeze(['items.json', 'key.json', 'tool-answers.json']);
 /** The day the questions were fixed; it decides only whether a question says "was" or "will be". */
 export const REFERENCE_DATE = '2026-10-05';
 export const SEED = 20261005;
@@ -607,16 +616,20 @@ export function drawnWith(key, tool) {
   return { engine: key.engine.version, deltaT: tool.answers[0].reply.receipt.deltaT };
 }
 
+/** The ΔT tables as the refusal names them: model, table and digest of each, in order. */
+const tablesOf = (deltaT) => deltaT.map(({ model, table, tableDigest }) => `${model} ${table} ${tableDigest}`).join(', ');
+
 /**
  * Why the installed engine may not draw a published version again, or null
  * when it may. A version is frozen once published: another engine or ΔT
- * table could move its answers, so it draws the next version in its own folder.
+ * table could move its answers, so it draws the next version in its own
+ * folder. Only what the refusal names is compared, so the way a receipt
+ * writes the same engine and tables does not count as another engine.
  */
-export function redrawRefusal(published, installed) {
-  if (JSON.stringify(published) === JSON.stringify(installed)) return null;
-  const tables = (deltaT) => deltaT.map(({ model, table, tableDigest }) => `${model} ${table} ${tableDigest}`).join(', ');
-  return `build-sky-benchmark: ${VERSION} was drawn with @zodiacs/engine ${published.engine} (ΔT ${tables(published.deltaT)}), `
-    + `and the installed engine is ${installed.engine} (ΔT ${tables(installed.deltaT)}). ${VERSION} is frozen: raise VERSION to draw the next version in its own folder.`;
+export function redrawRefusal(published, installed, version = VERSION) {
+  if (published.engine === installed.engine && tablesOf(published.deltaT) === tablesOf(installed.deltaT)) return null;
+  return `build-sky-benchmark: ${version} was drawn with @zodiacs/engine ${published.engine} (ΔT ${tablesOf(published.deltaT)}), `
+    + `and the installed engine is ${installed.engine} (ΔT ${tablesOf(installed.deltaT)}). ${version} is frozen: raise VERSION to draw the next version in its own folder.`;
 }
 
 export async function installedEngine() {
@@ -624,11 +637,88 @@ export async function installedEngine() {
   return { engine: ENGINE_VERSION, deltaT: engineStatements().deltaT };
 }
 
-export async function writeOrCheck({ check = false } = {}) {
-  const published = await Promise.all(['key.json', 'tool-answers.json'].map((name) => readFile(resolve(ROOT, OUT_DIR, name), 'utf8').then(JSON.parse, () => null)));
-  if (published.every(Boolean)) {
-    const refusal = redrawRefusal(drawnWith(...published), await installedEngine());
+/** How far apart the same event may be in two replies, in milliseconds. */
+const EVENT_TOLERANCE_MS = 2_000;
+
+/** The part of a reply that decides its answer: the question as read, the answer, and the facts behind it. */
+function decisive(result) {
+  const { answer, basis, fact, instant, window, zone, facts } = result;
+  return {
+    answer, basis, fact, instant, window, zone,
+    sign: facts.sign,
+    retrograde: facts.retrograde,
+    atStart: facts.atStart && { sign: facts.atStart.sign, retrograde: facts.atStart.retrograde },
+    changes: facts.changes?.map(({ at, into, retrograde }) => ({ at, into, retrograde })),
+    stations: facts.stations?.map(({ at, type }) => ({ at, type })),
+    ingresses: facts.ingresses?.map(({ at, retrograde }) => ({ at, retrograde })),
+    lunations: facts.lunations?.map(({ at, sign }) => ({ at, sign })),
+  };
+}
+
+const EVENT_LISTS = Object.freeze(['changes', 'stations', 'ingresses', 'lunations']);
+
+/**
+ * Where check_sky_fact's replies now differ from a version's published ones,
+ * in what the benchmark rests on: each request, its answer, and the facts
+ * that decide it, with every event within 2 seconds of where it was. The
+ * receipts, and anything else a reply reports, may differ: the published
+ * replies are what the tool returned when the version was drawn.
+ */
+export function replyDifferences(published, current) {
+  const differences = [];
+  const { answers: before, ...headBefore } = published;
+  const { answers: after, ...headAfter } = current;
+  if (JSON.stringify(headBefore) !== JSON.stringify(headAfter)) differences.push('the header or the counts of facts');
+  if (before.length !== after.length) return [...differences, `${before.length} replies published, ${after.length} now`];
+  before.forEach((was, index) => {
+    const now = after[index];
+    if (now.id !== was.id || JSON.stringify(now.request) !== JSON.stringify(was.request)) {
+      differences.push(`${was.id}: the request`);
+      return;
+    }
+    const a = decisive(was.reply.result);
+    const b = decisive(now.reply.result);
+    const withoutInstants = (value) => JSON.stringify(value, (name, inner) => (name === 'at' ? undefined : inner));
+    if (withoutInstants(a) !== withoutInstants(b)) {
+      differences.push(`${was.id}: the answer or the facts behind it`);
+      return;
+    }
+    for (const list of EVENT_LISTS) {
+      (a[list] ?? []).forEach((event, n) => {
+        if (Math.abs(Date.parse(event.at) - Date.parse(b[list][n].at)) > EVENT_TOLERANCE_MS) {
+          differences.push(`${was.id}: ${list} ${event.at} is now ${b[list][n].at}`);
+        }
+      });
+    }
+  });
+  return differences;
+}
+
+/**
+ * Writes a version that has not been published, or with `check`, holds a
+ * published one to what this draws now, returning the files that differ.
+ * It draws only VERSION, and refuses rather than redraw a published version:
+ * with one of its files missing, with another engine or ΔT tables, or
+ * without `check`.
+ */
+export async function writeOrCheck(version = VERSION, { check = false, root = ROOT } = {}) {
+  const dir = resolve(root, folderOf(version));
+  const texts = await Promise.all(DRAWN_FILES.map((name) => readFile(resolve(dir, name), 'utf8').catch(() => null)));
+  const published = texts.some((text) => text !== null);
+  if (version !== VERSION) {
+    throw new Error(`build-sky-benchmark: this generator draws ${VERSION}, not ${version}. `
+      + (published ? `${version} is frozen: its pinned bytes hold it.` : `Raise VERSION to draw ${version}.`));
+  }
+  if (published) {
+    const missing = DRAWN_FILES.filter((_, index) => texts[index] === null);
+    if (missing.length > 0) {
+      throw new Error(`build-sky-benchmark: ${version} is published, but ${missing.join(' and ')} ${missing.length > 1 ? 'are' : 'is'} missing. ${version} is frozen: restore ${missing.length > 1 ? 'them' : 'it'} rather than draw ${version} again.`);
+    }
+    const refusal = redrawRefusal(drawnWith(JSON.parse(texts[1]), JSON.parse(texts[2])), await installedEngine(), version);
     if (refusal) throw new Error(refusal);
+    if (!check) {
+      throw new Error(`build-sky-benchmark: ${version} is published. ${version} is frozen: check it with --check, or raise VERSION to draw the next version in its own folder.`);
+    }
   }
   const { checkSkyFact } = await import('../src/mcp/sky-tools.ts');
   const { items, key } = buildBenchmark();
@@ -638,25 +728,25 @@ export async function writeOrCheck({ check = false } = {}) {
     'key.json': serialize(key, 'items'),
     'tool-answers.json': serialize(tool, 'answers'),
   };
-  const stale = [];
-  for (const [name, text] of Object.entries(files)) {
-    const path = resolve(ROOT, OUT_DIR, name);
-    if (check) {
-      const current = await readFile(path, 'utf8').catch(() => null);
-      if (current !== text) stale.push(name);
-    } else {
+  if (!check) {
+    for (const [name, text] of Object.entries(files)) {
+      const path = resolve(dir, name);
       await mkdir(dirname(path), { recursive: true });
       await writeFile(path, text);
     }
+    return [];
   }
+  if (!published) return [...DRAWN_FILES];
+  const stale = ['items.json', 'key.json'].filter((name) => texts[DRAWN_FILES.indexOf(name)] !== files[name]);
+  if (replyDifferences(JSON.parse(texts[2]), tool).length > 0) stale.push('tool-answers.json');
   return stale;
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const check = process.argv.includes('--check');
-  const stale = await writeOrCheck({ check });
+  const stale = await writeOrCheck(VERSION, { check });
   if (check && stale.length > 0) {
-    console.error(`build-sky-benchmark: ${stale.join(', ')} differ from what the generator writes; run it without --check`);
+    console.error(`build-sky-benchmark: ${stale.join(', ')} of ${VERSION} differ from what the generator draws now. ${VERSION} is frozen, so the change belongs in the next version.`);
     process.exit(1);
   }
   console.log(`build-sky-benchmark: ${check ? 'up to date' : `wrote ${OUT_DIR}`}`);

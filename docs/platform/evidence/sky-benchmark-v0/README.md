@@ -8,7 +8,7 @@ published; check_sky_fact agrees with the engine on every item".
 | --- | --- |
 | `public/developers/sky-benchmark/v0/items.json` | the 300 questions, word for word, and the form each answer takes |
 | `public/developers/sky-benchmark/v0/key.json` | the engine's answer to each, every answer accepted, and the values that decide it |
-| `public/developers/sky-benchmark/v0/tool-answers.json` | `check_sky_fact`'s reply to each, unchanged, and the counts of facts and entries the test holds it to |
+| `public/developers/sky-benchmark/v0/tool-answers.json` | `check_sky_fact`'s reply to each when v0 was drawn, unchanged, and the counts of facts and entries the test holds it to |
 | `public/developers/sky-benchmark/v0/scorer.mjs` | the scorer, with no dependencies |
 | `scripts/build-sky-benchmark.mjs` | the generator of the first three |
 | `tests/benchmarks/sky-benchmark.test.ts` | the agreement, the generator and the scorer under test |
@@ -45,25 +45,38 @@ which the owner can rename before assistants are scored on it.
 ## How the questions were drawn
 
 The generator draws every question from fixed rules with a seeded generator
-(mulberry32, seed 20261005, one stream per family), so it writes the same
-three files on every run, and the test fails if the published files differ.
+(mulberry32, seed 20261005, one stream per family), so it draws the same
+questions and key on every run, and the test fails if they differ from the
+published files.
 Version 0 was drawn on 2026-10-05; that date decides only whether a question
 says "was" or "will be". Dates are drawn from 1900-01-01 to 2049-12-31; the
 latest year a question names is 2048.
 
-Version 0 is frozen. The test pins the SHA-256 of its four files, and the
-generator refuses to draw v0 again with an engine or ΔT tables other than
-those its files name: `@zodiacs/engine` 0.1.1-rc.16, with the IERS and model
-ΔT tables of 2026-09-24 (digests `064d98b4a531053a` and `6371988c510a1c6c`).
-A change to the engine or the rules is published as a new version in a new
-folder, and v0 stays as it is. Once the site takes another engine, the drift
-test checks that refusal instead, and the two tests that need v0's own engine
-(the entries while retrograde, and the rules derived again) do not run;
-`check_sky_fact` is still held to all 1,986 facts that are answers, which
-v0's margins keep from turning on the engine's error. That was simulated on
-2026-10-05 in a throwaway copy, with the installed engine named 0.1.1-rc.17
-and then with new ΔT tables: 17 tests passed and those 2 were skipped, both
-times.
+Version 0 is frozen. The test pins the SHA-256 of its four files. The
+generator writes only a version whose folder is empty, and refuses to check a
+published version with one of its files missing, or with an engine or ΔT
+tables other than those its files name: `@zodiacs/engine` 0.1.1-rc.16, with
+the IERS and model ΔT tables of 2026-09-24 (digests `064d98b4a531053a` and
+`6371988c510a1c6c`). It compares only the engine's version and each table's
+model, date and digest, so a receipt that writes the same engine and tables
+another way is not another engine. A change to the engine or the rules is
+published as a new version in a new folder, and v0 stays as it is.
+
+The drift test compares the questions and the key byte for byte.
+`check_sky_fact`'s replies it compares by what decides them: each request,
+its answer, and the facts behind it, with every event within 2 seconds of
+where it was. The receipts beside the replies say how each was made when v0
+was drawn, and may differ from today's without failing it.
+
+Once the site takes another engine, the drift test checks the refusal
+instead, and the one test that needs v0's own engine, the rules derived again
+and held to its instants, does not run. `check_sky_fact` is still held to all
+1,986 facts that are answers, which v0's margins keep from turning on the
+engine's error, and to every entry into a sign while retrograde in the
+ingress questions' periods, which the test finds again in the installed
+engine. That was simulated on 2026-10-05 in a throwaway copy, with the
+installed engine named 0.1.1-rc.17 and then with new ΔT tables: 20 of the 21
+tests passed and the rules test was skipped, both times.
 
 | family | questions | answers |
 | --- | --- | --- |
@@ -101,10 +114,12 @@ is more than the engine's largest measured longitude error for any body from
 by era), and against Horizons at this benchmark's 60 instants, 13.6″. Where the
 answer is that a planet stays in one sign on a date, or enters a sign once in
 a period, a station within 30″ of that sign's boundaries also leaves the
-question out, since the planet could cross there in the real sky; so does
-another entry into the sign, or another lunation of the phase, within those
-margins outside the period. These two rules came from the third review and
-change nothing in v0: no question it holds meets them. The ingress and the
+question out, since the planet could cross there in the real sky. So does
+another entry of the body into the sign within those margins outside the
+period, for the Sun and the Moon as for the planets, and, for a lunation,
+another of the same phase within 10 minutes outside it. These rules came
+from the third review and change nothing in v0: no question it holds meets
+them. The ingress and the
 lunation must also be at least two days from either end of the year or month
 asked about. ΔT is observed to 2026-09-24, predicted to 2027-10-02 and
 extrapolated after that. The engine's 1σ estimate of its uncertainty reaches
@@ -136,7 +151,10 @@ bodies at 1,500 instants from 1900 to 2049.
   protect. The entries while retrograde are not answers, and nothing keeps
   them from the edge of a date: in-025's, Mercury entering Libra at
   2033-11-02T12:08:09Z, is 8 minutes from one, and `check_sky_fact` gives it
-  the engine's dates too.
+  the engine's dates too. The test finds the entries again in the installed
+  engine, by a scan of its own, and with v0's engine holds them to the key's
+  18; so with another engine it still asks about every entry, on the dates
+  that hold it a minute either way.
 
   Its search samples every 5 days, or every day for the Moon, where the key
   samples every 10 minutes to 6 hours. Both read the same engine, so this
@@ -171,25 +189,32 @@ bodies at 1,500 instants from 1900 to 2049.
   dates either side of the accepted ones, score as wrong: 1,800 replies. The
   test also holds the lenient reading against copies of the question, a
   stray "no", "no-one" and "no-brainer", "Gemini" naming Google's assistant
-  but not "Gemini 12°", "yes and no" and dates written out. A question with
-  no reply counts as unparsed, and so as wrong. On 2026-10-05 the scorer as
-  published (SHA-256 `0519b207…`), copied into a folder with `items.json` and
-  `key.json`, scored one file of 268 replies under Node.js 18.20.8 and
-  22.22.2 with byte-identical output and the same warning: 267 replies to
-  questions in eight forms, strict and lenient, with 33 questions left
-  without a reply, and one reply to no question. That is what the page's
-  "Node.js 18 or later" rests on; no test runs Node.js 18.
+  but not "Gemini 12°", "Gemini 3 days later" or "Gemini, 1942 to 1949", YES
+  and NO before brackets, dashes, slashes and ellipses, "yes and no", "yes or
+  no", and dates written out. A question with no reply counts as unparsed,
+  and so as wrong. On 2026-10-05 the scorer as published (SHA-256
+  `6d07b3d2…`), copied into a folder with `items.json` and `key.json`, scored
+  one file of 281 replies under Node.js 18.20.8 and 22.22.2 with
+  byte-identical output and the same warning: 280 replies to questions, in
+  the eight forms of the earlier runs and 13 more that use the rules the
+  fourth review changed, strict and lenient, with 20 questions left without a
+  reply, and one reply to no question. That is what the page's "Node.js 18 or
+  later" rests on; no test runs Node.js 18.
 
 ## Deliberate faults
 
-Each fault below was made in a throwaway copy of commit `21bcfa1f`, with the
-files regenerated where the generator changed, and the benchmark's 19 tests
-were run on 2026-10-05. The tests are named here by their subjects:
+Each fault in the first table was made in a throwaway copy of commit
+`21bcfa1f`, with the files regenerated where the generator changed, and the
+benchmark's 19 tests of that commit were run on 2026-10-05. The second table
+holds the faults run after the fourth review, against its 21 tests. The
+tests are named here by their subjects, as they are now:
 
 | name | test |
 | --- | --- |
-| drift | "is what the generator writes, from the engine and from check_sky_fact, and with another engine the generator refuses to draw it again" |
+| drift | "is what the generator draws, the questions and key byte for byte and check_sky_fact's answers and facts, and with another engine the generator refuses to draw it again" (at `21bcfa1f`, "is what the generator writes, from the engine and from check_sky_fact, and with another engine the generator refuses to draw it again") |
 | engine | "names the engine and the ΔT tables it was drawn with, and the generator draws it only with those" |
+| frozen | "is never drawn again: not with a file missing, not over the published files, and not once the generator draws another version" (since the fourth review) |
+| replies drift | "holds check_sky_fact's replies to what decides them, and not to the receipts beside them" (since the fourth review) |
 | pins | "keeps the bytes it was published with" |
 | questions | "asks 300 distinct questions, 60 of each family, each with a key and a published reply" |
 | replies | "publishes check_sky_fact's own reply to each question, which gives the key's answer and the key's events within 2 seconds" |
@@ -237,12 +262,41 @@ read the same engine; a margin protects against the real sky, which only
 Horizons, asked again, would show.
 
 The two faults in the compute API's search are caught only by the entries
-test, which runs only with the engine v0 was drawn with.
+test. At `21bcfa1f` it ran only with the engine v0 was drawn with; since the
+fourth review it runs with any engine, and the second table shows it
+catching both with a simulated other engine.
+
+After the fourth review, each fault below was made in a throwaway copy of
+the tree with its fixes, and the 21 tests were run on 2026-10-05. "rc.17"
+means `installedEngine()` was made to name 0.1.1-rc.17, as the next engine
+will. The faults in `scorer.mjs` also failed the pins, as any change to its
+bytes does.
+
+| fault | where | caught as a wrong question, answer, fact or rule |
+| --- | --- | --- |
+| the guard comparing the replies' ΔT entries as JSON, as before | generator | engine (the same tables with their fields in another order counted as another engine) |
+| the replies compared with their receipts | generator | replies drift (all 300 replies differed by their receipts alone) |
+| an event allowed to move a minute | generator | replies drift (an ingress moved 2.001 seconds passed) |
+| the generator drawing over the published files | generator | frozen (the draw went ahead) |
+| a missing file ignored | generator | frozen (with `items.json` missing it refused for another reason) |
+| "Gemini" before any number read as the assistant, as before | `scorer.mjs` | scorer ("…from Taurus into Gemini 3 days later" read as Taurus) |
+| YES and NO no longer standing alone before a bracket | `scorer.mjs` | scorer ("No (Mercury was direct all day)." read as nothing) |
+| "yes or no" not taken out | `scorer.mjs` | scorer ("Either yes or no." read as NO) |
+| "yes or no" naming both, as before | `scorer.mjs` | scorer ("Is it yes or no? No." read as nothing) |
+| rc.17, with the compute API's search dropping entries while retrograde | `src/lib/compute-api/endpoints.ts` | entries (in-023 on 1944-12-23) |
+| rc.17, with that search looking for the wrong sign boundary while retrograde | `src/lib/compute-api/endpoints.ts` | entries (in-023 on 1944-12-23) |
+
+With rc.17 and nothing else changed, and again with new ΔT tables, 20 of the
+21 tests passed and the rules test was skipped. The fault that draws over
+the published files first ran against the test's 5-second default, which
+caught it only by timing out; the test now allows the time a generator that
+draws anyway takes, and a second run caught it on the refusal.
 
 ## Corrections made before publication
 
-Three independent reviews read this record before publication: two read
-the first build and a third read the second. What they found is fixed here:
+Four independent reviews read this record before publication: two read
+the first build, a third read the second and a fourth the third. What they
+found is fixed here:
 
 - **The margin for slow planets was 2″.** In the first draw, Neptune's entry
   into Scorpio in 1957 came 5 hours 7 minutes later in the engine than in
@@ -291,6 +345,41 @@ the first build and a third read the second. What they found is fixed here:
   as exact;
   B4.a was said to be recorded as validated before it was; and the Horizons
   tool said UT is UTC from 1972, not 1962.
+- **The guard compared how a receipt is written.** It compared the replies'
+  ΔT entries as JSON, which the site's code writes, so the same engine and
+  tables written in another key order would have refused v0, turned the
+  drift test into a check of that refusal and skipped two tests. It now
+  compares only what its refusal names: the engine's version and each
+  table's model, date and digest.
+- **The entries test ran only with v0's engine.** It is the one check of the
+  search's path for entries while retrograde, so after the next engine a
+  fault there would have passed. It now finds the entries again in the
+  installed engine and asks about each on the dates that hold it a minute
+  either way.
+- **Any change to a receipt would have failed the drift test.** It compared
+  `tool-answers.json` byte for byte, so a field added to the compute API's
+  receipt would have forced a new version though no answer moved. It now
+  compares the replies by what decides them, and the page says the replies
+  are as of drawing.
+- **The scorer gave false credit again.** "Gemini" before any number without
+  a degree mark read as Google's assistant, so "from Taurus into Gemini 3
+  days later" read as Taurus, and "Gemini, 1942 to 1949" as nothing. A
+  version is now one digit, perhaps with a point and one or two more,
+  followed by a model's name or the end of a clause. YES and NO now also
+  stand alone before a bracket, an ellipsis, a slash or a double hyphen, and
+  "yes or no", which only repeats the question, names neither. The scorer's
+  bytes changed, and so did its pin; v0 had not been published.
+- **The generator could draw v0 again.** With `key.json` or
+  `tool-answers.json` missing it skipped its guard, and raising VERSION, as
+  its refusal advises, would have failed the v0 drift test by construction.
+  It now writes only a version whose folder is empty, refuses to check a
+  published version with a file missing, and checks only the version it
+  draws.
+- **Wording.** The lunation's rule sat under "a planet stays in one sign, or
+  enters a sign once", and the rule on another entry covers the Sun and the
+  Moon too; each has its own clause now. The page said "Gemini" is ignored
+  wherever it names the assistant; it is ignored in the forms the scorer
+  lists.
 
 ## Not done, and not claimed
 

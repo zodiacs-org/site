@@ -20,12 +20,25 @@
  *   lenient  failing that, the whole reply, once any copy of the question or
  *            of its instruction is taken out, must name exactly one distinct
  *            answer of the allowed kinds. A sign counts wherever its name or
- *            symbol appears, except "Gemini" naming Google's assistant (I am
- *            Gemini, as Gemini I, Google Gemini, Gemini 2.5, Gemini Pro and
- *            the like; Gemini 12° is the sign). YES and NO count only standing
- *            alone, followed by punctuation or the end of a line, so "no
- *            idea", "no-one" or "there is no station" is not NO, and "yes and
- *            no" names both;
+ *            symbol appears, except "Gemini" naming Google's assistant in
+ *            these forms: "I am Gemini" or "I'm Gemini"; "as Gemini" before
+ *            "I" or ", I"; "Google Gemini" or "Google's Gemini"; "Gemini"
+ *            before Pro, Flash, Ultra, Nano, Advanced, app, apps or model, or
+ *            before "a model", "a language model", "a large model", "a large
+ *            language model" or "an AI", with or without a comma between; and
+ *            "Gemini" before a version number, one digit with or without a
+ *            point and one or two more, that is followed by Pro, Flash, Ultra
+ *            or Nano, or by a comma, full stop, semicolon, exclamation or
+ *            question mark, closing bracket or the end of the reply. So
+ *            "Gemini 2.5 Pro" and "as Gemini 2.5, I" are the assistant, and
+ *            "Gemini 12°", "Gemini 3 days later", "Gemini 14:30" and "Gemini,
+ *            1942 to 1949" are the sign.
+ *            YES and NO count only standing alone: followed, after any
+ *            closing emphasis or quote, by one of . , ! ? ; : ( ) ] … / — –,
+ *            by a hyphen with a space or another hyphen after it, or by the
+ *            end of a line. So "no idea", "no-one" or "there is no station"
+ *            is not NO. "Yes and no" names both, and "yes or no", which only
+ *            repeats the question, names neither.
  *            DEPENDS counts as the word "depends". A date may also be written
  *            as 7 March 2023, 7th of March 2023, March 7, 2023, Mar. 7 2023,
  *            7 Sept 2023 or 2023/03/07, and a YYYY-MM-DD date may run on into
@@ -135,11 +148,15 @@ function withoutEchoes(text, echoes) {
   return out;
 }
 
-/** Google's assistant naming itself, which is not the sign. */
-const ASSISTANT_NAME = /\b(?:i\s+am|i'm|i’m)\s+gemini\b|\bas\s+gemini\b(?=\s*,?\s*i\b)|\bgoogle(?:'s|’s)?\s+gemini\b|\bgemini(?=\s*(?:,\s*)?(?:\d+(?:\.\d+)?(?![\d.]*\s*(?:[°º′']|deg))|pro\b|flash\b|ultra\b|nano\b|advanced\b|app\b|apps\b|model\b|a\s+(?:large\s+)?(?:language\s+)?model\b|an\s+ai\b))/giu;
+/** Google's assistant naming itself, in the forms the header lists, which is not the sign. */
+const ASSISTANT_NAME = /\b(?:i\s+am|i'm|i’m)\s+gemini\b|\bas\s+gemini\b(?=\s*,?\s*i\b)|\bgoogle(?:'s|’s)?\s+gemini\b|\bgemini(?=\s+\d(?:\.\d{1,2})?(?!\.?\d)(?:\s+(?:pro|flash|ultra|nano)\b|\s*(?:[,.;!?)\]]|$))|\s*(?:,\s*)?(?:pro\b|flash\b|ultra\b|nano\b|advanced\b|app\b|apps\b|model\b|a\s+(?:large\s+)?(?:language\s+)?model\b|an\s+ai\b))/giu;
 
-/** YES or NO standing alone: followed, after any closing emphasis or quote, by punctuation or the end of a line; a hyphen counts only with a space after it. */
-const STANDALONE = (word) => new RegExp(`\\b${word}\\b(?=[*_\`"'”’]*\\s*(?:[.,!?;:)\\]—–]|-\\s|$))`, 'imu');
+/** YES or NO standing alone: followed, after any closing emphasis or quote, by one of the marks the header lists or the end of a line; a hyphen counts only with a space or another hyphen after it. */
+const STANDALONE = (word) => new RegExp(`\\b${word}\\b(?=[*_\`"'”’]*\\s*(?:[.,!?;:()\\]…/—–]|-[-\\s]|$))`, 'imu');
+
+/** "Yes or no" only repeats the question, and names neither; "yes and no" names both. */
+const YES_OR_NO = /\b(?:yes\s+or\s+no|no\s+or\s+yes)\b/giu;
+const YES_AND_NO = /\b(?:yes\s+and\s+no|no\s+and\s+yes)\b/iu;
 
 function lenientValue(kind, text, echoes) {
   const spec = KINDS[kind];
@@ -149,11 +166,11 @@ function lenientValue(kind, text, echoes) {
   if (spec.dates) {
     for (const date of datesIn(plain)) found.add(date);
   } else {
+    const unasked = lines.replace(YES_OR_NO, ' ');
     for (const word of spec.words) {
-      if (word === 'DEPENDS' ? /\bdepends\b/iu.test(plain) : STANDALONE(word).test(lines)) found.add(word);
+      if (word === 'DEPENDS' ? /\bdepends\b/iu.test(plain) : STANDALONE(word).test(unasked)) found.add(word);
     }
-    // "Yes and no" or "no or yes" names both.
-    if (spec.words.includes('YES') && /\b(?:yes\s+(?:and|or)\s+no|no\s+(?:and|or)\s+yes)\b/iu.test(plain)) {
+    if (spec.words.includes('YES') && YES_AND_NO.test(collapse(unasked))) {
       found.add('YES');
       found.add('NO');
     }
