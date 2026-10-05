@@ -117,7 +117,7 @@ Main's election-search release `51b64f3c` is integrated in `498b0066`. Both
 branches' privacy assertions are retained and the server bundles are rebuilt.
 The Studio HTML is byte-identical to the frozen HTTPS preview. The combined
 build passes at 4,417 pages, typecheck reports zero errors/warnings, and 6,809
-regression tests plus the two refreshed evidence tests pass (6,811 total; five
+regression tests plus five refreshed evidence tests pass (6,814 total; five
 skipped). All 54 AI tests, official HTTP/stdio clients, recipes and package
 checks pass. Fresh GitHub captures bind the combined source; all 18 pixel hashes
 match the existing screenshots, so only the receipt changes. No candidate

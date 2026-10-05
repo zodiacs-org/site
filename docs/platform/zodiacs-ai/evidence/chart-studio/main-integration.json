@@ -18,8 +18,8 @@
     "passed": 6809,
     "skipped": 5,
     "passingFiles": 524,
-    "phase1EvidencePassed": 2,
-    "totalPassedIncludingPhase1": 6811
+    "phase1EvidencePassed": 5,
+    "totalPassedIncludingPhase1": 6814
   },
   "pluginTests": 54,
   "officialClients": "passed HTTP/stdio, nine developer tools and Studio resource",
