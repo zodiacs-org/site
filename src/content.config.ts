@@ -205,4 +205,25 @@ const almanac = defineCollection({
   }),
 });
 
-export const collections = { guides, pairs, learn, horoscopes, birthdays, almanac };
+/**
+ * Translated Learn-family articles, one folder per language
+ * (learn-i18n/{locale}/rising/{sign}.mdx). English stays in `learn`; this
+ * collection only ever holds translations of entries that exist there.
+ */
+const learnLocalized = defineCollection({
+  loader: glob({ pattern: '**/*.mdx', base: './src/content/learn-i18n' }),
+  schema: z.object({
+    kind: z.literal('rising'),
+    sign: signEnum,
+    locale: z.enum(['es', 'pt', 'fr', 'it']),
+    title: z.string().max(60),
+    description: z.string().max(155),
+    faq: faqSchema.min(3),
+    published: z.coerce.date(),
+    updated: z.coerce.date(),
+    sources: sourcesSchema,
+    draft: z.boolean().default(false),
+  }),
+});
+
+export const collections = { guides, pairs, learn, learnLocalized, horoscopes, birthdays, almanac };

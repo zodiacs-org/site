@@ -1,0 +1,27 @@
+---
+import { getCollection } from 'astro:content';
+import LocalizedRisingPage from '../../../components/learn/LocalizedRisingPage.astro';
+import { SIGNS } from '../../../lib/signs';
+
+export async function getStaticPaths() {
+  const entries = await getCollection(
+    'learnLocalized',
+    (e) => e.data.locale === 'it' && e.data.kind === 'rising' && !e.data.draft,
+  );
+  // One translated profile per sign, filename true to its frontmatter.
+  for (const entry of entries) {
+    if (entry.id !== `it/rising/${entry.data.sign}`) {
+      throw new Error(`Rising file ${entry.id}.mdx declares ${entry.data.locale}/${entry.data.sign}`);
+    }
+  }
+  const seen = new Set(entries.map((entry) => entry.data.sign));
+  for (const sign of SIGNS) {
+    if (!seen.has(sign.slug)) throw new Error(`Missing it rising profile: ${sign.slug}`);
+  }
+  if (entries.length !== 12) throw new Error(`Expected 12 it rising profiles, found ${entries.length}`);
+  return entries.map((entry) => ({ params: { sign: entry.data.sign }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+---
+<LocalizedRisingPage entry={entry} />

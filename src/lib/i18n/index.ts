@@ -151,11 +151,20 @@ function isLocalizedBirthdayPath(path: string): boolean {
   return Boolean(maxDay && birthday[2] === String(day) && day >= 1 && day <= maxDay);
 }
 
+/** Rising-sign profiles are translated in src/content/learn-i18n; Russian links to the English ones. */
+export const RISING_PROFILE_LOCALES = ['en', 'es', 'pt', 'fr', 'it'] as const satisfies readonly Locale[];
+
+function isRisingProfilePath(path: string): boolean {
+  const sign = path.match(/^\/rising-sign\/([a-z]+)\/$/)?.[1];
+  return Boolean(sign && SIGN_SLUGS.includes(sign));
+}
+
 export function availableLocalesForPath(path: string): readonly Locale[] | undefined {
   const canonical = stripLocale(path);
   if (/^\/chart-of-the-day\/\d{4}-\d{2}-\d{2}\/$/.test(canonical)) return CORE_ROUTE_LOCALES;
   return LOCALIZED_PATHS.get(canonical)
     ?? (isLocalizedChineseZodiacPath(canonical) ? PROGRAMMATIC_ROUTE_LOCALES : undefined)
+    ?? (isRisingProfilePath(canonical) ? RISING_PROFILE_LOCALES : undefined)
     ?? (isLocalizedBirthdayPath(canonical) ? [DEFAULT_LOCALE] : undefined);
 }
 
@@ -166,6 +175,7 @@ export function renderableLocalesForPath(path: string): readonly Locale[] | unde
     return [...CORE_ROUTE_LOCALES, ...STAGED_CORE_ROUTE_LOCALES];
   }
   if (DAILY_READING_PATHS.includes(canonical)) return DAILY_READING_ROUTE_LOCALES;
+  if (isRisingProfilePath(canonical)) return RISING_PROFILE_LOCALES;
   return isLocalizedChineseZodiacPath(canonical) || isLocalizedBirthdayPath(canonical)
     ? PROGRAMMATIC_ROUTE_LOCALES
     : undefined;
