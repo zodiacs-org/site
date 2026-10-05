@@ -8,6 +8,7 @@
  * bundle at all.
  */
 import { describe, expect, it } from 'vitest';
+import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { gunzipSync } from 'node:zlib';
@@ -96,6 +97,36 @@ describe('the built server bundle', () => {
       expect(bundle.slice(0, 1200)).toContain(claim);
     }
   });
+});
+
+describe('the install check a downloader runs', () => {
+  /**
+   * `npm run verify` is what the README and the developer page tell a
+   * downloader to run, and they promise it exits 0 on a good install. Nothing
+   * ran it before a release, and an AI review of rc.16.2 found one of its
+   * checks could never pass: it compared two equal answers whose fields were
+   * written in a different order. It runs here against the committed bundle,
+   * with the packages this repository installs.
+   */
+  it('passes every check against the bundle that ships, and there are as many as the documents say', async () => {
+    const run = spawnSync(process.execPath, [resolve(ROOT, 'examples/mcp-server/verify.mjs')], {
+      cwd: resolve(ROOT, 'examples/mcp-server'), encoding: 'utf8', timeout: 120_000,
+    });
+    const output = run.stdout ?? '';
+    const lines = output.split('\n');
+    expect(lines.filter((line) => line.startsWith('FAIL'))).toEqual([]);
+    expect(run.status, run.stderr).toBe(0);
+    expect(output).toContain('zodiacs-mcp-server: install verified.');
+    const checks = lines.filter((line) => line.startsWith('ok   ')).length;
+    const readme = await readFile(resolve(ROOT, 'examples/mcp-server/README.md'), 'utf8');
+    const page = await readFile(resolve(ROOT, 'src/pages/developers/mcp/index.astro'), 'utf8');
+    const words = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven',
+      'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen', 'twenty'];
+    const spelled = checks <= 20 ? words[checks] : `twenty-${words[checks - 20]}`;
+    expect(readme.replace(/\s+/g, ' ').toLowerCase(), 'the README names another number of checks')
+      .toContain(`one line per check, ${spelled} in all`);
+    expect(page.toLowerCase(), 'the developer page names another number of checks').toContain(`${spelled} checks`);
+  }, 150_000);
 });
 
 describe('the recorded evidence', () => {

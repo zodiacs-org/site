@@ -414,3 +414,106 @@ The records, each against this bundle (`server.mjs` SHA-256 `b061f266…`):
 
 `host-interop.md`, the one model-driven run, is from an earlier candidate and
 was not repeated.
+
+## 0.1.0-rc.16.2, 2026-10-05
+
+Appended, like rc.16.1's section. rc.16.1 stays on disk as released, and the
+records its table quotes are at commit `fcc41d97`; the three files now hold
+rc.16.2's. The engine is still 0.1.1-rc.16. What changed:
+
+- **Three tools from the compute API.** `get_positions`, `find_events` and
+  `check_sky_fact` (`src/mcp/sky-tools.ts`) parse their arguments with the
+  hosted compute API's own parsers and calculate with its own functions in
+  `src/lib/compute-api/`, which are now inlined into the bundle. For the same
+  JSON, a call returns the body that POST `/api/v1/positions`, `/events` or
+  `/sky-fact` returns: the same result and the same receipt, and so the same
+  `cite.receipt` digest. Only `cite.url` differs; it names the tool's entry on
+  the developer page. A request the compute API's parser refuses gets its own
+  fixed sentence, after the JSON Pointer of the field it refused; one the
+  tool's input schema refuses first, such as an unknown argument or a value
+  outside a list, gets the MCP SDK's validation message.
+  `src/mcp/sky-tools.test.ts` holds this over a seeded synthetic corpus of 252
+  requests (61 for positions, 25 event windows and 166 sky facts), each run
+  through the tool and through the compute API's own request handler, over 17
+  refused requests, and over 43 more at the two ends of the accepted dates.
+  Every result is checked against the tool's output schema, in zod and as the
+  JSON Schema a host reads, against the compute API's OpenAPI components, and
+  through the SDK's own client.
+- **One difference in what is accepted.** The adapter looks up no time zone,
+  so `check_sky_fact` has no zone argument, and its input schema refuses one
+  before any calculation. A date is read the way the compute API reads a date
+  without a zone: as that day in every UTC offset in use today, −12:00 to
+  +14:00, at once, from 14 hours before its midnight UTC to 36 hours after, and
+  `depends` when the answer turns on the time of day or on the offset. Before
+  1868 some places kept a local time further from UTC than either end (Manila
+  until 1844, Alaska until 1867), so their date is not covered without a zone,
+  here or by the compute API.
+- **The compute API's limits.** Up to 100 instants in a call, a window of at
+  most 92 days, and at most 12,000 search evaluations for an events request
+  and 1,000 for a fact. A search samples every 5 days, or every day for the
+  Moon and for new and full moons, and narrows each crossing it finds to the
+  step divided by 2^24. It can miss a pair of crossings that both fall between
+  two samples, such as a body that crosses a sign boundary and crosses back
+  around a station. The receipt records the step, the evaluations used and
+  the limit, and calls the search tested, not proven complete.
+- **What a citation identifies.** The receipt these three tools cite holds no
+  instant, date or body from the request. Every positions call cites the same
+  receipt, and so does every fact at an instant; a window or a fact on a date
+  differs only in how many evaluations its search made.
+- **The result limit is now nearly reached.** The largest answer the limits
+  allow, 100 instants of all twelve rows in the IERS era, is about 230 KB:
+  228,731 bytes for the instants the test uses, and 231,294 for the largest
+  set a review could find, 88% of the 256 KB limit, which until now was only
+  headroom. The test keeps it under 90%. The reply carries the result again as
+  indented text, about 330 KB more, and the README and the developer page say
+  a host may warn about a reply that size or keep it out of the conversation.
+  `bounded`, which applies the limit, moved from `src/mcp/tools.ts` to
+  `src/mcp/bounds.ts` so the new module can use it without importing the tools
+  module back.
+- **A guard kept honest.** `tests/api/compute-api-privacy.test.ts` keeps every
+  module of the site outside the compute API from importing it, so its request
+  data cannot reach another surface. The adapter is now the one exception,
+  named in the test, which also checks that the adapter does import it and
+  that nothing outside `src/mcp/` imports the adapter.
+
+Two reviews of the first build, one of the code and tests and one of the
+documents and the claims ledger, found:
+
+- **The install check could never pass.** `npm run verify` compared the
+  positions at an instant with the chart's bodies as JSON text, and the two
+  answers write the same values in a different key order, so it failed on
+  every good install. No test ran it. It now compares them by value, and
+  `scripts/mcp-artifact.test.mjs` runs it against the committed bundle, which
+  fails on the first build.
+- **Untested paths.** No request in the corpus reached the ends of the
+  accepted dates, where every fact on a date is flagged
+  `outside-reference-span`, so a schema refusing that flag passed every test;
+  the 43 requests above now cover both ends. A sky tool's calculation that
+  throws, or rejects, for a reason nobody foresaw had no test either, so
+  reporting its message, which may quote an argument, or letting a rejection
+  past the guard passed every test; `src/mcp/create-server.test.ts` now covers
+  both. The sentence about dates was compared only with itself; its numbers
+  are now checked against a reply's window.
+- **Holes in the privacy guard.** The test above skipped `.mdx` files and
+  read only `from` and quoted dynamic imports, so a side-effect import, a
+  template-literal import or an `.mdx` page could import the compute API or
+  the adapter unnoticed. It now reads `.mdx`, `.cjs`, `.mts` and `.cts` files
+  and every import form, and each of the six bypasses fails it.
+- **Sentences that said more than the code.** "The day in every zone" is
+  wrong before 1868, as above, and the compute API's own page said "every UTC
+  offset in use" without "today"; both now say today's offsets. A refusal
+  from the input schema is the SDK's message, not the compute API's. Whether an
+  ingress or a phase falls on a date is never `true` without a zone, and an
+  instant is refused for those two kinds.
+
+The records, each against this bundle (`server.mjs` SHA-256 `7209455d…`):
+
+| record | result |
+| --- | --- |
+| `protocol-drive.json` | 106/106 checks, including each new tool's result and citation against its schema, the zone refusal, and refusals in the compute API's words |
+| `host-drive.json` | 7/7 checks, Claude Code 2.1.289 |
+| `benchmark.json` | 18/18 scenarios, 112/112 assertions |
+| a fresh extraction of the archive | `npm ci` installs 14 packages, and `npm run verify` passes its 21 checks |
+
+`host-interop.md`, the one model-driven run, is from an earlier candidate and
+was not repeated.

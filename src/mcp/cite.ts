@@ -19,6 +19,13 @@
  *   record, so a comparison's citation says how the comparison was made, not
  *   which records it read. The engine's version fixes the conventions it
  *   calculates under, which the `zodiacs://conventions` resource lists.
+ * - `get_positions`, `find_events` and `check_sky_fact`: the hosted compute
+ *   API's receipt for the same calculation, which the reply carries in full:
+ *   the engine, its conventions and coverage, the reference span, the two
+ *   sources of ΔT, and for a search how it searched and how many evaluations
+ *   it made. It holds no instant, date or body from the request, and it is the
+ *   receipt the compute API writes for the same request, so the digest is the
+ *   one the compute API cites.
  *
  * `cite.url` is the tool's entry on the developer page, an anchor that does
  * not move.
@@ -32,8 +39,17 @@ export const DOCS_URL = 'https://zodiacs.org/developers/mcp/';
 
 export const TOOL_NAMES = Object.freeze([
   'get_capabilities', 'calculate_natal_chart', 'compare_calculation_records',
+  'get_positions', 'find_events', 'check_sky_fact',
 ] as const);
 export type ToolName = (typeof TOOL_NAMES)[number];
+
+/** The tools that run a compute API calculation, and the endpoint each one is. */
+export const SKY_TOOLS = Object.freeze({
+  get_positions: 'positions',
+  find_events: 'events',
+  check_sky_fact: 'sky-fact',
+} as const);
+export type SkyToolName = keyof typeof SKY_TOOLS;
 
 export function toolUrl(tool: ToolName): string {
   return `${DOCS_URL}#${tool}`;
@@ -50,7 +66,7 @@ export function citeFor(tool: ToolName, receipt: unknown): Cite {
   return { url: toolUrl(tool), receipt: receiptDigest(receipt), engine: '@zodiacs/engine', version: ENGINE_VERSION };
 }
 
-function adapterReceipt<Tool extends Exclude<ToolName, 'calculate_natal_chart'>>(tool: Tool) {
+function adapterReceipt<Tool extends Exclude<ToolName, 'calculate_natal_chart' | SkyToolName>>(tool: Tool) {
   return {
     schema: ADAPTER_RECEIPT_SCHEMA,
     tool,

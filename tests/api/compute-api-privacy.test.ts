@@ -489,15 +489,29 @@ describe('the site and the compute API', () => {
     const root = new URL('../../', import.meta.url);
     const DOCUMENTS = new Set(['src/pages/developers/compute/index.astro']);
     const IMPORTERS = new Set(['src/pages/developers/compute/index.astro', 'src/lib/sky-api/schemas.ts', 'src/lib/sky-api/text.ts']);
+    // The local MCP adapter bundles the compute API's own parsers and
+    // calculations into examples/mcp-server/server.mjs and runs them on the
+    // user's machine, and its descriptions name the endpoints whose answers it
+    // matches. It is no page, island or script of the site: nothing the site
+    // serves imports it, which the end of this test holds, and its bundle makes
+    // no network request, which scripts/mcp-artifact.test.mjs holds.
+    const ADAPTER = 'src/mcp/';
+    // Every way a module names another: from, a bare side-effect import, a
+    // dynamic import with any quote, and require. An AI review found the first
+    // two forms alone let a side-effect import and a template-literal import
+    // through.
+    const importOf = (target: string) => new RegExp(
+      `(?:\\bfrom\\s*|\\bimport\\s*|\\bimport\\s*\\(\\s*|\\brequire\\s*\\(\\s*)['"\`][^'"\`]*${target}`, 'u');
+    const ADAPTER_IMPORT = importOf('\\/mcp\\/');
     const PATHS = /\/api\/(?:v1\/(?:chart|positions|houses|events|time|sky-fact)\b|compute\b)/u;
-    const IMPORT = /\bfrom\s+['"][^'"]*compute-api\/|\bimport\s*\(\s*['"][^'"]*compute-api\//u;
+    const IMPORT = importOf('compute-api(?:\\/|[\'"\`])');
     const files: string[] = [];
     const walk = (directory: string) => {
       for (const entry of readdirSync(new URL(directory, root), { withFileTypes: true })) {
         const path = `${directory}${entry.name}`;
         if (entry.isDirectory()) {
           if (path !== 'src/lib/compute-api') walk(`${path}/`);
-        } else if (/\.(?:astro|html|js|jsx|mjs|ts|tsx)$/u.test(entry.name)) {
+        } else if (/\.(?:astro|html|mdx|js|jsx|mjs|cjs|ts|tsx|mts|cts)$/u.test(entry.name)) {
           files.push(path);
         }
       }
@@ -506,10 +520,13 @@ describe('the site and the compute API', () => {
     walk('public/');
     expect(files.length).toBeGreaterThan(1000);
     const callers = files.filter((path) => {
+      if (path.startsWith(ADAPTER)) return false;
       const text = readFileSync(new URL(path, root), 'utf8');
       return (PATHS.test(text) && !DOCUMENTS.has(path)) || (IMPORT.test(text) && !IMPORTERS.has(path));
     });
     expect(callers).toEqual([]);
+    expect(files.filter((path) => path.startsWith(ADAPTER) && IMPORT.test(readFileSync(new URL(path, root), 'utf8'))).length).toBeGreaterThan(0);
+    expect(files.filter((path) => !path.startsWith(ADAPTER) && ADAPTER_IMPORT.test(readFileSync(new URL(path, root), 'utf8')))).toEqual([]);
     for (const path of DOCUMENTS) {
       if (files.includes(path)) expect(readFileSync(new URL(path, root), 'utf8')).not.toMatch(/<script\b/u);
     }

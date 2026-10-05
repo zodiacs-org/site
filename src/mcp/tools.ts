@@ -1,6 +1,8 @@
 /**
- * The three operations this adapter offers, as plain functions over validated
- * arguments.
+ * Three of the six operations this adapter offers, as plain functions over
+ * validated arguments: the capabilities reply, a natal chart and a comparison.
+ * The other three, the compute API's positions, events and sky facts, are in
+ * `sky-tools.ts`.
  *
  * Every calculation here is the site's own: `natalChart` and the envelope codec
  * come from the pinned `@zodiacs/engine` candidate, and the comparison is
@@ -23,13 +25,17 @@ import {
 } from '@zodiacs/engine/receipt';
 import { compareEnvelopes, type Difference } from '../lib/compare/diff';
 import { replay } from '../lib/compare/replay';
-import { capabilitiesReceipt, citeFor, comparisonReceipt } from './cite';
+import {
+  BUDGETS, EPOCH, EVENT_BODIES, EVENT_KINDS, PHASE_NAMES, POSITION_BODIES, SKY_FACT_KINDS,
+} from '../lib/compute-api/constants';
+import { SKY_TOOLS, capabilitiesReceipt, citeFor, comparisonReceipt } from './cite';
 import type { CapabilitiesOutput, CompareOutput, NatalRecordOutput, NatalSummaryOutput } from './outputs';
 import { RESOURCES } from './resources';
+import { ANY_ZONE_DAY_TEXT } from './sky-tools';
 import {
   ADAPTER_NAME, ADAPTER_VERSION, COMPARE_OUTPUTS, EPOCH_MAX_UTC, EPOCH_MIN_UTC,
   HOUSE_SYSTEMS, LIMITS, OUTPUTS, REFERENCES, parseCoordinates, parseInstant,
-  polarAngleExclusion, recordTooLarge, resultTooLarge, rowValueIsTheFinding,
+  bounded, polarAngleExclusion, recordTooLarge, rowValueIsTheFinding,
   utcNoonMisused,
 } from './bounds';
 
@@ -43,14 +49,14 @@ export const PRIVACY = Object.freeze({
   output: 'A comparison reports the exact difference between two charts. Anyone holding one of the two can reconstruct the other from it, so that output is safer to pass on than a full record but it is not anonymous.',
   withheld: 'By default a comparison names which fields differ and by how much, and leaves out the values of rows carrying birth details or computed positions — you supplied both records to this call, so repeating their contents back tells you nothing you did not have, while adding a second copy to whatever this result travels through. Ask for output: "full" when you need those values. This shortens what travels onward; it hides nothing from the assistant you are talking to, which already received both records as arguments.',
   claims: 'A version, checksum or source URL inside a supplied record is a claim that record makes about itself. Nothing here authenticates it.',
-  citation: 'A chart\'s cite.receipt is the digest of its calculation receipt, which holds the instant as it was written, offset included, the coordinates and the settings. The digest identifies the birth details from either side: with the date and the place, trying each time of day finds the time; with the instant, which the positions give away, trying places from a list of towns finds the place, even for a chart with no known time, whose summary shows no angle, cusp or coordinate. With timeKnown: false the coordinates change nothing else in the result, so leaving them out keeps them out of the receipt. Quote the digest only where the birth details may be known. A comparison cites the adapter\'s own receipt, which holds nothing from either record.',
+  citation: 'A chart\'s cite.receipt is the digest of its calculation receipt, which holds the instant as it was written, offset included, the coordinates and the settings. The digest identifies the birth details from either side: with the date and the place, trying each time of day finds the time; with the instant, which the positions give away, trying places from a list of towns finds the place, even for a chart with no known time, whose summary shows no angle, cusp or coordinate. With timeKnown: false the coordinates change nothing else in the result, so leaving them out keeps them out of the receipt. Quote the digest only where the birth details may be known. A comparison cites the adapter\'s own receipt, which holds nothing from either record. get_positions, find_events and check_sky_fact cite the compute API\'s receipt for the same calculation, which they carry and which holds no instant, date or body from the request.',
 });
 
 /** What this first integration deliberately does not do. */
 export const UNSUPPORTED = Object.freeze([
-  'Transit, progression, return, eclipse or any other search over a date range.',
+  'Transit, progression, return or eclipse searches. find_events finds sign ingresses, stations and new and full moons in a window of at most 92 days, and nothing else.',
   'Interpretation, horoscope or any generated reading.',
-  'Resolving a place name or timezone: supply an instant with an explicit zone offset.',
+  'Resolving a place name or time zone: supply an instant with an explicit offset. check_sky_fact reads a date without a zone as that day in every UTC offset in use today at once.',
   'Reading or writing files. Records are passed as content; the adapter accepts no path and imports no filesystem module.',
   'Fetching a URL, running a command, importing a named module or installing a package.',
   'Any network listener, remote endpoint or browser-reachable port. The transport is local stdio only.',
@@ -180,6 +186,19 @@ export function describeCapabilities(): ToolOutcome {
         excluded: 'latitude exactly 90 or -90 with timeKnown: true — the engine does not compute angles at the exact poles',
       },
       limits: { ...LIMITS },
+    },
+    sky: {
+      tools: Object.keys(SKY_TOOLS) as Array<keyof typeof SKY_TOOLS>,
+      sameAs: 'POST https://zodiacs.org/api/v1/positions, /events and /sky-fact: the same parser, calculation and receipt, so the same result and cite.receipt for the same request',
+      epoch: { from: EPOCH.from, to: EPOCH.to },
+      positionBodies: [...POSITION_BODIES],
+      eventBodies: [...EVENT_BODIES],
+      eventKinds: [...EVENT_KINDS],
+      factKinds: [...SKY_FACT_KINDS],
+      phases: [...PHASE_NAMES],
+      limits: { ...BUDGETS },
+      search: { window: 'start-exclusive-end-inclusive', completeness: 'tested-not-proven' },
+      dates: ANY_ZONE_DAY_TEXT,
     },
     resources: RESOURCES.map(({ uri, name, mimeType }) => ({ uri, name, mimeType })),
     unsupported: [...UNSUPPORTED],
@@ -337,11 +356,3 @@ function refusalOf(error: unknown): string {
 }
 
 const trimStop = (message: string) => message.replace(/\.+$/, '');
-
-function bounded(value: object): ToolOutcome {
-  const oversized = resultTooLarge(value);
-  if (oversized !== null) {
-    return { ok: false, refusal: `The result is ${oversized} bytes, over the ${LIMITS.resultBytes}-byte limit.` };
-  }
-  return { ok: true, value: value as Record<string, unknown> };
-}

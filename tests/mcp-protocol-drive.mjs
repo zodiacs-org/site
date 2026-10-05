@@ -6,7 +6,7 @@
  *
  * Nothing here is mocked: the drive spawns `examples/mcp-server/server.mjs` as
  * a child process, speaks MCP over its stdio, and reads what comes back. It
- * initializes, lists the tools and their output schemas, calls all three —
+ * initializes, lists the tools and their output schemas, calls all six —
  * the client itself checks every result against the schema the server
  * advertised — checks what each result cites, lists and reads the two
  * resources, drives eighteen malformed or refused requests, checks that a
@@ -196,8 +196,8 @@ try {
   // ---- tools/list ----
   const listed = await client.listTools();
   const names = listed.tools.map((tool) => tool.name).sort();
-  check('lists exactly the three tools', JSON.stringify(names)
-    === JSON.stringify(['calculate_natal_chart', 'compare_calculation_records', 'get_capabilities']), names);
+  check('lists exactly the six tools', JSON.stringify(names)
+    === JSON.stringify(['calculate_natal_chart', 'check_sky_fact', 'compare_calculation_records', 'find_events', 'get_capabilities', 'get_positions']), names);
   check('every tool closes its argument object', listed.tools.every((tool) =>
     tool.inputSchema?.type === 'object' && tool.inputSchema.additionalProperties === false));
   check('every tool is annotated read-only, non-destructive and closed-world', listed.tools.every((tool) =>
@@ -329,6 +329,63 @@ try {
     houses.cite?.url === `${DOCS}#compare_calculation_records` && houses.cite.receipt === digest(houses.receipt)
     && !JSON.stringify(houses.receipt).includes('1990') && !JSON.stringify(houses.receipt).includes('51.5074'),
     houses.receipt);
+
+  // ---- get_positions, find_events and check_sky_fact ----
+  // The compute API's own calculations, run inside the bundle. Each reply is
+  // the compute API's body for the same request and cites the compute receipt
+  // it carries, which holds nothing the request gave.
+  const skyInstant = '2026-10-15T12:00:00Z';
+  const placed = await ok('get_positions', { instants: [LONDON.utc, skyInstant] });
+  check('positions come back for every instant, twelve rows each, with the ΔT the engine used',
+    placed.result?.instants?.length === 2
+    && placed.result.instants.every((row) => row.bodies.length === 12 && typeof row.deltaT?.seconds === 'number'),
+    placed.result?.instants?.map((row) => row.bodies.length));
+  check("the positions at a chart's instant are the chart's bodies",
+    canonical(placed.result.instants[0].bodies) === canonical(chart.bodies));
+  check("positions cite the compute receipt they carry, the compute API's schema and endpoint",
+    placed.schema === 'zodiacs.compute-api.positions.v1' && placed.receipt?.schema === 'zodiacs.compute-receipt.v1'
+    && placed.receipt.endpoint === 'positions' && placed.cite?.url === `${DOCS}#get_positions`
+    && placed.cite.receipt === digest(placed.receipt), placed.cite);
+  const found = await ok('find_events', { from: '2026-02-01T00:00:00Z', to: '2026-04-30T00:00:00Z' });
+  check('events come back in time order, of all three kinds',
+    found.result?.events?.length > 0
+    && found.result.events.every((event, index, list) => index === 0 || list[index - 1].at <= event.at)
+    && ['ingress', 'station', 'lunation'].every((kind) => found.result.events.some((event) => event.kind === kind)),
+    found.result?.events?.length);
+  check('an events reply says its search is tested, not proven complete, and how it searched',
+    found.receipt?.search?.completeness === 'tested-not-proven'
+    && found.receipt.search.window === 'start-exclusive-end-inclusive' && found.receipt.search.samples > 0
+    && found.cite?.url === `${DOCS}#find_events` && found.cite.receipt === digest(found.receipt), found.receipt?.search);
+  const sunSign = placed.result.instants[1].bodies.find((row) => row.body === 'Sun').sign;
+  const atInstant = await ok('check_sky_fact', { kind: 'sign', body: 'Sun', sign: sunSign, instant: skyInstant });
+  const elsewhere = await ok('check_sky_fact', { kind: 'sign', body: 'Sun', sign: sunSign === 'aries' ? 'taurus' : 'aries', instant: skyInstant });
+  check('a fact at an instant is true or false, with the values that decide it',
+    atInstant.result?.answer === 'true' && elsewhere.result?.answer === 'false'
+    && atInstant.result.basis === 'instant' && atInstant.result.facts?.sign === sunSign
+    && typeof atInstant.result.facts.boundaryMarginArcsec === 'number', atInstant.result);
+  const lunation = found.result.events.find((event) => event.kind === 'lunation');
+  const onDate = await ok('check_sky_fact', { kind: 'phase', phase: lunation.type, date: lunation.at.slice(0, 10) });
+  // Two searches over different spans sample from different starts, so each
+  // bisects the crossing to within its one-day step over 2^24 of the truth,
+  // and the two agree to within twice that, about 10 ms.
+  const resolution = (2 * 86_400_000) / 2 ** 24;
+  check('a date without a zone is read in every UTC offset in use today at once, and a lunation on it depends on the offset',
+    onDate.result?.basis === 'any-zone-day' && onDate.result.answer === 'depends' && onDate.result.zone === null
+    && Date.parse(onDate.result.window.to) - Date.parse(onDate.result.window.from) === 50 * 3600 * 1000
+    && onDate.result.facts.lunations.some((row) => Math.abs(Date.parse(row.at) - Date.parse(lunation.at)) <= resolution),
+    { found: lunation.at, onDate: onDate.result?.facts?.lunations });
+  check('a fact cites the compute receipt it carries, which holds no date or instant from the request',
+    onDate.cite?.url === `${DOCS}#check_sky_fact` && onDate.cite.receipt === digest(onDate.receipt)
+    && atInstant.cite.receipt === digest(atInstant.receipt)
+    && ![skyInstant, lunation.at.slice(0, 10)].some((needle) => JSON.stringify([onDate.receipt, atInstant.receipt]).includes(needle)),
+    [onDate.receipt?.search, atInstant.receipt?.endpoint]);
+  const zoned = await attempt('check_sky_fact', { kind: 'phase', phase: 'full', date: '2026-10-07', zone: 'Europe/Paris' });
+  check('a zone is refused, since this server reads none, and names the argument',
+    zoned.layer === 'tool' && /zone/.test(zoned.text), zoned);
+  const backwards = await attempt('find_events', { from: '2026-04-30T00:00:00Z', to: '2026-02-01T00:00:00Z' });
+  check("a refusal from the compute API's parser is its own sentence, with the field it names",
+    backwards.layer === 'tool' && backwards.text === '/to: Must be later than from.', backwards);
+  await recovers("the compute tools' refusals");
 
   // ---- resources ----
   const resources = (await client.listResources()).resources;
