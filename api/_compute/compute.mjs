@@ -77,7 +77,7 @@ var BUDGET_MESSAGES = Object.freeze({
   "events.samples": `The event searches would need more than ${BUDGETS["events.samples"]} evaluations.`,
   "sky-fact.samples": `The fact's searches would need more than ${BUDGETS["sky-fact.samples"]} evaluations.`,
   "elections.windowDays": `An elections window is at most ${BUDGETS["elections.windowDays"]} days long.`,
-  "elections.samples": `The searches would need more than ${BUDGETS["elections.samples"]} evaluations; shorten the window or add a condition that rules out more of it.`
+  "elections.samples": `The searches would need more than ${BUDGETS["elections.samples"]} evaluations; shorten the window or, with an angular condition, add a condition that rules out more of it.`
 });
 var SEARCH_STEP_DAYS = Object.freeze({
   default: 5,
@@ -6026,8 +6026,13 @@ var SampleBudget = class {
     if (remaining < 1) throw budgetExhausted(this.limit);
     return { stepDays, maxSamples: remaining };
   }
+  /**
+   * Adds a finished search's steps, refusing the request if they pass the
+   * allowance: the search was given what was left when it began, and an
+   * election's station search also spends (below) for each new instant it reads.
+   */
   settle(result) {
-    if (result.status === "refused") throw budgetExhausted(this.limit);
+    if (result.status === "refused" || this.used + result.samples > this.max) throw budgetExhausted(this.limit);
     this.used += result.samples;
     return result.crossings;
   }
@@ -6663,9 +6668,17 @@ function conditionEcho(condition) {
       return { kind: condition.kind, body: condition.body, not: condition.not };
   }
 }
+function electionReach(request) {
+  const voidOfCourse = request.conditions.some((condition) => condition.kind === "void-of-course");
+  return {
+    first: new Date(request.from.getTime() - (voidOfCourse ? VOID_REACH_BEFORE_MS : 0)),
+    last: new Date(request.to.getTime() - 1 + (voidOfCourse ? VOID_REACH_AFTER_MS : 0))
+  };
+}
 function computeElections(request) {
   const { windows, samples, maxSamples } = searchElections(request);
-  const flags = outsideReferenceSpan(request.from) || outsideReferenceSpan(new Date(request.to.getTime() - 1)) ? ["outside-reference-span"] : [];
+  const reach = electionReach(request);
+  const flags = outsideReferenceSpan(reach.first) || outsideReferenceSpan(reach.last) ? ["outside-reference-span"] : [];
   return successBody("elections", {
     from: iso(request.from),
     to: iso(request.to),

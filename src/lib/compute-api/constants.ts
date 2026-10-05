@@ -144,7 +144,7 @@ export const BUDGET_MESSAGES: Readonly<Record<BudgetName, string>> = Object.free
   'events.samples': `The event searches would need more than ${BUDGETS['events.samples']} evaluations.`,
   'sky-fact.samples': `The fact's searches would need more than ${BUDGETS['sky-fact.samples']} evaluations.`,
   'elections.windowDays': `An elections window is at most ${BUDGETS['elections.windowDays']} days long.`,
-  'elections.samples': `The searches would need more than ${BUDGETS['elections.samples']} evaluations; shorten the window or add a condition that rules out more of it.`,
+  'elections.samples': `The searches would need more than ${BUDGETS['elections.samples']} evaluations; shorten the window or, with an angular condition, add a condition that rules out more of it.`,
 });
 
 /**
@@ -277,10 +277,11 @@ export const ELECTION_STEPS = Object.freeze({
 
 /**
  * What a full calculation counts for against elections.samples: all the
- * positions at an instant, or a natalChart for a house, each 0.9 to 1.5
- * milliseconds of CPU, against 0.06 to 0.1 milliseconds for a step of a
- * crossing search, which counts once. So the allowance bounds the search's
- * time whatever the conditions ask for (docs/platform/evidence/election-search-v0/).
+ * positions at an instant, or a natalChart for a house, each 0.7 to 1.2
+ * milliseconds of CPU in three runs on one machine, against 0.03 to 0.06
+ * milliseconds for a step of a crossing search, which counts once. So the
+ * allowance bounds the search's time whatever the conditions ask for
+ * (docs/platform/evidence/election-search-v0/unit-cost.txt).
  */
 export const FULL_CALCULATION_COST = 25;
 

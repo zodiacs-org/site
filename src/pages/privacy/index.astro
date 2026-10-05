@@ -450,8 +450,9 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
       <h2 id="compute-api">The compute API</h2>
       <p>
         The <a href="/developers/compute/">compute API</a> is for programs: it
-        computes a chart, positions, houses, events, a local time or a sky
-        fact from what a program sends it. The site's own calculators do not
+        computes a chart, positions, houses, events, a local time, a sky fact
+        or the stretches of time in which chosen conditions hold, from what a
+        program sends it. The site's own calculators do not
         use it. It reads the body of each request, which can hold a birth
         date, time and place, and nothing from the query string. Nothing from
         a request or its result is written to a log, a file or a database, no

@@ -125,8 +125,13 @@ export class SampleBudget {
     return { stepDays, maxSamples: remaining };
   }
 
+  /**
+   * Adds a finished search's steps, refusing the request if they pass the
+   * allowance: the search was given what was left when it began, and an
+   * election's station search also spends (below) for each new instant it reads.
+   */
   settle(result: CrossingSearchResult): LongitudeCrossing[] {
-    if (result.status === 'refused') throw budgetExhausted(this.limit);
+    if (result.status === 'refused' || this.used + result.samples > this.max) throw budgetExhausted(this.limit);
     this.used += result.samples;
     return result.crossings;
   }

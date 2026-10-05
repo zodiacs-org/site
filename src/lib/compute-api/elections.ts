@@ -487,9 +487,19 @@ function conditionEcho(condition: ElectionCondition): Record<string, string | bo
   }
 }
 
+/** The first and last instants a request's searches read: a void condition reads the Moon's sign changes on either side of the window. */
+export function electionReach(request: ElectionsRequest): { first: Date; last: Date } {
+  const voidOfCourse = request.conditions.some((condition) => condition.kind === 'void-of-course');
+  return {
+    first: new Date(request.from.getTime() - (voidOfCourse ? VOID_REACH_BEFORE_MS : 0)),
+    last: new Date(request.to.getTime() - 1 + (voidOfCourse ? VOID_REACH_AFTER_MS : 0)),
+  };
+}
+
 export function computeElections(request: ElectionsRequest) {
   const { windows, samples, maxSamples } = searchElections(request);
-  const flags = outsideReferenceSpan(request.from) || outsideReferenceSpan(new Date(request.to.getTime() - 1))
+  const reach = electionReach(request);
+  const flags = outsideReferenceSpan(reach.first) || outsideReferenceSpan(reach.last)
     ? ['outside-reference-span' as const]
     : [];
   return successBody('elections', {

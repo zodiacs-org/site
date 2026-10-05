@@ -433,11 +433,14 @@ const jsonLd = [
         evaluation. A full calculation, every body's position at an instant or
         a <code>natalChart</code> for a house, counts as{' '}
         {FULL_CALCULATION_COST}: in three runs on one machine, a step took
-        0.03 to 0.07 milliseconds and a full calculation 0.7 to 1.2.
-        Houses cost the most, so with an angular condition about three days of
-        house search fit in one request; other conditions that rule out most
-        of the window leave room for a longer one. The receipt records the
-        steps, the evaluations used and this limit.
+        0.03 to 0.06 milliseconds and a full calculation 0.7 to 1.2.
+        Houses cost the most: one angular condition alone fits a window of
+        about three to four days in Placidus, Koch or Campanus houses, and
+        about two in whole signs, while other conditions that rule out most
+        of the window leave room for a longer one. Every condition but an
+        angular one is searched over the whole window, so a month of void of
+        course alone can pass the limit: March 2138 needs 6,327 evaluations.
+        The receipt records the steps, the evaluations used and this limit.
       </p>
       <p>
         The search has been tested, not proven complete. On 100 random
@@ -485,7 +488,11 @@ const jsonLd = [
         identifies the birth details from either side: with the date and the
         place, trying each minute of the day finds the time, and with the date
         and the time, trying places from a list of towns finds the place.
-        Quote it only where the birth details may be known.
+        Quote it only where the birth details may be known. An elections
+        receipt holds no part of the request, but it counts the evaluations
+        the search made, which depend on the request, its place included, so
+        two requests that differ only in their place can give different
+        digests.
       </p>
     </div>
     <details class="compute-example">
@@ -514,14 +521,16 @@ const jsonLd = [
         one address at its rate limits could cost at most about 8.7 seconds of
         CPU time a minute. Measured again on 2026-10-05, on one machine, the
         same requests add up to about 10.7 seconds with rc.16, the engine the
-        API runs, and to about 7.8 with rc.15. The measurements are
+        API runs, and to about 7.8 with rc.15, in one run of each; two earlier
+        runs on rc.16 that day gave 12.8 and 13.2. The measurements are
         in the site repository, from{' '}
         <a href="https://github.com/zodiacs-org/site/tree/main/docs/platform/evidence/compute-api-2026-09-29">2026-09-29</a>{' '}
         and{' '}
         <a href="https://github.com/zodiacs-org/site/tree/main/docs/platform/evidence/compute-api-2026-10-05">2026-10-05</a>.
         An elections request counts against the same lower limit as an events
-        request, and the costliest elections request took less time than the
-        costliest events request, so it adds nothing to that figure.
+        request, and in each run that timed it the slowest elections request
+        took less time than the slowest events request, so it adds nothing to
+        that figure.
         When the API is switched off, or its rate limit is not in place, every
         endpoint answers 503.
       </p>

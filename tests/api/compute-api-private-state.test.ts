@@ -116,6 +116,11 @@ const inputs = {
   events: { from: utc, to: '2082-03-16T05:29:17Z', bodies: ['Moon', 'Mercury'] },
   time: { local: localChart.local, longitude: localChart.longitude },
   'sky-fact': { kind: 'phase', phase: 'full', date: '1913-07-19', zone: 'Australia/Lord_Howe' },
+  elections: {
+    from: '2026-12-09T00:00:00Z', to: '2026-12-12T00:00:00Z',
+    conditions: [{ kind: 'phase', phase: 'waxing' }, { kind: 'void-of-course', not: true }, { kind: 'retrograde', body: 'Mercury', not: true }, { kind: 'angular', body: 'Jupiter' }],
+    place: { latitude: 51.5072, longitude: -0.1276, houseSystem: 'placidus' },
+  },
 };
 for (const [endpoint, body] of Object.entries(inputs)) {
   const result = await run(handler, endpoint, body);
@@ -143,6 +148,9 @@ for (const [endpoint, body, extra, status] of [
   ['chart', '{', {}, 400],
   ['chart', { ...localChart, longitude: 181 }, {}, 400],
   ['positions', { instants: Array(101).fill(utc) }, {}, 422],
+  // Refused before any house is sampled, and refused after station searches have read positions.
+  ['elections', { from: '2026-12-01T00:00:00Z', to: '2027-01-01T00:00:00Z', conditions: ['Sun', 'Moon', 'Mercury', 'Venus', 'Mars'].map((body) => ({ kind: 'angular', body, not: true })), place: { latitude: 51.5072, longitude: -0.1276 } }, {}, 422],
+  ['elections', { from: '2026-02-18T00:00:00Z', to: '2026-03-21T00:00:00Z', conditions: [{ kind: 'void-of-course' }, { kind: 'retrograde', body: 'Jupiter' }, { kind: 'retrograde', body: 'Mercury' }] }, {}, 422],
 ]) {
   assert.equal((await run(handler, endpoint, body, extra)).status, status);
   allEmpty();

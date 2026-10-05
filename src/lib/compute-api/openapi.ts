@@ -176,7 +176,7 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
     type: 'object',
     additionalProperties: false,
     required: ['kind'],
-    description: 'The Moon void of course: from its last exact Ptolemaic aspect in a sign to the Sun or a planet, Mercury to Pluto, to its entry into the next sign (Lilly, Christian Astrology, 1647, p. 112). With not, the Moon not void.',
+    description: 'The Moon void of course: from its last exact Ptolemaic aspect in a sign to the Sun or a planet, Mercury to Pluto, to its entry into the next sign, the engine\'s own rule, after William Lilly. With not, the Moon not void.',
     properties: { kind: { const: 'void-of-course' }, not: { type: 'boolean', default: false } },
   },
   SignCondition: {
@@ -520,7 +520,7 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
         description: 'Every stretch of the window in which all the conditions hold, in time order, each from its start (included) to its end (excluded), within a second. A window that begins at the request\'s from or ends at its to may run on beyond it.',
         items: object(['from', 'to'], { from: outputInstant, to: outputInstant }),
       },
-      flags: spanFlags,
+      flags: { ...spanFlags, description: 'outside-reference-span when what the search reads reaches past the instant span: the window, and with a void-of-course condition the 4 days before it and the 3 after it, where it finds the Moon\'s sign changes.' },
     },
   },
   EventsResult: {

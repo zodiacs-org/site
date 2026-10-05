@@ -281,11 +281,12 @@ the slowest such request took 359.2 ms of CPU in
 most about 8.7 CPU-seconds a minute on that machine: 10 events requests and
 30 others at the slowest measured (`worst-case.json` shows the arithmetic).
 Measured again on 2026-10-05 (`docs/platform/evidence/compute-api-2026-10-05/`),
-the same arithmetic gives 7.8 CPU-seconds on rc.15 and 10.7 on rc.16, the
-engine the API runs, over the 10 that DECISIONS-2026-09-30 §7 set; finding F-78
-sets out the options for these rules, which are the owner's to change. An
-elections request costs less than the costliest events request, so it does not
-raise the figure.
+the same arithmetic gives 7.8 CPU-seconds on rc.15 and, in three runs, 10.7 to
+13.2 on rc.16, the engine the API runs, over the 10 that DECISIONS-2026-09-30
+§7 set; finding F-78 sets out the options for these rules, with their cost in
+each run, and they are the owner's to change. In each run that timed it, the
+slowest elections request took less time than the slowest events request, so
+the election search does not raise the figure.
 
 The owner first published `zodiacs-compute-api` at 60 requests per 60
 seconds, as this runbook first gave it; at 60, one address could cost about

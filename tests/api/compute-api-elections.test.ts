@@ -301,11 +301,34 @@ describe('the request', () => {
     expect(heavy.status).toBe(422);
     expect(heavy.json).toEqual({ error: {
       code: 'budget-exhausted',
-      message: `The searches would need more than ${BUDGETS['elections.samples']} evaluations; shorten the window or add a condition that rules out more of it.`,
+      message: `The searches would need more than ${BUDGETS['elections.samples']} evaluations; shorten the window or, with an angular condition, add a condition that rules out more of it.`,
       limit: 'elections.samples',
       max: BUDGETS['elections.samples'],
     } });
   }, 120_000);
+});
+
+describe('the allowance', () => {
+  it('refuses a request whose station searches pass the allowance with the positions they read as they step', async () => {
+    // Each search was given the allowance left when it began; this request was answered with 6,040 evaluations of 6,000
+    // before the steps of each search were checked again with the positions it had read.
+    const body = {
+      from: '2026-02-18T00:00:00.000Z', to: '2026-03-21T00:00:00.000Z',
+      conditions: [{ kind: 'void-of-course' }, { kind: 'retrograde', body: 'Jupiter' }, { kind: 'retrograde', body: 'Mercury' }],
+    };
+    expect(searchElections(parseElectionsRequest(body), new Unbounded('elections.samples')).samples).toBeGreaterThan(BUDGETS['elections.samples']);
+    const refused = await run(handler, { endpoint: 'elections', body });
+    expect(refused.status).toBe(422);
+    expect(refused.json.error).toMatchObject({ code: 'budget-exhausted', limit: 'elections.samples', max: BUDGETS['elections.samples'] });
+  }, 60_000);
+
+  it('flags a request whose searches read past the instant span: a void condition reads 4 days before the window and 3 after', () => {
+    const flags = (from: string, to: string, conditions: unknown[]) => (computeElections(request(from, to, conditions)) as any).result.flags;
+    expect(flags('2199-12-25T00:00:00Z', '2199-12-30T00:00:00Z', [{ kind: 'phase', phase: 'waxing' }])).toEqual([]);
+    expect(flags('2199-12-25T00:00:00Z', '2199-12-30T00:00:00Z', [{ kind: 'void-of-course' }])).toEqual(['outside-reference-span']);
+    expect(flags('1800-01-02T00:00:00Z', '1800-01-06T00:00:00Z', [{ kind: 'phase', phase: 'waxing' }])).toEqual([]);
+    expect(flags('1800-01-02T00:00:00Z', '1800-01-06T00:00:00Z', [{ kind: 'void-of-course', not: true }])).toEqual(['outside-reference-span']);
+  }, 60_000);
 });
 
 describe('the response', () => {
