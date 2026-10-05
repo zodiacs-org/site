@@ -1,7 +1,7 @@
 {
   "version": 1,
   "id": "localization-audit-20261005",
-  "baseCommit": "3491e8e97fbf0980d3ffcbf8ba5aa78ade60f555",
+  "baseCommit": "e20d5f4027ff7800a6cf494a3f1702bb142d49f0",
   "protectedPaths": [
     "src/data/es-guides.ts",
     "src/data/fr-guides.ts",
