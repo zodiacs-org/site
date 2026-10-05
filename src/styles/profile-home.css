@@ -598,12 +598,33 @@ a.pf-chart__action { text-decoration: none; }
 .pf-safety__choice { display: flex; gap: 10px; font-size: 13px; align-items: start; padding: 12px 0; }
 .pf-safety__choice input { margin-top: 3px; }
 .pf-safety__message { padding: 8px 0; }
-.pf-photo-button { display: block; border: 0; padding: 0; color: inherit; background: none; border-radius: 50%; cursor: pointer; }
-.pf-photo { width: var(--size, 72px); height: var(--size, 72px); border-radius: 50%; object-fit: cover; display: block; }
-.pf-photo-editor { display: flex; gap: 18px; align-items: start; margin-bottom: 20px; }
-.pf-photo-editor .pf-photo, .pf-photo-editor .initial { flex: 0 0 72px; }
-.pf-photo-editor > div { min-width: 0; }
-.pf-photo-editor input[type=file] { display: block; max-width: 100%; min-height: 44px; font: inherit; font-size: 12px; margin-top: 10px; }
-.pf-photo-editor input::file-selector-button { min-height: 44px; border: 1px solid var(--hair-2); color: var(--text); background: transparent; border-radius: 8px; padding: 8px 12px; margin-right: 10px; cursor: pointer; }
-.pf-photo-button:focus-visible { outline: 2px solid var(--text); outline-offset: 4px; }
-@media (max-width: 420px) { .pf-photo-editor { flex-direction: column; } }
+/* Personal identity and photo editing share one quiet, tactile control. */
+.pf-photo-button, .pf-photo-editor__preview {
+  position: relative; display: block; border: 0; padding: 0; color: var(--text);
+  background: none; border-radius: 50%; cursor: pointer; flex-shrink: 0;
+}
+.pf-photo { width: var(--size, 96px); height: var(--size, 96px); border-radius: 50%; object-fit: cover; display: block; }
+.pf-photo-button__edit {
+  position: absolute; right: -2px; bottom: -2px; display: grid; place-items: center;
+  width: 30px; height: 30px; border: 1px solid var(--hair-2); border-radius: 50%;
+  background: var(--bg, #0b0d11); color: var(--text-2); box-shadow: 0 0 0 3px var(--bg, #0b0d11);
+  transition: color 160ms ease, background-color 160ms ease;
+}
+.pf-photo-editor { display: grid; grid-template-columns: 96px minmax(0,1fr); gap: 24px; align-items: start; }
+.pf-photo-editor__preview { --size: 96px; }
+.pf-photo-editor__body { min-width: 0; }
+.pf-photo-editor__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 16px; margin: 8px 0; }
+.pf-photo-input { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.pf-photo-choose { display: inline-flex; align-items: center; min-height: 44px; padding: 8px 14px; border: 1px solid var(--hair-2); border-radius: var(--r-sm); background: transparent; color: var(--text); font: inherit; font-size: var(--text-sm); cursor: pointer; }
+.pf-photo-editor .field__help { margin: 0; max-width: 52ch; line-height: 1.6; }
+.pf-photo-editor .field__label { margin: 0; }
+.pf-photo-button:focus-visible, .pf-photo-editor__preview:focus-visible, .pf-photo-choose:focus-visible { outline: 2px solid var(--text); outline-offset: 4px; }
+.pf-me__share-action { display: inline-flex; align-items: center; gap: 8px; }
+.pf-me .pf-me__actions { gap: 8px 24px; }
+.pf-me .pf-me__actions > .btn { min-height: 48px; padding: 12px 20px; gap: 20px; border-radius: var(--r-sm); }
+.pf-me .pf-me__panel-actions > .btn { width: auto; min-width: 112px; min-height: 44px; justify-content: center; padding: 10px 20px; border-radius: var(--r-sm); }
+.pf-me .pf-me__today-line { font-size: clamp(23px, 3.3vw, 30px); line-height: 1.35; }
+.pf-me .pf-me__today .mono--label { text-transform: none; letter-spacing: .03em; font-size: 11px; line-height: 1.6; }
+@media (hover: hover) { .pf-photo-button:hover .pf-photo-button__edit, .pf-photo-editor__preview:hover .pf-photo-button__edit, .pf-photo-choose:hover { color: var(--text); background-color: var(--surface-2, #1b1e25); } }
+@media (max-width: 420px) { .pf-photo-editor { grid-template-columns: minmax(0, 1fr); gap: 18px; } }
+@media (prefers-reduced-motion: reduce) { .pf-photo-button__edit { transition: none; } }
