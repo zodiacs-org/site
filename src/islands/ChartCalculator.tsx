@@ -36,7 +36,7 @@ import {
   ALL_ASPECT_TYPES, entityId, parseEntityId,
   type ChartSceneModel, type EntityRef,
 } from '../lib/scene/types';
-import { formatLongitude, signBySlug, signForLongitude, signName } from '../lib/signs';
+import { formatLongitude, signBySlug, signForLongitude, signName, signPrepositional } from '../lib/signs';
 import { signIcon } from '../lib/sign-icon';
 import { bigThree } from '../lib/interpretations';
 import { prepareLocalTime, resolveLocalToUtc } from '../lib/time/localToUtc';
@@ -2269,7 +2269,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
             const ruler = chart.bodies.find((b) => b.body === rulerName);
             return ruler ? (
               <p class="calc__phase mono">
-                {t(locale, 'chartRuler')}{locale === 'fr' ? '\u202f:' : ':'} {planetLabel(locale, rulerName)} <PlanetGlyph body={rulerName} size={13} class="calc__pg" /> {t(locale, 'readIn')} {signName(signForLongitude(ruler.lon), locale)} - {t(locale, 'planetSteering')}
+                {t(locale, 'chartRuler')}{locale === 'fr' ? '\u202f:' : ':'} {planetLabel(locale, rulerName)} <PlanetGlyph body={rulerName} size={13} class="calc__pg" /> {t(locale, 'readIn')} {locale === 'ru' ? signPrepositional(signForLongitude(ruler.lon)) : signName(signForLongitude(ruler.lon), locale)} {locale === 'ru' ? '—' : '-'} {t(locale, 'planetSteering')}
               </p>
             ) : null;
           })()}
@@ -2860,7 +2860,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
 
                 {chart.aspects.length > 0 && (
                   <section class="calc__aspects" aria-labelledby="calc-aspects-title">
-                    <h3 id="calc-aspects-title">{t(locale, 'aspectsFound')} - {locale === 'ru'
+                    <h3 id="calc-aspects-title">{t(locale, 'aspectsFound')} {locale === 'ru' ? '—' : '-'} {locale === 'ru'
                       ? tp('ru', 'aspects', chart.aspects.length, russianCopy!.plurals)
                       : <>{chart.aspects.length} {t(locale, 'found')}</>}</h3>
                     <ul>

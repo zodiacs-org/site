@@ -17,27 +17,27 @@ interface StorageLike {
 
 const COPY = {
   en: {
-    ios: 'To keep your saved charts close, tap Share → Add to Home Screen. Daily notifications on iPhone and iPad work only from the installed site.',
+    ios: 'To keep your saved charts close, tap Share → Add to Home Screen. Sky alerts on iPhone and iPad work only from the installed site.',
     android: 'To keep your saved charts close, tap Menu → Add to Home screen.',
     dismiss: 'Dismiss home-screen hint',
   },
   es: {
-    ios: 'Para tener tus cartas guardadas a mano, toca Compartir → Añadir a pantalla de inicio. Las notificaciones diarias en iPhone y iPad solo funcionan desde el sitio instalado.',
+    ios: 'Para tener tus cartas guardadas a mano, toca Compartir → Añadir a pantalla de inicio. Los avisos del cielo en iPhone y iPad solo funcionan desde el sitio instalado.',
     android: 'Para tener tus cartas guardadas a mano, toca Menú → Añadir a pantalla de inicio.',
     dismiss: 'Descartar indicación de pantalla de inicio',
   },
   pt: {
-    ios: 'Para manter seus mapas salvos por perto, toque em Compartilhar → Adicionar à Tela de Início. As notificações diárias no iPhone e no iPad só funcionam pelo site instalado.',
+    ios: 'Para manter seus mapas salvos por perto, toque em Compartilhar → Adicionar à Tela de Início. Os alertas do céu no iPhone e no iPad só funcionam pelo site instalado.',
     android: 'Para manter seus mapas salvos por perto, toque em Menu → Adicionar à tela inicial.',
     dismiss: 'Dispensar dica da tela inicial',
   },
   fr: {
-    ios: 'Pour garder tes thèmes enregistrés à portée de main, appuie sur Partager → Ajouter à l’écran d’accueil. Sur iPhone et iPad, les notifications quotidiennes fonctionnent uniquement depuis le site installé.',
-    android: 'Pour garder tes thèmes enregistrés à portée de main, appuie sur Menu → Ajouter à l’écran d’accueil.',
+    ios: 'Pour garder tes thèmes enregistrés à portée de main, touche Partager → Sur l’écran d’accueil. Sur iPhone et iPad, les alertes du ciel fonctionnent uniquement depuis le site installé.',
+    android: 'Pour garder tes thèmes enregistrés à portée de main, touche Menu → Ajouter à l’écran d’accueil.',
     dismiss: 'Ignorer l’indication d’ajout à l’écran d’accueil',
   },
   it: {
-    ios: 'Per tenere a portata di mano i temi salvati, tocca Condividi → Aggiungi alla schermata Home. Su iPhone e iPad, le notifiche giornaliere funzionano solo dal sito installato.',
+    ios: 'Per tenere a portata di mano i temi salvati, tocca Condividi → Aggiungi alla schermata Home. Su iPhone e iPad, gli avvisi dal cielo funzionano solo dal sito installato.',
     android: 'Per tenere a portata di mano i temi salvati, tocca Menu → Aggiungi alla schermata Home.',
     dismiss: 'Ignora il suggerimento per la schermata Home',
   },

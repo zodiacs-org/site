@@ -622,8 +622,8 @@ function buildGuide(slug: string, p: Profile): ItalianGuide {
   ];
   return {
     sign: slug,
-    title: `${p.name}: date, personalità, compatibilità e significato`,
-    description: `${p.name} in italiano: date, personalità, amore, compatibilità e significato nel tuo tema natale. ${EDGE_COPY}`,
+    title: `${p.name}: date, personalità e compatibilità`,
+    description: `${p.name}: date, personalità, amore, compatibilità e significato nel tema natale. Vicino a un cambio di segno? Il tema natale fissa il tuo Sole.`,
     intro,
     sections,
     faq,

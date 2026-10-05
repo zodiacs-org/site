@@ -96,6 +96,15 @@ interface Props {
 
 const props = Astro.props;
 const locale = normalizeCatalogLocale(props.locale);
+// The daily-sky feed is English; its link title is localized so feed readers list it in the page's language.
+const FEED_TITLES: Record<typeof locale, { sky: string; horoscopes: string; almanac: string }> = {
+  en: { sky: 'Zodiacs.org — the sky, daily', horoscopes: 'Zodiacs.org daily horoscopes', almanac: 'The Zodiacs.org Almanac' },
+  es: { sky: 'Zodiacs.org — el cielo, cada día (en inglés)', horoscopes: 'Horóscopos diarios de Zodiacs.org (en inglés)', almanac: 'Almanaque de Zodiacs.org (en inglés)' },
+  pt: { sky: 'Zodiacs.org — o céu, todo dia (em inglês)', horoscopes: 'Horóscopos diários do Zodiacs.org (em inglês)', almanac: 'Almanaque do Zodiacs.org (em inglês)' },
+  fr: { sky: 'Zodiacs.org — le ciel, chaque jour (en anglais)', horoscopes: 'Horoscopes quotidiens de Zodiacs.org (en anglais)', almanac: 'Almanach de Zodiacs.org (en anglais)' },
+  it: { sky: 'Zodiacs.org — il cielo, ogni giorno (in inglese)', horoscopes: 'Oroscopi quotidiani di Zodiacs.org (in inglese)', almanac: 'Almanacco di Zodiacs.org (in inglese)' },
+  ru: { sky: 'Zodiacs.org — небо каждый день (по-английски)', horoscopes: 'Ежедневные гороскопы Zodiacs.org (по-английски)', almanac: 'Альманах Zodiacs.org (по-английски)' },
+};
 const clientUi = props.clientUi ? UI[locale] : null;
 const russianRuntime = props.clientUi && locale === 'ru' ? RUSSIAN_RUNTIME : null;
 const plausibleScriptUrl = import.meta.env.PUBLIC_PLAUSIBLE_SCRIPT_URL?.trim();
@@ -259,9 +268,9 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
     <link rel="icon" type="image/png" sizes="96x96" href={BRAND_ICON_PATHS.favicon} />
     <link rel="apple-touch-icon" sizes="180x180" href={BRAND_ICON_PATHS.appleTouch} />
     <link rel="manifest" href="/site.webmanifest" />
-    <link rel="alternate" type="application/rss+xml" title="Zodiacs.org — the sky, daily" href="/feeds/daily-sky.xml" />
-    <link rel="alternate" type="application/rss+xml" title="Zodiacs.org daily horoscopes" href="/feeds/horoscopes.xml" />
-    <link rel="alternate" type="application/rss+xml" title="The Zodiacs.org Almanac" href="/feeds/almanac.xml" />
+    <link rel="alternate" type="application/rss+xml" title={FEED_TITLES[locale].sky} href="/feeds/daily-sky.xml" />
+    <link rel="alternate" type="application/rss+xml" title={FEED_TITLES[locale].horoscopes} href="/feeds/horoscopes.xml" />
+    <link rel="alternate" type="application/rss+xml" title={FEED_TITLES[locale].almanac} href="/feeds/almanac.xml" />
     {props.rssFeed && (
       <link
         rel="alternate"

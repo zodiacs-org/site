@@ -48,7 +48,7 @@ export const GROWTH_UI_ES = {
   emailCaptureUsingSign: 'Usando tu signo solar: {sign}',
   emailCaptureChangeSign: 'Cambiar',
   emailCaptureSubmit: 'Envíame mi semana',
-  emailCaptureSubmitting: 'Uniéndote…',
+  emailCaptureSubmitting: 'Suscribiendo…',
   emailCaptureSuccess: 'Revisa tu email para confirmar la suscripción.',
   emailCaptureErrorTitle: 'Suscripción no disponible',
   emailCaptureError: 'No se pudo iniciar la suscripción. Inténtalo otra vez.',

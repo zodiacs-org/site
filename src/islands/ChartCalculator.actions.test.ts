@@ -40,7 +40,7 @@ describe('Chart result action contract', () => {
       ['Ver em três dimensões', 'Ocultar a terceira dimensão'],
       ['Voir en trois dimensions', 'Masquer la troisième dimension'],
       ['Vedilo in tre dimensioni', 'Nascondi la terza dimensione'],
-      ['See it in three dimensions — пока по-английски', 'Hide the third dimension — пока по-английски'],
+      ['Показать в трёх измерениях — пока по-английски', 'Скрыть третье измерение — пока по-английски'],
     ]);
   });
 
