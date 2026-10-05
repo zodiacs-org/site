@@ -152,15 +152,25 @@ function isLocalizedBirthdayPath(path: string): boolean {
 }
 
 /**
- * Rising-sign profiles and the four sky-calendar hubs are translated for es,
- * pt, fr and it (the same set as PROGRAMMATIC_ROUTE_LOCALES); Russian links to
- * the English pages.
+ * Rising-sign profiles, the four sky-calendar hubs and the 78 compatibility
+ * pairs are translated for es, pt, fr and it (the same set as
+ * PROGRAMMATIC_ROUTE_LOCALES); Russian links to the English pages.
+ *
+ * Answered on the server only: every link to these pages is server-rendered,
+ * and this module's browser copy sits inside route budgets with a few bytes
+ * of headroom. A browser component that links to them must take the
+ * localized href as a prop rather than call localizePath.
  */
 function isTranslatedFamilyPath(path: string): boolean {
+  if (!import.meta.env.SSR) return false;
   const rising = /^\/rising-sign\/([a-z]+)\/$/.exec(path)?.[1];
-  return rising
-    ? SIGN_SLUGS.includes(rising)
-    : /^\/(?:full-moon-calendar|eclipses|mercury-retrograde|retrogrades)\/$/.test(path);
+  if (rising) return SIGN_SLUGS.includes(rising);
+  const pair = /^\/compatibility\/([a-z]+)-([a-z]+)\/$/.exec(path);
+  if (pair) {
+    const first = SIGN_SLUGS.indexOf(pair[1]);
+    return first >= 0 && first <= SIGN_SLUGS.indexOf(pair[2]);
+  }
+  return /^\/(?:full-moon-calendar|eclipses|mercury-retrograde|retrogrades)\/$/.test(path);
 }
 
 export function availableLocalesForPath(path: string): readonly Locale[] | undefined {
@@ -178,12 +188,8 @@ export function renderableLocalesForPath(path: string): readonly Locale[] | unde
     return [...CORE_ROUTE_LOCALES, ...STAGED_CORE_ROUTE_LOCALES];
   }
   if (DAILY_READING_PATHS.includes(canonical)) return DAILY_READING_ROUTE_LOCALES;
-  // The translated families resolve on the server only: every link to them is
-  // server-rendered, and this function's browser copy sits inside route budgets
-  // with a few bytes of headroom. A browser component that links to them must
-  // take the localized href as a prop rather than call localizePath.
   return isLocalizedChineseZodiacPath(canonical) || isLocalizedBirthdayPath(canonical)
-    || (import.meta.env.SSR && isTranslatedFamilyPath(canonical))
+    || isTranslatedFamilyPath(canonical)
     ? PROGRAMMATIC_ROUTE_LOCALES
     : undefined;
 }
