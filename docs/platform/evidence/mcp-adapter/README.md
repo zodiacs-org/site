@@ -350,3 +350,67 @@ that does not exist, and "fourteen" malformed requests where there are eighteen.
   the existing route — issues on this repository — and nothing was sent anywhere.
 - **No authentication of anything.** Not of a record, not of an engine version,
   not of the claim that two records came from independent software.
+
+## 0.1.0-rc.16.1, 2026-10-04
+
+Appended; the sections above describe rc.4 and stay as written. rc.1 to rc.10,
+rc.14, rc.15 and rc.16 stay on disk as released; there were no rc.11 to rc.13
+archives. rc.16.1 bundles the same engine, 0.1.1-rc.16, so
+every position, angle, cusp and comparison is rc.16's. What changed:
+
+- **Output schemas.** Each tool declares one (`src/mcp/outputs.ts`), and the
+  SDK checks every result other than a refusal against it before sending it.
+  The rc.4 limit above, "No `outputSchema` on the tools", is superseded: the
+  programme's brief asks for an output schema on every tool (Track A1). The
+  risk that limit named, a declared shape drifting from the handler, is held
+  by `src/mcp/outputs.test.ts`, which runs every result over a seeded
+  synthetic corpus of 520 requests and 170 comparisons through the schemas,
+  both in zod and as the JSON Schema a host reads, and drives the real
+  registrations through the SDK's own client. The objects are closed, as the
+  advertised schema says. A difference too large for a number, which two
+  records may hold, is sent as `delta: null`, as the text reply always wrote
+  it, rather than failing the schema.
+- **Citations.** Every result other than a refusal carries
+  `cite: { url, receipt, engine, version }`,
+  the compute API's shape and digest (`src/lib/receipt-digest.ts`, moved out of
+  the compute API so both use one function). A chart cites the engine's
+  calculation receipt; the capabilities reply and a comparison cite the
+  adapter's own receipt, `zodiacs.mcp-receipt.v1`, which they carry and which
+  holds nothing from a record. The bundle now imports `createHash` from
+  `node:crypto`, and nothing else from it. A chart's digest identifies the
+  birth details from either side: with the date and the place, trying each
+  time of day finds the time; with the instant, which the positions give away,
+  trying places finds the place, even for a chart with no known time, whose
+  summary shows nothing that depends on the place. The privacy text, the
+  schema a model reads and the tool's description say so, and
+  `src/mcp/outputs.test.ts` holds both directions on synthetic charts.
+- **Resources.** `zodiacs://conventions` and `zodiacs://methodology`
+  (`src/mcp/resources.ts`).
+- **The engine's label.** `get_capabilities` reports the engine as
+  `published` on `npm`; rc.16 said `unpublished-candidate`, carried at 10:38
+  UTC on 2026-10-01, before the engine reached npm: npm's own `time` field
+  for the version reads 2026-10-01T12:02:05.117Z. The committed registry
+  receipt, `docs/platform/evidence/site-engine-rc16/npm-release/verification-receipt.json`
+  (read at 12:12 UTC that day), has 0.1.1-rc.16 under `next` and 0.1.1-rc.15
+  under `latest`. The adapter is still not on npm.
+
+Three reviews of the first build of rc.16.1, of the code and tests, of the
+claims and the privacy text, and of the release packaging, found the
+birthplace direction above, a comparison that a non-finite difference turned
+into an error, overstated sentences in the resources and the documents, and
+gaps in the tests and the artifact checks. All were fixed before this build;
+`node scripts/pack-mcp-server.mjs --check` now also refuses the all-zero
+placeholder commit, so an unpinned archive fails on the pull request rather
+than in the production build.
+
+The records, each against this bundle (`server.mjs` SHA-256 `b061f266…`):
+
+| record | result |
+| --- | --- |
+| `protocol-drive.json` | 95/95 checks, including the output schemas, the citations and the two resources |
+| `host-drive.json` | 7/7 checks, Claude Code 2.1.289 |
+| `benchmark.json` | 18/18 scenarios, 112/112 assertions |
+| a fresh extraction of the archive | `npm ci` installs 14 packages, and `npm run verify` passes its 18 checks |
+
+`host-interop.md`, the one model-driven run, is from an earlier candidate and
+was not repeated.

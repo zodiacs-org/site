@@ -11,9 +11,9 @@
  *
  * `cite.receipt` is a digest of the receipt in the same response, not a second
  * copy: SHA-256 over its RFC 8785 canonical JSON, so any client can recompute
- * it from the response, and an assistant can quote it in one line.
+ * it from the response, and an assistant can quote it in one line. The digest
+ * is `src/lib/receipt-digest.ts`, which the MCP adapter cites with too.
  */
-import { createHash } from 'node:crypto';
 import {
   DELTA_T_MODEL,
   DELTA_T_TABLE,
@@ -30,6 +30,9 @@ import {
   type ComputeEndpoint,
 } from './constants.js';
 import type { TimeResolutionFacts } from './local-time.js';
+import { receiptDigest } from '../receipt-digest.js';
+
+export { canonicalJson, receiptDigest } from '../receipt-digest.js';
 
 /** The backend every response names. */
 export const BACKEND = Object.freeze({
@@ -120,32 +123,6 @@ export function computeReceipt(
     ...(extra.timeResolution ? { timeResolution: extra.timeResolution } : {}),
     ...(extra.search ? { search: extra.search } : {}),
   };
-}
-
-/**
- * RFC 8785 (JSON Canonicalization Scheme) text of a JSON value: object keys
- * sorted by UTF-16 code units, no whitespace, and numbers and strings written
- * as ECMAScript's JSON.stringify writes them, which is what the RFC specifies.
- */
-export function canonicalJson(value: unknown): string {
-  if (value === null || typeof value === 'boolean' || typeof value === 'string') return JSON.stringify(value);
-  if (typeof value === 'number') {
-    if (!Number.isFinite(value)) throw new TypeError('Canonical JSON has no non-finite numbers.');
-    return JSON.stringify(value);
-  }
-  if (Array.isArray(value)) return `[${value.map(canonicalJson).join(',')}]`;
-  if (typeof value === 'object') {
-    const object = value as Record<string, unknown>;
-    const keys = Object.keys(object).sort();
-    return `{${keys.map((key) => `${JSON.stringify(key)}:${canonicalJson(object[key])}`).join(',')}}`;
-  }
-  throw new TypeError('Canonical JSON holds only JSON values.');
-}
-
-/** `sha256:` and the hex digest of the receipt as a client parses it from the response. */
-export function receiptDigest(receipt: unknown): string {
-  const parsed: unknown = JSON.parse(JSON.stringify(receipt));
-  return `sha256:${createHash('sha256').update(canonicalJson(parsed), 'utf8').digest('hex')}`;
 }
 
 export interface Cite {

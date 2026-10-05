@@ -590,6 +590,30 @@ describe('compute API receipts, backend and citation', () => {
     expect(found).toEqual(['14:30']);
   }, 60_000);
 
+  it("identifies the place as well: a chart's date and time give back its place through cite.receipt", async () => {
+    // The same synthetic birth, with its place hidden among 300 synthetic towns
+    // on the same clock: whoever knows the date and the time tries each town.
+    const example = { local: { date: '1990-06-15', time: '14:30', zone: 'Europe/Paris' }, latitude: 48.8566, longitude: 2.3522, houseSystem: 'whole' };
+    const target = (await call('chart', example)).json.cite.receipt;
+    let state = 20261005;
+    const random = () => {
+      state = (state + 0x6d2b79f5) >>> 0;
+      let t = Math.imul(state ^ (state >>> 15), state | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+    const towns = Array.from({ length: 300 }, () => ({
+      latitude: Number((42 + random() * 9).toFixed(4)), longitude: Number((-4 + random() * 12).toFixed(4)),
+    }));
+    towns.splice(171, 0, { latitude: example.latitude, longitude: example.longitude });
+    const found: { latitude: number; longitude: number }[] = [];
+    for (const town of towns) {
+      const { json } = await call('chart', { ...example, ...town });
+      if (json.cite.receipt === target) found.push(town);
+    }
+    expect(found).toEqual([{ latitude: 48.8566, longitude: 2.3522 }]);
+  }, 60_000);
+
   it('writes the same answer for the same request', async () => {
     for (const endpoint of COMPUTE_ENDPOINTS) {
       expect((await call(endpoint, VALID[endpoint])).text).toBe((await call(endpoint, VALID[endpoint])).text);

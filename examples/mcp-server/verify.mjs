@@ -7,7 +7,9 @@
  * It launches ./server.mjs as a real child process, speaks MCP to it with the
  * official client SDK, calls all three tools, checks a handful of values it can
  * verify without a second astrology engine, refuses two bad requests and shows
- * the session still works afterwards. Exit 0 means the install works.
+ * the session still works afterwards. The client checks every result against
+ * the output schema the server declares, so a result that does not match
+ * stops the run. Exit 0 means the install works.
  *
  * Every birth detail below is synthetic: London and Longyearbyen on dates
  * chosen for what they exercise.
@@ -41,14 +43,19 @@ try {
   const info = client.getServerVersion();
   check('the server starts and initializes', info?.name === 'zodiacs-mcp-server', info);
 
-  const tools = (await client.listTools()).tools.map((tool) => tool.name).sort();
+  const listed = (await client.listTools()).tools;
+  const tools = listed.map((tool) => tool.name).sort();
   check('all three tools are listed', tools.join(',')
     === 'calculate_natal_chart,compare_calculation_records,get_capabilities', tools);
+  const resources = (await client.listResources()).resources.map((resource) => resource.uri);
+  check('every tool declares an output schema, and both resources are listed',
+    listed.every((tool) => tool.outputSchema?.type === 'object')
+    && resources.join(',') === 'zodiacs://conventions,zodiacs://methodology', resources);
 
   const capabilities = (await call('get_capabilities', {})).value;
   check('capabilities name the engine and its release status',
     capabilities?.engine?.name === '@zodiacs/engine'
-    && capabilities.engine.releaseStatus === 'unpublished-candidate', capabilities?.engine);
+    && capabilities.engine.releaseStatus === 'published' && capabilities.engine.registry === 'npm', capabilities?.engine);
   check('capabilities state that a local server is not a local assistant',
     /not a local AI experience/.test(capabilities?.privacy?.assistant ?? ''));
 
