@@ -517,3 +517,64 @@ The records, each against this bundle (`server.mjs` SHA-256 `7209455d…`):
 
 `host-interop.md`, the one model-driven run, is from an earlier candidate and
 was not repeated.
+
+## 0.1.0-rc.16.3, 2026-10-05
+
+Appended, like the sections above. rc.16.2 stays on disk as released, and the
+records its table quotes are at commit `3acfae47`; the three files now hold
+rc.16.3's. The engine is still 0.1.1-rc.16. No tool changed. What did:
+
+- **Why there is a new candidate.** The compute API gained
+  `POST /api/v1/elections`. The modules of `src/lib/compute-api/` that this
+  adapter inlines hold the compute API's list of endpoints, its limits and
+  their sentences, its validation sentences and JSON Pointers, its receipt and
+  the allowance its searches share, and each gained the elections endpoint's
+  entries. The function that reads an elections request and the search itself
+  are not in the bundle, since nothing here calls them.
+  `scripts/mcp-artifact.test.mjs` requires the committed `server.mjs` to be
+  what the generator builds from the current source, so the bundle changed,
+  and a changed bundle is a new archive under a new version: rc.16.2's archive
+  keeps its bytes.
+- **What a host sees.** The adapter's version, wherever it is named: the
+  server information a host receives when it connects, the `get_capabilities`
+  reply, the receipt that reply and a comparison carry, and so their
+  `cite.receipt` digests, the methodology resource, and the line the server
+  writes to stderr when it starts. Every tool's arguments, results and
+  receipts are otherwise rc.16.2's. The receipts of `get_positions`,
+  `find_events` and `check_sky_fact` are the compute API's, which do not name
+  the adapter, so they are unchanged.
+- **One reply kept as it was.** `get_capabilities` copied the compute API's
+  whole table of limits into `sky.limits`. With the elections endpoint's two
+  limits in that table, it named limits of an endpoint this adapter has no
+  tool for, and its output schema, which lists the four limits of the three
+  sky tools and allows no others, refused the reply: three tests in
+  `src/mcp/outputs.test.ts`, one in `src/mcp/create-server.test.ts` and the
+  bundle check failed. It now names those four limits one by one, so the
+  reply is rc.16.2's, and `src/mcp/sky-tools.test.ts` holds it to exactly
+  those four.
+- **The allowance.** Its `settle` now also refuses a search whose steps would
+  pass what is left, for the elections endpoint, whose station search spends
+  while it runs. A search for `find_events` or `check_sky_fact` is given what
+  is left when it begins, and the engine's crossing search stops before it
+  takes a step past that, so the new condition cannot refuse a request of
+  theirs that rc.16.2 answered.
+- **A digest in the README.** Under its example comparison, the README
+  printed the `cite.receipt` of rc.16.1's receipt: rc.16.2 moved the
+  receipt's version line to rc.16.2 and left the digest below it, and this
+  candidate's first build did the same, so a reader who recomputed it, as the
+  README invites, got another digest. It now prints the digest of the receipt
+  it shows, and `scripts/mcp-artifact.test.mjs` recomputes it, and runs the
+  example chart and holds the citation printed under it to the one the tool
+  returns. rc.16.2's archive keeps its README as released.
+
+The records, each against this bundle (`server.mjs` SHA-256 `a59382d0…`):
+
+| record | result |
+| --- | --- |
+| `protocol-drive.json` | 106/106 checks |
+| `host-drive.json` | 7/7 checks, Claude Code 2.1.289 |
+| `benchmark.json` | 18/18 scenarios, 112/112 assertions |
+| a fresh extraction of the archive | `npm ci` installs 14 packages, and `npm run verify` passes its 21 checks |
+
+`host-interop.md`, the one model-driven run, is from an earlier candidate and
+was not repeated.

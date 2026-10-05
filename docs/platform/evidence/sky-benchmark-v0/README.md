@@ -772,7 +772,7 @@ here:
   page says so. CC0 1.0, as for the conformance vectors, would let anyone
   rerun and republish it.
 - **`check_sky_fact` is not on npm.** It ships only in the MCP adapter's
-  candidate 0.1.0-rc.16.2, which the site serves as an archive.
+  candidates from 0.1.0-rc.16.2 on, which the site serves as archives.
 - **The key is public**, so a model may have seen it, and a later model may
   have been trained on it.
 - **Three DEPENDS answers turn only on offsets more than 10 hours from

@@ -185,8 +185,9 @@ const engineRows = [
     <div class="prose">
       <p>
         <a href="/developers/compute/">The compute API</a> runs the same engine
-        on our server: six POST endpoints for a chart, positions, houses,
-        events in a window, local time and sky facts, with no key. Birth data
+        on our server: seven POST endpoints for a chart, positions, houses,
+        events in a window, local time, sky facts and the stretches of a
+        window in which chosen conditions hold, with no key. Birth data
         goes in the request body; the function writes nothing from a request
         to a log, a file or a database, and no response is cached, though the
         host's request logs keep each request's web address and IP address.

@@ -11,7 +11,8 @@ var COMPUTE_ENDPOINTS = Object.freeze([
   "houses",
   "events",
   "time",
-  "sky-fact"
+  "sky-fact",
+  "elections"
 ]);
 var COMPUTE_ORIGIN = "https://zodiacs.org";
 var COMPUTE_DOCS_URL = `${COMPUTE_ORIGIN}/developers/compute/`;
@@ -57,13 +58,17 @@ var BUDGETS = Object.freeze({
   "positions.instants": 100,
   "events.windowDays": 92,
   "events.samples": 12e3,
-  "sky-fact.samples": 1e3
+  "sky-fact.samples": 1e3,
+  "elections.windowDays": 31,
+  "elections.samples": 6e3
 });
 var BUDGET_MESSAGES = Object.freeze({
   "positions.instants": `A positions request takes at most ${BUDGETS["positions.instants"]} instants.`,
   "events.windowDays": `An events window is at most ${BUDGETS["events.windowDays"]} days long.`,
   "events.samples": `The event searches would need more than ${BUDGETS["events.samples"]} evaluations.`,
-  "sky-fact.samples": `The fact's searches would need more than ${BUDGETS["sky-fact.samples"]} evaluations.`
+  "sky-fact.samples": `The fact's searches would need more than ${BUDGETS["sky-fact.samples"]} evaluations.`,
+  "elections.windowDays": `An elections window is at most ${BUDGETS["elections.windowDays"]} days long.`,
+  "elections.samples": `The searches would need more than ${BUDGETS["elections.samples"]} evaluations; shorten the window or, with an angular condition, add a condition that rules out more of it.`
 });
 var SEARCH_STEP_DAYS = Object.freeze({
   default: 5,
@@ -161,6 +166,21 @@ var PHASES = Object.freeze({
 });
 var PHASE_NAMES = Object.freeze(Object.keys(PHASES));
 var SKY_FACT_KINDS = Object.freeze(["sign", "retrograde", "ingress", "phase"]);
+var ELECTION_CONDITION_KINDS = Object.freeze(["phase", "void-of-course", "sign", "retrograde", "angular"]);
+var MAX_ELECTION_CONDITIONS = 5;
+var MOON_HALVES = Object.freeze(["waxing", "waning"]);
+var ANGULAR_HOUSES = Object.freeze([1, 4, 7, 10]);
+var ANGULAR_MAX_ABS_LATITUDE = 60;
+var ELECTION_STEPS = Object.freeze({
+  houseSampleMinutes: 60,
+  houseBoundarySeconds: 1,
+  /**
+   * Every boundary is within a second, so two less than 2 seconds apart may be
+   * one instant found twice: a gap shorter than this between windows is
+   * closed, and a window shorter than it is not listed.
+   */
+  resolutionSeconds: 2
+});
 var ANY_ZONE_DAY = Object.freeze({
   startHoursBeforeUtcMidnight: 14,
   endHoursAfterUtcMidnight: 36
@@ -5502,7 +5522,8 @@ function computeReceipt(endpoint, extra = {}) {
     referenceSpan: { from: REFERENCE_SPAN.from, to: REFERENCE_SPAN.to },
     deltaT: deltaT2,
     ...extra.timeResolution ? { timeResolution: extra.timeResolution } : {},
-    ...extra.search ? { search: extra.search } : {}
+    ...extra.search ? { search: extra.search } : {},
+    ...extra.electionSearch ? { electionSearch: extra.electionSearch } : {}
   };
 }
 function citeFor(endpoint, receipt) {
@@ -5568,7 +5589,16 @@ var TEXT = Object.freeze({
   phase: `Must be one of: ${PHASE_NAMES.join(", ")}.`,
   instantOrDate: "Give exactly one of instant and date.",
   zoneNeedsDate: "A zone goes with a date, not with an instant.",
-  skippedDay: "This date did not happen in this zone: its clocks went from the day before straight to the day after."
+  skippedDay: "This date did not happen in this zone: its clocks went from the day before straight to the day after.",
+  conditions: `Must be an array of one to ${MAX_ELECTION_CONDITIONS} conditions.`,
+  conditionKind: `Must be one of: ${ELECTION_CONDITION_KINDS.join(", ")}.`,
+  moonHalf: `Must be one of: ${MOON_HALVES.join(", ")}.`,
+  stationBody: `Must be one of: ${STATION_BODIES.join(", ")}; the Sun and the Moon are never retrograde.`,
+  not: "Must be true or false.",
+  repeatedCondition: "Must not repeat a condition.",
+  placeRequired: "An angular condition needs a place.",
+  placeWithoutAngular: "A place goes with an angular condition.",
+  angularLatitude: `Must be a number from -${ANGULAR_MAX_ABS_LATITUDE} to ${ANGULAR_MAX_ABS_LATITUDE}: an angular condition is searched within ${ANGULAR_MAX_ABS_LATITUDE}\xB0 of the equator.`
 });
 var VALIDATION_POINTERS = Object.freeze([
   "",
@@ -5591,9 +5621,15 @@ var VALIDATION_POINTERS = Object.freeze([
   "/phase",
   "/instant",
   "/date",
-  "/zone"
+  "/zone",
+  "/conditions",
+  "/place",
+  "/place/latitude",
+  "/place/longitude",
+  "/place/houseSystem"
 ]);
-var INDEXED_POINTERS = Object.freeze(["/instants", "/bodies", "/kinds"]);
+var INDEXED_POINTERS = Object.freeze(["/instants", "/bodies", "/kinds", "/conditions"]);
+var CONDITION_FIELD_POINTERS = Object.freeze(["kind", "phase", "body", "sign", "not"]);
 var ZONE_NAME = /^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+){0,3}$/u;
 var INSTANT = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{1,3}))?)?(Z|[+-]\d{2}:\d{2})$/u;
 var EPOCH_FROM = Date.parse(EPOCH.from);
@@ -5755,6 +5791,13 @@ async function parseSkyFactRequest(value, zones) {
     }
   }
 }
+var CONDITION_FIELDS = Object.freeze({
+  phase: ["kind", "phase", "not"],
+  "void-of-course": ["kind", "not"],
+  sign: ["kind", "body", "sign", "not"],
+  retrograde: ["kind", "body", "not"],
+  angular: ["kind", "body", "not"]
+});
 var VALIDATION_MESSAGES = TEXT;
 
 // src/lib/compute-api/endpoints.ts
@@ -5798,10 +5841,24 @@ var SampleBudget = class {
     if (remaining < 1) throw budgetExhausted(this.limit);
     return { stepDays, maxSamples: remaining };
   }
+  /**
+   * Adds a finished search's steps, refusing the request if they pass the
+   * allowance: the search was given what was left when it began, and an
+   * election's station search also spends (below) for each new instant it reads.
+   */
   settle(result) {
-    if (result.status === "refused") throw budgetExhausted(this.limit);
+    if (result.status === "refused" || this.used + result.samples > this.max) throw budgetExhausted(this.limit);
     this.used += result.samples;
     return result.crossings;
+  }
+  /** Counts evaluations made outside the crossing search, refusing the request once the allowance is spent. */
+  spend(count) {
+    this.reserve(count);
+    this.used += count;
+  }
+  /** Refuses the request now if `count` more evaluations would pass the allowance, before any is made. */
+  reserve(count) {
+    if (this.used + count > this.max) throw budgetExhausted(this.limit);
   }
   facts() {
     return {
@@ -6036,6 +6093,17 @@ function factEcho(request) {
       return { kind: request.kind, phase: request.phase, date: request.day.date, zone: request.day.zone };
   }
 }
+
+// src/lib/compute-api/elections.ts
+var MINUTE_MS = 6e4;
+var HOUR_MS2 = 36e5;
+var DAY_MS3 = 864e5;
+var VOID_BODIES_MODERN = Object.freeze(["Sun", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"]);
+var ASPECT_OFFSETS = Object.freeze([0, 60, 300, 90, 270, 120, 240, 180]);
+var VOID_SCAN_MS = 3 * HOUR_MS2;
+var VOID_REACH_BEFORE_MS = 4 * DAY_MS3;
+var VOID_REACH_AFTER_MS = 3 * DAY_MS3;
+var HOUSE_STEP_MS = ELECTION_STEPS.houseSampleMinutes * MINUTE_MS;
 
 // src/lib/compute-api/handler.ts
 async function computeApiRateLimit(req, id = COMPUTE_RATE_LIMIT_ID) {

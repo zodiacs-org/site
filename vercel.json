@@ -316,6 +316,10 @@
     {
       "source": "/api/v1/sky-fact",
       "destination": "/api/compatibility?__zodiacs_compute=sky-fact"
+    },
+    {
+      "source": "/api/v1/elections",
+      "destination": "/api/compatibility?__zodiacs_compute=elections"
     }
   ],
   "headers": [
