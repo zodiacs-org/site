@@ -1,7 +1,7 @@
 {
   "version": 1,
   "brief": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md (version 2) with the version 1 rules it retains",
-  "asOf": "2026-10-05 checkpoint 16 (source 3f09711a; MCP adapter 0.1.0-rc.16.2 on production dpl_94a4kV72vzpEWurR5dFHe4ES9uUy: A1.a and A1.b partial)",
+  "asOf": "2026-10-05 checkpoint 17 (source e20d5f40; sky-fact benchmark v0 on production dpl_Aab4BCHqNeL2wK6w3A1AQaQ7wh28: B4.a validated, pending the owner's reading of raw answers)",
   "denominator": {
     "unit": "working days, from the brief's effort estimates (README.md)",
     "totalWeight": 182.45,
@@ -2496,9 +2496,16 @@
       "dependsOn": [
         "A1.b"
       ],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "validated",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/sky-benchmark-v0/README.md",
+        "public/developers/sky-benchmark/v0/: items.json (300 questions, 60 in each of five families), key.json (the engine's answers), scorer.mjs (no dependencies) and tool-answers.json (check_sky_fact's reply to each question when v0 was drawn, unchanged), written by scripts/build-sky-benchmark.mjs and pinned by their SHA-256",
+        "tests/benchmarks/sky-benchmark.test.ts: the questions and the key are what the generator draws, byte for byte, and check_sky_fact still gives the published replies' answers and the facts behind them; check_sky_fact gives the key's answer on all 300 questions and on 2,022 facts around them, among them every date of the 18 entries into a sign while retrograde in the ingress questions' periods, which the test finds again in whatever engine is installed; the generator writes only a version not yet published and refuses to check v0 with a file missing or with another engine; the scorer reads the key's own answers as 300 of 300 and 1,800 wrong replies as wrong",
+        "docs/platform/evidence/sky-benchmark-v0/horizons-check.json: every answer in the key agrees with NASA JPL Horizons (300 of 300)",
+        "production dpl_Aab4BCHqNeL2wK6w3A1AQaQ7wh28 (READY 2026-10-05T12:58:32Z, aliased to zodiacs.org) serves site e20d5f40, which serves /developers/sky-benchmark/ and the four files"
+      ],
+      "notes": "Checkpoint 17 (2026-10-05): validated. The items, the scorer and check_sky_fact's own replies are published, and check_sky_fact agrees with the engine on every item. In the brief's B4 risk line \"raw answers\" means the assistants' answers, which DECISIONS-2026-09-28 §9 sends to the private baselines repository and B4.b scores; this record publishes the tool's replies in their place, a reading the owner confirms or rejects. No licence has been chosen for the files; the programme recommends CC0 1.0, as for the conformance vectors."
     },
     {
       "id": "B4.b",
