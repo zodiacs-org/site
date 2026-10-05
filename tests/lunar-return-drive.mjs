@@ -233,9 +233,16 @@ export async function runLunarReturnChecks({ browser, baseURL, check, outDir }) 
         && await page.locator('[data-lr-image],[data-lunar-return-result]').count() === 0);
       await page.locator('#lr-date').fill('1990-02-01'); await page.locator('#lr-time').fill('12:00');
       await page.locator('#lr-place').fill('London'); await page.getByRole('option', { name: /London/ }).first().click();
+      // City selection moves focus to its replacement chip in a Preact effect.
+      // Complete that interaction before directing Space to another control.
+      await page.waitForFunction(() => document.activeElement?.id === 'lr-place'
+        && document.activeElement.classList.contains('place__chip-value'), null, { timeout: TIMEOUT });
       await inspectToggleTargets(page, check, width);
       const unknownTime = page.locator('[data-lunar-return-calculator] .field__labelrow input[type="checkbox"]');
       await unknownTime.focus(); await page.keyboard.press('Space');
+      // Native checkbox state changes before Preact commits its dependent UI.
+      // Wait for that real update; keep every disabled-state assertion below.
+      await page.locator('[data-lr-incomplete]').waitFor({ state: 'visible', timeout: TIMEOUT });
       check(`Lunar ${width}: native unknown-time toggle disables calculation and exposes its explanation`,
         await unknownTime.isChecked() && await page.locator('#lr-time').isDisabled()
         && await page.locator('button[type=submit]').isDisabled() && await page.locator('[data-lr-incomplete]').isVisible());
