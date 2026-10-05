@@ -30,7 +30,7 @@ describe('home-screen hint', () => {
     const storage = memoryStorage();
     expect(claimA2hsHint('es', IOS_SAFARI, storage)).toEqual({
       platform: 'ios',
-      message: 'Para tener tus cartas guardadas a mano, toca Compartir → Añadir a pantalla de inicio. Las notificaciones diarias en iPhone y iPad solo funcionan desde el sitio instalado.',
+      message: 'Para tener tus cartas guardadas a mano, toca Compartir → Agregar a inicio. Los avisos del cielo en iPhone y iPad solo funcionan desde el sitio instalado.',
       dismissLabel: 'Descartar indicación de pantalla de inicio',
     });
     expect(storage.values.get(A2HS_HINT_KEY)).toBe('1');

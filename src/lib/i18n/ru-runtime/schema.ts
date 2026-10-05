@@ -45,7 +45,10 @@ export interface RussianRuntimePayload {
       submit: string;
       privacy: string;
     }>;
+    /** Legacy «{знак} Солнце» label; kept so earlier automatic names stay recognizable. */
     autoNameSun: string;
+    /** Current automatic chart name; {sign} is the prepositional sign name. */
+    autoNameSunTemplate: string;
     sharedBirthplace: string;
     englishOnlyTitle: string;
     englishOnlySuffix: string;

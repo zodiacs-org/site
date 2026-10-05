@@ -21,11 +21,15 @@ const reading = dailyReadingForLocale(sign.slug, daily, locale);
 const dateLabel = formatDate(locale, `${daily.date}T12:00:00Z`, {
   day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC',
 });
+// El título usa la fecha sin año para caber en 60 caracteres con el nombre de signo más largo.
+const titleDate = formatDate(locale, `${daily.date}T12:00:00Z`, {
+  day: 'numeric', month: 'long', timeZone: 'UTC',
+});
 const cue = englishOnlyCue(locale);
-const description = `Horóscopo de ${name} para hoy, ${dateLabel}: ${reading.lines.length} notas leídas desde las casas solares de ${name} a partir de las posiciones reales del cielo, con sus recibos.`;
+const description = `Horóscopo de ${name} hoy, ${dateLabel}: ${reading.lines.length} notas leídas desde sus casas solares, con las posiciones reales del cielo y sus comprobantes.`;
 ---
 <Base
-  title={`${name} hoy — horóscopo del ${dateLabel} | Zodiacs.org`}
+  title={`Horóscopo de ${name} hoy, ${titleDate} | Zodiacs.org`}
   description={description}
   path={`/es/horoscopes/${sign.slug}/`}
   locale={locale}

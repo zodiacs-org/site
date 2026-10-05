@@ -8,7 +8,7 @@ const tools = [
   { href: '/ru/birth-chart/', title: 'Натальная карта', promise: 'Солнце, Луна, асцендент, планеты, дома и их значение.', hue: 'var(--sign-cancer)', kind: 'birth' as const },
   { href: '/birth-chart/someone-else/', title: 'Карта другого человека — пока по-английски', promise: 'Используйте данные рождения, большую тройку или ссылку Zodiacs — с согласия человека.', hue: 'var(--sign-pisces)', kind: 'birth' as const, englishOnly: true },
   { href: '/today/', title: 'Сегодня — пока по-английски', promise: 'Последняя сохранённая карта на фоне полуденного неба, с точными градусами.', hue: 'var(--sign-cancer)', kind: 'transit' as const, englishOnly: true },
-  { href: '/ru/compatibility/', title: 'Совместимость', promise: 'Сравните две карты и увидьте, где они сходятся, спорят и растут.', hue: 'var(--sign-libra)', kind: 'compat' as const },
+  { href: '/ru/compatibility/', title: 'Совместимость', promise: 'Сравните две карты: где они сходятся, где спорят и где помогают друг другу расти.', hue: 'var(--sign-libra)', kind: 'compat' as const },
   { href: '/ru/moon-sign/', title: 'Лунный знак', promise: 'Как вы чувствуете и что помогает вернуться к себе.', hue: 'var(--sign-pisces)', kind: 'moon' as const },
   { href: '/ru/rising-sign/', title: 'Асцендент', promise: 'Энергия, которую другие замечают первой.', hue: 'var(--sign-gemini)', kind: 'rising' as const },
   { href: '/ru/moon-phase/', title: 'Фаза Луны', promise: 'Луна сегодня и в любую важную для вас дату.', hue: 'var(--sign-cancer)', kind: 'moonphase' as const },
@@ -28,7 +28,7 @@ const jsonLd = [
 ];
 ---
 <Base
-  title="Астроинструменты — карта, совместимость, транзиты"
+  title="Астрологические калькуляторы — натальная карта, транзиты"
   description="Бесплатные инструменты: натальная карта, лунный знак, асцендент, фаза Луны, возвращение Сатурна, транзиты. Приватно, в браузере."
   path="/ru/tools/"
   locale="ru"
@@ -39,7 +39,7 @@ const jsonLd = [
   <section class="section container">
     <div class="section-head">
       <ToolsPageHeading>Бесплатные астроинструменты</ToolsPageHeading>
-      <p>Найдите свою натальную карту, лунный знак, асцендент и совместимость, а затем посмотрите, что происходит в небе сейчас. Данные считаются в вашем браузере.</p>
+      <p>Постройте натальную карту, узнайте лунный знак, асцендент и совместимость, а затем посмотрите, что происходит в небе сейчас. Данные считаются в вашем браузере.</p>
     </div>
 
     <div class="tools-grid">

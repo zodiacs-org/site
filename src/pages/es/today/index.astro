@@ -19,10 +19,10 @@ const dateLabel = formatDate(locale, `${daily.date}T12:00:00Z`, {
 });
 const readings = SIGNS.map((sign) => ({ sign, reading: dailyReadingForLocale(sign.slug, daily, locale) }));
 const cue = englishOnlyCue(locale);
-const description = `El cielo de hoy leído para los doce signos solares: cuatro notas por signo, calculadas a partir de las posiciones reales del ${dateLabel}, en español.`;
+const description = `El cielo de hoy para los doce signos solares: cuatro notas por signo, calculadas a partir de las posiciones reales del ${dateLabel}.`;
 ---
 <Base
-  title={`Hoy — el cielo del ${dateLabel} para cada signo | Zodiacs.org`}
+  title={`Hoy — el cielo del ${dateLabel} | Zodiacs.org`}
   description={description}
   path="/es/today/"
   locale={locale}
@@ -34,7 +34,7 @@ const description = `El cielo de hoy leído para los doce signos solares: cuatro
       <h1 class="display">Hoy</h1>
       <p>
         Elige tu signo solar. Cada nota sale de las posiciones registradas del cielo de hoy, leídas desde las casas
-        solares de tu signo; los recibos bajo cada lectura dicen exactamente qué la produjo.
+        solares de tu signo; los comprobantes bajo cada lectura dicen exactamente qué la produjo.
       </p>
       <span class="today-es__stamp mono">{dateLabel} · {moonPhaseLabel(locale, daily.moon.phase)}</span>
     </header>

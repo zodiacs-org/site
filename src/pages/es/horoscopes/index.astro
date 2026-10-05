@@ -17,10 +17,10 @@ const cards = SIGNS.map((sign) => {
   return { sign, teaser: reading.lines.find((line) => line.house !== undefined)?.text ?? reading.headline };
 });
 const cue = englishOnlyCue(locale);
-const description = `Horóscopos de hoy para los doce signos, ${dateLabel}: una nota clara por signo, calculada a partir de las posiciones reales del cielo y leída en español.`;
+const description = `Horóscopos de hoy, ${dateLabel}: una nota clara para cada uno de los doce signos, calculada a partir de las posiciones reales del cielo.`;
 ---
 <Base
-  title={`Horóscopos de hoy — ${dateLabel}, los doce signos | Zodiacs.org`}
+  title={`Horóscopos de hoy — ${dateLabel} | Zodiacs.org`}
   description={description}
   path="/es/horoscopes/"
   locale={locale}
