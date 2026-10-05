@@ -3,6 +3,7 @@ import Base from '../../../layouts/Base.astro';
 import items from '../../../../public/developers/sky-benchmark/v0/items.json';
 import key from '../../../../public/developers/sky-benchmark/v0/key.json';
 import { checks } from '../../../../public/developers/sky-benchmark/v0/tool-answers.json';
+import { ORGANIZATION, developerBreadcrumb } from '../../../lib/developer-structured-data.mjs';
 
 const FILES = '/developers/sky-benchmark/v0';
 const SOURCE = 'https://github.com/zodiacs-org/site/blob/main';
@@ -50,11 +51,11 @@ const jsonLd = [{
   version: items.version,
   temporalCoverage: `${items.dates.from}/${items.dates.to}`,
   isAccessibleForFree: true,
-  creator: { '@type': 'Organization', name: 'Zodiacs.org', url: 'https://zodiacs.org/' },
+  creator: ORGANIZATION,
   distribution: ['items.json', 'key.json', 'tool-answers.json'].map((name) => ({
     '@type': 'DataDownload', encodingFormat: 'application/json', contentUrl: `https://zodiacs.org${FILES}/${name}`,
   })),
-}];
+}, developerBreadcrumb('/developers/sky-benchmark/', 'Sky-fact benchmark')];
 ---
 <Base title={title} description={description} path="/developers/sky-benchmark/" jsonLd={jsonLd}>
   <section class="section container container--narrow benchmark-page">

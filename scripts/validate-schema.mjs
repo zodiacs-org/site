@@ -1,4 +1,5 @@
 /** Validate the structured-data contracts over a completed production build. */
+import { readdirSync, readFileSync } from 'node:fs';
 import { readdir, readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, relative, resolve, sep } from 'node:path';
@@ -6,6 +7,9 @@ import { EDITORIAL_METADATA } from '../src/lib/editorial-metadata.mjs';
 import { editorialGraphErrors, editorialSitemapErrors } from './editorial-metadata-checks.mjs';
 import { WEB_APPLICATION_PATHS } from '../src/strings/seo.en.mjs';
 import { eventArticleDateFailures } from './event-article-dates.mjs';
+import {
+  DEVELOPER_PAGES, SKY_DATA_FOLDERS, developerExpectations, developerStructuredDataErrors, servesUrlIn, skyDataFiles,
+} from './developer-structured-data-checks.mjs';
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const dist = resolve(repo, 'dist');
@@ -19,6 +23,18 @@ const SIGN_SLUGS = [
 const signSlugs = new Set(SIGN_SLUGS);
 const failures = [];
 const seenEditorial = new Set();
+const seenDeveloper = new Set();
+const servesUrl = servesUrlIn(dist);
+const readJson = (path) => JSON.parse(readFileSync(path, 'utf8'));
+const developerExpected = developerExpectations({
+  candidate: readJson(resolve(repo, 'src/data/platform-engine-candidate.json')),
+  manifest: readJson(resolve(repo, 'public/examples/mcp-server.json')),
+  conformanceSource: readJson(resolve(repo, 'src/data/conformance/source.json')),
+  conformanceSummary: readJson(resolve(repo, 'src/data/conformance/summary.json')),
+  skyIndex: readJson(resolve(dist, 'api/v1/index.json')),
+  skyFiles: skyDataFiles(Object.fromEntries(SKY_DATA_FOLDERS.map((folder) => [folder, readdirSync(resolve(dist, 'api/v1', folder)).sort()]))),
+  benchmarkItems: readJson(resolve(repo, 'public/developers/sky-benchmark/v0/items.json')),
+});
 let documentCount = 0;
 let nodeCount = 0;
 
@@ -237,6 +253,10 @@ for (const file of await htmlFiles(dist)) {
     seenEditorial.add(pathname);
     failures.push(...editorialGraphErrors(pathname, nodes).map((error) => `${label}: ${error}`));
   }
+  if (DEVELOPER_PAGES[pathname]) {
+    seenDeveloper.add(pathname);
+    failures.push(...developerStructuredDataErrors(pathname, nodes, { servesUrl, expected: developerExpected }).map((error) => `${label}: ${error}`));
+  }
   documentCount += documents.length;
   nodeCount += nodes.length;
 
@@ -336,6 +356,9 @@ for (const file of await htmlFiles(dist)) {
 
 for (const path of Object.keys(EDITORIAL_METADATA)) {
   if (!seenEditorial.has(path)) failures.push(`${path}: editorial owner missing from indexable output`);
+}
+for (const path of Object.keys(DEVELOPER_PAGES)) {
+  if (!seenDeveloper.has(path)) failures.push(`${path}: developer page missing from indexable output`);
 }
 failures.push(...editorialSitemapErrors(await readFile(resolve(dist, 'sitemap.xml'), 'utf8')));
 

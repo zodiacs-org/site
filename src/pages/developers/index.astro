@@ -3,7 +3,7 @@ import conformance from '../../data/conformance/summary.json';
 import Base from '../../layouts/Base.astro';
 import { iframeEmbedCode } from '../../lib/widgets';
 import { WIDGET_EN } from '../../strings/widgets';
-import { completeTransitYears } from '../../lib/sky-api/build';
+import { completeTransitYears, yearsWithin } from '../../lib/sky-api/build';
 import { PLANET_SLUGS } from '../../lib/sky-api/meta';
 import skyQuickStart from '../../lib/sky-api/examples/today.mjs?raw';
 import candidate from '../../data/platform-engine-candidate.json';
@@ -13,6 +13,9 @@ import candidate from '../../data/platform-engine-candidate.json';
 // own manifest instead.
 import starterEngine from '../../../examples/platform/candidate.json';
 import mcp from '../../../public/examples/mcp-server.json';
+import sky from '../../data/sky.json';
+import eclipses from '../../data/eclipses.json';
+import { FREE_OFFER, OPENAPI_URL, ORGANIZATION, SITE, SKY_DATA_LICENSE } from '../../lib/developer-structured-data.mjs';
 
 // The same month snapshots the generator reads decide which year files exist,
 // so this page and the deployed API can never disagree about coverage.
@@ -51,12 +54,47 @@ const skyEmbed = iframeEmbedCode({ origin: 'https://zodiacs.org', kind: 'sky', t
 
 const description = 'Build with Zodiacs: evaluate the local TypeScript chart engine, call the compute API, fetch free shared-sky JSON, or embed a moon, sky, or mini-chart widget. Current support, release status, and calculation limits in one place.';
 
-const jsonLd = [{
-  '@type': 'WebPage',
-  name: 'Zodiacs developer tools: charts, sky data, and embeds',
-  url: 'https://zodiacs.org/developers/',
-  description,
-}];
+// The files the sky data generator writes, chosen as src/lib/sky-api/files.ts chooses them:
+// retrogrades and Moon phases only for years sky.json covers, eclipses only for years eclipses.json covers.
+const skyYears = yearsWithin(years, sky.from, sky.to);
+const eclipseYears = yearsWithin(years, eclipses.from, eclipses.to);
+const skyFiles = [
+  '/api/v1/sky/today.json',
+  '/api/v1/sky/upcoming.json',
+  '/api/v1/signs.json',
+  ...PLANET_SLUGS.map((slug) => `/api/v1/planets/${slug}.json`),
+  ...['retrogrades', 'moon-phases'].flatMap((kind) => skyYears.map((year) => `/api/v1/${kind}/${year}.json`)),
+  ...['stations', 'ingresses', 'aspects'].flatMap((kind) => years.map((year) => `/api/v1/${kind}/${year}.json`)),
+  ...eclipseYears.map((year) => `/api/v1/eclipses/${year}.json`),
+];
+const jsonLd = [
+  {
+    '@type': 'WebPage',
+    name: 'Zodiacs developer tools: charts, sky data, and embeds',
+    url: 'https://zodiacs.org/developers/',
+    description,
+  },
+  {
+    '@type': 'WebAPI',
+    name: 'Zodiacs sky data API',
+    url: 'https://zodiacs.org/developers/#sky-data',
+    description: 'Static JSON files under /api/v1/ about the sky everyone shares: today, the next 60 days, each planet, the signs, and yearly files of retrogrades, stations, ingresses, Moon phases, eclipses and exact aspects.',
+    documentation: OPENAPI_URL,
+    provider: ORGANIZATION,
+    offers: FREE_OFFER,
+  },
+  {
+    '@type': 'Dataset',
+    name: 'Zodiacs shared sky data',
+    description: `The JSON files of the Zodiacs sky data API: today's positions, the next 60 days of events, each planet, the signs, and yearly files from ${firstYear} to ${lastYear} of retrogrades, stations, ingresses, Moon phases, eclipses and exact aspects.`,
+    url: 'https://zodiacs.org/developers/#sky-data',
+    license: SKY_DATA_LICENSE,
+    temporalCoverage: `${firstYear}-01-01/${lastYear}-12-31`,
+    creator: ORGANIZATION,
+    isAccessibleForFree: true,
+    distribution: skyFiles.map((path) => ({ '@type': 'DataDownload', encodingFormat: 'application/json', contentUrl: `${SITE}${path}` })),
+  },
+];
 ---
 <Base
   title="Developer Tools — Local Charts, Sky Data & Embeds | Zodiacs.org"

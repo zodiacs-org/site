@@ -1,5 +1,6 @@
 ---
 import Base from '../../../layouts/Base.astro';
+import { FREE_OFFER, OPENAPI_URL, ORGANIZATION, developerBreadcrumb } from '../../../lib/developer-structured-data.mjs';
 import examples from '../../../lib/compute-api/examples.json';
 import { SUCCESS_EXAMPLES } from '../../../lib/compute-api/examples';
 import {
@@ -73,12 +74,18 @@ const refusals: Array<[ErrorCode, string]> = [
   ['not-found', 'The request reached the function by a path that is not one of the six endpoints.'],
 ];
 
-const jsonLd = [{
-  '@type': 'WebPage',
-  name: 'Zodiacs compute API',
-  url: 'https://zodiacs.org/developers/compute/',
-  description,
-}];
+const jsonLd = [
+  {
+    '@type': 'WebAPI',
+    name: 'Zodiacs compute API',
+    url: 'https://zodiacs.org/developers/compute/',
+    description,
+    documentation: OPENAPI_URL,
+    provider: ORGANIZATION,
+    offers: FREE_OFFER,
+  },
+  developerBreadcrumb('/developers/compute/', 'Compute API'),
+];
 ---
 <Base title={title} description={description} path="/developers/compute/" jsonLd={jsonLd}>
   <section class="section container container--narrow compute-page">

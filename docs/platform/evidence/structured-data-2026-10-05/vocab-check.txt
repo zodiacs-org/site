@@ -1,0 +1,31 @@
+types: {'BreadcrumbList': 6, 'DataDownload': 49, 'Dataset': 3, 'ImageObject': 6, 'ListItem': 17, 'Offer': 4, 'Organization': 6, 'SoftwareApplication': 2, 'SoftwareSourceCode': 1, 'WebAPI': 2, 'WebPage': 1}
+0 errors, 29 notes
+note  developers/index.html #0.0 > logo: width is given as text; schema.org expects Distance, QuantitativeValue
+note  developers/index.html #0.0 > logo: height is given as text; schema.org expects Distance, QuantitativeValue
+note  developers/index.html #0.1 > itemListElement: item is given as text; schema.org expects Thing
+note  developers/index.html #0.1 > itemListElement: item is given as text; schema.org expects Thing
+note  developers/engine/index.html #0.0 > logo: width is given as text; schema.org expects Distance, QuantitativeValue
+note  developers/engine/index.html #0.0 > logo: height is given as text; schema.org expects Distance, QuantitativeValue
+note  developers/engine/index.html #0.3 > itemListElement: item is given as text; schema.org expects Thing
+note  developers/engine/index.html #0.3 > itemListElement: item is given as text; schema.org expects Thing
+note  developers/engine/index.html #0.3 > itemListElement: item is given as text; schema.org expects Thing
+note  developers/mcp/index.html #0.0 > logo: width is given as text; schema.org expects Distance, QuantitativeValue
+note  developers/mcp/index.html #0.0 > logo: height is given as text; schema.org expects Distance, QuantitativeValue
+note  developers/mcp/index.html #0.2 > itemListElement: item is given as text; schema.org expects Thing
+note  developers/mcp/index.html #0.2 > itemListElement: item is given as text; schema.org expects Thing
+note  developers/mcp/index.html #0.2 > itemListElement: item is given as text; schema.org expects Thing
+note  developers/compute/index.html #0.0 > logo: width is given as text; schema.org expects Distance, QuantitativeValue
+note  developers/compute/index.html #0.0 > logo: height is given as text; schema.org expects Distance, QuantitativeValue
+note  developers/compute/index.html #0.2 > itemListElement: item is given as text; schema.org expects Thing
+note  developers/compute/index.html #0.2 > itemListElement: item is given as text; schema.org expects Thing
+note  developers/compute/index.html #0.2 > itemListElement: item is given as text; schema.org expects Thing
+note  developers/conformance/index.html #0.0 > logo: width is given as text; schema.org expects Distance, QuantitativeValue
+note  developers/conformance/index.html #0.0 > logo: height is given as text; schema.org expects Distance, QuantitativeValue
+note  developers/conformance/index.html #0.2 > itemListElement: item is given as text; schema.org expects Thing
+note  developers/conformance/index.html #0.2 > itemListElement: item is given as text; schema.org expects Thing
+note  developers/conformance/index.html #0.2 > itemListElement: item is given as text; schema.org expects Thing
+note  developers/sky-benchmark/index.html #0.0 > logo: width is given as text; schema.org expects Distance, QuantitativeValue
+note  developers/sky-benchmark/index.html #0.0 > logo: height is given as text; schema.org expects Distance, QuantitativeValue
+note  developers/sky-benchmark/index.html #0.2 > itemListElement: item is given as text; schema.org expects Thing
+note  developers/sky-benchmark/index.html #0.2 > itemListElement: item is given as text; schema.org expects Thing
+note  developers/sky-benchmark/index.html #0.2 > itemListElement: item is given as text; schema.org expects Thing

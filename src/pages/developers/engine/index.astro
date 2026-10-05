@@ -4,6 +4,7 @@ import candidate from '../../../data/platform-engine-candidate.json';
 import bundle from '../../../data/engine-bundle.json';
 import { engineInstallBlock } from '../../../lib/engine-install-block';
 import { ENGINE_DEMO_SOURCE, ENGINE_DEMO_OUTPUT } from '../../../lib/engine-demo';
+import { ENGINE_LICENSES, FREE_OFFER, ORGANIZATION, developerBreadcrumb } from '../../../lib/developer-structured-data.mjs';
 
 const install = engineInstallBlock(candidate);
 // The package sits at the root of its repository from rc.7 (packages/engine of the SDK before).
@@ -32,17 +33,36 @@ const api = [
   ['@zodiacs/engine/vedic', 'The sidereal zodiac, a separate import: ayanamsas, sidereal charts, nakshatras, vargas, KP sub-lords and the Vimshottari, Yogini and Ashtottari dashas. This site uses none of it.'],
 ];
 
-const jsonLd = [{
-  '@type': 'SoftwareSourceCode',
-  name: 'Zodiacs Engine',
-  description,
-  url: 'https://zodiacs.org/developers/engine/',
-  codeRepository: candidate.sourceRepository,
-  programmingLanguage: 'TypeScript',
-  license: ['https://spdx.org/licenses/MIT.html', 'https://spdx.org/licenses/CC-BY-4.0.html'],
-  softwareVersion: candidate.version,
-  runtimePlatform: 'Node.js, browsers',
-}];
+const software = 'https://zodiacs.org/developers/engine/#software';
+const jsonLd = [
+  {
+    '@type': 'SoftwareApplication',
+    '@id': software,
+    name: 'Zodiacs Engine',
+    alternateName: candidate.name,
+    description,
+    url: 'https://zodiacs.org/developers/engine/',
+    applicationCategory: 'DeveloperApplication',
+    operatingSystem: 'Node.js 20.19 or a later 20.x, Node.js 22.7 and newer, or a browser through a bundler',
+    softwareVersion: candidate.version,
+    // The archive this page's install block fetches and checks; its SHA-256 is the npm tarball's.
+    downloadUrl: candidate.artifactUrl,
+    license: ENGINE_LICENSES,
+    isAccessibleForFree: true,
+    offers: FREE_OFFER,
+    publisher: ORGANIZATION,
+  },
+  {
+    '@type': 'SoftwareSourceCode',
+    name: 'Zodiacs Engine source code',
+    codeRepository: candidate.sourceRepository,
+    programmingLanguage: 'TypeScript',
+    runtimePlatform: 'Node.js, browsers',
+    license: ENGINE_LICENSES,
+    targetProduct: { '@id': software },
+  },
+  developerBreadcrumb('/developers/engine/', 'Zodiacs Engine'),
+];
 ---
 <Base title={title} description={description} path="/developers/engine/" jsonLd={jsonLd}>
   <section class="section container container--narrow engine-page">
