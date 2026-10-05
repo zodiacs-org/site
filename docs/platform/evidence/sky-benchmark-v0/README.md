@@ -227,7 +227,7 @@ bodies at 1,500 instants from 1900 to 2049.
   milliseconds on each, and the patterns it replaced took 3 to 82 seconds,
   as the fourth, fifth and sixth tables of faults show.
 - **The scorer under three versions of Node.js.** On 2026-10-05 the scorer
-  as published (SHA-256 `a9b28efc…`), copied into a folder with
+  as published (SHA-256 `728355f2…`), copied into a folder with
   `items.json` and `key.json`, scored `scorer-check-replies.jsonl` in this
   folder under Node.js 18.20.8, 22.22.2 and 24.21.0 with byte-identical
   output (SHA-256 `2f92cda4d8288437…`) and the same warning. The file holds
@@ -421,8 +421,9 @@ the sixth. "Slow" is now the test of eight long replies.
 
 After the eighth review's probes, each fault below undid one of the fixes
 that followed them in a throwaway copy of the tree with them, on
-2026-10-05, and was run as after the seventh; the unchanged copy passed all
-22 tests. "Slow" is now the test of ten long replies. Those marked * put
+2026-10-05, and was run as after the seventh, except that each fault in the
+generator was also run against the engine test; the unchanged copy passed
+all 22 tests. "Slow" is now the test of ten long replies. Those marked * put
 back one of eight changes the eighth review had made to the scorer with no
 test failing.
 
@@ -484,12 +485,13 @@ the eighth; the unchanged copy passed all 22 tests.
 
 ## Corrections made before publication
 
-Nine independent reviews read this record before publication: two read the
+Ten independent reviews read this record before publication: two read the
 first build, a third read the second, a fourth the third, a fifth the
-fourth, a sixth the fifth, a seventh the sixth, an eighth the seventh and a
-ninth the eighth's fixes. The machine the eighth ran on restarted before it
-wrote its report, so what is fixed here from it comes from the probes it
-had saved, run again. What they found is fixed here:
+fourth, a sixth the fifth, a seventh the sixth, an eighth the seventh, a
+ninth the eighth's fixes and a tenth the ninth's. The machine the eighth
+ran on restarted before it wrote its report, so what is fixed here from it
+comes from the probes it had saved, run again. What they found is fixed
+here:
 
 - **The margin for slow planets was 2″.** In the first draw, Neptune's entry
   into Scorpio in 1957 came 5 hours 7 minutes later in the engine than in
@@ -743,13 +745,21 @@ had saved, run again. What they found is fixed here:
   part before its unit; "2041-03-18 or 19.03.2041" still names two dates.
 - **Smaller fixes.** A file that is not an object no longer compares as the
   same as an object holding it, the generator refuses an empty engine
-  version or table name, and a drawn file or folder it cannot read is named
-  in the message. The record said every drawn file that does not read as
-  JSON is refused, where only `key.json` and `tool-answers.json` are read as
-  JSON and `items.json` is compared byte for byte; it said the twelve long
-  check replies were thousands of characters long, where they are 1,513 to
-  3,315; and it gives both times of the slow draft's fault. The header says
-  "the word standing alone" for what a hedged word may come before.
+  version, model, table or digest, and a drawn file or folder it cannot
+  read is named in the message. The record said every drawn file that does
+  not read as JSON is refused, where only `key.json` and `tool-answers.json`
+  are read as JSON and `items.json` is compared byte for byte; it said the
+  twelve long check replies were thousands of characters long, where they
+  are 1,513 to 3,315; and it gives both times of the slow draft's fault. The
+  header says "the word standing alone" for what a hedged word may come
+  before.
+- **The header's hedge rule was narrower than the scorer.** It said a hedged
+  word comes before "the word standing alone", where the scorer takes the
+  other word wherever it is, so "No. Yes no-one disputes it." reads as
+  nothing. The header now says so, with that example; the code is unchanged.
+  The record also says that the eighth's and ninth's faults in the generator
+  were run against the engine test, and lists two more dash cases among the
+  limits below.
 
 ## Not done, and not claimed
 
@@ -776,7 +786,9 @@ had saved, run again. What they found is fixed here:
   Gemini 2. Cancer", reads as Cancer, since "Gemini 2." reads as a version;
   an abbreviation's full stop starts a sentence, so "e.g. no (known)
   station" reads as NO; a "not" is no hedge, so "Yes, in Tokyo, but not in
-  London." reads as YES; and some hedges still read as one answer, among
+  London." reads as YES; a dash after UTC, GMT or UT is taken for a minus
+  even where it is only punctuation, so "at 23:50 UTC—18 or 19 March 2041"
+  reads as the 19th; and some hedges still read as one answer, among
   them "Yes, at first; no later on." and its mirror, "No, at first; yes
   later on.", "No, and yes too.", "Yes, mostly; no near midnight.",
   "Yes, depending on your time zone.", "No — except in Tokyo, where it is
@@ -796,8 +808,10 @@ had saved, run again. What they found is fixed here:
   station.", and so do "It depends: in Tokyo, yes; in London, no." and "The
   answer is not yes but no."; a sentence does not start after an ellipsis,
   so "Hmm... As Gemini, I think the Moon was in Leo." names two signs;
-  "there is no 29 February 2041; the date is 2041-03-01" and "Ingress 2 – 7
-  March 2023" name two dates; and so does a YYYY-MM-DD date followed by a
-  number that is not a day in a form the scorer does not know, as in "– 12
-  noon UTC", "– 6 o'clock", "– 14 UTC", "/ 1st quarter moon", "& 2 more
-  ingresses follow" and "and 2 other planets follow".
+  "there is no 29 February 2041; the date is 2041-03-01", "Ingress 2 – 7
+  March 2023" and "In EST–5 – 8 March 2023", where a dash is taken for a
+  minus only after UTC, GMT or UT, name two dates; and so does a YYYY-MM-DD
+  date followed by a number that is not a day in a form the scorer does not
+  know, as in "– 12 noon UTC", "– 6 o'clock", "– 14 UTC", "– 12.5-hour
+  window", "– 12,5 h", "/ 1st quarter moon", "& 2 more ingresses follow"
+  and "and 2 other planets follow".

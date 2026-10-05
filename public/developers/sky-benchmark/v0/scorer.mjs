@@ -66,16 +66,17 @@
  *            with or without an ellipsis or an aside in brackets after the
  *            first word. So does a reply with one of YES and NO standing
  *            alone and the other in a hedge: before an ellipsis, a bracket,
- *            the word standing alone, or one of and, or, but, if, unless,
- *            except, in, for, at, on, by, when, while, whereas, before,
- *            after, afterwards, thereafter, until, from, since, once, during,
- *            outside, under, beyond, around, west, east, elsewhere,
- *            otherwise, though, although, depending, maybe and perhaps; or
- *            after "but", "though", "although" or "yet". So "yes... and no
- *            really", "yes (in Tokyo) but no (in London)", "In London, no...
- *            in Tokyo, yes" and "Yes, before noon; no after" name nothing,
- *            while "No, so a yes would be wrong" is NO and "Yes, with no
- *            station that day" is YES.
+ *            the other word, whether or not that stands alone, or one of
+ *            and, or, but, if, unless, except, in, for, at, on, by, when,
+ *            while, whereas, before, after, afterwards, thereafter, until,
+ *            from, since, once, during, outside, under, beyond, around, west,
+ *            east, elsewhere, otherwise, though, although, depending, maybe
+ *            and perhaps; or after "but", "though", "although" or "yet". So
+ *            "yes... and no really", "yes (in Tokyo) but no (in London)",
+ *            "In London, no... in Tokyo, yes", "Yes, before noon; no after"
+ *            and "No. Yes no-one disputes it." name nothing, while "No, so a
+ *            yes would be wrong" is NO and "Yes, with no station that day"
+ *            is YES.
  *            DEPENDS counts as the word "depends". A date may also be written
  *            as 7 March 2023, 7th of March 2023, March 7, 2023, Mar. 7 2023,
  *            7 Sept 2023 or 2023/03/07, and a YYYY-MM-DD date may run on into

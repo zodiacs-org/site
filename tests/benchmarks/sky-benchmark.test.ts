@@ -103,7 +103,7 @@ const V0_SHA256: Record<string, string> = {
   'items.json': '8521a288178929e18f9598bda34d7c70f975e9b168a4b7107920ee657f6fe532',
   'key.json': '4d1ec5f76cce20830962d9bb0c876ad03fc85a9ace8a24a78f28ff4bd36abcb2',
   'tool-answers.json': '7477701a8aeb90b23fe5102b66696017f02a47c1a7f131a91937c536f8ac092c',
-  'scorer.mjs': 'a9b28efc1ca53c2e062b0a9a857f8b472b30fc18d326e8366a9ad819e548393e',
+  'scorer.mjs': '728355f27bccf8713b09125f08044895c85e66b54edc77c7eea4e39c0df28217',
 };
 
 /** The engine and ΔT tables v0 was drawn with, and whether the installed engine is the same. */
