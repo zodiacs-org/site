@@ -196,7 +196,14 @@ export function describeCapabilities(): ToolOutcome {
       eventKinds: [...EVENT_KINDS],
       factKinds: [...SKY_FACT_KINDS],
       phases: [...PHASE_NAMES],
-      limits: { ...BUDGETS },
+      // The compute API's limits on these three tools' requests, by name: its
+      // table also holds the limits of elections, which this adapter does not offer.
+      limits: {
+        'positions.instants': BUDGETS['positions.instants'],
+        'events.windowDays': BUDGETS['events.windowDays'],
+        'events.samples': BUDGETS['events.samples'],
+        'sky-fact.samples': BUDGETS['sky-fact.samples'],
+      },
       search: { window: 'start-exclusive-end-inclusive', completeness: 'tested-not-proven' },
       dates: ANY_ZONE_DAY_TEXT,
     },

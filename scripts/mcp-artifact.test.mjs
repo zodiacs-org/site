@@ -14,8 +14,12 @@ import { readFile } from 'node:fs/promises';
 import { gunzipSync } from 'node:zlib';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { Client } from '@modelcontextprotocol/client';
+import { InMemoryTransport } from '@modelcontextprotocol/server';
 import { buildServerBundle } from './build-mcp-server.mjs';
 import { manifestFor } from './pack-mcp-server.mjs';
+import { createServer } from '../src/mcp/create-server';
+import { receiptDigest } from '../src/lib/receipt-digest';
 
 const ROOT = fileURLToPath(new URL('../', import.meta.url));
 const BUNDLE = resolve(ROOT, 'examples/mcp-server/server.mjs');
@@ -127,6 +131,47 @@ describe('the install check a downloader runs', () => {
       .toContain(`one line per check, ${spelled} in all`);
     expect(page.toLowerCase(), 'the developer page names another number of checks').toContain(`${spelled} checks`);
   }, 150_000);
+});
+
+describe('the examples in the README', () => {
+  /**
+   * The README invites a reader to recompute the digest a citation quotes.
+   * Under its example comparison, rc.16.2's README printed the digest of
+   * rc.16.1's receipt: each release moved the receipt's version line and not
+   * the digest below it, and nothing compared the two.
+   */
+  const examples = async () => {
+    const readme = await readFile(resolve(ROOT, 'examples/mcp-server/README.md'), 'utf8');
+    return [...readme.matchAll(/```json\n([\s\S]*?)```/g)].map((match) => JSON.parse(match[1]));
+  };
+
+  it('prints, under the receipt it shows, the digest of that receipt', async () => {
+    const shown = (await examples()).filter((block) => block.receipt && block.cite);
+    expect(shown.map((block) => block.receipt.tool)).toEqual(['compare_calculation_records']);
+    for (const block of shown) expect(block.cite.receipt).toBe(receiptDigest(block.receipt));
+  });
+
+  it('prints, under the chart it asks for, what the tool returns', async () => {
+    const blocks = await examples();
+    const index = blocks.findIndex((block) => block.name === 'calculate_natal_chart');
+    const [request, printed] = [blocks[index], blocks[index + 1]];
+    const server = createServer(() => {});
+    const [clientSide, serverSide] = InMemoryTransport.createLinkedPair();
+    await server.connect(serverSide);
+    const client = new Client({ name: 'readme-examples', version: '1.0.0' });
+    await client.connect(clientSide);
+    try {
+      const result = await client.callTool(request);
+      expect(result.isError).toBeFalsy();
+      const answer = result.structuredContent;
+      expect(answer.cite).toEqual(printed.cite);
+      expect(answer.bodies[0]).toEqual(printed.bodies[0]);
+      expect(answer.angles).toEqual(printed.angles);
+      expect(answer.houses).toEqual(printed.houses);
+    } finally {
+      await client.close();
+    }
+  });
 });
 
 describe('the recorded evidence', () => {

@@ -108,7 +108,8 @@ const OWNER_TRUST_LASTMOD = '2026-10-03';
 const OWNER_TRUST_ROUTES = ['/', '/privacy/', '/terms/', '/methodology/', '/astrofolio/how-to-buy/'] as const;
 // MCP adapter 0.1.0-rc.16.2 of 2026-10-05: its page gains the three tools
 // that run the compute API's calculations, and the compute API's page now
-// says which UTC offsets a date without a zone is read in.
+// says which UTC offsets a date without a zone is read in. rc.16.3, the same
+// day, changes only the version and download the MCP page names.
 const MCP_COMPUTE_TOOLS_LASTMOD = '2026-10-05';
 const MCP_COMPUTE_TOOLS_ROUTES = ['/developers/mcp/', '/developers/compute/'] as const;
 // The sky-fact benchmark of 2026-10-05: its own page, and the developer hub's

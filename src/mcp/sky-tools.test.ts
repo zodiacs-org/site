@@ -398,7 +398,14 @@ describe('what the adapter says about the three tools', () => {
       eventKinds: [...EVENT_KINDS],
       factKinds: [...SKY_FACT_KINDS],
       phases: [...PHASE_NAMES],
-      limits: { ...BUDGETS },
+      // Only these tools' limits: the compute API's table also holds the
+      // elections endpoint's, and this adapter has no tool for it.
+      limits: {
+        'positions.instants': BUDGETS['positions.instants'],
+        'events.windowDays': BUDGETS['events.windowDays'],
+        'events.samples': BUDGETS['events.samples'],
+        'sky-fact.samples': BUDGETS['sky-fact.samples'],
+      },
       search: { window: 'start-exclusive-end-inclusive', completeness: 'tested-not-proven' },
       dates: ANY_ZONE_DAY_TEXT,
     });
