@@ -14,3 +14,8 @@ requires an OpenAI-supported distribution path; the repo marketplace and direct
 local MCP connection are the available development paths.
 
 These files are prepared packages, not evidence of upload, acceptance or listing.
+
+Current metadata packages are version **0.1.1**; `manifest.json` identifies their
+archive and member hashes. The retained 0.1.0 ZIPs are historical artifacts.
+Website, company and support metadata are refreshed; runtime and MCP connection
+configuration are unchanged. See [profile metadata](../../docs/platform/zodiacs-ai/PROFILE_METADATA.md).

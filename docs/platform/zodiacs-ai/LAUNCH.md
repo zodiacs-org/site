@@ -2,22 +2,27 @@
 
 ## Recovery status — 2026-10-05
 
-Main `3491e8e9` is integrated and the AI runtime/package artifacts are regenerated.
-Follow the latest PR #618 checks and new dated staging evidence for this source;
-the deployment and host results below are historical. The owner confirms there
-are no testers, so beta acceptance remains pending. Publisher identity
-verification still blocks upload. The existing ChatGPT development connection
-has expired preview authentication and needs an owner acknowledgement before
-replacement. Production remains disabled. Final owner approval is required
-before submitting, merging or activating it.
+Main `3491e8e9` is integrated. Complete Site Check (all nineteen jobs) and
+Browser Evidence (fifteen visual comparisons, thirty Lighthouse routes and
+navigation) pass on `c1977043bbe814f05dd12c5ac3e16ee1c36ad58e`. The later 0.1.1
+metadata packages pass `ai:check`; runtime and MCP configurations are unchanged.
+Follow the latest PR #618 checks for the final source before release approval.
 
 The refreshed stable staging alias targets `dpl_6FVWjbUkCMM3Wengo4vf8ssb65aH`,
 source `39f36c57bbeb8f4910fc1ff26712490fcb840c53`. Twelve HTTPS checks and six
-official-SDK calls pass in `evidence/staging-acceptance-2026-10-05.json`.
-Its original server quota credential is a deployment-only secret; no persistent
-production configuration or schema changed. A new 23-hour protected share is
-prepared privately in the replacement ChatGPT form. The owner's acknowledgement
-remains pending, so no new actual-host invocation is claimed.
+SDK calls pass in `evidence/staging-acceptance-2026-10-05.json`. Its quota
+credential remains deployment-only; no persistent production configuration or
+schema changed. The owner created **Zodiacs Staging October 5** using the private
+23-hour preview connection. It is Connected; fresh native calendar checks pass
+rc.16, UTC defaults, Bangkok display, invalid-zone refusal and recovery. Current
+host acceptance covers the calendar; older full routing/video remains rc.15.
+
+Eight custom profiles and both local plugins now have company, website, support,
+legal and capability metadata. See [PROFILE_METADATA.md](./PROFILE_METADATA.md)
+for verification and the original portable cloud profile's desktop update.
+The owner confirms no beta testers. Publisher identity and consented feedback
+remain pending. Production remains disabled. Final owner approval is reserved
+before submission, merge or production activation.
 
 ## Historical review status — 2026-10-02
 
@@ -53,7 +58,7 @@ from remaining acceptance requirements.
   deployment-bound share authentication works in ChatGPT; no credential is
   committed. No production alias or Firewall configuration was changed.
 
-## Current rc.16 staging
+## Historical rc.16 staging — 2026-10-02
 
 The stable staging alias now targets `dpl_CSFWTPqDyZ3ZF4e32wSXsFnMfspM`,
 source `5468423bac0675336949ab16839f40ac5def3e92`. Twelve HTTPS acceptance

@@ -1,13 +1,14 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "zodiacs-sky",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Explore upcoming sky events, exact-instant positions and astronomical fact checks with the Zodiacs public-sky tools.",
   "author": {
-    "name": "Zodiacs",
+    "name": "Zodiacs LLC",
+    "email": "admin@zodiacs.org",
     "url": "https://zodiacs.org/"
   },
-  "homepage": "https://zodiacs.org/developers/ai/",
+  "homepage": "https://zodiacs.org/",
   "repository": "https://github.com/zodiacs-org/site/tree/main/plugins/zodiacs-sky",
   "license": "Proprietary",
   "keywords": [
@@ -22,16 +23,16 @@
       "interface": {
         "displayName": "Zodiacs",
         "shortDescription": "Sky events and fact checks",
-        "longDescription": "See what changes this week, explore new and full Moons, and check astronomical claims with explicit timezones and versioned calculation receipts. The sky calendar supports inline, sidebar and conversation panels. Public-sky tools need no account or birth information. Event windows are at most 31 days; supported searches cover sign ingresses, planetary stations and lunations, with tested but unproven completeness. No reminders, eclipse search, personal chart storage or predictions of outcomes are offered. This is a review candidate; dated staging host evidence is recorded, while production and directory listing await release checks.",
-        "developerName": "Zodiacs",
+        "longDescription": "Developed by Zodiacs LLC, the operator of Zodiacs.org. See what changes this week, explore new and full Moons, and check astronomical claims with explicit timezones and versioned calculation receipts. The sky calendar supports inline, sidebar and conversation panels. Public-sky tools need no account or birth information. Event windows are at most 31 days; supported searches cover sign ingresses, planetary stations and lunations, with tested but unproven completeness. No reminders, eclipse search, personal chart storage or predictions of outcomes are offered. This is a review candidate; dated staging host evidence is recorded, while production and directory listing await release checks.\n\nOfficial website: https://zodiacs.org/ . Company and contact: https://zodiacs.org/about/ . Support: admin@zodiacs.org . Methods and developer documentation: https://zodiacs.org/developers/ . Privacy and terms are linked in this profile.",
+        "developerName": "Zodiacs LLC",
         "category": "Lifestyle",
         "capabilities": [
           "Sky calendar",
           "Astronomical fact checks",
           "Calculator discovery"
         ],
-        "websiteURL": "https://zodiacs.org/developers/ai/",
-        "supportURL": "https://zodiacs.org/developers/support/",
+        "websiteURL": "https://zodiacs.org/",
+        "supportURL": "https://zodiacs.org/about/",
         "privacyPolicyURL": "https://zodiacs.org/privacy/",
         "termsOfServiceURL": "https://zodiacs.org/terms/",
         "composerIcon": "./assets/icon.png",
@@ -97,7 +98,7 @@
         "demo_recording_url": "https://raw.githubusercontent.com/zodiacs-org/site/fca11967611ab4758dc616b871ce991f82cf1cd4/docs/platform/zodiacs-ai/evidence/chatgpt/host-capture-walkthrough.mp4"
       },
       "publication": {
-        "release_notes": "Initial unpublished review candidate: five public-sky tools and native calendar. Active candidate engine rc.16, atomic hosted quota and bounded staging acceptance recorded. The linked 40-second selected-state reel shows dated actual rc.15 ChatGPT UI; it is not a continuous recording or portal-approved video. Public production/listing and consenting beta acceptance remain release gates."
+        "release_notes": "0.1.1 updates publisher metadata, website, support contact and policy links. The engine, tools and release gates are unchanged. Initial unpublished review candidate: five public-sky tools and native calendar. Active candidate engine rc.16, atomic hosted quota and bounded staging acceptance recorded. The linked 40-second selected-state reel shows dated actual rc.15 ChatGPT UI; it is not a continuous recording or portal-approved video. Public production/listing and consenting beta acceptance remain release gates."
       }
     }
   }

@@ -1,9 +1,10 @@
 {
   "name": "zodiacs-developer",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Build and verify astrology integrations with the published Zodiacs engine, bounded sky tools and local chart comparison.",
   "author": {
-    "name": "Zodiacs",
+    "name": "Zodiacs LLC",
+    "email": "admin@zodiacs.org",
     "url": "https://zodiacs.org/"
   },
   "homepage": "https://zodiacs.org/developers/",
@@ -22,15 +23,15 @@
       "interface": {
         "displayName": "Zodiacs Developer",
         "shortDescription": "Build astrology integrations",
-        "longDescription": "Build Moon widgets, sky calendars and astrology APIs with the published Zodiacs engine. Verify calculation records and test timezones with synthetic inputs. The local developer server supports natal calculations without a listener or outbound connection; the assistant provider can still receive inputs and results. Personal hosted charts and public directory availability are not offered by this review candidate.",
-        "developerName": "Zodiacs",
+        "longDescription": "Developed by Zodiacs LLC, the operator of Zodiacs.org. Build Moon widgets, sky calendars and astrology APIs with the published Zodiacs engine. Verify calculation records and test timezones with synthetic inputs. The local developer server supports natal calculations without a listener or outbound connection; the assistant provider can still receive inputs and results. Personal hosted charts and public directory availability are not offered by this review candidate.\n\nOfficial website: https://zodiacs.org/ . Company and contact: https://zodiacs.org/about/ . Support: admin@zodiacs.org . Methods and developer documentation: https://zodiacs.org/developers/ . Privacy and terms are linked in this profile.",
+        "developerName": "Zodiacs LLC",
         "category": "Developer Tools",
         "capabilities": [
           "Read",
           "Write"
         ],
         "websiteURL": "https://zodiacs.org/developers/",
-        "supportURL": "https://zodiacs.org/developers/support/",
+        "supportURL": "https://zodiacs.org/about/",
         "privacyPolicyURL": "https://zodiacs.org/privacy/",
         "termsOfServiceURL": "https://zodiacs.org/terms/",
         "composerIcon": "./assets/icon.png",
