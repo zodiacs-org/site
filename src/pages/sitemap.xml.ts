@@ -115,6 +115,11 @@ const MCP_COMPUTE_TOOLS_ROUTES = ['/developers/mcp/', '/developers/compute/'] as
 // card for it.
 const SKY_BENCHMARK_LASTMOD = '2026-10-05';
 const SKY_BENCHMARK_ROUTES = ['/developers/', '/developers/sky-benchmark/'] as const;
+// The elections endpoint of 2026-10-05: its section on the compute API's page,
+// the endpoints the developer hub and support page list, and what the privacy
+// page says the compute API calculates.
+const ELECTIONS_LASTMOD = '2026-10-05';
+const ELECTIONS_ROUTES = ['/developers/', '/developers/compute/', '/developers/support/', '/privacy/'] as const;
 
 const EVERGREEN_LASTMOD = new Map<string, string>([
   [eventsPublication.hub.path, eventsPublication.lastModified] as const,
@@ -249,6 +254,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...OWNER_TRUST_ROUTES.map((loc) => [loc, OWNER_TRUST_LASTMOD] as const),
   ...MCP_COMPUTE_TOOLS_ROUTES.map((loc) => [loc, MCP_COMPUTE_TOOLS_LASTMOD] as const),
   ...SKY_BENCHMARK_ROUTES.map((loc) => [loc, SKY_BENCHMARK_LASTMOD] as const),
+  ...ELECTIONS_ROUTES.map((loc) => [loc, ELECTIONS_LASTMOD] as const),
 ]);
 
 function getLastmod(loc: string): string {
