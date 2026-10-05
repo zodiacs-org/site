@@ -673,6 +673,7 @@
     {"path":"src/islands/today/SunSignFallback.tsx","text":"No saved chart on this device.","claim":"priv.local-storage"},
     {"path":"src/islands/today/TodayBrief.tsx","text":"Saved moments start on this device.","claim":"priv.living-chart"},
     {"path":"src/islands/today/TodayBrief.tsx","text":"Saved moments stay on this device now.","claim":"priv.living-chart"},
+    {"path":"src/islands/today/TodayBrief.tsx","text":"Saving starts on this device.","claim":"priv.living-chart"},
     {"path":"src/islands/today/TodayBrief.tsx","text":"The saved-chart layer runs privately in this browser.","claim":"priv.on-device"},
     {"path":"src/islands/today/TodayBrief.tsx","text":"This is the birth chart marked as yours on this device.","claim":"priv.email"},
     {"path":"src/islands/today/TodayBrief.tsx","text":"This is the birth chart you saved most recently on this device.","claim":"priv.email"},
