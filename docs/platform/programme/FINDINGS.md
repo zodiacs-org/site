@@ -598,3 +598,16 @@ On rc.16 the preregistered rerun ([record](../evidence/houses-2026-10-04/README.
 ### F-57 — update, 2026-10-05 (checkpoint 15)
 
 The MCP adapter's part is fixed in 0.1.0-rc.16.1 (#643): `get_capabilities` labels the engine `published` on npm, and the README and `candidate.json` say it was published under `next` on 2026-10-01, when `latest` still named 0.1.1-rc.15. The engine's own packed README is unchanged and changes with its next version (open).
+
+### F-61 — update, 2026-10-05 (checkpoint 16)
+
+- **Again.** Main's Site Check after #645 (`c9777773`, documentation and evidence only) failed in the same step the same way. WebKit at 1280 px logged `Cannot load blob:… due to access control checks` twice from the same built chunk, `share-card-brand.SvWVt-Dl.js`, column 838, after the invitation journey, and `tests/sharing-phase2-drive.mjs:147` failed. The merge commit's tree is the tree of the pull request's head `7fc766e5`, whose run passed. The other 18 jobs passed, and #646's run, on top of it, passed the same step.
+- **Preserved.** Run 37250771720 attempt 1, job 111579178132. Artifact 11321028728 (`sharing-phase2-37250771720`, 9,012,921 bytes), downloaded on 2026-10-05, has SHA-256 `8911402d80628fc9fd849b9b049499960967725f69e901ee22c10ecbf68921dc`, equal to the digest the upload step printed. The first error, as logged (the second is the same with another blob):
+
+  ```
+  2026-10-05T01:31:27.6825344Z Browser error at http://127.0.0.1:8791/compatibility/ ttp://127.0.0.1:8791/86753f35-da7d-496a-abb1-1d8b73c655f1 due to access control checks. Cannot load blob:http://127.0.0.1:8791/86753f35-da7d-496a-abb1-1d8b73c655f1 due to access control checks.
+  2026-10-05T01:31:27.6827779Z     at o (http://127.0.0.1:8791/_astro/share-card-brand.SvWVt-Dl.js:1:838)
+  ```
+- **Retry.** None. By the time the run was read, main had moved on to `3f09711a` (#646), whose own run is the next sample.
+- **Rate.** Since CI began running the drive (#630), it has failed on 2 of the 12 completed runs on main, after #637 and #645, both documentation changes, both in WebKit at 1280 px after the invitation journey.
+- **Disposition.** Unchanged: the fix belongs to the sharing feature, and the handoff stands. Until it lands, any merge can turn main red this way.
