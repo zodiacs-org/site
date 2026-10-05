@@ -1,5 +1,46 @@
 # Programme status
 
+Checkpoint 18, 2026-10-05: structured data on the developer pages, judged
+against main `a1217c39c4cfb6e32a4d1c9c3cffa68ad0ce9f73` (#653), which
+production `dpl_6f2JNEQFegyBkAhxp4PYBLgn7i7N` serves (READY
+2026-10-05T15:08:18Z).
+
+**Overall delivery: 32%** (31.790% to three decimals) — 58 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%. Up from 31.241% at
+checkpoint 17 by S1's weight of 1. Gates, weights and the denominator are
+unchanged. [Structured data record](../evidence/structured-data-2026-10-05/README.md).
+
+- **Accepted (1).**
+  - S1 (1): the six developer pages carry SoftwareApplication (the engine,
+    the MCP server), SoftwareSourceCode (the engine's repository), WebAPI
+    (the static sky data, the compute API) and Dataset (the sky data, the
+    conformance vectors, the sky-fact benchmark) markup, each page with a
+    breadcrumb. `scripts/validate-schema.mjs` holds every value to the
+    record it comes from on every build, and 15 faults planted in a built
+    copy of the pages each failed it. schema.org's vocabulary found no
+    error in 97 typed nodes. The six pages in production serve JSON-LD
+    identical to the build that passed.
+  - Google's Rich Results Test was not run. The sky-fact benchmark's
+    Dataset names no licence, because none has been chosen.
+- **Findings.** None new. The pull request's first CI run failed because
+  the Phase 1 reader captures pin a digest over `src/lib`, where S1 adds a
+  module; its local checks had run only the targeted tests. The captures
+  were retaken, and the full test suite run, before the push that passed.
+- Actual command: `node scripts/programme-ledger.mjs --summary` →
+  `Overall delivery: 32% (58 of 182.45); blocked 2% (3)`.
+- **Owner decisions needed.** As in checkpoint 17: what "raw answers"
+  means for B4.a, a licence for the benchmark's files (the programme
+  recommends CC0 1.0) and its name; F-71; the readings that leave A6
+  partial; F-77; and an engine release for eclipses and the sidereal zodiac
+  in the MCP tools.
+- **Next.** B5.b, the election search on the compute API, with the fixes
+  from its independent review, and with it F-78: on engine rc.16 one
+  address at both of the compute API's rate limits can cost more than the
+  10 CPU-seconds a minute DECISIONS-2026-09-30 §7 allows, and changing the
+  Firewall rules is the owner's decision.
+
+## Earlier checkpoints
+
 Checkpoint 17, 2026-10-05: the sky-fact benchmark v0, judged against main
 `e20d5f4027ff7800a6cf494a3f1702bb142d49f0` (#648), which production
 `dpl_Aab4BCHqNeL2wK6w3A1AQaQ7wh28` serves (READY 2026-10-05T12:58:32Z).
@@ -46,8 +87,6 @@ checkpoint 16. Gates, weights and the denominator are unchanged.
     still says about 8.7. The election search does not raise the figure. It
     is recorded as F-78, with the evidence and the owner's options, in the
     election search's pull request.
-
-## Earlier checkpoints
 
 Checkpoint 16, 2026-10-05: the MCP adapter 0.1.0-rc.16.2, judged against main
 `3f09711a8bde37cec855bd33aad80de72ca9eed4` (#646), which production
