@@ -349,7 +349,7 @@ describe('registry pastel polish', () => {
     // The static pages carry the shared script; the hub SPA's Header sets
     // .is-away itself.
     for (const value of [wingNav, astrofolio, terminal, markets, thesis, sdk, technical]) {
-      expect(value).toContain('@media (max-width: 599.5px) {\n    .wnav-wrap { top: 0; padding-top: 0; transition: transform 360ms cubic-bezier(0.22,1,0.36,1), opacity 260ms ease; }');
+      expect(value).toContain('@media (max-width: 919.5px) {\n    .wnav-wrap { top: 0; padding-top: 0; transition: transform 360ms cubic-bezier(0.22,1,0.36,1), opacity 260ms ease; }');
       expect(value).toContain('.wnav-wrap.is-away { transform: translateY(-100%); opacity: 0; }');
       expect(value).toContain("html body .wnav-wrap .wnav { --wnav-lockup: clamp(10px, 3.2vw, 13px); display: grid; grid-template-areas: 'menu . mark chip . profile search'; grid-template-columns: 44px minmax(0,1fr) calc(var(--wnav-lockup) * 5.7 + 13px) calc(var(--wnav-lockup) * 8.27 + 13px) minmax(0,1fr) 44px 44px; box-sizing: border-box; width: 100%; max-width: none; height: calc(52px + env(safe-area-inset-top, 0px));");
       expect(value).toContain('border-width: 0 0 1px; border-radius: 0; box-shadow: none; }');
@@ -359,25 +359,25 @@ describe('registry pastel polish', () => {
       expect(value).toContain('.wnav__chip { grid-area: chip; position: relative; padding: 0 0 0 13px; border-left: 0; font-size: var(--wnav-lockup); letter-spacing: 0.2em; line-height: 1; }');
       expect(value).toContain(".wnav__chip::before { content: ''; position: absolute; left: 0; top: 50%; width: 1px; height: 15px;");
       expect(value).toContain('.wnav__search { grid-area: search; }');
-      expect(value).toContain('@media (max-width: 599.5px) and (prefers-reduced-motion: reduce) { .wnav-wrap { transition: none; } }');
+      expect(value).toContain('@media (max-width: 919.5px) and (prefers-reduced-motion: reduce) { .wnav-wrap { transition: none; } }');
     }
     for (const value of [wingNav, markets, thesis, sdk]) {
-      expect(value).toContain("var phone = window.matchMedia('(max-width: 599.5px)');");
+      expect(value).toContain("var phone = window.matchMedia('(max-width: 919.5px)');");
       expect(value).toContain("if(!phone.matches || y < 64 || held()){ set(false); last = y; return; }");
       expect(value).toContain("wrap.classList.toggle('is-away', next);");
     }
-    expect(source).toContain("const PHONE_BAR_QUERY = '(max-width: 599.5px)';");
+    expect(source).toContain("const PHONE_BAR_QUERY = '(max-width: 919.5px)';");
     expect(source).toContain('<div className="wnav-wrap" ref={wrapRef}>');
     const header = source.slice(source.indexOf('function Header() {'), source.indexOf('\n    function ', source.indexOf('function Header() {')));
     expect(header).toContain("wrap.classList.toggle('is-away', next);");
     expect(header).toContain("|| root.classList.contains('has-campaign-sheet')");
-    expect(siteNav).toContain(":global(html:not([data-chart-share-receiver])) .nav-wrap.is-away { transform: translateY(-100%); opacity: 0; }");
+    expect(siteNav).toContain(":global(html[lang]) .nav-wrap.is-away { transform: translateY(-100%); opacity: 0; }");
     expect(siteNav).toContain("grid-template-areas: 'menu . mark chip . profile search';");
     expect(siteNav).toContain("grid-template-areas: 'menu . mark chip . profile .';");
     expect(siteNav).toContain('grid-template-columns: 44px minmax(0, 1fr) calc(var(--nav-lockup) * 5.7 + 13px) calc(var(--nav-lockup) * 8.27 + 13px) minmax(0, 1fr) 44px 44px;');
-    expect(siteNav).toContain(":global(html:not([data-chart-share-receiver])) .nav__chip::before {");
-    expect(siteNav).toContain(":global(html:not([data-chart-share-receiver])) .nav__burger:not([aria-expanded='true']) .nav__burger-line:nth-child(2) { opacity: 0; }");
-    expect(siteNav).toContain("var phone = window.matchMedia('(max-width: 599.5px)');");
+    expect(siteNav).toContain(":global(html[lang]) .nav__chip::before {");
+    expect(siteNav).toContain(":global(html[lang]) .nav__burger:not([aria-expanded='true']) .nav__burger-line:nth-child(2) { opacity: 0; }");
+    expect(siteNav).toContain("? '(max-width: 1039.5px)' : '(max-width: 919.5px)');");
     expect(siteNav).toContain("if (!wrap || !window.matchMedia || root.hasAttribute('data-chart-share-receiver')) return;");
 
     for (const value of [wingNav, astrofolio, terminal, markets, thesis, sdk, technical]) {

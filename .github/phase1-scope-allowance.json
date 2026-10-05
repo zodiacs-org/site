@@ -1,20 +1,27 @@
 {
   "version": 1,
-  "id": "owner-review-fixes-20261004",
-  "baseCommit": "67aa32d8b3f112a08aebe5f7b52db9a331ecbaf1",
+  "id": "owner-responsive-navigation-consistency-20261005",
+  "baseCommit": "3491e8e97fbf0980d3ffcbf8ba5aa78ade60f555",
   "protectedPaths": [
-    "src/pages/es/index.astro",
-    "src/pages/es/saturn-return/index.astro",
-    "src/pages/fr/index.astro",
-    "src/pages/fr/saturn-return/index.astro",
-    "src/pages/it/index.astro",
-    "src/pages/it/saturn-return/index.astro",
-    "src/pages/pt/index.astro",
-    "src/pages/pt/saturn-return/index.astro",
-    "src/strings/additions.es.mjs",
-    "src/strings/additions.fr.mjs",
-    "src/strings/additions.it.mjs",
-    "src/strings/additions.pt.mjs"
+    "public/assets/app.js",
+    "public/registry/aquarius/index.html",
+    "public/registry/aries/index.html",
+    "public/registry/cancer/index.html",
+    "public/registry/capricorn/index.html",
+    "public/registry/gemini/index.html",
+    "public/registry/index.html",
+    "public/registry/leo/index.html",
+    "public/registry/libra/index.html",
+    "public/registry/pisces/index.html",
+    "public/registry/sagittarius/index.html",
+    "public/registry/scorpio/index.html",
+    "public/registry/taurus/index.html",
+    "public/registry/technical/index.html",
+    "public/registry/virgo/index.html",
+    "public/sdk/index.html",
+    "public/terminal/markets/index.html",
+    "scripts/registry-pastel-polish.test.mjs",
+    "src/app.jsx"
   ],
-  "authorization": "The owner reviewed the October 4 preview of PR #638, replied “Approved”, and on October 4, 2026 explicitly allowed this one-time exception. These bounded edits add the shared sharing-tools band to the localized homepages, add the Keep exploring links to the localized Saturn return pages, and add the localized link-preview card copy for the eight newer tools. They do not change sign guides, Learn pages, the Registry wing, or the SDK."
+  "authorization": "On October 5, 2026, after being told that tablet layouts and shared-chart pages still use the floating pill, the owner instructed: \u201cyes do it. I want consistency. Except desktop - that remains as is\u201d. This one-time exact-path exception updates only the shared navigation breakpoint, its Registry application scroll query, synchronized/generated navigation output, and the associated navigation regression assertions. Existing desktop navigation, page content, assets, disclosures and locale copy remain unchanged."
 }

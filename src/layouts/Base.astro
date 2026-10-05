@@ -556,8 +556,12 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
 <style is:global>
   :root { --nav-space: 96px; }
   main { position: relative; z-index: var(--z-base); padding-top: var(--nav-space); }
-  @media (max-width: 599.5px) {
+  @media (max-width: 919.5px) {
     :root { --nav-space: calc(64px + env(safe-area-inset-top, 0px)); }
     main > :is(.section, .section--tight):first-child { padding-top: 36px; }
+  }
+  @media (min-width: 920px) and (max-width: 1039.5px) {
+    :root:not(:lang(en)) { --nav-space: calc(64px + env(safe-area-inset-top, 0px)); }
+    :root:not(:lang(en)) main > :is(.section, .section--tight):first-child { padding-top: 36px; }
   }
 </style>

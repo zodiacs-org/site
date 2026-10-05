@@ -98,7 +98,7 @@ describe('navigation first-paint reservation', () => {
     // The centred ZODIACS | ASTROFOLIO pair must not be sized by its text: a
     // content-sized track re-centres the mark when the chip streams in after
     // first paint, which Lighthouse measured as layout shift on the homepage.
-    const phone = css.split('@media (max-width: 599.5px) {')[1].split('\n  }\n')[0];
+    const phone = css.split('@media (max-width: 919.5px) {')[1].split('\n  }\n')[0];
     const bar = rule('.nav-wrap .nav', phone);
     const tracks = value(bar, 'grid-template-columns');
     expect(tracks).not.toMatch(/\bauto\b|content/u);

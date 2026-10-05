@@ -1633,7 +1633,7 @@
 
     // Phones: the navigation is a full-width bar at the top edge that slides
     // away as the page scrolls down (the wing pages' shared rule).
-    const PHONE_BAR_QUERY = '(max-width: 599.5px)';
+    const PHONE_BAR_QUERY = '(max-width: 919.5px)';
 
     function Header() {
       const [menuOpen, setMenuOpen] = useState(false);
