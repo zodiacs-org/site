@@ -52,20 +52,23 @@ Version 0 was drawn on 2026-10-05; that date decides only whether a question
 says "was" or "will be". Dates are drawn from 1900-01-01 to 2049-12-31; the
 latest year a question names is 2048.
 
-Version 0 is frozen. The test pins the SHA-256 of its four files. The
-generator writes only a version whose folder is empty, and refuses to check a
-published version with one of its files missing, or with an engine or ΔT
-tables other than those its files name: `@zodiacs/engine` 0.1.1-rc.16, with
-the IERS and model ΔT tables of 2026-09-24 (digests `064d98b4a531053a` and
+Version 0 is frozen. The test pins the SHA-256 of its four files. A version
+counts as published once its folder holds any file, `scorer.mjs` among them.
+The generator writes only a version whose folder is empty or missing, refuses
+to check a version not yet published, and refuses to check a published
+version with one of its files missing, or with an engine or ΔT tables other
+than those its files name: `@zodiacs/engine` 0.1.1-rc.16, with the IERS and
+model ΔT tables of 2026-09-24 (digests `064d98b4a531053a` and
 `6371988c510a1c6c`). It compares only the engine's version and each table's
 model, date and digest, so a receipt that writes the same engine and tables
-another way is not another engine. A change to the engine or the rules is
+another way, or lists the tables in another order, is not another engine. A change to the engine or the rules is
 published as a new version in a new folder, and v0 stays as it is.
 
 The drift test compares the questions and the key byte for byte.
 `check_sky_fact`'s replies it compares by what decides them: each request,
 its answer, and the facts behind it, with every event within 2 seconds of
-where it was. The receipts beside the replies say how each was made when v0
+where it was; an event whose time is missing or does not read as a time
+counts as moved. The receipts beside the replies say how each was made when v0
 was drawn, and may differ from today's without failing it.
 
 Once the site takes another engine, the drift test checks the refusal
@@ -74,7 +77,10 @@ and held to its instants, does not run. `check_sky_fact` is still held to all
 1,986 facts that are answers, which v0's margins keep from turning on the
 engine's error, and to every entry into a sign while retrograde in the
 ingress questions' periods, which the test finds again in the installed
-engine. That was simulated on 2026-10-05 in a throwaway copy, with the
+engine. It holds their number to 18: each is at least 100 hours, and at
+least ten times the time its body takes to move 30″, from its period's
+edges, and no station in those periods comes within 134″ of a sign boundary,
+so an engine within 30″ of v0's finds the same entries. That was simulated on 2026-10-05 in a throwaway copy, with the
 installed engine named 0.1.1-rc.17 and then with new ΔT tables: 20 of the 21
 tests passed and the rules test was skipped, both times.
 
@@ -188,17 +194,20 @@ bodies at 1,500 instants from 1900 to 2049.
   reading. In place of each key answer, every other sign or word, and the
   dates either side of the accepted ones, score as wrong: 1,800 replies. The
   test also holds the lenient reading against copies of the question, a
-  stray "no", "no-one" and "no-brainer", "Gemini" naming Google's assistant
-  but not "Gemini 12°", "Gemini 3 days later" or "Gemini, 1942 to 1949", YES
-  and NO before brackets, dashes, slashes and ellipses, "yes and no", "yes or
-  no", and dates written out. A question with no reply counts as unparsed,
-  and so as wrong. On 2026-10-05 the scorer as published (SHA-256
-  `6d07b3d2…`), copied into a folder with `items.json` and `key.json`, scored
-  one file of 281 replies under Node.js 18.20.8 and 22.22.2 with
-  byte-identical output and the same warning: 280 replies to questions, in
-  the eight forms of the earlier runs and 13 more that use the rules the
-  fourth review changed, strict and lenient, with 20 questions left without a
-  reply, and one reply to no question. That is what the page's "Node.js 18 or
+  stray "no", "no-one", "no-brainer" and "no (direct) way", "Gemini" naming
+  Google's assistant but not "Gemini 12°", "Gemini 3 days later", "Gemini,
+  1942 to 1949", "read as Gemini, I think" or "Gemini" before the next item
+  of a list, YES and NO before brackets, dashes, ellipses and a table's
+  bars, the answer words listed as choices ("yes or no", "yes/no", "YES, NO
+  or DEPENDS"), "yes and no", dates written out, and two days hedged
+  between, as in "18 or 19 March 2041". A question with no reply counts as
+  unparsed, and so as wrong. On 2026-10-05 the scorer as published (SHA-256
+  `5d183a34…`), copied into a folder with `items.json` and `key.json`, scored
+  one file of 293 replies under Node.js 18.20.8 and 22.22.2 with
+  byte-identical output and the same warning: 292 replies to questions, in
+  the forms of the earlier runs and 20 more that use the rules the fifth
+  review changed, strict and lenient, with 8 questions left without a reply,
+  and one reply to no question. That is what the page's "Node.js 18 or
   later" rests on; no test runs Node.js 18.
 
 ## Deliberate faults
@@ -206,8 +215,9 @@ bodies at 1,500 instants from 1900 to 2049.
 Each fault in the first table was made in a throwaway copy of commit
 `21bcfa1f`, with the files regenerated where the generator changed, and the
 benchmark's 19 tests of that commit were run on 2026-10-05. The second table
-holds the faults run after the fourth review, against its 21 tests. The
-tests are named here by their subjects, as they are now:
+holds the faults run after the fourth review, and the third those run after
+the fifth, each against the 21 tests of its round. The tests are named here
+by their subjects, as they are now:
 
 | name | test |
 | --- | --- |
@@ -292,11 +302,34 @@ the published files first ran against the test's 5-second default, which
 caught it only by timing out; the test now allows the time a generator that
 draws anyway takes, and a second run caught it on the refusal.
 
+After the fifth review, each fault below undid one of its fixes in a
+throwaway copy of the tree with them, and the 21 tests were run on
+2026-10-05. The faults in `scorer.mjs` also failed the pins.
+
+| fault | where | caught as a wrong reading, refusal or difference |
+| --- | --- | --- |
+| a slash no longer joining the answer words into a list of choices | `scorer.mjs` | scorer ("It's not a simple yes/no." read as NO) |
+| a slash after YES or NO counted again, anywhere | `scorer.mjs` | scorer ("There is no/little chance it changed." read as NO) |
+| the Gemini rule run on the reply joined into one line, as before | `scorer.mjs` | scorer ("It is either", then "1. Gemini" and "2. Cancer" on their own lines, read as Cancer) |
+| a bracket or an ellipsis after YES or NO counted anywhere | `scorer.mjs` | scorer ("There is no (direct) way to tell…" read as NO) |
+| two days before one month and year read as one date, as before | `scorer.mjs` | scorer ("It falls on 18 or 19 March 2041…" read as the 19th) |
+| "As Gemini, I" read as the assistant anywhere | `scorer.mjs` | scorer ("The Sun would be read as Gemini, I think…" read as nothing) |
+| "Gemini Advanced" read as the assistant again | `scorer.mjs` | scorer ("Mercury in Gemini advanced to 28° that day." read as nothing) |
+| a table's bar no longer a mark | `scorer.mjs` | scorer ("\| Retrograde? \| No \|" read as nothing) |
+| an event time missing or unreadable compared as within 2 seconds | generator | replies drift (sd-001's change lost its time and passed) |
+| a version published only once a drawn file is there, as before | generator | frozen (with only `scorer.mjs` left, the generator drew v0) |
+| `--check` drawing a version not yet published | generator | frozen (it drew v0, then failed on the published replies that were not there, not with the refusal) |
+| the ΔT tables compared in their order | generator | engine (the same tables in the other order counted as another engine) |
+
+With rc.17 and nothing else changed, and again with new ΔT tables, 20 of the
+21 tests passed, the entries test among them with its 18 entries, and the
+rules test was skipped.
+
 ## Corrections made before publication
 
-Four independent reviews read this record before publication: two read
-the first build, a third read the second and a fourth the third. What they
-found is fixed here:
+Five independent reviews read this record before publication: two read
+the first build, a third read the second, a fourth the third and a fifth the
+fourth. What they found is fixed here:
 
 - **The margin for slow planets was 2″.** In the first draw, Neptune's entry
   into Scorpio in 1957 came 5 hours 7 minutes later in the engine than in
@@ -380,6 +413,43 @@ found is fixed here:
   Moon too; each has its own clause now. The page said "Gemini" is ignored
   wherever it names the assistant; it is ignored in the forms the scorer
   lists.
+- **"Yes/no" read as YES.** The fourth review's fixes let YES and NO stand
+  alone before a slash, so "a definitive yes/no answer" read as YES, and
+  "no simple yes/no answer: it depends on your time zone" as nothing. The
+  answer words joined by "or", "nor" or a slash now only list the choices
+  and name none of them, as "yes or no" already did, and a slash after YES
+  or NO no longer counts.
+- **The next item of a list read as a Gemini version.** The scorer joined
+  the reply into one line before its Gemini rule ran, so "Gemini" ending one
+  item of a numbered list and "2." starting the next read as "Gemini 2.",
+  the assistant, and "either Gemini or Cancer" written as a list read as
+  Cancer. The rule now reads the reply's own lines, and a version has to be
+  on the same line as "Gemini".
+- **"No" before a noun read as NO before a bracket or an ellipsis.** "There
+  is no (direct) way" read as NO. A bracket or an ellipsis now counts after
+  YES or NO only at the start of a line or a sentence.
+- **A reply hedging between two dates read as the second.** "It falls on 18
+  or 19 March 2041" read as the 19th, so a hedge gained credit on any date
+  question that accepts the second date. Two days joined by "or", "and",
+  "to", "through", a dash or a slash before one month and year now name two
+  dates, and such a reply reads as nothing.
+- **A reply whose events lost their times passed the drift test.** A
+  missing or unreadable time compared as within 2 seconds. It now counts as
+  moved.
+- **The generator could still draw v0 again.** With the three drawn files
+  gone and only `scorer.mjs` left, it saw no published version, and with
+  another engine it would have drawn v0 anew. A version now counts as
+  published once its folder holds any file, and `--check` refuses a version
+  not yet published rather than report its files as changed.
+- **Smaller fixes.** "Neither yes nor no" and a quoted "“yes” or “no”" list
+  the choices too. "Read as Gemini, I think" and "Gemini advanced to 28°"
+  read as the sign: "As Gemini, I" is the assistant only at the start of a
+  line or a sentence, and "Advanced" is no longer one of the names after
+  "Gemini" that make it the assistant. A table's "| No |" reads as NO. The
+  scorer's header says that space may come between YES or NO and the mark
+  after it. The guard compares the ΔT tables in any order. With another
+  engine, the entries test holds their number to 18, as above. The test has
+  a case where a slash list reads as NO.
 
 ## Not done, and not claimed
 

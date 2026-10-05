@@ -36,8 +36,9 @@
  *
  * A version is frozen once published: tests/benchmarks/sky-benchmark.test.ts
  * pins the bytes of its files, this writes only a version whose folder is
- * empty, and it refuses to check a published version with an engine or ΔT
- * tables other than those its files name, or with one of its files missing.
+ * empty or missing (so draw a version before adding its scorer.mjs), and it
+ * refuses to check a published version with an engine or ΔT tables other
+ * than those its files name, or with one of its files missing.
  * --check compares the questions and the key byte for byte, and
  * check_sky_fact's replies by what decides them: the request, the answer and
  * the facts behind it, each event within 2 seconds. The receipts beside the
@@ -45,7 +46,7 @@
  * from today's. A change in the engine or in these rules is a new version in
  * a new folder (raise VERSION), and v0 stays as it is.
  */
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ENGINE_VERSION, moonPhase } from '@zodiacs/engine';
@@ -616,15 +617,16 @@ export function drawnWith(key, tool) {
   return { engine: key.engine.version, deltaT: tool.answers[0].reply.receipt.deltaT };
 }
 
-/** The ΔT tables as the refusal names them: model, table and digest of each, in order. */
-const tablesOf = (deltaT) => deltaT.map(({ model, table, tableDigest }) => `${model} ${table} ${tableDigest}`).join(', ');
+/** The ΔT tables as the refusal names them: model, table and digest of each, in any order. */
+const tablesOf = (deltaT) => deltaT.map(({ model, table, tableDigest }) => `${model} ${table} ${tableDigest}`).sort().join(', ');
 
 /**
  * Why the installed engine may not draw a published version again, or null
  * when it may. A version is frozen once published: another engine or ΔT
  * table could move its answers, so it draws the next version in its own
  * folder. Only what the refusal names is compared, so the way a receipt
- * writes the same engine and tables does not count as another engine.
+ * writes the same engine and tables, or the order it lists the tables in,
+ * does not count as another engine.
  */
 export function redrawRefusal(published, installed, version = VERSION) {
   if (published.engine === installed.engine && tablesOf(published.deltaT) === tablesOf(installed.deltaT)) return null;
@@ -685,8 +687,9 @@ export function replyDifferences(published, current) {
     }
     for (const list of EVENT_LISTS) {
       (a[list] ?? []).forEach((event, n) => {
-        if (Math.abs(Date.parse(event.at) - Date.parse(b[list][n].at)) > EVENT_TOLERANCE_MS) {
-          differences.push(`${was.id}: ${list} ${event.at} is now ${b[list][n].at}`);
+        // A time missing or unreadable on either side is a difference too: NaN is never within the tolerance.
+        if (!(Math.abs(Date.parse(event.at) - Date.parse(b[list][n].at)) <= EVENT_TOLERANCE_MS)) {
+          differences.push(`${was.id}: ${list} ${event.at} is now ${b[list][n].at ?? 'missing'}`);
         }
       });
     }
@@ -697,22 +700,27 @@ export function replyDifferences(published, current) {
 /**
  * Writes a version that has not been published, or with `check`, holds a
  * published one to what this draws now, returning the files that differ.
- * It draws only VERSION, and refuses rather than redraw a published version:
- * with one of its files missing, with another engine or ΔT tables, or
- * without `check`.
+ * A version is published once its folder holds any file, scorer.mjs among
+ * them. It draws only VERSION, and refuses rather than redraw a published
+ * version: with one of its files missing, with another engine or ΔT tables,
+ * or without `check`. With `check`, it refuses a version not yet published.
  */
 export async function writeOrCheck(version = VERSION, { check = false, root = ROOT } = {}) {
   const dir = resolve(root, folderOf(version));
   const texts = await Promise.all(DRAWN_FILES.map((name) => readFile(resolve(dir, name), 'utf8').catch(() => null)));
-  const published = texts.some((text) => text !== null);
+  const published = (await readdir(dir).catch(() => [])).length > 0;
   if (version !== VERSION) {
     throw new Error(`build-sky-benchmark: this generator draws ${VERSION}, not ${version}. `
       + (published ? `${version} is frozen: its pinned bytes hold it.` : `Raise VERSION to draw ${version}.`));
   }
+  if (check && !published) {
+    throw new Error(`build-sky-benchmark: ${version} is not published, so there is nothing to check. Draw it without --check.`);
+  }
   if (published) {
     const missing = DRAWN_FILES.filter((_, index) => texts[index] === null);
     if (missing.length > 0) {
-      throw new Error(`build-sky-benchmark: ${version} is published, but ${missing.join(' and ')} ${missing.length > 1 ? 'are' : 'is'} missing. ${version} is frozen: restore ${missing.length > 1 ? 'them' : 'it'} rather than draw ${version} again.`);
+      const named = missing.length > 1 ? `${missing.slice(0, -1).join(', ')} and ${missing.at(-1)} are` : `${missing[0]} is`;
+      throw new Error(`build-sky-benchmark: ${version} is published, but ${named} missing. ${version} is frozen: restore ${missing.length > 1 ? 'them' : 'it'} rather than draw ${version} again.`);
     }
     const refusal = redrawRefusal(drawnWith(JSON.parse(texts[1]), JSON.parse(texts[2])), await installedEngine(), version);
     if (refusal) throw new Error(refusal);
@@ -736,7 +744,6 @@ export async function writeOrCheck(version = VERSION, { check = false, root = RO
     }
     return [];
   }
-  if (!published) return [...DRAWN_FILES];
   const stale = ['items.json', 'key.json'].filter((name) => texts[DRAWN_FILES.indexOf(name)] !== files[name]);
   if (replyDifferences(JSON.parse(texts[2]), tool).length > 0) stale.push('tool-answers.json');
   return stale;

@@ -103,7 +103,7 @@ const V0_SHA256: Record<string, string> = {
   'items.json': '8521a288178929e18f9598bda34d7c70f975e9b168a4b7107920ee657f6fe532',
   'key.json': '4d1ec5f76cce20830962d9bb0c876ad03fc85a9ace8a24a78f28ff4bd36abcb2',
   'tool-answers.json': '7477701a8aeb90b23fe5102b66696017f02a47c1a7f131a91937c536f8ac092c',
-  'scorer.mjs': '6d07b3d23098afd3e9b84f148a2e37f9fe9c5a94466430b0d94ff5ed92dc086e',
+  'scorer.mjs': '5d183a348e5d67edf48abba3307344e32e10d49209c0ca97778fbf317eeb5e50',
 };
 
 /** The engine and ΔT tables v0 was drawn with, and whether the installed engine is the same. */
@@ -133,6 +133,7 @@ describe('the sky-fact benchmark, v0', () => {
     const reordered = drawn.deltaT.map((table: any) => Object.fromEntries(Object.entries(table).reverse()));
     expect(redrawRefusal(drawn, { ...drawn, deltaT: reordered })).toBeNull();
     expect(redrawRefusal(drawn, { ...drawn, deltaT: drawn.deltaT.map((table: any) => ({ ...table, note: 'added' })) })).toBeNull();
+    expect(redrawRefusal(drawn, { ...drawn, deltaT: [...drawn.deltaT].reverse() })).toBeNull();
   });
 
   it('is never drawn again: not with a file missing, not over the published files, and not once the generator draws another version', async () => {
@@ -150,6 +151,17 @@ describe('the sky-fact benchmark, v0', () => {
         await expect(writeOrCheck('v0', { check: true, root }), name).rejects.toThrow(/is missing\. v0 is frozen/u);
         copyFileSync(fileURLToPath(new URL(name, DIR)), join(dir, name));
       }
+      // A folder holding any file is published: with only the scorer left, the three drawn files are missing, not to be drawn again.
+      for (const name of DRAWN_FILES) rmSync(join(dir, name));
+      copyFileSync(fileURLToPath(new URL('scorer.mjs', DIR)), join(dir, 'scorer.mjs'));
+      for (const check of [false, true]) {
+        await expect(writeOrCheck('v0', { check, root }), `check ${check}`).rejects.toThrow(/items\.json, key\.json and tool-answers\.json are missing\. v0 is frozen: restore them/u);
+      }
+      // There is nothing to check in a version not yet published.
+      rmSync(dir, { recursive: true });
+      await expect(writeOrCheck('v0', { check: true, root })).rejects.toThrow(/v0 is not published, so there is nothing to check/u);
+      mkdirSync(dir, { recursive: true });
+      await expect(writeOrCheck('v0', { check: true, root })).rejects.toThrow(/v0 is not published, so there is nothing to check/u);
       // A version the generator does not draw: a later one is drawn by raising VERSION, and an earlier one is held by its pins.
       await expect(writeOrCheck('v1', { check: true, root })).rejects.toThrow(/this generator draws v0, not v1\. Raise VERSION to draw v1\./u);
       const earlier = join(root, folderOf('v9'));
@@ -196,6 +208,19 @@ describe('the sky-fact benchmark, v0', () => {
     expect(moved(1_999)).toEqual([]);
     expect(moved(-1_999)).toEqual([]);
     expect(moved(2_001)).toEqual([expect.stringMatching(new RegExp(`^${id(ingress)}: ingresses `, 'u'))]);
+    // An event that lost its time, or whose time does not read as one, is a difference too.
+    for (const [index, list] of [[changes_, 'changes'], [station, 'stations'], [ingress, 'ingresses'], [lunation, 'lunations']] as const) {
+      const lost: Array<(event: any) => void> = [
+        (event) => { event.at = null; },
+        (event) => { event.at = 'soon'; },
+        (event) => { delete event.at; },
+        (event) => { event.time = event.at; delete event.at; },
+      ];
+      for (const lose of lost) {
+        expect(changed(index, (result) => lose(result.facts[list][0])), `${id(index)} ${list}`)
+          .toEqual([expect.stringMatching(new RegExp(`^${id(index)}: ${list} \\S+ is now (?:missing|soon)$`, 'u'))]);
+      }
+    }
     const asked = copy();
     asked.answers[0].request = { ...asked.answers[0].request, body: 'Moon' };
     expect(replyDifferences(tool, asked)).toEqual([`${id(0)}: the request`]);
@@ -340,13 +365,13 @@ describe('the sky-fact benchmark, v0', () => {
         }
       }
     }
+    // Every entry is at least 100 hours, and ten times the time its body takes to move 30″, from its period's edges, and no
+    // station in these periods comes within 134″ of a sign boundary: an engine within 30″ of v0's finds the same 18 entries.
+    expect(entries).toBe(18);
     // With v0's engine, the counts the published replies state, which the page quotes, with the 1,986 answers above: 2,022 facts.
     if (sameEngine) {
       expect([entries, dates]).toEqual([tool.checks.retrogradeEntries, tool.checks.retrogradeEntryDates]);
-      expect([entries, dates, tool.checks.facts]).toEqual([18, 36, 2022]);
-    } else {
-      expect(entries).toBeGreaterThan(0);
-      expect(dates).toBeGreaterThanOrEqual(entries);
+      expect([dates, tool.checks.facts]).toEqual([36, 2022]);
     }
   }, 300_000);
 
@@ -653,9 +678,11 @@ describe("the benchmark's scorer", () => {
     expect(readReply('sign', 'Gemini 1.5 Pro thinks the Sun was in Virgo.')).toEqual({ value: 'Virgo', reading: 'lenient' });
     expect(readReply('sign', 'The Sun was in Gemini, a mutable air sign.')).toEqual({ value: 'Gemini', reading: 'lenient' });
     // The sign with a degree after it is the sign, as Taurus 12° is Taurus.
-    for (const sign of ['Mars was at Gemini 12° that morning.', 'The Sun was in Gemini, 15° to be exact.', 'Mars was at Gemini 12 degrees.', 'It was in the sign known as Gemini.']) {
+    for (const sign of ['Mars was at Gemini 12° that morning.', 'The Sun was in Gemini, 15° to be exact.', 'Mars was at Gemini 12 degrees.', 'It was in the sign known as Gemini.', 'The Sun would be read as Gemini, I think, at that hour.', 'Mercury in Gemini advanced to 28° that day.']) {
       expect(readReply('sign', sign), sign).toEqual({ value: 'Gemini', reading: 'lenient' });
     }
+    // "As Gemini, I" is the assistant where it starts a line or a sentence.
+    expect(readReply('sign', 'Note:\nAs Gemini, I cannot see the sky. The Moon was in Leo.')).toEqual({ value: 'Leo', reading: 'lenient' });
     expect(readReply('sign', 'Mars was at Taurus 12° that morning.')).toEqual({ value: 'Taurus', reading: 'lenient' });
     // A number after "Gemini" makes it the assistant only as a version: one digit, perhaps a point and one or two more,
     // then a model's name or the end of a clause. Otherwise "Gemini" is the sign, and a reply naming another sign too names two.
@@ -670,24 +697,49 @@ describe("the benchmark's scorer", () => {
       ['Gemini 2.5 Flash-Lite says Leo.', 'Leo'],
       ['I asked Gemini 3. It said the Moon was in Leo.', 'Leo'],
       ['(Gemini 2.0) The Moon was in Leo.', 'Leo'],
+      // A list's next number, on the line below, is not a version.
+      ['It is either\n1. Gemini\n2. Cancer', null],
+      ['1. The Sun was at about 88°, which is Gemini\r\n2. It entered Cancer about 4 hours later.', null],
     ];
     for (const [text, sign] of geminiNumbers) expect(readReply('sign', text).value, text).toBe(sign);
-    // YES and NO before the marks the header lists; "yes or no" repeats the question and names neither, "yes and no" names both.
+    // YES and NO before the marks the header lists, and before a bracket or an ellipsis only where a line or a sentence starts.
+    // The answer words joined by "or", "nor" or a slash only list the choices and name none of them; "yes and no" names both.
     const standing: Array<[string, string | null]> = [
       ['No (Mercury was direct all day).', 'NO'],
+      ['Mercury was direct. No (it never stationed).', 'NO'],
+      ['**Answer:** No (Mercury was direct all day).', 'NO'],
+      ['- No (Mercury was direct all day)', 'NO'],
+      ['There is no (direct) way to tell without your time zone.', null],
+      ['No… it was direct.', 'NO'],
+      ['I have no… certainty here without an ephemeris.', null],
       ['No -- it was direct', 'NO'],
       ['Yes--it was retrograde.', 'YES'],
-      ['No… it was direct.', 'NO'],
+      ['| Retrograde? | No |', 'NO'],
       ["It's not a simple yes/no.", null],
+      ["I can't give a definitive yes/no answer without ephemeris data.", null],
+      ['There is no simple yes/no answer: it depends on your time zone.', 'DEPENDS'],
+      ['Answer (yes/no): NO', 'NO'],
+      ['Yes/No: No', 'NO'],
+      ['There is no/little chance it changed.', null],
       ['Is it yes or no? No.', 'NO'],
       ['You asked for YES or NO: NO', 'NO'],
+      ['I will answer YES, NO or DEPENDS. NO', 'NO'],
+      ['Answer (YES/NO/DEPENDS): NO', 'NO'],
       ['Either yes or no.', null],
+      ['Neither yes nor no: it depends on the time zone.', 'DEPENDS'],
+      ['It cannot be a simple “yes” or “no”, because it depends on the zone.', 'DEPENDS'],
+      ['Yes, no matter the zone, it was retrograde.', 'YES'],
       ['No and yes, depending on the zone.', null],
     ];
     for (const [text, word] of standing) expect(readReply('yes-no-depends', text, [rd]).value, text).toBe(word);
     expect(readReply('date', 'It happened at 2023-03-07T10:00Z.')).toEqual({ value: '2023-03-07', reading: 'lenient' });
     expect(readReply('date', 'Sept. 7, 2023')).toEqual({ value: '2023-09-07', reading: 'lenient' });
     expect(readReply('date', 'On 7 Sept 2023.')).toEqual({ value: '2023-09-07', reading: 'lenient' });
+    // Two days before one month and year name two dates, so a reply that hedges between them reads as nothing.
+    for (const hedge of ['It falls on 18 or 19 March 2041, depending on the time zone.', '19–20 March 2041', 'Between 19 and 20 March 2041.', 'March 19 or 20, 2041', 'March 19 or March 20, 2041', 'The 18th or the 19th of March 2041.', 'The night of 18/19 March 2041.']) {
+      expect(readReply('date', hedge), hedge).toEqual({ value: null, reading: 'unparsed' });
+    }
+    expect(readReply('date', 'At 14:30 – 19 March 2041.')).toEqual({ value: '2041-03-19', reading: 'lenient' });
     // A reply that only echoes the question scores nothing on any question.
     for (const [index, item] of items.items.entries()) {
       expect(scoreReply(item, key.items[index], item.prompt), item.id).toMatchObject({ value: null, lenient: false });

@@ -19,30 +19,43 @@
  *            question allows them, or a date as YYYY-MM-DD;
  *   lenient  failing that, the whole reply, once any copy of the question or
  *            of its instruction is taken out, must name exactly one distinct
- *            answer of the allowed kinds. A sign counts wherever its name or
- *            symbol appears, except "Gemini" naming Google's assistant in
- *            these forms: "I am Gemini" or "I'm Gemini"; "as Gemini" before
- *            "I" or ", I"; "Google Gemini" or "Google's Gemini"; "Gemini"
- *            before Pro, Flash, Ultra, Nano, Advanced, app, apps or model, or
- *            before "a model", "a language model", "a large model", "a large
- *            language model" or "an AI", with or without a comma between; and
- *            "Gemini" before a version number, one digit with or without a
- *            point and one or two more, that is followed by Pro, Flash, Ultra
- *            or Nano, or by a comma, full stop, semicolon, exclamation or
- *            question mark, closing bracket or the end of the reply. So
- *            "Gemini 2.5 Pro" and "as Gemini 2.5, I" are the assistant, and
- *            "Gemini 12°", "Gemini 3 days later", "Gemini 14:30" and "Gemini,
- *            1942 to 1949" are the sign.
+ *            answer of the allowed kinds. Below, the start of a line or a
+ *            sentence is the start of a line, after any list marker such as
+ *            "-" or "1.", or what follows . ! ? : or ; and a space, with any
+ *            quotes or emphasis between.
+ *            A sign counts wherever its name or symbol appears, except
+ *            "Gemini" naming Google's assistant in these forms: "I am Gemini"
+ *            or "I'm Gemini"; "As Gemini" at the start of a line or a
+ *            sentence, before "I" or ", I"; "Google Gemini" or "Google's
+ *            Gemini"; "Gemini" before Pro, Flash, Ultra, Nano, app, apps or
+ *            model, or before "a model", "a language model", "a large model",
+ *            "a large language model" or "an AI", with or without a comma
+ *            between; and "Gemini" before a version number on the same line,
+ *            one digit with or without a point and one or two more, that is
+ *            followed by Pro, Flash, Ultra or Nano, or by a comma, full stop,
+ *            semicolon, exclamation or question mark, closing bracket or the
+ *            end of the reply. So "Gemini 2.5 Pro" and "As Gemini 2.5, I" are
+ *            the assistant, and "Gemini 12°", "Gemini 3 days later", "Gemini
+ *            14:30", "Gemini, 1942 to 1949", "read as Gemini, I think" and a
+ *            list's "Gemini" with the next item's number on the line below
+ *            are the sign.
  *            YES and NO count only standing alone: followed, after any
- *            closing emphasis or quote, by one of . , ! ? ; : ( ) ] … / — –,
- *            by a hyphen with a space or another hyphen after it, or by the
- *            end of a line. So "no idea", "no-one" or "there is no station"
- *            is not NO. "Yes and no" names both, and "yes or no", which only
- *            repeats the question, names neither.
+ *            closing emphasis or quote and any space, by one of
+ *            . , ! ? ; : ) ] | — –, by a hyphen with a space or another
+ *            hyphen after it, or by the end of a line; or, at the start of a
+ *            line or a sentence, by ( or …. So "no idea", "no-one", "there is
+ *            no station" and "no (direct) way" are not NO, and "No (it was
+ *            direct)" is. YES, NO and DEPENDS joined by "or", "nor" or a
+ *            slash, with commas before the last and any quotes or emphasis
+ *            around each, only list the choices and name none of them: "yes
+ *            or no", "yes/no", "neither yes nor no", "YES, NO or DEPENDS".
+ *            "Yes and no" names both.
  *            DEPENDS counts as the word "depends". A date may also be written
  *            as 7 March 2023, 7th of March 2023, March 7, 2023, Mar. 7 2023,
  *            7 Sept 2023 or 2023/03/07, and a YYYY-MM-DD date may run on into
- *            a time.
+ *            a time. Two days joined by "or", "and", "to", "through", a dash
+ *            or a slash, before one month and year, name two dates: "18 or 19
+ *            March 2041", "18 March or 19 March 2041", "March 19–20, 2041".
  *
  * A reply neither reading parses is unparsed, and counts as wrong. Letter
  * case never matters. The strict score is the benchmark's score. The lenient
@@ -118,6 +131,8 @@ function strictValue(kind, line) {
 
 const MONTH_NAMES = `(${MONTHS.map((name) => (name === 'september' ? 'september|sept\\.?|sep\\.?' : `${name}|${name.slice(0, 3)}\\.?`)).join('|')})`;
 const monthNumber = (word) => MONTHS.findIndex((name) => word.toLowerCase().startsWith(name.slice(0, 3))) + 1;
+/** What joins two days: "or", "and", "to" or "through", a dash or a slash. */
+const JOINED = '(?:\\s*,?\\s+(?:or|and|to|through)\\s+(?:the\\s+)?|\\s*[-–—/]\\s*)';
 
 /** Every date the reply writes in one of the accepted forms, as YYYY-MM-DD. */
 function datesIn(text) {
@@ -129,6 +144,14 @@ function datesIn(text) {
   }
   for (const match of text.matchAll(new RegExp(`\\b${MONTH_NAMES}\\s+(\\d{1,2})(?:st|nd|rd|th)?\\s*,?\\s+(\\d{4})\\b`, 'giu'))) {
     found.push(isoOf(match[3], monthNumber(match[1]), match[2]));
+  }
+  // Two days before one month and year: "18 or 19 March 2041" and "18 March or 19 March 2041" name the 18th too.
+  for (const match of text.matchAll(new RegExp(`(?:^|[^\\d:])(\\d{1,2})(?:st|nd|rd|th)?(?:\\s+(?:of\\s+)?${MONTH_NAMES})?${JOINED}(\\d{1,2})(?:st|nd|rd|th)?\\s+(?:of\\s+)?${MONTH_NAMES}\\s*,?\\s+(\\d{4})\\b`, 'giu'))) {
+    found.push(isoOf(match[5], monthNumber(match[2] ?? match[4]), match[1]));
+  }
+  // "March 19 or 20, 2041" and "March 19 or March 20, 2041" name both days.
+  for (const match of text.matchAll(new RegExp(`\\b${MONTH_NAMES}\\s+(\\d{1,2})(?:st|nd|rd|th)?${JOINED}(?:${MONTH_NAMES}\\s+)?(\\d{1,2})(?:st|nd|rd|th)?\\s*,?\\s+(\\d{4})\\b`, 'giu'))) {
+    found.push(isoOf(match[5], monthNumber(match[1]), match[2]), isoOf(match[5], monthNumber(match[3] ?? match[1]), match[4]));
   }
   return found.filter(Boolean);
 }
@@ -148,34 +171,50 @@ function withoutEchoes(text, echoes) {
   return out;
 }
 
-/** Google's assistant naming itself, in the forms the header lists, which is not the sign. */
-const ASSISTANT_NAME = /\b(?:i\s+am|i'm|i’m)\s+gemini\b|\bas\s+gemini\b(?=\s*,?\s*i\b)|\bgoogle(?:'s|’s)?\s+gemini\b|\bgemini(?=\s+\d(?:\.\d{1,2})?(?!\.?\d)(?:\s+(?:pro|flash|ultra|nano)\b|\s*(?:[,.;!?)\]]|$))|\s*(?:,\s*)?(?:pro\b|flash\b|ultra\b|nano\b|advanced\b|app\b|apps\b|model\b|a\s+(?:large\s+)?(?:language\s+)?model\b|an\s+ai\b))/giu;
+/** Emphasis or quotes that may open a word, and that may close one. */
+const OPEN = '[*_`"\'“‘]*';
+const CLOSE = '[*_`"\'”’]*';
+/** The start of a line, after any list marker, or of a sentence, after . ! ? : or ; and a space; for a pattern with the m flag. */
+const STARTS = `(?:^[^\\S\\r\\n]*(?:[-*+•][^\\S\\r\\n]+|\\d{1,2}[.)][^\\S\\r\\n]+)?|[.!?:;]${CLOSE}\\s+)${OPEN}`;
 
-/** YES or NO standing alone: followed, after any closing emphasis or quote, by one of the marks the header lists or the end of a line; a hyphen counts only with a space or another hyphen after it. */
-const STANDALONE = (word) => new RegExp(`\\b${word}\\b(?=[*_\`"'”’]*\\s*(?:[.,!?;:()\\]…/—–]|-[-\\s]|$))`, 'imu');
+/** Google's assistant naming itself, in the forms the header lists, which is not the sign. It is read on the reply's own lines. */
+const ASSISTANT_NAME = new RegExp([
+  "\\b(?:i\\s+am|i'm|i’m)\\s+gemini\\b",
+  `${STARTS}as\\s+gemini\\b(?=\\s*,?\\s*i\\b)`,
+  "\\bgoogle(?:'s|’s)?\\s+gemini\\b",
+  // Before a version on the same line, then a model's name or the end of a clause or the reply; or before a model's name, "a model" or "an AI".
+  "\\bgemini(?=[^\\S\\r\\n]+\\d(?:\\.\\d{1,2})?(?!\\.?\\d)(?:\\s+(?:pro|flash|ultra|nano)\\b|\\s*(?:[,.;!?)\\]]|(?![\\s\\S])))"
+    + "|\\s*(?:,\\s*)?(?:pro\\b|flash\\b|ultra\\b|nano\\b|app\\b|apps\\b|model\\b|a\\s+(?:large\\s+)?(?:language\\s+)?model\\b|an\\s+ai\\b))",
+].join('|'), 'gimu');
 
-/** "Yes or no" only repeats the question, and names neither; "yes and no" names both. */
-const YES_OR_NO = /\b(?:yes\s+or\s+no|no\s+or\s+yes)\b/giu;
-const YES_AND_NO = /\b(?:yes\s+and\s+no|no\s+and\s+yes)\b/iu;
+/** YES or NO standing alone, as the header says: before the marks it lists anywhere, and before ( or … only where a line or a sentence starts. */
+const STANDALONE = (word) => new RegExp(
+  `\\b${word}\\b(?=${CLOSE}\\s*(?:[.,!?;:)\\]|—–]|-[-\\s]|$))|${STARTS}${word}\\b(?=${CLOSE}\\s*[(…])`,
+  'imu',
+);
+
+/** The answer words joined by "or", "nor" or a slash only list the choices, and name none of them; "yes and no" names both. */
+const WORD = `${OPEN}\\b(?:yes|no|depends)\\b${CLOSE}`;
+const CHOICES = new RegExp(`${WORD}(?:\\s*,\\s*${WORD})*(?:\\s*\\/\\s*${WORD}|\\s*,?\\s+n?or\\s+${WORD})+`, 'giu');
+const YES_AND_NO = new RegExp(`\\b(?:yes${CLOSE}\\s+and\\s+${OPEN}no|no${CLOSE}\\s+and\\s+${OPEN}yes)\\b`, 'iu');
 
 function lenientValue(kind, text, echoes) {
   const spec = KINDS[kind];
   const lines = withoutEchoes(text, echoes).replace(VARIATION_SELECTORS, '');
-  const plain = collapse(lines);
   const found = new Set();
   if (spec.dates) {
-    for (const date of datesIn(plain)) found.add(date);
+    for (const date of datesIn(collapse(lines))) found.add(date);
   } else {
-    const unasked = lines.replace(YES_OR_NO, ' ');
+    const unasked = lines.replace(CHOICES, ' ');
     for (const word of spec.words) {
-      if (word === 'DEPENDS' ? /\bdepends\b/iu.test(plain) : STANDALONE(word).test(unasked)) found.add(word);
+      if (word === 'DEPENDS' ? /\bdepends\b/iu.test(unasked) : STANDALONE(word).test(unasked)) found.add(word);
     }
-    if (spec.words.includes('YES') && YES_AND_NO.test(collapse(unasked))) {
+    if (spec.words.includes('YES') && YES_AND_NO.test(unasked)) {
       found.add('YES');
       found.add('NO');
     }
     if (spec.signs) {
-      const named = plain.replace(ASSISTANT_NAME, ' ');
+      const named = collapse(lines.replace(ASSISTANT_NAME, ' '));
       SIGNS.forEach((sign, index) => {
         if (new RegExp(`\\b${sign}\\b`, 'iu').test(named) || named.includes(GLYPHS[index])) found.add(sign);
       });

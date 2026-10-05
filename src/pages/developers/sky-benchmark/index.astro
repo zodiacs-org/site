@@ -151,11 +151,13 @@ const jsonLd = [{
         question or its instruction taken out, and with "Gemini" ignored where
         it names Google's assistant in the forms the scorer lists, must name
         exactly one such answer. A date may then also be written as 7 March
-        2023, as March 7, 2023 or as 2023/03/07, and YES or NO counts only as
-        a word on its own, so "no idea" and "no-one" are not NO; "yes and no"
-        names both, and "yes or no" neither. Letter case never matters, and a
-        reply that neither reading parses counts as wrong, as does a question
-        with no reply.
+        2023, as March 7, 2023 or as 2023/03/07, and a reply that gives two
+        days, as in "18 or 19 March 2041", names two dates. YES or NO counts
+        only as a word on its own, so "no idea", "no-one" and "no (direct)
+        way" are not NO; "yes and no" names both, and "yes or no" and
+        "yes/no" name neither. Letter case never matters, and a reply that
+        neither reading parses counts as wrong, as does a question with no
+        reply.
       </p>
       <p>
         The strict score is the benchmark's score. The lenient one counts a
