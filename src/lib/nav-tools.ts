@@ -254,7 +254,7 @@ export const TOOL_CATALOG: readonly ToolCatalogEntry[] = [
     hub: { order: 14, title: 'Eclipses', promise: 'Solar and lunar through 2028, with exact peak times.', hue: 'var(--sign-leo)', kind: 'eclipse', group: 'sky' },
   },
   {
-    href: '/retrogrades/', label: 'retrogrades', footerOrder: 9,
+    href: '/retrogrades/', label: 'retrogrades', footerOrder: 9, footerUsesLocalizedPath: true,
     hub: { order: 15, title: 'Retrogrades', promise: "See each planet's retrograde dates at a glance.", hue: 'var(--sign-virgo)', kind: 'retrograde', group: 'sky' },
   },
   {
