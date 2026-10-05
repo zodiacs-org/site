@@ -13,6 +13,7 @@ published; check_sky_fact agrees with the engine on every item".
 | `scripts/build-sky-benchmark.mjs` | the generator of the first three |
 | `tests/benchmarks/sky-benchmark.test.ts` | the agreement, the generator and the scorer under test |
 | `horizons-check.json`, `tools/horizons-check.mjs` | every answer in the key checked against NASA JPL Horizons |
+| `scorer-check-replies.jsonl` | the replies the scorer read alike under three versions of Node.js |
 | `src/pages/developers/sky-benchmark/index.astro` | the page, `/developers/sky-benchmark/` |
 
 ## The readings this record takes
@@ -53,7 +54,9 @@ says "was" or "will be". Dates are drawn from 1900-01-01 to 2049-12-31; the
 latest year a question names is 2048.
 
 Version 0 is frozen. The test pins the SHA-256 of its four files. A version
-counts as published once its folder holds any file, `scorer.mjs` among them.
+counts as published once its folder holds any file, `scorer.mjs` among them;
+only a folder or file that is not there counts as absent, and a folder that
+cannot be read stops the generator.
 The generator writes only a version whose folder is empty or missing, refuses
 to check a version not yet published, and refuses to check a published
 version with one of its files missing, or with an engine or ΔT tables other
@@ -78,11 +81,16 @@ and held to its instants, does not run. `check_sky_fact` is still held to all
 engine's error, and to every entry into a sign while retrograde in the
 ingress questions' periods, which the test finds again in the installed
 engine. It holds their number to 18: each is at least 100 hours, and at
-least ten times the time its body takes to move 30″, from its period's
-edges, and no station in those periods comes within 134″ of a sign boundary,
-so an engine within 30″ of v0's finds the same entries. That was simulated on 2026-10-05 in a throwaway copy, with the
-installed engine named 0.1.1-rc.17 and then with new ΔT tables: 20 of the 21
-tests passed and the rules test was skipped, both times.
+least ten times the time its body takes to move 30″, from the edges of the
+span the test scans, from 14 hours before the period's first midnight to 12
+hours after its last (86 hours and nine times from the period's own edges),
+and no station in those periods comes within 133″ of a sign boundary (the
+nearest, Mercury's on 2001-06-04, is 133.7″ from Cancer), so an engine within
+30″ of v0's finds the same entries. That was simulated on 2026-10-05 in a
+throwaway copy, with the installed engine named 0.1.1-rc.17 and then with new
+ΔT tables: with the sixth review's fixes, 21 of the 22 tests passed and the
+rules test was skipped, both times, as 20 of the 21 had after the fourth and
+fifth reviews.
 
 | family | questions | answers |
 | --- | --- | --- |
@@ -194,30 +202,41 @@ bodies at 1,500 instants from 1900 to 2049.
   reading. In place of each key answer, every other sign or word, and the
   dates either side of the accepted ones, score as wrong: 1,800 replies. The
   test also holds the lenient reading against copies of the question, a
-  stray "no", "no-one", "no-brainer" and "no (direct) way", "Gemini" naming
-  Google's assistant but not "Gemini 12°", "Gemini 3 days later", "Gemini,
-  1942 to 1949", "read as Gemini, I think" or "Gemini" before the next item
-  of a list, YES and NO before brackets, dashes, ellipses and a table's
-  bars, the answer words listed as choices ("yes or no", "yes/no", "YES, NO
-  or DEPENDS"), "yes and no", dates written out, and two days hedged
-  between, as in "18 or 19 March 2041". A question with no reply counts as
-  unparsed, and so as wrong. On 2026-10-05 the scorer as published (SHA-256
-  `5d183a34…`), copied into a folder with `items.json` and `key.json`, scored
-  one file of 293 replies under Node.js 18.20.8 and 22.22.2 with
-  byte-identical output and the same warning: 292 replies to questions, in
-  the forms of the earlier runs and 20 more that use the rules the fifth
-  review changed, strict and lenient, with 8 questions left without a reply,
-  and one reply to no question. That is what the page's "Node.js 18 or
-  later" rests on; no test runs Node.js 18.
+  stray "no", "no-one", "no-brainer", "no (direct) way" and "no...
+  certainty", "Gemini" naming Google's assistant but not "Gemini 12°",
+  "Gemini 3 days later", "Gemini, 1942 to 1949", "read as Gemini, I think",
+  "Gemini" before the next item of a list or "Pro tip" on the line below,
+  YES and NO before brackets, asides in brackets, dashes, ellipses and a
+  table's bars, the answer words listed as choices ("yes or no", "yes/no",
+  "yes|no", "YES, NO or DEPENDS") and a "no" before such a list, "yes and
+  no", dates written out, two days hedged between, as in "18 or 19 March
+  2041", a day the month does not have, and a number that is not a hedge's
+  first day, as in "UTC+10 – 8 March 2023". A question with no reply counts
+  as unparsed, and so as wrong. The test also holds the scorer to reading
+  each of five replies of 70,000 characters, built from the runs of spaces
+  and marks behind the sixth review's slow cases, in under a second. On
+  2026-10-05 it took 6 to 14 milliseconds on each, and the patterns it
+  replaced took 5 to 12 seconds, as the fourth table of faults shows.
+- **The scorer under three versions of Node.js.** On 2026-10-05 the scorer
+  as published (SHA-256 `ea6fe66e…`), copied into a folder with
+  `items.json` and `key.json`, scored `scorer-check-replies.jsonl` in this
+  folder under Node.js 18.20.8, 22.22.2 and 24.21.0 with byte-identical
+  output (SHA-256 `6869e6dace7338ac…`) and the same warning. The file holds
+  293 replies: 292 to questions, in the forms of the earlier runs and 26
+  that use the rules the sixth review changed, three of them thousands of
+  characters long, strict and lenient, with 8 questions left without a
+  reply, and one reply to no question. That is what the page's "Node.js 18
+  or later" rests on; no test runs Node.js 18.
 
 ## Deliberate faults
 
 Each fault in the first table was made in a throwaway copy of commit
 `21bcfa1f`, with the files regenerated where the generator changed, and the
 benchmark's 19 tests of that commit were run on 2026-10-05. The second table
-holds the faults run after the fourth review, and the third those run after
-the fifth, each against the 21 tests of its round. The tests are named here
-by their subjects, as they are now:
+holds the faults run after the fourth review, the third those run after the
+fifth, each against the 21 tests of its round, and the fourth those run
+after the sixth. The tests are named here by their subjects, as they are
+now:
 
 | name | test |
 | --- | --- |
@@ -325,11 +344,41 @@ With rc.17 and nothing else changed, and again with new ΔT tables, 20 of the
 21 tests passed, the entries test among them with its 18 entries, and the
 rules test was skipped.
 
+After the sixth review, each fault below undid one of its fixes in a
+throwaway copy of the tree with them, on 2026-10-05. A fault in `scorer.mjs`
+was run against the scorer's six tests, and one in the generator against the
+frozen and replies drift tests; the faults in `scorer.mjs` would also have
+failed the pins. "Slow" is the test of five long replies, each to be read in
+under a second; the time is the slowest reply's.
+
+| fault | where | caught as a wrong reading, refusal, difference or time |
+| --- | --- | --- |
+| a line's marks taken off one at a time, as before | `scorer.mjs` | slow (". " repeated: 6.3 seconds) |
+| a list of choices sought from every word and mark, as before | `scorer.mjs` | slow ("no, " repeated: 12.0 seconds) |
+| a list of choices allowed to split one run of spaces two ways, as before | `scorer.mjs` | slow ("No", 70,000 spaces and "x": 6.2 seconds) |
+| "As Gemini, I" allowed to split one run of spaces two ways, as before | `scorer.mjs` | slow ("As Gemini", 70,000 spaces and "x": 5.1 seconds) |
+| no aside in brackets before the mark | `scorer.mjs` | scorer ("The answer is no (Mercury was direct)." read as nothing) |
+| a full stop counted when it begins an ellipsis | `scorer.mjs` | scorer ("I have no... certainty here without an ephemeris." read as NO) |
+| an ellipsis that ends the line not counted | `scorer.mjs` | scorer ("The answer is no..." read as nothing) |
+| an ellipsis taken as the end of a sentence | `scorer.mjs` | scorer ("There is... no (simple) way to tell." read as NO) |
+| two full stops not counted at the start of a line | `scorer.mjs` | scorer ("No... it was direct all day." read as nothing) |
+| a list of choices taken out with nothing in its place | `scorer.mjs` | scorer ("There is no yes/no." read as NO) |
+| a bar no longer joining the choices | `scorer.mjs` | scorer ("Answer (yes\|no): NO" read as nothing) |
+| a bar with spaces around it joining them too | `scorer.mjs` | scorer (a table row "\| NO \| NO \|" read as nothing) |
+| a model's name on the next line read as the assistant | `scorer.mjs` | scorer ("The Sun was in Gemini", then "Pro tip: …", read as nothing) |
+| a day the month does not have dropped, day first | `scorer.mjs` | scorer ("It falls on 28 or 29 February 2041." read as the 28th) |
+| a day the month does not have dropped, month first | `scorer.mjs` | scorer ("February 28 or 29, 2041" read as the 28th) |
+| any character but a digit or colon before a hedge's first day, as before | `scorer.mjs` | scorer ("At 14.30 – 19 March 2041." read as nothing) |
+| any failure to read the folder taken as an empty folder | generator | frozen (with the folder's path a file, `--check` called v0 unpublished) |
+| an event that is not an object read for its fields | generator | replies drift (a null event threw rather than differed) |
+| a time lost from the published reply printed as "undefined" | generator | replies drift (sd-001's message) |
+| the refusal not naming what an otherwise empty folder holds | generator | frozen (a folder with only `.gitkeep`) |
+
 ## Corrections made before publication
 
-Five independent reviews read this record before publication: two read
-the first build, a third read the second, a fourth the third and a fifth the
-fourth. What they found is fixed here:
+Six independent reviews read this record before publication: two read the
+first build, a third read the second, a fourth the third, a fifth the fourth
+and a sixth the fifth. What they found is fixed here:
 
 - **The margin for slow planets was 2″.** In the first draw, Neptune's entry
   into Scorpio in 1957 came 5 hours 7 minutes later in the engine than in
@@ -450,6 +499,48 @@ fourth. What they found is fixed here:
   after it. The guard compares the ΔT tables in any order. With another
   engine, the entries test holds their number to 18, as above. The test has
   a case where a slash list reads as NO.
+- **The scorer could take minutes on a long reply.** The fifth review's
+  fixes ran the list of choices and "As Gemini, I" on the reply's own
+  lines, where a run of spaces can be long, and both patterns could split
+  one run two ways; the list was also sought again from every word of a
+  comma list and every character of a run of emphasis marks. The sixth
+  review timed replies of 200,000 characters at 54 seconds to almost 4
+  minutes, where the scorer after the fourth review took milliseconds, and a
+  run of ". " at about 50 seconds in both, because a line's marks were taken
+  off one at a time. Each
+  pattern now has one way to read a run, a list is sought only from its
+  first word, and a line's marks come off in one pass from each end. Every
+  one of 227 long replies, 200,000 characters each and of every kind,
+  now reads in under 100 milliseconds, and the test holds five of them to a
+  second.
+- **The bracket rule lost the commonest answers.** "The answer is no
+  (Mercury was direct)." read as nothing, because a bracket counted only
+  where a line or a sentence starts. An aside in brackets on the same line
+  now counts wherever it is followed by one of the marks, so "no (direct)
+  way" still reads as nothing.
+- **Three full stops still counted anywhere.** "I have no... certainty"
+  read as NO, though "no… certainty" did not. A full stop now counts only
+  when it does not begin an ellipsis, an ellipsis counts at the end of a
+  line, two full stops count like … at the start of a line, and an ellipsis
+  no longer ends a sentence, so "There is... no (simple) way" reads as
+  nothing.
+- **A "no" before a list of choices stood alone.** Taking the list out left
+  a space, so "There is no yes/no." read as NO. A word now takes its place.
+- **A hedge with a day the month lacks read as the other day.** "28 or 29
+  February 2041" read as the 28th, as 2041 has no 29 February. That day now
+  still counts as one of the two, and never as a right one.
+- **Smaller fixes.** "Gemini" before a model's name is the assistant only
+  on the same line, so "Gemini", then "Pro tip" on the next line, is the
+  sign. A hedge's first day must start the reply or follow a space, a
+  bracket, a quote or emphasis, so "UTC+10 – 8 March 2023" reads as 8
+  March. A bar with no space around it joins the choices, as in "(yes|no)",
+  while a table's "| NO | NO |" still reads as NO. The generator stops on a
+  folder it cannot read rather than take it as empty, names what an
+  otherwise empty folder holds, and reports an event that is not an object,
+  or a time lost from the published reply, as a difference. The record
+  gives the margins of the entries from both spans, and the nearest station
+  to a boundary as 133″ rather than 134″, which was 0.3″ too many. The
+  replies the scorer read under three versions of Node.js are committed.
 
 ## Not done, and not claimed
 
@@ -471,3 +562,10 @@ fourth. What they found is fixed here:
   offset no inhabited place keeps.
 - **The tropical zodiac only, and English only.** The questions ask for a
   fixed answer form, which is not how people usually ask.
+- **The lenient reading has known limits**, which the strict score does not
+  share. A list written on one line, "1. Gemini 2. Cancer", reads as
+  Cancer, since "Gemini 2." reads as a version; an abbreviation's full stop
+  starts a sentence, so "e.g. no (known) station" reads as NO; "Yes /
+  retrograde" reads as nothing, since a slash after YES or NO does not
+  count; and some hedges still read as one date, among them "Tuesday 18 or
+  Wednesday 19 March 2041" and "18 and/or 19 March 2041".

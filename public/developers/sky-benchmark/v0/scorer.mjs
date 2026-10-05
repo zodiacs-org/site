@@ -1,6 +1,8 @@
 /**
  * The scorer for the Zodiacs sky-fact benchmark, v0. No dependencies: it runs
- * in Node.js 18 or later and, imported as a module, in a browser.
+ * in Node.js 18 or later and, imported as a module, in a browser whose
+ * regular expressions have lookbehind, as every major browser's have since
+ * Safari 16.4 in 2023.
  *
  *   node scorer.mjs replies.jsonl
  *
@@ -22,40 +24,52 @@
  *            answer of the allowed kinds. Below, the start of a line or a
  *            sentence is the start of a line, after any list marker such as
  *            "-" or "1.", or what follows . ! ? : or ; and a space, with any
- *            quotes or emphasis between.
+ *            quotes or emphasis between, but not what follows an ellipsis;
+ *            an ellipsis is … or two or more full stops.
  *            A sign counts wherever its name or symbol appears, except
  *            "Gemini" naming Google's assistant in these forms: "I am Gemini"
  *            or "I'm Gemini"; "As Gemini" at the start of a line or a
  *            sentence, before "I" or ", I"; "Google Gemini" or "Google's
  *            Gemini"; "Gemini" before Pro, Flash, Ultra, Nano, app, apps or
  *            model, or before "a model", "a language model", "a large model",
- *            "a large language model" or "an AI", with or without a comma
- *            between; and "Gemini" before a version number on the same line,
- *            one digit with or without a point and one or two more, that is
- *            followed by Pro, Flash, Ultra or Nano, or by a comma, full stop,
- *            semicolon, exclamation or question mark, closing bracket or the
- *            end of the reply. So "Gemini 2.5 Pro" and "As Gemini 2.5, I" are
- *            the assistant, and "Gemini 12°", "Gemini 3 days later", "Gemini
- *            14:30", "Gemini, 1942 to 1949", "read as Gemini, I think" and a
- *            list's "Gemini" with the next item's number on the line below
+ *            "a large language model" or "an AI", on the same line, with or
+ *            without a comma between; and "Gemini" before a version number on
+ *            the same line, one digit with or without a point and one or two
+ *            more, that is followed by Pro, Flash, Ultra or Nano, or by a
+ *            comma, full stop, semicolon, exclamation or question mark,
+ *            closing bracket or the end of the reply. So "Gemini 2.5 Pro" and
+ *            "As Gemini 2.5, I" are the assistant, and "Gemini 12°", "Gemini
+ *            3 days later", "Gemini 14:30", "Gemini, 1942 to 1949", "read as
+ *            Gemini, I think", "Gemini" with "Pro tip" on the line below and
+ *            a list's "Gemini" with the next item's number on the line below
  *            are the sign.
  *            YES and NO count only standing alone: followed, after any
- *            closing emphasis or quote and any space, by one of
- *            . , ! ? ; : ) ] | — –, by a hyphen with a space or another
- *            hyphen after it, or by the end of a line; or, at the start of a
- *            line or a sentence, by ( or …. So "no idea", "no-one", "there is
- *            no station" and "no (direct) way" are not NO, and "No (it was
- *            direct)" is. YES, NO and DEPENDS joined by "or", "nor" or a
- *            slash, with commas before the last and any quotes or emphasis
- *            around each, only list the choices and name none of them: "yes
- *            or no", "yes/no", "neither yes nor no", "YES, NO or DEPENDS".
- *            "Yes and no" names both.
+ *            closing emphasis or quote, any space and any aside in brackets
+ *            on the same line, by one of , ! ? ; : ) ] | — –, by a full stop
+ *            that does not begin an ellipsis, by a hyphen with a space or
+ *            another hyphen after it, by an ellipsis that ends the line, or
+ *            by the end of a line; or, at the start of a line or a sentence,
+ *            by ( or an ellipsis. So "no idea", "no-one", "there is no
+ *            station", "no... certainty" and "no (direct) way" are not NO,
+ *            and "No (it was direct) all day" opening a line, "the answer is
+ *            no (it was direct)." and "the answer is no..." are.
+ *            YES, NO and DEPENDS joined by "or", "nor", a slash or a bar with
+ *            no space around it, with commas before the last and any quotes
+ *            or emphasis around each, only list the choices and name none of
+ *            them: "yes or no", "yes/no", "yes|no", "neither yes nor no",
+ *            "YES, NO or DEPENDS". A "no" before such a list is not NO
+ *            either: "there is no yes/no". A table's cells, "| NO | NO |",
+ *            are not a list. "Yes and no" names both.
  *            DEPENDS counts as the word "depends". A date may also be written
  *            as 7 March 2023, 7th of March 2023, March 7, 2023, Mar. 7 2023,
  *            7 Sept 2023 or 2023/03/07, and a YYYY-MM-DD date may run on into
  *            a time. Two days joined by "or", "and", "to", "through", a dash
  *            or a slash, before one month and year, name two dates: "18 or 19
  *            March 2041", "18 March or 19 March 2041", "March 19–20, 2041".
+ *            A day the month does not have is still one of the two, and
+ *            never right, so "28 or 29 February 2041" reads as nothing. The
+ *            first day must start the reply or follow a space, a bracket, a
+ *            quote or emphasis, so "UTC+10 – 8 March 2023" names 8 March.
  *
  * A reply neither reading parses is unparsed, and counts as wrong. Letter
  * case never matters. The strict score is the benchmark's score. The lenient
@@ -96,17 +110,22 @@ function isoOf(year, month, day) {
   return `${String(y).padStart(4, '0')}-${pad(m)}-${pad(d)}`;
 }
 
-/** A line without surrounding whitespace, quotes, emphasis, backticks or full stops and exclamation marks at its end. */
+/** Quotes, emphasis and backticks that may surround a line, and what else may end one. */
+const WRAPPING = new Set('*_`"\'“”‘’');
+const ENDING = new Set('*_`"\'“”‘’.!');
+const SPACE = /\s/u;
+
+/**
+ * A line without surrounding whitespace, quotes, emphasis, backticks or full
+ * stops and exclamation marks at its end, taken off one character at a time
+ * from each end so that a long run of them costs one pass.
+ */
 function bare(line) {
-  let text = line.trim();
-  for (;;) {
-    const next = text
-      .replace(/^[*_`"'“”‘’]+|[*_`"'“”‘’]+$/gu, '')
-      .replace(/[.!]+$/u, '')
-      .trim();
-    if (next === text) return text;
-    text = next;
-  }
+  let from = 0;
+  let to = line.length;
+  while (from < to && (WRAPPING.has(line[from]) || SPACE.test(line[from]))) from += 1;
+  while (to > from && (ENDING.has(line[to - 1]) || SPACE.test(line[to - 1]))) to -= 1;
+  return line.slice(from, to);
 }
 
 const VARIATION_SELECTORS = /[︎️]/gu;
@@ -133,6 +152,8 @@ const MONTH_NAMES = `(${MONTHS.map((name) => (name === 'september' ? 'september|
 const monthNumber = (word) => MONTHS.findIndex((name) => word.toLowerCase().startsWith(name.slice(0, 3))) + 1;
 /** What joins two days: "or", "and", "to" or "through", a dash or a slash. */
 const JOINED = '(?:\\s*,?\\s+(?:or|and|to|through)\\s+(?:the\\s+)?|\\s*[-–—/]\\s*)';
+/** A day of a hedge that its month does not have: still one of the hedge's two dates, and never a right one. */
+const NO_SUCH_DAY = Object.freeze(['no such first day', 'no such second day']);
 
 /** Every date the reply writes in one of the accepted forms, as YYYY-MM-DD. */
 function datesIn(text) {
@@ -145,13 +166,14 @@ function datesIn(text) {
   for (const match of text.matchAll(new RegExp(`\\b${MONTH_NAMES}\\s+(\\d{1,2})(?:st|nd|rd|th)?\\s*,?\\s+(\\d{4})\\b`, 'giu'))) {
     found.push(isoOf(match[3], monthNumber(match[1]), match[2]));
   }
-  // Two days before one month and year: "18 or 19 March 2041" and "18 March or 19 March 2041" name the 18th too.
-  for (const match of text.matchAll(new RegExp(`(?:^|[^\\d:])(\\d{1,2})(?:st|nd|rd|th)?(?:\\s+(?:of\\s+)?${MONTH_NAMES})?${JOINED}(\\d{1,2})(?:st|nd|rd|th)?\\s+(?:of\\s+)?${MONTH_NAMES}\\s*,?\\s+(\\d{4})\\b`, 'giu'))) {
-    found.push(isoOf(match[5], monthNumber(match[2] ?? match[4]), match[1]));
+  // Two days before one month and year: "18 or 19 March 2041" and "18 March or 19 March 2041" name both days. The first
+  // starts the text or follows a space, a bracket, a quote or emphasis, so "UTC+10 – 8 March 2023" names only the 8th.
+  for (const match of text.matchAll(new RegExp(`(?:^|[\\s(\\[{"'“‘*_\`])(\\d{1,2})(?:st|nd|rd|th)?(?:\\s+(?:of\\s+)?${MONTH_NAMES})?${JOINED}(\\d{1,2})(?:st|nd|rd|th)?\\s+(?:of\\s+)?${MONTH_NAMES}\\s*,?\\s+(\\d{4})\\b`, 'giu'))) {
+    found.push(isoOf(match[5], monthNumber(match[2] ?? match[4]), match[1]) ?? NO_SUCH_DAY[0], isoOf(match[5], monthNumber(match[4]), match[3]) ?? NO_SUCH_DAY[1]);
   }
   // "March 19 or 20, 2041" and "March 19 or March 20, 2041" name both days.
   for (const match of text.matchAll(new RegExp(`\\b${MONTH_NAMES}\\s+(\\d{1,2})(?:st|nd|rd|th)?${JOINED}(?:${MONTH_NAMES}\\s+)?(\\d{1,2})(?:st|nd|rd|th)?\\s*,?\\s+(\\d{4})\\b`, 'giu'))) {
-    found.push(isoOf(match[5], monthNumber(match[1]), match[2]), isoOf(match[5], monthNumber(match[3] ?? match[1]), match[4]));
+    found.push(isoOf(match[5], monthNumber(match[1]), match[2]) ?? NO_SUCH_DAY[0], isoOf(match[5], monthNumber(match[3] ?? match[1]), match[4]) ?? NO_SUCH_DAY[1]);
   }
   return found.filter(Boolean);
 }
@@ -174,28 +196,56 @@ function withoutEchoes(text, echoes) {
 /** Emphasis or quotes that may open a word, and that may close one. */
 const OPEN = '[*_`"\'“‘]*';
 const CLOSE = '[*_`"\'”’]*';
-/** The start of a line, after any list marker, or of a sentence, after . ! ? : or ; and a space; for a pattern with the m flag. */
-const STARTS = `(?:^[^\\S\\r\\n]*(?:[-*+•][^\\S\\r\\n]+|\\d{1,2}[.)][^\\S\\r\\n]+)?|[.!?:;]${CLOSE}\\s+)${OPEN}`;
-
-/** Google's assistant naming itself, in the forms the header lists, which is not the sign. It is read on the reply's own lines. */
+/** Spaces within a line. */
+const GAP = '[^\\S\\r\\n]';
+/**
+ * The start of a line, after any list marker, or of a sentence, after . ! ? :
+ * or ; and a space, but not after an ellipsis; for a pattern with the m flag.
+ */
+const STARTS = `(?:^${GAP}*(?:[-*+•]${GAP}+|\\d{1,2}[.)]${GAP}+)?|(?:[!?:;]|(?<!\\.)\\.)${CLOSE}\\s+)${OPEN}`;
+/**
+ * Google's assistant naming itself, in the forms the header lists, which is
+ * not the sign. No two quantifiers here can share a run of spaces, so a long
+ * run is read once.
+ */
 const ASSISTANT_NAME = new RegExp([
   "\\b(?:i\\s+am|i'm|i’m)\\s+gemini\\b",
-  `${STARTS}as\\s+gemini\\b(?=\\s*,?\\s*i\\b)`,
+  `${STARTS}as\\s+gemini\\b(?=\\s*(?:,\\s*)?i\\b)`,
   "\\bgoogle(?:'s|’s)?\\s+gemini\\b",
-  // Before a version on the same line, then a model's name or the end of a clause or the reply; or before a model's name, "a model" or "an AI".
-  "\\bgemini(?=[^\\S\\r\\n]+\\d(?:\\.\\d{1,2})?(?!\\.?\\d)(?:\\s+(?:pro|flash|ultra|nano)\\b|\\s*(?:[,.;!?)\\]]|(?![\\s\\S])))"
-    + "|\\s*(?:,\\s*)?(?:pro\\b|flash\\b|ultra\\b|nano\\b|app\\b|apps\\b|model\\b|a\\s+(?:large\\s+)?(?:language\\s+)?model\\b|an\\s+ai\\b))",
+  // Before a version on the same line, then a model's name or the end of a clause or the reply; or before a model's name, "a model" or
+  // "an AI" on the same line.
+  `\\bgemini(?=${GAP}+\\d(?:\\.\\d{1,2})?(?!\\.?\\d)(?:\\s+(?:pro|flash|ultra|nano)\\b|\\s*(?:[,.;!?)\\]]|(?![\\s\\S])))`
+    + `|${GAP}*(?:,${GAP}*)?(?:pro\\b|flash\\b|ultra\\b|nano\\b|app\\b|apps\\b|model\\b|a${GAP}+(?:large${GAP}+)?(?:language${GAP}+)?model\\b|an${GAP}+ai\\b))`,
 ].join('|'), 'gimu');
 
-/** YES or NO standing alone, as the header says: before the marks it lists anywhere, and before ( or … only where a line or a sentence starts. */
+/** After YES or NO, on its line: closing emphasis or quotes, spaces, and perhaps an aside in brackets. */
+const TRAIL = `${CLOSE}${GAP}*(?:\\([^()\\n]*\\)${CLOSE}${GAP}*)?`;
+/**
+ * What may follow YES or NO standing alone: one of these marks, a full stop
+ * that does not begin an ellipsis, a hyphen before a space or another hyphen,
+ * an ellipsis (… or two or more full stops) that ends the line, or the end of
+ * the line.
+ */
+const ENDS = `(?:[,!?;:)\\]|—–]|\\.(?!\\.)|-[-\\s]|(?:…|\\.{2,})${CLOSE}${GAP}*$|$)`;
+/** YES or NO standing alone, as the header says; at the start of a line or a sentence, also before ( or an ellipsis. */
 const STANDALONE = (word) => new RegExp(
-  `\\b${word}\\b(?=${CLOSE}\\s*(?:[.,!?;:)\\]|—–]|-[-\\s]|$))|${STARTS}${word}\\b(?=${CLOSE}\\s*[(…])`,
+  `\\b${word}\\b(?=${TRAIL}${ENDS})|${STARTS}${word}\\b(?=${CLOSE}\\s*(?:[(…]|\\.\\.))`,
   'imu',
 );
 
-/** The answer words joined by "or", "nor" or a slash only list the choices, and name none of them; "yes and no" names both. */
+/**
+ * The answer words joined by "or", "nor", a slash or a bar with no space
+ * around it only list the choices, and name none of them; a table's cells,
+ * "| NO | NO |", are not a list. "Yes and no" names both. A list is matched
+ * only from its first word, after any opening marks, so the search does not
+ * start again at every word or mark of a long run.
+ */
 const WORD = `${OPEN}\\b(?:yes|no|depends)\\b${CLOSE}`;
-const CHOICES = new RegExp(`${WORD}(?:\\s*,\\s*${WORD})*(?:\\s*\\/\\s*${WORD}|\\s*,?\\s+n?or\\s+${WORD})+`, 'giu');
+const CHOICES = new RegExp(
+  `(?<![*_\`"'“‘])${OPEN}\\b(?:yes|no|depends)\\b(?<!\\b(?:yes|no|depends)\\b${CLOSE}\\s*,\\s*${OPEN}(?:yes|no|depends))${CLOSE}`
+    + `(?:\\s*,\\s*${WORD})*(?:(?:\\s*\\/\\s*|\\|)${WORD}|(?:\\s*,\\s+|\\s+)n?or\\s+${WORD})+`,
+  'giu',
+);
 const YES_AND_NO = new RegExp(`\\b(?:yes${CLOSE}\\s+and\\s+${OPEN}no|no${CLOSE}\\s+and\\s+${OPEN}yes)\\b`, 'iu');
 
 function lenientValue(kind, text, echoes) {
@@ -205,7 +255,8 @@ function lenientValue(kind, text, echoes) {
   if (spec.dates) {
     for (const date of datesIn(collapse(lines))) found.add(date);
   } else {
-    const unasked = lines.replace(CHOICES, ' ');
+    // A word in place of the list, so that "there is no yes/no" leaves no "no" standing alone.
+    const unasked = lines.replace(CHOICES, ' choices ');
     for (const word of spec.words) {
       if (word === 'DEPENDS' ? /\bdepends\b/iu.test(unasked) : STANDALONE(word).test(unasked)) found.add(word);
     }

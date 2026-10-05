@@ -642,6 +642,9 @@ export async function installedEngine() {
 /** How far apart the same event may be in two replies, in milliseconds. */
 const EVENT_TOLERANCE_MS = 2_000;
 
+/** An event's fields that decide a reply, or the event as it is when it is not an object, so that it differs rather than throws. */
+const fieldsOf = (event, names) => (event && typeof event === 'object' ? Object.fromEntries(names.map((name) => [name, event[name]])) : event);
+
 /** The part of a reply that decides its answer: the question as read, the answer, and the facts behind it. */
 function decisive(result) {
   const { answer, basis, fact, instant, window, zone, facts } = result;
@@ -650,10 +653,10 @@ function decisive(result) {
     sign: facts.sign,
     retrograde: facts.retrograde,
     atStart: facts.atStart && { sign: facts.atStart.sign, retrograde: facts.atStart.retrograde },
-    changes: facts.changes?.map(({ at, into, retrograde }) => ({ at, into, retrograde })),
-    stations: facts.stations?.map(({ at, type }) => ({ at, type })),
-    ingresses: facts.ingresses?.map(({ at, retrograde }) => ({ at, retrograde })),
-    lunations: facts.lunations?.map(({ at, sign }) => ({ at, sign })),
+    changes: facts.changes?.map((event) => fieldsOf(event, ['at', 'into', 'retrograde'])),
+    stations: facts.stations?.map((event) => fieldsOf(event, ['at', 'type'])),
+    ingresses: facts.ingresses?.map((event) => fieldsOf(event, ['at', 'retrograde'])),
+    lunations: facts.lunations?.map((event) => fieldsOf(event, ['at', 'sign'])),
   };
 }
 
@@ -688,8 +691,10 @@ export function replyDifferences(published, current) {
     for (const list of EVENT_LISTS) {
       (a[list] ?? []).forEach((event, n) => {
         // A time missing or unreadable on either side is a difference too: NaN is never within the tolerance.
-        if (!(Math.abs(Date.parse(event.at) - Date.parse(b[list][n].at)) <= EVENT_TOLERANCE_MS)) {
-          differences.push(`${was.id}: ${list} ${event.at} is now ${b[list][n].at ?? 'missing'}`);
+        const then = event?.at;
+        const now = b[list][n]?.at;
+        if (!(Math.abs(Date.parse(then) - Date.parse(now)) <= EVENT_TOLERANCE_MS)) {
+          differences.push(`${was.id}: ${list} ${then ?? 'missing'} is now ${now ?? 'missing'}`);
         }
       });
     }
@@ -707,8 +712,14 @@ export function replyDifferences(published, current) {
  */
 export async function writeOrCheck(version = VERSION, { check = false, root = ROOT } = {}) {
   const dir = resolve(root, folderOf(version));
-  const texts = await Promise.all(DRAWN_FILES.map((name) => readFile(resolve(dir, name), 'utf8').catch(() => null)));
-  const published = (await readdir(dir).catch(() => [])).length > 0;
+  // Only a folder or a file that is not there counts as absent; any other failure to read one stops the generator.
+  const absent = (error) => {
+    if (error?.code === 'ENOENT') return null;
+    throw error;
+  };
+  const entries = (await readdir(dir).catch(absent)) ?? [];
+  const texts = await Promise.all(DRAWN_FILES.map((name) => readFile(resolve(dir, name), 'utf8').catch(absent)));
+  const published = entries.length > 0 || texts.some((text) => text !== null);
   if (version !== VERSION) {
     throw new Error(`build-sky-benchmark: this generator draws ${VERSION}, not ${version}. `
       + (published ? `${version} is frozen: its pinned bytes hold it.` : `Raise VERSION to draw ${version}.`));
@@ -720,7 +731,9 @@ export async function writeOrCheck(version = VERSION, { check = false, root = RO
     const missing = DRAWN_FILES.filter((_, index) => texts[index] === null);
     if (missing.length > 0) {
       const named = missing.length > 1 ? `${missing.slice(0, -1).join(', ')} and ${missing.at(-1)} are` : `${missing[0]} is`;
-      throw new Error(`build-sky-benchmark: ${version} is published, but ${named} missing. ${version} is frozen: restore ${missing.length > 1 ? 'them' : 'it'} rather than draw ${version} again.`);
+      // With none of the drawn files left, say what makes the folder count as published.
+      const holds = missing.length === DRAWN_FILES.length ? ` (its folder holds ${entries.join(', ')})` : '';
+      throw new Error(`build-sky-benchmark: ${version} is published${holds}, but ${named} missing. ${version} is frozen: restore ${missing.length > 1 ? 'them' : 'it'} rather than draw ${version} again.`);
     }
     const refusal = redrawRefusal(drawnWith(JSON.parse(texts[1]), JSON.parse(texts[2])), await installedEngine(), version);
     if (refusal) throw new Error(refusal);
