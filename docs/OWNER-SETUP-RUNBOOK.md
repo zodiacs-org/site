@@ -257,8 +257,8 @@ with `Retry-After`.
 | `registry-aura-holdings-v1` | `/api/aura-holdings` | 10 |
 | `zodiacs-wallet-birth` | `/api/wallet-birth` | 10 |
 | `zodiacs-transit-calendar` | `/api/calendar/transits` | 120 |
-| `zodiacs-compute-api` | the six compute endpoints, `/api/v1/{chart,positions,houses,events,time,sky-fact}` (served by `api/compatibility.ts`) | 40 |
-| `zodiacs-compute-events` | `/api/v1/events` only, counted in addition to `zodiacs-compute-api` | 10 |
+| `zodiacs-compute-api` | the seven compute endpoints, `/api/v1/{chart,positions,houses,events,time,sky-fact,elections}` (served by `api/compatibility.ts`) | 40 |
+| `zodiacs-compute-events` | `/api/v1/events` and `/api/v1/elections`, counted in addition to `zodiacs-compute-api` | 10 |
 
 The calendar's limit is higher because calendar apps fetch subscribed feeds
 from a few shared server addresses. Every subscriber's feed has its own URL,
@@ -270,8 +270,8 @@ The compute API needs both rules, and unlike the four endpoints above it fails
 closed: an endpoint answers 503 `rate-limit-unavailable` with
 `Retry-After: 300`, and computes nothing, until every rule it is counted under
 exists (the SDK reports `not-found` until then) and whenever the check fails.
-The events endpoint is counted under both rules, the other five under
-`zodiacs-compute-api` alone. The general limit is higher than the email, Aura
+The events and elections endpoints are counted under both rules, the other
+five under `zodiacs-compute-api` alone. The general limit is higher than the email, Aura
 and wallet limits because programs call the API in batches and most requests
 take a few milliseconds. Events requests are the costly ones, so they have
 their own, lower limit: their window is at most 92 days, and on engine rc.15
@@ -280,6 +280,12 @@ the slowest such request took 359.2 ms of CPU in
 244.0 ms, over every year the API takes). One address at both limits costs at
 most about 8.7 CPU-seconds a minute on that machine: 10 events requests and
 30 others at the slowest measured (`worst-case.json` shows the arithmetic).
+Measured again on 2026-10-05 (`docs/platform/evidence/compute-api-2026-10-05/`),
+the same arithmetic gives 7.8 CPU-seconds on rc.15 and 10.7 on rc.16, the
+engine the API runs, over the 10 that DECISIONS-2026-09-30 §7 set; finding F-78
+sets out the options for these rules, which are the owner's to change. An
+elections request costs less than the costliest events request, so it does not
+raise the figure.
 
 The owner first published `zodiacs-compute-api` at 60 requests per 60
 seconds, as this runbook first gave it; at 60, one address could cost about
@@ -288,8 +294,8 @@ version 6, by the owner's report: `zodiacs-compute-api` at 40 and
 `zodiacs-compute-events` at 10, beside the four rules above and
 `zodiacs-calendar-feed-write` at 3 for the calendar feeds, each a fixed
 60-second window counted by IP with the `rate_limit` (429) action. Until the
-events rule exists in a project, its events endpoint answers 503 and the
-other five answer as usual.
+events rule exists in a project, its events and elections endpoints answer
+503 and the other five answer as usual.
 
 To switch the API off without removing it, set `COMPUTE_API_ENABLED=0` for
 Production and redeploy: every compute endpoint then answers 503 `disabled`
@@ -372,7 +378,7 @@ static files under `/api/v1/` (small, edge-cached, every one named with an
 extension) and keep the plan's bandwidth allowance in view; on a plan with
 rate limiting, a generous per-IP rate-limit rule for the same paths can sit
 above it if abuse ever appears. Do not widen it to every path starting with
-`/api/v1/`: since 2026-09-29 that prefix also holds the six compute endpoints,
+`/api/v1/`: since 2026-09-29 that prefix also holds the compute endpoints,
 which run a function on every request and must keep the platform's
 mitigations. The expression is the one `vercel.json` uses for the static
 files' cache header, which no compute path can match.
