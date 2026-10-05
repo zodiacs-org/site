@@ -339,13 +339,17 @@ try {
         const desktop = width >= desktopBreakpoint;
         const navPage = await browser.newPage({ viewport: { width, height: 844 } });
         await navPage.goto(`http://127.0.0.1:4399${prefix}${route}`, { waitUntil: 'domcontentloaded' });
-        const state = await navPage.evaluate(() => {
+        const state = await navPage.evaluate((desktop) => {
           const nav = document.querySelector('[data-nav]')?.getBoundingClientRect();
           const chip = document.querySelector('.nav__chip');
           const burger = document.querySelector('[data-menu-toggle]');
           const links = document.querySelector('.nav__links');
           return {
-            navFits: Boolean(nav && nav.left >= 16 && nav.right <= innerWidth - 16),
+            navFits: Boolean(nav && (desktop
+              ? nav.left >= 16 && nav.right <= document.documentElement.clientWidth - 16
+              : Math.abs(nav.left) <= 0.1 && Math.abs(nav.right - document.documentElement.clientWidth) <= 0.1)),
+            viewportWidth: document.documentElement.clientWidth,
+            radius: getComputedStyle(document.querySelector('[data-nav]')).borderRadius,
             navWidth: nav?.width,
             chipPresent: Boolean(chip),
             chipVisible: Boolean(chip && getComputedStyle(chip).display !== 'none'),
@@ -356,7 +360,7 @@ try {
             burgerVisible: Boolean(burger && getComputedStyle(burger).display !== 'none'),
             linksVisible: Boolean(links && getComputedStyle(links).display !== 'none'),
           };
-        });
+        }, desktop);
         if (!desktop) {
           await navPage.locator('[data-menu-toggle]').click();
           state.mobileRegistryVisible = await navPage.locator('.mobile-menu__registry').count() > 0
@@ -373,7 +377,8 @@ try {
             && (desktop || state.mobileRegistryVisible === false);
         const pass = state.navFits
           && door
-          && Math.abs(state.navWidth - (desktop ? (prefix ? 992 : 884) : 336)) <= 0.1
+          && Math.abs(state.navWidth - (desktop ? (prefix ? 992 : 884) : state.viewportWidth)) <= 0.1
+          && (desktop ? state.radius !== '0px' : state.radius === '0px')
           && state.burgerVisible === !desktop
           && state.linksVisible === desktop;
         navBreakpointsPass &&= pass;
@@ -382,8 +387,8 @@ try {
       }
     }
     check(expectsDoor
-      ? 'navigation: reserved shells and Astrofolio persist at compact and desktop boundaries in all five locales'
-      : `navigation: ${surface} pages keep the reserved shells without any Astrofolio link in all five locales`,
+      ? 'navigation: full-width compact bars, desktop shells and Astrofolio persist at compact and desktop boundaries in all five locales'
+      : `navigation: ${surface} pages keep compact bars and desktop shells without any Astrofolio link in all five locales`,
     navBreakpointsPass, navBreakpointsDetail.join(' · '));
   }
 
