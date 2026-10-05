@@ -1,0 +1,662 @@
+---
+/**
+ * Translated full moon calendar. The English page
+ * (src/pages/full-moon-calendar/index.astro) is the reference: same data,
+ * same markup and class names, same styles. All copy lives in COPY below.
+ */
+import Base from '../../layouts/Base.astro';
+import '../../styles/rx-table.css';
+import sky from '../../data/sky.json';
+import { bodyLongitude } from '../../lib/engine/full';
+import { formatLongitude, signForLongitude, signName } from '../../lib/signs';
+import { formatDate, formatShortDate, formatTime } from '../../lib/i18n/dates';
+import { publishedEventById } from '../../lib/events/publication';
+import { ENGLISH_ONLY_COPY } from '../../lib/i18n';
+
+type Locale = 'es' | 'pt' | 'fr' | 'it';
+interface Props { locale: Locale }
+
+const { locale } = Astro.props;
+
+/**
+ * Inline prose: plain text, emphasis, a sign-guide link (named in the page's
+ * language by signName), or a link. `to` is the unprefixed path; links marked
+ * `english` keep it and carry the English-only cue.
+ */
+type Part =
+  | string
+  | { em: string }
+  | { sign: 'capricorn' | 'cancer' }
+  | { to: string; text: string; english?: boolean };
+
+interface Copy {
+  title: string;
+  description: string;
+  imageAlt: string;
+  heading: string;
+  lede: string;
+  asOf: (date: string) => string;
+  status: (name: string, day: string, position: string) => string;
+  statusNone: string;
+  nextYearLabel: string;
+  nextYearLink: string;
+  phaseLabel: string;
+  phaseLink: string;
+  yearHeading: (year: number) => string;
+  utcNote: string;
+  colDate: string;
+  colTime: string;
+  colPosition: string;
+  colName: string;
+  /** January to December, North American almanac tradition. */
+  moonNames: readonly string[];
+  blueMoon: string;
+  aboutHeading: string;
+  about: Part[][];
+  faqHeading: string;
+  faq: (facts: {
+    status: string;
+    nextBlue: string | null;
+    capricorn: string;
+    cancer: string;
+  }) => { q: string; a: string }[];
+  pageName: string;
+  pageDescription: string;
+  eventName: (name: string, sign: string) => string;
+  eventDescription: (position: string, iso: string) => string;
+  datasetName: string;
+  datasetDescription: string;
+  variables: string[];
+}
+
+const COPY: Record<Locale, Copy> = {
+  es: {
+    title: 'Calendario de lunas llenas 2026 y 2027 | Zodiacs.org',
+    description:
+      'Todas las lunas llenas de 2026 y 2027: fecha y hora universal exactas, signo y grado de la Luna y su nombre tradicional, del Lobo a la Fría, con Luna azul.',
+    imageAlt: 'Calendario de lunas llenas — Zodiacs.org',
+    heading: 'Encuentra todas las lunas llenas hasta 2027.',
+    lede:
+      'Cada fila es el instante exacto en que la Luna queda opuesta al Sol, con una precisión de un minuto hasta finales de 2027, junto con el signo en el que ocurre y el nombre que le dieron los almanaques.',
+    asOf: (date) => `Al ${date}`,
+    status: (name, day, position) => `La próxima Luna llena es la ${name}: ${day}, en ${position}.`,
+    statusNone: 'Todavía no hay fechas posteriores de Luna llena.',
+    nextYearLabel: 'Solo el próximo año:',
+    nextYearLink: 'el calendario de lunas llenas de 2027',
+    phaseLabel: 'La fase de esta noche o la Luna de cualquier fecha:',
+    phaseLink: 'la herramienta de fase lunar',
+    yearHeading: (year) => `Lunas llenas de ${year}`,
+    utcNote: 'Las horas están en hora universal (UTC); en América, el instante suele caer la noche anterior.',
+    colDate: 'Fecha',
+    colTime: 'Hora UTC',
+    colPosition: 'Posición de la Luna',
+    colName: 'Nombre',
+    moonNames: [
+      'Luna del Lobo', 'Luna de Nieve', 'Luna del Gusano', 'Luna Rosa', 'Luna de las Flores', 'Luna de Fresa',
+      'Luna del Ciervo', 'Luna del Esturión', 'Luna del Maíz', 'Luna del Cazador', 'Luna del Castor', 'Luna Fría',
+    ],
+    blueMoon: 'Luna azul',
+    aboutHeading: 'Qué es una Luna llena',
+    about: [
+      [
+        'Cada 29,5 días la Luna llega a quedar exactamente opuesta al Sol, con toda la cara iluminada hacia nosotros. Esa oposición es un solo instante que se puede calcular (las horas de arriba), aunque la Luna se ve prácticamente llena una noche antes y una después. Como es una oposición, la pareja de signos es fija: una Luna llena en ',
+        { sign: 'capricorn' },
+        ' solo puede ocurrir mientras el Sol está en ',
+        { sign: 'cancer' },
+        ', y así con el resto de la rueda.',
+      ],
+      [
+        'Los nombres son más antiguos que las columnas de astrología que los tomaron prestados. Los almanaques norteamericanos, a partir de la tradición estacional algonquina y colonial, ligaron la luna de cada mes al año de trabajo: los lobos en el frío de enero, los gusanos de marzo, la cornamenta nueva del ciervo en julio. Son poesía de calendario, no datos del cielo: la columna calculada es la del signo y el grado, que es lo que un astrólogo lee de verdad. Para saber dónde cae ese grado en ',
+        { em: 'tu' },
+        ' carta hace falta calcular tu ',
+        { to: '/birth-chart/', text: 'carta natal' },
+        '; cada lunación, a medida que llega, se sigue en los ',
+        { to: '/horoscopes/', text: 'horóscopos mensuales', english: true },
+        '.',
+      ],
+      [
+        'Más o menos dos veces al año, una Luna llena se alinea lo bastante con los nodos de la órbita lunar como para pasar por la sombra de la Tierra: un eclipse lunar. Esos tienen ',
+        { to: '/eclipses/', text: 'su propia página con fechas' },
+        '.',
+      ],
+    ],
+    faqHeading: 'Preguntas y respuestas',
+    faq: ({ status, nextBlue, capricorn, cancer }) => [
+      {
+        q: '¿Cuándo es la próxima Luna llena?',
+        a: `${status} Cada fecha de esta página se calcula a partir de la oposición real de la Luna al Sol, con una precisión de un minuto, en hora universal (UTC).`,
+      },
+      {
+        q: '¿Por qué la fecha de la Luna llena a veces cambia un día?',
+        a: 'La Luna llena es un solo instante, el momento en que la Luna queda exactamente opuesta al Sol, y esta página lo da en hora universal (UTC). Si cae a las 2:00 UTC, en América todavía es la noche anterior, así que un calendario local puede imprimir con toda razón la fecha vecina. De todos modos, a simple vista la Luna se ve llena una noche antes y una después.',
+      },
+      {
+        q: '¿Qué es una Luna azul?',
+        a: `El sentido moderno más común es la segunda Luna llena dentro de un mismo mes del calendario, algo que ocurre cada dos o tres años porque los meses lunares duran unos 29,5 días.${nextBlue ? ` La próxima es el ${nextBlue}.` : ''} El sentido antiguo de los almanaques, una cuarta Luna llena en una misma estación, sobrevive sobre todo en los concursos de preguntas. Ninguna de las dos se ve azul.`,
+      },
+      {
+        q: '¿De dónde vienen los nombres de las lunas llenas?',
+        a: 'La secuencia Lobo, Nieve, Gusano viene de la tradición de los almanaques norteamericanos, que tomó nombres estacionales algonquinos y coloniales. Describen el año agrícola y de caza, no la astrología: el contenido astrológico de una Luna llena es su signo y su grado, y por eso la tabla muestra ambos.',
+      },
+      {
+        q: '¿Qué significa una Luna llena en astrología?',
+        a: `Una Luna llena es el Sol y la Luna en oposición exacta, así que siempre une dos signos opuestos: una Luna llena en ${capricorn} ocurre durante la temporada de ${cancer}. Los astrólogos la leen como una culminación, o como algo que sale a la luz, en la parte de tu carta donde está el signo de la Luna. Para saber cuál es esa parte hace falta tu carta natal.`,
+      },
+    ],
+    pageName: 'Calendario de lunas llenas 2026 y 2027',
+    pageDescription:
+      'Todas las lunas llenas de 2026 y 2027 con su hora universal exacta, signo y grado del zodiaco y su nombre tradicional, calculadas a partir del movimiento real de la Luna.',
+    eventName: (name, sign) => `${name} en ${sign}`,
+    eventDescription: (position, iso) =>
+      `Luna llena en ${position}; oposición exacta del Sol y la Luna: ${iso}.`,
+    datasetName: 'Calendario de lunas llenas, 2026–2027',
+    datasetDescription:
+      'Instantes exactos en hora universal, posiciones en el zodiaco tropical y nombres tradicionales de todas las lunas llenas de 2026 y 2027.',
+    variables: ['instante de la Luna llena', 'signo del zodiaco', 'longitud zodiacal', 'nombre tradicional de la luna'],
+  },
+  pt: {
+    title: 'Calendário de luas cheias 2026 e 2027 | Zodiacs.org',
+    description:
+      'Todas as luas cheias de 2026 e 2027: data e hora universal exatas, signo e grau da Lua e o nome tradicional, do Lobo à Fria, com a Lua azul.',
+    imageAlt: 'Calendário de luas cheias — Zodiacs.org',
+    heading: 'Encontre todas as luas cheias até 2027.',
+    lede:
+      'Cada linha é o instante exato em que a Lua fica oposta ao Sol, com precisão de um minuto até o fim de 2027, com o signo em que isso acontece e o nome que os almanaques lhe deram.',
+    asOf: (date) => `Em ${date}`,
+    status: (name, day, position) => `A próxima Lua cheia é a ${name}: ${day}, em ${position}.`,
+    statusNone: 'Ainda não há datas posteriores de Lua cheia.',
+    nextYearLabel: 'Só o próximo ano:',
+    nextYearLink: 'o calendário de luas cheias de 2027',
+    phaseLabel: 'A fase desta noite ou a Lua de qualquer data:',
+    phaseLink: 'a ferramenta de fase da Lua',
+    yearHeading: (year) => `Luas cheias de ${year}`,
+    utcNote: 'Os horários estão em hora universal (UTC); nas Américas, o instante costuma cair na noite anterior.',
+    colDate: 'Data',
+    colTime: 'Hora UTC',
+    colPosition: 'Posição da Lua',
+    colName: 'Nome',
+    moonNames: [
+      'Lua do Lobo', 'Lua da Neve', 'Lua da Minhoca', 'Lua Rosa', 'Lua das Flores', 'Lua de Morango',
+      'Lua do Cervo', 'Lua do Esturjão', 'Lua do Milho', 'Lua do Caçador', 'Lua do Castor', 'Lua Fria',
+    ],
+    blueMoon: 'Lua azul',
+    aboutHeading: 'O que é uma Lua cheia',
+    about: [
+      [
+        'A cada 29,5 dias a Lua chega ao ponto exatamente oposto ao Sol, com toda a face iluminada voltada para nós. Essa oposição é um único instante calculável (os horários acima), embora a Lua pareça praticamente cheia uma noite antes e uma depois. Por ser uma oposição, o par de signos é fixo: uma Lua cheia em ',
+        { sign: 'capricorn' },
+        ' só pode acontecer enquanto o Sol está em ',
+        { sign: 'cancer' },
+        ', e assim por diante ao longo da roda.',
+      ],
+      [
+        'Os nomes são mais antigos que as colunas de astrologia que os tomaram emprestados. Os almanaques norte-americanos, com base na tradição sazonal algonquina e colonial, ligaram a lua de cada mês ao ano de trabalho: os lobos no frio de janeiro, as minhocas de março, a galhada nova do cervo em julho. São poesia de calendário, não dados do céu: a coluna calculada é a do signo e do grau, que é o que um astrólogo de fato lê. Para saber onde esse grau cai no ',
+        { em: 'seu' },
+        ' mapa, é preciso calcular o ',
+        { to: '/birth-chart/', text: 'mapa astral' },
+        '; cada lunação, à medida que chega, é acompanhada nos ',
+        { to: '/horoscopes/', text: 'horóscopos mensais', english: true },
+        '.',
+      ],
+      [
+        'Cerca de duas vezes por ano, uma Lua cheia se alinha o suficiente com os nodos da órbita lunar para atravessar a sombra da Terra: um eclipse lunar. Esses têm ',
+        { to: '/eclipses/', text: 'uma página própria, com as datas' },
+        '.',
+      ],
+    ],
+    faqHeading: 'Perguntas e respostas',
+    faq: ({ status, nextBlue, capricorn, cancer }) => [
+      {
+        q: 'Quando é a próxima Lua cheia?',
+        a: `${status} Cada data desta página é calculada a partir da oposição real entre a Lua e o Sol, com precisão de um minuto, em hora universal (UTC).`,
+      },
+      {
+        q: 'Por que a data da Lua cheia às vezes muda em um dia?',
+        a: 'A Lua cheia é um único instante, o momento em que a Lua fica exatamente oposta ao Sol, e esta página informa esse instante em hora universal (UTC). Se ele cai às 2h UTC, nas Américas ainda é a noite anterior, então um calendário local pode, com razão, trazer a data vizinha. De todo modo, a olho nu a Lua parece cheia uma noite antes e uma depois.',
+      },
+      {
+        q: 'O que é uma Lua azul?',
+        a: `O sentido moderno mais comum é a segunda Lua cheia dentro de um mesmo mês do calendário, o que acontece a cada dois ou três anos porque os meses lunares duram cerca de 29,5 dias.${nextBlue ? ` A próxima é em ${nextBlue}.` : ''} O sentido antigo dos almanaques, uma quarta Lua cheia na mesma estação, sobrevive principalmente em jogos de perguntas e respostas. Nenhuma das duas parece azul.`,
+      },
+      {
+        q: 'De onde vêm os nomes das luas cheias?',
+        a: 'A sequência Lobo, Neve, Minhoca vem da tradição dos almanaques norte-americanos, que aproveitou nomes sazonais algonquinos e coloniais. Eles descrevem o ano agrícola e de caça, não a astrologia: o conteúdo astrológico de uma Lua cheia é o signo e o grau, e por isso a tabela traz os dois.',
+      },
+      {
+        q: 'O que significa uma Lua cheia na astrologia?',
+        a: `Uma Lua cheia é o Sol e a Lua em oposição exata, por isso ela sempre reúne dois signos opostos: uma Lua cheia em ${capricorn} acontece na temporada de ${cancer}. Os astrólogos a leem como uma culminação, ou como algo que vem à tona, na parte do seu mapa onde está o signo da Lua. Para saber qual é essa parte, é preciso o seu mapa astral.`,
+      },
+    ],
+    pageName: 'Calendário de luas cheias 2026 e 2027',
+    pageDescription:
+      'Todas as luas cheias de 2026 e 2027 com a hora universal exata, o signo e o grau do zodíaco e o nome tradicional, calculadas a partir do movimento real da Lua.',
+    eventName: (name, sign) => `${name} em ${sign}`,
+    eventDescription: (position, iso) =>
+      `Lua cheia em ${position}; oposição exata do Sol e da Lua: ${iso}.`,
+    datasetName: 'Calendário de luas cheias, 2026–2027',
+    datasetDescription:
+      'Instantes exatos em hora universal, posições no zodíaco tropical e nomes tradicionais de todas as luas cheias de 2026 e 2027.',
+    variables: ['instante da Lua cheia', 'signo do zodíaco', 'longitude zodiacal', 'nome tradicional da lua'],
+  },
+  fr: {
+    title: 'Calendrier des pleines lunes 2026 et 2027 | Zodiacs.org',
+    description:
+      'Toutes les pleines lunes de 2026 et 2027\u202F: date et heure exactes en temps universel, signe et degré de la Lune, nom traditionnel, Lune bleue comprise.',
+    imageAlt: 'Calendrier des pleines lunes — Zodiacs.org',
+    heading: 'Trouve toutes les pleines lunes jusqu’en 2027.',
+    lede:
+      'Chaque ligne donne l’instant exact où la Lune se trouve à l’opposé du Soleil, à la minute près jusqu’à la fin de 2027, avec le signe où cela se produit et le nom que lui ont donné les almanachs.',
+    asOf: (date) => `Au ${date}`,
+    status: (name, day, position) => `La prochaine Pleine Lune est la ${name}\u202F: ${day}, à ${position}.`,
+    statusNone: 'Les dates suivantes de Pleine Lune ne sont pas encore disponibles.',
+    nextYearLabel: 'L’an prochain seulement\u202F:',
+    nextYearLink: 'le calendrier des pleines lunes de 2027',
+    phaseLabel: 'La phase de ce soir ou la Lune de n’importe quelle date\u202F:',
+    phaseLink: 'l’outil de phase de la Lune',
+    yearHeading: (year) => `Pleines lunes de ${year}`,
+    utcNote: 'Les heures sont en temps universel (UTC)\u202F; en Amérique, l’instant tombe souvent la veille au soir.',
+    colDate: 'Date',
+    colTime: 'Heure UTC',
+    colPosition: 'Position de la Lune',
+    colName: 'Nom',
+    moonNames: [
+      'Lune du Loup', 'Lune de Neige', 'Lune du Ver', 'Lune Rose', 'Lune des Fleurs', 'Lune des Fraises',
+      'Lune du Cerf', 'Lune de l’Esturgeon', 'Lune du Maïs', 'Lune du Chasseur', 'Lune du Castor', 'Lune Froide',
+    ],
+    blueMoon: 'Lune bleue',
+    aboutHeading: 'Ce qu’est une Pleine Lune',
+    about: [
+      [
+        'Tous les 29,5 jours, la Lune vient se placer exactement à l’opposé du Soleil, toute sa face éclairée tournée vers nous. Cette opposition est un instant unique et calculable (les heures ci-dessus), même si la Lune paraît pratiquement pleine la nuit d’avant et celle d’après. Comme il s’agit d’une opposition, la paire de signes est fixe\u202F: une Pleine Lune en ',
+        { sign: 'capricorn' },
+        ' ne peut avoir lieu que lorsque le Soleil est en ',
+        { sign: 'cancer' },
+        ', et ainsi de suite tout autour de la roue.',
+      ],
+      [
+        'Les noms sont plus anciens que les rubriques d’astrologie qui les ont empruntés. Les almanachs nord-américains, puisant dans la tradition saisonnière algonquienne et coloniale, ont relié la lune de chaque mois à l’année de travail\u202F: les loups dans le froid de janvier, les vers de mars, les bois neufs du cerf en juillet. C’est de la poésie de calendrier, pas des données du ciel\u202F: la colonne calculée est celle du signe et du degré, et c’est ce que lit vraiment un astrologue. Pour savoir où ce degré tombe dans ',
+        { em: 'ton' },
+        ' thème, il faut calculer ton ',
+        { to: '/birth-chart/', text: 'thème astral' },
+        '\u202F; chaque lunaison est suivie, à mesure qu’elle arrive, dans les ',
+        { to: '/horoscopes/', text: 'horoscopes mensuels', english: true },
+        '.',
+      ],
+      [
+        'Environ deux fois par an, une Pleine Lune s’aligne assez précisément avec les nœuds de l’orbite lunaire pour traverser l’ombre de la Terre\u202F: c’est une éclipse de Lune. Elles ont ',
+        { to: '/eclipses/', text: 'leur propre page, avec les dates' },
+        '.',
+      ],
+    ],
+    faqHeading: 'Questions et réponses',
+    faq: ({ status, nextBlue, capricorn, cancer }) => [
+      {
+        q: 'Quand a lieu la prochaine Pleine Lune\u202F?',
+        a: `${status} Chaque date de cette page est calculée à partir de l’opposition réelle de la Lune au Soleil, à la minute près, en temps universel (UTC).`,
+      },
+      {
+        q: 'Pourquoi la date de la Pleine Lune varie-t-elle parfois d’un jour\u202F?',
+        a: 'La Pleine Lune est un instant unique, le moment où la Lune se trouve exactement à l’opposé du Soleil, et cette page le donne en temps universel (UTC). S’il tombe à 2\u202Fh UTC, c’est encore la veille au soir en Amérique\u202F: un calendrier local peut donc tout à fait afficher la date voisine. Dans tous les cas, la Lune paraît pleine à l’œil nu une nuit avant et une nuit après.',
+      },
+      {
+        q: 'Qu’est-ce qu’une Lune bleue\u202F?',
+        a: `Le sens moderne le plus courant désigne la deuxième Pleine Lune d’un même mois civil, ce qui arrive tous les deux ou trois ans parce que les mois lunaires durent environ 29,5 jours.${nextBlue ? ` La prochaine a lieu le ${nextBlue}.` : ''} Le sens ancien des almanachs, une quatrième Pleine Lune dans une même saison, survit surtout dans les quiz. Aucune des deux n’a l’air bleue.`,
+      },
+      {
+        q: 'D’où viennent les noms des pleines lunes\u202F?',
+        a: 'La série Loup, Neige, Ver vient de la tradition des almanachs nord-américains, qui a repris des noms saisonniers algonquiens et coloniaux. Ils décrivent l’année des champs et de la chasse, pas l’astrologie\u202F: le contenu astrologique d’une Pleine Lune, c’est son signe et son degré, et c’est pourquoi le tableau donne les deux.',
+      },
+      {
+        q: 'Que signifie une Pleine Lune en astrologie\u202F?',
+        a: `Une Pleine Lune, c’est le Soleil et la Lune en opposition exacte\u202F: elle associe donc toujours deux signes opposés. Une Pleine Lune en ${capricorn} a lieu pendant la saison du ${cancer}. Les astrologues la lisent comme un aboutissement, ou une mise en lumière, dans la partie de ton thème où se trouve le signe de la Lune. Pour savoir de quelle partie il s’agit, il faut ton thème astral.`,
+      },
+    ],
+    pageName: 'Calendrier des pleines lunes 2026 et 2027',
+    pageDescription:
+      'Toutes les pleines lunes de 2026 et 2027 avec l’heure exacte en temps universel, le signe et le degré du zodiaque et le nom traditionnel, calculées à partir du mouvement réel de la Lune.',
+    eventName: (name, sign) => `${name} en ${sign}`,
+    eventDescription: (position, iso) =>
+      `Pleine Lune à ${position}\u202F; opposition exacte du Soleil et de la Lune\u202F: ${iso}.`,
+    datasetName: 'Calendrier des pleines lunes, 2026–2027',
+    datasetDescription:
+      'Instants exacts en temps universel, positions dans le zodiaque tropical et noms traditionnels de toutes les pleines lunes de 2026 et 2027.',
+    variables: ['instant de la Pleine Lune', 'signe du zodiaque', 'longitude zodiacale', 'nom traditionnel de la lune'],
+  },
+  it: {
+    title: 'Calendario delle lune piene 2026 e 2027 | Zodiacs.org',
+    description:
+      'Tutte le lune piene del 2026 e del 2027: data e ora esatte in tempo universale, segno e grado della Luna e nome tradizionale, Luna blu compresa.',
+    imageAlt: 'Calendario delle lune piene — Zodiacs.org',
+    heading: 'Trova tutte le lune piene fino al 2027.',
+    lede:
+      'Ogni riga è l’istante esatto in cui la Luna si trova opposta al Sole, con la precisione di un minuto fino alla fine del 2027, con il segno in cui avviene e il nome che le hanno dato gli almanacchi.',
+    asOf: (date) => `Al ${date}`,
+    status: (name, day, position) => `La prossima Luna piena è la ${name}: ${day}, a ${position}.`,
+    statusNone: 'Le date successive di Luna piena non sono ancora disponibili.',
+    nextYearLabel: 'Solo l’anno prossimo:',
+    nextYearLink: 'il calendario delle lune piene del 2027',
+    phaseLabel: 'La fase di stasera o la Luna di qualsiasi data:',
+    phaseLink: 'lo strumento della fase lunare',
+    yearHeading: (year) => `Lune piene del ${year}`,
+    utcNote: 'Gli orari sono in tempo universale (UTC); nelle Americhe l’istante cade spesso la sera prima.',
+    colDate: 'Data',
+    colTime: 'Ora UTC',
+    colPosition: 'Posizione della Luna',
+    colName: 'Nome',
+    moonNames: [
+      'Luna del Lupo', 'Luna della Neve', 'Luna del Verme', 'Luna Rosa', 'Luna dei Fiori', 'Luna delle Fragole',
+      'Luna del Cervo', 'Luna dello Storione', 'Luna del Mais', 'Luna del Cacciatore', 'Luna del Castoro', 'Luna Fredda',
+    ],
+    blueMoon: 'Luna blu',
+    aboutHeading: 'Che cos’è una Luna piena',
+    about: [
+      [
+        'Ogni 29,5 giorni la Luna arriva a trovarsi esattamente opposta al Sole, con tutta la faccia illuminata rivolta verso di noi. Quell’opposizione è un unico istante calcolabile (gli orari qui sopra), anche se la Luna appare praticamente piena per una notte prima e una dopo. Poiché è un’opposizione, la coppia di segni è fissa: una Luna piena in ',
+        { sign: 'capricorn' },
+        ' può avvenire solo mentre il Sole è in ',
+        { sign: 'cancer' },
+        ', e così via lungo tutta la ruota.',
+      ],
+      [
+        'I nomi sono più antichi delle rubriche di astrologia che li hanno presi in prestito. Gli almanacchi nordamericani, attingendo alla tradizione stagionale algonchina e coloniale, legarono la luna di ogni mese all’anno di lavoro: i lupi nel freddo di gennaio, i vermi di marzo, i palchi nuovi del cervo a luglio. Sono poesia da calendario, non dati del cielo: la colonna calcolata è quella del segno e del grado, ed è ciò che un astrologo legge davvero. Per sapere dove cade quel grado nel ',
+        { em: 'tuo' },
+        ' tema serve calcolare il ',
+        { to: '/birth-chart/', text: 'tema natale' },
+        '; ogni lunazione, man mano che arriva, è seguita negli ',
+        { to: '/horoscopes/', text: 'oroscopi mensili', english: true },
+        '.',
+      ],
+      [
+        'Circa due volte l’anno una Luna piena si allinea abbastanza con i nodi dell’orbita lunare da attraversare l’ombra della Terra: un’eclissi lunare. Queste hanno ',
+        { to: '/eclipses/', text: 'una pagina a parte, con le date' },
+        '.',
+      ],
+    ],
+    faqHeading: 'Domande e risposte',
+    faq: ({ status, nextBlue, capricorn, cancer }) => [
+      {
+        q: 'Quando è la prossima Luna piena?',
+        a: `${status} Ogni data di questa pagina è calcolata dall’opposizione reale tra la Luna e il Sole, con la precisione di un minuto, in tempo universale (UTC).`,
+      },
+      {
+        q: 'Perché la data della Luna piena a volte cambia di un giorno?',
+        a: 'La Luna piena è un unico istante, il momento in cui la Luna si trova esattamente opposta al Sole, e questa pagina lo riporta in tempo universale (UTC). Se cade alle 2:00 UTC, nelle Americhe è ancora la sera prima, quindi un calendario locale può a buon diritto riportare la data vicina. In ogni caso, a occhio nudo la Luna appare piena per una notte prima e una dopo.',
+      },
+      {
+        q: 'Che cos’è una Luna blu?',
+        a: `Il significato moderno più comune è la seconda Luna piena all’interno dello stesso mese di calendario, cosa che accade ogni due o tre anni perché i mesi lunari durano circa 29,5 giorni.${nextBlue ? ` La prossima è il ${nextBlue}.` : ''} Il significato più antico degli almanacchi, una quarta Luna piena nella stessa stagione, sopravvive soprattutto nei quiz. Nessuna delle due appare blu.`,
+      },
+      {
+        q: 'Da dove vengono i nomi delle lune piene?',
+        a: 'La serie Lupo, Neve, Verme viene dalla tradizione degli almanacchi nordamericani, che ha ripreso nomi stagionali algonchini e coloniali. Descrivono l’anno agricolo e della caccia, non l’astrologia: il contenuto astrologico di una Luna piena è il segno e il grado, ed è per questo che la tabella li riporta entrambi.',
+      },
+      {
+        q: 'Che cosa significa una Luna piena in astrologia?',
+        a: `Una Luna piena è il Sole e la Luna in opposizione esatta, quindi unisce sempre due segni opposti: una Luna piena in ${capricorn} avviene nella stagione del ${cancer}. Gli astrologi la leggono come un culmine, o come qualcosa che viene alla luce, nella parte del tuo tema in cui si trova il segno della Luna. Per sapere quale parte sia serve il tuo tema natale.`,
+      },
+    ],
+    pageName: 'Calendario delle lune piene 2026 e 2027',
+    pageDescription:
+      'Tutte le lune piene del 2026 e del 2027 con l’ora esatta in tempo universale, il segno e il grado dello zodiaco e il nome tradizionale, calcolate dal moto reale della Luna.',
+    eventName: (name, sign) => `${name} in ${sign}`,
+    eventDescription: (position, iso) =>
+      `Luna piena a ${position}; opposizione esatta del Sole e della Luna: ${iso}.`,
+    datasetName: 'Calendario delle lune piene, 2026–2027',
+    datasetDescription:
+      'Istanti esatti in tempo universale, posizioni nello zodiaco tropicale e nomi tradizionali di tutte le lune piene del 2026 e del 2027.',
+    variables: ['istante della Luna piena', 'segno zodiacale', 'longitudine zodiacale', 'nome tradizionale della luna'],
+  },
+};
+
+const c = COPY[locale];
+const cue = ENGLISH_ONLY_COPY[locale];
+const prefix = `/${locale}`;
+const pagePath = `${prefix}/full-moon-calendar/`;
+const pageUrl = `https://zodiacs.org${pagePath}`;
+const inLanguage = locale === 'pt' ? 'pt-BR' : locale;
+
+// Every full moon in the committed sky data, with the Moon's sign computed
+// at each instant. Same logic as the English page.
+const buildNow = new Date();
+const eventHorizon = new Date(buildNow);
+eventHorizon.setUTCFullYear(eventHorizon.getUTCFullYear() + 1);
+
+const sources = [
+  { label: 'Astronomy Engine', href: 'https://github.com/cosinekitty/astronomy' },
+  { label: 'IANA Time Zone Database', href: 'https://www.iana.org/time-zones' },
+];
+
+// Names are keyed by month. The second full moon in one calendar month
+// takes the blue moon name instead.
+const seen = new Set<string>();
+const fulls = (sky.moons as { type: string; at: string }[])
+  .filter((m) => m.type === 'full')
+  .map(({ at }) => {
+    const date = new Date(at);
+    const monthKey = at.slice(0, 7);
+    const second = seen.has(monthKey);
+    seen.add(monthKey);
+    const lon = bodyLongitude('Moon', date);
+    const id = `full-moon-${at.slice(0, 10)}`;
+    return {
+      id,
+      at: date,
+      year: date.getUTCFullYear(),
+      blue: second,
+      name: second ? c.blueMoon : c.moonNames[date.getUTCMonth()],
+      position: formatLongitude(lon, locale),
+      sign: signForLongitude(lon),
+      past: date < buildNow,
+      // Individual event pages exist in English only.
+      path: publishedEventById.get(id)?.path ?? null,
+    };
+  });
+
+const years = [...new Set(fulls.map((f) => f.year))];
+const next = fulls.find((f) => !f.past);
+const upcomingEvents = fulls.filter((f) => f.at >= buildNow && f.at <= eventHorizon);
+
+const fmtDay = (d: Date) =>
+  formatDate(locale, d, { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+const fmtTime = (d: Date) =>
+  formatTime(locale, d, { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'UTC' });
+
+const status = next ? c.status(next.name, fmtDay(next.at), next.position) : c.statusNone;
+
+const asOf = formatShortDate(locale, buildNow);
+
+// The next second-in-a-month full moon still ahead in the data; the FAQ
+// leaves the sentence out when there is none.
+const nextBlueMoon = fulls.find((f) => f.blue && !f.past);
+const nextBlue = nextBlueMoon
+  ? formatDate(locale, nextBlueMoon.at, { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
+  : null;
+
+const signNames = { capricorn: signName('capricorn', locale), cancer: signName('cancer', locale) };
+const faq = c.faq({ status, nextBlue, ...signNames });
+
+const eventNodes = upcomingEvents.map((full) => {
+  const iso = full.at.toISOString();
+  const url = `${pageUrl}#${full.id}`;
+  return {
+    '@type': 'Event',
+    '@id': url,
+    name: c.eventName(full.name, signName(full.sign, locale)),
+    description: c.eventDescription(full.position, iso),
+    inLanguage,
+    startDate: iso,
+    endDate: iso,
+    eventStatus: 'https://schema.org/EventScheduled',
+    url,
+  };
+});
+
+const dataset = {
+  '@type': 'Dataset',
+  '@id': `${pageUrl}#dataset`,
+  name: c.datasetName,
+  description: c.datasetDescription,
+  url: pageUrl,
+  inLanguage,
+  creator: { '@id': 'https://zodiacs.org/#org' },
+  publisher: { '@id': 'https://zodiacs.org/#org' },
+  dateModified: sky.generatedAt,
+  temporalCoverage: `${sky.from}/${sky.to}`,
+  spatialCoverage: 'Earth',
+  variableMeasured: c.variables,
+  citation: sources.map((source) => ({ '@type': 'CreativeWork', name: source.label, url: source.href })),
+};
+
+const jsonLd = [
+  {
+    '@type': 'WebPage',
+    name: c.pageName,
+    url: pageUrl,
+    description: c.pageDescription,
+    inLanguage,
+  },
+  {
+    '@type': 'FAQPage',
+    inLanguage,
+    mainEntity: faq.map(({ q, a }) => ({
+      '@type': 'Question',
+      name: q,
+      acceptedAnswer: { '@type': 'Answer', text: a },
+    })),
+  },
+  dataset,
+  ...eventNodes,
+];
+// One visible note replaces a cue repeated on every dated row; each link still carries hreflang and its title.
+const EVENT_LINK_NOTE: Record<'es' | 'pt' | 'fr' | 'it', string> = {
+  es: 'Las fechas con enlace abren la página del evento, por ahora en inglés.',
+  pt: 'As datas com link abrem a página do evento, por enquanto em inglês.',
+  fr: 'Les dates avec un lien ouvrent la page de l’événement, pour l’instant en anglais.',
+  it: 'Le date con un link aprono la pagina dell’evento, per ora in inglese.',
+};
+---
+<Base
+  title={c.title}
+  description={c.description}
+  path={pagePath}
+  locale={locale}
+  image="/assets/og/v2/tool/full-moon-calendar.png"
+  imageAlt={c.imageAlt}
+  jsonLd={jsonLd}
+  sources={sources}
+>
+  <section class="section--tight container container--narrow">
+    <div class="tool-hero reveal">
+      <h1 class="display">{c.heading}</h1>
+      <p>{c.lede}</p>
+    </div>
+
+    <div class="rx-now shell tinted reveal" style="--sign:var(--sign-cancer)">
+      <div class="core tinted rx-now__core">
+        <span class="mono--label">{c.asOf(asOf)}</span>
+        <strong class="rx-now__line">{status}</strong>
+        <span class="rx-now__all mono">
+          {c.nextYearLabel} <a href="/full-moon-calendar/2027/" hreflang="en" title={cue.aria}>{c.nextYearLink}{cue.suffix}</a> ·
+          {c.phaseLabel} <a href={`${prefix}/moon-phase/`}>{c.phaseLink}</a>
+        </span>
+      </div>
+    </div>
+  </section>
+
+  {years.map((year) => (
+    <section class="section--tight container container--narrow">
+      <div class="section-head reveal">
+        <h2>{c.yearHeading(year)}</h2>
+        {year === years[0] && (
+          <p>{c.utcNote} {EVENT_LINK_NOTE[locale]}</p>
+        )}
+      </div>
+      <div class="table-wrap reveal">
+        <table class="rx-table">
+          <thead>
+            <tr><th>{c.colDate}</th><th>{c.colTime}</th><th>{c.colPosition}</th><th>{c.colName}</th></tr>
+          </thead>
+          <tbody>
+            {fulls.filter((f) => f.year === year).map((f) => (
+              <tr id={f.id} class={f.past ? 'rx-table__past' : ''}>
+                <td data-label={c.colDate}>
+                  {f.path
+                    ? <a href={f.path} hreflang="en" title={cue.aria}>{fmtDay(f.at)}<span class="sr-only">{cue.suffix}</span></a>
+                    : fmtDay(f.at)}
+                </td>
+                <td class="mono" data-label={c.colTime}>{fmtTime(f.at)}</td>
+                <td class="mono" data-label={c.colPosition}>{f.position}</td>
+                <td data-label={c.colName}>{f.name}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  ))}
+
+  <section class="section--tight container container--narrow">
+    <div class="prose reveal">
+      <h2>{c.aboutHeading}</h2>
+      {c.about.map((parts) => (
+        <p>{parts.map((part) => (
+          typeof part === 'string'
+            ? part
+            : 'em' in part
+              ? <em>{part.em}</em>
+              : 'sign' in part
+                ? <a href={`${prefix}/${part.sign}/`}>{signNames[part.sign]}</a>
+                : part.english
+                  ? <a href={part.to} hreflang="en" title={cue.aria}>{part.text}{cue.suffix}</a>
+                  : <a href={`${prefix}${part.to}`}>{part.text}</a>
+        ))}</p>
+      ))}
+    </div>
+  </section>
+
+  <section class="section--tight container container--narrow">
+    <div class="section-head reveal"><h2>{c.faqHeading}</h2></div>
+    <div class="faq reveal">
+      {faq.map(({ q, a }) => (
+        <details class="faq__item">
+          <summary>{q}</summary>
+          <p>{a}</p>
+        </details>
+      ))}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .tool-hero { max-width: 62ch; margin-bottom: clamp(24px, 4vw, 36px); }
+  .tool-hero h1 {
+    margin: 0 0 16px;
+    font-family: var(--font-serif);
+    font-size: var(--text-2xl);
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    line-height: 1.04;
+    font-variant-numeric: oldstyle-figures;
+    text-wrap: balance;
+  }
+  .tool-hero p { margin: 0; color: var(--muted); font-size: var(--text-lg); text-wrap: pretty; }
+
+  .rx-now__core { padding: clamp(20px, 4vw, 28px); display: grid; gap: 10px; }
+  .rx-now__line { font-size: var(--text-lg); letter-spacing: -0.01em; max-width: 56ch; }
+  .rx-now__all { font-size: 11.5px; color: var(--faint); letter-spacing: 0.05em; }
+  .rx-now__all a { color: var(--muted); }
+  .rx-now__all a:hover { color: var(--text); }
+
+  /* .table-wrap + .rx-table (desktop + mobile stacking) live in
+     ../../styles/rx-table.css (shared). */
+
+  .faq { display: grid; gap: 8px; }
+  .faq__item {
+    border: 1px solid var(--hair-1);
+    border-radius: var(--r-md);
+    background: var(--void-1);
+    padding: 4px 18px;
+  }
+  .faq__item summary { cursor: pointer; padding: 12px 0; font-weight: 550; color: var(--text); }
+  .faq__item p { margin: 2px 0 16px; color: var(--text-2); font-size: var(--text-sm); line-height: 1.65; }
+</style>

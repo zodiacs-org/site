@@ -151,8 +151,11 @@ function isLocalizedBirthdayPath(path: string): boolean {
   return Boolean(maxDay && birthday[2] === String(day) && day >= 1 && day <= maxDay);
 }
 
-/** Rising-sign profiles are translated in src/content/learn-i18n; Russian links to the English ones. */
+/** Families translated for es, pt, fr and it only (rising-sign profiles, sky calendars); Russian links to English. */
 export const RISING_PROFILE_LOCALES = ['en', 'es', 'pt', 'fr', 'it'] as const satisfies readonly Locale[];
+
+/** The four sky-calendar hubs are translated for es, pt, fr and it; their year and event pages stay English. */
+const SKY_CALENDAR_PATHS: readonly string[] = ['/full-moon-calendar/', '/eclipses/', '/mercury-retrograde/', '/retrogrades/'];
 
 function isRisingProfilePath(path: string): boolean {
   const sign = path.match(/^\/rising-sign\/([a-z]+)\/$/)?.[1];
@@ -165,6 +168,7 @@ export function availableLocalesForPath(path: string): readonly Locale[] | undef
   return LOCALIZED_PATHS.get(canonical)
     ?? (isLocalizedChineseZodiacPath(canonical) ? PROGRAMMATIC_ROUTE_LOCALES : undefined)
     ?? (isRisingProfilePath(canonical) ? RISING_PROFILE_LOCALES : undefined)
+    ?? (SKY_CALENDAR_PATHS.includes(canonical) ? RISING_PROFILE_LOCALES : undefined)
     ?? (isLocalizedBirthdayPath(canonical) ? [DEFAULT_LOCALE] : undefined);
 }
 
@@ -176,6 +180,7 @@ export function renderableLocalesForPath(path: string): readonly Locale[] | unde
   }
   if (DAILY_READING_PATHS.includes(canonical)) return DAILY_READING_ROUTE_LOCALES;
   if (isRisingProfilePath(canonical)) return RISING_PROFILE_LOCALES;
+  if (SKY_CALENDAR_PATHS.includes(canonical)) return RISING_PROFILE_LOCALES;
   return isLocalizedChineseZodiacPath(canonical) || isLocalizedBirthdayPath(canonical)
     ? PROGRAMMATIC_ROUTE_LOCALES
     : undefined;
