@@ -146,8 +146,8 @@ async function runLogged(command, args, cwd, path, env = cleanEnv()) {
     throw new Error(`${command} exited ${error.code}: see ${path}`);
   }
 }
-async function assertIsolation(consumer) {
-  assert(!isAbsolute(relative(ROOT, consumer)) && relative(ROOT, consumer).startsWith(`..${sep}`), 'consumer must be outside checkout');
+async function assertIsolation(consumer, checkoutRoot = ROOT) {
+  assert(!isAbsolute(relative(checkoutRoot, consumer)) && relative(checkoutRoot, consumer).startsWith(`..${sep}`), 'consumer must be outside checkout');
   for (let parent = dirname(consumer); ; parent = dirname(parent)) {
     for (const name of ['node_modules', 'package.json']) {
       await access(join(parent, name)).then(() => { throw new Error(`consumer inherits ${join(parent, name)}`); }, error => {
@@ -162,6 +162,10 @@ async function assertIsolation(consumer) {
 // Both SDK and its transitive dependencies resolve in that consumer alone.
 async function consume(pinPath, out) {
   const consumer = dirname(FILE);
+  assert.equal(await realpath(process.cwd()), await realpath(consumer), 'consumer process cwd');
+  assert.equal(process.env.NODE_PATH, undefined, 'consumer NODE_PATH must be absent');
+  assert.equal(process.env.NODE_OPTIONS, undefined, 'consumer NODE_OPTIONS must be absent');
+  await assertIsolation(consumer, option('--checkout-root'));
   const pin = await jsonFile(pinPath);
   const require = createRequire(join(consumer, 'package.json'));
   const resolved = {};
@@ -176,10 +180,26 @@ async function consume(pinPath, out) {
   const transport = new StdioClientTransport({ command: process.execPath, args: [join(consumer, 'server.mjs')],
     cwd: consumer, env: cleanEnv(), stderr: 'pipe' });
   const result = { status: 'running', resolved, cases: [], refusals: [], unsupported: [], stderr: '' };
+  const environmentProof = env => Object.fromEntries(Object.entries(env).map(([key, value]) =>
+    [key, /PROXY|CA_CERTS/.test(key) ? '<platform network setting; value omitted>' : value]));
+  result.isolation = { consumerCwd: process.cwd(), installPath: consumer, checkoutRootExcluded: option('--checkout-root'),
+    workerEnvironment: environmentProof(process.env),
+    serverLaunch: { command: process.execPath, args: [join(consumer, 'server.mjs')], cwd: consumer, environment: environmentProof(cleanEnv()) },
+    ancestorPackageOrNodeModules: 'absent; checked again in consumer process',
+    moduleResolution: 'SDK entry realpaths are inside this consumer/node_modules; NODE_PATH and NODE_OPTIONS absent' };
   result.clientVersion = (await jsonFile(join(consumer, 'node_modules/@modelcontextprotocol/client/package.json'))).version;
   assert.equal(result.clientVersion, '2.0.0', 'locked consumer client');
   try {
     await client.connect(transport);
+    if (process.platform === 'linux') {
+      const childCwd = await realpath(`/proc/${transport.pid}/cwd`);
+      const childEnv = Object.fromEntries((await readFile(`/proc/${transport.pid}/environ`, 'utf8'))
+        .split('\0').filter(Boolean).map(entry => [entry.slice(0, entry.indexOf('=')), entry.slice(entry.indexOf('=') + 1)]));
+      assert.equal(childCwd, await realpath(consumer), 'actual extracted server cwd');
+      assert.deepEqual(childEnv, cleanEnv(), 'actual extracted server environment');
+      result.isolation.observedServer = { pid: transport.pid, cwd: childCwd,
+        environment: environmentProof(childEnv), proof: 'read-only /proc observation after SDK initialization' };
+    }
     transport.stderr?.on('data', data => { result.stderr += data.toString(); });
     result.server = client.getServerVersion();
     result.tools = (await client.listTools()).tools;
@@ -312,12 +332,14 @@ async function main(pinPath, out) {
     assert(!(await lstat(join(consumer, 'node_modules'))).isSymbolicLink(), 'consumer node_modules link');
     report.consumer = { packageVersion: pkg.version, license: pkg.license, shrinkwrapSha256: lockBefore,
       serverSha256: sha256(await readFile(join(consumer, 'server.mjs'))), nodeModules: 'fresh npm ci inside extracted package', inheritedNodeModules: false };
+    report.consumer.installPath = consumer;
+    report.consumer.lockPath = join(consumer, 'npm-shrinkwrap.json');
     report.verify = await runLogged(process.execPath, ['verify.mjs'], consumer, join(out, 'packaged-verify.log'));
     report.checks.push('locked fresh consumer and packaged verify.mjs');
     const consumerPin = join(scratch, 'pin.json');
     await save(consumerPin, pin);
     await copyFile(FILE, join(consumer, 'consumer-check.mjs'));
-    await runLogged(process.execPath, ['consumer-check.mjs', '--consumer', '--pin', consumerPin, '--out', join(out, 'mcp.json')], consumer, join(out, 'consumer-check.log'));
+    await runLogged(process.execPath, ['consumer-check.mjs', '--consumer', '--checkout-root', ROOT, '--pin', consumerPin, '--out', join(out, 'mcp.json')], consumer, join(out, 'consumer-check.log'));
     const mcp = await jsonFile(join(out, 'mcp.json'));
     report.checks.push('advertised MCP schemas, versions, citations, unsupported requests and recovery');
 
