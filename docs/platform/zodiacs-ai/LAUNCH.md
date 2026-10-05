@@ -1,19 +1,21 @@
 # Release gates and rollback
 
-## Chart Studio implementation — 2026-10-05
+## Chart Studio candidate — 2026-10-06
 
-Version 0.2.0 adds a browser-local interactive chart panel, explicit reviewed
-selection sharing and record export. Six public entrypoints and nine developer
-tools are packaged. Both local candidates are installed/enabled at 0.2.0;
-full local checks pass. [Chart Studio review](./CHART_STUDIO.md) records the
-scope, screenshots, 6,796 passing tests and remaining live-host/download checks.
-The separate protected Chart Studio deployment is ready; 15 HTTPS checks and
-seven SDK calls pass against source `f8110d7132cbd4bb305eeae0ebd331d8b2009d9e`.
-Its Browser Evidence workflow passes. The earlier ChatGPT calendar connection
-retains its deployment. The new branded `Zodiacs Chart Studio Preview` form
-awaits the owner's reserved acknowledgement and creation before live host
-acceptance. Chart Studio is not yet a verified ChatGPT release; production has
-not been activated.
+Version 0.3.0 packages Time Explorer, possible birth-time windows and local
+calculation-record inspection in the existing browser panel. See
+[Chart Studio review](./CHART_STUDIO.md). Its standalone local preview is under
+review; it has not replaced the connected ChatGPT deployment or installed
+0.2.0 local candidates.
+
+The owner approved creation and connection of **Zodiacs Chart Studio Preview**.
+Actual global calendar/Studio rendering, Sun selection and house comparison
+passed on the protected `f8110d71` 0.2.0 deployment. The branded profile has the
+company, website, support and legal links. That frozen preview also passed
+15 HTTPS checks and seven SDK calls. The earlier calendar connection retains
+its own deployment. Thread entrypoints, actual assistant sharing, saved-file
+download, beta feedback and publisher verification remain release checks.
+Production remains disabled. No 0.3.0 live-host or public release is claimed.
 
 ## Recovery status — 2026-10-05
 

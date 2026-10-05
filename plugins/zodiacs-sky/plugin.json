@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "zodiacs-sky",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Explore sky events and astronomical facts, or open Chart Studio to inspect an interactive chart calculated in the browser.",
   "author": {
     "name": "Zodiacs LLC",
@@ -23,7 +23,7 @@
       "interface": {
         "displayName": "Zodiacs",
         "shortDescription": "Sky events and Chart Studio",
-        "longDescription": "Developed by Zodiacs LLC, the operator of Zodiacs.org. See what changes this week, explore new and full Moons, and check astronomical claims with explicit timezones and versioned calculation receipts. The sky calendar supports inline, sidebar and conversation panels. Public-sky tools need no account or birth information. Chart Studio starts with a synthetic example and calculates personal UTC inputs in the browser. Inspect placements and aspects, compare Placidus and whole-sign houses, and download a calculation record. Only reviewed selections are shared with the assistant; derived chart facts can reveal personal information. Event windows are at most 31 days; supported searches cover sign ingresses, planetary stations and lunations, with tested but unproven completeness. No reminders, eclipse search, personal chart storage or predictions of outcomes are offered. This is a review candidate; dated staging host evidence is recorded, while production and directory listing await release checks.\n\nOfficial website: https://zodiacs.org/ . Company and contact: https://zodiacs.org/about/ . Support: admin@zodiacs.org . Methods and developer documentation: https://zodiacs.org/developers/ . Privacy and terms are linked in this profile.",
+        "longDescription": "Developed by Zodiacs LLC, the operator of Zodiacs.org. See what changes this week, explore new and full Moons, and check astronomical claims with explicit timezones and versioned calculation receipts. The sky calendar supports inline, sidebar and conversation panels. Public-sky tools need no account or birth information. Chart Studio starts with a synthetic example and calculates personal UTC inputs in the browser. Inspect placements and aspects, compare Placidus and whole-sign houses, step through UTC time and explore possible birth-time windows. Chart Inspector reads calculation records locally, compares them and checks reproduction with the installed engine. Downloaded records contain personal chart data. Only reviewed selections are shared with the assistant; derived chart facts can reveal personal information. Event windows are at most 31 days; supported searches cover sign ingresses, planetary stations and lunations, with tested but unproven completeness. No reminders, eclipse search, personal chart storage or predictions of outcomes are offered. This is a review candidate; dated staging host evidence is recorded, while production and directory listing await release checks.\n\nOfficial website: https://zodiacs.org/ . Company and contact: https://zodiacs.org/about/ . Support: admin@zodiacs.org . Methods and developer documentation: https://zodiacs.org/developers/ . Privacy and terms are linked in this profile.",
         "developerName": "Zodiacs LLC",
         "category": "Lifestyle",
         "capabilities": [

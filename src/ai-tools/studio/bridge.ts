@@ -21,7 +21,7 @@ export class StudioBridge {
     if (window.parent === window) return;
     window.addEventListener('message', this.listener);
     try {
-      const result = await this.request('ui/initialize', { protocolVersion: '2026-01-26', appInfo: { name: 'Zodiacs Chart Studio', version: '0.2.0' }, appCapabilities: { availableDisplayModes: ['inline', 'fullscreen'] } });
+      const result = await this.request('ui/initialize', { protocolVersion: '2026-01-26', appInfo: { name: 'Zodiacs Chart Studio', version: '0.3.0' }, appCapabilities: { availableDisplayModes: ['inline', 'fullscreen'] } });
       this.textContext = !!result?.hostCapabilities?.updateModelContext?.text;
       this.textMessage = !!result?.hostCapabilities?.message?.text;
       this.ready = true;

@@ -18,7 +18,7 @@ export function createAiServer(dependencies: AiDependencies) {
   }] }));
   server.registerResource('chart-studio', STUDIO_URI, {
     title: 'Zodiacs Chart Studio', mimeType: 'text/html;profile=mcp-app',
-    _meta: { ui: { csp: { connectDomains: [], resourceDomains: [] }, prefersBorder: true }, 'openai/widgetDescription': 'Interactive charts calculated in the browser, with selected-element inspection, house comparison and user-reviewed context sharing.' },
+    _meta: { ui: { csp: { connectDomains: [], resourceDomains: [] }, prefersBorder: true }, 'openai/widgetDescription': 'Interactive charts calculated in the browser, with time exploration, birth-time windows, calculation-record inspection, house comparison and user-reviewed context sharing.' },
   }, () => ({ contents: [{ uri: STUDIO_URI, mimeType: 'text/html;profile=mcp-app', text: STUDIO_HTML,
     _meta: { ui: { csp: { connectDomains: [], resourceDomains: [] }, prefersBorder: true }, 'openai/widgetCSP': { connect_domains: [], resource_domains: [] }, 'openai/widgetPrefersBorder': true, 'openai/ui': { availableDisplayModes: ['inline', 'fullscreen'], preferredDisplayMode: 'fullscreen' } },
   }] }));

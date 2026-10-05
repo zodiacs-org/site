@@ -7,6 +7,8 @@ import { entityId, parseEntityId, type EntityRef } from '../../lib/scene/types';
 import { formatLongitude, SIGNS } from '../../lib/signs';
 import { calculateStudio, compareStudio, EXAMPLE, houseName, recordText, selectionContext, type StudioInput } from './model';
 import { StudioBridge } from './bridge';
+import { TimeExplorer } from './TimeExplorer';
+import { RecordInspector } from './RecordInspector';
 import './style.css';
 
 declare const STUDIO_ICONS: Record<string, string>;
@@ -25,6 +27,8 @@ function App() {
   const [sharing, setSharing] = useState(false);
   const [notice, setNotice] = useState('');
   const [tab, setTab] = useState<'placements' | 'aspects' | 'receipt'>('placements');
+  const [workspace, setWorkspace] = useState<'chart' | 'time' | 'inspect'>('chart');
+  const [workspaceEpoch, setWorkspaceEpoch] = useState(0);
   const bridge = useRef<StudioBridge>();
   const wheelRoot = useRef<HTMLDivElement>(null);
   useLayoutEffect(() => {
@@ -34,7 +38,7 @@ function App() {
       const slug = image.getAttribute('data-href')!.split('/').at(-1)!.replace('.webp', '');
       if (STUDIO_ICONS[slug]) image.setAttribute('href', STUDIO_ICONS[slug]);
     }
-  }, [run]);
+  }, [run, workspace]);
   useEffect(() => { const host = new StudioBridge(setAvailable); bridge.current = host; void host.connect(); return () => host.dispose(); }, []);
   const scene = useMemo(() => buildSceneModel(run.chart, { wheelConventions: false }), [run]);
   const emphasis = useMemo(() => emphasisFor(scene, selection), [scene, selection]);
@@ -79,20 +83,24 @@ function App() {
   }
   return <main>
     <header class="studio-header"><a href="https://zodiacs.org/" target="_blank" rel="noreferrer">Zodiacs<span>·</span>org</a><span class="header-note">An interactive chart workspace</span></header>
-    <div class="studio-title"><div><p class="kicker">Explore the details</p><h1>Chart Studio</h1><p class="lede">A chart you can explore, compare, and bring into the conversation.</p></div><button class="quiet" onClick={() => apply(EXAMPLE, true)}>Reset to example</button></div>
+    <div class="studio-title"><div><p class="kicker">Explore the details</p><h1>Chart Studio</h1><p class="lede">A chart you can explore, compare, and bring into the conversation.</p></div><button class="quiet" onClick={() => { apply(EXAMPLE, true); setWorkspaceEpoch(value => value + 1); }}>Reset to example</button></div>
+    <nav class="workspace-tabs" aria-label="Chart Studio workspaces">{([['chart', 'Chart'], ['time', 'Time Explorer'], ['inspect', 'Chart Inspector']] as const).map(([value, label]) => <button key={value} aria-pressed={workspace === value} onClick={() => setWorkspace(value)}>{label}</button>)}</nav>
+    {error && <p class="error" role="alert">{error} The displayed chart still uses its previous inputs.</p>}
+    <div hidden={workspace !== 'inspect'}><RecordInspector key={workspaceEpoch} currentRecord={recordText(run)} /></div>
+    {workspace !== 'inspect' && <>
     <details class="inputs"><summary>Chart inputs <span>{example ? 'Synthetic example · London coordinates' : 'Your current calculation'}{dirty ? ' · unapplied changes' : ''}</span></summary>
-      <form onSubmit={e => { e.preventDefault(); apply(draft); }}>
+      <form onSubmit={e => { e.preventDefault(); apply(draft); }} onKeyDown={e => { if (e.key === 'Enter' && e.target instanceof HTMLInputElement) { e.preventDefault(); apply(draft); } }}>
         <label>UTC date<input type="date" min="1800-01-01" max="2199-12-31" required value={draft.date} onInput={e => update('date', e.currentTarget.value)} /></label>
         <label>UTC time<input type="time" required disabled={!draft.timeKnown} value={draft.time} onInput={e => update('time', e.currentTarget.value)} /></label>
         <label>Latitude<input type="number" step="any" min="-89.999999" max="89.999999" value={draft.latitude} disabled={!draft.timeKnown} onInput={e => update('latitude', e.currentTarget.value)} /></label>
         <label>Longitude<input type="number" step="any" min="-180" max="180" value={draft.longitude} disabled={!draft.timeKnown} onInput={e => update('longitude', e.currentTarget.value)} /></label>
         <label>House system<select value={draft.houseSystem} onChange={e => update('houseSystem', e.currentTarget.value as StudioInput['houseSystem'])}><option value="placidus">Placidus</option><option value="whole">Whole sign</option></select></label>
-        <button type="submit">Update chart</button>
+        <button type="button" onClick={() => apply(draft)}>Update chart</button>
         <label class="check"><input type="checkbox" checked={draft.timeKnown} onChange={e => update('timeKnown', e.currentTarget.checked)} /> Exact time is known</label>
         <p class="form-help">Enter UTC, not local clock time. Coordinates are optional; both are needed for houses. With unknown time, noon UTC is a reference only: no houses or angles are calculated, and positions can change during the day.</p>
-        {error && <p class="error" role="alert">{error} The displayed chart still uses its previous inputs.</p>}
       </form>
     </details>
+    {workspace === 'time' && <TimeExplorer key={workspaceEpoch} input={applied} run={run} onApply={apply} dirty={dirty} />}
     <div class="workspace">
       <section class="chart-area" aria-label="Chart workspace">
         <div class="chart-meta"><span>{example ? 'Example chart' : 'Calculated chart'}</span><time dateTime={run.inputSnapshot.utc}>{run.inputSnapshot.utc.replace('T', ' · ').replace(':00.000Z', ' UTC')}</time></div>
@@ -116,6 +124,7 @@ function App() {
       {tab === 'aspects' && <div class="aspect-grid">{scene.aspects.map(a => <button key={entityId({ kind: 'aspect', ...a })} onClick={() => select({ kind: 'aspect', ...a })}><span>{a.a} {a.type} {a.b}</span><small>Orb {a.orb.toFixed(3)}° · {a.applying ? 'applying' : 'separating'}</small></button>)}</div>}
       {tab === 'receipt' && <div class="receipt"><div><h2>Calculation record</h2><p>Inputs, conventions, versions, and results for the displayed chart. The downloaded record contains personal chart data.</p><button onClick={download}>Download chart record</button></div><details><summary>Inspect full JSON record</summary><pre tabIndex={0}>{recordText(run)}</pre></details>{comparison && <details><summary>Inspect comparison record</summary><pre tabIndex={0}>{recordText(comparison)}</pre></details>}</div>}
     </section>
+    </>}
     <footer class="studio-footer"><a href="https://zodiacs.org/methodology/" target="_blank" rel="noreferrer">Calculation methods</a><p>Calculated in this browser. This panel does not save charts. Only reviewed selections are shared with the assistant. Interpretations are separate from these calculations.</p><a href="https://zodiacs.org/privacy/" target="_blank" rel="noreferrer">Privacy</a></footer>
   </main>;
 }

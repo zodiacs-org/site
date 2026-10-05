@@ -1,10 +1,61 @@
-# Chart Studio 0.2.0 — implementation review
+# Chart Studio 0.3.0 — implementation review
 
 Chart Studio adds an interactive MCP Apps panel to the existing Zodiacs server.
 `open_chart_studio` takes exactly `{}` and returns a fixed launcher result. The
 panel starts with a labeled synthetic chart. It uses the existing wheel,
 selection/emphasis model, engine adapter, and versioned natal-record codec.
 The shared website wheel source is unchanged.
+
+## New in 0.3.0 — 2026-10-06
+
+Two workspaces extend the same panel and both plugin packages:
+
+- **Time Explorer:** UTC steps of 15 minutes, one hour or one day; an explicit
+  anchor and circular position differences; unknown time permits daily noon
+  references only and continues to omit angles/houses. Unapplied input changes
+  disable stepping. Reset removes the old anchor.
+- **Birth-time windows:** two explicit UTC bounds and coordinates, up to 48
+  hours, evaluated by the published engine's `birthWindow`. The start is
+  included and end excluded. Signs and houses found, readable transitions,
+  angle signs, aspects in orb, polar fallback, unresolved nodes and exceeded
+  bounds remain inspectable. Verification is the engine's one-second sampling
+  assessment, not a completeness proof or birth-time rectification.
+- **Chart Inspector:** local file or text input, a 64 KiB codec boundary,
+  same-version recalculation and the existing record comparator. Replay retains
+  the instant, time scale, requested houses and pinned delta-T. Comparisons label
+  reproduced explanations separately from reported facts and hypotheses.
+  Claimed origin and arbitrary extensions are never authenticated or executed.
+
+The window engine is embedded in a dedicated browser worker. Cancellation,
+a 15-second deadline, stale replies, input changes and unmounting terminate work.
+No calculation uses a network request. A host that blocks Blob workers receives
+a visible refusal; native ChatGPT worker acceptance remains unverified for this
+candidate. The standalone preview permits `worker-src blob:` while retaining
+`connect-src 'none'`. Inspector file reads are revision-guarded; edits clear old
+results and reset clears imported records. No new data enters the host bridge.
+
+The next notification service is specified in [SKY_WATCH.md](./SKY_WATCH.md).
+It is not implemented or advertised as a subscription capability.
+
+The 527,473-byte standalone bundle passes its reproducibility and package
+checks. Production build (4,417 pages), typecheck (zero errors/warnings), 77 AI
+tests, official HTTP/stdio clients, engine recipes and the claims ledger pass.
+The full regression run passed 6,836 tests, skipped five, and timed out one
+existing Phase 1 source-hashing test under suite load. All five tests in that
+file passed in isolation; the timed-out test took 599 ms. This is recorded as
+an isolated recheck, not a clean single full-suite run.
+
+Browser checks cover 1280px desktop and 360px mobile (345px document width),
+UTC stepping, window calculation and readable transitions, unknown time,
+local file import, reproduction, mismatches, invalid input, tab persistence
+and reset. A sandboxed opaque-origin host calculates without `allow-forms`;
+calculation buttons use local handlers, including keyboard Enter. No host data
+is sent by either new workspace. Sharing still sends zero selections before
+confirmation and one afterward. Actual ChatGPT acceptance of 0.3.0 remains
+pending. [Verification receipt](./evidence/studio-next/verification.json) and
+captures record the source hashes and scope.
+
+## Historical 0.2.0 implementation and evidence
 
 ## Included
 
@@ -101,15 +152,15 @@ The builder caps JSON-encoded HTML at 2 MB.
 
 ## Release state
 
-This is implemented and verified locally and over protected HTTPS, not accepted
-in live ChatGPT yet. A separate `Zodiacs Chart Studio Preview` connection is
-prepared with its branded icon, company, website, support, privacy and terms.
-Its final acknowledgement and creation remain the owner's reserved action.
-The earlier calendar connection retains its original deployment and evidence.
-After creating the preview connection, verify CSP/fonts, both entrypoints,
-reviewed sharing, refusal recovery and saved-file downloads, then record fresh
-host evidence before release. Production has not been activated. Existing
-publisher, consenting-beta and final owner approval gates still apply.
+The owner authorized creation and connection of **Zodiacs Chart Studio Preview**
+on 2026-10-05. Its branded profile is connected, and actual ChatGPT global
+calendar and Studio rendering, Sun selection and house comparison were observed.
+That private connection remains frozen on source `f8110d71` (0.2.0); the new
+0.3.0 features below are a local review candidate, not a deployed ChatGPT update.
+The original calendar connection also retains its deployment. Thread entrypoints,
+assistant sharing, saved-file download, consenting beta feedback and publisher
+verification still need acceptance. Production is disabled. Final submission,
+merge and production activation remain owner-reserved.
 
 ## Later main-branch integration
 
@@ -123,5 +174,5 @@ checks pass. Fresh GitHub captures bind the combined source; all 18 pixel hashes
 match the existing screenshots, so only the receipt changes. No candidate
 visual baselines were imported. `evidence/chart-studio/main-integration.json`
 records this scope. Full combined-source CI is still in progress; this is not
-a complete CI pass or a deployment of that later source. The prepared ChatGPT
-form continues to target the independently verified `f8110d71` preview.
+a complete CI pass or a deployment of that later source. The connected ChatGPT
+plugin continues to target the independently verified `f8110d71` preview.

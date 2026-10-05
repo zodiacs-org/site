@@ -17,7 +17,7 @@ const handler = createAiNodeHandler({ env: { ZODIACS_MCP_ENABLED: '1' }, atomicQ
 const server = createServer((req, res) => {
   const url = new URL(req.url, 'http://localhost');
   if (url.pathname === '/studio-test-host' && !url.search) { res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' }); res.end(chartStudioHostFixture(STUDIO_HTML)); return; }
-  if (url.pathname === '/studio' && !url.search) { res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'Content-Security-Policy': "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src data:; connect-src 'none'" }); res.end(STUDIO_HTML); return; }
+  if (url.pathname === '/studio' && !url.search) { res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'Content-Security-Policy': "default-src 'none'; script-src 'unsafe-inline'; worker-src blob:; style-src 'unsafe-inline'; img-src data:; font-src data:; connect-src 'none'" }); res.end(STUDIO_HTML); return; }
   if (!['/mcp', '/mcp/health'].includes(url.pathname)) { res.writeHead(404); res.end(); return; }
   if (url.pathname === '/mcp/health' && !url.search) req.query = { __zodiacs_ai: 'health' };
   void handler(req, res).catch(() => { if (!res.headersSent) res.writeHead(500); res.end(); });

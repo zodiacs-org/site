@@ -74,3 +74,14 @@ Start a loopback preview with `npm run ai:serve` from the site root, then open
 `http://127.0.0.1:8787/studio`. This standalone preview cannot share with an
 assistant. A supporting host enables the review-and-share action. Enter UTC
 inputs; place search and timezone conversion are not part of this first version.
+
+## 0.3.0 review candidate
+
+Chart Studio now includes Time Explorer (UTC stepping and possible birth-time
+windows) and Chart Inspector (local file/text record validation, reproduction
+and comparison). No new personal arguments enter MCP tools, and no imports or
+window results are automatically shared. Birth windows require a host that
+permits the embedded Blob worker. The new package is verified locally; the
+connected ChatGPT preview and installed local candidates remain on 0.2.0 until
+a separate upgrade and host acceptance run. Sky Watch notifications are not
+implemented. See `docs/platform/zodiacs-ai/CHART_STUDIO.md` in the repository.

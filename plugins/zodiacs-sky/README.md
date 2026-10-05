@@ -29,3 +29,14 @@ shared on an explicit user action. The panel starts with synthetic inputs and
 requires UTC date/time; unknown time uses a labeled noon reference with no
 houses or angles. Personal records are not stored. Prior calendar host acceptance
 does not establish Chart Studio acceptance; verify this version in ChatGPT.
+
+## 0.3.0 review candidate
+
+Chart Studio now includes Time Explorer (UTC stepping and possible birth-time
+windows) and Chart Inspector (local file/text record validation, reproduction
+and comparison). No new personal arguments enter MCP tools, and no imports or
+window results are automatically shared. Birth windows require a host that
+permits the embedded Blob worker. The new package is verified locally; the
+connected ChatGPT preview and installed local candidates remain on 0.2.0 until
+a separate upgrade and host acceptance run. Sky Watch notifications are not
+implemented. See `docs/platform/zodiacs-ai/CHART_STUDIO.md` in the repository.

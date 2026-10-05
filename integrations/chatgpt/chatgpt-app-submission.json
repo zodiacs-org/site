@@ -4,7 +4,7 @@
   "app_info": {
     "display_name": "Zodiacs",
     "subtitle": "Sky events and Chart Studio",
-    "description": "Zodiacs computes sky positions, upcoming sign ingresses, planetary stations and new/full Moons with explicit timezones and versioned calculation receipts. Check astronomical claims and find relevant astrology calculators and learning guides. No account or birth information is needed for public-sky tools. Interpretations are separate from astronomical facts. Chart Studio offers an interactive browser calculation panel with placement inspection, house comparison and downloadable records. Users review a selection before sharing it with the assistant.",
+    "description": "Zodiacs computes sky positions, upcoming sign ingresses, planetary stations and new/full Moons with explicit timezones and versioned calculation receipts. Check astronomical claims and find relevant astrology calculators and learning guides. No account or birth information is needed for public-sky tools. Interpretations are separate from astronomical facts. Chart Studio offers an interactive browser calculation panel with placement inspection, house comparison, UTC time exploration, possible birth-time windows and local calculation-record inspection. Users review a selection before sharing it with the assistant.",
     "category": "LIFESTYLE"
   },
   "tools": {

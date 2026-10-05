@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { EVENT_BODIES, EVENT_KINDS, PHASE_NAMES, POSITION_BODIES, SIGN_SLUGS } from '../lib/compute-api/constants';
 
-export const AI_VERSION = '0.2.0';
+export const AI_VERSION = '0.3.0';
 export const AI_RESULT_SCHEMA = 'zodiacs.ai-tool-result.v1';
 export const AI_TOOL_NAMES = ['get_capabilities', 'get_sky', 'get_upcoming_events', 'check_sky_fact', 'search_zodiacs', 'open_chart_studio'] as const;
 export type AiToolName = typeof AI_TOOL_NAMES[number];
@@ -62,7 +62,7 @@ export const OUTPUT_SCHEMAS = {
 };
 
 export const TOOL_DESCRIPTIONS: Record<AiToolName, string> = {
-  open_chart_studio: 'Open Chart Studio to explore an interactive chart, select placements and aspects, compare Placidus and whole-sign houses, or download a calculation record. Call with exactly {}. The panel starts with a labeled synthetic example and computes user-entered UTC inputs locally in the browser. It accepts no personal tool arguments. The assistant sees only selections the user explicitly reviews and shares; opening this tool does not provide a personal chart result.',
+  open_chart_studio: 'Open Chart Studio to explore an interactive chart, select placements and aspects, compare Placidus and whole-sign houses, step through UTC time, explore a possible birth-time window, inspect and reproduce imported calculation records, or download a record. Call with exactly {}. The panel starts with a labeled synthetic example and computes user-entered UTC inputs locally in the browser. It accepts no personal tool arguments. The assistant sees only selections the user explicitly reviews and shares; opening this tool does not provide a personal chart result.',
   get_capabilities: 'Use this when you need the supported operations, versions, bounds and privacy of Zodiacs before choosing another tool. Read-only; no signup or birth data required.',
   get_sky: 'Use this when the user asks where planets are at an explicit instant or right now. Omit instant only for the current server instant. Returns tropical positions, Moon phase, explicit UTC and display timezone, calculation receipt and method links. Do not describe the result as a personal prediction.',
   get_upcoming_events: 'Use this when the user asks what changes in a bounded week or month. Supply both from/to instants and the requested display timezone. Exactly {} opens the sky calendar for seven days from the current server instant in UTC. Finds supported sign ingresses, stations and new/full Moons in at most 31 days. Search completeness is tested, not proven; this does not find eclipses or all possible aspects.',
