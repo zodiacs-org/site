@@ -52,10 +52,13 @@ const shown = prompts.filter((prompt) => prompt.trim().length > 0).slice(0, 4);
     list-style: none;
   }
   .guide-prompts__chip {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    max-width: 100%;
     padding: 6px 12px;
     border: 1px solid var(--hair-2);
-    border-radius: 999px;
+    border-radius: var(--r-sm);
     color: var(--text-2);
     font-size: var(--text-sm);
     line-height: 1.4;

@@ -186,6 +186,7 @@ const livingChartCloudSyncEnabled = livingChartEnabled && livingChartSyncEnabled
     </EvidenceDisclosure>
   </section>
 <style is:global>
+  .today-page > .upcoming-events { margin-top: clamp(24px, 4vw, 32px); }
   .today-ask { margin: clamp(18px, 3vw, 26px) 0 0; }
   .today-page {
     max-width: 780px;
@@ -280,7 +281,7 @@ const livingChartCloudSyncEnabled = livingChartEnabled && livingChartSyncEnabled
   .today-returning-chart-status { margin: 0; color: var(--muted); font-size: var(--text-sm); visibility: hidden; }
   .today-returning-chart-status.is-visible { visibility: visible; }
   .today-returning-sun-baseline { display: none; gap: 8px; }
-  .today-returning-sun-baseline p { margin: 0; max-width: 58ch; }
+  .today-returning-sun-baseline p { margin: 0; max-width: 58ch; color: var(--muted); font-size: var(--text-sm); line-height: 1.55; }
   .today-returning-sun-baseline > a { color: var(--sign); font-size: var(--text-sm); font-weight: 650; }
   .today-returning-sign-links { display: flex; flex-wrap: wrap; gap: 8px 14px; }
   .today-returning-sign-links a { color: var(--text-2); font-size: var(--text-sm); }
@@ -608,12 +609,25 @@ const livingChartCloudSyncEnabled = livingChartEnabled && livingChartSyncEnabled
   }
   .living-moment-slot__closed,
   .living-moment-slot__fallback {
-    display: flex;
+    display: grid;
     min-width: 0;
     min-height: 50px;
-    align-items: center;
+    justify-items: start;
+    gap: 8px;
     padding-top: 2px;
   }
+  .living-moment-slot .living-moment-trigger {
+    width: fit-content;
+    max-width: 100%;
+    border-radius: var(--r-sm);
+    gap: 10px;
+    padding-inline: 16px;
+    font-size: var(--text-sm);
+    font-weight: 500;
+  }
+  .living-moment-trigger svg { flex: none; }
+  .living-moment-slot__closed .field__help,
+  .living-moment-slot__fallback .field__help { margin: 0; max-width: 58ch; color: var(--muted); font-size: var(--text-sm); line-height: 1.55; }
   .living-moment-slot__closed .btn,
   .living-moment-slot__fallback .btn { min-height: 46px; }
   .living-moment-slot__fallback { visibility: hidden; }
@@ -830,8 +844,6 @@ const livingChartCloudSyncEnabled = livingChartEnabled && livingChartSyncEnabled
   @media (max-width: 560px) {
     .today-useful__question { min-block-size: 4.65em; }
     .living-moment-composer__when { grid-template-columns: 1fr; }
-    .living-moment-slot__closed .btn,
-    .living-moment-slot__fallback .btn,
     .living-moment-composer__actions .btn,
     .living-self-chart .btn {
       width: 100%;

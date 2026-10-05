@@ -65,6 +65,13 @@ await withPreview({ port: 8787 }, async baseURL => {
         const page = await context.newPage();
         await page.goto(`${baseURL}/profile/`, { waitUntil: 'load' });
         const empty = page.locator('.living-chart__empty-state');
+        // The server-rendered empty state can be replaced while its island
+        // hydrates and opens local storage. Measure the mounted client panel.
+        await page.waitForFunction(() => {
+          const panel = document.querySelector('.living-chart__empty-state');
+          const island = panel?.closest('astro-island');
+          return Boolean(panel && island && !island.hasAttribute('ssr'));
+        });
         await empty.waitFor();
         // Measure the section as a visitor sees it, after scrolling and font
         // layout, rather than sampling below-fold geometry during hydration.

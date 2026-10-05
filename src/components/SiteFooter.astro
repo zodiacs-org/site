@@ -1,5 +1,5 @@
 ---
-import { isAstrologyToolPath } from '../lib/trust-boundary';
+import { isAstrologyToolPath, showsCollectionNavigation } from '../lib/trust-boundary';
 import { SIGNS, signName } from '../lib/signs';
 import BrandMark from './BrandMark.astro';
 import EmailCapture from './EmailCapture.astro';
@@ -23,6 +23,7 @@ const year = new Date().getFullYear();
 interface Props { locale?: Locale; terminalMarketNotice?: boolean; noAssistant?: boolean }
 const locale = normalizeCatalogLocale(Astro.props.locale);
 const isTool = isAstrologyToolPath(Astro.url.pathname);
+const showCollection = showsCollectionNavigation(Astro.url.pathname);
 const routeLanguageLinks = renderableAlternatePathEntries(Astro.url.pathname);
 // Preserve the established locale-home fallback on English-only routes while
 // deriving the candidate set from actual route availability, never LOCALES.
@@ -122,7 +123,7 @@ const terminalMarketNotice = Boolean(Astro.props.terminalMarketNotice);
         </div>
       </details></nav>
 
-      {!isTool && (
+      {showCollection && (
       <nav class="zfooter__group zfooter__group--wide" aria-label={t(locale, 'footerRegistry')}>
         <details class="zfooter__fold" open><summary class="zfooter__fold-label"><span class="zfooter__label">{t(locale, 'footerRegistry')}</span></summary>
         <div class="zfooter__links">

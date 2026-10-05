@@ -31,7 +31,7 @@ const dayLabel = (anchor: string) => {
         const sign = event.signs[0] ? signBySlug(event.signs[0]) : null;
         return (
           <li style={sign ? `--event-sign:${sign.hue}` : undefined}>
-            <a href={event.path}>
+            <a href={event.path} class:list={{ 'upcoming-events__link--text': !sign }}>
               {sign && <SignIcon sign={sign.slug} size={30} />}
               <span>
                 <strong>{event.title}</strong>
@@ -57,9 +57,8 @@ const dayLabel = (anchor: string) => {
   .upcoming-events__head { display: grid; gap: 5px; }
   .upcoming-events__head .mono {
     color: var(--faint);
-    font-size: 9px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.02em;
   }
   .upcoming-events h2 {
     margin: 0;
@@ -86,6 +85,7 @@ const dayLabel = (anchor: string) => {
     color: var(--text-2);
     text-decoration: none;
   }
+  .upcoming-events a.upcoming-events__link--text { grid-template-columns: minmax(0, 1fr); }
   .upcoming-events a:hover,
   .upcoming-events a:focus-visible {
     color: var(--text);
@@ -110,7 +110,6 @@ const dayLabel = (anchor: string) => {
     font-family: var(--font-mono);
     font-size: 9px;
     letter-spacing: 0.04em;
-    text-transform: uppercase;
   }
   .upcoming-events--compact { padding: 14px; }
   .upcoming-events--compact h2 { font-size: var(--text-md); }
