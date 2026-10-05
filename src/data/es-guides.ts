@@ -796,7 +796,7 @@ function expandedSections(profile: GuideDepth): SpanishGuide['sections'] {
         `Tu signo solar es solo una parte. Con el Sol en ${profile.name}, aparece una ${profile.sun}. Con la Luna en ${profile.name}, la historia se vuelve una ${profile.moon}. Con el ascendente en ${profile.name}, el mundo suele encontrarse primero con una ${profile.rising}.`,
         `Venus y Marte cambian el tono de las relaciones. Venus en ${profile.name} habla de ${profile.venus}. Marte en ${profile.name} muestra ${profile.mars}. Estas colocaciones pueden explicar por qué alguien no se identifica con la descripción típica de su signo solar.`,
         `También importa la casa donde cae ${profile.name}. Esa casa muestra ${profile.house}. Si no sabes en qué casa vive este signo en tu carta, calcula la carta natal completa con hora y lugar; ahí se ve si el tema aparece en identidad, pareja, trabajo, familia, creatividad o mundo interior.`,
-        `La precisión importa sobre todo cerca de los cambios de signo. Las fechas de ${profile.name} suelen ser ${profile.dateRange}, pero el Sol no entra a la misma hora todos los años. Si naciste en el borde, la única respuesta fiable es una carta calculada con tus datos.`,
+        `La precisión importa sobre todo cerca de los cambios de signo. Las fechas de ${profile.name} suelen ser ${profile.dateRange}, pero el Sol no entra a la misma hora todos los años. Si naciste en el borde, la única respuesta confiable es una carta calculada con tus datos.`,
       ],
     },
     {

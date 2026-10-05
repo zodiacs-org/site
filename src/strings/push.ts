@@ -14,9 +14,6 @@ const EN = {
   error: 'Sky alerts are unavailable right now. Try again later.',
 } as const;
 
-export const PUSH_CAP_EN = 'Never more than one a day, or two a week.';
-export const PUSH_REOFFER_EN = 'Your sky alerts lapsed with this browser’s subscription. Turn them back on?';
-
 export const PUSH_COPY = {
   en: EN,
   es: {
@@ -72,6 +69,22 @@ export const PUSH_COPY = {
     error: 'Gli avvisi dal cielo non sono disponibili al momento. Riprova più tardi.',
   },
 } as const satisfies Record<Locale, Record<keyof typeof EN, string>>;
+
+/** Shown beside the offer in every language; kept outside PUSH_COPY so the additive manifest's key set stays fixed. */
+export const PUSH_CAP: Record<Locale, string> = {
+  en: 'Never more than one a day, or two a week.',
+  es: 'Nunca más de uno al día ni de dos por semana.',
+  pt: 'Nunca mais de um por dia nem de dois por semana.',
+  fr: 'Jamais plus d’une par jour, ni de deux par semaine.',
+  it: 'Mai più di uno al giorno, né di due a settimana.',
+};
+export const PUSH_REOFFER: Record<Locale, string> = {
+  en: 'Your sky alerts lapsed with this browser’s subscription. Turn them back on?',
+  es: 'Tus avisos del cielo vencieron junto con la suscripción de este navegador. ¿Quieres volver a activarlos?',
+  pt: 'Seus alertas do céu expiraram junto com a assinatura deste navegador. Quer ativá-los de novo?',
+  fr: 'Tes alertes du ciel ont expiré avec l’abonnement de ce navigateur. Les réactiver\u202f?',
+  it: 'I tuoi avvisi dal cielo sono scaduti insieme all’iscrizione di questo browser. Vuoi riattivarli?',
+};
 
 export type PushCopyKey = keyof typeof EN;
 

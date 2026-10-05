@@ -86,7 +86,7 @@ const NAV_SUBLABELS = {
     en: 'Compare two charts and see where they click, clash, and grow.',
     es: 'Compara dos cartas y mira dónde conectan, chocan y crecen.',
     pt: 'Compare dois mapas e veja onde combinam, entram em conflito e crescem.',
-    fr: 'Compare deux thèmes : où ils s’accordent, où ils se heurtent, où ils grandissent.',
+    fr: 'Compare deux thèmes : où ils s’accordent, où ils se heurtent, où ils grandissent.',
     it: 'Confronta due temi e scopri dove si accordano, si scontrano e crescono.',
     ru: 'Сравните две карты: где они сходятся, где спорят и где помогают друг другу расти.',
   },
@@ -109,7 +109,7 @@ const NAV_SUBLABELS = {
   rising: {
     en: 'Find the sign people meet first. Birth time helps.',
     es: 'El signo que los demás ven primero. La hora de nacimiento ayuda.',
-    pt: 'Descubra o signo que as pessoas percebem primeiro em você. O horário de nascimento ajuda.',
+    pt: 'Descubra o signo que as pessoas percebem primeiro em você. A hora de nascimento ajuda.',
     fr: 'Découvre le signe que les autres perçoivent en premier. L’heure de naissance est utile.',
     it: 'Il segno che mostri agli altri al primo incontro. L’ora di nascita aiuta.',
     ru: 'Знак, который другие замечают первым. Нужно время рождения.',
@@ -306,7 +306,7 @@ export const ALL_TOOLS_LABEL = {
 export const NAV_MORE: readonly { href: string; label: Record<Locale, string> }[] = [
   { href: '/group-charts/', label: { en: 'Group charts', es: 'Cartas de grupo', pt: 'Mapas do grupo', fr: 'Thèmes de groupe', it: 'Temi di gruppo', ru: 'Карты группы' } },
   { href: '/chart-twins/', label: { en: 'Chart twins', es: 'Gemelos astrales', pt: 'Gêmeos astrais', fr: 'Jumeaux astrologiques', it: 'Gemelli astrologici', ru: 'Астрологические близнецы' } },
-  { href: '/big-three/', label: { en: 'Big three card', es: 'Tus tres signos', pt: 'Seus três signos', fr: 'Tes trois signes', it: 'I tuoi tre segni', ru: 'Три главных знака' } },
+  { href: '/big-three/', label: { en: 'Big three card', es: 'Los tres grandes', pt: 'Seus três signos', fr: 'Tes trois signes', it: 'I tuoi tre segni', ru: 'Большая тройка' } },
   { href: '/compatibility/invite/', label: { en: 'Invite a friend', es: 'Invitar a un amigo', pt: 'Convidar alguém', fr: 'Inviter un ami', it: 'Invita un amico', ru: 'Пригласить друга' } },
   { href: '/sky-calendar/', label: { en: 'Sky calendar', es: 'Calendario del cielo', pt: 'Calendário do céu', fr: 'Calendrier du ciel', it: 'Calendario del cielo', ru: 'Календарь неба' } },
   { href: '/chart-of-the-day/', label: { en: 'Chart of the day', es: 'Carta del día', pt: 'Mapa do dia', fr: 'Thème du jour', it: 'Tema del giorno', ru: 'Карта дня' } },

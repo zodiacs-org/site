@@ -11,11 +11,11 @@ const tools = [
   { href: '/birth-chart/', title: 'Thème astral', promise: 'Ton Soleil, ta Lune, ton ascendant, tes planètes, tes maisons et leur signification.', hue: 'var(--sign-cancer)', kind: 'birth' as const },
   { href: '/birth-chart/someone-else/', title: 'Thème d’une autre personne (en anglais)', promise: 'Utilise ses données de naissance, ses trois signes principaux ou un lien Zodiacs, avec son accord.', hue: 'var(--sign-pisces)', kind: 'birth' as const, englishOnly: true },
   { href: '/today/', title: 'Aujourd’hui (en anglais)', promise: 'Ton dernier thème enregistré face au ciel de midi, degrés compris.', hue: 'var(--sign-cancer)', kind: 'transit' as const, englishOnly: true },
-  { href: '/compatibility/', title: 'Compatibilité', promise: 'Compare deux thèmes et vois où ils s’accordent, se heurtent et évoluent.', hue: 'var(--sign-libra)', kind: 'compat' as const },
+  { href: '/compatibility/', title: 'Compatibilité', promise: 'Compare deux thèmes : où ils s’accordent, où ils se heurtent, où ils grandissent.', hue: 'var(--sign-libra)', kind: 'compat' as const },
   { href: '/moon-sign/', title: 'Signe lunaire', promise: 'Ta manière de ressentir et ce qui t’apaise.', hue: 'var(--sign-pisces)', kind: 'moon' as const },
   { href: '/rising-sign/', title: 'Ascendant', promise: 'Le signe que les autres rencontrent en premier.', hue: 'var(--sign-gemini)', kind: 'rising' as const },
   { href: '/moon-phase/', title: 'Phase de la Lune', promise: 'La Lune d’aujourd’hui et celle de toute date qui compte pour toi.', hue: 'var(--sign-cancer)', kind: 'moonphase' as const },
-  { href: '/saturn-return/', title: 'Retour de Saturne', promise: 'Quand le tien arrive, précisément, et ce qu’il tend à demander.', hue: 'var(--sign-capricorn)', kind: 'saturn' as const },
+  { href: '/saturn-return/', title: 'Retour de Saturne', promise: 'Quand arrive le tien, à la date près, et ce qu’il demande en général.', hue: 'var(--sign-capricorn)', kind: 'saturn' as const },
   { href: '/transits/', title: 'Transits', promise: 'Le ciel d’aujourd’hui comparé à ton thème.', hue: 'var(--sign-aries)', kind: 'transit' as const },
 ];
 
@@ -32,7 +32,7 @@ const jsonLd = [
 ---
 <Base
   title="Outils d’astrologie gratuits | Zodiacs.org"
-  description="Outils d’astrologie gratuits : thème astral, compatibilité, signe lunaire, ascendant, phase de la Lune, retour de Saturne et transits, dans ton navigateur."
+  description="Outils d’astrologie gratuits : thème astral, compatibilité, signe lunaire, ascendant, phase de la Lune, retour de Saturne et transits, dans ton navigateur."
   path="/fr/tools/"
   locale="fr"
   image="/assets/og/v2/tool/tools.png"
@@ -76,8 +76,8 @@ const jsonLd = [
     <div class="tools-upcoming">
       <em class="kicker">Également disponible en anglais</em>
       <ul>
-        <li><strong>Horoscopes.</strong> Le ciel du jour, signe par signe. L’édition anglaise comprend aussi les lectures de la semaine et du mois : <a href="/horoscopes/" hreflang="en" title={englishOnly.aria}>choisir un signe</a>.</li>
-        <li><strong>Mercure rétrograde.</strong> Les périodes exactes jusqu’en 2027 : <a href="/mercury-retrograde/" hreflang="en">voir les dates</a>.</li>
+        <li><strong>Horoscopes.</strong> Le ciel du jour, signe par signe. L’édition anglaise comprend aussi les lectures de la semaine et du mois : <a href="/horoscopes/" hreflang="en" title={englishOnly.aria}>choisir un signe</a>.</li>
+        <li><strong>Mercure rétrograde.</strong> Les périodes exactes jusqu’en 2027 : <a href="/mercury-retrograde/" hreflang="en">voir les dates</a>.</li>
       </ul>
     </div>
   </section>

@@ -22,7 +22,7 @@ const ORDINAL_ES = [
 const HOUSE_THEME_ES: Record<number, string> = {
   1: 'tu imagen, tus comienzos y la impresión que causas',
   2: 'el dinero, las posesiones y lo que te da estabilidad',
-  3: 'los recados, los hermanos, los mensajes y tu entorno cercano',
+  3: 'las diligencias, los hermanos, los mensajes y tu entorno cercano',
   4: 'el hogar, la familia y la base privada de tu vida',
   5: 'el placer, el romance, los hijos y lo que creas por gusto',
   6: 'el trabajo en curso, los hábitos de salud y la carga diaria',
@@ -236,7 +236,7 @@ function eventLineEs(event: DailyEvent, sunSign: string, date: string): DailyLin
     const b = planetLabel('es', event.b);
     const aspect = aspectLabel('es', event.type);
     return {
-      text: `${a} en ${aspect} con ${b} alcanza hoy su punto exacto: es un aspecto de alcance general y el recibo muestra la hora.`,
+      text: `${a} en ${aspect} con ${b} alcanza hoy su punto exacto: es un aspecto de alcance general y el comprobante muestra la hora.`,
       receipt: `${a} ${aspect} ${b} · exacto ${utcTime(event.at)}`,
       body: event.a,
       templateId: 'aspect-collective.v1',
