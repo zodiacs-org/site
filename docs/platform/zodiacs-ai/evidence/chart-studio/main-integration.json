@@ -1,0 +1,49 @@
+{
+  "schema": "zodiacs.chart-studio-main-integration.v1",
+  "checkedAt": "2026-10-05T18:19:15.408002+00:00",
+  "sourceCommit": "498b006635caca8834a6a4ca6f0b04844ddc4bf1",
+  "mergedMain": "51b64f3c",
+  "previewCommit": "f8110d7132cbd4bb305eeae0ebd331d8b2009d9e",
+  "build": {
+    "passed": true,
+    "pages": 4417,
+    "postbuildGates": "passed"
+  },
+  "typecheck": {
+    "errors": 0,
+    "warnings": 0,
+    "hints": 39
+  },
+  "suite": {
+    "passed": 6809,
+    "skipped": 5,
+    "passingFiles": 524,
+    "phase1EvidencePassed": 2,
+    "totalPassedIncludingPhase1": 6811
+  },
+  "pluginTests": 54,
+  "officialClients": "passed HTTP/stdio, nine developer tools and Studio resource",
+  "packageDrift": "passed",
+  "studioHtmlChanged": false,
+  "runtimeBundlesChanged": "rebuilt against main election-search API; not deployed over the frozen host preview",
+  "checks": {
+    "site": "https://github.com/zodiacs-org/site/actions/runs/37354436997",
+    "browser": "https://github.com/zodiacs-org/site/actions/runs/37354436842",
+    "capture": "https://github.com/zodiacs-org/site/actions/runs/37354590952",
+    "status": "in progress"
+  },
+  "approval": "No production activation, submission or PR merge.",
+  "sha256": {
+    "integrations/generated/chart-studio.mjs": "19e74fd911588c4e0b5befb63df0d296915bcb1b34f599331c6ae0c0bfb6c4a6",
+    "api/_ai/runtime.mjs": "a07f08ad6f44eea6934619196aedcc59e2b16d230e3b4542511464f8e50641a9",
+    "plugins/zodiacs-developer/mcp/server.mjs": "c8a79df4f8c6e611f0f80e27c178e8b565888214e4e7bfc6a563e77992432da8"
+  },
+  "phase1Capture": {
+    "workflow": "https://github.com/zodiacs-org/site/actions/runs/37354590952",
+    "conclusion": "success",
+    "captures": 18,
+    "pixelsIdenticalToCommitted": 18,
+    "receiptImported": true,
+    "visualBaselineCandidatesImported": false
+  }
+}

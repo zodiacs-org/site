@@ -110,3 +110,18 @@ After creating the preview connection, verify CSP/fonts, both entrypoints,
 reviewed sharing, refusal recovery and saved-file downloads, then record fresh
 host evidence before release. Production has not been activated. Existing
 publisher, consenting-beta and final owner approval gates still apply.
+
+## Later main-branch integration
+
+Main's election-search release `51b64f3c` is integrated in `498b0066`. Both
+branches' privacy assertions are retained and the server bundles are rebuilt.
+The Studio HTML is byte-identical to the frozen HTTPS preview. The combined
+build passes at 4,417 pages, typecheck reports zero errors/warnings, and 6,809
+regression tests plus the two refreshed evidence tests pass (6,811 total; five
+skipped). All 54 AI tests, official HTTP/stdio clients, recipes and package
+checks pass. Fresh GitHub captures bind the combined source; all 18 pixel hashes
+match the existing screenshots, so only the receipt changes. No candidate
+visual baselines were imported. `evidence/chart-studio/main-integration.json`
+records this scope. Full combined-source CI is still in progress; this is not
+a complete CI pass or a deployment of that later source. The prepared ChatGPT
+form continues to target the independently verified `f8110d71` preview.
