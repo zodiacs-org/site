@@ -75,7 +75,7 @@ describe('Phase 3 owner programme', () => {
     expect(dailyManifestSchema.safeParse({ ...manifest, editions: [edition, edition] }).success).toBe(false);
     for (const approved of dailyEditions) expect(approved.ownerApproval.approved).toBe(true);
   });
-  it('publishes only the reviewed October 4 Sinner record with an unknown birth time', () => {
+  it('keeps the reviewed October 4 Sinner record with an unknown birth time', () => {
     const edition = editionForDay('2026-10-04');
     expect(edition?.name).toBe('Jannik Sinner');
     expect(edition?.birthDate).toBe('2001-08-16');
@@ -85,7 +85,19 @@ describe('Phase 3 owner programme', () => {
     expect(edition?.newsSource).toBe('https://en.rolexshanghaimasters.com/en/media/news/sinner-shanghai-2026-withdrawal');
     expect(edition?.newsDate).toBe('2026-10-03');
     expect(edition?.ownerApproval.evidence).toContain('dated edition only');
-    expect(editionForDay('2026-10-05')).toBeNull();
+    expect(editionForDay('2026-10-06')).toBeNull();
+  });
+  it('publishes the owner-approved October 5 Alcaraz record without inventing a time', () => {
+    const edition = editionForDay('2026-10-05');
+    expect(edition?.name).toBe('Carlos Alcaraz');
+    expect(edition?.birthDate).toBe('2003-05-05');
+    expect(edition?.birthTime).toBeNull();
+    expect(edition?.timeQuality).toBe('unknown');
+    expect(edition?.birthSource).toBe('https://www.nittoatpfinals.com/en/players/singles/carlos-alcaraz');
+    expect(edition?.newsSource).toBe('https://en.rolexshanghaimasters.com/en/media/news/2026-shanghai-draw-revealed');
+    expect(edition?.newsDate).toBe('2026-10-05');
+    expect(edition?.ownerApproval.evidence).toContain('okay approve');
+    expect(edition?.ownerApproval.evidence).toContain('dated edition only');
   });
   it('all new tools use consumer navigation in six languages', () => { for (const locale of CATALOG_LOCALES) for (const path of ['/sky-calendar/', '/astrologer-kit/', '/your-sky-wrapped/', '/chart-of-the-day/']) expect(isAstrologyToolPath(`${locale === 'en' ? '' : '/' + locale}${path}`)).toBe(true); });
   it('personal surfaces omit analytics and export counts never accept birth inputs', () => {
