@@ -1,5 +1,51 @@
 # Programme status
 
+Checkpoint 16, 2026-10-05: the MCP adapter 0.1.0-rc.16.2, judged against main
+`3f09711a8bde37cec855bd33aad80de72ca9eed4` (#646), which production
+`dpl_94a4kV72vzpEWurR5dFHe4ES9uUy` serves (READY 2026-10-05T02:16:43Z).
+
+**Overall delivery: 31%** (31.241% to three decimals) — 57 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%. Unchanged from
+checkpoint 15. Gates, weights and the denominator are unchanged.
+[Adapter record](../evidence/mcp-adapter/README.md), section "0.1.0-rc.16.2,
+2026-10-05".
+
+- **Partial (2).**
+  - A1.a (1): `get_positions` and `find_events` parse with the compute API's
+    parsers and calculate with its functions. Each declares an output schema
+    beside its annotations, and `find_events`' receipt says its search is
+    tested, not proven complete. That meets the gate as written, but the
+    brief's Track A1 also asks for frame and zodiac options on
+    `get_positions`, and for aspects, eclipses and void-of-course periods in
+    `find_events`. None is in this release.
+  - A1.b (1): `check_sky_fact` answers true, false or depends, with the
+    values that decide the answer and a receipt, and interprets nothing. It
+    covers a sign at an instant or on a date, retrograde, an ingress on a
+    date and a lunation on a date. The brief also asks for aspect facts.
+  - Production serves the archive `/developers/mcp/` installs: 123,817
+    bytes, SHA-256 `2fc976c9…`, pinned to commit `3acfae47`. The file at that
+    commit on GitHub has the same digest.
+- **Findings.** F-61 happened again: main's run after #645, a documentation
+  change, failed in the WebKit sharing drive the same way, and the same
+  tree had passed before the merge. The fix belongs to the sharing feature's
+  session; no test or frontend file was changed here.
+- Actual command: `node scripts/programme-ledger.mjs --summary` →
+  `Overall delivery: 31% (57 of 182.45); blocked 2% (3)`.
+- **Owner decisions needed.**
+  - As in checkpoint 15: F-71; the readings that accept aspect patterns and
+    composite and Davison charts and leave A6 partial; F-77.
+  - Eclipses and the sidereal zodiac in the MCP tools need an engine
+    release, which needs the owner's approval to publish.
+- **Next.**
+  - The sky benchmark v0 (B4.a): 300 questions with the engine's answer to
+    each, a scorer, and `check_sky_fact`'s reply to each. It is being revised
+    after two reviews.
+  - Aspects and void-of-course periods in `find_events`, aspect facts in
+    `check_sky_fact` and frame options in `get_positions`, in the compute API
+    first.
+
+## Earlier checkpoints
+
 Checkpoint 15, 2026-10-05: the MCP adapter 0.1.0-rc.16.1 and three more of
 engine rc.16's units, judged against main
 `af91b52cfadac174bf1788a5b5335f447eb4cea5` (#643), which production
@@ -53,8 +99,6 @@ Gates, weights and the denominator are unchanged.
     zodiac options, aspects, eclipses and void-of-course periods, and aspect
     facts. Eclipses and the sidereal zodiac need an engine release.
   - The sky benchmark v0 (B4.a), which check_sky_fact makes possible.
-
-## Earlier checkpoints
 
 Checkpoint 14, 2026-10-04: engine rc.16's capability gates judged against
 main `67aa32d8b3f112a08aebe5f7b52db9a331ecbaf1` (#639), with two new Swiss

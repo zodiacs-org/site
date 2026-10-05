@@ -1,7 +1,7 @@
 {
   "version": 1,
   "brief": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md (version 2) with the version 1 rules it retains",
-  "asOf": "2026-10-05 checkpoint 15 (source af91b52c; MCP adapter 0.1.0-rc.16.1 on production dpl_3qPGVCFQh9Qjt7UCqiT68ZCaa3AZ: A1.e accepted; A6 partial for the static sky API; aspect patterns and composite/Davison accepted on disclosed readings; returns partial; the co-ascendants and Koch still validated pending F-71)",
+  "asOf": "2026-10-05 checkpoint 16 (source 3f09711a; MCP adapter 0.1.0-rc.16.2 on production dpl_94a4kV72vzpEWurR5dFHe4ES9uUy: A1.a and A1.b partial)",
   "denominator": {
     "unit": "working days, from the brief's effort estimates (README.md)",
     "totalWeight": 182.45,
@@ -1712,7 +1712,7 @@
       "status": "partial",
       "release": "none",
       "evidence": [],
-      "notes": "local stdio MCP adapter 0.1.0-rc.15 (bundling engine rc.15; production serves it since #603) with three tools; no remote server, no registry entry. Update 2026-10-04 (checkpoint 13): the site now serves the stdio adapter archive 0.1.0-rc.16 (sha256 dfc9177e…aeb9, 89,871 bytes, bundling engine rc.16), which /developers/mcp/ installs; still three tools, no remote server and no registry entry. Update 2026-10-05 (checkpoint 15): the site serves the stdio adapter 0.1.0-rc.16.1 (a44aea72…, 97,630 bytes, same engine rc.16), with output schemas, citations and two resources; still no remote server and no registry entry."
+      "notes": "local stdio MCP adapter 0.1.0-rc.15 (bundling engine rc.15; production serves it since #603) with three tools; no remote server, no registry entry. Update 2026-10-04 (checkpoint 13): the site now serves the stdio adapter archive 0.1.0-rc.16 (sha256 dfc9177e…aeb9, 89,871 bytes, bundling engine rc.16), which /developers/mcp/ installs; still three tools, no remote server and no registry entry. Update 2026-10-05 (checkpoint 15): the site serves the stdio adapter 0.1.0-rc.16.1 (a44aea72…, 97,630 bytes, same engine rc.16), with output schemas, citations and two resources; still no remote server and no registry entry. Update 2026-10-05 (checkpoint 16): the site serves the stdio adapter 0.1.0-rc.16.2 (2fc976c9…, 123,817 bytes, same engine rc.16), with three more tools that run the compute API's calculations; still no remote server and no registry entry."
     },
     {
       "id": "P3.7",
@@ -1932,9 +1932,15 @@
       "weight": 1,
       "gate": "output schemas; readOnlyHint/openWorldHint; tests",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "partial",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/mcp-adapter/README.md, section \"0.1.0-rc.16.2, 2026-10-05\"",
+        "src/mcp/sky-tools.ts: get_positions and find_events parse with the compute API's parsers and calculate with its functions; each declares an output schema (src/mcp/outputs.ts) and readOnlyHint/openWorldHint (src/mcp/create-server.ts); find_events' receipt records the search step, the evaluations and that the search is tested, not proven complete",
+        "src/mcp/sky-tools.test.ts: a seeded synthetic corpus of 252 requests run through each tool and through the compute API's own handler, 17 refusals and 43 requests at the ends of the accepted dates, every result checked against the output schema, the OpenAPI components and the SDK client; docs/platform/evidence/mcp-adapter/protocol-drive.json 106/106 against server.mjs 7209455d…",
+        "production dpl_94a4kV72vzpEWurR5dFHe4ES9uUy (READY 2026-10-05T02:16:43Z, aliased to zodiacs.org) serves site 3f09711a, whose /examples/mcp-server.json names zodiacs-mcp-server-0.1.0-rc.16.2.tgz (123,817 bytes, SHA-256 2fc976c9…) pinned to commit 3acfae47, the archive /developers/mcp/ installs"
+      ],
+      "notes": "Checkpoint 16 (2026-10-05): partial. Both tools exist with output schemas, annotations, tests and a completeness verdict, which is the gate as written. The brief's Track A1 also asks for frame and zodiac options on get_positions and aspects, eclipses and void-of-course periods in find_events; none is in 0.1.0-rc.16.2. Eclipses and the sidereal zodiac need an engine release, which needs the owner's approval to publish."
     },
     {
       "id": "A1.b",
@@ -1945,9 +1951,15 @@
       "weight": 1,
       "gate": "true/false/depends with computed facts and a receipt; never interpretive",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "partial",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/mcp-adapter/README.md, section \"0.1.0-rc.16.2, 2026-10-05\"",
+        "src/mcp/sky-tools.ts: check_sky_fact runs the compute API's sky-fact calculation and answers true, false or depends with the computed values that decide it and a receipt; it interprets nothing",
+        "src/mcp/sky-tools.test.ts (166 sky facts of the seeded corpus against the compute API's handler); docs/platform/evidence/mcp-adapter/protocol-drive.json 106/106",
+        "production dpl_94a4kV72vzpEWurR5dFHe4ES9uUy (READY 2026-10-05T02:16:43Z, aliased to zodiacs.org) serves site 3f09711a, whose /examples/mcp-server.json names zodiacs-mcp-server-0.1.0-rc.16.2.tgz (123,817 bytes, SHA-256 2fc976c9…) pinned to commit 3acfae47, the archive /developers/mcp/ installs"
+      ],
+      "notes": "Checkpoint 16 (2026-10-05): partial. check_sky_fact answers true, false or depends with the computed facts and a receipt, never interpretively, which is the gate as written; it covers a sign at an instant or on a date, retrograde, an ingress on a date and a lunation on a date. The brief's Track A1 also asks for aspect facts, which it does not check."
     },
     {
       "id": "A1.c",
