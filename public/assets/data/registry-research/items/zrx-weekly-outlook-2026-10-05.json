@@ -1,0 +1,108 @@
+{
+  "schema": "zodiacs.registry-research-item.v1",
+  "sourceType": "zodiacs-research",
+  "publisher": "Zodiacs.org Research System",
+  "byline": "Zodiacs.org Research System",
+  "method": {
+    "id": "zodiacs.registry-research-method.v1",
+    "version": 1,
+    "generator": "zodiacs.registry-research.deterministic.v1",
+    "deterministicTemplatesOnly": true,
+    "modelAuthoredProse": false,
+    "scoreRule": "The disclosed Registry Outlook sky score is copied before market comparison. Market fields cannot alter that score or its wording.",
+    "observationRule": "Follow-ups use the first archived market snapshot at or after the requested elapsed interval and report the actual elapsed time.",
+    "causalityRule": "Market changes are observations, never evidence that a sky event caused a price or liquidity movement.",
+    "publicationRule": "During the pilot, an exact artifact hash and named reviewer are required before an item enters public feeds."
+  },
+  "riskStatement": "Symbolic research—not investment advice. Market observations never alter the sky score.",
+  "scienceNote": "Astrology has no established predictive relationship with asset prices. Crypto assets can lose all value.",
+  "revisions": [],
+  "id": "zrx-weekly-outlook-2026-10-05",
+  "slug": "weekly-outlook-2026-10-05",
+  "kind": "weekly-outlook",
+  "templateId": "weekly-outlook.v1",
+  "issuedAt": "2026-10-05T12:00:00.000Z",
+  "visibleAt": "2026-10-05T12:00:00.000Z",
+  "title": "Weekly symbolic outlook · 2026-10-05",
+  "summary": "Libra, Leo, Gemini hold the three highest disclosed attention ranks for the next seven UTC days.",
+  "url": "/terminal/research/weekly-outlook-2026-10-05/",
+  "signs": [
+    "libra",
+    "leo",
+    "gemini"
+  ],
+  "topics": [
+    "markets",
+    "weekly-outlook",
+    "astrology"
+  ],
+  "symbolicScore": {
+    "sign": "libra",
+    "attention": 27,
+    "tone": 6,
+    "eventIntensity": 6,
+    "calculation": "22 attention / 8 tone / 8 event intensity × 0.7979 horizon multiplier",
+    "marketFieldsUsed": false
+  },
+  "sections": {
+    "skyFact": {
+      "heading": "Sky fact",
+      "body": "Libra, Leo, Gemini are ranked first through third by disclosed symbolic attention in the seven-day edition beginning 2026-10-05.",
+      "evidence": [
+        "public/assets/registry-outlook.json"
+      ]
+    },
+    "traditionalReading": {
+      "heading": "Traditional reading",
+      "body": "Elevated symbolic attention for this sign, without a strong directional tone. Signal: active. This reading supplies cultural context, not a forecast of price or liquidity.",
+      "evidence": [
+        "public/assets/registry-outlook.json"
+      ]
+    },
+    "marketObservation": {
+      "heading": "Market observation",
+      "body": "At 2026-10-05T00:08:21.586Z, Libra was indexed at $0.00008944, with -3.14% over 24 hours, $89.45K market cap, $89.45K FDV, $22.46K indexed liquidity, $197.43 24-hour volume, and 1 indexed pool. Market cap and FDV are kept separate. These descriptive fields did not alter the sky score.",
+      "evidence": [
+        "public/assets/data/registry-market-history.v1.json"
+      ]
+    }
+  },
+  "market": {
+    "available": true,
+    "snapshotId": "registry-market:2026-10-05:2026-10-05T00:08:21.586Z",
+    "observedAt": "2026-10-05T00:08:21.586Z",
+    "provider": "DexScreener",
+    "sign": "libra",
+    "priceUsd": 0.00008944,
+    "change24hPct": -3.14,
+    "marketCapUsd": 89446,
+    "fdvUsd": 89446,
+    "liquidityUsd": 22456.66,
+    "volume24hUsd": 197.43,
+    "indexedPoolCount": 1,
+    "deepestPoolUrl": "https://dexscreener.com/solana/dtxpqjk4ae4h2wc7d5rpij8ymsqxqlutcnkrpbcjcan9"
+  },
+  "evidence": {
+    "outlookEdition": "public/assets/registry-outlook.json#weekly:2026-10-05",
+    "marketSnapshotId": "registry-market:2026-10-05:2026-10-05T00:08:21.586Z",
+    "coverage": {
+      "overall": "complete",
+      "events": "complete",
+      "occupancies": "complete",
+      "expectedTransitMonths": [
+        "2026-10"
+      ],
+      "missingTransitMonths": [],
+      "missingOccupancyPlanets": []
+    }
+  },
+  "artifactHash": "085e9b7a0d394a2111c3106360e5abb179b4af2030d2576c1033f136225e2ff7",
+  "publishedAt": "2026-10-05T12:00:00.000Z",
+  "publication": {
+    "mode": "post-pilot-deterministic-allowlist",
+    "publishedAt": "2026-10-05T12:00:00.000Z",
+    "reviewer": null,
+    "artifactSha256": "085e9b7a0d394a2111c3106360e5abb179b4af2030d2576c1033f136225e2ff7"
+  },
+  "status": "approved"
+}

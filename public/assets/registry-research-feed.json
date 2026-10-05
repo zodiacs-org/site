@@ -1,12 +1,12 @@
 {
   "schema": "zodiacs.registry-research-feed.v1",
-  "generatedAt": "2026-10-04T00:07:19.389Z",
+  "generatedAt": "2026-10-05T00:08:21.586Z",
   "publisher": "Zodiacs.org Research System",
   "window": {
     "previousDays": 30,
     "futureDays": 7,
-    "startsAt": "2026-09-04T00:00:00.000Z",
-    "endsBefore": "2026-10-12T00:00:00.000Z"
+    "startsAt": "2026-09-05T00:00:00.000Z",
+    "endsBefore": "2026-10-13T00:00:00.000Z"
   },
   "items": [
     {
@@ -53,6 +53,110 @@
       "status": "scheduled"
     },
     {
+      "id": "zrx-daily-market-brief-2026-10-05",
+      "slug": "daily-market-brief-2026-10-05",
+      "kind": "daily-market-brief",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-05T12:00:00.000Z",
+      "visibleAt": "2026-10-05T12:00:00.000Z",
+      "title": "Jupiter in Leo · daily market brief",
+      "summary": "Jupiter in Leo leads the disclosed symbolic index; Leo market measures are recorded separately.",
+      "url": "/terminal/research/daily-market-brief-2026-10-05/",
+      "signs": [
+        "leo"
+      ],
+      "topics": [
+        "markets",
+        "daily-sky",
+        "occupancy"
+      ],
+      "status": "scheduled"
+    },
+    {
+      "id": "zrx-weekly-outlook-2026-10-05",
+      "slug": "weekly-outlook-2026-10-05",
+      "kind": "weekly-outlook",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-05T12:00:00.000Z",
+      "visibleAt": "2026-10-05T12:00:00.000Z",
+      "title": "Weekly symbolic outlook · 2026-10-05",
+      "summary": "Libra, Leo, Gemini hold the three highest disclosed attention ranks for the next seven UTC days.",
+      "url": "/terminal/research/weekly-outlook-2026-10-05/",
+      "signs": [
+        "libra",
+        "leo",
+        "gemini"
+      ],
+      "topics": [
+        "markets",
+        "weekly-outlook",
+        "astrology"
+      ],
+      "status": "scheduled"
+    },
+    {
+      "id": "zrx-market-check-2026-09-27-observation-168h",
+      "slug": "market-check-2026-09-27-observation-168h",
+      "kind": "observation-update",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-05T00:08:21.586Z",
+      "visibleAt": "2026-10-05T00:08:21.586Z",
+      "title": "Libra 7-day observation update",
+      "summary": "7-day follow-up using the first qualifying archived snapshot (187.07 actual hours elapsed).",
+      "url": "/terminal/research/market-check-2026-09-27-observation-168h/",
+      "signs": [
+        "libra"
+      ],
+      "topics": [
+        "markets",
+        "observation-update"
+      ],
+      "status": "published"
+    },
+    {
+      "id": "zrx-market-check-2026-10-04-observation-24h",
+      "slug": "market-check-2026-10-04-observation-24h",
+      "kind": "observation-update",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-05T00:08:21.586Z",
+      "visibleAt": "2026-10-05T00:08:21.586Z",
+      "title": "Aries 24-hour observation update",
+      "summary": "24-hour follow-up using the first qualifying archived snapshot (24.02 actual hours elapsed).",
+      "url": "/terminal/research/market-check-2026-10-04-observation-24h/",
+      "signs": [
+        "aries"
+      ],
+      "topics": [
+        "markets",
+        "observation-update"
+      ],
+      "status": "published"
+    },
+    {
+      "id": "zrx-market-check-2026-10-05",
+      "slug": "market-check-2026-10-05",
+      "kind": "market-check",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-05T00:08:21.586Z",
+      "visibleAt": "2026-10-05T00:08:21.586Z",
+      "title": "Leo market check · 2026-10-05",
+      "summary": "Leo price, market cap, liquidity, volume, and collection medians at one archived observation.",
+      "url": "/terminal/research/market-check-2026-10-05/",
+      "signs": [
+        "leo"
+      ],
+      "topics": [
+        "markets",
+        "market-check"
+      ],
+      "status": "published"
+    },
+    {
       "id": "zrx-event-brief-aspect-2026-10-04t12-25-54-014z-sun-opposition-saturn",
       "slug": "event-brief-aspect-2026-10-04t12-25-54-014z-sun-opposition-saturn",
       "kind": "event-brief",
@@ -72,7 +176,7 @@
         "astrology",
         "aspect"
       ],
-      "status": "scheduled"
+      "status": "published"
     },
     {
       "id": "zrx-daily-market-brief-2026-10-04",
@@ -94,7 +198,7 @@
         "daily-sky",
         "aspect"
       ],
-      "status": "scheduled"
+      "status": "published"
     },
     {
       "id": "zrx-market-check-2026-09-26-observation-168h",
