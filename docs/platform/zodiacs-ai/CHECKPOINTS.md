@@ -20,6 +20,12 @@ requires reconnection. Identity documents, acknowledgements and final approval
 remain owner actions. No submission, PR merge or production activation has
 occurred.
 
+The first recovered preview upload was blocked before build because the
+machine-default Git author was outside the project's permitted deployers.
+The authenticated Vercel account confirms the existing project identity
+`Zodiacs <admin@zodiacs.org>`. Follow-up commits use that verified identity;
+the blocked upload is not staging validation evidence.
+
 ## Historical continuation — 2026-10-02
 
 Continuation dated 2026-10-02 on `codex/zodiacs-ai-integrations`,
