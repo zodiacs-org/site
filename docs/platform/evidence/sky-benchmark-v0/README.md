@@ -765,12 +765,14 @@ here:
 
 - **No assistant has been scored.** That is B4.b, with the owner's accounts,
   and its raw answers go to the private baselines repository.
-- **No licence has been chosen.** DECISIONS-2026-09-28.md §6 and §7 set
-  licences for the engine, the conformance vectors, the public sky data and
-  the atlas, and not for a benchmark. Until the owner chooses one, these
-  files fall under the site repository's all-rights-reserved notice, and the
-  page says so. CC0 1.0, as for the conformance vectors, would let anyone
-  rerun and republish it.
+- **No licence had been chosen** when this record was written.
+  DECISIONS-2026-09-28.md §6 and §7 set licences for the engine, the
+  conformance vectors, the public sky data and the atlas, and not for a
+  benchmark, so the files fell under the site repository's all-rights-reserved
+  notice, and the page said so. On 2026-10-05, under the owner's delegation,
+  they were dedicated to the public domain under CC0 1.0, as the conformance
+  vectors are (DECISIONS-2026-10-05.md §3); the page, its Dataset markup and
+  `llms-full.txt` say so. The files' bytes did not change.
 - **`check_sky_fact` is not on npm.** It ships only in the MCP adapter's
   candidates from 0.1.0-rc.16.2 on, which the site serves as archives.
 - **The key is public**, so a model may have seen it, and a later model may
