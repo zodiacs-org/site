@@ -2,6 +2,7 @@
 import Base from '../../../layouts/Base.astro';
 import { archiveUrlFor, installBlock } from '../../../lib/mcp-install-block';
 import manifest from '../../../../public/examples/mcp-server.json';
+import { ENGINE_LICENSES, FREE_OFFER, ORGANIZATION, developerBreadcrumb } from '../../../lib/developer-structured-data.mjs';
 
 const title = 'Connect an AI Assistant to the Engine | Zodiacs.org';
 const description = 'A local MCP server for natal charts, record comparisons, positions, events and sky facts, run on your machine over stdio: no listener, no port, no network.';
@@ -42,9 +43,31 @@ const tools = [
   ['find_events', 'A window of at most 92 days. Returns the sign ingresses, the stations of Mercury to Pluto and the new and full moons in it, in time order, found by the engine\'s crossing search. The search is tested, not proven to miss nothing, and every reply\'s receipt says so.'],
   ['check_sky_fact', 'Whether a body is in a sign or retrograde, at an instant or on a date, whether it enters a sign on a date, or whether the Moon reaches a phase on a date: true, false or depends, with the computed values that decide it, and never an interpretation. There is no zone argument: a date is read as that day in every UTC offset in use today at once, from 14 hours before its midnight UTC to 36 hours after.'],
 ];
+
+// The archive's package.json declares MIT AND CC-BY-4.0: the adapter's code is
+// MIT, and the engine it bundles carries CC BY 4.0 ΔT data.
+const jsonLd = [
+  {
+    '@type': 'SoftwareApplication',
+    '@id': 'https://zodiacs.org/developers/mcp/#software',
+    name: 'Zodiacs MCP server',
+    alternateName: manifest.name,
+    description,
+    url: 'https://zodiacs.org/developers/mcp/',
+    applicationCategory: 'DeveloperApplication',
+    operatingSystem: `Node.js ${manifest.node.replace(/^>=\s*/u, '')} or later`,
+    softwareVersion: manifest.version,
+    downloadUrl: archiveUrl,
+    license: ENGINE_LICENSES,
+    isAccessibleForFree: true,
+    offers: FREE_OFFER,
+    publisher: ORGANIZATION,
+  },
+  developerBreadcrumb('/developers/mcp/', 'MCP server'),
+];
 ---
 
-<Base title={title} description={description} path="/developers/mcp/">
+<Base title={title} description={description} path="/developers/mcp/" jsonLd={jsonLd}>
   <section class="section container container--narrow mcp-page">
     <em class="kicker">Developer tools</em>
     <h1 class="display">Connect an assistant to the engine</h1>
