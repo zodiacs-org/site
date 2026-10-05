@@ -1,0 +1,60 @@
+{
+  "node": "v22.22.2",
+  "npm": "10.9.7",
+  "runnerSourceCommit": "06b44ca482061d59a51faa9f1deb539fa8da3b59",
+  "httpAndArtifactSourceUnchanged": true,
+  "checks": [
+    {
+      "command": "node --test scripts/mcp-independent-consumer.selftest.mjs",
+      "status": "PASS",
+      "tests": 8,
+      "rejections": 11
+    },
+    {
+      "command": "node scripts/mcp-independent-consumer.mjs --pin docs/platform/evidence/mcp-independent-consumer-2026-10-05/pin.json --archive public/examples/zodiacs-mcp-server-0.1.0-rc.16.3.tgz --out /tmp/zodiacs-consumer-node22",
+      "status": "PASS",
+      "localRequests": 10,
+      "liveRequests": 0
+    },
+    {
+      "command": "node node_modules/vitest/vitest.mjs run scripts/mcp-artifact.test.mjs tests/api/compute-api-bundle.test.ts tests/api/compute-api-openapi.test.ts",
+      "status": "PASS",
+      "tests": 56
+    },
+    {
+      "command": "node scripts/build-compute-handler.mjs --check",
+      "status": "PASS"
+    },
+    {
+      "command": "node scripts/build-compute-local-time.mjs --check",
+      "status": "PASS"
+    },
+    {
+      "command": "node scripts/build-mcp-server.mjs --check",
+      "status": "PASS"
+    },
+    {
+      "command": "PHASE1_SCOPE_BASE=51b64f3cb67c2026a18772297ec6b367ed2ca183 node scripts/phase1-scope-guard.mjs",
+      "status": "PASS",
+      "stdout": "phase1-scope-guard: PASS \u2014 28 changed path(s), protected scope untouched\n"
+    },
+    {
+      "command": "node scripts/programme-ledger.mjs --check",
+      "status": "PASS",
+      "stdout": "programme-ledger: OK\n"
+    },
+    {
+      "command": "node --check scripts/mcp-independent-consumer.mjs",
+      "status": "PASS"
+    },
+    {
+      "command": "node --check scripts/mcp-independent-consumer.selftest.mjs",
+      "status": "PASS"
+    },
+    {
+      "command": "git diff --cached --check",
+      "status": "PASS after trimming terminal blank line from new targeted test transcript"
+    }
+  ],
+  "notRun": "Full Astro build/check, browser drives, audit and full site CI; no application graph/dependency/CI changes, and prebuild rewrites owner-generated surfaces outside lane."
+}
