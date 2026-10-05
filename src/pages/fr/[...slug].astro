@@ -26,11 +26,8 @@ export async function getStaticPaths() {
 
   const dynamicSlugs = [
     ...pairs.map((p) => ['compatibility', p.id]),
-    ...learn.map((l) => (
-      l.data.kind === 'rising'
-        ? ['rising-sign', l.data.sign]
-        : ['learn', ...l.id.split('/')]
-    )),
+    // Rising-sign profiles are translated: src/pages/fr/rising-sign/[sign].astro.
+    ...learn.filter((l) => l.data.kind !== 'rising').map((l) => ['learn', ...l.id.split('/')]),
     ...currentHoroscopes.map((h) => ['horoscopes', h.data.sign]),
   ];
 
