@@ -10,7 +10,7 @@ const out = resolve(process.env.OUT_DIR ?? 'tests/visual/artifacts/chart-of-day'
 await mkdir(out, { recursive: true });
 const editions = JSON.parse(await readFile(new URL('../src/data/chart-of-the-day.json', import.meta.url), 'utf8')).editions;
 assert(editions.length > 0, 'The owner-approved publication drive needs a reviewed edition');
-const edition = editions.find(({ day }) => day === '2026-10-04');
+const edition = [...editions].sort((a, b) => a.day.localeCompare(b.day)).at(-1);
 assert(edition?.ownerApproval.approved);
 const locales = ['', 'es/', 'pt/', 'fr/', 'it/', 'ru/'];
 const policy = JSON.parse(await readFile(new URL('../vercel.json', import.meta.url), 'utf8')).headers.find(({ source }) => source === '/(.*)').headers.find(({ key }) => key === 'Content-Security-Policy').value;
@@ -67,7 +67,7 @@ await withPreview({ port: 8792 }, (preview) => withSecurePreview(preview, async 
         await page.locator('[data-check-our-math]').waitFor({ timeout: 30000 });
         assert.equal(new URL(page.url()).pathname, `/${locale}chart-of-the-day/${edition.day}/`);
         assert.equal(await page.locator('[data-check-our-math]').getAttribute('data-instant-basis'), 'reference');
-        assert((await page.locator('[data-check-our-math]').innerText()).includes('2001-08-16T12:00:00.000Z'));
+        assert((await page.locator('[data-check-our-math]').innerText()).includes(`${edition.birthDate}T12:00:00.000Z`));
         assert.equal(await page.locator('.return-result .return-contact-list li').count(), 12);
         assert.equal(await page.locator(`a[href="${edition.birthSource}"]`).count(), 1);
         assert.equal(await page.locator(`a[href="${edition.newsSource}"]`).count(), 1);

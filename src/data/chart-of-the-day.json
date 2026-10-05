@@ -33,6 +33,39 @@
         "approvedAt": "2026-10-04T07:31:18.000Z",
         "evidence": "The owner replied “approved” in task 01a0c34a-73b0-7091-911b-046a6f96fc8c on October 4, 2026, after the Phase 3 release report identified the October 4 Jannik Sinner draft as awaiting approval. This approval covers this dated edition only; future figures still require individual approval."
       }
+    },
+    {
+      "day": "2026-10-05",
+      "name": "Carlos Alcaraz",
+      "birthDate": "2003-05-05",
+      "birthTime": null,
+      "timeQuality": "unknown",
+      "birthSource": "https://www.nittoatpfinals.com/en/players/singles/carlos-alcaraz",
+      "birthSourceTitle": "Nitto ATP Finals",
+      "newsSource": "https://en.rolexshanghaimasters.com/en/media/news/2026-shanghai-draw-revealed",
+      "newsSourceTitle": "Rolex Shanghai Masters",
+      "newsDate": "2026-10-05",
+      "reason": {
+        "en": "The tournament published the Shanghai draw on October 5, with Carlos Alcaraz as the second seed. The chart does not predict match results.",
+        "es": "El torneo publicó el cuadro de Shanghái el 5 de octubre, con Carlos Alcaraz como segundo cabeza de serie. La carta no predice los resultados de los partidos.",
+        "pt": "O torneio publicou a chave de Xangai em 5 de outubro, com Carlos Alcaraz como segundo cabeça de chave. O mapa não prevê resultados de partidas.",
+        "fr": "Le tournoi a publié le tableau de Shanghai le 5 octobre, avec Carlos Alcaraz comme deuxième tête de série. Le thème ne prédit pas les résultats des matchs.",
+        "it": "Il torneo ha pubblicato il tabellone di Shanghai il 5 ottobre, con Carlos Alcaraz come seconda testa di serie. Il tema non prevede i risultati delle partite.",
+        "ru": "5 октября турнир опубликовал сетку Шанхая, где Карлос Алькарас получил второй номер посева. Карта не предсказывает результаты матчей."
+      },
+      "reliability": {
+        "en": "The official tour biography gives his birth date and El Palmar, Murcia, Spain. It is not a birth certificate and gives no birth time. Rising and houses are omitted; noon UTC is a reference moment only.",
+        "es": "La biografía oficial del circuito indica su fecha de nacimiento y El Palmar, Murcia, España. No es un certificado de nacimiento y no incluye la hora. Se omiten el ascendente y las casas; el mediodía UTC es solo un instante de referencia.",
+        "pt": "A biografia oficial do circuito informa a data de nascimento e El Palmar, Múrcia, Espanha. Não é uma certidão de nascimento e não informa o horário. Ascendente e casas são omitidos; meio-dia UTC é apenas um instante de referência.",
+        "fr": "La biographie officielle du circuit indique sa date de naissance et El Palmar, Murcie, en Espagne. Ce n’est pas un acte de naissance et aucune heure n’est donnée. L’ascendant et les maisons sont omis ; midi UTC est uniquement un instant de référence.",
+        "it": "La biografia ufficiale del circuito indica la data di nascita e El Palmar, Murcia, Spagna. Non è un certificato di nascita e non riporta l’ora. Ascendente e case sono omessi; mezzogiorno UTC è solo un istante di riferimento.",
+        "ru": "Официальная биография тура указывает дату рождения и Эль-Пальмар, Мурсия, Испания. Это не свидетельство о рождении; время рождения не указано. Асцендент и дома не приводятся; полдень UTC служит только моментом отсчёта."
+      },
+      "ownerApproval": {
+        "approved": true,
+        "approvedAt": "2026-10-05T09:08:18.305Z",
+        "evidence": "The owner replied “okay approve” in task 01a0c34a-73b0-7091-911b-046a6f96fc8c on October 5, 2026, after the assistant recommended Carlos Alcaraz for the October 5 edition using the official tournament draw report and explained that his birth time is unknown. This approval covers this dated edition only; future figures still require individual approval."
+      }
     }
   ]
 }
