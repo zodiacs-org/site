@@ -1,3 +1,4 @@
+import { CheckOurMath } from './ChartTrust';
 /**
  * Due-date sky reader: what a birth around a given date would carry.
  * Honest by construction — the Sun is nearly certain (with cusp caveats
@@ -22,6 +23,7 @@ interface MoonSpan { fromISO: string; toISO: string; sign: Sign }
 
 interface Reading {
   dueISO: string;
+  computedUtc: Date;
   sun: { kind: 'single'; sign: Sign; nearEdge: Sign | null } | { kind: 'split'; a: Sign; b: Sign };
   moonSpans: MoonSpan[];
   retro: string[];
@@ -103,6 +105,7 @@ export default function BabyZodiac({ locale: rawLocale = 'en' }: Props) {
       const day = noon.getUTCDate();
       setReading({
         dueISO: noon.toISOString(),
+        computedUtc: noon,
         sun,
         moonSpans: spans,
         retro,
@@ -158,6 +161,8 @@ export default function BabyZodiac({ locale: rawLocale = 'en' }: Props) {
       {reading && (
         <div class="calc__result">
           <h2 class="sr-only" tabIndex={-1} ref={resultHeadingRef}>{t(locale, 'babyCompute')}</h2>
+          <p class="chart-trust__opening" data-result-opening>{t(locale, 'trustDueIntro')}</p>
+          <CheckOurMath utc={reading.computedUtc} basis="sky-reference" locale={locale} />
           <div class="baby-block">
             <h3>{t(locale, 'babySunHead')}</h3>
             {reading.sun.kind === 'single' ? (

@@ -63,44 +63,26 @@ try {
     await submitAndWait(page, 1);
 
     const bridge = page.locator('[data-registry-bridge-surface="birth_chart"]');
-    await bridge.waitFor({ state: 'visible', timeout: TIMEOUT });
-    assert.equal(await bridge.count(), 1);
-    assert.equal(await bridge.getAttribute('data-registry-bridge-sign'), 'capricorn');
-    assert.equal(await bridge.locator('a').getAttribute('href'), '/registry/capricorn/');
-    assert.match(await bridge.innerText(), /Your Sun is in Capricorn\./);
-    assert.match(await bridge.innerText(), /Explore the Capricorn Registry →/);
-    assert.deepEqual(await events(page, 'registry_bridge_impression'), [{
-      name: 'registry_bridge_impression',
-      props: { surface: 'birth_chart', locale: 'en' },
-    }]);
+    const receipt = page.locator('[data-check-our-math]');
+    await receipt.waitFor({ state: 'visible', timeout: TIMEOUT });
+    assert.equal(await bridge.count(), 0, 'chart tools must not promote the token collection');
+    assert.equal(await receipt.getAttribute('data-instant-basis'), 'reference');
+    assert.equal(await page.locator('[data-result-opening]').count(), 1);
+    assert.deepEqual(await events(page, 'registry_bridge_impression'), []);
 
     await page.locator('#birth-date').fill('2026-03-20');
     await submitAndWait(page, 2);
-    assert.equal(await bridge.count(), 0, 'unknown-time ingress date must suppress the bridge');
-    assert.equal((await events(page, 'registry_bridge_impression')).length, 1);
+    assert.equal(await bridge.count(), 0, 'unknown-time ingress date must not promote the collection');
+    assert.equal(await receipt.getAttribute('data-instant-basis'), 'reference');
 
     await page.locator('.field__toggle input[type="checkbox"]').uncheck();
     await page.locator('#birth-time').fill('22:15');
     await submitAndWait(page, 3);
-    await bridge.waitFor({ state: 'visible', timeout: TIMEOUT });
-    assert.equal(await bridge.getAttribute('data-registry-bridge-sign'), 'aries');
-    assert.equal(await bridge.locator('a').getAttribute('href'), '/registry/aries/');
-    assert.deepEqual((await events(page, 'registry_bridge_impression')).at(-1), {
-      name: 'registry_bridge_impression',
-      props: { surface: 'birth_chart', locale: 'en' },
-    });
-
-    await bridge.locator('a').evaluate((link) => {
-      link.addEventListener('click', (event) => event.preventDefault(), { once: true });
-      link.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
-    });
-    await page.waitForFunction(() => (
-      globalThis.__registryBridgeEvents.some((event) => event.name === 'registry_bridge_click')
-    ));
-    assert.deepEqual(await events(page, 'registry_bridge_click'), [{
-      name: 'registry_bridge_click',
-      props: { surface: 'birth_chart', locale: 'en' },
-    }]);
+    assert.equal(await bridge.count(), 0, 'known-time results must not promote the collection either');
+    assert.equal(await receipt.getAttribute('data-instant-basis'), 'birth');
+    assert.equal(await receipt.locator('time').getAttribute('datetime'), '2026-03-20T15:15:00.000Z');
+    assert.deepEqual(await events(page, 'registry_bridge_impression'), []);
+    assert.deepEqual(await events(page, 'registry_bridge_click'), []);
     await chartRun.context.close();
 
     const birthdayRun = await trackedPage(browser);
@@ -124,4 +106,4 @@ try {
   await browser.close();
 }
 
-console.log('registry-bridge-drive: stable, cusp, exact-time, analytics, and birthday paths pass');
+console.log('registry-bridge-drive: tools omit collection links for known and unknown times; public birthday bridges remain intact');

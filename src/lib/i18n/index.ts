@@ -55,6 +55,14 @@ export function showsEnglishOnlyInterpretation(locale: Locale): boolean {
 const CORE_LOCALIZED_PATHS = [
   '/',
   '/tools/',
+  '/big-three/',
+  '/compatibility/invite/',
+  '/group-charts/',
+  '/chart-twins/',
+  '/sky-calendar/',
+  '/astrologer-kit/',
+  '/your-sky-wrapped/',
+  '/chart-of-the-day/',
   '/birth-chart/',
   '/compatibility/',
   '/moon-sign/',
@@ -97,8 +105,8 @@ export const PROGRAMMATIC_ROUTE_LOCALES = ['en', 'es', 'pt', 'fr', 'it'] as cons
 /** Byte-compatible locale-home fallback; future locales never join it. */
 export const LEGACY_HOME_SELECTOR_LOCALES = ['en', 'es', 'pt', 'fr', 'it'] as const satisfies readonly Locale[];
 
-/** Locales in which each translated route is actually available. */
-export const LOCALIZED_PATHS: ReadonlyMap<string, readonly Locale[]> = new Map<string, readonly Locale[]>([
+/** Discovery metadata has no side effects; client navigation can omit this map. */
+export const LOCALIZED_PATHS: ReadonlyMap<string, readonly Locale[]> = /*#__PURE__*/ (() => new Map<string, readonly Locale[]>([
   ...CORE_LOCALIZED_PATHS.map((path) => [
     path,
     SIGN_SLUGS.some((slug) => path === `/${slug}/`)
@@ -106,7 +114,7 @@ export const LOCALIZED_PATHS: ReadonlyMap<string, readonly Locale[]> = new Map<s
       : CORE_ROUTE_LOCALES,
   ] as const),
   ...DAILY_READING_PATHS.map((path) => [path, DAILY_READING_ROUTE_LOCALES] as const),
-]);
+]))();
 
 const BIRTHDAY_MONTH_LENGTHS: Readonly<Record<string, number>> = Object.freeze({
   january: 31,
@@ -145,6 +153,7 @@ function isLocalizedBirthdayPath(path: string): boolean {
 
 export function availableLocalesForPath(path: string): readonly Locale[] | undefined {
   const canonical = stripLocale(path);
+  if (/^\/chart-of-the-day\/\d{4}-\d{2}-\d{2}\/$/.test(canonical)) return CORE_ROUTE_LOCALES;
   return LOCALIZED_PATHS.get(canonical)
     ?? (isLocalizedChineseZodiacPath(canonical) ? PROGRAMMATIC_ROUTE_LOCALES : undefined)
     ?? (isLocalizedBirthdayPath(canonical) ? [DEFAULT_LOCALE] : undefined);
@@ -153,7 +162,7 @@ export function availableLocalesForPath(path: string): readonly Locale[] | undef
 /** Internal rendering availability; never use this for discovery metadata. */
 export function renderableLocalesForPath(path: string): readonly Locale[] | undefined {
   const canonical = stripLocale(path);
-  if (CORE_LOCALIZED_PATHS.includes(canonical)) {
+  if (CORE_LOCALIZED_PATHS.includes(canonical) || /^\/chart-of-the-day\/\d{4}-\d{2}-\d{2}\/$/.test(canonical)) {
     return [...CORE_ROUTE_LOCALES, ...STAGED_CORE_ROUTE_LOCALES];
   }
   if (DAILY_READING_PATHS.includes(canonical)) return DAILY_READING_ROUTE_LOCALES;

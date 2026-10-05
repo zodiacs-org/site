@@ -320,6 +320,20 @@
   ],
   "headers": [
     {
+      "source": "/sky-calendar.ics",
+      "headers": [
+        { "key": "Content-Type", "value": "text/calendar; charset=utf-8" },
+        { "key": "Cache-Control", "value": "public, max-age=3600, s-maxage=86400" }
+      ]
+    },
+    {
+      "source": "/:locale(es|pt|fr|it|ru)/sky-calendar.ics",
+      "headers": [
+        { "key": "Content-Type", "value": "text/calendar; charset=utf-8" },
+        { "key": "Cache-Control", "value": "public, max-age=3600, s-maxage=86400" }
+      ]
+    },
+    {
       "source": "/(.*)",
       "headers": [
         {
@@ -622,6 +636,15 @@
     },
     {
       "source": "/assets/webmcp-register.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/assets/site-footer.css",
       "headers": [
         {
           "key": "Cache-Control",

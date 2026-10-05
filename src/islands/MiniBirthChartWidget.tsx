@@ -16,7 +16,7 @@ function withinSign(longitude: number): number {
   return ((longitude % 30) + 30) % 30;
 }
 
-export default function MiniBirthChartWidget() {
+export default function MiniBirthChartWidget({ trustCopy }: { trustCopy: { intro: string; math: string; instant: string } }) {
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
   const [query, setQuery] = useState('');
@@ -27,6 +27,7 @@ export default function MiniBirthChartWidget() {
   const [placeError, setPlaceError] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const [computedUtc, setComputedUtc] = useState<string | null>(null);
   const [placements, setPlacements] = useState<Placement[]>([]);
   const timer = useRef<number>();
   const request = useRef(0);
@@ -110,6 +111,7 @@ export default function MiniBirthChartWidget() {
       const sun = chart.bodies.find((body) => body.body === 'Sun');
       const moon = chart.bodies.find((body) => body.body === 'Moon');
       if (!sun || !moon || !chart.angles) throw new Error('incomplete chart');
+      setComputedUtc(chart.input.utc.toISOString());
       setPlacements([
         { label: WIDGET_EN.sun, sign: signForLongitude(sun.lon), degree: withinSign(sun.lon) },
         { label: WIDGET_EN.moon, sign: signForLongitude(moon.lon), degree: withinSign(moon.lon) },
@@ -117,6 +119,7 @@ export default function MiniBirthChartWidget() {
       ]);
     } catch {
       setError(WIDGET_EN.chartError);
+      setComputedUtc(null);
       setPlacements([]);
     } finally {
       setBusy(false);
@@ -212,6 +215,11 @@ export default function MiniBirthChartWidget() {
       {error && <p class="mini-chart__error" role="alert">{error}</p>}
       {placements.length === 3 && (
         <section class="mini-chart__result" aria-live="polite">
+          <p class="mini-chart__opening" data-result-opening>{trustCopy.intro}</p>
+          {computedUtc && <aside class="mini-chart__receipt" data-check-our-math data-instant-basis="birth">
+            <a href="https://zodiacs.org/methodology/" target="_blank" rel="noopener noreferrer">{trustCopy.math}</a>
+            <p>{trustCopy.instant}<time dateTime={computedUtc}>{computedUtc}</time></p>
+          </aside>}
           {placements.map((placement) => (
             <article key={placement.label}>
               <img src={signIcon(48, placement.sign.slug)} alt="" width="42" height="42" decoding="async" />

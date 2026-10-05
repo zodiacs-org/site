@@ -83,7 +83,7 @@ export function renderAgentGuide(
     `- POST ${API_BASE}/events — sign ingresses, stations and new and full moons in a window of up to ${BUDGETS['events.windowDays']} days.`,
     `- POST ${API_BASE}/time — a local civil time as UTC and Terrestrial Time, with ΔT and flags for skipped and repeated clock times.`,
     `- POST ${API_BASE}/sky-fact — whether a body is in a sign, is retrograde or enters a sign, or a lunar phase falls, at an instant or on a date: true, false or depends, with the computed values that decide it.`,
-    '- Every success carries result, receipt, backend and cite. cite.url is the endpoint\'s documentation and cite.receipt the SHA-256 of the receipt\'s canonical JSON. For chart and houses the receipt holds the instant and the coordinates, so cite.receipt identifies the birth details: anyone who knows the date and the place can find the time by trying times until it matches. Quote cite with a result; for chart and houses, only where the birth details may be known. A refusal is {"error": {"code", "message"}} with a stable code.',
+    '- Every success carries result, receipt, backend and cite. cite.url is the endpoint\'s documentation and cite.receipt the SHA-256 of the receipt\'s canonical JSON. For chart and houses the receipt holds the instant and the coordinates, so cite.receipt identifies the birth details from either side: with the date and the place, trying times finds the time, and with the date and the time, trying places from a list of towns finds the place. Quote cite with a result; for chart and houses, only where the birth details may be known. A refusal is {"error": {"code", "message"}} with a stable code.',
     '',
     '## Caching',
     '',

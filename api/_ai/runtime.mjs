@@ -5444,8 +5444,28 @@ function timeResolutionFacts() {
   };
 }
 
-// src/lib/compute-api/receipt.ts
+// src/lib/receipt-digest.ts
 import { createHash } from "node:crypto";
+function canonicalJson(value) {
+  if (value === null || typeof value === "boolean" || typeof value === "string") return JSON.stringify(value);
+  if (typeof value === "number") {
+    if (!Number.isFinite(value)) throw new TypeError("Canonical JSON has no non-finite numbers.");
+    return JSON.stringify(value);
+  }
+  if (Array.isArray(value)) return `[${value.map(canonicalJson).join(",")}]`;
+  if (typeof value === "object") {
+    const object = value;
+    const keys = Object.keys(object).sort();
+    return `{${keys.map((key) => `${JSON.stringify(key)}:${canonicalJson(object[key])}`).join(",")}}`;
+  }
+  throw new TypeError("Canonical JSON holds only JSON values.");
+}
+function receiptDigest(receipt) {
+  const parsed = JSON.parse(JSON.stringify(receipt));
+  return `sha256:${createHash("sha256").update(canonicalJson(parsed), "utf8").digest("hex")}`;
+}
+
+// src/lib/compute-api/receipt.ts
 var BACKEND = Object.freeze({
   name: "@zodiacs/engine",
   version: ENGINE_VERSION,
@@ -5484,24 +5504,6 @@ function computeReceipt(endpoint, extra = {}) {
     ...extra.timeResolution ? { timeResolution: extra.timeResolution } : {},
     ...extra.search ? { search: extra.search } : {}
   };
-}
-function canonicalJson(value) {
-  if (value === null || typeof value === "boolean" || typeof value === "string") return JSON.stringify(value);
-  if (typeof value === "number") {
-    if (!Number.isFinite(value)) throw new TypeError("Canonical JSON has no non-finite numbers.");
-    return JSON.stringify(value);
-  }
-  if (Array.isArray(value)) return `[${value.map(canonicalJson).join(",")}]`;
-  if (typeof value === "object") {
-    const object = value;
-    const keys = Object.keys(object).sort();
-    return `{${keys.map((key) => `${JSON.stringify(key)}:${canonicalJson(object[key])}`).join(",")}}`;
-  }
-  throw new TypeError("Canonical JSON holds only JSON values.");
-}
-function receiptDigest(receipt) {
-  const parsed = JSON.parse(JSON.stringify(receipt));
-  return `sha256:${createHash("sha256").update(canonicalJson(parsed), "utf8").digest("hex")}`;
 }
 function citeFor(endpoint, receipt) {
   return {

@@ -1,4 +1,5 @@
 ---
+import { t } from '../../lib/i18n';
 import Base from '../../layouts/Base.astro';
 import RaceBoard from '../../islands/RaceBoard';
 import { SIGNS, signBySlug } from '../../lib/signs';
@@ -64,7 +65,7 @@ const description =
           decoding="async"
         />
         <div>
-          <p class="race-champion__sign display">{championSignEntry.name.toUpperCase()}</p>
+          <p class="race-champion__sign display">{championSignEntry.name}</p>
           <p class="race-champion__title">{champion.seasonName} Season Champion · {champion.year}</p>
           <p class="race-champion__detail">
             Won by {champion.marginPoints.toLocaleString('en')} {champion.marginPoints === 1 ? 'point' : 'points'} over {runnerUpName}. Engraved. Permanent.
@@ -101,8 +102,7 @@ const description =
         <li><strong>Watch the season.</strong> One champion. One trophy. Then it starts again.</li>
       </ol>
       <p>
-        People score the points: joins, weekly check-ins, and shares. Nothing
-        else counts.
+        {t('en', 'trustGamesScore')}
       </p>
 
       <h2>How seasons work</h2>
@@ -123,8 +123,7 @@ const description =
 
       <dt>How does my sign score?</dt>
       <dd>
-        People score the points: joins, weekly check-ins, and shares. Nothing
-        else counts.
+        {t('en', 'trustGamesScore')}
       </dd>
 
       <dt>Can someone buy a win?</dt>
@@ -140,7 +139,7 @@ const description =
       </dd>
 
       <dt>Do you sell anything?</dt>
-      <dd>No. The Games are free and nothing here is a store.</dd>
+      <dd>{t('en', 'trustFreeAnswer')} <a href="/disclosure/">{t('en', 'trustDisclosure')}</a>.</dd>
 
       <dt>What happens to my data?</dt>
       <dd>

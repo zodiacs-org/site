@@ -156,6 +156,14 @@ export const OG_EN = Object.freeze({
     { key: 'birthday', path: '/birthday/', kicker: 'Birthday astrology', title: 'Your birthday, read closely', sub: 'Character, love, work, growth, and an exact cusp answer when the year matters.' },
     { key: 'ask', path: '/ask/', kicker: 'Astrology guide', title: 'Guide', sub: 'Ask about this site, astrology, or your own chart.' },
     { key: 'today', path: '/today/', kicker: 'Your daily brief', title: 'Today, against your chart', sub: 'A personal daily focus drawn from the latest chart saved on this device.' },
+    { key: 'group-charts', path: '/group-charts/', kicker: 'Free group reading', title: 'Who’s the spark, who’s the glue?', sub: 'Three to eight charts, each given a role: the spark, the anchor, the connector, or the glue.' },
+    { key: 'chart-twins', path: '/chart-twins/', kicker: 'Sourced directory', title: 'Your chart twins', sub: 'Public figures who share your verified Sun and Moon signs.' },
+    { key: 'big-three', path: '/big-three/', kicker: 'Sun · Moon · Rising', title: 'Your big three', sub: 'Three signs in seconds, with a portrait card made in your browser.' },
+    { key: 'compatibility-private-invite', path: '/compatibility/invite/', kicker: 'Compatibility', title: 'Invite a friend to compare', sub: 'Send a link. They add their chart, and you both see how the two connect.' },
+    { key: 'sky-calendar', path: '/sky-calendar/', kicker: 'The calendar', title: 'The sky, in your calendar', sub: 'New and full moons, eclipse peaks, and retrograde windows, 2026–2030.' },
+    { key: 'chart-of-the-day', path: '/chart-of-the-day/', kicker: 'In the news', title: 'Chart of the day', sub: 'A public figure’s chart, with sourced birth data and its limits stated.' },
+    { key: 'your-sky-wrapped', path: '/your-sky-wrapped/', kicker: 'Your year', title: 'Your sky, wrapped', sub: 'The year’s Jupiter and Saturn contacts to your chart, on one card.' },
+    { key: 'astrologer-kit', path: '/astrologer-kit/', kicker: 'For astrologers', title: 'A client-ready chart', sub: 'Chart wheel, placements, aspects, and the calculation receipt as a PDF.' },
   ]),
 });
 

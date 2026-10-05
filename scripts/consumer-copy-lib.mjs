@@ -7,6 +7,8 @@ const METHOD_FIRST_PATHS = [
   '/archive/',
   '/thesis/',
   '/sdk/',
+  // Source-pinned API comments are technical documentation, like /sdk/.
+  '/developers/engine/reference/',
   '/learn/glossary/',
 ];
 

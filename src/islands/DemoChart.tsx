@@ -371,7 +371,7 @@ export default function DemoChart() {
             {demo.name} · {demo.birth} · computed as {demo.utc.replace('T', ' ').slice(0, 19)} UTC ·{' '}
             <a href="https://www.astro.com/astro-databank/Kahlo%2C_Frida" target="_blank" rel="noopener noreferrer">
               published time source
-            </a>
+            </a> · <a href="/methodology/" data-check-our-math>{t('en', 'trustMath')}</a>
           </p>
         </div>
       </div>

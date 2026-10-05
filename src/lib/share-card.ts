@@ -256,10 +256,12 @@ export const SHARE_CARD_WORDMARK = Object.freeze({
 
 async function drawPortraitShareBrand(
   context: CanvasRenderingContext2D,
+  centerY: number = PORTRAIT_SHARE_CARD_BRAND_LAYOUT.centerY,
 ): Promise<void> {
   await withShareBrandIcon((icon) => {
     drawShareBrandLockup(context, icon, {
       ...PORTRAIT_SHARE_CARD_BRAND_LAYOUT,
+      centerY,
       serif: SERIF,
     });
   });
@@ -770,17 +772,17 @@ async function drawBigThreeCard(
 
   const canvas = document.createElement('canvas');
   canvas.width = W;
-  canvas.height = H;
+  canvas.height = 1920;
   const ctx = canvas.getContext('2d');
   if (!ctx) throw new Error('canvas unavailable');
 
   ctx.fillStyle = BG;
-  ctx.fillRect(0, 0, W, H);
+  ctx.fillRect(0, 0, W, 1920);
   if (typeof ctx.roundRect === 'function') {
     ctx.strokeStyle = HAIR;
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.roundRect(28.5, 28.5, W - 57, H - 57, 26);
+    ctx.roundRect(28.5, 28.5, W - 57, 1920 - 57, 26);
     ctx.stroke();
   }
 
@@ -788,10 +790,10 @@ async function drawBigThreeCard(
   ctx.textBaseline = 'middle';
   ctx.fillStyle = INK_2;
   ctx.font = `italic 400 34px ${SERIF}`;
-  ctx.fillText(shareCardText(locale, 'bigThreeTitle'), W / 2, 112);
+  ctx.fillText(shareCardText(locale, 'bigThreeTitle'), W / 2, 230);
 
-  const gap = placements.length === 3 ? 292 : 370;
-  const firstY = placements.length === 3 ? 245 : 305;
+  const gap = placements.length === 3 ? 380 : 430;
+  const firstY = placements.length === 3 ? 430 : 525;
   placements.forEach((placement, index) => {
     const y = firstY + index * gap;
     const icon = discs[index];
@@ -814,10 +816,10 @@ async function drawBigThreeCard(
   ctx.textAlign = 'center';
   ctx.fillStyle = INK_2;
   ctx.font = `400 20px ${MONO}`;
-  timeNotes.forEach((note, index) => ctx.fillText(note, W / 2, 1150 + index * 34));
+  timeNotes.forEach((note, index) => ctx.fillText(note, W / 2, 1630 + index * 34));
   ctx.font = `400 24px ${MONO}`;
-  ctx.fillText(shareCardFormat(locale, 'engineReceipt', { version: chart.engineVersion }), W / 2, 1238);
-  await drawPortraitShareBrand(ctx);
+  ctx.fillText(shareCardFormat(locale, 'engineReceipt', { version: chart.engineVersion }), W / 2, 1770);
+  await drawPortraitShareBrand(ctx, 1850);
 
   const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
   if (!blob) throw new Error('png encode failed');

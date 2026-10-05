@@ -1,0 +1,73 @@
+{
+  "date": "2026-10-04",
+  "baseCommit": "076540b69123b353b6cdbac9054b3c60fb438846",
+  "buildReceipt": {
+    "schema": "zodiacs.phase1-build-receipt.v1",
+    "builtAt": "2026-10-03T19:52:03.809Z",
+    "templateSourceSha256": "d63f74985b26a4908097bbbd169342fb95bec8e4852f0c7045b8c21d72899906",
+    "dailyDate": "2026-10-03",
+    "publicationCanonicalSha256": "ee0304898bb69f2224063a30fa4bf1fb987b5de6f2e672af91555ca1433ae5d1",
+    "renderPayloadSha256": {
+      "daily": "36bb1f6917bea7cf3c33f08f2d91fab0bf9e4a1e22585331f2db968924f7bb25",
+      "dailyPublication": "9b999234c3f3403f4670546804ef61c5afdd13e370e49c162de6ad0965424509",
+      "dailyPublicationManifest": "7adba6910aad25f16fe97971a2654b8794fef59d37a9b5974e9129ec84ecf54c",
+      "horoscopeProgram": "051b07f375bd68756c78d552321bca344dc96cbe0f782d5894b084cddfd9e06a"
+    }
+  },
+  "typecheck": {
+    "errors": 0,
+    "warnings": 0,
+    "existingHints": 39
+  },
+  "vitest": {
+    "passed": 6476,
+    "skipped": 5,
+    "passedFiles": 510,
+    "skippedFiles": 1
+  },
+  "browser": {
+    "engines": [
+      "Chromium",
+      "WebKit"
+    ],
+    "widths": [
+      360,
+      390,
+      1280
+    ],
+    "groups": 51,
+    "transport": "HTTPS",
+    "resourcePolicy": "Unmodified production CSP",
+    "allSixLanguages": true
+  },
+  "previousVisualAcceptance": {
+    "passed": 18,
+    "failed": 0
+  },
+  "dailyEditionFixture": {
+    "languagesPassed": 6,
+    "restored": true,
+    "publishedRealFigures": 0
+  },
+  "pdfSamples": [
+    {
+      "name": "chromium-390-client.pdf",
+      "sha256": "1578e1187178e411740f0c7fd627e2da390a4f3764ffebf1bcb01f3e451f10d4",
+      "bytes": 544032
+    },
+    {
+      "name": "ru-unknown-client.pdf",
+      "sha256": "0e2a22e689ac63457b5514e17522870a029a7cb79d009bc35ff28427c2c0867d",
+      "bytes": 616350
+    }
+  ],
+  "productionFlagsBuild": {
+    "passed": true,
+    "standIns": "Exact CI production feature-flag environment",
+    "birthChartGzipKB": 68.9,
+    "compatibilityGzipKBDisplayed": 36.0,
+    "compatibilityLimitKB": 36,
+    "initialBudgetsChanged": false,
+    "serverOnlyLocaleMapRemovedFromBrowser": true
+  }
+}

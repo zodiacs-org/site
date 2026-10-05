@@ -1,5 +1,27 @@
 # Zodiacs AI integration checkpoints
 
+## Recovery continuation — 2026-10-05
+
+The interrupted chat was recovered. Main `3491e8e9` is integrated, including
+its updated consumer pages, privacy copy, engine helpers and browser contracts.
+Both generated AI bundles and the developer ZIP were rebuilt from the combined
+source. Local build (4,416 pages), typecheck (zero errors/warnings), 35 AI unit
+tests, eight stdio tools/recipes, 40/40 synthetic cases, both widget bridges and
+242 homepage browser checks pass. The complete local suite passes 6,743 tests
+with five skipped (520 files pass, one skipped). All eighteen Phase 1 captures were refreshed
+and their five receipt tests pass. The three reviewed Darwin homepage comparisons
+pass at zero pixel difference. Current complete CI and staging evidence
+must be checked on the new PR head; the evidence below remains dated history.
+
+The owner confirmed there are no beta testers. Consented feedback remains
+pending; synthetic tests cannot satisfy it. The signed-in publisher portal
+still requires identity verification, and the old ChatGPT development app
+requires reconnection. Identity documents, acknowledgements and final approval
+remain owner actions. No submission, PR merge or production activation has
+occurred.
+
+## Historical continuation — 2026-10-02
+
 Continuation dated 2026-10-02 on `codex/zodiacs-ai-integrations`,
 [PR #618](https://github.com/zodiacs-org/site/pull/618). Existing work is preserved;
 Approved main `65d800c5` (rc.16 and consumer release) is integrated. Active

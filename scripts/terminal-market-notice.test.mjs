@@ -9,7 +9,7 @@ const compact = (value) => value.replace(/\s+/gu, ' ');
 
 const MARKET_NOTICE_PARAGRAPHS = [
   'Zodiac tokens are speculative, thinly traded digital assets. Prices can be volatile, liquidity may disappear, and you could lose all money used to acquire one. Astrology has no established predictive relationship with asset prices.',
-  'Zodiacs.org provides the Terminal interface and public Registry; it does not operate a DEX, exchange, broker, or custodial service. When trading is available, Jupiter, an independent third-party liquidity aggregator, supplies the executable quote, builds and submits the transaction, and charges any venue fee shown; your wallet reviews, approves, and signs. Zodiacs.org holds no keys or funds, cannot reverse transactions, and receives no trading or referral compensation. References to Jupiter do not imply affiliation or endorsement.',
+  "Zodiacs.org does not connect wallets, request signatures, or submit transactions. Public address lookups use an address you paste. Purchase links open independent services with their own terms and risks. Zodiacs.org operates Astrofolio. Disclosure.",
   'Information is for informational purposes only and is not an offer or solicitation, an investment recommendation or trading strategy, or accounting, legal, tax, or financial advice. Third-party services may not be available in all regions. Verify the official address, network, amount, fees, and destination before signing.',
 ];
 
@@ -24,15 +24,15 @@ function paragraphText(source) {
     match[1]
       .replace(/<[^>]+>/gu, ' ')
       .replace(/&amp;/gu, '&'),
-  ).trim());
+  ).trim().replace(/\s+([.,;:])/gu, '$1'));
 }
 
 describe('Terminal market and venue notice coverage', () => {
-  it('keeps one canonical, link-free notice component for market-facing routes', async () => {
+  it('keeps one canonical notice with its disclosure link component for market-facing routes', async () => {
     const component = notice(await read('src/components/TerminalMarketVenueNotice.astro'));
     expect(component).toContain('data-terminal-market-notice');
     expect(component).toContain('Market &amp; venue notice');
-    expect(component).not.toMatch(/<a\b/iu);
+    expect(component).toContain('href="/disclosure/"');
     expect(paragraphText(component)).toEqual(MARKET_NOTICE_PARAGRAPHS);
   });
 
@@ -51,7 +51,7 @@ describe('Terminal market and venue notice coverage', () => {
   it('keeps the full notice beside the existing point-of-action risk block on Zodiac Markets', async () => {
     const markets = await read('public/terminal/markets/index.html');
     expect(markets.match(/data-terminal-market-notice/gu) ?? []).toHaveLength(1);
-    expect(markets).toContain('Before anything is signed');
+    expect(markets).toContain('Digital-asset risks');
     expect(paragraphText(notice(markets))).toEqual(MARKET_NOTICE_PARAGRAPHS);
   });
 

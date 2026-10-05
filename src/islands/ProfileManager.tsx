@@ -361,7 +361,7 @@ export default function ProfileManager({
         if (current) {
           setSyncState('syncing');
           await refreshed;
-          await api.syncNow();
+          if (!await api.syncNow()) throw new Error('Charts are saved in this browser. Sign in again to resume sync.');
           setDigestOptInState(await api.getDigestOptIn());
           setSyncState('synced');
           await loadDailyState(current);
@@ -374,7 +374,7 @@ export default function ProfileManager({
             return;
           }
           setSyncState('syncing');
-          await api.syncNow();
+          if (!await api.syncNow()) { setSyncState('error'); return; }
           setDigestOptInState(await api.getDigestOptIn());
           setSyncState('synced');
           await loadDailyState(next);
@@ -472,7 +472,7 @@ export default function ProfileManager({
     if (!syncApi) return;
     setSyncState('syncing');
     try {
-      await syncApi.syncNow();
+      if (!await syncApi.syncNow()) throw new Error('Charts are saved in this browser. Sign in again to resume sync.');
       setSyncState('synced');
       if (session) await loadDailyState(session);
     } catch (err) {

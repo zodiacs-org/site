@@ -58,7 +58,7 @@
 .zfooter__brand {
   direction: ltr;
   display: inline-flex;
-  align-items: baseline;
+  align-items: center;
   width: fit-content;
   gap: 0;
   color: var(--zf-text);
@@ -81,6 +81,8 @@
   font-weight: 500;
   letter-spacing: 0.01em;
   line-height: 1;
+  /* Centre the visible Garamond lettering, rather than its ascender box. */
+  transform: translateY(0.08em);
 }
 
 .zfooter__brand-tld {
@@ -90,6 +92,7 @@
   font-size: 10px;
   letter-spacing: 0.11em;
   line-height: 1;
+  transform: translateY(0.45em);
 }
 
 .zfooter__tag {

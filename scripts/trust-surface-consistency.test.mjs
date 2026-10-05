@@ -21,9 +21,10 @@ describe('public trust-surface claims', () => {
       expect(copy).toMatch(/Guide/);
       expect(copy).toMatch(/OpenAI/);
       expect(copy).toMatch(/store:false/);
-      expect(copy).toMatch(/Attach my chart/);
+      expect(copy).toMatch(/does not automatically attach your saved birth chart/);
+      expect(copy).not.toMatch(/Attach my chart/);
       expect(copy).toMatch(/generated draft reply.*second safety check/s);
-      expect(copy).toMatch(/birth date.*time.*place.*coordinates/s);
+      expect(copy).toMatch(/Avoid entering private birth details in Guide/);
       expect(copy).toMatch(/IANA\/ICU.*(?:browser|runtime)/s);
       expect(copy).toMatch(/raw IP.*user agent.*24 hours/s);
     }
@@ -89,7 +90,7 @@ describe('public trust-surface claims', () => {
     }
     const assistant = await text('src/lib/assistant/open-assistant.ts');
     expect(assistant).toMatch(/OpenAI/);
-    expect(assistant).toMatch(/saved name, birth date, time, place, or coordinates/);
+    expect(assistant).toMatch(/does not automatically attach your saved birth chart or personal chart placements/);
     expect(assistant).toMatch(/browser session|session/i);
   });
 

@@ -18,7 +18,7 @@ const END = '<!-- registry-trade:end -->';
 const SLOT = /<!-- registry-trade:slot (\{.*?\}) -->/;
 
 export function registryTradeEnabled(env = {}) {
-  return env[REGISTRY_TRADE_FLAG] === '1';
+  return false;
 }
 
 /** The comment the generator emits, carrying everything the stamper needs. */
@@ -32,21 +32,8 @@ export function tradeSlotComment({ sign, name, mint, hue }) {
  */
 export function renderTradeRegion({ sign, name, mint, hue, enabled }) {
   const slot = tradeSlotComment({ sign, name, mint, hue });
-  if (!enabled) return `${START}\n      ${slot}\n      ${END}`;
-  return [
-    START,
-    `      ${slot}`,
-    '      <div class="acq__trade" data-trade-panel',
-    `        data-trade-sign="${sign}" data-trade-name="${name}" data-trade-mint="${mint}"`,
-    `        data-trade-hue="${hue ?? ''}">`,
-    '        <noscript>',
-    '          <p class="acq__trade-noscript">Trading here needs JavaScript. The links below open the',
-    '          venue directly.</p>',
-    '        </noscript>',
-    '      </div>',
-    '      <script defer src="/assets/trade.js"></script>',
-    END,
-  ].join('\n');
+  return `${START}\n      ${slot}\n      ${END}`;
+
 }
 
 function metaFor(enabled) {

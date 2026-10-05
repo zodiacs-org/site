@@ -1,0 +1,15 @@
+{
+  "base": "076540b69123b353b6cdbac9054b3c60fb438846",
+  "paths": [
+    "public/sdk",
+    "vendor",
+    "package.json",
+    "package-lock.json",
+    "docs/platform/programme/acceptance-ledger.json",
+    "docs/platform/programme/LEDGER.md",
+    "docs/platform/programme/STATUS.md"
+  ],
+  "filesCompared": 131,
+  "mismatches": [],
+  "sdkTree": "9dbc8c2015b9dfc5fa3e247dcebf599759230740"
+}

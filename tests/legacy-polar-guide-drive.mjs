@@ -40,32 +40,10 @@ export async function driveLegacyPolarGuide({ browser, baseURL, check, outDir, i
     check('legacy polar Guide: ordinary consent sends no saved chart',
       requests.length === 1 && requests[0].ephemeralContext.baseContext.ownerChart.state === 'unavailable');
 
-    await page.locator('.zassistant__chart-chip').click();
-    const preview = page.locator('.zassistant__consent-preview');
-    await preview.waitFor({ state: 'visible' });
-    const previewText = (await preview.textContent()).trim();
-    const placementPreview = previewText.split('\n\n').at(-1)?.trim();
-    // The angles go to the whole degree, as in a shared chart code (F-19).
-    check('legacy polar Guide: consent identifies the same chart with corrected Aries ASC and house',
-      previewText.includes(`Selected self chart (kept on this device): ${fixture.polar.name}`)
-      && previewText.includes('ASC: 23° Aries · house 1')
-      && !previewText.includes('23°52′') && !previewText.includes('ASC: 23° Libra') && requests.length === 1);
-    await checkOriginalProfile(page, fixture, check, 'Guide consent');
-    if (outDir) await page.screenshot({ path: `${outDir}/legacy-polar-guide-consent.png`, fullPage: false });
-    await page.getByRole('button', { name: 'Attach my chart' }).click();
-    await page.locator('.zassistant__input').fill('What does my chart emphasize?');
-    await page.locator('.zassistant__input').press('Enter');
-    await page.locator('.zassistant__message--assistant').filter({ hasText: 'Your placements' }).waitFor();
-    const request = requests.at(-1);
-    const source = request.ephemeralContext.baseContext.ownerChart.source;
-    check('legacy polar Guide: outgoing chart facts exactly match the corrected consent preview',
-      requests.length === 2 && source?.facts.trim() === placementPreview
-      && source.facts.includes('ASC: 23° Aries · house 1') && !source.facts.includes('23°52′'));
-    const wire = JSON.stringify(request);
-    check('legacy polar Guide: chart name, birth data and account identifiers stay off the wire',
-      ![fixture.polar.name, fixture.polar.id, accountId, '2001-12-21', '"09:00"',
-        'Polar fixture', '78.2232', '15.6267'].some((value) => wire.includes(value)));
-    await checkOriginalProfile(page, fixture, check, 'Guide request');
+    check('legacy polar Guide keeps personal chart attachment hidden',
+      await page.locator('.zassistant__chart-chip').isHidden());
+    await checkOriginalProfile(page, fixture, check, 'Guide privacy boundary');
+    if (outDir) await page.screenshot({ path: `${outDir}/legacy-polar-guide-local.png`, fullPage: false });
     check('legacy polar Guide has no page errors', errors.length === 0, errors.join(' | '));
   } finally {
     await context.close();

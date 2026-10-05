@@ -64,12 +64,12 @@ describe('selected pattern image facts and ownership', () => {
     expect(text).toContain(card.title); expect(text).toContain(card.reading); expect(text).toContain(card.scope);
     card.receipt.forEach((receipt) => expect(text).toContain(receipt));
     card.points.forEach((point) => expect(text).toContain(`${point.body} · ${point.lon}°`));
-    expect(text).toContain('zodiacs.org'); expect(text).not.toContain('private-source');
+    expect(text).toContain('Zodiacs.org'); expect(text).not.toContain('private-source');
     expect(fixture.context.drawImage).toHaveBeenCalledOnce(); expect(fixture.close).toHaveBeenCalledOnce();
     expect(fixture.encodedSizes).toEqual([[1080, 1350]]); expect(fixture.canvas.width).toBe(0);
     expect(prepared.filename).toMatch(new RegExp(`^zodiacs-${context}-${kind}-[a-f0-9]{16}\\.png$`));
     expect(prepared.blob.type).toBe('image/png');
-    expect(fixture.painted.filter((row) => row.y > 590 && row.text !== 'zodiacs.org').every((row) => row.y <= 1224)).toBe(true);
+    expect(fixture.painted.filter((row) => row.y > 590 && row.text !== 'Zodiacs.org').every((row) => row.y <= 1224)).toBe(true);
   });
 
   it('draws T-square chords at true positions, independently of the collision labels', async () => {

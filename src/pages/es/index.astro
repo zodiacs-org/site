@@ -1,4 +1,7 @@
 ---
+import HomeTrustFaq from '../../components/HomeTrustFaq.astro';
+import HomeShareTools from '../../components/sharing/HomeShareTools.astro';
+import { homeTrustSchema } from '../../lib/home-trust';
 import Base from '../../layouts/Base.astro';
 import SignIcon from '../../components/SignIcon.astro';
 import ToolGlyph from '../../components/ToolGlyph.astro';
@@ -18,6 +21,7 @@ const tools = [
 ];
 
 const jsonLd = [
+  homeTrustSchema('es'),
   {
     '@type': 'WebSite',
     '@id': 'https://zodiacs.org/#site',
@@ -164,6 +168,8 @@ const jsonLd = [
     </div>
   </section>
 
+  <HomeShareTools locale="es" />
+
   <section class="container pace-tight" id="signos">
     <div class="section-head reveal">
       <h2>Los doce signos</h2>
@@ -188,6 +194,7 @@ const jsonLd = [
       <a class="btn btn--primary" href={localizePath('es', '/birth-chart/')}><span>Obtén tu carta natal gratis</span><span class="orb">↗</span></a>
     </div>
   </section>
+  <HomeTrustFaq locale="es" />
 </Base>
 
 <style>

@@ -1,10 +1,10 @@
 ---
+import { isAstrologyToolPath } from '../lib/trust-boundary';
 import { SIGNS, signName } from '../lib/signs';
 import BrandMark from './BrandMark.astro';
 import EmailCapture from './EmailCapture.astro';
 import TerminalMarketVenueNotice from './TerminalMarketVenueNotice.astro';
 import { GUIDE_LOADER_MARKER, guideLoaderSource } from '../lib/assistant/guide-loader.mjs';
-import { footerAcquisitionDisclosureVisible } from '../lib/footer-boundary.mjs';
 import { FOOTER_TOOLS } from '../lib/nav-tools';
 import {
   LOCALE_META,
@@ -22,6 +22,7 @@ import {
 const year = new Date().getFullYear();
 interface Props { locale?: Locale; terminalMarketNotice?: boolean; noAssistant?: boolean }
 const locale = normalizeCatalogLocale(Astro.props.locale);
+const isTool = isAstrologyToolPath(Astro.url.pathname);
 const routeLanguageLinks = renderableAlternatePathEntries(Astro.url.pathname);
 // Preserve the established locale-home fallback on English-only routes while
 // deriving the candidate set from actual route availability, never LOCALES.
@@ -59,7 +60,6 @@ const privacyHref = localizePath(locale, '/privacy/');
 const fontLicenseHref = locale === 'ru' ? '/fonts/OFL-golos-text.txt' : '/fonts/OFL-instrument-sans.txt';
 const consumerPath = stripLocale(Astro.url.pathname);
 const isRegistryWing = /^\/(?:terminal|registry|sdk|thesis|archive|disclosure)(?:\/|$)/.test(consumerPath);
-const showAcquisitionDisclosure = footerAcquisitionDisclosureVisible(consumerPath);
 const suppressFooterEmailCapture = /^\/(?:birth-chart|horoscopes|profile)(?:\/|$)/.test(consumerPath);
 const terminalMarketNotice = Boolean(Astro.props.terminalMarketNotice);
 ---
@@ -74,6 +74,7 @@ const terminalMarketNotice = Boolean(Astro.props.terminalMarketNotice);
           <span class="zfooter__brand-name">Zodiacs</span><span class="zfooter__brand-tld">.org</span>
         </a>
         <p class="zfooter__tag">{t(locale, 'footerTag')}</p>
+        {!isTool && isRegistryWing && <p class="zfooter__tag">{t(locale, 'trustWalletNotice')}</p>}
       </div>
       {!Astro.props.noAssistant && (
         <button
@@ -121,6 +122,7 @@ const terminalMarketNotice = Boolean(Astro.props.terminalMarketNotice);
         </div>
       </details></nav>
 
+      {!isTool && (
       <nav class="zfooter__group zfooter__group--wide" aria-label={t(locale, 'footerRegistry')}>
         <details class="zfooter__fold" open><summary class="zfooter__fold-label"><span class="zfooter__label">{t(locale, 'footerRegistry')}</span></summary>
         <div class="zfooter__links">
@@ -129,8 +131,10 @@ const terminalMarketNotice = Boolean(Astro.props.terminalMarketNotice);
           <a href="/sdk/" hreflang={englishHreflang} title={englishOnlyAria}>{t(locale, 'footerSdk')}{englishSuffix}</a>
           <a href={localizePath(locale, '/disclosure/')}>{t(locale, 'footerDisclosure')}</a>
         </div>
-        {showAcquisitionDisclosure && <span class="zfooter__note">{t(locale, 'footerCollectNote')}</span>}
+        <span class="zfooter__note">{t(locale, 'trustFreeAnswer')} <a href={localizePath(locale, '/disclosure/')}>{t(locale, 'trustDisclosure')}</a>.</span>
       </details></nav>
+
+      )}
 
       <nav class="zfooter__group zfooter__twelve" aria-label={t(locale, 'navSigns')}>
         <span class="zfooter__label">{t(locale, 'navTwelve')}</span>

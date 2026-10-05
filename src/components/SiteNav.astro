@@ -1,4 +1,5 @@
 ---
+import { isAstrologyToolPath } from '../lib/trust-boundary';
 /**
  * Floating pill navigation. The Signs item opens a 12-icon pastel grid —
  * the icons are the navigation. The profile glyph fills once the visitor
@@ -7,10 +8,11 @@
 import { SIGNS, signDates, signName } from '../lib/signs';
 import SignIcon from './SignIcon.astro';
 import { availableLocalesForPath, englishOnlyCue, localizePath, normalizeCatalogLocale, t, type CatalogLocale as Locale } from '../lib/i18n';
-import { ALL_TOOLS_LABEL, NAV_TOOLS, navToolLabelHasEnglishCue, type NavTool } from '../lib/nav-tools';
+import { ALL_TOOLS_LABEL, NAV_MORE, NAV_MORE_LABEL, NAV_TOOLS, navToolLabelHasEnglishCue, type NavTool } from '../lib/nav-tools';
 
 interface Props { locale?: Locale }
 const locale = normalizeCatalogLocale(Astro.props.locale);
+const isTool = isAstrologyToolPath(Astro.url.pathname);
 const path = Astro.url.pathname;
 const hasDailyReading = availableLocalesForPath('/today/')?.includes(locale) ?? false;
 const todayLabel = t(locale, 'today').replace(/^./u, (letter) => letter.toLocaleUpperCase(locale));
@@ -132,6 +134,7 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
       </a>
     )}
 
+    {!isTool && (
     <a
       class:list={['nav__chip', { 'nav__chip--deferred': Boolean(englishOnly) }]}
       href="/astrofolio/"
@@ -145,6 +148,8 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
         <><span>{t(locale, 'navCollect')}</span><small class="nav__deferred">{englishOnlyBadge}</small></>
       ) : t(locale, 'navCollect')}
     </a>
+
+    )}
 
     <button
       class="nav__burger"
@@ -175,6 +180,10 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
           <span class="tools-menu__desc">{tool.sublabel[locale]}</span>
         </a>
       ))}
+      <div class="tools-menu__more" role="group" aria-label={NAV_MORE_LABEL[locale]}>
+        <span class="tools-menu__more-label">{NAV_MORE_LABEL[locale]}</span>
+        <ul>{NAV_MORE.map((item) => <li><a href={localizePath(locale, item.href)}>{item.label[locale]}</a></li>)}</ul>
+      </div>
       <a class="tools-menu__all" href={localizePath(locale, '/tools/')}>
         {ALL_TOOLS_LABEL[locale]} <span aria-hidden="true">→</span>
       </a>
@@ -228,10 +237,12 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
     </div>
     <div class="mobile-menu__group">
       <a class="mobile-menu__link" style={`--i:${hasDailyReading ? 4 : 3}`} href="/developers/" hreflang={englishOnly ? 'en' : undefined} title={englishOnlyAria}>{developersLabel[locale]}{englishOnly?.suffix ?? ''}</a>
+      {!isTool && (
       <a class="mobile-menu__link mobile-menu__registry" style={`--i:${hasDailyReading ? 5 : 4}`} href="/astrofolio/" hreflang={englishOnly ? 'en' : undefined} title={englishOnlyAria}>
         <span>{t(locale, 'navCollect')}</span>
         <small>{astrofolioLabel[locale]}</small>
       </a>
+      )}
     </div>
     <div class="mobile-menu__group">
       <span class="mobile-menu__label">{t(locale, 'navTwelve')}</span>
@@ -625,6 +636,27 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
   }
   .tools-menu__all:hover,
   .tools-menu__all:focus-visible { color: var(--text); }
+  .tools-menu__more {
+    grid-column: 1 / -1;
+    display: grid;
+    gap: 6px;
+    padding: 10px 12px 12px;
+    border-top: 1px solid var(--hair-1);
+  }
+  .tools-menu__more-label { font-size: 11px; color: var(--faint); }
+  .tools-menu__more ul { display: flex; flex-wrap: wrap; gap: 2px 4px; margin: 0; padding: 0; list-style: none; }
+  .tools-menu__more a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 32px;
+    padding: 4px 8px;
+    border-radius: var(--r-sm, 8px);
+    color: var(--text-2);
+    font-size: 13px;
+    text-decoration: none;
+  }
+  .tools-menu__more a:hover,
+  .tools-menu__more a:focus-visible { background: rgba(198, 204, 218, 0.07); color: var(--text); }
   .signs-menu__grid {
     direction: ltr;
     display: grid;

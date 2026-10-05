@@ -483,7 +483,7 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
           if (observer) observer.disconnect();
           var stylesheet = document.createElement('link');
           stylesheet.rel = 'stylesheet';
-          stylesheet.href = '/assets/site-footer.css';
+          stylesheet.href = '/assets/site-footer.css?v=20261003';
           document.head.appendChild(stylesheet);
         }
         function appendAfterLoad() {
@@ -511,7 +511,7 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
         }
       })();
     </script>
-    <noscript><style>@import url('/assets/site-footer.css');</style></noscript>
+    <noscript><style>@import url('/assets/site-footer.css?v=20261003');</style></noscript>
 
     <script>
       // A small heading entrance, once, before it enters the reading area.

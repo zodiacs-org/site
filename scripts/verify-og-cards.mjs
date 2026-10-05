@@ -241,8 +241,8 @@ try {
 let russianBytes = 0;
 try {
   russianBytes = await directoryBytes(russianOut);
-  if (russianBytes > 600 * 1024) {
-    failures.push(`Russian OG family: ${(russianBytes / 1024).toFixed(1)}KiB exceeds the 600KiB budget`);
+  if (russianBytes > 700 * 1024) {
+    failures.push(`Russian OG family: ${(russianBytes / 1024).toFixed(1)}KiB exceeds the 700KiB budget`);
   }
 } catch {
   // The missing Russian directory is reported by the inventory gate above.

@@ -303,6 +303,14 @@
   text-align: right;
 }
 
+.living-chart__empty-state {
+  display: grid;
+  justify-items: start;
+  gap: 20px;
+}
+
+.living-chart__empty-state .living-chart__empty { margin: 0; }
+
 .living-chart__sync p {
   max-width: 32ch;
   margin: 0;

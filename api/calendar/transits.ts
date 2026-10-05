@@ -126,5 +126,7 @@ export async function handleTransitCalendar(
 }
 
 export default async function handler(req: any, res: any): Promise<void> {
-  return handleTransitCalendar(req, res);
+  // Retired: a positions token still contains personal birth information.
+  // The Transits UI offers a browser-built .ics download instead.
+  send(res, 410, 'text/plain', 'Personal calendar feeds are retired.', 'no-store');
 }

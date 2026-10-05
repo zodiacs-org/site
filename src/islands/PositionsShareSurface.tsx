@@ -1,3 +1,4 @@
+import { CheckOurMath, ResultOpening } from './ChartTrust';
 import { useEffect, useRef } from 'preact/hooks';
 import AspectGlyph from '../components/AspectGlyph';
 import PlanetGlyph from '../components/PlanetGlyph';
@@ -276,6 +277,8 @@ export function PositionsOnlyResult({ chart, locale }: PositionsOnlyResultProps)
       <h2 class="calc__positions-title" tabIndex={-1} ref={headingRef}>
         {shareText(locale, 'positionsOnlyTitle')}
       </h2>
+      <ResultOpening locale={locale} kind="other" />
+      <CheckOurMath locale={locale} />
       <p class="notice" role="status">{shareText(locale, 'positionsOnlyNotice')}</p>
       {moonIsUncertain(chart) && <p class="notice" data-moon-uncertain>{t(locale, 'moon')} · {t(locale, 'needsBirthTime')}</p>}
       <p class="calc__positions-privacy">{shareText(locale, chart.angles ? 'positionsOnlyPrivacy' : 'positionsOnlyPrivacyNoTime')}</p>

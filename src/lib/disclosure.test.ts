@@ -255,37 +255,14 @@ describe('registry disclosure contract', () => {
     }
   });
 
-  it('describes Aura wallet access as optional, public-address-only, and non-transactional', () => {
-    const row = DISCLOSURE_ROWS.find((candidate) => candidate.id === 'read-only')!;
-    expect(row.statement).toContain('may connect to compatible wallet software');
-    expect(row.statement).toContain('authorized public accounts');
-    expect(row.statement).toContain('uses one compatible address for the lookup');
-    expect(row.statement).toContain('after a user click');
-    expect(row.statement).toContain('does not hold assets');
-    expect(row.statement).toContain('request signatures or approvals');
-    expect(row.statement).toContain('construct or submit transactions');
-    expect(row.statement).toContain('switch networks');
-    expect(row.statement).toContain('Registry lookup surfaces, catalogue profiles, and @zodiacs/sdk are read-only');
-    expect(row.statement).toContain('does not describe the separate, opt-in Astrofolio How to Buy tool');
-    expect(row.statement).not.toContain('offer one external link to Jupiter');
-    expect(row.statement).not.toContain('do not connect wallets');
-    expect(row.evidence).toContain('forwards only the one address used for its holdings lookup');
-    expect(row.evidence).toContain('not proof of identity, control, or legal ownership');
-  });
-
-  it('separates read-only Registry profiles from the opt-in Astrofolio tool', () => {
+  it('states the approved paste-address and independent-service boundary', () => {
+    for (const id of ['read-only', 'trade-panel']) {
+      const row = DISCLOSURE_ROWS.find((candidate) => candidate.id === id)!;
+      expect(row.status).toBe('verified');
+      expect(row.statement).toBe('Zodiacs.org does not connect wallets, request signatures, or submit transactions. Public address lookups use an address you paste. Purchase links open independent services with their own terms and risks.');
+      expect(row.statement).not.toMatch(/may connect|reviews and signs|Jupiter convenience/);
+    }
     const row = DISCLOSURE_ROWS.find((candidate) => candidate.id === 'trade-panel')!;
-    expect(row.status).toBe('verified');
-    expect(row.statement).toContain('Registry catalogue profiles contain no embedded trade panel, purchase route, or external venue link');
-    expect(row.statement).toContain('public market context and verified token addresses only');
-    expect(row.statement).toContain('separate Astrofolio How to Buy page');
-    expect(row.statement).toContain('independent Jupiter convenience tool');
-    expect(row.statement).toContain('visitor’s wallet reviews and signs locally');
-    expect(row.statement).toContain('Zodiacs.org never holds keys or funds');
-    expect(row.statement).toContain('signs a transaction');
-    expect(row.statement).toContain('gains the ability to reverse one');
-    expect(row.statement).not.toContain('receives nothing from any trade');
-    expect(row.evidence).toContain('loads Jupiter only after the visitor’s click');
     expect(row.links.map((link) => link.href)).toEqual(['/astrofolio/how-to-buy/', '/terms/']);
   });
 
@@ -312,8 +289,7 @@ describe('registry disclosure contract', () => {
       .replace(/\s+/g, ' ');
 
     expect(boundary).toContain('sends the public address to its holdings provider');
-    expect(boundary).toContain('simply fills the public address field');
-    expect(boundary).toContain('nothing is signed');
+    expect(source).not.toMatch(/connectSolanaWallet|connectEip6963Provider|Connect Solana wallet|Connect Base wallet/);
     expect(boundary).toContain('href="/privacy/"');
     expect(boundary).toContain('href="/disclosure/"');
   });

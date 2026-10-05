@@ -24,15 +24,22 @@ const PROFILE = JSON.stringify({
   }],
 });
 
-// Profile readers legitimately refresh derived engine summaries. The handoff
-// must preserve every source/identity field and the selected house system.
-function savedProfileSourceUnchanged(raw) {
+/**
+ * The app may recompute a saved chart's cached summary when it is opened
+ * (src/lib/profile/refresh.ts): that is a refreshed cache, not an edit. What
+ * must never change is everything the person entered — the birth input, name,
+ * relationship, ids, timestamps and settings.
+ */
+function privateProfileInput(value) {
   try {
-    const source = (profile) => ({ ...profile, charts: profile.charts.map(({ summary, ...chart }) => (
-      { ...chart, summary: { houseSystem: summary.houseSystem } }
-    )) });
-    return JSON.stringify(source(JSON.parse(raw))) === JSON.stringify(source(JSON.parse(PROFILE)));
-  } catch { return false; }
+    const profile = JSON.parse(value);
+    return JSON.stringify({
+      ...profile,
+      charts: profile.charts.map(({ summary: _recomputedCache, ...entered }) => entered),
+    });
+  } catch {
+    return null;
+  }
 }
 
 export function savedChartContinuationFailures(state, prefix) {
@@ -45,7 +52,8 @@ export function savedChartContinuationFailures(state, prefix) {
       && state.subjectNotices[0].includes(saved.name) || 'named other-person result is missing',
     JSON.stringify(state.computedEvents) === JSON.stringify([{ mode: 'full', sunSign: 'cancer' }])
       || 'fresh full-chart computation did not finish with the expected Sun sign',
-    savedProfileSourceUnchanged(state.profile) || 'saved private profile was changed',
+    (privateProfileInput(state.profile) !== null
+      && privateProfileInput(state.profile) === privateProfileInput(PROFILE)) || 'saved private profile was changed',
   ].filter((failure) => failure !== true);
 }
 
@@ -85,9 +93,9 @@ export async function runSearchLearningChecks({ browser, baseURL, check, outDir 
         .filter((other) => {
           const style = getComputedStyle(other);
           const box = other.getBoundingClientRect();
-          // Closed details can retain descendant boxes without painted hit targets.
-          return !other.closest('details:not([open])')
-            && style.visibility === 'visible' && style.display !== 'none' && style.pointerEvents !== 'none'
+          // Controls inside a collapsed disclosure still report a layout box,
+          // but they are not rendered and cannot cover anything.
+          return other.checkVisibility() && style.visibility === 'visible' && style.display !== 'none' && style.pointerEvents !== 'none'
             && Math.min(box.right, rect.right) > Math.max(box.left, rect.left)
             && Math.min(box.bottom, rect.bottom) > Math.max(box.top, rect.top);
         }).map((other) => ({ tag: other.tagName, class: other.className }));

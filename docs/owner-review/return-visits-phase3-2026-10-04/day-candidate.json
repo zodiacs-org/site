@@ -1,0 +1,74 @@
+{
+  "status": "approved-for-publication",
+  "day": "2026-10-04",
+  "name": "Jannik Sinner",
+  "birthDate": "2001-08-16",
+  "birthTime": null,
+  "timeQuality": "unknown",
+  "birthSource": "https://www.nittoatpfinals.com/en/players/singles/jannik-sinner",
+  "birthSourceTitle": "Nitto ATP Finals official player profile",
+  "newsSource": "https://en.rolexshanghaimasters.com/en/media/news/sinner-shanghai-2026-withdrawal",
+  "newsSourceTitle": "Rolex Shanghai Masters: Sinner withdraws from Shanghai",
+  "newsDate": "2026-10-03",
+  "reason": "The tournament reported his withdrawal from Shanghai on October 3. The chart does not explain or predict injuries.",
+  "reliability": "The official tour profile documents his birth date and San Candido, Italy. It gives no birth time. No rising sign or houses will be published; noon UTC is a reference moment only.",
+  "ownerApproval": {
+    "approved": true,
+    "approvedAt": "2026-10-04T07:31:18.000Z",
+    "evidence": "The owner replied “approved” in task 01a0c34a-73b0-7091-911b-046a6f96fc8c on October 4, 2026, after the Phase 3 release report identified the October 4 Jannik Sinner draft as awaiting approval. This approval covers this dated edition only; future figures still require individual approval."
+  },
+  "previewReference": {
+    "utc": "2001-08-16T12:00:00.000Z",
+    "engine": "0.1.1-rc.16",
+    "positions": [
+      {
+        "name": "Sun",
+        "value": "23°40′ Leo"
+      },
+      {
+        "name": "Moon",
+        "value": "16°48′ Cancer"
+      },
+      {
+        "name": "Mercury",
+        "value": "4°16′ Virgo"
+      },
+      {
+        "name": "Venus",
+        "value": "17°23′ Cancer"
+      },
+      {
+        "name": "Mars",
+        "value": "20°01′ Sagittarius"
+      },
+      {
+        "name": "Jupiter",
+        "value": "7°10′ Cancer"
+      },
+      {
+        "name": "Saturn",
+        "value": "13°27′ Gemini"
+      },
+      {
+        "name": "Uranus",
+        "value": "22°49′ Aquarius"
+      },
+      {
+        "name": "Neptune",
+        "value": "6°55′ Aquarius"
+      },
+      {
+        "name": "Pluto",
+        "value": "12°33′ Sagittarius"
+      },
+      {
+        "name": "North Node",
+        "value": "5°23′ Cancer"
+      },
+      {
+        "name": "South Node",
+        "value": "5°23′ Capricorn"
+      }
+    ]
+  }
+}

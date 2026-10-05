@@ -66,10 +66,10 @@ async function nestedHtmlFiles(relativeDirectory) {
 await requireMarkers('src/layouts/Base.astro', [
   "import SiteFooter from '../components/SiteFooter.astro';",
   '<SiteFooter',
-  "stylesheet.href = '/assets/site-footer.css';",
+  "stylesheet.href = '/assets/site-footer.css?v=20261003';",
   'if (nearViewport) appendStylesheet();',
   "window.addEventListener('load', appendAfterLoad, { once: true });",
-  "<noscript><style>@import url('/assets/site-footer.css');</style></noscript>",
+  "<noscript><style>@import url('/assets/site-footer.css?v=20261003');</style></noscript>",
 ]);
 await rejectMarkers('src/layouts/Base.astro', [
   "import '../styles/site-footer.css';",
@@ -129,7 +129,7 @@ for (const fullPage of [
   ].map((sign) => `public/registry/${sign}/index.html`),
 ]) {
   await requireMarkers(fullPage, [
-    '<link rel="stylesheet" href="/assets/site-footer.css" />',
+    '<link rel="stylesheet" href="/assets/site-footer.css?v=20261003" />',
     'class="zfooter zfooter--static"',
     'class="zfooter__language"',
     'class="zfooter__colophon"',
@@ -170,7 +170,7 @@ for (const compactPage of [
   'public/terminal/markets/index.html',
 ]) {
   await requireMarkers(compactPage, [
-    '<link rel="stylesheet" href="/assets/site-footer.css" />',
+    '<link rel="stylesheet" href="/assets/site-footer.css?v=20261003" />',
     'class="zfooter zfooter--compact"',
   ]);
   await requireFooterAfterMain(compactPage);
@@ -184,7 +184,10 @@ for (const permanentCompactPage of [
   await requireMarkers(permanentCompactPage, ['data-footer-guide']);
 }
 
-const engineDocumentationPages = await nestedHtmlFiles('public/sdk/engine');
+const engineDocumentationPages = [
+  ...await nestedHtmlFiles('public/sdk/engine'),
+  ...await nestedHtmlFiles('public/developers/engine/reference'),
+];
 if (engineDocumentationPages.length === 0) failures.push('public/sdk/engine: no TypeDoc pages found');
 for (const enginePage of engineDocumentationPages) {
   await requireMarkers(enginePage, [

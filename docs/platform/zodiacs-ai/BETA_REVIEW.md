@@ -1,6 +1,7 @@
 # Consenting beta review kit
 
-Prepared 2026-10-02. No invitations have been sent and no feedback is recorded.
+Refreshed 2026-10-05. The owner confirms there are no testers. No invitations
+have been sent and no feedback is recorded.
 Use only after exact-head CI, staging quota/capacity and retention gates pass.
 The temporary staging share expires after 23 hours and is not a public launch URL.
 

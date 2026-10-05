@@ -33,11 +33,10 @@ describe('footer acquisition disclosure boundary', () => {
     expect(footerAcquisitionDisclosureVisible(path)).toBe(false);
   });
 
-  it('wires the disclosure copy through the route boundary in the shared footer', async () => {
+  it('shows the operator relationship where collection navigation appears, keeping tools separate', async () => {
     const footer = await readFile(new URL('../components/SiteFooter.astro', import.meta.url), 'utf8');
-    expect(footer).toContain('const showAcquisitionDisclosure = footerAcquisitionDisclosureVisible(consumerPath)');
-    expect(footer).toContain(
-      `{showAcquisitionDisclosure && <span class="zfooter__note">{t(locale, 'footerCollectNote')}</span>}`,
-    );
+    expect(footer).toContain('{!isTool && (');
+    expect(footer).toContain("t(locale, 'trustFreeAnswer')");
+    expect(footer).toContain("localizePath(locale, '/disclosure/')");
   });
 });

@@ -1,5 +1,19 @@
 # Site regression review
 
+## Recovery review — 2026-10-05
+
+Main `3491e8e9` is merged with the AI candidate. Its updated homepage includes
+the sharing band, while the candidate retains the accessible chart selector.
+The actual desktop, mobile and reduced-motion captures were reviewed before
+refreshing only the three Darwin homepage baselines. Other screenshots and
+the 0.1% comparison threshold are retained. Linux candidates still require
+capture provenance, review and an exact-head comparison before release.
+The homepage interaction drive passes all 242 checks. All eighteen Phase 1
+captures bind to current combined-source fingerprint
+`2bfefd21494f998d007de23ae40aeea8f87e0a755d05055d0c1b6ba1206d8dc9`;
+their five durable-receipt tests pass. Historical results below keep their
+original versions, browser and source scope.
+
 The original candidate recorded an existing homepage accessibility failure on
 clean main `450f0fd948d86d82c416bcbd51b3dace5196097e`. That historical reproduction
 remains in [site-regression-review.json](./evidence/site-regression-review.json).

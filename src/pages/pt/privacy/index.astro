@@ -1,4 +1,5 @@
 ---
+import { t } from '../../../lib/i18n';
 import Base from '../../../layouts/Base.astro';
 import { webAnalyticsEnabled as vercelWebAnalyticsFlag } from '../../../lib/web-analytics.mjs';
 import { accountSyncV2Enabled as isAccountSyncV2Enabled } from '../../../lib/account-v2/feature-flags';
@@ -16,8 +17,8 @@ const walletChartEnabled = configuredWalletChains({
   PUBLIC_WALLET_CHART_ENABLED:
     import.meta.env.PUBLIC_WALLET_CHART_ENABLED ?? process.env.PUBLIC_WALLET_CHART_ENABLED,
 }).length > 0;
-const updated = '29 de setembro de 2026';
-const modifiedAt = '2026-09-29T00:00:00.000Z';
+const updated = '3 de outubro de 2026';
+const modifiedAt = '2026-10-03T00:00:00.000Z';
 
 const jsonLd = [
   {
@@ -44,25 +45,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
     <h1 class="method-title display">Seus dados de nascimento só saem do seu dispositivo quando você os envia.</h1>
 
     <div class="prose">
-      <p class="lede">
-        O cálculo do mapa é feito no seu navegador. Os dados de nascimento não
-        são enviados como parte do cálculo nem de uma consulta do The Cabinet of
-        Twelve; eles só saem do seu dispositivo se você entrar na sua conta para
-        sincronizar mapas salvos, compartilhar um link que os contenha ou
-        digitá-los em uma mensagem ao assistente. Um calendário de trânsitos ou
-        um convite de compatibilidade envia, em vez disso, as posições do mapa,
-        e essas posições ainda permitem deduzir sua data e hora de nascimento.
-        Se você anexar explicitamente um mapa ao assistente, um resumo apenas
-        das posições também sai do dispositivo; os nomes salvos e os dados de
-        nascimento brutos não são anexados, embora as posições dele ainda
-        permitam deduzir sua data e hora de nascimento. Aura envia um endereço público de
-        carteira — não seus dados de nascimento nem os do mapa — a um provedor
-        de dados de blockchain para uma consulta somente para leitura. As
-        contas{weeklyDigestEnabled ? ',' : ' e'} os dados lembrados do
-        Aura{weeklyDigestEnabled ? ' e o e-mail semanal' : ''} são opcionais e
-        ficam desativados por padrão. Não exibimos anúncios nem usamos
-        rastreamento entre sites.
-      </p>
+      <p class="lede"> O cálculo do mapa é feito no seu navegador. Os dados de nascimento não são enviados como parte do cálculo nem de uma consulta do The Cabinet of Twelve; eles só saem do seu dispositivo se você entrar na sua conta para sincronizar mapas salvos, compartilhar um link que os contenha ou digitá-los em uma mensagem ao assistente. Aura envia um endereço público de carteira — não seus dados de nascimento nem os do mapa — a um provedor de dados de blockchain para uma consulta somente para leitura. As contas{weeklyDigestEnabled ? ',' : ' e'} os dados lembrados do Aura{weeklyDigestEnabled ? ' e o e-mail semanal' : ''} são opcionais e ficam desativados por padrão. Não exibimos anúncios nem usamos rastreamento entre sites. </p>
 
       <h2>Quem opera este site</h2>
       <p>
@@ -99,69 +82,21 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
       </p>
 
       <h2>Guide</h2>
-      <p>
-        Quando você envia uma pergunta ao Guide, essa mensagem, as mensagens
-        recentes do Guide e o contexto visível do Guide são enviados à OpenAI
-        para uma verificação de segurança da entrada e para gerar um rascunho
-        de resposta. Esse rascunho gerado é então enviado de volta à OpenAI
-        para uma segunda verificação de segurança antes que você o veja. Toda
-        solicitação à API Responses usa <code>store: false</code>. A conversa
-        atual com o Guide na web fica apenas nesta sessão do navegador, não é
-        sincronizada com uma conta e não é armazenada como texto nos servidores
-        do Zodiacs.org, esteja você conectado ou não. A OpenAI informa que, por
-        padrão, os dados da API não são usados para treinar seus modelos e que
-        seus registros de monitoramento de abuso guardam o conteúdo enviado por
-        até 30 dias, ou por mais tempo quando a lei exige ou quando isso é
-        necessário para proteger seus serviços ou outras pessoas contra danos.
-        O Guide oferece anexar um mapa só na prévia da sincronização
-        criptografada, que está desativada no site público, e só o mapa que
-        você marcou lá como seu. Ele só é incluído depois que você pressiona
-        “Anexar meu mapa”; a tela de consentimento mostra o resumo apenas das
-        posições antes do envio. Esse resumo acompanha cada pergunta enquanto
-        “Usando meu mapa” estiver ativo; você pode desativá-lo. O Guide nunca
-        anexa seu nome salvo, sua data e hora de nascimento, seu local de
-        nascimento nem suas coordenadas, mas as posições dos planetas no resumo
-        ainda permitem deduzir sua data e hora de nascimento, e o ascendente e
-        o Meio do Céu, em graus inteiros, o seu local de nascimento de forma
-        aproximada. Para um mapa sem hora de nascimento, o resumo é o céu das
-        12:00 UTC da data de nascimento, sem a Lua, que indica a data, mas nada
-        sobre o local de nascimento. Tudo o que você digita no chat faz parte
-        da mensagem que você envia. Para aplicar o limite diário, mantemos um identificador
-        unidirecional com sal, derivado do seu endereço IP (nunca o IP
-        original), com a respectiva contagem diária e um registro de cada
-        solicitação. Cada verificação de cota posterior apaga as contagens mais
-        antigas que o dia UTC anterior e os registros de solicitação com mais de
-        48 horas. Não enviamos esse identificador à OpenAI nem colocamos texto
-        da conversa nos metadados do provedor. O Guide também define um cookie
-        de sessão que contém um identificador aleatório e assinado. Ele serve
-        para limitar solicitações simultâneas de um mesmo navegador, dura até o
-        fim da sessão do navegador e não é armazenado com as suas mensagens.
-      </p>
+      <p>{t('pt', 'trustGuideNotice')}</p>
+      <p> Quando você envia uma pergunta ao Guide, essa mensagem, as mensagens recentes do Guide e o contexto visível do Guide são enviados à OpenAI para uma verificação de segurança da entrada e para gerar um rascunho de resposta. Esse rascunho gerado é então enviado de volta à OpenAI para uma segunda verificação de segurança antes que você o veja. Toda solicitação à API Responses usa <code>store: false</code>. A conversa atual com o Guide na web fica apenas nesta sessão do navegador, não é sincronizada com uma conta e não é armazenada como texto nos servidores do Zodiacs.org, esteja você conectado ou não. A OpenAI informa que, por padrão, os dados da API não são usados para treinar seus modelos e que seus registros de monitoramento de abuso guardam o conteúdo enviado por até 30 dias, ou por mais tempo quando a lei exige ou quando isso é necessário para proteger seus serviços ou outras pessoas contra danos. Para aplicar o limite diário, mantemos um identificador unidirecional com sal, derivado do seu endereço IP (nunca o IP original), com a respectiva contagem diária e um registro de cada solicitação. Cada verificação de cota posterior apaga as contagens mais antigas que o dia UTC anterior e os registros de solicitação com mais de 48 horas. Não enviamos esse identificador à OpenAI nem colocamos texto da conversa nos metadados do provedor. O Guide também define um cookie de sessão que contém um identificador aleatório e assinado. Ele serve para limitar solicitações simultâneas de um mesmo navegador, dura até o fim da sessão do navegador e não é armazenado com as suas mensagens. </p>
 
       <h2>Mapas que você salva</h2>
       <p>
         Quando você salva um mapa, ele é guardado no armazenamento local do seu
         navegador — no seu dispositivo, sob o seu controle. Ele não é enviado a
-        lugar nenhum, a menos que você entre em uma conta (abaixo), compartilhe
-        o mapa ou assine o calendário de trânsitos dele (abaixo), ou o anexe ao
-        Guide (acima). Limpar os dados deste site no seu navegador remove os
+        lugar nenhum, a menos que você entre em uma conta (abaixo) ou compartilhe
+        o mapa. Limpar os dados deste site no seu navegador remove os
         mapas salvos. A menos que você entre na sua conta, não podemos vê-los
         nem recuperá-los para você.
       </p>
 
       <h2>Links de compartilhamento e convites</h2>
-      <p>
-        Os links de compartilhamento guardam os dados do mapa depois do “#” no
-        endereço, parte que os navegadores não enviam aos servidores. Um link
-        com os dados completos leva o nome do mapa, a data, a hora e o local de
-        nascimento, e as coordenadas. Um link só com posições leva, em vez
-        disso, o código do mapa descrito em “Resumo diário, calendário e
-        notificações”. Qualquer pessoa que tenha um desses links pode abri-lo,
-        inclusive alguém a quem ele for encaminhado. Um link com imagem de
-        prévia também coloca no endereço o Sol, a Lua e o ascendente, com
-        precisão de grau, de modo que nosso servidor e qualquer aplicativo que
-        mostre a prévia os recebem.
-      </p>
+      <p> Os links de compartilhamento guardam os dados do mapa depois do “#” no endereço, parte que os navegadores não enviam aos servidores. Um link com os dados completos leva o nome do mapa, a data, a hora e o local de nascimento, e as coordenadas. Um link só com posições leva, em vez disso, o código do mapa descrito em “Resumo diário, calendário e notificações”. Qualquer pessoa que tenha um desses links pode abri-lo, inclusive alguém a quem ele for encaminhado. </p>
       <p>
         Toda imagem que você pode criar de um mapa, de um par de mapas ou de uma
         revolução — a folha do mapa e os cartões do mapa, as imagens de uma
@@ -264,17 +199,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
           nascimento ou do mapa é enviado.
         </p>
       )}
-      <p>
-        Você pode colar um endereço público sem conectar uma carteira. Se você
-        escolher “Connect”, um software de carteira compatível de terceiros só
-        é acionado depois do seu clique. Ele pode retornar a este navegador as
-        contas públicas que você autorizar; Aura seleciona um endereço
-        compatível e encaminha apenas esse endereço para a consulta. Aura não
-        solicita frase de recuperação, chave privada, assinatura de mensagem,
-        aprovação de token, transação nem mudança de rede. Os termos de
-        privacidade do próprio provedor da sua carteira se aplicam ao software
-        dele e ao pedido de conexão.
-      </p>
+      <p>{t('pt', 'trustWalletNotice')}</p>
       <p>
         Um endereço público é público, mas não necessariamente anônimo. Os
         ativos e o histórico on-chain dele podem ser visíveis e acabar
@@ -292,8 +217,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         Quando um painel de mercado relevante do Zodiac Terminal ou do Registro
         é exibido, seu navegador pode solicitar dados públicos de mercado à
         Dex Screener, dados públicos de gráficos à GeckoTerminal ou dados
-        públicos de audiência à Wikimedia, e abrir um mercado do Terminal pede
-        à Jupiter independente uma cotação de preço para um valor de exemplo.
+        públicos de audiência à Wikimedia.
         Essas solicitações automáticas não incluem endereço de carteira, dados
         de nascimento, dados do mapa nem resultados do Aura. O serviço
         independente ainda assim recebe metadados comuns de uma solicitação
@@ -301,27 +225,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         solicitação, e os termos de privacidade e as práticas de retenção dele
         se aplicam.
       </p>
-      <p>
-        Na página Como comprar do Astrofolio, abrir a página ou trocar o signo
-        selecionado não carrega a Jupiter, não contata nenhum software de
-        carteira e não solicita cotação. Depois que você carrega explicitamente
-        a ferramenta opcional de conveniência, seu navegador envia à Jupiter
-        independente o endereço de mint do token selecionado e o valor
-        solicitado como parâmetros de cotação, e pede à Dex Screener o contexto
-        de liquidez indexada. Essas solicitações de exibição não incluem
-        endereço de carteira. Se você decidir revisar uma troca direta, a
-        carteira compatível que você selecionar fornece à Jupiter o endereço
-        público Solana dela, para que a Jupiter monte a transação exata para a
-        sua revisão. Sua carteira assina localmente. Em seguida, seu navegador
-        envia a transação assinada e o identificador de solicitação da Jupiter
-        ao endpoint de execução da Jupiter. Nem o endereço público nem a
-        transação assinada são enviados a um servidor do Zodiacs.org, e o
-        Zodiacs.org nunca pede nem recebe uma frase de recuperação ou chave
-        privada. A Jupiter, a Dex Screener e o seu serviço de carteira podem
-        receber metadados comuns de uma solicitação web, como seu endereço IP,
-        informações do navegador e o horário da solicitação; aplicam-se os
-        termos de privacidade e as práticas de retenção próprios de cada um.
-      </p>
+      <p>{t('pt', 'trustWalletNotice')}</p>
       <p>
         O perfil de cada signo no Registro é somente para leitura. Ele mostra
         dados públicos de mercado e endereços de tokens verificados, mas não
@@ -507,39 +411,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
         O resumo diário lê as posições calculadas de um mapa salvo no seu
         dispositivo.
       </p>
-      <p>
-        Um feed de calendário de trânsitos leva no endereço web um código do
-        mapa só com posições. Nosso servidor, o cache dele e o seu serviço de
-        calendário recebem esse código a cada atualização do calendário. O
-        código não tem campos de nome, data, hora nem local. Ainda assim, as
-        posições dos planetas no código permitem deduzir sua data e hora de
-        nascimento com precisão de minuto: elas são tomadas na hora de
-        nascimento em UTC arredondada ao minuto inteiro. O ascendente e o Meio
-        do Céu são arredondados ao grau inteiro, o que ainda restringe o local
-        de nascimento a uma área de cerca de um grau de longitude de largura:
-        uns 110 km no equador, 80 km a 45° norte ou sul e 55 km a 60°. De norte
-        a sul, a área tem pelo menos 400 km a menos de 15° do equador, 200 km a
-        menos de 45° e 70 km a menos de 60°; mais ao norte pode ser mais
-        estreita, e perto do Círculo Polar Ártico pode ser uma faixa de menos de
-        um quilômetro de norte a sul. Um mapa sem hora de nascimento não tem
-        ascendente nem Meio do Céu, e o código dele leva o céu das 12:00 UTC da
-        data de nascimento, que indica a data, mas nada sobre o local de
-        nascimento. Os códigos criados por uma versão anterior do site podem
-        levar mais. Para um mapa sem hora de nascimento, levam o meio-dia no
-        local de nascimento, que indica o fuso horário dele ou, antes da hora
-        padrão, a longitude, e uma imagem de dois mapas feita com um desses
-        códigos desenha esse mapa com essas posições, não com o céu das 12:00
-        UTC. Para um nascimento anterior à hora padrão, quando o mapa segue o
-        tempo médio do próprio local de nascimento, levam o segundo do
-        nascimento, que restringe o local de nascimento a poucas faixas de cerca
-        de 3 km de largura ou menos. Os endereços de calendário criados antes de
-        23 de setembro de 2026 também levam o ascendente e o Meio do Céu com
-        mais precisão; nosso servidor agora os arredonda antes de usá-los. Um
-        endereço de calendário nunca muda sozinho, então, para substituir um
-        criado por uma versão anterior, como o de um mapa sem hora de nascimento
-        ou de um nascimento anterior à hora padrão, remova esse calendário e
-        assine novamente.
-      </p>
+
       <p>
         Um arquivo de calendário que você baixa da página de trânsitos é criado
         no seu navegador a partir do seu mapa como ele é calculado ali, não a
@@ -597,18 +469,7 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
       </p>
 
       <h2>Hospedagem, registros e análise de uso</h2>
-      <p>
-        O site é hospedado na <a href="https://vercel.com/" rel="noopener noreferrer">Vercel</a>.
-        Como acontece com qualquer serviço de hospedagem na web, os servidores
-        dela processam as solicitações feitas pelo seu navegador e podem manter
-        registros técnicos de curta duração (como endereço IP e tipo de
-        navegador) para entregar o site e protegê-lo contra abusos. Esses
-        registros guardam o endereço web completo de cada solicitação, que num
-        calendário de trânsitos inclui o código do mapa e num link com prévia
-        inclui o Sol, a Lua e o Ascendente. Não
-        veiculamos publicidade e não usamos cookies de rastreamento entre sites
-        nem pixels de marketing de terceiros.
-      </p>
+      <p> O site é hospedado na <a href="https://vercel.com/" rel="noopener noreferrer">Vercel</a>. Como acontece com qualquer serviço de hospedagem na web, os servidores dela processam as solicitações feitas pelo seu navegador e podem manter registros técnicos de curta duração (como endereço IP e tipo de navegador) para entregar o site e protegê-lo contra abusos. Não veiculamos publicidade e não usamos cookies de rastreamento entre sites nem pixels de marketing de terceiros. </p>
       {accountSyncV2Enabled ? (
         <p>
           A análise de uso de terceiros fica desativada durante toda a prévia de

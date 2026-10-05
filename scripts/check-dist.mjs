@@ -56,11 +56,16 @@ const ZODIAC_SIGN_SLUGS = [
   'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
   'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces',
 ];
+const dailyPublishedDays = JSON.parse(await readFile(resolve(repo, 'src/data/chart-of-the-day.json'), 'utf8')).editions.filter((edition) => edition.ownerApproval?.approved === true).map((edition) => edition.day);
 const RUSSIAN_INDEXED_PATHS = new Set([
+  ...dailyPublishedDays.map((day) => `/ru/chart-of-the-day/${day}/`),
+  ...(dailyPublishedDays.length ? ['/ru/chart-of-the-day/'] : []),
   '/ru/', '/ru/tools/', '/ru/birth-chart/', '/ru/compatibility/',
   '/ru/moon-sign/', '/ru/rising-sign/', '/ru/moon-phase/',
   '/ru/saturn-return/', '/ru/transits/', '/ru/baby-zodiac/',
   '/ru/profile/', '/ru/methodology/', '/ru/privacy/', '/ru/disclosure/',
+  '/ru/sky-calendar/', '/ru/astrologer-kit/', '/ru/your-sky-wrapped/',
+  '/ru/big-three/', '/ru/compatibility/invite/', '/ru/group-charts/', '/ru/chart-twins/',
 ]);
 const LOCALIZED_404_PATHS = new Set([
   '/404.html', '/es/404/', '/pt/404/', '/fr/404/', '/it/404/', '/ru/404/',
@@ -341,7 +346,11 @@ for (const file of files) {
     if (/^(https?:|mailto:|tel:|data:|javascript:|#|\/\/)/.test(value)) continue;
     if (value.includes('${')) continue; // inline-script template, not markup
     let target;
-    if (value.startsWith('/')) {
+    if (value.startsWith('webcal://')) {
+      const subscription = new URL(value);
+      if (subscription.hostname !== 'zodiacs.org') continue;
+      target = targetPath(subscription.pathname);
+    } else if (value.startsWith('/')) {
       target = targetPath(value);
     } else {
       const abs = resolve(dirname(file), value.split(/[?#]/)[0]);
@@ -1159,8 +1168,10 @@ const sitemapPolicy = {
   // +1 for /developers/engine/, the engine's own product page.
   // +1 for /developers/conformance/, the conformance suite's results page.
   // +1 for /developers/compute/, the compute API's page.
-  // +1 for /developers/ai/, the AI integration candidates' review page.
-  total: 1001 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
+  // +23 for three six-language sharing tools and five Big Three translations.
+  // +18 for three six-language return-visit tools.
+  // +1 for /developers/ai/, the AI integration candidates review page.
+  total: 1042 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
     + publishedEventPaths.size + indexablePeoplePaths.size
     + Number(JSON.parse(await readFile(resolve(repo, 'src/data/people.json'), 'utf8')).directoryIndexable === true)
     + indexedRegistryResearchPaths.size,
@@ -1173,7 +1184,7 @@ const sitemapPolicy = {
   eventPages: publishedEventPaths.size,
   peoplePages: indexablePeoplePaths.size,
   registryResearchPages: indexedRegistryResearchPaths.size,
-  translatedBlocks: 617,
+  translatedBlocks: 641,
 };
 const indexedFamilies = [
   { label: 'compatibility pairs', pattern: /^\/compatibility\/[a-z]+-[a-z]+\/$/, expected: sitemapPolicy.compatibilityPairs, localized: false },

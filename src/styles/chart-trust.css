@@ -1,0 +1,6 @@
+.chart-trust { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px; margin-block: 12px 24px; padding-block: 12px; border-block: 1px solid var(--hair-1); font-size: 12px; line-height: 1.6; }
+.chart-trust__link { color: var(--text-2); text-underline-offset: 3px; }
+.chart-trust__subject { color: var(--text-2); }
+.chart-trust p { flex: 1 1 260px; min-width: 0; margin: 0; color: var(--muted); }
+.chart-trust time { display: block; overflow-wrap: anywhere; font-size: 11px; }
+.chart-trust__opening { margin: 0 0 16px; color: var(--text-2); font-size: 17px; line-height: 1.65; }

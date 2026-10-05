@@ -1,9 +1,20 @@
 {
   "version": 1,
-  "id": "engine-rc16-local-adoption-20261001",
-  "baseCommit": "faf44b3519dbfc884bb8285577dacf13be1f4b4d",
+  "id": "owner-review-fixes-20261004",
+  "baseCommit": "67aa32d8b3f112a08aebe5f7b52db9a331ecbaf1",
   "protectedPaths": [
-    "scripts/registry-outlook.test.mjs"
+    "src/pages/es/index.astro",
+    "src/pages/es/saturn-return/index.astro",
+    "src/pages/fr/index.astro",
+    "src/pages/fr/saturn-return/index.astro",
+    "src/pages/it/index.astro",
+    "src/pages/it/saturn-return/index.astro",
+    "src/pages/pt/index.astro",
+    "src/pages/pt/saturn-return/index.astro",
+    "src/strings/additions.es.mjs",
+    "src/strings/additions.fr.mjs",
+    "src/strings/additions.it.mjs",
+    "src/strings/additions.pt.mjs"
   ],
-  "authorization": "The incorporated rc16 adoption handoff step 1 requires engine-derived registry outlook regeneration and attributable numeric pins. This allowance covers only its existing test vector: the engine full IAU 2000B frame moves the Mercury ingress by 130 ms, with evidence in docs/platform/evidence/site-engine-rc16/registry-ingress-pin.json. It authorizes no Registry UI or Guide changes; current-main owner changes are preserved."
+  "authorization": "The owner reviewed the October 4 preview of PR #638, replied “Approved”, and on October 4, 2026 explicitly allowed this one-time exception. These bounded edits add the shared sharing-tools band to the localized homepages, add the Keep exploring links to the localized Saturn return pages, and add the localized link-preview card copy for the eight newer tools. They do not change sign guides, Learn pages, the Registry wing, or the SDK."
 }

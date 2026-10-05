@@ -28,7 +28,10 @@ vi.mock('../lib/profile/pairs', () => ({
 vi.mock('../lib/share', () => ({ encodeChartLink: () => 'chart', decodeChartLink: vi.fn() }));
 vi.mock('../lib/share-synastry', () => ({ decodeSynastryLink: harness.decode }));
 vi.mock('../lib/engine/synastry', () => ({ summarizePair: harness.summarize }));
-vi.mock('./synastry/RelationshipWheel', () => ({ default: harness.wheel }));
+vi.mock('./synastry/RelationshipWheel', async () => ({
+  default: harness.wheel,
+  ...await import('./ChartTrust'),
+}));
 vi.mock('./CopyLinkButton', () => ({ CopyLinkButton: harness.copyLink }));
 vi.mock('./CompatibilityShareControl', () => ({ CompatibilityShareControl: harness.compatShare, CompatibilityPairingCta: vi.fn() }));
 vi.mock('./synastry/InviteExperience', () => ({ InviteArrival: harness.arrivalView, InvitePanel: vi.fn() }));
@@ -192,7 +195,8 @@ describe('compatibility optional sharing and invitation recovery', () => {
     assertReload(recovery('sharing')!, false);
     // Successful modules are retained even though the aggregate load failed.
     const loadedModules = harness.slots.filter((slot) => slot && typeof slot === 'object');
-    expect(loadedModules.some((slot) => 'CopyLinkButton' in (slot as object))).toBe(true);
+    // The private invite control is now owned by the already-loaded wheel;
+    // the removed raw-birth CopyLinkButton module is no longer loaded here.
     expect(loadedModules.some((slot) => 'CompatibilityShareControl' in (slot as object))).toBe(true);
     const comparisons = harness.summarize.mock.calls.length;
     harness.load.mockImplementation(loadDependency);

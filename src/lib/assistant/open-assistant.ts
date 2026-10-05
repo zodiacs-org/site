@@ -148,12 +148,7 @@ interface Copy {
   cloudBody: string;
   cloudConfirm: string;
   cloudCancel: string;
-  consentTitle: string;
-  consentBody: string;
   /** consentBody for a chart without a birth time. */
-  consentBodyNoTime: string;
-  consentConfirm: string;
-  consentCancel: string;
   sources: string;
   contextUpdated: string;
 }
@@ -175,11 +170,9 @@ const COPY: Record<AssistantLocale, Copy> = {
     user: 'You', assistant: 'Guide',
     privacy: 'Guide can be wrong. This web conversation stays in this browser session and is not synced to an account; submitted content and generated draft replies are processed by OpenAI.',
     cloudTitle: 'Before Guide answers',
-    cloudBody: 'Guide sends your question, recent Guide messages, and the visible sources above to OpenAI for an input safety check and to generate a draft reply. It then sends that generated draft reply back to OpenAI for a second safety check before showing it. This web Guide conversation stays only in this browser session, is not synced to your account, and is not stored as text by Zodiacs.org. Under standard API controls, OpenAI may retain abuse-monitoring data for up to 30 days, or longer where the law requires it or to protect against harm. Continue for this Guide day?',
-    cloudConfirm: 'Continue with Guide', cloudCancel: 'Not now', consentTitle: 'Before your chart is attached',
-    consentBody: 'This is the one chart you explicitly marked as your own. The placement lines below will be sent to OpenAI with your question. Zodiacs.org does not attach its saved name, birth date, time, place, or coordinates, and does not store the signed-out conversation. The planet positions still give your birth date and time, and the ascendant and midheaven, kept to the whole degree, give your birthplace roughly.',
-    consentBodyNoTime: 'This is the one chart you explicitly marked as your own. The placement lines below will be sent to OpenAI with your question. Zodiacs.org does not attach its saved name, birth date, place, or coordinates, and does not store the signed-out conversation. With no birth time, the lines are the sky at 12:00 UTC on your birth date, without the Moon, whose sign needs a birth time: they give your birth date and nothing about your birthplace.',
-    consentConfirm: 'Attach my chart', consentCancel: 'Keep it private', sources: 'From this site:',
+    cloudBody: "Guide sends the questions you type, recent Guide messages, and enabled public page or sky context to our cloud service. It does not automatically attach your saved birth chart or personal chart placements. Avoid entering private birth details in Guide. Guide sends your question, recent Guide messages, and the visible sources above to OpenAI for an input safety check and to generate a draft reply. It then sends that generated draft reply back to OpenAI for a second safety check before showing it. This web Guide conversation stays only in this browser session, is not synced to your account, and is not stored as text by Zodiacs.org. Under standard API controls, OpenAI may retain abuse-monitoring data for up to 30 days, or longer where the law requires it or to protect against harm. Continue for this Guide day?",
+    cloudConfirm: 'Continue with Guide', cloudCancel: 'Not now',
+    sources: 'From this site:',
     contextUpdated: 'Source removed. Earlier messages remain visible, but Guide will not use them in future answers.',
   },
   es: {
@@ -197,11 +190,9 @@ const COPY: Record<AssistantLocale, Copy> = {
     rateLimited: 'Guide está ocupado o alcanzó un límite de uso justo. Espera un minuto; si continúa, vuelve mañana.', user: 'Tú', assistant: 'Guide',
     privacy: 'Guide puede equivocarse. Esta conversación web permanece en esta sesión del navegador y no se sincroniza con una cuenta; OpenAI procesa el contenido enviado y los borradores de respuesta generados.',
     cloudTitle: 'Antes de que Guide responda',
-    cloudBody: 'Guide envía tu pregunta, los mensajes recientes y las fuentes visibles a OpenAI para una revisión de seguridad de la entrada y para generar un borrador de respuesta. Después envía ese borrador de respuesta generado de nuevo a OpenAI para una segunda revisión de seguridad antes de mostrártelo. Esta conversación web permanece solo en esta sesión del navegador, no se sincroniza con tu cuenta y Zodiacs.org no almacena su texto. Con los controles estándar de la API, OpenAI puede conservar datos de control de abusos hasta 30 días, o más cuando la ley lo exige o para proteger frente a daños. ¿Continuar durante este día de Guide?',
-    cloudConfirm: 'Continuar con Guide', cloudCancel: 'Ahora no', consentTitle: 'Antes de adjuntar tu carta',
-    consentBody: 'Las posiciones que aparecen abajo se enviarán a OpenAI con tu pregunta. Zodiacs.org no adjunta tu nombre, fecha, hora, lugar de nacimiento ni coordenadas guardados, y no guarda la conversación. Aun así, las posiciones de los planetas permiten deducir tu fecha y hora de nacimiento, y el ascendente y el medio cielo, al grado entero, tu lugar de nacimiento de forma aproximada.',
-    consentBodyNoTime: 'Las posiciones que aparecen abajo se enviarán a OpenAI con tu pregunta. Zodiacs.org no adjunta tu nombre, fecha, lugar de nacimiento ni coordenadas guardados, y no guarda la conversación. Sin hora de nacimiento, son las posiciones del cielo a las 12:00 UTC de tu fecha de nacimiento, sin la Luna, cuyo signo necesita la hora: permiten deducir tu fecha de nacimiento, pero nada sobre tu lugar de nacimiento.',
-    consentConfirm: 'Adjuntar mi carta', consentCancel: 'Mantenerla privada', sources: 'De este sitio:',
+    cloudBody: "Guide envía las preguntas que escribes, los mensajes recientes de Guide y el contexto público activado de la página o del cielo a nuestro servicio en la nube. No adjunta automáticamente tu carta natal guardada ni tus posiciones personales. Evita introducir datos de nacimiento privados en Guide. Guide envía tu pregunta, los mensajes recientes y las fuentes visibles a OpenAI para una revisión de seguridad de la entrada y para generar un borrador de respuesta. Después envía ese borrador de respuesta generado de nuevo a OpenAI para una segunda revisión de seguridad antes de mostrártelo. Esta conversación web permanece solo en esta sesión del navegador, no se sincroniza con tu cuenta y Zodiacs.org no almacena su texto. Con los controles estándar de la API, OpenAI puede conservar datos de control de abusos hasta 30 días, o más cuando la ley lo exige o para proteger frente a daños. ¿Continuar durante este día de Guide?",
+    cloudConfirm: 'Continuar con Guide', cloudCancel: 'Ahora no',
+    sources: 'De este sitio:',
     contextUpdated: 'Fuente eliminada. Los mensajes anteriores siguen visibles, pero Guide no los usará en respuestas futuras.',
   },
   pt: {
@@ -219,11 +210,9 @@ const COPY: Record<AssistantLocale, Copy> = {
     rateLimited: 'O Guide está ocupado ou atingiu um limite de uso justo. Espere um minuto; se continuar, volte amanhã.', user: 'Você', assistant: 'Guide',
     privacy: 'O Guide pode errar. Esta conversa na web fica nesta sessão do navegador e não é sincronizada com uma conta; o conteúdo enviado e os rascunhos de resposta gerados são processados pela OpenAI.',
     cloudTitle: 'Antes de o Guide responder',
-    cloudBody: 'O Guide envia sua pergunta, as mensagens recentes e as fontes visíveis à OpenAI para uma verificação de segurança da entrada e para gerar um rascunho de resposta. Depois, envia esse rascunho de resposta gerado de volta à OpenAI para uma segunda verificação de segurança antes de mostrá-lo. Esta conversa do Guide na web fica apenas nesta sessão do navegador, não é sincronizada com sua conta e não é armazenada como texto pelo Zodiacs.org. Nos controles padrão da API, a OpenAI pode reter dados de monitoramento de abuso por até 30 dias, ou mais quando a lei exige ou para proteger contra danos. Continuar neste dia do Guide?',
-    cloudConfirm: 'Continuar com o Guide', cloudCancel: 'Agora não', consentTitle: 'Antes de anexar seu mapa',
-    consentBody: 'As posições abaixo serão enviadas à OpenAI com sua pergunta. O Zodiacs.org não anexa nome, data, hora, local de nascimento nem coordenadas salvos e não armazena a conversa. Mesmo assim, as posições dos planetas permitem deduzir sua data e hora de nascimento, e o ascendente e o meio do céu, em graus inteiros, o seu local de nascimento de forma aproximada.',
-    consentBodyNoTime: 'As posições abaixo serão enviadas à OpenAI com sua pergunta. O Zodiacs.org não anexa nome, data, local de nascimento nem coordenadas salvos e não armazena a conversa. Sem a hora de nascimento, são as posições do céu às 12:00 UTC da sua data de nascimento, sem a Lua, cujo signo depende da hora: indicam a sua data de nascimento, mas nada sobre o seu local de nascimento.',
-    consentConfirm: 'Anexar meu mapa', consentCancel: 'Manter privado', sources: 'Deste site:',
+    cloudBody: "O Guide envia as perguntas que você digita, as mensagens recentes do Guide e o contexto público ativado da página ou do céu ao nosso serviço na nuvem. Ele não anexa automaticamente seu mapa natal salvo nem suas posições pessoais. Evite inserir dados de nascimento privados no Guide. O Guide envia sua pergunta, as mensagens recentes e as fontes visíveis à OpenAI para uma verificação de segurança da entrada e para gerar um rascunho de resposta. Depois, envia esse rascunho de resposta gerado de volta à OpenAI para uma segunda verificação de segurança antes de mostrá-lo. Esta conversa do Guide na web fica apenas nesta sessão do navegador, não é sincronizada com sua conta e não é armazenada como texto pelo Zodiacs.org. Nos controles padrão da API, a OpenAI pode reter dados de monitoramento de abuso por até 30 dias, ou mais quando a lei exige ou para proteger contra danos. Continuar neste dia do Guide?",
+    cloudConfirm: 'Continuar com o Guide', cloudCancel: 'Agora não',
+    sources: 'Deste site:',
     contextUpdated: 'Fonte removida. As mensagens anteriores continuam visíveis, mas o Guide não as usará nas próximas respostas.',
   },
   fr: {
@@ -241,11 +230,9 @@ const COPY: Record<AssistantLocale, Copy> = {
     rateLimited: 'Guide est occupé ou a atteint une limite d’utilisation équitable. Attends une minute ; si cela continue, reviens demain.', user: 'Toi', assistant: 'Guide',
     privacy: 'Guide peut se tromper. Cette conversation web reste dans cette session du navigateur et n’est pas synchronisée avec un compte ; OpenAI traite le contenu envoyé et les brouillons de réponse générés.',
     cloudTitle: 'Avant la réponse de Guide',
-    cloudBody: 'Guide envoie ta question, les messages récents et les sources visibles à OpenAI pour un contrôle de sécurité de l’entrée et pour produire un brouillon de réponse. Guide renvoie ensuite ce brouillon de réponse généré à OpenAI pour un second contrôle de sécurité avant de te l’afficher. Cette conversation Guide web reste uniquement dans cette session du navigateur, n’est pas synchronisée avec ton compte et n’est pas stockée sous forme de texte par Zodiacs.org. Avec les contrôles API standard, OpenAI peut garder des données de surveillance des abus jusqu’à 30 jours, ou plus longtemps lorsque la loi l’exige ou pour prévenir un préjudice. Continuer pour cette journée Guide ?',
-    cloudConfirm: 'Continuer avec Guide', cloudCancel: 'Pas maintenant', consentTitle: 'Avant de joindre ton thème',
-    consentBody: 'Les positions ci-dessous seront envoyées à OpenAI avec ta question. Zodiacs.org ne joint aucun nom, date, heure, lieu de naissance ou coordonnée enregistrés et ne conserve pas la conversation. Les positions des planètes permettent quand même de retrouver ta date et ton heure de naissance, et l’ascendant et le milieu du ciel, au degré entier, ton lieu de naissance de façon approximative.',
-    consentBodyNoTime: 'Les positions ci-dessous seront envoyées à OpenAI avec ta question. Zodiacs.org ne joint aucun nom, date, lieu de naissance ou coordonnée enregistrés et ne conserve pas la conversation. Sans heure de naissance, ce sont les positions du ciel à 12:00 UTC à ta date de naissance, sans la Lune, dont le signe demande l’heure : elles donnent ta date de naissance, mais rien sur ton lieu de naissance.',
-    consentConfirm: 'Joindre mon thème', consentCancel: 'Le garder privé', sources: 'Depuis ce site :',
+    cloudBody: "Guide envoie les questions que vous saisissez, les messages récents de Guide et le contexte public activé de la page ou du ciel à notre service cloud. Il ne joint pas automatiquement votre thème natal enregistré ni vos positions personnelles. Évitez de saisir des données de naissance privées dans Guide. Guide envoie ta question, les messages récents et les sources visibles à OpenAI pour un contrôle de sécurité de l’entrée et pour produire un brouillon de réponse. Guide renvoie ensuite ce brouillon de réponse généré à OpenAI pour un second contrôle de sécurité avant de te l’afficher. Cette conversation Guide web reste uniquement dans cette session du navigateur, n’est pas synchronisée avec ton compte et n’est pas stockée sous forme de texte par Zodiacs.org. Avec les contrôles API standard, OpenAI peut garder des données de surveillance des abus jusqu’à 30 jours, ou plus longtemps lorsque la loi l’exige ou pour prévenir un préjudice. Continuer pour cette journée Guide ?",
+    cloudConfirm: 'Continuer avec Guide', cloudCancel: 'Pas maintenant',
+    sources: 'Depuis ce site :',
     contextUpdated: 'Source retirée. Les anciens messages restent visibles, mais Guide ne les utilisera plus dans ses réponses.',
   },
   it: {
@@ -263,11 +250,9 @@ const COPY: Record<AssistantLocale, Copy> = {
     rateLimited: 'Guide è occupato o ha raggiunto un limite di utilizzo equo. Aspetta un minuto; se continua, torna domani.', user: 'Tu', assistant: 'Guide',
     privacy: 'Guide può sbagliare. Questa conversazione web resta nella sessione del browser e non viene sincronizzata con un account; OpenAI elabora i contenuti inviati e le bozze di risposta generate.',
     cloudTitle: 'Prima che Guide risponda',
-    cloudBody: 'Guide invia la tua domanda, i messaggi recenti e le fonti visibili a OpenAI per un controllo di sicurezza dell’input e per generare una bozza di risposta. Poi invia di nuovo a OpenAI la bozza di risposta generata per un secondo controllo di sicurezza prima di mostrartela. Questa conversazione web con Guide resta soltanto in questa sessione del browser, non viene sincronizzata con il tuo account e non viene archiviata come testo da Zodiacs.org. Con i controlli API standard, OpenAI può conservare dati di monitoraggio degli abusi fino a 30 giorni, o più a lungo quando la legge lo richiede o per prevenire danni. Continuare per questa giornata Guide?',
-    cloudConfirm: 'Continua con Guide', cloudCancel: 'Non ora', consentTitle: 'Prima di allegare il tuo tema',
-    consentBody: 'Le posizioni qui sotto saranno inviate a OpenAI con la tua domanda. Zodiacs.org non allega nome, data, ora, luogo di nascita o coordinate salvati e non conserva la conversazione. Le posizioni dei pianeti permettono comunque di ricavare data e ora di nascita, e l’ascendente e il medio cielo, al grado intero, il luogo di nascita in modo approssimativo.',
-    consentBodyNoTime: 'Le posizioni qui sotto saranno inviate a OpenAI con la tua domanda. Zodiacs.org non allega nome, data, luogo di nascita o coordinate salvati e non conserva la conversazione. Senza ora di nascita, sono le posizioni del cielo alle 12:00 UTC della tua data di nascita, senza la Luna, il cui segno richiede l’ora: indicano la data di nascita, ma nulla del luogo di nascita.',
-    consentConfirm: 'Allega il mio tema', consentCancel: 'Tienilo privato', sources: 'Da questo sito:',
+    cloudBody: "Guide invia le domande che scrivi, i messaggi recenti di Guide e il contesto pubblico attivato della pagina o del cielo al nostro servizio cloud. Non allega automaticamente il tema natale salvato o le tue posizioni personali. Evita di inserire dati di nascita privati in Guide. Guide invia la tua domanda, i messaggi recenti e le fonti visibili a OpenAI per un controllo di sicurezza dell’input e per generare una bozza di risposta. Poi invia di nuovo a OpenAI la bozza di risposta generata per un secondo controllo di sicurezza prima di mostrartela. Questa conversazione web con Guide resta soltanto in questa sessione del browser, non viene sincronizzata con il tuo account e non viene archiviata come testo da Zodiacs.org. Con i controlli API standard, OpenAI può conservare dati di monitoraggio degli abusi fino a 30 giorni, o più a lungo quando la legge lo richiede o per prevenire danni. Continuare per questa giornata Guide?",
+    cloudConfirm: 'Continua con Guide', cloudCancel: 'Non ora',
+    sources: 'Da questo sito:',
     contextUpdated: 'Fonte rimossa. I messaggi precedenti restano visibili, ma Guide non li userà nelle risposte future.',
   },
 };
@@ -277,7 +262,7 @@ const MAX_MESSAGES = 12;
 const MAX_CHART_CONTEXT = 3_500;
 const SESSION_KEY = 'zodiacs.guide.daily-session.v1';
 const AUTH_BOUNDARY_KEY = 'zodiacs.guide.auth-boundary.v1';
-const CONSENT_POLICY_VERSION = 'guide-cloud-processing-2026-08-14.2';
+const CONSENT_POLICY_VERSION = 'guide-cloud-processing-2026-10-03.1';
 const STYLESHEET_HREF = '/assets/assistant-drawer.css?v=icon-guide-5';
 const GUIDE_AVATAR_SRC = '/assets/guide-avatar.webp';
 const STREAM_SCHEMA = 'zodiacs.guide.stream-event.draft.v1';
@@ -485,7 +470,7 @@ function parseSession(raw: string | null): GuideSession | null {
   if (!raw) return null;
   try {
     const value = JSON.parse(raw) as Partial<GuideSession>;
-    if (value.version !== 1 || value.authBoundary !== rememberedAuthBoundary()
+    if (value.version !== 1 || value.consentPolicyVersion !== CONSENT_POLICY_VERSION || value.authBoundary !== rememberedAuthBoundary()
       || value.localDate !== localDate() || value.timeZone !== localTimeZone()
       || typeof value.conversationId !== 'string' || typeof value.localOwnerId !== 'string'
       || typeof value.dailySessionId !== 'string' || typeof value.disclosureId !== 'string'
@@ -1286,7 +1271,7 @@ function syncSendState(): void {
 
 function syncChartButton(): void {
   if (!chartButton) return;
-  chartButton.hidden = !savedChart;
+  chartButton.hidden = true;
   chartButton.disabled = Boolean(activeRequest) || interactionPending;
   chartButton.setAttribute('aria-pressed', String(chartEnabled));
   chartButton.classList.toggle('is-active', chartEnabled);
@@ -1323,7 +1308,7 @@ function setBusy(busy: boolean): void {
 
 function refreshSavedChart(): void {
   dismissPendingConsent?.();
-  const next = readSelectedSelfChart();
+  const next = null;
   if (chartEnabled) invalidateContext(true);
   savedChart = next;
   chartEnabled = false;
@@ -1579,38 +1564,6 @@ async function requestCloudConsent(): Promise<boolean> {
   return granted;
 }
 
-async function requestChartConsent(expectedGeneration = profileAccessGeneration): Promise<boolean> {
-  if (!currentProfileAccessGeneration(expectedGeneration) || !profileAccessAllowed()) return false;
-  if (chartConsented && chartEnabled) return true;
-  const chart = savedChart;
-  if (!chart || !transcript) return false;
-  chartSummaryPromise ??= placementSummaryForChart(chart);
-  const summary = await chartSummaryPromise;
-  if (!summary || !currentProfileAccessGeneration(expectedGeneration)
-    || !profileAccessAllowed() || savedChart !== chart) return false;
-  const copy = currentCopy();
-  const localLabel = chart.name.trim().slice(0, 120);
-  const preview = `${localLabel ? `Selected self chart (kept on this device): ${localLabel}\n\n` : ''}${summary}`;
-  const body = chart.birth.timeKnown ? copy.consentBody : copy.consentBodyNoTime;
-  const card = consentCard(copy.consentTitle, body, copy.consentConfirm, copy.consentCancel, preview);
-  dismissPendingConsent = card.dismiss;
-  const granted = await card.promise;
-  if (dismissPendingConsent === card.dismiss) dismissPendingConsent = null;
-  const current = currentProfileAccessGeneration(expectedGeneration)
-    && profileAccessAllowed() && savedChart === chart;
-  if (current && granted) {
-    chartConsented = true;
-    chartEnabled = true;
-    chartSourceId = uuid();
-    invalidateContext(false);
-  } else if (current) {
-    chartConsented = false;
-    chartEnabled = false;
-  }
-  syncSourceControls();
-  return current && granted;
-}
-
 function appendSourcesRow(container: HTMLElement, text: string): void {
   const paths = [...new Set([...text.matchAll(/(?:^|[\s([])(\/(?!\/)[a-z0-9-]+(?:\/[a-z0-9-]+)*\/?)/g)]
     .map((match) => match[1].endsWith('/') ? match[1] : `${match[1]}/`)
@@ -1638,7 +1591,6 @@ async function buildTurnBody(
   question: string,
   ids: { turnId: string; operationId: string; attemptId: string; messageId: string },
   retryOfAttemptId: string | null,
-  chartFacts?: string,
 ): Promise<{ body: Record<string, unknown>; history: GuideMessage[]; userMessage: GuideMessage }> {
   const state = getSession();
   const history = state.messages.filter((message) => message.sequence >= state.modelHistoryStartSequence).slice(-11);
@@ -1651,12 +1603,8 @@ async function buildTurnBody(
       containsThirdPartyData: false, persistence: 'local_only',
     }));
   }
-  const ownerChart = chartFacts && chartSourceId ? await localSource({
-    sourceId: chartSourceId,
-    kind: 'owner_chart', sourceRevision: 1, title: 'My chart', facts: chartFacts,
-    subject: { boundary: 'root_user', subjectId: 'self', subjectName: 'You', subjectIsUser: true },
-    containsThirdPartyData: false, persistence: 'local_only',
-  }) : null;
+  // Personal natal data and derived positions are never attached to cloud requests.
+  const ownerChart = null;
   const skyFacts = todaySkyEnabled() ? await cachedTodaySkySummary() : null;
   const skySourceId = `sky:${localDate()}`;
   const todaySky = skyFacts ? await localSource({
@@ -1801,36 +1749,11 @@ async function submitQuestion(): Promise<void> {
     if (!await requestCloudConsent()) return;
     if (rotateGuideDayIfNeeded()) return;
     if (!currentProfileAccessGeneration(expectedGeneration)) return;
-    let chartFacts: string | undefined;
-    let chartAuthority: StoredChart | null = null;
-    const wantsChart = Boolean(savedChart) && (chartEnabled || questionRequestsMyChart(question));
-    if (wantsChart && !chartEnabled) {
-      setStatus(currentCopy().chartReading);
-      await requestChartConsent(expectedGeneration);
-    }
-    if (rotateGuideDayIfNeeded()) return;
-    if (!currentProfileAccessGeneration(expectedGeneration)) return;
-    if (chartEnabled && savedChart) {
-      const current = readSelectedSelfChart();
-      if (!sameSelfChartAuthority(savedChart, current)) {
-        refreshSavedChart();
-        setStatus(currentCopy().contextUpdated);
-        return;
-      }
-      chartSummaryPromise ??= placementSummaryForChart(savedChart);
-      chartFacts = (await chartSummaryPromise) ?? undefined;
-      const currentAfterSummary = readSelectedSelfChart();
-      if (!chartFacts || !sameSelfChartAuthority(savedChart, currentAfterSummary)) {
-        refreshSavedChart();
-        setStatus(currentCopy().contextUpdated);
-        return;
-      }
-      chartAuthority = currentAfterSummary;
-    }
+    const chartAuthority = null;
     if (rotateGuideDayIfNeeded()) return;
     if (!currentProfileAccessGeneration(expectedGeneration)) return;
     const ids = { turnId: uuid(), operationId: uuid(), attemptId: uuid(), messageId: uuid() };
-    const built = await buildTurnBody(question, ids, null, chartFacts);
+    const built = await buildTurnBody(question, ids, null);
     const user = appendMessage('user', question);
     const guide = appendMessage('guide', '');
     textarea.value = '';
@@ -1992,25 +1915,9 @@ function toggleTodaySky(): void {
 }
 
 function toggleChart(): void {
-  if (activeRequest || interactionPending) return;
-  if (chartEnabled) {
-    chartEnabled = false;
-    chartConsented = false;
-    chartSourceId = null;
-    invalidateContext(true);
-    syncSourceControls();
-    setStatus(currentCopy().contextUpdated);
-    return;
-  }
-  interactionPending = true;
-  syncSendState();
+  // Retired. Keeping this local seam cannot attach a personal chart.
+  chartEnabled = false;
   syncSourceControls();
-  const expectedGeneration = profileAccessGeneration;
-  void requestChartConsent(expectedGeneration).finally(() => {
-    interactionPending = false;
-    syncSendState();
-    syncSourceControls();
-  });
 }
 
 function build(): void {

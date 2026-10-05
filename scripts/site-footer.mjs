@@ -42,7 +42,7 @@ function renderLinks(links, external = false) {
   )).join('');
 }
 
-export const SITE_FOOTER_STYLESHEET = '<link rel="stylesheet" href="/assets/site-footer.css" />';
+export const SITE_FOOTER_STYLESHEET = '<link rel="stylesheet" href="/assets/site-footer.css?v=20261003" />';
 
 export function renderStaticFooter({
   tagline = 'The official public Registry of the Twelve.',
@@ -72,6 +72,8 @@ export function renderStaticFooter({
       </button>
     </div>
 
+    <p class="zfooter__tag">Our astrology tools and guides are free, with no signup required. Zodiacs.org also operates Astrofolio, the Zodiac token collection. <a href="/disclosure/">Read our disclosure</a>.</p>
+    <p class="zfooter__tag">Zodiacs.org does not connect wallets, request signatures, or submit transactions. Public address lookups use an address you paste. Purchase links open independent services with their own terms and risks.</p>
     <div class="zfooter__directory">
       <nav class="zfooter__group" aria-label="Explore">
         <details class="zfooter__fold" open data-footer-essential><summary class="zfooter__fold-label"><span class="zfooter__label">Explore</span></summary>

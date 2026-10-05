@@ -160,15 +160,11 @@ describe('technical audit remediation contracts', () => {
     expect(sitemap).toContain("const AUDIT_REMEDIATION_LASTMOD = '2026-08-23'");
     expect(sitemap).toContain("const LEGAL_IDENTITY_LASTMOD = '2026-08-29'");
     expect(sitemap).toContain("...['/', '/about/', '/privacy/', '/terms/'].map((loc) => [loc, LEGAL_IDENTITY_LASTMOD] as const)");
-    // Revised on 2026-09-29 (the ΔT attribution, finding F-50); the sitemap's
-    // DELTAT_ATTRIBUTION_LASTMOD carries that date for it.
-    expect(terms).toContain("const modifiedAt = '2026-09-29T00:00:00.000Z'");
-    // Revised on 2026-09-23 (the claims ledger's corrections), on 2026-09-28
-    // (the privacy audit's fixes) and on 2026-09-29 (the share-image review);
-    // the sitemap's SHARE_IMAGE_REVIEW_LASTMOD carries the last date for it.
-    // The AI integration privacy revision is later than the share-image audit.
-    expect(privacy).toContain("const modifiedAt = '2026-10-01T00:00:00.000Z'");
-    expect(sitemap).toContain("['/privacy/', '2026-10-01']");
+    // The approved trust notices revise both schemas and sitemap dates together.
+    expect(terms).toContain("const modifiedAt = '2026-10-03T00:00:00.000Z'");
+    expect(privacy).toContain("const modifiedAt = '2026-10-03T00:00:00.000Z'");
+    expect(sitemap).toContain("const OWNER_TRUST_LASTMOD = '2026-10-03'");
+    expect(sitemap).toContain("...OWNER_TRUST_ROUTES.map((loc) => [loc, OWNER_TRUST_LASTMOD] as const)");
     for (const page of [privacy, terms]) expect(page).toContain('dateModified: modifiedAt');
     expect(about).toContain("dateModified: '2026-09-28T00:00:00.000Z'");
     expect(sitemap).toContain("const ENGINE_PHASE1_LASTMOD = '2026-09-23'");

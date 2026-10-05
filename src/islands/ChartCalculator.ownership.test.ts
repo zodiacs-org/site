@@ -101,7 +101,7 @@ function harness() {
   return { context, state, calls, modules, frames, engine };
 }
 function expectEmpty(context: Record<string, any>) {
-  for (const key of ['chart', 'computedInput', 'shareInput', 'receiptExport', 'signature', 'registryRecordSlug']) expect(context[key], key).toBeNull();
+  for (const key of ['chart', 'computedInput', 'shareInput', 'receiptExport', 'signature']) expect(context[key], key).toBeNull();
   expect(context.shareRuntimeRef.current.primary).toBeUndefined();
   expect(context.postContext).toBeNull(); expect(context.card).toBe('idle');
 }

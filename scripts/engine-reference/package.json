@@ -1,0 +1,10 @@
+{
+  "name": "zodiacs-engine-reference-tools",
+  "private": true,
+  "type": "module",
+  "engines": { "node": "22.x" },
+  "devDependencies": {
+    "typedoc": "0.28.20",
+    "typescript": "5.9.3"
+  }
+}

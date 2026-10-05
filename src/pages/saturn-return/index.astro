@@ -1,5 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
+import ReturnToolLinks from '../../components/return-visits/ReturnToolLinks.astro';
 import SaturnReturnCalculator from '../../islands/SaturnReturnCalculator';
 import '../../styles/calculator.css';
 
@@ -46,6 +47,7 @@ const jsonLd = [
 ];
 ---
 <Base
+  privateSurface
   clientUi
   title="Saturn Return Calculator — When Is Yours? | Zodiacs.org"
   description="Find your exact Saturn return dates free: every crossing, retrograde passes included, computed from Saturn's real motion on your device. Just needs your birth date."
@@ -109,6 +111,7 @@ const jsonLd = [
       ))}
     </div>
   </section>
+  <section class="section--tight container container--narrow"><ReturnToolLinks locale="en" current="/saturn-return/" /></section>
 </Base>
 
 <style>

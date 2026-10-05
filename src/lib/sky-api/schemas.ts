@@ -19,6 +19,12 @@ const url = { type: 'string', format: 'uri' } as const;
 const str = { type: 'string' } as const;
 const num = { type: 'number' } as const;
 const bool = { type: 'boolean' } as const;
+// The rounding is part of the contract: read as "not ahead", a 0 once failed this
+// API's own test (scripts/sky-api.test.mjs) for an event 26 minutes away.
+const daysAway = {
+  type: 'number',
+  description: 'Present only in a payload read from a snapshot: the days from that snapshot (snapshotAt in today, from in upcoming) to at, rounded to the nearest tenth of a day. Every listed event is later than the snapshot, so 0 means it is less than 72 minutes ahead.',
+} as const;
 const nullable = (schema: Schema): Schema => ({ anyOf: [schema, { type: 'null' }] });
 
 const envelopeProperties = {
@@ -63,7 +69,7 @@ const lunation = {
     degree: { type: 'number', minimum: 0, maximum: 30 },
     name: str,
     label: str,
-    daysAway: num,
+    daysAway,
     when: str,
   },
 };
@@ -136,7 +142,7 @@ const upcomingEvent = {
     kind: { enum: ['lunation', 'ingress', 'station', 'eclipse', 'aspect'] },
     at: iso,
     when: str,
-    daysAway: num,
+    daysAway,
     label: str,
     eclipseKind: str,
   },

@@ -169,7 +169,7 @@ async function checkImage(page, check, outDir, slug, approximate) {
     && png.width === 1080 && png.height === 1350
     && painted.includes(`${approximate ? 'Approximate solar return' : 'Solar return'} · 2024`)
     && reading.every((line) => painted.includes(line))
-    && painted.includes(`Engine ${ENGINE_VERSION}`) && painted.includes('zodiacs.org')
+    && painted.includes(`Engine ${ENGINE_VERSION}`) && painted.includes('Zodiacs.org')
     && (await page.locator('[data-solar-return-result]').getAttribute('data-sr-no-place') !== 'true' || painted.includes('No stored birthplace is available, so this return is planets-only.'))
     && painted.includes('shift by hours') === approximate
     && !/Frida|1907-07-06|Mexico City|08:30/.test(painted), `${png.width}×${png.height}; ${file.sha256}`);

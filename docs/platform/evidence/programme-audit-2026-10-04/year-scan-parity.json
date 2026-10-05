@@ -1,0 +1,31 @@
+{
+  "schema": "zodiacs.year-scan-parity.v1",
+  "finding": "F-67",
+  "question": "Do the year ahead's solar returns from the package search equal those of the site scan they replace?",
+  "before": "findLongitudeCrossings('Sun', natal Sun longitude, window, 1-day step) over the window clipped to 1800–2200, as src/lib/engine/year-scan.ts did at 9d7dd31d",
+  "after": "yearScan(...).solarReturns, which walks mostRecentSolarReturnInstant from @zodiacs/engine/techniques back from the window end",
+  "inputs": {
+    "seed": 20261004,
+    "generator": "mulberry32",
+    "cases": 1000,
+    "births": "uniform 1900-01-01 to 2026-01-01 UTC; synthetic, no person",
+    "windows": "start uniform 1950-01-01 to 2199-06-01 UTC; 366 days long"
+  },
+  "engine": {
+    "version": "0.1.1-rc.16",
+    "techniquesJsSha256": "53a7623c6fa073914df219d46093b34fe004d32a4237280a6a437d2406d27c4f"
+  },
+  "results": {
+    "windowsWithTheSameCount": 1000,
+    "windowsWithTwoReturns": 2,
+    "windowsWithNoReturn": 0,
+    "returnsCompared": 1002,
+    "maxAbsoluteDifferenceMs": 3,
+    "absoluteDifferenceMsHistogram": {
+      "0": 999,
+      "1": 2,
+      "3": 1
+    }
+  },
+  "note": "The shared crossing solver bisects a one-day step 24 times, so the two searches, whose sample grids start at different instants, can settle up to about 5 ms apart on the same crossing. The year ahead shows the solar return to the minute."
+}

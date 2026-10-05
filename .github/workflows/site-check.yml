@@ -80,7 +80,8 @@ jobs:
 
       - name: Authorship stays transparent
         run: |
-          ! grep -RInE 'Rowan Vale|about/#editor([^i]|$)|"@type"[[:space:]]*:[[:space:]]*"Person"' src
+          npx vitest run scripts/check-source-authorship.test.mjs
+          node scripts/check-source-authorship.mjs
 
       # npm's prebuild already verifies the package and replays 30 editions.
       # Keep that release gate, without running it twice in this same job.
@@ -89,6 +90,19 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Developer documentation authorship
+        run: |
+          npx vitest run scripts/check-developer-authorship.test.mjs
+          node scripts/check-developer-authorship.mjs
+
+      - name: Released engine reference
+        run: |
+          npm ci --prefix scripts/engine-reference --ignore-scripts
+          node scripts/build-engine-reference.mjs --check
+          node scripts/check-engine-reference.mjs dist
+          npx vitest run scripts/engine-reference.test.mjs
+          node tests/engine-reference-drive.mjs
 
       - name: Typecheck
         run: npm run check
@@ -151,6 +165,29 @@ jobs:
 
       - name: Engine accuracy vectors
         run: npm test
+
+      - name: Return visits, browser PDF and private sharing
+        timeout-minutes: 6
+        env:
+          RETURN_VISITS_BROWSERS: chromium
+          OUT_DIR: tests/visual/artifacts/return-visits
+        run: node tests/return-visits-drive.mjs
+
+      - name: Approved dated charts, translations and download recovery
+        timeout-minutes: 6
+        env:
+          RETURN_VISITS_BROWSERS: chromium
+          OUT_DIR: tests/visual/artifacts/return-visits/daily
+        run: node tests/chart-of-day-drive.mjs
+
+      - name: Upload return visit evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: return-visits-browser-${{ github.run_id }}
+          path: tests/visual/artifacts/return-visits/
+          if-no-files-found: ignore
+          retention-days: 30
 
       # The precision alpha's own suite is node:test, not vitest, so the
       # line above does not reach it -- and it is where the aliasing
@@ -701,7 +738,10 @@ jobs:
   production-flags-build:
     name: Build with production's feature flags
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    # WebKit's Ubuntu dependencies used almost the previous 20-minute job
+    # allowance before either browser drive started. Individual drive limits
+    # remain unchanged; allow installation plus both acceptance drives.
+    timeout-minutes: 30
     env:
       PUBLIC_COMPAT_INVITES_ENABLED: "1"
       PUBLIC_REGISTRY_AURA_ENABLED: "1"
@@ -715,7 +755,9 @@ jobs:
       PUBLIC_PLAUSIBLE_SCRIPT_URL: https://plausible.io/js/script.js
       SOLANA_RPC_URL: https://production-flags-ci.invalid/rpc
       BASE_RPC_URL: https://production-flags-ci.invalid/base
-      PUBLIC_SUPABASE_URL: https://production-flags-ci.invalid
+      # Linux WebKit resolves hosts before Playwright can intercept fetch.
+      # The recovery driver owns this loopback fixture; no live account service.
+      PUBLIC_SUPABASE_URL: http://127.0.0.1:54321
       SUPABASE_SERVICE_ROLE_KEY: ci_stand_in_service_role
       DAILY_EMAIL_ENABLED: "1"
       EMAIL_PROVIDER: resend
@@ -743,6 +785,51 @@ jobs:
       # budgets (report-bundles --fail), the same gates Vercel runs.
       - name: Build, dist checks and route budgets (production flags on)
         run: npm run build
+
+      - name: Install profile test browsers
+        run: npx playwright-core install --with-deps chromium webkit
+
+      - name: Free sharing and sourced matches in Chromium and WebKit
+        timeout-minutes: 8
+        env:
+          OUT_DIR: tests/visual/artifacts/sharing-phase2
+        run: node tests/sharing-phase2-drive.mjs
+
+      - name: Upload sharing evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: sharing-phase2-${{ github.run_id }}
+          path: tests/visual/artifacts/sharing-phase2/
+          if-no-files-found: ignore
+          retention-days: 30
+
+      - name: Profile photo, backup and cross-device recovery
+        env:
+          OUT_DIR: tests/visual/artifacts/profile-recovery
+        run: node tests/profile-recovery-drive.mjs
+
+      - name: Mobile spacing and stable Astrofolio purchase controls
+        timeout-minutes: 6
+        run: node tests/visual-consistency-drive.mjs
+
+      - name: Upload visual consistency evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: visual-consistency-${{ github.run_id }}
+          path: tests/visual/artifacts/visual-consistency/
+          if-no-files-found: ignore
+          retention-days: 30
+
+      - name: Upload profile recovery evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: profile-recovery-${{ github.run_id }}
+          path: tests/visual/artifacts/profile-recovery/
+          if-no-files-found: ignore
+          retention-days: 30
 
   # The birthplace clock's tables (src/data/tz-lmt.json and
   # src/data/tz-history/) must match the pinned tzdb release they are built

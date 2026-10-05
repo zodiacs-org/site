@@ -1,5 +1,18 @@
 # Release gates and rollback
 
+## Recovery status — 2026-10-05
+
+Main `3491e8e9` is integrated and the AI runtime/package artifacts are regenerated.
+Follow the latest PR #618 checks and new dated staging evidence for this source;
+the deployment and host results below are historical. The owner confirms there
+are no testers, so beta acceptance remains pending. Publisher identity
+verification still blocks upload. The existing ChatGPT development connection
+has expired preview authentication and needs an owner acknowledgement before
+replacement. Production remains disabled. Final owner approval is required
+before submitting, merging or activating it.
+
+## Historical review status — 2026-10-02
+
 Review candidate updated 2026-10-02. Staging and host testing have advanced;
 production remains disabled and no app directory submission or listing exists.
 [CHECKPOINTS.md](./CHECKPOINTS.md) and the evidence files distinguish tested work

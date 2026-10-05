@@ -406,6 +406,11 @@ export async function readGuideHttpTurnRequest(req: any): Promise<RawTurnResult>
     return { ok: false, status: 400 };
   }
   const request = parseGuideTurnRequestDraftV1(body);
+  // Old tabs cannot forward personal natal positions to a cloud provider.
+  if (request?.mode === 'ephemeral' && (
+    request.ephemeralContext.baseContext.ownerChart.state === 'active'
+    || request.ephemeralContext.attachments.some(source => source.subject.boundary !== 'public_reference')
+  )) return { ok: false, status: 400 };
   return request ? { ok: true, request } : { ok: false, status: 400 };
 }
 

@@ -1,3 +1,4 @@
+import { CheckOurMath, ResultOpening } from '../ChartTrust';
 import { useEffect, useMemo, useRef } from 'preact/hooks';
 import type { ComponentType } from 'preact';
 import type { WheelProps } from '../../lib/wheel/Wheel';
@@ -30,6 +31,8 @@ export function SolarReturnResult({ result, Wheel }: SolarReturnResultProps) {
 
   return (
     <div class="sr-result" data-solar-return-result data-sr-asc={wheel.angles?.asc ?? undefined} data-sr-sun={sun.lon} data-sr-no-time={result.noTime} data-sr-no-place={result.noPlace}>
+      <ResultOpening kind="return" />
+      <CheckOurMath utc={chart.input.utc} basis={result.noTime ? 'approximate-return' : 'return'} />
       <section class="shell sr-result__reading" aria-labelledby="solar-return-reading-title">
         <div class="core sr-result__core">
           <span class="mono--label">Your {result.returnYear} return</span>

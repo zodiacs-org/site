@@ -2,7 +2,7 @@
   "type": "named end-user host interoperability: the host launched the adapter and connected to it. Separate from the official-SDK protocol drive, and separate from the model-driven demonstration recorded by hand in host-interop.md.",
   "host": {
     "name": "Claude Code CLI",
-    "version": "2.1.286 (Claude Code)",
+    "version": "2.1.289 (Claude Code)",
     "mechanism": "claude mcp add/list/get/remove, stdio"
   },
   "notTested": [
@@ -16,36 +16,36 @@
   },
   "server": {
     "path": "examples/mcp-server/server.mjs",
-    "sha256": "a20ddbb5899fee66f70e422fb532120f997d69f2dd7084f6857858d0df5dfaa3"
+    "sha256": "7209455dcdc0091cc283e85d18470ef30cff5dcb5cf553e2f65bdc7ce55df49c"
   },
-  "completedAt": "2026-10-01T09:37:09.076Z",
+  "completedAt": "2026-10-05T00:25:11.477Z",
   "checks": 7,
   "passed": 7,
   "results": [
     {
       "name": "the host accepts the server through its documented add command",
       "ok": true,
-      "detail": "Added stdio MCP server zodiacs with command: node /workspace/scratch/8dfe85084616/site-rc16/examples/mcp-server/server.mjs to local config\nFile modified: /tmp/zodiacs-mcp-host-Zv1Lls/claude-config/.claude.json [project: /tmp/zodiacs-mcp-host-Zv1Lls/project]"
+      "detail": "Added stdio MCP server zodiacs with command: node /tmp/claude-0/-home-user-site/25475091-052a-53d7-9cd4-cf04ce09dc68/scratchpad/a1ab-wt/examples/mcp-server/server.mjs to local config\nFile modified: /tmp/zodiacs-mcp-host-m3ZD1Z/claude-config/.claude.json [project: /tmp/zodiacs-mcp-host-m3ZD1Z/project]"
     },
     {
       "name": "the registration landed in the throwaway config, not the real one",
       "ok": true,
-      "detail": "Added stdio MCP server zodiacs with command: node /workspace/scratch/8dfe85084616/site-rc16/examples/mcp-server/server.mjs to local config\nFile modified: /tmp/zodiacs-mcp-host-Zv1Lls/claude-config/.claude.json [project: /tmp/zodiacs-mcp-host-Zv1Lls/project]"
+      "detail": "Added stdio MCP server zodiacs with command: node /tmp/claude-0/-home-user-site/25475091-052a-53d7-9cd4-cf04ce09dc68/scratchpad/a1ab-wt/examples/mcp-server/server.mjs to local config\nFile modified: /tmp/zodiacs-mcp-host-m3ZD1Z/claude-config/.claude.json [project: /tmp/zodiacs-mcp-host-m3ZD1Z/project]"
     },
     {
       "name": "the host launches the server and reports it connected",
       "ok": true,
-      "detail": "Checking MCP server health…\n\nzodiacs: node /workspace/scratch/8dfe85084616/site-rc16/examples/mcp-server/server.mjs - ✔ Connected"
+      "detail": "Checking MCP server health…\n\nzodiacs: node /tmp/claude-0/-home-user-site/25475091-052a-53d7-9cd4-cf04ce09dc68/scratchpad/a1ab-wt/examples/mcp-server/server.mjs - √ Connected"
     },
     {
       "name": "the host reports it as a connected stdio server",
       "ok": true,
-      "detail": "zodiacs:\n  Scope: Local config (private to you in this project)\n  Status: ✔ Connected\n  Type: stdio\n  Command: node\n  Args: /workspace/scratch/8dfe85084616/site-rc16/examples/mcp-server/server.mjs\n  Environment:\n\nTo remove this server, run: claude mcp remove zodiacs -s local"
+      "detail": "zodiacs:\n  Scope: Local config (private to you in this project)\n  Status: √ Connected\n  Type: stdio\n  Command: node\n  Args: /tmp/claude-0/-home-user-site/25475091-052a-53d7-9cd4-cf04ce09dc68/scratchpad/a1ab-wt/examples/mcp-server/server.mjs\n  Environment:\n\nTo remove this server, run: claude mcp remove zodiacs -s local"
     },
     {
       "name": "the documented removal command removes it",
       "ok": true,
-      "detail": "Removed MCP server zodiacs from local config\nFile modified: /tmp/zodiacs-mcp-host-Zv1Lls/claude-config/.claude.json [project: /tmp/zodiacs-mcp-host-Zv1Lls/project]"
+      "detail": "Removed MCP server zodiacs from local config\nFile modified: /tmp/zodiacs-mcp-host-m3ZD1Z/claude-config/.claude.json [project: /tmp/zodiacs-mcp-host-m3ZD1Z/project]"
     },
     {
       "name": "nothing is left configured after removal",
@@ -56,8 +56,8 @@
       "name": "the machine's own Claude Code configuration is byte-identical throughout",
       "ok": true,
       "detail": {
-        "before": "absent",
-        "after": "absent"
+        "before": "241b28485d36cf3231953189b7a3d15dcfd36f21360bb1de66027a624672be5b",
+        "after": "241b28485d36cf3231953189b7a3d15dcfd36f21360bb1de66027a624672be5b"
       }
     }
   ]

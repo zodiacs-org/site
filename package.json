@@ -163,7 +163,8 @@
     "astronomy-engine": "^2.1.19",
     "preact": "^10.26.0",
     "react": "18.3.1",
-    "react-dom": "18.3.1"
+    "react-dom": "18.3.1",
+    "http-cache-semantics": "file:vendor/http-cache-semantics"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
@@ -191,5 +192,8 @@
     "vitest": "^3.2.0",
     "web-push": "^3.6.7",
     "zod": "^4.6.5"
+  },
+  "overrides": {
+    "http-cache-semantics": "$http-cache-semantics"
   }
 }

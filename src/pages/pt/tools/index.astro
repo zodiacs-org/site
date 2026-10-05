@@ -1,4 +1,6 @@
 ---
+import ReturnToolLinks from "../../../components/return-visits/ReturnToolLinks.astro";
+import SharingToolLinks from '../../../components/sharing/SharingToolLinks.astro';
 import Base from '../../../layouts/Base.astro';
 import ToolGlyph from '../../../components/ToolGlyph.astro';
 import ToolsPageHeading from '../../../components/ToolsPageHeading.astro';
@@ -79,6 +81,8 @@ const jsonLd = [
       </ul>
     </div>
   </section>
+<section class="section--tight container"><SharingToolLinks locale="pt" /></section>
+<section class="section--tight container"><ReturnToolLinks locale="pt" /></section>
 </Base>
 
 <style>

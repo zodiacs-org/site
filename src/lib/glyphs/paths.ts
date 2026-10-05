@@ -89,6 +89,14 @@ export const TOOL_GLYPH: Record<string, string> = {
   numerology: `<rect x="4.5" y="4.5" width="15" height="15" rx="1.5"/><path d="M4.5 9.5h15M4.5 14.5h15M9.5 4.5v15M14.5 4.5v15"/>`,
   // a plain conversation bubble for the site assistant
   assistant: `<path d="M5 5.5h14v10H10l-4.5 3v-3H5Z"/><path d="M8.5 9.3h7M8.5 12h4.5"/>`,
+  // three small discs in a ring — a group of charts
+  group: `<circle cx="12" cy="7.2" r="3.2"/><circle cx="7" cy="15.6" r="3.2"/><circle cx="17" cy="15.6" r="3.2"/>`,
+  // a ring sending an arc to a second ring — an invitation
+  invite: `<circle cx="7.5" cy="15" r="3.6"/><circle cx="16.5" cy="9" r="3.6"/><path d="M10.4 12.6 13.6 11"/>`,
+  // a calendar sheet with one marked day
+  calendar: `<rect x="4.5" y="5.5" width="15" height="14" rx="1.5"/><path d="M4.5 9.5h15M8.5 3.8v3.4M15.5 3.8v3.4"/>${DOT(12, 14.5, 1.1)}`,
+  // a page with a small wheel — a printable chart
+  document: `<path d="M6.5 3.8h8l3 3v13.4h-11Z"/><circle cx="12" cy="13.2" r="3.4"/>`,
 };
 
 export const GLYPH_VIEWBOX = '0 0 24 24';

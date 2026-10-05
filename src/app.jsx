@@ -1893,67 +1893,6 @@
 
     let galleryBundleRequested = false;
 
-    /* The trade panel's runtime, fetched at most once per page and only when
-       the panel is actually near the reader. Resolves to null if the bundle
-       cannot load, so a failed fetch leaves an empty box rather than a
-       half-built form. */
-    let tradeBundleReady = null;
-
-    function loadTradeBundle() {
-      if (tradeBundleReady) return tradeBundleReady;
-      tradeBundleReady = new Promise((resolve) => {
-        if (window.zodiacsTrade) { resolve(window.zodiacsTrade); return; }
-        const script = document.createElement('script');
-        script.src = '/assets/trade.js';
-        script.defer = true;
-        script.addEventListener('load', () => resolve(window.zodiacsTrade ?? null), { once: true });
-        script.addEventListener('error', () => resolve(null), { once: true });
-        document.body.appendChild(script);
-      });
-      return tradeBundleReady;
-    }
-
-    /* The panel itself is plain DOM, mounted into this box by the bundle. It
-       is rebuilt when the sign changes: a panel is about one token, and
-       carrying a half-typed amount across signs would be worse than clearing
-       it. */
-    function LandingTrade({ sign }) {
-      const hostRef = useRef(null);
-      useEffect(() => {
-        const host = hostRef.current;
-        if (!host) return undefined;
-        let panel = null;
-        let live = true;
-        let io = null;
-        const open = () => {
-          loadTradeBundle().then((trade) => {
-            if (!live || !trade) return;
-            panel = trade.mount(host, {
-              name: sign.name,
-              slug: sign.asset.sign,
-              mint: sign.representations.solana.address,
-              hue: sign.hue,
-              iconUrl: `/assets/zodiac-icons/128/${sign.asset.sign}.webp`,
-            });
-          });
-        };
-        if (!('IntersectionObserver' in window)) open();
-        else {
-          io = new IntersectionObserver(([entry]) => {
-            if (entry.isIntersecting) { open(); io.disconnect(); }
-          }, { rootMargin: '400px 0px' });
-          io.observe(host);
-        }
-        return () => {
-          live = false;
-          io?.disconnect();
-          panel?.destroy?.();
-        };
-      }, [sign]);
-
-      return <div className="consumer-trade" data-landing-trade={sign.asset.sign} ref={hostRef} />;
-    }
-
     // Inert pastel discs hold the rail's shape until the scene bundle
     // arrives and swaps in the live ticks with one replaceChildren call.
     // Rendered via dangerouslySetInnerHTML with a constant string so React
@@ -5629,7 +5568,6 @@
     // bag stays over the runway, follows the look in view, and its sign opens
     // a sheet of all twelve. It rests over the closing notice and footer.
     function CampaignBag({ sign, batch, onPick }) {
-      const seasonTicker = useCurrentSeason()?.sign.ticker ?? '';
       const [shown, setShown] = useState(true);
       const phone = useMediaMatch(CAMPAIGN_PHONE_QUERY);
       const sheetRef = useRef(null);
@@ -5700,7 +5638,7 @@
                   <span>{formatPriceUsd(quote.priceUsd)}</span>
                   {change !== null && <span className={`campaign-bag__move is-${direction}`}>{formatPercent(change)}</span>}
                 </>
-              ) : <span>{sign.ticker === seasonTicker ? 'In season now' : consumerSignDateLabel(sign)}</span>}
+              ) : <span>{batch.status === 'ok' ? 'Price not indexed' : batch.status === 'unavailable' ? 'Price unavailable' : 'Reading price…'}</span>}
             </small>
           </span>
         </>
@@ -7040,7 +6978,7 @@
       },
       {
         q: 'What is the Terminal?',
-        a: 'The Terminal is the market desk for all twelve Zodiacs, with live prices, liquidity, charts, season context, research, and trading. Jupiter Ultra supplies the executable route and transaction; your wallet reviews, approves, and signs.'
+        a: 'Zodiacs.org does not connect wallets, request signatures, or submit transactions. Public address lookups use an address you paste. Purchase links open independent services with their own terms and risks.'
       }
     ];
 
@@ -7327,6 +7265,7 @@
               </button>
             </div>
 
+            <p className="zfooter__tag">Our astrology tools and guides are free, with no signup required. Zodiacs.org also operates Astrofolio, the Zodiac token collection. <a href="/disclosure/">Read our disclosure</a>.</p>
             <div className="zfooter__directory">
               <nav className="zfooter__group" aria-label="Explore">
                 <details className="zfooter__fold" open data-footer-essential><summary className="zfooter__fold-label"><span className="zfooter__label">Explore</span></summary>
@@ -7419,15 +7358,7 @@
                 volatile, liquidity may disappear, and you could lose all money used to acquire
                 one. Astrology has no established predictive relationship with asset prices.
               </p>
-              <p>
-                Zodiacs.org provides the Terminal interface and public Registry; it does not
-                operate a DEX, exchange, broker, or custodial service. When trading is available,
-                Jupiter, an independent third-party liquidity aggregator, supplies the executable
-                quote, builds and submits the transaction, and charges any venue fee shown; your
-                wallet reviews, approves, and signs. Zodiacs.org holds no keys or funds, cannot
-                reverse transactions, and receives no trading or referral compensation.
-                References to Jupiter do not imply affiliation or endorsement.
-              </p>
+              <p>Zodiacs.org does not connect wallets, request signatures, or submit transactions. Public address lookups use an address you paste. Purchase links open independent services with their own terms and risks. Zodiacs.org operates Astrofolio. <a href="/disclosure/">Disclosure</a>.</p>
               <p>
                 Information is for informational purposes only and is not an offer or solicitation,
                 an investment recommendation or trading strategy, or accounting, legal, tax, or

@@ -217,8 +217,8 @@ try {
       await open(source, `${baseURL}/birth-chart/`);
       assert.equal(await source.locator('html[data-chart-share-receiver]').count(), 0,
         'a fresh calculator visit must not activate fragment-receiver sterility');
-      assert.ok(await source.locator(SHARE_WING_LINKS).count() > 0,
-        'fresh calculator chrome must not inherit fragment-receiver sterility');
+      assert.equal(await source.locator(SHARE_WING_LINKS).count(), 0,
+        'tool chrome must omit Astrofolio and collection links');
       await computeChart(source);
       await source.evaluate(() => {
         globalThis.__t17Events = [];
@@ -256,8 +256,8 @@ try {
         'birth details must not be the result surface’s default link action');
       assert.equal(await source.locator('[data-share-dialog]').count(), 0,
         'dialog must stay unmounted until requested');
-      assert.ok(await source.locator(SHARE_WING_LINKS).count() > 0,
-        'a fresh computed chart must retain sanctioned records links');
+      assert.equal(await source.locator(SHARE_WING_LINKS).count(), 0,
+        'computed tool results must omit Astrofolio and collection links');
 
       const preparedSheet = await source.evaluate(() => {
         const all = globalThis.__t17CanvasText.slice();
@@ -297,7 +297,7 @@ try {
         'the hidden chart sheet must give the twelve bodies to the arcminute');
       assert.equal(sheetValues.filter((value) => /^[A-Z][a-z]+ \d{2}°$/u.test(value)).length, 4,
         'the hidden chart sheet must give ASC, DSC, MC and IC only to the whole degree');
-      const sheetWordmarks = preparedSheet.text.filter((entry) => entry.value === 'zodiacs.org');
+      const sheetWordmarks = preparedSheet.text.filter((entry) => entry.value === 'Zodiacs.org');
       assert.deepEqual(sheetWordmarks.map(({ align, x, y }) => ({ align, x, y })), [
         { align: 'right', x: 1708, y: 104 },
       ], 'chart sheet must carry one legible corner wordmark');
@@ -344,15 +344,11 @@ try {
         'English full charts must offer the wired signature card');
       assert.equal(await dialog.locator('[data-positions-link]').count(), 1,
         'the positions-only link must be the primary link action');
-      assert.equal(await dialog.locator('[data-preview-link]').count(), 1,
-        'the preview link must be an explicit adjacent opt-in');
+      assert.equal(await dialog.locator('[data-preview-link]').count(), 0,
+        'server preview links must not expose birth placements');
       assert.equal(await dialog.locator('[data-details-link]').count(), 1,
         'the v1 birth-details link must remain a labeled secondary action');
-      assert.equal(
-        (await dialog.locator('[data-preview-link]').locator('xpath=../following-sibling::p[1]').innerText()).trim(),
-        'Both links keep the chart code after the # sign, which browsers do not send to servers. The preview link also sends the Sun, Moon and Rising, to the whole degree, to our preview service.',
-        'the preview tradeoff must stay two dry sentences',
-      );
+
 
       await source.waitForFunction(() => (
         document.querySelector('[data-share-card-action="signature"]')?.textContent?.includes('Preparing image')
@@ -413,31 +409,15 @@ try {
           `positions-only link leaked ${privateValue}`);
       }
 
-      await dialog.locator('[data-preview-link]').click();
-      await source.waitForFunction(() => globalThis.__t17Clipboard.length === 2, null, { timeout: TIMEOUT });
-      const previewUrl = new URL((await clipboard(source))[1]);
-      assert.equal(previewUrl.pathname, '/api/og/chart');
-      assert.equal(previewUrl.hash, `#p=${sourcePositions.token}`,
-        'preview opt-in must keep the full code in the fragment');
-      const wholeDegree = (longitude) => String(Math.floor(longitude));
-      assert.deepEqual([...previewUrl.searchParams.keys()], ['sun', 'moon', 'rising', 'houses']);
-      assert.deepEqual(Object.fromEntries(previewUrl.searchParams), {
-        sun: wholeDegree(sourcePositions.wire.b[0]),
-        moon: wholeDegree(sourcePositions.wire.b[1]),
-        rising: wholeDegree(sourcePositions.wire.a[0]),
-        houses: 'whole',
-      }, 'preview query must carry only the Sun, Moon and Rising to the whole degree');
-
       await dialog.locator('[data-details-link]').click();
-      await source.waitForFunction(() => globalThis.__t17Clipboard.length === 3, null, { timeout: TIMEOUT });
-      const fullUrl = (await clipboard(source))[2];
+      await source.waitForFunction(() => globalThis.__t17Clipboard.length === 2, null, { timeout: TIMEOUT });
+      const fullUrl = (await clipboard(source))[1];
       const fullParsed = new URL(fullUrl);
       assert.equal(fullParsed.hash.startsWith('#c=1.'), true,
         'the explicitly labeled full-detail link must preserve v1 #c');
       assert.deepEqual((await events(source))
         .filter(({ name }) => name === 'chart_share')
         .map(({ name, props }) => ({ name, props })), [
-        { name: 'chart_share', props: { variant: 'positions_link' } },
         { name: 'chart_share', props: { variant: 'positions_link' } },
         { name: 'chart_share', props: { variant: 'details_link' } },
       ], 'link analytics must use only the approved bounded variants');
@@ -598,7 +578,7 @@ try {
       }
       assert.equal(approachText.includes(`Engine ${ENGINE_VERSION}`), true,
         'approach PNG must carry only its engine receipt');
-      const approachWordmark = contextualPrepared.approach.find((entry) => entry.value === 'zodiacs.org');
+      const approachWordmark = contextualPrepared.approach.find((entry) => entry.value === 'Zodiacs.org');
       assert.deepEqual(
         { align: approachWordmark?.align, x: approachWordmark?.x, y: approachWordmark?.y },
         { align: 'right', x: 1014, y: 1290 },
@@ -748,7 +728,7 @@ try {
       assert.equal(communicationText.includes(`Engine ${ENGINE_VERSION}`), true,
         'communication PNG must carry only its engine receipt');
       const communicationWordmark = contextualPrepared.communication
-        .find((entry) => entry.value === 'zodiacs.org');
+        .find((entry) => entry.value === 'Zodiacs.org');
       assert.deepEqual(
         { align: communicationWordmark?.align, x: communicationWordmark?.x, y: communicationWordmark?.y },
         { align: 'right', x: 1014, y: 1290 },
@@ -837,15 +817,12 @@ try {
       const failureDialog = preparationFailure.locator('[data-share-dialog]');
       await failureDialog.waitFor({ state: 'visible', timeout: TIMEOUT });
       await failureDialog.locator('[data-positions-link]').click();
-      await failureDialog.locator('[data-preview-link]').click();
       await failureDialog.locator('[data-details-link]').click();
-      await preparationFailure.waitForFunction(() => globalThis.__t17Clipboard.length === 3, null, { timeout: TIMEOUT });
+      await preparationFailure.waitForFunction(() => globalThis.__t17Clipboard.length === 2, null, { timeout: TIMEOUT });
       const failureLinks = await clipboard(preparationFailure);
       assert.ok(failureLinks[0].includes('#p=2.'),
         'positions-only link must remain usable when every image encoder fails');
-      assert.equal(new URL(failureLinks[1]).pathname, '/api/og/chart',
-        'preview link must remain usable when every image encoder fails');
-      assert.ok(new URL(failureLinks[2]).hash.startsWith('#c=1.'),
+      assert.ok(new URL(failureLinks[1]).hash.startsWith('#c=1.'),
         'explicit birth-details link must remain usable when every image encoder fails');
       await preparationFailure.waitForFunction(() => (
         document.querySelector('[data-share-card-action="sheet"]')?.disabled
@@ -869,9 +846,8 @@ try {
         .filter(({ name }) => name === 'chart_share')
         .map(({ name, props }) => ({ name, props })), [
         { name: 'chart_share', props: { variant: 'positions_link' } },
-        { name: 'chart_share', props: { variant: 'positions_link' } },
         { name: 'chart_share', props: { variant: 'details_link' } },
-      ], 'failed image rendering may record only the three successful bounded link actions');
+      ], 'failed image rendering may record only the two successful bounded link actions');
       assert.equal(await preparationFailure.evaluate(() => globalThis.__t17DownloadClicks.length), 0,
         'a failed pre-render must not start a download');
       assert.match(
@@ -953,9 +929,13 @@ try {
       assert.equal(await received.locator('#birth-time').inputValue(), '', 'positions link must not prefill a birth time');
       assert.equal(await received.locator('#place').inputValue(), '', 'positions link must not prefill a birthplace');
       const receivedText = await positions.innerText();
-      for (const privateValue of [BIRTH.date, BIRTH.time, BIRTH.cityQuery, 'UTC']) {
+      for (const privateValue of [BIRTH.date, BIRTH.time, BIRTH.cityQuery]) {
         assert.equal(receivedText.includes(privateValue), false, `positions result leaked ${privateValue}`);
       }
+      assert.equal(await positions.locator('[data-check-our-math][data-instant-basis="unavailable"]').count(), 1,
+        'placement-only shares must disclose the missing original UTC instant');
+      assert.equal(await positions.locator('[data-check-our-math] time').count(), 0,
+        'placement-only shares must not invent a birth timestamp');
       assert.equal(receivedText.toLowerCase().includes(`engine v${ENGINE_VERSION}`.toLowerCase()), true,
         'positions result must carry the installed engine version receipt');
 

@@ -1,0 +1,135 @@
+{
+ "swisseph": "2.10.03",
+ "unit": "arcseconds",
+ "tolerance": 3.0,
+ "window": "1850-2049",
+ "judged": false,
+ "readings": {
+  "shared-ut1": {
+   "ladder": {
+    "compared": 319,
+    "armcMax": 0.001404,
+    "equatorialAscendant": {
+     "max": 0.001281,
+     "over": 0
+    },
+    "kochCoAscendant": {
+     "max": 0.02002,
+     "over": 0
+    },
+    "munkaseyCoAscendant": {
+     "max": 0.001811,
+     "over": 0
+    },
+    "polarAscendant": {
+     "max": 0.02002,
+     "over": 0
+    }
+   },
+   "broad": {
+    "compared": 1541,
+    "armcMax": 0.001512,
+    "equatorialAscendant": {
+     "max": 0.001618,
+     "over": 0
+    },
+    "kochCoAscendant": {
+     "max": 0.01324,
+     "over": 0
+    },
+    "munkaseyCoAscendant": {
+     "max": 0.0172,
+     "over": 0
+    },
+    "polarAscendant": {
+     "max": 0.01324,
+     "over": 0
+    }
+   }
+  },
+  "utc-as-ut1": {
+   "ladder": {
+    "compared": 319,
+    "armcMax": 11.66,
+    "equatorialAscendant": {
+     "max": 10.89,
+     "over": 46
+    },
+    "kochCoAscendant": {
+     "max": 88.51,
+     "over": 40
+    },
+    "munkaseyCoAscendant": {
+     "max": 13.25,
+     "over": 48
+    },
+    "polarAscendant": {
+     "max": 88.51,
+     "over": 40
+    }
+   },
+   "broad": {
+    "compared": 1541,
+    "armcMax": 11.41,
+    "equatorialAscendant": {
+     "max": 11.45,
+     "over": 232
+    },
+    "kochCoAscendant": {
+     "max": 49.07,
+     "over": 215
+    },
+    "munkaseyCoAscendant": {
+     "max": 28.61,
+     "over": 141
+    },
+    "polarAscendant": {
+     "max": 49.07,
+     "over": 215
+    }
+   }
+  },
+  "swiss-utc-to-jd": {
+   "ladder": {
+    "compared": 319,
+    "armcMax": 14.87,
+    "equatorialAscendant": {
+     "max": 14.61,
+     "over": 13
+    },
+    "kochCoAscendant": {
+     "max": 9.179,
+     "over": 13
+    },
+    "munkaseyCoAscendant": {
+     "max": 14.43,
+     "over": 13
+    },
+    "polarAscendant": {
+     "max": 9.179,
+     "over": 13
+    }
+   },
+   "broad": {
+    "compared": 1541,
+    "armcMax": 14.74,
+    "equatorialAscendant": {
+     "max": 13.65,
+     "over": 58
+    },
+    "kochCoAscendant": {
+     "max": 17.09,
+     "over": 55
+    },
+    "munkaseyCoAscendant": {
+     "max": 16.82,
+     "over": 44
+    },
+    "polarAscendant": {
+     "max": 17.09,
+     "over": 55
+    }
+   }
+  }
+ }
+}

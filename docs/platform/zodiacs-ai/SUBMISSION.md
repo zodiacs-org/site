@@ -1,6 +1,6 @@
 # Publisher review package
 
-Prepared 2026-10-02 for PR #618. This is a review packet, not permission to
+Refreshed 2026-10-05 for PR #618. This is a review packet, not permission to
 submit, merge, publish or enable production. The exact final commit and checks
 must be recorded before owner approval.
 
@@ -75,13 +75,18 @@ Preparing a local file is distinct from activating a production route.
 
 The current sky archive is 59,022 bytes, SHA-256
 `c36aa54266f2f2950018175b0cc55f7106333c621e6aa59f6ebdce76232d5c81`.
-The developer archive is 684,100 bytes, SHA-256
-`ce7bc4fd3a16c3e127487946b33f1a476004f6e0add6608f3844a1f9f786eb8d`.
-The manifest records every member digest. Current rc.16 runtime staging and
-complete Linux CI use source `5468423bac0675336949ab16839f40ac5def3e92`;
-the latest PR head identifies this supplementary evidence/package commit.
+The developer archive is 701,174 bytes, SHA-256
+`72cd3d978506da91d8137d646e7194ff15848f90ff831a0030ca069bf27deec1`.
+The manifest records every member digest. Both bundles were rebuilt after
+integrating main `3491e8e9`; the new PR head and its complete checks identify
+the current candidate. Prior rc.16 staging and complete Linux CI use source
+`5468423bac0675336949ab16839f40ac5def3e92` and remain dated historical evidence.
 Require its exact-head checks before approval. The ChatGPT development app needs
 its temporary connection refreshed after the staging alias moved; see LAUNCH.
+
+On 2026-10-05 the owner confirmed there are no testers. The beta worksheet has
+no consenting results. Publisher identity verification remains incomplete; no
+domain challenge or submission has been issued.
 
 ## Final owner approval
 

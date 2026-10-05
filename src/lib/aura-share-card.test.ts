@@ -378,7 +378,7 @@ describe("Registry Aura talisman PNG", () => {
       "Your collection, set against today’s sky.",
       "PUBLIC EDITION · COLLECTION + DATED SKY",
       "REGISTRY CHECKED JUL 16, 2026 UTC",
-      "zodiacs.org",
+      "Zodiacs.org",
     ]) {
       expect(text).toContain(required);
     }
@@ -519,7 +519,7 @@ describe("Registry Aura talisman PNG", () => {
     ]);
     expect(harness.context.drawImage).toHaveBeenCalledTimes(16);
     expect(harness.painted.filter(({ text }) => text.includes("×3"))).toHaveLength(1);
-    const brand = harness.painted.find(({ text }) => text === "zodiacs.org");
+    const brand = harness.painted.find(({ text }) => text === "Zodiacs.org");
     expect(brand).toMatchObject({
       fillStyle: "#8E96AB",
       textAlign: "right",

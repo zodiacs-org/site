@@ -1,5 +1,259 @@
 # Programme status
 
+Checkpoint 16, 2026-10-05: the MCP adapter 0.1.0-rc.16.2, judged against main
+`3f09711a8bde37cec855bd33aad80de72ca9eed4` (#646), which production
+`dpl_94a4kV72vzpEWurR5dFHe4ES9uUy` serves (READY 2026-10-05T02:16:43Z).
+
+**Overall delivery: 31%** (31.241% to three decimals) — 57 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%. Unchanged from
+checkpoint 15. Gates, weights and the denominator are unchanged.
+[Adapter record](../evidence/mcp-adapter/README.md), section "0.1.0-rc.16.2,
+2026-10-05".
+
+- **Partial (2).**
+  - A1.a (1): `get_positions` and `find_events` parse with the compute API's
+    parsers and calculate with its functions. Each declares an output schema
+    beside its annotations, and `find_events`' receipt says its search is
+    tested, not proven complete. That meets the gate as written, but the
+    brief's Track A1 also asks for frame and zodiac options on
+    `get_positions`, and for aspects, eclipses and void-of-course periods in
+    `find_events`. None is in this release.
+  - A1.b (1): `check_sky_fact` answers true, false or depends, with the
+    values that decide the answer and a receipt, and interprets nothing. It
+    covers a sign at an instant or on a date, retrograde, an ingress on a
+    date and a lunation on a date. The brief also asks for aspect facts.
+  - Production serves the archive `/developers/mcp/` installs: 123,817
+    bytes, SHA-256 `2fc976c9…`, pinned to commit `3acfae47`. The file at that
+    commit on GitHub has the same digest.
+- **Findings.** F-61 happened again: main's run after #645, a documentation
+  change, failed in the WebKit sharing drive the same way, and the same
+  tree had passed before the merge. The fix belongs to the sharing feature's
+  session; no test or frontend file was changed here.
+- Actual command: `node scripts/programme-ledger.mjs --summary` →
+  `Overall delivery: 31% (57 of 182.45); blocked 2% (3)`.
+- **Owner decisions needed.**
+  - As in checkpoint 15: F-71; the readings that accept aspect patterns and
+    composite and Davison charts and leave A6 partial; F-77.
+  - Eclipses and the sidereal zodiac in the MCP tools need an engine
+    release, which needs the owner's approval to publish.
+- **Next.**
+  - The sky benchmark v0 (B4.a): 300 questions with the engine's answer to
+    each, a scorer, and `check_sky_fact`'s reply to each. It is being revised
+    after two reviews.
+  - Aspects and void-of-course periods in `find_events`, aspect facts in
+    `check_sky_fact` and frame options in `get_positions`, in the compute API
+    first.
+
+## Earlier checkpoints
+
+Checkpoint 15, 2026-10-05: the MCP adapter 0.1.0-rc.16.1 and three more of
+engine rc.16's units, judged against main
+`af91b52cfadac174bf1788a5b5335f447eb4cea5` (#643), which production
+`dpl_3qPGVCFQh9Qjt7UCqiT68ZCaa3AZ` serves (READY 2026-10-05T00:28:56Z).
+
+**Overall delivery: 31%** (31.241% to three decimals) — 57 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%. Up 2.5 from checkpoint 14.
+Gates, weights and the denominator are unchanged.
+[Unit record](../evidence/rc16-units-2026-10-04/README.md).
+
+- **Accepted (2.5).**
+  - A1.e (0.75): each of the adapter's three tools declares an output schema
+    beside its annotations, and two resources give the conventions vocabulary
+    and the methodology. Production serves the archive `/developers/mcp/`
+    installs, 97,630 bytes, SHA-256 `a44aea72…`, pinned to commit `fcc41d97`.
+    Three reviews of its first build were acted on before release (F-74).
+  - P2.A.aspects.configurable (1): a fixture for each of the four patterns the
+    package defines, with a negative for each, and the exact inclusive orb
+    semantics against a rational oracle on the released archive, 53,168 cases
+    without a mismatch. Accepted on the reading that "every pattern
+    definition" means every pattern the package defines.
+  - P2.A.composite-davison (0.75): the definitions cite their sources and the
+    fixtures and parity pass. Accepted on the reading that "definitions cited"
+    means each definition cites the source it was taken from; the engine says
+    none of the three books was read.
+- **Partial.**
+  - A6 (0.5): the compute API and, from rc.16.1, the MCP adapter cite every
+    result other than a refusal. The static sky API under `/api/v1/` carries
+    no `cite`. On the reading that A6's API is the hosted compute API alone,
+    the gate is met.
+  - P2.A.timing.returns (1.5): site parity is met; there is no fixture from a
+    cited worked example of a solar or lunar return.
+- **Findings.** F-74 (major, privacy): a chart's citation digest identifies
+  the place as well as the time. Fixed in #643, before the adapter's release
+  and in the compute API's documents. F-75 to F-77 (minor): a capture run one
+  pixel off, two major-aspect patterns listed as minor in the engine's
+  documentation, and a Lighthouse simulation race on `/birth-chart/`.
+- Actual command: `node scripts/programme-ledger.mjs --summary` →
+  `Overall delivery: 31% (57 of 182.45); blocked 2% (3)`.
+- **Owner decisions needed.**
+  - F-71, as in checkpoint 14.
+  - The readings above: aspect patterns and composite and Davison charts are
+    accepted on them, and A6 is left partial on its own; each can be
+    overruled.
+  - F-77: a retake rule like F-51's for the Lighthouse gate, or loading the
+    chart form's scripts after the first paint, which is frontend work.
+- **Next.**
+  - MCP adapter 0.1.0-rc.16.2: `get_positions`, `find_events` and
+    `check_sky_fact`, reviewed twice, with every finding fixed. A1.a and A1.b
+    stay partial when it ships, because the brief also asks for frame and
+    zodiac options, aspects, eclipses and void-of-course periods, and aspect
+    facts. Eclipses and the sidereal zodiac need an engine release.
+  - The sky benchmark v0 (B4.a), which check_sky_fact makes possible.
+
+Checkpoint 14, 2026-10-04: engine rc.16's capability gates judged against
+main `67aa32d8b3f112a08aebe5f7b52db9a331ecbaf1` (#639), with two new Swiss
+comparisons, and revised after two independent reviews before merging.
+
+**Overall delivery: 30%** (29.871% to three decimals) — 54.5 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%. Up 7.5 from checkpoint 13.
+Gates, weights and the denominator are unchanged.
+[Gate record](../evidence/rc16-gates-2026-10-04/README.md).
+
+- **Accepted (7.5).**
+  - B2.a (4), the birth-time window partition: the engine's preregistered
+    1,000-window check, rerun on rc.16's build, matched all 24,188 one-second
+    transitions and missed none. "In the engine/API" is read as the engine's
+    own interface; neither the birth chart tool (B2.b) nor the hosted API
+    offers windows yet.
+  - B2.c (1): that rule run is recorded as PASS, preregistered, and again on
+    rc.16's build.
+  - P2.D.frames (2): the uniform API's twelve frame-transform checks against
+    ERFA pass, and the engine's 25 round-trip fixtures replay exactly on the
+    released archive. It depends on P3.2, which stays partial for the
+    sidereal zodiac, an option none of these outputs uses.
+  - P2.E.returns (0.5), again: production `dpl_Av6FTWYa2iFZzT2WZuWeCsRDg2oV`
+    serves #639, and the year ahead on `/profile/` takes its solar returns
+    from the package (F-67).
+- **Validated, pending the owner (F-71).** The co-ascendants (0.25) and Koch
+  (0.2) are within 3″ of Swiss end to end on the ladder from 1850 to 2049
+  (largest 0.020″ and 0.035″) only when both programs are given the same UT1.
+  With Swiss reading the UTC instant as UT1, as the rc.9 tool did, Koch reaches
+  82.677″ and the co-ascendants 88.5″. That reading, and for the co-ascendants
+  the window, were chosen with residuals already seen, and the two
+  preregistrations did not say so. Under the programme's rule they count only
+  once the owner ratifies them.
+- **Partial.** P3.2 (3): `calc()` types the sidereal zodiac but refuses it,
+  and does not type user-defined ayanamsas, both of which Phase 2 ships.
+  Planetary returns (0.75): complete verdicts and agreement with JPL Horizons,
+  but no cited worked example.
+- **Failed.** House positions (0.75) and cusp speeds (0.75) fail as worded,
+  where Swiss's own values are off the exact ones. Rise and set (1.5): 192
+  events of Uranus over 5 s, and 2 events over USNO's 30 s, by 0.058 s and
+  0.149 s. Planetary hours (0.75): one of those USNO misses is a sunset.
+- **Held.** The other twelve house systems keep their acceptance on the rc.9
+  and rc.10 records. On rc.16 whole sign passes end to end under either clock
+  reading, Equal-MC was not measured under the other one, and the remaining ten
+  pass only with the shared UT1, which F-71 puts to the owner.
+- Actual command: `node scripts/programme-ledger.mjs --summary` →
+  `Overall delivery: 30% (54.5 of 182.45); blocked 2% (3)`.
+- **Owner decision needed (F-71).** Should end-to-end comparisons with an
+  engine that applies UT1 − UTC give Swiss the engine's UT1? And does the
+  1850–2049 window apply to the co-ascendants? A yes to the first accepts Koch
+  (0.2); yes to both also accepts the co-ascendants (0.25). The programme
+  recommends both.
+- **Next.**
+  - **Engine work, in a candidate after rc.16** (whose publication needs the
+    owner's approval):
+    - the sidereal zodiac and user-defined ayanamsas in `calc()` (P3.2);
+    - a cited worked example for planetary returns.
+  - **Gate decisions, not engine work:** house positions and cusp speeds.
+    Meeting them as worded would mean reproducing Swiss's departures from the
+    exact values.
+  - **Rise and set (with planetary hours):** the Uranus events are an
+    ephemeris limit, for the DE440 backend (P4.1). The two USNO misses, the
+    Moon's rise and the Sun's set at 34.60° S, decide both units: they need
+    engine examination in the next candidate, or a decision on how the gate
+    treats USNO's times, which are published to the minute.
+
+Checkpoint 13, 2026-10-04: an independent audit of checkpoints 9 to 12, and its
+corrections, against main `9d7dd31daa673fd1a21675ce359f9f4a69eac1cd` (#637).
+
+**Overall delivery: 26%** (25.760% to three decimals) — 47 of 182.45 weighted
+units accepted; blocked 2% (3), or 1.644%. Down 0.5 from checkpoint 12: one of
+its acceptances was premature (F-67). Gates, weights and the denominator are
+unchanged. [Audit record](../evidence/programme-audit-2026-10-04/README.md).
+
+- **Withdrawn (F-67).** P2.E.returns requires the site's own return search to
+  be gone, but the year ahead on `/profile/` still found solar returns with
+  the site's own Sun crossing scan. This change moves it to the package's
+  search: on 1,000 synthetic windows it finds the same returns, none more than
+  3 ms apart. The unit is validated, not accepted, until production serves it.
+- **What held.** The other six acceptances of checkpoint 12, their CI runs,
+  the production deployment, rc.16's identity on npm and in production, the
+  rerun adoption parity, the A4 skill manifest, the API reference's
+  byte-identical rebuild, and that the sky API repair changed tests only. A new
+  private history check for A4, run outside every repository, found no birth
+  data in the engine commits and trees published since rc.16 (`6807f632` to
+  `23660f5`); it is not the missing receipt of 1 October.
+- **Fixed here.** F-62: the authorship guards now catch the retired persona
+  split by line breaks, entities, invisible characters or tags in any case, or
+  joined or inverted, the editor link however its path and fragment are
+  commonly written, and Person
+  markup in JSON-LD, microdata and RDFa; they read every text file, and the
+  `src/` guard is a tested script that fails closed, with one recorded
+  allowance for the People template's subject. F-64: the reference's dead
+  `http://LICENSING.md` link is gone, its checker resolves every link and
+  accepts one off zodiacs.org only over HTTPS to a named host, and the llms
+  files and the support page point at the rc.16 reference. F-65: the sky API's
+  tests hold every `nextByKind` entry to the first event of its kind, eclipses
+  included, and `daysAway`'s rounding is documented; no computed value
+  changes.
+- **Owner action (F-63).** The engine repository's description says
+  "MIT-licensed" and its `.zenodo.json` says `mit`; the package is MIT AND
+  CC-BY-4.0. Wording that names both licences is prepared.
+- **Frontend (F-61).** One WebKit sharing-drive failure in main's post-merge
+  run is preserved; one unchanged retry passed, and a handoff is prepared for
+  the frontend session. No assertion was changed.
+- **Records (F-66, F-68, F-69, F-70).** Dated notes correct this file's living
+  sections and ledger notes that described 30 September or the package before
+  rc.16, and state the Moon candidates' parity for the path actually adopted
+  (3,002 of 3,005).
+- Actual command: `node scripts/programme-ledger.mjs --summary` →
+  `Overall delivery: 26% (47 of 182.45); blocked 2% (3)`.
+- Next: once production serves this change, accept P2.E.returns again; then
+  judge the nine rc.16 capability units against their own gates.
+
+Checkpoint 12, 2026-10-04: seven published or deployed gates reconciled against
+current main `b1636359d7f79351b5fb2b477a57e6dafb7c0a3c`.
+
+**Overall delivery: 26%** (26.035% to three decimals) — 47.5 of 182.45 weighted
+units accepted; blocked 2% (3), or 1.644%. The denominator, weights and calculator
+are unchanged. This adds exactly 4.0, without importing the missing October 2
+private acceptance checkpoint. [Evidence and limits](../evidence/programme-acceptance-2026-10-04/README.md)
+and the [verified producer input](../evidence/programme-acceptance-2026-10-04/reconciliation.json).
+
+- **S6 accepted, deployed (+0.5):** PR632 extended the existing persona/editor/
+  Person-markup guard to served developer docs, with post-build CI and negative
+  controls. It remains a bounded scanner, not a general JSON-LD semantic processor.
+- **A4 accepted, merged (+0.5):** engine PR23 published the skill bundle. Three
+  manifest hashes match; the producer recovered 21 successful postmerge checks.
+  Only its stale 0.5 publication blocker is removed. The final private rescan
+  receipt remains unavailable; no private patterns or logs are reconstructed.
+- **Four rc16 adoptions accepted, deployed (+2.0):** returns, void-of-course,
+  aspect patterns and Moon candidates in sharing. Package imports/removals,
+  recorded parity, npm release and production source binding meet these adoption
+  gates. Returns retains 50 span discrepancies; Moon retains 13 differences
+  (date-form 3, skipped-date 1, before-1970 9). The main calculator still leaves
+  unknown-time Moon certainty unresolved. This is not new accuracy evidence.
+- **G1 accepted, deployed (+1.0):** PR635 merged as `b1636359`, with all 19 premerge
+  and all 19 postmerge checks passing. READY deployment
+  `dpl_4LmaXAGm8YJFF6vastJQ5WWXSTE8` serves the linked rc16 reference outside
+  `/sdk/`; the producer verified live canonical, provenance and license bytes and
+  neutral repository metadata. Historical SDK bytes and both MIT AND CC-BY-4.0
+  obligations remain unchanged.
+- The original October 2 six-request live receipt and private acceptance commit
+  remain missing. Current source/provider evidence is not a reconstructed
+  original receipt or a fresh computation replay. Known conformance results
+  remain 267 passed, 192 failed and 41 unsupported.
+- **Still unaccepted:** JSR (license issue; no retry), P3.3/F60 and cold telemetry,
+  and the shelved calendar unit. No new credit for composite, dignities,
+  declinations or sect. No frontend, Guide, package or runtime work is included.
+- Actual command: `node scripts/programme-ledger.mjs --summary` →
+  `Overall delivery: 26% (47.5 of 182.45); blocked 2% (3)`.
+- Next: independently review this bounded accounting diff, publish its PR and
+  run required CI before normal merge. Other historical blockers below retain
+  their dated context; they are not silently treated as current accomplishments.
+
 Checkpoint 11, 2026-10-01: warm compute timing and usage-cost evidence recovered.
 
 **Overall delivery: 24%** (23.842% to three decimals) — 43.5 of 182.45 weighted units accepted; blocked 2% (3.5), or 1.918%. G4's independently verified release remains accepted; no new unit is accepted in this checkpoint.
@@ -11,8 +265,6 @@ Checkpoint 11, 2026-10-01: warm compute timing and usage-cost evidence recovered
 - The expanded read-only start-type query found 227 API requests, all Hot, over 06:00–10:40 UTC; its broader project/path scope is separate from the exact 120-request baseline. No cold sample, cost, counter behavior or acceptance is invented.
 - Historical connector/export evidence remains unchanged. Public records contain only matched synthetic observations and aggregates; private logs and dashboard authentication material are excluded.
 - Actual command: `node scripts/programme-ledger.mjs --summary` → `Overall delivery: 24% (43.5 of 182.45); blocked 2% (3.5)`.
-
-## Earlier checkpoints
 
 Checkpoint 10, 2026-10-01: the first tagged engine release and permanent DOI are verified.
 
@@ -109,12 +361,15 @@ Completed on 2026-10-01: the first GitHub release and permanent DOI (G4), indepe
 
 Remaining:
 2. **JSR (P3.1c).** A publish workflow using GitHub's OIDC token is to be added to the engine. Its first run needs the owner's authorization.
+   *Update 2026-10-04:* the OIDC publish workflow exists (engine #24 and #25, `23660f5`). With the owner's authorization, its dry run [37111251733](https://github.com/zodiacs-org/engine/actions/runs/37111251733) passed on 2026-10-03, and the publish run [37111638537](https://github.com/zodiacs-org/engine/actions/runs/37111638537) failed at its publish step. The owner's report to JSR, [jsr-io/jsr#1563](https://github.com/jsr-io/jsr/issues/1563), says JSR answered `invalidLicense` to the SPDX expression `MIT AND CC-BY-4.0`. On 2026-10-04 that issue was open, untriaged and without comments, and JSR's API listed no version of `@zodiacs/engine`. There is no retry until JSR accepts an expression that states both licences, or the owner decides on a faithful alternative. The package is never to be labelled MIT alone.
 3. **Search and analytics baselines (P0.7b).** Add Bing's export when it is ready, then either attach `zodiacs-org/analytics-baselines` read-only to this work, or compute the aggregates on the owner's side. Only aggregates would be committed, to that private repository.
 4. **Microsoft Copilot**, only if the monthly panel (A8) and the assistant benchmark (B4.b) are to cover five assistants: a free account for admin@zodiacs.org.
 
 Later, once the site has rebuilt the MCP server on the published engine: the same manual first upload for `@zodiacs/mcp-server`, from its verified archive, since npm sets up a trusted publisher only for a package that exists.
 
 ## Identities verified
+
+At checkpoint 13, 2026-10-04, before this record merged: site `main` = `9d7dd31d` (#637), served by READY production deployment `dpl_9pVLB8brkRDrtKu2cA5zLMnf6eKM`; its post-merge Site Check [37198913984](https://github.com/zodiacs-org/site/actions/runs/37198913984) passed on its second attempt after one WebKit failure in a sharing drive (F-61). Engine `main` = `23660f5` (#25). npm `@zodiacs/engine`: `latest` 0.1.1-rc.15, `next` 0.1.1-rc.16, whose registry SHA-1 `f57e312b…3afa` and SHA-512 integrity are those of the archive the site vendors, `43a72d30…15d8`, published by the trusted publisher with SLSA provenance. JSR: no version. PyPI: `zodiacs` 0.1.0a1. `@zodiacs/mcp-server` is not on npm; the site serves the MCP archive 0.1.0-rc.16, `dfc9177e…aeb9`, 89,871 bytes. The tag `v0.1.1-rc.15` points at `93ebae9`, and DOI 10.5281/zenodo.23080134 resolves.
 
 At checkpoint 8, before this record merged: site `main` = `acbfad2e` (#604), served by `dpl_J8wQ2hr7RwQRDbT9unq5bUc6mHSC`, whose `/developers/engine/` says `npm install @zodiacs/engine` installs 0.1.1-rc.15; engine `main` = `6807f63` (PR #22, rc.16, archive `43a72d30…15d8`, not on npm and not adopted by the site).
 
@@ -142,3 +397,12 @@ The earlier archives are as checkpoint 5 lists them. rc.15's three local builds 
 ## In progress and next
 
 [HANDOFF-2026-09-30.md](HANDOFF-2026-09-30.md) §4 lists the work in flight, with each branch's head and state, and §5 the next steps in order, each with its gate.
+
+*Update 2026-10-04:* that list describes 30 September. The state of the same work on 4 October:
+
+- The compute API is deployed and the F-59 cache fix is live (`fd1ce88a`). P3.3 stays unaccepted: no Cold sample has been observed, and F-60 is open.
+- The calendar feeds (`feed-ids`, then #613) are shelved: #613 was closed unmerged on 2026-10-03 after the owner's #628 retired personal calendar feeds and kept local calendar downloads. Server-side personal subscriptions are not to be revived without a new owner decision.
+- The rc.16 adoption landed in #620. Void-of-course, aspect patterns and Moon candidates are accepted (checkpoint 12); returns is validated until production serves the year-ahead change of checkpoint 13 (F-67); composite waits for a lightweight entry (F-54); dignities, declinations and sect are not adopted.
+- Engine rc.16 is on npm under `next`; G4 is done; the JSR publish failed on the licence expression (above); `@zodiacs/mcp-server` is not published.
+- `moon-enclosure`, `feature-eclipses` and `chinese-heldback` exist only in the owner's bundles, unchanged.
+- Next: accept P2.E.returns again once production serves its completed adoption; then judge the rc.16 capability units (P3.2, P2.D.frames, B2.a, house positions, co-ascendants, cusp speeds, planetary returns and hours, rise and set) against their gates, now that rc.16 is released and served.

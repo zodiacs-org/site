@@ -4,7 +4,7 @@ import { archiveUrlFor, installBlock } from '../../../lib/mcp-install-block';
 import manifest from '../../../../public/examples/mcp-server.json';
 
 const title = 'Connect an AI Assistant to the Engine | Zodiacs.org';
-const description = 'A local MCP server that lets an assistant you connect it to calculate natal charts and compare two calculation records. Runs on your machine over stdio; no listener, no port, no network.';
+const description = 'A local MCP server for natal charts, record comparisons, positions, events and sky facts, run on your machine over stdio: no listener, no port, no network.';
 
 // The download is pinned to a commit, not to a path on this site: a commit's
 // contents cannot change, so the archive and its digest cannot be replaced
@@ -35,9 +35,12 @@ const entry = `{
 }`;
 
 const tools = [
-  ['get_capabilities', 'No arguments. The engine and adapter versions, the record schemas, every limit a request must respect, and the list of what this adapter does not do. Worth calling before the other two rather than guessing at supported options.'],
+  ['get_capabilities', 'No arguments. The engine and adapter versions, the record schemas, every limit a request must respect, the two resources, and the list of what this adapter does not do. Worth calling before the others rather than guessing at supported options.'],
   ['calculate_natal_chart', 'One chart from an instant and, optionally, coordinates. Returns the bodies, angles, cusps and aspects, plus whether the time was known and which house system was requested against which one was actually used. The full calculation record is a separate, explicit request.'],
-  ['compare_calculation_records', 'Two records, passed as content. Names every field that differs, then what accounts for it — reproduced by a local recalculation, reported by the records, a hypothesis that fits, or unresolved. By default it leaves out the values of rows carrying birth details or computed positions, keeping their labels and their numeric differences; ask for the values explicitly when you need to read them.'],
+  ['compare_calculation_records', 'Two records, passed as content. Names where they differ, from the inputs and settings to the computed values, then what accounts for it — reproduced by a local recalculation, reported by the records, a hypothesis that fits, or unresolved. By default it leaves out the values of rows carrying birth details or computed positions, keeping their labels and their numeric differences; ask for the values explicitly when you need to read them.'],
+  ['get_positions', 'Up to 100 instants, each with Z or an offset. Returns the twelve rows of a chart at each, the longitude, latitude, daily motion, sign and degree of every body, with the ΔT and time scale the engine used: the rows calculate_natal_chart gives for the same instant.'],
+  ['find_events', 'A window of at most 92 days. Returns the sign ingresses, the stations of Mercury to Pluto and the new and full moons in it, in time order, found by the engine\'s crossing search. The search is tested, not proven to miss nothing, and every reply\'s receipt says so.'],
+  ['check_sky_fact', 'Whether a body is in a sign or retrograde, at an instant or on a date, whether it enters a sign on a date, or whether the Moon reaches a phase on a date: true, false or depends, with the computed values that decide it, and never an interpretation. There is no zone argument: a date is read as that day in every UTC offset in use today at once, from 14 hours before its midnight UTC to 36 hours after.'],
 ];
 ---
 
@@ -48,7 +51,8 @@ const tools = [
     <div class="prose">
       <p>
         A local MCP server, so an AI assistant you connect it to can calculate a natal
-        chart and read what differs between two calculation records. It speaks the
+        chart, read what differs between two calculation records, find positions,
+        sign ingresses, stations and lunations, and check a stated sky fact. It speaks the
         Model Context Protocol over stdio: one process on your machine, started by
         whichever host you point at it. No listener, no port, no outbound request, no
         files read or written.
@@ -113,9 +117,10 @@ const tools = [
       <p>
         <code>npm run verify</code> is the check that the install <em>works</em>, not a
         second integrity check: it launches the server as a real process, speaks MCP to
-        it with the official client library, calls all three tools with synthetic
-        charts, refuses two bad requests, and confirms the session still works
-        afterwards. Seventeen checks, one line each, exit 0 when they all pass. It
+        it with the official client library, calls all six tools with synthetic
+        charts and dates, refuses two bad requests, and confirms the session still works
+        afterwards; the client checks every result other than a refusal against
+        the output schema the server declares. Twenty-one checks, one line each, exit 0 when they all pass. It
         tests behaviour rather than identity, so a tampered archive can pass it — the
         digest comparison above is what establishes you have the published bytes.
       </p>
@@ -136,18 +141,16 @@ const tools = [
         <code>npm run verify</code> uses. <code>npm ci --omit=dev</code> installs
         the three and the server runs; only the verifier needs the rest. The engine
         ({manifest.engine.package} {manifest.engine.version}) and the comparison are
-        already inside <code>server.mjs</code>. This archive was built before its
-        engine version was published; engine rc.16 is now on npm under
-        <code>next</code>, while <code>latest</code> remains rc.15. The MCP
-        adapter itself is still an unpublished candidate. Its archive bytes
-        remain unchanged; bundling keeps one copy of the comparison rules.
-        Node {manifest.node}.
+        already inside <code>server.mjs</code>; bundling keeps one copy of the
+        comparison rules. That engine version was published to npm on 1 October
+        2026 under the <code>next</code> tag, and <code>get_capabilities</code>
+        says it is published; the MCP adapter itself is not on npm. Node {manifest.node}.
       </p>
     </div>
 
     <h2 id="connect">Connect it to a host</h2>
     <div class="prose">
-      <p>Claude Code CLI connected to this rc.16 bundle in the named-host drive. From the extracted directory:</p>
+      <p>Claude Code CLI connected to this bundle in the named-host drive. From the extracted directory:</p>
     </div>
     <pre tabindex="0" role="region" aria-label="Claude Code commands"><code>{connect}</code></pre>
     <div class="prose">
@@ -174,15 +177,35 @@ const tools = [
       </p>
     </div>
 
-    <h2 id="tools">The three tools</h2>
+    <h2 id="tools">The six tools</h2>
     <dl class="mcp-tools">
       {tools.map(([name, summary]) => (
         <div>
-          <dt><code>{name}</code></dt>
+          <dt id={name}><code>{name}</code></dt>
           <dd>{summary}</dd>
         </div>
       ))}
     </dl>
+    <div class="prose">
+      <p>
+        Each tool declares an output schema beside its arguments, which a host reads
+        before it calls. The server checks every result other than a refusal
+        against that schema before sending it, so a result that did not match would
+        come back as an error
+        rather than as data the schema does not describe. The site's tests hold every
+        result over a seeded synthetic corpus to these schemas.
+      </p>
+      <p>
+        <code>get_positions</code>, <code>find_events</code> and
+        <code>check_sky_fact</code> run the <a href="/developers/compute/">compute
+        API</a>'s own parsers and calculations, without a zone. For the same request
+        each returns the compute API's body, with the same result and the same
+        receipt; only the citation's link names the tool here. A request the
+        compute API's parser refuses gets its sentence, after the field it names;
+        one the input schema refuses first, such as an unknown argument or a value
+        outside a list, gets the MCP SDK's validation message.
+      </p>
+    </div>
     <div class="prose">
       <p>
         Ask your assistant, in your own words: <em>calculate a natal chart for
@@ -259,25 +282,88 @@ const tools = [
       </p>
     </div>
 
+    <h2 id="cite">Citing a result</h2>
+    <div class="prose">
+      <p>
+        Every result other than a refusal carries <code>cite</code>, the same four
+        fields the
+        <a href="/developers/compute/">compute API</a> puts on its answers:
+        <code>url</code>, the tool's entry on this page; <code>receipt</code>,
+        <code>sha256:</code> and the SHA-256 of a receipt's RFC 8785 canonical JSON;
+        and the engine and its version.
+      </p>
+      <p>
+        A chart cites the engine's calculation receipt, the one inside the record
+        that <code>output: "record"</code> returns for the same arguments, so a summary
+        and a record of one calculation cite one digest, and anyone given the record
+        can recompute it. That receipt holds the instant as it was written, offset
+        included, the coordinates and the settings, so the digest identifies the
+        birth details from either side. With the date and the place, trying each
+        time of day finds the time. With the instant, which the positions give away,
+        trying places from a list of towns finds the place, even for a chart with no
+        known time, whose summary shows no angle, cusp or coordinate. With
+        <code>timeKnown: false</code> the coordinates change nothing else in the
+        result, so leaving them out keeps them out of the receipt. Quote the digest
+        only where the birth details may be known.
+      </p>
+      <p>
+        <code>get_capabilities</code> and <code>compare_calculation_records</code>
+        cite the adapter's own receipt, which the reply carries: the adapter and the
+        engine that answered, and for a comparison its output. It holds nothing from
+        either record, so a comparison's citation says how the comparison was made,
+        not which records it read.
+      </p>
+      <p>
+        <code>get_positions</code>, <code>find_events</code> and
+        <code>check_sky_fact</code> cite the compute API's receipt for the same
+        calculation, which the reply carries: the engine, its conventions and
+        coverage, the reference span, the two sources of ΔT, and for a search how it
+        searched and how many evaluations it made. It holds no instant, date or body
+        from the request, and the compute API cites the same digest for the same
+        request.
+      </p>
+    </div>
+
+    <h2 id="resources">Two resources</h2>
+    <div class="prose">
+      <p>
+        <code>zodiacs://conventions</code> is the conventions vocabulary of the
+        calculation records the server writes and reads: every conventions set a
+        record may carry, taken from the engine, with the engine versions that wrote
+        it, what each key covers, the coverage statement the engine's receipts carry,
+        and what each chart flag reports. <code>zodiacs://methodology</code> says how
+        the server calculates, with links to the
+        <a href="/methodology/">methodology page</a>. Both are built into
+        <code>server.mjs</code>: reading one opens no file and makes no request.
+      </p>
+    </div>
+
     <h2 id="limits">Known limits</h2>
     <div class="prose">
       <ul>
-        <li>One chart at a time. No transits, progressions, returns or eclipses, and
-          nothing that scans a date range.</li>
+        <li>Narrow searches only. <code>find_events</code> finds sign ingresses,
+          stations and new and full moons in a window of at most 92 days. No
+          transits, progressions, returns or eclipses.</li>
         <li>No interpretation. Positions and differences, no readings.</li>
         <li>No timezone resolution. Supply an instant with an explicit offset; the
-          adapter does not turn a place name and a wall clock into a moment.</li>
+          adapter does not turn a place name and a wall clock into a moment, and
+          <code>check_sky_fact</code> reads a date without a zone as that day in
+          every UTC offset in use today at once.</li>
         <li>No file access and no fetching. Records are passed as content.</li>
         <li>No cancellation and no timeout. A calculation is synchronous, so a timer
-          could not stop it mid-way; the work is bounded by refusing unbounded
-          operations — one chart per call, no searches, no date ranges.</li>
+          could not stop it mid-way; the work is bounded instead: one chart per call,
+          at most 100 instants, a window of at most 92 days, and at most 12,000
+          evaluations for an events request, or 1,000 for a fact on a date.</li>
+        <li>Large replies. The largest <code>get_positions</code> answer the limits
+          allow, a hundred instants of twelve rows, is about 230 KB of JSON, sent
+          once as structured content and again as text. A host may warn about a
+          reply that size or keep it out of the conversation, so ask for the
+          instants you need.</li>
         <li>No authentication of anything — not a record, not an engine version, not
           the claim that two records came from independent software. Two records from
           one engine agreeing shows consistency, not independent accuracy.</li>
         <li>No body-to-house mapping. The summary returns the cusps and the body
           longitudes; which house a body falls in is left to the caller.</li>
-        <li>No <code>outputSchema</code> on the tools. Arguments are schema-bounded;
-          result shapes are documented rather than declared.</li>
         <li>A single request longer than 1 MB is dropped rather than answered. The
           stdio framing is one JSON message per line, so a line that cannot be buffered
           cannot be refused with a reply; it is discarded at the next newline and the
@@ -302,8 +388,9 @@ const tools = [
         Recorded in the repository under
         <code>docs/platform/evidence/mcp-adapter/</code>, kept as separate records
         because they establish separate things: the official client library against the
-        real server process; historical Claude Code and model interoperability
-        records from earlier candidates; and a fixed synthetic corpus of eighteen
+        real server process; the Claude Code CLI connecting to it; model-driven
+        interoperability records from earlier candidates; and a fixed synthetic
+        corpus of eighteen
         scenarios with the classification each should
         receive, written before the candidate ran against any of them. That last one is
         a regression corpus rather than an accuracy rate — both sides of every pair
@@ -311,10 +398,16 @@ const tools = [
         about a disagreement between independently authored software.
       </p>
       <p>
-        The current rc.16 bundle passed the protocol, synthetic regression and
-        Claude Code CLI connection drives. The latter checks setup and stdio,
-        without a login or model turn. Model-driven records from earlier
-        candidates remain historical.
+        The site's tests also run 252 synthetic requests through
+        <code>get_positions</code>, <code>find_events</code> and
+        <code>check_sky_fact</code> and through the compute API's own handler, and
+        hold the two answers to be the same apart from the citation's link.
+      </p>
+      <p>
+        The current bundle passed the protocol, synthetic regression and Claude
+        Code CLI connection drives. The latter checks setup and stdio, without a
+        login or model turn. Model-driven records from earlier candidates remain
+        historical.
       </p>
       <p>
         Every chart in every test is synthetic: round coordinates for well-known cities

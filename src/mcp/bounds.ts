@@ -11,10 +11,11 @@
  * built artifact.
  */
 import { NATAL_ENVELOPE_LIMITS } from '@zodiacs/engine/receipt';
+import type { ToolOutcome } from './tools';
 
 /** This adapter's own version, distinct from the engine's. */
-export const ADAPTER_VERSION = '0.1.0-rc.16';
-export const ADAPTER_NAME = 'zodiacs-mcp-server';
+export const ADAPTER_VERSION = '0.1.0-rc.16.2';
+export const ADAPTER_NAME = 'zodiacs-mcp-server' as const;
 
 /**
  * The epoch the site supports everywhere else — every date input on
@@ -136,14 +137,17 @@ export function rowValueIsTheFinding(id: string): boolean {
  * rather than a parse. `INSTANT_CHARS` bounds the date argument so a
  * megabyte-long string is refused by the schema, not by a regex walking it.
  *
- * `resultBytes`, `differences` and `explanations` are headroom rather than
- * operative limits, and an AI review was right that they should not be
- * described as bounds a caller could reach. The comparison's own structure caps
- * it near 206 rows and a dozen candidate causes, and the largest result anyone
- * has produced from it is 20,756 bytes — under 8% of the byte cap. They are
- * here so the bound is a fixed number rather than an assumption, and so an
- * engine change that made results much larger is refused with its size named
- * instead of returned.
+ * `differences` and `explanations` are headroom rather than operative limits,
+ * and an AI review was right that they should not be described as bounds a
+ * caller could reach: the comparison's own structure caps it near 206 rows and
+ * a dozen candidate causes, and the largest comparison anyone has produced is
+ * 20,756 bytes. `resultBytes` is headroom for every tool but `get_positions`,
+ * whose largest answer, a hundred instants of twelve rows, is about 230 KB, 88%
+ * of it; `src/mcp/sky-tools.test.ts` keeps that under 90%. Each limit is here
+ * so the bound is a fixed number rather than an assumption, and so an engine
+ * change that made results much larger is refused with its size named instead
+ * of returned. The reply also carries the result as indented text, which for
+ * that answer is about 330 KB more.
  */
 export const LIMITS = Object.freeze({
   recordBytes: NATAL_ENVELOPE_LIMITS.bytes,
@@ -259,4 +263,13 @@ export function recordTooLarge(record: string): number | null {
 export function resultTooLarge(result: unknown): number | null {
   const bytes = Buffer.byteLength(JSON.stringify(result) ?? '', 'utf8');
   return bytes > LIMITS.resultBytes ? bytes : null;
+}
+
+/** A tool's value, or the refusal that names its size when it is over the cap. */
+export function bounded(value: object): ToolOutcome {
+  const oversized = resultTooLarge(value);
+  if (oversized !== null) {
+    return { ok: false, refusal: `The result is ${oversized} bytes, over the ${LIMITS.resultBytes}-byte limit.` };
+  }
+  return { ok: true, value: value as Record<string, unknown> };
 }

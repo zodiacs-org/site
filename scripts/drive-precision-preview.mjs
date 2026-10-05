@@ -443,7 +443,7 @@ async function run(name, browser) {
         || /^\/_astro\/[^/]+\.css$/.test(u)
         || /^\/fonts\/[^/]+\.woff2$/.test(u)
         || /^\/assets\/app-icons\//.test(u)
-        || u === '/assets/site-footer.css'
+        || u === '/assets/site-footer.css?v=20261003'
         || /^\/assets\/zodiac-icons\/48\/[a-z]+\.webp\?surface=site-footer$/.test(u)
         // Only reached by a deliberate Ctrl+K, and checked on its own in
         // steps.siteSearch. Listed so the allowlist stays exhaustive.
