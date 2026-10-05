@@ -229,7 +229,7 @@ export default function LivingMomentCapture({
       <div class="living-moment-slot" data-living-moment-capture>
         <div class="living-moment-slot__closed">
           <button
-            class="btn btn--primary"
+            class="btn btn--ghost living-moment-trigger"
             type="button"
             ref={openButtonRef}
             data-living-moment-open
@@ -238,7 +238,7 @@ export default function LivingMomentCapture({
             onClick={open}
           >
             <span>{loading ? 'Opening…' : 'Save this moment'}</span>
-            <span class="orb" aria-hidden="true">+</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 4.75A1.75 1.75 0 0 1 7.75 3h8.5A1.75 1.75 0 0 1 18 4.75V21l-6-4-6 4V4.75Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" /></svg>
           </button>
           <p class="field__help">Keep today’s reading with a short observation, then revisit it in your timeline. Saving starts on this device.</p>
         </div>
