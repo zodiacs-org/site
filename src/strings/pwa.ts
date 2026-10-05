@@ -14,7 +14,7 @@ export const PWA_PROMPT_COPY = {
   es: {
     heading: '¿Tener Zodiacs a mano?',
     body: 'Instala Zodiacs para volver más rápido a tus cartas, la astrología de cada día y tus herramientas guardadas.',
-    ios: 'En iPhone o iPad, toca Compartir y luego Añadir a pantalla de inicio.',
+    ios: 'En iPhone o iPad, toca Compartir y luego Agregar a inicio.',
     install: 'Instalar Zodiacs',
     dismiss: 'No, no volver a preguntar',
     icons: 'Los doce signos del zodiaco',

@@ -34,7 +34,7 @@ const COPY = {
   },
   fr: {
     download: 'Télécharger ces dates (.ics)',
-    downloadNote: 'Le fichier est un instantané des dates exactes affichées ici, créé dans ton navigateur. Ses heures viennent de ton thème exact : toute personne avec qui tu le partages, ou tout calendrier en ligne où tu l’importes, peut en déduire ton heure de naissance et, par celles de ton Ascendant ou de ton Milieu du Ciel, ton lieu de naissance.',
+    downloadNote: 'Le fichier est un instantané des dates exactes affichées ici, créé dans ton navigateur. Ses heures viennent de ton thème exact : toute personne avec qui tu le partages, ou tout calendrier en ligne où tu l’importes, peut en déduire ton heure de naissance et, par celles de ton Ascendant ou de ton Milieu du Ciel, ton lieu de naissance.',
   },
   it: {
     download: 'Scarica queste date (.ics)',

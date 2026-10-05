@@ -78,7 +78,9 @@ describe('Russian sign guides', () => {
     const corpus = EXPECTED.map(({ slug }) => readerText(slug)).join('\n');
     expect(corpus).toContain('осознанным выбором, а не автоматической реакцией');
     expect(corpus).toContain('Солнечный знак — только начало.');
-    expect(corpus).toContain('Знак дает словарь; натальная карта составляет фразу.');
+    expect(corpus).toContain('Знак даёт словарь; натальная карта составляет фразу.');
+    // «ё» is written wherever it is pronounced (RU-COPY-DECK conventions).
+    expect(corpus).not.toMatch(/(?<![а-яё])(?:еще|ее|дает|растет|остается|вперед|партнер[а-я]*|надежн[а-я]*|расчет[а-я]*|учеб[а-я]*|серьезн[а-я]*)(?![а-яё])/iu);
     expect(corpus).not.toMatch(/гарантир|предначерт|сужден|неизбеж|обязательно случит/iu);
     expect(corpus).not.toMatch(/машинн(?:ый|ого) перевод|проверен\w* носител|переведен\w* человеком|искусственн\w+ интеллект/iu);
   });

@@ -137,7 +137,7 @@ export const PF_BOOK_COPY = {
     count: (n: number) => n === 1
       ? '1 carta natal guardada.'
       : `${n} cartas natales guardadas: la tuya y las de las personas para quienes haces lecturas.`,
-    add: 'Añade la carta de alguien',
+    add: 'Agrega la carta de alguien',
     privacy: 'Guardado en este dispositivo. No se sube nada salvo que actives la sincronización.',
     details: 'Datos de nacimiento',
   },
@@ -151,8 +151,8 @@ export const PF_BOOK_COPY = {
   },
   fr: {
     count: (n: number) => n === 1
-      ? '1 thème natal enregistré.'
-      : `${n} thèmes nataux enregistrés : le tien et ceux que tu interprètes pour d’autres personnes.`,
+      ? '1 thème astral enregistré.'
+      : `${n} thèmes astraux enregistrés : le tien et ceux que tu interprètes pour d’autres personnes.`,
     add: 'Ajouter le thème de quelqu’un',
     privacy: 'Enregistré sur cet appareil. Rien n’est envoyé tant que tu n’actives pas la synchronisation.',
     details: 'Données de naissance',

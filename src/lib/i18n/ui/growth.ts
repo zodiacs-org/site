@@ -36,7 +36,7 @@ export const GROWTH_UI_EN = {
 export const GROWTH_UI_ES = {
   ...GROWTH_UI_EN,
   footerWidgets: 'Widgets',
-  footerDisclosure: 'Declaraciones',
+  footerDisclosure: 'Declaración',
   emailCaptureKicker: 'Pronóstico semanal gratuito',
   emailCaptureTitle: 'Tu semana por delante.',
   emailCapturePersonalTitle: 'Tu semana de {sign} por delante.',
@@ -59,12 +59,12 @@ export const GROWTH_UI_ES = {
   emailConfirmSubject: 'Confirma tu pronóstico semanal de Zodiacs.org',
   emailConfirmMessage: 'Confirma que quieres recibir el pronóstico semanal gratuito de Zodiacs.org:',
   emailConfirmIgnore: 'Si no lo solicitaste, ignora este email. No se activará ninguna suscripción.',
-  emailConfirmTitle: 'Una última comprobación.',
+  emailConfirmTitle: 'Una última verificación.',
   emailConfirmBody: 'Confirma la suscripción para empezar a recibir el pronóstico semanal gratuito. Hasta entonces, no hay ninguna suscripción semanal activa.',
   emailConfirmAction: 'Confirmar suscripción',
   emailConfirmedTitle: 'Suscripción confirmada.',
   emailConfirmedBody: 'Tu pronóstico semanal gratuito está activo. Cada mensaje incluye un enlace para darte de baja.',
   emailConfirmInvalidTitle: 'Este enlace no es válido.',
-  emailConfirmInvalidBody: 'El enlace de confirmación no es válido o ha caducado. Vuelve a Zodiacs.org para solicitar otro.',
+  emailConfirmInvalidBody: 'El enlace de confirmación no es válido o ha vencido. Vuelve a Zodiacs.org para solicitar otro.',
   emailReturnHome: 'Volver a Zodiacs.org',
 } as const satisfies Record<keyof typeof GROWTH_UI_EN, string>;

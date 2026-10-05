@@ -1,7 +1,9 @@
 import { readFileSync } from 'node:fs';
 import ts from 'typescript';
 import { describe, expect, it } from 'vitest';
-import { signForLongitude, signName } from '../lib/signs';
+import { signForLongitude, signName, signPrepositional } from '../lib/signs';
+import { RUSSIAN_RUNTIME } from '../lib/i18n/ru-runtime/server';
+import { NAME_MAX } from '../lib/share';
 import { t } from '../lib/i18n';
 
 const source = readFileSync(new URL('./ChartCalculator.tsx', import.meta.url), 'utf8');
@@ -36,14 +38,16 @@ describe('reference Sun downstream interpretation', () => {
 
   it.each(['en', 'es', 'fr', 'it', 'pt', 'ru'] as const)('qualifies new unknown-time automatic names and wording in %s', locale => {
     const sunSign = signForLongitude(45);
-    const context = { locale, t, sunSign, signName, date: '2024-04-19', computedInput: { date: '2024-04-19', timeKnown: false },
-      russianCopy: { chart: { autoNameSun: 'Солнце' } }, AUTO_NAME_SUN: { en: 'Sun', es: 'Sol', fr: 'Soleil', it: 'Sole', pt: 'Sol' } };
+    const context = { locale, t, sunSign, signName, signPrepositional, date: '2024-04-19', computedInput: { date: '2024-04-19', timeKnown: false },
+      russianCopy: RUSSIAN_RUNTIME, AUTO_NAME_SUN: { en: 'Sun', es: 'Sol', fr: 'Soleil', it: 'Sole', pt: 'Sol' } };
     const code = ['referenceName', 'autoName'].map(name => `const ${declarations.get(name)!.getText(ast)};`).join('\n');
     const name = evaluate(code + '\nreturn autoName;', context);
     expect(name).toBe(`${t(locale, 'referenceChartName')} · 2024-04-19`);
     expect(name.length).toBeLessThanOrEqual(24);
     const known = evaluate(code + '\nreturn autoName;', { ...context, computedInput: { ...context.computedInput, timeKnown: true } });
-    expect(known).toContain(signName(sunSign, locale));
+    expect(known).toContain(locale === 'ru' ? signPrepositional(sunSign) : signName(sunSign, locale));
+    if (locale === 'ru') expect(known).toBe('Солнце в Тельце · 2024-04-19');
+    if (locale === 'en') expect(known).toBe('Taurus Sun · 2024-04-19');
     expect(t(locale, 'unknownTimeSunReference')).not.toBe('unknownTimeSunReference');
   });
 
@@ -53,6 +57,28 @@ describe('reference Sun downstream interpretation', () => {
     expect(copy).toContain('has not been verified across the whole birth date');
     expect(copy).not.toMatch(/changes|changed|both signs|all possible/i);
     expect(source).toContain("t(locale, 'unknownTimeSunReference')");
+  });
+
+  it('keeps earlier Russian automatic names recognizable beside the current form', () => {
+    const sunSign = signForLongitude(75);
+    const list = (locale: 'en' | 'ru') => evaluate(
+      `const ${declarations.get('autoNameLocales')!.getText(ast)};\nreturn (${declarations.get('autoNames')!.initializer!.getText(ast)});`,
+      { locale, sunSign, signName, signPrepositional, NAME_MAX, date: '', computedInput: { date: '2024-06-05' },
+        russianCopy: locale === 'ru' ? RUSSIAN_RUNTIME : null,
+        CATALOG_LOCALES: ['en', 'es', 'pt', 'fr', 'it', 'ru'], RELEASED_LOCALES: ['en', 'es', 'pt', 'fr', 'it'],
+        AUTO_NAME_SUN: { en: 'Sun', es: 'Sol', fr: 'Soleil', it: 'Sole', pt: 'Sol' } },
+    ) as string[];
+    const russian = list('ru');
+    expect(russian).toContain('Солнце в Близнецах · 2024-06-05');
+    expect(russian).toContain('Близнецы Солнце · 2024-06-05');
+    // Share links cap names at NAME_MAX, so the capped spellings are automatic too.
+    expect(russian).toContain('Солнце в Близнецах · 2024-06-05'.slice(0, NAME_MAX).trim());
+    expect(russian).toContain('Близнецы Солнце · 2024-06-05'.slice(0, NAME_MAX).trim());
+    expect(russian.slice(0, 5)).toEqual(list('en'));
+    expect(list('en')).toEqual([
+      'Gemini Sun · 2024-06-05', 'Géminis Sol · 2024-06-05', 'Gêmeos Sol · 2024-06-05',
+      'Gémeaux Soleil · 2024-06-05', 'Gemelli Sole · 2024-06-05',
+    ]);
   });
 
   it('recognizes automatic reference names without requesting another client catalog', () => {

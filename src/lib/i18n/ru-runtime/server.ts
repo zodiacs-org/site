@@ -96,6 +96,7 @@ export const RUSSIAN_RUNTIME = {
       privacy: 'Приватно по умолчанию. Данные рождения этого человека остаются в браузере.',
     },
     autoNameSun: 'Солнце',
+    autoNameSunTemplate: 'Солнце в {sign}',
     sharedBirthplace: 'Общее место рождения',
     englishOnlyTitle: 'Материал пока доступен по-английски',
     englishOnlySuffix: ' — пока по-английски',

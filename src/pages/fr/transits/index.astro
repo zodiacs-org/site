@@ -18,7 +18,7 @@ const faq = [
   },
   {
     q: 'Quels transits cette page affiche-t-elle ?',
-    a: 'Elle montre les aspects entre les dix planètes du ciel — aujourd’hui ou à la date choisie avec le curseur — et les dix planètes de ton thème natal, lorsque leur orbe est inférieur ou égal à 3 degrés, la marge étroite dans laquelle un transit est généralement considéré comme actif. La Lune en transit ne figure pas dans la liste, car elle parcourt tout ton thème chaque mois, mais elle reste visible sur l’anneau extérieur.',
+    a: 'Elle montre les aspects entre les dix planètes du ciel — aujourd’hui ou à la date choisie avec le curseur — et les dix planètes de ton thème astral, lorsque leur orbe est inférieur ou égal à 3 degrés, la marge étroite dans laquelle un transit est généralement considéré comme actif. La Lune en transit ne figure pas dans la liste, car elle parcourt tout ton thème chaque mois, mais elle reste visible sur l’anneau extérieur.',
   },
   {
     q: 'Pourquoi les transits lents comptent-ils davantage ?',
@@ -26,16 +26,16 @@ const faq = [
   },
   {
     q: 'Ai-je besoin de mon heure de naissance exacte ?',
-    a: 'Pour la plupart des transits, non. Les aspects entre planètes fonctionnent avec la date et le lieu de naissance. La Lune fait exception : sans heure, elle est calculée à midi et peut être décalée de six degrés au maximum ; les transits lunaires proches de la limite de l’orbe sont donc incertains. L’outil te prévient lorsque cela arrive.',
+    a: 'Pour la plupart des transits, non. Les aspects entre planètes fonctionnent avec la date et le lieu de naissance. La Lune fait exception : sans heure, elle est calculée à midi et peut être décalée de six degrés au maximum ; les transits lunaires proches de la limite de l’orbe sont donc incertains. L’outil te prévient lorsque cela arrive.',
   },
 ];
 
 const jsonLd = [
   {
     '@type': 'WebPage',
-    name: 'Suivi des transits : le ciel en mouvement sur ton thème',
+    name: 'Suivi des transits : le ciel en mouvement sur ton thème',
     url: 'https://zodiacs.org/fr/transits/',
-    description: 'Le ciel en mouvement sur ton thème astral : transits avec un orbe maximal de 3 degrés, aujourd’hui ou à toute date jusqu’à un an avant ou après.',
+    description: 'Le ciel en mouvement sur ton thème astral : transits avec un orbe maximal de 3 degrés, aujourd’hui ou à toute date jusqu’à un an avant ou après.',
     inLanguage: 'fr',
     isPartOf: { '@id': 'https://zodiacs.org/#site' },
   },
@@ -52,8 +52,8 @@ const jsonLd = [
 ---
 <Base
   clientUi
-  title="Transits sur ton thème astral — le ciel en mouvement | Zodiacs.org"
-  description="Les transits du jour sur tes planètes natales, avec un orbe maximal de 3°, et un curseur pour déplacer le ciel jusqu’à un an avant ou après. Gratuit et sur ton appareil."
+  title="Transits du jour sur ton thème astral | Zodiacs.org"
+  description="Les transits du jour sur tes planètes natales, à 3° d’orbe au plus, et un curseur pour avancer ou reculer le ciel jusqu’à un an. Calculé sur ton appareil."
   path="/fr/transits/"
   locale="fr"
   image="/assets/og/v2/tool/transits.png"
@@ -76,7 +76,7 @@ const jsonLd = [
     <section class="section--tight container container--narrow">
       <div class="section-head reveal">
         <h2>Le ciel en {label}</h2>
-        <p>Événements du mois calculés par le moteur : entrées dans les signes, lunaisons, stations et aspects exacts. Les heures sont en temps universel.</p>
+        <p>Événements du mois calculés par le moteur : entrées dans les signes, lunaisons, stations et aspects exacts. Les heures sont en temps universel.</p>
       </div>
       <ul class="trn-events reveal">
         {events.map((event) => (

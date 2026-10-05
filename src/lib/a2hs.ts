@@ -22,8 +22,8 @@ const COPY = {
     dismiss: 'Dismiss home-screen hint',
   },
   es: {
-    ios: 'Para tener tus cartas guardadas a mano, toca Compartir → Añadir a pantalla de inicio. Los avisos del cielo en iPhone y iPad solo funcionan desde el sitio instalado.',
-    android: 'Para tener tus cartas guardadas a mano, toca Menú → Añadir a pantalla de inicio.',
+    ios: 'Para tener tus cartas guardadas a mano, toca Compartir → Agregar a inicio. Los avisos del cielo en iPhone y iPad solo funcionan desde el sitio instalado.',
+    android: 'Para tener tus cartas guardadas a mano, toca Menú → Agregar a la pantalla principal.',
     dismiss: 'Descartar indicación de pantalla de inicio',
   },
   pt: {
