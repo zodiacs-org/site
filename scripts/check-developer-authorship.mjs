@@ -12,7 +12,7 @@ const trees = ['developers', 'sdk', 'api/v1', 'widgets', 'examples'];
 const rootDocuments = ['llms.txt', 'llms-full.txt', 'assets/README.md'];
 export const requiredDocuments = [
   ...['', 'compare/', 'compute/', 'conformance/', 'engine/', 'examples/',
-    'mcp/', 'precision-preview/', 'support/'].map((route) => `developers/${route}index.html`),
+    'mcp/', 'precision-preview/', 'sky-benchmark/', 'support/'].map((route) => `developers/${route}index.html`),
   'developers/engine/reference/index.html', 'developers/engine/reference/modules.html',
   'developers/engine/reference/provenance.json',
   'developers/engine/reference/release/LICENSE.txt',
