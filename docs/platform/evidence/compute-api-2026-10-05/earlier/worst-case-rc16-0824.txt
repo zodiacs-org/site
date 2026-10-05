@@ -1,0 +1,11 @@
+quiet from 08:24:07 (load 0.22 0.89 1.27)
+events, 92 days (the limit), all bodies and kinds, four windows a year 1800-2199: 1600 requests, cpu max 619.2 ms
+positions, 100 instants (the limit), all bodies, one request a year 1800-2199: 400 requests, cpu max 220.3 ms
+chart, each of the 13 house systems, 1800-2199: 200 requests, cpu max 17.7 ms
+sky-fact, each kind on a date in every zone, 1800-2199: 400 requests, cpu max 39.1 ms
+time, with a longitude, 1800-2199: 400 requests, cpu max 5.4 ms
+elections, the Moon void of course, 31 days, 1800-2199: 400 requests, cpu max 340.1 ms
+elections, five conditions without houses, 31 days, 1800-2199: 400 requests, cpu max 369.0 ms
+elections, the Moon angular, 4 days, 1800-2199: 400 requests, cpu max 489.1 ms
+elections, the Moon in a sign, waxing, and Mars angular, 31 days, 1800-2199: 400 requests, cpu max 480.0 ms
+exit 0 at 08:37:41 (load 0.94 1.00 1.13)

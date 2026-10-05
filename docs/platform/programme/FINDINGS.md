@@ -44,6 +44,7 @@ Severity follows the audit's scale:
 | F-67 | major | adoption | P2.E.returns was accepted while `src/lib/engine/year-scan.ts`, the year ahead on `/profile/`, still found solar returns with the site's own Sun crossing scan | fixed in the 2026-10-04 audit PR: the package's search, parity on 1,000 synthetic windows (max 3 ms), a regression test; P2.E.returns is `validated` until production serves it; in production since #639 (merged as `67aa32d8`, deployment `dpl_Av6FTWYa2iFZzT2WZuWeCsRDg2oV`), and accepted again at checkpoint 14 |
 | F-71 | major | process | Checkpoint 14 first accepted the co-ascendants and Koch on a clock reading and, for the co-ascendants, a window chosen after the residuals were seen, and its preregistrations said nothing had been measured | owner decision: both units `validated` until the owner ratifies the shared-UT1 reading and the window; they fail as measured if not |
 | F-74 | major | privacy | A chart's citation digest identifies the place as well as the time, and the MCP adapter's and the compute API's documents said only the time; on a chart with no known time the adapter's summary shows nothing that depends on the place | fixed in #643, each with tests: the MCP adapter states both directions from 0.1.0-rc.16.1, before its release, and so do the compute API's documents and its claim |
+| F-78 | major | cost | On engine rc.16, one address at both rate limits can cost 10.7 to 13.2 CPU-seconds a minute at the slowest requests, in three runs on one machine, against 7.8 on rc.15 in the run that timed both; DECISIONS-2026-09-30 §7 allows 10 | open, for the owner: the Firewall rules are the owner's; options with their cost in each run are below; the compute page now gives these figures, where it gave only rc.15's 8.7; the elections endpoint does not raise the bound |
 | F-06 | major | engine rc.11 | Configured-aspect "exact orb" claim fails on general decimal inputs | fix in engine rc.13 (in progress); fixed in engine rc.14 (zodiacs-org/engine#10, merged 2026-09-29 as `8deda244`); reaches production when the site adopts it; in production since #600 (merged as `6cc4d477`, deployment `dpl_2JtJjuE2bU8CYTBMxKF3kco43qcN`) |
 | F-17 | major | privacy | Share code of a chart without a birth time reveals the birthplace's longitude or zone | open: code fix planned; copy wrong until then; fixed in #599: a chart without a birth time is shared as the sky at 12:00 UTC on its date, and the copy is corrected in six locales; in production since #599 (merged as `aca257ad`, deployment `dpl_AuGvEUL1oJPenrfbFq3FkGH5V9s9`) |
 | F-18 | major | privacy | Sign-icon requests reveal Sun, Moon and rising signs to the server; privacy page silent | open: fix planned; fixed in #599: a chart's page asks for all twelve sign pictures of a size before showing its own; in production since #599 (merged as `aca257ad`, deployment `dpl_AuGvEUL1oJPenrfbFq3FkGH5V9s9`) |
@@ -611,3 +612,55 @@ The MCP adapter's part is fixed in 0.1.0-rc.16.1 (#643): `get_capabilities` labe
 - **Retry.** None. By the time the run was read, main had moved on to `3f09711a` (#646), whose own run is the next sample.
 - **Rate.** Since CI began running the drive (#630), it has failed on 2 of the 12 completed runs on main, after #637 and #645, both documentation changes, both in WebKit at 1280 px after the invitation journey.
 - **Disposition.** Unchanged: the fix belongs to the sharing feature, and the handoff stands. Until it lands, any merge can turn main red this way.
+
+### F-78 — on engine rc.16 one address can cost more than the 10 CPU-seconds a minute the compute API's limits allow (major, cost)
+
+- **Found** while measuring the election search's cost (B5.b), 2026-10-05.
+  `docs/platform/evidence/election-search-v0/tools/worst-case.ts` ran every
+  endpoint's costliest shape over every year from 1800 to 2199 through the
+  real handler, once with engine rc.15 installed and once with rc.16, one
+  after the other on one quiet 4-core machine (`worst-case-rc15.json`,
+  `worst-case-rc16.json` in `evidence/compute-api-2026-10-05/`). Two earlier
+  runs on rc.16 that morning, with earlier versions of the tool, are kept
+  beside them in `earlier/`.
+- **Figures.** At the slowest requests, ten events requests and thirty
+  positions requests a minute cost 10 × 0.403 s + 30 × 0.124 s = 7.8
+  CPU-seconds on rc.15 and 10 × 0.539 s + 30 × 0.178 s = 10.7 on rc.16. The
+  two earlier rc.16 runs, while the machine reported a 2.80 GHz processor,
+  gave 12.8 and 13.2. At the 95th percentiles, 5.9 on rc.15 and 6.8 on
+  rc.16. The engine calls themselves cost 5% to 14% more on rc.16
+  (`engine-rc15-rc16.txt`); the slowest request of each shape moved
+  further, from 8% less to 54% more, since a maximum is one request's time
+  and the spread between runs is wide.
+- **Rule.** DECISIONS-2026-09-30 §7: the rules come down if a later engine's
+  figures put one address over 10 CPU-seconds a minute. Until the election
+  search, the compute page gave only rc.15's figure of 2026-09-29, about 8.7
+  seconds; it now gives the figures of 2026-10-05.
+- **Elections.** The election search does not raise the bound: its slowest
+  request measured took 384 ms on rc.16, against 539 ms for an events
+  request, and 489 ms against 619 ms in the earlier run that timed it; it
+  counts under both rules as an events request does.
+- **Options**, for the owner. Each figure is CPU-seconds a minute for one
+  address at both rules, with every events request as slow as the run's
+  slowest events request and every other request as slow as its slowest
+  positions request: for 6 and 40 in the 12:40 run, 6 × 0.5391 + 34 ×
+  0.1776 = 9.3.
+
+  | events rule, general rule | 12:40 run | 08:24 run | 07:47 run |
+  | --- | ---: | ---: | ---: |
+  | 10 and 40, as now | 10.7 | 12.8 | 13.2 |
+  | 6 and 40 | 9.3 | 11.2 | 11.6 |
+  | 8 and 40 | 10.0 | 12.0 | 12.4 |
+  | 10 and 30 | 8.9 | 10.6 | 10.9 |
+  | 8 and 35 | 9.1 | 10.9 | 11.3 |
+  | 6 and 30 | 7.5 | 9.0 | 9.3 |
+
+  Only 6 and 30 stays under 10 in all three runs. Two other courses:
+  - a lower limit in the API itself (fewer instants in a positions request,
+    or a shorter events window), which changes what the API accepts and
+    needs a new version of its documents;
+  - or keep the rules until the deployed endpoints are measured, the P3.3
+    gate's own measurement, which is still open; that choice is the owner's
+    too.
+- **Disposition.** Open, for the owner. Lowering a Firewall rule changes a
+  security setting, which the programme does not do on its own.

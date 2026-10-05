@@ -1,0 +1,8 @@
+years 1800 to 2196, every 4; elections.samples 6000; CPU milliseconds per request
+events 92 days, all bodies and kinds             n 100  max 476.2 (1804, 200)  p95 386.3  refused 0  most evaluations 5279
+elections void 31 days                           n 100  max 210.6 (2056, 200)  p95 185.8  refused 0  most evaluations 5551
+elections five cheap 31 days                     n 100  max 232.6 (1812, 422)  p95 204.5  refused 10  most evaluations 5941
+elections five retrograde 31 days                n 100  max 68.0 (2100, 200)  p95 56.3  refused 0  most evaluations 2737
+elections angular Moon 4 days                    n 100  max 302.5 (1812, 422)  p95 247.5  refused 32  most evaluations 6000
+elections not void + angular Sun 31 days         n 100  max 180.3 (1908, 422)  p95 157.8  refused 100  most evaluations 0
+elections Moon in a sign + angular Mars 31 days  n 100  max 235.9 (2036, 422)  p95 189.2  refused 9  most evaluations 5924

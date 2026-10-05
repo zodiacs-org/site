@@ -162,9 +162,13 @@ describe('technical audit remediation contracts', () => {
     expect(sitemap).toContain("...['/', '/about/', '/privacy/', '/terms/'].map((loc) => [loc, LEGAL_IDENTITY_LASTMOD] as const)");
     // The approved trust notices revise both schemas and sitemap dates together.
     expect(terms).toContain("const modifiedAt = '2026-10-03T00:00:00.000Z'");
-    expect(privacy).toContain("const modifiedAt = '2026-10-03T00:00:00.000Z'");
     expect(sitemap).toContain("const OWNER_TRUST_LASTMOD = '2026-10-03'");
     expect(sitemap).toContain("...OWNER_TRUST_ROUTES.map((loc) => [loc, OWNER_TRUST_LASTMOD] as const)");
+    // So did the elections endpoint's sentence on the privacy page, on 5 October.
+    expect(privacy).toContain("const modifiedAt = '2026-10-05T00:00:00.000Z'");
+    expect(sitemap).toContain("const ELECTIONS_LASTMOD = '2026-10-05'");
+    expect(sitemap).toContain("const ELECTIONS_ROUTES = ['/developers/', '/developers/compute/', '/developers/support/', '/privacy/'] as const;");
+    expect(sitemap).toContain("...ELECTIONS_ROUTES.map((loc) => [loc, ELECTIONS_LASTMOD] as const)");
     for (const page of [privacy, terms]) expect(page).toContain('dateModified: modifiedAt');
     expect(about).toContain("dateModified: '2026-09-28T00:00:00.000Z'");
     expect(sitemap).toContain("const ENGINE_PHASE1_LASTMOD = '2026-09-23'");

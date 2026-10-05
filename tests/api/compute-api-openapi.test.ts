@@ -43,7 +43,7 @@ function jcsDigest(value: unknown): string {
 }
 
 describe('compute API in the OpenAPI document', () => {
-  it('describes all six endpoints as POST operations with schemas and examples for every request and response', () => {
+  it('describes all seven endpoints as POST operations with schemas and examples for every request and response', () => {
     expect(openapi.openapi).toBe('3.1.0');
     expect(openapi.tags.map((tag: any) => tag.name)).toContain('compute');
     // OpenAPI 3.1: a licence names an SPDX identifier or a URL, never both.
@@ -71,7 +71,7 @@ describe('compute API in the OpenAPI document', () => {
         expect(response.headers['Cache-Control'].schema.const).toBe('no-store');
       }
       expect(Object.keys(operation.responses).sort()).toEqual(
-        ['200', '400', '404', '405', '413', '415', ...(['positions', 'events', 'sky-fact'].includes(endpoint) ? ['422'] : []), '429', '500', '503'].sort(),
+        ['200', '400', '404', '405', '413', '415', ...(['positions', 'events', 'elections', 'sky-fact'].includes(endpoint) ? ['422'] : []), '429', '500', '503'].sort(),
       );
       // The headers a client acts on are declared where they are sent.
       expect(operation.responses['405'].headers.Allow.schema.const).toBe('POST, OPTIONS');
