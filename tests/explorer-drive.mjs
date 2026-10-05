@@ -840,6 +840,9 @@ try {
       /(conjunction|sextile|square|trine|opposition)/i.test(t2 ?? '')
       && (await page.url()).includes('sel=aspect'), t2 ?? '');
     check('beginner inspector: aspect uses What / How / Where / Why', await hasBeginnerInspector(page));
+    // Contextual selection schedules focus on the next animation frame.
+    // Assert the resulting focus state after that bounded transition.
+    await page.waitForFunction(() => document.activeElement?.hasAttribute('data-inspector-heading'), null, { timeout: 3000 });
     check('beginner inspector: contextual navigation focuses the new heading',
       await page.evaluate(() => document.activeElement?.hasAttribute('data-inspector-heading') ?? false));
   }

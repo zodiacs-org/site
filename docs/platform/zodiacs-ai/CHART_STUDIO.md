@@ -32,10 +32,11 @@ or the later Event Watch/Record Vault/Verification Lab roadmap products.
 
 On 2026-10-05, Node 22.23.2:
 
-- Production build: 4,416 pages; postbuild, distribution, schema and bundle
-  budgets pass. No website wheel or Phase 1 screenshot baseline changes.
-- Full repository suite: 6,762 passed, five skipped, 522 passing test files.
-- Typecheck: zero errors and warnings (40 existing informational hints).
+- Production build after merging main: 4,417 pages; postbuild, distribution,
+  schema and bundle budgets pass. The website wheel source is unchanged.
+  Phase 1 captures are refreshed against the merged template source.
+- Full repository suite: 6,796 passed, five skipped, 524 passing test files.
+- Typecheck: zero errors and warnings (39 existing informational hints).
 - AI tests: 54 tests pass; official HTTP client launches the panel, refuses
   personal arguments and retrieves its resource; official stdio client checks
   all nine tools and the packaged resource. The installed 0.2.0 developer copy
@@ -60,6 +61,19 @@ saved-file download remains a host acceptance check. No download success is
 claimed from that browser run.
 
 Captures and the machine-readable receipt are in `evidence/chart-studio/`.
+The merged source requires a regenerated minified Studio bundle. Two successive
+builds produce identical SHA-256 hashes, package drift checks pass, and the
+refreshed installed developer server matches the generated bundle. The final
+browser capture verifies that regenerated HTML renders without console errors.
+
+The merged-source GitHub run passed all 18 Phase 1 captures, 15 visual
+comparisons, and Lighthouse across 30 routes (90 samples). Its explorer drive
+reported two focus timing failures. The manual Moon-return toggle retained
+its value and restored calculation; the browser drivers now wait for the
+existing selected-place focus transfer and inspector animation-frame focus
+before continuing. Their assertions remain intact. A fresh CI run validates
+those bounded waits; the original failed provenance remains recorded in
+`evidence/chart-studio/merged-browser-evidence.json`.
 
 ## Try it
 

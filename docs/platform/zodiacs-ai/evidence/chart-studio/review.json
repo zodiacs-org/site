@@ -10,21 +10,21 @@
     "src/ai-tools/studio/style.css": "b233324a5be8b3cb528350af1caa758570af3ba4e78ef3b3826bb98eca555ecd",
     "src/ai-tools/studio/model.ts": "574d1fd3db9fe2a8e5e28b5bda802d965c79f9862623bac9e4c19ccc3d4ab232",
     "src/ai-tools/studio/bridge.ts": "2ae860805612ed076fe75307b96d16cab6c30951cccc3f02225335a591fac660",
-    "integrations/generated/chart-studio.mjs": "bbf41d7af90405ec74a5a01a7716096bb6f25c447056c3a46786a9725710d7e6",
+    "integrations/generated/chart-studio.mjs": "19e74fd911588c4e0b5befb63df0d296915bcb1b34f599331c6ae0c0bfb6c4a6",
     "integrations/packages/zodiacs-sky-0.2.0.zip": "e158c1853ae7d67404bb76e79050c07b85c975be5376984dfcd7d212ededd31b",
-    "integrations/packages/zodiacs-developer-0.2.0.zip": "bfc3b1b18b58c2aa96f0c16ec38e5effcbbf57a42e023c13a358e57a51e7036e"
+    "integrations/packages/zodiacs-developer-0.2.0.zip": "94da609a0df6f0dbd731bb2990be0350dee235af0194f213f57556385450ef9f"
   },
   "checks": {
-    "build": "pass; 4416 pages and postbuild gates",
+    "build": "pass; 4417 pages and postbuild gates after merging current main",
     "typecheck": {
       "errors": 0,
       "warnings": 0,
-      "hints": 40
+      "hints": 39
     },
     "fullSuite": {
-      "passed": 6762,
+      "passed": 6796,
       "skipped": 5,
-      "filesPassed": 522
+      "filesPassed": 524
     },
     "aiTests": 54,
     "adapterEvaluations": {
@@ -32,8 +32,16 @@
       "total": 40
     },
     "stdioTools": 9,
-    "installedBundle": "pass, nine tools and Studio resource",
-    "packages": "reproducible bundle/manifest/member checks pass"
+    "installedBundle": "pass; refreshed 0.2.0 copy matches generated server SHA-256 and passes nine tools plus Studio resource",
+    "packages": "two consecutive generated bundles have identical SHA-256; bundle/manifest/member checks pass",
+    "mergedBrowserEvidence": {
+      "url": "https://github.com/zodiacs-org/site/actions/runs/37345899072",
+      "phase1Captures": 18,
+      "visualComparisons": 15,
+      "lighthouseRoutes": 30,
+      "lighthouseSamples": 90,
+      "result": "Capture, visual and performance steps pass. Explorer reports two focus timing failures. Drivers now await the existing focus transitions; assertions retained; rerun pending."
+    }
   },
   "browser": {
     "viewports": [
@@ -82,6 +90,14 @@
       "file": "chart-studio-mobile.jpg",
       "bytes": 86984,
       "sha256": "92f9127086601ae798fb5df1e1080deb3765b71a0a90de331610301dc21e4c43"
+    },
+    {
+      "file": "chart-studio-final.jpg",
+      "bytes": 141718,
+      "sha256": "83ec7cf9268dbce813b2d84ddcb49d70ac06ac5cf0e264b6f0ddb43964c70ea7",
+      "note": "Post-merge rebuilt bundle loaded and rendered successfully; no observed console errors"
     }
-  ]
+  ],
+  "integrationBaseCommit": "0917879b55561114035da4d30df36fe0555bfa06",
+  "integrationReverifiedAt": "2026-10-05T17:35:05.399230+00:00"
 }
