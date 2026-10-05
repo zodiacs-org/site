@@ -170,10 +170,12 @@ describe('the house search', () => {
     ['the Sun at 59.5° north, Koch', 'Sun', { latitude: 59.5, longitude: 30.3, houseSystem: 'koch' }],
     ['Venus at 45° south, whole signs', 'Venus', { latitude: -45, longitude: 170, houseSystem: 'whole' }],
   ];
-  const angularScan = (body: BodyName, place: { latitude: number; longitude: number; houseSystem: string }, from: number, to: number) => scan((ms) => {
+  const angularAt = (body: BodyName, place: { latitude: number; longitude: number; houseSystem: string }, ms: number) => {
     const chart = natalChart({ utc: new Date(ms), latitude: place.latitude, longitude: place.longitude, houseSystem: place.houseSystem as never });
     return [1, 4, 7, 10].includes(houseOf(chart.bodies.find((row) => row.body === body)!.lon, chart.houses!.cusps));
-  }, from, to, MINUTE);
+  };
+  const angularScan = (body: BodyName, place: { latitude: number; longitude: number; houseSystem: string }, from: number, to: number) =>
+    scan((ms) => angularAt(body, place, ms), from, to, MINUTE);
 
   it("finds the spans in an angular house that a scan every minute finds, to within 2 seconds, sampled hourly and every six hours", () => {
     const from = Date.UTC(2026, 11, 1);
@@ -210,6 +212,23 @@ describe('the house search', () => {
     expect(phase.windows.reduce((sum, span) => sum + span.to - span.from, 0)).toBeLessThan(3.5 * DAY);
     expect(narrowed.samples - phase.samples).toBeLessThan(0.75 * alone.samples);
     expect(narrowed.windows.every((window) => phase.windows.some((span) => span.from <= window.from && window.to <= span.to))).toBe(true);
+  }, 60_000);
+
+  it('negates an angular condition within the stretches the other conditions leave, as a scan every minute finds', () => {
+    // The new moon of 9 December falls in these two days, so the waxing Moon leaves one stretch, from it to the end.
+    const from = Date.UTC(2026, 11, 8, 12);
+    const to = from + 2 * DAY;
+    const resolution = ELECTION_STEPS.resolutionSeconds * SECOND;
+    const waxing = scan((ms) => moonPhase(new Date(ms)).angle < 180, from, to, MINUTE);
+    expect(waxing.length).toBe(1);
+    expect(waxing[0].from).toBeGreaterThan(from);
+    const expected = resolveSpans(intersectSpans(waxing, scan((ms) => !angularAt('Moon', LONDON, ms), from, to, MINUTE)), resolution);
+    const { windows } = searchElections(
+      request(new Date(from).toISOString(), new Date(to).toISOString(), [{ kind: 'angular', body: 'Moon', not: true }, { kind: 'phase', phase: 'waxing' }], LONDON),
+      new Unbounded('elections.samples'),
+    );
+    expect(expected.length).toBeGreaterThanOrEqual(3);
+    expectSpans(windows, expected, 'the Moon waxing and not angular');
   }, 60_000);
 
   it('refuses before sampling a house when the stretches left need more samples than the request has', () => {
@@ -268,8 +287,11 @@ describe('the request', () => {
     }
   });
 
-  it('refuses a window longer than 31 days, and a search that would pass its samples, as a whole', async () => {
-    const long = await run(handler, { endpoint: 'elections', body: { from: FROM, to: '2027-01-02T00:00:01Z', conditions: [{ kind: 'void-of-course' }] } });
+  it('answers a window of exactly 31 days, and refuses one a second longer, and a search that would pass its samples, as a whole', async () => {
+    expect(BUDGETS['elections.windowDays']).toBe(31);
+    const exact = await run(handler, { endpoint: 'elections', body: { from: FROM, to: '2027-01-01T00:00:00Z', conditions: [{ kind: 'phase', phase: 'waxing' }] } });
+    expect(exact.status).toBe(200);
+    const long = await run(handler, { endpoint: 'elections', body: { from: FROM, to: '2027-01-01T00:00:01Z', conditions: [{ kind: 'void-of-course' }] } });
     expect(long.status).toBe(422);
     expect(long.json.error).toMatchObject({ code: 'budget-exhausted', limit: 'elections.windowDays', max: BUDGETS['elections.windowDays'] });
     const heavy = await run(handler, {
