@@ -1,7 +1,7 @@
 {
   "version": 1,
   "id": "translated-rising-and-sky-calendars-20261006",
-  "baseCommit": "550c67680279f5f31733b7feccbcb3491428fd31",
+  "baseCommit": "51b64f3cb67c2026a18772297ec6b367ed2ca183",
   "protectedPaths": [
     "src/lib/i18n/index.ts",
     "src/pages/es/[...slug].astro",
