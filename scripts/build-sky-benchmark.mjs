@@ -642,23 +642,34 @@ export async function installedEngine() {
 /** How far apart the same event may be in two replies, in milliseconds. */
 const EVENT_TOLERANCE_MS = 2_000;
 
-/** An event's fields that decide a reply, or the event as it is when it is not an object, so that it differs rather than throws. */
-const fieldsOf = (event, names) => (event && typeof event === 'object' ? Object.fromEntries(names.map((name) => [name, event[name]])) : event);
+const isObject = (value) => value !== null && typeof value === 'object';
+/**
+ * An object's fields that decide a reply, or the value as it is when it is
+ * not an object, so that a malformed reply differs rather than throws.
+ */
+const fieldsOf = (value, names) => (isObject(value) ? Object.fromEntries(names.map((name) => [name, value[name]])) : value);
+/** A list of events by their deciding fields, or the value as it is when it is not a list. */
+const eventsOf = (events, names) => (Array.isArray(events) ? events.map((event) => fieldsOf(event, names)) : events);
 
 /** The part of a reply that decides its answer: the question as read, the answer, and the facts behind it. */
 function decisive(result) {
+  if (!isObject(result)) return { result };
   const { answer, basis, fact, instant, window, zone, facts } = result;
+  if (!isObject(facts)) return { answer, basis, fact, instant, window, zone, facts };
   return {
     answer, basis, fact, instant, window, zone,
     sign: facts.sign,
     retrograde: facts.retrograde,
-    atStart: facts.atStart && { sign: facts.atStart.sign, retrograde: facts.atStart.retrograde },
-    changes: facts.changes?.map((event) => fieldsOf(event, ['at', 'into', 'retrograde'])),
-    stations: facts.stations?.map((event) => fieldsOf(event, ['at', 'type'])),
-    ingresses: facts.ingresses?.map((event) => fieldsOf(event, ['at', 'retrograde'])),
-    lunations: facts.lunations?.map((event) => fieldsOf(event, ['at', 'sign'])),
+    atStart: fieldsOf(facts.atStart, ['sign', 'retrograde']),
+    changes: eventsOf(facts.changes, ['at', 'into', 'retrograde']),
+    stations: eventsOf(facts.stations, ['at', 'type']),
+    ingresses: eventsOf(facts.ingresses, ['at', 'retrograde']),
+    lunations: eventsOf(facts.lunations, ['at', 'sign']),
   };
 }
+
+/** A time as a message shows it: as written when it is a string, and as JSON otherwise. */
+const shown = (at) => (at === undefined || at === null ? 'missing' : typeof at === 'string' ? at : JSON.stringify(at));
 
 const EVENT_LISTS = Object.freeze(['changes', 'stations', 'ingresses', 'lunations']);
 
@@ -674,27 +685,29 @@ export function replyDifferences(published, current) {
   const { answers: before, ...headBefore } = published;
   const { answers: after, ...headAfter } = current;
   if (JSON.stringify(headBefore) !== JSON.stringify(headAfter)) differences.push('the header or the counts of facts');
+  if (!Array.isArray(before) || !Array.isArray(after)) return [...differences, 'the replies are not a list'];
   if (before.length !== after.length) return [...differences, `${before.length} replies published, ${after.length} now`];
   before.forEach((was, index) => {
-    const now = after[index];
-    if (now.id !== was.id || JSON.stringify(now.request) !== JSON.stringify(was.request)) {
-      differences.push(`${was.id}: the request`);
+    const is = after[index];
+    if (is?.id !== was?.id || JSON.stringify(is?.request) !== JSON.stringify(was?.request)) {
+      differences.push(`${was?.id ?? is?.id}: the request`);
       return;
     }
-    const a = decisive(was.reply.result);
-    const b = decisive(now.reply.result);
+    const a = decisive(was.reply?.result);
+    const b = decisive(is.reply?.result);
     const withoutInstants = (value) => JSON.stringify(value, (name, inner) => (name === 'at' ? undefined : inner));
     if (withoutInstants(a) !== withoutInstants(b)) {
       differences.push(`${was.id}: the answer or the facts behind it`);
       return;
     }
     for (const list of EVENT_LISTS) {
-      (a[list] ?? []).forEach((event, n) => {
+      if (!Array.isArray(a[list])) continue;
+      a[list].forEach((event, n) => {
         // A time missing or unreadable on either side is a difference too: NaN is never within the tolerance.
         const then = event?.at;
-        const now = b[list][n]?.at;
+        const now = b[list]?.[n]?.at;
         if (!(Math.abs(Date.parse(then) - Date.parse(now)) <= EVENT_TOLERANCE_MS)) {
-          differences.push(`${was.id}: ${list} ${then ?? 'missing'} is now ${now ?? 'missing'}`);
+          differences.push(`${was.id}: ${list} ${shown(then)} is now ${shown(now)}`);
         }
       });
     }
@@ -730,10 +743,14 @@ export async function writeOrCheck(version = VERSION, { check = false, root = RO
   if (published) {
     const missing = DRAWN_FILES.filter((_, index) => texts[index] === null);
     if (missing.length > 0) {
-      const named = missing.length > 1 ? `${missing.slice(0, -1).join(', ')} and ${missing.at(-1)} are` : `${missing[0]} is`;
+      const listed = (names) => (names.length > 1 ? `${names.slice(0, -1).join(', ')} and ${names.at(-1)} are` : `${names[0]} is`);
       // With none of the drawn files left, say what makes the folder count as published.
-      const holds = missing.length === DRAWN_FILES.length ? ` (its folder holds ${entries.join(', ')})` : '';
-      throw new Error(`build-sky-benchmark: ${version} is published${holds}, but ${named} missing. ${version} is frozen: restore ${missing.length > 1 ? 'them' : 'it'} rather than draw ${version} again.`);
+      const others = entries.filter((name) => !DRAWN_FILES.includes(name));
+      const holds = missing.length === DRAWN_FILES.length && others.length > 0 ? ` (its folder holds ${others.join(', ')})` : '';
+      // A drawn file the folder lists but that reads as not there is a link to a file that is not there.
+      const broken = missing.filter((name) => entries.includes(name));
+      const links = broken.length > 0 ? ` ${listed(broken)} ${broken.length > 1 ? 'links to files that are' : 'a link to a file that is'} not there.` : '';
+      throw new Error(`build-sky-benchmark: ${version} is published${holds}, but ${listed(missing)} missing.${links} ${version} is frozen: restore ${missing.length > 1 ? 'them' : 'it'} rather than draw ${version} again.`);
     }
     const refusal = redrawRefusal(drawnWith(JSON.parse(texts[1]), JSON.parse(texts[2])), await installedEngine(), version);
     if (refusal) throw new Error(refusal);
