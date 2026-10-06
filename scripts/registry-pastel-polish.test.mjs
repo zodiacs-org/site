@@ -345,13 +345,13 @@ describe('registry pastel polish', () => {
 
     // Phones: every copy turns the pill into a full-width bar at the top edge
     // that slides away on the way down: the menu on the left, the
-    // Zodiacs mark beside it; profile and search before the Astrofolio divider.
+    // ZODIACS | ASTROFOLIO lockup on the centre line, search on the right.
     // The static pages carry the shared script; the hub SPA's Header sets
     // .is-away itself.
     for (const value of [wingNav, astrofolio, terminal, markets, thesis, sdk, technical]) {
       expect(value).toContain('@media (max-width: 919.5px) {\n    .wnav-wrap { top: 0; padding-top: 0; transition: transform 360ms cubic-bezier(0.22,1,0.36,1), opacity 260ms ease; }');
       expect(value).toContain('.wnav-wrap.is-away { transform: translateY(-100%); opacity: 0; }');
-      expect(value).toContain("html body .wnav-wrap .wnav { --wnav-lockup: clamp(10px, 3.2vw, 13px); display: grid; grid-template-areas: 'menu mark . profile search chip'; grid-template-columns: 44px calc(var(--wnav-lockup) * 5.7 + 13px) minmax(0,1fr) 44px 44px calc(var(--wnav-lockup) * 8.27 + 13px); box-sizing: border-box; width: 100%; max-width: none; height: calc(52px + env(safe-area-inset-top, 0px));");
+      expect(value).toContain("html body .wnav-wrap .wnav { --wnav-lockup: clamp(10px, 3.2vw, 13px); display: grid; grid-template-areas: 'menu . mark chip . profile search'; grid-template-columns: 44px minmax(0,1fr) calc(var(--wnav-lockup) * 5.7 + 13px) calc(var(--wnav-lockup) * 8.27 + 13px) minmax(0,1fr) 44px 44px; box-sizing: border-box; width: 100%; max-width: none; height: calc(52px + env(safe-area-inset-top, 0px));");
       expect(value).toContain('border-width: 0 0 1px; border-radius: 0; box-shadow: none; }');
       expect(value).toContain('.wnav__burger { grid-area: menu; border-color: transparent; }');
       expect(value).toContain(".wnav__burger:not([aria-expanded='true']) .wnav__burger-line:nth-child(2) { opacity: 0; }");
@@ -372,9 +372,9 @@ describe('registry pastel polish', () => {
     expect(header).toContain("wrap.classList.toggle('is-away', next);");
     expect(header).toContain("|| root.classList.contains('has-campaign-sheet')");
     expect(siteNav).toContain(":global(html[lang]) .nav-wrap.is-away { transform: translateY(-100%); opacity: 0; }");
-    expect(siteNav).toContain("grid-template-areas: 'menu mark . profile search chip';");
-    expect(siteNav).toContain("grid-template-areas: 'menu mark . profile chip';");
-    expect(siteNav).toContain('grid-template-columns: 44px calc(var(--nav-lockup) * 5.7 + 13px) minmax(0, 1fr) 44px 44px calc(var(--nav-lockup) * 8.27 + 13px);');
+    expect(siteNav).toContain("grid-template-areas: 'menu . mark chip . profile search';");
+    expect(siteNav).toContain("grid-template-areas: 'menu . mark chip . profile .';");
+    expect(siteNav).toContain('grid-template-columns: 44px minmax(0, 1fr) calc(var(--nav-lockup) * 5.7 + 13px) calc(var(--nav-lockup) * 8.27 + 13px) minmax(0, 1fr) 44px 44px;');
     expect(siteNav).toContain(":global(html[lang]) .nav__chip::before {");
     expect(siteNav).toContain(":global(html[lang]) .nav__burger:not([aria-expanded='true']) .nav__burger-line:nth-child(2) { opacity: 0; }");
     expect(siteNav).toContain("? '(max-width: 1039.5px)' : '(max-width: 919.5px)');");

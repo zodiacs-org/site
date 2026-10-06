@@ -20,11 +20,11 @@ await withPreview({port:8911},async base=>{
    const box=await nav.boundingBox();
    const chip=page.locator('[data-nav] .nav__chip');
    const chipBox=await chip.boundingBox();
-   assert(box.x+box.width<=chipBox.x+0.5,'Profile stays left of the Astrofolio divider');
+   assert(width < 920 ? chipBox.x+chipBox.width<=box.x+0.5 : box.x+box.width<=chipBox.x+0.5,'Mobile retains its order; desktop places Astrofolio last');
    const search=page.locator('[data-nav] .nav__search');
    if(await search.isVisible()) assert(box.x+box.width<=(await search.boundingBox()).x+0.5,'Profile → search on every layout');
    const beforeChip=await search.isVisible()?search:nav;
-   assert((await beforeChip.boundingBox()).x+(await beforeChip.boundingBox()).width<=chipBox.x+0.5,'Search stays left of the Astrofolio divider');
+   if(width >= 920) assert((await beforeChip.boundingBox()).x+(await beforeChip.boundingBox()).width<=chipBox.x+0.5,'Desktop search stays left of the Astrofolio divider');
    await beforeChip.focus();await page.keyboard.press('Tab');
    assert(await chip.evaluate(node=>document.activeElement===node),'Matching keyboard order');
    await page.mouse.click(10,90);

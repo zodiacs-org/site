@@ -370,7 +370,7 @@ ${WING_PHONE_BAR_CSS}`;
 
 // Below the existing 920px desktop tier, the pill becomes a full-width bar at the top edge, in the same
 // colour (owner request, after rolex.com): the menu on the left, the
-// Zodiacs mark beside it, then profile and search before Astrofolio on the right. It
+// ZODIACS | ASTROFOLIO lockup on the centre line, search on the right. It
 // slides away as the page scrolls down and returns as it scrolls up. Both
 // words share one size and tracking; the mark leads with the 0.2em that
 // trails the last letter, and the hairline gets 13px either side. The two
@@ -383,8 +383,8 @@ export const WING_PHONE_BAR_CSS = `@media (max-width: 919.5px) {
     .wnav-wrap { top: 0; padding-top: 0; transition: transform 360ms cubic-bezier(0.22,1,0.36,1), opacity 260ms ease; }
     .wnav-wrap.is-away { transform: translateY(-100%); opacity: 0; }
     .wnav-wrap.is-away .wnav { pointer-events: none; }
-    /* html body … outranks the hub's lens and frost pill rules. Fixed word tracks preserve first-paint geometry; Astrofolio sits after profile and search. */
-    html body .wnav-wrap .wnav { --wnav-lockup: clamp(10px, 3.2vw, 13px); display: grid; grid-template-areas: 'menu mark . profile search chip'; grid-template-columns: 44px calc(var(--wnav-lockup) * 5.7 + 13px) minmax(0,1fr) 44px 44px calc(var(--wnav-lockup) * 8.27 + 13px); box-sizing: border-box; width: 100%; max-width: none; height: calc(52px + env(safe-area-inset-top, 0px)); padding: env(safe-area-inset-top, 0px) 6px 0; gap: 0; border-width: 0 0 1px; border-radius: 0; box-shadow: none; }
+    /* html body … outranks the hub's lens and frost pill rules. The two outer tracks match, so the lockup centres on the bar. */
+    html body .wnav-wrap .wnav { --wnav-lockup: clamp(10px, 3.2vw, 13px); display: grid; grid-template-areas: 'menu . mark chip . profile search'; grid-template-columns: 44px minmax(0,1fr) calc(var(--wnav-lockup) * 5.7 + 13px) calc(var(--wnav-lockup) * 8.27 + 13px) minmax(0,1fr) 44px 44px; box-sizing: border-box; width: 100%; max-width: none; height: calc(52px + env(safe-area-inset-top, 0px)); padding: env(safe-area-inset-top, 0px) 6px 0; gap: 0; border-width: 0 0 1px; border-radius: 0; box-shadow: none; }
     .wnav__burger { grid-area: menu; border-color: transparent; }
     .wnav__burger-line { width: 20px; }
     .wnav__burger:not([aria-expanded='true']) .wnav__burger-line:first-child { transform: translate(-50%, calc(-50% - 3.5px)); }
