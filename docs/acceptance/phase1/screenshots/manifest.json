@@ -6,27 +6,27 @@
     "script": "tests/phase1-acceptance-drive.mjs",
     "contractVersion": 4
   },
-  "capturedAt": "2026-10-06T15:54:13.767Z",
+  "capturedAt": "2026-10-06T17:17:41.541Z",
   "browser": "Chromium 154.0.8037.98",
   "dailyDate": "2026-10-06",
   "publicationCanonicalSha256": "86c811b61f6dead84ab58b91b02d289dcfc5273cf04e6dbdcd78841c5295a465",
-  "templateSourceSha256": "71fb54a25602d508b3484a94406cab5f070feec1cb6765243ff18c761a76459f",
+  "templateSourceSha256": "22d9c6f387024020cb623a56992fb49f7df92597f5c8e6224a608f11173f515b",
   "renderPayloadSha256": {
     "daily": "14f710002804e0f04dac5d0023c8d2f35b40d861abd2f308136c2f1c01484214",
     "dailyPublication": "90dc8007e010e419a91a934efd47a33e62df4b4d17867ccf4d5c76f727f658a1",
-    "dailyPublicationManifest": "a9f9df9858a2defbdeabb3e0e528fce03d7891b636c87f0b7a1160e638611c3a",
+    "dailyPublicationManifest": "71bcbb4cf4ba713b77d765f1eb42dea25f227fa4666c30762a3a42737c9a4e2c",
     "horoscopeProgram": "4b81013c05506334c503632ddfe310fc4b8bb94ebb9e650faa7b328f2d98b16e"
   },
   "buildReceipt": {
     "schema": "zodiacs.phase1-build-receipt.v1",
-    "builtAt": "2026-10-06T15:53:22.005Z",
-    "templateSourceSha256": "71fb54a25602d508b3484a94406cab5f070feec1cb6765243ff18c761a76459f",
+    "builtAt": "2026-10-06T17:17:09.333Z",
+    "templateSourceSha256": "22d9c6f387024020cb623a56992fb49f7df92597f5c8e6224a608f11173f515b",
     "dailyDate": "2026-10-06",
     "publicationCanonicalSha256": "86c811b61f6dead84ab58b91b02d289dcfc5273cf04e6dbdcd78841c5295a465",
     "renderPayloadSha256": {
       "daily": "14f710002804e0f04dac5d0023c8d2f35b40d861abd2f308136c2f1c01484214",
       "dailyPublication": "90dc8007e010e419a91a934efd47a33e62df4b4d17867ccf4d5c76f727f658a1",
-      "dailyPublicationManifest": "a9f9df9858a2defbdeabb3e0e528fce03d7891b636c87f0b7a1160e638611c3a",
+      "dailyPublicationManifest": "71bcbb4cf4ba713b77d765f1eb42dea25f227fa4666c30762a3a42737c9a4e2c",
       "horoscopeProgram": "4b81013c05506334c503632ddfe310fc4b8bb94ebb9e650faa7b328f2d98b16e"
     }
   },
