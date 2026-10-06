@@ -140,12 +140,14 @@ await withPreview({ port: 4402 }, async (baseURL) => {
         await page.waitForFunction(() => document.querySelector('[data-hero-video]')?.dataset.heroPlayback === 'playing');
       }
 
+      await page.locator('[data-hero-poster]').evaluate((poster) => poster.decode());
       const before = await video.evaluate((element) => {
         const poster = document.querySelector('[data-hero-poster]');
         return {
           attached: element.dataset.sourcesAttached === 'true',
           playback: element.dataset.heroPlayback,
           poster: poster?.currentSrc ?? null,
+          posterHeight: poster?.naturalHeight ?? 0,
           sources: [...element.querySelectorAll('source')].map((source) => source.getAttribute('src')),
           animation: poster?.getAnimations().find((item) => item.animationName === 'hero-poster-drift')?.playState ?? null,
           width: poster?.getBoundingClientRect().width ?? 0,
@@ -159,7 +161,8 @@ await withPreview({ port: 4402 }, async (baseURL) => {
           : !before.attached && before.sources.every((source) => source === null),
         `${before.playback} · ${JSON.stringify(before.sources)}`,
       );
-      check(`${testCase.name}: poster remains the LCP surface`, /\/assets\/hero\/zodiacs-hero-poster(?:-mobile)?\.avif$/.test(before.poster ?? '') && before.width > 0 && before.height > 0, `${before.poster} · ${before.width.toFixed(0)}×${before.height.toFixed(0)}`);
+      if (testCase.viewport.width < 720) check(`${testCase.name}: mobile poster retains full-HD source detail`, before.posterHeight >= 1080, `${before.posterHeight}px`);
+      check(`${testCase.name}: poster remains the LCP surface`, /\/assets\/hero\/zodiacs-hero-poster(?:-mobile-v2)?\.avif$/.test(before.poster ?? '') && before.width > 0 && before.height > 0, `${before.poster} · ${before.width.toFixed(0)}×${before.height.toFixed(0)}`);
       check(
         `${testCase.name}: ambient motion matches preference and viewport`,
         testCase.drifts ? before.animation === 'running' : before.animation === null,
