@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "id": "owner-responsive-navigation-consistency-20261005",
-  "baseCommit": "51b64f3cb67c2026a18772297ec6b367ed2ca183",
+  "id": "owner-footer-discovery-polish-20261006",
+  "baseCommit": "f0fe72a438401aaff43ed138cf6c46e20e761250",
   "protectedPaths": [
     "public/assets/app.js",
     "public/registry/aquarius/index.html",
@@ -18,10 +18,10 @@
     "public/registry/taurus/index.html",
     "public/registry/technical/index.html",
     "public/registry/virgo/index.html",
+    "public/sdk/examples/simastry-aura/index.html",
     "public/sdk/index.html",
     "public/terminal/markets/index.html",
-    "scripts/registry-pastel-polish.test.mjs",
     "src/app.jsx"
   ],
-  "authorization": "On October 5, 2026, after being told that tablet layouts and shared-chart pages still use the floating pill, the owner instructed: \u201cyes do it. I want consistency. Except desktop - that remains as is\u201d. This one-time exact-path exception updates only the shared navigation breakpoint, its Registry application scroll query, synchronized/generated navigation output, and the associated navigation regression assertions. Existing desktop navigation, page content, assets, disclosures and locale copy remain unchanged. On October 6 the owner requested saved-profile polish and explicitly directed: \u201cThen push everything live.\u201d This release combines that approved navigation work with the profile and consumer visual fixes."
+  "authorization": "The owner requested cleaner Keep exploring links and a separate Guide section with a simple explanation on October 6, 2026. This exact-path allowance covers only the shared Registry footer introduction, its generated output, and the footer stylesheet cache version on static pages. Standing owner approval authorizes publishing the frontend polish."
 }

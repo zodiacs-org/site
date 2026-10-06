@@ -21,7 +21,24 @@
 .return-result { margin-top: 32px; scroll-margin-top: 90px; }
 .return-result h2 { margin-bottom: 18px; }
 .return-result .chart-trust time { overflow-wrap: anywhere; }
-.return-discovery ul { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 22px; }
-.return-discovery a { min-height: 44px; display: inline-flex; align-items: center; text-underline-offset: 4px; }
-.return-discovery { border-top: 1px solid var(--hair-1); margin-block: 32px 20px; padding-top: 22px; }
-.return-discovery h2 { font-family: var(--font-serif); font-weight: 400; font-size: 27px; margin-bottom: 14px; }
+/* A small directory, with one clear destination per row. */
+.return-discovery { border-top: 1px solid var(--hair-1); margin-block: 32px 0; padding-top: 24px; }
+.return-discovery h2 { font-family: var(--font-serif); font-weight: 400; font-size: 27px; margin: 0 0 20px; }
+.return-discovery ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr); }
+.return-discovery li { min-width: 0; border-bottom: 1px solid var(--hair-1); }
+.return-discovery a { min-height: 60px; height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 14px 8px; color: var(--text-2); line-height: 1.45; text-decoration: none; border-radius: 4px; transition: color 160ms ease, background-color 160ms ease; }
+.return-discovery__arrow { flex: 0 0 auto; color: var(--muted); transition: transform 160ms ease; }
+.return-discovery a:focus-visible { outline: 2px solid var(--text-2); outline-offset: 3px; }
+@media (hover: hover) {
+  .return-discovery a:hover { color: var(--text); background: var(--void-1); }
+  .return-discovery a:hover .return-discovery__arrow { transform: translateX(3px); }
+}
+@media (min-width: 760px) {
+  .return-discovery ul { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 32px; }
+}
+/* Profile already ends with section padding; avoid stacking two large gaps. */
+main > .section--tight:has(> .return-discovery) { width: min(100% - 40px, 780px); padding-block: 0; }
+main > .section--tight > .return-discovery { margin-top: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .return-discovery a, .return-discovery__arrow { transition: none; }
+}

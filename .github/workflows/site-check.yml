@@ -814,6 +814,12 @@ jobs:
           node tests/profile-appearance-drive.mjs
           node tests/profile-navigation-drive.mjs
 
+      - name: Discovery links and Guide introduction
+        timeout-minutes: 6
+        env:
+          OUT_DIR: tests/visual/artifacts/footer-discovery
+        run: node tests/footer-discovery-drive.mjs
+
       - name: Mobile spacing and stable Astrofolio purchase controls
         timeout-minutes: 6
         run: node tests/visual-consistency-drive.mjs
@@ -835,6 +841,7 @@ jobs:
           path: |
             tests/visual/artifacts/profile-recovery/
             tests/visual/artifacts/profile-appearance/
+            tests/visual/artifacts/footer-discovery/
           if-no-files-found: ignore
           retention-days: 30
 
