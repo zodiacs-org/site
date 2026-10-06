@@ -1642,6 +1642,7 @@
       const toolsButtonRef = useRef(null);
       const signsButtonRef = useRef(null);
       const menuButtonRef = useRef(null);
+      useEffect(() => initProfileNavigation(), []);
       const focusDropdownItem = (id, last = false) => {
         window.requestAnimationFrame(() => {
           const items = [...document.querySelectorAll(`#${id} a`)];
@@ -1806,9 +1807,8 @@
                   <a className="wnav__link" href="/today/">Today</a>
                   <a className="wnav__link" href="/learn/">Learn</a>
                   <a className="wnav__link" href="/horoscopes/">Horoscopes</a>
-                  <a className="wnav__link" href="/profile/">Saved charts</a>
                 </div>
-                <a className="wnav__profile-shortcut" href="/profile/" aria-label="Your profile" title="Your profile"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="3.2" stroke="currentColor" strokeWidth="1.3"/><path d="M5.5 20v-1.5a6.5 6.5 0 0 1 13 0V20" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/></svg></a>
+                <a className="wnav__profile-shortcut" href="/profile/" aria-label="Your profile" title="Your profile" data-profile-glyph=""><svg className="wnav__profile-icon" width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="3.2" stroke="currentColor" strokeWidth="1.3"/><path d="M5.5 20v-1.5a6.5 6.5 0 0 1 13 0V20" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/></svg><span className="wnav__avatar" data-profile-avatar="" aria-hidden="true" hidden /></a>
                 <a className="wnav__search" href="/?search=1" aria-label="Search the site">
                   <svg width="14" height="14" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="6.5" cy="6.5" r="4.75" stroke="currentColor" strokeWidth="1.4"/><path d="M10.5 10.5L13.5 13.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></svg>
                   <kbd className="wnav__search-kbd" aria-hidden="true">/</kbd>

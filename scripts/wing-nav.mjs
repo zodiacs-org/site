@@ -1,3 +1,5 @@
+import { initProfileNavigation } from '../src/lib/profile/navigation-avatar.mjs';
+
 // Unified site-wide navigation — the WING copy.
 //
 // Part AA: one nav bar across the whole site. The main site renders it from
@@ -95,9 +97,8 @@ export function wingNavHtml({ includeSearch = true } = {}) {
         <a class="wnav__link" href="/today/">Today</a>
         <a class="wnav__link" href="/learn/">Learn</a>
         <a class="wnav__link" href="/horoscopes/">Horoscopes</a>
-        <a class="wnav__link" href="/profile/">Saved charts</a>
       </div>
-      <a class="wnav__profile-shortcut" href="/profile/" aria-label="Your profile" title="Your profile"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="3.2" stroke="currentColor" stroke-width="1.3"/><path d="M5.5 20v-1.5a6.5 6.5 0 0 1 13 0V20" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></a>
+      <a class="wnav__profile-shortcut" href="/profile/" aria-label="Your profile" title="Your profile" data-profile-glyph><svg class="wnav__profile-icon" width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="3.2" stroke="currentColor" stroke-width="1.3"/><path d="M5.5 20v-1.5a6.5 6.5 0 0 1 13 0V20" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><span class="wnav__avatar" data-profile-avatar aria-hidden="true" hidden></span></a>
       ${search}
       <a class="wnav__chip" href="/astrofolio/">Astrofolio</a>
       <button class="wnav__burger" type="button" data-wnav-burger aria-expanded="false" aria-controls="wnav-menu" aria-label="Open menu">
@@ -267,6 +268,8 @@ export function wingNavScript() {
       setMobile(false);
       if(restore) restore.focus();
     });
+    ${initProfileNavigation.toString()}
+    initProfileNavigation();
   })();
   ${WING_PHONE_BAR_SCRIPT}`;
 }
@@ -287,7 +290,7 @@ export function wingNavCss() {
   .wnav-wrap { --wing-sans: 'Instrument Sans', 'Instrument Sans Fallback', 'Instrument Sans Fallback Android', system-ui, -apple-system, sans-serif; --wing-serif: 'EB Garamond', 'EB Garamond Fallback', 'EB Garamond Fallback Android', 'EB Garamond Fallback Times', 'Iowan Old Style', Georgia, serif; position: fixed; top: 14px; left: 0; right: 0; z-index: 60; display: flex; flex-direction: column; align-items: center; pointer-events: none; padding-top: env(safe-area-inset-top); }
   .wnav { pointer-events: auto; box-sizing: border-box; max-width: calc(100% - 32px); display: inline-flex; align-items: center; gap: 10px; height: 52px; padding: 0 10px 0 20px; border-radius: 999px; background: rgba(10,12,17,0.96); backdrop-filter: saturate(150%) blur(18px); -webkit-backdrop-filter: saturate(150%) blur(18px); border: 1px solid rgba(198,204,218,0.16); box-shadow: inset 0 1px 0 rgba(238,241,247,0.06), 0 12px 32px -14px rgba(0,0,0,0.7); }
   @media (min-width: 920px) { .wnav { gap: 10px; } }
-  @media (min-width: 900px) { .wnav { gap: 18px; } }
+
   .wnav__mark { display: inline-flex; align-items: center; gap: 9px; text-decoration: none; white-space: nowrap; }
   .wnav__brand { display: block; flex-shrink: 0; }
   .wnav__mark:hover .wnav__brand { animation: wnav-turn 14s linear infinite; }
@@ -302,10 +305,14 @@ export function wingNavCss() {
   }
   .wnav__search-kbd { display: none; font-family: var(--mono, 'JetBrains Mono', monospace); font-size: 10px; line-height: 1; padding: 3px 5px; border: 1px solid rgba(198,204,218,0.16); border-radius: 4px; color: var(--ink-mute, #8A93A6); }
   @media (min-width: 920px) { .wnav__search-kbd { display: inline-block; } }
-  .wnav__profile-shortcut { display: none; width: 44px; height: 44px; place-items: center; color: var(--ink-2, #C6CCDA); border-radius: 50%; }
+  .wnav__profile-shortcut { display: inline-grid; width: 44px; height: 44px; place-items: center; color: var(--ink-2, #C6CCDA); border-radius: 50%; }
+  .wnav__avatar { display: inline-grid; place-items: center; box-sizing: border-box; width: 28px; height: 28px; overflow: hidden; border-radius: 50%; background: var(--sign, #EEF1F7); color: #080A0E; font-family: var(--wing-serif); font-size: 16px; font-weight: 500; line-height: 1; }
+  .wnav__avatar[hidden], .has-avatar > .wnav__profile-icon { display: none; }
+  .wnav__avatar img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .wnav__profile-shortcut:hover { background: rgba(198,204,218,0.08); }
   .wnav__links { display: none; align-items: center; gap: 2px; }
-  @media (min-width: 920px) { .wnav__links { display: inline-flex; } }
-  .wnav__link { display: inline-flex; align-items: center; gap: 6px; padding: 7px 11px; border-radius: 999px; font-family: var(--wing-sans); font-size: 14px; font-weight: 500; letter-spacing: normal; text-transform: none; white-space: nowrap; color: var(--ink-2, #C6CCDA); text-decoration: none; background: none; border: 0; cursor: pointer; transition: color 200ms var(--ease, cubic-bezier(0.4,0,0.2,1)), background 260ms var(--ease, cubic-bezier(0.4,0,0.2,1)); }
+  @media (min-width: 920px) { .wnav__links { display: grid; } }
+  .wnav__link { line-height: 1.6; display: inline-flex; align-items: center; gap: 6px; padding: 7px 11px; border-radius: 999px; font-family: var(--wing-sans); font-size: 14px; font-weight: 500; letter-spacing: normal; text-transform: none; white-space: nowrap; color: var(--ink-2, #C6CCDA); text-decoration: none; background: none; border: 0; cursor: pointer; transition: color 200ms var(--ease, cubic-bezier(0.4,0,0.2,1)), background 260ms var(--ease, cubic-bezier(0.4,0,0.2,1)); }
   .wnav__link:hover { color: var(--ink, #EEF1F7); background: rgba(198,204,218,0.07); }
   .wnav__link[aria-current='page'] { color: var(--ink, #EEF1F7); }
   .wnav__dropdown-btn svg { transition: transform 260ms var(--ease, cubic-bezier(0.4,0,0.2,1)); }
@@ -365,6 +372,15 @@ export function wingNavCss() {
   .wnav-menu__sign .wnav-disc { width: 30px; height: 30px; }
   @keyframes wnav-turn { to { transform: rotate(360deg); } }
   @media (prefers-reduced-motion: reduce) { .wnav-tools, .wnav-signs, .wnav__burger, .wnav__dropdown-btn svg, .wnav__burger-line { transition: none; } .wnav__mark:hover .wnav__brand { animation: none; } }
+  @media (min-width: 920px) {
+    .wnav { display: grid; width: 884px; grid-template-areas: 'mark links profile search chip'; grid-template-columns: 116px minmax(0, 1fr) 44px 62px 120px; gap: 18px; }
+    .wnav__mark { grid-area: mark; min-width: 0; }
+    .wnav__links { grid-area: links; min-width: 0; grid-template-columns: 74px 74px 64px 62px minmax(0, 1fr); }
+    .wnav__profile-shortcut { grid-area: profile; }
+    .wnav__search { grid-area: search; box-sizing: border-box; width: 62px; height: 44px; }
+    .wnav__chip { grid-area: chip; box-sizing: border-box; min-width: 0; }
+    .wnav__dropdown-btn { justify-content: space-between; }
+  }
 ${WING_PHONE_BAR_CSS}`;
 }
 

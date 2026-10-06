@@ -317,12 +317,11 @@ try {
     browser, baseURL: 'http://127.0.0.1:4399', check, outDir: OUT,
   });
 
-  // Editorial pages keep the Astrofolio door at every boundary. Tool pages
-  // (owner rule since #633: no Astrofolio branding on tools) use the shorter
-  // desktop shell with the door removed from both the bar and the menu.
+  // Owner-approved global navigation keeps the same Astrofolio door on
+  // editorial and tool pages, including each responsive boundary.
   for (const [surface, route, expectsDoor] of [
     ['editorial', '/learn/', true],
-    ['tool', '/birth-chart/', false],
+    ['tool', '/birth-chart/', true],
   ]) {
     let navBreakpointsPass = true;
     const navBreakpointsDetail = [];
@@ -377,7 +376,7 @@ try {
             && (desktop || state.mobileRegistryVisible === false);
         const pass = state.navFits
           && door
-          && Math.abs(state.navWidth - (desktop ? (expectsDoor ? (prefix ? 992 : 884) : (prefix ? 854 : 746)) : state.viewportWidth)) <= 0.1
+          && Math.abs(state.navWidth - (desktop ? (prefix ? 992 : 884) : state.viewportWidth)) <= 0.1
           && (desktop ? state.radius !== '0px' : state.radius === '0px')
           && state.burgerVisible === !desktop
           && state.linksVisible === desktop;
@@ -392,15 +391,14 @@ try {
     navBreakpointsPass, navBreakpointsDetail.join(' · '));
   }
 
-  // A shared-chart receiver intentionally removes every wing link. Its head
-  // marker must reserve the shorter shell before hydration, with no empty
-  // destination track and no later movement of the surviving controls.
+  // Shared charts retain the standard navigation while removing collection
+  // links from the reading. The header must stay stable through hydration.
   const receiverDetails = [];
   let receiverPass = true;
   for (const [prefix, desktopBreakpoint, desktopWidth] of [
-    ['', 920, 746],
-    ['/es', 1040, 854],
-    ['/ru', 1040, 854],
+    ['', 920, 884],
+    ['/es', 1040, 992],
+    ['/ru', 1040, 992],
   ]) {
     for (const width of [320, 390, desktopBreakpoint, ...(prefix === '' ? [1440] : [])]) {
       const desktop = width >= desktopBreakpoint;
@@ -423,7 +421,7 @@ try {
           });
         return {
           receiver: document.documentElement.hasAttribute('data-chart-share-receiver'),
-          wingLinks: document.querySelectorAll('a[href="/astrofolio/"],a[href^="/registry/"],a[href^="/sdk/"]').length,
+          wingLinks: document.querySelectorAll('main a[href="/astrofolio/"],main a[href^="/registry/"],main a[href^="/sdk/"]').length,
           left: box?.left, right: box?.right, top: box?.top, bottom: box?.bottom, width: box?.width,
           scrollX, scrollY,
           viewport: visualViewport && {
