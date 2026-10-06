@@ -14,8 +14,10 @@ host checks remain pending. See [readiness criteria](./READINESS.md) and
 Version 0.3.0 packages Time Explorer, possible birth-time windows and local
 calculation-record inspection in the existing browser panel. See
 [Chart Studio review](./CHART_STUDIO.md). Its standalone local preview is under
-review; it has not replaced the connected ChatGPT deployment or installed
-0.2.0 local candidates.
+review. Both local packages are now installed/enabled at 0.3.0 and the installed
+Developer server passes its nine-tool driver. The frozen connected ChatGPT
+deployment is unchanged. Sky's existing production URL is not activated by a
+local package upgrade.
 
 The owner approved creation and connection of **Zodiacs Chart Studio Preview**.
 Actual global calendar/Studio rendering, Sun selection and house comparison

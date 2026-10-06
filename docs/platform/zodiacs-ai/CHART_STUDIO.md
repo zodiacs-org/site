@@ -8,7 +8,7 @@ The shared website wheel source is unchanged.
 
 ## New in 0.3.0 — 2026-10-06
 
-The current uninstalled candidate follows main's vendored rc.17 engine, which
+The current locally installed candidate follows main's vendored rc.17 engine, which
 is not published on npm. The earlier 0.3.0 screenshots below were captured with
 rc.16; the connected 0.2.0 ChatGPT deployment remains unchanged on rc.16.
 
@@ -57,6 +57,11 @@ recipes. Website build and typecheck pass. The final full regression run had
 tests in that file passed separately (the timed-out check took 4.7 seconds).
 This is not a clean single full-suite run; exact candidate CI remains separate.
 
+Both local review packages were upgraded to 0.3.0 through the Codex CLI and
+verified as installed/enabled. The installed Developer copy has its pinned
+dependencies and passes the nine-tool/record/privacy driver. Sky's package
+upgrade retains its existing production URL; it does not activate that endpoint.
+
 Browser checks of this bundle cover New York's skipped/repeated daylight-saving
 times and Mexico City's 1907 subminute conversion. Keyboard review and explicit
 sharing work in an opaque-origin synthetic host without `allow-forms`: applying
@@ -65,6 +70,17 @@ the final Share sends one. At a 360px viewport, document and scroll widths both
 measure 345px. The new dedicated Watch deployment includes this Studio candidate;
 the original connected Studio deployment is unchanged. See the
 [current local-time evidence](evidence/studio-local-time/verification.json).
+
+Main `3f9d791c` is subsequently integrated. Build and plugin reproducibility
+pass; 19 of 20 Site Check jobs pass on `c4b04b3`. The remaining job passed 6,898
+regression tests and failed only the stale screenshot source fingerprint.
+Fresh source-bound captures and their receipt now pass all five evidence tests.
+The Linux visual comparison found expected main navigation and Guide-footer
+changes. All five routes were inspected at desktop/mobile; 15 reviewed actual
+captures became baselines with unchanged test tolerances. The failed comparison
+run was stopped during Lighthouse to retrieve its artifacts; its incomplete
+performance/navigation checks are not claimed passed. Final CI must rerun.
+[Integration record](evidence/studio-local-time/main-integration.json).
 
 The earlier 527,473-byte standalone bundle passed its reproducibility and package
 checks. Production build (4,417 pages), typecheck (zero errors/warnings), 77 AI
@@ -186,7 +202,8 @@ on 2026-10-05. Its branded profile is connected, and actual ChatGPT global
 calendar and Studio rendering, Sun selection and house comparison were observed.
 That private connection remains frozen on source `f8110d71` (0.2.0); the new
 0.3.0 features are a review candidate on a separate OAuth preview; they have
-not passed native ChatGPT acceptance or replaced the installed local packages.
+not passed native ChatGPT acceptance. Local packages are installed at 0.3.0;
+this does not update the frozen cloud preview or activate production.
 The original calendar connection also retains its deployment. Thread entrypoints,
 assistant sharing, saved-file download, consenting beta feedback and publisher
 verification still need acceptance. Production is disabled. Final submission,

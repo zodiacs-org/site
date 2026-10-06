@@ -16,8 +16,10 @@ or public release is claimed. The profile still shows **Connect**; an owner
 account and native lifecycle acceptance are pending. The original Chart Studio
 profile and its deployment remain frozen.
 
-Current portable candidates are **0.3.0**. Installed local plugins remain
-**0.2.0**; profile metadata version 1.0.1 is a different version namespace.
+Current portable candidates and installed/enabled local plugins are **0.3.0**.
+The installed Developer copy passes its nine-tool/record/privacy driver. Sky
+retains its existing production endpoint configuration; installation does not
+activate that endpoint. Profile metadata version 1.0.1 is a different namespace.
 Earlier records below describe their own date and do not establish current
 installation or release status.
 

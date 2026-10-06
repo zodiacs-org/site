@@ -1,9 +1,12 @@
 # Consenting beta review kit
 
-Refreshed 2026-10-05. The owner confirms there are no testers. No invitations
+Refreshed 2026-10-06. The owner confirms there are no testers. No invitations
 have been sent and no feedback is recorded.
 Use only after exact-head CI, staging quota/capacity and retention gates pass.
-The temporary staging share expires after 23 hours and is not a public launch URL.
+The older Chart Studio share expires after 23 hours. The separate Sky Watch
+preview uses individual accounts and an explicit OAuth connection. Neither is
+a public launch. Wider Sky Watch testing also requires the email sender,
+server-side password policy and recovery work listed in SKY_WATCH.md.
 
 ## Panel and tasks
 
@@ -20,6 +23,8 @@ in the review dataset. Keep any contact list outside this repository.
 | Developer integration | Published engine dependency, local capability check, synthetic example, runnable tests |
 | Native calendar | Open global/thread panels, change display zone, refuse an invalid zone and recover |
 | Chart Studio | Explore the synthetic chart, compare houses, inspect a receipt and explicitly review a selected fact before sharing |
+| Local time and place | Review a supplied synthetic clock conversion, understand repeated/skipped time warnings and retain assumptions in the record |
+| Sky Watch, after native acceptance | Select a public event, receive it, refresh the watch and stop delivery through unsubscribe/Disconnect |
 | Unsupported request | Clear limit or refusal without an invented calculation |
 
 Ask each participant whether the answer completed their task, whether they would
@@ -48,7 +53,13 @@ reviewed runtime metadata retention is thirty days. The service does not save
 calculation requests/results and its quota stores bounded aggregate counters.
 The local developer server calculates on your machine, while your assistant
 provider can still receive its arguments/results. Temporary staging access
-expires after 23 hours and should not be forwarded.
+for the older Studio preview expires after 23 hours and should not be forwarded.
+Sky Watch has a separate preview account: Supabase handles the email/password
+sign-in, and the connected app receives an account ID and access token that
+includes email. The service keeps authorization facts, selected public-event
+filters, expiry and encrypted delivery credentials. A watch lasts at most
+seven days unless refreshed; Disconnect stops further delivery. Account-page
+sign-out alone does not disconnect a watch. Do not share accounts or passwords.
 
 “Chart Studio starts with a labeled synthetic example and calculates in the
 panel. It sends selected facts to the assistant only after you preview and
@@ -92,6 +103,17 @@ who declines is not asked to complete tasks.
    been sent yet, then explicitly share and check that only the reviewed facts
    appear in context. Record panel opening, selection, unknown time, sharing and
    saved-file download separately. Do not replace this with a simulator result.
+7. Use synthetic local time `2024-03-10 02:30` in New York City. Review the
+   daylight-saving gap warning and the resolved `07:30Z` before applying it.
+   Confirm that applying it does not share anything. Repeat with
+   `2024-11-03 01:30`; identify the earlier occurrence and `05:30Z`. Download
+   the synthetic record and inspect its original wall time and policy.
+8. After native Watch acceptance and the account/email gates pass, connect your
+   own preview account, explicitly select a supported public event and inspect
+   the stated expiry. Record subscription, actual arrival, refresh, stop and
+   Disconnect separately. Compare the delivered event time and receipt with a
+   public sky query. A successful synthetic callback or an idle worker run is
+   not an arrival result. Record missing/delayed events honestly.
 
 The synthetic personal-week file remains an offline concept, not a shipped
 personal tool or a participant task. Stagger testing within the global preview
@@ -106,6 +128,8 @@ an astronomical or UI error. Do not increase counters to hide it.
 | Per-task attempted/completed/useful totals | Not measured |
 | Conversation/native/developer totals | Not measured |
 | Chart Studio open / selection / unknown-time / share / download totals | Not measured |
+| Local time conversion / ambiguity understood / record retained totals | Not measured |
+| Watch subscribe / actual arrival / refresh / stop / Disconnect totals | Not measured |
 | Voluntarily reported second use within seven days | Not measured |
 | Capacity refusals / calculation / UI / routing issues | Not measured |
 | Open reproducible defects and fixes | Not measured |

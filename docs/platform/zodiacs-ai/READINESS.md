@@ -24,7 +24,7 @@ vendored engine candidate. Never describe an unpublished candidate as an npm rel
 | Calculation integrity | Versioned, reproducible results; explicit time/zone/coverage; meaningful negative tests | Implemented and automated checks pass; historical clock and receipt edge cases covered |
 | First use | An unfamiliar user completes the primary task with clear defaults and recovery | Local time/city entry added; real unfamiliar-user trial still missing |
 | ChatGPT experience | Current candidate opens globally and in conversation; worker, reviewed sharing, download and event lifecycle work in the actual host | Earlier calendar/Studio evidence exists; latest candidate acceptance pending |
-| Trust | Clear company, website, support, privacy, terms, calculation methods and honest preview limits | Existing profiles updated in prior review; new Watch profile and account flow available; publisher verification pending |
+| Trust | Clear company, website, support, privacy, terms, calculation methods and honest preview limits | Most profiles updated; Watch profile verified; original portable cloud profile still needs its desktop update; publisher verification pending |
 | Reliability | Refresh/restart/retry, quota and cancellation checks; live disconnect blocks access/delivery; scheduled-worker health | Local PostgreSQL lifecycle and hosted OAuth/revocation pass; real ChatGPT delivery and stop still unverified |
 | Usefulness | Consenting completion/usefulness and voluntary second-use evidence | No testers or fabricated results; task kit ready |
 | Release operations | Exact candidate CI, rollback, owner review, sustainable capacity and measured hosting | Separate test deployment/limits in place; latest CI and final release review still required |
