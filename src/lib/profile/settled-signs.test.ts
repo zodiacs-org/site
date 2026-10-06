@@ -33,7 +33,7 @@ describe('settled signs', () => {
   });
 
   it('keeps the navigation copy of the hues, the settle rule and the name rules in step', async () => {
-    const nav = await readFile(new URL('../../components/SiteNav.astro', import.meta.url), 'utf8');
+    const nav = await readFile(new URL('./navigation-avatar.mjs', import.meta.url), 'utf8');
     const script = nav.slice(nav.indexOf('var hues = ['), nav.indexOf('function render()'));
     expect(script.match(/#[0-9A-F]{6}/gu)).toEqual([...SIGN_HUES]);
     expect(script).toContain('within < 1.02 || 30 - within < 1.02');

@@ -74,7 +74,8 @@ await withPreview({ port: 8792 }, (preview) => withSecurePreview(preview, async 
         assert((await page.locator('main').innerText()).includes(edition.reliability[locale.replace('/', '') || 'en']));
         assert.equal(await page.locator('link[rel="alternate"][hreflang]').count(), 7);
         assert(!(await page.locator('meta[name="robots"]').getAttribute('content')).includes('noindex'));
-        assert.equal(await page.locator('a[href="/astrofolio/"]').count(), 0);
+        assert.equal(await page.locator('[data-nav] a[href="/astrofolio/"]').count(), 1);
+        assert.equal(await page.locator('main a[href="/astrofolio/"]').count(), 0);
         assert.equal(await page.locator('input[type="date"], input[type="time"]').count(), 0);
         assert.equal(await page.locator('.return-result .return-contact-list').getByText(/Ascendant|Rising|ASC/).count(), 0);
         await settle(page);

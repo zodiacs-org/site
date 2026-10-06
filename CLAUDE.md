@@ -61,7 +61,11 @@ The CONTENT boundary survives the visual merge:
    scanner's own rules, and the legal pages (Privacy, Terms, Disclosure)
    carry the wallet/provider/market-risk disclosures that the Registry
    features legally require — disclosure language there is compliance text,
-   not a boundary breach. The wing's nav label is "Astrofolio" in every
+   not a boundary breach. Owner-approved navigation exception (2026-10-06): every primary navigation,
+   including tools and shared-chart receivers, includes Astrofolio in the same
+   position. This does not change the content or footer boundary. Desktop
+   places Profile and Search before the divider, with Astrofolio alone on the
+   right; mobile keeps its established order. The wing's nav label is "Astrofolio" in every
    locale; the owner-approved navigation description names the official Zodiac token
    collection before the click (2026-10-01, exact localized copy checked by the scanner); the footer column heading is "Registry". Wing URL topology (all
    permanent redirects, served by Vercel as 308): deep paths

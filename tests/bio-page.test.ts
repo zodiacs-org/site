@@ -25,7 +25,8 @@ describe('/bio/ link contract', () => {
   it('focuses the canonical shared shell without creating a second chrome system', () => {
     expect(source).toContain('<Base\n  noindex\n  analyticsOnNoindex');
     expect(source).not.toContain('minimalChrome');
-    expect(source).toContain(':global(body:has(.bio-shell) .nav)');
+    expect(source).not.toContain(':global(body:has(.bio-shell) .nav)');
+    expect(source).not.toContain(':global(body:has(.bio-shell) .nav__chip)');
     expect(source).toContain(':global(body:has(.bio-shell) .zguide-launcher)');
     expect(source).toContain(':global(body:has(.bio-shell) .zfooter__directory)');
     expect(source).toContain('background: var(--text);');

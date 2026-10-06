@@ -384,7 +384,8 @@ describe('registry pastel polish', () => {
       expect(value).toContain('height: 52px; padding: 0 10px 0 20px;');
       expect(value).toContain('gap: 10px;');
       expect(value).toContain('@media (min-width: 920px) { .wnav { gap: 10px; } }');
-      expect(value).toContain('@media (min-width: 900px) { .wnav { gap: 18px; } }');
+      expect(value).toContain("grid-template-areas: 'mark links profile search chip'; grid-template-columns: 116px minmax(0, 1fr) 44px 62px 120px; gap: 18px;");
+      expect(value).toContain('display: grid; width: 884px;');
       expect(value).toContain('rgba(198,204,218,0.16)');
       expect(value).toContain('width: 18px; height: 1.5px;');
       expect(value).toContain('position: absolute; top: 50%; left: 50%;');

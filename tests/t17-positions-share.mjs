@@ -24,7 +24,9 @@ const ENGINE_PACKAGE = JSON.parse(await readFile(
   'utf8',
 ));
 const ENGINE_VERSION = String(ENGINE_PACKAGE.version);
-const SHARE_WING_LINKS = 'a[href="/astrofolio/"], a[href^="/registry/"], a[href^="/sdk/"]';
+// The owner-approved primary navigation remains on every page. Collection
+// promotion elsewhere still must not appear in private chart readings.
+const SHARE_WING_LINKS = 'a[href="/astrofolio/"]:not([data-nav] a, [data-mobile-menu] a), a[href^="/registry/"], a[href^="/sdk/"]';
 const ZOOM_EVIDENCE_FILE = fileURLToPath(new URL(
   '../docs/acceptance/phase4-sharing/chart-sheet-33-percent.png',
   import.meta.url,
@@ -218,7 +220,9 @@ try {
       assert.equal(await source.locator('html[data-chart-share-receiver]').count(), 0,
         'a fresh calculator visit must not activate fragment-receiver sterility');
       assert.equal(await source.locator(SHARE_WING_LINKS).count(), 0,
-        'tool chrome must omit Astrofolio and collection links');
+        'tool content must omit collection links outside the shared navigation');
+      assert.equal(await source.locator('[data-nav] a[href="/astrofolio/"]').count(), 1,
+        'the calculator retains the same primary navigation');
       await computeChart(source);
       await source.evaluate(() => {
         globalThis.__t17Events = [];
@@ -257,7 +261,7 @@ try {
       assert.equal(await source.locator('[data-share-dialog]').count(), 0,
         'dialog must stay unmounted until requested');
       assert.equal(await source.locator(SHARE_WING_LINKS).count(), 0,
-        'computed tool results must omit Astrofolio and collection links');
+        'computed tool results must omit collection links outside the shared navigation');
 
       const preparedSheet = await source.evaluate(() => {
         const all = globalThis.__t17CanvasText.slice();
