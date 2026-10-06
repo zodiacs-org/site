@@ -91,6 +91,28 @@ await withPreview({ port: 8794 }, async (baseURL) => {
             const links = page.locator(test.wing ? '.wnav__links' : '.nav__links');
             assert(await links.isVisible(), 'Desktop links must retain their existing full row');
           }
+          if (!test.wing) {
+            const profile = nav.locator('.nav__profile-shortcut');
+            assert.equal(await profile.count(), 1, 'One profile control serves every layout');
+            const profileBox = await profile.boundingBox();
+            assert(profileBox && profileBox.width >= 44 && profileBox.height >= 44);
+            const chip = nav.locator('.nav__chip');
+            if (await chip.isVisible()) {
+              const chipBox = await chip.boundingBox();
+              assert(chipBox.x + chipBox.width <= profileBox.x + 0.5, 'Astrofolio precedes profile');
+              if (!compact) {
+                // macOS WebKit uses Option-Tab to include links in keyboard navigation.
+                await chip.focus(); await page.keyboard.press(name === 'webkit' && process.platform === 'darwin' ? 'Alt+Tab' : 'Tab');
+                assert(await profile.evaluate(node => document.activeElement === node), 'Keyboard order matches the displayed order');
+              }
+            }
+            const search = nav.locator('.nav__search');
+            if (await search.isVisible()) {
+              const searchBox = await search.boundingBox();
+              assert(profileBox.x + profileBox.width <= searchBox.x + 0.5, 'Profile precedes search');
+              assert(Math.abs((profileBox.y + profileBox.height / 2) - (searchBox.y + searchBox.height / 2)) < 1, 'Profile and search share a baseline');
+            }
+          }
           assert.deepEqual(errors, []);
           const id = `${name}-${test.path.split('#')[0].replaceAll('/', '_')}-${test.width}`;
           if ([390, 612, 1440].includes(test.width) && (test.path === '/learn/' || test.path === '/astrofolio/')) {

@@ -21,7 +21,7 @@ await withPreview({port:8910}, async base => {
    if(state==='unassigned') seed.charts[0].relationship='friend';
    await context.addInitScript(p=>{if(!sessionStorage.getItem('seeded')){localStorage.setItem('zodiacs.profile.v1',JSON.stringify(p));localStorage.setItem('zodiacs.me.v1',JSON.stringify({version:1,displayName:p.charts.some(c=>c.relationship==='self')?'Maya':null,keepCloseDismissed:true}));sessionStorage.setItem('seeded','1');}},seed);
    const page=await context.newPage();await page.goto(base+'/profile/',{waitUntil:'networkidle'});await page.evaluate(()=>document.fonts.ready);
-   const nav=page.locator(width<920?'.nav__profile-shortcut':'.nav__saved');
+   const nav=page.locator('.nav__profile-shortcut');
    await nav.waitFor();
    assert((await nav.boundingBox()).height>=44);
    if(state!=='self') {
