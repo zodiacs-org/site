@@ -6,8 +6,9 @@ Measured on 6 October 2026 on Node 22.22.2, with pyswisseph 2.10.3.2
 [`tools/run.sh`](tools/run.sh) checks both before it runs. Engine archive
 SHA-256 `9cd24c788863424ef614aaadec580db5a0dfc529303d385274db48a092a5299a`.
 
-These are the two runs the public accuracy claims bind to, made by the
-unchanged tools in `../../swiss-benchmark/tools/`:
+These are the two runs the Swiss-statistics claims, `acc.swiss-multiyear`
+and `acc.deltat`, bind to, made by the unchanged tools in
+`../../swiss-benchmark/tools/`:
 
 - `multiyear-1800-2199.json`: 14,610 instants every ten days from 1800 to
   2199, 11 bodies, at the same UT1 and at the same TT;

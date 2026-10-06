@@ -574,10 +574,11 @@ the engine artifact's own SHA-256 and the source paths every part was built from
 - **Not on npm.** This adapter is not published under any name, and
   `get_capabilities` labels it `unpublished-candidate`. Neither is the engine
   it bundles, `@zodiacs/engine` 0.1.1-rc.17, which `get_capabilities` labels
-  `unpublished-candidate` too. npm serves the release before it, 0.1.1-rc.16,
-  under the `next` tag, and 0.1.1-rc.15 under `latest`. rc.17 adds the
-  sidereal zodiac to the engine's `calc` entry, which this adapter does not
-  use, so its tools answer as they did with rc.16.
+  `unpublished-candidate` too. When this archive was made, on 2026-10-06, npm
+  had the version before it, 0.1.1-rc.16, under the `next` tag, and
+  0.1.1-rc.15 under `latest`. rc.17 adds the sidereal zodiac to the engine's
+  `calc` entry, which this adapter does not use, so its tools answer as they
+  did with rc.16.
 
 ## Uninstall
 

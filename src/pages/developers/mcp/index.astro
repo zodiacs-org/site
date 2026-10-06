@@ -171,9 +171,9 @@ const jsonLd = [
           <>That engine version is on npm: the registry read of {candidate.registryObservedOn} records
           it under <code>next</code>, and <code>get_capabilities</code> labels it published.</>
         ) : (
-          <>That engine version is a release candidate that is not on npm, where{' '}
-          <code>next</code> is {candidate.registryVersion}, and <code>get_capabilities</code>{' '}
-          labels it an unpublished candidate.</>
+          <>That engine version is a release candidate that is not on npm: the registry read of{' '}
+          {candidate.registryObservedOn} records {candidate.registryVersion} under <code>next</code>, and{' '}
+          <code>get_capabilities</code> labels it an unpublished candidate.</>
         )}{' '}
         The MCP adapter itself is not on npm. Node {manifest.node}.
       </p>

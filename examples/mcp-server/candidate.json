@@ -28,7 +28,7 @@
     "scripts/build-mcp-server.mjs"
   ],
   "bundled": {
-    "note": "Engine 0.1.1-rc.17 and the site comparison are inlined into server.mjs. That engine is a release candidate that is not on npm, where 0.1.1-rc.16 is under the next tag; the bundle is built from the archive whose SHA-256 is below, carried in the engine repository. Bundling keeps one copy of the comparison rules.",
+    "note": "Engine 0.1.1-rc.17 and the site comparison are inlined into server.mjs. That engine is a release candidate that is not on npm; when this archive was made, on 2026-10-06, npm had 0.1.1-rc.16 under the next tag; the bundle is built from the archive whose SHA-256 is below, carried in the engine repository. Bundling keeps one copy of the comparison rules.",
     "engine": {
       "package": "@zodiacs/engine",
       "version": "0.1.1-rc.17",

@@ -56,7 +56,7 @@
       "rc17Sha256": "3a769f1121a3c24f4fd509b7ef8d2e2afb332bf37d418442d5a817e1ba59aa44",
       "rc16": "node_modules/@zodiacs/engine/dist/chunk-2OWGBT3O.js",
       "rc16Sha256": "a987e24e2921d5fb4ea980e9c051e378d9fdecf0498d4ad2a546e4931b2e0c6d",
-      "difference": "chunk file names and the version string"
+      "difference": "the version string"
     },
     {
       "rc17": "node_modules/@zodiacs/engine/dist/chunk-V6YOLO64.js",

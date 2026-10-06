@@ -95,19 +95,27 @@ from npm gives rc.16, which refuses the sidereal zodiac in `./calc`.
 - **The sky-fact benchmark.** v0 was drawn with rc.16. With any other
   engine its generator refuses to draw or check it, and
   `tests/benchmarks/sky-benchmark.test.ts` holds v0 to its pinned bytes
-  rather than to a fresh draw, and does not run the one test that needs
-  v0's own engine: every rule and margin v0 publishes, derived again from
-  that engine. With rc.17 installed, that test is the one the full suite
-  skips. To see what those checks would find, v0 was drawn again on rc.17
-  by the generator's own steps, without the refusal
+  rather than to a fresh draw. It skips the one test that needs v0's own
+  engine, every rule and margin v0 publishes derived again from that
+  engine, and its test of entries into a sign while retrograde leaves out
+  the comparisons with the key: the 18 entries' instants, the dates that
+  hold them, and the counts of 36 dates and 2,022 facts. With rc.17
+  installed, the full suite skips that one test. The test still holds
+  `check_sky_fact`'s replies to v0's questions to the published ones, as the
+  generator's check does: each answer and the facts behind it, every event
+  within 2 seconds. Before this adoption it did so only through the
+  generator's check, which refuses another engine; it now makes the same
+  comparison itself when the engine differs. To see what the skipped checks
+  would find, v0 was drawn again on rc.17 by the generator's own steps,
+  without the refusal
   ([sky-benchmark-v0/redraw-rc17.json](sky-benchmark-v0/redraw-rc17.json),
   [tools/redraw-sky-benchmark-v0.mjs](tools/redraw-sky-benchmark-v0.mjs)):
   `items.json` is the same bytes; `key.json` differs only in the engine
   version it names; and the 300 replies in `tool-answers.json` differ only
   in the version they name and the receipt digest over it, so the
   generator's own check finds no reply that differs. A temporary copy of
-  the test that read the installed engine as v0's ran the two tests that
-  depend on v0's engine on rc.17, and both passed
+  the test that read the installed engine as v0's ran those two tests in
+  full on rc.17, and both passed
   ([engine-gate.diff](sky-benchmark-v0/engine-gate.diff),
   [engine-gate-tests.log](sky-benchmark-v0/engine-gate-tests.log)). v0
   keeps its bytes.
@@ -142,7 +150,8 @@ from npm gives rc.16, which refuses the sidereal zodiac in `./calc`.
   zodiac. Adding it to the adapter's tools is a separate unit
   (DECISIONS-2026-10-05.md §6).
 - While the site runs rc.17, the test suite does not derive the sky-fact
-  benchmark v0's rules and margins again: that test runs only with the
+  benchmark v0's rules and margins again, and does not compare the entries
+  into a sign while retrograde with v0's key: those checks run only with the
   engine v0 was drawn with. The run on rc.17 above was made once, on
   6 October 2026, and the suite does not repeat it.
 - No programme unit is accepted by this adoption. P3.2 (the uniform

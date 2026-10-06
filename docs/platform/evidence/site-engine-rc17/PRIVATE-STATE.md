@@ -22,14 +22,19 @@ installed package is from those bytes.
 ## What rc.17 changes, and what the bundle takes from it
 
 rc.17 adds the sidereal zodiac to `@zodiacs/engine/calc`, and with it moves
-the ayanamsa module out of `dist/vedic.js` into `dist/chunk-TCGFZEEE.js`, a
-chunk that `dist/calc.js` and `dist/vedic.js` share. The module's two
-WeakMaps, `FRAMES` and `VALUES`, move with it; rc.16 declared both in
+three modules out of `dist/vedic.js` into `dist/chunk-TCGFZEEE.js`, a chunk
+that `dist/calc.js` and `dist/vedic.js` share: the ayanamsas
+(`src/vedic/ayanamsa.ts`), the exact grid of signs, nakshatras and padas
+(`grid.ts`) and sidereal longitudes and charts (`sidereal.ts`). Their four
+module-level collections move with them, the WeakSets `DEFINITIONS` and
+`SIDEREAL` and the WeakMaps `FRAMES` and `VALUES`; rc.16 declared all four in
 `dist/vedic.js`. The other top-level bindings rc.17 adds are constants and
-functions in `dist/calc.js` and three functions in that chunk. The compute
-API imports neither `./calc` nor `./vedic`: it imports the root entry and
-`./receipt`, that chunk is not among the bundle's inputs, and the bundle
-holds neither name.
+functions in `dist/calc.js` and four functions in that chunk: `ayanamsaAt`,
+`isUserAyanamsaName`, `outsideSpanEpoch` and `wholeSignCusps`, which is not
+the houses chunk's function of that name. The compute API imports neither
+`./calc` nor `./vedic`: it imports the root entry and `./receipt`, that chunk
+is not among the bundle's inputs, and the bundle holds none of the four
+collections' names.
 
 The digest covers 15 inputs
 ([`private-state-review/inputs.json`](private-state-review/inputs.json)).
@@ -37,7 +42,7 @@ Against rc.16's:
 
 - six engine chunks are byte-identical;
 - six engine files differ only in the file names of the chunks they import;
-- one chunk differs in those names and in the version string,
+- one chunk, which imports no other, differs only in the version string,
   `ENGINE_VERSION`;
 - astronomy-engine's ESM build is the same file (2.1.19, unchanged in the
   lockfile);
