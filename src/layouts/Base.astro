@@ -212,7 +212,10 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
 
           /* EditionText keeps a dated server/no-JS fallback. On a current
              edition, replace each span as the parser adds it so a warm-cache
-             paint can never briefly lay out the longer dated label. */
+             paint can never briefly lay out the longer dated label. The parser
+             can pause between a span's start tag and its text; the text it
+             inserts next is appended to the node this script put there (a
+             characterData change, not an added node), so watch those too. */
           if (editionState === 'current' && 'MutationObserver' in window) {
             var syncCurrentEditionText = function (node) {
               if (node.nodeType === Node.TEXT_NODE) {
@@ -234,10 +237,11 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
             };
             var editionPrepaintObserver = new MutationObserver(function (records) {
               records.forEach(function (record) {
+                if (record.type === 'characterData') syncCurrentEditionText(record.target);
                 record.addedNodes.forEach(syncCurrentEditionText);
               });
             });
-            editionPrepaintObserver.observe(editionRoot, { childList: true, subtree: true });
+            editionPrepaintObserver.observe(editionRoot, { childList: true, characterData: true, subtree: true });
             document.addEventListener('DOMContentLoaded', function () {
               syncCurrentEditionText(document);
               editionPrepaintObserver.disconnect();
