@@ -53,7 +53,11 @@ await withPreview({ port: 8791 }, async (plainBase) => {
     const response = await fetch(`${plainBase}/${locale}sky-calendar.ics`); assert.equal(response.status, 200); const calendar = await response.text();
     assert.equal(calendar.match(/BEGIN:VEVENT/g)?.length, 195); assert.match(calendar, /DTSTART:\d{8}T\d{6}Z/); assert(!/birth|natal|wallet|astrofolio/i.test(calendar));
     for (const route of ['sky-calendar', 'astrologer-kit', 'your-sky-wrapped', 'chart-of-the-day', 'saturn-return']) {
-      const html = await (await fetch(`${plainBase}/${locale}${route}/`)).text(); assert.match(html, /rel="canonical"/); assert(!/href="\/astrofolio\//.test(html));
+      const html = await (await fetch(`${plainBase}/${locale}${route}/`)).text(); assert.match(html, /rel="canonical"/);
+      const primaryNav = html.match(/<nav\b[^>]*data-nav[^>]*>[\s\S]*?<\/nav>/)?.[0];
+      assert(primaryNav && /href="\/astrofolio\/"/.test(primaryNav), `${locale}${route}: consistent collection navigation`);
+      const content = html.match(/<main\b[^>]*>[\s\S]*?<\/main>/)?.[0];
+      assert(content && !/href="\/astrofolio\//.test(content), `${locale}${route}: no collection promotion in tool content`);
       if (['astrologer-kit','your-sky-wrapped','saturn-return'].includes(route)) assert(!/remoteScript\.src\s*=|insights\.src\s*=/.test(html));
     }
   }
