@@ -32,11 +32,18 @@ does not establish Chart Studio acceptance; verify this version in ChatGPT.
 
 ## 0.3.0 review candidate
 
-Chart Studio now includes Time Explorer (UTC stepping and possible birth-time
+Chart Studio includes local date/time entry, an offline search of 1,000 large
+cities and a review of daylight-saving/historical-clock assumptions before
+conversion. The downloaded record retains those assumptions. Manual UTC entry
+and unknown-time references remain available.
+
+Chart Studio also includes Time Explorer (UTC stepping and possible birth-time
 windows) and Chart Inspector (local file/text record validation, reproduction
 and comparison). No new personal arguments enter MCP tools, and no imports or
 window results are automatically shared. Birth windows require a host that
 permits the embedded Blob worker. The new package is verified locally; the
 connected ChatGPT preview and installed local candidates remain on 0.2.0 until
-a separate upgrade and host acceptance run. Sky Watch notifications are not
-implemented. See `docs/platform/zodiacs-ai/CHART_STUDIO.md` in the repository.
+a separate upgrade and host acceptance run. Sky Watch is implemented on a
+separate authenticated test host; real ChatGPT event arrival and human beta
+feedback remain unverified. Notifications are not enabled by this package.
+See `docs/platform/zodiacs-ai/CHART_STUDIO.md` and `SKY_WATCH.md` in the repository.

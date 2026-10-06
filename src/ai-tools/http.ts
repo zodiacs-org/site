@@ -100,7 +100,7 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
       const service = options.skyWatch ?? configuredSkyWatch(env);
       if (service) {
         const owner = await service.authenticate(req.headers?.authorization);
-        if (!owner) { res.setHeader('WWW-Authenticate', 'Bearer realm="Zodiacs Sky Watch preview"'); return send(res, 401, 'authentication-required'); }
+        if (!owner) { res.setHeader('WWW-Authenticate', service.oauth?.challenge ?? 'Bearer realm="Zodiacs Sky Watch preview"'); return send(res, 401, 'authentication-required'); }
         watch = { service, owner };
       }
     } catch { return send(res, 503, 'watch-unavailable'); }

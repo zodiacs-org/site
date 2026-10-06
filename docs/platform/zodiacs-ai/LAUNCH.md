@@ -2,6 +2,15 @@
 
 ## Chart Studio candidate — 2026-10-06
 
+The latest continuation adds local date/time and offline city entry, with
+reviewed conversion and receipt provenance. A separate **Zodiacs Sky Watch
+Preview** has been created in ChatGPT, backed by its own Free Plan database and
+OAuth-protected test host. Hosted sign-in, refresh and immediate grant revocation
+pass with synthetic credentials; a bounded scheduled worker is active.
+The owner's account connection, actual ChatGPT event arrival and 0.3.0 native
+host checks remain pending. See [readiness criteria](./READINESS.md) and
+[Sky Watch](./SKY_WATCH.md). This is preview infrastructure, not public activation.
+
 Version 0.3.0 packages Time Explorer, possible birth-time windows and local
 calculation-record inspection in the existing browser panel. See
 [Chart Studio review](./CHART_STUDIO.md). Its standalone local preview is under
@@ -15,7 +24,8 @@ company, website, support and legal links. That frozen preview also passed
 15 HTTPS checks and seven SDK calls. The earlier calendar connection retains
 its own deployment. Thread entrypoints, actual assistant sharing, saved-file
 download, beta feedback and publisher verification remain release checks.
-Production remains disabled. No 0.3.0 live-host or public release is claimed.
+Production remains disabled. The new 0.3.0 host is separate; no 0.3.0 native
+ChatGPT workflow acceptance or public release is claimed.
 
 ## Recovery status — 2026-10-05
 

@@ -12,7 +12,15 @@ The current uninstalled candidate follows main's vendored rc.17 engine, which
 is not published on npm. The earlier 0.3.0 screenshots below were captured with
 rc.16; the connected 0.2.0 ChatGPT deployment remains unchanged on rc.16.
 
-Two workspaces extend the same panel and both plugin packages:
+The following capabilities extend the same panel and both plugin packages:
+
+- **Local time and place:** offline search over a population-ranked subset of
+  1,000 cities from the site's GeoNames index, with manual coordinates/IANA
+  zone entry for other places. The site's shared local-time resolver preserves
+  pinned pre-1970 history and local mean time. A separate review names the UTC
+  instant, repeated/skipped-clock policy and historical uncertainty before use.
+  The receipt retains the original wall time and assumptions. UTC stepping
+  removes that old wall-time provenance while retaining subminute precision.
 
 - **Time Explorer:** UTC steps of 15 minutes, one hour or one day; an explicit
   anchor and circular position differences; unknown time permits daily noon
@@ -38,10 +46,27 @@ candidate. The standalone preview permits `worker-src blob:` while retaining
 `connect-src 'none'`. Inspector file reads are revision-guarded; edits clear old
 results and reset clears imported records. No new data enters the host bridge.
 
-The next notification service is specified in [SKY_WATCH.md](./SKY_WATCH.md).
-It is not implemented or advertised as a subscription capability.
+The notification service is implemented on a separate OAuth-protected preview
+in [SKY_WATCH.md](./SKY_WATCH.md). It does not enable notifications for the
+ordinary anonymous/local plugin packages. ChatGPT event arrival remains pending.
 
-The 527,473-byte standalone bundle passes its reproducibility and package
+The current local-time bundle is **924,260 bytes**. Its build and package drift
+checks pass, along with 132 AI unit tests, HTTP/stdio clients and published-engine
+recipes. Website build and typecheck pass. The final full regression run had
+6,898 passes, six skips and one unrelated 15-second build-audit timeout. All 11
+tests in that file passed separately (the timed-out check took 4.7 seconds).
+This is not a clean single full-suite run; exact candidate CI remains separate.
+
+Browser checks of this bundle cover New York's skipped/repeated daylight-saving
+times and Mexico City's 1907 subminute conversion. Keyboard review and explicit
+sharing work in an opaque-origin synthetic host without `allow-forms`: applying
+local time shares zero selections, reviewing a selection still shares zero, and
+the final Share sends one. At a 360px viewport, document and scroll widths both
+measure 345px. The new dedicated Watch deployment includes this Studio candidate;
+the original connected Studio deployment is unchanged. See the
+[current local-time evidence](evidence/studio-local-time/verification.json).
+
+The earlier 527,473-byte standalone bundle passed its reproducibility and package
 checks. Production build (4,417 pages), typecheck (zero errors/warnings), 77 AI
 tests, official HTTP/stdio clients, engine recipes and the claims ledger pass.
 The full regression run passed 6,836 tests, skipped five, and timed out one
@@ -142,7 +167,7 @@ to Vercel SSO; temporary access credentials are excluded from this repository.
 ## Try it
 
 From the repository, run `npm run ai:serve` and open
-`http://127.0.0.1:8787/studio`. The current review session uses port 8791.
+`http://127.0.0.1:8787/studio`. The current review session uses port 8794.
 `/studio-test-host` is a loopback-only synthetic host fixture. It never connects
 to an assistant. A standalone HTML copy is included in the owner's output kit.
 Standalone mode can calculate and inspect records but cannot share context.
@@ -160,7 +185,8 @@ The owner authorized creation and connection of **Zodiacs Chart Studio Preview**
 on 2026-10-05. Its branded profile is connected, and actual ChatGPT global
 calendar and Studio rendering, Sun selection and house comparison were observed.
 That private connection remains frozen on source `f8110d71` (0.2.0); the new
-0.3.0 features below are a local review candidate, not a deployed ChatGPT update.
+0.3.0 features are a review candidate on a separate OAuth preview; they have
+not passed native ChatGPT acceptance or replaced the installed local packages.
 The original calendar connection also retains its deployment. Thread entrypoints,
 assistant sharing, saved-file download, consenting beta feedback and publisher
 verification still need acceptance. Production is disabled. Final submission,

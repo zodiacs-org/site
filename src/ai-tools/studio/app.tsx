@@ -9,6 +9,7 @@ import { calculateStudio, compareStudio, EXAMPLE, houseName, recordText, selecti
 import { StudioBridge } from './bridge';
 import { TimeExplorer } from './TimeExplorer';
 import { RecordInspector } from './RecordInspector';
+import { LocalTimeEntry } from './LocalTimeEntry';
 import './style.css';
 
 declare const STUDIO_ICONS: Record<string, string>;
@@ -59,7 +60,7 @@ function App() {
   const selectedTitle = selection?.kind === 'body' ? selection.body : selection?.kind === 'house' ? `House ${selection.house}` : selection?.kind === 'sign' ? titleCase(selection.sign) : selection?.kind === 'angle' ? ({ asc: 'Ascendant', mc: 'Midheaven', dsc: 'Descendant', ic: 'Imum coeli' }[selection.angle]) : selection?.kind === 'aspect' ? `${selection.a} ${selection.type} ${selection.b}` : 'Select a placement';
   const shareRevision = useRef(0);
   function select(next: EntityRef | null) { shareRevision.current++; setSelection(next); setShareOpen(false); setNotice(''); }
-  function update<K extends keyof StudioInput>(key: K, value: StudioInput[K]) { setDraft(previous => ({ ...previous, [key]: value })); setError(''); }
+  function update<K extends keyof StudioInput>(key: K, value: StudioInput[K]) { setDraft(previous => ({ ...previous, local: key === 'houseSystem' ? previous.local : undefined, [key]: value })); setError(''); }
   function apply(input: StudioInput, isExample = false) {
     try {
       const next = calculateStudio(input);
@@ -89,9 +90,11 @@ function App() {
     <div hidden={workspace !== 'inspect'}><RecordInspector key={workspaceEpoch} currentRecord={recordText(run)} /></div>
     {workspace !== 'inspect' && <>
     <details class="inputs"><summary>Chart inputs <span>{example ? 'Synthetic example · London coordinates' : 'Your current calculation'}{dirty ? ' · unapplied changes' : ''}</span></summary>
+      <LocalTimeEntry key={workspaceEpoch} input={draft} onApply={apply} />
+      <h2 class="utc-heading">Enter UTC directly</h2>
       <form onSubmit={e => { e.preventDefault(); apply(draft); }} onKeyDown={e => { if (e.key === 'Enter' && e.target instanceof HTMLInputElement) { e.preventDefault(); apply(draft); } }}>
         <label>UTC date<input type="date" min="1800-01-01" max="2199-12-31" required value={draft.date} onInput={e => update('date', e.currentTarget.value)} /></label>
-        <label>UTC time<input type="time" required disabled={!draft.timeKnown} value={draft.time} onInput={e => update('time', e.currentTarget.value)} /></label>
+        <label>UTC time<input type="time" step="0.001" required disabled={!draft.timeKnown} value={draft.time} onInput={e => update('time', e.currentTarget.value)} /></label>
         <label>Latitude<input type="number" step="any" min="-89.999999" max="89.999999" value={draft.latitude} disabled={!draft.timeKnown} onInput={e => update('latitude', e.currentTarget.value)} /></label>
         <label>Longitude<input type="number" step="any" min="-180" max="180" value={draft.longitude} disabled={!draft.timeKnown} onInput={e => update('longitude', e.currentTarget.value)} /></label>
         <label>House system<select value={draft.houseSystem} onChange={e => update('houseSystem', e.currentTarget.value as StudioInput['houseSystem'])}><option value="placidus">Placidus</option><option value="whole">Whole sign</option></select></label>
@@ -103,7 +106,8 @@ function App() {
     {workspace === 'time' && <TimeExplorer key={workspaceEpoch} input={applied} run={run} onApply={apply} dirty={dirty} />}
     <div class="workspace">
       <section class="chart-area" aria-label="Chart workspace">
-        <div class="chart-meta"><span>{example ? 'Example chart' : 'Calculated chart'}</span><time dateTime={run.inputSnapshot.utc}>{run.inputSnapshot.utc.replace('T', ' · ').replace(':00.000Z', ' UTC')}</time></div>
+        <div class="chart-meta"><span>{example ? 'Example chart' : 'Calculated chart'}</span><time dateTime={run.inputSnapshot.utc}>{run.inputSnapshot.utc.replace('T', ' · ').replace(':00.000Z', ' UTC').replace('Z', ' UTC')}</time></div>
+        {applied.local && run.chart.input.timeKnown && <p class="local-origin">From {applied.local.resolution.date} at {applied.local.resolution.time} · {applied.local.resolution.timeZone}. Time-zone assumptions are in the calculation record.</p>}
         <div class="wheel-wrap" ref={wheelRoot}><Wheel bodies={run.chart.bodies} asc={run.chart.angles?.asc} mc={run.chart.angles?.mc} cusps={run.chart.houses?.cusps} aspects={run.chart.aspects} size={520} deferIcons interactive={{ scene, selection, emphasis, onSelect: select, label: 'Select a chart element' }} /></div>
         <div class="chart-caption"><span>Tropical zodiac</span><span>{run.chart.houses ? `${houseName(run.chart.houses.system)} houses` : 'No houses or angles'}</span><span>Engine {run.chart.engineVersion}</span></div>
         {run.chart.flags.includes('polar-fallback') && <p class="callout">Placidus is unavailable at this latitude. The engine used whole-sign houses; the receipt records the fallback.</p>}

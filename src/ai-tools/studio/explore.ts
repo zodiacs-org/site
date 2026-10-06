@@ -3,7 +3,7 @@ import type { PortableChartCalculation } from '../../lib/engine/portable';
 import { circularDelta } from '../../lib/compare/angles';
 import { houseOf } from '../../lib/engine/houses';
 import { signForLongitude } from '../../lib/signs';
-import { calculateStudio, type StudioInput } from './model';
+import { calculateStudio, studioInstant, type StudioInput } from './model';
 
 export function shiftStudio(input: StudioInput, minutes: number): StudioInput {
   if (![15, 60, 1440].includes(Math.abs(minutes))) throw new Error('Choose a 15-minute, one-hour or one-day step.');
@@ -12,7 +12,7 @@ export function shiftStudio(input: StudioInput, minutes: number): StudioInput {
   const shifted = new Date(Date.parse(current.inputSnapshot.utc) + minutes * 60_000);
   if (shifted.getUTCFullYear() < 1800 || shifted.getUTCFullYear() > 2199) throw new Error('Stay within 1800–2199.');
   const iso = shifted.toISOString();
-  return { ...input, date: iso.slice(0, 10), time: iso.slice(11, 16) };
+  return { ...input, local: undefined, date: iso.slice(0, 10), time: iso.slice(11, input.time.length === 5 ? 16 : 23) };
 }
 
 export function timeChanges(anchor: PortableChartCalculation, current: PortableChartCalculation) {
@@ -29,7 +29,7 @@ export function timeChanges(anchor: PortableChartCalculation, current: PortableC
 
 export interface WindowDraft { start: string; end: string; latitude: string; longitude: string; houseSystem: 'placidus' | 'whole' }
 export function initialWindow(input: StudioInput): WindowDraft {
-  const at = Date.parse(`${input.date}T${input.timeKnown ? input.time : '12:00'}:00Z`);
+  const at = Date.parse(studioInstant(input));
   const half = input.timeKnown ? 15 * 60_000 : 12 * 3600_000;
   return { start: new Date(at - half).toISOString().slice(0, 16), end: new Date(at + half).toISOString().slice(0, 16),
     latitude: input.timeKnown ? input.latitude : '', longitude: input.timeKnown ? input.longitude : '',

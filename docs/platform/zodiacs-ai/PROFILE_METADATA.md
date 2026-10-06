@@ -1,4 +1,27 @@
-# Zodiacs profile metadata — 5 October 2026
+# Zodiacs profile metadata
+
+## Sky Watch preview — 6 October 2026
+
+The separate **Zodiacs Sky Watch Preview** profile was created and updated to
+metadata version **1.0.1**. Its visible page shows the branded icon, Zodiacs LLC,
+Lifestyle category, website, privacy and terms links, public-sky capabilities
+and three starter prompts. Its underlying app description also includes the
+company, support address and valid methods URL. The app ID is
+`asdk_app_6ac4aa125bd88191b2dd4a221788e2ab`.
+
+The description identifies the separate preview account, seven-day maximum
+watch lifetime, Disconnect control, retained authorization/delivery data and
+unverified ChatGPT arrival/timing. No publisher-verification badge, endorsement
+or public release is claimed. The profile still shows **Connect**; an owner
+account and native lifecycle acceptance are pending. The original Chart Studio
+profile and its deployment remain frozen.
+
+Current portable candidates are **0.3.0**. Installed local plugins remain
+**0.2.0**; profile metadata version 1.0.1 is a different version namespace.
+Earlier records below describe their own date and do not establish current
+installation or release status.
+
+## Earlier profiles — 5 October 2026
 
 Eight custom ChatGPT profiles were updated to version 1.0.1 and their visible
 profile pages verified: Shared Sky (Private Trial), Shared Sky, Staging Review,

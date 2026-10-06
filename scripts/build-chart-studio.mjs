@@ -6,8 +6,14 @@ const root = new URL('../', import.meta.url);
 export async function buildChartStudio(check = false) {
   const signs = ['aries','taurus','gemini','cancer','leo','virgo','libra','scorpio','sagittarius','capricorn','aquarius','pisces'];
   const icons = Object.fromEntries(await Promise.all(signs.map(async sign => [sign, 'data:image/webp;base64,' + (await readFile(new URL(`public/assets/zodiac-icons/128/${sign}.webp`,root))).toString('base64')])));
+  const cityIndex = JSON.parse(await readFile(new URL('public/data/cities/index.json', root), 'utf8'));
+  const cityRows = (await Promise.all(cityIndex.shards.map(async shard => JSON.parse(await readFile(new URL(`public/data/cities/${shard}.json`, root), 'utf8'))))).flat();
+  const cities = cityRows.sort((a, b) => b[7] - a[7] || a[0].localeCompare(b[0], 'en')).slice(0, 1000).map(row => {
+    const label = [row[0], cityIndex.admin1[row[2]], cityIndex.countries[row[3]]].filter(Boolean).join(', ');
+    return { label, search: `${label} ${row[1] || ''}`.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase(), latitude: String(row[4] / 100), longitude: String(row[5] / 100), zone: cityIndex.tz[row[6]] };
+  });
   const worker = await build({ absWorkingDir: fileURLToPath(root), entryPoints: ['src/ai-tools/studio/window.worker.ts'], bundle: true, write: false, format: 'iife', platform: 'browser', target: 'es2022', minify: true, legalComments: 'inline' });
-  const result = await build({ absWorkingDir: fileURLToPath(root), entryPoints: ['src/ai-tools/studio/app.tsx'], bundle: true, write: false, outdir: 'out', format: 'iife', platform: 'browser', target: 'es2022', minify: true, legalComments: 'inline', jsx: 'automatic', jsxImportSource: 'preact', define: { STUDIO_ICONS: JSON.stringify(icons), STUDIO_WINDOW_WORKER: JSON.stringify(worker.outputFiles[0].text), 'process.env.NODE_ENV': '"production"', 'import.meta.env.SSR': 'false' } });
+  const result = await build({ absWorkingDir: fileURLToPath(root), entryPoints: ['src/ai-tools/studio/app.tsx'], bundle: true, write: false, outdir: 'out', format: 'iife', platform: 'browser', target: 'es2022', minify: true, legalComments: 'inline', jsx: 'automatic', jsxImportSource: 'preact', define: { STUDIO_ICONS: JSON.stringify(icons), STUDIO_CITIES: JSON.stringify(cities), STUDIO_WINDOW_WORKER: JSON.stringify(worker.outputFiles[0].text), 'process.env.NODE_ENV': '"production"', 'import.meta.env.SSR': 'false' } });
   const js = result.outputFiles.find(file => file.path.endsWith('.js')).text.replace(/<\/script/gi, '<\\/script');
   let css = result.outputFiles.find(file => file.path.endsWith('.css')).text;
   for (const [family,file] of [['Instrument Sans','instrument-sans-latin-wght-normal.woff2'],['EB Garamond','eb-garamond-latin-400-normal.woff2'],['JetBrains Mono','jetbrains-mono-latin-wght-normal.woff2']]) {

@@ -4,13 +4,15 @@ import { callbackPost, callbackUrl, verifyCallback, type CallbackPost } from './
 import { destinationVault, digest, signingKey } from './crypto';
 import { DAY, EVENT_DEFINITIONS, FILTERS, subscriptionParams, unsubscribeParams, type Principal, type Rpc } from './contracts';
 import { watchRpc } from './store';
+import { configuredWatchOAuth, type WatchOAuth } from './oauth';
 
 export class SkyWatch {
   readonly vault: ReturnType<typeof destinationVault>;
-  constructor(readonly rpc: Rpc, encryptionKey: string, readonly post: CallbackPost = callbackPost, readonly now = Date.now) {
+  constructor(readonly rpc: Rpc, encryptionKey: string, readonly post: CallbackPost = callbackPost, readonly now = Date.now, readonly oauth?: WatchOAuth) {
     this.vault = destinationVault(encryptionKey);
   }
   async authenticate(header: unknown): Promise<Principal | null> {
+    if (this.oauth) return typeof header === 'string' && header.startsWith('Bearer ') ? this.oauth.authenticate(header.slice(7)) : null;
     if (typeof header !== 'string' || !/^Bearer zsw_[A-Za-z0-9_-]{43}$/.test(header)) return null;
     return this.rpc<Principal | null>('authenticate', { token_hash: digest(header.slice(7)) });
   }
@@ -49,13 +51,14 @@ export class SkyWatch {
   }
 }
 
-/** Private preview credentials are scoped, expiring, individually revocable bearer grants.
- * Public OAuth onboarding is a separate release gate. Never activate this mode in production.
+/** The hosted preview uses OAuth; the local operator runner retains synthetic grants.
+ * Both are preview-only and individually revocable. Never activate this mode in production.
  */
 export function configuredSkyWatch(env: Readonly<Record<string, string | undefined>>): SkyWatch | undefined {
   if (env.ZODIACS_SKY_WATCH_ENABLED !== '1') return undefined;
   if (env.VERCEL_ENV !== 'preview' || !env.ZODIACS_SKY_WATCH_KEY) throw new Error('watch-preview-unavailable');
-  return new SkyWatch(watchRpc(env), env.ZODIACS_SKY_WATCH_KEY);
+  const rpc = watchRpc(env);
+  return new SkyWatch(rpc, env.ZODIACS_SKY_WATCH_KEY, callbackPost, Date.now, configuredWatchOAuth(env, rpc));
 }
 
 export function registerSkyWatch(server: import('@modelcontextprotocol/server').McpServer, watch: SkyWatch, owner: Principal) {
