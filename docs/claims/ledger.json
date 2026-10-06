@@ -471,6 +471,7 @@
     {"path":"src/ai-tools/studio/RecordInspector.tsx","text":"Recalculated using engine ${…}, with the record’s instant, time scale, coordinates, requested houses and any pinned ΔT.","claim":"acc.studio-replay"},
     {"path":"src/ai-tools/studio/app.tsx","text":"Calculated in this browser.","claim":"priv.chart-studio"},
     {"path":"src/ai-tools/studio/app.tsx","text":"Chart positions can reveal personal information.","claim":"priv.chart-studio"},
+    {"path":"src/ai-tools/watch/contracts.ts","text":"IANA time zone for display; UTC by default.","claim":"time.host-icu"},
     {"path":"src/components/EmailCapture.astro","text":"That exists only for account-synced charts — syncing is always your call, and this chart stays on your device until you make it.","claim":"priv.account-sync"},
     {"path":"src/components/events/EventPageLayout.astro","text":"Choose a chart already saved in this browser, or enter your birth details there.","claim":"priv.local-storage"},
     {"path":"src/components/events/EventPageLayout.astro","text":"IANA Time Zone Database","exempt":"navigation"},

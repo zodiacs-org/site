@@ -5,7 +5,9 @@ export const digest = (value: string) => createHash('sha256').update(value).dige
 export function signingKey(secret: string): Buffer {
   if (!/^whsec_[A-Za-z0-9+/]+={0,2}$/.test(secret)) throw new Error('invalid-signing-key');
   const key = Buffer.from(secret.slice(6), 'base64');
-  if (key.length < 24 || key.length > 64 || key.toString('base64') !== secret.slice(6)) throw new Error('invalid-signing-key');
+  const encoded = secret.slice(6);
+  const canonical = key.toString('base64');
+  if (key.length < 24 || key.length > 64 || (encoded.includes('=') ? canonical !== encoded : canonical.replace(/=+$/, '') !== encoded)) throw new Error('invalid-signing-key');
   return key;
 }
 export function signature(secret: string, id: string, seconds: number, body: string) {

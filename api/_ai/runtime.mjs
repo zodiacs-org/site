@@ -7842,7 +7842,9 @@ var digest = (value) => createHash2("sha256").update(value).digest("hex");
 function signingKey(secret) {
   if (!/^whsec_[A-Za-z0-9+/]+={0,2}$/.test(secret)) throw new Error("invalid-signing-key");
   const key = Buffer.from(secret.slice(6), "base64");
-  if (key.length < 24 || key.length > 64 || key.toString("base64") !== secret.slice(6)) throw new Error("invalid-signing-key");
+  const encoded2 = secret.slice(6);
+  const canonical = key.toString("base64");
+  if (key.length < 24 || key.length > 64 || (encoded2.includes("=") ? canonical !== encoded2 : canonical.replace(/=+$/, "") !== encoded2)) throw new Error("invalid-signing-key");
   return key;
 }
 function signature(secret, id, seconds3, body2) {
@@ -7985,7 +7987,7 @@ var EVENT_DEFINITIONS = NAMES.map((name) => ({
     type: "object",
     additionalProperties: false,
     properties: {
-      ...name.endsWith("lunation") ? { phases: { type: "array", minItems: 1, maxItems: 2, uniqueItems: true, items: { enum: ["new", "full"] } } } : { bodies: { type: "array", minItems: 1, maxItems: 10, uniqueItems: true, items: { enum: name.endsWith("station") ? BODIES2.slice(2) : BODIES2 } } },
+      ...name.endsWith("lunation") ? { phases: { type: "array", minItems: 1, maxItems: 2, items: { enum: ["new", "full"] } } } : { bodies: { type: "array", minItems: 1, maxItems: name.endsWith("station") ? 8 : 10, items: { enum: name.endsWith("station") ? BODIES2.slice(2) : BODIES2 } } },
       zone: { type: "string", description: "IANA time zone for display; UTC by default." }
     },
     required: [name.endsWith("lunation") ? "phases" : "bodies"]

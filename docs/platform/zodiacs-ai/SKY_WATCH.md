@@ -110,7 +110,9 @@ with an injected synthetic callback receiver. It checks discovery and tool
 compatibility, authentication, ownership, durable refresh across a fresh server
 instance, key rotation, short TTL, cancellation during verification, concurrent
 ingestion/claims, stale lease completion, retry IDs, filters, permanent rejection,
-expiry, unsubscribe and revocation. It checks RLS and role grants too. The new
+expiry, unsubscribe and revocation. Real engine calculations also verify ledger
+restart without duplicates and bounded catch-up after missed worker runs. It
+checks RLS and role grants too. The new
 CI job **Sky Watch subscription lifecycle** repeats that drive on a disposable
 database. It sends no external notifications and uses no real personal data.
 
@@ -118,6 +120,10 @@ Run the drive with `SKY_WATCH_TEST_DATABASE_URL` pointing to an isolated local
 PostgreSQL database whose name ends in `_test`, after applying the bootstrap and
 Sky Watch migration. It intentionally refuses nonlocal databases and truncates
 only Sky Watch tables in the test database.
+
+The [verification record](evidence/sky-watch/verification.json) records the
+reviewed runtime, migration and package hashes, check results and deployment
+status.
 
 ## Remaining release gates
 

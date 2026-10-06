@@ -86,7 +86,9 @@ jobs:
       # npm's prebuild already verifies the package and replays 30 editions.
       # Keep that release gate, without running it twice in this same job.
       - name: Verify AI integration candidates
-        run: npm run ai:check && npm run ai:test
+        # The recipes intentionally use the published engine, independently of
+        # the site's vendored candidate. Install their own dependency boundary.
+        run: npm ci --prefix plugins/zodiacs-developer --ignore-scripts && npm run ai:check && npm run ai:test
 
       - name: Build
         run: npm run build

@@ -10,13 +10,17 @@ function once(source: string, marker: string, replacement: string) {
   return source.replace(marker, replacement);
 }
 
-for (const local of [false, true]) it(`clears actual ${local ? 'stdio' : 'HTTP'} bundle state after success and failure`, async () => {
+for (const [name, path, local] of [
+  ['HTTP', 'api/_ai/runtime.mjs', false],
+  ['stdio', 'plugins/zodiacs-developer/mcp/server.mjs', true],
+  ['Sky Watch', 'integrations/generated/sky-watch.mjs', false],
+] as const) it(`clears actual ${name} bundle state after success and failure`, async () => {
   // A disposable fixture keeps ordinary imports beside the real node_modules.
   // Only the local transport startup is omitted; calculation and cleanup are
   // the generated production code, with test-only private-state readers.
   const directory = await mkdtemp(join(root, 'node_modules/.ai-lifetime-'));
   try {
-    let source = await readFile(join(root, local ? 'plugins/zodiacs-developer/mcp/server.mjs' : 'api/_ai/runtime.mjs'), 'utf8');
+    let source = await readFile(join(root, path), 'utf8');
     if (local) {
       const start = source.indexOf('var pending = [];');
       const end = source.indexOf('// Calculations are synchronous;');

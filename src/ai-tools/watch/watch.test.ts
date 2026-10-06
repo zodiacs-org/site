@@ -28,6 +28,10 @@ describe('Sky Watch safety and event ledger', () => {
   it('rejects malformed or incorrectly sized signing keys', () => {
     for (const secret of ['x', 'whsec_YQ==', `whsec_${randomBytes(65).toString('base64')}`, `whsec_${randomBytes(32).toString('base64')}=`]) expect(() => signingKey(secret)).toThrow();
   });
+  it('accepts canonical base64 with or without padding', () => {
+    const bytes = randomBytes(32);
+    expect(signingKey(`whsec_${bytes.toString('base64').replace(/=+$/, '')}`)).toEqual(bytes);
+  });
   it('encrypts destinations, detects changes, and binds ciphertext to its subscription', () => {
     const vault = destinationVault(randomBytes(32).toString('base64'));
     const destination = { url: 'https://receiver.example/private', secret: 'secret-canary' };

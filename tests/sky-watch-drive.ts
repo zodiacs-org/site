@@ -8,7 +8,7 @@ import { createAiNodeHandler } from '../src/ai-tools/http';
 import { SkyWatch } from '../src/ai-tools/watch/service';
 import { destinationVault, digest, signature } from '../src/ai-tools/watch/crypto';
 import { DAY, WATCH_VERSION, type Rpc } from '../src/ai-tools/watch/contracts';
-import { deliverWatchEvents } from '../src/ai-tools/watch/worker';
+import { deliverWatchEvents, fillWatchLedger } from '../src/ai-tools/watch/worker';
 
 const database = process.env.SKY_WATCH_TEST_DATABASE_URL;
 if (!database) throw new Error('Set SKY_WATCH_TEST_DATABASE_URL to an isolated local test database.');
@@ -105,7 +105,7 @@ try {
   });
   await assert.rejects(() => racing.subscribe(freshOwner, race));
   // Synthetic occurrence tests delivery plumbing; engine calculation is checked separately.
-  const now = Date.now(); const from = new Date(Math.floor(now / DAY) * DAY).toISOString();
+  const now = Date.now(); const from = new Date(Math.floor((now - 60_000) / DAY) * DAY).toISOString();
   const at = new Date(now - 60_000).toISOString();
   await sql(`update sky_watch.subscriptions set started_at=clock_timestamp()-interval '2 minutes' where id='${id}';`);
   const event = { eventId: 'evt_synthetic', name: params.name, timestamp: at, data: { event: { kind: 'lunation', type: 'new', at }, receipt: { synthetic: true } }, cursor: null };
@@ -167,5 +167,20 @@ try {
   assert.equal(await rpc('permit', { id, event: event.eventId, lease: beforeRevoke.lease, revision: beforeRevoke.revision }), false);
   assert.equal((await call('events/list')).status, 401);
   assert.equal(await sql(`select sealed is null from sky_watch.subscriptions where id='${id}';`), 't');
-  console.log('Sky Watch PostgreSQL + MCP lifecycle passed: auth, discovery, ownership, refresh/rotation, CAS cancellation, replay, leases, retry, filtering, 410/413, expiry, unsubscribe, revocation. No external notifications sent.');
+  await sql(`update sky_watch.principals set expires_at=clock_timestamp()-interval '1 second' where token_hash='${digest(token2)}';`);
+  assert.equal((await call('events/list', {}, token2)).status, 401);
+  // The actual engine and persistent scheduler also survive restart and missed runs.
+  await sql('truncate sky_watch.outbox, sky_watch.ledger, sky_watch.progress;');
+  const firstTick = Date.parse('2026-10-10T12:00:00Z');
+  assert.equal(await fillWatchLedger(rpc, firstTick), 2);
+  const idsBeforeRestart = await sql('select jsonb_agg(id order by id) from sky_watch.ledger;');
+  assert.notEqual(idsBeforeRestart, '');
+  assert.equal(await fillWatchLedger(rpc, firstTick), 0);
+  assert.equal(await sql('select jsonb_agg(id order by id) from sky_watch.ledger;'), idsBeforeRestart);
+  const missedRuns = Date.parse('2026-10-14T12:00:00Z');
+  assert.equal(await fillWatchLedger(rpc, missedRuns), 3);
+  assert.equal(await fillWatchLedger(rpc, missedRuns), 1);
+  assert.equal(await fillWatchLedger(rpc, missedRuns), 0);
+  assert.equal(await sql("select bool_and(payload#>>'{data,receipt,search,completeness}'='tested-not-proven') from sky_watch.ledger;"), 't');
+  console.log('Sky Watch PostgreSQL + MCP lifecycle passed: auth, discovery, ownership, refresh/rotation, CAS cancellation, replay, leases, retry, filtering, 410/413, expiry, unsubscribe, revocation, real-engine scheduler restart and missed-run recovery. No external notifications sent.');
 } finally { await new Promise<void>(resolve => server.close(() => resolve())); }

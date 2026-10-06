@@ -32,8 +32,8 @@ export const EVENT_DEFINITIONS = NAMES.map(name => ({
       : 'A selected new or full Moon occurs.',
   delivery: ['webhook'],
   inputSchema: { type: 'object', additionalProperties: false,
-    properties: { ...(name.endsWith('lunation') ? { phases: { type: 'array', minItems: 1, maxItems: 2, uniqueItems: true, items: { enum: ['new', 'full'] } } }
-      : { bodies: { type: 'array', minItems: 1, maxItems: 10, uniqueItems: true, items: { enum: name.endsWith('station') ? BODIES.slice(2) : BODIES } } }),
+    properties: { ...(name.endsWith('lunation') ? { phases: { type: 'array', minItems: 1, maxItems: 2, items: { enum: ['new', 'full'] } } }
+      : { bodies: { type: 'array', minItems: 1, maxItems: name.endsWith('station') ? 8 : 10, items: { enum: name.endsWith('station') ? BODIES.slice(2) : BODIES } } }),
     zone: { type: 'string', description: 'IANA time zone for display; UTC by default.' } },
     required: [name.endsWith('lunation') ? 'phases' : 'bodies'],
   },
