@@ -1,0 +1,207 @@
+{
+  "schema": "zodiacs.browser-evidence.v1",
+  "mode": "candidates",
+  "headSha": "498b006635caca8834a6a4ca6f0b04844ddc4bf1",
+  "baseSha": "51b64f3cb67c2026a18772297ec6b367ed2ca183",
+  "actualHead": "498b006635caca8834a6a4ca6f0b04844ddc4bf1",
+  "repository": "zodiacs-org/site",
+  "runUrl": "https://github.com/zodiacs-org/site/actions/runs/37354590952",
+  "runAttempt": "1",
+  "recordedAt": "2026-10-05T18:21:45.684Z",
+  "node": "v22.23.3",
+  "requiredBrowser": "149.0.7827.55",
+  "templateSourceSha256": "d6bb8c771b8d2583e5597f61e32bf60b673914f8b461174b832d6ba9b6beea39",
+  "outcomes": {
+    "checkout": "success",
+    "node": "success",
+    "request": "success",
+    "install": "success",
+    "browser": "success",
+    "build": "success",
+    "acceptance": "success",
+    "receipt": "success",
+    "visual": "skipped",
+    "candidates": "success",
+    "lighthouse": "skipped",
+    "explorer": "skipped"
+  },
+  "phase1CaptureSucceeded": true,
+  "baselineFiles": "unapproved-candidates",
+  "files": [
+    {
+      "path": "docs/acceptance/phase1/screenshots/career-1280.png",
+      "bytes": 392466,
+      "sha256": "02e452185db78216310d254ded495bea2a754f02d40d34df112b1be14726b741"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/career-360.png",
+      "bytes": 276042,
+      "sha256": "4807c03ba6970d04bce8c7677ddad3c63298d74b5702740beee8cd34b82fb73d"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/daily-1280.png",
+      "bytes": 416760,
+      "sha256": "4da0efd93d38002eab801a007fbd51f9710941f036ada37d5d530fc7878f1164"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/daily-360.png",
+      "bytes": 301876,
+      "sha256": "5455ae82e33d69c1e6d6f6b712c1b53d1ac39990dba3c5ec84713b9ffc652653"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/horoscopes-hub-1280.png",
+      "bytes": 448845,
+      "sha256": "35b4ace7fe766807945d3660e2430e4e92a5451d9533362b04580c88c99b42c0"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/horoscopes-hub-360.png",
+      "bytes": 387653,
+      "sha256": "49996226102ba6b0d6e2f21b358d3281e9dbd129cb2282d1af70a4da7cda5476"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/love-1280.png",
+      "bytes": 392111,
+      "sha256": "49277343c6648db8d0f67616ad6590a3536560e2e1086ca17d4cf5162aa2cfdf"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/love-360.png",
+      "bytes": 277069,
+      "sha256": "784af45305674853585dc93cf4b5fe7cb589f9e790f6978eed3b3cf218e7bedf"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/manifest.json",
+      "bytes": 12353,
+      "sha256": "eb18f649ae9d84a9222eda86a24a24073bea23a51f3654a18ff981a8f982126a"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/monthly-1280.png",
+      "bytes": 505485,
+      "sha256": "650a124ee436a330ee1488b76007922f73d2069d02e758141d47248399ff3b14"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/monthly-360.png",
+      "bytes": 386333,
+      "sha256": "66f037869a8f37a12e06a5a1e03adaecc81b325dfbe76394baaaa1ff9a0d4c83"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/today-1280.png",
+      "bytes": 740131,
+      "sha256": "4cd9c88a09be1b5ab9441be10147b0c4f32d6e7562a3772955579c1ea04ff2e9"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/today-360.png",
+      "bytes": 594272,
+      "sha256": "65f324b27fd8d7d444af06d768b2985aa8a46a1fba07c2f9a1a8db8341bfc1e2"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/tomorrow-1280.png",
+      "bytes": 424101,
+      "sha256": "cef46b6c21539bed956f5bad9d92850e464d0284ec0a24f497cadc2166c4db03"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/tomorrow-360.png",
+      "bytes": 300762,
+      "sha256": "146842304b50b0dd52ca2a37ddb55169d5203a0236606cc970db97a7c69f1195"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/weekly-1280.png",
+      "bytes": 491906,
+      "sha256": "1136b407fb3e09ea60b7f496702461c8dddaaae2b621fbc9b9b27ab37df72bc2"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/weekly-360.png",
+      "bytes": 362869,
+      "sha256": "530a87e1f7342df8b95f75e459450abd4be970c69d58e35740acae9bba940b04"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/yearly-1280.png",
+      "bytes": 1289643,
+      "sha256": "afbced2ee174a0c9e74cadab281e7065464b261406c40878c477de933c58d980"
+    },
+    {
+      "path": "docs/acceptance/phase1/screenshots/yearly-360.png",
+      "bytes": 1038910,
+      "sha256": "1390f34609c603680b5a32f6b605c256ba06e58beaacef4c55c05beee60e2517"
+    },
+    {
+      "path": "tests/visual/artifacts/browser-evidence/runtime.json",
+      "bytes": 55,
+      "sha256": "7948ee175ec966290f564cfcb5ddccc2a0c4604a934262096bff39dc778a4c44"
+    },
+    {
+      "path": "tests/visual/baselines/linux/aries-desktop-reduced-motion.png",
+      "bytes": 1076126,
+      "sha256": "4788b263ff29401ddf7476bce1bee38edc3c4e4928782448bc3e698b0130df37"
+    },
+    {
+      "path": "tests/visual/baselines/linux/aries-desktop.png",
+      "bytes": 1076126,
+      "sha256": "4788b263ff29401ddf7476bce1bee38edc3c4e4928782448bc3e698b0130df37"
+    },
+    {
+      "path": "tests/visual/baselines/linux/aries-mobile.png",
+      "bytes": 941013,
+      "sha256": "8f7a7c9b5fbfea88ed3f9959efc1d9b01209cd220d78004435c20ab7f3b7694c"
+    },
+    {
+      "path": "tests/visual/baselines/linux/birth-chart-kahlo-desktop-reduced-motion.png",
+      "bytes": 1399812,
+      "sha256": "f6789a1fde72ba036a43dd4062c5a2ecb8b6afeccb4dff8843dbc31d29cce1fd"
+    },
+    {
+      "path": "tests/visual/baselines/linux/birth-chart-kahlo-desktop.png",
+      "bytes": 1400097,
+      "sha256": "63ada7e40418a93db31fbd2f06feca3bca90193fe098b981b1bc8dd177bbf039"
+    },
+    {
+      "path": "tests/visual/baselines/linux/birth-chart-kahlo-mobile.png",
+      "bytes": 1292527,
+      "sha256": "fd581ce392fd6866446f73e935b21dce70f49dde7ec5af9ee34057171cf8fc9a"
+    },
+    {
+      "path": "tests/visual/baselines/linux/event-full-moon-desktop-reduced-motion.png",
+      "bytes": 725595,
+      "sha256": "d5061eacc175102418bd38844c1d7cc69ae01d7593bc8a366445ac58e00626e1"
+    },
+    {
+      "path": "tests/visual/baselines/linux/event-full-moon-desktop.png",
+      "bytes": 725595,
+      "sha256": "d5061eacc175102418bd38844c1d7cc69ae01d7593bc8a366445ac58e00626e1"
+    },
+    {
+      "path": "tests/visual/baselines/linux/event-full-moon-mobile.png",
+      "bytes": 579089,
+      "sha256": "b96d014bbfd854d19d0908d8383d02edeb62e6b1ae8ee9de1e73fd7ac5a99a59"
+    },
+    {
+      "path": "tests/visual/baselines/linux/events-hub-desktop-reduced-motion.png",
+      "bytes": 1673005,
+      "sha256": "911fb3a5100e057f33a4d6cba65ba6f93964bf2fc715438c3bc94b892a5ec759"
+    },
+    {
+      "path": "tests/visual/baselines/linux/events-hub-desktop.png",
+      "bytes": 1673659,
+      "sha256": "711e5d3708b17227e7c8dba2fb9d27f1f34b82164a9a31d5296cdc086c2080f4"
+    },
+    {
+      "path": "tests/visual/baselines/linux/events-hub-mobile.png",
+      "bytes": 1440313,
+      "sha256": "ed89a7a4555b561e58a94a44b4e6270b8f735b734418d036a764c94ddffe30ba"
+    },
+    {
+      "path": "tests/visual/baselines/linux/home-desktop-reduced-motion.png",
+      "bytes": 2071925,
+      "sha256": "d45c2a3b24549acf7927429a772cd73afbf01149720181d33bc3f1d49dd20893"
+    },
+    {
+      "path": "tests/visual/baselines/linux/home-desktop.png",
+      "bytes": 2070420,
+      "sha256": "f5786b70722509a1b42eb123af8bc6684431aa6c58bff3e2a704d4ae146f2fb4"
+    },
+    {
+      "path": "tests/visual/baselines/linux/home-mobile.png",
+      "bytes": 885043,
+      "sha256": "269740f6c33e466f254c4ef0743401e8e2d447aa663549ee41e79d67339f04c1"
+    }
+  ]
+}

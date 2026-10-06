@@ -1173,8 +1173,8 @@ const sitemapPolicy = {
   // +18 for three six-language return-visit tools.
   // +48 for the twelve rising-sign profiles translated into es, pt, fr and it.
   // +16 for the four sky-calendar hubs translated into es, pt, fr and it.
-  // +312 for the 78 compatibility pairs translated into es, pt, fr and it.
-  total: 1418 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
+  // +312 translated compatibility pairs and +1 AI integration candidates page.
+  total: 1419 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
     + publishedEventPaths.size + indexablePeoplePaths.size
     + Number(JSON.parse(await readFile(resolve(repo, 'src/data/people.json'), 'utf8')).directoryIndexable === true)
     + indexedRegistryResearchPaths.size,

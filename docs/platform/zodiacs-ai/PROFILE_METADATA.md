@@ -1,0 +1,83 @@
+# Zodiacs profile metadata
+
+## Sky Watch preview — 6 October 2026
+
+The separate **Zodiacs Sky Watch Preview** profile was created and updated to
+metadata version **1.0.2**. Its visible page shows the branded icon, Zodiacs LLC,
+Lifestyle category, website, privacy and terms links, public-sky capabilities
+and three starter prompts. Its underlying app description also includes the
+company, support address and valid methods URL. The app ID is
+`asdk_app_6ac4aa125bd88191b2dd4a221788e2ab`.
+
+The description identifies the separate preview account, seven-day maximum
+watch lifetime, Disconnect control, retained authorization/delivery data and
+unverified ChatGPT arrival/timing. No publisher-verification badge, endorsement
+or public release is claimed. The profile now shows **Connected** to the existing
+synthetic preview account. Native discovery, subscription, callback verification and Pause/unsubscribe
+now pass in a fresh Work chat. Real event arrival and automatic renewal remain
+unverified. The original Chart Studio
+profile and its deployment remain frozen. Tool refresh reset the cloud profile to generic version 1.0.0 after a cached
+view briefly retained its older metadata. Uploading a complete metadata-only
+1.0.2 ZIP referencing the same existing app restored the branded icon, Zodiacs
+LLC, website, privacy and terms; the updated profile was verified. Verify and,
+if needed, restore profile metadata after future tool refreshes.
+
+Current portable metadata candidates are **0.3.2**, retaining the 0.3.0 runtime.
+Installed/enabled local packages are **0.3.0**; the already-open chat still
+reported 0.2.0 before reload. Package 0.3.2 preserves onboarding, Sky's
+three starter prompts, five/three review cases and release notes, and includes
+local chart-record copying for embedded hosts that block downloads. It clears
+the historical walkthrough URL pending a current recording. Private app-reference
+ZIPs remain separate from public submission; see [SUBMISSION.md](./SUBMISSION.md).
+The installed Developer copy passes its nine-tool/record/privacy driver. Sky
+retains its existing production endpoint configuration; installation does not
+activate that endpoint. Profile metadata version 1.0.2 is a different namespace.
+Earlier records below describe their own date and do not establish current
+installation or release status.
+
+## Earlier profiles — 5 October 2026
+
+Eight custom ChatGPT profiles were updated to version 1.0.1 and their visible
+profile pages verified: Shared Sky (Private Trial), Shared Sky, Staging Review,
+Staging Final, Staging Acceptance, Staging Patched, Staging Verified and Staging
+October 5. The latter remains Connected.
+
+Each now includes the official website, Zodiacs LLC developer identity, company
+and support contact, privacy policy, terms, calculation documentation, branded
+plugin icons, capabilities and starter prompts. Descriptions distinguish shared
+snapshots, historical previews and current private staging. No verified-publisher
+badge, tester endorsement, public listing or OpenAI approval is claimed.
+
+Official company/contact information: https://zodiacs.org/about/
+Website: https://zodiacs.org/
+Support: admin@zodiacs.org
+Documentation: https://zodiacs.org/developers/
+Privacy: https://zodiacs.org/privacy/
+Terms: https://zodiacs.org/terms/
+These destinations returned HTTP 200 on 5 October 2026.
+
+## Packages and remaining cloud profile
+
+Both source packages and local installed plugins are refreshed to 0.1.1.
+`npm run ai:check` passes. The Sky homepage previously pointed to
+`https://zodiacs.org/developers/ai/`, which returns 404; it now points to the
+homepage. Developer retains the valid developer documentation URL.
+
+The original portable cloud profile named **Zodiacs** still has its old metadata.
+Its web page offers only **Open in desktop app**. Computer Use blocks control of
+that desktop app, so its cloud update could not be completed automatically.
+Open that original profile in the desktop app and update it with
+`zodiacs-sky-0.1.1.zip`. Then verify Website is https://zodiacs.org/, Developer
+is Zodiacs LLC and Version is 0.1.1. The prepared archive is in `integrations/packages/`.
+
+The eight small 1.0.1 ZIPs reference their existing ChatGPT apps. They preserve
+app IDs and access. They contain metadata and icons, not preview credentials.
+Underlying app-card icons on older connections may retain their original globe;
+their plugin profile icons have been updated.
+
+`integrations/packages/manifest.json` records both 0.1.1 portable archives and
+member digests. Prior 0.1.0 archives remain historical evidence. Current profile
+screenshots and receipts are preserved in the local review outputs. Runtime code
+and MCP configurations are unchanged; complete Site Check and Browser Evidence
+passed on the preceding source `c1977043bbe814f05dd12c5ac3e16ee1c36ad58e`.
+That CI result does not establish checks on a later metadata commit. No submission, PR merge or production activation occurred.

@@ -1,0 +1,13 @@
+{
+  "schema": "zodiacs.lighthouse-recovery-summary.v1",
+  "sourceCommit": "f4ee5004bcbe1c821796288e66e7c3fd4c34d509",
+  "runUrl": "https://github.com/zodiacs-org/site/actions/runs/37300746001",
+  "routes": 30,
+  "samples": 90,
+  "minimum": {
+    "performance": 97,
+    "accessibility": 96,
+    "seo": 100
+  },
+  "scope": "Worst of three samples per route. The comparison job fails only the three homepage height differences; this is not a complete final-head release gate."
+}

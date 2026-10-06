@@ -372,9 +372,13 @@ export async function driveLocaleDiscovery({ browser, baseURL, check, outDir }) 
                       && (i === 0 || child.left >= children[i - 1].right - 1)) };
                 });
                 const link = page.locator(`.nav__links a[href="${pathFor(locale, '/today/')}"]`);
-                record(`${locale.code} five-track Today desktop navigation@1440`, nav.tracks === 5 && nav.children.length === 5 && nav.fits
-                  && await page.locator('.nav__profile-shortcut').isVisible()
-                  && await link.isVisible() && (await link.textContent()).trim() === locale.today, JSON.stringify(nav));
+                const profile = page.locator(`.nav__profile-shortcut[href="${pathFor(locale, '/profile/')}"]`);
+                const profileBox = await profile.boundingBox();
+                record(`${locale.code} five-track Today navigation and separate profile shortcut@1440`, nav.tracks === 5 && nav.children.length === 5 && nav.fits
+                  && await link.isVisible() && (await link.textContent()).trim() === locale.today
+                  && await profile.isVisible() && Boolean((await profile.getAttribute('aria-label'))?.trim())
+                  && profileBox?.width >= 44 && profileBox?.height >= 44,
+                JSON.stringify({ ...nav, profileBox }));
               }
             }
 

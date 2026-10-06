@@ -128,7 +128,7 @@ describe('homepage first-paint assets', () => {
     expect(page).toContain('Birth charts calculated in your browser.');
     expect(page).toContain('Clear astrology readings and tools, free to explore.');
     expect(page).toContain('Get your free birth chart');
-    expect(page).toContain('Your horoscope');
+    expect(page).toMatch(/<a\b[^>]*class="btn btn--ghost hero__ghost"[^>]*href="\/horoscopes\/"[^>]*><span>Your horoscope<\/span><\/a>/u);
     expect(page).toContain('Free · No signup · Calculated in your browser');
     expect(page).not.toContain('class="hero__story"');
     expect(page).not.toContain('class="hero__method"');

@@ -1,0 +1,45 @@
+- link "Skip to content":
+  - /url: "#_r_3o_"
+- main:
+  - button "Show sidebar":
+  - heading "Zodiacs Staging Acceptance" [level=1]
+  - heading [level=3]: Outputs
+  - button:
+  - button:
+    - generic: Create file or site
+- status
+- status
+- status
+- textbox "Work with ChatGPT":
+  - paragraph: Work with ChatGPT
+- button "Add files and more":
+- button "Select ChatGPT model":
+  - generic: GPT-6.1 Sol
+  - generic: Light
+  - generic: None
+  - generic: Minimal
+  - generic: Light
+  - generic: Medium
+  - generic: High
+  - generic: Extra High
+  - generic: Max
+  - generic: Ultra
+  - generic: Persistent
+- button "Dictate":
+- button "Send" [disabled]:
+- iframe [active]:
+  - iframe [active] [id="root"]:
+    - main:
+      - heading "Sky calendar" [level=1]
+      - status: Must be a time zone name the server's time zone data includes.
+      - text: Start date (UTC, exclusive)
+      - textbox "Start date (UTC, exclusive)"
+      - text: End date (UTC, inclusive)
+      - textbox "End date (UTC, inclusive)"
+      - text: Display timezone
+      - textbox "Display timezone"
+      - button "Update calendar"
+      - paragraph: Windows are at most 31 days. Date controls use midnight UTC; the timezone changes the displayed event times.
+      - list
+      - paragraph
+      - navigation "Explore on Zodiacs"

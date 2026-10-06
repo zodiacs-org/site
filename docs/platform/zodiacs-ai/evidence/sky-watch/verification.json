@@ -1,0 +1,56 @@
+{
+  "schema": "zodiacs.sky-watch-preview-review.v1",
+  "checkedAt": "2026-10-06T06:47:30.119730+00:00",
+  "status": "private-candidate-disabled",
+  "engine": {
+    "embedded": "0.1.1-rc.17",
+    "publishedRecipes": "0.1.1-rc.16",
+    "rc17RegistryCheck": "E404 on 2026-10-06"
+  },
+  "mcpProtocol": "2026-07-28",
+  "events": [
+    "zodiacs.sky.ingress",
+    "zodiacs.sky.station",
+    "zodiacs.sky.lunation"
+  ],
+  "checks": {
+    "aiUnitTests": 118,
+    "postgresql": "17.11; real database and MCP transport; synthetic callbacks",
+    "securityAdvisors": "no issues",
+    "websiteBuild": "passed",
+    "typecheck": "0 errors; 0 warnings; 39 pre-existing hints",
+    "fullRegression": {
+      "passed": 6885,
+      "skipped": 6,
+      "failed": 0,
+      "execution": "6880 passed / 6 skipped with screenshot-evidence file excluded, then all 5 screenshot-evidence checks passed after verified artifact refresh"
+    },
+    "newCiLifecycle": "passed on ac8139ed",
+    "browser": "Chart Studio rc.17: render, UTC step, worker window; no observed console errors",
+    "browserEvidence": "passed: 18 Phase 1 captures, visual baseline comparison, Lighthouse (three runs per gated route), navigation and chart explorer drive"
+  },
+  "deployment": {
+    "remoteMigrationApplied": false,
+    "schedulerActivated": false,
+    "externalNotificationsSent": false,
+    "chatgptEventLifecycleVerified": false,
+    "publicOAuthImplemented": false
+  },
+  "github": {
+    "pullRequest": "https://github.com/zodiacs-org/site/pull/618",
+    "browserEvidenceHead": "ac8139ed082665944ec6a113789e67d0f8b6a0f6",
+    "browserEvidenceRun": "https://github.com/zodiacs-org/site/actions/runs/37422983700",
+    "browserEvidenceArtifactId": 11394742707,
+    "browserEvidenceConclusion": "success",
+    "templateSourceSha256": "3696dfe16c388d2c42c206a32a670fff931ae64019edc68f43d4c6b4cad4eab8",
+    "unchangedScreenshotHashes": 18,
+    "lifecycleRun": "https://github.com/zodiacs-org/site/actions/runs/37422983807",
+    "ciNote": "Sky Watch lifecycle passed on ac8139ed. That head\u2019s Build & Check job failed because nested recipe dependencies were not installed; the final workflow installs them explicitly, and the local equivalent passes. The final commit\u2019s CI result is not represented by this record."
+  },
+  "hashes": {
+    "integrations/generated/sky-watch.mjs": "c5f5dd6f28e09077aad6354c13f5cb875414b02b75bfdc4aea29fdc8e286b8c3",
+    "supabase/migrations/20261006060504_sky_watch_preview.sql": "4b5561f2bdab858c8f43f1e2cf5866cc76b609b39fbdb6626bfa8a6c09c6b00d",
+    "integrations/packages/zodiacs-developer-0.3.0.zip": "1cd4e668932f4375eaaca02519f2d7846c2accd0b00a1ab4e3a272e03138a32f",
+    "docs/acceptance/phase1/screenshots/manifest.json": "59e9f5af9545f13b3f882da118326cfb1869f2e69bad0b69c6d439107a55a240"
+  }
+}

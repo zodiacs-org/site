@@ -13,6 +13,7 @@ const SOURCE_EXTENSIONS = new Set([
  * and the scanner failing loudly on a missing root is the behaviour to keep.
  */
 export const SOURCE_ROOTS = Object.freeze([
+  'src/ai-tools',
   'api',
   'src/components',
   'src/content',
