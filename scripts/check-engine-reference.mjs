@@ -39,10 +39,10 @@ export async function checkEngineReference(root) {
   try { provenance = JSON.parse(await readFile(join(directory, 'provenance.json'), 'utf8')); }
   catch { return { pages: 0, errors: ['Missing or invalid reference provenance'] }; }
   if (provenance.sourceRepository !== 'https://github.com/zodiacs-org/engine'
-    || provenance.artifactUrl !== 'https://raw.githubusercontent.com/zodiacs-org/engine/ef44477f85f28a57d5ec7f61ed6ea6a99c4be563/artifacts/zodiacs-engine-0.1.1-rc.16.tgz'
-    || provenance.version !== '0.1.1-rc.16' || provenance.license !== 'MIT AND CC-BY-4.0'
-    || provenance.sourceCommit !== 'ddbbaa0b1d21e16834722f81e8708816849c6726'
-    || provenance.sha256 !== '43a72d30e483d8ff22024e403c4bd0d86d81bb6e1d0ad138f857cd001ab015d8') errors.push('Reference identity differs from rc16');
+    || provenance.artifactUrl !== 'https://raw.githubusercontent.com/zodiacs-org/engine/b080217c1b5b0b36c931e9c237bcff0308ec1efc/artifacts/zodiacs-engine-0.1.1-rc.17.tgz'
+    || provenance.version !== '0.1.1-rc.17' || provenance.license !== 'MIT AND CC-BY-4.0'
+    || provenance.sourceCommit !== 'aae419c05b77455b9e8f03ca11ee273b446f7d02'
+    || provenance.sha256 !== '9cd24c788863424ef614aaadec580db5a0dfc529303d385274db48a092a5299a') errors.push('Reference identity differs from rc17');
   const files = await readdir(directory, { recursive: true });
   const pages = files.filter((file) => file.endsWith('.html'));
   for (const required of ['index.html', 'modules.html', ...['engine','calc','crossings','deltat','geo','houses','receipt','sky','techniques','timing','vedic','window'].map((name) => `modules/${name}.html`)]) {
@@ -53,7 +53,7 @@ export async function checkEngineReference(root) {
     const canonical = path === 'index.html' ? base : new URL(path, base).href;
     if (!html.includes(`<link rel="canonical" href="${canonical}"/>`) || (html.match(/rel="canonical"/g) ?? []).length !== 1) errors.push(`${path}: incorrect canonical`);
     if (!html.includes('<meta name="robots" content="noindex,follow"/>')) errors.push(`${path}: missing noindex contract`);
-    if (!html.includes('@zodiacs/engine 0.1.1-rc.16') || !html.includes('MIT AND CC-BY-4.0')) errors.push(`${path}: missing version or licence`);
+    if (!html.includes('@zodiacs/engine 0.1.1-rc.17') || !html.includes('MIT AND CC-BY-4.0')) errors.push(`${path}: missing version or licence`);
     if (!html.includes(`href="${provenance.sourceRepository}/tree/${provenance.sourceCommit}"`)) errors.push(`${path}: missing pinned source link`);
     if (!html.includes('<footer><nav class="engine-sign-rail"') || !html.includes('/about/#editorial-system')) errors.push(`${path}: missing footer or editorial policy`);
     const tokenWord = TOKEN_WORDS.exec(html);

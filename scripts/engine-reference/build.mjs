@@ -1,4 +1,4 @@
-// Generated documentation only. Never writes public/sdk or the release archive.
+// Generated documentation only. Never writes public/sdk or the package archive.
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { cp, mkdir, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
@@ -12,11 +12,11 @@ const root = fileURLToPath(new URL('../../', import.meta.url));
 const target = join(root, 'public/developers/engine/reference');
 const base = 'https://zodiacs.org/developers/engine/reference/';
 export const release = Object.freeze({
-  version: '0.1.1-rc.16',
-  sourceCommit: 'ddbbaa0b1d21e16834722f81e8708816849c6726',
-  sha256: '43a72d30e483d8ff22024e403c4bd0d86d81bb6e1d0ad138f857cd001ab015d8',
+  version: '0.1.1-rc.17',
+  sourceCommit: 'aae419c05b77455b9e8f03ca11ee273b446f7d02',
+  sha256: '9cd24c788863424ef614aaadec580db5a0dfc529303d385274db48a092a5299a',
   sourceRepository: 'https://github.com/zodiacs-org/engine',
-  artifactUrl: 'https://raw.githubusercontent.com/zodiacs-org/engine/ef44477f85f28a57d5ec7f61ed6ea6a99c4be563/artifacts/zodiacs-engine-0.1.1-rc.16.tgz',
+  artifactUrl: 'https://raw.githubusercontent.com/zodiacs-org/engine/b080217c1b5b0b36c931e9c237bcff0308ec1efc/artifacts/zodiacs-engine-0.1.1-rc.17.tgz',
 });
 export const excluded = Object.freeze(['./internal', './internal/math']);
 const sha = (bytes) => createHash('sha256').update(bytes).digest('hex');
@@ -101,7 +101,7 @@ export async function buildEngineReference({ check = false } = {}) {
       schemaVersion: 1, version: release.version, sourceCommit: release.sourceCommit, sha256: release.sha256,
       license: pkg.license, sourceRepository: release.sourceRepository, artifactUrl: release.artifactUrl,
       generator: { typedoc: (await json(join(root, 'scripts/engine-reference/node_modules/typedoc/package.json'))).version, typescript: ts.version },
-      input: 'Unmodified public declarations from the digest-verified release archive',
+      input: 'Unmodified public declarations from the digest-verified package archive',
       excluded: Object.fromEntries(excluded.map((key) => [key, 'Site compatibility only; outside the public API promise; may change without notice.'])),
       api, notices,
     };

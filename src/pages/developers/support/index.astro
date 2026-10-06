@@ -18,7 +18,7 @@ const description = 'Current Zodiacs developer support: local engine candidate, 
 const engineRows = [
   ['Language and runtime', 'ESM JavaScript with TypeScript declarations. The manifest declares Node.js ^20.19.0 || >=22.7.0: astronomy-engine ships ES modules in a package without "type": "module", which plain Node loads as ES modules only from 20.19.0 and 22.7.0. There is no CommonJS export. Browser integrations need an ESM-aware bundler or equivalent dependency setup; bundlers are not affected by the Node range.'],
   ['Recorded runtime checks', 'The linked reports record this candidate’s tested runtimes, package consumers and TypeScript declarations. They identify the exact artifact and validation scope; they do not certify every browser or all Node versions allowed by the manifest.'],
-  ['Zodiac and positions', 'Tropical ecliptic of date; apparent geocentric positions in degrees. Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto, and true North/South Moon nodes. The sidereal zodiac is in the separate @zodiacs/engine/vedic entry point. No topocentric parallax.'],
+  ['Zodiac and positions', 'Tropical ecliptic of date; apparent geocentric positions in degrees. Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto, and true North/South Moon nodes. The sidereal zodiac is in the separate @zodiacs/engine/vedic and @zodiacs/engine/calc entry points. The core has no topocentric parallax; @zodiacs/engine/calc offers a topocentric center.'],
   ['Calculations', 'Positions, natal charts, transit snapshots, synastry, Moon phase, Saturn-return seasons, secondary progressions, chart points, aspects under a configurable policy, and declinations with parallels. Separate imports add Hellenistic timing (@zodiacs/engine/timing) and sidereal and Jyotish techniques (@zodiacs/engine/vedic). The same public API supplies calculation metadata; interpretation is separate from astronomical accuracy.'],
   ['Houses and unknown time', 'Thirteen house systems, each as Swiss Ephemeris defines it: whole sign, Placidus, Koch, Porphyry, Regiomontanus, Campanus, Topocentric, Alcabitius, Equal (Ascendant), Equal-MC, Vehlow, Meridian and Morinus. Known time and coordinates are required for angles/houses. timeKnown: false sets both to null and adds no-time. Placidus and Koch fall back to whole sign inside the polar circle, where the absolute latitude is 90° minus the obliquity or more, and Placidus also on nonconvergence, with polar-fallback. The other eleven systems are defined wherever the angles are. Exact geographic poles and degenerate horizon intersections are outside verified angle scope.'],
   ['Resolved instant input', 'A valid Date, finite epoch milliseconds, or validated ISO date/time. Date-times require Z or an explicit numeric offset; date-only YYYY-MM-DD means midnight UTC. Invalid ISO calendar dates, unresolved local date-times, leap seconds, and more than three fractional-second digits are rejected. A Date already normalized by its caller cannot reveal that earlier rollover. Outputs normalize to Date and do not preserve the original offset or local timezone. The instant is read as UTC: from 1972 to 2027-10-02 through the IERS leap seconds and UT1 − UTC, otherwise as UT1 with the ΔT model, and the chart reports which (timeScale). A timeScale of "ut1" or "tt" reads it on that scale instead; any other value, and a birth-input key that differs from a field only in letter case, throws a RangeError.'],
@@ -48,7 +48,10 @@ const engineRows = [
         <a href="/developers/">Developer tools</a> have different release states.
         Public sky files, hosted embeds and the compute API are available now;
         the compute API answers only while its per-address rate limit is in
-        place. The local engine below is on npm as a release candidate.
+        place. The local engine below is a release candidate,{' '}
+        {candidate.releaseStatus === 'published'
+          ? 'on npm.'
+          : 'distributed as a digest-pinned archive and not on npm.'}
       </p>
     </div>
 
@@ -60,25 +63,53 @@ const engineRows = [
         Ephemeris, and an install that verifies the digest before npm sees the
         file. This section is the reference behind it.
       </p>
-      <p>
-        <code>{`npm install ${candidate.name}@${candidate.version}`}</code> installs
-        this exact published release. The verified registry read of
-        {candidate.registryObservedOn} records it under <code>next</code>;
-        <code>latest</code> remains 0.1.1-rc.15. That release was
-        published from the <code>release.yml</code> workflow of the{' '}
-        <a href={candidate.sourceRepository}>engine repository</a> with SLSA
-        provenance, which names that repository, the workflow and the commit the
-        package was built from; <code>npm audit signatures</code> verifies it.
-        Provenance shows where the package was built. It does not show that its
-        results are correct.
-      </p>
-      <p>
-        This revision vendors the {candidate.version} archive below. Its bytes
-        match both the verified npm tarball and the engine repository carrier,
-        and passed clean-consumer checks on Node 22 and 24. This archive
-        identifies the local package; hosted data and widgets are separate
-        deployments.
-      </p>
+      {candidate.releaseStatus === 'published' ? (
+        <>
+          <p>
+            <code>{`npm install ${candidate.name}@${candidate.version}`}</code> installs
+            this exact published release. The verified registry read of
+            {candidate.registryObservedOn} records it under <code>next</code>;
+            <code>latest</code> remains 0.1.1-rc.15. That release was
+            published from the <code>release.yml</code> workflow of the{' '}
+            <a href={candidate.sourceRepository}>engine repository</a> with SLSA
+            provenance, which names that repository, the workflow and the commit the
+            package was built from; <code>npm audit signatures</code> verifies it.
+            Provenance shows where the package was built. It does not show that its
+            results are correct.
+          </p>
+          <p>
+            This revision vendors the {candidate.version} archive below. Its bytes
+            match both the verified npm tarball and the engine repository carrier,
+            and passed clean-consumer checks on Node 22 and 24. This archive
+            identifies the local package; hosted data and widgets are separate
+            deployments.
+          </p>
+        </>
+      ) : (
+        <>
+          <p>
+            This revision vendors the {candidate.version} archive below, a release
+            candidate that is not on npm. Its bytes match the engine repository
+            carrier, and it passed clean-consumer checks on Node 22 and 24. This
+            archive identifies the local package; hosted data and widgets are
+            separate deployments.
+          </p>
+          <p>
+            The verified registry read of {candidate.registryObservedOn} records{' '}
+            {candidate.registryVersion} under <code>next</code> and 0.1.1-rc.15 under{' '}
+            <code>latest</code>.{' '}
+            <code>{`npm install ${candidate.name}@${candidate.registryVersion}`}</code>{' '}
+            installs {candidate.registryVersion}, the version before this candidate, which
+            refuses the sidereal zodiac in <code>@zodiacs/engine/calc</code>. It was
+            published from the <code>release.yml</code> workflow of the{' '}
+            <a href={candidate.sourceRepository}>engine repository</a> with SLSA
+            provenance, which names that repository, the workflow and the commit the
+            package was built from; <code>npm audit signatures</code> verifies it.
+            Provenance shows where the package was built. It does not show that its
+            results are correct.
+          </p>
+        </>
+      )}
       <p>
         <a href={candidate.artifactUrl}>Download engine {candidate.version} (.tgz)</a>.
         Verify its SHA-256 before installing the local file; follow the{' '}
@@ -94,7 +125,7 @@ const engineRows = [
         <a href={receiptSpec}>draft receipt specification</a> (written for rc.3 to rc.6), and{' '}
         <a href={`${sourceRoot}/CHANGELOG.md`}>candidate changelog</a>. The{' '}
         <a href="/developers/engine/reference/">{candidate.version} API reference</a> documents every
-        public entry point of the released archive; the{' '}
+        public entry point of the archive this revision vendors; the{' '}
         <a href="/sdk/engine/">archived rc.1 API reference</a> describes the earlier candidate.
       </p>
     </div>

@@ -1,0 +1,452 @@
+{
+ "schemaVersion": 1,
+ "what": "Every file the engine-derived data generators write, regenerated on 2026-10-06 with each engine installed in turn, compared with site main b4f82564 and with each other",
+ "tool": "tools/regen-engine-data.sh",
+ "node": "v22.22.2",
+ "runs": {
+  "rc16": {
+   "engine": "0.1.1-rc.16",
+   "archiveSha256": "43a72d30e483d8ff22024e403c4bd0d86d81bb6e1d0ad138f857cd001ab015d8",
+   "tree": "site main b4f82564, which vendors it"
+  },
+  "rc17": {
+   "engine": "0.1.1-rc.17",
+   "archiveSha256": "9cd24c788863424ef614aaadec580db5a0dfc529303d385274db48a092a5299a",
+   "tree": "this adoption"
+  }
+ },
+ "files": 71,
+ "identicalInAllThree": 67,
+ "entries": [
+  {
+   "path": "public/assets/registry-outlook.json",
+   "main": "285294dc24561de81cc4a4afeaf0399ffa7d25184e691fcdb637d4d3c2caad91",
+   "rc16": "285294dc24561de81cc4a4afeaf0399ffa7d25184e691fcdb637d4d3c2caad91",
+   "rc17": "285294dc24561de81cc4a4afeaf0399ffa7d25184e691fcdb637d4d3c2caad91"
+  },
+  {
+   "path": "src/data/aura-moon-ingresses.json",
+   "main": "91e6ae8b62115da0b53d0844a82fce377931d376127789b12356fea894830916",
+   "rc16": "2fa72e14903c17633fd85f4052b43938643680b9a03e2b7101aee8804fe12bdf",
+   "rc17": "faf154ac63871719511a9b04ddbed3a02814aa9ff48f1374e3f7225515b23c09",
+   "differs": "only in generatedAt, the time of the run; the committed file is kept"
+  },
+  {
+   "path": "src/data/birthdays.json",
+   "main": "e7a469a309de3a7cc86580c2b8c370afbe5891f1ab5836e3389f31f0e25ba020",
+   "rc16": "a217d5fc351b929460a361e83e2e7130092f00df68a194241b7d1583d09aecc5",
+   "rc17": "a217d5fc351b929460a361e83e2e7130092f00df68a194241b7d1583d09aecc5",
+   "differs": "only in generated, the time of the run; the committed file is kept"
+  },
+  {
+   "path": "src/data/daily-publication-manifest.json",
+   "main": "2fc856a18166d2467c7ba14286309f03f7a22df5b30c45ab507515d60594a7f9",
+   "rc16": "2fc856a18166d2467c7ba14286309f03f7a22df5b30c45ab507515d60594a7f9",
+   "rc17": "3710267d84914704282110bc129280df1b81a01c2f3aa3fd18025e6800c8631f",
+   "differs": "under rc.17 only in facts.engine.version and generation.generatorSha256, whose sources include package-lock.json; the rc.17 file is committed"
+  },
+  {
+   "path": "src/data/daily-publication.json",
+   "main": "90dc8007e010e419a91a934efd47a33e62df4b4d17867ccf4d5c76f727f658a1",
+   "rc16": "90dc8007e010e419a91a934efd47a33e62df4b4d17867ccf4d5c76f727f658a1",
+   "rc17": "90dc8007e010e419a91a934efd47a33e62df4b4d17867ccf4d5c76f727f658a1"
+  },
+  {
+   "path": "src/data/daily.json",
+   "main": "14f710002804e0f04dac5d0023c8d2f35b40d861abd2f308136c2f1c01484214",
+   "rc16": "14f710002804e0f04dac5d0023c8d2f35b40d861abd2f308136c2f1c01484214",
+   "rc17": "14f710002804e0f04dac5d0023c8d2f35b40d861abd2f308136c2f1c01484214"
+  },
+  {
+   "path": "src/data/eclipses.json",
+   "main": "3e3b26468b56a51032fcac0bb4a806c9f79dbd31271bb1624612bd03b514cf91",
+   "rc16": "3e3b26468b56a51032fcac0bb4a806c9f79dbd31271bb1624612bd03b514cf91",
+   "rc17": "3e3b26468b56a51032fcac0bb4a806c9f79dbd31271bb1624612bd03b514cf91"
+  },
+  {
+   "path": "src/data/events-publication.json",
+   "main": "832e7d9c9e5d65bfd6e8fc0262154f1458640634b36dbe78a9ef1e3e37d458ff",
+   "rc16": "832e7d9c9e5d65bfd6e8fc0262154f1458640634b36dbe78a9ef1e3e37d458ff",
+   "rc17": "832e7d9c9e5d65bfd6e8fc0262154f1458640634b36dbe78a9ef1e3e37d458ff"
+  },
+  {
+   "path": "src/data/horoscope-program.json",
+   "main": "4b81013c05506334c503632ddfe310fc4b8bb94ebb9e650faa7b328f2d98b16e",
+   "rc16": "4b81013c05506334c503632ddfe310fc4b8bb94ebb9e650faa7b328f2d98b16e",
+   "rc17": "4b81013c05506334c503632ddfe310fc4b8bb94ebb9e650faa7b328f2d98b16e"
+  },
+  {
+   "path": "src/data/ingresses.json",
+   "main": "c76171a5cb45aa82d9b01f59f83ffc79364cbd68849d921c1e83f24b4ecbaa3d",
+   "rc16": "4b8fb2811e837316136da729afc33fd5737b0d4191873a71cc51bebe521219a7",
+   "rc17": "a803b48c3a8fc44925563a9db6f66eda2ee449b9714a8438072b8093048a76b2",
+   "differs": "only in generatedAt, the time of the run; the committed file is kept"
+  },
+  {
+   "path": "src/data/sky.json",
+   "main": "e9ceb4c406d0a6a3172e6bac2be9bad079ece67d0388d7b71a0c26d9a845f92e",
+   "rc16": "e9ceb4c406d0a6a3172e6bac2be9bad079ece67d0388d7b71a0c26d9a845f92e",
+   "rc17": "e9ceb4c406d0a6a3172e6bac2be9bad079ece67d0388d7b71a0c26d9a845f92e"
+  },
+  {
+   "path": "src/data/transits-2026-01.json",
+   "main": "c5cdd8695b282cc81b57f55db17785fddfa64548fba0be348355ce6d9e224313",
+   "rc16": "c5cdd8695b282cc81b57f55db17785fddfa64548fba0be348355ce6d9e224313",
+   "rc17": "c5cdd8695b282cc81b57f55db17785fddfa64548fba0be348355ce6d9e224313"
+  },
+  {
+   "path": "src/data/transits-2026-02.json",
+   "main": "3629d406aaebd2f99bf3e6d2b86063b7f162d2fe23cd2b0344e328d1ab6d9f56",
+   "rc16": "3629d406aaebd2f99bf3e6d2b86063b7f162d2fe23cd2b0344e328d1ab6d9f56",
+   "rc17": "3629d406aaebd2f99bf3e6d2b86063b7f162d2fe23cd2b0344e328d1ab6d9f56"
+  },
+  {
+   "path": "src/data/transits-2026-03.json",
+   "main": "4fa6732b5a18ee0b8da88ebf7f521a65b626df95bcb65e6bde9a7f18eeb7e030",
+   "rc16": "4fa6732b5a18ee0b8da88ebf7f521a65b626df95bcb65e6bde9a7f18eeb7e030",
+   "rc17": "4fa6732b5a18ee0b8da88ebf7f521a65b626df95bcb65e6bde9a7f18eeb7e030"
+  },
+  {
+   "path": "src/data/transits-2026-04.json",
+   "main": "8048501a6bbc49036464ae367885e20d22d1047c47eda7ae7d2ddf1c052a9776",
+   "rc16": "8048501a6bbc49036464ae367885e20d22d1047c47eda7ae7d2ddf1c052a9776",
+   "rc17": "8048501a6bbc49036464ae367885e20d22d1047c47eda7ae7d2ddf1c052a9776"
+  },
+  {
+   "path": "src/data/transits-2026-05.json",
+   "main": "5ad6ff134c397bb11af873eafdff69adeb6939dd4b78cd1d5064aedcbe8faa93",
+   "rc16": "5ad6ff134c397bb11af873eafdff69adeb6939dd4b78cd1d5064aedcbe8faa93",
+   "rc17": "5ad6ff134c397bb11af873eafdff69adeb6939dd4b78cd1d5064aedcbe8faa93"
+  },
+  {
+   "path": "src/data/transits-2026-06.json",
+   "main": "2845ca185d7c842a4f8c95bdfeeaa515d0c7d5b1203043817a3561fdc6106b9d",
+   "rc16": "2845ca185d7c842a4f8c95bdfeeaa515d0c7d5b1203043817a3561fdc6106b9d",
+   "rc17": "2845ca185d7c842a4f8c95bdfeeaa515d0c7d5b1203043817a3561fdc6106b9d"
+  },
+  {
+   "path": "src/data/transits-2026-07.json",
+   "main": "125128fee281c8ef2e37d5d441775619bc87f47b6b4f2929663b783e05ca461d",
+   "rc16": "125128fee281c8ef2e37d5d441775619bc87f47b6b4f2929663b783e05ca461d",
+   "rc17": "125128fee281c8ef2e37d5d441775619bc87f47b6b4f2929663b783e05ca461d"
+  },
+  {
+   "path": "src/data/transits-2026-08.json",
+   "main": "073e0690cef0ef4f2d14d5a9516a8b1c63c3c143458707adeb10bff8dbc4ae85",
+   "rc16": "073e0690cef0ef4f2d14d5a9516a8b1c63c3c143458707adeb10bff8dbc4ae85",
+   "rc17": "073e0690cef0ef4f2d14d5a9516a8b1c63c3c143458707adeb10bff8dbc4ae85"
+  },
+  {
+   "path": "src/data/transits-2026-09.json",
+   "main": "56c0c561d6f47b135050983a0e70ccf998f806bf48997733375f74acdfea67e8",
+   "rc16": "56c0c561d6f47b135050983a0e70ccf998f806bf48997733375f74acdfea67e8",
+   "rc17": "56c0c561d6f47b135050983a0e70ccf998f806bf48997733375f74acdfea67e8"
+  },
+  {
+   "path": "src/data/transits-2026-10.json",
+   "main": "d216bcb3ceda371b0725817894476755dcba8307fa32de990a3aa78eb776fff2",
+   "rc16": "d216bcb3ceda371b0725817894476755dcba8307fa32de990a3aa78eb776fff2",
+   "rc17": "d216bcb3ceda371b0725817894476755dcba8307fa32de990a3aa78eb776fff2"
+  },
+  {
+   "path": "src/data/transits-2026-11.json",
+   "main": "babed9c405e7352384fb29baf7277aea84ffa46e3c9d32b5ffdfc595a5780ad1",
+   "rc16": "babed9c405e7352384fb29baf7277aea84ffa46e3c9d32b5ffdfc595a5780ad1",
+   "rc17": "babed9c405e7352384fb29baf7277aea84ffa46e3c9d32b5ffdfc595a5780ad1"
+  },
+  {
+   "path": "src/data/transits-2026-12.json",
+   "main": "4c2c39c0f27df2f9bd788634bab4665da2754990caf5387f656e9d282e90803e",
+   "rc16": "4c2c39c0f27df2f9bd788634bab4665da2754990caf5387f656e9d282e90803e",
+   "rc17": "4c2c39c0f27df2f9bd788634bab4665da2754990caf5387f656e9d282e90803e"
+  },
+  {
+   "path": "src/data/transits-2027-01.json",
+   "main": "737f6e4da7cde961b51ea0445607bb70f0174d3f1812c1ea027f5b4f9bb425aa",
+   "rc16": "737f6e4da7cde961b51ea0445607bb70f0174d3f1812c1ea027f5b4f9bb425aa",
+   "rc17": "737f6e4da7cde961b51ea0445607bb70f0174d3f1812c1ea027f5b4f9bb425aa"
+  },
+  {
+   "path": "src/data/transits-2027-02.json",
+   "main": "835ef5fa34614660d1334e1b2c29ba0ae0b2e7ce9f6779b3f74763fd86a658b2",
+   "rc16": "835ef5fa34614660d1334e1b2c29ba0ae0b2e7ce9f6779b3f74763fd86a658b2",
+   "rc17": "835ef5fa34614660d1334e1b2c29ba0ae0b2e7ce9f6779b3f74763fd86a658b2"
+  },
+  {
+   "path": "src/data/transits-2027-03.json",
+   "main": "f32efbfd865209b08b838924a448b2ff2373ad380eb5ead14a8e169b6d36e158",
+   "rc16": "f32efbfd865209b08b838924a448b2ff2373ad380eb5ead14a8e169b6d36e158",
+   "rc17": "f32efbfd865209b08b838924a448b2ff2373ad380eb5ead14a8e169b6d36e158"
+  },
+  {
+   "path": "src/data/transits-2027-04.json",
+   "main": "9f9317a285636218f32eef1bf06ab36a3f9935faf2a8dd3df619fae0276db911",
+   "rc16": "9f9317a285636218f32eef1bf06ab36a3f9935faf2a8dd3df619fae0276db911",
+   "rc17": "9f9317a285636218f32eef1bf06ab36a3f9935faf2a8dd3df619fae0276db911"
+  },
+  {
+   "path": "src/data/transits-2027-05.json",
+   "main": "528681cfd6680dcaa997693d162d9025155b6568efe82ef1ad2841b13e8947b0",
+   "rc16": "528681cfd6680dcaa997693d162d9025155b6568efe82ef1ad2841b13e8947b0",
+   "rc17": "528681cfd6680dcaa997693d162d9025155b6568efe82ef1ad2841b13e8947b0"
+  },
+  {
+   "path": "src/data/transits-2027-06.json",
+   "main": "7c1a6a8edc4fd2c6754860b814e1dc9f2c293e96b6baae296b5ae4db276b779d",
+   "rc16": "7c1a6a8edc4fd2c6754860b814e1dc9f2c293e96b6baae296b5ae4db276b779d",
+   "rc17": "7c1a6a8edc4fd2c6754860b814e1dc9f2c293e96b6baae296b5ae4db276b779d"
+  },
+  {
+   "path": "src/data/transits-2027-07.json",
+   "main": "f6f18eaee280e58cd777a8963ff587279fcc50258e86412e599a2a964acddb7d",
+   "rc16": "f6f18eaee280e58cd777a8963ff587279fcc50258e86412e599a2a964acddb7d",
+   "rc17": "f6f18eaee280e58cd777a8963ff587279fcc50258e86412e599a2a964acddb7d"
+  },
+  {
+   "path": "src/data/transits-2027-08.json",
+   "main": "9d60f65130380e9466dba541cf1ce636e29d6ded4906da6afaebd2dd7c3a7ae1",
+   "rc16": "9d60f65130380e9466dba541cf1ce636e29d6ded4906da6afaebd2dd7c3a7ae1",
+   "rc17": "9d60f65130380e9466dba541cf1ce636e29d6ded4906da6afaebd2dd7c3a7ae1"
+  },
+  {
+   "path": "src/data/transits-2027-09.json",
+   "main": "766838b1c3705db0580433b6fdb226bf90ff5327696ce1eedc06f5acf7959b54",
+   "rc16": "766838b1c3705db0580433b6fdb226bf90ff5327696ce1eedc06f5acf7959b54",
+   "rc17": "766838b1c3705db0580433b6fdb226bf90ff5327696ce1eedc06f5acf7959b54"
+  },
+  {
+   "path": "src/data/transits-2027-10.json",
+   "main": "7d3ef9915ef0eb2b6e8db753bfdba2b916103bf2124ddd5b4e90b3bf52f0eaa5",
+   "rc16": "7d3ef9915ef0eb2b6e8db753bfdba2b916103bf2124ddd5b4e90b3bf52f0eaa5",
+   "rc17": "7d3ef9915ef0eb2b6e8db753bfdba2b916103bf2124ddd5b4e90b3bf52f0eaa5"
+  },
+  {
+   "path": "src/data/transits-2027-11.json",
+   "main": "290843534afdeaab5fd1d032dcb56bcbbbc4d99bf98baf409ebd5a85c53cfc01",
+   "rc16": "290843534afdeaab5fd1d032dcb56bcbbbc4d99bf98baf409ebd5a85c53cfc01",
+   "rc17": "290843534afdeaab5fd1d032dcb56bcbbbc4d99bf98baf409ebd5a85c53cfc01"
+  },
+  {
+   "path": "src/data/transits-2027-12.json",
+   "main": "9fb59c9b2e2a2b3512a66a6831ed83927a4e1c900c4506608f2ee8b10032b71a",
+   "rc16": "9fb59c9b2e2a2b3512a66a6831ed83927a4e1c900c4506608f2ee8b10032b71a",
+   "rc17": "9fb59c9b2e2a2b3512a66a6831ed83927a4e1c900c4506608f2ee8b10032b71a"
+  },
+  {
+   "path": "src/data/transits-2028-01.json",
+   "main": "fa4e2ffe5fd6cbd81b1ec5bcf6548cf7b774ae8d4f59841fa28cd519fb723024",
+   "rc16": "fa4e2ffe5fd6cbd81b1ec5bcf6548cf7b774ae8d4f59841fa28cd519fb723024",
+   "rc17": "fa4e2ffe5fd6cbd81b1ec5bcf6548cf7b774ae8d4f59841fa28cd519fb723024"
+  },
+  {
+   "path": "src/data/transits-2028-02.json",
+   "main": "ceebfaf90d0fadc18872b538fb914afa5f294c2a117610fea129d0a46dc446dd",
+   "rc16": "ceebfaf90d0fadc18872b538fb914afa5f294c2a117610fea129d0a46dc446dd",
+   "rc17": "ceebfaf90d0fadc18872b538fb914afa5f294c2a117610fea129d0a46dc446dd"
+  },
+  {
+   "path": "src/data/transits-2028-03.json",
+   "main": "1a302b6bde053c19c1d60260438ed2c13db8b923a24f91a36f4e2404eecd6285",
+   "rc16": "1a302b6bde053c19c1d60260438ed2c13db8b923a24f91a36f4e2404eecd6285",
+   "rc17": "1a302b6bde053c19c1d60260438ed2c13db8b923a24f91a36f4e2404eecd6285"
+  },
+  {
+   "path": "src/data/transits-2028-04.json",
+   "main": "0a5f9199f5aefe23842b4cc3188eb3829eb856fda0df6b6e7db19c8d2535ecf1",
+   "rc16": "0a5f9199f5aefe23842b4cc3188eb3829eb856fda0df6b6e7db19c8d2535ecf1",
+   "rc17": "0a5f9199f5aefe23842b4cc3188eb3829eb856fda0df6b6e7db19c8d2535ecf1"
+  },
+  {
+   "path": "src/data/transits-2028-05.json",
+   "main": "ab623f314657c1c0c4f010fa0bad8aa949e90dfa0a805be9a966b0dbf6c30771",
+   "rc16": "ab623f314657c1c0c4f010fa0bad8aa949e90dfa0a805be9a966b0dbf6c30771",
+   "rc17": "ab623f314657c1c0c4f010fa0bad8aa949e90dfa0a805be9a966b0dbf6c30771"
+  },
+  {
+   "path": "src/data/transits-2028-06.json",
+   "main": "0b1fdb77667bfa0e79820fceff7b42edbd80fc0f2e85eae3ea8c46a96ab8e490",
+   "rc16": "0b1fdb77667bfa0e79820fceff7b42edbd80fc0f2e85eae3ea8c46a96ab8e490",
+   "rc17": "0b1fdb77667bfa0e79820fceff7b42edbd80fc0f2e85eae3ea8c46a96ab8e490"
+  },
+  {
+   "path": "src/data/transits-2028-07.json",
+   "main": "44f9a6bbc9b75863d26e897b6a5547744f51300ff69646f4c901aa5dea8be36b",
+   "rc16": "44f9a6bbc9b75863d26e897b6a5547744f51300ff69646f4c901aa5dea8be36b",
+   "rc17": "44f9a6bbc9b75863d26e897b6a5547744f51300ff69646f4c901aa5dea8be36b"
+  },
+  {
+   "path": "src/data/transits-2028-08.json",
+   "main": "2a1a702c84f14d47da70214bae0ae692e12464f28d74048bd0afaed76c3cc828",
+   "rc16": "2a1a702c84f14d47da70214bae0ae692e12464f28d74048bd0afaed76c3cc828",
+   "rc17": "2a1a702c84f14d47da70214bae0ae692e12464f28d74048bd0afaed76c3cc828"
+  },
+  {
+   "path": "src/data/transits-2028-09.json",
+   "main": "edcf53317824b8c26087797313b7ce236cb6a3cc0ce55d3aa44d52386adc4e0c",
+   "rc16": "edcf53317824b8c26087797313b7ce236cb6a3cc0ce55d3aa44d52386adc4e0c",
+   "rc17": "edcf53317824b8c26087797313b7ce236cb6a3cc0ce55d3aa44d52386adc4e0c"
+  },
+  {
+   "path": "src/data/transits-2028-10.json",
+   "main": "86955fbc2f74650092a77d5ff8738ae4f3cba59003549044001c6e8abde99f7a",
+   "rc16": "86955fbc2f74650092a77d5ff8738ae4f3cba59003549044001c6e8abde99f7a",
+   "rc17": "86955fbc2f74650092a77d5ff8738ae4f3cba59003549044001c6e8abde99f7a"
+  },
+  {
+   "path": "src/data/transits-2028-11.json",
+   "main": "30292e4c6637575cd52ca9227ea08f3b7395caa5cbb29f3403613ef601ed71d4",
+   "rc16": "30292e4c6637575cd52ca9227ea08f3b7395caa5cbb29f3403613ef601ed71d4",
+   "rc17": "30292e4c6637575cd52ca9227ea08f3b7395caa5cbb29f3403613ef601ed71d4"
+  },
+  {
+   "path": "src/data/transits-2028-12.json",
+   "main": "fd40fbfde4069f7406578c241bb2a449d611db6315014a67ad3f160a156e75d1",
+   "rc16": "fd40fbfde4069f7406578c241bb2a449d611db6315014a67ad3f160a156e75d1",
+   "rc17": "fd40fbfde4069f7406578c241bb2a449d611db6315014a67ad3f160a156e75d1"
+  },
+  {
+   "path": "src/data/transits-2029-01.json",
+   "main": "b8f221bec5db001796a200f09b30c71723b4af1a0b0f8372a4851882b5c82d57",
+   "rc16": "b8f221bec5db001796a200f09b30c71723b4af1a0b0f8372a4851882b5c82d57",
+   "rc17": "b8f221bec5db001796a200f09b30c71723b4af1a0b0f8372a4851882b5c82d57"
+  },
+  {
+   "path": "src/data/transits-2029-02.json",
+   "main": "65900318b9fb2aef456e295494f825dd93f21c95afc9bbe650912aebb3dd2c63",
+   "rc16": "65900318b9fb2aef456e295494f825dd93f21c95afc9bbe650912aebb3dd2c63",
+   "rc17": "65900318b9fb2aef456e295494f825dd93f21c95afc9bbe650912aebb3dd2c63"
+  },
+  {
+   "path": "src/data/transits-2029-03.json",
+   "main": "a4faf3c324ecd8f7ebe36346f80ed58cc4ce219a78bc06985802ba2d76d1e0dd",
+   "rc16": "a4faf3c324ecd8f7ebe36346f80ed58cc4ce219a78bc06985802ba2d76d1e0dd",
+   "rc17": "a4faf3c324ecd8f7ebe36346f80ed58cc4ce219a78bc06985802ba2d76d1e0dd"
+  },
+  {
+   "path": "src/data/transits-2029-04.json",
+   "main": "97860889a4cc0f35b2f9a20e668aad7b4baf3cd5cc96ef189b6b9a6deed9d277",
+   "rc16": "97860889a4cc0f35b2f9a20e668aad7b4baf3cd5cc96ef189b6b9a6deed9d277",
+   "rc17": "97860889a4cc0f35b2f9a20e668aad7b4baf3cd5cc96ef189b6b9a6deed9d277"
+  },
+  {
+   "path": "src/data/transits-2029-05.json",
+   "main": "9a3114e56cc25546ce95bfcfdcd61a2c08349fc8fb186deaa9188156ba48f223",
+   "rc16": "9a3114e56cc25546ce95bfcfdcd61a2c08349fc8fb186deaa9188156ba48f223",
+   "rc17": "9a3114e56cc25546ce95bfcfdcd61a2c08349fc8fb186deaa9188156ba48f223"
+  },
+  {
+   "path": "src/data/transits-2029-06.json",
+   "main": "050662f882c3a46363dd4a6b5a0cbff4d82941cf79d879b0076b54f1f6324d56",
+   "rc16": "050662f882c3a46363dd4a6b5a0cbff4d82941cf79d879b0076b54f1f6324d56",
+   "rc17": "050662f882c3a46363dd4a6b5a0cbff4d82941cf79d879b0076b54f1f6324d56"
+  },
+  {
+   "path": "src/data/transits-2029-07.json",
+   "main": "33ac4b892d9571890f1c9bb523207b7bf8d10aeeafecdadbd22f128ba48769b7",
+   "rc16": "33ac4b892d9571890f1c9bb523207b7bf8d10aeeafecdadbd22f128ba48769b7",
+   "rc17": "33ac4b892d9571890f1c9bb523207b7bf8d10aeeafecdadbd22f128ba48769b7"
+  },
+  {
+   "path": "src/data/transits-2029-08.json",
+   "main": "b09db80431f6c973565ee3ca4e52bc9eb0433a48b0b34b672717c9a486b26ffb",
+   "rc16": "b09db80431f6c973565ee3ca4e52bc9eb0433a48b0b34b672717c9a486b26ffb",
+   "rc17": "b09db80431f6c973565ee3ca4e52bc9eb0433a48b0b34b672717c9a486b26ffb"
+  },
+  {
+   "path": "src/data/transits-2029-09.json",
+   "main": "a2af106d91774d25e0591ae9c8b98b68fa30375db12ce64f64bc754e1b75a6f0",
+   "rc16": "a2af106d91774d25e0591ae9c8b98b68fa30375db12ce64f64bc754e1b75a6f0",
+   "rc17": "a2af106d91774d25e0591ae9c8b98b68fa30375db12ce64f64bc754e1b75a6f0"
+  },
+  {
+   "path": "src/data/transits-2029-10.json",
+   "main": "4218413aabe8121879f7afe97e01ec203b52dd493c7e3dd21fbce0524514e513",
+   "rc16": "4218413aabe8121879f7afe97e01ec203b52dd493c7e3dd21fbce0524514e513",
+   "rc17": "4218413aabe8121879f7afe97e01ec203b52dd493c7e3dd21fbce0524514e513"
+  },
+  {
+   "path": "src/data/transits-2029-11.json",
+   "main": "52ed5e2942c9301b9f2c38e0079d99483bf76e94b72acc21a3c7ff7819f64f14",
+   "rc16": "52ed5e2942c9301b9f2c38e0079d99483bf76e94b72acc21a3c7ff7819f64f14",
+   "rc17": "52ed5e2942c9301b9f2c38e0079d99483bf76e94b72acc21a3c7ff7819f64f14"
+  },
+  {
+   "path": "src/data/transits-2029-12.json",
+   "main": "d06f10933bea7d9f14b83a9b0a73994cfb23a57caee26ea172eec4a2c065101b",
+   "rc16": "d06f10933bea7d9f14b83a9b0a73994cfb23a57caee26ea172eec4a2c065101b",
+   "rc17": "d06f10933bea7d9f14b83a9b0a73994cfb23a57caee26ea172eec4a2c065101b"
+  },
+  {
+   "path": "src/data/transits-2030-01.json",
+   "main": "2b69cf16cf27b0c70984cfe0e1b02c04dd6ae1f16ccea16f590aac900af0a6cb",
+   "rc16": "2b69cf16cf27b0c70984cfe0e1b02c04dd6ae1f16ccea16f590aac900af0a6cb",
+   "rc17": "2b69cf16cf27b0c70984cfe0e1b02c04dd6ae1f16ccea16f590aac900af0a6cb"
+  },
+  {
+   "path": "src/data/transits-2030-02.json",
+   "main": "37dfacbc016a1d8d72edc1ef88d9eef15d10e302c9ea7d65a77c3148084d450f",
+   "rc16": "37dfacbc016a1d8d72edc1ef88d9eef15d10e302c9ea7d65a77c3148084d450f",
+   "rc17": "37dfacbc016a1d8d72edc1ef88d9eef15d10e302c9ea7d65a77c3148084d450f"
+  },
+  {
+   "path": "src/data/transits-2030-03.json",
+   "main": "ca82f666753eb1a84a535a3c96768b58f683014a3c21b82725d3d4735d5eab93",
+   "rc16": "ca82f666753eb1a84a535a3c96768b58f683014a3c21b82725d3d4735d5eab93",
+   "rc17": "ca82f666753eb1a84a535a3c96768b58f683014a3c21b82725d3d4735d5eab93"
+  },
+  {
+   "path": "src/data/transits-2030-04.json",
+   "main": "e47f9d7da39fe247c67c18cd26d9c4f6737460592db76f7f4fe462ed9278ca04",
+   "rc16": "e47f9d7da39fe247c67c18cd26d9c4f6737460592db76f7f4fe462ed9278ca04",
+   "rc17": "e47f9d7da39fe247c67c18cd26d9c4f6737460592db76f7f4fe462ed9278ca04"
+  },
+  {
+   "path": "src/data/transits-2030-05.json",
+   "main": "53ff17b1f687debb90b4d72eb994ea962152eaf7a929c1e1cfeae20725d644d0",
+   "rc16": "53ff17b1f687debb90b4d72eb994ea962152eaf7a929c1e1cfeae20725d644d0",
+   "rc17": "53ff17b1f687debb90b4d72eb994ea962152eaf7a929c1e1cfeae20725d644d0"
+  },
+  {
+   "path": "src/data/transits-2030-06.json",
+   "main": "2a977b2ea045a784a955d8031ff1c7ba0c6b55b90cf1c35f2fb81a021c1e12b0",
+   "rc16": "2a977b2ea045a784a955d8031ff1c7ba0c6b55b90cf1c35f2fb81a021c1e12b0",
+   "rc17": "2a977b2ea045a784a955d8031ff1c7ba0c6b55b90cf1c35f2fb81a021c1e12b0"
+  },
+  {
+   "path": "src/data/transits-2030-07.json",
+   "main": "b9471112a222ea2b907360aa363a93ebfebd45815fb30510e857dff7ec586cf7",
+   "rc16": "b9471112a222ea2b907360aa363a93ebfebd45815fb30510e857dff7ec586cf7",
+   "rc17": "b9471112a222ea2b907360aa363a93ebfebd45815fb30510e857dff7ec586cf7"
+  },
+  {
+   "path": "src/data/transits-2030-08.json",
+   "main": "afeb86e0777a6473dc221b3a28ee9e8430e6c5c8b8302aaff108e87fb927616f",
+   "rc16": "afeb86e0777a6473dc221b3a28ee9e8430e6c5c8b8302aaff108e87fb927616f",
+   "rc17": "afeb86e0777a6473dc221b3a28ee9e8430e6c5c8b8302aaff108e87fb927616f"
+  },
+  {
+   "path": "src/data/transits-2030-09.json",
+   "main": "2f849585ed7dfb43e5e4ef43acd2c105bd3604dec8a4d388dcf1e5405f40c540",
+   "rc16": "2f849585ed7dfb43e5e4ef43acd2c105bd3604dec8a4d388dcf1e5405f40c540",
+   "rc17": "2f849585ed7dfb43e5e4ef43acd2c105bd3604dec8a4d388dcf1e5405f40c540"
+  },
+  {
+   "path": "src/data/transits-2030-10.json",
+   "main": "0e7defb51c345069731ab78688701c8c06b0b6aad30d4ae938b8d48787308241",
+   "rc16": "0e7defb51c345069731ab78688701c8c06b0b6aad30d4ae938b8d48787308241",
+   "rc17": "0e7defb51c345069731ab78688701c8c06b0b6aad30d4ae938b8d48787308241"
+  },
+  {
+   "path": "src/data/transits-2030-11.json",
+   "main": "ef506724798cb43130fe3e4b4ec38fe930806313ae79967f4726f0a5e141b330",
+   "rc16": "ef506724798cb43130fe3e4b4ec38fe930806313ae79967f4726f0a5e141b330",
+   "rc17": "ef506724798cb43130fe3e4b4ec38fe930806313ae79967f4726f0a5e141b330"
+  },
+  {
+   "path": "src/data/transits-2030-12.json",
+   "main": "21cea8ee509cbc3ce5af49ddb7f2d707dd4d562b802f7b2e7689f8efafa43f7f",
+   "rc16": "21cea8ee509cbc3ce5af49ddb7f2d707dd4d562b802f7b2e7689f8efafa43f7f",
+   "rc17": "21cea8ee509cbc3ce5af49ddb7f2d707dd4d562b802f7b2e7689f8efafa43f7f"
+  }
+ ]
+}

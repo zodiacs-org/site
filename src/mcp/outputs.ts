@@ -103,8 +103,7 @@ export const CAPABILITIES_OUTPUT = z.strictObject({
   engine: z.strictObject({
     name: z.literal('@zodiacs/engine'),
     version: z.string(),
-    releaseStatus: z.literal('published'),
-    registry: z.literal('npm'),
+    releaseStatus: z.literal('unpublished-candidate'),
   }),
   schemas: z.strictObject({
     envelope: z.literal(NATAL_ENVELOPE_SCHEMA),

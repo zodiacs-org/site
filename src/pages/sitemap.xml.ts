@@ -121,6 +121,13 @@ const SKY_BENCHMARK_ROUTES = ['/developers/', '/developers/sky-benchmark/'] as c
 // page says the compute API calculates.
 const ELECTIONS_LASTMOD = '2026-10-05';
 const ELECTIONS_ROUTES = ['/developers/', '/developers/compute/', '/developers/support/', '/privacy/'] as const;
+// Engine 0.1.1-rc.17 of 2026-10-06, and the MCP adapter 0.1.0-rc.17 built on it: the pages that name the
+// engine's version, how to install it and whether npm carries it, and the adapter's version and download.
+const ENGINE_RC17_LASTMOD = '2026-10-06';
+const ENGINE_RC17_ROUTES = [
+  '/developers/', '/developers/compare/', '/developers/compute/', '/developers/conformance/',
+  '/developers/engine/', '/developers/mcp/', '/developers/support/',
+] as const;
 
 const EVERGREEN_LASTMOD = new Map<string, string>([
   [eventsPublication.hub.path, eventsPublication.lastModified] as const,
@@ -256,6 +263,7 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   ...MCP_COMPUTE_TOOLS_ROUTES.map((loc) => [loc, MCP_COMPUTE_TOOLS_LASTMOD] as const),
   ...SKY_BENCHMARK_ROUTES.map((loc) => [loc, SKY_BENCHMARK_LASTMOD] as const),
   ...ELECTIONS_ROUTES.map((loc) => [loc, ELECTIONS_LASTMOD] as const),
+  ...ENGINE_RC17_ROUTES.map((loc) => [loc, ENGINE_RC17_LASTMOD] as const),
 ]);
 
 function getLastmod(loc: string): string {

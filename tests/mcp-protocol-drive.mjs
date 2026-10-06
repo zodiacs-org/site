@@ -232,10 +232,15 @@ try {
   const capabilities = await ok('get_capabilities', {});
   check('capabilities name the pinned engine', capabilities.engine?.name === '@zodiacs/engine'
     && /^\d+\.\d+\.\d+-rc\.\d+$/.test(capabilities.engine.version), capabilities.engine);
-  // The engine has been on npm since 2026-10-01; the adapter is not on npm.
-  check('capabilities label the engine published on npm and the adapter an unpublished candidate',
+  // The adapter is not on npm. The engine is labelled as the site's candidate record has it: rc.16 was on
+  // npm, under `next`; rc.17, which the site vendors, is not (docs/platform/programme/DECISIONS-2026-10-05.md §7).
+  const engineCandidate = JSON.parse(await readFile(resolve(ROOT, 'src/data/platform-engine-candidate.json'), 'utf8'));
+  const engineLabel = { name: '@zodiacs/engine', version: engineCandidate.version,
+    ...(engineCandidate.releaseStatus === 'published'
+      ? { releaseStatus: 'published', registry: 'npm' } : { releaseStatus: 'unpublished-candidate' }) };
+  check('capabilities label the engine as the site\'s candidate record does, and the adapter an unpublished candidate',
     capabilities.adapter?.releaseStatus === 'unpublished-candidate'
-    && capabilities.engine?.releaseStatus === 'published' && capabilities.engine.registry === 'npm',
+    && JSON.stringify(capabilities.engine) === JSON.stringify(engineLabel),
     { adapter: capabilities.adapter, engine: capabilities.engine });
   check('capabilities cite the receipt they carry', capabilities.cite?.url === `${DOCS}#get_capabilities`
     && capabilities.cite.receipt === digest(capabilities.receipt)

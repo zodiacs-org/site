@@ -520,9 +520,10 @@ const jsonLd = [
         API takes: on the machine they were measured on, with engine rc.15,
         one address at its rate limits could cost at most about 8.7 seconds of
         CPU time a minute. Measured again on 2026-10-05, on one machine, the
-        same requests add up to about 10.7 seconds with rc.16, the engine the
-        API runs, and to about 7.8 with rc.15, in one run of each; two earlier
-        runs on rc.16 that day gave 12.8 and 13.2. The measurements are
+        same requests add up to about 10.7 seconds with rc.16 and to about 7.8
+        with rc.15, in one run of each; two earlier runs on rc.16 that day gave
+        12.8 and 13.2. The API now runs rc.17, which answers these requests
+        with rc.16's code. The measurements are
         in the site repository, from{' '}
         <a href="https://github.com/zodiacs-org/site/tree/main/docs/platform/evidence/compute-api-2026-09-29">2026-09-29</a>{' '}
         and{' '}
