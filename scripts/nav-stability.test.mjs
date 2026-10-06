@@ -46,7 +46,7 @@ describe('navigation first-paint reservation', () => {
       ['.nav__chip', 'chip'], ['.nav__burger', 'menu'],
     ]) expect(value(rule(selector), 'grid-area')).toBe(area);
     expect(value(rule('.nav'), 'grid-template-areas')).toBe("'mark search chip menu'");
-    expect(value(rule('.nav:not(.nav--localized)'), 'grid-template-areas')).toBe("'mark links search chip'");
+    expect(value(rule('.nav:not(.nav--localized)'), 'grid-template-areas')).toBe("'mark links chip profile search'");
   });
 
   it('reserves complete English and localized desktop widths independently of font loading', () => {
@@ -54,8 +54,8 @@ describe('navigation first-paint reservation', () => {
     const localized = rule('.nav--localized', css.split('@media (min-width: 1040px)')[1]);
     expect(value(english, 'width')).toBe('884px');
     expect(value(localized, 'width')).toBe('992px');
-    expect(value(english, 'grid-template-columns')).toBe('116px minmax(0, 1fr) 62px 120px');
-    expect(value(localized, 'grid-template-columns')).toBe('116px minmax(0, 1fr) 44px 120px');
+    expect(value(english, 'grid-template-columns')).toBe('116px minmax(0, 1fr) 120px 44px 62px');
+    expect(value(localized, 'grid-template-columns')).toBe('116px minmax(0, 1fr) 120px 44px 44px');
     expect(nav).toContain("'nav--localized': locale !== 'en'");
     expect(nav).toContain("'nav--without-search': locale === 'ru'");
   });
@@ -109,15 +109,15 @@ describe('navigation first-paint reservation', () => {
   });
 
   it('pins desktop link starts and provides a sixth localized Today track without truncation', () => {
-    expect(value(rule('.nav__links'), 'grid-template-columns')).toBe('74px 74px 64px 62px 102px minmax(0, 1fr)');
+    expect(value(rule('.nav__links'), 'grid-template-columns')).toBe('74px 74px 64px 62px minmax(0, 1fr)');
     expect(value(rule('.nav--localized .nav__links'), 'grid-template-columns'))
-      .toBe('128px 82px repeat(2, minmax(0, 1fr)) 156px');
+      .toBe('128px 82px repeat(2, minmax(0, 1fr))');
     expect(value(rule('.nav--localized.nav--with-today .nav__links'), 'grid-template-columns'))
-      .toBe('128px 82px 52px repeat(2, minmax(0, 1fr)) 144px');
+      .toBe('128px 82px 52px repeat(2, minmax(0, 1fr))');
     expect(nav).toContain("'nav--with-today': links.some((link) => link.href === '/today/')");
     expect(hasChildDependentNavigation(css)).toBe(false);
     expect(value(rule('.nav--without-search .nav__links'), 'grid-template-columns'))
-      .toBe('136px 84px repeat(2, minmax(0, 1fr)) 172px');
+      .toBe('136px 84px repeat(2, minmax(0, 1fr))');
     expect(rule('.nav__link')).not.toMatch(/overflow:\s*hidden|text-overflow|font-size:\s*0/u);
     expect(value(rule('.nav__link'), 'white-space')).toBe('nowrap');
     expect(value(rule('.nav__dropdown-btn'), 'justify-content')).toBe('space-between');
@@ -153,11 +153,11 @@ describe('navigation first-paint reservation', () => {
     expect(localized[1] - 80.324).toBeGreaterThanOrEqual(1);
     expect(localizedToday[1] - 80.324).toBeGreaterThanOrEqual(1);
 
-    const englishRow = 884 - 32 - 3 * 18 - 116 - 62 - 120;
-    const localizedRow = 992 - 32 - 3 * 18 - 116 - 44 - 120;
-    expect(englishRow - english.reduce((sum, width) => sum + width, 0) - 5 * 2).toBe(114);
-    expect((localizedRow - localized.reduce((sum, width) => sum + width, 0) - 4 * 2) / 2).toBe(126);
-    expect((localizedRow - localizedToday.reduce((sum, width) => sum + width, 0) - 5 * 2) / 2).toBe(105);
+    const englishRow = 884 - 32 - 4 * 18 - 116 - 62 - 120 - 44;
+    const localizedRow = 992 - 32 - 4 * 18 - 116 - 44 - 120 - 44;
+    expect(englishRow - english.reduce((sum, width) => sum + width, 0) - 4 * 2).toBe(156);
+    expect((localizedRow - localized.reduce((sum, width) => sum + width, 0) - 3 * 2) / 2).toBe(174);
+    expect((localizedRow - localizedToday.reduce((sum, width) => sum + width, 0) - 4 * 2) / 2).toBe(147);
   });
 
   it('removes exactly the absent receiver chip and one gap without shrinking any surviving track', () => {
@@ -181,11 +181,11 @@ describe('navigation first-paint reservation', () => {
     expect(value(rule(`${receiver} .nav`), 'grid-template-columns')).toBe('minmax(0, 1fr) 44px 44px');
     expect(value(rule(`${receiver} .nav--without-search`), 'grid-template-columns')).toBe('minmax(0, 1fr) 44px');
     expect(value(rule(`${receiver} .nav:not(.nav--localized)`, desktopEn), 'grid-template-columns'))
-      .toBe('116px minmax(0, 1fr) 62px');
+      .toBe('116px minmax(0, 1fr) 44px 62px');
     expect(value(rule(`${receiver} .nav--localized`, desktopLocalized), 'grid-template-columns'))
-      .toBe('116px minmax(0, 1fr) 44px');
+      .toBe('116px minmax(0, 1fr) 44px 44px');
     expect(value(rule(`${receiver} .nav--without-search`, desktopLocalized), 'grid-template-columns'))
-      .toBe('116px minmax(0, 1fr)');
+      .toBe('116px minmax(0, 1fr) 44px');
   });
 });
 

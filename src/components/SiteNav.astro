@@ -111,10 +111,27 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
           ) : l.label}
         </a>
       ))}
-      <a class="nav__link nav__saved" href={localizePath(locale, '/profile/')} aria-current={path.startsWith(localizePath(locale, '/profile/')) ? 'page' : undefined} title={profileLabel[locale]} aria-label={profileLabel[locale]} data-profile-glyph><svg class="nav__profile-icon" width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="3.2" stroke="currentColor" stroke-width="1.3"/><path d="M5.5 20v-1.5a6.5 6.5 0 0 1 13 0V20" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><span class="nav__avatar" data-profile-avatar aria-hidden="true" hidden></span><span class="nav__saved-label">{t(locale, 'navSavedCharts')}</span></a>
+
     </div>
 
-    <a class="nav__profile-shortcut" href={localizePath(locale, '/profile/')} aria-label={profileLabel[locale]} title={profileLabel[locale]} aria-current={path.startsWith(localizePath(locale, '/profile/')) ? 'page' : undefined}>
+    {showCollection && (
+    <a
+      class:list={['nav__chip', { 'nav__chip--deferred': Boolean(englishOnly) }]}
+      href="/astrofolio/"
+      hreflang={englishOnly ? 'en' : undefined}
+      aria-current={path === '/astrofolio/' ? 'page' : undefined}
+      title={astrofolioLabel[locale]}
+      aria-description={astrofolioLabel[locale]}
+      aria-label={englishOnly ? `${t(locale, 'navCollect')}. ${englishOnlyAria}` : undefined}
+    >
+      {englishOnly ? (
+        <><span>{t(locale, 'navCollect')}</span><small class="nav__deferred">{englishOnlyBadge}</small></>
+      ) : t(locale, 'navCollect')}
+    </a>
+
+    )}
+
+    <a class="nav__profile-shortcut" data-profile-glyph href={localizePath(locale, '/profile/')} aria-label={profileLabel[locale]} title={profileLabel[locale]} aria-current={path.startsWith(localizePath(locale, '/profile/')) ? 'page' : undefined}>
       <svg class="nav__profile-icon" width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="3.2" stroke="currentColor" stroke-width="1.3"/><path d="M5.5 20v-1.5a6.5 6.5 0 0 1 13 0V20" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><span class="nav__avatar" data-profile-avatar aria-hidden="true" hidden></span>
     </a>
     {locale === 'ru' ? null : locale === 'en' ? (
@@ -134,22 +151,6 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
       </a>
     )}
 
-    {showCollection && (
-    <a
-      class:list={['nav__chip', { 'nav__chip--deferred': Boolean(englishOnly) }]}
-      href="/astrofolio/"
-      hreflang={englishOnly ? 'en' : undefined}
-      aria-current={path === '/astrofolio/' ? 'page' : undefined}
-      title={astrofolioLabel[locale]}
-      aria-description={astrofolioLabel[locale]}
-      aria-label={englishOnly ? `${t(locale, 'navCollect')}. ${englishOnlyAria}` : undefined}
-    >
-      {englishOnly ? (
-        <><span>{t(locale, 'navCollect')}</span><small class="nav__deferred">{englishOnlyBadge}</small></>
-      ) : t(locale, 'navCollect')}
-    </a>
-
-    )}
 
     <button
       class="nav__burger"
@@ -345,20 +346,20 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
     min-width: 0;
     align-items: center;
     gap: 2px;
-    grid-template-columns: 74px 74px 64px 62px 102px minmax(0, 1fr);
+    grid-template-columns: 74px 74px 64px 62px minmax(0, 1fr);
   }
-  .nav__profile-shortcut { grid-area: profile; display: none; width: 44px; height: 44px; place-items: center; border-radius: 50%; color: var(--text-2); }
+  .nav__profile-shortcut { grid-area: profile; display: inline-grid; width: 44px; height: 44px; place-items: center; border-radius: 50%; color: var(--text-2); }
   .nav__profile-shortcut[aria-current='page'] { color: var(--text); background: rgba(198,204,218,0.08); }
   .nav--localized .nav__links {
-    grid-template-columns: 128px 82px repeat(2, minmax(0, 1fr)) 156px;
+    grid-template-columns: 128px 82px repeat(2, minmax(0, 1fr));
   }
   /* The server knows the full link set before children stream. Never infer
      the sixth track from children arriving later in the document. */
   .nav--localized.nav--with-today .nav__links {
-    grid-template-columns: 128px 82px 52px repeat(2, minmax(0, 1fr)) 144px;
+    grid-template-columns: 128px 82px 52px repeat(2, minmax(0, 1fr));
   }
   .nav--without-search .nav__links {
-    grid-template-columns: 136px 84px repeat(2, minmax(0, 1fr)) 172px;
+    grid-template-columns: 136px 84px repeat(2, minmax(0, 1fr));
   }
 
   .nav__link {
@@ -426,8 +427,8 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
   .nav__dropdown-btn[aria-expanded='true'] svg { transform: rotate(180deg); }
 
   /* Saved-charts link tints to accent once this device has saved a chart. */
-  .nav__saved.has-saves { color: var(--accent); }
-  .nav__saved.has-saves:hover { color: var(--accent); }
+  .nav__profile-shortcut.has-saves { color: var(--accent); }
+  .nav__profile-shortcut.has-saves:hover { color: var(--accent); }
 
   /* Local photo or initial, with a person icon before either is available.
      Both header variants keep a fixed 44px target as the image loads. */
@@ -450,16 +451,6 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
   .nav__avatar[hidden] { display: none; }
   .nav__avatar :global(img) { display: block; width: 100%; height: 100%; object-fit: cover; }
   .has-avatar > .nav__profile-icon { display: none; }
-  .nav__saved { justify-self: start; justify-content: center; width: 44px; height: 44px; padding: 0; box-sizing: border-box; }
-  .nav__saved .nav__saved-label {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-  }
   .mobile-menu__link .nav__avatar { margin-inline-end: 12px; vertical-align: -3px; }
 
   /* A permanent door into Astrofolio. It stays compact on phones, then gains
@@ -538,14 +529,14 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
   @media (min-width: 920px) {
     .nav:not(.nav--localized) {
       width: 884px;
-      grid-template-areas: 'mark links search chip';
-      grid-template-columns: 116px minmax(0, 1fr) 62px 120px;
+      grid-template-areas: 'mark links chip profile search';
+      grid-template-columns: 116px minmax(0, 1fr) 120px 44px 62px;
       gap: 18px;
     }
     :global(html[data-chart-share-receiver]) .nav:not(.nav--localized) {
       width: 746px;
-      grid-template-areas: 'mark links search';
-      grid-template-columns: 116px minmax(0, 1fr) 62px;
+      grid-template-areas: 'mark links profile search';
+      grid-template-columns: 116px minmax(0, 1fr) 44px 62px;
     }
     .nav:not(.nav--localized) .nav__links { display: grid; }
     .nav:not(.nav--localized) .nav__sep,
@@ -558,19 +549,19 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
   @media (min-width: 1040px) {
     .nav--localized {
       width: 992px;
-      grid-template-areas: 'mark links search chip';
-      grid-template-columns: 116px minmax(0, 1fr) 44px 120px;
+      grid-template-areas: 'mark links chip profile search';
+      grid-template-columns: 116px minmax(0, 1fr) 120px 44px 44px;
       gap: 18px;
     }
-    .nav--without-search { grid-template-areas: 'mark links chip'; grid-template-columns: 116px minmax(0, 1fr) 120px; }
+    .nav--without-search { grid-template-areas: 'mark links chip profile'; grid-template-columns: 116px minmax(0, 1fr) 120px 44px; }
     :global(html[data-chart-share-receiver]) .nav--localized {
       width: 854px;
-      grid-template-areas: 'mark links search';
-      grid-template-columns: 116px minmax(0, 1fr) 44px;
+      grid-template-areas: 'mark links profile search';
+      grid-template-columns: 116px minmax(0, 1fr) 44px 44px;
     }
     :global(html[data-chart-share-receiver]) .nav--without-search {
-      grid-template-areas: 'mark links';
-      grid-template-columns: 116px minmax(0, 1fr);
+      grid-template-areas: 'mark links profile';
+      grid-template-columns: 116px minmax(0, 1fr) 44px;
     }
     .nav--localized .nav__links { display: grid; }
     .nav--localized .nav__sep,
