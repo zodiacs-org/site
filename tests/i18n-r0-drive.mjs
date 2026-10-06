@@ -180,6 +180,7 @@ await withPreview({ port: 4417 }, async (baseURL) => {
     // A short page can put the canonical footer in the first viewport before
     // images finish loading. Its stylesheet must be requested immediately,
     // rather than exposing raw footer markup until the window load event.
+    // Match the canonical asset independently of its rotating cache version.
     const shortPage = await browser.newPage({ viewport: { width: 1280, height: 900 } });
     await shortPage.addInitScript(() => {
       window.__zdxFooterLinkAt = null;
@@ -187,7 +188,7 @@ await withPreview({ port: 4417 }, async (baseURL) => {
       const recordFooterLink = () => {
         if (
           window.__zdxFooterLinkAt === null
-          && document.querySelector('link[href="/assets/site-footer.css?v=20261003"]')
+          && document.querySelector('link[rel="stylesheet"][href^="/assets/site-footer.css?"]')
         ) {
           window.__zdxFooterLinkAt = performance.now();
         }
@@ -204,7 +205,7 @@ await withPreview({ port: 4417 }, async (baseURL) => {
     check(shortResponse?.status() === 200, `/es/learn/: expected 200, got ${shortResponse?.status()}`);
     const shortFooter = await shortPage.evaluate(() => {
       const footer = document.querySelector('.zfooter');
-      const link = document.querySelector('link[href="/assets/site-footer.css?v=20261003"]');
+      const link = document.querySelector('link[rel="stylesheet"][href^="/assets/site-footer.css?"]');
       return {
         nearViewport: Boolean(footer && footer.getBoundingClientRect().top <= innerHeight + 200),
         stylesheetRequested: Boolean(link),
