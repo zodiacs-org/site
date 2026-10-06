@@ -226,7 +226,7 @@
       "permanent": true
     },
     {
-      "source": "/:path((?!api(?:/|$)|v1(?:/|$)|\\.well-known(?:/|$)|.*\\.[^/]+$).*[^/])",
+      "source": "/:path((?!api(?:/|$)|v1(?:/|$)|mcp(?:/|$)|\\.well-known(?:/|$)|.*\\.[^/]+$).*[^/])",
       "destination": "/:path/",
       "permanent": true
     },
@@ -276,6 +276,22 @@
     {
       "source": "/api/compatibility/:action",
       "destination": "/api/compatibility?action=:action"
+    },
+    {
+      "source": "/mcp",
+      "destination": "/api/compatibility?__zodiacs_mcp=1"
+    },
+    {
+      "source": "/mcp/",
+      "destination": "/api/compatibility?__zodiacs_mcp=1"
+    },
+    {
+      "source": "/mcp/health",
+      "destination": "/api/compatibility?__zodiacs_mcp=health"
+    },
+    {
+      "source": "/mcp/health/",
+      "destination": "/api/compatibility?__zodiacs_mcp=health"
     },
     {
       "source": "/api/v1/chart",
