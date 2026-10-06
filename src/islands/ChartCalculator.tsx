@@ -339,6 +339,8 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
   const receiptExportRef = useRef<ChartReceiptExport | null>(null);
   const [receiptDownloadError, setReceiptDownloadError] = useState(false);
   const [recordKeep, setRecordKeep] = useState<RecordKeepStatus>('idle');
+  /** A current scope is open; while one is being replaced the keep button is disabled, whatever outcome it states. */
+  const [recordScopeReady, setRecordScopeReady] = useState(false);
   const [recordMode, setRecordMode] = useState<SavedRecordMode | null>(null);
   const [recordErasedNote, setRecordErasedNote] = useState(false);
   // Copy loads with the record module, keeping the route closure unchanged when nothing is kept.
@@ -484,9 +486,13 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
       recordScopeRef.current?.close();
       recordScopeRef.current = null;
       setRecordMode(null);
-      // The button waits until the scope is known; a keep in flight and an
-      // uncertain outcome for this result keep their own state.
-      setRecordKeep((current) => (current === 'busy' || current === 'uncertain' ? current : 'opening'));
+      setRecordScopeReady(false);
+      // The button waits until the scope is known. A keep in flight and a
+      // stated outcome for this result keep their own state: "Kept" is checked
+      // against the fresh scope below, and "nothing was stored" stays until
+      // the visitor's next click.
+      setRecordKeep((current) => (current === 'busy' || current === 'uncertain' || current === 'changed' || current === 'kept'
+        ? current : 'opening'));
       try {
         const [api, copyModule] = await Promise.all([
           recordAccessRef.current ?? import('../lib/profile/saved-record-access'),
@@ -508,6 +514,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
           return;
         }
         recordScopeRef.current = opened.scope;
+        setRecordScopeReady(true);
         setRecordMode(opened.scope.mode);
         setRecordErasedNote(opened.scope.state === 'owner-erased' || opened.scope.state === 'device-erased');
         const next: RecordKeepStatus = !opened.scope.canSave ? 'read-only' : opened.scope.state === 'erasure-pending' ? 'pending' : 'idle';
@@ -540,7 +547,11 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
       recordAccessRef.current = api;
       unsubscribe = api.subscribeSavedRecordScope(() => {
         recordKeepRunRef.current += 1;
-        setRecordKeep((current) => (current === 'busy' || current === 'uncertain' || current === 'changed' ? current : 'stale'));
+        // A keep in another tab does not undo this one: withdrawing "Kept"
+        // here would invite a second, duplicate keep. The re-open decides.
+        setRecordScopeReady(false);
+        setRecordKeep((current) => (current === 'busy' || current === 'uncertain' || current === 'changed' || current === 'kept'
+          ? current : 'stale'));
         setTimeout(() => { if (live) void reopen(); }, 0);
       });
     }).catch(() => {});
@@ -2729,7 +2740,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                           class="btn btn--glass"
                           type="button"
                           onClick={() => void keepRecord()}
-                          disabled={recordKeep === 'opening' || recordKeep === 'busy' || recordKeep === 'kept' || recordKeep === 'read-only'
+                          disabled={!recordScopeReady || recordKeep === 'opening' || recordKeep === 'busy' || recordKeep === 'kept' || recordKeep === 'read-only'
                             || recordKeep === 'locked' || recordKeep === 'unavailable' || recordKeep === 'pending'}
                           aria-describedby="calculation-record-scope"
                           data-keep-calculation-record

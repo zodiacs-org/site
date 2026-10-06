@@ -5,6 +5,7 @@
  *   OUT_DIR=/tmp/today-shots npm run test:today:browser
  */
 import { chromium } from 'playwright-core';
+import { createServer } from 'node:http';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { withPreview } from './visual/preview-server.mjs';
@@ -230,6 +231,116 @@ async function inspectReturningMobile(BASE, browser, fixtureProfile, state, expe
   );
   if (OUT) await page.screenshot({ path: `${OUT}/today-returning-${state}-360.png`, fullPage: true });
   await page.close();
+}
+
+/**
+ * Serves /today/ with the document paused at the byte `cutAt` picks, the way
+ * a network chunk boundary or a parser yield can split it, so whatever is
+ * parsed before the pause can paint first. Every other request is proxied
+ * to the preview.
+ */
+async function startPausedTodayProxy(BASE, cutAt) {
+  const html = Buffer.from(await (await fetch(`${BASE}/today/`)).arrayBuffer());
+  const cut = cutAt(html);
+  const server = createServer(async (request, response) => {
+    if (request.url === '/today/') {
+      response.writeHead(200, { 'content-type': 'text/html; charset=utf-8' });
+      response.write(html.subarray(0, cut));
+      setTimeout(() => response.end(html.subarray(cut)), 150);
+      return;
+    }
+    try {
+      const upstream = await fetch(`${BASE}${request.url}`, { method: request.method, redirect: 'manual' });
+      const headers = Object.fromEntries(upstream.headers);
+      delete headers['content-encoding'];
+      delete headers['content-length'];
+      response.writeHead(upstream.status, headers);
+      response.end(Buffer.from(await upstream.arrayBuffer()));
+    } catch {
+      response.writeHead(502);
+      response.end();
+    }
+  });
+  await new Promise((resolveListen) => server.listen(0, '127.0.0.1', resolveListen));
+  return {
+    url: `http://127.0.0.1:${server.address().port}`,
+    close: () => new Promise((resolveClose) => {
+      server.closeAllConnections();
+      server.close(resolveClose);
+    }),
+  };
+}
+
+async function inspectPausedEditionLabel(BASE, browser) {
+  // Paused just after the start tag of the hero's edition label.
+  const proxy = await startPausedTodayProxy(BASE, (html) => {
+    const hero = html.toString('latin1').search(/<h1[^>]*><span data-edition-text[^>]*>/u);
+    if (hero < 0) throw new Error('The Today hero has no edition label to pause inside.');
+    return html.indexOf('>', html.indexOf('<span data-edition-text', hero)) + 1;
+  });
+  try {
+    // Narrow enough that the dated label wraps where "Today" does not.
+    const page = await newTodayPage(browser, { viewport: { width: 360, height: 1800 }, deviceScaleFactor: 2, hasTouch: true });
+    await observeLayoutShifts(page);
+    // Runs before the page's own DOMContentLoaded resync of the label.
+    await page.addInitScript(() => {
+      document.addEventListener('DOMContentLoaded', () => {
+        globalThis.__zdxHeroAtDomContentLoaded = document.querySelector('.today-hero h1')?.textContent ?? null;
+      }, { once: true });
+    });
+    await page.goto(`${proxy.url}/today/`, { waitUntil: 'networkidle' });
+    await page.waitForSelector('[data-today-state="empty"]');
+    const evidence = await page.evaluate(() => new Promise((resolveEvidence) => {
+      requestAnimationFrame(() => requestAnimationFrame(() => resolveEvidence({
+        cls: globalThis.__zdxLayoutShifts.reduce((sum, value) => sum + value, 0),
+        editionState: document.documentElement.getAttribute('data-edition-state'),
+        atDomContentLoaded: globalThis.__zdxHeroAtDomContentLoaded,
+        final: document.querySelector('.today-hero h1').textContent,
+        shifts: globalThis.__zdxLayoutShiftDetails,
+      })));
+    }));
+    check(
+      'a parser pause inside the edition label leaves no mixed label for DOMContentLoaded to fix',
+      evidence.atDomContentLoaded === evidence.final,
+      JSON.stringify({ editionState: evidence.editionState, atDomContentLoaded: evidence.atDomContentLoaded, final: evidence.final }),
+    );
+    check('a parser pause inside the edition label has exactly zero CLS', evidence.cls === 0, JSON.stringify(evidence));
+    await page.close();
+  } finally {
+    await proxy.close();
+  }
+}
+
+async function inspectPausedNavInitial(BASE, browser) {
+  // Paused just after the nav, before the menu and the script that fills
+  // the saved-chart initial into its slots: the profile control must already
+  // hold the initial's place, as a late swap would move it.
+  const proxy = await startPausedTodayProxy(BASE, (html) => {
+    const end = html.indexOf('</nav>');
+    if (end < 0) throw new Error('Today has no nav to pause after.');
+    return end + '</nav>'.length;
+  });
+  try {
+    const page = await newTodayPage(browser, { viewport: { width: 1440, height: 1400 } });
+    await observeLayoutShifts(page);
+    await page.addInitScript((value) => {
+      localStorage.setItem('zodiacs.profile.v1', JSON.stringify(value));
+    }, profile);
+    await page.goto(`${proxy.url}/today/`, { waitUntil: 'networkidle' });
+    await page.waitForSelector('[data-today-state="chart"]');
+    const evidence = await page.evaluate(() => new Promise((resolveEvidence) => {
+      requestAnimationFrame(() => requestAnimationFrame(() => resolveEvidence({
+        cls: globalThis.__zdxLayoutShifts.reduce((sum, value) => sum + value, 0),
+        initial: document.querySelector('.nav__profile-shortcut [data-profile-avatar]')?.textContent ?? null,
+        shifts: globalThis.__zdxLayoutShiftDetails,
+      })));
+    }));
+    check('a parser pause after the nav still shows the saved-chart initial', evidence.initial === 'F', JSON.stringify({ initial: evidence.initial }));
+    check('a parser pause after the nav has exactly zero CLS', evidence.cls === 0, JSON.stringify(evidence));
+    await page.close();
+  } finally {
+    await proxy.close();
+  }
 }
 
 async function drive(BASE, browser) {
@@ -628,6 +739,8 @@ async function drive(BASE, browser) {
 
   await inspectReturningMobile(BASE, browser, threeHitMobileProfile, 'active', 3);
   await inspectReturningMobile(BASE, browser, quietMobileProfile, 'quiet', 0);
+  await inspectPausedEditionLabel(BASE, browser);
+  await inspectPausedNavInitial(BASE, browser);
 }
 
 await withPreview({ port: 4398 }, async (BASE) => {

@@ -42,23 +42,37 @@ export function recordHelpers(base) {
 
   async function waitKeepState(page, states, options = {}) {
     const wanted = [].concat(states);
-    await page.waitForFunction((list) => list.includes(document.querySelector('[data-record-keep]')?.getAttribute('data-record-keep-state')), wanted, options);
-    return keepState(page);
+    // The state that satisfied the wait, not a second read: a re-open can move
+    // the state on between the two.
+    const matched = await page.waitForFunction((list) => {
+      const state = document.querySelector('[data-record-keep]')?.getAttribute('data-record-keep-state');
+      return list.includes(state) ? state : null;
+    }, wanted, options);
+    return matched.jsonValue();
   }
 
   async function keep(page) {
     for (let attempt = 0; ; attempt++) {
       await page.waitForFunction(() => !document.querySelector('[data-keep-calculation-record]')?.disabled
         || document.querySelector('[data-record-keep-message]'));
+      // Record whether this click reaches the button at all.
+      await page.evaluate(() => {
+        window.__recordKeepClicked = false;
+        if (window.__recordKeepProbe) return;
+        window.__recordKeepProbe = true;
+        document.addEventListener('click', (event) => {
+          if (event.target instanceof Element && event.target.closest('[data-keep-calculation-record]')) window.__recordKeepClicked = true;
+        }, true);
+      });
       await page.click('[data-keep-calculation-record]');
-      try {
-        return await waitKeepState(page, KEEP_OUTCOMES, { timeout: attempt < 2 ? 5000 : 30_000 });
-      } catch (error) {
-        // A click can land on the button in the instant a concurrent re-open
-        // (another tab changed the records) disables it; the click is inert and
-        // the button returns to its idle label, so a person clicks again.
-        if (attempt >= 2 || await keepState(page) !== 'idle') throw error;
-      }
+      // A click that reached the button ran a keep: report its stated outcome
+      // and never click again on the visitor's behalf, because a second click
+      // is a second keep.
+      if (await page.evaluate(() => window.__recordKeepClicked)) return waitKeepState(page, KEEP_OUTCOMES, { timeout: 30_000 });
+      // A click can land in the instant a concurrent re-open (another tab
+      // changed the records) disables the button. A disabled button receives
+      // no click, nothing ran, and a person clicks again.
+      if (attempt >= 2) throw new Error('The keep button never received the click.');
     }
   }
 
