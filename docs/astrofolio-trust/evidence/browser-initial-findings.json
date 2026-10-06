@@ -1,0 +1,29 @@
+{
+  "recordType": "summary-of-observed-initial-findings",
+  "scope": "The initial complete local browser run reported eight passing scenarios and three failures. Its original complete JSON report was overwritten by a subsequent run. This file summarizes only the known findings preserved in the execution transcript; it is not a reconstruction of the original report.",
+  "findings": [
+    {
+      "scenario": "layout-320",
+      "observation": "After expanding the collection records, document.scrollWidth was 321 for a 320px viewport. A rotated av-expand element reached x=320.61968994140625.",
+      "resolution": "The page owner corrected compounded mobile container gutters and narrow layout sizing. The subsequent complete run passed the 320px layout checks."
+    },
+    {
+      "scenario": "no-javascript-evidence",
+      "observation": "The harness queried a global noscript locator, which matched both the page guidance and a shared-layout element. Playwright rejected the ambiguous locator.",
+      "resolution": "The harness now selects the page's av-nojs guidance directly. The subsequent complete run passed the no-JavaScript evidence checks."
+    },
+    {
+      "scenario": "real-service-worker-offline-never-reuses-match",
+      "observation": "All verification failure and cached-snapshot assertions completed, but the strict console-error check found six shared resources unavailable after offline navigation.",
+      "resources": [
+        "/assets/app-icons/v3/favicon.svg",
+        "/assets/app-icons/v3/favicon-32.png",
+        "/assets/app-icons/v3/favicon-16.png",
+        "/assets/app-icons/v3/favicon-96.png",
+        "/assets/site-footer.css",
+        "/assets/assistant-ui.js?v=ask-guide-3"
+      ],
+      "resolution": "The harness permits only these exact resource URLs with expected offline network-error codes in that scenario and records every observed exception. Shared caching remains outside this workstream; these offline limitations were not repaired or hidden."
+    }
+  ]
+}

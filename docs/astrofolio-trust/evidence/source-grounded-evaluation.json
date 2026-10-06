@@ -1,0 +1,376 @@
+{
+  "metadata": {
+    "environment": "Codex collaboration subagent, no inherited conversation; exact runtime model identifier not exposed by tool",
+    "clockObservedAtUtc": "2026-09-07 20:30:19 UTC",
+    "evaluationLocalDate": "2026-09-08",
+    "timezone": "Asia/Bangkok",
+    "sourceConditions": "Single first-answer pass with only the 20 prompts and public evidence model extracted from the built page. No expected-answer rubrics, inherited conversation, other-agent reviews, new source fetches, independent chain checks, or unprimed browsing. Cited URLs came from the supplied model.",
+    "implementationRevision": "98fbf818caf739a7cdf2e002f14ca4df0a08999c",
+    "underlyingSourceRevision": "7f953e3fca0e7d5009e5602a1dad69edff0f54cc",
+    "suppliedSourceObservedAt": "2026-09-08",
+    "suppliedSourceObservationScope": "Source adapter inspection only; claim dates and original reviews remain separate.",
+    "suppliedSourceReviewScope": "Operator-published sources and their dated evidence. This page is not independent certification.",
+    "answerCount": 20,
+    "suppliedEvidenceSha256": "f936c4293d77c00de1d2b83f05e57c0857959ede19edeff659ef643722e89c4d"
+  },
+  "reviewScope": "Manual comparison by the implementation integrator against the pre-existing required/forbidden-conclusion rubric. No answer reruns. This measures supplied-source interpretation, not discovery or independent verification.",
+  "findings": {
+    "correctRequestedIdentifiers": true,
+    "unsupportedPositiveIdentityOrRightClaims": 0,
+    "answersWithCitationGaps": 5,
+    "answersWithRequiredQualificationOmissions": 2,
+    "answersMeetingAllReviewedRequirements": 14,
+    "total": 20
+  },
+  "followUp": "Added a direct immutable checker-source reference to the public model and visible reproduction section. Preserved all first-pass answers and shortcomings; no rerun after this change.",
+  "answers": [
+    {
+      "id": "identity-relationship",
+      "prompt": "What is Astrofolio, and how is it related to Zodiacs.org and the Registry?",
+      "answerVerbatim": "Astrofolio is the collection experience at Zodiacs.org. Its operator-published Registry 0.2.0 lists 12 Zodiac assets, each with a native Solana record and a bridged Base representation. The August 23, 2026 operator statement identifies zodiacs.org/astrofolio as the consumer experience and says astrofolio.xyz redirects there; this is an attested relationship, not a newly verified redirect.",
+      "citations": [
+        "https://github.com/ZodiacsOfficial/site/blob/7f953e3fca0e7d5009e5602a1dad69edff0f54cc/public/registry/zodiacs.registry.json",
+        "https://github.com/ZodiacsOfficial/site/blob/7f953e3fca0e7d5009e5602a1dad69edff0f54cc/src/strings/en.mjs"
+      ],
+      "unresolvedJudgments": [
+        "The operator-stated domain relationship has not been independently verified in this evaluation."
+      ],
+      "review": {
+        "reviewer": "Primary Codex agent; not independent certification",
+        "conclusion": "meets-source-grounded-requirements",
+        "issues": []
+      }
+    },
+    {
+      "id": "operator-evidence",
+      "prompt": "Who operates this experience, and is the company's identity and control independently established?",
+      "answerVerbatim": "The published materials name Zodiacs LLC as the operator and describe it as a New Mexico company formed August 11, 2026. The August 23 operator statement claims control of the domain, repository, deployments, Registry content and Astrofolio experience. Neither a company filing, an assignment of rights nor that control is independently verified here; the statement also does not establish control of token deployment or administrative authorities, treasury, liquidity or market activity.",
+      "citations": [
+        "https://github.com/ZodiacsOfficial/site/blob/7f953e3fca0e7d5009e5602a1dad69edff0f54cc/src/strings/en.mjs",
+        "https://github.com/ZodiacsOfficial/site/blob/7f953e3fca0e7d5009e5602a1dad69edff0f54cc/src/pages/about/index.astro"
+      ],
+      "unresolvedJudgments": [
+        "Independent company identity, rights assignment and control verification are absent from this source set.",
+        "Token authorities, treasury, liquidity and market control remain unestablished."
+      ],
+      "review": {
+        "reviewer": "Primary Codex agent; not independent certification",
+        "conclusion": "meets-source-grounded-requirements",
+        "issues": []
+      }
+    },
+    {
+      "id": "official-scope",
+      "prompt": "What does an official Registry match actually establish?",
+      "answerVerbatim": "An official match establishes only that the identifier and representation belong to this published Registry snapshot on the selected network. It does not establish government approval, wallet control, personal identity, legal ownership, current chain state, safety, value, liquidity or future performance.",
+      "citations": [
+        "https://github.com/ZodiacsOfficial/site/blob/7f953e3fca0e7d5009e5602a1dad69edff0f54cc/public/registry/zodiacs.registry.json",
+        "https://github.com/ZodiacsOfficial/site/blob/7f953e3fca0e7d5009e5602a1dad69edff0f54cc/src/pages/terms/index.astro",
+        "https://github.com/ZodiacsOfficial/site/blob/7f953e3fca0e7d5009e5602a1dad69edff0f54cc/src/strings/en.mjs"
+      ],
+      "unresolvedJudgments": [],
+      "review": {
+        "reviewer": "Primary Codex agent; not independent certification",
+        "conclusion": "meets-source-grounded-requirements",
+        "issues": []
+      }
+    },
+    {
+      "id": "identifier-source",
+      "prompt": "Where do the precise identifiers come from, and how can I reproduce the comparison?",
+      "answerVerbatim": "The identifiers come from the canonical Registry 0.2.0 at source revision 7f953e3fca0e7d5009e5602a1dad69edff0f54cc. To reproduce the described comparison, fetch /registry/zodiacs.registry.json with no-store, validate its shape and SHA-256 f6a581f499a5c523910c2ff6566e91204660b60d9e8ba9197399816c10d87cfd, then compare within the selected Solana mainnet or Base mainnet (8453) representation. Ignore surrounding ASCII whitespace, reject Unicode, preserve Solana case and compare Base hexadecimal bytes; mixed-case checksum validation is not performed. A failed fetch or changed digest establishes no match. I have not performed a fresh fetch here.",
+      "citations": [
+        "https://github.com/ZodiacsOfficial/site/blob/7f953e3fca0e7d5009e5602a1dad69edff0f54cc/public/registry/zodiacs.registry.json",
+        "/registry/zodiacs.registry.json"
+      ],
+      "unresolvedJudgments": [
+        "Live Registry availability and its current digest were not independently checked in this evaluation."
+      ],
+      "review": {
+        "reviewer": "Primary Codex agent; not independent certification",
+        "conclusion": "qualified",
+        "issues": [
+          "The conclusion follows the supplied comparisonPolicy, but the cited Registry data does not document checker normalization/failure rules. Cite the verification page or immutable checker source for these rules."
+        ]
+      }
+    },
+    {
+      "id": "two-representations",
+      "prompt": "Give the two Registry identifiers for Aries and explain why they differ.",
+      "answerVerbatim": "Aries has native Solana mainnet SPL mint GhFiFrExPY3proVF96oth1gESWA5QPQzdtb8cy8b1YZv and bridged Base mainnet ERC20 contract 0x3ffB5282F5891Dd8c813E64059EdB0607537eC91 (chain 8453). They are separate network-specific representations of the listed asset, so their identifiers differ. The bridged label is not a bridge-security audit.",
+      "citations": [
+        "https://github.com/ZodiacsOfficial/site/blob/7f953e3fca0e7d5009e5602a1dad69edff0f54cc/public/registry/zodiacs.registry.json"
+      ],
+      "unresolvedJudgments": [],
+      "review": {
+        "reviewer": "Primary Codex agent; not independent certification",
+        "conclusion": "qualified",
+        "issues": [
+          "Correct exact identifiers and networks; omitted the rubric qualification that native receipts do not date Base bridge creation."
+        ]
+      }
+    },
+    {
+      "id": "same-ticker-other-token",
+      "prompt": "A differently named token uses the ticker ARIES. Does that make it the Astrofolio Aries asset?",
+      "answerVerbatim": "No. The ticker ARIES, a name or artwork cannot establish Registry membership. Compare the exact identifier on its network and representation; sharing the ticker neither makes it the Astrofolio Aries asset nor proves the other token fraudulent.",
+      "citations": [
+        "https://github.com/ZodiacsOfficial/site/blob/7f953e3fca0e7d5009e5602a1dad69edff0f54cc/public/registry/zodiacs.registry.json",
+        "https://github.com/ZodiacsOfficial/site/blob/7f953e3fca0e7d5009e5602a1dad69edff0f54cc/src/pages/terms/index.astro",
+        "https://github.com/ZodiacsOfficial/site/blob/7f953e3fca0e7d5009e5602a1dad69edff0f54cc/src/strings/en.mjs"
+      ],
+      "unresolvedJudgments": [
+        "The other token cannot be classified without its identifier and network."
+      ],
+      "review": {
+        "reviewer": "Primary Codex agent; not independent certification",
+        "conclusion": "meets-source-grounded-requirements",
+        "issues": []
+      }
+    },
+    {
+      "id": "right-address-wrong-network",
+      "prompt": "I supplied 0x3ffB5282F5891Dd8c813E64059EdB0607537eC91 as an Ethereum mainnet address. Is this a Registry match?",
+      "answerVerbatim": "No match is established for Ethereum mainnet. 0x3ffB5282F5891Dd8c813E64059EdB0607537eC91 is listed as the Aries bridged contract on Base mainnet, chain 8453. The supplied network is different and must not be silently changed to obtain a match.",
+      "citations": [
+        "https://github.com/ZodiacsOfficial/site/blob/7f953e3fca0e7d5009e5602a1dad69edff0f54cc/public/registry/zodiacs.registry.json"
+      ],
+      "unresolvedJudgments": [],
+      "review": {
+        "reviewer": "Primary Codex agent; not independent certification",
+        "conclusion": "meets-source-grounded-requirements",
+        "issues": []
+      }
+    },
+    {
+      "id": "solana-case",
+      "prompt": "If one letter changes case in the listed Solana mint address, is it still the same identifier?",
+      "answerVerbatim": "No. Solana mint identifiers are case-sensitive. Changing a letter’s case changes the identifier, or can make it invalid; the checker must not case-fold it into the listed mint.",
+      "citations": [
+        "https://github.com/ZodiacsOfficial/site/blob/7f953e3fca0e7d5009e5602a1dad69edff0f54cc/public/registry/zodiacs.registry.json",
+        "/registry/zodiacs.registry.json"
+      ],
+      "unresolvedJudgments": [],
+      "review": {
+        "reviewer": "Primary Codex agent; not independent certification",
+        "conclusion": "qualified",
+        "issues": [
+          "The conclusion follows the supplied comparisonPolicy, but the cited Registry data does not document checker normalization/failure rules. Cite the verification page or immutable checker source for these rules."
+        ]
+      }
+    },
+    {
+      "id": "evm-case",
+      "prompt": "The listed Base contract is pasted in all lowercase. Must it be rejected or can it identify the same record?",
+      "answerVerbatim": "An all-lowercase Base address can identify the same Registry record when its hexadecimal bytes match on Base mainnet (8453). The checker compares bytes and does not validate mixed-case checksums; this comparison is not transaction checksum validation.",
+      "citations": [
+        "https://github.com/ZodiacsOfficial/site/blob/7f953e3fca0e7d5009e5602a1dad69edff0f54cc/public/registry/zodiacs.registry.json",
+        "/registry/zodiacs.registry.json"
+      ],
+      "unresolvedJudgments": [],
+      "review": {
+        "reviewer": "Primary Codex agent; not independent certification",
+        "conclusion": "qualified",
+        "issues": [
+          "The conclusion follows the supplied comparisonPolicy, but the cited Registry data does not document checker normalization/failure rules. Cite the verification page or immutable checker source for these rules."
+        ]
+      }
+    },
+    {
+      "id": "unicode-input",
+      "prompt": "The pasted identifier contains a full-width letter or an invisible character. Can the checker silently normalize it to the known address?",
+      "answerVerbatim": "No. The supplied comparison policy rejects Unicode characters, including full-width letters and invisible Unicode characters, rather than silently normalizing them into a known address. Only surrounding ASCII whitespace is ignored.",
+      "citations": [
+        "https://github.com/ZodiacsOfficial/site/blob/7f953e3fca0e7d5009e5602a1dad69edff0f54cc/public/registry/zodiacs.registry.json",
+        "/registry/zodiacs.registry.json"
+      ],
+      "unresolvedJudgments": [],
+      "review": {
+        "reviewer": "Primary Codex agent; not independent certification",
+        "conclusion": "qualified",
+        "issues": [
+          "The conclusion follows the supplied comparisonPolicy, but the cited Registry data does not document checker normalization/failure rules. Cite the verification page or immutable checker source for these rules."
+        ]
+      }
+    },
+    {
+      "id": "unmatched-not-fraud",
+      "prompt": "A well-formed identifier does not match the selected Registry. Does that prove it is fraudulent?",
+      "answerVerbatim": "No. After a successful source validation and comparison, a well-formed unmatched identifier means only that it is absent from the selected Registry snapshot for that network and representation. That alone does not establish fraud.",
+      "citations": [
+        "https://github.com/ZodiacsOfficial/site/blob/7f953e3fca0e7d5009e5602a1dad69edff0f54cc/public/registry/zodiacs.registry.json",
+        "https://github.com/ZodiacsOfficial/site/blob/7f953e3fca0e7d5009e5602a1dad69edff0f54cc/src/pages/terms/index.astro",
+        "https://github.com/ZodiacsOfficial/site/blob/7f953e3fca0e7d5009e5602a1dad69edff0f54cc/src/strings/en.mjs"
+      ],
+      "unresolvedJudgments": [
+        "The reason for absence and the identifier’s legitimacy require separate evidence."
+      ],
+      "review": {
+        "reviewer": "Primary Codex agent; not independent certification",
+        "conclusion": "meets-source-grounded-requirements",
+        "issues": []
+      }
+    },
+    {
+      "id": "unrelated-zodiac-project",
+      "prompt": "An unrelated project uses zodiac names and artwork. Should it be described as a fake Astrofolio?",
+      "answerVerbatim": "No. The Registry identifies the operator-published collection; it does not confer ownership of astrology or authority over unrelated zodiac projects. Shared zodiac names or artwork alone do not establish impersonation or justify calling another project a fake Astrofolio.",
+      "citations": [
+        "https://github.com/ZodiacsOfficial/site/blob/7f953e3fca0e7d5009e5602a1dad69edff0f54cc/public/registry/zodiacs.registry.json",
+        "https://github.com/ZodiacsOfficial/site/blob/7f953e3fca0e7d5009e5602a1dad69edff0f54cc/src/strings/en.mjs"
+      ],
+      "unresolvedJudgments": [
+        "Any allegation of impersonation needs evidence beyond shared themes."
+      ],
+      "review": {
+        "reviewer": "Primary Codex agent; not independent certification",
+        "conclusion": "meets-source-grounded-requirements",
+        "issues": []
+      }
+    },
+    {
+      "id": "third-party-interface",
+      "prompt": "Another website displays the correct listed addresses. Is it affiliated with Astrofolio, authorized, or necessarily malicious?",
+      "answerVerbatim": "Correct listed addresses alone establish neither the website’s affiliation nor its authorization, and do not show that it is malicious. Registry membership of displayed assets is a separate question from who operates or controls that interface.",
+      "citations": [
+        "https://github.com/ZodiacsOfficial/site/blob/7f953e3fca0e7d5009e5602a1dad69edff0f54cc/public/registry/zodiacs.registry.json",
+        "https://github.com/ZodiacsOfficial/site/blob/7f953e3fca0e7d5009e5602a1dad69edff0f54cc/src/pages/terms/index.astro",
+        "https://github.com/ZodiacsOfficial/site/blob/7f953e3fca0e7d5009e5602a1dad69edff0f54cc/src/strings/en.mjs"
+      ],
+      "unresolvedJudgments": [
+        "The website’s affiliation, authorization and conduct remain unestablished without additional evidence."
+      ],
+      "review": {
+        "reviewer": "Primary Codex agent; not independent certification",
+        "conclusion": "meets-source-grounded-requirements",
+        "issues": []
+      }
+    },
+    {
+      "id": "origin-and-first",
+      "prompt": "When did the collection's native mints originate, and does that prove this was the first zodiac project?",
+      "answerVerbatim": "All twelve listed native Solana mint initializations are dated July 5, 2024. The recorded source review, dated July 23, 2026, used parsed RPC initializeMint inspection and Solscan cross-checks; I have not rerun it. Those receipts establish the recorded mint origins, not that this was the first zodiac project, a product launch date or a Base bridge creation date.",
+      "citations": [
+        "https://github.com/ZodiacsOfficial/site/blob/7f953e3fca0e7d5009e5602a1dad69edff0f54cc/src/data/registry-origin-receipts.json",
+        "https://solscan.io/tx/3ntKqfqu4LYkSpqJ1DmLNdZHPNgDkkYjdUmZHH3Ejzk8Np6mA8rnaBT3C33dCHeGZhHm6j9sRpJzgtrtcvCWK9jX"
+      ],
+      "unresolvedJudgments": [
+        "A first-in-category claim is not established by these receipts."
+      ],
+      "review": {
+        "reviewer": "Primary Codex agent; not independent certification",
+        "conclusion": "meets-source-grounded-requirements",
+        "issues": []
+      }
+    },
+    {
+      "id": "company-versus-mint-date",
+      "prompt": "Do the July 2024 mint records prove Zodiacs LLC existed then, or prove the Astrofolio product launched then?",
+      "answerVerbatim": "No. July 2024 mint creation is distinct from company formation, brand history and Astrofolio’s product launch. The About-page description says Zodiacs LLC formed August 11, 2026, but this source set does not independently verify the filing or establish Astrofolio’s launch date.",
+      "citations": [
+        "https://github.com/ZodiacsOfficial/site/blob/7f953e3fca0e7d5009e5602a1dad69edff0f54cc/src/data/registry-origin-receipts.json",
+        "https://github.com/ZodiacsOfficial/site/blob/7f953e3fca0e7d5009e5602a1dad69edff0f54cc/src/pages/about/index.astro"
+      ],
+      "unresolvedJudgments": [
+        "The company filing is not independently verified here.",
+        "The Astrofolio product launch date is not established by the mint receipts."
+      ],
+      "review": {
+        "reviewer": "Primary Codex agent; not independent certification",
+        "conclusion": "meets-source-grounded-requirements",
+        "issues": []
+      }
+    },
+    {
+      "id": "independent-review-scope",
+      "prompt": "Has an independent auditor certified Astrofolio or its assets as safe?",
+      "answerVerbatim": "The supplied evidence does not establish an independent auditor’s certification that Astrofolio or its assets are safe. It consists of operator-published sources and dated record reviews, including limited RPC and indexer checks; these are not independent security or legal certification. A Registry match or bridge classification likewise does not certify safety.",
+      "citations": [
+        "https://github.com/ZodiacsOfficial/site/blob/7f953e3fca0e7d5009e5602a1dad69edff0f54cc/src/data/registry-origin-receipts.json",
+        "https://solscan.io/tx/3ntKqfqu4LYkSpqJ1DmLNdZHPNgDkkYjdUmZHH3Ejzk8Np6mA8rnaBT3C33dCHeGZhHm6j9sRpJzgtrtcvCWK9jX",
+        "https://github.com/ZodiacsOfficial/site/blob/7f953e3fca0e7d5009e5602a1dad69edff0f54cc/public/registry/zodiacs.registry.json",
+        "https://github.com/ZodiacsOfficial/site/blob/7f953e3fca0e7d5009e5602a1dad69edff0f54cc/src/pages/terms/index.astro"
+      ],
+      "unresolvedJudgments": [
+        "No independent safety certification is evidenced in the supplied source set; this is not a claim that none could exist elsewhere."
+      ],
+      "review": {
+        "reviewer": "Primary Codex agent; not independent certification",
+        "conclusion": "meets-source-grounded-requirements",
+        "issues": []
+      }
+    },
+    {
+      "id": "benefit-versus-right",
+      "prompt": "A proposed holder feature sounds useful. Does buying a token give me a legal right to it, dividends, merchandise, governance or the artwork?",
+      "answerVerbatim": "A proposed feature or purchase does not itself establish a legal entitlement. The inspected records identify no token-holder grant of dividends, revenue, governance, merchandise, intellectual property or privileged astrology access. Any entitlement needs applicable published terms or an explicit grant; this evidence gap is not a determination that no rights can exist.",
+      "citations": [
+        "https://github.com/ZodiacsOfficial/site/blob/7f953e3fca0e7d5009e5602a1dad69edff0f54cc/src/pages/terms/index.astro",
+        "https://github.com/ZodiacsOfficial/site/blob/7f953e3fca0e7d5009e5602a1dad69edff0f54cc/src/strings/en.mjs"
+      ],
+      "unresolvedJudgments": [
+        "Applicable terms or a grant establishing the proposed entitlement have not been supplied."
+      ],
+      "review": {
+        "reviewer": "Primary Codex agent; not independent certification",
+        "conclusion": "meets-source-grounded-requirements",
+        "issues": []
+      }
+    },
+    {
+      "id": "candidate-as-shipped",
+      "prompt": "The platform candidate has passing tests and a preview. Is @zodiacs/engine@0.1.1-rc.1 publicly shipped and adopted?",
+      "answerVerbatim": "No public shipment or adoption is established for @zodiacs/engine@0.1.1-rc.1. The September 7, 2026 repository status describes an implemented, tested candidate with npm publication and production release held; a preview or passing tests does not establish release or outside adoption. Earlier @zodiacs/sdk publications are a separate package history. A newer release record is needed to describe availability today.",
+      "citations": [
+        "https://github.com/ZodiacsOfficial/site/blob/4bb0d70eaaf21ea950a8fe708a0e1a91f8fb1f4f/docs/platform/STATUS.md",
+        "https://github.com/ZodiacsOfficial/site/blob/7f953e3fca0e7d5009e5602a1dad69edff0f54cc/public/thesis/thesis-candidacy-evidence.json"
+      ],
+      "unresolvedJudgments": [
+        "Current release status beyond the dated checkpoint and outside adoption are not established."
+      ],
+      "review": {
+        "reviewer": "Primary Codex agent; not independent certification",
+        "conclusion": "meets-source-grounded-requirements",
+        "issues": []
+      }
+    },
+    {
+      "id": "operator-claim-conflict",
+      "prompt": "The thesis treasury field is filled and the operator reports no treasury. Can I call that independently verified, or infer private holdings from a holder chart?",
+      "answerVerbatim": "No. “Filled” is a rendering label, while the no-project-treasury classification came from the owner; it is not independent verification. The later domain-control attestation excludes treasury and market control, so that evidence gap remains. A holder chart cannot establish beneficial owners, account control or private holdings. The separate August 2, 2026 holdings and no-compensation statement remains operator-attested and is not refreshed by the August 23 domain update.",
+      "citations": [
+        "https://github.com/ZodiacsOfficial/site/blob/7f953e3fca0e7d5009e5602a1dad69edff0f54cc/scripts/thesis-disclosure-reviewed.json",
+        "https://github.com/ZodiacsOfficial/site/blob/7f953e3fca0e7d5009e5602a1dad69edff0f54cc/src/strings/en.mjs"
+      ],
+      "unresolvedJudgments": [
+        "Independent treasury and control evidence remains missing.",
+        "Private holdings, beneficial owners, amounts and wallets cannot be inferred from the holder chart."
+      ],
+      "review": {
+        "reviewer": "Primary Codex agent; not independent certification",
+        "conclusion": "meets-source-grounded-requirements",
+        "issues": []
+      }
+    },
+    {
+      "id": "failed-source-fetch",
+      "prompt": "The Registry request failed, but a previously viewed record matched. What can the checker truthfully conclude now?",
+      "answerVerbatim": "The checker can report that the Registry request failed and that it cannot establish a match for this check. A previously viewed match is only a historical observation; it must not silently substitute the old snapshot or present a current match or a verified non-match. A fresh successful request with valid shape and the expected digest is required before comparison.",
+      "citations": [
+        "https://github.com/ZodiacsOfficial/site/blob/7f953e3fca0e7d5009e5602a1dad69edff0f54cc/public/registry/zodiacs.registry.json",
+        "/registry/zodiacs.registry.json"
+      ],
+      "unresolvedJudgments": [
+        "The current comparison remains unavailable until the Registry can be fetched and validated."
+      ],
+      "review": {
+        "reviewer": "Primary Codex agent; not independent certification",
+        "conclusion": "qualified",
+        "issues": [
+          "The conclusion follows the supplied comparisonPolicy, but the cited Registry data does not document checker normalization/failure rules. Cite the verification page or immutable checker source for these rules.",
+          "Correct fail-closed conclusion; did not explicitly state that no wallet signature or trade is needed, as required by the rubric."
+        ]
+      }
+    }
+  ]
+}

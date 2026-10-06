@@ -1,0 +1,4 @@
+2026-09-07T20:36:13.4874259Z   PHASE1_SCOPE_BASE: 7f953e3fca0e7d5009e5602a1dad69edff0f54cc
+2026-09-07T20:36:14.2899648Z phase1-scope-guard: 1 protected path change(s)
+2026-09-07T20:36:14.2900445Z   - src/pages/registry/verify/index.astro (Registry wing)
+2026-09-07T20:36:14.3001551Z ##[error]Process completed with exit code 1.
