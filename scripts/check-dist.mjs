@@ -1171,7 +1171,9 @@ const sitemapPolicy = {
   // +1 for /developers/sky-benchmark/, the sky-fact benchmark's page.
   // +23 for three six-language sharing tools and five Big Three translations.
   // +18 for three six-language return-visit tools.
-  total: 1042 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
+  // +48 for the twelve rising-sign profiles translated into es, pt, fr and it.
+  // +16 for the four sky-calendar hubs translated into es, pt, fr and it.
+  total: 1106 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
     + publishedEventPaths.size + indexablePeoplePaths.size
     + Number(JSON.parse(await readFile(resolve(repo, 'src/data/people.json'), 'utf8')).directoryIndexable === true)
     + indexedRegistryResearchPaths.size,

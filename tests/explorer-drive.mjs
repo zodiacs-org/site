@@ -318,8 +318,8 @@ try {
   });
 
   // Editorial pages keep the Astrofolio door at every boundary. Tool pages
-  // (owner rule since #633: no Astrofolio branding on tools) keep the same
-  // reserved shell with the door removed from both the bar and the menu.
+  // (owner rule since #633: no Astrofolio branding on tools) use the shorter
+  // desktop shell with the door removed from both the bar and the menu.
   for (const [surface, route, expectsDoor] of [
     ['editorial', '/learn/', true],
     ['tool', '/birth-chart/', false],
@@ -377,7 +377,7 @@ try {
             && (desktop || state.mobileRegistryVisible === false);
         const pass = state.navFits
           && door
-          && Math.abs(state.navWidth - (desktop ? (prefix ? 992 : 884) : state.viewportWidth)) <= 0.1
+          && Math.abs(state.navWidth - (desktop ? (expectsDoor ? (prefix ? 992 : 884) : (prefix ? 854 : 746)) : state.viewportWidth)) <= 0.1
           && (desktop ? state.radius !== '0px' : state.radius === '0px')
           && state.burgerVisible === !desktop
           && state.linksVisible === desktop;

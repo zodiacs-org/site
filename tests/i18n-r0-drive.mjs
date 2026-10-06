@@ -187,7 +187,7 @@ await withPreview({ port: 4417 }, async (baseURL) => {
       const recordFooterLink = () => {
         if (
           window.__zdxFooterLinkAt === null
-          && document.querySelector('link[href="/assets/site-footer.css?v=20261003"]')
+          && document.querySelector('link[href="/assets/site-footer.css?v=20261006"]')
         ) {
           window.__zdxFooterLinkAt = performance.now();
         }
@@ -204,7 +204,7 @@ await withPreview({ port: 4417 }, async (baseURL) => {
     check(shortResponse?.status() === 200, `/es/learn/: expected 200, got ${shortResponse?.status()}`);
     const shortFooter = await shortPage.evaluate(() => {
       const footer = document.querySelector('.zfooter');
-      const link = document.querySelector('link[href="/assets/site-footer.css?v=20261003"]');
+      const link = document.querySelector('link[href="/assets/site-footer.css?v=20261006"]');
       return {
         nearViewport: Boolean(footer && footer.getBoundingClientRect().top <= innerHeight + 200),
         stylesheetRequested: Boolean(link),

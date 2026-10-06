@@ -105,6 +105,8 @@ await withPreview({ port: Number(process.env.BIO_DRIVE_PORT ?? 4431) }, async (B
     await page.waitForTimeout(50);
     const footerHeight = Math.round(await page.locator('.zfooter').evaluate((footer) => footer.getBoundingClientRect().height));
     check(`${viewport.name}: rendered compact footer stays subordinate`, footerHeight > 0 && footerHeight <= 460, `${footerHeight}px`);
+    check(`${viewport.name}: compact footer does not leave an orphan Guide description`,
+      !(await page.locator('.zfooter__help').isVisible()));
     await page.evaluate(() => window.scrollTo(0, 0));
 
     if (viewport.name === 'desktop') {

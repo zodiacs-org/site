@@ -1,0 +1,731 @@
+---
+/**
+ * Translated eclipse calendar (es, pt, fr, it). The English page
+ * (src/pages/eclipses/index.astro) is the reference: same committed data,
+ * same table and markup, with the copy below in the reader's language.
+ */
+import Base from '../../layouts/Base.astro';
+import '../../styles/rx-table.css';
+import eclipseData from '../../data/eclipses.json';
+import { signBySlug, signName } from '../../lib/signs';
+import { formatDate, formatShortDate, formatTime } from '../../lib/i18n/dates';
+import { publishedEventById } from '../../lib/events/publication';
+import { ENGLISH_ONLY_COPY } from '../../lib/i18n';
+
+type Locale = 'es' | 'pt' | 'fr' | 'it';
+interface Props { locale: Locale }
+
+const { locale } = Astro.props;
+
+type EclipseType = 'solar' | 'lunar';
+type EclipseKind = 'total' | 'partial' | 'annular' | 'penumbral';
+
+interface Copy {
+  title: string;
+  description: string;
+  imageAlt: string;
+  heroHeading: string;
+  heroLede: string;
+  asOf: (date: string) => string;
+  /** A weekday-led date as it reads after a verb: "el sábado, 6 de febrero de 2027". */
+  on: (day: string, utcWeekday: number) => string;
+  /** The noun, then the type and kind adjectives that follow it. */
+  noun: string;
+  type: Record<EclipseType, string>;
+  kind: Record<EclipseKind, string>;
+  percent: (n: number) => string;
+  detail: {
+    solarTotal: string;
+    solarAnnular: (pct: string) => string;
+    solarPartial: string;
+    lunarTotal: (minutes: number) => string;
+    lunarPartial: (pct: string) => string;
+    lunarPenumbral: string;
+  };
+  status: (name: string, when: string, sign: string) => string;
+  statusNone: string;
+  seasons: string;
+  yearLink: string;
+  methodSummary: string;
+  method: string;
+  tableHeading: string;
+  tableLede: string;
+  th: { peak: string; eclipse: string; sign: string; detail: string };
+  proseHeading: string;
+  p1: string;
+  /** Paragraph two runs: text, date, text, date, text, sign link, text. */
+  p2a: string;
+  p2b: string;
+  p2c: string;
+  p2d: string;
+  /** Paragraph three runs: text, lunation link, text, chart link, text. */
+  p3a: string;
+  p3Lunation: string;
+  p3b: string;
+  p3Chart: string;
+  p3c: string;
+  /** The closing horoscopes sentence: text, link, text. */
+  horoBefore: string;
+  horoLink: string;
+  horoAfter: string;
+  faqHeading: string;
+  faq: {
+    solarQ: string;
+    solarA: (name: string, when: string, sign: string, aug12: string) => string;
+    solarNone: string;
+    lunarQ: string;
+    lunarA: (name: string, when: string, sign: string) => string;
+    lunarNone: string;
+    differenceQ: string;
+    differenceA: string;
+    pairsQ: string;
+    pairsA: string;
+    meaningQ: string;
+    meaningA: string;
+  };
+  ld: {
+    pageName: string;
+    pageDescription: string;
+    datasetName: string;
+    datasetDescription: string;
+    earth: string;
+    variables: string[];
+    eventName: (name: string, sign: string) => string;
+    eventDescription: (detail: string, peak: string) => string;
+  };
+}
+
+const cap = (text: string) => text.charAt(0).toLocaleUpperCase(locale) + text.slice(1);
+
+const COPY: Record<Locale, Copy> = {
+  es: {
+    title: 'Eclipses 2026–2028: fechas y signos | Zodiacs.org',
+    description:
+      'Todos los eclipses solares y lunares hasta 2028, con la hora exacta del máximo y su signo, incluido el eclipse solar total del 12 de agosto de 2026.',
+    imageAlt: 'Fechas de eclipses — Zodiacs.org',
+    heroHeading: 'Encuentra todos los eclipses hasta 2028.',
+    heroLede:
+      'Revisa el próximo eclipse solar o lunar, la hora de su máximo en hora universal (UTC) y su signo del zodiaco.',
+    asOf: (date) => `Al ${date}`,
+    on: (day) => `el ${day}`,
+    noun: 'eclipse',
+    type: { solar: 'solar', lunar: 'lunar' },
+    kind: { total: 'total', partial: 'parcial', annular: 'anular', penumbral: 'penumbral' },
+    percent: (n) => `${n}%`,
+    detail: {
+      solarTotal: 'totalidad: el Sol queda cubierto por completo a lo largo de la franja',
+      solarAnnular: (pct) => `eclipse en forma de anillo: ${pct} del Sol cubierto en el máximo`,
+      solarPartial: 'solo parcial',
+      lunarTotal: (minutes) => `la totalidad dura unos ${minutes} minutos`,
+      lunarPartial: (pct) => `${pct} de la Luna en sombra en el máximo`,
+      lunarPenumbral: 'penumbral: un oscurecimiento tenue, fácil de pasar por alto',
+    },
+    status: (name, when, sign) => `El próximo eclipse es un ${name}, ${when}, en ${sign}.`,
+    statusNone: 'Las fechas de los eclipses siguientes aún no están disponibles.',
+    seasons:
+      'Las temporadas de eclipses llegan dos veces al año; el solar y el lunar ocurren con unas dos semanas de diferencia',
+    yearLink: 'solo los eclipses de 2027',
+    methodSummary: 'Cómo funciona este calendario',
+    method:
+      'Todos los eclipses solares y lunares hasta 2028, calculados a partir de la geometría real: el instante del máximo en hora universal (UTC) y el signo en el que cae cada uno.',
+    tableHeading: 'Los eclipses, 2026–2028',
+    tableLede:
+      'Horas del máximo en hora universal (UTC). Los eclipses solares se ven a lo largo de una franja limitada; los lunares, desde todo el lado nocturno de la Tierra.',
+    th: { peak: 'Máximo', eclipse: 'Eclipse', sign: 'Signo', detail: 'Detalle' },
+    proseHeading: 'Qué es un eclipse',
+    p1:
+      'Todo eclipse es una luna nueva o llena con mejor puntería que de costumbre. La órbita de la Luna está inclinada unos cinco grados respecto del camino del Sol, así que la mayoría de los meses su sombra no nos alcanza y la sombra de la Tierra no la alcanza a ella. Dos veces al año los puntos de cruce, los nodos, se alinean con el Sol, y durante unas semanas cualquier lunación cae de lleno en esa geometría: una luna nueva tapa el Sol en algún lugar de la Tierra, una luna llena entra en la sombra de la Tierra. Ese es todo el mecanismo, y por eso la tabla de arriba se agrupa en temporadas.',
+    p2a: 'El que vale la pena planear es el del ',
+    p2b:
+      ': el primer eclipse solar total sobre la Europa continental desde 1999. La totalidad cruza Groenlandia, el oeste de Islandia y el norte de España al final de la tarde; la mayor parte de Europa ve un eclipse parcial profundo. Un eclipse lunar no exige viajar: el eclipse lunar total del ',
+    p2c: ', con la Luna en ',
+    p2d: ', se ve desde todo el lado nocturno, y su totalidad dura cerca de una hora.',
+    p3a:
+      'La astrología lee los eclipses como lunaciones con el volumen más alto, porque ocurren sobre el eje nodal que la tradición asocia con el rumbo: hacia dónde vas y qué dejas atrás. El consejo práctico es poco vistoso: observa qué aparece en el ',
+    p3Lunation: 'ciclo de lunaciones',
+    p3b: ' durante esas semanas y contrasta el par de signos con ',
+    p3Chart: 'tu propia carta',
+    p3c: ' en lugar de con los titulares.',
+    horoBefore: 'Los ',
+    horoLink: 'horóscopos mensuales',
+    horoAfter: ' fechan cada eclipse cuando llega.',
+    faqHeading: 'Preguntas y respuestas',
+    faq: {
+      solarQ: '¿Cuándo es el próximo eclipse solar?',
+      solarA: (name, when, sign, aug12) =>
+        `Un ${name} alcanza su máximo ${when}, con el Sol en ${sign}. Los eclipses solares solo se ven desde una franja limitada: en el eclipse total del ${aug12}, la totalidad cruza Groenlandia, el oeste de Islandia y el norte de España.`,
+      solarNone: 'Las fechas de los eclipses solares siguientes aún no están disponibles.',
+      lunarQ: '¿Cuándo es el próximo eclipse lunar?',
+      lunarA: (name, when, sign) =>
+        `Un ${name} alcanza su máximo ${when}, con la Luna en ${sign}. A diferencia de los eclipses solares, un eclipse lunar se ve al mismo tiempo desde todo el lado nocturno de la Tierra.`,
+      lunarNone: 'Las fechas de los eclipses lunares siguientes aún no están disponibles.',
+      differenceQ: '¿Cuál es la diferencia entre un eclipse solar y uno lunar?',
+      differenceA:
+        'Un eclipse solar es la Luna pasando por delante del Sol en una luna nueva: se ve solo a lo largo de una franja estrecha, de día. Un eclipse lunar es la Luna atravesando la sombra de la Tierra en una luna llena: se ve desde cualquier lugar donde la Luna esté sobre el horizonte y se puede mirar a simple vista sin riesgo. Los eclipses solares exigen protección para los ojos en todas sus fases, excepto durante la totalidad.',
+      pairsQ: '¿Por qué los eclipses vienen en pares?',
+      pairsA:
+        'La órbita de la Luna está inclinada unos cinco grados, así que la mayoría de las lunas nuevas y llenas no llegan a alinearse. Dos veces al año la geometría coincide durante unas semanas, una temporada de eclipses, y en cada temporada suele haber un eclipse solar y uno lunar con unas dos semanas de diferencia. La tabla muestra el ritmo: febrero–marzo y agosto en 2026.',
+      meaningQ: '¿Qué significan los eclipses en astrología?',
+      meaningA:
+        'La astrología lee los eclipses como lunaciones amplificadas: una luna nueva o llena que cae cerca de los nodos de la Luna, los puntos que la astrología asocia con el rumbo y el cambio. La tradición los trata como aceleradores, comienzos y finales que llegan más rápido de lo habitual, en la parte de tu carta donde cae el grado del eclipse. Para encontrar esa parte necesitas tu carta natal.',
+    },
+    ld: {
+      pageName: 'Fechas de eclipses 2026–2028',
+      pageDescription:
+        'Todos los eclipses solares y lunares de 2026 a 2028: hora exacta del máximo, tipo y signo del zodiaco, calculados a partir de la geometría real.',
+      datasetName: 'Fechas de eclipses solares y lunares, 2026–2028',
+      datasetDescription:
+        'Instantes calculados del máximo, tipos de eclipse y posiciones en el zodiaco tropical de cada eclipse solar y lunar de 2026 a 2028.',
+      earth: 'Tierra',
+      variables: ['instante del máximo', 'tipo de eclipse', 'signo del zodiaco', 'longitud zodiacal', 'oscurecimiento'],
+      eventName: (name, sign) => `${cap(name)} en ${sign}`,
+      eventDescription: (detail, peak) => `${detail}; máximo: ${peak}, hora universal (UTC).`,
+    },
+  },
+  pt: {
+    title: 'Eclipses 2026–2028: datas e signos | Zodiacs.org',
+    description:
+      'Todos os eclipses solares e lunares até 2028, com a hora exata do máximo e o signo, incluindo o eclipse solar total de 12 de agosto de 2026.',
+    imageAlt: 'Datas dos eclipses — Zodiacs.org',
+    heroHeading: 'Encontre todos os eclipses até 2028.',
+    heroLede:
+      'Veja o próximo eclipse solar ou lunar, a hora do máximo em tempo universal (UTC) e o signo do zodíaco.',
+    asOf: (date) => `Em ${date}`,
+    // Sábado and domingo are masculine; the other weekdays are feminine.
+    on: (day, utcWeekday) => `${utcWeekday === 0 || utcWeekday === 6 ? 'no' : 'na'} ${day}`,
+    noun: 'eclipse',
+    type: { solar: 'solar', lunar: 'lunar' },
+    kind: { total: 'total', partial: 'parcial', annular: 'anular', penumbral: 'penumbral' },
+    percent: (n) => `${n}%`,
+    detail: {
+      solarTotal: 'totalidade: o Sol totalmente coberto ao longo da faixa',
+      solarAnnular: (pct) => `eclipse em forma de anel: ${pct} do Sol coberto no máximo`,
+      solarPartial: 'apenas parcial',
+      lunarTotal: (minutes) => `a totalidade dura cerca de ${minutes} minutos`,
+      lunarPartial: (pct) => `${pct} da Lua na sombra no máximo`,
+      lunarPenumbral: 'penumbral: um sombreado sutil, fácil de passar despercebido',
+    },
+    status: (name, when, sign) => `O próximo eclipse é um ${name}, ${when}, em ${sign}.`,
+    statusNone: 'As datas dos eclipses seguintes ainda não estão disponíveis.',
+    seasons:
+      'As temporadas de eclipses acontecem duas vezes por ano; o solar e o lunar chegam com cerca de duas semanas de intervalo',
+    yearLink: 'só os eclipses de 2027',
+    methodSummary: 'Como este calendário funciona',
+    method:
+      'Todos os eclipses solares e lunares até 2028, calculados a partir da geometria real: o instante do máximo em tempo universal (UTC) e o signo em que cada um cai.',
+    tableHeading: 'Os eclipses, 2026–2028',
+    tableLede:
+      'Horas do máximo em tempo universal (UTC). Os eclipses solares são visíveis ao longo de uma faixa limitada; os lunares, de todo o lado noturno da Terra.',
+    th: { peak: 'Máximo', eclipse: 'Eclipse', sign: 'Signo', detail: 'Detalhe' },
+    proseHeading: 'O que é um eclipse',
+    p1:
+      'Todo eclipse é uma lua nova ou cheia com a mira melhor que a de costume. A órbita da Lua é inclinada cerca de cinco graus em relação ao caminho do Sol, então na maioria dos meses a sombra dela não nos alcança e a sombra da Terra não alcança a Lua. Duas vezes por ano os pontos de cruzamento, os nodos, se alinham com o Sol, e por algumas semanas qualquer lunação cai em cheio nessa geometria: uma lua nova encobre o Sol em algum lugar da Terra, uma lua cheia entra na sombra da Terra. O mecanismo todo é esse, e é por isso que a tabela acima se agrupa em temporadas.',
+    p2a: 'O que vale a pena planejar é o de ',
+    p2b:
+      ': o primeiro eclipse solar total sobre a Europa continental desde 1999. A totalidade cruza a Groenlândia, o oeste da Islândia e o norte da Espanha no fim da tarde; a maior parte da Europa vê um eclipse parcial profundo. Um eclipse lunar não exige viagem: o eclipse lunar total de ',
+    p2c: ', com a Lua em ',
+    p2d: ', é visível de todo o lado noturno, com a totalidade durando cerca de uma hora.',
+    p3a:
+      'A astrologia lê os eclipses como lunações com o volume mais alto, porque acontecem no eixo nodal que a tradição associa a direção: para onde você vai e o que está deixando. O conselho prático não tem glamour: observe o que vem à tona no ',
+    p3Lunation: 'ciclo de lunações',
+    p3b: ' nessas semanas e leia o par de signos com base no ',
+    p3Chart: 'seu próprio mapa',
+    p3c: ', e não nas manchetes.',
+    horoBefore: 'Os ',
+    horoLink: 'horóscopos mensais',
+    horoAfter: ' datam cada eclipse quando ele chega.',
+    faqHeading: 'Perguntas e respostas',
+    faq: {
+      solarQ: 'Quando é o próximo eclipse solar?',
+      solarA: (name, when, sign, aug12) =>
+        `Um ${name} atinge o máximo ${when}, com o Sol em ${sign}. Os eclipses solares só são visíveis de uma faixa limitada: no eclipse total de ${aug12}, a totalidade cruza a Groenlândia, o oeste da Islândia e o norte da Espanha.`,
+      solarNone: 'As datas dos eclipses solares seguintes ainda não estão disponíveis.',
+      lunarQ: 'Quando é o próximo eclipse lunar?',
+      lunarA: (name, when, sign) =>
+        `Um ${name} atinge o máximo ${when}, com a Lua em ${sign}. Ao contrário dos eclipses solares, um eclipse lunar é visível ao mesmo tempo de todo o lado noturno da Terra.`,
+      lunarNone: 'As datas dos eclipses lunares seguintes ainda não estão disponíveis.',
+      differenceQ: 'Qual é a diferença entre um eclipse solar e um lunar?',
+      differenceA:
+        'Um eclipse solar é a Lua passando na frente do Sol em uma lua nova: visível apenas ao longo de uma faixa estreita, durante o dia. Um eclipse lunar é a Lua atravessando a sombra da Terra em uma lua cheia: visível de qualquer lugar onde a Lua esteja acima do horizonte e seguro para olhar a olho nu. Os eclipses solares exigem proteção para os olhos em todas as fases, exceto durante a totalidade.',
+      pairsQ: 'Por que os eclipses vêm em pares?',
+      pairsA:
+        'A órbita da Lua é inclinada cerca de cinco graus, por isso a maioria das luas novas e cheias não chega ao alinhamento. Duas vezes por ano a geometria se alinha por algumas semanas, uma temporada de eclipses, e em cada temporada costuma haver um eclipse solar e um lunar com cerca de duas semanas de intervalo. A tabela mostra o ritmo: fevereiro–março e agosto em 2026.',
+      meaningQ: 'O que os eclipses significam na astrologia?',
+      meaningA:
+        'Astrólogos leem os eclipses como lunações amplificadas: uma lua nova ou cheia que cai perto dos nodos lunares, os pontos que a astrologia associa a direção e mudança. A tradição os trata como aceleradores, começos e fins que chegam mais rápido que o normal, na parte do seu mapa onde está o grau do eclipse. Para encontrar essa parte, você precisa do seu mapa astral.',
+    },
+    ld: {
+      pageName: 'Datas dos eclipses 2026–2028',
+      pageDescription:
+        'Todos os eclipses solares e lunares de 2026 a 2028: hora exata do máximo, tipo e signo do zodíaco, calculados a partir da geometria real.',
+      datasetName: 'Datas de eclipses solares e lunares, 2026–2028',
+      datasetDescription:
+        'Instantes calculados do máximo, tipos de eclipse e posições no zodíaco tropical de cada eclipse solar e lunar de 2026 a 2028.',
+      earth: 'Terra',
+      variables: ['instante do máximo', 'tipo de eclipse', 'signo do zodíaco', 'longitude zodiacal', 'obscurecimento'],
+      eventName: (name, sign) => `${cap(name)} em ${sign}`,
+      eventDescription: (detail, peak) => `${detail}; máximo: ${peak}, tempo universal (UTC).`,
+    },
+  },
+  fr: {
+    title: 'Éclipses 2026–2028\u202F: dates et signes | Zodiacs.org',
+    description:
+      'Toutes les éclipses solaires et lunaires jusqu’en 2028, avec l’heure exacte du maximum et le signe, dont l’éclipse solaire totale du 12 août 2026.',
+    imageAlt: 'Dates des éclipses — Zodiacs.org',
+    heroHeading: 'Trouve toutes les éclipses jusqu’en 2028.',
+    heroLede:
+      'Repère la prochaine éclipse solaire ou lunaire, l’heure de son maximum en temps universel (UTC) et son signe du zodiaque.',
+    asOf: (date) => `Au ${date}`,
+    on: (day) => `le ${day}`,
+    noun: 'éclipse',
+    type: { solar: 'solaire', lunar: 'lunaire' },
+    kind: { total: 'totale', partial: 'partielle', annular: 'annulaire', penumbral: 'pénombrale' },
+    percent: (n) => `${n}\u202F%`,
+    detail: {
+      solarTotal: 'totalité\u202F: le Soleil entièrement masqué le long de la bande',
+      solarAnnular: (pct) => `éclipse en anneau\u202F: ${pct} du Soleil masqué au maximum`,
+      solarPartial: 'partielle seulement',
+      lunarTotal: (minutes) => `la totalité dure environ ${minutes} minutes`,
+      lunarPartial: (pct) => `${pct} de la Lune dans l’ombre au maximum`,
+      lunarPenumbral: 'pénombrale\u202F: un léger voile, facile à manquer',
+    },
+    status: (name, when, sign) => `La prochaine éclipse est une ${name}, ${when}, en ${sign}.`,
+    statusNone: 'Les dates des éclipses suivantes ne sont pas encore disponibles.',
+    seasons:
+      'Les saisons d’éclipses reviennent deux fois par an\u202F; l’éclipse solaire et l’éclipse lunaire arrivent à environ deux semaines d’écart',
+    yearLink: 'les éclipses de 2027 seulement',
+    methodSummary: 'Comment fonctionne ce calendrier',
+    method:
+      'Toutes les éclipses solaires et lunaires jusqu’en 2028, calculées à partir de la géométrie réelle\u202F: l’instant du maximum en temps universel (UTC) et le signe où tombe chacune.',
+    tableHeading: 'Les éclipses, 2026–2028',
+    tableLede:
+      'Heures du maximum en temps universel (UTC). Les éclipses solaires se voient le long d’une bande limitée\u202F; les éclipses lunaires, depuis toute la face nocturne de la Terre.',
+    th: { peak: 'Maximum', eclipse: 'Éclipse', sign: 'Signe', detail: 'Détail' },
+    proseHeading: 'Ce qu’est une éclipse',
+    p1:
+      'Toute éclipse est une nouvelle ou une pleine lune qui vise mieux que d’habitude. L’orbite de la Lune est inclinée d’environ cinq degrés par rapport à la trajectoire du Soleil\u202F: la plupart des mois, son ombre passe à côté de la Terre et l’ombre de la Terre passe à côté d’elle. Deux fois par an, les points de croisement, les nœuds, s’alignent avec le Soleil, et pendant quelques semaines toute lunaison tombe en plein dans cette géométrie\u202F: une nouvelle lune masque le Soleil quelque part sur Terre, une pleine lune glisse dans l’ombre de la Terre. Voilà tout le mécanisme, et c’est pourquoi le tableau ci-dessus se regroupe en saisons.',
+    p2a: 'Celle qui mérite qu’on s’y prépare est celle du ',
+    p2b:
+      '\u202F: la première éclipse solaire totale sur l’Europe continentale depuis 1999. La totalité traverse le Groenland, l’ouest de l’Islande et le nord de l’Espagne en fin d’après-midi\u202F; la majeure partie de l’Europe voit une éclipse partielle profonde. Une éclipse lunaire ne demande aucun voyage\u202F: l’éclipse lunaire totale du ',
+    p2c: ', avec la Lune en ',
+    p2d: ', se voit depuis toute la face nocturne, et sa totalité dure environ une heure.',
+    p3a:
+      'L’astrologie lit les éclipses comme des lunaisons dont on a monté le volume, parce qu’elles se produisent sur l’axe des nœuds que la tradition associe à la direction\u202F: là où tu vas et ce que tu laisses. Le conseil pratique n’a rien de spectaculaire\u202F: observe ce qui remonte dans le ',
+    p3Lunation: 'cycle des lunaisons',
+    p3b: ' pendant ces semaines, et lis la paire de signes à la lumière de ',
+    p3Chart: 'ton propre thème',
+    p3c: ' plutôt qu’à celle des gros titres.',
+    horoBefore: 'Chaque éclipse est datée à son arrivée dans les ',
+    horoLink: 'horoscopes mensuels',
+    horoAfter: '.',
+    faqHeading: 'Questions et réponses',
+    faq: {
+      solarQ: 'Quand a lieu la prochaine éclipse solaire\u202F?',
+      solarA: (name, when, sign, aug12) =>
+        `Une ${name} atteint son maximum ${when}, avec le Soleil en ${sign}. Les éclipses solaires ne se voient que depuis une bande limitée\u202F: pour l’éclipse totale du ${aug12}, la totalité traverse le Groenland, l’ouest de l’Islande et le nord de l’Espagne.`,
+      solarNone: 'Les dates des éclipses solaires suivantes ne sont pas encore disponibles.',
+      lunarQ: 'Quand a lieu la prochaine éclipse lunaire\u202F?',
+      lunarA: (name, when, sign) =>
+        `Une ${name} atteint son maximum ${when}, avec la Lune en ${sign}. Contrairement aux éclipses solaires, une éclipse lunaire se voit en même temps depuis toute la face nocturne de la Terre.`,
+      lunarNone: 'Les dates des éclipses lunaires suivantes ne sont pas encore disponibles.',
+      differenceQ: 'Quelle est la différence entre une éclipse solaire et une éclipse lunaire\u202F?',
+      differenceA:
+        'Une éclipse solaire, c’est la Lune qui passe devant le Soleil à la nouvelle lune\u202F: elle ne se voit que le long d’une bande étroite, en plein jour. Une éclipse lunaire, c’est la Lune qui traverse l’ombre de la Terre à la pleine lune\u202F: elle se voit de partout où la Lune est levée et s’observe à l’œil nu sans danger. Les éclipses solaires exigent une protection des yeux à chaque phase, sauf pendant la totalité.',
+      pairsQ: 'Pourquoi les éclipses vont-elles par deux\u202F?',
+      pairsA:
+        'L’orbite de la Lune est inclinée d’environ cinq degrés, si bien que la plupart des nouvelles et des pleines lunes manquent l’alignement. Deux fois par an, la géométrie s’aligne pendant quelques semaines, une saison d’éclipses, et chaque saison compte en général une éclipse solaire et une éclipse lunaire à environ deux semaines d’écart. Le tableau montre le rythme\u202F: février–mars et août en 2026.',
+      meaningQ: 'Que signifient les éclipses en astrologie\u202F?',
+      meaningA:
+        'Les astrologues lisent les éclipses comme des lunaisons amplifiées\u202F: une nouvelle ou une pleine lune qui tombe près des nœuds de la Lune, ces points que l’astrologie associe à la direction et au changement. La tradition y voit des accélérateurs, des débuts et des fins qui arrivent plus vite que d’habitude, dans la partie de ton thème où se trouve le degré de l’éclipse. Pour trouver cette partie, il faut ton thème astral.',
+    },
+    ld: {
+      pageName: 'Dates des éclipses 2026–2028',
+      pageDescription:
+        'Toutes les éclipses solaires et lunaires de 2026 à 2028\u202F: heure exacte du maximum, type et signe du zodiaque, calculés à partir de la géométrie réelle.',
+      datasetName: 'Dates des éclipses solaires et lunaires, 2026–2028',
+      datasetDescription:
+        'Instants calculés du maximum, types d’éclipse et positions dans le zodiaque tropical de chaque éclipse solaire et lunaire de 2026 à 2028.',
+      earth: 'Terre',
+      variables: ['instant du maximum', 'type d’éclipse', 'signe du zodiaque', 'longitude zodiacale', 'obscuration'],
+      eventName: (name, sign) => `${cap(name)} en ${sign}`,
+      eventDescription: (detail, peak) => `${detail}\u202F; maximum\u202F: ${peak}, temps universel (UTC).`,
+    },
+  },
+  it: {
+    title: 'Eclissi 2026–2028: date e segni | Zodiacs.org',
+    description:
+      'Tutte le eclissi solari e lunari fino al 2028, con l’ora esatta del massimo e il segno, compresa l’eclissi solare totale del 12 agosto 2026.',
+    imageAlt: 'Date delle eclissi — Zodiacs.org',
+    heroHeading: 'Trova tutte le eclissi fino al 2028.',
+    heroLede:
+      'Consulta la prossima eclissi solare o lunare, l’ora del massimo in tempo universale (UTC) e il suo segno zodiacale.',
+    asOf: (date) => `Al ${date}`,
+    on: (day) => day,
+    noun: 'eclissi',
+    type: { solar: 'solare', lunar: 'lunare' },
+    kind: { total: 'totale', partial: 'parziale', annular: 'anulare', penumbral: 'penombrale' },
+    percent: (n) => `${n}%`,
+    detail: {
+      solarTotal: 'totalità: il Sole coperto per intero lungo la fascia',
+      solarAnnular: (pct) => `eclissi ad anello: ${pct} del Sole coperto al massimo`,
+      solarPartial: 'solo parziale',
+      lunarTotal: (minutes) => `la totalità dura circa ${minutes} minuti`,
+      lunarPartial: (pct) => `${pct} della Luna in ombra al massimo`,
+      lunarPenumbral: 'penombrale: un’ombreggiatura lieve, facile da non notare',
+    },
+    status: (name, when, sign) => `La prossima eclissi è un’${name}, ${when}, in ${sign}.`,
+    statusNone: 'Le date delle eclissi successive non sono ancora disponibili.',
+    seasons:
+      'Le stagioni delle eclissi arrivano due volte l’anno; quella solare e quella lunare cadono a circa due settimane di distanza',
+    yearLink: 'solo le eclissi del 2027',
+    methodSummary: 'Come funziona questo calendario',
+    method:
+      'Tutte le eclissi solari e lunari fino al 2028, calcolate dalla geometria reale: l’istante del massimo in tempo universale (UTC) e il segno in cui cade ciascuna.',
+    tableHeading: 'Le eclissi, 2026–2028',
+    tableLede:
+      'Orari del massimo in tempo universale (UTC). Le eclissi solari sono visibili lungo una fascia limitata; quelle lunari, da tutto il lato notturno della Terra.',
+    th: { peak: 'Massimo', eclipse: 'Eclissi', sign: 'Segno', detail: 'Dettaglio' },
+    proseHeading: 'Che cos’è un’eclissi',
+    p1:
+      'Ogni eclissi è una luna nuova o piena con una mira migliore del solito. L’orbita della Luna è inclinata di circa cinque gradi rispetto al percorso del Sole, perciò nella maggior parte dei mesi la sua ombra non ci raggiunge e l’ombra della Terra non la raggiunge. Due volte l’anno i punti di incrocio, i nodi, si allineano con il Sole, e per qualche settimana ogni lunazione cade in pieno in quella geometria: una luna nuova copre il Sole da qualche parte sulla Terra, una luna piena scivola nell’ombra della Terra. Il meccanismo è tutto qui, ed è per questo che la tabella qui sopra si raggruppa in stagioni.',
+    p2a: 'L’eclissi per cui vale la pena organizzarsi è quella del ',
+    p2b:
+      ': la prima eclissi solare totale sull’Europa continentale dal 1999. La totalità attraversa la Groenlandia, l’Islanda occidentale e la Spagna settentrionale nel tardo pomeriggio; gran parte dell’Europa vede un’eclissi parziale profonda. Un’eclissi lunare non richiede viaggi: l’eclissi lunare totale del ',
+    p2c: ', con la Luna in ',
+    p2d: ', è visibile da tutto il lato notturno, con una totalità di circa un’ora.',
+    p3a:
+      'L’astrologia legge le eclissi come lunazioni a volume più alto, perché avvengono sull’asse dei nodi che la tradizione associa alla direzione: dove stai andando e che cosa ti lasci alle spalle. Il consiglio pratico è poco appariscente: osserva che cosa emerge nel ',
+    p3Lunation: 'ciclo delle lunazioni',
+    p3b: ' in quelle settimane e leggi la coppia di segni sul ',
+    p3Chart: 'tuo tema',
+    p3c: ' più che sui titoli dei giornali.',
+    horoBefore: 'Ogni eclissi viene datata al suo arrivo negli ',
+    horoLink: 'oroscopi mensili',
+    horoAfter: '.',
+    faqHeading: 'Domande e risposte',
+    faq: {
+      solarQ: 'Quando sarà la prossima eclissi solare?',
+      solarA: (name, when, sign, aug12) =>
+        `Un’${name} raggiunge il massimo ${when}, con il Sole in ${sign}. Le eclissi solari si vedono solo da una fascia limitata: per l’eclissi totale del ${aug12}, la totalità attraversa la Groenlandia, l’Islanda occidentale e la Spagna settentrionale.`,
+      solarNone: 'Le date delle eclissi solari successive non sono ancora disponibili.',
+      lunarQ: 'Quando sarà la prossima eclissi lunare?',
+      lunarA: (name, when, sign) =>
+        `Un’${name} raggiunge il massimo ${when}, con la Luna in ${sign}. A differenza delle eclissi solari, un’eclissi lunare è visibile nello stesso momento da tutto il lato notturno della Terra.`,
+      lunarNone: 'Le date delle eclissi lunari successive non sono ancora disponibili.',
+      differenceQ: 'Che differenza c’è tra un’eclissi solare e un’eclissi lunare?',
+      differenceA:
+        'Un’eclissi solare è la Luna che passa davanti al Sole durante una luna nuova: si vede solo lungo una fascia stretta, di giorno. Un’eclissi lunare è la Luna che attraversa l’ombra della Terra durante una luna piena: si vede da qualunque luogo in cui la Luna sia sopra l’orizzonte e si può guardare a occhio nudo senza rischi. Le eclissi solari richiedono una protezione per gli occhi in ogni fase, tranne durante la totalità.',
+      pairsQ: 'Perché le eclissi arrivano in coppia?',
+      pairsA:
+        'L’orbita della Luna è inclinata di circa cinque gradi, quindi la maggior parte delle lune nuove e piene manca l’allineamento. Due volte l’anno la geometria si allinea per qualche settimana, una stagione delle eclissi, e in ogni stagione di solito ci sono un’eclissi solare e una lunare a circa due settimane di distanza. La tabella mostra il ritmo: febbraio–marzo e agosto nel 2026.',
+      meaningQ: 'Che cosa significano le eclissi in astrologia?',
+      meaningA:
+        'Gli astrologi leggono le eclissi come lunazioni amplificate: una luna nuova o piena che cade vicino ai nodi lunari, i punti che l’astrologia associa alla direzione e al cambiamento. La tradizione le tratta come acceleratori, inizi e conclusioni che arrivano più in fretta del solito, nella parte del tuo tema in cui cade il grado dell’eclissi. Per trovare quella parte serve il tuo tema natale.',
+    },
+    ld: {
+      pageName: 'Date delle eclissi 2026–2028',
+      pageDescription:
+        'Tutte le eclissi solari e lunari dal 2026 al 2028: ora esatta del massimo, tipo e segno zodiacale, calcolati dalla geometria reale.',
+      datasetName: 'Date delle eclissi solari e lunari, 2026–2028',
+      datasetDescription:
+        'Istanti calcolati del massimo, tipi di eclissi e posizioni nello zodiaco tropicale di ogni eclissi solare e lunare dal 2026 al 2028.',
+      earth: 'Terra',
+      variables: ['istante del massimo', 'tipo di eclissi', 'segno zodiacale', 'longitudine zodiacale', 'oscuramento'],
+      eventName: (name, sign) => `${cap(name)} in ${sign}`,
+      eventDescription: (detail, peak) => `${detail}; massimo: ${peak}, tempo universale (UTC).`,
+    },
+  },
+};
+
+const c = COPY[locale];
+const englishOnly = ENGLISH_ONLY_COPY[locale];
+const prefix = `/${locale}`;
+const pagePath = `${prefix}/eclipses/`;
+const pageUrl = `https://zodiacs.org${pagePath}`;
+const inLanguage = locale === 'pt' ? 'pt-BR' : locale;
+// The monthly horoscopes are translated for Spanish and Portuguese only.
+const horoscopesLocalized = locale === 'es' || locale === 'pt';
+
+// Every eclipse in the committed data — receipts, no client ephemeris.
+const buildNow = new Date();
+const eventHorizon = new Date(buildNow);
+eventHorizon.setUTCFullYear(eventHorizon.getUTCFullYear() + 1);
+
+const sources = [
+  { label: 'NASA Eclipse Catalog', href: 'https://eclipse.gsfc.nasa.gov/eclipse.html' },
+  { label: 'Astronomy Engine', href: 'https://github.com/cosinekitty/astronomy' },
+  { label: 'IANA Time Zone Database', href: 'https://www.iana.org/time-zones' },
+];
+
+interface EclipseEntry {
+  type: EclipseType;
+  kind: string;
+  peak: string;
+  sign: string;
+  obscuration?: number;
+  totalMinutes?: number;
+}
+
+const kindLabel = (kind: string) => c.kind[kind as EclipseKind] ?? kind;
+/** "eclipse solar total" — the full lower-case name, for running text. */
+const eclipseName = (type: EclipseType, kind: string) => `${c.noun} ${c.type[type]} ${kindLabel(kind)}`;
+
+const eclipses = (eclipseData.eclipses as EclipseEntry[]).map((e) => {
+  const at = new Date(e.peak);
+  const publicationId = `eclipse-${e.peak.slice(0, 10)}`;
+  const anchorId = `${publicationId}-${e.type}`;
+  const pct = typeof e.obscuration === 'number' ? c.percent(Math.round(e.obscuration * 100)) : c.percent(0);
+  let detail = '';
+  if (e.type === 'solar') {
+    detail = e.kind === 'total'
+      ? c.detail.solarTotal
+      : e.kind === 'annular'
+        ? c.detail.solarAnnular(pct)
+        : c.detail.solarPartial;
+  } else {
+    detail = e.kind === 'total'
+      ? c.detail.lunarTotal(e.totalMinutes ?? 0)
+      : e.kind === 'partial'
+        ? c.detail.lunarPartial(pct)
+        : c.detail.lunarPenumbral;
+  }
+  const sign = signBySlug(e.sign);
+  return {
+    ...e,
+    anchorId,
+    at,
+    sign,
+    signLabel: signName(sign, locale),
+    detail,
+    name: eclipseName(e.type, e.kind),
+    label: cap(`${c.type[e.type]} ${kindLabel(e.kind)}`),
+    past: at < buildNow,
+    // Individual event pages are English-only; the table marks the link.
+    path: publishedEventById.get(publicationId)?.path ?? null,
+  };
+});
+
+const next = eclipses.find((e) => !e.past);
+const nextSolar = eclipses.find((e) => !e.past && e.type === 'solar');
+const nextLunar = eclipses.find((e) => !e.past && e.type === 'lunar');
+const upcomingEvents = eclipses.filter((e) => e.at >= buildNow && e.at <= eventHorizon);
+
+const fmtDay = (d: Date) =>
+  formatDate(locale, d, { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+const fmtTime = (d: Date) =>
+  formatTime(locale, d, { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'UTC' });
+// Running text spells the weekday out; abbreviations stay in the table.
+const fmtWhen = (d: Date) =>
+  c.on(
+    formatDate(locale, d, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' }),
+    d.getUTCDay(),
+  );
+const fmtPlainDay = (iso: string) =>
+  formatDate(locale, iso, { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+
+// The two eclipses the article names, printed the way the locale writes dates.
+const aug12 = fmtPlainDay('2026-08-12T12:00:00.000Z');
+const mar3 = fmtPlainDay('2026-03-03T12:00:00.000Z');
+const virgo = signName(signBySlug('virgo'), locale);
+
+const status = next
+  ? c.status(next.name, fmtWhen(next.at), next.signLabel)
+  : c.statusNone;
+
+const asOf = formatShortDate(locale, buildNow);
+
+const faq = [
+  {
+    q: c.faq.solarQ,
+    a: nextSolar
+      ? c.faq.solarA(nextSolar.name, fmtWhen(nextSolar.at), nextSolar.signLabel, aug12)
+      : c.faq.solarNone,
+  },
+  {
+    q: c.faq.lunarQ,
+    a: nextLunar
+      ? c.faq.lunarA(nextLunar.name, fmtWhen(nextLunar.at), nextLunar.signLabel)
+      : c.faq.lunarNone,
+  },
+  { q: c.faq.differenceQ, a: c.faq.differenceA },
+  { q: c.faq.pairsQ, a: c.faq.pairsA },
+  { q: c.faq.meaningQ, a: c.faq.meaningA },
+];
+
+// Each event node points at its row on this page: the standalone event
+// pages are English, and their own JSON-LD already describes them.
+const eventNodes = upcomingEvents.map((e) => {
+  return {
+    '@type': 'Event',
+    '@id': `${pageUrl}#${e.anchorId}`,
+    name: c.ld.eventName(e.name, e.signLabel),
+    description: c.ld.eventDescription(e.detail, e.peak),
+    startDate: e.peak,
+    endDate: e.peak,
+    eventStatus: 'https://schema.org/EventScheduled',
+    inLanguage,
+    url: `${pageUrl}#${e.anchorId}`,
+  };
+});
+
+const dataset = {
+  '@type': 'Dataset',
+  '@id': `${pageUrl}#dataset`,
+  name: c.ld.datasetName,
+  description: c.ld.datasetDescription,
+  url: pageUrl,
+  inLanguage,
+  creator: { '@id': 'https://zodiacs.org/#org' },
+  publisher: { '@id': 'https://zodiacs.org/#org' },
+  dateModified: eclipseData.generatedAt,
+  temporalCoverage: `${eclipseData.from}/${eclipseData.to}`,
+  spatialCoverage: c.ld.earth,
+  variableMeasured: c.ld.variables,
+  citation: sources.map((source) => ({ '@type': 'CreativeWork', name: source.label, url: source.href })),
+};
+
+const jsonLd = [
+  {
+    '@type': 'WebPage',
+    name: c.ld.pageName,
+    url: pageUrl,
+    inLanguage,
+    description: c.ld.pageDescription,
+  },
+  {
+    '@type': 'FAQPage',
+    inLanguage,
+    mainEntity: faq.map(({ q, a }) => ({
+      '@type': 'Question',
+      name: q,
+      acceptedAnswer: { '@type': 'Answer', text: a },
+    })),
+  },
+  dataset,
+  ...eventNodes,
+];
+// One visible note replaces a cue repeated on every dated row; each link still carries hreflang and its title.
+const EVENT_LINK_NOTE: Record<'es' | 'pt' | 'fr' | 'it', string> = {
+  es: 'Las fechas con enlace abren la página del evento, por ahora en inglés.',
+  pt: 'As datas com link abrem a página do evento, por enquanto em inglês.',
+  fr: 'Les dates avec un lien ouvrent la page de l’événement, pour l’instant en anglais.',
+  it: 'Le date con un link aprono la pagina dell’evento, per ora in inglese.',
+};
+---
+<Base
+  title={c.title}
+  description={c.description}
+  path={pagePath}
+  locale={locale}
+  image="/assets/og/v2/tool/eclipses.png"
+  imageAlt={c.imageAlt}
+  jsonLd={jsonLd}
+  sources={sources}
+>
+  <section class="section--tight container container--narrow">
+    <div class="tool-hero reveal">
+      <h1 class="display">{c.heroHeading}</h1>
+      <p>{c.heroLede}</p>
+    </div>
+
+    <div class="rx-now shell tinted reveal" style="--sign:var(--sign-leo)">
+      <div class="core tinted rx-now__core">
+        <span class="mono--label">{c.asOf(asOf)}</span>
+        <strong class="rx-now__line">{status}</strong>
+        <span class="rx-now__all mono">
+          {c.seasons}
+          · <a href="/eclipses/2027/" hreflang="en" title={englishOnly.aria}>{c.yearLink}{englishOnly.suffix}</a>
+        </span>
+      </div>
+    </div>
+    <details class="calendar-method"><summary>{c.methodSummary}</summary>
+      <p>{c.method}</p>
+    </details>
+  </section>
+
+  <section class="section--tight container container--narrow">
+    <div class="section-head reveal">
+      <h2>{c.tableHeading}</h2>
+      <p>{c.tableLede} {EVENT_LINK_NOTE[locale]}</p>
+    </div>
+    <div class="table-wrap reveal">
+      <table class="rx-table">
+        <thead>
+          <tr><th>{c.th.peak}</th><th>UTC</th><th>{c.th.eclipse}</th><th>{c.th.sign}</th><th>{c.th.detail}</th></tr>
+        </thead>
+        <tbody>
+          {eclipses.map((e) => (
+            <tr id={e.anchorId} class={e.past ? 'rx-table__past' : ''}>
+              <td data-label={c.th.peak}>
+                {e.path
+                  ? <a href={e.path} hreflang="en" title={englishOnly.aria}>{fmtDay(e.at)}<span class="sr-only">{englishOnly.suffix}</span></a>
+                  : fmtDay(e.at)}
+              </td>
+              <td class="mono" data-label="UTC">{fmtTime(e.at)}</td>
+              <td data-label={c.th.eclipse}>{e.label}</td>
+              <td data-label={c.th.sign} style={`color:${e.sign.hue}`}>{e.signLabel}</td>
+              <td class="ecl-detail" data-label={c.th.detail}>{e.detail}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section--tight container container--narrow">
+    <div class="prose reveal">
+      <h2>{c.proseHeading}</h2>
+      <p>{c.p1}</p>
+      <p>{c.p2a}<strong>{aug12}</strong>{c.p2b}<strong>{mar3}</strong>{c.p2c}<a href={`${prefix}/virgo/`}>{virgo}</a>{c.p2d}</p>
+      <p>{c.p3a}<a href={`${prefix}/full-moon-calendar/`}>{c.p3Lunation}</a>{c.p3b}<a href={`${prefix}/birth-chart/`}>{c.p3Chart}</a>{c.p3c}{' '}{c.horoBefore}{horoscopesLocalized
+        ? <a href={`${prefix}/horoscopes/`}>{c.horoLink}</a>
+        : <a href="/horoscopes/" hreflang="en" title={englishOnly.aria}>{c.horoLink}{englishOnly.suffix}</a>}{c.horoAfter}</p>
+    </div>
+  </section>
+
+  <section class="section--tight container container--narrow">
+    <div class="section-head reveal"><h2>{c.faqHeading}</h2></div>
+    <div class="faq reveal">
+      {faq.map(({ q, a }) => (
+        <details class="faq__item">
+          <summary>{q}</summary>
+          <p>{a}</p>
+        </details>
+      ))}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .tool-hero { max-width: 62ch; margin-bottom: clamp(24px, 4vw, 36px); }
+  .tool-hero h1 {
+    margin: 0 0 16px;
+    font-family: var(--font-serif);
+    font-size: var(--text-2xl);
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    line-height: 1.04;
+    font-variant-numeric: oldstyle-figures;
+    text-wrap: balance;
+  }
+  .tool-hero p { margin: 0; color: var(--muted); font-size: var(--text-lg); text-wrap: pretty; }
+
+  .rx-now__core { padding: clamp(20px, 4vw, 28px); display: grid; gap: 10px; }
+  .rx-now__line { font-size: var(--text-lg); letter-spacing: -0.01em; max-width: 56ch; }
+  .rx-now__all { font-size: 11.5px; color: var(--faint); letter-spacing: 0.05em; }
+
+  /* .table-wrap + .rx-table (desktop + mobile stacking) live in
+     ../../styles/rx-table.css (shared). */
+  .rx-table td.ecl-detail { white-space: normal; min-width: 200px; }
+  @media (max-width: 560px) { .rx-table td.ecl-detail { min-width: 0; } }
+
+  .faq { display: grid; gap: 8px; }
+  .faq__item {
+    border: 1px solid var(--hair-1);
+    border-radius: var(--r-md);
+    background: var(--void-1);
+    padding: 4px 18px;
+  }
+  .faq__item summary { cursor: pointer; padding: 12px 0; font-weight: 550; color: var(--text); }
+  .faq__item p { margin: 2px 0 16px; color: var(--text-2); font-size: var(--text-sm); line-height: 1.65; }
+</style>
