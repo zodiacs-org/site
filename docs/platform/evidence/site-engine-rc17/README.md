@@ -52,7 +52,10 @@ from npm gives rc.16, which refuses the sidereal zodiac in `./calc`.
   are identical in all three. Three differ only in the time stamp of the
   run, and the committed files are kept. `daily-publication-manifest.json`
   differs under rc.17 in the engine version it names and in its generator
-  digest, which covers `package-lock.json`; that file is committed.
+  digest, which covers `package-lock.json`; that file is committed. The
+  dependency audit fix that followed in the same pull request (smol-toml,
+  source-map-js and tinypool) changed the lockfile, and so that digest
+  again: the committed manifest is that later one, with the same facts.
 - **Reference fixtures and snapshots.** The four independent-reference
   fixtures in `src/lib/engine/fixtures/`, rebuilt by
   `docs/engine-validation/independent-references/tools/build.py` from the
