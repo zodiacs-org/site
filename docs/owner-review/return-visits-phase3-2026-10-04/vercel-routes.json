@@ -1,7 +1,7 @@
 {
-  "recorded": "2026-10-04",
-  "how": "Current header sources compiled with the official Vercel CLI 50.35.0 routing-utils getTransformedRoutes implementation used by vercel build, on Node 22.23.3. Historical Astro platformHeaders are retained from the unchanged September 29 build receipt via the October 3 routing receipt. No compute route gains calendar caching.",
-  "vercelConfigSha256": "b91c5abef2f93dd05c1ce169357c6d967f665fbae94aca5c3d94a7c21ac6eaf1",
+  "recorded": "2026-10-06",
+  "how": "Current header sources and compute rewrites compiled with the official Vercel CLI 50.35.0 routing-utils getTransformedRoutes implementation used by vercel build, on Node 22.23.2. Historical Astro platformHeaders are retained from the unchanged September 29 build receipt via the October 3 routing receipt. The OpenAI domain challenge receives plain text and no-store only on its exact path; no compute route gains calendar caching.",
+  "vercelConfigSha256": "8058f44ed6ccc4d684b4827780f2768abd8df5deca8e9118770c146b84330952",
   "platformHeaders": [
     {
       "src": "^/assets/(.*)$",
@@ -17,6 +17,10 @@
     }
   ],
   "headers": [
+    {
+      "source": "/.well-known/openai-apps-challenge",
+      "src": "^/\\.well-known/openai-apps-challenge$"
+    },
     {
       "source": "/sky-calendar.ics",
       "src": "^/sky-calendar\\.ics$"
@@ -221,33 +225,27 @@
   "computeRewrites": [
     {
       "src": "^/api/v1/chart$",
-      "dest": "/api/compatibility?__zodiacs_compute=chart",
-      "check": true
+      "dest": "/api/compatibility?__zodiacs_compute=chart"
     },
     {
       "src": "^/api/v1/positions$",
-      "dest": "/api/compatibility?__zodiacs_compute=positions",
-      "check": true
+      "dest": "/api/compatibility?__zodiacs_compute=positions"
     },
     {
       "src": "^/api/v1/houses$",
-      "dest": "/api/compatibility?__zodiacs_compute=houses",
-      "check": true
+      "dest": "/api/compatibility?__zodiacs_compute=houses"
     },
     {
       "src": "^/api/v1/events$",
-      "dest": "/api/compatibility?__zodiacs_compute=events",
-      "check": true
+      "dest": "/api/compatibility?__zodiacs_compute=events"
     },
     {
       "src": "^/api/v1/time$",
-      "dest": "/api/compatibility?__zodiacs_compute=time",
-      "check": true
+      "dest": "/api/compatibility?__zodiacs_compute=time"
     },
     {
       "src": "^/api/v1/sky-fact$",
-      "dest": "/api/compatibility?__zodiacs_compute=sky-fact",
-      "check": true
+      "dest": "/api/compatibility?__zodiacs_compute=sky-fact"
     }
   ]
 }
