@@ -53,3 +53,15 @@ remain separate. Consenting human feedback for the 9/10 target is still absent.
 The AI build, package and package-contract checks passed. Runtime bundles
 were unchanged; this release corrects listing metadata and adds a category guard.
 The prior full CI result applies to source ede0cb6c6427baab816bbcd5ae0a625d7c173f5b.
+
+The review branch now includes main 3e81989c. All 189 targeted AI, navigation,
+claims and privacy checks pass. The new registry advisory for sharp was resolved
+by updating only sharp and its matching binary packages to 0.35.5 / libvips 1.3.4
+(librsvg 2.63.2). The production dependency audit reports zero vulnerabilities;
+the full-tree high/critical gate passes, with the existing two moderate Vitest
+development findings still reported. See the [maintainer advisory](https://github.com/lovell/sharp/security/advisories/GHSA-wq5f-xc86-pv6w).
+
+The supported daily-publication generator refreshed the dependency fingerprint;
+published copy and facts are unchanged. The full local build passed, including
+4,420 pages, schema checks and bundle budgets. Fresh hosted CI and the
+combined-source browser capture receipt are still required before release.
