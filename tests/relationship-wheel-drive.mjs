@@ -90,8 +90,9 @@ try {
   const openings = page.locator('[data-result-opening]');
   check('the comparison begins with a human sentence before placements',
     await openings.count() === 1 && await openings.isVisible());
-  check('astrology tools carry no Astrofolio navigation or footer brand',
-    !/Astrofolio/.test(await page.locator('.znav, .zfooter').allTextContents().then(parts => parts.join(' '))));
+  check('astrology tools share navigation while keeping collection branding out of their footer',
+    await page.locator('[data-nav] a[href="/astrofolio/"]').count() === 1
+      && !/Astrofolio/.test(await page.locator('.zfooter').allTextContents().then(parts => parts.join(' '))));
 
   // Both rings render: inner natal marks (South Node hidden ⇒ 11) and the
   // outer partner ring (11, Moon included, South Node hidden).
