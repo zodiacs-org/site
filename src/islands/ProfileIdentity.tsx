@@ -158,12 +158,13 @@ export default function ProfileIdentity({ accountBound = false }: { accountBound
 
   useEffect(() => {
     const open = () => {
+      if (!self) return;
       setPanel('share');
       requestAnimationFrame(() => headRef.current?.scrollIntoView({ block: 'start' }));
     };
     window.addEventListener(OPEN_CARD_EVENT, open);
     return () => window.removeEventListener(OPEN_CARD_EVENT, open);
-  }, []);
+  }, [self]);
 
   // Closing a panel hands focus back to the action that opened it.
   useEffect(() => {
@@ -173,26 +174,20 @@ export default function ProfileIdentity({ accountBound = false }: { accountBound
     closedPanel.current = null;
   }, [panel]);
 
-  if (!ready || !self) {
-    return (
-      <div class="pf-introduction">
-        <Intro />
-        {ready && !self && profile.charts.length > 0 && <SelfChooser charts={profile.charts} />}
-      </div>
-    );
-  }
+  if (!ready) return <div class="pf-introduction"><Intro /></div>;
 
   const name = draft === null
     ? savedName
-    : cleanDisplayName(draft) ?? resolvedDisplayName(DEFAULT_ME, self.name);
-  const placements = chartPlacements(self);
-  const lead = todayLead(self);
+    : cleanDisplayName(draft) ?? resolvedDisplayName(DEFAULT_ME, self?.name ?? null);
+  const placements = self ? chartPlacements(self) : [];
+  const lead = self ? todayLead(self) : null;
   const close = () => {
     closedPanel.current = panel;
     setPanel(null);
   };
 
   return (
+    <>
     <header class="pf-me" style={hue ? `--sign:${hue}` : undefined} ref={headRef} data-profile-identity>
       <div class="pf-me__id">
         <div class="pf-me__initial">
@@ -201,7 +196,7 @@ export default function ProfileIdentity({ accountBound = false }: { accountBound
               <img class="pf-photo" src={me.photo} alt="Your profile photo" width="72" height="72" /><span class="pf-photo-button__edit"><PhotoMark /></span>
             </button>
           ) : name === null ? (
-            <button class="initial initial--unnamed pf-me__add-name" type="button" ref={photoButton} onClick={openPhoto} aria-label="Add your name">
+            <button class="initial initial--unnamed pf-me__add-name" type="button" ref={photoButton} onClick={openPhoto} aria-label="Add profile photo">
               <PhotoMark />
             </button>
           ) : (
@@ -212,11 +207,12 @@ export default function ProfileIdentity({ accountBound = false }: { accountBound
         </div>
         <div class="pf-me__text">
           <em class="kicker">Your page</em>
-          <h1 class="display">{name ?? 'Your chart'}</h1>
+          <h1 class="display">{name ?? (self ? 'Your chart' : 'Your charts, today and ahead.')}</h1>
           <PlacementList placements={placements} />
         </div>
       </div>
 
+      {!self && panel === null && <p class="pf-me__intro">Keep your birth chart and the people you’ve added here. Today uses the chart you mark as yours; your timeline keeps the readings and observations you choose to save.</p>}
       {lead && panel === null && (
         <p class="pf-me__today" data-today-lead>
           <span class="mono mono--label">
@@ -229,12 +225,14 @@ export default function ProfileIdentity({ accountBound = false }: { accountBound
 
       {panel === null && (
         <div class="pf-me__actions">
+          {self ? <>
           <a class={`btn ${inboxHoldsPrimary ? 'btn--ghost' : 'btn--primary'}`} href="/today/">
             <span>{t('en', 'openDailyBrief')}</span><span aria-hidden="true">↗</span>
           </a>
           <button class="pf-quiet pf-me__share-action" type="button" ref={shareButton} onClick={() => setPanel('share')} data-card-share-toggle>
             <span>Send your card</span><span aria-hidden="true">↗</span>
           </button>
+          </> : <a class="pf-quiet pf-me__share-action" href="/birth-chart/">Make a birth chart <span aria-hidden="true">↗</span></a>}
           <button class="pf-quiet" type="button" ref={editButton} onClick={() => { editFromPhoto.current = false; setPanel('edit'); }}>
             Edit profile
           </button>
@@ -243,7 +241,7 @@ export default function ProfileIdentity({ accountBound = false }: { accountBound
       {panel === 'edit' && (
         <EditPanel initialName={me.displayName ?? savedName ?? ''} initialPhoto={me.photo} onDraft={setDraft} onClose={close} />
       )}
-      {panel === 'share' && (
+      {panel === 'share' && self && (
         <SharePanel
           chart={self}
           name={savedName}
@@ -254,6 +252,8 @@ export default function ProfileIdentity({ accountBound = false }: { accountBound
         />
       )}
     </header>
+    {!self && profile.charts.length > 0 && <SelfChooser charts={profile.charts} />}
+    </>
   );
 }
 
