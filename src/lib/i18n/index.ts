@@ -151,11 +151,23 @@ function isLocalizedBirthdayPath(path: string): boolean {
   return Boolean(maxDay && birthday[2] === String(day) && day >= 1 && day <= maxDay);
 }
 
+/**
+ * Rising-sign profiles and the four sky-calendar hubs are translated for es,
+ * pt, fr and it (the same set as PROGRAMMATIC_ROUTE_LOCALES); Russian links to
+ * the English pages.
+ */
+function isTranslatedFamilyPath(path: string): boolean {
+  const rising = /^\/rising-sign\/([a-z]+)\/$/.exec(path)?.[1];
+  return rising
+    ? SIGN_SLUGS.includes(rising)
+    : /^\/(?:full-moon-calendar|eclipses|mercury-retrograde|retrogrades)\/$/.test(path);
+}
+
 export function availableLocalesForPath(path: string): readonly Locale[] | undefined {
   const canonical = stripLocale(path);
   if (/^\/chart-of-the-day\/\d{4}-\d{2}-\d{2}\/$/.test(canonical)) return CORE_ROUTE_LOCALES;
   return LOCALIZED_PATHS.get(canonical)
-    ?? (isLocalizedChineseZodiacPath(canonical) ? PROGRAMMATIC_ROUTE_LOCALES : undefined)
+    ?? (isLocalizedChineseZodiacPath(canonical) || isTranslatedFamilyPath(canonical) ? PROGRAMMATIC_ROUTE_LOCALES : undefined)
     ?? (isLocalizedBirthdayPath(canonical) ? [DEFAULT_LOCALE] : undefined);
 }
 
@@ -166,7 +178,12 @@ export function renderableLocalesForPath(path: string): readonly Locale[] | unde
     return [...CORE_ROUTE_LOCALES, ...STAGED_CORE_ROUTE_LOCALES];
   }
   if (DAILY_READING_PATHS.includes(canonical)) return DAILY_READING_ROUTE_LOCALES;
+  // The translated families resolve on the server only: every link to them is
+  // server-rendered, and this function's browser copy sits inside route budgets
+  // with a few bytes of headroom. A browser component that links to them must
+  // take the localized href as a prop rather than call localizePath.
   return isLocalizedChineseZodiacPath(canonical) || isLocalizedBirthdayPath(canonical)
+    || (import.meta.env.SSR && isTranslatedFamilyPath(canonical))
     ? PROGRAMMATIC_ROUTE_LOCALES
     : undefined;
 }

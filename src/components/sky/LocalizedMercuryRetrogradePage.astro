@@ -1,0 +1,580 @@
+---
+/**
+ * Translated Mercury retrograde hub (es, pt, fr, it). The English page
+ * (src/pages/mercury-retrograde/index.astro) is the reference: same data
+ * logic, markup and styles, with the copy in the reader's language.
+ *
+ * Links: destinations that exist in the reader's language take the locale
+ * prefix. The year page stays English and carries the shared "in English for
+ * now" cue. The English page's glossary and planet-guide links sit inside
+ * running prose and point at English-only pages, so here the words stay and
+ * the links are dropped.
+ */
+import Base from '../../layouts/Base.astro';
+import '../../styles/rx-table.css';
+import sky from '../../data/sky.json';
+import { bodyLongitude } from '../../lib/engine/full';
+import { formatLongitude } from '../../lib/signs';
+import { formatDate, formatShortDate } from '../../lib/i18n/dates';
+import { planetLabel } from '../../lib/i18n/astrology';
+import { ENGLISH_ONLY_COPY } from '../../lib/i18n';
+
+type Locale = 'es' | 'pt' | 'fr' | 'it';
+interface Props { locale: Locale }
+
+const { locale } = Astro.props;
+
+/** A formatted date plus its day of the month, for copy that must agree with it. */
+interface DayLabel { text: string; day: number }
+
+interface Copy {
+  title: string;
+  description: string;
+  imageAlt: string;
+  h1: string;
+  intro: string;
+  asOf: (date: DayLabel) => string;
+  statusActive: (direct: DayLabel) => string;
+  statusNext: (from: DayLabel, to: DayLabel, year: number) => string;
+  statusDirect: string;
+  retroToday: string;
+  none: string;
+  allBefore: string;
+  allLink: string;
+  only2027: string;
+  windowsHeading: string;
+  windowsLede: string;
+  colWindow: string;
+  colRetrograde: string;
+  colDirect: string;
+  colStatus: string;
+  now: string;
+  ahead: string;
+  ongoing: string;
+  bodyHeading: string;
+  motion: string;
+  advice: string;
+  /** Text, emphasised possessive, text, birth-chart link label, text. */
+  chart: [string, string, string, string, string];
+  faqHeading: string;
+  faqNext: { q: string; a: (status: string, year: number | string) => string };
+  faq: { q: string; a: string }[];
+  pageName: string;
+  pageDescription: string;
+  eventName: string;
+  eventDescription: (from: string, to: string, retrograde: string, direct: string | null) => string;
+  eventDescriptionOpen: (from: string, retrograde: string) => string;
+  datasetName: string;
+  datasetDescription: string;
+  variableMeasured: string[];
+}
+
+// Italian articles and prepositions elide before "otto" and "undici".
+const itElides = (date: DayLabel) => date.day === 8 || date.day === 11;
+const itOn = (date: DayLabel) => (itElides(date) ? `l’${date.text}` : `il ${date.text}`);
+const itFrom = (date: DayLabel) => (itElides(date) ? `dall’${date.text}` : `dal ${date.text}`);
+const itTo = (date: DayLabel) => (itElides(date) ? `all’${date.text}` : `al ${date.text}`);
+
+const COPY: Record<Locale, Copy> = {
+  es: {
+    title: 'Mercurio retrógrado 2026 y 2027: fechas | Zodiacs.org',
+    description: 'Todas las retrogradaciones de Mercurio hasta 2027, calculadas con el movimiento real del planeta: fechas exactas, estaciones y qué te pide cada una.',
+    imageAlt: 'Fechas de Mercurio retrógrado — Zodiacs.org',
+    h1: 'Mira cuándo Mercurio se vuelve retrógrado.',
+    intro: 'Cada retrogradación de esta página se calcula a partir del movimiento real de Mercurio, de estación a estación, con precisión de una hora, hasta fines de 2027.',
+    asOf: (date) => `Al ${date.text}`,
+    statusActive: (direct) => `Mercurio está retrógrado en este momento: retoma el movimiento directo el ${direct.text}.`,
+    statusNext: (from, to, year) => `Mercurio está directo en este momento: la próxima retrogradación va del ${from.text} al ${to.text} de ${year}.`,
+    statusDirect: 'Mercurio está directo en este momento.',
+    retroToday: 'Retrógrados hoy:',
+    none: 'ninguno',
+    allBefore: 'los períodos de todos los planetas están en',
+    allLink: 'la página de retrogradaciones',
+    only2027: 'solo 2027',
+    windowsHeading: 'Las retrogradaciones, 2026–2027',
+    windowsLede: 'Fechas en hora universal (UTC). La posición indicada es el punto donde Mercurio se detiene cada vez: las estaciones.',
+    colWindow: 'Período',
+    colRetrograde: 'Estación retrógrada',
+    colDirect: 'Estación directa',
+    colStatus: 'Estado',
+    now: 'ahora',
+    ahead: 'por venir',
+    ongoing: 'en curso',
+    bodyHeading: 'Qué pasa realmente allá arriba',
+    motion: 'Nada frena y nada retrocede. Mercurio da la vuelta al Sol en 88 días, frente a nuestros 365, y unas cuantas veces al año nos adelanta por el carril interior. Visto desde una Tierra en movimiento, el planeta parece frenar, quedarse inmóvil uno o dos días y deslizarse hacia atrás por el zodíaco antes de retomar su rumbo: la misma ilusión de cuando un tren más lento, visto por la ventanilla, parece rodar hacia atrás. Las fechas de arriba son esa ilusión, calculada con precisión.',
+    advice: 'La astrología lee a Mercurio como el planeta de la comunicación, los traslados y el papeleo, y así fue como tres semanas de aparente marcha atrás terminaron siendo sinónimo de correos que no llegan y trenes perdidos. El consejo real de la tradición es más tranquilo: toma el período como temporada de revisión. Termina lo que tienes abierto, relee antes de enviar, confirma la reserva y, si puedes, deja los grandes lanzamientos y las firmas para las otras cuarenta y cinco semanas del año. No porque el cielo los prohíba, sino porque una excusa programada para revisar todo dos veces sirve de verdad.',
+    chart: [
+      'El lugar de ',
+      'tu',
+      ' carta donde cae una retrogradación decide qué área de la vida entra en revisión; para saberlo necesitas tu ',
+      'carta natal',
+      '. Y si naciste con Mercurio retrógrado (más o menos una de cada cinco personas), la astrología lo lee como una manera de procesar hacia adentro, no como un defecto.',
+    ],
+    faqHeading: 'Preguntas y respuestas',
+    faqNext: {
+      q: '¿Cuándo es el próximo Mercurio retrógrado?',
+      a: (status, year) => `${status} La tabla completa de arriba incluye todos los períodos hasta ${year}, calculados a partir del movimiento real de Mercurio y con precisión de una hora.`,
+    },
+    faq: [
+      {
+        q: '¿Qué es en realidad Mercurio retrógrado?',
+        a: 'Un efecto óptico. Mercurio gira alrededor del Sol más rápido que la Tierra, y tres o cuatro veces al año nos adelanta por dentro: desde nuestro punto de vista en movimiento parece frenar, detenerse y deslizarse hacia atrás por el zodíaco durante unas tres semanas. Nada cambia de dirección en el espacio; la apariencia es lo bastante real como para calcularla con un margen de pocos minutos.',
+      },
+      {
+        q: '¿Cuánto dura Mercurio retrógrado?',
+        a: 'Unas tres semanas, tres o cuatro veces al año. Los astrólogos también siguen la “sombra” (la sombra previa y la posterior: una o dos semanas a cada lado, mientras Mercurio recorre los mismos grados a velocidad normal), pero los períodos con fecha de esta página son la retrogradación propiamente dicha, de estación a estación.',
+      },
+      {
+        q: '¿Qué significa Mercurio retrógrado en astrología?',
+        a: 'Mercurio es el planeta que la astrología asocia con la comunicación, los viajes y la información, y por eso su retrogradación se ganó la fama de mensajes confusos, contratiempos de viaje y aparatos en rebeldía. El consejo práctico es más aburrido que los memes: deja margen, confirma los detalles y toma el período como temporada de revisión; es momento de terminar, corregir y revisar dos veces, más que de lanzar.',
+      },
+      {
+        q: '¿Otros planetas también se vuelven retrógrados?',
+        a: 'Todos, menos el Sol y la Luna. Los planetas exteriores pasan meses retrógrados cada año y los astrólogos apenas se inmutan; Mercurio se lleva los titulares porque sus retrogradaciones son frecuentes, cortas y tocan asuntos de la vida diaria.',
+      },
+    ],
+    pageName: 'Fechas de Mercurio retrógrado, 2026–2027',
+    pageDescription: 'Fechas exactas de Mercurio retrógrado para 2026 y 2027, calculadas a partir del movimiento real del planeta, con las posiciones de las estaciones.',
+    eventName: 'Mercurio retrógrado',
+    eventDescription: (from, to, retrograde, direct) => `Mercurio se ve retrógrado desde ${from} hasta ${to}, con estaciones en ${retrograde} y ${direct ?? 'una estación directa aún no disponible'}.`,
+    eventDescriptionOpen: (from, retrograde) => `Mercurio se ve retrógrado desde ${from}. Todavía no hay fecha de término ni estación directa disponibles; la estación retrógrada está en ${retrograde}.`,
+    datasetName: 'Períodos de Mercurio retrógrado, 2026–2027',
+    datasetDescription: 'Instantes calculados de las estaciones retrógrada y directa de Mercurio, con sus posiciones en el zodíaco tropical, para 2026 y 2027.',
+    variableMeasured: ['instante de la estación retrógrada', 'instante de la estación directa', 'longitud de la estación'],
+  },
+  pt: {
+    title: 'Mercúrio retrógrado 2026 e 2027: datas | Zodiacs.org',
+    description: 'Todos os períodos de Mercúrio retrógrado até 2027, calculados pelo movimento real do planeta: datas exatas, estações e o que cada um pede de você.',
+    imageAlt: 'Datas de Mercúrio retrógrado — Zodiacs.org',
+    h1: 'Veja quando Mercúrio fica retrógrado.',
+    intro: 'Cada período retrógrado desta página é calculado a partir do movimento real de Mercúrio, de estação a estação, com precisão de uma hora, até o fim de 2027.',
+    asOf: (date) => `Em ${date.text}`,
+    statusActive: (direct) => `Mercúrio está retrógrado neste momento: volta ao movimento direto em ${direct.text}.`,
+    statusNext: (from, to, year) => `Mercúrio está direto neste momento: o próximo período retrógrado vai de ${from.text} a ${to.text} de ${year}.`,
+    statusDirect: 'Mercúrio está direto neste momento.',
+    retroToday: 'Retrógrados hoje:',
+    none: 'nenhum',
+    allBefore: 'os períodos de todos os planetas estão na',
+    allLink: 'página de planetas retrógrados',
+    only2027: 'só 2027',
+    windowsHeading: 'Os períodos retrógrados, 2026–2027',
+    windowsLede: 'Datas em tempo universal (UTC). A posição indicada é o ponto em que Mercúrio fica parado a cada vez: as estações.',
+    colWindow: 'Período',
+    colRetrograde: 'Estação retrógrada',
+    colDirect: 'Estação direta',
+    colStatus: 'Situação',
+    now: 'agora',
+    ahead: 'por vir',
+    ongoing: 'em curso',
+    bodyHeading: 'O que realmente acontece lá em cima',
+    motion: 'Nada desacelera e nada dá marcha à ré. Mercúrio dá a volta no Sol em 88 dias, contra os nossos 365, e algumas vezes por ano nos ultrapassa pela pista de dentro. Visto de uma Terra em movimento, o planeta parece frear, ficar imóvel por um ou dois dias e deslizar para trás pelo zodíaco antes de retomar o rumo: a mesma ilusão de quando um trem mais lento, visto pela janela, parece andar para trás. As datas acima são essa ilusão, calculada com precisão.',
+    advice: 'A astrologia lê Mercúrio como o planeta da comunicação, dos deslocamentos e da papelada, e foi assim que três semanas de aparente movimento para trás viraram sinônimo de e-mails perdidos e trens que partem sem você. O conselho da tradição, na verdade, é mais calmo: trate o período como temporada de revisão. Termine o que está em aberto, releia antes de enviar, confirme a reserva e, se puder, deixe os grandes lançamentos e as assinaturas para as outras quarenta e cinco semanas do ano. Não porque o céu os proíba, mas porque uma desculpa marcada no calendário para conferir tudo de novo é útil de verdade.',
+    chart: [
+      'O ponto do ',
+      'seu',
+      ' mapa em que um período retrógrado cai define qual área da vida entra em revisão; para saber, você precisa do seu ',
+      'mapa astral',
+      '. E, se você nasceu com Mercúrio retrógrado (mais ou menos uma em cada cinco pessoas), a astrologia lê isso como um jeito de processar as coisas por dentro, não como um defeito.',
+    ],
+    faqHeading: 'Perguntas e respostas',
+    faqNext: {
+      q: 'Quando é o próximo Mercúrio retrógrado?',
+      a: (status, year) => `${status} A tabela completa acima traz todos os períodos até ${year}, calculados a partir do movimento real de Mercúrio e com precisão de uma hora.`,
+    },
+    faq: [
+      {
+        q: 'O que é, de fato, Mercúrio retrógrado?',
+        a: 'Um efeito óptico. Mercúrio gira em torno do Sol mais rápido que a Terra e, três ou quatro vezes por ano, nos ultrapassa por dentro: do nosso ponto de vista em movimento, ele parece desacelerar, parar e deslizar para trás pelo zodíaco por cerca de três semanas. Nada muda de direção no espaço; a aparência é real o bastante para ser calculada com margem de poucos minutos.',
+      },
+      {
+        q: 'Quanto tempo dura Mercúrio retrógrado?',
+        a: 'Cerca de três semanas, três ou quatro vezes por ano. Os astrólogos também acompanham a “sombra” (uma ou duas semanas antes e depois, enquanto Mercúrio percorre os mesmos graus em velocidade normal), mas os períodos datados desta página são o período retrógrado propriamente dito, de estação a estação.',
+      },
+      {
+        q: 'O que Mercúrio retrógrado significa na astrologia?',
+        a: 'Mercúrio é o planeta que a astrologia associa à comunicação, às viagens e à informação, e por isso seu período retrógrado ganhou fama de mensagens truncadas, contratempos de viagem e aparelhos em motim. O conselho prático é mais sem graça que os memes: deixe margem, confirme os detalhes e trate o período como temporada de revisão; é hora de terminar, corrigir e conferir de novo, mais do que de lançar.',
+      },
+      {
+        q: 'Outros planetas também ficam retrógrados?',
+        a: 'Todos, menos o Sol e a Lua. Os planetas exteriores passam meses retrógrados todo ano e os astrólogos mal se abalam; Mercúrio fica com as manchetes porque seus períodos retrógrados são frequentes, curtos e ligados a assuntos do dia a dia.',
+      },
+    ],
+    pageName: 'Datas de Mercúrio retrógrado, 2026–2027',
+    pageDescription: 'Datas exatas de Mercúrio retrógrado em 2026 e 2027, calculadas a partir do movimento real do planeta, com as posições das estações.',
+    eventName: 'Mercúrio retrógrado',
+    eventDescription: (from, to, retrograde, direct) => `Mercúrio aparece retrógrado de ${from} a ${to}, com estações em ${retrograde} e ${direct ?? 'uma estação direta ainda não disponível'}.`,
+    eventDescriptionOpen: (from, retrograde) => `Mercúrio aparece retrógrado a partir de ${from}. Ainda não há data final nem estação direta disponíveis; a estação retrógrada fica em ${retrograde}.`,
+    datasetName: 'Períodos de Mercúrio retrógrado, 2026–2027',
+    datasetDescription: 'Instantes calculados das estações retrógrada e direta de Mercúrio, com as posições no zodíaco tropical, para 2026 e 2027.',
+    variableMeasured: ['instante da estação retrógrada', 'instante da estação direta', 'longitude da estação'],
+  },
+  fr: {
+    title: 'Mercure rétrograde 2026 et 2027 : dates | Zodiacs.org',
+    description: 'Chaque Mercure rétrograde jusqu’en 2027, calculé d’après le mouvement réel de la planète : dates exactes, stations et ce que la période te demande.',
+    imageAlt: 'Dates de Mercure rétrograde — Zodiacs.org',
+    h1: 'Regarde quand Mercure devient rétrograde.',
+    intro: 'Chaque période rétrograde de cette page est calculée d’après le mouvement réel de Mercure, de station à station, à l’heure près, jusqu’à la fin de 2027.',
+    asOf: (date) => `Au ${date.text}`,
+    statusActive: (direct) => `Mercure est rétrograde en ce moment : il redevient direct le ${direct.text}.`,
+    statusNext: (from, to, year) => `Mercure est direct en ce moment : la prochaine période rétrograde va du ${from.text} au ${to.text} ${year}.`,
+    statusDirect: 'Mercure est direct en ce moment.',
+    retroToday: 'Rétrogrades aujourd’hui :',
+    none: 'aucune planète',
+    allBefore: 'les périodes de toutes les planètes sont sur',
+    allLink: 'la page des périodes rétrogrades',
+    only2027: '2027 seulement',
+    windowsHeading: 'Les périodes rétrogrades, 2026–2027',
+    windowsLede: 'Dates en temps universel (UTC). La position indiquée est le point où Mercure s’immobilise à chaque fois : les stations.',
+    colWindow: 'Période',
+    colRetrograde: 'Station rétrograde',
+    colDirect: 'Station directe',
+    colStatus: 'État',
+    now: 'maintenant',
+    ahead: 'à venir',
+    ongoing: 'en cours',
+    bodyHeading: 'Ce qui se passe réellement là-haut',
+    motion: 'Rien ne ralentit et rien ne fait demi-tour. Mercure boucle son tour du Soleil en 88 jours, contre 365 pour nous, et quelques fois par an il nous double par la voie intérieure. Vue depuis une Terre en mouvement, la planète semble freiner, rester immobile un jour ou deux, puis reculer dans le zodiaque avant de reprendre sa route : la même illusion que lorsqu’un train plus lent, vu par la fenêtre, semble rouler en arrière. Les dates ci-dessus sont cette illusion, calculée avec précision.',
+    advice: 'L’astrologie fait de Mercure la planète de la communication, des déplacements et de la paperasse, et c’est ainsi que trois semaines de recul apparent sont devenues synonymes de courriels perdus et de trains ratés. Le vrai conseil de la tradition est plus calme : prends cette période comme une saison de relecture. Termine ce qui est en cours, relis avant d’envoyer, confirme la réservation et, si tu peux, garde les grands lancements et les signatures pour les quarante-cinq autres semaines de l’année. Non pas parce que le ciel les interdit, mais parce qu’un prétexte inscrit au calendrier pour tout revérifier est vraiment utile.',
+    chart: [
+      'L’endroit de ',
+      'ton',
+      ' thème où tombe une période rétrograde détermine quel domaine de la vie passe en révision ; pour le savoir, il te faut ton ',
+      'thème astral',
+      '. Et si Mercure était rétrograde à ta naissance (environ une personne sur cinq), les astrologues y voient une façon de réfléchir tournée vers l’intérieur, pas un défaut.',
+    ],
+    faqHeading: 'Questions et réponses',
+    faqNext: {
+      q: 'Quand a lieu le prochain Mercure rétrograde ?',
+      a: (status, year) => `${status} Le tableau complet ci-dessus donne toutes les périodes jusqu’en ${year}, calculées d’après le mouvement réel de Mercure, à l’heure près.`,
+    },
+    faq: [
+      {
+        q: 'Qu’est-ce que Mercure rétrograde, au juste ?',
+        a: 'Un effet d’optique. Mercure tourne autour du Soleil plus vite que la Terre et, trois ou quatre fois par an, il nous double par l’intérieur : depuis notre point de vue en mouvement, il semble ralentir, s’arrêter, puis reculer dans le zodiaque pendant environ trois semaines. Rien ne change de direction dans l’espace ; l’apparence est assez réelle pour être calculée à quelques minutes près.',
+      },
+      {
+        q: 'Combien de temps dure Mercure rétrograde ?',
+        a: 'Environ trois semaines, trois ou quatre fois par an. Les astrologues surveillent aussi l’« ombre » (une ou deux semaines avant et après, pendant que Mercure parcourt les mêmes degrés à vitesse normale), mais les périodes datées de cette page correspondent à la période rétrograde proprement dite, de station à station.',
+      },
+      {
+        q: 'Que signifie Mercure rétrograde en astrologie ?',
+        a: 'Mercure est la planète que les astrologues associent à la communication, aux voyages et à l’information ; sa période rétrograde y a gagné une réputation de messages brouillés, de pépins de voyage et d’appareils en révolte. Le conseil pratique est plus ennuyeux que les mèmes : prévois de la marge, confirme les détails et prends cette période comme une saison de relecture, où l’on termine, corrige et revérifie plutôt que de lancer.',
+      },
+      {
+        q: 'Les autres planètes deviennent-elles rétrogrades ?',
+        a: 'Toutes, sauf le Soleil et la Lune. Les planètes extérieures passent des mois en mouvement rétrograde chaque année et les astrologues sourcillent à peine ; Mercure fait les gros titres parce que ses périodes rétrogrades sont fréquentes, courtes et liées au quotidien.',
+      },
+    ],
+    pageName: 'Dates de Mercure rétrograde, 2026–2027',
+    pageDescription: 'Dates exactes de Mercure rétrograde pour 2026 et 2027, calculées d’après le mouvement réel de la planète, avec les positions des stations.',
+    eventName: 'Mercure rétrograde',
+    eventDescription: (from, to, retrograde, direct) => `Mercure apparaît rétrograde de ${from} à ${to}, avec des stations à ${retrograde} et ${direct ?? 'une station directe pas encore disponible'}.`,
+    eventDescriptionOpen: (from, retrograde) => `Mercure apparaît rétrograde à partir de ${from}. La date de fin et la station directe ne sont pas encore disponibles ; la station rétrograde se situe à ${retrograde}.`,
+    datasetName: 'Périodes de Mercure rétrograde, 2026–2027',
+    datasetDescription: 'Instants calculés des stations rétrograde et directe de Mercure, avec leurs positions dans le zodiaque tropical, pour 2026 et 2027.',
+    variableMeasured: ['instant de la station rétrograde', 'instant de la station directe', 'longitude de la station'],
+  },
+  it: {
+    title: 'Mercurio retrogrado 2026 e 2027: date | Zodiacs.org',
+    description: 'Tutti i periodi di Mercurio retrogrado fino al 2027, calcolati dal moto reale del pianeta: date esatte, stazioni e che cosa ti chiede ciascuno.',
+    imageAlt: 'Date di Mercurio retrogrado — Zodiacs.org',
+    h1: 'Guarda quando Mercurio diventa retrogrado.',
+    intro: 'Ogni periodo retrogrado di questa pagina è calcolato dal moto reale di Mercurio, da stazione a stazione, con la precisione dell’ora, fino alla fine del 2027.',
+    asOf: (date) => (itElides(date) ? `All’${date.text}` : `Al ${date.text}`),
+    statusActive: (direct) => `Mercurio è retrogrado in questo momento: torna diretto ${itOn(direct)}.`,
+    statusNext: (from, to, year) => `Mercurio è diretto in questo momento: il prossimo periodo retrogrado va ${itFrom(from)} ${itTo(to)} ${year}.`,
+    statusDirect: 'Mercurio è diretto in questo momento.',
+    retroToday: 'Retrogradi oggi:',
+    none: 'nessuno',
+    allBefore: 'i periodi di tutti i pianeti sono nella',
+    allLink: 'pagina dei pianeti retrogradi',
+    only2027: 'solo il 2027',
+    windowsHeading: 'I periodi retrogradi, 2026–2027',
+    windowsLede: 'Date in tempo universale (UTC). La posizione indicata è il punto in cui Mercurio si ferma ogni volta: le stazioni.',
+    colWindow: 'Periodo',
+    colRetrograde: 'Stazione retrograda',
+    colDirect: 'Stazione diretta',
+    colStatus: 'Stato',
+    now: 'ora',
+    ahead: 'in arrivo',
+    ongoing: 'in corso',
+    bodyHeading: 'Che cosa succede davvero lassù',
+    motion: 'Niente rallenta e niente torna indietro. Mercurio gira intorno al Sole in 88 giorni, contro i nostri 365, e qualche volta all’anno ci sorpassa dalla corsia interna. Visto da una Terra in movimento, il pianeta sembra frenare, restare fermo per un giorno o due e scivolare all’indietro lungo lo zodiaco prima di riprendere la rotta: la stessa illusione di quando un treno più lento, visto dal finestrino, sembra andare all’indietro. Le date qui sopra sono quell’illusione, calcolata con precisione.',
+    advice: 'L’astrologia legge Mercurio come il pianeta della comunicazione, degli spostamenti e delle scartoffie, ed è così che tre settimane di apparente moto all’indietro sono diventate sinonimo di email perse e treni mancati. Il consiglio vero della tradizione è più tranquillo: tratta il periodo come una stagione di revisione. Chiudi ciò che è aperto, rileggi prima di inviare, conferma la prenotazione e, se puoi, tieni i grandi lanci e le firme per le altre quarantacinque settimane dell’anno. Non perché il cielo li vieti, ma perché una scusa già in calendario per ricontrollare tutto è davvero utile.',
+    chart: [
+      'Il punto del ',
+      'tuo',
+      ' tema in cui cade un periodo retrogrado decide quale ambito della vita entra in revisione; per saperlo ti serve il tuo ',
+      'tema natale',
+      '. E se alla tua nascita Mercurio era retrogrado (più o meno una persona su cinque), gli astrologi lo leggono come un modo di elaborare rivolto verso l’interno, non come un difetto.',
+    ],
+    faqHeading: 'Domande e risposte',
+    faqNext: {
+      q: 'Quando è il prossimo Mercurio retrogrado?',
+      a: (status, year) => `${status} La tabella completa qui sopra elenca tutti i periodi fino al ${year}, calcolati dal moto reale di Mercurio e con la precisione dell’ora.`,
+    },
+    faq: [
+      {
+        q: 'Che cos’è davvero Mercurio retrogrado?',
+        a: 'Un effetto ottico. Mercurio gira intorno al Sole più in fretta della Terra e, tre o quattro volte all’anno, ci sorpassa all’interno: dal nostro punto di vista in movimento sembra rallentare, fermarsi e scivolare all’indietro lungo lo zodiaco per circa tre settimane. Nello spazio niente cambia direzione; l’apparenza è abbastanza reale da poterla calcolare con uno scarto di pochi minuti.',
+      },
+      {
+        q: 'Quanto dura Mercurio retrogrado?',
+        a: 'Circa tre settimane, tre o quattro volte all’anno. Gli astrologi osservano anche l’“ombra” (una o due settimane prima e dopo, mentre Mercurio attraversa gli stessi gradi a velocità normale), ma i periodi datati di questa pagina sono il periodo retrogrado vero e proprio, da stazione a stazione.',
+      },
+      {
+        q: 'Che cosa significa Mercurio retrogrado in astrologia?',
+        a: 'Mercurio è il pianeta che gli astrologi associano alla comunicazione, ai viaggi e alle informazioni; per questo il suo periodo retrogrado si è fatto la fama di messaggi confusi, intoppi di viaggio e tecnologia in rivolta. Il consiglio pratico è più noioso dei meme: lascia margine, conferma i dettagli e tratta il periodo come una stagione di revisione, in cui finire, correggere e ricontrollare più che lanciare.',
+      },
+      {
+        q: 'Anche gli altri pianeti diventano retrogradi?',
+        a: 'Tutti, tranne il Sole e la Luna. I pianeti esterni passano mesi in moto retrogrado ogni anno e gli astrologi quasi non ci fanno caso; Mercurio finisce nei titoli perché i suoi periodi retrogradi sono frequenti, brevi e legati alla vita di tutti i giorni.',
+      },
+    ],
+    pageName: 'Date di Mercurio retrogrado, 2026–2027',
+    pageDescription: 'Date esatte di Mercurio retrogrado per il 2026 e il 2027, calcolate dal moto reale del pianeta, con le posizioni delle stazioni.',
+    eventName: 'Mercurio retrogrado',
+    eventDescription: (from, to, retrograde, direct) => `Mercurio appare retrogrado da ${from} a ${to}, con stazioni a ${retrograde} e ${direct ?? 'una stazione diretta non ancora disponibile'}.`,
+    eventDescriptionOpen: (from, retrograde) => `Mercurio appare retrogrado da ${from}. La data di fine e la stazione diretta non sono ancora disponibili; la stazione retrograda è a ${retrograde}.`,
+    datasetName: 'Periodi di Mercurio retrogrado, 2026–2027',
+    datasetDescription: 'Istanti calcolati delle stazioni retrograda e diretta di Mercurio, con le posizioni nello zodiaco tropicale, per il 2026 e il 2027.',
+    variableMeasured: ['istante della stazione retrograda', 'istante della stazione diretta', 'longitudine della stazione'],
+  },
+};
+
+const c = COPY[locale];
+const englishOnly = ENGLISH_ONLY_COPY[locale];
+const prefix = `/${locale}`;
+const pagePath = `${prefix}/mercury-retrograde/`;
+const pageUrl = `https://zodiacs.org${pagePath}`;
+const inLanguage = locale === 'pt' ? 'pt-BR' : locale;
+
+// Intl writes the first of the month as a bare "1"; French, Portuguese and
+// Italian prose want the ordinal ("1er juin", "1º de junho", "1º giugno").
+const firstOrdinal = (text: string, day: number) => {
+  if (day !== 1) return text;
+  if (locale === 'fr') return text.replace(/^1 /, '1er ');
+  if (locale === 'pt' || locale === 'it') return text.replace(/^1 /, '1º ');
+  return text;
+};
+const dayLabel = (date: Date, text: string): DayLabel => {
+  const day = date.getUTCDate();
+  return { text: firstOrdinal(text, day), day };
+};
+
+// All computed at build time from the committed sky data — the page
+// ships as receipts, no client ephemeris.
+const buildNow = new Date();
+const eventHorizon = new Date(buildNow);
+eventHorizon.setUTCFullYear(eventHorizon.getUTCFullYear() + 1);
+const sources = [
+  { label: 'Astronomy Engine', href: 'https://github.com/cosinekitty/astronomy' },
+  { label: 'IANA Time Zone Database', href: 'https://www.iana.org/time-zones' },
+];
+const windows = (sky.retrogrades as { planet: string; from: string; to: string | null }[])
+  .filter((r) => r.planet === 'Mercury')
+  .map((r) => {
+    const from = new Date(r.from);
+    const to = r.to ? new Date(r.to) : null;
+    const fmt = (d: Date) => formatShortDate(locale, d);
+    return {
+      from,
+      to,
+      label: `${fmt(from)} – ${to ? fmt(to) : c.ongoing}`,
+      stationRx: formatLongitude(bodyLongitude('Mercury', from), locale),
+      stationDirect: to ? formatLongitude(bodyLongitude('Mercury', to), locale) : null,
+      state: to && to < buildNow ? 'past' : from > buildNow ? 'upcoming' : 'active',
+    };
+  });
+const upcomingWindows = windows.filter((window) =>
+  window.from <= eventHorizon && (!window.to || window.to >= buildNow));
+
+const active = windows.find((w) => w.state === 'active');
+const next = windows.find((w) => w.state === 'upcoming');
+const fmtShort = (d: Date) =>
+  dayLabel(d, formatDate(locale, d, { month: 'long', day: 'numeric', timeZone: 'UTC' }));
+
+const status = active
+  ? c.statusActive(fmtShort(active.to!))
+  : next
+    ? c.statusNext(fmtShort(next.from), fmtShort(next.to!), next.to!.getUTCFullYear())
+    : c.statusDirect;
+
+const retroToday = (sky.retrogrades as { planet: string; from: string; to: string | null }[])
+  .filter((r) => new Date(r.from) <= buildNow && (!r.to || new Date(r.to) >= buildNow))
+  .map((r) => planetLabel(locale, r.planet));
+
+const asOf = c.asOf(dayLabel(buildNow, formatShortDate(locale, buildNow)));
+
+const faq = [
+  {
+    q: c.faqNext.q,
+    a: c.faqNext.a(status, windows.at(-1)?.to?.getUTCFullYear() ?? '2027'),
+  },
+  ...c.faq,
+];
+
+const eventNodes = upcomingWindows.map((window) => {
+  const from = window.from.toISOString();
+  const to = window.to?.toISOString();
+  const id = `mercury-retrograde-${from.slice(0, 10)}`;
+  return {
+    '@type': 'Event',
+    '@id': `${pageUrl}#${id}`,
+    name: c.eventName,
+    description: to
+      ? c.eventDescription(from, to, window.stationRx, window.stationDirect)
+      : c.eventDescriptionOpen(from, window.stationRx),
+    startDate: from,
+    ...(to ? { endDate: to } : {}),
+    eventStatus: 'https://schema.org/EventScheduled',
+    inLanguage,
+    url: `${pageUrl}#${id}`,
+  };
+});
+
+const dataset = {
+  '@type': 'Dataset',
+  '@id': `${pageUrl}#dataset`,
+  name: c.datasetName,
+  description: c.datasetDescription,
+  url: pageUrl,
+  inLanguage,
+  creator: { '@id': 'https://zodiacs.org/#org' },
+  publisher: { '@id': 'https://zodiacs.org/#org' },
+  dateModified: sky.generatedAt,
+  temporalCoverage: `${sky.from}/${sky.to}`,
+  spatialCoverage: 'Earth',
+  variableMeasured: c.variableMeasured,
+  citation: sources.map((source) => ({ '@type': 'CreativeWork', name: source.label, url: source.href })),
+};
+
+const jsonLd = [
+  {
+    '@type': 'WebPage',
+    name: c.pageName,
+    url: pageUrl,
+    description: c.pageDescription,
+    inLanguage,
+  },
+  {
+    '@type': 'FAQPage',
+    inLanguage,
+    mainEntity: faq.map(({ q, a }) => ({
+      '@type': 'Question',
+      name: q,
+      acceptedAnswer: { '@type': 'Answer', text: a },
+    })),
+  },
+  dataset,
+  ...eventNodes,
+];
+---
+<Base
+  title={c.title}
+  description={c.description}
+  path={pagePath}
+  locale={locale}
+  image="/assets/og/v2/tool/mercury-retrograde.png"
+  imageAlt={c.imageAlt}
+  jsonLd={jsonLd}
+  sources={sources}
+>
+  <section class="section--tight container container--narrow">
+    <div class="tool-hero reveal">
+      <h1 class="display">{c.h1}</h1>
+      <p>{c.intro}</p>
+    </div>
+
+    <div class="rx-now shell tinted reveal" style="--sign:var(--sign-gemini)">
+      <div class="core tinted rx-now__core">
+        <span class="mono--label">{asOf}</span>
+        <strong class="rx-now__line">{status}</strong>
+        <span class="rx-now__all mono">
+          {c.retroToday} {retroToday.length ? retroToday.join(', ') : c.none} ·
+          {c.allBefore} <a href={`${prefix}/retrogrades/`}>{c.allLink}</a>
+          · <a href="/mercury-retrograde/2027/" hreflang="en" title={englishOnly.aria}>{c.only2027}{englishOnly.suffix}</a>
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section--tight container container--narrow">
+    <div class="section-head reveal">
+      <h2>{c.windowsHeading}</h2>
+      <p>{c.windowsLede}</p>
+    </div>
+    <div class="table-wrap reveal">
+      <table class="rx-table">
+        <thead>
+          <tr><th>{c.colWindow}</th><th>{c.colRetrograde}</th><th>{c.colDirect}</th><th></th></tr>
+        </thead>
+        <tbody>
+          {windows.map((w) => (
+            <tr id={`mercury-retrograde-${w.from.toISOString().slice(0, 10)}`} class={w.state === 'past' ? 'rx-table__past' : ''}>
+              <td data-label={c.colWindow}>{w.label}</td>
+              <td class="mono" data-label={c.colRetrograde}>{w.stationRx}</td>
+              <td class="mono" data-label={c.colDirect}>{w.stationDirect ?? '—'}</td>
+              <td class="mono rx-table__state" data-label={c.colStatus}>{w.state === 'active' ? c.now : w.state === 'upcoming' ? c.ahead : ''}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section--tight container container--narrow">
+    <div class="prose reveal">
+      <h2>{c.bodyHeading}</h2>
+      <p>{c.motion}</p>
+      <p>{c.advice}</p>
+      <p>{c.chart[0]}<em>{c.chart[1]}</em>{c.chart[2]}<a href={`${prefix}/birth-chart/`}>{c.chart[3]}</a>{c.chart[4]}</p>
+    </div>
+  </section>
+
+  <section class="section--tight container container--narrow">
+    <div class="section-head reveal"><h2>{c.faqHeading}</h2></div>
+    <div class="faq reveal">
+      {faq.map(({ q, a }) => (
+        <details class="faq__item">
+          <summary>{q}</summary>
+          <p>{a}</p>
+        </details>
+      ))}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .tool-hero { max-width: 62ch; margin-bottom: clamp(24px, 4vw, 36px); }
+  .tool-hero h1 {
+    margin: 0 0 16px;
+    font-family: var(--font-serif);
+    font-size: var(--text-2xl);
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    line-height: 1.04;
+    font-variant-numeric: oldstyle-figures;
+    text-wrap: balance;
+  }
+  .tool-hero p { margin: 0; color: var(--muted); font-size: var(--text-lg); text-wrap: pretty; }
+
+  .rx-now__core { padding: clamp(20px, 4vw, 28px); display: grid; gap: 10px; }
+  .rx-now__line { font-size: var(--text-lg); letter-spacing: -0.01em; max-width: 56ch; }
+  .rx-now__all { font-size: 11.5px; color: var(--faint); letter-spacing: 0.05em; }
+  .rx-now__all a { color: var(--muted); }
+  .rx-now__all a:hover { color: var(--text); }
+
+  /* .table-wrap + .rx-table (desktop + mobile stacking) live in
+     ../../styles/rx-table.css (shared with the other sky-calendar pages). */
+
+  .faq { display: grid; gap: 8px; }
+  .faq__item {
+    border: 1px solid var(--hair-1);
+    border-radius: var(--r-md);
+    background: var(--void-1);
+    padding: 4px 18px;
+  }
+  .faq__item summary { cursor: pointer; padding: 12px 0; font-weight: 550; color: var(--text); }
+  .faq__item p { margin: 2px 0 16px; color: var(--text-2); font-size: var(--text-sm); line-height: 1.65; }
+</style>

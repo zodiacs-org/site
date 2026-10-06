@@ -12,19 +12,12 @@ export async function getStaticPaths() {
     ['learn', 'houses'],
     ['learn', 'aspects'],
     ['learn', 'placements'],
-    ['mercury-retrograde'],
-    ['retrogrades'],
-    ['eclipses'],
-    ['full-moon-calendar'],
   ];
 
   const dynamicSlugs = [
     ...pairs.map((p) => ['compatibility', p.id]),
-    ...learn.map((l) => (
-      l.data.kind === 'rising'
-        ? ['rising-sign', l.data.sign]
-        : ['learn', ...l.id.split('/')]
-    )),
+    // Rising-sign profiles are translated: src/pages/pt/rising-sign/[sign].astro.
+    ...learn.filter((l) => l.data.kind !== 'rising').map((l) => ['learn', ...l.id.split('/')]),
   ];
 
   return [...staticSlugs, ...dynamicSlugs].map((slug) => ({ params: { slug: slug.join('/') } }));
