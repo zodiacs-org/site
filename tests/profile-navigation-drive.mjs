@@ -20,11 +20,13 @@ await withPreview({port:8911},async base=>{
    const box=await nav.boundingBox();
    const chip=page.locator('[data-nav] .nav__chip');
    const chipBox=await chip.boundingBox();
-   assert(chipBox.x+chipBox.width<=box.x+0.5,'Astrofolio → profile on every layout');
+   assert(box.x+box.width<=chipBox.x+0.5,'Profile stays left of the Astrofolio divider');
    const search=page.locator('[data-nav] .nav__search');
    if(await search.isVisible()) assert(box.x+box.width<=(await search.boundingBox()).x+0.5,'Profile → search on every layout');
-   await chip.focus();await page.keyboard.press('Tab');
-   assert(await nav.evaluate(node=>document.activeElement===node),'Matching keyboard order');
+   const beforeChip=await search.isVisible()?search:nav;
+   assert((await beforeChip.boundingBox()).x+(await beforeChip.boundingBox()).width<=chipBox.x+0.5,'Search stays left of the Astrofolio divider');
+   await beforeChip.focus();await page.keyboard.press('Tab');
+   assert(await chip.evaluate(node=>document.activeElement===node),'Matching keyboard order');
    await page.mouse.click(10,90);
    if(!locale) await page.locator('[data-nav]').screenshot({path:`${out}/navigation-${width}.png`});
    const set=async value=>page.evaluate(value=>{localStorage.setItem('zodiacs.me.v1',JSON.stringify({version:1,photo:value}));window.dispatchEvent(new Event('zodiacs:me'));},value);

@@ -46,7 +46,7 @@ describe('navigation first-paint reservation', () => {
       ['.nav__chip', 'chip'], ['.nav__burger', 'menu'],
     ]) expect(value(rule(selector), 'grid-area')).toBe(area);
     expect(value(rule('.nav'), 'grid-template-areas')).toBe("'mark search chip menu'");
-    expect(value(rule('.nav:not(.nav--localized)'), 'grid-template-areas')).toBe("'mark links chip profile search'");
+    expect(value(rule('.nav:not(.nav--localized)'), 'grid-template-areas')).toBe("'mark links profile search chip'");
   });
 
   it('reserves complete English and localized desktop widths independently of font loading', () => {
@@ -54,8 +54,8 @@ describe('navigation first-paint reservation', () => {
     const localized = rule('.nav--localized', css.split('@media (min-width: 1040px)')[1]);
     expect(value(english, 'width')).toBe('884px');
     expect(value(localized, 'width')).toBe('992px');
-    expect(value(english, 'grid-template-columns')).toBe('116px minmax(0, 1fr) 120px 44px 62px');
-    expect(value(localized, 'grid-template-columns')).toBe('116px minmax(0, 1fr) 120px 44px 44px');
+    expect(value(english, 'grid-template-columns')).toBe('116px minmax(0, 1fr) 44px 62px 120px');
+    expect(value(localized, 'grid-template-columns')).toBe('116px minmax(0, 1fr) 44px 44px 120px');
     expect(nav).toContain("'nav--localized': locale !== 'en'");
     expect(nav).toContain("'nav--without-search': locale === 'ru'");
   });
@@ -95,14 +95,13 @@ describe('navigation first-paint reservation', () => {
   });
 
   it('reserves the phone bar lockup before the chip or the face arrives', () => {
-    // The centred ZODIACS | ASTROFOLIO pair must not be sized by its text: a
-    // content-sized track re-centres the mark when the chip streams in after
-    // first paint, which Lighthouse measured as layout shift on the homepage.
+    // The two separated destinations keep fixed word tracks; font loading
+    // and streamed children must not shift navigation controls.
     const phone = css.split('@media (max-width: 919.5px) {')[1].split('\n  }\n')[0];
     const bar = rule('.nav-wrap .nav', phone);
     const tracks = value(bar, 'grid-template-columns');
     expect(tracks).not.toMatch(/\bauto\b|content/u);
-    expect(tracks).toBe('44px minmax(0, 1fr) calc(var(--nav-lockup) * 5.7 + 13px) calc(var(--nav-lockup) * 8.27 + 13px) minmax(0, 1fr) 44px 44px');
+    expect(tracks).toBe('44px calc(var(--nav-lockup) * 5.7 + 13px) minmax(0, 1fr) 44px 44px calc(var(--nav-lockup) * 8.27 + 13px)');
     expect(value(bar, '--nav-lockup')).toBe('clamp(10px, 3.2vw, 13px)');
     expect(value(rule('.nav__mark', phone), 'font-size')).toBe('var(--nav-lockup)');
     expect(value(rule('.nav__chip', phone), 'font-size')).toBe('var(--nav-lockup)');

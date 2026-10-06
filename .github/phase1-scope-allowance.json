@@ -1,9 +1,8 @@
 {
   "version": 1,
-  "id": "owner-footer-discovery-polish-20261006",
-  "baseCommit": "f0fe72a438401aaff43ed138cf6c46e20e761250",
+  "id": "owner-astrofolio-nav-right-20261006",
+  "baseCommit": "c5f016932d78e9686bdd8e84f0fb809667e12ee6",
   "protectedPaths": [
-    "public/assets/app.js",
     "public/registry/aquarius/index.html",
     "public/registry/aries/index.html",
     "public/registry/cancer/index.html",
@@ -18,10 +17,9 @@
     "public/registry/taurus/index.html",
     "public/registry/technical/index.html",
     "public/registry/virgo/index.html",
-    "public/sdk/examples/simastry-aura/index.html",
     "public/sdk/index.html",
     "public/terminal/markets/index.html",
-    "src/app.jsx"
+    "scripts/registry-pastel-polish.test.mjs"
   ],
-  "authorization": "The owner requested cleaner Keep exploring links and a separate Guide section with a simple explanation on October 6, 2026. This exact-path allowance covers only the shared Registry footer introduction, its generated output, and the footer stylesheet cache version on static pages. Standing owner approval authorizes publishing the frontend polish."
+  "authorization": "On October 6, 2026 the owner requested Astrofolio on its own on the right, clarifying that profile and search must sit to the left of the line separating it. This exact-path exception covers the shared navigation order, generated and synchronized wing output, and corresponding layout regression expectations. Standing owner approval authorizes publishing frontend fixes."
 }

@@ -83,7 +83,7 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
   && !navToolLabelHasEnglishCue(locale, tool.label, t(locale, tool.label));
 ---
 <div class="nav-wrap">
-  <nav class:list={['nav', { 'nav--localized': locale !== 'en', 'nav--without-search': locale === 'ru', 'nav--with-today': links.some((link) => link.href === '/today/') }]} aria-label={t(locale, 'navPrimary')} data-nav>
+  <nav class:list={['nav', { 'nav--localized': locale !== 'en', 'nav--without-collection': !showCollection, 'nav--without-search': locale === 'ru', 'nav--with-today': links.some((link) => link.href === '/today/') }]} aria-label={t(locale, 'navPrimary')} data-nav>
     <a class="nav__mark" href={localizePath(locale, '/')}>
       <span class="nav__name">Zodiacs<span class="nav__sep">·</span><span class="nav__dim">org</span></span>
     </a>
@@ -114,23 +114,6 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
 
     </div>
 
-    {showCollection && (
-    <a
-      class:list={['nav__chip', { 'nav__chip--deferred': Boolean(englishOnly) }]}
-      href="/astrofolio/"
-      hreflang={englishOnly ? 'en' : undefined}
-      aria-current={path === '/astrofolio/' ? 'page' : undefined}
-      title={astrofolioLabel[locale]}
-      aria-description={astrofolioLabel[locale]}
-      aria-label={englishOnly ? `${t(locale, 'navCollect')}. ${englishOnlyAria}` : undefined}
-    >
-      {englishOnly ? (
-        <><span>{t(locale, 'navCollect')}</span><small class="nav__deferred">{englishOnlyBadge}</small></>
-      ) : t(locale, 'navCollect')}
-    </a>
-
-    )}
-
     <a class="nav__profile-shortcut" data-profile-glyph href={localizePath(locale, '/profile/')} aria-label={profileLabel[locale]} title={profileLabel[locale]} aria-current={path.startsWith(localizePath(locale, '/profile/')) ? 'page' : undefined}>
       <svg class="nav__profile-icon" width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="3.2" stroke="currentColor" stroke-width="1.3"/><path d="M5.5 20v-1.5a6.5 6.5 0 0 1 13 0V20" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><span class="nav__avatar" data-profile-avatar aria-hidden="true" hidden></span>
     </a>
@@ -151,6 +134,23 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
       </a>
     )}
 
+
+    {showCollection && (
+    <a
+      class:list={['nav__chip', { 'nav__chip--deferred': Boolean(englishOnly) }]}
+      href="/astrofolio/"
+      hreflang={englishOnly ? 'en' : undefined}
+      aria-current={path === '/astrofolio/' ? 'page' : undefined}
+      title={astrofolioLabel[locale]}
+      aria-description={astrofolioLabel[locale]}
+      aria-label={englishOnly ? `${t(locale, 'navCollect')}. ${englishOnlyAria}` : undefined}
+    >
+      {englishOnly ? (
+        <><span>{t(locale, 'navCollect')}</span><small class="nav__deferred">{englishOnlyBadge}</small></>
+      ) : t(locale, 'navCollect')}
+    </a>
+
+    )}
 
     <button
       class="nav__burger"
@@ -529,10 +529,11 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
   @media (min-width: 920px) {
     .nav:not(.nav--localized) {
       width: 884px;
-      grid-template-areas: 'mark links chip profile search';
-      grid-template-columns: 116px minmax(0, 1fr) 120px 44px 62px;
+      grid-template-areas: 'mark links profile search chip';
+      grid-template-columns: 116px minmax(0, 1fr) 44px 62px 120px;
       gap: 18px;
     }
+    .nav--without-collection:not(.nav--localized),
     :global(html[data-chart-share-receiver]) .nav:not(.nav--localized) {
       width: 746px;
       grid-template-areas: 'mark links profile search';
@@ -549,16 +550,18 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
   @media (min-width: 1040px) {
     .nav--localized {
       width: 992px;
-      grid-template-areas: 'mark links chip profile search';
-      grid-template-columns: 116px minmax(0, 1fr) 120px 44px 44px;
+      grid-template-areas: 'mark links profile search chip';
+      grid-template-columns: 116px minmax(0, 1fr) 44px 44px 120px;
       gap: 18px;
     }
-    .nav--without-search { grid-template-areas: 'mark links chip profile'; grid-template-columns: 116px minmax(0, 1fr) 120px 44px; }
+    .nav--without-search { grid-template-areas: 'mark links profile chip'; grid-template-columns: 116px minmax(0, 1fr) 44px 120px; }
+    .nav--without-collection.nav--localized,
     :global(html[data-chart-share-receiver]) .nav--localized {
       width: 854px;
       grid-template-areas: 'mark links profile search';
       grid-template-columns: 116px minmax(0, 1fr) 44px 44px;
     }
+    .nav--without-collection.nav--without-search,
     :global(html[data-chart-share-receiver]) .nav--without-search {
       grid-template-areas: 'mark links profile';
       grid-template-columns: 116px minmax(0, 1fr) 44px;
@@ -778,7 +781,7 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
 
   /* Below the full-link desktop layout, the pill becomes a full-width bar at the top edge, in the same
      colour (owner request, after rolex.com): the menu on the left, the
-     ZODIACS | ASTROFOLIO lockup on the centre line, search on the right. It
+     Zodiacs mark beside it, then profile and search before the separate Astrofolio destination. It
      slides away as the page scrolls down and returns as it scrolls up; the
      inline script below sets .is-away. Shared-chart receivers use the same bar and keep it visible during
      their automatic result scroll. */
@@ -790,12 +793,8 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
     }
     :global(html[lang]) .nav-wrap.is-away { transform: translateY(-100%); opacity: 0; }
     :global(html[lang]) .nav-wrap.is-away .nav { pointer-events: none; }
-    /* .nav-wrap .nav outranks the homepages' lens pill rules. The two outer
-       tracks match, so the lockup centres on the bar with or without search.
-       Its two tracks are reserved from EB Garamond's measured advances at
-       0.2em tracking (ZODIACS 5.697em, ASTROFOLIO 8.265em), never from the
-       text itself: the words sit still while later children stream in and
-       while the face loads. */
+    /* Fixed word tracks preserve first-paint geometry. Astrofolio is the
+       final destination; profile and search stay before its divider. */
     :global(html[lang]) .nav-wrap .nav {
       --nav-lockup: clamp(10px, 3.2vw, 13px);
       width: 100%;
@@ -806,11 +805,20 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
       border-width: 0 0 1px;
       border-radius: 0;
       box-shadow: none;
-      grid-template-areas: 'menu . mark chip . profile search';
-      grid-template-columns: 44px minmax(0, 1fr) calc(var(--nav-lockup) * 5.7 + 13px) calc(var(--nav-lockup) * 8.27 + 13px) minmax(0, 1fr) 44px 44px;
+      grid-template-areas: 'menu mark . profile search chip';
+      grid-template-columns: 44px calc(var(--nav-lockup) * 5.7 + 13px) minmax(0, 1fr) 44px 44px calc(var(--nav-lockup) * 8.27 + 13px);
     }
     :global(html[lang]) .nav-wrap .nav--without-search {
-      grid-template-areas: 'menu . mark chip . profile .';
+      grid-template-areas: 'menu mark . profile chip';
+      grid-template-columns: 44px calc(var(--nav-lockup) * 5.7 + 13px) minmax(0, 1fr) 44px calc(var(--nav-lockup) * 8.27 + 13px);
+    }
+    :global(html[lang]) .nav-wrap .nav--without-collection {
+      grid-template-areas: 'menu mark . profile search';
+      grid-template-columns: 44px calc(var(--nav-lockup) * 5.7 + 13px) minmax(0, 1fr) 44px 44px;
+    }
+    :global(html[lang]) .nav-wrap .nav--without-collection.nav--without-search {
+      grid-template-areas: 'menu mark . profile';
+      grid-template-columns: 44px calc(var(--nav-lockup) * 5.7 + 13px) minmax(0, 1fr) 44px;
     }
     :global(html[lang]) .nav__profile-shortcut { display: inline-grid; }
     /* Both words share one size and tracking. The mark leads with the same
@@ -868,12 +876,8 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
     }
     :global(html:not(:lang(en))) .nav-wrap.is-away { transform: translateY(-100%); opacity: 0; }
     :global(html:not(:lang(en))) .nav-wrap.is-away .nav { pointer-events: none; }
-    /* .nav-wrap .nav outranks the homepages' lens pill rules. The two outer
-       tracks match, so the lockup centres on the bar with or without search.
-       Its two tracks are reserved from EB Garamond's measured advances at
-       0.2em tracking (ZODIACS 5.697em, ASTROFOLIO 8.265em), never from the
-       text itself: the words sit still while later children stream in and
-       while the face loads. */
+    /* Fixed word tracks preserve first-paint geometry. Astrofolio is the
+       final destination; profile and search stay before its divider. */
     :global(html:not(:lang(en))) .nav-wrap .nav {
       --nav-lockup: clamp(10px, 3.2vw, 13px);
       width: 100%;
@@ -884,11 +888,20 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
       border-width: 0 0 1px;
       border-radius: 0;
       box-shadow: none;
-      grid-template-areas: 'menu . mark chip . profile search';
-      grid-template-columns: 44px minmax(0, 1fr) calc(var(--nav-lockup) * 5.7 + 13px) calc(var(--nav-lockup) * 8.27 + 13px) minmax(0, 1fr) 44px 44px;
+      grid-template-areas: 'menu mark . profile search chip';
+      grid-template-columns: 44px calc(var(--nav-lockup) * 5.7 + 13px) minmax(0, 1fr) 44px 44px calc(var(--nav-lockup) * 8.27 + 13px);
     }
     :global(html:not(:lang(en))) .nav-wrap .nav--without-search {
-      grid-template-areas: 'menu . mark chip . profile .';
+      grid-template-areas: 'menu mark . profile chip';
+      grid-template-columns: 44px calc(var(--nav-lockup) * 5.7 + 13px) minmax(0, 1fr) 44px calc(var(--nav-lockup) * 8.27 + 13px);
+    }
+    :global(html:not(:lang(en))) .nav-wrap .nav--without-collection {
+      grid-template-areas: 'menu mark . profile search';
+      grid-template-columns: 44px calc(var(--nav-lockup) * 5.7 + 13px) minmax(0, 1fr) 44px 44px;
+    }
+    :global(html:not(:lang(en))) .nav-wrap .nav--without-collection.nav--without-search {
+      grid-template-areas: 'menu mark . profile';
+      grid-template-columns: 44px calc(var(--nav-lockup) * 5.7 + 13px) minmax(0, 1fr) 44px;
     }
     :global(html:not(:lang(en))) .nav__profile-shortcut { display: inline-grid; }
     /* Both words share one size and tracking. The mark leads with the same
