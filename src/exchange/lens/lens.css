@@ -130,3 +130,10 @@
 .lens-calendar--month .lens-calendar-event,.lens-calendar--week .lens-calendar-event {white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .lens-calendar-more {display:block;border:0;background:transparent;color:var(--lens-accent);font-size:11px;padding:6px 3px;min-height:32px;text-align:left;width:100%}
 .lens-form > fieldset {grid-column:1/-1;display:block}.lens-form > .lens-metrics {grid-column:1/-1}.lens-risk-grid {margin-top:16px}.lens-metrics strong {overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+
+/* Keep the searchable cross-asset selector within small-screen layout bounds. */
+.market-lens .lens-asset-picker { margin-block-end: 1rem; }
+.market-lens .lens-asset-picker .lens-toolbar { align-items: end; }
+.market-lens .lens-asset-picker .lens-field { min-width: 0; flex: 1 1 14rem; }
+.market-lens .lens-asset-picker select, .market-lens .lens-asset-picker input { max-width: 100%; width: 100%; }
+.market-lens .lens-asset-picker > .lens-segments { flex-wrap: wrap; }

@@ -16,7 +16,7 @@ function sink() {
 describe('Market Lens candle contracts', () => {
   it('allowlists instruments, intervals, aligned bounded ranges and unique parameters', () => {
     expect(parseMarketQuery(new URLSearchParams('instrument=ETH-USD&interval=1h'), NOW)).toEqual({ instrument: 'ETH-USD', interval: '1h', start: END - 240 * STEP, end: END });
-    for (const query of ['instrument=__proto__', 'instrument=SOL-USD', 'interval=4h', 'url=https://evil.test', 'interval=1h&interval=1d', 'start=1&end=2', `interval=1h&start=${END - 901 * STEP}&end=${END}`, `interval=1h&end=${END + STEP}`]) {
+    for (const query of ['instrument=__proto__', 'instrument=UNLISTED-USD', 'interval=4h', 'url=https://evil.test', 'interval=1h&interval=1d', 'start=1&end=2', `interval=1h&start=${END - 901 * STEP}&end=${END}`, `interval=1h&end=${END + STEP}`]) {
       expect(() => parseMarketQuery(new URLSearchParams(query), NOW)).toThrow();
     }
   });
@@ -174,12 +174,12 @@ describe('Market Lens same-origin API', () => {
     expect(fetcher).not.toHaveBeenCalled();
   });
 
-  it('supports router dispatch, sets public cache headers, and sanitizes errors', async () => {
+  it('supports router dispatch, withholds CDN caching, and sanitizes errors', async () => {
     const fetcher = vi.fn().mockResolvedValueOnce(response([row(END - STEP)]));
     const res = sink();
     await handleLensMarket({ method: 'GET', url: `/api/compatibility?action=registry-lens&instrument=BTC-USD&interval=1h&start=${request.start}&end=${request.end}`, socket: { remoteAddress: 'success' } }, res, deps(fetcher));
     expect(res.statusCode).toBe(200);
-    expect(res.headers['Cache-Control']).toContain('public');
+    expect(res.headers['Cache-Control']).toContain('no-store');
     expect(JSON.parse(res.body).instrument.venue).toBe('Coinbase Exchange');
     const failed = sink();
     await handleLensMarket({ method: 'GET', url: '/api/registry/lens', socket: { remoteAddress: 'failed' } }, failed, deps(vi.fn().mockRejectedValue(new Error('secret-in-upstream-error'))));

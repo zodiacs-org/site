@@ -1,0 +1,98 @@
+{
+  "schema": "zodiacs.registry-research-item.v1",
+  "sourceType": "zodiacs-research",
+  "publisher": "Zodiacs.org Research System",
+  "byline": "Zodiacs.org Research System",
+  "method": {
+    "id": "zodiacs.registry-research-method.v1",
+    "version": 1,
+    "generator": "zodiacs.registry-research.deterministic.v1",
+    "deterministicTemplatesOnly": true,
+    "modelAuthoredProse": false,
+    "scoreRule": "The disclosed Registry Outlook sky score is copied before market comparison. Market fields cannot alter that score or its wording.",
+    "observationRule": "Follow-ups use the first archived market snapshot at or after the requested elapsed interval and report the actual elapsed time.",
+    "causalityRule": "Market changes are observations, never evidence that a sky event caused a price or liquidity movement.",
+    "publicationRule": "During the pilot, an exact artifact hash and named reviewer are required before an item enters public feeds."
+  },
+  "riskStatement": "Symbolic research—not investment advice. Market observations never alter the sky score.",
+  "scienceNote": "Astrology has no established predictive relationship with asset prices. Crypto assets can lose all value.",
+  "revisions": [],
+  "id": "zrx-event-brief-lunation-2026-10-10t15-50-02-149z-new-moon-libra",
+  "slug": "event-brief-lunation-2026-10-10t15-50-02-149z-new-moon-libra",
+  "kind": "event-brief",
+  "templateId": "event-brief.v1",
+  "issuedAt": "2026-10-06T12:00:00.000Z",
+  "visibleAt": "2026-10-10T15:50:02.149Z",
+  "eventAt": "2026-10-10T15:50:02.149Z",
+  "title": "New Moon in Libra · event brief",
+  "summary": "New Moon in Libra becomes exact at 2026-10-10T15:50:02.149Z. Its symbolic reading and later market observations remain separate.",
+  "url": "/terminal/research/event-brief-lunation-2026-10-10t15-50-02-149z-new-moon-libra/",
+  "signs": [
+    "libra"
+  ],
+  "topics": [
+    "calendar",
+    "astrology",
+    "lunation"
+  ],
+  "symbolicScore": {
+    "sign": "libra",
+    "attention": 18.3,
+    "tone": 6.7,
+    "eventIntensity": 6.7,
+    "calculation": "22 attention / 8 tone / 8 event intensity × 0.8336 horizon multiplier",
+    "marketFieldsUsed": false
+  },
+  "sections": {
+    "skyFact": {
+      "heading": "Sky fact",
+      "body": "New Moon in Libra is exact at 2026-10-10T15:50:02.149Z, according to the committed transit catalog.",
+      "evidence": [
+        "src/data/transits-2026-10.json"
+      ]
+    },
+    "traditionalReading": {
+      "heading": "Traditional reading",
+      "body": "A new Moon is scored as symbolic renewal for Libra; that is an astrology convention, not evidence of higher returns. The score calculation is 22 attention / 8 tone / 8 event intensity × 0.8336 horizon multiplier.",
+      "evidence": [
+        "src/data/transits-2026-10.json"
+      ]
+    },
+    "marketObservation": {
+      "heading": "Market observation",
+      "body": "No market outcome is attached to this precomputed event brief. A separately timestamped follow-up may be appended after an eligible archive observation.",
+      "evidence": []
+    }
+  },
+  "market": {
+    "available": false,
+    "snapshotId": null,
+    "observedAt": null
+  },
+  "evidence": {
+    "transitSource": "src/data/transits-2026-10.json",
+    "eventKey": "lunation:2026-10-10T15:50:02.149Z:new-moon-libra",
+    "groupedEvents": null,
+    "outlookEdition": "public/assets/registry-outlook.json#weekly:2026-10-06",
+    "marketSnapshotId": null,
+    "coverage": {
+      "overall": "complete",
+      "events": "complete",
+      "occupancies": "complete",
+      "expectedTransitMonths": [
+        "2026-10"
+      ],
+      "missingTransitMonths": [],
+      "missingOccupancyPlanets": []
+    }
+  },
+  "artifactHash": "cf114aadc0bd065d03fe1ed055e81ee118872b487a85d2634ac7a6ce21eaec4f",
+  "publishedAt": "2026-10-06T12:00:00.000Z",
+  "publication": {
+    "mode": "post-pilot-deterministic-allowlist",
+    "publishedAt": "2026-10-06T12:00:00.000Z",
+    "reviewer": null,
+    "artifactSha256": "cf114aadc0bd065d03fe1ed055e81ee118872b487a85d2634ac7a6ce21eaec4f"
+  },
+  "status": "approved"
+}

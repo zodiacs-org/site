@@ -11,11 +11,11 @@ interface Props {
   onSelectEvent: (event: SkyEvent) => void;
 }
 
-function contiguousRuns(points: Indicators['sma20'], seconds: number) {
+function contiguousRuns(points: Indicators['sma20'], seconds: number, data: MarketDataset) {
   const runs: Indicators['sma20'][] = [];
   for (const point of points) {
     const current = runs.at(-1);
-    if (!current || point.time - current.at(-1)!.time !== seconds) runs.push([point]);
+    if (!current || point.time !== (data.candles.find(c => c.time === current.at(-1)!.time)?.nextTime ?? current.at(-1)!.time + seconds)) runs.push([point]);
     else current.push(point);
   }
   return runs;
@@ -73,7 +73,7 @@ export default function ChartPanel({ data, indicators, events, selectedEvent, ti
       const first = data.candles[0].time;
       const last = data.candles[data.candles.length - 1].time;
       const chartData = [];
-      for (let time = first; time <= last; time += seconds) {
+      for (const time of [...new Set([...data.candles.map(c => c.time), ...data.coverage.gaps.filter(t => t >= first && t <= last)])].sort((a,b) => a-b)) {
         const candle = byTime.get(time);
         chartData.push(candle
           ? { time: time as UTCTimestamp, open: candle.open, high: candle.high, low: candle.low, close: candle.close }
@@ -87,14 +87,14 @@ export default function ChartPanel({ data, indicators, events, selectedEvent, ti
         const curves = [[indicators.sma20, '#aebce9', 'SMA 20'], [indicators.sma50, '#d6b6da', 'SMA 50'], [indicators.ema20, '#e3c8a9', 'EMA 20']] as const;
         for (const [points, color, title] of curves) {
           // Separate series avoid a line connecting computed values across a gap.
-          for (const run of contiguousRuns(points, seconds)) {
+          for (const run of contiguousRuns(points, seconds, data)) {
             const line = chart.addSeries(lib.LineSeries, { color, lineWidth: 1, title, priceLineVisible: false, lastValueVisible: false });
             line.setData(run.map((p) => ({ time: p.time as UTCTimestamp, value: p.value })));
           }
         }
       }
       if (showRSI) {
-        const runs = contiguousRuns(indicators.rsi14, seconds);
+        const runs = contiguousRuns(indicators.rsi14, seconds, data);
         for (const [index, run] of runs.entries()) {
           const rsi = chart.addSeries(lib.LineSeries, { color: '#c5b8e7', lineWidth: 1, title: 'RSI 14', priceLineVisible: false, lastValueVisible: index === runs.length - 1 }, 1);
           rsi.setData(run.map((p) => ({ time: p.time as UTCTimestamp, value: p.value })));
@@ -111,7 +111,7 @@ export default function ChartPanel({ data, indicators, events, selectedEvent, ti
         const window = event.personal.window;
         return [event, { ...event, at: window.startUtc, subtype: 'window-entry' }, { ...event, at: window.endUtc, subtype: 'window-exit' }];
       });
-      const markers = markerEvents.map((event) => ({ event, bucket: Math.floor(Date.parse(event.at) / 1000 / seconds) * seconds }))
+      const markers = markerEvents.map((event) => ({ event, bucket: data.sessions ? data.sessions.find(s => Date.parse(event.at)/1000 >= s.open && Date.parse(event.at)/1000 < s.close)?.open ?? -1 : Math.floor(Date.parse(event.at) / 1000 / seconds) * seconds }))
         .filter(({ bucket }) => byTime.has(bucket))
         .sort((a, b) => a.bucket - b.bucket || a.event.id.localeCompare(b.event.id));
       lib.createSeriesMarkers(series, markers.map(({ event, bucket }) => ({
@@ -150,15 +150,15 @@ export default function ChartPanel({ data, indicators, events, selectedEvent, ti
     </div>
     <div class="lens-chart" ref={host} data-testid="lens-chart" aria-label="Candlestick chart with volume, technical indicators, and astronomical event markers" />
     {error && <p class="lens-error" role="alert">{error}</p>}
-    {!data && <p class="lens-chart-empty">Loading public candles…</p>}
+    {!data && <p class="lens-chart-empty">No verified prices are available for this selection.</p>}
     <div class="lens-chart-foot"><span>SMA 20 · SMA 50 · EMA 20 · RSI 14 · base-asset volume</span>
       <div class="lens-inline"><button class="lens-button lens-button--quiet" onClick={() => api.current?.timeScale().fitContent()}>Fit history</button><a href="https://www.tradingview.com/" target="_blank" rel="noopener noreferrer">Charting by TradingView</a></div></div>
     <details class="lens-data-table"><summary>Accessible prices &amp; indicators · latest 20 finalized candles</summary>
-      <div class="lens-table-scroll"><table><caption>{data?.instrument.id ?? 'Selected instrument'} · {data?.interval} · Coinbase Exchange</caption>
+      <div class="lens-table-scroll"><table><caption>{data?.instrument.id ?? 'Selected instrument'} · {data?.interval} · {data?.attribution ?? data?.instrument.venue}</caption>
         <thead><tr><th scope="col">Time ({timeZone})</th><th scope="col">Open</th><th scope="col">High</th><th scope="col">Low</th><th scope="col">Close</th><th scope="col">Volume</th><th scope="col">SMA 20</th><th scope="col">SMA 50</th><th scope="col">EMA 20</th><th scope="col">RSI 14</th></tr></thead>
         <tbody>{data?.candles.filter((c) => c.complete).slice(-20).reverse().map((c) => <tr key={c.time}><th scope="row">{new Intl.DateTimeFormat('en', { timeZone, month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }).format(new Date(c.time * 1000))}</th>{[c.open, c.high, c.low, c.close, c.volume, ...indicatorValues.map((values) => values.get(c.time))].map((n) => <td>{n === undefined ? 'Unavailable' : n.toLocaleString('en', { maximumFractionDigits: 2 })}</td>)}</tr>)}</tbody>
       </table></div>
-      {latest && <p class="lens-muted">Last finalized close: ${latest.close.toLocaleString('en', { maximumFractionDigits: 2 })}. Indicator calculations use finalized candles and restart after gaps.</p>}
+      {latest && <p class="lens-muted">Last finalized close: {latest.close.toLocaleString('en', { maximumFractionDigits: 5 })} {data?.instrument.quote}. Indicator calculations use finalized candles and restart after gaps.</p>}
     </details>
   </section>;
 }

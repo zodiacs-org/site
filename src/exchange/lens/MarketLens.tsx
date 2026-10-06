@@ -1,3 +1,4 @@
+import { isInstrumentId } from './catalog';
 import { profileAccessAllowed } from '../../lib/account-v2/profile-access-reader';
 import { explicitSelfChart, loadProfile } from '../../lib/profile/read-store';
 import { lazyPanel } from './lazy-panel';
@@ -9,7 +10,8 @@ import { INSTRUMENTS, loadMarketDataset } from './market';
 import { calculateIndicators } from './indicators';
 import { eventDay, eventICS, formatEventDate, formatEventTime, loadEvents } from './events';
 import { evaluateRules } from './rules';
-import { createJournalEntry, exportStore, importStore, readStore, compareAndSaveStore, clearPersonalContext, LensConflictError, MAX_IMPORT_BYTES, updateJournalEntry, type LensStore } from './storage';
+import { emptyStore, createJournalEntry, exportStore, importStore, readStore, compareAndSaveStore, clearPersonalContext, LensConflictError, MAX_IMPORT_BYTES, updateJournalEntry, type LensStore } from './storage';
+const AssetPicker = lazyPanel(() => import('./AssetPicker'));
 const ChartPanel = lazyPanel(() => import('./ChartPanel'));
 const CalendarPanel = lazyPanel(() => import('./CalendarPanel'));
 const HistoryPanel = lazyPanel(() => import('./HistoryPanel'));
@@ -25,14 +27,15 @@ const PersonalDetail = lazyPanel(() => import('./PersonalDetail'));
 
 const FAMILIES: EventFamily[] = ['lunation', 'eclipse', 'station', 'retrograde', 'ingress', 'aspect'];
 const admitPersonalContext = (store: LensStore, session?: { id: string; updatedAt: string } | null) => { const own = explicitSelfChart(loadProfile().charts); const source = session?.id === 'session' && profileAccessAllowed() ? session : own; return clearPersonalContext(store, source?.id ?? null, source?.updatedAt); };
-const EMPTY_STORE: LensStore = { schema: 1, rules: [], entries: [], seenMatches: [] };
-const money = (n: number) => n.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 });
+const EMPTY_STORE: LensStore = emptyStore();
+const money = (n: number, currency: string) => currency === 'GBX' ? `${n.toLocaleString('en-US')} GBX` : n.toLocaleString('en-US', {style:'currency', currency, maximumFractionDigits:5});
 const download = (name: string, content: string, type: string) => {
   const url = URL.createObjectURL(new Blob([content], { type }));
   const a = document.createElement('a'); a.href = url; a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
 };
 
 export default function MarketLens({ manifest }: { manifest: EventManifest }) {
+  const [preferencesReady, setPreferencesReady] = useState(false);
   const [instrument, setInstrument] = useState<InstrumentId>('BTC-USD');
   const [interval, setInterval] = useState<Interval>('1d');
   const [timeZone, setTimeZone] = useState('UTC');
@@ -71,18 +74,20 @@ export default function MarketLens({ manifest }: { manifest: EventManifest }) {
       const preferences = JSON.parse(localStorage.getItem('zodiacs-market-lens-preferences-v1') ?? '{}');
       const zone = preferences.timeZone || Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
       new Intl.DateTimeFormat('en', { timeZone: zone }).format(); setTimeZone(zone); setSelectedDate(eventDay(Date.now(), zone));
-      if (preferences.instrument === 'BTC-USD' || preferences.instrument === 'ETH-USD') setInstrument(preferences.instrument);
+      if (isInstrumentId(preferences.instrument)) setInstrument(preferences.instrument);
       if (preferences.interval === '1h' || preferences.interval === '1d') setInterval(preferences.interval);
       if (Array.isArray(preferences.families) && preferences.families.every((f: EventFamily) => FAMILIES.includes(f))) setFamilies(preferences.families);
     } catch { /* Public view preferences are optional; note storage errors are explicit. */ }
+    setPreferencesReady(true);
     readStore().then((saved) => { const admitted = admitPersonalContext(saved, liveChartRef.current); storeRef.current = saved; setStore(admitted); setStorageReady(true); }).catch(() => setStorageError('Private storage is unavailable. Your calendar and chart still work; notes and rules cannot be saved in this browser.'));
     const timer = window.setInterval(() => { setClock(Date.now()); setRefresh((n) => n + 1); }, 60000);
     return () => window.clearInterval(timer);
   }, []);
 
   useEffect(() => {
+    if (!preferencesReady) return;
     try { localStorage.setItem('zodiacs-market-lens-preferences-v1', JSON.stringify({ instrument, interval, timeZone, families })); } catch { /* Optional preferences. */ }
-  }, [instrument, interval, timeZone, families]);
+  }, [instrument, interval, timeZone, families, preferencesReady]);
 
   useEffect(() => {
     const controller = new AbortController(); setLoading(true); setMarketError('');
@@ -158,15 +163,16 @@ export default function MarketLens({ manifest }: { manifest: EventManifest }) {
   const zoneOptions = [...new Set([timeZone, 'UTC', 'Asia/Bangkok', 'Asia/Kathmandu', 'America/New_York', 'Europe/London'])];
 
   return <div class="market-lens" data-testid="market-lens" data-storage-state={storageReady ? 'ready' : storageError ? 'unavailable' : 'loading'}>
+    <AssetPicker value={instrument} onChange={setInstrument} />
     <div class="lens-toolbar">
-      <label class="lens-field">Instrument<select data-testid="lens-instrument" value={instrument} onChange={(e) => setInstrument(e.currentTarget.value as InstrumentId)}>{Object.values(INSTRUMENTS).map((i) => <option value={i.id}>{i.name} · {i.id}</option>)}</select></label>
+
       <div class="lens-field"><span>Candles</span><div class="lens-segments">{(['1h', '1d'] as const).map((value) => <button aria-pressed={interval === value} onClick={() => setInterval(value)}>{value === '1h' ? '1 hour' : '1 day'}</button>)}</div></div>
       <label class="lens-field">Display timezone<select value={timeZone} onChange={(e) => setTimeZone(e.currentTarget.value)}>{zoneOptions.map((zone) => <option value={zone}>{zone.replaceAll('_', ' ')}</option>)}</select></label>
       <button class="lens-button lens-refresh" disabled={loading} onClick={() => setRefresh((n) => n + 1)}>{loading ? 'Refreshing…' : 'Refresh candles'}</button>
     </div>
     <div class="lens-market-summary" aria-live="polite">
-      <div><span class="lens-market-symbol">{instrument}</span><strong>{last ? money(last.close) : '—'}</strong><span class={change !== null && change < 0 ? 'lens-down' : 'lens-up'}>{change === null ? '' : `${change >= 0 ? '+' : ''}${change.toFixed(2)}% previous candle`}</span></div>
-      <p>Coinbase Exchange · USD quote · {data ? `${data.candles.filter((c) => c.complete).length} finalized candles` : 'awaiting public data'}<br />{data && <>Fetched {formatEventDate(data.fetchedAt, timeZone)} · {formatEventTime(data.fetchedAt, timeZone)} · {data.stale || marketError ? 'stale / previous response' : 'latest response'} · {data.coverage.gaps.length} missing buckets</>}</p>
+      <div><span class="lens-market-symbol">{instrument}</span><strong>{last ? money(last.close, INSTRUMENTS[instrument].quote) : '—'}</strong><span class={change !== null && change < 0 ? 'lens-down' : 'lens-up'}>{change === null ? '' : `${change >= 0 ? '+' : ''}${change.toFixed(2)}% previous candle`}</span></div>
+      <p>{INSTRUMENTS[instrument].venue} · {INSTRUMENTS[instrument].quote} quote · {data ? `${data.candles.filter((c) => c.complete).length} finalized candles` : 'awaiting public data'}<br />{data && <>Fetched {formatEventDate(data.fetchedAt, timeZone)} · {formatEventTime(data.fetchedAt, timeZone)} · {data.stale || marketError ? 'stale / previous response' : 'latest response'} · {data.coverage.gaps.length} missing buckets</>}</p>
     </div>
     {marketError && <p class="lens-error" role="alert">{marketError}</p>}
     {data?.warnings.map((warning) => <p class="lens-notice">{warning}</p>)}

@@ -1,3 +1,4 @@
+import { collectTwelveData } from './lens-providers.js';
 import {
   INSTRUMENTS, INTERVAL_SECONDS, MarketDataError, normalizeCoinbaseCandles, parseMarketQuery,
   type MarketRequest,
@@ -110,6 +111,9 @@ export async function collectMarketDataset(request: MarketRequest, dependencies:
   const nowMs = (dependencies.now ?? Date.now)();
   // Validate direct callers too; bounded requests are part of this adapter's contract.
   parseMarketQuery(new URLSearchParams({ instrument: request.instrument, interval: request.interval, start: String(request.start), end: String(request.end) }), nowMs / 1000);
+  const provider = INSTRUMENTS[request.instrument].provider;
+  if (provider?.id === 'twelve-data') return collectTwelveData(request, dependencies);
+  if (provider?.id !== 'coinbase') throw new MarketDataError('unavailable', 'Price coverage is unavailable for this instrument.');
   const key = cacheKey(request);
   const cache = dependencies.cache ?? sharedCache;
   const previous = cache.get(key);
@@ -162,8 +166,8 @@ function sendJson(res: any, status: number, body: MarketDataset | { error: strin
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Robots-Tag', 'noindex');
-  // CDN caching is short and keyed by the full allowlisted query string.
-  res.setHeader('Cache-Control', status === 200 && 'stale' in body && !body.stale ? 'public, max-age=15, s-maxage=30' : 'private, no-store');
+  // Prevent intermediary retention after entitlement changes.
+  res.setHeader('Cache-Control', 'private, no-store');
   res.end(JSON.stringify(body));
 }
 
@@ -186,7 +190,7 @@ export async function handleLensMarket(req: any, res: any, dependencies: MarketD
     const request = parseMarketQuery(url.searchParams, nowMs / 1000);
     // Public API availability is separate from permission to display its data.
     // Hosted previews and production remain closed until the owner has a grant.
-    if (process.env.VERCEL === '1' && process.env.MARKET_LENS_COINBASE_DISPLAY_ENABLED !== '1') {
+    if (process.env.VERCEL === '1' && (INSTRUMENTS[request.instrument].provider?.id === 'coinbase' ? process.env.MARKET_LENS_COINBASE_DISPLAY_ENABLED !== '1' : process.env.MARKET_LENS_TWELVE_DATA_DISPLAY_ENABLED !== '1')) {
       sendJson(res, 503, { error: 'display-disabled', message: 'Market prices are not enabled for this deployment. The calendar and journal remain available.' });
       return;
     }

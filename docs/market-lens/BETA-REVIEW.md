@@ -1,14 +1,8 @@
 # Protected beta review
 
-The patched Lens application is ready at
-[the protected preview](https://zodiacs-org-git-codex-lens-preview-20261001-zodiacsofficial.vercel.app/terminal/lens/).
-It uses application `e7cbc8d5`, which passes all 19 hosted CI jobs. Main's
-subsequent consumer changes are integrated into the review branch; refresh
-this preview from that integrated source and verify hosted acceptance before
-inviting reviewers. See [OPERATIONS.md](OPERATIONS.md) for the current checkpoint.
-Vercel Authentication requires an authorized reviewer. Prices remain disabled
-while written display rights are unresolved. The calendar, private setup/risk
-planner and journal can be reviewed now. No production release occurred.
+Updated 7 October 2026, Asia/Bangkok. Cross-asset review builds on the existing draft PR #619. The stable [protected preview](https://zodiacs-org-git-codex-lens-preview-20261001-zodiacsofficial.vercel.app/terminal/lens/) is being refreshed; exact source and hosted acceptance are recorded in LOCAL-CONTINUATION.md. Do not invite reviewers until that acceptance is verified.
+
+Vercel Authentication remains enabled. An authorized session or short-lived same-project OIDC binding provides review access without public sharing. Prices remain disabled while written display rights are unresolved. Catalog search, calendars, private setup/risk planning and journals can be reviewed; unsupported metadata refuses sizing. No production release, invitations or feedback are recorded.
 
 Invite three to five traders through the owner's existing channel after
 granting preview access. No invitations have been sent in this session.
@@ -18,7 +12,7 @@ Allow 15–20 minutes per reviewer and ask them to perform these tasks:
    personal contact and identify its entry, exact contact, exit and uncertainty.
 2. Change calendar view, timezone and orb. Explain which items are personal,
    shared sky or economic releases, and inspect an unavailable/stale schedule.
-3. Save a hypothetical cash spot setup with confirmation and invalidation;
+3. Search across asset classes, favorite a stock/ETF/FX pair, reload and confirm the exact venue/currency. Distinguish reference indexes and commodity proxies. Save a hypothetical cash spot setup with confirmation and invalidation;
    compare fees/slippage, cash cap and optional target, then revise the plan.
 4. Record a journal hypothesis, reload, find the original and revision, and
    export a private backup. Test a conflicting edit in a second tab.
@@ -31,8 +25,4 @@ steps rather than birth data, private journal contents or trading-account
 screenshots. The owner keeps feedback private. Fix blocked tasks before
 expanding the group; review again after enabling a licensed price feed.
 
-Automated local evidence is in revised-acceptance.json (30 Lens browser
-checks), LAUNCH.md (17 native calculator checks) and the synthetic screenshots.
-Actual hosted Lens API/browser acceptance still requires the secure
-`VERCEL_AUTOMATION_BYPASS_SECRET` binding for this preview host; the current
-cloud runtime receives an authentication redirect before reaching the app.
+Fresh local browser evidence: 18 existing Lens checks, 5 cross-asset synthetic/disabled scenarios and 17 web calculator ownership checks. See LOCAL-CONTINUATION.md and cross-asset-acceptance.json. Historical revised-acceptance.json remains a dated record. This is not native iOS or licensed live-market acceptance. After grants and provider enablement, repeat actual chart/API/session freshness checks before a live-data beta.

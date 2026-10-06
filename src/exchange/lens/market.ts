@@ -1,9 +1,7 @@
-import type { Candle, Instrument, InstrumentId, Interval, MarketDataset } from './types';
+import type { Candle, InstrumentId, Interval, MarketDataset } from './types';
 
-export const INSTRUMENTS: Record<InstrumentId, Instrument> = {
-  'BTC-USD': { id: 'BTC-USD', name: 'Bitcoin', base: 'BTC', quote: 'USD', venue: 'Coinbase Exchange', sourceUrl: 'https://exchange.coinbase.com/trade/BTC-USD' },
-  'ETH-USD': { id: 'ETH-USD', name: 'Ethereum', base: 'ETH', quote: 'USD', venue: 'Coinbase Exchange', sourceUrl: 'https://exchange.coinbase.com/trade/ETH-USD' },
-};
+import { INSTRUMENTS } from './catalog.js';
+export { INSTRUMENTS } from './catalog.js';
 export const INTERVAL_SECONDS: Record<Interval, number> = { '1h': 3600, '1d': 86400 };
 export const MAX_MARKET_BARS = 900;
 export const DEFAULT_MARKET_BARS = 240;
@@ -131,6 +129,14 @@ export async function loadMarketDataset(
     throw new MarketDataError(response.status === 429 ? 'rate-limit' : 'unavailable', response.status === 429 ? 'Refresh limit reached. Try again shortly.' : 'Market data is unavailable. The calendar and journal remain available.');
   }
   const dataset: unknown = await response.json();
+  const bounds = (dataset as MarketDataset)?.coverage;
+  if ((request.start !== undefined && bounds?.requestedStart !== request.start) || (request.end !== undefined && bounds?.requestedEnd !== request.end)) throw new MarketDataError('response', 'The market response is invalid: response range differs from request.');
+  if ((dataset as {schema?:unknown})?.schema === 2) {
+    const { validateSessionDataset } = await import('./provider-contract.js');
+    if (!validateSessionDataset(dataset)) throw new MarketDataError('response', 'Invalid session dataset.');
+    if (dataset.instrument.id !== request.instrument || dataset.interval !== request.interval) throw new MarketDataError('response', 'Wrong instrument or interval.');
+    return { ...dataset, instrument: INSTRUMENTS[request.instrument] };
+  }
   if (!isDataset(dataset) || dataset.instrument.id !== request.instrument || dataset.interval !== request.interval) throw new MarketDataError('response', 'The market response is invalid.');
   // Protect consumers of the contract as well as the upstream API boundary.
   const normalized = normalizeCoinbaseCandles(dataset.candles.map((bar) => [bar.time, bar.low, bar.high, bar.open, bar.close, bar.volume]), { interval: dataset.interval, start: dataset.coverage.requestedStart, end: dataset.coverage.requestedEnd, now: new Date(dataset.fetchedAt).getTime() / 1000 });

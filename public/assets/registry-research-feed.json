@@ -32,6 +32,47 @@
       "status": "scheduled"
     },
     {
+      "id": "zrx-daily-market-brief-2026-10-06",
+      "slug": "daily-market-brief-2026-10-06",
+      "kind": "daily-market-brief",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-06T12:00:00.000Z",
+      "visibleAt": "2026-10-06T12:00:00.000Z",
+      "title": "Jupiter in Leo · daily market brief",
+      "summary": "Jupiter in Leo leads the disclosed symbolic index; Leo market measures are recorded separately.",
+      "url": "/terminal/research/daily-market-brief-2026-10-06/",
+      "signs": [
+        "leo"
+      ],
+      "topics": [
+        "markets",
+        "daily-sky",
+        "occupancy"
+      ],
+      "status": "scheduled"
+    },
+    {
+      "id": "zrx-market-check-2026-10-06",
+      "slug": "market-check-2026-10-06",
+      "kind": "market-check",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-06T12:00:00.000Z",
+      "visibleAt": "2026-10-06T12:00:00.000Z",
+      "title": "Leo market check · 2026-10-06",
+      "summary": "Leo market comparison is delayed because the paired archive snapshot is unavailable.",
+      "url": "/terminal/research/market-check-2026-10-06/",
+      "signs": [
+        "leo"
+      ],
+      "topics": [
+        "markets",
+        "market-check"
+      ],
+      "status": "scheduled"
+    },
+    {
       "id": "zrx-event-brief-aspect-2026-10-04t12-25-54-014z-sun-opposition-saturn",
       "slug": "event-brief-aspect-2026-10-04t12-25-54-014z-sun-opposition-saturn",
       "kind": "event-brief",

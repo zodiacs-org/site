@@ -37,6 +37,7 @@ export interface OccurrenceSummary {
 }
 
 export interface OccurrenceOptions {
+  sessions?: import('./sessions').TradingSession[];
   interval: Interval;
   horizonHours?: number;
   beforeHours?: number;
@@ -86,7 +87,7 @@ export function analyzeOccurrences(events: SkyEvent[], candles: Candle[], option
   const byTime = new Map<number, Candle>();
   for (const candle of candles) {
     if (byTime.has(candle.time)) throw new Error('History candles contain duplicate timestamps.');
-    if (!Number.isInteger(candle.time) || candle.time % step !== 0) throw new Error('History candles must use UTC interval starts.');
+    if (!Number.isInteger(candle.time) || (!options.sessions && candle.time % step !== 0)) throw new Error('History candles must use UTC interval starts.');
     if (![candle.open, candle.high, candle.low, candle.close, candle.volume].every(Number.isFinite)
       || Math.min(candle.open, candle.high, candle.low, candle.close) <= 0 || candle.volume < 0
       || candle.low > Math.min(candle.open, candle.close) || candle.high < Math.max(candle.open, candle.close)) throw new Error('History candles contain invalid prices.');
@@ -98,23 +99,31 @@ export function analyzeOccurrences(events: SkyEvent[], candles: Candle[], option
     if (!Number.isFinite(exact)) throw new Error('History event instant is invalid.');
     if (ids.has(event.id)) throw new Error('History events contain duplicate IDs.');
     ids.add(event.id);
-    const anchor = Math.floor(exact / step) * step;
-    const windowStart = anchor - before;
-    const windowEnd = anchor + horizon;
+    const schedule = options.sessions;
+    const index = schedule?.findIndex(s => s.close > exact) ?? -1;
+    const anchor = schedule ? schedule[index]?.open ?? exact : Math.floor(exact / step) * step;
+    const beforeCount = before / step, afterCount = horizon / step;
+    const windowStart = schedule ? schedule[index-beforeCount]?.open ?? anchor-before : anchor - before;
+    const windowEnd = schedule ? schedule[index+afterCount-1]?.close ?? Infinity : anchor + horizon;
+    const baselineTime = schedule ? schedule[index-1]?.open : anchor-step;
+    const pastTime = schedule ? schedule[index-beforeCount-1]?.open : windowStart-step;
+    const outcomeTime = schedule ? schedule[index+afterCount-1]?.open : windowEnd-step;
     // Include the close at the beginning of the before window, not just
     // the bars whose opens happen within it.
     const requiredTimes = [];
-    for (let at = windowStart - step; at < windowEnd; at += step) requiredTimes.push(at);
+    if (schedule) { for (let n = index-beforeCount-1; n < index+afterCount; n++) requiredTimes.push(schedule[n]?.open ?? -1); }
+    else for (let at = windowStart - step; at < windowEnd; at += step) requiredTimes.push(at);
     const missingTimes = requiredTimes.filter((time) => !byTime.has(time));
-    const unfinished = requiredTimes.some((time) => byTime.has(time) && !byTime.get(time)!.complete);
+    const unfinished = requiredTimes.some(time => byTime.has(time) && (!byTime.get(time)!.complete || (byTime.get(time)!.closeTime ?? time+step) > now));
+    const split = requiredTimes.some(time => byTime.get(time)?.adjustmentBreak);
     const pending = windowEnd > now || unfinished;
-    const status = pending ? 'pending' : missingTimes.length ? 'incomplete' : 'complete';
-    const observation: Occurrence = { event, status, reason: pending ? 'Outcome window has not finalized.' : missingTimes.length ? 'Required UTC candles are missing.' : null,
+    const status = pending ? 'pending' : missingTimes.length || split ? 'incomplete' : 'complete';
+    const observation: Occurrence = { event, status, reason: pending ? 'Outcome window has not finalized.' : missingTimes.length ? 'Required session candles are missing.' : split ? 'Window crosses an unadjusted corporate action.' : null,
       anchor, windowStart, windowEnd, beforeReturnPct: null, returnPct: null, rangePct: null, volatilityPct: null, reversal: null, missingTimes, overlappingIds: [], linkedIds: event.linkedIds ?? [] };
     if (status === 'complete') {
-      const baseline = byTime.get(anchor - step)!.close;
-      const past = byTime.get(windowStart - step)!.close;
-      const outcome = byTime.get(windowEnd - step)!.close;
+      const baseline = byTime.get(baselineTime!)!.close;
+      const past = byTime.get(pastTime!)!.close;
+      const outcome = byTime.get(outcomeTime!)!.close;
       const after = requiredTimes.filter((time) => time >= anchor).map((time) => byTime.get(time)!);
       observation.beforeReturnPct = pct(baseline, past);
       observation.returnPct = pct(outcome, baseline);
@@ -143,7 +152,7 @@ export function analyzeOccurrences(events: SkyEvent[], candles: Candle[], option
     meanVolatilityPct: mean(completed.map(row => row.volatilityPct!)), reversalFraction: mean(completed.flatMap(row => row.reversal === null ? [] : [row.reversal ? 1 : 0])),
     positiveFraction: returns.length ? returns.filter((value) => value > 0).length / returns.length : null,
     returnDistribution: returns,
-    convention: `UTC ${options.interval} bars; baseline is the finalized close before the bar containing the exact event. Before window: ${before / 3600} hours; after window: ${horizon / 3600} hours. Aggregates include complete windows only. Overlapping and linked observations are flagged; aggregate rows are not independent samples.`,
+    convention: `${options.sessions ? 'Verified trading sessions; off-session events anchor to the next session. Horizons count sessions (1/3/7), not elapsed days.' : 'UTC'} ${options.interval} bars; baseline is the finalized close before the bar containing the exact event. Before window: ${before / 3600} hours; after window: ${horizon / 3600} hours. Aggregates include complete windows only. Overlapping and linked observations are flagged; aggregate rows are not independent samples.`,
   };
 }
 

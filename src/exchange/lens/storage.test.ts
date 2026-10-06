@@ -16,7 +16,7 @@ const makeRule = (): WatchRule => ({
   condition: 'rsi-cross-up', threshold: 50, family: 'lunation',
   windowHours: 6, enabled: true, createdAt: START,
 });
-const makeStore = (): LensStore => ({ schema: 1, entries: [makeEntry()], rules: [makeRule()], seenMatches: ['reminder-one'] });
+const makeStore = (): LensStore => ({ ...emptyStore(), entries: [makeEntry()], rules: [makeRule()], seenMatches: ['reminder-one'] });
 
 afterEach(() => vi.unstubAllGlobals());
 
@@ -81,7 +81,7 @@ describe('versioned workspace backup', () => {
 
   it('rejects unsupported schemas, poisoned fields, oversized files, and duplicate IDs', () => {
     expect(() => importStore('{')).toThrow('valid Market Lens JSON');
-    expect(() => importStore(JSON.stringify({ ...emptyStore(), schema: 2 }))).toThrow('schema version');
+    expect(() => importStore(JSON.stringify({ ...emptyStore(), schema: 99 }))).toThrow('schema version');
     expect(() => importStore('{"schema":1,"rules":[],"entries":[],"seenMatches":[],"__proto__":{"polluted":true}}')).toThrow('unsupported fields');
     expect(() => importStore(' '.repeat(MAX_IMPORT_BYTES + 1))).toThrow('bytes');
     const store = makeStore();

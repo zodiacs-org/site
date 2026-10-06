@@ -1,3 +1,4 @@
+import { INSTRUMENTS, CATALOG_VERSION } from './catalog';
 import type { EventFamily, JournalEntry, JournalRevision, SetupPlan, WatchRule } from './types';
 import { estimateRisk } from './risk';
 
@@ -11,7 +12,8 @@ const FAMILIES: EventFamily[] = ['lunation', 'eclipse', 'station', 'retrograde',
 const CONDITIONS = ['sma-cross-up', 'sma-cross-down', 'price-cross-up', 'price-cross-down', 'rsi-cross-up', 'rsi-cross-down'];
 
 export interface LensStore {
-  schema: 1;
+  schema: 1 | 2;
+  catalogVersion?: string;
   rules: WatchRule[];
   entries: JournalEntry[];
   seenMatches: string[];
@@ -39,7 +41,7 @@ export class LensConflictError extends LensStorageError {
 }
 
 export function emptyStore(): LensStore {
-  return { schema: 1, rules: [], entries: [], seenMatches: [] };
+  return { schema: 2, catalogVersion: CATALOG_VERSION, rules: [], entries: [], seenMatches: [] };
 }
 
 /** Opens only the separate Market Lens database. Never reads natal/account stores. */
@@ -253,16 +255,24 @@ function revision(at: string, contents: Pick<JournalEntry, 'hypothesis' | 'plan'
 
 export function validateStore(value: unknown): LensStore {
   const obj = record(value, 'Workspace');
-  keys(obj, ['schema', 'rules', 'entries', 'seenMatches', 'exportedAt'], 'Workspace');
-  if (obj.schema !== 1) throw new Error('This Market Lens schema version is not supported.');
+  keys(obj, ['schema', 'catalogVersion', 'rules', 'entries', 'seenMatches', 'exportedAt'], 'Workspace');
+  if (obj.schema !== 1 && obj.schema !== 2) throw new Error('This Market Lens schema version is not supported.');
   if (obj.exportedAt !== undefined) timestamp(obj.exportedAt, 'Export time');
   const rules = array(obj.rules, 200, 'Rules').map(validateRule);
   const entries = array(obj.entries, 500, 'Journal entries').map(validateEntry);
+  for (const entry of entries) for (const setup of [entry.setup, ...entry.revisions.map(r => r.setup)]) {
+    if (setup?.risk.instrumentId && setup.risk.instrumentId !== entry.instrument) throw new Error('Risk instrument does not match its journal entry.');
+    if (setup && !['BTC-USD', 'ETH-USD'].includes(entry.instrument) && !setup.risk.instrumentId) throw new Error('Cross-asset risk requires explicit instrument and currency.');
+  }
   const seenMatches = array(obj.seenMatches, 10_000, 'Reminder history').map(value => text(value, 512, 'Reminder key'));
   unique(rules.map(rule => rule.id), 'Rule IDs');
   unique(entries.map(entry => entry.id), 'Journal IDs');
   unique(seenMatches, 'Reminder keys');
-  return { schema: 1, rules, entries, seenMatches };
+  // Legacy v1 BTC/ETH IDs and every authored revision are retained exactly.
+  // The same IndexedDB key is upgraded on the next atomic save, never by a blind write.
+  if (obj.schema === 1 && [...rules, ...entries].some(row => !['BTC-USD', 'ETH-USD'].includes(row.instrument))) throw new Error('Legacy v1 only supports BTC/ETH records.');
+  if (obj.schema === 2 && obj.catalogVersion !== CATALOG_VERSION) throw new Error('Unsupported instrument catalog version; preserve this export.');
+  return { schema: 2, catalogVersion: CATALOG_VERSION, rules, entries, seenMatches };
 }
 
 function validateRule(value: unknown): WatchRule {
@@ -271,7 +281,7 @@ function validateRule(value: unknown): WatchRule {
   const condition = oneOf(obj.condition, CONDITIONS, 'Rule condition') as WatchRule['condition'];
   const rule: WatchRule = {
     id: identifier(obj.id, 'Rule ID'), version: integer(obj.version, 1, 1_000_000, 'Rule version'),
-    instrument: oneOf(obj.instrument, ['BTC-USD', 'ETH-USD'], 'Instrument') as WatchRule['instrument'],
+    instrument: oneOf(obj.instrument, Object.keys(INSTRUMENTS), 'Instrument') as WatchRule['instrument'],
     interval: oneOf(obj.interval, ['1h', '1d'], 'Interval') as WatchRule['interval'],
     condition, family: oneOf(obj.family, [...FAMILIES, 'any'], 'Event family') as WatchRule['family'],
     windowHours: finite(obj.windowHours, 0, 720, 'Research window'),
@@ -306,7 +316,7 @@ function validateEntry(value: unknown): JournalEntry {
   unique(eventIds, 'Linked event IDs');
   return {
     id: identifier(obj.id, 'Journal ID'),
-    instrument: oneOf(obj.instrument, ['BTC-USD', 'ETH-USD'], 'Instrument') as JournalEntry['instrument'],
+    instrument: oneOf(obj.instrument, Object.keys(INSTRUMENTS), 'Instrument') as JournalEntry['instrument'],
     createdAt, updatedAt, eventIds, horizonHours: finite(obj.horizonHours, 0, 8_760, 'Journal horizon'),
     method: oneOf(obj.method, ['TA only', 'TA + astrology'], 'Journal method') as JournalEntry['method'],
     hypothesis, plan, outcome, revisions, ...(obj.chartRef === undefined ? {} : { chartRef: validateChartRef(obj.chartRef) }), ...(setup ? { setup } : {}),
@@ -317,8 +327,14 @@ function validateSetup(value: unknown): SetupPlan {
   const obj = record(value, 'Setup');
   keys(obj, ['interval', 'technicalSetup', 'confirmation', 'invalidation', 'risk', 'window'], 'Setup');
   const raw = record(obj.risk, 'Risk');
-  keys(raw, ['equity', 'riskMode', 'riskValue', 'entry', 'stop', 'target', 'feeBps', 'slippageBps'], 'Risk');
-  const risk: SetupPlan['risk'] = { equity: finite(raw.equity, Number.MIN_VALUE, 1e12, 'Equity'), riskMode: oneOf(raw.riskMode, ['percent', 'usd'], 'Risk mode') as 'percent' | 'usd', riskValue: finite(raw.riskValue, Number.MIN_VALUE, 1e12, 'Risk value'), entry: finite(raw.entry, Number.MIN_VALUE, 1e12, 'Entry'), stop: finite(raw.stop, Number.MIN_VALUE, 1e12, 'Stop'), feeBps: finite(raw.feeBps, 0, 1000, 'Fees'), slippageBps: finite(raw.slippageBps, 0, 1000, 'Slippage'), ...(raw.target === undefined ? {} : { target: finite(raw.target, Number.MIN_VALUE, 1e12, 'Target') }) };
+  keys(raw, ['equity', 'riskMode', 'riskValue', 'entry', 'stop', 'target', 'feeBps', 'slippageBps', 'instrumentId', 'currency', 'funding', 'marginPerContract'], 'Risk');
+  const risk: SetupPlan['risk'] = { equity: finite(raw.equity, Number.MIN_VALUE, 1e12, 'Equity'), riskMode: oneOf(raw.riskMode, ['percent', 'usd', 'quote'], 'Risk mode') as SetupPlan['risk']['riskMode'], riskValue: finite(raw.riskValue, Number.MIN_VALUE, 1e12, 'Risk value'), entry: finite(raw.entry, Number.MIN_VALUE, 1e12, 'Entry'), stop: finite(raw.stop, Number.MIN_VALUE, 1e12, 'Stop'), feeBps: finite(raw.feeBps, 0, 1000, 'Fees'), slippageBps: finite(raw.slippageBps, 0, 1000, 'Slippage'), ...(raw.target === undefined ? {} : { target: finite(raw.target, Number.MIN_VALUE, 1e12, 'Target') }) };
+  if (raw.instrumentId !== undefined) {
+    risk.instrumentId = oneOf(raw.instrumentId, Object.keys(INSTRUMENTS), 'Risk instrument');
+    risk.currency = oneOf(raw.currency, [INSTRUMENTS[risk.instrumentId].quote], 'Risk currency');
+    risk.funding = oneOf(raw.funding, ['cash'], 'Funding') as 'cash';
+  } else if (raw.currency !== undefined || raw.funding !== undefined || raw.marginPerContract !== undefined) throw new Error('Risk metadata needs an instrument.');
+  if (raw.marginPerContract !== undefined) throw new Error('Derivative journal plans require verified contract metadata; unsupported in this catalog version.');
   estimateRisk(risk);
   const setup: SetupPlan = { interval: oneOf(obj.interval, ['1h', '1d'], 'Timeframe') as SetupPlan['interval'], technicalSetup: text(obj.technicalSetup, TEXT_LIMIT, 'Technical setup'), confirmation: text(obj.confirmation, TEXT_LIMIT, 'Confirmation'), invalidation: text(obj.invalidation, TEXT_LIMIT, 'Invalidation'), risk };
   if (obj.window !== undefined) {

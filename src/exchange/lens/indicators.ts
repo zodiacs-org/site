@@ -1,3 +1,4 @@
+import { consecutive } from './sessions';
 import type { Candle, IndicatorPoint, Indicators } from './types';
 
 /** Simple moving average: the first point follows `period` finalized closes. */
@@ -71,7 +72,7 @@ export function calculateIndicators(candles: Candle[], intervalSeconds?: number)
   };
   for (const candle of ordered) {
     if (!candle.complete || !Number.isFinite(candle.close) || candle.close <= 0) { flush(); continue; }
-    if (segment.length && candle.time - segment[segment.length - 1].time !== spacing) flush();
+    if (segment.length && !consecutive(segment[segment.length - 1], candle, spacing)) flush();
     segment.push(candle);
   }
   flush();

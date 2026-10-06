@@ -13,9 +13,11 @@ const out = process.env.OUT_DIR ?? '/tmp/lens-deployed';
 await mkdir(out, {recursive: true});
 const bypass = process.env.VERCEL_AUTOMATION_BYPASS_SECRET ?? '';
 assert.ok(!/[\r\n]/.test(bypass));
-const headers = bypass ? {'x-vercel-protection-bypass': bypass} : {};
+const oidc = process.env.VERCEL_OIDC_TOKEN ?? '';
+assert.ok(!/[\r\n]/.test(oidc));
+const headers = oidc ? {'x-vercel-trusted-oidc-idp-token': oidc} : bypass ? {'x-vercel-protection-bypass': bypass} : {};
 const checks = [], errors = [], requests = [];
-for (const instrument of ['BTC-USD', 'ETH-USD']) {
+for (const instrument of ['BTC-USD', 'ETH-USD', 'SOL-USD', 'XRP-USD', 'XNAS:AAPL', 'FX:EUR/USD', 'ETF:NYSE:GLD']) {
   for (const interval of ['1h', '1d']) {
     const response = await fetch(new URL(`/api/registry/lens?instrument=${instrument}&interval=${interval}`, base), {headers, redirect: 'manual'});
     assert.equal(response.status, 503, 'Expected the configured disabled market API, not an edge login/HTML response');
@@ -25,8 +27,8 @@ for (const instrument of ['BTC-USD', 'ETH-USD']) {
     assert.equal(response.headers.get('x-robots-tag'), 'noindex');
   }
 }
-checks.push('BTC/ETH hourly/daily requests reach the actual function and return the noncached display-disabled contract');
-const badQuery = await fetch(new URL('/api/registry/lens?instrument=SOL-USD', base), {headers});
+checks.push('Cross-asset hourly/daily requests reach the actual function and return the noncached display-disabled contract');
+const badQuery = await fetch(new URL('/api/registry/lens?instrument=UNLISTED-USD', base), {headers});
 assert.equal(badQuery.status, 400);
 assert.equal((await badQuery.json()).error, 'request');
 const wrongMethod = await fetch(new URL('/api/registry/lens', base), {method: 'POST', headers});

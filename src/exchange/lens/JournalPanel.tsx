@@ -3,6 +3,8 @@ import type { InstrumentId, JournalEntry, SkyEvent } from './types';
 import { estimateRisk } from './risk';
 import { formatEventDate, formatEventTime } from './events';
 
+const quotePrice = (value: number | string, currency = 'USD') => currency === 'USD' ? `$${value}` : `${value} ${currency}`;
+
 type JournalInput = {
   id?: string;
   baseUpdatedAt?: string;
@@ -214,7 +216,7 @@ export default function JournalPanel({ entries, instrument, selectedEvent, timeZ
           <p class="lens-muted">Recorded <time dateTime={entry.createdAt}>{timestamp(entry.createdAt)}</time>{entry.updatedAt !== entry.createdAt && <> · Updated <time dateTime={entry.updatedAt}>{timestamp(entry.updatedAt)}</time></>}</p>
           <p><strong>Expectation</strong><br />{entry.hypothesis}</p>
           <p><strong>Plan</strong><br />{entry.plan}</p>
-          {entry.setup && <details><summary>Saved setup / risk context</summary><p>Timeframe {entry.setup.interval} · {entry.setup.technicalSetup}<br />Confirmation: {entry.setup.confirmation}<br />Invalidation: {entry.setup.invalidation}<br />Entry ${entry.setup.risk.entry} · stop ${entry.setup.risk.stop} · target {entry.setup.risk.target ?? 'none'}<br />{estimateRisk(entry.setup.risk).units.toFixed(8)} units · ${estimateRisk(entry.setup.risk).stopLossUSD.toFixed(2)} estimated loss incl. costs · fees {entry.setup.risk.feeBps} bps and slippage {entry.setup.risk.slippageBps} bps per side</p>{entry.setup.window && <p>Associated {entry.setup.window.kind} window · {entry.setup.window.from} to {entry.setup.window.to}</p>}</details>}
+          {entry.setup && <details><summary>Saved setup / risk context</summary><p>Timeframe {entry.setup.interval} · {entry.setup.technicalSetup}<br />Confirmation: {entry.setup.confirmation}<br />Invalidation: {entry.setup.invalidation}<br />Entry {quotePrice(entry.setup.risk.entry, entry.setup.risk.currency)} · stop {quotePrice(entry.setup.risk.stop, entry.setup.risk.currency)} · target {entry.setup.risk.target == null ? 'none' : quotePrice(entry.setup.risk.target, entry.setup.risk.currency)}<br />{estimateRisk(entry.setup.risk).units.toFixed(8)} units · {quotePrice(estimateRisk(entry.setup.risk).stopLoss.toFixed(2), entry.setup.risk.currency)} estimated loss incl. costs · fees {entry.setup.risk.feeBps} bps and slippage {entry.setup.risk.slippageBps} bps per side</p>{entry.setup.window && <p>Associated {entry.setup.window.kind} window · {entry.setup.window.from} to {entry.setup.window.to}</p>}</details>}
           {entry.outcome ? <p><strong>Outcome</strong><br />{entry.outcome}</p> : <p class="lens-muted">Outcome not recorded yet.</p>}
           {entry.eventIds.length > 0 && <details><summary>{entry.eventIds.length} attached sky {entry.eventIds.length === 1 ? 'event' : 'events'}</summary><ul>{entry.eventIds.map(id => <li key={id}>{selectedEvent?.id === id ? selectedEvent.title : id}</li>)}</ul></details>}
           {entry.revisions.length > 1 && <details data-testid="journal-revisions">
@@ -223,7 +225,7 @@ export default function JournalPanel({ entries, instrument, selectedEvent, timeZ
               <p class="lens-muted"><time dateTime={revision.at}>{timestamp(revision.at)}</time></p>
               <p><strong>Expectation</strong><br />{revision.hypothesis}</p>
               <p><strong>Plan</strong><br />{revision.plan}</p>
-              {revision.setup && <p>Saved risk version: entry ${revision.setup.risk.entry} · stop ${revision.setup.risk.stop} · risk {revision.setup.risk.riskValue} {revision.setup.risk.riskMode} · fees {revision.setup.risk.feeBps} / slippage {revision.setup.risk.slippageBps} bps per side. Confirmation: {revision.setup.confirmation}. Invalidation: {revision.setup.invalidation}.</p>}
+              {revision.setup && <p>Saved risk version: entry {quotePrice(revision.setup.risk.entry, revision.setup.risk.currency)} · stop {quotePrice(revision.setup.risk.stop, revision.setup.risk.currency)} · risk {revision.setup.risk.riskValue} {revision.setup.risk.riskMode} · fees {revision.setup.risk.feeBps} / slippage {revision.setup.risk.slippageBps} bps per side. Confirmation: {revision.setup.confirmation}. Invalidation: {revision.setup.invalidation}.</p>}
               {revision.outcome && <p><strong>Outcome</strong><br />{revision.outcome}</p>}
             </div>)}</div>
           </details>}

@@ -1,3 +1,4 @@
+import { consecutive } from './sessions';
 import { calculateIndicators } from './indicators';
 import type { Candle, EventFamily, InstrumentId, Interval, RuleMatch, SkyEvent, WatchRule } from './types';
 
@@ -30,8 +31,8 @@ export function evaluateRules(
     for (let i = 1; i < bars.length; i += 1) {
       const previous = bars[i - 1];
       const current = bars[i];
-      if (!previous.complete || !current.complete || current.time - previous.time !== step) continue;
-      const closeTime = current.time + step;
+      if (!previous.complete || !current.complete || !consecutive(previous, current, step)) continue;
+      const closeTime = current.closeTime ?? current.time + step;
       if (closeTime < created) continue;
       let before: number | undefined;
       let after: number | undefined;
