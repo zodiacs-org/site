@@ -26,7 +26,7 @@ describe('hreflang release policy', () => {
     expect(STAGED_NOINDEX_LOCALES).toEqual([]);
     expect(ABSENT_LOCALES).toEqual(['ar']);
     expect(X_DEFAULT_HREFLANG).toEqual({
-      hreflang: 'x-default', locale: 'en', expectedBlocks: 739 + (dailyEditions.length + (dailyEditions.length ? 1 : 0)) * 6,
+      hreflang: 'x-default', locale: 'en', expectedBlocks: 1129 + (dailyEditions.length + (dailyEditions.length ? 1 : 0)) * 6,
     });
     expect(hreflangRouteFamily('/fr/tools/')).toBe('core');
     expect(hreflangRouteFamily('/birthday/february-29/')).toBe('birthday');
@@ -36,6 +36,10 @@ describe('hreflang release policy', () => {
     expect(hreflangRouteFamily('/rising-sign/')).toBe('core');
     expect(hreflangRouteFamily('/fr/eclipses/')).toBe('sky-calendar');
     expect(hreflangRouteFamily('/eclipses/2027/')).toBe(null);
+    expect(hreflangRouteFamily('/es/compatibility/aries-leo/')).toBe('compatibility-pair');
+    expect(hreflangRouteFamily('/compatibility/leo-aries/')).toBe(null);
+    expect(hreflangRouteFamily('/compatibility/invite/')).toBe('core');
+    expect([...expectedHreflangsForPath('/compatibility/pisces-pisces/')]).toEqual(['en', 'es', 'pt-BR', 'fr', 'it', 'x-default']);
     expect([...expectedHreflangsForPath('/retrogrades/')]).toEqual(['en', 'es', 'pt-BR', 'fr', 'it', 'x-default']);
     expect([...expectedHreflangsForPath('/tools/')]).toEqual(['en', 'es', 'pt-BR', 'fr', 'it', 'ru', 'x-default']);
     expect([...expectedHreflangsForPath('/birthday/february-29/')])
@@ -65,9 +69,9 @@ describe('hreflang release policy', () => {
     }
     // Fourteen daily families, four sharing tools, three indexed return tools, twelve rising-sign profiles in
     // five languages, four sky calendars in five languages, and owner-approved dated editions.
-    expect(HREFLANG_LOCALE_POLICY.find(({ locale }) => locale === 'en')?.expectedBlocks).toBe(575 + 14 * 3 + 24 + 18 + 12 * 5 + 4 * 5 + (dailyEditions.length + (dailyEditions.length ? 1 : 0)) * 6);
+    expect(HREFLANG_LOCALE_POLICY.find(({ locale }) => locale === 'en')?.expectedBlocks).toBe(575 + 14 * 3 + 24 + 18 + 12 * 5 + 4 * 5 + 78 * 5 + (dailyEditions.length + (dailyEditions.length ? 1 : 0)) * 6);
     for (const locale of ['es', 'pt']) {
-      expect(HREFLANG_LOCALE_POLICY.find((entry) => entry.locale === locale)?.expectedBlocks).toBe(209 + 14 * 3 + 24 + 18 + 12 * 5 + 4 * 5 + (dailyEditions.length + (dailyEditions.length ? 1 : 0)) * 6);
+      expect(HREFLANG_LOCALE_POLICY.find((entry) => entry.locale === locale)?.expectedBlocks).toBe(209 + 14 * 3 + 24 + 18 + 12 * 5 + 4 * 5 + 78 * 5 + (dailyEditions.length + (dailyEditions.length ? 1 : 0)) * 6);
     }
   });
 });
