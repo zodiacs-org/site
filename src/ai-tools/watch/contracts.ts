@@ -1,6 +1,7 @@
 import { z } from 'zod';
+import { ENGINE_VERSION } from '@zodiacs/engine';
 
-export const WATCH_VERSION = 'sky-watch-v1:rc.16';
+export const WATCH_VERSION = `sky-watch-v1:${ENGINE_VERSION}`;
 export const DAY = 86_400_000;
 export const BODIES = ['Sun', 'Moon', 'Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto'] as const;
 export const NAMES = ['zodiacs.sky.ingress', 'zodiacs.sky.station', 'zodiacs.sky.lunation'] as const;

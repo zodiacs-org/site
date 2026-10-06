@@ -36,7 +36,7 @@ try {
   assert.ok(panel.contents[0].text.includes('Chart Studio'));
   assert.ok(panel.contents[0].text.length > 100_000);
   await call('get_capabilities'); const local = await call('get_local_chart_capabilities'); assert.equal(local.engine.releaseStatus, 'published');
-  const sky = await call('get_sky', { instant: '2026-10-01T06:00:00Z' }); assert.equal(sky.data.calculation.cite.version, '0.1.1-rc.16');
+  const sky = await call('get_sky', { instant: '2026-10-01T06:00:00Z' }); assert.equal(sky.data.calculation.cite.version, '0.1.1-rc.17');
   await call('get_upcoming_events', { from: '2026-10-01T00:00:00Z', to: '2026-10-08T00:00:00Z', kinds: ['lunation'] });
   const opened = await call('get_upcoming_events'); assert.equal(opened.data.zone, 'UTC');
   await call('check_sky_fact', { kind: 'retrograde', body: 'Mercury', instant: '2026-10-01T00:00:00Z' });

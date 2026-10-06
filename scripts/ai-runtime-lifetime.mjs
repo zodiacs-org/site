@@ -1,4 +1,4 @@
-/** Mirror main's audited rc.16 server lifetime policy for both AI bundles. */
+/** Mirror main's audited server lifetime policy for each generated AI runtime. */
 export function addAiLifetimeBoundary(generated, local) {
   const tool = 'async function executeAiTool(tool, input, dependencies) {';
   const respond = 'function respond(run2) {';

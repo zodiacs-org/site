@@ -62,5 +62,6 @@ for (const match of catalog.matchAll(/path: '([^']+)'/g)) await access(new URL(`
 const packageInfo = await json('plugins/zodiacs-developer/package.json');
 assert.equal(packageInfo.dependencies['@zodiacs/engine'], '0.1.1-rc.16');
 assert.equal(packageInfo.dependencies['@modelcontextprotocol/server'], '2.0.0');
-const site = await json('package.json'); assert.equal(site.dependencies['@zodiacs/engine'], 'file:vendor/zodiacs-engine-0.1.1-rc.16.tgz');
+// Site/embedded runtime follows the reviewed candidate; external recipes keep the published release.
+const site = await json('package.json'); assert.equal(site.dependencies['@zodiacs/engine'], 'file:vendor/zodiacs-engine-0.1.1-rc.17.tgz');
 console.log('AI package contracts: manifests, submission cases, versions, routes and canonical links verified.');

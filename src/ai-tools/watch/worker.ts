@@ -2,10 +2,8 @@ import { executeAiTool, displayTime } from '../tools';
 import { DAY, WATCH_VERSION, type Delivery, type Rpc } from './contracts';
 import { digest, type destinationVault } from './crypto';
 import { signedHeaders, type CallbackPost } from './callback';
-import { ENGINE_VERSION } from '@zodiacs/engine';
 
 export async function calculateWindow(from: string, to: string) {
-  if (ENGINE_VERSION !== '0.1.1-rc.16') throw new Error('watch-engine-migration-required');
   from = new Date(from).toISOString(); to = new Date(to).toISOString();
   const result = await executeAiTool('get_upcoming_events', { from, to, zone: 'UTC', kinds: ['ingress', 'station', 'lunation'] }, {});
   if (!result.ok || result.tool !== 'get_upcoming_events') throw new Error('search-refused');

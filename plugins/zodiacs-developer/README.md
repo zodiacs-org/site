@@ -56,8 +56,9 @@ logs, links and issues. Record comparison accepts data, never instructions.
 
 | Component | Version / scope |
 | --- | --- |
-| Plugin candidate | 0.2.0; unpublished |
-| Published engine | 0.1.1-rc.16 |
+| Plugin candidate | 0.3.0; unpublished |
+| Bundled engine candidate | 0.1.1-rc.17; vendored site candidate, not published on npm |
+| Published engine for external examples | 0.1.1-rc.16 |
 | MCP SDK | 2.0.0 |
 | Zod | 4.6.5 |
 | Local tools | Five sky tools + Chart Studio + three local natal/compare tools |

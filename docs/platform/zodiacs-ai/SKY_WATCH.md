@@ -47,7 +47,9 @@ receiver `410`, or expiry cleanup. Metadata is removed 30 days after expiry;
 public event records and their delivery rows are retained for 30 days. Cleanup
 runs with the worker, so a stopped worker must be restarted to finish retention.
 
-The worker calculates fixed UTC-day partitions with the published rc.16 engine.
+The worker calculates fixed UTC-day partitions with the site's pinned engine.
+After merging main, this is the vendored rc.17 candidate, which is not published
+on npm. The already-connected Chart Studio preview still uses published rc.16.
 It fills at most three days per run toward a two-day horizon and persists its
 next boundary transactionally. Failed searches never advance it. Concurrent
 workers use compare-and-swap ingestion and unique subscription/event outbox

@@ -8,6 +8,10 @@ The shared website wheel source is unchanged.
 
 ## New in 0.3.0 — 2026-10-06
 
+The current uninstalled candidate follows main's vendored rc.17 engine, which
+is not published on npm. The earlier 0.3.0 screenshots below were captured with
+rc.16; the connected 0.2.0 ChatGPT deployment remains unchanged on rc.16.
+
 Two workspaces extend the same panel and both plugin packages:
 
 - **Time Explorer:** UTC steps of 15 minutes, one hour or one day; an explicit
@@ -15,7 +19,7 @@ Two workspaces extend the same panel and both plugin packages:
   references only and continues to omit angles/houses. Unapplied input changes
   disable stepping. Reset removes the old anchor.
 - **Birth-time windows:** two explicit UTC bounds and coordinates, up to 48
-  hours, evaluated by the published engine's `birthWindow`. The start is
+  hours, evaluated by the pinned engine's `birthWindow`. The start is
   included and end excluded. Signs and houses found, readable transitions,
   angle signs, aspects in orb, polar fallback, unresolved nodes and exceeded
   bounds remain inspectable. Verification is the engine's one-second sampling

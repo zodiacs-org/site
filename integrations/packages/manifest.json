@@ -60,8 +60,8 @@
       "name": "zodiacs-developer",
       "version": "0.3.0",
       "file": "zodiacs-developer-0.3.0.zip",
-      "bytes": 1243692,
-      "sha256": "fd1474b384d050daa03e0c12f3e7a7b484fb778c7aafc4d49af49de650486458",
+      "bytes": 1274024,
+      "sha256": "e626abaea1fa3b89505c4a0f898e041bca8c07a946265a9df97deaaa0099206e",
       "members": [
         {
           "path": ".codex-plugin/plugin.json",
@@ -80,13 +80,13 @@
         },
         {
           "path": "ENGINE-LICENSING",
-          "bytes": 15561,
-          "sha256": "6acd13d54ed4e98d3b02cc98bd4763ff8cc7da7ecbcea961e210a4bfa94336ed"
+          "bytes": 26057,
+          "sha256": "5bf86592af992451cf325a04de4fa7ddd07aa92521368db5ac6fc8e8d766bd70"
         },
         {
           "path": "ENGINE-NOTICE",
-          "bytes": 5824,
-          "sha256": "82bf6091aaccceae0f094fcdbe4ca5211b4c24ce79c8e9a8f637f6f464c108d1"
+          "bytes": 10121,
+          "sha256": "15b724304a7bebadaed4f6e01631314dab7b5b92b3b84dc3a59864fb6e555cce"
         },
         {
           "path": "LICENSE",
@@ -95,13 +95,13 @@
         },
         {
           "path": "NOTICE",
-          "bytes": 1182,
-          "sha256": "3ec318765caf05c34f79b9fda19d9853f4e62fc94bd0145346eb84322aaf5d39"
+          "bytes": 1228,
+          "sha256": "09646b0f0af64f3b679e7ef424befa5d6cb33ea8b068a5ab7051dd87a2c8457c"
         },
         {
           "path": "README.md",
-          "bytes": 4515,
-          "sha256": "48f2dafe9f3fb101f9c390f1c62cfc281a02efb80a610bfff0d6ba869869809d"
+          "bytes": 4627,
+          "sha256": "7c641c0c6f8de39312dc7fd28e09b28392c1e30378be704d65731dfe034c9255"
         },
         {
           "path": "assets/icon.png",
@@ -130,8 +130,8 @@
         },
         {
           "path": "mcp/server.mjs",
-          "bytes": 1148807,
-          "sha256": "fb26acae16fdbc79180b4ca35e8f7e20098f6dd24b669d14d5f9a44433cbfe31"
+          "bytes": 1164188,
+          "sha256": "f2c599c2881009f2af7a87fdba1b1bb1560a0a796500c7a43dbc63e710b40196"
         },
         {
           "path": "package-lock.json",
