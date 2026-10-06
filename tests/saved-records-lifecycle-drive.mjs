@@ -26,6 +26,7 @@ const B = '22222222-2222-4222-8222-222222222222';
 const GRANT_KEY = 'zodiacs.account-sync-v2.profile-access.v1';
 const OWNER_KEY = 'zodiacs.account-sync-v2.local-owner.v1';
 const RETAINED_KEY = 'zodiacs.account-sync-v2.retained-owner.v1';
+const SCOPE_KEY = 'zodiacs.saved-records.scope-change.v1';
 const sha = (bytes) => createHash('sha256').update(bytes).digest('hex');
 const results = [];
 let browser;
@@ -496,6 +497,13 @@ try {
       await computeKnownTime(second, { date: '1985-03-02', time: '09:15', place: 'Paris' });
       await waitKeepState(first, ['idle']);
       await waitKeepState(second, ['idle']);
+      // Each tab counts the record-scope announcements the other tab sends it.
+      for (const page of [first, second]) {
+        await page.evaluate((key) => {
+          window.__scopeAnnouncements = 0;
+          window.addEventListener('storage', (event) => { if (event.key === key) window.__scopeAnnouncements += 1; });
+        }, SCOPE_KEY);
+      }
       const outcomes = await Promise.all([keep(first), keep(second)]);
       assert.ok(outcomes.includes('kept'), `one keep must win: ${outcomes.join(', ')}`);
       const loser = outcomes[0] === 'kept' ? second : first;
@@ -506,6 +514,16 @@ try {
         await waitKeepState(loser, ['changed']);
         assert.equal(await keep(loser), 'kept', 'an explicit second keep succeeds against the winner\'s admission');
       }
+      // Each keep reached the other tab, and neither tab withdrew its own
+      // "Kept": a withdrawn confirmation invites a second, duplicate keep.
+      for (const page of [first, second]) {
+        await page.waitForFunction(() => window.__scopeAnnouncements > 0);
+        assert.equal(await keepState(page), 'kept', 'a keep in another tab must not withdraw this tab\'s "Kept"');
+      }
+      const inventory = await context.newPage();
+      assert.equal(await gotoProfile(inventory), 'ready');
+      assert.equal(await recordCount(inventory), 2);
+      for (const page of [first, second]) assert.ok(await page.$('[data-record-kept]'), 'both calculators still state "Kept" once their scopes re-open');
       assert.equal(await gotoProfile(first), 'ready');
       assert.equal(await recordCount(first), 2);
       const single = await first.evaluate(async () => (await indexedDB.databases()).filter((entry) => entry.name === 'zodiacs-saved-natal-v1').length);
