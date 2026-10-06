@@ -416,6 +416,7 @@ jobs:
         run: |
           psql "$SKY_WATCH_TEST_DATABASE_URL" -X -v ON_ERROR_STOP=1 -f supabase/tests/bootstrap.sql
           psql "$SKY_WATCH_TEST_DATABASE_URL" -X -v ON_ERROR_STOP=1 -f supabase/migrations/20261006060504_sky_watch_preview.sql
+          psql "$SKY_WATCH_TEST_DATABASE_URL" -X -v ON_ERROR_STOP=1 -f supabase/migrations/20261006070234_sky_watch_singleton_update.sql
       - name: Exercise MCP and persistent delivery lifecycle
         run: npx vite-node --script tests/sky-watch-drive.ts
 

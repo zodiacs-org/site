@@ -5,6 +5,12 @@ active. The existing ChatGPT Chart Studio preview remains on its original
 deployment. This implementation is a candidate for review, not evidence of
 ChatGPT receiving an event.
 
+A separate Free Plan project, **Zodiacs Sky Watch Test**, is now provisioned in
+the Zodiacs.org organization at the confirmed $0/month database quote. Its schema,
+access controls and actual runtime/Data API path have been verified. The HTTP
+server used for this check was local; no public Sky Watch deployment or scheduler
+is active. See the [staging record](evidence/sky-watch/staging.json).
+
 ## What is implemented
 
 The same authenticated MCP endpoint serves the existing six tools and three
@@ -65,9 +71,15 @@ An HTTPS request already in flight cannot be recalled by an unsubscribe.
 
 ## Running the private candidate
 
-Use a separate staging database. Apply the reviewed migration
-`supabase/migrations/20261006060504_sky_watch_preview.sql` there. No remote
-migration has been applied by this implementation turn.
+Use a separate staging database. Apply these reviewed migrations in order:
+
+- `supabase/migrations/20261002115707_zodiacs_mcp_atomic_quota.sql`
+- `supabase/migrations/20261006060504_sky_watch_preview.sql`
+- `supabase/migrations/20261006070234_sky_watch_singleton_update.sql`
+
+All three are applied to the Free Plan test project. The last migration makes
+the ledger boundary update explicitly select its singleton row, as required by
+Supabase's Data API `safeupdate` protection. That protection remains enabled.
 
 Configure server-side secrets through the deployment's secret manager:
 
@@ -117,8 +129,8 @@ CI job **Sky Watch subscription lifecycle** repeats that drive on a disposable
 database. It sends no external notifications and uses no real personal data.
 
 Run the drive with `SKY_WATCH_TEST_DATABASE_URL` pointing to an isolated local
-PostgreSQL database whose name ends in `_test`, after applying the bootstrap and
-Sky Watch migration. It intentionally refuses nonlocal databases and truncates
+PostgreSQL database whose name ends in `_test`, after applying the bootstrap,
+Sky Watch migration and singleton update correction. It intentionally refuses nonlocal databases and truncates
 only Sky Watch tables in the test database.
 
 The [verification record](evidence/sky-watch/verification.json) records the
@@ -129,8 +141,10 @@ status.
 
 1. Add an OAuth connection flow suitable for real users, with scoped grants and
    disconnect/revocation mapped to delivery authorization.
-2. Apply and verify the reviewed schema on separate staging, configure secrets
-   and a scheduled worker, and exercise the real HTTPS callback path there.
+2. Deploy the authenticated endpoint against the verified staging database,
+   configure hosted secrets and a scheduled worker, and exercise the real HTTPS
+   callback path there. The hosted database and local-to-hosted runtime checks
+   are complete; they do not establish public endpoint or callback acceptance.
 3. Connect a separate plugin and verify subscription, arrival, refresh and stop
    in ChatGPT Work/Cloud. Rescan and record host evidence. Do not repoint the
    existing Chart Studio alias or reuse its deployment-bound share credential.
