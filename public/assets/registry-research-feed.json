@@ -1,12 +1,12 @@
 {
   "schema": "zodiacs.registry-research-feed.v1",
-  "generatedAt": "2026-10-05T00:08:21.586Z",
+  "generatedAt": "2026-10-06T00:07:37.815Z",
   "publisher": "Zodiacs.org Research System",
   "window": {
     "previousDays": 30,
     "futureDays": 7,
-    "startsAt": "2026-09-05T00:00:00.000Z",
-    "endsBefore": "2026-10-13T00:00:00.000Z"
+    "startsAt": "2026-09-06T00:00:00.000Z",
+    "endsBefore": "2026-10-14T00:00:00.000Z"
   },
   "items": [
     {
@@ -53,6 +53,67 @@
       "status": "scheduled"
     },
     {
+      "id": "zrx-daily-market-brief-2026-10-06",
+      "slug": "daily-market-brief-2026-10-06",
+      "kind": "daily-market-brief",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-06T12:00:00.000Z",
+      "visibleAt": "2026-10-06T12:00:00.000Z",
+      "title": "Jupiter in Leo · daily market brief",
+      "summary": "Jupiter in Leo leads the disclosed symbolic index; Leo market measures are recorded separately.",
+      "url": "/terminal/research/daily-market-brief-2026-10-06/",
+      "signs": [
+        "leo"
+      ],
+      "topics": [
+        "markets",
+        "daily-sky",
+        "occupancy"
+      ],
+      "status": "scheduled"
+    },
+    {
+      "id": "zrx-market-check-2026-09-28-observation-168h",
+      "slug": "market-check-2026-09-28-observation-168h",
+      "kind": "observation-update",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-06T00:07:37.815Z",
+      "visibleAt": "2026-10-06T00:07:37.815Z",
+      "title": "Leo 7-day observation update",
+      "summary": "7-day follow-up using the first qualifying archived snapshot (187.03 actual hours elapsed).",
+      "url": "/terminal/research/market-check-2026-09-28-observation-168h/",
+      "signs": [
+        "leo"
+      ],
+      "topics": [
+        "markets",
+        "observation-update"
+      ],
+      "status": "published"
+    },
+    {
+      "id": "zrx-market-check-2026-10-06",
+      "slug": "market-check-2026-10-06",
+      "kind": "market-check",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-06T00:07:37.815Z",
+      "visibleAt": "2026-10-06T00:07:37.815Z",
+      "title": "Leo market check · 2026-10-06",
+      "summary": "Leo price, market cap, liquidity, volume, and collection medians at one archived observation.",
+      "url": "/terminal/research/market-check-2026-10-06/",
+      "signs": [
+        "leo"
+      ],
+      "topics": [
+        "markets",
+        "market-check"
+      ],
+      "status": "published"
+    },
+    {
       "id": "zrx-daily-market-brief-2026-10-05",
       "slug": "daily-market-brief-2026-10-05",
       "kind": "daily-market-brief",
@@ -71,7 +132,7 @@
         "daily-sky",
         "occupancy"
       ],
-      "status": "scheduled"
+      "status": "published"
     },
     {
       "id": "zrx-weekly-outlook-2026-10-05",
@@ -94,7 +155,7 @@
         "weekly-outlook",
         "astrology"
       ],
-      "status": "scheduled"
+      "status": "published"
     },
     {
       "id": "zrx-market-check-2026-09-27-observation-168h",
