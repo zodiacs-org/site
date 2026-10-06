@@ -1,4 +1,4 @@
-# OpenAI portal review — 6 October 2026
+# OpenAI portal snapshot before deployment — 6 October 2026
 
 Business verification is approved for Zodiacs LLC. The daily identity monitor is paused.
 This approval is separate from plugin-directory approval.
@@ -63,14 +63,14 @@ The newly published sharp advisory was resolved with sharp 0.35.5 / libvips 1.3.
 the full-tree high/critical gate passes, with two moderate Vitest development
 findings still reported. See the [maintainer advisory](https://github.com/lovell/sharp/security/advisories/GHSA-wq5f-xc86-pv6w).
 
-The integrated source [a29cded0](https://github.com/zodiacs-org/site/commit/a29cded0dc67d17e248568af4efc7bc466f8b12a)
-passed its build, 18 Phase 1 captures, capture-receipt validation and visual
-comparisons in [Browser Evidence 37498721676](https://github.com/zodiacs-org/site/actions/runs/37498721676).
-All 19 capture files were imported unchanged after matching their CI SHA-256
-hashes. That capture run was cancelled during Lighthouse to retrieve the new
-receipt; it is not full browser acceptance. Final Site Check and Browser Evidence
-must pass after this import and the domain-file change. Follow
-[PR #618](https://github.com/zodiacs-org/site/pull/618) for the final result.
+The final render-source capture [0a56bac0](https://github.com/zodiacs-org/site/commit/0a56bac0928b6dcdd2ea7eb308afc9cbd91d9fce)
+passed the site build, all 18 captures, capture-receipt validation and visual
+comparisons in [Browser Evidence 37507840107](https://github.com/zodiacs-org/site/actions/runs/37507840107).
+All 19 capture files were imported unchanged after matching CI SHA-256 hashes;
+the five local evidence tests pass. That run was cancelled during Lighthouse to
+retrieve the new receipt, so it is not full browser acceptance. The final commit
+still requires complete Site Check and Browser Evidence. Follow
+[PR #618](https://github.com/zodiacs-org/site/pull/618) for their final result.
 
 The newly listed MCP client advisory GHSA-6qxp-vccf-f47h was fixed by updating
 the development test client to 2.3.1. Its stdio integration drive passed. Production

@@ -6,7 +6,9 @@ Zodiacs LLC business verification is approved. Sky 0.3.3 is uploaded to the
 existing public-submission draft; the unsupported category was corrected and
 the skill scan passed. Company, icon, website, support, privacy, terms and all
 eight review scenarios imported. The privacy assessment could not complete;
-MCP setup and the current walkthrough remain incomplete. The exact public
+MCP setup and the walkthrough upload remain incomplete. Sky 0.3.4 and a
+248-second synthetic native walkthrough are prepared; see [WALKTHROUGH.md](./WALKTHROUGH.md)
+for its private-preview scope and public-release checks. The exact public
 domain challenge and plain-text response header are prepared in the release
 candidate. This is not a submitted or published listing.
 See [PORTAL_REVIEW.md](./PORTAL_REVIEW.md) for the current portal state and PR

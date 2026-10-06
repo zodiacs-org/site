@@ -225,27 +225,38 @@
   "computeRewrites": [
     {
       "src": "^/api/v1/chart$",
-      "dest": "/api/compatibility?__zodiacs_compute=chart"
+      "dest": "/api/compatibility?__zodiacs_compute=chart",
+      "check": true
     },
     {
       "src": "^/api/v1/positions$",
-      "dest": "/api/compatibility?__zodiacs_compute=positions"
+      "dest": "/api/compatibility?__zodiacs_compute=positions",
+      "check": true
     },
     {
       "src": "^/api/v1/houses$",
-      "dest": "/api/compatibility?__zodiacs_compute=houses"
+      "dest": "/api/compatibility?__zodiacs_compute=houses",
+      "check": true
     },
     {
       "src": "^/api/v1/events$",
-      "dest": "/api/compatibility?__zodiacs_compute=events"
+      "dest": "/api/compatibility?__zodiacs_compute=events",
+      "check": true
     },
     {
       "src": "^/api/v1/time$",
-      "dest": "/api/compatibility?__zodiacs_compute=time"
+      "dest": "/api/compatibility?__zodiacs_compute=time",
+      "check": true
     },
     {
       "src": "^/api/v1/sky-fact$",
-      "dest": "/api/compatibility?__zodiacs_compute=sky-fact"
+      "dest": "/api/compatibility?__zodiacs_compute=sky-fact",
+      "check": true
+    },
+    {
+      "src": "^/api/v1/elections$",
+      "dest": "/api/compatibility?__zodiacs_compute=elections",
+      "check": true
     }
   ]
 }
