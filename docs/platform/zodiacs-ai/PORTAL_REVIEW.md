@@ -55,8 +55,10 @@ remain separate. Consenting human feedback for the 9/10 target is still absent.
 
 Sky 0.3.3 and Developer 0.3.2 package-contract and archive checks pass. The
 runtime bundles are unchanged by the listing correction. The current branch
-includes main 55871059, preserving the translated compatibility pages, dependency
-lock and supported daily-publication provenance. Daily verification passes.
+includes main a4903dd3, preserving the translated compatibility pages and the
+sharp mobile homepage poster. Both branches patched the MCP test-client advisory;
+this candidate retains the verified 2.3.1 client, its lock and regenerated daily
+provenance. The Phase 1 source fingerprint and its reviewed captures are unchanged.
 
 The newly published sharp advisory was resolved with sharp 0.35.5 / libvips 1.3.4
 (librsvg 2.63.2). The production dependency audit reports zero vulnerabilities;
