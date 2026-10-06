@@ -11,6 +11,8 @@ import { CONSUMER_CATALOG } from './catalog';
 import { AI_RESULT_SCHEMA, AI_TOOL_NAMES, AI_VERSION, INPUT_SCHEMAS, MAX_EVENT_DAYS, ORIGIN, OUTPUT_SCHEMAS, type AiToolName } from './contracts';
 
 export interface AiDependencies {
+  /** Authenticated preview only; changes the declared privacy/limitations. */
+  skyWatch?: boolean;
   localTime?: LocalTimeModule;
   now?: () => Date;
   /** The hosted boundary supplies both Firewall and atomic event admission. */
@@ -49,6 +51,11 @@ export async function executeAiTool(tool: AiToolName, input: unknown, dependenci
       case 'get_capabilities': {
         const statements = engineStatements();
         data = { name: 'Zodiacs', version: AI_VERSION, engine: BACKEND, tools: [...AI_TOOL_NAMES], limits: LIMITS, conventions: statements.conventions, coverage: statements.coverage, privacy: PRIVACY, limitations: ['Tropical geocentric positions; supported reference span is stated in each receipt.', 'Event completeness is tested, not proven. Budget exhaustion refuses the whole search.', 'No eclipse or aspect search, birth-time rectification, predictions, reminders or account access.', 'Search covers curated consumer guides, not the full website.', 'Current means the server instant; daily sky files are separate noon-UTC snapshots.'] };
+        if (dependencies.skyWatch) {
+          const capabilities = data as { privacy: string; limitations: string[] };
+          capabilities.privacy += ' Sky Watch preview saves public-sky filters, owner, expiration and encrypted callback credentials. Stopping or expiring a watch clears its credentials; subscription metadata is retained for up to 30 days afterward. Public event records and delivery status are retained for up to 30 days. No birth details are accepted.';
+          capabilities.limitations[2] = 'Sky Watch delivers selected public-sky events through verified callbacks. Delivery can be delayed or repeated; no personal predictions, eclipses, aspect search or birth-time rectification.';
+        }
         break;
       }
       case 'get_sky': {

@@ -3,11 +3,13 @@ import { AI_TOOL_NAMES, AI_VERSION, INPUT_SCHEMAS, OUTPUT_SCHEMAS, READ_ONLY, TO
 import { executeAiTool, type AiDependencies } from './tools';
 import { STUDIO_HTML } from '../../integrations/generated/chart-studio.mjs';
 import { WIDGET_HTML } from './widget';
+import { registerSkyWatch, type SkyWatch } from './watch/service';
+import type { Principal } from './watch/contracts';
 
 /** A fresh SDK server per HTTP request or local stdio connection. */
-export function createAiServer(dependencies: AiDependencies) {
+export function createAiServer(dependencies: AiDependencies, watch?: { service: SkyWatch; owner: Principal }) {
   const server = new McpServer({ name: 'zodiacs', version: AI_VERSION }, {
-    capabilities: { tools: {}, resources: {} },
+    capabilities: { tools: {}, resources: {}, ...(watch ? { events: {} } : {}) },
     instructions: 'Zodiacs computes astronomical facts with versioned receipts. Explain astrology as interpretation separately. Preserve depends/refused answers, explicit timezone, search completeness and source limits. Do not claim that a local server makes a cloud conversation local. Return complete useful answers; site links offer optional visualization or method inspection.',
   });
   server.registerResource('sky-events', WIDGET_URI, {
@@ -29,11 +31,12 @@ export function createAiServer(dependencies: AiDependencies) {
       ...(resourceUri ? { icons: [{ src: `https://zodiacs.org/assets/ai/${tool === 'open_chart_studio' ? 'chart-studio' : 'sky-calendar'}.svg`, mimeType: 'image/svg+xml', sizes: ['20x20'] }] } : {}),
       inputSchema: INPUT_SCHEMAS[tool], outputSchema: OUTPUT_SCHEMAS[tool],
       annotations: { ...READ_ONLY, idempotentHint: tool !== 'get_sky' && tool !== 'get_upcoming_events' },
-      _meta: { securitySchemes: [{ type: 'noauth' }], ...(resourceUri ? { ui: { resourceUri, visibility: ['model', 'app'] }, 'openai/outputTemplate': resourceUri, 'openai/ui': { entrypoints: [{ type: 'global' }, { type: 'thread' }] } } : {}) },
+      _meta: { ...(!watch ? { securitySchemes: [{ type: 'noauth' }] } : {}), ...(resourceUri ? { ui: { resourceUri, visibility: ['model', 'app'] }, 'openai/outputTemplate': resourceUri, 'openai/ui': { entrypoints: [{ type: 'global' }, { type: 'thread' }] } } : {}) },
     }, async (args: unknown) => {
-      const result = await executeAiTool(tool, args, dependencies);
+      const result = await executeAiTool(tool, args, { ...dependencies, skyWatch: !!watch });
       return { isError: !result.ok, content: [{ type: 'text' as const, text: JSON.stringify(result) }], structuredContent: result };
     });
   }
+  if (watch) registerSkyWatch(server, watch.service, watch.owner);
   return server;
 }

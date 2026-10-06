@@ -7949,6 +7949,7 @@ async function verifyCallback(url, secret, id, post, now) {
 
 // src/ai-tools/watch/contracts.ts
 import { z as z2 } from "zod";
+var WATCH_VERSION = "sky-watch-v1:rc.16";
 var DAY5 = 864e5;
 var BODIES2 = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
 var NAMES = ["zodiacs.sky.ingress", "zodiacs.sky.station", "zodiacs.sky.lunation"];
@@ -8376,8 +8377,86 @@ function createAiNodeHandler(options = {}) {
     }
   };
 }
+
+// src/ai-tools/watch/worker.ts
+async function calculateWindow(from, to) {
+  if (ENGINE_VERSION !== "0.1.1-rc.16") throw new Error("watch-engine-migration-required");
+  from = new Date(from).toISOString();
+  to = new Date(to).toISOString();
+  const result = await executeAiTool("get_upcoming_events", { from, to, zone: "UTC", kinds: ["ingress", "station", "lunation"] }, {});
+  if (!result.ok || result.tool !== "get_upcoming_events") throw new Error("search-refused");
+  const data = result.data;
+  if (data.completeness !== "tested-not-proven") throw new Error("search-incomplete");
+  return data.events.map(({ localAt: _localAt, ...event2 }) => ({
+    eventId: `evt_${digest(JSON.stringify([WATCH_VERSION, from, event2]))}`,
+    name: `zodiacs.sky.${event2.kind}`,
+    timestamp: event2.at,
+    data: { event: event2, receipt: data.calculation.receipt },
+    cursor: null
+  }));
+}
+async function fillWatchLedger(rpc, now = Date.now(), calculate = calculateWindow) {
+  let filled = 0;
+  for (; filled < 3; filled++) {
+    const from = await rpc("window", { version: WATCH_VERSION, start: new Date(Math.floor(now / DAY5) * DAY5).toISOString() });
+    if (Date.parse(from) >= Math.floor(now / DAY5) * DAY5 + 2 * DAY5) break;
+    const to = new Date(Date.parse(from) + DAY5).toISOString();
+    const events = await calculate(from, to);
+    await rpc("ingest", { version: WATCH_VERSION, from, to, events });
+  }
+  await rpc("enqueue");
+  return filled;
+}
+function deliveryOutcome(status, attempts) {
+  if (status >= 200 && status < 300) return { outcome: "sent", delay_seconds: 0 };
+  if (status === 410) return { outcome: "gone", delay_seconds: 0 };
+  const transient = status === 0 || status === 408 || status === 429 || status >= 500;
+  return transient && attempts < 8 ? { outcome: "retry", delay_seconds: Math.min(3600, 30 * 2 ** (attempts - 1)) } : { outcome: "failed", delay_seconds: 0 };
+}
+async function deliverWatchEvents(rpc, vault, post, now = Date.now) {
+  let delivered = 0, failed = 0, retried = 0;
+  for (let i = 0; i < 10; i++) {
+    const row = await rpc("claim");
+    if (!row) break;
+    if (!await rpc("permit", { id: row.subscription_id, event: row.event_id, lease: row.lease, revision: row.revision })) continue;
+    let status = 0;
+    try {
+      const destination = vault.open(row.sealed, row.subscription_id);
+      const previous = row.previous_sealed && Date.parse(row.rotate_until ?? "") > now() ? vault.open(row.previous_sealed, row.subscription_id).secret : void 0;
+      const event2 = { ...row.payload, data: {
+        ...row.payload.data,
+        zone: row.filters.zone,
+        localAt: displayTime(row.payload.timestamp, row.filters.zone),
+        methodUrl: "https://zodiacs.org/developers/compute/#events"
+      } };
+      const body2 = JSON.stringify(event2);
+      if (Buffer.byteLength(body2) > 262144) status = 413;
+      else status = (await post(destination.url, signedHeaders(destination.secret, row.event_id, row.subscription_id, body2, now(), previous), body2)).status;
+    } catch {
+    }
+    const outcome = deliveryOutcome(status, row.attempts);
+    await rpc("settle", { id: row.subscription_id, event: row.event_id, lease: row.lease, ...outcome });
+    if (outcome.outcome === "sent") delivered++;
+    else if (outcome.outcome === "retry") retried++;
+    else failed++;
+  }
+  return { delivered, failed, retried };
+}
+
+// src/ai-tools/watch/runtime.ts
+async function runSkyWatchTick(env = process.env) {
+  const watch = configuredSkyWatch(env);
+  if (!watch) throw new Error("Sky Watch preview is disabled.");
+  const windowsFilled = await fillWatchLedger(watch.rpc);
+  const delivery = await deliverWatchEvents(watch.rpc, watch.vault, watch.post);
+  return { windowsFilled, ...delivery };
+}
 export {
-  createAiNodeHandler
+  configuredSkyWatch,
+  createAiNodeHandler,
+  digest,
+  runSkyWatchTick,
+  watchRpc
 };
 
 // Calculations are synchronous; clearing cannot interrupt another calculation.

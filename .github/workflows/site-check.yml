@@ -380,6 +380,43 @@ jobs:
       - name: Reference drift gate
         run: git diff --exit-code -- src/lib/engine/fixtures/ docs/engine-validation/independent-references/
 
+  sky-watch-lifecycle:
+    name: Sky Watch subscription lifecycle
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: local-synthetic-test
+          POSTGRES_DB: sky_watch_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      SKY_WATCH_TEST_DATABASE_URL: postgresql://postgres:local-synthetic-test@127.0.0.1:5432/sky_watch_test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install
+        run: npm ci
+      - name: Prepare isolated database
+        run: |
+          psql "$SKY_WATCH_TEST_DATABASE_URL" -X -v ON_ERROR_STOP=1 -f supabase/tests/bootstrap.sql
+          psql "$SKY_WATCH_TEST_DATABASE_URL" -X -v ON_ERROR_STOP=1 -f supabase/migrations/20261006060504_sky_watch_preview.sql
+      - name: Exercise MCP and persistent delivery lifecycle
+        run: npx vite-node --script tests/sky-watch-drive.ts
+
   phase3-delivery-sql:
     name: Phase 3 delivery SQL
     runs-on: ubuntu-latest

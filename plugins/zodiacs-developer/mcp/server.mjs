@@ -1087,8 +1087,8 @@ function fields(value, required2, optional = []) {
   if (required2.some((key) => !Object.hasOwn(value, key)) || Object.keys(value).some((key) => !required2.includes(key) && !optional.includes(key)))
     fail("invalid_shape");
 }
-function choice(value, choices) {
-  if (typeof value !== "string" || !choices.includes(value)) fail("invalid_value");
+function choice(value, choices2) {
+  if (typeof value !== "string" || !choices2.includes(value)) fail("invalid_value");
   return value;
 }
 function number(value, min, max, exclusiveMax = false) {
@@ -1368,8 +1368,8 @@ function validateLocal(value, receipt, timeBasis22) {
   } catch {
     fail("invalid_context");
   }
-  const zone2 = text(local.timeZone, 128);
-  if (!/^[A-Za-z][A-Za-z0-9._+-]*(?:\/[A-Za-z0-9._+-]+){0,3}$/.test(zone2)) fail("invalid_context");
+  const zone3 = text(local.timeZone, 128);
+  if (!/^[A-Za-z][A-Za-z0-9._+-]*(?:\/[A-Za-z0-9._+-]+){0,3}$/.test(zone3)) fail("invalid_context");
   const offset = number(local.offsetMinutes, -1440, 1440);
   const shift2 = number(local.gapShiftMinutes, 0, 2880);
   const offsetMs = offset * 6e4, shiftMs = shift2 * 6e4;
@@ -1757,7 +1757,7 @@ function parseInstant(value) {
       reason: "utc must be an ISO-8601 instant with an explicit zone, such as 2000-01-01T00:00:00Z or 2000-01-01T05:30:00+05:30"
     };
   }
-  const [, y, mo, d, h, mi, s, , zone2] = match;
+  const [, y, mo, d, h, mi, s, , zone3] = match;
   const year = Number(y);
   const month = Number(mo);
   const day = Number(d);
@@ -1766,9 +1766,9 @@ function parseInstant(value) {
   if (Number(h) > 23 || Number(mi) > 59 || s !== void 0 && Number(s) > 59) {
     return { ok: false, reason: "utc names a time outside 00:00:00-23:59:59; leap seconds are not accepted" };
   }
-  if (zone2 !== "Z") {
-    const offsetHours = Number(zone2.slice(1, 3));
-    const offsetMinutes2 = Number(zone2.slice(4, 6));
+  if (zone3 !== "Z") {
+    const offsetHours = Number(zone3.slice(1, 3));
+    const offsetMinutes2 = Number(zone3.slice(4, 6));
     if (offsetMinutes2 > 59 || offsetHours * 60 + offsetMinutes2 > 14 * 60) {
       return { ok: false, reason: "utc names a zone offset beyond \xB114:00" };
     }
@@ -3411,10 +3411,10 @@ function precession_rot(time, dir) {
   throw "Invalid precess direction";
 }
 var Vector = class {
-  constructor(x, y, z4, t) {
+  constructor(x, y, z6, t) {
     this.x = x;
     this.y = y;
-    this.z = z4;
+    this.z = z6;
     this.t = t;
   }
   /**
@@ -3426,10 +3426,10 @@ var Vector = class {
   }
 };
 var StateVector = class {
-  constructor(x, y, z4, vx, vy, vz, t) {
+  constructor(x, y, z6, vx, vy, vz, t) {
     this.x = x;
     this.y = y;
-    this.z = z4;
+    this.z = z6;
     this.vx = vx;
     this.vy = vy;
     this.vz = vz;
@@ -3635,10 +3635,10 @@ var PlutoStateTable = [
   [73e4, [4.24325283709, -30.118201690825, -10.707441231349], [0.0031725847067411, 1609846120227e-16, -90672150593868e-17]]
 ];
 var TerseVector = class _TerseVector {
-  constructor(x, y, z4) {
+  constructor(x, y, z6) {
     this.x = x;
     this.y = y;
-    this.z = z4;
+    this.z = z6;
   }
   clone() {
     return new _TerseVector(this.x, this.y, this.z);
@@ -4168,17 +4168,17 @@ function eclipticFrame(tt) {
   };
   return last;
 }
-function meanEcliptic(frame, x, y, z4) {
+function meanEcliptic(frame, x, y, z6) {
   const m = frame.rows;
   return [
-    m[0] * x + m[1] * y + m[2] * z4,
-    m[3] * x + m[4] * y + m[5] * z4,
-    m[6] * x + m[7] * y + m[8] * z4
+    m[0] * x + m[1] * y + m[2] * z6,
+    m[3] * x + m[4] * y + m[5] * z6,
+    m[6] * x + m[7] * y + m[8] * z6
   ];
 }
-function eclipticOfDate(x, y, z4, tt) {
+function eclipticOfDate(x, y, z6, tt) {
   const frame = eclipticFrame(tt);
-  const [ex, ey, ez] = meanEcliptic(frame, x, y, z4);
+  const [ex, ey, ez] = meanEcliptic(frame, x, y, z6);
   return {
     lon: normalizeLongitude(Math.atan2(ey, ex) * RAD22 + frame.tilt.dpsi / 3600),
     lat: Math.asin(ez / Math.hypot(ex, ey, ez)) * RAD22
@@ -6515,16 +6515,16 @@ function instantAt(value, pointer) {
   const text2 = stringAt(value, pointer);
   const match = text2.length <= 29 ? INSTANT2.exec(text2) : null;
   if (!match) throw invalidRequest(pointer, TEXT.instantFormat);
-  const [, y, mo, d, h, mi, s, , zone2] = match;
+  const [, y, mo, d, h, mi, s, , zone3] = match;
   const year = Number(y);
   const month = Number(mo);
   const day = Number(d);
   if (month < 1 || month > 12 || day < 1 || day > daysInMonth2(year, month) || Number(h) > 23 || Number(mi) > 59 || s !== void 0 && Number(s) > 59) {
     throw invalidRequest(pointer, TEXT.instantCalendar);
   }
-  if (zone2 !== "Z") {
-    const hours = Number(zone2.slice(1, 3));
-    const minutes = Number(zone2.slice(4, 6));
+  if (zone3 !== "Z") {
+    const hours = Number(zone3.slice(1, 3));
+    const minutes = Number(zone3.slice(4, 6));
     if (minutes > 59 || hours * 60 + minutes > 14 * 60) throw invalidRequest(pointer, TEXT.instantOffset);
   }
   const ms = Date.parse(text2);
@@ -6536,9 +6536,9 @@ function dateAt(value, pointer) {
   if (!parseCivilDate(text2) || text2 < FIRST_DATE || text2 > LAST_DATE) throw invalidRequest(pointer, TEXT.date);
   return text2;
 }
-function zoneKnown(zone2) {
+function zoneKnown(zone3) {
   try {
-    new Intl.DateTimeFormat("en-US", { timeZone: zone2 });
+    new Intl.DateTimeFormat("en-US", { timeZone: zone3 });
     return true;
   } catch {
     return false;
@@ -6597,8 +6597,8 @@ function parseEventsRequest(value) {
 }
 async function factDay(object, zones) {
   const date2 = dateAt(required(object, "date", ""), "/date");
-  const zone2 = has(object, "zone") ? await zoneAt(object.zone, "/zone", zones) : null;
-  return { date: date2, zone: zone2 };
+  const zone3 = has(object, "zone") ? await zoneAt(object.zone, "/zone", zones) : null;
+  return { date: date2, zone: zone3 };
 }
 async function factWhen(object, zones) {
   if (has(object, "instant") === has(object, "date")) throw invalidRequest("", TEXT.instantOrDate);
@@ -8268,8 +8268,8 @@ function createLocalTimeModule() {
     async function loadZoneHistory(name) {
       const bucket = await globImport_data_tz_history_2025c_json(`../../data/tz-history/2025c/${historyBucket(name)}.json`);
       const key = name.toLowerCase();
-      for (const [zone2, history] of Object.entries(bucket.default.zones)) {
-        if (zone2.toLowerCase() === key) return history;
+      for (const [zone3, history] of Object.entries(bucket.default.zones)) {
+        if (zone3.toLowerCase() === key) return history;
       }
       return null;
     }
@@ -8727,7 +8727,7 @@ function createLocalTimeModule() {
         loadModule(() => Promise.resolve().then(() => (init_excluded(), excluded_exports)))
       ]);
       const zones = Object.keys(bucket.default.zones);
-      return zones.find((zone2) => nameKey2(zone2) === key) ?? Object.keys(excluded.default.excluded).find((zone2) => nameKey2(zone2) === key);
+      return zones.find((zone3) => nameKey2(zone3) === key) ?? Object.keys(excluded.default.excluded).find((zone3) => nameKey2(zone3) === key);
     }
     async function canonicalZoneName(name) {
       if (typeof name !== "string") return null;
@@ -8839,8 +8839,8 @@ var PRIVACY2 = "Public-sky tools need no birth details and save no request or re
 var methodLink = { title: "How these calculations work", url: `${ORIGIN}/developers/compute/` };
 var moonLink = { title: "Explore Moon phases", url: `${ORIGIN}/moon-phase/` };
 var LIMITS2 = { from: EPOCH.from, to: EPOCH.to, eventWindowDays: MAX_EVENT_DAYS, eventKinds: [...EVENT_KINDS], samples: BUDGETS["events.samples"], factSamples: BUDGETS["sky-fact.samples"], searchResults: 5 };
-function displayTime(utc, zone2) {
-  return new Intl.DateTimeFormat("en-GB", { timeZone: zone2, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23", timeZoneName: "shortOffset" }).format(new Date(utc));
+function displayTime(utc, zone3) {
+  return new Intl.DateTimeFormat("en-GB", { timeZone: zone3, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23", timeZoneName: "shortOffset" }).format(new Date(utc));
 }
 function failure(tool, code, message, retryAfterSeconds) {
   return { schema: AI_RESULT_SCHEMA, ok: false, tool, error: { code, message, ...retryAfterSeconds === void 0 ? {} : { retryAfterSeconds } } };
@@ -8863,16 +8863,21 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies) {
       case "get_capabilities": {
         const statements2 = engineStatements();
         data = { name: "Zodiacs", version: AI_VERSION, engine: BACKEND, tools: [...AI_TOOL_NAMES], limits: LIMITS2, conventions: statements2.conventions, coverage: statements2.coverage, privacy: PRIVACY2, limitations: ["Tropical geocentric positions; supported reference span is stated in each receipt.", "Event completeness is tested, not proven. Budget exhaustion refuses the whole search.", "No eclipse or aspect search, birth-time rectification, predictions, reminders or account access.", "Search covers curated consumer guides, not the full website.", "Current means the server instant; daily sky files are separate noon-UTC snapshots."] };
+        if (dependencies.skyWatch) {
+          const capabilities = data;
+          capabilities.privacy += " Sky Watch preview saves public-sky filters, owner, expiration and encrypted callback credentials. Stopping or expiring a watch clears its credentials; subscription metadata is retained for up to 30 days afterward. Public event records and delivery status are retained for up to 30 days. No birth details are accepted.";
+          capabilities.limitations[2] = "Sky Watch delivers selected public-sky events through verified callbacks. Delivery can be delayed or repeated; no personal predictions, eclipses, aspect search or birth-time rectification.";
+        }
         break;
       }
       case "get_sky": {
         const args = INPUT_SCHEMAS.get_sky.parse(input);
-        const zone2 = await zoneAt(args.zone ?? "UTC", "/zone", resolveZone);
+        const zone3 = await zoneAt(args.zone ?? "UTC", "/zone", resolveZone);
         const instant2 = args.instant ?? (dependencies.now?.() ?? /* @__PURE__ */ new Date()).toISOString();
         const calculation2 = computePositions(parsePositionsRequest({ instants: [instant2], ...args.bodies ? { bodies: args.bodies } : {} }));
         const utc = calculation2.result.instants[0].instant;
         const phase = moonPhase(new Date(utc));
-        data = { mode: args.instant ? "requested-instant" : "current-instant", time: { utc, zone: zone2, display: displayTime(utc, zone2) }, calculation: calculation2, moonPhase: { name: phase.name, angle: phase.angle, illumination: phase.illumination }, interpretation: "Astronomical calculations; no personal prediction is supplied." };
+        data = { mode: args.instant ? "requested-instant" : "current-instant", time: { utc, zone: zone3, display: displayTime(utc, zone3) }, calculation: calculation2, moonPhase: { name: phase.name, angle: phase.angle, illumination: phase.illumination }, interpretation: "Astronomical calculations; no personal prediction is supplied." };
         links = [moonLink, methodLink];
         break;
       }
@@ -8881,7 +8886,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies) {
         const { zone: requestedZone, ...explicitRequest } = args;
         const now = args.from ? void 0 : dependencies.now?.() ?? /* @__PURE__ */ new Date();
         const request = now ? { from: now.toISOString(), to: new Date(now.getTime() + 7 * 864e5).toISOString() } : explicitRequest;
-        const zone2 = await zoneAt(requestedZone ?? "UTC", "/zone", resolveZone);
+        const zone3 = await zoneAt(requestedZone ?? "UTC", "/zone", resolveZone);
         const parsedRequest = parseEventsRequest(request);
         if (parsedRequest.to.getTime() - parsedRequest.from.getTime() > MAX_EVENT_DAYS * 864e5) return failure(tool, "budget-exhausted", "An event window is at most 31 days long.");
         if (dependencies.allowEvents) {
@@ -8889,7 +8894,7 @@ async function executeAiToolWithoutLifetimeBoundary(tool, input, dependencies) {
           if (verdict !== "allowed") return failure(tool, verdict === "limited" ? "rate-limited" : "rate-limit-unavailable", "Event computation is unavailable under its request limit. Try again later.", verdict === "limited" ? 60 : 300);
         }
         const calculation2 = computeEvents(parsedRequest);
-        data = { from: calculation2.result.from, to: calculation2.result.to, zone: zone2, events: calculation2.result.events.map((event2) => ({ ...event2, localAt: displayTime(event2.at, zone2) })), calculation: calculation2, completeness: calculation2.receipt.search.completeness };
+        data = { from: calculation2.result.from, to: calculation2.result.to, zone: zone3, events: calculation2.result.events.map((event2) => ({ ...event2, localAt: displayTime(event2.at, zone3) })), calculation: calculation2, completeness: calculation2.receipt.search.completeness };
         links = [{ title: "Explore the lunar calendar", url: `${ORIGIN}/full-moon-calendar/` }, { title: "Explore retrogrades", url: `${ORIGIN}/retrogrades/` }, methodLink];
         break;
       }
@@ -9001,10 +9006,96 @@ var WIDGET_HTML = `<!doctype html>
 })();
 </script></body></html>`;
 
+// src/ai-tools/watch/service.ts
+import { ProtocolError } from "@modelcontextprotocol/server";
+import { z as z5 } from "zod";
+
+// src/ai-tools/watch/callback.ts
+import { BlockList, isIP } from "node:net";
+var blocked = new BlockList();
+for (const [ip, prefix] of [["0.0.0.0", 8], ["10.0.0.0", 8], ["100.64.0.0", 10], ["127.0.0.0", 8], ["169.254.0.0", 16], ["172.16.0.0", 12], ["192.0.0.0", 24], ["192.0.2.0", 24], ["192.88.99.0", 24], ["192.168.0.0", 16], ["198.18.0.0", 15], ["198.51.100.0", 24], ["203.0.113.0", 24], ["224.0.0.0", 3]]) blocked.addSubnet(ip, prefix, "ipv4");
+var global6 = new BlockList();
+global6.addSubnet("2000::", 3, "ipv6");
+for (const [ip, prefix] of [["2001::", 23], ["2001:db8::", 32], ["2002::", 16], ["3fff::", 20]]) blocked.addSubnet(ip, prefix, "ipv6");
+
+// src/ai-tools/watch/contracts.ts
+import { z as z4 } from "zod";
+var BODIES2 = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
+var NAMES = ["zodiacs.sky.ingress", "zodiacs.sky.station", "zodiacs.sky.lunation"];
+var zone2 = z4.string().max(80).default("UTC").refine((value) => {
+  try {
+    new Intl.DateTimeFormat("en", { timeZone: value });
+    return true;
+  } catch {
+    return false;
+  }
+});
+var choices = (values) => z4.array(z4.enum(values)).min(1).max(values.length).transform((values2) => [...new Set(values2)].sort());
+var FILTERS = {
+  "zodiacs.sky.ingress": z4.object({ bodies: choices(BODIES2), zone: zone2 }).strict(),
+  "zodiacs.sky.station": z4.object({ bodies: choices(["Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"]), zone: zone2 }).strict(),
+  "zodiacs.sky.lunation": z4.object({ phases: choices(["new", "full"]), zone: zone2 }).strict()
+};
+var subscriptionParams = z4.object({
+  name: z4.enum(NAMES),
+  arguments: z4.unknown(),
+  delivery: z4.object({ mode: z4.literal("webhook"), url: z4.string().max(2048), secret: z4.string().max(100) }).strict(),
+  cursor: z4.null().optional(),
+  ttlMs: z4.number().int().positive().max(Number.MAX_SAFE_INTEGER).nullable().optional()
+}).strict();
+var unsubscribeParams = subscriptionParams.omit({ ttlMs: true, cursor: true }).extend({
+  delivery: subscriptionParams.shape.delivery.omit({ secret: true })
+});
+var EVENT_DEFINITIONS = NAMES.map((name) => ({
+  name,
+  description: name.endsWith("ingress") ? "A selected body crosses a tropical zodiac sign boundary." : name.endsWith("station") ? "A selected planet changes between direct and retrograde motion." : "A selected new or full Moon occurs.",
+  delivery: ["webhook"],
+  inputSchema: {
+    type: "object",
+    additionalProperties: false,
+    properties: {
+      ...name.endsWith("lunation") ? { phases: { type: "array", minItems: 1, maxItems: 2, uniqueItems: true, items: { enum: ["new", "full"] } } } : { bodies: { type: "array", minItems: 1, maxItems: 10, uniqueItems: true, items: { enum: name.endsWith("station") ? BODIES2.slice(2) : BODIES2 } } },
+      zone: { type: "string", description: "IANA time zone for display; UTC by default." }
+    },
+    required: [name.endsWith("lunation") ? "phases" : "bodies"]
+  },
+  payloadSchema: { type: "object", additionalProperties: false, required: ["event", "receipt", "zone", "localAt", "methodUrl"], properties: {
+    event: { type: "object", description: "Engine event, including kind, UTC at, sign and body or phase type." },
+    receipt: { type: "object", description: "Versioned calculation conventions and bounded-search completeness." },
+    zone: { type: "string" },
+    localAt: { type: "string" },
+    methodUrl: { type: "string" }
+  } }
+}));
+
+// src/ai-tools/watch/service.ts
+function registerSkyWatch(server, watch, owner) {
+  const meta = { _meta: z5.record(z5.string(), z5.unknown()).optional() };
+  const guarded2 = (run2) => run2().catch((error) => {
+    if (error instanceof ProtocolError) throw error;
+    throw new ProtocolError(-32602, "The event request could not be completed under its schema or availability requirements.");
+  });
+  server.server.setRequestHandler(
+    "events/list",
+    { params: z5.object({ ...meta, cursor: z5.null().optional() }).strict() },
+    async () => ({ events: EVENT_DEFINITIONS })
+  );
+  server.server.setRequestHandler(
+    "events/subscribe",
+    { params: subscriptionParams.extend(meta) },
+    async ({ _meta, ...params }) => guarded2(() => watch.subscribe(owner, params))
+  );
+  server.server.setRequestHandler(
+    "events/unsubscribe",
+    { params: unsubscribeParams.extend(meta) },
+    async ({ _meta, ...params }) => guarded2(() => watch.unsubscribe(owner, params))
+  );
+}
+
 // src/ai-tools/server.ts
-function createAiServer(dependencies) {
+function createAiServer(dependencies, watch) {
   const server = new McpServer({ name: "zodiacs", version: AI_VERSION }, {
-    capabilities: { tools: {}, resources: {} },
+    capabilities: { tools: {}, resources: {}, ...watch ? { events: {} } : {} },
     instructions: "Zodiacs computes astronomical facts with versioned receipts. Explain astrology as interpretation separately. Preserve depends/refused answers, explicit timezone, search completeness and source limits. Do not claim that a local server makes a cloud conversation local. Return complete useful answers; site links offer optional visualization or method inspection."
   });
   server.registerResource("sky-events", WIDGET_URI, {
@@ -9036,18 +9127,23 @@ function createAiServer(dependencies) {
       inputSchema: INPUT_SCHEMAS[tool],
       outputSchema: OUTPUT_SCHEMAS[tool],
       annotations: { ...READ_ONLY, idempotentHint: tool !== "get_sky" && tool !== "get_upcoming_events" },
-      _meta: { securitySchemes: [{ type: "noauth" }], ...resourceUri ? { ui: { resourceUri, visibility: ["model", "app"] }, "openai/outputTemplate": resourceUri, "openai/ui": { entrypoints: [{ type: "global" }, { type: "thread" }] } } : {} }
+      _meta: { ...!watch ? { securitySchemes: [{ type: "noauth" }] } : {}, ...resourceUri ? { ui: { resourceUri, visibility: ["model", "app"] }, "openai/outputTemplate": resourceUri, "openai/ui": { entrypoints: [{ type: "global" }, { type: "thread" }] } } : {} }
     }, async (args) => {
-      const result = await executeAiTool(tool, args, dependencies);
+      const result = await executeAiTool(tool, args, { ...dependencies, skyWatch: !!watch });
       return { isError: !result.ok, content: [{ type: "text", text: JSON.stringify(result) }], structuredContent: result };
     });
   }
+  if (watch) registerSkyWatch(server, watch.service, watch.owner);
   return server;
 }
 
 // src/ai-tools/sanitize.ts
 function sanitizeProtocolMessage(message) {
-  if (message.error) message.error = { code: message.error.code, message: "The MCP request does not match a supported operation or schema." };
+  if (message.error) message.error = {
+    code: message.error.code,
+    message: "The MCP request does not match a supported operation or schema.",
+    ...message.error.code === -32015 ? { data: { reason: message.error.data?.reason === "timeout" ? "timeout" : "challenge_failed" } } : {}
+  };
   else if (message.result?.isError && !message.result?.structuredContent?.schema && message.result.content?.some((item) => item.type === "text" && item.text.startsWith("Input validation error:"))) {
     message.result.content = [{ type: "text", text: "The tool arguments do not match the supported schema." }];
   }

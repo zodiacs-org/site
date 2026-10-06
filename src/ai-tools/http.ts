@@ -6,6 +6,7 @@ import { createAiServer } from './server';
 import type { AiDependencies } from './tools';
 import { sanitizeProtocolMessage } from './sanitize';
 import { reserveAiQuota, type QuotaKind } from './quota';
+import { configuredSkyWatch, type SkyWatch } from './watch/service';
 
 const ALLOWED_ORIGINS = new Set(['https://chatgpt.com', 'https://chat.openai.com', ORIGIN]);
 const SECURITY_HEADERS = { 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff', 'X-Robots-Tag': 'noindex' };
@@ -20,6 +21,8 @@ export interface AiHttpOptions {
   dependencies?: AiDependencies;
   /** Explicit loopback/preview hostnames for local tests. Production defaults to zodiacs.org. */
   allowedHosts?: readonly string[];
+  /** Isolated protocol tests inject a store-backed preview service. */
+  skyWatch?: SkyWatch;
 }
 
 function send(res: any, status: number, code: string, retry?: number) {
@@ -49,7 +52,7 @@ async function readBody(req: any): Promise<string> {
   return new TextDecoder('utf-8', { fatal: true }).decode(Buffer.concat(chunks, total));
 }
 
-/** Stateless HTTP transport, no user store, outbound proxy or argument logging. */
+/** Stateless transport; optional authenticated Sky Watch uses its own durable store. */
 export function createAiNodeHandler(options: AiHttpOptions = {}) {
   return async (req: any, res: any): Promise<void> => {
     const env = options.env ?? process.env;
@@ -74,7 +77,7 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
     if (origin) { res.setHeader('Access-Control-Allow-Origin', origin); res.setHeader('Vary', 'Origin'); }
     if (method === 'OPTIONS') {
       res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-      res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept, MCP-Protocol-Version, MCP-Session-Id, MCP-Method, MCP-Name');
+      res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type, Accept, MCP-Protocol-Version, MCP-Session-Id, MCP-Method, MCP-Name');
       res.statusCode = 204; res.end(); return;
     }
     let rawQuery: URLSearchParams;
@@ -92,6 +95,15 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
     let verdict: RateLimitVerdict;
     try { verdict = await rateLimit(req, COMPUTE_RATE_LIMIT_ID); } catch { verdict = 'unavailable'; }
     if (verdict !== 'allowed') return send(res, verdict === 'limited' ? 429 : 503, verdict === 'limited' ? 'rate-limited' : 'rate-limit-unavailable', verdict === 'limited' ? 60 : 300);
+    let watch: { service: SkyWatch; owner: import('./watch/contracts').Principal } | undefined;
+    try {
+      const service = options.skyWatch ?? configuredSkyWatch(env);
+      if (service) {
+        const owner = await service.authenticate(req.headers?.authorization);
+        if (!owner) { res.setHeader('WWW-Authenticate', 'Bearer realm="Zodiacs Sky Watch preview"'); return send(res, 401, 'authentication-required'); }
+        watch = { service, owner };
+      }
+    } catch { return send(res, 503, 'watch-unavailable'); }
     try { verdict = await atomicQuota('request'); } catch { verdict = 'unavailable'; }
     if (verdict !== 'allowed') return send(res, verdict === 'limited' ? 429 : 503, verdict === 'limited' ? 'rate-limited' : 'rate-limit-unavailable', verdict === 'limited' ? 60 : 300);
     if (method === 'GET') {
@@ -113,7 +125,9 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
       const name = (message.params as Record<string, unknown>).name;
       if ((AI_TOOL_NAMES as readonly string[]).includes(String(name))) operation = String(name);
     }
-    if (!['initialize', 'notifications/initialized', 'ping', 'server/discover', 'tools/list', 'tools/call', 'resources/list', 'resources/read', 'resources/templates/list'].includes(String(message.method))) {
+    const watchMethod = ['events/list', 'events/subscribe', 'events/unsubscribe'].includes(String(message.method));
+    if (watch && watchMethod && req.headers?.['mcp-protocol-version'] !== '2026-07-28') return send(res, 400, 'event-protocol-required');
+    if (!['initialize', 'notifications/initialized', 'ping', 'server/discover', 'tools/list', 'tools/call', 'resources/list', 'resources/read', 'resources/templates/list', ...(watch ? ['events/list', 'events/subscribe', 'events/unsubscribe'] : [])].includes(String(message.method))) {
       res.setHeader('Content-Type', 'application/json; charset=utf-8'); res.statusCode = 200;
       res.end(JSON.stringify({ jsonrpc: '2.0', id: typeof message.id === 'string' || typeof message.id === 'number' ? message.id : null, error: { code: -32601, message: 'This MCP operation is not supported.' } })); return;
     }
@@ -123,7 +137,7 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
         return addressVerdict === 'allowed' ? await atomicQuota('event') : addressVerdict;
       } catch { return 'unavailable'; }
     } };
-    const sdk = createMcpHandler(() => createAiServer(dependencies), { legacy: 'stateless', responseMode: 'auto', onerror: () => {} });
+    const sdk = createMcpHandler(() => createAiServer(dependencies, watch), { legacy: 'stateless', responseMode: 'auto', onerror: () => {} });
     try {
       const headers = new Headers();
       for (const key of ['content-type', 'accept', 'mcp-protocol-version', 'mcp-session-id', 'mcp-method', 'mcp-name']) {
