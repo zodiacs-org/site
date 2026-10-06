@@ -1,5 +1,4 @@
 import { COMPUTE_ROUTE_PARAM } from '../src/lib/compute-api/constants.js';
-import { MCP_ROUTE_PARAM } from '../src/mcp/hosted-route.js';
 import { sendInviteJson } from '../src/lib/invite/api.js';
 import { handleGamesApi } from '../src/lib/games/server.js';
 import { handleRegistryNews } from './_registry/news-handler.js';
@@ -53,11 +52,9 @@ export default async function handler(req: any, res: any): Promise<void> {
     await computeApi(req, res);
     return;
   }
-  // The hosted MCP endpoint (/mcp and /mcp/health) rewrites here the same way,
-  // and loads only when one is asked for; off until ZODIACS_MCP_ENABLED is 1.
-  if (req.query?.[MCP_ROUTE_PARAM] !== undefined) {
-    const { default: hostedMcp } = await import('./_mcp/handler.js');
-    await hostedMcp(req, res);
+  // The hosted sky MCP endpoint, /api/v1/mcp (src/mcp/hosted-route.ts).
+  if (req.query?.__zodiacs_mcp !== undefined) {
+    await (await import('./_mcp/handler.js')).default(req, res);
     return;
   }
   const previewRoute = req.query?.__zodiacs_og_route;

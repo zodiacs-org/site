@@ -1,6 +1,6 @@
 /**
- * Bundles the hosted MCP endpoint (https://zodiacs.org/mcp) for the shared
- * Vercel function.
+ * Bundles the hosted sky MCP endpoint (https://zodiacs.org/api/v1/mcp) for the
+ * shared Vercel function.
  *
  *   node scripts/build-mcp-remote.mjs           # write api/_mcp/remote.mjs
  *   node scripts/build-mcp-remote.mjs --check   # fail on drift (tests/api/mcp-remote-bundle.test.ts)

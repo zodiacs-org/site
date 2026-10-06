@@ -226,7 +226,7 @@
       "permanent": true
     },
     {
-      "source": "/:path((?!api(?:/|$)|v1(?:/|$)|mcp(?:/|$)|\\.well-known(?:/|$)|.*\\.[^/]+$).*[^/])",
+      "source": "/:path((?!api(?:/|$)|v1(?:/|$)|\\.well-known(?:/|$)|.*\\.[^/]+$).*[^/])",
       "destination": "/:path/",
       "permanent": true
     },
@@ -278,22 +278,6 @@
       "destination": "/api/compatibility?action=:action"
     },
     {
-      "source": "/mcp",
-      "destination": "/api/compatibility?__zodiacs_mcp=1"
-    },
-    {
-      "source": "/mcp/",
-      "destination": "/api/compatibility?__zodiacs_mcp=1"
-    },
-    {
-      "source": "/mcp/health",
-      "destination": "/api/compatibility?__zodiacs_mcp=health"
-    },
-    {
-      "source": "/mcp/health/",
-      "destination": "/api/compatibility?__zodiacs_mcp=health"
-    },
-    {
       "source": "/api/v1/chart",
       "destination": "/api/compatibility?__zodiacs_compute=chart"
     },
@@ -320,6 +304,14 @@
     {
       "source": "/api/v1/elections",
       "destination": "/api/compatibility?__zodiacs_compute=elections"
+    },
+    {
+      "source": "/api/v1/mcp",
+      "destination": "/api/compatibility?__zodiacs_mcp=1"
+    },
+    {
+      "source": "/api/v1/mcp/health",
+      "destination": "/api/compatibility?__zodiacs_mcp=health"
     }
   ],
   "headers": [

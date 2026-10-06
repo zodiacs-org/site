@@ -1,7 +1,7 @@
 /**
- * The MCP server behind https://zodiacs.org/mcp: the public-sky tools of the
- * local adapter, served over Streamable HTTP by api/compatibility.ts through
- * hosted-http.ts.
+ * The MCP server behind https://zodiacs.org/api/v1/mcp: the public-sky tools
+ * of the local adapter, served over Streamable HTTP by api/compatibility.ts
+ * through hosted-http.ts.
  *
  * The calculations are the local adapter's, from the same modules:
  * get_positions, find_events and check_sky_fact parse and compute with the
@@ -36,7 +36,7 @@ import {
 } from './sky-tools';
 import { UNSUPPORTED, type ToolOutcome } from './tools';
 
-export const HOSTED_SERVER_NAME = 'zodiacs-mcp';
+export const HOSTED_SERVER_NAME = 'zodiacs-sky-mcp';
 export const HOSTED_SERVER_VERSION = '0.1.0';
 
 export const HOSTED_TOOL_NAMES = Object.freeze([

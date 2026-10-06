@@ -83,7 +83,7 @@ describe("the hosted MCP endpoint's bundle", () => {
   });
 
   it('answers as the source transport does, and refuses while switched off', async () => {
-    const options = { env: { ZODIACS_MCP_ENABLED: '1' }, rateLimit: async () => 'allowed' as const, now: () => new Date('2026-10-06T12:00:00Z') };
+    const options = { env: { ZODIACS_SKY_MCP_ENABLED: '1' }, rateLimit: async () => 'allowed' as const, now: () => new Date('2026-10-06T12:00:00Z') };
     const fromBundle = bundledHandler(options);
     const fromSource = sourceHandler(options);
     const requests = [

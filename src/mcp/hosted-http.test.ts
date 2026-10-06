@@ -12,7 +12,7 @@ import { COMPUTE_EVENTS_RATE_LIMIT_ID, COMPUTE_RATE_LIMIT_ID, type RateLimitVerd
 import { createHostedMcpHandler, originAllowed, sanitizeProtocolMessage } from './hosted-http';
 import { HOSTED_TOOL_NAMES } from './hosted-server';
 
-const ON = Object.freeze({ ZODIACS_MCP_ENABLED: '1' });
+const ON = Object.freeze({ ZODIACS_SKY_MCP_ENABLED: '1' });
 const PROTOCOL = '/api/compatibility?__zodiacs_mcp=1';
 const HEALTH = '/api/compatibility?__zodiacs_mcp=health';
 
@@ -81,14 +81,14 @@ describe('who the endpoint answers', () => {
     expect((await call({ body: INIT, headers: { host: 'WWW.Zodiacs.org' } })).status).toBe(200);
     const preview = 'zodiacs-org-git-x-zodiacsofficial.vercel.app';
     expect((await call({ body: INIT, headers: { host: preview } })).status).toBe(403);
-    expect((await call({ body: INIT, headers: { host: preview }, env: { ...ON, ZODIACS_MCP_STAGING_HOST: preview } })).status).toBe(200);
+    expect((await call({ body: INIT, headers: { host: preview }, env: { ...ON, ZODIACS_SKY_MCP_STAGING_HOST: preview } })).status).toBe(200);
     // A preview deployment also answers on its own hostname, as the platform names it; production never does.
     const deployment = 'zodiacs-org-abc123-zodiacsofficial.vercel.app';
     expect((await call({ body: INIT, headers: { host: deployment }, env: { ...ON, VERCEL_ENV: 'preview', VERCEL_URL: deployment } })).status).toBe(200);
     expect((await call({ body: INIT, headers: { host: deployment }, env: { ...ON, VERCEL_ENV: 'production', VERCEL_URL: deployment } })).status).toBe(403);
     expect((await call({ body: INIT, headers: { host: 'other.vercel.app' }, env: { ...ON, VERCEL_ENV: 'preview', VERCEL_URL: deployment } })).status).toBe(403);
     for (const invalid of ['*.vercel.app', 'UPPER.example', 'nodot', 'a..b']) {
-      expect((await call({ body: INIT, headers: { host: invalid }, env: { ...ON, ZODIACS_MCP_STAGING_HOST: invalid } })).status, invalid).toBe(403);
+      expect((await call({ body: INIT, headers: { host: invalid }, env: { ...ON, ZODIACS_SKY_MCP_STAGING_HOST: invalid } })).status, invalid).toBe(403);
     }
   });
 
@@ -120,10 +120,11 @@ describe('who the endpoint answers', () => {
 });
 
 describe('the switch and the limits', () => {
-  it('is off unless ZODIACS_MCP_ENABLED is 1, and then counts nothing', async () => {
+  it('is off unless ZODIACS_SKY_MCP_ENABLED is 1, and then counts nothing', async () => {
     let counted = 0;
     const rateLimit = async () => { counted += 1; return 'allowed' as const; };
-    const switchedOff: Array<Record<string, string>> = [{}, { ZODIACS_MCP_ENABLED: '0' }, { ZODIACS_MCP_ENABLED: 'true' }];
+    // #618's switch, ZODIACS_MCP_ENABLED, does not turn this server on.
+    const switchedOff: Array<Record<string, string>> = [{}, { ZODIACS_SKY_MCP_ENABLED: '0' }, { ZODIACS_SKY_MCP_ENABLED: 'true' }, { ZODIACS_MCP_ENABLED: '1' }];
     for (const env of switchedOff) {
       for (const [url, method] of [[PROTOCOL, 'POST'], [HEALTH, 'GET']] as const) {
         const reply = await call({ env, url, method, body: method === 'POST' ? INIT : undefined, rateLimit });
@@ -138,7 +139,7 @@ describe('the switch and the limits', () => {
     let counted = 0;
     const reply = await call({ method: 'GET', url: HEALTH, rateLimit: async () => { counted += 1; return 'allowed'; } });
     expect(reply.status).toBe(200);
-    expect(JSON.parse(reply.text)).toEqual({ service: 'zodiacs-mcp', version: '0.1.0', transport: 'streamable-http', ready: true });
+    expect(JSON.parse(reply.text)).toEqual({ service: 'zodiacs-sky-mcp', version: '0.1.0', transport: 'streamable-http', ready: true });
     expect(counted).toBe(0);
   });
 

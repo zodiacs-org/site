@@ -35322,9 +35322,9 @@ async function computeApiRateLimit(req, id = COMPUTE_RATE_LIMIT_ID) {
 // src/mcp/hosted-route.ts
 var MCP_ROUTE_PARAM = "__zodiacs_mcp";
 var MCP_ROUTES = Object.freeze({ protocol: "1", health: "health" });
-var MCP_URL = "https://zodiacs.org/mcp";
-var MCP_SWITCH_ENV = "ZODIACS_MCP_ENABLED";
-var MCP_STAGING_HOST_ENV = "ZODIACS_MCP_STAGING_HOST";
+var MCP_URL = "https://zodiacs.org/api/v1/mcp";
+var MCP_SWITCH_ENV = "ZODIACS_SKY_MCP_ENABLED";
+var MCP_STAGING_HOST_ENV = "ZODIACS_SKY_MCP_STAGING_HOST";
 
 // src/mcp/bounds.ts
 var ADAPTER_VERSION = "0.1.0-rc.17";
@@ -35965,7 +35965,7 @@ var PARSE_REFUSALS = Object.freeze({
 });
 
 // src/mcp/hosted-server.ts
-var HOSTED_SERVER_NAME = "zodiacs-mcp";
+var HOSTED_SERVER_NAME = "zodiacs-sky-mcp";
 var HOSTED_SERVER_VERSION = "0.1.0";
 var HOSTED_TOOL_NAMES = Object.freeze([
   "get_capabilities",
@@ -36279,7 +36279,7 @@ function sanitizeReply(reply, eventStream) {
 function routeOf(req) {
   let params;
   try {
-    params = new URL(req.url ?? "/mcp", ORIGIN).searchParams;
+    params = new URL(req.url ?? "/api/v1/mcp", ORIGIN).searchParams;
   } catch {
     return "invalid";
   }
@@ -36379,7 +36379,7 @@ function createHostedMcpHandler(options = {}) {
         const value = req.headers?.[name];
         if (typeof value === "string") headers.set(name, value);
       }
-      const response = await sdk.fetch(new Request(`${ORIGIN}/mcp`, { method: "POST", headers, body: text2 }), { parsedBody: body2 });
+      const response = await sdk.fetch(new Request(`${ORIGIN}/api/v1/mcp`, { method: "POST", headers, body: text2 }), { parsedBody: body2 });
       const reply = response.body ? await response.text() : "";
       if (Buffer.byteLength(reply) > MAX_REPLY_BYTES) return refuse(res, 500, "reply-too-large");
       const safe = sanitizeReply(reply, response.headers.get("content-type")?.includes("text/event-stream") ?? false);

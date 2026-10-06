@@ -209,12 +209,12 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   time (F-58); `--check` for drift, and `tests/api/compute-api-bundle.test.ts`
   rebuilds it byte for byte and loads it without module syntax detection)
 - `api/_mcp/remote.mjs` + `remote.d.mts` ← `node scripts/build-mcp-remote.mjs`
-  (the hosted MCP endpoint at `/mcp`, from `src/mcp/hosted-http.ts` and
+  (the hosted sky MCP endpoint at `/api/v1/mcp`, from `src/mcp/hosted-http.ts` and
   `hosted-server.ts`, bundled with the engine, the MCP SDK and zod; the engine
   inputs must be the set audited for the compute bundle, and each request ends
   by clearing the same engine memos. `--check` for drift, and
   `tests/api/mcp-remote-bundle.test.ts` rebuilds it byte for byte. Off unless
-  `ZODIACS_MCP_ENABLED=1`; not one of the local MCP archive's sources)
+  `ZODIACS_SKY_MCP_ENABLED=1`; not one of the local MCP archive's sources)
 - `src/lib/compute-api/examples.json` ← `npx vite-node --script
   scripts/build-compute-examples.mjs` (the compute API's documented answers,
   run through the real handler; `tests/api/compute-api-openapi.test.ts` fails

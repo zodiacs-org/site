@@ -1,7 +1,7 @@
 /**
- * The HTTP side of https://zodiacs.org/mcp: a stateless Streamable HTTP
+ * The HTTP side of https://zodiacs.org/api/v1/mcp: a stateless Streamable HTTP
  * endpoint for the tools in hosted-server.ts, called by api/_mcp/handler.ts
- * when vercel.json's /mcp rewrite reaches api/compatibility.ts.
+ * when vercel.json's /api/v1/mcp rewrite reaches api/compatibility.ts.
  *
  * Adapted from the transport pull request #618 tested against ChatGPT and the
  * official SDK clients (src/ai-tools/http.ts there), without its separate
@@ -155,7 +155,7 @@ function sanitizeReply(reply: string, eventStream: boolean): string {
 function routeOf(req: any): string | null | 'invalid' {
   let params: URLSearchParams;
   try {
-    params = new URL(req.url ?? '/mcp', ORIGIN).searchParams;
+    params = new URL(req.url ?? '/api/v1/mcp', ORIGIN).searchParams;
   } catch {
     return 'invalid';
   }
@@ -257,7 +257,7 @@ export function createHostedMcpHandler(options: HostedHttpOptions = {}) {
         const value = req.headers?.[name];
         if (typeof value === 'string') headers.set(name, value);
       }
-      const response = await sdk.fetch(new Request(`${ORIGIN}/mcp`, { method: 'POST', headers, body: text }), { parsedBody: body });
+      const response = await sdk.fetch(new Request(`${ORIGIN}/api/v1/mcp`, { method: 'POST', headers, body: text }), { parsedBody: body });
       const reply = response.body ? await response.text() : '';
       if (Buffer.byteLength(reply) > MAX_REPLY_BYTES) return refuse(res, 500, 'reply-too-large');
       const safe = sanitizeReply(reply, response.headers.get('content-type')?.includes('text/event-stream') ?? false);
