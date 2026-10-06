@@ -298,7 +298,7 @@ await withPreview({ port: 4425 }, async (baseURL) => {
       const navRuns = [];
       for (const blockFonts of [false, true]) {
         const navStates = [];
-        for (const route of ['/', '/people/', '/people/ada-lovelace/', '/today/']) {
+        for (const route of ['/', '/people/', '/people/ada-lovelace/', '/birth-chart/', '/today/']) {
           const context = await browser.newContext({ viewport });
           if (blockFonts) {
             await context.route(/\.woff2(?:\?|$)/u, (requestRoute) => requestRoute.abort());
@@ -316,6 +316,7 @@ await withPreview({ port: 4425 }, async (baseURL) => {
             const box = nav?.getBoundingClientRect();
             return {
               width: box?.width ?? 0,
+              hasCollection: Boolean(nav?.querySelector('.nav__chip')),
               height: box?.height ?? 0,
               sans: nav ? getComputedStyle(nav).fontFamily : '',
               serif: document.querySelector('.nav__name')
@@ -367,11 +368,17 @@ await withPreview({ port: 4425 }, async (baseURL) => {
         }
 
         const baseline = navStates[0].settled;
-        for (const state of navStates.slice(1)) {
+        for (const state of navStates) {
+          const isTool = ['/birth-chart/', '/today/'].includes(state.route);
+          check(state.settled.hasCollection === !isTool, `${state.route}: navigation collection boundary differs`);
+          // Tools omit Astrofolio and its reserved desktop width. Compare
+          // each composition against its own reference, retaining the shared
+          // height, typography and first-paint stability checks.
+          const geometryReference = navStates.find((entry) => entry.route === (isTool ? '/birth-chart/' : '/'));
           check(
-            Math.abs(state.settled.width - baseline.width) <= 0.1
+            Math.abs(state.settled.width - geometryReference.settled.width) <= 0.1
               && Math.abs(state.settled.height - baseline.height) <= 0.1,
-            `${state.route}@${viewport.width}: navigation geometry differs from /${blockFonts ? ' with fonts blocked' : ''}`,
+            `${state.route}@${viewport.width}: navigation geometry differs from ${geometryReference.route}${blockFonts ? ' with fonts blocked' : ''}`,
           );
           check(
             state.settled.sans === baseline.sans
