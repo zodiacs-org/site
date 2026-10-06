@@ -150,7 +150,7 @@ describe('Phase 1 layout and motion contract', () => {
     ]);
     expect(brief).toContain('{livingChartEnabled && <LivingReflection />}');
     expect(brief).toContain('<LivingReflection prompt={reflectionPrompt} />');
-    expect(brief.match(/<button class="btn btn--primary">/gu)).toHaveLength(2);
+    expect(brief.match(/<button class="btn btn--ghost living-moment-trigger">/gu)).toHaveLength(2);
     expect(brief).not.toContain('<span class="btn btn--primary"><span>Save this moment</span>');
     expect(today).toContain(".today-useful[aria-hidden='true'] { visibility: hidden; }");
     expect(today).toContain('.today-useful__question { min-block-size: 3.1em; }');

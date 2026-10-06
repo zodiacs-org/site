@@ -15,10 +15,12 @@
  * v0 was drawn with engine 0.1.1-rc.16 and the ΔT tables of 24 September
  * 2026. With another engine the generator refuses to draw or check v0 again,
  * and the one test that needs v0's own engine, the rules derived again and
- * held to its instants, does not run. check_sky_fact is still held to every
- * answer, since v0's margins keep the answers from turning on the engine's
- * error, and to every entry into a sign while retrograde in the ingress
- * questions' periods, found again in the installed engine.
+ * held to its instants, does not run. check_sky_fact is still held to the
+ * published replies as the generator's check holds them, each answer and the
+ * facts behind it with every event within 2 seconds; to every answer, since
+ * v0's margins keep the answers from turning on the engine's error; and to
+ * every entry into a sign while retrograde in the ingress questions' periods,
+ * found again in the installed engine.
  */
 import { createHash } from 'node:crypto';
 import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
@@ -29,7 +31,7 @@ import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import {
   ANY_OFFSET_DAY, DRAWN_FILES, ENGINE_ERROR_ARCSEC, REFERENCE_DATE, SIGNS, VERSION, datesHolding, drawnWith, factFor, folderOf,
-  installedEngine, periodReach, redrawRefusal, replyDifferences, windowOf, writeOrCheck,
+  installedEngine, periodReach, redrawRefusal, replyDifferences, toolAnswers, windowOf, writeOrCheck,
 } from '../../scripts/build-sky-benchmark.mjs';
 import {
   INSTRUCTIONS as SCORER_INSTRUCTIONS, SIGNS as SIGN_NAMES, readReply, scoreReply, scoreRun,
@@ -115,6 +117,9 @@ describe('the sky-fact benchmark, v0', () => {
     // Once the generator draws a later version, v0 is held by its pinned bytes alone.
     if (sameEngine && VERSION === 'v0') expect(await writeOrCheck('v0', { check: true })).toEqual([]);
     else await expect(writeOrCheck('v0', { check: true })).rejects.toThrow(/v0 is frozen/u);
+    // With another engine the generator does not draw v0 again, and check_sky_fact's replies to its questions are held
+    // to the published ones as the generator's check holds them: each answer, the facts behind it, every event within 2 s.
+    if (!sameEngine && VERSION === 'v0') expect(replyDifferences(tool, await toolAnswers(items, key, checkSkyFact))).toEqual([]);
   }, 300_000);
 
   it('names the engine and the ΔT tables it was drawn with, and the generator draws it only with those', () => {

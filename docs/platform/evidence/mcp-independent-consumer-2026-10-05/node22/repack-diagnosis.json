@@ -1,0 +1,338 @@
+{
+  "sourceCommit": "51b64f3cb67c2026a18772297ec6b367ed2ca183",
+  "savedWorktreeUmask": "0077",
+  "savedPackageModes": "0600 for all seven files",
+  "gitArchivePackageModes": "0644 for all seven files",
+  "classification": "environment file-mode mismatch; no payload drift; exact existing archive reproduced from pinned Git export",
+  "payloadsIdentical": true,
+  "uncompressedDifferenceBytes": 22,
+  "differenceFields": [
+    "tar mode",
+    "tar header checksum"
+  ],
+  "archives": [
+    {
+      "path": "/workspace/mcp-consumer-review/public/examples/zodiacs-mcp-server-0.1.0-rc.16.3.tgz",
+      "bytes": 124924,
+      "sha256": "dde8e475a43d1ef9f7563281996aef8a4f53d89b99d5c387ba708f8878e034a4",
+      "gzipHeader": "1f8b08000000000002ff",
+      "tarBytes": 396800,
+      "tarSha256": "4dc5707ef588427f95e6eec77c26d279617e2c8cc46ca84ff166011b8f8b5e67",
+      "members": [
+        {
+          "name": "package/NOTICE",
+          "type": "0",
+          "size": 11073,
+          "mode": "0o644",
+          "uid": 0,
+          "gid": 0,
+          "uname": "",
+          "gname": "",
+          "mtime": 499162500,
+          "pax": {},
+          "sha256": "f79d6ce8da63947c9f0c19c3ecdfff8469548ea47e3a5d13c356ee628db50688"
+        },
+        {
+          "name": "package/candidate.json",
+          "type": "0",
+          "size": 4567,
+          "mode": "0o644",
+          "uid": 0,
+          "gid": 0,
+          "uname": "",
+          "gname": "",
+          "mtime": 499162500,
+          "pax": {},
+          "sha256": "bb105e96580c52825ca61d6d96e8697255a989eea5d07d61ea5b63c091a8bfbc"
+        },
+        {
+          "name": "package/npm-shrinkwrap.json",
+          "type": "0",
+          "size": 6385,
+          "mode": "0o644",
+          "uid": 0,
+          "gid": 0,
+          "uname": "",
+          "gname": "",
+          "mtime": 499162500,
+          "pax": {},
+          "sha256": "4c30e34d30f64f4a7255aafb67a00f7277ce51d7578f41d6225f82a98c9b4759"
+        },
+        {
+          "name": "package/package.json",
+          "type": "0",
+          "size": 712,
+          "mode": "0o644",
+          "uid": 0,
+          "gid": 0,
+          "uname": "",
+          "gname": "",
+          "mtime": 499162500,
+          "pax": {},
+          "sha256": "b109afcf82215058fe4f1101140405df135f4f1e00bdb843182d12b064acf063"
+        },
+        {
+          "name": "package/README.md",
+          "type": "0",
+          "size": 30614,
+          "mode": "0o644",
+          "uid": 0,
+          "gid": 0,
+          "uname": "",
+          "gname": "",
+          "mtime": 499162500,
+          "pax": {},
+          "sha256": "bce4795c0feb28a588024fd6855b03c89741e9240077fd5cfee999285e1a301c"
+        },
+        {
+          "name": "package/server.mjs",
+          "type": "0",
+          "size": 329498,
+          "mode": "0o644",
+          "uid": 0,
+          "gid": 0,
+          "uname": "",
+          "gname": "",
+          "mtime": 499162500,
+          "pax": {},
+          "sha256": "a59382d0fbe5b3f9afc9ff788ce92a1dd406a3ef2c59d98d77a41c7e0f598312"
+        },
+        {
+          "name": "package/verify.mjs",
+          "type": "0",
+          "size": 8103,
+          "mode": "0o644",
+          "uid": 0,
+          "gid": 0,
+          "uname": "",
+          "gname": "",
+          "mtime": 499162500,
+          "pax": {},
+          "sha256": "a9c0fc2a3c614609294eaea6858aa5c73a3ff05bcd009f3fec35387bf2fd6ce0"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/zodiacs-repack-diagnosis/node22-npm10/zodiacs-mcp-server-0.1.0-rc.16.3.tgz",
+      "bytes": 124922,
+      "sha256": "032992f181a265c06f32d7354fac7fed2fbad68af5f29f1b55efd7efa56ca427",
+      "gzipHeader": "1f8b08000000000002ff",
+      "tarBytes": 396800,
+      "tarSha256": "15562cfe5d650278cc8fd2554a1b232692b09751432ae2b2ec9345121086717d",
+      "members": [
+        {
+          "name": "package/NOTICE",
+          "type": "0",
+          "size": 11073,
+          "mode": "0o600",
+          "uid": 0,
+          "gid": 0,
+          "uname": "",
+          "gname": "",
+          "mtime": 499162500,
+          "pax": {},
+          "sha256": "f79d6ce8da63947c9f0c19c3ecdfff8469548ea47e3a5d13c356ee628db50688"
+        },
+        {
+          "name": "package/candidate.json",
+          "type": "0",
+          "size": 4567,
+          "mode": "0o600",
+          "uid": 0,
+          "gid": 0,
+          "uname": "",
+          "gname": "",
+          "mtime": 499162500,
+          "pax": {},
+          "sha256": "bb105e96580c52825ca61d6d96e8697255a989eea5d07d61ea5b63c091a8bfbc"
+        },
+        {
+          "name": "package/npm-shrinkwrap.json",
+          "type": "0",
+          "size": 6385,
+          "mode": "0o600",
+          "uid": 0,
+          "gid": 0,
+          "uname": "",
+          "gname": "",
+          "mtime": 499162500,
+          "pax": {},
+          "sha256": "4c30e34d30f64f4a7255aafb67a00f7277ce51d7578f41d6225f82a98c9b4759"
+        },
+        {
+          "name": "package/package.json",
+          "type": "0",
+          "size": 712,
+          "mode": "0o600",
+          "uid": 0,
+          "gid": 0,
+          "uname": "",
+          "gname": "",
+          "mtime": 499162500,
+          "pax": {},
+          "sha256": "b109afcf82215058fe4f1101140405df135f4f1e00bdb843182d12b064acf063"
+        },
+        {
+          "name": "package/README.md",
+          "type": "0",
+          "size": 30614,
+          "mode": "0o600",
+          "uid": 0,
+          "gid": 0,
+          "uname": "",
+          "gname": "",
+          "mtime": 499162500,
+          "pax": {},
+          "sha256": "bce4795c0feb28a588024fd6855b03c89741e9240077fd5cfee999285e1a301c"
+        },
+        {
+          "name": "package/server.mjs",
+          "type": "0",
+          "size": 329498,
+          "mode": "0o600",
+          "uid": 0,
+          "gid": 0,
+          "uname": "",
+          "gname": "",
+          "mtime": 499162500,
+          "pax": {},
+          "sha256": "a59382d0fbe5b3f9afc9ff788ce92a1dd406a3ef2c59d98d77a41c7e0f598312"
+        },
+        {
+          "name": "package/verify.mjs",
+          "type": "0",
+          "size": 8103,
+          "mode": "0o600",
+          "uid": 0,
+          "gid": 0,
+          "uname": "",
+          "gname": "",
+          "mtime": 499162500,
+          "pax": {},
+          "sha256": "a9c0fc2a3c614609294eaea6858aa5c73a3ff05bcd009f3fec35387bf2fd6ce0"
+        }
+      ]
+    },
+    {
+      "path": "/tmp/zodiacs-repack-diagnosis/node24-npm11/zodiacs-mcp-server-0.1.0-rc.16.3.tgz",
+      "bytes": 124922,
+      "sha256": "032992f181a265c06f32d7354fac7fed2fbad68af5f29f1b55efd7efa56ca427",
+      "gzipHeader": "1f8b08000000000002ff",
+      "tarBytes": 396800,
+      "tarSha256": "15562cfe5d650278cc8fd2554a1b232692b09751432ae2b2ec9345121086717d",
+      "members": [
+        {
+          "name": "package/NOTICE",
+          "type": "0",
+          "size": 11073,
+          "mode": "0o600",
+          "uid": 0,
+          "gid": 0,
+          "uname": "",
+          "gname": "",
+          "mtime": 499162500,
+          "pax": {},
+          "sha256": "f79d6ce8da63947c9f0c19c3ecdfff8469548ea47e3a5d13c356ee628db50688"
+        },
+        {
+          "name": "package/candidate.json",
+          "type": "0",
+          "size": 4567,
+          "mode": "0o600",
+          "uid": 0,
+          "gid": 0,
+          "uname": "",
+          "gname": "",
+          "mtime": 499162500,
+          "pax": {},
+          "sha256": "bb105e96580c52825ca61d6d96e8697255a989eea5d07d61ea5b63c091a8bfbc"
+        },
+        {
+          "name": "package/npm-shrinkwrap.json",
+          "type": "0",
+          "size": 6385,
+          "mode": "0o600",
+          "uid": 0,
+          "gid": 0,
+          "uname": "",
+          "gname": "",
+          "mtime": 499162500,
+          "pax": {},
+          "sha256": "4c30e34d30f64f4a7255aafb67a00f7277ce51d7578f41d6225f82a98c9b4759"
+        },
+        {
+          "name": "package/package.json",
+          "type": "0",
+          "size": 712,
+          "mode": "0o600",
+          "uid": 0,
+          "gid": 0,
+          "uname": "",
+          "gname": "",
+          "mtime": 499162500,
+          "pax": {},
+          "sha256": "b109afcf82215058fe4f1101140405df135f4f1e00bdb843182d12b064acf063"
+        },
+        {
+          "name": "package/README.md",
+          "type": "0",
+          "size": 30614,
+          "mode": "0o600",
+          "uid": 0,
+          "gid": 0,
+          "uname": "",
+          "gname": "",
+          "mtime": 499162500,
+          "pax": {},
+          "sha256": "bce4795c0feb28a588024fd6855b03c89741e9240077fd5cfee999285e1a301c"
+        },
+        {
+          "name": "package/server.mjs",
+          "type": "0",
+          "size": 329498,
+          "mode": "0o600",
+          "uid": 0,
+          "gid": 0,
+          "uname": "",
+          "gname": "",
+          "mtime": 499162500,
+          "pax": {},
+          "sha256": "a59382d0fbe5b3f9afc9ff788ce92a1dd406a3ef2c59d98d77a41c7e0f598312"
+        },
+        {
+          "name": "package/verify.mjs",
+          "type": "0",
+          "size": 8103,
+          "mode": "0o600",
+          "uid": 0,
+          "gid": 0,
+          "uname": "",
+          "gname": "",
+          "mtime": 499162500,
+          "pax": {},
+          "sha256": "a9c0fc2a3c614609294eaea6858aa5c73a3ff05bcd009f3fec35387bf2fd6ce0"
+        }
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "environment": "saved worktree, Node 22.22.2 / npm 10.9.7",
+      "status": "FAIL",
+      "command": "node scripts/pack-mcp-server.mjs --check",
+      "stdout": "pack-mcp-server: public/examples/zodiacs-mcp-server-0.1.0-rc.16.3.tgz differs from a fresh pack of examples/mcp-server\n"
+    },
+    {
+      "environment": "Git export mode 0644, Node 22.22.2 / npm 10.9.7",
+      "status": "PASS",
+      "command": "node scripts/pack-mcp-server.mjs --check",
+      "stdout": "pack-mcp-server: verified zodiacs-mcp-server-0.1.0-rc.16.3.tgz (124924 bytes, sha256 dde8e475a43d\u2026, commit dcb51a1669f78de7942930d9b72479e3450b3edb)\n"
+    },
+    {
+      "environment": "Git export mode 0644, Node 24.19.0 / npm 11.9.0",
+      "status": "PASS",
+      "command": "node scripts/pack-mcp-server.mjs --check",
+      "stdout": "pack-mcp-server: verified zodiacs-mcp-server-0.1.0-rc.16.3.tgz (124924 bytes, sha256 dde8e475a43d\u2026, commit dcb51a1669f78de7942930d9b72479e3450b3edb)\n"
+    }
+  ]
+}

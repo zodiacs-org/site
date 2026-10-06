@@ -368,7 +368,7 @@ export function wingNavCss() {
 ${WING_PHONE_BAR_CSS}`;
 }
 
-// Phones: the pill becomes a full-width bar at the top edge, in the same
+// Below the existing 920px desktop tier, the pill becomes a full-width bar at the top edge, in the same
 // colour (owner request, after rolex.com): the menu on the left, the
 // ZODIACS | ASTROFOLIO lockup on the centre line, search on the right. It
 // slides away as the page scrolls down and returns as it scrolls up. Both
@@ -379,7 +379,7 @@ ${WING_PHONE_BAR_CSS}`;
 // the words sit still while the page and the face load. The same
 // block and script sit in the hand-kept wing pages (thesis, SDK, Terminal
 // markets) and the hub SPA shell; the SPA's Header sets .is-away itself.
-export const WING_PHONE_BAR_CSS = `@media (max-width: 599.5px) {
+export const WING_PHONE_BAR_CSS = `@media (max-width: 919.5px) {
     .wnav-wrap { top: 0; padding-top: 0; transition: transform 360ms cubic-bezier(0.22,1,0.36,1), opacity 260ms ease; }
     .wnav-wrap.is-away { transform: translateY(-100%); opacity: 0; }
     .wnav-wrap.is-away .wnav { pointer-events: none; }
@@ -397,7 +397,7 @@ export const WING_PHONE_BAR_CSS = `@media (max-width: 599.5px) {
     .wnav__search { grid-area: search; }
     .wnav__profile-shortcut { grid-area: profile; display: inline-grid; }
   }
-  @media (max-width: 599.5px) and (prefers-reduced-motion: reduce) { .wnav-wrap { transition: none; } }`;
+  @media (max-width: 919.5px) and (prefers-reduced-motion: reduce) { .wnav-wrap { transition: none; } }`;
 
 // It always shows near the top, while a menu is open, and while it holds
 // keyboard focus.
@@ -406,7 +406,7 @@ export const WING_PHONE_BAR_SCRIPT = `(function(){
     var wrap = nav ? nav.parentElement : null;
     var root = document.documentElement;
     if(!wrap || !window.matchMedia) return;
-    var phone = window.matchMedia('(max-width: 599.5px)');
+    var phone = window.matchMedia('(max-width: 919.5px)');
     var last = Math.max(0, window.scrollY), away = false, frame = 0;
     function set(next){ if(next === away) return; away = next; wrap.classList.toggle('is-away', next); }
     function held(){ return root.style.overflow === 'hidden' || !!document.querySelector('[data-wnav-burger][aria-expanded="true"]') || !!wrap.querySelector(':focus-visible'); }

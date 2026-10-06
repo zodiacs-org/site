@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { ENGINE_VERSION, REFERENCE_SPAN, natalChart } from '@zodiacs/engine';
 import { parseNatalEnvelope } from '@zodiacs/engine/receipt';
+import candidate from '../data/platform-engine-candidate.json';
 import { EPOCH_MAX_UTC, EPOCH_MIN_UTC, HOUSE_SYSTEMS } from './bounds';
 import {
   COMPARE_INPUT, NATAL_INPUT, PRIVACY, UNSUPPORTED,
@@ -65,10 +66,12 @@ describe('get_capabilities', () => {
   })();
 
   it('names the engine actually bundled, and labels both releases honestly', () => {
-    // The engine has been on npm since 2026-10-01; the adapter is not on npm.
+    // The engine's label follows the site's candidate record: rc.17 is vendored, not on npm. The adapter is not on npm.
     expect(value.engine.version).toBe(ENGINE_VERSION);
-    expect(value.engine.releaseStatus).toBe('published');
-    expect(value.engine.registry).toBe('npm');
+    expect(candidate.version).toBe(ENGINE_VERSION);
+    const published = candidate.releaseStatus === 'published';
+    expect(value.engine.releaseStatus).toBe(published ? 'published' : 'unpublished-candidate');
+    expect(value.engine.registry).toBe(published ? 'npm' : undefined);
     expect(value.adapter.releaseStatus).toBe('unpublished-candidate');
     expect(value.adapter.transport).toBe('stdio');
   });

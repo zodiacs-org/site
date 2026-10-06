@@ -1,0 +1,59 @@
+{
+ "schema": "zodiacs.calc-roundtrip-replay.v1",
+ "fixture": {
+  "path": "src/fixtures/calc-roundtrip.json",
+  "sha256": "3512922defa52d6d6ed43e5e7c6381236e05a69e0717a2d7d398cc9d13a02a81",
+  "engineCommits": [
+   "aae419c05b77455b9e8f03ca11ee273b446f7d02",
+   "782b4963a8575fa8d81c602a36285f65fb9ae9bb"
+  ]
+ },
+ "engine": "0.1.1-rc.17",
+ "cases": 37,
+ "byFunction": {
+  "calc": 27,
+  "houses": 3,
+  "events": 3,
+  "chart": 4
+ },
+ "zodiacs": {
+  "tropical": 27,
+  "sidereal lahiri": 3,
+  "sidereal, caller's": 3,
+  "sidereal true-chitra": 1,
+  "sidereal krishnamurti": 1,
+  "sidereal galactic-center": 1,
+  "sidereal raman": 1
+ },
+ "receiptReplays": 26,
+ "refusals": {
+  "not-in-this-version": 1,
+  "unsupported-combination": 5,
+  "out-of-range": 4,
+  "sample-budget": 1
+ },
+ "frames": [
+  "ecliptic-icrs",
+  "ecliptic-j2000",
+  "ecliptic-mean-of-date",
+  "ecliptic-true-of-date",
+  "equatorial-icrs",
+  "equatorial-j2000",
+  "equatorial-mean-of-date",
+  "equatorial-true-of-date"
+ ],
+ "centers": [
+  "barycentric",
+  "geocentric",
+  "heliocentric",
+  "topocentric"
+ ],
+ "corrections": [
+  "apparent",
+  "astrometric",
+  "geometric"
+ ],
+ "tolerance": "the same keys, and each number within 1e-12 of the fixture's, relative above 1 and absolute below",
+ "worstRelativeDifference": 0,
+ "mismatches": 0
+}

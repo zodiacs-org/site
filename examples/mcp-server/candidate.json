@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "package": "zodiacs-mcp-server",
-  "version": "0.1.0-rc.16.3",
+  "version": "0.1.0-rc.17",
   "status": "Unpublished release candidate. Not on npm, under this or any other name. Install from the versioned archive at https://zodiacs.org/examples/, whose SHA-256 is published beside it.",
   "sourceRepository": "https://github.com/zodiacs-org/site",
   "sourcePaths": [
@@ -28,15 +28,14 @@
     "scripts/build-mcp-server.mjs"
   ],
   "bundled": {
-    "note": "Engine 0.1.1-rc.16 and the site comparison are inlined into server.mjs. The engine was published to npm on 2026-10-01 under the next tag; the bundle is built from the archive whose SHA-256 is below, which npm's tarball matches. Bundling keeps one copy of the comparison rules.",
+    "note": "Engine 0.1.1-rc.17 and the site comparison are inlined into server.mjs. That engine is a release candidate that is not on npm; when this archive was made, on 2026-10-06, npm had 0.1.1-rc.16 under the next tag; the bundle is built from the archive whose SHA-256 is below, carried in the engine repository. Bundling keeps one copy of the comparison rules.",
     "engine": {
       "package": "@zodiacs/engine",
-      "version": "0.1.1-rc.16",
-      "releaseStatus": "published",
-      "registry": "npm",
+      "version": "0.1.1-rc.17",
+      "releaseStatus": "unpublished-candidate",
       "sourceRepository": "https://github.com/zodiacs-org/engine",
       "sourcePackagePath": "",
-      "artifactSha256": "43a72d30e483d8ff22024e403c4bd0d86d81bb6e1d0ad138f857cd001ab015d8"
+      "artifactSha256": "9cd24c788863424ef614aaadec580db5a0dfc529303d385274db48a092a5299a"
     },
     "ephemeris": {
       "name": "astronomy-engine",
@@ -85,6 +84,6 @@
     "note": "Zodiacs-owned vocabulary, not an industry interoperability standard. The record and receipt schemas are drafts.",
     "computeReceipt": "zodiacs.compute-receipt.v1"
   },
-  "supersedes": "0.1.0-rc.16.2",
-  "changedSince": "rc.1 to rc.10, rc.14, rc.15, rc.16, rc.16.1 and rc.16.2 remain unchanged as separate archives; there were no rc.11 to rc.13 archives. The engine is the same 0.1.1-rc.16. New in rc.16.3: nothing a tool does. The compute API gained POST /api/v1/elections, and the modules of src/lib/compute-api/ that this adapter inlines hold the compute API's list of endpoints, its limits, its validation sentences, its receipt and the allowance its searches share, which changed with it, so the bundle changed. get_capabilities lists under sky.limits the same four limits as before, the ones its three sky tools use: it had copied the compute API's whole table of limits, which now also holds the elections endpoint's, and this adapter has no tool for it. Apart from the adapter's version, which the server, get_capabilities, this adapter's own receipts and so the cite.receipt over them, and the methodology resource name, every tool's arguments, results and receipts are rc.16.2's. The README's example comparison now prints the digest of the receipt it shows; rc.16.2's printed rc.16.1's. The adapter itself is still not on npm."
+  "supersedes": "0.1.0-rc.16.3",
+  "changedSince": "rc.1 to rc.10, rc.14, rc.15, rc.16 and rc.16.1 to rc.16.3 remain unchanged as separate archives; there were no rc.11 to rc.13 archives. The engine is 0.1.1-rc.17, a release candidate that is not on npm. It adds the sidereal zodiac to @zodiacs/engine/calc, which this adapter does not bundle. The parts it does bundle are rc.16's apart from the version string and comments naming chunk files, so every position, angle, cusp, event, fact and comparison is rc.16.3's. New in rc.17: get_capabilities labels the engine unpublished-candidate, with no registry, where rc.16.1 to rc.16.3 labelled 0.1.1-rc.16 published on npm. The server information, get_capabilities, the receipts, the cites, the methodology resource and the line the server writes when it starts name the two new versions, and the cite.receipt digests over those receipts change with them. Apart from the label, the versions and those digests, every tool's arguments, results and refusals are rc.16.3's, over the 278 calls of docs/platform/evidence/site-engine-rc17/mcp-rc16.3-rc17.json. verify.mjs, the install check a downloader runs, now checks the engine's label against this archive's candidate.json; it expected the label of an engine on npm, and rc.17's would have failed it. The adapter itself is still not on npm."
 }

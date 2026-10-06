@@ -16,36 +16,36 @@
   },
   "server": {
     "path": "examples/mcp-server/server.mjs",
-    "sha256": "a59382d0fbe5b3f9afc9ff788ce92a1dd406a3ef2c59d98d77a41c7e0f598312"
+    "sha256": "0c3e739ce34a5a7f80948310dd78b3b690f905e4a9d076f80d968a09558ba1fd"
   },
-  "completedAt": "2026-10-05T15:57:19.848Z",
+  "completedAt": "2026-10-06T01:15:59.404Z",
   "checks": 7,
   "passed": 7,
   "results": [
     {
       "name": "the host accepts the server through its documented add command",
       "ok": true,
-      "detail": "Added stdio MCP server zodiacs with command: node /tmp/claude-0/-home-user-site/25475091-052a-53d7-9cd4-cf04ce09dc68/scratchpad/b5b-wt/examples/mcp-server/server.mjs to local config\nFile modified: /tmp/zodiacs-mcp-host-GZtSUX/claude-config/.claude.json [project: /tmp/zodiacs-mcp-host-GZtSUX/project]"
+      "detail": "Added stdio MCP server zodiacs with command: node /tmp/claude-0/-home-user-site/25475091-052a-53d7-9cd4-cf04ce09dc68/scratchpad/site-dec/examples/mcp-server/server.mjs to local config\nFile modified: /tmp/zodiacs-mcp-host-5K3kzM/claude-config/.claude.json [project: /tmp/zodiacs-mcp-host-5K3kzM/project]"
     },
     {
       "name": "the registration landed in the throwaway config, not the real one",
       "ok": true,
-      "detail": "Added stdio MCP server zodiacs with command: node /tmp/claude-0/-home-user-site/25475091-052a-53d7-9cd4-cf04ce09dc68/scratchpad/b5b-wt/examples/mcp-server/server.mjs to local config\nFile modified: /tmp/zodiacs-mcp-host-GZtSUX/claude-config/.claude.json [project: /tmp/zodiacs-mcp-host-GZtSUX/project]"
+      "detail": "Added stdio MCP server zodiacs with command: node /tmp/claude-0/-home-user-site/25475091-052a-53d7-9cd4-cf04ce09dc68/scratchpad/site-dec/examples/mcp-server/server.mjs to local config\nFile modified: /tmp/zodiacs-mcp-host-5K3kzM/claude-config/.claude.json [project: /tmp/zodiacs-mcp-host-5K3kzM/project]"
     },
     {
       "name": "the host launches the server and reports it connected",
       "ok": true,
-      "detail": "Checking MCP server health…\n\nzodiacs: node /tmp/claude-0/-home-user-site/25475091-052a-53d7-9cd4-cf04ce09dc68/scratchpad/b5b-wt/examples/mcp-server/server.mjs - √ Connected"
+      "detail": "Checking MCP server health…\n\nzodiacs: node /tmp/claude-0/-home-user-site/25475091-052a-53d7-9cd4-cf04ce09dc68/scratchpad/site-dec/examples/mcp-server/server.mjs - √ Connected"
     },
     {
       "name": "the host reports it as a connected stdio server",
       "ok": true,
-      "detail": "zodiacs:\n  Scope: Local config (private to you in this project)\n  Status: √ Connected\n  Type: stdio\n  Command: node\n  Args: /tmp/claude-0/-home-user-site/25475091-052a-53d7-9cd4-cf04ce09dc68/scratchpad/b5b-wt/examples/mcp-server/server.mjs\n  Environment:\n\nTo remove this server, run: claude mcp remove zodiacs -s local"
+      "detail": "zodiacs:\n  Scope: Local config (private to you in this project)\n  Status: √ Connected\n  Type: stdio\n  Command: node\n  Args: /tmp/claude-0/-home-user-site/25475091-052a-53d7-9cd4-cf04ce09dc68/scratchpad/site-dec/examples/mcp-server/server.mjs\n  Environment:\n\nTo remove this server, run: claude mcp remove zodiacs -s local"
     },
     {
       "name": "the documented removal command removes it",
       "ok": true,
-      "detail": "Removed MCP server zodiacs from local config\nFile modified: /tmp/zodiacs-mcp-host-GZtSUX/claude-config/.claude.json [project: /tmp/zodiacs-mcp-host-GZtSUX/project]"
+      "detail": "Removed MCP server zodiacs from local config\nFile modified: /tmp/zodiacs-mcp-host-5K3kzM/claude-config/.claude.json [project: /tmp/zodiacs-mcp-host-5K3kzM/project]"
     },
     {
       "name": "nothing is left configured after removal",
@@ -56,8 +56,8 @@
       "name": "the machine's own Claude Code configuration is byte-identical throughout",
       "ok": true,
       "detail": {
-        "before": "58a9dc2bc88d45300c71048e31bd1aedbc97d8576ab2a5e5febaf2e0976e29f2",
-        "after": "58a9dc2bc88d45300c71048e31bd1aedbc97d8576ab2a5e5febaf2e0976e29f2"
+        "before": "6d0eaf9be0965f48b82eebf216c5cc7b8ba3d0c1aeba9670b7fd7e73ada08ec0",
+        "after": "6d0eaf9be0965f48b82eebf216c5cc7b8ba3d0c1aeba9670b7fd7e73ada08ec0"
       }
     }
   ]

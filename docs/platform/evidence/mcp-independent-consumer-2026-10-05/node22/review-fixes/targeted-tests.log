@@ -1,0 +1,15 @@
+
+ RUN  v3.2.7 /workspace/mcp-consumer-review
+
+ ✓ tests/api/compute-api-openapi.test.ts (5 tests) 850ms
+   ✓ compute API in the OpenAPI document > shows what the handler answers: every example runs through it and the committed responses match  533ms
+ ✓ scripts/mcp-artifact.test.mjs (46 tests) 1673ms
+   ✓ the install check a downloader runs > passes every check against the bundle that ships, and there are as many as the documents say  1355ms
+ ✓ tests/api/compute-api-bundle.test.ts (5 tests) 1719ms
+   ✓ the compute API's handler bundle > is what scripts/build-compute-handler.mjs builds from its sources  629ms
+   ✓ the compute API's handler bundle > answers every documented example as the source handler does  788ms
+
+ Test Files  3 passed (3)
+      Tests  56 passed (56)
+   Start at  19:02:45
+   Duration  3.42s (transform 1.19s, setup 0ms, collect 3.57s, tests 4.24s, environment 1ms, prepare 362ms)

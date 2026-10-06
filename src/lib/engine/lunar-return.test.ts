@@ -113,8 +113,9 @@ describe('independent lunar return references', () => {
       .toBe('5db9f2ef1491fc96896d2d610bbe91a84b0743dd30b449f923e8c2d7aafa5ba5');
     // rc.16 nutation moves returned-chart instants; rebuild their Horizons/ERFA
     // references at those instants, retaining the independent crossings and gates.
+    // The rc.17 rebuild changes only the engine version the file records.
     expect(digest(new URL('./fixtures/independent-lunar-returns.json', import.meta.url)))
-      .toBe('cbe8d916f84770eb65d10adc66dce5d5393619c05a8463db1f4d65e924c02c56');
+      .toBe('4bbbeeca7d880f1db8178175380687d92eaa29fd57ba686b29379e348a60e5b0');
     expect(digest(new URL('./fixtures/swiss-lunar-fixed-target-applicability.json', import.meta.url)))
       .toBe('2f9056c0f93b22e3270bf1f496d804759a9057ac6b3e5a142604248ba1dddb1a');
     // The carried-over policy names the one it supersedes, and keeps its gates.

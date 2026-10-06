@@ -16,9 +16,12 @@
  */
 import { Client } from '@modelcontextprotocol/client';
 import { StdioClientTransport } from '@modelcontextprotocol/client/stdio';
+import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
 const SERVER = fileURLToPath(new URL('./server.mjs', import.meta.url));
+/** What this archive records about itself, beside the server it ships. */
+const CANDIDATE = JSON.parse(readFileSync(fileURLToPath(new URL('./candidate.json', import.meta.url)), 'utf8'));
 const LONDON = { utc: '1990-06-15T13:30:00Z', latitude: 51.5074, longitude: -0.1278 };
 const POLAR = { utc: '1990-12-15T09:00:00Z', latitude: 78.2232, longitude: 15.6267 };
 
@@ -62,9 +65,12 @@ try {
     && resources.join(',') === 'zodiacs://conventions,zodiacs://methodology', resources);
 
   const capabilities = (await call('get_capabilities', {})).value;
-  check('capabilities name the engine and its release status',
-    capabilities?.engine?.name === '@zodiacs/engine'
-    && capabilities.engine.releaseStatus === 'published' && capabilities.engine.registry === 'npm', capabilities?.engine);
+  // A version on npm carries registry: 'npm'; a candidate that is not on npm, as 0.1.1-rc.17 is, carries none.
+  const bundled = CANDIDATE.bundled.engine;
+  check('capabilities name the engine and its release status, as candidate.json records them',
+    capabilities?.engine?.name === bundled.package && capabilities.engine.version === bundled.version
+    && capabilities.engine.releaseStatus === bundled.releaseStatus && capabilities.engine.registry === bundled.registry,
+    capabilities?.engine);
   check('capabilities state that a local server is not a local assistant',
     /not a local AI experience/.test(capabilities?.privacy?.assistant ?? ''));
 

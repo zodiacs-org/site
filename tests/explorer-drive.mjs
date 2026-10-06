@@ -339,13 +339,17 @@ try {
         const desktop = width >= desktopBreakpoint;
         const navPage = await browser.newPage({ viewport: { width, height: 844 } });
         await navPage.goto(`http://127.0.0.1:4399${prefix}${route}`, { waitUntil: 'domcontentloaded' });
-        const state = await navPage.evaluate(() => {
+        const state = await navPage.evaluate((desktop) => {
           const nav = document.querySelector('[data-nav]')?.getBoundingClientRect();
           const chip = document.querySelector('.nav__chip');
           const burger = document.querySelector('[data-menu-toggle]');
           const links = document.querySelector('.nav__links');
           return {
-            navFits: Boolean(nav && nav.left >= 16 && nav.right <= innerWidth - 16),
+            navFits: Boolean(nav && (desktop
+              ? nav.left >= 16 && nav.right <= document.documentElement.clientWidth - 16
+              : Math.abs(nav.left) <= 0.1 && Math.abs(nav.right - document.documentElement.clientWidth) <= 0.1)),
+            viewportWidth: document.documentElement.clientWidth,
+            radius: getComputedStyle(document.querySelector('[data-nav]')).borderRadius,
             navWidth: nav?.width,
             chipPresent: Boolean(chip),
             chipVisible: Boolean(chip && getComputedStyle(chip).display !== 'none'),
@@ -356,7 +360,7 @@ try {
             burgerVisible: Boolean(burger && getComputedStyle(burger).display !== 'none'),
             linksVisible: Boolean(links && getComputedStyle(links).display !== 'none'),
           };
-        });
+        }, desktop);
         if (!desktop) {
           await navPage.locator('[data-menu-toggle]').click();
           state.mobileRegistryVisible = await navPage.locator('.mobile-menu__registry').count() > 0
@@ -373,7 +377,8 @@ try {
             && (desktop || state.mobileRegistryVisible === false);
         const pass = state.navFits
           && door
-          && Math.abs(state.navWidth - (desktop ? (prefix ? 992 : 884) : 336)) <= 0.1
+          && Math.abs(state.navWidth - (desktop ? (prefix ? 992 : 884) : state.viewportWidth)) <= 0.1
+          && (desktop ? state.radius !== '0px' : state.radius === '0px')
           && state.burgerVisible === !desktop
           && state.linksVisible === desktop;
         navBreakpointsPass &&= pass;
@@ -382,8 +387,8 @@ try {
       }
     }
     check(expectsDoor
-      ? 'navigation: reserved shells and Astrofolio persist at compact and desktop boundaries in all five locales'
-      : `navigation: ${surface} pages keep the reserved shells without any Astrofolio link in all five locales`,
+      ? 'navigation: full-width compact bars, desktop shells and Astrofolio persist at compact and desktop boundaries in all five locales'
+      : `navigation: ${surface} pages keep compact bars and desktop shells without any Astrofolio link in all five locales`,
     navBreakpointsPass, navBreakpointsDetail.join(' · '));
   }
 
@@ -392,10 +397,10 @@ try {
   // destination track and no later movement of the surviving controls.
   const receiverDetails = [];
   let receiverPass = true;
-  for (const [prefix, desktopBreakpoint, compactWidth, mobileWidth, desktopWidth] of [
-    ['', 920, 180, 210, 746],
-    ['/es', 1040, 184, 210, 854],
-    ['/ru', 1040, 132, 166, 854],
+  for (const [prefix, desktopBreakpoint, desktopWidth] of [
+    ['', 920, 746],
+    ['/es', 1040, 854],
+    ['/ru', 1040, 854],
   ]) {
     for (const width of [320, 390, desktopBreakpoint, ...(prefix === '' ? [1440] : [])]) {
       const desktop = width >= desktopBreakpoint;
@@ -455,14 +460,14 @@ try {
         return Math.abs(scrollY - target) <= 1 && Math.abs(scrollY - before) <= 0.1;
       });
       const settled = await receiverGeometry();
-      const expectedWidth = desktop ? desktopWidth : width <= 360 ? compactWidth : mobileWidth;
+      const expectedWidth = desktop ? desktopWidth : width;
       const pass = [early, settled].every((state) => state.receiver
         && state.visible
         && state.wingLinks === 0
         && Math.abs(state.width - expectedWidth) <= 0.1
-        && state.left >= 16 && state.right <= width - 16
+        && state.left >= (desktop ? 16 : 0) && state.right <= width - (desktop ? 16 : 0)
         && Math.abs(state.left - (width - expectedWidth) / 2) <= 0.1
-        && Math.abs(state.endGap - (width <= 360 ? 5 : 11)) <= 0.1
+        && Math.abs(state.endGap - (desktop ? 11 : prefix === '/ru' ? 50 : 6)) <= 0.1
         && state.children.every((child) => child.left >= state.left && child.right <= state.right)
         && state.controls.length === (desktop ? (prefix === '/ru' ? 0 : 1) : (prefix === '/ru' ? 1 : 2))
         && (desktop || state.controls.every((control) => control.width === 44 && control.height === 44)))

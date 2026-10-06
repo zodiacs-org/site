@@ -35,7 +35,8 @@ describe('footer acquisition disclosure boundary', () => {
 
   it('shows the operator relationship where collection navigation appears, keeping tools separate', async () => {
     const footer = await readFile(new URL('../components/SiteFooter.astro', import.meta.url), 'utf8');
-    expect(footer).toContain('{!isTool && (');
+    expect(footer).toContain('const showCollection = showsCollectionNavigation(Astro.url.pathname);');
+    expect(footer).toContain('{showCollection && (');
     expect(footer).toContain("t(locale, 'trustFreeAnswer')");
     expect(footer).toContain("localizePath(locale, '/disclosure/')");
   });

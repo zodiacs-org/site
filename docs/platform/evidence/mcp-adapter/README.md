@@ -578,3 +578,47 @@ The records, each against this bundle (`server.mjs` SHA-256 `a59382d0…`):
 
 `host-interop.md`, the one model-driven run, is from an earlier candidate and
 was not repeated.
+
+## 0.1.0-rc.17, 2026-10-06
+
+Appended, like the sections above. rc.16.3 stays on disk as released, and
+the records its table quotes are at commit `b4f82564`; the three files now
+hold rc.17's. What changed:
+
+- **Why there is a new candidate.** The site adopts engine 0.1.1-rc.17
+  ([`../site-engine-rc17/README.md`](../site-engine-rc17/README.md)), and
+  `server.mjs` inlines the engine, so the bundle changed. A changed bundle is
+  a new archive under a new version: rc.16.3's archive keeps its bytes.
+- **The engine's label.** rc.17 is a release candidate that is not on npm,
+  and under the owner's delegated decision of 2026-10-05 it will not be.
+  `get_capabilities` labels it `unpublished-candidate`, with no `registry`,
+  where rc.16.1 to rc.16.3 labelled rc.16 `published` on `npm`; its output
+  schema says the same. The unit tests, the protocol drive and the archive's
+  own `verify.mjs` all expected `published`. The unit tests and the drive now
+  read the label from the site's candidate record, and `verify.mjs` from the
+  archive's `candidate.json`, which ships beside it.
+- **What a host sees otherwise.** Nothing else.
+  [`../site-engine-rc17/mcp-rc16.3-rc17.json`](../site-engine-rc17/mcp-rc16.3-rc17.json)
+  drives rc.16.3's bundle and this one with the same tool list, both
+  resources and 278 tool calls, ten of them refusals. With the versions and
+  the `sha256:` digests over receipts that name them written out, the only
+  differences are the engine's label in `get_capabilities` and in its output
+  schema. Every position, angle, cusp, event, fact and comparison is
+  rc.16.3's.
+- **No star values.** rc.17 moved the star-based ayanamsas' values into a
+  chunk that the engine's `./calc` and `./vedic` share. This adapter bundles
+  neither entry, and none of the 21 numbers with five or more decimals that
+  only that chunk holds is in `server.mjs`. `NOTICE`'s statement that none of
+  the engine's star values is in `server.mjs` still holds.
+
+The records, each against this bundle (`server.mjs` SHA-256 `0c3e739c…`):
+
+| record | result |
+| --- | --- |
+| `protocol-drive.json` | 106/106 checks |
+| `host-drive.json` | 7/7 checks, Claude Code 2.1.289 |
+| `benchmark.json` | 18/18 scenarios, 112/112 assertions |
+| a fresh extraction of the archive | `npm ci` installs 14 packages, and `npm run verify` passes its 21 checks |
+
+`host-interop.md`, the one model-driven run, is from an earlier candidate and
+was not repeated.

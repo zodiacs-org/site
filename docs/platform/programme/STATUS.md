@@ -1,5 +1,161 @@
 # Programme status
 
+Checkpoint 21, 2026-10-06: the uniform calculation API (P3.2), judged on
+engine rc.17 against main `6f873334349f64e4a92c4305311def96261ca64a` (#663),
+which production `dpl_64jrZa9XhBh51S8b9FryzfSkSnbA` serves (READY
+2026-10-06T03:42:45Z).
+
+**Overall delivery: 33%** (33.434% to three decimals) — 61 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%. Unchanged from
+checkpoint 20: P3.2 moves from partial to validated, which does not count.
+Gates, weights and the denominator are unchanged.
+[Gate record](../evidence/rc17-gates-2026-10-06/README.md).
+
+- **Validated, pending the owner (F-80).**
+  - P3.2 (3): `calc()`, `houses()`, `events()` and `chart()` in
+    `@zodiacs/engine/calc` take the sidereal zodiac, with one of the nine
+    built-in ayanamsas or a caller's own, the two options checkpoint 14
+    found missing. A type check holds calc's declarations to what
+    `@zodiacs/engine/vedic` ships; it compiles against rc.17 and fails
+    against rc.16. A run-time sweep computes every built-in ayanamsa and a
+    caller's in twelve forms in all four functions, equal to `/vedic`'s
+    `siderealChart()` in `calc()`, `houses()` and `chart()` where `/vedic`
+    has the form. The engine's 37 round-trip fixtures replay exactly, and
+    the refusals are typed.
+  - Not met without a reading: calc refuses a caller's ayanamsa carried by
+    precession from an epoch outside 1800 to 2200, at every instant, where
+    `/vedic` computes it and flags it. A zero point in 284 CE is such a
+    definition. By checkpoint 14's standard that covers only part of the
+    option; counting it as the entry point's span is the programme's own
+    reading, which DECISIONS-2026-10-05 §4 leaves to the owner.
+- **Engine rc.17 adopted (#663).** The site vendors engine 0.1.1-rc.17, which
+  is not on npm (DECISIONS-2026-10-05 §7), and the local MCP adapter is
+  0.1.0-rc.17. The site imports neither of the two entry points rc.17
+  changed, and a new test holds `src/` and `api/` to that, so nothing the
+  site computes changes. The compute API's bundle was audited again for
+  private state. Production's engine chunk is the local build's byte for
+  byte. [Adoption record](../evidence/site-engine-rc17/README.md).
+- **Findings.** F-80, above. F-79: advisories for smol-toml, source-map-js
+  and tinypool, which reached npm's audit data on 2026-10-06 after main's run
+  at 00:07 UTC, failed Site Check's dependency audit on main's lockfile; #663
+  fixes it. One moderate advisory stays in development dependencies until
+  vitest is upgraded. F-61 again, on #663's run of `875e0bc3`.
+- Actual command: `node scripts/programme-ledger.mjs --summary` →
+  `Overall delivery: 33% (61 of 182.45); blocked 2% (3)`.
+- **Owner decision needed (F-80).** Should P3.2's first clause count as met
+  while calc refuses `SE_SIDM_USER` definitions carried by precession from
+  epochs outside 1800 to 2200, which `/vedic` computes and flags? Yes: P3.2
+  is accepted (3; delivery 64 of 182.45, 35.078%). No: P3.2 stays validated
+  until an engine candidate that computes every such epoch is served and
+  judged. The programme recommends no, and closing it in the 1.0 candidate
+  by computing such an ayanamsa from every epoch `/vedic` accepts, compared
+  with ERFA there.
+- **Owner actions.** Apply F-78's two numbers in the Vercel Firewall; attach
+  zodiacs-org/site to the programme's session if pull request events should
+  reach it.
+- **Next.** The sidereal zodiac in the MCP tools (DECISIONS-2026-10-05 §6);
+  then the core 1.0, with F-80's epochs in its scope, the documentation and
+  quickstarts, the clients and the remote MCP.
+
+## Earlier checkpoints
+
+Checkpoint 20, 2026-10-05: the owner's decisions of 2026-10-05, made by the
+programme under the owner's delegation, recorded on main
+`3e79936aa6715c197b97999ba959101727dc0e08` (#658).
+
+**Overall delivery: 33%** (33.434% to three decimals) — 61 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%. Unchanged from
+checkpoint 19: no unit's status changes. Gates, weights and the denominator
+are unchanged. [Decisions](DECISIONS-2026-10-05.md).
+
+- **Decided, with the reason for each in the record.**
+  - F-78: the compute API's Firewall rules come down to 6 events requests
+    and 30 requests a minute per address, the only pair under 10
+    CPU-seconds a minute in all three runs. A Firewall rule is a security
+    setting the programme cannot read or change, so the owner applies it;
+    F-78 stays open until then.
+  - The sky-fact benchmark's files are dedicated to the public domain under
+    CC0 1.0, as the conformance vectors are, and keep their name. The page,
+    its Dataset markup and `llms-full.txt` now say so; the files' bytes did
+    not change.
+  - The external-builder trial waits for the remote MCP server, with its
+    packet measured again against it.
+  - The sidereal zodiac goes into the MCP tools once engine rc.17 is
+    adopted; eclipses wait behind the core 1.0, the documentation, the
+    clients and the remote MCP.
+  - No npm release of rc.17; the next publication is the 1.0 candidate, for
+    which the owner's approval is asked once. The core 1.0 is a frozen
+    public API with a changelog and a deprecation policy.
+  - F-77: no retake rule for the Lighthouse gate; the fix is in the page,
+    which belongs to the frontend session.
+- **Not ratified under the delegation.** F-71's two readings of the
+  end-to-end house comparisons, B4.a's "raw answers" as the tool's replies,
+  and A6's "API" as the compute API alone would each count the programme's
+  own work as accepted on a reading it proposed after seeing the results;
+  that judgement stays the owner's. Koch and the co-ascendants stay
+  validated, B4.a validated and A6 partial; A6 will be met without a
+  reading, by a `cite` on the static sky API's responses.
+- **Engine rc.17, in progress.** The sidereal zodiac in the calc entry, which
+  P3.2 lacks. Its second independent review found the near-Sun bounds
+  exceeded in years the dense comparison had not sampled; every star
+  definition is now compared with ERFA in every year from 1800 to 2199,
+  1,647,452 comparisons, and the bounds are set from that. Not yet merged.
+- Actual command: `node scripts/programme-ledger.mjs --summary` →
+  `Overall delivery: 33% (61 of 182.45); blocked 2% (3)`.
+- **Owner actions.** Apply F-78's two numbers in the Vercel Firewall; attach
+  zodiacs-org/site to the programme's session if pull request events should
+  reach it (the session's permission check refused it as an access grant).
+- **Next.** Engine rc.17's merge and its adoption on the site, which
+  P3.2's acceptance needs; then the core 1.0, the documentation and
+  quickstarts, the clients and the remote MCP.
+
+Checkpoint 19, 2026-10-05: the election search, judged against main
+`51b64f3cb67c2026a18772297ec6b367ed2ca183` (#655), which production
+`dpl_5hEgWFChgos3USWviHWVFEwHBeVW` serves (READY 2026-10-05T18:05:51Z).
+
+**Overall delivery: 33%** (33.434% to three decimals) — 61 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%. Up from 31.790% at
+checkpoint 18 by B5.b's weight of 3. Gates, weights and the denominator are
+unchanged. [Election search record](../evidence/election-search-v0/README.md).
+
+- **Accepted (1).**
+  - B5.b (3): `POST /api/v1/elections` returns the stretches of a window of
+    at most 31 days in which one to five conditions all hold: the Moon
+    waxing or waning or void of course, a body in a sign, a planet
+    retrograde, a body in an angular house at a place within 60° of the
+    equator, each of them negatable. Every boundary is narrowed to a second,
+    and a request is refused whole past 6,000 evaluations. It counts under
+    both existing Firewall rules, so no rule and no spending were added. The
+    gate's evaluation was preregistered and run once: all 100 random
+    queries agreed with a brute force that reads every condition every 10
+    seconds, 206 windows, the largest difference 5.4 seconds. 28 faults
+    planted in a copy of the search were each caught but one, in a branch
+    no request reaches. Production answers the London example with the
+    body the build recorded, and refuses a window a second over 31 days.
+  - The search is tested, not proven complete.
+- **The MCP adapter, 0.1.0-rc.16.3.** It inlines the compute API's shared
+  modules, which the search changed, so it was rebuilt and re-cut in the
+  same pull request; rc.16.2's archive keeps its bytes. No tool changed:
+  `get_capabilities` lists only its three sky tools' four limits, as it
+  did, rather than the compute API's whole table. Protocol drive 106/106,
+  host drive 7/7, benchmark 18/18.
+- **Findings.** F-78, recorded with B5.b: on engine rc.16, one address at
+  both of the compute API's rate limits can cost 10.7 to 13.2 CPU-seconds a
+  minute at the slowest requests, in three runs on one machine, against the
+  10 that DECISIONS-2026-09-30 §7 allows; on rc.15, 7.8. The election search
+  does not raise it. The options are in FINDINGS.md; only the events rule at
+  6 with the general rule at 30 stays under 10 in all three runs.
+- Actual command: `node scripts/programme-ledger.mjs --summary` →
+  `Overall delivery: 33% (61 of 182.45); blocked 2% (3)`.
+- **Owner decisions needed.** F-78's Firewall rules; as in checkpoint 18:
+  what "raw answers" means for B4.a, a licence for the benchmark's files
+  (the programme recommends CC0 1.0) and its name; F-71; the readings that
+  leave A6 partial; F-77; and an engine release for eclipses and the
+  sidereal zodiac in the MCP tools. And whether to send the external-builder
+  trial.
+- **Next.** The core 1.0, the documentation and quickstarts, the clients
+  and the remote MCP, ahead of further precision work.
+
 Checkpoint 18, 2026-10-05: structured data on the developer pages, judged
 against main `a1217c39c4cfb6e32a4d1c9c3cffa68ad0ce9f73` (#653), which
 production `dpl_6f2JNEQFegyBkAhxp4PYBLgn7i7N` serves (READY
@@ -38,8 +194,6 @@ unchanged. [Structured data record](../evidence/structured-data-2026-10-05/READM
   address at both of the compute API's rate limits can cost more than the
   10 CPU-seconds a minute DECISIONS-2026-09-30 §7 allows, and changing the
   Firewall rules is the owner's decision.
-
-## Earlier checkpoints
 
 Checkpoint 17, 2026-10-05: the sky-fact benchmark v0, judged against main
 `e20d5f4027ff7800a6cf494a3f1702bb142d49f0` (#648), which production

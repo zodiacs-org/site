@@ -102,6 +102,7 @@ const benchmark = () => ({
   url: `${SITE}/developers/sky-benchmark/`,
   version: 'v0',
   temporalCoverage: '1900-01-01/2049-12-31',
+  license: CONFORMANCE_LICENSE,
   creator: ORGANIZATION,
   distribution: ['items.json', 'key.json', 'tool-answers.json'].map((name) => ({ '@type': 'DataDownload', encodingFormat: 'application/json', contentUrl: `${SITE}/developers/sky-benchmark/v0/${name}` })),
 });
@@ -142,11 +143,13 @@ describe("the developer pages' structured data", () => {
     expect(check('/developers/mcp/', [ORG_NODE, mcpApp(), linked])).toHaveLength(1);
   });
 
-  it('holds each licence to the one the release carries, and a release with none chosen to stating none', () => {
+  it('holds each licence to the one the release carries, and a page that licenses nothing of its own to stating none', () => {
     expect(check('/developers/', edited('/developers/', 'Dataset', ({ license, ...rest }) => rest)))
       .toEqual([`/developers/: Dataset.license should be ${JSON.stringify([SKY_DATA_LICENSE])}, not null`]);
-    expect(check('/developers/sky-benchmark/', edited('/developers/sky-benchmark/', 'Dataset', (node) => ({ ...node, license: CONFORMANCE_LICENSE }))))
-      .toEqual([`/developers/sky-benchmark/: Dataset.license should be null, not ${JSON.stringify([CONFORMANCE_LICENSE])}`]);
+    expect(check('/developers/sky-benchmark/', edited('/developers/sky-benchmark/', 'Dataset', (node) => ({ ...node, license: SKY_DATA_LICENSE }))))
+      .toEqual([`/developers/sky-benchmark/: Dataset.license should be ${JSON.stringify([CONFORMANCE_LICENSE])}, not ${JSON.stringify([SKY_DATA_LICENSE])}`]);
+    expect(check('/developers/sky-benchmark/', edited('/developers/sky-benchmark/', 'Dataset', ({ license, ...rest }) => rest)))
+      .toEqual([`/developers/sky-benchmark/: Dataset.license should be ${JSON.stringify([CONFORMANCE_LICENSE])}, not null`]);
     expect(check('/developers/conformance/', edited('/developers/conformance/', 'Dataset', (node) => ({ ...node, license: SKY_DATA_LICENSE }))))
       .toHaveLength(1);
     expect(check('/developers/mcp/', edited('/developers/mcp/', 'SoftwareApplication', (node) => ({ ...node, license: [ENGINE_LICENSES[0]] }))))

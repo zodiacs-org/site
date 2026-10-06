@@ -88,7 +88,7 @@ by `node scripts/sync-wing-navigation.mjs` (predev/prebuild); edit the shared
 navigation source and run the synchronizer, leaving the rest hand-authored.
 
 - `public/developers/engine/reference/` ← `node scripts/build-engine-reference.mjs`
-  (digest-pinned rc16 archive declarations; `--check` verifies reproducibility;
+  (declarations of the digest-pinned archive the site vendors; `--check` verifies reproducibility;
   never edits the historical `public/sdk/engine/` reference). It retains the
   sanctioned compact TypeDoc sign-rail ending.
 - `public/registry/{sign}/index.html` ← `node scripts/build-sign-pages.mjs`

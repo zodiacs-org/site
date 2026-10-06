@@ -1,0 +1,16 @@
+✔ canonical digest has fixed independently known bytes; finite JSON only (2.302178ms)
+✔ altered archive hash fails before extraction (0.955454ms)
+✔ stale engine and adapter versions fail even when wrappers agree (1.755408ms)
+✔ missing receipt is refused (0.684347ms)
+✔ bad citation digest fails independent recomputation (0.510783ms)
+✔ lost depends fails even after BOTH wrappers collapse it to true (0.705266ms)
+✔ inflated completeness fails even when BOTH wrappers recite the altered receipt (1.520679ms)
+✔ parity allows only exact documentation URL substitution (0.918515ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 104.975207
