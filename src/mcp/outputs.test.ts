@@ -15,6 +15,7 @@ import { Client } from '@modelcontextprotocol/client';
 import { InMemoryTransport } from '@modelcontextprotocol/server';
 import { ENGINE_VERSION, EPHEMERIS, natalChart } from '@zodiacs/engine';
 import { NATAL_RECEIPT_CONVENTION_SETS, createNatalEnvelope, serializeNatalEnvelope } from '@zodiacs/engine/receipt';
+import candidate from '../data/platform-engine-candidate.json';
 import { ADAPTER_VERSION, HOUSE_SYSTEMS } from './bounds';
 import { ADAPTER_RECEIPT_SCHEMA, DOCS_URL, TOOL_NAMES, citeFor } from './cite';
 import { createServer } from './create-server';
@@ -366,8 +367,12 @@ describe('get_capabilities', () => {
     expect(parsed.success, parsed.error?.message).toBe(true);
   });
 
-  it('labels the engine as published on npm and the adapter as an unpublished candidate', () => {
-    expect(value?.engine).toEqual({ name: '@zodiacs/engine', version: ENGINE_VERSION, releaseStatus: 'published', registry: 'npm' });
+  it('labels the engine as the site\'s candidate record does, and the adapter as an unpublished candidate', () => {
+    // rc.17 is vendored and not on npm; a published engine would carry registry: 'npm' as rc.16.1 to rc.16.3 did.
+    expect(candidate.version).toBe(ENGINE_VERSION);
+    expect(value?.engine).toEqual(candidate.releaseStatus === 'published'
+      ? { name: '@zodiacs/engine', version: ENGINE_VERSION, releaseStatus: 'published', registry: 'npm' }
+      : { name: '@zodiacs/engine', version: ENGINE_VERSION, releaseStatus: 'unpublished-candidate' });
     expect(value?.adapter.releaseStatus).toBe('unpublished-candidate');
   });
 
@@ -393,7 +398,11 @@ describe('the conventions vocabulary', () => {
     expect(vocabulary.sets.map((set) => set.conventions)).toEqual([...NATAL_RECEIPT_CONVENTION_SETS]);
     const fresh = createNatalEnvelope(natalChart({ utc: LONDON.utc })).receipt;
     expect(fresh.conventions).toEqual(vocabulary.sets[0].conventions);
-    expect(vocabulary.sets[0].writtenBy.from).toBe(ENGINE_VERSION);
+    // The installed engine writes the current set; rc.16 wrote it first, and rc.17
+    // records rc.16's conventions unchanged, as its declarations say.
+    const rc = (version: string) => Number(/^0\.1\.1-rc\.(\d+)$/.exec(version)![1]);
+    expect(vocabulary.sets[0].writtenBy).toEqual({ from: '0.1.1-rc.16', to: null });
+    expect(rc(ENGINE_VERSION)).toBeGreaterThanOrEqual(rc(vocabulary.sets[0].writtenBy.from));
     expect(vocabulary.coverage).toEqual(fresh.coverage);
     expect(vocabulary.engine).toEqual({ name: '@zodiacs/engine', version: ENGINE_VERSION, ephemeris: { ...EPHEMERIS } });
   });

@@ -48,7 +48,7 @@ const read = (p) => readFileSync(resolve(root, p), 'utf8');
 // deltat-gap-2100-2199.json holds and its tools regenerate with Swiss run on
 // demand.
 const report = JSON.parse(read('docs/platform/evidence/swiss-benchmark/report-measure-rc8.json'));
-const gap = JSON.parse(read('docs/platform/evidence/site-engine-rc16/accuracy-refresh/deltat-gap-2100-2199.json'));
+const gap = JSON.parse(read('docs/platform/evidence/site-engine-rc17/accuracy-refresh/deltat-gap-2100-2199.json'));
 const corpus = read('docs/platform/evidence/swiss-benchmark/tools/corpus.mjs');
 const { withinRecord, farFuture } = report.statistics;
 /** The comparator's own per-stratum aggregates, which the statistics must agree with. */
@@ -286,8 +286,9 @@ describe('the accuracy claim on /methodology/', () => {
 
   it('describes the reduction the engine actually performs', () => {
     // The Moon does not go through the light-time and aberration pass the
-    // planets do: rc.16 takes GeoMoon's geometric EQJ vector through its
-    // own full IAU2000B ecliptic frame, without light-time or aberration.
+    // planets do: since rc.16 the engine takes GeoMoon's geometric EQJ vector
+    // through its own full IAU2000B ecliptic frame, without light-time or
+    // aberration.
     // Every emitted file, not one hashed chunk: a new engine build renames
     // its chunks, and the test must follow the code rather than the name.
     const engineDist = 'node_modules/@zodiacs/engine/dist';
@@ -375,7 +376,7 @@ describe('the same figures on /developers/engine/', () => {
 
 describe('the every-tenth-day comparison, 1800 to 2199', () => {
   // Statistics only: the per-instant Swiss values stay out of the repository.
-  const dense = JSON.parse(read('docs/platform/evidence/site-engine-rc16/accuracy-refresh/multiyear-1800-2199.json'));
+  const dense = JSON.parse(read('docs/platform/evidence/site-engine-rc17/accuracy-refresh/multiyear-1800-2199.json'));
   const upTo2026 = dense.allBodiesLongitude.sameUt['1800-2026'];
   const moonSameTt = dense.sameTt.Moon.lon.byEra['2150-2199'];
   const moonSameUt = dense.sameUt.Moon.lon.byEra['2150-2199'];

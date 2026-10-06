@@ -18,7 +18,7 @@ beforeEach(async () => {
   provenance = JSON.parse(await readFile('public/developers/engine/reference/provenance.json', 'utf8'));
   for (const path of ['index.html', 'modules.html', ...modules.map((name) => `modules/${name}.html`)]) {
     const url = path === 'index.html' ? base : new URL(path, base).href;
-    await put(path, `<head><link rel="canonical" href="${url}"/><meta name="robots" content="noindex,follow"/></head><h1>@zodiacs/engine 0.1.1-rc.16</h1><footer><nav class="engine-sign-rail"></nav>MIT AND CC-BY-4.0 /about/#editorial-system <a href="${provenance.sourceRepository}/tree/${provenance.sourceCommit}">Source</a></footer>`);
+    await put(path, `<head><link rel="canonical" href="${url}"/><meta name="robots" content="noindex,follow"/></head><h1>@zodiacs/engine 0.1.1-rc.17</h1><footer><nav class="engine-sign-rail"></nav>MIT AND CC-BY-4.0 /about/#editorial-system <a href="${provenance.sourceRepository}/tree/${provenance.sourceCommit}">Source</a></footer>`);
   }
   for (const path of Object.keys(provenance.notices)) {
     const bytes = await readFile(`public/developers/engine/reference/${path}`);
@@ -33,7 +33,7 @@ it('accepts complete reference output and faithful release notices', async () =>
 });
 it.each([
   ['canonical', 'https://zodiacs.org/developers/engine/reference/', 'https://zodiacs.org/sdk/engine/'],
-  ['version', '@zodiacs/engine 0.1.1-rc.16', '@zodiacs/engine 0.1.1-rc.1'],
+  ['version', '@zodiacs/engine 0.1.1-rc.17', '@zodiacs/engine 0.1.1-rc.1'],
   ['licence', 'MIT AND CC-BY-4.0', 'MIT'],
   ['noindex', 'noindex,follow', 'index,follow'],
   ['pinned source', provenance => provenance.sourceCommit, 'main'],

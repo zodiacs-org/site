@@ -7,6 +7,8 @@ import { ENGINE_DEMO_SOURCE, ENGINE_DEMO_OUTPUT } from '../../../lib/engine-demo
 import { ENGINE_LICENSES, FREE_OFFER, ORGANIZATION, developerBreadcrumb } from '../../../lib/developer-structured-data.mjs';
 
 const install = engineInstallBlock(candidate);
+// A vendored candidate is not on npm: the registry serves an earlier version under `next`.
+const published = candidate.releaseStatus === 'published';
 // The package sits at the root of its repository from rc.7 (packages/engine of the SDK before).
 const sourceTree = `${candidate.sourceRepository}/tree/${candidate.sourceCommit}${candidate.sourcePackagePath ? `/${candidate.sourcePackagePath}` : ''}`;
 
@@ -45,7 +47,7 @@ const jsonLd = [
     applicationCategory: 'DeveloperApplication',
     operatingSystem: 'Node.js 20.19 or a later 20.x, Node.js 22.7 and newer, or a browser through a bundler',
     softwareVersion: candidate.version,
-    // The archive this page's install block fetches and checks; its SHA-256 is the npm tarball's.
+    // The archive this page's install block fetches and checks.
     downloadUrl: candidate.artifactUrl,
     license: ENGINE_LICENSES,
     isAccessibleForFree: true,
@@ -105,35 +107,65 @@ const jsonLd = [
     <pre tabindex="0" role="region" aria-label="Output of the worked example" class="engine-output"><code>{ENGINE_DEMO_OUTPUT}</code></pre>
 
     <h2 id="install">Install it</h2>
-    <div class="prose">
-      <p>
-        This revision vendors {candidate.version}. The verified registry read of
-        {candidate.registryObservedOn} records it under <code>next</code>;
-        <code>latest</code> remains 0.1.1-rc.15. Install this exact published version:
-      </p>
-    </div>
-    <pre tabindex="0" role="region" aria-label="Install from npm"><code>{`npm install ${candidate.name}@${candidate.version}`}</code></pre>
-    <div class="prose">
-      <p>
-        The recorded npm release was published from the engine repository's <code>release.yml</code>{' '}
-        workflow with SLSA provenance. The provenance names the source
-        repository, the workflow and the commit the package was built from, and{' '}
-        <code>npm audit signatures</code> verifies it. That shows where the
-        package came from, not that its results are right;{' '}
-        <a href="#accuracy">How close it is</a> gives the measurements.
-      </p>
-      <p>
-        The pinned {candidate.version} archive below is byte-identical to the
-        verified npm tarball. To install the same bytes through its immutable carrier,
-        paste this into a POSIX shell, in your project's directory; it refuses
-        to install anything whose digest does not match. It also stops if that
-        directory has no package.json, because npm would otherwise install into
-        the nearest directory above it that has one.
-      </p>
-    </div>
+    {published ? (
+      <>
+        <div class="prose">
+          <p>
+            This revision vendors {candidate.version}. The verified registry read of
+            {candidate.registryObservedOn} records it under <code>next</code>;
+            <code>latest</code> remains 0.1.1-rc.15. Install this exact published version:
+          </p>
+        </div>
+        <pre tabindex="0" role="region" aria-label="Install from npm"><code>{`npm install ${candidate.name}@${candidate.version}`}</code></pre>
+        <div class="prose">
+          <p>
+            The recorded npm release was published from the engine repository's <code>release.yml</code>{' '}
+            workflow with SLSA provenance. The provenance names the source
+            repository, the workflow and the commit the package was built from, and{' '}
+            <code>npm audit signatures</code> verifies it. That shows where the
+            package came from, not that its results are right;{' '}
+            <a href="#accuracy">How close it is</a> gives the measurements.
+          </p>
+          <p>
+            The pinned {candidate.version} archive below is byte-identical to the
+            verified npm tarball. To install the same bytes through its immutable carrier,
+            paste this into a POSIX shell, in your project's directory; it refuses
+            to install anything whose digest does not match. It also stops if that
+            directory has no package.json, because npm would otherwise install into
+            the nearest directory above it that has one.
+          </p>
+        </div>
+      </>
+    ) : (
+      <div class="prose">
+        <p>
+          This revision vendors {candidate.version}, a release candidate that is
+          not on npm. To install it, paste this into a POSIX shell, in your
+          project's directory: it downloads the archive from its immutable
+          carrier in the engine repository and refuses to install anything whose
+          digest does not match. It also stops if that directory has no
+          package.json, because npm would otherwise install into the nearest
+          directory above it that has one.
+        </p>
+      </div>
+    )}
     <pre tabindex="0" role="region" aria-label="Install commands"><code>{install}</code></pre>
     <div class="prose">
       <p class="engine-hash">SHA-256: <code>{candidate.sha256}</code></p>
+      {!published && (
+        <p>
+          On npm, the verified registry read of {candidate.registryObservedOn}{' '}
+          records {candidate.registryVersion} under <code>next</code> and
+          0.1.1-rc.15 under <code>latest</code>.{' '}
+          <code>{`npm install ${candidate.name}@${candidate.registryVersion}`}</code>{' '}
+          installs {candidate.registryVersion}, the release before this one,
+          which refuses the sidereal zodiac in <code>@zodiacs/engine/calc</code>.
+          It was published from the engine repository's <code>release.yml</code>{' '}
+          workflow with SLSA provenance, which names the source repository, the
+          workflow and the commit the package was built from;{' '}
+          <code>npm audit signatures</code> verifies it.
+        </p>
+      )}
       <p>
         Prefer a project that already runs? <a href="/developers/examples/">The starter</a>{' '}
         has natal, transit and widget examples wired up, and{' '}
@@ -283,7 +315,7 @@ const jsonLd = [
     <h2 id="limits">What it does not do</h2>
     <div class="prose">
       <ul>
-        <li>The core is tropical. The sidereal zodiac, with its ayanamsas, is in the separate <code>/vedic</code> entry point, which this site does not use. No topocentric parallax.</li>
+        <li>The core is tropical. The sidereal zodiac, with its ayanamsas, is in the separate <code>/vedic</code> and <code>/calc</code> entry points, which this site does not use. No topocentric parallax.</li>
         <li>Sun through Pluto and the true nodes. No Chiron, no asteroids.</li>
         <li>Placidus and Koch are undefined inside the polar circle; where the absolute latitude is 90° minus the obliquity or more (66.53° to 66.59° over 1800–2200) they fall back to whole sign and flag it. The other eleven systems are defined there.</li>
         <li>Event searches sample the motion at a fixed step, so they can miss an event between samples. The solver is tested, not proven complete.</li>
@@ -311,7 +343,7 @@ const jsonLd = [
         redistribute: the NOTICE carries Astronomy Engine's MIT notice, the
         attribution those ΔT values require, the sources of the time zone,
         leap-second and UT1 data and of the star values in{' '}
-        <code>/vedic</code>, and the CC BY 4.0 attribution that
+        <code>/vedic</code> and <code>/calc</code>, and the CC BY 4.0 attribution that
         GeoNames-derived place data requires; LICENSING.md gives the terms of
         each and three questions about them that are still open.{' '}
         <a href={`${candidate.sourceRepository}/issues`}>Report a problem</a>.

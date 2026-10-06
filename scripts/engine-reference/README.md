@@ -1,7 +1,7 @@
 # Engine API reference
 
 **@zodiacs/engine {{VERSION}}**, generated from the declarations in the exact
-released package. [Engine overview and limitations](/developers/engine/#limits)
+package archive named below. [Engine overview and limitations](/developers/engine/#limits)
 · [Support matrix](/developers/support/)
 
 Browse the [module index](/developers/engine/reference/modules.html) for
@@ -25,7 +25,7 @@ publication state.
 
 ## Source and licences
 
-Source: [{{COMMIT}}]({{SOURCE}}). Distribution: [immutable rc16 archive]({{ARCHIVE}}).
+Source: [{{COMMIT}}]({{SOURCE}}). Distribution: [immutable {{VERSION}} archive]({{ARCHIVE}}).
 Archive SHA-256: `{{SHA256}}`.
 
 The distribution's licence expression is **MIT AND CC-BY-4.0**: both apply.
@@ -35,7 +35,7 @@ Keep the unchanged [LICENSE](/developers/engine/reference/release/LICENSE.txt),
 terms; this reference does not resolve them. NOTICE includes Astronomy Engine
 by Don Cross, the ΔT data attribution and the other named sources.
 
-Documentation comments come from the released Zodiacs engine declarations.
+Documentation comments come from the Zodiacs engine's declarations in that archive.
 The site generates this reference with TypeDoc; no individual human author or
 reviewer is asserted. TypeDoc’s generated presentation is covered by its
 [Apache-2.0 licence](/developers/engine/reference/release/TYPEDOC-LICENSE.txt). [Editorial policy](/about/#editorial-system).

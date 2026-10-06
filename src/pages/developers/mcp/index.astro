@@ -2,6 +2,7 @@
 import Base from '../../../layouts/Base.astro';
 import { archiveUrlFor, installBlock } from '../../../lib/mcp-install-block';
 import manifest from '../../../../public/examples/mcp-server.json';
+import candidate from '../../../data/platform-engine-candidate.json';
 import { ENGINE_LICENSES, FREE_OFFER, ORGANIZATION, developerBreadcrumb } from '../../../lib/developer-structured-data.mjs';
 
 const title = 'Connect an AI Assistant to the Engine | Zodiacs.org';
@@ -165,9 +166,16 @@ const jsonLd = [
         the three and the server runs; only the verifier needs the rest. The engine
         ({manifest.engine.package} {manifest.engine.version}) and the comparison are
         already inside <code>server.mjs</code>; bundling keeps one copy of the
-        comparison rules. That engine version was published to npm on 1 October
-        2026 under the <code>next</code> tag, and <code>get_capabilities</code>
-        says it is published; the MCP adapter itself is not on npm. Node {manifest.node}.
+        comparison rules.{' '}
+        {candidate.releaseStatus === 'published' ? (
+          <>That engine version is on npm: the registry read of {candidate.registryObservedOn} records
+          it under <code>next</code>, and <code>get_capabilities</code> labels it published.</>
+        ) : (
+          <>That engine version is a release candidate that is not on npm, where{' '}
+          <code>next</code> is {candidate.registryVersion}, and <code>get_capabilities</code>{' '}
+          labels it an unpublished candidate.</>
+        )}{' '}
+        The MCP adapter itself is not on npm. Node {manifest.node}.
       </p>
     </div>
 
