@@ -1,5 +1,64 @@
 # Programme status
 
+Checkpoint 21, 2026-10-06: the uniform calculation API (P3.2), judged on
+engine rc.17 against main `6f873334349f64e4a92c4305311def96261ca64a` (#663),
+which production `dpl_64jrZa9XhBh51S8b9FryzfSkSnbA` serves (READY
+2026-10-06T03:42:45Z).
+
+**Overall delivery: 33%** (33.434% to three decimals) — 61 of 182.45
+weighted units accepted; blocked 2% (3), or 1.644%. Unchanged from
+checkpoint 20: P3.2 moves from partial to validated, which does not count.
+Gates, weights and the denominator are unchanged.
+[Gate record](../evidence/rc17-gates-2026-10-06/README.md).
+
+- **Validated, pending the owner (F-80).**
+  - P3.2 (3): `calc()`, `houses()`, `events()` and `chart()` in
+    `@zodiacs/engine/calc` take the sidereal zodiac, with one of the nine
+    built-in ayanamsas or a caller's own, the two options checkpoint 14
+    found missing. A type check holds calc's declarations to what
+    `@zodiacs/engine/vedic` ships; it compiles against rc.17 and fails
+    against rc.16. A run-time sweep computes every built-in ayanamsa and a
+    caller's in twelve forms in all four functions, equal to `/vedic`'s
+    `siderealChart()` in `calc()`, `houses()` and `chart()` where `/vedic`
+    has the form. The engine's 37 round-trip fixtures replay exactly, and
+    the refusals are typed.
+  - Not met without a reading: calc refuses a caller's ayanamsa carried by
+    precession from an epoch outside 1800 to 2200, at every instant, where
+    `/vedic` computes it and flags it. A zero point in 284 CE is such a
+    definition. By checkpoint 14's standard that covers only part of the
+    option; counting it as the entry point's span is the programme's own
+    reading, which DECISIONS-2026-10-05 §4 leaves to the owner.
+- **Engine rc.17 adopted (#663).** The site vendors engine 0.1.1-rc.17, which
+  is not on npm (DECISIONS-2026-10-05 §7), and the local MCP adapter is
+  0.1.0-rc.17. The site imports neither of the two entry points rc.17
+  changed, and a new test holds `src/` and `api/` to that, so nothing the
+  site computes changes. The compute API's bundle was audited again for
+  private state. Production's engine chunk is the local build's byte for
+  byte. [Adoption record](../evidence/site-engine-rc17/README.md).
+- **Findings.** F-80, above. F-79: advisories for smol-toml, source-map-js
+  and tinypool, which reached npm's audit data on 2026-10-06 after main's run
+  at 00:07 UTC, failed Site Check's dependency audit on main's lockfile; #663
+  fixes it. One moderate advisory stays in development dependencies until
+  vitest is upgraded. F-61 again, on #663's run of `875e0bc3`.
+- Actual command: `node scripts/programme-ledger.mjs --summary` →
+  `Overall delivery: 33% (61 of 182.45); blocked 2% (3)`.
+- **Owner decision needed (F-80).** Should P3.2's first clause count as met
+  while calc refuses `SE_SIDM_USER` definitions carried by precession from
+  epochs outside 1800 to 2200, which `/vedic` computes and flags? Yes: P3.2
+  is accepted (3; delivery 64 of 182.45, 35.078%). No: P3.2 stays validated
+  until an engine candidate that computes every such epoch is served and
+  judged. The programme recommends no, and closing it in the 1.0 candidate
+  by computing such an ayanamsa from every epoch `/vedic` accepts, compared
+  with ERFA there.
+- **Owner actions.** Apply F-78's two numbers in the Vercel Firewall; attach
+  zodiacs-org/site to the programme's session if pull request events should
+  reach it.
+- **Next.** The sidereal zodiac in the MCP tools (DECISIONS-2026-10-05 §6);
+  then the core 1.0, with F-80's epochs in its scope, the documentation and
+  quickstarts, the clients and the remote MCP.
+
+## Earlier checkpoints
+
 Checkpoint 20, 2026-10-05: the owner's decisions of 2026-10-05, made by the
 programme under the owner's delegation, recorded on main
 `3e79936aa6715c197b97999ba959101727dc0e08` (#658).
@@ -49,8 +108,6 @@ are unchanged. [Decisions](DECISIONS-2026-10-05.md).
 - **Next.** Engine rc.17's merge and its adoption on the site, which
   P3.2's acceptance needs; then the core 1.0, the documentation and
   quickstarts, the clients and the remote MCP.
-
-## Earlier checkpoints
 
 Checkpoint 19, 2026-10-05: the election search, judged against main
 `51b64f3cb67c2026a18772297ec6b367ed2ca183` (#655), which production

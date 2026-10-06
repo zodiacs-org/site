@@ -1,0 +1,11 @@
+tools/calc-types-cover-vedic.ts(16,17): error TS2724: '"@zodiacs/engine/calc"' has no exported member named 'CalcAyanamsaModel'. Did you mean 'CalcAyanamsa'?
+tools/calc-types-cover-vedic.ts(16,59): error TS2724: '"@zodiacs/engine/calc"' has no exported member named 'CalcUserAyanamsa'. Did you mean 'CalcAyanamsa'?
+tools/calc-types-cover-vedic.ts(28,28): error TS2344: Type 'false' does not satisfy the constraint 'true'.
+tools/calc-types-cover-vedic.ts(30,34): error TS2344: Type 'false' does not satisfy the constraint 'true'.
+tools/calc-types-cover-vedic.ts(35,32): error TS2344: Type 'false' does not satisfy the constraint 'true'.
+tools/calc-types-cover-vedic.ts(36,33): error TS2344: Type 'false' does not satisfy the constraint 'true'.
+tools/calc-types-cover-vedic.ts(37,32): error TS2344: Type 'false' does not satisfy the constraint 'true'.
+tools/calc-types-cover-vedic.ts(38,33): error TS2344: Type 'false' does not satisfy the constraint 'true'.
+tools/calc-types-cover-vedic.ts(50,32): error TS2344: Type 'false' does not satisfy the constraint 'true'.
+tools/calc-types-cover-vedic.ts(52,28): error TS2344: Type 'false' does not satisfy the constraint 'true'.
+exit 2

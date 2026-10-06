@@ -45,6 +45,7 @@ Severity follows the audit's scale:
 | F-71 | major | process | Checkpoint 14 first accepted the co-ascendants and Koch on a clock reading and, for the co-ascendants, a window chosen after the residuals were seen, and its preregistrations said nothing had been measured | owner decision: both units `validated` until the owner ratifies the shared-UT1 reading and the window; they fail as measured if not |
 | F-74 | major | privacy | A chart's citation digest identifies the place as well as the time, and the MCP adapter's and the compute API's documents said only the time; on a chart with no known time the adapter's summary shows nothing that depends on the place | fixed in #643, each with tests: the MCP adapter states both directions from 0.1.0-rc.16.1, before its release, and so do the compute API's documents and its claim |
 | F-78 | major | cost | On engine rc.16, one address at both rate limits can cost 10.7 to 13.2 CPU-seconds a minute at the slowest requests, in three runs on one machine, against 7.8 on rc.15 in the run that timed both; DECISIONS-2026-09-30 §7 allows 10 | open, for the owner: the Firewall rules are the owner's; under the owner's delegation the programme chose 6 and 30 (DECISIONS-2026-10-05 §1), which the owner applies; options with their cost in each run are below; the compute page now gives these figures, where it gave only rc.15's 8.7; the elections endpoint does not raise the bound |
+| F-80 | major | process | P3.2's first clause holds only if calc's refusal of `SE_SIDM_USER` definitions carried by precession from epochs outside 1800–2200, which `/vedic` computes and flags, is read as the span the entry point keeps; the reading is the programme's own | owner decision: P3.2 `validated` until the owner ratifies the reading, or until an engine candidate that computes every such epoch is served and judged; the programme recommends the latter, in the 1.0 candidate |
 | F-06 | major | engine rc.11 | Configured-aspect "exact orb" claim fails on general decimal inputs | fix in engine rc.13 (in progress); fixed in engine rc.14 (zodiacs-org/engine#10, merged 2026-09-29 as `8deda244`); reaches production when the site adopts it; in production since #600 (merged as `6cc4d477`, deployment `dpl_2JtJjuE2bU8CYTBMxKF3kco43qcN`) |
 | F-17 | major | privacy | Share code of a chart without a birth time reveals the birthplace's longitude or zone | open: code fix planned; copy wrong until then; fixed in #599: a chart without a birth time is shared as the sky at 12:00 UTC on its date, and the copy is corrected in six locales; in production since #599 (merged as `aca257ad`, deployment `dpl_AuGvEUL1oJPenrfbFq3FkGH5V9s9`) |
 | F-18 | major | privacy | Sign-icon requests reveal Sun, Moon and rising signs to the server; privacy page silent | open: fix planned; fixed in #599: a chart's page asks for all twelve sign pictures of a size before showing its own; in production since #599 (merged as `aca257ad`, deployment `dpl_AuGvEUL1oJPenrfbFq3FkGH5V9s9`) |
@@ -72,6 +73,7 @@ Severity follows the audit's scale:
 | F-75 | minor | evidence | One of four local Phase 1 capture runs drew `yearly-360`'s sticky header one pixel low, shifting the page by a pixel | recorded: the committed captures are byte-identical to main's; a retake that changes an image whose template did not change is run again before it is committed |
 | F-76 | minor | records | The engine's techniques documentation lists the mystic rectangle and the grand sextile among "aspect patterns with minor aspects"; both are made of oppositions, trines and sextiles | open: an appended correction in an engine pull request |
 | F-77 | minor | gates | The Lighthouse gate can fail `/birth-chart/` on a sample whose real load was no slower: the simulation counts the chart form's module scripts as blocking the first paint when they finish loading a few milliseconds before it, which took one sample of #643 to performance 92 and LCP 3.17 s against the route's calibrated 93 and 2.80 s | open, for the owner: a retake rule like F-51's, or loading the form's scripts after the first paint; the budgets stay as they are |
+| F-79 | minor | CI | Advisories for smol-toml, source-map-js and tinypool, which reached npm's audit data on 2026-10-06 after main's run at 00:07 UTC, failed Site Check's dependency audit on main's lockfile | fixed in #663: smol-toml 1.9.0 and source-map-js 1.2.2 in range, tinypool 2.2.0 through an override past vitest 3.2.7's declared `^1.1.1`; GHSA-82fw-gwwq-j7x9 (moderate) stays in development dependencies until vitest is upgraded |
 | F-01 | minor | provenance | Two different archives both named 0.1.1-rc.11 | fix in rc.13 (artifact list; one version, one byte sequence); fixed in engine rc.14 (zodiacs-org/engine#10, merged 2026-09-29 as `8deda244`); reaches production when the site adopts it; in production since #600 (merged as `6cc4d477`, deployment `dpl_2JtJjuE2bU8CYTBMxKF3kco43qcN`) |
 | F-02 | minor | provenance | Engine CI never binds an artifact to its source | fix in rc.13 (CI rebuild-and-compare); fixed in engine rc.14 (zodiacs-org/engine#10, merged 2026-09-29 as `8deda244`); reaches production when the site adopts it; CI on the merge ran the check; in production since #600 (merged as `6cc4d477`, deployment `dpl_2JtJjuE2bU8CYTBMxKF3kco43qcN`) |
 | F-03 | minor | provenance | Site CI does not run `mcp:pack:check` | open: site CI change planned; fixed by the rc.14 adoption (2026-09-29): the Legacy wing drift job runs it; merged in #600 (`6cc4d477`) |
@@ -670,3 +672,88 @@ The MCP adapter's part is fixed in 0.1.0-rc.16.1 (#643): `get_capabilities` labe
     too.
 - **Disposition.** Open, for the owner. Lowering a Firewall rule changes a
   security setting, which the programme does not do on its own.
+
+### F-61 — update, 2026-10-06 (checkpoint 21)
+
+- **Again, on a pull request.** #663's run on `875e0bc3` (run 37405272826,
+  job 112081327311) failed in "Build with production's feature flags" the
+  same way. WebKit at 1280 px, after the invitation journey, logged
+  `Cannot load blob:… due to access control checks` from the same built
+  chunk, `share-card-brand.SvWVt-Dl.js`, column 838, and
+  `tests/sharing-phase2-drive.mjs:147` failed. The next push cancelled the
+  rest of the run. The run on the next head, `24f7cff5` (run 37406975966),
+  passed the job.
+- **Kept.** GitHub keeps artifact 11387371783 (`sharing-phase2-37405272826`,
+  9,028,617 bytes), whose upload step printed the SHA-256
+  `413568a16f86f3678be6fe7183bd73f8085a1eada4dc16105bdbacab4d093cd2`; it was
+  not downloaded here.
+- **Disposition.** Unchanged: the fix belongs to the sharing feature, and the
+  handoff stands. A pull request's run does not count toward the rate on
+  main.
+
+### F-79 — new advisories fail Site Check's dependency audit on main's lockfile (minor, CI; fixed in #663)
+
+- **Found.** On 2026-10-06 #663's first run (run 37403332738, job
+  112075221035, on `87b72364`) failed at "Dependency advisories stay at
+  zero". Main's lockfile at `b4f82564` fails both of the step's audits the
+  same way, run again here on 2026-10-06: `npm audit --omit=dev` finds
+  smol-toml (moderate) and source-map-js (high), and
+  `npm audit --audit-level=high` also finds tinypool (critical) and
+  @vitest/mocker (moderate), both through vitest. Main's last run on that
+  commit (37392350360, started 00:07 UTC) passed the step, so the advisories
+  reached npm's audit data after it.
+- **Advisories.** GHSA-r4xh-jqrq-34v2, smol-toml up to 1.8.0, through astro;
+  GHSA-68fv-2mgg-jv7q, source-map-js 1.0.0 to 1.2.1, through postcss,
+  magicast and css-tree; GHSA-5gmw-xhrv-c9v3 and GHSA-85c8-ppgw-ccpr,
+  tinypool up to 2.1.1, through vitest; GHSA-82fw-gwwq-j7x9,
+  @vitest/mocker 2.1.0 to 4.1.10, through vitest.
+- **Fix.** `875e0bc3` in #663. smol-toml 1.9.0 and source-map-js 1.2.2 are
+  inside their dependents' ranges. tinypool 2.2.0 is not: vitest 3.2.7, the
+  last 3.x, declares `^1.1.1`, and 2.2.0 is a major version past it. It is a
+  development dependency that an override hands to vitest, as #628 does for
+  http-cache-semantics. tinypool 2.2.0 keeps every export of 1.1.1 and adds
+  `withNullPrototype`, a `serialization` option and `URL` filenames; it needs
+  Node 20, or 22 and later. With it the full suite passed on main's tree at
+  `6f873334` (6,771 tests, 1 skipped), and Site Check passed on #663's head.
+  Both audits pass, and so does the step.
+- **Remaining.** GHSA-82fw-gwwq-j7x9, moderate, in development dependencies,
+  which the step's high level allows. Its fix is vitest 4.1.11 or 5, an
+  upgrade of its own. Neither depends on tinypool, so the override and the
+  tinypool development dependency can go with it.
+- **Risk.** A branch cut from main before #663 fails the step until it
+  merges main.
+
+### F-80 — P3.2's first clause holds only on a reading of the span (major, process)
+
+- **Found** by checkpoint 21's independent review, 2026-10-06. calc refuses a
+  caller's ayanamsa carried by precession from an epoch outside 1800–2200
+  (`out-of-range`) in all four functions and at every instant, inside the
+  span as well. `/vedic` computes it and flags the result
+  `outside-reference-span`. A zero point at TT Julian date 1824800.5 (284 CE),
+  asked for at 2026-03-20, gives a mean ayanamsa of 24.2461° through `/vedic`
+  and is refused by calc; the same epoch and value with a linear rate are
+  computed by both
+  ([`rc17-gates-2026-10-06/results/sidereal-options-sweep.json`](../evidence/rc17-gates-2026-10-06/results/sidereal-options-sweep.json),
+  section `span`).
+- **Why it matters.** The epoch is part of `SE_SIDM_USER`, the `t0` of
+  `swe_set_sid_mode`. Checkpoint 14 failed the clause for an option that was
+  declared but refused, so by that standard calc covers only part of this
+  one. The draft of checkpoint 21 read the epoch's range as the span the
+  entry point keeps, and counted P3.2 accepted on that reading. The reading
+  is the programme's own, made at the checkpoint, and DECISIONS-2026-10-05 §4
+  leaves such readings to the owner.
+- **Disposition.** P3.2 is `validated`, not accepted. An instant outside the
+  span is a different matter, and is not counted against the clause: an
+  instant is the input of `calc_ut`, not one of its options, calc refused it
+  in rc.16 too, and checkpoint 14 did not count that. That too is a reading,
+  and the owner can overrule it.
+- **Owner decision.** Should P3.2's first clause count as met while calc
+  refuses `SE_SIDM_USER` definitions carried by precession from epochs
+  outside 1800–2200, which `/vedic` computes and flags? Yes: P3.2 is
+  accepted (3; delivery 64 of 182.45, 35.078%). No: P3.2 stays validated
+  until an engine candidate that computes every such epoch is served and
+  judged. The programme recommends no, and closing it in the 1.0 candidate:
+  computing a precession-carried ayanamsa from every epoch `/vedic` accepts,
+  the whole range of a JavaScript `Date`, compared with ERFA there. A
+  candidate that covers only the engine's ephemeris span would leave a
+  narrower gap that needs the same reading.
