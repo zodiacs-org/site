@@ -30,6 +30,16 @@
       "permanent": true
     },
     {
+      "source": "/how-we-compute",
+      "destination": "/methodology/",
+      "statusCode": 301
+    },
+    {
+      "source": "/how-we-compute/",
+      "destination": "/methodology/",
+      "statusCode": 301
+    },
+    {
       "source": "/guide",
       "destination": "/ask/",
       "statusCode": 301
