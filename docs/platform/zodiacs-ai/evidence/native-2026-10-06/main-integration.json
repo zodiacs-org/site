@@ -1,0 +1,43 @@
+{
+  "schema": "zodiacs.combined-source-review.v1",
+  "source": "98c33bf4d8ac823d7460efb00240d7173ba64d0e",
+  "base": "6c1766ed5ea9df8c14128f485a14fe7464cc7c24",
+  "runUrl": "https://github.com/zodiacs-org/site/actions/runs/37459336929",
+  "templateSourceSha256": "de54944cab31d434d490b1ced004a1bc25224628791d2e5495346c122e9dabb4",
+  "captureReceiptSha256": "a164a8a52809fb75f7991aa0e179ba7646bccd9e1bccb1d855b70485fffd09ab",
+  "freshCaptureCount": 18,
+  "capturePixelsMatchExistingFiles": true,
+  "homepageBaselines": [
+    {
+      "path": "tests/visual/baselines/linux/home-desktop.png",
+      "sha256": "883937503676a63be3f25ec6bd17c04423ffe861222f5fc8f5dbb1de752dc088",
+      "matchesFreshActual": true
+    },
+    {
+      "path": "tests/visual/baselines/linux/home-desktop-reduced-motion.png",
+      "sha256": "f7bcfe0a447460dbbbd0507ea324856d7f947a0ff2cfce97d1d82cc506d92654",
+      "matchesFreshActual": true
+    },
+    {
+      "path": "tests/visual/baselines/linux/home-mobile.png",
+      "sha256": "d93e58c5f7e0950fab64ba059a2256daf59c5cf0f76acef7295535ef8dae3a23",
+      "matchesFreshActual": true
+    }
+  ],
+  "explanation": "Fresh 98c33bf homepage actuals are byte-identical to the previously reviewed 3524b2a images. Restored those three after the main merge had selected its older references. The fresh Phase 1 receipt is copied unchanged from the CI artifact; all 18 image hashes match. No masks, thresholds or generated fingerprint edits.",
+  "outcomes": {
+    "checkout": "success",
+    "node": "success",
+    "request": "success",
+    "install": "success",
+    "browser": "success",
+    "build": "success",
+    "acceptance": "success",
+    "receipt": "success",
+    "visual": "failure",
+    "candidates": "skipped",
+    "lighthouse": "cancelled",
+    "explorer": "skipped"
+  },
+  "ciLimit": "Comparison failed on the three replaced references. The already-red browser run was cancelled while Lighthouse was running to collect artifacts before a fresh final run; its capture/receipt succeeded, but Lighthouse/explorer are not claimed complete. Site Check passed 19 jobs; full tests 6897 passed / 6 skipped / 2 failures: stale capture receipt and missing privacy-claim binding. Both fixes need final CI."
+}

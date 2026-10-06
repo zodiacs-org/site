@@ -23,9 +23,9 @@ vendored engine candidate. Never describe an unpublished candidate as an npm rel
 | --- | --- | --- |
 | Calculation integrity | Versioned, reproducible results; explicit time/zone/coverage; meaningful negative tests | Implemented and automated checks pass; historical clock and receipt edge cases covered |
 | First use | An unfamiliar user completes the primary task with clear defaults and recovery | Local time/city entry added; real unfamiliar-user trial still missing |
-| ChatGPT experience | Current candidate opens globally and in conversation; worker, reviewed sharing, record export and event lifecycle work in the actual host | Current Studio/calendar render in conversation; local-time review, time stepping, worker completion, record reproduction and explicit sharing pass. Host blocks direct downloads/automatic clipboard; manual local copy verified against the displayed JSON. Native cancellation and event lifecycle remain pending |
+| ChatGPT experience | Current candidate opens globally and in conversation; worker, reviewed sharing, record export and event lifecycle work in the actual host | Current Studio/calendar render in conversation; local-time review, time stepping, worker completion, record reproduction and explicit sharing pass. Host blocks direct downloads/automatic clipboard; manual local copy verified against the displayed JSON. Native event discovery, subscription and stop pass in a fresh Work chat; actual arrival, renewal and worker cancellation remain pending |
 | Trust | Clear company, website, support, privacy, terms, calculation methods and honest preview limits | Most profiles updated; Watch profile verified; original portable cloud profile still needs its desktop update; publisher verification pending |
-| Reliability | Refresh/restart/retry, quota and cancellation checks; live disconnect blocks access/delivery; scheduled-worker health | Local PostgreSQL lifecycle and hosted OAuth/revocation pass; real ChatGPT delivery and stop still unverified |
+| Reliability | Refresh/restart/retry, quota and cancellation checks; live disconnect blocks access/delivery; scheduled-worker health | Local PostgreSQL lifecycle and hosted OAuth/revocation pass; native callback verification and stop pass; actual arrival and automatic renewal remain unverified |
 | Usefulness | Consenting completion/usefulness and voluntary second-use evidence | No testers or fabricated results; task kit ready |
 | Release operations | Exact candidate CI, rollback, owner review, sustainable capacity and measured hosting | Separate test deployment/limits in place; latest CI and final release review still required |
 
@@ -38,9 +38,9 @@ acceptance evidence but cannot stand in for independent user feedback.
 ## Remaining order of work
 
 1. Completed: ChatGPT connected the existing synthetic preview account.
-2. Finish native cancellation and Sky Watch subscription/arrival/refresh/stop on
-   the 0.3.2 package candidate (runtime 0.3.0). The latest host exposes no
-   subscription action; do not replace it with polling or claim delivery.
+2. Finish native worker cancellation and Sky Watch arrival/automatic renewal on
+   the 0.3.2 package candidate (runtime 0.3.0). A fresh Work chat was required
+   after tool refresh to expose events; subscribe/callback verification/stop pass.
    [Current native evidence](evidence/native-2026-10-06/README.md) records the
    successful workflows and exact remaining limits.
 3. Fix observed defects; repeat the affected checks and the final candidate CI.

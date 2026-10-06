@@ -28,8 +28,9 @@ worker completion, local record reproduction and explicit context attachment
 passed. Direct downloads were blocked by the host sandbox; local record copying
 is now verified in the actual host, including manual copying when clipboard
 access is denied. The full displayed JSON matches the copied record. Native
-cancellation remains unverified, and no native event subscription is exposed
-even after refreshing tools. Actual event arrival and full lifecycle acceptance
+worker cancellation remains unverified. A fresh Work chat after tool refresh
+exposes all three events; subscription, callback verification and Pause/stop
+pass with server-state evidence. Actual event arrival and automatic renewal
 remain pending. [Current native evidence](evidence/native-2026-10-06/README.md)
 also records the corrected private-preview deployment incident. See [readiness criteria](./READINESS.md) and
 [Sky Watch](./SKY_WATCH.md). This is preview infrastructure, not public activation.

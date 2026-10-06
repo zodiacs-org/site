@@ -3,9 +3,12 @@
 Implemented 2026-10-06. Default off for ordinary plugin packages and production.
 A separate OAuth-protected host and scheduled worker are active for the private
 preview. No human watches or successful ChatGPT deliveries have been established.
-After the corrected deployment and native tool refresh, ChatGPT still reports no
-available event-subscription action. No watch or polling substitute was created;
-subscription/arrival/refresh/stop remain blocked at native discovery. See
+After the corrected deployment and native tool refresh, a fresh Work chat
+exposed all three event types and created a Moon ingress watch. Server state
+confirms callback verification and finite expiry. Pausing the native task set
+the subscription inactive and cleared callback credentials; no active test
+watch or polling substitute remains. The older conversation could not use the
+new events. Actual arrival and automatic renewal remain unverified. See
 [current native evidence](evidence/native-2026-10-06/README.md).
 The existing ChatGPT Chart Studio preview remains on its original deployment.
 

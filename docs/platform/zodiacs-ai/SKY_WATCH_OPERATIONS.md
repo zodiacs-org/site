@@ -61,3 +61,28 @@ lifecycle tests, anonymous-denial checks and synthetic provider sign-in/refresh/
 revocation checks. Review exact deployment target and alias, then verify the
 native ChatGPT subscribe/arrival/refresh/stop flow. No successful native delivery
 has yet been recorded. Production activation remains reserved for owner review.
+
+## Preview bundle preflight
+
+Build the dedicated host with `node scripts/build-sky-watch-preview.mjs` and an
+empty output directory outside this repository. Install that directory's pinned
+dependencies, then verify its actual wrapper export before deploying:
+
+```sh
+node --input-type=module -e "import assert from 'node:assert/strict'; import {createWatchPreviewHandler} from './api/_watch/runtime.mjs'; assert.equal(typeof createWatchPreviewHandler, 'function');"
+```
+
+Run this from the prepared deployment directory. The general
+`integrations/generated/sky-watch.mjs` bundle is not the OAuth/account/worker
+wrapper; copying it over `api/_watch/runtime.mjs` breaks the entry point. A
+private deployment on 6 October exposed that mistake, was rolled back, and was
+replaced with the dedicated build. Preserve this preflight in the deploy runner.
+
+Verify the deployment is Ready before moving the test alias. Its unique Vercel
+hostname is deliberately rejected by the exact-host guard; use that only to
+check that the wrapper loads, not as an OAuth URL. After assigning the approved
+test alias, protected-resource metadata and account configuration must return
+200, and unauthenticated MCP and worker POSTs must return 401. Refresh the
+private plugin and test its actual panel. Keep the preceding working deployment
+available for alias rollback. The original Chart Studio 0.2.0 preview and
+production aliases are separate and remain unchanged.

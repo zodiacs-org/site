@@ -138,7 +138,8 @@ rescan rather than filing a speculative appeal.
 - Complete the remaining native acceptance and current walkthrough.
   [Observed host evidence](evidence/native-2026-10-06/README.md) now covers
   public-sky routing, Studio interaction, explicit sharing and manual record
-  copying; native cancellation and event lifecycle remain unverified.
+  copying. Native event discovery, subscription, callback verification and stop
+  pass; actual arrival, automatic renewal and worker cancellation remain unverified.
 - Publisher identity, stable enabled endpoint, domain proof and portal scans.
 - Exact final commit/CI, package hashes, privacy/support reachability, rollback
   and measured capacity/cost review.

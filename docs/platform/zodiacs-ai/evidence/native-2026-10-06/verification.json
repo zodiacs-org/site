@@ -87,11 +87,12 @@
         "characters": 5598,
         "validJson": true,
         "file": "native-copied-chart-record.json",
-        "sha256": "8060a8911e62dc6f03432af0ba56bf5b85b134a0846e9154c217dd076107b477"
+        "sha256": "8060a8911e62dc6f03432af0ba56bf5b85b134a0846e9154c217dd076107b477",
+        "reimport": "Pasted the actual copied JSON into Record A in the refreshed native panel; Compared calculation fields reproduce with rc.17."
       }
     },
-    "skyWatch": "Native event subscription still unavailable after corrected deployment and Refresh tools; no native watch or polling substitute created. Arrival/refresh/unsubscribe remain unverified.",
-    "profile": "Branded icon, Zodiacs LLC, website/privacy/terms and version 1.0.1 remain visible after Refresh tools."
+    "skyWatch": "Fresh Work chat after Refresh tools exposed all three events and created a native Moon ingress watch. Server records confirm signed callback verification, Moon/Asia-Bangkok filters and finite expiry. Native Pause set active=false, revision=2 and cleared callback credentials. No real event arrived; automatic expiry renewal remains unverified. See native-watch-lifecycle.json.",
+    "profile": "Tool refresh reset metadata to generic 1.0.0. Uploaded a complete metadata-only 1.0.2 ZIP referencing the same app; verified icon, Zodiacs LLC, website, privacy and terms restored. No new app or endpoint."
   },
   "deploymentIncident": {
     "failedDeployment": "dpl_6xx8Sh1i1uRNsqXmNdjmJUGRfu2G",
@@ -115,7 +116,7 @@
   },
   "remaining": [
     "native worker cancellation",
-    "native event subscription/arrival/refresh/stop",
+    "native event arrival and automatic renewal",
     "current reviewer-accessible walkthrough video",
     "publisher approval and portal scans",
     "consenting usefulness feedback or owner revision of proposed beta plan",

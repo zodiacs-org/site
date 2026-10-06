@@ -3,7 +3,7 @@
 ## Sky Watch preview — 6 October 2026
 
 The separate **Zodiacs Sky Watch Preview** profile was created and updated to
-metadata version **1.0.1**. Its visible page shows the branded icon, Zodiacs LLC,
+metadata version **1.0.2**. Its visible page shows the branded icon, Zodiacs LLC,
 Lifestyle category, website, privacy and terms links, public-sky capabilities
 and three starter prompts. Its underlying app description also includes the
 company, support address and valid methods URL. The app ID is
@@ -13,11 +13,14 @@ The description identifies the separate preview account, seven-day maximum
 watch lifetime, Disconnect control, retained authorization/delivery data and
 unverified ChatGPT arrival/timing. No publisher-verification badge, endorsement
 or public release is claimed. The profile now shows **Connected** to the existing
-synthetic preview account. Native lifecycle acceptance remains pending. The original Chart Studio
-profile and its deployment remain frozen. After the current tool refresh, the
-public profile still visibly retains its icon, Zodiacs LLC, website, privacy
-and terms links at metadata version 1.0.1; the separate development-app settings
-page uses its generic "App developer" label.
+synthetic preview account. Native discovery, subscription, callback verification and Pause/unsubscribe
+now pass in a fresh Work chat. Real event arrival and automatic renewal remain
+unverified. The original Chart Studio
+profile and its deployment remain frozen. Tool refresh reset the cloud profile to generic version 1.0.0 after a cached
+view briefly retained its older metadata. Uploading a complete metadata-only
+1.0.2 ZIP referencing the same existing app restored the branded icon, Zodiacs
+LLC, website, privacy and terms; the updated profile was verified. Verify and,
+if needed, restore profile metadata after future tool refreshes.
 
 Current portable metadata candidates are **0.3.2**, retaining the 0.3.0 runtime.
 Installed/enabled local packages are **0.3.0**; the already-open chat still
@@ -28,7 +31,7 @@ the historical walkthrough URL pending a current recording. Private app-referenc
 ZIPs remain separate from public submission; see [SUBMISSION.md](./SUBMISSION.md).
 The installed Developer copy passes its nine-tool/record/privacy driver. Sky
 retains its existing production endpoint configuration; installation does not
-activate that endpoint. Profile metadata version 1.0.1 is a different namespace.
+activate that endpoint. Profile metadata version 1.0.2 is a different namespace.
 Earlier records below describe their own date and do not establish current
 installation or release status.
 
