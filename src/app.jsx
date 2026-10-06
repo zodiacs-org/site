@@ -7275,10 +7275,13 @@
                 </a>
                 <p className="zfooter__tag">{tagline}</p>
               </div>
-              <button className="zfooter__guide" type="button" data-assistant-open data-footer-guide aria-haspopup="dialog">
+              <aside className="zfooter__help" aria-label="Guide">
+      <button className="zfooter__guide" type="button" data-assistant-open data-footer-guide aria-haspopup="dialog" aria-describedby="footer-guide-description">
                 <img src="/assets/guide-avatar.webp" width="32" height="32" alt="" loading="lazy" decoding="async" />
-                <span>Guide</span>
+                <span>Guide</span><span className="zfooter__guide-arrow" aria-hidden="true">→</span>
               </button>
+      <p id="footer-guide-description" className="zfooter__help-description">An AI assistant for astrology questions and help using Zodiacs.</p>
+      </aside>
             </div>
 
             <p className="zfooter__tag">Our astrology tools and guides are free, with no signup required. Zodiacs.org also operates Astrofolio, the Zodiac token collection. <a href="/disclosure/">Read our disclosure</a>.</p>
