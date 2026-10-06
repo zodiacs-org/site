@@ -288,9 +288,10 @@ await withPreview({ port: 4425 }, async (baseURL) => {
     }
     await noJsContext.close();
 
-    // The shared capsule must keep the same geometry on default, stable, and
-    // local-content typography routes. Normal and font-blocked passes verify
-    // both the canonical main-site faces and their shared fallback path.
+    // Typography must not change geometry within the same navigation variant.
+    // Today uses the tool capsule without the collection link, so compare it
+    // with a calculator; People pages retain the homepage's editorial capsule.
+    // Normal and font-blocked passes also check the shared fallback path.
     for (const viewport of [
       { width: 390, height: 844 },
       { width: 1280, height: 900 },
@@ -298,7 +299,7 @@ await withPreview({ port: 4425 }, async (baseURL) => {
       const navRuns = [];
       for (const blockFonts of [false, true]) {
         const navStates = [];
-        for (const route of ['/', '/people/', '/people/ada-lovelace/', '/today/']) {
+        for (const route of ['/', '/birth-chart/', '/people/', '/people/ada-lovelace/', '/today/']) {
           const context = await browser.newContext({ viewport });
           if (blockFonts) {
             await context.route(/\.woff2(?:\?|$)/u, (requestRoute) => requestRoute.abort());
@@ -366,18 +367,19 @@ await withPreview({ port: 4425 }, async (baseURL) => {
           await context.close();
         }
 
-        const baseline = navStates[0].settled;
-        for (const state of navStates.slice(1)) {
+        for (const state of navStates.filter(({ route }) => route !== '/' && route !== '/birth-chart/')) {
+          const referenceRoute = state.route === '/today/' ? '/birth-chart/' : '/';
+          const baseline = navStates.find(({ route }) => route === referenceRoute).settled;
           check(
             Math.abs(state.settled.width - baseline.width) <= 0.1
               && Math.abs(state.settled.height - baseline.height) <= 0.1,
-            `${state.route}@${viewport.width}: navigation geometry differs from /${blockFonts ? ' with fonts blocked' : ''}`,
+            `${state.route}@${viewport.width}: navigation geometry differs from ${referenceRoute}${blockFonts ? ' with fonts blocked' : ''}`,
           );
           check(
             state.settled.sans === baseline.sans
               && state.settled.serif === baseline.serif
               && state.settled.mono === baseline.mono,
-            `${state.route}@${viewport.width}: navigation font families differ from /${blockFonts ? ' with fonts blocked' : ''}`,
+            `${state.route}@${viewport.width}: navigation font families differ from ${referenceRoute}${blockFonts ? ' with fonts blocked' : ''}`,
           );
         }
         navRuns.push({ blockFonts, navStates });
