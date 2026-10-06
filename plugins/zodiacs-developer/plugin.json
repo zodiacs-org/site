@@ -1,6 +1,6 @@
 {
   "name": "zodiacs-developer",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Build and verify astrology integrations with the published Zodiacs engine, bounded sky tools and local chart comparison.",
   "author": {
     "name": "Zodiacs LLC",
@@ -20,6 +20,10 @@
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "extensions": {
     "com.openai": {
+      "onboardingSkill": "./skills/build-with-zodiacs/SKILL.md",
+      "publication": {
+        "release_notes": "0.3.1 adds packaged onboarding and clearer capability labels. The runtime remains 0.3.0 with nine local tools, reviewed local-time entry in Chart Studio and calculation-record comparison. This stdio package is for local/private distribution; public-directory submission requires a supported distribution route. The bundled vendored engine candidate is rc.17; external examples use published rc.16."
+      },
       "interface": {
         "displayName": "Zodiacs Developer",
         "shortDescription": "Build astrology integrations",
@@ -27,8 +31,9 @@
         "developerName": "Zodiacs LLC",
         "category": "Developer Tools",
         "capabilities": [
-          "Read",
-          "Write"
+          "Astrology integration recipes",
+          "Reproducible chart calculations",
+          "Calculation-record comparison"
         ],
         "websiteURL": "https://zodiacs.org/developers/",
         "supportURL": "https://zodiacs.org/about/",

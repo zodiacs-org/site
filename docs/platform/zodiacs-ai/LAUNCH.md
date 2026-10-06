@@ -1,5 +1,16 @@
 # Release gates and rollback
 
+## Submission metadata — 2026-10-06
+
+Package 0.3.1 updates metadata only; the runtime and endpoints remain unchanged
+at 0.3.0. [SUBMISSION.md](./SUBMISSION.md) follows the current public-directory
+flow, distinguishes private app-reference ZIPs and the local Developer route,
+and records the missing current walkthrough, identity and portal scan evidence.
+Sky has exactly five positive/three negative cases and three starter prompts.
+After initial public publication, eligible hosted MCP updates may go live after
+automatic scans, so production server changes require the existing owner review
+even when no ZIP upload or separate publish button is needed.
+
 ## Chart Studio candidate — 2026-10-06
 
 The latest continuation adds local date/time and offline city entry, with

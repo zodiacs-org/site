@@ -28,7 +28,7 @@ for (const [entry, output, external] of outputs) {
 const compatibility = JSON.parse(await readFile(resolve(root, 'plugins/zodiacs-developer/.codex-plugin/plugin.json'), 'utf8'));
 const portable = Object.fromEntries(['name', 'version', 'description', 'author', 'homepage', 'repository', 'license', 'keywords'].map(key => [key, compatibility[key]]));
 portable.$schema = 'https://agent-plugins.org/schemas/1.0.0/plugin.schema.json';
-portable.extensions = { 'com.openai': { interface: compatibility.interface } };
+portable.extensions = { 'com.openai': { ...compatibility.extensions?.['com.openai'], interface: compatibility.interface } };
 const portableMcp = { $schema: 'https://agent-plugins.org/schemas/1.0.0/mcp.schema.json', mcpServers: { 'zodiacs-developer': { type: 'stdio', command: 'node', cwd: './', args: ['${PLUGIN_ROOT}/mcp/server.mjs'] } } };
 for (const [output, data] of [['plugins/zodiacs-developer/plugin.json', portable], ['plugins/zodiacs-developer/mcp.json', portableMcp]]) {
   const bytes = Buffer.from(JSON.stringify(data, null, 2) + '\n');
@@ -40,7 +40,9 @@ for (const [output, data] of [['plugins/zodiacs-developer/plugin.json', portable
 // read by current local-marketplace clients so upgrades retain version and MCP.
 const sky = JSON.parse(await readFile(resolve(root, 'plugins/zodiacs-sky/plugin.json'), 'utf8'));
 const skyCompatibility = Object.fromEntries(['name', 'version', 'description', 'author', 'homepage', 'repository', 'license', 'keywords'].map(key => [key, sky[key]]));
-Object.assign(skyCompatibility, { skills: './skills/', mcpServers: './.mcp.json', interface: sky.extensions['com.openai'].interface });
+const { interface: skyInterface, ...skySettings } = sky.extensions['com.openai'];
+Object.assign(skyCompatibility, { skills: './skills/', mcpServers: './.mcp.json', interface: skyInterface });
+skyCompatibility.extensions = { 'com.openai': skySettings };
 const skyMcp = { mcpServers: { 'zodiacs-sky': { url: 'https://zodiacs.org/mcp' } } };
 for (const [output, data] of [['plugins/zodiacs-sky/.codex-plugin/plugin.json', skyCompatibility], ['plugins/zodiacs-sky/.mcp.json', skyMcp]]) {
   const bytes = Buffer.from(JSON.stringify(data, null, 2) + '\n');

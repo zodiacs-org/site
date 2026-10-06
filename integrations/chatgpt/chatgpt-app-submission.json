@@ -83,19 +83,11 @@
   },
   "test_cases": [
     {
-      "description": "Inspect supported operations before a calculation.",
-      "user_prompt": "What can Zodiacs calculate and which engine version does it use?",
+      "description": "Inspect capabilities and calculate an explicit public-sky instant.",
+      "user_prompt": "Show what Zodiacs supports and which engine it uses, then calculate the sky at 06:00 UTC on October 1, 2026, displayed in Asia/Bangkok.",
       "file_attachment_urls": null,
-      "tools_triggered": "get_capabilities",
-      "expected_output": "Lists the six operations, pinned engine, limits, privacy and numerical limitations.",
-      "expected_output_url": null
-    },
-    {
-      "description": "Compute an explicit instant in Bangkok.",
-      "user_prompt": "Show the sky at 06:00 UTC on October 1, 2026, displayed in Asia/Bangkok.",
-      "file_attachment_urls": null,
-      "tools_triggered": "get_sky",
-      "expected_output": "Returns positions and Moon phase at that instant, explicit timezone and UTC, receipt and optional method links.",
+      "tools_triggered": "get_capabilities, get_sky",
+      "expected_output": "Report the six supported operations, actual bundled engine version, limits and privacy; return positions and Moon phase for 2026-10-01T06:00:00Z, Asia/Bangkok display time and a calculation receipt. Distinguish the vendored rc.17 candidate from published rc.16 developer recipes.",
       "expected_output_url": null
     },
     {
@@ -103,7 +95,7 @@
       "user_prompt": "Find new and full Moons from October 1 to October 8, 2026, at midnight UTC, displayed in America/New_York.",
       "file_attachment_urls": null,
       "tools_triggered": "get_upcoming_events",
-      "expected_output": "Returns the computed events or an honest empty window, localized times and tested-not-proven search coverage.",
+      "expected_output": "Return computed events or an honest empty window, local times and tested-not-proven coverage; render the sky calendar.",
       "expected_output_url": null
     },
     {
@@ -111,23 +103,23 @@
       "user_prompt": "Did the Sun enter Libra on September 23, 2026? I haven't chosen a timezone.",
       "file_attachment_urls": null,
       "tools_triggered": "check_sky_fact",
-      "expected_output": "Returns depends when the crossing fits some local-day interpretations, explains the date/timezone basis and preserves the receipt.",
+      "expected_output": "Preserve depends when the crossing fits some local-day interpretations and explain the date/timezone basis.",
       "expected_output_url": null
     },
     {
-      "description": "Find a useful calculator without a required click.",
+      "description": "Find a calculator with a canonical link.",
       "user_prompt": "Where is the Zodiacs Moon sign calculator?",
       "file_attachment_urls": null,
       "tools_triggered": "search_zodiacs",
-      "expected_output": "Returns the canonical Moon sign calculator link and explains its purpose; no personal data appears in the URL.",
+      "expected_output": "Return the canonical Moon sign calculator link and explain its purpose; include no personal URL data.",
       "expected_output_url": "https://zodiacs.org/moon-sign/"
     },
     {
-      "description": "Launch Chart Studio with empty arguments.",
-      "user_prompt": "Open Chart Studio so I can inspect a chart and compare house systems.",
+      "description": "Open an interactive chart without sending birth data as tool arguments.",
+      "user_prompt": "Open Chart Studio so I can compare house systems.",
       "file_attachment_urls": null,
       "tools_triggered": "open_chart_studio",
-      "expected_output": "Renders a labeled synthetic example. Inputs are calculated in the browser. Supports placement/aspect selection, house comparison and record export; no selected facts are shared before review and confirmation.",
+      "expected_output": "Call with {}, render the labeled synthetic example, and calculate locally. Review a synthetic local date/time conversion, compare house systems, inspect and download its record, and share selected facts only after preview and explicit confirmation. Input changes and record imports must not automatically share data.",
       "expected_output_url": null
     }
   ],

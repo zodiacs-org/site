@@ -12,7 +12,7 @@ hosting metadata retention still require review.
 
 From the site checkout, `npm run ai:package` creates deterministic review ZIPs.
 The ZIP contains root `plugin.json`, `mcp.json`, its skill, icon and notices.
-Its six positive and three negative review cases are proposed expectations;
+Its five positive and three negative review cases are proposed expectations;
 real ChatGPT tool selection, screenshots and the required walkthrough remain
 launch gates. Credentials and domain-verification tokens belong outside the ZIP.
 
@@ -41,9 +41,21 @@ Chart Studio also includes Time Explorer (UTC stepping and possible birth-time
 windows) and Chart Inspector (local file/text record validation, reproduction
 and comparison). No new personal arguments enter MCP tools, and no imports or
 window results are automatically shared. Birth windows require a host that
-permits the embedded Blob worker. The new package is verified locally; the
-connected ChatGPT preview and installed local candidates remain on 0.2.0 until
-a separate upgrade and host acceptance run. Sky Watch is implemented on a
+permits the embedded Blob worker. The runtime is verified locally. Local 0.3.0 packages were installed; the
+already-open chat still needs a reload. The originally connected ChatGPT preview
+remains frozen on 0.2.0, and native acceptance of the new candidate is pending. Sky Watch is implemented on a
 separate authenticated test host; real ChatGPT event arrival and human beta
 feedback remain unverified. Notifications are not enabled by this package.
 See `docs/platform/zodiacs-ai/CHART_STUDIO.md` and `SKY_WATCH.md` in the repository.
+
+## 0.3.1 submission metadata
+
+This metadata update preserves the 0.3.0 runtime. It adds packaged onboarding
+and follows the 2026-10-06 OpenAI submission reference. Public upload is distinct
+from local/private installation. See `docs/platform/zodiacs-ai/SUBMISSION.md`
+for the public route, current blockers and release safeguards.
+
+The five positive scenarios cover all six tools; three starter prompts fit the
+listing limit. The old calendar-only reel is cleared from review metadata so it
+cannot stand in for a current walkthrough. The empty recording field is an
+intentional submission blocker until the current experience has been recorded.
