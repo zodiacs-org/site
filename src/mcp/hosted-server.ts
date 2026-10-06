@@ -51,11 +51,11 @@ export const LOCAL_ONLY_TOOLS = Object.freeze(['calculate_natal_chart', 'compare
 export const MAX_REQUEST_BYTES = 16_384;
 
 /**
- * What reaches whom. Pending the owner's approval of the wording before the
- * endpoint is switched on (MCP_SWITCH_ENV): each sentence restates what
+ * What reaches whom. The owner approved this wording on 2026-10-07, after the
+ * preview (pull request #677). Each sentence restates what
  * docs/claims/ledger.json already supports for the compute API (priv.compute-api)
  * or for the local adapter (priv.local-tools), for the one function both
- * hosted surfaces share.
+ * hosted surfaces share; change none of them without the owner's yes.
  */
 export const HOSTED_PRIVACY = Object.freeze({
   server: 'These tools run on zodiacs.org\'s servers, in the function that serves the compute API. A request\'s arguments travel only in its body, and nothing from a request or its result is written to a log, a file or a database.',
