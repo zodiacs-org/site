@@ -51,6 +51,8 @@ await withPreview({port:8911},async base=>{
    await page.evaluate(()=>{localStorage.removeItem('zodiacs.me.v1');window.dispatchEvent(new StorageEvent('storage',{key:'zodiacs.me.v1'}));});
    assert.equal(await nav.locator('img').count(),0,'Other-tab removal must clear the photo');
    assert(await nav.locator('.nav__profile-icon, .wnav__profile-icon').isVisible());
+   await page.evaluate(()=>{localStorage.setItem('zodiacs.me.v1',JSON.stringify({version:1,displayName:'Nav test'}));window.dispatchEvent(new Event('zodiacs:me'));});
+   assert.deepEqual(await nav.locator('[data-profile-avatar]').evaluate(node=>({text:node.textContent,background:getComputedStyle(node).backgroundColor,color:getComputedStyle(node).color})),{text:'N',background:'rgb(198, 204, 218)',color:'rgb(6, 7, 9)'},'Initials use the same neutral palette on every page');
    assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
    console.log(`PASS ${route} ${width}: icon, photo, rejected URLs, account gate, removal`);await page.close();
   }
