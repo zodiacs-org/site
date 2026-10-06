@@ -123,6 +123,7 @@ describe('compute API in the OpenAPI document', () => {
     });
     const documented = normalize(committed);
     const computed = structuredClone(normalize(fresh));
+    const byteComparable = structuredClone(fresh);
     // Nodal speed is a central difference and differs by ~6e-9 deg/day across
     // libm implementations. Keep the documented JSON unchanged, explicitly
     // bound only these values, and compare the rest of each response exactly.
@@ -134,13 +135,18 @@ describe('compute API in the OpenAPI document', () => {
         const expected = reference.find((value: { body: string }) => value.body === body.body).speed;
         expect(Math.abs(body.speed - expected)).toBeLessThanOrEqual(1e-8);
         body.speed = expected;
+        // The byte comparison below must use this same, already-bounded
+        // normalization; matching tzdb versions do not imply matching libm.
+        byteComparable.success.chart[name].result.bodies.find(
+          (value: { body: string }) => value.body === body.body,
+        )!.speed = expected;
       }
     }
     expect(documented, `stale ${EXAMPLES_PATH}: run npx vite-node --script scripts/build-compute-examples.mjs`)
       .toEqual(computed);
-    // On a runtime with the same time zone data the file is reproduced byte for byte.
+    // With matching tzdb, all bytes except the bounded nodal speeds must match.
     if (process.versions.tz === committed.success.time.pinned.receipt.timeResolution.runtimeTzdb) {
-      expect(serializeExamples(fresh)).toBe(readFileSync(resolve(root, EXAMPLES_PATH), 'utf8'));
+      expect(serializeExamples(byteComparable)).toBe(readFileSync(resolve(root, EXAMPLES_PATH), 'utf8'));
     }
     for (const endpoint of COMPUTE_ENDPOINTS) {
       expect(Object.keys(committed.success[endpoint]).sort()).toEqual(Object.keys(SUCCESS_EXAMPLES[endpoint]).sort());
