@@ -1,7 +1,7 @@
 {
   "version": 1,
   "id": "translated-rising-and-sky-calendars-20261006",
-  "baseCommit": "51b64f3cb67c2026a18772297ec6b367ed2ca183",
+  "baseCommit": "b1c42f199cea5c879afd1be3597666d43abf9653",
   "protectedPaths": [
     "src/lib/i18n/index.ts",
     "src/pages/es/[...slug].astro",
@@ -42,5 +42,5 @@
     "src/pages/pt/rising-sign/index.astro",
     "src/pages/pt/tools/index.astro"
   ],
-  "authorization": "After reviewing the preview of PR #650 on October 5, 2026, the owner replied “go ahead - merge and continue - i allow this one time”, explicitly allowing this one-time exception for the next translation step he had selected: the rising-sign profiles and the sky calendars. These bounded edits add translated rising-sign profile routes and sky-calendar routes under the Spanish, Portuguese, French and Italian page trees, remove their “not translated yet” stubs, point the localized rising-sign hubs, sign guides and tools pages at the translated pages, register the two translated route families in the locale route policy, and reword one sentence of the Portuguese homepage description. They do not change English pages, sign-guide bodies, English Learn content, the Registry wing, or the SDK."
+  "authorization": "After reviewing the preview of PR #650 on October 5, 2026, the owner replied \u201cgo ahead - merge and continue - i allow this one time\u201d, explicitly allowing this one-time exception for the next translation step he had selected: the rising-sign profiles and the sky calendars. These bounded edits add translated rising-sign profile routes and sky-calendar routes under the Spanish, Portuguese, French and Italian page trees, remove their \u201cnot translated yet\u201d stubs, point the localized rising-sign hubs, sign guides and tools pages at the translated pages, register the two translated route families in the locale route policy, and reword one sentence of the Portuguese homepage description. They do not change English pages, sign-guide bodies, English Learn content, the Registry wing, or the SDK."
 }
