@@ -147,6 +147,9 @@ dated snapshot as a new observation. No retry, alternate-route request, capacity
 quota, rate, load or exhaustion probe was made. Metadata bodies were limited to
 1 MiB, compute bodies to 256 KiB, headers to 16 KiB; compute transport timeout was
 10 seconds. Cookies and authorization response values are omitted from evidence.
+`git diff --check` reports the observed trailing space in each captured HTTP/2
+status line and the terminal blank header line. Those transport bytes are retained;
+the runner, selftests, Markdown and remaining evidence pass the whitespace check.
 
 Only the independent-consumer runner, its selftests and this new dated evidence
 directory are changed. Runtime, frontend, Guide, CI, ledger, packages, released
