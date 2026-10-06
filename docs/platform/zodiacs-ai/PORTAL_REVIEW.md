@@ -65,3 +65,11 @@ The supported daily-publication generator refreshed the dependency fingerprint;
 published copy and facts are unchanged. The full local build passed, including
 4,420 pages, schema checks and bundle budgets. Fresh hosted CI and the
 combined-source browser capture receipt are still required before release.
+
+The combined-source capture from Browser Evidence 37494063833 was imported
+unchanged after verifying all 18 image hashes and its generated receipt. The
+capture, receipt and visual comparison steps passed. That run was cancelled
+during performance checks to retrieve the artifacts and repair the known stale
+receipt; it is not a complete acceptance run. Five local evidence checks now
+pass. The prior Site Check passed 19 jobs; its full regression had 6,900 passed,
+six skipped and only the stale-receipt failure corrected by this import.
