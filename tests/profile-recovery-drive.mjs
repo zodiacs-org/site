@@ -163,6 +163,8 @@ for (const engine of (process.env.PROFILE_TEST_ENGINES ?? 'chromium,webkit').spl
     check(`${engine}: synced status follows a successful cloud write`, cloud.charts.length === 1);
     const cloudSecond = await context({ signedIn: true }); const recovered = await cloudSecond.newPage(); await recovered.goto(`${base}/profile/`);
     await recovered.getByRole('button', { name: 'Edit profile', exact: true }).waitFor();
+    // The editor now exists before a chart arrives; wait for the recovery itself.
+    await recovered.waitForFunction(() => JSON.parse(localStorage.getItem('zodiacs.profile.v1') || 'null')?.charts?.some(c => c.id === '11111111-1111-4111-8111-111111111111'));
     check(`${engine}: signed-in second device retrieves a saved birth chart`, await recovered.evaluate(() => JSON.parse(localStorage.getItem('zodiacs.profile.v1')).charts.some(c => c.id === '11111111-1111-4111-8111-111111111111')));
     cloud.fail = true; await signed.getByRole('button', { name: /^(Sync now|Synced)$/ }).click();
     await signed.getByText('Saved in this browser · sync needs attention', { exact: true }).waitFor();

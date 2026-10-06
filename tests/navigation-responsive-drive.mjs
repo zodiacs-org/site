@@ -18,6 +18,7 @@ const cases = locales.flatMap((prefix) => {
 for (const prefix of ['', '/es', '/ru']) for (const width of [390, 612, 768]) {
   cases.push({ path: `${prefix}/birth-chart/${chart}`, width, desktop: prefix ? 1040 : 920, receiver: true, wing: false });
 }
+for (const width of [390, 920]) cases.push({ path: '/birth-chart/', width, desktop: 920, receiver: false, wing: false });
 for (const path of ['/astrofolio/', '/registry/virgo/', '/sdk/']) for (const width of [390, 612, 919, 920, 1440]) {
   cases.push({ path, width, desktop: 920, receiver: false, wing: true });
 }
@@ -90,6 +91,38 @@ await withPreview({ port: 8794 }, async (baseURL) => {
             assert.notEqual(geometry.radius, '0px'); assert(geometry.left > 0 && geometry.right < test.width);
             const links = page.locator(test.wing ? '.wnav__links' : '.nav__links');
             assert(await links.isVisible(), 'Desktop links must retain their existing full row');
+          }
+          const collection = nav.locator(test.wing ? '.wnav__chip' : '.nav__chip');
+          if (!compact && await collection.isVisible()) {
+            const collectionBox = await collection.boundingBox();
+            for (const control of geometry.controls.filter(control => !control.className.includes('__chip'))) {
+              assert(control.right <= collectionBox.x + 0.5, 'Astrofolio is alone to the right of every other control and its divider');
+            }
+          }
+          if (!test.wing) {
+            const profile = nav.locator('.nav__profile-shortcut');
+            assert.equal(await profile.count(), 1, 'One profile control serves every layout');
+            const profileBox = await profile.boundingBox();
+            assert(profileBox && profileBox.width >= 44 && profileBox.height >= 44);
+            const chip = nav.locator('.nav__chip');
+            if (await chip.isVisible()) {
+              const chipBox = await chip.boundingBox();
+              assert(compact ? chipBox.x + chipBox.width <= profileBox.x + 0.5 : profileBox.x + profileBox.width <= chipBox.x + 0.5, 'Mobile keeps its existing order; desktop puts Astrofolio last');
+              if (!compact) {
+                // macOS WebKit uses Option-Tab to include links in keyboard navigation.
+                const beforeChip = await nav.locator('.nav__search').isVisible() ? nav.locator('.nav__search') : profile;
+                const beforeBox = await beforeChip.boundingBox();
+                assert(beforeBox.x + beforeBox.width <= chipBox.x + 0.5, 'Search precedes the Astrofolio divider');
+                await beforeChip.focus(); await page.keyboard.press(name === 'webkit' && process.platform === 'darwin' ? 'Alt+Tab' : 'Tab');
+                assert(await chip.evaluate(node => document.activeElement === node), 'Keyboard order matches the displayed order');
+              }
+            }
+            const search = nav.locator('.nav__search');
+            if (await search.isVisible()) {
+              const searchBox = await search.boundingBox();
+              assert(profileBox.x + profileBox.width <= searchBox.x + 0.5, 'Profile precedes search');
+              assert(Math.abs((profileBox.y + profileBox.height / 2) - (searchBox.y + searchBox.height / 2)) < 1, 'Profile and search share a baseline');
+            }
           }
           assert.deepEqual(errors, []);
           const id = `${name}-${test.path.split('#')[0].replaceAll('/', '_')}-${test.width}`;

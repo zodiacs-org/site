@@ -1,9 +1,8 @@
 {
   "version": 1,
-  "id": "owner-responsive-navigation-consistency-20261005",
-  "baseCommit": "51b64f3cb67c2026a18772297ec6b367ed2ca183",
+  "id": "owner-desktop-only-navigation-20261006",
+  "baseCommit": "152ce8288141e3ca3b31011cac8682943f39d581",
   "protectedPaths": [
-    "public/assets/app.js",
     "public/registry/aquarius/index.html",
     "public/registry/aries/index.html",
     "public/registry/cancer/index.html",
@@ -20,8 +19,7 @@
     "public/registry/virgo/index.html",
     "public/sdk/index.html",
     "public/terminal/markets/index.html",
-    "scripts/registry-pastel-polish.test.mjs",
-    "src/app.jsx"
+    "scripts/registry-pastel-polish.test.mjs"
   ],
-  "authorization": "On October 5, 2026, after being told that tablet layouts and shared-chart pages still use the floating pill, the owner instructed: \u201cyes do it. I want consistency. Except desktop - that remains as is\u201d. This one-time exact-path exception updates only the shared navigation breakpoint, its Registry application scroll query, synchronized/generated navigation output, and the associated navigation regression assertions. Existing desktop navigation, page content, assets, disclosures and locale copy remain unchanged. On October 6 the owner requested saved-profile polish and explicitly directed: \u201cThen push everything live.\u201d This release combines that approved navigation work with the profile and consumer visual fixes."
+  "authorization": "The owner clarified on October 6, 2026: do not change mobile, only desktop. This exact-path allowance restores the previous shared mobile navigation and its generated static pages and regression expectations, while retaining the approved desktop profile/search placement before the Astrofolio divider. The preceding rollout was canceled before publication."
 }

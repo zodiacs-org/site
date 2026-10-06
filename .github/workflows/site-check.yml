@@ -854,6 +854,20 @@ jobs:
           OUT_DIR: tests/visual/artifacts/profile-recovery
         run: node tests/profile-recovery-drive.mjs
 
+      - name: Profile photo editing and navigation on desktop and mobile
+        timeout-minutes: 8
+        env:
+          OUT_DIR: tests/visual/artifacts/profile-appearance
+        run: |
+          node tests/profile-appearance-drive.mjs
+          node tests/profile-navigation-drive.mjs
+
+      - name: Discovery links and Guide introduction
+        timeout-minutes: 6
+        env:
+          OUT_DIR: tests/visual/artifacts/footer-discovery
+        run: node tests/footer-discovery-drive.mjs
+
       - name: Mobile spacing and stable Astrofolio purchase controls
         timeout-minutes: 6
         run: node tests/visual-consistency-drive.mjs
@@ -872,7 +886,10 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: profile-recovery-${{ github.run_id }}
-          path: tests/visual/artifacts/profile-recovery/
+          path: |
+            tests/visual/artifacts/profile-recovery/
+            tests/visual/artifacts/profile-appearance/
+            tests/visual/artifacts/footer-discovery/
           if-no-files-found: ignore
           retention-days: 30
 

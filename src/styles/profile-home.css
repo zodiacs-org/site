@@ -628,3 +628,5 @@ a.pf-chart__action { text-decoration: none; }
 @media (hover: hover) { .pf-photo-button:hover .pf-photo-button__edit, .pf-photo-editor__preview:hover .pf-photo-button__edit, .pf-photo-choose:hover { color: var(--text); background-color: var(--surface-2, #1b1e25); } }
 @media (max-width: 420px) { .pf-photo-editor { grid-template-columns: minmax(0, 1fr); gap: 18px; } }
 @media (prefers-reduced-motion: reduce) { .pf-photo-button__edit { transition: none; } }
+
+.pf-me__intro { margin: 24px 0 0; max-width: 58ch; color: var(--muted); line-height: 1.65; }
