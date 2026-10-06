@@ -93,7 +93,7 @@ await withPreview({ port: 8794 }, async (baseURL) => {
             assert(await links.isVisible(), 'Desktop links must retain their existing full row');
           }
           const collection = nav.locator(test.wing ? '.wnav__chip' : '.nav__chip');
-          if (await collection.isVisible()) {
+          if (!compact && await collection.isVisible()) {
             const collectionBox = await collection.boundingBox();
             for (const control of geometry.controls.filter(control => !control.className.includes('__chip'))) {
               assert(control.right <= collectionBox.x + 0.5, 'Astrofolio is alone to the right of every other control and its divider');
@@ -107,7 +107,7 @@ await withPreview({ port: 8794 }, async (baseURL) => {
             const chip = nav.locator('.nav__chip');
             if (await chip.isVisible()) {
               const chipBox = await chip.boundingBox();
-              assert(profileBox.x + profileBox.width <= chipBox.x + 0.5, 'Profile precedes the Astrofolio divider');
+              assert(compact ? chipBox.x + chipBox.width <= profileBox.x + 0.5 : profileBox.x + profileBox.width <= chipBox.x + 0.5, 'Mobile keeps its existing order; desktop puts Astrofolio last');
               if (!compact) {
                 // macOS WebKit uses Option-Tab to include links in keyboard navigation.
                 const beforeChip = await nav.locator('.nav__search').isVisible() ? nav.locator('.nav__search') : profile;

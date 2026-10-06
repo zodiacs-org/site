@@ -101,7 +101,7 @@ describe('navigation first-paint reservation', () => {
     const bar = rule('.nav-wrap .nav', phone);
     const tracks = value(bar, 'grid-template-columns');
     expect(tracks).not.toMatch(/\bauto\b|content/u);
-    expect(tracks).toBe('44px calc(var(--nav-lockup) * 5.7 + 13px) minmax(0, 1fr) 44px 44px calc(var(--nav-lockup) * 8.27 + 13px)');
+    expect(tracks).toBe('44px minmax(0, 1fr) calc(var(--nav-lockup) * 5.7 + 13px) calc(var(--nav-lockup) * 8.27 + 13px) minmax(0, 1fr) 44px 44px');
     expect(value(bar, '--nav-lockup')).toBe('clamp(10px, 3.2vw, 13px)');
     expect(value(rule('.nav__mark', phone), 'font-size')).toBe('var(--nav-lockup)');
     expect(value(rule('.nav__chip', phone), 'font-size')).toBe('var(--nav-lockup)');
