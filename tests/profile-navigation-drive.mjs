@@ -38,6 +38,12 @@ await withPreview({port:8911},async base=>{
     await set(bad);assert.equal(await nav.locator('img').count(),0);assert(await nav.locator('.nav__profile-icon, .wnav__profile-icon').isVisible());
    }
    await set(photo);
+   for (const ownerKey of ['zodiacs.account-sync-v2.local-owner.v1', 'zodiacs.account-sync-v2.retained-owner.v1']) {
+    await page.evaluate(key=>{localStorage.setItem(key,JSON.stringify({version:1,accountId:'synthetic-owner'}));window.dispatchEvent(new StorageEvent('storage',{key}));},ownerKey);
+    assert.equal(await nav.locator('img').count(),0,'Owned caches stay hidden on pages without an account coordinator');
+    await page.evaluate(key=>{localStorage.removeItem(key);window.dispatchEvent(new StorageEvent('storage',{key}));},ownerKey);
+    assert.equal(await nav.locator('img').count(),1,'Unowned local profile remains available');
+   }
    await page.evaluate(()=>{document.documentElement.setAttribute('data-account-sync-v2','');window.dispatchEvent(new Event('zodiacs:profile-access'));});
    assert.equal(await nav.locator('img').count(),0,'Account gate must clear the local photo');
    await page.evaluate(()=>{document.documentElement.removeAttribute('data-account-sync-v2');window.dispatchEvent(new Event('zodiacs:profile-access'));});

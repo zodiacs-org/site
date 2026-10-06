@@ -1310,8 +1310,13 @@
       '#D3A9DE', '#B9DCE8', '#E0B080', '#C0DEA8', '#AE8FC9', '#A9D4C4'];
     function you() {
       var access = window.zodiacsProfileAccess;
-      if (document.documentElement.hasAttribute('data-account-sync-v2')
-        && !(access && access.canRead && access.canRead() === true)) return null;
+      var unlocked = access && typeof access.canRead === 'function' && access.canRead() === true;
+      // Static wing pages do not mount the account coordinator. An owned or
+      // retained cache must not become readable merely because that page has
+      // no feature attribute; show the generic icon until access is granted.
+      if (!unlocked && (document.documentElement.hasAttribute('data-account-sync-v2')
+        || localStorage.getItem('zodiacs.account-sync-v2.local-owner.v1') !== null
+        || localStorage.getItem('zodiacs.account-sync-v2.retained-owner.v1') !== null)) return null;
       var profile = JSON.parse(localStorage.getItem('zodiacs.profile.v1') || 'null');
       var own = profile && Array.isArray(profile.charts)
         ? profile.charts.filter(function (chart) { return chart && chart.relationship === 'self'; })
@@ -1365,7 +1370,8 @@
       window.addEventListener(name, render);
     });
     function onStorage(event) {
-      if (!event.key || event.key === 'zodiacs.me.v1' || event.key === 'zodiacs.profile.v1') render();
+      if (!event.key || event.key === 'zodiacs.me.v1' || event.key === 'zodiacs.profile.v1'
+        || event.key.startsWith('zodiacs.account-sync-v2.')) render();
     }
     window.addEventListener('storage', onStorage);
     return function cleanup() {
