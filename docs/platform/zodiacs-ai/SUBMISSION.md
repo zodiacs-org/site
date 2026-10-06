@@ -12,7 +12,7 @@ submission, attestations, merge, publication or production activation.
 
 | Offering | Current package | Public-directory route |
 | --- | --- | --- |
-| Zodiacs Sky | `integrations/packages/zodiacs-sky-0.3.3.zip`; portable manifest, one remote MCP, one skill | First public candidate. Its configured stable URL is `https://zodiacs.org/mcp`, currently disabled pending release review. |
+| Zodiacs Sky | `integrations/packages/zodiacs-sky-0.3.4.zip`; portable manifest, one remote MCP, one skill | First public candidate. Its configured stable URL is `https://zodiacs.org/mcp`, currently disabled pending release review. |
 | Zodiacs Developer | `integrations/packages/zodiacs-developer-0.3.2.zip`; nine local stdio tools and three skills | Local/private distribution remains supported. Public submission requires a remote HTTPS server or specific OpenAI support for local MCP distribution. Do not silently move personal chart calculations to a server. |
 | Sky Watch and older custom profiles | Private ChatGPT app-reference ZIPs | Private testing only. ZIPs with `apps` / `.app.json` references or lifecycle hooks cannot currently be submitted. These are not public-release archives. |
 
@@ -45,9 +45,10 @@ may retain an older process until the host reloads.
 - Company, icon, website, support, privacy and terms fields are present. The
   directory publisher name still comes from the verified identity selected in
   the portal, not merely from `developerName`.
-- Sky's `review.demo_recording_url` is deliberately `""`. This clears the old
-  calendar-only reel on import; it is an unresolved submission requirement.
-  Omission or null would preserve an existing saved value.
+- Sky 0.3.4 declares the new synthetic native walkthrough at
+  `https://zodiacs.org/assets/ai/review/zodiacs-sky-0.3.4.mp4`. It is included in
+  the site release candidate; verify public HTTP 200 and its digest before upload.
+  [WALKTHROUGH.md](./WALKTHROUGH.md) records private-preview scope and limitations.
 - Reviewer credentials and private sign-in instructions remain outside ZIPs.
   Country targeting is omitted to preserve the portal's existing selection.
 
@@ -101,7 +102,8 @@ Keep that account available for later reviews.
 Business verification is approved for Zodiacs LLC and the daily identity monitor
 is paused. Sky 0.3.3 is uploaded to a public-submission draft, its category issue
 is resolved and its skill check passed. Domain setup, tool scans and the current
-walkthrough remain incomplete. The draft is not submitted or published. See
+walkthrough upload remain incomplete. The new 0.3.4 video and ZIP are prepared locally.
+The draft is not submitted or published. See
 [PORTAL_REVIEW.md](./PORTAL_REVIEW.md) for actual portal findings and identifiers.
 Public URLs must be accessible and identify the same publisher at final review.
 

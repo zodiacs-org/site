@@ -39,9 +39,12 @@ bytes before selecting Verify Domain. Tool discovery and automated tool findings
 cannot be evaluated until the stable public server is reachable. The temporary
 authenticated Watch host is not a substitute for this public URL.
 
-The walkthrough URL remains empty. Record and verify the current public candidate's
-five/three scenarios before attaching a recording; the historical rc.15 reel is not
-current evidence. OpenAI's portal explicitly reports this missing material.
+The uploaded 0.3.3 walkthrough URL remains empty. Sky 0.3.4 is now prepared with
+a 248-second actual native recording of all five positive and three negative
+scenarios on the current private preview. Its extra Watch capability is clearly
+outside public Sky scope. See [WALKTHROUGH.md](./WALKTHROUGH.md). The video URL
+and exact public resource must be verified after deployment before this new ZIP
+is uploaded; the historical rc.15 reel is not current evidence.
 
 Status: **not submitted / not published**. Domain verification and tool scan are
 incomplete. No policy attestations, paid upgrades, production activation or merge
@@ -68,3 +71,8 @@ hashes. That capture run was cancelled during Lighthouse to retrieve the new
 receipt; it is not full browser acceptance. Final Site Check and Browser Evidence
 must pass after this import and the domain-file change. Follow
 [PR #618](https://github.com/zodiacs-org/site/pull/618) for the final result.
+
+The newly listed MCP client advisory GHSA-6qxp-vccf-f47h was fixed by updating
+the development test client to 2.3.1. Its stdio integration drive passed. Production
+audit remains zero and the full high/critical gate passes; the two moderate
+Vitest development findings remain. No client OAuth credentials were used.

@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "zodiacs-sky",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "Explore sky events and astronomical facts, or open Chart Studio to inspect an interactive chart calculated in the browser.",
   "author": {
     "name": "Zodiacs LLC",
@@ -99,10 +99,10 @@
         },
         "commerce": false,
         "commerce_description": "The public-sky plugin sells no products and processes no payments.",
-        "demo_recording_url": ""
+        "demo_recording_url": "https://zodiacs.org/assets/ai/review/zodiacs-sky-0.3.4.mp4"
       },
       "publication": {
-        "release_notes": "0.3.3: Corrects the public directory category to Education & Research. Retains local chart-record copying, explicit sharing, reviewed local-time conversion and vendored engine rc.17 from 0.3.2."
+        "release_notes": "0.3.4: Adds the current synthetic ChatGPT walkthrough covering Chart Studio, public-sky calculations and unsupported requests. The recording uses the private preview with runtime 0.3.0 and engine rc.17; its extra Sky Watch capability is not included in this six-tool public plugin. Retains the corrected Education & Research category and local record-copy recovery."
       },
       "onboardingSkill": "./skills/explore-the-sky/SKILL.md"
     }
