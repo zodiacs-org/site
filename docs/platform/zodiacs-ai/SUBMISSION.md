@@ -115,8 +115,8 @@ token, without JSON, quotes, a token list or an added newline.
 The base must be the MCP hostname or an eligible parent domain. Inspect any
 existing challenge first. Do not replace another plugin's token; use an allowed
 parent origin or distinct hostname, or contact support if neither is possible.
-Verify the public response after the approved deployment. No token is invented
-or committed to this packet.
+Verify the public response after the approved deployment. The exact portal-issued public challenge is included in the release candidate;
+it is outside the plugin ZIP and must be checked against the live response.
 
 ## After publication
 

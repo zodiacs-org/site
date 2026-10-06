@@ -27,17 +27,17 @@ and permits submission for additional review. The public privacy page returned H
 ## Connection and remaining review work
 
 The draft retains the stable public URL https://zodiacs.org/mcp with No Auth.
-The public health endpoint and domain-challenge URL both returned HTTP 404.
-Production is deployment dpl_8PHCE8ArZ72uLZJK8yENdXjL9ebP on main
-3e81989ca7ed07588e21c8a6e7907f9f4ba44e18; the tested PR candidate has not been
-promoted or merged by this work.
+The public health endpoint and domain-challenge URL returned HTTP 404 during
+this review. Production remains unmodified by this work.
 
-The portal supplied an exact domain challenge. It is prepared in the task's private
-work/submission-domain/ directory, without an added newline. No existing challenge
-was overwritten. Deployment must return HTTP 200 and plain text at
-https://zodiacs.org/.well-known/openai-apps-challenge. The server must be reachable
-before connection, tool discovery and automated tool findings can be evaluated.
-The temporary authenticated Watch host is not a substitute for this public URL.
+The exact 43-byte domain challenge is now included at
+`public/.well-known/openai-apps-challenge`, without an added newline. Its Vercel
+route declares plain text and no caching. No existing challenge was overwritten.
+This is a public domain-control proof, not an authentication credential; it stays
+outside the plugin ZIP. After deployment, verify HTTP 200 and exact response
+bytes before selecting Verify Domain. Tool discovery and automated tool findings
+cannot be evaluated until the stable public server is reachable. The temporary
+authenticated Watch host is not a substitute for this public URL.
 
 The walkthrough URL remains empty. Record and verify the current public candidate's
 five/three scenarios before attaching a recording; the historical rc.15 reel is not
@@ -50,26 +50,21 @@ remain separate. Consenting human feedback for the 9/10 target is still absent.
 
 ## Verification
 
-The AI build, package and package-contract checks passed. Runtime bundles
-were unchanged; this release corrects listing metadata and adds a category guard.
-The prior full CI result applies to source ede0cb6c6427baab816bbcd5ae0a625d7c173f5b.
+Sky 0.3.3 and Developer 0.3.2 package-contract and archive checks pass. The
+runtime bundles are unchanged by the listing correction. The current branch
+includes main 55871059, preserving the translated compatibility pages, dependency
+lock and supported daily-publication provenance. Daily verification passes.
 
-The review branch now includes main 3e81989c. All 189 targeted AI, navigation,
-claims and privacy checks pass. The new registry advisory for sharp was resolved
-by updating only sharp and its matching binary packages to 0.35.5 / libvips 1.3.4
+The newly published sharp advisory was resolved with sharp 0.35.5 / libvips 1.3.4
 (librsvg 2.63.2). The production dependency audit reports zero vulnerabilities;
-the full-tree high/critical gate passes, with the existing two moderate Vitest
-development findings still reported. See the [maintainer advisory](https://github.com/lovell/sharp/security/advisories/GHSA-wq5f-xc86-pv6w).
+the full-tree high/critical gate passes, with two moderate Vitest development
+findings still reported. See the [maintainer advisory](https://github.com/lovell/sharp/security/advisories/GHSA-wq5f-xc86-pv6w).
 
-The supported daily-publication generator refreshed the dependency fingerprint;
-published copy and facts are unchanged. The full local build passed, including
-4,420 pages, schema checks and bundle budgets. Fresh hosted CI and the
-combined-source browser capture receipt are still required before release.
-
-The combined-source capture from Browser Evidence 37494063833 was imported
-unchanged after verifying all 18 image hashes and its generated receipt. The
-capture, receipt and visual comparison steps passed. That run was cancelled
-during performance checks to retrieve the artifacts and repair the known stale
-receipt; it is not a complete acceptance run. Five local evidence checks now
-pass. The prior Site Check passed 19 jobs; its full regression had 6,900 passed,
-six skipped and only the stale-receipt failure corrected by this import.
+The integrated source [a29cded0](https://github.com/zodiacs-org/site/commit/a29cded0dc67d17e248568af4efc7bc466f8b12a)
+passed its build, 18 Phase 1 captures, capture-receipt validation and visual
+comparisons in [Browser Evidence 37498721676](https://github.com/zodiacs-org/site/actions/runs/37498721676).
+All 19 capture files were imported unchanged after matching their CI SHA-256
+hashes. That capture run was cancelled during Lighthouse to retrieve the new
+receipt; it is not full browser acceptance. Final Site Check and Browser Evidence
+must pass after this import and the domain-file change. Follow
+[PR #618](https://github.com/zodiacs-org/site/pull/618) for the final result.

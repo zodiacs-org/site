@@ -1,5 +1,18 @@
 # Release gates and rollback
 
+## Current portal status — 2026-10-06
+
+Zodiacs LLC business verification is approved. Sky 0.3.3 is uploaded to the
+existing public-submission draft; the unsupported category was corrected and
+the skill scan passed. Company, icon, website, support, privacy, terms and all
+eight review scenarios imported. The privacy assessment could not complete;
+MCP setup and the current walkthrough remain incomplete. The exact public
+domain challenge and plain-text response header are prepared in the release
+candidate. This is not a submitted or published listing.
+See [PORTAL_REVIEW.md](./PORTAL_REVIEW.md) for the current portal state and PR
+checks. Dated sections below retain historical evidence rather than current
+publisher or deployment status.
+
 ## Submission metadata — 2026-10-06
 
 Package 0.3.2 retains the corrected submission metadata and adds local record
@@ -9,7 +22,7 @@ The advertised Studio resource is v2 to avoid stale host HTML; v1 remains readab
 for hosts retaining the previous tool metadata.
 [SUBMISSION.md](./SUBMISSION.md) follows the current public-directory
 flow, distinguishes private app-reference ZIPs and the local Developer route,
-and records the missing current walkthrough, identity and portal scan evidence.
+and records the missing current walkthrough and portal tool-scan evidence.
 Sky has exactly five positive/three negative cases and three starter prompts.
 After initial public publication, eligible hosted MCP updates may go live after
 automatic scans, so production server changes require the existing owner review
@@ -188,13 +201,11 @@ pins and existing Firewall counters. Host connections can be disconnected.
 3. Run the [consenting beta packet](./BETA_REVIEW.md) after owner-directed
    recruitment. Consent, usefulness and repeat-use aggregates do not exist yet;
    no participant has been contacted. The prepared worksheet is not feedback.
-4. Owner identity documents and attestations still block OpenAI publisher
-   upload. No domain challenge has been issued. Prepare its exact-byte response
-   only when supplied and verify the eligible hostname without replacing an
-   existing plugin token. [SUBMISSION.md](./SUBMISSION.md) inventories the
-   proposed listing, packaged five/three cases, dated recording URL, version
-   scope and final approval record. Confirm any stricter video requirement in
-   the verified portal, then finish connection, scans and review details.
+4. Publisher identity is approved and Sky 0.3.3 is uploaded. Deploy and verify
+   the exact domain proof prepared from the portal, without replacing another
+   plugin's challenge. Finish the stable public connection, tool scan and
+   current walkthrough. [SUBMISSION.md](./SUBMISSION.md) inventories the
+   imported five/three cases, listing details and remaining review information.
 5. Obtain final owner approval of the concrete packet before submitting,
    merging or activating production. A protected 23-hour preview share does
    not provide a stable directory-review endpoint. Keep production disabled
