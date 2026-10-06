@@ -1,0 +1,28 @@
+---
+import { getCollection } from 'astro:content';
+import LocalizedPairPage from '../../../../components/compat/LocalizedPairPage.astro';
+import { ALL_PAIRS, pairSlug } from '../../../../lib/compat';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('pairsLocalized', (e) => e.data.locale === 'it' && !e.data.draft);
+  // One translation per English pair, filename true to its frontmatter.
+  for (const entry of entries) {
+    const expected = `it/${pairSlug(entry.data.signs[0], entry.data.signs[1])}`;
+    if (entry.id !== expected) {
+      throw new Error(`Pair file ${entry.id}.mdx declares signs [${entry.data.signs.join(', ')}] — expected ${expected}.mdx`);
+    }
+  }
+  const seen = new Set(entries.map((entry) => entry.id));
+  for (const [a, b] of ALL_PAIRS) {
+    if (!seen.has(`it/${a}-${b}`)) throw new Error(`Missing it pair article: ${a}-${b}`);
+  }
+  if (entries.length !== 78) throw new Error(`Expected 78 it pair articles, found ${entries.length}`);
+  return entries.map((entry) => ({
+    params: { pair: pairSlug(entry.data.signs[0], entry.data.signs[1]) },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+---
+<LocalizedPairPage entry={entry} />

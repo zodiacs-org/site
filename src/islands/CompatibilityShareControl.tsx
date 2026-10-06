@@ -37,7 +37,8 @@ export function CompatibilityPairingCta({
   return (
     <a
       class="btn btn--ghost"
-      href={`/compatibility/${pairSlug(signA.slug, signB.slug)}/`}
+      // The pair guides are translated for es, pt, fr and it; English and Russian read the English one.
+      href={`${locale === 'en' || locale === 'ru' ? '' : `/${locale}`}/compatibility/${pairSlug(signA.slug, signB.slug)}/`}
       title={locale === 'ru' ? 'Материал пока доступен по-английски' : undefined}
     >
       <span>{tf(locale, 'pairingCta', {
