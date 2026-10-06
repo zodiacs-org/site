@@ -12,7 +12,7 @@ submission, attestations, merge, publication or production activation.
 
 | Offering | Current package | Public-directory route |
 | --- | --- | --- |
-| Zodiacs Sky | `integrations/packages/zodiacs-sky-0.3.2.zip`; portable manifest, one remote MCP, one skill | First public candidate. Its configured stable URL is `https://zodiacs.org/mcp`, currently disabled pending release review. |
+| Zodiacs Sky | `integrations/packages/zodiacs-sky-0.3.3.zip`; portable manifest, one remote MCP, one skill | First public candidate. Its configured stable URL is `https://zodiacs.org/mcp`, currently disabled pending release review. |
 | Zodiacs Developer | `integrations/packages/zodiacs-developer-0.3.2.zip`; nine local stdio tools and three skills | Local/private distribution remains supported. Public submission requires a remote HTTPS server or specific OpenAI support for local MCP distribution. Do not silently move personal chart calculations to a server. |
 | Sky Watch and older custom profiles | Private ChatGPT app-reference ZIPs | Private testing only. ZIPs with `apps` / `.app.json` references or lifecycle hooks cannot currently be submitted. These are not public-release archives. |
 
@@ -28,8 +28,8 @@ resource avoids stale host HTML while v1 stays readable during tool refresh. The
 engine is rc.17, not an npm release. External developer recipes use published
 rc.16. `integrations/packages/manifest.json` records current archive and member
 hashes. Old archives and dated evidence do not establish the current candidate's
-acceptance. Installed local packages were updated to 0.3.0; an already-open chat
-may retain the older process until the host reloads.
+acceptance. Installed-package observations are dated evidence; an already-open chat
+may retain an older process until the host reloads.
 
 ## Corrected package metadata
 
@@ -98,11 +98,12 @@ Keep that account available for later reviews.
    attestations. Only one review can be active per plugin. Approval and public
    publication are separate steps; the owner chooses when to publish.
 
-The owner completed identity submission and reported the application in review.
-Approval remains unverified; a daily read-only check is active. No domain
-challenge, public draft scan result, submission or directory approval is claimed
-by this document. Public URLs must be accessible and identify the same publisher
-when the final packet is reviewed.
+Business verification is approved for Zodiacs LLC and the daily identity monitor
+is paused. Sky 0.3.3 is uploaded to a public-submission draft, its category issue
+is resolved and its skill check passed. Domain setup, tool scans and the current
+walkthrough remain incomplete. The draft is not submitted or published. See
+[PORTAL_REVIEW.md](./PORTAL_REVIEW.md) for actual portal findings and identifiers.
+Public URLs must be accessible and identify the same publisher at final review.
 
 ## Domain challenge
 
@@ -140,7 +141,7 @@ rescan rather than filing a speculative appeal.
   public-sky routing, Studio interaction, explicit sharing and manual record
   copying. Native event discovery, subscription, callback verification and stop
   pass; actual arrival, automatic renewal and worker cancellation remain unverified.
-- Publisher identity, stable enabled endpoint, domain proof and portal scans.
+- Stable enabled endpoint, domain proof and portal tool scans; publisher identity is approved.
 - Exact final commit/CI, package hashes, privacy/support reachability, rollback
   and measured capacity/cost review.
 - Owner-reviewed usefulness evidence for the 9/10 product target. The small

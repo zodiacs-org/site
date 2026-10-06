@@ -1,5 +1,8 @@
 import assert from 'node:assert/strict';
 import { readFile, access } from 'node:fs/promises';
+// OpenAI submission-errors reference, verified 2026-10-06. A valid ZIP can
+// still fail the portal when its listing uses an unsupported category.
+const submissionCategories = new Set(['Productivity', 'Creativity', 'Developer Tools', 'Business & Operations', 'Data & Analytics', 'Communication', 'Education & Research', 'Security', 'Finance', 'Healthcare', 'Travel', 'Entertainment', 'Other']);
 const root = new URL('../', import.meta.url);
 const json = async path => JSON.parse(await readFile(new URL(path, root), 'utf8'));
 const plugin = await json('plugins/zodiacs-developer/.codex-plugin/plugin.json');
@@ -18,6 +21,7 @@ for (const name of ['zodiacs-developer', 'zodiacs-sky']) {
   const info = manifest.extensions['com.openai'].interface;
   assert.ok(info.displayName.length <= 30 && info.shortDescription.length <= 30 && info.longDescription.length <= 4000);
   assert.ok(info.developerName.length > 0 && info.developerName.length <= 80);
+  assert.ok(submissionCategories.has(info.category), `${name}: supported public-directory category`);
   const prompts = typeof info.defaultPrompt === 'string' ? [info.defaultPrompt] : info.defaultPrompt ?? [];
   assert.ok(prompts.length <= 3, `${name}: at most three starter prompts`);
   assert.equal(new Set(prompts).size, prompts.length, `${name}: unique starter prompts`);
