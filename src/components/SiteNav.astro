@@ -1,5 +1,5 @@
 ---
-import { showsCollectionNavigation } from '../lib/trust-boundary';
+import { initProfileNavigation } from '../lib/profile/navigation-avatar.mjs';
 /**
  * Floating pill navigation. The Signs item opens a 12-icon pastel grid —
  * the icons are the navigation. The profile glyph fills once the visitor
@@ -12,7 +12,8 @@ import { ALL_TOOLS_LABEL, NAV_MORE, NAV_MORE_LABEL, NAV_TOOLS, navToolLabelHasEn
 
 interface Props { locale?: Locale }
 const locale = normalizeCatalogLocale(Astro.props.locale);
-const showCollection = showsCollectionNavigation(Astro.url.pathname);
+// Owner-approved: the collection door is consistent on every primary navigation.
+const showCollection = true;
 const path = Astro.url.pathname;
 const hasDailyReading = availableLocalesForPath('/today/')?.includes(locale) ?? false;
 const todayLabel = t(locale, 'today').replace(/^./u, (letter) => letter.toLocaleUpperCase(locale));
@@ -83,7 +84,7 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
   && !navToolLabelHasEnglishCue(locale, tool.label, t(locale, tool.label));
 ---
 <div class="nav-wrap">
-  <nav class:list={['nav', { 'nav--localized': locale !== 'en', 'nav--without-collection': !showCollection, 'nav--without-search': locale === 'ru', 'nav--with-today': links.some((link) => link.href === '/today/') }]} aria-label={t(locale, 'navPrimary')} data-nav>
+  <nav class:list={['nav', { 'nav--localized': locale !== 'en', 'nav--without-search': locale === 'ru', 'nav--with-today': links.some((link) => link.href === '/today/') }]} aria-label={t(locale, 'navPrimary')} data-nav>
     <a class="nav__mark" href={localizePath(locale, '/')}>
       <span class="nav__name">Zodiacs<span class="nav__sep">·</span><span class="nav__dim">org</span></span>
     </a>
@@ -301,19 +302,6 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
     grid-template-areas: 'mark chip menu';
     grid-template-columns: minmax(0, 1fr) 116px 44px;
   }
-  /* Shared-chart pages mark the receiver in <head>, before the nav streams.
-     Their existing boundary removes the wing link. Reserve only the remaining
-     tracks from the first paint, keeping their sizes and the pill centered. */
-  :global(html[data-chart-share-receiver]) .nav {
-    width: 210px;
-    grid-template-areas: 'mark search menu';
-    grid-template-columns: minmax(0, 1fr) 44px 44px;
-  }
-  :global(html[data-chart-share-receiver]) .nav--without-search {
-    width: 166px;
-    grid-template-areas: 'mark menu';
-    grid-template-columns: minmax(0, 1fr) 44px;
-  }
   .nav__mark {
     grid-area: mark;
     min-width: 0;
@@ -516,9 +504,6 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
     .nav { gap: 4px; padding-inline: 10px 4px; }
     .nav--localized { width: 288px; grid-template-columns: minmax(0, 1fr) 44px 100px 44px; }
     .nav--without-search { width: 224px; grid-template-columns: minmax(0, 1fr) 88px 44px; }
-    :global(html[data-chart-share-receiver]) .nav { width: 180px; }
-    :global(html[data-chart-share-receiver]) .nav--localized { width: 184px; }
-    :global(html[data-chart-share-receiver]) .nav--without-search { width: 132px; }
     .nav__mark { gap: 0; }
     .nav__name { font-size: 11px; letter-spacing: 0.08em; }
     .nav__chip { padding-inline: 7px 0; font-size: 11px; letter-spacing: 0.04em; }
@@ -532,12 +517,6 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
       grid-template-areas: 'mark links profile search chip';
       grid-template-columns: 116px minmax(0, 1fr) 44px 62px 120px;
       gap: 18px;
-    }
-    .nav--without-collection:not(.nav--localized),
-    :global(html[data-chart-share-receiver]) .nav:not(.nav--localized) {
-      width: 746px;
-      grid-template-areas: 'mark links profile search';
-      grid-template-columns: 116px minmax(0, 1fr) 44px 62px;
     }
     .nav:not(.nav--localized) .nav__links { display: grid; }
     .nav:not(.nav--localized) .nav__sep,
@@ -555,17 +534,6 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
       gap: 18px;
     }
     .nav--without-search { grid-template-areas: 'mark links profile chip'; grid-template-columns: 116px minmax(0, 1fr) 44px 120px; }
-    .nav--without-collection.nav--localized,
-    :global(html[data-chart-share-receiver]) .nav--localized {
-      width: 854px;
-      grid-template-areas: 'mark links profile search';
-      grid-template-columns: 116px minmax(0, 1fr) 44px 44px;
-    }
-    .nav--without-collection.nav--without-search,
-    :global(html[data-chart-share-receiver]) .nav--without-search {
-      grid-template-areas: 'mark links profile';
-      grid-template-columns: 116px minmax(0, 1fr) 44px;
-    }
     .nav--localized .nav__links { display: grid; }
     .nav--localized .nav__sep,
     .nav--localized .nav__dim { display: inline; }
@@ -1162,77 +1130,7 @@ const toolNeedsEnglishCue = (tool: NavTool): boolean => englishOnlyHref(tool.hre
 
 </script>
 
-<script is:inline>
-  /* The same local photo or initial in desktop and compact navigation.
-     Only an explicitly chosen self chart supplies a fallback name/sign hue.
-     Photos follow profile/photo.ts: small re-encoded JPEGs, never remote URLs.
-     Classic and inline so the processed navigation script stays small. */
-  (function () {
-    var slots = document.querySelectorAll('[data-profile-avatar]');
-    if (!slots.length) return;
-    var hues = ['#DE8E79', '#B9D4BE', '#B29DD0', '#B6D4E4', '#E0A9B4', '#B7D9B0',
-      '#D3A9DE', '#B9DCE8', '#E0B080', '#C0DEA8', '#AE8FC9', '#A9D4C4'];
-    function you() {
-      var access = window.zodiacsProfileAccess;
-      if (document.documentElement.hasAttribute('data-account-sync-v2')
-        && !(access && access.canRead && access.canRead() === true)) return null;
-      var profile = JSON.parse(localStorage.getItem('zodiacs.profile.v1') || 'null');
-      var own = profile && Array.isArray(profile.charts)
-        ? profile.charts.filter(function (chart) { return chart && chart.relationship === 'self'; })
-        : [];
-      var self = own.length === 1 ? own[0] : null;
-      var me = JSON.parse(localStorage.getItem('zodiacs.me.v1') || 'null');
-      if (me && me.version === 1 && typeof me.photo === 'string' && me.photo.length <= 100000
-        && /^data:image\/jpeg;base64,\/9j\/[A-Za-z0-9+/]+={0,2}$/.test(me.photo)) return { photo: me.photo };
-      var name = me && me.version === 1 && typeof me.displayName === 'string' ? me.displayName : '';
-      // An automatic chart name ends in the birth date; it is not a name.
-      if (!name && self && typeof self.name === 'string' && !/·\s*\d{4}-\d{2}-\d{2}\s*$/.test(self.name)) {
-        name = self.name.split('·')[0];
-      }
-      var first = Array.from(name.replace(new RegExp('[\\p{Cc}\\p{Cf}]', 'gu'), '').normalize('NFC').trim())[0];
-      if (!first || !new RegExp('^[\\p{L}\\p{N}]$', 'u').test(first)) return null;
-      var letter = first.toUpperCase();
-      if (Array.from(letter).length !== 1) letter = first;
-      var bodies = self && self.summary && Array.isArray(self.summary.bodies) ? self.summary.bodies : [];
-      var sun = bodies.filter(function (row) { return row && row.body === 'Sun'; })[0];
-      var lon = sun ? Number(sun.lon) : NaN;
-      var hue = '';
-      if (isFinite(lon)) {
-        lon = ((lon % 360) + 360) % 360;
-        var index = Math.min(11, Math.floor(lon / 30));
-        var within = lon - index * 30;
-        var timeKnown = Boolean(self && self.birth && self.birth.timeKnown === true);
-        // Without a birth time, a Sun within a day's motion of a cusp is unsettled.
-        if (timeKnown || !(within < 1.02 || 30 - within < 1.02)) hue = hues[index];
-      }
-      return { letter: letter, hue: hue };
-    }
-    function render() {
-      var mark = null;
-      try { mark = you(); } catch (error) { mark = null; }
-      for (var i = 0; i < slots.length; i += 1) {
-        var slot = slots[i];
-        slot.textContent = mark && mark.letter ? mark.letter : '';
-        if (mark && mark.photo) {
-          var photo = document.createElement('img');
-          photo.src = mark.photo; photo.alt = ''; photo.width = photo.height = 28;
-          slot.appendChild(photo);
-        }
-        if (mark && mark.hue) slot.style.setProperty('--sign', mark.hue);
-        else slot.style.removeProperty('--sign');
-        slot.hidden = !mark;
-        if (slot.parentElement) slot.parentElement.classList.toggle('has-avatar', Boolean(mark));
-      }
-    }
-    render();
-    ['zodiacs:profile', 'zodiacs:profile-access', 'zodiacs:me'].forEach(function (name) {
-      window.addEventListener(name, render);
-    });
-    window.addEventListener('storage', function (event) {
-      if (!event.key || event.key === 'zodiacs.me.v1' || event.key === 'zodiacs.profile.v1') render();
-    });
-  })();
-</script>
+<script is:inline set:html={`(${initProfileNavigation.toString()})();`} />
 
 <script is:inline>
   /* Compact layouts: the bar slides away as the page scrolls down and returns as it

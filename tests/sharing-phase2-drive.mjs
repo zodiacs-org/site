@@ -43,10 +43,13 @@ await withPreview({ port: 8791 }, async (base) => {
     const html = await response.text();
     assert(!/remoteScript\.src\s*=|insights\.src\s*=/.test(html), `${locale}${route}: third-party analytics runtime`);
     assert.match(html, /rel="canonical"/);
-    assert(!/href="\/astrofolio\//.test(html), `${locale}${route}: collection navigation`);
+    const primaryNav = html.match(/<nav\b[^>]*data-nav[^>]*>[\s\S]*?<\/nav>/)?.[0];
+    assert(primaryNav && /href="\/astrofolio\/"/.test(primaryNav), `${locale}${route}: consistent collection navigation`);
+    const content = html.match(/<main\b[^>]*>[\s\S]*?<\/main>/)?.[0];
+    assert(content && !/href="\/astrofolio\//.test(content), `${locale}${route}: no collection promotion in tool content`);
     assert.match(html, /hreflang="ru"/);
   }
-  record('all 24 localized tools resolve with reciprocating locale metadata and no collection navigation');
+  record('all 24 localized tools resolve with locale metadata, shared navigation and no collection promotion in tool content');
   for (const locale of locales) {
     const response = await fetch(`${base}/${locale}compatibility/`);
     assert.equal(response.status, 200);

@@ -369,12 +369,10 @@ await withPreview({ port: 4425 }, async (baseURL) => {
 
         const baseline = navStates[0].settled;
         for (const state of navStates) {
-          const isTool = ['/birth-chart/', '/today/'].includes(state.route);
-          check(state.settled.hasCollection === !isTool, `${state.route}: navigation collection boundary differs`);
-          // Tools omit Astrofolio and its reserved desktop width. Compare
-          // each composition against its own reference, retaining the shared
-          // height, typography and first-paint stability checks.
-          const geometryReference = navStates.find((entry) => entry.route === (isTool ? '/birth-chart/' : '/'));
+          check(state.settled.hasCollection, `${state.route}: shared navigation is missing Astrofolio`);
+          // Every primary navigation uses the same composition, including
+          // tools; compare against the homepage even before fonts arrive.
+          const geometryReference = navStates.find((entry) => entry.route === '/');
           check(
             Math.abs(state.settled.width - geometryReference.settled.width) <= 0.1
               && Math.abs(state.settled.height - baseline.height) <= 0.1,

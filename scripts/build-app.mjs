@@ -1,3 +1,4 @@
+import { initProfileNavigation } from '../src/lib/profile/navigation-avatar.mjs';
 // Build step for the Zodiacs.org main page.
 //
 // Transforms the JSX source (src/app.jsx) into a plain browser script
@@ -188,6 +189,7 @@ const { code } = Babel.transform(source, {
 const sourceSha256 = createHash('sha256').update(source).digest('hex');
 const banner = `/* Generated from src/app.jsx by scripts/build-app.mjs — source-sha256:${sourceSha256} — do not edit directly. */\n`;
 const registryMeta = [
+  `const initProfileNavigation=${initProfileNavigation.toString()};`,
   `const REGISTRY_ESTABLISHED=${JSON.stringify(REGISTRY_ESTABLISHED)};`,
   `const REGISTRY_ESTABLISHMENT_PROVENANCE_URL=${JSON.stringify(REGISTRY_ESTABLISHMENT_PROVENANCE_URL)};`,
   `const REGISTRY_DISCLOSURE_LABEL=${JSON.stringify(EN['disclosure.linkLabel'])};`,

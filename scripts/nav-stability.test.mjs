@@ -159,34 +159,11 @@ describe('navigation first-paint reservation', () => {
     expect((localizedRow - localizedToday.reduce((sum, width) => sum + width, 0) - 4 * 2) / 2).toBe(147);
   });
 
-  it('removes exactly the absent receiver chip and one gap without shrinking any surviving track', () => {
-    const receiver = ':global(html[data-chart-share-receiver])';
-    const compact = css.split('@media (max-width: 360px)')[1].split('\n  }')[0];
-    const desktopEn = css.split('@media (min-width: 920px)')[1].split('@media (min-width: 1040px)')[0];
-    const desktopLocalized = css.split('@media (min-width: 1040px)')[1];
-    for (const [source, selector, before, chip, gap] of [
-      [css, '.nav', 336, 116, 10],
-      [css, '.nav--without-search', 292, 116, 10],
-      [compact, '.nav', 272, 88, 4],
-      [compact, '.nav--localized', 288, 100, 4],
-      [compact, '.nav--without-search', 224, 88, 4],
-      [desktopEn, '.nav:not(.nav--localized)', 884, 120, 18],
-      [desktopLocalized, '.nav--localized', 992, 120, 18],
-    ]) {
-      const receiverRule = rule(`${receiver} ${selector}`, source);
-      expect(Number.parseFloat(value(receiverRule, 'width'))).toBe(before - chip - gap);
-      expect(value(receiverRule, 'grid-template-areas') ?? '').not.toContain('chip');
-    }
-    expect(value(rule(`${receiver} .nav`), 'grid-template-columns')).toBe('minmax(0, 1fr) 44px 44px');
-    expect(value(rule(`${receiver} .nav--without-search`), 'grid-template-columns')).toBe('minmax(0, 1fr) 44px');
-    expect(value(rule(`${receiver} .nav:not(.nav--localized)`, desktopEn), 'grid-template-columns'))
-      .toBe('116px minmax(0, 1fr) 44px 62px');
-    expect(value(rule(`${receiver} .nav--localized`, desktopLocalized), 'grid-template-columns'))
-      .toBe('116px minmax(0, 1fr) 44px 44px');
-    expect(value(rule(`${receiver} .nav--without-search`, desktopLocalized), 'grid-template-columns'))
-      .toBe('116px minmax(0, 1fr) 44px');
-  });
-});
+  it('keeps the same collection track on tools and shared-chart receivers', () => {
+    expect(nav).toContain('const showCollection = true;');
+    expect(css).not.toContain('nav--without-collection');
+    expect(css).not.toContain(':global(html[data-chart-share-receiver])');
+  });});
 
 describe('Instrument Sans fallback width and line-box metrics', () => {
   it.each(['src/styles/tokens.css', 'scripts/wing-nav.mjs'])('keeps every authored fallback in %s metric matched', (path) => {
