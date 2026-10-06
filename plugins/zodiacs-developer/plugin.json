@@ -1,6 +1,6 @@
 {
   "name": "zodiacs-developer",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Build and verify astrology integrations with the published Zodiacs engine, bounded sky tools and local chart comparison.",
   "author": {
     "name": "Zodiacs LLC",
@@ -22,7 +22,7 @@
     "com.openai": {
       "onboardingSkill": "./skills/build-with-zodiacs/SKILL.md",
       "publication": {
-        "release_notes": "0.3.1 adds packaged onboarding and clearer capability labels. The runtime remains 0.3.0 with nine local tools, reviewed local-time entry in Chart Studio and calculation-record comparison. This stdio package is for local/private distribution; public-directory submission requires a supported distribution route. The bundled vendored engine candidate is rc.17; external examples use published rc.16."
+        "release_notes": "0.3.2: Adds local chart-record copying with manual selection when an embedded host blocks downloads or clipboard access. Preserves explicit sharing, reviewed local-time conversion, current submission metadata and vendored engine rc.17."
       },
       "interface": {
         "displayName": "Zodiacs Developer",

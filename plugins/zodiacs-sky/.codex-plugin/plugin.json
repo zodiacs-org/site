@@ -1,6 +1,6 @@
 {
   "name": "zodiacs-sky",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Explore sky events and astronomical facts, or open Chart Studio to inspect an interactive chart calculated in the browser.",
   "author": {
     "name": "Zodiacs LLC",
@@ -77,7 +77,7 @@
               "description": "Open an interactive chart without sending birth data as tool arguments.",
               "prompt": "Open Chart Studio so I can compare house systems.",
               "tools_triggered": "open_chart_studio",
-              "expected_behavior": "Call with {}, render the labeled synthetic example, and calculate locally. Review a synthetic local date/time conversion, compare house systems, inspect and download its record, and share selected facts only after preview and explicit confirmation. Input changes and record imports must not automatically share data."
+              "expected_behavior": "Call with {}, render the labeled synthetic example, and calculate locally. Review a synthetic local date/time conversion, compare house systems, inspect and download or locally copy its record, and share selected facts only after preview and explicit confirmation. Input changes and record imports must not automatically share data."
             }
           ],
           "negative": [
@@ -103,7 +103,7 @@
         "demo_recording_url": ""
       },
       "publication": {
-        "release_notes": "0.3.1 updates the submission metadata, limits starter prompts to three, packages exactly five positive and three negative review cases, and adds onboarding. Runtime remains 0.3.0: reviewed local time/city conversion, Time Explorer, possible birth-time windows and local calculation-record comparison. The bundled engine is vendored 0.1.1-rc.17, not an npm release; external developer recipes use published rc.16. Sky Watch is a separate private preview and is not enabled by this package. The historical calendar reel is cleared from review metadata; a current walkthrough and desktop/mobile host acceptance are required before submission."
+        "release_notes": "0.3.2: Adds local chart-record copying with manual selection when an embedded host blocks downloads or clipboard access. Preserves explicit sharing, reviewed local-time conversion, current submission metadata and vendored engine rc.17."
       },
       "onboardingSkill": "./skills/explore-the-sky/SKILL.md"
     }

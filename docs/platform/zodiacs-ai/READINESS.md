@@ -23,7 +23,7 @@ vendored engine candidate. Never describe an unpublished candidate as an npm rel
 | --- | --- | --- |
 | Calculation integrity | Versioned, reproducible results; explicit time/zone/coverage; meaningful negative tests | Implemented and automated checks pass; historical clock and receipt edge cases covered |
 | First use | An unfamiliar user completes the primary task with clear defaults and recovery | Local time/city entry added; real unfamiliar-user trial still missing |
-| ChatGPT experience | Current candidate opens globally and in conversation; worker, reviewed sharing, download and event lifecycle work in the actual host | Earlier calendar/Studio evidence exists; latest candidate acceptance pending |
+| ChatGPT experience | Current candidate opens globally and in conversation; worker, reviewed sharing, record export and event lifecycle work in the actual host | Current Studio/calendar render in conversation; local-time review, time stepping, worker completion, record reproduction and explicit sharing pass. Host blocks direct downloads/automatic clipboard; manual local copy verified against the displayed JSON. Native cancellation and event lifecycle remain pending |
 | Trust | Clear company, website, support, privacy, terms, calculation methods and honest preview limits | Most profiles updated; Watch profile verified; original portable cloud profile still needs its desktop update; publisher verification pending |
 | Reliability | Refresh/restart/retry, quota and cancellation checks; live disconnect blocks access/delivery; scheduled-worker health | Local PostgreSQL lifecycle and hosted OAuth/revocation pass; real ChatGPT delivery and stop still unverified |
 | Usefulness | Consenting completion/usefulness and voluntary second-use evidence | No testers or fabricated results; task kit ready |
@@ -37,9 +37,12 @@ acceptance evidence but cannot stand in for independent user feedback.
 
 ## Remaining order of work
 
-1. Owner completes the preview-account sign-in and reviews the ChatGPT connection.
-2. Verify the actual 0.3.0 Chart Studio and Sky Watch subscription/arrival/refresh/
-   stop flow in ChatGPT. Record exact deployment and host observations.
+1. Completed: ChatGPT connected the existing synthetic preview account.
+2. Finish native cancellation and Sky Watch subscription/arrival/refresh/stop on
+   the 0.3.2 package candidate (runtime 0.3.0). The latest host exposes no
+   subscription action; do not replace it with polling or claim delivery.
+   [Current native evidence](evidence/native-2026-10-06/README.md) records the
+   successful workflows and exact remaining limits.
 3. Fix observed defects; repeat the affected checks and the final candidate CI.
 4. Owner recruits consenting testers or explicitly revises the beta plan. Do not
    contact people without instruction. Record only the agreed aggregate feedback.

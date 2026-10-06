@@ -11,7 +11,9 @@ export const AI_ROUTE_PARAM = '__zodiacs_ai';
 export const AI_SWITCH_ENV = 'ZODIACS_MCP_ENABLED';
 export const ORIGIN = 'https://zodiacs.org';
 export const WIDGET_URI = 'ui://zodiacs/sky-events-v1.html';
-export const STUDIO_URI = 'ui://zodiacs/chart-studio-v1.html';
+export const STUDIO_URI = 'ui://zodiacs/chart-studio-v2.html';
+// Keep existing host definitions readable while their tool metadata is refreshed.
+export const LEGACY_STUDIO_URI = 'ui://zodiacs/chart-studio-v1.html';
 export const READ_ONLY = { readOnlyHint: true, destructiveHint: false, openWorldHint: false, idempotentHint: true } as const;
 
 const instant = z.string().min(20).max(29).describe('ISO 8601 instant with Z or a numeric UTC offset, years 1800–2199.');

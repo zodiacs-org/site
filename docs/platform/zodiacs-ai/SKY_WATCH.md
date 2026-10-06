@@ -3,6 +3,10 @@
 Implemented 2026-10-06. Default off for ordinary plugin packages and production.
 A separate OAuth-protected host and scheduled worker are active for the private
 preview. No human watches or successful ChatGPT deliveries have been established.
+After the corrected deployment and native tool refresh, ChatGPT still reports no
+available event-subscription action. No watch or polling substitute was created;
+subscription/arrival/refresh/stop remain blocked at native discovery. See
+[current native evidence](evidence/native-2026-10-06/README.md).
 The existing ChatGPT Chart Studio preview remains on its original deployment.
 
 A separate Free Plan project, **Zodiacs Sky Watch Test**, is now provisioned in
@@ -206,8 +210,8 @@ their runtime, migration and package hashes, checks and deployment status.
 
 ## Remaining release gates
 
-1. Complete the owner's preview-account connection. The new **Zodiacs Sky Watch
-   Preview** was created in ChatGPT and reached the provider sign-in page.
+1. Completed: **Zodiacs Sky Watch Preview** connected the existing synthetic
+   preview account in ChatGPT. No human beta feedback is implied.
 2. Verify subscription, arrival, refresh and stop in ChatGPT Work/Cloud. Rescan
    and record host evidence. Do not repoint the existing Chart Studio alias or
    reuse its deployment-bound share credential. Synthetic/local callback tests

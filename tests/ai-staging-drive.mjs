@@ -38,7 +38,7 @@ try {
   const launcher = tools.find(tool => tool.name === 'open_chart_studio');
   assert.deepEqual(launcher.inputSchema.properties, {});
   assert.equal(launcher.inputSchema.additionalProperties, false);
-  assert.equal(launcher._meta.ui.resourceUri, 'ui://zodiacs/chart-studio-v1.html');
+  assert.equal(launcher._meta.ui.resourceUri, 'ui://zodiacs/chart-studio-v2.html');
   assert.deepEqual(launcher._meta['openai/ui'].entrypoints, [{ type: 'global' }, { type: 'thread' }]);
   record('Chart Studio has empty-only arguments and both native entrypoints');
   const calls = [
@@ -65,7 +65,7 @@ try {
   const resource = await client.readResource({ uri: 'ui://zodiacs/sky-events-v1.html' });
   assert.equal(resource.contents[0].mimeType, 'text/html;profile=mcp-app');
   record('native calendar resource');
-  const studio = (await client.readResource({ uri: 'ui://zodiacs/chart-studio-v1.html' })).contents[0];
+  const studio = (await client.readResource({ uri: 'ui://zodiacs/chart-studio-v2.html' })).contents[0];
   assert.equal(studio.mimeType, 'text/html;profile=mcp-app');
   assert.equal(studio.text, STUDIO_HTML);
   assert.deepEqual(studio._meta.ui.csp, { connectDomains: [], resourceDomains: [] });

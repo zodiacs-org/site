@@ -2,7 +2,7 @@ import { beforeAll, afterAll, describe, it, expect } from 'vitest';
 import { createServer, request, type Server } from 'node:http';
 import { Client, LATEST_PROTOCOL_VERSION, StreamableHTTPClientTransport } from '@modelcontextprotocol/client';
 import { createAiNodeHandler } from './http';
-import { AI_TOOL_NAMES, MAX_HTTP_BYTES, OUTPUT_SCHEMAS, WIDGET_URI, STUDIO_URI } from './contracts';
+import { AI_TOOL_NAMES, MAX_HTTP_BYTES, OUTPUT_SCHEMAS, WIDGET_URI, STUDIO_URI, LEGACY_STUDIO_URI } from './contracts';
 import { COMPUTE_EVENTS_RATE_LIMIT_ID, COMPUTE_RATE_LIMIT_ID } from '../lib/compute-api/constants';
 
 let server: Server, base: string;
@@ -73,6 +73,10 @@ describe('stateless MCP HTTP boundary', () => {
       expect(panel.contents[0]._meta?.ui).toMatchObject({ csp: { connectDomains: [], resourceDomains: [] } });
       expect(panel.contents[0]._meta?.['openai/ui']).toMatchObject({ preferredDisplayMode: 'fullscreen' });
       expect(panel.contents[0]).toHaveProperty('text', expect.stringContaining('Chart Studio'));
+      expect(studio._meta?.['openai/outputTemplate']).toBe(STUDIO_URI);
+      const previousPanel = await client.readResource({ uri: LEGACY_STUDIO_URI });
+      expect(previousPanel.contents[0].uri).toBe(LEGACY_STUDIO_URI);
+      expect(previousPanel.contents[0]).toEqual({ ...panel.contents[0], uri: LEGACY_STUDIO_URI });
       const result = await client.callTool({ name: 'get_sky', arguments: { instant: '2026-10-01T06:00:00Z', zone: 'Asia/Bangkok' } });
       expect(result.isError).toBe(false); expect(OUTPUT_SCHEMAS.get_sky.parse(result.structuredContent).ok).toBe(true);
       const widget = await client.readResource({ uri: WIDGET_URI });

@@ -1,5 +1,5 @@
 import { McpServer } from '@modelcontextprotocol/server';
-import { AI_TOOL_NAMES, AI_VERSION, INPUT_SCHEMAS, OUTPUT_SCHEMAS, READ_ONLY, TOOL_DESCRIPTIONS, WIDGET_URI, STUDIO_URI } from './contracts';
+import { AI_TOOL_NAMES, AI_VERSION, INPUT_SCHEMAS, OUTPUT_SCHEMAS, READ_ONLY, TOOL_DESCRIPTIONS, WIDGET_URI, STUDIO_URI, LEGACY_STUDIO_URI } from './contracts';
 import { executeAiTool, type AiDependencies } from './tools';
 import { STUDIO_HTML } from '../../integrations/generated/chart-studio.mjs';
 import { WIDGET_HTML } from './widget';
@@ -19,10 +19,10 @@ export function createAiServer(dependencies: AiDependencies, watch?: { service: 
   }, () => ({ contents: [{ uri: WIDGET_URI, mimeType: 'text/html;profile=mcp-app', text: WIDGET_HTML,
     _meta: { ui: { csp: { connectDomains: [], resourceDomains: [] }, prefersBorder: true }, 'openai/widgetCSP': { connect_domains: [], resource_domains: [] }, 'openai/widgetPrefersBorder': true, 'openai/ui': { availableDisplayModes: ['inline', 'fullscreen'], preferredDisplayMode: 'inline' } },
   }] }));
-  server.registerResource('chart-studio', STUDIO_URI, {
+  for (const uri of [STUDIO_URI, LEGACY_STUDIO_URI]) server.registerResource(uri === STUDIO_URI ? 'chart-studio' : 'chart-studio-legacy', uri, {
     title: 'Zodiacs Chart Studio', mimeType: 'text/html;profile=mcp-app',
     _meta: { ui: { csp: { connectDomains: [], resourceDomains: [] }, prefersBorder: true }, 'openai/widgetDescription': 'Interactive charts calculated in the browser, with time exploration, birth-time windows, calculation-record inspection, house comparison and user-reviewed context sharing.' },
-  }, () => ({ contents: [{ uri: STUDIO_URI, mimeType: 'text/html;profile=mcp-app', text: STUDIO_HTML,
+  }, () => ({ contents: [{ uri, mimeType: 'text/html;profile=mcp-app', text: STUDIO_HTML,
     _meta: { ui: { csp: { connectDomains: [], resourceDomains: [] }, prefersBorder: true }, 'openai/widgetCSP': { connect_domains: [], resource_domains: [] }, 'openai/widgetPrefersBorder': true, 'openai/ui': { availableDisplayModes: ['inline', 'fullscreen'], preferredDisplayMode: 'fullscreen' } },
   }] }));
   for (const tool of AI_TOOL_NAMES) {

@@ -31,7 +31,7 @@ try {
     const result = await client.callTool({ name, arguments: args }); assert.equal(result.isError ?? false, false, `${name}: ${JSON.stringify(result)}`); return result.structuredContent;
   };
   const studio = await call('open_chart_studio'); assert.equal(studio.data.calculation, 'browser-local');
-  const panel = await client.readResource({ uri: 'ui://zodiacs/chart-studio-v1.html' });
+  const panel = await client.readResource({ uri: 'ui://zodiacs/chart-studio-v2.html' });
   assert.equal(panel.contents[0].mimeType, 'text/html;profile=mcp-app');
   assert.ok(panel.contents[0].text.includes('Chart Studio'));
   assert.ok(panel.contents[0].text.length > 100_000);

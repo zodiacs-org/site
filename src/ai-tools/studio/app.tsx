@@ -15,6 +15,35 @@ import './style.css';
 declare const STUDIO_ICONS: Record<string, string>;
 const titleCase = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
+function RecordExport({ text }: { text: string }) {
+  const [showCopy, setShowCopy] = useState(false);
+  const [notice, setNotice] = useState('');
+  const output = useRef<HTMLTextAreaElement>(null);
+  function download() {
+    // Embedded hosts may silently block downloads. Always expose a local recovery path.
+    setShowCopy(true); setNotice('');
+    const url = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
+    const link = document.createElement('a');
+    link.href = url; link.download = 'zodiacs-chart-record.json';
+    document.body.append(link); link.click(); link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+  async function copy() {
+    try {
+      if (!navigator.clipboard?.writeText) throw new Error('Clipboard unavailable');
+      await navigator.clipboard.writeText(text);
+      setNotice('Record copied. Save it as zodiacs-chart-record.json in a text editor.');
+    } catch {
+      output.current?.focus(); output.current?.select();
+      setNotice('Automatic copying is unavailable here. The record is selected: use Copy, then save it as zodiacs-chart-record.json in a text editor.');
+    }
+  }
+  return <div class="record-export">
+    <div class="inline-actions"><button onClick={download}>Download chart record</button><button class="quiet" aria-expanded={showCopy} onClick={() => { setShowCopy(!showCopy); setNotice(''); }}>Copy chart record</button></div>
+    {showCopy && <div class="record-input"><p>If no file downloads, copy the record below and save it as <code>zodiacs-chart-record.json</code> in a text editor. This keeps the record on your device.</p><label>Chart record to copy<textarea ref={output} readOnly value={text} spellcheck={false} autoComplete="off" /></label><div class="inline-actions"><button class="quiet" onClick={() => void copy()}>Copy record text</button><button class="quiet" onClick={() => { output.current?.focus(); output.current?.select(); setNotice('Record selected. Use Copy to copy it.'); }}>Select record text</button></div><p role="status">{notice}</p></div>}
+  </div>;
+}
+
 function App() {
   const [draft, setDraft] = useState<StudioInput>({ ...EXAMPLE });
   const [applied, setApplied] = useState<StudioInput>({ ...EXAMPLE });
@@ -68,12 +97,6 @@ function App() {
       setError(''); setShareOpen(false); setNotice(''); setSelection(null);
     } catch (e) { setError(e instanceof Error ? e.message : 'The chart could not be calculated.'); }
   }
-  function download() {
-    const blob = new Blob([recordText(run)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob); const link = document.createElement('a');
-    link.href = url; link.download = 'zodiacs-chart-record.json'; link.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-  }
   async function share() {
     if (sharing) return;
     const revision = shareRevision.current;
@@ -126,7 +149,7 @@ function App() {
     <section class="records" aria-label="Calculation details"><div class="record-tabs" role="group" aria-label="View calculation details">{(['placements','aspects','receipt'] as const).map(name => <button key={name} aria-pressed={tab === name} onClick={() => setTab(name)}>{titleCase(name)}</button>)}</div>
       {tab === 'placements' && <div class="placement-grid">{scene.bodies.map(b => <button key={b.body} aria-pressed={selection?.kind === 'body' && selection.body === b.body} onClick={() => select({ kind: 'body', body: b.body })}><span>{b.body}</span><strong>{formatLongitude(b.lon)}</strong><small>{b.house ? `House ${b.house}` : 'House unavailable'}{b.retrograde ? ' · retrograde' : ''}</small></button>)}</div>}
       {tab === 'aspects' && <div class="aspect-grid">{scene.aspects.map(a => <button key={entityId({ kind: 'aspect', ...a })} onClick={() => select({ kind: 'aspect', ...a })}><span>{a.a} {a.type} {a.b}</span><small>Orb {a.orb.toFixed(3)}° · {a.applying ? 'applying' : 'separating'}</small></button>)}</div>}
-      {tab === 'receipt' && <div class="receipt"><div><h2>Calculation record</h2><p>Inputs, conventions, versions, and results for the displayed chart. The downloaded record contains personal chart data.</p><button onClick={download}>Download chart record</button></div><details><summary>Inspect full JSON record</summary><pre tabIndex={0}>{recordText(run)}</pre></details>{comparison && <details><summary>Inspect comparison record</summary><pre tabIndex={0}>{recordText(comparison)}</pre></details>}</div>}
+      {tab === 'receipt' && <div class="receipt"><div><h2>Calculation record</h2><p>Inputs, conventions, versions, and results for the displayed chart. Downloaded and copied records contain personal chart data.</p><RecordExport key={recordText(run)} text={recordText(run)} /></div><details><summary>Inspect full JSON record</summary><pre tabIndex={0}>{recordText(run)}</pre></details>{comparison && <details><summary>Inspect comparison record</summary><pre tabIndex={0}>{recordText(comparison)}</pre></details>}</div>}
     </section>
     </>}
     <footer class="studio-footer"><a href="https://zodiacs.org/methodology/" target="_blank" rel="noreferrer">Calculation methods</a><p>Calculated in this browser. This panel does not save charts. Only reviewed selections are shared with the assistant. Interpretations are separate from these calculations.</p><a href="https://zodiacs.org/privacy/" target="_blank" rel="noreferrer">Privacy</a></footer>

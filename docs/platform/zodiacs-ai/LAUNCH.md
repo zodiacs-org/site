@@ -2,8 +2,12 @@
 
 ## Submission metadata — 2026-10-06
 
-Package 0.3.1 updates metadata only; the runtime and endpoints remain unchanged
-at 0.3.0. [SUBMISSION.md](./SUBMISSION.md) follows the current public-directory
+Package 0.3.2 retains the corrected submission metadata and adds local record
+copying when the embedded host blocks downloads or clipboard access. Runtime
+reports 0.3.0; bundle digests identify this UI revision. Endpoints are unchanged.
+The advertised Studio resource is v2 to avoid stale host HTML; v1 remains readable
+for hosts retaining the previous tool metadata.
+[SUBMISSION.md](./SUBMISSION.md) follows the current public-directory
 flow, distinguishes private app-reference ZIPs and the local Developer route,
 and records the missing current walkthrough, identity and portal scan evidence.
 Sky has exactly five positive/three negative cases and three starter prompts.
@@ -18,8 +22,16 @@ reviewed conversion and receipt provenance. A separate **Zodiacs Sky Watch
 Preview** has been created in ChatGPT, backed by its own Free Plan database and
 OAuth-protected test host. Hosted sign-in, refresh and immediate grant revocation
 pass with synthetic credentials; a bounded scheduled worker is active.
-The owner's account connection, actual ChatGPT event arrival and 0.3.0 native
-host checks remain pending. See [readiness criteria](./READINESS.md) and
+ChatGPT connected the existing synthetic preview account. Native Chart Studio
+rendering, house comparison, repeated-local-time review, time stepping, window
+worker completion, local record reproduction and explicit context attachment
+passed. Direct downloads were blocked by the host sandbox; local record copying
+is now verified in the actual host, including manual copying when clipboard
+access is denied. The full displayed JSON matches the copied record. Native
+cancellation remains unverified, and no native event subscription is exposed
+even after refreshing tools. Actual event arrival and full lifecycle acceptance
+remain pending. [Current native evidence](evidence/native-2026-10-06/README.md)
+also records the corrected private-preview deployment incident. See [readiness criteria](./READINESS.md) and
 [Sky Watch](./SKY_WATCH.md). This is preview infrastructure, not public activation.
 
 Version 0.3.0 packages Time Explorer, possible birth-time windows and local
@@ -37,8 +49,8 @@ company, website, support and legal links. That frozen preview also passed
 15 HTTPS checks and seven SDK calls. The earlier calendar connection retains
 its own deployment. Thread entrypoints, actual assistant sharing, saved-file
 download, beta feedback and publisher verification remain release checks.
-Production remains disabled. The new 0.3.0 host is separate; no 0.3.0 native
-ChatGPT workflow acceptance or public release is claimed.
+Production remains disabled. The new 0.3.0 host is separate; partial native
+acceptance above does not establish full lifecycle acceptance or public release.
 
 ## Recovery status — 2026-10-05
 

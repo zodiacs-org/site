@@ -1,0 +1,124 @@
+{
+  "schema": "zodiacs.native-review.v1",
+  "date": "2026-10-06",
+  "status": "partial-native-acceptance; unpublished",
+  "sourceBase": "6281191aeed2ec48bac5c568a310ccd8d68390b8",
+  "packageVersion": "0.3.2",
+  "runtimeVersion": "0.3.0",
+  "vendoredEngine": "0.1.1-rc.17",
+  "publishedRecipeEngine": "0.1.1-rc.16",
+  "preview": {
+    "project": "prj_3caSY4c2sKF7rsBxWfXEyASqBL9S",
+    "deployment": "dpl_Esk2afAcuHnag6HFqKztCJ1sc3RU",
+    "url": "https://zodiacs-sky-watch-test.vercel.app",
+    "appId": "asdk_app_6ac4aa125bd88191b2dd4a221788e2ab",
+    "resource": "ui://zodiacs/chart-studio-v2.html",
+    "legacyResourceRetained": "ui://zodiacs/chart-studio-v1.html",
+    "postDeploymentChecks": {
+      "protectedResourceMetadata": 200,
+      "accountConfig": 200,
+      "unauthenticatedWorker": 401,
+      "unauthenticatedMcp": 401
+    }
+  },
+  "packages": [
+    {
+      "name": "zodiacs-sky",
+      "version": "0.3.2",
+      "file": "zodiacs-sky-0.3.2.zip",
+      "bytes": 70562,
+      "sha256": "a91179f52ffda740d498974ab957ed64f00a3f8d531e9269c48166d1da40595c"
+    },
+    {
+      "name": "zodiacs-developer",
+      "version": "0.3.2",
+      "file": "zodiacs-developer-0.3.2.zip",
+      "bytes": 1659706,
+      "sha256": "81ddc9227ad15714cc1eda5e0bf43c17360922b7ead9b8dc40158763069a3c86"
+    }
+  ],
+  "bundles": [
+    {
+      "path": "integrations/generated/chart-studio.mjs",
+      "sha256": "8a7cc71a764916d4050bd4db02435138bb8be2023a3d21844b631af526e31c24",
+      "bytes": 948885
+    },
+    {
+      "path": "api/_ai/runtime.mjs",
+      "sha256": "8a93c4469bc46833c42d29e51cfd3b62f4a9aea7749270a976a3ea347ffcc669",
+      "bytes": 1497441
+    },
+    {
+      "path": "integrations/generated/sky-watch.mjs",
+      "sha256": "a0332ad31026434e9ab17e7b24b31321b23b9ff4ab56f2aac9cd0d2a027b37e1",
+      "bytes": 1501155
+    },
+    {
+      "path": "plugins/zodiacs-developer/mcp/server.mjs",
+      "sha256": "cec1a5bd9d6251b2d4a763ec6dad5d3b08575a477edae0aec4fa43049e8671cc",
+      "bytes": 1548029
+    }
+  ],
+  "native": {
+    "publicScenarios": {
+      "capabilitiesAndDatedSky": "observed successful answer; rc.17, 13:00 Bangkok, Sun Libra 8.08 degrees, Moon Gemini 7.48 degrees",
+      "boundedLunarCalendar": "rendered honest empty October 1-8 UTC window in America/New_York",
+      "ambiguousIngress": "preserved depends; crossing 2026-09-23T00:05:45.548Z",
+      "canonicalCalculator": "returned https://zodiacs.org/moon-sign/",
+      "chartStudio": "opened labeled synthetic example; latest refreshed v2 shows Copy chart record"
+    },
+    "negativeScenarios": {
+      "rescheduleMeeting": "asked for meeting and new time; no Zodiacs call or completion claim observed; did not explicitly explain the plugin has no calendar write access",
+      "stockPrediction": "refused horoscope-based stock prediction",
+      "relationshipGuarantee": "refused guarantee and distinguished astrology from outcome"
+    },
+    "studio": {
+      "houseComparison": "10 of 12 houses changed, planetary positions unchanged",
+      "localTimeReview": "New York 2026-11-01 01:30 repeated-clock warning; earlier occurrence 05:30Z applied",
+      "timeStep": "Later produced 06:30Z",
+      "worker": "4-interval and 321-interval windows completed",
+      "cancellation": "not verified in native host; calculation completed before cancellation could be clicked",
+      "recordReproduction": "Compared calculation fields reproduce",
+      "sharing": "no app context before explicit share; reviewed Sun selection produced Context 1 and Selection attached; context then removed",
+      "directDownload": "blocked by ChatGPT iframe sandbox without allow-downloads",
+      "automaticClipboard": "denied by host; text selected with honest fallback instructions",
+      "manualCopy": {
+        "matchesDisplayedRecord": true,
+        "characters": 5598,
+        "validJson": true,
+        "file": "native-copied-chart-record.json",
+        "sha256": "8060a8911e62dc6f03432af0ba56bf5b85b134a0846e9154c217dd076107b477"
+      }
+    },
+    "skyWatch": "Native event subscription still unavailable after corrected deployment and Refresh tools; no native watch or polling substitute created. Arrival/refresh/unsubscribe remain unverified.",
+    "profile": "Branded icon, Zodiacs LLC, website/privacy/terms and version 1.0.1 remain visible after Refresh tools."
+  },
+  "deploymentIncident": {
+    "failedDeployment": "dpl_6xx8Sh1i1uRNsqXmNdjmJUGRfu2G",
+    "cause": "Wrong general bundle copied into dedicated OAuth preview wrapper; required createWatchPreviewHandler export absent.",
+    "impact": "Private preview MCP returned 500; positive scenario 5 failed twice. No production change.",
+    "recovery": "Rolled test alias back, rebuilt with dedicated build-sky-watch-preview.mjs and added wrapper-export preflight; corrected preview checks and native open pass. Versioned resource v2 resolved cached old host HTML."
+  },
+  "validation": {
+    "aiUnitTests": 132,
+    "phase1EvidenceTests": 5,
+    "typecheck": {
+      "errors": 0,
+      "warnings": 0,
+      "hints": 39
+    },
+    "siteBuild": "passed",
+    "packageAndDrift": "passed",
+    "previousHeadBrowserEvidence": "6281191 all passed",
+    "previousHeadSiteCheck": "19 other jobs passed; main stopped only at oversized bio footer. The .zfooter__help fix reduces mobile footer to 399/399/422px at widths 390/412/320; existing maximum remains 460px.",
+    "newHeadCi": "must check the resulting commit"
+  },
+  "remaining": [
+    "native worker cancellation",
+    "native event subscription/arrival/refresh/stop",
+    "current reviewer-accessible walkthrough video",
+    "publisher approval and portal scans",
+    "consenting usefulness feedback or owner revision of proposed beta plan",
+    "final CI, capacity/cost review and owner-reserved release approval"
+  ]
+}

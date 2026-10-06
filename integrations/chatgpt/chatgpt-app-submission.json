@@ -119,7 +119,7 @@
       "user_prompt": "Open Chart Studio so I can compare house systems.",
       "file_attachment_urls": null,
       "tools_triggered": "open_chart_studio",
-      "expected_output": "Call with {}, render the labeled synthetic example, and calculate locally. Review a synthetic local date/time conversion, compare house systems, inspect and download its record, and share selected facts only after preview and explicit confirmation. Input changes and record imports must not automatically share data.",
+      "expected_output": "Call with {}, render the labeled synthetic example, and calculate locally. Review a synthetic local date/time conversion, compare house systems, inspect and download or locally copy its record, and share selected facts only after preview and explicit confirmation. Input changes and record imports must not automatically share data.",
       "expected_output_url": null
     }
   ],

@@ -12,14 +12,18 @@ company, support address and valid methods URL. The app ID is
 The description identifies the separate preview account, seven-day maximum
 watch lifetime, Disconnect control, retained authorization/delivery data and
 unverified ChatGPT arrival/timing. No publisher-verification badge, endorsement
-or public release is claimed. The profile still shows **Connect**; an owner
-account and native lifecycle acceptance are pending. The original Chart Studio
-profile and its deployment remain frozen.
+or public release is claimed. The profile now shows **Connected** to the existing
+synthetic preview account. Native lifecycle acceptance remains pending. The original Chart Studio
+profile and its deployment remain frozen. After the current tool refresh, the
+public profile still visibly retains its icon, Zodiacs LLC, website, privacy
+and terms links at metadata version 1.0.1; the separate development-app settings
+page uses its generic "App developer" label.
 
-Current portable metadata candidates are **0.3.1**, retaining the 0.3.0 runtime.
+Current portable metadata candidates are **0.3.2**, retaining the 0.3.0 runtime.
 Installed/enabled local packages are **0.3.0**; the already-open chat still
-reported 0.2.0 before reload. Package 0.3.1 adds onboarding and corrects Sky's
-three starter prompts, five/three review cases and release notes. It clears
+reported 0.2.0 before reload. Package 0.3.2 preserves onboarding, Sky's
+three starter prompts, five/three review cases and release notes, and includes
+local chart-record copying for embedded hosts that block downloads. It clears
 the historical walkthrough URL pending a current recording. Private app-reference
 ZIPs remain separate from public submission; see [SUBMISSION.md](./SUBMISSION.md).
 The installed Developer copy passes its nine-tool/record/privacy driver. Sky

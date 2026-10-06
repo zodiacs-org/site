@@ -12,8 +12,8 @@ submission, attestations, merge, publication or production activation.
 
 | Offering | Current package | Public-directory route |
 | --- | --- | --- |
-| Zodiacs Sky | `integrations/packages/zodiacs-sky-0.3.1.zip`; portable manifest, one remote MCP, one skill | First public candidate. Its configured stable URL is `https://zodiacs.org/mcp`, currently disabled pending release review. |
-| Zodiacs Developer | `integrations/packages/zodiacs-developer-0.3.1.zip`; nine local stdio tools and three skills | Local/private distribution remains supported. Public submission requires a remote HTTPS server or specific OpenAI support for local MCP distribution. Do not silently move personal chart calculations to a server. |
+| Zodiacs Sky | `integrations/packages/zodiacs-sky-0.3.2.zip`; portable manifest, one remote MCP, one skill | First public candidate. Its configured stable URL is `https://zodiacs.org/mcp`, currently disabled pending release review. |
+| Zodiacs Developer | `integrations/packages/zodiacs-developer-0.3.2.zip`; nine local stdio tools and three skills | Local/private distribution remains supported. Public submission requires a remote HTTPS server or specific OpenAI support for local MCP distribution. Do not silently move personal chart calculations to a server. |
 | Sky Watch and older custom profiles | Private ChatGPT app-reference ZIPs | Private testing only. ZIPs with `apps` / `.app.json` references or lifecycle hooks cannot currently be submitted. These are not public-release archives. |
 
 The [local-to-directory guidance](https://developers.openai.com/plugins/guides/submit-claude-plugin)
@@ -22,7 +22,9 @@ Do not strip Developer's MCP merely to pass a skills-only upload: an MCP cannot
 currently be added to an existing skills-only plugin. Any genuinely skills-only
 offering would need its own clear scope and owner decision.
 
-Package 0.3.1 changes metadata; runtime remains 0.3.0. The runtime's vendored
+Package 0.3.2 preserves the corrected metadata and adds local chart-record export
+recovery for embedded hosts. Runtime reports 0.3.0; bundle digests identify the UI revision. The v2 Studio
+resource avoids stale host HTML while v1 stays readable during tool refresh. The runtime's vendored
 engine is rc.17, not an npm release. External developer recipes use published
 rc.16. `integrations/packages/manifest.json` records current archive and member
 hashes. Old archives and dated evidence do not establish the current candidate's
@@ -96,7 +98,8 @@ Keep that account available for later reviews.
    attestations. Only one review can be active per plugin. Approval and public
    publication are separate steps; the owner chooses when to publish.
 
-Publisher verification was incomplete at the last portal inspection. No domain
+The owner completed identity submission and reported the application in review.
+Approval remains unverified; a daily read-only check is active. No domain
 challenge, public draft scan result, submission or directory approval is claimed
 by this document. Public URLs must be accessible and identify the same publisher
 when the final packet is reviewed.
@@ -132,7 +135,10 @@ rescan rather than filing a speculative appeal.
 
 ## Remaining release evidence
 
-- Current native ChatGPT desktop/mobile acceptance and walkthrough.
+- Complete the remaining native acceptance and current walkthrough.
+  [Observed host evidence](evidence/native-2026-10-06/README.md) now covers
+  public-sky routing, Studio interaction, explicit sharing and manual record
+  copying; native cancellation and event lifecycle remain unverified.
 - Publisher identity, stable enabled endpoint, domain proof and portal scans.
 - Exact final commit/CI, package hashes, privacy/support reachability, rollback
   and measured capacity/cost review.

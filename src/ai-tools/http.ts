@@ -1,7 +1,7 @@
 import { createMcpHandler } from '@modelcontextprotocol/server';
 import { COMPUTE_EVENTS_RATE_LIMIT_ID, COMPUTE_RATE_LIMIT_ID, type RateLimitVerdict } from '../lib/compute-api/constants';
 import { computeApiRateLimit } from '../lib/compute-api/handler';
-import { AI_TOOL_NAMES, STUDIO_URI, AI_ROUTE_PARAM, AI_SWITCH_ENV, AI_VERSION, MAX_HTTP_BYTES, ORIGIN } from './contracts';
+import { AI_TOOL_NAMES, STUDIO_URI, LEGACY_STUDIO_URI, AI_ROUTE_PARAM, AI_SWITCH_ENV, AI_VERSION, MAX_HTTP_BYTES, ORIGIN } from './contracts';
 import { createAiServer } from './server';
 import type { AiDependencies } from './tools';
 import { sanitizeProtocolMessage } from './sanitize';
@@ -152,7 +152,8 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
         // which may repeat unknown property names. Neither logs nor refusals quote inputs.
         const reply = await response.text();
         // Only the fixed, self-contained Studio resource has a larger response budget.
-        const studioResource = message.method === 'resources/read' && (message.params as { uri?: unknown })?.uri === STUDIO_URI;
+        const resourceUri = (message.params as { uri?: unknown })?.uri;
+        const studioResource = message.method === 'resources/read' && (resourceUri === STUDIO_URI || resourceUri === LEGACY_STUDIO_URI);
         if (Buffer.byteLength(reply) > (studioResource ? 2_100_000 : 262144)) throw new Error('output-budget');
         function sanitize(text: string) {
           return JSON.stringify(sanitizeProtocolMessage(JSON.parse(text)));
