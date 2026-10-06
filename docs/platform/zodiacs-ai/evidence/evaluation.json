@@ -1,0 +1,218 @@
+{
+  "schema": "zodiacs.ai-evaluation.v1",
+  "scope": "Local adapter with preselected tools and synthetic inputs; not LLM routing, host acceptance, accuracy-reference, load or production latency testing.",
+  "engine": "0.1.1-rc.16",
+  "cases": [
+    {
+      "id": "01",
+      "passed": true,
+      "tool": "get_capabilities"
+    },
+    {
+      "id": "02",
+      "passed": true,
+      "tool": "get_sky"
+    },
+    {
+      "id": "03",
+      "passed": true,
+      "tool": "get_sky"
+    },
+    {
+      "id": "04",
+      "passed": true,
+      "tool": "get_sky"
+    },
+    {
+      "id": "05",
+      "passed": true,
+      "tool": "get_sky"
+    },
+    {
+      "id": "06",
+      "passed": true,
+      "tool": "get_sky"
+    },
+    {
+      "id": "07",
+      "passed": true,
+      "tool": "get_sky"
+    },
+    {
+      "id": "08",
+      "passed": true,
+      "tool": "get_sky"
+    },
+    {
+      "id": "09",
+      "passed": true,
+      "tool": "get_sky"
+    },
+    {
+      "id": "10",
+      "passed": true,
+      "tool": "get_sky"
+    },
+    {
+      "id": "11",
+      "passed": true,
+      "tool": "get_upcoming_events"
+    },
+    {
+      "id": "12",
+      "passed": true,
+      "tool": "get_upcoming_events"
+    },
+    {
+      "id": "13",
+      "passed": true,
+      "tool": "get_upcoming_events"
+    },
+    {
+      "id": "14",
+      "passed": true,
+      "tool": "get_upcoming_events"
+    },
+    {
+      "id": "15",
+      "passed": true,
+      "tool": "get_upcoming_events"
+    },
+    {
+      "id": "16",
+      "passed": true,
+      "tool": "get_upcoming_events"
+    },
+    {
+      "id": "17",
+      "passed": true,
+      "tool": "get_upcoming_events"
+    },
+    {
+      "id": "18",
+      "passed": true,
+      "tool": "get_upcoming_events"
+    },
+    {
+      "id": "19",
+      "passed": true,
+      "tool": "get_upcoming_events"
+    },
+    {
+      "id": "20",
+      "passed": true,
+      "tool": "get_sky"
+    },
+    {
+      "id": "21",
+      "passed": true,
+      "tool": "check_sky_fact"
+    },
+    {
+      "id": "22",
+      "passed": true,
+      "tool": "check_sky_fact"
+    },
+    {
+      "id": "23",
+      "passed": true,
+      "tool": "check_sky_fact"
+    },
+    {
+      "id": "24",
+      "passed": true,
+      "tool": "check_sky_fact"
+    },
+    {
+      "id": "25",
+      "passed": true,
+      "tool": "check_sky_fact"
+    },
+    {
+      "id": "26",
+      "passed": true,
+      "tool": "check_sky_fact"
+    },
+    {
+      "id": "27",
+      "passed": true,
+      "tool": "check_sky_fact"
+    },
+    {
+      "id": "28",
+      "passed": true,
+      "tool": "check_sky_fact"
+    },
+    {
+      "id": "29",
+      "passed": true,
+      "tool": "check_sky_fact"
+    },
+    {
+      "id": "30",
+      "passed": true,
+      "tool": "check_sky_fact"
+    },
+    {
+      "id": "31",
+      "passed": true,
+      "tool": "search_zodiacs"
+    },
+    {
+      "id": "32",
+      "passed": true,
+      "tool": "search_zodiacs"
+    },
+    {
+      "id": "33",
+      "passed": true,
+      "tool": "search_zodiacs"
+    },
+    {
+      "id": "34",
+      "passed": true,
+      "tool": "search_zodiacs"
+    },
+    {
+      "id": "35",
+      "passed": true,
+      "tool": "get_sky"
+    },
+    {
+      "id": "36",
+      "passed": true,
+      "tool": "get_sky"
+    },
+    {
+      "id": "37",
+      "passed": true,
+      "tool": "get_sky"
+    },
+    {
+      "id": "38",
+      "passed": true,
+      "tool": "check_sky_fact"
+    },
+    {
+      "id": "39",
+      "passed": true,
+      "tool": "get_capabilities"
+    },
+    {
+      "id": "40",
+      "passed": true,
+      "tool": "check_sky_fact"
+    }
+  ],
+  "localMilliseconds": {
+    "median": 0.752207999999996,
+    "p95": 21.319957999999986
+  },
+  "unverified": [
+    "Actual ChatGPT and Codex host acceptance",
+    "Hosted cold/warm latency, cost and capacity",
+    "Hosting-layer retention",
+    "Consenting beta panel and repeat use",
+    "Public submission and approval"
+  ]
+}

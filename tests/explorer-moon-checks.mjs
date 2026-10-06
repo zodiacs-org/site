@@ -112,6 +112,14 @@ export async function runExplorerMoonChecks({ browser, baseURL, check, outDir })
       // stylesheet arrives. Loading its public CSS avoids starting a private
       // conversation merely to verify the layering of a floating button.
       const launcher = page.locator('[data-guide-launcher]');
+      const inlineGuide = page.locator('.calc__guide [data-assistant-open]');
+      const usesInlineGuide = width <= 900;
+      if (usesInlineGuide) {
+        await inlineGuide.focus();
+        check(`Moon ${width}: inline Guide replaces the floating launcher on mobile`,
+          await launcher.isHidden() && await inlineGuide.isVisible()
+          && await inlineGuide.evaluate((node) => document.activeElement === node));
+      }
       for (const guideStyles of width < 960 ? ['bootstrap', 'loaded drawer CSS'] : ['bootstrap']) {
         if (guideStyles === 'loaded drawer CSS') {
           const [response] = await Promise.all([
@@ -128,13 +136,7 @@ export async function runExplorerMoonChecks({ browser, baseURL, check, outDir })
         } else {
           check(`Moon ${width}: launcher begins with its bootstrap styles`, await page.locator('link[href*="/assets/assistant-drawer.css"]').count() === 0);
         }
-        if (width <= 900) {
-          check(`Moon mobile ${guideStyles}: inline Guide entry replaces the floating launcher`,
-            await page.locator('.calc__guide [data-assistant-open]').isVisible()
-            && await launcher.evaluate((node) => getComputedStyle(node).display === 'none'));
-        } else {
-          await launcher.waitFor({ state: 'visible', timeout: TIMEOUT });
-        }
+        await launcher.waitFor({ state: usesInlineGuide ? 'hidden' : 'visible', timeout: TIMEOUT });
         await page.locator('[data-tour-start]').click();
         await page.locator('[data-tour-card]').waitFor({ state: 'visible', timeout: TIMEOUT });
         if (width < 960) {
@@ -164,14 +166,11 @@ export async function runExplorerMoonChecks({ browser, baseURL, check, outDir })
           && namesIn(tourReceipt).length === 0 && !tourReceipt.includes('°'), tourReceipt);
         if (outDir && width < 960) await page.locator('[data-tour-card]').screenshot({ path: `${outDir}/moon-tour-guide-${guideStyles === 'bootstrap' ? 'bootstrap' : 'loaded'}-390.png`, animations: 'disabled' });
         await page.locator('[data-tour-exit]').click();
-        if (width <= 900) {
-          const inlineGuide = page.locator('.calc__guide [data-assistant-open]');
+        await launcher.waitFor({ state: usesInlineGuide ? 'hidden' : 'visible', timeout: TIMEOUT });
+        if (usesInlineGuide) {
           await inlineGuide.focus();
-          check(`Moon mobile ${guideStyles}: dismissal preserves the keyboard-accessible inline Guide`,
-            await inlineGuide.evaluate((node) => document.activeElement === node)
-            && await launcher.evaluate((node) => getComputedStyle(node).display === 'none'));
-        } else {
-          await launcher.waitFor({ state: 'visible', timeout: TIMEOUT });
+          check(`Moon mobile ${guideStyles}: dismissal keeps inline Guide keyboard-accessible without restoring a duplicate launcher`,
+            await launcher.isHidden() && await inlineGuide.evaluate((node) => document.activeElement === node));
         }
       }
 

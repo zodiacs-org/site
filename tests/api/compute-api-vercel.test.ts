@@ -72,6 +72,16 @@ describe('vercel.json for the compute API', () => {
     }
   });
 
+  it('serves the OpenAI domain proof as uncached plain text only on its exact path', () => {
+    const path = '/.well-known/openai-apps-challenge';
+    const headers = effectiveHeaders(config, path);
+    expect(headers.get('content-type')).toBe('text/plain; charset=utf-8');
+    expect(headers.get('cache-control')).toBe('no-store');
+    for (const other of ['/xwell-known/openai-apps-challenge', `${path}/extra`, '/mcp', ...COMPUTE_PATHS]) {
+      expect(matchingHeaderRules(config, other).some((rule: any) => rule.source === path), other).toBe(false);
+    }
+  });
+
   it('compiles each current source as the official Vercel route compiler does', () => {
     expect(recorded.headers.map((rule: any) => rule.source)).toEqual(config.headers.map((rule: any) => rule.source));
     for (const rule of recorded.headers) expect(sourceRegexSource(rule.source), rule.source).toBe(rule.src);

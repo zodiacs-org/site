@@ -1,0 +1,110 @@
+- link "Skip to content":
+  - /url: "#_r_4b_"
+- main:
+  - button "Show sidebar":
+  - heading "Zodiacs Staging Review" [level=1]
+  - heading [level=3]: Outputs
+  - button:
+  - button:
+    - generic: Create file or site
+- status
+- status
+- status: Response complete
+- button "Latest turn" [expanded]:
+  - generic: Latest turn
+- button "Worked for 15s":
+  - generic: Worked for 15s
+- heading "ChatGPT said:" [level=4]
+- paragraph:
+  - strong: No new or full Moons were returned
+  - text: by Zodiacs Staging Review for this window.
+- table:
+  - rowgroup:
+    - row "Sky calendar · America/New_York Time":
+      - columnheader "Sky calendar · America/New_York"
+      - columnheader "Time"
+  - rowgroup:
+    - row "Window starts September 30, 2026, 8:00 PM EDT":
+      - cell "Window starts"
+      - cell "September 30, 2026, 8:00 PM EDT"
+    - row "Window ends October 7, 2026, 8:00 PM EDT":
+      - cell "Window ends"
+      - cell "October 7, 2026, 8:00 PM EDT"
+    - row "🌑 New Moon No matching events":
+      - cell "🌑 New Moon"
+      - cell "No matching events"
+    - row "🌕 Full Moon No matching events":
+      - cell "🌕 Full Moon"
+      - cell "No matching events"
+- button "Copy table":
+- button "Expand table":
+- paragraph:
+  - text: The exact UTC bounds were
+  - strong: October 1, 00:00 → October 8, 00:00, 2026
+  - text: . The engine uses a
+  - strong: start-exclusive, end-inclusive
+  - text: window; search completeness is
+  - strong: tested, not proven
+  - text: .
+- paragraph: "Engine: @zodiacs/engine 0.1.1-rc.15, with astronomy-engine 2.1.19."
+- paragraph:
+  - link "Calculation methodology":
+    - /url: https://zodiacs.org/developers/compute/#events
+    - generic: Calculation methodology
+  - text: "· Receipt:"
+- generic: Plain text
+- button "Enable word wrap":
+- button "Copy":
+- code:
+  - generic: sha256:b624eddfc8c308181ccf9a25cd9532117d6ab0b32116d7d649d193fd629231b0
+- button "Copy":
+- button "Rate response":
+- button "Share":
+- button "Regenerate response":
+- textbox "Work with ChatGPT" [active]:
+  - paragraph: Work with ChatGPT
+- button "Add files and more":
+- button "Select ChatGPT model":
+  - generic: GPT-6.1 Sol
+  - generic: Light
+  - generic: None
+  - generic: Minimal
+  - generic: Light
+  - generic: Medium
+  - generic: High
+  - generic: Extra High
+  - generic: Max
+  - generic: Ultra
+  - generic: Persistent
+- button "Dictate":
+- button "Start Voice":
+- iframe:
+  - iframe [id="root"]:
+    - main:
+      - heading "Sky calendar" [level=1]
+      - status: 2026-10-01T00:00:00.000Z to 2026-10-08T00:00:00.000Z · Asia/Bangkok
+      - text: Start date (UTC)
+      - textbox "Start date (UTC)"
+      - text: End date (UTC, exclusive)
+      - textbox "End date (UTC, exclusive)"
+      - text: Display timezone
+      - textbox "Display timezone"
+      - button "Update calendar"
+      - paragraph: Windows are at most 31 days. Date controls use midnight UTC; the timezone changes the displayed event times.
+      - list:
+        - text: Moon enters cancer
+        - time: 03/10/2026, 02:54:06 GMT+7 · UTC 2026-10-02T19:54:06.451Z
+        - text: Venus stations retrograde
+        - time: 03/10/2026, 14:10:13 GMT+7 · UTC 2026-10-03T07:10:13.002Z
+        - text: Moon enters leo
+        - time: 05/10/2026, 05:54:12 GMT+7 · UTC 2026-10-04T22:54:12.636Z
+        - text: Moon enters virgo
+        - time: 07/10/2026, 09:52:37 GMT+7 · UTC 2026-10-07T02:52:37.139Z
+      - paragraph: "Tropical geocentric · Engine 0.1.1-rc.15. Supported searches: sign ingresses, stations, new and full Moons. Completeness is tested, not proven."
+      - navigation "Explore on Zodiacs":
+        - link "Explore the lunar calendar":
+          - /url: https://zodiacs.org/full-moon-calendar/
+        - link "Explore retrogrades":
+          - /url: https://zodiacs.org/retrogrades/
+        - link "How these calculations work":
+          - /url: https://zodiacs.org/developers/compute/

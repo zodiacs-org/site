@@ -1,0 +1,61 @@
+{
+  "schema": "zodiacs.studio-local-time-review.v1",
+  "recordedAt": "2026-10-06T08:52:47.493619+00:00",
+  "version": "0.3.0",
+  "engine": "0.1.1-rc.17 vendored candidate, not published npm",
+  "htmlBytes": 924260,
+  "checks": {
+    "aiUnitTests": 132,
+    "officialHttpStdioClients": "passed",
+    "publishedEngineRecipes": "passed",
+    "packageReproducibility": "passed",
+    "websiteBuild": "passed",
+    "typecheck": {
+      "errors": 0,
+      "warnings": 0,
+      "existingHints": 39
+    },
+    "fullRegression": {
+      "passed": 6898,
+      "skipped": 6,
+      "failed": 1,
+      "failure": "Unrelated i18n build-audit 15-second timeout",
+      "isolatedRecheck": {
+        "testsPassed": 11,
+        "timedOutCheckDurationMs": 4687
+      },
+      "cleanSingleSuiteRun": false
+    },
+    "browser": {
+      "driver": "Codex in-app browser via CUA",
+      "desktop": "passed",
+      "mobileViewport": 360,
+      "mobileDocumentWidth": 345,
+      "mobileScrollWidth": 345,
+      "newYorkGap": "2024-03-10 02:30 -> 07:30Z, 60-minute shift warning",
+      "newYorkFold": "2024-11-03 01:30 -> 05:30Z, earlier-occurrence warning",
+      "historicalSeconds": "1907-07-06 08:30 America/Mexico_City at bundled -99.13 longitude -> 15:06:31Z",
+      "opaqueOriginWithoutAllowForms": "Enter review and apply passed",
+      "hostSelections": {
+        "afterLocalTimeApply": 0,
+        "afterShareReview": 0,
+        "afterExplicitShare": 1
+      },
+      "observedConsoleErrors": 0
+    }
+  },
+  "nativeChatgptAcceptance": false,
+  "humanFeedbackCount": 0,
+  "phase1RenderSourceHash": "3696dfe16c388d2c42c206a32a670fff931ae64019edc68f43d4c6b4cad4eab8",
+  "hashes": {
+    "src/ai-tools/studio/local-time.ts": "42c04b4069563b7e9213feecbab29e71f57274139539f33cb05ddb0d0de90271",
+    "src/ai-tools/studio/local-time.test.ts": "687eb7be4d001c7c7d3be36136efc715afe8aa3ca09bd0bd2a00c048ef62c77c",
+    "src/ai-tools/studio/LocalTimeEntry.tsx": "83d06ffcf5cb2d5794d528fbba3364a54961e9048eb3cfc0449bd1a2c02f6e24",
+    "src/ai-tools/studio/model.ts": "981c1232994a7e17f9ba5cd11205a11b177ad2246433426a68ad3db772603369",
+    "src/ai-tools/studio/app.tsx": "fb7648553906f16c48148a8aabdf404e1073575aa39192944e498ea34cd7b32e",
+    "src/ai-tools/studio/explore.ts": "c6bc682702247ded35978085123916bcd4c71bb42b203655f64d012a05ff71bb",
+    "src/ai-tools/studio/style.css": "d1660e1481d4ebd844709ec80561b2a72e8a3d0ed384c66ce1f1c8beb4112771",
+    "scripts/build-chart-studio.mjs": "2aeba0f4334901f231a9b34413e4f2556ccdf13ac72dd390dfb8abcf7ddc63b4",
+    "integrations/generated/chart-studio.mjs": "14cf640995a38fa226aa2243e5d4d442f5ab467f2ce464aba23823f08fbba909"
+  }
+}

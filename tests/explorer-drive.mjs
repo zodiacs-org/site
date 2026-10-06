@@ -374,9 +374,10 @@ try {
           : !state.chipPresent
             && state.wingLinks === 0
             && (desktop || state.mobileRegistryVisible === false);
+        const desktopWidth = expectsDoor ? (prefix ? 992 : 884) : (prefix ? 854 : 746);
         const pass = state.navFits
           && door
-          && Math.abs(state.navWidth - (desktop ? (prefix ? 992 : 884) : state.viewportWidth)) <= 0.1
+          && Math.abs(state.navWidth - (desktop ? desktopWidth : state.viewportWidth)) <= 0.1
           && (desktop ? state.radius !== '0px' : state.radius === '0px')
           && state.burgerVisible === !desktop
           && state.linksVisible === desktop;
@@ -843,6 +844,9 @@ try {
       /(conjunction|sextile|square|trine|opposition)/i.test(t2 ?? '')
       && (await page.url()).includes('sel=aspect'), t2 ?? '');
     check('beginner inspector: aspect uses What / How / Where / Why', await hasBeginnerInspector(page));
+    // Contextual selection schedules focus on the next animation frame.
+    // Assert the resulting focus state after that bounded transition.
+    await page.waitForFunction(() => document.activeElement?.hasAttribute('data-inspector-heading'), null, { timeout: 3000 });
     check('beginner inspector: contextual navigation focuses the new heading',
       await page.evaluate(() => document.activeElement?.hasAttribute('data-inspector-heading') ?? false));
   }

@@ -1,0 +1,236 @@
+{
+  "schema": "zodiacs.plugin-main-integration-review.v1",
+  "checkedAt": "2026-10-06T09:42:59.165790+00:00",
+  "reviewedSource": "c4b04b34de537406a9bf060343fc86828a981193",
+  "integratedMain": "3f9d791c04173e0a3e1ed2373d5d5b684c74b669",
+  "renderSourceHash": "90f6d59bd778b5d2baadb08e0b60c63eda1cf1cbf4aae752bff0ddc496f04879",
+  "build": "passed locally and in CI",
+  "pluginReproducibility": "passed after integration",
+  "siteCheck": {
+    "run": "https://github.com/zodiacs-org/site/actions/runs/37440909448",
+    "jobsPassed": 19,
+    "failedJob": "Build & Check",
+    "reason": "Only stale Phase 1 source fingerprint; 6898 regression tests passed, six skipped",
+    "correction": "Imported all 18 fresh source-bound captures and receipt; all five evidence tests pass locally",
+    "exactFinalHeadCi": "pending"
+  },
+  "browserComparison": {
+    "run": "https://github.com/zodiacs-org/site/actions/runs/37440909453",
+    "head": "c4b04b34de537406a9bf060343fc86828a981193",
+    "outcomes": {
+      "checkout": "success",
+      "node": "success",
+      "request": "success",
+      "install": "success",
+      "browser": "success",
+      "build": "success",
+      "acceptance": "success",
+      "receipt": "success",
+      "visual": "failure",
+      "candidates": "skipped",
+      "lighthouse": "cancelled",
+      "explorer": "skipped"
+    },
+    "cancellation": "Stopped the already-failed comparison run during Lighthouse to retrieve review artifacts. Lighthouse and explorer are not claimed passed by this run.",
+    "review": "Inspected prior/current headers across all five routes and shared footer at desktop/mobile. Differences match main profile navigation and expanded Guide footer. Page content remained aligned; diagnostic content crops show zero differences above 25/channel outside home, with <=0.00000534 pixel ratio for home.",
+    "baselineAction": "Accepted the 15 reviewed actual comparison captures as new Linux baselines. No screenshot assertion, mask or tolerance was weakened. Darwin baselines are unchanged.",
+    "artifactHashVerification": "All imported files match recorded SHA-256 digests",
+    "comparisons": [
+      {
+        "case": "aries-desktop-reduced-motion",
+        "before": [
+          1440,
+          7049
+        ],
+        "after": [
+          1440,
+          7059
+        ],
+        "contentPixelRatioAbove25": 0.0
+      },
+      {
+        "case": "aries-desktop",
+        "before": [
+          1440,
+          7049
+        ],
+        "after": [
+          1440,
+          7059
+        ],
+        "contentPixelRatioAbove25": 0.0
+      },
+      {
+        "case": "aries-mobile",
+        "before": [
+          390,
+          10195
+        ],
+        "after": [
+          390,
+          10278
+        ],
+        "contentPixelRatioAbove25": 0.0
+      },
+      {
+        "case": "birth-chart-kahlo-desktop-reduced-motion",
+        "before": [
+          1440,
+          9690
+        ],
+        "after": [
+          1440,
+          9699
+        ],
+        "contentPixelRatioAbove25": 0.0
+      },
+      {
+        "case": "birth-chart-kahlo-desktop",
+        "before": [
+          1440,
+          9690
+        ],
+        "after": [
+          1440,
+          9699
+        ],
+        "contentPixelRatioAbove25": 0.0
+      },
+      {
+        "case": "birth-chart-kahlo-mobile",
+        "before": [
+          390,
+          14087
+        ],
+        "after": [
+          390,
+          14171
+        ],
+        "contentPixelRatioAbove25": 0.0
+      },
+      {
+        "case": "event-full-moon-desktop-reduced-motion",
+        "before": [
+          1440,
+          4744
+        ],
+        "after": [
+          1440,
+          4754
+        ],
+        "contentPixelRatioAbove25": 0.0
+      },
+      {
+        "case": "event-full-moon-desktop",
+        "before": [
+          1440,
+          4744
+        ],
+        "after": [
+          1440,
+          4754
+        ],
+        "contentPixelRatioAbove25": 0.0
+      },
+      {
+        "case": "event-full-moon-mobile",
+        "before": [
+          390,
+          6771
+        ],
+        "after": [
+          390,
+          6854
+        ],
+        "contentPixelRatioAbove25": 0.0
+      },
+      {
+        "case": "events-hub-desktop-reduced-motion",
+        "before": [
+          1440,
+          16780
+        ],
+        "after": [
+          1440,
+          16789
+        ],
+        "contentPixelRatioAbove25": 0.0
+      },
+      {
+        "case": "events-hub-desktop",
+        "before": [
+          1440,
+          16780
+        ],
+        "after": [
+          1440,
+          16789
+        ],
+        "contentPixelRatioAbove25": 0.0
+      },
+      {
+        "case": "events-hub-mobile",
+        "before": [
+          390,
+          20985
+        ],
+        "after": [
+          390,
+          21068
+        ],
+        "contentPixelRatioAbove25": 0.0
+      },
+      {
+        "case": "home-desktop-reduced-motion",
+        "before": [
+          1440,
+          7109
+        ],
+        "after": [
+          1440,
+          7118
+        ],
+        "contentPixelRatioAbove25": 1.82e-06
+      },
+      {
+        "case": "home-desktop",
+        "before": [
+          1440,
+          7109
+        ],
+        "after": [
+          1440,
+          7118
+        ],
+        "contentPixelRatioAbove25": 1.82e-06
+      },
+      {
+        "case": "home-mobile",
+        "before": [
+          390,
+          9098
+        ],
+        "after": [
+          390,
+          9182
+        ],
+        "contentPixelRatioAbove25": 5.34e-06
+      }
+    ]
+  },
+  "freshDatabase": {
+    "postgres": "17",
+    "migrationsPassed": 21,
+    "oauthAuthRoleLifecycle": "passed",
+    "sharedBootstrap": "Supabase-owned OAuth roles/tables provided to every migration suite"
+  },
+  "localInstallation": {
+    "method": "Codex CLI existing local marketplace update",
+    "sky": "0.3.0 installed/enabled; existing production URL retained, no endpoint activation",
+    "developer": "0.3.0 installed/enabled; pinned dependencies, nine tools, record comparison and privacy recovery verified",
+    "frozenChatgptStudio": "0.2.0 deployment unchanged"
+  },
+  "ownerAccountConnected": false,
+  "nativeWatchLifecycleVerified": false,
+  "humanFeedbackCount": 0
+}

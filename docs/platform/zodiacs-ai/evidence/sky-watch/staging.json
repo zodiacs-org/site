@@ -1,0 +1,111 @@
+{
+  "schema": "zodiacs.sky-watch-staging-review.v1",
+  "checkedAt": "2026-10-06T07:06:26.134559+00:00",
+  "status": "database-ready-alerts-disabled",
+  "organization": "Zodiacs.org",
+  "organizationId": "bpenqntjwuayagdnvaot",
+  "project": "Zodiacs Sky Watch Test",
+  "projectId": "vdunxhdbnosuqqsyicim",
+  "dashboard": "https://supabase.com/dashboard/project/vdunxhdbnosuqqsyicim",
+  "region": "ap-northeast-1",
+  "database": "PostgreSQL 17.11",
+  "databaseQuote": {
+    "currency": "USD",
+    "amount": 0,
+    "recurrence": "monthly",
+    "kind": "standalone project",
+    "confirmedByOwner": true,
+    "scope": "database project quote; not a guarantee of all future hosting or usage costs"
+  },
+  "checks": {
+    "transactionalSubscriptionLifecycle": "passed; rolled back",
+    "atomicQuota": "40 requests accepted, 41st blocked; rolled back",
+    "localPostgresLifecycleAfterCorrection": "passed",
+    "hostedRuntime": {
+      "checkedAt": "2026-10-06T07:03:20.644Z",
+      "projectId": "vdunxhdbnosuqqsyicim",
+      "runtime": "c7cdf05c846c31ceaafa65f899c882c7f9f24224",
+      "publicRpcDenied": 401,
+      "invalidBearerDenied": 401,
+      "revokedBearerDenied": 401,
+      "advertisedEvents": [
+        "zodiacs.sky.ingress",
+        "zodiacs.sky.station",
+        "zodiacs.sky.lunation"
+      ],
+      "advertisedTools": 6,
+      "firstTick": {
+        "windowsFilled": 2,
+        "delivered": 0,
+        "failed": 0,
+        "retried": 0
+      },
+      "secondTick": {
+        "windowsFilled": 0,
+        "delivered": 0,
+        "failed": 0,
+        "retried": 0
+      },
+      "localHttpWithHostedDatabase": true,
+      "externalCallbacksSent": 0,
+      "schedulerActivated": false,
+      "chatgptLifecycleVerified": false
+    },
+    "accessControl": "all five Sky Watch tables have RLS; anon/authenticated have no table or RPC access; service-only invoker RPC with fixed search_path",
+    "securityAdvisors": {
+      "errors": 0,
+      "warnings": 0,
+      "informational": {
+        "rls_enabled_no_policy": 5
+      },
+      "explanation": "Intentional default-deny tables in a private schema; only the trusted service role has access. No browser access policies should be added.",
+      "reference": "https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy"
+    },
+    "performanceAdvisors": {
+      "errors": 0,
+      "warnings": 0,
+      "informational": {
+        "unused_index": 4
+      },
+      "explanation": "New empty staging tables; indexes are retained for the worker lifecycle.",
+      "reference": "https://supabase.com/docs/guides/database/database-linter?lint=0005_unused_index"
+    }
+  },
+  "fix": {
+    "observed": "Data API ingestion refused with code 21000: UPDATE requires a WHERE clause",
+    "resolution": "Explicit WHERE singleton = true in a follow-up migration; retained safeupdate protection",
+    "verified": "Hosted worker filled two daily partitions; a second run filled zero and produced no duplicate records"
+  },
+  "remoteMigrations": [
+    {
+      "version": "20261006065709",
+      "name": "sky_watch_preview"
+    },
+    {
+      "version": "20261006065920",
+      "name": "zodiacs_mcp_atomic_quota"
+    },
+    {
+      "version": "20261006070316",
+      "name": "sky_watch_singleton_update"
+    }
+  ],
+  "finalState": {
+    "principals": 0,
+    "subscriptions": 0,
+    "outboxRows": 0,
+    "publicSkyEvents": 1,
+    "nextFrom": "2026-10-08T00:00:00+00:00"
+  },
+  "productionModified": false,
+  "publicEndpointDeployed": false,
+  "schedulerActivated": false,
+  "externalCallbacksSent": 0,
+  "chatgptLifecycleVerified": false,
+  "hashes": {
+    "supabase/migrations/20261002115707_zodiacs_mcp_atomic_quota.sql": "a9eca0d33ea63136eb55a6d228ace91b82bc1d30a0419ee001baf79fb686f6d6",
+    "supabase/migrations/20261006060504_sky_watch_preview.sql": "4b5561f2bdab858c8f43f1e2cf5866cc76b609b39fbdb6626bfa8a6c09c6b00d",
+    "supabase/migrations/20261006070234_sky_watch_singleton_update.sql": "a387be11f4fb4d2ee01cb6c411609810b5bbd6b17e154da3089a239378a34edb",
+    "integrations/generated/sky-watch.mjs": "c5f5dd6f28e09077aad6354c13f5cb875414b02b75bfdc4aea29fdc8e286b8c3"
+  }
+}
