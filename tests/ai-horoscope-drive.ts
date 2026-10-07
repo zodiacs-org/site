@@ -45,6 +45,13 @@ try {
   await page.getByRole('heading', { name: 'Leo' }).waitFor();
   const requests = await page.evaluate(() => (window as any).requests);
   assert.deepEqual(requests, [{ name: 'get_horoscope', args: { sign: 'leo', period: 'day', focus: 'general', zone: 'Asia/Bangkok' } }]);
+  // ChatGPT sends updates for resizes and may repeat the turn's first result; neither undoes the choice.
+  await page.evaluate((first) => {
+    window.dispatchEvent(new CustomEvent('openai:set_globals', { detail: { globals: { maxHeight: 640 } } }));
+    window.dispatchEvent(new CustomEvent('openai:set_globals', { detail: { globals: { toolOutput: first.structuredContent } } }));
+  }, picker);
+  await page.waitForTimeout(300);
+  assert.equal(await page.getByRole('heading', { name: 'Leo' }).count(), 1, 'A host update after the choice keeps Leo on screen');
   const text = await page.locator('article').innerText();
   assert.match(text, /times for Bangkok/);
   assert.doesNotMatch(text, /UTC|Asia\/Bangkok|\d{4}-\d{2}-\d{2}/, 'People see dates and places, not UTC, time-zone IDs or ISO dates');
@@ -61,17 +68,20 @@ try {
   const article = await page.locator('article').boundingBox();
   assert.ok(article && article.y < 812, 'On a phone the reading starts on the first screen');
   await page.screenshot({ path: new URL('horoscopes-mobile.png', out).pathname, fullPage: true });
-  // Reading text is rendered as text, never as markup.
+  // Reading text is rendered as text, never as markup (a fresh panel, as the host's first result).
   const injected = structuredClone(leo) as any;
   injected._meta['zodiacs/horoscope'].days.forEach((day: any) => { day.focuses.general.paragraphs = [{ text: '<img src=x onerror="window.pwned=1">' }]; });
-  await page.evaluate(result => {
-    (window as any).openai.toolOutput = result.structuredContent;
-    (window as any).openai.toolResponseMetadata = result._meta;
-    window.dispatchEvent(new CustomEvent('openai:set_globals', { detail: { globals: { toolOutput: result.structuredContent } } }));
+  const fresh = await context.newPage();
+  fresh.on('pageerror', error => errors.push(error.message));
+  fresh.on('request', request => { if (!request.url().startsWith('data:')) network++; });
+  await fresh.setContent(HOROSCOPES_HTML);
+  await fresh.evaluate(result => {
+    (window as any).openai = { toolOutput: result.structuredContent, toolResponseMetadata: result._meta };
+    window.dispatchEvent(new CustomEvent('openai:set_globals', { detail: { globals: { toolOutput: result.structuredContent, toolResponseMetadata: result._meta } } }));
   }, injected);
-  await page.locator('.prose p', { hasText: 'onerror' }).waitFor();
-  assert.equal(await page.locator('article img').count(), 0);
-  assert.equal(await page.evaluate(() => (window as any).pwned), undefined);
+  await fresh.locator('.prose p', { hasText: 'onerror' }).waitFor();
+  assert.equal(await fresh.locator('article img').count(), 0);
+  assert.equal(await fresh.evaluate(() => (window as any).pwned), undefined);
   assert.equal(network, 0); assert.deepEqual(errors, []);
 
   // Chart Studio opens on the person's own birth details; the example is a labelled second choice.
@@ -91,6 +101,6 @@ try {
   await studio.getByRole('button', { name: 'See an example chart (not yours)' }).click();
   assert.match(await studio.locator('.chart-meta').innerText(), /Example chart \(not yours\)/);
   assert.deepEqual(studioErrors, []);
-  await writeFile(new URL('horoscopes-review.json', out), JSON.stringify({ scope: 'Local Chromium render with synthetic host bridges; not ChatGPT or Claude host acceptance', timezone: 'Asia/Bangkok', window: window.editions.map(edition => edition.anchorDate), passed: ['sign picker', 'sign choice through the OpenAI bridge', 'plain dates and places', 'focus and week switching', 'why this reading', '375px phone: no sideways scroll, reading on the first screen', 'text injection', 'no external requests', 'Chart Studio opens on birth details', 'unknown birth time path', 'labelled example chart'], errors: [...errors, ...studioErrors] }, null, 2) + '\n');
+  await writeFile(new URL('horoscopes-review.json', out), JSON.stringify({ scope: 'Local Chromium render with synthetic host bridges; not ChatGPT or Claude host acceptance', timezone: 'Asia/Bangkok', window: window.editions.map(edition => edition.anchorDate), passed: ['sign picker', 'sign choice through the OpenAI bridge', 'host updates after a choice keep it','plain dates and places', 'focus and week switching', 'why this reading', '375px phone: no sideways scroll, reading on the first screen', 'text injection', 'no external requests', 'Chart Studio opens on birth details', 'unknown birth time path', 'labelled example chart'], errors: [...errors, ...studioErrors] }, null, 2) + '\n');
   console.log('Horoscope and Chart Studio browser QA passed.');
 } finally { await browser.close(); }

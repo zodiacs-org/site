@@ -9,6 +9,7 @@
   "passed": [
     "sign picker",
     "sign choice through the OpenAI bridge",
+    "host updates after a choice keep it",
     "plain dates and places",
     "focus and week switching",
     "why this reading",

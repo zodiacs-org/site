@@ -73,6 +73,10 @@ function App() {
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState('');
   const [theme, setTheme] = useState('');
+  // Once the person has chosen something here, a host repeating the turn's result must not undo it.
+  const touched = useRef(false);
+  const pick = (value: boolean) => { touched.current = true; setPicking(value); };
+  const show = (next: View) => { touched.current = true; setView(next); };
 
   function accept(result: PanelToolResult) {
     const data = result._meta?.[PANEL_KEY] as HoroscopePanelData | undefined;
@@ -90,7 +94,7 @@ function App() {
   }
 
   useEffect(() => {
-    const link = new HoroscopeBridge(accept, (value) => setTheme(value === 'dark' || value === 'light' ? value : ''));
+    const link = new HoroscopeBridge((result) => { if (!touched.current) accept(result); }, (value) => setTheme(value === 'dark' || value === 'light' ? value : ''));
     bridge.current = link;
     link.connect();
     return () => link.dispose();
@@ -102,6 +106,7 @@ function App() {
   async function choose(slug: string) {
     const name = signInfo(slug)?.name ?? slug;
     if (!bridge.current?.canCall()) { setMessage(`Ask in the chat for another sign, for example “Show the ${name} horoscope”.`); return; }
+    touched.current = true;
     setBusy(true); setMessage('');
     try {
       const period = panel?.requested.period ?? 'day';
@@ -125,7 +130,7 @@ function App() {
       </button>)}</nav>
       {busy && <p role="status" class="quiet">Opening the reading…</p>}
       {message && <p role="alert" class="notice">{message}</p>}
-      {panel && <button class="text" onClick={() => setPicking(false)}>Back to {panel.signName}</button>}
+      {panel && <button class="text" onClick={() => pick(false)}>Back to {panel.signName}</button>}
     </main>;
   }
 
@@ -155,14 +160,14 @@ function App() {
     <header class="sign-head">
       <img src={HOROSCOPE_ICONS[panel.sign]} alt="" width="56" height="56"/>
       <div><p class="eyebrow">Your horoscope</p><h1>{panel.signName}</h1><p class="quiet">{signInfo(panel.sign)?.dates}</p></div>
-      <button class="text" onClick={() => setPicking(true)}>Change sign</button>
+      <button class="text" onClick={() => pick(true)}>Change sign</button>
     </header>
     <div class="chips" role="group" aria-label="Day or week">
-      {dayChoices.map((date) => <button key={date} aria-pressed={current.mode === 'day' && current.date === date} onClick={() => setView({ mode: 'day', date, focus: current.mode === 'day' ? current.focus : 'general' })}>{dayLabel(date)}</button>)}
-      <button aria-pressed={current.mode === 'week'} onClick={() => setView({ mode: 'week' })}>This week</button>
+      {dayChoices.map((date) => <button key={date} aria-pressed={current.mode === 'day' && current.date === date} onClick={() => show({ mode: 'day', date, focus: current.mode === 'day' ? current.focus : 'general' })}>{dayLabel(date)}</button>)}
+      <button aria-pressed={current.mode === 'week'} onClick={() => show({ mode: 'week' })}>This week</button>
     </div>
     {current.mode === 'day' && <div class="chips focus" role="group" aria-label="Focus">
-      {FOCUSES.map((focus) => <button key={focus} aria-pressed={current.focus === focus} onClick={() => setView({ ...current, focus })}>{FOCUS_LABEL[focus]}</button>)}
+      {FOCUSES.map((focus) => <button key={focus} aria-pressed={current.focus === focus} onClick={() => show({ ...current, focus })}>{FOCUS_LABEL[focus]}</button>)}
     </div>}
     <article aria-live="polite">
       {reading && reading.status === 'available'

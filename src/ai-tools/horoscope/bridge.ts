@@ -37,13 +37,18 @@ export class HoroscopeBridge {
     if (message.error) request.reject(new Error('The assistant could not open that reading.'));
     else request.resolve(message.result);
   };
-  private globals = () => {
+  // On connect, read everything; after that, act only on what an update says changed.
+  // ChatGPT sends updates for resizes and theme changes too, and replaying the
+  // turn's first result then would undo a sign the person picked here.
+  private globals = (event?: Event) => {
     const host = openai();
     if (!host) return;
-    if (host.toolOutput !== undefined || host.toolResponseMetadata !== undefined) {
+    const changed = event ? (event as CustomEvent<{ globals?: OpenAiGlobals }>).detail?.globals : host;
+    if (!changed) return;
+    if (changed.toolOutput !== undefined || changed.toolResponseMetadata !== undefined) {
       this.onResult({ structuredContent: host.toolOutput, _meta: host.toolResponseMetadata });
     }
-    if (host.theme) this.onTheme(host.theme);
+    if (changed.theme) this.onTheme(changed.theme);
   };
 
   constructor(private onResult: (result: PanelToolResult) => void, private onTheme: (theme: unknown) => void) {}
