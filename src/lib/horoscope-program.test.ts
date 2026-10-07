@@ -181,6 +181,89 @@ describe('horoscope program domain', () => {
     ))).toEqual([]);
   });
 
+  it('sequences only the later sign when four career readings would share a lead sentence', () => {
+    // The sky of 2027-05-09: with Mercury in Gemini, Saturn in Aries, Mars in
+    // Leo, and the Sun in Taurus, four career leads would each open four signs'
+    // readings, one more than the copy verifier allows for an exact sentence.
+    const collision = clone(input);
+    const today = collision.dailySnapshots.find(({ date }) => date === collision.anchorDate)!;
+    const place = (name: string, sign: string) => {
+      const placed = today.bodies.find(({ body }) => body === name)!;
+      placed.sign = sign;
+      placed.retrograde = false;
+      placed.lon = SIGN_SLUGS.indexOf(sign) * 30 + placed.degree;
+    };
+    place('Sun', 'taurus');
+    place('Mercury', 'gemini');
+    place('Saturn', 'aries');
+    place('Mars', 'leo');
+
+    const program = buildHoroscopeProgram(collision);
+    const career = (sign: string) => program.signs.find((entry) => entry.sign === sign)!.readings.career;
+    expect(SIGN_SLUGS.filter((sign) => career(sign).text.includes('Tighten the brief, message, or nearby exchange.')))
+      .toEqual(['aries', 'gemini', 'aquarius']);
+    // Pisces was the fourth sign for two leads. Only the opening words change:
+    // the advice and the cited facts stay.
+    expect(career('pisces').text).toContain('First, repair the workflow before asking effort alone to solve it.');
+    expect(career('pisces').text).toContain('Next, tighten the brief, message, or nearby exchange.');
+    expect(career('pisces').text).toContain('Mars brings daily work, health routines, and responsibilities into the work picture.');
+    const cited = new Set(career('pisces').passages.flatMap((item) => item.evidenceRefs));
+    expect(program.evidence
+      .filter((receipt) => cited.has(receipt.id))
+      .map((receipt) => [receipt.kind, receipt.body, receipt.sunSign ?? '-', receipt.house ?? '-'].join(':'))
+      .sort()).toEqual([
+      'body-position:Mars:-:-',
+      'body-position:Sun:-:-',
+      'solar-house:Mars:pisces:6',
+      'solar-house:Sun:pisces:3',
+    ]);
+    // Sequencing Virgo also returns Sagittarius's lead to three signs, so only
+    // two readings change.
+    expect(program.signs
+      .filter((entry) => entry.readings.career.text.startsWith('First, '))
+      .map((entry) => entry.sign)).toEqual(['virgo', 'pisces']);
+
+    expect(validateHoroscopeProgramAgainstInput(collision, program)).toEqual([]);
+    expect(verifyHoroscopeProgramCopy(program).filter(({ ruleId, path }) => (
+      ruleId === 'COPY-DIST-SENTENCE-REUSE' || path.includes('.readings.career')
+    ))).toEqual([]);
+  });
+
+  it('sequences only the later sign when four today readings would share a decision sentence', () => {
+    // The sky of 2028-09-05: Mercury in Libra, Venus in Cancer, Mars in Leo,
+    // and retrograde Saturn in Taurus put four signs' secondary bodies in each
+    // of the third, seventh, and eleventh solar houses.
+    const collision = clone(input);
+    const today = collision.dailySnapshots.find(({ date }) => date === collision.anchorDate)!;
+    const place = (name: string, sign: string, retrograde: boolean) => {
+      const placed = today.bodies.find(({ body }) => body === name)!;
+      placed.sign = sign;
+      placed.retrograde = retrograde;
+      placed.lon = SIGN_SLUGS.indexOf(sign) * 30 + placed.degree;
+    };
+    place('Mercury', 'libra', false);
+    place('Venus', 'cancer', false);
+    place('Mars', 'leo', false);
+    place('Saturn', 'taurus', true);
+
+    const program = buildHoroscopeProgram(collision);
+    const reading = (sign: string) => program.signs.find((entry) => entry.sign === sign)!.readings.today;
+    const decision = 'State the term that is still vague and give the other person a real chance to answer it.';
+    expect(SIGN_SLUGS.filter((sign) => reading(sign).text.includes(decision)))
+      .toEqual(['aries', 'scorpio', 'capricorn']);
+    expect(reading('aquarius').passages[1].text).toMatch(
+      /^Next, state the term that is still vague and give the other person a real chance to answer it\. .*Mars in Leo/u,
+    );
+    expect(program.signs
+      .filter((entry) => entry.readings.today.passages[1].text.startsWith('Next, '))
+      .map((entry) => entry.sign)).toEqual(['sagittarius', 'aquarius', 'pisces']);
+
+    expect(validateHoroscopeProgramAgainstInput(collision, program)).toEqual([]);
+    expect(verifyHoroscopeProgramCopy(program).filter(({ ruleId, path }) => (
+      ruleId === 'COPY-DIST-SENTENCE-REUSE' || /\.readings\.today(?:\.|$)/u.test(path)
+    ))).toEqual([]);
+  });
+
   it('links every publishable passage to serializable source or derived evidence', () => {
     const program = buildHoroscopeProgram(input);
     const evidence = new Map(program.evidence.map((receipt) => [receipt.id, receipt]));
