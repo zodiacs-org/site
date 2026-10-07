@@ -6369,11 +6369,11 @@ var OUTPUT_SCHEMAS = {
 };
 var TOOL_DESCRIPTIONS = {
   open_chart_studio: "Opens Chart Studio, an interactive birth chart the person fills in themselves: birth date, place, and time if they know it. Call it with no arguments and do not ask for birth details first. The chart is calculated inside the panel; you see only the parts the person chooses to share.",
-  get_capabilities: "Lists what Zodiacs can do, its limits and how it handles privacy. Use it only when you need those details before choosing another tool. No sign-in or birth details needed.",
+  get_capabilities: "Lists what Zodiacs can do, its limits and how it handles privacy. Use it when the person asks what Zodiacs can do, or when you need those details before choosing another tool; it is not needed to turn down a request Zodiacs does not handle. No sign-in or birth details needed.",
   get_sky: "Shows where the Sun, Moon and planets are right now, or at a moment the person names, with the Moon's phase. Pass the person's time zone if you know it so times read on their clock. Astronomy only; it makes no personal prediction.",
   get_upcoming_events: "Shows what changes in the sky over the coming days or weeks: planets changing sign, turning retrograde or direct, and new and full Moons, for up to 92 days. Supply from and to, and the person's time zone. With no arguments it opens the calendar for the next seven days. It does not list eclipses or every aspect.",
   check_sky_fact: "Checks a claim such as 'Is Mercury retrograde today?' or 'Did the Sun enter Libra on 23 September?' and answers yes, no, or that it depends on the time zone when the answer changes during that day. Use instant or date for sign and retrograde checks, date for ingress and Moon-phase checks. Astronomy only; it cannot check predictions.",
-  get_horoscope: "Shows a Sun-sign horoscope, general, love or career for today or general for this week, written for the person's own date. Leave out the sign to let them choose; never guess it. Pass their time zone if you know it. Share the reading as written, keep its dates, and present it as reflection, not a personal birth-chart forecast."
+  get_horoscope: "Shows a Sun-sign horoscope, general, love or career for today or general for this week, written for the person's own date. Use it when the person asks for a horoscope or reading, not to answer a request for certainty about a relationship, money or health. Leave out the sign to let them choose; never guess it. Pass their time zone if you know it. Share the reading as written, keep its dates, and present it as reflection, not a personal birth-chart forecast."
 };
 
 // src/ai-tools/server.ts
@@ -8315,7 +8315,7 @@ function registerSkyWatch(server, watch, owner) {
 }
 
 // src/ai-tools/server.ts
-var INSTRUCTIONS = "Zodiacs calculates the sky and publishes dated Sun-sign horoscopes. Answer in plain words first. Keep calculated facts separate from what they mean in astrology, and say when an answer depends on the time zone. Mention calculation details such as versions, receipts or UTC only if the person asks how something was calculated. Never guess a birth time or a sign.";
+var INSTRUCTIONS = "Zodiacs calculates the sky and publishes dated Sun-sign horoscopes. Answer in plain words first. Keep calculated facts separate from what they mean in astrology, and say when an answer depends on the time zone. Mention calculation details such as versions, receipts or UTC only if the person asks how something was calculated. Never guess a birth time or a sign. Zodiacs does not schedule anything, pick investments, or promise how a relationship, health or money will turn out; do not call its tools for those requests, and say plainly that it cannot.";
 var PANELS = {
   get_upcoming_events: { uri: WIDGET_URI, icon: "sky-calendar" },
   open_chart_studio: { uri: STUDIO_URI, icon: "chart-studio" },

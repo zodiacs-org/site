@@ -8,7 +8,7 @@ import { registerSkyWatch, type SkyWatch } from './watch/service';
 import type { Principal } from './watch/contracts';
 import { WATCH_SCOPES } from './watch/oauth';
 
-const INSTRUCTIONS = 'Zodiacs calculates the sky and publishes dated Sun-sign horoscopes. Answer in plain words first. Keep calculated facts separate from what they mean in astrology, and say when an answer depends on the time zone. Mention calculation details such as versions, receipts or UTC only if the person asks how something was calculated. Never guess a birth time or a sign.';
+const INSTRUCTIONS = 'Zodiacs calculates the sky and publishes dated Sun-sign horoscopes. Answer in plain words first. Keep calculated facts separate from what they mean in astrology, and say when an answer depends on the time zone. Mention calculation details such as versions, receipts or UTC only if the person asks how something was calculated. Never guess a birth time or a sign. Zodiacs does not schedule anything, pick investments, or promise how a relationship, health or money will turn out; do not call its tools for those requests, and say plainly that it cannot.';
 
 const PANELS: Partial<Record<AiToolName, { uri: string; icon: string }>> = {
   get_upcoming_events: { uri: WIDGET_URI, icon: 'sky-calendar' },
