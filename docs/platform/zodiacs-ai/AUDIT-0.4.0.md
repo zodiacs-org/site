@@ -20,6 +20,14 @@ The live site, ChatGPT and Claude checks below all pass. The iPhone is
 still untested; it can only be tested after approval. The earlier decisions
 are kept below for the record.
 
+**Submitted (about 12:15 UTC):** with the owner's explicit yes, the 0.4.0
+package from #685 (the release-notes fix) was uploaded to the existing
+identity. The portal then showed no metadata, skill or MCP-scan issues, after
+a rescan that found the six 0.4.0 tools. The owner confirmed the six portal
+statements, and 0.4.0 was submitted. The portal shows “0.4.0 · In review”.
+During review, keep `/mcp` and its tool schemas unchanged, and check that the
+nightly job keeps the horoscope window current.
+
 ## Live checks after the merge — 7 October 2026, 11:36–11:50 UTC
 
 - **Server.** `zodiacs.org/mcp` reports 0.4.0 with the new instructions and
