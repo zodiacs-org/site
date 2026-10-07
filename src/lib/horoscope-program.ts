@@ -938,6 +938,8 @@ function padReading(
  * `alternate` frames the same facts, house advice, and evidence in different
  * sentences. buildHoroscopeProgram asks for it only through
  * separateSimilarDailyReadings, never for an edition that is already distinct.
+ * `sequenced` opens today's house decision with "Next," and is asked for only
+ * through limitSentenceReuse.
  */
 function dailySurface(
   surface: 'today' | 'tomorrow',
@@ -945,6 +947,7 @@ function dailySurface(
   daily: Daily,
   catalog: EvidenceCatalog,
   alternate = false,
+  sequenced = false,
 ): HoroscopeReading {
   const profile = SIGN_REGISTER[sign];
   const moon = body(daily, 'Moon');
@@ -953,13 +956,16 @@ function dailySurface(
   const secondary = body(daily, secondaryName);
   const moonHouse = solarHouse(moon.sign, sign);
   const secondaryHouse = solarHouse(secondary.sign, sign);
+  const houseDecision = sequenced
+    ? `Next, ${uncap(HOUSE_DECISION[secondaryHouse])}`
+    : HOUSE_DECISION[secondaryHouse];
   const dayWord = surface === 'today' ? 'Today' : 'Tomorrow';
   const exact = daily.events[0] as HoroscopeProgramEvent | undefined;
   const period = { from: daily.date, through: daily.date };
   const title = `${cap(sign)} horoscope for ${surface === 'today' ? dateLabel(daily.date) : `tomorrow, ${dateLabel(daily.date)}`}`;
   if (alternate) {
     return reading(surface, sign, period, title, alternateDailyPassages(
-      surface, sign, daily, catalog, { moon, secondary, moonHouse, secondaryHouse, exact },
+      surface, sign, daily, catalog, { moon, secondary, moonHouse, secondaryHouse, houseDecision, exact },
     ));
   }
   const tomorrowOpening = exact
@@ -972,7 +978,7 @@ function dailySurface(
           catalog.position(daily, moon, sign),
         ),
         passage(
-          `${HOUSE_DECISION[secondaryHouse]} In this reading, ${secondary.body}${secondary.retrograde ? ' retrograde' : ''} in ${cap(secondary.sign)} brings attention to ${HOUSE_THEME[secondaryHouse]}.`,
+          `${houseDecision} In this reading, ${secondary.body}${secondary.retrograde ? ' retrograde' : ''} in ${cap(secondary.sign)} brings attention to ${HOUSE_THEME[secondaryHouse]}.`,
           catalog.position(daily, secondary, sign),
         ),
       ]
@@ -1017,10 +1023,11 @@ function alternateDailyPassages(
     secondary: DailyBody;
     moonHouse: number;
     secondaryHouse: number;
+    houseDecision: string;
     exact: HoroscopeProgramEvent | undefined;
   },
 ): HoroscopePassage[] {
-  const { moon, secondary, moonHouse, secondaryHouse, exact } = facts;
+  const { moon, secondary, moonHouse, secondaryHouse, houseDecision, exact } = facts;
   const profile = SIGN_REGISTER[sign];
   const phase = moonPhaseLabel(daily.moon.phase);
   const placement = `${secondary.body}${secondary.retrograde ? ' retrograde' : ''} in ${cap(secondary.sign)}`;
@@ -1034,7 +1041,7 @@ function alternateDailyPassages(
           catalog.position(daily, moon, sign),
         ),
         passage(
-          `${HOUSE_DECISION[secondaryHouse]} ${placement} keeps ${HOUSE_THEME[secondaryHouse]} in view through the day.`,
+          `${houseDecision} ${placement} keeps ${HOUSE_THEME[secondaryHouse]} in view through the day.`,
           catalog.position(daily, secondary, sign),
         ),
       ]
@@ -1077,23 +1084,76 @@ function alternateDailyPassages(
  * too similar to an earlier sign's (canonical order), re-render it with the
  * alternate frames: the facts, advice, and evidence stay the same. Editions
  * that are already distinct stay byte-identical, and a pair the alternate
- * cannot separate is left for the validator to refuse.
+ * cannot separate is left for the validator to refuse. Returns the signs that
+ * now use the alternate frames.
  */
 function separateSimilarDailyReadings(
   surface: 'today' | 'tomorrow',
   signs: HoroscopeSignProgram[],
   daily: Daily,
   catalog: EvidenceCatalog,
-): void {
+): Set<HoroscopeSign> {
   const limit = HOROSCOPE_DISTINCTNESS_LIMITS[surface];
+  const reframed = new Set<HoroscopeSign>();
   signs.forEach((entry, index) => {
     const tooSimilar = (candidate: HoroscopeReading): boolean => signs.slice(0, index).some((earlier) => (
       horoscopeShingleJaccard(earlier.readings[surface].text, candidate.text, 3) > limit
     ));
     if (!tooSimilar(entry.readings[surface])) return;
     const alternate = dailySurface(surface, entry.sign, daily, catalog, true);
-    if (!tooSimilar(alternate)) entry.readings[surface] = alternate;
+    if (tooSimilar(alternate)) return;
+    entry.readings[surface] = alternate;
+    reframed.add(entry.sign);
   });
+  return reframed;
+}
+
+// The independent copy verifier lets one exact sentence of six or more words
+// appear for at most three signs in an edition (COPY-DIST-SENTENCE-REUSE).
+const MAX_EXACT_SENTENCE_SIGNS = 3;
+const MIN_COUNTED_SENTENCE_WORDS = 6;
+
+/** Normalized sentences the verifier counts, split the way it splits them. */
+function countedSentences(item: HoroscopeReading): string[] {
+  if (item.status !== 'publishable') return [];
+  return item.text.split(/(?<=[.!?])\s+/u)
+    .filter((sentence) => horoscopeWordCount(sentence) >= MIN_COUNTED_SENTENCE_WORDS)
+    .map((sentence) => tokens(sentence).join(' '));
+}
+
+/**
+ * Some house advice is a single table sentence that several signs can receive
+ * on the same day. Career leads come from three primary bodies plus the Sun,
+ * so one action can open four career readings: from 9 May 2027, "Tighten the
+ * brief, message, or nearby exchange." would do so and block publication.
+ * Today's house decision is shared the same way by the four secondary bodies
+ * (5 September 2028). When three earlier signs (canonical order) already use a
+ * sentence, re-render the reading that repeats it with the sequenced frames:
+ * the advice, facts, and evidence stay the same. Editions that already pass
+ * stay byte-identical, and a reading the sequenced frames cannot fix is left
+ * for the validators to refuse.
+ */
+function limitSentenceReuse(
+  signs: HoroscopeSignProgram[],
+  sequenced: Partial<Record<HoroscopeSurface, (sign: HoroscopeSign) => HoroscopeReading>>,
+): void {
+  const earlierSigns = new Map<string, Set<HoroscopeSign>>();
+  for (const entry of signs) {
+    const overused = (candidate: HoroscopeReading): boolean => countedSentences(candidate).some((sentence) => (
+      (earlierSigns.get(sentence)?.size ?? 0) >= MAX_EXACT_SENTENCE_SIGNS
+    ));
+    for (const surface of SURFACES) {
+      const render = sequenced[surface];
+      if (!render || !overused(entry.readings[surface])) continue;
+      const alternate = render(entry.sign);
+      if (!overused(alternate)) entry.readings[surface] = alternate;
+    }
+    for (const surface of SURFACES) {
+      for (const sentence of countedSentences(entry.readings[surface])) {
+        earlierSigns.set(sentence, (earlierSigns.get(sentence) ?? new Set<HoroscopeSign>()).add(entry.sign));
+      }
+    }
+  }
 }
 
 function loveSurface(sign: HoroscopeSign, daily: Daily, catalog: EvidenceCatalog): HoroscopeReading {
@@ -1116,18 +1176,30 @@ function loveSurface(sign: HoroscopeSign, daily: Daily, catalog: EvidenceCatalog
   ]);
 }
 
-function careerSurface(sign: HoroscopeSign, daily: Daily, catalog: EvidenceCatalog): HoroscopeReading {
+/**
+ * `sequenced` opens the same two actions with "First," and "Next,".
+ * buildHoroscopeProgram asks for it only through limitSentenceReuse.
+ */
+function careerSurface(
+  sign: HoroscopeSign,
+  daily: Daily,
+  catalog: EvidenceCatalog,
+  sequenced = false,
+): HoroscopeReading {
   const signIndex = SIGN_SLUGS.indexOf(sign);
   const primary = body(daily, ['Mercury', 'Saturn', 'Mars'][signIndex % 3]);
   const sun = body(daily, 'Sun');
   const primaryHouse = solarHouse(primary.sign, sign);
   const sunHouse = solarHouse(sun.sign, sign);
+  const primaryLead = sequenced
+    ? `First, ${CAREER_ACTION[primaryHouse]}.`
+    : `${cap(CAREER_ACTION[primaryHouse])}.`;
   const sunLead = sunHouse === primaryHouse
     ? `Keep ${HOUSE_SECTION[sunHouse]} anchored to one observable result.`
-    : `${cap(CAREER_ACTION[sunHouse])}.`;
+    : sequenced ? `Next, ${CAREER_ACTION[sunHouse]}.` : `${cap(CAREER_ACTION[sunHouse])}.`;
   return reading('career', sign, { from: daily.date, through: daily.date }, `${cap(sign)} career horoscope for ${dateLabel(daily.date)}`, [
     passage(
-      `${cap(CAREER_ACTION[primaryHouse])}. For ${cap(sign)}, ${SIGN_REGISTER[sign].career}. ${primary.body}${primary.retrograde ? ' retrograde' : ''} brings ${HOUSE_THEME[primaryHouse]} into the work picture.`,
+      `${primaryLead} For ${cap(sign)}, ${SIGN_REGISTER[sign].career}. ${primary.body}${primary.retrograde ? ' retrograde' : ''} brings ${HOUSE_THEME[primaryHouse]} into the work picture.`,
       catalog.position(daily, primary, sign),
     ),
     passage(
@@ -1546,8 +1618,14 @@ export function buildHoroscopeProgram(input: BuildHoroscopeProgramInput): Horosc
       },
     };
   });
-  if (today) separateSimilarDailyReadings('today', signs, today, catalog);
+  const reframedToday = today ? separateSimilarDailyReadings('today', signs, today, catalog) : new Set<HoroscopeSign>();
   if (tomorrow) separateSimilarDailyReadings('tomorrow', signs, tomorrow, catalog);
+  if (today) {
+    limitSentenceReuse(signs, {
+      today: (sign) => dailySurface('today', sign, today, catalog, reframedToday.has(sign), true),
+      career: (sign) => careerSurface(sign, today, catalog, true),
+    });
+  }
 
   return {
     schema: HOROSCOPE_PROGRAM_SCHEMA,

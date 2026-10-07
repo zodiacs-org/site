@@ -107,9 +107,18 @@ function addDays(date: string, amount: number): string {
 }
 
 describe('computed daily horoscope editions', () => {
-  // Before the alternate frames, Gemini and Virgo's tomorrow readings in these
-  // editions measured 0.402 against the 0.4 limit and blocked publication.
-  it.each(['2026-10-08', '2026-10-10'])('passes both validators for the %s edition', async (anchorDate) => {
+  // Each of these editions once blocked publication.
+  it.each([
+    // Gemini and Virgo's tomorrow readings measured 0.402 against the 0.4 limit.
+    '2026-10-08',
+    '2026-10-10',
+    // Four signs' career readings opened with the same sentence.
+    '2027-05-09',
+    '2028-10-24',
+    '2028-12-10',
+    // Four signs' today readings shared one house decision sentence.
+    '2028-09-05',
+  ])('passes both validators for the %s edition', async (anchorDate) => {
     const isoDay = new Date(`${anchorDate}T00:00:00.000Z`).getUTCDay() || 7;
     const dates = [...new Set([
       anchorDate,
