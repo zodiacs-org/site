@@ -56,36 +56,43 @@ decision.
    says to contact support to request approval for a new name. Vercel's
    shareable link answers with a 307 cookie redirect that Claude's connector
    does not keep.
-4. **The documented route for clients that send only a URL** is Vercel's
+4. **Vercel's query-parameter bypass is outside the owner's boundary.**
    [Protection Bypass for Automation](https://vercel.com/docs/deployment-protection/methods-to-bypass-deployment-protection/protection-bypass-automation)
-   as a query parameter: `…/mcp?x-vercel-protection-bypass=<secret>`. Vercel
-   documents it for third-party services that cannot set headers, and the
-   secret travels on every request without a redirect.
-   - **Server side, done here (commit `1dd7d698`).** `/mcp` refused that
-     parameter with 400 even after Vercel accepted it; I observed this on
-     `zodiacs.org/mcp`. It now tolerates the parameter on preview deployments
-     only, never reads, echoes or logs it, and still refuses it in production.
-     Tests cover both cases.
-   - **Owner side, not done.** A bypass secret works on every deployment of
-     the project until it is revoked, so it is wider than a one-preview
-     temporary link. Creating, sharing and revoking it is the owner's
-     decision. It is a security setting, made in the Vercel dashboard. The
-     owner pastes the full URL only into the ChatGPT and Claude connector
-     forms, never into a chat, commit or evidence file, and revokes it when
-     testing ends.
+   can travel in the URL for clients that cannot send headers. Its secret,
+   however, opens every deployment of the project until it is revoked, which
+   is wider than the approved temporary access to one preview. It is not used.
+   The handler change made for it (`1dd7d698`) is reverted (`8213ef7c`), so
+   `/mcp` again refuses every unknown query key.
+5. **Any protected preview needs a credential that expires within a day.**
+   Even if support repoints the old identity at a share-link URL, it will
+   expire again, so that route buys one test session at a time.
 
-### What has to happen before the host tests
+### The route that stays inside the boundaries
 
-- Redeploy staging from `1dd7d698` or later with Codex's bounded-preview
-  procedure, keeping the deployment-only switch, staging host and quota
-  credential.
-- Before testing on 8 October or later, merge main into the branch and rebuild
-  `src/data/horoscope-window.json`. The committed window covers 6–8 October
-  only.
-- Then run the case matrix on ChatGPT web, through a new temporary connection
-  or a repaired identity, and on Claude. Mobile waits until after approval.
-- Record the eight-case walkthrough from ChatGPT web, then set
-  `demo_recording_url` and rebuild the packages.
+1. **The owner** asks OpenAI support to point the private Zodiacs Preview
+   identity at `https://zodiacs.org/mcp`. That address is public, stable and
+   needs no credential, so the connection stops expiring. Keep this separate
+   from case 16624967.
+2. **The owner** decides about the 0.3.4 review: wait for its decision, or
+   cancel it. 0.4.0 supersedes it, and its listing still carries the old
+   catalogue tool and "Lifestyle" copy. Nothing changes while it is under
+   review.
+3. **Once 0.3.4 is out of review, and with the owner's explicit yes**, merge
+   #681 so that `/mcp` serves 0.4.0. Then run the real tests against
+   production:
+   - ChatGPT web through the repointed Preview identity;
+   - Claude through a no-sign-in custom connector to `https://zodiacs.org/mcp`.
+     It accepts claude.ai origins and needs no header approval.
+4. Record the eight-case walkthrough on ChatGPT web, set
+   `demo_recording_url` and rebuild the packages. Claude then audits the
+   results.
+5. The owner decides whether to submit 0.4.0. The iPhone check follows
+   approval, because developer-mode apps are web only.
+
+This route needs no secret, no change to deployment protection, no new
+ChatGPT identity and no header approval. Its cost is that real-host testing
+starts after 0.4.0 is live but before it is submitted. The release has passed
+staging protocol checks, so a rollback is a reviewed revert of #681.
 
 ### Case status after this update
 
