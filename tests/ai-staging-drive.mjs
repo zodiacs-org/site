@@ -4,6 +4,10 @@ import { createHash } from 'node:crypto';
 import { readFile, writeFile } from 'node:fs/promises';
 import { Client, StreamableHTTPClientTransport } from '@modelcontextprotocol/client';
 import { STUDIO_HTML } from '../integrations/generated/chart-studio.mjs';
+import { HOROSCOPES_HTML } from '../integrations/generated/horoscopes.mjs';
+
+const packageInfo = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'));
+const expectedEngine = packageInfo.dependencies['@zodiacs/engine'].match(/zodiacs-engine-(.+)\.tgz$/)[1];
 
 const url = new URL(process.env.ZODIACS_STAGING_MCP_URL);
 assert.equal(url.protocol, 'https:');
@@ -19,7 +23,7 @@ const cookies = jar.split('\n').filter(line => line && (!line.startsWith('#') ||
 assert.ok(cookies);
 const headers = { Cookie: cookies };
 const client = new Client({ name: 'zodiacs-staging-review', version: '1' });
-const evidence = { schema: 'zodiacs.ai-staging-acceptance.v2', capturedAt: new Date().toISOString(), url: url.href, transport: 'official SDK 2.0.0', checks: [], calls: [] };
+const evidence = { schema: 'zodiacs.ai-staging-acceptance.v2', capturedAt: new Date().toISOString(), url: url.href, transport: `official MCP client ${packageInfo.devDependencies['@modelcontextprotocol/client']}`, expectedEngine, checks: [], calls: [] };
 const record = (name, detail = {}) => evidence.checks.push({ name, passed: true, ...detail });
 const request = async (path, options = {}) => fetch(new URL(path, url), { ...options, headers: { ...headers, ...options.headers }, redirect: 'manual' });
 try {
@@ -59,13 +63,20 @@ try {
     if (name === 'open_chart_studio') assert.deepEqual(result.structuredContent.data, {
       title: 'Chart Studio', calculation: 'browser-local', initialChart: 'birth-details', sharing: 'user-reviewed-selection-only',
     });
-    if (name === 'get_sky') assert.equal(result.structuredContent.data.calculation.cite.version, '0.1.1-rc.16');
+    if (name === 'get_sky') assert.equal(result.structuredContent.data.calculation.cite.version, expectedEngine);
     evidence.calls.push({ name, arguments: args, elapsedMs: Math.round(performance.now() - start), result: result.structuredContent });
   }
   record('all six tools, native empty-argument launches and bounded lunation window');
   const resource = await client.readResource({ uri: 'ui://zodiacs/sky-events-v1.html' });
   assert.equal(resource.contents[0].mimeType, 'text/html;profile=mcp-app');
   record('native calendar resource');
+  const horoscopes = (await client.readResource({ uri: 'ui://zodiacs/horoscopes-v1.html' })).contents[0];
+  assert.equal(horoscopes.mimeType, 'text/html;profile=mcp-app');
+  assert.equal(horoscopes.text, HOROSCOPES_HTML);
+  assert.deepEqual(horoscopes._meta.ui.csp, { connectDomains: [], resourceDomains: [] });
+  record('native horoscope resource matches the self-contained bundle', {
+    bytes: Buffer.byteLength(horoscopes.text), sha256: createHash('sha256').update(horoscopes.text).digest('hex'),
+  });
   const studio = (await client.readResource({ uri: 'ui://zodiacs/chart-studio-v2.html' })).contents[0];
   assert.equal(studio.mimeType, 'text/html;profile=mcp-app');
   assert.equal(studio.text, STUDIO_HTML);
