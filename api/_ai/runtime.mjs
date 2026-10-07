@@ -8414,7 +8414,6 @@ async function reserveAiQuota(kind, env, fetcher = fetch) {
 var ALLOWED_ORIGINS = /* @__PURE__ */ new Set(["https://chatgpt.com", "https://chat.openai.com", "https://claude.ai", "https://claude.com", ORIGIN]);
 var SECURITY_HEADERS = { "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff", "X-Robots-Tag": "noindex" };
 var handledPreviewRequests = 0;
-var PREVIEW_BYPASS_PARAM = "x-vercel-protection-bypass";
 var REFUSALS = {
   "rate-limited": "Zodiacs is busy. Try again in a minute.",
   "rate-limit-unavailable": "Zodiacs is busy. Try again in a few minutes.",
@@ -8485,10 +8484,9 @@ function createAiNodeHandler(options = {}) {
       } catch {
         return send(res, 400, "invalid-query");
       }
-      const known = (key) => key === AI_ROUTE_PARAM || env.VERCEL_ENV === "preview" && key === PREVIEW_BYPASS_PARAM;
-      if ([...rawQuery.keys()].some((key) => !known(key)) || rawQuery.getAll(AI_ROUTE_PARAM).length > 1 || rawQuery.getAll(PREVIEW_BYPASS_PARAM).length > 1) return send(res, 400, "invalid-query");
+      if ([...rawQuery.keys()].some((key) => key !== AI_ROUTE_PARAM) || rawQuery.getAll(AI_ROUTE_PARAM).length > 1) return send(res, 400, "invalid-query");
       const query = req.query ?? Object.fromEntries(rawQuery);
-      if (Object.keys(query).some((key) => !known(key)) || query[AI_ROUTE_PARAM] !== void 0 && !["1", "health"].includes(query[AI_ROUTE_PARAM])) return send(res, 400, "invalid-query");
+      if (Object.keys(query).some((key) => key !== AI_ROUTE_PARAM) || query[AI_ROUTE_PARAM] !== void 0 && !["1", "health"].includes(query[AI_ROUTE_PARAM])) return send(res, 400, "invalid-query");
       if (method !== "POST" && !(method === "GET" && query[AI_ROUTE_PARAM] === "health")) {
         res.setHeader("Allow", "POST, OPTIONS");
         return send(res, 405, "method-not-allowed");
