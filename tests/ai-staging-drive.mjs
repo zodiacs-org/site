@@ -48,15 +48,16 @@ try {
     ['get_upcoming_events', {}],
     ['get_upcoming_events', { from: '2026-10-01T00:00:00Z', to: '2026-10-08T00:00:00Z', zone: 'America/New_York', kinds: ['lunation'] }],
     ['check_sky_fact', { kind: 'ingress', body: 'Sun', sign: 'libra', date: '2026-09-23' }],
-    ['search_zodiacs', { query: 'Moon sign' }],
+    ['get_horoscope', { sign: 'leo', zone: 'Asia/Bangkok' }],
   ];
   for (const [name, args] of calls) {
     const start = performance.now();
     const result = await client.callTool({ name, arguments: args });
     assert.equal(result.isError, false); assert.equal(result.structuredContent.ok, true);
-    if (name === 'get_capabilities') assert.equal(result.structuredContent.data.version, '0.2.0');
+    if (name === 'get_capabilities') assert.equal(result.structuredContent.data.version, '0.4.0');
+    if (name === 'get_horoscope') assert.equal(result.structuredContent.data.status, 'available');
     if (name === 'open_chart_studio') assert.deepEqual(result.structuredContent.data, {
-      title: 'Chart Studio', calculation: 'browser-local', initialChart: 'synthetic-example', sharing: 'user-reviewed-selection-only',
+      title: 'Chart Studio', calculation: 'browser-local', initialChart: 'birth-details', sharing: 'user-reviewed-selection-only',
     });
     if (name === 'get_sky') assert.equal(result.structuredContent.data.calculation.cite.version, '0.1.1-rc.16');
     evidence.calls.push({ name, arguments: args, elapsedMs: Math.round(performance.now() - start), result: result.structuredContent });

@@ -66,7 +66,8 @@ try {
   const discovery = await call('server/discover');
   assert.equal(discovery.status, 200); assert.deepEqual(discovery.message.result.capabilities.events, {});
   assert.equal((await call('events/list')).message.result.events.length, 3);
-  assert.equal((await call('tools/list')).message.result.tools.length, 6);
+  // Five public-sky tools: the preview host has no horoscope window, and catalogue search is retired.
+  assert.equal((await call('tools/list')).message.result.tools.length, 5);
   const created = await call('events/subscribe', params);
   assert.equal(created.message.error, undefined, JSON.stringify(created.message));
   const id = created.message.result.id;
