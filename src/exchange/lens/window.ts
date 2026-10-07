@@ -1,6 +1,6 @@
 import type { SetupPlan, SkyEvent } from './types';
 import { eventVEVENT, foldICSLine, icsDate, icsText } from './events';
-import { resolveLocalToUtc } from '../../lib/time/localToUtc';
+import { localInstant } from './sessions';
 
 export type WindowItemKind = 'economic' | 'personal' | 'sky';
 export interface TradeWindowItem {
@@ -85,19 +85,21 @@ export function tickLabel(ms: number, timeZone: string, unit: 'day' | 'month'): 
 export const coversWindow = (item: TradeWindowItem, start: number, end: number): boolean => item.at === null && item.from <= start && item.to >= end;
 
 /**
- * Resolve a datetime-local value typed in the display zone. A planned trade
- * entry is a present-day civil time, not a birthplace, so no longitude applies.
+ * Resolve a datetime-local value typed in the display zone with the Desk's
+ * session-time helper. A planned entry is a present-day market time, so the
+ * zone's current rules apply; a time skipped by a clock change is refused,
+ * and a repeated one resolves to its earlier instant.
  */
 export function plannedEntry(value: string, timeZone: string): { at?: string; note?: string; error?: string } {
   if (!value) return {};
-  const [date, time = ''] = value.split('T');
-  try {
-    const resolved = resolveLocalToUtc(date, time.slice(0, 5), timeZone);
-    const at = resolved.utc.toISOString();
-    if (resolved.flags.includes('dst-gap')) return { at, note: `That local time is skipped by a clock change; the plan uses ${formatMinute(resolved.utc.getTime(), timeZone)}.` };
-    if (resolved.flags.includes('dst-fold')) return { at, note: 'That local time happens twice because of a clock change; the plan uses the earlier one.' };
-    return { at };
-  } catch { return { error: 'Enter the planned entry as a date and time.' }; }
+  const match = /^(\d{4}-\d{2}-\d{2})T([01]\d|2[0-3]):([0-5]\d)$/.exec(value.slice(0, 16));
+  let at: number;
+  try { if (!match) throw new Error('format'); at = localInstant(match[1], Number(match[2]), Number(match[3]), timeZone) * 1000; }
+  catch (reason) { return { error: match && reason instanceof Error && reason.message.startsWith('Ambiguous or nonexistent') ? 'That local time is skipped by a clock change in this zone. Choose another time.' : 'Enter the planned entry as a date and time.' }; }
+  const wall = value.slice(0, 16);
+  for (const shift of [3_600_000, 1_800_000]) if (wallTimeInput(at - shift, timeZone) === wall) { at -= shift; break; }
+  const repeated = [3_600_000, 1_800_000].some(shift => wallTimeInput(at + shift, timeZone) === wall);
+  return { at: new Date(at).toISOString(), ...(repeated ? { note: 'That local time happens twice because of a clock change; the plan uses the earlier one.' } : {}) };
 }
 
 /** Wall-clock value for an <input type="datetime-local"> in the display zone. */

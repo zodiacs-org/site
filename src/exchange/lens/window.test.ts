@@ -84,13 +84,20 @@ describe('time display and input', () => {
     expect(long).toEqual({ unit: 'month', ticks: [Date.parse('2026-11-01T00:00:00.000Z')] });
   });
 
-  it('resolves a planned entry typed in the display zone through the shared resolver', () => {
+  it('resolves a planned entry typed in the display zone with the session-time helper', () => {
     expect(plannedEntry('', 'Asia/Bangkok')).toEqual({});
     expect(plannedEntry('2026-10-13T09:30', 'Asia/Bangkok')).toEqual({ at: '2026-10-13T02:30:00.000Z' });
     expect(wallTimeInput(Date.parse('2026-10-13T02:30:00.000Z'), 'Asia/Bangkok')).toBe('2026-10-13T09:30');
-    expect(plannedEntry('2026-03-08T02:30', 'America/New_York').note).toContain('skipped by a clock change');
-    expect(plannedEntry('2026-11-01T01:30', 'America/New_York')).toMatchObject({ at: '2026-11-01T05:30:00.000Z' });
-    expect(plannedEntry('2026-11-01T01:30', 'America/New_York').note).toContain('happens twice');
+    expect(plannedEntry('2026-10-13T05:45', 'Asia/Kathmandu')).toEqual({ at: '2026-10-13T00:00:00.000Z' });
+    expect(plannedEntry('2026-03-08T02:30', 'America/New_York').error).toContain('skipped by a clock change');
+    expect(plannedEntry('2026-10-04T02:15', 'Australia/Lord_Howe').error).toContain('skipped by a clock change');
+    const repeated = plannedEntry('2026-11-01T01:30', 'America/New_York');
+    expect(repeated.at).toBe('2026-11-01T05:30:00.000Z');
+    expect(repeated.note).toContain('happens twice');
+    const halfHour = plannedEntry('2027-04-04T01:45', 'Australia/Lord_Howe');
+    expect(halfHour.at).toBe('2027-04-03T14:45:00.000Z');
+    expect(halfHour.note).toContain('happens twice');
     expect(plannedEntry('2026-13-40T25:00', 'UTC').error).toContain('date and time');
+    expect(plannedEntry('2026-02-30T10:00', 'UTC').error).toContain('date and time');
   });
 });

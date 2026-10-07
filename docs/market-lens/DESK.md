@@ -19,9 +19,12 @@ database, `zodiacs-market-lens-*` preference keys, `MARKET_LENS_*` settings,
 
 **Trade window.** Setup & risk and the Session brief show the plan's holding
 window. It opens at the planned entry (new and optional, typed in the display
-time zone and resolved with the shared `resolveLocalToUtc`, which reports
-skipped and repeated clock-change times) or when the plan was first saved, and
-closes at the end of the horizon.
+time zone) or when the plan was first saved, and closes at the end of the
+horizon. The planned entry is resolved with the Desk's Intl-based session-time
+helper, `localInstant` in `sessions.ts`: a time skipped by a clock change is
+refused and a repeated time uses its earlier instant. A planned entry is a
+present-day market time, not a birthplace, and this keeps `src/lib/` unchanged,
+so the Phase 1 capture receipt still matches its template sources.
 
 - One strip marks official releases as tall labelled marks, sky events as short
   marks and personal transit windows as bands with their exact contacts.
@@ -114,6 +117,14 @@ the machine:
 Site Check now runs that drive and the existing cross-asset drive against the
 built site; their screenshots are uploaded with the browser evidence. The real
 build, full suite, Astro check and bundle gate are verified there, not here.
+
+**Integration with main.** Main moved four commits past the integrated base
+`8e0b849e`. Both sides regenerated `docs/acceptance/phase1/screenshots/`, so the
+pull request reports a conflict and GitHub skips its `pull_request` checks until
+main is integrated again. Integration needs the 18 Phase 1 captures refreshed
+for the merged sources with the supported drive (`npm run test:phase1:acceptance`
+after a build, or the Browser Evidence workflow), which this session could not
+run. Until then, Site Check runs on the branch head by manual dispatch.
 The protected preview still serves application `54fd2609` without these
 changes. No preview was redeployed, no protection changed, and prices remain
 disabled.
