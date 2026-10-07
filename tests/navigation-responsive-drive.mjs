@@ -59,7 +59,7 @@ await withPreview({ port: 8794 }, async (baseURL) => {
           if (!compact && test.desktop === 920) {
             // Cross-page geometry: older wing pages must use the same tracks,
             // not merely fit inside a similarly sized pill.
-            for (const [suffix, offset] of [['__mark', 21], ['__links', 155], ['__profile-shortcut', 611], ['__search', 673], ['__chip', 753]]) {
+            for (const [suffix, offset] of [['__mark', 21], ['__links', 155], ['__profile-shortcut', 643], ['__search', 691], ['__chip', 753]]) {
               const control = geometry.controls.find(item => item.className.includes(suffix));
               assert(control && Math.abs(control.left - geometry.left - offset) < 0.5, `${test.path}: ${suffix} position differs`);
             }
@@ -136,6 +136,11 @@ await withPreview({ port: 8794 }, async (baseURL) => {
             if (await search.isVisible()) {
               const searchBox = await search.boundingBox();
               assert(profileBox.x + profileBox.width <= searchBox.x + 0.5, 'Profile precedes search');
+              if (!compact) {
+                assert.equal(searchBox.width, 44, 'Desktop search retains a full click target');
+                assert(Math.abs(searchBox.x - profileBox.x - profileBox.width - 4) < 0.5, 'Desktop profile and search are grouped with a 4px gap');
+                assert.equal(await search.locator('kbd').isVisible(), false, 'Search is an icon without the shortcut badge');
+              }
               assert(Math.abs((profileBox.y + profileBox.height / 2) - (searchBox.y + searchBox.height / 2)) < 1, 'Profile and search share a baseline');
             }
           }

@@ -156,7 +156,7 @@
     .wnav__search { display: inline-grid; place-items: center; flex: 0 0 44px; width: 44px; height: 44px; padding: 0; }
   }
   .wnav__search-kbd { display: none; font-family: var(--mono, 'JetBrains Mono', monospace); font-size: 10px; line-height: 1; padding: 3px 5px; border: 1px solid rgba(198,204,218,0.16); border-radius: 4px; color: var(--ink-mute, #8A93A6); }
-  @media (min-width: 920px) { .wnav__search-kbd { display: inline-block; } }
+
   .wnav__profile-shortcut { display: inline-grid; width: 44px; height: 44px; place-items: center; color: var(--ink-2, #C6CCDA); border-radius: 50%; }
   .wnav__avatar { display: inline-grid; place-items: center; box-sizing: border-box; width: 28px; height: 28px; overflow: hidden; border-radius: 50%; background: var(--sign, #C6CCDA); color: #060709; font-family: var(--wing-serif); font-size: 16px; font-weight: 500; line-height: 1; }
   .wnav__avatar[hidden], .has-avatar > .wnav__profile-icon { display: none; }
@@ -225,11 +225,11 @@
   @keyframes wnav-turn { to { transform: rotate(360deg); } }
   @media (prefers-reduced-motion: reduce) { .wnav-tools, .wnav-signs, .wnav__burger, .wnav__dropdown-btn svg, .wnav__burger-line { transition: none; } .wnav__mark:hover .wnav__brand { animation: none; } }
   @media (min-width: 920px) {
-    .wnav { display: grid; width: 884px; grid-template-areas: 'mark links profile search chip'; grid-template-columns: 116px minmax(0, 1fr) 44px 62px 120px; gap: 18px; }
+    .wnav { display: grid; width: 884px; grid-template-areas: 'mark links profile search chip'; grid-template-columns: 116px minmax(0, 1fr) 30px 44px 120px; gap: 18px; }
     .wnav__mark { grid-area: mark; min-width: 0; }
     .wnav__links { grid-area: links; min-width: 0; grid-template-columns: 74px 74px 64px 62px minmax(0, 1fr); }
     .wnav__profile-shortcut { grid-area: profile; }
-    .wnav__search { grid-area: search; box-sizing: border-box; width: 62px; height: 44px; }
+    .wnav__search { grid-area: search; display: inline-grid; place-items: center; box-sizing: border-box; width: 44px; height: 44px; padding: 0; }
     .wnav__chip { grid-area: chip; box-sizing: border-box; min-width: 0; }
     .wnav__dropdown-btn { justify-content: space-between; }
   }
