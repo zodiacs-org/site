@@ -148,10 +148,7 @@
     "check:site:live": "node scripts/check-site.mjs",
     "i18n:parity:r0": "node scripts/check-i18n-r0-parity.mjs",
     "i18n:parity:r2": "node scripts/check-i18n-r2-parity.mjs",
-    "ai:package": "python3 scripts/package-ai-integrations.py",
-    "ai:horoscopes:build": "node scripts/build-horoscope-preview.mjs",
-    "ai:horoscopes:serve": "node integrations/generated/horoscope-preview-server.mjs",
-    "ai:horoscopes:test": "vitest run src/ai-tools/horoscope"
+    "ai:package": "python3 scripts/package-ai-integrations.py"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.111.0",

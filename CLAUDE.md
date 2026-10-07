@@ -155,12 +155,22 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
 - `integrations/generated/chart-studio.mjs` ← `scripts/build-chart-studio.mjs`
   through `npm run ai:build`; standalone browser bundle with inline fonts/icons.
   Its sources are `src/ai-tools/studio/`; never edit the generated HTML string.
+- `integrations/generated/horoscopes.mjs` ← `scripts/build-horoscope-panel.mjs`
+  through `npm run ai:build`; the get_horoscope panel (sources
+  `src/ai-tools/horoscope/`). It carries no reading data.
+- `src/data/horoscope-window.json` ← `vite-node --script
+  scripts/build-horoscope-window.ts` (the daily workflow rebuilds it after the
+  day's program; `verify-horoscope-window.ts --replay` checks it). It holds the
+  editions for the day before, the day of and the day after the committed daily
+  date; `api/_ai/handler.ts` reads it when a horoscope is asked for.
 - `api/_ai/runtime.mjs`, `plugins/zodiacs-developer/mcp/server.mjs` and the
   developer's portable `plugin.json`/`mcp.json` ← `npm run ai:build` (sources
   `src/ai-tools/` and the compatibility manifest). `integrations/packages/`
   ZIPs and manifest ← `npm run ai:package`. `npm run ai:check` checks drift.
-  The hosted MCP defaults off; its exact optional staging hostname is configured
-  with `ZODIACS_MCP_STAGING_HOST`. See `docs/platform/zodiacs-ai/LAUNCH.md`.
+  The hosted MCP at /mcp is switched on in production with
+  `ZODIACS_MCP_ENABLED=1` and is the only hosted MCP server; its exact optional
+  staging hostname is configured with `ZODIACS_MCP_STAGING_HOST`. See
+  `docs/platform/zodiacs-ai/LAUNCH.md`.
 - `api/_assistant/persona.ts` is Fable-authored source; edit it only via Fable.
 - `public/assets/og/v2/` ← `node --experimental-strip-types
   scripts/build-og-void.mjs` (ALL share cards sitewide since Part Q — wing

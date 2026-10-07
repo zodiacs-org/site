@@ -18,9 +18,9 @@ try {
     window.dispatchEvent(new CustomEvent('openai:set_globals', { detail: { globals: { toolOutput: result } } }));
   }, result);
   assert.ok(await page.locator('li').count() > 0);
-  assert.match(await page.locator('#status').innerText(), /Asia\/Bangkok/);
-  assert.match(await page.locator('#coverage').innerText(), /0\.1\.1-rc\.16/);
-  assert.match(await page.locator('#coverage').innerText(), /tested, not proven/);
+  assert.match(await page.locator('#status').innerText(), /times for Bangkok/);
+  assert.doesNotMatch(await page.locator('#events').innerText(), /UTC|Z\b|\d{4}-\d{2}-\d{2}T/);
+  assert.match(await page.locator('#coverage').innerText(), /new and full Moons/);
   assert.equal(network, 0);
   const out = new URL('../docs/platform/zodiacs-ai/evidence/', import.meta.url);
   await mkdir(out, { recursive: true });
@@ -43,12 +43,13 @@ try {
     (window as any).openai = { callTool: async (name: string, args: unknown) => { (window as any).requests.push({ name, args }); return { structuredContent: result }; } };
     window.dispatchEvent(new CustomEvent('openai:set_globals', { detail: { globals: {} } }));
   }, changed);
-  await page.locator('#from').fill('2026-10-02'); await page.locator('#to').fill('2026-10-09'); await page.locator('#zone').fill('America/New_York');
+  await page.locator('#zone').selectOption('America/New_York'); await page.locator('#from').fill('2026-10-02'); await page.locator('#to').fill('2026-10-09');
   await page.locator('#update').click();
-  await page.waitForFunction(() => document.querySelector('#status')?.textContent?.includes('America/New_York'));
-  assert.deepEqual(await page.evaluate(() => (window as any).requests), [{ name: 'get_upcoming_events', args: { from: '2026-10-02T00:00:00.000Z', to: '2026-10-09T00:00:00.000Z', zone: 'America/New_York' } }]);
-  await page.locator('#to').fill('2026-12-09'); await page.locator('#update').click();
-  assert.match(await page.locator('#status').innerText(), /at most 31 days/);
+  await page.waitForFunction(() => document.querySelector('#status')?.textContent?.includes('times for New York'));
+  // From and To are local dates in the chosen zone: New York midnight is 04:00 UTC in October, and To is inclusive.
+  assert.deepEqual(await page.evaluate(() => (window as any).requests), [{ name: 'get_upcoming_events', args: { from: '2026-10-02T04:00:00.000Z', to: '2026-10-10T04:00:00.000Z', zone: 'America/New_York' } }]);
+  await page.locator('#to').fill('2027-02-09'); await page.locator('#update').click();
+  assert.match(await page.locator('#status').innerText(), /up to 92 days apart/);
   assert.equal(await page.evaluate(() => (window as any).requests.length), 1);
   assert.equal(await page.locator('li').count(), 0);
   // Exercise the standard MCP Apps handshake and host-mediated tools/call.
@@ -66,14 +67,14 @@ try {
   const frame = page.frames()[1]; await frame.setContent(WIDGET_HTML);
   await frame.waitForFunction(() => !(document.querySelector('#update') as HTMLButtonElement).disabled);
   await page.evaluate(result => document.querySelector('iframe')!.contentWindow!.postMessage({ jsonrpc: '2.0', method: 'ui/notifications/tool-result', params: { structuredContent: result } }, '*'), result);
-  await frame.waitForFunction(() => document.querySelector('#status')?.textContent?.includes('Asia/Bangkok'));
-  await frame.locator('#from').fill('2026-10-02'); await frame.locator('#to').fill('2026-10-09'); await frame.locator('#zone').fill('America/New_York');
+  await frame.waitForFunction(() => document.querySelector('#status')?.textContent?.includes('times for Bangkok'));
+  await frame.locator('#zone').selectOption('America/New_York'); await frame.locator('#from').fill('2026-10-02'); await frame.locator('#to').fill('2026-10-09');
   await frame.locator('#update').click();
-  await frame.waitForFunction(() => document.querySelector('#status')?.textContent?.includes('America/New_York'));
+  await frame.waitForFunction(() => document.querySelector('#status')?.textContent?.includes('times for New York'));
   const messages = await page.evaluate(() => (window as any).protocolMessages);
   assert.ok(messages.some((message: any) => message.method === 'ui/notifications/initialized'));
-  assert.deepEqual(messages.find((message: any) => message.method === 'tools/call').params, { name: 'get_upcoming_events', arguments: { from: '2026-10-02T00:00:00.000Z', to: '2026-10-09T00:00:00.000Z', zone: 'America/New_York' } });
+  assert.deepEqual(messages.find((message: any) => message.method === 'tools/call').params, { name: 'get_upcoming_events', arguments: { from: '2026-10-02T04:00:00.000Z', to: '2026-10-10T04:00:00.000Z', zone: 'America/New_York' } });
   assert.equal(network, 0); assert.deepEqual(errors, []);
-  await writeFile(new URL('widget-review.json', out), JSON.stringify({ scope: 'Local Chromium render and synthetic host bridges; not ChatGPT host acceptance', passed: ['desktop', '360px mobile', 'UTC/local time', 'engine version', 'coverage', 'no external requests', 'text injection', 'URL allowlist', 'refusal clears stale content', 'calendar form through OpenAI bridge', '31-day form limit before host call', 'MCP Apps initialization and calendar tools/call'], errors }, null, 2) + '\n');
+  await writeFile(new URL('widget-review.json', out), JSON.stringify({ scope: 'Local Chromium render and synthetic host bridges; not ChatGPT host acceptance', passed: ['desktop', '360px mobile', 'local dates and times', 'no UTC or ISO times on screen', 'coverage', 'no external requests', 'text injection', 'URL allowlist', 'refusal clears stale content', 'calendar form through OpenAI bridge', '92-day form limit before host call', 'MCP Apps initialization and calendar tools/call'], errors }, null, 2) + '\n');
   console.log('Widget browser QA: desktop, mobile, injection, links and error recovery passed.');
 } finally { await browser.close(); }

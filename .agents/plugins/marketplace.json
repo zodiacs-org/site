@@ -3,6 +3,6 @@
   "interface": { "displayName": "Zodiacs local review candidates" },
   "plugins": [
     { "name": "zodiacs-developer", "source": { "source": "local", "path": "./plugins/zodiacs-developer" }, "policy": { "installation": "AVAILABLE", "authentication": "ON_INSTALL" }, "category": "Developer Tools" },
-    { "name": "zodiacs-sky", "source": { "source": "local", "path": "./plugins/zodiacs-sky" }, "policy": { "installation": "AVAILABLE", "authentication": "ON_INSTALL" }, "category": "Lifestyle" }
+    { "name": "zodiacs-sky", "source": { "source": "local", "path": "./plugins/zodiacs-sky" }, "policy": { "installation": "AVAILABLE", "authentication": "ON_INSTALL" }, "category": "Education & Research" }
   ]
 }
