@@ -834,6 +834,21 @@ function eventSentence(event: HoroscopeProgramEvent, sign: HoroscopeSign): strin
   return `${eventName(event)} brings ${HOUSE_THEME[house]} into focus.`;
 }
 
+/** The same event and houses as eventSentence, in the alternate daily frame. */
+function alternateEventSentence(event: HoroscopeProgramEvent, sign: HoroscopeSign): string {
+  const houses = eventHouses(event, sign);
+  if (houses.length === 2) {
+    return `${cap(eventName(event))} ties ${HOUSE_THEME[houses[0]]} to ${HOUSE_THEME[houses[1]]}.`;
+  }
+  return `${cap(eventName(event))} gives ${HOUSE_THEME[houses[0]]} extra weight.`;
+}
+
+/** "new moon", "full moon", or "waxing crescent Moon", without "new moon Moon". */
+function moonPhaseLabel(phase: string): string {
+  const lower = phase.toLocaleLowerCase('en');
+  return lower.endsWith(' moon') ? lower : `${lower} Moon`;
+}
+
 function passage(text: string, evidenceRefs: string[], heading?: string): HoroscopePassage {
   return {
     ...(heading ? { heading } : {}),
@@ -919,11 +934,17 @@ function padReading(
   return passages;
 }
 
+/**
+ * `alternate` frames the same facts, house advice, and evidence in different
+ * sentences. buildHoroscopeProgram asks for it only through
+ * separateSimilarDailyReadings, never for an edition that is already distinct.
+ */
 function dailySurface(
   surface: 'today' | 'tomorrow',
   sign: HoroscopeSign,
   daily: Daily,
   catalog: EvidenceCatalog,
+  alternate = false,
 ): HoroscopeReading {
   const profile = SIGN_REGISTER[sign];
   const moon = body(daily, 'Moon');
@@ -934,6 +955,13 @@ function dailySurface(
   const secondaryHouse = solarHouse(secondary.sign, sign);
   const dayWord = surface === 'today' ? 'Today' : 'Tomorrow';
   const exact = daily.events[0] as HoroscopeProgramEvent | undefined;
+  const period = { from: daily.date, through: daily.date };
+  const title = `${cap(sign)} horoscope for ${surface === 'today' ? dateLabel(daily.date) : `tomorrow, ${dateLabel(daily.date)}`}`;
+  if (alternate) {
+    return reading(surface, sign, period, title, alternateDailyPassages(
+      surface, sign, daily, catalog, { moon, secondary, moonHouse, secondaryHouse, exact },
+    ));
+  }
   const tomorrowOpening = exact
     ? `${TOMORROW_MOON_ACTION[moonHouse]}. Use the lead time to ${profile.test}.`
     : `${TOMORROW_MOON_ACTION[moonHouse]}, using the lead time to prepare the conditions around the decision before tomorrow begins.`;
@@ -976,13 +1004,96 @@ function dailySurface(
       [...catalog.position(daily, moon, sign), ...catalog.position(daily, secondary, sign)],
     ));
   }
-  return reading(
-    surface,
-    sign,
-    { from: daily.date, through: daily.date },
-    `${cap(sign)} horoscope for ${surface === 'today' ? dateLabel(daily.date) : `tomorrow, ${dateLabel(daily.date)}`}`,
-    passages,
-  );
+  return reading(surface, sign, period, title, passages);
+}
+
+function alternateDailyPassages(
+  surface: 'today' | 'tomorrow',
+  sign: HoroscopeSign,
+  daily: Daily,
+  catalog: EvidenceCatalog,
+  facts: {
+    moon: DailyBody;
+    secondary: DailyBody;
+    moonHouse: number;
+    secondaryHouse: number;
+    exact: HoroscopeProgramEvent | undefined;
+  },
+): HoroscopePassage[] {
+  const { moon, secondary, moonHouse, secondaryHouse, exact } = facts;
+  const profile = SIGN_REGISTER[sign];
+  const phase = moonPhaseLabel(daily.moon.phase);
+  const placement = `${secondary.body}${secondary.retrograde ? ' retrograde' : ''} in ${cap(secondary.sign)}`;
+  const tomorrowOpening = exact
+    ? `${TOMORROW_MOON_ACTION[moonHouse]}. As part of that preparation, ${profile.test}.`
+    : `${TOMORROW_MOON_ACTION[moonHouse]}; preparing ahead keeps the decision from being made in a rush.`;
+  const passages = surface === 'today'
+    ? [
+        passage(
+          `First, ${HOUSE_ACTION[moonHouse]}. For ${cap(sign)}, ${profile.daily}. Under the ${phase}, today’s agenda starts with ${HOUSE_THEME[moonHouse]}.`,
+          catalog.position(daily, moon, sign),
+        ),
+        passage(
+          `${HOUSE_DECISION[secondaryHouse]} ${placement} keeps ${HOUSE_THEME[secondaryHouse]} in view through the day.`,
+          catalog.position(daily, secondary, sign),
+        ),
+      ]
+    : [
+        passage(
+          `${tomorrowOpening} Tomorrow, the ${phase} brings ${HOUSE_THEME[moonHouse]} to the front of the day.`,
+          catalog.position(daily, moon, sign),
+        ),
+        passage(
+          `${TOMORROW_DECISION[secondaryHouse]}. ${placement} adds ${HOUSE_THEME[secondaryHouse]} to the conditions around that choice.`,
+          catalog.position(daily, secondary, sign),
+        ),
+      ];
+  if (exact) {
+    const exactHouse = eventHouses(exact, sign)[0];
+    const checkpoint = exactHouse === secondaryHouse
+      ? DAILY_SAME_HOUSE_FOLLOW_UP[exactHouse]
+      : DAILY_CHECKPOINT[exactHouse][surface];
+    passages.push(passage(
+      `${checkpoint}. ${alternateEventSentence(exact, sign)}`,
+      catalog.event(exact, sign, { date: daily.date, sourceId: daily.eventsSource ?? `daily-snapshot:${daily.date}` }),
+    ));
+  } else {
+    const quietFocus = moonHouse === secondaryHouse
+      ? `Let ${HOUSE_THEME[moonHouse]} set the terms of the choice`
+      : `Weigh ${HOUSE_THEME[moonHouse]} against ${HOUSE_THEME[secondaryHouse]}`;
+    passages.push(passage(
+      `${quietFocus}, then ${profile.test}.`,
+      [...catalog.position(daily, moon, sign), ...catalog.position(daily, secondary, sign)],
+    ));
+  }
+  return passages;
+}
+
+/**
+ * Two signs can get the same house advice on the same day. On 9 October 2026,
+ * Mars in Leo and Venus in Scorpio both fall in the third solar house for
+ * Gemini and Virgo, so their shared sentence frames pushed the pair past the
+ * tomorrow limit and would have blocked publication. Only when a reading is
+ * too similar to an earlier sign's (canonical order), re-render it with the
+ * alternate frames: the facts, advice, and evidence stay the same. Editions
+ * that are already distinct stay byte-identical, and a pair the alternate
+ * cannot separate is left for the validator to refuse.
+ */
+function separateSimilarDailyReadings(
+  surface: 'today' | 'tomorrow',
+  signs: HoroscopeSignProgram[],
+  daily: Daily,
+  catalog: EvidenceCatalog,
+): void {
+  const limit = HOROSCOPE_DISTINCTNESS_LIMITS[surface];
+  signs.forEach((entry, index) => {
+    const tooSimilar = (candidate: HoroscopeReading): boolean => signs.slice(0, index).some((earlier) => (
+      horoscopeShingleJaccard(earlier.readings[surface].text, candidate.text, 3) > limit
+    ));
+    if (!tooSimilar(entry.readings[surface])) return;
+    const alternate = dailySurface(surface, entry.sign, daily, catalog, true);
+    if (!tooSimilar(alternate)) entry.readings[surface] = alternate;
+  });
 }
 
 function loveSurface(sign: HoroscopeSign, daily: Daily, catalog: EvidenceCatalog): HoroscopeReading {
@@ -1435,6 +1546,8 @@ export function buildHoroscopeProgram(input: BuildHoroscopeProgramInput): Horosc
       },
     };
   });
+  if (today) separateSimilarDailyReadings('today', signs, today, catalog);
+  if (tomorrow) separateSimilarDailyReadings('tomorrow', signs, tomorrow, catalog);
 
   return {
     schema: HOROSCOPE_PROGRAM_SCHEMA,
