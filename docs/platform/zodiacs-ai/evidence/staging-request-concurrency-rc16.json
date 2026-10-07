@@ -1,0 +1,382 @@
+{
+  "schema": "zodiacs.staging-resources.v1",
+  "phase": "request-concurrency",
+  "startedAt": "2026-10-02T12:53:35.822Z",
+  "url": "https://zodiacs-org-git-codex-zodiacs-ai-integrations-zodiacsofficial.vercel.app/mcp",
+  "sourceCommit": "5468423bac0675336949ab16839f40ac5def3e92",
+  "observations": [
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 1154.61,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5090
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 1155.64,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5090
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 823.65,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5090
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 1025.68,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5090
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 1066.5,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5090
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 1140.94,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5090
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 1337.97,
+      "ok": false,
+      "transportStatus": 429
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 1344.85,
+      "ok": false,
+      "transportStatus": 429
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 844.25,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5090
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 821.34,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5090
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 1365.17,
+      "ok": false,
+      "transportStatus": 429
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 895.97,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5090
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 1333.22,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5090
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 1115.37,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5090
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 1339.31,
+      "ok": false,
+      "transportStatus": 429
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 1101.97,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5090
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 874.9,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5090
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 1338.45,
+      "ok": false,
+      "transportStatus": 429
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 1172.02,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5090
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 1111.01,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5090
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 1356.05,
+      "ok": false,
+      "transportStatus": 429
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 1104.07,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5090
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 1170.79,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5090
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 818.19,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5090
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 1211.56,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5090
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 1160.54,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5090
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 1065.01,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5090
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 1149.19,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5090
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 1116.03,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5090
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 1184.65,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5090
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 1161.98,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5090
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 1119.06,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5090
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 1174.19,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5090
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 814.12,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5090
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 1159.12,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5090
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 1157.81,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5090
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 2260.31,
+      "ok": false,
+      "transportStatus": 429
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 1105.15,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5090
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 1093.19,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5090
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 2139.42,
+      "ok": false,
+      "transportStatus": 429
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 1188.07,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5090
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 1145.8,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5090
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 1147.49,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5090
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 1151.83,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5090
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 1349.59,
+      "ok": false,
+      "transportStatus": 429
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 1338.78,
+      "ok": false,
+      "transportStatus": 429
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 1334.52,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5090
+    },
+    {
+      "name": "get_capabilities",
+      "elapsedMs": 1240.15,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5090
+    }
+  ],
+  "admitted": 38,
+  "refused": 10,
+  "refusalCounts": {
+    "429": 10
+  },
+  "finishedAt": "2026-10-02T12:53:40.063Z",
+  "strictCeilingPassed": true,
+  "availabilityAtBurstPassed": true,
+  "scope": "Quiet expired preview window. Existing per-address Firewall and global atomic budget both apply. SDK initialization also uses incoming slots, so general-call successes may be below 40. Exact 10/40 atomic counts are separately proved by PostgreSQL and REST contention tests."
+}

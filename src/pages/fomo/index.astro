@@ -247,10 +247,6 @@ const sources = [
 >
   <article class="fomo" data-fomo-page data-initial-sign={initial.slug} style={`--fomo-sign:${initial.hue}`}>
     <section class="fomo-hero" aria-labelledby="fomo-title">
-      <header class="fomo-top">
-        <a class="fomo-top__brand" href="/">Zodiacs<span class="fomo-top__sep">·</span><span class="fomo-top__dim">org</span></a>
-        <a class="fomo-top__cta" href="#top-stores">Get the app<span aria-hidden="true"> ↓</span></a>
-      </header>
       <div class="fomo-film" data-fomo-film aria-hidden="true">
         <picture class="fomo-film__ambient">
           <source type="image/avif" srcset={FILM.posterAvif} />
@@ -1034,11 +1030,6 @@ const sources = [
   }
   .fomo-hero h1 :global(.fomo-mark) { height: 0.62em; width: auto; vertical-align: -0.04em; }
 
-  /* ── Promotional chrome: the site nav stands down on this page; a
-     wordmark and one action sit over the film instead (the /bio/ landing
-     trims the nav the same way). The colophon stays. ── */
-  :global(body:has(.fomo) .nav-wrap),
-  :global(body:has(.fomo) .mobile-menu) { display: none !important; }
   /* Guide stands down here too: no floating launcher over the film, no
      Guide button in the colophon (the /bio/ landing does the same). */
   :global(body:has(.fomo) .zguide-launcher),

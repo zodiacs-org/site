@@ -1,0 +1,174 @@
+{
+  "schema": "zodiacs.ai-review-packages.v1",
+  "status": "Unpublished review candidates; bounded host evidence recorded, release gates pending",
+  "packages": [
+    {
+      "name": "zodiacs-sky",
+      "version": "0.4.0",
+      "file": "zodiacs-sky-0.4.0.zip",
+      "bytes": 68271,
+      "sha256": "a3366465d279ab1e3cf033ea1c62c86a08c1fdf024448d30254647c9166855a2",
+      "members": [
+        {
+          "path": ".claude-plugin/plugin.json",
+          "bytes": 824,
+          "sha256": "276b12f62d36d3023e33f8981f1ac1f3568831c07254aa2f700202ffa6bb0ae2"
+        },
+        {
+          "path": ".codex-plugin/plugin.json",
+          "bytes": 6867,
+          "sha256": "f0011d52c7c7c028cae299f30a4188215100f1401f7b5658a466aacd098607e0"
+        },
+        {
+          "path": ".mcp.json",
+          "bytes": 114,
+          "sha256": "ac984e1e50a4f78164942838ee3f0065588a2a2c5f611928709bcf083f48ac04"
+        },
+        {
+          "path": "LICENSE",
+          "bytes": 1287,
+          "sha256": "2f0026657a02eabd4f469404adae52a0966ac2cd2491025ac5b1a0fdd14d4e98"
+        },
+        {
+          "path": "NOTICE",
+          "bytes": 354,
+          "sha256": "e2530709a74034cc605e64a21d8afad719820c6050a3880eba3bd15afb73736d"
+        },
+        {
+          "path": "README.md",
+          "bytes": 1394,
+          "sha256": "b6ed403071ce98d40340d51ad67a0c465ca22589f80c1e6b5b265978bf808d0b"
+        },
+        {
+          "path": "assets/icon.png",
+          "bytes": 47117,
+          "sha256": "01405f4da95d384d77e19d2986abbbe1ae9081650055d03cc46698b8d53c8896"
+        },
+        {
+          "path": "mcp.json",
+          "bytes": 181,
+          "sha256": "287c8b78bee463ce73ac88746a398eef965480b86d489e3147482f7cca1f48da"
+        },
+        {
+          "path": "plugin.json",
+          "bytes": 6982,
+          "sha256": "6b49d9b51403bd063f5c31ffc4d2b3d0b5eba41721956cb4ff7eaab956e5a4e0"
+        },
+        {
+          "path": "skills/explore-the-sky/SKILL.md",
+          "bytes": 2075,
+          "sha256": "77984998b9b1d39a2d119c78797daf8cf728a8f13f6ac54e31ee341e0c96be14"
+        }
+      ]
+    },
+    {
+      "name": "zodiacs-developer",
+      "version": "0.3.3",
+      "file": "zodiacs-developer-0.3.3.zip",
+      "bytes": 1852802,
+      "sha256": "017a7868bbde479e11175d3ded8166757720395a6980600e4afc56c37ba00211",
+      "members": [
+        {
+          "path": ".codex-plugin/plugin.json",
+          "bytes": 2908,
+          "sha256": "1bfc4fc9b573fb5c41ea471f8cd01d2017d3b63702e8fb34c0cf149a5751b88c"
+        },
+        {
+          "path": ".mcp.json",
+          "bytes": 115,
+          "sha256": "88e22e6ba37bda179cc16b356e764421952f166d7ff1416957e3a5e695fdecf4"
+        },
+        {
+          "path": "ENGINE-LICENSE",
+          "bytes": 1068,
+          "sha256": "9a8ab25f278db9d59a00ee82d1a82d63ee4891a9c417c53b4e2b9942aaab10df"
+        },
+        {
+          "path": "ENGINE-LICENSING",
+          "bytes": 26057,
+          "sha256": "5bf86592af992451cf325a04de4fa7ddd07aa92521368db5ac6fc8e8d766bd70"
+        },
+        {
+          "path": "ENGINE-NOTICE",
+          "bytes": 10121,
+          "sha256": "15b724304a7bebadaed4f6e01631314dab7b5b92b3b84dc3a59864fb6e555cce"
+        },
+        {
+          "path": "LICENSE",
+          "bytes": 1287,
+          "sha256": "2f0026657a02eabd4f469404adae52a0966ac2cd2491025ac5b1a0fdd14d4e98"
+        },
+        {
+          "path": "NOTICE",
+          "bytes": 1228,
+          "sha256": "09646b0f0af64f3b679e7ef424befa5d6cb33ea8b068a5ab7051dd87a2c8457c"
+        },
+        {
+          "path": "README.md",
+          "bytes": 5539,
+          "sha256": "14f80d73febb628a6d854e9b0d9672e8e9d35a6f6b8735047a3a3158a20cc4c0"
+        },
+        {
+          "path": "assets/icon.png",
+          "bytes": 47117,
+          "sha256": "01405f4da95d384d77e19d2986abbbe1ae9081650055d03cc46698b8d53c8896"
+        },
+        {
+          "path": "examples/calendar.mjs",
+          "bytes": 1127,
+          "sha256": "ce0e997851f2756933a8aab0dc21818d98f409a2336376f41fe8a49bc3913d4f"
+        },
+        {
+          "path": "examples/sky.mjs",
+          "bytes": 307,
+          "sha256": "55a06ce718aa4c27c7b9a3420f7a40aae86d1b8440eee1edf7ea107281883337"
+        },
+        {
+          "path": "examples/verify.mjs",
+          "bytes": 1055,
+          "sha256": "e9dc69d04d9c6d4ba7c123af07e25e5db0318c31820dcc0286691445b7549299"
+        },
+        {
+          "path": "mcp.json",
+          "bytes": 262,
+          "sha256": "7bf7369d911b199c4c0864e9da0567890df7c04d12c29d877359f473e5aaa131"
+        },
+        {
+          "path": "mcp/server.mjs",
+          "bytes": 1741150,
+          "sha256": "0c382e9b52e8df304e08dea995adb08148fd7ea6ec2e9f78988763a7e4b0cf6f"
+        },
+        {
+          "path": "package-lock.json",
+          "bytes": 2460,
+          "sha256": "985b2447d0ac6ba55eab6e794c253a85e188262c5fecce40a4e601c889edf905"
+        },
+        {
+          "path": "package.json",
+          "bytes": 429,
+          "sha256": "0f4d783634db86273d4f970099afa31e68f23497776bbc4fc02938a307ebd5a2"
+        },
+        {
+          "path": "plugin.json",
+          "bytes": 3019,
+          "sha256": "f635fdf030a45c05772e7b2fb99de6a10fcb80f8282717c270439688f6710e3f"
+        },
+        {
+          "path": "skills/build-with-zodiacs/SKILL.md",
+          "bytes": 2058,
+          "sha256": "62c2e9fee4cdf8f96087409c6815a3702e3c43781892026084ef15d91e68d3cc"
+        },
+        {
+          "path": "skills/test-astrology-integration/SKILL.md",
+          "bytes": 1511,
+          "sha256": "5a4e18ef09b2564bae76ab6a00aa606b748ae9cd6b241b98460d7d31821443dc"
+        },
+        {
+          "path": "skills/verify-astrology-output/SKILL.md",
+          "bytes": 1748,
+          "sha256": "e0c393dcc6107fc9f2c7304d1f7cd8bf4ff80ba89e973d8ebd2be8e5330652c4"
+        }
+      ]
+    }
+  ]
+}

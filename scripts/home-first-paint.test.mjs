@@ -128,7 +128,7 @@ describe('homepage first-paint assets', () => {
     expect(page).toContain('Birth charts calculated in your browser.');
     expect(page).toContain('Clear astrology readings and tools, free to explore.');
     expect(page).toContain('Get your free birth chart');
-    expect(page).toContain('Your horoscope');
+    expect(page).toMatch(/<a\b[^>]*class="btn btn--ghost hero__ghost"[^>]*href="\/horoscopes\/"[^>]*><span>Your horoscope<\/span><\/a>/u);
     expect(page).toContain('Free · No signup · Calculated in your browser');
     expect(page).not.toContain('class="hero__story"');
     expect(page).not.toContain('class="hero__method"');
@@ -149,7 +149,7 @@ describe('homepage first-paint assets', () => {
     'discovers the poster first and installs client copy after the hero',
     async () => {
       const html = await readFile(resolve(repositoryRoot, 'dist/index.html'), 'utf8');
-      const posterHint = html.indexOf('href="/assets/hero/zodiacs-hero-poster-mobile.avif"');
+      const posterHint = html.indexOf('href="/assets/hero/zodiacs-hero-poster-mobile-v2.avif"');
       const criticalBase = html.indexOf('data-zdx-critical=');
       const hero = html.indexOf('<section class="hero');
       const catalog = html.indexOf('globalThis.__ZDX_UI__');

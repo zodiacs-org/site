@@ -498,7 +498,13 @@ describe('the site and the compute API', () => {
     // documentation names its paths, and only build-time modules import it.
     const root = new URL('../../', import.meta.url);
     const DOCUMENTS = new Set(['src/pages/developers/compute/index.astro']);
-    const IMPORTERS = new Set(['src/pages/developers/compute/index.astro', 'src/lib/sky-api/schemas.ts', 'src/lib/sky-api/text.ts']);
+    const IMPORTERS = new Set(['src/pages/developers/compute/index.astro', 'src/lib/sky-api/schemas.ts', 'src/lib/sky-api/text.ts',
+      // Server-only AI adapters reuse pure compute operations. They do not
+      // send browser calculations to the hosted compute API.
+      'src/ai-tools/contracts.ts', 'src/ai-tools/http.ts', 'src/ai-tools/local.ts', 'src/ai-tools/tools.ts',
+      'src/ai-tools/http.test.ts', 'src/ai-tools/tools.test.ts',
+      'src/ai-tools/quota.ts',
+    ]);
     // The local MCP adapter bundles the compute API's own parsers and
     // calculations into examples/mcp-server/server.mjs and runs them on the
     // user's machine, and its descriptions name the endpoints whose answers it
@@ -513,6 +519,8 @@ describe('the site and the compute API', () => {
     const importOf = (target: string) => new RegExp(
       `(?:\\bfrom\\s*|\\bimport\\s*|\\bimport\\s*\\(\\s*|\\brequire\\s*\\(\\s*)['"\`][^'"\`]*${target}`, 'u');
     const ADAPTER_IMPORT = importOf('\\/mcp\\/');
+    // The companion's server-only stdio entry reuses the local MCP operations.
+    const ADAPTER_IMPORTERS = new Set(['src/ai-tools/local.ts']);
     const PATHS = /\/api\/(?:v1\/(?:chart|positions|houses|events|time|sky-fact|elections)\b|compute\b)/u;
     const IMPORT = importOf('compute-api(?:\\/|[\'"\`])');
     const files: string[] = [];
@@ -535,8 +543,11 @@ describe('the site and the compute API', () => {
       return (PATHS.test(text) && !DOCUMENTS.has(path)) || (IMPORT.test(text) && !IMPORTERS.has(path));
     });
     expect(callers).toEqual([]);
+    const browserAdapters = files.filter(path => /^src\/(?:pages|islands|components)\//u.test(path))
+      .filter(path => importOf('ai-tools\\/').test(readFileSync(new URL(path, root), 'utf8')));
+    expect(browserAdapters).toEqual([]);
     expect(files.filter((path) => path.startsWith(ADAPTER) && IMPORT.test(readFileSync(new URL(path, root), 'utf8'))).length).toBeGreaterThan(0);
-    expect(files.filter((path) => !path.startsWith(ADAPTER) && ADAPTER_IMPORT.test(readFileSync(new URL(path, root), 'utf8')))).toEqual([]);
+    expect(files.filter((path) => !path.startsWith(ADAPTER) && !ADAPTER_IMPORTERS.has(path) && ADAPTER_IMPORT.test(readFileSync(new URL(path, root), 'utf8')))).toEqual([]);
     for (const path of DOCUMENTS) {
       if (files.includes(path)) expect(readFileSync(new URL(path, root), 'utf8')).not.toMatch(/<script\b/u);
     }

@@ -1,0 +1,105 @@
+{
+  "schema": "zodiacs.studio-next-review.v1",
+  "verifiedAt": "2026-10-05T19:17:47.239Z",
+  "candidateVersion": "0.3.0",
+  "engineVersion": "0.1.1-rc.16",
+  "baseHead": "fa578e7d7e27a8a41dd7770a10fe1a7f132f49ea",
+  "sourceSha256": {
+    "src/ai-tools/studio/app.tsx": "94a63469ba18ae735a865fd9fec6e30ebebe6bb11ecec2b97cdd8ab947027f78",
+    "src/ai-tools/studio/model.ts": "574d1fd3db9fe2a8e5e28b5bda802d965c79f9862623bac9e4c19ccc3d4ab232",
+    "src/ai-tools/studio/explore.ts": "5339189fec94fbd1e376f156c3b5c9ad7cfa2b2626674ab958bf7782abbe45e8",
+    "src/ai-tools/studio/TimeExplorer.tsx": "8edac11e7722c02910886b5ad4ae49d2fd914d9e51761a2f496da72b3452be91",
+    "src/ai-tools/studio/inspect.ts": "401797a9ff6c8779abe85ee2e919f9d74b74507c1d03af7d16e09b91bf66b616",
+    "src/ai-tools/studio/RecordInspector.tsx": "07aa41ab9ceaa868326e00d3511bb6284492d75b556dae3444560aba36c3ce77",
+    "src/ai-tools/studio/window-client.ts": "2cbcee8dee05289152d6e8341429e165b72eb883955f3cec26836a3fc0d189dd",
+    "src/ai-tools/studio/window.worker.ts": "4abc6f568f041b2cde31970e83fc37c6061540270c6407a20be4d049945629a0",
+    "src/ai-tools/studio/style.css": "9d71112626c697306df8fd83a37a852124460560ccacfae35dd322b154594ad7",
+    "src/ai-tools/studio/bridge.ts": "3ec4548f4d7ee10272be4b3b0138e6f3837c4127ebf8bcecd4e01b06687f77d2",
+    "scripts/build-chart-studio.mjs": "4be1e33393bcb5cd979fd3346ea5bafbd1346ae176a637fdf6de2d542e44ea22"
+  },
+  "html": {
+    "bytes": 527473,
+    "sha256": "b48e17e020464d3df0b644474d40bfe468b8920230dbbce9779ec8d7fe2b2808"
+  },
+  "checks": {
+    "build": {
+      "passed": true,
+      "pages": 4417
+    },
+    "typecheck": {
+      "errors": 0,
+      "warnings": 0,
+      "hints": 39
+    },
+    "ai": {
+      "tests": 77,
+      "passed": true,
+      "officialHttpAndStdio": true,
+      "recipes": true,
+      "reproduciblePackages": true
+    },
+    "regression": {
+      "fullRunPassed": 6836,
+      "fullRunFailed": 1,
+      "skipped": 5,
+      "failure": "Existing Phase 1 transitive-source hashing test exceeded its five-second timeout under full-suite load.",
+      "isolatedEvidenceRerun": {
+        "passed": 5,
+        "failed": 0,
+        "previouslyTimedOutTestMs": 599
+      },
+      "aggregatePassingTests": 6837
+    },
+    "claimsLedger": {
+      "tests": 11,
+      "passed": true
+    }
+  },
+  "browser": {
+    "tool": "Codex in-app browser",
+    "inputs": "synthetic only",
+    "desktopWidth": 1280,
+    "mobile": {
+      "viewport": 360,
+      "documentWidth": 345
+    },
+    "verified": [
+      "UTC stepping and anchor differences",
+      "possible birth-time window and readable transition",
+      "window worker in ordinary and sandboxed opaque-origin iframe",
+      "no allow-forms permission needed for calculation buttons",
+      "stale window cleared on edit",
+      "unknown-time daily reference omits houses and angles",
+      "same-version record reproduction",
+      "local JSON file import",
+      "identical and differing records",
+      "invalid record refusal",
+      "imported records retained between workspaces",
+      "reset clears imported records",
+      "zero host shares during window calculation and record inspection",
+      "zero host shares during share preview; one after explicit confirmation",
+      "no observed console errors"
+    ],
+    "captures": [
+      "ready-preview.png",
+      "time-explorer-desktop.png",
+      "time-explorer-mobile.png",
+      "chart-inspector-desktop.png",
+      "chart-inspector-mobile.png"
+    ]
+  },
+  "release": {
+    "deployed": false,
+    "installed": false,
+    "connectedChatGPTVersion": "0.2.0",
+    "connectedChatGPTSource": "f8110d7132cbd4bb305eeae0ebd331d8b2009d9e",
+    "productionEnabled": false,
+    "skyWatch": "design only",
+    "remaining": [
+      "0.3.0 protected HTTPS and native ChatGPT host acceptance",
+      "live-host worker/CSP, thread entrypoints, reviewed sharing and saved-file download",
+      "consenting beta feedback and publisher verification",
+      "owner approval for submission, merge and production enablement"
+    ]
+  }
+}

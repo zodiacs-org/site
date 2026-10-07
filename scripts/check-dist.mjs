@@ -1171,11 +1171,15 @@ const sitemapPolicy = {
   // +1 for /developers/sky-benchmark/, the sky-fact benchmark's page.
   // +23 for three six-language sharing tools and five Big Three translations.
   // +18 for three six-language return-visit tools.
-  total: 1042 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
+  // +48 for the twelve rising-sign profiles translated into es, pt, fr and it.
+  // +16 for the four sky-calendar hubs translated into es, pt, fr and it.
+  // +312 translated compatibility pairs and +1 AI integration candidates page.
+  total: 1419 + (dailyPublishedDays.length + (dailyPublishedDays.length ? 1 : 0)) * 6 + Number(registryAuraIndexed) + Number(raceIndexed) + Number(trophyHallIndexed)
     + publishedEventPaths.size + indexablePeoplePaths.size
     + Number(JSON.parse(await readFile(resolve(repo, 'src/data/people.json'), 'utf8')).directoryIndexable === true)
     + indexedRegistryResearchPaths.size,
-  compatibilityPairs: 78,
+  // 78 pairs in English and in es, pt, fr and it.
+  compatibilityPairs: 390,
   birthdays: 366,
   chineseZodiac: 65,
   disclosures: 6,
@@ -1187,7 +1191,7 @@ const sitemapPolicy = {
   translatedBlocks: 641,
 };
 const indexedFamilies = [
-  { label: 'compatibility pairs', pattern: /^\/compatibility\/[a-z]+-[a-z]+\/$/, expected: sitemapPolicy.compatibilityPairs, localized: false },
+  { label: 'compatibility pairs', pattern: /^\/(?:(?:es|pt|fr|it)\/)?compatibility\/[a-z]+-[a-z]+\/$/, expected: sitemapPolicy.compatibilityPairs, localized: true },
   { label: 'birthdays', pattern: /^\/(?:(?:es|pt|fr|it)\/)?birthday\/[a-z]+-\d{1,2}\/$/, expected: sitemapPolicy.birthdays, localized: true },
   { label: 'Chinese zodiac', pattern: /^\/(?:(?:es|pt|fr|it)\/)?learn\/chinese-zodiac(?:\/[a-z]+)?\/$/, expected: sitemapPolicy.chineseZodiac, localized: true },
   { label: 'disclosures', pattern: /^\/(?:(?:es|pt|fr|it|ru)\/)?disclosure\/$/, expected: sitemapPolicy.disclosures, localized: true },

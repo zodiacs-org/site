@@ -123,6 +123,9 @@ run_phase6_sql_file \
 run_phase6_sql_file \
   "${phase6_repo_root}/supabase/tests/guide_quota_concurrency.sql"
 
+run_phase6_sql_file \
+  "${phase6_repo_root}/supabase/tests/zodiacs_mcp_quota.sql"
+
 # Exercise the exact early-production table shape in a second database. The
 # same migration sequence must rename its legacy columns without replacing
 # rows or constraints, survive reviewed SQL Editor replays, restore both

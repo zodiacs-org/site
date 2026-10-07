@@ -29,7 +29,7 @@
   <link rel="icon" type="image/png" sizes="96x96" href="/assets/app-icons/v3/favicon-96.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/app-icons/v3/apple-touch-icon.png" />
   <link rel="manifest" href="/site.webmanifest" />
-  <link rel="stylesheet" href="/assets/site-footer.css?v=20261003" />
+  <link rel="stylesheet" href="/assets/site-footer.css?v=20261006" />
   <link rel="preload" href="/fonts/eb-garamond-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
 
   <style>
@@ -203,7 +203,7 @@
   .wnav-wrap { --wing-sans: 'Instrument Sans', 'Instrument Sans Fallback', 'Instrument Sans Fallback Android', system-ui, -apple-system, sans-serif; --wing-serif: 'EB Garamond', 'EB Garamond Fallback', 'EB Garamond Fallback Android', 'EB Garamond Fallback Times', 'Iowan Old Style', Georgia, serif; position: fixed; top: 14px; left: 0; right: 0; z-index: 60; display: flex; flex-direction: column; align-items: center; pointer-events: none; padding-top: env(safe-area-inset-top); }
   .wnav { pointer-events: auto; box-sizing: border-box; max-width: calc(100% - 32px); display: inline-flex; align-items: center; gap: 10px; height: 52px; padding: 0 10px 0 20px; border-radius: 999px; background: rgba(10,12,17,0.96); backdrop-filter: saturate(150%) blur(18px); -webkit-backdrop-filter: saturate(150%) blur(18px); border: 1px solid rgba(198,204,218,0.16); box-shadow: inset 0 1px 0 rgba(238,241,247,0.06), 0 12px 32px -14px rgba(0,0,0,0.7); }
   @media (min-width: 920px) { .wnav { gap: 10px; } }
-  @media (min-width: 900px) { .wnav { gap: 18px; } }
+
   .wnav__mark { display: inline-flex; align-items: center; gap: 9px; text-decoration: none; white-space: nowrap; }
   .wnav__brand { display: block; flex-shrink: 0; }
   .wnav__mark:hover .wnav__brand { animation: wnav-turn 14s linear infinite; }
@@ -218,10 +218,14 @@
   }
   .wnav__search-kbd { display: none; font-family: var(--mono, 'JetBrains Mono', monospace); font-size: 10px; line-height: 1; padding: 3px 5px; border: 1px solid rgba(198,204,218,0.16); border-radius: 4px; color: var(--ink-mute, #8A93A6); }
   @media (min-width: 920px) { .wnav__search-kbd { display: inline-block; } }
-  .wnav__profile-shortcut { display: none; width: 44px; height: 44px; place-items: center; color: var(--ink-2, #C6CCDA); border-radius: 50%; }
+  .wnav__profile-shortcut { display: inline-grid; width: 44px; height: 44px; place-items: center; color: var(--ink-2, #C6CCDA); border-radius: 50%; }
+  .wnav__avatar { display: inline-grid; place-items: center; box-sizing: border-box; width: 28px; height: 28px; overflow: hidden; border-radius: 50%; background: var(--sign, #C6CCDA); color: #060709; font-family: var(--wing-serif); font-size: 16px; font-weight: 500; line-height: 1; }
+  .wnav__avatar[hidden], .has-avatar > .wnav__profile-icon { display: none; }
+  .wnav__avatar img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .wnav__profile-shortcut:hover { background: rgba(198,204,218,0.08); }
   .wnav__links { display: none; align-items: center; gap: 2px; }
-  @media (min-width: 920px) { .wnav__links { display: inline-flex; } }
-  .wnav__link { display: inline-flex; align-items: center; gap: 6px; padding: 7px 11px; border-radius: 999px; font-family: var(--wing-sans); font-size: 14px; font-weight: 500; letter-spacing: normal; text-transform: none; white-space: nowrap; color: var(--ink-2, #C6CCDA); text-decoration: none; background: none; border: 0; cursor: pointer; transition: color 200ms var(--ease, cubic-bezier(0.4,0,0.2,1)), background 260ms var(--ease, cubic-bezier(0.4,0,0.2,1)); }
+  @media (min-width: 920px) { .wnav__links { display: grid; } }
+  .wnav__link { line-height: 1.6; display: inline-flex; align-items: center; gap: 6px; padding: 7px 11px; border-radius: 999px; font-family: var(--wing-sans); font-size: 14px; font-weight: 500; letter-spacing: normal; text-transform: none; white-space: nowrap; color: var(--ink-2, #C6CCDA); text-decoration: none; background: none; border: 0; cursor: pointer; transition: color 200ms var(--ease, cubic-bezier(0.4,0,0.2,1)), background 260ms var(--ease, cubic-bezier(0.4,0,0.2,1)); }
   .wnav__link:hover { color: var(--ink, #EEF1F7); background: rgba(198,204,218,0.07); }
   .wnav__link[aria-current='page'] { color: var(--ink, #EEF1F7); }
   .wnav__dropdown-btn svg { transition: transform 260ms var(--ease, cubic-bezier(0.4,0,0.2,1)); }
@@ -281,6 +285,15 @@
   .wnav-menu__sign .wnav-disc { width: 30px; height: 30px; }
   @keyframes wnav-turn { to { transform: rotate(360deg); } }
   @media (prefers-reduced-motion: reduce) { .wnav-tools, .wnav-signs, .wnav__burger, .wnav__dropdown-btn svg, .wnav__burger-line { transition: none; } .wnav__mark:hover .wnav__brand { animation: none; } }
+  @media (min-width: 920px) {
+    .wnav { display: grid; width: 884px; grid-template-areas: 'mark links profile search chip'; grid-template-columns: 116px minmax(0, 1fr) 44px 62px 120px; gap: 18px; }
+    .wnav__mark { grid-area: mark; min-width: 0; }
+    .wnav__links { grid-area: links; min-width: 0; grid-template-columns: 74px 74px 64px 62px minmax(0, 1fr); }
+    .wnav__profile-shortcut { grid-area: profile; }
+    .wnav__search { grid-area: search; box-sizing: border-box; width: 62px; height: 44px; }
+    .wnav__chip { grid-area: chip; box-sizing: border-box; min-width: 0; }
+    .wnav__dropdown-btn { justify-content: space-between; }
+  }
 @media (max-width: 919.5px) {
     .wnav-wrap { top: 0; padding-top: 0; transition: transform 360ms cubic-bezier(0.22,1,0.36,1), opacity 260ms ease; }
     .wnav-wrap.is-away { transform: translateY(-100%); opacity: 0; }
@@ -1134,9 +1147,8 @@
         <a class="wnav__link" href="/today/">Today</a>
         <a class="wnav__link" href="/learn/">Learn</a>
         <a class="wnav__link" href="/horoscopes/">Horoscopes</a>
-        <a class="wnav__link" href="/profile/">Saved charts</a>
       </div>
-      <a class="wnav__profile-shortcut" href="/profile/" aria-label="Your profile" title="Your profile"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="3.2" stroke="currentColor" stroke-width="1.3"/><path d="M5.5 20v-1.5a6.5 6.5 0 0 1 13 0V20" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></a>
+      <a class="wnav__profile-shortcut" href="/profile/" aria-label="Your profile" title="Your profile" data-profile-glyph><svg class="wnav__profile-icon" width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="3.2" stroke="currentColor" stroke-width="1.3"/><path d="M5.5 20v-1.5a6.5 6.5 0 0 1 13 0V20" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><span class="wnav__avatar" data-profile-avatar aria-hidden="true" hidden></span></a>
       <a class="wnav__search" href="/?search=1" aria-label="Search the site">
         <svg width="14" height="14" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="6.5" cy="6.5" r="4.75" stroke="currentColor" stroke-width="1.4"/><path d="M10.5 10.5L13.5 13.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
         <kbd class="wnav__search-kbd" aria-hidden="true">/</kbd>
@@ -1262,11 +1274,11 @@
         <div class="market__head"><p class="market__copy">The price can change quickly and can fall to zero.</p><a class="market__source" data-market-live-link href="https://dexscreener.com/solana/7mP6WeVYBNt3eao5szsMPmuHughHjNRx26TcrgJXZRky" rel="noopener noreferrer external nofollow">View live chart ↗</a></div>
         <section class="quick" aria-labelledby="quick-title" data-live-quote>
           <span class="quick__label" id="quick-title" data-live-price-label>Latest recorded price</span>
-          <div class="quick__quote" aria-live="polite"><strong class="quick__price" data-live-price>$0.0000661</strong><span class="quick__change" data-live-change>Past 24 hours -6.37%</span><p class="quick__state" data-live-state>Showing the latest saved price. Checking for a newer one…</p></div>
+          <div class="quick__quote" aria-live="polite"><strong class="quick__price" data-live-price>$0.00006913</strong><span class="quick__change" data-live-change>Past 24 hours +5.29%</span><p class="quick__state" data-live-state>Showing the latest saved price. Checking for a newer one…</p></div>
         </section>
         <div class="market__grid" data-market-grid>
-          <div class="market__cell"><div class="market__k">Total market value</div><div class="market__v ">$66.1K</div></div>
-          <div class="market__cell"><div class="market__k">Traded in 24 hours</div><div class="market__v ">$293.27</div></div>
+          <div class="market__cell"><div class="market__k">Total market value</div><div class="market__v ">$69.1K</div></div>
+          <div class="market__cell"><div class="market__k">Traded in 24 hours</div><div class="market__v ">$200.63</div></div>
         </div>
         <p class="market__state" data-market-state>Loading price history…</p>
         <div class="market__chart" data-market-chart hidden>
@@ -1274,27 +1286,27 @@
           <div data-market-chart-canvas></div><dl class="chart-summary" data-chart-summary hidden></dl>
         </div>
         <noscript><p class="market__state">Price history is unavailable here. The latest recorded price and verified address are still shown.</p></noscript>
-        <div class="market__foot" data-market-foot>Updated Oct 6, 2026, 12:07 AM UTC</div>
+        <div class="market__foot" data-market-foot>Updated Oct 7, 2026, 12:03 AM UTC</div>
       </aside>
       <section class="standings" data-market-standings aria-labelledby="standings-title">
-        <div class="standings__head"><div><span>Market standings</span><h3 id="standings-title">12th of 12 by total market value</h3></div><p data-standings-summary>This rank only compares total market value. It does not show how many people support each sign.</p></div>
+        <div class="standings__head"><div><span>Market standings</span><h3 id="standings-title">11th of 12 by total market value</h3></div><p data-standings-summary>This rank only compares total market value. It does not show how many people support each sign.</p></div>
         <details class="standings__all"><summary>See all 12 market standings</summary>
           <ol class="standings__list" data-standings-list>
-          <li><a href="/registry/gemini/" style="--sign:#B29DD0"><span class="standings__rank">#1</span><picture><source srcset="/assets/zodiac-icons/48/gemini.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/gemini.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Gemini</strong><span>$156,912</span></a></li>
-          <li><a href="/registry/libra/" style="--sign:#D3A9DE"><span class="standings__rank">#2</span><picture><source srcset="/assets/zodiac-icons/48/libra.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/libra.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Libra</strong><span>$89,858</span></a></li>
-          <li><a href="/registry/aquarius/" style="--sign:#AE8FC9"><span class="standings__rank">#3</span><picture><source srcset="/assets/zodiac-icons/48/aquarius.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/aquarius.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Aquarius</strong><span>$83,875</span></a></li>
-          <li><a href="/registry/capricorn/" style="--sign:#C0DEA8"><span class="standings__rank">#4</span><picture><source srcset="/assets/zodiac-icons/48/capricorn.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/capricorn.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Capricorn</strong><span>$74,164</span></a></li>
-          <li><a href="/registry/taurus/" style="--sign:#B9D4BE"><span class="standings__rank">#5</span><picture><source srcset="/assets/zodiac-icons/48/taurus.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/taurus.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Taurus</strong><span>$72,975</span></a></li>
-          <li><a href="/registry/aries/" style="--sign:#DE8E79"><span class="standings__rank">#6</span><picture><source srcset="/assets/zodiac-icons/48/aries.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/aries.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Aries</strong><span>$71,374</span></a></li>
-          <li><a href="/registry/scorpio/" style="--sign:#B9DCE8"><span class="standings__rank">#7</span><picture><source srcset="/assets/zodiac-icons/48/scorpio.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/scorpio.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Scorpio</strong><span>$71,265</span></a></li>
-          <li><a href="/registry/leo/" style="--sign:#E0A9B4"><span class="standings__rank">#8</span><picture><source srcset="/assets/zodiac-icons/48/leo.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/leo.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Leo</strong><span>$70,918</span></a></li>
-          <li><a href="/registry/cancer/" style="--sign:#B6D4E4"><span class="standings__rank">#9</span><picture><source srcset="/assets/zodiac-icons/48/cancer.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/cancer.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Cancer</strong><span>$68,918</span></a></li>
-          <li><a href="/registry/virgo/" style="--sign:#B7D9B0"><span class="standings__rank">#10</span><picture><source srcset="/assets/zodiac-icons/48/virgo.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/virgo.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Virgo</strong><span>$67,314</span></a></li>
-          <li><a href="/registry/pisces/" style="--sign:#A9D4C4"><span class="standings__rank">#11</span><picture><source srcset="/assets/zodiac-icons/48/pisces.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/pisces.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Pisces</strong><span>$66,671</span></a></li>
-          <li class="is-current" aria-current="true"><a href="/registry/sagittarius/" style="--sign:#E0B080"><span class="standings__rank">#12</span><picture><source srcset="/assets/zodiac-icons/48/sagittarius.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/sagittarius.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Sagittarius</strong><span>$66,076</span></a></li>
+          <li><a href="/registry/gemini/" style="--sign:#B29DD0"><span class="standings__rank">#1</span><picture><source srcset="/assets/zodiac-icons/48/gemini.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/gemini.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Gemini</strong><span>$177,632</span></a></li>
+          <li><a href="/registry/aquarius/" style="--sign:#AE8FC9"><span class="standings__rank">#2</span><picture><source srcset="/assets/zodiac-icons/48/aquarius.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/aquarius.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Aquarius</strong><span>$101,503</span></a></li>
+          <li><a href="/registry/libra/" style="--sign:#D3A9DE"><span class="standings__rank">#3</span><picture><source srcset="/assets/zodiac-icons/48/libra.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/libra.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Libra</strong><span>$88,977</span></a></li>
+          <li><a href="/registry/leo/" style="--sign:#E0A9B4"><span class="standings__rank">#4</span><picture><source srcset="/assets/zodiac-icons/48/leo.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/leo.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Leo</strong><span>$74,059</span></a></li>
+          <li><a href="/registry/taurus/" style="--sign:#B9D4BE"><span class="standings__rank">#5</span><picture><source srcset="/assets/zodiac-icons/48/taurus.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/taurus.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Taurus</strong><span>$73,019</span></a></li>
+          <li><a href="/registry/scorpio/" style="--sign:#B9DCE8"><span class="standings__rank">#6</span><picture><source srcset="/assets/zodiac-icons/48/scorpio.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/scorpio.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Scorpio</strong><span>$72,978</span></a></li>
+          <li><a href="/registry/capricorn/" style="--sign:#C0DEA8"><span class="standings__rank">#7</span><picture><source srcset="/assets/zodiac-icons/48/capricorn.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/capricorn.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Capricorn</strong><span>$72,878</span></a></li>
+          <li><a href="/registry/aries/" style="--sign:#DE8E79"><span class="standings__rank">#8</span><picture><source srcset="/assets/zodiac-icons/48/aries.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/aries.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Aries</strong><span>$72,133</span></a></li>
+          <li><a href="/registry/pisces/" style="--sign:#A9D4C4"><span class="standings__rank">#9</span><picture><source srcset="/assets/zodiac-icons/48/pisces.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/pisces.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Pisces</strong><span>$71,784</span></a></li>
+          <li><a href="/registry/cancer/" style="--sign:#B6D4E4"><span class="standings__rank">#10</span><picture><source srcset="/assets/zodiac-icons/48/cancer.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/cancer.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Cancer</strong><span>$70,627</span></a></li>
+          <li class="is-current" aria-current="true"><a href="/registry/sagittarius/" style="--sign:#E0B080"><span class="standings__rank">#11</span><picture><source srcset="/assets/zodiac-icons/48/sagittarius.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/sagittarius.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Sagittarius</strong><span>$69,107</span></a></li>
+          <li><a href="/registry/virgo/" style="--sign:#B7D9B0"><span class="standings__rank">#12</span><picture><source srcset="/assets/zodiac-icons/48/virgo.avif" type="image/avif"/><img src="/assets/zodiac-icons/48/virgo.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><strong>Virgo</strong><span>$68,702</span></a></li>
           </ol>
         </details>
-        <p class="standings__time" data-standings-time>Updated Oct 6, 2026, 12:07 AM UTC</p>
+        <p class="standings__time" data-standings-time>Updated Oct 7, 2026, 12:03 AM UTC</p>
         <details class="market-explainer"><summary>Where do these numbers come from?</summary><p>The source reports each sign’s price, trading activity and total market value. Zodiacs.org matches each sign by its verified address. Total market value is a comparison, not money held in a bank, and light trading can move it quickly. <a href="/registry/technical/#market-transparency">See sources and method details.</a></p></details>
       </section>
     </section>
@@ -1376,10 +1388,13 @@
         </a>
         <p class="zfooter__tag">Sagittarius is one of the Twelve in the official Zodiacs Registry.</p>
       </div>
-      <button class="zfooter__guide" type="button" data-assistant-open data-footer-guide aria-haspopup="dialog">
+      <aside class="zfooter__help" aria-label="Guide">
+      <button class="zfooter__guide" type="button" data-assistant-open data-footer-guide aria-haspopup="dialog" aria-describedby="footer-guide-description">
         <img src="/assets/guide-avatar.webp" width="32" height="32" alt="" loading="lazy" decoding="async" />
-        <span>Guide</span>
+        <span>Guide</span><span class="zfooter__guide-arrow" aria-hidden="true">→</span>
       </button>
+      <p id="footer-guide-description" class="zfooter__help-description">An AI assistant for astrology questions and help using Zodiacs.</p>
+      </aside>
     </div>
 
     <p class="zfooter__tag">Our astrology tools and guides are free, with no signup required. Zodiacs.org also operates Astrofolio, the Zodiac token collection. <a href="/disclosure/">Read our disclosure</a>.</p>
@@ -1707,6 +1722,86 @@
       setMobile(false);
       if(restore) restore.focus();
     });
+    function initProfileNavigation() {
+    var slots = document.querySelectorAll('[data-profile-avatar]');
+    if (!slots.length) return;
+    var hues = ['#DE8E79', '#B9D4BE', '#B29DD0', '#B6D4E4', '#E0A9B4', '#B7D9B0',
+      '#D3A9DE', '#B9DCE8', '#E0B080', '#C0DEA8', '#AE8FC9', '#A9D4C4'];
+    function you() {
+      var access = window.zodiacsProfileAccess;
+      var unlocked = access && typeof access.canRead === 'function' && access.canRead() === true;
+      // Static wing pages do not mount the account coordinator. An owned or
+      // retained cache must not become readable merely because that page has
+      // no feature attribute; show the generic icon until access is granted.
+      if (!unlocked && (document.documentElement.hasAttribute('data-account-sync-v2')
+        || localStorage.getItem('zodiacs.account-sync-v2.local-owner.v1') !== null
+        || localStorage.getItem('zodiacs.account-sync-v2.retained-owner.v1') !== null)) return null;
+      var profile = JSON.parse(localStorage.getItem('zodiacs.profile.v1') || 'null');
+      var own = profile && Array.isArray(profile.charts)
+        ? profile.charts.filter(function (chart) { return chart && chart.relationship === 'self'; })
+        : [];
+      var self = own.length === 1 ? own[0] : null;
+      var me = JSON.parse(localStorage.getItem('zodiacs.me.v1') || 'null');
+      if (me && me.version === 1 && typeof me.photo === 'string' && me.photo.length <= 100000
+        && /^data:image\/jpeg;base64,\/9j\/[A-Za-z0-9+/]+={0,2}$/.test(me.photo)) return { photo: me.photo };
+      var name = me && me.version === 1 && typeof me.displayName === 'string' ? me.displayName : '';
+      // An automatic chart name ends in the birth date; it is not a name.
+      if (!name && self && typeof self.name === 'string' && !/·\s*\d{4}-\d{2}-\d{2}\s*$/.test(self.name)) {
+        name = self.name.split('·')[0];
+      }
+      var first = Array.from(name.replace(new RegExp('[\\p{Cc}\\p{Cf}]', 'gu'), '').normalize('NFC').trim())[0];
+      if (!first || !new RegExp('^[\\p{L}\\p{N}]$', 'u').test(first)) return null;
+      var letter = first.toUpperCase();
+      if (Array.from(letter).length !== 1) letter = first;
+      var bodies = self && self.summary && Array.isArray(self.summary.bodies) ? self.summary.bodies : [];
+      var sun = bodies.filter(function (row) { return row && row.body === 'Sun'; })[0];
+      var lon = sun ? Number(sun.lon) : NaN;
+      var hue = '';
+      if (isFinite(lon)) {
+        lon = ((lon % 360) + 360) % 360;
+        var index = Math.min(11, Math.floor(lon / 30));
+        var within = lon - index * 30;
+        var timeKnown = Boolean(self && self.birth && self.birth.timeKnown === true);
+        // Without a birth time, a Sun within a day's motion of a cusp is unsettled.
+        if (timeKnown || !(within < 1.02 || 30 - within < 1.02)) hue = hues[index];
+      }
+      return { letter: letter, hue: hue };
+    }
+    function render() {
+      var mark = null;
+      try { mark = you(); } catch (error) { mark = null; }
+      for (var i = 0; i < slots.length; i += 1) {
+        var slot = slots[i];
+        slot.textContent = mark && mark.letter ? mark.letter : '';
+        if (mark && mark.photo) {
+          var photo = document.createElement('img');
+          photo.src = mark.photo; photo.alt = ''; photo.width = photo.height = 28;
+          slot.appendChild(photo);
+        }
+        if (mark && mark.hue) slot.style.setProperty('--sign', mark.hue);
+        else slot.style.removeProperty('--sign');
+        slot.hidden = !mark;
+        if (slot.parentElement) slot.parentElement.classList.toggle('has-avatar', Boolean(mark));
+      }
+    }
+    render();
+    ['zodiacs:profile', 'zodiacs:profile-access', 'zodiacs:me'].forEach(function (name) {
+      window.addEventListener(name, render);
+    });
+    function onStorage(event) {
+      if (!event.key || event.key === 'zodiacs.me.v1' || event.key === 'zodiacs.profile.v1'
+        || event.key.startsWith('zodiacs.account-sync-v2.')) render();
+    }
+    window.addEventListener('storage', onStorage);
+    return function cleanup() {
+      ['zodiacs:profile', 'zodiacs:profile-access', 'zodiacs:me'].forEach(function (name) {
+        window.removeEventListener(name, render);
+      });
+      window.removeEventListener('storage', onStorage);
+    };
+
+}
+    initProfileNavigation();
   })();
   (function(){
     var nav = document.querySelector('[data-wnav]');

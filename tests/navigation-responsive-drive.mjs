@@ -18,9 +18,12 @@ const cases = locales.flatMap((prefix) => {
 for (const prefix of ['', '/es', '/ru']) for (const width of [390, 612, 768]) {
   cases.push({ path: `${prefix}/birth-chart/${chart}`, width, desktop: prefix ? 1040 : 920, receiver: true, wing: false });
 }
-for (const path of ['/astrofolio/', '/registry/virgo/', '/sdk/']) for (const width of [390, 612, 919, 920, 1440]) {
+for (const width of [390, 920]) cases.push({ path: '/birth-chart/', width, desktop: 920, receiver: false, wing: false });
+for (const path of ['/astrofolio/', '/registry/virgo/', '/sdk/', '/thesis/']) for (const width of [390, 612, 919, 920, 1440]) {
   cases.push({ path, width, desktop: 920, receiver: false, wing: true });
 }
+
+for (const path of ['/profile/', '/today/', '/bio/', '/fomo/']) for (const width of [390, 920, 1440]) cases.push({ path, width, desktop: 920, receiver: false, wing: false });
 
 await withPreview({ port: 8794 }, async (baseURL) => {
   for (const [name, driver, options] of [
@@ -51,6 +54,16 @@ await withPreview({ port: 8794 }, async (baseURL) => {
               away: node.parentElement.classList.contains('is-away') };
           });
           const compact = test.width < test.desktop;
+          assert.equal(await nav.locator('a[href="/astrofolio/"]').count(), 1);
+          if (!compact) assert.equal(geometry.width, test.desktop === 920 ? 884 : 992);
+          if (!compact && test.desktop === 920) {
+            // Cross-page geometry: older wing pages must use the same tracks,
+            // not merely fit inside a similarly sized pill.
+            for (const [suffix, offset] of [['__mark', 21], ['__links', 155], ['__profile-shortcut', 611], ['__search', 673], ['__chip', 753]]) {
+              const control = geometry.controls.find(item => item.className.includes(suffix));
+              assert(control && Math.abs(control.left - geometry.left - offset) < 0.5, `${test.path}: ${suffix} position differs`);
+            }
+          }
           assert.equal(geometry.overflow, false, `${test.path}@${test.width}: overflow`);
           if (compact) {
             // Classic WebKit scrollbars reserve layout width; the bar must fill
@@ -63,7 +76,10 @@ await withPreview({ port: 8794 }, async (baseURL) => {
               assert(control.left >= 0 && control.right <= test.width + 0.5, JSON.stringify(control));
               assert(control.height >= 44 && control.hit, JSON.stringify(control));
             }
-            if (test.receiver) assert.equal(await page.locator('a[href="/astrofolio/"],a[href^="/registry/"]').count(), 0);
+            if (test.receiver) {
+              assert.equal(await nav.locator('a[href="/astrofolio/"]').count(), 1);
+              assert.equal(await page.locator('main a[href="/astrofolio/"],main a[href^="/registry/"]').count(), 0);
+            }
             if (test.width === 612 && !test.receiver) {
               const burger = page.locator(test.wing ? '[data-wnav-burger]' : '[data-menu-toggle]');
               await burger.click(); assert.equal(await burger.getAttribute('aria-expanded'), 'true');
@@ -90,6 +106,38 @@ await withPreview({ port: 8794 }, async (baseURL) => {
             assert.notEqual(geometry.radius, '0px'); assert(geometry.left > 0 && geometry.right < test.width);
             const links = page.locator(test.wing ? '.wnav__links' : '.nav__links');
             assert(await links.isVisible(), 'Desktop links must retain their existing full row');
+          }
+          const collection = nav.locator(test.wing ? '.wnav__chip' : '.nav__chip');
+          if (!compact && await collection.isVisible()) {
+            const collectionBox = await collection.boundingBox();
+            for (const control of geometry.controls.filter(control => !control.className.includes('__chip'))) {
+              assert(control.right <= collectionBox.x + 0.5, 'Astrofolio is alone to the right of every other control and its divider');
+            }
+          }
+          {
+            const profile = nav.locator(test.wing ? '.wnav__profile-shortcut' : '.nav__profile-shortcut');
+            assert.equal(await profile.count(), 1, 'One profile control serves every layout');
+            const profileBox = await profile.boundingBox();
+            assert(profileBox && profileBox.width >= 44 && profileBox.height >= 44);
+            const chip = nav.locator(test.wing ? '.wnav__chip' : '.nav__chip');
+            if (await chip.isVisible()) {
+              const chipBox = await chip.boundingBox();
+              assert(compact ? chipBox.x + chipBox.width <= profileBox.x + 0.5 : profileBox.x + profileBox.width <= chipBox.x + 0.5, 'Mobile keeps its existing order; desktop puts Astrofolio last');
+              if (!compact) {
+                // macOS WebKit uses Option-Tab to include links in keyboard navigation.
+                const beforeChip = await nav.locator(test.wing ? '.wnav__search' : '.nav__search').isVisible() ? nav.locator(test.wing ? '.wnav__search' : '.nav__search') : profile;
+                const beforeBox = await beforeChip.boundingBox();
+                assert(beforeBox.x + beforeBox.width <= chipBox.x + 0.5, 'Search precedes the Astrofolio divider');
+                await beforeChip.focus(); await page.keyboard.press(name === 'webkit' && process.platform === 'darwin' ? 'Alt+Tab' : 'Tab');
+                assert(await chip.evaluate(node => document.activeElement === node), 'Keyboard order matches the displayed order');
+              }
+            }
+            const search = nav.locator(test.wing ? '.wnav__search' : '.nav__search');
+            if (await search.isVisible()) {
+              const searchBox = await search.boundingBox();
+              assert(profileBox.x + profileBox.width <= searchBox.x + 0.5, 'Profile precedes search');
+              assert(Math.abs((profileBox.y + profileBox.height / 2) - (searchBox.y + searchBox.height / 2)) < 1, 'Profile and search share a baseline');
+            }
           }
           assert.deepEqual(errors, []);
           const id = `${name}-${test.path.split('#')[0].replaceAll('/', '_')}-${test.width}`;

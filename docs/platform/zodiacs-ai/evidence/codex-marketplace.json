@@ -1,0 +1,41 @@
+{
+  "installed": [],
+  "available": [
+    {
+      "pluginId": "zodiacs-developer@zodiacs-local-review",
+      "name": "zodiacs-developer",
+      "marketplaceName": "zodiacs-local-review",
+      "version": "0.1.0",
+      "installed": false,
+      "enabled": false,
+      "source": {
+        "source": "local",
+        "path": "/workspace/site/plugins/zodiacs-developer"
+      },
+      "marketplaceSource": {
+        "sourceType": "local",
+        "source": "/workspace/site"
+      },
+      "installPolicy": "AVAILABLE",
+      "authPolicy": "ON_INSTALL"
+    },
+    {
+      "pluginId": "zodiacs-sky@zodiacs-local-review",
+      "name": "zodiacs-sky",
+      "marketplaceName": "zodiacs-local-review",
+      "version": "0.1.0",
+      "installed": false,
+      "enabled": false,
+      "source": {
+        "source": "local",
+        "path": "/workspace/site/plugins/zodiacs-sky"
+      },
+      "marketplaceSource": {
+        "sourceType": "local",
+        "source": "/workspace/site"
+      },
+      "installPolicy": "AVAILABLE",
+      "authPolicy": "ON_INSTALL"
+    }
+  ]
+}

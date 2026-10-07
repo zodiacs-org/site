@@ -5,7 +5,7 @@ import Faq from '../../../components/Faq.astro';
 import CollectBand from '../../../components/CollectBand.astro';
 import ShareRow from '../../../components/ShareRow.astro';
 import { SIGNS, SIGN_SLUGS, elementLabel, signBySlug, signDates, signName } from '../../../lib/signs';
-import { ENGLISH_ONLY_COPY, localizePath } from '../../../lib/i18n';
+import { localizePath } from '../../../lib/i18n';
 import { spanishGuideFor } from '../../../data/es-guides';
 import { pairSlug } from '../../../lib/compat';
 import { EDITOR_AUTHOR } from '../../../lib/editorial';
@@ -105,8 +105,8 @@ const jsonLd = [
             {section.body.map((p) => <p>{p}</p>)}
             {section.risingProfile && (
               <p>
-                <a href={`/rising-sign/${sign.slug}/`} hreflang="en">
-                  Perfil completo de {signName(sign, 'es')} ascendente (en inglés) →
+                <a href={`/es/rising-sign/${sign.slug}/`}>
+                  Perfil completo del ascendente {signName(sign, 'es')} →
                 </a>
               </p>
             )}
@@ -125,7 +125,7 @@ const jsonLd = [
             {easeful.map((slug) => {
               const s = signBySlug(slug);
               return (
-                <a class="chip" href={`/compatibility/${pairSlug(sign.slug, s.slug)}/`} hreflang="en" title={ENGLISH_ONLY_COPY.es.aria} aria-label={`${signName(sign, 'es')} y ${signName(s, 'es')}. ${ENGLISH_ONLY_COPY.es.aria}`} style={`--sign:${s.hue}`}>
+                <a class="chip" href={`/es/compatibility/${pairSlug(sign.slug, s.slug)}/`} style={`--sign:${s.hue}`}>
                   <SignIcon sign={s.slug} size={18} class="chip__icon" /> {signName(sign, 'es')} y {signName(s, 'es')}
                 </a>
               );

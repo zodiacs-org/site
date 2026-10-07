@@ -1,0 +1,49 @@
+{
+  "schema": "zodiacs.ai-launch-local-validation.v1",
+  "date": "2026-10-02",
+  "sourceCommit": "5468423bac0675336949ab16839f40ac5def3e92",
+  "engine": "0.1.1-rc.16",
+  "checks": {
+    "aiBundleDrift": "passed",
+    "unitAndPrivateStateTests": 35,
+    "syntheticCases": 40,
+    "installedStdioTools": 8,
+    "installedRecipes": "passed",
+    "widget": "passed",
+    "siteBuild": {
+      "pages": 4349,
+      "budgets": "passed"
+    },
+    "typecheck": {
+      "errors": 0,
+      "warnings": 0,
+      "hints": 19
+    },
+    "phase1Captures": 18,
+    "durableReceiptTests": 5,
+    "fullMacScope": {
+      "filesPassed": 502,
+      "testsPassed": 6379,
+      "skipped": 5,
+      "excludedExactFixtureFiles": [
+        "tests/api/compute-api-openapi.test.ts",
+        "src/lib/scene/scene.test.ts",
+        "src/lib/wheel/wheel-serialization.test.ts"
+      ],
+      "scope": "Complete Linux CI required; approved numerical fixtures preserved."
+    }
+  },
+  "historicalEvidence": "validation.json retains dated rc.15 results; this file supplements rather than overwrites them.",
+  "completeLinuxCI": {
+    "sourceCommit": "5468423bac0675336949ab16839f40ac5def3e92",
+    "siteCheck": {
+      "run": 37007716450,
+      "conclusion": "success"
+    },
+    "browserEvidence": {
+      "run": 37007716389,
+      "conclusion": "success"
+    },
+    "scope": "Runtime source. Require exact final review-package head checks separately."
+  }
+}

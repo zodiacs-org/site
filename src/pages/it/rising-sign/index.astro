@@ -4,10 +4,7 @@ import Faq from '../../../components/Faq.astro';
 import ChartCalculator from '../../../islands/ChartCalculator';
 import SignIcon from '../../../components/SignIcon.astro';
 import { SIGNS, signName } from '../../../lib/signs';
-import { ENGLISH_ONLY_COPY } from '../../../lib/i18n';
 import '../../../styles/calculator.css';
-
-const englishOnly = ENGLISH_ONLY_COPY.it;
 
 const faq = [
   {
@@ -82,9 +79,9 @@ const jsonLd = [
     </div>
     <div class="risings">
       {SIGNS.map((s) => (
-        <a class="risings__chip" href={`/rising-sign/${s.slug}/`} hreflang="en" title={englishOnly.aria} aria-label={`Ascendente ${signName(s, 'it')}. ${englishOnly.aria}`} style={`--sign:${s.hue}`}>
+        <a class="risings__chip" href={`/it/rising-sign/${s.slug}/`} style={`--sign:${s.hue}`}>
           <SignIcon sign={s.slug} size={26} class="risings__disc" />
-          <span>Ascendente {signName(s, 'it')}<span class="sr-only">{englishOnly.suffix}</span></span>
+          <span>Ascendente {signName(s, 'it')}</span>
         </a>
       ))}
     </div>

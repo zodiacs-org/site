@@ -57,7 +57,7 @@ const jsonLd = [
   jsonLd={jsonLd}
   glass
 >
-  <section class="section--tight container container--narrow">
+  <section class="section--tight container container--narrow" id="calculator">
     <div class="compat-hero">
       <em class="kicker">Deux thèmes, comparés clairement</em>
       <h1 class="display">Explore ta compatibilité astrologique.</h1>
@@ -72,7 +72,7 @@ const jsonLd = [
   <section class="section container">
     <div class="section-head">
       <h2>Les 78 combinaisons</h2>
-      <p>Les guides complets restent pour l’instant en anglais, mais tu peux explorer chaque paire comme point de départ.</p>
+      <p>Chaque duo a son guide : comment il fonctionne, là où ça frotte et ce qui le fait durer.</p>
     </div>
     <div class="compat-index">
       {SIGNS.map((a) => (
@@ -83,7 +83,7 @@ const jsonLd = [
           </a>
           <div class="compat-row__pairs">
             {SIGNS.map((b) => (
-              <a class="compat-row__pair" href={`/compatibility/${pairSlug(a.slug, b.slug)}/`} hreflang="en">
+              <a class="compat-row__pair" href={`/fr/compatibility/${pairSlug(a.slug, b.slug)}/`}>
                 {signName(b, 'fr')}
               </a>
             ))}

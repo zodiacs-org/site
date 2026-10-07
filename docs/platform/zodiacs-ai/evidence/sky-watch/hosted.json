@@ -1,0 +1,104 @@
+{
+  "schema": "zodiacs.sky-watch-hosted-review.v1",
+  "recordedAt": "2026-10-06T08:52:47.493619+00:00",
+  "status": "private-preview-owner-connection-pending",
+  "sourceBase": "c5b4fc11c7d31798b4991fa95aaa70ae298166a3",
+  "sourceBinding": "Reviewed changes identified by hashes; this record is committed with the candidate.",
+  "projectId": "vdunxhdbnosuqqsyicim",
+  "deployment": {
+    "id": "dpl_3bU5oqmjhWQMj9mWepi2P8FVF7MX",
+    "url": "https://zodiacs-sky-watch-test-8xi4atefk-zodiacsofficial.vercel.app",
+    "alias": "https://zodiacs-sky-watch-test.vercel.app",
+    "target": "preview",
+    "status": "Ready",
+    "existingProductionModified": false
+  },
+  "hostedSynthetic": {
+    "checkedAt": "2026-10-06T08:49:44.879Z",
+    "host": "https://zodiacs-sky-watch-test.vercel.app",
+    "authentication": "Supabase OAuth authorization_code+S256, exact MCP audience, ES256 verified",
+    "tools": 6,
+    "events": 3,
+    "refresh": true,
+    "revokedOriginalAndRefreshedAccess": true,
+    "workerRejectsAnonymous": true,
+    "worker": {
+      "windowsFilled": 0,
+      "delivered": 0,
+      "failed": 0,
+      "retried": 0
+    },
+    "fixture": "synthetic only; no human feedback or ChatGPT delivery evidence"
+  },
+  "databaseTests": {
+    "postgres17McpLifecycle": "passed",
+    "oauthLifecycleUnderAuthRole": "passed",
+    "workerCannotForgeAuthProjection": "passed"
+  },
+  "scheduler": {
+    "active": true,
+    "jobId": 1,
+    "schedule": "*/5 * * * *",
+    "idleBehavior": "No HTTP unless active watch or daily maintenance due",
+    "observedCron": "2026-10-06T08:45:00Z succeeded, zero rows while idle",
+    "pgNetRequest": {
+      "id": 1,
+      "observedAt": "2026-10-06T08:15:57Z",
+      "status": 200,
+      "timedOut": false,
+      "error": null
+    },
+    "secrets": "Vault reference; no secret included in this record"
+  },
+  "securityAdvisors": {
+    "checkedAt": "2026-10-06T08:23:00Z",
+    "errors": 0,
+    "warnings": [
+      "auth_leaked_password_protection: requires paid Supabase plan; no upgrade made"
+    ],
+    "informationalDefaultDenyRlsTables": 6
+  },
+  "passwordPolicy": {
+    "signupUiMinimum": 12,
+    "lastVerifiedProviderMinimum": 6,
+    "providerIncrease": "not completed: existing CLI credential lookup timed out"
+  },
+  "costs": {
+    "database": "Owner-approved Free Plan quote $0/month",
+    "host": "Existing Vercel team; no new paid plan; usage not guaranteed free"
+  },
+  "chatgpt": {
+    "appId": "asdk_app_6ac4aa125bd88191b2dd4a221788e2ab",
+    "profileVersion": "1.0.1",
+    "identityWebsiteLegalAndIcon": "visible in profile",
+    "state": "Connect",
+    "ownerAccountConnected": false,
+    "nativeEventsVerified": false
+  },
+  "externalCallbacksDelivered": 0,
+  "humanFeedbackCount": 0,
+  "remaining": [
+    "Owner completes preview account and connection",
+    "Native subscribe/arrival/refresh/stop acceptance",
+    "Wider-beta mail, provider password policy and recovery",
+    "Consenting human task feedback",
+    "Exact candidate CI and owner release review"
+  ],
+  "hashes": {
+    "src/ai-tools/watch/oauth.ts": "b1ea33ba8a1a040d25d321e9aab89ff4ca615b648031e72e4b83fce33aef41d9",
+    "src/ai-tools/watch/oauth.test.ts": "7706b76d32240df762c11b4309f74a4487161addf47caa239aba546a7dd35762",
+    "src/ai-tools/watch/preview-http.ts": "e76a26a452a573ae9f32d34d7f67ab92e2c938e983affe19f9db30e1dee9dfb0",
+    "src/ai-tools/watch/account.ts": "51048555e6eda3f6e99326e0eb721cecb0cbe4bd765504f1939f92b4e00036e7",
+    "src/ai-tools/watch/account.html": "d2bc0afebd8dcfcad05ff225ee5ca83608434d8938dfd5cedc5c0e539bc7931a",
+    "src/ai-tools/watch/account.css": "12c9965d82d231479fe1ea87bcb3acd7e1f7e5354c3666ae6b7d2d53fc28d8f5",
+    "scripts/build-sky-watch-preview.mjs": "921c86ea84b8fe7df1ca0fdf1bf22ecdd5357862dbb9233c1042fc05fa66b17f",
+    "supabase/migrations/20261006073225_sky_watch_oauth.sql": "d2dee74a313bb830b5696ff2ce91c3610f31454732df3de3c14c945f54bd626a",
+    "supabase/migrations/20261006074029_sky_watch_worker_lease.sql": "ad6f416ca54c9359f6ce23593d0fc30a7da53558896b6906eed46eff56a65a55",
+    "supabase/migrations/20261006075332_sky_watch_auth_lifecycle_projection.sql": "212978c4e7dcaa7e3bf943365018a3162228a2119b9c521bd24b01fcda3e8c6c",
+    "tests/sky-watch-auth-fixture.sql": "48756d46d82f50d4176efb6fe84190df57166ea92465f96953446aee4ac9e59f",
+    "tests/sky-watch-oauth.sql": "43154737cf68d6f2c70c6c5ed7d31fbf8c21bed7d6e9352d85f158bc6518afdb",
+    "integrations/generated/sky-watch.mjs": "a945ea47ffa97ed98b357ac1f1cd2f89d8906aa6b8783b5415706dc98a06e0ad",
+    "integrations/packages/zodiacs-developer-0.3.0.zip": "8fbb719f6c5aaec772b0555e6764403829bd166260ad3f3068cc991f56f540cc",
+    "integrations/packages/zodiacs-sky-0.3.0.zip": "cb9ad41676e40844da6d756e1542efff9df40990b48d1bc60b91d8d5d8157fa9"
+  }
+}

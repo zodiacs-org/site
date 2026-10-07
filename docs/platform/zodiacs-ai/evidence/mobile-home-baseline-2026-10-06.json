@@ -1,0 +1,24 @@
+{
+  "schema": "zodiacs.visual-baseline-review.v1",
+  "reviewedAt": "2026-10-06T18:28:58.062138+00:00",
+  "reviewer": "Codex; source and captured-image inspection, not human beta feedback",
+  "sourceHead": "958fb1c8803bc5f520f4cd4d78e392c130227c4b",
+  "sourceRun": "https://github.com/zodiacs-org/site/actions/runs/37510106173",
+  "artifactId": 11435392284,
+  "sourceArtifactPath": "tests/visual/artifacts/visual/home-mobile.actual.png",
+  "baselinePath": "tests/visual/baselines/linux/home-mobile.png",
+  "sha256": "06983bbb06d53ce8feaf91cef20d7c8cc51cae60fd49cc4258d66b8ef8a59ad7",
+  "bytes": 929881,
+  "expectedDimensions": [
+    390,
+    9091
+  ],
+  "acceptedDimensions": [
+    390,
+    9182
+  ],
+  "reason": "The incoming main baseline includes the sharp mobile hero but predates the branch's accessible chart selector. The combined source retains the sharp hero and adds the already-reviewed 44px selector plus its label and spacing, increasing mobile page height by 91px. The inspected actual screenshot shows the intended labeled selector and no overlap. The first materially different row is 1217; the hero above it matches the incoming baseline.",
+  "otherComparisons": "All 14 other comparisons passed in the same run; no thresholds or other baselines changed.",
+  "import": "Exact actual screenshot bytes imported unchanged after checking the CI provenance hash. No image editing or synthesized pixels used in the baseline.",
+  "finalComparison": "Pending a complete new run against this baseline."
+}

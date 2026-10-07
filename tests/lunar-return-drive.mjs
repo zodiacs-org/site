@@ -233,6 +233,9 @@ export async function runLunarReturnChecks({ browser, baseURL, check, outDir }) 
         && await page.locator('[data-lr-image],[data-lunar-return-result]').count() === 0);
       await page.locator('#lr-date').fill('1990-02-01'); await page.locator('#lr-time').fill('12:00');
       await page.locator('#lr-place').fill('London'); await page.getByRole('option', { name: /London/ }).first().click();
+      // PlaceSearch transfers focus from its removed combobox to the selected
+      // field after rendering. Finish that transition before keyboard toggles.
+      await page.waitForFunction(() => document.activeElement?.id === 'lr-place', null, { timeout: 3000 });
       await inspectToggleTargets(page, check, width);
       const unknownTime = page.locator('[data-lunar-return-calculator] .field__labelrow input[type="checkbox"]');
       await unknownTime.focus(); await page.keyboard.press('Space');

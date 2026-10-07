@@ -151,11 +151,33 @@ function isLocalizedBirthdayPath(path: string): boolean {
   return Boolean(maxDay && birthday[2] === String(day) && day >= 1 && day <= maxDay);
 }
 
+/**
+ * Rising-sign profiles, the four sky-calendar hubs and the 78 compatibility
+ * pairs are translated for es, pt, fr and it (the same set as
+ * PROGRAMMATIC_ROUTE_LOCALES); Russian links to the English pages.
+ *
+ * Answered on the server only: every link to these pages is server-rendered,
+ * and this module's browser copy sits inside route budgets with a few bytes
+ * of headroom. A browser component that links to them must take the
+ * localized href as a prop rather than call localizePath.
+ */
+function isTranslatedFamilyPath(path: string): boolean {
+  if (!import.meta.env.SSR) return false;
+  const rising = /^\/rising-sign\/([a-z]+)\/$/.exec(path)?.[1];
+  if (rising) return SIGN_SLUGS.includes(rising);
+  const pair = /^\/compatibility\/([a-z]+)-([a-z]+)\/$/.exec(path);
+  if (pair) {
+    const first = SIGN_SLUGS.indexOf(pair[1]);
+    return first >= 0 && first <= SIGN_SLUGS.indexOf(pair[2]);
+  }
+  return /^\/(?:full-moon-calendar|eclipses|mercury-retrograde|retrogrades)\/$/.test(path);
+}
+
 export function availableLocalesForPath(path: string): readonly Locale[] | undefined {
   const canonical = stripLocale(path);
   if (/^\/chart-of-the-day\/\d{4}-\d{2}-\d{2}\/$/.test(canonical)) return CORE_ROUTE_LOCALES;
   return LOCALIZED_PATHS.get(canonical)
-    ?? (isLocalizedChineseZodiacPath(canonical) ? PROGRAMMATIC_ROUTE_LOCALES : undefined)
+    ?? (isLocalizedChineseZodiacPath(canonical) || isTranslatedFamilyPath(canonical) ? PROGRAMMATIC_ROUTE_LOCALES : undefined)
     ?? (isLocalizedBirthdayPath(canonical) ? [DEFAULT_LOCALE] : undefined);
 }
 
@@ -167,6 +189,7 @@ export function renderableLocalesForPath(path: string): readonly Locale[] | unde
   }
   if (DAILY_READING_PATHS.includes(canonical)) return DAILY_READING_ROUTE_LOCALES;
   return isLocalizedChineseZodiacPath(canonical) || isLocalizedBirthdayPath(canonical)
+    || isTranslatedFamilyPath(canonical)
     ? PROGRAMMATIC_ROUTE_LOCALES
     : undefined;
 }

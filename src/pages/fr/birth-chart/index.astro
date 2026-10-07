@@ -79,6 +79,7 @@ const jsonLd = [
         document.documentElement.dataset.chartShareReceiver = '';
         document.addEventListener('DOMContentLoaded', function () {
           document.querySelectorAll('a[href="/astrofolio/"],a[href^="/registry/"],a[href^="/sdk/"]').forEach(function (element) {
+            if (element.closest('[data-nav], [data-mobile-menu]')) return;
             var footerWing = element.closest('.footer__col, .zfooter__group');
             (footerWing || element).remove();
           });
@@ -87,7 +88,7 @@ const jsonLd = [
     } catch (error) {}
   </script>
   <style slot="head" is:inline>
-    html[data-chart-share-receiver] a[href="/astrofolio/"],
+    html[data-chart-share-receiver] a[href="/astrofolio/"]:not([data-nav] a, [data-mobile-menu] a),
     html[data-chart-share-receiver] a[href^="/registry/"],
     html[data-chart-share-receiver] a[href^="/sdk/"],
     html[data-chart-share-receiver] .calc__record,

@@ -9,5 +9,5 @@ import '../../styles/return-visits.css';
 ---
 <nav class="return-discovery" aria-label={s(locale, 'discovery')}>
   <h2>{s(locale, 'discovery')}</h2>
-  <ul>{links.filter((link) => link.path !== current).map((link) => <li><a href={localizePath(locale, link.path)}>{link.key === 'saturn' ? t(locale, 'saturnReturn') : s(locale, link.key)} <span aria-hidden="true">↗</span></a></li>)}</ul>
+  <ul>{links.filter((link) => link.path !== current).map((link) => <li><a href={localizePath(locale, link.path)}><span>{link.key === 'saturn' ? t(locale, 'saturnReturn') : s(locale, link.key)}</span><span class="return-discovery__arrow" aria-hidden="true">→</span></a></li>)}</ul>
 </nav>

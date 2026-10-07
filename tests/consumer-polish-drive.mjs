@@ -27,7 +27,7 @@ await withPreview({port:8907},async base=>{
       assert(await page.locator('[data-nav] a[href="/astrofolio/"]').isVisible(),`${route} misses Astrofolio`);
       assert.equal(await page.locator('.zfooter a[href="/astrofolio/"]').count(),1);
      }
-     if(['/birth-chart/','/today/','/compatibility/','/sky-calendar/','/tools/'].includes(route)) assert.equal(await page.locator('[data-nav] a[href="/astrofolio/"]').count(),0);
+     if(['/birth-chart/','/today/','/compatibility/','/sky-calendar/','/tools/'].includes(route)) assert.equal(await page.locator('[data-nav] a[href="/astrofolio/"]').count(),1);
      for(const chip of await page.locator('.guide-prompts__chip').all()){
       const box=await chip.boundingBox();if(box) assert(box.height>=44,`${route} small Guide target`);
      }

@@ -51,7 +51,7 @@ function run({ top = 1800, readyState = 'loading', io = 'normal', hasFooter = tr
 }
 
 const expectOneStylesheet = (state) => expect(state.links).toEqual([
-  { tag: 'link', rel: 'stylesheet', href: '/assets/site-footer.css?v=20261003' },
+  { tag: 'link', rel: 'stylesheet', href: '/assets/site-footer.css?v=20261006' },
 ]);
 
 describe('actual footer stylesheet loader', () => {

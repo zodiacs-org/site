@@ -1,0 +1,685 @@
+---
+/**
+ * Translated retrograde calendar (es, pt, fr, it). The English page
+ * (src/pages/retrogrades/index.astro) is the reference: same data logic,
+ * markup and styles; every visible string comes from COPY below.
+ *
+ * The English page's glossary and planet-profile links point at English-only
+ * pages (/learn/…). They are incidental prose links, so the text stays and
+ * the link is dropped here rather than carrying an "in English" cue
+ * mid-sentence.
+ */
+import Base from '../../layouts/Base.astro';
+import '../../styles/rx-table.css';
+import sky from '../../data/sky.json';
+import { bodyLongitude } from '../../lib/engine/full';
+import type { BodyName } from '../../lib/engine/types';
+import { formatLongitude } from '../../lib/signs';
+import { formatShortDate } from '../../lib/i18n/dates';
+import { planetLabel } from '../../lib/i18n/astrology';
+
+type Locale = 'es' | 'pt' | 'fr' | 'it';
+interface Props { locale: Locale }
+
+const { locale } = Astro.props;
+
+const PLANET_ORDER = ['Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto'] as const;
+type RetroPlanet = (typeof PLANET_ORDER)[number];
+
+/** Running text with inline links, in the order it is printed. */
+type Part = string | { text: string; href: string };
+
+interface Links {
+  mercury: string;
+  transits: string;
+  birthChart: string;
+}
+
+interface Copy {
+  title: string;
+  description: string;
+  imageAlt: string;
+  schemaName: string;
+  schemaDescription: string;
+  datasetName: string;
+  datasetDescription: string;
+  variableMeasured: string[];
+  /** `planet` is the localized name; `key` is the English data key. */
+  eventName: (planet: string, key: RetroPlanet) => string;
+  eventClosed: (planet: string, from: string, to: string, rx: string, direct: string) => string;
+  eventOpen: (planet: string, from: string, rx: string) => string;
+  notYet: string;
+  heroTitle: string;
+  heroLede: string;
+  asOf: (date: string) => string;
+  and: string;
+  statusRetro: (planets: string) => string;
+  statusDirect: string;
+  sunMoon: string;
+  mercuryNote: (links: Links) => Part[];
+  methodSummary: string;
+  methodText: string;
+  rhythm: Record<RetroPlanet, string>;
+  nowBadge: (key: RetroPlanet) => string;
+  thWindow: string;
+  thRetrograde: string;
+  thDirect: string;
+  thStatus: string;
+  clampedFrom: string;
+  openEnd: string;
+  stateNow: string;
+  stateAhead: string;
+  calmHeading: string;
+  calm1: string;
+  calm2: (links: Links) => Part[];
+  calm3: (links: Links) => Part[];
+  faqHeading: string;
+  faq: (status: string) => { q: string; a: string }[];
+}
+
+const COPY: Record<Locale, Copy> = {
+  es: {
+    title: 'Planetas retrógrados 2026 y 2027 | Zodiacs.org',
+    description: 'Qué planetas están retrógrados ahora y cuándo son los próximos periodos: de Mercurio a Plutón en 2026 y 2027, con fechas y posiciones de cada estación.',
+    imageAlt: 'Planetas retrógrados — Zodiacs.org',
+    schemaName: 'Planetas retrógrados 2026–2027, con fechas',
+    schemaDescription: 'Todos los periodos retrógrados de 2026 y 2027, de Mercurio a Plutón, con fechas y posiciones de las estaciones, calculados a partir del movimiento real.',
+    datasetName: 'Periodos retrógrados de los planetas, 2026–2027',
+    datasetDescription: 'Instantes calculados de las estaciones retrógradas y directas y posiciones en el zodiaco tropical, de Mercurio a Plutón.',
+    variableMeasured: ['planeta', 'instante de la estación retrógrada', 'instante de la estación directa', 'longitud de la estación'],
+    eventName: (planet) => `${planet} retrógrado`,
+    eventClosed: (planet, from, to, rx, direct) =>
+      `${planet} aparece en movimiento retrógrado desde ${from} hasta ${to}; posiciones de las estaciones: ${rx} y ${direct}.`,
+    eventOpen: (planet, from, rx) =>
+      `${planet} aparece en movimiento retrógrado desde ${from}. La fecha de término aún no está disponible; posición de la estación retrógrada: ${rx}.`,
+    notYet: 'aún no disponible',
+    heroTitle: 'Revisa todos los periodos retrógrados hasta 2027.',
+    heroLede: 'Mira qué planetas están retrógrados ahora y cuándo cambia de dirección cada uno.',
+    asOf: (date) => `Al ${date}`,
+    and: 'y',
+    statusRetro: (planets) => `En periodo retrógrado ahora mismo: ${planets}. Todos los demás planetas están en movimiento directo.`,
+    statusDirect: 'Todos los planetas están en movimiento directo ahora mismo; nunca dura mucho.',
+    sunMoon: 'El Sol y la Luna nunca se vuelven retrógrados',
+    mercuryNote: (links) => ['Los periodos de Mercurio tienen ', { text: 'su propia página', href: links.mercury }],
+    methodSummary: 'Cómo funciona este calendario',
+    methodText: 'Los ocho planetas que se vuelven retrógrados, de 2026 a 2027: cada periodo se calcula de estación a estación a partir del movimiento real, con el grado donde ocurre cada cambio de dirección.',
+    rhythm: {
+      Mercury: 'tres o cuatro veces al año, unas tres semanas cada vez',
+      Venus: 'cada 19 meses, unas seis semanas: el menos frecuente',
+      Mars: 'cada 26 meses, de dos a tres meses',
+      Jupiter: 'cada año, unos cuatro meses',
+      Saturn: 'cada año, unos cuatro meses y medio',
+      Uranus: 'cada año, unos cinco meses',
+      Neptune: 'cada año, unos cinco meses',
+      Pluto: 'cada año, de cinco a seis meses',
+    },
+    nowBadge: () => 'retrógrado ahora',
+    thWindow: 'Periodo',
+    thRetrograde: 'Estación retrógrada',
+    thDirect: 'Estación directa',
+    thStatus: 'Estado',
+    clampedFrom: 'ya retrógrado al comenzar 2026',
+    openEnd: 'más allá del horizonte de datos',
+    stateNow: 'en curso',
+    stateAhead: 'por venir',
+    calmHeading: 'Cómo leer esto con calma',
+    calm1: 'El movimiento retrógrado es perspectiva, no marcha atrás: planetas que se adelantan unos a otros en órbitas distintas, la misma ilusión de un tren más lento que parece rodar hacia atrás. Lo que las tablas dejan claro es lo común que es. Los planetas exteriores pasan entre un tercio y la mitad de cada año retrógrados: en un día cualquiera el cielo suele tener uno o dos, y hoy no es la excepción.',
+    calm2: (links) => [
+      'La tradición ajusta sus lecturas al ritmo. Los periodos de tres semanas de ',
+      { text: 'Mercurio', href: links.mercury },
+      ' son temporada de revisión para planes y papeleo. Un periodo retrógrado de Venus —el menos frecuente, cada 19 meses— se lee como una reevaluación de lo que quieres y de a quién quieres; el de Marte, cada 26 meses, como una reconstrucción del motor del impulso mismo. Los periodos anuales de los planetas exteriores pasan casi inadvertidos y solo se sienten donde cruzan algo exacto en tu propia carta, que es lo que revisa el ',
+      { text: 'seguimiento de tránsitos', href: links.transits },
+      '.',
+    ],
+    calm3: (links) => [
+      '¿Naciste durante un periodo retrógrado? Es común y nada alarmante: más o menos una de cada cinco personas tiene a Mercurio retrógrado en su carta natal. Tu ',
+      { text: 'carta natal', href: links.birthChart },
+      ' marca con una ℞ cada planeta que se movía hacia atrás cuando naciste.',
+    ],
+    faqHeading: 'Preguntas y respuestas',
+    faq: (status) => [
+      {
+        q: '¿Qué planetas están retrógrados ahora mismo?',
+        a: `${status} Las tablas de arriba muestran todos los periodos de 2026 y 2027, de estación a estación, con precisión de una hora.`,
+      },
+      {
+        q: '¿El Sol o la Luna pueden estar retrógrados?',
+        a: 'No. El movimiento retrógrado es un efecto de perspectiva entre planetas que giran alrededor del Sol a velocidades distintas. La Luna gira directamente alrededor de la Tierra y el movimiento aparente del Sol es el reflejo de la órbita de la propia Tierra, así que ninguno de los dos parece retroceder nunca.',
+      },
+      {
+        q: '¿Son importantes los periodos retrógrados de los planetas exteriores?',
+        a: 'En general, no. De Júpiter a Plutón, los planetas pasan entre cuatro y seis meses de cada año retrógrados: es su ritmo normal, y más o menos la mitad de las personas vivas tiene al menos un planeta exterior retrógrado en su carta natal. La astrología los lee como fases más tranquilas e interiores del tema de cada planeta, nada parecido al folclore de agenda que rodea a Mercurio.',
+      },
+      {
+        q: '¿Qué es una estación?',
+        a: 'El cambio de dirección. Un planeta se frena, se queda varios días en un mismo grado y luego invierte su marcha: primero en la estación retrógrada, más tarde en la estación directa. Las posiciones de las tablas marcan esas pausas, y la astrología trata el grado de una estación como el punto sensible de todo el periodo.',
+      },
+      {
+        q: '¿Por qué Mercurio se lleva toda la atención?',
+        a: 'Por frecuencia y por terreno. Mercurio se vuelve retrógrado tres o cuatro veces al año —es el único planeta que lo hace más de una vez al año— y la astrología le asigna los asuntos del día a día: mensajes, viajes, contratos. Los periodos retrógrados de Venus y Marte son menos frecuentes y se leen como revisiones más profundas del apego y del impulso. La historia completa de Mercurio tiene su propia página.',
+      },
+    ],
+  },
+  pt: {
+    title: 'Planetas retrógrados 2026 e 2027 | Zodiacs.org',
+    description: 'Quais planetas estão retrógrados agora e quando vêm os próximos períodos: de Mercúrio a Plutão em 2026 e 2027, com datas e posições de cada estação.',
+    imageAlt: 'Planetas retrógrados — Zodiacs.org',
+    schemaName: 'Planetas retrógrados 2026–2027, com datas',
+    schemaDescription: 'Todos os períodos retrógrados de 2026 e 2027, de Mercúrio a Plutão, com datas e posições das estações, calculados a partir do movimento real.',
+    datasetName: 'Períodos retrógrados dos planetas, 2026–2027',
+    datasetDescription: 'Instantes calculados das estações retrógradas e diretas e posições no zodíaco tropical, de Mercúrio a Plutão.',
+    variableMeasured: ['planeta', 'instante da estação retrógrada', 'instante da estação direta', 'longitude da estação'],
+    eventName: (planet) => `${planet} retrógrado`,
+    eventClosed: (planet, from, to, rx, direct) =>
+      `${planet} aparece em movimento retrógrado de ${from} a ${to}; posições das estações: ${rx} e ${direct}.`,
+    eventOpen: (planet, from, rx) =>
+      `${planet} aparece em movimento retrógrado a partir de ${from}. A data de término ainda não está disponível; posição da estação retrógrada: ${rx}.`,
+    notYet: 'ainda não disponível',
+    heroTitle: 'Veja todos os períodos retrógrados até 2027.',
+    heroLede: 'Confira quais planetas estão retrógrados agora e quando cada um muda de direção.',
+    asOf: (date) => `Em ${date}`,
+    and: 'e',
+    statusRetro: (planets) => `Em período retrógrado agora: ${planets}. Todos os outros planetas estão em movimento direto.`,
+    statusDirect: 'Todos os planetas estão em movimento direto agora; isso nunca dura muito.',
+    sunMoon: 'O Sol e a Lua nunca ficam retrógrados',
+    mercuryNote: (links) => ['Os períodos de Mercúrio têm ', { text: 'uma página própria', href: links.mercury }],
+    methodSummary: 'Como este calendário funciona',
+    methodText: 'Todos os oito planetas que ficam retrógrados, de 2026 a 2027: cada período é calculado de estação a estação a partir do movimento real, com o grau em que cada mudança de direção acontece.',
+    rhythm: {
+      Mercury: 'três ou quatro vezes por ano, cerca de três semanas cada vez',
+      Venus: 'a cada 19 meses, cerca de seis semanas: o mais raro',
+      Mars: 'a cada 26 meses, de dois a três meses',
+      Jupiter: 'todo ano, cerca de quatro meses',
+      Saturn: 'todo ano, cerca de quatro meses e meio',
+      Uranus: 'todo ano, cerca de cinco meses',
+      Neptune: 'todo ano, cerca de cinco meses',
+      Pluto: 'todo ano, de cinco a seis meses',
+    },
+    nowBadge: () => 'retrógrado agora',
+    thWindow: 'Período',
+    thRetrograde: 'Estação retrógrada',
+    thDirect: 'Estação direta',
+    thStatus: 'Situação',
+    clampedFrom: 'já retrógrado no início de 2026',
+    openEnd: 'além do horizonte dos dados',
+    stateNow: 'em curso',
+    stateAhead: 'por vir',
+    calmHeading: 'Como ler isto com calma',
+    calm1: 'O movimento retrógrado é perspectiva, não marcha a ré: planetas que se ultrapassam em órbitas diferentes, a mesma ilusão de um trem mais lento que parece andar para trás. O que as tabelas deixam claro é como isso é comum. Os planetas exteriores passam de um terço à metade de cada ano retrógrados: em um dia qualquer o céu costuma ter um ou dois, e hoje não é exceção.',
+    calm2: (links) => [
+      'A tradição ajusta suas leituras ao ritmo. Os períodos de três semanas de ',
+      { text: 'Mercúrio', href: links.mercury },
+      ' são temporada de revisão de planos e papelada. Um período retrógrado de Vênus — o mais raro, a cada 19 meses — é lido como uma reavaliação do que você quer e de quem você quer; o de Marte, a cada 26 meses, como uma retífica do motor do próprio impulso. Os períodos anuais dos planetas exteriores passam quase despercebidos e só são sentidos onde cruzam algo exato no seu mapa, e é isso que o ',
+      { text: 'acompanhamento de trânsitos', href: links.transits },
+      ' verifica.',
+    ],
+    calm3: (links) => [
+      'Nasceu durante um período retrógrado? É comum e nada alarmante: mais ou menos uma em cada cinco pessoas tem Mercúrio retrógrado no mapa astral. Seu ',
+      { text: 'mapa astral', href: links.birthChart },
+      ' marca com um ℞ cada planeta que se movia para trás quando você nasceu.',
+    ],
+    faqHeading: 'Perguntas e respostas',
+    faq: (status) => [
+      {
+        q: 'Quais planetas estão retrógrados agora?',
+        a: `${status} As tabelas acima listam todos os períodos de 2026 e 2027, de estação a estação, com precisão de uma hora.`,
+      },
+      {
+        q: 'O Sol ou a Lua podem ficar retrógrados?',
+        a: 'Não. O movimento retrógrado é um efeito de perspectiva entre planetas que orbitam o Sol em velocidades diferentes. A Lua orbita a Terra diretamente e o movimento aparente do Sol é o reflexo da órbita da própria Terra, então nenhum dos dois jamais parece andar para trás.',
+      },
+      {
+        q: 'Os períodos retrógrados dos planetas exteriores são importantes?',
+        a: 'Em geral, não. De Júpiter a Plutão, os planetas passam de quatro a seis meses de cada ano retrógrados: é o ritmo normal deles, e mais ou menos metade das pessoas vivas tem pelo menos um planeta exterior retrógrado no mapa astral. Astrólogos os leem como fases mais quietas e internas do tema de cada planeta, nada parecido com o folclore de agenda em torno de Mercúrio.',
+      },
+      {
+        q: 'O que é uma estação?',
+        a: 'A mudança de direção. Um planeta desacelera, fica dias parado no mesmo grau e então inverte o sentido: primeiro na estação retrógrada, depois na estação direta. As posições nas tabelas marcam essas paradas, e astrólogos tratam o grau de uma estação como o ponto sensível de todo o período.',
+      },
+      {
+        q: 'Por que Mercúrio recebe toda a atenção?',
+        a: 'Por frequência e por território. Mercúrio fica retrógrado três ou quatro vezes por ano — é o único planeta que faz isso mais de uma vez por ano — e a astrologia entrega a ele os assuntos do dia a dia: mensagens, viagens, contratos. Os períodos retrógrados de Vênus e Marte são mais raros e lidos como revisões mais profundas do apego e do impulso. A história completa de Mercúrio tem uma página própria.',
+      },
+    ],
+  },
+  fr: {
+    title: 'Planètes rétrogrades 2026 et 2027 | Zodiacs.org',
+    description: 'Quelles planètes sont rétrogrades maintenant et quand viennent les prochaines périodes\u202F: de Mercure à Pluton, 2026–2027, dates et positions des stations.',
+    imageAlt: 'Planètes rétrogrades — Zodiacs.org',
+    schemaName: 'Planètes rétrogrades 2026–2027, avec les dates',
+    schemaDescription: 'Toutes les périodes rétrogrades de 2026 et 2027, de Mercure à Pluton, avec les dates et les positions des stations, calculées d’après le mouvement réel.',
+    datasetName: 'Périodes rétrogrades des planètes, 2026–2027',
+    datasetDescription: 'Instants calculés des stations rétrogrades et directes et positions dans le zodiaque tropical, de Mercure à Pluton.',
+    variableMeasured: ['planète', 'instant de la station rétrograde', 'instant de la station directe', 'longitude de la station'],
+    eventName: (planet) => `${planet} rétrograde`,
+    eventClosed: (planet, from, to, rx, direct) =>
+      `${planet} apparaît en mouvement rétrograde de ${from} à ${to}\u202F; positions des stations\u202F: ${rx} et ${direct}.`,
+    eventOpen: (planet, from, rx) =>
+      `${planet} apparaît en mouvement rétrograde à partir de ${from}. La date de fin n’est pas encore disponible\u202F; position de la station rétrograde\u202F: ${rx}.`,
+    notYet: 'pas encore disponible',
+    heroTitle: 'Consulte toutes les périodes rétrogrades jusqu’en 2027.',
+    heroLede: 'Vois quelles planètes sont rétrogrades en ce moment et quand chacune change de sens.',
+    asOf: (date) => `Au ${date}`,
+    and: 'et',
+    statusRetro: (planets) => `En période rétrograde en ce moment\u202F: ${planets}. Toutes les autres planètes sont en mouvement direct.`,
+    statusDirect: 'Toutes les planètes sont en mouvement direct en ce moment\u202F; cela ne dure jamais longtemps.',
+    sunMoon: 'Le Soleil et la Lune ne sont jamais rétrogrades',
+    mercuryNote: (links) => ['Les périodes de Mercure ont ', { text: 'leur propre page', href: links.mercury }],
+    methodSummary: 'Comment fonctionne ce calendrier',
+    methodText: 'Les huit planètes qui connaissent des périodes rétrogrades, de 2026 à 2027\u202F: chaque période est calculée de station à station d’après le mouvement réel, avec le degré où se produit chaque changement de sens.',
+    rhythm: {
+      Mercury: 'trois ou quatre fois par an, environ trois semaines à chaque fois',
+      Venus: 'tous les 19 mois, environ six semaines\u202F: la plus rare',
+      Mars: 'tous les 26 mois, deux à trois mois',
+      Jupiter: 'chaque année, environ quatre mois',
+      Saturn: 'chaque année, environ quatre mois et demi',
+      Uranus: 'chaque année, environ cinq mois',
+      Neptune: 'chaque année, environ cinq mois',
+      Pluto: 'chaque année, cinq à six mois',
+    },
+    nowBadge: () => 'rétrograde en ce moment',
+    thWindow: 'Période',
+    thRetrograde: 'Station rétrograde',
+    thDirect: 'Station directe',
+    thStatus: 'Statut',
+    clampedFrom: 'déjà rétrograde au début de 2026',
+    openEnd: 'au-delà de l’horizon des données',
+    stateNow: 'en cours',
+    stateAhead: 'à venir',
+    calmHeading: 'Comment lire ce calendrier calmement',
+    calm1: 'Le mouvement rétrograde est une affaire de perspective, pas une marche arrière\u202F: des planètes qui se doublent sur des orbites différentes, la même illusion qu’un train plus lent qui semble reculer. Ce que les tableaux montrent clairement, c’est à quel point le phénomène est ordinaire. Les planètes extérieures passent entre un tiers et la moitié de chaque année en période rétrograde\u202F: n’importe quel jour, le ciel en compte généralement une ou deux, et aujourd’hui ne fait pas exception.',
+    calm2: (links) => [
+      'La tradition ajuste ses lectures au rythme. Les périodes de trois semaines de ',
+      { text: 'Mercure', href: links.mercury },
+      ' sont la saison des révisions pour les projets et la paperasse. Une période rétrograde de Vénus — la plus rare, tous les 19 mois — se lit comme une réévaluation de ce que tu veux et de qui tu veux\u202F; celle de Mars, tous les 26 mois, comme une remise à neuf du moteur de l’élan lui-même. Les périodes annuelles des planètes extérieures passent le plus souvent inaperçues et ne se font sentir que là où elles croisent un point exact de ton propre thème, et c’est ce que vérifie le ',
+      { text: 'suivi des transits', href: links.transits },
+      '.',
+    ],
+    calm3: (links) => [
+      'Ta naissance tombe pendant une période rétrograde\u202F? C’est courant et cela n’a rien d’alarmant\u202F: environ une personne sur cinq a Mercure rétrograde dans son thème astral. Ton ',
+      { text: 'thème astral', href: links.birthChart },
+      ' signale par un ℞ chaque planète qui reculait au moment de ta naissance.',
+    ],
+    faqHeading: 'Questions et réponses',
+    faq: (status) => [
+      {
+        q: 'Quelles planètes sont rétrogrades en ce moment\u202F?',
+        a: `${status} Les tableaux ci-dessus recensent toutes les périodes de 2026 et 2027, de station à station, à l’heure près.`,
+      },
+      {
+        q: 'Le Soleil ou la Lune peuvent-ils être rétrogrades\u202F?',
+        a: 'Non. Le mouvement rétrograde est un effet de perspective entre des planètes qui tournent autour du Soleil à des vitesses différentes. La Lune tourne directement autour de la Terre, et le mouvement apparent du Soleil est le reflet de l’orbite de la Terre elle-même\u202F: aucun des deux ne semble donc jamais faire marche arrière.',
+      },
+      {
+        q: 'Les périodes rétrogrades des planètes extérieures sont-elles importantes\u202F?',
+        a: 'Le plus souvent, non. De Jupiter à Pluton, les planètes passent quatre à six mois par an en période rétrograde\u202F: c’est leur rythme normal, et environ la moitié des personnes en vie ont au moins une planète extérieure rétrograde dans leur thème astral. Les astrologues y lisent des phases plus calmes et plus intérieures du registre de chaque planète, rien à voir avec le folklore d’agenda qui entoure Mercure.',
+      },
+      {
+        q: 'Qu’est-ce qu’une station\u202F?',
+        a: 'Le changement de sens. Une planète ralentit, reste plusieurs jours sur le même degré, puis repart dans l’autre sens\u202F: d’abord à la station rétrograde, plus tard à la station directe. Les positions des tableaux indiquent ces points d’arrêt, et les astrologues considèrent le degré d’une station comme le point sensible de toute la période.',
+      },
+      {
+        q: 'Pourquoi toute l’attention va-t-elle à Mercure\u202F?',
+        a: 'Question de fréquence et de domaine. Mercure devient rétrograde trois ou quatre fois par an — c’est la seule planète à le faire plus d’une fois par an — et l’astrologie lui confie le quotidien\u202F: messages, déplacements, contrats. Les périodes rétrogrades de Vénus et de Mars sont plus rares et se lisent comme des révisions plus profondes de l’attachement et de l’élan. L’histoire complète de Mercure a sa propre page.',
+      },
+    ],
+  },
+  it: {
+    title: 'Pianeti retrogradi 2026 e 2027 | Zodiacs.org',
+    description: 'Quali pianeti sono retrogradi adesso e quando arrivano i prossimi periodi: da Mercurio a Plutone nel 2026 e 2027, con date e posizioni di ogni stazione.',
+    imageAlt: 'Pianeti retrogradi — Zodiacs.org',
+    schemaName: 'Pianeti retrogradi 2026–2027, con le date',
+    schemaDescription: 'Tutti i periodi retrogradi del 2026 e del 2027, da Mercurio a Plutone, con date e posizioni delle stazioni, calcolati sul moto reale.',
+    datasetName: 'Periodi retrogradi dei pianeti, 2026–2027',
+    datasetDescription: 'Istanti calcolati delle stazioni retrograde e dirette e posizioni nello zodiaco tropicale, da Mercurio a Plutone.',
+    variableMeasured: ['pianeta', 'istante della stazione retrograda', 'istante della stazione diretta', 'longitudine della stazione'],
+    // Venere is feminine in Italian; the other seven are masculine.
+    eventName: (planet, key) => `${planet} ${key === 'Venus' ? 'retrograda' : 'retrogrado'}`,
+    eventClosed: (planet, from, to, rx, direct) =>
+      `${planet} appare in moto retrogrado da ${from} a ${to}; posizioni delle stazioni: ${rx} e ${direct}.`,
+    eventOpen: (planet, from, rx) =>
+      `${planet} appare in moto retrogrado da ${from}. La data di fine non è ancora disponibile; posizione della stazione retrograda: ${rx}.`,
+    notYet: 'non ancora disponibile',
+    heroTitle: 'Consulta tutti i periodi retrogradi fino al 2027.',
+    heroLede: 'Guarda quali pianeti sono retrogradi adesso e quando ciascuno cambia direzione.',
+    asOf: (date) => `Al ${date}`,
+    and: 'e',
+    statusRetro: (planets) => `In periodo retrogrado adesso: ${planets}. Tutti gli altri pianeti sono in moto diretto.`,
+    statusDirect: 'In questo momento tutti i pianeti sono in moto diretto; non dura mai a lungo.',
+    sunMoon: 'Il Sole e la Luna non sono mai retrogradi',
+    mercuryNote: (links) => ['I periodi di Mercurio hanno ', { text: 'una pagina tutta loro', href: links.mercury }],
+    methodSummary: 'Come funziona questo calendario',
+    methodText: 'Tutti e otto i pianeti che hanno periodi retrogradi, dal 2026 al 2027: ogni periodo è calcolato da stazione a stazione sul moto reale, con il grado in cui avviene ogni cambio di direzione.',
+    rhythm: {
+      Mercury: 'tre o quattro volte l’anno, circa tre settimane ogni volta',
+      Venus: 'ogni 19 mesi, circa sei settimane: il più raro',
+      Mars: 'ogni 26 mesi, da due a tre mesi',
+      Jupiter: 'ogni anno, circa quattro mesi',
+      Saturn: 'ogni anno, circa quattro mesi e mezzo',
+      Uranus: 'ogni anno, circa cinque mesi',
+      Neptune: 'ogni anno, circa cinque mesi',
+      Pluto: 'ogni anno, da cinque a sei mesi',
+    },
+    nowBadge: (key) => (key === 'Venus' ? 'retrograda adesso' : 'retrogrado adesso'),
+    thWindow: 'Periodo',
+    thRetrograde: 'Stazione retrograda',
+    thDirect: 'Stazione diretta',
+    thStatus: 'Stato',
+    clampedFrom: 'già in moto retrogrado all’inizio del 2026',
+    openEnd: 'oltre l’orizzonte dei dati',
+    stateNow: 'in corso',
+    stateAhead: 'in arrivo',
+    calmHeading: 'Come leggere tutto questo con calma',
+    calm1: 'Il moto retrogrado è prospettiva, non retromarcia: pianeti che si sorpassano su orbite diverse, la stessa illusione di un treno più lento che sembra andare all’indietro. Quello che le tabelle mostrano con chiarezza è quanto sia normale. I pianeti esterni passano da un terzo a metà di ogni anno in moto retrogrado: in un giorno qualsiasi il cielo ne ha di solito uno o due, e oggi non fa eccezione.',
+    calm2: (links) => [
+      'La tradizione adatta le sue letture al ritmo. I periodi di tre settimane di ',
+      { text: 'Mercurio', href: links.mercury },
+      ' sono la stagione delle revisioni per progetti e scartoffie. Un periodo retrogrado di Venere — il più raro, ogni 19 mesi — si legge come un riesame di ciò che vuoi e di chi vuoi; quello di Marte, ogni 26 mesi, come una revisione del motore della spinta stessa. I periodi annuali dei pianeti esterni passano per lo più inosservati e si sentono solo dove incrociano qualcosa di esatto nel tuo tema, ed è ciò che controlla lo ',
+      { text: 'strumento dei transiti', href: links.transits },
+      '.',
+    ],
+    calm3: (links) => [
+      'La tua nascita cade in un periodo retrogrado? È comune e non ha nulla di allarmante: circa una persona su cinque ha Mercurio retrogrado nel tema natale. Il tuo ',
+      { text: 'tema natale', href: links.birthChart },
+      ' segna con una ℞ ogni pianeta che si muoveva all’indietro al momento della tua nascita.',
+    ],
+    faqHeading: 'Domande e risposte',
+    faq: (status) => [
+      {
+        q: 'Quali pianeti sono retrogradi adesso?',
+        a: `${status} Le tabelle qui sopra elencano tutti i periodi del 2026 e del 2027, da stazione a stazione, con la precisione dell’ora.`,
+      },
+      {
+        q: 'Il Sole o la Luna possono essere retrogradi?',
+        a: 'No. Il moto retrogrado è un effetto prospettico tra pianeti che orbitano intorno al Sole a velocità diverse. La Luna orbita direttamente intorno alla Terra e il moto apparente del Sole è il riflesso dell’orbita della Terra stessa, quindi nessuno dei due sembra mai invertire la marcia.',
+      },
+      {
+        q: 'I periodi retrogradi dei pianeti esterni sono importanti?',
+        a: 'Per lo più no. Da Giove a Plutone, i pianeti passano da quattro a sei mesi di ogni anno in moto retrogrado: è il loro ritmo normale, e circa metà delle persone in vita ha almeno un pianeta esterno retrogrado nel tema natale. Gli astrologi li leggono come fasi più quiete e interiori di ciò che un pianeta rappresenta, niente a che vedere con il folclore da agenda che circonda Mercurio.',
+      },
+      {
+        q: 'Che cos’è una stazione?',
+        a: 'Il cambio di direzione. Un pianeta rallenta, resta per giorni sullo stesso grado, poi inverte la marcia: prima alla stazione retrograda, più tardi alla stazione diretta. Le posizioni nelle tabelle indicano queste soste, e gli astrologi considerano il grado di una stazione il punto sensibile dell’intero periodo.',
+      },
+      {
+        q: 'Perché Mercurio riceve tutta l’attenzione?',
+        a: 'Per frequenza e per territorio. Mercurio diventa retrogrado tre o quattro volte l’anno — è l’unico pianeta a farlo più di una volta l’anno — e l’astrologia gli affida la vita di tutti i giorni: messaggi, viaggi, contratti. I periodi retrogradi di Venere e Marte sono più rari e si leggono come revisioni più profonde dell’attaccamento e della spinta. La storia completa di Mercurio ha una pagina tutta sua.',
+      },
+    ],
+  },
+};
+
+const c = COPY[locale];
+const prefix = `/${locale}`;
+const pagePath = `${prefix}/retrogrades/`;
+const pageUrl = `https://zodiacs.org${pagePath}`;
+const inLanguage = locale === 'pt' ? 'pt-BR' : locale;
+const links: Links = {
+  mercury: `${prefix}/mercury-retrograde/`,
+  transits: `${prefix}/transits/`,
+  birthChart: `${prefix}/birth-chart/`,
+};
+
+// All computed at build time from the committed sky data — receipts,
+// no client ephemeris.
+const buildNow = new Date();
+const skyFrom = sky.from as string;
+const eventHorizon = new Date(buildNow);
+eventHorizon.setUTCFullYear(eventHorizon.getUTCFullYear() + 1);
+
+const sources = [
+  { label: 'Astronomy Engine', href: 'https://github.com/cosinekitty/astronomy' },
+  { label: 'IANA Time Zone Database', href: 'https://www.iana.org/time-zones' },
+];
+
+const fmt = (d: Date) => formatShortDate(locale, d);
+
+const windows = (sky.retrogrades as { planet: BodyName; from: string; to: string | null }[]).map((r) => {
+  const from = new Date(r.from);
+  const to = r.to ? new Date(r.to) : null;
+  // A window that opens exactly at the data horizon was clamped, not
+  // stationed — no honest station position exists for it.
+  const clamped = r.from === skyFrom;
+  return {
+    planet: r.planet,
+    from,
+    to,
+    clamped,
+    label: `${clamped ? c.clampedFrom : fmt(from)} – ${to ? fmt(to) : c.openEnd}`,
+    stationRx: clamped ? null : formatLongitude(bodyLongitude(r.planet, from), locale),
+    stationDirect: to ? formatLongitude(bodyLongitude(r.planet, to), locale) : null,
+    state: to && to < buildNow ? 'past' : from > buildNow ? 'upcoming' : 'active',
+  };
+});
+
+const byPlanet = PLANET_ORDER.map((planet) => ({
+  planet,
+  name: planetLabel(locale, planet),
+  rhythm: c.rhythm[planet],
+  windows: windows.filter((w) => w.planet === planet),
+  active: windows.some((w) => w.planet === planet && w.state === 'active'),
+}));
+const upcomingWindows = windows.filter((window) =>
+  window.from <= eventHorizon && (!window.to || window.to >= buildNow));
+
+const retroToday = byPlanet.filter((p) => p.active).map((p) => p.name);
+const asOf = formatShortDate(locale, buildNow);
+
+// None of the four languages puts a comma before the final conjunction.
+const listJoin = (xs: string[]) =>
+  xs.length <= 1 ? xs.join('') : `${xs.slice(0, -1).join(', ')} ${c.and} ${xs.at(-1)}`;
+
+const status = retroToday.length ? c.statusRetro(listJoin(retroToday)) : c.statusDirect;
+
+const faq = c.faq(status);
+
+const eventNodes = upcomingWindows.map((window) => {
+  const from = window.from.toISOString();
+  const to = window.to?.toISOString();
+  // Anchor ids stay on the English planet key so they match across locales.
+  const id = `retrograde-${window.planet.toLowerCase()}-${from.slice(0, 10)}`;
+  const planetName = planetLabel(locale, window.planet);
+  return {
+    '@type': 'Event',
+    '@id': `${pageUrl}#${id}`,
+    name: c.eventName(planetName, window.planet as RetroPlanet),
+    description: to
+      ? c.eventClosed(planetName, from, to, window.stationRx ?? c.notYet, window.stationDirect ?? c.notYet)
+      : c.eventOpen(planetName, from, window.stationRx ?? c.notYet),
+    startDate: from,
+    ...(to ? { endDate: to } : {}),
+    eventStatus: 'https://schema.org/EventScheduled',
+    inLanguage,
+    url: `${pageUrl}#${id}`,
+  };
+});
+
+const dataset = {
+  '@type': 'Dataset',
+  '@id': `${pageUrl}#dataset`,
+  name: c.datasetName,
+  description: c.datasetDescription,
+  url: pageUrl,
+  inLanguage,
+  creator: { '@id': 'https://zodiacs.org/#org' },
+  publisher: { '@id': 'https://zodiacs.org/#org' },
+  dateModified: sky.generatedAt,
+  temporalCoverage: `${sky.from}/${sky.to}`,
+  spatialCoverage: 'Earth',
+  variableMeasured: c.variableMeasured,
+  citation: sources.map((source) => ({ '@type': 'CreativeWork', name: source.label, url: source.href })),
+};
+
+const jsonLd = [
+  {
+    '@type': 'WebPage',
+    name: c.schemaName,
+    url: pageUrl,
+    description: c.schemaDescription,
+    inLanguage,
+  },
+  {
+    '@type': 'FAQPage',
+    inLanguage,
+    mainEntity: faq.map(({ q, a }) => ({
+      '@type': 'Question',
+      name: q,
+      acceptedAnswer: { '@type': 'Answer', text: a },
+    })),
+  },
+  dataset,
+  ...eventNodes,
+];
+---
+<Base
+  title={c.title}
+  description={c.description}
+  path={pagePath}
+  locale={locale}
+  image="/assets/og/v2/tool/retrogrades.png"
+  imageAlt={c.imageAlt}
+  jsonLd={jsonLd}
+  sources={sources}
+>
+  <section class="section--tight container container--narrow">
+    <div class="tool-hero reveal">
+      <h1 class="display">{c.heroTitle}</h1>
+      <p>{c.heroLede}</p>
+    </div>
+
+    <div class="rx-now shell tinted reveal" style="--sign:var(--sign-gemini)">
+      <div class="core tinted rx-now__core">
+        <span class="mono--label">{c.asOf(asOf)}</span>
+        <strong class="rx-now__line">{status}</strong>
+        <span class="rx-now__all mono">
+          {c.sunMoon} · {c.mercuryNote(links).map((part) => (
+            typeof part === 'string' ? part : <a href={part.href}>{part.text}</a>
+          ))}
+        </span>
+      </div>
+    </div>
+    <details class="calendar-method"><summary>{c.methodSummary}</summary>
+      <p>{c.methodText}</p>
+    </details>
+  </section>
+
+  <section class="section--tight container container--narrow">
+    <div class="planets reveal">
+      {byPlanet.map((p) => (
+        <div class="planet">
+          <div class="planet__head">
+            <h2 class="planet__name">
+              {p.name}
+              {p.active && <span class="planet__now mono">{c.nowBadge(p.planet)}</span>}
+            </h2>
+            <span class="planet__rhythm">{p.rhythm}</span>
+          </div>
+          <div class="table-wrap">
+            <table class="rx-table">
+              <thead>
+                <tr><th>{c.thWindow}</th><th>{c.thRetrograde}</th><th>{c.thDirect}</th><th></th></tr>
+              </thead>
+              <tbody>
+                {p.windows.map((w) => (
+                  <tr id={`retrograde-${p.planet.toLowerCase()}-${w.from.toISOString().slice(0, 10)}`} class={w.state === 'past' ? 'rx-table__past' : ''}>
+                    <td class="planet__window" data-label={c.thWindow}>{w.label}</td>
+                    <td class="mono" data-label={c.thRetrograde}>{w.stationRx ?? '—'}</td>
+                    <td class="mono" data-label={c.thDirect}>{w.stationDirect ?? '—'}</td>
+                    <td class="mono rx-table__state" data-label={c.thStatus}>{w.state === 'active' ? c.stateNow : w.state === 'upcoming' ? c.stateAhead : ''}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="section--tight container container--narrow">
+    <div class="prose reveal">
+      <h2>{c.calmHeading}</h2>
+      <p>{c.calm1}</p>
+      <p>
+        {c.calm2(links).map((part) => (
+          typeof part === 'string' ? part : <a href={part.href}>{part.text}</a>
+        ))}
+      </p>
+      <p>
+        {c.calm3(links).map((part) => (
+          typeof part === 'string' ? part : <a href={part.href}>{part.text}</a>
+        ))}
+      </p>
+    </div>
+  </section>
+
+  <section class="section--tight container container--narrow">
+    <div class="section-head reveal"><h2>{c.faqHeading}</h2></div>
+    <div class="faq reveal">
+      {faq.map(({ q, a }) => (
+        <details class="faq__item">
+          <summary>{q}</summary>
+          <p>{a}</p>
+        </details>
+      ))}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .tool-hero { max-width: 62ch; margin-bottom: clamp(24px, 4vw, 36px); }
+  .tool-hero h1 {
+    margin: 0 0 16px;
+    font-family: var(--font-serif);
+    font-size: var(--text-2xl);
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    line-height: 1.04;
+    font-variant-numeric: oldstyle-figures;
+    text-wrap: balance;
+  }
+  .tool-hero p { margin: 0; color: var(--muted); font-size: var(--text-lg); text-wrap: pretty; }
+
+  .rx-now__core { padding: clamp(20px, 4vw, 28px); display: grid; gap: 10px; }
+  .rx-now__line { font-size: var(--text-lg); letter-spacing: -0.01em; max-width: 56ch; }
+  .rx-now__all { font-size: 11.5px; color: var(--faint); letter-spacing: 0.05em; }
+  .rx-now__all a { color: var(--muted); }
+  .rx-now__all a:hover { color: var(--text); }
+
+  .planets { display: grid; gap: clamp(34px, 5vw, 52px); }
+  .planet__head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 18px; margin-bottom: 6px; }
+  .planet__name {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: var(--text-xl);
+    font-weight: 500;
+    letter-spacing: 0.002em;
+  }
+  .planet__now {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border: 1px solid var(--hair-2);
+    border-radius: 99px;
+    padding: 3px 10px;
+    vertical-align: middle;
+    margin-left: 10px;
+  }
+  .planet__rhythm { font-size: var(--text-sm); color: var(--faint); }
+  .planet__window { white-space: normal; min-width: 210px; }
+  @media (max-width: 560px) { .planet__window { min-width: 0; } }
+
+  /* .table-wrap + .rx-table (desktop + mobile stacking) live in
+     ../../styles/rx-table.css (shared). */
+
+  .faq { display: grid; gap: 8px; }
+  .faq__item {
+    border: 1px solid var(--hair-1);
+    border-radius: var(--r-md);
+    background: var(--void-1);
+    padding: 4px 18px;
+  }
+  .faq__item summary { cursor: pointer; padding: 12px 0; font-weight: 550; color: var(--text); }
+  .faq__item p { margin: 2px 0 16px; color: var(--text-2); font-size: var(--text-sm); line-height: 1.65; }
+</style>

@@ -26,12 +26,21 @@ describe('hreflang release policy', () => {
     expect(STAGED_NOINDEX_LOCALES).toEqual([]);
     expect(ABSENT_LOCALES).toEqual(['ar']);
     expect(X_DEFAULT_HREFLANG).toEqual({
-      hreflang: 'x-default', locale: 'en', expectedBlocks: 659 + (dailyEditions.length + (dailyEditions.length ? 1 : 0)) * 6,
+      hreflang: 'x-default', locale: 'en', expectedBlocks: 1129 + (dailyEditions.length + (dailyEditions.length ? 1 : 0)) * 6,
     });
     expect(hreflangRouteFamily('/fr/tools/')).toBe('core');
     expect(hreflangRouteFamily('/birthday/february-29/')).toBe('birthday');
     expect(hreflangRouteFamily('/ru/aries/')).toBe('sign-guide');
     expect(hreflangRouteFamily('/pt/horoscopes/aries/')).toBe('daily-reading');
+    expect(hreflangRouteFamily('/it/rising-sign/aries/')).toBe('rising-profile');
+    expect(hreflangRouteFamily('/rising-sign/')).toBe('core');
+    expect(hreflangRouteFamily('/fr/eclipses/')).toBe('sky-calendar');
+    expect(hreflangRouteFamily('/eclipses/2027/')).toBe(null);
+    expect(hreflangRouteFamily('/es/compatibility/aries-leo/')).toBe('compatibility-pair');
+    expect(hreflangRouteFamily('/compatibility/leo-aries/')).toBe(null);
+    expect(hreflangRouteFamily('/compatibility/invite/')).toBe('core');
+    expect([...expectedHreflangsForPath('/compatibility/pisces-pisces/')]).toEqual(['en', 'es', 'pt-BR', 'fr', 'it', 'x-default']);
+    expect([...expectedHreflangsForPath('/retrogrades/')]).toEqual(['en', 'es', 'pt-BR', 'fr', 'it', 'x-default']);
     expect([...expectedHreflangsForPath('/tools/')]).toEqual(['en', 'es', 'pt-BR', 'fr', 'it', 'ru', 'x-default']);
     expect([...expectedHreflangsForPath('/birthday/february-29/')])
       .toEqual(['en', 'x-default']);
@@ -41,6 +50,12 @@ describe('hreflang release policy', () => {
       .toEqual(['en', 'es', 'pt-BR', 'fr', 'it', 'x-default']);
     expect([...expectedHreflangsForPath('/horoscopes/aries/')]).toEqual(['en', 'es', 'pt-BR', 'x-default']);
     expect([...expectedHreflangsForPath('/horoscopes/aries/weekly/')]).toEqual([]);
+    // Rising-sign profiles are translated for es, pt, fr and it; Russian links to the English ones.
+    expect([...expectedHreflangsForPath('/rising-sign/aries/')])
+      .toEqual(['en', 'es', 'pt-BR', 'fr', 'it', 'x-default']);
+    expect(alternatePathEntries('/fr/rising-sign/aries/').map(({ href }) => href)).toEqual([
+      '/rising-sign/aries/', '/es/rising-sign/aries/', '/pt/rising-sign/aries/', '/fr/rising-sign/aries/', '/it/rising-sign/aries/',
+    ]);
     expect(HREFLANG_LOCALE_POLICY.find((entry) => entry.locale === 'ru')?.routeFamilies).toEqual(['core']);
     expect(HREFLANG_LOCALE_POLICY.find((entry) => entry.locale === 'ar')?.routeFamilies).toEqual([]);
   });
@@ -52,10 +67,11 @@ describe('hreflang release policy', () => {
         expect([...expectedHreflangsForPath(`${prefix}${path}`)]).toEqual([...expected, 'x-default']);
       }
     }
-    // Fourteen daily families, four sharing tools, three indexed return tools and owner-approved dated editions.
-    expect(HREFLANG_LOCALE_POLICY.find(({ locale }) => locale === 'en')?.expectedBlocks).toBe(575 + 14 * 3 + 24 + 18 + (dailyEditions.length + (dailyEditions.length ? 1 : 0)) * 6);
+    // Fourteen daily families, four sharing tools, three indexed return tools, twelve rising-sign profiles in
+    // five languages, four sky calendars in five languages, and owner-approved dated editions.
+    expect(HREFLANG_LOCALE_POLICY.find(({ locale }) => locale === 'en')?.expectedBlocks).toBe(575 + 14 * 3 + 24 + 18 + 12 * 5 + 4 * 5 + 78 * 5 + (dailyEditions.length + (dailyEditions.length ? 1 : 0)) * 6);
     for (const locale of ['es', 'pt']) {
-      expect(HREFLANG_LOCALE_POLICY.find((entry) => entry.locale === locale)?.expectedBlocks).toBe(209 + 14 * 3 + 24 + 18 + (dailyEditions.length + (dailyEditions.length ? 1 : 0)) * 6);
+      expect(HREFLANG_LOCALE_POLICY.find((entry) => entry.locale === locale)?.expectedBlocks).toBe(209 + 14 * 3 + 24 + 18 + 12 * 5 + 4 * 5 + 78 * 5 + (dailyEditions.length + (dailyEditions.length ? 1 : 0)) * 6);
     }
   });
 });

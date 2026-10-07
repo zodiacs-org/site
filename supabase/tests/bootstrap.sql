@@ -16,6 +16,10 @@ begin
   if not exists (select 1 from pg_catalog.pg_roles where rolname = 'service_role') then
     create role service_role nologin noinherit bypassrls;
   end if;
+
+  if not exists (select 1 from pg_catalog.pg_roles where rolname = 'supabase_auth_admin') then
+    create role supabase_auth_admin nologin noinherit;
+  end if;
 end;
 $$;
 
@@ -24,6 +28,23 @@ create schema if not exists auth authorization postgres;
 create table if not exists auth.users (
   id uuid primary key
 );
+
+-- OAuth migrations use these provider-owned authorization facts. All migration
+-- suites need the same shapes, not only the focused Sky Watch drive.
+alter table auth.users add column if not exists banned_until timestamptz;
+alter table auth.users add column if not exists deleted_at timestamptz;
+create table if not exists auth.sessions (
+  id uuid primary key, user_id uuid, oauth_client_id uuid,
+  not_after timestamptz, scopes text
+);
+create table if not exists auth.oauth_clients (
+  id uuid primary key, deleted_at timestamptz
+);
+create table if not exists auth.oauth_consents (
+  user_id uuid, client_id uuid, scopes text, revoked_at timestamptz
+);
+grant usage on schema auth to supabase_auth_admin;
+grant select, insert, update, delete on all tables in schema auth to supabase_auth_admin;
 
 create or replace function auth.uid()
 returns uuid

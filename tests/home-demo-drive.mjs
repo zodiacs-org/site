@@ -159,6 +159,9 @@ await withPreview({ port: 4394 }, async (baseURL) => {
         const slug = EXPECTED_SIGNS[index];
         const target = signTargets.nth(index);
         const disc = signImages.nth(index);
+        // The mobile guide can scroll the wheel away while exercising its jumps.
+        // Hit testing must inspect the target inside the viewport.
+        await target.scrollIntoViewIfNeeded();
         const [targetBox, discBox] = await Promise.all([
           settledBox(target),
           settledBox(disc),
@@ -290,7 +293,7 @@ await withPreview({ port: 4394 }, async (baseURL) => {
 
         await target.click();
         const caption = await page.locator('[data-demo-caption]').textContent();
-        const pressed = await target.getAttribute('aria-pressed');
+        const pressed = await target.getAttribute('data-selected');
         if (index === 0) {
           check(
             `${width}px: pointer selection uses the explanatory arrival cue`,
@@ -303,6 +306,25 @@ await withPreview({ port: 4394 }, async (baseURL) => {
           `${pressed} · ${caption ?? ''}`,
         );
       }
+
+      const selector = page.getByLabel('Explore the chart', { exact: true });
+      const selectorBox = await selector.boundingBox();
+      check(`${width}px: every wheel mark has a full-size equivalent control`,
+        Boolean(selectorBox) && selectorBox.height >= 44
+          && await selector.locator('option').count() === await page.locator('[data-demo-target]').count());
+      for (const id of await page.locator('[data-demo-target]').evaluateAll((marks) => marks.map((mark) => mark.dataset.demoId))) {
+        await selector.selectOption(id);
+        check(`${width}px: selector can explain ${id}`,
+          await demo.getAttribute('data-active-id') === id
+            && await page.locator('[data-demo-caption]').textContent() === await page.locator(`[data-demo-id="${id}"]`).getAttribute('data-demo-copy'));
+      }
+      await selector.focus();
+      await selector.press('Home');
+      await selector.press('ArrowDown');
+      await selector.press('Enter');
+      check(`${width}px: native selector supports keyboard selection`,
+        await selector.evaluate((node) => node.value) === await demo.getAttribute('data-active-id')
+          && await demo.getAttribute('data-demo-motion') === 'instant');
 
       const allTargets = page.locator('[data-demo-copy]');
       const secondPerson = await allTargets.evaluateAll((buttons) => buttons
