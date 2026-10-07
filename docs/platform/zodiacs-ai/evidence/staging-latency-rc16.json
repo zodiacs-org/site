@@ -1,0 +1,191 @@
+{
+  "schema": "zodiacs.staging-resources.v1",
+  "phase": "latency",
+  "startedAt": "2026-10-02T12:45:52.794Z",
+  "url": "https://zodiacs-org-git-codex-zodiacs-ai-integrations-zodiacsofficial.vercel.app/mcp",
+  "sourceCommit": "5468423bac0675336949ab16839f40ac5def3e92",
+  "observations": [
+    {
+      "repetition": 1,
+      "caseIndex": 0,
+      "name": "get_capabilities",
+      "elapsedMs": 1525.42,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5090
+    },
+    {
+      "repetition": 1,
+      "caseIndex": 1,
+      "name": "get_sky",
+      "elapsedMs": 1027.06,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 10058
+    },
+    {
+      "repetition": 1,
+      "caseIndex": 2,
+      "name": "get_upcoming_events",
+      "elapsedMs": 4251.52,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 7926
+    },
+    {
+      "repetition": 1,
+      "caseIndex": 3,
+      "name": "get_upcoming_events",
+      "elapsedMs": 1286.08,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 17010
+    },
+    {
+      "repetition": 1,
+      "caseIndex": 4,
+      "name": "check_sky_fact",
+      "elapsedMs": 840.73,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 6928
+    },
+    {
+      "repetition": 1,
+      "caseIndex": 5,
+      "name": "search_zodiacs",
+      "elapsedMs": 766.52,
+      "ok": true,
+      "errorCode": null,
+      "engine": null,
+      "resultBytes": 1008
+    },
+    {
+      "repetition": 2,
+      "caseIndex": 0,
+      "name": "get_capabilities",
+      "elapsedMs": 540.8,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5090
+    },
+    {
+      "repetition": 2,
+      "caseIndex": 1,
+      "name": "get_sky",
+      "elapsedMs": 557.75,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 10058
+    },
+    {
+      "repetition": 2,
+      "caseIndex": 2,
+      "name": "get_upcoming_events",
+      "elapsedMs": 966.62,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 7926
+    },
+    {
+      "repetition": 2,
+      "caseIndex": 3,
+      "name": "get_upcoming_events",
+      "elapsedMs": 1439.3,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 17010
+    },
+    {
+      "repetition": 2,
+      "caseIndex": 4,
+      "name": "check_sky_fact",
+      "elapsedMs": 771.82,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 6928
+    },
+    {
+      "repetition": 2,
+      "caseIndex": 5,
+      "name": "search_zodiacs",
+      "elapsedMs": 531.12,
+      "ok": true,
+      "errorCode": null,
+      "engine": null,
+      "resultBytes": 1008
+    },
+    {
+      "repetition": 3,
+      "caseIndex": 0,
+      "name": "get_capabilities",
+      "elapsedMs": 514.66,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5090
+    },
+    {
+      "repetition": 3,
+      "caseIndex": 1,
+      "name": "get_sky",
+      "elapsedMs": 1028.69,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 10058
+    },
+    {
+      "repetition": 3,
+      "caseIndex": 2,
+      "name": "get_upcoming_events",
+      "elapsedMs": 1998.7,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 7926
+    },
+    {
+      "repetition": 3,
+      "caseIndex": 3,
+      "name": "get_upcoming_events",
+      "elapsedMs": 1089.18,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 17010
+    },
+    {
+      "repetition": 3,
+      "caseIndex": 4,
+      "name": "check_sky_fact",
+      "elapsedMs": 765.56,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 6928
+    },
+    {
+      "repetition": 3,
+      "caseIndex": 5,
+      "name": "search_zodiacs",
+      "elapsedMs": 516.47,
+      "ok": true,
+      "errorCode": null,
+      "engine": null,
+      "resultBytes": 1008
+    }
+  ],
+  "scope": "18 sequential synthetic completions plus SDK protocol overhead, isolated preview. RTT includes client network, two Japan database admissions for expensive tools, engine and transport. Not a provider cold-start classification or invoice.",
+  "finishedAt": "2026-10-02T12:46:16.906Z"
+}

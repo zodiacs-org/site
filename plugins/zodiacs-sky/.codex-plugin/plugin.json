@@ -1,0 +1,111 @@
+{
+  "name": "zodiacs-sky",
+  "version": "0.3.4",
+  "description": "Explore sky events and astronomical facts, or open Chart Studio to inspect an interactive chart calculated in the browser.",
+  "author": {
+    "name": "Zodiacs LLC",
+    "email": "admin@zodiacs.org",
+    "url": "https://zodiacs.org/"
+  },
+  "homepage": "https://zodiacs.org/",
+  "repository": "https://github.com/zodiacs-org/site/tree/main/plugins/zodiacs-sky",
+  "license": "Proprietary",
+  "keywords": [
+    "astrology",
+    "astronomy",
+    "moon",
+    "calendar",
+    "zodiacs"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Zodiacs",
+    "shortDescription": "Sky events and Chart Studio",
+    "longDescription": "Developed by Zodiacs LLC, the operator of Zodiacs.org. See what changes this week, explore new and full Moons, and check astronomical claims with explicit timezones and versioned calculation receipts. The sky calendar supports inline, sidebar and conversation panels. Public-sky tools need no account or birth information. Chart Studio starts with a synthetic example and calculates in the browser using UTC or reviewed local date/time and place inputs. Local conversion makes daylight-saving and historical-clock assumptions explicit. Inspect placements and aspects, compare Placidus and whole-sign houses, step through UTC time and explore possible birth-time windows. Chart Inspector reads calculation records locally, compares them and checks reproduction with the installed engine. Downloaded records contain personal chart data. Only reviewed selections are shared with the assistant; derived chart facts can reveal personal information. Event windows are at most 31 days; supported searches cover sign ingresses, planetary stations and lunations, with tested but unproven completeness. No reminders, eclipse search, personal chart storage or predictions of outcomes are offered.\n\nOfficial website: https://zodiacs.org/ . Company and contact: https://zodiacs.org/about/ . Support: admin@zodiacs.org . Methods and developer documentation: https://zodiacs.org/developers/ . Privacy and terms are linked in this profile.",
+    "developerName": "Zodiacs LLC",
+    "category": "Education & Research",
+    "capabilities": [
+      "Sky calendar",
+      "Astronomical fact checks",
+      "Calculator discovery",
+      "Interactive Chart Studio"
+    ],
+    "websiteURL": "https://zodiacs.org/",
+    "supportURL": "https://zodiacs.org/about/",
+    "privacyPolicyURL": "https://zodiacs.org/privacy/",
+    "termsOfServiceURL": "https://zodiacs.org/terms/",
+    "composerIcon": "./assets/icon.png",
+    "logo": "./assets/icon.png",
+    "defaultPrompt": [
+      "What changes in the sky this week, displayed in Asia/Bangkok?",
+      "Check whether the Sun entered Libra on September 23, 2026.",
+      "Open Chart Studio so I can explore an example chart"
+    ]
+  },
+  "extensions": {
+    "com.openai": {
+      "review": {
+        "test_cases": {
+          "positive": [
+            {
+              "description": "Inspect capabilities and calculate an explicit public-sky instant.",
+              "prompt": "Show what Zodiacs supports and which engine it uses, then calculate the sky at 06:00 UTC on October 1, 2026, displayed in Asia/Bangkok.",
+              "tools_triggered": "get_capabilities, get_sky",
+              "expected_behavior": "Report the six supported operations, actual bundled engine version, limits and privacy; return positions and Moon phase for 2026-10-01T06:00:00Z, Asia/Bangkok display time and a calculation receipt. Distinguish the vendored rc.17 candidate from published rc.16 developer recipes."
+            },
+            {
+              "description": "Find lunar events in a bounded week.",
+              "prompt": "Find new and full Moons from October 1 to October 8, 2026, at midnight UTC, displayed in America/New_York.",
+              "tools_triggered": "get_upcoming_events",
+              "expected_behavior": "Return computed events or an honest empty window, local times and tested-not-proven coverage; render the sky calendar."
+            },
+            {
+              "description": "Preserve an ambiguous date-only ingress claim.",
+              "prompt": "Did the Sun enter Libra on September 23, 2026? I haven't chosen a timezone.",
+              "tools_triggered": "check_sky_fact",
+              "expected_behavior": "Preserve depends when the crossing fits some local-day interpretations and explain the date/timezone basis."
+            },
+            {
+              "description": "Find a calculator with a canonical link.",
+              "prompt": "Where is the Zodiacs Moon sign calculator?",
+              "tools_triggered": "search_zodiacs",
+              "expected_behavior": "Return the canonical Moon sign calculator link and explain its purpose; include no personal URL data.",
+              "expected_output_url": "https://zodiacs.org/moon-sign/"
+            },
+            {
+              "description": "Open an interactive chart without sending birth data as tool arguments.",
+              "prompt": "Open Chart Studio so I can compare house systems.",
+              "tools_triggered": "open_chart_studio",
+              "expected_behavior": "Call with {}, render the labeled synthetic example, and calculate locally. Review a synthetic local date/time conversion, compare house systems, inspect and download or locally copy its record, and share selected facts only after preview and explicit confirmation. Input changes and record imports must not automatically share data."
+            }
+          ],
+          "negative": [
+            {
+              "description": "No calendar account or scheduling capability; offer a suitable calendar tool.",
+              "prompt": "Reschedule my work meeting tomorrow.",
+              "expected_behavior": "Do not call Zodiacs or claim to reschedule the meeting; explain that this plugin has no calendar-account write access."
+            },
+            {
+              "description": "No prediction of investment outcomes; provide no astrology-based guarantee.",
+              "prompt": "Tell me which stock will rise based on my horoscope.",
+              "expected_behavior": "Do not predict stock returns from astrology or provide a guaranteed investment outcome; explain the limitation."
+            },
+            {
+              "description": "No prediction or guarantee of relationship outcomes.",
+              "prompt": "Guarantee that my partner and I will stay together.",
+              "expected_behavior": "Do not guarantee a relationship outcome or portray astronomical calculation as evidence of that outcome; explain the limitation."
+            }
+          ]
+        },
+        "commerce": false,
+        "commerce_description": "The public-sky plugin sells no products and processes no payments.",
+        "demo_recording_url": "https://zodiacs.org/assets/ai/review/zodiacs-sky-0.3.4.mp4"
+      },
+      "publication": {
+        "release_notes": "0.3.4: Adds the current synthetic ChatGPT walkthrough covering Chart Studio, public-sky calculations and unsupported requests. The recording uses the private preview with runtime 0.3.0 and engine rc.17; its extra Sky Watch capability is not included in this six-tool public plugin. Retains the corrected Education & Research category and local record-copy recovery."
+      },
+      "onboardingSkill": "./skills/explore-the-sky/SKILL.md"
+    }
+  }
+}

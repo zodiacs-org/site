@@ -1,0 +1,514 @@
+{
+  "schema": "zodiacs.staging-incremental-cost.v1",
+  "capturedAt": "2026-10-02T12:48:31.426Z",
+  "sourceCommit": "5468423bac0675336949ab16839f40ac5def3e92",
+  "deploymentId": "dpl_CSFWTPqDyZ3ZF4e32wSXsFnMfspM",
+  "isolationWindow": {
+    "from": "2026-10-02T12:45:52.794Z",
+    "to": "2026-10-02T12:46:16.906Z"
+  },
+  "resourceRows": [
+    {
+      "measurement": "zodiacs.mcp.resources.v1",
+      "operation": "protocol",
+      "elapsedMs": 1460.85,
+      "processCpuMs": 206.78,
+      "firstHandledRequest": true,
+      "status": 200
+    },
+    {
+      "measurement": "zodiacs.mcp.resources.v1",
+      "operation": "protocol",
+      "elapsedMs": 689.93,
+      "processCpuMs": 60.58,
+      "firstHandledRequest": false,
+      "status": 202
+    },
+    {
+      "measurement": "zodiacs.mcp.resources.v1",
+      "operation": "protocol",
+      "elapsedMs": 1.13,
+      "processCpuMs": 0.75,
+      "firstHandledRequest": false,
+      "status": 405
+    },
+    {
+      "measurement": "zodiacs.mcp.resources.v1",
+      "operation": "get_capabilities",
+      "elapsedMs": 915.16,
+      "processCpuMs": 126.38,
+      "firstHandledRequest": false,
+      "status": 200
+    },
+    {
+      "measurement": "zodiacs.mcp.resources.v1",
+      "operation": "get_sky",
+      "elapsedMs": 734.04,
+      "processCpuMs": 67.8,
+      "firstHandledRequest": false,
+      "status": 200
+    },
+    {
+      "measurement": "zodiacs.mcp.resources.v1",
+      "operation": "get_upcoming_events",
+      "elapsedMs": 674.54,
+      "processCpuMs": 146.35,
+      "firstHandledRequest": false,
+      "status": 200
+    },
+    {
+      "measurement": "zodiacs.mcp.resources.v1",
+      "operation": "get_upcoming_events",
+      "elapsedMs": 838.46,
+      "processCpuMs": 251.32,
+      "firstHandledRequest": false,
+      "status": 200
+    },
+    {
+      "measurement": "zodiacs.mcp.resources.v1",
+      "operation": "check_sky_fact",
+      "elapsedMs": 556.98,
+      "processCpuMs": 26.7,
+      "firstHandledRequest": false,
+      "status": 200
+    },
+    {
+      "measurement": "zodiacs.mcp.resources.v1",
+      "operation": "search_zodiacs",
+      "elapsedMs": 234.89,
+      "processCpuMs": 12.69,
+      "firstHandledRequest": false,
+      "status": 200
+    },
+    {
+      "measurement": "zodiacs.mcp.resources.v1",
+      "operation": "get_capabilities",
+      "elapsedMs": 252.58,
+      "processCpuMs": 14.12,
+      "firstHandledRequest": false,
+      "status": 200
+    },
+    {
+      "measurement": "zodiacs.mcp.resources.v1",
+      "operation": "get_sky",
+      "elapsedMs": 259.12,
+      "processCpuMs": 37.48,
+      "firstHandledRequest": false,
+      "status": 200
+    },
+    {
+      "measurement": "zodiacs.mcp.resources.v1",
+      "operation": "get_upcoming_events",
+      "elapsedMs": 637.82,
+      "processCpuMs": 134.18,
+      "firstHandledRequest": false,
+      "status": 200
+    },
+    {
+      "measurement": "zodiacs.mcp.resources.v1",
+      "operation": "get_upcoming_events",
+      "elapsedMs": 1138.48,
+      "processCpuMs": 191.13,
+      "firstHandledRequest": false,
+      "status": 200
+    },
+    {
+      "measurement": "zodiacs.mcp.resources.v1",
+      "operation": "check_sky_fact",
+      "elapsedMs": 487.34,
+      "processCpuMs": 44.95,
+      "firstHandledRequest": false,
+      "status": 200
+    },
+    {
+      "measurement": "zodiacs.mcp.resources.v1",
+      "operation": "search_zodiacs",
+      "elapsedMs": 257.91,
+      "processCpuMs": 14.31,
+      "firstHandledRequest": false,
+      "status": 200
+    },
+    {
+      "measurement": "zodiacs.mcp.resources.v1",
+      "operation": "get_capabilities",
+      "elapsedMs": 231.68,
+      "processCpuMs": 9.27,
+      "firstHandledRequest": false,
+      "status": 200
+    },
+    {
+      "measurement": "zodiacs.mcp.resources.v1",
+      "operation": "get_sky",
+      "elapsedMs": 726.12,
+      "processCpuMs": 31.91,
+      "firstHandledRequest": false,
+      "status": 200
+    },
+    {
+      "measurement": "zodiacs.mcp.resources.v1",
+      "operation": "get_upcoming_events",
+      "elapsedMs": 1620.77,
+      "processCpuMs": 67.44,
+      "firstHandledRequest": false,
+      "status": 200
+    },
+    {
+      "measurement": "zodiacs.mcp.resources.v1",
+      "operation": "get_upcoming_events",
+      "elapsedMs": 805.51,
+      "processCpuMs": 167.22,
+      "firstHandledRequest": false,
+      "status": 200
+    },
+    {
+      "measurement": "zodiacs.mcp.resources.v1",
+      "operation": "check_sky_fact",
+      "elapsedMs": 490.08,
+      "processCpuMs": 18.54,
+      "firstHandledRequest": false,
+      "status": 200
+    },
+    {
+      "measurement": "zodiacs.mcp.resources.v1",
+      "operation": "search_zodiacs",
+      "elapsedMs": 232.49,
+      "processCpuMs": 12.35,
+      "firstHandledRequest": false,
+      "status": 200
+    }
+  ],
+  "observations": [
+    {
+      "repetition": 1,
+      "caseIndex": 0,
+      "name": "get_capabilities",
+      "elapsedMs": 1525.42,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5090,
+      "serverElapsedMs": 915.16,
+      "processCpuMs": 126.38,
+      "functionOnlyEstimatedUsd": 0.000010482786666666665
+    },
+    {
+      "repetition": 1,
+      "caseIndex": 1,
+      "name": "get_sky",
+      "elapsedMs": 1027.06,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 10058,
+      "serverElapsedMs": 734.04,
+      "processCpuMs": 67.8,
+      "functionOnlyEstimatedUsd": 0.000007333346666666666
+    },
+    {
+      "repetition": 1,
+      "caseIndex": 2,
+      "name": "get_upcoming_events",
+      "elapsedMs": 4251.52,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 7926,
+      "serverElapsedMs": 674.54,
+      "processCpuMs": 146.35,
+      "functionOnlyEstimatedUsd": 0.000009775846666666666
+    },
+    {
+      "repetition": 1,
+      "caseIndex": 3,
+      "name": "get_upcoming_events",
+      "elapsedMs": 1286.08,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 17010,
+      "serverElapsedMs": 838.46,
+      "processCpuMs": 251.32,
+      "functionOnlyEstimatedUsd": 0.00001447342
+    },
+    {
+      "repetition": 1,
+      "caseIndex": 4,
+      "name": "check_sky_fact",
+      "elapsedMs": 840.73,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 6928,
+      "serverElapsedMs": 556.98,
+      "processCpuMs": 26.7,
+      "functionOnlyEstimatedUsd": 0.000004829326666666667
+    },
+    {
+      "repetition": 1,
+      "caseIndex": 5,
+      "name": "search_zodiacs",
+      "elapsedMs": 766.52,
+      "ok": true,
+      "errorCode": null,
+      "engine": null,
+      "resultBytes": 1008,
+      "serverElapsedMs": 234.89,
+      "processCpuMs": 12.69,
+      "functionOnlyEstimatedUsd": 0.000002434441111111111
+    },
+    {
+      "repetition": 2,
+      "caseIndex": 0,
+      "name": "get_capabilities",
+      "elapsedMs": 540.8,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5090,
+      "serverElapsedMs": 252.58,
+      "processCpuMs": 14.12,
+      "functionOnlyEstimatedUsd": 0.00000258946
+    },
+    {
+      "repetition": 2,
+      "caseIndex": 1,
+      "name": "get_sky",
+      "elapsedMs": 557.75,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 10058,
+      "serverElapsedMs": 259.12,
+      "processCpuMs": 37.48,
+      "functionOnlyEstimatedUsd": 0.000003458551111111111
+    },
+    {
+      "repetition": 2,
+      "caseIndex": 2,
+      "name": "get_upcoming_events",
+      "elapsedMs": 966.62,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 7926,
+      "serverElapsedMs": 637.82,
+      "processCpuMs": 134.18,
+      "functionOnlyEstimatedUsd": 0.000009126895555555556
+    },
+    {
+      "repetition": 2,
+      "caseIndex": 3,
+      "name": "get_upcoming_events",
+      "elapsedMs": 1439.3,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 17010,
+      "serverElapsedMs": 1138.48,
+      "processCpuMs": 191.13,
+      "functionOnlyEstimatedUsd": 0.000014100115555555554
+    },
+    {
+      "repetition": 2,
+      "caseIndex": 4,
+      "name": "check_sky_fact",
+      "elapsedMs": 771.82,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 6928,
+      "serverElapsedMs": 487.34,
+      "processCpuMs": 44.95,
+      "functionOnlyEstimatedUsd": 0.000005068113333333333
+    },
+    {
+      "repetition": 2,
+      "caseIndex": 5,
+      "name": "search_zodiacs",
+      "elapsedMs": 531.12,
+      "ok": true,
+      "errorCode": null,
+      "engine": null,
+      "resultBytes": 1008,
+      "serverElapsedMs": 257.91,
+      "processCpuMs": 14.31,
+      "functionOnlyEstimatedUsd": 0.000002627603333333333
+    },
+    {
+      "repetition": 3,
+      "caseIndex": 0,
+      "name": "get_capabilities",
+      "elapsedMs": 514.66,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 5090,
+      "serverElapsedMs": 231.68,
+      "processCpuMs": 9.27,
+      "functionOnlyEstimatedUsd": 0.0000022939377777777777
+    },
+    {
+      "repetition": 3,
+      "caseIndex": 1,
+      "name": "get_sky",
+      "elapsedMs": 1028.69,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 10058,
+      "serverElapsedMs": 726.12,
+      "processCpuMs": 31.91,
+      "functionOnlyEstimatedUsd": 0.000006010617777777778
+    },
+    {
+      "repetition": 3,
+      "caseIndex": 2,
+      "name": "get_upcoming_events",
+      "elapsedMs": 1998.7,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 7926,
+      "serverElapsedMs": 1620.77,
+      "processCpuMs": 67.44,
+      "functionOnlyEstimatedUsd": 0.00001254240111111111
+    },
+    {
+      "repetition": 3,
+      "caseIndex": 3,
+      "name": "get_upcoming_events",
+      "elapsedMs": 1089.18,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 17010,
+      "serverElapsedMs": 805.51,
+      "processCpuMs": 167.22,
+      "functionOnlyEstimatedUsd": 0.000011289158888888888
+    },
+    {
+      "repetition": 3,
+      "caseIndex": 4,
+      "name": "check_sky_fact",
+      "elapsedMs": 765.56,
+      "ok": true,
+      "errorCode": null,
+      "engine": "0.1.1-rc.16",
+      "resultBytes": 6928,
+      "serverElapsedMs": 490.08,
+      "processCpuMs": 18.54,
+      "functionOnlyEstimatedUsd": 0.000004145226666666666
+    },
+    {
+      "repetition": 3,
+      "caseIndex": 5,
+      "name": "search_zodiacs",
+      "elapsedMs": 516.47,
+      "ok": true,
+      "errorCode": null,
+      "engine": null,
+      "resultBytes": 1008,
+      "serverElapsedMs": 232.49,
+      "processCpuMs": 12.35,
+      "functionOnlyEstimatedUsd": 0.000002408218888888889
+    }
+  ],
+  "roundTripMs": {
+    "min": 514.66,
+    "median": 903.675,
+    "p95": 4251.52,
+    "max": 4251.52
+  },
+  "rateCard": {
+    "region": "iad1",
+    "cpuUsdPerHour": 0.128,
+    "memoryUsdPerGbHour": 0.0106,
+    "provisionedMemoryGB": 2,
+    "invocationUsd": 6e-7,
+    "checkedAt": "2026-10-02",
+    "sources": [
+      "https://vercel.com/docs/functions/usage-and-pricing",
+      "https://vercel.com/docs/functions/configuring-functions/memory"
+    ]
+  },
+  "estimatedFunctionUsd": {
+    "entireDrive": 0.00014899462666666664,
+    "perSuccessfulToolIncludingAmortizedProtocol": 0.000008277479259259258,
+    "perThousand": 0.008277479259259257
+  },
+  "coldStart": {
+    "firstHandlerEntryObserved": 1,
+    "actualProviderColdStartsClassified": true,
+    "reason": "Provider Start Type reports 95.2% hot and 4.8% prewarmed across these 21 invocations; no cold start is reported. This does not measure genuine cold-start latency or map a start type to an individual tool.",
+    "providerObservedAggregateStartTypes": {
+      "hotPercent": 95.2,
+      "prewarmedPercent": 4.8,
+      "coldReported": false
+    }
+  },
+  "limitations": [
+    "Measured application process CPU and handler duration, not provider metering or an invoice. Process CPU is meaningful only for this isolated serial drive.",
+    "Two-GB provisioned-memory serial estimate excludes module/adapter startup and teardown outside the timed handler; consequently it is not an upper bound or total invoice.",
+    "Protocol rows include initialization, notification and an automatic GET 405; tools are not the only billable requests.",
+    "Shared Supabase CPU/egress, Vercel network/edge/observability, existing subscriptions, model tokens and Pro credits are unallocated. No free-cost assumption.",
+    "No personal inputs, raw provider IDs, headers or credentials are retained.",
+    "A model can call twice for one completion; apply repeated tool and protocol costs explicitly.",
+    "Provider-rounded averages supplement handler measurements. Serial-only memory attribution; do not sum per-request memory cost for overlapping Fluid requests."
+  ],
+  "providerObserved": {
+    "window": {
+      "from": "2026-10-02T12:45:00Z",
+      "to": "2026-10-02T12:47:00Z"
+    },
+    "environment": "preview",
+    "route": "/api/compatibility",
+    "invocations": 21,
+    "averageDurationMs": 673,
+    "p75DurationMs": 833,
+    "p95DurationMs": 1570,
+    "averageActiveCpuMs": 94,
+    "p75ActiveCpuMs": 127,
+    "p95ActiveCpuMs": 257,
+    "allocatedMemoryMB": 2048,
+    "averageMemoryUsageMB": 243,
+    "startTypes": {
+      "hotPercent": 95.2,
+      "prewarmedPercent": 4.8,
+      "coldReported": false
+    },
+    "sources": [
+      "provider/rc16-isolated-metrics.jpg",
+      "provider/rc16-advanced-metrics.jpg"
+    ],
+    "scope": "The matching preview-only two-minute window contains exactly the 21 isolated drive invocations. Rounded provider averages, not request-level billing records."
+  },
+  "providerBasedFunctionEstimateUsd": {
+    "cpu": 0.00007018666666666666,
+    "memory": 0.00008322766666666666,
+    "invocations": 0.0000126,
+    "total": 0.00016601433333333332,
+    "perSuccessfulToolIncludingProtocol": 0.000009223018518518517,
+    "perThousand": 0.009223018518518518
+  },
+  "calendarBurstProviderObserved": {
+    "window": {
+      "from": "2026-10-02T12:47:00Z",
+      "to": "2026-10-02T12:48:00Z"
+    },
+    "environment": "preview",
+    "route": "/api/compatibility",
+    "invocations": 15,
+    "averageDurationMs": 1780,
+    "p75DurationMs": 2450,
+    "p95DurationMs": 2610,
+    "averageActiveCpuMs": 439,
+    "p75ActiveCpuMs": 670,
+    "p95ActiveCpuMs": 730,
+    "startTypes": {
+      "coldPercent": 60,
+      "hotPercent": 40
+    },
+    "source": "provider/rc16-calendar-burst.jpg",
+    "scope": "Twelve simultaneous calendar calls, ten successes/two rate refusals, with three SDK protocol invocations. Actual cold-containing mixture; individual cold tool latency and overlapping-instance memory billing are not attributable from these aggregates."
+  }
+}

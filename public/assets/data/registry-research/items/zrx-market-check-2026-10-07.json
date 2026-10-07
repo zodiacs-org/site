@@ -21,10 +21,10 @@
   "slug": "market-check-2026-10-07",
   "kind": "market-check",
   "templateId": "market-check.v1",
-  "issuedAt": "2026-10-07T12:00:00.000Z",
-  "visibleAt": "2026-10-07T12:00:00.000Z",
+  "issuedAt": "2026-10-07T00:03:04.322Z",
+  "visibleAt": "2026-10-07T00:03:04.322Z",
   "title": "Leo market check · 2026-10-07",
-  "summary": "Leo market comparison is delayed because the paired archive snapshot is unavailable.",
+  "summary": "Leo price, market cap, liquidity, volume, and collection medians at one archived observation.",
   "url": "/terminal/research/market-check-2026-10-07/",
   "signs": [
     "leo"
@@ -58,18 +58,38 @@
     },
     "marketObservation": {
       "heading": "Market observation",
-      "body": "The paired market snapshot is unavailable. The symbolic note remains unchanged; market comparison is delayed.",
-      "evidence": []
+      "body": "At 2026-10-07T00:03:04.322Z, Leo was indexed at $0.00007406, with +4.5% over 24 hours, $74.06K market cap, $74.06K FDV, $16.58K indexed liquidity, $170.94 24-hour volume, and 1 indexed pool. Market cap and FDV are kept separate. These descriptive fields did not alter the sky score. Leo market cap was 1.016× the collection median and indexed liquidity was 1.031× the collection median.",
+      "evidence": [
+        "public/assets/data/registry-market-history.v1.json"
+      ]
     }
   },
   "market": {
-    "available": false,
-    "snapshotId": null,
-    "observedAt": null
+    "available": true,
+    "snapshotId": "registry-market:2026-10-07:2026-10-07T00:03:04.322Z",
+    "observedAt": "2026-10-07T00:03:04.322Z",
+    "provider": "DexScreener",
+    "sign": "leo",
+    "priceUsd": 0.00007406,
+    "change24hPct": 4.5,
+    "marketCapUsd": 74059,
+    "fdvUsd": 74059,
+    "liquidityUsd": 16575.85,
+    "volume24hUsd": 170.94,
+    "indexedPoolCount": 1,
+    "deepestPoolUrl": "https://dexscreener.com/solana/48erbgmqizekyloccebd7cs5knqpzqr7qqak9mzapqgq",
+    "collectionMedian": {
+      "marketCapUsd": 72928,
+      "liquidityUsd": 16083.13
+    },
+    "vsCollectionMedian": {
+      "marketCap": 1.016,
+      "liquidity": 1.031
+    }
   },
   "evidence": {
     "outlookEdition": "public/assets/registry-outlook.json#daily:2026-10-07",
-    "marketSnapshotId": null,
+    "marketSnapshotId": "registry-market:2026-10-07:2026-10-07T00:03:04.322Z",
     "coverage": {
       "overall": "complete",
       "events": "complete",
@@ -81,13 +101,13 @@
       "missingOccupancyPlanets": []
     }
   },
-  "artifactHash": "ba9f211000fdbdf69c9f1e21baa9fdd21a19b2c10c5110024d8720d41e7c963c",
-  "publishedAt": "2026-10-07T12:00:00.000Z",
+  "artifactHash": "9cf2d21a1ae364adfe607d446b374882b0e81683f9e1d14873b6368109b12a85",
+  "publishedAt": "2026-10-07T00:03:04.322Z",
   "publication": {
     "mode": "post-pilot-deterministic-allowlist",
-    "publishedAt": "2026-10-07T12:00:00.000Z",
+    "publishedAt": "2026-10-07T00:03:04.322Z",
     "reviewer": null,
-    "artifactSha256": "ba9f211000fdbdf69c9f1e21baa9fdd21a19b2c10c5110024d8720d41e7c963c"
+    "artifactSha256": "9cf2d21a1ae364adfe607d446b374882b0e81683f9e1d14873b6368109b12a85"
   },
   "status": "approved"
 }

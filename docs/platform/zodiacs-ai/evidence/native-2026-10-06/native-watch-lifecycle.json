@@ -1,0 +1,64 @@
+{
+  "schema": "zodiacs.native-watch-lifecycle.v1",
+  "date": "2026-10-06",
+  "appId": "asdk_app_6ac4aa125bd88191b2dd4a221788e2ab",
+  "deployment": "dpl_Esk2afAcuHnag6HFqKztCJ1sc3RU",
+  "method": "Fresh Work chat after Refresh tools; native event monitoring, followed by Pause in its task dialog. Read-only database queries confirm server state.",
+  "subscribed": {
+    "now": "2026-10-06T12:03:53.898036+00:00",
+    "outbox": [],
+    "subscriptions": [
+      {
+        "name": "zodiacs.sky.ingress",
+        "active": true,
+        "filters": {
+          "zone": "Asia/Bangkok",
+          "bodies": [
+            "Moon"
+          ]
+        },
+        "revision": 1,
+        "expires_at": "2026-10-07T12:00:52.497963+00:00",
+        "started_at": "2026-10-06T12:00:52.507205+00:00",
+        "verified_until": "2026-10-06T12:10:52.497963+00:00"
+      }
+    ]
+  },
+  "paused": {
+    "now": "2026-10-06T12:05:53.024197+00:00",
+    "outbox": [],
+    "worker": {
+      "last_ok": true,
+      "last_result": {
+        "ok": true,
+        "failed": 0,
+        "retried": 0,
+        "delivered": 0,
+        "windowsFilled": 0
+      },
+      "last_finished": "2026-10-06T12:05:03.362361+00:00"
+    },
+    "subscriptions": [
+      {
+        "name": "zodiacs.sky.ingress",
+        "active": false,
+        "filters": {
+          "zone": "Asia/Bangkok",
+          "bodies": [
+            "Moon"
+          ]
+        },
+        "revision": 2,
+        "expires_at": "2026-10-06T12:05:41.740318+00:00",
+        "started_at": "2026-10-06T12:00:52.507205+00:00",
+        "callbackCredentialsCleared": true
+      }
+    ]
+  },
+  "limits": [
+    "No real event arrived during the short synthetic test.",
+    "Host-managed expiry renewal remains unverified.",
+    "The requested cutoff was in task instructions; the host granted a one-day default server lifetime until 12:00:52Z. The test was paused immediately after verification, before that expiry.",
+    "An older open conversation retained no callable event action despite the refreshed event catalog; a fresh Work chat was necessary."
+  ]
+}

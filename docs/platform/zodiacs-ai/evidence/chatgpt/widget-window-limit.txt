@@ -1,0 +1,54 @@
+- link "Skip to content":
+  - /url: "#_r_4b_"
+- main:
+  - button "Show sidebar":
+  - heading "Zodiacs Staging Review" [level=1]
+  - heading [level=3]: Outputs
+  - button:
+  - button:
+    - generic: Create file or site
+- status
+- status
+- status: Response complete
+- button "Latest turn" [expanded]:
+  - generic: Latest turn
+- heading "ChatGPT said:" [level=4]
+- paragraph: I can’t guarantee that you and your partner will stay together, and astrology can’t provide that certainty either. What you can influence is how you communicate, build trust and work through disagreements together.
+- paragraph: Has something happened that’s making you worry about the relationship?
+- button "Copy":
+- button "Rate response":
+- button "Share":
+- button "Regenerate response":
+- textbox "Work with ChatGPT":
+  - paragraph: Work with ChatGPT
+- button "Add files and more":
+- button "Select ChatGPT model":
+  - generic: GPT-6.1 Sol
+  - generic: Light
+  - generic: None
+  - generic: Minimal
+  - generic: Light
+  - generic: Medium
+  - generic: High
+  - generic: Extra High
+  - generic: Max
+  - generic: Ultra
+  - generic: Persistent
+- button "Dictate":
+- button "Start Voice":
+- iframe [active]:
+  - iframe [active] [id="root"]:
+    - main:
+      - heading "Sky calendar" [level=1]
+      - status: Choose an increasing UTC date window of at most 31 days.
+      - text: Start date (UTC)
+      - textbox "Start date (UTC)"
+      - text: End date (UTC, exclusive)
+      - textbox "End date (UTC, exclusive)"
+      - text: Display timezone
+      - textbox "Display timezone"
+      - button "Update calendar" [active]
+      - paragraph: Windows are at most 31 days. Date controls use midnight UTC; the timezone changes the displayed event times.
+      - list
+      - paragraph
+      - navigation "Explore on Zodiacs"

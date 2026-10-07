@@ -44,6 +44,11 @@ export function compatibilityInviteHandlerForAction(value: unknown): InviteHandl
 }
 
 export default async function handler(req: any, res: any): Promise<void> {
+  if (req.query?.__zodiacs_ai !== undefined) {
+    const { default: ai } = await import('./_ai/handler.js');
+    await ai(req, res);
+    return;
+  }
   // The compute API (/api/v1/chart and five more) rewrites here (vercel.json)
   // so it does not add a deployed function. Its handler owns everything past
   // this line for those routes, and loads only when one is asked for.

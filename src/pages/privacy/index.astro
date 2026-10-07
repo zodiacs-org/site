@@ -45,6 +45,10 @@ const webAnalyticsEnabled = vercelWebAnalyticsFlag(import.meta.env);
     <div class="prose">
       <p class="lede"> Chart calculation runs in your browser. Birth fields are not sent as part of calculation or a Cabinet of Twelve lookup; they leave your device only if you sign in to sync saved charts, share a link that carries them, or type them into an assistant message. Aura sends one public wallet address—not your birth or chart data—to a blockchain-data provider for a read-only lookup. Accounts{weeklyDigestEnabled ? ',' : ' and'} remembered Aura data{weeklyDigestEnabled ? ', and the weekly email' : ''} are optional and off by default. We show no ads and use no cross-site tracking. </p>
 
+      <h2 id="ai-integrations">AI integration candidates</h2>
+      <p>The public-sky ChatGPT candidate needs no birth information or account. When enabled, its tool arguments and results pass through the assistant provider and calculations run on Zodiacs infrastructure. The adapter saves no requests or results, writes no argument logs, uses uncacheable responses and refuses personal fields. Hosting and provider request metadata have separate retention policies; those policies require review before activation. The candidate is disabled by default and has not been publicly submitted.</p>
+      <p>The developer plugin computes locally over stdio and makes no outbound requests. An assistant connected to it can still send its tool arguments and results to its provider. Natal positions and exported records can reveal a birth instant; they are not anonymous. Keep them out of public links, analytics, screenshots and issues. The hosted candidate does not offer personal-chart computation or storage.</p>
+
       <h2>Who operates this site</h2>
       <p>
         <strong>Zodiacs LLC</strong>, a New Mexico limited liability company

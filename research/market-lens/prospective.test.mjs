@@ -1,10 +1,31 @@
-import {afterEach, describe, expect, it} from 'vitest';
-import {mkdtemp, readFile, rm, writeFile} from 'node:fs/promises';
+import {afterAll, afterEach, describe, expect, it} from 'vitest';
+import {cp, mkdir, mkdtemp, readFile, rm, symlink, writeFile} from 'node:fs/promises';
+import {execFileSync} from 'node:child_process';
+import {findPackageJSON} from 'node:module';
+import {fileURLToPath, pathToFileURL} from 'node:url';
 import os from 'node:os';
 import path from 'node:path';
 import manifest from './prospective-manifest.json';
 import {DAY} from './core.mjs';
-import {createDecision, decisionWindow, openStudy, recordDecision, reportStudy, settleDecisions, settleTrade, writeOnce} from './prospective.mjs';
+// The website may advance its engine; this frozen study must still run rc.15.
+// Copy unchanged sources and unpack the committed archive into an isolated runtime.
+const fixtureRoot = new URL('../../.cache/', import.meta.url);
+await mkdir(fixtureRoot, {recursive: true});
+const frozenRuntime = await mkdtemp(path.join(fileURLToPath(fixtureRoot), 'lens-frozen-test-'));
+afterAll(async () => { await rm(frozenRuntime, {recursive: true, force: true}); });
+for (const relative of ['research/market-lens/prospective-manifest.json', 'research/market-lens/prospective.mjs', 'research/market-lens/features.mjs', 'research/market-lens/core.mjs', 'research/market-lens/dataset.mjs', 'scripts/market-lens-paper.mjs', 'package.json', 'package-lock.json', 'vendor/zodiacs-engine-0.1.1-rc.15.tgz']) {
+  const target = path.join(frozenRuntime, relative);
+  await mkdir(path.dirname(target), {recursive: true});
+  await cp(new URL('../../' + relative, import.meta.url), target);
+}
+const engineDirectory = path.join(frozenRuntime, 'node_modules/@zodiacs/engine');
+await mkdir(engineDirectory, {recursive: true});
+execFileSync('tar', ['-xzf', path.join(frozenRuntime, 'vendor/zodiacs-engine-0.1.1-rc.15.tgz'), '--strip-components=1', '-C', engineDirectory]);
+const ephemerisPackage = findPackageJSON('astronomy-engine', import.meta.url);
+expect(JSON.parse(await readFile(ephemerisPackage, 'utf8')).version).toBe(manifest.ephemerisVersion);
+await symlink(path.dirname(ephemerisPackage), path.join(frozenRuntime, 'node_modules/astronomy-engine'));
+// Resolve dependencies from the isolated frozen source directory.
+const {createDecision, decisionWindow, openStudy, recordDecision, reportStudy, settleDecisions, settleTrade, writeOnce} = await import(/* @vite-ignore */ pathToFileURL(path.join(frozenRuntime, 'research/market-lens/prospective.mjs')).href);
 
 const first = Date.parse(manifest.start) / 1000;
 const recordTime = (first - DAY / 2) * 1000;

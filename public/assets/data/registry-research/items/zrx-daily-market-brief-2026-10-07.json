@@ -62,19 +62,31 @@
     },
     "marketObservation": {
       "heading": "Market observation",
-      "body": "The paired market snapshot is unavailable. The symbolic note remains unchanged; market comparison is delayed.",
-      "evidence": []
+      "body": "At 2026-10-07T00:03:04.322Z, Leo was indexed at $0.00007406, with +4.5% over 24 hours, $74.06K market cap, $74.06K FDV, $16.58K indexed liquidity, $170.94 24-hour volume, and 1 indexed pool. Market cap and FDV are kept separate. These descriptive fields did not alter the sky score.",
+      "evidence": [
+        "public/assets/data/registry-market-history.v1.json"
+      ]
     }
   },
   "market": {
-    "available": false,
-    "snapshotId": null,
-    "observedAt": null
+    "available": true,
+    "snapshotId": "registry-market:2026-10-07:2026-10-07T00:03:04.322Z",
+    "observedAt": "2026-10-07T00:03:04.322Z",
+    "provider": "DexScreener",
+    "sign": "leo",
+    "priceUsd": 0.00007406,
+    "change24hPct": 4.5,
+    "marketCapUsd": 74059,
+    "fdvUsd": 74059,
+    "liquidityUsd": 16575.85,
+    "volume24hUsd": 170.94,
+    "indexedPoolCount": 1,
+    "deepestPoolUrl": "https://dexscreener.com/solana/48erbgmqizekyloccebd7cs5knqpzqr7qqak9mzapqgq"
   },
   "evidence": {
     "dailyFacts": "src/data/daily.json#2026-10-07",
     "outlookEdition": "public/assets/registry-outlook.json#daily:2026-10-07",
-    "marketSnapshotId": null,
+    "marketSnapshotId": "registry-market:2026-10-07:2026-10-07T00:03:04.322Z",
     "coverage": {
       "overall": "complete",
       "events": "complete",
@@ -86,13 +98,13 @@
       "missingOccupancyPlanets": []
     }
   },
-  "artifactHash": "c3c29ef7583dc7e56f8c6cd68a396ad4656cd553c9a1b73ab92e76dc64fed0f7",
+  "artifactHash": "ec7f13ea0d105fa7c23e964fdef1d8f5395867eb7c8c0ad7238dfb81d3908e8a",
   "publishedAt": "2026-10-07T12:00:00.000Z",
   "publication": {
     "mode": "post-pilot-deterministic-allowlist",
     "publishedAt": "2026-10-07T12:00:00.000Z",
     "reviewer": null,
-    "artifactSha256": "c3c29ef7583dc7e56f8c6cd68a396ad4656cd553c9a1b73ab92e76dc64fed0f7"
+    "artifactSha256": "ec7f13ea0d105fa7c23e964fdef1d8f5395867eb7c8c0ad7238dfb81d3908e8a"
   },
   "status": "approved"
 }

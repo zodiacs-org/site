@@ -1,0 +1,18 @@
+{
+  "scope": "Local Chromium render and synthetic host bridges; not ChatGPT host acceptance",
+  "passed": [
+    "desktop",
+    "360px mobile",
+    "UTC/local time",
+    "engine version",
+    "coverage",
+    "no external requests",
+    "text injection",
+    "URL allowlist",
+    "refusal clears stale content",
+    "calendar form through OpenAI bridge",
+    "31-day form limit before host call",
+    "MCP Apps initialization and calendar tools/call"
+  ],
+  "errors": []
+}

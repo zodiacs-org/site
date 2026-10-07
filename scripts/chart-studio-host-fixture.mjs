@@ -1,0 +1,13 @@
+/** Loopback-only synthetic host. It never calls an assistant or sends chart data off-device. */
+export function chartStudioHostFixture(html) {
+  return `<!doctype html><html><head><meta charset="utf-8"><title>Chart Studio · synthetic host test</title><style>body{margin:0;background:#0c0e16;color:#eef1f7;font:14px system-ui}header{padding:18px}select,button{font:inherit;padding:10px;margin:8px}iframe{width:100%;height:1100px;border:0}pre{white-space:pre-wrap;overflow-wrap:anywhere;max-height:220px;overflow:auto}summary{cursor:pointer}</style></head><body><header><strong>Synthetic MCP Apps host · local test only</strong><p>This fixture receives chart context locally. It is not ChatGPT acceptance evidence.</p><label>Host behavior<select id="mode"><option value="context">Context attachment</option><option value="message">Message fallback</option><option value="reject">Reject sharing</option><option value="none">No sharing capability</option></select></label><button id="restart">Restart panel</button><p id="count" role="status">Received 0 shared selections</p><details><summary>Inspect received context</summary><pre id="received"></pre></details></header><iframe title="Chart Studio" sandbox="allow-scripts allow-downloads allow-popups allow-popups-to-escape-sandbox"></iframe><script>
+const panel=document.querySelector('iframe'),mode=document.querySelector('#mode');let received=0;
+window.addEventListener('message',event=>{if(event.source!==panel.contentWindow||event.data?.jsonrpc!=='2.0')return;const request=event.data;
+if(request.method==='ui/initialize')panel.contentWindow.postMessage({jsonrpc:'2.0',id:request.id,result:{protocolVersion:'2026-01-26',hostInfo:{name:'Synthetic local test host',version:'1'},hostCapabilities:mode.value==='none'?{}:mode.value==='message'?{message:{text:{}}}:{updateModelContext:{text:{}}}}},'*');
+if(['ui/update-model-context','ui/message'].includes(request.method)){received++;document.querySelector('#count').textContent='Received '+received+' shared selections';document.querySelector('#received').textContent=JSON.stringify(request.params,null,2);panel.contentWindow.postMessage({jsonrpc:'2.0',id:request.id,...(mode.value==='reject'?{error:{code:-1,message:'Synthetic rejection'}}:{result:{}})},'*');}
+});
+const html=${JSON.stringify(html).replace(/<\/script/gi, '<\\/script')};
+function restart(){received=0;document.querySelector('#count').textContent='Received 0 shared selections';document.querySelector('#received').textContent='';panel.srcdoc=html;}
+document.querySelector('#restart').addEventListener('click',restart);restart();
+</script></body></html>`;
+}

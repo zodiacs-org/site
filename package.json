@@ -29,6 +29,12 @@
     "engine:bundle": "node scripts/measure-engine-bundle.mjs",
     "engine:bundle:check": "node scripts/measure-engine-bundle.mjs --check",
     "mcp:build": "node scripts/build-mcp-server.mjs",
+    "ai:build": "node scripts/build-ai-integrations.mjs",
+    "ai:check": "node scripts/build-ai-integrations.mjs --check && node scripts/check-ai-integrations.mjs && python3 scripts/package-ai-integrations.py --check",
+    "ai:serve": "node scripts/serve-ai-integrations.mjs",
+    "ai:test": "vitest run src/ai-tools && node tests/ai-integrations-drive.mjs && npm test --prefix plugins/zodiacs-developer",
+    "ai:eval": "vite-node --script scripts/evaluate-ai-integrations.ts",
+    "ai:widget": "vite-node --script tests/ai-widget-drive.ts",
     "mcp:build:check": "node scripts/build-mcp-server.mjs --check",
     "mcp:pack": "node scripts/pack-mcp-server.mjs",
     "mcp:pack:check": "node scripts/pack-mcp-server.mjs --check",
@@ -146,7 +152,8 @@
     "data:market-lens:check": "node scripts/build-market-lens-events.mjs --check",
     "test:market-lens:browser": "node tests/market-lens-drive.mjs",
     "research:market-lens": "node scripts/market-lens-research.mjs",
-    "research:market-lens:paper": "node scripts/market-lens-paper.mjs"
+    "research:market-lens:paper": "node scripts/market-lens-paper.mjs",
+    "ai:package": "python3 scripts/package-ai-integrations.py"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.111.0",

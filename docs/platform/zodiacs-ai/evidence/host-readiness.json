@@ -1,0 +1,156 @@
+{
+  "schema": "zodiacs.ai-host-readiness.v1",
+  "date": "2026-10-02",
+  "openaiGuides": {
+    "extensions": "retrieved and inspected",
+    "connectionAndHostTesting": "retrieved and inspected",
+    "portablePackaging": "retrieved and inspected",
+    "submissionAndPublication": "retrieved and inspected",
+    "extensionSpecCommit": "900032d8bd7c1566202d0cb1666986584f932043",
+    "agentPluginsSchemas": {
+      "version": "1.0.0",
+      "validatedFiles": 4,
+      "validator": "jsonschema Draft202012Validator"
+    },
+    "legacySdkCompatibility": {
+      "version": "1.29.0",
+      "toolsPassed": 5,
+      "source": "tests/ai-legacy-sdk-drive.mjs",
+      "scope": "Local transport; not ChatGPT host acceptance"
+    }
+  },
+  "codex": {
+    "authenticated": true,
+    "marketplaceCandidatesDiscovered": 2,
+    "pluginInstallation": "installed and enabled",
+    "plugins": [
+      "zodiacs-developer@zodiacs-local-review",
+      "zodiacs-sky@zodiacs-local-review"
+    ],
+    "pinnedRuntimeDependenciesInstalled": true,
+    "installedStdioToolsPassed": 8,
+    "installedRecipesPassed": true,
+    "installedSkillsFollowedInThisConversation": [
+      "build-with-zodiacs",
+      "verify-astrology-output",
+      "test-astrology-integration"
+    ],
+    "disposableIntegrationTestsPassed": 5,
+    "disposableProject": "/tmp/zodiacs-ai-synthetic-project",
+    "freshConversationAutomaticSkillRoutingVerified": false,
+    "scope": "Actual CLI installation and installed-server SDK calls; skills followed by this conversation, not a separate model-routing trial."
+  },
+  "hosting": {
+    "githubAccessAvailable": true,
+    "vercelCredentialPresent": true,
+    "vercelProjectBindingPresent": true,
+    "stagingHostname": "zodiacs-org-git-codex-zodiacs-ai-integrations-zodiacsofficial.vercel.app",
+    "enabledDeployment": "dpl_2QWjfr3xzkNp2qt4xFg3Lpz2JUrg",
+    "sourceCommit": "a6947f71dce4adb7635060a6edfceb3ae7060e41",
+    "previewSsoPreserved": true,
+    "temporaryShareCredentialLifetimeHours": 23,
+    "credentialsRecorded": false,
+    "stagingMcpActivated": true,
+    "productionMcpActivated": false,
+    "httpsChecksPassed": 12,
+    "sharedComputeQuota429Verified": true,
+    "sequentialSharedEventQuotaVerified": true,
+    "concurrentEventQuotaStrictEnforcementVerified": false,
+    "concurrentEventsObserved": {
+      "requests": 12,
+      "allowed": 12,
+      "elapsedMs": 1832
+    },
+    "activeFirewallVersion": 6,
+    "firewallRulesChanged": false,
+    "warmNetworkElapsedMs": {
+      "min": 310,
+      "median": 484.5,
+      "max": 599,
+      "sampleSize": 6
+    },
+    "coldStartsClassified": false,
+    "capacityAndCostMeasured": false,
+    "retention": {
+      "providerConfigurationInspected": true,
+      "teamPlan": "pro",
+      "fluidCompute": true,
+      "region": "iad1",
+      "configuredLogDrains": 0,
+      "runtimeRowsInspected": 32,
+      "applicationMessages": 0,
+      "syntheticBodyCanaryObserved": false,
+      "observabilityEntitlementPresent": true,
+      "observabilityPlusRetentionConfirmed": true,
+      "documentedProDays": 1,
+      "documentedProPlusDays": 30,
+      "scope": "Observed application/provider logs; absence of a body canary does not prove every provider layer or deletion policy.",
+      "confirmedRuntimeRetentionDays": 30,
+      "evidence": "provider-log-review.json"
+    },
+    "rollbackEvidence": "staging-rollback.json",
+    "stagingRollbackVerified": true,
+    "providerAggregateColdStartMetricObserved": true,
+    "previewFunctionMetricsEvidence": "provider-log-review.json",
+    "previousEnabledDeployment": "dpl_6tEgUKWfJngQpFtdZNdVxgHZmiE7",
+    "patchedHttpsAcceptanceEvidence": "staging-acceptance-patched.json"
+  },
+  "chatgpt": {
+    "developerModeSessionAvailable": true,
+    "portableSkyZipImported": true,
+    "portableSkyPluginWebAvailability": "desktop-only",
+    "hostedMcpAppConnected": true,
+    "initialReviewAppId": "asdk_app_6abe8eb75b5c81918063b5a494b6a925",
+    "finalReviewAppId": "asdk_app_6abe9b0cae0c8191a520be3a0badf78e",
+    "modelToolSelectionVerified": true,
+    "positiveCasesPassed": 5,
+    "negativeCasesPassed": 3,
+    "unsupportedEventKindRefused": true,
+    "dateTimezoneDependsPreserved": true,
+    "nativeEntryPointsVerifiedInChatgpt": [
+      "global",
+      "thread"
+    ],
+    "initialSevenDayUtcObserved": true,
+    "widgetTimezoneChangeVerified": true,
+    "widgetInvalidTimezoneRefused": true,
+    "widgetWindowLimitRefused": true,
+    "widgetRecoveryVerified": true,
+    "correctedBoundaryLabelsVerifiedOnFinalDeployment": true,
+    "hostOutputsAndScreenshots": "chatgpt/",
+    "reviewerWalkthroughVideo": {
+      "file": "chatgpt/host-capture-walkthrough.mp4",
+      "format": "MP4, 40 seconds, eight labelled actual UI captures",
+      "scope": "Selected captured states, not continuous screen recording or portal-accepted submission video",
+      "publicReviewerUrl": "https://raw.githubusercontent.com/zodiacs-org/site/codex/zodiacs-ai-integrations/docs/platform/zodiacs-ai/evidence/chatgpt/host-capture-walkthrough.mp4"
+    },
+    "publisherSessionAvailable": true,
+    "publisherIdentityVerified": false,
+    "publisherUploadBlockedBy": "Complete identity verification: verified developer identity required before upload",
+    "domainChallengeIssued": false,
+    "publicSubmissionCompleted": false,
+    "publicListingPublished": false,
+    "supersededTestAppsUninstalled": true,
+    "currentReviewAppId": "asdk_app_6abeac26b3708191b2fabbc6e2024f26",
+    "currentReviewAppName": "Zodiacs Staging Verified",
+    "hostCspEnforcementEnabled": true,
+    "cspRetest": "Native global and thread rendering, invalid-timezone refusal, zone update and recovery passed with enforcement enabled.",
+    "threadModelCalendarRequestsObserved": 2,
+    "duplicateModelToolSelectionPrevented": false,
+    "widgetAutomaticCalculationRequests": 0,
+    "duplicateScope": "The final host conversation displays two opened calendars with server instants four seconds apart. Widget source requests computation only after form submission. Native rendering works, but single model invocation is not guaranteed.",
+    "patchedDeploymentNativeRetest": true,
+    "patchedDeploymentRetestEvidence": [
+      "chatgpt/patched-native-global.jpg",
+      "chatgpt/patched-widget-refusal.txt",
+      "chatgpt/patched-widget-recovery.jpg"
+    ],
+    "credentialPropagationScope": "An immediately issued credential connected but failed actual invocation after alias movement; a fresh credential after propagation passed native entry, refusal and recovery."
+  },
+  "beta": {
+    "invited": 0,
+    "consentingParticipants": 0,
+    "feedbackRecorded": false,
+    "reviewKit": "../BETA_REVIEW.md"
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "schema": "zodiacs.ai-staging-quota.v1",
+  "capturedAt": "2026-10-01T17:41:25.777Z",
+  "scope": "Two independent official-SDK clients alternate sequential event calls through one incoming egress IP. Ten succeed; both then receive rate-limited with retryAfterSeconds=60. This is not a load-capacity benchmark.",
+  "eventCalls": [
+    {
+      "client": 0,
+      "isError": false
+    },
+    {
+      "client": 1,
+      "isError": false
+    },
+    {
+      "client": 0,
+      "isError": false
+    },
+    {
+      "client": 1,
+      "isError": false
+    },
+    {
+      "client": 0,
+      "isError": false
+    },
+    {
+      "client": 1,
+      "isError": false
+    },
+    {
+      "client": 0,
+      "isError": false
+    },
+    {
+      "client": 1,
+      "isError": false
+    },
+    {
+      "client": 0,
+      "isError": false
+    },
+    {
+      "client": 1,
+      "isError": false
+    },
+    {
+      "client": 0,
+      "isError": true,
+      "code": "rate-limited",
+      "result": {
+        "schema": "zodiacs.ai-tool-result.v1",
+        "ok": false,
+        "tool": "get_upcoming_events",
+        "error": {
+          "code": "rate-limited",
+          "message": "Event computation is unavailable under its request limit. Try again later.",
+          "retryAfterSeconds": 60
+        }
+      }
+    },
+    {
+      "client": 1,
+      "isError": true,
+      "code": "rate-limited",
+      "result": {
+        "schema": "zodiacs.ai-tool-result.v1",
+        "ok": false,
+        "tool": "get_upcoming_events",
+        "error": {
+          "code": "rate-limited",
+          "message": "Event computation is unavailable under its request limit. Try again later.",
+          "retryAfterSeconds": 60
+        }
+      }
+    }
+  ],
+  "eventBurstMs": 4931,
+  "eventsEnforced": true
+}

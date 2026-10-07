@@ -1,0 +1,306 @@
+{
+  "schema": "zodiacs.ai-staging-quota.v1",
+  "capturedAt": "2026-10-01T17:38:53.934Z",
+  "scope": "Two official-SDK clients issue twelve concurrent events in 1.832s, all allowed; a later sequential health drive observes a shared compute 429 with Retry-After=60 and no-store. Sequential event enforcement is recorded separately. Concurrency overshoot remains a capacity limitation.",
+  "eventCalls": [
+    {
+      "client": 0,
+      "isError": false
+    },
+    {
+      "client": 1,
+      "isError": false
+    },
+    {
+      "client": 0,
+      "isError": false
+    },
+    {
+      "client": 1,
+      "isError": false
+    },
+    {
+      "client": 0,
+      "isError": false
+    },
+    {
+      "client": 1,
+      "isError": false
+    },
+    {
+      "client": 0,
+      "isError": false
+    },
+    {
+      "client": 1,
+      "isError": false
+    },
+    {
+      "client": 0,
+      "isError": false
+    },
+    {
+      "client": 1,
+      "isError": false
+    },
+    {
+      "client": 0,
+      "isError": false
+    },
+    {
+      "client": 1,
+      "isError": false
+    }
+  ],
+  "healthCalls": [
+    {
+      "client": 0,
+      "status": 200,
+      "retryAfter": null,
+      "cacheControl": "no-store"
+    },
+    {
+      "client": 1,
+      "status": 200,
+      "retryAfter": null,
+      "cacheControl": "no-store"
+    },
+    {
+      "client": 0,
+      "status": 200,
+      "retryAfter": null,
+      "cacheControl": "no-store"
+    },
+    {
+      "client": 1,
+      "status": 200,
+      "retryAfter": null,
+      "cacheControl": "no-store"
+    },
+    {
+      "client": 0,
+      "status": 200,
+      "retryAfter": null,
+      "cacheControl": "no-store"
+    },
+    {
+      "client": 1,
+      "status": 200,
+      "retryAfter": null,
+      "cacheControl": "no-store"
+    },
+    {
+      "client": 0,
+      "status": 200,
+      "retryAfter": null,
+      "cacheControl": "no-store"
+    },
+    {
+      "client": 1,
+      "status": 200,
+      "retryAfter": null,
+      "cacheControl": "no-store"
+    },
+    {
+      "client": 0,
+      "status": 200,
+      "retryAfter": null,
+      "cacheControl": "no-store"
+    },
+    {
+      "client": 1,
+      "status": 200,
+      "retryAfter": null,
+      "cacheControl": "no-store"
+    },
+    {
+      "client": 0,
+      "status": 200,
+      "retryAfter": null,
+      "cacheControl": "no-store"
+    },
+    {
+      "client": 1,
+      "status": 200,
+      "retryAfter": null,
+      "cacheControl": "no-store"
+    },
+    {
+      "client": 0,
+      "status": 200,
+      "retryAfter": null,
+      "cacheControl": "no-store"
+    },
+    {
+      "client": 1,
+      "status": 200,
+      "retryAfter": null,
+      "cacheControl": "no-store"
+    },
+    {
+      "client": 0,
+      "status": 200,
+      "retryAfter": null,
+      "cacheControl": "no-store"
+    },
+    {
+      "client": 1,
+      "status": 200,
+      "retryAfter": null,
+      "cacheControl": "no-store"
+    },
+    {
+      "client": 0,
+      "status": 200,
+      "retryAfter": null,
+      "cacheControl": "no-store"
+    },
+    {
+      "client": 1,
+      "status": 200,
+      "retryAfter": null,
+      "cacheControl": "no-store"
+    },
+    {
+      "client": 0,
+      "status": 200,
+      "retryAfter": null,
+      "cacheControl": "no-store"
+    },
+    {
+      "client": 1,
+      "status": 200,
+      "retryAfter": null,
+      "cacheControl": "no-store"
+    },
+    {
+      "client": 0,
+      "status": 200,
+      "retryAfter": null,
+      "cacheControl": "no-store"
+    },
+    {
+      "client": 1,
+      "status": 200,
+      "retryAfter": null,
+      "cacheControl": "no-store"
+    },
+    {
+      "client": 0,
+      "status": 200,
+      "retryAfter": null,
+      "cacheControl": "no-store"
+    },
+    {
+      "client": 1,
+      "status": 200,
+      "retryAfter": null,
+      "cacheControl": "no-store"
+    },
+    {
+      "client": 0,
+      "status": 200,
+      "retryAfter": null,
+      "cacheControl": "no-store"
+    },
+    {
+      "client": 1,
+      "status": 200,
+      "retryAfter": null,
+      "cacheControl": "no-store"
+    },
+    {
+      "client": 0,
+      "status": 200,
+      "retryAfter": null,
+      "cacheControl": "no-store"
+    },
+    {
+      "client": 1,
+      "status": 200,
+      "retryAfter": null,
+      "cacheControl": "no-store"
+    },
+    {
+      "client": 0,
+      "status": 200,
+      "retryAfter": null,
+      "cacheControl": "no-store"
+    },
+    {
+      "client": 1,
+      "status": 200,
+      "retryAfter": null,
+      "cacheControl": "no-store"
+    },
+    {
+      "client": 0,
+      "status": 200,
+      "retryAfter": null,
+      "cacheControl": "no-store"
+    },
+    {
+      "client": 1,
+      "status": 200,
+      "retryAfter": null,
+      "cacheControl": "no-store"
+    },
+    {
+      "client": 0,
+      "status": 200,
+      "retryAfter": null,
+      "cacheControl": "no-store"
+    },
+    {
+      "client": 1,
+      "status": 200,
+      "retryAfter": null,
+      "cacheControl": "no-store"
+    },
+    {
+      "client": 0,
+      "status": 200,
+      "retryAfter": null,
+      "cacheControl": "no-store"
+    },
+    {
+      "client": 1,
+      "status": 200,
+      "retryAfter": null,
+      "cacheControl": "no-store"
+    },
+    {
+      "client": 0,
+      "status": 200,
+      "retryAfter": null,
+      "cacheControl": "no-store"
+    },
+    {
+      "client": 1,
+      "status": 200,
+      "retryAfter": null,
+      "cacheControl": "no-store"
+    },
+    {
+      "client": 0,
+      "status": 200,
+      "retryAfter": null,
+      "cacheControl": "no-store"
+    },
+    {
+      "client": 1,
+      "status": 429,
+      "retryAfter": "60",
+      "cacheControl": "no-store"
+    },
+    {
+      "client": 0,
+      "status": 429,
+      "retryAfter": "60",
+      "cacheControl": "no-store"
+    }
+  ],
+  "eventBurstMs": 1832,
+  "eventsEnforced": false,
+  "computeEnforced": true
+}

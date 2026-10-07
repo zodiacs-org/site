@@ -1,12 +1,12 @@
 {
   "schema": "zodiacs.registry-research-feed.v1",
-  "generatedAt": "2026-10-06T00:07:37.815Z",
+  "generatedAt": "2026-10-07T00:03:04.322Z",
   "publisher": "Zodiacs.org Research System",
   "window": {
     "previousDays": 30,
     "futureDays": 7,
-    "startsAt": "2026-09-06T00:00:00.000Z",
-    "endsBefore": "2026-10-14T00:00:00.000Z"
+    "startsAt": "2026-09-07T00:00:00.000Z",
+    "endsBefore": "2026-10-15T00:00:00.000Z"
   },
   "items": [
     {
@@ -53,26 +53,6 @@
       "status": "scheduled"
     },
     {
-      "id": "zrx-market-check-2026-10-07",
-      "slug": "market-check-2026-10-07",
-      "kind": "market-check",
-      "sourceType": "zodiacs-research",
-      "publisher": "Zodiacs.org Research System",
-      "publishedAt": "2026-10-07T12:00:00.000Z",
-      "visibleAt": "2026-10-07T12:00:00.000Z",
-      "title": "Leo market check · 2026-10-07",
-      "summary": "Leo market comparison is delayed because the paired archive snapshot is unavailable.",
-      "url": "/terminal/research/market-check-2026-10-07/",
-      "signs": [
-        "leo"
-      ],
-      "topics": [
-        "markets",
-        "market-check"
-      ],
-      "status": "scheduled"
-    },
-    {
       "id": "zrx-event-brief-aspect-2026-10-07t10-41-21-014z-mars-sextile-uranus",
       "slug": "event-brief-aspect-2026-10-07t10-41-21-014z-mars-sextile-uranus",
       "kind": "event-brief",
@@ -95,6 +75,66 @@
       "status": "scheduled"
     },
     {
+      "id": "zrx-market-check-2026-09-29-observation-168h",
+      "slug": "market-check-2026-09-29-observation-168h",
+      "kind": "observation-update",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-07T00:03:04.322Z",
+      "visibleAt": "2026-10-07T00:03:04.322Z",
+      "title": "Leo 7-day observation update",
+      "summary": "7-day follow-up using the first qualifying archived snapshot (191.91 actual hours elapsed).",
+      "url": "/terminal/research/market-check-2026-09-29-observation-168h/",
+      "signs": [
+        "leo"
+      ],
+      "topics": [
+        "markets",
+        "observation-update"
+      ],
+      "status": "published"
+    },
+    {
+      "id": "zrx-market-check-2026-10-05-observation-24h",
+      "slug": "market-check-2026-10-05-observation-24h",
+      "kind": "observation-update",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-07T00:03:04.322Z",
+      "visibleAt": "2026-10-07T00:03:04.322Z",
+      "title": "Leo 24-hour observation update",
+      "summary": "24-hour follow-up using the first qualifying archived snapshot (47.91 actual hours elapsed).",
+      "url": "/terminal/research/market-check-2026-10-05-observation-24h/",
+      "signs": [
+        "leo"
+      ],
+      "topics": [
+        "markets",
+        "observation-update"
+      ],
+      "status": "published"
+    },
+    {
+      "id": "zrx-market-check-2026-10-07",
+      "slug": "market-check-2026-10-07",
+      "kind": "market-check",
+      "sourceType": "zodiacs-research",
+      "publisher": "Zodiacs.org Research System",
+      "publishedAt": "2026-10-07T00:03:04.322Z",
+      "visibleAt": "2026-10-07T00:03:04.322Z",
+      "title": "Leo market check · 2026-10-07",
+      "summary": "Leo price, market cap, liquidity, volume, and collection medians at one archived observation.",
+      "url": "/terminal/research/market-check-2026-10-07/",
+      "signs": [
+        "leo"
+      ],
+      "topics": [
+        "markets",
+        "market-check"
+      ],
+      "status": "published"
+    },
+    {
       "id": "zrx-daily-market-brief-2026-10-06",
       "slug": "daily-market-brief-2026-10-06",
       "kind": "daily-market-brief",
@@ -113,7 +153,7 @@
         "daily-sky",
         "occupancy"
       ],
-      "status": "scheduled"
+      "status": "published"
     },
     {
       "id": "zrx-market-check-2026-09-28-observation-168h",

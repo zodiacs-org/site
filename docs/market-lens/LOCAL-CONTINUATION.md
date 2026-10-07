@@ -6,26 +6,27 @@ Updated: 2026-10-07, Asia/Bangkok. Local chat: `01a10797-8c9a-7902-bae0-9bc0a518
 
 Continue existing draft PR [#619](https://github.com/zodiacs-org/site/pull/619): verify the private v2 study and offline recovery; implement a versioned cross-asset catalog, provider/session/risk support and migrations; prepare a separate expanded study; verify a protected preview where access allows; update beta and licensing documentation. Keep the PR draft. Production release, merging, real trades, purchases and new external outreach remain unauthorized. Preserve v1 evidence and frozen v2 bytes. Raw market/state data stays outside this public repository.
 
-## Checkpoint status
+## Current checkpoint — 7 October 2026, 08:13 Bangkok
 
-| Checkpoint | Implemented | Freshly tested | Remotely verified | Outstanding |
-| --- | --- | --- | --- | --- |
-| 1. v2 study and recovery | Existing private workflow preserved | Safe restore; query + digest signatures; two repeat cycles preserve every original byte | Run 37492139845: all cycle steps succeeded; Git b00969a persisted archive contents | First scheduled cycle 7 October 07:17 Bangkok is not due at verification |
-| 2. Cross-asset catalog and UI | 52 versioned instruments, search/favorites, schema-2 migration, currency-aware journal | 99 Lens unit checks; 5 cross-asset browser scenarios; 18 existing Lens checks | New protected preview pending | Live coverage and measured eligibility require provider evidence |
-| 3. Providers, sessions and sizing | Coinbase and gated Twelve Data adapters; calendars, adjustments, native sizing | Holidays/DST/splits/FX/futures/currency/rights tests pass | Rights remain absent | Verified grants, credentials and source mappings before live acceptance |
-| 4. Expanded study | Separate v3 draft, runtime, raw acquisition bundle, serialized scheduler, recovery | 5 runtime/scheduler/recovery tests; isolated minimal install and two empty synthetic cycles pass | Not activated | Real provider/session/eligibility receipts and prospective live acceptance |
-| 5. Protected preview and beta | Existing protection retained; OIDC driver ready | Local disabled/synthetic browser acceptance passes | Authenticated access verified; refresh pending | Deploy new source, run actual hosted driver, then owner-authorized beta |
+| Checkpoint | Verified status | Remaining |
+| --- | --- | --- |
+| v2 | Initial and subsequent manual cycle, two signed decisions, Git persistence, both artifact checksums, isolated restore and repeat operations verified; every initial archive byte preserved | Cron execution has not yet been observed; first settlement is due 8 October 07:05 Bangkok |
+| App | 52 candidate instruments, provider/session/risk support, explicit journal migration, search and favorites implemented | Written rights and verified coverage before live prices |
+| Local validation | Build/static/budgets pass; 7,036 tests pass, 5 skip; 5 cross-asset + 18 Lens + 17 ownership browser checks; 18 refreshed captures | Final hosted CI and integrated preview acceptance pending |
+| v3 | Separate rc.17 draft/runtime; synthetic minimal-runtime restore and two repeat cycles pass | Provider grants, credentials, mappings/calendars, eligibility and live acceptance before activation |
+| Beta | Review kit prepared; protection and disabled price gates preserved | Owner decision to release/invite; zero invitations or feedback |
+
+The user delegated the engine choice. The app and unfrozen v3 follow integrated main `8e0b849e`; original v1/v2 sources and receipts retain rc.15 unchanged. Legacy paper tests now run unchanged sources against the committed rc.15 archive in an isolated test directory. The main-only automatic deployment and production/spend controls remain unchanged.
+
+The pre-integration protected preview at `5c0c6054` passed actual hosted acceptance. A new integrated preview and stable-alias refresh are in progress; it is not yet the final accepted deployment. No live licensed market-data acceptance is claimed.
 
 ## Evidence and continuity
 
-- This checkpoint is public-safe. Private recovery paths, downloaded state, raw snapshots and full signature verification logs belong in the separate private recovery workspace.
-- v1 partial recovery was previously verified; full original v1 protocol and decision bytes remain unavailable. Do not present reconstructed payloads as original receipts or deploy partial v1 over v2.
-- Initial local checkout is clean and detached at `5cc7d70d503e9110a6be9af7f1e4aefffb0c3a10`, predating Market Lens. PR #619 is attached to this chat. Actual current PR state still requires fetching.
-- Initial sandboxed GitHub checks could not connect to api.github.com. Authentication status under that restriction is not evidence that credentials are invalid; retry through authorized network access before requesting new credentials.
+This is the current public-safe checkpoint. Dated sections below preserve prior evidence and superseded status, including earlier failed tests and unavailable access. Private raw state, signatures and recovery logs are retained outside this public repository. The partial v1 archive is not deployable and has never replaced v2. The isolated publishing checkout avoids a blocked cloud-offloaded pack in the original shared Git store; no original files or Git pack were deleted.
 
 ## Next action
 
-Publish the reviewed implementation to the existing draft branch, refresh the protected preview through an explicit preview deployment without changing main-only/spend guards, and run the actual authenticated deployed driver. Record exact source/deployment/CI IDs below. No production release or beta invitations.
+Push the integrated draft, verify current GitHub checks, deploy and test the protected preview, move only the stable review alias, and save the finished local checkout durably. No production release or invitations.
 
 ## Checkpoint 1 — independently verified 6 October 2026, 23:38 Bangkok
 
@@ -71,3 +72,15 @@ Current main (`55871059`) has 2,155 changed paths since this draft's integration
 ## Main integration — 7 October, 00:51 Bangkok
 
 Integrated main `55871059` into the isolated review copy after preserving the pre-integration draft. All 41 conflicts concern generated files, lockfile and budget settings. Current main supplies the generator inputs and approved engine budget; the Lens 32 KB limit remains unchanged. The app now follows main's rc.17 pin. Only the unfrozen v3 draft/minimal dependency/source manifest follow rc.17; frozen v1/v2 sources, protocols and witnesses remain unchanged. Generated evidence, security audit, full tests, browser checks and the final preview must be rerun on this integration.
+
+## Subsequent v2 recovery — 7 October, 08:08 Bangkok
+
+Manual run [37554752309](https://github.com/zodiacs-org/market-lens-paper/actions/runs/37554752309) completed every cycle/persistence/backup step. Persisted Git: `c500b46fb808150cce12a0772ac362ccaaad8330`. The scheduled 00:17 UTC run had not appeared; this manual run is not evidence of cron execution. Two decisions are now independently witnessed, with leads of 28,782 and 82,854 seconds. No settlement is due yet. All initial archive files and all new original files survive two isolated repeat cycles byte-for-byte.
+
+Artifact `11453749981` ZIP SHA-256: `5c10a3f81b62e3c81eae21bd6d151d4b8fd47acaa17407276bfa90de20877d45`. Enclosed tar SHA-256: `4138bd4cb81012e6470dd7324c2e310e35c87605b60a7a6569ba54e7fdbe0069`. The independently downloaded backup matches persisted Git and is retained offline. Expires 5 January 2027.
+
+## Integrated local acceptance — 7 October, 08:13 Bangkok
+
+Main `8e0b849e` integrated; fresh build, static check (0 errors/warnings, 40 hints), 7,036 passing tests / 5 skipped / 0 failures. The legacy frozen-study test harness is isolated with its rc.15 vendor archive; production study sources are unchanged. Browser checks: 5 cross-asset, 18 existing Lens, 17 ownership; 18 supported Phase 1 captures refreshed. Lens 31.8/32 KB, max chunk 50.1/60 KB, engine 32.4/main-approved 32.598046875 KB. No protected paths differ from current main, so no scope exception is needed.
+
+The rc.17 v3 synthetic recovery archive (`72ce1fbee11e42594152b208f2ac8dc25b242b81370096764e45b10852970230`) restores, installs only its minimal engine/ephemeris graph, verifies the source seal and completes two empty prospective cycles without changing protocol bytes. This is synthetic recovery acceptance, not live activation.

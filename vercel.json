@@ -226,7 +226,7 @@
       "permanent": true
     },
     {
-      "source": "/:path((?!api(?:/|$)|v1(?:/|$)|\\.well-known(?:/|$)|.*\\.[^/]+$).*[^/])",
+      "source": "/:path((?!api(?:/|$)|v1(?:/|$)|mcp(?:/|$)|\\.well-known(?:/|$)|.*\\.[^/]+$).*[^/])",
       "destination": "/:path/",
       "permanent": true
     },
@@ -286,6 +286,22 @@
       "destination": "/api/compatibility?__zodiacs_compute=chart"
     },
     {
+      "source": "/mcp",
+      "destination": "/api/compatibility?__zodiacs_ai=1"
+    },
+    {
+      "source": "/mcp/",
+      "destination": "/api/compatibility?__zodiacs_ai=1"
+    },
+    {
+      "source": "/mcp/health",
+      "destination": "/api/compatibility?__zodiacs_ai=health"
+    },
+    {
+      "source": "/mcp/health/",
+      "destination": "/api/compatibility?__zodiacs_ai=health"
+    },
+    {
       "source": "/api/v1/positions",
       "destination": "/api/compatibility?__zodiacs_compute=positions"
     },
@@ -311,6 +327,19 @@
     }
   ],
   "headers": [
+    {
+      "source": "/.well-known/openai-apps-challenge",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/plain; charset=utf-8"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ]
+    },
     {
       "source": "/sky-calendar.ics",
       "headers": [
