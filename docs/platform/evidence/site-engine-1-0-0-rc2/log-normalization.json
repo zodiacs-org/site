@@ -80,6 +80,72 @@
       "path": "docs/platform/evidence/site-engine-1-0-0-rc2/validation/site-rc2-timing-rerun.log",
       "capturedSha256": "4a56ddd082fee77d333201d883ed29ca4f450cb1f46872352c8fb5a14c6e119b",
       "normalizedSha256": "2cd1c95506dba1800e966e20d6fccb0e2ae7a223ba7b1d6f771c5f23a1a9cf3d"
+    },
+    {
+      "path": "docs/platform/evidence/site-engine-1-0-0-rc2/validation/site-rc2-check-main-refresh.log",
+      "capturedSha256": "78164b82745ae19abda2129c267a91d2a2bdb924e18b903af174238e78439651",
+      "normalizedSha256": "c72144b3f926c985ca63562ede5bae3c3c8958a25d10e92450c2dc116c64796e",
+      "withheldLines": 0
+    },
+    {
+      "path": "docs/platform/evidence/site-engine-1-0-0-rc2/validation/site-rc2-build-main-refresh.log",
+      "capturedSha256": "b2f9057cd9e76d84379b633cc10d3ce437886027a3b48067bc7293c017d4faf0",
+      "normalizedSha256": "ce66c174be1ac5d347bc7594c0b11cba25e2f680ef4d8426b2a7a154781c0c20",
+      "withheldLines": 0
+    },
+    {
+      "path": "docs/platform/evidence/site-engine-1-0-0-rc2/validation/site-rc2-phase1-main-refresh.log",
+      "capturedSha256": "10bb5a864ff02be3f4c8fe968880ad86cd6a2f8afea7a111ca4c6a71f364d80a",
+      "normalizedSha256": "10bb5a864ff02be3f4c8fe968880ad86cd6a2f8afea7a111ca4c6a71f364d80a",
+      "withheldLines": 0
+    },
+    {
+      "path": "docs/platform/evidence/site-engine-1-0-0-rc2/validation/regenerated-outputs-main-refresh-check.log",
+      "capturedSha256": "bbd0e59bdc6708e0c5926014764a748af879602ff8a21f96d5225a475242fe3e",
+      "normalizedSha256": "bbd0e59bdc6708e0c5926014764a748af879602ff8a21f96d5225a475242fe3e",
+      "withheldLines": 0
+    },
+    {
+      "path": "docs/platform/evidence/site-engine-1-0-0-rc2/validation/ai-main-refresh-build.log",
+      "capturedSha256": "f46bdc41b05aaf0884a268cf77b983c0205d63262ec72d3767b4edf165b3dbd0",
+      "normalizedSha256": "f46bdc41b05aaf0884a268cf77b983c0205d63262ec72d3767b4edf165b3dbd0",
+      "withheldLines": 0
+    },
+    {
+      "path": "docs/platform/evidence/site-engine-1-0-0-rc2/validation/ai-main-refresh-package.log",
+      "capturedSha256": "2a8928f61462293f008e760fe1d62e69698eb73a1e4ce1eb2370c154ccfca8f9",
+      "normalizedSha256": "2a8928f61462293f008e760fe1d62e69698eb73a1e4ce1eb2370c154ccfca8f9",
+      "withheldLines": 0
+    },
+    {
+      "path": "docs/platform/evidence/site-engine-1-0-0-rc2/validation/ai-main-refresh-check.log",
+      "capturedSha256": "cf9a4f2732c7ca417e956d37df77ba388b2f32ad937ef0b553e891120b67804d",
+      "normalizedSha256": "cf9a4f2732c7ca417e956d37df77ba388b2f32ad937ef0b553e891120b67804d",
+      "withheldLines": 0
+    },
+    {
+      "path": "docs/platform/evidence/site-engine-1-0-0-rc2/validation/ai-main-refresh-tests.log",
+      "capturedSha256": "8fac3b4e25d00eebfffac94fffaced13e1a9710faafa705b23d1f1ea831d55cb",
+      "normalizedSha256": "8fac3b4e25d00eebfffac94fffaced13e1a9710faafa705b23d1f1ea831d55cb",
+      "withheldLines": 0
+    },
+    {
+      "path": "docs/platform/evidence/site-engine-1-0-0-rc2/validation/site-rc2-full-tests-main-refresh.log",
+      "capturedSha256": "2bffa9cf81258f6ddd7a930e0964545ca23ac6a4f46289cb9e7c293fe12af919",
+      "normalizedSha256": "5ef9331293192517387103e93f86ceae92570651a8d91476d560851535623231",
+      "withheldLines": 0
+    },
+    {
+      "path": "docs/platform/evidence/site-engine-1-0-0-rc2/validation/site-rc2-candidate-docs-rerun.log",
+      "capturedSha256": "c5507a39de30ae459837d17fc56e2d2022b0705d9097ed91e6c715a968f69745",
+      "normalizedSha256": "0a69e0dd2d040f70e97170f5152b2eaef91c79945658873d0c65b366e508834f",
+      "withheldLines": 0
+    },
+    {
+      "path": "docs/platform/evidence/site-engine-1-0-0-rc2/validation/site-rc2-frames-main-refresh.log",
+      "capturedSha256": "e7e16575a7ac863e9a0129b53f17c42837257f025ba1ef3dc1b00c77d0a6c449",
+      "normalizedSha256": "e7e16575a7ac863e9a0129b53f17c42837257f025ba1ef3dc1b00c77d0a6c449",
+      "withheldLines": 0
     }
   ]
 }

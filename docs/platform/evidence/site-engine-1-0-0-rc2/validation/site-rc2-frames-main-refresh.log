@@ -1,0 +1,16 @@
+
+> zodiacs-org@1.0.0 test:phase1:frames
+> node tests/phase1-frame-drive.mjs
+
+FAIL baseline: 51.9fps, median 16.70ms, p95 33.30ms
+PASS trial 1: 60.0fps, median 16.70ms, p95 16.70ms, 0 >34ms
+PASS trial 2: 60.0fps, median 16.70ms, p95 16.70ms, 0 >34ms
+PASS trial 3: 57.8fps, median 16.70ms, p95 16.80ms, 2 >34ms
+file:///workspace/site/tests/phase1-frame-drive.mjs:226
+  throw new Error(
+        ^
+
+Error: Phase 1 frame cadence failed: 3/3 required trials passed at 4× CPU slowdown.
+    at file:///workspace/site/tests/phase1-frame-drive.mjs:226:9
+
+Node.js v22.22.2

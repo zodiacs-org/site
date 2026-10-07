@@ -73,12 +73,16 @@ records its exact comparison; v0's published files retain their bytes.
 
 The [compute-state review](PRIVATE-STATE.md) preceded its reviewed digest
 update. The same record includes a source review and static inventories of all three
-current AI runtimes; their actual-bundle lifetime regression drive passes
+AI runtimes before the main-metadata refresh; their actual-bundle lifetime regression drive passes
 success, refusal, failure and overlapping timezone resolution. Site main PR #681 removed the older
 hosted `/api/v1/mcp` bundle; this adoption rebuilds the current sole `/mcp`
 runtime instead of reinstating that removed endpoint. Developer plugin
 0.3.5 is the current review ZIP; the earlier local 0.3.4 candidate, sky 0.4.0
-and developer 0.3.3 retain their bytes.
+and developer 0.3.3 retain their bytes. All 62 archives present before this
+refresh retain their SHA-256; developer 0.3.5 is appended. The earlier lifetime
+inventory binds the preceding bundles, not the refreshed bundle digests.
+The merged metadata sources pass the refreshed AI build, package, contract
+checks and regression suite; they do not establish secure erasure.
 
 MCP adapter 0.1.0-rc.18 bundles rc.2. The [278-call comparison](mcp-rc17-rc18.json)
 finds no differences after version/receipt-digest normalization, including
@@ -134,10 +138,10 @@ changes still invalidate; excluded delivery/payload changes still do not.
 The first focused run correctly rejects the now-stale capture receipt. The
 fresh build and 18/18 captures bind source digest
 `b513a934c454dd36466ea647c234010cd0ab063027f9bcb521486d2334ba9d45`.
-The complete suite after this helper change runs every test, with one Vitest
+The fourth complete suite after this helper change runs every test, with one Vitest
 thread and unchanged time limits: 6,915 pass, one solar-return consistency case
 times out, and the five pre-existing skips remain. All ten solar-return checks
-then pass in isolation (461 ms for the file). The complete run is **failed**;
+then pass in isolation (461 ms for the file). That complete run is **failed**;
 the isolated pass does not turn it into a green full-suite result. CI remains
 required before delivery or acceptance.
 
@@ -155,9 +159,11 @@ required before delivery or acceptance.
   driver once on freshly built, untouched main, then on the candidate before
   and after the evidence-hasher optimization.
   Both calibrations measure 58.1 fps, below the unchanged 59 fps floor; all
-  three animation trials pass at 60 fps in those first two runs. The final
+  three animation trials pass at 60 fps in those first two runs. The preceding
   candidate measures 58.4 fps in calibration and 58.7–60 fps in its three
-  passing animation trials. All three frame gates fail their unchanged calibration.
+  passing animation trials. All three frame gates fail their unchanged calibration. The refreshed candidate
+  measures 51.9256 fps against the same 59 fps calibration floor, with three
+  passing animation trials; its overall frame gate is also **failed**.
   The earlier candidate reports remain retained. This reproduces the calibration
   failure on main; it does not establish a passing calibration or rule out
   every performance regression. No animation, Guide or threshold changes.
@@ -171,9 +177,12 @@ required before delivery or acceptance.
 - P3.3 is merged but not accepted; deployed cold latency and cost are missing.
 - Privacy evidence establishes finite behavior, not secure memory erasure;
   numerical agreement is consistency, not independent observation.
-- Birth-data search for this branch is pending. Private inputs stay outside
-  every repository and public record; only counts and anonymous labels may
-  be recorded when it runs.
+- The private birth-data search ran across the four-commit release range,
+  staged changes, the committed tree, working files and decompressed archives.
+  [history-check.txt](history-check.txt) records counts and anonymous labels
+  only. Both pattern sets have positive, **unclassified** matches. No privacy
+  clearance is claimed. Publication is held pending private classification;
+  inputs and raw outputs stay outside every repository and public record.
 - No npm publication is authorized, and no daily scheduled check is duplicated.
 
 The regenerated Moon ingress table was redrawn against Swiss 2.10.03: 481
@@ -196,4 +205,23 @@ Main advanced to `10099d693d35a02d521a11fba21a6c1705a3d08e` during
 validation. Its MCP tool titles and compute documentation link are retained,
 and the AI runtimes and developer plugin are regenerated from those merged
 sources. The new developer 0.3.5 ZIP preserves the earlier 0.3.4 archive.
-Refreshed full-suite and capture results will be recorded before review delivery.
+The merged source commit is `1d49fd4397e378cf86054fc930e8395da0e63f6f`.
+The refreshed build, typecheck, generated-output comparison, hash-equivalence
+comparison and all 18 captures pass. The capture source digest remains
+`b513a934c454dd36466ea647c234010cd0ab063027f9bcb521486d2334ba9d45`.
+The closure remains 33,193 gzip bytes across seven chunks.
+
+The fifth complete suite runs all 536 files and 6,921 tests with unchanged
+deadlines: **6,915 pass, one fails by timeout, and five existing skips remain**.
+The five-second timeout is in `scripts/platform-candidate-docs.test.mjs`;
+all 25 checks in that file then pass in isolation under the same deadline.
+The full run remains **failed**. Its duration is 898.98 seconds.
+[The complete log](validation/site-rc2-full-tests-main-refresh.log) and
+[isolated rerun](validation/site-rc2-candidate-docs-rerun.log) retain both results.
+The [refreshed frame report](browser-frames/candidate-main-refresh.json)
+also fails its unchanged calibration, as recorded above. No passing result
+is selected in place of those failures.
+
+The branch remains local. No PR, deployment, npm publication, Checkpoint 22
+or new programme acceptance is claimed. Delivery needs privacy classification,
+passing unchanged release gates, and API/deployment verification.

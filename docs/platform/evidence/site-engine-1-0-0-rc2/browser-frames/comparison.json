@@ -1,5 +1,5 @@
 {
-  "what": "One idle drive on untouched main, then candidate drives before and after the evidence-hasher optimization. Driver, thresholds and CPU throttle unchanged; the hasher is outside the rendered application.",
+  "what": "One idle drive on untouched main, then candidate drives before and after the evidence-hasher optimization. Driver, thresholds and CPU throttle unchanged; the hasher is outside the rendered application. Final candidate drive after retaining current main metadata; all earlier reports retained.",
   "base": "f4715b7047c852f48d0e188d43863d5825ae2bef",
   "node": "22.22.2",
   "cpuQuota": "400000 100000",
@@ -35,6 +35,18 @@
       "cpuThrottleRate": 4,
       "baselinePass": false,
       "baselineFps": 58.38090295796575,
+      "passingTrials": 3,
+      "pass": false
+    },
+    {
+      "report": "candidate-main-refresh.json",
+      "reportSha256": "904536da8ee841c0335260fdc60212b5b56dd62847cf7291af43a5ef24fa85ac",
+      "assembledSourceCommit": "1d49fd4397e378cf86054fc930e8395da0e63f6f",
+      "templateSourceSha256": "b513a934c454dd36466ea647c234010cd0ab063027f9bcb521486d2334ba9d45",
+      "browser": "Chromium 151.0.7922.173",
+      "cpuThrottleRate": 4,
+      "baselinePass": false,
+      "baselineFps": 51.92557334487235,
       "passingTrials": 3,
       "pass": false
     }
