@@ -44,6 +44,13 @@ The portal reads these from the server. Checked against the live server on
 7 October 2026: six tools, each with a title, `readOnlyHint: true`,
 `destructiveHint: false` and `openWorldHint: false`. All six returned results.
 
+The portal's Tools step then flagged two things this check missed: each tool
+also needs `annotations.title`, not only a top-level `title`, and it wanted an
+API documentation link in `check_sky_fact`'s description. Codex fixed both in
+[#687](https://github.com/zodiacs-org/site/pull/687), merged and live at
+16:16 UTC, before submitting. This changed the live tool metadata while OpenAI
+was reviewing 0.4.0. Names, schemas and behavior are unchanged.
+
 | Tool | Title | Panel |
 | --- | --- | --- |
 | `get_capabilities` | What Zodiacs can do | — |
