@@ -13,7 +13,7 @@ and clicks Submit.
 
 Decided 7 October 2026: submit now, with the live server as it is.
 
-**Submitted 7 October 2026, about 15:30 UTC,** from the Zodiacs-org account
+**Submitted 7 October 2026, about 16:25 UTC,** from the Zodiacs-org account
 (admin@zodiacs.org, Pro). Codex filled in the form and the owner submitted it.
 The portal shows "In review", and the reviewer emails the primary contact if
 they need anything. Categories chosen: Media & Entertainment, Education (the
