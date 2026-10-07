@@ -52,5 +52,21 @@
       }
     ],
     "protocolBytesUnchanged": true
+  },
+  "security": {
+    "production": {
+      "total": 0
+    },
+    "development": {
+      "moderate": 2,
+      "high": 0,
+      "critical": 0
+    }
+  },
+  "compatibilityBudgetFollowup": {
+    "commit": "613ac801efd0650c39120076fd40b1fb896fab3c",
+    "focusedTestsPassed": 26,
+    "productionFeatureBuildPassed": true,
+    "budgetsUnchanged": true
   }
 }

@@ -84,3 +84,11 @@ Artifact `11453749981` ZIP SHA-256: `5c10a3f81b62e3c81eae21bd6d151d4b8fd47acaa17
 Main `8e0b849e` integrated; fresh build, static check (0 errors/warnings, 40 hints), 7,036 passing tests / 5 skipped / 0 failures. The legacy frozen-study test harness is isolated with its rc.15 vendor archive; production study sources are unchanged. Browser checks: 5 cross-asset, 18 existing Lens, 17 ownership; 18 supported Phase 1 captures refreshed. Lens 31.8/32 KB, max chunk 50.1/60 KB, engine 32.4/main-approved 32.598046875 KB. No protected paths differ from current main, so no scope exception is needed.
 
 The rc.17 v3 synthetic recovery archive (`72ce1fbee11e42594152b208f2ac8dc25b242b81370096764e45b10852970230`) restores, installs only its minimal engine/ephemeris graph, verifies the source seal and completes two empty prospective cycles without changing protocol bytes. This is synthetic recovery acceptance, not live activation.
+
+## CI budget follow-up — 7 October, 08:25 Bangkok
+
+Integrated preview `dpl_7pkHah1FuTpNCZ3jGNt7VowJ2S9x` at application `19f424f4` passed all five actual deployed acceptance groups, with prices disabled, authenticated OIDC access, no fixtures, no personal payload transmission and no protection changes. The stable alias awaits the final budget-fix deployment.
+
+GitHub's production-feature build exposed a small compatibility-page overrun at its unchanged 36 KB limit. Commit `613ac801` reuses the existing chart resolver instead of duplicating conversion logic; all 26 compatibility unit/recovery tests and the complete production-feature build/budget checks pass. Default build/captures/full tests are being refreshed. No budget or deployment guard was relaxed. Fresh CI: run `37556918440` (supersedes the earlier failed budget run).
+
+The full working project and independent Git history are also saved outside temporary storage at `/Users/chiburashka/.codex/recoveries/market-lens-local-2026-10-07/site`. The original checkout has a continuation pointer; its original files and Git pack remain intact. This copy excludes reinstallable dependencies, build caches and environment bindings.

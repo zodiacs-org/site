@@ -2,7 +2,7 @@
 
 ## Local continuation — 7 October 2026 (Asia/Bangkok)
 
-Current evidence is in [LOCAL-CONTINUATION.md](LOCAL-CONTINUATION.md) and [CROSS-ASSET.md](CROSS-ASSET.md). Private v2 is running and its initial run, Git persistence, downloaded backup, restored source/protocol and signed receipts have now been independently verified. Earlier statements below about an empty private repository or inaccessible GitHub are dated history. The cross-asset extension and separate blocked v3 draft are under fresh validation; historical tests/previews do not establish their acceptance. Public display rights remain ungranted.
+Current evidence is in [LOCAL-CONTINUATION.md](LOCAL-CONTINUATION.md) and [CROSS-ASSET.md](CROSS-ASSET.md). Private v2 initial and subsequent manual runs, Git persistence, both downloaded backups, restored source/protocol and original signed receipts have been independently verified. Two decisions are witnessed; all initial bytes and repeat-operation bytes are preserved. Cron execution has not yet been observed; manual verification does not establish schedule delivery. Earlier statements below about an empty private repository or inaccessible GitHub are dated history. The cross-asset extension and separate blocked v3 draft are under fresh validation; historical tests/previews do not establish their acceptance. Public display rights remain ungranted.
 
 
 ## Protected preview checkpoint — 2026-10-02 (Asia/Bangkok)
