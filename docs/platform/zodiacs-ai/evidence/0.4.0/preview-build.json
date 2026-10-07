@@ -1,0 +1,14 @@
+{
+  "sourceCommit": "edb054868f20f6a82fe7f3fab5c4824aa070522e",
+  "scope": "Bounded MCP preview; existing compatibility function; no static website or unrelated routes",
+  "runtime": "nodejs22.x",
+  "adapterChanges": [
+    "Function output name normalized to match the repository rewrite",
+    "Committed horoscope window explicitly included",
+    "Preview-only Origin-presence boolean wrapper; no raw header or request data"
+  ],
+  "runtimeSha256": "d716d962d352e987fe4834b12d8ba1cf74db6a36c6d23f48567c629c2ff23766",
+  "sourceRuntimeSha256": "d716d962d352e987fe4834b12d8ba1cf74db6a36c6d23f48567c629c2ff23766",
+  "windowSha256": "9ffbaeb9a8c70d8f1f8c9c889527550a72575bd2171ac643ff9432b821cc47d7",
+  "wrapperSha256": "0bbe6e275a7bfa864839f7134dbecf80460d263be59d8f7d4408edc16cd8afe5"
+}
