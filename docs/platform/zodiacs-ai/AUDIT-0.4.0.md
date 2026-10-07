@@ -1,19 +1,56 @@
 # Zodiacs 0.4.0 release audit
 
-Audit date: 7 October 2026. Prepared by Codex for Claude and the owner. PR
-[#681](https://github.com/zodiacs-org/site/pull/681) remains a draft on
-`opus/consumer-plugin-0.4`. Nothing was merged, submitted, withdrawn or
-published. No production setting, project environment variable, Firewall rule,
-database schema or service-role key was changed. No email was sent.
+Audit date: 7 October 2026. Prepared by Codex for Claude and the owner, then
+updated by Claude. With the owner's approval, the 0.3.4 review was cancelled
+and PR [#681](https://github.com/zodiacs-org/site/pull/681) was merged. Codex
+and Claude changed no project environment variable, Firewall rule, database
+schema or service-role key, and sent no email.
 
 ## Decision
 
-**Current (about 11:00 UTC): 0.4.0 passes all eight review cases in real
-ChatGPT on the web, after three fixes found by those tests. It is worth
-submitting. Two steps come first, and both are the owner's: deciding about
-the 0.3.4 review, and merging #681.** Claude and the iPhone are still
-untested, for the reasons below. The earlier decision (Codex, morning) is
-kept below for the record.
+**Current (about 11:50 UTC): 0.4.0 is live and ready to submit.** The owner
+accepted the recommendation below. With that approval:
+
+- the 0.3.4 review was cancelled (the portal now shows “Not submitted,
+  0.3.4 Draft”);
+- #681 was merged (`f4715b70`, 11:32 UTC);
+- `zodiacs.org/mcp` has served 0.4.0 since 11:36 UTC.
+
+The live site, ChatGPT and Claude checks below all pass. The iPhone is
+still untested; it can only be tested after approval. The earlier decisions
+are kept below for the record.
+
+## Live checks after the merge — 7 October 2026, 11:36–11:50 UTC
+
+- **Server.** `zodiacs.org/mcp` reports 0.4.0 with the new instructions and
+  six tools; `search_zodiacs` is gone and `get_horoscope` is present.
+  - The horoscope panel matches the fixed build (`43bd8a66…`, 179,941
+    bytes).
+  - Leo's reading for Bangkok is available for Wednesday 7 October.
+  - The walkthrough URL answers 200 with the 2,657,928-byte video.
+- **ChatGPT web.** A private connection on the admin@zodiacs.org account,
+  “Zodiacs Live” (`plugin_asdk_app_6ac62a018f708191bfcafed97dcaae1d`), points
+  at `https://zodiacs.org/mcp` with no secret. One conversation passed four
+  checks:
+  - the sign picker, then Leo, which stayed;
+  - the calendar for 7–14 October in Bangkok times;
+  - Chart Studio on birth details;
+  - the relationship request, declined with no Zodiacs call.
+- **Claude (claude.ai, the owner's free account).** A custom connector
+  “Zodiacs” to `https://zodiacs.org/mcp`. Claude detected “No sign-in” and
+  listed all six tools, with Horoscopes, Sky calendar and Chart Studio as
+  interactive. Each tool needed one approval.
+  - **Horoscope:** called with no sign (`{"zone": "Asia/Bangkok"}`). The
+    panel rendered in Claude, and picking Leo inside it showed the
+    Wednesday 7 October reading, which stayed.
+  - **Mercury:** “No, Mercury is not retrograde today (Wednesday, 7 October,
+    Bangkok time)… moving direct through Scorpio”.
+  - **Chart Studio:** opened with `{}` on “When and where were you born?”.
+
+  Claude shows panels in a short frame that scrolls inside the chat; worth
+  improving later. Whether Claude sends an Origin header was not measured;
+  its requests were accepted.
+- **iPhone:** not executable before approval.
 
 ## Claude's ChatGPT test — 7 October 2026, 09:30–11:00 UTC
 
