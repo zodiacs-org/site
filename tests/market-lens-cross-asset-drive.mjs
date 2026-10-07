@@ -4,7 +4,8 @@ import {chromium} from 'playwright-core';
 import {findChromium,STABLE_CHROMIUM_ARGS} from './visual/browser.mjs';
 import {startPreview} from './visual/preview-server.mjs';
 const out=process.env.OUT_DIR??'/tmp/lens-cross-asset-browser';await mkdir(out,{recursive:true});
-const preview=await startPreview({port:4395});
+// DESK_BASE_URL drives an already running server instead of a local Astro preview.
+const preview=process.env.DESK_BASE_URL?{baseURL:process.env.DESK_BASE_URL,stop:async()=>{}}:await startPreview({port:4395});
 const browser=await chromium.launch({executablePath:await findChromium(),args:STABLE_CHROMIUM_ARGS});
 const errors=[],requests=[],checks=[];
 try{
@@ -21,7 +22,9 @@ try{
  const page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));context.on('request',r=>requests.push({url:r.url(),body:r.postData()??''}));
  await page.goto(`${preview.baseURL}/terminal/desk/`);await page.getByTestId('lens-instrument').waitFor();await page.getByText('Market prices are not enabled for this deployment.',{exact:false}).waitFor();
  assert.equal(await page.locator('.lens-market-summary strong').innerText(),'—');checks.push('Disabled response keeps prices empty and calendar/planning usable');
- await page.getByRole('button',{name:'Stocks',exact:true}).click();await page.getByLabel('Search assets').fill('Toyota');await page.getByTestId('lens-instrument').selectOption('XTKS:7203');await page.getByRole('button',{name:'Add favorite',exact:true}).click();await page.reload();await page.getByTestId('lens-instrument').waitFor();assert.equal(await page.getByTestId('lens-instrument').inputValue(),'XTKS:7203');await page.getByRole('button',{name:'Remove favorite',exact:true}).waitFor();
+ await page.getByRole('button',{name:'Stocks',exact:true}).click();await page.getByLabel('Search assets').fill('Toyota');await page.getByTestId('lens-instrument').selectOption('XTKS:7203');await page.getByRole('button',{name:'Add favorite',exact:true}).click();
+ // Preferences and favorites persist in effects after render; reload only once both are stored.
+ await page.waitForFunction(()=>JSON.parse(localStorage.getItem('zodiacs-lens-favorites-v1')??'null')?.ids?.includes('XTKS:7203')&&JSON.parse(localStorage.getItem('zodiacs-market-lens-preferences-v1')??'{}').instrument==='XTKS:7203');await page.reload();await page.getByTestId('lens-instrument').waitFor();assert.equal(await page.getByTestId('lens-instrument').inputValue(),'XTKS:7203');await page.getByRole('button',{name:'Remove favorite',exact:true}).waitFor();
  await page.getByTestId('lens-tab-setup').click();await page.getByText('Verified tick, lot and multiplier metadata are required for sizing.').waitFor();checks.push('Search, stable overseas identity and favorites persist; unverified sizing refuses');
  await page.getByTestId('lens-instrument').selectOption('FX:USD/JPY');await page.getByLabel('Cash equity (JPY)',{exact:true}).fill('1000000');await page.getByLabel('Entry (JPY)',{exact:true}).fill('150');await page.getByLabel('Stop (JPY)',{exact:true}).fill('149');
  for(const [label,value]of [['Technical setup / price levels','SYNTHETIC-PRIVATE-FX'],['Confirmation condition','Wait for a finalized session'],['Invalidation condition','Stop below entry'],['Timing hypothesis','Unvalidated test hypothesis']])await page.getByLabel(label,{exact:true}).fill(value);

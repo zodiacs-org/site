@@ -117,7 +117,10 @@ the machine:
 
 Site Check now runs that drive and the existing cross-asset drive against the
 built site; their screenshots are uploaded with the browser evidence. The real
-build, full suite, Astro check and bundle gate are verified there, not here.
+build, full suite, Astro check and bundle gate are verified there, not here;
+draft PR #619 links the run for each head. The cross-asset drive now waits for
+the favorite and instrument preference to be stored before it reloads, which
+removes an intermittent 30-second timeout seen in its first CI run.
 
 **Integration with main.** Main moved four commits past the integrated base
 `8e0b849e`. Both sides regenerated `docs/acceptance/phase1/screenshots/`, so the
