@@ -5,7 +5,7 @@
     "display_name": "Zodiacs",
     "subtitle": "Sky, horoscopes and charts",
     "description": "See what's changing in the sky this week, check whether a planet is retrograde, read the horoscope for your sign, and explore your own birth chart. No account is needed. Zodiacs calculates the sky; what it means in astrology is offered as interpretation, for reflection. Horoscopes are dated Sun-sign readings written for your own day, in your time zone. Chart Studio asks for your birth date, place and, if you know it, time, and works out the chart inside the panel. The assistant sees only what you choose to share.",
-    "category": "LIFESTYLE"
+    "category": "EDUCATION"
   },
   "tools": {
     "get_capabilities": {

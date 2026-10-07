@@ -2,7 +2,9 @@
 
 Measured 2026-10-02 on enabled preview `dpl_CSFWTPqDyZ3ZF4e32wSXsFnMfspM`,
 source `5468423bac0675336949ab16839f40ac5def3e92`, engine rc.16. Production
-`/mcp/` remains unavailable (observed 404); no production switch or alias changed.
+`/mcp/` was unavailable on that date (observed 404); that drive changed no
+production switch or alias. By 7 October the production endpoint is deployed
+and the 0.3.4 package is in review. These dated costs are not a 0.4.0 measurement.
 
 ## Representative serial drive
 

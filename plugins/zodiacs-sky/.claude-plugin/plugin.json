@@ -1,0 +1,27 @@
+{
+  "name": "zodiacs-sky",
+  "version": "0.4.0",
+  "description": "Check what's happening in the sky, read the horoscope for your sign, and explore your own birth chart.",
+  "author": {
+    "name": "Zodiacs LLC",
+    "email": "admin@zodiacs.org",
+    "url": "https://zodiacs.org/"
+  },
+  "homepage": "https://zodiacs.org/",
+  "repository": "https://github.com/zodiacs-org/site/tree/main/plugins/zodiacs-sky",
+  "license": "Proprietary",
+  "keywords": [
+    "astrology",
+    "astronomy",
+    "moon",
+    "calendar",
+    "zodiacs"
+  ],
+  "displayName": "Zodiacs",
+  "mcpServers": "./.mcp.json",
+  "icon": "./assets/icon.png",
+  "documentationUrl": "https://zodiacs.org/",
+  "supportUrl": "https://zodiacs.org/about/",
+  "privacyPolicyUrl": "https://zodiacs.org/privacy/",
+  "termsOfServiceUrl": "https://zodiacs.org/terms/"
+}

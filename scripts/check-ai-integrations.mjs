@@ -49,7 +49,15 @@ assert.equal(skyCompatibility.version, sky.version);
 const { interface: skyInterface, ...skySettings } = sky.extensions['com.openai'];
 assert.deepEqual(skyCompatibility.interface, skyInterface);
 assert.deepEqual(skyCompatibility.extensions['com.openai'], skySettings);
-assert.deepEqual((await json('plugins/zodiacs-sky/.mcp.json')).mcpServers['zodiacs-sky'], { url: 'https://zodiacs.org/mcp' });
+assert.deepEqual((await json('plugins/zodiacs-sky/.mcp.json')).mcpServers['zodiacs-sky'], { type: 'http', url: 'https://zodiacs.org/mcp' });
+const skyClaude = await json('plugins/zodiacs-sky/.claude-plugin/plugin.json');
+for (const key of ['name', 'version', 'description', 'author', 'homepage', 'repository', 'license', 'keywords']) assert.deepEqual(skyClaude[key], sky[key]);
+assert.equal(skyClaude.displayName, skyInterface.displayName);
+assert.equal(skyClaude.mcpServers, './.mcp.json');
+assert.equal(skyClaude.icon, skyInterface.logo);
+assert.equal(skyClaude.documentationUrl, sky.homepage);
+for (const [claudeKey, openaiKey] of [['supportUrl', 'supportURL'], ['privacyPolicyUrl', 'privacyPolicyURL'], ['termsOfServiceUrl', 'termsOfServiceURL']]) assert.equal(skyClaude[claudeKey], skyInterface[openaiKey]);
+assert.ok(!skyClaude.apps && !skyClaude.hooks);
 const review = sky.extensions['com.openai'].review;
 assert.equal(review.test_cases.positive.length, 5); assert.equal(review.test_cases.negative.length, 3);
 for (const entry of review.test_cases.positive) {
@@ -62,6 +70,7 @@ const submission = await json('integrations/chatgpt/chatgpt-app-submission.json'
 const names = ['get_capabilities', 'get_sky', 'get_upcoming_events', 'check_sky_fact', 'get_horoscope', 'open_chart_studio'];
 assert.deepEqual(Object.keys(submission.tools), names);
 assert.equal(submission.schema_version, 1); assert.ok(submission.app_info.subtitle.length <= 30);
+assert.equal(submission.app_info.category, 'EDUCATION');
 assert.equal(submission.test_cases.length, 5); assert.equal(submission.negative_test_cases.length, 3);
 for (const name of names) {
   assert.deepEqual(submission.tools[name].annotations, { readOnlyHint: true, openWorldHint: false, destructiveHint: false });

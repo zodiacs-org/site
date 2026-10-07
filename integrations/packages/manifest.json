@@ -6,9 +6,14 @@
       "name": "zodiacs-sky",
       "version": "0.4.0",
       "file": "zodiacs-sky-0.4.0.zip",
-      "bytes": 67181,
-      "sha256": "fd3f56db5b6e1776e9acc4fd8c85d42da5e612b0282ef74cd0830a37f0503cad",
+      "bytes": 68155,
+      "sha256": "ac39164bd8e12797e5e5c9473b87762dfff2e21ed53faebb949aefd00fc793d9",
       "members": [
+        {
+          "path": ".claude-plugin/plugin.json",
+          "bytes": 824,
+          "sha256": "276b12f62d36d3023e33f8981f1ac1f3568831c07254aa2f700202ffa6bb0ae2"
+        },
         {
           "path": ".codex-plugin/plugin.json",
           "bytes": 6809,
@@ -16,8 +21,8 @@
         },
         {
           "path": ".mcp.json",
-          "bytes": 92,
-          "sha256": "11a64b144aa59556168c758bd659a11fbf368894d5661885d3df7c408bac977e"
+          "bytes": 114,
+          "sha256": "ac984e1e50a4f78164942838ee3f0065588a2a2c5f611928709bcf083f48ac04"
         },
         {
           "path": "LICENSE",
@@ -60,8 +65,8 @@
       "name": "zodiacs-developer",
       "version": "0.3.3",
       "file": "zodiacs-developer-0.3.3.zip",
-      "bytes": 1852044,
-      "sha256": "c375858dde70f023bfca958b4166dce4518d945dd15d0435406379ba8421cd9c",
+      "bytes": 1852055,
+      "sha256": "9422412c759b4d630609a6d67e0908fc735dbeb86e71f78e22cde4f13a76c5a9",
       "members": [
         {
           "path": ".codex-plugin/plugin.json",
@@ -100,8 +105,8 @@
         },
         {
           "path": "README.md",
-          "bytes": 5516,
-          "sha256": "435ee7078028d8c190f5038db69d9db4c7879600bc633ef48172c2c919b01e4a"
+          "bytes": 5539,
+          "sha256": "14f80d73febb628a6d854e9b0d9672e8e9d35a6f6b8735047a3a3158a20cc4c0"
         },
         {
           "path": "assets/icon.png",
@@ -150,13 +155,13 @@
         },
         {
           "path": "skills/build-with-zodiacs/SKILL.md",
-          "bytes": 2074,
-          "sha256": "9ed48f0634a69148de6c3b7dd9e3e3f192aae4281ca8ad14e71716ec9cdc62e7"
+          "bytes": 2058,
+          "sha256": "62c2e9fee4cdf8f96087409c6815a3702e3c43781892026084ef15d91e68d3cc"
         },
         {
           "path": "skills/test-astrology-integration/SKILL.md",
-          "bytes": 1507,
-          "sha256": "2f6d97794218c07560f9af208904bcf2651e9a83b8ecc8faa6a8f1b305c2c54c"
+          "bytes": 1511,
+          "sha256": "5a4e18ef09b2564bae76ab6a00aa606b748ae9cd6b241b98460d7d31821443dc"
         },
         {
           "path": "skills/verify-astrology-output/SKILL.md",

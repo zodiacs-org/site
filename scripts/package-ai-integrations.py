@@ -14,7 +14,7 @@ FILES = {
     "zodiacs-sky": COMMON + [".mcp.json"],
     "zodiacs-developer": COMMON + ["package.json", "package-lock.json", ".mcp.json", "ENGINE-LICENSE", "ENGINE-NOTICE", "ENGINE-LICENSING"],
 }
-DIRS = {"zodiacs-sky": ["assets", "skills", ".codex-plugin"], "zodiacs-developer": ["assets", "skills", "examples", "mcp", ".codex-plugin"]}
+DIRS = {"zodiacs-sky": ["assets", "skills", ".codex-plugin", ".claude-plugin"], "zodiacs-developer": ["assets", "skills", "examples", "mcp", ".codex-plugin"]}
 
 
 def archive(name):
