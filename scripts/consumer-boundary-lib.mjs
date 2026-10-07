@@ -53,11 +53,6 @@ const NON_SURFACE_SOURCE = Object.freeze([
   /(?:^|\/)[^/]+\.(?:spec|test)\.[^.]+$/u,
   /^api\/_assistant\/persona\.ts$/u,
   /^src\/lib\/guide-server\/safety\.ts$/u,
-  // The hosted MCP endpoint's generated bundle (scripts/build-mcp-remote.mjs).
-  // Its own text is src/mcp/hosted-*.ts, scanned under src/mcp; the rest is the
-  // MCP SDK's inlined protocol schemas, whose OAuth field names (for example
-  // issued_token_type) are never shown to anyone. Exactly this one file.
-  /^api\/_mcp\/remote\.mjs$/u,
 ]);
 
 const VOCABULARY = Object.freeze([

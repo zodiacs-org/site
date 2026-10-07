@@ -320,14 +320,6 @@
     {
       "source": "/api/v1/elections",
       "destination": "/api/compatibility?__zodiacs_compute=elections"
-    },
-    {
-      "source": "/api/v1/mcp",
-      "destination": "/api/compatibility?__zodiacs_mcp=1"
-    },
-    {
-      "source": "/api/v1/mcp/health",
-      "destination": "/api/compatibility?__zodiacs_mcp=health"
     }
   ],
   "headers": [
