@@ -12,7 +12,7 @@
     },
     {
       "file": "03-sky-this-week.png",
-      "prompt": "What's happening in the sky this week? I'm in Bangkok."
+      "prompt": "Use Zodiacs to show this week's sky calendar for Bangkok."
     },
     {
       "file": "04-chart-studio-start.png",

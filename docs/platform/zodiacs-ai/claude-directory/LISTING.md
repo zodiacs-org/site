@@ -11,17 +11,19 @@ and clicks Submit.
 
 ## Order
 
-1. Let OpenAI finish reviewing 0.4.0. ChatGPT's reviewers test the live server,
-   so it stays as it is until then.
-2. Re-test the panels from this branch in ChatGPT on staging, then merge and let
-   the site deploy. Claude needs the two panel fixes in this branch: panels grow
-   to fit their content instead of scrolling inside a short frame, and links
-   open through Claude.
-3. Submit from a paid Claude account (Pro, Max, Team or Enterprise; Free can't
-   submit). The listing belongs to the organization you submit from, so use the
-   account that should own it long term, such as admin@zodiacs.org.
-4. Submit the server first, as an **MCP connector**. A **plugin bundle** for
+Decided 7 October 2026: submit now, with the live server as it is.
+
+1. Submit from the paid admin@zodiacs.org Claude account (Pro; Free can't
+   submit). The listing belongs to the organization you submit from.
+2. Submit the server as an **MCP connector**. A **plugin bundle** for
    `plugins/zodiacs-sky` is optional and can follow.
+3. After OpenAI's review of 0.4.0 ends, re-test this branch's panels in ChatGPT
+   on staging, then merge. Claude users then get the two panel fixes
+   automatically, with no resubmission: panels grow to fit their content
+   instead of scrolling inside a short frame, and links open through Claude.
+
+Claude's review doesn't require those fixes. It scans each submission
+automatically and lists it as a Community connector by default.
 
 Submit at https://claude.ai/directory/manage → **Submit new** → **MCP connector**.
 
@@ -82,7 +84,7 @@ in 05 is made up.
 | --- | --- |
 | `01-choose-your-sign.png` | Show my horoscope for today |
 | `02-leo-today.png` | Show today's horoscope for Leo. |
-| `03-sky-this-week.png` | What's happening in the sky this week? I'm in Bangkok. |
+| `03-sky-this-week.png` | Use Zodiacs to show this week's sky calendar for Bangkok. |
 | `04-chart-studio-start.png` | Help me read my birth chart. |
 | `05-chart-without-birth-time.png` | Help me read my birth chart. I don't know my birth time. |
 
@@ -123,7 +125,7 @@ Paste into the reviewer instructions:
 
 > No account or credentials are needed. Add `https://zodiacs.org/mcp` as a custom connector (Customize → Connectors), then try:
 >
-> 1. "What's happening in the sky this week? I'm in Bangkok." Shows the sky calendar with times in Bangkok.
+> 1. "Use Zodiacs to show this week's sky calendar for Bangkok." Shows the sky calendar with times in Bangkok.
 > 2. "Is Mercury retrograde right now, and where is it?" Answers yes or no with dates and Mercury's current sign.
 > 3. "Show today's horoscope for Leo." Shows the horoscope panel with today's dated reading.
 > 4. "Help me read my birth chart." Opens Chart Studio, which asks for a birth date and place; a made-up date works. "I don't know my birth time" makes a chart without houses.
@@ -131,11 +133,15 @@ Paste into the reviewer instructions:
 >
 > Zodiacs declines requests to schedule things, pick investments or promise personal outcomes.
 
+In Claude, name Zodiacs in the calendar prompt. Asked plainly "What's
+happening in the sky this week?", Claude read it as stargazing and searched
+the web instead.
+
 The portal also asks you to confirm you ran every tool yourself. Every tool was
 run against the live server on 7 October 2026. In Claude, through a custom
-connector, the horoscope panel, a Mercury question and Chart Studio were tried
-the same day, before this branch's fixes; the sky calendar wasn't. After this
-branch is live, try all five prompts above in Claude once before submitting.
+connector, the horoscope panel, a Mercury question, Chart Studio and the sky
+calendar were tried the same day. The calendar showed in full, with no
+scrolling inside its frame.
 
 ## Compliance
 

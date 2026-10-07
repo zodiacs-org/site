@@ -75,7 +75,7 @@ try {
 
   await page.setContent(WIDGET_HTML); await host(page, week);
   await page.waitForFunction(() => document.querySelector('#status')?.textContent?.includes('times for Bangkok'));
-  await save('03-sky-this-week.png', "What's happening in the sky this week? I'm in Bangkok.");
+  await save('03-sky-this-week.png', "Use Zodiacs to show this week's sky calendar for Bangkok.");
 
   await page.setContent(STUDIO_HTML);
   await page.getByRole('heading', { name: 'When and where were you born?' }).waitFor();
