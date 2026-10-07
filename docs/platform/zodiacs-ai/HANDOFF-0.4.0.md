@@ -64,15 +64,23 @@ watch CI.
      `/assets/ai/review/zodiacs-sky-0.4.0.mp4`.
    - Set `demo_recording_url`, then run `npm run ai:package` and
      `npm run ai:check`.
-5. **The submission.** Ask the owner before changing what is under review.
+5. **Stop before submitting.** Do not upload, replace, submit or withdraw
+   anything in the OpenAI developer portal, and do not merge #681. Write
+   `docs/platform/zodiacs-ai/AUDIT-0.4.0.md` instead and tell the owner it is
+   ready: the owner will have Claude audit whether submitting is worth doing.
+   It should hold the staging deployment, every host test with evidence, known
+   problems, anything that would fail OpenAI's app guidelines as you read them,
+   the current portal status (read only), and the exact submit and rollback
+   steps.
+6. **The submission, after the audit and the owner's yes.** Ask the owner before changing what is under review.
    - If the 0.3.x review is still open, the owner decides whether to replace
      it with 0.4.0.
    - Merging #681 changes the live `/mcp` tools, so it must not land while
      reviewers test 0.3.x.
-6. **Claude listing prep.** This is not in #681. Add a `.claude-plugin/`
+7. **Claude listing prep.** This is not in #681. Add a `.claude-plugin/`
    manifest and the `type` field in the plugin's `.mcp.json`, as Claude's
    directory requires.
-7. **Stale docs.** None of these is user-facing on the site:
+8. **Stale docs.** None of these is user-facing on the site:
    - `integrations/chatgpt/README.md` (says "not deployed", "five tools",
      "Lifestyle");
    - `integrations/packages/README.md` (0.1.1);
@@ -80,7 +88,7 @@ watch CI.
    - `CHECKPOINTS.md` and `COST.md` (say `/mcp` is 404);
    - the `app_info.category` "LIFESTYLE" in `chatgpt-app-submission.json`;
    - the model-routing lines ("Use GPT-6.1 Sol High…") in the developer skills.
-8. **Rate limits (separate PR, F-78).** The live Firewall is 30 a minute and
+9. **Rate limits (separate PR, F-78).** The live Firewall is 30 a minute and
    6 for events (version 8), but `RATE_LIMIT_RULES` and the docs say 40 and 10.
    - Rebuilding means the compute bundle, the runtime, the MCP archive and the
      Phase 1 receipt.
