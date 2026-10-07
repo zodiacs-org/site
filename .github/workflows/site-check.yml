@@ -263,7 +263,7 @@ jobs:
         run: OUT_DIR=tests/visual/artifacts/zodiacs-desk node tests/zodiacs-desk-drive.mjs
 
       - name: Zodiacs Desk cross-asset acceptance
-        run: OUT_DIR=tests/visual/artifacts/zodiacs-desk-cross-asset node tests/market-lens-cross-asset-drive.mjs
+        run: OUT_DIR=tests/visual/artifacts/zodiacs-desk-cross-asset node tests/market-lens-cross-asset-drive.mjs > /tmp/drive.log 2>&1 || { tail -n 40 /tmp/drive.log; printf '::error title=Drive tail::%s\n' "$(tail -n 40 /tmp/drive.log | sed -e 's/%/%25/g' -e 's/\r//g' -e 's/\x1b\[[0-9;]*m//g' | awk '{printf "%s%%0A", $0}')"; exit 1; }
 
       - name: Phase 1 mobile frame cadence
         run: npm run test:phase1:frames
