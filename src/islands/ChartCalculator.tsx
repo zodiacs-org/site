@@ -126,6 +126,15 @@ type SavedRecordScope = import('../lib/profile/saved-record-access').SavedRecord
 type SavedRecordMode = import('../lib/profile/saved-record-access').SavedRecordMode;
 /** Explicit keep-on-this-device outcome for the current result; never retried automatically. */
 type RecordKeepStatus = 'opening' | 'idle' | 'busy' | 'kept' | 'uncertain' | 'changed' | 'failed' | 'full' | 'unavailable' | 'locked' | 'read-only' | 'pending' | 'stale';
+/**
+ * What a re-open of the record scope leaves in place until the fresh scope can
+ * judge it: a keep in flight, and what the visitor was told about the last one
+ * (kept, maybe kept, nothing stored). Wiping "Kept" whenever another tab keeps
+ * or removes something would offer to keep the same calculation twice.
+ */
+function recordKeepSurvivesReopen(status: RecordKeepStatus): boolean {
+  return status === 'busy' || status === 'kept' || status === 'uncertain' || status === 'changed';
+}
 type PreparedPrimaryShare = Awaited<ReturnType<ShareSurfaceModule['preparePrimaryShareArtifact']>>;
 type PrimaryShareHandle = {
   artifact: PreparedPrimaryShare;
@@ -483,10 +492,10 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
       const run = ++recordKeepRunRef.current;
       recordScopeRef.current?.close();
       recordScopeRef.current = null;
+      // The button waits until the scope is known (it is disabled while there
+      // is no mode); a keep in flight and a stated outcome keep their own state.
       setRecordMode(null);
-      // The button waits until the scope is known; a keep in flight and an
-      // uncertain outcome for this result keep their own state.
-      setRecordKeep((current) => (current === 'busy' || current === 'uncertain' ? current : 'opening'));
+      setRecordKeep((current) => (recordKeepSurvivesReopen(current) ? current : 'opening'));
       try {
         const [api, copyModule] = await Promise.all([
           recordAccessRef.current ?? import('../lib/profile/saved-record-access'),
@@ -503,7 +512,9 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
           return;
         }
         if (opened.status !== 'ready') {
-          setRecordKeep((current) => (current === 'busy' || current === 'uncertain' || current === 'changed' ? current
+          // Nothing can be kept now, so "keep it again" would be a dead end:
+          // the reason replaces it. A keep in flight and an uncertain outcome stay.
+          setRecordKeep((current) => (current === 'busy' || current === 'uncertain' ? current
             : opened.status === 'locked' ? 'locked' : opened.status === 'pending' ? 'pending' : 'unavailable'));
           return;
         }
@@ -511,10 +522,11 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
         setRecordMode(opened.scope.mode);
         setRecordErasedNote(opened.scope.state === 'owner-erased' || opened.scope.state === 'device-erased');
         const next: RecordKeepStatus = !opened.scope.canSave ? 'read-only' : opened.scope.state === 'erasure-pending' ? 'pending' : 'idle';
-        // A keep still in flight reports its own outcome, and an uncertain
+        // A keep still in flight reports its own outcome, an uncertain
         // outcome for this result stays stated until the visitor reconciles
-        // it under Profile; a confirmed keep survives only while the same
-        // namespace is still admitted. The fresh scope replaces the rest.
+        // it under Profile, and "nothing was stored" stays until the next
+        // click; a confirmed keep survives only while the same namespace is
+        // still admitted. The fresh scope replaces the rest.
         const kept = recordKeptRef.current;
         const sameKeptNamespace = opened.scope.state === null && kept !== null && opened.scope.ownerKey === kept.ownerKey;
         setRecordKeep((current) => (current === 'busy' || current === 'uncertain' || current === 'changed'
@@ -540,7 +552,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
       recordAccessRef.current = api;
       unsubscribe = api.subscribeSavedRecordScope(() => {
         recordKeepRunRef.current += 1;
-        setRecordKeep((current) => (current === 'busy' || current === 'uncertain' || current === 'changed' ? current : 'stale'));
+        setRecordKeep((current) => (recordKeepSurvivesReopen(current) ? current : 'stale'));
         setTimeout(() => { if (live) void reopen(); }, 0);
       });
     }).catch(() => {});
@@ -2729,8 +2741,8 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
                           class="btn btn--glass"
                           type="button"
                           onClick={() => void keepRecord()}
-                          disabled={recordKeep === 'opening' || recordKeep === 'busy' || recordKeep === 'kept' || recordKeep === 'read-only'
-                            || recordKeep === 'locked' || recordKeep === 'unavailable' || recordKeep === 'pending'}
+                          disabled={recordMode === null || recordKeep === 'opening' || recordKeep === 'busy' || recordKeep === 'kept'
+                            || recordKeep === 'read-only' || recordKeep === 'locked' || recordKeep === 'unavailable' || recordKeep === 'pending'}
                           aria-describedby="calculation-record-scope"
                           data-keep-calculation-record
                         >

@@ -515,6 +515,92 @@ try {
       return { outcomes };
     });
 
+    // Records every keep state a calculator tab shows from now on, and counts
+    // the completed re-opens of its scope: the scope line empties while the
+    // scope is replaced and is written again once the new one is open.
+    const watchKeep = (page) => page.evaluate(() => {
+      const box = document.querySelector('[data-record-keep]');
+      const line = document.querySelector('#calculation-record-scope');
+      const seen = (window.__keepSeen = { states: [], reopened: 0 });
+      let emptied = false;
+      new MutationObserver(() => seen.states.push(box.getAttribute('data-record-keep-state')))
+        .observe(box, { attributes: true, attributeFilter: ['data-record-keep-state'] });
+      new MutationObserver(() => {
+        if (line.textContent.trim() === '') emptied = true;
+        else if (emptied) { emptied = false; seen.reopened += 1; }
+      }).observe(line, { childList: true, characterData: true, subtree: true });
+    });
+    const keepSeen = (page) => page.evaluate(() => window.__keepSeen);
+
+    await check('device mode: a keep in another tab leaves this tab\'s "Kept" standing, so nothing offers to keep it twice', async () => {
+      const { context, blocked, errors } = await newContext();
+      const first = await context.newPage();
+      const second = await context.newPage();
+      await computeKnownTime(first);
+      await computeKnownTime(second, { date: '1985-03-02', time: '09:15', place: 'Paris' });
+      await waitKeepState(first, ['idle']);
+      await waitKeepState(second, ['idle']);
+      await watchKeep(second);
+      assert.equal(await keep(first), 'kept');
+      // One after the other: the second tab has re-opened on the first tab's announcement.
+      await second.waitForFunction(() => window.__keepSeen.reopened > 0);
+      await waitKeepState(second, ['idle']);
+      await watchKeep(first);
+      assert.equal(await keep(second), 'kept');
+      await first.waitForFunction(() => window.__keepSeen.reopened > 0);
+      const probe = await context.newPage();
+      assert.equal(await gotoProfile(probe), 'ready');
+      assert.equal(await recordCount(probe), 2);
+      // The first tab's record is still there, so its confirmation never left
+      // and its button never offered to keep the same calculation again.
+      const { states } = await keepSeen(first);
+      assert.deepEqual(states, [], 'the first tab must stay "Kept" through the second tab\'s keep');
+      assert.ok(await first.$('[data-record-kept]'));
+      assert.ok(await first.$('[data-keep-calculation-record][disabled]'));
+      assert.deepEqual(blocked, []); assert.deepEqual(errors, []);
+      await context.close();
+      return { firstStatesAfterSecondKeep: states };
+    });
+
+    await check('device mode: a keep that missed another tab\'s keep stores nothing and says so until the next click', async () => {
+      const { context, blocked, errors } = await newContext();
+      const first = await context.newPage();
+      const second = await context.newPage();
+      // The second tab's click lands before the first tab's announcement
+      // reaches it: hold that one announcement back (listening before any page
+      // script does), so the click acts on the scope the second tab opened
+      // before the device set was admitted.
+      await second.addInitScript((key) => {
+        const hold = (event) => {
+          if (event.key !== key) return;
+          event.stopImmediatePropagation();
+          window.removeEventListener('storage', hold);
+          window.__announcementHeld = true;
+        };
+        window.addEventListener('storage', hold);
+      }, 'zodiacs.saved-records.scope-change.v1');
+      await computeKnownTime(first);
+      await computeKnownTime(second, { date: '1985-03-02', time: '09:15', place: 'Paris' });
+      await waitKeepState(first, ['idle']);
+      await waitKeepState(second, ['idle']);
+      assert.equal(await keep(first), 'kept');
+      await second.waitForFunction(() => window.__announcementHeld === true);
+      assert.equal(await keep(second), 'changed');
+      assert.match(await second.textContent('[data-record-keep-message]'), /Nothing was stored/u);
+      // The re-open that follows the refusal leaves the message in place; the
+      // button comes back once the fresh scope is open.
+      await second.waitForSelector('[data-keep-calculation-record]:not([disabled])');
+      assert.equal(await keepState(second), 'changed');
+      assert.match(await second.textContent('[data-record-keep-message]'), /Nothing was stored/u);
+      assert.equal(await keep(second), 'kept', 'an explicit second keep succeeds against the other tab\'s admission');
+      const probe = await context.newPage();
+      assert.equal(await gotoProfile(probe), 'ready');
+      assert.equal(await recordCount(probe), 2);
+      assert.deepEqual(blocked, []); assert.deepEqual(errors, []);
+      await context.close();
+      return { refusedThenKept: true };
+    });
+
     await check('device mode: a single removal in another tab reaches open inventories and the calculator without reload', async () => {
       const { context, blocked, errors } = await newContext();
       const calculator = await context.newPage();
