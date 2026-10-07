@@ -15,5 +15,7 @@
   "docs/platform/evidence/site-engine-1-0-0-rc2/tools/regenerate.py": "b2504968c9734c143bb805c07c0e8361dca368a3e56dfeb1ab77ba91bc38fa07",
   "docs/platform/evidence/site-engine-1-0-0-rc2/tools/check-regenerated-outputs.py": "c2a1e954728d0e270059ef30ef273163dc7bc0c5b5977d52bdf0599263f8589d",
   "tests/visual/phase1-evidence-contract.mjs": "a52c7aa2502cc0ce787655fab1f6f375b6f825f251eee4e9b5b817874f060d04",
-  "docs/platform/evidence/site-engine-1-0-0-rc2/tools/check-phase1-hash.mjs": "b594a6d4d0349867f2bb6489808a7ff7625951bfdbf8d7e75633da46399f1b9e"
+  "docs/platform/evidence/site-engine-1-0-0-rc2/tools/check-phase1-hash.mjs": "b594a6d4d0349867f2bb6489808a7ff7625951bfdbf8d7e75633da46399f1b9e",
+  "src/ai-tools/contracts.ts": "9953cf3ad61e39a461453a4083924012c1f568206ebb19d5809a4eb5a68cc58e",
+  "src/ai-tools/server.ts": "a0b394e6c1ed642c684779fb244e942e2776e2bdf5599cb2bd51022097b39f3d"
 }

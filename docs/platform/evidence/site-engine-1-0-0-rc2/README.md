@@ -77,7 +77,8 @@ current AI runtimes; their actual-bundle lifetime regression drive passes
 success, refusal, failure and overlapping timezone resolution. Site main PR #681 removed the older
 hosted `/api/v1/mcp` bundle; this adoption rebuilds the current sole `/mcp`
 runtime instead of reinstating that removed endpoint. Developer plugin
-0.3.4 is a new review ZIP; sky 0.4.0 and developer 0.3.3 retain their bytes.
+0.3.5 is the current review ZIP; the earlier local 0.3.4 candidate, sky 0.4.0
+and developer 0.3.3 retain their bytes.
 
 MCP adapter 0.1.0-rc.18 bundles rc.2. The [278-call comparison](mcp-rc17-rc18.json)
 finds no differences after version/receipt-digest normalization, including
@@ -91,7 +92,7 @@ binds its SHA-256. The complete local release checks and their failures are reco
 
 ## Bundle and compute cost
 
-The current-main baseline measures 33,128 gzip bytes across seven static
+The release-base baseline measures 33,128 gzip bytes across seven static
 chunks, under the unchanged 33,380.4-byte engine allowance.
 [baseline-engine-closure.json](baseline-engine-closure.json) gives each chunk.
 The candidate build measures 33,193 gzip bytes in seven static chunks,
@@ -188,3 +189,11 @@ Runner log copies have trailing whitespace removed for review.
 [log-normalization.json](log-normalization.json) records the captured and
 normalized SHA-256 for each affected log; original captured logs remain
 outside Git. This formatting change does not change assertions or results.
+
+## Refresh from current main
+
+Main advanced to `10099d693d35a02d521a11fba21a6c1705a3d08e` during
+validation. Its MCP tool titles and compute documentation link are retained,
+and the AI runtimes and developer plugin are regenerated from those merged
+sources. The new developer 0.3.5 ZIP preserves the earlier 0.3.4 archive.
+Refreshed full-suite and capture results will be recorded before review delivery.
