@@ -13,6 +13,12 @@ and clicks Submit.
 
 Decided 7 October 2026: submit now, with the live server as it is.
 
+**Submitted 7 October 2026, about 15:30 UTC,** from the Zodiacs-org account
+(admin@zodiacs.org, Pro). Codex filled in the form and the owner submitted it.
+The portal shows "In review", and the reviewer emails the primary contact if
+they need anything. Categories chosen: Media & Entertainment, Education (the
+portal has no Lifestyle category).
+
 1. Submit from the paid admin@zodiacs.org Claude account (Pro; Free can't
    submit). The listing belongs to the organization you submit from.
 2. Submit the server as an **MCP connector**. A **plugin bundle** for
