@@ -1,0 +1,85 @@
+{
+  "normalization": "Trailing whitespace and terminal blank lines removed from new captured log copies only. Original captured bytes remain outside Git in the local audit workspace. Assertions, timing values and results are unchanged.",
+  "files": [
+    {
+      "path": "docs/platform/evidence/site-engine-1-0-0-rc2/baseline-timeout-rerun.log",
+      "capturedSha256": "2ea4f507057c19444605a82f1ce548bf31ea8aafd06be38f44927f091f21871b",
+      "normalizedSha256": "9b17d52dea9f528c979a47109c899c336f07d54d0f4e4bddf2d523440d2dd74f"
+    },
+    {
+      "path": "docs/platform/evidence/site-engine-1-0-0-rc2/private-state-review/focused-tests.log",
+      "capturedSha256": "ee355099fd5d9cfb092a8294311f8a962a64f84cbf364d91f7a95e3c9ff37946",
+      "normalizedSha256": "72e848411dc24e508093063d08f08e2b1883c3f68c6dbcfabcc905a7d7c06596"
+    },
+    {
+      "path": "docs/platform/evidence/site-engine-1-0-0-rc2/typecheck.log",
+      "capturedSha256": "fcf4545422812012beecf3693f1dbd6a377a35a30b9e31db2e27410e1f0ed8b5",
+      "normalizedSha256": "185c291eebf48e8811f4fea819874edf173d141fd30e06cf8d297ab19e110409"
+    },
+    {
+      "path": "docs/platform/evidence/site-engine-1-0-0-rc2/validation/site-frame-main-build.log",
+      "capturedSha256": "e59f4c3abd48d03c80d2ae6d9f14a9404168f845f5d3b8ee5188c0720f3082bb",
+      "normalizedSha256": "a974c2af33dd72cb851e8bb2613bf5a2a4fcc98dc14006246ac2d8817591067b"
+    },
+    {
+      "path": "docs/platform/evidence/site-engine-1-0-0-rc2/validation/site-rc2-build-current.log",
+      "capturedSha256": "286eb73f2bd830f7a5b4f11f32a0f2babdb9ccba535ff806f2e89c3c2121f807",
+      "normalizedSha256": "a5f6c3c5dc9c290acf5fafd142c3a772089e3ecc4559e25055f7f135ac78b424"
+    },
+    {
+      "path": "docs/platform/evidence/site-engine-1-0-0-rc2/validation/site-rc2-build-hash-fixed.log",
+      "capturedSha256": "6e58aeb1022655d967dc0736c96f8631b89067b1f9a661c408b4118fa6ec0f2d",
+      "normalizedSha256": "151c16230999a584f43373615c0f81e06a89858fa491f5f2b64f4cbf9c4fb53e"
+    },
+    {
+      "path": "docs/platform/evidence/site-engine-1-0-0-rc2/validation/site-rc2-check-hash-fixed.log",
+      "capturedSha256": "df30ab7df676be13a713265c91c7851a591c2f9dd771627a8e79603578c8b1cb",
+      "normalizedSha256": "7550cdd01fa3513c950ff646106993f9cd416916b658a28457b0b3c7c5aa483b"
+    },
+    {
+      "path": "docs/platform/evidence/site-engine-1-0-0-rc2/validation/site-rc2-check-release.log",
+      "capturedSha256": "b13e168252b8aff55e217f8afdb93a5e36aabf6f89ae6ce8660ea9778ebb4177",
+      "normalizedSha256": "a3f21f8dbd822a42e94d3a44ff86bc1cc118a248639a23ed9599b2dac5daa54b"
+    },
+    {
+      "path": "docs/platform/evidence/site-engine-1-0-0-rc2/validation/site-rc2-failures-rerun.log",
+      "capturedSha256": "f69ea7d362b03a247504966384bba9a324aa38616e45ad1da50e7ce7a566804f",
+      "normalizedSha256": "d7c2eb4f7d90021a5c0aad48e3de8ed4908383b79de51e713450dcfbb5e842da"
+    },
+    {
+      "path": "docs/platform/evidence/site-engine-1-0-0-rc2/validation/site-rc2-full-tests-final.log",
+      "capturedSha256": "97b14baeb180769bf697b192b3eedb996e2df7a7439a6ccea0569ed1a23955d4",
+      "normalizedSha256": "b85ffd3f5fe747c7efc91e79422acd438ba8bfbf4a9ebd7204dd40f5da10af9a"
+    },
+    {
+      "path": "docs/platform/evidence/site-engine-1-0-0-rc2/validation/site-rc2-full-tests-hash-fixed.log",
+      "capturedSha256": "916009b3fed261b077da46efafda3f1acbb635d7a580d773d49ce1520b72d5d0",
+      "normalizedSha256": "5736c4fd777ce7d4b1a58f7ba123ffcf9a39dcc37a6fbdf8b5bf21d2196394ce"
+    },
+    {
+      "path": "docs/platform/evidence/site-engine-1-0-0-rc2/validation/site-rc2-full-tests-threads.log",
+      "capturedSha256": "3cdd45376b66f21c18a39119a1c5beaae91e16b442ad5bd0992690ae78badca1",
+      "normalizedSha256": "39848db938b1e479418de8fec8215ede7f2612c1c7017102c5cb80fbafc7e706"
+    },
+    {
+      "path": "docs/platform/evidence/site-engine-1-0-0-rc2/validation/site-rc2-full-tests.log",
+      "capturedSha256": "5ef0b6ab1676e1a78ca09aedc2807c88ff7bb84d732d8541faaf1ae88d559d58",
+      "normalizedSha256": "f1b8277b3a6806bce093375e24ede2488901cd1684421445cb8e0955a8f5937e"
+    },
+    {
+      "path": "docs/platform/evidence/site-engine-1-0-0-rc2/validation/site-rc2-hash-fix-focused.log",
+      "capturedSha256": "bb09f834193a0a529352fc98bf1eae7c9836db2e286493cbb4fd2efc725083da",
+      "normalizedSha256": "6e495cadfc6451da45c49093616c1d8e4a548e2bc37d7e90df6ea1eee63a83af"
+    },
+    {
+      "path": "docs/platform/evidence/site-engine-1-0-0-rc2/validation/site-rc2-solar-return-rerun.log",
+      "capturedSha256": "5cee4ebee0b96ccdb4c77c6817f99a23bc0f0eba16b795ed5df3b0779b4ac58b",
+      "normalizedSha256": "11b599656311dffa29f2a2ce1a0dd9ed6020fae67255573158195c0f5a84b625"
+    },
+    {
+      "path": "docs/platform/evidence/site-engine-1-0-0-rc2/validation/site-rc2-timing-rerun.log",
+      "capturedSha256": "4a56ddd082fee77d333201d883ed29ca4f450cb1f46872352c8fb5a14c6e119b",
+      "normalizedSha256": "2cd1c95506dba1800e966e20d6fccb0e2ae7a223ba7b1d6f771c5f23a1a9cf3d"
+    }
+  ]
+}

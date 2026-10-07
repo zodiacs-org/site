@@ -1,0 +1,22 @@
+
+> zodiacs-org@1.0.0 test
+> vitest run src/lib/time/localToUtc-birthplace-clock.test.ts scripts/phase1-acceptance-evidence.test.mjs --fileParallelism=false
+
+
+ RUN  v3.2.7 /workspace/site
+
+ ✓ src/lib/time/localToUtc-birthplace-clock.test.ts (26 tests) 6473ms
+   ✓ the birthplace clock at the end of its local mean time era > America/New_York: Buffalo  311ms
+   ✓ the birthplace clock at each change of its pinned history before 1970 > America/New_York: New York  1195ms
+   ✓ the birthplace clock at each change of its pinned history before 1970 > Europe/Amsterdam: Amsterdam  739ms
+   ✓ the birthplace clock at each change of its pinned history before 1970 > Atlantic/Reykjavik: Reykjavik  599ms
+ ✓ scripts/phase1-acceptance-evidence.test.mjs (5 tests) 4605ms
+   ✓ Phase 1 durable acceptance evidence > contains exact 360px and 1280px captures for every new template  479ms
+   ✓ Phase 1 durable acceptance evidence > invalidates stale evidence when a transitive render source or bundled font changes  2637ms
+   ✓ Phase 1 durable acceptance evidence > keeps server-only email delivery changes outside the Phase 1 visual receipt  665ms
+   ✓ Phase 1 durable acceptance evidence > keeps reviewed template geometry valid across payload-only daily editions  817ms
+
+ Test Files  2 passed (2)
+      Tests  31 passed (31)
+   Start at  16:29:01
+   Duration  12.34s (transform 298ms, setup 0ms, collect 381ms, tests 11.08s, environment 1ms, prepare 184ms)

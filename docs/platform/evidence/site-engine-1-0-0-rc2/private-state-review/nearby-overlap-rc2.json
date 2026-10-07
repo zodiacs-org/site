@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "node": "v22.22.2",
+  "source": {
+    "path": "api/_compute/compute.mjs",
+    "sha256": "1a221dc9ea91f9d1ad21b429958f53b5e16cc1e5018336460661d2da423942f8"
+  },
+  "preceding": {
+    "utc": "2082-03-14T05:29:17.000Z",
+    "latitude": -31.55537,
+    "longitude": 159.07735
+  },
+  "target": {
+    "utc": "2082-03-14T05:29:17.001Z",
+    "latitude": -31.55537,
+    "longitude": 159.07735
+  },
+  "positiveControl": {
+    "retainedFrame": {
+      "tt": 30022.979541406614,
+      "rows": [
+        0.9997991288374145,
+        -0.018383213923634102,
+        -0.007984949704591097,
+        0.020042496707701356,
+        0.9173720918318866,
+        0.39752577709339887,
+        0.000017368613206300218,
+        -0.3976059639565619,
+        0.9175562637378182
+      ],
+      "tilt": {
+        "dpsi": 7.52506960997008,
+        "deps": 8.9881860711411,
+        "mobl": 23.4285855266806,
+        "tobl": 23.431082245033693,
+        "ee": 6.903520063380674
+      }
+    },
+    "retainedPlutoSegments": [
+      "26"
+    ],
+    "retainedAggregateMoonCalls": 18,
+    "deltaTReset": true,
+    "knownSampleOffsetDays": 0.25,
+    "recoveredRequestUtc": "2082-03-14T05:29:17.001Z"
+  },
+  "unwrappedWarmedEqualsFreshIsolatedModule": true,
+  "cleanedSequentialEqualsFreshIsolatedModule": true,
+  "cleanedOverlappingEqualsFreshIsolatedModule": true,
+  "fullNumericalResponseReceiptAndCiteCompared": true,
+  "completionStates": [
+    {
+      "frame": null,
+      "pluto": [],
+      "moon": 0,
+      "deltaTReset": true
+    },
+    {
+      "frame": null,
+      "pluto": [],
+      "moon": 0,
+      "deltaTReset": true
+    }
+  ],
+  "limits": [
+    "One synthetic +1 ms pair in one Node runtime; no claim of universal bitwise history independence.",
+    "Fresh modules here share one process; nine fresh-process comparisons are in the independent focused Vitest run.",
+    "No rounding normalization, tolerance, field removal or receipt-digest removal was applied to full-response equality.",
+    "Recovered UTC uses binary64 TT inversion rounded to the API millisecond resolution and subtracts the documented +0.25-day node sample.",
+    "The rc.15 aggregate Moon counter was already documented as a non-time diagnostic. Resetting it is a bounded tightening, not discovery of a new critical time leak.",
+    "No independent accuracy, secure memory erasure or production-performance claim."
+  ]
+}

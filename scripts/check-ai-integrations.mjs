@@ -102,5 +102,5 @@ const packageInfo = await json('plugins/zodiacs-developer/package.json');
 assert.equal(packageInfo.dependencies['@zodiacs/engine'], '0.1.1-rc.16');
 assert.equal(packageInfo.dependencies['@modelcontextprotocol/server'], '2.0.0');
 // Site/embedded runtime follows the reviewed candidate; external recipes keep the published release.
-const site = await json('package.json'); assert.equal(site.dependencies['@zodiacs/engine'], 'file:vendor/zodiacs-engine-0.1.1-rc.17.tgz');
+const site = await json('package.json'); assert.equal(site.dependencies['@zodiacs/engine'], 'file:vendor/zodiacs-engine-1.0.0-rc.2.tgz');
 console.log('AI package contracts: manifests, submission cases, versions, routes and canonical links verified.');

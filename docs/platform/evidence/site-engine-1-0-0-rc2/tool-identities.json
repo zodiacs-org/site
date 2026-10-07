@@ -1,0 +1,19 @@
+{
+  "docs/platform/evidence/election-search-v0/tools/worst-case.ts": "8b2cf998a6d17f2aee414be4e6371100f05497c3359dd5d019f73cd8504159fd",
+  "docs/platform/evidence/election-search-v0/tools/draw.ts": "0d5304e843b339166c8e070d7faa1b066621ca919c8b6ed1623c5af9d21109c4",
+  "scripts/lib/compute-api-harness.ts": "1ada779ff57a91ab29d288cbf85017df2df50b3c0626f66e24c2d16478e64eb3",
+  "scripts/build-compute-handler.mjs": "08f1da89283f67267765e1ed33036c686ee75ca51da18578b7924e4af2ecd4fe",
+  "api/_compute/compute.mjs": "1a221dc9ea91f9d1ad21b429958f53b5e16cc1e5018336460661d2da423942f8",
+  "api/_compute/local-time.mjs": "6f9253009a83f84e755810ac5221eefd87811203e66aaef1933840be4e8571da",
+  "src/lib/engine/time-basis.mjs": "1aa6d2f7d3814c44862e6148fd5b42d58233ce616f14188db897940f0a921b5a",
+  "examples/mcp-server/server.mjs": "f0be3308b76f7dd9e5f1b3cf7ee8c9e719501ca1f802706ffb4cd672941a42ac",
+  "scripts/build-ai-integrations.mjs": "cc017d526cfdd6085af7851b1a38ce6bfe88ab3c7b621e941a8d4285319e35cf",
+  "scripts/ai-runtime-lifetime.mjs": "83f889d8cfb55ed4b12f086d8c814aa2fb0869eb368c839fc102bda6aff7c9d8",
+  "src/ai-tools/tools.ts": "cc317343b697fc9174da960c65c4e16ac040b87201d836a4d956433bb66e9650",
+  "src/ai-tools/local.ts": "47599fa4744402965ba799e5518150d6f2fbaf1229ee1de8d5e9c989c68ad712",
+  "src/ai-tools/http.ts": "ee07c6a66cd0142d9619c3edff16ad452547761691f020adaf2867feda07b1e9",
+  "docs/platform/evidence/site-engine-1-0-0-rc2/tools/regenerate.py": "b2504968c9734c143bb805c07c0e8361dca368a3e56dfeb1ab77ba91bc38fa07",
+  "docs/platform/evidence/site-engine-1-0-0-rc2/tools/check-regenerated-outputs.py": "c2a1e954728d0e270059ef30ef273163dc7bc0c5b5977d52bdf0599263f8589d",
+  "tests/visual/phase1-evidence-contract.mjs": "a52c7aa2502cc0ce787655fab1f6f375b6f825f251eee4e9b5b817874f060d04",
+  "docs/platform/evidence/site-engine-1-0-0-rc2/tools/check-phase1-hash.mjs": "b594a6d4d0349867f2bb6489808a7ff7625951bfdbf8d7e75633da46399f1b9e"
+}

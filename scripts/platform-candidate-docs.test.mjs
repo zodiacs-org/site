@@ -31,7 +31,8 @@ const currentRegistry = JSON.parse(read('docs/platform/evidence/site-engine-rc16
 // What npm served on 2026-10-06, when the site vendored rc.17, which is not on npm: the same tool's read of
 // the version under `next`, and the registry's list of versions (docs/platform/evidence/site-engine-rc17/).
 const registryNow = JSON.parse(read('docs/platform/evidence/site-engine-rc17/npm-registry-rc16.json'));
-const npmView = read('docs/platform/evidence/site-engine-rc17/npm-view.txt');
+const currentRegistryRead = JSON.parse(read('docs/platform/evidence/site-engine-1-0-0-rc2/npm-registry-rc16.json'));
+const npmView = read('docs/platform/evidence/site-engine-1-0-0-rc2/npm-view.txt');
 
 describe('developer candidate documentation', () => {
   it('identifies the installed public engine and exact archived package', () => {
@@ -47,7 +48,7 @@ describe('developer candidate documentation', () => {
     expect(lock.packages[`node_modules/${candidate.name}`].integrity)
       .toBe(`sha512-${createHash('sha512').update(archive).digest('base64')}`);
     const files = readPackageArchive(archive);
-    expect(files.size).toBe(70);
+    expect(files.size).toBe(74);
     for (const [path, bytes] of files) {
       expect(readFileSync(resolve(root, 'node_modules/@zodiacs/engine', path)), path).toEqual(bytes);
     }
@@ -111,6 +112,7 @@ describe('developer candidate documentation', () => {
   it('rejects extra metadata fields and evidence path traversal', () => {
     const validFixture = { ...candidate, evidenceCommit: 'a'.repeat(40) };
     expect(assertEngineCandidate(validFixture)).toBe(validFixture);
+    expect(() => assertEngineCandidate({ ...validFixture, evidenceCommit: '0'.repeat(40) })).toThrow();
     expect(() => assertEngineCandidate({ ...validFixture, anotherIdentity: true })).toThrow();
     expect(() => assertEngineCandidate({ ...validFixture, evidencePaths: {
       ...candidate.evidencePaths, node22: 'docs/platform/../private.json',
@@ -141,7 +143,10 @@ describe('developer candidate documentation', () => {
     // rc.17 is vendored and not on npm (docs/platform/programme/DECISIONS-2026-10-05.md §7).
     expect(candidate.releaseStatus).toBe('vendored-candidate');
     expect(candidate.releaseLabel).toBe('Vendored candidate');
-    expect(candidate.registryObservedOn).toBe(registryNow.readAt.slice(0, 10));
+    expect(candidate.registryObservedOn).toBe(currentRegistryRead.readAt.slice(0, 10));
+    expect(currentRegistryRead.version).toBe(candidate.registryVersion);
+    expect(currentRegistryRead.distTags).toEqual(registryNow.distTags);
+    expect(currentRegistryRead.dist).toEqual(registryNow.dist);
     expect(registryNow.version).toBe(candidate.registryVersion);
     expect(registryNow.distTags).toEqual({ latest: registry.version, next: candidate.registryVersion });
     const versions = JSON.parse(npmView.slice(npmView.indexOf('{'), npmView.indexOf('\n}\n') + 2)).versions;

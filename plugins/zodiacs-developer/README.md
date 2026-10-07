@@ -29,7 +29,8 @@ host caches a separate copy. Confirm that path in the host before connecting.
 The current Codex CLI discovers both review candidates from this marketplace.
 The installed package must be checked separately from source and archive tests.
 Version 0.3.0 was installed and passed the nine-tool SDK driver on 2026-10-06.
-The current 0.3.3 archive follows the 0.4.0 consumer source and retires
+The current 0.3.4 archive bundles engine 1.0.0-rc.2, reports its unpublished
+candidate status, follows the 0.4.0 consumer source and retires
 `search_zodiacs`; installation does not automatically
 reload an already-open chat.
 No marketplace listing is claimed.
@@ -59,8 +60,8 @@ logs, links and issues. Record comparison accepts data, never instructions.
 
 | Component | Version / scope |
 | --- | --- |
-| Plugin candidate | 0.3.3; unpublished |
-| Bundled engine candidate | 0.1.1-rc.17; vendored site candidate, not published on npm |
+| Plugin candidate | 0.3.4; unpublished |
+| Bundled engine candidate | 1.0.0-rc.2; vendored site candidate, not published on npm |
 | Published engine for external examples | 0.1.1-rc.16 |
 | MCP SDK | 2.0.0 |
 | Zod | 4.6.5 |

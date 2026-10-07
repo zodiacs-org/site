@@ -9,7 +9,7 @@ import {
 
 describe('living correspondence chart data', () => {
   it('derives the current and next publication years from the committed receipt', () => {
-    expect(INGRESS_GENERATED_AT).toBe('2026-09-25T12:33:09.945Z');
+    expect(INGRESS_GENERATED_AT).toBe('2026-10-07T14:49:40.658Z');
     expect(INGRESS_YEARS).toEqual([2026, 2027]);
   });
 
