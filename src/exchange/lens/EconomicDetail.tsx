@@ -1,0 +1,6 @@
+import type { EconomicEvent } from './economics';
+import { formatEventDate, formatEventTime } from './events';
+export default function EconomicDetail({ event, timeZone }: { event: EconomicEvent; timeZone: string }) {
+  const stale = Date.now() - Date.parse(event.verifiedAt) > 7 * 86400000;
+  return <><span class="lens-tag lens-event--economic">Economic schedule · {event.status}{stale && ' · stale'}</span><h2 id="lens-event-detail-title">{event.title}</h2><p>{formatEventDate(event.at, timeZone)}<br />{formatEventTime(event.at, timeZone)}</p><dl><dt>Official scheduled time</dt><dd>{event.date} {event.time} America/New_York<br />UTC {event.at}</dd><dt>Last verified</dt><dd>{event.verifiedAt}</dd><dt>Coverage &amp; revisions</dt><dd>2026 schedule snapshot. Revisions: {event.revisions.length}. A scheduled release may change. Verify the official source before your session.</dd><dt>Market context</dt><dd>Prepare for possible changes in liquidity and volatility. No consensus, release values or predicted direction are supplied.</dd></dl>{event.revisions.map(rev => <p>Previous time: {rev.at} · verified {rev.verifiedAt}</p>)}<a href={event.sourceUrl} target="_blank" rel="noopener noreferrer">Official source →</a></>;
+}

@@ -1,0 +1,46 @@
+---
+import Base from '../../../layouts/Base.astro';
+import MarketLens from '../../../exchange/lens/MarketLens';
+import eventManifest from '../../../../public/data/market-lens/events/manifest.json';
+import type { EventManifest } from '../../../exchange/lens/types';
+---
+
+<Base
+  title="Market Lens · Sky Cycles & Technical Analysis | Zodiacs"
+  description="Explore verified sky events alongside cross-asset market research and technical analysis. Save watch conditions, record private hypotheses, and inspect previous occurrences."
+  path="/terminal/lens/"
+  stableTypography
+  noAssistant
+  privateSurface
+  noindex
+  clientUi
+>
+  <div class="lens-page">
+    <header class="lens-hero">
+      <nav aria-label="Terminal"><a href="/terminal/">← Terminal</a><a href="/terminal/lens/research/">Experiment results</a></nav>
+      <p class="kicker">A workspace for market observations</p>
+      <h1>Market Lens</h1>
+      <p class="lens-deck">Explore sky cycles alongside your trading setup.</p>
+      <p class="lens-hero-note">Technical conditions, exact astronomical events, and your own hypotheses—each with its own context.</p>
+    </header>
+    <MarketLens client:load manifest={eventManifest as EventManifest} />
+    <aside class="lens-research-notice" role="note" aria-label="Research and data notice">
+      <strong>Research &amp; data</strong>
+      <p>Price coverage is provider-specific and remains disabled pending display rights. The catalog includes planning candidates, reference indexes and named tradable exposures; availability does not certify eligibility. Market Lens provides read-only observations and does not execute trades. Astrology has no established predictive relationship with asset prices; this workspace helps you document and test your own hypotheses. Nothing here is a personalized investment recommendation.</p>
+    </aside>
+  </div>
+</Base>
+
+<style>
+  .lens-page { max-width: 1480px; margin: 0 auto; padding: 32px clamp(16px, 3vw, 48px) 56px; }
+  .lens-hero { margin-bottom: 30px; }
+  .lens-hero nav { display: flex; justify-content: space-between; margin-bottom: 32px; color: var(--text-2); font-size: 13px; }
+  .lens-hero .kicker { margin: 0 0 8px; color: var(--text-2); }
+  .lens-hero h1 { font: 400 clamp(42px, 5.5vw, 72px)/1.06 var(--font-serif); letter-spacing: -.035em; margin: 0 0 12px; }
+  .lens-deck { font-size: clamp(17px, 2vw, 21px); margin: 0 0 8px; }
+  .lens-hero-note { color: var(--text-2); font-size: 14px; margin: 0; max-width: 720px; line-height: 1.6; }
+  .lens-research-notice { display: grid; grid-template-columns: 140px minmax(0, 1fr); gap: 24px; border-block: 1px solid var(--hair-1); padding: 24px 0; margin-top: 36px; font-size: 13px; line-height: 1.65; color: var(--text-2); }
+  .lens-research-notice strong { color: var(--text); font-weight: 500; }
+  .lens-research-notice p { margin: 0; }
+  @media (max-width: 640px) { .lens-page { padding-top: 20px; } .lens-research-notice { grid-template-columns: 1fr; gap: 10px; } }
+</style>

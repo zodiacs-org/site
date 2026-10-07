@@ -1106,14 +1106,14 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
         if (!handoffIsCurrent() || resolving || !profileAccessAllowed()) return;
         resolving = true;
         const accessGeneration = profileAccessGeneration.current;
-        void import('../lib/profile/profile-chart-handoff').then(({ loadProfileChartRunInput }) => {
+        void import('../lib/profile/profile-chart-handoff').then(({ loadProfileChartEditInput }) => {
           resolving = false;
           if (!handoffIsCurrent() || !profileAccessAllowed()) return;
           if (accessGeneration !== profileAccessGeneration.current) {
             queueMicrotask(resolveCurrentProfileChart);
             return;
           }
-          const input = loadProfileChartRunInput(profileChartId);
+          const input = loadProfileChartEditInput(profileChartId);
           if (!input) {
             active = false;
             window.removeEventListener('zodiacs:profile-access', onProfileAccess);
@@ -1135,7 +1135,7 @@ export default function ChartCalculator({ mode, locale: rawLocale = 'en' }: Prop
           setFromLink(true);
           setLinkName(input.name ?? null);
           setPositionsOnly(null);
-          void runChart(input, false);
+          if (linkCity) void runChart({ ...input, city: linkCity }, false);
         }).catch(() => {
           resolving = false;
           if (handoffIsCurrent() && accessGeneration === profileAccessGeneration.current) {

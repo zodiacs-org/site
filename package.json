@@ -10,7 +10,7 @@
     "exchange:probe": "node scripts/probe-registry-exchange.mjs",
     "predev": "npm run footer:sync && node scripts/sync-wing-navigation.mjs && node scripts/build-registry-hub.mjs && node scripts/sync-registry-establishment.mjs && node scripts/configure-registry-aura.mjs && node scripts/configure-registry-trade.mjs && node scripts/configure-registry-exchange.mjs && node scripts/configure-legacy-analytics.mjs && node scripts/build-widget-loader.mjs",
     "dev": "astro dev",
-    "prebuild": "npm run footer:sync && node scripts/sync-wing-navigation.mjs && npm run editorial:daily:verify && npm run editorial:daily:replay && npm run editorial:daily:freshness && npm run editorial:horoscopes:verify && npm run editorial:horoscopes:freshness && npm run editorial:transits:verify-all && npm run data:events:verify && npm run registry:research:check && npm run registry:research:verify && node scripts/build-people-index-demand.mjs --check && node docs/phase5/people-pilot/tools/compose-copy.mjs --check && node scripts/build-people-pilot.mjs --check && node scripts/build-people-portraits.mjs --check && node scripts/validate-people-pilot.mjs && node scripts/check-people-pilot.mjs && node scripts/build-registry-hub.mjs && node scripts/build-sign-pages.mjs && node scripts/build-archive.mjs && node scripts/build-app.mjs && node scripts/sync-registry-establishment.mjs && node scripts/configure-registry-aura.mjs && node scripts/configure-registry-trade.mjs && node scripts/configure-registry-exchange.mjs && node scripts/configure-legacy-analytics.mjs && node scripts/build-widget-loader.mjs && npm run data:og:verify && npm run data:astrofolio-identity:verify",
+    "prebuild": "npm run footer:sync && node scripts/build-market-lens-events.mjs --check && node scripts/sync-wing-navigation.mjs && npm run editorial:daily:verify && npm run editorial:daily:replay && npm run editorial:daily:freshness && npm run editorial:horoscopes:verify && npm run editorial:horoscopes:freshness && npm run editorial:transits:verify-all && npm run data:events:verify && npm run registry:research:check && npm run registry:research:verify && node scripts/build-people-index-demand.mjs --check && node docs/phase5/people-pilot/tools/compose-copy.mjs --check && node scripts/build-people-pilot.mjs --check && node scripts/build-people-portraits.mjs --check && node scripts/validate-people-pilot.mjs && node scripts/check-people-pilot.mjs && node scripts/build-registry-hub.mjs && node scripts/build-sign-pages.mjs && node scripts/build-archive.mjs && node scripts/build-app.mjs && node scripts/sync-registry-establishment.mjs && node scripts/configure-registry-aura.mjs && node scripts/configure-registry-trade.mjs && node scripts/configure-registry-exchange.mjs && node scripts/configure-legacy-analytics.mjs && node scripts/build-widget-loader.mjs && npm run data:og:verify && npm run data:astrofolio-identity:verify",
     "build": "astro build && vite-node --script scripts/build-search-index.mjs && node scripts/build-search-ui.mjs && node scripts/build-assistant-ui.mjs && node scripts/build-webmcp.mjs && vite-node --script scripts/build-sky-api.mjs",
     "postbuild": "node scripts/stamp-astrofolio-season.mjs && node scripts/inline-critical-styles.mjs && node scripts/build-service-worker.mjs && node scripts/verify-widgets.mjs && node scripts/check-dist.mjs && node scripts/check-people-dist.mjs && node scripts/check-i18n-r2-ru.mjs && node scripts/check-i18n-english-links.mjs && node scripts/bake-thesis-disclosure-static.mjs --check && npm run schema:check && node scripts/report-bundles.mjs --fail && node scripts/write-phase1-build-receipt.mjs",
     "preview": "astro preview",
@@ -148,6 +148,11 @@
     "check:site:live": "node scripts/check-site.mjs",
     "i18n:parity:r0": "node scripts/check-i18n-r0-parity.mjs",
     "i18n:parity:r2": "node scripts/check-i18n-r2-parity.mjs",
+    "data:market-lens:build": "node scripts/build-market-lens-events.mjs",
+    "data:market-lens:check": "node scripts/build-market-lens-events.mjs --check",
+    "test:market-lens:browser": "node tests/market-lens-drive.mjs",
+    "research:market-lens": "node scripts/market-lens-research.mjs",
+    "research:market-lens:paper": "node scripts/market-lens-paper.mjs",
     "ai:package": "python3 scripts/package-ai-integrations.py"
   },
   "dependencies": {
@@ -162,6 +167,7 @@
     "astro": "^7.0.6",
     "astronomy-engine": "^2.1.19",
     "http-cache-semantics": "file:vendor/http-cache-semantics",
+    "lightweight-charts": "5.0.9",
     "preact": "^10.26.0",
     "react": "18.3.1",
     "react-dom": "18.3.1"

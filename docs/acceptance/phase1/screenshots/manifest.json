@@ -6,27 +6,27 @@
     "script": "tests/phase1-acceptance-drive.mjs",
     "contractVersion": 4
   },
-  "capturedAt": "2026-10-07T00:05:44.452Z",
+  "capturedAt": "2026-10-07T01:39:28.128Z",
   "browser": "Chromium 154.0.8037.98",
   "dailyDate": "2026-10-07",
   "publicationCanonicalSha256": "87004f68859ed743eebb3c484efade63e1c7754f06eb200c2d5c233a69a8b63a",
-  "templateSourceSha256": "b2993c81e915d834f699969b58bb77315342635779495b8fd1dbc6942e323baf",
+  "templateSourceSha256": "a55bbef8ac0a8baa97adc9d9baf6d3eecf77f51551945ca18c1b5ee0af7105b8",
   "renderPayloadSha256": {
     "daily": "e0792eb84436d652b998c71f16fefef2120e2ec10b0ee248d70b0939c829c736",
     "dailyPublication": "30cf7a076f9e075f1c245be1226e7f4ef124eceb6e51124ffea601c8d976fb46",
-    "dailyPublicationManifest": "dadd44b6e737e77b0c469309306fb210acb747326b6fd4d8bc4882563d3099db",
+    "dailyPublicationManifest": "17f720edbf67e9a4553eb9773dc6338c46e6c77bfdbb5642dc5d99b2310b886f",
     "horoscopeProgram": "58270552b5c1302b5b7fc9cd83508e93eb5cd865d22179d5124edf871ec73dc3"
   },
   "buildReceipt": {
     "schema": "zodiacs.phase1-build-receipt.v1",
-    "builtAt": "2026-10-07T00:05:10.548Z",
-    "templateSourceSha256": "b2993c81e915d834f699969b58bb77315342635779495b8fd1dbc6942e323baf",
+    "builtAt": "2026-10-07T01:38:51.629Z",
+    "templateSourceSha256": "a55bbef8ac0a8baa97adc9d9baf6d3eecf77f51551945ca18c1b5ee0af7105b8",
     "dailyDate": "2026-10-07",
     "publicationCanonicalSha256": "87004f68859ed743eebb3c484efade63e1c7754f06eb200c2d5c233a69a8b63a",
     "renderPayloadSha256": {
       "daily": "e0792eb84436d652b998c71f16fefef2120e2ec10b0ee248d70b0939c829c736",
       "dailyPublication": "30cf7a076f9e075f1c245be1226e7f4ef124eceb6e51124ffea601c8d976fb46",
-      "dailyPublicationManifest": "dadd44b6e737e77b0c469309306fb210acb747326b6fd4d8bc4882563d3099db",
+      "dailyPublicationManifest": "17f720edbf67e9a4553eb9773dc6338c46e6c77bfdbb5642dc5d99b2310b886f",
       "horoscopeProgram": "58270552b5c1302b5b7fc9cd83508e93eb5cd865d22179d5124edf871ec73dc3"
     }
   },

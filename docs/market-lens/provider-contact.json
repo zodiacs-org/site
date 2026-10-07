@@ -1,0 +1,16 @@
+{
+  "provider": "CoinAPI",
+  "contactUrl": "https://www.coinapi.io/contact-us",
+  "requestSha256": "2bf5edb39bd96daf1a9fef60eb8edc69d246b21746feef2ae00519a7bc94f589",
+  "status": "submitted",
+  "posts": [
+    {
+      "path": "/api/contact-us",
+      "status": 200
+    }
+  ],
+  "message": "Success! Check your email!",
+  "at": "2026-10-01T17:27:19.349Z",
+  "replyAddress": "Owner-provided business address; retained in private receipt",
+  "displayRightsGranted": false
+}

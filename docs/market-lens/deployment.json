@@ -1,0 +1,28 @@
+{
+  "verifiedAt": "2026-10-01T12:47:28.606145+00:00",
+  "pullRequest": "https://github.com/zodiacs-org/site/pull/619",
+  "deploymentSourceCommit": "1991376712c0fbe8694eed0e461e0f864fd8da95",
+  "applicationSourceCommit": "3bf75a5f826b87660a9e1d3f5e87814823d0620d",
+  "deploymentId": 6784524012,
+  "environment": "Preview",
+  "deploymentState": "success",
+  "readyAt": "2026-10-01T12:42:45Z",
+  "url": "https://zodiacs-n9fiyargf-zodiacsofficial.vercel.app",
+  "lensUrl": "https://zodiacs-n9fiyargf-zodiacsofficial.vercel.app/terminal/lens/",
+  "genericFunctionSmoke": {
+    "status": "passed",
+    "url": "https://github.com/zodiacs-org/site/actions/runs/36863601046",
+    "runnerSource": "trusted main; does not probe the new Lens route"
+  },
+  "lensDeployedAcceptance": {
+    "status": "blocked",
+    "reason": "Vercel Authentication returns HTTP 302 before the function; no bypass binding in this cloud runtime",
+    "attemptedUrl": "https://zodiacs-org-git-codex-market-lens-20261001-zodiacsofficial.vercel.app/api/registry/lens?instrument=BTC-USD&interval=1d",
+    "browserVerified": false,
+    "lensFunctionVerified": false,
+    "livePricesVerified": false
+  },
+  "displayRights": "Owner confirmed no display license; hosted prices disabled",
+  "previewCostControl": "Temporary allowance applied only to this branch for one preview; final configuration restores original main-only automatic deployment guards",
+  "productionDeployment": false
+}

@@ -304,42 +304,19 @@ export async function resolveLink(link: { input: ShareChartInput; label: string 
 }
 
 export async function resolveForm(slot: SlotState, fallbackLabel: string, loadEngine: EngineLoader): Promise<Person> {
-  const [engine, { prepareLocalTime, resolveLocalToUtc }] = await Promise.all([
-    loadEngine(),
-    loadModule(() => import('../lib/time/localToUtc')),
-  ]);
-  await prepareLocalTime(slot.date, slot.city!.tz);
-  const timeKnown = slot.timeKnown && slot.time !== '';
-  const resolved = resolveLocalToUtc(slot.date, timeKnown ? slot.time : '12:00', slot.city!.tz, { longitude: slot.city!.lon });
-  const result = engine.computeChart({
-    utc: resolved.utc,
-    latitude: slot.city!.lat,
-    longitude: slot.city!.lon,
-    houseSystem: 'whole',
-    timeKnown,
-    flags: resolved.flags,
-  });
-  return {
+  const person = await resolveLink({
+    input: {
+      date: slot.date,
+      time: slot.time,
+      timeKnown: slot.timeKnown && slot.time !== '',
+      lat: slot.city!.lat,
+      lon: slot.city!.lon,
+      tz: slot.city!.tz,
+      houseSystem: 'whole',
+    },
     label: slot.name.trim() || fallbackLabel,
-    bodies: result.bodies.map(({ body, lon }) => ({ body, lon })),
-    asc: result.angles?.asc ?? null,
-    timeKnown,
-    wheel: {
-      bodies: result.bodies.map(({ body, lon, retrograde }) => ({ body, lon, retrograde })),
-      mc: result.angles?.mc ?? null,
-      cusps: timeKnown ? (result.houses?.cusps ?? null) : null,
-    },
-    depth: result.bodies.map(({ body, lon, lat, retrograde }) => ({ body, lon, lat, retrograde })),
-    positions: {
-      bodies: result.bodies,
-      angles: result.angles ? { asc: result.angles.asc, mc: result.angles.mc } : null,
-      houseSystem: result.input.houseSystem,
-      engineVersion: result.engineVersion,
-    },
-    computedUtc: resolved.utc,
-    ...(timeKnown ? { utc: resolved.utc } : { untimedDate: slot.date }),
-    oldStyle: slot.oldStyle,
-  };
+  }, loadEngine);
+  return { ...person, oldStyle: slot.oldStyle };
 }
 
 /**

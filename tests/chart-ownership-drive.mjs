@@ -22,11 +22,14 @@ const ts = createRequire(resolve(root, 'package.json'))('typescript');
 /**
  * Find the engine's own natal calculation in whatever chunk the bundler put it.
  *
- * It is the one served function that takes the caller's input and returns the
- * chart built from it with that input passed through unmodified. The shape is
+ * It is the one calculator-reachable function that takes the caller's input
+ * and returns the chart built from it with that input passed through unmodified. The shape is
  * what identifies it; the chunk it lands in is the bundler's business, and it
  * moves as soon as a second island imports the engine and the shared code is
  * split out. Pinning a chunk name measured the bundler, not the site.
+ * Follow the calculator island's static and literal dynamic imports from the
+ * built page. A separately bundled worker may contain the same engine, but is
+ * not part of this calculator's module graph or its page-level coverage.
  *
  * Since engine 0.1.1-rc.8 the calculation sets its ΔT clock and hands the
  * input to a builder, chartAt(input, pin), which returns the chart. The
@@ -48,6 +51,7 @@ const ts = createRequire(resolve(root, 'package.json'))('typescript');
  */
 const chunkDir = resolve(dist, '_astro');
 const natalCandidates = [];
+const moduleImports = new Map();
 const nestedFunction = (node) => ts.isFunctionDeclaration(node) || ts.isFunctionExpression(node)
   || ts.isArrowFunction(node) || ts.isMethodDeclaration(node) || ts.isGetAccessorDeclaration(node)
   || ts.isSetAccessorDeclaration(node) || ts.isConstructorDeclaration(node);
@@ -71,10 +75,18 @@ for (const file of (await readdir(chunkDir)).filter((name) => name.endsWith('.js
   const source = (await readFile(resolve(chunkDir, file))).toString();
   const ast = ts.createSourceFile(file, source, ts.ScriptTarget.Latest, true);
   const functions = [];
+  const dependencies = new Set();
   (function collect(node) {
     if (ts.isFunctionDeclaration(node) && node.name && node.body && node.parameters.length >= 1) functions.push(node);
+    const specifier = ts.isImportDeclaration(node) || ts.isExportDeclaration(node) ? node.moduleSpecifier
+      : ts.isCallExpression(node) && node.expression.kind === ts.SyntaxKind.ImportKeyword ? node.arguments[0] : null;
+    if (specifier && ts.isStringLiteralLike(specifier) && /^[./]/.test(specifier.text)) {
+      const path = new URL(specifier.text, `https://ownership.invalid/_astro/${file}`).pathname;
+      if (path.startsWith('/_astro/') && path.endsWith('.js')) dependencies.add(path.slice('/_astro/'.length));
+    }
     ts.forEachChild(node, collect);
   })(ast);
+  moduleImports.set(file, dependencies);
   const builders = new Set(functions.filter((fn) => {
     const input = fn.parameters[0].name.getText(ast);
     return returnedExpressions(fn).some((expression) => {
@@ -108,11 +120,26 @@ for (const file of (await readdir(chunkDir)).filter((name) => name.endsWith('.js
     if (!inner.has(candidate.name)) natalCandidates.push({ file, function: candidate.name });
   }
 }
-assert.equal(natalCandidates.length, 1, `expected exactly one served natal calculation, found ${JSON.stringify(natalCandidates)}`);
-const nativeFile = natalCandidates[0].file;
+const builtPage = await readFile(resolve(dist, 'birth-chart/index.html'), 'utf8');
+const calculatorEntries = [...builtPage.matchAll(/<astro-island\b[^>]*\bcomponent-url="([^"]*ChartCalculator[^"]*)"/g)]
+  .map((match) => new URL(match[1], 'https://ownership.invalid').pathname);
+assert.equal(calculatorEntries.length, 1, 'Expected exactly one calculator island on the built birth-chart page');
+assert.ok(calculatorEntries[0].startsWith('/_astro/'), 'Calculator entry must use built Astro assets');
+const calculatorModules = new Set();
+const pendingModules = [calculatorEntries[0].slice('/_astro/'.length)];
+while (pendingModules.length) {
+  const file = pendingModules.pop();
+  if (calculatorModules.has(file)) continue;
+  assert.ok(moduleImports.has(file), `Missing built calculator module ${file}`);
+  calculatorModules.add(file);
+  pendingModules.push(...moduleImports.get(file));
+}
+const calculatorNatalCandidates = natalCandidates.filter((candidate) => calculatorModules.has(candidate.file));
+assert.equal(calculatorNatalCandidates.length, 1, `expected exactly one calculator-reachable natal calculation, found ${JSON.stringify(calculatorNatalCandidates)}`);
+const nativeFile = calculatorNatalCandidates[0].file;
 const nativeBytes = await readFile(resolve(chunkDir, nativeFile));
-const nativeFunctions = [natalCandidates[0].function];
-const nativeIdentity = { file: nativeFile, sha256: sha(nativeBytes), function: nativeFunctions[0], mapping: 'One-argument function returning its exact input plus bodies and engineVersion, itself or through the chart builder it passes that input to, directly or inside the error wrapper of the engine; parsed from actual served chunk.' };
+const nativeFunctions = [calculatorNatalCandidates[0].function];
+const nativeIdentity = { file: nativeFile, sha256: sha(nativeBytes), function: nativeFunctions[0], calculatorEntry: calculatorEntries[0], calculatorModules: [...calculatorModules].sort(), otherNatalCandidates: natalCandidates.filter((candidate) => !calculatorModules.has(candidate.file)), mapping: 'One-argument function returning its exact input plus bodies and engineVersion, itself or through the chart builder it passes that input to, directly or inside the error wrapper of the engine; parsed from the actual calculator-reachable served chunk.' };
 const served = {}, requests = [], results = [], contexts = [], releases = [];
 const mime = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.webp': 'image/webp', '.woff2': 'font/woff2', '.ico': 'image/x-icon', '.jpg': 'image/jpeg', '.mp4': 'video/mp4', '.webm': 'video/webm' };
 const server = createServer(async (req, res) => {
