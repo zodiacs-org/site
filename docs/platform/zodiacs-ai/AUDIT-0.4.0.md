@@ -8,13 +8,110 @@ database schema or service-role key was changed. No email was sent.
 
 ## Decision
 
-**The technical staging packet is ready for review; the release is not ready
-for submission.** Six remote tools and their self-contained panel resources
-pass the actual Vercel acceptance drive. Actual ChatGPT and Claude use, the
-iPhone check and the new eight-case walkthrough remain blocked or unverified.
-Protocol checks and desktop responsive screenshots do not establish those
-host results. Keep `demo_recording_url` empty until an actual 0.4 recording
-exists. Do not merge this server change during the existing 0.3.4 review.
+**Current (about 11:00 UTC): 0.4.0 passes all eight review cases in real
+ChatGPT on the web, after three fixes found by those tests. It is worth
+submitting. Two steps come first, and both are the owner's: deciding about
+the 0.3.4 review, and merging #681.** Claude and the iPhone are still
+untested, for the reasons below. The earlier decision (Codex, morning) is
+kept below for the record.
+
+## Claude's ChatGPT test — 7 October 2026, 09:30–11:00 UTC
+
+### Setup
+
+- **Test identity.** OpenAI support confirmed that an existing plugin's
+  server address can't be changed. With the owner's approval, Claude
+  therefore made a new private test copy in ChatGPT, “Zodiacs Preview”
+  (`plugin_asdk_app_6ac6158f5c148191ae156fea7ebc9dac`), on the
+  admin@zodiacs.org account. The account's time zone is Bangkok and it has
+  no auth. The old preview identity was left untouched.
+- **Owner steps.** The owner switched on ChatGPT developer mode and pasted
+  the server address. That address carries a temporary Vercel share link,
+  which expires 8 October around 05:05 UTC. Claude didn't type it into
+  ChatGPT, and it isn't recorded here.
+- **Test server.** Protected preview deployments of #681, all on the same
+  alias as this morning (`zodiacs-consumer-040-preview-zodiacsofficial.vercel.app`),
+  each with deployment-only `ZODIACS_MCP_ENABLED`,
+  `ZODIACS_MCP_STAGING_HOST` and the quota credential:
+  - `dpl_57xc4tiLKhNjUG8ykqTmSGFVYW7G` (commit `34f45d8e`);
+  - `dpl_BCkSQC8pP5ssFd59PrKnkjnct6mW` (`2b357c44`);
+  - `dpl_5Y6TXM8dYs4JZUipf22oQjLYer7T` (content of `a6d24dc0`, the final
+    one).
+
+  Moving the alias kept the same share link. No production setting, project
+  variable or Firewall rule was changed.
+- **What was not done.** The test copy's three starter prompts are not set.
+  Setting them means uploading a new version of the test plugin package,
+  which Claude's safety check stopped as possible publishing; it is the
+  owner's call. ChatGPT's “Enforce CSP in developer mode” stayed off, so
+  panels show a “CSP off” label. Our panels declare an empty CSP anyway.
+
+### Problems found and fixed
+
+1. **Sign switching snapped back** (`34f45d8e`). Picking a sign in the
+   horoscope panel showed the reading, then returned to the sign grid within
+   seconds. ChatGPT sends `openai:set_globals` updates for resizes, and the
+   panel re-read the turn's first result ("choose a sign") on each one. The
+   panel now acts only on what an update says changed, and ignores repeats
+   once the person has chosen. The browser drive has a check that fails on
+   the old panel. Retested in ChatGPT: Leo, Love, This week and a switch to
+   Virgo all stay.
+2. **Declined requests still called Zodiacs** (`2b357c44`, `a6d24dc0`).
+   ChatGPT refused correctly in words, but it called “What Zodiacs can do”
+   for the stock and relationship prompts. For “Guarantee that my partner
+   and I will stay together”, it also showed the horoscope sign picker.
+   OpenAI's review asks that the plugin not act on these. The server
+   instructions and two tool descriptions now say that Zodiacs doesn't
+   schedule, pick investments or promise relationship, health or money
+   outcomes, and that its tools shouldn't be called for those.
+3. After a server change, ChatGPT kept its saved copy of the panels until
+   **Refresh** was pressed in the plugin's settings. This is noted for
+   future tests.
+
+### Observed results (final build)
+
+All five handled cases called Zodiacs and rendered correctly. None of the
+three declined cases called Zodiacs. The walkthrough (below) shows the final
+run in one conversation. Earlier single-case runs gave the same results,
+except as noted.
+
+| Case | Result |
+| --- | --- |
+| “Show my horoscope for today” | Pass: sign picker, no guessed sign; ChatGPT: “I won't guess it.” |
+| Reader's own date | Pass: “Wednesday 7 October · times for Bangkok”. The time zone came from ChatGPT or the device; no zone with a different date was tried in ChatGPT. |
+| Switch sign in the panel | Pass after fix 1 (failed before it) |
+| “Help me read my birth chart” | Pass: opens on “When and where were you born?”, no chart until chosen |
+| Unknown birth time | Pass: midday stand-in, no rising sign or houses, plain caution |
+| “What's happening in the sky this week? I'm in Bangkok.” | Pass: 7–14 Oct, Bangkok times; in-panel date change to 31 Oct works and stays |
+| “Is Mercury retrograde right now(, and where is it)?” | Pass: “No — … direct … in Scorpio, around 8°44′”, Bangkok date |
+| “What can Zodiacs check…? …Libra on 23 September… I haven't said where I am.” | Pass: “yes, but the calendar date depends on time zone… 00:05:45 UTC” |
+| “Reschedule my work meeting tomorrow.” | Pass: no Zodiacs call; “Zodiacs can't schedule or modify work meetings.” |
+| “Tell me which stock will rise based on my horoscope.” | Pass in the walkthrough: no call, “Zodiacs specifically doesn't pick investments”. **Risk:** in a new chat with Zodiacs pinned to that one message, ChatGPT still made one read-only “What Zodiacs can do” call before refusing. |
+| “Guarantee that my partner and I will stay together.” | Pass after fix 2: no call; “Astrology can't establish that outcome, and neither can I.” |
+
+### Still open
+
+- **Claude:** not tested. The protected preview still needs an approved
+  header name; the documented route is production after merge.
+- **iPhone:** not executable before approval (developer-mode apps are web
+  only).
+- **Polish, not blocking:**
+  - while a horoscope loads, the sign grid shows for about a second;
+  - Chart Studio's chart header shows an ISO date and UTC;
+  - ChatGPT sometimes adds its own suggestions, such as an “astrology angle”
+    on investing, that Zodiacs doesn't make.
+- **The walkthrough URL** answers only after #681 is deployed to production.
+
+### Recommendation
+
+Submit 0.4.0. It replaces 0.3.4, which still lists the retired catalogue
+tool and the old copy. In order, each step needing the owner's yes:
+
+1. Decide on the 0.3.4 review: cancel it, or wait for its result.
+2. Merge #681 so that `zodiacs.org/mcp` serves 0.4.0 and the video URL
+   works.
+3. Check production once, in ChatGPT and in Claude.
+4. Upload `zodiacs-sky-0.4.0.zip` to the existing identity and submit.
 
 ## Claude's review and update — 7 October 2026, about 06:30 UTC
 
@@ -243,6 +340,9 @@ screenshot of the connector URL while its access secret is visible.
 
 ### Required case matrix
 
+Superseded for ChatGPT web by the results under “Claude's ChatGPT test”
+above. The table below is Codex's morning record.
+
 | Prompt or interaction | ChatGPT web | ChatGPT iPhone | Claude |
 | --- | --- | --- | --- |
 | “Show my horoscope for today”; choose a sign without guessing | Blocked: expired connection; not executed | Not executed: device check pending | Blocked: connector setup |
@@ -263,12 +363,14 @@ evidence of real assistant refusals.
 ## Walkthrough and packages
 
 The 0.4.0 manifest has exactly five positive and three negative review cases.
-No valid 0.4.0 recording has been made because the required host connection
-does not yet work. The existing 0.3.4 video is not reused as 0.4 evidence.
-`public/assets/ai/review/zodiacs-sky-0.4.0.mp4` is not fabricated or populated
-with a simulation. Its future URL is not advertised as accessible now.
+The 0.4.0 walkthrough is now recorded from real ChatGPT on the web; see
+[WALKTHROUGH.md](WALKTHROUGH.md) for how it was made and its chapters.
+`demo_recording_url` is set to
+`https://zodiacs.org/assets/ai/review/zodiacs-sky-0.4.0.mp4`. That address
+answers only after #681 is deployed to production.
 
-`ai:package` and `ai:check` pass with the current deliberate empty demo URL.
+`ai:package` and `ai:check` pass with the demo URL set (Codex's morning note
+below refers to the empty URL).
 This verifies package consistency, not review readiness. Sky is 0.4.0;
 Developer is 0.3.3. The generated consumer Claude manifest is included in the
 complete Sky ZIP. Shared `.mcp.json` now declares remote `type: "http"`;

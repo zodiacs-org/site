@@ -99,7 +99,7 @@
         },
         "commerce": false,
         "commerce_description": "The public-sky plugin sells no products and processes no payments.",
-        "demo_recording_url": ""
+        "demo_recording_url": "https://zodiacs.org/assets/ai/review/zodiacs-sky-0.4.0.mp4"
       },
       "publication": {
         "release_notes": "0.4.0: Adds dated Sun-sign horoscopes written for the reader's own day, opens Chart Studio on your own birth details with the example as a labelled second choice, extends the sky calendar to 92 days, removes the catalogue search tool and rewrites the labels and answers in plain language. A new walkthrough recording is required before submission."
