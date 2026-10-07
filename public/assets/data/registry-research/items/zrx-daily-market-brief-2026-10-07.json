@@ -1,0 +1,110 @@
+{
+  "schema": "zodiacs.registry-research-item.v1",
+  "sourceType": "zodiacs-research",
+  "publisher": "Zodiacs.org Research System",
+  "byline": "Zodiacs.org Research System",
+  "method": {
+    "id": "zodiacs.registry-research-method.v1",
+    "version": 1,
+    "generator": "zodiacs.registry-research.deterministic.v1",
+    "deterministicTemplatesOnly": true,
+    "modelAuthoredProse": false,
+    "scoreRule": "The disclosed Registry Outlook sky score is copied before market comparison. Market fields cannot alter that score or its wording.",
+    "observationRule": "Follow-ups use the first archived market snapshot at or after the requested elapsed interval and report the actual elapsed time.",
+    "causalityRule": "Market changes are observations, never evidence that a sky event caused a price or liquidity movement.",
+    "publicationRule": "During the pilot, an exact artifact hash and named reviewer are required before an item enters public feeds."
+  },
+  "riskStatement": "Symbolic research—not investment advice. Market observations never alter the sky score.",
+  "scienceNote": "Astrology has no established predictive relationship with asset prices. Crypto assets can lose all value.",
+  "revisions": [],
+  "id": "zrx-daily-market-brief-2026-10-07",
+  "slug": "daily-market-brief-2026-10-07",
+  "kind": "daily-market-brief",
+  "templateId": "daily-market-brief.v1",
+  "issuedAt": "2026-10-07T12:00:00.000Z",
+  "visibleAt": "2026-10-07T12:00:00.000Z",
+  "title": "Mars sextile Uranus · daily market brief",
+  "summary": "Mars sextile Uranus leads the disclosed symbolic index; Leo market measures are recorded separately.",
+  "url": "/terminal/research/daily-market-brief-2026-10-07/",
+  "signs": [
+    "leo",
+    "gemini"
+  ],
+  "topics": [
+    "markets",
+    "daily-sky",
+    "aspect"
+  ],
+  "symbolicScore": {
+    "sign": "leo",
+    "attention": 26,
+    "tone": 6,
+    "eventIntensity": 2,
+    "calculation": "12 attention / 7 tone / 2 event intensity × 0.8887 horizon multiplier",
+    "marketFieldsUsed": false
+  },
+  "sections": {
+    "skyFact": {
+      "heading": "Sky fact",
+      "body": "Mars sextile Uranus is the highest-weighted named factor for Leo in the 2026-10-07 UTC edition. The disclosed score is attention 26/100, tone 6, and symbolic event intensity 2/100.",
+      "evidence": [
+        "src/data/transits-2026-10.json",
+        "public/assets/registry-outlook.json"
+      ]
+    },
+    "traditionalReading": {
+      "heading": "Traditional reading",
+      "body": "Elevated symbolic attention for this sign, without a strong directional tone. Signal: active. This is a traditional symbolic reading, not a price direction or probability.",
+      "evidence": [
+        "src/data/transits-2026-10.json",
+        "public/assets/registry-outlook.json"
+      ]
+    },
+    "marketObservation": {
+      "heading": "Market observation",
+      "body": "At 2026-10-07T00:03:04.322Z, Leo was indexed at $0.00007406, with +4.5% over 24 hours, $74.06K market cap, $74.06K FDV, $16.58K indexed liquidity, $170.94 24-hour volume, and 1 indexed pool. Market cap and FDV are kept separate. These descriptive fields did not alter the sky score.",
+      "evidence": [
+        "public/assets/data/registry-market-history.v1.json"
+      ]
+    }
+  },
+  "market": {
+    "available": true,
+    "snapshotId": "registry-market:2026-10-07:2026-10-07T00:03:04.322Z",
+    "observedAt": "2026-10-07T00:03:04.322Z",
+    "provider": "DexScreener",
+    "sign": "leo",
+    "priceUsd": 0.00007406,
+    "change24hPct": 4.5,
+    "marketCapUsd": 74059,
+    "fdvUsd": 74059,
+    "liquidityUsd": 16575.85,
+    "volume24hUsd": 170.94,
+    "indexedPoolCount": 1,
+    "deepestPoolUrl": "https://dexscreener.com/solana/48erbgmqizekyloccebd7cs5knqpzqr7qqak9mzapqgq"
+  },
+  "evidence": {
+    "dailyFacts": "src/data/daily.json#2026-10-07",
+    "outlookEdition": "public/assets/registry-outlook.json#daily:2026-10-07",
+    "marketSnapshotId": "registry-market:2026-10-07:2026-10-07T00:03:04.322Z",
+    "coverage": {
+      "overall": "complete",
+      "events": "complete",
+      "occupancies": "complete",
+      "expectedTransitMonths": [
+        "2026-10"
+      ],
+      "missingTransitMonths": [],
+      "missingOccupancyPlanets": []
+    }
+  },
+  "artifactHash": "ec7f13ea0d105fa7c23e964fdef1d8f5395867eb7c8c0ad7238dfb81d3908e8a",
+  "publishedAt": "2026-10-07T12:00:00.000Z",
+  "publication": {
+    "mode": "post-pilot-deterministic-allowlist",
+    "publishedAt": "2026-10-07T12:00:00.000Z",
+    "reviewer": null,
+    "artifactSha256": "ec7f13ea0d105fa7c23e964fdef1d8f5395867eb7c8c0ad7238dfb81d3908e8a"
+  },
+  "status": "approved"
+}
