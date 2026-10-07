@@ -3,6 +3,7 @@ import { z } from 'astro/zod';
 import { glob } from 'astro/loaders';
 import { SIGN_SLUGS } from './lib/signs';
 import { pairFacts } from './lib/compat';
+import { localizedPairFaq } from './lib/compat-i18n';
 
 const signEnum = z.enum(SIGN_SLUGS as [string, ...string[]]);
 const faqSchema = z.array(z.object({ q: z.string(), a: z.string() }));
@@ -205,4 +206,53 @@ const almanac = defineCollection({
   }),
 });
 
-export const collections = { guides, pairs, learn, horoscopes, birthdays, almanac };
+/**
+ * Translated Learn-family articles, one folder per language
+ * (learn-i18n/{locale}/rising/{sign}.mdx). English stays in `learn`; this
+ * collection only ever holds translations of entries that exist there.
+ */
+const learnLocalized = defineCollection({
+  loader: glob({ pattern: '**/*.mdx', base: './src/content/learn-i18n' }),
+  schema: z.object({
+    kind: z.literal('rising'),
+    sign: signEnum,
+    locale: z.enum(['es', 'pt', 'fr', 'it']),
+    title: z.string().max(60),
+    description: z.string().max(155),
+    faq: faqSchema.min(3),
+    published: z.coerce.date(),
+    updated: z.coerce.date(),
+    sources: sourcesSchema,
+    draft: z.boolean().default(false),
+  }),
+});
+
+/**
+ * Translated compatibility pair articles, one folder per language
+ * (pairs-i18n/{locale}/{a}-{b}.mdx). English stays in `pairs`; the
+ * translated routes assert that every English pair has its translation.
+ * The three questions are derived from the pair's computed panel in the
+ * page's language, as on the English page.
+ */
+const pairsLocalized = defineCollection({
+  loader: glob({ pattern: '**/*.mdx', base: './src/content/pairs-i18n' }),
+  schema: z.object({
+    signs: z
+      .tuple([signEnum, signEnum])
+      .refine(
+        ([a, b]) => SIGN_SLUGS.indexOf(a) <= SIGN_SLUGS.indexOf(b),
+        { message: 'Pair signs must be in zodiac order (aries first, pisces last).' },
+      ),
+    locale: z.enum(['es', 'pt', 'fr', 'it']),
+    title: z.string().max(60),
+    description: z.string().max(155),
+    published: z.coerce.date(),
+    updated: z.coerce.date(),
+    draft: z.boolean().default(false),
+  }).transform((data) => ({
+    ...data,
+    faq: localizedPairFaq(data.locale, data.signs),
+  })),
+});
+
+export const collections = { guides, pairs, pairsLocalized, learn, learnLocalized, horoscopes, birthdays, almanac };

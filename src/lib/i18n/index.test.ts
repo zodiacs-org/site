@@ -29,9 +29,9 @@ import {
 import { SIGN_SLUGS } from '../signs';
 
 describe('i18n helpers', () => {
-  it('keeps every localized UI catalog aligned with all 422 English keys', () => {
+  it('keeps every localized UI catalog aligned with all 452 English keys', () => {
     const englishKeys = Object.keys(UI.en).sort();
-    expect(englishKeys).toHaveLength(422);
+    expect(englishKeys).toHaveLength(452);
     for (const locale of CATALOG_LOCALES) {
       expect(Object.keys(UI[locale]).sort()).toEqual(englishKeys);
     }
@@ -73,7 +73,9 @@ describe('i18n helpers', () => {
     expect(localizePath('pt', '/disclosure/')).toBe('/pt/disclosure/');
     expect(localizePath('fr', '/disclosure/')).toBe('/fr/disclosure/');
     expect(localizePath('it', '/disclosure/')).toBe('/it/disclosure/');
-    expect(localizePath('es', '/compatibility/aries-taurus/')).toBe('/compatibility/aries-taurus/');
+    expect(localizePath('es', '/compatibility/aries-taurus/')).toBe('/es/compatibility/aries-taurus/');
+    expect(localizePath('ru', '/compatibility/aries-taurus/')).toBe('/compatibility/aries-taurus/');
+    expect(localizePath('es', '/compatibility/taurus-aries/')).toBe('/compatibility/taurus-aries/');
     expect(stripLocale('/es/aries/')).toBe('/aries/');
     expect(stripLocale('/pt/aries/')).toBe('/aries/');
     expect(stripLocale('/fr/aries/')).toBe('/aries/');
@@ -209,9 +211,10 @@ describe('i18n helpers', () => {
     }
   });
 
-  it('localizes data-driven WS5 routes while keeping pair prose English-only', () => {
+  it('localizes data-driven WS5 routes and the translated pair pages', () => {
     expect(LOCALIZED_PATHS.has('/compatibility/aries-taurus/')).toBe(false);
-    expect(alternatePaths('/compatibility/aries-taurus/')).toBeNull();
+    expect(Object.keys(alternatePaths('/compatibility/aries-taurus/') ?? {})).toEqual(['en', 'es', 'pt', 'fr', 'it']);
+    expect(alternatePaths('/compatibility/taurus-aries/')).toBeNull();
 
     for (const path of ['/learn/chinese-zodiac/', '/learn/chinese-zodiac/dragon/']) {
       // Programmatic families are recognized without enumerating hundreds of

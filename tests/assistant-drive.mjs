@@ -266,7 +266,9 @@ await withPreview({ port: 4404 }, async (baseURL) => {
       await dialog.evaluate((node) => document.activeElement === node)
       && !await input.evaluate((node) => document.activeElement === node));
     if (!GUIDE_AVATAR_ONLY) {
-      check('opening is the first saved-chart read', await page.evaluate(() => window.__profileReads) > 0);
+      check('opening keeps personal chart attachment unavailable',
+        await dialog.locator('.zassistant__chart-chip').count() === 1
+          && await dialog.locator('.zassistant__chart-chip').isHidden() && requests.length === 0);
     }
     // Visibility begins during the entrance animation; measure the settled sheet.
     await page.waitForFunction(() => {
@@ -374,25 +376,15 @@ await withPreview({ port: 4404 }, async (baseURL) => {
       && await page.locator('.zassistant__source-chip').isHidden()
       && await page.getByRole('button', { name: /Use this page/ }).isVisible());
 
-    await page.locator('.zassistant__chart-chip').click();
-    const preview = page.locator('.zassistant__consent-preview');
-    await preview.waitFor({ state: 'visible' });
-    const previewText = (await preview.textContent() ?? '').trim();
-    check('chart consent shows exact placement-only text before a call', requests.length === beforeRemove
-      && /Sun: \d+°\d{2}′/.test(previewText)
-      && previewText.includes('Selected self chart (kept on this device): Secret Person')
-      && !/1990-04-17|08:45|Bangkok/.test(previewText));
-    await page.getByRole('button', { name: 'Attach my chart' }).click();
-    await page.locator('.zassistant__input').fill('What does my chart emphasize?');
+    check('personal chart attachment is unavailable even when a self chart is saved',
+      await page.locator('.zassistant__chart-chip').isHidden());
+    await page.locator('.zassistant__input').fill('How should I start reading a birth chart?');
     await page.locator('.zassistant__input').press('Enter');
-    await page.locator('.zassistant__message--assistant').filter({ hasText: 'Your placements' }).waitFor();
+    await page.locator('.zassistant__message--assistant').filter({ hasText: 'practical answer' }).last().waitFor();
     const chartRequest = requests.at(-1);
-    const chartSource = chartRequest.ephemeralContext.baseContext.ownerChart.source;
-    const placementPreview = previewText.split('\n\n').at(-1)?.trim();
-    check('confirmed chart attaches exactly the placement-only preview', chartSource.facts.trim() === placementPreview);
-    check('chart request contains no saved birth PII', !/Secret Person|private-chart-id|1990-04-17|08:45|Bangkok|13\.7563|100\.5018|Asia\/Bangkok/.test(JSON.stringify(chartRequest))
-      && !JSON.stringify(chartRequest).includes(CHART_ID)
-      && !JSON.stringify(chartRequest).includes(ACCOUNT_ID));
+    check('Guide receives no saved natal positions or birth details',
+      chartRequest.ephemeralContext.baseContext.ownerChart.state === 'unavailable'
+      && !/Secret Person|private-chart-id|1990-04-17|08:45|Bangkok|13\.7563|100\.5018|Asia\/Bangkok/.test(JSON.stringify(chartRequest)));
 
     await page.evaluate(() => {
       document.documentElement.setAttribute('data-account-sync-v2', '');

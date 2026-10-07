@@ -1,0 +1,11 @@
+{
+  "date": "2026-10-01",
+  "siteMain": "9cfafa3e742de943062c9174338472781724a4b5",
+  "engineMain": "6807f632fc5aad08999d97f61e50793c6ca9a0b4",
+  "handOffMatchesMain": true,
+  "manifest": "BUNDLES.md supplied by owner",
+  "bundles": [
+    {"repository":"zodiacs-org/site","file":"zodiacs-site-wip-2026-09-30.bundle","bytes":2193509,"sha256":"d5d800509c00de4d1be5152884190be2903215d9ceec9288b531a193f728b059","bundleVerify":"PASS","fetchedHeads":{"wip/feed-ids":"9b6c770d28bfdfda4fce8f63dd86f5920123ef25","wip/rc16-adoption":"4f5df85400fb520d7a5d78a7c6a2a0b4b3d8cbcb","wip/moon-enclosure":"dfa19aa9077c14c0add9b018cfc80b860d11954a"}},
+    {"repository":"zodiacs-org/engine","file":"zodiacs-engine-wip-2026-09-30.bundle","bytes":304470,"sha256":"af5b0beeea45872cb8daff1d03a6f89f4aeb1156fe653a7cf00652e6ee5bbd2e","bundleVerify":"PASS","fetchedHeads":{"wip/feature-eclipses":"d2cc4e6c688eb0816bd969c9ab1f66ebccde63ce","wip/chinese-heldback":"0ef62950c6c8ac1a911117bc1f88cff8703f9213"}}
+  ]
+}

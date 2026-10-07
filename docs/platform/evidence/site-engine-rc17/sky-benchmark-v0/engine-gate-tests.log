@@ -1,0 +1,12 @@
+
+ RUN  v3.2.7 <site>
+
+ ✓ tests/benchmarks/sky-benchmark-forced.test.ts (22 tests | 20 skipped) 23512ms
+   ✓ the sky-fact benchmark, v0 > check_sky_fact finds every entry into a sign while retrograde in the ingress questions' periods, on every date that holds it  4934ms
+   ✓ the sky-fact benchmark, v0 > keeps every rule and margin it publishes, derived again by other steps from the engine it was drawn with  18575ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed | 20 skipped (22)
+   Start at  01:53:16
+   Duration  24.93s (transform 411ms, setup 0ms, collect 864ms, tests 23.51s, environment 0ms, prepare 96ms)
+

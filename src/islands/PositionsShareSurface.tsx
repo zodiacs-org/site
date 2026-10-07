@@ -1,3 +1,4 @@
+import { CheckOurMath, ResultOpening } from './ChartTrust';
 import { useEffect, useRef } from 'preact/hooks';
 import AspectGlyph from '../components/AspectGlyph';
 import PlanetGlyph from '../components/PlanetGlyph';
@@ -64,7 +65,7 @@ const SHARE_COPY = {
     positionsOnlyNotice: 'Solo posiciones, sin campos de nombre, fecha, hora ni lugar.',
     positionsOnlyPrivacy: 'Las posiciones exactas siguen dando la fecha y la hora de nacimiento. Además acotan el lugar de nacimiento a una zona de unos 110 km de ancho y cientos de kilómetros de largo cerca del ecuador, y más pequeña hacia los polos; cerca del círculo polar ártico puede ser una franja de menos de un kilómetro de norte a sur. Un enlace creado con una versión anterior del sitio para un nacimiento anterior a la hora estándar puede acotarlo a franjas de unos 3 km de ancho.',
     positionsOnlyPrivacyNoTime: 'Las posiciones siguen dando la fecha de nacimiento. Sin hora de nacimiento, corresponden a una hora de referencia de ese día. Un enlace creado con una versión anterior del sitio puede llevar en su lugar el mediodía del lugar de nacimiento, que da su huso horario o, antes de la hora estándar, su longitud.',
-    reconstructedHouses: 'Las casas se reconstruyen por signo entero desde el Ascendente compartido. El cálculo original no puede reconstruirse solo con las posiciones.',
+    reconstructedHouses: 'Las casas se reconstruyen con el sistema de signos completos desde el ascendente compartido. El cálculo original no puede reconstruirse solo con las posiciones.',
     sharedAspects: 'Aspectos mayores',
     positionsLinkInvalid: 'Ese enlace solo con posiciones no es válido o está incompleto.',
     shareLinkAmbiguous: 'Este enlace contiene dos formatos de carta, por lo que no se abrió ninguno.',
@@ -72,8 +73,8 @@ const SHARE_COPY = {
     preparingImage: 'Preparando imagen…',
     shareThisImage: 'Compartir esta imagen',
     moreWaysToShare: 'Más formas de compartir',
-    chartImagePrivacy: 'La imagen muestra las posiciones de la carta y los ajustes de cálculo, sin nombre, fecha, hora ni lugar de nacimiento, coordenadas ni enlace a la carta. Sus posiciones siguen dando la fecha y la hora de nacimiento. Muestra el ascendente y el medio cielo solo al grado entero y deja fuera las casas Placidus, así que no acota el lugar de nacimiento más que el enlace.',
-    chartImagePrivacyNoTime: 'La imagen muestra las posiciones de la carta y los ajustes de cálculo, sin nombre, fecha ni lugar de nacimiento, coordenadas ni enlace a la carta. Sin hora de nacimiento, muestra el cielo de las 12:00 UTC de tu fecha de nacimiento, igual que el enlace, así que da tu fecha de nacimiento pero nada sobre tu lugar de nacimiento. Cualquier posición puede diferir un poco de tu carta y, el día en que un planeta cambia de signo, también su signo.',
+    chartImagePrivacy: 'La imagen muestra las posiciones de la carta y la configuración del cálculo, sin nombre, fecha, hora ni lugar de nacimiento, coordenadas ni enlace a la carta. Sus posiciones siguen dando la fecha y la hora de nacimiento. Muestra el ascendente y el medio cielo solo al grado entero y deja fuera las casas Placidus, así que no acota el lugar de nacimiento más que el enlace.',
+    chartImagePrivacyNoTime: 'La imagen muestra las posiciones de la carta y la configuración del cálculo, sin nombre, fecha ni lugar de nacimiento, coordenadas ni enlace a la carta. Sin hora de nacimiento, muestra el cielo de las 12:00 UTC de tu fecha de nacimiento, igual que el enlace, así que da tu fecha de nacimiento pero nada sobre tu lugar de nacimiento. Cualquier posición puede diferir un poco de tu carta y, el día en que un planeta cambia de signo, también su signo.',
     chartImagePrivacyDetails: 'Esta imagen incluye la fecha y, si se conoce, la hora local de nacimiento, con el lugar, las coordenadas, la zona horaria y el instante UTC. No incluye el nombre ni un enlace a la carta.',
     moonCardTitle: 'Tarjeta del signo lunar',
     risingCardTitle: 'Tarjeta del ascendente',
@@ -112,11 +113,11 @@ const SHARE_COPY = {
     closeShare: 'Fermer les options de partage',
     hideBirthDetails: 'Masquer les données de naissance',
     copyPositionsLink: 'Copier le lien avec les positions uniquement',
-    positionsShareNote: 'Le lien n’a pas de champ pour le nom, la date, l’heure ou le lieu de naissance. Ses positions donnent quand même ta date et ton heure de naissance, à la minute près. Elles situent aussi ton lieu de naissance dans une zone d’environ 110 km de large et de plusieurs centaines de kilomètres de long près de l’équateur, plus petite vers les pôles ; près du cercle polaire arctique, ce peut être une bande de moins d’un kilomètre du nord au sud.',
-    positionsShareNoteNoTime: 'Le lien n’a pas de champ pour le nom, la date, l’heure ou le lieu de naissance. Sans heure de naissance, il contient le ciel de 12:00 UTC à ta date de naissance, et non celui de midi à ton lieu de naissance : il donne ta date de naissance, mais rien sur ce lieu. Chaque position peut différer de ton thème : la Lune de plusieurs degrés, les autres planètes de moins et, le jour où une planète change de signe, son signe aussi.',
+    positionsShareNote: 'Le lien n’a pas de champ pour le nom, la date, l’heure ou le lieu de naissance. Ses positions donnent quand même ta date et ton heure de naissance, à la minute près. Elles situent aussi ton lieu de naissance dans une zone d’environ 110 km de large et de plusieurs centaines de kilomètres de long près de l’équateur, plus petite vers les pôles ; près du cercle polaire arctique, ce peut être une bande de moins d’un kilomètre du nord au sud.',
+    positionsShareNoteNoTime: 'Le lien n’a pas de champ pour le nom, la date, l’heure ou le lieu de naissance. Sans heure de naissance, il contient le ciel de 12:00 UTC à ta date de naissance, et non celui de midi à ton lieu de naissance : il donne ta date de naissance, mais rien sur ce lieu. Chaque position peut différer de ton thème : la Lune de plusieurs degrés, les autres planètes de moins et, le jour où une planète change de signe, son signe aussi.',
     positionsOnlyTitle: 'Positions partagées du thème',
     positionsOnlyNotice: 'Positions uniquement, sans champ de nom, de date, d’heure ou de lieu.',
-    positionsOnlyPrivacy: 'Les positions exactes donnent quand même la date et l’heure de naissance. Elles situent aussi le lieu de naissance dans une zone d’environ 110 km de large et de plusieurs centaines de kilomètres de long près de l’équateur, plus petite vers les pôles ; près du cercle polaire arctique, ce peut être une bande de moins d’un kilomètre du nord au sud. Un lien créé par une version antérieure du site pour une naissance antérieure à l’heure légale peut le situer dans des bandes d’environ 3 km de large.',
+    positionsOnlyPrivacy: 'Les positions exactes donnent quand même la date et l’heure de naissance. Elles situent aussi le lieu de naissance dans une zone d’environ 110 km de large et de plusieurs centaines de kilomètres de long près de l’équateur, plus petite vers les pôles ; près du cercle polaire arctique, ce peut être une bande de moins d’un kilomètre du nord au sud. Un lien créé par une version antérieure du site pour une naissance antérieure à l’heure légale peut le situer dans des bandes d’environ 3 km de large.',
     positionsOnlyPrivacyNoTime: 'Les positions donnent quand même la date de naissance. Sans heure de naissance, elles correspondent à une heure de référence ce jour-là. Un lien créé par une version antérieure du site peut contenir à la place midi au lieu de naissance, ce qui donne son fuseau horaire ou, avant l’heure légale, sa longitude.',
     reconstructedHouses: 'Les maisons sont reconstruites en signes entiers à partir de l’Ascendant partagé. Le calcul d’origine ne peut pas être retrouvé à partir des seules positions.',
     sharedAspects: 'Aspects majeurs',
@@ -126,8 +127,8 @@ const SHARE_COPY = {
     preparingImage: 'Préparation de l’image…',
     shareThisImage: 'Partager cette image',
     moreWaysToShare: 'Autres façons de partager',
-    chartImagePrivacy: 'L’image montre les positions du thème et les réglages de calcul, sans nom, date, heure ou lieu de naissance, coordonnées ni lien vers le thème. Ses positions donnent encore la date et l’heure de naissance. Elle ne montre l’ascendant et le milieu du ciel qu’au degré entier et laisse de côté les maisons Placidus : elle ne situe donc pas le lieu de naissance plus précisément que le lien.',
-    chartImagePrivacyNoTime: 'L’image montre les positions du thème et les réglages de calcul, sans nom, date ou lieu de naissance, coordonnées ni lien vers le thème. Sans heure de naissance, elle montre le ciel de 12:00 UTC à ta date de naissance, comme le lien : elle donne ta date de naissance, mais rien sur ton lieu de naissance. Chaque position peut différer un peu de ton thème et, le jour où une planète change de signe, son signe aussi.',
+    chartImagePrivacy: 'L’image montre les positions du thème et les réglages de calcul, sans nom, date, heure ou lieu de naissance, coordonnées ni lien vers le thème. Ses positions donnent encore la date et l’heure de naissance. Elle ne montre l’ascendant et le milieu du ciel qu’au degré entier et laisse de côté les maisons Placidus : elle ne situe donc pas le lieu de naissance plus précisément que le lien.',
+    chartImagePrivacyNoTime: 'L’image montre les positions du thème et les réglages de calcul, sans nom, date ou lieu de naissance, coordonnées ni lien vers le thème. Sans heure de naissance, elle montre le ciel de 12:00 UTC à ta date de naissance, comme le lien : elle donne ta date de naissance, mais rien sur ton lieu de naissance. Chaque position peut différer un peu de ton thème et, le jour où une planète change de signe, son signe aussi.',
     chartImagePrivacyDetails: 'Cette image inclut la date et, si elle est connue, l’heure locale de naissance, avec le lieu, les coordonnées, le fuseau horaire et l’instant UTC. Elle n’inclut ni nom ni lien vers le thème.',
     moonCardTitle: 'Carte du signe lunaire',
     risingCardTitle: 'Carte de l’Ascendant',
@@ -276,6 +277,8 @@ export function PositionsOnlyResult({ chart, locale }: PositionsOnlyResultProps)
       <h2 class="calc__positions-title" tabIndex={-1} ref={headingRef}>
         {shareText(locale, 'positionsOnlyTitle')}
       </h2>
+      <ResultOpening locale={locale} kind="other" />
+      <CheckOurMath locale={locale} />
       <p class="notice" role="status">{shareText(locale, 'positionsOnlyNotice')}</p>
       {moonIsUncertain(chart) && <p class="notice" data-moon-uncertain>{t(locale, 'moon')} · {t(locale, 'needsBirthTime')}</p>}
       <p class="calc__positions-privacy">{shareText(locale, chart.angles ? 'positionsOnlyPrivacy' : 'positionsOnlyPrivacyNoTime')}</p>

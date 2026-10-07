@@ -1,0 +1,27 @@
+{
+  "schema": "zodiacs-site-output-evidence-validation/v1",
+  "node": "v22.22.2",
+  "pass": true,
+  "checks": [
+    "full original comparison call coverage retained",
+    "extra compared values are exactly the expanded time-scale leaves",
+    "exact intended versions, base and immutable archives",
+    "installed rc.16 byte-identical to every file in archive",
+    "exact comparison and witness source hashes match current tools",
+    "all differences accounted for exactly once by passing numerical witnesses",
+    "longitude latitude speed replays remain exact, no tolerance widening",
+    "negative controls prevent path-only explanations"
+  ],
+  "installedArchiveFilesChecked": 69,
+  "reportSha256": "44a943e754ac7a39ad4a68ceaa9789c22dbaa5574ccf377a3727c9c563af6023",
+  "sourceBindings": {
+    "compare-site-outputs.mjs": "94b3f8675fc7950ee4813e55881c3463eefba441bdce2a5063f0ff0b247abc40",
+    "output-mechanisms.mjs": "bfff6aa6a2a807b7af1261450c979d28d37fe619a8976e194aec154674d6e793"
+  },
+  "calls": 574961,
+  "comparedValues": 34189944,
+  "differingValues": 10131398,
+  "unexplainedValues": 0,
+  "mechanismFailures": 0,
+  "accuracyGateAcceptance": "No gate accepted or weakened; this is migration equivalence evidence only."
+}

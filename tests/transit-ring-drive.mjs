@@ -9,11 +9,12 @@
  */
 import { readFile } from 'node:fs/promises';
 import { chromium } from 'playwright-core';
-import { spawn } from 'node:child_process';
+import { startPreview } from './visual/preview-server.mjs';
+import { findChromium, STABLE_CHROMIUM_ARGS } from './visual/browser.mjs';
 import { setTimeout as wait } from 'node:timers/promises';
 
 const OUT = process.env.OUT_DIR ?? null;
-const CHROMIUM = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH ?? '/opt/pw-browsers/chromium';
+const CHROMIUM = await findChromium();
 
 const profile = {
   version: 1,
@@ -34,20 +35,19 @@ const profile = {
   }],
 };
 
-const preview = spawn('npx', ['astro', 'preview', '--host', '127.0.0.1', '--port', '4399'], { stdio: 'ignore' });
-await wait(2500);
+const preview = await startPreview({ port: 4399 });
 const results = [];
 const check = (name, ok, detail = '') => { results.push({ name, ok, detail }); };
 const shot = async (t, p, o = {}) => { if (OUT) await t.screenshot({ path: `${OUT}/${p}`, ...o }).catch(() => {}); };
 
 try {
-  const browser = await chromium.launch({ executablePath: CHROMIUM });
+  const browser = await chromium.launch({ executablePath: CHROMIUM, args: STABLE_CHROMIUM_ARGS });
 
   async function run(page) {
     await page.addInitScript((prof) => {
       localStorage.setItem('zodiacs.profile.v1', JSON.stringify(prof));
     }, profile);
-    await page.goto('http://127.0.0.1:4399/transits/', { waitUntil: 'networkidle' });
+    await page.goto(`${preview.baseURL}/transits/`, { waitUntil: 'networkidle' });
     // The saved chart preselects; compute.
     await page.waitForSelector('.calc__submit', { timeout: 15000 });
     await page.locator('.calc__submit').click();
@@ -128,11 +128,9 @@ try {
   check('exact-date markers render on the timeline', markCount > 0, `${markCount} markers`);
 
   // The calendar file keeps the exact times, from the exact chart, and says
-  // so beside its button; the feed's note keeps its approximate contacts to
-  // the feed. The file's UIDs are hashes of what each event shows.
+  // so beside its button. The file's UIDs are hashes of what each event shows.
   const notes = await page.locator('.calendar-subscribe__note').allInnerTexts();
-  check('the feed note keeps its approximate angle contacts to the feed',
-    notes.some((note) => note.includes('The feed keeps the Ascendant and Midheaven to the whole degree, so its contacts to those two points are approximate')));
+  check('personal server calendar subscriptions are retired', await page.locator('[data-calendar-subscribe]').count() === 0);
   check('the download note says the file\'s times come from the exact chart',
     notes.some((note) => note.includes('The times in the file come from your exact chart')));
   const [calendarDownload] = await Promise.all([page.waitForEvent('download'), page.locator('[data-calendar-download]').click()]);
@@ -144,31 +142,20 @@ try {
   check('calendar file keeps each contact to the second',
     (calendarFile.match(/DTSTART:\d{8}T\d{6}Z/gu) ?? []).length === calendarUids.length);
   const dateBeforeJump = await page.locator('.tring__date').textContent();
-  await page.locator('[data-transit-mark]').first().click();
+  // Dates can share a pointer position. Every marker remains keyboard-accessible;
+  // the final DOM marker is the foreground pointer target at its position.
+  await page.locator('[data-transit-mark]').first().focus();
+  await page.locator('[data-transit-mark]').first().press('Enter');
   await wait(1200);
-  check('clicking a marker jumps the sky to that date',
+  check('keyboard activation of a marker jumps the sky to that date',
     (await page.locator('.tring__date').textContent()) !== dateBeforeJump);
+  const dateBeforePointer = await page.locator('.tring__date').textContent();
+  await page.locator('[data-transit-mark]').last().click();
+  await wait(1200);
+  check('clicking the foreground marker jumps the sky to that date',
+    (await page.locator('.tring__date').textContent()) !== dateBeforePointer);
   await shot(page, 'transit-ring-markers.png', { clip: { x: 0, y: 0, width: 1440, height: 1100 } });
 
-  // Integration: the durable calendar subscription carries only the v2
-  // positions token used by chart sharing — never the saved birth input.
-  const calBtn = page.locator('[data-calendar-subscribe]');
-  await page.waitForSelector('[data-calendar-subscribe][href^="webcal:"]', { timeout: 10000 });
-  check('calendar subscription button renders', (await calBtn.count()) === 1);
-  const calendarHref = await calBtn.getAttribute('href');
-  const calendarUrl = calendarHref ? new URL(calendarHref) : null;
-  const positionsToken = calendarUrl?.searchParams.get('token') ?? '';
-  const positionsWire = positionsToken.startsWith('2.')
-    ? JSON.parse(Buffer.from(positionsToken.slice(2), 'base64url').toString('utf8'))
-    : null;
-  check('calendar uses a webcal feed URL', calendarUrl?.protocol === 'webcal:');
-  check('calendar URL has only the positions token',
-    calendarUrl != null
-      && [...calendarUrl.searchParams.keys()].join(',') === 'token'
-      && positionsWire != null
-      && Object.keys(positionsWire).every((key) => ['b', 'a', 'h', 'v'].includes(key))
-      && !calendarHref?.includes('Coyoac')
-      && !calendarHref?.includes('1907-07-06'));
   await page.close();
 
   // ── Mobile ──
@@ -201,13 +188,13 @@ try {
   // Keep the checks already made when a later browser action fails.
   check('drive completed without an unhandled failure', false, error instanceof Error ? error.message : String(error));
 } finally {
-  preview.kill();
+  await preview.stop();
 }
 
 let failed = 0;
 for (const r of results) {
   if (!r.ok) failed += 1;
-  console.log(`${r.ok ? 'PASS' : 'FAIL'}  ${r.name}${r.detail ? `  · ${r.detail.slice(0, 90)}` : ''}`);
+  console.log(`${r.ok ? 'PASS' : 'FAIL'}  ${r.name}${r.detail ? `  · ${r.ok ? r.detail.slice(0, 90) : r.detail}` : ''}`);
 }
 console.log(failed ? `\n${failed} FAILURES` : '\nALL PASS');
 process.exit(failed ? 1 : 0);

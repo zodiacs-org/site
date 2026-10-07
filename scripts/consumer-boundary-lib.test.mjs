@@ -22,6 +22,14 @@ describe('consumer boundary source scanner', () => {
     expect(rules(copy.replace('Official Zodiac token collection', 'Buy an official Zodiac token'), 'src/components/SiteNav.astro').length).toBeGreaterThan(0);
   });
 
+  it('allows the exact owner-approved trust statement only on its catalog key', () => {
+    const statement = 'Our astrology tools and guides are free, with no signup required. Zodiacs.org also operates Astrofolio, the Zodiac token collection.';
+    const catalog = `const en = { trustFreeAnswer: ${JSON.stringify(statement)} };`;
+    expect(rules(catalog, 'src/lib/i18n/ui/en.ts')).toEqual([]);
+    expect(rules(catalog.replace('trustFreeAnswer', 'hero'), 'src/lib/i18n/ui/en.ts').length).toBeGreaterThan(0);
+    expect(rules(catalog.replace('the Zodiac token collection.', 'the Zodiac token collection. Buy today.'), 'src/lib/i18n/ui/en.ts').length).toBeGreaterThan(0);
+  });
+
   it('reads visible Astro copy and frontmatter strings without treating comments as copy', () => {
     const source = `---
 const description = 'A free astrology calculator.';

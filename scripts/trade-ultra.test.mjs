@@ -385,84 +385,10 @@ describe('fetching an order', () => {
   });
 });
 
-describe('executing a signed transaction', () => {
-  it('sends exactly the two fields the venue validates', async () => {
-    let captured;
-    const fetchImpl = async (url, init) => {
-      captured = { url, body: JSON.parse(init.body), method: init.method };
-      return jsonResponse({ status: 'Success', signature: 'sig', slot: 1, code: 0 });
-    };
-    const result = await executeOrder({ signedTransaction: 'AQAB', requestId: 'rid', fetchImpl });
-
-    expect(captured.method).toBe('POST');
-    expect(captured.url).toContain('/swap/v2/execute');
-    expect(Object.keys(captured.body).sort()).toEqual(['requestId', 'signedTransaction']);
-    expect(result.signature).toBe('sig');
-  });
-
-  it('refuses to post an incomplete signature', async () => {
-    await expectTradeError(
-      () => executeOrder({ signedTransaction: '', requestId: 'rid', fetchImpl: async () => jsonResponse({}) }),
-      'execute_failed',
-    );
-  });
-
-  it('treats a venue rejection as a failed trade', async () => {
-    await expectTradeError(
-      () => executeOrder({
-        signedTransaction: 'AQAB',
-        requestId: 'rid',
-        fetchImpl: async () => jsonResponse({ status: 'Failed', error: 'slippage exceeded' }),
-      }),
-      'execute_failed',
-    );
-  });
-
-  it('reports a dropped connection as unconfirmed rather than failed', async () => {
-    // A submitted trade can still land after the socket dies; saying "failed"
-    // would invite a visitor to pay twice.
-    await expectTradeError(
-      () => executeOrder({
-        signedTransaction: 'AQAB',
-        requestId: 'rid',
-        fetchImpl: async () => { throw new TypeError('Failed to fetch'); },
-      }),
-      'execute_unconfirmed',
-    );
-  });
-
-  it('treats an unreadable or incomplete execute answer as unconfirmed', async () => {
-    for (const response of [
-      { ok: true, status: 200, json: async () => { throw new SyntaxError('bad json'); } },
-      jsonResponse({}),
-      jsonResponse({ error: 'upstream reset' }, { status: 502 }),
-      jsonResponse({ status: 'Success', code: 0 }),
-      jsonResponse({ status: 'Success', signature: 'sig' }),
-    ]) {
-      await expectTradeError(
-        () => executeOrder({
-          signedTransaction: 'AQAB', requestId: 'rid', fetchImpl: async () => response,
-        }),
-        'execute_unconfirmed',
-      );
-    }
-  });
-
-  it('bounds a stalled execute response body as unconfirmed', async () => {
-    const fetchImpl = async (_url, { signal }) => ({
-      ok: true,
-      status: 200,
-      json: () => new Promise((_resolve, reject) => {
-        signal.addEventListener('abort', () => {
-          reject(Object.assign(new Error('body stalled'), { name: 'AbortError' }));
-        }, { once: true });
-      }),
-    });
-    await expectTradeError(
-      () => executeOrder({
-        signedTransaction: 'AQAB', requestId: 'rid', fetchImpl, deadlineMs: 5,
-      }),
-      'execute_unconfirmed',
-    );
+describe('retired transaction submission', () => {
+  it('refuses stale submission calls without contacting any service', async () => {
+    let calls = 0;
+    await expect(executeOrder({ signedTransaction: 'synthetic', requestId: 'synthetic', fetchImpl: async () => { calls++; } })).rejects.toThrow('transaction_submission_disabled');
+    expect(calls).toBe(0);
   });
 });

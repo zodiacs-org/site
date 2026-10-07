@@ -30,7 +30,7 @@ export interface Difference {
   readonly label: string;
   readonly left: string;
   readonly right: string;
-  /** Signed degrees, for angular rows only. */
+  /** Right minus left in the row's unit (degrees; degrees a day for a speed), the shorter way round for a longitude, an angle or a cusp; null for a row with no numeric difference. */
   readonly delta: number | null;
   readonly kind: DifferenceKind;
 }

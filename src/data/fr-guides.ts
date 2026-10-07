@@ -34,7 +34,7 @@ interface Profile {
   privateTruth: string;
 }
 
-const EDGE_COPY = 'Si tu es né·e près d’un changement de signe, calcule ton thème astral : le Soleil ne change pas de signe à la même heure chaque année.';
+const EDGE_COPY = 'Si tu es né·e près d’un changement de signe, calcule ton thème astral : le Soleil ne change pas de signe à la même heure chaque année.';
 
 const PROFILES: Record<string, Profile> = {
   aries: {
@@ -266,7 +266,7 @@ function buildGuide(slug: string, p: Profile): FrenchGuide {
     {
       heading: `${subjectCap} en amour`,
       body: [
-        `En amour, ${subject} ${plural ? 'recherchent' : 'recherche'} ${p.love}. L’attirance ne suffit pas : le lien doit aussi respecter ${possessive} rythme et ${plural ? 'leur' : 'sa'} manière de faire confiance.`,
+        `En amour, ${subject} ${plural ? 'recherchent' : 'recherche'} ${p.love}. L’attirance ne suffit pas : le lien doit aussi respecter ${possessive} rythme et ${plural ? 'leur' : 'sa'} manière de faire confiance.`,
         `En amitié, ce signe apprécie ${p.friendship}. La compatibilité la plus saine n’est pas toujours la plus spectaculaire ; c’est souvent celle qui laisse chacun respirer sans avoir à s’expliquer toute la journée.`,
       ],
     },
@@ -286,7 +286,7 @@ function buildGuide(slug: string, p: Profile): FrenchGuide {
       heading: `${subjectCap}, liens et confiance`,
       body: [
         `Pour se sentir proche, ${subject} ${plural ? 'recherchent' : 'recherche'} ${p.love}. Lorsque cela manque, une relation peut sembler correcte de l’extérieur tout en restant vide à l’intérieur.`,
-        `${p.ease}. C’est souvent l’accord le plus fluide. ${p.tension}. Ces liens ne sont pas condamnés : ils demandent simplement plus de conscience et de dialogue.`,
+        `${p.ease}. C’est souvent l’accord le plus fluide. ${p.tension}. Ces liens ne sont pas condamnés : ils demandent simplement plus de conscience et de dialogue.`,
         `Le signe solaire n’est qu’un début. La Lune, Vénus, Mars, l’ascendant, les maisons et les aspects racontent la relation réelle entre deux thèmes.`,
       ],
     },
@@ -311,7 +311,7 @@ function buildGuide(slug: string, p: Profile): FrenchGuide {
     {
       heading: `Ombre et évolution ${deName}`,
       body: [
-        `L’ombre ${deName} n’est pas un défaut moral. C’est souvent une stratégie autrefois utile qui s’est mise à fonctionner toute seule : ${p.shadow}.`,
+        `L’ombre ${deName} n’est pas un défaut moral. C’est souvent une stratégie autrefois utile qui s’est mise à fonctionner toute seule : ${p.shadow}.`,
         `Son apprentissage consiste à ${p.growth}. Le but n’est pas de nier l’impulsion du signe, mais de lui donner une forme plus consciente et plus durable.`,
         `Le corps compte aussi. ${subjectCap} ${plural ? 'gagnent' : 'gagne'} à ${p.care}. L’astrologie devient utile lorsqu’elle rejoint de petites décisions concrètes.`,
       ],
@@ -320,14 +320,14 @@ function buildGuide(slug: string, p: Profile): FrenchGuide {
       heading: `Ce que ${subject} ${plural ? 'disent' : 'dit'} rarement à voix haute`,
       body: [
         `${p.privateTruth}. Cette vérité intime en dit souvent plus que les stéréotypes associés au signe.`,
-        `${subjectCap} ${plural ? 'peuvent' : 'peut'} réunir des contraires : force et besoin de soin, liberté et appartenance, calme apparent et vie intérieure intense. Le thème complet permet à ces nuances de coexister.`,
+        `${subjectCap} ${plural ? 'peuvent' : 'peut'} réunir des contraires : force et besoin de soin, liberté et appartenance, calme apparent et vie intérieure intense. Le thème complet permet à ces nuances de coexister.`,
         `Ce guide est donc un point de départ. Pour comprendre ${subject} dans ta vie, regarde où ce signe apparaît dans ton thème, quelles planètes s’y trouvent et quels aspects elles forment. Le signe donne le vocabulaire ; le thème astral compose la phrase.`,
       ],
     },
   ];
   const faq: FrenchGuide['faq'] = [
     { q: `Quelles sont les dates ${deName} ?`, a: `En général ${p.dates}. ${EDGE_COPY}` },
-    { q: `Quel est l’élément ${deName} ?`, a: `${subjectCap} ${plural ? 'sont' : 'est'} un signe ${elementPhrase}. Astre maître : ${p.ruler}.` },
+    { q: `Quel est l’élément ${deName} ?`, a: `${subjectCap} ${plural ? 'sont' : 'est'} un signe ${elementPhrase}. Astre maître : ${p.ruler}.` },
     { q: `Quels signes sont compatibles avec ${subject} ?`, a: `${p.ease}. Pour une lecture vraiment utile, compare les deux thèmes complets.` },
     { q: `Que signifie une forte présence ${deName} dans le thème ?`, a: `Plusieurs planètes ou points importants parlent alors le langage de ce signe ${elementPhrase}. Les maisons et les aspects indiquent où et comment cette présence s’exprime.` },
     { q: `Et si je ne me reconnais pas dans ce portrait ${deName} ?`, a: 'C’est courant. L’ascendant, la Lune, les planètes dominantes et les aspects forts modifient beaucoup la façon dont le signe solaire se vit. Calcule le thème complet avant de l’écarter.' },
@@ -335,8 +335,9 @@ function buildGuide(slug: string, p: Profile): FrenchGuide {
   ];
   return {
     sign: slug,
-    title: `${p.name} : dates, personnalité, compatibilité et signification`,
-    description: `Guide français ${deName} : dates, personnalité, amour, compatibilité et signification dans ton thème astral. ${EDGE_COPY}`,
+    // Sagittaire and Capricorne would run past 60 characters with the ' | Zodiacs.org' suffix.
+    title: `${p.name} : dates, ${p.name.length > 9 ? 'caractère' : 'personnalité'}, compatibilité`,
+    description: `Guide ${deName} : dates, personnalité, amour et compatibilité dans ton thème astral. Né·e à la limite d’un signe ? Calcule ton thème pour savoir.`,
     intro,
     sections,
     faq,

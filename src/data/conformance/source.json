@@ -1,7 +1,7 @@
 {
   "note": "summary.json is conformance/results/summary.json from the engine repository at the commit below, copied unchanged. Refresh both together.",
   "repository": "https://github.com/zodiacs-org/engine",
-  "commit": "93ebae9fa54597aeaafbb346873f7f51e3cc6cb6",
+  "commit": "782b4963a8575fa8d81c602a36285f65fb9ae9bb",
   "path": "conformance/results/summary.json",
-  "sha256": "a298c9dfe93946d2cc169b14e1df7a1ebca5c79e93bdf4320d0fc6dfcbe0ae33"
+  "sha256": "af6e444c3d116a2a2b4660b31f4ebd0f9b5b04d2b3b2de855b9556058085c307"
 }

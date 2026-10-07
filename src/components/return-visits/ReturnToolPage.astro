@@ -1,0 +1,36 @@
+---
+import { ruOgImageForPath } from '../../strings/seo.ru.mjs';
+import Base from '../../layouts/Base.astro';
+import ReturnPersonal from '../../islands/ReturnPersonal';
+import ReturnToolLinks from './ReturnToolLinks.astro';
+import { localizePath, type CatalogLocale } from '../../lib/i18n';
+import { returnText as s } from '../../lib/return-visits/copy';
+import { sharingText } from '../../lib/sharing/copy';
+import '../../styles/calculator.css';
+import '../../styles/sharing-tools.css';
+import '../../styles/return-visits.css';
+interface Props { kind: 'calendar' | 'kit' | 'wrapped'; locale?: CatalogLocale }
+const { kind, locale = 'en' } = Astro.props;
+const titleKey = ({ calendar: 'calendarTitle', kit: 'kitTitle', wrapped: 'wrappedTitle' } as const)[kind];
+const ledeKey = ({ calendar: 'calendarLede', kit: 'kitLede', wrapped: 'wrappedLede' } as const)[kind];
+const path = ({ calendar: '/sky-calendar/', kit: '/astrologer-kit/', wrapped: '/your-sky-wrapped/' })[kind];
+const route = localizePath(locale, path);
+const feed = `https://zodiacs.org${locale === 'en' ? '' : `/${locale}`}/sky-calendar.ics`;
+const jsonLd = kind === 'calendar' ? [] : [{ '@type': 'WebApplication', name: s(locale, titleKey), url: `https://zodiacs.org${route}`, applicationCategory: 'LifestyleApplication', operatingSystem: 'Web', offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' } }];
+---
+<Base privateSurface={kind !== 'calendar'} clientUi locale={locale} path={route} title={`${s(locale, titleKey)} | Zodiacs.org`} description={s(locale, ledeKey)} image={locale === 'ru' ? ruOgImageForPath(route) ?? '/assets/og/v2/ru/share.png' : `/assets/og/v2/tool/${({ calendar: 'sky-calendar', kit: 'astrologer-kit', wrapped: 'your-sky-wrapped' })[kind]}.png`} imageAlt={s(locale, titleKey)} jsonLd={jsonLd} glass>
+  <section class="section--tight container return-page">
+    <header class="tool-hero sharing-hero"><h1 class="display">{s(locale, titleKey)}</h1><p>{s(locale, ledeKey)}</p></header>
+    {kind === 'calendar' ? <div class="return-panel">
+      <p>{s(locale, 'calendarRange')}</p>
+      <div class="return-actions"><a class="btn btn--primary" href={feed.replace('https:', 'webcal:')}>{s(locale, 'subscribe')}</a><a class="btn btn--ghost" href={feed} download={`zodiacs-sky-${locale}.ics`}>{s(locale, 'downloadCalendar')}</a></div>
+      <h2>{s(locale, 'calendarUrl')}</h2><a class="return-url mono" href={feed}>{feed}</a>
+      <p>{s(locale, 'calendarHelp')}</p><p class="sharing-note">{s(locale, 'calendarPrivacy')}</p><p class="sharing-note">{s(locale, 'eclipseNote')}</p>
+      <a href={localizePath(locale, '/methodology/')}>{s(locale, 'accuracy')} →</a>
+    </div> : <>
+      <ReturnPersonal kind={kind} locale={locale} client:load />
+      <noscript><p>{sharingText(locale, 'jsRequired')}</p></noscript>
+    </>}
+    <ReturnToolLinks locale={locale} current={path} />
+  </section>
+</Base>

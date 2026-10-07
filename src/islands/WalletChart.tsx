@@ -1,3 +1,4 @@
+import { CheckOurMath } from './ChartTrust';
 import { useMemo, useState } from 'preact/hooks';
 import { BirthFields } from './BirthFields';
 import type { City } from '../lib/geo/search';
@@ -276,6 +277,7 @@ export default function WalletChart({ availableChains }: Props) {
                 time: formatWalletUtc(wallet.birthTimestamp),
               })}
             </h2>
+            <CheckOurMath utc={wallet.birthTimestamp} basis="record" />
             <p class="wallet-result__boundary">{walletText('utcOnly')}</p>
             <dl class="wallet-result__receipt">
               <div>

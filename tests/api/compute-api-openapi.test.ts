@@ -43,7 +43,7 @@ function jcsDigest(value: unknown): string {
 }
 
 describe('compute API in the OpenAPI document', () => {
-  it('describes all six endpoints as POST operations with schemas and examples for every request and response', () => {
+  it('describes all seven endpoints as POST operations with schemas and examples for every request and response', () => {
     expect(openapi.openapi).toBe('3.1.0');
     expect(openapi.tags.map((tag: any) => tag.name)).toContain('compute');
     // OpenAPI 3.1: a licence names an SPDX identifier or a URL, never both.
@@ -71,7 +71,7 @@ describe('compute API in the OpenAPI document', () => {
         expect(response.headers['Cache-Control'].schema.const).toBe('no-store');
       }
       expect(Object.keys(operation.responses).sort()).toEqual(
-        ['200', '400', '404', '405', '413', '415', ...(['positions', 'events', 'sky-fact'].includes(endpoint) ? ['422'] : []), '429', '500', '503'].sort(),
+        ['200', '400', '404', '405', '413', '415', ...(['positions', 'events', 'elections', 'sky-fact'].includes(endpoint) ? ['422'] : []), '429', '500', '503'].sort(),
       );
       // The headers a client acts on are declared where they are sent.
       expect(operation.responses['405'].headers.Allow.schema.const).toBe('POST, OPTIONS');
@@ -121,11 +121,32 @@ describe('compute API in the OpenAPI document', () => {
       success: Object.fromEntries(Object.entries<any>(set.success).map(([endpoint, examples]) => [endpoint,
         Object.fromEntries(Object.entries<any>(examples).map(([name, value]) => [name, withoutRuntime(value)]))])),
     });
-    expect(normalize(committed), `stale ${EXAMPLES_PATH}: run npx vite-node --script scripts/build-compute-examples.mjs`)
-      .toEqual(normalize(fresh));
-    // On a runtime with the same time zone data the file is reproduced byte for byte.
+    const documented = normalize(committed);
+    const computed = structuredClone(normalize(fresh));
+    const byteComparable = structuredClone(fresh);
+    // Nodal speed is a central difference and differs by ~6e-9 deg/day across
+    // libm implementations. Keep the documented JSON unchanged, explicitly
+    // bound only these values, and compare the rest of each response exactly.
+    for (const name of Object.keys(documented.success.chart)) {
+      const bodies = computed.success.chart[name].result.bodies;
+      const reference = documented.success.chart[name].result.bodies;
+      for (const body of bodies) {
+        if (body.body !== 'North Node' && body.body !== 'South Node') continue;
+        const expected = reference.find((value: { body: string }) => value.body === body.body).speed;
+        expect(Math.abs(body.speed - expected)).toBeLessThanOrEqual(1e-8);
+        body.speed = expected;
+        // The byte comparison below must use this same, already-bounded
+        // normalization; matching tzdb versions do not imply matching libm.
+        byteComparable.success.chart[name].result.bodies.find(
+          (value: { body: string }) => value.body === body.body,
+        )!.speed = expected;
+      }
+    }
+    expect(documented, `stale ${EXAMPLES_PATH}: run npx vite-node --script scripts/build-compute-examples.mjs`)
+      .toEqual(computed);
+    // With matching tzdb, all bytes except the bounded nodal speeds must match.
     if (process.versions.tz === committed.success.time.pinned.receipt.timeResolution.runtimeTzdb) {
-      expect(serializeExamples(fresh)).toBe(readFileSync(resolve(root, EXAMPLES_PATH), 'utf8'));
+      expect(serializeExamples(byteComparable)).toBe(readFileSync(resolve(root, EXAMPLES_PATH), 'utf8'));
     }
     for (const endpoint of COMPUTE_ENDPOINTS) {
       expect(Object.keys(committed.success[endpoint]).sort()).toEqual(Object.keys(SUCCESS_EXAMPLES[endpoint]).sort());

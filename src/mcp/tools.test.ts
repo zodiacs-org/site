@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { ENGINE_VERSION, REFERENCE_SPAN, natalChart } from '@zodiacs/engine';
 import { parseNatalEnvelope } from '@zodiacs/engine/receipt';
+import candidate from '../data/platform-engine-candidate.json';
 import { EPOCH_MAX_UTC, EPOCH_MIN_UTC, HOUSE_SYSTEMS } from './bounds';
 import {
   COMPARE_INPUT, NATAL_INPUT, PRIVACY, UNSUPPORTED,
@@ -65,8 +66,12 @@ describe('get_capabilities', () => {
   })();
 
   it('names the engine actually bundled, and labels both releases honestly', () => {
+    // The engine's label follows the site's candidate record: rc.17 is vendored, not on npm. The adapter is not on npm.
     expect(value.engine.version).toBe(ENGINE_VERSION);
-    expect(value.engine.releaseStatus).toBe('unpublished-candidate');
+    expect(candidate.version).toBe(ENGINE_VERSION);
+    const published = candidate.releaseStatus === 'published';
+    expect(value.engine.releaseStatus).toBe(published ? 'published' : 'unpublished-candidate');
+    expect(value.engine.registry).toBe(published ? 'npm' : undefined);
     expect(value.adapter.releaseStatus).toBe('unpublished-candidate');
     expect(value.adapter.transport).toBe('stdio');
   });
@@ -146,7 +151,8 @@ describe('calculate_natal_chart', () => {
   it('returns the full record only when asked, and then only the record', () => {
     const outcome = natal({ ...LONDON, output: 'record' });
     const value = outcome.ok ? (outcome.value as Record<string, any>) : {};
-    expect(Object.keys(value).sort()).toEqual(['engine', 'record', 'schema']);
+    // From 0.1.0-rc.16.1 the record sits beside its two labels and what to cite.
+    expect(Object.keys(value).sort()).toEqual(['cite', 'engine', 'record', 'schema']);
     const parsed = parseNatalEnvelope(value.record);
     expect(parsed.ok).toBe(true);
   });

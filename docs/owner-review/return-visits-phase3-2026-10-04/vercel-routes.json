@@ -1,0 +1,253 @@
+{
+  "recorded": "2026-10-04",
+  "how": "Current header sources compiled with the official Vercel CLI 50.35.0 routing-utils getTransformedRoutes implementation used by vercel build, on Node 22.23.3. Historical Astro platformHeaders are retained from the unchanged September 29 build receipt via the October 3 routing receipt. No compute route gains calendar caching.",
+  "vercelConfigSha256": "b91c5abef2f93dd05c1ce169357c6d967f665fbae94aca5c3d94a7c21ac6eaf1",
+  "platformHeaders": [
+    {
+      "src": "^/assets/(.*)$",
+      "headers": {
+        "cache-control": "public, max-age=31536000, immutable"
+      }
+    },
+    {
+      "src": "^/_astro/(.*)$",
+      "headers": {
+        "cache-control": "public, max-age=31536000, immutable"
+      }
+    }
+  ],
+  "headers": [
+    {
+      "source": "/sky-calendar.ics",
+      "src": "^/sky-calendar\\.ics$"
+    },
+    {
+      "source": "/:locale(es|pt|fr|it|ru)/sky-calendar.ics",
+      "src": "^(?:/(es|pt|fr|it|ru))/sky-calendar\\.ics$"
+    },
+    {
+      "source": "/(.*)",
+      "src": "^(?:/(.*))$"
+    },
+    {
+      "source": "/c/(.*)",
+      "src": "^/c(?:/(.*))$"
+    },
+    {
+      "source": "/people/rigoberta-menchu/",
+      "src": "^/people/rigoberta-menchu/$"
+    },
+    {
+      "source": "/people/serena-williams/",
+      "src": "^/people/serena-williams/$"
+    },
+    {
+      "source": "/people/bill-gates/",
+      "src": "^/people/bill-gates/$"
+    },
+    {
+      "source": "/people/leonardo-dicaprio/",
+      "src": "^/people/leonardo-dicaprio/$"
+    },
+    {
+      "source": "/assets/people/rigoberta-menchu(.*)",
+      "src": "^/assets/people/rigoberta-menchu(.*)$"
+    },
+    {
+      "source": "/assets/people/serena-williams(.*)",
+      "src": "^/assets/people/serena-williams(.*)$"
+    },
+    {
+      "source": "/assets/people/bill-gates(.*)",
+      "src": "^/assets/people/bill-gates(.*)$"
+    },
+    {
+      "source": "/assets/people/leonardo-dicaprio(.*)",
+      "src": "^/assets/people/leonardo-dicaprio(.*)$"
+    },
+    {
+      "source": "/assets/og/v2/people/rigoberta-menchu.png",
+      "src": "^/assets/og/v2/people/rigoberta-menchu\\.png$"
+    },
+    {
+      "source": "/assets/og/v2/people/serena-williams.png",
+      "src": "^/assets/og/v2/people/serena-williams\\.png$"
+    },
+    {
+      "source": "/assets/og/v2/people/bill-gates.png",
+      "src": "^/assets/og/v2/people/bill-gates\\.png$"
+    },
+    {
+      "source": "/assets/og/v2/people/leonardo-dicaprio.png",
+      "src": "^/assets/og/v2/people/leonardo-dicaprio\\.png$"
+    },
+    {
+      "source": "/astrofolio/how-to-buy/(.*)",
+      "src": "^/astrofolio/how-to-buy(?:/(.*))$"
+    },
+    {
+      "source": "/terminal/markets/(.*)",
+      "src": "^/terminal/markets(?:/(.*))$"
+    },
+    {
+      "source": "/registry/exchange/(.*)",
+      "src": "^/registry/exchange(?:/(.*))$"
+    },
+    {
+      "source": "/registry/collection/(.*)",
+      "src": "^/registry/collection(?:/(.*))$"
+    },
+    {
+      "source": "/embed/(.*)",
+      "src": "^/embed(?:/(.*))$"
+    },
+    {
+      "source": "/fonts/(.*)",
+      "src": "^/fonts(?:/(.*))$"
+    },
+    {
+      "source": "/assets/assistant-ui.js",
+      "src": "^/assets/assistant-ui\\.js$"
+    },
+    {
+      "source": "/assets/assistant-ui.css",
+      "src": "^/assets/assistant-ui\\.css$"
+    },
+    {
+      "source": "/assets/assistant-drawer.js",
+      "src": "^/assets/assistant-drawer\\.js$"
+    },
+    {
+      "source": "/assets/assistant-drawer.css",
+      "src": "^/assets/assistant-drawer\\.css$"
+    },
+    {
+      "source": "/assets/search-ui.js",
+      "src": "^/assets/search-ui\\.js$"
+    },
+    {
+      "source": "/assets/webmcp-register.js",
+      "src": "^/assets/webmcp-register\\.js$"
+    },
+    {
+      "source": "/assets/site-footer.css",
+      "src": "^/assets/site-footer\\.css$"
+    },
+    {
+      "source": "/assets/app.js",
+      "src": "^/assets/app\\.js$"
+    },
+    {
+      "source": "/assets/vendor/(.*)",
+      "src": "^/assets/vendor(?:/(.*))$"
+    },
+    {
+      "source": "/assets/registry-outlook.json",
+      "src": "^/assets/registry-outlook\\.json$"
+    },
+    {
+      "source": "/assets/registry-research-feed.json",
+      "src": "^/assets/registry-research-feed\\.json$"
+    },
+    {
+      "source": "/assets/data/registry-market-history.v1.json",
+      "src": "^/assets/data/registry-market-history\\.v1\\.json$"
+    },
+    {
+      "source": "/assets/gallery.js",
+      "src": "^/assets/gallery\\.js$"
+    },
+    {
+      "source": "/assets/registry-token-chart.js",
+      "src": "^/assets/registry-token-chart\\.js$"
+    },
+    {
+      "source": "/assets/trade.js",
+      "src": "^/assets/trade\\.js$"
+    },
+    {
+      "source": "/assets/exchange.js",
+      "src": "^/assets/exchange\\.js$"
+    },
+    {
+      "source": "/assets/zodiac-icons/(.*)",
+      "src": "^/assets/zodiac-icons(?:/(.*))$"
+    },
+    {
+      "source": "/assets/(art|nuggets|og|sculptures)/(.*)",
+      "src": "^/assets(?:/(art|nuggets|og|sculptures))(?:/(.*))$"
+    },
+    {
+      "source": "/assets/people/(.*)",
+      "src": "^/assets/people(?:/(.*))$"
+    },
+    {
+      "source": "/assets/hero/(.*)",
+      "src": "^/assets/hero(?:/(.*))$"
+    },
+    {
+      "source": "/assets/astrofolio/v2/(.*)",
+      "src": "^/assets/astrofolio/v2(?:/(.*))$"
+    },
+    {
+      "source": "/assets/og/v2/share-pastel-wheel-20260809.png",
+      "src": "^/assets/og/v2/share-pastel-wheel-20260809\\.png$"
+    },
+    {
+      "source": "/_astro/(.*)",
+      "src": "^/_astro(?:/(.*))$"
+    },
+    {
+      "source": "/api/v1/:file(.*\\.[^/]+)",
+      "src": "^/api/v1(?:/(.*\\.[^/]+))$"
+    },
+    {
+      "source": "/api/v1/sky/today.json",
+      "src": "^/api/v1/sky/today\\.json$"
+    },
+    {
+      "source": "/api/v1/index.json",
+      "src": "^/api/v1/index\\.json$"
+    },
+    {
+      "source": "/registry/zodiacs.registry.json",
+      "src": "^/registry/zodiacs\\.registry\\.json$"
+    },
+    {
+      "source": "/registry/registry-meta.json",
+      "src": "^/registry/registry-meta\\.json$"
+    }
+  ],
+  "computeRewrites": [
+    {
+      "src": "^/api/v1/chart$",
+      "dest": "/api/compatibility?__zodiacs_compute=chart",
+      "check": true
+    },
+    {
+      "src": "^/api/v1/positions$",
+      "dest": "/api/compatibility?__zodiacs_compute=positions",
+      "check": true
+    },
+    {
+      "src": "^/api/v1/houses$",
+      "dest": "/api/compatibility?__zodiacs_compute=houses",
+      "check": true
+    },
+    {
+      "src": "^/api/v1/events$",
+      "dest": "/api/compatibility?__zodiacs_compute=events",
+      "check": true
+    },
+    {
+      "src": "^/api/v1/time$",
+      "dest": "/api/compatibility?__zodiacs_compute=time",
+      "check": true
+    },
+    {
+      "src": "^/api/v1/sky-fact$",
+      "dest": "/api/compatibility?__zodiacs_compute=sky-fact",
+      "check": true
+    }
+  ]
+}

@@ -1,5 +1,8 @@
 ---
+import SharingToolLinks from '../../components/sharing/SharingToolLinks.astro';
+import { sharingText } from '../../lib/sharing/copy';
 import Base from '../../layouts/Base.astro';
+import { SHARING_COPY } from '../../lib/sharing/copy';
 import BigThreeQuick from '../../islands/BigThreeQuick';
 import '../../styles/calculator.css';
 
@@ -40,19 +43,19 @@ const jsonLd = [
   },
 ];
 ---
-<Base
+<Base privateSurface
   clientUi
   title="Big Three Calculator — Sun, Moon, and Rising in Seconds | Zodiacs.org"
   description="Enter a birth date, time, and place and get your Sun, Moon, and Rising signs with exact degrees, a card to share, and one tap into the full birth chart. Free, computed in your browser."
   path="/big-three/"
-  image="/assets/og/v2/tool/birth-chart.png"
+  image="/assets/og/v2/tool/big-three.png"
   imageAlt="Big Three calculator — Zodiacs.org"
   jsonLd={jsonLd}
 >
   <section class="section--tight container">
     <div class="tool-hero">
       <em class="kicker">Sun · Moon · Rising</em>
-      <h1 class="display">Your Big Three, in ten seconds.</h1>
+      <h1 class="display">{sharingText('en', 'bigTitle')}</h1>
       <p>
         Three fields, three placements. The <a href="/learn/glossary/#sun">Sun</a> is who you are, the{' '}
         <a href="/learn/glossary/#moon">Moon</a> is how you feel, and the Rising sign is how people first read you.
@@ -60,7 +63,8 @@ const jsonLd = [
       </p>
     </div>
 
-    <BigThreeQuick client:load />
+    <BigThreeQuick copy={SHARING_COPY.en} client:load />
+    <SharingToolLinks current="/big-three/" />
   </section>
 
   <section class="section--tight container container--narrow">

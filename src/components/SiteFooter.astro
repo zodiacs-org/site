@@ -1,10 +1,10 @@
 ---
+import { isAstrologyToolPath, showsCollectionNavigation } from '../lib/trust-boundary';
 import { SIGNS, signName } from '../lib/signs';
 import BrandMark from './BrandMark.astro';
 import EmailCapture from './EmailCapture.astro';
 import TerminalMarketVenueNotice from './TerminalMarketVenueNotice.astro';
 import { GUIDE_LOADER_MARKER, guideLoaderSource } from '../lib/assistant/guide-loader.mjs';
-import { footerAcquisitionDisclosureVisible } from '../lib/footer-boundary.mjs';
 import { FOOTER_TOOLS } from '../lib/nav-tools';
 import {
   LOCALE_META,
@@ -22,6 +22,8 @@ import {
 const year = new Date().getFullYear();
 interface Props { locale?: Locale; terminalMarketNotice?: boolean; noAssistant?: boolean }
 const locale = normalizeCatalogLocale(Astro.props.locale);
+const isTool = isAstrologyToolPath(Astro.url.pathname);
+const showCollection = showsCollectionNavigation(Astro.url.pathname);
 const routeLanguageLinks = renderableAlternatePathEntries(Astro.url.pathname);
 // Preserve the established locale-home fallback on English-only routes while
 // deriving the candidate set from actual route availability, never LOCALES.
@@ -33,14 +35,15 @@ const languageLinks = (routeLanguageLinks.length ? routeLanguageLinks : availabl
   meta: LOCALE_META[entry.locale],
 }));
 const FOOTER_COPY = {
-  en: { assistant: 'Guide', language: 'Language', legal: 'Legal', utilities: 'More', licenses: 'Data & licenses', developers: 'Developers' },
-  es: { assistant: 'Guide', language: 'Idioma', legal: 'Legal', utilities: 'Más', licenses: 'Datos y licencias', developers: 'Desarrolladores' },
-  pt: { assistant: 'Guide', language: 'Idioma', legal: 'Legal', utilities: 'Mais', licenses: 'Dados e licenças', developers: 'Desenvolvedores' },
-  fr: { assistant: 'Guide', language: 'Langue', legal: 'Mentions légales', utilities: 'Plus', licenses: 'Données et licences', developers: 'Développeurs' },
-  it: { assistant: 'Guide', language: 'Lingua', legal: 'Note legali', utilities: 'Altro', licenses: 'Dati e licenze', developers: 'Sviluppatori' },
-  ru: { assistant: 'Guide — пока по-английски', language: 'Язык', legal: 'Правовая информация', utilities: 'Ещё', licenses: 'Данные и лицензии', developers: 'Разработчикам' },
+  en: { guideDescription: 'An AI assistant for astrology questions and help using Zodiacs.', assistant: 'Guide', language: 'Language', legal: 'Legal', utilities: 'More', licenses: 'Data & licenses', developers: 'Developers' },
+  es: { guideDescription: 'Un asistente de IA para tus preguntas sobre astrología y ayuda con Zodiacs.', assistant: 'Guide', language: 'Idioma', legal: 'Legal', utilities: 'Más', licenses: 'Datos y licencias', developers: 'Desarrolladores' },
+  pt: { guideDescription: 'Um assistente de IA para dúvidas sobre astrologia e ajuda com o Zodiacs.', assistant: 'Guide', language: 'Idioma', legal: 'Legal', utilities: 'Mais', licenses: 'Dados e licenças', developers: 'Desenvolvedores' },
+  fr: { guideDescription: 'Un assistant IA pour vos questions sur l’astrologie et pour vous aider à utiliser Zodiacs.', assistant: 'Guide', language: 'Langue', legal: 'Mentions légales', utilities: 'Plus', licenses: 'Données et licences', developers: 'Développeurs' },
+  it: { guideDescription: 'Un assistente IA per le tue domande di astrologia e per aiutarti a usare Zodiacs.', assistant: 'Guide', language: 'Lingua', legal: 'Note legali', utilities: 'Altro', licenses: 'Dati e licenze', developers: 'Sviluppatori' },
+  ru: { guideDescription: 'ИИ-помощник для вопросов об астрологии и помощи с Zodiacs.', assistant: 'Guide — пока по-английски', language: 'Язык', legal: 'Правовая информация', utilities: 'Ещё', licenses: 'Данные и лицензии', developers: 'Разработчикам' },
 } as const satisfies Record<Locale, {
   assistant: string;
+  guideDescription: string;
   language: string;
   legal: string;
   utilities: string;
@@ -59,7 +62,6 @@ const privacyHref = localizePath(locale, '/privacy/');
 const fontLicenseHref = locale === 'ru' ? '/fonts/OFL-golos-text.txt' : '/fonts/OFL-instrument-sans.txt';
 const consumerPath = stripLocale(Astro.url.pathname);
 const isRegistryWing = /^\/(?:terminal|registry|sdk|thesis|archive|disclosure)(?:\/|$)/.test(consumerPath);
-const showAcquisitionDisclosure = footerAcquisitionDisclosureVisible(consumerPath);
 const suppressFooterEmailCapture = /^\/(?:birth-chart|horoscopes|profile)(?:\/|$)/.test(consumerPath);
 const terminalMarketNotice = Boolean(Astro.props.terminalMarketNotice);
 ---
@@ -74,8 +76,10 @@ const terminalMarketNotice = Boolean(Astro.props.terminalMarketNotice);
           <span class="zfooter__brand-name">Zodiacs</span><span class="zfooter__brand-tld">.org</span>
         </a>
         <p class="zfooter__tag">{t(locale, 'footerTag')}</p>
+        {!isTool && isRegistryWing && <p class="zfooter__tag">{t(locale, 'trustWalletNotice')}</p>}
       </div>
       {!Astro.props.noAssistant && (
+        <aside class="zfooter__help" aria-label={FOOTER_COPY[locale].assistant}>
         <button
           class="zfooter__guide"
           type="button"
@@ -83,10 +87,13 @@ const terminalMarketNotice = Boolean(Astro.props.terminalMarketNotice);
           data-footer-guide
           data-assistant-locale={locale}
           aria-haspopup="dialog"
+          aria-describedby="footer-guide-description"
         >
           <img src="/assets/guide-avatar.webp" width="32" height="32" alt="" loading="lazy" decoding="async" />
-          <span>{FOOTER_COPY[locale].assistant}</span>
+          <span>{FOOTER_COPY[locale].assistant}</span><span class="zfooter__guide-arrow" aria-hidden="true">→</span>
         </button>
+        <p id="footer-guide-description" class="zfooter__help-description">{FOOTER_COPY[locale].guideDescription}</p>
+        </aside>
       )}
     </div>
 
@@ -121,6 +128,7 @@ const terminalMarketNotice = Boolean(Astro.props.terminalMarketNotice);
         </div>
       </details></nav>
 
+      {showCollection && (
       <nav class="zfooter__group zfooter__group--wide" aria-label={t(locale, 'footerRegistry')}>
         <details class="zfooter__fold" open><summary class="zfooter__fold-label"><span class="zfooter__label">{t(locale, 'footerRegistry')}</span></summary>
         <div class="zfooter__links">
@@ -129,8 +137,10 @@ const terminalMarketNotice = Boolean(Astro.props.terminalMarketNotice);
           <a href="/sdk/" hreflang={englishHreflang} title={englishOnlyAria}>{t(locale, 'footerSdk')}{englishSuffix}</a>
           <a href={localizePath(locale, '/disclosure/')}>{t(locale, 'footerDisclosure')}</a>
         </div>
-        {showAcquisitionDisclosure && <span class="zfooter__note">{t(locale, 'footerCollectNote')}</span>}
+        <span class="zfooter__note">{t(locale, 'trustFreeAnswer')} <a href={localizePath(locale, '/disclosure/')}>{t(locale, 'trustDisclosure')}</a>.</span>
       </details></nav>
+
+      )}
 
       <nav class="zfooter__group zfooter__twelve" aria-label={t(locale, 'navSigns')}>
         <span class="zfooter__label">{t(locale, 'navTwelve')}</span>

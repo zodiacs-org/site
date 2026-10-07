@@ -24,8 +24,8 @@ const faq = [
     a: 'Вся карта рассчитывается в вашем браузере: калькулятор не обращается к серверному API для карт, аккаунт не нужен. Сохранённая карта сначала остаётся на этом устройстве. Необязательная синхронизация отправляет только выбранные сохранённые карты и только после входа.',
   },
   {
-    q: 'Цельнознаковые дома или Плацидус: что выбрать?',
-    a: 'Цельнознаковая система — более древняя и простая для чтения: каждый дом занимает целый знак. Плацидус делит дома по времени их восхождения, поэтому их размер различается. Попробуйте обе: планеты не двигаются, меняются только границы домов.',
+    q: 'Дома целых знаков или Плацидус: что выбрать?',
+    a: 'Система целых знаков — более древняя и простая для чтения: каждый дом занимает целый знак. Плацидус делит дома по времени их восхождения, поэтому их размер различается. Попробуйте обе: планеты не двигаются, меняются только границы домов.',
   },
 ];
 
@@ -37,7 +37,7 @@ const jsonLd = [
     applicationCategory: 'LifestyleApplication',
     operatingSystem: 'Web',
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
-    featureList: 'Солнце, Луна, асцендент, планеты от Меркурия до Плутона, Истинный узел, цельнознаковые дома и Плацидус, аспекты',
+    featureList: 'Солнце, Луна, асцендент, планеты от Меркурия до Плутона, Истинный узел, дома целых знаков и Плацидус, аспекты',
     inLanguage: 'ru',
     isPartOf: { '@id': 'https://zodiacs.org/#site' },
   },
@@ -66,7 +66,7 @@ const jsonLd = [
   inlineCriticalCss
   localTypography
   localChromeTypography
-  title="Бесплатная натальная карта — Солнце, Луна и асцендент"
+  title="Натальная карта онлайн бесплатно — Солнце, Луна, асцендент"
   description="Рассчитайте натальную карту: Солнце, Луна, асцендент, планеты, дома и их значение. Приватно в браузере, объяснено простым языком."
   path="/ru/birth-chart/"
   locale="ru"
@@ -81,6 +81,7 @@ const jsonLd = [
         document.documentElement.dataset.chartShareReceiver = '';
         document.addEventListener('DOMContentLoaded', function () {
           document.querySelectorAll('a[href="/astrofolio/"],a[href^="/registry/"],a[href^="/sdk/"]').forEach(function (element) {
+            if (element.closest('[data-nav], [data-mobile-menu]')) return;
             var footerWing = element.closest('.footer__col, .zfooter__group');
             (footerWing || element).remove();
           });
@@ -89,7 +90,7 @@ const jsonLd = [
     } catch (error) {}
   </script>
   <style slot="head" is:inline>
-    html[data-chart-share-receiver] a[href="/astrofolio/"],
+    html[data-chart-share-receiver] a[href="/astrofolio/"]:not([data-nav] a, [data-mobile-menu] a),
     html[data-chart-share-receiver] a[href^="/registry/"],
     html[data-chart-share-receiver] a[href^="/sdk/"],
     html[data-chart-share-receiver] .calc__record,

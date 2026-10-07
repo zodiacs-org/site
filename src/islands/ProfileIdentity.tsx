@@ -25,6 +25,7 @@ import { DEFAULT_ME, DISPLAY_NAME_MAX, cleanDisplayName, resolvedDisplayName, sa
 import { OPEN_CARD_EVENT, cardUrl, encodeCardLink, loadCardPositionsForChart } from '../lib/profile/card-link';
 import { chartHandle, personalChartName, savedChartSunHue } from '../lib/profile/your-people';
 import { initialIcon, initialOf } from '../lib/profile/initial';
+import { prepareProfilePhoto } from '../lib/profile/photo';
 import { todayLead } from '../lib/profile/today-reading';
 import { t } from '../lib/i18n';
 import { moonPhaseLabel } from '../lib/i18n/astrology';
@@ -32,6 +33,10 @@ import type { SavedChart } from '../lib/profile/schema';
 import { useInboxHoldsPrimary, useProfileSurface } from '../lib/profile/surface-gate';
 
 type Panel = 'edit' | 'share' | null;
+
+function PhotoMark() {
+  return <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M8 5.5 9.5 3.5h5L16 5.5h3a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-11a2 2 0 0 1 2-2h3Z"/><circle cx="12" cy="12.5" r="4"/></svg>;
+}
 
 const STORAGE_ERROR = 'This browser wouldn’t keep it. Private browsing or a full disk can do that.';
 /** --ink-1: the disc's colour when the chart cannot settle a Sun sign. */
@@ -141,6 +146,9 @@ export default function ProfileIdentity({ accountBound = false }: { accountBound
   const [draft, setDraft] = useState<string | null>(null);
   const headRef = useRef<HTMLElement>(null);
   const editButton = useRef<HTMLButtonElement>(null);
+  const photoButton = useRef<HTMLButtonElement>(null);
+  const editFromPhoto = useRef(false);
+  const openPhoto = () => { editFromPhoto.current = true; setPanel('edit'); };
   const shareButton = useRef<HTMLButtonElement>(null);
   const closedPanel = useRef<Panel>(null);
   // A card waiting at the top of the page holds the one white action.
@@ -150,60 +158,62 @@ export default function ProfileIdentity({ accountBound = false }: { accountBound
 
   useEffect(() => {
     const open = () => {
+      if (!self) return;
       setPanel('share');
       requestAnimationFrame(() => headRef.current?.scrollIntoView({ block: 'start' }));
     };
     window.addEventListener(OPEN_CARD_EVENT, open);
     return () => window.removeEventListener(OPEN_CARD_EVENT, open);
-  }, []);
+  }, [self]);
 
   // Closing a panel hands focus back to the action that opened it.
   useEffect(() => {
     if (panel !== 'edit') setDraft(null);
     if (panel !== null || closedPanel.current === null) return;
-    (closedPanel.current === 'edit' ? editButton : shareButton).current?.focus();
+    (closedPanel.current === 'edit' ? (editFromPhoto.current ? photoButton : editButton) : shareButton).current?.focus();
     closedPanel.current = null;
   }, [panel]);
 
-  if (!ready || !self) {
-    return (
-      <div class="pf-introduction">
-        <Intro />
-        {ready && !self && profile.charts.length > 0 && <SelfChooser charts={profile.charts} />}
-      </div>
-    );
-  }
+  if (!ready) return <div class="pf-introduction"><Intro /></div>;
 
   const name = draft === null
     ? savedName
-    : cleanDisplayName(draft) ?? resolvedDisplayName(DEFAULT_ME, self.name);
-  const placements = chartPlacements(self);
-  const lead = todayLead(self);
+    : cleanDisplayName(draft) ?? resolvedDisplayName(DEFAULT_ME, self?.name ?? null);
+  const placements = self ? chartPlacements(self) : [];
+  const lead = self ? todayLead(self) : null;
   const close = () => {
     closedPanel.current = panel;
     setPanel(null);
   };
 
   return (
+    <>
     <header class="pf-me" style={hue ? `--sign:${hue}` : undefined} ref={headRef} data-profile-identity>
       <div class="pf-me__id">
         <div class="pf-me__initial">
-          {name === null ? (
-            <button class="initial initial--unnamed pf-me__add-name" type="button" onClick={() => setPanel('edit')} aria-label="Add your name">
-              <span aria-hidden="true">+</span>
+          {me.photo ? (
+            <button class="pf-photo-button" type="button" ref={photoButton} onClick={openPhoto} aria-label="Change profile photo">
+              <img class="pf-photo" src={me.photo} alt="Your profile photo" width="72" height="72" /><span class="pf-photo-button__edit"><PhotoMark /></span>
+            </button>
+          ) : name === null ? (
+            <button class="initial initial--unnamed pf-me__add-name" type="button" ref={photoButton} onClick={openPhoto} aria-label="Add profile photo">
+              <PhotoMark />
             </button>
           ) : (
-            <Initial name={name} hue={hue} />
+            <button class="pf-photo-button" type="button" ref={photoButton} onClick={openPhoto} aria-label="Add profile photo">
+              <Initial name={name} hue={hue} /><span class="pf-photo-button__edit"><PhotoMark /></span>
+            </button>
           )}
         </div>
         <div class="pf-me__text">
           <em class="kicker">Your page</em>
-          <h1 class="display">{name ?? 'Your chart'}</h1>
+          <h1 class="display">{name ?? (self ? 'Your chart' : 'Your charts, today and ahead.')}</h1>
           <PlacementList placements={placements} />
         </div>
       </div>
 
-      {lead && (
+      {!self && panel === null && <p class="pf-me__intro">Keep your birth chart and the people you’ve added here. Today uses the chart you mark as yours; your timeline keeps the readings and observations you choose to save.</p>}
+      {lead && panel === null && (
         <p class="pf-me__today" data-today-lead>
           <span class="mono mono--label">
             <time dateTime={lead.date}>{lead.date}</time>
@@ -215,21 +225,23 @@ export default function ProfileIdentity({ accountBound = false }: { accountBound
 
       {panel === null && (
         <div class="pf-me__actions">
+          {self ? <>
           <a class={`btn ${inboxHoldsPrimary ? 'btn--ghost' : 'btn--primary'}`} href="/today/">
-            <span>{t('en', 'openDailyBrief')}</span><span class="orb" aria-hidden="true">↗</span>
+            <span>{t('en', 'openDailyBrief')}</span><span aria-hidden="true">↗</span>
           </a>
-          <button class="btn btn--ghost" type="button" ref={shareButton} onClick={() => setPanel('share')} data-card-share-toggle>
-            <span>Send your card</span><span class="orb" aria-hidden="true">↗</span>
+          <button class="pf-quiet pf-me__share-action" type="button" ref={shareButton} onClick={() => setPanel('share')} data-card-share-toggle>
+            <span>Send your card</span><span aria-hidden="true">↗</span>
           </button>
-          <button class="pf-quiet" type="button" ref={editButton} onClick={() => setPanel('edit')}>
-            {savedName ? 'Edit your name' : 'Add your name'}
+          </> : <a class="pf-quiet pf-me__share-action" href="/birth-chart/">Make a birth chart <span aria-hidden="true">↗</span></a>}
+          <button class="pf-quiet" type="button" ref={editButton} onClick={() => { editFromPhoto.current = false; setPanel('edit'); }}>
+            Edit profile
           </button>
         </div>
       )}
       {panel === 'edit' && (
-        <EditPanel initialName={me.displayName ?? savedName ?? ''} onDraft={setDraft} onClose={close} />
+        <EditPanel initialName={me.displayName ?? savedName ?? ''} initialPhoto={me.photo} onDraft={setDraft} onClose={close} />
       )}
-      {panel === 'share' && (
+      {panel === 'share' && self && (
         <SharePanel
           chart={self}
           name={savedName}
@@ -240,17 +252,23 @@ export default function ProfileIdentity({ accountBound = false }: { accountBound
         />
       )}
     </header>
+    {!self && profile.charts.length > 0 && <SelfChooser charts={profile.charts} />}
+    </>
   );
 }
 
-function EditPanel({ initialName, onDraft, onClose }: {
+function EditPanel({ initialName, initialPhoto, onDraft, onClose }: {
   initialName: string;
+  initialPhoto?: string;
   onDraft: (name: string) => void;
   onClose: () => void;
 }) {
   const [draftName, setDraftName] = useState(initialName);
   const [message, setMessage] = useState('');
+  const [photo, setPhoto] = useState(initialPhoto);
+  const [preparing, setPreparing] = useState(false);
   const nameRef = useRef<HTMLInputElement>(null);
+  const photoInput = useRef<HTMLInputElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
   // The action row this replaces is gone, so focus moves in: to the name
@@ -268,7 +286,8 @@ function EditPanel({ initialName, onDraft, onClose }: {
 
   function onSubmit(event: Event) {
     event.preventDefault();
-    if (!saveMe({ displayName: cleanDisplayName(draftName) })) {
+    if (preparing) return;
+    if (!saveMe({ displayName: cleanDisplayName(draftName), photo })) {
       setMessage(STORAGE_ERROR);
       return;
     }
@@ -276,7 +295,31 @@ function EditPanel({ initialName, onDraft, onClose }: {
   }
 
   return (
-    <form class="pf-me__panel" id="pf-me-edit" ref={formRef} tabIndex={-1} onSubmit={onSubmit} aria-label="Edit your name">
+    <form class="pf-me__panel" id="pf-me-edit" ref={formRef} tabIndex={-1} onSubmit={onSubmit} aria-label="Edit profile">
+      <div class="pf-photo-editor" aria-busy={preparing}>
+        <button class="pf-photo-editor__preview" type="button" disabled={preparing} onClick={() => photoInput.current?.click()} aria-label={photo ? 'Change profile photo' : 'Add profile photo'}>
+          {photo ? <img class="pf-photo" src={photo} alt="Photo preview" width="96" height="96" /> : <Initial name={draftName || null} hue={null} size={96} />}
+          <span class="pf-photo-button__edit"><PhotoMark /></span>
+        </button>
+        <div class="pf-photo-editor__body">
+          <label class="field__label" for="pf-me-photo">Profile photo <span class="muted">(optional)</span></label>
+          <input ref={photoInput} class="pf-photo-input" id="pf-me-photo" type="file" tabIndex={-1} aria-describedby="pf-photo-help" accept="image/jpeg,image/png,image/webp" disabled={preparing} onChange={async (event) => {
+            const input = event.currentTarget as HTMLInputElement;
+            const file = input.files?.[0];
+            if (!file) return;
+            setPreparing(true); setMessage('');
+            try { setPhoto(await prepareProfilePhoto(file)); }
+            catch (error) { setMessage(error instanceof Error ? error.message : 'Try another photo.'); }
+            finally { setPreparing(false); input.value = ''; }
+          }} />
+          <div class="pf-photo-editor__actions">
+            <button class="pf-photo-choose" type="button" disabled={preparing} onClick={() => photoInput.current?.click()}>{photo ? 'Change profile photo' : 'Add profile photo'}</button>
+            {photo && <button class="pf-quiet" type="button" disabled={preparing} onClick={() => setPhoto(undefined)}>Remove photo</button>}
+          </div>
+          <p class="field__help" id="pf-photo-help">Center-cropped. Saved in this browser and included in your backup. Your photo is not sent with shared cards or chart sync.</p>
+          {preparing && <p role="status">Preparing photo…</p>}
+        </div>
+      </div>
       <div class="field pf-me__name">
         <label class="field__label" for="pf-me-name">Your name</label>
         <input
@@ -294,8 +337,8 @@ function EditPanel({ initialName, onDraft, onClose }: {
       </div>
       {message && <p class="field__error" role="alert">{message}</p>}
       <div class="pf-me__panel-actions">
-        <button class="btn btn--primary" type="submit">
-          <span>Save</span><span class="orb" aria-hidden="true">✓</span>
+        <button class="btn btn--primary" type="submit" disabled={preparing}>
+          <span>Save</span>
         </button>
         <button class="pf-quiet" type="button" onClick={onClose}>Cancel</button>
       </div>

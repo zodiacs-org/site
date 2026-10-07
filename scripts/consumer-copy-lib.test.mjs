@@ -35,6 +35,9 @@ describe('consumer copy guard', () => {
   it('exempts intentional method-first destinations without weakening consumer pages', () => {
     const html = `<html><body><p>AI-operated with a fail-closed gate.</p></body></html>`;
     expect(backstageCopyMatches(html, '/methodology/')).toEqual([]);
+    expect(backstageCopyMatches(html, '/developers/engine/reference/interfaces/receipt.NatalEnvelope.html')).toEqual([]);
+    expect(backstageCopyMatches(html, '/developers/engine/')).toEqual(['AI-operated', 'fail-closed']);
+    expect(backstageCopyMatches(html, '/developers/engine/reference-other/')).toEqual(['AI-operated', 'fail-closed']);
     expect(backstageCopyMatches(html, '/horoscopes/aries/')).toEqual(['AI-operated', 'fail-closed']);
   });
 

@@ -11,14 +11,9 @@ const compact = (value) => value.replace(/\s+/g, ' ');
 describe('Exchange risk and trust copy', () => {
   it('keeps the pinned sentences on the committed page, beside Terminal, not in a footer', async () => {
     const html = compact(await read('public/terminal/markets/index.html'));
-    expect(html).toContain('independent third-party');
-    expect(html).toContain('can lose all market value');
-    expect(html).toContain('could lose all money used to acquire a Zodiac');
-    expect(html).toContain('an onchain transaction that cannot be reversed');
-    expect(html).toContain('Verify the official mint, network, amount, and destination');
-    // The venue boundary, in the decision record's own words, plus the fee.
-    expect(html).toContain('presents a trade that an independent venue builds, executes, and charges for');
-    expect(html).toContain('operates no market');
+    expect(html).toContain("Zodiacs.org does not connect wallets, request signatures, or submit transactions. Public address lookups use an address you paste. Purchase links open independent services with their own terms and risks.");
+    expect(html).toContain('could lose all money used to acquire one');
+    expect(html).toContain('Zodiacs.org operates Astrofolio');
     expect(html).toContain('<title>Terminal · Advanced Market Route · Zodiacs.org</title>');
     expect(html).toContain('<meta property="og:title" content="Terminal · Advanced Market Route" />');
     expect(html).toContain('https://zodiacs.org/assets/og/v6/terminal.png');
@@ -26,16 +21,12 @@ describe('Exchange risk and trust copy', () => {
     expect(html).toContain('"name": "Advanced market route"');
     expect(html).toContain('"name": "Terminal", "item": "https://zodiacs.org/terminal/"');
     expect(html).toContain('<h1 id="zme-title">Terminal</h1>');
-    expect(html).toContain('<h2 id="zme-records">The 12 Official Zodiac Tokens</h2>');
+    expect(html).toContain('<h2 id="zme-records">The twelve official Zodiac tokens</h2>');
     expect(html).toContain('Sign 12 of 12');
     expect(html).not.toMatch(/\bLot (?:I|V|X)/u);
     expect(html).not.toContain('Registry Trading Room');
     expect(html).not.toContain('Zodiacs Mercantile Exchange');
-    expect(html).toContain('may not exceed 0.10%');
-    // Thin pools are a headline, not a footnote.
-    expect(html).toContain('thousands of dollars');
-    // The privacy boundary: an address travels only on an explicit trade.
-    expect(html).toContain('only when you choose to trade, never to show a price');
+    expect(html).not.toContain('your wallet reviews, approves, and signs');
     expect(html).toContain('href="/privacy/"');
     expect(html).toContain('href="/terms/"');
     expect(html).toContain('href="/disclosure/"');
@@ -59,7 +50,7 @@ describe('Exchange risk and trust copy', () => {
       expect(venueLinks.every((link) => link === 'https://jup.ag/')).toBe(true);
     }
     // The risk block survives stamping untouched.
-    expect(compact(on)).toContain('presents a trade that an independent venue builds, executes, and charges for');
+    expect(compact(on)).toContain('Zodiacs.org does not connect wallets, request signatures, or submit transactions. Public address lookups use an address you paste. Purchase links open independent services with their own terms and risks.');
   });
 
   it('keeps the depth ladder honest about not being an order book, in source and bundle', async () => {
@@ -68,7 +59,7 @@ describe('Exchange risk and trust copy', () => {
       expect(source, path).toContain('These pools have no order book');
       expect(source, path).toContain('indicative Jupiter quote');
       expect(source, path).toContain('Sell sizes are estimates from the indexed mid');
-      expect(source, path).toContain('quoted again before wallet review');
+      expect(source, path).toContain('does not connect wallets, request signatures, or submit transactions');
       expect(source, path).toContain('price comes from the returned atomic amounts');
       expect(source, path).toContain('fee above 0.10%, are refused');
       expect(source, path).toContain('Independent third-party data, not a valuation or recommendation');
@@ -89,7 +80,7 @@ describe('Exchange risk and trust copy', () => {
     for (const path of ['src/exchange/terminal.mjs', 'public/assets/exchange.js']) {
       const source = compact(await read(path));
       expect(source, path).toContain('Reference market — the sign’s canonical pool');
-      expect(source, path).toContain('Orders execute through Jupiter and may route beyond it');
+      expect(source, path).toContain('Public address lookups use an address you paste');
       expect(source, path).toContain('Indicative aggregate quote — Jupiter may route across several pools');
       expect(source, path).toContain('canonical pool · newest first');
     }

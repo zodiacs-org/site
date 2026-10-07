@@ -5,7 +5,7 @@ import path from 'node:path';
 import {tmpdir} from 'node:os';
 import {hash,validateProtocol,decision,settle,report} from '../research/market-lens/v3/runtime.mjs';
 const runtime=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
-const sources=['scripts/market-lens-paper-v3.mjs','research/market-lens/v3/runtime.mjs','research/market-lens/v3/acquire.mjs','research/market-lens/v3/cycle.mjs','vendor/zodiacs-engine-0.1.1-rc.15.tgz','research/market-lens/v3/runtime-deps/package.json','research/market-lens/v3/runtime-deps/package-lock.json','research/market-lens/v3/install-runtime.sh','research/market-lens/v3/restore.py','research/market-lens/ops/freetsa-ca.pem'];
+const sources=['scripts/market-lens-paper-v3.mjs','research/market-lens/v3/runtime.mjs','research/market-lens/v3/acquire.mjs','research/market-lens/v3/cycle.mjs','vendor/zodiacs-engine-0.1.1-rc.17.tgz','research/market-lens/v3/runtime-deps/package.json','research/market-lens/v3/runtime-deps/package-lock.json','research/market-lens/v3/install-runtime.sh','research/market-lens/v3/restore.py','research/market-lens/ops/freetsa-ca.pem'];
 const [command,...pairs]=process.argv.slice(2),args={};
 for(let i=0;i<pairs.length;i+=2){if(!/^--(dir|manifest|input|instrument|session|archive|ca)$/.test(pairs[i])||!pairs[i+1]||args[pairs[i]])throw Error('Invalid or duplicate CLI argument.');args[pairs[i]]=pairs[i+1];}
 if(!args['--dir'])throw Error('Use --dir with an isolated private state directory.');

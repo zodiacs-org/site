@@ -1,0 +1,74 @@
+run 1 of 3, 12:23:18 UTC
+crossing searches, 2026-01-01 to 2026-04-01
+new and full moons                           0.0649 ms a step (326 steps)
+the Moon's twelve sign boundaries            0.0418 ms a step (2028 steps)
+Mars's twelve sign boundaries                0.0519 ms a step (276 steps)
+Mercury's stations                           1.2859 ms a step (67 steps)
+full calculations, one a minute apart from 2026-03-01
+positions(), every body                      0.7965 ms a call
+natalChart(), whole, 51.5° N                 0.8268 ms a call
+natalChart(), placidus, 51.5° N              0.8719 ms a call
+natalChart(), porphyry, 51.5° N              0.8397 ms a call
+natalChart(), equal, 51.5° N                 0.8316 ms a call
+natalChart(), equal-mc, 51.5° N              0.8752 ms a call
+natalChart(), vehlow, 51.5° N                0.8083 ms a call
+natalChart(), koch, 51.5° N                  0.8215 ms a call
+natalChart(), regiomontanus, 51.5° N         0.8101 ms a call
+natalChart(), campanus, 51.5° N              0.7377 ms a call
+natalChart(), topocentric, 51.5° N           0.9758 ms a call
+natalChart(), alcabitius, 51.5° N            0.9703 ms a call
+natalChart(), morinus, 51.5° N               0.9563 ms a call
+natalChart(), meridian, 51.5° N              1.0160 ms a call
+natalChart(), placidus, 59.9° N              0.8921 ms a call
+for comparison
+moonPhase()                                  0.0247 ms a call
+
+run 2 of 3, 12:25:31 UTC
+crossing searches, 2026-01-01 to 2026-04-01
+new and full moons                           0.0613 ms a step (326 steps)
+the Moon's twelve sign boundaries            0.0334 ms a step (2028 steps)
+Mars's twelve sign boundaries                0.0472 ms a step (276 steps)
+Mercury's stations                           1.1443 ms a step (67 steps)
+full calculations, one a minute apart from 2026-03-01
+positions(), every body                      0.8273 ms a call
+natalChart(), whole, 51.5° N                 0.8975 ms a call
+natalChart(), placidus, 51.5° N              0.8886 ms a call
+natalChart(), porphyry, 51.5° N              0.8344 ms a call
+natalChart(), equal, 51.5° N                 0.8466 ms a call
+natalChart(), equal-mc, 51.5° N              0.8327 ms a call
+natalChart(), vehlow, 51.5° N                0.9638 ms a call
+natalChart(), koch, 51.5° N                  0.9268 ms a call
+natalChart(), regiomontanus, 51.5° N         0.8653 ms a call
+natalChart(), campanus, 51.5° N              0.8523 ms a call
+natalChart(), topocentric, 51.5° N           1.0573 ms a call
+natalChart(), alcabitius, 51.5° N            0.8971 ms a call
+natalChart(), morinus, 51.5° N               0.9441 ms a call
+natalChart(), meridian, 51.5° N              1.2079 ms a call
+natalChart(), placidus, 59.9° N              0.8969 ms a call
+for comparison
+moonPhase()                                  0.0229 ms a call
+
+run 3 of 3, 12:27:46 UTC
+crossing searches, 2026-01-01 to 2026-04-01
+new and full moons                           0.0637 ms a step (326 steps)
+the Moon's twelve sign boundaries            0.0401 ms a step (2028 steps)
+Mars's twelve sign boundaries                0.0550 ms a step (276 steps)
+Mercury's stations                           1.2725 ms a step (67 steps)
+full calculations, one a minute apart from 2026-03-01
+positions(), every body                      0.8802 ms a call
+natalChart(), whole, 51.5° N                 0.9610 ms a call
+natalChart(), placidus, 51.5° N              1.0684 ms a call
+natalChart(), porphyry, 51.5° N              0.8333 ms a call
+natalChart(), equal, 51.5° N                 0.8519 ms a call
+natalChart(), equal-mc, 51.5° N              1.0190 ms a call
+natalChart(), vehlow, 51.5° N                0.9303 ms a call
+natalChart(), koch, 51.5° N                  0.9610 ms a call
+natalChart(), regiomontanus, 51.5° N         0.8584 ms a call
+natalChart(), campanus, 51.5° N              0.8480 ms a call
+natalChart(), topocentric, 51.5° N           0.8507 ms a call
+natalChart(), alcabitius, 51.5° N            0.9481 ms a call
+natalChart(), morinus, 51.5° N               0.8995 ms a call
+natalChart(), meridian, 51.5° N              1.0066 ms a call
+natalChart(), placidus, 59.9° N              0.8657 ms a call
+for comparison
+moonPhase()                                  0.0239 ms a call

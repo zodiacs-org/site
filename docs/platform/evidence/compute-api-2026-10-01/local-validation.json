@@ -1,0 +1,60 @@
+{
+  "baseline": "9cfafa3e742de943062c9174338472781724a4b5",
+  "verifiedDate": "2026-10-01",
+  "state": "local; not deployed",
+  "files": {
+    "api/_compute/compute.mjs": "2a2324f5742b756a6c03faafa340fcca21bffbcd3ae7b45e1d7ac218fa60c7df",
+    "api/_compute/local-time.mjs": "6f9253009a83f84e755810ac5221eefd87811203e66aaef1933840be4e8571da",
+    "api/_compute/handler.ts": "fbf5f1d5e2fd252a44ff81a29a6b7c45b2e592ee425967d8b03f45239724a331",
+    "scripts/build-compute-handler.mjs": "e18216f5496f70bf017a74d555f0519539628b2f4535385d98510b1daaf3e5cb",
+    "scripts/build-compute-local-time.mjs": "81b3a80289af02201835966743cde377b1b2338e8af7ac510e88e0651a98100b",
+    "tests/api/compute-api-private-state.test.ts": "3c20b1c11b4c2910ce0923f4c0c37148886b67557c47d38cb0c469c61bb9d4da",
+    "api/_assistant/context.ts": "175cf3bb3364c553393bd8a550d71e0ebea78e9c359c9478b9949a105d9cf4e1",
+    "docs/claims/ledger.json": "e728905d9dbf69e86dcd1ccb1d66831d836387f012f6b18e0b04c08df82af541"
+  },
+  "fullChecks": {
+    "build": "PASS Node24.19.0 with ASTRO_TELEMETRY_DISABLED=1",
+    "astroCheck": "PASS 0errors 0warnings 18hints",
+    "fullTestsNode22": {
+      "node": "22.22.2",
+      "passed": 6352,
+      "skipped": 4,
+      "filesPassed": 500,
+      "filesSkipped": 1
+    },
+    "fullTestsNode24": {
+      "node": "24.19.0",
+      "passed": 6348,
+      "failed": 3,
+      "skipped": 5,
+      "failure": "preexisting composite-card stalled font/SVG/PNG timeout cleanup assertions; same file passes on supportedNode22"
+    },
+    "checkDist": "PASS: 4,446 HTML files, 1,141 search entries, 9 feed items",
+    "scope": "PASS",
+    "claimsUnlisted": 0,
+    "claimsOrphans": 0,
+    "phase1Evidence": "PASS5tests; currentbuild/sourcehash equals existing committedmanifest"
+  },
+  "phase1": {
+    "templateSourceSha256": "0b53514a64e0e9a3fa6c7cae1be3ab70f274f1a13bcd8a2aafbf481c9e5a0cf6",
+    "captures": "Existing committed captures valid; not retaken",
+    "retakeAttempt": "Blocked by local Chromium Unix socket restriction, including escalated attempt; no browser gate changed"
+  },
+  "packaging": {
+    "cli": "62.0.0",
+    "config": "Repositoryvercel.json with buildCommand/installCommand empty in local fixture; no remote env pull",
+    "functions": 12,
+    "runtime": "nodejs22.x",
+    "secrets": "No remote environment values fetched; local preview environment deliberately empty",
+    "probe": "60freshNode24processes with NODE_OPTIONS=--no-experimental-detect-module; each makes2synthetic requests through packaged compatibility handler; sixendpoints; all200; Firewallnetworkstubbed",
+    "limits": "Not platform coldstart telemetry; Vercel prints existing TypeScript diagnostics but completes; builder rewrote lockfile locally, which was restored before finaltests"
+  },
+  "sourceCommit": "9d6d36ad9a2e5c1dae056a74af9ca7b7abdbe71c",
+  "sourceCommitProvenance": {
+    "localCommit": "620584bfc3f175f079670e6155ab3dedcd480aac",
+    "publishedCommit": "9d6d36ad9a2e5c1dae056a74af9ca7b7abdbe71c",
+    "identicalTree": "697c625e241eef62b09586a989dd3f5a8658eb51",
+    "note": "Published through existing authenticated GitHub connector because clone transport lacked credentials; author metadata changes commit identity, not code bytes or immutable archives."
+  },
+  "fullCheckScope": "The source fix plus the checkpoint baseline repairs in api/_assistant/context.ts and docs/claims/ledger.json. Source-only commit9d6d36ad excludes those repairs and is not asserted to pass the full suite by itself."
+}

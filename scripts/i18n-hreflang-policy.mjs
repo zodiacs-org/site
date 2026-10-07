@@ -1,21 +1,25 @@
+import { readFileSync } from 'node:fs';
+const approvedDailyDays = JSON.parse(readFileSync(new URL('../src/data/chart-of-the-day.json', import.meta.url), 'utf8')).editions.filter((edition) => edition.ownerApproval?.approved === true).map((edition) => edition.day);
+// Each approved edition, plus the chart-of-the-day index once any edition exists, in six languages.
+const dailyBlocks = (approvedDailyDays.length + (approvedDailyDays.length ? 1 : 0)) * 6;
 /**
  * Hreflang activation is explicit and per locale. Declaring metadata in the
  * TypeScript locale union never changes this release policy.
  */
 export const HREFLANG_LOCALE_POLICY = Object.freeze([
-  { locale: 'en', hreflang: 'en', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'birthday', 'daily-reading'], expectedBlocks: 617 },
-  { locale: 'es', hreflang: 'es', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'daily-reading'], expectedBlocks: 251 },
-  { locale: 'pt', hreflang: 'pt-BR', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'daily-reading'], expectedBlocks: 251 },
-  { locale: 'fr', hreflang: 'fr', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac'], expectedBlocks: 209 },
-  { locale: 'it', hreflang: 'it', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac'], expectedBlocks: 209 },
-  { locale: 'ru', hreflang: 'ru', indexEligible: true, routeFamilies: ['core'], expectedBlocks: 84 },
+  { locale: 'en', hreflang: 'en', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'birthday', 'daily-reading', 'rising-profile', 'sky-calendar', 'compatibility-pair'], expectedBlocks: 1129 + dailyBlocks },
+  { locale: 'es', hreflang: 'es', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'daily-reading', 'rising-profile', 'sky-calendar', 'compatibility-pair'], expectedBlocks: 763 + dailyBlocks },
+  { locale: 'pt', hreflang: 'pt-BR', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'daily-reading', 'rising-profile', 'sky-calendar', 'compatibility-pair'], expectedBlocks: 763 + dailyBlocks },
+  { locale: 'fr', hreflang: 'fr', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'rising-profile', 'sky-calendar', 'compatibility-pair'], expectedBlocks: 721 + dailyBlocks },
+  { locale: 'it', hreflang: 'it', indexEligible: true, routeFamilies: ['core', 'sign-guide', 'chinese-zodiac', 'rising-profile', 'sky-calendar', 'compatibility-pair'], expectedBlocks: 721 + dailyBlocks },
+  { locale: 'ru', hreflang: 'ru', indexEligible: true, routeFamilies: ['core'], expectedBlocks: 126 + dailyBlocks },
   { locale: 'ar', hreflang: 'ar', indexEligible: false, routeFamilies: [], expectedBlocks: 0 },
 ]);
 
 export const X_DEFAULT_HREFLANG = Object.freeze({
   hreflang: 'x-default',
   locale: 'en',
-  expectedBlocks: 617,
+  expectedBlocks: 1129 + dailyBlocks,
 });
 
 export const ACTIVE_HREFLANGS = Object.freeze(
@@ -42,8 +46,17 @@ const CORE_PATHS = new Set([
   '/', '/tools/', '/birth-chart/', '/compatibility/', '/moon-sign/',
   '/rising-sign/', '/moon-phase/', '/saturn-return/', '/transits/',
   '/baby-zodiac/', '/profile/', '/methodology/', '/privacy/', '/disclosure/',
+  '/big-three/', '/compatibility/invite/', '/group-charts/', '/chart-twins/',
+  '/sky-calendar/', '/astrologer-kit/', '/your-sky-wrapped/', '/chart-of-the-day/',
+  ...approvedDailyDays.map((day) => `/chart-of-the-day/${day}/`),
 ]);
 const SIGN_GUIDE_PATHS = new Set(SIGN_SLUGS.map((slug) => `/${slug}/`));
+// Translated in src/content/learn-i18n for es, pt, fr and it; Russian links to the English profiles.
+// The four calendar hubs; their year and event pages stay English-only.
+const SKY_CALENDAR_PATHS = new Set(['/full-moon-calendar/', '/eclipses/', '/mercury-retrograde/', '/retrogrades/']);
+const RISING_PROFILE_PATHS = new Set(SIGN_SLUGS.map((slug) => `/rising-sign/${slug}/`));
+// The 78 pairs in zodiac order, translated in src/content/pairs-i18n for es, pt, fr and it.
+const COMPATIBILITY_PAIR_PATHS = new Set(SIGN_SLUGS.flatMap((a, i) => SIGN_SLUGS.slice(i).map((b) => `/compatibility/${a}-${b}/`)));
 const DAILY_READING_PATHS = new Set([
   '/today/', '/horoscopes/', ...SIGN_SLUGS.map((slug) => `/horoscopes/${slug}/`),
 ]);
@@ -72,6 +85,9 @@ export function hreflangRouteFamily(path) {
   const clean = canonicalPath(path);
   if (CORE_PATHS.has(clean)) return 'core';
   if (SIGN_GUIDE_PATHS.has(clean)) return 'sign-guide';
+  if (RISING_PROFILE_PATHS.has(clean)) return 'rising-profile';
+  if (SKY_CALENDAR_PATHS.has(clean)) return 'sky-calendar';
+  if (COMPATIBILITY_PAIR_PATHS.has(clean)) return 'compatibility-pair';
   if (DAILY_READING_PATHS.has(clean)) return 'daily-reading';
   if (clean === '/learn/chinese-zodiac/') return 'chinese-zodiac';
   const animal = clean.match(/^\/learn\/chinese-zodiac\/([a-z]+)\/$/)?.[1];

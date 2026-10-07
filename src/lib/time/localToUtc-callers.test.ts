@@ -15,7 +15,6 @@ import { describe, expect, it } from 'vitest';
 const root = resolve(process.cwd(), 'src');
 
 const WITHOUT_LONGITUDE: Record<string, string> = {
-  'lib/chart-date-certainty.ts': 'local midnights of a date on the zone clock; used only by tests',
   'lib/learning-source.ts': 'checks that a stored birth resolves at all; the chart itself goes through ChartCalculator',
   'islands/WalletChart.tsx': 'Registry scope, frozen for Phase 1; planets only, no angles',
 };

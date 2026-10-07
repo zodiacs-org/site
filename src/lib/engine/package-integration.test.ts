@@ -18,7 +18,7 @@ import { computeBodies, computeChart } from './full';
 import { PROGRESSION_DAYS_PER_YEAR, progressedBodies, progressedInstant } from './progressions';
 import { ENGINE_VERSION } from './types';
 
-const artifactPath = resolve(process.cwd(), 'vendor/zodiacs-engine-0.1.1-rc.15.tgz');
+const artifactPath = resolve(process.cwd(), 'vendor/zodiacs-engine-0.1.1-rc.17.tgz');
 const docsPath = resolve(process.cwd(), 'public/sdk/engine');
 
 function walk(directory: string): string[] {
@@ -92,7 +92,7 @@ describe('vendored @zodiacs/engine integration', () => {
   it('matches both recorded checksums in the repository', () => {
     const artifact = readFileSync(artifactPath);
     const checksum = readFileSync(
-      resolve(process.cwd(), 'vendor/zodiacs-engine-0.1.1-rc.15.sha256'),
+      resolve(process.cwd(), 'vendor/zodiacs-engine-0.1.1-rc.17.sha256'),
       'utf8',
     ).trim().split(/\s+/u)[0];
     const lock = JSON.parse(
@@ -113,7 +113,7 @@ describe('vendored @zodiacs/engine integration', () => {
     const siteBodies = computeBodies(date);
 
     expect(ENGINE_VERSION).toBe(packageEngineVersion);
-    expect(ENGINE_VERSION).toBe('0.1.1-rc.15');
+    expect(ENGINE_VERSION).toBe('0.1.1-rc.17');
     expect(siteBodies).toEqual(
       packageBodies.map(({ body, lon, lat, speed, retrograde }) => ({
         body,

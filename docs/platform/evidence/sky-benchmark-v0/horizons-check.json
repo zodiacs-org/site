@@ -1,0 +1,4838 @@
+{
+ "checked": "2026-10-05",
+ "source": "NASA JPL Horizons API (https://ssd.jpl.nasa.gov/api/horizons.api), observer quantity 31: apparent geocentric ecliptic longitude of date, TIME_TYPE UT",
+ "benchmark": {
+  "name": "Zodiacs sky-fact benchmark",
+  "version": "v0",
+  "engine": {
+   "name": "@zodiacs/engine",
+   "version": "0.1.1-rc.16"
+  }
+ },
+ "questions": 300,
+ "agree": 300,
+ "differ": [],
+ "results": [
+  {
+   "id": "si-001",
+   "family": "sign-at-instant",
+   "key": [
+    "Aquarius"
+   ],
+   "horizons": {
+    "answer": "Aquarius",
+    "lon": 327.2369508,
+    "boundaryMarginArcsec": 9946.977120000043,
+    "engineMinusJplArcsec": -0.5718481545955001
+   },
+   "agree": true
+  },
+  {
+   "id": "si-002",
+   "family": "sign-at-instant",
+   "key": [
+    "Scorpio"
+   ],
+   "horizons": {
+    "answer": "Scorpio",
+    "lon": 228.1378126,
+    "boundaryMarginArcsec": 42703.87464000004,
+    "engineMinusJplArcsec": 0.8147536568230862
+   },
+   "agree": true
+  },
+  {
+   "id": "si-003",
+   "family": "sign-at-instant",
+   "key": [
+    "Sagittarius"
+   ],
+   "horizons": {
+    "answer": "Sagittarius",
+    "lon": 268.9601844,
+    "boundaryMarginArcsec": 3743.33615999999,
+    "engineMinusJplArcsec": 2.6486671582915733
+   },
+   "agree": true
+  },
+  {
+   "id": "si-004",
+   "family": "sign-at-instant",
+   "key": [
+    "Leo"
+   ],
+   "horizons": {
+    "answer": "Leo",
+    "lon": 149.9696225,
+    "boundaryMarginArcsec": 109.35899999994945,
+    "engineMinusJplArcsec": -1.6759243325850548
+   },
+   "agree": true
+  },
+  {
+   "id": "si-005",
+   "family": "sign-at-instant",
+   "key": [
+    "Taurus"
+   ],
+   "horizons": {
+    "answer": "Taurus",
+    "lon": 54.8680584,
+    "boundaryMarginArcsec": 18474.98975999999,
+    "engineMinusJplArcsec": 0.5697139665244322
+   },
+   "agree": true
+  },
+  {
+   "id": "si-006",
+   "family": "sign-at-instant",
+   "key": [
+    "Libra"
+   ],
+   "horizons": {
+    "answer": "Libra",
+    "lon": 197.5577862,
+    "boundaryMarginArcsec": 44791.969679999966,
+    "engineMinusJplArcsec": -2.9665092126379022
+   },
+   "agree": true
+  },
+  {
+   "id": "si-007",
+   "family": "sign-at-instant",
+   "key": [
+    "Aquarius"
+   ],
+   "horizons": {
+    "answer": "Aquarius",
+    "lon": 306.860415,
+    "boundaryMarginArcsec": 24697.493999999962,
+    "engineMinusJplArcsec": -1.1296861966457072
+   },
+   "agree": true
+  },
+  {
+   "id": "si-008",
+   "family": "sign-at-instant",
+   "key": [
+    "Aries"
+   ],
+   "horizons": {
+    "answer": "Aries",
+    "lon": 22.7787968,
+    "boundaryMarginArcsec": 25996.331520000018,
+    "engineMinusJplArcsec": 4.036505686781311
+   },
+   "agree": true
+  },
+  {
+   "id": "si-009",
+   "family": "sign-at-instant",
+   "key": [
+    "Cancer"
+   ],
+   "horizons": {
+    "answer": "Cancer",
+    "lon": 90.9356714,
+    "boundaryMarginArcsec": 3368.417040000014,
+    "engineMinusJplArcsec": 2.2859934209009225
+   },
+   "agree": true
+  },
+  {
+   "id": "si-010",
+   "family": "sign-at-instant",
+   "key": [
+    "Aquarius"
+   ],
+   "horizons": {
+    "answer": "Aquarius",
+    "lon": 309.9651879,
+    "boundaryMarginArcsec": 35874.67643999996,
+    "engineMinusJplArcsec": -1.7767633044968534
+   },
+   "agree": true
+  },
+  {
+   "id": "si-011",
+   "family": "sign-at-instant",
+   "key": [
+    "Scorpio"
+   ],
+   "horizons": {
+    "answer": "Scorpio",
+    "lon": 233.8040873,
+    "boundaryMarginArcsec": 22305.28572000003,
+    "engineMinusJplArcsec": -0.3287023221673735
+   },
+   "agree": true
+  },
+  {
+   "id": "si-012",
+   "family": "sign-at-instant",
+   "key": [
+    "Leo"
+   ],
+   "horizons": {
+    "answer": "Leo",
+    "lon": 145.1699528,
+    "boundaryMarginArcsec": 17388.169919999986,
+    "engineMinusJplArcsec": 0.7016376401224989
+   },
+   "agree": true
+  },
+  {
+   "id": "si-013",
+   "family": "sign-at-instant",
+   "key": [
+    "Leo"
+   ],
+   "horizons": {
+    "answer": "Leo",
+    "lon": 139.0945948,
+    "boundaryMarginArcsec": 39259.458719999966,
+    "engineMinusJplArcsec": 0.8670077136230248
+   },
+   "agree": true
+  },
+  {
+   "id": "si-014",
+   "family": "sign-at-instant",
+   "key": [
+    "Aquarius"
+   ],
+   "horizons": {
+    "answer": "Aquarius",
+    "lon": 324.5690222,
+    "boundaryMarginArcsec": 19551.520079999977,
+    "engineMinusJplArcsec": 4.748273744189646
+   },
+   "agree": true
+  },
+  {
+   "id": "si-015",
+   "family": "sign-at-instant",
+   "key": [
+    "Cancer"
+   ],
+   "horizons": {
+    "answer": "Cancer",
+    "lon": 95.7486248,
+    "boundaryMarginArcsec": 20695.049280000007,
+    "engineMinusJplArcsec": 0.07473599625882343
+   },
+   "agree": true
+  },
+  {
+   "id": "si-016",
+   "family": "sign-at-instant",
+   "key": [
+    "Gemini"
+   ],
+   "horizons": {
+    "answer": "Gemini",
+    "lon": 68.1555979,
+    "boundaryMarginArcsec": 29360.152440000013,
+    "engineMinusJplArcsec": -4.387875783140771
+   },
+   "agree": true
+  },
+  {
+   "id": "si-017",
+   "family": "sign-at-instant",
+   "key": [
+    "Sagittarius"
+   ],
+   "horizons": {
+    "answer": "Sagittarius",
+    "lon": 255.9532684,
+    "boundaryMarginArcsec": 50568.23375999995,
+    "engineMinusJplArcsec": 5.341250400306308
+   },
+   "agree": true
+  },
+  {
+   "id": "si-018",
+   "family": "sign-at-instant",
+   "key": [
+    "Aries"
+   ],
+   "horizons": {
+    "answer": "Aries",
+    "lon": 15.5912461,
+    "boundaryMarginArcsec": 51871.51404,
+    "engineMinusJplArcsec": 0.9128092119226494
+   },
+   "agree": true
+  },
+  {
+   "id": "si-019",
+   "family": "sign-at-instant",
+   "key": [
+    "Virgo"
+   ],
+   "horizons": {
+    "answer": "Virgo",
+    "lon": 171.3291028,
+    "boundaryMarginArcsec": 31215.22992000005,
+    "engineMinusJplArcsec": 1.9630857531410584
+   },
+   "agree": true
+  },
+  {
+   "id": "si-020",
+   "family": "sign-at-instant",
+   "key": [
+    "Leo"
+   ],
+   "horizons": {
+    "answer": "Leo",
+    "lon": 127.1119812,
+    "boundaryMarginArcsec": 25603.132320000008,
+    "engineMinusJplArcsec": 1.2411855300342722
+   },
+   "agree": true
+  },
+  {
+   "id": "si-021",
+   "family": "sign-at-instant",
+   "key": [
+    "Aquarius"
+   ],
+   "horizons": {
+    "answer": "Aquarius",
+    "lon": 310.6716792,
+    "boundaryMarginArcsec": 38418.045120000104,
+    "engineMinusJplArcsec": 0.05921259617025498
+   },
+   "agree": true
+  },
+  {
+   "id": "si-022",
+   "family": "sign-at-instant",
+   "key": [
+    "Scorpio"
+   ],
+   "horizons": {
+    "answer": "Scorpio",
+    "lon": 215.2721029,
+    "boundaryMarginArcsec": 18979.570439999974,
+    "engineMinusJplArcsec": 0.8536212028047885
+   },
+   "agree": true
+  },
+  {
+   "id": "si-023",
+   "family": "sign-at-instant",
+   "key": [
+    "Cancer"
+   ],
+   "horizons": {
+    "answer": "Cancer",
+    "lon": 93.8380068,
+    "boundaryMarginArcsec": 13816.824480000008,
+    "engineMinusJplArcsec": -1.323862732078851
+   },
+   "agree": true
+  },
+  {
+   "id": "si-024",
+   "family": "sign-at-instant",
+   "key": [
+    "Capricorn"
+   ],
+   "horizons": {
+    "answer": "Capricorn",
+    "lon": 297.6848962,
+    "boundaryMarginArcsec": 8334.373679999908,
+    "engineMinusJplArcsec": -2.3791694551619003
+   },
+   "agree": true
+  },
+  {
+   "id": "si-025",
+   "family": "sign-at-instant",
+   "key": [
+    "Taurus"
+   ],
+   "horizons": {
+    "answer": "Taurus",
+    "lon": 56.8779788,
+    "boundaryMarginArcsec": 11239.276319999995,
+    "engineMinusJplArcsec": -3.069110047090362
+   },
+   "agree": true
+  },
+  {
+   "id": "si-026",
+   "family": "sign-at-instant",
+   "key": [
+    "Scorpio"
+   ],
+   "horizons": {
+    "answer": "Scorpio",
+    "lon": 238.5305324,
+    "boundaryMarginArcsec": 5290.083360000006,
+    "engineMinusJplArcsec": 3.5818710504372575
+   },
+   "agree": true
+  },
+  {
+   "id": "si-027",
+   "family": "sign-at-instant",
+   "key": [
+    "Aquarius"
+   ],
+   "horizons": {
+    "answer": "Aquarius",
+    "lon": 323.5069239,
+    "boundaryMarginArcsec": 23375.073959999987,
+    "engineMinusJplArcsec": -2.4337627357908787
+   },
+   "agree": true
+  },
+  {
+   "id": "si-028",
+   "family": "sign-at-instant",
+   "key": [
+    "Leo"
+   ],
+   "horizons": {
+    "answer": "Leo",
+    "lon": 145.1859913,
+    "boundaryMarginArcsec": 17330.431319999956,
+    "engineMinusJplArcsec": 3.562779321509879
+   },
+   "agree": true
+  },
+  {
+   "id": "si-029",
+   "family": "sign-at-instant",
+   "key": [
+    "Cancer"
+   ],
+   "horizons": {
+    "answer": "Cancer",
+    "lon": 91.7464967,
+    "boundaryMarginArcsec": 6287.38811999998,
+    "engineMinusJplArcsec": 5.331861646800462
+   },
+   "agree": true
+  },
+  {
+   "id": "si-030",
+   "family": "sign-at-instant",
+   "key": [
+    "Scorpio"
+   ],
+   "horizons": {
+    "answer": "Scorpio",
+    "lon": 211.6514525,
+    "boundaryMarginArcsec": 5945.229000000018,
+    "engineMinusJplArcsec": 3.1841739734773
+   },
+   "agree": true
+  },
+  {
+   "id": "si-031",
+   "family": "sign-at-instant",
+   "key": [
+    "Cancer"
+   ],
+   "horizons": {
+    "answer": "Cancer",
+    "lon": 100.3929445,
+    "boundaryMarginArcsec": 37414.60019999999,
+    "engineMinusJplArcsec": -0.3740970030776225
+   },
+   "agree": true
+  },
+  {
+   "id": "si-032",
+   "family": "sign-at-instant",
+   "key": [
+    "Pisces"
+   ],
+   "horizons": {
+    "answer": "Pisces",
+    "lon": 354.6192678,
+    "boundaryMarginArcsec": 19370.63592000004,
+    "engineMinusJplArcsec": 0.8029567739413324
+   },
+   "agree": true
+  },
+  {
+   "id": "si-033",
+   "family": "sign-at-instant",
+   "key": [
+    "Virgo"
+   ],
+   "horizons": {
+    "answer": "Virgo",
+    "lon": 153.7229565,
+    "boundaryMarginArcsec": 13402.643400000034,
+    "engineMinusJplArcsec": -3.9145383226241393
+   },
+   "agree": true
+  },
+  {
+   "id": "si-034",
+   "family": "sign-at-instant",
+   "key": [
+    "Aquarius"
+   ],
+   "horizons": {
+    "answer": "Aquarius",
+    "lon": 317.9374251,
+    "boundaryMarginArcsec": 43425.26964000006,
+    "engineMinusJplArcsec": -0.18375664330960717
+   },
+   "agree": true
+  },
+  {
+   "id": "si-035",
+   "family": "sign-at-instant",
+   "key": [
+    "Pisces"
+   ],
+   "horizons": {
+    "answer": "Pisces",
+    "lon": 331.2363095,
+    "boundaryMarginArcsec": 4450.714200000016,
+    "engineMinusJplArcsec": -2.0603042090442614
+   },
+   "agree": true
+  },
+  {
+   "id": "si-036",
+   "family": "sign-at-instant",
+   "key": [
+    "Scorpio"
+   ],
+   "horizons": {
+    "answer": "Scorpio",
+    "lon": 228.1780239,
+    "boundaryMarginArcsec": 42559.11396,
+    "engineMinusJplArcsec": -0.37782798463013023
+   },
+   "agree": true
+  },
+  {
+   "id": "si-037",
+   "family": "sign-at-instant",
+   "key": [
+    "Aquarius"
+   ],
+   "horizons": {
+    "answer": "Aquarius",
+    "lon": 309.7790745,
+    "boundaryMarginArcsec": 35204.66819999993,
+    "engineMinusJplArcsec": 0.525236080011382
+   },
+   "agree": true
+  },
+  {
+   "id": "si-038",
+   "family": "sign-at-instant",
+   "key": [
+    "Sagittarius"
+   ],
+   "horizons": {
+    "answer": "Sagittarius",
+    "lon": 262.3179669,
+    "boundaryMarginArcsec": 27655.319160000043,
+    "engineMinusJplArcsec": -1.3880720111501432
+   },
+   "agree": true
+  },
+  {
+   "id": "si-039",
+   "family": "sign-at-instant",
+   "key": [
+    "Leo"
+   ],
+   "horizons": {
+    "answer": "Leo",
+    "lon": 128.8640792,
+    "boundaryMarginArcsec": 31910.685119999973,
+    "engineMinusJplArcsec": 13.557875142669218
+   },
+   "agree": true
+  },
+  {
+   "id": "si-040",
+   "family": "sign-at-instant",
+   "key": [
+    "Capricorn"
+   ],
+   "horizons": {
+    "answer": "Capricorn",
+    "lon": 279.5114839,
+    "boundaryMarginArcsec": 34241.3420399999,
+    "engineMinusJplArcsec": -0.32974034106700856
+   },
+   "agree": true
+  },
+  {
+   "id": "si-041",
+   "family": "sign-at-instant",
+   "key": [
+    "Leo"
+   ],
+   "horizons": {
+    "answer": "Leo",
+    "lon": 121.816961,
+    "boundaryMarginArcsec": 6541.059600000022,
+    "engineMinusJplArcsec": -0.7680941250328033
+   },
+   "agree": true
+  },
+  {
+   "id": "si-042",
+   "family": "sign-at-instant",
+   "key": [
+    "Capricorn"
+   ],
+   "horizons": {
+    "answer": "Capricorn",
+    "lon": 280.7813384,
+    "boundaryMarginArcsec": 38812.818239999935,
+    "engineMinusJplArcsec": 0.09636626846258878
+   },
+   "agree": true
+  },
+  {
+   "id": "si-043",
+   "family": "sign-at-instant",
+   "key": [
+    "Aquarius"
+   ],
+   "horizons": {
+    "answer": "Aquarius",
+    "lon": 322.9646048,
+    "boundaryMarginArcsec": 25327.422719999937,
+    "engineMinusJplArcsec": 3.2023724076225335
+   },
+   "agree": true
+  },
+  {
+   "id": "si-044",
+   "family": "sign-at-instant",
+   "key": [
+    "Cancer"
+   ],
+   "horizons": {
+    "answer": "Cancer",
+    "lon": 93.4388156,
+    "boundaryMarginArcsec": 12379.736159999993,
+    "engineMinusJplArcsec": -1.5173984763350745
+   },
+   "agree": true
+  },
+  {
+   "id": "si-045",
+   "family": "sign-at-instant",
+   "key": [
+    "Taurus"
+   ],
+   "horizons": {
+    "answer": "Taurus",
+    "lon": 59.6709754,
+    "boundaryMarginArcsec": 1184.4885599999884,
+    "engineMinusJplArcsec": 0.5386720518345101
+   },
+   "agree": true
+  },
+  {
+   "id": "si-046",
+   "family": "sign-at-instant",
+   "key": [
+    "Capricorn"
+   ],
+   "horizons": {
+    "answer": "Capricorn",
+    "lon": 278.2349151,
+    "boundaryMarginArcsec": 29645.694360000085,
+    "engineMinusJplArcsec": 5.4783191934348
+   },
+   "agree": true
+  },
+  {
+   "id": "si-047",
+   "family": "sign-at-instant",
+   "key": [
+    "Capricorn"
+   ],
+   "horizons": {
+    "answer": "Capricorn",
+    "lon": 270.3880779,
+    "boundaryMarginArcsec": 1397.0804399999452,
+    "engineMinusJplArcsec": 2.6533951598594285
+   },
+   "agree": true
+  },
+  {
+   "id": "si-048",
+   "family": "sign-at-instant",
+   "key": [
+    "Gemini"
+   ],
+   "horizons": {
+    "answer": "Gemini",
+    "lon": 87.6852398,
+    "boundaryMarginArcsec": 8333.136719999982,
+    "engineMinusJplArcsec": 0.5672443513049075
+   },
+   "agree": true
+  },
+  {
+   "id": "si-049",
+   "family": "sign-at-instant",
+   "key": [
+    "Sagittarius"
+   ],
+   "horizons": {
+    "answer": "Sagittarius",
+    "lon": 266.4629743,
+    "boundaryMarginArcsec": 12733.292520000054,
+    "engineMinusJplArcsec": -10.242465570445347
+   },
+   "agree": true
+  },
+  {
+   "id": "si-050",
+   "family": "sign-at-instant",
+   "key": [
+    "Scorpio"
+   ],
+   "horizons": {
+    "answer": "Scorpio",
+    "lon": 235.3917922,
+    "boundaryMarginArcsec": 16589.548080000008,
+    "engineMinusJplArcsec": 1.6562997053370054
+   },
+   "agree": true
+  },
+  {
+   "id": "si-051",
+   "family": "sign-at-instant",
+   "key": [
+    "Gemini"
+   ],
+   "horizons": {
+    "answer": "Gemini",
+    "lon": 62.6783221,
+    "boundaryMarginArcsec": 9641.95956000001,
+    "engineMinusJplArcsec": -0.3227925131795928
+   },
+   "agree": true
+  },
+  {
+   "id": "si-052",
+   "family": "sign-at-instant",
+   "key": [
+    "Libra"
+   ],
+   "horizons": {
+    "answer": "Libra",
+    "lon": 185.0322635,
+    "boundaryMarginArcsec": 18116.148599999997,
+    "engineMinusJplArcsec": 0.9528080524887628
+   },
+   "agree": true
+  },
+  {
+   "id": "si-053",
+   "family": "sign-at-instant",
+   "key": [
+    "Aquarius"
+   ],
+   "horizons": {
+    "answer": "Aquarius",
+    "lon": 313.6390347,
+    "boundaryMarginArcsec": 49100.52492000009,
+    "engineMinusJplArcsec": 0.7019836285508063
+   },
+   "agree": true
+  },
+  {
+   "id": "si-054",
+   "family": "sign-at-instant",
+   "key": [
+    "Virgo"
+   ],
+   "horizons": {
+    "answer": "Virgo",
+    "lon": 171.3537034,
+    "boundaryMarginArcsec": 31126.667759999997,
+    "engineMinusJplArcsec": -0.39197957698888786
+   },
+   "agree": true
+  },
+  {
+   "id": "si-055",
+   "family": "sign-at-instant",
+   "key": [
+    "Aquarius"
+   ],
+   "horizons": {
+    "answer": "Aquarius",
+    "lon": 307.1841692,
+    "boundaryMarginArcsec": 25863.009119999948,
+    "engineMinusJplArcsec": -3.5104470780879637
+   },
+   "agree": true
+  },
+  {
+   "id": "si-056",
+   "family": "sign-at-instant",
+   "key": [
+    "Aries"
+   ],
+   "horizons": {
+    "answer": "Aries",
+    "lon": 12.8012178,
+    "boundaryMarginArcsec": 46084.38408000001,
+    "engineMinusJplArcsec": -0.2203839447702194
+   },
+   "agree": true
+  },
+  {
+   "id": "si-057",
+   "family": "sign-at-instant",
+   "key": [
+    "Aquarius"
+   ],
+   "horizons": {
+    "answer": "Aquarius",
+    "lon": 318.0300622,
+    "boundaryMarginArcsec": 43091.77608000009,
+    "engineMinusJplArcsec": 1.4971262251037842
+   },
+   "agree": true
+  },
+  {
+   "id": "si-058",
+   "family": "sign-at-instant",
+   "key": [
+    "Sagittarius"
+   ],
+   "horizons": {
+    "answer": "Sagittarius",
+    "lon": 264.1754671,
+    "boundaryMarginArcsec": 20968.318440000032,
+    "engineMinusJplArcsec": -6.503989351904238
+   },
+   "agree": true
+  },
+  {
+   "id": "si-059",
+   "family": "sign-at-instant",
+   "key": [
+    "Sagittarius"
+   ],
+   "horizons": {
+    "answer": "Sagittarius",
+    "lon": 268.7505942,
+    "boundaryMarginArcsec": 4497.8608799999165,
+    "engineMinusJplArcsec": -10.898053190067003
+   },
+   "agree": true
+  },
+  {
+   "id": "si-060",
+   "family": "sign-at-instant",
+   "key": [
+    "Capricorn"
+   ],
+   "horizons": {
+    "answer": "Capricorn",
+    "lon": 273.0431404,
+    "boundaryMarginArcsec": 10955.305440000098,
+    "engineMinusJplArcsec": -0.1377103918002831
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-001",
+   "family": "sign-on-date",
+   "key": [
+    "DEPENDS"
+   ],
+   "horizons": {
+    "answer": "DEPENDS",
+    "changes": [
+     {
+      "at": "2024-01-05T12:39:28Z",
+      "into": "scorpio",
+      "retrograde": false
+     }
+    ],
+    "nearestEdgeMinutes": 159
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-002",
+   "family": "sign-on-date",
+   "key": [
+    "Capricorn"
+   ],
+   "horizons": {
+    "answer": "Capricorn",
+    "changes": [],
+    "nearestEdgeMinutes": null
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-003",
+   "family": "sign-on-date",
+   "key": [
+    "Cancer"
+   ],
+   "horizons": {
+    "answer": "Cancer",
+    "changes": [],
+    "nearestEdgeMinutes": null
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-004",
+   "family": "sign-on-date",
+   "key": [
+    "DEPENDS"
+   ],
+   "horizons": {
+    "answer": "DEPENDS",
+    "changes": [
+     {
+      "at": "1912-10-18T02:38:41Z",
+      "into": "scorpio",
+      "retrograde": false
+     }
+    ],
+    "nearestEdgeMinutes": 999
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-005",
+   "family": "sign-on-date",
+   "key": [
+    "DEPENDS"
+   ],
+   "horizons": {
+    "answer": "DEPENDS",
+    "changes": [
+     {
+      "at": "2043-01-22T17:59:43Z",
+      "into": "cancer",
+      "retrograde": false
+     }
+    ],
+    "nearestEdgeMinutes": 480
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-006",
+   "family": "sign-on-date",
+   "key": [
+    "Scorpio"
+   ],
+   "horizons": {
+    "answer": "Scorpio",
+    "changes": [],
+    "nearestEdgeMinutes": null
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-007",
+   "family": "sign-on-date",
+   "key": [
+    "Pisces"
+   ],
+   "horizons": {
+    "answer": "Pisces",
+    "changes": [],
+    "nearestEdgeMinutes": null
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-008",
+   "family": "sign-on-date",
+   "key": [
+    "DEPENDS"
+   ],
+   "horizons": {
+    "answer": "DEPENDS",
+    "changes": [
+     {
+      "at": "1915-07-19T13:32:10Z",
+      "into": "leo",
+      "retrograde": false
+     }
+    ],
+    "nearestEdgeMinutes": 1348
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-009",
+   "family": "sign-on-date",
+   "key": [
+    "DEPENDS"
+   ],
+   "horizons": {
+    "answer": "DEPENDS",
+    "changes": [
+     {
+      "at": "1992-07-20T11:07:14Z",
+      "into": "aries",
+      "retrograde": false
+     }
+    ],
+    "nearestEdgeMinutes": 1493
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-010",
+   "family": "sign-on-date",
+   "key": [
+    "Cancer"
+   ],
+   "horizons": {
+    "answer": "Cancer",
+    "changes": [],
+    "nearestEdgeMinutes": null
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-011",
+   "family": "sign-on-date",
+   "key": [
+    "Scorpio"
+   ],
+   "horizons": {
+    "answer": "Scorpio",
+    "changes": [],
+    "nearestEdgeMinutes": null
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-012",
+   "family": "sign-on-date",
+   "key": [
+    "DEPENDS"
+   ],
+   "horizons": {
+    "answer": "DEPENDS",
+    "changes": [
+     {
+      "at": "1976-12-09T12:52:56Z",
+      "into": "aquarius",
+      "retrograde": false
+     }
+    ],
+    "nearestEdgeMinutes": 1387
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-013",
+   "family": "sign-on-date",
+   "key": [
+    "Scorpio"
+   ],
+   "horizons": {
+    "answer": "Scorpio",
+    "changes": [],
+    "nearestEdgeMinutes": 138
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-014",
+   "family": "sign-on-date",
+   "key": [
+    "Virgo"
+   ],
+   "horizons": {
+    "answer": "Virgo",
+    "changes": [],
+    "nearestEdgeMinutes": null
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-015",
+   "family": "sign-on-date",
+   "key": [
+    "Pisces"
+   ],
+   "horizons": {
+    "answer": "Pisces",
+    "changes": [],
+    "nearestEdgeMinutes": null
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-016",
+   "family": "sign-on-date",
+   "key": [
+    "DEPENDS"
+   ],
+   "horizons": {
+    "answer": "DEPENDS",
+    "changes": [
+     {
+      "at": "1920-01-22T18:32:02Z",
+      "into": "pisces",
+      "retrograde": false
+     }
+    ],
+    "nearestEdgeMinutes": 1048
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-017",
+   "family": "sign-on-date",
+   "key": [
+    "DEPENDS"
+   ],
+   "horizons": {
+    "answer": "DEPENDS",
+    "changes": [
+     {
+      "at": "1960-10-04T01:46:13Z",
+      "into": "aries",
+      "retrograde": false
+     }
+    ],
+    "nearestEdgeMinutes": 946
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-018",
+   "family": "sign-on-date",
+   "key": [
+    "Scorpio"
+   ],
+   "horizons": {
+    "answer": "Scorpio",
+    "changes": [],
+    "nearestEdgeMinutes": null
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-019",
+   "family": "sign-on-date",
+   "key": [
+    "Cancer"
+   ],
+   "horizons": {
+    "answer": "Cancer",
+    "changes": [],
+    "nearestEdgeMinutes": null
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-020",
+   "family": "sign-on-date",
+   "key": [
+    "DEPENDS"
+   ],
+   "horizons": {
+    "answer": "DEPENDS",
+    "changes": [
+     {
+      "at": "1949-07-10T03:19:27Z",
+      "into": "cancer",
+      "retrograde": false
+     }
+    ],
+    "nearestEdgeMinutes": 1039
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-021",
+   "family": "sign-on-date",
+   "key": [
+    "DEPENDS"
+   ],
+   "horizons": {
+    "answer": "DEPENDS",
+    "changes": [
+     {
+      "at": "2029-12-08T19:41:13Z",
+      "into": "aquarius",
+      "retrograde": false
+     }
+    ],
+    "nearestEdgeMinutes": 979
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-022",
+   "family": "sign-on-date",
+   "key": [
+    "Gemini"
+   ],
+   "horizons": {
+    "answer": "Gemini",
+    "changes": [],
+    "nearestEdgeMinutes": null
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-023",
+   "family": "sign-on-date",
+   "key": [
+    "Scorpio"
+   ],
+   "horizons": {
+    "answer": "Scorpio",
+    "changes": [],
+    "nearestEdgeMinutes": null
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-024",
+   "family": "sign-on-date",
+   "key": [
+    "DEPENDS"
+   ],
+   "horizons": {
+    "answer": "DEPENDS",
+    "changes": [
+     {
+      "at": "2032-07-14T02:16:13Z",
+      "into": "cancer",
+      "retrograde": false
+     }
+    ],
+    "nearestEdgeMinutes": 976
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-025",
+   "family": "sign-on-date",
+   "key": [
+    "DEPENDS"
+   ],
+   "horizons": {
+    "answer": "DEPENDS",
+    "changes": [
+     {
+      "at": "2021-03-28T05:22:17Z",
+      "into": "libra",
+      "retrograde": false
+     }
+    ],
+    "nearestEdgeMinutes": 395
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-026",
+   "family": "sign-on-date",
+   "key": [
+    "Pisces"
+   ],
+   "horizons": {
+    "answer": "Pisces",
+    "changes": [],
+    "nearestEdgeMinutes": null
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-027",
+   "family": "sign-on-date",
+   "key": [
+    "Scorpio"
+   ],
+   "horizons": {
+    "answer": "Scorpio",
+    "changes": [],
+    "nearestEdgeMinutes": null
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-028",
+   "family": "sign-on-date",
+   "key": [
+    "DEPENDS"
+   ],
+   "horizons": {
+    "answer": "DEPENDS",
+    "changes": [
+     {
+      "at": "1982-05-21T09:22:55Z",
+      "into": "gemini",
+      "retrograde": false
+     }
+    ],
+    "nearestEdgeMinutes": 1403
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-029",
+   "family": "sign-on-date",
+   "key": [
+    "DEPENDS"
+   ],
+   "horizons": {
+    "answer": "DEPENDS",
+    "changes": [
+     {
+      "at": "1959-12-25T07:00:37Z",
+      "into": "scorpio",
+      "retrograde": false
+     }
+    ],
+    "nearestEdgeMinutes": 299
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-030",
+   "family": "sign-on-date",
+   "key": [
+    "Taurus"
+   ],
+   "horizons": {
+    "answer": "Taurus",
+    "changes": [],
+    "nearestEdgeMinutes": null
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-031",
+   "family": "sign-on-date",
+   "key": [
+    "Cancer"
+   ],
+   "horizons": {
+    "answer": "Cancer",
+    "changes": [],
+    "nearestEdgeMinutes": null
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-032",
+   "family": "sign-on-date",
+   "key": [
+    "DEPENDS"
+   ],
+   "horizons": {
+    "answer": "DEPENDS",
+    "changes": [
+     {
+      "at": "1936-12-02T08:38:31Z",
+      "into": "capricorn",
+      "retrograde": false
+     }
+    ],
+    "nearestEdgeMinutes": 1359
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-033",
+   "family": "sign-on-date",
+   "key": [
+    "DEPENDS"
+   ],
+   "horizons": {
+    "answer": "DEPENDS",
+    "changes": [
+     {
+      "at": "2040-08-01T14:59:56Z",
+      "into": "gemini",
+      "retrograde": false
+     }
+    ],
+    "nearestEdgeMinutes": 300
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-034",
+   "family": "sign-on-date",
+   "key": [
+    "Sagittarius"
+   ],
+   "horizons": {
+    "answer": "Sagittarius",
+    "changes": [],
+    "nearestEdgeMinutes": null
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-035",
+   "family": "sign-on-date",
+   "key": [
+    "Taurus"
+   ],
+   "horizons": {
+    "answer": "Taurus",
+    "changes": [],
+    "nearestEdgeMinutes": null
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-036",
+   "family": "sign-on-date",
+   "key": [
+    "DEPENDS"
+   ],
+   "horizons": {
+    "answer": "DEPENDS",
+    "changes": [
+     {
+      "at": "1914-05-26T20:47:02Z",
+      "into": "cancer",
+      "retrograde": false
+     }
+    ],
+    "nearestEdgeMinutes": 913
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-037",
+   "family": "sign-on-date",
+   "key": [
+    "DEPENDS"
+   ],
+   "horizons": {
+    "answer": "DEPENDS",
+    "changes": [
+     {
+      "at": "1914-07-04T10:25:23Z",
+      "into": "sagittarius",
+      "retrograde": false
+     }
+    ],
+    "nearestEdgeMinutes": 25
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-038",
+   "family": "sign-on-date",
+   "key": [
+    "Cancer"
+   ],
+   "horizons": {
+    "answer": "Cancer",
+    "changes": [],
+    "nearestEdgeMinutes": null
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-039",
+   "family": "sign-on-date",
+   "key": [
+    "Aries"
+   ],
+   "horizons": {
+    "answer": "Aries",
+    "changes": [],
+    "nearestEdgeMinutes": null
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-040",
+   "family": "sign-on-date",
+   "key": [
+    "DEPENDS"
+   ],
+   "horizons": {
+    "answer": "DEPENDS",
+    "changes": [
+     {
+      "at": "1976-11-20T23:53:20Z",
+      "into": "sagittarius",
+      "retrograde": false
+     }
+    ],
+    "nearestEdgeMinutes": 727
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-041",
+   "family": "sign-on-date",
+   "key": [
+    "DEPENDS"
+   ],
+   "horizons": {
+    "answer": "DEPENDS",
+    "changes": [
+     {
+      "at": "2014-10-30T13:51:55Z",
+      "into": "aquarius",
+      "retrograde": false
+     }
+    ],
+    "nearestEdgeMinutes": 1328
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-042",
+   "family": "sign-on-date",
+   "key": [
+    "Aries"
+   ],
+   "horizons": {
+    "answer": "Aries",
+    "changes": [],
+    "nearestEdgeMinutes": null
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-043",
+   "family": "sign-on-date",
+   "key": [
+    "Capricorn"
+   ],
+   "horizons": {
+    "answer": "Capricorn",
+    "changes": [],
+    "nearestEdgeMinutes": null
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-044",
+   "family": "sign-on-date",
+   "key": [
+    "DEPENDS"
+   ],
+   "horizons": {
+    "answer": "DEPENDS",
+    "changes": [
+     {
+      "at": "1956-03-12T01:57:06Z",
+      "into": "libra",
+      "retrograde": true
+     }
+    ],
+    "nearestEdgeMinutes": 603
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-045",
+   "family": "sign-on-date",
+   "key": [
+    "DEPENDS"
+   ],
+   "horizons": {
+    "answer": "DEPENDS",
+    "changes": [
+     {
+      "at": "1962-09-25T20:30:45Z",
+      "into": "virgo",
+      "retrograde": false
+     }
+    ],
+    "nearestEdgeMinutes": 929
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-046",
+   "family": "sign-on-date",
+   "key": [
+    "Gemini"
+   ],
+   "horizons": {
+    "answer": "Gemini",
+    "changes": [],
+    "nearestEdgeMinutes": null
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-047",
+   "family": "sign-on-date",
+   "key": [
+    "DEPENDS"
+   ],
+   "horizons": {
+    "answer": "DEPENDS",
+    "changes": [
+     {
+      "at": "1944-03-19T07:43:02Z",
+      "into": "aries",
+      "retrograde": false
+     }
+    ],
+    "nearestEdgeMinutes": 257
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-048",
+   "family": "sign-on-date",
+   "key": [
+    "DEPENDS"
+   ],
+   "horizons": {
+    "answer": "DEPENDS",
+    "changes": [
+     {
+      "at": "1977-06-06T06:10:19Z",
+      "into": "taurus",
+      "retrograde": false
+     }
+    ],
+    "nearestEdgeMinutes": 1210
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-049",
+   "family": "sign-on-date",
+   "key": [
+    "DEPENDS"
+   ],
+   "horizons": {
+    "answer": "DEPENDS",
+    "changes": [
+     {
+      "at": "2036-04-11T11:14:48Z",
+      "into": "scorpio",
+      "retrograde": false
+     }
+    ],
+    "nearestEdgeMinutes": 45
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-050",
+   "family": "sign-on-date",
+   "key": [
+    "Pisces"
+   ],
+   "horizons": {
+    "answer": "Pisces",
+    "changes": [],
+    "nearestEdgeMinutes": null
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-051",
+   "family": "sign-on-date",
+   "key": [
+    "Pisces"
+   ],
+   "horizons": {
+    "answer": "Pisces",
+    "changes": [],
+    "nearestEdgeMinutes": null
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-052",
+   "family": "sign-on-date",
+   "key": [
+    "DEPENDS"
+   ],
+   "horizons": {
+    "answer": "DEPENDS",
+    "changes": [
+     {
+      "at": "1928-01-13T08:46:24Z",
+      "into": "aries",
+      "retrograde": false
+     }
+    ],
+    "nearestEdgeMinutes": 1366
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-053",
+   "family": "sign-on-date",
+   "key": [
+    "DEPENDS"
+   ],
+   "horizons": {
+    "answer": "DEPENDS",
+    "changes": [
+     {
+      "at": "1985-01-18T18:28:49Z",
+      "into": "capricorn",
+      "retrograde": false
+     }
+    ],
+    "nearestEdgeMinutes": 1051
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-054",
+   "family": "sign-on-date",
+   "key": [
+    "Cancer"
+   ],
+   "horizons": {
+    "answer": "Cancer",
+    "changes": [],
+    "nearestEdgeMinutes": null
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-055",
+   "family": "sign-on-date",
+   "key": [
+    "Capricorn"
+   ],
+   "horizons": {
+    "answer": "Capricorn",
+    "changes": [],
+    "nearestEdgeMinutes": 1080
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-056",
+   "family": "sign-on-date",
+   "key": [
+    "DEPENDS"
+   ],
+   "horizons": {
+    "answer": "DEPENDS",
+    "changes": [
+     {
+      "at": "2014-04-07T15:34:42Z",
+      "into": "aries",
+      "retrograde": false
+     }
+    ],
+    "nearestEdgeMinutes": 1225
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-057",
+   "family": "sign-on-date",
+   "key": [
+    "Aquarius"
+   ],
+   "horizons": {
+    "answer": "Aquarius",
+    "changes": [],
+    "nearestEdgeMinutes": 13
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-058",
+   "family": "sign-on-date",
+   "key": [
+    "Libra"
+   ],
+   "horizons": {
+    "answer": "Libra",
+    "changes": [],
+    "nearestEdgeMinutes": null
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-059",
+   "family": "sign-on-date",
+   "key": [
+    "Sagittarius"
+   ],
+   "horizons": {
+    "answer": "Sagittarius",
+    "changes": [],
+    "nearestEdgeMinutes": null
+   },
+   "agree": true
+  },
+  {
+   "id": "sd-060",
+   "family": "sign-on-date",
+   "key": [
+    "DEPENDS"
+   ],
+   "horizons": {
+    "answer": "DEPENDS",
+    "changes": [
+     {
+      "at": "1937-04-25T06:29:05Z",
+      "into": "aries",
+      "retrograde": false
+     }
+    ],
+    "nearestEdgeMinutes": 1229
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-001",
+   "family": "retrograde-on-date",
+   "key": [
+    "NO"
+   ],
+   "horizons": {
+    "answer": "NO",
+    "stations": [],
+    "nearestEdgeHours": null
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-002",
+   "family": "retrograde-on-date",
+   "key": [
+    "YES"
+   ],
+   "horizons": {
+    "answer": "YES",
+    "stations": [],
+    "nearestEdgeHours": null
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-003",
+   "family": "retrograde-on-date",
+   "key": [
+    "NO"
+   ],
+   "horizons": {
+    "answer": "NO",
+    "stations": [],
+    "nearestEdgeHours": null
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-004",
+   "family": "retrograde-on-date",
+   "key": [
+    "DEPENDS"
+   ],
+   "horizons": {
+    "answer": "DEPENDS",
+    "stations": [
+     {
+      "at": "2046-08-08T04:14:13Z",
+      "type": "retrograde"
+     }
+    ],
+    "nearestEdgeHours": 18.2
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-005",
+   "family": "retrograde-on-date",
+   "key": [
+    "YES"
+   ],
+   "horizons": {
+    "answer": "YES",
+    "stations": [],
+    "nearestEdgeHours": null
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-006",
+   "family": "retrograde-on-date",
+   "key": [
+    "YES"
+   ],
+   "horizons": {
+    "answer": "YES",
+    "stations": [],
+    "nearestEdgeHours": null
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-007",
+   "family": "retrograde-on-date",
+   "key": [
+    "NO"
+   ],
+   "horizons": {
+    "answer": "NO",
+    "stations": [],
+    "nearestEdgeHours": null
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-008",
+   "family": "retrograde-on-date",
+   "key": [
+    "DEPENDS"
+   ],
+   "horizons": {
+    "answer": "DEPENDS",
+    "stations": [
+     {
+      "at": "1900-09-17T19:40:00Z",
+      "type": "retrograde"
+     }
+    ],
+    "nearestEdgeHours": 16.3
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-009",
+   "family": "retrograde-on-date",
+   "key": [
+    "NO"
+   ],
+   "horizons": {
+    "answer": "NO",
+    "stations": [],
+    "nearestEdgeHours": null
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-010",
+   "family": "retrograde-on-date",
+   "key": [
+    "YES"
+   ],
+   "horizons": {
+    "answer": "YES",
+    "stations": [],
+    "nearestEdgeHours": null
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-011",
+   "family": "retrograde-on-date",
+   "key": [
+    "YES"
+   ],
+   "horizons": {
+    "answer": "YES",
+    "stations": [],
+    "nearestEdgeHours": null
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-012",
+   "family": "retrograde-on-date",
+   "key": [
+    "DEPENDS"
+   ],
+   "horizons": {
+    "answer": "DEPENDS",
+    "stations": [
+     {
+      "at": "2030-09-20T21:26:22Z",
+      "type": "retrograde"
+     }
+    ],
+    "nearestEdgeHours": 14.6
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-013",
+   "family": "retrograde-on-date",
+   "key": [
+    "YES"
+   ],
+   "horizons": {
+    "answer": "YES",
+    "stations": [],
+    "nearestEdgeHours": null
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-014",
+   "family": "retrograde-on-date",
+   "key": [
+    "YES"
+   ],
+   "horizons": {
+    "answer": "YES",
+    "stations": [],
+    "nearestEdgeHours": null
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-015",
+   "family": "retrograde-on-date",
+   "key": [
+    "YES"
+   ],
+   "horizons": {
+    "answer": "YES",
+    "stations": [],
+    "nearestEdgeHours": null
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-016",
+   "family": "retrograde-on-date",
+   "key": [
+    "DEPENDS"
+   ],
+   "horizons": {
+    "answer": "DEPENDS",
+    "stations": [
+     {
+      "at": "1992-11-11T09:49:08Z",
+      "type": "retrograde"
+     }
+    ],
+    "nearestEdgeHours": 23.8
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-017",
+   "family": "retrograde-on-date",
+   "key": [
+    "NO"
+   ],
+   "horizons": {
+    "answer": "NO",
+    "stations": [],
+    "nearestEdgeHours": null
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-018",
+   "family": "retrograde-on-date",
+   "key": [
+    "YES"
+   ],
+   "horizons": {
+    "answer": "YES",
+    "stations": [],
+    "nearestEdgeHours": null
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-019",
+   "family": "retrograde-on-date",
+   "key": [
+    "YES"
+   ],
+   "horizons": {
+    "answer": "YES",
+    "stations": [],
+    "nearestEdgeHours": null
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-020",
+   "family": "retrograde-on-date",
+   "key": [
+    "DEPENDS"
+   ],
+   "horizons": {
+    "answer": "DEPENDS",
+    "stations": [
+     {
+      "at": "1959-04-20T06:58:00Z",
+      "type": "direct"
+     }
+    ],
+    "nearestEdgeHours": 21
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-021",
+   "family": "retrograde-on-date",
+   "key": [
+    "NO"
+   ],
+   "horizons": {
+    "answer": "NO",
+    "stations": [],
+    "nearestEdgeHours": null
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-022",
+   "family": "retrograde-on-date",
+   "key": [
+    "YES"
+   ],
+   "horizons": {
+    "answer": "YES",
+    "stations": [],
+    "nearestEdgeHours": null
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-023",
+   "family": "retrograde-on-date",
+   "key": [
+    "YES"
+   ],
+   "horizons": {
+    "answer": "YES",
+    "stations": [],
+    "nearestEdgeHours": null
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-024",
+   "family": "retrograde-on-date",
+   "key": [
+    "DEPENDS"
+   ],
+   "horizons": {
+    "answer": "DEPENDS",
+    "stations": [
+     {
+      "at": "2029-12-16T23:47:37Z",
+      "type": "retrograde"
+     }
+    ],
+    "nearestEdgeHours": 12.2
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-025",
+   "family": "retrograde-on-date",
+   "key": [
+    "YES"
+   ],
+   "horizons": {
+    "answer": "YES",
+    "stations": [],
+    "nearestEdgeHours": null
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-026",
+   "family": "retrograde-on-date",
+   "key": [
+    "YES"
+   ],
+   "horizons": {
+    "answer": "YES",
+    "stations": [],
+    "nearestEdgeHours": null
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-027",
+   "family": "retrograde-on-date",
+   "key": [
+    "NO"
+   ],
+   "horizons": {
+    "answer": "NO",
+    "stations": [],
+    "nearestEdgeHours": null
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-028",
+   "family": "retrograde-on-date",
+   "key": [
+    "DEPENDS"
+   ],
+   "horizons": {
+    "answer": "DEPENDS",
+    "stations": [
+     {
+      "at": "1925-05-01T01:22:30Z",
+      "type": "direct"
+     }
+    ],
+    "nearestEdgeHours": 15.4
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-029",
+   "family": "retrograde-on-date",
+   "key": [
+    "NO"
+   ],
+   "horizons": {
+    "answer": "NO",
+    "stations": [],
+    "nearestEdgeHours": null
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-030",
+   "family": "retrograde-on-date",
+   "key": [
+    "YES"
+   ],
+   "horizons": {
+    "answer": "YES",
+    "stations": [],
+    "nearestEdgeHours": null
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-031",
+   "family": "retrograde-on-date",
+   "key": [
+    "NO"
+   ],
+   "horizons": {
+    "answer": "NO",
+    "stations": [],
+    "nearestEdgeHours": null
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-032",
+   "family": "retrograde-on-date",
+   "key": [
+    "DEPENDS"
+   ],
+   "horizons": {
+    "answer": "DEPENDS",
+    "stations": [
+     {
+      "at": "2031-03-29T00:34:33Z",
+      "type": "retrograde"
+     }
+    ],
+    "nearestEdgeHours": 14.6
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-033",
+   "family": "retrograde-on-date",
+   "key": [
+    "NO"
+   ],
+   "horizons": {
+    "answer": "NO",
+    "stations": [],
+    "nearestEdgeHours": null
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-034",
+   "family": "retrograde-on-date",
+   "key": [
+    "YES"
+   ],
+   "horizons": {
+    "answer": "YES",
+    "stations": [],
+    "nearestEdgeHours": null
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-035",
+   "family": "retrograde-on-date",
+   "key": [
+    "NO"
+   ],
+   "horizons": {
+    "answer": "NO",
+    "stations": [],
+    "nearestEdgeHours": null
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-036",
+   "family": "retrograde-on-date",
+   "key": [
+    "DEPENDS"
+   ],
+   "horizons": {
+    "answer": "DEPENDS",
+    "stations": [
+     {
+      "at": "2043-06-01T08:21:26Z",
+      "type": "retrograde"
+     }
+    ],
+    "nearestEdgeHours": 22.4
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-037",
+   "family": "retrograde-on-date",
+   "key": [
+    "NO"
+   ],
+   "horizons": {
+    "answer": "NO",
+    "stations": [],
+    "nearestEdgeHours": null
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-038",
+   "family": "retrograde-on-date",
+   "key": [
+    "YES"
+   ],
+   "horizons": {
+    "answer": "YES",
+    "stations": [],
+    "nearestEdgeHours": 8.5
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-039",
+   "family": "retrograde-on-date",
+   "key": [
+    "NO"
+   ],
+   "horizons": {
+    "answer": "NO",
+    "stations": [],
+    "nearestEdgeHours": null
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-040",
+   "family": "retrograde-on-date",
+   "key": [
+    "DEPENDS"
+   ],
+   "horizons": {
+    "answer": "DEPENDS",
+    "stations": [
+     {
+      "at": "1998-11-13T13:04:26Z",
+      "type": "direct"
+     }
+    ],
+    "nearestEdgeHours": 22.9
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-041",
+   "family": "retrograde-on-date",
+   "key": [
+    "YES"
+   ],
+   "horizons": {
+    "answer": "YES",
+    "stations": [],
+    "nearestEdgeHours": null
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-042",
+   "family": "retrograde-on-date",
+   "key": [
+    "YES"
+   ],
+   "horizons": {
+    "answer": "YES",
+    "stations": [],
+    "nearestEdgeHours": null
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-043",
+   "family": "retrograde-on-date",
+   "key": [
+    "NO"
+   ],
+   "horizons": {
+    "answer": "NO",
+    "stations": [],
+    "nearestEdgeHours": null
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-044",
+   "family": "retrograde-on-date",
+   "key": [
+    "DEPENDS"
+   ],
+   "horizons": {
+    "answer": "DEPENDS",
+    "stations": [
+     {
+      "at": "1939-08-20T17:07:10Z",
+      "type": "direct"
+     }
+    ],
+    "nearestEdgeHours": 18.9
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-045",
+   "family": "retrograde-on-date",
+   "key": [
+    "NO"
+   ],
+   "horizons": {
+    "answer": "NO",
+    "stations": [],
+    "nearestEdgeHours": null
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-046",
+   "family": "retrograde-on-date",
+   "key": [
+    "YES"
+   ],
+   "horizons": {
+    "answer": "YES",
+    "stations": [],
+    "nearestEdgeHours": null
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-047",
+   "family": "retrograde-on-date",
+   "key": [
+    "NO"
+   ],
+   "horizons": {
+    "answer": "NO",
+    "stations": [],
+    "nearestEdgeHours": null
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-048",
+   "family": "retrograde-on-date",
+   "key": [
+    "DEPENDS"
+   ],
+   "horizons": {
+    "answer": "DEPENDS",
+    "stations": [
+     {
+      "at": "1967-12-09T10:30:00Z",
+      "type": "direct"
+     }
+    ],
+    "nearestEdgeHours": 24.5
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-049",
+   "family": "retrograde-on-date",
+   "key": [
+    "NO"
+   ],
+   "horizons": {
+    "answer": "NO",
+    "stations": [],
+    "nearestEdgeHours": null
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-050",
+   "family": "retrograde-on-date",
+   "key": [
+    "YES"
+   ],
+   "horizons": {
+    "answer": "YES",
+    "stations": [],
+    "nearestEdgeHours": null
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-051",
+   "family": "retrograde-on-date",
+   "key": [
+    "NO"
+   ],
+   "horizons": {
+    "answer": "NO",
+    "stations": [],
+    "nearestEdgeHours": null
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-052",
+   "family": "retrograde-on-date",
+   "key": [
+    "DEPENDS"
+   ],
+   "horizons": {
+    "answer": "DEPENDS",
+    "stations": [
+     {
+      "at": "1921-05-14T00:27:30Z",
+      "type": "direct"
+     }
+    ],
+    "nearestEdgeHours": 14.5
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-053",
+   "family": "retrograde-on-date",
+   "key": [
+    "NO"
+   ],
+   "horizons": {
+    "answer": "NO",
+    "stations": [],
+    "nearestEdgeHours": null
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-054",
+   "family": "retrograde-on-date",
+   "key": [
+    "YES"
+   ],
+   "horizons": {
+    "answer": "YES",
+    "stations": [],
+    "nearestEdgeHours": null
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-055",
+   "family": "retrograde-on-date",
+   "key": [
+    "NO"
+   ],
+   "horizons": {
+    "answer": "NO",
+    "stations": [],
+    "nearestEdgeHours": null
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-056",
+   "family": "retrograde-on-date",
+   "key": [
+    "DEPENDS"
+   ],
+   "horizons": {
+    "answer": "DEPENDS",
+    "stations": [
+     {
+      "at": "2034-03-10T06:48:45Z",
+      "type": "direct"
+     }
+    ],
+    "nearestEdgeHours": 20.8
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-057",
+   "family": "retrograde-on-date",
+   "key": [
+    "NO"
+   ],
+   "horizons": {
+    "answer": "NO",
+    "stations": [],
+    "nearestEdgeHours": null
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-058",
+   "family": "retrograde-on-date",
+   "key": [
+    "YES"
+   ],
+   "horizons": {
+    "answer": "YES",
+    "stations": [],
+    "nearestEdgeHours": null
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-059",
+   "family": "retrograde-on-date",
+   "key": [
+    "YES"
+   ],
+   "horizons": {
+    "answer": "YES",
+    "stations": [],
+    "nearestEdgeHours": null
+   },
+   "agree": true
+  },
+  {
+   "id": "rd-060",
+   "family": "retrograde-on-date",
+   "key": [
+    "DEPENDS"
+   ],
+   "horizons": {
+    "answer": "DEPENDS",
+    "stations": [
+     {
+      "at": "1937-04-14T14:41:50Z",
+      "type": "retrograde"
+     }
+    ],
+    "nearestEdgeHours": 21.3
+   },
+   "agree": true
+  },
+  {
+   "id": "in-001",
+   "family": "ingress-date",
+   "key": [
+    "2041-03-19",
+    "2041-03-20"
+   ],
+   "horizons": {
+    "answer": "2041-03-20",
+    "accepted": [
+     "2041-03-19",
+     "2041-03-20"
+    ],
+    "at": "2041-03-20T06:06:51Z",
+    "engineMinusJplMinutes": 0.22
+   },
+   "agree": true
+  },
+  {
+   "id": "in-002",
+   "family": "ingress-date",
+   "key": [
+    "1931-04-20",
+    "1931-04-21"
+   ],
+   "horizons": {
+    "answer": "1931-04-21",
+    "accepted": [
+     "1931-04-20",
+     "1931-04-21"
+    ],
+    "at": "1931-04-21T01:39:47Z",
+    "engineMinusJplMinutes": -0.16
+   },
+   "agree": true
+  },
+  {
+   "id": "in-003",
+   "family": "ingress-date",
+   "key": [
+    "1946-01-20",
+    "1946-01-21"
+   ],
+   "horizons": {
+    "answer": "1946-01-20",
+    "accepted": [
+     "1946-01-20",
+     "1946-01-21"
+    ],
+    "at": "1946-01-20T15:44:37Z",
+    "engineMinusJplMinutes": -0.13
+   },
+   "agree": true
+  },
+  {
+   "id": "in-004",
+   "family": "ingress-date",
+   "key": [
+    "2044-07-21",
+    "2044-07-22"
+   ],
+   "horizons": {
+    "answer": "2044-07-22",
+    "accepted": [
+     "2044-07-21",
+     "2044-07-22"
+    ],
+    "at": "2044-07-22T03:43:26Z",
+    "engineMinusJplMinutes": 0.05
+   },
+   "agree": true
+  },
+  {
+   "id": "in-005",
+   "family": "ingress-date",
+   "key": [
+    "1996-04-19",
+    "1996-04-20"
+   ],
+   "horizons": {
+    "answer": "1996-04-19",
+    "accepted": [
+     "1996-04-19",
+     "1996-04-20"
+    ],
+    "at": "1996-04-19T19:09:54Z",
+    "engineMinusJplMinutes": 0.02
+   },
+   "agree": true
+  },
+  {
+   "id": "in-006",
+   "family": "ingress-date",
+   "key": [
+    "1948-10-23",
+    "1948-10-24"
+   ],
+   "horizons": {
+    "answer": "1948-10-23",
+    "accepted": [
+     "1948-10-23",
+     "1948-10-24"
+    ],
+    "at": "1948-10-23T12:18:00Z",
+    "engineMinusJplMinutes": -0.08
+   },
+   "agree": true
+  },
+  {
+   "id": "in-007",
+   "family": "ingress-date",
+   "key": [
+    "1978-03-20",
+    "1978-03-21"
+   ],
+   "horizons": {
+    "answer": "1978-03-20",
+    "accepted": [
+     "1978-03-20",
+     "1978-03-21"
+    ],
+    "at": "1978-03-20T23:33:33Z",
+    "engineMinusJplMinutes": -0.29
+   },
+   "agree": true
+  },
+  {
+   "id": "in-008",
+   "family": "ingress-date",
+   "key": [
+    "1932-12-21",
+    "1932-12-22"
+   ],
+   "horizons": {
+    "answer": "1932-12-22",
+    "accepted": [
+     "1932-12-21",
+     "1932-12-22"
+    ],
+    "at": "1932-12-22T01:14:15Z",
+    "engineMinusJplMinutes": -0.11
+   },
+   "agree": true
+  },
+  {
+   "id": "in-009",
+   "family": "ingress-date",
+   "key": [
+    "1993-04-11",
+    "1993-04-12"
+   ],
+   "horizons": {
+    "answer": "1993-04-11",
+    "accepted": [
+     "1993-04-11",
+     "1993-04-12"
+    ],
+    "at": "1993-04-11T22:23:56Z",
+    "engineMinusJplMinutes": -0.01
+   },
+   "agree": true
+  },
+  {
+   "id": "in-010",
+   "family": "ingress-date",
+   "key": [
+    "1949-05-10",
+    "1949-05-11"
+   ],
+   "horizons": {
+    "answer": "1949-05-11",
+    "accepted": [
+     "1949-05-10",
+     "1949-05-11"
+    ],
+    "at": "1949-05-11T01:53:33Z",
+    "engineMinusJplMinutes": 0
+   },
+   "agree": true
+  },
+  {
+   "id": "in-011",
+   "family": "ingress-date",
+   "key": [
+    "1977-06-19",
+    "1977-06-20"
+   ],
+   "horizons": {
+    "answer": "1977-06-19",
+    "accepted": [
+     "1977-06-19",
+     "1977-06-20"
+    ],
+    "at": "1977-06-19T14:53:16Z",
+    "engineMinusJplMinutes": -0.03
+   },
+   "agree": true
+  },
+  {
+   "id": "in-012",
+   "family": "ingress-date",
+   "key": [
+    "1998-05-25",
+    "1998-05-26"
+   ],
+   "horizons": {
+    "answer": "1998-05-25",
+    "accepted": [
+     "1998-05-25",
+     "1998-05-26"
+    ],
+    "at": "1998-05-25T12:25:12Z",
+    "engineMinusJplMinutes": -0.02
+   },
+   "agree": true
+  },
+  {
+   "id": "in-013",
+   "family": "ingress-date",
+   "key": [
+    "2001-09-15",
+    "2001-09-16"
+   ],
+   "horizons": {
+    "answer": "2001-09-15",
+    "accepted": [
+     "2001-09-15",
+     "2001-09-16"
+    ],
+    "at": "2001-09-15T19:39:25Z",
+    "engineMinusJplMinutes": -0.03
+   },
+   "agree": true
+  },
+  {
+   "id": "in-014",
+   "family": "ingress-date",
+   "key": [
+    "2020-05-09",
+    "2020-05-10"
+   ],
+   "horizons": {
+    "answer": "2020-05-10",
+    "accepted": [
+     "2020-05-09",
+     "2020-05-10"
+    ],
+    "at": "2020-05-10T09:38:32Z",
+    "engineMinusJplMinutes": -0.01
+   },
+   "agree": true
+  },
+  {
+   "id": "in-015",
+   "family": "ingress-date",
+   "key": [
+    "1983-11-13",
+    "1983-11-14"
+   ],
+   "horizons": {
+    "answer": "1983-11-13",
+    "accepted": [
+     "1983-11-13",
+     "1983-11-14"
+    ],
+    "at": "1983-11-13T12:40:38Z",
+    "engineMinusJplMinutes": 0.04
+   },
+   "agree": true
+  },
+  {
+   "id": "in-016",
+   "family": "ingress-date",
+   "key": [
+    "1973-02-24",
+    "1973-02-25"
+   ],
+   "horizons": {
+    "answer": "1973-02-24",
+    "accepted": [
+     "1973-02-24",
+     "1973-02-25"
+    ],
+    "at": "1973-02-24T14:14:13Z",
+    "engineMinusJplMinutes": -0.01
+   },
+   "agree": true
+  },
+  {
+   "id": "in-017",
+   "family": "ingress-date",
+   "key": [
+    "1950-02-16",
+    "1950-02-17"
+   ],
+   "horizons": {
+    "answer": "1950-02-17",
+    "accepted": [
+     "1950-02-16",
+     "1950-02-17"
+    ],
+    "at": "1950-02-17T03:10:48Z",
+    "engineMinusJplMinutes": -0.05
+   },
+   "agree": true
+  },
+  {
+   "id": "in-018",
+   "family": "ingress-date",
+   "key": [
+    "1989-01-06",
+    "1989-01-07"
+   ],
+   "horizons": {
+    "answer": "1989-01-06",
+    "accepted": [
+     "1989-01-06",
+     "1989-01-07"
+    ],
+    "at": "1989-01-06T13:13:58Z",
+    "engineMinusJplMinutes": -0.03
+   },
+   "agree": true
+  },
+  {
+   "id": "in-019",
+   "family": "ingress-date",
+   "key": [
+    "1969-11-08",
+    "1969-11-09"
+   ],
+   "horizons": {
+    "answer": "1969-11-08",
+    "accepted": [
+     "1969-11-08",
+     "1969-11-09"
+    ],
+    "at": "1969-11-08T16:17:45Z",
+    "engineMinusJplMinutes": -0.04
+   },
+   "agree": true
+  },
+  {
+   "id": "in-020",
+   "family": "ingress-date",
+   "key": [
+    "1939-11-16",
+    "1939-11-17"
+   ],
+   "horizons": {
+    "answer": "1939-11-16",
+    "accepted": [
+     "1939-11-16",
+     "1939-11-17"
+    ],
+    "at": "1939-11-16T20:00:05Z",
+    "engineMinusJplMinutes": -0.02
+   },
+   "agree": true
+  },
+  {
+   "id": "in-021",
+   "family": "ingress-date",
+   "key": [
+    "2041-07-25",
+    "2041-07-26"
+   ],
+   "horizons": {
+    "answer": "2041-07-25",
+    "accepted": [
+     "2041-07-25",
+     "2041-07-26"
+    ],
+    "at": "2041-07-25T15:27:29Z",
+    "engineMinusJplMinutes": 0.26
+   },
+   "agree": true
+  },
+  {
+   "id": "in-022",
+   "family": "ingress-date",
+   "key": [
+    "1975-01-08",
+    "1975-01-09"
+   ],
+   "horizons": {
+    "answer": "1975-01-08",
+    "accepted": [
+     "1975-01-08",
+     "1975-01-09"
+    ],
+    "at": "1975-01-08T21:57:47Z",
+    "engineMinusJplMinutes": 0.79
+   },
+   "agree": true
+  },
+  {
+   "id": "in-023",
+   "family": "ingress-date",
+   "key": [
+    "1944-07-28",
+    "1944-07-29"
+   ],
+   "horizons": {
+    "answer": "1944-07-28",
+    "accepted": [
+     "1944-07-28",
+     "1944-07-29"
+    ],
+    "at": "1944-07-28T23:43:38Z",
+    "engineMinusJplMinutes": -0.63
+   },
+   "agree": true
+  },
+  {
+   "id": "in-024",
+   "family": "ingress-date",
+   "key": [
+    "2017-09-29",
+    "2017-09-30"
+   ],
+   "horizons": {
+    "answer": "2017-09-30",
+    "accepted": [
+     "2017-09-29",
+     "2017-09-30"
+    ],
+    "at": "2017-09-30T00:42:07Z",
+    "engineMinusJplMinutes": -0.19
+   },
+   "agree": true
+  },
+  {
+   "id": "in-025",
+   "family": "ingress-date",
+   "key": [
+    "2033-04-11",
+    "2033-04-12"
+   ],
+   "horizons": {
+    "answer": "2033-04-12",
+    "accepted": [
+     "2033-04-11",
+     "2033-04-12"
+    ],
+    "at": "2033-04-12T09:17:49Z",
+    "engineMinusJplMinutes": 0.58
+   },
+   "agree": true
+  },
+  {
+   "id": "in-026",
+   "family": "ingress-date",
+   "key": [
+    "2001-08-13",
+    "2001-08-14"
+   ],
+   "horizons": {
+    "answer": "2001-08-14",
+    "accepted": [
+     "2001-08-13",
+     "2001-08-14"
+    ],
+    "at": "2001-08-14T05:03:44Z",
+    "engineMinusJplMinutes": -0.11
+   },
+   "agree": true
+  },
+  {
+   "id": "in-027",
+   "family": "ingress-date",
+   "key": [
+    "1914-02-17",
+    "1914-02-18"
+   ],
+   "horizons": {
+    "answer": "1914-02-18",
+    "accepted": [
+     "1914-02-17",
+     "1914-02-18"
+    ],
+    "at": "1914-02-18T00:04:52Z",
+    "engineMinusJplMinutes": 0.07
+   },
+   "agree": true
+  },
+  {
+   "id": "in-028",
+   "family": "ingress-date",
+   "key": [
+    "1954-04-28",
+    "1954-04-29"
+   ],
+   "horizons": {
+    "answer": "1954-04-28",
+    "accepted": [
+     "1954-04-28",
+     "1954-04-29"
+    ],
+    "at": "1954-04-28T22:03:07Z",
+    "engineMinusJplMinutes": -0.62
+   },
+   "agree": true
+  },
+  {
+   "id": "in-029",
+   "family": "ingress-date",
+   "key": [
+    "2030-04-04",
+    "2030-04-05"
+   ],
+   "horizons": {
+    "answer": "2030-04-05",
+    "accepted": [
+     "2030-04-04",
+     "2030-04-05"
+    ],
+    "at": "2030-04-05T09:18:47Z",
+    "engineMinusJplMinutes": -0.46
+   },
+   "agree": true
+  },
+  {
+   "id": "in-030",
+   "family": "ingress-date",
+   "key": [
+    "2047-02-18",
+    "2047-02-19"
+   ],
+   "horizons": {
+    "answer": "2047-02-18",
+    "accepted": [
+     "2047-02-18",
+     "2047-02-19"
+    ],
+    "at": "2047-02-18T19:12:27Z",
+    "engineMinusJplMinutes": 0.35
+   },
+   "agree": true
+  },
+  {
+   "id": "in-031",
+   "family": "ingress-date",
+   "key": [
+    "1963-07-31",
+    "1963-08-01"
+   ],
+   "horizons": {
+    "answer": "1963-07-31",
+    "accepted": [
+     "1963-07-31",
+     "1963-08-01"
+    ],
+    "at": "1963-07-31T22:38:28Z",
+    "engineMinusJplMinutes": -0.69
+   },
+   "agree": true
+  },
+  {
+   "id": "in-032",
+   "family": "ingress-date",
+   "key": [
+    "1958-10-27",
+    "1958-10-28"
+   ],
+   "horizons": {
+    "answer": "1958-10-27",
+    "accepted": [
+     "1958-10-27",
+     "1958-10-28"
+    ],
+    "at": "1958-10-27T16:26:02Z",
+    "engineMinusJplMinutes": -0.21
+   },
+   "agree": true
+  },
+  {
+   "id": "in-033",
+   "family": "ingress-date",
+   "key": [
+    "1942-01-11",
+    "1942-01-12"
+   ],
+   "horizons": {
+    "answer": "1942-01-11",
+    "accepted": [
+     "1942-01-11",
+     "1942-01-12"
+    ],
+    "at": "1942-01-11T22:20:31Z",
+    "engineMinusJplMinutes": -0.61
+   },
+   "agree": true
+  },
+  {
+   "id": "in-034",
+   "family": "ingress-date",
+   "key": [
+    "1966-08-25",
+    "1966-08-26"
+   ],
+   "horizons": {
+    "answer": "1966-08-25",
+    "accepted": [
+     "1966-08-25",
+     "1966-08-26"
+    ],
+    "at": "1966-08-25T15:51:50Z",
+    "engineMinusJplMinutes": -0.52
+   },
+   "agree": true
+  },
+  {
+   "id": "in-035",
+   "family": "ingress-date",
+   "key": [
+    "1933-08-25",
+    "1933-08-26"
+   ],
+   "horizons": {
+    "answer": "1933-08-26",
+    "accepted": [
+     "1933-08-25",
+     "1933-08-26"
+    ],
+    "at": "1933-08-26T06:33:58Z",
+    "engineMinusJplMinutes": -1.13
+   },
+   "agree": true
+  },
+  {
+   "id": "in-036",
+   "family": "ingress-date",
+   "key": [
+    "1915-10-07",
+    "1915-10-08"
+   ],
+   "horizons": {
+    "answer": "1915-10-07",
+    "accepted": [
+     "1915-10-07",
+     "1915-10-08"
+    ],
+    "at": "1915-10-07T20:47:42Z",
+    "engineMinusJplMinutes": -0.96
+   },
+   "agree": true
+  },
+  {
+   "id": "in-037",
+   "family": "ingress-date",
+   "key": [
+    "1932-01-17",
+    "1932-01-18"
+   ],
+   "horizons": {
+    "answer": "1932-01-18",
+    "accepted": [
+     "1932-01-17",
+     "1932-01-18"
+    ],
+    "at": "1932-01-18T00:34:33Z",
+    "engineMinusJplMinutes": -0.63
+   },
+   "agree": true
+  },
+  {
+   "id": "in-038",
+   "family": "ingress-date",
+   "key": [
+    "1978-08-03",
+    "1978-08-04"
+   ],
+   "horizons": {
+    "answer": "1978-08-04",
+    "accepted": [
+     "1978-08-03",
+     "1978-08-04"
+    ],
+    "at": "1978-08-04T09:06:54Z",
+    "engineMinusJplMinutes": 0.59
+   },
+   "agree": true
+  },
+  {
+   "id": "in-039",
+   "family": "ingress-date",
+   "key": [
+    "2047-04-13",
+    "2047-04-14"
+   ],
+   "horizons": {
+    "answer": "2047-04-13",
+    "accepted": [
+     "2047-04-13",
+     "2047-04-14"
+    ],
+    "at": "2047-04-13T21:03:53Z",
+    "engineMinusJplMinutes": 2.75
+   },
+   "agree": true
+  },
+  {
+   "id": "in-040",
+   "family": "ingress-date",
+   "key": [
+    "2001-07-12",
+    "2001-07-13"
+   ],
+   "horizons": {
+    "answer": "2001-07-13",
+    "accepted": [
+     "2001-07-12",
+     "2001-07-13"
+    ],
+    "at": "2001-07-13T00:02:46Z",
+    "engineMinusJplMinutes": -0.23
+   },
+   "agree": true
+  },
+  {
+   "id": "in-041",
+   "family": "ingress-date",
+   "key": [
+    "2035-04-29",
+    "2035-04-30"
+   ],
+   "horizons": {
+    "answer": "2035-04-29",
+    "accepted": [
+     "2035-04-29",
+     "2035-04-30"
+    ],
+    "at": "2035-04-29T18:57:16Z",
+    "engineMinusJplMinutes": -3.48
+   },
+   "agree": true
+  },
+  {
+   "id": "in-042",
+   "family": "ingress-date",
+   "key": [
+    "1945-08-24",
+    "1945-08-25"
+   ],
+   "horizons": {
+    "answer": "1945-08-25",
+    "accepted": [
+     "1945-08-24",
+     "1945-08-25"
+    ],
+    "at": "1945-08-25T06:05:27Z",
+    "engineMinusJplMinutes": 3.99
+   },
+   "agree": true
+  },
+  {
+   "id": "in-043",
+   "family": "ingress-date",
+   "key": [
+    "1978-04-11",
+    "1978-04-12"
+   ],
+   "horizons": {
+    "answer": "1978-04-12",
+    "accepted": [
+     "1978-04-11",
+     "1978-04-12"
+    ],
+    "at": "1978-04-12T00:11:44Z",
+    "engineMinusJplMinutes": 7.09
+   },
+   "agree": true
+  },
+  {
+   "id": "in-044",
+   "family": "ingress-date",
+   "key": [
+    "2020-12-19",
+    "2020-12-20"
+   ],
+   "horizons": {
+    "answer": "2020-12-19",
+    "accepted": [
+     "2020-12-19",
+     "2020-12-20"
+    ],
+    "at": "2020-12-19T13:07:28Z",
+    "engineMinusJplMinutes": 1.59
+   },
+   "agree": true
+  },
+  {
+   "id": "in-045",
+   "family": "ingress-date",
+   "key": [
+    "2017-12-19",
+    "2017-12-20"
+   ],
+   "horizons": {
+    "answer": "2017-12-20",
+    "accepted": [
+     "2017-12-19",
+     "2017-12-20"
+    ],
+    "at": "2017-12-20T04:48:59Z",
+    "engineMinusJplMinutes": -2.72
+   },
+   "agree": true
+  },
+  {
+   "id": "in-046",
+   "family": "ingress-date",
+   "key": [
+    "1921-10-07",
+    "1921-10-08"
+   ],
+   "horizons": {
+    "answer": "1921-10-07",
+    "accepted": [
+     "1921-10-07",
+     "1921-10-08"
+    ],
+    "at": "1921-10-07T17:21:41Z",
+    "engineMinusJplMinutes": -4.13
+   },
+   "agree": true
+  },
+  {
+   "id": "in-047",
+   "family": "ingress-date",
+   "key": [
+    "1914-08-24",
+    "1914-08-25"
+   ],
+   "horizons": {
+    "answer": "1914-08-24",
+    "accepted": [
+     "1914-08-24",
+     "1914-08-25"
+    ],
+    "at": "1914-08-24T17:27:18Z",
+    "engineMinusJplMinutes": -12.67
+   },
+   "agree": true
+  },
+  {
+   "id": "in-048",
+   "family": "ingress-date",
+   "key": [
+    "2014-12-23",
+    "2014-12-24"
+   ],
+   "horizons": {
+    "answer": "2014-12-23",
+    "accepted": [
+     "2014-12-23",
+     "2014-12-24"
+    ],
+    "at": "2014-12-23T16:33:49Z",
+    "engineMinusJplMinutes": 0
+   },
+   "agree": true
+  },
+  {
+   "id": "in-049",
+   "family": "ingress-date",
+   "key": [
+    "2007-09-02",
+    "2007-09-03"
+   ],
+   "horizons": {
+    "answer": "2007-09-02",
+    "accepted": [
+     "2007-09-02",
+     "2007-09-03"
+    ],
+    "at": "2007-09-02T13:48:31Z",
+    "engineMinusJplMinutes": -7.84
+   },
+   "agree": true
+  },
+  {
+   "id": "in-050",
+   "family": "ingress-date",
+   "key": [
+    "2035-05-11",
+    "2035-05-12"
+   ],
+   "horizons": {
+    "answer": "2035-05-11",
+    "accepted": [
+     "2035-05-11",
+     "2035-05-12"
+    ],
+    "at": "2035-05-11T20:44:45Z",
+    "engineMinusJplMinutes": 21.95
+   },
+   "agree": true
+  },
+  {
+   "id": "in-051",
+   "family": "ingress-date",
+   "key": [
+    "1968-09-28",
+    "1968-09-29"
+   ],
+   "horizons": {
+    "answer": "1968-09-28",
+    "accepted": [
+     "1968-09-28",
+     "1968-09-29"
+    ],
+    "at": "1968-09-28T16:08:33Z",
+    "engineMinusJplMinutes": 38.86
+   },
+   "agree": true
+  },
+  {
+   "id": "in-052",
+   "family": "ingress-date",
+   "key": [
+    "2040-05-15",
+    "2040-05-16"
+   ],
+   "horizons": {
+    "answer": "2040-05-15",
+    "accepted": [
+     "2040-05-15",
+     "2040-05-16"
+    ],
+    "at": "2040-05-15T22:15:11Z",
+    "engineMinusJplMinutes": 11.89
+   },
+   "agree": true
+  },
+  {
+   "id": "in-053",
+   "family": "ingress-date",
+   "key": [
+    "1956-06-09",
+    "1956-06-10"
+   ],
+   "horizons": {
+    "answer": "1956-06-10",
+    "accepted": [
+     "1956-06-09",
+     "1956-06-10"
+    ],
+    "at": "1956-06-10T01:46:54Z",
+    "engineMinusJplMinutes": 0.76
+   },
+   "agree": true
+  },
+  {
+   "id": "in-054",
+   "family": "ingress-date",
+   "key": [
+    "1975-09-07",
+    "1975-09-08"
+   ],
+   "horizons": {
+    "answer": "1975-09-08",
+    "accepted": [
+     "1975-09-07",
+     "1975-09-08"
+    ],
+    "at": "1975-09-08T05:15:27Z",
+    "engineMinusJplMinutes": 25.55
+   },
+   "agree": true
+  },
+  {
+   "id": "in-055",
+   "family": "ingress-date",
+   "key": [
+    "2039-03-23",
+    "2039-03-24"
+   ],
+   "horizons": {
+    "answer": "2039-03-23",
+    "accepted": [
+     "2039-03-23",
+     "2039-03-24"
+    ],
+    "at": "2039-03-23T20:36:46Z",
+    "engineMinusJplMinutes": -25.66
+   },
+   "agree": true
+  },
+  {
+   "id": "in-056",
+   "family": "ingress-date",
+   "key": [
+    "1901-07-19",
+    "1901-07-20"
+   ],
+   "horizons": {
+    "answer": "1901-07-19",
+    "accepted": [
+     "1901-07-19",
+     "1901-07-20"
+    ],
+    "at": "1901-07-19T23:56:33Z",
+    "engineMinusJplMinutes": -26.85
+   },
+   "agree": true
+  },
+  {
+   "id": "in-057",
+   "family": "ingress-date",
+   "key": [
+    "2038-05-21",
+    "2038-05-22"
+   ],
+   "horizons": {
+    "answer": "2038-05-22",
+    "accepted": [
+     "2038-05-21",
+     "2038-05-22"
+    ],
+    "at": "2038-05-22T00:13:15Z",
+    "engineMinusJplMinutes": -25.39
+   },
+   "agree": true
+  },
+  {
+   "id": "in-058",
+   "family": "ingress-date",
+   "key": [
+    "2043-03-08",
+    "2043-03-09"
+   ],
+   "horizons": {
+    "answer": "2043-03-09",
+    "accepted": [
+     "2043-03-08",
+     "2043-03-09"
+    ],
+    "at": "2043-03-09T01:01:34Z",
+    "engineMinusJplMinutes": 55.57
+   },
+   "agree": true
+  },
+  {
+   "id": "in-059",
+   "family": "ingress-date",
+   "key": [
+    "1983-11-05",
+    "1983-11-06"
+   ],
+   "horizons": {
+    "answer": "1983-11-05",
+    "accepted": [
+     "1983-11-05",
+     "1983-11-06"
+    ],
+    "at": "1983-11-05T21:09:26Z",
+    "engineMinusJplMinutes": -30.34
+   },
+   "agree": true
+  },
+  {
+   "id": "in-060",
+   "family": "ingress-date",
+   "key": [
+    "1913-07-09",
+    "1913-07-10"
+   ],
+   "horizons": {
+    "answer": "1913-07-09",
+    "accepted": [
+     "1913-07-09",
+     "1913-07-10"
+    ],
+    "at": "1913-07-09T22:27:23Z",
+    "engineMinusJplMinutes": -41.16
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-001",
+   "family": "lunation-date",
+   "key": [
+    "1937-06-08",
+    "1937-06-09"
+   ],
+   "horizons": {
+    "answer": "1937-06-08",
+    "accepted": [
+     "1937-06-08",
+     "1937-06-09"
+    ],
+    "at": "1937-06-08T20:42:55Z",
+    "engineMinusJplMinutes": 0.03
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-002",
+   "family": "lunation-date",
+   "key": [
+    "1906-04-08",
+    "1906-04-09"
+   ],
+   "horizons": {
+    "answer": "1906-04-09",
+    "accepted": [
+     "1906-04-08",
+     "1906-04-09"
+    ],
+    "at": "1906-04-09T06:12:11Z",
+    "engineMinusJplMinutes": -0.05
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-003",
+   "family": "lunation-date",
+   "key": [
+    "1988-02-24",
+    "1988-02-25"
+   ],
+   "horizons": {
+    "answer": "1988-02-24",
+    "accepted": [
+     "1988-02-24",
+     "1988-02-25"
+    ],
+    "at": "1988-02-24T12:15:08Z",
+    "engineMinusJplMinutes": -0.06
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-004",
+   "family": "lunation-date",
+   "key": [
+    "2017-04-26",
+    "2017-04-27"
+   ],
+   "horizons": {
+    "answer": "2017-04-26",
+    "accepted": [
+     "2017-04-26",
+     "2017-04-27"
+    ],
+    "at": "2017-04-26T12:16:08Z",
+    "engineMinusJplMinutes": 0.03
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-005",
+   "family": "lunation-date",
+   "key": [
+    "1950-01-03",
+    "1950-01-04"
+   ],
+   "horizons": {
+    "answer": "1950-01-04",
+    "accepted": [
+     "1950-01-03",
+     "1950-01-04"
+    ],
+    "at": "1950-01-04T07:47:46Z",
+    "engineMinusJplMinutes": -0.05
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-006",
+   "family": "lunation-date",
+   "key": [
+    "1965-05-23",
+    "1965-05-24"
+   ],
+   "horizons": {
+    "answer": "1965-05-23",
+    "accepted": [
+     "1965-05-23",
+     "1965-05-24"
+    ],
+    "at": "1965-05-23T14:40:12Z",
+    "engineMinusJplMinutes": -0.04
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-007",
+   "family": "lunation-date",
+   "key": [
+    "1926-12-04",
+    "1926-12-05"
+   ],
+   "horizons": {
+    "answer": "1926-12-05",
+    "accepted": [
+     "1926-12-04",
+     "1926-12-05"
+    ],
+    "at": "1926-12-05T06:11:26Z",
+    "engineMinusJplMinutes": -0.05
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-008",
+   "family": "lunation-date",
+   "key": [
+    "1995-09-08",
+    "1995-09-09"
+   ],
+   "horizons": {
+    "answer": "1995-09-09",
+    "accepted": [
+     "1995-09-08",
+     "1995-09-09"
+    ],
+    "at": "1995-09-09T03:36:39Z",
+    "engineMinusJplMinutes": 0.05
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-009",
+   "family": "lunation-date",
+   "key": [
+    "1924-01-13",
+    "1924-01-14"
+   ],
+   "horizons": {
+    "answer": "1924-01-13",
+    "accepted": [
+     "1924-01-13",
+     "1924-01-14"
+    ],
+    "at": "1924-01-13T22:44:22Z",
+    "engineMinusJplMinutes": -0.1
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-010",
+   "family": "lunation-date",
+   "key": [
+    "1953-09-07",
+    "1953-09-08"
+   ],
+   "horizons": {
+    "answer": "1953-09-08",
+    "accepted": [
+     "1953-09-07",
+     "1953-09-08"
+    ],
+    "at": "1953-09-08T07:47:34Z",
+    "engineMinusJplMinutes": -0.06
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-011",
+   "family": "lunation-date",
+   "key": [
+    "1968-08-07",
+    "1968-08-08",
+    "1968-08-09"
+   ],
+   "horizons": {
+    "answer": "1968-08-08",
+    "accepted": [
+     "1968-08-07",
+     "1968-08-08",
+     "1968-08-09"
+    ],
+    "at": "1968-08-08T11:32:16Z",
+    "engineMinusJplMinutes": 0.02
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-012",
+   "family": "lunation-date",
+   "key": [
+    "1916-06-22",
+    "1916-06-23"
+   ],
+   "horizons": {
+    "answer": "1916-06-22",
+    "accepted": [
+     "1916-06-22",
+     "1916-06-23"
+    ],
+    "at": "1916-06-22T13:16:00Z",
+    "engineMinusJplMinutes": -0.08
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-013",
+   "family": "lunation-date",
+   "key": [
+    "2014-10-23",
+    "2014-10-24"
+   ],
+   "horizons": {
+    "answer": "2014-10-23",
+    "accepted": [
+     "2014-10-23",
+     "2014-10-24"
+    ],
+    "at": "2014-10-23T21:56:40Z",
+    "engineMinusJplMinutes": 0
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-014",
+   "family": "lunation-date",
+   "key": [
+    "1964-04-26",
+    "1964-04-27"
+   ],
+   "horizons": {
+    "answer": "1964-04-26",
+    "accepted": [
+     "1964-04-26",
+     "1964-04-27"
+    ],
+    "at": "1964-04-26T17:49:32Z",
+    "engineMinusJplMinutes": -0.02
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-015",
+   "family": "lunation-date",
+   "key": [
+    "2035-02-15",
+    "2035-02-16"
+   ],
+   "horizons": {
+    "answer": "2035-02-15",
+    "accepted": [
+     "2035-02-15",
+     "2035-02-16"
+    ],
+    "at": "2035-02-15T13:17:01Z",
+    "engineMinusJplMinutes": -0.09
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-016",
+   "family": "lunation-date",
+   "key": [
+    "2008-12-27",
+    "2008-12-28"
+   ],
+   "horizons": {
+    "answer": "2008-12-27",
+    "accepted": [
+     "2008-12-27",
+     "2008-12-28"
+    ],
+    "at": "2008-12-27T12:22:24Z",
+    "engineMinusJplMinutes": 0.06
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-017",
+   "family": "lunation-date",
+   "key": [
+    "2025-06-10",
+    "2025-06-11"
+   ],
+   "horizons": {
+    "answer": "2025-06-11",
+    "accepted": [
+     "2025-06-10",
+     "2025-06-11"
+    ],
+    "at": "2025-06-11T07:43:50Z",
+    "engineMinusJplMinutes": -0.01
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-018",
+   "family": "lunation-date",
+   "key": [
+    "2004-07-08",
+    "2004-07-09"
+   ],
+   "horizons": {
+    "answer": "2004-07-09",
+    "accepted": [
+     "2004-07-08",
+     "2004-07-09"
+    ],
+    "at": "2004-07-09T07:33:35Z",
+    "engineMinusJplMinutes": -0.01
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-019",
+   "family": "lunation-date",
+   "key": [
+    "2008-03-07",
+    "2008-03-08"
+   ],
+   "horizons": {
+    "answer": "2008-03-07",
+    "accepted": [
+     "2008-03-07",
+     "2008-03-08"
+    ],
+    "at": "2008-03-07T17:14:14Z",
+    "engineMinusJplMinutes": 0.04
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-020",
+   "family": "lunation-date",
+   "key": [
+    "1975-08-21",
+    "1975-08-22"
+   ],
+   "horizons": {
+    "answer": "1975-08-21",
+    "accepted": [
+     "1975-08-21",
+     "1975-08-22"
+    ],
+    "at": "1975-08-21T19:47:38Z",
+    "engineMinusJplMinutes": 0.01
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-021",
+   "family": "lunation-date",
+   "key": [
+    "1969-03-25",
+    "1969-03-26"
+   ],
+   "horizons": {
+    "answer": "1969-03-26",
+    "accepted": [
+     "1969-03-25",
+     "1969-03-26"
+    ],
+    "at": "1969-03-26T00:48:00Z",
+    "engineMinusJplMinutes": -0.04
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-022",
+   "family": "lunation-date",
+   "key": [
+    "1915-09-08",
+    "1915-09-09",
+    "1915-09-10"
+   ],
+   "horizons": {
+    "answer": "1915-09-09",
+    "accepted": [
+     "1915-09-08",
+     "1915-09-09",
+     "1915-09-10"
+    ],
+    "at": "1915-09-09T10:52:17Z",
+    "engineMinusJplMinutes": -0.09
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-023",
+   "family": "lunation-date",
+   "key": [
+    "2004-04-04",
+    "2004-04-05",
+    "2004-04-06"
+   ],
+   "horizons": {
+    "answer": "2004-04-05",
+    "accepted": [
+     "2004-04-04",
+     "2004-04-05",
+     "2004-04-06"
+    ],
+    "at": "2004-04-05T11:02:45Z",
+    "engineMinusJplMinutes": 0.01
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-024",
+   "family": "lunation-date",
+   "key": [
+    "1908-03-25",
+    "1908-03-26"
+   ],
+   "horizons": {
+    "answer": "1908-03-25",
+    "accepted": [
+     "1908-03-25",
+     "1908-03-26"
+    ],
+    "at": "1908-03-25T12:31:31Z",
+    "engineMinusJplMinutes": -0.07
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-025",
+   "family": "lunation-date",
+   "key": [
+    "1923-07-13",
+    "1923-07-14"
+   ],
+   "horizons": {
+    "answer": "1923-07-14",
+    "accepted": [
+     "1923-07-13",
+     "1923-07-14"
+    ],
+    "at": "1923-07-14T00:44:38Z",
+    "engineMinusJplMinutes": -0.06
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-026",
+   "family": "lunation-date",
+   "key": [
+    "1984-12-07",
+    "1984-12-08",
+    "1984-12-09"
+   ],
+   "horizons": {
+    "answer": "1984-12-08",
+    "accepted": [
+     "1984-12-07",
+     "1984-12-08",
+     "1984-12-09"
+    ],
+    "at": "1984-12-08T10:53:21Z",
+    "engineMinusJplMinutes": -0.02
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-027",
+   "family": "lunation-date",
+   "key": [
+    "1919-07-04",
+    "1919-07-05"
+   ],
+   "horizons": {
+    "answer": "1919-07-05",
+    "accepted": [
+     "1919-07-04",
+     "1919-07-05"
+    ],
+    "at": "1919-07-05T03:16:46Z",
+    "engineMinusJplMinutes": -0.05
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-028",
+   "family": "lunation-date",
+   "key": [
+    "1926-10-06",
+    "1926-10-07"
+   ],
+   "horizons": {
+    "answer": "1926-10-06",
+    "accepted": [
+     "1926-10-06",
+     "1926-10-07"
+    ],
+    "at": "1926-10-06T22:13:08Z",
+    "engineMinusJplMinutes": -0.08
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-029",
+   "family": "lunation-date",
+   "key": [
+    "2022-08-11",
+    "2022-08-12"
+   ],
+   "horizons": {
+    "answer": "2022-08-12",
+    "accepted": [
+     "2022-08-11",
+     "2022-08-12"
+    ],
+    "at": "2022-08-12T01:35:45Z",
+    "engineMinusJplMinutes": -0.03
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-030",
+   "family": "lunation-date",
+   "key": [
+    "2036-12-09",
+    "2036-12-10"
+   ],
+   "horizons": {
+    "answer": "2036-12-10",
+    "accepted": [
+     "2036-12-09",
+     "2036-12-10"
+    ],
+    "at": "2036-12-10T09:18:33Z",
+    "engineMinusJplMinutes": 0.05
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-031",
+   "family": "lunation-date",
+   "key": [
+    "1959-08-04",
+    "1959-08-05"
+   ],
+   "horizons": {
+    "answer": "1959-08-04",
+    "accepted": [
+     "1959-08-04",
+     "1959-08-05"
+    ],
+    "at": "1959-08-04T14:33:51Z",
+    "engineMinusJplMinutes": -0.04
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-032",
+   "family": "lunation-date",
+   "key": [
+    "1919-07-12",
+    "1919-07-13"
+   ],
+   "horizons": {
+    "answer": "1919-07-13",
+    "accepted": [
+     "1919-07-12",
+     "1919-07-13"
+    ],
+    "at": "1919-07-13T06:01:54Z",
+    "engineMinusJplMinutes": -0.02
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-033",
+   "family": "lunation-date",
+   "key": [
+    "1950-05-24",
+    "1950-05-25"
+   ],
+   "horizons": {
+    "answer": "1950-05-24",
+    "accepted": [
+     "1950-05-24",
+     "1950-05-25"
+    ],
+    "at": "1950-05-24T21:28:21Z",
+    "engineMinusJplMinutes": -0.06
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-034",
+   "family": "lunation-date",
+   "key": [
+    "1905-04-04",
+    "1905-04-05"
+   ],
+   "horizons": {
+    "answer": "1905-04-04",
+    "accepted": [
+     "1905-04-04",
+     "1905-04-05"
+    ],
+    "at": "1905-04-04T23:23:18Z",
+    "engineMinusJplMinutes": -0.11
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-035",
+   "family": "lunation-date",
+   "key": [
+    "1966-05-04",
+    "1966-05-05"
+   ],
+   "horizons": {
+    "answer": "1966-05-04",
+    "accepted": [
+     "1966-05-04",
+     "1966-05-05"
+    ],
+    "at": "1966-05-04T21:00:28Z",
+    "engineMinusJplMinutes": -0.03
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-036",
+   "family": "lunation-date",
+   "key": [
+    "2027-04-28",
+    "2027-04-29"
+   ],
+   "horizons": {
+    "answer": "2027-04-28",
+    "accepted": [
+     "2027-04-28",
+     "2027-04-29"
+    ],
+    "at": "2027-04-28T20:17:52Z",
+    "engineMinusJplMinutes": 0.06
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-037",
+   "family": "lunation-date",
+   "key": [
+    "2042-08-15",
+    "2042-08-16"
+   ],
+   "horizons": {
+    "answer": "2042-08-15",
+    "accepted": [
+     "2042-08-15",
+     "2042-08-16"
+    ],
+    "at": "2042-08-15T18:01:22Z",
+    "engineMinusJplMinutes": -0.04
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-038",
+   "family": "lunation-date",
+   "key": [
+    "1943-01-20",
+    "1943-01-21",
+    "1943-01-22"
+   ],
+   "horizons": {
+    "answer": "1943-01-21",
+    "accepted": [
+     "1943-01-20",
+     "1943-01-21",
+     "1943-01-22"
+    ],
+    "at": "1943-01-21T10:47:50Z",
+    "engineMinusJplMinutes": 0.01
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-039",
+   "family": "lunation-date",
+   "key": [
+    "1929-05-15",
+    "1929-05-16"
+   ],
+   "horizons": {
+    "answer": "1929-05-15",
+    "accepted": [
+     "1929-05-15",
+     "1929-05-16"
+    ],
+    "at": "1929-05-15T20:55:53Z",
+    "engineMinusJplMinutes": 0
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-040",
+   "family": "lunation-date",
+   "key": [
+    "1993-11-13",
+    "1993-11-14"
+   ],
+   "horizons": {
+    "answer": "1993-11-13",
+    "accepted": [
+     "1993-11-13",
+     "1993-11-14"
+    ],
+    "at": "1993-11-13T21:34:20Z",
+    "engineMinusJplMinutes": -0.07
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-041",
+   "family": "lunation-date",
+   "key": [
+    "1947-12-27",
+    "1947-12-28"
+   ],
+   "horizons": {
+    "answer": "1947-12-27",
+    "accepted": [
+     "1947-12-27",
+     "1947-12-28"
+    ],
+    "at": "1947-12-27T20:26:52Z",
+    "engineMinusJplMinutes": -0.01
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-042",
+   "family": "lunation-date",
+   "key": [
+    "1971-10-10",
+    "1971-10-11"
+   ],
+   "horizons": {
+    "answer": "1971-10-11",
+    "accepted": [
+     "1971-10-10",
+     "1971-10-11"
+    ],
+    "at": "1971-10-11T05:29:16Z",
+    "engineMinusJplMinutes": 0.02
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-043",
+   "family": "lunation-date",
+   "key": [
+    "2001-11-14",
+    "2001-11-15"
+   ],
+   "horizons": {
+    "answer": "2001-11-15",
+    "accepted": [
+     "2001-11-14",
+     "2001-11-15"
+    ],
+    "at": "2001-11-15T06:39:59Z",
+    "engineMinusJplMinutes": -0.02
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-044",
+   "family": "lunation-date",
+   "key": [
+    "1936-06-04",
+    "1936-06-05"
+   ],
+   "horizons": {
+    "answer": "1936-06-05",
+    "accepted": [
+     "1936-06-04",
+     "1936-06-05"
+    ],
+    "at": "1936-06-05T05:22:17Z",
+    "engineMinusJplMinutes": 0.01
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-045",
+   "family": "lunation-date",
+   "key": [
+    "2022-03-09",
+    "2022-03-10",
+    "2022-03-11"
+   ],
+   "horizons": {
+    "answer": "2022-03-10",
+    "accepted": [
+     "2022-03-09",
+     "2022-03-10",
+     "2022-03-11"
+    ],
+    "at": "2022-03-10T10:45:24Z",
+    "engineMinusJplMinutes": 0.05
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-046",
+   "family": "lunation-date",
+   "key": [
+    "1982-04-23",
+    "1982-04-24"
+   ],
+   "horizons": {
+    "answer": "1982-04-23",
+    "accepted": [
+     "1982-04-23",
+     "1982-04-24"
+    ],
+    "at": "1982-04-23T20:28:40Z",
+    "engineMinusJplMinutes": 0.03
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-047",
+   "family": "lunation-date",
+   "key": [
+    "1942-12-22",
+    "1942-12-23"
+   ],
+   "horizons": {
+    "answer": "1942-12-22",
+    "accepted": [
+     "1942-12-22",
+     "1942-12-23"
+    ],
+    "at": "1942-12-22T15:03:09Z",
+    "engineMinusJplMinutes": 0.02
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-048",
+   "family": "lunation-date",
+   "key": [
+    "1963-10-09",
+    "1963-10-10"
+   ],
+   "horizons": {
+    "answer": "1963-10-09",
+    "accepted": [
+     "1963-10-09",
+     "1963-10-10"
+    ],
+    "at": "1963-10-09T19:27:01Z",
+    "engineMinusJplMinutes": -0.05
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-049",
+   "family": "lunation-date",
+   "key": [
+    "1960-07-23",
+    "1960-07-24"
+   ],
+   "horizons": {
+    "answer": "1960-07-23",
+    "accepted": [
+     "1960-07-23",
+     "1960-07-24"
+    ],
+    "at": "1960-07-23T18:30:44Z",
+    "engineMinusJplMinutes": -0.07
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-050",
+   "family": "lunation-date",
+   "key": [
+    "1953-08-24",
+    "1953-08-25"
+   ],
+   "horizons": {
+    "answer": "1953-08-24",
+    "accepted": [
+     "1953-08-24",
+     "1953-08-25"
+    ],
+    "at": "1953-08-24T20:20:42Z",
+    "engineMinusJplMinutes": -0.04
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-051",
+   "family": "lunation-date",
+   "key": [
+    "1994-01-19",
+    "1994-01-20"
+   ],
+   "horizons": {
+    "answer": "1994-01-19",
+    "accepted": [
+     "1994-01-19",
+     "1994-01-20"
+    ],
+    "at": "1994-01-19T20:26:37Z",
+    "engineMinusJplMinutes": 0.04
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-052",
+   "family": "lunation-date",
+   "key": [
+    "2036-09-19",
+    "2036-09-20"
+   ],
+   "horizons": {
+    "answer": "2036-09-20",
+    "accepted": [
+     "2036-09-19",
+     "2036-09-20"
+    ],
+    "at": "2036-09-20T01:51:38Z",
+    "engineMinusJplMinutes": -0.05
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-053",
+   "family": "lunation-date",
+   "key": [
+    "1974-06-04",
+    "1974-06-05"
+   ],
+   "horizons": {
+    "answer": "1974-06-04",
+    "accepted": [
+     "1974-06-04",
+     "1974-06-05"
+    ],
+    "at": "1974-06-04T22:09:38Z",
+    "engineMinusJplMinutes": 0.02
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-054",
+   "family": "lunation-date",
+   "key": [
+    "1933-02-17",
+    "1933-02-18"
+   ],
+   "horizons": {
+    "answer": "1933-02-17",
+    "accepted": [
+     "1933-02-17",
+     "1933-02-18"
+    ],
+    "at": "1933-02-17T14:08:20Z",
+    "engineMinusJplMinutes": -0.02
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-055",
+   "family": "lunation-date",
+   "key": [
+    "1956-04-10",
+    "1956-04-11"
+   ],
+   "horizons": {
+    "answer": "1956-04-11",
+    "accepted": [
+     "1956-04-10",
+     "1956-04-11"
+    ],
+    "at": "1956-04-11T02:38:49Z",
+    "engineMinusJplMinutes": -0.08
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-056",
+   "family": "lunation-date",
+   "key": [
+    "2017-10-05",
+    "2017-10-06"
+   ],
+   "horizons": {
+    "answer": "2017-10-05",
+    "accepted": [
+     "2017-10-05",
+     "2017-10-06"
+    ],
+    "at": "2017-10-05T18:40:07Z",
+    "engineMinusJplMinutes": 0.02
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-057",
+   "family": "lunation-date",
+   "key": [
+    "1922-04-04",
+    "1922-04-05"
+   ],
+   "horizons": {
+    "answer": "1922-04-05",
+    "accepted": [
+     "1922-04-04",
+     "1922-04-05"
+    ],
+    "at": "1922-04-05T05:45:05Z",
+    "engineMinusJplMinutes": 0.01
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-058",
+   "family": "lunation-date",
+   "key": [
+    "1925-08-19",
+    "1925-08-20"
+   ],
+   "horizons": {
+    "answer": "1925-08-19",
+    "accepted": [
+     "1925-08-19",
+     "1925-08-20"
+    ],
+    "at": "1925-08-19T13:14:35Z",
+    "engineMinusJplMinutes": -0.14
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-059",
+   "family": "lunation-date",
+   "key": [
+    "1902-07-20",
+    "1902-07-21"
+   ],
+   "horizons": {
+    "answer": "1902-07-20",
+    "accepted": [
+     "1902-07-20",
+     "1902-07-21"
+    ],
+    "at": "1902-07-20T16:45:02Z",
+    "engineMinusJplMinutes": -0.04
+   },
+   "agree": true
+  },
+  {
+   "id": "lu-060",
+   "family": "lunation-date",
+   "key": [
+    "1981-11-18",
+    "1981-11-19"
+   ],
+   "horizons": {
+    "answer": "1981-11-18",
+    "accepted": [
+     "1981-11-18",
+     "1981-11-19"
+    ],
+    "at": "1981-11-18T14:53:42Z",
+    "engineMinusJplMinutes": 0.04
+   },
+   "agree": true
+  }
+ ]
+}

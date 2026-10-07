@@ -21,7 +21,7 @@
   "slug": "event-brief-lunation-2026-10-10t15-50-02-149z-new-moon-libra",
   "kind": "event-brief",
   "templateId": "event-brief.v1",
-  "issuedAt": "2026-10-06T12:00:00.000Z",
+  "issuedAt": "2026-10-03T12:00:00.000Z",
   "visibleAt": "2026-10-10T15:50:02.149Z",
   "eventAt": "2026-10-10T15:50:02.149Z",
   "title": "New Moon in Libra · event brief",
@@ -35,14 +35,7 @@
     "astrology",
     "lunation"
   ],
-  "symbolicScore": {
-    "sign": "libra",
-    "attention": 18.3,
-    "tone": 6.7,
-    "eventIntensity": 6.7,
-    "calculation": "22 attention / 8 tone / 8 event intensity × 0.8336 horizon multiplier",
-    "marketFieldsUsed": false
-  },
+  "symbolicScore": null,
   "sections": {
     "skyFact": {
       "heading": "Sky fact",
@@ -53,7 +46,7 @@
     },
     "traditionalReading": {
       "heading": "Traditional reading",
-      "body": "A new Moon is scored as symbolic renewal for Libra; that is an astrology convention, not evidence of higher returns. The score calculation is 22 attention / 8 tone / 8 event intensity × 0.8336 horizon multiplier.",
+      "body": "The event is listed as calendar context. No directional market claim is attached to it.",
       "evidence": [
         "src/data/transits-2026-10.json"
       ]
@@ -73,7 +66,7 @@
     "transitSource": "src/data/transits-2026-10.json",
     "eventKey": "lunation:2026-10-10T15:50:02.149Z:new-moon-libra",
     "groupedEvents": null,
-    "outlookEdition": "public/assets/registry-outlook.json#weekly:2026-10-06",
+    "outlookEdition": "public/assets/registry-outlook.json#weekly:2026-10-03",
     "marketSnapshotId": null,
     "coverage": {
       "overall": "complete",
@@ -86,13 +79,13 @@
       "missingOccupancyPlanets": []
     }
   },
-  "artifactHash": "cf114aadc0bd065d03fe1ed055e81ee118872b487a85d2634ac7a6ce21eaec4f",
-  "publishedAt": "2026-10-06T12:00:00.000Z",
+  "artifactHash": "52a27cfb1b56c0b1196b3439bd1ac3dff7f200c2b544235d9bbd77afb3f8171d",
+  "publishedAt": "2026-10-03T12:00:00.000Z",
   "publication": {
     "mode": "post-pilot-deterministic-allowlist",
-    "publishedAt": "2026-10-06T12:00:00.000Z",
+    "publishedAt": "2026-10-03T12:00:00.000Z",
     "reviewer": null,
-    "artifactSha256": "cf114aadc0bd065d03fe1ed055e81ee118872b487a85d2634ac7a6ce21eaec4f"
+    "artifactSha256": "52a27cfb1b56c0b1196b3439bd1ac3dff7f200c2b544235d9bbd77afb3f8171d"
   },
   "status": "approved"
 }

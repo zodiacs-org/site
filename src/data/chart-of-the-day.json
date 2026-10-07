@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "editions": [
+    {
+      "day": "2026-10-04",
+      "name": "Jannik Sinner",
+      "birthDate": "2001-08-16",
+      "birthTime": null,
+      "timeQuality": "unknown",
+      "birthSource": "https://www.nittoatpfinals.com/en/players/singles/jannik-sinner",
+      "newsSource": "https://en.rolexshanghaimasters.com/en/media/news/sinner-shanghai-2026-withdrawal",
+      "newsDate": "2026-10-03",
+      "birthSourceTitle": "Nitto ATP Finals",
+      "newsSourceTitle": "Rolex Shanghai Masters",
+      "reason": {
+        "en": "The tournament reported his withdrawal from Shanghai on October 3. The chart does not explain or predict injuries.",
+        "es": "El torneo anunció su retirada de Shanghái el 3 de octubre. La carta no explica ni predice lesiones.",
+        "pt": "O torneio anunciou sua desistência de Xangai em 3 de outubro. O mapa não explica nem prevê lesões.",
+        "fr": "Le tournoi a annoncé son retrait de Shanghai le 3 octobre. Le thème n’explique ni ne prédit les blessures.",
+        "it": "Il torneo ha annunciato il suo ritiro da Shanghai il 3 ottobre. Il tema non spiega né prevede gli infortuni.",
+        "ru": "Турнир сообщил о его отказе от участия в Шанхае 3 октября. Карта не объясняет и не предсказывает травмы."
+      },
+      "reliability": {
+        "en": "The official tour biography gives his birth date and San Candido, Italy. It is not a birth certificate and gives no birth time. Rising and houses are omitted; noon UTC is a reference moment only.",
+        "es": "La biografía oficial del circuito indica su fecha de nacimiento y San Candido, Italia. No es un certificado de nacimiento y no incluye la hora. Se omiten el ascendente y las casas; el mediodía UTC es solo un instante de referencia.",
+        "pt": "A biografia oficial do circuito informa a data de nascimento e San Candido, Itália. Não é uma certidão de nascimento e não informa o horário. Ascendente e casas são omitidos; meio-dia UTC é apenas um instante de referência.",
+        "fr": "La biographie officielle du circuit indique sa date de naissance et San Candido, en Italie. Ce n’est pas un acte de naissance et aucune heure n’est donnée. L’ascendant et les maisons sont omis ; midi UTC est uniquement un instant de référence.",
+        "it": "La biografia ufficiale del circuito indica la data di nascita e San Candido, Italia. Non è un certificato di nascita e non riporta l’ora. Ascendente e case sono omessi; mezzogiorno UTC è solo un istante di riferimento.",
+        "ru": "Официальная биография тура указывает дату рождения и Сан-Кандидо, Италия. Это не свидетельство о рождении; время рождения не указано. Асцендент и дома не приводятся; полдень UTC служит только моментом отсчёта."
+      },
+      "ownerApproval": {
+        "approved": true,
+        "approvedAt": "2026-10-04T07:31:18.000Z",
+        "evidence": "The owner replied “approved” in task 01a0c34a-73b0-7091-911b-046a6f96fc8c on October 4, 2026, after the Phase 3 release report identified the October 4 Jannik Sinner draft as awaiting approval. This approval covers this dated edition only; future figures still require individual approval."
+      }
+    }
+  ]
+}

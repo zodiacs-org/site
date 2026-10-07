@@ -29,7 +29,15 @@ describe('assistant site context', () => {
 
     expect(TOOL_ROUTES).toEqual([
       '/ask/',
+      '/sky-calendar/',
+      '/astrologer-kit/',
+      '/your-sky-wrapped/',
+      '/chart-of-the-day/',
       '/baby-zodiac/',
+      '/big-three/',
+      '/chart-twins/',
+      '/compatibility/invite/',
+      '/group-charts/',
       '/birth-chart/',
       '/birthday/',
       '/compatibility/',
@@ -65,14 +73,15 @@ describe('assistant site context', () => {
       // The local MCP adapter's page at /developers/mcp/ adds one more again.
       // The engine's own product page at /developers/engine/ adds one more.
       // The conformance suite's results page at /developers/conformance/ adds one more.
-      // The compute API's page at /developers/compute/ adds the last one.
-      consumerRoutes: 697,
+      // The compute API's page at /developers/compute/ adds one more.
+      // The sky-fact benchmark's page at /developers/sky-benchmark/ adds the last one.
+      consumerRoutes: 705,
       glossary: 145,
       guides: 12,
       learn: 159,
       pairs: 78,
-      staticPages: 58,
-      tools: 20,
+      staticPages: 66,
+      tools: 28,
     });
     expect(context).toContain('- /birthday/february-29/ — Pisces birthday guide.');
     expect(context).toContain('- /compatibility/aries-pisces/ — Aries and Pisces in love and the long run.');

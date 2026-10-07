@@ -122,7 +122,7 @@ async function inspectMobile(browser, baseURL, width) {
   check(`${width}: chart canvas remains named`, layout.canvasRole === 'img' && Boolean(layout.canvasLabel));
 
   const tabs = page.getByRole('tab');
-  check(`${width}: exactly Chart and Trade tabs`, await tabs.allTextContents().then((labels) => labels.join('|') === 'Chart|Trade'));
+  check(`${width}: exactly Chart and Registry tabs`, await tabs.allTextContents().then((labels) => labels.join('|') === 'Chart|Registry'));
   check(`${width}: Chart selected initially`, await page.getByRole('tab', { name: 'Chart' }).getAttribute('aria-selected') === 'true');
 
   const marketButton = page.locator('.zme-mobile-market__button');
@@ -160,20 +160,19 @@ async function inspectMobile(browser, baseURL, width) {
   check(`${width}: market choice updates hash`, await page.evaluate(() => location.hash) === '#taurus');
   check(`${width}: market choice updates header`, await page.locator('.zme-mobile-market__name').textContent() === 'Taurus');
 
-  const amount = page.locator('.tp .pay__input');
-  await amount.waitFor({ state: 'attached' });
   await page.locator('.zme-mobile-buy').click();
-  check(`${width}: sticky Buy opens Trade`, await page.getByRole('tab', { name: 'Trade' }).getAttribute('aria-selected') === 'true');
-  check(`${width}: sticky Buy focuses amount`, await amount.evaluate((node) => document.activeElement === node));
+  check(`${width}: sticky Registry opens record tab`, await page.getByRole('tab', { name: 'Registry' }).getAttribute('aria-selected') === 'true');
+  const record = page.locator('.zme__panel-host a');
+  check(`${width}: record link stays pinned to selected sign`, await record.getAttribute('href') === '/registry/taurus/');
+  check(`${width}: no transaction panel`, await page.locator('.tp').count() === 0);
   if (OUT && width === 390) {
-    await page.screenshot({ path: `${OUT}/zodiac-markets-${width}-trade.png` });
+    await page.screenshot({ path: `${OUT}/zodiac-markets-${width}-registry.png` });
   }
-  await amount.fill('42');
   await page.getByRole('tab', { name: 'Chart' }).click();
-  await page.getByRole('tab', { name: 'Trade' }).click();
-  check(`${width}: tab switch preserves trade state`, await amount.inputValue() === '42');
-  check(`${width}: no invented Sell or limit button`,
-    await page.getByRole('button', { name: /^(?:Sell|Limit|TP\/SL)$/iu }).count() === 0);
+  await page.getByRole('tab', { name: 'Registry' }).click();
+  check(`${width}: tab switch preserves selected record`, await record.getAttribute('href') === '/registry/taurus/');
+  check(`${width}: no signing or wallet button`,
+    await page.getByRole('button', { name: /^(?:Connect wallet|Buy|Sell|Sign|Limit|TP\/SL)$/iu }).count() === 0);
 
   const beforeDepth = providerRequests.length;
   check(`${width}: depth remains explicit`, await page.getByRole('button', { name: 'Load depth' }).count() === 1);
@@ -182,7 +181,7 @@ async function inspectMobile(browser, baseURL, width) {
 
   await page.getByRole('tab', { name: 'Chart' }).focus();
   await page.keyboard.press('ArrowRight');
-  check(`${width}: tab keyboard navigation works`, await page.getByRole('tab', { name: 'Trade' }).getAttribute('aria-selected') === 'true');
+  check(`${width}: tab keyboard navigation works`, await page.getByRole('tab', { name: 'Registry' }).getAttribute('aria-selected') === 'true');
   check(`${width}: no runtime exception`, pageErrors.length === 0, pageErrors.join('\n'));
   const allowedOrigins = new Set([
     new URL(baseURL).origin,

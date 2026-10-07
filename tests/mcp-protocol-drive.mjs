@@ -6,10 +6,12 @@
  *
  * Nothing here is mocked: the drive spawns `examples/mcp-server/server.mjs` as
  * a child process, speaks MCP over its stdio, and reads what comes back. It
- * initializes, lists the tools, calls all three, drives eighteen malformed or
- * refused requests, checks that a valid request still works after every one of
- * them, probes four raw line shapes the SDK client cannot express, and closes
- * the process.
+ * initializes, lists the tools and their output schemas, calls all six —
+ * the client itself checks every result against the schema the server
+ * advertised — checks what each result cites, lists and reads the two
+ * resources, drives eighteen malformed or refused requests, checks that a
+ * valid request still works after every one of them, probes raw line shapes
+ * the SDK client cannot express, and closes the process.
  *
  * Every chart in here is synthetic: round coordinates for well-known cities on
  * dates chosen for what they exercise. No real person's birth details are used
@@ -35,6 +37,18 @@ import { LATEST_PROTOCOL_VERSION, SUPPORTED_PROTOCOL_VERSIONS } from '@modelcont
 const ROOT = fileURLToPath(new URL('../', import.meta.url));
 const SERVER = resolve(ROOT, 'examples/mcp-server/server.mjs');
 const OUT = resolve(ROOT, 'docs/platform/evidence/mcp-adapter');
+const PACKAGE_VERSION = JSON.parse(await readFile(resolve(ROOT, 'examples/mcp-server/package.json'), 'utf8')).version;
+const DOCS = 'https://zodiacs.org/developers/mcp/';
+
+/** RFC 8785 canonical JSON and its SHA-256, written out here, as a client citing a result would. */
+const canonical = (value) => {
+  if (Array.isArray(value)) return `[${value.map(canonical).join(',')}]`;
+  if (value !== null && typeof value === 'object') {
+    return `{${Object.keys(value).sort().map((key) => `${JSON.stringify(key)}:${canonical(value[key])}`).join(',')}}`;
+  }
+  return JSON.stringify(value);
+};
+const digest = (value) => `sha256:${createHash('sha256').update(canonical(value), 'utf8').digest('hex')}`;
 
 /** Synthetic birth details, reused so the drive is deterministic. */
 const LONDON = { utc: '1990-06-15T13:30:00Z', latitude: 51.5074, longitude: -0.1278 };
@@ -172,19 +186,28 @@ try {
   // ---- connection ----
   const info = client.getServerVersion();
   check('initialize succeeds and names the adapter', info?.name === 'zodiacs-mcp-server', info);
-  check('server version is the adapter candidate', /^\d+\.\d+\.\d+-rc\.\d+$/.test(info?.version ?? ''), info?.version);
+  // The packaged version, and still a release candidate's: a fourth part marks
+  // a revision of a candidate that keeps its engine (0.1.0-rc.16.1).
+  check('server version is the packaged adapter candidate version',
+    info?.version === PACKAGE_VERSION && /^\d+\.\d+\.\d+-rc\.\d+(?:\.\d+)?$/.test(PACKAGE_VERSION),
+    { server: info?.version, package: PACKAGE_VERSION });
   check('server declares the tools capability', Boolean(client.getServerCapabilities()?.tools));
 
   // ---- tools/list ----
   const listed = await client.listTools();
   const names = listed.tools.map((tool) => tool.name).sort();
-  check('lists exactly the three tools', JSON.stringify(names)
-    === JSON.stringify(['calculate_natal_chart', 'compare_calculation_records', 'get_capabilities']), names);
+  check('lists exactly the six tools', JSON.stringify(names)
+    === JSON.stringify(['calculate_natal_chart', 'check_sky_fact', 'compare_calculation_records', 'find_events', 'get_capabilities', 'get_positions']), names);
   check('every tool closes its argument object', listed.tools.every((tool) =>
     tool.inputSchema?.type === 'object' && tool.inputSchema.additionalProperties === false));
   check('every tool is annotated read-only, non-destructive and closed-world', listed.tools.every((tool) =>
     tool.annotations?.readOnlyHint === true && tool.annotations.destructiveHint === false
     && tool.annotations.openWorldHint === false));
+  // The client checks each result against these before handing it back, so
+  // every call below that succeeds has also matched its advertised schema.
+  check('every tool advertises an object output schema', listed.tools.every((tool) =>
+    tool.outputSchema?.type === 'object'), listed.tools.map((tool) => [tool.name, tool.outputSchema?.type ?? null]));
+  check('the server declares the resources capability', Boolean(client.getServerCapabilities()?.resources));
   check('the natal schema bounds the epoch, coordinates and options', (() => {
     const schema = listed.tools.find((tool) => tool.name === 'calculate_natal_chart')?.inputSchema;
     const p = schema?.properties ?? {};
@@ -209,9 +232,19 @@ try {
   const capabilities = await ok('get_capabilities', {});
   check('capabilities name the pinned engine', capabilities.engine?.name === '@zodiacs/engine'
     && /^\d+\.\d+\.\d+-rc\.\d+$/.test(capabilities.engine.version), capabilities.engine);
-  check('capabilities label both releases as unpublished candidates',
+  // The adapter is not on npm. The engine is labelled as the site's candidate record has it: rc.16 was on
+  // npm, under `next`; rc.17, which the site vendors, is not (docs/platform/programme/DECISIONS-2026-10-05.md §7).
+  const engineCandidate = JSON.parse(await readFile(resolve(ROOT, 'src/data/platform-engine-candidate.json'), 'utf8'));
+  const engineLabel = { name: '@zodiacs/engine', version: engineCandidate.version,
+    ...(engineCandidate.releaseStatus === 'published'
+      ? { releaseStatus: 'published', registry: 'npm' } : { releaseStatus: 'unpublished-candidate' }) };
+  check('capabilities label the engine as the site\'s candidate record does, and the adapter an unpublished candidate',
     capabilities.adapter?.releaseStatus === 'unpublished-candidate'
-    && capabilities.engine?.releaseStatus === 'unpublished-candidate');
+    && JSON.stringify(capabilities.engine) === JSON.stringify(engineLabel),
+    { adapter: capabilities.adapter, engine: capabilities.engine });
+  check('capabilities cite the receipt they carry', capabilities.cite?.url === `${DOCS}#get_capabilities`
+    && capabilities.cite.receipt === digest(capabilities.receipt)
+    && capabilities.cite.version === capabilities.engine.version, capabilities.cite);
   check('capabilities state the privacy distinction in full', Boolean(capabilities.privacy?.calculation)
     && /not a local AI experience/.test(capabilities.privacy?.assistant ?? '')
     && /not anonymous/.test(capabilities.privacy?.output ?? '')
@@ -264,9 +297,12 @@ try {
   // the record in a named field beside two labels. The reply as a whole is not
   // a record and the comparison refuses it, so the wording has to send readers
   // to the field.
-  check('the record reply is the record in a field, beside the two labels',
-    JSON.stringify(Object.keys(record).sort()) === '["engine","record","schema"]',
+  check('the record reply is the record in a field, beside its two labels and what to cite',
+    JSON.stringify(Object.keys(record).sort()) === '["cite","engine","record","schema"]',
     Object.keys(record));
+  check('a chart and its record cite one digest, the record receipt\'s', chart.cite?.url === `${DOCS}#calculate_natal_chart`
+    && record.cite?.receipt === digest(JSON.parse(record.record).receipt)
+    && chart.cite.receipt === record.cite.receipt, { chart: chart.cite, record: record.cite });
   const wrapper = await attempt('compare_calculation_records', {
     left: JSON.stringify(record), right: JSON.stringify(record),
   });
@@ -294,6 +330,80 @@ try {
     houses.explanations.map((row) => [row.id, row.evidence]));
   check('a comparison labels its own output as not anonymous',
     /not anonymous/.test(houses.disclosure ?? ''));
+  check('a comparison cites its own receipt, which carries nothing from either record',
+    houses.cite?.url === `${DOCS}#compare_calculation_records` && houses.cite.receipt === digest(houses.receipt)
+    && !JSON.stringify(houses.receipt).includes('1990') && !JSON.stringify(houses.receipt).includes('51.5074'),
+    houses.receipt);
+
+  // ---- get_positions, find_events and check_sky_fact ----
+  // The compute API's own calculations, run inside the bundle. Each reply is
+  // the compute API's body for the same request and cites the compute receipt
+  // it carries, which holds nothing the request gave.
+  const skyInstant = '2026-10-15T12:00:00Z';
+  const placed = await ok('get_positions', { instants: [LONDON.utc, skyInstant] });
+  check('positions come back for every instant, twelve rows each, with the ΔT the engine used',
+    placed.result?.instants?.length === 2
+    && placed.result.instants.every((row) => row.bodies.length === 12 && typeof row.deltaT?.seconds === 'number'),
+    placed.result?.instants?.map((row) => row.bodies.length));
+  check("the positions at a chart's instant are the chart's bodies",
+    canonical(placed.result.instants[0].bodies) === canonical(chart.bodies));
+  check("positions cite the compute receipt they carry, the compute API's schema and endpoint",
+    placed.schema === 'zodiacs.compute-api.positions.v1' && placed.receipt?.schema === 'zodiacs.compute-receipt.v1'
+    && placed.receipt.endpoint === 'positions' && placed.cite?.url === `${DOCS}#get_positions`
+    && placed.cite.receipt === digest(placed.receipt), placed.cite);
+  const found = await ok('find_events', { from: '2026-02-01T00:00:00Z', to: '2026-04-30T00:00:00Z' });
+  check('events come back in time order, of all three kinds',
+    found.result?.events?.length > 0
+    && found.result.events.every((event, index, list) => index === 0 || list[index - 1].at <= event.at)
+    && ['ingress', 'station', 'lunation'].every((kind) => found.result.events.some((event) => event.kind === kind)),
+    found.result?.events?.length);
+  check('an events reply says its search is tested, not proven complete, and how it searched',
+    found.receipt?.search?.completeness === 'tested-not-proven'
+    && found.receipt.search.window === 'start-exclusive-end-inclusive' && found.receipt.search.samples > 0
+    && found.cite?.url === `${DOCS}#find_events` && found.cite.receipt === digest(found.receipt), found.receipt?.search);
+  const sunSign = placed.result.instants[1].bodies.find((row) => row.body === 'Sun').sign;
+  const atInstant = await ok('check_sky_fact', { kind: 'sign', body: 'Sun', sign: sunSign, instant: skyInstant });
+  const elsewhere = await ok('check_sky_fact', { kind: 'sign', body: 'Sun', sign: sunSign === 'aries' ? 'taurus' : 'aries', instant: skyInstant });
+  check('a fact at an instant is true or false, with the values that decide it',
+    atInstant.result?.answer === 'true' && elsewhere.result?.answer === 'false'
+    && atInstant.result.basis === 'instant' && atInstant.result.facts?.sign === sunSign
+    && typeof atInstant.result.facts.boundaryMarginArcsec === 'number', atInstant.result);
+  const lunation = found.result.events.find((event) => event.kind === 'lunation');
+  const onDate = await ok('check_sky_fact', { kind: 'phase', phase: lunation.type, date: lunation.at.slice(0, 10) });
+  // Two searches over different spans sample from different starts, so each
+  // bisects the crossing to within its one-day step over 2^24 of the truth,
+  // and the two agree to within twice that, about 10 ms.
+  const resolution = (2 * 86_400_000) / 2 ** 24;
+  check('a date without a zone is read in every UTC offset in use today at once, and a lunation on it depends on the offset',
+    onDate.result?.basis === 'any-zone-day' && onDate.result.answer === 'depends' && onDate.result.zone === null
+    && Date.parse(onDate.result.window.to) - Date.parse(onDate.result.window.from) === 50 * 3600 * 1000
+    && onDate.result.facts.lunations.some((row) => Math.abs(Date.parse(row.at) - Date.parse(lunation.at)) <= resolution),
+    { found: lunation.at, onDate: onDate.result?.facts?.lunations });
+  check('a fact cites the compute receipt it carries, which holds no date or instant from the request',
+    onDate.cite?.url === `${DOCS}#check_sky_fact` && onDate.cite.receipt === digest(onDate.receipt)
+    && atInstant.cite.receipt === digest(atInstant.receipt)
+    && ![skyInstant, lunation.at.slice(0, 10)].some((needle) => JSON.stringify([onDate.receipt, atInstant.receipt]).includes(needle)),
+    [onDate.receipt?.search, atInstant.receipt?.endpoint]);
+  const zoned = await attempt('check_sky_fact', { kind: 'phase', phase: 'full', date: '2026-10-07', zone: 'Europe/Paris' });
+  check('a zone is refused, since this server reads none, and names the argument',
+    zoned.layer === 'tool' && /zone/.test(zoned.text), zoned);
+  const backwards = await attempt('find_events', { from: '2026-04-30T00:00:00Z', to: '2026-02-01T00:00:00Z' });
+  check("a refusal from the compute API's parser is its own sentence, with the field it names",
+    backwards.layer === 'tool' && backwards.text === '/to: Must be later than from.', backwards);
+  await recovers("the compute tools' refusals");
+
+  // ---- resources ----
+  const resources = (await client.listResources()).resources;
+  check('lists the conventions and methodology resources', JSON.stringify(resources.map((row) => row.uri))
+    === JSON.stringify(['zodiacs://conventions', 'zodiacs://methodology']), resources.map((row) => row.uri));
+  const conventions = JSON.parse((await client.readResource({ uri: 'zodiacs://conventions' })).contents[0]?.text ?? '{}');
+  check('the conventions resource is the vocabulary the records carry',
+    canonical(conventions.sets?.[0]?.conventions ?? null) === canonical(JSON.parse(record.record).receipt.conventions)
+    && conventions.sets.length === 5, conventions.sets?.map((set) => set.writtenBy));
+  const methodology = (await client.readResource({ uri: 'zodiacs://methodology' })).contents[0]?.text ?? '';
+  check('the methodology resource names the engine and the site\'s methodology page',
+    methodology.includes(`@zodiacs/engine ${capabilities.engine.version}`)
+    && methodology.includes('https://zodiacs.org/methodology/'), methodology.slice(0, 200));
 
   // On the wire, not only in the handler: the default response must not carry
   // the birth details the caller already supplied as arguments.

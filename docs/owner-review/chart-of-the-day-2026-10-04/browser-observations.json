@@ -1,0 +1,74 @@
+[
+  {
+    "name": "six approved dated routes are in the sitemap"
+  },
+  {
+    "name": "chromium en/ 390: approved chart, sources, reference UTC, no angles, complete translations and responsive layout"
+  },
+  {
+    "name": "chromium es/ 390: approved chart, sources, reference UTC, no angles, complete translations and responsive layout"
+  },
+  {
+    "name": "chromium pt/ 390: approved chart, sources, reference UTC, no angles, complete translations and responsive layout"
+  },
+  {
+    "name": "chromium fr/ 390: approved chart, sources, reference UTC, no angles, complete translations and responsive layout"
+  },
+  {
+    "name": "chromium it/ 390: approved chart, sources, reference UTC, no angles, complete translations and responsive layout"
+  },
+  {
+    "name": "chromium ru/ 390: approved chart, sources, reference UTC, no angles, complete translations and responsive layout"
+  },
+  {
+    "name": "chromium en/ 360: approved chart, sources, reference UTC, no angles, complete translations and responsive layout"
+  },
+  {
+    "name": "chromium en/ 1280: approved chart, sources, reference UTC, no angles, complete translations and responsive layout"
+  },
+  {
+    "name": "en/: failed engine download has translated retry and explicit reload recovery"
+  },
+  {
+    "name": "es/: failed engine download has translated retry and explicit reload recovery"
+  },
+  {
+    "name": "pt/: failed engine download has translated retry and explicit reload recovery"
+  },
+  {
+    "name": "fr/: failed engine download has translated retry and explicit reload recovery"
+  },
+  {
+    "name": "it/: failed engine download has translated retry and explicit reload recovery"
+  },
+  {
+    "name": "ru/: failed engine download has translated retry and explicit reload recovery"
+  },
+  {
+    "name": "unapproved next day stays unpublished; the approved edition remains an archive link"
+  },
+  {
+    "name": "webkit en/ 390: approved chart, sources, reference UTC, no angles, complete translations and responsive layout"
+  },
+  {
+    "name": "webkit es/ 390: approved chart, sources, reference UTC, no angles, complete translations and responsive layout"
+  },
+  {
+    "name": "webkit pt/ 390: approved chart, sources, reference UTC, no angles, complete translations and responsive layout"
+  },
+  {
+    "name": "webkit fr/ 390: approved chart, sources, reference UTC, no angles, complete translations and responsive layout"
+  },
+  {
+    "name": "webkit it/ 390: approved chart, sources, reference UTC, no angles, complete translations and responsive layout"
+  },
+  {
+    "name": "webkit ru/ 390: approved chart, sources, reference UTC, no angles, complete translations and responsive layout"
+  },
+  {
+    "name": "webkit en/ 360: approved chart, sources, reference UTC, no angles, complete translations and responsive layout"
+  },
+  {
+    "name": "webkit en/ 1280: approved chart, sources, reference UTC, no angles, complete translations and responsive layout"
+  }
+]

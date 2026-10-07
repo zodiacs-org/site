@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "officialDocs": [
+    "https://code.claude.com/docs/en/setup#install-with-npm",
+    "https://code.claude.com/docs/en/env-vars",
+    "https://code.claude.com/docs/en/mcp"
+  ],
+  "package": {
+    "version": "2.1.286",
+    "homepage": "https://github.com/anthropics/claude-code",
+    "integrity": "sha512-5UNEDKy2znv81PWqNqgPJO4qPqH5NRenh52XTtx2tT5Q6xIxjI1q0RyucY+AUHMABImzDOlh6ztuj4qNiAaRvA==",
+    "native": {
+      "version": "2.1.286",
+      "resolved": "https://registry.npmjs.org/@anthropic-ai/claude-code-linux-x64/-/claude-code-linux-x64-2.1.286.tgz",
+      "integrity": "sha512-PnVL8ZCEev3IexLeOc9/QRfqRDUZRgnsaMLdpjlBN0VaieeTrf7mZ2JJi29ue2KAqHvq6SsOadU5G/shnFE4MA==",
+      "cpu": [
+        "x64"
+      ],
+      "license": "SEE LICENSE IN LICENSE.md",
+      "optional": true,
+      "os": [
+        "linux"
+      ]
+    }
+  },
+  "installerSha256": "5cbab1670597f492cd4eeb946f3c344ebcb1fbd43c623ba192c9b33744461b85",
+  "nativeSha256": "fe503f65c6289d59c23e5b21ae44f03583f997dd33a2cbfc75ab4f96fb8fc73f",
+  "environmentKeys": [
+    "CI",
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC",
+    "CLAUDE_CODE_DISABLE_OFFICIAL_MARKETPLACE_AUTOINSTALL",
+    "CLAUDE_CONFIG_DIR",
+    "DISABLE_AUTOUPDATER",
+    "DISABLE_ERROR_REPORTING",
+    "DISABLE_EXTRA_USAGE_COMMAND",
+    "DISABLE_LOGIN_COMMAND",
+    "DISABLE_TELEMETRY",
+    "DISABLE_UPDATES",
+    "DISABLE_UPGRADE_COMMAND",
+    "DO_NOT_TRACK",
+    "HOME",
+    "PATH",
+    "TERM",
+    "TMPDIR",
+    "XDG_CACHE_HOME",
+    "XDG_CONFIG_HOME",
+    "XDG_DATA_HOME"
+  ],
+  "isolation": "Clean allowlisted environment only; no auth variables read or inherited; HOME and every XDG directory disposable; existing drive creates another temporary config/project; its unchanged-home assertion refers to the disposable outer HOME, not a claim that any real credential file was read or fingerprinted",
+  "commands": [
+    "claude --version",
+    "existing tests/mcp-host-drive.mjs: mcp add/list/get/remove only"
+  ],
+  "noLogin": true,
+  "noModelTurn": true,
+  "noCredentialOrGrant": true,
+  "exitCode": 0,
+  "limits": "Named-host stdio initialization only; no external agent/model conversation or paid use"
+}

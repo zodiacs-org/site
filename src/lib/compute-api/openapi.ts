@@ -13,10 +13,16 @@
  * `from`); those are refused with invalid-request too.
  */
 import {
+  ANGULAR_MAX_ABS_LATITUDE,
   COMPUTE_DOCS_URL,
   COMPUTE_RECEIPT_SCHEMA,
   COMPUTE_ENDPOINTS,
+  ELECTION_STEPS,
+  FULL_CALCULATION_COST,
   ERROR_CODES,
+  MAX_ELECTION_CONDITIONS,
+  MOON_HALVES,
+  STATION_BODIES,
   PREFLIGHT_HEADERS,
   RETRY_AFTER_SECONDS,
   EVENT_BODIES,
@@ -132,6 +138,76 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
     properties: {
       local: ref('LocalTime'),
       longitude: { ...ref('Longitude'), description: 'The place\'s longitude, degrees east. With it, a time before the place adopted a legal time uses the place\'s own mean time, and a date up to 1970-01-01 the pinned zone history.' },
+    },
+  },
+  ElectionsRequest: {
+    type: 'object',
+    additionalProperties: false,
+    required: ['from', 'to', 'conditions'],
+    description: `A window of at most ${BUDGETS['elections.windowDays']} days, from its start (included) to its end (excluded), one to ${MAX_ELECTION_CONDITIONS} conditions, and a place when a condition is angular. The end must be later than the start, a condition may not repeat, and a place goes with an angular condition and only with one, which the schema cannot state.`,
+    properties: {
+      from: ref('Instant'),
+      to: ref('Instant'),
+      conditions: { type: 'array', minItems: 1, maxItems: MAX_ELECTION_CONDITIONS, items: ref('ElectionCondition') },
+      place: ref('ElectionPlace'),
+    },
+  },
+  ElectionCondition: {
+    oneOf: [ref('PhaseCondition'), ref('VoidOfCourseCondition'), ref('SignCondition'), ref('RetrogradeCondition'), ref('AngularCondition')],
+    discriminator: {
+      propertyName: 'kind',
+      mapping: {
+        phase: '#/components/schemas/PhaseCondition',
+        'void-of-course': '#/components/schemas/VoidOfCourseCondition',
+        sign: '#/components/schemas/SignCondition',
+        retrograde: '#/components/schemas/RetrogradeCondition',
+        angular: '#/components/schemas/AngularCondition',
+      },
+    },
+  },
+  PhaseCondition: {
+    type: 'object',
+    additionalProperties: false,
+    required: ['kind', 'phase'],
+    description: 'The Moon waxing (its elongation from the Sun in [0°, 180°)) or waning ([180°, 360°)).',
+    properties: { kind: { const: 'phase' }, phase: { enum: [...MOON_HALVES] }, not: { type: 'boolean', default: false } },
+  },
+  VoidOfCourseCondition: {
+    type: 'object',
+    additionalProperties: false,
+    required: ['kind'],
+    description: 'The Moon void of course: from its last exact Ptolemaic aspect in a sign to the Sun or a planet, Mercury to Pluto, to its entry into the next sign, the engine\'s own rule, after William Lilly. With not, the Moon not void.',
+    properties: { kind: { const: 'void-of-course' }, not: { type: 'boolean', default: false } },
+  },
+  SignCondition: {
+    type: 'object',
+    additionalProperties: false,
+    required: ['kind', 'body', 'sign'],
+    description: 'A body in a sign of the tropical zodiac.',
+    properties: { kind: { const: 'sign' }, body: { enum: [...EVENT_BODIES] }, sign, not: { type: 'boolean', default: false } },
+  },
+  RetrogradeCondition: {
+    type: 'object',
+    additionalProperties: false,
+    required: ['kind', 'body'],
+    description: 'A planet retrograde: its longitude speed below zero. With not, direct.',
+    properties: { kind: { const: 'retrograde' }, body: { enum: [...STATION_BODIES] }, not: { type: 'boolean', default: false } },
+  },
+  AngularCondition: {
+    type: 'object',
+    additionalProperties: false,
+    required: ['kind', 'body'],
+    description: 'A body in the 1st, 4th, 7th or 10th house at the request\'s place, as the engine\'s natalChart and houseOf place it in the place\'s house system.',
+    properties: { kind: { const: 'angular' }, body: { enum: [...EVENT_BODIES] }, not: { type: 'boolean', default: false } },
+  },
+  ElectionPlace: {
+    type: 'object',
+    additionalProperties: false,
+    required: ['latitude', 'longitude'],
+    properties: {
+      latitude: { type: 'number', minimum: -ANGULAR_MAX_ABS_LATITUDE, maximum: ANGULAR_MAX_ABS_LATITUDE, description: `Degrees north, within ${ANGULAR_MAX_ABS_LATITUDE}° of the equator.` },
+      longitude: ref('Longitude'),
+      houseSystem: { ...ref('HouseSystem'), default: 'placidus' },
     },
   },
   SkyFactRequest: {
@@ -335,6 +411,26 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
           completeness: { const: 'tested-not-proven' },
         },
       },
+      electionSearch: {
+        type: 'object',
+        description: 'How an election search ran: the crossing search\'s steps for sign changes, stations and phases; the void-of-course rule and the step of its scan for the Moon\'s last aspect; the house sampling; the evaluations made, where a crossing step counts once and a full calculation, all the positions at an instant or a natalChart for a house, counts as fullCalculationCost. Every window\'s ends are within a second, so a gap shorter than resolutionSeconds between two windows is closed and a window shorter than it is not listed: two boundaries that close may be one instant found twice.',
+        required: ['solver', 'stepDays', 'voidOfCourse', 'houseSampleMinutes', 'boundarySeconds', 'resolutionSeconds', 'fullCalculationCost', 'samples', 'maxSamples', 'window', 'completeness'],
+        properties: {
+          solver: { const: 'engine-longitude-crossings-and-sampled-houses' },
+          stepDays: { type: 'object', additionalProperties: num },
+          voidOfCourse: object(['convention', 'bodies', 'scanHours'], {
+            convention: { const: 'last-exact-ptolemaic-aspect-to-sign-exit' }, bodies: { const: 'modern' }, scanHours: num,
+          }),
+          houseSampleMinutes: { const: ELECTION_STEPS.houseSampleMinutes },
+          boundarySeconds: { const: ELECTION_STEPS.houseBoundarySeconds },
+          resolutionSeconds: { const: ELECTION_STEPS.resolutionSeconds },
+          fullCalculationCost: { const: FULL_CALCULATION_COST },
+          samples: { type: 'integer', minimum: 0 },
+          maxSamples: { type: 'integer' },
+          window: { const: 'start-inclusive-end-exclusive' },
+          completeness: { const: 'tested-not-proven' },
+        },
+      },
     },
   },
   Backend: {
@@ -350,7 +446,7 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
     type: 'object',
     additionalProperties: false,
     required: ['url', 'receipt', 'engine', 'version'],
-    description: 'What to quote: the documentation of this endpoint, a digest that identifies the receipt in this response (SHA-256 over its RFC 8785 canonical JSON), and the engine and its version. For chart and houses the receipt holds the instant and the coordinates, so the digest identifies the birth details: anyone who knows the date and the place can find the time by trying times until the digest matches. Quote it only where the birth details may be known.',
+    description: 'What to quote: the documentation of this endpoint, a digest that identifies the receipt in this response (SHA-256 over its RFC 8785 canonical JSON), and the engine and its version. For chart and houses the receipt holds the instant and the coordinates, so the digest identifies the birth details from either side: with the date and the place, trying times finds the time, and with the date and the time, trying places from a list of towns finds the place. Quote it only where the birth details may be known.',
     properties: {
       url: { type: 'string', format: 'uri' },
       receipt: { type: 'string', pattern: '^sha256:[0-9a-f]{64}$' },
@@ -405,6 +501,26 @@ export const COMPUTE_SCHEMAS: Readonly<Record<string, Schema>> = Object.freeze({
           },
         },
       },
+    },
+  },
+  ElectionsResult: {
+    type: 'object',
+    required: ['from', 'to', 'conditions', 'place', 'windows', 'flags'],
+    properties: {
+      from: outputInstant,
+      to: outputInstant,
+      conditions: {
+        type: 'array',
+        description: 'The conditions as validated, each with its not.',
+        items: object(['kind', 'not'], { kind: { enum: ['phase', 'void-of-course', 'sign', 'retrograde', 'angular'] }, phase: { enum: [...MOON_HALVES] }, body: { enum: [...EVENT_BODIES] }, sign, not: bool }),
+      },
+      place: nullable(object(['latitude', 'longitude', 'houseSystem'], { latitude: num, longitude: num, houseSystem: ref('HouseSystem') })),
+      windows: {
+        type: 'array',
+        description: 'Every stretch of the window in which all the conditions hold, in time order, each from its start (included) to its end (excluded), within a second. A window that begins at the request\'s from or ends at its to may run on beyond it.',
+        items: object(['from', 'to'], { from: outputInstant, to: outputInstant }),
+      },
+      flags: { ...spanFlags, description: 'outside-reference-span when what the search reads reaches past the instant span: the window, and with a void-of-course condition the 4 days before it and the 3 after it, where it finds the Moon\'s sign changes.' },
     },
   },
   EventsResult: {
@@ -535,6 +651,7 @@ const RESULT_SCHEMA: Readonly<Record<ComputeEndpoint, string>> = {
   events: 'EventsResult',
   time: 'TimeResult',
   'sky-fact': 'SkyFactResult',
+  elections: 'ElectionsResult',
 };
 
 const REQUEST_SCHEMA: Readonly<Record<ComputeEndpoint, string>> = {
@@ -544,6 +661,7 @@ const REQUEST_SCHEMA: Readonly<Record<ComputeEndpoint, string>> = {
   events: 'EventsRequest',
   time: 'TimeRequest',
   'sky-fact': 'SkyFactRequest',
+  elections: 'ElectionsRequest',
 };
 
 export function responseComponentName(endpoint: ComputeEndpoint): string {
@@ -581,6 +699,7 @@ const SUMMARIES: Readonly<Record<ComputeEndpoint, string>> = {
   events: 'Sign ingresses, stations and lunations in a window',
   time: 'A local civil time as UTC and TT, with ΔT and flags',
   'sky-fact': 'Whether a stated fact about the sky holds: true, false or depends',
+  elections: 'The windows in which every condition holds: the Moon\'s phase, void of course, a sign, retrograde, a body angular',
 };
 
 const DESCRIPTIONS: Readonly<Record<ComputeEndpoint, string>> = {
@@ -590,6 +709,7 @@ const DESCRIPTIONS: Readonly<Record<ComputeEndpoint, string>> = {
   events: 'Sign ingresses of the requested bodies, their stations, and new and full moons, found by the engine\'s crossing search. Each crossing is bisected to within its search step divided by 2^24. Completeness is tested, not proven: sampling can miss a pair of crossings around a station that falls between two samples.',
   time: 'The site\'s own local-time resolver: a repeated wall time takes the earlier instant (dst-fold), a skipped one moves forward by the gap (dst-gap). With a longitude, a time before the place adopted a legal time uses the place\'s own mean time (lmt), and a date up to 1970-01-01 in a zone the pinned tzdb release keeps takes that release\'s offsets, backzone included (zoneHistory pinned). Otherwise offsets come from the server\'s time zone data (zoneHistory runtime), and a date up to 1970-01-01 read that way has zoneUncertain true.',
   'sky-fact': 'A structured fact, never interpretive text, answered true, false or depends, with the computed values that decide it. A fact about a date is depends when the answer turns on the time of day or, with no zone given, on the zone.',
+  elections: `An election search: every stretch of the window in which all the conditions hold. Sign changes, stations and the Moon's new and full phases come from the engine's crossing search; void periods from the Moon's sign changes and its last exact aspect before each; house changes from natalChart, sampled every ${ELECTION_STEPS.houseSampleMinutes} minutes inside the stretches the other conditions leave, more finely where a body passes more than one house between samples. Every boundary is within a second. Completeness is tested, not proven: on 100 random requests it found the same windows as a scan of every 10 seconds, every end within 5.4 seconds.`,
 };
 
 const RETRY_AFTER_HEADER = (seconds: readonly number[], what: string): Schema => ({
@@ -624,7 +744,7 @@ const operationName = (endpoint: ComputeEndpoint) => (endpoint === 'sky-fact' ? 
 function operation(endpoint: ComputeEndpoint): Schema {
   const success = (examples.success as Record<string, Record<string, unknown>>)[endpoint];
   const requests = SUCCESS_EXAMPLES[endpoint];
-  const budgeted = endpoint === 'positions' || endpoint === 'events' || endpoint === 'sky-fact';
+  const budgeted = endpoint === 'positions' || endpoint === 'events' || endpoint === 'sky-fact' || endpoint === 'elections';
   return {
     options: {
       operationId: `preflight${operationName(endpoint)}`,
@@ -669,7 +789,7 @@ function operation(endpoint: ComputeEndpoint): Schema {
           },
         },
         400: errorResponse('The body is not JSON, or a field is missing, unknown or invalid.', ['invalid-request', 'invalid-json']),
-        404: errorResponse('The request reached the compute function by a path that is not one of the six endpoints. The six paths never answer it.', ['not-found']),
+        404: errorResponse('The request reached the compute function by a path that is not one of the seven endpoints. The seven paths never answer it.', ['not-found']),
         405: errorResponse('Only POST, and OPTIONS for a CORS preflight.', ['method-not-allowed'], {
           Allow: { required: true, description: 'The methods the endpoint takes.', schema: { const: 'POST, OPTIONS' } },
         }),

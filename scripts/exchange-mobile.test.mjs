@@ -34,9 +34,9 @@ describe('Terminal venue-route mobile contract', () => {
     expect(terminal).toContain('button.disabled = locked');
   });
 
-  it('offers one Buy action and no invented order controls', () => {
-    expect(terminal).toContain("el('button', 'zme-mobile-buy', 'Buy')");
-    expect(terminal).toContain("panelHost.querySelector('.tp .pay__input')");
+  it('offers one public Registry action and no transaction controls', () => {
+    expect(terminal).toContain("el('button', 'zme-mobile-buy', 'Registry')");
+    expect(terminal).toContain("panelHost.querySelector('a')");
     expect(terminal).not.toMatch(/zme-mobile-(?:sell|limit|tp|sl)/iu);
     expect(ZX_CSS).not.toMatch(/zme-mobile-(?:sell|limit|tp|sl)/iu);
   });

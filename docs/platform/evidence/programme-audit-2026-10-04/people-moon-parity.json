@@ -1,0 +1,15 @@
+{
+  "schema": "zodiacs.people-moon-parity.v1",
+  "finding": "F-70",
+  "question": "Do the People pilot's frozen Moon-sign verdicts equal the package's moonSignCandidates for the same civil day?",
+  "input": "src/data/people.json: every page, its computed Gregorian birth date, IANA zone and longitude",
+  "engine": "0.1.1-rc.16",
+  "counts": {
+    "pages": 501,
+    "verdictsAgree": 501,
+    "signsAgree": 501,
+    "dayBoundsAgree": 501,
+    "refused": 0
+  },
+  "note": "The pilot samples the Moon's sign at both ends of the civil day; the package returns the signs the Moon holds across it. The day bounds compare the package's from and to (inclusive, to the millisecond) with the pilot's start and end."
+}

@@ -72,7 +72,8 @@ describe('Registry symbolic outlook', () => {
       expect.objectContaining({
         kind: 'ingress',
         label: 'Mercury enters Leo',
-        at: '2026-08-09T16:28:16.308Z',
+        // rc.16 full IAU 2000B shifts this ingress by 130 ms.
+        at: '2026-08-09T16:28:16.438Z',
         tonePoints: 0,
         source: 'src/data/transits-2026-08.json',
       }),

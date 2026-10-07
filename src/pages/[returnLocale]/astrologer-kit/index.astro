@@ -1,0 +1,7 @@
+---
+import ReturnToolPage from "../../../components/return-visits/ReturnToolPage.astro";
+import { CATALOG_LOCALES, type CatalogLocale } from "../../../lib/i18n/core";
+export function getStaticPaths() { return CATALOG_LOCALES.filter((locale) => locale !== "en").map((locale) => ({ params: { returnLocale: locale } })); }
+const locale = Astro.params.returnLocale as CatalogLocale;
+---
+<ReturnToolPage kind="kit" locale={locale} />

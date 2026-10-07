@@ -1,0 +1,19 @@
+{
+  "sourceUrl": "https://vercel.com/docs/functions/usage-and-pricing",
+  "sourceTitle": "Fluid compute pricing",
+  "retrievedUtc": "2026-10-01T10:37:39Z",
+  "sourceLastUpdated": "2026-06-16",
+  "currency": "USD",
+  "region": "iad1",
+  "plan": "Pro",
+  "mode": "Fluid",
+  "planModeEvidence": [
+    "Pro label visible in saved project Query snapshots",
+    "Fluid label in vercel-first-chart-detail.txt; parent verified project UI"
+  ],
+  "activeCpuUsdPerHour": 0.128,
+  "provisionedMemoryUsdPerGbHour": 0.0106,
+  "invocationsUsdPerMillion": 0.6,
+  "billingSemantics": "CPU bills actual execution; provisioned memory covers instance work including waits until last in-flight request finishes. Shared-instance memory must not be multiplied by overlapping request count. Invocations are separate; plan credits may offset gross charges.",
+  "rateVerification": "Independently re-opened official page and verified iad1 regional row and invocation-price example. Published rates, not an account-specific invoice."
+}

@@ -1,3 +1,4 @@
+import { CheckOurMath } from '../ChartTrust';
 /**
  * The Transit Ring — the animated bi-wheel. The natal chart is the fixed
  * inner wheel (the Wheel's pinned static path); the transiting sky is an
@@ -164,7 +165,7 @@ const COPY = {
     eventDate: 'Date de l’événement',
     back1m: '−1 mois',
     fwd1m: '+1 mois',
-    outerRing: 'Anneau extérieur : le ciel à cette date. Roue intérieure : ton thème natal.',
+    outerRing: 'Anneau extérieur : le ciel à cette date. Roue intérieure : ton thème astral.',
     tapHint: 'Touche une planète en mouvement ou une ligne de liaison pour lire ce transit.',
     moonOmitted: 'la Lune va trop vite pour figurer dans la liste, mais tu peux la suivre sur la roue',
     announce: 'Ciel du',
@@ -425,6 +426,7 @@ export default function TransitRing({ locale, natal, computeSky, nowMs, focusReq
 
   return (
     <div class="tring">
+      <CheckOurMath locale={locale} utc={when} />
       <p class="tring__caption mono">{c.outerRing}</p>
 
       <div class="tring__wheelbox">

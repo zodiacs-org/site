@@ -1,0 +1,40 @@
+Recorded in /workspace/mcp-consumer-review at source 51b64f3cb67c2026a18772297ec6b367ed2ca183.
+Node v24.19.0; npm 11.9.0. Outputs below transcribe the execution-tool results.
+
+$ node scripts/build-compute-handler.mjs --check
+build-compute-handler: up to date (266155 bytes, sha256 662dd5105a5e…)
+exit 0
+
+$ node scripts/build-compute-local-time.mjs --check
+build-compute-local-time: up to date (275756 bytes, sha256 6f9253009a83…)
+exit 0
+
+$ node scripts/build-mcp-server.mjs --check
+build-mcp-server: up to date (329498 bytes, sha256 a59382d0fbe5…)
+exit 0
+
+$ npm_config_cache=/tmp/zodiacs-consumer-npm-cache node scripts/pack-mcp-server.mjs --check
+pack-mcp-server: public/examples/zodiacs-mcp-server-0.1.0-rc.16.3.tgz differs from a fresh pack of examples/mcp-server
+exit 1
+
+$ npm_config_cache=/tmp/zodiacs-consumer-npm-cache node node_modules/vitest/vitest.mjs run scripts/mcp-artifact.test.mjs tests/api/compute-api-bundle.test.ts tests/api/compute-api-openapi.test.ts
+ RUN  v3.2.7 /workspace/mcp-consumer-review
+ ✓ tests/api/compute-api-openapi.test.ts (5 tests) 520ms
+ ✓ scripts/mcp-artifact.test.mjs (46 tests) 1361ms
+ ✓ tests/api/compute-api-bundle.test.ts (5 tests) 1293ms
+ Test Files  3 passed (3)
+      Tests  56 passed (56)
+   Start at  18:15:40
+   Duration  2.65s (transform 861ms, setup 0ms, collect 3.01s, tests 3.17s, environment 1ms, prepare 216ms)
+exit 0
+
+$ node --check scripts/mcp-independent-consumer.mjs
+exit 0
+$ node --check scripts/mcp-independent-consumer.selftest.mjs
+exit 0
+$ git diff --check
+exit 0
+
+The new selftest output is selftests.log, archive verifier output is
+packaged-verify.log, new runner output/results are report.json, mcp.json,
+http.json and openapi.json, and actual ledger output is programme-summary.log.

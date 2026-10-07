@@ -1,0 +1,70 @@
+{
+ "schemaVersion": 1,
+ "what": "Two builds of the local MCP adapter driven with the same tool list, resource reads and tool calls, compared after versions and sha256: digests are written out",
+ "node": "v22.22.2",
+ "old": {
+  "file": "server-0.1.0-rc.16.3.mjs",
+  "sha256": "a59382d0fbe5b3f9afc9ff788ce92a1dd406a3ef2c59d98d77a41c7e0f598312"
+ },
+ "new": {
+  "file": "server-0.1.0-rc.17.mjs",
+  "sha256": "0c3e739ce34a5a7f80948310dd78b3b690f905e4a9d076f80d968a09558ba1fd"
+ },
+ "tools": [
+  {
+   "path": "$.0.outputSchema.properties.engine.properties.releaseStatus.const",
+   "old": "published",
+   "new": "unpublished-candidate"
+  },
+  {
+   "path": "$.0.outputSchema.properties.engine.properties.registry",
+   "old": {
+    "type": "string",
+    "const": "npm"
+   }
+  },
+  {
+   "path": "$.0.outputSchema.properties.engine.required.3",
+   "old": "registry"
+  }
+ ],
+ "resources": [],
+ "calls": 278,
+ "refusals": 10,
+ "byTool": {
+  "get_capabilities": 1,
+  "calculate_natal_chart": 160,
+  "compare_calculation_records": 23,
+  "get_positions": 23,
+  "find_events": 14,
+  "check_sky_fact": 57
+ },
+ "differing": [
+  {
+   "index": 0,
+   "name": "get_capabilities",
+   "args": {},
+   "differences": [
+    {
+     "path": "$.structured.engine.releaseStatus",
+     "old": "published",
+     "new": "unpublished-candidate"
+    },
+    {
+     "path": "$.structured.engine.registry",
+     "old": "npm"
+    },
+    {
+     "path": "$.content.0.text",
+     "onlyOld": [
+      "  \"releaseStatus\": \"published\",",
+      "  \"registry\": \"npm\""
+     ],
+     "onlyNew": [
+      "  \"releaseStatus\": \"unpublished-candidate\""
+     ]
+    }
+   ]
+  }
+ ]
+}

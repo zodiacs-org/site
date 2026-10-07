@@ -49,6 +49,23 @@ describe('saved-chart continuation browser evidence', () => {
       .toContain('fresh full-chart computation did not finish with the expected Sun sign');
   });
 
+  it('accepts a recomputed summary cache but rejects any change to what the person entered', () => {
+    const stored = JSON.parse(profile);
+    const refreshed = JSON.stringify({ ...stored, charts: [{ ...stored.charts[0],
+      summary: { ...stored.charts[0].summary, engineVersion: '0.1.1-rc.16', utcISO: '1907-07-06T15:06:38.000Z' } }] });
+    expect(savedChartContinuationFailures({ ...observed(), profile: refreshed }, '')).toEqual([]);
+    for (const patch of [
+      { birth: { ...stored.charts[0].birth, time: '08:31' } }, { name: 'Renamed' },
+      { updatedAt: '2026-10-05T00:00:00.000Z' },
+    ]) {
+      const edited = JSON.stringify({ ...stored, charts: [{ ...stored.charts[0], ...patch }] });
+      expect(savedChartContinuationFailures({ ...observed(), profile: edited }, ''))
+        .toEqual(['saved private profile was changed']);
+    }
+    expect(savedChartContinuationFailures({ ...observed(), profile: null }, ''))
+      .toEqual(['saved private profile was changed']);
+  });
+
   it('rejects changed birth input, locale fallback, private fragments, and profile mutation', () => {
     const state = { ...observed('/es'), pathname: '/birth-chart/', hash: '#profileChartId=fixture',
       time: '12:00', profile: '{}' };

@@ -1,0 +1,14 @@
+{
+  "source": "Vercel connector get_deployment read-only response",
+  "observedUtc": "2026-10-01T20:32:54Z",
+  "deploymentId": "dpl_AsJc5MrDgH4PpgoZSGMe7XTZePe4",
+  "projectId": "prj_nRTO3q3aNYLfaM3dotAowOc028fO",
+  "state": "READY",
+  "target": "production",
+  "githubCommitSha": "fd1ce88af66eca158c24a92569a9101281b964f7",
+  "githubCommitRef": "main",
+  "regions": ["iad1"],
+  "aliases": ["zodiacs.org", "www.zodiacs.org", "zodiacs-org.vercel.app", "zodiacs-org-zodiacsofficial.vercel.app", "zodiacs-org-git-main-zodiacsofficial.vercel.app"],
+  "deploymentDomain": "zodiacs-6k54md7q3-zodiacsofficial.vercel.app",
+  "privacy": "Selected non-sensitive deployment facts transcribed from the connector response; account identity fields omitted"
+}

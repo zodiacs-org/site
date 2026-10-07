@@ -1,0 +1,10 @@
+# Reproducible working inputs/outputs of audit.mjs; immutable source archives
+# stay in vendor/. Commit the script, measurements, metadata and report only.
+archive-inputs/
+rc15-esbuild.js
+rc16-esbuild.js
+rc15-vite-full.js
+rc16-vite-full.js
+rc15-vite-full.js.map
+rc16-vite-full.js.map
+audit.log

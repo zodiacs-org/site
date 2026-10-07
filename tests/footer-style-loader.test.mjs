@@ -51,10 +51,17 @@ function run({ top = 1800, readyState = 'loading', io = 'normal', hasFooter = tr
 }
 
 const expectOneStylesheet = (state) => expect(state.links).toEqual([
-  { tag: 'link', rel: 'stylesheet', href: '/assets/site-footer.css' },
+  { tag: 'link', rel: 'stylesheet', href: '/assets/site-footer.css?v=20261006' },
 ]);
 
 describe('actual footer stylesheet loader', () => {
+  it('revalidates the mutable footer stylesheet instead of freezing future repairs', () => {
+    const config = JSON.parse(readFileSync(new URL('../vercel.json', import.meta.url), 'utf8'));
+    const header = config.headers.find(rule => rule.source === '/assets/site-footer.css')
+      ?.headers.find(header => header.key.toLowerCase() === 'cache-control');
+    expect(header?.value).toBe('public, max-age=0, must-revalidate');
+  });
+
   it('requests an initially visible/near footer immediately before window load', () => {
     for (const top of [200, 1200]) {
       const state = run({ top });

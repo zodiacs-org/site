@@ -1,0 +1,56 @@
+(node:7) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+(node:20) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+ RUN  v3.2.7 /workspace/scratch/8dfe85084616/site-rc16
+
+(node:52) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:45) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:53) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:46) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:75) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:64) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:44) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:76) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/programme-ledger.test.mjs (6 tests) 9ms
+(node:213) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/api/compute-api-local-time.test.ts (4 tests) 835ms
+   ✓ the compute API's local-time bundle > gives every zone name the spelling the source gives it, in any letter case  336ms
+(node:401) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/api/compute-api-privacy.test.ts (6 tests) 817ms
+   ✓ compute API negative control > keeps every canary out of the same places when the compatibility function serves the request, as deployed  383ms
+(node:433) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/api/compute-api-private-state.test.ts (1 test) 1931ms
+   ✓ compute API private module lifetime > clears exact instants and selected caches on success, refusal and failure, without racing another resolver  1930ms
+(node:453) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/api/compute-api-bundle.test.ts (5 tests) 1221ms
+   ✓ the compute API's handler bundle > is what scripts/build-compute-handler.mjs builds from its sources  406ms
+   ✓ the compute API's handler bundle > answers every documented example as the source handler does  532ms
+(node:473) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/api/compute-api.test.ts (37 tests) 6244ms
+   ✓ compute API validation > passes the resolver one spelling of a zone: 5,000 case variants add no formatter  1584ms
+   ✓ compute API receipts, backend and citation > identifies a chart's birth details through cite.receipt: its date and place give back its time  2837ms
+   ✓ compute API parity with the engine and the site resolver > events find the stations, lunations and ingresses the site published for 2026, to within minutes  666ms
+
+ Test Files  6 passed (6)
+      Tests  59 passed (59)
+   Start at  16:00:50
+   Duration  7.70s (transform 1.84s, setup 0ms, collect 4.98s, tests 11.06s, environment 1ms, prepare 485ms)
+
+(node:493) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)

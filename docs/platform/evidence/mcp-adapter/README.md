@@ -350,3 +350,275 @@ that does not exist, and "fourteen" malformed requests where there are eighteen.
   the existing route — issues on this repository — and nothing was sent anywhere.
 - **No authentication of anything.** Not of a record, not of an engine version,
   not of the claim that two records came from independent software.
+
+## 0.1.0-rc.16.1, 2026-10-04
+
+Appended; the sections above describe rc.4 and stay as written. rc.1 to rc.10,
+rc.14, rc.15 and rc.16 stay on disk as released; there were no rc.11 to rc.13
+archives. rc.16.1 bundles the same engine, 0.1.1-rc.16, so
+every position, angle, cusp and comparison is rc.16's. What changed:
+
+- **Output schemas.** Each tool declares one (`src/mcp/outputs.ts`), and the
+  SDK checks every result other than a refusal against it before sending it.
+  The rc.4 limit above, "No `outputSchema` on the tools", is superseded: the
+  programme's brief asks for an output schema on every tool (Track A1). The
+  risk that limit named, a declared shape drifting from the handler, is held
+  by `src/mcp/outputs.test.ts`, which runs every result over a seeded
+  synthetic corpus of 520 requests and 170 comparisons through the schemas,
+  both in zod and as the JSON Schema a host reads, and drives the real
+  registrations through the SDK's own client. The objects are closed, as the
+  advertised schema says. A difference too large for a number, which two
+  records may hold, is sent as `delta: null`, as the text reply always wrote
+  it, rather than failing the schema.
+- **Citations.** Every result other than a refusal carries
+  `cite: { url, receipt, engine, version }`,
+  the compute API's shape and digest (`src/lib/receipt-digest.ts`, moved out of
+  the compute API so both use one function). A chart cites the engine's
+  calculation receipt; the capabilities reply and a comparison cite the
+  adapter's own receipt, `zodiacs.mcp-receipt.v1`, which they carry and which
+  holds nothing from a record. The bundle now imports `createHash` from
+  `node:crypto`, and nothing else from it. A chart's digest identifies the
+  birth details from either side: with the date and the place, trying each
+  time of day finds the time; with the instant, which the positions give away,
+  trying places finds the place, even for a chart with no known time, whose
+  summary shows nothing that depends on the place. The privacy text, the
+  schema a model reads and the tool's description say so, and
+  `src/mcp/outputs.test.ts` holds both directions on synthetic charts.
+- **Resources.** `zodiacs://conventions` and `zodiacs://methodology`
+  (`src/mcp/resources.ts`).
+- **The engine's label.** `get_capabilities` reports the engine as
+  `published` on `npm`; rc.16 said `unpublished-candidate`, carried at 10:38
+  UTC on 2026-10-01, before the engine reached npm: npm's own `time` field
+  for the version reads 2026-10-01T12:02:05.117Z. The committed registry
+  receipt, `docs/platform/evidence/site-engine-rc16/npm-release/verification-receipt.json`
+  (read at 12:12 UTC that day), has 0.1.1-rc.16 under `next` and 0.1.1-rc.15
+  under `latest`. The adapter is still not on npm.
+
+Three reviews of the first build of rc.16.1, of the code and tests, of the
+claims and the privacy text, and of the release packaging, found the
+birthplace direction above, a comparison that a non-finite difference turned
+into an error, overstated sentences in the resources and the documents, and
+gaps in the tests and the artifact checks. All were fixed before this build;
+`node scripts/pack-mcp-server.mjs --check` now also refuses the all-zero
+placeholder commit, so an unpinned archive fails on the pull request rather
+than in the production build.
+
+The records, each against this bundle (`server.mjs` SHA-256 `b061f266…`):
+
+| record | result |
+| --- | --- |
+| `protocol-drive.json` | 95/95 checks, including the output schemas, the citations and the two resources |
+| `host-drive.json` | 7/7 checks, Claude Code 2.1.289 |
+| `benchmark.json` | 18/18 scenarios, 112/112 assertions |
+| a fresh extraction of the archive | `npm ci` installs 14 packages, and `npm run verify` passes its 18 checks |
+
+`host-interop.md`, the one model-driven run, is from an earlier candidate and
+was not repeated.
+
+## 0.1.0-rc.16.2, 2026-10-05
+
+Appended, like rc.16.1's section. rc.16.1 stays on disk as released, and the
+records its table quotes are at commit `fcc41d97`; the three files now hold
+rc.16.2's. The engine is still 0.1.1-rc.16. What changed:
+
+- **Three tools from the compute API.** `get_positions`, `find_events` and
+  `check_sky_fact` (`src/mcp/sky-tools.ts`) parse their arguments with the
+  hosted compute API's own parsers and calculate with its own functions in
+  `src/lib/compute-api/`, which are now inlined into the bundle. For the same
+  JSON, a call returns the body that POST `/api/v1/positions`, `/events` or
+  `/sky-fact` returns: the same result and the same receipt, and so the same
+  `cite.receipt` digest. Only `cite.url` differs; it names the tool's entry on
+  the developer page. A request the compute API's parser refuses gets its own
+  fixed sentence, after the JSON Pointer of the field it refused; one the
+  tool's input schema refuses first, such as an unknown argument or a value
+  outside a list, gets the MCP SDK's validation message.
+  `src/mcp/sky-tools.test.ts` holds this over a seeded synthetic corpus of 252
+  requests (61 for positions, 25 event windows and 166 sky facts), each run
+  through the tool and through the compute API's own request handler, over 17
+  refused requests, and over 43 more at the two ends of the accepted dates.
+  Every result is checked against the tool's output schema, in zod and as the
+  JSON Schema a host reads, against the compute API's OpenAPI components, and
+  through the SDK's own client.
+- **One difference in what is accepted.** The adapter looks up no time zone,
+  so `check_sky_fact` has no zone argument, and its input schema refuses one
+  before any calculation. A date is read the way the compute API reads a date
+  without a zone: as that day in every UTC offset in use today, −12:00 to
+  +14:00, at once, from 14 hours before its midnight UTC to 36 hours after, and
+  `depends` when the answer turns on the time of day or on the offset. Before
+  1868 some places kept a local time further from UTC than either end (Manila
+  until 1844, Alaska until 1867), so their date is not covered without a zone,
+  here or by the compute API.
+- **The compute API's limits.** Up to 100 instants in a call, a window of at
+  most 92 days, and at most 12,000 search evaluations for an events request
+  and 1,000 for a fact. A search samples every 5 days, or every day for the
+  Moon and for new and full moons, and narrows each crossing it finds to the
+  step divided by 2^24. It can miss a pair of crossings that both fall between
+  two samples, such as a body that crosses a sign boundary and crosses back
+  around a station. The receipt records the step, the evaluations used and
+  the limit, and calls the search tested, not proven complete.
+- **What a citation identifies.** The receipt these three tools cite holds no
+  instant, date or body from the request. Every positions call cites the same
+  receipt, and so does every fact at an instant; a window or a fact on a date
+  differs only in how many evaluations its search made.
+- **The result limit is now nearly reached.** The largest answer the limits
+  allow, 100 instants of all twelve rows in the IERS era, is about 230 KB:
+  228,731 bytes for the instants the test uses, and 231,294 for the largest
+  set a review could find, 88% of the 256 KB limit, which until now was only
+  headroom. The test keeps it under 90%. The reply carries the result again as
+  indented text, about 330 KB more, and the README and the developer page say
+  a host may warn about a reply that size or keep it out of the conversation.
+  `bounded`, which applies the limit, moved from `src/mcp/tools.ts` to
+  `src/mcp/bounds.ts` so the new module can use it without importing the tools
+  module back.
+- **A guard kept honest.** `tests/api/compute-api-privacy.test.ts` keeps every
+  module of the site outside the compute API from importing it, so its request
+  data cannot reach another surface. The adapter is now the one exception,
+  named in the test, which also checks that the adapter does import it and
+  that nothing outside `src/mcp/` imports the adapter.
+
+Two reviews of the first build, one of the code and tests and one of the
+documents and the claims ledger, found:
+
+- **The install check could never pass.** `npm run verify` compared the
+  positions at an instant with the chart's bodies as JSON text, and the two
+  answers write the same values in a different key order, so it failed on
+  every good install. No test ran it. It now compares them by value, and
+  `scripts/mcp-artifact.test.mjs` runs it against the committed bundle, which
+  fails on the first build.
+- **Untested paths.** No request in the corpus reached the ends of the
+  accepted dates, where every fact on a date is flagged
+  `outside-reference-span`, so a schema refusing that flag passed every test;
+  the 43 requests above now cover both ends. A sky tool's calculation that
+  throws, or rejects, for a reason nobody foresaw had no test either, so
+  reporting its message, which may quote an argument, or letting a rejection
+  past the guard passed every test; `src/mcp/create-server.test.ts` now covers
+  both. The sentence about dates was compared only with itself; its numbers
+  are now checked against a reply's window.
+- **Holes in the privacy guard.** The test above skipped `.mdx` files and
+  read only `from` and quoted dynamic imports, so a side-effect import, a
+  template-literal import or an `.mdx` page could import the compute API or
+  the adapter unnoticed. It now reads `.mdx`, `.cjs`, `.mts` and `.cts` files
+  and every import form, and each of the six bypasses fails it.
+- **Sentences that said more than the code.** "The day in every zone" is
+  wrong before 1868, as above, and the compute API's own page said "every UTC
+  offset in use" without "today"; both now say today's offsets. A refusal
+  from the input schema is the SDK's message, not the compute API's. Whether an
+  ingress or a phase falls on a date is never `true` without a zone, and an
+  instant is refused for those two kinds.
+
+The records, each against this bundle (`server.mjs` SHA-256 `7209455d…`):
+
+| record | result |
+| --- | --- |
+| `protocol-drive.json` | 106/106 checks, including each new tool's result and citation against its schema, the zone refusal, and refusals in the compute API's words |
+| `host-drive.json` | 7/7 checks, Claude Code 2.1.289 |
+| `benchmark.json` | 18/18 scenarios, 112/112 assertions |
+| a fresh extraction of the archive | `npm ci` installs 14 packages, and `npm run verify` passes its 21 checks |
+
+`host-interop.md`, the one model-driven run, is from an earlier candidate and
+was not repeated.
+
+## 0.1.0-rc.16.3, 2026-10-05
+
+Appended, like the sections above. rc.16.2 stays on disk as released, and the
+records its table quotes are at commit `3acfae47`; the three files now hold
+rc.16.3's. The engine is still 0.1.1-rc.16. No tool changed. What did:
+
+- **Why there is a new candidate.** The compute API gained
+  `POST /api/v1/elections`. The modules of `src/lib/compute-api/` that this
+  adapter inlines hold the compute API's list of endpoints, its limits and
+  their sentences, its validation sentences and JSON Pointers, its receipt and
+  the allowance its searches share, and each gained the elections endpoint's
+  entries. The function that reads an elections request and the search itself
+  are not in the bundle, since nothing here calls them.
+  `scripts/mcp-artifact.test.mjs` requires the committed `server.mjs` to be
+  what the generator builds from the current source, so the bundle changed,
+  and a changed bundle is a new archive under a new version: rc.16.2's archive
+  keeps its bytes.
+- **What a host sees.** The adapter's version, wherever it is named: the
+  server information a host receives when it connects, the `get_capabilities`
+  reply, the receipt that reply and a comparison carry, and so their
+  `cite.receipt` digests, the methodology resource, and the line the server
+  writes to stderr when it starts. Every tool's arguments, results and
+  receipts are otherwise rc.16.2's. The receipts of `get_positions`,
+  `find_events` and `check_sky_fact` are the compute API's, which do not name
+  the adapter, so they are unchanged.
+- **One reply kept as it was.** `get_capabilities` copied the compute API's
+  whole table of limits into `sky.limits`. With the elections endpoint's two
+  limits in that table, it named limits of an endpoint this adapter has no
+  tool for, and its output schema, which lists the four limits of the three
+  sky tools and allows no others, refused the reply: three tests in
+  `src/mcp/outputs.test.ts`, one in `src/mcp/create-server.test.ts` and the
+  bundle check failed. It now names those four limits one by one, so the
+  reply is rc.16.2's, and `src/mcp/sky-tools.test.ts` holds it to exactly
+  those four.
+- **The allowance.** Its `settle` now also refuses a search whose steps would
+  pass what is left, for the elections endpoint, whose station search spends
+  while it runs. A search for `find_events` or `check_sky_fact` is given what
+  is left when it begins, and the engine's crossing search stops before it
+  takes a step past that, so the new condition cannot refuse a request of
+  theirs that rc.16.2 answered.
+- **A digest in the README.** Under its example comparison, the README
+  printed the `cite.receipt` of rc.16.1's receipt: rc.16.2 moved the
+  receipt's version line to rc.16.2 and left the digest below it, and this
+  candidate's first build did the same, so a reader who recomputed it, as the
+  README invites, got another digest. It now prints the digest of the receipt
+  it shows, and `scripts/mcp-artifact.test.mjs` recomputes it, and runs the
+  example chart and holds the citation printed under it to the one the tool
+  returns. rc.16.2's archive keeps its README as released.
+
+The records, each against this bundle (`server.mjs` SHA-256 `a59382d0…`):
+
+| record | result |
+| --- | --- |
+| `protocol-drive.json` | 106/106 checks |
+| `host-drive.json` | 7/7 checks, Claude Code 2.1.289 |
+| `benchmark.json` | 18/18 scenarios, 112/112 assertions |
+| a fresh extraction of the archive | `npm ci` installs 14 packages, and `npm run verify` passes its 21 checks |
+
+`host-interop.md`, the one model-driven run, is from an earlier candidate and
+was not repeated.
+
+## 0.1.0-rc.17, 2026-10-06
+
+Appended, like the sections above. rc.16.3 stays on disk as released, and
+the records its table quotes are at commit `b4f82564`; the three files now
+hold rc.17's. What changed:
+
+- **Why there is a new candidate.** The site adopts engine 0.1.1-rc.17
+  ([`../site-engine-rc17/README.md`](../site-engine-rc17/README.md)), and
+  `server.mjs` inlines the engine, so the bundle changed. A changed bundle is
+  a new archive under a new version: rc.16.3's archive keeps its bytes.
+- **The engine's label.** rc.17 is a release candidate that is not on npm,
+  and under the owner's delegated decision of 2026-10-05 it will not be.
+  `get_capabilities` labels it `unpublished-candidate`, with no `registry`,
+  where rc.16.1 to rc.16.3 labelled rc.16 `published` on `npm`; its output
+  schema says the same. The unit tests, the protocol drive and the archive's
+  own `verify.mjs` all expected `published`. The unit tests and the drive now
+  read the label from the site's candidate record, and `verify.mjs` from the
+  archive's `candidate.json`, which ships beside it.
+- **What a host sees otherwise.** Nothing else.
+  [`../site-engine-rc17/mcp-rc16.3-rc17.json`](../site-engine-rc17/mcp-rc16.3-rc17.json)
+  drives rc.16.3's bundle and this one with the same tool list, both
+  resources and 278 tool calls, ten of them refusals. With the versions and
+  the `sha256:` digests over receipts that name them written out, the only
+  differences are the engine's label in `get_capabilities` and in its output
+  schema. Every position, angle, cusp, event, fact and comparison is
+  rc.16.3's.
+- **No star values.** rc.17 moved the star-based ayanamsas' values into a
+  chunk that the engine's `./calc` and `./vedic` share. This adapter bundles
+  neither entry, and none of the 21 numbers with five or more decimals that
+  only that chunk holds is in `server.mjs`. `NOTICE`'s statement that none of
+  the engine's star values is in `server.mjs` still holds.
+
+The records, each against this bundle (`server.mjs` SHA-256 `0c3e739c…`):
+
+| record | result |
+| --- | --- |
+| `protocol-drive.json` | 106/106 checks |
+| `host-drive.json` | 7/7 checks, Claude Code 2.1.289 |
+| `benchmark.json` | 18/18 scenarios, 112/112 assertions |
+| a fresh extraction of the archive | `npm ci` installs 14 packages, and `npm run verify` passes its 21 checks |
+
+`host-interop.md`, the one model-driven run, is from an earlier candidate and
+was not repeated.

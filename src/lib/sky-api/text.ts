@@ -6,7 +6,7 @@
 import { API_BASE, API_ORIGIN, PLANET_NAMES, PLANET_SLUGS, CONVENTIONS } from './meta';
 import { UPCOMING_WINDOW_DAYS } from './build';
 import { formatDay } from './format';
-import { BUDGETS, COMPUTE_DOCS_URL } from '../compute-api/constants';
+import { BUDGETS, COMPUTE_DOCS_URL, MAX_ELECTION_CONDITIONS } from '../compute-api/constants';
 
 type Payload = Record<string, any>;
 
@@ -75,7 +75,7 @@ export function renderAgentGuide(
     '',
     '## Compute endpoints',
     '',
-    `Six endpoints calculate from a JSON body sent with POST, on the same engine. There is no key. Requests from one IP address are rate limited, and the endpoints answer only while that limit is in place; otherwise every endpoint answers 503. Birth data goes only in the body: any query string is ignored, and the host's request logs keep each request's web address and IP address. The function writes nothing from a request or its result to a log, a file or a database, and no response is cached. Documentation: ${COMPUTE_DOCS_URL} · Schemas and examples: ${API_BASE}/openapi.json (tag compute).`,
+    `Seven endpoints calculate from a JSON body sent with POST, on the same engine. There is no key. Requests from one IP address are rate limited, and the endpoints answer only while that limit is in place; otherwise every endpoint answers 503. Birth data goes only in the body: any query string is ignored, and the host's request logs keep each request's web address and IP address. The function writes nothing from a request or its result to a log, a file or a database, and no response is cached. Documentation: ${COMPUTE_DOCS_URL} · Schemas and examples: ${API_BASE}/openapi.json (tag compute).`,
     '',
     `- POST ${API_BASE}/chart — bodies, angles, house cusps and aspects for an instant (utc) or a local time and IANA zone (local), a latitude and a longitude, in one of the engine's thirteen house systems.`,
     `- POST ${API_BASE}/positions — positions and speeds of chosen bodies at up to ${BUDGETS['positions.instants']} instants.`,
@@ -83,7 +83,8 @@ export function renderAgentGuide(
     `- POST ${API_BASE}/events — sign ingresses, stations and new and full moons in a window of up to ${BUDGETS['events.windowDays']} days.`,
     `- POST ${API_BASE}/time — a local civil time as UTC and Terrestrial Time, with ΔT and flags for skipped and repeated clock times.`,
     `- POST ${API_BASE}/sky-fact — whether a body is in a sign, is retrograde or enters a sign, or a lunar phase falls, at an instant or on a date: true, false or depends, with the computed values that decide it.`,
-    '- Every success carries result, receipt, backend and cite. cite.url is the endpoint\'s documentation and cite.receipt the SHA-256 of the receipt\'s canonical JSON. For chart and houses the receipt holds the instant and the coordinates, so cite.receipt identifies the birth details: anyone who knows the date and the place can find the time by trying times until it matches. Quote cite with a result; for chart and houses, only where the birth details may be known. A refusal is {"error": {"code", "message"}} with a stable code.',
+    `- POST ${API_BASE}/elections — the stretches of a window of up to ${BUDGETS['elections.windowDays']} days in which up to ${MAX_ELECTION_CONDITIONS} conditions all hold: the Moon waxing or waning or void of course, a body in a sign, a planet retrograde, a body in an angular house at a place; each can be negated.`,
+    '- Every success carries result, receipt, backend and cite. cite.url is the endpoint\'s documentation and cite.receipt the SHA-256 of the receipt\'s canonical JSON. For chart and houses the receipt holds the instant and the coordinates, so cite.receipt identifies the birth details from either side: with the date and the place, trying times finds the time, and with the date and the time, trying places from a list of towns finds the place. Quote cite with a result; for chart and houses, only where the birth details may be known. A refusal is {"error": {"code", "message"}} with a stable code.',
     '',
     '## Caching',
     '',

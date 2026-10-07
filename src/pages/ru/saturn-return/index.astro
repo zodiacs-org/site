@@ -1,5 +1,6 @@
 ---
 import Base from '../../../layouts/Base.astro';
+import ReturnToolLinks from '../../../components/return-visits/ReturnToolLinks.astro';
 import Faq from '../../../components/Faq.astro';
 import SaturnReturnCalculator from '../../../islands/SaturnReturnCalculator';
 import '../../../styles/calculator.css';
@@ -19,7 +20,7 @@ const faq = [
   },
   {
     q: 'Сколько длится возвращение Сатурна?',
-    a: 'Точные пересечения могут растянуться от нескольких дней почти до года — в зависимости от ретроградной петли. Шире обычно рассматривают весь проход Сатурна по знаку натального Сатурна, около двух с половиной лет.',
+    a: 'Точные проходы могут растянуться от нескольких дней почти до года — в зависимости от ретроградной петли. Шире обычно рассматривают весь транзит Сатурна по знаку натального Сатурна, около двух с половиной лет.',
   },
   {
     q: 'Возвращение Сатурна — это плохо?',
@@ -50,9 +51,10 @@ const jsonLd = [
 ];
 ---
 <Base
+  privateSurface
   clientUi
-  title="Возвращение Сатурна — когда и что это"
-  description="Годы и точные даты вашего возвращения Сатурна, рассчитанные по эфемеридам, с тремя проходами."
+  title="Возвращение Сатурна: калькулятор дат — когда и что это"
+  description="Годы и точные даты вашего возвращения Сатурна по эфемеридам, с тремя проходами. Введите дату рождения — расчёт в браузере, без регистрации."
   path="/ru/saturn-return/"
   locale="ru"
   image="/assets/og/v2/tool/saturn-return.png"
@@ -73,6 +75,7 @@ const jsonLd = [
   <section class="section--tight container container--narrow">
     <Faq items={faq} heading="Вопросы о возвращении Сатурна" />
   </section>
+  <section class="section--tight container container--narrow"><ReturnToolLinks locale="ru" current="/saturn-return/" /></section>
 </Base>
 
 <style>

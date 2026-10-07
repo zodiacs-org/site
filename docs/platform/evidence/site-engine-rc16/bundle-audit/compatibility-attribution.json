@@ -1,0 +1,694 @@
+{
+  "rc15RecordedProduction": {
+    "limitKb": 36,
+    "limitBytes": 36864,
+    "rc15": 36747,
+    "headroom": 117,
+    "rc14AfterReview": 36751,
+    "delta": -4
+  },
+  "rc15ExistingDefaultTotal": 36295,
+  "rc16PreviouslyMeasuredDefault": 36460,
+  "rc16Production": 36915,
+  "rc16DefaultMainInferred": 11605,
+  "method": "rc16 default and production route closures reference identical files except SynastryCalculator; original default closure is preserved in measurements.json. Compare current production non-Synastry chunks to rc15 existing default artifacts; no rc15 production chunk snapshot is claimed.",
+  "comparables": [
+    {
+      "role": "AstroTerm.astro_astro_type_script_index_0_lang",
+      "rc15DefaultFile": "AstroTerm.astro_astro_type_script_index_0_lang.DB1iYTmP.js",
+      "rc15DefaultGzip": 413,
+      "rc16ProductionFile": "AstroTerm.astro_astro_type_script_index_0_lang.DB1iYTmP.js",
+      "rc16ProductionGzip": 413,
+      "change": 0
+    },
+    {
+      "role": "preload-helper",
+      "rc15DefaultFile": "preload-helper.L5lOfJxi.js",
+      "rc15DefaultGzip": 764,
+      "rc16ProductionFile": "preload-helper.L5lOfJxi.js",
+      "rc16ProductionGzip": 764,
+      "change": 0
+    },
+    {
+      "role": "SynastryCalculator",
+      "rc15DefaultFile": "SynastryCalculator.u0MHma7J.js",
+      "rc15DefaultGzip": 11453,
+      "rc16ProductionFile": "SynastryCalculator.CCPBjKb5.js",
+      "rc16ProductionGzip": 12060,
+      "change": 607
+    },
+    {
+      "role": "preact.module",
+      "rc15DefaultFile": "preact.module.Bjq9tLsx.js",
+      "rc15DefaultGzip": 4422,
+      "rc16ProductionFile": "preact.module.Bjq9tLsx.js",
+      "rc16ProductionGzip": 4422,
+      "change": 0
+    },
+    {
+      "role": "hooks.module",
+      "rc15DefaultFile": "hooks.module.C0_8FjiD.js",
+      "rc15DefaultGzip": 1236,
+      "rc16ProductionFile": "hooks.module.C0_8FjiD.js",
+      "rc16ProductionGzip": 1236,
+      "change": 0
+    },
+    {
+      "role": "module-load",
+      "rc15DefaultFile": "module-load.Bon2MfsC.js",
+      "rc15DefaultGzip": 228,
+      "rc16ProductionFile": "module-load.Bon2MfsC.js",
+      "rc16ProductionGzip": 228,
+      "change": 0
+    },
+    {
+      "role": "useEngine",
+      "rc15DefaultFile": "useEngine.D11NZRsP.js",
+      "rc15DefaultGzip": 377,
+      "rc16ProductionFile": "useEngine.CiZwEwXl.js",
+      "rc16ProductionGzip": 379,
+      "change": 2
+    },
+    {
+      "role": "profile-access-reader",
+      "rc15DefaultFile": "profile-access-reader.DoQqlSjt.js",
+      "rc15DefaultGzip": 264,
+      "rc16ProductionFile": "profile-access-reader.DoQqlSjt.js",
+      "rc16ProductionGzip": 264,
+      "change": 0
+    },
+    {
+      "role": "useProfile",
+      "rc15DefaultFile": "useProfile.CeI1iGpH.js",
+      "rc15DefaultGzip": 299,
+      "rc16ProductionFile": "useProfile.BUWA37OV.js",
+      "rc16ProductionGzip": 301,
+      "change": 2
+    },
+    {
+      "role": "schema",
+      "rc15DefaultFile": "schema.DqKqbGHb.js",
+      "rc15DefaultGzip": 112,
+      "rc16ProductionFile": "schema.DqKqbGHb.js",
+      "rc16ProductionGzip": 112,
+      "change": 0
+    },
+    {
+      "role": "read-store",
+      "rc15DefaultFile": "read-store.CxxvcKMc.js",
+      "rc15DefaultGzip": 716,
+      "rc16ProductionFile": "read-store.CQjgDq6O.js",
+      "rc16ProductionGzip": 717,
+      "change": 1
+    },
+    {
+      "role": "chunk-MFF3VKO3",
+      "rc15DefaultFile": "chunk-MFF3VKO3.DkBXfVur.js",
+      "rc15DefaultGzip": 1160,
+      "rc16ProductionFile": "chunk-2OWGBT3O.Cw5cXswy.js",
+      "rc16ProductionGzip": 1168,
+      "change": 8
+    },
+    {
+      "role": "signs",
+      "rc15DefaultFile": "signs.BMXPKoMF.js",
+      "rc15DefaultGzip": 4271,
+      "rc16ProductionFile": "signs.BMXPKoMF.js",
+      "rc16ProductionGzip": 4271,
+      "change": 0
+    },
+    {
+      "role": "jsxRuntime.module",
+      "rc15DefaultFile": "jsxRuntime.module.BG9KJlGc.js",
+      "rc15DefaultGzip": 306,
+      "rc16ProductionFile": "jsxRuntime.module.BG9KJlGc.js",
+      "rc16ProductionGzip": 306,
+      "change": 0
+    },
+    {
+      "role": "i18n",
+      "rc15DefaultFile": "i18n.Cg_lCJuc.js",
+      "rc15DefaultGzip": 2831,
+      "rc16ProductionFile": "i18n.Cg_lCJuc.js",
+      "rc16ProductionGzip": 2831,
+      "change": 0
+    },
+    {
+      "role": "CalculationReload",
+      "rc15DefaultFile": "CalculationReload.CHVnezqu.js",
+      "rc15DefaultGzip": 327,
+      "rc16ProductionFile": "CalculationReload.CHVnezqu.js",
+      "rc16ProductionGzip": 327,
+      "change": 0
+    },
+    {
+      "role": "pairs",
+      "rc15DefaultFile": "pairs.VSaatg-O.js",
+      "rc15DefaultGzip": 1022,
+      "rc16ProductionFile": "pairs.VSaatg-O.js",
+      "rc16ProductionGzip": 1022,
+      "change": 0
+    },
+    {
+      "role": "share-positions",
+      "rc15DefaultFile": "share-positions.BSDWSfM2.js",
+      "rc15DefaultGzip": 1237,
+      "rc16ProductionFile": "share-positions.BSDWSfM2.js",
+      "rc16ProductionGzip": 1237,
+      "change": 0
+    },
+    {
+      "role": "useProfileAccessGeneration",
+      "rc15DefaultFile": "useProfileAccessGeneration.w2JLb1F6.js",
+      "rc15DefaultGzip": 231,
+      "rc16ProductionFile": "useProfileAccessGeneration.w2JLb1F6.js",
+      "rc16ProductionGzip": 231,
+      "change": 0
+    },
+    {
+      "role": "BirthFields",
+      "rc15DefaultFile": "BirthFields.wJaLxABT.js",
+      "rc15DefaultGzip": 1314,
+      "rc16ProductionFile": "BirthFields.wJaLxABT.js",
+      "rc16ProductionGzip": 1314,
+      "change": 0
+    },
+    {
+      "role": "PlaceSearch",
+      "rc15DefaultFile": "PlaceSearch.XYSJuxC8.js",
+      "rc15DefaultGzip": 1628,
+      "rc16ProductionFile": "PlaceSearch.XYSJuxC8.js",
+      "rc16ProductionGzip": 1628,
+      "change": 0
+    },
+    {
+      "role": "SignChip",
+      "rc15DefaultFile": "SignChip.1gtDT8UJ.js",
+      "rc15DefaultGzip": 334,
+      "rc16ProductionFile": "SignChip.1gtDT8UJ.js",
+      "rc16ProductionGzip": 334,
+      "change": 0
+    },
+    {
+      "role": "sign-icon",
+      "rc15DefaultFile": "sign-icon.5AEtqUYO.js",
+      "rc15DefaultGzip": 205,
+      "rc16ProductionFile": "sign-icon.5AEtqUYO.js",
+      "rc16ProductionGzip": 205,
+      "change": 0
+    },
+    {
+      "role": "NextActionCard",
+      "rc15DefaultFile": "NextActionCard.eDMj-LSr.js",
+      "rc15DefaultGzip": 323,
+      "rc16ProductionFile": "NextActionCard.eDMj-LSr.js",
+      "rc16ProductionGzip": 323,
+      "change": 0
+    },
+    {
+      "role": "client",
+      "rc15DefaultFile": "client.DPkn9Lbl.js",
+      "rc15DefaultGzip": 822,
+      "rc16ProductionFile": "client.DPkn9Lbl.js",
+      "rc16ProductionGzip": 822,
+      "change": 0
+    }
+  ],
+  "wheel": {
+    "rc15": {
+      "entry": "RelationshipWheel.DMspVuIt.js",
+      "gzip": 52000,
+      "chunks": [
+        {
+          "file": "RelationshipWheel.DMspVuIt.js",
+          "gzip": 18679,
+          "imports": [
+            "./preload-helper.L5lOfJxi.js",
+            "./preact.module.Bjq9tLsx.js",
+            "./hooks.module.C0_8FjiD.js",
+            "./module-load.Bon2MfsC.js",
+            "./signs.BMXPKoMF.js",
+            "./compat.Bjc3uaB7.js",
+            "./jsxRuntime.module.BG9KJlGc.js",
+            "./PlanetGlyph.BhITbtcc.js",
+            "./EvidenceDisclosure.LNSfDkU7.js",
+            "./i18n.Cg_lCJuc.js",
+            "./CalculationReload.CHVnezqu.js",
+            "./astrology.BHib5efU.js",
+            "./AspectGlyph.DMIAGIQV.js",
+            "./Wheel.RNRSqGob.js",
+            "./AspectPatternFeature.D8yONZw8.js",
+            "./renderTransitOverlay.CuVT6C2P.js",
+            "./compositeCopy.LfPPB3lj.js"
+          ],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "preload-helper.L5lOfJxi.js",
+          "gzip": 764,
+          "imports": [],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "preact.module.Bjq9tLsx.js",
+          "gzip": 4422,
+          "imports": [],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "hooks.module.C0_8FjiD.js",
+          "gzip": 1236,
+          "imports": [
+            "./preact.module.Bjq9tLsx.js"
+          ],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "module-load.Bon2MfsC.js",
+          "gzip": 228,
+          "imports": [],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "signs.BMXPKoMF.js",
+          "gzip": 4271,
+          "imports": [],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "compat.Bjc3uaB7.js",
+          "gzip": 743,
+          "imports": [
+            "./signs.BMXPKoMF.js"
+          ],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "jsxRuntime.module.BG9KJlGc.js",
+          "gzip": 306,
+          "imports": [
+            "./preact.module.Bjq9tLsx.js"
+          ],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "PlanetGlyph.BhITbtcc.js",
+          "gzip": 409,
+          "imports": [
+            "./paths.DYbAuceH.js",
+            "./jsxRuntime.module.BG9KJlGc.js"
+          ],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "paths.DYbAuceH.js",
+          "gzip": 717,
+          "imports": [],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "EvidenceDisclosure.LNSfDkU7.js",
+          "gzip": 304,
+          "imports": [
+            "./jsxRuntime.module.BG9KJlGc.js"
+          ],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "i18n.Cg_lCJuc.js",
+          "gzip": 2831,
+          "imports": [
+            "./signs.BMXPKoMF.js"
+          ],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "CalculationReload.CHVnezqu.js",
+          "gzip": 327,
+          "imports": [
+            "./module-load.Bon2MfsC.js",
+            "./jsxRuntime.module.BG9KJlGc.js",
+            "./i18n.Cg_lCJuc.js"
+          ],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "astrology.BHib5efU.js",
+          "gzip": 913,
+          "imports": [
+            "./signs.BMXPKoMF.js"
+          ],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "AspectGlyph.DMIAGIQV.js",
+          "gzip": 359,
+          "imports": [
+            "./paths.DYbAuceH.js",
+            "./jsxRuntime.module.BG9KJlGc.js"
+          ],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "Wheel.RNRSqGob.js",
+          "gzip": 4392,
+          "imports": [
+            "./signs.BMXPKoMF.js",
+            "./paths.DYbAuceH.js",
+            "./jsxRuntime.module.BG9KJlGc.js"
+          ],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "AspectPatternFeature.D8yONZw8.js",
+          "gzip": 1062,
+          "imports": [
+            "./preload-helper.L5lOfJxi.js",
+            "./preact.module.Bjq9tLsx.js",
+            "./hooks.module.C0_8FjiD.js",
+            "./module-load.Bon2MfsC.js",
+            "./jsxRuntime.module.BG9KJlGc.js",
+            "./CalculationReload.CHVnezqu.js"
+          ],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "renderTransitOverlay.CuVT6C2P.js",
+          "gzip": 1455,
+          "imports": [
+            "./signs.BMXPKoMF.js",
+            "./paths.DYbAuceH.js",
+            "./jsxRuntime.module.BG9KJlGc.js",
+            "./Wheel.RNRSqGob.js"
+          ],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "compositeCopy.LfPPB3lj.js",
+          "gzip": 6735,
+          "imports": [
+            "./preact.module.Bjq9tLsx.js",
+            "./chunk-MFF3VKO3.DkBXfVur.js",
+            "./aspects.vzMMbAJi.js",
+            "./signs.BMXPKoMF.js",
+            "./paths.DYbAuceH.js",
+            "./jsxRuntime.module.BG9KJlGc.js",
+            "./Wheel.RNRSqGob.js",
+            "./technical-layout.DQIjXHHb.js"
+          ],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "chunk-MFF3VKO3.DkBXfVur.js",
+          "gzip": 1160,
+          "imports": [],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "aspects.vzMMbAJi.js",
+          "gzip": 227,
+          "imports": [
+            "./chunk-MFF3VKO3.DkBXfVur.js"
+          ],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "technical-layout.DQIjXHHb.js",
+          "gzip": 460,
+          "imports": [],
+          "ephemerisMarkers": []
+        }
+      ]
+    },
+    "rc16": {
+      "entry": "RelationshipWheel.BELnvFfu.js",
+      "gzip": 96188,
+      "chunks": [
+        {
+          "file": "RelationshipWheel.BELnvFfu.js",
+          "gzip": 18773,
+          "imports": [
+            "./preload-helper.L5lOfJxi.js",
+            "./preact.module.Bjq9tLsx.js",
+            "./hooks.module.C0_8FjiD.js",
+            "./module-load.Bon2MfsC.js",
+            "./signs.BMXPKoMF.js",
+            "./compat.Bjc3uaB7.js",
+            "./jsxRuntime.module.BG9KJlGc.js",
+            "./PlanetGlyph.BhITbtcc.js",
+            "./EvidenceDisclosure.LNSfDkU7.js",
+            "./i18n.Cg_lCJuc.js",
+            "./CalculationReload.CHVnezqu.js",
+            "./astrology.BHib5efU.js",
+            "./AspectGlyph.DMIAGIQV.js",
+            "./Wheel.RNRSqGob.js",
+            "./AspectPatternFeature.BdIDYYOu.js",
+            "./renderTransitOverlay.CuVT6C2P.js",
+            "./compositeCopy.69O0mxS0.js"
+          ],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "preload-helper.L5lOfJxi.js",
+          "gzip": 764,
+          "imports": [],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "preact.module.Bjq9tLsx.js",
+          "gzip": 4422,
+          "imports": [],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "hooks.module.C0_8FjiD.js",
+          "gzip": 1236,
+          "imports": [
+            "./preact.module.Bjq9tLsx.js"
+          ],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "module-load.Bon2MfsC.js",
+          "gzip": 228,
+          "imports": [],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "signs.BMXPKoMF.js",
+          "gzip": 4271,
+          "imports": [],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "compat.Bjc3uaB7.js",
+          "gzip": 743,
+          "imports": [
+            "./signs.BMXPKoMF.js"
+          ],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "jsxRuntime.module.BG9KJlGc.js",
+          "gzip": 306,
+          "imports": [
+            "./preact.module.Bjq9tLsx.js"
+          ],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "PlanetGlyph.BhITbtcc.js",
+          "gzip": 409,
+          "imports": [
+            "./paths.DYbAuceH.js",
+            "./jsxRuntime.module.BG9KJlGc.js"
+          ],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "paths.DYbAuceH.js",
+          "gzip": 717,
+          "imports": [],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "EvidenceDisclosure.LNSfDkU7.js",
+          "gzip": 304,
+          "imports": [
+            "./jsxRuntime.module.BG9KJlGc.js"
+          ],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "i18n.Cg_lCJuc.js",
+          "gzip": 2831,
+          "imports": [
+            "./signs.BMXPKoMF.js"
+          ],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "CalculationReload.CHVnezqu.js",
+          "gzip": 327,
+          "imports": [
+            "./module-load.Bon2MfsC.js",
+            "./jsxRuntime.module.BG9KJlGc.js",
+            "./i18n.Cg_lCJuc.js"
+          ],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "astrology.BHib5efU.js",
+          "gzip": 913,
+          "imports": [
+            "./signs.BMXPKoMF.js"
+          ],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "AspectGlyph.DMIAGIQV.js",
+          "gzip": 359,
+          "imports": [
+            "./paths.DYbAuceH.js",
+            "./jsxRuntime.module.BG9KJlGc.js"
+          ],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "Wheel.RNRSqGob.js",
+          "gzip": 4392,
+          "imports": [
+            "./signs.BMXPKoMF.js",
+            "./paths.DYbAuceH.js",
+            "./jsxRuntime.module.BG9KJlGc.js"
+          ],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "AspectPatternFeature.BdIDYYOu.js",
+          "gzip": 1206,
+          "imports": [
+            "./preload-helper.L5lOfJxi.js",
+            "./preact.module.Bjq9tLsx.js",
+            "./hooks.module.C0_8FjiD.js",
+            "./module-load.Bon2MfsC.js",
+            "./jsxRuntime.module.BG9KJlGc.js",
+            "./CalculationReload.CHVnezqu.js"
+          ],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "renderTransitOverlay.CuVT6C2P.js",
+          "gzip": 1455,
+          "imports": [
+            "./signs.BMXPKoMF.js",
+            "./paths.DYbAuceH.js",
+            "./jsxRuntime.module.BG9KJlGc.js",
+            "./Wheel.RNRSqGob.js"
+          ],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "compositeCopy.69O0mxS0.js",
+          "gzip": 6514,
+          "imports": [
+            "./preact.module.Bjq9tLsx.js",
+            "./aspects.BMFS_z7-.js",
+            "./signs.BMXPKoMF.js",
+            "./paths.DYbAuceH.js",
+            "./jsxRuntime.module.BG9KJlGc.js",
+            "./Wheel.RNRSqGob.js",
+            "./technical-layout.DQIjXHHb.js",
+            "./techniques.fuIjA2yk.js"
+          ],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "aspects.BMFS_z7-.js",
+          "gzip": 227,
+          "imports": [
+            "./chunk-2OWGBT3O.Cw5cXswy.js"
+          ],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "chunk-2OWGBT3O.Cw5cXswy.js",
+          "gzip": 1168,
+          "imports": [],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "technical-layout.DQIjXHHb.js",
+          "gzip": 460,
+          "imports": [],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "techniques.fuIjA2yk.js",
+          "gzip": 10066,
+          "imports": [
+            "./rolldown-runtime.DK3Fl9T5.js",
+            "./chunk-2OWGBT3O.Cw5cXswy.js",
+            "./chunk-KFTJMMG7.BtLu95jT.js",
+            "./chunk-CPALRSPC.DWNyQy_f.js",
+            "./chunk-KHBLFXFG.DP9le7v-.js",
+            "./chunk-AECKV73C.CyItoxb-.js",
+            "./chunk-WOU7JVD3.pnw1-4va.js"
+          ],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "rolldown-runtime.DK3Fl9T5.js",
+          "gzip": 154,
+          "imports": [],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "chunk-KFTJMMG7.BtLu95jT.js",
+          "gzip": 619,
+          "imports": [],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "chunk-CPALRSPC.DWNyQy_f.js",
+          "gzip": 501,
+          "imports": [],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "chunk-KHBLFXFG.DP9le7v-.js",
+          "gzip": 6482,
+          "imports": [],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "chunk-AECKV73C.CyItoxb-.js",
+          "gzip": 1568,
+          "imports": [],
+          "ephemerisMarkers": []
+        },
+        {
+          "file": "chunk-WOU7JVD3.pnw1-4va.js",
+          "gzip": 23004,
+          "imports": [
+            "./chunk-2OWGBT3O.Cw5cXswy.js",
+            "./chunk-4NV4ZEFZ.sSniBhHx.js",
+            "./chunk-KHBLFXFG.DP9le7v-.js"
+          ],
+          "ephemerisMarkers": [
+            "Value is not boolean:",
+            "Light-travel time solver did not converge"
+          ]
+        },
+        {
+          "file": "chunk-4NV4ZEFZ.sSniBhHx.js",
+          "gzip": 1769,
+          "imports": [
+            "./chunk-2OWGBT3O.Cw5cXswy.js"
+          ],
+          "ephemerisMarkers": []
+        }
+      ]
+    }
+  }
+}

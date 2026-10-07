@@ -10,7 +10,7 @@
   "publicationDelaySeconds": 300,
   "featureSessions": 50,
   "initialCapitalPerArm": 10000,
-  "engineVersion": "0.1.1-rc.15",
+  "engineVersion": "0.1.1-rc.17",
   "candidateAssets": ["BTC-USD", "ETH-USD", "SOL-USD", "XRP-USD", "XNAS:AAPL", "XNAS:MSFT", "XNAS:NVDA", "XNYS:JPM", "XETR:SAP", "XLON:AZN", "XPAR:MC", "XTKS:7203", "XHKG:0700", "XASX:BHP", "ETF:NYSE:SPY", "ETF:NASDAQ:QQQ", "ETF:NYSE:DIA", "ETF:XETRA:EXS1", "ETF:LSE:ISF", "ETF:JPX:1321", "ETF:HKEX:2800", "ETF:ASX:STW", "FX:EUR/USD", "FX:GBP/USD", "FX:USD/JPY", "FX:USD/CHF", "FX:AUD/USD", "FX:USD/CAD", "FX:NZD/USD", "ETF:NYSE:GLD", "ETF:NYSE:SLV", "ETF:NYSE:USO", "ETF:NYSE:BNO", "ETF:NYSE:UNG", "ETF:NYSE:CPER"],
   "assets": [],
   "costsBpsPerSide": {"crypto":{"fee":10,"slippage":5},"stocks":{"fee":2,"slippage":5},"indices":{"fee":2,"slippage":5},"fx":{"fee":1,"slippage":2},"commodities":{"fee":3,"slippage":10}},

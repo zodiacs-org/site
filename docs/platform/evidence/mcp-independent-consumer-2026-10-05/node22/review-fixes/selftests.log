@@ -1,0 +1,82 @@
+TAP version 13
+# Subtest: canonical digest has fixed independently known bytes; finite JSON only
+ok 1 - canonical digest has fixed independently known bytes; finite JSON only
+  ---
+  duration_ms: 2.739712
+  type: 'test'
+  ...
+# Subtest: altered archive hash fails before extraction
+ok 2 - altered archive hash fails before extraction
+  ---
+  duration_ms: 1.073172
+  type: 'test'
+  ...
+# Subtest: stale engine and adapter versions fail even when wrappers agree
+ok 3 - stale engine and adapter versions fail even when wrappers agree
+  ---
+  duration_ms: 2.415918
+  type: 'test'
+  ...
+# Subtest: missing receipt is refused
+ok 4 - missing receipt is refused
+  ---
+  duration_ms: 0.328383
+  type: 'test'
+  ...
+# Subtest: bad citation digest fails independent recomputation
+ok 5 - bad citation digest fails independent recomputation
+  ---
+  duration_ms: 0.447054
+  type: 'test'
+  ...
+# Subtest: lost depends fails even after BOTH wrappers collapse it to true
+ok 6 - lost depends fails even after BOTH wrappers collapse it to true
+  ---
+  duration_ms: 0.840308
+  type: 'test'
+  ...
+# Subtest: inflated completeness fails even when BOTH wrappers recite the altered receipt
+ok 7 - inflated completeness fails even when BOTH wrappers recite the altered receipt
+  ---
+  duration_ms: 1.293844
+  type: 'test'
+  ...
+# Subtest: parity allows only exact documentation URL substitution
+ok 8 - parity allows only exact documentation URL substitution
+  ---
+  duration_ms: 1.035932
+  type: 'test'
+  ...
+# Subtest: malformed and non-JSON HTTP bodies survive failed parsing alongside earlier evidence
+ok 9 - malformed and non-JSON HTTP bodies survive failed parsing alongside earlier evidence
+  ---
+  duration_ms: 34.07408
+  type: 'test'
+  ...
+# Subtest: fetch and interrupted-body failures retain honest status and partial bytes
+ok 10 - fetch and interrupted-body failures retain honest status and partial bytes
+  ---
+  duration_ms: 4.596696
+  type: 'test'
+  ...
+# Subtest: oversized HTTP body and headers stop with explicitly bounded evidence
+ok 11 - oversized HTTP body and headers stop with explicitly bounded evidence
+  ---
+  duration_ms: 28.524345
+  type: 'test'
+  ...
+# Subtest: stale output directory is rejected by helper and CLI without changing original evidence
+ok 12 - stale output directory is rejected by helper and CLI without changing original evidence
+  ---
+  duration_ms: 105.510052
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 318.476888

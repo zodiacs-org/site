@@ -1,0 +1,10 @@
+{
+  "node": "v22.22.2",
+  "npm": "10.9.7",
+  "nodeRequirement": ".github/workflows/site-check.yml: node-version 22; package.json: engines node 22.x",
+  "npmRequirement": "No exact packageManager/npm version pin in package.json or Site Check; used the official Node release bundled npm.",
+  "url": "https://nodejs.org/download/release/v22.22.2/node-v22.22.2-linux-x64.tar.xz",
+  "checksumsUrl": "https://nodejs.org/download/release/v22.22.2/SHASUMS256.txt",
+  "bytes": 31065656,
+  "sha256": "88fd1ce767091fd8d4a99fdb2356e98c819f93f3b1f8663853a2dee9b438068a"
+}

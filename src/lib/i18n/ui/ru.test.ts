@@ -39,7 +39,7 @@ afterEach(() => {
 describe('Russian staged catalog', () => {
   it('covers every UI key and preserves every interpolation token', () => {
     const englishKeys = Object.keys(en).sort() as UiKey[];
-    expect(englishKeys).toHaveLength(422);
+    expect(englishKeys).toHaveLength(452);
     expect(Object.keys(ru).sort()).toEqual(englishKeys);
     for (const key of englishKeys) {
       expect(placeholders(ru[key]), `ru.${key}`).toEqual(placeholders(en[key]));
@@ -50,7 +50,7 @@ describe('Russian staged catalog', () => {
     expect(ru.navTools).toBe('Инструменты');
     expect(ru.privacyDevice).toBe('Приватно по умолчанию. Данные рождения остаются в этом браузере.');
     expect(ru.skyAsOf).toBe('{date} · 12 UTC');
-    expect(ru.emailCapturePersonalTitle).toBe('Ваша неделя {sign} впереди.');
+    expect(ru.emailCapturePersonalTitle).toBe('{sign}: ваша неделя впереди.');
     expect(ru.emailConfirmIgnore).toContain('Ссылка действует 48 часов.');
   });
 

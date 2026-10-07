@@ -199,8 +199,6 @@ export async function imagePositions(chart: BigThreeCardChart, birthDate?: strin
   return { bodies: computeBodies(utc), angles: null, engineVersion: chart.engineVersion, moonSignCandidates: [] };
 }
 
-const HOUR_MS = 3_600_000;
-
 /**
  * The Moon's sign on a card of a chart without a birth time: shown only when
  * the Moon is in that sign at every instant of the birth date in every time
@@ -222,12 +220,13 @@ const HOUR_MS = 3_600_000;
  * card can name a sign the Moon was not in for part of that date.
  */
 export async function untimedMoonSign(birthDate?: string): Promise<string | null> {
+  // The date as a link reads it: a date that is not one has no card sign.
   const noon = await referenceInstant(birthDate).catch(() => null);
-  if (!noon) return null;
-  const { bodyLongitude } = await import('./engine/full');
-  const first = signForLongitude(bodyLongitude('Moon', new Date(noon.getTime() - 26 * HOUR_MS))).slug;
-  const last = signForLongitude(bodyLongitude('Moon', new Date(noon.getTime() + 24 * HOUR_MS - 1))).slug;
-  return first === last ? first : null;
+  if (!noon || !birthDate) return null;
+  // @zodiacs/engine's rule for a date without a zone, from 00:00 at UTC+14 to
+  // 24:00 at UTC−12 (engine rc.16, which ported this function into the package).
+  const { moonSignCandidates } = await import('@zodiacs/engine/techniques');
+  return moonSignCandidates(birthDate).sign;
 }
 
 /** 12:00 UTC on the civil birth date, as a link carries it (sharedReferenceInstant), loaded on demand. */
@@ -257,10 +256,12 @@ export const SHARE_CARD_WORDMARK = Object.freeze({
 
 async function drawPortraitShareBrand(
   context: CanvasRenderingContext2D,
+  centerY: number = PORTRAIT_SHARE_CARD_BRAND_LAYOUT.centerY,
 ): Promise<void> {
   await withShareBrandIcon((icon) => {
     drawShareBrandLockup(context, icon, {
       ...PORTRAIT_SHARE_CARD_BRAND_LAYOUT,
+      centerY,
       serif: SERIF,
     });
   });
@@ -771,17 +772,17 @@ async function drawBigThreeCard(
 
   const canvas = document.createElement('canvas');
   canvas.width = W;
-  canvas.height = H;
+  canvas.height = 1920;
   const ctx = canvas.getContext('2d');
   if (!ctx) throw new Error('canvas unavailable');
 
   ctx.fillStyle = BG;
-  ctx.fillRect(0, 0, W, H);
+  ctx.fillRect(0, 0, W, 1920);
   if (typeof ctx.roundRect === 'function') {
     ctx.strokeStyle = HAIR;
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.roundRect(28.5, 28.5, W - 57, H - 57, 26);
+    ctx.roundRect(28.5, 28.5, W - 57, 1920 - 57, 26);
     ctx.stroke();
   }
 
@@ -789,10 +790,10 @@ async function drawBigThreeCard(
   ctx.textBaseline = 'middle';
   ctx.fillStyle = INK_2;
   ctx.font = `italic 400 34px ${SERIF}`;
-  ctx.fillText(shareCardText(locale, 'bigThreeTitle'), W / 2, 112);
+  ctx.fillText(shareCardText(locale, 'bigThreeTitle'), W / 2, 230);
 
-  const gap = placements.length === 3 ? 292 : 370;
-  const firstY = placements.length === 3 ? 245 : 305;
+  const gap = placements.length === 3 ? 380 : 430;
+  const firstY = placements.length === 3 ? 430 : 525;
   placements.forEach((placement, index) => {
     const y = firstY + index * gap;
     const icon = discs[index];
@@ -815,10 +816,10 @@ async function drawBigThreeCard(
   ctx.textAlign = 'center';
   ctx.fillStyle = INK_2;
   ctx.font = `400 20px ${MONO}`;
-  timeNotes.forEach((note, index) => ctx.fillText(note, W / 2, 1150 + index * 34));
+  timeNotes.forEach((note, index) => ctx.fillText(note, W / 2, 1630 + index * 34));
   ctx.font = `400 24px ${MONO}`;
-  ctx.fillText(shareCardFormat(locale, 'engineReceipt', { version: chart.engineVersion }), W / 2, 1238);
-  await drawPortraitShareBrand(ctx);
+  ctx.fillText(shareCardFormat(locale, 'engineReceipt', { version: chart.engineVersion }), W / 2, 1770);
+  await drawPortraitShareBrand(ctx, 1850);
 
   const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
   if (!blob) throw new Error('png encode failed');

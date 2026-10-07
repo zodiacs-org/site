@@ -1,0 +1,7 @@
+---
+import SharingToolPage from '../../../components/sharing/SharingToolPage.astro';
+import type { CatalogLocale } from '../../../lib/i18n/core';
+export function getStaticPaths() { return ['es', 'pt', 'fr', 'it', 'ru'].map((locale) => ({ params: { sharingLocale: locale } })); }
+const locale = Astro.params.sharingLocale as CatalogLocale;
+---
+<SharingToolPage kind="twins" locale={locale} />

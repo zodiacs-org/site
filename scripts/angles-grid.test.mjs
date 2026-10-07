@@ -25,7 +25,7 @@ import { deltaT } from '@zodiacs/engine/deltat';
 import { e_tilt, MakeTime, SetDeltaTFunction, SiderealTime } from 'astronomy-engine';
 import { describe, expect, it } from 'vitest';
 import { computeChart } from '../src/lib/engine/full';
-import { timeBasis } from '../src/lib/engine/time-basis.mjs';
+import { tilt, timeBasis } from '../src/lib/engine/time-basis.mjs';
 
 const corpora = resolve(import.meta.dirname, '../docs/platform/evidence/engine-beyond-swiss/corpora');
 const corpusBytes = readFileSync(resolve(corpora, 'angle-grid-inputs.json'));
@@ -48,13 +48,17 @@ const chart = ([utc, latitude, longitude]) => computeChart({
  * Sidereal time (hours) and the true obliquity at an instant, as the engine
  * takes them: since 0.1.1-rc.15 at the UT1 of its time basis (for 1972 to
  * 2027-10-02, UTC plus IERS UT1 − UTC), with the basis's ΔT held for the call.
+ * Since rc.16 replace astronomy-engine's five-term equation of the equinoxes
+ * with the package's full IAU 2000B value and use its true obliquity.
  */
 const onEngineClock = (utc) => {
   const basis = timeBasis(Date.parse(utc), 'utc');
   SetDeltaTFunction(() => basis.deltaT.seconds);
   try {
     const time = MakeTime(basis.ut1Days);
-    return { gastHours: SiderealTime(time), obliquity: e_tilt(time).tobl };
+    const model = tilt(time.tt);
+    const gastHours = ((SiderealTime(time) + (model.ee - 15 * e_tilt(time).ee) / 54_000) % 24 + 24) % 24;
+    return { gastHours, obliquity: model.tobl };
   } finally {
     SetDeltaTFunction(deltaT);
   }
@@ -88,11 +92,13 @@ describe('the angles against the ERFA arbiter (rule 1b)', () => {
 
   it('keeps the ascendant within 8″ of the arbiter everywhere and 0.5″ within 45° of the equator', () => {
     const worst = rows.reduce((a, b) => (b.asc > a.asc ? b : a));
-    expect(worst.id).toBe('2025-03-21T18:00:00Z -66°');
-    expect(worst.asc).toBeCloseTo(6.36, 1);
-    expect(quantile(asc, 0.95)).toBeCloseTo(0.24, 1);
-    expect(quantile(asc, 0.5)).toBeCloseTo(0.065, 2);
-    expect(Math.max(...midLatitudes)).toBeCloseTo(0.36, 1);
+    // rc.16's full IAU 2000B nutation replaces the five-term model. These
+    // residual pins shrink on the same corpus and ERFA values; gates below stay fixed.
+    expect(worst.id).toBe('1850-03-21T18:00:00Z -66°');
+    expect(worst.asc).toBeCloseTo(0.0956, 4);
+    expect(quantile(asc, 0.95)).toBeCloseTo(0.00357, 5);
+    expect(quantile(asc, 0.5)).toBeCloseTo(0.000668, 6);
+    expect(Math.max(...midLatitudes)).toBeCloseTo(0.00378, 5);
     // Rule 1b's gates.
     expect(Math.max(...asc)).toBeLessThan(8);
     expect(Math.max(...midLatitudes)).toBeLessThan(0.5);
@@ -103,7 +109,7 @@ describe('the angles against the ERFA arbiter (rule 1b)', () => {
   });
 
   it('agrees with the arbiter\'s formula on the engine\'s own sidereal time and true obliquity', () => {
-    // The engine's angles are the arbiter's formula on astronomy-engine's
+    // The engine's angles are the arbiter's formula on its IAU 2000B
     // sidereal time and true obliquity, so the two stay within 1e-6″.
     const worst = Math.max(...corpus.A.map(([utc, latitude, longitude]) => {
       const { gastHours, obliquity } = onEngineClock(utc);

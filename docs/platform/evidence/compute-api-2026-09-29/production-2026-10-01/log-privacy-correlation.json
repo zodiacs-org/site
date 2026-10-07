@@ -1,0 +1,3313 @@
+{
+  "sourceFiles": [
+    "logs_window_0603_0606.json",
+    "logs_window_0606_0607.json",
+    "logs_window_0607_0608.json",
+    "logs_window_0608_0609.json",
+    "logs_window_0609_0610.json"
+  ],
+  "productionWindow": [
+    "2026-10-01T06:03:00Z",
+    "2026-10-01T06:10:00Z"
+  ],
+  "sampleCount": 120,
+  "observedLogRows": 122,
+  "rowsByEndpoint": {
+    "/api/v1/time": 21,
+    "/api/v1/houses": 20,
+    "/api/v1/positions": 20,
+    "/api/v1/chart": 21,
+    "/api/v1/sky-fact": 20,
+    "/api/v1/events": 20
+  },
+  "statusCounts": {
+    "200": 122
+  },
+  "correlatedSamples": 120,
+  "ambiguousOrMissingSampleCorrelations": [],
+  "applicationOutputOutsideRequestMetadata": [],
+  "syntheticValueSearchNeedles": [
+    "2000-01-01T12:00:00",
+    "51.4779",
+    "-0.0015",
+    "2026-09-29T12:00:00",
+    "2026-12-31",
+    "-33.8688",
+    "151.2093",
+    "2026-06-21",
+    "1947-07-01",
+    "Europe/Stockholm",
+    "18.07",
+    "2026-10-24",
+    "America/New_York"
+  ],
+  "syntheticValueMatches": [],
+  "limitations": [
+    "No request-id correlation available; temporal/path match only",
+    "No cold/start, duration, CPU or billed memory values exposed",
+    "No claims about unseen storage, logs before/after the window, or body-free host request metadata",
+    "Successful synthetic examples do not exercise error paths or constitute a production planted-leak negative control"
+  ],
+  "requestRows": [
+    {
+      "timestamp": "2026-10-01T06:05:58Z",
+      "method": "POST",
+      "path": "/api/v1/time",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0603_0606.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:05:56Z",
+      "method": "POST",
+      "path": "/api/v1/houses",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0603_0606.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:05:53Z",
+      "method": "POST",
+      "path": "/api/v1/positions",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0603_0606.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:05:51Z",
+      "method": "POST",
+      "path": "/api/v1/chart",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0603_0606.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:05:49Z",
+      "method": "POST",
+      "path": "/api/v1/sky-fact",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0603_0606.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:05:47Z",
+      "method": "POST",
+      "path": "/api/v1/time",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0603_0606.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:05:45Z",
+      "method": "POST",
+      "path": "/api/v1/events",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0603_0606.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:05:42Z",
+      "method": "POST",
+      "path": "/api/v1/positions",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0603_0606.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:05:40Z",
+      "method": "POST",
+      "path": "/api/v1/chart",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0603_0606.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:05:38Z",
+      "method": "POST",
+      "path": "/api/v1/sky-fact",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0603_0606.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:05:36Z",
+      "method": "POST",
+      "path": "/api/v1/time",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0603_0606.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:05:34Z",
+      "method": "POST",
+      "path": "/api/v1/events",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0603_0606.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:05:31Z",
+      "method": "POST",
+      "path": "/api/v1/houses",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0603_0606.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:05:29Z",
+      "method": "POST",
+      "path": "/api/v1/chart",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0603_0606.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:05:27Z",
+      "method": "POST",
+      "path": "/api/v1/sky-fact",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0603_0606.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:05:25Z",
+      "method": "POST",
+      "path": "/api/v1/time",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0603_0606.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:05:23Z",
+      "method": "POST",
+      "path": "/api/v1/events",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0603_0606.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:05:20Z",
+      "method": "POST",
+      "path": "/api/v1/houses",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0603_0606.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:05:18Z",
+      "method": "POST",
+      "path": "/api/v1/positions",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0603_0606.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:05:16Z",
+      "method": "POST",
+      "path": "/api/v1/sky-fact",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0603_0606.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:05:14Z",
+      "method": "POST",
+      "path": "/api/v1/time",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0603_0606.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:05:12Z",
+      "method": "POST",
+      "path": "/api/v1/events",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0603_0606.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:05:09Z",
+      "method": "POST",
+      "path": "/api/v1/houses",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0603_0606.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:05:07Z",
+      "method": "POST",
+      "path": "/api/v1/positions",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0603_0606.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:05:07Z",
+      "method": "POST",
+      "path": "/api/v1/chart",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0603_0606.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:04:20Z",
+      "method": "POST",
+      "path": "/api/v1/time",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0603_0606.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:03:37Z",
+      "method": "POST",
+      "path": "/api/v1/chart",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0603_0606.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:06:59Z",
+      "method": "POST",
+      "path": "/api/v1/chart",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0606_0607.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:06:57Z",
+      "method": "POST",
+      "path": "/api/v1/sky-fact",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0606_0607.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:06:55Z",
+      "method": "POST",
+      "path": "/api/v1/time",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0606_0607.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:06:53Z",
+      "method": "POST",
+      "path": "/api/v1/events",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0606_0607.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:06:51Z",
+      "method": "POST",
+      "path": "/api/v1/houses",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0606_0607.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:06:48Z",
+      "method": "POST",
+      "path": "/api/v1/chart",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0606_0607.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:06:46Z",
+      "method": "POST",
+      "path": "/api/v1/sky-fact",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0606_0607.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:06:44Z",
+      "method": "POST",
+      "path": "/api/v1/time",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0606_0607.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:06:42Z",
+      "method": "POST",
+      "path": "/api/v1/events",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0606_0607.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:06:40Z",
+      "method": "POST",
+      "path": "/api/v1/houses",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0606_0607.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:06:37Z",
+      "method": "POST",
+      "path": "/api/v1/positions",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0606_0607.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:06:35Z",
+      "method": "POST",
+      "path": "/api/v1/sky-fact",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0606_0607.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:06:33Z",
+      "method": "POST",
+      "path": "/api/v1/time",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0606_0607.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:06:31Z",
+      "method": "POST",
+      "path": "/api/v1/events",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0606_0607.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:06:29Z",
+      "method": "POST",
+      "path": "/api/v1/houses",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0606_0607.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:06:26Z",
+      "method": "POST",
+      "path": "/api/v1/positions",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0606_0607.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:06:24Z",
+      "method": "POST",
+      "path": "/api/v1/chart",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0606_0607.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:06:22Z",
+      "method": "POST",
+      "path": "/api/v1/time",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0606_0607.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:06:20Z",
+      "method": "POST",
+      "path": "/api/v1/events",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0606_0607.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:06:18Z",
+      "method": "POST",
+      "path": "/api/v1/houses",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0606_0607.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:06:15Z",
+      "method": "POST",
+      "path": "/api/v1/positions",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0606_0607.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:06:13Z",
+      "method": "POST",
+      "path": "/api/v1/chart",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0606_0607.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:06:11Z",
+      "method": "POST",
+      "path": "/api/v1/sky-fact",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0606_0607.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:06:09Z",
+      "method": "POST",
+      "path": "/api/v1/events",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0606_0607.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:06:07Z",
+      "method": "POST",
+      "path": "/api/v1/houses",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0606_0607.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:06:04Z",
+      "method": "POST",
+      "path": "/api/v1/positions",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0606_0607.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:06:02Z",
+      "method": "POST",
+      "path": "/api/v1/chart",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0606_0607.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:06:00Z",
+      "method": "POST",
+      "path": "/api/v1/sky-fact",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0606_0607.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:07:59Z",
+      "method": "POST",
+      "path": "/api/v1/houses",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0607_0608.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:07:57Z",
+      "method": "POST",
+      "path": "/api/v1/positions",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0607_0608.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:07:54Z",
+      "method": "POST",
+      "path": "/api/v1/sky-fact",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0607_0608.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:07:52Z",
+      "method": "POST",
+      "path": "/api/v1/time",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0607_0608.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:07:50Z",
+      "method": "POST",
+      "path": "/api/v1/events",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0607_0608.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:07:48Z",
+      "method": "POST",
+      "path": "/api/v1/houses",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0607_0608.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:07:46Z",
+      "method": "POST",
+      "path": "/api/v1/positions",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0607_0608.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:07:43Z",
+      "method": "POST",
+      "path": "/api/v1/chart",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0607_0608.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:07:41Z",
+      "method": "POST",
+      "path": "/api/v1/time",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0607_0608.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:07:39Z",
+      "method": "POST",
+      "path": "/api/v1/events",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0607_0608.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:07:37Z",
+      "method": "POST",
+      "path": "/api/v1/houses",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0607_0608.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:07:35Z",
+      "method": "POST",
+      "path": "/api/v1/positions",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0607_0608.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:07:32Z",
+      "method": "POST",
+      "path": "/api/v1/chart",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0607_0608.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:07:30Z",
+      "method": "POST",
+      "path": "/api/v1/sky-fact",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0607_0608.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:07:28Z",
+      "method": "POST",
+      "path": "/api/v1/events",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0607_0608.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:07:26Z",
+      "method": "POST",
+      "path": "/api/v1/houses",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0607_0608.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:07:24Z",
+      "method": "POST",
+      "path": "/api/v1/positions",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0607_0608.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:07:21Z",
+      "method": "POST",
+      "path": "/api/v1/chart",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0607_0608.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:07:19Z",
+      "method": "POST",
+      "path": "/api/v1/sky-fact",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0607_0608.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:07:17Z",
+      "method": "POST",
+      "path": "/api/v1/time",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0607_0608.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:07:15Z",
+      "method": "POST",
+      "path": "/api/v1/houses",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0607_0608.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:07:13Z",
+      "method": "POST",
+      "path": "/api/v1/positions",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0607_0608.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:07:10Z",
+      "method": "POST",
+      "path": "/api/v1/chart",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0607_0608.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:07:08Z",
+      "method": "POST",
+      "path": "/api/v1/sky-fact",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0607_0608.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:07:06Z",
+      "method": "POST",
+      "path": "/api/v1/time",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0607_0608.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:07:04Z",
+      "method": "POST",
+      "path": "/api/v1/events",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0607_0608.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:07:02Z",
+      "method": "POST",
+      "path": "/api/v1/positions",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0607_0608.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:08:58Z",
+      "method": "POST",
+      "path": "/api/v1/events",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0608_0609.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:08:56Z",
+      "method": "POST",
+      "path": "/api/v1/houses",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0608_0609.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:08:54Z",
+      "method": "POST",
+      "path": "/api/v1/positions",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0608_0609.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:08:52Z",
+      "method": "POST",
+      "path": "/api/v1/chart",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0608_0609.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:08:49Z",
+      "method": "POST",
+      "path": "/api/v1/sky-fact",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0608_0609.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:08:47Z",
+      "method": "POST",
+      "path": "/api/v1/events",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0608_0609.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:08:45Z",
+      "method": "POST",
+      "path": "/api/v1/houses",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0608_0609.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:08:43Z",
+      "method": "POST",
+      "path": "/api/v1/positions",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0608_0609.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:08:41Z",
+      "method": "POST",
+      "path": "/api/v1/chart",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0608_0609.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:08:38Z",
+      "method": "POST",
+      "path": "/api/v1/sky-fact",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0608_0609.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:08:36Z",
+      "method": "POST",
+      "path": "/api/v1/time",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0608_0609.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:08:34Z",
+      "method": "POST",
+      "path": "/api/v1/houses",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0608_0609.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:08:32Z",
+      "method": "POST",
+      "path": "/api/v1/positions",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0608_0609.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:08:30Z",
+      "method": "POST",
+      "path": "/api/v1/chart",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0608_0609.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:08:27Z",
+      "method": "POST",
+      "path": "/api/v1/sky-fact",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0608_0609.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:08:25Z",
+      "method": "POST",
+      "path": "/api/v1/time",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0608_0609.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:08:23Z",
+      "method": "POST",
+      "path": "/api/v1/events",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0608_0609.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:08:21Z",
+      "method": "POST",
+      "path": "/api/v1/positions",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0608_0609.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:08:19Z",
+      "method": "POST",
+      "path": "/api/v1/chart",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0608_0609.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:08:16Z",
+      "method": "POST",
+      "path": "/api/v1/sky-fact",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0608_0609.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:08:14Z",
+      "method": "POST",
+      "path": "/api/v1/time",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0608_0609.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:08:12Z",
+      "method": "POST",
+      "path": "/api/v1/events",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0608_0609.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:08:10Z",
+      "method": "POST",
+      "path": "/api/v1/houses",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0608_0609.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:08:08Z",
+      "method": "POST",
+      "path": "/api/v1/chart",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0608_0609.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:08:05Z",
+      "method": "POST",
+      "path": "/api/v1/sky-fact",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0608_0609.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:08:03Z",
+      "method": "POST",
+      "path": "/api/v1/time",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0608_0609.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:08:01Z",
+      "method": "POST",
+      "path": "/api/v1/events",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0608_0609.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:09:27Z",
+      "method": "POST",
+      "path": "/api/v1/chart",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0609_0610.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:09:25Z",
+      "method": "POST",
+      "path": "/api/v1/sky-fact",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0609_0610.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:09:22Z",
+      "method": "POST",
+      "path": "/api/v1/time",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0609_0610.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:09:20Z",
+      "method": "POST",
+      "path": "/api/v1/events",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0609_0610.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:09:18Z",
+      "method": "POST",
+      "path": "/api/v1/houses",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0609_0610.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:09:16Z",
+      "method": "POST",
+      "path": "/api/v1/positions",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0609_0610.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:09:14Z",
+      "method": "POST",
+      "path": "/api/v1/sky-fact",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0609_0610.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:09:11Z",
+      "method": "POST",
+      "path": "/api/v1/time",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0609_0610.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:09:09Z",
+      "method": "POST",
+      "path": "/api/v1/events",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0609_0610.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:09:07Z",
+      "method": "POST",
+      "path": "/api/v1/houses",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0609_0610.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:09:05Z",
+      "method": "POST",
+      "path": "/api/v1/positions",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0609_0610.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:09:03Z",
+      "method": "POST",
+      "path": "/api/v1/chart",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0609_0610.json"
+    },
+    {
+      "timestamp": "2026-10-01T06:09:00Z",
+      "method": "POST",
+      "path": "/api/v1/time",
+      "status": 200,
+      "source": "info/serverless",
+      "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+      "file": "logs_window_0609_0610.json"
+    }
+  ],
+  "sampleCorrelations": [
+    {
+      "endpoint": "chart",
+      "round": 0,
+      "xVercelId": "cle1::iad1::vmhgc-1790834707477-02e049001710",
+      "httpDate": "Thu, 01 Oct 2026 06:05:07 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:05:07Z",
+          "method": "POST",
+          "path": "/api/v1/chart",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0603_0606.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "positions",
+      "round": 0,
+      "xVercelId": "cle1::iad1::vmhgc-1790834707642-f825bba45989",
+      "httpDate": "Thu, 01 Oct 2026 06:05:07 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:05:07Z",
+          "method": "POST",
+          "path": "/api/v1/positions",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0603_0606.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "houses",
+      "round": 0,
+      "xVercelId": "cle1::iad1::pz5pd-1790834709850-f4d503372d3f",
+      "httpDate": "Thu, 01 Oct 2026 06:05:09 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:05:09Z",
+          "method": "POST",
+          "path": "/api/v1/houses",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0603_0606.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "events",
+      "round": 0,
+      "xVercelId": "cle1::iad1::mm7lf-1790834712045-6118bf7ff1ff",
+      "httpDate": "Thu, 01 Oct 2026 06:05:12 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:05:12Z",
+          "method": "POST",
+          "path": "/api/v1/events",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0603_0606.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "time",
+      "round": 0,
+      "xVercelId": "cle1::iad1::fpw5g-1790834714248-f323ad5366c9",
+      "httpDate": "Thu, 01 Oct 2026 06:05:14 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:05:14Z",
+          "method": "POST",
+          "path": "/api/v1/time",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0603_0606.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "sky-fact",
+      "round": 0,
+      "xVercelId": "cle1::iad1::vmhgc-1790834716446-22b86a08556f",
+      "httpDate": "Thu, 01 Oct 2026 06:05:16 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:05:16Z",
+          "method": "POST",
+          "path": "/api/v1/sky-fact",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0603_0606.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "positions",
+      "round": 1,
+      "xVercelId": "cle1::iad1::s59gc-1790834718645-80466036c8b3",
+      "httpDate": "Thu, 01 Oct 2026 06:05:18 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:05:18Z",
+          "method": "POST",
+          "path": "/api/v1/positions",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0603_0606.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "houses",
+      "round": 1,
+      "xVercelId": "cle1::iad1::qnxsg-1790834720845-9182128748aa",
+      "httpDate": "Thu, 01 Oct 2026 06:05:20 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:05:20Z",
+          "method": "POST",
+          "path": "/api/v1/houses",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0603_0606.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "events",
+      "round": 1,
+      "xVercelId": "cle1::iad1::vhmh6-1790834723043-245f8258eb07",
+      "httpDate": "Thu, 01 Oct 2026 06:05:23 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:05:23Z",
+          "method": "POST",
+          "path": "/api/v1/events",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0603_0606.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "time",
+      "round": 1,
+      "xVercelId": "cle1::iad1::5k89l-1790834725244-3c24d13b4da2",
+      "httpDate": "Thu, 01 Oct 2026 06:05:25 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:05:25Z",
+          "method": "POST",
+          "path": "/api/v1/time",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0603_0606.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "sky-fact",
+      "round": 1,
+      "xVercelId": "cle1::iad1::69ctd-1790834727444-f5ac8b39dea8",
+      "httpDate": "Thu, 01 Oct 2026 06:05:27 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:05:27Z",
+          "method": "POST",
+          "path": "/api/v1/sky-fact",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0603_0606.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "chart",
+      "round": 1,
+      "xVercelId": "cle1::iad1::2c65w-1790834729644-8bbb2449f6c8",
+      "httpDate": "Thu, 01 Oct 2026 06:05:29 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:05:29Z",
+          "method": "POST",
+          "path": "/api/v1/chart",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0603_0606.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "houses",
+      "round": 2,
+      "xVercelId": "cle1::iad1::ts7xt-1790834731843-35386d2a0a36",
+      "httpDate": "Thu, 01 Oct 2026 06:05:31 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:05:31Z",
+          "method": "POST",
+          "path": "/api/v1/houses",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0603_0606.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "events",
+      "round": 2,
+      "xVercelId": "cle1::iad1::5h55q-1790834734049-39a8a77fd2f3",
+      "httpDate": "Thu, 01 Oct 2026 06:05:34 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:05:34Z",
+          "method": "POST",
+          "path": "/api/v1/events",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0603_0606.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "time",
+      "round": 2,
+      "xVercelId": "cle1::iad1::dbmn7-1790834736244-78aeb46b2cc7",
+      "httpDate": "Thu, 01 Oct 2026 06:05:36 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:05:36Z",
+          "method": "POST",
+          "path": "/api/v1/time",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0603_0606.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "sky-fact",
+      "round": 2,
+      "xVercelId": "cle1::iad1::4n2mq-1790834738442-f84da3c35093",
+      "httpDate": "Thu, 01 Oct 2026 06:05:38 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:05:38Z",
+          "method": "POST",
+          "path": "/api/v1/sky-fact",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0603_0606.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "chart",
+      "round": 2,
+      "xVercelId": "cle1::iad1::52cqj-1790834740651-eff75b1580ee",
+      "httpDate": "Thu, 01 Oct 2026 06:05:40 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:05:40Z",
+          "method": "POST",
+          "path": "/api/v1/chart",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0603_0606.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "positions",
+      "round": 2,
+      "xVercelId": "cle1::iad1::psp7h-1790834742842-117012d977ad",
+      "httpDate": "Thu, 01 Oct 2026 06:05:42 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:05:42Z",
+          "method": "POST",
+          "path": "/api/v1/positions",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0603_0606.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "events",
+      "round": 3,
+      "xVercelId": "cle1::iad1::glb6d-1790834745045-e115417b7340",
+      "httpDate": "Thu, 01 Oct 2026 06:05:45 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:05:45Z",
+          "method": "POST",
+          "path": "/api/v1/events",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0603_0606.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "time",
+      "round": 3,
+      "xVercelId": "cle1::iad1::zxxfp-1790834747243-3916dfbe3485",
+      "httpDate": "Thu, 01 Oct 2026 06:05:47 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:05:47Z",
+          "method": "POST",
+          "path": "/api/v1/time",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0603_0606.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "sky-fact",
+      "round": 3,
+      "xVercelId": "cle1::iad1::9xm4w-1790834749443-96d16dfdc9e7",
+      "httpDate": "Thu, 01 Oct 2026 06:05:49 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:05:49Z",
+          "method": "POST",
+          "path": "/api/v1/sky-fact",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0603_0606.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "chart",
+      "round": 3,
+      "xVercelId": "cle1::iad1::9xm4w-1790834751645-3d194c6c5c07",
+      "httpDate": "Thu, 01 Oct 2026 06:05:51 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:05:51Z",
+          "method": "POST",
+          "path": "/api/v1/chart",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0603_0606.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "positions",
+      "round": 3,
+      "xVercelId": "cle1::iad1::w2bhl-1790834753844-0610c12ffee6",
+      "httpDate": "Thu, 01 Oct 2026 06:05:53 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:05:53Z",
+          "method": "POST",
+          "path": "/api/v1/positions",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0603_0606.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "houses",
+      "round": 3,
+      "xVercelId": "cle1::iad1::89ddh-1790834756045-ebd768d159f9",
+      "httpDate": "Thu, 01 Oct 2026 06:05:56 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:05:56Z",
+          "method": "POST",
+          "path": "/api/v1/houses",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0603_0606.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "time",
+      "round": 4,
+      "xVercelId": "cle1::iad1::wrwdw-1790834758247-9875e53eb35b",
+      "httpDate": "Thu, 01 Oct 2026 06:05:58 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:05:58Z",
+          "method": "POST",
+          "path": "/api/v1/time",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0603_0606.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "sky-fact",
+      "round": 4,
+      "xVercelId": "cle1::iad1::2r662-1790834760445-15610ac41b75",
+      "httpDate": "Thu, 01 Oct 2026 06:06:00 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:06:00Z",
+          "method": "POST",
+          "path": "/api/v1/sky-fact",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0606_0607.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "chart",
+      "round": 4,
+      "xVercelId": "cle1::iad1::tswn9-1790834762646-aca7760954e2",
+      "httpDate": "Thu, 01 Oct 2026 06:06:02 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:06:02Z",
+          "method": "POST",
+          "path": "/api/v1/chart",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0606_0607.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "positions",
+      "round": 4,
+      "xVercelId": "cle1::iad1::5p9rx-1790834764846-77dee4178887",
+      "httpDate": "Thu, 01 Oct 2026 06:06:04 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:06:04Z",
+          "method": "POST",
+          "path": "/api/v1/positions",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0606_0607.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "houses",
+      "round": 4,
+      "xVercelId": "cle1::iad1::g5s96-1790834767046-bdb0a035483f",
+      "httpDate": "Thu, 01 Oct 2026 06:06:07 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:06:07Z",
+          "method": "POST",
+          "path": "/api/v1/houses",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0606_0607.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "events",
+      "round": 4,
+      "xVercelId": "cle1::iad1::4f25r-1790834769246-9ccfe280c2a8",
+      "httpDate": "Thu, 01 Oct 2026 06:06:09 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:06:09Z",
+          "method": "POST",
+          "path": "/api/v1/events",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0606_0607.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "sky-fact",
+      "round": 5,
+      "xVercelId": "cle1::iad1::pctsz-1790834771445-cdad895f5947",
+      "httpDate": "Thu, 01 Oct 2026 06:06:11 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:06:11Z",
+          "method": "POST",
+          "path": "/api/v1/sky-fact",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0606_0607.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "chart",
+      "round": 5,
+      "xVercelId": "cle1::iad1::9z446-1790834773645-6eb27446e665",
+      "httpDate": "Thu, 01 Oct 2026 06:06:13 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:06:13Z",
+          "method": "POST",
+          "path": "/api/v1/chart",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0606_0607.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "positions",
+      "round": 5,
+      "xVercelId": "cle1::iad1::9pmx6-1790834775845-57fb55166821",
+      "httpDate": "Thu, 01 Oct 2026 06:06:15 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:06:15Z",
+          "method": "POST",
+          "path": "/api/v1/positions",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0606_0607.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "houses",
+      "round": 5,
+      "xVercelId": "cle1::iad1::kq525-1790834778044-386acc227aef",
+      "httpDate": "Thu, 01 Oct 2026 06:06:18 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:06:18Z",
+          "method": "POST",
+          "path": "/api/v1/houses",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0606_0607.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "events",
+      "round": 5,
+      "xVercelId": "cle1::iad1::bqw2p-1790834780249-e8ee1f3c9b91",
+      "httpDate": "Thu, 01 Oct 2026 06:06:20 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:06:20Z",
+          "method": "POST",
+          "path": "/api/v1/events",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0606_0607.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "time",
+      "round": 5,
+      "xVercelId": "cle1::iad1::6mqbn-1790834782445-ad863b42551a",
+      "httpDate": "Thu, 01 Oct 2026 06:06:22 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:06:22Z",
+          "method": "POST",
+          "path": "/api/v1/time",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0606_0607.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "chart",
+      "round": 6,
+      "xVercelId": "cle1::iad1::dxfxp-1790834784646-6e8b1e322717",
+      "httpDate": "Thu, 01 Oct 2026 06:06:24 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:06:24Z",
+          "method": "POST",
+          "path": "/api/v1/chart",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0606_0607.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "positions",
+      "round": 6,
+      "xVercelId": "cle1::iad1::8qt8j-1790834786846-99401efa308a",
+      "httpDate": "Thu, 01 Oct 2026 06:06:26 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:06:26Z",
+          "method": "POST",
+          "path": "/api/v1/positions",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0606_0607.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "houses",
+      "round": 6,
+      "xVercelId": "cle1::iad1::8qt8j-1790834789046-70084620f80d",
+      "httpDate": "Thu, 01 Oct 2026 06:06:29 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:06:29Z",
+          "method": "POST",
+          "path": "/api/v1/houses",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0606_0607.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "events",
+      "round": 6,
+      "xVercelId": "cle1::iad1::nblpv-1790834791247-3233e5fc8f5e",
+      "httpDate": "Thu, 01 Oct 2026 06:06:31 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:06:31Z",
+          "method": "POST",
+          "path": "/api/v1/events",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0606_0607.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "time",
+      "round": 6,
+      "xVercelId": "cle1::iad1::7w85m-1790834793447-be555a5e3c3d",
+      "httpDate": "Thu, 01 Oct 2026 06:06:33 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:06:33Z",
+          "method": "POST",
+          "path": "/api/v1/time",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0606_0607.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "sky-fact",
+      "round": 6,
+      "xVercelId": "cle1::iad1::sjl6l-1790834795646-be1a25faf472",
+      "httpDate": "Thu, 01 Oct 2026 06:06:35 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:06:35Z",
+          "method": "POST",
+          "path": "/api/v1/sky-fact",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0606_0607.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "positions",
+      "round": 7,
+      "xVercelId": "cle1::iad1::nhthp-1790834797847-32a6c3d7de02",
+      "httpDate": "Thu, 01 Oct 2026 06:06:37 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:06:37Z",
+          "method": "POST",
+          "path": "/api/v1/positions",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0606_0607.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "houses",
+      "round": 7,
+      "xVercelId": "cle1::iad1::7p5c2-1790834800045-edba0f420c1e",
+      "httpDate": "Thu, 01 Oct 2026 06:06:40 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:06:40Z",
+          "method": "POST",
+          "path": "/api/v1/houses",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0606_0607.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "events",
+      "round": 7,
+      "xVercelId": "cle1::iad1::4ksf5-1790834802245-0c8c1ae0bf20",
+      "httpDate": "Thu, 01 Oct 2026 06:06:42 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:06:42Z",
+          "method": "POST",
+          "path": "/api/v1/events",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0606_0607.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "time",
+      "round": 7,
+      "xVercelId": "cle1::iad1::qp9zm-1790834804445-8397060824fc",
+      "httpDate": "Thu, 01 Oct 2026 06:06:44 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:06:44Z",
+          "method": "POST",
+          "path": "/api/v1/time",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0606_0607.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "sky-fact",
+      "round": 7,
+      "xVercelId": "cle1::iad1::2l9jj-1790834806645-e06813e0fd3d",
+      "httpDate": "Thu, 01 Oct 2026 06:06:46 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:06:46Z",
+          "method": "POST",
+          "path": "/api/v1/sky-fact",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0606_0607.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "chart",
+      "round": 7,
+      "xVercelId": "cle1::iad1::4f25r-1790834808844-fdec94f1db99",
+      "httpDate": "Thu, 01 Oct 2026 06:06:48 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:06:48Z",
+          "method": "POST",
+          "path": "/api/v1/chart",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0606_0607.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "houses",
+      "round": 8,
+      "xVercelId": "cle1::iad1::wq7xp-1790834811050-6b4b2f16e945",
+      "httpDate": "Thu, 01 Oct 2026 06:06:51 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:06:51Z",
+          "method": "POST",
+          "path": "/api/v1/houses",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0606_0607.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "events",
+      "round": 8,
+      "xVercelId": "cle1::iad1::wq7xp-1790834813246-d1a5a5b35677",
+      "httpDate": "Thu, 01 Oct 2026 06:06:53 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:06:53Z",
+          "method": "POST",
+          "path": "/api/v1/events",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0606_0607.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "time",
+      "round": 8,
+      "xVercelId": "cle1::iad1::dxfxp-1790834815447-4576418ef1c2",
+      "httpDate": "Thu, 01 Oct 2026 06:06:55 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:06:55Z",
+          "method": "POST",
+          "path": "/api/v1/time",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0606_0607.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "sky-fact",
+      "round": 8,
+      "xVercelId": "cle1::iad1::qkn7l-1790834817646-8a3e61d439d6",
+      "httpDate": "Thu, 01 Oct 2026 06:06:57 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:06:57Z",
+          "method": "POST",
+          "path": "/api/v1/sky-fact",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0606_0607.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "chart",
+      "round": 8,
+      "xVercelId": "cle1::iad1::d5pmc-1790834819846-1e495afd97f8",
+      "httpDate": "Thu, 01 Oct 2026 06:06:59 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:06:59Z",
+          "method": "POST",
+          "path": "/api/v1/chart",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0606_0607.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "positions",
+      "round": 8,
+      "xVercelId": "cle1::iad1::rhh8z-1790834822052-6e11db126f0c",
+      "httpDate": "Thu, 01 Oct 2026 06:07:02 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:07:02Z",
+          "method": "POST",
+          "path": "/api/v1/positions",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0607_0608.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "events",
+      "round": 9,
+      "xVercelId": "cle1::iad1::npbsh-1790834824249-0dd8f57ade55",
+      "httpDate": "Thu, 01 Oct 2026 06:07:04 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:07:04Z",
+          "method": "POST",
+          "path": "/api/v1/events",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0607_0608.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "time",
+      "round": 9,
+      "xVercelId": "cle1::iad1::f65nf-1790834826449-ad1f850caff4",
+      "httpDate": "Thu, 01 Oct 2026 06:07:06 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:07:06Z",
+          "method": "POST",
+          "path": "/api/v1/time",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0607_0608.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "sky-fact",
+      "round": 9,
+      "xVercelId": "cle1::iad1::2w9dj-1790834828658-f6283c89fe46",
+      "httpDate": "Thu, 01 Oct 2026 06:07:08 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:07:08Z",
+          "method": "POST",
+          "path": "/api/v1/sky-fact",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0607_0608.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "chart",
+      "round": 9,
+      "xVercelId": "cle1::iad1::dbmn7-1790834830848-a076a9e0e7d4",
+      "httpDate": "Thu, 01 Oct 2026 06:07:10 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:07:10Z",
+          "method": "POST",
+          "path": "/api/v1/chart",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0607_0608.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "positions",
+      "round": 9,
+      "xVercelId": "cle1::iad1::w7wlm-1790834833053-094fbd261cf5",
+      "httpDate": "Thu, 01 Oct 2026 06:07:13 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:07:13Z",
+          "method": "POST",
+          "path": "/api/v1/positions",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0607_0608.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "houses",
+      "round": 9,
+      "xVercelId": "cle1::iad1::52ks2-1790834835255-e71897ac7930",
+      "httpDate": "Thu, 01 Oct 2026 06:07:15 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:07:15Z",
+          "method": "POST",
+          "path": "/api/v1/houses",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0607_0608.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "time",
+      "round": 10,
+      "xVercelId": "cle1::iad1::7nq7p-1790834837452-b41a79b113a0",
+      "httpDate": "Thu, 01 Oct 2026 06:07:17 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:07:17Z",
+          "method": "POST",
+          "path": "/api/v1/time",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0607_0608.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "sky-fact",
+      "round": 10,
+      "xVercelId": "cle1::iad1::pgnp4-1790834839653-c412395d7b6e",
+      "httpDate": "Thu, 01 Oct 2026 06:07:19 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:07:19Z",
+          "method": "POST",
+          "path": "/api/v1/sky-fact",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0607_0608.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "chart",
+      "round": 10,
+      "xVercelId": "cle1::iad1::7qvvj-1790834841853-d3d9adba7ff2",
+      "httpDate": "Thu, 01 Oct 2026 06:07:21 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:07:21Z",
+          "method": "POST",
+          "path": "/api/v1/chart",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0607_0608.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "positions",
+      "round": 10,
+      "xVercelId": "cle1::iad1::9zjsv-1790834844055-4dfa6b7a5c87",
+      "httpDate": "Thu, 01 Oct 2026 06:07:24 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:07:24Z",
+          "method": "POST",
+          "path": "/api/v1/positions",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0607_0608.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "houses",
+      "round": 10,
+      "xVercelId": "cle1::iad1::6mqbn-1790834846255-d863da26f4d5",
+      "httpDate": "Thu, 01 Oct 2026 06:07:26 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:07:26Z",
+          "method": "POST",
+          "path": "/api/v1/houses",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0607_0608.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "events",
+      "round": 10,
+      "xVercelId": "cle1::iad1::glb6d-1790834848456-9b6ff7df507e",
+      "httpDate": "Thu, 01 Oct 2026 06:07:28 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:07:28Z",
+          "method": "POST",
+          "path": "/api/v1/events",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0607_0608.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "sky-fact",
+      "round": 11,
+      "xVercelId": "cle1::iad1::n8dtn-1790834850655-5c5afe52fc12",
+      "httpDate": "Thu, 01 Oct 2026 06:07:30 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:07:30Z",
+          "method": "POST",
+          "path": "/api/v1/sky-fact",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0607_0608.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "chart",
+      "round": 11,
+      "xVercelId": "cle1::iad1::4n2mq-1790834852856-c113b511bec1",
+      "httpDate": "Thu, 01 Oct 2026 06:07:32 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:07:32Z",
+          "method": "POST",
+          "path": "/api/v1/chart",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0607_0608.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "positions",
+      "round": 11,
+      "xVercelId": "cle1::iad1::pz5pd-1790834855056-28658393499a",
+      "httpDate": "Thu, 01 Oct 2026 06:07:35 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:07:35Z",
+          "method": "POST",
+          "path": "/api/v1/positions",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0607_0608.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "houses",
+      "round": 11,
+      "xVercelId": "cle1::iad1::x486d-1790834857257-3d055ad70aa7",
+      "httpDate": "Thu, 01 Oct 2026 06:07:37 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:07:37Z",
+          "method": "POST",
+          "path": "/api/v1/houses",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0607_0608.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "events",
+      "round": 11,
+      "xVercelId": "cle1::iad1::clpjk-1790834859456-ca2e4bcad1f5",
+      "httpDate": "Thu, 01 Oct 2026 06:07:39 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:07:39Z",
+          "method": "POST",
+          "path": "/api/v1/events",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0607_0608.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "time",
+      "round": 11,
+      "xVercelId": "cle1::iad1::l6gmc-1790834861658-cea9e1b8141e",
+      "httpDate": "Thu, 01 Oct 2026 06:07:41 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:07:41Z",
+          "method": "POST",
+          "path": "/api/v1/time",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0607_0608.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "chart",
+      "round": 12,
+      "xVercelId": "cle1::iad1::fl276-1790834863861-094bf80f022b",
+      "httpDate": "Thu, 01 Oct 2026 06:07:43 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:07:43Z",
+          "method": "POST",
+          "path": "/api/v1/chart",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0607_0608.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "positions",
+      "round": 12,
+      "xVercelId": "cle1::iad1::wq7xp-1790834866057-6300e30e8320",
+      "httpDate": "Thu, 01 Oct 2026 06:07:46 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:07:46Z",
+          "method": "POST",
+          "path": "/api/v1/positions",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0607_0608.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "houses",
+      "round": 12,
+      "xVercelId": "cle1::iad1::fnfxb-1790834868257-c7144ea7b01b",
+      "httpDate": "Thu, 01 Oct 2026 06:07:48 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:07:48Z",
+          "method": "POST",
+          "path": "/api/v1/houses",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0607_0608.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "events",
+      "round": 12,
+      "xVercelId": "cle1::iad1::fl276-1790834870457-1b2634efd045",
+      "httpDate": "Thu, 01 Oct 2026 06:07:50 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:07:50Z",
+          "method": "POST",
+          "path": "/api/v1/events",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0607_0608.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "time",
+      "round": 12,
+      "xVercelId": "cle1::iad1::58sgm-1790834872657-d2b4b59e5738",
+      "httpDate": "Thu, 01 Oct 2026 06:07:52 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:07:52Z",
+          "method": "POST",
+          "path": "/api/v1/time",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0607_0608.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "sky-fact",
+      "round": 12,
+      "xVercelId": "cle1::iad1::lfvgk-1790834874857-a193b3562e3a",
+      "httpDate": "Thu, 01 Oct 2026 06:07:54 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:07:54Z",
+          "method": "POST",
+          "path": "/api/v1/sky-fact",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0607_0608.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "positions",
+      "round": 13,
+      "xVercelId": "cle1::iad1::5k89l-1790834877061-ed383eb3d870",
+      "httpDate": "Thu, 01 Oct 2026 06:07:57 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:07:57Z",
+          "method": "POST",
+          "path": "/api/v1/positions",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0607_0608.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "houses",
+      "round": 13,
+      "xVercelId": "cle1::iad1::h8jcd-1790834879257-693733faea57",
+      "httpDate": "Thu, 01 Oct 2026 06:07:59 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:07:59Z",
+          "method": "POST",
+          "path": "/api/v1/houses",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0607_0608.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "events",
+      "round": 13,
+      "xVercelId": "cle1::iad1::ts7xt-1790834881457-2b30948f5d42",
+      "httpDate": "Thu, 01 Oct 2026 06:08:01 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:08:01Z",
+          "method": "POST",
+          "path": "/api/v1/events",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0608_0609.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "time",
+      "round": 13,
+      "xVercelId": "cle1::iad1::qkn7l-1790834883657-07a672498803",
+      "httpDate": "Thu, 01 Oct 2026 06:08:03 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:08:03Z",
+          "method": "POST",
+          "path": "/api/v1/time",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0608_0609.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "sky-fact",
+      "round": 13,
+      "xVercelId": "cle1::iad1::96gcv-1790834885858-a00c7b7b7cdd",
+      "httpDate": "Thu, 01 Oct 2026 06:08:05 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:08:05Z",
+          "method": "POST",
+          "path": "/api/v1/sky-fact",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0608_0609.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "chart",
+      "round": 13,
+      "xVercelId": "cle1::iad1::kmz6z-1790834888066-07a37287e2a1",
+      "httpDate": "Thu, 01 Oct 2026 06:08:08 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:08:08Z",
+          "method": "POST",
+          "path": "/api/v1/chart",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0608_0609.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "houses",
+      "round": 14,
+      "xVercelId": "cle1::iad1::qp9zm-1790834890259-6236c2fcd3aa",
+      "httpDate": "Thu, 01 Oct 2026 06:08:10 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:08:10Z",
+          "method": "POST",
+          "path": "/api/v1/houses",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0608_0609.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "events",
+      "round": 14,
+      "xVercelId": "cle1::iad1::r6gmd-1790834892464-f0729c2084e7",
+      "httpDate": "Thu, 01 Oct 2026 06:08:12 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:08:12Z",
+          "method": "POST",
+          "path": "/api/v1/events",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0608_0609.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "time",
+      "round": 14,
+      "xVercelId": "cle1::iad1::t9tks-1790834894659-5574b1936e98",
+      "httpDate": "Thu, 01 Oct 2026 06:08:14 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:08:14Z",
+          "method": "POST",
+          "path": "/api/v1/time",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0608_0609.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "sky-fact",
+      "round": 14,
+      "xVercelId": "cle1::iad1::dmxh7-1790834896858-d02eaa365baf",
+      "httpDate": "Thu, 01 Oct 2026 06:08:16 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:08:16Z",
+          "method": "POST",
+          "path": "/api/v1/sky-fact",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0608_0609.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "chart",
+      "round": 14,
+      "xVercelId": "cle1::iad1::7w85m-1790834899058-e67a8c58c6db",
+      "httpDate": "Thu, 01 Oct 2026 06:08:19 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:08:19Z",
+          "method": "POST",
+          "path": "/api/v1/chart",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0608_0609.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "positions",
+      "round": 14,
+      "xVercelId": "cle1::iad1::fl276-1790834901258-80097a19a6dc",
+      "httpDate": "Thu, 01 Oct 2026 06:08:21 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:08:21Z",
+          "method": "POST",
+          "path": "/api/v1/positions",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0608_0609.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "events",
+      "round": 15,
+      "xVercelId": "cle1::iad1::nprrh-1790834903457-8ba21bf00962",
+      "httpDate": "Thu, 01 Oct 2026 06:08:23 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:08:23Z",
+          "method": "POST",
+          "path": "/api/v1/events",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0608_0609.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "time",
+      "round": 15,
+      "xVercelId": "cle1::iad1::4cqvb-1790834905658-a637faf256b9",
+      "httpDate": "Thu, 01 Oct 2026 06:08:25 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:08:25Z",
+          "method": "POST",
+          "path": "/api/v1/time",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0608_0609.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "sky-fact",
+      "round": 15,
+      "xVercelId": "cle1::iad1::fl276-1790834907857-78f752fbd442",
+      "httpDate": "Thu, 01 Oct 2026 06:08:27 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:08:27Z",
+          "method": "POST",
+          "path": "/api/v1/sky-fact",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0608_0609.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "chart",
+      "round": 15,
+      "xVercelId": "cle1::iad1::8rj9q-1790834910058-9f4cc73023d3",
+      "httpDate": "Thu, 01 Oct 2026 06:08:30 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:08:30Z",
+          "method": "POST",
+          "path": "/api/v1/chart",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0608_0609.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "positions",
+      "round": 15,
+      "xVercelId": "cle1::iad1::7jr5t-1790834912257-bdd67b8990e1",
+      "httpDate": "Thu, 01 Oct 2026 06:08:32 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:08:32Z",
+          "method": "POST",
+          "path": "/api/v1/positions",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0608_0609.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "houses",
+      "round": 15,
+      "xVercelId": "cle1::iad1::cdhkd-1790834914457-630fdbc80d96",
+      "httpDate": "Thu, 01 Oct 2026 06:08:34 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:08:34Z",
+          "method": "POST",
+          "path": "/api/v1/houses",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0608_0609.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "time",
+      "round": 16,
+      "xVercelId": "cle1::iad1::lhv2l-1790834916657-a2a1984fed68",
+      "httpDate": "Thu, 01 Oct 2026 06:08:36 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:08:36Z",
+          "method": "POST",
+          "path": "/api/v1/time",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0608_0609.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "sky-fact",
+      "round": 16,
+      "xVercelId": "cle1::iad1::vmhgc-1790834918867-6dfd77021365",
+      "httpDate": "Thu, 01 Oct 2026 06:08:38 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:08:38Z",
+          "method": "POST",
+          "path": "/api/v1/sky-fact",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0608_0609.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "chart",
+      "round": 16,
+      "xVercelId": "cle1::iad1::fr6r7-1790834921056-50d4b5cca66b",
+      "httpDate": "Thu, 01 Oct 2026 06:08:41 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:08:41Z",
+          "method": "POST",
+          "path": "/api/v1/chart",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0608_0609.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "positions",
+      "round": 16,
+      "xVercelId": "cle1::iad1::wrwdw-1790834923256-dfcab808eaba",
+      "httpDate": "Thu, 01 Oct 2026 06:08:43 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:08:43Z",
+          "method": "POST",
+          "path": "/api/v1/positions",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0608_0609.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "houses",
+      "round": 16,
+      "xVercelId": "cle1::iad1::qkn7l-1790834925456-9b55444441fc",
+      "httpDate": "Thu, 01 Oct 2026 06:08:45 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:08:45Z",
+          "method": "POST",
+          "path": "/api/v1/houses",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0608_0609.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "events",
+      "round": 16,
+      "xVercelId": "cle1::iad1::9fq4v-1790834927656-37f2c86f0fc2",
+      "httpDate": "Thu, 01 Oct 2026 06:08:47 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:08:47Z",
+          "method": "POST",
+          "path": "/api/v1/events",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0608_0609.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "sky-fact",
+      "round": 17,
+      "xVercelId": "cle1::iad1::96gcv-1790834929857-18175878cf94",
+      "httpDate": "Thu, 01 Oct 2026 06:08:49 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:08:49Z",
+          "method": "POST",
+          "path": "/api/v1/sky-fact",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0608_0609.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "chart",
+      "round": 17,
+      "xVercelId": "cle1::iad1::7n9jr-1790834932057-e2da3490fe13",
+      "httpDate": "Thu, 01 Oct 2026 06:08:52 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:08:52Z",
+          "method": "POST",
+          "path": "/api/v1/chart",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0608_0609.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "positions",
+      "round": 17,
+      "xVercelId": "cle1::iad1::hcxfh-1790834934256-a7b0028d1a5a",
+      "httpDate": "Thu, 01 Oct 2026 06:08:54 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:08:54Z",
+          "method": "POST",
+          "path": "/api/v1/positions",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0608_0609.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "houses",
+      "round": 17,
+      "xVercelId": "cle1::iad1::89ddh-1790834936455-19565438f2f2",
+      "httpDate": "Thu, 01 Oct 2026 06:08:56 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:08:56Z",
+          "method": "POST",
+          "path": "/api/v1/houses",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0608_0609.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "events",
+      "round": 17,
+      "xVercelId": "cle1::iad1::69ctd-1790834938657-d37a49fd4639",
+      "httpDate": "Thu, 01 Oct 2026 06:08:58 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:08:58Z",
+          "method": "POST",
+          "path": "/api/v1/events",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0608_0609.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "time",
+      "round": 17,
+      "xVercelId": "cle1::iad1::c78kq-1790834940856-6bae5b0979a2",
+      "httpDate": "Thu, 01 Oct 2026 06:09:00 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:09:00Z",
+          "method": "POST",
+          "path": "/api/v1/time",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0609_0610.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "chart",
+      "round": 18,
+      "xVercelId": "cle1::iad1::7pdhr-1790834943055-826200083072",
+      "httpDate": "Thu, 01 Oct 2026 06:09:03 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:09:03Z",
+          "method": "POST",
+          "path": "/api/v1/chart",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0609_0610.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "positions",
+      "round": 18,
+      "xVercelId": "cle1::iad1::cdhkd-1790834945257-a3b5df075602",
+      "httpDate": "Thu, 01 Oct 2026 06:09:05 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:09:05Z",
+          "method": "POST",
+          "path": "/api/v1/positions",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0609_0610.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "houses",
+      "round": 18,
+      "xVercelId": "cle1::iad1::v7md7-1790834947455-c75e6a103880",
+      "httpDate": "Thu, 01 Oct 2026 06:09:07 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:09:07Z",
+          "method": "POST",
+          "path": "/api/v1/houses",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0609_0610.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "events",
+      "round": 18,
+      "xVercelId": "cle1::iad1::7n9jr-1790834949657-584aa244275b",
+      "httpDate": "Thu, 01 Oct 2026 06:09:09 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:09:09Z",
+          "method": "POST",
+          "path": "/api/v1/events",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0609_0610.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "time",
+      "round": 18,
+      "xVercelId": "cle1::iad1::nhthp-1790834951857-60239283ebd7",
+      "httpDate": "Thu, 01 Oct 2026 06:09:11 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:09:11Z",
+          "method": "POST",
+          "path": "/api/v1/time",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0609_0610.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "sky-fact",
+      "round": 18,
+      "xVercelId": "cle1::iad1::wmrzw-1790834954058-1c60f2249383",
+      "httpDate": "Thu, 01 Oct 2026 06:09:14 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:09:14Z",
+          "method": "POST",
+          "path": "/api/v1/sky-fact",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0609_0610.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "positions",
+      "round": 19,
+      "xVercelId": "cle1::iad1::9ktpf-1790834956255-6573fe6154bb",
+      "httpDate": "Thu, 01 Oct 2026 06:09:16 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:09:16Z",
+          "method": "POST",
+          "path": "/api/v1/positions",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0609_0610.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "houses",
+      "round": 19,
+      "xVercelId": "cle1::iad1::thvc6-1790834958455-1e493df3df75",
+      "httpDate": "Thu, 01 Oct 2026 06:09:18 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:09:18Z",
+          "method": "POST",
+          "path": "/api/v1/houses",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0609_0610.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "events",
+      "round": 19,
+      "xVercelId": "cle1::iad1::nhthp-1790834960656-e97ec39dd3be",
+      "httpDate": "Thu, 01 Oct 2026 06:09:20 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:09:20Z",
+          "method": "POST",
+          "path": "/api/v1/events",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0609_0610.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "time",
+      "round": 19,
+      "xVercelId": "cle1::iad1::82b64-1790834962855-a38a828561db",
+      "httpDate": "Thu, 01 Oct 2026 06:09:22 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:09:22Z",
+          "method": "POST",
+          "path": "/api/v1/time",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0609_0610.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "sky-fact",
+      "round": 19,
+      "xVercelId": "cle1::iad1::22bgn-1790834965055-a4c08d60df57",
+      "httpDate": "Thu, 01 Oct 2026 06:09:25 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:09:25Z",
+          "method": "POST",
+          "path": "/api/v1/sky-fact",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0609_0610.json"
+        }
+      ]
+    },
+    {
+      "endpoint": "chart",
+      "round": 19,
+      "xVercelId": "cle1::iad1::g7tqh-1790834967255-384e815b2bbc",
+      "httpDate": "Thu, 01 Oct 2026 06:09:27 GMT",
+      "matchMethod": "same endpoint + status + timestamp within one second; not request-ID matched",
+      "candidates": [
+        {
+          "timestamp": "2026-10-01T06:09:27Z",
+          "method": "POST",
+          "path": "/api/v1/chart",
+          "status": 200,
+          "source": "info/serverless",
+          "metadata": "dep=dpl_6uGzGxdgxboMZ5jeFwQMTL24demr branch=main cache=MISS",
+          "file": "logs_window_0609_0610.json"
+        }
+      ]
+    }
+  ]
+}

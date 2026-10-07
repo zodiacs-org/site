@@ -1,4 +1,6 @@
 ---
+import ReturnToolLinks from "../../../components/return-visits/ReturnToolLinks.astro";
+import SharingToolLinks from '../../../components/sharing/SharingToolLinks.astro';
 import Base from '../../../layouts/Base.astro';
 import ToolGlyph from '../../../components/ToolGlyph.astro';
 import ToolsPageHeading from '../../../components/ToolsPageHeading.astro';
@@ -7,7 +9,7 @@ import { ENGLISH_ONLY_COPY, localizePath } from '../../../lib/i18n';
 const englishOnly = ENGLISH_ONLY_COPY.pt;
 const tools = [
   { href: '/birth-chart/', title: 'Calculadora de mapa astral', promise: 'Veja seu Sol, sua Lua, seu ascendente, seus planetas, suas casas e o que tudo isso significa.', hue: 'var(--sign-cancer)', kind: 'birth' as const },
-  { href: '/birth-chart/someone-else/', title: 'Mapa de outra pessoa (em inglês)', promise: 'Use os dados de nascimento, os três signos principais ou um link do Zodiacs, com a permissão dela.', hue: 'var(--sign-pisces)', kind: 'birth' as const, englishOnly: true },
+  { href: '/birth-chart/someone-else/', title: 'Mapa de outra pessoa (em inglês)', promise: 'Use os dados de nascimento, os três signos ou um link do Zodiacs, com a permissão dela.', hue: 'var(--sign-pisces)', kind: 'birth' as const, englishOnly: true },
   { href: '/today/', title: 'Hoje', promise: 'O céu de hoje, lido para os doze signos solares.', hue: 'var(--sign-cancer)', kind: 'transit' as const },
   { href: '/compatibility/', title: 'Compatibilidade', promise: 'Compare dois mapas e veja onde eles se conectam, entram em conflito e crescem.', hue: 'var(--sign-libra)', kind: 'compat' as const },
   { href: '/moon-sign/', title: 'Calculadora de signo lunar', promise: 'Como você vive as emoções e o que ajuda a voltar ao seu centro.', hue: 'var(--sign-pisces)', kind: 'moon' as const },
@@ -30,7 +32,7 @@ const jsonLd = [
 ---
 <Base
   title="Ferramentas gratuitas de astrologia | Zodiacs.org"
-  description="Calculadoras gratuitas de astrologia: mapa astral, compatibilidade, signo lunar, ascendente, fase da Lua, retorno de Saturno e trânsitos, com privacidade no seu navegador."
+  description="Calculadoras gratuitas de astrologia: mapa astral, compatibilidade, signo lunar, ascendente, fase da Lua e trânsitos — privadas, no seu navegador."
   path="/pt/tools/"
   locale="pt"
   image="/assets/og/v2/tool/tools.png"
@@ -72,13 +74,24 @@ const jsonLd = [
     </div>
 
     <div class="tools-upcoming">
+      <em class="kicker">Calendários do céu</em>
+      <ul>
+        <li><a href="/pt/full-moon-calendar/"><strong>Luas cheias</strong></a>: datas, signos e nomes até 2027.</li>
+        <li><a href="/pt/eclipses/"><strong>Eclipses</strong></a>: solares e lunares até 2028.</li>
+        <li><a href="/pt/mercury-retrograde/"><strong>Mercúrio retrógrado</strong></a>: cada período, com as estações.</li>
+        <li><a href="/pt/retrogrades/"><strong>Planetas retrógrados</strong></a>: de Mercúrio a Plutão.</li>
+      </ul>
+    </div>
+
+    <div class="tools-upcoming">
       <em class="kicker">Também disponível em inglês</em>
       <ul>
         <li><strong>Horóscopos.</strong> O céu de hoje, signo por signo. A edição em inglês também inclui leituras semanais e mensais: <a href="/horoscopes/" hreflang="en" title={englishOnly.aria}>escolher signo</a>.</li>
-        <li><strong>Mercúrio retrógrado.</strong> Períodos exatos até 2027: <a href="/mercury-retrograde/" hreflang="en">veja as datas</a>.</li>
       </ul>
     </div>
   </section>
+<section class="section--tight container"><SharingToolLinks locale="pt" /></section>
+<section class="section--tight container"><ReturnToolLinks locale="pt" /></section>
 </Base>
 
 <style>

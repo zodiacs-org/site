@@ -1633,7 +1633,7 @@
 
     // Phones: the navigation is a full-width bar at the top edge that slides
     // away as the page scrolls down (the wing pages' shared rule).
-    const PHONE_BAR_QUERY = '(max-width: 599.5px)';
+    const PHONE_BAR_QUERY = '(max-width: 919.5px)';
 
     function Header() {
       const [menuOpen, setMenuOpen] = useState(false);
@@ -1641,6 +1641,8 @@
       const [toolsOpen, setToolsOpen] = useState(false);
       const toolsButtonRef = useRef(null);
       const signsButtonRef = useRef(null);
+      const menuButtonRef = useRef(null);
+      useEffect(() => initProfileNavigation(), []);
       const focusDropdownItem = (id, last = false) => {
         window.requestAnimationFrame(() => {
           const items = [...document.querySelectorAll(`#${id} a`)];
@@ -1671,7 +1673,22 @@
       };
       useEffect(() => {
         if (!menuOpen) return undefined;
-        const onKey = (e) => { if (e.key === 'Escape') setMenuOpen(false); };
+        const menu = document.getElementById('wnav-menu');
+        const items = () => [...(menu?.querySelectorAll('a[href],button:not([disabled])') || [])]
+          .filter((item) => item.getClientRects().length);
+        items()[0]?.focus();
+        const onKey = (e) => {
+          if (e.key === 'Escape') {
+            e.preventDefault();
+            setMenuOpen(false);
+            menuButtonRef.current?.focus();
+          } else if (e.key === 'Tab') {
+            const links = items();
+            const first = links[0], last = links[links.length - 1];
+            if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last?.focus(); }
+            else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); }
+          }
+        };
         document.addEventListener('keydown', onKey);
         const prev = document.documentElement.style.overflow;
         document.documentElement.style.overflow = 'hidden';
@@ -1765,12 +1782,12 @@
       const NAV_TOOLS = [
         { href: '/birth-chart/', name: 'Birth chart', description: 'See your sun, moon, rising, planets, houses, and what they mean.' },
         { href: '/compatibility/', name: 'Compatibility', description: 'Compare two charts and see where they click, clash, and grow.' },
-        { href: '/transits/', name: 'Transits', description: "See today's sky next to your chart." },
+        { href: '/transits/', name: 'Transits', description: 'Explore today’s planets and their connections to your chart.' },
         { href: '/moon-sign/', name: 'Moon sign', description: 'How you feel, and what settles you.' },
         { href: '/rising-sign/', name: 'Rising sign', description: 'Find the sign people meet first. Birth time helps.' },
         { href: '/moon-phase/', name: 'Moon phase', description: 'Tonight’s moon, and the moon of any date you care about.' },
         { href: '/saturn-return/', name: 'Saturn return', description: 'When yours hits, exactly, and what it tends to ask.' },
-        { href: '/birthday/', name: 'Birthday', description: 'Check the Zodiac sign for any birthday from 1940 to 2030, including birthdays close to a sign change.' },
+        { href: '/birthday/', name: 'Birthday', description: 'Find your Sun sign from your birthday, including dates near a sign change.' },
       ];
       const terminalNav = {
         href: '/astrofolio/',
@@ -1790,15 +1807,14 @@
                   <a className="wnav__link" href="/today/">Today</a>
                   <a className="wnav__link" href="/learn/">Learn</a>
                   <a className="wnav__link" href="/horoscopes/">Horoscopes</a>
-                  <a className="wnav__link" href="/profile/">Saved charts</a>
                 </div>
-                <a className="wnav__profile-shortcut" href="/profile/" aria-label="Your profile" title="Your profile"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="3.2" stroke="currentColor" strokeWidth="1.3"/><path d="M5.5 20v-1.5a6.5 6.5 0 0 1 13 0V20" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/></svg></a>
+                <a className="wnav__profile-shortcut" href="/profile/" aria-label="Your profile" title="Your profile" data-profile-glyph=""><svg className="wnav__profile-icon" width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="3.2" stroke="currentColor" strokeWidth="1.3"/><path d="M5.5 20v-1.5a6.5 6.5 0 0 1 13 0V20" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/></svg><span className="wnav__avatar" data-profile-avatar="" aria-hidden="true" hidden /></a>
                 <a className="wnav__search" href="/?search=1" aria-label="Search the site">
                   <svg width="14" height="14" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="6.5" cy="6.5" r="4.75" stroke="currentColor" strokeWidth="1.4"/><path d="M10.5 10.5L13.5 13.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></svg>
                   <kbd className="wnav__search-kbd" aria-hidden="true">/</kbd>
                 </a>
                 <a className="wnav__chip" href={terminalNav.href} aria-current={REGISTRY_VIEW === 'terminal' ? 'page' : undefined}>{terminalNav.label}</a>
-                <button type="button" className="wnav__burger" data-wnav-burger="" aria-expanded={menuOpen} aria-controls="wnav-menu" aria-label={menuOpen ? 'Close menu' : 'Open menu'} onClick={() => { setToolsOpen(false); setSignsOpen(false); setMenuOpen((v) => !v); }}>
+                <button ref={menuButtonRef} type="button" className="wnav__burger" data-wnav-burger="" aria-expanded={menuOpen} aria-controls="wnav-menu" aria-label={menuOpen ? 'Close menu' : 'Open menu'} onClick={() => { setToolsOpen(false); setSignsOpen(false); if (menuOpen) menuButtonRef.current?.focus(); setMenuOpen((v) => !v); }}>
                   <span className="wnav__burger-line" /><span className="wnav__burger-line" /><span className="wnav__burger-line" />
                 </button>
             </nav>
@@ -1892,67 +1908,6 @@
     const GALLERY_LIVE = document.documentElement.classList.contains('gallery-live');
 
     let galleryBundleRequested = false;
-
-    /* The trade panel's runtime, fetched at most once per page and only when
-       the panel is actually near the reader. Resolves to null if the bundle
-       cannot load, so a failed fetch leaves an empty box rather than a
-       half-built form. */
-    let tradeBundleReady = null;
-
-    function loadTradeBundle() {
-      if (tradeBundleReady) return tradeBundleReady;
-      tradeBundleReady = new Promise((resolve) => {
-        if (window.zodiacsTrade) { resolve(window.zodiacsTrade); return; }
-        const script = document.createElement('script');
-        script.src = '/assets/trade.js';
-        script.defer = true;
-        script.addEventListener('load', () => resolve(window.zodiacsTrade ?? null), { once: true });
-        script.addEventListener('error', () => resolve(null), { once: true });
-        document.body.appendChild(script);
-      });
-      return tradeBundleReady;
-    }
-
-    /* The panel itself is plain DOM, mounted into this box by the bundle. It
-       is rebuilt when the sign changes: a panel is about one token, and
-       carrying a half-typed amount across signs would be worse than clearing
-       it. */
-    function LandingTrade({ sign }) {
-      const hostRef = useRef(null);
-      useEffect(() => {
-        const host = hostRef.current;
-        if (!host) return undefined;
-        let panel = null;
-        let live = true;
-        let io = null;
-        const open = () => {
-          loadTradeBundle().then((trade) => {
-            if (!live || !trade) return;
-            panel = trade.mount(host, {
-              name: sign.name,
-              slug: sign.asset.sign,
-              mint: sign.representations.solana.address,
-              hue: sign.hue,
-              iconUrl: `/assets/zodiac-icons/128/${sign.asset.sign}.webp`,
-            });
-          });
-        };
-        if (!('IntersectionObserver' in window)) open();
-        else {
-          io = new IntersectionObserver(([entry]) => {
-            if (entry.isIntersecting) { open(); io.disconnect(); }
-          }, { rootMargin: '400px 0px' });
-          io.observe(host);
-        }
-        return () => {
-          live = false;
-          io?.disconnect();
-          panel?.destroy?.();
-        };
-      }, [sign]);
-
-      return <div className="consumer-trade" data-landing-trade={sign.asset.sign} ref={hostRef} />;
-    }
 
     // Inert pastel discs hold the rail's shape until the scene bundle
     // arrives and swaps in the live ticks with one replaceChildren call.
@@ -5629,7 +5584,6 @@
     // bag stays over the runway, follows the look in view, and its sign opens
     // a sheet of all twelve. It rests over the closing notice and footer.
     function CampaignBag({ sign, batch, onPick }) {
-      const seasonTicker = useCurrentSeason()?.sign.ticker ?? '';
       const [shown, setShown] = useState(true);
       const phone = useMediaMatch(CAMPAIGN_PHONE_QUERY);
       const sheetRef = useRef(null);
@@ -5700,7 +5654,7 @@
                   <span>{formatPriceUsd(quote.priceUsd)}</span>
                   {change !== null && <span className={`campaign-bag__move is-${direction}`}>{formatPercent(change)}</span>}
                 </>
-              ) : <span>{sign.ticker === seasonTicker ? 'In season now' : consumerSignDateLabel(sign)}</span>}
+              ) : <span>{batch.status === 'ok' ? 'Price not indexed' : batch.status === 'unavailable' ? 'Price unavailable' : 'Reading price…'}</span>}
             </small>
           </span>
         </>
@@ -7040,7 +6994,7 @@
       },
       {
         q: 'What is the Terminal?',
-        a: 'The Terminal is the market desk for all twelve Zodiacs, with live prices, liquidity, charts, season context, research, and trading. Jupiter Ultra supplies the executable route and transaction; your wallet reviews, approves, and signs.'
+        a: 'Zodiacs.org does not connect wallets, request signatures, or submit transactions. Public address lookups use an address you paste. Purchase links open independent services with their own terms and risks.'
       }
     ];
 
@@ -7321,12 +7275,16 @@
                 </a>
                 <p className="zfooter__tag">{tagline}</p>
               </div>
-              <button className="zfooter__guide" type="button" data-assistant-open data-footer-guide aria-haspopup="dialog">
+              <aside className="zfooter__help" aria-label="Guide">
+      <button className="zfooter__guide" type="button" data-assistant-open data-footer-guide aria-haspopup="dialog" aria-describedby="footer-guide-description">
                 <img src="/assets/guide-avatar.webp" width="32" height="32" alt="" loading="lazy" decoding="async" />
-                <span>Guide</span>
+                <span>Guide</span><span className="zfooter__guide-arrow" aria-hidden="true">→</span>
               </button>
+      <p id="footer-guide-description" className="zfooter__help-description">An AI assistant for astrology questions and help using Zodiacs.</p>
+      </aside>
             </div>
 
+            <p className="zfooter__tag">Our astrology tools and guides are free, with no signup required. Zodiacs.org also operates Astrofolio, the Zodiac token collection. <a href="/disclosure/">Read our disclosure</a>.</p>
             <div className="zfooter__directory">
               <nav className="zfooter__group" aria-label="Explore">
                 <details className="zfooter__fold" open data-footer-essential><summary className="zfooter__fold-label"><span className="zfooter__label">Explore</span></summary>
@@ -7419,15 +7377,7 @@
                 volatile, liquidity may disappear, and you could lose all money used to acquire
                 one. Astrology has no established predictive relationship with asset prices.
               </p>
-              <p>
-                Zodiacs.org provides the Terminal interface and public Registry; it does not
-                operate a DEX, exchange, broker, or custodial service. When trading is available,
-                Jupiter, an independent third-party liquidity aggregator, supplies the executable
-                quote, builds and submits the transaction, and charges any venue fee shown; your
-                wallet reviews, approves, and signs. Zodiacs.org holds no keys or funds, cannot
-                reverse transactions, and receives no trading or referral compensation.
-                References to Jupiter do not imply affiliation or endorsement.
-              </p>
+              <p>Zodiacs.org does not connect wallets, request signatures, or submit transactions. Public address lookups use an address you paste. Purchase links open independent services with their own terms and risks. Zodiacs.org operates Astrofolio. <a href="/disclosure/">Disclosure</a>.</p>
               <p>
                 Information is for informational purposes only and is not an offer or solicitation,
                 an investment recommendation or trading strategy, or accounting, legal, tax, or

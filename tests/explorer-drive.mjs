@@ -317,67 +317,88 @@ try {
     browser, baseURL: 'http://127.0.0.1:4399', check, outDir: OUT,
   });
 
-  let navBreakpointsPass = true;
-  const navBreakpointsDetail = [];
-  for (const [prefix, desktopBreakpoint, englishOnlyCue] of [
-    ['', 920, ''],
-    ['/es', 1040, '— por ahora en inglés'],
-    ['/pt', 1040, '— por enquanto em inglês'],
-    ['/fr', 1040, '— pour l’instant en anglais'],
-    ['/it', 1040, '— per ora in inglese'],
+  // Owner-approved global navigation keeps the same Astrofolio door on
+  // editorial and tool pages, including each responsive boundary.
+  for (const [surface, route, expectsDoor] of [
+    ['editorial', '/learn/', true],
+    ['tool', '/birth-chart/', true],
   ]) {
-    // Retain the old 819/820 checks as compact-layout regressions, and check
-    // both sides of the new reserved-shell desktop thresholds independently.
-    for (const width of [819, 820, desktopBreakpoint - 1, desktopBreakpoint]) {
-      const desktop = width >= desktopBreakpoint;
-      const navPage = await browser.newPage({ viewport: { width, height: 844 } });
-      await navPage.goto(`http://127.0.0.1:4399${prefix}/birth-chart/`, { waitUntil: 'domcontentloaded' });
-      const state = await navPage.evaluate(() => {
-        const nav = document.querySelector('[data-nav]')?.getBoundingClientRect();
-        const chip = document.querySelector('.nav__chip');
-        const burger = document.querySelector('[data-menu-toggle]');
-        const links = document.querySelector('.nav__links');
-        return {
-          navFits: Boolean(nav && nav.left >= 16 && nav.right <= innerWidth - 16),
-          navWidth: nav?.width,
-          chipVisible: Boolean(chip && getComputedStyle(chip).display !== 'none'),
-          chipHref: chip?.getAttribute('href'),
-          chipText: (chip?.querySelector(':scope > span') ?? chip)?.textContent?.trim(),
-          chipCue: chip?.querySelector('small')?.textContent?.trim() ?? '',
-          burgerVisible: Boolean(burger && getComputedStyle(burger).display !== 'none'),
-          linksVisible: Boolean(links && getComputedStyle(links).display !== 'none'),
-        };
-      });
-      if (!desktop) {
-        await navPage.locator('[data-menu-toggle]').click();
-        const mobileRegistryVisible = await navPage.locator('.mobile-menu__registry').isVisible();
-        state.mobileRegistryVisible = mobileRegistryVisible;
+    let navBreakpointsPass = true;
+    const navBreakpointsDetail = [];
+    for (const [prefix, desktopBreakpoint, englishOnlyCue] of [
+      ['', 920, ''],
+      ['/es', 1040, '— por ahora en inglés'],
+      ['/pt', 1040, '— por enquanto em inglês'],
+      ['/fr', 1040, '— pour l’instant en anglais'],
+      ['/it', 1040, '— per ora in inglese'],
+    ]) {
+      // Retain the old 819/820 checks as compact-layout regressions, and check
+      // both sides of the new reserved-shell desktop thresholds independently.
+      for (const width of [819, 820, desktopBreakpoint - 1, desktopBreakpoint]) {
+        const desktop = width >= desktopBreakpoint;
+        const navPage = await browser.newPage({ viewport: { width, height: 844 } });
+        await navPage.goto(`http://127.0.0.1:4399${prefix}${route}`, { waitUntil: 'domcontentloaded' });
+        const state = await navPage.evaluate((desktop) => {
+          const nav = document.querySelector('[data-nav]')?.getBoundingClientRect();
+          const chip = document.querySelector('.nav__chip');
+          const burger = document.querySelector('[data-menu-toggle]');
+          const links = document.querySelector('.nav__links');
+          return {
+            navFits: Boolean(nav && (desktop
+              ? nav.left >= 16 && nav.right <= document.documentElement.clientWidth - 16
+              : Math.abs(nav.left) <= 0.1 && Math.abs(nav.right - document.documentElement.clientWidth) <= 0.1)),
+            viewportWidth: document.documentElement.clientWidth,
+            radius: getComputedStyle(document.querySelector('[data-nav]')).borderRadius,
+            navWidth: nav?.width,
+            chipPresent: Boolean(chip),
+            chipVisible: Boolean(chip && getComputedStyle(chip).display !== 'none'),
+            chipHref: chip?.getAttribute('href'),
+            chipText: (chip?.querySelector(':scope > span') ?? chip)?.textContent?.trim(),
+            chipCue: chip?.querySelector('small')?.textContent?.trim() ?? '',
+            wingLinks: document.querySelectorAll('[data-nav] a[href^="/astrofolio/"], .mobile-menu a[href^="/astrofolio/"]').length,
+            burgerVisible: Boolean(burger && getComputedStyle(burger).display !== 'none'),
+            linksVisible: Boolean(links && getComputedStyle(links).display !== 'none'),
+          };
+        }, desktop);
+        if (!desktop) {
+          await navPage.locator('[data-menu-toggle]').click();
+          state.mobileRegistryVisible = await navPage.locator('.mobile-menu__registry').count() > 0
+            && await navPage.locator('.mobile-menu__registry').isVisible();
+        }
+        const door = expectsDoor
+          ? state.chipVisible
+            && state.chipHref === '/astrofolio/'
+            && state.chipText === 'Astrofolio'
+            && state.chipCue === englishOnlyCue
+            && (desktop || state.mobileRegistryVisible === true)
+          : !state.chipPresent
+            && state.wingLinks === 0
+            && (desktop || state.mobileRegistryVisible === false);
+        const pass = state.navFits
+          && door
+          && Math.abs(state.navWidth - (desktop ? (prefix ? 992 : 884) : state.viewportWidth)) <= 0.1
+          && (desktop ? state.radius !== '0px' : state.radius === '0px')
+          && state.burgerVisible === !desktop
+          && state.linksVisible === desktop;
+        navBreakpointsPass &&= pass;
+        navBreakpointsDetail.push(`${prefix || '/en'}@${width}:${pass ? 'ok' : JSON.stringify(state)}`);
+        await navPage.close();
       }
-      const pass = state.navFits
-        && state.chipVisible
-        && state.chipHref === '/astrofolio/'
-        && state.chipText === 'Astrofolio'
-        && state.chipCue === englishOnlyCue
-        && Math.abs(state.navWidth - (desktop ? (prefix ? 992 : 884) : 336)) <= 0.1
-        && state.burgerVisible === !desktop
-        && state.linksVisible === desktop
-        && (desktop || state.mobileRegistryVisible === true);
-      navBreakpointsPass &&= pass;
-      navBreakpointsDetail.push(`${prefix || '/en'}@${width}:${pass ? 'ok' : JSON.stringify(state)}`);
-      await navPage.close();
     }
+    check(expectsDoor
+      ? 'navigation: full-width compact bars, desktop shells and Astrofolio persist at compact and desktop boundaries in all five locales'
+      : `navigation: ${surface} pages keep compact bars and desktop shells without any Astrofolio link in all five locales`,
+    navBreakpointsPass, navBreakpointsDetail.join(' · '));
   }
-  check('navigation: reserved shells and Astrofolio persist at compact and desktop boundaries in all five locales', navBreakpointsPass, navBreakpointsDetail.join(' · '));
 
-  // A shared-chart receiver intentionally removes every wing link. Its head
-  // marker must reserve the shorter shell before hydration, with no empty
-  // destination track and no later movement of the surviving controls.
+  // Shared charts retain the standard navigation while removing collection
+  // links from the reading. The header must stay stable through hydration.
   const receiverDetails = [];
   let receiverPass = true;
-  for (const [prefix, desktopBreakpoint, compactWidth, mobileWidth, desktopWidth] of [
-    ['', 920, 180, 210, 746],
-    ['/es', 1040, 184, 210, 854],
-    ['/ru', 1040, 132, 166, 854],
+  for (const [prefix, desktopBreakpoint, desktopWidth] of [
+    ['', 920, 884],
+    ['/es', 1040, 992],
+    ['/ru', 1040, 992],
   ]) {
     for (const width of [320, 390, desktopBreakpoint, ...(prefix === '' ? [1440] : [])]) {
       const desktop = width >= desktopBreakpoint;
@@ -400,7 +421,7 @@ try {
           });
         return {
           receiver: document.documentElement.hasAttribute('data-chart-share-receiver'),
-          wingLinks: document.querySelectorAll('a[href="/astrofolio/"],a[href^="/registry/"],a[href^="/sdk/"]').length,
+          wingLinks: document.querySelectorAll('main a[href="/astrofolio/"],main a[href^="/registry/"],main a[href^="/sdk/"]').length,
           left: box?.left, right: box?.right, top: box?.top, bottom: box?.bottom, width: box?.width,
           scrollX, scrollY,
           viewport: visualViewport && {
@@ -437,14 +458,14 @@ try {
         return Math.abs(scrollY - target) <= 1 && Math.abs(scrollY - before) <= 0.1;
       });
       const settled = await receiverGeometry();
-      const expectedWidth = desktop ? desktopWidth : width <= 360 ? compactWidth : mobileWidth;
+      const expectedWidth = desktop ? desktopWidth : width;
       const pass = [early, settled].every((state) => state.receiver
         && state.visible
         && state.wingLinks === 0
         && Math.abs(state.width - expectedWidth) <= 0.1
-        && state.left >= 16 && state.right <= width - 16
+        && state.left >= (desktop ? 16 : 0) && state.right <= width - (desktop ? 16 : 0)
         && Math.abs(state.left - (width - expectedWidth) / 2) <= 0.1
-        && Math.abs(state.endGap - (width <= 360 ? 5 : 11)) <= 0.1
+        && Math.abs(state.endGap - (desktop ? 11 : prefix === '/ru' ? 50 : 6)) <= 0.1
         && state.children.every((child) => child.left >= state.left && child.right <= state.right)
         && state.controls.length === (desktop ? (prefix === '/ru' ? 0 : 1) : (prefix === '/ru' ? 1 : 2))
         && (desktop || state.controls.every((control) => control.width === 44 && control.height === 44)))

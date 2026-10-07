@@ -44,7 +44,7 @@ const EXPECTED_FAQS = [
     // 2026-08-13) no longer fronts a consumer answer; Terminal carries the
     // trading sentence.
     q: 'What is the Terminal?',
-    a: 'The Terminal is the market desk for all twelve Zodiacs, with live prices, liquidity, charts, season context, research, and trading. Jupiter Ultra supplies the executable route and transaction; your wallet reviews, approves, and signs.',
+    a: 'Zodiacs.org does not connect wallets, request signatures, or submit transactions. Public address lookups use an address you paste. Purchase links open independent services with their own terms and risks.',
   },
 ];
 function functionBlock(source, name) {

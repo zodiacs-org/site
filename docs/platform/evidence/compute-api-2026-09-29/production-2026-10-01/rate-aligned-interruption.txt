@@ -1,0 +1,1 @@
+The first aligned probe process became unavailable before any request record was written; exact poll retry after authorization returned unknown process. No result claimed. A fresh bounded attempt follows under the original production-verification authorization.

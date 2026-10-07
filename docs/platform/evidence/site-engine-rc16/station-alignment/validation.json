@@ -1,0 +1,1907 @@
+{
+  "schemaVersion": 1,
+  "sourceBaseline": "bbba65df31aee186250bac2bf2e2de78a31785ad",
+  "scope": "Product station consistency; no numerical accuracy gate acceptance",
+  "node": "v22.22.2",
+  "skySha256": "e9ceb4c406d0a6a3172e6bac2be9bad079ece67d0388d7b71a0c26d9a845f92e",
+  "generatorSha256": "1aa2b80e80a2805bd050b3f95608242c9966b258ccd3a14b524a020b61e6f640",
+  "transitMonths": 60,
+  "matchedMonthlyStations": 90,
+  "maxAgreementMs": 1237,
+  "fixedFieldsUnchanged": true,
+  "changedSkyBoundaries": [
+    {
+      "planet": "Jupiter",
+      "field": "to",
+      "before": "2026-03-11T03:26:48.398Z",
+      "after": "2026-03-11T03:29:02.870Z",
+      "deltaMs": 134472
+    },
+    {
+      "planet": "Uranus",
+      "field": "to",
+      "before": "2026-02-04T02:17:22.382Z",
+      "after": "2026-02-04T02:32:26.776Z",
+      "deltaMs": 904394
+    },
+    {
+      "planet": "Mercury",
+      "field": "from",
+      "before": "2026-02-26T06:47:18.427Z",
+      "after": "2026-02-26T06:47:25.019Z",
+      "deltaMs": 6592
+    },
+    {
+      "planet": "Mercury",
+      "field": "to",
+      "before": "2026-03-20T19:35:01.903Z",
+      "after": "2026-03-20T19:35:04.540Z",
+      "deltaMs": 2637
+    },
+    {
+      "planet": "Mercury",
+      "field": "preShadowStart",
+      "before": "2026-02-11T22:13:35.266Z",
+      "after": "2026-02-11T22:13:33.206Z",
+      "deltaMs": -2060
+    },
+    {
+      "planet": "Mercury",
+      "field": "postShadowEnd",
+      "before": "2026-04-09T11:41:34.799Z",
+      "after": "2026-04-09T11:41:37.190Z",
+      "deltaMs": 2391
+    },
+    {
+      "planet": "Pluto",
+      "field": "from",
+      "before": "2026-05-06T15:44:42.860Z",
+      "after": "2026-05-06T15:34:24.550Z",
+      "deltaMs": -618310
+    },
+    {
+      "planet": "Pluto",
+      "field": "to",
+      "before": "2026-10-16T02:23:40.750Z",
+      "after": "2026-10-16T02:39:22.059Z",
+      "deltaMs": 941309
+    },
+    {
+      "planet": "Pluto",
+      "field": "preShadowStart",
+      "before": "2026-01-12T07:41:47.627Z",
+      "after": "2026-01-12T07:41:59.823Z",
+      "deltaMs": 12196
+    },
+    {
+      "planet": "Pluto",
+      "field": "postShadowEnd",
+      "before": "2027-02-07T01:15:11.916Z",
+      "after": "2027-02-07T01:14:49.012Z",
+      "deltaMs": -22904
+    },
+    {
+      "planet": "Mercury",
+      "field": "from",
+      "before": "2026-06-29T17:37:19.453Z",
+      "after": "2026-06-29T17:37:11.542Z",
+      "deltaMs": -7911
+    },
+    {
+      "planet": "Mercury",
+      "field": "to",
+      "before": "2026-07-23T22:56:25.985Z",
+      "after": "2026-07-23T22:56:24.667Z",
+      "deltaMs": -1318
+    },
+    {
+      "planet": "Mercury",
+      "field": "preShadowStart",
+      "before": "2026-06-13T00:54:40.572Z",
+      "after": "2026-06-13T00:54:42.465Z",
+      "deltaMs": 1893
+    },
+    {
+      "planet": "Mercury",
+      "field": "postShadowEnd",
+      "before": "2026-08-07T03:37:00.197Z",
+      "after": "2026-08-07T03:37:02.339Z",
+      "deltaMs": 2142
+    },
+    {
+      "planet": "Neptune",
+      "field": "from",
+      "before": "2026-07-07T11:21:11.776Z",
+      "after": "2026-07-07T11:01:01.523Z",
+      "deltaMs": -1210253
+    },
+    {
+      "planet": "Neptune",
+      "field": "to",
+      "before": "2026-12-12T22:13:40.458Z",
+      "after": "2026-12-12T22:23:17.899Z",
+      "deltaMs": 577441
+    },
+    {
+      "planet": "Neptune",
+      "field": "preShadowStart",
+      "before": "2026-03-16T09:00:29.084Z",
+      "after": "2026-03-16T09:00:39.795Z",
+      "deltaMs": 10711
+    },
+    {
+      "planet": "Neptune",
+      "field": "postShadowEnd",
+      "before": "2027-04-02T19:05:44.693Z",
+      "after": "2027-04-02T19:05:26.812Z",
+      "deltaMs": -17881
+    },
+    {
+      "planet": "Saturn",
+      "field": "from",
+      "before": "2026-07-26T19:57:43.769Z",
+      "after": "2026-07-26T19:53:13.505Z",
+      "deltaMs": -270264
+    },
+    {
+      "planet": "Saturn",
+      "field": "to",
+      "before": "2026-12-10T23:23:31.523Z",
+      "after": "2026-12-10T23:28:30.790Z",
+      "deltaMs": 299267
+    },
+    {
+      "planet": "Saturn",
+      "field": "preShadowStart",
+      "before": "2026-04-20T12:10:52.174Z",
+      "after": "2026-04-20T12:10:49.041Z",
+      "deltaMs": -3133
+    },
+    {
+      "planet": "Saturn",
+      "field": "postShadowEnd",
+      "before": "2027-03-15T06:48:38.763Z",
+      "after": "2027-03-15T06:48:58.703Z",
+      "deltaMs": 19940
+    },
+    {
+      "planet": "Uranus",
+      "field": "from",
+      "before": "2026-09-10T18:40:50.829Z",
+      "after": "2026-09-10T18:28:28.593Z",
+      "deltaMs": -742236
+    },
+    {
+      "planet": "Uranus",
+      "field": "to",
+      "before": "2027-02-08T12:23:17.460Z",
+      "after": "2027-02-08T12:28:27.274Z",
+      "deltaMs": 309814
+    },
+    {
+      "planet": "Uranus",
+      "field": "preShadowStart",
+      "before": "2026-05-25T10:47:14.827Z",
+      "after": "2026-05-25T10:46:33.382Z",
+      "deltaMs": -41445
+    },
+    {
+      "planet": "Uranus",
+      "field": "postShadowEnd",
+      "before": "2027-05-26T03:46:04.926Z",
+      "after": "2027-05-26T03:46:37.308Z",
+      "deltaMs": 32382
+    },
+    {
+      "planet": "Venus",
+      "field": "from",
+      "before": "2026-10-03T07:10:01.610Z",
+      "after": "2026-10-03T07:10:25.341Z",
+      "deltaMs": 23731
+    },
+    {
+      "planet": "Venus",
+      "field": "to",
+      "before": "2026-11-14T00:21:06.943Z",
+      "after": "2026-11-14T00:21:21.444Z",
+      "deltaMs": 14501
+    },
+    {
+      "planet": "Venus",
+      "field": "postShadowEnd",
+      "before": "2026-12-15T18:36:51.792Z",
+      "after": "2026-12-15T18:36:57.972Z",
+      "deltaMs": 6180
+    },
+    {
+      "planet": "Mercury",
+      "field": "from",
+      "before": "2026-10-24T07:14:26.601Z",
+      "after": "2026-10-24T07:14:22.646Z",
+      "deltaMs": -3955
+    },
+    {
+      "planet": "Mercury",
+      "field": "to",
+      "before": "2026-11-13T15:53:03.837Z",
+      "after": "2026-11-13T15:53:06.474Z",
+      "deltaMs": 2637
+    },
+    {
+      "planet": "Mercury",
+      "field": "preShadowStart",
+      "before": "2026-10-04T09:10:59.014Z",
+      "after": "2026-10-04T09:10:55.306Z",
+      "deltaMs": -3708
+    },
+    {
+      "planet": "Mercury",
+      "field": "postShadowEnd",
+      "before": "2026-11-30T06:17:02.468Z",
+      "after": "2026-11-30T06:17:00.984Z",
+      "deltaMs": -1484
+    },
+    {
+      "planet": "Jupiter",
+      "field": "from",
+      "before": "2026-12-13T00:58:59.794Z",
+      "after": "2026-12-13T00:57:26.191Z",
+      "deltaMs": -93603
+    },
+    {
+      "planet": "Jupiter",
+      "field": "to",
+      "before": "2027-04-13T02:13:19.804Z",
+      "after": "2027-04-13T02:08:29.765Z",
+      "deltaMs": -290039
+    },
+    {
+      "planet": "Jupiter",
+      "field": "preShadowStart",
+      "before": "2026-09-17T04:34:50.613Z",
+      "after": "2026-09-17T04:34:34.463Z",
+      "deltaMs": -16150
+    },
+    {
+      "planet": "Jupiter",
+      "field": "postShadowEnd",
+      "before": "2027-07-11T04:42:52.721Z",
+      "after": "2027-07-11T04:42:46.789Z",
+      "deltaMs": -5932
+    },
+    {
+      "planet": "Mars",
+      "field": "from",
+      "before": "2027-01-10T13:01:10.312Z",
+      "after": "2027-01-10T13:00:54.491Z",
+      "deltaMs": -15821
+    },
+    {
+      "planet": "Mars",
+      "field": "to",
+      "before": "2027-04-01T14:10:45.556Z",
+      "after": "2027-04-01T14:11:19.833Z",
+      "deltaMs": 34277
+    },
+    {
+      "planet": "Mars",
+      "field": "preShadowStart",
+      "before": "2026-11-05T15:33:36.593Z",
+      "after": "2026-11-05T15:33:33.543Z",
+      "deltaMs": -3050
+    },
+    {
+      "planet": "Mars",
+      "field": "postShadowEnd",
+      "before": "2027-06-08T01:59:12.839Z",
+      "after": "2027-06-08T01:59:06.494Z",
+      "deltaMs": -6345
+    },
+    {
+      "planet": "Mercury",
+      "field": "from",
+      "before": "2027-02-09T17:35:43.212Z",
+      "after": "2027-02-09T17:35:41.894Z",
+      "deltaMs": -1318
+    },
+    {
+      "planet": "Mercury",
+      "field": "to",
+      "before": "2027-03-03T12:35:41.015Z",
+      "after": "2027-03-03T12:35:47.606Z",
+      "deltaMs": 6591
+    },
+    {
+      "planet": "Mercury",
+      "field": "preShadowStart",
+      "before": "2027-01-25T18:58:47.928Z",
+      "after": "2027-01-25T18:58:47.021Z",
+      "deltaMs": -907
+    },
+    {
+      "planet": "Mercury",
+      "field": "postShadowEnd",
+      "before": "2027-03-23T15:00:17.631Z",
+      "after": "2027-03-23T15:00:18.372Z",
+      "deltaMs": 741
+    },
+    {
+      "planet": "Pluto",
+      "field": "from",
+      "before": "2027-05-08T12:14:52.528Z",
+      "after": "2027-05-08T12:55:38.085Z",
+      "deltaMs": 2445557
+    },
+    {
+      "planet": "Pluto",
+      "field": "to",
+      "before": "2027-10-18T03:51:13.094Z",
+      "after": "2027-10-18T03:49:21.034Z",
+      "deltaMs": -112060
+    },
+    {
+      "planet": "Pluto",
+      "field": "preShadowStart",
+      "before": "2027-01-13T23:39:29.226Z",
+      "after": "2027-01-13T23:39:34.335Z",
+      "deltaMs": 5109
+    },
+    {
+      "planet": "Pluto",
+      "field": "postShadowEnd",
+      "before": "2028-02-09T05:12:29.704Z",
+      "after": "2028-02-09T05:11:49.741Z",
+      "deltaMs": -39963
+    },
+    {
+      "planet": "Mercury",
+      "field": "from",
+      "before": "2027-06-10T18:19:14.882Z",
+      "after": "2027-06-10T18:19:04.335Z",
+      "deltaMs": -10547
+    },
+    {
+      "planet": "Mercury",
+      "field": "to",
+      "before": "2027-07-04T19:40:09.081Z",
+      "after": "2027-07-04T19:39:55.898Z",
+      "deltaMs": -13183
+    },
+    {
+      "planet": "Mercury",
+      "field": "preShadowStart",
+      "before": "2027-05-26T06:04:57.288Z",
+      "after": "2027-05-26T06:04:57.535Z",
+      "deltaMs": 247
+    },
+    {
+      "planet": "Mercury",
+      "field": "postShadowEnd",
+      "before": "2027-07-19T08:42:46.321Z",
+      "after": "2027-07-19T08:42:48.547Z",
+      "deltaMs": 2226
+    },
+    {
+      "planet": "Neptune",
+      "field": "from",
+      "before": "2027-07-09T22:50:18.163Z",
+      "after": "2027-07-09T22:44:01.113Z",
+      "deltaMs": -377050
+    },
+    {
+      "planet": "Neptune",
+      "field": "to",
+      "before": "2027-12-15T09:42:54.755Z",
+      "after": "2027-12-15T09:13:20.243Z",
+      "deltaMs": -1774512
+    },
+    {
+      "planet": "Neptune",
+      "field": "preShadowStart",
+      "before": "2027-03-18T20:09:27.607Z",
+      "after": "2027-03-18T20:09:15.494Z",
+      "deltaMs": -12113
+    },
+    {
+      "planet": "Neptune",
+      "field": "postShadowEnd",
+      "before": "2028-04-04T08:19:03.482Z",
+      "after": "2028-04-04T08:19:24.658Z",
+      "deltaMs": 21176
+    },
+    {
+      "planet": "Saturn",
+      "field": "from",
+      "before": "2027-08-09T17:52:25.165Z",
+      "after": "2027-08-09T18:00:44.823Z",
+      "deltaMs": 499658
+    },
+    {
+      "planet": "Saturn",
+      "field": "to",
+      "before": "2027-12-24T02:49:35.097Z",
+      "after": "2027-12-24T02:41:54.989Z",
+      "deltaMs": -460108
+    },
+    {
+      "planet": "Saturn",
+      "field": "preShadowStart",
+      "before": "2027-05-04T18:00:42.186Z",
+      "after": "2027-05-04T18:01:02.619Z",
+      "deltaMs": 20433
+    },
+    {
+      "planet": "Saturn",
+      "field": "postShadowEnd",
+      "before": "2028-03-27T04:25:49.510Z",
+      "after": "2028-03-27T04:26:21.973Z",
+      "deltaMs": 32463
+    },
+    {
+      "planet": "Uranus",
+      "field": "from",
+      "before": "2027-09-15T09:15:09.667Z",
+      "after": "2027-09-15T09:10:05.125Z",
+      "deltaMs": -304542
+    },
+    {
+      "planet": "Uranus",
+      "field": "to",
+      "before": "2028-02-12T23:40:06.884Z",
+      "after": "2028-02-12T23:49:19.276Z",
+      "deltaMs": 552392
+    },
+    {
+      "planet": "Uranus",
+      "field": "preShadowStart",
+      "before": "2027-05-30T03:46:52.717Z",
+      "after": "2027-05-30T03:47:03.922Z",
+      "deltaMs": 11205
+    },
+    {
+      "planet": "Uranus",
+      "field": "postShadowEnd",
+      "before": "2028-05-29T15:26:45.594Z",
+      "after": "2028-05-29T15:26:39.908Z",
+      "deltaMs": -5686
+    },
+    {
+      "planet": "Mercury",
+      "field": "from",
+      "before": "2027-10-07T14:39:14.149Z",
+      "after": "2027-10-07T14:39:08.875Z",
+      "deltaMs": -5274
+    },
+    {
+      "planet": "Mercury",
+      "field": "to",
+      "before": "2027-10-28T14:11:15.878Z",
+      "after": "2027-10-28T14:11:14.559Z",
+      "deltaMs": -1319
+    },
+    {
+      "planet": "Mercury",
+      "field": "preShadowStart",
+      "before": "2027-09-17T07:28:03.899Z",
+      "after": "2027-09-17T07:28:03.816Z",
+      "deltaMs": -83
+    },
+    {
+      "planet": "Mercury",
+      "field": "postShadowEnd",
+      "before": "2027-11-13T09:55:27.948Z",
+      "after": "2027-11-13T09:55:32.644Z",
+      "deltaMs": 4696
+    },
+    {
+      "planet": "Jupiter",
+      "field": "from",
+      "before": "2028-01-12T08:48:46.318Z",
+      "after": "2028-01-12T08:54:01.406Z",
+      "deltaMs": 315088
+    },
+    {
+      "planet": "Jupiter",
+      "field": "to",
+      "before": "2028-05-13T19:57:49.042Z",
+      "after": "2028-05-13T20:02:00.849Z",
+      "deltaMs": 251807
+    },
+    {
+      "planet": "Jupiter",
+      "field": "preShadowStart",
+      "before": "2027-10-17T05:53:38.993Z",
+      "after": "2027-10-17T05:54:00.663Z",
+      "deltaMs": 21670
+    },
+    {
+      "planet": "Jupiter",
+      "field": "postShadowEnd",
+      "before": "2028-08-11T12:54:23.514Z",
+      "after": "2028-08-11T12:54:39.581Z",
+      "deltaMs": 16067
+    },
+    {
+      "planet": "Mercury",
+      "field": "from",
+      "before": "2028-01-24T11:03:31.816Z",
+      "after": "2028-01-24T11:03:29.179Z",
+      "deltaMs": -2637
+    },
+    {
+      "planet": "Mercury",
+      "field": "to",
+      "before": "2028-02-14T12:39:37.000Z",
+      "after": "2028-02-14T12:39:33.046Z",
+      "deltaMs": -3954
+    },
+    {
+      "planet": "Mercury",
+      "field": "preShadowStart",
+      "before": "2028-01-08T19:24:08.408Z",
+      "after": "2028-01-08T19:24:10.138Z",
+      "deltaMs": 1730
+    },
+    {
+      "planet": "Mercury",
+      "field": "postShadowEnd",
+      "before": "2028-03-05T16:45:13.372Z",
+      "after": "2028-03-05T16:45:18.647Z",
+      "deltaMs": 5275
+    },
+    {
+      "planet": "Pluto",
+      "field": "from",
+      "before": "2028-05-09T08:48:35.771Z",
+      "after": "2028-05-09T09:32:46.991Z",
+      "deltaMs": 2651220
+    },
+    {
+      "planet": "Pluto",
+      "field": "to",
+      "before": "2028-10-19T04:19:49.599Z",
+      "after": "2028-10-19T03:41:40.927Z",
+      "deltaMs": -2288672
+    },
+    {
+      "planet": "Pluto",
+      "field": "preShadowStart",
+      "before": "2028-01-15T15:36:59.785Z",
+      "after": "2028-01-15T15:37:06.542Z",
+      "deltaMs": 6757
+    },
+    {
+      "planet": "Pluto",
+      "field": "postShadowEnd",
+      "before": "2029-02-10T08:09:38.235Z",
+      "after": "2029-02-10T08:08:46.243Z",
+      "deltaMs": -51992
+    },
+    {
+      "planet": "Venus",
+      "field": "from",
+      "before": "2028-05-10T23:01:45.028Z",
+      "after": "2028-05-10T23:02:03.485Z",
+      "deltaMs": 18457
+    },
+    {
+      "planet": "Venus",
+      "field": "to",
+      "before": "2028-06-22T22:13:23.319Z",
+      "after": "2028-06-22T22:13:04.863Z",
+      "deltaMs": -18456
+    },
+    {
+      "planet": "Venus",
+      "field": "preShadowStart",
+      "before": "2028-04-07T13:49:24.109Z",
+      "after": "2028-04-07T13:49:24.604Z",
+      "deltaMs": 495
+    },
+    {
+      "planet": "Venus",
+      "field": "postShadowEnd",
+      "before": "2028-07-26T21:06:39.295Z",
+      "after": "2028-07-26T21:06:45.889Z",
+      "deltaMs": 6594
+    },
+    {
+      "planet": "Mercury",
+      "field": "from",
+      "before": "2028-05-21T08:39:56.337Z",
+      "after": "2028-05-21T08:39:52.382Z",
+      "deltaMs": -3955
+    },
+    {
+      "planet": "Mercury",
+      "field": "to",
+      "before": "2028-06-14T06:07:00.556Z",
+      "after": "2028-06-14T06:07:05.829Z",
+      "deltaMs": 5273
+    },
+    {
+      "planet": "Mercury",
+      "field": "preShadowStart",
+      "before": "2028-05-06T18:40:32.371Z",
+      "after": "2028-05-06T18:40:32.288Z",
+      "deltaMs": -83
+    },
+    {
+      "planet": "Mercury",
+      "field": "postShadowEnd",
+      "before": "2028-06-29T08:58:11.316Z",
+      "after": "2028-06-29T08:58:11.974Z",
+      "deltaMs": 658
+    },
+    {
+      "planet": "Neptune",
+      "field": "from",
+      "before": "2028-07-11T13:18:02.812Z",
+      "after": "2028-07-11T13:05:31.347Z",
+      "deltaMs": -751465
+    },
+    {
+      "planet": "Neptune",
+      "field": "to",
+      "before": "2028-12-16T20:55:58.739Z",
+      "after": "2028-12-16T20:49:57.509Z",
+      "deltaMs": -361230
+    },
+    {
+      "planet": "Neptune",
+      "field": "preShadowStart",
+      "before": "2028-03-20T07:46:54.722Z",
+      "after": "2028-03-20T07:47:29.742Z",
+      "deltaMs": 35020
+    },
+    {
+      "planet": "Neptune",
+      "field": "postShadowEnd",
+      "before": "2029-04-06T21:14:34.152Z",
+      "after": "2029-04-06T21:12:47.942Z",
+      "deltaMs": -106210
+    },
+    {
+      "planet": "Saturn",
+      "field": "from",
+      "before": "2028-08-22T22:16:58.212Z",
+      "after": "2028-08-22T22:16:21.297Z",
+      "deltaMs": -36915
+    },
+    {
+      "planet": "Saturn",
+      "field": "to",
+      "before": "2029-01-05T12:31:52.938Z",
+      "after": "2029-01-05T12:34:24.550Z",
+      "deltaMs": 151612
+    },
+    {
+      "planet": "Saturn",
+      "field": "preShadowStart",
+      "before": "2028-05-18T07:16:54.338Z",
+      "after": "2028-05-18T07:16:48.651Z",
+      "deltaMs": -5687
+    },
+    {
+      "planet": "Saturn",
+      "field": "postShadowEnd",
+      "before": "2029-04-09T11:30:46.084Z",
+      "after": "2029-04-09T11:30:46.416Z",
+      "deltaMs": 332
+    },
+    {
+      "planet": "Uranus",
+      "field": "from",
+      "before": "2028-09-19T00:06:11.776Z",
+      "after": "2028-09-19T00:01:15.146Z",
+      "deltaMs": -296630
+    },
+    {
+      "planet": "Uranus",
+      "field": "to",
+      "before": "2029-02-16T10:49:55.750Z",
+      "after": "2029-02-16T10:52:48.456Z",
+      "deltaMs": 172706
+    },
+    {
+      "planet": "Uranus",
+      "field": "preShadowStart",
+      "before": "2028-06-02T21:23:40.611Z",
+      "after": "2028-06-02T21:23:25.452Z",
+      "deltaMs": -15159
+    },
+    {
+      "planet": "Uranus",
+      "field": "postShadowEnd",
+      "before": "2029-06-03T03:57:00.480Z",
+      "after": "2029-06-03T03:56:53.806Z",
+      "deltaMs": -6674
+    },
+    {
+      "planet": "Mercury",
+      "field": "to",
+      "before": "2028-10-11T10:30:03.954Z",
+      "after": "2028-10-11T10:30:01.318Z",
+      "deltaMs": -2636
+    },
+    {
+      "planet": "Mercury",
+      "field": "preShadowStart",
+      "before": "2028-08-30T07:16:09.843Z",
+      "after": "2028-08-30T07:16:06.217Z",
+      "deltaMs": -3626
+    },
+    {
+      "planet": "Mercury",
+      "field": "postShadowEnd",
+      "before": "2028-10-26T13:49:35.480Z",
+      "after": "2028-10-26T13:49:34.903Z",
+      "deltaMs": -577
+    },
+    {
+      "planet": "Mercury",
+      "field": "from",
+      "before": "2029-01-07T07:57:21.356Z",
+      "after": "2029-01-07T07:57:22.675Z",
+      "deltaMs": 1319
+    },
+    {
+      "planet": "Mercury",
+      "field": "to",
+      "before": "2029-01-27T18:38:04.716Z",
+      "after": "2029-01-27T18:38:00.761Z",
+      "deltaMs": -3955
+    },
+    {
+      "planet": "Mercury",
+      "field": "preShadowStart",
+      "before": "2028-12-21T21:24:19.586Z",
+      "after": "2028-12-21T21:24:19.504Z",
+      "deltaMs": -82
+    },
+    {
+      "planet": "Mercury",
+      "field": "postShadowEnd",
+      "before": "2029-02-16T16:50:55.405Z",
+      "after": "2029-02-16T16:50:55.488Z",
+      "deltaMs": 83
+    },
+    {
+      "planet": "Jupiter",
+      "field": "from",
+      "before": "2029-02-10T13:08:45.146Z",
+      "after": "2029-02-10T13:05:24.755Z",
+      "deltaMs": -200391
+    },
+    {
+      "planet": "Jupiter",
+      "field": "to",
+      "before": "2029-06-13T21:07:50.653Z",
+      "after": "2029-06-13T21:08:06.474Z",
+      "deltaMs": 15821
+    },
+    {
+      "planet": "Jupiter",
+      "field": "preShadowStart",
+      "before": "2028-11-15T11:35:21.623Z",
+      "after": "2028-11-15T11:35:23.765Z",
+      "deltaMs": 2142
+    },
+    {
+      "planet": "Jupiter",
+      "field": "postShadowEnd",
+      "before": "2029-09-11T05:49:09.139Z",
+      "after": "2029-09-11T05:49:23.560Z",
+      "deltaMs": 14421
+    },
+    {
+      "planet": "Mars",
+      "field": "from",
+      "before": "2029-02-14T08:13:46.171Z",
+      "after": "2029-02-14T08:12:52.118Z",
+      "deltaMs": -54053
+    },
+    {
+      "planet": "Mars",
+      "field": "to",
+      "before": "2029-05-05T18:57:15.644Z",
+      "after": "2029-05-05T18:58:41.337Z",
+      "deltaMs": 85693
+    },
+    {
+      "planet": "Mars",
+      "field": "preShadowStart",
+      "before": "2028-12-10T02:32:03.869Z",
+      "after": "2028-12-10T02:32:12.850Z",
+      "deltaMs": 8981
+    },
+    {
+      "planet": "Mars",
+      "field": "postShadowEnd",
+      "before": "2029-07-09T03:59:55.000Z",
+      "after": "2029-07-09T03:59:58.542Z",
+      "deltaMs": 3542
+    },
+    {
+      "planet": "Mercury",
+      "field": "from",
+      "before": "2029-05-01T23:10:13.915Z",
+      "after": "2029-05-01T23:10:21.825Z",
+      "deltaMs": 7910
+    },
+    {
+      "planet": "Mercury",
+      "field": "to",
+      "before": "2029-05-25T19:15:35.156Z",
+      "after": "2029-05-25T19:15:24.609Z",
+      "deltaMs": -10547
+    },
+    {
+      "planet": "Mercury",
+      "field": "preShadowStart",
+      "before": "2029-04-17T22:43:34.002Z",
+      "after": "2029-04-17T22:43:35.898Z",
+      "deltaMs": 1896
+    },
+    {
+      "planet": "Mercury",
+      "field": "postShadowEnd",
+      "before": "2029-06-10T19:53:48.027Z",
+      "after": "2029-06-10T19:53:51.819Z",
+      "deltaMs": 3792
+    },
+    {
+      "planet": "Pluto",
+      "field": "from",
+      "before": "2029-05-11T04:12:01.581Z",
+      "after": "2029-05-11T04:16:58.212Z",
+      "deltaMs": 296631
+    },
+    {
+      "planet": "Pluto",
+      "field": "to",
+      "before": "2029-10-21T03:58:14.969Z",
+      "after": "2029-10-21T03:52:34.833Z",
+      "deltaMs": -340136
+    },
+    {
+      "planet": "Pluto",
+      "field": "preShadowStart",
+      "before": "2029-01-16T07:27:43.629Z",
+      "after": "2029-01-16T07:27:00.618Z",
+      "deltaMs": -43011
+    },
+    {
+      "planet": "Pluto",
+      "field": "postShadowEnd",
+      "before": "2030-02-12T10:30:54.050Z",
+      "after": "2030-02-12T10:31:04.680Z",
+      "deltaMs": 10630
+    },
+    {
+      "planet": "Neptune",
+      "field": "from",
+      "before": "2029-07-14T02:12:52.118Z",
+      "after": "2029-07-14T02:11:34.335Z",
+      "deltaMs": -77783
+    },
+    {
+      "planet": "Neptune",
+      "field": "to",
+      "before": "2029-12-19T08:17:57.977Z",
+      "after": "2029-12-19T08:28:22.880Z",
+      "deltaMs": 624903
+    },
+    {
+      "planet": "Neptune",
+      "field": "preShadowStart",
+      "before": "2029-03-22T19:59:10.696Z",
+      "after": "2029-03-22T20:00:38.614Z",
+      "deltaMs": 87918
+    },
+    {
+      "planet": "Neptune",
+      "field": "postShadowEnd",
+      "before": "2030-04-09T09:33:25.139Z",
+      "after": "2030-04-09T09:33:46.563Z",
+      "deltaMs": 21424
+    },
+    {
+      "planet": "Mercury",
+      "field": "from",
+      "before": "2029-09-02T12:14:31.434Z",
+      "after": "2029-09-02T12:14:28.797Z",
+      "deltaMs": -2637
+    },
+    {
+      "planet": "Mercury",
+      "field": "to",
+      "before": "2029-09-25T02:02:58.856Z",
+      "after": "2029-09-25T02:02:57.538Z",
+      "deltaMs": -1318
+    },
+    {
+      "planet": "Mercury",
+      "field": "preShadowStart",
+      "before": "2029-08-13T09:10:29.760Z",
+      "after": "2029-08-13T09:10:32.479Z",
+      "deltaMs": 2719
+    },
+    {
+      "planet": "Mercury",
+      "field": "postShadowEnd",
+      "before": "2029-10-09T16:19:42.428Z",
+      "after": "2029-10-09T16:19:41.192Z",
+      "deltaMs": -1236
+    },
+    {
+      "planet": "Saturn",
+      "field": "from",
+      "before": "2029-09-06T08:32:30.731Z",
+      "after": "2029-09-06T08:35:28.710Z",
+      "deltaMs": 177979
+    },
+    {
+      "planet": "Saturn",
+      "field": "to",
+      "before": "2030-01-19T03:50:11.132Z",
+      "after": "2030-01-19T03:51:15.731Z",
+      "deltaMs": 64599
+    },
+    {
+      "planet": "Saturn",
+      "field": "preShadowStart",
+      "before": "2029-06-02T02:02:00.187Z",
+      "after": "2029-06-02T02:01:35.963Z",
+      "deltaMs": -24224
+    },
+    {
+      "planet": "Saturn",
+      "field": "postShadowEnd",
+      "before": "2030-04-23T04:13:40.209Z",
+      "after": "2030-04-23T04:13:18.703Z",
+      "deltaMs": -21506
+    },
+    {
+      "planet": "Uranus",
+      "field": "from",
+      "before": "2029-09-23T16:16:42.391Z",
+      "after": "2029-09-23T16:20:01.464Z",
+      "deltaMs": 199073
+    },
+    {
+      "planet": "Uranus",
+      "field": "to",
+      "before": "2030-02-20T23:23:34.159Z",
+      "after": "2030-02-20T23:23:56.571Z",
+      "deltaMs": 22412
+    },
+    {
+      "planet": "Uranus",
+      "field": "preShadowStart",
+      "before": "2029-06-07T16:19:01.147Z",
+      "after": "2029-06-07T16:18:27.612Z",
+      "deltaMs": -33535
+    },
+    {
+      "planet": "Uranus",
+      "field": "postShadowEnd",
+      "before": "2030-06-07T16:29:34.372Z",
+      "after": "2030-06-07T16:30:21.092Z",
+      "deltaMs": 46720
+    },
+    {
+      "planet": "Venus",
+      "field": "from",
+      "before": "2029-12-16T23:49:23.231Z",
+      "after": "2029-12-16T23:49:27.187Z",
+      "deltaMs": 3956
+    },
+    {
+      "planet": "Venus",
+      "field": "to",
+      "before": "2030-01-26T21:33:38.407Z",
+      "after": "2030-01-26T21:33:25.224Z",
+      "deltaMs": -13183
+    },
+    {
+      "planet": "Venus",
+      "field": "preShadowStart",
+      "before": "2029-11-15T09:33:26.704Z",
+      "after": "2029-11-15T09:33:28.105Z",
+      "deltaMs": 1401
+    },
+    {
+      "planet": "Venus",
+      "field": "postShadowEnd",
+      "before": "2030-02-27T14:19:09.332Z",
+      "after": "2030-02-27T14:19:06.448Z",
+      "deltaMs": -2884
+    },
+    {
+      "planet": "Mercury",
+      "field": "from",
+      "before": "2029-12-22T05:49:52.235Z",
+      "after": "2029-12-22T05:49:50.917Z",
+      "deltaMs": -1318
+    },
+    {
+      "planet": "Mercury",
+      "field": "to",
+      "before": "2030-01-11T05:44:30.556Z",
+      "after": "2030-01-11T05:44:27.919Z",
+      "deltaMs": -2637
+    },
+    {
+      "planet": "Mercury",
+      "field": "preShadowStart",
+      "before": "2029-12-04T23:16:03.031Z",
+      "after": "2029-12-04T23:16:03.774Z",
+      "deltaMs": 743
+    },
+    {
+      "planet": "Mercury",
+      "field": "postShadowEnd",
+      "before": "2030-01-30T15:51:36.989Z",
+      "after": "2030-01-30T15:51:33.445Z",
+      "deltaMs": -3544
+    },
+    {
+      "planet": "Jupiter",
+      "field": "from",
+      "before": "2030-03-13T14:36:41.219Z",
+      "after": "2030-03-13T14:34:12.245Z",
+      "deltaMs": -148974
+    },
+    {
+      "planet": "Jupiter",
+      "field": "to",
+      "before": "2030-07-15T01:26:04.012Z",
+      "after": "2030-07-15T01:25:40.282Z",
+      "deltaMs": -23730
+    },
+    {
+      "planet": "Jupiter",
+      "field": "preShadowStart",
+      "before": "2029-12-16T21:26:09.915Z",
+      "after": "2029-12-16T21:26:18.485Z",
+      "deltaMs": 8570
+    },
+    {
+      "planet": "Jupiter",
+      "field": "postShadowEnd",
+      "before": "2030-10-11T04:13:51.908Z",
+      "after": "2030-10-11T04:13:32.134Z",
+      "deltaMs": -19774
+    },
+    {
+      "planet": "Mercury",
+      "field": "from",
+      "before": "2030-04-13T02:27:55.194Z",
+      "after": "2030-04-13T02:27:57.831Z",
+      "deltaMs": 2637
+    },
+    {
+      "planet": "Mercury",
+      "field": "to",
+      "before": "2030-05-06T20:18:05.887Z",
+      "after": "2030-05-06T20:18:13.797Z",
+      "deltaMs": 7910
+    },
+    {
+      "planet": "Mercury",
+      "field": "postShadowEnd",
+      "before": "2030-05-24T00:40:17.868Z",
+      "after": "2030-05-24T00:40:13.665Z",
+      "deltaMs": -4203
+    },
+    {
+      "planet": "Pluto",
+      "field": "from",
+      "before": "2030-05-12T23:10:53.466Z",
+      "after": "2030-05-12T23:12:34.979Z",
+      "deltaMs": 101513
+    },
+    {
+      "planet": "Pluto",
+      "field": "to",
+      "before": "2030-10-23T03:06:18.368Z",
+      "after": "2030-10-23T03:04:23.671Z",
+      "deltaMs": -114697
+    },
+    {
+      "planet": "Pluto",
+      "field": "preShadowStart",
+      "before": "2030-01-17T23:01:00.615Z",
+      "after": "2030-01-17T23:00:20.980Z",
+      "deltaMs": -39635
+    },
+    {
+      "planet": "Pluto",
+      "field": "postShadowEnd",
+      "before": "2031-02-14T12:14:04.407Z",
+      "after": "2031-02-14T12:13:45.620Z",
+      "deltaMs": -18787
+    },
+    {
+      "planet": "Neptune",
+      "field": "from",
+      "before": "2030-07-16T16:52:48.456Z",
+      "after": "2030-07-16T16:30:07.909Z",
+      "deltaMs": -1360547
+    },
+    {
+      "planet": "Neptune",
+      "field": "to",
+      "before": "2030-12-21T20:58:50.125Z",
+      "after": "2030-12-21T20:41:57.625Z",
+      "deltaMs": -1012500
+    },
+    {
+      "planet": "Neptune",
+      "field": "preShadowStart",
+      "before": "2030-03-25T08:43:19.445Z",
+      "after": "2030-03-25T08:41:55.894Z",
+      "deltaMs": -83551
+    },
+    {
+      "planet": "Neptune",
+      "field": "postShadowEnd",
+      "before": "2031-04-11T21:31:48.898Z",
+      "after": "2031-04-11T21:32:27.543Z",
+      "deltaMs": 38645
+    },
+    {
+      "planet": "Mercury",
+      "field": "from",
+      "before": "2030-08-16T01:22:55.488Z",
+      "after": "2030-08-16T01:22:54.169Z",
+      "deltaMs": -1319
+    },
+    {
+      "planet": "Mercury",
+      "field": "to",
+      "before": "2030-09-08T09:22:22.089Z",
+      "after": "2030-09-08T09:22:24.726Z",
+      "deltaMs": 2637
+    },
+    {
+      "planet": "Mercury",
+      "field": "preShadowStart",
+      "before": "2030-07-27T12:48:55.161Z",
+      "after": "2030-07-27T12:48:58.374Z",
+      "deltaMs": 3213
+    },
+    {
+      "planet": "Mercury",
+      "field": "postShadowEnd",
+      "before": "2030-09-22T14:57:29.787Z",
+      "after": "2030-09-22T14:57:29.292Z",
+      "deltaMs": -495
+    },
+    {
+      "planet": "Saturn",
+      "field": "from",
+      "before": "2030-09-20T21:37:44.941Z",
+      "after": "2030-09-20T21:31:41.073Z",
+      "deltaMs": -363868
+    },
+    {
+      "planet": "Saturn",
+      "field": "to",
+      "before": "2031-02-02T02:21:24.960Z",
+      "after": "2031-02-02T02:25:22.265Z",
+      "deltaMs": 237305
+    },
+    {
+      "planet": "Saturn",
+      "field": "preShadowStart",
+      "before": "2030-06-16T23:46:14.788Z",
+      "after": "2030-06-16T23:46:14.787Z",
+      "deltaMs": -1
+    },
+    {
+      "planet": "Saturn",
+      "field": "postShadowEnd",
+      "before": "2031-05-07T06:17:33.613Z",
+      "after": "2031-05-07T06:17:50.752Z",
+      "deltaMs": 17139
+    },
+    {
+      "planet": "Uranus",
+      "field": "from",
+      "before": "2030-09-28T08:22:01.875Z",
+      "after": "2030-09-28T08:25:14.354Z",
+      "deltaMs": 192479
+    },
+    {
+      "planet": "Uranus",
+      "field": "to",
+      "before": "2031-02-25T11:37:28.681Z",
+      "after": "2031-02-25T11:25:06.444Z",
+      "deltaMs": -742237
+    },
+    {
+      "planet": "Uranus",
+      "field": "preShadowStart",
+      "before": "2030-06-12T12:00:58.748Z",
+      "after": "2030-06-12T12:01:23.960Z",
+      "deltaMs": 25212
+    },
+    {
+      "planet": "Uranus",
+      "field": "postShadowEnd",
+      "before": "2031-06-12T05:48:20.114Z",
+      "after": "2031-06-12T05:48:27.941Z",
+      "deltaMs": 7827
+    },
+    {
+      "planet": "Mercury",
+      "field": "from",
+      "before": "2030-12-06T02:44:29.238Z",
+      "after": "2030-12-06T02:44:33.193Z",
+      "deltaMs": 3955
+    },
+    {
+      "planet": "Mercury",
+      "field": "to",
+      "before": "2030-12-25T21:17:22.821Z",
+      "after": "2030-12-25T21:17:20.184Z",
+      "deltaMs": -2637
+    },
+    {
+      "planet": "Mercury",
+      "field": "preShadowStart",
+      "before": "2030-11-17T23:55:17.870Z",
+      "after": "2030-11-17T23:55:21.660Z",
+      "deltaMs": 3790
+    },
+    {
+      "planet": "Mercury",
+      "field": "postShadowEnd",
+      "before": "2031-01-13T14:44:54.037Z",
+      "after": "2031-01-13T14:44:54.367Z",
+      "deltaMs": 330
+    }
+  ],
+  "alignment": [
+    {
+      "planet": "Uranus",
+      "type": "direct",
+      "monthInstant": "2026-02-04T02:32:25.622Z",
+      "catalogInstant": "2026-02-04T02:32:26.776Z",
+      "deltaMs": 1154
+    },
+    {
+      "planet": "Mercury",
+      "type": "retrograde",
+      "monthInstant": "2026-02-26T06:47:24.029Z",
+      "catalogInstant": "2026-02-26T06:47:25.019Z",
+      "deltaMs": 990
+    },
+    {
+      "planet": "Jupiter",
+      "type": "direct",
+      "monthInstant": "2026-03-11T03:29:01.881Z",
+      "catalogInstant": "2026-03-11T03:29:02.870Z",
+      "deltaMs": 989
+    },
+    {
+      "planet": "Mercury",
+      "type": "direct",
+      "monthInstant": "2026-03-20T19:35:03.716Z",
+      "catalogInstant": "2026-03-20T19:35:04.540Z",
+      "deltaMs": 824
+    },
+    {
+      "planet": "Pluto",
+      "type": "retrograde",
+      "monthInstant": "2026-05-06T15:34:23.725Z",
+      "catalogInstant": "2026-05-06T15:34:24.550Z",
+      "deltaMs": 825
+    },
+    {
+      "planet": "Mercury",
+      "type": "retrograde",
+      "monthInstant": "2026-06-29T17:37:11.212Z",
+      "catalogInstant": "2026-06-29T17:37:11.542Z",
+      "deltaMs": 330
+    },
+    {
+      "planet": "Neptune",
+      "type": "retrograde",
+      "monthInstant": "2026-07-07T11:01:00.780Z",
+      "catalogInstant": "2026-07-07T11:01:01.523Z",
+      "deltaMs": 743
+    },
+    {
+      "planet": "Mercury",
+      "type": "direct",
+      "monthInstant": "2026-07-23T22:56:24.667Z",
+      "catalogInstant": "2026-07-23T22:56:24.667Z",
+      "deltaMs": 0
+    },
+    {
+      "planet": "Saturn",
+      "type": "retrograde",
+      "monthInstant": "2026-07-26T19:53:12.269Z",
+      "catalogInstant": "2026-07-26T19:53:13.505Z",
+      "deltaMs": 1236
+    },
+    {
+      "planet": "Uranus",
+      "type": "retrograde",
+      "monthInstant": "2026-09-10T18:28:28.015Z",
+      "catalogInstant": "2026-09-10T18:28:28.593Z",
+      "deltaMs": 578
+    },
+    {
+      "planet": "Venus",
+      "type": "retrograde",
+      "monthInstant": "2026-10-03T07:10:24.846Z",
+      "catalogInstant": "2026-10-03T07:10:25.341Z",
+      "deltaMs": 495
+    },
+    {
+      "planet": "Pluto",
+      "type": "direct",
+      "monthInstant": "2026-10-16T02:39:20.905Z",
+      "catalogInstant": "2026-10-16T02:39:22.059Z",
+      "deltaMs": 1154
+    },
+    {
+      "planet": "Mercury",
+      "type": "retrograde",
+      "monthInstant": "2026-10-24T07:14:21.822Z",
+      "catalogInstant": "2026-10-24T07:14:22.646Z",
+      "deltaMs": 824
+    },
+    {
+      "planet": "Mercury",
+      "type": "direct",
+      "monthInstant": "2026-11-13T15:53:06.309Z",
+      "catalogInstant": "2026-11-13T15:53:06.474Z",
+      "deltaMs": 165
+    },
+    {
+      "planet": "Venus",
+      "type": "direct",
+      "monthInstant": "2026-11-14T00:21:20.207Z",
+      "catalogInstant": "2026-11-14T00:21:21.444Z",
+      "deltaMs": 1237
+    },
+    {
+      "planet": "Saturn",
+      "type": "direct",
+      "monthInstant": "2026-12-10T23:28:30.048Z",
+      "catalogInstant": "2026-12-10T23:28:30.790Z",
+      "deltaMs": 742
+    },
+    {
+      "planet": "Neptune",
+      "type": "direct",
+      "monthInstant": "2026-12-12T22:23:17.322Z",
+      "catalogInstant": "2026-12-12T22:23:17.899Z",
+      "deltaMs": 577
+    },
+    {
+      "planet": "Jupiter",
+      "type": "retrograde",
+      "monthInstant": "2026-12-13T00:57:25.943Z",
+      "catalogInstant": "2026-12-13T00:57:26.191Z",
+      "deltaMs": 248
+    },
+    {
+      "planet": "Mars",
+      "type": "retrograde",
+      "monthInstant": "2027-01-10T13:00:54.408Z",
+      "catalogInstant": "2027-01-10T13:00:54.491Z",
+      "deltaMs": 83
+    },
+    {
+      "planet": "Uranus",
+      "type": "direct",
+      "monthInstant": "2027-02-08T12:28:27.191Z",
+      "catalogInstant": "2027-02-08T12:28:27.274Z",
+      "deltaMs": 83
+    },
+    {
+      "planet": "Mercury",
+      "type": "retrograde",
+      "monthInstant": "2027-02-09T17:35:40.821Z",
+      "catalogInstant": "2027-02-09T17:35:41.894Z",
+      "deltaMs": 1073
+    },
+    {
+      "planet": "Mercury",
+      "type": "direct",
+      "monthInstant": "2027-03-03T12:35:46.864Z",
+      "catalogInstant": "2027-03-03T12:35:47.606Z",
+      "deltaMs": 742
+    },
+    {
+      "planet": "Mars",
+      "type": "direct",
+      "monthInstant": "2027-04-01T14:11:18.844Z",
+      "catalogInstant": "2027-04-01T14:11:19.833Z",
+      "deltaMs": 989
+    },
+    {
+      "planet": "Jupiter",
+      "type": "direct",
+      "monthInstant": "2027-04-13T02:08:29.187Z",
+      "catalogInstant": "2027-04-13T02:08:29.765Z",
+      "deltaMs": 578
+    },
+    {
+      "planet": "Pluto",
+      "type": "retrograde",
+      "monthInstant": "2027-05-08T12:55:37.012Z",
+      "catalogInstant": "2027-05-08T12:55:38.085Z",
+      "deltaMs": 1073
+    },
+    {
+      "planet": "Mercury",
+      "type": "retrograde",
+      "monthInstant": "2027-06-10T18:19:04.252Z",
+      "catalogInstant": "2027-06-10T18:19:04.335Z",
+      "deltaMs": 83
+    },
+    {
+      "planet": "Mercury",
+      "type": "direct",
+      "monthInstant": "2027-07-04T19:39:55.815Z",
+      "catalogInstant": "2027-07-04T19:39:55.898Z",
+      "deltaMs": 83
+    },
+    {
+      "planet": "Neptune",
+      "type": "retrograde",
+      "monthInstant": "2027-07-09T22:44:00.618Z",
+      "catalogInstant": "2027-07-09T22:44:01.113Z",
+      "deltaMs": 495
+    },
+    {
+      "planet": "Saturn",
+      "type": "retrograde",
+      "monthInstant": "2027-08-09T18:00:43.999Z",
+      "catalogInstant": "2027-08-09T18:00:44.823Z",
+      "deltaMs": 824
+    },
+    {
+      "planet": "Uranus",
+      "type": "retrograde",
+      "monthInstant": "2027-09-15T09:10:03.889Z",
+      "catalogInstant": "2027-09-15T09:10:05.125Z",
+      "deltaMs": 1236
+    },
+    {
+      "planet": "Mercury",
+      "type": "retrograde",
+      "monthInstant": "2027-10-07T14:39:07.886Z",
+      "catalogInstant": "2027-10-07T14:39:08.875Z",
+      "deltaMs": 989
+    },
+    {
+      "planet": "Pluto",
+      "type": "direct",
+      "monthInstant": "2027-10-18T03:49:20.045Z",
+      "catalogInstant": "2027-10-18T03:49:21.034Z",
+      "deltaMs": 989
+    },
+    {
+      "planet": "Mercury",
+      "type": "direct",
+      "monthInstant": "2027-10-28T14:11:13.817Z",
+      "catalogInstant": "2027-10-28T14:11:14.559Z",
+      "deltaMs": 742
+    },
+    {
+      "planet": "Neptune",
+      "type": "direct",
+      "monthInstant": "2027-12-15T09:13:19.830Z",
+      "catalogInstant": "2027-12-15T09:13:20.243Z",
+      "deltaMs": 413
+    },
+    {
+      "planet": "Saturn",
+      "type": "direct",
+      "monthInstant": "2027-12-24T02:41:54.000Z",
+      "catalogInstant": "2027-12-24T02:41:54.989Z",
+      "deltaMs": 989
+    },
+    {
+      "planet": "Jupiter",
+      "type": "retrograde",
+      "monthInstant": "2028-01-12T08:54:00.498Z",
+      "catalogInstant": "2028-01-12T08:54:01.406Z",
+      "deltaMs": 908
+    },
+    {
+      "planet": "Mercury",
+      "type": "retrograde",
+      "monthInstant": "2028-01-24T11:03:28.684Z",
+      "catalogInstant": "2028-01-24T11:03:29.179Z",
+      "deltaMs": 495
+    },
+    {
+      "planet": "Uranus",
+      "type": "direct",
+      "monthInstant": "2028-02-12T23:49:18.040Z",
+      "catalogInstant": "2028-02-12T23:49:19.276Z",
+      "deltaMs": 1236
+    },
+    {
+      "planet": "Mercury",
+      "type": "direct",
+      "monthInstant": "2028-02-14T12:39:32.881Z",
+      "catalogInstant": "2028-02-14T12:39:33.046Z",
+      "deltaMs": 165
+    },
+    {
+      "planet": "Pluto",
+      "type": "retrograde",
+      "monthInstant": "2028-05-09T09:32:46.743Z",
+      "catalogInstant": "2028-05-09T09:32:46.991Z",
+      "deltaMs": 248
+    },
+    {
+      "planet": "Venus",
+      "type": "retrograde",
+      "monthInstant": "2028-05-10T23:02:02.249Z",
+      "catalogInstant": "2028-05-10T23:02:03.485Z",
+      "deltaMs": 1236
+    },
+    {
+      "planet": "Jupiter",
+      "type": "direct",
+      "monthInstant": "2028-05-13T20:02:00.519Z",
+      "catalogInstant": "2028-05-13T20:02:00.849Z",
+      "deltaMs": 330
+    },
+    {
+      "planet": "Mercury",
+      "type": "retrograde",
+      "monthInstant": "2028-05-21T08:39:52.134Z",
+      "catalogInstant": "2028-05-21T08:39:52.382Z",
+      "deltaMs": 248
+    },
+    {
+      "planet": "Mercury",
+      "type": "direct",
+      "monthInstant": "2028-06-14T06:07:05.664Z",
+      "catalogInstant": "2028-06-14T06:07:05.829Z",
+      "deltaMs": 165
+    },
+    {
+      "planet": "Venus",
+      "type": "direct",
+      "monthInstant": "2028-06-22T22:13:04.450Z",
+      "catalogInstant": "2028-06-22T22:13:04.863Z",
+      "deltaMs": 413
+    },
+    {
+      "planet": "Neptune",
+      "type": "retrograde",
+      "monthInstant": "2028-07-11T13:05:30.274Z",
+      "catalogInstant": "2028-07-11T13:05:31.347Z",
+      "deltaMs": 1073
+    },
+    {
+      "planet": "Saturn",
+      "type": "retrograde",
+      "monthInstant": "2028-08-22T22:16:20.061Z",
+      "catalogInstant": "2028-08-22T22:16:21.297Z",
+      "deltaMs": 1236
+    },
+    {
+      "planet": "Uranus",
+      "type": "retrograde",
+      "monthInstant": "2028-09-19T00:01:13.910Z",
+      "catalogInstant": "2028-09-19T00:01:15.146Z",
+      "deltaMs": 1236
+    },
+    {
+      "planet": "Mercury",
+      "type": "retrograde",
+      "monthInstant": "2028-09-19T16:30:15.736Z",
+      "catalogInstant": "2028-09-19T16:30:15.819Z",
+      "deltaMs": 83
+    },
+    {
+      "planet": "Mercury",
+      "type": "direct",
+      "monthInstant": "2028-10-11T10:30:00.659Z",
+      "catalogInstant": "2028-10-11T10:30:01.318Z",
+      "deltaMs": 659
+    },
+    {
+      "planet": "Pluto",
+      "type": "direct",
+      "monthInstant": "2028-10-19T03:41:40.432Z",
+      "catalogInstant": "2028-10-19T03:41:40.927Z",
+      "deltaMs": 495
+    },
+    {
+      "planet": "Neptune",
+      "type": "direct",
+      "monthInstant": "2028-12-16T20:49:56.932Z",
+      "catalogInstant": "2028-12-16T20:49:57.509Z",
+      "deltaMs": 577
+    },
+    {
+      "planet": "Saturn",
+      "type": "direct",
+      "monthInstant": "2029-01-05T12:34:24.302Z",
+      "catalogInstant": "2029-01-05T12:34:24.550Z",
+      "deltaMs": 248
+    },
+    {
+      "planet": "Mercury",
+      "type": "retrograde",
+      "monthInstant": "2029-01-07T07:57:21.438Z",
+      "catalogInstant": "2029-01-07T07:57:22.675Z",
+      "deltaMs": 1237
+    },
+    {
+      "planet": "Mercury",
+      "type": "direct",
+      "monthInstant": "2029-01-27T18:38:00.431Z",
+      "catalogInstant": "2029-01-27T18:38:00.761Z",
+      "deltaMs": 330
+    },
+    {
+      "planet": "Jupiter",
+      "type": "retrograde",
+      "monthInstant": "2029-02-10T13:05:24.178Z",
+      "catalogInstant": "2029-02-10T13:05:24.755Z",
+      "deltaMs": 577
+    },
+    {
+      "planet": "Mars",
+      "type": "retrograde",
+      "monthInstant": "2029-02-14T08:12:51.541Z",
+      "catalogInstant": "2029-02-14T08:12:52.118Z",
+      "deltaMs": 577
+    },
+    {
+      "planet": "Uranus",
+      "type": "direct",
+      "monthInstant": "2029-02-16T10:52:48.043Z",
+      "catalogInstant": "2029-02-16T10:52:48.456Z",
+      "deltaMs": 413
+    },
+    {
+      "planet": "Mercury",
+      "type": "retrograde",
+      "monthInstant": "2029-05-01T23:10:21.083Z",
+      "catalogInstant": "2029-05-01T23:10:21.825Z",
+      "deltaMs": 742
+    },
+    {
+      "planet": "Mars",
+      "type": "direct",
+      "monthInstant": "2029-05-05T18:58:40.760Z",
+      "catalogInstant": "2029-05-05T18:58:41.337Z",
+      "deltaMs": 577
+    },
+    {
+      "planet": "Pluto",
+      "type": "retrograde",
+      "monthInstant": "2029-05-11T04:16:57.140Z",
+      "catalogInstant": "2029-05-11T04:16:58.212Z",
+      "deltaMs": 1072
+    },
+    {
+      "planet": "Mercury",
+      "type": "direct",
+      "monthInstant": "2029-05-25T19:15:24.196Z",
+      "catalogInstant": "2029-05-25T19:15:24.609Z",
+      "deltaMs": 413
+    },
+    {
+      "planet": "Jupiter",
+      "type": "direct",
+      "monthInstant": "2029-06-13T21:08:06.144Z",
+      "catalogInstant": "2029-06-13T21:08:06.474Z",
+      "deltaMs": 330
+    },
+    {
+      "planet": "Neptune",
+      "type": "retrograde",
+      "monthInstant": "2029-07-14T02:11:33.922Z",
+      "catalogInstant": "2029-07-14T02:11:34.335Z",
+      "deltaMs": 413
+    },
+    {
+      "planet": "Mercury",
+      "type": "retrograde",
+      "monthInstant": "2029-09-02T12:14:28.797Z",
+      "catalogInstant": "2029-09-02T12:14:28.797Z",
+      "deltaMs": 0
+    },
+    {
+      "planet": "Saturn",
+      "type": "retrograde",
+      "monthInstant": "2029-09-06T08:35:28.545Z",
+      "catalogInstant": "2029-09-06T08:35:28.710Z",
+      "deltaMs": 165
+    },
+    {
+      "planet": "Uranus",
+      "type": "retrograde",
+      "monthInstant": "2029-09-23T16:20:01.216Z",
+      "catalogInstant": "2029-09-23T16:20:01.464Z",
+      "deltaMs": 248
+    },
+    {
+      "planet": "Mercury",
+      "type": "direct",
+      "monthInstant": "2029-09-25T02:02:57.208Z",
+      "catalogInstant": "2029-09-25T02:02:57.538Z",
+      "deltaMs": 330
+    },
+    {
+      "planet": "Pluto",
+      "type": "direct",
+      "monthInstant": "2029-10-21T03:52:34.833Z",
+      "catalogInstant": "2029-10-21T03:52:34.833Z",
+      "deltaMs": 0
+    },
+    {
+      "planet": "Venus",
+      "type": "retrograde",
+      "monthInstant": "2029-12-16T23:49:26.857Z",
+      "catalogInstant": "2029-12-16T23:49:27.187Z",
+      "deltaMs": 330
+    },
+    {
+      "planet": "Neptune",
+      "type": "direct",
+      "monthInstant": "2029-12-19T08:28:21.891Z",
+      "catalogInstant": "2029-12-19T08:28:22.880Z",
+      "deltaMs": 989
+    },
+    {
+      "planet": "Mercury",
+      "type": "retrograde",
+      "monthInstant": "2029-12-22T05:49:50.010Z",
+      "catalogInstant": "2029-12-22T05:49:50.917Z",
+      "deltaMs": 907
+    },
+    {
+      "planet": "Mercury",
+      "type": "direct",
+      "monthInstant": "2030-01-11T05:44:27.919Z",
+      "catalogInstant": "2030-01-11T05:44:27.919Z",
+      "deltaMs": 0
+    },
+    {
+      "planet": "Saturn",
+      "type": "direct",
+      "monthInstant": "2030-01-19T03:51:14.495Z",
+      "catalogInstant": "2030-01-19T03:51:15.731Z",
+      "deltaMs": 1236
+    },
+    {
+      "planet": "Venus",
+      "type": "direct",
+      "monthInstant": "2030-01-26T21:33:24.811Z",
+      "catalogInstant": "2030-01-26T21:33:25.224Z",
+      "deltaMs": 413
+    },
+    {
+      "planet": "Uranus",
+      "type": "direct",
+      "monthInstant": "2030-02-20T23:23:56.406Z",
+      "catalogInstant": "2030-02-20T23:23:56.571Z",
+      "deltaMs": 165
+    },
+    {
+      "planet": "Jupiter",
+      "type": "retrograde",
+      "monthInstant": "2030-03-13T14:34:11.668Z",
+      "catalogInstant": "2030-03-13T14:34:12.245Z",
+      "deltaMs": 577
+    },
+    {
+      "planet": "Mercury",
+      "type": "retrograde",
+      "monthInstant": "2030-04-13T02:27:57.006Z",
+      "catalogInstant": "2030-04-13T02:27:57.831Z",
+      "deltaMs": 825
+    },
+    {
+      "planet": "Mercury",
+      "type": "direct",
+      "monthInstant": "2030-05-06T20:18:13.055Z",
+      "catalogInstant": "2030-05-06T20:18:13.797Z",
+      "deltaMs": 742
+    },
+    {
+      "planet": "Pluto",
+      "type": "retrograde",
+      "monthInstant": "2030-05-12T23:12:34.566Z",
+      "catalogInstant": "2030-05-12T23:12:34.979Z",
+      "deltaMs": 413
+    },
+    {
+      "planet": "Jupiter",
+      "type": "direct",
+      "monthInstant": "2030-07-15T01:25:40.199Z",
+      "catalogInstant": "2030-07-15T01:25:40.282Z",
+      "deltaMs": 83
+    },
+    {
+      "planet": "Neptune",
+      "type": "retrograde",
+      "monthInstant": "2030-07-16T16:30:07.661Z",
+      "catalogInstant": "2030-07-16T16:30:07.909Z",
+      "deltaMs": 248
+    },
+    {
+      "planet": "Mercury",
+      "type": "retrograde",
+      "monthInstant": "2030-08-16T01:22:53.921Z",
+      "catalogInstant": "2030-08-16T01:22:54.169Z",
+      "deltaMs": 248
+    },
+    {
+      "planet": "Mercury",
+      "type": "direct",
+      "monthInstant": "2030-09-08T09:22:23.818Z",
+      "catalogInstant": "2030-09-08T09:22:24.726Z",
+      "deltaMs": 908
+    },
+    {
+      "planet": "Saturn",
+      "type": "retrograde",
+      "monthInstant": "2030-09-20T21:31:40.825Z",
+      "catalogInstant": "2030-09-20T21:31:41.073Z",
+      "deltaMs": 248
+    },
+    {
+      "planet": "Uranus",
+      "type": "retrograde",
+      "monthInstant": "2030-09-28T08:25:13.282Z",
+      "catalogInstant": "2030-09-28T08:25:14.354Z",
+      "deltaMs": 1072
+    },
+    {
+      "planet": "Pluto",
+      "type": "direct",
+      "monthInstant": "2030-10-23T03:04:23.588Z",
+      "catalogInstant": "2030-10-23T03:04:23.671Z",
+      "deltaMs": 83
+    },
+    {
+      "planet": "Mercury",
+      "type": "retrograde",
+      "monthInstant": "2030-12-06T02:44:32.863Z",
+      "catalogInstant": "2030-12-06T02:44:33.193Z",
+      "deltaMs": 330
+    },
+    {
+      "planet": "Neptune",
+      "type": "direct",
+      "monthInstant": "2030-12-21T20:41:56.389Z",
+      "catalogInstant": "2030-12-21T20:41:57.625Z",
+      "deltaMs": 1236
+    },
+    {
+      "planet": "Mercury",
+      "type": "direct",
+      "monthInstant": "2030-12-25T21:17:19.689Z",
+      "catalogInstant": "2030-12-25T21:17:20.184Z",
+      "deltaMs": 495
+    }
+  ],
+  "swiss": {
+    "stationMaxBeforeSeconds": 2454.39,
+    "stationMaxAfterSeconds": 419.451,
+    "stationEvents": 92,
+    "fallbacks": 0,
+    "otherFamiliesUnchanged": true,
+    "independentInstrumentLimits": "Catalogue event-time statistics only, not same-UT1 residuals or an observational-accuracy claim. No per-event Swiss value, residual or reference instant is written."
+  }
+}

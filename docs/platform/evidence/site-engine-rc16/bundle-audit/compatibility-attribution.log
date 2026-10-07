@@ -1,0 +1,77 @@
+{
+  "rc15Default": 36295,
+  "rc16Default": 36460,
+  "rc16Production": 36915,
+  "overage": 51,
+  "rc16DefaultMain": 11605,
+  "changedChunks": [
+    {
+      "role": "SynastryCalculator",
+      "rc15DefaultFile": "SynastryCalculator.u0MHma7J.js",
+      "rc15DefaultGzip": 11453,
+      "rc16ProductionFile": "SynastryCalculator.CCPBjKb5.js",
+      "rc16ProductionGzip": 12060,
+      "change": 607
+    },
+    {
+      "role": "useEngine",
+      "rc15DefaultFile": "useEngine.D11NZRsP.js",
+      "rc15DefaultGzip": 377,
+      "rc16ProductionFile": "useEngine.CiZwEwXl.js",
+      "rc16ProductionGzip": 379,
+      "change": 2
+    },
+    {
+      "role": "useProfile",
+      "rc15DefaultFile": "useProfile.CeI1iGpH.js",
+      "rc15DefaultGzip": 299,
+      "rc16ProductionFile": "useProfile.BUWA37OV.js",
+      "rc16ProductionGzip": 301,
+      "change": 2
+    },
+    {
+      "role": "read-store",
+      "rc15DefaultFile": "read-store.CxxvcKMc.js",
+      "rc15DefaultGzip": 716,
+      "rc16ProductionFile": "read-store.CQjgDq6O.js",
+      "rc16ProductionGzip": 717,
+      "change": 1
+    },
+    {
+      "role": "chunk-MFF3VKO3",
+      "rc15DefaultFile": "chunk-MFF3VKO3.DkBXfVur.js",
+      "rc15DefaultGzip": 1160,
+      "rc16ProductionFile": "chunk-2OWGBT3O.Cw5cXswy.js",
+      "rc16ProductionGzip": 1168,
+      "change": 8
+    }
+  ],
+  "wheel": {
+    "rc15": {
+      "entry": "RelationshipWheel.DMspVuIt.js",
+      "gzip": 52000,
+      "count": 22,
+      "markers": []
+    },
+    "rc16": {
+      "entry": "RelationshipWheel.BELnvFfu.js",
+      "gzip": 96188,
+      "count": 30,
+      "markers": [
+        {
+          "file": "chunk-WOU7JVD3.pnw1-4va.js",
+          "gzip": 23004,
+          "imports": [
+            "./chunk-2OWGBT3O.Cw5cXswy.js",
+            "./chunk-4NV4ZEFZ.sSniBhHx.js",
+            "./chunk-KHBLFXFG.DP9le7v-.js"
+          ],
+          "ephemerisMarkers": [
+            "Value is not boolean:",
+            "Light-travel time solver did not converge"
+          ]
+        }
+      ]
+    }
+  }
+}

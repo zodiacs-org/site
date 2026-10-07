@@ -27,6 +27,14 @@ const ACCOUNT_SYNC_V2_ENABLED = accountSyncV2Enabled();
 
 export { isSupabaseConfigured };
 
+export type ChartSaveStatus = 'local' | 'syncing' | 'synced' | 'error';
+let chartSaveStatus: ChartSaveStatus = 'local';
+export function getChartSaveStatus(): ChartSaveStatus { return chartSaveStatus; }
+function announceSaveStatus(status: ChartSaveStatus): void {
+  chartSaveStatus = status;
+  if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('zodiacs:chart-save-status', { detail: status }));
+}
+
 export async function getSyncSession(): Promise<Session | null> {
   const client = getSupabaseClient();
   if (!client) return null;
@@ -117,6 +125,7 @@ export async function setDigestOptIn(digestOptIn: boolean): Promise<boolean> {
 export function scheduleCloudSync(delay = 500): void {
   if (ACCOUNT_SYNC_V2_ENABLED) return;
   if (!isSupabaseConfigured() || typeof window === 'undefined') return;
+  announceSaveStatus('syncing');
   window.clearTimeout(timer);
   timer = window.setTimeout(() => {
     void syncNow().catch(() => {});
@@ -131,7 +140,14 @@ export async function deleteRemoteChart(id: string): Promise<void> {
 export async function syncNow(): Promise<boolean> {
   if (ACCOUNT_SYNC_V2_ENABLED) return false;
   if (inFlight) return inFlight;
-  inFlight = syncProfile().finally(() => {
+  announceSaveStatus('syncing');
+  inFlight = syncProfile().then(ok => {
+    announceSaveStatus(ok ? 'synced' : 'local');
+    return ok;
+  }).catch(error => {
+    announceSaveStatus('error');
+    throw error;
+  }).finally(() => {
     inFlight = null;
   });
   return inFlight;

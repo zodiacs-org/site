@@ -46,7 +46,7 @@ describe('navigation first-paint reservation', () => {
       ['.nav__chip', 'chip'], ['.nav__burger', 'menu'],
     ]) expect(value(rule(selector), 'grid-area')).toBe(area);
     expect(value(rule('.nav'), 'grid-template-areas')).toBe("'mark search chip menu'");
-    expect(value(rule('.nav:not(.nav--localized)'), 'grid-template-areas')).toBe("'mark links search chip'");
+    expect(value(rule('.nav:not(.nav--localized)'), 'grid-template-areas')).toBe("'mark links profile search chip'");
   });
 
   it('reserves complete English and localized desktop widths independently of font loading', () => {
@@ -54,8 +54,8 @@ describe('navigation first-paint reservation', () => {
     const localized = rule('.nav--localized', css.split('@media (min-width: 1040px)')[1]);
     expect(value(english, 'width')).toBe('884px');
     expect(value(localized, 'width')).toBe('992px');
-    expect(value(english, 'grid-template-columns')).toBe('116px minmax(0, 1fr) 62px 120px');
-    expect(value(localized, 'grid-template-columns')).toBe('116px minmax(0, 1fr) 44px 120px');
+    expect(value(english, 'grid-template-columns')).toBe('116px minmax(0, 1fr) 44px 62px 120px');
+    expect(value(localized, 'grid-template-columns')).toBe('116px minmax(0, 1fr) 44px 44px 120px');
     expect(nav).toContain("'nav--localized': locale !== 'en'");
     expect(nav).toContain("'nav--without-search': locale === 'ru'");
   });
@@ -95,10 +95,9 @@ describe('navigation first-paint reservation', () => {
   });
 
   it('reserves the phone bar lockup before the chip or the face arrives', () => {
-    // The centred ZODIACS | ASTROFOLIO pair must not be sized by its text: a
-    // content-sized track re-centres the mark when the chip streams in after
-    // first paint, which Lighthouse measured as layout shift on the homepage.
-    const phone = css.split('@media (max-width: 599.5px) {')[1].split('\n  }\n')[0];
+    // The two separated destinations keep fixed word tracks; font loading
+    // and streamed children must not shift navigation controls.
+    const phone = css.split('@media (max-width: 919.5px) {')[1].split('\n  }\n')[0];
     const bar = rule('.nav-wrap .nav', phone);
     const tracks = value(bar, 'grid-template-columns');
     expect(tracks).not.toMatch(/\bauto\b|content/u);
@@ -109,15 +108,15 @@ describe('navigation first-paint reservation', () => {
   });
 
   it('pins desktop link starts and provides a sixth localized Today track without truncation', () => {
-    expect(value(rule('.nav__links'), 'grid-template-columns')).toBe('74px 74px 64px 62px 102px minmax(0, 1fr)');
+    expect(value(rule('.nav__links'), 'grid-template-columns')).toBe('74px 74px 64px 62px minmax(0, 1fr)');
     expect(value(rule('.nav--localized .nav__links'), 'grid-template-columns'))
-      .toBe('128px 82px repeat(2, minmax(0, 1fr)) 156px');
+      .toBe('128px 82px repeat(2, minmax(0, 1fr))');
     expect(value(rule('.nav--localized.nav--with-today .nav__links'), 'grid-template-columns'))
-      .toBe('128px 82px 52px repeat(2, minmax(0, 1fr)) 144px');
+      .toBe('128px 82px 52px repeat(2, minmax(0, 1fr))');
     expect(nav).toContain("'nav--with-today': links.some((link) => link.href === '/today/')");
     expect(hasChildDependentNavigation(css)).toBe(false);
     expect(value(rule('.nav--without-search .nav__links'), 'grid-template-columns'))
-      .toBe('136px 84px repeat(2, minmax(0, 1fr)) 172px');
+      .toBe('136px 84px repeat(2, minmax(0, 1fr))');
     expect(rule('.nav__link')).not.toMatch(/overflow:\s*hidden|text-overflow|font-size:\s*0/u);
     expect(value(rule('.nav__link'), 'white-space')).toBe('nowrap');
     expect(value(rule('.nav__dropdown-btn'), 'justify-content')).toBe('space-between');
@@ -153,41 +152,18 @@ describe('navigation first-paint reservation', () => {
     expect(localized[1] - 80.324).toBeGreaterThanOrEqual(1);
     expect(localizedToday[1] - 80.324).toBeGreaterThanOrEqual(1);
 
-    const englishRow = 884 - 32 - 3 * 18 - 116 - 62 - 120;
-    const localizedRow = 992 - 32 - 3 * 18 - 116 - 44 - 120;
-    expect(englishRow - english.reduce((sum, width) => sum + width, 0) - 5 * 2).toBe(114);
-    expect((localizedRow - localized.reduce((sum, width) => sum + width, 0) - 4 * 2) / 2).toBe(126);
-    expect((localizedRow - localizedToday.reduce((sum, width) => sum + width, 0) - 5 * 2) / 2).toBe(105);
+    const englishRow = 884 - 32 - 4 * 18 - 116 - 62 - 120 - 44;
+    const localizedRow = 992 - 32 - 4 * 18 - 116 - 44 - 120 - 44;
+    expect(englishRow - english.reduce((sum, width) => sum + width, 0) - 4 * 2).toBe(156);
+    expect((localizedRow - localized.reduce((sum, width) => sum + width, 0) - 3 * 2) / 2).toBe(174);
+    expect((localizedRow - localizedToday.reduce((sum, width) => sum + width, 0) - 4 * 2) / 2).toBe(147);
   });
 
-  it('removes exactly the absent receiver chip and one gap without shrinking any surviving track', () => {
-    const receiver = ':global(html[data-chart-share-receiver])';
-    const compact = css.split('@media (max-width: 360px)')[1].split('\n  }')[0];
-    const desktopEn = css.split('@media (min-width: 920px)')[1].split('@media (min-width: 1040px)')[0];
-    const desktopLocalized = css.split('@media (min-width: 1040px)')[1];
-    for (const [source, selector, before, chip, gap] of [
-      [css, '.nav', 336, 116, 10],
-      [css, '.nav--without-search', 292, 116, 10],
-      [compact, '.nav', 272, 88, 4],
-      [compact, '.nav--localized', 288, 100, 4],
-      [compact, '.nav--without-search', 224, 88, 4],
-      [desktopEn, '.nav:not(.nav--localized)', 884, 120, 18],
-      [desktopLocalized, '.nav--localized', 992, 120, 18],
-    ]) {
-      const receiverRule = rule(`${receiver} ${selector}`, source);
-      expect(Number.parseFloat(value(receiverRule, 'width'))).toBe(before - chip - gap);
-      expect(value(receiverRule, 'grid-template-areas') ?? '').not.toContain('chip');
-    }
-    expect(value(rule(`${receiver} .nav`), 'grid-template-columns')).toBe('minmax(0, 1fr) 44px 44px');
-    expect(value(rule(`${receiver} .nav--without-search`), 'grid-template-columns')).toBe('minmax(0, 1fr) 44px');
-    expect(value(rule(`${receiver} .nav:not(.nav--localized)`, desktopEn), 'grid-template-columns'))
-      .toBe('116px minmax(0, 1fr) 62px');
-    expect(value(rule(`${receiver} .nav--localized`, desktopLocalized), 'grid-template-columns'))
-      .toBe('116px minmax(0, 1fr) 44px');
-    expect(value(rule(`${receiver} .nav--without-search`, desktopLocalized), 'grid-template-columns'))
-      .toBe('116px minmax(0, 1fr)');
-  });
-});
+  it('keeps the same collection track on tools and shared-chart receivers', () => {
+    expect(nav).toContain('const showCollection = true;');
+    expect(css).not.toContain('nav--without-collection');
+    expect(css).not.toContain(':global(html[data-chart-share-receiver])');
+  });});
 
 describe('Instrument Sans fallback width and line-box metrics', () => {
   it.each(['src/styles/tokens.css', 'scripts/wing-nav.mjs'])('keeps every authored fallback in %s metric matched', (path) => {

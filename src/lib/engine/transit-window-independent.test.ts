@@ -68,7 +68,9 @@ function verifyWindow(window: TransitWindow, expected: Component, budget: number
 describe('independent A–I transit-window references', () => {
   it('retains the reference bytes, and D’s second period keeps an unresolved exact topology', () => {
     const bytes = readFileSync(new URL('./fixtures/transit-window-horizons.json', import.meta.url));
-    expect(createHash('sha256').update(bytes).digest('hex')).toBe('571b5819ee39a67cfcdd796f7856d20d4c661d6b1ed8e2bf52ac5c20a4bbabf3');
+    // rc.17 rebuild: the engine version only (rc.16's: the engine version and the
+    // retained Horizons manifest identity).
+    expect(createHash('sha256').update(bytes).digest('hex')).toBe('8b59eb0e6b19b3bad778f4e72784837bb770bedbeee5c6ed8eb791a09818a9dc');
     expect(fixtures.cases).toHaveLength(9);
     expect(fixtures.cases.reduce((sum, item) => sum + item.geometries.length, 0)).toBe(30);
     // Uranus turns 0.0442° from the D target, inside the 0.05° budget: no

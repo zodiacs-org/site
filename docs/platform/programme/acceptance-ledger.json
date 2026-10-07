@@ -1,7 +1,7 @@
 {
   "version": 1,
   "brief": "docs/platform/ENGINE-AND-PLATFORM-BRIEF.md (version 2) with the version 1 rules it retains",
-  "asOf": "2026-09-30 (site main 2197e696, production dpl_Ax6saHNV85duCvdExDz7LpSHrLD7; engine main d5326a8; sdk main a95dc0cf; npm @zodiacs/engine 0.1.1-rc.15 latest)",
+  "asOf": "2026-10-06 checkpoint 21 (source 6f873334; engine rc.17 on production dpl_64jrZa9XhBh51S8b9FryzfSkSnbA: P3.2 validated, pending the owner's reading of calc's span for a caller's ayanamsa, FINDINGS F-80)",
   "denominator": {
     "unit": "working days, from the brief's effort estimates (README.md)",
     "totalWeight": 182.45,
@@ -541,7 +541,8 @@
       "evidence": [
         "docs/platform/evidence/houses-2026-09-26/README.md (given Swiss inputs: PASS for all twelve rc.9 systems; end to end on the ladder 1850–2049: eleven PASS, Koch 3.73″ in 1 of 353)",
         "docs/platform/evidence/site-engine-rc10/ (site vendors engine rc.10 since f2bd0dd4; production dpl_GNiCYhHNi5daRWqT3ra4qSzT8XZf at 817132f7)",
-        "MCP 0.1.0-rc.10 offers the system (src/mcp/bounds.ts)"
+        "MCP 0.1.0-rc.10 offers the system (src/mcp/bounds.ts)",
+        "docs/platform/evidence/houses-2026-10-04/README.md (preregistered rerun on rc.16, the engine the site and the MCP adapter 0.1.0-rc.16 run, with Swiss given the engine's UT1 Julian day: given Swiss inputs within 0.01″ and end to end within 3″ on the ladder from 1850 to 2049; whole sign is also within 3″ with Swiss reading the UTC instant as UT1 (site-engine-rc16/accuracy-refresh/houses-default-utc.json), so FINDINGS F-71 does not bear on it)"
       ],
       "notes": "consumer forms still offer whole sign and Placidus only; that is site exposure (§4.6), not this gate"
     },
@@ -559,7 +560,8 @@
       "evidence": [
         "docs/platform/evidence/houses-2026-09-26/README.md (given Swiss inputs: PASS for all twelve rc.9 systems; end to end on the ladder 1850–2049: eleven PASS, Koch 3.73″ in 1 of 353)",
         "docs/platform/evidence/site-engine-rc10/ (site vendors engine rc.10 since f2bd0dd4; production dpl_GNiCYhHNi5daRWqT3ra4qSzT8XZf at 817132f7)",
-        "MCP 0.1.0-rc.10 offers the system (src/mcp/bounds.ts)"
+        "MCP 0.1.0-rc.10 offers the system (src/mcp/bounds.ts)",
+        "docs/platform/evidence/houses-2026-10-04/README.md (preregistered rerun on rc.16, the engine the site and the MCP adapter 0.1.0-rc.16 run, with Swiss given the engine's UT1 Julian day: given Swiss inputs within 0.01″ and end to end within 3″ on the ladder from 1850 to 2049; with Swiss reading the UTC instant as UT1 instead, every original system but whole sign exceeds 3″ on rc.16 (site-engine-rc16/accuracy-refresh/houses-default-utc.json); the reading is put to the owner in FINDINGS F-71)"
       ],
       "notes": "consumer forms still offer whole sign and Placidus only; that is site exposure (§4.6), not this gate"
     },
@@ -577,7 +579,8 @@
       "evidence": [
         "docs/platform/evidence/houses-2026-09-26/README.md (given Swiss inputs: PASS for all twelve rc.9 systems; end to end on the ladder 1850–2049: eleven PASS, Koch 3.73″ in 1 of 353)",
         "docs/platform/evidence/site-engine-rc10/ (site vendors engine rc.10 since f2bd0dd4; production dpl_GNiCYhHNi5daRWqT3ra4qSzT8XZf at 817132f7)",
-        "MCP 0.1.0-rc.10 offers the system (src/mcp/bounds.ts)"
+        "MCP 0.1.0-rc.10 offers the system (src/mcp/bounds.ts)",
+        "docs/platform/evidence/houses-2026-10-04/README.md (preregistered rerun on rc.16, the engine the site and the MCP adapter 0.1.0-rc.16 run, with Swiss given the engine's UT1 Julian day: given Swiss inputs within 0.01″ and end to end within 3″ on the ladder from 1850 to 2049; with Swiss reading the UTC instant as UT1 instead, every original system but whole sign exceeds 3″ on rc.16 (site-engine-rc16/accuracy-refresh/houses-default-utc.json); the reading is put to the owner in FINDINGS F-71)"
       ],
       "notes": "consumer forms still offer whole sign and Placidus only; that is site exposure (§4.6), not this gate"
     },
@@ -590,12 +593,15 @@
       "weight": 0.2,
       "gate": "≤ 0.01″ from Swiss houses_armc given its inputs and ≤ 3″ end to end on the 55–66.6° ladder; polar status agrees; in a released engine adopted by the site and MCP",
       "dependsOn": [],
-      "status": "failed",
+      "status": "validated",
       "release": "deployed",
       "evidence": [
-        "docs/platform/evidence/houses-2026-09-26/README.md (given Swiss inputs: PASS for all twelve rc.9 systems; end to end on the ladder 1850–2049: eleven PASS, Koch 3.73″ in 1 of 353)"
+        "docs/platform/evidence/houses-2026-09-26/README.md (given Swiss inputs: PASS for all twelve rc.9 systems; end to end on the ladder 1850–2049: eleven PASS, Koch 3.73″ in 1 of 353)",
+        "docs/platform/evidence/site-engine-rc16/accuracy-refresh/README.md (2026-10-01, rc.16: with Swiss reading the UTC instant as UT1, 48 of 353 ladder cases over 3″ from 1850 to 2049, the largest 82.677″; with the aligned clock, the largest 0.035″; given Swiss inputs 4.71e-9″; the site's rc.16 record kept Koch failed)",
+        "docs/platform/evidence/houses-2026-10-04/README.md (preregistered rerun on rc.16 with Swiss given the engine's UT1 Julian day: given Swiss inputs within 0.000000005″ and polar status agreeing in every case; end to end on the ladder from 1850 to 2049 the largest 0.035″, the rc.9 failing case included)",
+        "production dpl_Av6FTWYa2iFZzT2WZuWeCsRDg2oV (READY 2026-10-04T17:54:58Z, aliased to zodiacs.org) serves site 67aa32d8, which vendors the rc.16 archive 43a72d30…15d8; its engine chunk names 0.1.1-rc.16; MCP 0.1.0-rc.16 offers the system (src/mcp/bounds.ts)"
       ],
-      "notes": "end to end 3.73″ > 3″ in one ladder case at 65.6° N; given Swiss inputs it agrees to 4e-10″, so the excess is the sidereal-time input difference Koch magnifies. FAIL stands until the input agreement improves (Phase 4)"
+      "notes": "end to end 3.73″ > 3″ in one ladder case at 65.6° N; given Swiss inputs it agrees to 4e-10″, so the excess is the sidereal-time input difference Koch magnifies. FAIL stands until the input agreement improves (Phase 4). Checkpoint 14 (2026-10-04): validated, not accepted. On rc.16, with both programs given the same UT1, the RAMCs agree within 0.0016″ from 1850 to 2049 and Koch is within 3″ end to end (largest 0.035″). With Swiss reading the UTC instant as UT1, as the rc.9 tool did, it is not (48 of 353 over 3″, 82.677″): since rc.15 the engine applies UT1 − UTC and the two readings differ by it. The site's rc.16 record kept Koch failed (\"an aligned-clock pass does not substitute for the original failed comparison\"), and the shared reading was chosen with both results on main. Under README *Status and release* a gate that passes only under a change adopted after its residual was seen is validated until the owner ratifies the change (FINDINGS F-71, question 1: the clock reading; its window is the rc.9 record's); Koch fails if the owner does not."
     },
     {
       "id": "P2.A.house.regiomontanus",
@@ -611,7 +617,8 @@
       "evidence": [
         "docs/platform/evidence/houses-2026-09-26/README.md (given Swiss inputs: PASS for all twelve rc.9 systems; end to end on the ladder 1850–2049: eleven PASS, Koch 3.73″ in 1 of 353)",
         "docs/platform/evidence/site-engine-rc10/ (site vendors engine rc.10 since f2bd0dd4; production dpl_GNiCYhHNi5daRWqT3ra4qSzT8XZf at 817132f7)",
-        "MCP 0.1.0-rc.10 offers the system (src/mcp/bounds.ts)"
+        "MCP 0.1.0-rc.10 offers the system (src/mcp/bounds.ts)",
+        "docs/platform/evidence/houses-2026-10-04/README.md (preregistered rerun on rc.16, the engine the site and the MCP adapter 0.1.0-rc.16 run, with Swiss given the engine's UT1 Julian day: given Swiss inputs within 0.01″ and end to end within 3″ on the ladder from 1850 to 2049; with Swiss reading the UTC instant as UT1 instead, every original system but whole sign exceeds 3″ on rc.16 (site-engine-rc16/accuracy-refresh/houses-default-utc.json); the reading is put to the owner in FINDINGS F-71)"
       ],
       "notes": "consumer forms still offer whole sign and Placidus only; that is site exposure (§4.6), not this gate"
     },
@@ -629,7 +636,8 @@
       "evidence": [
         "docs/platform/evidence/houses-2026-09-26/README.md (given Swiss inputs: PASS for all twelve rc.9 systems; end to end on the ladder 1850–2049: eleven PASS, Koch 3.73″ in 1 of 353)",
         "docs/platform/evidence/site-engine-rc10/ (site vendors engine rc.10 since f2bd0dd4; production dpl_GNiCYhHNi5daRWqT3ra4qSzT8XZf at 817132f7)",
-        "MCP 0.1.0-rc.10 offers the system (src/mcp/bounds.ts)"
+        "MCP 0.1.0-rc.10 offers the system (src/mcp/bounds.ts)",
+        "docs/platform/evidence/houses-2026-10-04/README.md (preregistered rerun on rc.16, the engine the site and the MCP adapter 0.1.0-rc.16 run, with Swiss given the engine's UT1 Julian day: given Swiss inputs within 0.01″ and end to end within 3″ on the ladder from 1850 to 2049; with Swiss reading the UTC instant as UT1 instead, every original system but whole sign exceeds 3″ on rc.16 (site-engine-rc16/accuracy-refresh/houses-default-utc.json); the reading is put to the owner in FINDINGS F-71)"
       ],
       "notes": "consumer forms still offer whole sign and Placidus only; that is site exposure (§4.6), not this gate"
     },
@@ -647,7 +655,8 @@
       "evidence": [
         "docs/platform/evidence/houses-2026-09-26/README.md (given Swiss inputs: PASS for all twelve rc.9 systems; end to end on the ladder 1850–2049: eleven PASS, Koch 3.73″ in 1 of 353)",
         "docs/platform/evidence/site-engine-rc10/ (site vendors engine rc.10 since f2bd0dd4; production dpl_GNiCYhHNi5daRWqT3ra4qSzT8XZf at 817132f7)",
-        "MCP 0.1.0-rc.10 offers the system (src/mcp/bounds.ts)"
+        "MCP 0.1.0-rc.10 offers the system (src/mcp/bounds.ts)",
+        "docs/platform/evidence/houses-2026-10-04/README.md (preregistered rerun on rc.16, the engine the site and the MCP adapter 0.1.0-rc.16 run, with Swiss given the engine's UT1 Julian day: given Swiss inputs within 0.01″ and end to end within 3″ on the ladder from 1850 to 2049; with Swiss reading the UTC instant as UT1 instead, every original system but whole sign exceeds 3″ on rc.16 (site-engine-rc16/accuracy-refresh/houses-default-utc.json); the reading is put to the owner in FINDINGS F-71)"
       ],
       "notes": "consumer forms still offer whole sign and Placidus only; that is site exposure (§4.6), not this gate"
     },
@@ -665,7 +674,8 @@
       "evidence": [
         "docs/platform/evidence/houses-2026-09-26/README.md (given Swiss inputs: PASS for all twelve rc.9 systems; end to end on the ladder 1850–2049: eleven PASS, Koch 3.73″ in 1 of 353)",
         "docs/platform/evidence/site-engine-rc10/ (site vendors engine rc.10 since f2bd0dd4; production dpl_GNiCYhHNi5daRWqT3ra4qSzT8XZf at 817132f7)",
-        "MCP 0.1.0-rc.10 offers the system (src/mcp/bounds.ts)"
+        "MCP 0.1.0-rc.10 offers the system (src/mcp/bounds.ts)",
+        "docs/platform/evidence/houses-2026-10-04/README.md (preregistered rerun on rc.16, the engine the site and the MCP adapter 0.1.0-rc.16 run, with Swiss given the engine's UT1 Julian day: given Swiss inputs within 0.01″ and end to end within 3″ on the ladder from 1850 to 2049; with Swiss reading the UTC instant as UT1 instead, every original system but whole sign exceeds 3″ on rc.16 (site-engine-rc16/accuracy-refresh/houses-default-utc.json); the reading is put to the owner in FINDINGS F-71)"
       ],
       "notes": "consumer forms still offer whole sign and Placidus only; that is site exposure (§4.6), not this gate"
     },
@@ -683,7 +693,8 @@
       "evidence": [
         "docs/platform/evidence/houses-2026-09-26/README.md (given Swiss inputs: PASS for all twelve rc.9 systems; end to end on the ladder 1850–2049: eleven PASS, Koch 3.73″ in 1 of 353)",
         "docs/platform/evidence/site-engine-rc10/ (site vendors engine rc.10 since f2bd0dd4; production dpl_GNiCYhHNi5daRWqT3ra4qSzT8XZf at 817132f7)",
-        "MCP 0.1.0-rc.10 offers the system (src/mcp/bounds.ts)"
+        "MCP 0.1.0-rc.10 offers the system (src/mcp/bounds.ts)",
+        "docs/platform/evidence/houses-2026-10-04/README.md (preregistered rerun on rc.16, the engine the site and the MCP adapter 0.1.0-rc.16 run, with Swiss given the engine's UT1 Julian day: given Swiss inputs within 0.01″ and end to end within 3″ on the ladder from 1850 to 2049; with Swiss reading the UTC instant as UT1 instead, every original system but whole sign exceeds 3″ on rc.16 (site-engine-rc16/accuracy-refresh/houses-default-utc.json); the reading is put to the owner in FINDINGS F-71)"
       ],
       "notes": "consumer forms still offer whole sign and Placidus only; that is site exposure (§4.6), not this gate"
     },
@@ -700,7 +711,8 @@
       "release": "deployed",
       "evidence": [
         "docs/platform/evidence/points-2026-09-26/ (re-run 2026-09-28 on the deployed rc.10 archive a377cdc8…; every result file reproduced byte for byte): given inputs max 4.09e-10″ (ladder and broad); end to end 1850–2049 ladder max 0.229″",
-        "docs/platform/evidence/site-engine-rc10/ (site vendors engine rc.10 since f2bd0dd4; production dpl_GNiCYhHNi5daRWqT3ra4qSzT8XZf at 817132f7)"
+        "docs/platform/evidence/site-engine-rc10/ (site vendors engine rc.10 since f2bd0dd4; production dpl_GNiCYhHNi5daRWqT3ra4qSzT8XZf at 817132f7)",
+        "docs/platform/evidence/houses-2026-10-04/README.md (preregistered rerun on rc.16, the engine the site and the MCP adapter 0.1.0-rc.16 run, with Swiss given the engine's UT1 Julian day: given Swiss inputs within 0.01″ and end to end within 3″ on the ladder from 1850 to 2049; not measured with Swiss reading the UTC instant as UT1; the reading is put to the owner in FINDINGS F-71)"
       ]
     },
     {
@@ -717,7 +729,8 @@
       "evidence": [
         "docs/platform/evidence/houses-2026-09-26/README.md (given Swiss inputs: PASS for all twelve rc.9 systems; end to end on the ladder 1850–2049: eleven PASS, Koch 3.73″ in 1 of 353)",
         "docs/platform/evidence/site-engine-rc10/ (site vendors engine rc.10 since f2bd0dd4; production dpl_GNiCYhHNi5daRWqT3ra4qSzT8XZf at 817132f7)",
-        "MCP 0.1.0-rc.10 offers the system (src/mcp/bounds.ts)"
+        "MCP 0.1.0-rc.10 offers the system (src/mcp/bounds.ts)",
+        "docs/platform/evidence/houses-2026-10-04/README.md (preregistered rerun on rc.16, the engine the site and the MCP adapter 0.1.0-rc.16 run, with Swiss given the engine's UT1 Julian day: given Swiss inputs within 0.01″ and end to end within 3″ on the ladder from 1850 to 2049; with Swiss reading the UTC instant as UT1 instead, every original system but whole sign exceeds 3″ on rc.16 (site-engine-rc16/accuracy-refresh/houses-default-utc.json); the reading is put to the owner in FINDINGS F-71)"
       ],
       "notes": "consumer forms still offer whole sign and Placidus only; that is site exposure (§4.6), not this gate"
     },
@@ -735,7 +748,8 @@
       "evidence": [
         "docs/platform/evidence/houses-2026-09-26/README.md (given Swiss inputs: PASS for all twelve rc.9 systems; end to end on the ladder 1850–2049: eleven PASS, Koch 3.73″ in 1 of 353)",
         "docs/platform/evidence/site-engine-rc10/ (site vendors engine rc.10 since f2bd0dd4; production dpl_GNiCYhHNi5daRWqT3ra4qSzT8XZf at 817132f7)",
-        "MCP 0.1.0-rc.10 offers the system (src/mcp/bounds.ts)"
+        "MCP 0.1.0-rc.10 offers the system (src/mcp/bounds.ts)",
+        "docs/platform/evidence/houses-2026-10-04/README.md (preregistered rerun on rc.16, the engine the site and the MCP adapter 0.1.0-rc.16 run, with Swiss given the engine's UT1 Julian day: given Swiss inputs within 0.01″ and end to end within 3″ on the ladder from 1850 to 2049; with Swiss reading the UTC instant as UT1 instead, every original system but whole sign exceeds 3″ on rc.16 (site-engine-rc16/accuracy-refresh/houses-default-utc.json); the reading is put to the owner in FINDINGS F-71)"
       ],
       "notes": "consumer forms still offer whole sign and Placidus only; that is site exposure (§4.6), not this gate"
     },
@@ -753,7 +767,8 @@
       "evidence": [
         "docs/platform/evidence/houses-2026-09-26/README.md (given Swiss inputs: PASS for all twelve rc.9 systems; end to end on the ladder 1850–2049: eleven PASS, Koch 3.73″ in 1 of 353)",
         "docs/platform/evidence/site-engine-rc10/ (site vendors engine rc.10 since f2bd0dd4; production dpl_GNiCYhHNi5daRWqT3ra4qSzT8XZf at 817132f7)",
-        "MCP 0.1.0-rc.10 offers the system (src/mcp/bounds.ts)"
+        "MCP 0.1.0-rc.10 offers the system (src/mcp/bounds.ts)",
+        "docs/platform/evidence/houses-2026-10-04/README.md (preregistered rerun on rc.16, the engine the site and the MCP adapter 0.1.0-rc.16 run, with Swiss given the engine's UT1 Julian day: given Swiss inputs within 0.01″ and end to end within 3″ on the ladder from 1850 to 2049; with Swiss reading the UTC instant as UT1 instead, every original system but whole sign exceeds 3″ on rc.16 (site-engine-rc16/accuracy-refresh/houses-default-utc.json); the reading is put to the owner in FINDINGS F-71)"
       ],
       "notes": "consumer forms still offer whole sign and Placidus only; that is site exposure (§4.6), not this gate"
     },
@@ -782,9 +797,14 @@
       "weight": 0.75,
       "gate": "vs Swiss house_pos on a grid",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "failed",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/rc16-gates-2026-10-04/README.md",
+        "https://github.com/zodiacs-org/engine/tree/ddbbaa0b1d21e16834722f81e8708816849c6726/docs/evidence/houses-extra-2026-09-29 (gate P against swe_house_pos at 0.01″, rerun on rc.16's build)",
+        "production dpl_Av6FTWYa2iFZzT2WZuWeCsRDg2oV (READY 2026-10-04T17:54:58Z, aliased to zodiacs.org) serves site 67aa32d8, which vendors the rc.16 archive 43a72d30…15d8; its engine chunk names 0.1.1-rc.16"
+      ],
+      "notes": "Checkpoint 14 (2026-10-04): 11 of 13 systems pass. Porphyry fails in 11 of 20,000 broad cases (up to 0.0507″); Topocentric in 444 ladder and 301 broad cases (up to 0.465″), and is undefined in the engine alone in 519 and 979. The engine's diagnostics (not preregistered): Swiss's Porphyry positions are the exact ones for each longitude plus 0.001″, magnified in narrow quadrants, and Swiss's Topocentric positions are near the exact solution, not on it, where the engine's satisfy their circle's equation to 1.13e-9″. Meeting the gate as worded would mean reproducing Swiss's departures, which the brief's third non-negotiable rules out; it needs a decision on the gate, not an engine fix."
     },
     {
       "id": "P2.A.houses.vertex-east-point",
@@ -812,9 +832,16 @@
       "weight": 0.25,
       "gate": "vs Swiss houses_ex ascmc",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "validated",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/rc16-gates-2026-10-04/README.md",
+        "https://github.com/zodiacs-org/engine/tree/ddbbaa0b1d21e16834722f81e8708816849c6726/docs/evidence/houses-extra-2026-09-29 (gate A, rerun on rc.16's build: within 0.000000005″ (4.71e-9″) of swe_houses_armc's ascmc[4..7] given its inputs, 25,616 cases)",
+        "docs/platform/evidence/co-ascendants-2026-10-04/README.md (preregistered; end to end from an instant and a place with Swiss given the engine's UT1 Julian day: within 0.021″ of swe_houses_ex on the 55–66.6° ladder from 1850 to 2049, 3″ allowed; results/clock-readings.json, added after review: with Swiss reading the UTC instant as UT1, 40 to 48 of 319 ladder cases over 3″, the largest 88.5″; a scratch comparison earlier the same day had found up to 6.07″ after 2050)",
+        "coAscendants in @zodiacs/engine/houses; released in @zodiacs/engine 0.1.1-rc.16, on npm under next since 2026-10-01 with SLSA provenance built from 6807f632 (the merge of engine #22, whose package source is the release source ddbbaa0); the site vendors the same bytes (43a72d30…15d8)",
+        "production dpl_Av6FTWYa2iFZzT2WZuWeCsRDg2oV (READY 2026-10-04T17:54:58Z, aliased to zodiacs.org) serves site 67aa32d8, which vendors the rc.16 archive 43a72d30…15d8; its engine chunk names 0.1.1-rc.16"
+      ],
+      "notes": "Checkpoint 14 (2026-10-04): validated, not accepted. Given Swiss's inputs the four points meet M5's 0.01″; end to end they are within 3″ on the ladder from 1850 to 2049 only with Swiss given the engine's UT1 Julian day. Both that reading and the window were chosen with residuals known: the rc.16 accuracy refresh on main had measured the house systems both ways, and a scratch comparison earlier the same day had found up to 6.07″ after 2050, though the preregistration said the end-to-end half had not been measured. Under README *Status and release* the unit is validated until the owner ratifies the reading and the window (FINDINGS F-71, questions 1 and 2); it fails if the owner does not ratify both."
     },
     {
       "id": "P2.A.houses.cusp-speeds",
@@ -825,9 +852,14 @@
       "weight": 0.75,
       "gate": "vs Swiss houses_ex2 speeds",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "failed",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/rc16-gates-2026-10-04/README.md",
+        "https://github.com/zodiacs-org/engine/tree/ddbbaa0b1d21e16834722f81e8708816849c6726/docs/evidence/houses-extra-2026-09-29 (gates S and F, rerun on rc.16's build)",
+        "production dpl_Av6FTWYa2iFZzT2WZuWeCsRDg2oV (READY 2026-10-04T17:54:58Z, aliased to zodiacs.org) serves site 67aa32d8, which vendors the rc.16 archive 43a72d30…15d8; its engine chunk names 0.1.1-rc.16"
+      ],
+      "notes": "Checkpoint 14 (2026-10-04): against swe_houses_armc_ex2 at 0.004°/day + 1e-6|v| the ascendant, the midheaven and eight systems pass; Koch, Placidus, Porphyry, whole sign and Alcabitius fail. Against a central difference of the engine's own cusps every system passes (largest 0.000348°/day), and the engine's record finds Swiss's speeds disagreeing with a central difference of Swiss's own cusps in the same values. The gate names Swiss's speeds, so it stands failed; judging against a derivative instead would be a decision on the gate, not made here."
     },
     {
       "id": "P2.A.points.mean-node-lilith",
@@ -904,14 +936,17 @@
       "weight": 1,
       "gate": "fixtures for every pattern definition; exact inclusive orb semantics as documented",
       "dependsOn": [],
-      "status": "partial",
+      "status": "accepted",
       "release": "deployed",
       "evidence": [
         "engine rc.11 (537ecaf4); independent review 2026-09-28: the exact-orb claim fails on general decimal inputs (finding F-06)",
         "engine rc.13 (f05ea02b) and rc.14 (8deda244): orb decisions exact on binary64 inputs; exact rational oracles report 0 mismatches over 50,600 decimal-grid, 1,497 multi-body and 3,640 declination cases, and 53,168 cases in Python fractions on the packed archive (engine docs/evidence/rc13-20260928/)",
-        "docs/platform/evidence/site-engine-rc14/ (site vendors engine rc.14 since #600, merged as 6cc4d477; production dpl_2JtJjuE2bU8CYTBMxKF3kco43qcN)"
+        "docs/platform/evidence/site-engine-rc14/ (site vendors engine rc.14 since #600, merged as 6cc4d477; production dpl_2JtJjuE2bU8CYTBMxKF3kco43qcN)",
+        "docs/platform/evidence/rc16-units-2026-10-04/README.md",
+        "engine 6807f632 src/techniques/aspect-patterns.test.ts: a fixture for each of the four pattern definitions and a removed-edge negative for each (23 tests pass); the rational oracle on the rc.16 archive 43a72d30…15d8: 53,168 cases, 0 mismatches (rc16-units-2026-10-04/results/exact-oracle-rc16.json)",
+        "production dpl_Av6FTWYa2iFZzT2WZuWeCsRDg2oV and later serve the vendored rc.16 archive (checkpoint 14); the site's patterns parity P-D 840/840 and P-C 1000/1000 (site-engine-rc16/techniques-parity.json)"
       ],
-      "notes": "the exact inclusive orb semantics now pass; the gate's fixtures for every aspect-pattern definition wait for the patterns to move into the package (rc.16)"
+      "notes": "the exact inclusive orb semantics now pass; the gate's fixtures for every aspect-pattern definition wait for the patterns to move into the package (rc.16). Checkpoint 15 (2026-10-05): accepted on the reading that \"every pattern definition\" is every pattern the package defines: the grand trine, T-square, grand cross and kite, as Hand defines them. Hand's grand sextile, mystic rectangle, minor grand trine and yod are not defined; on the reading that the gate means every pattern in Hand's chapter it is not met, and the owner can overrule this reading."
     },
     {
       "id": "P2.A.aspects.declination-oob",
@@ -978,8 +1013,11 @@
       "dependsOn": [],
       "status": "partial",
       "release": "none",
-      "evidence": [],
-      "notes": "site-only implementation (src/lib/engine returns); package has Saturn returns and a longitude-crossing search"
+      "evidence": [
+        "docs/platform/evidence/rc16-units-2026-10-04/README.md",
+        "site parity on rc.16: R-SI, R-SY, R-SM and R-LI 400/400, R-SC and R-LC 160/160, R-E 50 of 60 different by design (returns-span) (site-engine-rc16/techniques-parity.json)"
+      ],
+      "notes": "site-only implementation (src/lib/engine returns); package has Saturn returns and a longitude-crossing search. Update 2026-10-04 (checkpoint 13; FINDINGS F-69): since engine rc.16 the package has solar and lunar returns (@zodiacs/engine/techniques) and planetary returns (@zodiacs/engine/timing); the site imports the first two (P2.E.returns). This unit's gate is not re-judged here. Checkpoint 15 (2026-10-05): judged partial. Site parity is met; there are no fixtures from a cited worked example of a solar or lunar return: USNO's season times and Horizons positions are reference values, not worked examples (as checkpoint 14 judged planetary returns)."
     },
     {
       "id": "P2.A.timing.solar-arc",
@@ -1075,9 +1113,14 @@
       "weight": 0.75,
       "gate": "cited worked examples; completeness verdict",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "partial",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/rc16-gates-2026-10-04/README.md",
+        "https://github.com/zodiacs-org/engine/tree/ddbbaa0b1d21e16834722f81e8708816849c6726/docs/evidence/houses-extra-2026-09-29 (gate R, rerun on rc.16's build)",
+        "production dpl_Av6FTWYa2iFZzT2WZuWeCsRDg2oV (READY 2026-10-04T17:54:58Z, aliased to zodiacs.org) serves site 67aa32d8, which vendors the rc.16 archive 43a72d30…15d8; its engine chunk names 0.1.1-rc.16"
+      ],
+      "notes": "Checkpoint 14 (2026-10-04): every result carries its completeness verdict (complete); for each of the ten bodies the returns match JPL Horizons's crossings in number and direction within the body's tolerance; an invented native's solar returns fall within 50 s of USNO's published equinoxes (210 s allowed). Not met: cited worked examples. The Horizons fixtures are computed, and the Sun's check applies a published reference to an invented native; no return is checked against a cited worked example."
     },
     {
       "id": "P2.A.timing.planetary-hours",
@@ -1088,9 +1131,15 @@
       "weight": 0.75,
       "gate": "cited worked examples; sunrise/sunset per rise-set rule",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "failed",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/rc16-gates-2026-10-04/README.md",
+        "https://github.com/zodiacs-org/engine/tree/ddbbaa0b1d21e16834722f81e8708816849c6726/src/sky/hours.test.ts (cited worked examples)",
+        "https://github.com/zodiacs-org/engine/tree/ddbbaa0b1d21e16834722f81e8708816849c6726/docs/evidence/sky-chinese-2026-09-29/rc16 (S4)",
+        "production dpl_Av6FTWYa2iFZzT2WZuWeCsRDg2oV (READY 2026-10-04T17:54:58Z, aliased to zodiacs.org) serves site 67aa32d8, which vendors the rc.16 archive 43a72d30…15d8; its engine chunk names 0.1.1-rc.16"
+      ],
+      "notes": "Checkpoint 14 (2026-10-04): the cited worked examples pass (Chaucer, Astrolabe II.12; Skeat's notes to II.7–10; Heindel 1919, pp. 155–156; Cassius Dio 37.19), and the hours divide the rise/set function's sunrises and sunsets exactly (227,880 hours, 0 failures at 1 ms). The gate takes sunrise and sunset per the rise-set rule. The Sun's rises and sets meet its 5 s comparisons, but one of the rule's two USNO misses is the Sun's set at 34.60° S on 2024-06-21 (−30.149 s), so the unit stands failed while that sunset misses; the Uranus events do not bear on the hours."
     },
     {
       "id": "P2.A.rise-set",
@@ -1101,9 +1150,14 @@
       "weight": 1.5,
       "gate": "≤ 5 s from Swiss rise_trans and a first-principles computation on a site grid; USNO ±30 s check",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "failed",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/rc16-gates-2026-10-04/README.md",
+        "https://github.com/zodiacs-org/engine/tree/ddbbaa0b1d21e16834722f81e8708816849c6726/docs/evidence/sky-chinese-2026-09-29/rc16 (S1 to S3, on rc.16's build)",
+        "production dpl_Av6FTWYa2iFZzT2WZuWeCsRDg2oV (READY 2026-10-04T17:54:58Z, aliased to zodiacs.org) serves site 67aa32d8, which vendors the rc.16 archive 43a72d30…15d8; its engine chunk names 0.1.1-rc.16"
+      ],
+      "notes": "Checkpoint 14 (2026-10-04): 192 of 189,491 events over 5 s against skyfield with DE440s (largest 11.603 s) and the same 192 against Swiss rise_trans (largest 11.609 s), all rises and sets of Uranus in 1950 at 65° N and S, where astronomy-engine's Uranus is 15″ to 18″ of altitude from DE440s at a grazing crossing (an ephemeris limit; the DE440 backend, P4.1, is the route); 2 of 467 over 30 s against USNO, which publishes to the minute (the Moon's rise at 34.60° S on 1950-03-20, −30.058 s; the Sun's set there on 2024-06-21, −30.149 s)."
     },
     {
       "id": "P2.A.composite-davison",
@@ -1114,10 +1168,14 @@
       "weight": 0.75,
       "gate": "definitions cited; fixtures",
       "dependsOn": [],
-      "status": "partial",
-      "release": "none",
-      "evidence": [],
-      "notes": "composite exists in the site only; no Davison"
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/rc16-units-2026-10-04/README.md",
+        "engine 6807f632 docs/techniques.md, Composite charts and Davison charts (Townley 1973, Hand 1975, Davison 1977, quoted from The Astrology Podcast ep. 128); src/techniques/relationship.test.ts, 11 tests pass; the composite parity C-M 500/500 and C-R 500/500",
+        "compositeChart and davisonChart in @zodiacs/engine/techniques, released in 0.1.1-rc.16; the site vendors the archive and production serves it; the site does not call davisonChart"
+      ],
+      "notes": "composite exists in the site only; no Davison. Update 2026-10-04 (checkpoint 13; FINDINGS F-69): since engine rc.16 the package exports compositeChart and davisonChart (@zodiacs/engine/techniques); the site still casts its own composite (P2.E.composite). This unit's gate is not re-judged here. Checkpoint 15 (2026-10-05): accepted on the reading that \"definitions cited\" means each definition cites the source it was taken from and names its origin. The engine says none of the three books was read and that its Davison place conventions are its own; read as the brief's M5 rule, definitions from the original books with every formula cited, it is not met, and the owner can overrule this reading."
     },
     {
       "id": "P2.A.eclipses",
@@ -1316,10 +1374,16 @@
       "dependsOn": [
         "P3.2"
       ],
-      "status": "partial",
-      "release": "none",
-      "evidence": [],
-      "notes": "rc.11 adds vector-derived equatorial coordinates; no uniform frame/center API"
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/rc16-gates-2026-10-04/README.md",
+        "https://github.com/zodiacs-org/engine/tree/ddbbaa0b1d21e16834722f81e8708816849c6726/docs/evidence/calc-api (PREREGISTRATION.md; rc16/README.md and rc16/tables.md on rc.16's build. Part (a), pass or fail: all twelve frame-transform checks pass, each turning the engine's own output for the ten geocentric apparent bodies and the true node with ERFA (pyerfa 2.0.1.5, ERFA 2.0.1) and comparing it with the engine's output in another frame, the four through the nutation within 0.0023″ of 0.005″. Part (b), reported without a pass or fail as preregistered: positions, distances and speeds against ERFA frames built from JPL Horizons ICRF vectors, for every centre: heliocentric positions up to 24.32″ and heliocentric speeds up to 5.38″/day, geocentric speeds up to 2.10″/day; the barycentric Sun 87.2″ median and 519″ largest, from astronomy-engine's five-body barycentre, its bounds derived rather than measured (Deviation 8))",
+        "docs/platform/evidence/rc16-gates-2026-10-04/results/calc-roundtrip-replay.json (the engine's 25 round-trip fixtures, SHA-256 b56ba1cf…e874, replayed against the vendored rc.16 archive: every result and the 16 receipts' requests exact, in all eight frames, four centres and three corrections, with nine typed refusals)",
+        "calc in @zodiacs/engine/calc; released in @zodiacs/engine 0.1.1-rc.16, on npm under next since 2026-10-01 with SLSA provenance built from 6807f632 (the merge of engine #22, whose package source is the release source ddbbaa0); the site vendors the same bytes (43a72d30…15d8)",
+        "production dpl_Av6FTWYa2iFZzT2WZuWeCsRDg2oV (READY 2026-10-04T17:54:58Z, aliased to zodiacs.org) serves site 67aa32d8, which vendors the rc.16 archive 43a72d30…15d8; its engine chunk names 0.1.1-rc.16; the site does not call calc()"
+      ],
+      "notes": "rc.11 adds vector-derived equatorial coordinates; no uniform frame/center API. Checkpoint 14 (2026-10-04): accepted. rc.16 delivers equatorial, J2000 and ICRS frames, heliocentric (and barycentric) centres, distances, and speeds in every coordinate through calc(). The gate names no tolerance. This record reads its pyerfa clause as the engine's preregistered comparison: part (a), the frame transforms, which pass; and part (b), the title's heliocentric positions and speeds against the pyerfa chain built from Horizons, reported as bounds as the preregistration fixed before any result (heliocentric positions up to 24.32″ and speeds up to 5.38″/day, the ephemeris's own accuracy, which other units judge). The barycentric Sun, which the title does not name, is 87.2″ median and 519″ largest from Horizons's, from astronomy-engine's five-body barycentre. It depends on P3.2, which stays partial: the brief asks for these outputs through the uniform API (3.2), and they go through calc(), released; the clause P3.2 misses is the sidereal zodiac, which none of these outputs uses. The ledger's rules do not define dependsOn, and this is the first accepted unit whose dependency is not accepted. Checkpoint 21 (2026-10-06): P3.2, the unit this one depends on, is validated, pending the owner (FINDINGS F-80); this unit is not judged again."
     },
     {
       "id": "P2.E.progressions",
@@ -1347,9 +1411,21 @@
       "weight": 0.5,
       "gate": "package function released; the site imports it and its own implementation is removed; parity recorded; deployed",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/programme-acceptance-2026-10-04/README.md",
+        "https://github.com/zodiacs-org/site/pull/620",
+        "https://github.com/zodiacs-org/site/actions/runs/37003714196",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/docs/platform/evidence/site-engine-rc16/techniques-parity.json",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/docs/platform/evidence/site-engine-rc16/integration-2026-10-02/PUBLICATION.md",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/src/lib/engine/solar-return.ts",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/src/lib/engine/lunar-return.ts",
+        "docs/platform/evidence/programme-audit-2026-10-04/README.md",
+        "docs/platform/evidence/programme-audit-2026-10-04/year-scan-parity.json",
+        "production dpl_Av6FTWYa2iFZzT2WZuWeCsRDg2oV (READY 2026-10-04T17:54:58Z, aliased to zodiacs.org) serves site 67aa32d8, which vendors the rc.16 archive 43a72d30…15d8; its engine chunk names 0.1.1-rc.16; /profile/ loads ProfileDashboard.DWK6Ee01.js, then ProfileDashboard.AoOmDIeV.js, then year-scan.BK5ZoljG.js, which imports the package's techniques.AoBtvjde.js; production's year-scan.BK5ZoljG.js (SHA-256 39dda0a94f93248856bf3bd15fe2f43e9c08daaf8f108b089f855356d49ba43b) and techniques.AoBtvjde.js (1e15aec5d8149126637376696676ddcf3ae686c8ffda1a8328753cf4bf46f4f8) equal a local build of the merged tree byte for byte (checked 2026-10-04)"
+      ],
+      "notes": "Solar/lunar return instant searches are imported from package techniques; site chart adapters preserve their existing output shape. Parity sections R-SI/R-SY/R-SM/R-SC/R-LI/R-LC record agreement; R-E retains span differences. Finite product-parity/adoption gate only; not independent astronomical accuracy or general completeness. Existing package and convention limitations remain. Recorded parity: 1980 cases, 1930 agree, 50 differ. Differences: returns-span 50. Released rc16 source ddbbaa0b1d21e16834722f81e8708816849c6726, archive 43a72d30e483d8ff22024e403c4bd0d86d81bb6e1d0ad138f857cd001ab015d8; production dpl_4LmaXAGm8YJFF6vastJQ5WWXSTE8 at b1636359. Original October 2 six-request live receipt and private acceptance commit remain missing; neither is reconstructed or credited. Audit 2026-10-04 (checkpoint 13; FINDINGS F-67): the removal clause was not met at 9d7dd31d. src/lib/engine/year-scan.ts, the year ahead on /profile/, still found solar returns with the site's own Sun crossing scan, the construction PR620 removed from solar-return.ts; production served it. The audit routes it through the package's mostRecentSolarReturnInstant: on 1,000 seeded synthetic windows every window has the same returns as the replaced scan, 999 of 1,002 to the millisecond and none more than 3 ms apart (year-scan-parity.json); src/lib/engine/year-scan-returns.test.ts fails if the site scans the Sun itself again. Validated, not accepted, until production serves the change; the recorded rc16 parity above is unchanged. Accepted again at checkpoint 14 (2026-10-04): production dpl_Av6FTWYa2iFZzT2WZuWeCsRDg2oV (READY 2026-10-04T17:54:58Z, aliased to zodiacs.org) serves site 67aa32d8, which vendors the rc.16 archive 43a72d30…15d8; its engine chunk names 0.1.1-rc.16, and the year ahead's solar returns come from the package."
     },
     {
       "id": "P2.E.void-of-course",
@@ -1360,9 +1436,18 @@
       "weight": 0.5,
       "gate": "package function released; the site imports it and its own implementation is removed; parity recorded; deployed",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/programme-acceptance-2026-10-04/README.md",
+        "https://github.com/zodiacs-org/site/pull/620",
+        "https://github.com/zodiacs-org/site/actions/runs/37003714196",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/docs/platform/evidence/site-engine-rc16/techniques-parity.json",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/docs/platform/evidence/site-engine-rc16/integration-2026-10-02/PUBLICATION.md",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/src/pages/void-of-course-moon/index.astro",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/src/lib/engine/void-of-course.test.ts"
+      ],
+      "notes": "Page directly imports package windows/status and calls them at build time; old engine/void-of-course.ts is deleted. Parity sections V-W/V-P/V-S cover finite window/status cases. Finite product-parity/adoption gate only; not independent astronomical accuracy or general completeness. Existing package and convention limitations remain. Recorded parity: 156 cases, 156 agree, 0 differ. Released rc16 source ddbbaa0b1d21e16834722f81e8708816849c6726, archive 43a72d30e483d8ff22024e403c4bd0d86d81bb6e1d0ad138f857cd001ab015d8; production dpl_4LmaXAGm8YJFF6vastJQ5WWXSTE8 at b1636359. Original October 2 six-request live receipt and private acceptance commit remain missing; neither is reconstructed or credited."
     },
     {
       "id": "P2.E.declinations",
@@ -1389,9 +1474,18 @@
       "weight": 0.5,
       "gate": "package function released; the site imports it and its own implementation is removed; parity recorded; deployed",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/programme-acceptance-2026-10-04/README.md",
+        "https://github.com/zodiacs-org/site/pull/620",
+        "https://github.com/zodiacs-org/site/actions/runs/37003714196",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/docs/platform/evidence/site-engine-rc16/techniques-parity.json",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/docs/platform/evidence/site-engine-rc16/integration-2026-10-02/PUBLICATION.md",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/src/lib/engine/aspect-patterns.ts",
+        "docs/platform/evidence/programme-audit-2026-10-04/README.md"
+      ],
+      "notes": "Adapter imports package aspectPatterns rather than site detection implementation. P-D/P-C parity records preserve constructed/chart cases and malformed-input coverage. Finite product-parity/adoption gate only; not independent astronomical accuracy or general completeness. Existing package and convention limitations remain. Recorded parity: 1840 cases, 1840 agree, 0 differ. Released rc16 source ddbbaa0b1d21e16834722f81e8708816849c6726, archive 43a72d30e483d8ff22024e403c4bd0d86d81bb6e1d0ad138f857cd001ab015d8; production dpl_4LmaXAGm8YJFF6vastJQ5WWXSTE8 at b1636359. Original October 2 six-request live receipt and private acceptance commit remain missing; neither is reconstructed or credited. Audit 2026-10-04 (checkpoint 13; FINDINGS F-70): the People pilot's frozen copy generator (docs/phase5/people-pilot/tools/compose-copy.mjs) detects grand trines and T-squares itself, from aspects that hold for the whole civil day; it is outside the brief's src/lib scope and its released copy is frozen. Acceptance unchanged."
     },
     {
       "id": "P2.E.composite",
@@ -1444,9 +1538,18 @@
       "weight": 0.5,
       "gate": "package function released; the site imports it and its own implementation is removed; parity recorded; deployed",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/programme-acceptance-2026-10-04/README.md",
+        "https://github.com/zodiacs-org/site/pull/620",
+        "https://github.com/zodiacs-org/site/actions/runs/37003714196",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/docs/platform/evidence/site-engine-rc16/techniques-parity.json",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/docs/platform/evidence/site-engine-rc16/integration-2026-10-02/PUBLICATION.md",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/src/lib/share-card.ts",
+        "docs/platform/evidence/programme-audit-2026-10-04/README.md"
+      ],
+      "notes": "Active sharing helper dynamically imports package moonSignCandidates; preview/download callers remain. M-A/M-Z/M-P parity records preserve date-form, skipped-date and historical-zone differences. The main calculator deliberately leaves unknown-time Moon certainty unresolved; that predates PR620 and is not counted as a new candidate inference. Finite product-parity/adoption gate only; not independent astronomical accuracy or general completeness. Existing package and convention limitations remain. Recorded parity: 5147 cases, 5134 agree, 13 differ. Differences: moon-date-form 3, moon-skipped-date 1, moon-before-1970 9. Released rc16 source ddbbaa0b1d21e16834722f81e8708816849c6726, archive 43a72d30e483d8ff22024e403c4bd0d86d81bb6e1d0ad138f857cd001ab015d8; production dpl_4LmaXAGm8YJFF6vastJQ5WWXSTE8 at b1636359. Original October 2 six-request live receipt and private acceptance commit remain missing; neither is reconstructed or credited. Audit 2026-10-04 (checkpoint 13; FINDINGS F-68): the parity of the adopted sharing path is section M-A, 3,005 cases, 3,002 agree; its 3 differences are dates in years 0 to 99, which the site's own date guard refuses. Sections M-Z and M-P (2,142 cases, 10 differences) compare helpers no production path has called since 9d180c9f. The People pilot's frozen generator samples the Moon's sign at both ends of the civil day itself; it is outside the brief's src/lib scope, and an audit check found its signs, verdicts and day bounds equal to the package's on all 501 pages (F-70). Acceptance unchanged."
     },
     {
       "id": "P3.1a",
@@ -1499,8 +1602,10 @@
       ],
       "status": "partial",
       "release": "none",
-      "evidence": [],
-      "notes": "the byte-identical rebuild check runs in the engine's CI: scripts/verify-archive-binding.mjs on every pull request, and --rebuild-all rebuilds every carried archive from its source commit (zodiacs-org/engine#10 and later, green); no CycloneDX SBOM per release and no JSR entry yet; since 2026-09-30 the engine is on npm with provenance (P3.1a), and the JSR scope @zodiacs and package engine exist, linked to zodiacs-org/engine, with nothing published"
+      "evidence": [
+        "docs/platform/evidence/programme-audit-2026-10-04/README.md"
+      ],
+      "notes": "the byte-identical rebuild check runs in the engine's CI: scripts/verify-archive-binding.mjs on every pull request, and --rebuild-all rebuilds every carried archive from its source commit (zodiacs-org/engine#10 and later, green); no CycloneDX SBOM per release and no JSR entry yet; since 2026-09-30 the engine is on npm with provenance (P3.1a), and the JSR scope @zodiacs and package engine exist, linked to zodiacs-org/engine, with nothing published. Update 2026-10-04 (checkpoint 13): the OIDC publish workflow exists (zodiacs-org/engine#24 and #25, 23660f5). With the owner's authorization its dry run 37111251733 passed on 2026-10-03, and the publish run 37111638537 failed at its publish step; jsr-io/jsr#1563 reports JSR's invalidLicense answer to the SPDX expression MIT AND CC-BY-4.0. JSR lists no version of @zodiacs/engine. No retry until JSR accepts an expression that states both licences or the owner decides a faithful alternative; the package is never labelled MIT alone. No CycloneDX SBOM per release yet."
     },
     {
       "id": "P3.1d",
@@ -1524,9 +1629,19 @@
       "weight": 3,
       "gate": ".d.ts covers every calc_ut option Phase 2 ships; round-trip fixtures; typed refusals",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "validated",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/rc17-gates-2026-10-06/README.md",
+        "docs/platform/evidence/rc17-gates-2026-10-06/tools/calc-types-cover-vedic.ts: tsc --strict compiles it against the vendored rc.17 (results/calc-types-rc17.log) and refuses it against rc.16, extracted from vendor/ (results/calc-types-rc16.log); 18 faults, one change each to a copy of rc.17's calc.d.ts, each fail it at the assertion they break (results/calc-types-faults.json)",
+        "docs/platform/evidence/rc17-gates-2026-10-06/results/sidereal-options-sweep.json: calc(), houses(), events() and chart() with each of the nine built-in ayanamsas and twelve forms of a caller's, at a synthetic instant and place: every one computed; calc(), houses() and chart() equal to @zodiacs/engine/vedic's siderealChart() where /vedic has the form, and events() held to calc's own sidereal longitude; its span section records the refusals outside 1800-2200",
+        "https://github.com/zodiacs-org/engine/tree/aae419c05b77455b9e8f03ca11ee273b446f7d02/docs/calc.md (The sidereal zodiac; Swiss Ephemeris calc_ut flags), unchanged at the engine's main, 782b4963",
+        "docs/platform/evidence/rc17-gates-2026-10-06/results/calc-roundtrip-replay.json (the engine's round-trip fixtures at aae419c, SHA-256 3512922d…2a81: 37 cases, 27 calc, 3 houses, 3 events and 4 chart, 10 of them sidereal; every result and the 26 receipts' requests exact against the vendored rc.17; typed refusals with all four reasons)",
+        "calc, houses, events and chart in @zodiacs/engine/calc; in @zodiacs/engine 0.1.1-rc.17, a vendored candidate not on npm (DECISIONS-2026-10-05.md §7), packed from aae419c05b77455b9e8f03ca11ee273b446f7d02 and carried by b080217c1b5b0b36c931e9c237bcff0308ec1efc, both on the engine's main since engine #26 (782b4963); the site vendors the carrier's archive, 9cd24c78…299a",
+        "production dpl_64jrZa9XhBh51S8b9FryzfSkSnbA (READY 2026-10-06T03:42:45Z, aliased to zodiacs.org) serves site 6f873334 (#663), which vendors the rc.17 archive 9cd24c78…299a; its engine chunk names 0.1.1-rc.17 and equals a local build of 6f873334 byte for byte; the site does not call calc (scripts/engine-entry-imports.test.mjs)",
+        "docs/platform/evidence/rc16-gates-2026-10-04/README.md (checkpoint 14: partial)"
+      ],
+      "notes": "Checkpoint 14 (2026-10-04): calc(), houses(), events() and chart() are typed in @zodiacs/engine/calc, refusals are typed, and the round-trip fixtures replay exactly, though none exercises chart(). Not met, the first clause, for two options Phase 2 ships: the engine's own map of calc_ut flags gives SEFLG_SIDEREAL as typed in but refused (not-in-this-version), while @zodiacs/engine/vedic gives sidereal longitudes, on which the nakshatra and dasha units are accepted; and CalcAyanamsa names the nine built-in ayanamsas only, while vedic also ships userAyanamsa, the counterpart of SE_SIDM_USER. Checkpoint 21 (2026-10-06): validated, pending the owner (FINDINGS F-80). In engine rc.17, vendored and not on npm, calc(), houses(), events() and chart() take zodiac: { sidereal } with one of the nine built-in ayanamsas or a caller's own (CalcUserAyanamsa, the counterpart of SE_SIDM_USER and of vedic's userAyanamsa). A type check holds calc's declarations to what @zodiacs/engine/vedic ships, field types included: it compiles against rc.17 and is refused against rc.16. A run-time sweep computes every built-in ayanamsa and a caller's in twelve forms in all four functions, equal to vedic's siderealChart() in calc(), houses() and chart() where vedic has the form. For every other calc_ut flag the engine's map names the counterpart, and Phase 2 ships none of the ones it does not offer. The 37 round-trip fixtures replay exactly, and the refusals are typed. Not met without a reading: calc refuses a caller's ayanamsa carried by precession from an epoch outside 1800–2200, at every instant, where vedic computes and flags it. The epoch is part of SE_SIDM_USER, and checkpoint 14 failed the clause for an option declared but refused; reading the epoch's range as the entry point's span is the programme's own reading, which DECISIONS-2026-10-05 §4 leaves to the owner. An instant outside the span, which calc refused in rc.16 too, is not counted against the clause, as at checkpoint 14. The programme recommends closing F-80 in the 1.0 candidate, by computing such an ayanamsa from every epoch vedic accepts (the range of a JavaScript Date), rather than by the reading."
     },
     {
       "id": "P3.3",
@@ -1539,13 +1654,18 @@
       "dependsOn": [
         "P3.2"
       ],
-      "status": "implemented",
-      "release": "unmerged",
+      "status": "merged",
+      "release": "deployed",
       "evidence": [
         "docs/platform/evidence/compute-api-2026-09-29/README.md",
-        "tests/api/compute-api-privacy.test.ts"
+        "tests/api/compute-api-privacy.test.ts",
+        "docs/platform/evidence/compute-api-2026-09-29/production-2026-10-01/README.md",
+        "docs/platform/evidence/compute-api-2026-10-01/README.md",
+        "tests/api/compute-api-private-state.test.ts",
+        "docs/platform/evidence/compute-api-2026-10-01/observability/README.md",
+        "docs/platform/evidence/compute-api-postrelease-2026-10-01/README.md"
       ],
-      "notes": "decided 2026-09-28: free and anonymous on the existing Vercel plan, rate-limited, no additional spending (docs/platform/programme/DECISIONS-2026-09-28.md §5). Implemented on the compute-api branch, not merged, on @zodiacs/engine 0.1.1-rc.15 since main's adoption of it: six POST endpoints; the negative-control test and receipts that name the backend hold. Each endpoint fails closed until every Firewall rule it is counted under is published: zodiacs-compute-api at 40 a minute for all six, and zodiacs-compute-events at 10 a minute for events (DECISIONS-2026-09-30.md §6 and §7). On 2026-09-30 the owner published Firewall version 6, with zodiacs-compute-api at 40 and zodiacs-compute-events at 10 a minute per address, so every endpoint can answer once deployed. Gate still open: p50 and p95 latency, warm and cold, and the cost of 1,000 requests of each kind, on the deployed endpoints, measurable once the API is deployed. On one 4-core machine over every year from 1800 to 2199, on rc.15, a 92-day events window took CPU p50 165.7 ms, p95 244.0 ms, at most 359.2 ms, and one address at both limits can cost at most 8.7 CPU-seconds a minute (5.2 at the 95th percentiles) (docs/platform/evidence/compute-api-2026-09-29/README.md)"
+      "notes": "decided 2026-09-28: free and anonymous on the existing Vercel plan, rate-limited, no additional spending (docs/platform/programme/DECISIONS-2026-09-28.md §5). Implemented on the compute-api branch, not merged, on @zodiacs/engine 0.1.1-rc.15 since main's adoption of it: six POST endpoints; the negative-control test and receipts that name the backend hold. Each endpoint fails closed until every Firewall rule it is counted under is published: zodiacs-compute-api at 40 a minute for all six, and zodiacs-compute-events at 10 a minute for events (DECISIONS-2026-09-30.md §6 and §7). On 2026-09-30 the owner published Firewall version 6, with zodiacs-compute-api at 40 and zodiacs-compute-events at 10 a minute per address, so every endpoint can answer once deployed. Gate still open: p50 and p95 latency, warm and cold, and the cost of 1,000 requests of each kind, on the deployed endpoints, measurable once the API is deployed. On one 4-core machine over every year from 1800 to 2199, on rc.15, a 92-day events window took CPU p50 165.7 ms, p95 244.0 ms, at most 359.2 ms, and one address at both limits can cost at most 8.7 CPU-seconds a minute (5.2 at the 95th percentiles) (docs/platform/evidence/compute-api-2026-09-29/README.md) Update 2026-10-01: the six endpoints are deployed at site 9cfafa3e / dpl_6uGzGxdgxboMZ5jeFwQMTL24demr and all 120 synthetic sample requests succeeded. Client latency is recorded without a warm/cold label. Metered cost and actual start-type telemetry remain unavailable; P3.3 is not accepted. F-59 found exact synthetic input time in a private warm-process ephemeris cache. A server-only cache-lifetime fix is locally tested in this checkpoint but is not yet deployed; do not read release=deployed as this fix being live. Historical failed/inconclusive measurements remain preserved. Checkpoint 11: exact 120-request platform/export and Query reconciliation observes 20 Hot requests per endpoint and recorded execution p50/p95 plus rounded aggregate CPU/memory usage-cost estimates. No Cold samples; F60 remains unresolved; cache-fix deployment and post-deploy verification still outstanding. No acceptance. Correction 2026-10-04 (checkpoint 13): the two sentences above about the F-59 fix were written before it shipped. FINDINGS F-59 records it merged as fd1ce88a and live in production deployment dpl_AsJc5MrDgH4PpgoZSGMe7XTZePe4 from 2026-10-01 20:23 UTC, with the scoped post-release verification in docs/platform/evidence/compute-api-postrelease-2026-10-01/README.md. P3.3 stays unaccepted for the Cold observations and F-60."
     },
     {
       "id": "P3.4",
@@ -1561,7 +1681,7 @@
       "status": "partial",
       "release": "none",
       "evidence": [],
-      "notes": "static /api/v1 OpenAPI 3.1 with 11 GET operations and no examples, as main serves it. The compute-api branch (P3.3, not merged) adds the six compute endpoints to the same document: each a POST operation with its request and response schemas, the refusals it answers with and an example of each that the handler itself produced, and an OPTIONS operation for the CORS preflight; tests/api/compute-api-openapi.test.ts validates every compute example against its schema and holds the committed examples to the handler, and the whole document validated once against the OpenAPI Initiative's 3.1 schema, outside the repository (docs/platform/evidence/compute-api-2026-09-29/README.md). The GET operations still have no examples, and there are no TypeScript or Python clients and no Markdown twins"
+      "notes": "static /api/v1 OpenAPI 3.1 with 11 GET operations and no examples, as main serves it. The compute-api branch (P3.3, not merged) adds the six compute endpoints to the same document: each a POST operation with its request and response schemas, the refusals it answers with and an example of each that the handler itself produced, and an OPTIONS operation for the CORS preflight; tests/api/compute-api-openapi.test.ts validates every compute example against its schema and holds the committed examples to the handler, and the whole document validated once against the OpenAPI Initiative's 3.1 schema, outside the repository (docs/platform/evidence/compute-api-2026-09-29/README.md). The GET operations still have no examples, and there are no TypeScript or Python clients and no Markdown twins. Update 2026-10-04 (checkpoint 13): the compute endpoints and their OpenAPI operations are on main and in production since #605 and #607; the GET operations, clients and Markdown twins are as stated above."
     },
     {
       "id": "P3.5",
@@ -1596,7 +1716,7 @@
       "status": "partial",
       "release": "none",
       "evidence": [],
-      "notes": "local stdio MCP adapter 0.1.0-rc.15 (bundling engine rc.15; production serves it since #603) with three tools; no remote server, no registry entry"
+      "notes": "local stdio MCP adapter 0.1.0-rc.15 (bundling engine rc.15; production serves it since #603) with three tools; no remote server, no registry entry. Update 2026-10-04 (checkpoint 13): the site now serves the stdio adapter archive 0.1.0-rc.16 (sha256 dfc9177e…aeb9, 89,871 bytes, bundling engine rc.16), which /developers/mcp/ installs; still three tools, no remote server and no registry entry. Update 2026-10-05 (checkpoint 15): the site serves the stdio adapter 0.1.0-rc.16.1 (a44aea72…, 97,630 bytes, same engine rc.16), with output schemas, citations and two resources; still no remote server and no registry entry. Update 2026-10-05 (checkpoint 16): the site serves the stdio adapter 0.1.0-rc.16.2 (2fc976c9…, 123,817 bytes, same engine rc.16), with three more tools that run the compute API's calculations; still no remote server and no registry entry. Update 2026-10-05 (checkpoint 19): the site serves the stdio adapter 0.1.0-rc.16.3 (dde8e475…, 124,924 bytes, same engine rc.16), re-cut for the compute API's elections endpoint with no tool changed; still no remote server and no registry entry."
     },
     {
       "id": "P3.7",
@@ -1816,9 +1936,16 @@
       "weight": 1,
       "gate": "output schemas; readOnlyHint/openWorldHint; tests",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "partial",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/mcp-adapter/README.md, section \"0.1.0-rc.16.2, 2026-10-05\"",
+        "src/mcp/sky-tools.ts: get_positions and find_events parse with the compute API's parsers and calculate with its functions; each declares an output schema (src/mcp/outputs.ts) and readOnlyHint/openWorldHint (src/mcp/create-server.ts); find_events' receipt records the search step, the evaluations and that the search is tested, not proven complete",
+        "src/mcp/sky-tools.test.ts: a seeded synthetic corpus of 252 requests run through each tool and through the compute API's own handler, 17 refusals and 43 requests at the ends of the accepted dates, every result checked against the output schema, the OpenAPI components and the SDK client; docs/platform/evidence/mcp-adapter/protocol-drive.json 106/106 against server.mjs 7209455d…",
+        "production dpl_94a4kV72vzpEWurR5dFHe4ES9uUy (READY 2026-10-05T02:16:43Z, aliased to zodiacs.org) serves site 3f09711a, whose /examples/mcp-server.json names zodiacs-mcp-server-0.1.0-rc.16.2.tgz (123,817 bytes, SHA-256 2fc976c9…) pinned to commit 3acfae47, the archive /developers/mcp/ installs",
+        "production dpl_5hEgWFChgos3USWviHWVFEwHBeVW (READY 2026-10-05T18:05:51Z, aliased to zodiacs.org) serves site 51b64f3c, whose /examples/mcp-server.json names zodiacs-mcp-server-0.1.0-rc.16.3.tgz (124,924 bytes, SHA-256 dde8e475…) pinned to commit dcb51a16, the archive /developers/mcp/ installs; docs/platform/evidence/mcp-adapter/README.md, section \"0.1.0-rc.16.3, 2026-10-05\""
+      ],
+      "notes": "Checkpoint 16 (2026-10-05): partial. Both tools exist with output schemas, annotations, tests and a completeness verdict, which is the gate as written. The brief's Track A1 also asks for frame and zodiac options on get_positions and aspects, eclipses and void-of-course periods in find_events; none is in 0.1.0-rc.16.2. Eclipses and the sidereal zodiac need an engine release, which needs the owner's approval to publish. Checkpoint 19 (2026-10-05): still partial. The site now serves the MCP adapter 0.1.0-rc.16.3, re-cut in PR #655 because the compute API's elections endpoint changed the modules the adapter inlines. No tool changed: an independent drive of 3,275 calls against the rc.16.2 and rc.16.3 archives found no difference beyond the adapter's version and the citation of its own receipt."
     },
     {
       "id": "A1.b",
@@ -1829,9 +1956,16 @@
       "weight": 1,
       "gate": "true/false/depends with computed facts and a receipt; never interpretive",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "partial",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/mcp-adapter/README.md, section \"0.1.0-rc.16.2, 2026-10-05\"",
+        "src/mcp/sky-tools.ts: check_sky_fact runs the compute API's sky-fact calculation and answers true, false or depends with the computed values that decide it and a receipt; it interprets nothing",
+        "src/mcp/sky-tools.test.ts (166 sky facts of the seeded corpus against the compute API's handler); docs/platform/evidence/mcp-adapter/protocol-drive.json 106/106",
+        "production dpl_94a4kV72vzpEWurR5dFHe4ES9uUy (READY 2026-10-05T02:16:43Z, aliased to zodiacs.org) serves site 3f09711a, whose /examples/mcp-server.json names zodiacs-mcp-server-0.1.0-rc.16.2.tgz (123,817 bytes, SHA-256 2fc976c9…) pinned to commit 3acfae47, the archive /developers/mcp/ installs",
+        "production dpl_5hEgWFChgos3USWviHWVFEwHBeVW (READY 2026-10-05T18:05:51Z, aliased to zodiacs.org) serves site 51b64f3c, whose /examples/mcp-server.json names zodiacs-mcp-server-0.1.0-rc.16.3.tgz (124,924 bytes, SHA-256 dde8e475…) pinned to commit dcb51a16, the archive /developers/mcp/ installs; docs/platform/evidence/mcp-adapter/README.md, section \"0.1.0-rc.16.3, 2026-10-05\""
+      ],
+      "notes": "Checkpoint 16 (2026-10-05): partial. check_sky_fact answers true, false or depends with the computed facts and a receipt, never interpretively, which is the gate as written; it covers a sign at an instant or on a date, retrograde, an ingress on a date and a lunation on a date. The brief's Track A1 also asks for aspect facts, which it does not check. Checkpoint 19 (2026-10-05): still partial. The site now serves the MCP adapter 0.1.0-rc.16.3, re-cut in PR #655 because the compute API's elections endpoint changed the modules the adapter inlines. No tool changed: an independent drive of 3,275 calls against the rc.16.2 and rc.16.3 archives found no difference beyond the adapter's version and the citation of its own receipt."
     },
     {
       "id": "A1.c",
@@ -1868,10 +2002,15 @@
       "weight": 0.75,
       "gate": "every tool annotated with an output schema",
       "dependsOn": [],
-      "status": "partial",
-      "release": "none",
-      "evidence": [],
-      "notes": "the three stdio tools carry readOnlyHint/openWorldHint; no output schemas"
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/mcp-adapter/README.md, section \"0.1.0-rc.16.1, 2026-10-04\"",
+        "src/mcp/outputs.ts (an output schema for each tool), src/mcp/create-server.ts (readOnlyHint, destructiveHint, idempotentHint and openWorldHint on each), src/mcp/resources.ts (zodiacs://conventions and zodiacs://methodology); src/mcp/outputs.test.ts holds all 520 charts and 170 comparisons of a seeded corpus to the schemas in zod and as the advertised JSON Schema, through the SDK client",
+        "docs/platform/evidence/mcp-adapter/protocol-drive.json: 95/95 against server.mjs b061f266…, including tools/list output schemas and annotations, resources/list and resources/read",
+        "production dpl_3qPGVCFQh9Qjt7UCqiT68ZCaa3AZ (READY 2026-10-05T00:28:56Z, aliased to zodiacs.org) serves site af91b52c, whose /examples/mcp-server.json names zodiacs-mcp-server-0.1.0-rc.16.1.tgz (97,630 bytes, SHA-256 a44aea72…) pinned to commit fcc41d97, the archive /developers/mcp/ installs"
+      ],
+      "notes": "the three stdio tools carry readOnlyHint/openWorldHint; no output schemas. Checkpoint 15 (2026-10-05): accepted. All three tools of 0.1.0-rc.16.1 declare an output schema beside their annotations, and the two resources give the conventions vocabulary and the methodology. \"Every tool\" is the three tools that exist; A1.a to A1.d's tools carry the same requirement in their own gates. Three reviews of the first build were acted on before release (FINDINGS F-74)."
     },
     {
       "id": "A2",
@@ -1909,9 +2048,18 @@
       "weight": 0.5,
       "gate": "published SKILL.md bundle",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "accepted",
+      "release": "merged",
+      "evidence": [
+        "docs/platform/evidence/programme-acceptance-2026-10-04/README.md",
+        "https://github.com/zodiacs-org/engine/pull/23",
+        "https://github.com/zodiacs-org/engine/blob/c8a390ee1f3ad1f6883a0b986d66a31bf010ddd7/skills/zodiacs-compute/SKILL.md",
+        "https://github.com/zodiacs-org/engine/blob/c8a390ee1f3ad1f6883a0b986d66a31bf010ddd7/docs/evidence/agent-skill-20261001/bundle.json",
+        "https://github.com/zodiacs-org/engine/blob/c8a390ee1f3ad1f6883a0b986d66a31bf010ddd7/docs/evidence/agent-skill-20261001/local-validation.json",
+        "https://api.github.com/repos/zodiacs-org/engine/commits/c8a390ee1f3ad1f6883a0b986d66a31bf010ddd7/check-runs?per_page=100",
+        "docs/platform/evidence/programme-audit-2026-10-04/a4-history-rescan.json"
+      ],
+      "notes": "Public merged bundle content verified; all three file hashes independently match the manifest; 21 successful postmerge checks are directly recoverable. Tool selection, uncertainty, citation and non-accuracy claims covered. No package publication required by this unit. Committed record contains initial scan aggregates and missing optional-example input limitation. Final local rescan receipt is not recovered here; no claim of a recovered raw scan log. This reconciliation publishes no engine source change and does not rerun or reconstruct private patterns. Update 2026-10-04 (checkpoint 13): a new post-publication history check with the owner's private patterns, outside every repository, found no birth data in 6807f632..c8a390ee (2 commits; tree of c8a390ee, 1,080 files) or in everything published since rc.16, 6807f632..23660f5 (6 commits; tree of 23660f5, 1,092 files); the optional published-example check, not run before publication, found every file holding such data citing its source. Only aggregates are recorded (docs/platform/evidence/programme-audit-2026-10-04/a4-history-rescan.json). This is a new check, not the missing receipt of 2026-10-01."
     },
     {
       "id": "A5",
@@ -1938,8 +2086,12 @@
       "dependsOn": [],
       "status": "partial",
       "release": "none",
-      "evidence": [],
-      "notes": "MCP results carry receipts; no cite object"
+      "evidence": [
+        "src/lib/compute-api/ and tests/api/compute-api.test.ts: every compute API success carries cite {url, receipt, engine, version} (P3.3)",
+        "docs/platform/evidence/mcp-adapter/README.md, section \"0.1.0-rc.16.1, 2026-10-04\": every MCP result other than a refusal carries cite {url, receipt, engine, version}; src/mcp/outputs.test.ts recomputes every digest",
+        "production dpl_3qPGVCFQh9Qjt7UCqiT68ZCaa3AZ (READY 2026-10-05T00:28:56Z, aliased to zodiacs.org) serves site af91b52c"
+      ],
+      "notes": "MCP results carry receipts; no cite object. Checkpoint 15 (2026-10-05): still partial. The compute API and, from 0.1.0-rc.16.1, the MCP adapter cite every result; a refusal carries none, which this record reads as within \"results\" (the brief's A6: \"API and MCP results carry cite\"). The static sky API under /api/v1/ carries source, docs, licence and attribution but no cite, and the brief calls it an API (\"a static sky API\", §1). On the reading that A6's API is the hosted compute API alone the gate is met; the owner can rule on it."
     },
     {
       "id": "A8",
@@ -1967,9 +2119,15 @@
       "weight": 1,
       "gate": "markup validates; listed on the developer pages",
       "dependsOn": [],
-      "status": "partial",
-      "release": "none",
-      "evidence": []
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/structured-data-2026-10-05/README.md",
+        "scripts/validate-schema.mjs, which CI runs over the production build (\"Structured data validation\", npm run schema:check), holds each of the six developer pages to its contract in scripts/developer-structured-data-checks.mjs: SoftwareApplication for the engine and the MCP server, SoftwareSourceCode for the engine's repository, WebAPI for the static sky data and the compute API, Dataset for the sky data, the conformance vectors and the sky-fact benchmark, with every value held to the record it comes from (versions, downloads, licences, commits, spans, file lists, URLs the build serves) and a breadcrumb on each page; scripts/developer-structured-data-checks.test.mjs tests the check in 10 cases, and 15 faults planted in a built copy of the pages each failed it (PR #653)",
+        "docs/platform/evidence/structured-data-2026-10-05/vocab-check.txt: every JSON-LD node on the six built pages held to schema.org's vocabulary (V30.1, 2026-10-05), 97 typed nodes of eleven types, 0 errors",
+        "production dpl_6f2JNEQFegyBkAhxp4PYBLgn7i7N (READY 2026-10-05T15:08:18Z, aliased to zodiacs.org) serves site a1217c39; the six developer pages it serves carry JSON-LD identical to the build that validate-schema passed, fetched after READY"
+      ],
+      "notes": "Checkpoint 18 (2026-10-05): accepted. The six developer pages carry SoftwareApplication, SoftwareSourceCode, WebAPI and Dataset markup with breadcrumbs, the site's validator holds every value to its source on every build, and schema.org's vocabulary finds no error. Google's Rich Results Test was not run. The sky-fact benchmark's Dataset names no licence, because none has been chosen. Checkpoint 20 (2026-10-05): the sky-fact benchmark's Dataset now names CC0 1.0 (DECISIONS-2026-10-05 §3), and scripts/developer-structured-data-checks.mjs holds it to that licence."
     },
     {
       "id": "S2",
@@ -2021,10 +2179,19 @@
       "weight": 0.5,
       "gate": "persona/editor/Person-markup blocks cover developer docs",
       "dependsOn": [],
-      "status": "partial",
-      "release": "none",
-      "evidence": [],
-      "notes": "CI blocks the retired persona in src/; developer docs not covered"
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/programme-acceptance-2026-10-04/README.md",
+        "https://github.com/zodiacs-org/site/pull/632",
+        "https://github.com/zodiacs-org/site/actions/runs/37143121771",
+        "https://github.com/zodiacs-org/site/actions/runs/37146059723",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/scripts/check-developer-authorship.mjs",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/scripts/check-developer-authorship.test.mjs",
+        "https://github.com/zodiacs-org/site/blob/a7ecab9a745f9735e191aeae8466469c8d4d3794/.github/workflows/site-check.yml",
+        "docs/platform/evidence/programme-audit-2026-10-04/README.md"
+      ],
+      "notes": "Reviewed scanner and negative controls are committed and active after build; exact merge 076540b6 had 19 premerge and 19 postmerge Site Check successes and READY canonical deployment. Current main retains it. Bounded served developer-doc scanner and existing src guard; not a complete arbitrary JSON-LD semantic processor. Audit 2026-10-04 (checkpoint 13; FINDINGS F-62): the cited runs scanned 156 files with the scanner as of a7ecab9a, and PR635 extended it to the 514 reference pages (676 files, run 37193751725). The audit found realistic bypasses: the persona wrapped across lines or capitalised, other spellings of the editor anchor, single-quoted Person markup in src/ (where the People template carries one subject Person), and a source guard that passed when grep errored. They are closed with shared bounded detectors and scripts/check-source-authorship.mjs, with one recorded People-subject allowance; 210 tests; 702 served text files and 2,102 src files scanned; the known limits are in F-62. The gate's coverage of developer docs held for the forms CI checked; acceptance unchanged."
     },
     {
       "id": "S7",
@@ -2080,10 +2247,20 @@
       "weight": 1,
       "gate": "engine docs at a home outside /sdk/; repository description and topics set; no token framing",
       "dependsOn": [],
-      "status": "partial",
-      "release": "none",
-      "evidence": [],
-      "notes": "zodiacs-org/engine exists (§10.2 decided), and its description and topics are set (read back through a GitHub search on 2026-09-30); the docs are still at /sdk/engine/ (rc.1 TypeDoc with Registry links)"
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/programme-acceptance-2026-10-04/README.md",
+        "https://github.com/zodiacs-org/site/pull/635",
+        "https://github.com/zodiacs-org/site/actions/runs/37186581567",
+        "https://github.com/zodiacs-org/site/actions/runs/37191270664",
+        "https://github.com/zodiacs-org/site/actions/runs/37193751725",
+        "https://zodiacs.org/developers/engine/reference/",
+        "https://zodiacs.org/developers/engine/reference/provenance.json",
+        "https://github.com/zodiacs-org/engine",
+        "docs/platform/evidence/programme-audit-2026-10-04/README.md"
+      ],
+      "notes": "PR635 merged normally as b1636359 after all 19 exact-head checks passed. All 19 postmerge checks passed. Canonical production is READY at that source. Live overview/module/function routes returned200 with correct canonicals, noindex and both-license notices; live provenance and LICENSE/LICENSING/NOTICE match committed text. The engine landing links to the reference. Engine repository description and topics are neutral and its homepage points outside /sdk. Generated declaration documentation describes the implementation, not proof of astronomical accuracy or completeness. Known conformance failures and both license obligations remain. Local Firefox was unavailable and its HTTP proxy refusal remains historical; live canonical GET verification subsequently succeeded through the authorized Vercel connector. Historical SDK bytes remain unchanged. Distribution obligations remain MIT AND CC-BY-4.0. Audit 2026-10-04 (checkpoint 13): the repository description reads \"MIT-licensed astrology calculation engine\" and .zenodo.json \"mit\", which the acceptance called neutral without noting (FINDINGS F-63; owner action, prepared wording). The reference's overview linked http://LICENSING.md, a renderer autolink; it is removed, and the checker now resolves every link: one to zodiacs.org must reach a file in the build, any other must be HTTPS to one of three named hosts; it also rejects token wording (F-64). The gate's three clauses hold; acceptance unchanged."
     },
     {
       "id": "G2",
@@ -2126,13 +2303,11 @@
       "weight": 1,
       "gate": "tags and GitHub releases; Zenodo DOI minted",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": [],
-      "blockedBy": {
-        "owner": true,
-        "action": "the owner's authorization for the first GitHub release of zodiacs-org/engine, which mints a permanent Zenodo DOI; Zenodo's GitHub integration is on for the repository since 2026-09-30 (docs/platform/programme/DECISIONS-2026-09-28.md §10)"
-      }
+      "status": "accepted",
+      "release": "released",
+      "evidence": [
+        "docs/platform/evidence/engine-github-release-2026-10-01/README.md: GitHub release 400849502 at tag v0.1.1-rc.15, engine 93ebae9fa54597aeaafbb346873f7f51e3cc6cb6; full changelog matches approved text after CRLF normalization; permanent DOI 10.5281/zenodo.23080134 published; all 605 archived files byte-identical to the tagged commit."
+      ]
     },
     {
       "id": "G5",
@@ -2228,10 +2403,15 @@
       "weight": 4,
       "gate": "switch instants agree with dense 1 s sampling on 1,000 random windows, zero missed",
       "dependsOn": [],
-      "status": "partial",
-      "release": "none",
-      "evidence": [],
-      "notes": "site Moon-sign candidates for unknown times (moon-certainty.ts); research interval machinery"
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/rc16-gates-2026-10-04/README.md",
+        "https://github.com/zodiacs-org/engine/tree/ddbbaa0b1d21e16834722f81e8708816849c6726/docs/evidence/birth-window (PREREGISTRATION.md in d03f60c0 (authored 2026-09-28T17:29:42Z), an ancestor of 09f8aa18, which records the PASS in RESULTS.md (authored 19:10:39Z); a rebase committed both at 2026-09-30T06:46:40Z; rc16/README.md and rc16/summary.json, the same method on rc.16's build 704cadc: 1,000 of 1,000 windows pass, 24,188 one-second transitions all matched, 0 missed, 0 extra, 0 cell disagreements, 1,487,520 millisecond checks with 0 failures)",
+        "birthWindow in @zodiacs/engine/window; released in @zodiacs/engine 0.1.1-rc.16, on npm under next since 2026-10-01 with SLSA provenance built from 6807f632 (the merge of engine #22, whose package source is the release source ddbbaa0); the site vendors the same bytes (43a72d30…15d8)",
+        "production dpl_Av6FTWYa2iFZzT2WZuWeCsRDg2oV (READY 2026-10-04T17:54:58Z, aliased to zodiacs.org) serves site 67aa32d8, which vendors the rc.16 archive 43a72d30…15d8; its engine chunk names 0.1.1-rc.16; the site does not call birthWindow"
+      ],
+      "notes": "site Moon-sign candidates for unknown times (moon-certainty.ts); research interval machinery. Checkpoint 14 (2026-10-04): accepted on the engine's own preregistered check, rerun on rc.16's build; from that build to the release the window code changed only in comments. The title's \"engine/API\" is read as the engine's own interface, as the programme's handoff of 2026-09-30 read it (the calc, window, houses and sky capabilities); the brief's first slice also names the birth chart tool (B2.b) and the API, and neither the tool nor the hosted compute API offers windows yet. Near the true node's ingresses a window can leave a stretch unresolved (flag node-unresolved, the node's cells null; none of the 1,000 did). RESULTS.md names six commits from before a rebase that are in no published history (FINDINGS F-73); the rc.16 rerun on 704cadc stands on its own."
     },
     {
       "id": "B2.b",
@@ -2259,9 +2439,13 @@
       "dependsOn": [
         "B2.a"
       ],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "accepted",
+      "release": "merged",
+      "evidence": [
+        "docs/platform/evidence/rc16-gates-2026-10-04/README.md",
+        "https://github.com/zodiacs-org/engine/tree/ddbbaa0b1d21e16834722f81e8708816849c6726/docs/evidence/birth-window (RESULTS.md: the 1,000-window rule recorded as PASS; PREREGISTRATION.md in d03f60c0 (authored 2026-09-28T17:29:42Z), an ancestor of 09f8aa18, which records the PASS in RESULTS.md (authored 19:10:39Z); a rebase committed both at 2026-09-30T06:46:40Z; rc16/README.md: PASS again on rc.16's build 704cadc, with rc16/summary.json; both on the engine's main, 23660f5)"
+      ],
+      "notes": "Accepted at checkpoint 14 (2026-10-04): the gate asks for the rule run recorded as PASS or FAIL, and the engine's records give PASS, preregistered, and PASS again on rc.16's build. Recorded merged, as the ledger records the other records it accepts (P0.1, P0.2, P0.3)."
     },
     {
       "id": "B3.a",
@@ -2324,9 +2508,16 @@
       "dependsOn": [
         "A1.b"
       ],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "validated",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/sky-benchmark-v0/README.md",
+        "public/developers/sky-benchmark/v0/: items.json (300 questions, 60 in each of five families), key.json (the engine's answers), scorer.mjs (no dependencies) and tool-answers.json (check_sky_fact's reply to each question when v0 was drawn, unchanged), written by scripts/build-sky-benchmark.mjs and pinned by their SHA-256",
+        "tests/benchmarks/sky-benchmark.test.ts: the questions and the key are what the generator draws, byte for byte, and check_sky_fact still gives the published replies' answers and the facts behind them; check_sky_fact gives the key's answer on all 300 questions and on 2,022 facts around them, among them every date of the 18 entries into a sign while retrograde in the ingress questions' periods, which the test finds again in whatever engine is installed; the generator writes only a version not yet published and refuses to check v0 with a file missing or with another engine; the scorer reads the key's own answers as 300 of 300 and 1,800 wrong replies as wrong",
+        "docs/platform/evidence/sky-benchmark-v0/horizons-check.json: every answer in the key agrees with NASA JPL Horizons (300 of 300)",
+        "production dpl_Aab4BCHqNeL2wK6w3A1AQaQ7wh28 (READY 2026-10-05T12:58:32Z, aliased to zodiacs.org) serves site e20d5f40, which serves /developers/sky-benchmark/ and the four files"
+      ],
+      "notes": "Checkpoint 17 (2026-10-05): validated. The items, the scorer and check_sky_fact's own replies are published, and check_sky_fact agrees with the engine on every item. In the brief's B4 risk line \"raw answers\" means the assistants' answers, which DECISIONS-2026-09-28 §9 sends to the private baselines repository and B4.b scores; this record publishes the tool's replies in their place, a reading the owner confirms or rejects. No licence has been chosen for the files; the programme recommends CC0 1.0, as for the conformance vectors. Checkpoint 20 (2026-10-05): under the owner's delegation the files are dedicated to the public domain under CC0 1.0 (DECISIONS-2026-10-05 §3), which the page, its Dataset markup and llms-full.txt now say; the reading of \"raw answers\" is not ratified under the delegation (§4), so B4.a stays validated."
     },
     {
       "id": "B4.b",
@@ -2373,9 +2564,16 @@
       "weight": 3,
       "gate": "query results against brute force at 10 s on 100 random queries",
       "dependsOn": [],
-      "status": "not-started",
-      "release": "none",
-      "evidence": []
+      "status": "accepted",
+      "release": "deployed",
+      "evidence": [
+        "docs/platform/evidence/election-search-v0/README.md",
+        "docs/platform/evidence/election-search-v0/PREREGISTRATION.md, committed before the seed was drawn; the run's results were committed after it, as they came out (PR #655)",
+        "docs/platform/evidence/election-search-v0/results.json: 100 random queries answered and held against a brute force that reads every condition every 10 seconds with its own void-of-course code; all 100 passed, 206 windows compared, the largest boundary difference 5.4 seconds; one query refused for its allowance and replaced, as preregistered",
+        "tests/api/compute-api-elections.test.ts, with the privacy, private-state, OpenAPI, rate-limit and routing tests; 28 faults planted one at a time in a copy of the search, every reachable one caught (README, \"Faults\")",
+        "production dpl_5hEgWFChgos3USWviHWVFEwHBeVW (READY 2026-10-05T18:05:51Z, aliased to zodiacs.org) serves site 51b64f3c; fetched after READY: POST /api/v1/elections answers the OpenAPI London example with the body the build recorded (seven windows, the same receipt and cite), a window a second over 31 days is refused 422 with limit elections.windowDays, and the OpenAPI document, /developers/compute/#elections and /api/v1/llms.txt list the endpoint"
+      ],
+      "notes": "Checkpoint 19 (2026-10-05): accepted. POST /api/v1/elections answers a window of at most 31 days and one to five conditions (the Moon's phase or void of course, a body's sign, a planet retrograde, a body in an angular house, each negatable) with the stretches in which all hold, every boundary to a second, within an allowance of 6,000 evaluations; it counts under both existing Firewall rules, so no rule or spending was added. The gate's evaluation was preregistered and run once: 100 of 100 queries agreed with the 10-second brute force. The search is tested, not proven complete. F-78, the compute API's per-address cost on rc.16, is the owner's to decide and is not part of this gate. The local MCP adapter was re-cut as 0.1.0-rc.16.3 in the same PR because it inlines the compute API's shared modules; no MCP tool changed."
     },
     {
       "id": "R44",

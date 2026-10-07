@@ -1,15 +1,26 @@
 {
   "version": 1,
-  "id": "consumer-experience-continuity-2026-10-01",
-  "baseCommit": "6ca4269a5f536f11365d3ca9edfef05b215d2fa1",
+  "id": "translated-compatibility-pairs-20261006",
+  "baseCommit": "3e81989ca7ed07588e21c8a6e7907f9f4ba44e18",
   "protectedPaths": [
-    "src/lib/i18n/ui/en.ts",
-    "src/lib/i18n/ui/es.ts",
-    "src/lib/i18n/ui/fr.ts",
-    "src/lib/i18n/ui/it.ts",
-    "src/lib/i18n/ui/pt.ts",
-    "src/lib/i18n/ui/ru.ts",
-    "src/pages/[sign]/index.astro"
+    "src/lib/i18n/index.test.ts",
+    "src/lib/i18n/index.ts",
+    "src/pages/es/[...slug].astro",
+    "src/pages/es/[sign]/index.astro",
+    "src/pages/es/compatibility/[pair]/index.astro",
+    "src/pages/es/compatibility/index.astro",
+    "src/pages/fr/[...slug].astro",
+    "src/pages/fr/[sign]/index.astro",
+    "src/pages/fr/compatibility/[pair]/index.astro",
+    "src/pages/fr/compatibility/index.astro",
+    "src/pages/it/[...slug].astro",
+    "src/pages/it/[sign]/index.astro",
+    "src/pages/it/compatibility/[pair]/index.astro",
+    "src/pages/it/compatibility/index.astro",
+    "src/pages/pt/[...slug].astro",
+    "src/pages/pt/[sign]/index.astro",
+    "src/pages/pt/compatibility/[pair]/index.astro",
+    "src/pages/pt/compatibility/index.astro"
   ],
-  "authorization": "The owner explicitly approved all nine consumer-experience recommendations and requested implementation and live publication: “agree. implement all and push live.” This one-time allowance covers the exact six shared locale catalogs for birthplace and unknown-time guidance, and the English chart-to-Today journey copy. Calculation, time coverage, consent, account sync, and unrelated programme behavior remain unchanged. The sign-guide template also preloads its existing above-the-fold mono face to prevent a cold font layout shift, without changing its design."
+  "authorization": "After reviewing the previews of the translated rising-sign profiles, sky calendars and compatibility pairs on October 6, 2026, and being told that the compatibility-pair translations touch protected language files, the owner replied “merge and i allow this one time”. This one-time exact-path exception covers only the work he selected: the 78 compatibility pair guides translated into Spanish, Brazilian Portuguese, French and Italian, their four localized routes, the removal of their English-only stubs, the links to them from the four localized compatibility hubs and sign guides, and the route policy and its test. Disclosure, legal, Registry, SDK and trust wording are unchanged."
 }

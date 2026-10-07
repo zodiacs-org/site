@@ -6,8 +6,8 @@ const accountSyncV2Enabled = isAccountSyncV2Enabled({
   PUBLIC_ACCOUNT_SYNC_V2_ENABLED: process.env.PUBLIC_ACCOUNT_SYNC_V2_ENABLED,
   PUBLIC_ACCOUNT_SYNC_V2_PREVIEW_ACK: process.env.PUBLIC_ACCOUNT_SYNC_V2_PREVIEW_ACK,
 });
-const updated = '29 September 2026';
-const modifiedAt = '2026-09-29T00:00:00.000Z';
+const updated = '3 October 2026';
+const modifiedAt = '2026-10-03T00:00:00.000Z';
 
 const jsonLd = [
   {
@@ -15,14 +15,14 @@ const jsonLd = [
     name: 'Terms of use — Zodiacs.org',
     url: 'https://zodiacs.org/terms/',
     description:
-      'Terms for using Zodiacs.org astrology tools, saved charts, Registry records, and the optional Astrofolio Jupiter convenience tool.',
+      'Terms for using Zodiacs.org astrology tools, saved charts, Registry records, and external purchase links.',
     dateModified: modifiedAt,
   },
 ];
 ---
 <Base
   title="Terms of Use | Zodiacs.org"
-  description="Terms for using Zodiacs.org astrology tools, saved charts, Registry records, and the optional Astrofolio Jupiter convenience tool."
+  description="Terms for using Zodiacs.org astrology tools, saved charts, Registry records, and external purchase links."
   path="/terms/"
   jsonLd={jsonLd}
 >
@@ -37,14 +37,11 @@ const jsonLd = [
         (“Zodiacs,” “we,” “us,” or “our”). Zodiacs LLC owns and operates
         Zodiacs.org. The site is a free astrology reference with a Registry wing
         whose records, catalogue profiles, SDK, and verification tools are
-        read-only. A separate, optional Astrofolio convenience tool can request
-        a quote from Jupiter and hand a proposed transaction to your own wallet
-        after you explicitly load it. Zodiacs does not take custody or sign for
-        you. Using the site means you agree to these terms. We have tried to keep
+        read-only. Zodiacs.org does not connect wallets, request signatures, or submit transactions. Public address lookups use an address you paste. A lookup does not prove control of an address, legal ownership of an asset, or a person's identity. Purchase links open independent services with their own terms and risks. Using the site means you agree to these terms. We have tried to keep
         them short and readable.
       </p>
 
-      <h2>The Cabinet of Twelve and wallet connections</h2>
+      <h2>The Cabinet of Twelve and public addresses</h2>
       <p>
         The Cabinet of Twelve is an optional symbolic display that reads a locally
         saved birth-chart summary, the public record of one wallet address, and
@@ -53,15 +50,7 @@ const jsonLd = [
         person, wallet score, price prediction, or recommendation. The wallet
         record does not change the birth chart, and no purchase is required.
       </p>
-      <p>
-        Aura accepts a pasted public address or, after your click, asks
-        compatible third-party wallet software for public accounts you
-        authorize. Aura uses one compatible address for its lookup and does not
-        request or need a recovery phrase, private key, message signature, token
-        approval, transaction, or network switch. Pasted addresses may belong
-        to anyone. A connection or lookup does not prove control of an address,
-        legal ownership of an asset, or a person's identity.
-      </p>
+      <p>Zodiacs.org does not connect wallets, request signatures, or submit transactions. Public address lookups use an address you paste. Purchase links open independent services with their own terms and risks.</p>
 
       <h2>What “official” means in the Registry</h2>
       <p>
@@ -86,30 +75,7 @@ const jsonLd = [
         Registry status, an Aura reading, or displayed market context does not
         predict value or reduce those risks.
       </p>
-      <p>
-        Explorer and other external links lead to independent third parties
-        with their own terms, fees, security, and privacy practices. Catalogue
-        profiles and Registry lookups contain no purchase route or trading link.
-        On the separate <a href="/astrofolio/how-to-buy/">Astrofolio How to Buy</a>{' '}
-        page, an optional tool loads only after your click and eligibility
-        confirmation. Jupiter supplies the quote, constructs the proposed
-        transaction, and receives the signed transaction for submission. Your
-        independent wallet displays the transaction and signs locally only if
-        you approve it. Zodiacs.org does not execute or broker the trade, never
-        receives your recovery phrase or private key, holds no keys or funds,
-        cannot reverse a transaction, and receives no referral, platform,
-        liquidity, or marketplace compensation for any trade reached through
-        the site. Blockchain transactions are often irreversible. Check the
-        network, official address, amount, fees, and destination before signing.
-      </p>
-      <p>
-        The optional tool is not available to everyone or lawful in every
-        jurisdiction. Use it only if you are legally eligible where you live,
-        meet any age requirement that applies to you, and may use Jupiter and
-        your wallet under their terms. Do not load or use it where digital-asset
-        swaps are prohibited or restricted for you. Zodiacs.org does not make
-        an eligibility determination for you.
-      </p>
+      <p>Zodiacs.org does not connect wallets, request signatures, or submit transactions. Public address lookups use an address you paste. Purchase links open independent services with their own terms and risks. Blockchain transactions are often irreversible. Zodiacs.org operates Astrofolio. <a href="/disclosure/">Disclosure</a>.</p>
       <p>
         A link or Registry entry is provided for reference and is not an
         endorsement, solicitation, or statement that an asset is suitable for

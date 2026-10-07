@@ -1,7 +1,7 @@
 {
   "schema": "zodiacs.daily-publication-manifest.v2",
-  "date": "2026-10-06",
-  "snapshotAt": "2026-10-06T12:00:00.000Z",
+  "date": "2026-10-07",
+  "snapshotAt": "2026-10-07T12:00:00.000Z",
   "status": "verified",
   "policy": {
     "id": "org.zodiacs.daily.en",
@@ -10,28 +10,28 @@
   },
   "facts": {
     "path": "src/data/daily.json",
-    "fileSha256": "1230ef9922e41e6ecd6003bee4e61d8c382abf540d511084a4fad4f9cab3e0d4",
-    "canonicalSha256": "dc114387a3f0751c73b1cd3a9b295d3657d80f29055b5e82537cfcd412b46aac",
-    "factCount": 46,
+    "fileSha256": "e0792eb84436d652b998c71f16fefef2120e2ec10b0ee248d70b0939c829c736",
+    "canonicalSha256": "20276e73f7da1cc8f66a28f299a108823ff1d2951f9038f1b48c9a9b536bab34",
+    "factCount": 47,
     "eventsCoverage": "complete",
     "eventsSource": "src/data/transits-2026-10.json",
-    "eventsSourceSha256": "1e573505a3a0d6da7b4017fa824fab265c835dac4180b5865ab9b7df0e79e90f",
-    "eventsSourceCanonicalSha256": "a55ee94bda6ee1adba46808203891c911fdca4cf3d515a031776622835c186a0",
+    "eventsSourceSha256": "d216bcb3ceda371b0725817894476755dcba8307fa32de990a3aa78eb776fff2",
+    "eventsSourceCanonicalSha256": "2a26fa0a7ee66ad5a8f8c86078cd3c6a14c2f9e81410cd8b68ff6197618e8472",
     "engine": {
       "name": "@zodiacs/engine",
-      "version": "0.1.1-rc.15"
+      "version": "0.1.1-rc.17"
     }
   },
   "publication": {
     "path": "src/data/daily-publication.json",
-    "canonicalSha256": "bd0749a7e7198460bcb6112c3cc76eeedb3a4b5121144621ea202a7933695fb1",
+    "canonicalSha256": "87004f68859ed743eebb3c484efade63e1c7754f06eb200c2d5c233a69a8b63a",
     "signCount": 12,
-    "outputCount": 60
+    "outputCount": 72
   },
   "generation": {
     "mode": "deterministic-template",
     "generatorId": "zodiacs.daily-renderer.v1.2",
-    "generatorSha256": "ccd8b012d26ef5c0b5b015ac363584844a2d562dc25cdd210ac6f00c476ea98e",
+    "generatorSha256": "502cc5f44a332d60f0406e1b131f096c1b2f943a683951324b99c2d3641894d0",
     "model": null,
     "freeformModelOutput": false
   },

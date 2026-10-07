@@ -1,61 +1,80 @@
 # Vendored @zodiacs/engine artifact
 
-`zodiacs-engine-0.1.1-rc.15.tgz` is the exact npm pack artifact consumed by this
+`zodiacs-engine-0.1.1-rc.17.tgz` is the exact npm pack artifact consumed by this
 candidate site revision. The standalone starter keeps its separate engine
 `0.1.1-rc.3` pin and immutable project archive.
 
-- Package: `@zodiacs/engine@0.1.1-rc.15`, on npm under `latest` and `next`
-  since 2026-09-30, published from the engine's `release.yml` with SLSA
-  provenance; npm's tarball has this archive's SHA-1 and SHA-512
-  (`docs/platform/evidence/site-engine-rc15/npm-registry.json`)
+- Package: `@zodiacs/engine@0.1.1-rc.17` (vendored candidate, not on npm)
+- Registry read of 2026-10-06: npm carries rc.14 to rc.16, `next` is rc.16 and
+  `latest` rc.15, and it has no rc.17. npm's rc.16 tarball is still the
+  vendored rc.16 archive, with its attestation verified. See
+  `docs/platform/evidence/site-engine-rc17/npm-view.txt` and
+  `npm-registry-rc16.json`. Under the owner's delegated decision of 2026-10-05
+  (`docs/platform/programme/DECISIONS-2026-10-05.md` §7) rc.17 is not to be
+  published; the next publication is the 1.0 candidate.
 - Source repository: `https://github.com/zodiacs-org/engine`
-- Source commit: `104bd5a56ee00356eecc75f15f0aa946f5a39f41`
-- Artifact carrier commit: `cbad72cf075c1950bca1250dfd911085da3208d2`, merged into
-  engine `main` by `93ebae9fa54597aeaafbb346873f7f51e3cc6cb6` (engine PR #20)
-- Artifact SHA-256: `24eeb597b0157598c0faa26bb615c0cb5dfaaeac0393d62c73fbd37c5da4d348`
-- [Immutable anonymous download](https://raw.githubusercontent.com/zodiacs-org/engine/cbad72cf075c1950bca1250dfd911085da3208d2/artifacts/zodiacs-engine-0.1.1-rc.15.tgz)
-- Archive: 54 files, 190,974 packed bytes, 668,343 unpacked bytes.
+- Source commit: `aae419c05b77455b9e8f03ca11ee273b446f7d02`
+- Artifact carrier commit: `b080217c1b5b0b36c931e9c237bcff0308ec1efc`, merged into
+  engine `main` by `782b4963a8575fa8d81c602a36285f65fb9ae9bb` (engine PR #26)
+- Artifact SHA-256: `9cd24c788863424ef614aaadec580db5a0dfc529303d385274db48a092a5299a`
+- [Immutable anonymous download](https://raw.githubusercontent.com/zodiacs-org/engine/b080217c1b5b0b36c931e9c237bcff0308ec1efc/artifacts/zodiacs-engine-0.1.1-rc.17.tgz)
+- Archive: 70 files, 273,123 packed bytes, 946,349 unpacked bytes.
 
 The archive and its `.sha256` receipt were written from the engine
-repository's git objects at `93ebae9f`, byte for byte (blob ids `304a8165…`
-and `29f73f02…`), and the digest checked again; the anonymous download above
-gives the same bytes. The licence expression is `MIT AND CC-BY-4.0`, as in
-rc.14. The packaged NOTICE and LICENSING.md now also cite the IERS leap-second
-list, the IERS UT1 − UTC data the core carries, the tzdb 2025c history that
-`@zodiacs/engine/geo` ships, and the sources of the Gregorian adoption table
-and of the Vedic ayanamsas' star values. `engines.node` is
-`^20.19.0 || >=22.7.0`.
+repository's git objects at the carrier, byte for byte (blob ids `8737a033…`
+and `e5e2e76a…`, the same at `782b4963`), and the digest checked again. The
+licence expression is `MIT AND CC-BY-4.0`, as in rc.16, and `engines.node` is
+`^20.19.0 || >=22.7.0`. The packaged NOTICE and LICENSING.md now say that the
+22 published star values of the star-based ayanamsas sit in a chunk that
+`./vedic` and `./calc` share.
 
-What rc.15 changes for this site:
+What rc.17 changes for this site:
 
-- From 1972 to 2027-10-02 a chart reads its instant as UTC: TT from the IERS
-  leap seconds and UT1 from IERS UT1 − UTC. rc.14 read every instant as UT1
-  with the ΔT model, which it still does outside those years. On the site's
-  comparison of its outputs on both, the Moon moved by up to 0.50″, the other
-  bodies by up to 0.070″, and the angles with UT1 − UTC: the midheaven by up
-  to 12.7″ and the ascendant by up to 62.7″ at 69.6° N. Charts report
-  `timeScale`, and their `deltaT.model` is `"iers-utc/1"` in those years.
-- Receipts gain a conventions set at index 0 of
-  `NATAL_RECEIPT_CONVENTION_SETS`, recording the time basis; receipts of
-  rc.8 to rc.14 still parse under the rc.8 set, now at index 1.
-- In `@zodiacs/engine/geo`, a wall time before 1970 needs `prepareLocalTime`
-  first, unknown options throw, and `lmt` means a local-mean-time clock. The
-  site keeps its own resolver, `src/lib/time/localToUtc.ts`, and gives `lmt`
-  the same meaning; with a longitude the two agree on 264,455 wall times from
-  1850 to 1969.
-- New entry points `@zodiacs/engine/timing` and `@zodiacs/engine/vedic`, which
-  the root entry does not import.
+- Nothing it computes. rc.17 adds the sidereal zodiac to
+  `@zodiacs/engine/calc`, and in `./vedic` removes a rounding from linear
+  ayanamsas; the site imports neither entry. Every entry it imports is
+  rc.16's code but for the version string and the names of chunk files. The
+  data the site generates from the engine are rc.16's but for the version
+  they record and the digests that cover it, and the natal bundle it
+  measures is 0.1 KB smaller after Brotli
+  ([the rc.17 adoption evidence](../docs/platform/evidence/site-engine-rc17/README.md)).
+- Receipts name 0.1.1-rc.17 and carry rc.16's conventions set, unchanged.
 
-The package does not export its time basis. `src/lib/engine/time-basis.mjs`
-is its compiled code bundled from this archive by
+`src/lib/engine/time-basis.mjs` carries the package's compiled time basis,
+frame of date and nutation, bundled from this archive by
 `scripts/build-time-basis.mjs`, for the calendar function's server adapter
-and the reference tools, which call astronomy-engine directly.
-
-[The rc.15 adoption evidence](../docs/platform/evidence/site-engine-rc15/README.md)
-records what was run for this adoption and what it does not establish.
+and the reference tools, which call astronomy-engine directly. From rc.16 it
+differs only in five comment lines: the engine version, the archive's digest
+and the names of chunk files.
 
 The site pin is not evidence of npm publication, production deployment or
 external adoption. Earlier archives and evidence retain their identities.
+
+## Previous rc.16 site candidate
+
+`zodiacs-engine-0.1.1-rc.16.tgz` and its checksum remain unchanged. Source
+`ddbbaa0b1d21e16834722f81e8708816849c6726`, carrier
+`ef44477f85f28a57d5ec7f61ed6ea6a99c4be563` (merged by `6807f632`), SHA-256
+`43a72d30e483d8ff22024e403c4bd0d86d81bb6e1d0ad138f857cd001ab015d8`, 266,934
+bytes. npm has carried it under `next` since 2026-10-01, and its tarball is
+these bytes, with SLSA provenance verified
+(`docs/platform/evidence/site-engine-rc16/npm-release/verification-receipt.json`).
+It brought the full IAU 2000B nutation, a receipt conventions set naming it,
+and the opt-in entries `/calc`, `/window`, `/techniques`, `/houses` and
+`/sky`. [Its evidence](../docs/platform/evidence/site-engine-rc16/README.md)
+describes that release and does not certify rc.17.
+
+## Previous rc.15 site candidate
+
+`zodiacs-engine-0.1.1-rc.15.tgz` and its checksum remain unchanged. Source
+`104bd5a56ee00356eecc75f15f0aa946f5a39f41`, carrier
+`cbad72cf075c1950bca1250dfd911085da3208d2` (merged by `93ebae9f`), SHA-256
+`24eeb597b0157598c0faa26bb615c0cb5dfaaeac0393d62c73fbd37c5da4d348`, 190,974
+bytes. It read an instant from 1972 to 2027-10-02 as UTC, through the IERS
+leap seconds and UT1 − UTC, shipped the tzdb 2025c history before 1970 and
+gave `lmt` its local-mean-time meaning.
+[Its evidence](../docs/platform/evidence/site-engine-rc15/README.md) describes
+that release and does not certify rc.16.
 
 ## Previous rc.14 site candidate
 
@@ -68,7 +87,7 @@ secondary progressions (rc.12), exact configured-aspect and declination
 decisions (rc.13), and the Sun's out-of-bounds convention, `EPHEMERIS_SPAN`
 refusal and the licence expression `MIT AND CC-BY-4.0` (rc.14).
 [Its evidence](../docs/platform/evidence/site-engine-rc14/README.md) describes
-that release and does not certify rc.15.
+that release and does not certify rc.15 or rc.16.
 
 ## Previous rc.10 site candidate
 

@@ -1,6 +1,8 @@
 /**
- * The three operations this adapter offers, as plain functions over validated
- * arguments.
+ * Three of the six operations this adapter offers, as plain functions over
+ * validated arguments: the capabilities reply, a natal chart and a comparison.
+ * The other three, the compute API's positions, events and sky facts, are in
+ * `sky-tools.ts`.
  *
  * Every calculation here is the site's own: `natalChart` and the envelope codec
  * come from the pinned `@zodiacs/engine` candidate, and the comparison is
@@ -21,12 +23,19 @@ import {
   createNatalEnvelope, parseNatalEnvelope, serializeNatalEnvelope,
   type NatalEnvelope, type NatalEnvelopeErrorCode,
 } from '@zodiacs/engine/receipt';
-import { compareEnvelopes } from '../lib/compare/diff';
+import { compareEnvelopes, type Difference } from '../lib/compare/diff';
 import { replay } from '../lib/compare/replay';
+import {
+  BUDGETS, EPOCH, EVENT_BODIES, EVENT_KINDS, PHASE_NAMES, POSITION_BODIES, SKY_FACT_KINDS,
+} from '../lib/compute-api/constants';
+import { SKY_TOOLS, capabilitiesReceipt, citeFor, comparisonReceipt } from './cite';
+import type { CapabilitiesOutput, CompareOutput, NatalRecordOutput, NatalSummaryOutput } from './outputs';
+import { RESOURCES } from './resources';
+import { ANY_ZONE_DAY_TEXT } from './sky-tools';
 import {
   ADAPTER_NAME, ADAPTER_VERSION, COMPARE_OUTPUTS, EPOCH_MAX_UTC, EPOCH_MIN_UTC,
   HOUSE_SYSTEMS, LIMITS, OUTPUTS, REFERENCES, parseCoordinates, parseInstant,
-  polarAngleExclusion, recordTooLarge, resultTooLarge, rowValueIsTheFinding,
+  bounded, polarAngleExclusion, recordTooLarge, rowValueIsTheFinding,
   utcNoonMisused,
 } from './bounds';
 
@@ -40,13 +49,14 @@ export const PRIVACY = Object.freeze({
   output: 'A comparison reports the exact difference between two charts. Anyone holding one of the two can reconstruct the other from it, so that output is safer to pass on than a full record but it is not anonymous.',
   withheld: 'By default a comparison names which fields differ and by how much, and leaves out the values of rows carrying birth details or computed positions — you supplied both records to this call, so repeating their contents back tells you nothing you did not have, while adding a second copy to whatever this result travels through. Ask for output: "full" when you need those values. This shortens what travels onward; it hides nothing from the assistant you are talking to, which already received both records as arguments.',
   claims: 'A version, checksum or source URL inside a supplied record is a claim that record makes about itself. Nothing here authenticates it.',
+  citation: 'A chart\'s cite.receipt is the digest of its calculation receipt, which holds the instant as it was written, offset included, the coordinates and the settings. The digest identifies the birth details from either side: with the date and the place, trying each time of day finds the time; with the instant, which the positions give away, trying places from a list of towns finds the place, even for a chart with no known time, whose summary shows no angle, cusp or coordinate. With timeKnown: false the coordinates change nothing else in the result, so leaving them out keeps them out of the receipt. Quote the digest only where the birth details may be known. A comparison cites the adapter\'s own receipt, which holds nothing from either record. get_positions, find_events and check_sky_fact cite the compute API\'s receipt for the same calculation, which they carry and which holds no instant, date or body from the request.',
 });
 
 /** What this first integration deliberately does not do. */
 export const UNSUPPORTED = Object.freeze([
-  'Transit, progression, return, eclipse or any other search over a date range.',
+  'Transit, progression, return or eclipse searches. find_events finds sign ingresses, stations and new and full moons in a window of at most 92 days, and nothing else.',
   'Interpretation, horoscope or any generated reading.',
-  'Resolving a place name or timezone: supply an instant with an explicit zone offset.',
+  'Resolving a place name or time zone: supply an instant with an explicit offset. check_sky_fact reads a date without a zone as that day in every UTC offset in use today at once.',
   'Reading or writing files. Records are passed as content; the adapter accepts no path and imports no filesystem module.',
   'Fetching a URL, running a command, importing a named module or installing a package.',
   'Any network listener, remote endpoint or browser-reachable port. The transport is local stdio only.',
@@ -76,7 +86,7 @@ export const NATAL_INPUT = z.strictObject({
   houseSystem: z.enum(HOUSE_SYSTEMS).default('placidus')
     .describe('Requested house system. Both the request and what the engine could actually use are reported, which differ inside the polar circle: Placidus and Koch are undefined there, and the engine uses whole sign.'),
   timeKnown: z.boolean().default(true)
-    .describe('False means utc is a reference instant rather than a birth time, which suppresses angles and houses. It does not imply noon.'),
+    .describe('False means utc is a reference instant rather than a birth time, which suppresses angles and houses. It does not imply noon. With false, coordinates change nothing in the result, but the calculation record still holds them and the result\'s cite.receipt identifies them.'),
   reference: z.enum(REFERENCES).optional()
     .describe('What the supplied instant represents, recorded in the calculation record. Omitting it is the usual case and infers nothing, including when timeKnown is false. "utc-noon" means no birth time was known and midday UTC stands in, so it needs timeKnown: false and utc at exactly 12:00:00Z.'),
   output: z.enum(OUTPUTS).default('summary')
@@ -89,7 +99,7 @@ export const COMPARE_INPUT = z.strictObject({
   right: z.string().min(1).max(LIMITS.recordBytes)
     .describe('The content of the second calculation record, as JSON text.'),
   output: z.enum(COMPARE_OUTPUTS).default('summary')
-    .describe('summary names every field that differs, with its label, kind and numeric difference, and leaves out the values of rows carrying birth details or computed positions — you already hold both records. full returns those values too; ask for it when you need to read them rather than act on which fields moved.'),
+    .describe('summary lists every row full does, with its label, kind and numeric difference, and leaves out the values of rows carrying birth details or computed positions — you already hold both records. full returns those values too; ask for it when you need to read them rather than act on which fields moved.'),
 });
 
 /**
@@ -156,31 +166,55 @@ function hint(record: string, code: NatalEnvelopeErrorCode): string {
 }
 
 export function describeCapabilities(): ToolOutcome {
-  return {
-    ok: true,
-    value: {
-      adapter: { name: ADAPTER_NAME, version: ADAPTER_VERSION, releaseStatus: 'unpublished-candidate', transport: 'stdio' },
-      engine: { name: '@zodiacs/engine', version: ENGINE_VERSION, releaseStatus: 'unpublished-candidate' },
-      schemas: { envelope: NATAL_ENVELOPE_SCHEMA, receipt: NATAL_RECEIPT_SCHEMA, diagnostic: NATAL_DIAGNOSTIC_SCHEMA },
-      supported: {
-        houseSystems: [...HOUSE_SYSTEMS],
-        references: [...REFERENCES],
-        referenceRules: {
-          'utc-noon': 'needs timeKnown: false and utc at exactly 12:00:00Z; it records that no birth time was known',
-          'local-noon': 'not offered: it needs a captured local date, wall time, zone and offset, and this adapter resolves no timezones',
-        },
-        epoch: { from: EPOCH_MIN_UTC, to: EPOCH_MAX_UTC },
-        coordinates: {
-          latitude: [-90, 90],
-          longitude: [-180, 180],
-          excluded: 'latitude exactly 90 or -90 with timeKnown: true — the engine does not compute angles at the exact poles',
-        },
-        limits: { ...LIMITS },
+  const receipt = capabilitiesReceipt();
+  const value: CapabilitiesOutput = {
+    adapter: { name: ADAPTER_NAME, version: ADAPTER_VERSION, releaseStatus: 'unpublished-candidate', transport: 'stdio' },
+    // 0.1.1-rc.17 is the candidate the site vendors, and npm does not carry it: npm serves rc.16 under
+    // `next` (docs/platform/programme/DECISIONS-2026-10-05.md §7). The adapter is not on npm either.
+    engine: { name: '@zodiacs/engine', version: ENGINE_VERSION, releaseStatus: 'unpublished-candidate' },
+    schemas: { envelope: NATAL_ENVELOPE_SCHEMA, receipt: NATAL_RECEIPT_SCHEMA, diagnostic: NATAL_DIAGNOSTIC_SCHEMA },
+    supported: {
+      houseSystems: [...HOUSE_SYSTEMS],
+      references: [...REFERENCES],
+      referenceRules: {
+        'utc-noon': 'needs timeKnown: false and utc at exactly 12:00:00Z; it records that no birth time was known',
+        'local-noon': 'not offered: it needs a captured local date, wall time, zone and offset, and this adapter resolves no timezones',
       },
-      unsupported: [...UNSUPPORTED],
-      privacy: { ...PRIVACY },
+      epoch: { from: EPOCH_MIN_UTC, to: EPOCH_MAX_UTC },
+      coordinates: {
+        latitude: [-90, 90],
+        longitude: [-180, 180],
+        excluded: 'latitude exactly 90 or -90 with timeKnown: true — the engine does not compute angles at the exact poles',
+      },
+      limits: { ...LIMITS },
     },
+    sky: {
+      tools: Object.keys(SKY_TOOLS) as Array<keyof typeof SKY_TOOLS>,
+      sameAs: 'POST https://zodiacs.org/api/v1/positions, /events and /sky-fact: the same parser, calculation and receipt, so the same result and cite.receipt for the same request',
+      epoch: { from: EPOCH.from, to: EPOCH.to },
+      positionBodies: [...POSITION_BODIES],
+      eventBodies: [...EVENT_BODIES],
+      eventKinds: [...EVENT_KINDS],
+      factKinds: [...SKY_FACT_KINDS],
+      phases: [...PHASE_NAMES],
+      // The compute API's limits on these three tools' requests, by name: its
+      // table also holds the limits of elections, which this adapter does not offer.
+      limits: {
+        'positions.instants': BUDGETS['positions.instants'],
+        'events.windowDays': BUDGETS['events.windowDays'],
+        'events.samples': BUDGETS['events.samples'],
+        'sky-fact.samples': BUDGETS['sky-fact.samples'],
+      },
+      search: { window: 'start-exclusive-end-inclusive', completeness: 'tested-not-proven' },
+      dates: ANY_ZONE_DAY_TEXT,
+    },
+    resources: RESOURCES.map(({ uri, name, mimeType }) => ({ uri, name, mimeType })),
+    unsupported: [...UNSUPPORTED],
+    privacy: { ...PRIVACY },
+    receipt,
+    cite: citeFor('get_capabilities', receipt),
   };
+  return { ok: true, value };
 }
 
 export function calculateNatalChart(args: z.infer<typeof NATAL_INPUT>): ToolOutcome {
@@ -214,15 +248,25 @@ export function calculateNatalChart(args: z.infer<typeof NATAL_INPUT>): ToolOutc
   }
 
   const { receipt, result } = envelope;
-  const value = args.output === 'record'
+  // A receipt of the current conventions set always names its ephemeris; the
+  // type leaves it optional for records from before rc.8, which this engine
+  // never writes. Checked rather than assumed: a throw here is a refusal.
+  const { ephemeris } = receipt.engine;
+  if (!ephemeris) throw new TypeError('The engine wrote a receipt that names no ephemeris');
+  const engine = { name: receipt.engine.name, version: receipt.engine.version, ephemeris };
+  // The summary cites the receipt it leaves out, so a summary and a record of
+  // one calculation cite one digest; only the record carries the receipt.
+  const cite = citeFor('calculate_natal_chart', receipt);
+  const value: NatalRecordOutput | NatalSummaryOutput = args.output === 'record'
     ? {
-      engine: receipt.engine,
+      engine,
       schema: envelope.schema,
       // An explicit, documented choice: the record repeats the inputs back.
       record: serializeNatalEnvelope(envelope),
+      cite,
     }
     : {
-      engine: receipt.engine,
+      engine,
       // These four are not an echo of the request. Without them a position
       // table cannot be read: whether a time was known, which house system was
       // asked for, which one the engine could use, and why one is absent.
@@ -234,6 +278,7 @@ export function calculateNatalChart(args: z.infer<typeof NATAL_INPUT>): ToolOutc
       angles: result.angles,
       cusps: result.houses?.cusps ?? null,
       aspects: result.aspects,
+      cite,
     };
   return bounded(value);
 }
@@ -263,13 +308,19 @@ export function compareCalculationRecords(args: z.infer<typeof COMPARE_INPUT>): 
   // difference. Which field moved and by how much is the diagnosis; the
   // absolute values are a second copy of what the caller already sent.
   const full = args.output === 'full';
-  const differences = full ? comparison.differences : comparison.differences.map((row) => {
-    if (rowValueIsTheFinding(row.id)) return row;
-    const { left: _left, right: _right, ...rest } = row;
+  // Copies, so a reply shares no object with the comparison that made it. A
+  // record may carry numbers as large as Number.MAX_VALUE, so the difference of
+  // two can overflow to an infinity, which has no JSON form: it is sent as null,
+  // as the text reply always wrote it, rather than failing the output schema.
+  const copy = (row: Difference): Difference => ({ ...row, delta: Number.isFinite(row.delta) ? row.delta : null });
+  const differences = full ? comparison.differences.map(copy) : comparison.differences.map((row) => {
+    if (rowValueIsTheFinding(row.id)) return copy(row);
+    const { left: _left, right: _right, ...rest } = copy(row);
     return { ...rest, valuesWithheld: true as const };
   });
 
-  return bounded({
+  const receipt = comparisonReceipt(args.output);
+  const value: CompareOutput = {
     identical: comparison.identical,
     counts: {
       differences: comparison.differences.length,
@@ -279,11 +330,14 @@ export function compareCalculationRecords(args: z.infer<typeof COMPARE_INPUT>): 
     },
     output: args.output,
     differences,
-    explanations: comparison.explanations,
-    limits: comparison.limits,
+    explanations: comparison.explanations.map((row) => ({ ...row, covers: [...row.covers] })),
+    limits: [...comparison.limits],
     disclosure: PRIVACY.output,
     ...(full ? {} : { withheld: PRIVACY.withheld }),
-  });
+    receipt,
+    cite: citeFor('compare_calculation_records', receipt),
+  };
+  return bounded(value);
 }
 
 /**
@@ -310,11 +364,3 @@ function refusalOf(error: unknown): string {
 }
 
 const trimStop = (message: string) => message.replace(/\.+$/, '');
-
-function bounded(value: Record<string, unknown>): ToolOutcome {
-  const oversized = resultTooLarge(value);
-  if (oversized !== null) {
-    return { ok: false, refusal: `The result is ${oversized} bytes, over the ${LIMITS.resultBytes}-byte limit.` };
-  }
-  return { ok: true, value };
-}

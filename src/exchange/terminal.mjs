@@ -13,7 +13,7 @@
  * Two markets are deliberately kept apart on this page and labelled so: the
  * chart and tape describe the sign's canonical pool (the reference market),
  * while the panel's indicative quote is Jupiter's aggregate and may route
- * beyond that pool. A trade is quoted again before wallet review.
+ * beyond that pool. Zodiacs.org does not connect wallets, request signatures, or submit transactions.
  */
 
 import { EXCHANGE_SIGNS } from './signs.mjs';
@@ -83,13 +83,13 @@ export function panelLocksSelection(candidate) {
 export const LADDER_CAPTION = 'These pools have no order book. Each rung is an indicative Jupiter quote '
   + 'at the time requested; price comes from the returned atomic amounts and “vs best” compares '
   + 'the smallest rung. Sell sizes are estimates from the indexed mid. Quotes with unreadable '
-  + 'fee or impact fields, or a fee above 0.10%, are refused. A trade is quoted again before wallet review.';
+  + 'fee or impact fields, or a fee above 0.10%, are refused. Zodiacs.org does not connect wallets, request signatures, or submit transactions.';
 
 /** The reference-vs-execution boundary, also pinned by test. */
 export const CHART_SCOPE = 'Reference market — the sign’s canonical pool. '
-  + 'Orders execute through Jupiter and may route beyond it.';
+  + 'Public address lookups use an address you paste.';
 export const PANEL_SCOPE = 'Indicative aggregate quote — Jupiter may route across several pools; '
-  + 'a trade is quoted again before wallet review.';
+  + 'Zodiacs.org does not connect wallets, request signatures, or submit transactions.';
 
 function el(tag, className, text) {
   const node = document.createElement(tag);
@@ -125,22 +125,6 @@ async function readRegistry() {
   }
   if (records.size !== EXCHANGE_SIGNS.length) throw new Error('registry: incomplete');
   return records;
-}
-
-/** The trade panel's runtime, fetched at most once and only when wanted. */
-let tradeBundleReady = null;
-function loadTradeBundle() {
-  if (tradeBundleReady) return tradeBundleReady;
-  tradeBundleReady = new Promise((resolve) => {
-    if (window.zodiacsTrade) { resolve(window.zodiacsTrade); return; }
-    const script = document.createElement('script');
-    script.src = '/assets/trade.js';
-    script.defer = true;
-    script.addEventListener('load', () => resolve(window.zodiacsTrade ?? null), { once: true });
-    script.addEventListener('error', () => resolve(null), { once: true });
-    document.body.appendChild(script);
-  });
-  return tradeBundleReady;
 }
 
 const HASH_SLUGS = new Set(EXCHANGE_SIGNS.map((sign) => sign.slug));
@@ -203,7 +187,7 @@ export function createTerminal({ host }) {
   mobileTabs.setAttribute('role', 'tablist');
   mobileTabs.setAttribute('aria-label', 'Market view');
   const chartTab = el('button', 'zme-mobile-tabs__tab', 'Chart');
-  const tradeTab = el('button', 'zme-mobile-tabs__tab', 'Trade');
+  const tradeTab = el('button', 'zme-mobile-tabs__tab', 'Registry');
   for (const [button, id, panelId] of [
     [chartTab, 'zme-chart-tab', 'zme-chart-panel'],
     [tradeTab, 'zme-trade-tab', 'zme-trade-panel'],
@@ -329,7 +313,7 @@ export function createTerminal({ host }) {
   statsCard.append(statsHead, statsGrid);
 
   desk.append(panelCard, ladderCard, statsCard);
-  const stickyBuy = el('button', 'zme-mobile-buy', 'Buy');
+  const stickyBuy = el('button', 'zme-mobile-buy', 'Registry');
   stickyBuy.type = 'button';
 
   grid.append(rail, center, desk);
@@ -451,15 +435,9 @@ export function createTerminal({ host }) {
     }
   }
 
-  function focusTradeAmount(attempt = 0) {
+  function focusRegistryLink() {
     if (!mobileMedia.matches || mobileTab !== 'trade') return;
-    const input = panelHost.querySelector('.tp .pay__input');
-    if (input) {
-      input.focus({ preventScroll: true });
-      input.scrollIntoView({ block: 'center', behavior: 'auto' });
-      return;
-    }
-    if (attempt < 20) setTimeout(() => focusTradeAmount(attempt + 1), 50);
+    panelHost.querySelector('a')?.focus({ preventScroll: true });
   }
 
   function closeMarketSheet({ restoreFocus = true } = {}) {
@@ -561,7 +539,7 @@ export function createTerminal({ host }) {
   tradeTab.addEventListener('click', () => setMobileTab('trade'));
   stickyBuy.addEventListener('click', () => {
     setMobileTab('trade');
-    focusTradeAmount();
+    focusRegistryLink();
   });
   document.addEventListener('keydown', onTerminalKeydown);
   mobileMedia.addEventListener('change', updateResponsivePresentation);
@@ -585,7 +563,7 @@ export function createTerminal({ host }) {
     marketPair.textContent = `${record?.symbol || sign?.name || '—'} / USDC`;
     marketSource.srcset = sign ? `/assets/zodiac-icons/128/${sign.slug}.avif` : '';
     marketIcon.src = sign ? `/assets/zodiac-icons/128/${sign.slug}.webp` : '';
-    stickyBuy.textContent = `Buy ${sign?.name ?? ''}`.trim();
+    stickyBuy.textContent = `Registry · ${sign?.name ?? ''}`.trim();
   }
 
   function setRailLocked(locked) {
@@ -716,7 +694,7 @@ export function createTerminal({ host }) {
     const pool = poolForSelection();
     if (!pool) {
       chart.clear();
-      showState(chartState, 'No indexed pool to chart. The trade panel still quotes the venue directly.');
+      showState(chartState, 'No indexed pool to chart. Public market data is unavailable.');
       reportState('chart', 'not_indexed');
       return;
     }
@@ -757,7 +735,7 @@ export function createTerminal({ host }) {
       }
       if (!fresh()) return;
       chart.clear();
-      showState(chartState, 'Chart unavailable. The trade panel still quotes the venue directly.');
+      showState(chartState, 'Chart unavailable. Public market data is unavailable.');
       reportState('chart', error?.code === 'not_indexed' ? 'not_indexed' : 'unavailable');
     }
     } finally {
@@ -966,43 +944,12 @@ export function createTerminal({ host }) {
 
   // ── the trade panel ─────────────────────────────────────────────────────
   function mountPanel() {
-    const sign = signFor(selected);
-    const record = recordFor(selected);
-    const attempt = ++panelAttempt;
-    panel?.destroy?.();
-    panel = null;
-    setRailLocked(false);
     panelHost.replaceChildren();
-    if (!sign || !record) {
-      panelHost.append(registryFailed
-        ? registryFailureNode()
-        : stateNode('Reading the registry…'));
-      return;
-    }
-    loadTradeBundle().then((trade) => {
-      if (destroyed || attempt !== panelAttempt) return;
-      if (!trade) {
-        panelHost.append(stateNode('The trade panel could not load. The record page lists the venue route directly.'));
-        reportState('panel', 'unavailable');
-        return;
-      }
-      panel = trade.mount(panelHost, {
-        name: sign.name,
-        slug: sign.slug,
-        mint: record.mint,
-        hue: sign.hue,
-        iconUrl: `/assets/zodiac-icons/128/${sign.slug}.webp`,
-      }, {
-        onStateChange: (_view, state) => {
-          setRailLocked(state.state === 'signing');
-          if (state.state === 'ready') reportState('panel', 'ready');
-          if (state.state === 'error') {
-            reportState('panel', state.error === 'rate_limited' ? 'rate_limited' : 'unavailable');
-          }
-        },
-      });
-      if (!panel) reportState('panel', 'unavailable');
-    });
+    const record = recordFor(selected);
+    if (!record) return;
+    const link = el('a', '', 'Registry');
+    link.href = `/registry/${selected}/`;
+    panelHost.append(link);
   }
 
   // ── selection ───────────────────────────────────────────────────────────

@@ -59,3 +59,15 @@ The first full test run overlapped a build, invalidating several built-file chec
 - Full sequential suite: 6,482 passed, 4 skipped, 4 failed. The i18n built-payload timeout passes alone (11 tests). Three unchanged strict engine/example/scene/wheel numeric golden comparisons still fail on this macOS environment; frozen engine and golden files were not modified. Hosted Linux validation is pending; do not call the full suite green.
 - Current production audit: zero findings after compatible lockfile patches. Three development-only test-runner findings remain; resolving them requires a separately verified major Vitest upgrade.
 - Separate v3 synthetic archive restored into an isolated directory, installed only its two pinned runtime packages, verified the frozen source/protocol and ran two serialized cycles with zero due tasks/errors. It contains the standalone acquisition bundle, original CA and scheduler. No live v3 dates or decisions were frozen. Original v1/v2 bytes remain untouched.
+
+## Protected preview checkpoint — 7 October, 00:42 Bangkok
+
+Draft commit `5c0c6054bd1a35c6ca101a7c722dddcf65241c09` was published. Manual preview deployment `dpl_9ncYRfaFtjHA7AMC95mLvZ3nr458` is READY at https://zodiacs-94jc7vriu-zodiacsofficial.vercel.app. The actual deployed driver passed all five groups through a short-lived origin-scoped OIDC binding, including 14 cross-asset disabled API requests, validation/method checks, real calendar shards, private journal persistence and noindex research. No fixtures, public access links or protection/guard changes. Stable alias is not yet moved because main integration is in progress.
+
+The shared original Git store contains a macOS cloud-offloaded 1.5 GB pack whose reads block. All implementation files and staged index remain preserved there. A fresh isolated publishing copy at `/private/tmp/lens-publish-20261007` reproduces the exact parent/tree and was used to push. No reset or shared pack deletion occurred.
+
+Current main (`55871059`) has 2,155 changed paths since this draft's integration base, including engine rc.17. The user delegated the choice; integrate main so the draft receives normal PR checks, keep frozen v1/v2 untouched, and revalidate the still-unfrozen v3 against the current app engine. Direct CI run 37505199451 tests the pre-integration checkpoint; it is not a final integrated-source acceptance.
+
+## Main integration — 7 October, 00:51 Bangkok
+
+Integrated main `55871059` into the isolated review copy after preserving the pre-integration draft. All 41 conflicts concern generated files, lockfile and budget settings. Current main supplies the generator inputs and approved engine budget; the Lens 32 KB limit remains unchanged. The app now follows main's rc.17 pin. Only the unfrozen v3 draft/minimal dependency/source manifest follow rc.17; frozen v1/v2 sources, protocols and witnesses remain unchanged. Generated evidence, security audit, full tests, browser checks and the final preview must be rerun on this integration.

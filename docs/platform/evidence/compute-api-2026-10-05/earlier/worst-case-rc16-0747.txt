@@ -1,0 +1,6 @@
+events, 92 days (the limit), all bodies and kinds, four windows a year 1800-2199: 1600 requests, cpu max 630.4 ms
+positions, 100 instants (the limit), all bodies, one request a year 1800-2199: 400 requests, cpu max 231.1 ms
+chart, each of the 13 house systems, 1800-2199: 200 requests, cpu max 20.2 ms
+sky-fact, each kind on a date in every zone, 1800-2199: 400 requests, cpu max 42.3 ms
+time, with a longitude, 1800-2199: 400 requests, cpu max 8.6 ms
+exit 0

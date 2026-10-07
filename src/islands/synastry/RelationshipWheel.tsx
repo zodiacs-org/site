@@ -1,3 +1,5 @@
+export { default as PrivateInviteResultControl } from '../PrivateInviteResultControl';
+export { RelationshipTrust } from '../ChartTrust';
 /**
  * The Relationship Wheel's lazy result module. It owns all three comparison
  * views so the /compatibility/ form stays light: the original bi-wheel, a
@@ -168,7 +170,7 @@ const COPY = {
     tapHint: 'Коснитесь соединительной линии или строки ниже, чтобы прочитать контакт. Коснитесь планеты на внешнем кольце, чтобы увидеть её положение.',
     ringLabel: 'Карта {name} на внешнем кольце',
     tally: 'межкартных аспектов',
-    easeful: 'плавных',
+    easeful: 'лёгких',
     charged: 'напряжённых',
     loudest: 'Самые заметные контакты:',
     views: 'Виды карты отношений',

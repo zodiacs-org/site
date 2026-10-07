@@ -1,0 +1,29 @@
+{
+  "source": ".github/workflows/site-check.yml production-flags-build env",
+  "scope": "Committed CI non-secret stand-ins only",
+  "flags": {
+    "PUBLIC_COMPAT_INVITES_ENABLED": "1",
+    "PUBLIC_REGISTRY_AURA_ENABLED": "1",
+    "PUBLIC_REGISTRY_COLLECTION_ENABLED": "1",
+    "PUBLIC_REGISTRY_TRADE_ENABLED": "1",
+    "PUBLIC_SAVED_RECORDS_ENABLED": "1",
+    "PUBLIC_WEEKLY_DIGEST_ENABLED": "1",
+    "PUBLIC_ZODIAC_GAMES_ENABLED": "1",
+    "PUBLIC_SUPABASE_PUBLISHABLE_KEY": "sb_publishable_ci_stand_in",
+    "PUBLIC_VAPID_KEY": "ci-stand-in-vapid-public-key",
+    "PUBLIC_PLAUSIBLE_SCRIPT_URL": "https://plausible.io/js/script.js",
+    "SOLANA_RPC_URL": "https://production-flags-ci.invalid/rpc",
+    "BASE_RPC_URL": "https://production-flags-ci.invalid/base",
+    "PUBLIC_SUPABASE_URL": "https://production-flags-ci.invalid",
+    "SUPABASE_SERVICE_ROLE_KEY": "ci_stand_in_service_role",
+    "DAILY_EMAIL_ENABLED": "1",
+    "EMAIL_PROVIDER": "resend",
+    "RESEND_API_KEY": "re_ci_stand_in_sending",
+    "RESEND_CONTACTS_API_KEY": "re_ci_stand_in_contacts",
+    "RESEND_FROM_EMAIL": "Zodiacs.org <ci@production-flags-ci.invalid>",
+    "RESEND_DAILY_SEGMENT_ID": "ci_stand_in_daily_segment",
+    "EMAIL_CONFIRM_SECRET": "ci-stand-in-confirm-secret-00000000000000000000",
+    "DAILY_EMAIL_UNSUBSCRIBE_SECRET": "ci-stand-in-unsubscribe-secret-000000000000000",
+    "DAILY_EMAIL_RECIPIENT_HASH_SECRET": "ci-stand-in-recipient-secret-0000000000000000"
+  }
+}

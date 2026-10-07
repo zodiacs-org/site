@@ -62,26 +62,15 @@ describe('the retired catalogue compatibility hook', () => {
   });
 });
 
-describe('the shared Jupiter trade module', () => {
-  it('mounts from Terminal markets and only after explicit intent on the beginner guide', async () => {
-    const [terminal, browserRuntime, builtRuntime] = await Promise.all([
-      readFile(resolve(root, 'src/exchange/terminal.mjs'), 'utf8'),
-      readFile(resolve(root, 'src/trade/browser.mjs'), 'utf8'),
-      readFile(resolve(root, 'public/assets/trade.js'), 'utf8'),
-    ]);
+describe('the retired transaction runtime', () => {
+  it('ships an inert cached-page API and no provider or submission code', async () => {
+    const runtime = await readFile(resolve(root, 'public/assets/trade.js'), 'utf8');
+    const terminal = await readFile(resolve(root, 'src/exchange/terminal.mjs'), 'utf8');
     const guide = await readFile(resolve(root, 'src/pages/astrofolio/how-to-buy/index.astro'), 'utf8');
-
-    expect(terminal).toContain("script.src = '/assets/trade.js'");
-    expect(terminal).toContain("desk.id = 'zme-trade-panel'");
-    expect(terminal).toContain('panel = trade.mount(panelHost');
-    expect(terminal).toContain('Indicative aggregate quote — Jupiter may route across several pools');
-    expect(browserRuntime).toContain('export function mount(host, sign, hooks = {})');
-    expect(browserRuntime).toContain('window.zodiacsTrade = Object.freeze({ mount })');
-    expect(builtRuntime).toContain('window.zodiacsTrade');
-    expect(builtRuntime).toContain('api.jup.ag');
-    expect(guide).toContain("script.src = '/assets/trade.js'");
-    expect(guide).toContain("loadButton?.addEventListener('click', revealTrade)");
-    expect(guide).not.toContain('<script src="/assets/trade.js"');
+    expect(runtime).toContain('window.zodiacsTrade');
+    expect(runtime).not.toMatch(/api\.jup\.ag|signTransaction|standard:connect|executeOrder|eth_requestAccounts/);
+    expect(terminal).not.toContain('loadTradeBundle');
+    expect(guide).not.toMatch(/trade\.js|data-jupiter-host|revealTrade/);
   });
 });
 

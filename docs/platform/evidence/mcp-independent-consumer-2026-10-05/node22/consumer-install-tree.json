@@ -1,0 +1,406 @@
+{
+  "version": "0.1.0-rc.16.3",
+  "name": "zodiacs-mcp-server",
+  "private": true,
+  "description": "A local stdio MCP server over the Zodiacs engine and its chart comparison. Unpublished release candidate.",
+  "license": "MIT AND CC-BY-4.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "files": [
+    "server.mjs",
+    "verify.mjs",
+    "README.md",
+    "NOTICE",
+    "candidate.json",
+    "npm-shrinkwrap.json"
+  ],
+  "scripts": {
+    "start": "node server.mjs",
+    "verify": "node verify.mjs",
+    "test": "node verify.mjs"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/client": "2.0.0"
+  },
+  "_id": "zodiacs-mcp-server@0.1.0-rc.16.3",
+  "extraneous": false,
+  "path": "/tmp/zodiacs-mcp-consumer-U2r9GM/package",
+  "_dependencies": {
+    "@modelcontextprotocol/server": "2.0.0",
+    "zod": "4.6.5"
+  },
+  "peerDependencies": {},
+  "dependencies": {
+    "@modelcontextprotocol/client": {
+      "version": "2.0.0",
+      "resolved": "https://registry.npmjs.org/@modelcontextprotocol/client/-/client-2.0.0.tgz",
+      "overridden": false,
+      "name": "@modelcontextprotocol/client",
+      "integrity": "sha512-8f1OghQ2rjzIOfqgUCP+8GiUWqRs89njoWLNqAe8kWmDePv3s1fZXseej+QXemssEuuOvLLmLO/kqM3IQHtISw==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=20"
+      },
+      "_id": "@modelcontextprotocol/client@2.0.0",
+      "extraneous": false,
+      "path": "/tmp/zodiacs-mcp-consumer-U2r9GM/package/node_modules/@modelcontextprotocol/client",
+      "_dependencies": {
+        "@modelcontextprotocol/core": "2.0.0",
+        "cross-spawn": "^7.0.5",
+        "eventsource": "^3.0.2",
+        "eventsource-parser": "^3.0.0",
+        "jose": "^6.1.3",
+        "pkce-challenge": "^5.0.0",
+        "zod": "^4.2.0"
+      },
+      "devDependencies": {},
+      "peerDependencies": {},
+      "dependencies": {
+        "@modelcontextprotocol/core": {
+          "version": "2.0.0",
+          "resolved": "https://registry.npmjs.org/@modelcontextprotocol/core/-/core-2.0.0.tgz",
+          "overridden": false,
+          "name": "@modelcontextprotocol/core",
+          "integrity": "sha512-pJCEwGG7Lfr/+PQp9ZTwKXNeO5wzbfKL7H3MYpCorM4oFBoQrdjnBgEoqG+RjhsvS1FKrDbKux+M1HhlnGWqcA==",
+          "license": "MIT",
+          "engines": {
+            "node": ">=20"
+          },
+          "_id": "@modelcontextprotocol/core@2.0.0",
+          "extraneous": false,
+          "path": "/tmp/zodiacs-mcp-consumer-U2r9GM/package/node_modules/@modelcontextprotocol/core",
+          "_dependencies": {
+            "zod": "^4.2.0"
+          },
+          "devDependencies": {},
+          "peerDependencies": {},
+          "dependencies": {
+            "zod": {
+              "version": "4.6.5",
+              "name": "zod",
+              "resolved": "https://registry.npmjs.org/zod/-/zod-4.6.5.tgz",
+              "integrity": "sha512-v5l/aFXZQeai4awLbOpSoHecE9UiMrnfx75tEXLjNonXVARxQ5mOeipTjROUchszUNCqnE+hqAMujRsRHsut2Q==",
+              "license": "MIT",
+              "funding": {
+                "url": "https://github.com/sponsors/colinhacks"
+              },
+              "_id": "zod@4.6.5",
+              "extraneous": false,
+              "path": "/tmp/zodiacs-mcp-consumer-U2r9GM/package/node_modules/zod",
+              "_dependencies": {},
+              "devDependencies": {},
+              "peerDependencies": {}
+            }
+          }
+        },
+        "cross-spawn": {
+          "version": "7.0.6",
+          "resolved": "https://registry.npmjs.org/cross-spawn/-/cross-spawn-7.0.6.tgz",
+          "overridden": false,
+          "name": "cross-spawn",
+          "integrity": "sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==",
+          "dev": true,
+          "license": "MIT",
+          "engines": {
+            "node": ">= 8"
+          },
+          "_id": "cross-spawn@7.0.6",
+          "extraneous": false,
+          "path": "/tmp/zodiacs-mcp-consumer-U2r9GM/package/node_modules/cross-spawn",
+          "_dependencies": {
+            "path-key": "^3.1.0",
+            "shebang-command": "^2.0.0",
+            "which": "^2.0.1"
+          },
+          "devDependencies": {},
+          "peerDependencies": {},
+          "dependencies": {
+            "path-key": {
+              "version": "3.1.1",
+              "resolved": "https://registry.npmjs.org/path-key/-/path-key-3.1.1.tgz",
+              "overridden": false,
+              "name": "path-key",
+              "integrity": "sha512-ojmeN0qd+y0jszEtoY48r0Peq5dwMEkIlCOu6Q5f41lfkswXuKtYrhgoTpLnyIcHm24Uhqx+5Tqm2InSwLhE6Q==",
+              "dev": true,
+              "license": "MIT",
+              "engines": {
+                "node": ">=8"
+              },
+              "_id": "path-key@3.1.1",
+              "extraneous": false,
+              "path": "/tmp/zodiacs-mcp-consumer-U2r9GM/package/node_modules/path-key",
+              "_dependencies": {},
+              "devDependencies": {},
+              "peerDependencies": {}
+            },
+            "shebang-command": {
+              "version": "2.0.0",
+              "resolved": "https://registry.npmjs.org/shebang-command/-/shebang-command-2.0.0.tgz",
+              "overridden": false,
+              "name": "shebang-command",
+              "integrity": "sha512-kHxr2zZpYtdmrN1qDjrrX/Z1rR1kG8Dx+gkpK1G4eXmvXswmcE1hTWBWYUzlraYw1/yZp6YuDY77YtvbN0dmDA==",
+              "dev": true,
+              "license": "MIT",
+              "engines": {
+                "node": ">=8"
+              },
+              "_id": "shebang-command@2.0.0",
+              "extraneous": false,
+              "path": "/tmp/zodiacs-mcp-consumer-U2r9GM/package/node_modules/shebang-command",
+              "_dependencies": {
+                "shebang-regex": "^3.0.0"
+              },
+              "devDependencies": {},
+              "peerDependencies": {},
+              "dependencies": {
+                "shebang-regex": {
+                  "version": "3.0.0",
+                  "resolved": "https://registry.npmjs.org/shebang-regex/-/shebang-regex-3.0.0.tgz",
+                  "overridden": false,
+                  "name": "shebang-regex",
+                  "integrity": "sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==",
+                  "dev": true,
+                  "license": "MIT",
+                  "engines": {
+                    "node": ">=8"
+                  },
+                  "_id": "shebang-regex@3.0.0",
+                  "extraneous": false,
+                  "path": "/tmp/zodiacs-mcp-consumer-U2r9GM/package/node_modules/shebang-regex",
+                  "_dependencies": {},
+                  "devDependencies": {},
+                  "peerDependencies": {}
+                }
+              }
+            },
+            "which": {
+              "version": "2.0.2",
+              "resolved": "https://registry.npmjs.org/which/-/which-2.0.2.tgz",
+              "overridden": false,
+              "name": "which",
+              "integrity": "sha512-BLI3Tl1TW3Pvl70l3yq3Y64i+awpwXqsGBYWkkqMtnbXgrMD+yj7rhW0kuEDxzJaYXGjEW5ogapKNMEKNMjibA==",
+              "dev": true,
+              "license": "ISC",
+              "bin": {
+                "node-which": "bin/node-which"
+              },
+              "engines": {
+                "node": ">= 8"
+              },
+              "_id": "which@2.0.2",
+              "extraneous": false,
+              "path": "/tmp/zodiacs-mcp-consumer-U2r9GM/package/node_modules/which",
+              "_dependencies": {
+                "isexe": "^2.0.0"
+              },
+              "devDependencies": {},
+              "peerDependencies": {},
+              "dependencies": {
+                "isexe": {
+                  "version": "2.0.0",
+                  "resolved": "https://registry.npmjs.org/isexe/-/isexe-2.0.0.tgz",
+                  "overridden": false,
+                  "name": "isexe",
+                  "integrity": "sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==",
+                  "dev": true,
+                  "license": "ISC",
+                  "_id": "isexe@2.0.0",
+                  "extraneous": false,
+                  "path": "/tmp/zodiacs-mcp-consumer-U2r9GM/package/node_modules/isexe",
+                  "_dependencies": {},
+                  "devDependencies": {},
+                  "peerDependencies": {}
+                }
+              }
+            }
+          }
+        },
+        "eventsource-parser": {
+          "version": "3.1.1",
+          "resolved": "https://registry.npmjs.org/eventsource-parser/-/eventsource-parser-3.1.1.tgz",
+          "overridden": false,
+          "name": "eventsource-parser",
+          "integrity": "sha512-EKN1vKAMcZ8MlYMpaNuxN6R9yakzH6uajHcHVTqWJzvu5pWw9DyhbP35HH8MVBQ+dZjAfDxk+A8NiR9KWaXiyQ==",
+          "dev": true,
+          "license": "MIT",
+          "engines": {
+            "node": ">=18.0.0"
+          },
+          "_id": "eventsource-parser@3.1.1",
+          "extraneous": false,
+          "path": "/tmp/zodiacs-mcp-consumer-U2r9GM/package/node_modules/eventsource-parser",
+          "_dependencies": {},
+          "devDependencies": {},
+          "peerDependencies": {}
+        },
+        "eventsource": {
+          "version": "3.0.7",
+          "resolved": "https://registry.npmjs.org/eventsource/-/eventsource-3.0.7.tgz",
+          "overridden": false,
+          "name": "eventsource",
+          "integrity": "sha512-CRT1WTyuQoD771GW56XEZFQ/ZoSfWid1alKGDYMmkt2yl8UXrVR4pspqWNEcqKvVIzg6PAltWjxcSSPrboA4iA==",
+          "dev": true,
+          "license": "MIT",
+          "engines": {
+            "node": ">=18.0.0"
+          },
+          "_id": "eventsource@3.0.7",
+          "extraneous": false,
+          "path": "/tmp/zodiacs-mcp-consumer-U2r9GM/package/node_modules/eventsource",
+          "_dependencies": {
+            "eventsource-parser": "^3.0.1"
+          },
+          "devDependencies": {},
+          "peerDependencies": {},
+          "dependencies": {
+            "eventsource-parser": {
+              "version": "3.1.1",
+              "name": "eventsource-parser",
+              "resolved": "https://registry.npmjs.org/eventsource-parser/-/eventsource-parser-3.1.1.tgz",
+              "integrity": "sha512-EKN1vKAMcZ8MlYMpaNuxN6R9yakzH6uajHcHVTqWJzvu5pWw9DyhbP35HH8MVBQ+dZjAfDxk+A8NiR9KWaXiyQ==",
+              "dev": true,
+              "license": "MIT",
+              "engines": {
+                "node": ">=18.0.0"
+              },
+              "_id": "eventsource-parser@3.1.1",
+              "extraneous": false,
+              "path": "/tmp/zodiacs-mcp-consumer-U2r9GM/package/node_modules/eventsource-parser",
+              "_dependencies": {},
+              "devDependencies": {},
+              "peerDependencies": {}
+            }
+          }
+        },
+        "jose": {
+          "version": "6.2.12",
+          "resolved": "https://registry.npmjs.org/jose/-/jose-6.2.12.tgz",
+          "overridden": false,
+          "name": "jose",
+          "integrity": "sha512-9NiFmJEex0sy2Dk58j2UGBSHgUs2ypF9eZSu4L6vjOX3Dp96Sw1F3uL+H+D1sx02jZZdzUT0HgvCy59CuvXcWw==",
+          "dev": true,
+          "license": "MIT",
+          "funding": {
+            "url": "https://github.com/sponsors/panva"
+          },
+          "_id": "jose@6.2.12",
+          "extraneous": false,
+          "path": "/tmp/zodiacs-mcp-consumer-U2r9GM/package/node_modules/jose",
+          "_dependencies": {},
+          "devDependencies": {},
+          "peerDependencies": {}
+        },
+        "pkce-challenge": {
+          "version": "5.0.1",
+          "resolved": "https://registry.npmjs.org/pkce-challenge/-/pkce-challenge-5.0.1.tgz",
+          "overridden": false,
+          "name": "pkce-challenge",
+          "integrity": "sha512-wQ0b/W4Fr01qtpHlqSqspcj3EhBvimsdh0KlHhH8HRZnMsEa0ea2fTULOXOS9ccQr3om+GcGRk4e+isrZWV8qQ==",
+          "dev": true,
+          "license": "MIT",
+          "engines": {
+            "node": ">=16.20.0"
+          },
+          "_id": "pkce-challenge@5.0.1",
+          "extraneous": false,
+          "path": "/tmp/zodiacs-mcp-consumer-U2r9GM/package/node_modules/pkce-challenge",
+          "_dependencies": {},
+          "devDependencies": {},
+          "peerDependencies": {}
+        },
+        "zod": {
+          "version": "4.6.5",
+          "name": "zod",
+          "resolved": "https://registry.npmjs.org/zod/-/zod-4.6.5.tgz",
+          "integrity": "sha512-v5l/aFXZQeai4awLbOpSoHecE9UiMrnfx75tEXLjNonXVARxQ5mOeipTjROUchszUNCqnE+hqAMujRsRHsut2Q==",
+          "license": "MIT",
+          "funding": {
+            "url": "https://github.com/sponsors/colinhacks"
+          },
+          "_id": "zod@4.6.5",
+          "extraneous": false,
+          "path": "/tmp/zodiacs-mcp-consumer-U2r9GM/package/node_modules/zod",
+          "_dependencies": {},
+          "devDependencies": {},
+          "peerDependencies": {}
+        }
+      }
+    },
+    "@modelcontextprotocol/server": {
+      "version": "2.0.0",
+      "resolved": "https://registry.npmjs.org/@modelcontextprotocol/server/-/server-2.0.0.tgz",
+      "overridden": false,
+      "name": "@modelcontextprotocol/server",
+      "integrity": "sha512-YhHWdHfpFMQfd0prsEnxKeS3Qz3ytIGmsS0sth4KDjnacIT7hxk6hXHkJ9KysxlkvTM+WZAtQbbcUhdoP4Hvtw==",
+      "license": "MIT",
+      "engines": {
+        "node": ">=20"
+      },
+      "_id": "@modelcontextprotocol/server@2.0.0",
+      "extraneous": false,
+      "path": "/tmp/zodiacs-mcp-consumer-U2r9GM/package/node_modules/@modelcontextprotocol/server",
+      "_dependencies": {
+        "@modelcontextprotocol/core": "2.0.0",
+        "zod": "^4.2.0"
+      },
+      "devDependencies": {},
+      "peerDependencies": {},
+      "dependencies": {
+        "@modelcontextprotocol/core": {
+          "version": "2.0.0",
+          "name": "@modelcontextprotocol/core",
+          "resolved": "https://registry.npmjs.org/@modelcontextprotocol/core/-/core-2.0.0.tgz",
+          "integrity": "sha512-pJCEwGG7Lfr/+PQp9ZTwKXNeO5wzbfKL7H3MYpCorM4oFBoQrdjnBgEoqG+RjhsvS1FKrDbKux+M1HhlnGWqcA==",
+          "license": "MIT",
+          "engines": {
+            "node": ">=20"
+          },
+          "_id": "@modelcontextprotocol/core@2.0.0",
+          "extraneous": false,
+          "path": "/tmp/zodiacs-mcp-consumer-U2r9GM/package/node_modules/@modelcontextprotocol/core",
+          "_dependencies": {
+            "zod": "^4.2.0"
+          },
+          "devDependencies": {},
+          "peerDependencies": {}
+        },
+        "zod": {
+          "version": "4.6.5",
+          "name": "zod",
+          "resolved": "https://registry.npmjs.org/zod/-/zod-4.6.5.tgz",
+          "integrity": "sha512-v5l/aFXZQeai4awLbOpSoHecE9UiMrnfx75tEXLjNonXVARxQ5mOeipTjROUchszUNCqnE+hqAMujRsRHsut2Q==",
+          "license": "MIT",
+          "funding": {
+            "url": "https://github.com/sponsors/colinhacks"
+          },
+          "_id": "zod@4.6.5",
+          "extraneous": false,
+          "path": "/tmp/zodiacs-mcp-consumer-U2r9GM/package/node_modules/zod",
+          "_dependencies": {},
+          "devDependencies": {},
+          "peerDependencies": {}
+        }
+      }
+    },
+    "zod": {
+      "version": "4.6.5",
+      "resolved": "https://registry.npmjs.org/zod/-/zod-4.6.5.tgz",
+      "overridden": false,
+      "name": "zod",
+      "integrity": "sha512-v5l/aFXZQeai4awLbOpSoHecE9UiMrnfx75tEXLjNonXVARxQ5mOeipTjROUchszUNCqnE+hqAMujRsRHsut2Q==",
+      "license": "MIT",
+      "funding": {
+        "url": "https://github.com/sponsors/colinhacks"
+      },
+      "_id": "zod@4.6.5",
+      "extraneous": false,
+      "path": "/tmp/zodiacs-mcp-consumer-U2r9GM/package/node_modules/zod",
+      "_dependencies": {},
+      "devDependencies": {},
+      "peerDependencies": {}
+    }
+  }
+}

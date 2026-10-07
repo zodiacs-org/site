@@ -37,14 +37,6 @@ const dailyLabel = new Intl.DateTimeFormat('en-US', {
   image="/assets/og/v2/share-pastel-wheel-20260809.png"
   imageAlt="The twelve zodiac signs in the Zodiacs.org celestial wheel."
 >
-  <button class="bio-share" type="button" data-bio-share aria-label="Share Zodiacs.org links">
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M12 16V3m0 0L7.5 7.5M12 3l4.5 4.5M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7" />
-    </svg>
-    <span data-bio-share-label>Share</span>
-  </button>
-  <span class="bio-share-status" data-bio-share-status role="status" aria-live="polite"></span>
-
   <div class="bio-shell">
     <section class="bio-card" aria-labelledby="bio-title">
       <div class="bio-intro">
@@ -85,6 +77,13 @@ const dailyLabel = new Intl.DateTimeFormat('en-US', {
           <li>No signup</li>
           <li>Calculated in your browser</li>
         </ul>
+        <button class="bio-share" type="button" data-bio-share aria-label="Share Zodiacs.org links">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 16V3m0 0L7.5 7.5M12 3l4.5 4.5M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7" />
+          </svg>
+          <span data-bio-share-label>Share</span>
+        </button>
+        <span class="bio-share-status" data-bio-share-status role="status" aria-live="polite"></span>
       </div>
 
       <section class="bio-signs" aria-labelledby="signs-title">
@@ -407,10 +406,7 @@ const dailyLabel = new Intl.DateTimeFormat('en-US', {
   .bio-astrofolio__arrow { color: var(--muted); }
 
   .bio-share {
-    position: fixed;
-    top: calc(18px + env(safe-area-inset-top));
-    right: max(20px, calc((100vw - 960px) / 2));
-    z-index: calc(var(--z-nav) + 1);
+    margin-top: 12px;
     display: inline-flex;
     min-height: 44px;
     align-items: center;
@@ -495,7 +491,6 @@ const dailyLabel = new Intl.DateTimeFormat('en-US', {
     .bio-link { min-height: 72px; padding-inline: 18px; }
     .bio-signs__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; }
     .bio-sign { min-height: 82px; }
-    .bio-share { right: 16px; }
   }
 
   @media (max-width: 350px) {
@@ -521,36 +516,10 @@ const dailyLabel = new Intl.DateTimeFormat('en-US', {
     z-index: auto;
     padding-top: calc(76px + env(safe-area-inset-top));
   }
-  :global(body:has(.bio-shell) .nav-wrap) {
-    top: 12px;
-    padding-inline: 20px;
-    background: var(--void-0);
-  }
-  :global(body:has(.bio-shell) .nav) {
-    width: min(100%, 960px) !important;
-    justify-content: flex-start;
-    height: 52px;
-    padding: 0 !important;
-    border: 0 !important;
-    border-bottom: 1px solid var(--hair-1) !important;
-    border-radius: 0 !important;
-    background: transparent !important;
-    box-shadow: none !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-  }
-  :global(body:has(.bio-shell) .nav__links),
-  :global(body:has(.bio-shell) .nav__search),
-  :global(body:has(.bio-shell) .nav__chip),
-  :global(body:has(.bio-shell) .nav__burger),
-  :global(body:has(.bio-shell) .nav-menu) { display: none !important; }
-  :global(body:has(.bio-shell) .nav__sep),
-  :global(body:has(.bio-shell) .nav__dim) { display: inline !important; }
-  :global(body:has(.bio-shell) .nav__mark) { min-height: 44px; }
 
   :global(body:has(.bio-shell) .zguide-launcher),
   :global(body:has(.bio-shell) .zfooter .email-capture--footer),
-  :global(body:has(.bio-shell) .zfooter__guide),
+  :global(body:has(.bio-shell) .zfooter__help),
   :global(body:has(.bio-shell) .zfooter__directory),
   :global(body:has(.bio-shell) .zfooter__colophon > nav[aria-label="More"]),
   :global(body:has(.bio-shell) .zfooter__credits) { display: none !important; }

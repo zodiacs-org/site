@@ -16,7 +16,8 @@ const policyBytes = read('swiss-node-polar-policy.json');
 const fixture = JSON.parse(fixtureBytes);
 const policy = JSON.parse(policyBytes);
 const digest = (bytes) => createHash('sha256').update(bytes).digest('hex');
-assert.equal(digest(fixtureBytes), '75f667f192c43c1ee3a8be6c5379586621b5eaa26f32e21e2ec8afd6206e3800');
+// The rc.17 reference rebuild changes only the engine version the fixture records (rc.16 also changed the Horizons manifest identity).
+assert.equal(digest(fixtureBytes), '0a47972018df985fa125aafb96f516db5444556b972c4758f2b2b635e76025e5');
 assert.equal(digest(policyBytes), '7742cb2bc7cd0932a344ddcb708e45dad07b91cb653ea1f55538c2d73fa18e96');
 const distance = (a, b) => Math.abs(((a - b + 540) % 360) - 180);
 const nodes = fixture.trueNode.map((reference) => {

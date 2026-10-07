@@ -239,6 +239,8 @@ try {
   });
   await check('edit-after-success-clears-result', async (subject) => {
     await hydrated(subject); await subject.page.locator('.calc__result').waitFor(); await settled(subject);
+    assert.match(await subject.page.locator('[data-result-opening]').innerText(), /this person’s needs/);
+    assert.equal(await subject.page.locator('[data-check-our-math] time[datetime]').count(), 1);
     await subject.page.locator('#birth-time').fill('15:30');
     const state = await assertEmpty(subject); assert.equal(state.computed.length, 1); assert.equal(state.busy, 'false');
     return { oldResultAndActionsCleared: true };

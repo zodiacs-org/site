@@ -21,10 +21,12 @@ import {
   COMPUTE_FUNCTION_PATH,
   COMPUTE_RATE_LIMIT_ID,
   COMPUTE_ROUTE_PARAM,
+  ELECTION_CONDITION_KINDS,
   EVENT_BODIES,
   HOUSE_SYSTEM_NAMES,
   EVENT_KINDS,
   MAX_BODY_BYTES,
+  MOON_HALVES,
   PHASE_NAMES,
   PINNED_TZDB_RELEASE,
   POSITION_BODIES,
@@ -70,6 +72,7 @@ const VALID: Record<ComputeEndpoint, Record<string, unknown>> = {
   events: { from: '2026-10-01T00:00:00Z', to: '2026-10-08T00:00:00Z', bodies: ['Sun'] },
   time: { local: { date: '2026-09-29', time: '12:00', zone: 'Europe/Paris' } },
   'sky-fact': { kind: 'sign', body: 'Sun', sign: 'libra', instant: '2026-09-29T12:00:00Z' },
+  elections: { from: '2026-10-01T00:00:00Z', to: '2026-10-04T00:00:00Z', conditions: [{ kind: 'phase', phase: 'waxing' }] },
 };
 
 beforeEach(() => {
@@ -78,7 +81,7 @@ beforeEach(() => {
 });
 
 describe('compute API routing, methods and CORS', () => {
-  it('serves only the six endpoints the rewrites name', async () => {
+  it('serves only the seven endpoints the rewrites name', async () => {
     for (const endpoint of COMPUTE_ENDPOINTS) expect((await call(endpoint, VALID[endpoint])).status).toBe(200);
     const missing = await call(null, CHART);
     expect(missing.status).toBe(404);
@@ -225,7 +228,7 @@ describe('compute API switch and rate limit', () => {
     expect(checkRateLimit).not.toHaveBeenCalled();
   });
 
-  it('counts an events request under both rules and every other request under the first, before reading its body', async () => {
+  it('counts an events or elections request under both rules and every other request under the first, before reading its body', async () => {
     vi.stubEnv('NODE_ENV', 'production');
     const defaults = createComputeApiHandler({ localTime, env: {} });
     vi.mocked(checkRateLimit).mockResolvedValue({ rateLimited: false });
@@ -233,7 +236,7 @@ describe('compute API switch and rate limit', () => {
       vi.mocked(checkRateLimit).mockClear();
       expect((await run(defaults, { endpoint, body: VALID[endpoint] })).status, endpoint).toBe(200);
       expect(vi.mocked(checkRateLimit).mock.calls.map(([id]) => id), endpoint)
-        .toEqual(endpoint === 'events' ? [COMPUTE_RATE_LIMIT_ID, COMPUTE_EVENTS_RATE_LIMIT_ID] : [COMPUTE_RATE_LIMIT_ID]);
+        .toEqual(endpoint === 'events' || endpoint === 'elections' ? [COMPUTE_RATE_LIMIT_ID, COMPUTE_EVENTS_RATE_LIMIT_ID] : [COMPUTE_RATE_LIMIT_ID]);
     }
     expect(COMPUTE_EVENTS_RATE_LIMIT_ID).toBe('zodiacs-compute-events');
     // The events rule refuses on its own; the first rule refuses before the second is counted.
@@ -299,6 +302,7 @@ describe('compute API body limits', () => {
 
 const VOCABULARY = new Set<string>([
   ...COMPUTE_ENDPOINTS, ...POSITION_BODIES, ...HOUSE_SYSTEM_NAMES, ...SIGN_SLUGS, ...SKY_FACT_KINDS, ...PHASE_NAMES, ...EVENT_KINDS,
+  ...ELECTION_CONDITION_KINDS, ...MOON_HALVES,
 ]);
 
 /** An invalid-request answer names the field and says why, without repeating what was sent. */
@@ -588,6 +592,30 @@ describe('compute API receipts, backend and citation', () => {
       if (json.cite.receipt === target) found.push(time);
     }
     expect(found).toEqual(['14:30']);
+  }, 60_000);
+
+  it("identifies the place as well: a chart's date and time give back its place through cite.receipt", async () => {
+    // The same synthetic birth, with its place hidden among 300 synthetic towns
+    // on the same clock: whoever knows the date and the time tries each town.
+    const example = { local: { date: '1990-06-15', time: '14:30', zone: 'Europe/Paris' }, latitude: 48.8566, longitude: 2.3522, houseSystem: 'whole' };
+    const target = (await call('chart', example)).json.cite.receipt;
+    let state = 20261005;
+    const random = () => {
+      state = (state + 0x6d2b79f5) >>> 0;
+      let t = Math.imul(state ^ (state >>> 15), state | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+    const towns = Array.from({ length: 300 }, () => ({
+      latitude: Number((42 + random() * 9).toFixed(4)), longitude: Number((-4 + random() * 12).toFixed(4)),
+    }));
+    towns.splice(171, 0, { latitude: example.latitude, longitude: example.longitude });
+    const found: { latitude: number; longitude: number }[] = [];
+    for (const town of towns) {
+      const { json } = await call('chart', { ...example, ...town });
+      if (json.cite.receipt === target) found.push(town);
+    }
+    expect(found).toEqual([{ latitude: 48.8566, longitude: 2.3522 }]);
   }, 60_000);
 
   it('writes the same answer for the same request', async () => {

@@ -96,6 +96,15 @@ interface Props {
 
 const props = Astro.props;
 const locale = normalizeCatalogLocale(props.locale);
+// The daily-sky feed is English; its link title is localized so feed readers list it in the page's language.
+const FEED_TITLES: Record<typeof locale, { sky: string; horoscopes: string; almanac: string }> = {
+  en: { sky: 'Zodiacs.org — the sky, daily', horoscopes: 'Zodiacs.org daily horoscopes', almanac: 'The Zodiacs.org Almanac' },
+  es: { sky: 'Zodiacs.org — el cielo, cada día (en inglés)', horoscopes: 'Horóscopos diarios de Zodiacs.org (en inglés)', almanac: 'Almanaque de Zodiacs.org (en inglés)' },
+  pt: { sky: 'Zodiacs.org — o céu, todo dia (em inglês)', horoscopes: 'Horóscopos diários do Zodiacs.org (em inglês)', almanac: 'Almanaque do Zodiacs.org (em inglês)' },
+  fr: { sky: 'Zodiacs.org — le ciel, chaque jour (en anglais)', horoscopes: 'Horoscopes quotidiens de Zodiacs.org (en anglais)', almanac: 'Almanach de Zodiacs.org (en anglais)' },
+  it: { sky: 'Zodiacs.org — il cielo, ogni giorno (in inglese)', horoscopes: 'Oroscopi quotidiani di Zodiacs.org (in inglese)', almanac: 'Almanacco di Zodiacs.org (in inglese)' },
+  ru: { sky: 'Zodiacs.org — небо каждый день (по-английски)', horoscopes: 'Ежедневные гороскопы Zodiacs.org (по-английски)', almanac: 'Альманах Zodiacs.org (по-английски)' },
+};
 const clientUi = props.clientUi ? UI[locale] : null;
 const russianRuntime = props.clientUi && locale === 'ru' ? RUSSIAN_RUNTIME : null;
 const plausibleScriptUrl = import.meta.env.PUBLIC_PLAUSIBLE_SCRIPT_URL?.trim();
@@ -259,9 +268,9 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
     <link rel="icon" type="image/png" sizes="96x96" href={BRAND_ICON_PATHS.favicon} />
     <link rel="apple-touch-icon" sizes="180x180" href={BRAND_ICON_PATHS.appleTouch} />
     <link rel="manifest" href="/site.webmanifest" />
-    <link rel="alternate" type="application/rss+xml" title="Zodiacs.org — the sky, daily" href="/feeds/daily-sky.xml" />
-    <link rel="alternate" type="application/rss+xml" title="Zodiacs.org daily horoscopes" href="/feeds/horoscopes.xml" />
-    <link rel="alternate" type="application/rss+xml" title="The Zodiacs.org Almanac" href="/feeds/almanac.xml" />
+    <link rel="alternate" type="application/rss+xml" title={FEED_TITLES[locale].sky} href="/feeds/daily-sky.xml" />
+    <link rel="alternate" type="application/rss+xml" title={FEED_TITLES[locale].horoscopes} href="/feeds/horoscopes.xml" />
+    <link rel="alternate" type="application/rss+xml" title={FEED_TITLES[locale].almanac} href="/feeds/almanac.xml" />
     {props.rssFeed && (
       <link
         rel="alternate"
@@ -483,7 +492,7 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
           if (observer) observer.disconnect();
           var stylesheet = document.createElement('link');
           stylesheet.rel = 'stylesheet';
-          stylesheet.href = '/assets/site-footer.css';
+          stylesheet.href = '/assets/site-footer.css?v=20261006';
           document.head.appendChild(stylesheet);
         }
         function appendAfterLoad() {
@@ -511,7 +520,7 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
         }
       })();
     </script>
-    <noscript><style>@import url('/assets/site-footer.css');</style></noscript>
+    <noscript><style>@import url('/assets/site-footer.css?v=20261006');</style></noscript>
 
     <script>
       // A small heading entrance, once, before it enters the reading area.
@@ -556,8 +565,12 @@ const rtlDocumentDirection = (direction: 'ltr' | 'rtl') => direction === 'rtl' ?
 <style is:global>
   :root { --nav-space: 96px; }
   main { position: relative; z-index: var(--z-base); padding-top: var(--nav-space); }
-  @media (max-width: 599.5px) {
+  @media (max-width: 919.5px) {
     :root { --nav-space: calc(64px + env(safe-area-inset-top, 0px)); }
     main > :is(.section, .section--tight):first-child { padding-top: 36px; }
+  }
+  @media (min-width: 920px) and (max-width: 1039.5px) {
+    :root:not(:lang(en)) { --nav-space: calc(64px + env(safe-area-inset-top, 0px)); }
+    :root:not(:lang(en)) main > :is(.section, .section--tight):first-child { padding-top: 36px; }
   }
 </style>

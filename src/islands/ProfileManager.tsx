@@ -137,7 +137,7 @@ export const PF_BOOK_COPY = {
     count: (n: number) => n === 1
       ? '1 carta natal guardada.'
       : `${n} cartas natales guardadas: la tuya y las de las personas para quienes haces lecturas.`,
-    add: 'Añade la carta de alguien',
+    add: 'Agrega la carta de alguien',
     privacy: 'Guardado en este dispositivo. No se sube nada salvo que actives la sincronización.',
     details: 'Datos de nacimiento',
   },
@@ -151,8 +151,8 @@ export const PF_BOOK_COPY = {
   },
   fr: {
     count: (n: number) => n === 1
-      ? '1 thème natal enregistré.'
-      : `${n} thèmes nataux enregistrés : le tien et ceux que tu interprètes pour d’autres personnes.`,
+      ? '1 thème astral enregistré.'
+      : `${n} thèmes astraux enregistrés : le tien et ceux que tu interprètes pour d’autres personnes.`,
     add: 'Ajouter le thème de quelqu’un',
     privacy: 'Enregistré sur cet appareil. Rien n’est envoyé tant que tu n’actives pas la synchronisation.',
     details: 'Données de naissance',
@@ -361,7 +361,7 @@ export default function ProfileManager({
         if (current) {
           setSyncState('syncing');
           await refreshed;
-          await api.syncNow();
+          if (!await api.syncNow()) throw new Error('Charts are saved in this browser. Sign in again to resume sync.');
           setDigestOptInState(await api.getDigestOptIn());
           setSyncState('synced');
           await loadDailyState(current);
@@ -374,7 +374,7 @@ export default function ProfileManager({
             return;
           }
           setSyncState('syncing');
-          await api.syncNow();
+          if (!await api.syncNow()) { setSyncState('error'); return; }
           setDigestOptInState(await api.getDigestOptIn());
           setSyncState('synced');
           await loadDailyState(next);
@@ -472,7 +472,7 @@ export default function ProfileManager({
     if (!syncApi) return;
     setSyncState('syncing');
     try {
-      await syncApi.syncNow();
+      if (!await syncApi.syncNow()) throw new Error('Charts are saved in this browser. Sign in again to resume sync.');
       setSyncState('synced');
       if (session) await loadDailyState(session);
     } catch (err) {
@@ -1076,7 +1076,7 @@ export default function ProfileManager({
       )}
 
       <div class="pf-foot">
-        <a class="btn btn--ghost" href={localizePath(locale, '/birth-chart/')}><span>{PF_BOOK_COPY[locale].add}</span><span class="orb">+</span></a>
+        <a class="btn btn--ghost" href={locale === 'en' ? '/birth-chart/someone-else/' : localizePath(locale, '/birth-chart/')}><span>{PF_BOOK_COPY[locale].add}</span><span class="orb">+</span></a>
       </div>
 
       {syncPanel}

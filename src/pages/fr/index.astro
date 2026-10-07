@@ -1,4 +1,7 @@
 ---
+import HomeTrustFaq from '../../components/HomeTrustFaq.astro';
+import HomeShareTools from '../../components/sharing/HomeShareTools.astro';
+import { homeTrustSchema } from '../../lib/home-trust';
 import Base from '../../layouts/Base.astro';
 import SignIcon from '../../components/SignIcon.astro';
 import ToolGlyph from '../../components/ToolGlyph.astro';
@@ -15,16 +18,17 @@ const tools = [
   { href: '/birth-chart/', title: 'Thème astral', promise: 'Ton Soleil, ta Lune, ton ascendant, tes planètes, tes maisons et leur signification.', hue: 'var(--sign-cancer)', kind: 'birth' as const },
   { href: '/moon-sign/', title: 'Signe lunaire', promise: 'Ta manière de ressentir, ce qui t’apaise et ce dont tu as besoin pour te sentir chez toi.', hue: 'var(--sign-pisces)', kind: 'moon' as const },
   { href: '/rising-sign/', title: 'Ascendant', promise: 'La première impression que tu donnes et la façon dont ton thème s’organise.', hue: 'var(--sign-libra)', kind: 'rising' as const },
-  { href: '/compatibility/', title: 'Compatibilité', promise: 'Compare deux thèmes et vois où ils s’accordent, se heurtent et évoluent.', hue: 'var(--sign-leo)', kind: 'compat' as const },
+  { href: '/compatibility/', title: 'Compatibilité', promise: 'Compare deux thèmes : où ils s’accordent, où ils se heurtent, où ils grandissent.', hue: 'var(--sign-leo)', kind: 'compat' as const },
 ];
 
 const jsonLd = [
+  homeTrustSchema('fr'),
   {
     '@type': 'WebSite',
     '@id': 'https://zodiacs.org/#site',
     url: 'https://zodiacs.org/',
     name: 'Zodiacs.org',
-    description: 'Thèmes astraux gratuits, signe lunaire, compatibilité, horoscopes et guides des signes, confidentiels et faciles à comprendre.',
+    description: 'Thème astral gratuit, signe lunaire, ascendant, compatibilité, horoscopes et guides des douze signes — tout est calculé dans ton navigateur.',
     publisher: { '@id': 'https://zodiacs.org/#org' },
     inLanguage: ['en', 'fr'],
   },
@@ -32,8 +36,8 @@ const jsonLd = [
 ---
 <Base
   clientUi
-  title="Zodiacs.org en français — thèmes astraux gratuits et astrologie claire"
-  description="Thèmes astraux gratuits, signe lunaire, ascendant, compatibilité, horoscopes et guides des signes : précis, confidentiels et faciles à comprendre."
+  title="Thème astral gratuit, signe lunaire, ascendant | Zodiacs.org"
+  description="Thème astral gratuit, signe lunaire, ascendant, compatibilité, horoscopes et guides des douze signes — tout est calculé dans ton navigateur."
   path="/fr/"
   locale="fr"
   jsonLd={jsonLd}
@@ -65,7 +69,7 @@ const jsonLd = [
       <div class="hero-es__content">
         <h1>Ton thème complet, pas seulement ton signe.</h1>
         <div class="hero-es__foot">
-          <p>Thèmes astraux, signe lunaire, compatibilité et horoscopes gratuits : précis, confidentiels et faciles à comprendre.</p>
+          <p>Thèmes astraux, signe lunaire, compatibilité et horoscopes gratuits : précis, confidentiels et faciles à comprendre.</p>
           <div class="hero-es__ctas">
             <a class="btn btn--primary" href={localizePath('fr', '/birth-chart/')}><span>Obtiens ton thème astral gratuit</span><span class="orb">↗</span></a>
             <a class="btn btn--ghost hero-es__ghost" href={localizePath('fr', '/horoscopes/')} hreflang="en" title={englishOnly?.aria}><span>Ton horoscope{englishOnly?.suffix}</span></a>
@@ -159,10 +163,12 @@ const jsonLd = [
     </div>
   </section>
 
+  <HomeShareTools locale="fr" />
+
   <section class="container pace-tight" id="signes">
     <div class="section-head reveal">
       <h2>Les douze signes</h2>
-      <p>Des guides clairs pour chaque signe : personnalité, amour, compatibilité et signification dans ton thème.</p>
+      <p>Des guides clairs pour chaque signe : personnalité, amour, compatibilité et signification dans ton thème.</p>
     </div>
     <div class="twelve-es">
       {SIGNS.map((sign, i) => (
@@ -183,6 +189,7 @@ const jsonLd = [
       <a class="btn btn--primary" href={localizePath('fr', '/birth-chart/')}><span>Obtiens ton thème astral gratuit</span><span class="orb">↗</span></a>
     </div>
   </section>
+  <HomeTrustFaq locale="fr" />
 </Base>
 
 <style>

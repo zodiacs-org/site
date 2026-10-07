@@ -18,7 +18,16 @@ main .pf-hero p { max-width: 52ch; font-size: 16px; line-height: 1.65; }
 .pf-page-nav a:focus-visible { transition: none; }
 .pf-page-nav + .pf-keep { margin-top: 0; }
 .pf-me__initial { position: relative; }
-.pf-me__initial::before { content: ''; position: absolute; inset: -8px; border: 1px solid color-mix(in srgb, var(--sign, var(--ink-2)) 25%, transparent); border-radius: 50%; pointer-events: none; }
+
+/* Long translated actions must not set the minimum width of a saved card
+   or of the profile's single-column grid. */
+.pf { grid-template-columns: minmax(0, 1fr); }
+.pf .pf-list, .pf .pf-chart__core { grid-template-columns: minmax(0, 1fr); }
+.pf .pf-chart__actions { flex-wrap: wrap; }
+.pf .pf-sync__form { min-width: 0; }
+.pf .pf-foot .btn, .pf .pf-sync__form .btn { max-width: 100%; white-space: normal; }
+.pf .pf-foot .btn > span:not(.orb), .pf .pf-sync__form .btn > span:not(.orb) { min-width: 0; line-height: 1.35; }
+@media (max-width: 679px) { .pf .pf-sync__core { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 599px) { .pf-page-nav a { padding-inline: 9px; font-size: 12px; } }
 @media (hover: hover) and (pointer: fine) { .pf-page-nav a:hover { background: rgba(198,204,218,0.04); color: var(--text); } }
 @media (prefers-reduced-motion: reduce) { .pf-page-nav a { transition: none; } .pf-page-nav a:active { transform: none; } }

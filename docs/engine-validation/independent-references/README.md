@@ -123,9 +123,13 @@ would have moved under it, so that means running `tools/build.py` again and
 committing the new files and pins. (Before rc.15 the test compared the ΔT
 model and table alone, which rc.15 left unchanged while it moved the
 instants.)
-A new engine version with the same model and table changes only the version
-a file records, but Site Check rebuilds the files and fails on any changed
-byte, so it too means a rebuild and new pins.
+A new engine version with the same model and table keeps the reference clock
+unchanged, but its product return instants can still move when the position
+model changes. The returned-chart references must then be evaluated at those
+new instants. Site Check rebuilds the files and fails on any changed byte, so
+a new engine version means a rebuild and new pins. The rc.16 refresh and its
+byte-identical offline rebuilds are recorded in
+[`../../platform/evidence/site-engine-rc16/reference-refresh/`](../../platform/evidence/site-engine-rc16/reference-refresh/README.md).
 
 ### Where this clock departs from the policies
 

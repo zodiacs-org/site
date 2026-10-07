@@ -189,7 +189,7 @@ export async function runLunarReturnChecks({ browser, baseURL, check, outDir }) 
       const reading = await page.locator('[data-lr-reading]:not([data-lr-reading="moon-house"])').allTextContents();
       check(`Lunar ${width}: actual PNG contains matching clocks, reading, branding and unclipped text`, png.width === 1080 && png.height === 1350
         && text.includes('Lunar return') && text.includes(`Return: ${shown.slice(0, 16).replace('T', ' ')} UTC`)
-        && text.includes(`Next after: ${REFERENCE.slice(0, 16).replace('T', ' ')} UTC`) && text.includes('zodiacs.org')
+        && text.includes(`Next after: ${REFERENCE.slice(0, 16).replace('T', ' ')} UTC`) && text.includes('Zodiacs.org')
         && text.includes('Placidus houses are left out of this image.') && reading.every((line) => text.includes(line)) && lunarTextGeometryFits(ink) && !/Private|1990-02-01|Synthetic/.test(text), JSON.stringify({ sha256: image.sha256, ink }));
       await page.locator('[data-lr-share]').focus(); await page.keyboard.press('Space');
       await page.waitForFunction(() => window.__lrShare[0]?.sha256);

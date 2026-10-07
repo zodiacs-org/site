@@ -1,0 +1,40 @@
+{
+  "schema": "zodiacs.programme-audit.history-rescan.v1",
+  "date": "2026-10-04",
+  "purpose": "A new post-publication birth-data history check of the engine commits published since rc.16, including the A4 skill bundle. It is not the missing final local rescan receipt of 2026-10-01 and does not reconstruct it.",
+  "tool": {
+    "path": "docs/evidence/rc15-20260929/rebuilt/history-check.mjs",
+    "repository": "zodiacs-org/engine",
+    "at": "23660f509fd9552d596966419fc982544fe06019",
+    "sha256": "4f88a2a14b78c9ca6416f23e1ad68d6106f2d2e37784468e2cfff121f5d7b0de"
+  },
+  "runtime": { "node": "v22.22.2", "git": "2.43.0" },
+  "inputs": {
+    "patterns": "the owner's private pattern file, kept outside every repository; its contents, labels and digest are not recorded here",
+    "patternCounts": { "data": 79, "name": 10 },
+    "publishedExamples": "the owner's private list of the published worked examples that the engine's CONTRIBUTING.md allows, kept outside every repository"
+  },
+  "runs": [
+    {
+      "range": "6807f632fc5aad08999d97f61e50793c6ca9a0b4..c8a390ee1f3ad1f6883a0b986d66a31bf010ddd7",
+      "what": "engine PR23 (the A4 skill bundle) as merged",
+      "commits": 2,
+      "birthDataLinesInCommits": 0,
+      "tree": { "commit": "c8a390ee1f3ad1f6883a0b986d66a31bf010ddd7", "files": 1080, "birthDataLines": 0 },
+      "publishedExamples": { "listed": 5, "filesHoldingBirthData": 2, "allThoseFilesCite": true }
+    },
+    {
+      "range": "6807f632fc5aad08999d97f61e50793c6ca9a0b4..23660f509fd9552d596966419fc982544fe06019",
+      "what": "everything published on engine main since rc.16: PR23, PR24 and PR25",
+      "commits": 6,
+      "birthDataLinesInCommits": 0,
+      "tree": { "commit": "23660f509fd9552d596966419fc982544fe06019", "files": 1092, "birthDataLines": 0 },
+      "publishedExamples": { "listed": 5, "filesHoldingBirthData": 2, "allThoseFilesCite": true }
+    }
+  ],
+  "limits": [
+    "Only aggregate outcomes are recorded. The raw tool output, which names files and opaque labels, stays outside the repository.",
+    "A pattern list can only find what it describes; zero matches is not proof that no other personal data exists.",
+    "The 2026-10-01 check of local revision c583f31b recorded in the engine's docs/evidence/agent-skill-20261001/README.md remains the only record from before publication."
+  ]
+}

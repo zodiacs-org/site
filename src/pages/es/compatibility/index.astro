@@ -1,4 +1,5 @@
 ---
+import SharingToolLinks from '../../../components/sharing/SharingToolLinks.astro';
 import Base from '../../../layouts/Base.astro';
 import Faq from '../../../components/Faq.astro';
 import SignIcon from '../../../components/SignIcon.astro';
@@ -14,7 +15,7 @@ const faq = [
   },
   {
     q: '¿La compatibilidad entre signos solares es real?',
-    a: 'Es la capa útil más sencilla. Dos personas son mucho más que sus signos solares: en la práctica, la Luna, Venus y Marte suelen importar más. Las guías de parejas de signos son puntos de partida honestos, y la calculadora compara las dos cartas natales cuando tienes los datos de nacimiento.',
+    a: 'Es la capa útil más sencilla. Dos personas son mucho más que sus signos solares: en la práctica, la Luna, Venus y Marte suelen importar más. Las guías de combinaciones de signos son puntos de partida honestos, y la calculadora compara las dos cartas natales cuando tienes los datos de nacimiento.',
   },
   {
     q: '¿Necesito las horas exactas de nacimiento para comparar dos cartas?',
@@ -45,7 +46,7 @@ const jsonLd = [
   },
 ];
 ---
-<Base
+<Base privateSurface
   clientUi
   title="Calculadora de compatibilidad astrológica | Zodiacs.org"
   description="Compara dos cartas natales gratis y de forma privada en tu navegador, con lecturas claras y guías para las 78 combinaciones de signos."
@@ -56,7 +57,7 @@ const jsonLd = [
   jsonLd={jsonLd}
   glass
 >
-  <section class="section--tight container container--narrow">
+  <section class="section--tight container container--narrow" id="calculator">
     <div class="compat-hero">
       <em class="kicker">Dos cartas, comparadas con claridad</em>
       <h1 class="display">Revisa tu compatibilidad astrológica.</h1>
@@ -71,7 +72,7 @@ const jsonLd = [
   <section class="section container">
     <div class="section-head">
       <h2>Las 78 combinaciones</h2>
-      <p>Las guías completas siguen en inglés por ahora, pero puedes explorar cada pareja como punto de partida.</p>
+      <p>Cada combinación tiene su guía: cómo funciona, dónde roza y qué la hace durar.</p>
     </div>
     <div class="compat-index">
       {SIGNS.map((a) => (
@@ -82,7 +83,7 @@ const jsonLd = [
           </a>
           <div class="compat-row__pairs">
             {SIGNS.map((b) => (
-              <a class="compat-row__pair" href={`/compatibility/${pairSlug(a.slug, b.slug)}/`} hreflang="en">
+              <a class="compat-row__pair" href={`/es/compatibility/${pairSlug(a.slug, b.slug)}/`}>
                 {signName(b, 'es')}
               </a>
             ))}
@@ -95,6 +96,7 @@ const jsonLd = [
   <section class="section--tight container container--narrow">
     <Faq items={faq} heading="Preguntas sobre la compatibilidad" />
   </section>
+<section class="section--tight container"><SharingToolLinks locale="es" /></section>
 </Base>
 
 <style>

@@ -12,17 +12,24 @@ const signs = [
   'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo',
   'libra', 'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces',
 ];
+const approvedDailyDays = JSON.parse(await readFile(resolve(repo, 'src/data/chart-of-the-day.json'), 'utf8')).editions.filter((edition) => edition.ownerApproval?.approved === true).map((edition) => edition.day);
 const core = [
+  ...approvedDailyDays.map((day) => `/chart-of-the-day/${day}/`),
+  // The index is indexable once at least one owner-approved edition exists.
+  ...(approvedDailyDays.length ? ['/chart-of-the-day/'] : []),
   '/', '/tools/', '/birth-chart/', '/compatibility/', '/moon-sign/',
   '/rising-sign/', '/moon-phase/', '/saturn-return/', '/transits/',
   '/baby-zodiac/', '/profile/', '/methodology/', '/privacy/', '/disclosure/',
+  '/sky-calendar/', '/astrologer-kit/', '/your-sky-wrapped/',
+  '/big-three/', '/compatibility/invite/', '/group-charts/', '/chart-twins/',
   ...signs.map((sign) => `/${sign}/`),
 ];
 const signPaths = new Set(signs.map((sign) => `/${sign}/`));
 const indexedRoutes = core.filter((path) => !signPaths.has(path)).map((path) => `/ru${path}`);
 const noindexSignRoutes = new Set(signs.map((sign) => `/ru/${sign}/`));
 const notFoundRoute = '/ru/404/';
-const expectedRoutes = [...indexedRoutes, ...noindexSignRoutes, notFoundRoute];
+const withheldDailyRoute = approvedDailyDays.length ? null : '/ru/chart-of-the-day/';
+const expectedRoutes = [...indexedRoutes, ...noindexSignRoutes, notFoundRoute, ...(withheldDailyRoute ? [withheldDailyRoute] : [])];
 const expectedFiles = new Map(expectedRoutes.map((route) => [
   route,
   resolve(dist, route.replace(/^\//, ''), 'index.html'),
@@ -171,7 +178,7 @@ for (const [route, file] of expectedFiles) {
     continue;
   }
   const text = visibleText(html);
-  const noindex = route === notFoundRoute || noindexSignRoutes.has(route);
+  const noindex = route === notFoundRoute || route === withheldDailyRoute || noindexSignRoutes.has(route);
   if (!/<html\b[^>]*\blang=["']ru["']/u.test(html)) fail(`${route}: html lang is not ru`);
   if (/<html\b[^>]*\bdir=/u.test(html)) fail(`${route}: Russian LTR page must not emit dir`);
   const robots = metaContent(html, 'robots');
@@ -195,7 +202,7 @@ for (const [route, file] of expectedFiles) {
   if (!/<meta\b[^>]*property=["']og:locale["'][^>]*content=["']ru_RU["']/u.test(html)) {
     fail(`${route}: Russian Open Graph locale is missing`);
   }
-  const expectedCard = RU_OG_ROUTE_CARDS[route];
+  const expectedCard = RU_OG_ROUTE_CARDS[/^\/ru\/chart-of-the-day\/\d{4}-\d{2}-\d{2}\/$/.test(route) ? '/ru/chart-of-the-day/' : route];
   const expectedImage = expectedCard
     ? `https://zodiacs.org/assets/og/v2/ru/${expectedCard}`
     : null;
@@ -337,4 +344,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log(`i18n-r2-ru: OK — 14 indexable routes + 12 noindex sign guides + noindex 404, reciprocal discovery, ${fontBytes} font bytes, ${heroPosterBytes}/${mobileHeroPosterBytes} byte desktop/mobile homepage posters`);
+console.log(`i18n-r2-ru: OK — ${indexedRoutes.length} indexable routes + 12 noindex sign guides + noindex 404 and unapproved daily edition, reciprocal discovery, ${fontBytes} font bytes, ${heroPosterBytes}/${mobileHeroPosterBytes} byte desktop/mobile homepage posters`);

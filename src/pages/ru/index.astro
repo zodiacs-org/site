@@ -1,4 +1,7 @@
 ---
+import HomeTrustFaq from '../../components/HomeTrustFaq.astro';
+import HomeShareTools from '../../components/sharing/HomeShareTools.astro';
+import { homeTrustSchema } from '../../lib/home-trust';
 import Base from '../../layouts/Base.astro';
 import SignIcon from '../../components/SignIcon.astro';
 import ToolGlyph from '../../components/ToolGlyph.astro';
@@ -12,10 +15,11 @@ const tools = [
   { href: '/ru/birth-chart/', title: 'Натальная карта', promise: 'Солнце, Луна, асцендент, планеты, дома и их значение.', hue: 'var(--sign-cancer)', kind: 'birth' as const },
   { href: '/ru/moon-sign/', title: 'Лунный знак', promise: 'Как вы чувствуете, что вас успокаивает и что даёт ощущение дома.', hue: 'var(--sign-pisces)', kind: 'moon' as const },
   { href: '/ru/rising-sign/', title: 'Асцендент', promise: 'Первое впечатление и то, как выстроена вся карта.', hue: 'var(--sign-libra)', kind: 'rising' as const },
-  { href: '/ru/compatibility/', title: 'Совместимость', promise: 'Сравните две карты и увидьте, где они сходятся, спорят и растут.', hue: 'var(--sign-leo)', kind: 'compat' as const },
+  { href: '/ru/compatibility/', title: 'Совместимость', promise: 'Сравните две карты: где они сходятся, где спорят и где помогают друг другу расти.', hue: 'var(--sign-leo)', kind: 'compat' as const },
 ];
 
 const jsonLd = [
+  homeTrustSchema('ru'),
   {
     '@type': 'WebSite',
     '@id': 'https://zodiacs.org/#site',
@@ -316,7 +320,7 @@ const jsonLd = [
   <section class="container pace-act">
     <div class="section-head reveal">
       <h2>Начните со своей карты</h2>
-      <p>Найдите натальную карту, лунный знак, асцендент и совместимость, а затем посмотрите на сегодняшнее небо.</p>
+      <p>Постройте натальную карту, узнайте лунный знак, асцендент и совместимость, а затем посмотрите на сегодняшнее небо.</p>
     </div>
     <div class="home-tools-ru">
       {tools.map((tool, i) => (
@@ -331,6 +335,8 @@ const jsonLd = [
       ))}
     </div>
   </section>
+
+  <HomeShareTools locale="ru" />
 
   <section class="container pace-tight" id="signs">
     <div class="section-head reveal">
@@ -356,6 +362,7 @@ const jsonLd = [
       <a class="btn btn--primary" href="/ru/birth-chart/"><span>Постройте бесплатную натальную карту</span><span class="orb">↗</span></a>
     </div>
   </section>
+  <HomeTrustFaq locale="ru" />
 </Base>
 
 <style>
@@ -562,7 +569,7 @@ const jsonLd = [
   @media (min-width: 900px) { .home-tools-ru { grid-template-columns: repeat(4, 1fr); } }
   .home-tool-ru { display: flex; flex-direction: column; gap: 9px; padding: 26px 22px 22px; min-height: 196px; }
   /* Tool-card icon disc lives in ToolGlyph.astro (shared with the EN home). */
-  .home-tool-ru h3 { margin: 2px 0 0; font-size: var(--text-base); font-weight: 620; color: var(--text); }
+  .home-tool-ru h3 { margin: 2px 0 0; font-size: var(--text-base); font-weight: 620; color: var(--text); overflow-wrap: anywhere; hyphens: auto; }
   .home-tool-ru p { margin: 0; font-size: 13px; color: var(--text-2); line-height: 1.55; }
   .home-tool-ru__go { margin-top: auto; padding-top: 12px; font-size: 12.5px; color: var(--muted); }
   .twelve-ru { display: grid; gap: 12px; grid-template-columns: repeat(2, 1fr); }

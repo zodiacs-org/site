@@ -76,7 +76,7 @@
   <link rel="icon" type="image/png" sizes="96x96" href="/assets/app-icons/v3/favicon-96.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/app-icons/v3/apple-touch-icon.png" />
   <link rel="manifest" href="/site.webmanifest" />
-  <link rel="stylesheet" href="/assets/site-footer.css" />
+  <link rel="stylesheet" href="/assets/site-footer.css?v=20261006" />
 
   <style>
     @font-face { font-family: 'EB Garamond'; src: url('/fonts/eb-garamond-latin-400-normal.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
@@ -142,7 +142,7 @@
   .wnav-wrap { --wing-sans: 'Instrument Sans', 'Instrument Sans Fallback', 'Instrument Sans Fallback Android', system-ui, -apple-system, sans-serif; --wing-serif: 'EB Garamond', 'EB Garamond Fallback', 'EB Garamond Fallback Android', 'EB Garamond Fallback Times', 'Iowan Old Style', Georgia, serif; position: fixed; top: 14px; left: 0; right: 0; z-index: 60; display: flex; flex-direction: column; align-items: center; pointer-events: none; padding-top: env(safe-area-inset-top); }
   .wnav { pointer-events: auto; box-sizing: border-box; max-width: calc(100% - 32px); display: inline-flex; align-items: center; gap: 10px; height: 52px; padding: 0 10px 0 20px; border-radius: 999px; background: rgba(10,12,17,0.96); backdrop-filter: saturate(150%) blur(18px); -webkit-backdrop-filter: saturate(150%) blur(18px); border: 1px solid rgba(198,204,218,0.16); box-shadow: inset 0 1px 0 rgba(238,241,247,0.06), 0 12px 32px -14px rgba(0,0,0,0.7); }
   @media (min-width: 920px) { .wnav { gap: 10px; } }
-  @media (min-width: 900px) { .wnav { gap: 18px; } }
+
   .wnav__mark { display: inline-flex; align-items: center; gap: 9px; text-decoration: none; white-space: nowrap; }
   .wnav__brand { display: block; flex-shrink: 0; }
   .wnav__mark:hover .wnav__brand { animation: wnav-turn 14s linear infinite; }
@@ -157,10 +157,14 @@
   }
   .wnav__search-kbd { display: none; font-family: var(--mono, 'JetBrains Mono', monospace); font-size: 10px; line-height: 1; padding: 3px 5px; border: 1px solid rgba(198,204,218,0.16); border-radius: 4px; color: var(--ink-mute, #8A93A6); }
   @media (min-width: 920px) { .wnav__search-kbd { display: inline-block; } }
-  .wnav__profile-shortcut { display: none; width: 44px; height: 44px; place-items: center; color: var(--ink-2, #C6CCDA); border-radius: 50%; }
+  .wnav__profile-shortcut { display: inline-grid; width: 44px; height: 44px; place-items: center; color: var(--ink-2, #C6CCDA); border-radius: 50%; }
+  .wnav__avatar { display: inline-grid; place-items: center; box-sizing: border-box; width: 28px; height: 28px; overflow: hidden; border-radius: 50%; background: var(--sign, #C6CCDA); color: #060709; font-family: var(--wing-serif); font-size: 16px; font-weight: 500; line-height: 1; }
+  .wnav__avatar[hidden], .has-avatar > .wnav__profile-icon { display: none; }
+  .wnav__avatar img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .wnav__profile-shortcut:hover { background: rgba(198,204,218,0.08); }
   .wnav__links { display: none; align-items: center; gap: 2px; }
-  @media (min-width: 920px) { .wnav__links { display: inline-flex; } }
-  .wnav__link { display: inline-flex; align-items: center; gap: 6px; padding: 7px 11px; border-radius: 999px; font-family: var(--wing-sans); font-size: 14px; font-weight: 500; letter-spacing: normal; text-transform: none; white-space: nowrap; color: var(--ink-2, #C6CCDA); text-decoration: none; background: none; border: 0; cursor: pointer; transition: color 200ms var(--ease, cubic-bezier(0.4,0,0.2,1)), background 260ms var(--ease, cubic-bezier(0.4,0,0.2,1)); }
+  @media (min-width: 920px) { .wnav__links { display: grid; } }
+  .wnav__link { line-height: 1.6; display: inline-flex; align-items: center; gap: 6px; padding: 7px 11px; border-radius: 999px; font-family: var(--wing-sans); font-size: 14px; font-weight: 500; letter-spacing: normal; text-transform: none; white-space: nowrap; color: var(--ink-2, #C6CCDA); text-decoration: none; background: none; border: 0; cursor: pointer; transition: color 200ms var(--ease, cubic-bezier(0.4,0,0.2,1)), background 260ms var(--ease, cubic-bezier(0.4,0,0.2,1)); }
   .wnav__link:hover { color: var(--ink, #EEF1F7); background: rgba(198,204,218,0.07); }
   .wnav__link[aria-current='page'] { color: var(--ink, #EEF1F7); }
   .wnav__dropdown-btn svg { transition: transform 260ms var(--ease, cubic-bezier(0.4,0,0.2,1)); }
@@ -220,7 +224,16 @@
   .wnav-menu__sign .wnav-disc { width: 30px; height: 30px; }
   @keyframes wnav-turn { to { transform: rotate(360deg); } }
   @media (prefers-reduced-motion: reduce) { .wnav-tools, .wnav-signs, .wnav__burger, .wnav__dropdown-btn svg, .wnav__burger-line { transition: none; } .wnav__mark:hover .wnav__brand { animation: none; } }
-@media (max-width: 599.5px) {
+  @media (min-width: 920px) {
+    .wnav { display: grid; width: 884px; grid-template-areas: 'mark links profile search chip'; grid-template-columns: 116px minmax(0, 1fr) 44px 62px 120px; gap: 18px; }
+    .wnav__mark { grid-area: mark; min-width: 0; }
+    .wnav__links { grid-area: links; min-width: 0; grid-template-columns: 74px 74px 64px 62px minmax(0, 1fr); }
+    .wnav__profile-shortcut { grid-area: profile; }
+    .wnav__search { grid-area: search; box-sizing: border-box; width: 62px; height: 44px; }
+    .wnav__chip { grid-area: chip; box-sizing: border-box; min-width: 0; }
+    .wnav__dropdown-btn { justify-content: space-between; }
+  }
+@media (max-width: 919.5px) {
     .wnav-wrap { top: 0; padding-top: 0; transition: transform 360ms cubic-bezier(0.22,1,0.36,1), opacity 260ms ease; }
     .wnav-wrap.is-away { transform: translateY(-100%); opacity: 0; }
     .wnav-wrap.is-away .wnav { pointer-events: none; }
@@ -238,7 +251,7 @@
     .wnav__search { grid-area: search; }
     .wnav__profile-shortcut { grid-area: profile; display: inline-grid; }
   }
-  @media (max-width: 599.5px) and (prefers-reduced-motion: reduce) { .wnav-wrap { transition: none; } }
+  @media (max-width: 919.5px) and (prefers-reduced-motion: reduce) { .wnav-wrap { transition: none; } }
 
     /* ── Hero — the astronomical clock ── */
     .hero {
@@ -1889,9 +1902,8 @@
         <a class="wnav__link" href="/today/">Today</a>
         <a class="wnav__link" href="/learn/">Learn</a>
         <a class="wnav__link" href="/horoscopes/">Horoscopes</a>
-        <a class="wnav__link" href="/profile/">Saved charts</a>
       </div>
-      <a class="wnav__profile-shortcut" href="/profile/" aria-label="Your profile" title="Your profile"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="3.2" stroke="currentColor" stroke-width="1.3"/><path d="M5.5 20v-1.5a6.5 6.5 0 0 1 13 0V20" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></a>
+      <a class="wnav__profile-shortcut" href="/profile/" aria-label="Your profile" title="Your profile" data-profile-glyph><svg class="wnav__profile-icon" width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="3.2" stroke="currentColor" stroke-width="1.3"/><path d="M5.5 20v-1.5a6.5 6.5 0 0 1 13 0V20" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><span class="wnav__avatar" data-profile-avatar aria-hidden="true" hidden></span></a>
       <a class="wnav__search" href="/?search=1" aria-label="Search the site">
         <svg width="14" height="14" viewBox="0 0 15 15" fill="none" aria-hidden="true"><circle cx="6.5" cy="6.5" r="4.75" stroke="currentColor" stroke-width="1.4"/><path d="M10.5 10.5L13.5 13.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
         <kbd class="wnav__search-kbd" aria-hidden="true">/</kbd>
@@ -1902,7 +1914,7 @@
       </button>
     </nav>
     <div class="wnav-tools" id="wnav-tools" data-wnav-tools-menu hidden>
-      <div class="wnav-tools__grid"><a class="wnav-tools__item" href="/birth-chart/"><span class="wnav-tools__name">Birth chart</span><span class="wnav-tools__desc">See your sun, moon, rising, planets, houses, and what they mean.</span></a><a class="wnav-tools__item" href="/compatibility/"><span class="wnav-tools__name">Compatibility</span><span class="wnav-tools__desc">Compare two charts and see where they click, clash, and grow.</span></a><a class="wnav-tools__item" href="/transits/"><span class="wnav-tools__name">Transits</span><span class="wnav-tools__desc">See today's sky next to your chart.</span></a><a class="wnav-tools__item" href="/moon-sign/"><span class="wnav-tools__name">Moon sign</span><span class="wnav-tools__desc">How you feel, and what settles you.</span></a><a class="wnav-tools__item" href="/rising-sign/"><span class="wnav-tools__name">Rising sign</span><span class="wnav-tools__desc">Find the sign people meet first. Birth time helps.</span></a><a class="wnav-tools__item" href="/moon-phase/"><span class="wnav-tools__name">Moon phase</span><span class="wnav-tools__desc">Tonight’s moon, and the moon of any date you care about.</span></a><a class="wnav-tools__item" href="/saturn-return/"><span class="wnav-tools__name">Saturn return</span><span class="wnav-tools__desc">When yours hits, exactly, and what it tends to ask.</span></a><a class="wnav-tools__item" href="/birthday/"><span class="wnav-tools__name">Birthday</span><span class="wnav-tools__desc">Check the Zodiac sign for any birthday from 1940 to 2030, including birthdays close to a sign change.</span></a></div>
+      <div class="wnav-tools__grid"><a class="wnav-tools__item" href="/birth-chart/"><span class="wnav-tools__name">Birth chart</span><span class="wnav-tools__desc">See your sun, moon, rising, planets, houses, and what they mean.</span></a><a class="wnav-tools__item" href="/compatibility/"><span class="wnav-tools__name">Compatibility</span><span class="wnav-tools__desc">Compare two charts and see where they click, clash, and grow.</span></a><a class="wnav-tools__item" href="/transits/"><span class="wnav-tools__name">Transits</span><span class="wnav-tools__desc">Explore today’s planets and their connections to your chart.</span></a><a class="wnav-tools__item" href="/moon-sign/"><span class="wnav-tools__name">Moon sign</span><span class="wnav-tools__desc">How you feel, and what settles you.</span></a><a class="wnav-tools__item" href="/rising-sign/"><span class="wnav-tools__name">Rising sign</span><span class="wnav-tools__desc">Find the sign people meet first. Birth time helps.</span></a><a class="wnav-tools__item" href="/moon-phase/"><span class="wnav-tools__name">Moon phase</span><span class="wnav-tools__desc">Tonight’s moon, and the moon of any date you care about.</span></a><a class="wnav-tools__item" href="/saturn-return/"><span class="wnav-tools__name">Saturn return</span><span class="wnav-tools__desc">When yours hits, exactly, and what it tends to ask.</span></a><a class="wnav-tools__item" href="/birthday/"><span class="wnav-tools__name">Birthday</span><span class="wnav-tools__desc">Find your Sun sign from your birthday, including dates near a sign change.</span></a></div>
     </div>
     <div class="wnav-signs" id="wnav-signs" data-wnav-signs-menu hidden>
       <div class="wnav-signs__grid"><a class="wnav-signs__item" href="/aries/" style="--sign:#DE8E79"><picture class="wnav-disc"><source srcset="/assets/zodiac-icons/128/aries.avif" type="image/avif"/><img src="/assets/zodiac-icons/128/aries.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><span class="wnav-signs__name">Aries</span><span class="wnav-signs__dates">Mar 21 – Apr 19</span></a><a class="wnav-signs__item" href="/taurus/" style="--sign:#B9D4BE"><picture class="wnav-disc"><source srcset="/assets/zodiac-icons/128/taurus.avif" type="image/avif"/><img src="/assets/zodiac-icons/128/taurus.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><span class="wnav-signs__name">Taurus</span><span class="wnav-signs__dates">Apr 20 – May 20</span></a><a class="wnav-signs__item" href="/gemini/" style="--sign:#B29DD0"><picture class="wnav-disc"><source srcset="/assets/zodiac-icons/128/gemini.avif" type="image/avif"/><img src="/assets/zodiac-icons/128/gemini.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><span class="wnav-signs__name">Gemini</span><span class="wnav-signs__dates">May 21 – Jun 20</span></a><a class="wnav-signs__item" href="/cancer/" style="--sign:#B6D4E4"><picture class="wnav-disc"><source srcset="/assets/zodiac-icons/128/cancer.avif" type="image/avif"/><img src="/assets/zodiac-icons/128/cancer.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><span class="wnav-signs__name">Cancer</span><span class="wnav-signs__dates">Jun 21 – Jul 22</span></a><a class="wnav-signs__item" href="/leo/" style="--sign:#E0A9B4"><picture class="wnav-disc"><source srcset="/assets/zodiac-icons/128/leo.avif" type="image/avif"/><img src="/assets/zodiac-icons/128/leo.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><span class="wnav-signs__name">Leo</span><span class="wnav-signs__dates">Jul 23 – Aug 22</span></a><a class="wnav-signs__item" href="/virgo/" style="--sign:#B7D9B0"><picture class="wnav-disc"><source srcset="/assets/zodiac-icons/128/virgo.avif" type="image/avif"/><img src="/assets/zodiac-icons/128/virgo.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><span class="wnav-signs__name">Virgo</span><span class="wnav-signs__dates">Aug 23 – Sep 22</span></a><a class="wnav-signs__item" href="/libra/" style="--sign:#D3A9DE"><picture class="wnav-disc"><source srcset="/assets/zodiac-icons/128/libra.avif" type="image/avif"/><img src="/assets/zodiac-icons/128/libra.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><span class="wnav-signs__name">Libra</span><span class="wnav-signs__dates">Sep 23 – Oct 22</span></a><a class="wnav-signs__item" href="/scorpio/" style="--sign:#B9DCE8"><picture class="wnav-disc"><source srcset="/assets/zodiac-icons/128/scorpio.avif" type="image/avif"/><img src="/assets/zodiac-icons/128/scorpio.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><span class="wnav-signs__name">Scorpio</span><span class="wnav-signs__dates">Oct 23 – Nov 21</span></a><a class="wnav-signs__item" href="/sagittarius/" style="--sign:#E0B080"><picture class="wnav-disc"><source srcset="/assets/zodiac-icons/128/sagittarius.avif" type="image/avif"/><img src="/assets/zodiac-icons/128/sagittarius.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><span class="wnav-signs__name">Sagittarius</span><span class="wnav-signs__dates">Nov 22 – Dec 21</span></a><a class="wnav-signs__item" href="/capricorn/" style="--sign:#C0DEA8"><picture class="wnav-disc"><source srcset="/assets/zodiac-icons/128/capricorn.avif" type="image/avif"/><img src="/assets/zodiac-icons/128/capricorn.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><span class="wnav-signs__name">Capricorn</span><span class="wnav-signs__dates">Dec 22 – Jan 19</span></a><a class="wnav-signs__item" href="/aquarius/" style="--sign:#AE8FC9"><picture class="wnav-disc"><source srcset="/assets/zodiac-icons/128/aquarius.avif" type="image/avif"/><img src="/assets/zodiac-icons/128/aquarius.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><span class="wnav-signs__name">Aquarius</span><span class="wnav-signs__dates">Jan 20 – Feb 18</span></a><a class="wnav-signs__item" href="/pisces/" style="--sign:#A9D4C4"><picture class="wnav-disc"><source srcset="/assets/zodiac-icons/128/pisces.avif" type="image/avif"/><img src="/assets/zodiac-icons/128/pisces.webp" width="32" height="32" alt="" loading="lazy" decoding="async"/></picture><span class="wnav-signs__name">Pisces</span><span class="wnav-signs__dates">Feb 19 – Mar 20</span></a></div>
@@ -1920,7 +1932,7 @@
       </div>
       <div class="wnav-menu__group">
         <span class="wnav-menu__label">Tools</span>
-        <div class="wnav-menu__tools"><a class="wnav-menu__tool" style="--i:0" href="/birth-chart/" aria-label="Birth chart. See your sun, moon, rising, planets, houses, and what they mean.">Birth chart</a><a class="wnav-menu__tool" style="--i:1" href="/compatibility/" aria-label="Compatibility. Compare two charts and see where they click, clash, and grow.">Compatibility</a><a class="wnav-menu__tool" style="--i:2" href="/transits/" aria-label="Transits. See today's sky next to your chart.">Transits</a><a class="wnav-menu__tool" style="--i:3" href="/moon-sign/" aria-label="Moon sign. How you feel, and what settles you.">Moon sign</a><a class="wnav-menu__tool" style="--i:4" href="/rising-sign/" aria-label="Rising sign. Find the sign people meet first. Birth time helps.">Rising sign</a><a class="wnav-menu__tool" style="--i:5" href="/moon-phase/" aria-label="Moon phase. Tonight’s moon, and the moon of any date you care about.">Moon phase</a><a class="wnav-menu__tool" style="--i:6" href="/saturn-return/" aria-label="Saturn return. When yours hits, exactly, and what it tends to ask.">Saturn return</a><a class="wnav-menu__tool" style="--i:7" href="/birthday/" aria-label="Birthday. Check the Zodiac sign for any birthday from 1940 to 2030, including birthdays close to a sign change.">Birthday</a></div>
+        <div class="wnav-menu__tools"><a class="wnav-menu__tool" style="--i:0" href="/birth-chart/" aria-label="Birth chart. See your sun, moon, rising, planets, houses, and what they mean.">Birth chart</a><a class="wnav-menu__tool" style="--i:1" href="/compatibility/" aria-label="Compatibility. Compare two charts and see where they click, clash, and grow.">Compatibility</a><a class="wnav-menu__tool" style="--i:2" href="/transits/" aria-label="Transits. Explore today’s planets and their connections to your chart.">Transits</a><a class="wnav-menu__tool" style="--i:3" href="/moon-sign/" aria-label="Moon sign. How you feel, and what settles you.">Moon sign</a><a class="wnav-menu__tool" style="--i:4" href="/rising-sign/" aria-label="Rising sign. Find the sign people meet first. Birth time helps.">Rising sign</a><a class="wnav-menu__tool" style="--i:5" href="/moon-phase/" aria-label="Moon phase. Tonight’s moon, and the moon of any date you care about.">Moon phase</a><a class="wnav-menu__tool" style="--i:6" href="/saturn-return/" aria-label="Saturn return. When yours hits, exactly, and what it tends to ask.">Saturn return</a><a class="wnav-menu__tool" style="--i:7" href="/birthday/" aria-label="Birthday. Find your Sun sign from your birthday, including dates near a sign change.">Birthday</a></div>
       </div>
       <div class="wnav-menu__group">
         <span class="wnav-menu__label">The twelve</span>
@@ -2609,13 +2621,17 @@
             </a>
             <p class="zfooter__tag">The argument for the Twelve, and the public record behind it.</p>
           </div>
-          <button class="zfooter__guide" type="button" data-assistant-open data-footer-guide aria-haspopup="dialog">
+          <aside class="zfooter__help" aria-label="Guide">
+      <button class="zfooter__guide" type="button" data-assistant-open data-footer-guide aria-haspopup="dialog" aria-describedby="footer-guide-description">
             <img src="/assets/guide-avatar.webp" width="32" height="32" alt="" loading="lazy" decoding="async" />
-            <span>Guide</span>
+            <span>Guide</span><span class="zfooter__guide-arrow" aria-hidden="true">→</span>
           </button>
+      <p id="footer-guide-description" class="zfooter__help-description">An AI assistant for astrology questions and help using Zodiacs.</p>
+      </aside>
         </div>
 
-        <div class="zfooter__directory">
+        <p class="zfooter__tag">Our astrology tools and guides are free, with no signup required. Zodiacs.org also operates Astrofolio, the Zodiac token collection. <a href="/disclosure/">Read our disclosure</a>.</p>
+    <div class="zfooter__directory">
           <nav class="zfooter__group" aria-label="Explore">
             <details class="zfooter__fold" open data-footer-essential><summary class="zfooter__fold-label"><span class="zfooter__label">Explore</span></summary>
             <div class="zfooter__links"><a href="/">Astrology</a><a href="/astrofolio/">Astrofolio</a><a href="/registry/">Official Registry</a><a href="/thesis/" aria-current="page">Thesis</a><a href="/archive/">Archive</a></div>
@@ -2922,6 +2938,86 @@
       setMobile(false);
       if(restore) restore.focus();
     });
+    function initProfileNavigation() {
+    var slots = document.querySelectorAll('[data-profile-avatar]');
+    if (!slots.length) return;
+    var hues = ['#DE8E79', '#B9D4BE', '#B29DD0', '#B6D4E4', '#E0A9B4', '#B7D9B0',
+      '#D3A9DE', '#B9DCE8', '#E0B080', '#C0DEA8', '#AE8FC9', '#A9D4C4'];
+    function you() {
+      var access = window.zodiacsProfileAccess;
+      var unlocked = access && typeof access.canRead === 'function' && access.canRead() === true;
+      // Static wing pages do not mount the account coordinator. An owned or
+      // retained cache must not become readable merely because that page has
+      // no feature attribute; show the generic icon until access is granted.
+      if (!unlocked && (document.documentElement.hasAttribute('data-account-sync-v2')
+        || localStorage.getItem('zodiacs.account-sync-v2.local-owner.v1') !== null
+        || localStorage.getItem('zodiacs.account-sync-v2.retained-owner.v1') !== null)) return null;
+      var profile = JSON.parse(localStorage.getItem('zodiacs.profile.v1') || 'null');
+      var own = profile && Array.isArray(profile.charts)
+        ? profile.charts.filter(function (chart) { return chart && chart.relationship === 'self'; })
+        : [];
+      var self = own.length === 1 ? own[0] : null;
+      var me = JSON.parse(localStorage.getItem('zodiacs.me.v1') || 'null');
+      if (me && me.version === 1 && typeof me.photo === 'string' && me.photo.length <= 100000
+        && /^data:image\/jpeg;base64,\/9j\/[A-Za-z0-9+/]+={0,2}$/.test(me.photo)) return { photo: me.photo };
+      var name = me && me.version === 1 && typeof me.displayName === 'string' ? me.displayName : '';
+      // An automatic chart name ends in the birth date; it is not a name.
+      if (!name && self && typeof self.name === 'string' && !/·\s*\d{4}-\d{2}-\d{2}\s*$/.test(self.name)) {
+        name = self.name.split('·')[0];
+      }
+      var first = Array.from(name.replace(new RegExp('[\\p{Cc}\\p{Cf}]', 'gu'), '').normalize('NFC').trim())[0];
+      if (!first || !new RegExp('^[\\p{L}\\p{N}]$', 'u').test(first)) return null;
+      var letter = first.toUpperCase();
+      if (Array.from(letter).length !== 1) letter = first;
+      var bodies = self && self.summary && Array.isArray(self.summary.bodies) ? self.summary.bodies : [];
+      var sun = bodies.filter(function (row) { return row && row.body === 'Sun'; })[0];
+      var lon = sun ? Number(sun.lon) : NaN;
+      var hue = '';
+      if (isFinite(lon)) {
+        lon = ((lon % 360) + 360) % 360;
+        var index = Math.min(11, Math.floor(lon / 30));
+        var within = lon - index * 30;
+        var timeKnown = Boolean(self && self.birth && self.birth.timeKnown === true);
+        // Without a birth time, a Sun within a day's motion of a cusp is unsettled.
+        if (timeKnown || !(within < 1.02 || 30 - within < 1.02)) hue = hues[index];
+      }
+      return { letter: letter, hue: hue };
+    }
+    function render() {
+      var mark = null;
+      try { mark = you(); } catch (error) { mark = null; }
+      for (var i = 0; i < slots.length; i += 1) {
+        var slot = slots[i];
+        slot.textContent = mark && mark.letter ? mark.letter : '';
+        if (mark && mark.photo) {
+          var photo = document.createElement('img');
+          photo.src = mark.photo; photo.alt = ''; photo.width = photo.height = 28;
+          slot.appendChild(photo);
+        }
+        if (mark && mark.hue) slot.style.setProperty('--sign', mark.hue);
+        else slot.style.removeProperty('--sign');
+        slot.hidden = !mark;
+        if (slot.parentElement) slot.parentElement.classList.toggle('has-avatar', Boolean(mark));
+      }
+    }
+    render();
+    ['zodiacs:profile', 'zodiacs:profile-access', 'zodiacs:me'].forEach(function (name) {
+      window.addEventListener(name, render);
+    });
+    function onStorage(event) {
+      if (!event.key || event.key === 'zodiacs.me.v1' || event.key === 'zodiacs.profile.v1'
+        || event.key.startsWith('zodiacs.account-sync-v2.')) render();
+    }
+    window.addEventListener('storage', onStorage);
+    return function cleanup() {
+      ['zodiacs:profile', 'zodiacs:profile-access', 'zodiacs:me'].forEach(function (name) {
+        window.removeEventListener(name, render);
+      });
+      window.removeEventListener('storage', onStorage);
+    };
+
+}
+    initProfileNavigation();
   })();
     })();
 
@@ -3329,7 +3425,7 @@
     var wrap = nav ? nav.parentElement : null;
     var root = document.documentElement;
     if(!wrap || !window.matchMedia) return;
-    var phone = window.matchMedia('(max-width: 599.5px)');
+    var phone = window.matchMedia('(max-width: 919.5px)');
     var last = Math.max(0, window.scrollY), away = false, frame = 0;
     function set(next){ if(next === away) return; away = next; wrap.classList.toggle('is-away', next); }
     function held(){ return root.style.overflow === 'hidden' || !!document.querySelector('[data-wnav-burger][aria-expanded="true"]') || !!wrap.querySelector(':focus-visible'); }

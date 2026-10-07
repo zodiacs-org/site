@@ -47,9 +47,14 @@ export default function PlaceSearch({
   }, [selected]);
   const pickHint = validationError || (!selected && query.trim() ? selectionHint : '');
 
-  useEffect(() => () => {
-    clearTimeout(debounce.current);
-    ++requestToken.current;
+  useEffect(() => {
+    // Continue a query already entered into the visible server form.
+    const draft = inputRef.current?.value;
+    if (draft && !requestToken.current) onInput(draft);
+    return () => {
+      clearTimeout(debounce.current);
+      ++requestToken.current;
+    };
   }, []);
 
   useEffect(() => {
@@ -148,7 +153,8 @@ export default function PlaceSearch({
         aria-required={required || undefined}
         placeholder={t(locale, 'placePlaceholder')}
         autocomplete="off"
-        value={query}
+        // Leave an empty first render alone so hydration preserves early input.
+        value={query || undefined}
         onFocus={() => { void loadSearch().then(({ preloadIndex }) => { void preloadIndex(); }, () => {}); }}
         onInput={(e) => onInput((e.target as HTMLInputElement).value)}
         onKeyDown={onKeyDown}

@@ -14,7 +14,11 @@ export type ToolGlyphKind =
   | 'fullmoon'
   | 'eclipse'
   | 'baby'
-  | 'numerology';
+  | 'numerology'
+  | 'group'
+  | 'invite'
+  | 'calendar'
+  | 'document';
 
 interface ToolHubCard {
   order: number;
@@ -72,7 +76,7 @@ export interface ToolsHubEntry extends ToolHubCard {
 const NAV_SUBLABELS = {
   birth: {
     en: 'See your sun, moon, rising, planets, houses, and what they mean.',
-    es: 'Ve tu Sol, Luna, ascendente, planetas, casas y lo que significan.',
+    es: 'Descubre tu Sol, tu Luna, tu ascendente, los planetas, las casas y lo que significan.',
     pt: 'Veja seu Sol, sua Lua, seu ascendente, os planetas, as casas e o que tudo isso significa.',
     fr: 'Découvre ton Soleil, ta Lune, ton ascendant, tes planètes, tes maisons et leur signification.',
     it: 'Il tuo Sole, la tua Luna, l’ascendente, i pianeti, le case e il loro significato.',
@@ -82,21 +86,21 @@ const NAV_SUBLABELS = {
     en: 'Compare two charts and see where they click, clash, and grow.',
     es: 'Compara dos cartas y mira dónde conectan, chocan y crecen.',
     pt: 'Compare dois mapas e veja onde combinam, entram em conflito e crescem.',
-    fr: 'Compare deux thèmes et vois où ils s’accordent, se heurtent et évoluent.',
+    fr: 'Compare deux thèmes : où ils s’accordent, où ils se heurtent, où ils grandissent.',
     it: 'Confronta due temi e scopri dove si accordano, si scontrano e crescono.',
-    ru: 'Сравните две карты и увидьте, где они совпадают, спорят и растут.',
+    ru: 'Сравните две карты: где они сходятся, где спорят и где помогают друг другу расти.',
   },
   transits: {
-    en: "See today's sky next to your chart.",
-    es: 'El cielo de hoy comparado con tu carta.',
-    pt: 'Veja o céu de hoje ao lado do seu mapa.',
-    fr: 'Observe le ciel d’aujourd’hui par rapport à ton thème.',
-    it: 'Il cielo di oggi a confronto con il tuo tema.',
-    ru: 'Посмотрите на сегодняшнее небо рядом со своей картой.',
+    en: 'Explore today’s planets and their connections to your chart.',
+    es: 'Explora los planetas de hoy y sus conexiones con tu carta.',
+    pt: 'Explore os planetas de hoje e suas conexões com seu mapa.',
+    fr: 'Explore les planètes du jour et leurs liens avec ton thème.',
+    it: 'Esplora i pianeti di oggi e i loro legami con il tuo tema.',
+    ru: 'Изучите планеты сегодня и их связи с вашей картой.',
   },
   moon: {
     en: 'How you feel, and what settles you.',
-    es: 'Cómo sientes y qué te ayuda a volver a ti.',
+    es: 'Cómo sientes las cosas y qué te calma.',
     pt: 'Como você vive as emoções e o que traz calma.',
     fr: 'Ta manière de ressentir et ce qui t’apaise.',
     it: 'Come vivi le emozioni e che cosa ti calma.',
@@ -104,11 +108,11 @@ const NAV_SUBLABELS = {
   },
   rising: {
     en: 'Find the sign people meet first. Birth time helps.',
-    es: 'Encuentra la energía que otros notan primero.',
-    pt: 'Descubra o signo que as pessoas percebem primeiro em você. O horário de nascimento ajuda.',
+    es: 'El signo que los demás ven primero. La hora de nacimiento ayuda.',
+    pt: 'Descubra o signo que as pessoas percebem primeiro em você. A hora de nascimento ajuda.',
     fr: 'Découvre le signe que les autres perçoivent en premier. L’heure de naissance est utile.',
     it: 'Il segno che mostri agli altri al primo incontro. L’ora di nascita aiuta.',
-    ru: 'Найдите знак, который люди встречают первым. Нужны часы рождения.',
+    ru: 'Знак, который другие замечают первым. Нужно время рождения.',
   },
   moonPhase: {
     en: 'Tonight’s moon, and the moon of any date you care about.',
@@ -121,18 +125,18 @@ const NAV_SUBLABELS = {
   saturn: {
     en: 'When yours hits, exactly, and what it tends to ask.',
     es: 'Cuándo llega el tuyo y qué suele pedir.',
-    pt: 'Quando o seu acontece, com exatidão, e o que ele costuma pedir.',
-    fr: 'Quand le tien arrive, précisément, et ce qu’il tend à demander.',
+    pt: 'Quando o seu chega, com datas exatas, e o que ele costuma pedir.',
+    fr: 'Quand arrive le tien, à la date près, et ce qu’il demande en général.',
     it: 'Quando arriva il tuo, con precisione, e che cosa tende a chiedere.',
-    ru: 'Когда именно случится ваше возвращение и о чём оно обычно спрашивает.',
+    ru: 'Когда именно случится ваше возвращение и какие вопросы оно обычно ставит.',
   },
   birthday: {
-    en: 'Pick your birthday and get the receipts: sun sign verified across 1940–2030, exact degree spans, decans with traditional rulers, and year-by-year cusp tables.',
-    es: 'Un cumpleaños, un aniversario, cualquier fecha.',
-    pt: 'Um aniversário, uma data especial, qualquer data.',
-    fr: 'Un anniversaire, une date marquante, n’importe quelle date.',
-    it: 'Un compleanno, un anniversario, una data qualsiasi.',
-    ru: 'Выберите дату рождения и получите точные данные о знаке, градусе и декане.',
+    en: 'Find your Sun sign from your birthday, including dates near a sign change.',
+    es: 'Encuentra tu signo solar por tu cumpleaños, incluso cerca de un cambio de signo.',
+    pt: 'Encontre seu signo solar pelo aniversário, inclusive perto de uma mudança de signo.',
+    fr: 'Trouve ton signe solaire avec ta date de naissance, même près d’un changement de signe.',
+    it: 'Trova il tuo segno solare dalla data di nascita, anche vicino a un cambio di segno.',
+    ru: 'Узнайте солнечный знак по дате рождения, в том числе на границе знаков.',
   },
 } as const satisfies Record<string, Record<Locale, string>>;
 
@@ -154,6 +158,34 @@ export const TOOL_CATALOG: readonly ToolCatalogEntry[] = [
   {
     href: '/big-three/',
     hub: { order: 16, title: 'Big Three calculator', promise: 'Sun, Moon, and Rising in seconds, with a card to share and one tap into the full chart.', hue: 'var(--sign-leo)', kind: 'birth', group: 'start' },
+  },
+  {
+    href: '/group-charts/',
+    hub: { order: 20, title: 'Group charts', promise: 'Three to eight people: who brings the spark, the anchor, the connector, and the glue.', hue: 'var(--sign-aries)', kind: 'group', group: 'start' },
+  },
+  {
+    href: '/compatibility/invite/',
+    hub: { order: 21, title: 'Invite a friend to compare', promise: 'Send a link; your friend adds their chart and the comparison opens for both of you.', hue: 'var(--sign-libra)', kind: 'invite', group: 'start' },
+  },
+  {
+    href: '/chart-twins/',
+    hub: { order: 22, title: 'Chart twins', promise: 'Public figures in the sourced directory who share your Sun and Moon signs.', hue: 'var(--sign-gemini)', kind: 'compat', group: 'start' },
+  },
+  {
+    href: '/astrologer-kit/',
+    hub: { order: 23, title: 'Chart PDF', promise: 'A clean chart with placement and aspect tables, made on your device to print or send.', hue: 'var(--sign-virgo)', kind: 'document', group: 'start' },
+  },
+  {
+    href: '/sky-calendar/',
+    hub: { order: 24, title: 'Sky calendar', promise: 'New and full moons, eclipses, and retrogrades in your own calendar app.', hue: 'var(--sign-aquarius)', kind: 'calendar', group: 'sky' },
+  },
+  {
+    href: '/chart-of-the-day/',
+    hub: { order: 25, title: 'Chart of the day', promise: 'A public figure in the news, with sourced birth data and its limits stated.', hue: 'var(--sign-sagittarius)', kind: 'birth', group: 'sky' },
+  },
+  {
+    href: '/your-sky-wrapped/',
+    hub: { order: 26, title: 'Your sky, wrapped', promise: 'The year’s Jupiter and Saturn contacts to your chart, with a card to share.', hue: 'var(--sign-capricorn)', kind: 'transit', group: 'milestones' },
   },
   {
     href: '/today/', label: 'today', footerOrder: 2, footerUsesLocalizedPath: true,
@@ -222,7 +254,7 @@ export const TOOL_CATALOG: readonly ToolCatalogEntry[] = [
     hub: { order: 14, title: 'Eclipses', promise: 'Solar and lunar through 2028, with exact peak times.', hue: 'var(--sign-leo)', kind: 'eclipse', group: 'sky' },
   },
   {
-    href: '/retrogrades/', label: 'retrogrades', footerOrder: 9,
+    href: '/retrogrades/', label: 'retrogrades', footerOrder: 9, footerUsesLocalizedPath: true,
     hub: { order: 15, title: 'Retrogrades', promise: "See each planet's retrograde dates at a glance.", hue: 'var(--sign-virgo)', kind: 'retrograde', group: 'sky' },
   },
   {
@@ -265,4 +297,23 @@ export const ALL_TOOLS_LABEL = {
   fr: 'Tous les outils',
   it: 'Tutti gli strumenti',
   ru: 'Все инструменты',
+} as const satisfies Record<Locale, string>;
+
+/**
+ * Newer sharing and return-visit tools, listed under the main eight in the
+ * Tools menu with short labels. Every one has a route in all six locales.
+ */
+export const NAV_MORE: readonly { href: string; label: Record<Locale, string> }[] = [
+  { href: '/group-charts/', label: { en: 'Group charts', es: 'Cartas de grupo', pt: 'Mapas do grupo', fr: 'Thèmes de groupe', it: 'Temi di gruppo', ru: 'Карты группы' } },
+  { href: '/chart-twins/', label: { en: 'Chart twins', es: 'Gemelos astrales', pt: 'Gêmeos astrais', fr: 'Jumeaux astrologiques', it: 'Gemelli astrologici', ru: 'Астрологические близнецы' } },
+  { href: '/big-three/', label: { en: 'Big three card', es: 'Los tres grandes', pt: 'Seus três signos', fr: 'Tes trois signes', it: 'I tuoi tre segni', ru: 'Большая тройка' } },
+  { href: '/compatibility/invite/', label: { en: 'Invite a friend', es: 'Invitar a un amigo', pt: 'Convidar alguém', fr: 'Inviter un ami', it: 'Invita un amico', ru: 'Пригласить друга' } },
+  { href: '/sky-calendar/', label: { en: 'Sky calendar', es: 'Calendario del cielo', pt: 'Calendário do céu', fr: 'Calendrier du ciel', it: 'Calendario del cielo', ru: 'Календарь неба' } },
+  { href: '/chart-of-the-day/', label: { en: 'Chart of the day', es: 'Carta del día', pt: 'Mapa do dia', fr: 'Thème du jour', it: 'Tema del giorno', ru: 'Карта дня' } },
+  { href: '/your-sky-wrapped/', label: { en: 'Your sky, wrapped', es: 'Tu cielo, en retrospectiva', pt: 'Seu céu em retrospectiva', fr: 'Ton ciel, en rétrospective', it: 'Il tuo cielo, in retrospettiva', ru: 'Ваше небо: итоги года' } },
+  { href: '/astrologer-kit/', label: { en: 'Chart PDF', es: 'PDF de la carta', pt: 'PDF do mapa', fr: 'PDF du thème', it: 'PDF del tema', ru: 'PDF карты' } },
+];
+
+export const NAV_MORE_LABEL = {
+  en: 'More to explore', es: 'Más para explorar', pt: 'Mais para explorar', fr: 'À explorer aussi', it: 'Altro da esplorare', ru: 'Ещё стоит посмотреть',
 } as const satisfies Record<Locale, string>;

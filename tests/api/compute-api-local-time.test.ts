@@ -1,6 +1,7 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import * as bundled from '../../api/_compute/local-time.mjs';
+import { createLocalTimeModule } from '../../api/_compute/local-time.mjs';
+const bundled = createLocalTimeModule();
 import * as source from '../../src/lib/compute-api/local-time-source';
 import { BUNDLE_PATH, TYPES_PATH, buildLocalTimeBundle } from '../../scripts/build-compute-local-time.mjs';
 

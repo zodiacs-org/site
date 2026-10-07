@@ -65,7 +65,7 @@ const jsonLd = [
   clientUi
   glass
   title="Mapa astral grátis — Sol, Lua e ascendente | Zodiacs.org"
-  description="Calcule seu mapa astral grátis: Sol, Lua, ascendente, planetas, casas e seus significados. Calculado com privacidade no seu navegador e explicado com clareza."
+  description="Calcule seu mapa astral grátis: Sol, Lua, ascendente, planetas, casas e o que cada um significa. Calculado com privacidade no seu navegador."
   path="/pt/birth-chart/"
   locale="pt"
   image="/assets/og/v2/tool/birth-chart.png"
@@ -79,6 +79,7 @@ const jsonLd = [
         document.documentElement.dataset.chartShareReceiver = '';
         document.addEventListener('DOMContentLoaded', function () {
           document.querySelectorAll('a[href="/astrofolio/"],a[href^="/registry/"],a[href^="/sdk/"]').forEach(function (element) {
+            if (element.closest('[data-nav], [data-mobile-menu]')) return;
             var footerWing = element.closest('.footer__col, .zfooter__group');
             (footerWing || element).remove();
           });
@@ -87,7 +88,7 @@ const jsonLd = [
     } catch (error) {}
   </script>
   <style slot="head" is:inline>
-    html[data-chart-share-receiver] a[href="/astrofolio/"],
+    html[data-chart-share-receiver] a[href="/astrofolio/"]:not([data-nav] a, [data-mobile-menu] a),
     html[data-chart-share-receiver] a[href^="/registry/"],
     html[data-chart-share-receiver] a[href^="/sdk/"],
     html[data-chart-share-receiver] .calc__record,

@@ -23,15 +23,17 @@ describe('Russian R2 Open Graph catalogue', () => {
     })));
   });
 
-  it('pins the exact 27-route deck-copy contract', () => {
-    expect(RU_OG_ROUTES).toHaveLength(27);
-    expect(RU_OG_REQUIRED_CARDS).toHaveLength(27);
+  it('pins the exact 35-route deck-copy contract', () => {
+    expect(RU_OG_ROUTES).toHaveLength(35);
+    expect(RU_OG_REQUIRED_CARDS).toHaveLength(35);
     expect(createHash('sha256').update(RU_OG_COPY_DIGEST_INPUT).digest('hex'))
-      .toBe('618d6d02962b4324f7a1e5d5564e47055dd72818c66ad925f0b17e37bb12a807');
+      .toBe('5b65ff6a8d14b70177b5caa3229499c184d2e292b4fa63c2d5bf07b07dee98d5');
 
     const paths = RU_OG_ROUTES.map((entry) => entry.publicPath);
-    expect(new Set(paths).size).toBe(27);
+    expect(new Set(paths).size).toBe(35);
     expect(paths).toEqual([
+      '/ru/sky-calendar/', '/ru/astrologer-kit/', '/ru/your-sky-wrapped/', '/ru/chart-of-the-day/',
+      '/ru/big-three/', '/ru/compatibility/invite/', '/ru/group-charts/', '/ru/chart-twins/',
       '/ru/', '/ru/tools/', '/ru/birth-chart/', '/ru/compatibility/',
       '/ru/moon-sign/', '/ru/rising-sign/', '/ru/moon-phase/',
       '/ru/saturn-return/', '/ru/transits/', '/ru/baby-zodiac/',

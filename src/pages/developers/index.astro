@@ -3,7 +3,7 @@ import conformance from '../../data/conformance/summary.json';
 import Base from '../../layouts/Base.astro';
 import { iframeEmbedCode } from '../../lib/widgets';
 import { WIDGET_EN } from '../../strings/widgets';
-import { completeTransitYears } from '../../lib/sky-api/build';
+import { completeTransitYears, yearsWithin } from '../../lib/sky-api/build';
 import { PLANET_SLUGS } from '../../lib/sky-api/meta';
 import skyQuickStart from '../../lib/sky-api/examples/today.mjs?raw';
 import candidate from '../../data/platform-engine-candidate.json';
@@ -13,6 +13,9 @@ import candidate from '../../data/platform-engine-candidate.json';
 // own manifest instead.
 import starterEngine from '../../../examples/platform/candidate.json';
 import mcp from '../../../public/examples/mcp-server.json';
+import sky from '../../data/sky.json';
+import eclipses from '../../data/eclipses.json';
+import { FREE_OFFER, OPENAPI_URL, ORGANIZATION, SITE, SKY_DATA_LICENSE } from '../../lib/developer-structured-data.mjs';
 
 // The same month snapshots the generator reads decide which year files exist,
 // so this page and the deployed API can never disagree about coverage.
@@ -51,12 +54,47 @@ const skyEmbed = iframeEmbedCode({ origin: 'https://zodiacs.org', kind: 'sky', t
 
 const description = 'Build with Zodiacs: evaluate the local TypeScript chart engine, call the compute API, fetch free shared-sky JSON, or embed a moon, sky, or mini-chart widget. Current support, release status, and calculation limits in one place.';
 
-const jsonLd = [{
-  '@type': 'WebPage',
-  name: 'Zodiacs developer tools: charts, sky data, and embeds',
-  url: 'https://zodiacs.org/developers/',
-  description,
-}];
+// The files the sky data generator writes, chosen as src/lib/sky-api/files.ts chooses them:
+// retrogrades and Moon phases only for years sky.json covers, eclipses only for years eclipses.json covers.
+const skyYears = yearsWithin(years, sky.from, sky.to);
+const eclipseYears = yearsWithin(years, eclipses.from, eclipses.to);
+const skyFiles = [
+  '/api/v1/sky/today.json',
+  '/api/v1/sky/upcoming.json',
+  '/api/v1/signs.json',
+  ...PLANET_SLUGS.map((slug) => `/api/v1/planets/${slug}.json`),
+  ...['retrogrades', 'moon-phases'].flatMap((kind) => skyYears.map((year) => `/api/v1/${kind}/${year}.json`)),
+  ...['stations', 'ingresses', 'aspects'].flatMap((kind) => years.map((year) => `/api/v1/${kind}/${year}.json`)),
+  ...eclipseYears.map((year) => `/api/v1/eclipses/${year}.json`),
+];
+const jsonLd = [
+  {
+    '@type': 'WebPage',
+    name: 'Zodiacs developer tools: charts, sky data, and embeds',
+    url: 'https://zodiacs.org/developers/',
+    description,
+  },
+  {
+    '@type': 'WebAPI',
+    name: 'Zodiacs sky data API',
+    url: 'https://zodiacs.org/developers/#sky-data',
+    description: 'Static JSON files under /api/v1/ about the sky everyone shares: today, the next 60 days, each planet, the signs, and yearly files of retrogrades, stations, ingresses, Moon phases, eclipses and exact aspects.',
+    documentation: OPENAPI_URL,
+    provider: ORGANIZATION,
+    offers: FREE_OFFER,
+  },
+  {
+    '@type': 'Dataset',
+    name: 'Zodiacs shared sky data',
+    description: `The JSON files of the Zodiacs sky data API: today's positions, the next 60 days of events, each planet, the signs, and yearly files from ${firstYear} to ${lastYear} of retrogrades, stations, ingresses, Moon phases, eclipses and exact aspects.`,
+    url: 'https://zodiacs.org/developers/#sky-data',
+    license: SKY_DATA_LICENSE,
+    temporalCoverage: `${firstYear}-01-01/${lastYear}-12-31`,
+    creator: ORGANIZATION,
+    isAccessibleForFree: true,
+    distribution: skyFiles.map((path) => ({ '@type': 'DataDownload', encodingFormat: 'application/json', contentUrl: `${SITE}${path}` })),
+  },
+];
 ---
 <Base
   title="Developer Tools — Local Charts, Sky Data & Embeds | Zodiacs.org"
@@ -73,12 +111,12 @@ const jsonLd = [{
         <li>
           <p class="dev-status">{candidate.releaseLabel} · engine {candidate.version}</p>
           <h2><a href="/developers/engine/">Calculate a chart</a></h2>
-          <p>{candidate.name} takes an instant and coordinates and returns bodies, angles, cusps and aspects, in your own browser or Node.js process, with no network request. What it computes, what it costs to bundle, how close it is to Swiss Ephemeris, and how to install it from npm or from a verified archive are on its page. <a href="/developers/examples/">The starter</a> is the same job as a running project; it pins engine {starterEngine.version}, while the site runs {candidate.version}.</p>
+          <p>{candidate.name} takes an instant and coordinates and returns bodies, angles, cusps and aspects, in your own browser or Node.js process, with no network request. What it computes, what it costs to bundle, how close it is to Swiss Ephemeris, and how to install it are on its page. <a href="/developers/examples/">The starter</a> is the same job as a running project; it pins engine {starterEngine.version}, while the site runs {candidate.version}.</p>
         </li>
         <li>
           <p class="dev-status">Available · runs on our server</p>
           <h2><a href="/developers/compute/">Calculate on our server</a></h2>
-          <p>Six POST endpoints for a chart, positions, houses, the events in a window, a local time read as UTC, and whether a sky fact holds, each answer with a receipt and the engine's version. No key. Birth data goes in the request body, and the function writes nothing from a request to a log, a file or a database. The endpoints answer only while their per-address rate limit is in place.</p>
+          <p>Seven POST endpoints for a chart, positions, houses, the events in a window, a local time read as UTC, whether a sky fact holds, and when chosen conditions all hold, each answer with a receipt and the engine's version. No key. Birth data goes in the request body, and the function writes nothing from a request to a log, a file or a database. The endpoints answer only while their per-address rate limit is in place.</p>
         </li>
         <li>
           <p class="dev-status">Available · hosted embeds</p>
@@ -99,6 +137,11 @@ const jsonLd = [{
           <p class="dev-status">Available · suite {conformance.suiteVersion}</p>
           <h2><a href="/developers/conformance/">Check an engine against independent references</a></h2>
           <p>Test vectors for positions, houses and angles, time zones, time scales and calendars, each with an independent arbiter and a stated tolerance, with the results for @zodiacs/engine and for Swiss Ephemeris. Any engine can be run against them through a small adapter.</p>
+        </li>
+        <li>
+          <p class="dev-status">Available · version 0</p>
+          <h2><a href="/developers/sky-benchmark/">Test an assistant on questions about the sky</a></h2>
+          <p>Questions a calculation settles (which sign a body was in, whether a planet was retrograde, when the Moon was full), with the engine's answer to each, a scorer that reads replies without a person, and the MCP adapter's check_sky_fact reply to each.</p>
         </li>
       </ul>
     </nav>

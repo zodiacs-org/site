@@ -1,0 +1,11 @@
+--- tests/benchmarks/sky-benchmark.test.ts	2026-10-05 20:28:03.683639639 +0000
++++ tests/benchmarks/sky-benchmark-forced.test.ts	2026-10-06 01:53:11.205679060 +0000
+@@ -108,7 +108,7 @@
+ 
+ /** The engine and ΔT tables v0 was drawn with, and whether the installed engine is the same. */
+ const drawn = drawnWith(key, tool);
+-const sameEngine = redrawRefusal(drawn, await installedEngine()) === null;
++const sameEngine = redrawRefusal(drawn, { ...(await installedEngine()), engine: drawn.engine }) === null;
+ 
+ describe('the sky-fact benchmark, v0', () => {
+   it("is what the generator draws, the questions and key byte for byte and check_sky_fact's answers and facts, and with another engine the generator refuses to draw it again", async () => {

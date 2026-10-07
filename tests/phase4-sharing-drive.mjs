@@ -11,12 +11,20 @@
  * account, recipient, or provider.
  */
 import { chromium } from 'playwright-core';
+import { createHash } from 'node:crypto';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { resolve } from 'node:path';
 import {
   findChromium,
   isSiteFooterIconTeardownAbort,
   STABLE_CHROMIUM_ARGS,
 } from './visual/browser.mjs';
 import { withPreview } from './visual/preview-server.mjs';
+import {
+  COMPARISON_READY_TIMEOUT_MS,
+  featureOffComparisonState,
+  waitForFeatureOffComparison,
+} from './phase4-sharing-readiness.mjs';
 
 const MODE = process.env.PHASE4_SHARING_MODE === 'enabled' ? 'enabled' : 'off';
 const PROFILE_KEY = 'zodiacs.profile.v1';
@@ -43,6 +51,8 @@ const EXPIRES_AT = '2099-08-07T00:00:00.000Z';
 const results = [];
 const browserErrors = [];
 const unexpectedRequests = [];
+const readinessEvidence = [];
+let observedBrowser = null;
 
 const check = (name, ok, detail = '') => {
   results.push({ name, ok, detail });
@@ -325,8 +335,16 @@ async function runFeatureOff(browser, baseURL) {
   const response = await page.goto(`${baseURL}/compatibility/#invite=${SESSION_HANDLE}`, {
     waitUntil: 'domcontentloaded',
   });
-  await page.locator('.calc__form').waitFor({ state: 'visible', timeout: 30_000 });
-  await page.waitForTimeout(250);
+  const started = performance.now();
+  const hydrated = await waitForFeatureOffComparison(page);
+  readinessEvidence.push({
+    case: 'ordinary feature-off',
+    ready: hydrated,
+    timeoutMs: COMPARISON_READY_TIMEOUT_MS,
+    elapsedMs: performance.now() - started,
+    state: await featureOffComparisonState(page),
+  });
+  check('feature-off required hydrated state arrives within the existing 30-second deadline', hydrated);
 
   check('feature-off compatibility route returns 200', response?.status() === 200, String(response?.status()));
   check('feature-off leaves the existing two-person calculator intact',
@@ -590,6 +608,73 @@ async function runInvitationAndReturn(browser, baseURL) {
   await context.close();
 }
 
+/** Control real module arrival; do not substitute a simplified UI fixture. */
+async function runFeatureOffHydrationChecks(browser, baseURL) {
+  for (const neverArrives of [false, true]) {
+    const context = await seededContext(browser);
+    const page = await context.newPage();
+    const errors = [];
+    page.on('pageerror', (error) => errors.push(error.message));
+    page.on('console', (message) => {
+      if (message.type() === 'error') errors.push(message.text());
+    });
+    let release;
+    const held = new Promise((resolveHeld) => { release = resolveHeld; });
+    const pendingRoutes = [];
+    let heldRequests = 0;
+    await context.route('**/_astro/SynastryCalculator.*.js', (route) => {
+      heldRequests += 1;
+      const pending = held.then(() => route.continue());
+      pendingRoutes.push(pending);
+      return pending;
+    });
+    const evidence = {
+      case: neverArrives ? 'required controls never arrive before deadline' : 'delayed real hydration',
+      timeoutMs: COMPARISON_READY_TIMEOUT_MS,
+      errors,
+    };
+    readinessEvidence.push(evidence);
+    try {
+      await page.goto(`${baseURL}/compatibility/#invite=${SESSION_HANDLE}`, { waitUntil: 'domcontentloaded' });
+      await page.locator('.calc__form').waitFor({ state: 'visible', timeout: COMPARISON_READY_TIMEOUT_MS });
+      evidence.before = await featureOffComparisonState(page);
+      if (!neverArrives) {
+        // The old 250ms allowance cannot establish readiness while the actual
+        // hydration module is held. This is a controlled deadline, not a sleep.
+        evidence.legacyProbeReady = await waitForFeatureOffComparison(page, { timeout: 250 });
+        check('feature-off delayed hydration keeps the SSR form from proving profile readiness',
+          heldRequests > 0 && evidence.before.sources === 0 && evidence.before.submits === 1
+            && !evidence.legacyProbeReady);
+      }
+      const started = performance.now();
+      const ready = waitForFeatureOffComparison(page);
+      if (!neverArrives) release();
+      evidence.ready = await ready;
+      evidence.elapsedMs = performance.now() - started;
+      evidence.after = await featureOffComparisonState(page);
+      evidence.heldRequests = heldRequests;
+      check(neverArrives
+        ? 'feature-off missing hydration cannot pass the required-control deadline'
+        : 'feature-off delayed real hydration reaches the same two-select and one-submit state',
+      neverArrives
+        ? heldRequests > 0 && !evidence.ready && evidence.after.sources === 0 && evidence.after.submits === 1
+        : evidence.ready && evidence.after.sources === 2 && evidence.after.submits === 1);
+    } finally {
+      try {
+        release();
+        await Promise.allSettled(pendingRoutes);
+        // Release only for teardown after the negative outcome is recorded.
+        // Let ordinary resources settle so closing the test context does not
+        // turn an intentionally held request into an unrelated console error.
+        await page.waitForLoadState('networkidle', { timeout: COMPARISON_READY_TIMEOUT_MS });
+      } finally {
+        await context.close();
+      }
+    }
+    check(`feature-off ${neverArrives ? 'missing' : 'delayed'} hydration control has no page errors`, errors.length === 0, errors.join(' | '));
+  }
+}
+
 async function runChartShareExposure(browser, baseURL) {
   const context = await seededContext(browser);
   const page = await context.newPage();
@@ -619,7 +704,7 @@ async function runChartShareExposure(browser, baseURL) {
   check('both chart images are prepared before the final user tap', true);
   check('the dialog keeps the private positions link primary and labels the details link',
     await dialog.locator('[data-positions-link].btn--primary').count() === 1
-      && await dialog.locator('[data-preview-link]').count() === 1
+      && await dialog.locator('[data-preview-link]').count() === 0
       && await dialog.locator('[data-details-link]').count() === 1
       && /includes your birth details/iu.test(await dialog.textContent() ?? ''));
   check('chart share sheet never displays fixture birth details',
@@ -639,9 +724,11 @@ await withPreview({ port: MODE === 'enabled' ? 4452 : 4451 }, async (baseURL) =>
     headless: true,
     args: STABLE_CHROMIUM_ARGS,
   });
+  observedBrowser = browser.version();
   try {
     if (MODE === 'off') {
       await runFeatureOff(browser, baseURL);
+      await runFeatureOffHydrationChecks(browser, baseURL);
     } else {
       await runCreation(browser, baseURL);
       await runUnavailable(browser, baseURL);
@@ -662,6 +749,21 @@ check(`${MODE} drive observes no browser or network errors`,
   browserErrors.length === 0, browserErrors.join(' | '));
 
 const failures = results.filter((result) => !result.ok);
+const hash = (value) => createHash('sha256').update(value).digest('hex');
+const evidenceRoot = resolve('tests/visual/artifacts/phase4-sharing');
+await mkdir(evidenceRoot, { recursive: true });
+await writeFile(resolve(evidenceRoot, `${MODE}-result.json`), `${JSON.stringify({
+  schema: 'zodiacs.phase4-sharing-readiness.v1',
+  mode: MODE,
+  checkoutCommit: process.env.GITHUB_SHA ?? null,
+  runId: process.env.GITHUB_RUN_ID ?? null,
+  browser: observedBrowser,
+  driverSha256: hash(await readFile(new URL(import.meta.url))),
+  readinessHelperSha256: hash(await readFile(new URL('./phase4-sharing-readiness.mjs', import.meta.url))),
+  packageLockSha256: hash(await readFile(resolve('package-lock.json'))),
+  results,
+  readinessEvidence,
+}, null, 2)}\n`);
 for (const result of results) {
   console.log(`${result.ok ? 'PASS' : 'FAIL'} ${result.name}${result.detail ? ` — ${result.detail}` : ''}`);
 }

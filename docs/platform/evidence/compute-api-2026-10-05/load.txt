@@ -1,0 +1,8 @@
+start engine rc.15 against rc.16 12:21:18 (load 0.02 0.23 0.46)
+start unit costs 1 12:23:18 (load 0.07 0.20 0.42)
+start unit costs 2 12:25:31 (load 0.12 0.20 0.40)
+start unit costs 3 12:27:46 (load 0.12 0.21 0.37)
+start worst case on rc.15 12:30:01 (load 0.08 0.20 0.35)
+start worst case on rc.16 12:40:28 (load 0.17 0.62 0.58)
+start cost sweep on rc.16 12:52:20 (load 0.16 0.70 0.75)
+done 12:53:53 (load 0.94 0.86 0.81)

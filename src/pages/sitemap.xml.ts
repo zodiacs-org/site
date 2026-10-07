@@ -20,6 +20,7 @@ import {
   latestModifiedAt,
   terminalResearchLastmod,
 } from '../lib/seo-lastmod';
+import { dailyEditions } from '../lib/return-visits/chart-of-day';
 import { SIGNS } from '../lib/signs';
 import birthdayFactsData from '../data/birthdays.json';
 import daily from '../data/daily.json';
@@ -43,7 +44,6 @@ const YEARLY_HOROSCOPE_LASTMOD = '2026-07-19';
 const AUDIT_REMEDIATION_LASTMOD = '2026-08-23';
 const THESIS_LASTMOD = '2026-09-05';
 const LEGAL_IDENTITY_LASTMOD = '2026-08-29';
-const BIG_THREE_LASTMOD = '2026-09-01';
 const YEAR_PAGES_LASTMOD = '2026-09-01';
 // The numerology calculator; the tools hub and methodology page changed with
 // it. Each Life Path page dates itself from its own `updated` field, the same
@@ -104,6 +104,31 @@ const COMPUTE_API_REVIEW_ROUTES = [
 // Keep these dates source-controlled: build environments may have shallow or
 // absent Git history. When an evergreen page's rendered source changes, update
 // its entry here in the same commit.
+const OWNER_TRUST_LASTMOD = '2026-10-03';
+const OWNER_TRUST_ROUTES = ['/', '/privacy/', '/terms/', '/methodology/', '/astrofolio/how-to-buy/'] as const;
+// MCP adapter 0.1.0-rc.16.2 of 2026-10-05: its page gains the three tools
+// that run the compute API's calculations, and the compute API's page now
+// says which UTC offsets a date without a zone is read in. rc.16.3, the same
+// day, changes only the version and download the MCP page names.
+const MCP_COMPUTE_TOOLS_LASTMOD = '2026-10-05';
+const MCP_COMPUTE_TOOLS_ROUTES = ['/developers/mcp/', '/developers/compute/'] as const;
+// The sky-fact benchmark of 2026-10-05: its own page, and the developer hub's
+// card for it.
+const SKY_BENCHMARK_LASTMOD = '2026-10-05';
+const SKY_BENCHMARK_ROUTES = ['/developers/', '/developers/sky-benchmark/'] as const;
+// The elections endpoint of 2026-10-05: its section on the compute API's page,
+// the endpoints the developer hub and support page list, and what the privacy
+// page says the compute API calculates.
+const ELECTIONS_LASTMOD = '2026-10-05';
+const ELECTIONS_ROUTES = ['/developers/', '/developers/compute/', '/developers/support/', '/privacy/'] as const;
+// Engine 0.1.1-rc.17 of 2026-10-06, and the MCP adapter 0.1.0-rc.17 built on it: the pages that name the
+// engine's version, how to install it and whether npm carries it, and the adapter's version and download.
+const ENGINE_RC17_LASTMOD = '2026-10-06';
+const ENGINE_RC17_ROUTES = [
+  '/developers/', '/developers/compare/', '/developers/compute/', '/developers/conformance/',
+  '/developers/engine/', '/developers/mcp/', '/developers/support/',
+] as const;
+
 const EVERGREEN_LASTMOD = new Map<string, string>([
   [eventsPublication.hub.path, eventsPublication.lastModified] as const,
   ...[
@@ -210,7 +235,10 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
     '/ru/disclosure/', '/registry/technical/', '/sdk/',
   ].map((loc) => [loc, AUDIT_REMEDIATION_LASTMOD] as const),
   ...['/', '/about/', '/privacy/', '/terms/'].map((loc) => [loc, LEGAL_IDENTITY_LASTMOD] as const),
-  ['/big-three/', BIG_THREE_LASTMOD] as const,
+  ...dailyEditions.flatMap((edition) => ['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => [`${locale === 'en' ? '' : '/' + locale}/chart-of-the-day/${edition.day}/`, edition.ownerApproval.approvedAt.slice(0, 10)] as const)),
+  ...(dailyEditions.length ? ['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => [`${locale === 'en' ? '' : '/' + locale}/chart-of-the-day/`, dailyEditions.map((edition) => edition.ownerApproval.approvedAt.slice(0, 10)).sort().at(-1)!] as const) : []),
+  ...['/sky-calendar/', '/astrologer-kit/', '/your-sky-wrapped/'].flatMap((path) => ['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => [`${locale === 'en' ? '' : '/' + locale}${path}`, '2026-10-04'] as const)),
+  ...['/big-three/', '/compatibility/invite/', '/group-charts/', '/chart-twins/'].flatMap((path) => ['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => [`${locale === 'en' ? '' : '/' + locale}${path}`, '2026-10-03'] as const)),
   ...['/full-moon-calendar/2027/', '/eclipses/2027/', '/mercury-retrograde/2027/']
     .map((loc) => [loc, YEAR_PAGES_LASTMOD] as const),
   ...['/numerology/', '/tools/', '/methodology/'].map((loc) => [loc, NUMEROLOGY_LASTMOD] as const),
@@ -231,6 +259,11 @@ const EVERGREEN_LASTMOD = new Map<string, string>([
   // Then the compute API, and its review last of all.
   ...COMPUTE_API_ROUTES.map((loc) => [loc, COMPUTE_API_LASTMOD] as const),
   ...COMPUTE_API_REVIEW_ROUTES.map((loc) => [loc, COMPUTE_API_REVIEW_LASTMOD] as const),
+  ...OWNER_TRUST_ROUTES.map((loc) => [loc, OWNER_TRUST_LASTMOD] as const),
+  ...MCP_COMPUTE_TOOLS_ROUTES.map((loc) => [loc, MCP_COMPUTE_TOOLS_LASTMOD] as const),
+  ...SKY_BENCHMARK_ROUTES.map((loc) => [loc, SKY_BENCHMARK_LASTMOD] as const),
+  ...ELECTIONS_ROUTES.map((loc) => [loc, ELECTIONS_LASTMOD] as const),
+  ...ENGINE_RC17_ROUTES.map((loc) => [loc, ENGINE_RC17_LASTMOD] as const),
 ]);
 
 function getLastmod(loc: string): string {
@@ -274,7 +307,10 @@ export const GET: APIRoute = async () => {
     { loc: '/birth-chart/', priority: 0.95 },
     { loc: '/birth-chart/someone-else/', priority: 0.75 },
     { loc: '/birth-chart/three-dimensions/', priority: 0.7 },
-    { loc: '/big-three/', priority: 0.85 },
+    ...dailyEditions.flatMap((edition) => ['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => ({ loc: `${locale === 'en' ? '' : '/' + locale}/chart-of-the-day/${edition.day}/`, priority: 0.6 }))),
+    ...(dailyEditions.length ? ['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => ({ loc: `${locale === 'en' ? '' : '/' + locale}/chart-of-the-day/`, priority: 0.7 })) : []),
+    ...['/sky-calendar/', '/astrologer-kit/', '/your-sky-wrapped/'].flatMap((path) => ['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => ({ loc: `${locale === 'en' ? '' : '/' + locale}${path}`, priority: 0.8 }))),
+    ...['/big-three/', '/compatibility/invite/', '/group-charts/', '/chart-twins/'].flatMap((path) => ['en', 'es', 'pt', 'fr', 'it', 'ru'].map((locale) => ({ loc: `${locale === 'en' ? '' : '/' + locale}${path}`, priority: 0.8 }))),
     { loc: '/compatibility/', priority: 0.9 },
     { loc: '/moon-sign/', priority: 0.9 },
     { loc: '/rising-sign/', priority: 0.9 },
@@ -322,6 +358,7 @@ export const GET: APIRoute = async () => {
     { loc: '/developers/mcp/', priority: 0.6 },
     { loc: '/developers/conformance/', priority: 0.6 },
     { loc: '/developers/compute/', priority: 0.6 },
+    { loc: '/developers/sky-benchmark/', priority: 0.6 },
     { loc: '/fomo/', priority: 0.6 },
     { loc: '/disclosure/', priority: 0.5 },
     // Locale variants and hreflang blocks are added below through the same

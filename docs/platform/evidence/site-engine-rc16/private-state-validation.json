@@ -1,0 +1,132 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-01",
+  "runtime": "v22.22.2",
+  "scope": "local stateless compute rc.16 adoption prerequisite; no release or full-adoption assertion",
+  "prerequisites": {
+    "main": "ed55dacb",
+    "wip": "4f5df85400fb520d7a5d78a7c6a2a0b4b3d8cbcb",
+    "compute": "458b6ab9edbf82cf31a560d08c898c57bbdcf8c0"
+  },
+  "archive": {
+    "sha256": "43a72d30e483d8ff22024e403c4bd0d86d81bb6e1d0ad138f857cd001ab015d8",
+    "bytes": 266934,
+    "files": 69,
+    "unpackedBytes": 923282,
+    "carrier": "ef44477f85f28a57d5ec7f61ed6ea6a99c4be563",
+    "source": "ddbbaa0b1d21e16834722f81e8708816849c6726"
+  },
+  "auditedInputsSha256": "025fc77deed9584f4d5f4c342f42483f1880fd3c5f4abe87af4cabd0584cc1ab",
+  "auditedInputs": [
+    {
+      "path": "node_modules/@zodiacs/engine/dist/chunk-2OWGBT3O.js",
+      "sha256": "a987e24e2921d5fb4ea980e9c051e378d9fdecf0498d4ad2a546e4931b2e0c6d"
+    },
+    {
+      "path": "node_modules/@zodiacs/engine/dist/chunk-4NV4ZEFZ.js",
+      "sha256": "218b7e37ae42dbc01e10f1fb8ec5758e5930143137224b3af824ceebd40bac89"
+    },
+    {
+      "path": "node_modules/@zodiacs/engine/dist/chunk-AECKV73C.js",
+      "sha256": "a812be9882c25f67c9fa8dfe19eb0d950a3867a7cdbede4c746c226ca760480c"
+    },
+    {
+      "path": "node_modules/@zodiacs/engine/dist/chunk-CPALRSPC.js",
+      "sha256": "9db1a3814ec9bd00a40d4bc295e348debd6108f62a322ed91d18610c81b9fb08"
+    },
+    {
+      "path": "node_modules/@zodiacs/engine/dist/chunk-I7O5EGFV.js",
+      "sha256": "47ec9271d788e287d341ff0af1b47682f97907ddbed6aa598cfc971e66025af1"
+    },
+    {
+      "path": "node_modules/@zodiacs/engine/dist/chunk-KFTJMMG7.js",
+      "sha256": "a828a7b1802d8c61fc48bd1844cd12cbc60d54ad732014cae91413fe491c92a9"
+    },
+    {
+      "path": "node_modules/@zodiacs/engine/dist/chunk-KHBLFXFG.js",
+      "sha256": "e690801ef7d6bf53efb744b4f92157797ce4c405b4c6ead0fda88facd29c3188"
+    },
+    {
+      "path": "node_modules/@zodiacs/engine/dist/chunk-L6ZHWJZ6.js",
+      "sha256": "097cec8e1a039207c6b2b733f7ce46eaefaf19ddb681e9e532bf1f8d8d9130d2"
+    },
+    {
+      "path": "node_modules/@zodiacs/engine/dist/chunk-ONBZ4HK7.js",
+      "sha256": "50f11205373c177c728ea8c7d50d41b19ff80cd9921eb51c6e907a8045f93308"
+    },
+    {
+      "path": "node_modules/@zodiacs/engine/dist/chunk-PFGUCNOK.js",
+      "sha256": "6d9d38ab4606288700b0959e732a61dfa5b4cdc570be21d17b4ac9b9fe1c0eb4"
+    },
+    {
+      "path": "node_modules/@zodiacs/engine/dist/chunk-WOU7JVD3.js",
+      "sha256": "cfd2a97efe894a1760c2c451441e8664d706bf7ff52b0f9da232ddf3d78ac992"
+    },
+    {
+      "path": "node_modules/@zodiacs/engine/dist/index.js",
+      "sha256": "304618765bdf2aa8f27d86b9ed9e0e86cad6e384030bb63a6545630d9c443cef"
+    },
+    {
+      "path": "node_modules/@zodiacs/engine/dist/receipt.js",
+      "sha256": "27a93c369404e3d8c92db9d211fda23f82e074126b894c05b12cb06e8a58bf70"
+    },
+    {
+      "path": "node_modules/astronomy-engine/esm/astronomy.js",
+      "sha256": "068f1445ed0c636c94818fe6d20d7d125120e605e0bab9fc4675c3d531be5ad7"
+    },
+    {
+      "path": "src/lib/engine/time-basis.mjs",
+      "sha256": "01d4387ab64481fc0b4b817966870b4af3a0a0e2345ea6dfc1d865707cdc047c"
+    }
+  ],
+  "outputs": {
+    "compute": {
+      "sha256": "7e2f1e5c36ae577b513bbc438c295c7499668e138d1a0a8fdab7d34949c2bab6",
+      "bytes": 245241
+    },
+    "localTime": {
+      "sha256": "6f9253009a83f84e755810ac5221eefd87811203e66aaef1933840be4e8571da"
+    }
+  },
+  "checks": [
+    {
+      "command": "vitest run tests/api/compute-api-private-state.test.ts tests/api/compute-api-bundle.test.ts tests/api/compute-api-privacy.test.ts tests/api/compute-api.test.ts tests/api/compute-api-local-time.test.ts scripts/programme-ledger.test.mjs",
+      "result": "pass",
+      "files": 6,
+      "tests": 59
+    },
+    {
+      "command": "node scripts/build-compute-handler.mjs --check",
+      "result": "pass"
+    },
+    {
+      "command": "node scripts/build-compute-local-time.mjs --check",
+      "result": "pass"
+    }
+  ],
+  "privateStateCases": {
+    "positiveControl": "exact synthetic UTC recovered from retained TT minus +0.25-day node sample",
+    "endpoints": 6,
+    "freshProcessExactResponses": 9,
+    "fullReceiptsAndCitationDigests": true,
+    "refusals": true,
+    "ephemerisFailure": true,
+    "resolverFailure": true,
+    "responseWriterFailure": true,
+    "interleavedHistoricalResolver": true,
+    "guardMutationCases": 9
+  },
+  "programme": {
+    "accepted": 42.5,
+    "total": 182.45,
+    "reportedPercent": 23,
+    "exactPercent": "23.294",
+    "blockedWeight": 4,
+    "gateStatesUnchanged": true
+  },
+  "limits": [
+    "No secure memory erasure or complete platform-log assertion",
+    "Same-runtime finite regression corpus, not independent accuracy or universal bitwise parity",
+    "Full unit/build/budget/browser/capture/adoption release gates remain separate"
+  ]
+}

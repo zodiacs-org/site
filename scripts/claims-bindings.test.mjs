@@ -16,13 +16,13 @@ import { computeSolarReturn } from '../src/islands/solar-return/compute.ts';
  * the figure it states still covers what was measured.
  */
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
-const evidence = JSON.parse(read('docs/platform/evidence/events-vs-swiss-2026-09-30/deltas.json'));
+const evidence = JSON.parse(read('docs/platform/evidence/site-engine-rc16/station-alignment/events-vs-swiss.json'));
 const MINUTE = 60;
 const HOUR = 3600;
 
 // deltas.json keeps each event's id and published instant and the summary
 // statistics the copy is held to; the differences from Swiss stay out of the
-// repository (DECISIONS-2026-09-28 §3). Measured on engine rc.15's catalog.
+// repository (DECISIONS-2026-09-28 §3). Measured on the rc.16 source-aligned product catalog.
 describe('event times against Swiss Ephemeris', () => {
   it('were measured on the catalog the site publishes now', () => {
     const published = eventsCatalog().events
@@ -43,11 +43,13 @@ describe('event times against Swiss Ephemeris', () => {
     expect(read('src/pages/events/index.astro')).toContain('and eclipses are timed to within a minute');
   });
 
-  it('keep stations within about 40 minutes, and a few minutes on the retrograde pages', () => {
+  it('keep the original station ceiling and bind the tighter seven-minute measured claim', () => {
     expect(evidence.summary.station.maxAbsSeconds).toBeLessThan(45 * MINUTE);
+    // Original ceiling retained; this additional bound checks the new measured copy.
+    expect(evidence.summary.station.maxAbsSeconds).toBeLessThan(7 * MINUTE);
     const byPlanet = evidence.summary.stationMaxAbsSecondsByPlanet;
     for (const planet of ['Mercury', 'Venus', 'Mars']) expect(byPlanet[planet]).toBeLessThan(10 * MINUTE);
-    expect(read('src/pages/events/index.astro')).toContain('a station can be off by up to about 40 minutes');
+    expect(read('src/pages/events/index.astro')).toContain('a station can be off by up to about seven minutes');
     expect(read('src/components/events/EventFactsBand.astro'))
       .toContain('so these station times can be off by a few minutes.');
     expect(read('src/pages/mercury-retrograde/index.astro')).toContain('compute to within a few minutes');

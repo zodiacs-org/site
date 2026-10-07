@@ -37,6 +37,7 @@ export const PHASE1_TEMPLATE_SOURCE_PATHS = Object.freeze([
 export const PHASE1_TEMPLATE_SOURCE_DIRECTORIES = Object.freeze([
   'public/assets/zodiac-icons',
   'public/fonts',
+  'vendor/http-cache-semantics',
   'src/components',
   'src/content/horoscopes',
   'src/islands',

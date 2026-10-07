@@ -1,0 +1,61 @@
+{
+  "source": "fd1ce88af66eca158c24a92569a9101281b964f7",
+  "intendedDeployment": "dpl_AsJc5MrDgH4PpgoZSGMe7XTZePe4",
+  "samples": 120,
+  "allFunctionalPrivacyHeaderChecksPass": true,
+  "firstStartedAt": "2026-10-01T20:25:57.295Z",
+  "lastEndedAt": "2026-10-01T20:30:24.868Z",
+  "firstRequestId": "cle1::iad1::4qxpn-1790886364519-db3f1d9862d4",
+  "lastRequestId": "cle1::iad1::phwvg-1790886624768-966358438bc0",
+  "percentileMethod": "nearest rank",
+  "minimumObservedUtcStartGapMs": 2198.0,
+  "maximumStartsInAny60Seconds": 28,
+  "routes": {
+    "chart": {
+      "n": 20,
+      "clientP50Ms": 131.11399500002153,
+      "clientP95Ms": 179.68488999997498,
+      "clientMaxMs": 7853.239128,
+      "firstMs": 7853.239128
+    },
+    "positions": {
+      "n": 20,
+      "clientP50Ms": 113.04956099999254,
+      "clientP95Ms": 240.32196299999487,
+      "clientMaxMs": 371.4186090000003,
+      "firstMs": 371.4186090000003
+    },
+    "houses": {
+      "n": 20,
+      "clientP50Ms": 111.85415600001579,
+      "clientP95Ms": 142.41618400000152,
+      "clientMaxMs": 188.00904099999934,
+      "firstMs": 188.00904099999934
+    },
+    "events": {
+      "n": 20,
+      "clientP50Ms": 196.70770400000038,
+      "clientP95Ms": 316.7598860000144,
+      "clientMaxMs": 386.21856599999956,
+      "firstMs": 386.21856599999956
+    },
+    "time": {
+      "n": 20,
+      "clientP50Ms": 105.56715200000326,
+      "clientP95Ms": 154.07048099999884,
+      "clientMaxMs": 207.2294380000094,
+      "firstMs": 154.07048099999884
+    },
+    "sky-fact": {
+      "n": 20,
+      "clientP50Ms": 138.051066,
+      "clientP95Ms": 195.1306859999895,
+      "clientMaxMs": 245.8961190000009,
+      "firstMs": 245.8961190000009
+    }
+  },
+  "temperature": "unclassified pending platform telemetry",
+  "cost": "not inferred from client elapsed time",
+  "outliers": "all observations retained, including first chart",
+  "requestRecordsSha256": "914e6a22d1e935c4912ec63bca3d5c43e04b07d3bd9de318848a6d3ca9f8175d"
+}

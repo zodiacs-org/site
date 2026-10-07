@@ -1,0 +1,14 @@
+{
+  "name": "@zodiacs/http-cache-semantics",
+  "version": "4.2.0-zodiacs.1",
+  "description": "Pinned upstream HTTP cache policy with the CVE-2026-93748 reuse-restriction fix",
+  "main": "index.js",
+  "license": "BSD-2-Clause",
+  "author": "Kornel Lesi\u0144ski",
+  "repository": "https://github.com/kornelski/http-cache-semantics",
+  "files": [
+    "index.js",
+    "LICENSE",
+    "PROVENANCE.md"
+  ]
+}

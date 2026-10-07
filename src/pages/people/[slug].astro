@@ -1,5 +1,6 @@
 ---
 import '../../styles/people.css';
+import { CheckOurMath } from '../../islands/ChartTrust';
 import Base from '../../layouts/Base.astro';
 import EvidenceDisclosure from '../../components/EvidenceDisclosure.astro';
 import ShareRow from '../../components/ShareRow.astro';
@@ -238,6 +239,7 @@ const jsonLd = [
 
       <div class="person-reading">
         <p class="person-lede">{person.copy.lede}</p>
+        <CheckOurMath utc={person.computation.utcInstant} basis="reference" />
 
         <div class="person-wheel">
           <Wheel

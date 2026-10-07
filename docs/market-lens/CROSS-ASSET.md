@@ -45,3 +45,5 @@ Candidate membership sources: [S&P500 methodology](https://www.spglobal.com/spdj
 - `MARKET_LENS_TWELVE_DATA_CONFIG`: server-only JSON containing `grantId`, `validUntil`, and an `instruments` map keyed by stable catalog ID. Each mapping has verified `symbol`, `exchange`, `currency`, `timeZone`, `actionsFrom`, `actionsThrough`, `splits:[{effectiveDate,ratio}]`, and an explicit `sessions:[{date,open,close,nextOpen}]` where the built-in US calendar does not apply. Do not fill unknown data with guessed defaults.
 
 Request a written quote covering public browser display, JSON candle delivery, derived indicators/history, bounded caching, private retained research, backup retention and aggregate publication; enumerate every venue and instrument family. Ask for attribution, delays, quotas, termination/deletion obligations and source exchange fees. Reply address remains admin@zodiacs.org. This is a prepared request scope, not a sent message or budget authorization.
+
+The complete unsent request is in [PROVIDER-REQUEST.md](PROVIDER-REQUEST.md). No outreach or purchase is authorized by preparing it.

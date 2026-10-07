@@ -61,14 +61,15 @@ const SHARED_ENCODERS: Record<string, readonly string[]> = {
  * it takes from it and why.
  */
 const EXACT_MODULE_IMPORTERS: Record<string, { takes: string[]; why: string }> = {
+  'src/lib/sharing/private-invite.ts': {
+    takes: ['decodePositionsLink', 'encodeSharedPositionsLink'],
+    why: 'makes fragment-only invitations through the reviewed minute/noon privacy paths, and decodes strict arrivals',
+  },
   'api/calendar/transits.ts': {
     takes: ['decodePositionsLink', 'wholeDegreeAngles'],
     why: 'the calendar feed decodes the code in its URL and takes its angles to the whole degree',
   },
-  'src/islands/CalendarSubscribe.tsx': {
-    takes: ['encodeSharedPositionsLink'],
-    why: 'makes the feed code with the shared encoder (PRODUCERS)',
-  },
+
   'src/islands/ChartShareDialog.tsx': {
     takes: ['encodeSharedPositionsLink'],
     why: 'makes the chart link with the shared encoder (PRODUCERS)',
@@ -133,21 +134,17 @@ const EXACT_MODULE_IMPORTERS: Record<string, { takes: string[]; why: string }> =
  * only the exact encoder (EXACT_CALLS).
  */
 const PRODUCERS: Record<string, { how: string; calls: string[]; mustUse: string[] }> = {
+  'src/lib/sharing/private-invite.ts': {
+    how: 'uses the engine at the rounded UTC minute or noon UTC on the civil date before the shared encoder',
+    calls: ['encodeSharedPositionsLink(shared)'],
+    mustUse: ['timedSharedPositions(input, instant.utc, computeBodies)', 'untimedSharedPositions(input, instant.birthDate, computeBodies)'],
+  },
   'src/islands/ChartShareDialog.tsx': {
     how: 'a chart with a birth time is linked from loadTimedSharedPositions at its instant, one without from loadUntimedSharedPositions on its birth date',
     calls: ['encodeSharedPositionsLink(shared)'],
     mustUse: ['chart.input.timeKnown', 'loadTimedSharedPositions({', '}, chart.input.utc)', 'loadUntimedSharedPositions(base, birthDate)'],
   },
-  'src/islands/CalendarSubscribe.tsx': {
-    how: 'given a birth date (only for a chart without a birth time) the feed code comes from loadUntimedSharedPositions; otherwise from the chart itself on a whole UTC minute, or from loadTimedSharedPositions',
-    calls: ['encodeSharedPositionsLink(positions as PositionsShareInput)', 'calendarToken(positions)', 'calendarToken(shared)'],
-    mustUse: [
-      'loadUntimedSharedPositions({ houseSystem, engineVersion }, birthDate)',
-      'const wholeMinute = !timeUnknown && onWholeMinute(utc);',
-      'loadTimedSharedPositions({',
-      'const token = wholeMinute ? direct : loaded;',
-    ],
-  },
+
   'src/lib/share-synastry.ts': {
     how: 'encodes the two sides it is given; sendBackToken gives it untimed sides at noon UTC and timed sides at the whole minute',
     calls: ['encodeSharedPositionsLink(first.chart)', 'encodeSharedPositionsLink(second.chart)'],

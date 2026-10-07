@@ -18,8 +18,9 @@ import { MESSAGES } from '../../src/lib/compute-api/errors';
 import { createComputeApiHandler } from '../../src/lib/compute-api/handler';
 import type { LocalTimeModule } from '../../src/lib/compute-api/local-time';
 import * as sourceLocalTime from '../../src/lib/compute-api/local-time-source';
-import { INDEXED_POINTERS, VALIDATION_MESSAGES, VALIDATION_POINTERS } from '../../src/lib/compute-api/validate';
-import * as bundledLocalTime from '../../api/_compute/local-time.mjs';
+import { CONDITION_FIELD_POINTERS, INDEXED_POINTERS, VALIDATION_MESSAGES, VALIDATION_POINTERS } from '../../src/lib/compute-api/validate';
+import { createLocalTimeModule } from '../../api/_compute/local-time.mjs';
+const bundledLocalTime = createLocalTimeModule();
 import { prepareLocalTime, resolveLocalToUtc } from '../../src/lib/time/localToUtc';
 import { run, type HarnessRequest } from '../../scripts/lib/compute-api-harness';
 import compatibilityHandler from '../../api/compatibility.js';
@@ -107,6 +108,11 @@ const SCENARIOS: Scenario[] = [
   { name: 'sky-fact on a date in a zone', endpoint: 'sky-fact', body: { kind: 'retrograde', body: 'Mercury', date: DATE, zone: ZONE } },
   { name: 'sky-fact at an instant', endpoint: 'sky-fact', body: { kind: 'sign', body: 'Moon', sign: 'leo', instant: INSTANT } },
   { name: 'sky-fact ingress on a date', endpoint: 'sky-fact', body: { kind: 'ingress', body: 'Moon', sign: 'leo', date: LATER_DATE, zone: ZONE } },
+  {
+    name: 'elections at a place',
+    endpoint: 'elections',
+    body: { from: INSTANT, to: '2071-11-25T17:43:09+05:45', conditions: [{ kind: 'angular', body: 'Moon' }, { kind: 'phase', phase: 'waxing', not: true }], place: { latitude: LATITUDE, longitude: LONGITUDE, houseSystem: 'koch' } },
+  },
   { name: 'query string alongside a body', endpoint: 'chart', body: { utc: INSTANT, latitude: LATITUDE, longitude: LONGITUDE }, query: { utc: QUERY_DATE, latitude: QUERY_PLACE } },
   { name: 'GET with birth data in the query', endpoint: 'chart', method: 'GET', contentType: null, query: { utc: QUERY_DATE, latitude: QUERY_PLACE } },
   { name: 'preflight', endpoint: 'time', method: 'OPTIONS', contentType: null, query: { date: QUERY_DATE } },
@@ -119,10 +125,13 @@ const SCENARIOS: Scenario[] = [
   { name: 'a zone the server does not know', endpoint: 'time', body: { local: { date: DATE, time: TIME, zone: `${ZONE}_Island` } } },
   { name: 'a number where a string belongs', endpoint: 'time', body: { local: { date: DATE, time: TIME, zone: LONGITUDE } } },
   { name: 'a date that does not exist', endpoint: 'sky-fact', body: { kind: 'phase', phase: 'full', date: MISSING_DATE, zone: ZONE } },
+  { name: 'a condition naming the input', endpoint: 'elections', body: { from: INSTANT, to: '2071-11-25T17:43:09+05:45', conditions: [{ kind: 'sign', body: 'Moon', sign: DATE }] } },
+  { name: 'an election place out of range', endpoint: 'elections', body: { from: INSTANT, to: '2071-11-25T17:43:09+05:45', conditions: [{ kind: 'angular', body: 'Sun' }], place: { latitude: FAR_LATITUDE, longitude: LONGITUDE } } },
   { name: 'the wrong content type', endpoint: 'time', contentType: 'text/plain', body: JSON.stringify({ local: LOCAL }) },
   { name: 'a body over 16 KB', endpoint: 'positions', contentLength: null, body: JSON.stringify({ instants: Array(700).fill(INSTANT) }) },
   { name: 'over the positions budget', endpoint: 'positions', body: { instants: Array(101).fill(INSTANT) } },
   { name: 'over the events window', endpoint: 'events', body: { from: `${DATE}T${TIME}:00Z`, to: INSTANT } },
+  { name: 'over the elections window', endpoint: 'elections', body: { from: `${DATE}T${TIME}:00Z`, to: INSTANT, conditions: [{ kind: 'void-of-course' }] } },
   { name: 'the switch off', endpoint: 'chart', body: { local: LOCAL, latitude: LATITUDE, longitude: LONGITUDE }, env: { COMPUTE_API_ENABLED: '0' } },
   { name: 'rate limited', endpoint: 'houses', body: { local: LOCAL, latitude: LATITUDE, longitude: LONGITUDE }, firewall: 429 },
   { name: 'Firewall rule not provisioned', endpoint: 'chart', body: { local: LOCAL, latitude: LATITUDE, longitude: LONGITUDE }, firewall: 404 },
@@ -315,6 +324,8 @@ function expectedHeaders(status: number, code: string | undefined): Map<string, 
 const MESSAGE_CATALOG = new Set<string>([...Object.values(MESSAGES), ...Object.values(VALIDATION_MESSAGES), ...Object.values(BUDGET_MESSAGES)]);
 const LIMITS = new Map<string, number>([...Object.entries(BUDGETS), ['body.bytes', MAX_BODY_BYTES]]);
 const INDEXED = new RegExp(`^(?:${INDEXED_POINTERS.join('|')})/(?:0|[1-9]\\d{0,2})$`, 'u');
+/** A field of one election condition: /conditions/2/body. */
+const CONDITION_FIELD = new RegExp(`^/conditions/(?:0|[1-9]\\d{0,2})/(?:${CONDITION_FIELD_POINTERS.join('|')})$`, 'u');
 
 /** Every field of a refusal from a fixed catalog, and nothing else in it. */
 function catalogProblems(observation: Observation): string[] {
@@ -330,7 +341,7 @@ function catalogProblems(observation: Observation): string[] {
   }
   if (!(ERROR_CODES as readonly string[]).includes(error.code) || ERROR_STATUS[error.code as keyof typeof ERROR_STATUS] !== observation.status) say('the error code is not the catalog code for its status');
   if (!MESSAGE_CATALOG.has(error.message)) say('the error message is not a fixed sentence');
-  if ('pointer' in error && !((VALIDATION_POINTERS as readonly string[]).includes(error.pointer) || INDEXED.test(error.pointer))) say('the pointer is not a field the schema names');
+  if ('pointer' in error && !((VALIDATION_POINTERS as readonly string[]).includes(error.pointer) || INDEXED.test(error.pointer) || CONDITION_FIELD.test(error.pointer))) say('the pointer is not a field the schema names');
   if ('pointer' in error !== (error.code === 'invalid-request')) say('a pointer where there should be none, or none where there should be one');
   if ('limit' in error || 'max' in error) {
     if (LIMITS.get(error.limit) !== error.max) say('the limit and maximum are not a catalog pair');
@@ -381,7 +392,7 @@ describe('compute API negative control', () => {
   it('computes the canaries it looks for, and they are distinctive', () => {
     expect(resolved.utc.toISOString()).toBe('1913-07-18T18:37:00.000Z');
     for (const canary of [...BODY_CANARIES, ...QUERY_CANARIES]) expect(canary.length).toBeGreaterThanOrEqual(5);
-    expect(SCENARIOS.map((scenario) => scenario.endpoint)).toEqual(expect.arrayContaining(['chart', 'positions', 'houses', 'events', 'time', 'sky-fact']));
+    expect(SCENARIOS.map((scenario) => scenario.endpoint)).toEqual(expect.arrayContaining(['chart', 'positions', 'houses', 'events', 'time', 'sky-fact', 'elections']));
   });
 
   it('keeps every canary out of logs, output, errors, files, globals, headers and error bodies, with the real Firewall SDK', async () => {
@@ -488,15 +499,29 @@ describe('the site and the compute API', () => {
     const root = new URL('../../', import.meta.url);
     const DOCUMENTS = new Set(['src/pages/developers/compute/index.astro']);
     const IMPORTERS = new Set(['src/pages/developers/compute/index.astro', 'src/lib/sky-api/schemas.ts', 'src/lib/sky-api/text.ts']);
-    const PATHS = /\/api\/(?:v1\/(?:chart|positions|houses|events|time|sky-fact)\b|compute\b)/u;
-    const IMPORT = /\bfrom\s+['"][^'"]*compute-api\/|\bimport\s*\(\s*['"][^'"]*compute-api\//u;
+    // The local MCP adapter bundles the compute API's own parsers and
+    // calculations into examples/mcp-server/server.mjs and runs them on the
+    // user's machine, and its descriptions name the endpoints whose answers it
+    // matches. It is no page, island or script of the site: nothing the site
+    // serves imports it, which the end of this test holds, and its bundle makes
+    // no network request, which scripts/mcp-artifact.test.mjs holds.
+    const ADAPTER = 'src/mcp/';
+    // Every way a module names another: from, a bare side-effect import, a
+    // dynamic import with any quote, and require. An AI review found the first
+    // two forms alone let a side-effect import and a template-literal import
+    // through.
+    const importOf = (target: string) => new RegExp(
+      `(?:\\bfrom\\s*|\\bimport\\s*|\\bimport\\s*\\(\\s*|\\brequire\\s*\\(\\s*)['"\`][^'"\`]*${target}`, 'u');
+    const ADAPTER_IMPORT = importOf('\\/mcp\\/');
+    const PATHS = /\/api\/(?:v1\/(?:chart|positions|houses|events|time|sky-fact|elections)\b|compute\b)/u;
+    const IMPORT = importOf('compute-api(?:\\/|[\'"\`])');
     const files: string[] = [];
     const walk = (directory: string) => {
       for (const entry of readdirSync(new URL(directory, root), { withFileTypes: true })) {
         const path = `${directory}${entry.name}`;
         if (entry.isDirectory()) {
           if (path !== 'src/lib/compute-api') walk(`${path}/`);
-        } else if (/\.(?:astro|html|js|jsx|mjs|ts|tsx)$/u.test(entry.name)) {
+        } else if (/\.(?:astro|html|mdx|js|jsx|mjs|cjs|ts|tsx|mts|cts)$/u.test(entry.name)) {
           files.push(path);
         }
       }
@@ -505,10 +530,13 @@ describe('the site and the compute API', () => {
     walk('public/');
     expect(files.length).toBeGreaterThan(1000);
     const callers = files.filter((path) => {
+      if (path.startsWith(ADAPTER)) return false;
       const text = readFileSync(new URL(path, root), 'utf8');
       return (PATHS.test(text) && !DOCUMENTS.has(path)) || (IMPORT.test(text) && !IMPORTERS.has(path));
     });
     expect(callers).toEqual([]);
+    expect(files.filter((path) => path.startsWith(ADAPTER) && IMPORT.test(readFileSync(new URL(path, root), 'utf8'))).length).toBeGreaterThan(0);
+    expect(files.filter((path) => !path.startsWith(ADAPTER) && ADAPTER_IMPORT.test(readFileSync(new URL(path, root), 'utf8')))).toEqual([]);
     for (const path of DOCUMENTS) {
       if (files.includes(path)) expect(readFileSync(new URL(path, root), 'utf8')).not.toMatch(/<script\b/u);
     }

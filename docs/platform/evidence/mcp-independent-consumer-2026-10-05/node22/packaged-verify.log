@@ -1,0 +1,24 @@
+ok   the server starts and initializes
+ok   all six tools are listed
+ok   every tool declares an output schema, and both resources are listed
+ok   capabilities name the engine and its release status
+ok   capabilities state that a local server is not a local assistant
+ok   an ordinary chart returns twelve bodies, four angles and twelve cusps
+ok   the chart result does not repeat the birth details back
+ok   a polar chart reports the house system it could actually use
+ok   record output is a calculation record
+ok   one record against itself compares identical
+ok   a house-system difference moves all twelve cusps
+ok   the house-system cause is reproduced by recalculating locally
+ok   the comparison says its own output is not anonymous
+ok   the default comparison leaves the birth details out of its answer
+ok   asking for the full output returns the values it withheld
+ok   the positions at an instant are the chart's bodies at that instant
+ok   a search finds stations and says it is tested, not proven complete
+ok   a sky fact is answered, with the values that decide it
+ok   a date that does not exist is refused
+ok   a record that is not JSON is refused
+ok   the session still works after both refusals
+
+zodiacs-mcp-server: install verified.
+zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.16.3, engine 0.1.1-rc.16, no network

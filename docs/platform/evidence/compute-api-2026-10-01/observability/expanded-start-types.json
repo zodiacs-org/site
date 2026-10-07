@@ -1,0 +1,41 @@
+{
+  "sourceUrl": "https://vercel.com/zodiacsofficial/zodiacs-org/observability/query?metric=serverlessFunctionInvocation.count&by=requestPath%2CfunctionStartType&time=2026-10-01T06%3A00%3A00.000Z%2F2026-10-01T10%3A40%3A00.000Z&search=%2Fapi%2Fv1%2F",
+  "capturedDocumentSha256": "967f5f3337b9f958c7a1469dd4c8b1ff1a2a6c46216347e2e026eea253f54751",
+  "windowUtc": "2026-10-01T06:00:00Z/2026-10-01T10:40:00Z",
+  "scope": "Project path search /api/v1/; no deployment filter. This is availability of retained cold observations, not a controlled workload extension.",
+  "rows": [
+    {
+      "requestPath": "/api/v1/time",
+      "startType": "hot",
+      "count": 103
+    },
+    {
+      "requestPath": "/api/v1/events",
+      "startType": "hot",
+      "count": 42
+    },
+    {
+      "requestPath": "/api/v1/sky-fact",
+      "startType": "hot",
+      "count": 21
+    },
+    {
+      "requestPath": "/api/v1/chart",
+      "startType": "hot",
+      "count": 21
+    },
+    {
+      "requestPath": "/api/v1/positions",
+      "startType": "hot",
+      "count": 20
+    },
+    {
+      "requestPath": "/api/v1/houses",
+      "startType": "hot",
+      "count": 20
+    }
+  ],
+  "totalHot": 227,
+  "totalCold": 0,
+  "limits": "No cold p50/p95 or cold cost can be estimated from zero observed cold invocations. No new request or forced redeployment was used."
+}

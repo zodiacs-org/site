@@ -1,12 +1,13 @@
 # zodiacs-mcp-server
 
 A local MCP server that lets an AI assistant you connect it to calculate natal
-charts with the Zodiacs engine, and compare two calculation records to find out
-why they disagree.
+charts with the Zodiacs engine, compare two calculation records to find out why
+they disagree, find positions, sign ingresses, stations and lunations, and check
+whether a stated sky fact holds.
 
 It speaks MCP over stdio. It opens no listener, binds no port, makes no outbound
-request, and reads and writes no files. Three tools, one process, started by
-whatever host you point at it.
+request, and reads and writes no files. Six tools and two resources, one
+process, started by whatever host you point at it.
 
 **Unpublished release candidate.** There is no `npm install zodiacs-mcp-server`:
 the package is not on npm under this or any other name, and an install command
@@ -57,7 +58,7 @@ happen against the `.tgz` you still have:
 ```sh
 # from the directory holding the archive, against the SHA-256 on the page above
 node -e 'const e=process.argv[2];const a=require("crypto").createHash("sha256").update(require("fs").readFileSync(process.argv[1])).digest("hex");if(a!==e){console.error("Mismatch. Delete this copy and install again from the page.\n  expected "+e+"\n  got      "+a);process.exit(1)}console.log("Archive verified: "+a)' \
-  zodiacs-mcp-server-0.1.0-rc.15.tgz '<the SHA-256 published on the page>'
+  zodiacs-mcp-server-0.1.0-rc.17.tgz '<the SHA-256 published on the page>'
 ```
 
 Then, inside the extracted directory:
@@ -76,9 +77,11 @@ disk, `npm ci --omit=dev` installs the three and `npm start` works; only
 `npm run verify` needs the rest.
 
 `npm run verify` launches `server.mjs` as a real child process, speaks MCP to it
-with the official client SDK, calls all three tools with synthetic charts,
-refuses two bad requests, and confirms the session still works afterwards. It
-prints one line per check and exits 0 when they all pass. That is the
+with the official client SDK, calls all six tools with synthetic charts and
+dates, refuses two bad requests, and confirms the session still works
+afterwards. The client checks every result other than a refusal against the
+output schema the server declares. It prints one line per check, twenty-one in
+all, and exits 0 when they all pass. That is the
 clean-environment verification: if it passes in a directory you just extracted,
 the install is good.
 
@@ -128,14 +131,23 @@ key, credential or secret anywhere in this package. What a host passes it is the
 host's business — most pass their whole environment — but nothing here looks at
 it.
 
-## The three tools
+## The six tools
+
+Each tool declares an output schema, which a host reads in `tools/list`
+beside the arguments. The server checks every result other than a refusal
+against its schema before sending it, so a result that did not match would come
+back as an error rather than as data the schema does not describe; the
+repository's tests hold every result over a seeded synthetic corpus to these
+schemas. A refusal is an error with its reason, and carries no data. Every other
+result says what to cite, under [Citing a result](#citing-a-result).
 
 ### `get_capabilities`
 
 Takes no arguments. Returns the engine and adapter versions and their release
-status, the record schemas, every limit a request must respect, the list of what
-this adapter deliberately does not do, and the privacy text above. Worth calling
-first rather than guessing at supported options.
+status, the record schemas, every limit a request must respect, the two
+resources, the list of what this adapter deliberately does not do, and the
+privacy text above. Worth calling first rather than guessing at supported
+options.
 
 ### `calculate_natal_chart`
 
@@ -145,20 +157,23 @@ first rather than guessing at supported options.
 | `latitude` | number | −90 to 90. Supply both coordinates or neither. Exactly 90 or −90 needs `timeKnown: false`: the engine does not compute angles at the poles, which its own records state as `angleExclusions`. |
 | `longitude` | number | −180 to 180. |
 | `houseSystem` | `placidus` \| `whole` \| `porphyry` \| `equal` \| `vehlow` \| `koch` \| `regiomontanus` \| `campanus` \| `topocentric` \| `alcabitius` \| `morinus` \| `meridian` \| `equal-mc` | Default `placidus`. Placidus and Koch fall back to whole sign inside the polar circle. |
-| `timeKnown` | boolean | Default `true`. `false` makes `utc` a reference instant and suppresses angles and houses. It does not imply noon. |
+| `timeKnown` | boolean | Default `true`. `false` makes `utc` a reference instant and suppresses angles and houses. It does not imply noon. With `false` the coordinates change nothing in the result, but the calculation record holds them and `cite.receipt` identifies them: leave them out unless the record should carry them. |
 | `reference` | `supplied-instant` \| `utc-noon` | Recorded in the calculation record, not in the summary. Omitting it is the usual case and infers nothing. `utc-noon` means no birth time was known and midday UTC stands in, so it needs `timeKnown: false` and `utc` at exactly `12:00:00Z`. The envelope's third value, `local-noon`, is not offered: it requires a captured local date, wall time, zone and offset, and this adapter resolves no timezones. |
 | `output` | `summary` \| `record` | Default `summary`. |
 
 `summary` returns the computed chart — twelve bodies, four angles, twelve cusps,
 the aspect list — plus the four fields you need to read it: whether the time was
 known, which house system was requested, which one the engine could actually
-use, and why one is absent. It does not repeat your birth details back at you.
+use, and why one is absent. It does not echo the request, but it is not
+anonymous: with a known time, the positions and the angles are enough to work
+out the instant and the place, and `cite.receipt` identifies the birth details
+whether or not the time is known.
 
-`output: "record"` returns `{ engine, schema, record }`. The record itself is
-the `record` field, as text — the full `zodiacs.natal-envelope.draft-v1` record,
-which does contain every input — and the two keys beside it name the engine that
-produced it and the vocabulary it speaks. **Pass the field, not the reply around
-it:** `compare_calculation_records` takes record text, and the reply as a whole
+`output: "record"` returns `{ engine, schema, record, cite }`. The record itself
+is the `record` field, as text — the full `zodiacs.natal-envelope.draft-v1`
+record, which does contain every input — and the keys beside it name the engine
+that produced it, the vocabulary it speaks and what to cite. **Pass the field,
+not the reply around it:** `compare_calculation_records` takes record text, and the reply as a whole
 is a different object, so it is refused. Asking for the record is the explicit
 choice: make it when the record is what you need, which in practice means
 feeding two of them to the comparison below.
@@ -169,8 +184,10 @@ Takes `left` and `right`: the **content** of two calculation records, as JSON
 text. Not paths, not URLs, not identifiers — this adapter reads no files and
 fetches nothing. At most 65536 bytes each.
 
-Names every field that differs, and then what accounts for it, labelled by the
-evidence behind each claim:
+Names where the two records differ — the inputs, the house settings, the
+conventions, the flags, ΔT and the time basis, and the computed values — and
+then what accounts for each difference, labelled by the evidence behind each
+claim:
 
 - **reproduced** — recalculated here, changing one setting and nothing else, and
   the result matched.
@@ -178,6 +195,9 @@ evidence behind each claim:
 - **hypothesis** — fits the evidence, not demonstrated. Several can fit one
   difference, and all of them are listed.
 - **unresolved** — nothing in either record accounts for it.
+
+A record's extensions are not compared, and nor is what it says about its own
+origin, apart from its engine version.
 
 A cause reaches **reproduced** only when three things hold: both records name a
 version this installation actually has, each record's own recorded values —
@@ -203,6 +223,54 @@ they print rather than on a tolerance. A record naming an engine version other
 than the one bundled here is not re-run on this engine and offered as the
 original: the cause stays a hypothesis and the limit is stated.
 
+### `get_positions`
+
+Takes `instants`, one to 100 instants written in ISO 8601 with `Z` or a numeric
+offset, and optionally `bodies`, the rows to return. Returns, for each instant,
+the twelve rows of a chart, each body's tropical longitude, latitude, daily
+motion, sign and degree, with the ΔT and the time scale the engine used. They
+are the chart's rows: `calculate_natal_chart` at the same instant returns the
+same bodies.
+
+### `find_events`
+
+Takes a window, `from` and `to`, of at most 92 days, and optionally `bodies`
+and `kinds`. Returns the sign ingresses, the stations of Mercury to Pluto, and
+the new and full moons in it, in time order. The window excludes its start and
+includes its end. The search samples each motion at a fixed step, 5 days for
+most bodies and 1 day for the Moon and for the Moon–Sun elongation behind every
+lunation, and bisects each crossing it sees 24 times. It is tested, not proven
+to miss nothing, and every reply's receipt says so in `search.completeness`,
+beside the number of evaluations it made, at most 12,000.
+
+### `check_sky_fact`
+
+Takes a `kind` and what it needs: `sign`, a body in a sign, or `retrograde`, a
+body moving backward, each at an `instant` or on a `date`; `ingress`, a body
+entering a sign on a `date`; or `phase`, the Moon reaching `new`,
+`first-quarter`, `full` or `last-quarter` on a `date`. It answers `true`,
+`false` or `depends`, with the computed values that decide the answer. It
+never interprets.
+
+This adapter looks up no time zone, so there is no `zone` argument. A date is
+read as that day in every UTC offset in use today, −12:00 to +14:00, at once:
+from 14 hours before its midnight UTC to 36 hours after. `depends` means the
+answer turns on the time of day or on the offset. When the ingress or the phase
+asked about falls in that span, the answer is always `depends`, because some
+offsets' dates hold it and others' do not, so neither is ever `true` here. For a
+definite answer to a sign or retrograde fact, ask at an instant; for an ingress
+or a phase, `find_events` gives the instant.
+
+These three run the hosted compute API's own calculations: the same parser and
+the same function as `POST https://zodiacs.org/api/v1/positions`, `/events` and
+`/sky-fact` without a zone. For the same request each returns the compute API's
+body, with the same `result` and the same `receipt`, so the same
+`cite.receipt`; only `cite.url` names the tool here. A request the compute
+API's parser refuses gets its sentence, after the field it names:
+`/to: Must be later than from.` One the input schema refuses first, such as an
+unknown argument like `zone`, more than 100 instants or a value outside a list,
+gets the MCP SDK's validation message instead.
+
 ## Three requests, and what comes back
 
 **1. An ordinary chart.**
@@ -213,19 +281,63 @@ original: the cause stays a hypothesis and the limit is stated.
 ```
 
 ```json
-{ "engine": { "name": "@zodiacs/engine", "version": "0.1.1-rc.15",
-              "ephemeris": { "name": "astronomy-engine", "version": "2.1.19" } },
+{
+  "engine": {
+    "ephemeris": {
+      "name": "astronomy-engine",
+      "version": "2.1.19"
+    },
+    "name": "@zodiacs/engine",
+    "version": "0.1.1-rc.17"
+  },
   "timeKnown": true,
-  "houses": { "requested": "placidus", "actual": "placidus", "absenceReason": null },
-  "inputFlags": [], "resultFlags": [],
-  "bodies": [ { "body": "Sun", "lon": 84.18908527436764, "lat": -0.000018285232616151122,
-                "speed": 0.9551295117944392, "retrograde": false,
-                "sign": "gemini", "degree": 24.189085274367642 }, "…11 more" ],
-  "angles": { "asc": 191.23954826620667, "mc": 104.68849392708933,
-              "dsc": 11.239548266206668, "ic": 284.6884939270893 },
-  "cusps": [ 191.23954826620667, 216.40904162782272, "…10 more" ],
-  "aspects": [ { "a": "Moon", "b": "Jupiter", "type": "trine",
-                 "orb": 0.29106046772665195, "applying": false }, "…16 more" ] }
+  "houses": {
+    "absenceReason": null,
+    "actual": "placidus",
+    "requested": "placidus"
+  },
+  "inputFlags": [],
+  "resultFlags": [],
+  "bodies": [
+    {
+      "body": "Sun",
+      "degree": 24.189077046148668,
+      "lat": -0.000018285232619282298,
+      "lon": 84.18907704614867,
+      "retrograde": false,
+      "sign": "gemini",
+      "speed": 0.95512655695984
+    },
+    "…11 more"
+  ],
+  "angles": {
+    "asc": 191.23954148521,
+    "dsc": 11.239541485209998,
+    "ic": 284.68848532286995,
+    "mc": 104.68848532286995
+  },
+  "cusps": [
+    191.23954148521,
+    216.40903277974905,
+    "…10 more"
+  ],
+  "aspects": [
+    {
+      "a": "Moon",
+      "applying": false,
+      "b": "Jupiter",
+      "orb": 0.29106046772676564,
+      "type": "trine"
+    },
+    "…16 more"
+  ],
+  "cite": {
+    "url": "https://zodiacs.org/developers/mcp/#calculate_natal_chart",
+    "receipt": "sha256:f7b4ba470bb3c3a16cdb65d2d37271086cb1665cd8686e139cd5c98fc19c5920",
+    "engine": "@zodiacs/engine",
+    "version": "0.1.1-rc.17"
+  }
+}
 ```
 
 **2. The same chart at 78° north, asking for Placidus.**
@@ -248,27 +360,102 @@ are separate fields, so a fallback is visible rather than silent.
 ```
 
 ```json
-{ "identical": false,
-  "counts": { "differences": 15, "substantive": 15, "displayOnly": 0, "explanations": 1 },
+{
+  "identical": false,
+  "counts": {
+    "differences": 15,
+    "substantive": 15,
+    "displayOnly": 0,
+    "explanations": 1
+  },
   "output": "summary",
   "differences": [
-    { "id": "houses-requested", "area": "Houses", "label": "House system requested",
-      "left": "placidus", "right": "whole", "delta": null, "kind": "metadata" },
-    { "id": "houses-actual", "…": "same two values" },
-    { "id": "houses-system", "…": "same two values" },
-    { "id": "cusp-1", "area": "Houses", "label": "House 1 cusp",
-      "delta": -11.239548266206612, "kind": "numeric", "valuesWithheld": true },
-    "…cusp-2 through cusp-12" ],
+    {
+      "id": "houses-requested",
+      "area": "Houses",
+      "label": "House system requested",
+      "left": "placidus",
+      "right": "whole",
+      "delta": null,
+      "kind": "metadata"
+    },
+    {
+      "id": "houses-actual",
+      "area": "Houses",
+      "label": "House system actually used",
+      "left": "placidus",
+      "right": "whole",
+      "delta": null,
+      "kind": "metadata"
+    },
+    {
+      "id": "houses-system",
+      "area": "Houses",
+      "label": "House system in the result",
+      "left": "placidus",
+      "right": "whole",
+      "delta": null,
+      "kind": "metadata"
+    },
+    {
+      "id": "cusp-1",
+      "area": "Houses",
+      "label": "House 1 cusp",
+      "delta": -11.239541485209998,
+      "kind": "numeric",
+      "valuesWithheld": true
+    },
+    "…cusp-2 through cusp-12"
+  ],
   "explanations": [
-    { "id": "house-system", "evidence": "reproduced",
+    {
+      "id": "house-system",
+      "evidence": "reproduced",
       "statement": "The different house system accounts for the house cusps.",
-      "covers": [ "cusp-1", "…cusp-12", "houses-requested", "houses-actual", "houses-system" ],
-      "detail": "Each chart's own recorded values were reproduced from its own declared inputs on engine 0.1.1-rc.15, and changing only the house system turns each one into the other, in both directions." } ],
+      "covers": [
+        "cusp-1",
+        "cusp-2",
+        "cusp-3",
+        "cusp-4",
+        "cusp-5",
+        "cusp-6",
+        "cusp-7",
+        "cusp-8",
+        "cusp-9",
+        "cusp-10",
+        "cusp-11",
+        "cusp-12",
+        "houses-requested",
+        "houses-actual",
+        "houses-system"
+      ],
+      "detail": "Each chart's own recorded values were reproduced from its own declared inputs on engine 0.1.1-rc.17, and changing only the house system turns each one into the other, in both directions."
+    }
+  ],
   "limits": [
     "Only the house system is re-run here. A different moment or place is never promoted past a hypothesis, even when both records name the same engine.",
-    "Both receipts name the same engine, so agreement between them would show consistency, not independent astronomical accuracy." ],
-  "disclosure": "A comparison reports the exact difference between two charts. …not anonymous.",
-  "withheld": "By default a comparison names which fields differ and by how much, …" }
+    "Both receipts name the same engine, so agreement between them would show consistency, not independent astronomical accuracy."
+  ],
+  "disclosure": "A comparison reports the exact difference between two charts. Anyone holding one of the two can reconstruct the other from it, so that output is safer to pass on than a full record but it is not anonymous.",
+  "withheld": "By default a comparison names which fields differ and by how much, and leaves out the values of rows carrying birth details or computed positions — you supplied both records to this call, so repeating their contents back tells you nothing you did not have, while adding a second copy to whatever this result travels through. Ask for output: \"full\" when you need those values. This shortens what travels onward; it hides nothing from the assistant you are talking to, which already received both records as arguments.",
+  "receipt": {
+    "schema": "zodiacs.mcp-receipt.v1",
+    "tool": "compare_calculation_records",
+    "adapter": { "name": "zodiacs-mcp-server", "version": "0.1.0-rc.17" },
+    "engine": {
+      "name": "@zodiacs/engine",
+      "version": "0.1.1-rc.17",
+      "ephemeris": { "name": "astronomy-engine", "version": "2.1.19" }
+    },
+    "output": "summary"
+  },
+  "cite": {
+    "url": "https://zodiacs.org/developers/mcp/#compare_calculation_records",
+    "receipt": "sha256:e0422cc4f22b22487e8ae56669b9c53d74ec86ca96d5c7be31b2b5a31db39ce1",
+    "engine": "@zodiacs/engine",
+    "version": "0.1.1-rc.17"
+  }
+}
 ```
 
 The house-system rows keep their values; the twelve cusp rows do not, because a
@@ -282,34 +469,97 @@ either, for the same reason.
 `limits` is not an error channel. It is where the comparison says what it could
 not settle, and it is worth reading even when everything else looks resolved.
 
+## Citing a result
+
+Every result other than a refusal carries `cite`, the shape the hosted compute
+API uses on each of its answers:
+
+- `url`: the tool's entry on <https://zodiacs.org/developers/mcp/>, an anchor
+  that does not move;
+- `receipt`: `sha256:` and the SHA-256 of a receipt's RFC 8785 canonical JSON;
+- `engine` and `version`: the engine that calculated, `@zodiacs/engine`
+  0.1.1-rc.17.
+
+A chart cites the engine's calculation receipt, the `receipt` inside the record
+that `output: "record"` returns for the same arguments, so a summary and a
+record of one calculation cite one digest, and anyone given the record can
+recompute it. That receipt holds the instant as it was written, offset
+included, the coordinates and the settings, so the digest identifies the birth
+details from either side. With the date and the place, trying each time of day
+finds the time. With the instant, which the positions give away, trying places
+from a list of towns finds the place, even for a chart with no known time, whose
+summary shows no angle, cusp or coordinate. With `timeKnown: false` the
+coordinates change nothing else in the result, so leaving them out keeps them
+out of the receipt. Quote the digest only where the birth details may be known.
+
+`get_capabilities` and `compare_calculation_records` cite the adapter's own
+receipt, which the reply carries in full: the adapter and the engine that
+answered, and for a comparison its output. It holds nothing from either record,
+so a comparison's citation says how the comparison was made, not which records
+it read.
+
+`get_positions`, `find_events` and `check_sky_fact` cite the compute API's
+receipt for the same calculation, which the reply carries in full: the engine,
+its conventions and coverage, the reference span, the two sources of ΔT, and
+for a search how it searched and how many evaluations it made. It holds no
+instant, date or body from the request, and the compute API cites the same
+digest for the same request.
+
+## Resources
+
+Two resources, built into `server.mjs`; reading one opens no file and makes no
+request.
+
+- `zodiacs://conventions` (JSON): the conventions vocabulary of the calculation
+  records this server writes and reads. Every conventions set a record may
+  carry, taken from the engine, with the engine versions that wrote it; a
+  sentence on what each key covers; the coverage statement the engine's
+  receipts carry; and what each chart flag reports.
+- `zodiacs://methodology` (Markdown): what a chart holds, how an instant is
+  read, unknown birth times, house systems, aspects, comparisons, positions,
+  events and sky facts, the accepted dates, and what a result cites, with links
+  to the site's methodology page and the engine's measured agreement with other
+  software.
+
 ## Versions
 
 | | |
 | --- | --- |
-| adapter | `0.1.0-rc.15`, unpublished candidate |
-| engine | `@zodiacs/engine` `0.1.1-rc.15`, unpublished candidate, bundled into `server.mjs` |
+| adapter | `0.1.0-rc.17`, unpublished candidate |
+| engine | `@zodiacs/engine` `0.1.1-rc.17`, a release candidate that is not on npm, bundled into `server.mjs` |
 | ephemeris | `astronomy-engine` 2.1.19, inside the engine |
 | MCP SDK | `@modelcontextprotocol/server` 2.0.0, pinned exactly, installed from npm |
 | validation | `zod` 4.6.5, pinned exactly |
 | protocol | stdio. Negotiated on the wire in testing: 2025-11-25, 2025-06-18, 2025-03-26, 2024-11-05, 2024-10-07 |
 | node | built for and tested on Node 22 (v22.22.2). `package.json` requires `>=22` |
 | record schema | `zodiacs.natal-envelope.draft-v1` — Zodiacs-owned draft vocabulary, not an industry interoperability standard |
+| adapter receipt | `zodiacs.mcp-receipt.v1`, carried by `get_capabilities` and `compare_calculation_records` |
+| compute receipt | `zodiacs.compute-receipt.v1`, the hosted compute API's, carried by `get_positions`, `find_events` and `check_sky_fact` |
 
 `candidate.json` carries the same identities in machine-readable form, including
 the engine artifact's own SHA-256 and the source paths every part was built from.
 
 ## Known limits
 
-- **One chart at a time, no searches.** No transits, progressions, returns or
-  eclipses; nothing that scans a date range.
+- **Narrow searches only.** `find_events` finds sign ingresses, stations and
+  new and full moons in a window of at most 92 days. No transits,
+  progressions, returns or eclipses.
 - **No interpretation.** Positions and differences, no readings.
 - **No timezone resolution.** Supply an instant with an explicit offset. This
-  adapter does not turn a place name and a wall clock into a moment.
+  adapter does not turn a place name and a wall clock into a moment, and
+  `check_sky_fact` reads a date without a zone as that day in every UTC offset
+  in use today at once.
 - **No file access and no fetching.** Records are passed as content. The adapter
   imports no filesystem, process or network module at all.
 - **No cancellation and no timeout.** A calculation is synchronous, so a timer
-  could not interrupt it mid-way. The work is bounded by refusing unbounded
-  operations: one chart per call, no searches, no date ranges.
+  could not interrupt it mid-way. The work is bounded instead: one chart per
+  call, at most 100 instants, a window of at most 92 days, and at most 12,000
+  evaluations for an events request, or 1,000 for a fact on a date.
+- **Large replies.** The largest `get_positions` answer the limits allow, a
+  hundred instants of twelve rows, is about 230 KB of JSON, and the reply
+  carries it twice, as structured content and as text. A host may warn about a
+  reply that size or keep it out of the conversation, so ask for the instants
+  you need.
 - **No authentication of anything.** Not of a record, not of an engine version,
   not of the claim that two records came from independent software. Two records
   from one engine agreeing shows consistency, not independent astronomical
@@ -318,21 +568,22 @@ the engine artifact's own SHA-256 and the source paths every part was built from
   longitudes; which house a body falls in is left to the caller, and getting it
   right needs the same wraparound care as everything else here. Worth adding;
   not in this first integration.
-- **No `outputSchema` on the tools.** Arguments are schema-bounded and a host
-  reads those; results come back as `structuredContent` with their shapes
-  documented here rather than declared, so a shape that drifted from the handler
-  could not turn a correct result into a protocol error.
 - **1800 to 2199.** The engine's own records state
   `broadDateRange: "not-certified"`; this is the range the rest of Zodiacs
   supports and the adapter adopts it rather than inventing a wider one.
-- **Not published.** Neither this adapter nor the engine is on npm. Both are
-  labelled `unpublished-candidate` in `get_capabilities`, and will keep saying
-  so until that changes.
+- **Not on npm.** This adapter is not published under any name, and
+  `get_capabilities` labels it `unpublished-candidate`. Neither is the engine
+  it bundles, `@zodiacs/engine` 0.1.1-rc.17, which `get_capabilities` labels
+  `unpublished-candidate` too. When this archive was made, on 2026-10-06, npm
+  had the version before it, 0.1.1-rc.16, under the `next` tag, and
+  0.1.1-rc.15 under `latest`. rc.17 adds the sidereal zodiac to the engine's
+  `calc` entry, which this adapter does not use, so its tools answer as they
+  did with rc.16.
 
 ## Uninstall
 
-The server writes nothing anywhere: no config of its own, no cache, no database,
-no state. `npm install` does use npm's own cache under `~/.npm`, as any install
+The server writes no config, cache or database to disk. Its process keeps
+in-memory calculation caches until it exits. `npm install` does use npm's own cache under `~/.npm`, as any install
 does, and that survives deleting this directory. Removal is two steps.
 
 ```sh
@@ -346,14 +597,22 @@ clean up.
 
 ## How this was tested
 
-Recorded in the site repository under
-`docs/platform/evidence/mcp-adapter/`, kept as three separate records because
-they establish three different things:
+The current protocol, regression and named-host results are recorded under
+`docs/platform/evidence/mcp-adapter/`, each against this bundle. The
+model-interoperability record is from an earlier candidate and stays
+historical until rerun. The records establish different things:
 
 - **`protocol-drive.json`** — the official SDK client against the real server
-  process: initialize, list, all three tools, eighteen malformed or refused
-  requests each followed by a valid one, the diagnostic channel, a clean close,
-  and a raw handshake at every protocol revision the SDK supports.
+  process: initialize, list the tools and their output schemas, all six tools
+  with every result other than a refusal checked against its schema by the
+  client, what each result
+  cites, the two resources, eighteen malformed or refused requests each
+  followed by a valid one, the diagnostic channel, a clean close, and a raw
+  handshake at every protocol revision the SDK supports.
+- **`src/mcp/sky-tools.test.ts`**, in the repository — for 252 synthetic
+  requests, `get_positions`, `find_events` and `check_sky_fact` return the body
+  the compute API's own handler answers for the same JSON, apart from
+  `cite.url`, and each of 17 refused requests gets the handler's own sentence.
 - **`host-drive.json`** — the Claude Code CLI launching the adapter and
   reporting it connected, inside a throwaway config directory, with the
   machine's real configuration proved byte-identical afterwards.
@@ -370,7 +629,7 @@ on dates chosen for what they exercise.
 ## Licence
 
 MIT AND CC-BY-4.0. The adapter's own code is MIT. `server.mjs` bundles
-`@zodiacs/engine` 0.1.1-rc.15, whose ΔT module contains 32 values of Table S15
+`@zodiacs/engine` 0.1.1-rc.17, whose ΔT module contains 32 values of Table S15
 of Stephenson, Morrison and Hohenkerk (2016) under CC BY 4.0, and whose time
 basis carries the IERS leap-second list and a UT1 − UTC table derived from
 IERS data. `NOTICE` gives the attributions; keep it if you redistribute the

@@ -3,7 +3,6 @@ import handler, {
   buildTransitCalendar,
   handleTransitCalendar,
 } from '../../../api/calendar/transits';
-import { calendarToken, calendarWebcalUrl } from '../../islands/CalendarSubscribe';
 import { decodePositionsLink, encodePositionsLink, POSITION_BODY_ORDER } from '../share-positions';
 
 const CRLF = '\r\n';
@@ -18,6 +17,17 @@ function uidLines(calendar: string): string[] {
 }
 
 describe('subscribable transit calendar', () => {
+  it('retires the public personal feed before reading its query or scanning', async () => {
+    let status = 0; let body = ''; const headers = new Map();
+    await handler({ get query() { throw new Error('must not read birth positions'); } }, {
+      set statusCode(value: number) { status = value; },
+      setHeader(name: string, value: string) { headers.set(name, value); },
+      end(value: string) { body = value; },
+    });
+    expect(status).toBe(410);
+    expect(headers.get('Cache-Control')).toBe('no-store');
+    expect(body).toContain('retired');
+  });
   it('serializes a pinned positions-only token with stable UIDs and valid RFC 5545 lines', () => {
     const first = buildTransitCalendar(PINNED_TOKEN, {
       ...WINDOW,
@@ -84,30 +94,6 @@ describe('subscribable transit calendar', () => {
     }
   });
 
-  it('mints the feed code with ASC and MC to the whole degree and every body to 0.001°', () => {
-    const token = calendarToken({
-      bodies: POSITION_BODY_ORDER.map((body, index) => ({ body, lon: index * 30.0123 })),
-      angles: { asc: 245.678, mc: 159.999 },
-      houseSystem: 'placidus',
-      engineVersion: '1.0.0',
-    });
-    const decoded = decodePositionsLink(token!);
-    expect(decoded?.angles).toEqual({ asc: 245.5, mc: 159.5 });
-    expect(decoded?.bodies[1]).toEqual({ body: 'Moon', lon: 30.012 });
-    expect(decoded?.houseSystem).toBe('placidus');
-  });
-
-  it('builds webcal URLs with only the existing positions token', () => {
-    const value = calendarWebcalUrl('https://zodiacs.org', PINNED_TOKEN);
-    const parsed = new URL(value);
-    expect(parsed.protocol).toBe('webcal:');
-    expect(parsed.host).toBe('zodiacs.org');
-    expect(parsed.pathname).toBe('/api/calendar/transits');
-    expect([...parsed.searchParams.keys()]).toEqual(['token']);
-    expect(parsed.searchParams.get('token')).toBe(PINNED_TOKEN);
-    expect(value).not.toMatch(/date|time|place|lat|lon|coord|name/i);
-  });
-
   it('rejects invalid tokens and non-GET requests without scanning', async () => {
     const response = () => {
       const headers = new Map<string, string>();
@@ -121,12 +107,12 @@ describe('subscribable transit calendar', () => {
     };
 
     const invalid = response();
-    await handler({ method: 'GET', query: { token: '2.invalid' } }, invalid);
+    await handleTransitCalendar({ method: 'GET', query: { token: '2.invalid' } }, invalid);
     expect(invalid.statusCode).toBe(400);
     expect(invalid.headers.get('cache-control')).toBe('no-store');
 
     const wrongMethod = response();
-    await handler({ method: 'POST', query: { token: PINNED_TOKEN } }, wrongMethod);
+    await handleTransitCalendar({ method: 'POST', query: { token: PINNED_TOKEN } }, wrongMethod);
     expect(wrongMethod.statusCode).toBe(405);
     expect(wrongMethod.headers.get('allow')).toBe('GET');
   });

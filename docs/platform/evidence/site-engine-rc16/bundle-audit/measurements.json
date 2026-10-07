@@ -1,0 +1,653 @@
+{
+  "node": "v22.22.2",
+  "method": "gzip level 9, summed per emitted static-closure chunk; standalone comparisons separately labelled",
+  "actual": {
+    "rc15": {
+      "entry": "full.Dc14JBf_.js",
+      "gzip": 32108,
+      "bytes": 70405,
+      "rows": [
+        {
+          "file": "full.Dc14JBf_.js",
+          "bytes": 434,
+          "gzip": 273,
+          "sha256": "416c16ec6cb75c69e55785033aa92e73055f9a2e94a687f53b41311c54693cdb",
+          "imports": [
+            "./rolldown-runtime.DK3Fl9T5.js",
+            "./chart-adapter.D7gaZnvr.js",
+            "./chunk-ZZPITHQS.bDBlQczH.js"
+          ]
+        },
+        {
+          "file": "rolldown-runtime.DK3Fl9T5.js",
+          "bytes": 158,
+          "gzip": 154,
+          "sha256": "a526d1bb3288ef04d001028843220a24b0867a4edf8c685b69506d6525af36ff",
+          "imports": []
+        },
+        {
+          "file": "chart-adapter.D7gaZnvr.js",
+          "bytes": 479,
+          "gzip": 304,
+          "sha256": "41da38c04ca48f87a9ed7fcf6810e2a852d51010f4c42fda0c772913b91144b7",
+          "imports": []
+        },
+        {
+          "file": "chunk-ZZPITHQS.bDBlQczH.js",
+          "bytes": 51180,
+          "gzip": 21965,
+          "sha256": "d488b884e580478d30a5e5c5e98ae3f91bb90d5e502cd8b9df5db952ab4a85aa",
+          "imports": [
+            "./chunk-MFF3VKO3.DkBXfVur.js",
+            "./chunk-ZHVI3KWJ.D6rRknEF.js",
+            "./chunk-KHBLFXFG.DP9le7v-.js"
+          ]
+        },
+        {
+          "file": "chunk-MFF3VKO3.DkBXfVur.js",
+          "bytes": 2857,
+          "gzip": 1160,
+          "sha256": "f875c68e5396eec83fb5a06a02b3fb0ffc276450803f598d362058a35abe30c0",
+          "imports": []
+        },
+        {
+          "file": "chunk-ZHVI3KWJ.D6rRknEF.js",
+          "bytes": 4430,
+          "gzip": 1770,
+          "sha256": "10875491353bf21ea15baa4df4aca7bc9026d5a4c3ac427dd045c657ae311afe",
+          "imports": [
+            "./chunk-MFF3VKO3.DkBXfVur.js"
+          ]
+        },
+        {
+          "file": "chunk-KHBLFXFG.DP9le7v-.js",
+          "bytes": 10867,
+          "gzip": 6482,
+          "sha256": "9909094792868218fbd8292e1417b2ced88d6bb6348cf89dd186be17dc672a38",
+          "imports": []
+        }
+      ]
+    },
+    "rc16": {
+      "entry": "full.DlszcQ4H.js",
+      "gzip": 33154,
+      "bytes": 71576,
+      "rows": [
+        {
+          "file": "full.DlszcQ4H.js",
+          "bytes": 434,
+          "gzip": 273,
+          "sha256": "52e8c67177dc22d91fed1e15cd53dc981a593a2ffce484b27e9bde18dca0e317",
+          "imports": [
+            "./rolldown-runtime.DK3Fl9T5.js",
+            "./chart-adapter.D7gaZnvr.js",
+            "./chunk-WOU7JVD3.pnw1-4va.js"
+          ]
+        },
+        {
+          "file": "rolldown-runtime.DK3Fl9T5.js",
+          "bytes": 158,
+          "gzip": 154,
+          "sha256": "a526d1bb3288ef04d001028843220a24b0867a4edf8c685b69506d6525af36ff",
+          "imports": []
+        },
+        {
+          "file": "chart-adapter.D7gaZnvr.js",
+          "bytes": 479,
+          "gzip": 304,
+          "sha256": "41da38c04ca48f87a9ed7fcf6810e2a852d51010f4c42fda0c772913b91144b7",
+          "imports": []
+        },
+        {
+          "file": "chunk-WOU7JVD3.pnw1-4va.js",
+          "bytes": 52335,
+          "gzip": 23004,
+          "sha256": "93411f1eba8dda551b7979f78270ca8de787a5ec8fcf2c69c0208a5cdee6ee44",
+          "imports": [
+            "./chunk-2OWGBT3O.Cw5cXswy.js",
+            "./chunk-4NV4ZEFZ.sSniBhHx.js",
+            "./chunk-KHBLFXFG.DP9le7v-.js"
+          ]
+        },
+        {
+          "file": "chunk-2OWGBT3O.Cw5cXswy.js",
+          "bytes": 2873,
+          "gzip": 1168,
+          "sha256": "316ad4f8724bc5f79e0a5a7f6a1fb35a394b7bdb1150deaeeec411fe3d731033",
+          "imports": []
+        },
+        {
+          "file": "chunk-4NV4ZEFZ.sSniBhHx.js",
+          "bytes": 4430,
+          "gzip": 1769,
+          "sha256": "6c4ff51d6fcbbec85b0aba6139c289c84d40b37976981e1df045c4e1b2ee7ba5",
+          "imports": [
+            "./chunk-2OWGBT3O.Cw5cXswy.js"
+          ]
+        },
+        {
+          "file": "chunk-KHBLFXFG.DP9le7v-.js",
+          "bytes": 10867,
+          "gzip": 6482,
+          "sha256": "9909094792868218fbd8292e1417b2ced88d6bb6348cf89dd186be17dc672a38",
+          "imports": []
+        }
+      ]
+    },
+    "deltaGzip": 1046
+  },
+  "versions": {
+    "astro": {
+      "rc15": "7.3.2",
+      "rc16": "7.3.2"
+    },
+    "astro/node_modules/vite": {
+      "rc15": "8.1.3",
+      "rc16": "8.1.3"
+    },
+    "esbuild": {
+      "rc15": "0.28.1",
+      "rc16": "0.28.1"
+    },
+    "rolldown": {
+      "rc15": "1.1.4",
+      "rc16": "1.1.4"
+    }
+  },
+  "archives": {
+    "rc15": {
+      "file": "vendor/zodiacs-engine-0.1.1-rc.15.tgz",
+      "sha256": "24eeb597b0157598c0faa26bb615c0cb5dfaaeac0393d62c73fbd37c5da4d348",
+      "installedJsDifferences": []
+    },
+    "rc16": {
+      "file": "vendor/zodiacs-engine-0.1.1-rc.16.tgz",
+      "sha256": "43a72d30e483d8ff22024e403c4bd0d86d81bb6e1d0ad138f857cd001ab015d8",
+      "installedJsDifferences": []
+    }
+  },
+  "sourceChecks": {
+    "src/lib/engine/full.ts": {
+      "identical": true,
+      "rc15": "2f34bf48efd52d47fa9771b2373d4d5f696616b4e3faf6a4ec784190782ae624",
+      "rc16": "2f34bf48efd52d47fa9771b2373d4d5f696616b4e3faf6a4ec784190782ae624"
+    },
+    "src/lib/engine/chart-adapter.ts": {
+      "identical": true,
+      "rc15": "f10a7c1d167175ea600d064a8d69dfdaaf3fd067ad401cbb7e12f2d9e78707b6",
+      "rc16": "f10a7c1d167175ea600d064a8d69dfdaaf3fd067ad401cbb7e12f2d9e78707b6"
+    },
+    "astro.config.mjs": {
+      "identical": true,
+      "rc15": "df207b2a6c84aae75d0c9d11b31eb6ccd5486297aae9684a5d624142a51a5ced",
+      "rc16": "df207b2a6c84aae75d0c9d11b31eb6ccd5486297aae9684a5d624142a51a5ced"
+    },
+    "scripts/report-bundles.mjs": {
+      "identical": true,
+      "rc15": "7f4f47fec33e97c2f6accb7f159c7d5e5e31994981246af49aa6540da69e9328",
+      "rc16": "7f4f47fec33e97c2f6accb7f159c7d5e5e31994981246af49aa6540da69e9328"
+    },
+    "budgets.json": {
+      "identical": true,
+      "rc15": "400f18a0985a3ced084466b0ef29e2bbb92a4263d0e8cb71052d8f53d22325b9",
+      "rc16": "400f18a0985a3ced084466b0ef29e2bbb92a4263d0e8cb71052d8f53d22325b9"
+    }
+  },
+  "standalone": {
+    "rc15": {
+      "esbuild": {
+        "gzip": 32707,
+        "bytes": 71463
+      },
+      "vite": {
+        "gzip": 31303,
+        "bytes": 69323,
+        "chunks": [
+          {
+            "file": "full.js",
+            "exports": [
+              "bodyLongitude",
+              "computeBodies",
+              "computeChart",
+              "longitudeSpeed"
+            ],
+            "imports": [],
+            "dynamicImports": [],
+            "modules": [
+              "docs/platform/evidence/site-engine-rc16/bundle-audit/archive-inputs/rc15/package/dist/chunk-MFF3VKO3.js",
+              "docs/platform/evidence/site-engine-rc16/bundle-audit/archive-inputs/rc15/package/dist/chunk-ZHVI3KWJ.js",
+              "docs/platform/evidence/site-engine-rc16/bundle-audit/archive-inputs/rc15/package/dist/chunk-ONBZ4HK7.js",
+              "docs/platform/evidence/site-engine-rc16/bundle-audit/archive-inputs/rc15/package/dist/chunk-KHBLFXFG.js",
+              "node_modules/astronomy-engine/esm/astronomy.js",
+              "docs/platform/evidence/site-engine-rc16/bundle-audit/archive-inputs/rc15/package/dist/chunk-ZZPITHQS.js",
+              "src/lib/engine/chart-adapter.ts",
+              "src/lib/engine/full.ts"
+            ]
+          }
+        ]
+      }
+    },
+    "rc16": {
+      "esbuild": {
+        "gzip": 33777,
+        "bytes": 72590
+      },
+      "vite": {
+        "gzip": 32350,
+        "bytes": 70483,
+        "chunks": [
+          {
+            "file": "full.js",
+            "exports": [
+              "bodyLongitude",
+              "computeBodies",
+              "computeChart",
+              "longitudeSpeed"
+            ],
+            "imports": [],
+            "dynamicImports": [],
+            "modules": [
+              "docs/platform/evidence/site-engine-rc16/bundle-audit/archive-inputs/rc16/package/dist/chunk-ONBZ4HK7.js",
+              "docs/platform/evidence/site-engine-rc16/bundle-audit/archive-inputs/rc16/package/dist/chunk-KHBLFXFG.js",
+              "docs/platform/evidence/site-engine-rc16/bundle-audit/archive-inputs/rc16/package/dist/chunk-2OWGBT3O.js",
+              "docs/platform/evidence/site-engine-rc16/bundle-audit/archive-inputs/rc16/package/dist/chunk-4NV4ZEFZ.js",
+              "node_modules/astronomy-engine/esm/astronomy.js",
+              "docs/platform/evidence/site-engine-rc16/bundle-audit/archive-inputs/rc16/package/dist/chunk-WOU7JVD3.js",
+              "src/lib/engine/chart-adapter.ts",
+              "src/lib/engine/full.ts"
+            ]
+          }
+        ]
+      }
+    },
+    "deltaGzip": {
+      "esbuild": 1070,
+      "vite": 1047
+    }
+  },
+  "routes": [
+    {
+      "route": "/",
+      "gzip": 31702,
+      "limitBytes": 43008,
+      "headroomBytes": 11306,
+      "passes": true,
+      "engineChunks": [],
+      "missing": [],
+      "closure": [
+        "/_astro/AstroTerm.astro_astro_type_script_index_0_lang.DB1iYTmP.js",
+        "/_astro/preload-helper.L5lOfJxi.js",
+        "/_astro/WelcomeBack.gGV_6P3i.js",
+        "/_astro/preact.module.Bjq9tLsx.js",
+        "/_astro/read-store.CQjgDq6O.js",
+        "/_astro/schema.DqKqbGHb.js",
+        "/_astro/profile-access-reader.DoQqlSjt.js",
+        "/_astro/chunk-2OWGBT3O.Cw5cXswy.js",
+        "/_astro/useProfile.BUWA37OV.js",
+        "/_astro/hooks.module.C0_8FjiD.js",
+        "/_astro/signs.BMXPKoMF.js",
+        "/_astro/feature-flags.BT17fOoR.js",
+        "/_astro/jsxRuntime.module.BG9KJlGc.js",
+        "/_astro/i18n.Cg_lCJuc.js",
+        "/_astro/share.BRlg0eGS.js",
+        "/_astro/rolldown-runtime.DK3Fl9T5.js",
+        "/_astro/civil-date.CpOZUt7Z.js",
+        "/_astro/technical-locales.DDKucXXd.js",
+        "/_astro/SignChip.1gtDT8UJ.js",
+        "/_astro/sign-icon.5AEtqUYO.js",
+        "/_astro/NextActionCard.eDMj-LSr.js",
+        "/_astro/client.DPkn9Lbl.js",
+        "/_astro/TodayBySign.Bb77QToK.js",
+        "/_astro/daily.Y_iV5G43.js",
+        "/_astro/daily.Co2kNXQh.js",
+        "/_astro/PlanetGlyph.BhITbtcc.js",
+        "/_astro/paths.DYbAuceH.js",
+        "/_astro/EvidenceDisclosure.LNSfDkU7.js",
+        "/_astro/astrology.BHib5efU.js",
+        "/_astro/dates.D4PDcYt5.js"
+      ]
+    },
+    {
+      "route": "/birth-chart/",
+      "gzip": 69319,
+      "limitBytes": 72704,
+      "headroomBytes": 3385,
+      "passes": true,
+      "engineChunks": [],
+      "missing": [],
+      "closure": [
+        "/_astro/AstroTerm.astro_astro_type_script_index_0_lang.DB1iYTmP.js",
+        "/_astro/preload-helper.L5lOfJxi.js",
+        "/_astro/ChartCalculator.CiWdgKz9.js",
+        "/_astro/preact.module.Bjq9tLsx.js",
+        "/_astro/hooks.module.C0_8FjiD.js",
+        "/_astro/module-load.Bon2MfsC.js",
+        "/_astro/useEngine.CiZwEwXl.js",
+        "/_astro/profile-access-reader.DoQqlSjt.js",
+        "/_astro/chunk-2OWGBT3O.Cw5cXswy.js",
+        "/_astro/signs.BMXPKoMF.js",
+        "/_astro/jsxRuntime.module.BG9KJlGc.js",
+        "/_astro/PlanetGlyph.BhITbtcc.js",
+        "/_astro/paths.DYbAuceH.js",
+        "/_astro/i18n.Cg_lCJuc.js",
+        "/_astro/CalculationReload.CHVnezqu.js",
+        "/_astro/astrology.BHib5efU.js",
+        "/_astro/sign-icon.5AEtqUYO.js",
+        "/_astro/share.BRlg0eGS.js",
+        "/_astro/rolldown-runtime.DK3Fl9T5.js",
+        "/_astro/civil-date.CpOZUt7Z.js",
+        "/_astro/technical-locales.DDKucXXd.js",
+        "/_astro/chart-handoff.DP-oSU54.js",
+        "/_astro/saved-record-flags.DqSqg_CY.js",
+        "/_astro/useProfileAccessGeneration.w2JLb1F6.js",
+        "/_astro/BirthFields.wJaLxABT.js",
+        "/_astro/PlaceSearch.XYSJuxC8.js",
+        "/_astro/localToUtc.CZfJT2gL.js",
+        "/_astro/interpretations.DbgOkEMA.js",
+        "/_astro/AstroTerm.7K8SAipO.js",
+        "/_astro/SignChip.1gtDT8UJ.js",
+        "/_astro/AspectGlyph.DMIAGIQV.js",
+        "/_astro/Wheel.RNRSqGob.js",
+        "/_astro/dignities.D6lQGYrR.js",
+        "/_astro/receipt-download.DmSDBiiW.js",
+        "/_astro/houses.EkHapWLk.js",
+        "/_astro/chunk-4NV4ZEFZ.sSniBhHx.js",
+        "/_astro/technical-layout.DQIjXHHb.js",
+        "/_astro/local-date-reference.CZMhquk4.js",
+        "/_astro/lite.DGL34Z7h.js",
+        "/_astro/learning-input-identity.C-WLv51I.js",
+        "/_astro/analytics.CH5T6e-b.js",
+        "/_astro/post-chart-context.cHI09JaB.js",
+        "/_astro/client.DPkn9Lbl.js"
+      ]
+    },
+    {
+      "route": "/big-three/",
+      "gzip": 30709,
+      "limitBytes": 30720,
+      "headroomBytes": 11,
+      "passes": true,
+      "engineChunks": [],
+      "missing": [],
+      "closure": [
+        "/_astro/BigThreeQuick.De9incME.js",
+        "/_astro/preload-helper.L5lOfJxi.js",
+        "/_astro/hooks.module.C0_8FjiD.js",
+        "/_astro/preact.module.Bjq9tLsx.js",
+        "/_astro/module-load.Bon2MfsC.js",
+        "/_astro/useEngine.CiZwEwXl.js",
+        "/_astro/signs.BMXPKoMF.js",
+        "/_astro/jsxRuntime.module.BG9KJlGc.js",
+        "/_astro/CalculationReload.CHVnezqu.js",
+        "/_astro/i18n.Cg_lCJuc.js",
+        "/_astro/chart-handoff.DP-oSU54.js",
+        "/_astro/share.BRlg0eGS.js",
+        "/_astro/rolldown-runtime.DK3Fl9T5.js",
+        "/_astro/civil-date.CpOZUt7Z.js",
+        "/_astro/technical-locales.DDKucXXd.js",
+        "/_astro/BirthFields.wJaLxABT.js",
+        "/_astro/PlaceSearch.XYSJuxC8.js",
+        "/_astro/search.BXcwbrsc.js",
+        "/_astro/localToUtc.CZfJT2gL.js",
+        "/_astro/interpretations.DbgOkEMA.js",
+        "/_astro/client.DPkn9Lbl.js"
+      ]
+    },
+    {
+      "route": "/transits/",
+      "gzip": 29471,
+      "limitBytes": 30720,
+      "headroomBytes": 1249,
+      "passes": true,
+      "engineChunks": [],
+      "missing": [],
+      "closure": [
+        "/_astro/AstroTerm.astro_astro_type_script_index_0_lang.DB1iYTmP.js",
+        "/_astro/preload-helper.L5lOfJxi.js",
+        "/_astro/TransitTracker.Cu9A1Mxp.js",
+        "/_astro/hooks.module.C0_8FjiD.js",
+        "/_astro/preact.module.Bjq9tLsx.js",
+        "/_astro/module-load.Bon2MfsC.js",
+        "/_astro/useEngine.CiZwEwXl.js",
+        "/_astro/useProfile.BUWA37OV.js",
+        "/_astro/schema.DqKqbGHb.js",
+        "/_astro/profile-access-reader.DoQqlSjt.js",
+        "/_astro/read-store.CQjgDq6O.js",
+        "/_astro/chunk-2OWGBT3O.Cw5cXswy.js",
+        "/_astro/signs.BMXPKoMF.js",
+        "/_astro/jsxRuntime.module.BG9KJlGc.js",
+        "/_astro/i18n.Cg_lCJuc.js",
+        "/_astro/CalculationReload.CHVnezqu.js",
+        "/_astro/useProfileAccessGeneration.w2JLb1F6.js",
+        "/_astro/BirthFields.wJaLxABT.js",
+        "/_astro/PlaceSearch.XYSJuxC8.js",
+        "/_astro/localToUtc.CZfJT2gL.js",
+        "/_astro/rolldown-runtime.DK3Fl9T5.js",
+        "/_astro/civil-date.CpOZUt7Z.js",
+        "/_astro/technical-locales.DDKucXXd.js",
+        "/_astro/client.DPkn9Lbl.js"
+      ]
+    },
+    {
+      "route": "/solar-return/",
+      "gzip": 24523,
+      "limitBytes": 30720,
+      "headroomBytes": 6197,
+      "passes": true,
+      "engineChunks": [],
+      "missing": [],
+      "closure": [
+        "/_astro/SolarReturnCalculator.DHjl0c_D.js",
+        "/_astro/preload-helper.L5lOfJxi.js",
+        "/_astro/preact.module.Bjq9tLsx.js",
+        "/_astro/hooks.module.C0_8FjiD.js",
+        "/_astro/module-load.Bon2MfsC.js",
+        "/_astro/profile-access-reader.DoQqlSjt.js",
+        "/_astro/read-store.CQjgDq6O.js",
+        "/_astro/schema.DqKqbGHb.js",
+        "/_astro/chunk-2OWGBT3O.Cw5cXswy.js",
+        "/_astro/useProfile.BUWA37OV.js",
+        "/_astro/jsxRuntime.module.BG9KJlGc.js",
+        "/_astro/CalculationReload.CHVnezqu.js",
+        "/_astro/i18n.Cg_lCJuc.js",
+        "/_astro/signs.BMXPKoMF.js",
+        "/_astro/useProfileAccessGeneration.w2JLb1F6.js",
+        "/_astro/BirthFields.wJaLxABT.js",
+        "/_astro/PlaceSearch.XYSJuxC8.js",
+        "/_astro/client.DPkn9Lbl.js"
+      ]
+    },
+    {
+      "route": "/lunar-return/",
+      "gzip": 24433,
+      "limitBytes": 30720,
+      "headroomBytes": 6287,
+      "passes": true,
+      "engineChunks": [],
+      "missing": [],
+      "closure": [
+        "/_astro/LunarReturnCalculator.f_lWom2z.js",
+        "/_astro/preload-helper.L5lOfJxi.js",
+        "/_astro/preact.module.Bjq9tLsx.js",
+        "/_astro/hooks.module.C0_8FjiD.js",
+        "/_astro/module-load.Bon2MfsC.js",
+        "/_astro/profile-access-reader.DoQqlSjt.js",
+        "/_astro/read-store.CQjgDq6O.js",
+        "/_astro/schema.DqKqbGHb.js",
+        "/_astro/chunk-2OWGBT3O.Cw5cXswy.js",
+        "/_astro/useProfile.BUWA37OV.js",
+        "/_astro/jsxRuntime.module.BG9KJlGc.js",
+        "/_astro/CalculationReload.CHVnezqu.js",
+        "/_astro/i18n.Cg_lCJuc.js",
+        "/_astro/signs.BMXPKoMF.js",
+        "/_astro/useProfileAccessGeneration.w2JLb1F6.js",
+        "/_astro/BirthFields.wJaLxABT.js",
+        "/_astro/PlaceSearch.XYSJuxC8.js",
+        "/_astro/client.DPkn9Lbl.js"
+      ]
+    },
+    {
+      "route": "/numerology/",
+      "gzip": 17744,
+      "limitBytes": 30720,
+      "headroomBytes": 12976,
+      "passes": true,
+      "engineChunks": [],
+      "missing": [],
+      "closure": [
+        "/_astro/NumerologyCalculator.CBAwMwPi.js",
+        "/_astro/preact.module.Bjq9tLsx.js",
+        "/_astro/hooks.module.C0_8FjiD.js",
+        "/_astro/jsxRuntime.module.BG9KJlGc.js",
+        "/_astro/EvidenceDisclosure.LNSfDkU7.js",
+        "/_astro/client.DPkn9Lbl.js",
+        "/_astro/preload-helper.L5lOfJxi.js"
+      ]
+    },
+    {
+      "route": "/numerology/life-path/7/",
+      "gzip": 17744,
+      "limitBytes": 30720,
+      "headroomBytes": 12976,
+      "passes": true,
+      "engineChunks": [],
+      "missing": [],
+      "closure": [
+        "/_astro/NumerologyCalculator.CBAwMwPi.js",
+        "/_astro/preact.module.Bjq9tLsx.js",
+        "/_astro/hooks.module.C0_8FjiD.js",
+        "/_astro/jsxRuntime.module.BG9KJlGc.js",
+        "/_astro/EvidenceDisclosure.LNSfDkU7.js",
+        "/_astro/client.DPkn9Lbl.js",
+        "/_astro/preload-helper.L5lOfJxi.js"
+      ]
+    },
+    {
+      "route": "/void-of-course-moon/",
+      "gzip": 0,
+      "limitBytes": 5120,
+      "headroomBytes": 5120,
+      "passes": true,
+      "engineChunks": [],
+      "missing": [],
+      "closure": []
+    },
+    {
+      "route": "/today/",
+      "gzip": 20916,
+      "limitBytes": 22016,
+      "headroomBytes": 1100,
+      "passes": true,
+      "engineChunks": [],
+      "missing": [],
+      "closure": [
+        "/_astro/TodayBrief.B2OdC7_y.js",
+        "/_astro/preload-helper.L5lOfJxi.js",
+        "/_astro/preact.module.Bjq9tLsx.js",
+        "/_astro/hooks.module.C0_8FjiD.js",
+        "/_astro/read-store.CQjgDq6O.js",
+        "/_astro/schema.DqKqbGHb.js",
+        "/_astro/profile-access-reader.DoQqlSjt.js",
+        "/_astro/chunk-2OWGBT3O.Cw5cXswy.js",
+        "/_astro/useProfile.BUWA37OV.js",
+        "/_astro/edition-freshness.CsVJBFvT.js",
+        "/_astro/signs.BMXPKoMF.js",
+        "/_astro/jsxRuntime.module.BG9KJlGc.js",
+        "/_astro/client.DPkn9Lbl.js"
+      ]
+    },
+    {
+      "route": "/compatibility/",
+      "gzip": 36460,
+      "limitBytes": 36864,
+      "headroomBytes": 404,
+      "passes": true,
+      "engineChunks": [],
+      "missing": [],
+      "closure": [
+        "/_astro/AstroTerm.astro_astro_type_script_index_0_lang.DB1iYTmP.js",
+        "/_astro/preload-helper.L5lOfJxi.js",
+        "/_astro/SynastryCalculator.DVdPvmUI.js",
+        "/_astro/preact.module.Bjq9tLsx.js",
+        "/_astro/hooks.module.C0_8FjiD.js",
+        "/_astro/module-load.Bon2MfsC.js",
+        "/_astro/useEngine.CiZwEwXl.js",
+        "/_astro/profile-access-reader.DoQqlSjt.js",
+        "/_astro/useProfile.BUWA37OV.js",
+        "/_astro/schema.DqKqbGHb.js",
+        "/_astro/read-store.CQjgDq6O.js",
+        "/_astro/chunk-2OWGBT3O.Cw5cXswy.js",
+        "/_astro/signs.BMXPKoMF.js",
+        "/_astro/jsxRuntime.module.BG9KJlGc.js",
+        "/_astro/i18n.Cg_lCJuc.js",
+        "/_astro/CalculationReload.CHVnezqu.js",
+        "/_astro/pairs.VSaatg-O.js",
+        "/_astro/share-positions.BSDWSfM2.js",
+        "/_astro/useProfileAccessGeneration.w2JLb1F6.js",
+        "/_astro/BirthFields.wJaLxABT.js",
+        "/_astro/PlaceSearch.XYSJuxC8.js",
+        "/_astro/SignChip.1gtDT8UJ.js",
+        "/_astro/sign-icon.5AEtqUYO.js",
+        "/_astro/NextActionCard.eDMj-LSr.js",
+        "/_astro/client.DPkn9Lbl.js"
+      ]
+    },
+    {
+      "route": "/aries/",
+      "gzip": 0,
+      "limitBytes": 0,
+      "headroomBytes": 0,
+      "passes": true,
+      "engineChunks": [],
+      "missing": [],
+      "closure": []
+    },
+    {
+      "route": "/almanac/",
+      "gzip": 0,
+      "limitBytes": 0,
+      "headroomBytes": 0,
+      "passes": true,
+      "engineChunks": [],
+      "missing": [],
+      "closure": []
+    },
+    {
+      "route": "/almanac/sky-2026-08/",
+      "gzip": 0,
+      "limitBytes": 0,
+      "headroomBytes": 0,
+      "passes": true,
+      "engineChunks": [],
+      "missing": [],
+      "closure": []
+    },
+    {
+      "route": "/almanac/reading-a-childs-chart/",
+      "gzip": 0,
+      "limitBytes": 0,
+      "headroomBytes": 0,
+      "passes": true,
+      "engineChunks": [],
+      "missing": [],
+      "closure": []
+    },
+    {
+      "route": "/registry/collection/",
+      "gzip": 0,
+      "limitBytes": 49152,
+      "headroomBytes": 49152,
+      "passes": true,
+      "engineChunks": [],
+      "missing": [],
+      "closure": []
+    }
+  ],
+  "budget": {
+    "oldKb": 31.6,
+    "oldBytes": 32358.4,
+    "newBytesFor250Headroom": 33404,
+    "newKbExact": 32.62109375,
+    "preserveOldExactHeadroomKb": 32.621484375
+  }
+}

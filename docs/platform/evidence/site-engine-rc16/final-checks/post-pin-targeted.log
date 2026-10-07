@@ -1,0 +1,51 @@
+(node:71) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+ RUN  v3.2.7 /workspace/scratch/8dfe85084616/site-rc16
+
+(node:96) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:95) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:102) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:103) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:128) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:105) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:107) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:122) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/programme-ledger.test.mjs (6 tests) 24ms
+(node:262) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/engine-demo.test.mjs (4 tests) 398ms
+   ✓ the worked example on the engine page > prints exactly the output printed beside it  394ms
+(node:292) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/claims-bindings.test.mjs (14 tests) 1947ms
+   ✓ event times against Swiss Ephemeris > were measured on the catalog the site publishes now  506ms
+   ✓ the famous-people pages > keep the reference instant and civil day the birth chart calculator gives for the same place and date  971ms
+(node:319) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/platform-candidate-docs.test.mjs (25 tests) 4221ms
+   ✓ developer candidate documentation > identifies the installed public engine and exact archived package  3907ms
+(node:359) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/claims-ledger.test.mjs (11 tests) 16264ms
+   ✓ claims ledger > R3 resolves every claim's evidence  310ms
+(node:379) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/swiss-output-guard.test.mjs (11 tests) 41934ms
+   ✓ Swiss Ephemeris output stays out of the tree > finds no removed or replaced file's bytes under any name, archive members included  41767ms
+
+ Test Files  6 passed (6)
+      Tests  71 passed (71)
+   Start at  17:19:06
+   Duration  43.24s (transform 2.10s, setup 0ms, collect 5.11s, tests 64.79s, environment 1ms, prepare 1.05s)
+
+(node:399) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)

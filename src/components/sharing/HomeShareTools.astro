@@ -1,0 +1,47 @@
+---
+/**
+ * Homepage band for the three sharing tools, shared by every locale's home.
+ * Copy comes from the sharing catalogue so the six languages stay in step.
+ */
+import ToolGlyph from '../ToolGlyph.astro';
+import { localizePath, type CatalogLocale } from '../../lib/i18n';
+import { sharingText as s } from '../../lib/sharing/copy';
+interface Props { locale?: CatalogLocale }
+const { locale = 'en' } = Astro.props;
+const tools = [
+  { path: '/group-charts/', title: 'groupTitle', promise: 'homeGroupPromise', hue: 'var(--sign-aries)', kind: 'group' },
+  { path: '/big-three/', title: 'bigTitle', promise: 'homeBigPromise', hue: 'var(--sign-leo)', kind: 'birth' },
+  { path: '/compatibility/invite/', title: 'inviteTitle', promise: 'homeInvitePromise', hue: 'var(--sign-libra)', kind: 'invite' },
+] as const;
+---
+<section class="container home-share" data-home-share>
+  <div class="section-head reveal">
+    <h2>{s(locale, 'sharingTools')}</h2>
+    <p>{s(locale, 'homeShareLede')}</p>
+  </div>
+  <div class="home-share__grid">
+    {tools.map((tool, i) => (
+      <a class="tile reveal" href={localizePath(locale, tool.path)} style={`--sign:${tool.hue};--reveal-delay:${i * 60}ms`}>
+        <div class="home-share__card">
+          <ToolGlyph kind={tool.kind} />
+          <h3>{s(locale, tool.title)}</h3>
+          <p>{s(locale, tool.promise)}</p>
+          <span class="home-share__go">{s(locale, 'open')} →</span>
+        </div>
+      </a>
+    ))}
+  </div>
+</section>
+
+<style is:inline>
+  /* Homepage section spacing is scoped to each locale page, so this band carries its own. */
+  .home-share { padding-top: clamp(56px, 7.5vw, 104px); }
+  .home-share__grid { display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr); }
+  @media (min-width: 760px) { .home-share__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  .home-share__grid > a { text-decoration: none; color: inherit; }
+  .home-share__card { display: flex; flex-direction: column; gap: 9px; padding: 24px 22px 20px; min-height: 176px; height: 100%; }
+  .home-share__card h3 { margin: 2px 0 0; font-size: var(--text-base); font-weight: 620; letter-spacing: -0.01em; color: var(--text); }
+  .home-share__card p { margin: 0; font-size: 13px; color: var(--text-2); line-height: 1.55; }
+  .home-share__go { margin-top: auto; padding-top: 12px; font-size: 12.5px; font-weight: 550; color: var(--muted); }
+  a:hover .home-share__go { color: var(--text); }
+</style>

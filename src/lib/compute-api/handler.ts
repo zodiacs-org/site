@@ -1,5 +1,5 @@
 /**
- * The compute API's HTTP boundary, which vercel.json reaches from six paths
+ * The compute API's HTTP boundary, which vercel.json reaches from seven paths
  * under /api/v1/ through the existing compatibility function
  * (api/compatibility.ts hands the request to api/_compute/handler.ts).
  *
@@ -36,6 +36,7 @@ import {
   computeTime,
   type ComputeDependencies,
 } from './endpoints.js';
+import { computeElections } from './elections.js';
 import {
   ComputeApiError,
   calculationFailed,
@@ -50,6 +51,7 @@ import {
 } from './errors.js';
 import type { LocalTimeModule } from './local-time.js';
 import {
+  parseElectionsRequest,
   parseEventsRequest,
   parsePlaceInstantRequest,
   parsePositionsRequest,
@@ -252,6 +254,7 @@ async function dispatch(endpoint: ComputeEndpoint, body: unknown, dependencies: 
     case 'events': return computeEvents(parseEventsRequest(body));
     case 'time': return computeTime(await parseTimeRequest(body, zones), dependencies);
     case 'sky-fact': return computeSkyFact(await parseSkyFactRequest(body, zones), dependencies);
+    case 'elections': return computeElections(parseElectionsRequest(body));
   }
 }
 

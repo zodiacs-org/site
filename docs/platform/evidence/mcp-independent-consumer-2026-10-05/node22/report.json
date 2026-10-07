@@ -1,0 +1,172 @@
+{
+  "schema": "zodiacs.independent-consumer-evidence.v1",
+  "startedAt": "2026-10-05T18:32:14.389Z",
+  "node": "v22.22.2",
+  "pin": {
+    "adapterVersion": "0.1.0-rc.16.3",
+    "engineVersion": "0.1.1-rc.16",
+    "ephemerisVersion": "2.1.19",
+    "engineArchiveSha256": "43a72d30e483d8ff22024e403c4bd0d86d81bb6e1d0ad138f857cd001ab015d8",
+    "manifestSha256": "e6a2ee81b6b97ed7c12ba50867a20fd9bb2ca483f17adc3d7351734ffeb4defe",
+    "archive": {
+      "sourceCommit": "dcb51a1669f78de7942930d9b72479e3450b3edb",
+      "url": "https://raw.githubusercontent.com/zodiacs-org/site/dcb51a1669f78de7942930d9b72479e3450b3edb/public/examples/zodiacs-mcp-server-0.1.0-rc.16.3.tgz",
+      "bytes": 124924,
+      "sha256": "dde8e475a43d1ef9f7563281996aef8a4f53d89b99d5c387ba708f8878e034a4"
+    },
+    "openapi": {
+      "bytes": 369971,
+      "sha256": "911e663d40aa63c17f868a517f2cbb4a591e304fac077851003a42747ecb16c2"
+    },
+    "http": {
+      "sourceCommit": "51b64f3cb67c2026a18772297ec6b367ed2ca183",
+      "bundleSha256": "662dd5105a5ee65bd058e28b01397a9e19d04a9d9e33fe0cdeb0c311332ccef1"
+    }
+  },
+  "status": "pass",
+  "checks": [
+    "source and archive bindings",
+    "locked fresh consumer and packaged verify.mjs",
+    "advertised MCP schemas, versions, citations, unsupported requests and recovery",
+    "six fixed source-bound HTTP parity cases, two parser refusals and recovery"
+  ],
+  "httpRequests": 10,
+  "live": {
+    "status": "inconclusive",
+    "requests": 0,
+    "reason": "No live deployment source binding was established; selected source-bound loopback HTTP."
+  },
+  "credit": "No delivery credit. Integration evidence, not independent astronomical accuracy or astrology prediction validation.",
+  "runner": {
+    "path": "scripts/mcp-independent-consumer.mjs",
+    "sha256": "06bf1a5c50e14ebc1cb4ea29d959218278eb13a27deb5c9e027716f6f745c95c"
+  },
+  "npm": "10.9.7",
+  "sourceLockSha256": "aaf9e5d1960feea1000763b9fb54463ab6db26730a71a2954ee39f9435e27618",
+  "source": {
+    "httpCommit": "51b64f3cb67c2026a18772297ec6b367ed2ca183",
+    "httpTree": "21a259f71e0796dcc6e282d29fecfd4215910442",
+    "archiveSourceCommit": "dcb51a1669f78de7942930d9b72479e3450b3edb",
+    "sourcePaths": [
+      "src/mcp",
+      "src/lib/compute-api",
+      "src/lib/sky-api",
+      "src/lib/receipt-digest.ts",
+      "src/lib/engine/time-basis.mjs",
+      "src/lib/time",
+      "src/lib/compare",
+      "src/data",
+      "api/_compute",
+      "examples/mcp-server",
+      "public/examples/mcp-server.json",
+      "public/examples/zodiacs-mcp-server-0.1.0-rc.16.3.tgz",
+      "vendor",
+      "scripts/build-compute-handler.mjs",
+      "scripts/build-compute-local-time.mjs",
+      "scripts/build-mcp-server.mjs",
+      "scripts/pack-mcp-server.mjs",
+      "package.json",
+      "package-lock.json"
+    ]
+  },
+  "archive": {
+    "origin": "explicit local archive",
+    "bytes": 124924,
+    "sha256": "dde8e475a43d1ef9f7563281996aef8a4f53d89b99d5c387ba708f8878e034a4"
+  },
+  "scratch": "/tmp/zodiacs-mcp-consumer-U2r9GM",
+  "install": {
+    "command": [
+      "npm",
+      "ci",
+      "--ignore-scripts",
+      "--no-audit",
+      "--no-fund"
+    ],
+    "exitCode": 0,
+    "log": "/tmp/zodiacs-consumer-node22/consumer-install.log"
+  },
+  "consumer": {
+    "packageVersion": "0.1.0-rc.16.3",
+    "license": "MIT AND CC-BY-4.0",
+    "shrinkwrapSha256": "4c30e34d30f64f4a7255aafb67a00f7277ce51d7578f41d6225f82a98c9b4759",
+    "serverSha256": "a59382d0fbe5b3f9afc9ff788ce92a1dd406a3ef2c59d98d77a41c7e0f598312",
+    "nodeModules": "fresh npm ci inside extracted package",
+    "inheritedNodeModules": false,
+    "installPath": "/tmp/zodiacs-mcp-consumer-U2r9GM/package",
+    "lockPath": "/tmp/zodiacs-mcp-consumer-U2r9GM/package/npm-shrinkwrap.json"
+  },
+  "verify": {
+    "command": [
+      "/tmp/zodiacs-node22-review/node-v22.22.2-linux-x64/bin/node",
+      "verify.mjs"
+    ],
+    "exitCode": 0,
+    "log": "/tmp/zodiacs-consumer-node22/packaged-verify.log"
+  },
+  "openapi": {
+    "bytes": 369971,
+    "sha256": "911e663d40aa63c17f868a517f2cbb4a591e304fac077851003a42747ecb16c2",
+    "origin": "source buildSkyApi bytes",
+    "sourceCommit": "51b64f3cb67c2026a18772297ec6b367ed2ca183"
+  },
+  "http": {
+    "sourceCommit": "51b64f3cb67c2026a18772297ec6b367ed2ca183",
+    "bundleSha256": "662dd5105a5ee65bd058e28b01397a9e19d04a9d9e33fe0cdeb0c311332ccef1",
+    "mode": "local-loopback",
+    "origin": "http://127.0.0.1:46639",
+    "rateLimitFixture": "allowed",
+    "deployment": null
+  },
+  "cases": [
+    {
+      "id": "positions",
+      "schema": "zodiacs.compute-api.positions.v1",
+      "result": "pass",
+      "receiptDigest": "sha256:27ca366458ec14dde6561fb68f864c79d08bf7e55d3143e7aa7e2aeffdb2b593",
+      "onlyAllowedDifference": "cite.url"
+    },
+    {
+      "id": "short-lunation",
+      "schema": "zodiacs.compute-api.events.v1",
+      "result": "pass",
+      "receiptDigest": "sha256:0473e7ba31a791cbee63d9366183591ff87304d3220b49240bec503b8eff17fa",
+      "onlyAllowedDifference": "cite.url",
+      "events": 1,
+      "completeness": "tested-not-proven"
+    },
+    {
+      "id": "sun-never-retrograde",
+      "schema": "zodiacs.compute-api.sky-fact.v1",
+      "result": "pass",
+      "receiptDigest": "sha256:fe3f71fb8dccdbfbc5c4837c08c117ad2b8f01f72cfe9261b3b0d51d642c7056",
+      "onlyAllowedDifference": "cite.url",
+      "answer": "false"
+    },
+    {
+      "id": "instant-sign",
+      "schema": "zodiacs.compute-api.sky-fact.v1",
+      "result": "pass",
+      "receiptDigest": "sha256:fe3f71fb8dccdbfbc5c4837c08c117ad2b8f01f72cfe9261b3b0d51d642c7056",
+      "onlyAllowedDifference": "cite.url",
+      "answer": "true"
+    },
+    {
+      "id": "date-depends",
+      "schema": "zodiacs.compute-api.sky-fact.v1",
+      "result": "pass",
+      "receiptDigest": "sha256:2182c370cdd6e4b98ac9bfd75ad8ac74b4211703146b52b01c8e74c34df4dc76",
+      "onlyAllowedDifference": "cite.url",
+      "answer": "depends"
+    },
+    {
+      "id": "reference-edge",
+      "schema": "zodiacs.compute-api.sky-fact.v1",
+      "result": "pass",
+      "receiptDigest": "sha256:92ffe4356b21850b3d3c7a4eaceacb956b0d97227d1b5fa30fc23e88eca24ce0",
+      "onlyAllowedDifference": "cite.url",
+      "answer": "false"
+    }
+  ],
+  "finishedAt": "2026-10-05T18:32:18.188Z"
+}

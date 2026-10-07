@@ -275,9 +275,9 @@ describe('registry pastel polish', () => {
     expect(phone).toContain('.campaign-look .campaign-spark { display: none; }');
     const sheet = campaign.slice(campaign.indexOf('/* The bag\'s sign opens a sheet of all twelve (phones). */'), campaign.indexOf('@media (min-width: 601px) and (max-width: 900px)'));
     expect(sheet).toContain('.campaign-bag__pick {\n      min-height: 48px;');
-    // The caret rides beside the name and steps aside for a long one, so
-    // neither the name nor the status line gives up width to it.
-    expect(sheet).toContain('.campaign-bag__name { min-width: 0; height: 20px; display: flex; flex-wrap: wrap; align-items: center; column-gap: 6px; overflow: hidden; }');
+    // The picker remains beside long names instead of wrapping into a
+    // hidden line. Real geometry is covered by visual-consistency-drive.
+    expect(sheet).toContain('.campaign-bag__name { min-width: 0; height: 20px; display: flex; align-items: center; column-gap: 4px; }');
     expect(sheet).toContain('.campaign-sheet__grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; }');
     expect(sheet).toContain('.campaign-sheet__sign {\n      min-height: 84px;');
     expect(sheet).toContain('.campaign-sheet__close {\n      width: 44px;\n      height: 44px;');
@@ -349,7 +349,7 @@ describe('registry pastel polish', () => {
     // The static pages carry the shared script; the hub SPA's Header sets
     // .is-away itself.
     for (const value of [wingNav, astrofolio, terminal, markets, thesis, sdk, technical]) {
-      expect(value).toContain('@media (max-width: 599.5px) {\n    .wnav-wrap { top: 0; padding-top: 0; transition: transform 360ms cubic-bezier(0.22,1,0.36,1), opacity 260ms ease; }');
+      expect(value).toContain('@media (max-width: 919.5px) {\n    .wnav-wrap { top: 0; padding-top: 0; transition: transform 360ms cubic-bezier(0.22,1,0.36,1), opacity 260ms ease; }');
       expect(value).toContain('.wnav-wrap.is-away { transform: translateY(-100%); opacity: 0; }');
       expect(value).toContain("html body .wnav-wrap .wnav { --wnav-lockup: clamp(10px, 3.2vw, 13px); display: grid; grid-template-areas: 'menu . mark chip . profile search'; grid-template-columns: 44px minmax(0,1fr) calc(var(--wnav-lockup) * 5.7 + 13px) calc(var(--wnav-lockup) * 8.27 + 13px) minmax(0,1fr) 44px 44px; box-sizing: border-box; width: 100%; max-width: none; height: calc(52px + env(safe-area-inset-top, 0px));");
       expect(value).toContain('border-width: 0 0 1px; border-radius: 0; box-shadow: none; }');
@@ -359,32 +359,33 @@ describe('registry pastel polish', () => {
       expect(value).toContain('.wnav__chip { grid-area: chip; position: relative; padding: 0 0 0 13px; border-left: 0; font-size: var(--wnav-lockup); letter-spacing: 0.2em; line-height: 1; }');
       expect(value).toContain(".wnav__chip::before { content: ''; position: absolute; left: 0; top: 50%; width: 1px; height: 15px;");
       expect(value).toContain('.wnav__search { grid-area: search; }');
-      expect(value).toContain('@media (max-width: 599.5px) and (prefers-reduced-motion: reduce) { .wnav-wrap { transition: none; } }');
+      expect(value).toContain('@media (max-width: 919.5px) and (prefers-reduced-motion: reduce) { .wnav-wrap { transition: none; } }');
     }
     for (const value of [wingNav, markets, thesis, sdk]) {
-      expect(value).toContain("var phone = window.matchMedia('(max-width: 599.5px)');");
+      expect(value).toContain("var phone = window.matchMedia('(max-width: 919.5px)');");
       expect(value).toContain("if(!phone.matches || y < 64 || held()){ set(false); last = y; return; }");
       expect(value).toContain("wrap.classList.toggle('is-away', next);");
     }
-    expect(source).toContain("const PHONE_BAR_QUERY = '(max-width: 599.5px)';");
+    expect(source).toContain("const PHONE_BAR_QUERY = '(max-width: 919.5px)';");
     expect(source).toContain('<div className="wnav-wrap" ref={wrapRef}>');
     const header = source.slice(source.indexOf('function Header() {'), source.indexOf('\n    function ', source.indexOf('function Header() {')));
     expect(header).toContain("wrap.classList.toggle('is-away', next);");
     expect(header).toContain("|| root.classList.contains('has-campaign-sheet')");
-    expect(siteNav).toContain(":global(html:not([data-chart-share-receiver])) .nav-wrap.is-away { transform: translateY(-100%); opacity: 0; }");
+    expect(siteNav).toContain(":global(html[lang]) .nav-wrap.is-away { transform: translateY(-100%); opacity: 0; }");
     expect(siteNav).toContain("grid-template-areas: 'menu . mark chip . profile search';");
     expect(siteNav).toContain("grid-template-areas: 'menu . mark chip . profile .';");
     expect(siteNav).toContain('grid-template-columns: 44px minmax(0, 1fr) calc(var(--nav-lockup) * 5.7 + 13px) calc(var(--nav-lockup) * 8.27 + 13px) minmax(0, 1fr) 44px 44px;');
-    expect(siteNav).toContain(":global(html:not([data-chart-share-receiver])) .nav__chip::before {");
-    expect(siteNav).toContain(":global(html:not([data-chart-share-receiver])) .nav__burger:not([aria-expanded='true']) .nav__burger-line:nth-child(2) { opacity: 0; }");
-    expect(siteNav).toContain("var phone = window.matchMedia('(max-width: 599.5px)');");
+    expect(siteNav).toContain(":global(html[lang]) .nav__chip::before {");
+    expect(siteNav).toContain(":global(html[lang]) .nav__burger:not([aria-expanded='true']) .nav__burger-line:nth-child(2) { opacity: 0; }");
+    expect(siteNav).toContain("? '(max-width: 1039.5px)' : '(max-width: 919.5px)');");
     expect(siteNav).toContain("if (!wrap || !window.matchMedia || root.hasAttribute('data-chart-share-receiver')) return;");
 
     for (const value of [wingNav, astrofolio, terminal, markets, thesis, sdk, technical]) {
       expect(value).toContain('height: 52px; padding: 0 10px 0 20px;');
       expect(value).toContain('gap: 10px;');
       expect(value).toContain('@media (min-width: 920px) { .wnav { gap: 10px; } }');
-      expect(value).toContain('@media (min-width: 900px) { .wnav { gap: 18px; } }');
+      expect(value).toContain("grid-template-areas: 'mark links profile search chip'; grid-template-columns: 116px minmax(0, 1fr) 44px 62px 120px; gap: 18px;");
+      expect(value).toContain('display: grid; width: 884px;');
       expect(value).toContain('rgba(198,204,218,0.16)');
       expect(value).toContain('width: 18px; height: 1.5px;');
       expect(value).toContain('position: absolute; top: 50%; left: 50%;');

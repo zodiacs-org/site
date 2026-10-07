@@ -1,14 +1,19 @@
 ---
 import Base from '../../../layouts/Base.astro';
+import { FREE_OFFER, OPENAPI_URL, ORGANIZATION, developerBreadcrumb } from '../../../lib/developer-structured-data.mjs';
 import examples from '../../../lib/compute-api/examples.json';
 import { SUCCESS_EXAMPLES } from '../../../lib/compute-api/examples';
 import {
+  ANGULAR_MAX_ABS_LATITUDE,
   BUDGETS,
   COMPUTE_ORIGIN,
+  ELECTION_STEPS,
   EPOCH,
   ERROR_STATUS,
+  FULL_CALCULATION_COST,
   HOUSE_SYSTEM_NAMES,
   MAX_BODY_BYTES,
+  MAX_ELECTION_CONDITIONS,
   RETRY_AFTER_SECONDS,
   computePath,
   type ComputeEndpoint,
@@ -17,7 +22,7 @@ import {
 
 const title = 'Compute API — Charts, Positions and Sky Facts over HTTP | Zodiacs.org';
 // A plain literal: scripts/build-assistant-context.mjs reads it from the source.
-const description = 'Six POST endpoints under /api/v1/ compute a chart, positions, houses, the events in a window, a local time as UTC and TT, and whether a stated sky fact holds. Every answer names the engine and carries a receipt. No key; birth data goes in the body, and the function writes nothing from a request to a log, a file or a database.';
+const description = 'Seven POST endpoints under /api/v1/ compute a chart, positions, houses, the events in a window, a local time as UTC and TT, whether a stated sky fact holds, and when chosen conditions all hold. Every answer names the engine and carries a receipt. No key; birth data goes in the body, and the function writes nothing from a request to a log, a file or a database.';
 
 const backend = examples.success.chart.utc.backend;
 const number = (value: number) => value.toLocaleString('en-US');
@@ -31,6 +36,7 @@ const shown: Record<ComputeEndpoint, string> = {
   events: 'october',
   time: 'pinned',
   'sky-fact': 'retrograde',
+  elections: 'london',
 };
 const success = examples.success as Record<string, Record<string, { result: unknown }>>;
 const request = (endpoint: ComputeEndpoint) => [
@@ -48,6 +54,7 @@ const endpoints: Array<[ComputeEndpoint, string]> = [
   ['events', `Sign changes, stations and new and full moons in a window of up to ${BUDGETS['events.windowDays']} days.`],
   ['time', 'A local civil time as UTC and Terrestrial Time, with flags for skipped and repeated clock times.'],
   ['sky-fact', 'Whether a stated fact about the sky holds on a date or at an instant: true, false or depends.'],
+  ['elections', `The stretches of a window of up to ${BUDGETS['elections.windowDays']} days in which up to ${MAX_ELECTION_CONDITIONS} conditions all hold: the Moon's phase or void of course, a body's sign, a planet retrograde, a body in an angular house.`],
 ];
 
 const limits: Array<[string, string, string]> = [
@@ -56,7 +63,9 @@ const limits: Array<[string, string, string]> = [
   ['Length of an events window', `${number(BUDGETS['events.windowDays'])} days`, '422 budget-exhausted, limit events.windowDays'],
   ['Evaluations in one events request', number(BUDGETS['events.samples']), '422 budget-exhausted, limit events.samples'],
   ['Evaluations in one sky-fact request', number(BUDGETS['sky-fact.samples']), '422 budget-exhausted, limit sky-fact.samples'],
-  ['Requests from one IP address', 'set by the rate limit; events requests count against a second, lower limit too', `429 rate-limited, Retry-After: ${RETRY_AFTER_SECONDS.rateLimited}`],
+  ['Length of an elections window', `${number(BUDGETS['elections.windowDays'])} days`, '422 budget-exhausted, limit elections.windowDays'],
+  ['Evaluations in one elections request', number(BUDGETS['elections.samples']), '422 budget-exhausted, limit elections.samples'],
+  ['Requests from one IP address', 'set by the rate limit; events and elections requests count against a second, lower limit too', `429 rate-limited, Retry-After: ${RETRY_AFTER_SECONDS.rateLimited}`],
 ];
 
 const refusals: Array<[ErrorCode, string]> = [
@@ -70,15 +79,21 @@ const refusals: Array<[ErrorCode, string]> = [
   ['invalid-request', 'A field is missing, out of range, of the wrong type, or not one the endpoint takes.'],
   ['budget-exhausted', 'The request is over one of the limits above; limit and max name it.'],
   ['calculation-failed', 'The engine could not complete the calculation.'],
-  ['not-found', 'The request reached the function by a path that is not one of the six endpoints.'],
+  ['not-found', 'The request reached the function by a path that is not one of the seven endpoints.'],
 ];
 
-const jsonLd = [{
-  '@type': 'WebPage',
-  name: 'Zodiacs compute API',
-  url: 'https://zodiacs.org/developers/compute/',
-  description,
-}];
+const jsonLd = [
+  {
+    '@type': 'WebAPI',
+    name: 'Zodiacs compute API',
+    url: 'https://zodiacs.org/developers/compute/',
+    description,
+    documentation: OPENAPI_URL,
+    provider: ORGANIZATION,
+    offers: FREE_OFFER,
+  },
+  developerBreadcrumb('/developers/compute/', 'Compute API'),
+];
 ---
 <Base title={title} description={description} path="/developers/compute/" jsonLd={jsonLd}>
   <section class="section container container--narrow compute-page">
@@ -87,7 +102,7 @@ const jsonLd = [{
 
     <div class="prose">
       <p>
-        Six endpoints under <code>{`${COMPUTE_ORIGIN}/api/v1/`}</code> calculate
+        Seven endpoints under <code>{`${COMPUTE_ORIGIN}/api/v1/`}</code> calculate
         from a JSON body sent with POST. There is no key and no account. Each
         answer carries the result, a receipt that says how it was computed, and
         the name and version of the engine that computed it:{' '}
@@ -128,16 +143,12 @@ const jsonLd = [{
         keeps a copy.
       </p>
       <p>
-        Between requests a running instance keeps in memory the public tables
-        it has loaded to answer: the time zone tables it has read, by zone
-        name, and working values of the ephemeris for the periods asked about.
-        They show which zones and periods were asked about. The ephemeris
-        library also keeps two values from its last calculations, to reuse
-        them: sidereal time at the moment of the last chart or houses request,
-        and the Earth's tilt at the last moment any calculation used. So those
-        two moments stay in memory until later requests replace them, or the
-        instance is replaced. No place is kept, and none of this is written
-        anywhere.
+        When a request ends, including a refused or failed request, the server
+        clears its last calculated frame and epoch-selected ephemeris segments
+        and discards the request's time zone lookup maps. Fixed public tables
+        remain available to later calculations. This removes application-held
+        references; it does not guarantee discarded memory is overwritten or
+        describe every log the hosting platform may keep.
       </p>
       <p>
         To apply the rate limit, the function sends the request's headers,
@@ -345,7 +356,7 @@ const jsonLd = [{
       </ul>
       <p>
         A date is read in the <code>zone</code> you give, from its midnight to
-        the next. Without a zone it is read in every UTC offset in use, from 14
+        the next. Without a zone it is read in every UTC offset in use today, from 14
         hours before its midnight in UTC to 36 hours after. The answer is{' '}
         <code>depends</code> when it turns on the time of day, because the body
         changes sign or stations during that day, or, without a zone, on the
@@ -368,6 +379,84 @@ const jsonLd = [{
       <pre tabindex="0" role="region" aria-label="Sky fact result"><code>{result('sky-fact')}</code></pre>
     </details>
 
+    <h2 id="elections">Elections</h2>
+    <div class="prose">
+      <p>
+        <code>POST /api/v1/elections</code> takes a window, <code>from</code>{' '}
+        and <code>to</code>, at most {BUDGETS['elections.windowDays']} days
+        long, and from one to {MAX_ELECTION_CONDITIONS}{' '}
+        <code>conditions</code>. It returns, in time order, every stretch of
+        the window in which all of them hold. The conditions it takes:
+      </p>
+      <ul>
+        <li><code>phase</code>: the Moon <code>waxing</code>, from new moon to
+          full, or <code>waning</code>, from full moon to new.</li>
+        <li><code>void-of-course</code>: the Moon void of course, from its
+          last exact conjunction, sextile, square, trine or opposition in a
+          sign to the Sun or a planet from Mercury to Pluto, until it enters
+          the next sign. This is the engine's own rule, after William
+          Lilly.</li>
+        <li><code>sign</code>: a <code>body</code>, of the ten from the Sun to
+          Pluto, in a <code>sign</code>.</li>
+        <li><code>retrograde</code>: a planet from Mercury to Pluto with its
+          longitude speed below zero.</li>
+        <li><code>angular</code>: a body in the 1st, 4th, 7th or 10th house at
+          the request's <code>place</code>, which has a <code>latitude</code>{' '}
+          within {ANGULAR_MAX_ABS_LATITUDE}° of the equator, a{' '}
+          <code>longitude</code> and an optional <code>houseSystem</code>.</li>
+      </ul>
+      <p>
+        Any condition takes <code>not</code>: with{' '}
+        <code>{'"not": true'}</code> a retrograde condition asks for the planet
+        direct. A condition may not be given twice, and a request has a{' '}
+        <code>place</code> when it has an angular condition, and only then.
+      </p>
+      <p>
+        Sign changes, stations and new and full moons come from the crossing
+        search the <a href="#events">events endpoint</a> uses. A void period
+        ends at one of the Moon's sign changes and begins at its last exact
+        aspect before it, found by scanning back in 3-hour steps. Houses come
+        from the engine's <code>natalChart</code>, sampled every{' '}
+        {ELECTION_STEPS.houseSampleMinutes} minutes only where the other
+        conditions all hold, and more often where a body passes more than one
+        house between two samples. Every boundary is found to within a second,
+        so two less than {ELECTION_STEPS.resolutionSeconds} seconds apart are
+        taken as one instant: a gap that short between two windows is closed,
+        and a window that short is not listed. A window excludes its end, and
+        one that begins at <code>from</code> or ends at <code>to</code> may
+        run on beyond it.
+      </p>
+      <p>
+        A request whose searches would need more than{' '}
+        {number(BUDGETS['elections.samples'])} evaluations is refused whole,
+        and no windows are returned. A step of a crossing search counts as one
+        evaluation. A full calculation, every body's position at an instant or
+        a <code>natalChart</code> for a house, counts as{' '}
+        {FULL_CALCULATION_COST}: in three runs on one machine, a step took
+        0.03 to 0.06 milliseconds and a full calculation 0.7 to 1.2.
+        Houses cost the most: one angular condition alone fits a window of
+        about three to four days in Placidus, Koch or Campanus houses, and
+        about two in whole signs, while other conditions that rule out most
+        of the window leave room for a longer one. Every condition but an
+        angular one is searched over the whole window, so a month of void of
+        course alone can pass the limit: March 2138 needs 6,327 evaluations.
+        The receipt records the steps, the evaluations used and this limit.
+      </p>
+      <p>
+        The search has been tested, not proven complete. On 100 random
+        requests with dates from 1800 to 2195, drawn by rules written down
+        before the run, it found the same 206 windows as a scan of every 10
+        seconds, every end within 5.4 seconds of the scan's. The rules, the
+        scan and the results are in the{' '}
+        <a href="https://github.com/zodiacs-org/site/tree/main/docs/platform/evidence/election-search-v0">site repository</a>.
+      </p>
+    </div>
+    <pre tabindex="0" role="region" aria-label="Elections request"><code>{request('elections')}</code></pre>
+    <details class="compute-example">
+      <summary>The answer's <code>result</code></summary>
+      <pre tabindex="0" role="region" aria-label="Elections result"><code>{result('elections')}</code></pre>
+    </details>
+
     <h2 id="receipts">Receipts and citation</h2>
     <div class="prose">
       <p>Every successful answer has five fields:</p>
@@ -376,7 +465,7 @@ const jsonLd = [{
         <li><code>result</code>, what was computed.</li>
         <li><code>receipt</code>, how. For chart and houses it is the engine's
           own chart receipt, <code>zodiacs.calculation-receipt.draft-v1</code>.
-          For the other four it is <code>zodiacs.compute-receipt.v1</code>: the
+          For the other five it is <code>zodiacs.compute-receipt.v1</code>: the
           engine's conventions and coverage as its receipts state them, the two
           sources of ΔT its time basis uses, and, where they apply, the
           search's limits and how local time was read.</li>
@@ -396,9 +485,14 @@ const jsonLd = [{
       <p>
         A digest does not hide what it identifies. For chart and houses the
         receipt holds the instant and the coordinates, so the digest
-        identifies the birth details: anyone who knows the date and the place
-        can find the time by trying each minute of the day until the digest
-        matches. Quote it only where the birth details may be known.
+        identifies the birth details from either side: with the date and the
+        place, trying each minute of the day finds the time, and with the date
+        and the time, trying places from a list of towns finds the place.
+        Quote it only where the birth details may be known. An elections
+        receipt holds no part of the request, but it counts the evaluations
+        the search made, which depend on the request, its place included, so
+        two requests that differ only in their place can give different
+        digests.
       </p>
     </div>
     <details class="compute-example">
@@ -420,13 +514,24 @@ const jsonLd = [{
     <div class="prose">
       <p>
         A request over a limit is refused whole, before anything is computed,
-        except the two evaluation limits, which are counted as the searches
+        except the three evaluation limits, which are counted as the searches
         run: when one is spent the request is refused and nothing is returned.
         The limits come from the measured cost of requests in every year the
-        API takes: on the machine they were measured on, one address at its
-        rate limits can cost at most about 8.7 seconds of CPU time a minute.
-        The measurements are in the{' '}
-        <a href="https://github.com/zodiacs-org/site/tree/main/docs/platform/evidence/compute-api-2026-09-29">site repository</a>.
+        API takes: on the machine they were measured on, with engine rc.15,
+        one address at its rate limits could cost at most about 8.7 seconds of
+        CPU time a minute. Measured again on 2026-10-05, on one machine, the
+        same requests add up to about 10.7 seconds with rc.16 and to about 7.8
+        with rc.15, in one run of each; two earlier runs on rc.16 that day gave
+        12.8 and 13.2. The API now runs rc.17, which answers these requests
+        with rc.16's code. The measurements are
+        in the site repository, from{' '}
+        <a href="https://github.com/zodiacs-org/site/tree/main/docs/platform/evidence/compute-api-2026-09-29">2026-09-29</a>{' '}
+        and{' '}
+        <a href="https://github.com/zodiacs-org/site/tree/main/docs/platform/evidence/compute-api-2026-10-05">2026-10-05</a>.
+        An elections request counts against the same lower limit as an events
+        request, and in each run that timed it the slowest elections request
+        took less time than the slowest events request, so it adds nothing to
+        that figure.
         When the API is switched off, or its rate limit is not in place, every
         endpoint answers 503.
       </p>
@@ -458,7 +563,7 @@ const jsonLd = [{
     <h2 id="openapi">OpenAPI and versions</h2>
     <div class="prose">
       <p>
-        The six operations are in the OpenAPI 3.1 document at{' '}
+        The seven operations are in the OpenAPI 3.1 document at{' '}
         <a href="/api/v1/openapi.json"><code>/api/v1/openapi.json</code></a>,
         tagged <code>compute</code>, with a JSON Schema for every request and
         answer and an example of each that the handler itself produced. A

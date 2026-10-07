@@ -4,16 +4,16 @@
  * chart and houses carry the engine's own calculation receipt
  * (`zodiacs.calculation-receipt.draft-v1`, from `createNatalEnvelope`). The
  * engine writes no receipt for the other calculations, so positions, events,
- * time and sky-fact carry `zodiacs.compute-receipt.v1`: the same engine
+ * time, sky-fact and elections carry `zodiacs.compute-receipt.v1`: the same engine
  * identity, conventions and coverage statement the engine writes into its own
  * receipts, read from one it writes, plus what the request used (the ΔT
  * sources of the engine's time basis, searches, time zone data).
  *
  * `cite.receipt` is a digest of the receipt in the same response, not a second
  * copy: SHA-256 over its RFC 8785 canonical JSON, so any client can recompute
- * it from the response, and an assistant can quote it in one line.
+ * it from the response, and an assistant can quote it in one line. The digest
+ * is `src/lib/receipt-digest.ts`, which the MCP adapter cites with too.
  */
-import { createHash } from 'node:crypto';
 import {
   DELTA_T_MODEL,
   DELTA_T_TABLE,
@@ -30,6 +30,9 @@ import {
   type ComputeEndpoint,
 } from './constants.js';
 import type { TimeResolutionFacts } from './local-time.js';
+import { receiptDigest } from '../receipt-digest.js';
+
+export { canonicalJson, receiptDigest } from '../receipt-digest.js';
 
 /** The backend every response names. */
 export const BACKEND = Object.freeze({
@@ -91,6 +94,28 @@ export interface SearchFacts {
   completeness: 'tested-not-proven';
 }
 
+/**
+ * How an election search ran: the crossing search's steps for sign changes,
+ * stations and phases, the void-of-course rule and its scan, the house
+ * sampling, and the evaluations it made. Boundaries are within a second.
+ */
+export interface ElectionSearchFacts {
+  solver: 'engine-longitude-crossings-and-sampled-houses';
+  stepDays: { default: number; moon: number; elongation: number };
+  voidOfCourse: { convention: 'last-exact-ptolemaic-aspect-to-sign-exit'; bodies: 'modern'; scanHours: number };
+  houseSampleMinutes: number;
+  boundarySeconds: number;
+  /** Gaps shorter than this between windows are closed, and windows shorter than it are not listed. */
+  resolutionSeconds: number;
+  /** What one full calculation (all positions, or a natalChart) counts for in samples; a crossing step counts once. */
+  fullCalculationCost: number;
+  samples: number;
+  maxSamples: number;
+  /** Each window holds its start and not its end, as the request's window does. */
+  window: 'start-inclusive-end-exclusive';
+  completeness: 'tested-not-proven';
+}
+
 export interface ComputeReceipt {
   schema: typeof COMPUTE_RECEIPT_SCHEMA;
   endpoint: ComputeEndpoint;
@@ -102,11 +127,12 @@ export interface ComputeReceipt {
   deltaT: readonly [DeltaTSource, DeltaTSource];
   timeResolution?: TimeResolutionFacts;
   search?: SearchFacts;
+  electionSearch?: ElectionSearchFacts;
 }
 
 export function computeReceipt(
   endpoint: ComputeEndpoint,
-  extra: { timeResolution?: TimeResolutionFacts; search?: SearchFacts } = {},
+  extra: { timeResolution?: TimeResolutionFacts; search?: SearchFacts; electionSearch?: ElectionSearchFacts } = {},
 ): ComputeReceipt {
   const { conventions, coverage, deltaT } = engineStatements();
   return {
@@ -119,33 +145,8 @@ export function computeReceipt(
     deltaT,
     ...(extra.timeResolution ? { timeResolution: extra.timeResolution } : {}),
     ...(extra.search ? { search: extra.search } : {}),
+    ...(extra.electionSearch ? { electionSearch: extra.electionSearch } : {}),
   };
-}
-
-/**
- * RFC 8785 (JSON Canonicalization Scheme) text of a JSON value: object keys
- * sorted by UTF-16 code units, no whitespace, and numbers and strings written
- * as ECMAScript's JSON.stringify writes them, which is what the RFC specifies.
- */
-export function canonicalJson(value: unknown): string {
-  if (value === null || typeof value === 'boolean' || typeof value === 'string') return JSON.stringify(value);
-  if (typeof value === 'number') {
-    if (!Number.isFinite(value)) throw new TypeError('Canonical JSON has no non-finite numbers.');
-    return JSON.stringify(value);
-  }
-  if (Array.isArray(value)) return `[${value.map(canonicalJson).join(',')}]`;
-  if (typeof value === 'object') {
-    const object = value as Record<string, unknown>;
-    const keys = Object.keys(object).sort();
-    return `{${keys.map((key) => `${JSON.stringify(key)}:${canonicalJson(object[key])}`).join(',')}}`;
-  }
-  throw new TypeError('Canonical JSON holds only JSON values.');
-}
-
-/** `sha256:` and the hex digest of the receipt as a client parses it from the response. */
-export function receiptDigest(receipt: unknown): string {
-  const parsed: unknown = JSON.parse(JSON.stringify(receipt));
-  return `sha256:${createHash('sha256').update(canonicalJson(parsed), 'utf8').digest('hex')}`;
 }
 
 export interface Cite {

@@ -1,7 +1,7 @@
 {
   "type": "official-SDK protocol interoperability against the real server process; not a named end-user host, and not a model-driven demonstration",
-  "startedAt": "2026-09-30T08:06:34.734Z",
-  "completedAt": "2026-09-30T08:06:40.787Z",
+  "startedAt": "2026-10-06T01:16:20.754Z",
+  "completedAt": "2026-10-06T01:16:25.901Z",
   "node": "v22.22.2",
   "client": {
     "package": "@modelcontextprotocol/client",
@@ -17,8 +17,8 @@
   },
   "server": {
     "path": "examples/mcp-server/server.mjs",
-    "bytes": 227835,
-    "sha256": "938c8e62449aa2379d6a480c3e6988aa556ddbb5d784342196cfbc54563a9f76"
+    "bytes": 329571,
+    "sha256": "0c3e739ce34a5a7f80948310dd78b3b690f905e4a9d076f80d968a09558ba1fd"
   },
   "wire": [
     {
@@ -102,33 +102,39 @@
       "unansweredOffender": true
     }
   ],
-  "checks": 87,
-  "passed": 87,
+  "checks": 106,
+  "passed": 106,
   "results": [
     {
       "name": "initialize succeeds and names the adapter",
       "ok": true,
       "detail": {
         "name": "zodiacs-mcp-server",
-        "version": "0.1.0-rc.15"
+        "version": "0.1.0-rc.17"
       }
     },
     {
-      "name": "server version is the adapter candidate",
+      "name": "server version is the packaged adapter candidate version",
       "ok": true,
-      "detail": "0.1.0-rc.15"
+      "detail": {
+        "server": "0.1.0-rc.17",
+        "package": "0.1.0-rc.17"
+      }
     },
     {
       "name": "server declares the tools capability",
       "ok": true
     },
     {
-      "name": "lists exactly the three tools",
+      "name": "lists exactly the six tools",
       "ok": true,
       "detail": [
         "calculate_natal_chart",
+        "check_sky_fact",
         "compare_calculation_records",
-        "get_capabilities"
+        "find_events",
+        "get_capabilities",
+        "get_positions"
       ]
     },
     {
@@ -137,6 +143,40 @@
     },
     {
       "name": "every tool is annotated read-only, non-destructive and closed-world",
+      "ok": true
+    },
+    {
+      "name": "every tool advertises an object output schema",
+      "ok": true,
+      "detail": [
+        [
+          "get_capabilities",
+          "object"
+        ],
+        [
+          "calculate_natal_chart",
+          "object"
+        ],
+        [
+          "compare_calculation_records",
+          "object"
+        ],
+        [
+          "get_positions",
+          "object"
+        ],
+        [
+          "find_events",
+          "object"
+        ],
+        [
+          "check_sky_fact",
+          "object"
+        ]
+      ]
+    },
+    {
+      "name": "the server declares the resources capability",
       "ok": true
     },
     {
@@ -157,13 +197,36 @@
       "ok": true,
       "detail": {
         "name": "@zodiacs/engine",
-        "version": "0.1.1-rc.15",
+        "version": "0.1.1-rc.17",
         "releaseStatus": "unpublished-candidate"
       }
     },
     {
-      "name": "capabilities label both releases as unpublished candidates",
-      "ok": true
+      "name": "capabilities label the engine as the site's candidate record does, and the adapter an unpublished candidate",
+      "ok": true,
+      "detail": {
+        "adapter": {
+          "name": "zodiacs-mcp-server",
+          "version": "0.1.0-rc.17",
+          "releaseStatus": "unpublished-candidate",
+          "transport": "stdio"
+        },
+        "engine": {
+          "name": "@zodiacs/engine",
+          "version": "0.1.1-rc.17",
+          "releaseStatus": "unpublished-candidate"
+        }
+      }
+    },
+    {
+      "name": "capabilities cite the receipt they carry",
+      "ok": true,
+      "detail": {
+        "url": "https://zodiacs.org/developers/mcp/#get_capabilities",
+        "receipt": "sha256:ece36a13982c7ff35660e125e8b653c67842c63be6de2ab570883e5f7a47f3ab",
+        "engine": "@zodiacs/engine",
+        "version": "0.1.1-rc.17"
+      }
     },
     {
       "name": "capabilities state the privacy distinction in full",
@@ -212,17 +275,37 @@
       "detail": [
         "engine",
         "schema",
-        "record"
+        "record",
+        "cite"
       ]
     },
     {
-      "name": "the record reply is the record in a field, beside the two labels",
+      "name": "the record reply is the record in a field, beside its two labels and what to cite",
       "ok": true,
       "detail": [
         "engine",
         "schema",
-        "record"
+        "record",
+        "cite"
       ]
+    },
+    {
+      "name": "a chart and its record cite one digest, the record receipt's",
+      "ok": true,
+      "detail": {
+        "chart": {
+          "url": "https://zodiacs.org/developers/mcp/#calculate_natal_chart",
+          "receipt": "sha256:f7b4ba470bb3c3a16cdb65d2d37271086cb1665cd8686e139cd5c98fc19c5920",
+          "engine": "@zodiacs/engine",
+          "version": "0.1.1-rc.17"
+        },
+        "record": {
+          "url": "https://zodiacs.org/developers/mcp/#calculate_natal_chart",
+          "receipt": "sha256:f7b4ba470bb3c3a16cdb65d2d37271086cb1665cd8686e139cd5c98fc19c5920",
+          "engine": "@zodiacs/engine",
+          "version": "0.1.1-rc.17"
+        }
+      }
     },
     {
       "name": "handing the whole reply to the comparison is refused, not compared",
@@ -270,6 +353,214 @@
     {
       "name": "a comparison labels its own output as not anonymous",
       "ok": true
+    },
+    {
+      "name": "a comparison cites its own receipt, which carries nothing from either record",
+      "ok": true,
+      "detail": {
+        "schema": "zodiacs.mcp-receipt.v1",
+        "tool": "compare_calculation_records",
+        "adapter": {
+          "name": "zodiacs-mcp-server",
+          "version": "0.1.0-rc.17"
+        },
+        "engine": {
+          "name": "@zodiacs/engine",
+          "version": "0.1.1-rc.17",
+          "ephemeris": {
+            "name": "astronomy-engine",
+            "version": "2.1.19"
+          }
+        },
+        "output": "summary"
+      }
+    },
+    {
+      "name": "positions come back for every instant, twelve rows each, with the ΔT the engine used",
+      "ok": true,
+      "detail": [
+        12,
+        12
+      ]
+    },
+    {
+      "name": "the positions at a chart's instant are the chart's bodies",
+      "ok": true
+    },
+    {
+      "name": "positions cite the compute receipt they carry, the compute API's schema and endpoint",
+      "ok": true,
+      "detail": {
+        "url": "https://zodiacs.org/developers/mcp/#get_positions",
+        "receipt": "sha256:166b22120fffe135225114f2274f56b0e39f7883c59a7ac4b294e1b3b62cb7de",
+        "engine": "@zodiacs/engine",
+        "version": "0.1.1-rc.17"
+      }
+    },
+    {
+      "name": "events come back in time order, of all three kinds",
+      "ok": true,
+      "detail": 62
+    },
+    {
+      "name": "an events reply says its search is tested, not proven complete, and how it searched",
+      "ok": true,
+      "detail": {
+        "solver": "engine-longitude-crossings",
+        "stepDays": {
+          "default": 5,
+          "moon": 1,
+          "elongation": 1
+        },
+        "bisections": 24,
+        "samples": 4938,
+        "maxSamples": 12000,
+        "window": "start-exclusive-end-inclusive",
+        "completeness": "tested-not-proven"
+      }
+    },
+    {
+      "name": "a fact at an instant is true or false, with the values that decide it",
+      "ok": true,
+      "detail": {
+        "answer": "true",
+        "basis": "instant",
+        "fact": {
+          "kind": "sign",
+          "body": "Sun",
+          "sign": "libra",
+          "instant": "2026-10-15T12:00:00.000Z",
+          "date": null,
+          "zone": null
+        },
+        "instant": "2026-10-15T12:00:00.000Z",
+        "window": null,
+        "zone": null,
+        "facts": {
+          "lon": 202.1520384980946,
+          "sign": "libra",
+          "degree": 22.152038498094612,
+          "speed": 0.9913009521369531,
+          "retrograde": false,
+          "deltaT": {
+            "seconds": 69.22333325195312,
+            "sigma": 0.003153,
+            "model": "iers-utc/1",
+            "table": "2026-09-24",
+            "tableDigest": "064d98b4a531053a",
+            "segment": "predicted"
+          },
+          "timeScale": {
+            "input": "utc",
+            "basis": "iers",
+            "ut1MinusUtc": {
+              "seconds": -0.03933333333333877,
+              "sigma": 0.003153,
+              "source": "predicted"
+            },
+            "leapSeconds": {
+              "taiMinusUtc": 37,
+              "listed": true
+            }
+          },
+          "boundaryMarginArcsec": 28252.6614068594,
+          "flags": []
+        }
+      }
+    },
+    {
+      "name": "a date without a zone is read in every UTC offset in use today at once, and a lunation on it depends on the offset",
+      "ok": true,
+      "detail": {
+        "found": "2026-02-01T22:09:17.518Z",
+        "onDate": [
+          {
+            "at": "2026-02-01T22:09:17.520Z",
+            "lon": 133.06144847908683,
+            "sign": "leo",
+            "degree": 13.061448479086835
+          }
+        ]
+      }
+    },
+    {
+      "name": "a fact cites the compute receipt it carries, which holds no date or instant from the request",
+      "ok": true,
+      "detail": [
+        {
+          "solver": "engine-longitude-crossings",
+          "stepDays": {
+            "default": 5,
+            "moon": 1,
+            "elongation": 1
+          },
+          "bisections": 24,
+          "samples": 28,
+          "maxSamples": 1000,
+          "window": "start-exclusive-end-inclusive",
+          "completeness": "tested-not-proven"
+        },
+        "sky-fact"
+      ]
+    },
+    {
+      "name": "a zone is refused, since this server reads none, and names the argument",
+      "ok": true,
+      "detail": {
+        "layer": "tool",
+        "text": "Input validation error: Invalid arguments for tool check_sky_fact: Unrecognized key: \"zone\""
+      }
+    },
+    {
+      "name": "a refusal from the compute API's parser is its own sentence, with the field it names",
+      "ok": true,
+      "detail": {
+        "layer": "tool",
+        "text": "/to: Must be later than from."
+      }
+    },
+    {
+      "name": "recovers after the compute tools' refusals",
+      "ok": true
+    },
+    {
+      "name": "lists the conventions and methodology resources",
+      "ok": true,
+      "detail": [
+        "zodiacs://conventions",
+        "zodiacs://methodology"
+      ]
+    },
+    {
+      "name": "the conventions resource is the vocabulary the records carry",
+      "ok": true,
+      "detail": [
+        {
+          "from": "0.1.1-rc.16",
+          "to": null
+        },
+        {
+          "from": "0.1.1-rc.15",
+          "to": "0.1.1-rc.15"
+        },
+        {
+          "from": "0.1.1-rc.8",
+          "to": "0.1.1-rc.14"
+        },
+        {
+          "from": "0.1.1-rc.7",
+          "to": "0.1.1-rc.7"
+        },
+        {
+          "from": "0.1.1-rc.3",
+          "to": "0.1.1-rc.6"
+        }
+      ]
+    },
+    {
+      "name": "the methodology resource names the engine and the site's methodology page",
+      "ok": true,
+      "detail": "# How this server calculates\n\nzodiacs-mcp-server 0.1.0-rc.17 runs @zodiacs/engine 0.1.1-rc.17, with astronomy-engine 2.1.19, on the machine it runs on.\nThe site's methodology page, https://zodiacs.org"
     },
     {
       "name": "the default comparison response repeats no birth detail back",
@@ -573,22 +864,22 @@
     {
       "name": "stderr carried the adapter's startup note, so the capture is real",
       "ok": true,
-      "detail": "zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.15, engine 0.1.1-rc.15, no network\n"
+      "detail": "zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.17, engine 0.1.1-rc.17, no network\n"
     },
     {
       "name": "stderr carried only the adapter's own notes",
       "ok": true,
-      "detail": "zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.15, engine 0.1.1-rc.15, no network\n"
+      "detail": "zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.17, engine 0.1.1-rc.17, no network\n"
     },
     {
       "name": "stderr carried no birth detail, coordinate or record content",
       "ok": true,
-      "detail": "zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.15, engine 0.1.1-rc.15, no network\n"
+      "detail": "zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.17, engine 0.1.1-rc.17, no network\n"
     },
     {
       "name": "the transport exposes the server process id, so the next check measures something",
       "ok": true,
-      "detail": 27773
+      "detail": 1965
     },
     {
       "name": "the server process is gone after the client closes",
@@ -686,7 +977,7 @@
           1,
           6
         ],
-        "stderr": "zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.15, engine 0.1.1-rc.15, no network"
+        "stderr": "zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.17, engine 0.1.1-rc.17, no network"
       }
     },
     {
@@ -700,7 +991,7 @@
           83,
           7
         ],
-        "stderr": "zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.15, engine 0.1.1-rc.15, no network"
+        "stderr": "zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.17, engine 0.1.1-rc.17, no network"
       }
     },
     {

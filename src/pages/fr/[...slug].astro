@@ -5,7 +5,6 @@ import { currentHoroscopeMonth, utcMonth } from '../../lib/horoscope-month.mjs';
 import daily from '../../data/daily.json';
 
 export async function getStaticPaths() {
-  const pairs = await getCollection('pairs', ({ data }) => !data.draft);
   const learn = await getCollection('learn', ({ data }) => !data.draft);
   const horoscopes = await getCollection('horoscopes', ({ data }) => !data.draft);
   const latestMonth = currentHoroscopeMonth(horoscopes.map((h) => h.data.month), utcMonth(daily.date));
@@ -18,19 +17,12 @@ export async function getStaticPaths() {
     ['learn', 'aspects'],
     ['learn', 'placements'],
     ['horoscopes'],
-    ['mercury-retrograde'],
-    ['retrogrades'],
-    ['eclipses'],
-    ['full-moon-calendar'],
   ];
 
   const dynamicSlugs = [
-    ...pairs.map((p) => ['compatibility', p.id]),
-    ...learn.map((l) => (
-      l.data.kind === 'rising'
-        ? ['rising-sign', l.data.sign]
-        : ['learn', ...l.id.split('/')]
-    )),
+    // Compatibility pairs are translated: src/pages/fr/compatibility/[pair]/index.astro.
+    // Rising-sign profiles are translated: src/pages/fr/rising-sign/[sign].astro.
+    ...learn.filter((l) => l.data.kind !== 'rising').map((l) => ['learn', ...l.id.split('/')]),
     ...currentHoroscopes.map((h) => ['horoscopes', h.data.sign]),
   ];
 

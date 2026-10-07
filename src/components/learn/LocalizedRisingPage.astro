@@ -1,0 +1,345 @@
+---
+/**
+ * Translated rising-sign profile. The article body, title, description and
+ * FAQ come from src/content/learn-i18n/{locale}/rising/{sign}.mdx; this
+ * component supplies the page chrome in the same language. The English page
+ * (src/pages/rising-sign/[sign].astro) is the reference layout.
+ */
+import { render, type CollectionEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Faq from '../Faq.astro';
+import SignIcon from '../SignIcon.astro';
+import ChartCalculator from '../../islands/ChartCalculator.tsx';
+import { SIGNS, signBySlug, signName, formatLongitude, elementLabel, modalityLabel } from '../../lib/signs';
+import { bodyLongitude } from '../../lib/engine/full';
+import type { BodyName } from '../../lib/engine/types';
+import { formatShortDate } from '../../lib/i18n/dates';
+import { planetLabel } from '../../lib/i18n/astrology';
+import { EDITOR_AUTHOR } from '../../lib/editorial';
+import '../../styles/calculator.css';
+
+type RisingLocale = 'es' | 'pt' | 'fr' | 'it';
+interface Props { entry: CollectionEntry<'learnLocalized'> }
+
+const { entry } = Astro.props;
+const locale: RisingLocale = entry.data.locale;
+const sign = signBySlug(entry.data.sign);
+const name = signName(sign, locale);
+const { Content } = await render(entry);
+
+interface Chrome {
+  kicker: string;
+  heading: (sign: string) => string;
+  hub: string;
+  rulerLabel: string;
+  rulerText: string;
+  modern: (planet: string) => string;
+  rulerNow: (planet: string, date: string) => string;
+  moonLabel: string;
+  moonText: string;
+  elementLabel: string;
+  turnoverLabel: string;
+  turnoverText: string;
+  calcHeading: string;
+  calcLede: string;
+  noscript: string;
+  faqHeading: string;
+  related: string;
+  keepReading: string;
+  guide: (sign: string) => string;
+  chart: string;
+  others: string;
+}
+
+const CHROME: Record<RisingLocale, Chrome> = {
+  es: {
+    kicker: 'Ascendentes',
+    heading: (s) => `Ascendente ${s}`,
+    hub: 'Calculadora de ascendente',
+    rulerLabel: 'Regente de la carta',
+    rulerText: 'el planeta que dirige esta carta',
+    modern: (p) => ` (la astrología moderna agrega a ${p})`,
+    rulerNow: (p, d) => `${p}, ${d}`,
+    moonLabel: 'El ritmo de la Luna',
+    moonText: 'un signo cada dos días y medio; tu Luna natal es el ancla estable',
+    elementLabel: 'Elemento · Modalidad',
+    turnoverLabel: 'El relevo',
+    turnoverText: 'el ascendente cambia de signo cada dos horas, más o menos: doce ascendentes al día',
+    calcHeading: 'Encuentra tu ascendente',
+    calcLede: 'Fecha, hora y lugar de nacimiento: el ascendente necesita los tres.',
+    noscript: 'Esta calculadora del ascendente necesita JavaScript. Activa JavaScript y recarga la página con tu fecha, hora exacta y lugar de nacimiento.',
+    faqHeading: 'Preguntas y respuestas',
+    related: 'Páginas relacionadas',
+    keepReading: 'Sigue leyendo',
+    guide: (s) => `La guía de ${s}`,
+    chart: 'Tu carta natal',
+    others: 'Otros ascendentes',
+  },
+  pt: {
+    kicker: 'Ascendentes',
+    heading: (s) => `Ascendente em ${s}`,
+    hub: 'Calculadora de ascendente',
+    rulerLabel: 'Regente do mapa',
+    rulerText: 'o planeta que conduz este mapa',
+    modern: (p) => ` (a astrologia moderna acrescenta ${p})`,
+    rulerNow: (p, d) => `${p}, ${d}`,
+    moonLabel: 'O ritmo da Lua',
+    moonText: 'um signo a cada dois dias e meio; sua Lua natal é a âncora estável',
+    elementLabel: 'Elemento · Modalidade',
+    turnoverLabel: 'A troca',
+    turnoverText: 'o ascendente muda de signo a cada duas horas, mais ou menos: doze ascendentes por dia',
+    calcHeading: 'Descubra seu ascendente',
+    calcLede: 'Data, hora e local de nascimento: o ascendente precisa dos três.',
+    noscript: 'Esta calculadora de ascendente precisa de JavaScript. Ative-o e recarregue a página com sua data, hora exata e local de nascimento.',
+    faqHeading: 'Perguntas e respostas',
+    related: 'Páginas relacionadas',
+    keepReading: 'Continue lendo',
+    guide: (s) => `O guia de ${s}`,
+    chart: 'Seu mapa astral',
+    others: 'Outros ascendentes',
+  },
+  fr: {
+    kicker: 'Ascendants',
+    heading: (s) => `Ascendant ${s}`,
+    hub: 'Calculateur d’ascendant',
+    rulerLabel: 'Maître du thème',
+    rulerText: 'la planète qui pilote ce thème',
+    modern: (p) => ` (l’astrologie moderne ajoute ${p})`,
+    rulerNow: (p, d) => `${p}, ${d}`,
+    moonLabel: 'Le rythme de la Lune',
+    moonText: 'un signe tous les deux jours et demi ; ta Lune natale est le point fixe',
+    elementLabel: 'Élément · Modalité',
+    turnoverLabel: 'La rotation',
+    turnoverText: 'l’ascendant change de signe toutes les deux heures environ : douze ascendants par jour',
+    calcHeading: 'Trouve ton ascendant',
+    calcLede: 'Date, heure et lieu de naissance : l’ascendant a besoin des trois.',
+    noscript: 'Ce calculateur d’ascendant nécessite JavaScript. Active JavaScript et recharge la page avec ta date, ton heure exacte et ton lieu de naissance.',
+    faqHeading: 'Questions et réponses',
+    related: 'Pages liées',
+    keepReading: 'À lire ensuite',
+    guide: (s) => `Guide du signe : ${s}`,
+    chart: 'Ton thème astral',
+    others: 'Autres ascendants',
+  },
+  it: {
+    kicker: 'Ascendenti',
+    heading: (s) => `Ascendente ${s}`,
+    hub: 'Calcolatore dell’ascendente',
+    rulerLabel: 'Governatore del tema',
+    rulerText: 'il pianeta che guida questo tema',
+    modern: (p) => ` (l’astrologia moderna aggiunge ${p})`,
+    rulerNow: (p, d) => `${p}, ${d}`,
+    moonLabel: 'Il passo della Luna',
+    moonText: 'un segno ogni due giorni e mezzo; la tua Luna natale è il punto fermo',
+    elementLabel: 'Elemento · Modalità',
+    turnoverLabel: 'Il ricambio',
+    turnoverText: 'l’ascendente cambia segno ogni due ore circa: dodici ascendenti al giorno',
+    calcHeading: 'Trova il tuo ascendente',
+    calcLede: 'Data, ora e luogo di nascita: all’ascendente servono tutti e tre.',
+    noscript: 'Questo calcolatore dell’ascendente richiede JavaScript. Attiva JavaScript e ricarica la pagina con data, ora esatta e luogo di nascita.',
+    faqHeading: 'Domande e risposte',
+    related: 'Pagine correlate',
+    keepReading: 'Continua a leggere',
+    guide: (s) => `Guida al segno: ${s}`,
+    chart: 'Il tuo tema natale',
+    others: 'Altri ascendenti',
+  },
+};
+const c = CHROME[locale];
+const prefix = `/${locale}`;
+const pagePath = `${prefix}/rising-sign/${sign.slug}/`;
+const pageUrl = `https://zodiacs.org${pagePath}`;
+
+// Rulerships are read traditionally, as on the English page; the modern
+// ruler is named where it differs.
+const chartRuler = sign.classicRuler ?? sign.ruler;
+const rulerName = planetLabel(locale, chartRuler);
+const modernNote = sign.classicRuler ? c.modern(planetLabel(locale, sign.ruler)) : '';
+const buildNow = new Date();
+const rulerNow = chartRuler === 'Moon'
+  ? null
+  : formatLongitude(bodyLongitude(chartRuler as BodyName, buildNow), locale);
+const asOf = formatShortDate(locale, buildNow);
+
+const signIdx = SIGNS.findIndex((s) => s.slug === sign.slug);
+const prevSign = SIGNS[(signIdx + 11) % 12];
+const nextSign = SIGNS[(signIdx + 1) % 12];
+const others = SIGNS.filter((s) => s.slug !== sign.slug && s.slug !== prevSign.slug && s.slug !== nextSign.slug);
+const title = entry.data.title;
+
+const jsonLd = [
+  {
+    '@type': 'Article',
+    headline: entry.data.title,
+    description: entry.data.description,
+    url: pageUrl,
+    datePublished: entry.data.published.toISOString(),
+    dateModified: entry.data.updated.toISOString(),
+    author: EDITOR_AUTHOR,
+    publisher: { '@id': 'https://zodiacs.org/#org' },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': pageUrl },
+    inLanguage: locale === 'pt' ? 'pt-BR' : locale,
+    image: `https://zodiacs.org/assets/og/v2/rising/${sign.slug}.png`,
+    about: { '@type': 'Thing', name: c.heading(name) },
+    citation: entry.data.sources.map((source) => source.href
+      ? { '@type': 'CreativeWork', name: source.label, url: source.href }
+      : source.label),
+  },
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Zodiacs.org', item: `https://zodiacs.org${prefix}/` },
+      { '@type': 'ListItem', position: 2, name: c.hub, item: `https://zodiacs.org${prefix}/rising-sign/` },
+      { '@type': 'ListItem', position: 3, name: c.heading(name), item: pageUrl },
+    ],
+  },
+  {
+    '@type': 'FAQPage',
+    inLanguage: locale === 'pt' ? 'pt-BR' : locale,
+    mainEntity: entry.data.faq.map(({ q, a }) => ({
+      '@type': 'Question',
+      name: q,
+      acceptedAnswer: { '@type': 'Answer', text: a },
+    })),
+  },
+];
+---
+<Base
+  clientUi
+  title={title}
+  description={entry.data.description}
+  path={pagePath}
+  locale={locale}
+  image={`/assets/og/v2/rising/${sign.slug}.png`}
+  imageAlt={`${c.heading(name)} — Zodiacs.org`}
+  type="article"
+  jsonLd={jsonLd}
+  sources={entry.data.sources}
+>
+  <article class="container container--narrow learn-detail" style={`--sign:${sign.hue}`}>
+    <header class="learn-detail__hero reveal">
+      <em class="kicker">{c.kicker}</em>
+      <div class="plc-lockup">
+        <SignIcon sign={sign.slug} size={64} class="plc-disc" loading="eager" />
+        <h1 class="display">{c.heading(name)}</h1>
+      </div>
+
+      <dl class="plc-panel mono">
+        <div class="plc-panel__row">
+          <dt>{c.rulerLabel}</dt>
+          <dd><strong>{rulerName}</strong> — {c.rulerText}{modernNote}</dd>
+        </div>
+        {rulerNow ? (
+          <div class="plc-panel__row">
+            <dt>{c.rulerNow(rulerName, asOf)}</dt>
+            <dd>{rulerNow}</dd>
+          </div>
+        ) : (
+          <div class="plc-panel__row">
+            <dt>{c.moonLabel}</dt>
+            <dd>{c.moonText}</dd>
+          </div>
+        )}
+        <div class="plc-panel__row">
+          <dt>{c.elementLabel}</dt>
+          <dd>{elementLabel(sign.element, locale)} · {modalityLabel(sign.modality, locale)}</dd>
+        </div>
+        <div class="plc-panel__row">
+          <dt>{c.turnoverLabel}</dt>
+          <dd>{c.turnoverText}</dd>
+        </div>
+      </dl>
+    </header>
+
+    <div class="prose reveal">
+      <Content />
+    </div>
+
+    <section class="rising-calc reveal">
+      <div class="section-head">
+        <h2>{c.calcHeading}</h2>
+        <p>{c.calcLede}</p>
+      </div>
+      <ChartCalculator mode="rising" locale={locale} client:visible />
+      <noscript>
+        <p>{c.noscript}</p>
+      </noscript>
+    </section>
+
+    <section class="reveal">
+      <Faq items={entry.data.faq} heading={c.faqHeading} />
+    </section>
+
+    <nav class="plc-more reveal" aria-label={c.related}>
+      <div class="plc-more__col">
+        <span class="plc-more__head">{c.keepReading}</span>
+        <div class="plc-more__chips">
+          <a class="plc-chip" href={`${prefix}/${sign.slug}/`}>{c.guide(name)}</a>
+          <a class="plc-chip" href={`${prefix}/rising-sign/`}>{c.hub}</a>
+          <a class="plc-chip" href={`${prefix}/birth-chart/`}>{c.chart}</a>
+        </div>
+      </div>
+      <div class="plc-more__col">
+        <span class="plc-more__head">{c.others}</span>
+        <div class="plc-more__chips">
+          <a class="plc-chip" href={`${prefix}/rising-sign/${prevSign.slug}/`}>← {signName(prevSign, locale)}</a>
+          {others.map((s) => (
+            <a class="plc-chip" href={`${prefix}/rising-sign/${s.slug}/`}>{signName(s, locale)}</a>
+          ))}
+          <a class="plc-chip" href={`${prefix}/rising-sign/${nextSign.slug}/`}>{signName(nextSign, locale)} →</a>
+        </div>
+      </div>
+    </nav>
+  </article>
+</Base>
+
+<style>
+  .learn-detail { display: grid; gap: clamp(28px, 5vw, 44px); padding-block: clamp(24px, 5vw, 56px) clamp(36px, 6vw, 72px); }
+  .learn-detail__hero { display: grid; gap: 18px; justify-items: start; }
+
+  .plc-lockup { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .plc-lockup :global(.plc-disc) { border-radius: 50%; }
+  .plc-lockup h1 {
+    margin: 0;
+    font-size: clamp(2.1rem, 1.4rem + 3.4vw, 3.6rem);
+    line-height: 1.02;
+  }
+
+  .plc-panel { margin: 0; display: grid; width: 100%; max-width: 640px; }
+  .plc-panel__row {
+    display: grid;
+    gap: 2px 20px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--hair-1);
+    font-size: 11.5px;
+    letter-spacing: 0.05em;
+  }
+  .plc-panel__row:first-child { border-top: 1px solid var(--hair-1); }
+  @media (min-width: 560px) { .plc-panel__row { grid-template-columns: 170px 1fr; } }
+  .plc-panel__row dt { color: var(--faint); text-transform: uppercase; font-size: 10px; letter-spacing: 0.14em; align-self: baseline; }
+  .plc-panel__row dd { margin: 0; color: var(--text-2); }
+  .plc-panel__row strong { color: var(--text); font-weight: 600; }
+
+  .rising-calc { display: grid; gap: 18px; }
+
+  .plc-more {
+    display: grid;
+    gap: 20px;
+    padding-top: 18px;
+    border-top: 1px solid var(--hair-1);
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 700px) { .plc-more { grid-template-columns: auto 1fr; gap: 20px 48px; } }
+  .plc-more__col { display: grid; gap: 10px; align-content: start; }
+  .plc-more__head { font-weight: 600; font-size: var(--text-sm); color: var(--text); }
+  .plc-more__chips { display: flex; flex-wrap: wrap; gap: 4px 2px; }
+  .plc-chip {
+    padding: 4px 9px;
+    border-radius: var(--r-full);
+    font-size: 12.5px;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color var(--dur-1) var(--ease), background var(--dur-1) var(--ease);
+  }
+  .plc-chip:hover { color: var(--text); background: color-mix(in oklab, var(--sign) 12%, transparent); }
+</style>

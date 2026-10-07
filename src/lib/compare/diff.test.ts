@@ -335,15 +335,13 @@ describe('regressions an adversarial review found', () => {
     expect(evidenceFor(oneMs, 'instant')).toBe('hypothesis');
     expect(evidenceFor(oneMs, 'unexplained')).toBeNull();
 
-    // Six milliseconds moves the faster bodies across a rounding boundary while
-    // the slower ones stay put, so one comparison carries both kinds at once —
-    // and the distance between the two is not what separates them. Mercury
-    // moves 1.2e-7 and prints differently; the lunar nodes move 5.1e-7 and
-    // print the same. (Under the ΔT model, before engine rc.15 read 1990 on
-    // IERS UT1, ten milliseconds showed the same, with 2.0e-7 and 5.3e-7.)
-    const sixMs = compareEnvelopes(base, buildEnvelope({ ...ORDINARY, utc: '1990-06-15T13:30:00.006Z' }), live);
-    const moved = sixMs.differences.filter((row) => row.id.endsWith('-lon') && row.kind === 'numeric');
-    const still = sixMs.differences.filter((row) => row.id.endsWith('-lon') && row.kind === 'display');
+    // Full IAU 2000B in rc.16 moves the baseline over a different rounding
+    // boundary: two milliseconds now make the Moon print differently
+    // (3.10e-7°), while the nodes still print the same (5.09e-7°). rc.15
+    // needed six milliseconds and Mercury was the smaller visible change.
+    const twoMs = compareEnvelopes(base, buildEnvelope({ ...ORDINARY, utc: '1990-06-15T13:30:00.002Z' }), live);
+    const moved = twoMs.differences.filter((row) => row.id.endsWith('-lon') && row.kind === 'numeric');
+    const still = twoMs.differences.filter((row) => row.id.endsWith('-lon') && row.kind === 'display');
     expect(moved.length).toBeGreaterThan(0);
     expect(still.length).toBeGreaterThan(0);
     for (const row of moved) expect(row.left, row.id).not.toBe(row.right);
@@ -984,13 +982,14 @@ describe('ΔT, which records carry from engine 0.1.1-rc.8 on', () => {
     // latitude agrees, and the two records still say different things about ΔT.
     // From engine rc.15 a pin also puts TT on UT1, so the time between a speed's
     // two samples follows the Earth's rotation rather than UTC: 2.3e-8 longer
-    // here, which moves the Sun's and the Moon's speeds across a sixth decimal.
+    // here. On rc.16's full-nutation frame only the Moon crosses a sixth
+    // decimal; the Sun's two speeds now both print 0.955127.
     const modelled = buildEnvelope(ORDINARY);
     const comparison = compareEnvelopes(modelled, pinnedEnvelope(ORDINARY, modelled.result.deltaT!.seconds), live);
     expect(comparison.identical).toBe(false);
     expect(comparison.differences.some((row) => row.id === 'delta-t-seconds')).toBe(false);
     const speeds = comparison.differences.filter((row) => row.id.endsWith('-speed') && row.kind !== 'display');
-    expect(speeds.map((row) => row.id)).toEqual(['body-Sun-speed', 'body-Moon-speed']);
+    expect(speeds.map((row) => row.id)).toEqual(['body-Moon-speed']);
     for (const row of speeds) expect(Math.abs(row.delta! / Number(row.left))).toBeLessThan(3e-8);
     expect(comparison.differences.find((row) => row.id === 'delta-t-model'))
       .toMatchObject({ left: 'iers-utc/1', right: 'pinned' });
@@ -1002,7 +1001,7 @@ describe('ΔT, which records carry from engine 0.1.1-rc.8 on', () => {
     const deltaT = cause(comparison, 'delta-t');
     expect(deltaT?.evidence).toBe('hypothesis');
     const area = (id: string) => comparison.differences.find((row) => row.id === id)?.area;
-    expect(deltaT?.covers.filter((id) => area(id) !== 'Time scale')).toEqual(['body-Sun-speed', 'body-Moon-speed']);
+    expect(deltaT?.covers.filter((id) => area(id) !== 'Time scale')).toEqual(['body-Moon-speed']);
     expect(comparison.explanations.map((item) => item.id)).toEqual(['delta-t']);
   });
 
@@ -1133,5 +1132,40 @@ describe('the time basis, which records carry from engine 0.1.1-rc.15 on', () =>
     expect(cause(comparison, 'conventions')?.covers).toEqual(expect.arrayContaining(['time-scale', 'convention-timeScale']));
     expect(comparison.differences.some((row) => ['time-basis', 'ut1-utc-seconds'].includes(row.id))).toBe(false);
     expect(cause(comparison, 'unexplained')?.covers ?? []).not.toContain('time-scale');
+  });
+});
+
+describe('the full-nutation receipt conventions, from engine 0.1.1-rc.16', () => {
+  it('records full IAU 2000B and the GeoMoon vector reduction explicitly', () => {
+    const envelope = buildEnvelope(ORDINARY);
+    expect(envelope.receipt.conventions).toEqual(NATAL_RECEIPT_CONVENTION_SETS[0]);
+    expect(envelope.receipt.conventions).toMatchObject({
+      nutation: 'iau2000b;equation-of-equinoxes-with-two-complementary-terms',
+      moonPosition: 'astronomy-engine-geo-moon;no-light-time;no-aberration',
+    });
+  });
+
+  it('identifies both convention changes when reading an rc.15 record', () => {
+    const current = buildEnvelope(ORDINARY);
+    // This tests receipt compatibility only: the parser does not recompute
+    // positions, so the synthetic numbers deliberately stay identical.
+    const older = JSON.parse(JSON.stringify(current));
+    older.receipt.engine.version = '0.1.1-rc.15';
+    older.receipt.conventions = { ...NATAL_RECEIPT_CONVENTION_SETS.find((set) =>
+      'timeScale' in set && !('nutation' in set))! };
+    const parsed = parseNatalEnvelope(JSON.stringify(older));
+    expect(parsed.ok ? 'accepted' : parsed.code).toBe('accepted');
+    if (!parsed.ok) return;
+    const comparison = compareEnvelopes(parsed.envelope, current, live);
+    expect(comparison.differences.find((row) => row.id === 'convention-nutation'))
+      .toMatchObject({ left: '—', right: 'iau2000b;equation-of-equinoxes-with-two-complementary-terms' });
+    expect(comparison.differences.find((row) => row.id === 'convention-moonPosition'))
+      .toMatchObject({ left: 'astronomy-engine-ecliptic-geo-moon;no-light-time;no-aberration',
+        right: 'astronomy-engine-geo-moon;no-light-time;no-aberration' });
+    expect(comparison.explanations.find((item) => item.id === 'conventions')?.covers)
+      .toEqual(expect.arrayContaining(['convention-nutation', 'convention-moonPosition']));
+    const unexplained = comparison.explanations.find((item) => item.id === 'unexplained')?.covers ?? [];
+    expect(unexplained).not.toContain('convention-nutation');
+    expect(unexplained).not.toContain('convention-moonPosition');
   });
 });

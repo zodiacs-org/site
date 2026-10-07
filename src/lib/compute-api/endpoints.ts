@@ -1,5 +1,6 @@
 /**
- * The six calculations. Each takes a validated request and returns the body
+ * Six of the seven calculations (the seventh, elections, is in elections.ts
+ * and reuses the searches here). Each takes a validated request and returns the body
  * of a success response; every number in it comes from the vendored engine's
  * root entry point (`natalChart`, `positions`, `moonPhase`,
  * `outsideReferenceSpan`, `searchLongitudeCrossings`,
@@ -84,18 +85,18 @@ function basisOf(instant: Date): Pick<TimeBasis, 'deltaT' | 'timeScale' | 'ttDay
   return timeBasis(instant.getTime());
 }
 
-function iso(date: Date): string {
+export function iso(date: Date): string {
   return date.toISOString();
 }
 
-function rowOf(rows: readonly BodyPosition[], body: BodyName): BodyPosition {
+export function rowOf(rows: readonly BodyPosition[], body: BodyName): BodyPosition {
   const row = rows.find((candidate) => candidate.body === body);
   if (!row) throw new Error('The engine returned no row for a body it names.');
   return row;
 }
 
 /** One positions() call per instant within a request; dropped with the request. */
-function positionsMemo(): (date: Date) => BodyPosition[] {
+export function positionsMemo(): (date: Date) => BodyPosition[] {
   const memo = new Map<number, BodyPosition[]>();
   return (date) => {
     const key = date.getTime();
@@ -109,7 +110,7 @@ function positionsMemo(): (date: Date) => BodyPosition[] {
 }
 
 /** A whole-request allowance of evaluations shared by every search in it. */
-class SampleBudget {
+export class SampleBudget {
   used = 0;
 
   constructor(readonly limit: BudgetName) {}
@@ -124,10 +125,26 @@ class SampleBudget {
     return { stepDays, maxSamples: remaining };
   }
 
+  /**
+   * Adds a finished search's steps, refusing the request if they pass the
+   * allowance: the search was given what was left when it began, and an
+   * election's station search also spends (below) for each new instant it reads.
+   */
   settle(result: CrossingSearchResult): LongitudeCrossing[] {
-    if (result.status === 'refused') throw budgetExhausted(this.limit);
+    if (result.status === 'refused' || this.used + result.samples > this.max) throw budgetExhausted(this.limit);
     this.used += result.samples;
     return result.crossings;
+  }
+
+  /** Counts evaluations made outside the crossing search, refusing the request once the allowance is spent. */
+  spend(count: number): void {
+    this.reserve(count);
+    this.used += count;
+  }
+
+  /** Refuses the request now if `count` more evaluations would pass the allowance, before any is made. */
+  reserve(count: number): void {
+    if (this.used + count > this.max) throw budgetExhausted(this.limit);
   }
 
   facts(): SearchFacts {
@@ -148,7 +165,7 @@ function stepFor(body: BodyName): number {
 }
 
 /** Sign ingresses: crossings of the twelve sign boundaries, in the engine's own longitudes. */
-function signCrossings(
+export function signCrossings(
   body: BodyName,
   boundary: number,
   from: Date,
@@ -165,7 +182,7 @@ function signEntered(boundary: number, retrograde: boolean): SignSlug {
 }
 
 /** Stations: where the engine's longitude speed crosses zero, by the same solver. */
-function stationCrossings(
+export function stationCrossings(
   body: BodyName,
   from: Date,
   to: Date,
@@ -177,7 +194,7 @@ function stationCrossings(
 }
 
 /** Principal lunar phases: where the Moon–Sun elongation of moonPhase() crosses 0°, 90°, 180° or 270°. */
-function phaseCrossings(target: number, from: Date, to: Date, budget: SampleBudget): LongitudeCrossing[] {
+export function phaseCrossings(target: number, from: Date, to: Date, budget: SampleBudget): LongitudeCrossing[] {
   const elongationAt = (_body: BodyName, date: Date) => moonPhase(date).angle;
   return budget.settle(searchLongitudeCrossingsWith(elongationAt, 'Moon', target, from, to, budget.options(SEARCH_STEP_DAYS.elongation)));
 }

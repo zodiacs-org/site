@@ -1,0 +1,23 @@
+---
+import { localizePath, type CatalogLocale } from '../../lib/i18n';
+import { sharingText as s } from '../../lib/sharing/copy';
+interface Props { locale?: CatalogLocale; current?: string }
+const { locale = 'en', current = '' } = Astro.props;
+const links = [
+  { path: '/big-three/', key: 'bigTitle' },
+  { path: '/compatibility/invite/', key: 'inviteTitle' },
+  { path: '/group-charts/', key: 'groupTitle' },
+  { path: '/chart-twins/', key: 'twinsTitle' },
+] as const;
+---
+<nav class="sharing-discovery" aria-label={s(locale, 'sharingTools')}>
+  <h2>{s(locale, 'sharingTools')}</h2>
+  <ul>{links.filter((link) => link.path !== current).map((link) => <li><a href={localizePath(locale, link.path)}>{s(locale, link.key)} <span aria-hidden="true">↗</span></a></li>)}</ul>
+</nav>
+<style>
+  .sharing-discovery { margin-block: 36px 20px; padding-top: 22px; border-top: 1px solid var(--hair-1); }
+  .sharing-discovery h2 { font-family: var(--font-serif); font-size: 27px; font-weight: 400; margin: 0 0 15px; }
+  .sharing-discovery ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 22px; }
+  .sharing-discovery a { min-height: 44px; display: inline-flex; align-items: center; gap: 10px; color: var(--text); font-size: 14px; text-underline-offset: 5px; }
+  .sharing-discovery a span { color: var(--muted); }
+</style>

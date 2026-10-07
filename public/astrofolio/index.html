@@ -140,7 +140,7 @@
           {
             "@type": "Question",
             "name": "What is the Terminal?",
-            "acceptedAnswer": { "@type": "Answer", "text": "The Terminal is the market desk for all twelve Zodiacs, with live prices, liquidity, charts, season context, research, and trading. Jupiter Ultra supplies the executable route and transaction; your wallet reviews, approves, and signs." }
+            "acceptedAnswer": { "@type": "Answer", "text": "Zodiacs.org does not connect wallets, request signatures, or submit transactions. Public address lookups use an address you paste. Purchase links open independent services with their own terms and risks." }
           }
         ]
       },
@@ -186,7 +186,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/astrofolio/v2/leo/apple-touch-icon-180.png" />
   <link rel="manifest" href="/assets/astrofolio/v2/leo/astrofolio.webmanifest" />
 
-  <link rel="stylesheet" href="/assets/site-footer.css" />
+  <link rel="stylesheet" href="/assets/site-footer.css?v=20261006" />
 
   <style>
     @font-face { font-family: 'EB Garamond'; src: url('/fonts/eb-garamond-latin-400-normal.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
@@ -628,7 +628,7 @@
   .wnav-wrap { --wing-sans: 'Instrument Sans', 'Instrument Sans Fallback', 'Instrument Sans Fallback Android', system-ui, -apple-system, sans-serif; --wing-serif: 'EB Garamond', 'EB Garamond Fallback', 'EB Garamond Fallback Android', 'EB Garamond Fallback Times', 'Iowan Old Style', Georgia, serif; position: fixed; top: 14px; left: 0; right: 0; z-index: 60; display: flex; flex-direction: column; align-items: center; pointer-events: none; padding-top: env(safe-area-inset-top); }
   .wnav { pointer-events: auto; box-sizing: border-box; max-width: calc(100% - 32px); display: inline-flex; align-items: center; gap: 10px; height: 52px; padding: 0 10px 0 20px; border-radius: 999px; background: rgba(10,12,17,0.96); backdrop-filter: saturate(150%) blur(18px); -webkit-backdrop-filter: saturate(150%) blur(18px); border: 1px solid rgba(198,204,218,0.16); box-shadow: inset 0 1px 0 rgba(238,241,247,0.06), 0 12px 32px -14px rgba(0,0,0,0.7); }
   @media (min-width: 920px) { .wnav { gap: 10px; } }
-  @media (min-width: 900px) { .wnav { gap: 18px; } }
+
   .wnav__mark { display: inline-flex; align-items: center; gap: 9px; text-decoration: none; white-space: nowrap; }
   .wnav__brand { display: block; flex-shrink: 0; }
   .wnav__mark:hover .wnav__brand { animation: wnav-turn 14s linear infinite; }
@@ -643,10 +643,14 @@
   }
   .wnav__search-kbd { display: none; font-family: var(--mono, 'JetBrains Mono', monospace); font-size: 10px; line-height: 1; padding: 3px 5px; border: 1px solid rgba(198,204,218,0.16); border-radius: 4px; color: var(--ink-mute, #8A93A6); }
   @media (min-width: 920px) { .wnav__search-kbd { display: inline-block; } }
-  .wnav__profile-shortcut { display: none; width: 44px; height: 44px; place-items: center; color: var(--ink-2, #C6CCDA); border-radius: 50%; }
+  .wnav__profile-shortcut { display: inline-grid; width: 44px; height: 44px; place-items: center; color: var(--ink-2, #C6CCDA); border-radius: 50%; }
+  .wnav__avatar { display: inline-grid; place-items: center; box-sizing: border-box; width: 28px; height: 28px; overflow: hidden; border-radius: 50%; background: var(--sign, #C6CCDA); color: #060709; font-family: var(--wing-serif); font-size: 16px; font-weight: 500; line-height: 1; }
+  .wnav__avatar[hidden], .has-avatar > .wnav__profile-icon { display: none; }
+  .wnav__avatar img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .wnav__profile-shortcut:hover { background: rgba(198,204,218,0.08); }
   .wnav__links { display: none; align-items: center; gap: 2px; }
-  @media (min-width: 920px) { .wnav__links { display: inline-flex; } }
-  .wnav__link { display: inline-flex; align-items: center; gap: 6px; padding: 7px 11px; border-radius: 999px; font-family: var(--wing-sans); font-size: 14px; font-weight: 500; letter-spacing: normal; text-transform: none; white-space: nowrap; color: var(--ink-2, #C6CCDA); text-decoration: none; background: none; border: 0; cursor: pointer; transition: color 200ms var(--ease, cubic-bezier(0.4,0,0.2,1)), background 260ms var(--ease, cubic-bezier(0.4,0,0.2,1)); }
+  @media (min-width: 920px) { .wnav__links { display: grid; } }
+  .wnav__link { line-height: 1.6; display: inline-flex; align-items: center; gap: 6px; padding: 7px 11px; border-radius: 999px; font-family: var(--wing-sans); font-size: 14px; font-weight: 500; letter-spacing: normal; text-transform: none; white-space: nowrap; color: var(--ink-2, #C6CCDA); text-decoration: none; background: none; border: 0; cursor: pointer; transition: color 200ms var(--ease, cubic-bezier(0.4,0,0.2,1)), background 260ms var(--ease, cubic-bezier(0.4,0,0.2,1)); }
   .wnav__link:hover { color: var(--ink, #EEF1F7); background: rgba(198,204,218,0.07); }
   .wnav__link[aria-current='page'] { color: var(--ink, #EEF1F7); }
   .wnav__dropdown-btn svg { transition: transform 260ms var(--ease, cubic-bezier(0.4,0,0.2,1)); }
@@ -706,7 +710,16 @@
   .wnav-menu__sign .wnav-disc { width: 30px; height: 30px; }
   @keyframes wnav-turn { to { transform: rotate(360deg); } }
   @media (prefers-reduced-motion: reduce) { .wnav-tools, .wnav-signs, .wnav__burger, .wnav__dropdown-btn svg, .wnav__burger-line { transition: none; } .wnav__mark:hover .wnav__brand { animation: none; } }
-@media (max-width: 599.5px) {
+  @media (min-width: 920px) {
+    .wnav { display: grid; width: 884px; grid-template-areas: 'mark links profile search chip'; grid-template-columns: 116px minmax(0, 1fr) 44px 62px 120px; gap: 18px; }
+    .wnav__mark { grid-area: mark; min-width: 0; }
+    .wnav__links { grid-area: links; min-width: 0; grid-template-columns: 74px 74px 64px 62px minmax(0, 1fr); }
+    .wnav__profile-shortcut { grid-area: profile; }
+    .wnav__search { grid-area: search; box-sizing: border-box; width: 62px; height: 44px; }
+    .wnav__chip { grid-area: chip; box-sizing: border-box; min-width: 0; }
+    .wnav__dropdown-btn { justify-content: space-between; }
+  }
+@media (max-width: 919.5px) {
     .wnav-wrap { top: 0; padding-top: 0; transition: transform 360ms cubic-bezier(0.22,1,0.36,1), opacity 260ms ease; }
     .wnav-wrap.is-away { transform: translateY(-100%); opacity: 0; }
     .wnav-wrap.is-away .wnav { pointer-events: none; }
@@ -724,7 +737,7 @@
     .wnav__search { grid-area: search; }
     .wnav__profile-shortcut { grid-area: profile; display: inline-grid; }
   }
-  @media (max-width: 599.5px) and (prefers-reduced-motion: reduce) { .wnav-wrap { transition: none; } }
+  @media (max-width: 919.5px) and (prefers-reduced-motion: reduce) { .wnav-wrap { transition: none; } }
 
     /* ── Liquid glass — SVG filter defs container. On Chromium the hero
        CTAs AND the nav pill refract the footage behind them (.zdx-lens is
@@ -9957,10 +9970,13 @@
       z-index: 45;
       bottom: calc(16px + env(safe-area-inset-bottom, 0px));
       left: 50%;
+      width: min(440px, calc(100% - 24px));
+      min-height: 62px;
       max-width: calc(100% - 24px);
-      display: flex;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 180px;
       align-items: center;
-      gap: 14px;
+      gap: 10px;
       padding: 6px 6px 6px 8px;
       border: 1px solid var(--hair-2);
       border-radius: 999px;
@@ -9977,7 +9993,8 @@
       transform: translate(-50%, 140%);
       transition: transform 480ms var(--ease), opacity 360ms ease, visibility 0s linear 480ms;
     }
-    .campaign-bag__who { min-width: 0; display: flex; align-items: center; gap: 10px; padding-right: 2px; }
+    .campaign-bag__who { min-width: 0; display: flex; align-items: center; gap: 8px; padding-right: 2px; }
+    .campaign-bag > .btn--fomo { width: 100%; }
     .campaign-bag__who img {
       width: 40px;
       height: 40px;
@@ -10568,6 +10585,7 @@
         right: 12px;
         bottom: calc(12px + env(safe-area-inset-bottom, 0px));
         left: 12px;
+        width: auto;
         max-width: none;
         justify-content: space-between;
         transform: none;
@@ -10619,9 +10637,11 @@
        bag on phones and tablets; it rises above the bag while the bag shows
        and settles back when the bag rests. */
     @media (max-width: 900px) {
+      body .zguide-launcher {
+        transition: opacity 180ms ease, transform 180ms ease, translate 320ms var(--ease);
+      }
       body:has(.campaign-bag:not(.is-hidden)) .zguide-launcher {
         translate: 0 -78px;
-        transition: opacity 180ms ease, transform 180ms ease, translate 320ms var(--ease);
       }
     }
     /* Phones: as the page moves on, the film stays in place and dims, the
@@ -10767,10 +10787,9 @@
       -webkit-tap-highlight-color: transparent;
     }
     .campaign-bag__pick:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
-    /* The caret rides beside the name, so the status line keeps its width.
-       Where a long name needs the room, the caret wraps onto a clipped
-       second line instead of cutting the name short. */
-    .campaign-bag__name { min-width: 0; height: 20px; display: flex; flex-wrap: wrap; align-items: center; column-gap: 6px; overflow: hidden; }
+    /* Keep the sign picker visible beside every name, including Sagittarius. */
+    .campaign-bag__name { min-width: 0; height: 20px; display: flex; align-items: center; column-gap: 4px; }
+    .campaign-bag__name strong { min-width: 0; }
     .campaign-bag__caret { flex: 0 0 12px; color: var(--ink-dim); }
     .campaign-sheet {
       width: min(100%, 560px);
@@ -10853,9 +10872,20 @@
       .campaign-bag { right: auto; left: 50%; width: min(560px, calc(100% - 24px)); transform: translateX(-50%); }
       .campaign-bag.is-hidden { transform: translate(-50%, 140%); }
     }
-    @media (max-width: 360px) {
-      .campaign-bag { gap: 10px; padding-left: 12px; }
+    @media (max-width: 600px) {
+      .campaign-bag { min-height: 74px; }
+      body:has(.campaign-bag:not(.is-hidden)) .zguide-launcher { translate: 0 -90px; }
+      .campaign-bag__who strong { font-size: 18px; }
+      /* Both the price and daily movement retain their own line. Reserve the
+         same space while loading, unavailable, or displaying sign dates. */
+      .campaign-bag__who small { display: grid; min-height: 28px; align-content: center; gap: 1px; }
+    }
+    @media (max-width: 380px) {
       .campaign-bag__who img { display: none; }
+    }
+    @media (max-width: 340px) {
+      .campaign-bag { grid-template-columns: minmax(0, 1fr) 178px; column-gap: 8px; }
+      .campaign-bag__who strong { font-size: 16px; }
     }
     @media (min-width: 901px) and (prefers-reduced-motion: reduce) {
       .campaign-hero { height: auto; }
@@ -11259,7 +11289,7 @@ body:has(:focus-visible) .campaign-look__shine::after { animation-play-state: pa
           <details class="consumer-faq__item"><summary>Do I need a wallet to browse?</summary><p>No. You can browse the collection, see market context, and verify addresses without connecting a wallet.</p></details>
           <details class="consumer-faq__item"><summary>Where can I find Astrofolio merchandise?</summary><p>Browse the <a href="https://shop.app/m/41mzeq7f2h" rel="noopener noreferrer external">Astrofolio Shop</a> for clothing inspired by the twelve signs.</p></details>
           <details class="consumer-faq__item"><summary>What are the risks?</summary><p>Zodiac tokens are speculative and can be volatile or hard to sell. Prices can fall to zero, and wallet mistakes or scams can cause permanent loss.</p></details>
-          <details class="consumer-faq__item"><summary>What is the Terminal?</summary><p>The Terminal is the market desk for all twelve Zodiacs, with live prices, liquidity, charts, season context, research, and trading. Jupiter Ultra supplies the executable route and transaction; your wallet reviews, approves, and signs.</p></details>
+          <details class="consumer-faq__item"><summary>What is the Terminal?</summary><p>Zodiacs.org does not connect wallets, request signatures, or submit transactions. Public address lookups use an address you paste. Purchase links open independent services with their own terms and risks.</p></details>
         </div>
       </section>
 
@@ -11285,10 +11315,11 @@ body:has(:focus-visible) .campaign-look__shine::after { animation-play-state: pa
         <aside class="static-site__market-notice" role="note" aria-labelledby="static-terminal-market-notice-title" data-terminal-market-notice>
           <strong id="static-terminal-market-notice-title">Market &amp; venue notice</strong>
           <p>Zodiac tokens are speculative, thinly traded digital assets. Prices can be volatile, liquidity may disappear, and you could lose all money used to acquire one. Astrology has no established predictive relationship with asset prices.</p>
-          <p>Zodiacs.org provides the Terminal interface and public Registry; it does not operate a DEX, exchange, broker, or custodial service. When trading is available, Jupiter, an independent third-party liquidity aggregator, supplies the executable quote, builds and submits the transaction, and charges any venue fee shown; your wallet reviews, approves, and signs. Zodiacs.org holds no keys or funds, cannot reverse transactions, and receives no trading or referral compensation. References to Jupiter do not imply affiliation or endorsement.</p>
+          <p>Zodiacs.org does not connect wallets, request signatures, or submit transactions. Public address lookups use an address you paste. Purchase links open independent services with their own terms and risks. Zodiacs.org operates Astrofolio. <a href="/disclosure/">Disclosure</a>.</p>
           <p>Information is for informational purposes only and is not an offer or solicitation, an investment recommendation or trading strategy, or accounting, legal, tax, or financial advice. Third-party services may not be available in all regions. Verify the official address, network, amount, fees, and destination before signing.</p>
         </aside>
-      </footer>
+      <p class="zfooter__tag">Our astrology tools and guides are free, with no signup required. Zodiacs.org also operates Astrofolio, the Zodiac token collection. <a href="/disclosure/">Read our disclosure</a>.</p>
+    </footer>
   </div>
 
   <script>

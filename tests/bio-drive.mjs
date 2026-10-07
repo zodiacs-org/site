@@ -87,9 +87,9 @@ await withPreview({ port: Number(process.env.BIO_DRIVE_PORT ?? 4431) }, async (B
     check(`${viewport.name}: no horizontal overflow`, evidence.width <= evidence.viewport, `${evidence.width}/${evidence.viewport}`);
     check(`${viewport.name}: canonical nav and footer remain present`, evidence.navCount === 1 && evidence.fullFooterCount === 1);
     check(`${viewport.name}: focused navigation spacing remains present`, evidence.mainPaddingTop === '76px', evidence.mainPaddingTop);
-    check(`${viewport.name}: secondary site navigation stays out of the focused chrome`, !evidence.navLinksVisible);
+    check(`${viewport.name}: shared site navigation remains visible`, evidence.navLinksVisible);
     check(`${viewport.name}: share action stays visible`, evidence.shareVisible);
-    check(`${viewport.name}: share action stays above the focused navigation`, evidence.shareHitTarget);
+    check(`${viewport.name}: share action remains unobstructed in the page content`, evidence.shareHitTarget);
     check(`${viewport.name}: Guide does not overlap the link hub`, !evidence.guideVisible);
     check(`${viewport.name}: card stays inside viewport`, Boolean(evidence.card && evidence.card.left >= 0 && evidence.card.right <= viewport.width));
     check(`${viewport.name}: primary CTA arrives in the opening scan`, evidence.primaryTop <= 360, `${evidence.primaryTop}px`);
@@ -105,6 +105,8 @@ await withPreview({ port: Number(process.env.BIO_DRIVE_PORT ?? 4431) }, async (B
     await page.waitForTimeout(50);
     const footerHeight = Math.round(await page.locator('.zfooter').evaluate((footer) => footer.getBoundingClientRect().height));
     check(`${viewport.name}: rendered compact footer stays subordinate`, footerHeight > 0 && footerHeight <= 460, `${footerHeight}px`);
+    check(`${viewport.name}: compact footer does not leave an orphan Guide description`,
+      !(await page.locator('.zfooter__help').isVisible()));
     await page.evaluate(() => window.scrollTo(0, 0));
 
     if (viewport.name === 'desktop') {

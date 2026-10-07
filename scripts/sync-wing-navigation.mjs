@@ -41,7 +41,8 @@ for (const page of [...pages, ...stylePages]) {
   }
 
   const cssStart = output.indexOf('.wnav-wrap {');
-  const lastRule = '@media (max-width: 599.5px) and (prefers-reduced-motion: reduce) { .wnav-wrap { transition: none; } }';
+  const lastRule = output.match(/@media \(max-width: (?:599\.5|919\.5)px\) and \(prefers-reduced-motion: reduce\) \{ \.wnav-wrap \{ transition: none; \} \}/)?.[0] ?? '';
+  if (!lastRule) throw new Error(`${page}: compact navigation end marker missing`);
   const cssEnd = output.indexOf(lastRule, cssStart) + lastRule.length;
   if (cssStart < 0 || cssEnd < cssStart) throw new Error(`${page}: navigation styles missing`);
   const css = wingNavCss();
