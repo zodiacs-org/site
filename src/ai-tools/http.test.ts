@@ -171,6 +171,21 @@ describe('stateless MCP HTTP boundary', () => {
     expect(result.structuredContent.data.zone).toBe('Asia/Bangkok');
     expect(JSON.stringify(result.structuredContent)).not.toContain('TH');
   });
+  it("tolerates Vercel's query-parameter bypass on previews only, without echoing it", async () => {
+    const bypassed = (environment: Record<string, string | undefined>) => new Promise<{ status: number; body: string }>((resolve) => {
+      const handler = createAiNodeHandler({ env: { ZODIACS_MCP_ENABLED: '1', ...environment }, allowedHosts: ['zodiacs.org'], atomicQuota: async () => 'allowed', rateLimit: async () => 'allowed' });
+      const chunks: Buffer[] = [];
+      const res = { statusCode: 0, headersSent: false, setHeader() {}, write(chunk: string) { chunks.push(Buffer.from(chunk)); }, end(chunk?: string) { if (chunk) chunks.push(Buffer.from(chunk)); resolve({ status: this.statusCode, body: Buffer.concat(chunks).toString() }); } };
+      const body = JSON.stringify(rpc('ping'));
+      void handler({ method: 'POST', url: '/api/compatibility?__zodiacs_ai=1&x-vercel-protection-bypass=preview-canary-secret', headers: { host: 'zodiacs.org', 'content-type': 'application/json', accept: 'application/json, text/event-stream', 'content-length': String(body.length) }, body }, res);
+    });
+    const preview = await bypassed({ VERCEL_ENV: 'preview' });
+    expect(preview.status).toBe(200); expect(preview.body).not.toContain('preview-canary-secret');
+    for (const environment of [{ VERCEL_ENV: 'production' }, {}]) {
+      const refused = await bypassed(environment);
+      expect(refused.status).toBe(400); expect(refused.body).not.toContain('preview-canary-secret');
+    }
+  });
   it('serves the newer per-request protocol envelope without a session', async () => {
     const response = await post(rpc('tools/list', { _meta: {
       'io.modelcontextprotocol/protocolVersion': '2026-07-28',

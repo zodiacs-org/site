@@ -12,6 +12,7 @@ import { configuredSkyWatch, type SkyWatch } from './watch/service';
 const ALLOWED_ORIGINS = new Set(['https://chatgpt.com', 'https://chat.openai.com', 'https://claude.ai', 'https://claude.com', ORIGIN]);
 const SECURITY_HEADERS = { 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff', 'X-Robots-Tag': 'noindex' };
 let handledPreviewRequests = 0;
+const PREVIEW_BYPASS_PARAM = 'x-vercel-protection-bypass';
 /** Plain refusals; none repeats anything from the request. */
 const REFUSALS: Record<string, string> = {
   'rate-limited': 'Zodiacs is busy. Try again in a minute.',
@@ -91,9 +92,13 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
     let rawQuery: URLSearchParams;
     try { rawQuery = new URL(req.url ?? '/mcp', ORIGIN).searchParams; }
     catch { return send(res, 400, 'invalid-query'); }
-    if ([...rawQuery.keys()].some(key => key !== AI_ROUTE_PARAM) || rawQuery.getAll(AI_ROUTE_PARAM).length > 1) return send(res, 400, 'invalid-query');
+    // Vercel's documented query-parameter bypass lets an assistant that cannot send custom
+    // headers reach a protected preview. Vercel checks it before this function runs; it is
+    // tolerated here on preview deployments only, and never read, echoed or logged.
+    const known = (key: string) => key === AI_ROUTE_PARAM || (env.VERCEL_ENV === 'preview' && key === PREVIEW_BYPASS_PARAM);
+    if ([...rawQuery.keys()].some(key => !known(key)) || rawQuery.getAll(AI_ROUTE_PARAM).length > 1 || rawQuery.getAll(PREVIEW_BYPASS_PARAM).length > 1) return send(res, 400, 'invalid-query');
     const query = req.query ?? Object.fromEntries(rawQuery);
-    if (Object.keys(query).some(key => key !== AI_ROUTE_PARAM) || (query[AI_ROUTE_PARAM] !== undefined && !['1', 'health'].includes(query[AI_ROUTE_PARAM]))) return send(res, 400, 'invalid-query');
+    if (Object.keys(query).some(key => !known(key)) || (query[AI_ROUTE_PARAM] !== undefined && !['1', 'health'].includes(query[AI_ROUTE_PARAM]))) return send(res, 400, 'invalid-query');
     if (method !== 'POST' && !(method === 'GET' && query[AI_ROUTE_PARAM] === 'health')) {
       res.setHeader('Allow', 'POST, OPTIONS'); return send(res, 405, 'method-not-allowed');
     }
