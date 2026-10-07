@@ -267,7 +267,10 @@ const SHARE_INSTANT_SOURCES: Record<string, string[]> = {
   'src/islands/SynastryCalculator.tsx': [
     '...(resolved.timeKnown ? { utc: summary.utcISO } : { untimedDate: chart.birth.date })',
     '...(input.timeKnown ? { utc: resolved.utc } : { untimedDate: input.date })',
-    '...(timeKnown ? { utc: resolved.utc } : { untimedDate: slot.date })',
+    'const person = await resolveLink({',
+    'date: slot.date,',
+    "timeKnown: slot.timeKnown && slot.time !== '',",
+    'return { ...person, oldStyle: slot.oldStyle };',
     'a={result.a}',
     'b={result.b}',
   ],

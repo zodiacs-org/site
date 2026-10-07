@@ -28,7 +28,14 @@
     "webChartOwnership": 17,
     "phase1Captures": 18
   },
-  "hostedIntegratedAcceptance": "pending",
+  "hostedIntegratedAcceptance": {
+    "status": "passed",
+    "sourceCommit": "54fd2609783959f1595397139e02313e65d69f31",
+    "deploymentId": "dpl_39XunjH1rDqsUQmVRUYUxV1bDgHQ",
+    "stableAliasVerified": true,
+    "unauthenticatedStatus": 302,
+    "livePricesVerified": false
+  },
   "v3Activated": false,
   "v3SyntheticRecovery": {
     "at": "2026-10-07T01:10:52.518Z",
@@ -67,6 +74,12 @@
     "commit": "613ac801efd0650c39120076fd40b1fb896fab3c",
     "focusedTestsPassed": 26,
     "productionFeatureBuildPassed": true,
-    "budgetsUnchanged": true
+    "budgetsUnchanged": true,
+    "productionFeatureCompatibilityKB": 35.9,
+    "limitKB": 36
+  },
+  "privacySourceAssertionFollowup": {
+    "focusedTestsPassed": 55,
+    "meaning": "Privacy caller guard follows the shared resolver; runtime privacy tests unchanged."
   }
 }

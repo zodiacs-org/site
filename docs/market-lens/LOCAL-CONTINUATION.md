@@ -6,27 +6,33 @@ Updated: 2026-10-07, Asia/Bangkok. Local chat: `01a10797-8c9a-7902-bae0-9bc0a518
 
 Continue existing draft PR [#619](https://github.com/zodiacs-org/site/pull/619): verify the private v2 study and offline recovery; implement a versioned cross-asset catalog, provider/session/risk support and migrations; prepare a separate expanded study; verify a protected preview where access allows; update beta and licensing documentation. Keep the PR draft. Production release, merging, real trades, purchases and new external outreach remain unauthorized. Preserve v1 evidence and frozen v2 bytes. Raw market/state data stays outside this public repository.
 
-## Current checkpoint — 7 October 2026, 08:13 Bangkok
+## Current checkpoint — 7 October 2026, 08:40 Bangkok
 
 | Checkpoint | Verified status | Remaining |
 | --- | --- | --- |
 | v2 | Initial and subsequent manual cycle, two signed decisions, Git persistence, both artifact checksums, isolated restore and repeat operations verified; every initial archive byte preserved | Cron execution has not yet been observed; first settlement is due 8 October 07:05 Bangkok |
 | App | 52 candidate instruments, provider/session/risk support, explicit journal migration, search and favorites implemented | Written rights and verified coverage before live prices |
-| Local validation | Build/static/budgets pass; 7,036 tests pass, 5 skip; 5 cross-asset + 18 Lens + 17 ownership browser checks; 18 refreshed captures | Final hosted CI and integrated preview acceptance pending |
+| Local validation | Build/static/budgets pass; 7,036 tests pass, 5 skip; 5 cross-asset + 18 Lens + 17 ownership browser checks; 18 refreshed captures | Actual hosted acceptance passes; GitHub checks are linked from draft PR #619 |
 | v3 | Separate rc.17 draft/runtime; synthetic minimal-runtime restore and two repeat cycles pass | Provider grants, credentials, mappings/calendars, eligibility and live acceptance before activation |
-| Beta | Review kit prepared; protection and disabled price gates preserved | Owner decision to release/invite; zero invitations or feedback |
+| Beta | Stable protected alias refreshed and tested; review kit updated | Owner decision to release/invite; zero invitations or feedback |
 
 The user delegated the engine choice. The app and unfrozen v3 follow integrated main `8e0b849e`; original v1/v2 sources and receipts retain rc.15 unchanged. Legacy paper tests now run unchanged sources against the committed rc.15 archive in an isolated test directory. The main-only automatic deployment and production/spend controls remain unchanged.
 
-The pre-integration protected preview at `5c0c6054` passed actual hosted acceptance. A new integrated preview and stable-alias refresh are in progress; it is not yet the final accepted deployment. No live licensed market-data acceptance is claimed.
+The stable protected alias now serves validated application `54fd2609`. Actual deployed acceptance passes through both its individual URL and the stable alias; authentication remains enforced. Subsequent changes are test assertions, generated evidence and documentation only. No licensed live-market acceptance is claimed.
 
 ## Evidence and continuity
 
 This is the current public-safe checkpoint. Dated sections below preserve prior evidence and superseded status, including earlier failed tests and unavailable access. Private raw state, signatures and recovery logs are retained outside this public repository. The partial v1 archive is not deployable and has never replaced v2. The isolated publishing checkout avoids a blocked cloud-offloaded pack in the original shared Git store; no original files or Git pack were deleted.
 
-## Next action
+## Release prerequisites
 
-Push the integrated draft, verify current GitHub checks, deploy and test the protected preview, move only the stable review alias, and save the finished local checkout durably. No production release or invitations.
+Written provider rights, secure credentials, accepted symbol/action/session mappings and dated eligibility/liquidity evidence are required for live prices and v3. The prepared request in PROVIDER-REQUEST.md has not been sent. V3 remains inactive until live acquisition/timestamp/scheduler/restore acceptance and future start dates are approved. Owner decisions are still needed for release and beta invitations; no outreach, purchases, trades or production release occurred.
+
+GitHub cron delivery remains unobserved; the unchanged manual v2 cycle and downloadable recovery are verified. Check the private workflow's subsequent scheduled runs and preserve failures/receipts without backfilling. The first settlement becomes eligible 8 October 07:05 Bangkok.
+
+## Final validation links
+
+Draft PR #619 carries the current GitHub check results. Application source is `54fd2609`; test/provenance follow-ups do not change the deployed application. Exact hosted evidence is in deployed-cross-asset-acceptance.json. Durable independent checkout: `/Users/chiburashka/.codex/recoveries/market-lens-local-2026-10-07/site`.
 
 ## Checkpoint 1 — independently verified 6 October 2026, 23:38 Bangkok
 
@@ -92,3 +98,9 @@ Integrated preview `dpl_7pkHah1FuTpNCZ3jGNt7VowJ2S9x` at application `19f424f4` 
 GitHub's production-feature build exposed a small compatibility-page overrun at its unchanged 36 KB limit. Commit `613ac801` reuses the existing chart resolver instead of duplicating conversion logic; all 26 compatibility unit/recovery tests and the complete production-feature build/budget checks pass. Default build/captures/full tests are being refreshed. No budget or deployment guard was relaxed. Fresh CI: run `37556918440` (supersedes the earlier failed budget run).
 
 The full working project and independent Git history are also saved outside temporary storage at `/Users/chiburashka/.codex/recoveries/market-lens-local-2026-10-07/site`. The original checkout has a continuation pointer; its original files and Git pack remain intact. This copy excludes reinstallable dependencies, build caches and environment bindings.
+
+## Stable protected preview — 7 October, 08:40 Bangkok
+
+Deployment `dpl_39XunjH1rDqsUQmVRUYUxV1bDgHQ`, application `54fd2609`, is READY. Both the individual URL and stable review alias pass all five real hosted groups (cross-asset disabled responses, validation, actual calendar shards, private journal persistence, noindex research). Unauthorized requests still return 302 to authentication. No access sharing, protection change, production release, price-gate enablement or budget relaxation occurred. Beta kit updated; zero invitations and zero feedback.
+
+The compatibility refactor preserved timed/untimed privacy behavior. Its source-scanning privacy assertion now follows the shared resolver instead of requiring the removed duplicate expression; all 55 focused caller/i18n checks pass. A disk-heavy i18n test timed out during a concurrent full-suite/upload run and passes in isolation; the final full suite is rerun with four workers. Historical failures above remain dated records.

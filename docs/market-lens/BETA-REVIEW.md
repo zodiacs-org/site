@@ -1,6 +1,6 @@
 # Protected beta review
 
-Updated 7 October 2026, Asia/Bangkok. Cross-asset review builds on the existing draft PR #619. The stable [protected preview](https://zodiacs-org-git-codex-lens-preview-20261001-zodiacsofficial.vercel.app/terminal/lens/) is being refreshed; exact source and hosted acceptance are recorded in LOCAL-CONTINUATION.md. Do not invite reviewers until that acceptance is verified.
+Updated 7 October 2026, Asia/Bangkok. The stable [protected preview](https://zodiacs-org-git-codex-lens-preview-20261001-zodiacsofficial.vercel.app/terminal/lens/) now serves application `54fd2609` (deployment `dpl_39XunjH1rDqsUQmVRUYUxV1bDgHQ`). All five actual hosted acceptance groups passed through both the deployment URL and stable alias. Unauthenticated access returns the authentication redirect. See deployed-cross-asset-acceptance.json for exact evidence.
 
 Vercel Authentication remains enabled. An authorized session or short-lived same-project OIDC binding provides review access without public sharing. Prices remain disabled while written display rights are unresolved. Catalog search, calendars, private setup/risk planning and journals can be reviewed; unsupported metadata refuses sizing. No production release, invitations or feedback are recorded.
 

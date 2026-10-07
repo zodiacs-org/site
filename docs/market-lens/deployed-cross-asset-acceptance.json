@@ -1,6 +1,6 @@
 {
-  "verifiedAt": "2026-10-06T17:41:48.925Z",
-  "base": "https://zodiacs-94jc7vriu-zodiacsofficial.vercel.app",
+  "verifiedAt": "2026-10-07T01:39:48.689Z",
+  "base": "https://zodiacs-org-git-codex-lens-preview-20261001-zodiacsofficial.vercel.app",
   "transport": "TLS-verified native-fetch relay to actual deployed URLs; no data fixtures",
   "status": "passed",
   "checks": [
@@ -14,7 +14,11 @@
   "privatePayloadTransmitted": false,
   "livePricePathVerified": false,
   "livePriceBlocker": "Owner confirmed no display license; hosted prices are disabled",
-  "sourceCommit": "5c0c6054bd1a35c6ca101a7c722dddcf65241c09",
-  "deploymentId": "dpl_9ncYRfaFtjHA7AMC95mLvZ3nr458",
-  "reviewState": "pre-main-integration checkpoint; final integrated source must be redeployed and reverified"
+  "sourceCommit": "54fd2609783959f1595397139e02313e65d69f31",
+  "deploymentId": "dpl_39XunjH1rDqsUQmVRUYUxV1bDgHQ",
+  "individualDeployment": "https://zodiacs-mobf5voja-zodiacsofficial.vercel.app",
+  "unauthenticatedStatus": 302,
+  "protection": "Vercel SSO remains enabled for previews",
+  "automaticDeploymentGuardsUnchanged": true,
+  "subsequentChanges": "Only test assertions, generated visual provenance and documentation; application source is unchanged."
 }
