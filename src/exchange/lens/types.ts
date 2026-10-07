@@ -122,12 +122,37 @@ export interface RuleMatch {
   condition: string;
 }
 
+/**
+ * What the timing context changed, answered once when a TA + astrology plan is
+ * created and fixed afterwards: nothing, a larger or smaller size, the decision
+ * to trade, or the decision to pass. It is the plan's own counterfactual.
+ */
+export type TimingRole = 'none' | 'larger' | 'smaller' | 'initiated' | 'veto';
+/**
+ * Four outcomes of a trade that was taken, plus two plans that never became a
+ * trade: the confirmation never came, or the trader passed.
+ */
+export type ReviewStatus = 'not-triggered' | 'skipped' | 'target' | 'stop' | 'time-exit' | 'manual-exit';
+export interface PlanReview {
+  status: ReviewStatus;
+  /** Exit price in the quote currency. For a passed plan, where it would have exited. */
+  exit?: number;
+  /**
+   * Result in multiples of the loss planned at the stop when the window
+   * opened. For a passed plan it is the would-have result, never a realized one.
+   */
+  r?: number;
+  /** Only for trades that were taken. */
+  followedPlan?: boolean;
+}
+
 export interface JournalRevision {
   at: string;
   hypothesis: string;
   plan: string;
   outcome: string;
   setup?: SetupPlan;
+  review?: PlanReview;
 }
 export interface JournalEntry {
   id: string;
@@ -143,6 +168,8 @@ export interface JournalEntry {
   revisions: JournalRevision[];
   chartRef?: { id: string; updatedAt: string };
   setup?: SetupPlan;
+  timingRole?: TimingRole;
+  review?: PlanReview;
 }
 
 export interface SetupPlan {
@@ -151,6 +178,8 @@ export interface SetupPlan {
   confirmation: string;
   invalidation: string;
   risk: { equity: number; riskMode: 'percent' | 'usd' | 'quote'; riskValue: number; entry: number; stop: number; target?: number; feeBps: number; slippageBps: number; instrumentId?: InstrumentId; currency?: string; funding?: 'cash' | 'derivative'; marginPerContract?: number };
+  /** Planned entry instant (UTC). Without it the trade window opens when the plan was first saved. */
+  entryAt?: string;
   window?: { kind: 'shared' | 'personal' | 'economic'; id: string; sourceId?: string; sourceUpdatedAt?: string; from: string; to: string };
 }
 

@@ -17,7 +17,7 @@ async function contextWith(charts, viewport = { width: 1440, height: 1050 }) {
   context.on('request', request => requests.push({ url: request.url(), body: request.postData() ?? '' }));
   await context.addInitScript(charts => { localStorage.setItem('zodiacs.profile.v1', JSON.stringify({ version: 1, settings: { houseSystem: 'whole' }, charts })); }, charts);
   const page = await context.newPage(); page.on('pageerror', error => errors.push(error.message));
-  await page.goto(`${BASE}/terminal/lens/`);
+  await page.goto(`${BASE}/terminal/desk/`);
   await page.getByTestId('lens-personal-context').waitFor();
   // Local cloud previews enable the v2 boundary without Supabase credentials.
   // Exercise the real synchronous guard with a synthetic unowned grant.
@@ -44,6 +44,7 @@ try {
   await page.getByLabel('Confirmation condition').fill('Finalized close above entry'); await page.getByLabel('Invalidation condition').fill('Stop level'); await page.getByLabel('Timing hypothesis', { exact: true }).fill('Private preparation hypothesis');
   await page.getByLabel('Entry (USD)', { exact: true }).fill('100'); await page.getByLabel('Stop (USD)', { exact: true }).fill('90'); await page.getByLabel('Target (optional USD)').fill('120');
   await page.getByLabel('Associate selected personal window:', { exact: false }).check();
+  await page.getByTestId('setup-timing').selectOption('larger'); await page.getByTestId('trade-window').waitFor();
   await page.getByRole('button', { name: 'Save setup to journal', exact: true }).click(); await page.getByText('Setup saved in your private journal.', { exact: false }).waitFor();
   await page.getByRole('button', { name: 'Revise setup', exact: true }).click(); await page.getByLabel('Stop (USD)', { exact: true }).fill('95'); await page.getByRole('button', { name: 'Save setup revision', exact: true }).click();
   await page.getByText('Setup revision saved;', { exact: false }).waitFor();
@@ -74,10 +75,10 @@ try {
   await tab(page, 'brief'); assert.match(await page.getByTestId('lens-brief').innerText(), /Crypto trades continuously|SYNTHETIC-PRIVATE-SETUP/);
   checks.push('Separate official economics, timezone conversion and preparation brief');
   await page.screenshot({ path: `${OUT}/desktop-brief.png`, fullPage: true });
-  const peer = await context.newPage(); await peer.goto(`${BASE}/terminal/lens/`); await peer.getByTestId('lens-setup').waitFor({ state: 'attached' });
+  const peer = await context.newPage(); await peer.goto(`${BASE}/terminal/desk/`); await peer.getByTestId('lens-setup').waitFor({ state: 'attached' });
   await tab(page, 'setup'); await page.getByRole('button', { name: 'Revise setup', exact: true }).click(); await page.getByLabel('Stop (USD)', { exact: true }).fill('93');
   await tab(peer, 'setup'); await peer.getByRole('button', { name: 'Revise setup', exact: true }).click(); await peer.getByLabel('Stop (USD)', { exact: true }).fill('94'); await peer.getByRole('button', { name: 'Save setup revision', exact: true }).click(); await peer.getByText('Setup revision saved;', { exact: false }).waitFor();
-  await page.getByRole('button', { name: 'Save setup revision', exact: true }).click(); await page.getByText('Market Lens was changed in another tab.', { exact: false }).waitFor(); assert.equal(await page.getByLabel('Stop (USD)', { exact: true }).inputValue(), '93');
+  await page.getByRole('button', { name: 'Save setup revision', exact: true }).click(); await page.getByText('Zodiacs Desk was changed in another tab.', { exact: false }).waitFor(); assert.equal(await page.getByLabel('Stop (USD)', { exact: true }).inputValue(), '93');
   checks.push('Cross-tab setup revision refuses a stale draft and retains it for review');
   await peer.evaluate(() => { const profile = JSON.parse(localStorage.getItem('zodiacs.profile.v1')); const own = profile.charts.find(chart => chart.relationship === 'self'); own.birth.timeKnown = false; own.birth.time = null; own.summary.flags = ['no-time']; own.updatedAt = '2026-10-01T13:00:00.000Z'; localStorage.setItem('zodiacs.profile.v1', JSON.stringify(profile)); window.dispatchEvent(new Event('zodiacs:profile')); });
   await page.getByText('Time is unknown or uncertain:', { exact: false }).waitFor({ timeout: 60000 });
@@ -115,7 +116,7 @@ try {
   await approximate.page.getByText('Time is unknown or uncertain:', { exact: false }).waitFor({ timeout: 60000 }); checks.push('Ambiguous-clock flag excludes natal Moon, angles and houses'); await approximate.context.close();
   const handoff = await contextWith([]);
   const token = '1.' + Buffer.from(JSON.stringify({ d: fixture.birth.date, t: fixture.birth.time, z: fixture.birth.place.tz, la: fixture.birth.place.lat, lo: fixture.birth.place.lon, h: 'placidus' })).toString('base64url');
-  await handoff.page.goto(`${BASE}/terminal/lens/#c=${token}`); await handoff.page.getByText('Using your unsaved chart · this session only', { exact: true }).waitFor(); await waitPersonal(handoff.page); assert.equal(new URL(handoff.page.url()).hash, '');
+  await handoff.page.goto(`${BASE}/terminal/desk/#c=${token}`); await handoff.page.getByText('Using your unsaved chart · this session only', { exact: true }).waitFor(); await waitPersonal(handoff.page); assert.equal(new URL(handoff.page.url()).hash, '');
   await handoff.page.getByTestId('lens-tab-calendar').focus(); await handoff.page.keyboard.press('Enter'); await handoff.page.getByRole('heading', { name: 'My Astro Calendar', exact: true }).last().waitFor();
   checks.push('Existing full-chart fragment handoff is consumed privately; keyboard calendar navigation works'); await handoff.context.close();
   const none = await contextWith([]); assert.match(await none.page.getByTestId('lens-personal-context').innerText(), /Choose your own full chart|locked/); await none.context.close();
@@ -129,7 +130,7 @@ try {
   checks.push('Missing birthplace opens shared editor with known date and time preserved');
   await partial.context.close();
   const dateOnly = await contextWith([]);
-  await dateOnly.page.goto(`${BASE}/terminal/lens/#date=2001-03-02&time=unknown`);
+  await dateOnly.page.goto(`${BASE}/terminal/desk/#date=2001-03-02&time=unknown`);
   await dateOnly.page.getByText('Your date and time choice are available for this session.', { exact: false }).waitFor();
   assert.equal(new URL(dateOnly.page.url()).hash, '');
   await dateOnly.page.getByRole('link', { name: 'Open chart calculator', exact: true }).click();
@@ -142,5 +143,5 @@ try {
   for (const request of requests) assert.ok(!JSON.stringify(request).includes('1990-02-01') && !JSON.stringify(request).includes('2001-03-02') && !JSON.stringify(request).includes('SYNTHETIC-PRIVATE-SETUP') && !JSON.stringify(request).includes('Private preparation hypothesis'));
   checks.push('No private birth or journal data in outbound API URLs/payloads');
   await writeFile(`${OUT}/acceptance.json`, JSON.stringify({ at: new Date().toISOString(), checks, errors, requestCount: requests.length, privateApiLeakChecks: outward.length, syntheticChart: true }, null, 2) + '\n');
-  console.log(`${checks.length} revised Market Lens browser checks passed.`);
+  console.log(`${checks.length} revised Zodiacs Desk browser checks passed.`);
 } finally { await browser.close(); }

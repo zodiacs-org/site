@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'preact/hooks';
 import type { InstrumentId, JournalEntry, SkyEvent } from './types';
+import type { LensStore } from './storage';
 import { estimateRisk } from './risk';
 import { formatEventDate, formatEventTime } from './events';
+import { applyReview, describeReview, HINDSIGHT_LABELS, hindsightFlags, horizonEnd, TIMING_ROLE_LABELS } from './ledger';
+import { formatMinute } from './window';
+import ReviewForm from './ReviewForm';
 
 const quotePrice = (value: number | string, currency = 'USD') => currency === 'USD' ? `$${value}` : `${value} ${currency}`;
 
@@ -28,13 +32,14 @@ export interface JournalPanelProps {
   onImport: (file: File) => Promise<void>;
   storageError: string | null;
   personalSourceKey: string;
+  onUpdate: (mutate: (current: LensStore) => LensStore) => Promise<void>;
 }
 
 function errorMessage(error: unknown): string {
   return error instanceof Error ? error.message : 'The journal could not be updated. Please try again.';
 }
 
-export default function JournalPanel({ entries, instrument, selectedEvent, timeZone, onSave, onDelete, onExport, onImport, storageError, personalSourceKey }: JournalPanelProps) {
+export default function JournalPanel({ entries, instrument, selectedEvent, timeZone, onSave, onDelete, onExport, onImport, storageError, personalSourceKey, onUpdate }: JournalPanelProps) {
   const timestamp = (value: string) => `${formatEventDate(value, timeZone)} · ${formatEventTime(value, timeZone)}`;
   const [editingId, setEditingId] = useState<string | null>(null);
   const [baseUpdatedAt, setBaseUpdatedAt] = useState<string | undefined>();
@@ -44,6 +49,7 @@ export default function JournalPanel({ entries, instrument, selectedEvent, timeZ
   const [horizon, setHorizon] = useState('24');
   const [method, setMethod] = useState<JournalEntry['method']>('TA + astrology');
   const [eventIds, setEventIds] = useState<string[]>([]);
+  const [reviewing, setReviewing] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -167,7 +173,7 @@ export default function JournalPanel({ entries, instrument, selectedEvent, timeZ
         <h2 id="lens-journal-heading" class="lens-section-title">Trading journal</h2>
         <button type="button" class="lens-button lens-button--quiet" onClick={exportEntries} disabled={pending || entries.length === 0} data-testid="journal-export">Export journal</button>
       </div>
-      <p class="lens-muted">Record your expectation before a trade, then return to review the outcome. Entries stay on this device. Export a copy to keep a backup.</p>
+      <p class="lens-muted">Record your expectation before a trade, then return to review it. Entries stay on this device. Export a copy to keep a backup.</p>
       {(error || storageError) && <p class="lens-error" role="alert">{error || storageError}</p>}
       <p role="status" aria-live="polite" class="lens-muted">{message}</p>
       <form class="lens-form" onSubmit={save} data-testid="journal-form" aria-busy={pending}>
@@ -183,7 +189,7 @@ export default function JournalPanel({ entries, instrument, selectedEvent, timeZ
             <input id="lens-journal-horizon" type="number" min="1" max="8760" step="1" required value={horizon} onInput={event => setHorizon(event.currentTarget.value)} disabled={pending || Boolean(editingId)} data-testid="journal-horizon" />
           </label>
         </div>
-        {editingId && <p class="lens-muted">The original method, time horizon, and attached events are preserved with this entry. <button type="button" class="lens-text-button" disabled={pending} onClick={() => setEditingId(null)}>Save as new entry</button></p>}
+        {editingId && <p class="lens-muted">The original method, time horizon and attached events are preserved with this entry. <button type="button" class="lens-text-button" disabled={pending} onClick={() => setEditingId(null)}>Save as new entry</button></p>}
         <label class="lens-field" for="lens-journal-hypothesis">Expectation before the trade
           <textarea id="lens-journal-hypothesis" rows={3} required maxLength={5000} value={hypothesis} onInput={event => setHypothesis(event.currentTarget.value)} disabled={pending} placeholder="What do you expect, and over what period?" data-testid="journal-hypothesis" />
         </label>
@@ -213,11 +219,15 @@ export default function JournalPanel({ entries, instrument, selectedEvent, timeZ
         {visibleEntries.length === 0 && <p class="lens-muted">Your saved plans and reviews will appear here.</p>}
         {visibleEntries.map(entry => <article key={entry.id} class="lens-card" data-testid="journal-entry">
           <div class="lens-inline"><strong>{entry.method}</strong><span class="lens-muted">{entry.horizonHours} h horizon</span></div>
+          {entry.timingRole && <p class="lens-muted">Timing answer: {TIMING_ROLE_LABELS[entry.timingRole]}</p>}
           <p class="lens-muted">Recorded <time dateTime={entry.createdAt}>{timestamp(entry.createdAt)}</time>{entry.updatedAt !== entry.createdAt && <> · Updated <time dateTime={entry.updatedAt}>{timestamp(entry.updatedAt)}</time></>}</p>
           <p><strong>Expectation</strong><br />{entry.hypothesis}</p>
           <p><strong>Plan</strong><br />{entry.plan}</p>
-          {entry.setup && <details><summary>Saved setup / risk context</summary><p>Timeframe {entry.setup.interval} · {entry.setup.technicalSetup}<br />Confirmation: {entry.setup.confirmation}<br />Invalidation: {entry.setup.invalidation}<br />Entry {quotePrice(entry.setup.risk.entry, entry.setup.risk.currency)} · stop {quotePrice(entry.setup.risk.stop, entry.setup.risk.currency)} · target {entry.setup.risk.target == null ? 'none' : quotePrice(entry.setup.risk.target, entry.setup.risk.currency)}<br />{estimateRisk(entry.setup.risk).units.toFixed(8)} units · {quotePrice(estimateRisk(entry.setup.risk).stopLoss.toFixed(2), entry.setup.risk.currency)} estimated loss incl. costs · fees {entry.setup.risk.feeBps} bps and slippage {entry.setup.risk.slippageBps} bps per side</p>{entry.setup.window && <p>Associated {entry.setup.window.kind} window · {entry.setup.window.from} to {entry.setup.window.to}</p>}</details>}
-          {entry.outcome ? <p><strong>Outcome</strong><br />{entry.outcome}</p> : <p class="lens-muted">Outcome not recorded yet.</p>}
+          {entry.setup && <details><summary>Saved setup / risk context</summary><p>Timeframe {entry.setup.interval} · {entry.setup.technicalSetup}<br />Confirmation: {entry.setup.confirmation}<br />Invalidation: {entry.setup.invalidation}<br />Entry {quotePrice(entry.setup.risk.entry, entry.setup.risk.currency)} · stop {quotePrice(entry.setup.risk.stop, entry.setup.risk.currency)} · target {entry.setup.risk.target == null ? 'none' : quotePrice(entry.setup.risk.target, entry.setup.risk.currency)}<br />{estimateRisk(entry.setup.risk).units.toFixed(8)} units · {quotePrice(estimateRisk(entry.setup.risk).stopLoss.toFixed(2), entry.setup.risk.currency)} estimated loss incl. costs · fees {entry.setup.risk.feeBps} bps and slippage {entry.setup.risk.slippageBps} bps per side{entry.setup.entryAt && <><br />Planned entry {formatMinute(Date.parse(entry.setup.entryAt), timeZone)}</>}</p>{entry.setup.window && <p>Associated {entry.setup.window.kind} window · {formatMinute(Date.parse(entry.setup.window.from), timeZone)} to {formatMinute(Date.parse(entry.setup.window.to), timeZone)}</p>}</details>}
+          {entry.review ? <p data-testid="journal-review"><strong>Review</strong><br />{describeReview(entry.review)}</p>
+            : entry.setup && <p class="lens-muted">{horizonEnd(entry) <= Date.now() ? `Window closed ${formatMinute(horizonEnd(entry), timeZone)}. Ready for review.` : `Window closes ${formatMinute(horizonEnd(entry), timeZone)}.`}</p>}
+          {entry.setup && hindsightFlags(entry).length > 0 && <p class="lens-notice" data-testid="journal-hindsight">{[...new Set(hindsightFlags(entry).map(flag => HINDSIGHT_LABELS[flag.kind]))].join('; ').replace(/^./, letter => letter.toUpperCase())}. Left out of ledger figures.</p>}
+          {entry.outcome && <p><strong>{entry.review ? 'Review notes' : 'Outcome'}</strong><br />{entry.outcome}</p>}
           {entry.eventIds.length > 0 && <details><summary>{entry.eventIds.length} attached sky {entry.eventIds.length === 1 ? 'event' : 'events'}</summary><ul>{entry.eventIds.map(id => <li key={id}>{selectedEvent?.id === id ? selectedEvent.title : id}</li>)}</ul></details>}
           {entry.revisions.length > 1 && <details data-testid="journal-revisions">
             <summary>{entry.revisions.length - 1} earlier {entry.revisions.length === 2 ? 'version' : 'versions'}</summary>
@@ -226,10 +236,13 @@ export default function JournalPanel({ entries, instrument, selectedEvent, timeZ
               <p><strong>Expectation</strong><br />{revision.hypothesis}</p>
               <p><strong>Plan</strong><br />{revision.plan}</p>
               {revision.setup && <p>Saved risk version: entry {quotePrice(revision.setup.risk.entry, revision.setup.risk.currency)} · stop {quotePrice(revision.setup.risk.stop, revision.setup.risk.currency)} · risk {revision.setup.risk.riskValue} {revision.setup.risk.riskMode} · fees {revision.setup.risk.feeBps} / slippage {revision.setup.risk.slippageBps} bps per side. Confirmation: {revision.setup.confirmation}. Invalidation: {revision.setup.invalidation}.</p>}
+              {revision.review && <p><strong>Review</strong><br />{describeReview(revision.review)}</p>}
               {revision.outcome && <p><strong>Outcome</strong><br />{revision.outcome}</p>}
             </div>)}</div>
           </details>}
+          {reviewing === entry.id && <ReviewForm entry={entry} onSave={input => onUpdate(current => applyReview(current, input))} onDone={() => setReviewing(null)} />}
           <div class="lens-inline">
+            {entry.setup && reviewing !== entry.id && <button class="lens-button" type="button" disabled={pending || Boolean(storageError)} onClick={() => setReviewing(entry.id)} data-testid="journal-review-open">{entry.review ? 'Edit review' : 'Record review'}</button>}
             <button class="lens-button lens-button--quiet" type="button" disabled={pending} onClick={() => edit(entry)} data-testid="journal-edit" aria-label={`Edit journal entry from ${timestamp(entry.createdAt)}`}>Edit / add outcome</button>
             <button class="lens-button lens-button--quiet" type="button" disabled={pending} onClick={() => void remove(entry.id)} data-testid="journal-delete" aria-label={`Delete journal entry from ${timestamp(entry.createdAt)}`}>Delete entry</button>
           </div>

@@ -21,7 +21,7 @@ const tab = async (p, name) => {
   await p.getByTestId(`lens-tab-${name}`).click();
 };
 const ready = async p => {
-  await p.goto(`${BASE}/terminal/lens/`);
+  await p.goto(`${BASE}/terminal/desk/`);
   await p.waitForFunction(() => document.querySelector('.lens-market-summary strong')?.textContent?.startsWith('$'), { timeout: 40000 });
   await p.locator('[data-testid="lens-chart"] canvas').first().waitFor();
 };

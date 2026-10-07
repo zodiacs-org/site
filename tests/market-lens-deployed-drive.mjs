@@ -53,7 +53,7 @@ try {
   });
   const page = await context.newPage();
   page.on('pageerror', error => errors.push(error.message));
-  await page.goto(new URL('/terminal/lens/', base).href);
+  await page.goto(new URL('/terminal/desk/', base).href);
   await page.waitForFunction(() => document.querySelector('[data-testid="market-lens"]')?.getAttribute('data-storage-state') === 'ready');
   await page.getByText('Market prices are not enabled for this deployment.', {exact: false}).waitFor();
   await page.getByTestId('lens-tab-calendar').click();
@@ -73,7 +73,7 @@ try {
   assert.ok(!requests.some(request => request.url.includes(privateText) || request.body.includes(privateText)));
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
   checks.push('Deployed journal saves/reloads privately and mobile layout fits');
-  await page.goto(new URL('/terminal/lens/research/', base).href);
+  await page.goto(new URL('/terminal/desk/research/', base).href);
   await page.getByRole('heading', {name: 'The prospective paper protocol'}).waitFor();
   assert.match(await page.locator('meta[name="robots"]').getAttribute('content'), /^noindex, follow(?:,|$)/);
   checks.push('Deployed retrospective report and prospective protocol remain noindex');

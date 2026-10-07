@@ -91,8 +91,8 @@ export function eventDay(event: SkyEvent | string | number, timeZone: string): s
 
 export function localMonth(event: SkyEvent | string | number, timeZone: string): string { return eventDay(event, timeZone).slice(0, 7); }
 
-const icsText = (text: string): string => text.replace(/\\/g, '\\\\').replace(/\r\n|\r|\n/g, '\\n').replace(/;/g, '\\;').replace(/,/g, '\\,');
-const icsDate = (date: Date): string => date.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+export const icsText = (text: string): string => text.replace(/\\/g, '\\\\').replace(/\r\n|\r|\n/g, '\\n').replace(/;/g, '\\;').replace(/,/g, '\\,');
+export const icsDate = (date: Date): string => date.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
 
 /** RFC 5545 content lines are at most 75 UTF-8 octets, excluding CRLF. */
 export function foldICSLine(line: string): string {
@@ -108,12 +108,15 @@ export function foldICSLine(line: string): string {
 }
 
 /** A one-minute calendar entry marks the exact instant, not a research window. */
-export function eventICS(event: SkyEvent, generatedAt: Date = new Date()): string {
+export function eventVEVENT(event: SkyEvent, generatedAt: Date): string[] {
   const start = new Date(event.at);
   if (!Number.isFinite(start.getTime()) || !Number.isFinite(generatedAt.getTime())) throw new Error('Calendar event time is invalid.');
-  const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Zodiacs//Market Lens//EN', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', 'BEGIN:VEVENT',
-    `UID:${encodeURIComponent(event.id)}@zodiacs.org`, `DTSTAMP:${icsDate(generatedAt)}`, `DTSTART:${icsDate(start)}`, 'DURATION:PT1M',
+  return ['BEGIN:VEVENT', `UID:${encodeURIComponent(event.id)}@zodiacs.org`, `DTSTAMP:${icsDate(generatedAt)}`, `DTSTART:${icsDate(start)}`, 'DURATION:PT1M',
     `SUMMARY:${icsText(event.title)}`, `DESCRIPTION:${icsText(event.economic ? `Official scheduled instant: ${event.at}. Last verified: ${event.economic.verifiedAt}. Schedule may change. Source: ${event.economic.sourceUrl}.` : `Astronomical model instant: ${event.at}. Traditional interpretation: ${event.interpretation} Source: ${event.provenance.catalog}. ${event.provenance.convention}`)}`,
-    'TRANSP:TRANSPARENT', 'END:VEVENT', 'END:VCALENDAR'];
+    'TRANSP:TRANSPARENT', 'END:VEVENT'];
+}
+
+export function eventICS(event: SkyEvent, generatedAt: Date = new Date()): string {
+  const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Zodiacs//Zodiacs Desk//EN', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', ...eventVEVENT(event, generatedAt), 'END:VCALENDAR'];
   return `${lines.map(foldICSLine).join('\r\n')}\r\n`;
 }

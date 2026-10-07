@@ -6,9 +6,9 @@ import type { EventManifest } from '../../../exchange/lens/types';
 ---
 
 <Base
-  title="Market Lens · Sky Cycles & Technical Analysis | Zodiacs"
-  description="Explore verified sky events alongside cross-asset market research and technical analysis. Save watch conditions, record private hypotheses, and inspect previous occurrences."
-  path="/terminal/lens/"
+  title="Zodiacs Desk · Trade Planning with Sky and Economic Timing | Zodiacs"
+  description="Plan trades around official economic releases, exact sky events and your personal transits. Size the risk, record the plan before the outcome, and grade it in a private ledger."
+  path="/terminal/desk/"
   stableTypography
   noAssistant
   privateSurface
@@ -17,16 +17,16 @@ import type { EventManifest } from '../../../exchange/lens/types';
 >
   <div class="lens-page">
     <header class="lens-hero">
-      <nav aria-label="Terminal"><a href="/terminal/">← Terminal</a><a href="/terminal/lens/research/">Experiment results</a></nav>
-      <p class="kicker">A workspace for market observations</p>
-      <h1>Market Lens</h1>
-      <p class="lens-deck">Explore sky cycles alongside your trading setup.</p>
-      <p class="lens-hero-note">Technical conditions, exact astronomical events, and your own hypotheses—each with its own context.</p>
+      <nav aria-label="Terminal"><a href="/terminal/">← Terminal</a><a href="/terminal/desk/research/">Experiment results</a></nav>
+      <p class="kicker">Trade planning with sky and economic timing</p>
+      <h1>Zodiacs Desk</h1>
+      <p class="lens-deck">Plan the trade, see what falls inside its holding window, and grade it when the window closes.</p>
+      <p class="lens-hero-note">Your technical setup leads. Official releases, exact sky events and your personal transits are context, and your ledger shows over time whether that context changes your results.</p>
     </header>
     <MarketLens client:load manifest={eventManifest as EventManifest} />
     <aside class="lens-research-notice" role="note" aria-label="Research and data notice">
       <strong>Research &amp; data</strong>
-      <p>Price coverage is provider-specific and remains disabled pending display rights. The catalog includes planning candidates, reference indexes and named tradable exposures; availability does not certify eligibility. Market Lens provides read-only observations and does not execute trades. Astrology has no established predictive relationship with asset prices; this workspace helps you document and test your own hypotheses. Nothing here is a personalized investment recommendation.</p>
+      <p>Price coverage is provider-specific and remains disabled pending display rights. The catalog includes planning candidates, reference indexes and named tradable exposures; availability does not certify eligibility. Zodiacs Desk provides read-only observations and does not execute trades. Astrology has no established predictive relationship with asset prices; this workspace helps you document and test your own hypotheses. Nothing here is a personalized investment recommendation.</p>
     </aside>
   </div>
 </Base>

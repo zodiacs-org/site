@@ -6,6 +6,10 @@ Updated: 2026-10-07, Asia/Bangkok. Local chat: `01a10797-8c9a-7902-bae0-9bc0a518
 
 Continue existing draft PR [#619](https://github.com/zodiacs-org/site/pull/619): verify the private v2 study and offline recovery; implement a versioned cross-asset catalog, provider/session/risk support and migrations; prepare a separate expanded study; verify a protected preview where access allows; update beta and licensing documentation. Keep the PR draft. Production release, merging, real trades, purchases and new external outreach remain unauthorized. Preserve v1 evidence and frozen v2 bytes. Raw market/state data stays outside this public repository.
 
+## Zodiacs Desk follow-up — 7 October 2026, 23:45 Bangkok
+
+After the validated commit `1f1f7a13`, the draft continues with the Zodiacs Desk rename, the trade window and the plan ledger (workspace schema 3); see [DESK.md](DESK.md). The evidence below belongs to `1f1f7a13` and does not validate the new head; Site Check on the new head, including the new Desk browser drive, does. The v2 study, v3 draft, frozen protocols, receipts, provider gates and protected preview are unchanged.
+
 ## Current checkpoint — 7 October 2026, 08:40 Bangkok
 
 | Checkpoint | Verified status | Remaining |

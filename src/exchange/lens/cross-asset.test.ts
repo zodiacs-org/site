@@ -73,7 +73,7 @@ describe('migration, provider rights and source identity',()=>{
  it('migrates BTC/ETH without mutating authored records and round-trips cross-asset notes',()=>{
   const entry=createJournalEntry({instrument:'BTC-USD',eventIds:[],horizonHours:24,method:'TA only',hypothesis:'Original',plan:'Before outcome',outcome:''});
   const legacy={schema:1,rules:[],entries:[entry],seenMatches:['original']},before=JSON.stringify(legacy);
-  const upgraded=validateStore(legacy);expect(upgraded.schema).toBe(2);expect(upgraded.entries[0]).toEqual(entry);expect(JSON.stringify(legacy)).toBe(before);
+  const upgraded=validateStore(legacy);expect(upgraded.schema).toBe(3);expect(upgraded.entries[0]).toEqual(entry);expect(JSON.stringify(legacy)).toBe(before);
   const fx=createJournalEntry({...entry,instrument:'FX:EUR/USD',hypothesis:'FX plan'});
   const store={...upgraded,entries:[...upgraded.entries,fx]};expect(importStore(exportStore(store)).store).toEqual(store);
   expect(()=>validateStore({...store,schema:1})).toThrow('BTC/ETH');

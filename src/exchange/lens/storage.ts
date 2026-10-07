@@ -1,5 +1,5 @@
 import { INSTRUMENTS, CATALOG_VERSION } from './catalog';
-import type { EventFamily, JournalEntry, JournalRevision, SetupPlan, WatchRule } from './types';
+import type { EventFamily, JournalEntry, JournalRevision, PlanReview, SetupPlan, TimingRole, WatchRule } from './types';
 import { estimateRisk } from './risk';
 
 export const LENS_DATABASE_NAME = 'zodiacs-market-lens-v1';
@@ -10,9 +10,12 @@ export const MAX_IMPORT_BYTES = 2_000_000;
 const TEXT_LIMIT = 5_000;
 const FAMILIES: EventFamily[] = ['lunation', 'eclipse', 'station', 'retrograde', 'ingress', 'aspect'];
 const CONDITIONS = ['sma-cross-up', 'sma-cross-down', 'price-cross-up', 'price-cross-down', 'rsi-cross-up', 'rsi-cross-down'];
+/** Reviews of these statuses describe a trade that was taken. */
+export const TAKEN_REVIEW_STATUSES = ['target', 'stop', 'time-exit', 'manual-exit'];
+const TIMING_ROLES: TimingRole[] = ['none', 'larger', 'smaller', 'initiated', 'veto'];
 
 export interface LensStore {
-  schema: 1 | 2;
+  schema: 1 | 2 | 3;
   catalogVersion?: string;
   rules: WatchRule[];
   entries: JournalEntry[];
@@ -35,16 +38,16 @@ export class LensStorageError extends Error {
 
 export class LensConflictError extends LensStorageError {
   constructor() {
-    super('Market Lens was changed in another tab. These changes were not saved. Reload the latest saved data and retry; keep your unsaved draft.');
+    super('Zodiacs Desk was changed in another tab. These changes were not saved. Reload the latest saved data and retry; keep your unsaved draft.');
     this.name = 'LensConflictError';
   }
 }
 
 export function emptyStore(): LensStore {
-  return { schema: 2, catalogVersion: CATALOG_VERSION, rules: [], entries: [], seenMatches: [] };
+  return { schema: 3, catalogVersion: CATALOG_VERSION, rules: [], entries: [], seenMatches: [] };
 }
 
-/** Opens only the separate Market Lens database. Never reads natal/account stores. */
+/** Opens only the separate Zodiacs Desk (formerly Market Lens) database. Never reads natal/account stores. */
 export function createIndexedDBBackend(factory?: IDBFactory): LensStorageBackend {
   async function open(): Promise<IDBDatabase> {
     let indexedDBFactory: IDBFactory | undefined;
@@ -57,7 +60,7 @@ export function createIndexedDBBackend(factory?: IDBFactory): LensStorageBackend
       const fail = (cause?: unknown) => {
         if (settled) return;
         settled = true;
-        reject(new LensStorageError('Market Lens could not open private storage. Check browser storage permissions.', { cause }));
+        reject(new LensStorageError('Zodiacs Desk could not open private storage. Check browser storage permissions.', { cause }));
       };
       try { request = indexedDBFactory.open(LENS_DATABASE_NAME, LENS_DATABASE_VERSION); }
       catch (cause) { fail(cause); return; }
@@ -92,7 +95,7 @@ export function createIndexedDBBackend(factory?: IDBFactory): LensStorageBackend
           // can abort after a put request has already succeeded.
           transaction.oncomplete = () => resolve(mode === 'readonly' ? result : undefined);
           transaction.onabort = () => reject(failure ?? new LensStorageError(mode === 'readonly'
-            ? 'Market Lens could not read private storage. Saved data has been left unchanged.'
+            ? 'Zodiacs Desk could not read private storage. Saved data has been left unchanged.'
             : 'Private storage did not save. Your previous saved data remains available; export unsaved notes.', { cause: transaction.error }));
           transaction.onerror = () => { /* onabort reports the final transaction failure */ };
           const abort = (error: Error) => {
@@ -109,7 +112,7 @@ export function createIndexedDBBackend(factory?: IDBFactory): LensStorageBackend
               let current: LensStore;
               try { current = request.result === undefined ? emptyStore() : validateStore(request.result); }
               catch (cause) {
-                abort(new LensStorageError('Saved Market Lens data could not be validated. It was left unchanged.', { cause }));
+                abort(new LensStorageError('Saved Zodiacs Desk data could not be validated. It was left unchanged.', { cause }));
                 return;
               }
               if (JSON.stringify(current) !== JSON.stringify(expected)) { abort(new LensConflictError()); return; }
@@ -121,7 +124,7 @@ export function createIndexedDBBackend(factory?: IDBFactory): LensStorageBackend
             request.onsuccess = () => { result = request.result; };
           }
         } catch (cause) {
-          reject(new LensStorageError('Market Lens could not access private storage. Export unsaved notes.', { cause }));
+          reject(new LensStorageError('Zodiacs Desk could not access private storage. Export unsaved notes.', { cause }));
         }
       });
     } finally { database.close(); }
@@ -141,7 +144,7 @@ export async function readStore(backend: LensStorageBackend = createIndexedDBBac
     enforceSize(JSON.stringify(validated));
     return validated;
   }
-  catch (cause) { throw new LensStorageError('Saved Market Lens data could not be validated. The saved data has been left unchanged.', { cause }); }
+  catch (cause) { throw new LensStorageError('Saved Zodiacs Desk data could not be validated. The saved data has been left unchanged.', { cause }); }
 }
 
 export async function saveStore(store: LensStore, backend: LensStorageBackend = createIndexedDBBackend()): Promise<void> {
@@ -193,7 +196,7 @@ export function importStore(payload: string, current: LensStore = emptyStore()):
   enforceSize(payload);
   let parsed: unknown;
   try { parsed = JSON.parse(payload); }
-  catch { throw new Error('Import must contain valid Market Lens JSON.'); }
+  catch { throw new Error('Import must contain valid Zodiacs Desk (or Market Lens) JSON.'); }
   const incoming = validateStore(parsed);
   const store = validateStore(current);
   const conflicts: ImportConflict[] = [];
@@ -229,8 +232,8 @@ export function importStore(payload: string, current: LensStore = emptyStore()):
   return { store: validated, importedRules, importedEntries, conflicts };
 }
 
-type JournalInput = Pick<JournalEntry, 'instrument' | 'eventIds' | 'horizonHours' | 'method' | 'hypothesis' | 'plan' | 'outcome' | 'setup' | 'chartRef'>;
-type JournalPatch = Partial<Pick<JournalEntry, 'hypothesis' | 'plan' | 'outcome' | 'setup'>>;
+type JournalInput = Pick<JournalEntry, 'instrument' | 'eventIds' | 'horizonHours' | 'method' | 'hypothesis' | 'plan' | 'outcome' | 'setup' | 'chartRef' | 'timingRole'>;
+type JournalPatch = Partial<Pick<JournalEntry, 'hypothesis' | 'plan' | 'outcome' | 'setup' | 'review'>>;
 
 export function createJournalEntry(input: JournalInput, options: { at?: string; id?: string } = {}): JournalEntry {
   const at = timestamp(options.at ?? new Date().toISOString(), 'Journal time');
@@ -240,23 +243,25 @@ export function createJournalEntry(input: JournalInput, options: { at?: string; 
 
 export function updateJournalEntry(entry: JournalEntry, patch: JournalPatch, options: { at?: string } = {}): JournalEntry {
   const original = validateEntry(entry);
-  if (!isRecord(patch) || Object.keys(patch).some(key => !['hypothesis', 'plan', 'outcome', 'setup'].includes(key))) throw new Error('Only journal text and setup can be revised; the original instrument and methodology remain fixed.');
+  if (!isRecord(patch) || Object.keys(patch).some(key => !['hypothesis', 'plan', 'outcome', 'setup', 'review'].includes(key))) throw new Error('Only journal text, setup and review can be revised; the original instrument, methodology and timing answer remain fixed.');
   const edited = { ...original, ...patch };
   const latest = original.revisions.at(-1)!;
-  if (edited.hypothesis === latest.hypothesis && edited.plan === latest.plan && edited.outcome === latest.outcome && JSON.stringify(edited.setup) === JSON.stringify(latest.setup)) return original;
+  if (edited.hypothesis === latest.hypothesis && edited.plan === latest.plan && edited.outcome === latest.outcome && JSON.stringify(edited.setup) === JSON.stringify(latest.setup) && JSON.stringify(edited.review) === JSON.stringify(latest.review)) return original;
   const at = timestamp(options.at ?? new Date(Math.max(Date.now(), Date.parse(original.updatedAt) + 1)).toISOString(), 'Revision time');
   if (Date.parse(at) <= Date.parse(original.updatedAt)) throw new Error('Revision time must follow the previous saved revision.');
   return validateEntry({ ...edited, updatedAt: at, revisions: [...original.revisions, revision(at, edited)] });
 }
 
-function revision(at: string, contents: Pick<JournalEntry, 'hypothesis' | 'plan' | 'outcome' | 'setup'>): JournalRevision {
-  return { at, hypothesis: contents.hypothesis, plan: contents.plan, outcome: contents.outcome, ...(contents.setup ? { setup: contents.setup } : {}) };
+function revision(at: string, contents: Pick<JournalEntry, 'hypothesis' | 'plan' | 'outcome' | 'setup' | 'review'>): JournalRevision {
+  return { at, hypothesis: contents.hypothesis, plan: contents.plan, outcome: contents.outcome, ...(contents.setup ? { setup: contents.setup } : {}), ...(contents.review ? { review: contents.review } : {}) };
 }
 
 export function validateStore(value: unknown): LensStore {
   const obj = record(value, 'Workspace');
   keys(obj, ['schema', 'catalogVersion', 'rules', 'entries', 'seenMatches', 'exportedAt'], 'Workspace');
-  if (obj.schema !== 1 && obj.schema !== 2) throw new Error('This Market Lens schema version is not supported.');
+  // Schema 3 adds plan reviews, the fixed timing answer and planned entry times.
+  // Schemas 1 and 2 still import unchanged and are rewritten only by an atomic save.
+  if (obj.schema !== 1 && obj.schema !== 2 && obj.schema !== 3) throw new Error('This Zodiacs Desk schema version is not supported.');
   if (obj.exportedAt !== undefined) timestamp(obj.exportedAt, 'Export time');
   const rules = array(obj.rules, 200, 'Rules').map(validateRule);
   const entries = array(obj.entries, 500, 'Journal entries').map(validateEntry);
@@ -271,8 +276,9 @@ export function validateStore(value: unknown): LensStore {
   // Legacy v1 BTC/ETH IDs and every authored revision are retained exactly.
   // The same IndexedDB key is upgraded on the next atomic save, never by a blind write.
   if (obj.schema === 1 && [...rules, ...entries].some(row => !['BTC-USD', 'ETH-USD'].includes(row.instrument))) throw new Error('Legacy v1 only supports BTC/ETH records.');
-  if (obj.schema === 2 && obj.catalogVersion !== CATALOG_VERSION) throw new Error('Unsupported instrument catalog version; preserve this export.');
-  return { schema: 2, catalogVersion: CATALOG_VERSION, rules, entries, seenMatches };
+  if (obj.schema !== 1 && obj.catalogVersion !== CATALOG_VERSION) throw new Error('Unsupported instrument catalog version; preserve this export.');
+  if (obj.schema !== 3 && entries.some(entry => entry.timingRole || entry.revisions.some(rev => rev.review || rev.setup?.entryAt))) throw new Error('Timing answers, reviews and planned entries need workspace schema 3.');
+  return { schema: 3, catalogVersion: CATALOG_VERSION, rules, entries, seenMatches };
 }
 
 function validateRule(value: unknown): WatchRule {
@@ -295,13 +301,13 @@ function validateRule(value: unknown): WatchRule {
 
 function validateEntry(value: unknown): JournalEntry {
   const obj = record(value, 'Journal entry');
-  keys(obj, ['id', 'instrument', 'createdAt', 'updatedAt', 'eventIds', 'horizonHours', 'method', 'hypothesis', 'plan', 'outcome', 'revisions', 'setup', 'chartRef'], 'Journal entry');
+  keys(obj, ['id', 'instrument', 'createdAt', 'updatedAt', 'eventIds', 'horizonHours', 'method', 'hypothesis', 'plan', 'outcome', 'revisions', 'setup', 'chartRef', 'timingRole', 'review'], 'Journal entry');
   const createdAt = timestamp(obj.createdAt, 'Journal creation time');
   const updatedAt = timestamp(obj.updatedAt, 'Journal update time');
   const revisions = array(obj.revisions, 100, 'Journal revisions').map(value => {
     const rev = record(value, 'Revision');
-    keys(rev, ['at', 'hypothesis', 'plan', 'outcome', 'setup'], 'Revision');
-    return { at: timestamp(rev.at, 'Revision time'), hypothesis: text(rev.hypothesis, TEXT_LIMIT, 'Hypothesis'), plan: text(rev.plan, TEXT_LIMIT, 'Plan'), outcome: text(rev.outcome, TEXT_LIMIT, 'Outcome'), ...(rev.setup === undefined ? {} : { setup: validateSetup(rev.setup) }) };
+    keys(rev, ['at', 'hypothesis', 'plan', 'outcome', 'setup', 'review'], 'Revision');
+    return { at: timestamp(rev.at, 'Revision time'), hypothesis: text(rev.hypothesis, TEXT_LIMIT, 'Hypothesis'), plan: text(rev.plan, TEXT_LIMIT, 'Plan'), outcome: text(rev.outcome, TEXT_LIMIT, 'Outcome'), ...(rev.setup === undefined ? {} : { setup: validateSetup(rev.setup) }), ...(rev.review === undefined ? {} : { review: validateReview(rev.review) }) };
   });
   if (revisions.length === 0 || revisions[0].at !== createdAt || revisions.at(-1)!.at !== updatedAt) throw new Error('Journal revisions must preserve the original creation and latest update timestamps.');
   if (revisions.some((rev, i) => i > 0 && Date.parse(rev.at) <= Date.parse(revisions[i - 1].at))) throw new Error('Journal revisions must be ordered with strictly increasing timestamps.');
@@ -311,21 +317,37 @@ function validateEntry(value: unknown): JournalEntry {
   const latest = revisions.at(-1)!;
   const setup = obj.setup === undefined ? undefined : validateSetup(obj.setup);
   if (JSON.stringify(setup) !== JSON.stringify(latest.setup)) throw new Error('The latest setup must match its latest revision.');
+  const review = obj.review === undefined ? undefined : validateReview(obj.review);
+  if (JSON.stringify(review) !== JSON.stringify(latest.review)) throw new Error('The latest review must match its latest revision.');
   if (latest.hypothesis !== hypothesis || latest.plan !== plan || latest.outcome !== outcome) throw new Error('The latest journal text must match its latest revision.');
   const eventIds = array(obj.eventIds, 50, 'Linked event IDs').map(value => identifier(value, 'Event ID'));
   unique(eventIds, 'Linked event IDs');
+  const method = oneOf(obj.method, ['TA only', 'TA + astrology'], 'Journal method') as JournalEntry['method'];
+  if (obj.timingRole !== undefined && method !== 'TA + astrology') throw new Error('Only TA + astrology plans record what the timing changed.');
   return {
     id: identifier(obj.id, 'Journal ID'),
     instrument: oneOf(obj.instrument, Object.keys(INSTRUMENTS), 'Instrument') as JournalEntry['instrument'],
     createdAt, updatedAt, eventIds, horizonHours: finite(obj.horizonHours, 0, 8_760, 'Journal horizon'),
-    method: oneOf(obj.method, ['TA only', 'TA + astrology'], 'Journal method') as JournalEntry['method'],
-    hypothesis, plan, outcome, revisions, ...(obj.chartRef === undefined ? {} : { chartRef: validateChartRef(obj.chartRef) }), ...(setup ? { setup } : {}),
+    method, hypothesis, plan, outcome, revisions, ...(obj.chartRef === undefined ? {} : { chartRef: validateChartRef(obj.chartRef) }), ...(setup ? { setup } : {}),
+    ...(obj.timingRole === undefined ? {} : { timingRole: oneOf(obj.timingRole, TIMING_ROLES, 'Timing answer') as TimingRole }), ...(review ? { review } : {}),
   };
+}
+
+/** Keys are emitted in one fixed order so an unchanged review never adds a revision. */
+function validateReview(value: unknown): PlanReview {
+  const obj = record(value, 'Review');
+  keys(obj, ['status', 'exit', 'r', 'followedPlan'], 'Review');
+  const status = oneOf(obj.status, ['not-triggered', 'skipped', ...TAKEN_REVIEW_STATUSES], 'Review status') as PlanReview['status'];
+  const taken = TAKEN_REVIEW_STATUSES.includes(status);
+  if (status === 'not-triggered' && (obj.exit !== undefined || obj.r !== undefined)) throw new Error('A plan whose confirmation never came has no exit or R result.');
+  if (!taken && obj.followedPlan !== undefined) throw new Error('Only a taken trade records plan adherence.');
+  if (obj.exit !== undefined && obj.r === undefined) throw new Error('A review with an exit price also records its R result.');
+  return { status, ...(obj.exit === undefined ? {} : { exit: finite(obj.exit, Number.MIN_VALUE, 1e12, 'Exit price') }), ...(obj.r === undefined ? {} : { r: finite(obj.r, -100, 100, 'R multiple') }), ...(obj.followedPlan === undefined ? {} : { followedPlan: boolean(obj.followedPlan, 'Plan adherence') }) };
 }
 
 function validateSetup(value: unknown): SetupPlan {
   const obj = record(value, 'Setup');
-  keys(obj, ['interval', 'technicalSetup', 'confirmation', 'invalidation', 'risk', 'window'], 'Setup');
+  keys(obj, ['interval', 'technicalSetup', 'confirmation', 'invalidation', 'risk', 'entryAt', 'window'], 'Setup');
   const raw = record(obj.risk, 'Risk');
   keys(raw, ['equity', 'riskMode', 'riskValue', 'entry', 'stop', 'target', 'feeBps', 'slippageBps', 'instrumentId', 'currency', 'funding', 'marginPerContract'], 'Risk');
   const risk: SetupPlan['risk'] = { equity: finite(raw.equity, Number.MIN_VALUE, 1e12, 'Equity'), riskMode: oneOf(raw.riskMode, ['percent', 'usd', 'quote'], 'Risk mode') as SetupPlan['risk']['riskMode'], riskValue: finite(raw.riskValue, Number.MIN_VALUE, 1e12, 'Risk value'), entry: finite(raw.entry, Number.MIN_VALUE, 1e12, 'Entry'), stop: finite(raw.stop, Number.MIN_VALUE, 1e12, 'Stop'), feeBps: finite(raw.feeBps, 0, 1000, 'Fees'), slippageBps: finite(raw.slippageBps, 0, 1000, 'Slippage'), ...(raw.target === undefined ? {} : { target: finite(raw.target, Number.MIN_VALUE, 1e12, 'Target') }) };
@@ -336,7 +358,7 @@ function validateSetup(value: unknown): SetupPlan {
   } else if (raw.currency !== undefined || raw.funding !== undefined || raw.marginPerContract !== undefined) throw new Error('Risk metadata needs an instrument.');
   if (raw.marginPerContract !== undefined) throw new Error('Derivative journal plans require verified contract metadata; unsupported in this catalog version.');
   estimateRisk(risk);
-  const setup: SetupPlan = { interval: oneOf(obj.interval, ['1h', '1d'], 'Timeframe') as SetupPlan['interval'], technicalSetup: text(obj.technicalSetup, TEXT_LIMIT, 'Technical setup'), confirmation: text(obj.confirmation, TEXT_LIMIT, 'Confirmation'), invalidation: text(obj.invalidation, TEXT_LIMIT, 'Invalidation'), risk };
+  const setup: SetupPlan = { interval: oneOf(obj.interval, ['1h', '1d'], 'Timeframe') as SetupPlan['interval'], technicalSetup: text(obj.technicalSetup, TEXT_LIMIT, 'Technical setup'), confirmation: text(obj.confirmation, TEXT_LIMIT, 'Confirmation'), invalidation: text(obj.invalidation, TEXT_LIMIT, 'Invalidation'), risk, ...(obj.entryAt === undefined ? {} : { entryAt: timestamp(obj.entryAt, 'Planned entry') }) };
   if (obj.window !== undefined) {
     const window = record(obj.window, 'Setup window'); keys(window, ['kind', 'id', 'sourceId', 'sourceUpdatedAt', 'from', 'to'], 'Setup window');
     const kind = oneOf(window.kind, ['shared', 'personal', 'economic'], 'Window kind') as NonNullable<SetupPlan['window']>['kind'];
@@ -416,5 +438,5 @@ function unique(values: string[], label: string): void {
   if (new Set(values).size !== values.length) throw new Error(`${label} must be unique.`);
 }
 function enforceSize(payload: string): void {
-  if (typeof payload !== 'string' || new TextEncoder().encode(payload).byteLength > MAX_IMPORT_BYTES) throw new Error(`Market Lens data must be at most ${MAX_IMPORT_BYTES.toLocaleString('en-US')} bytes.`);
+  if (typeof payload !== 'string' || new TextEncoder().encode(payload).byteLength > MAX_IMPORT_BYTES) throw new Error(`Zodiacs Desk data must be at most ${MAX_IMPORT_BYTES.toLocaleString('en-US')} bytes.`);
 }

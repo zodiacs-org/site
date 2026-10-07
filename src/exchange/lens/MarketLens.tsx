@@ -8,7 +8,7 @@ import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import type { EventFamily, EventManifest, InstrumentId, Interval, JournalEntry, RuleCondition, SkyEvent } from './types';
 import { INSTRUMENTS, loadMarketDataset } from './market';
 import { calculateIndicators } from './indicators';
-import { eventDay, eventICS, formatEventDate, formatEventTime, loadEvents } from './events';
+import { eventDay, formatEventDate, formatEventTime, loadEvents } from './events';
 import { evaluateRules } from './rules';
 import { emptyStore, createJournalEntry, exportStore, importStore, readStore, compareAndSaveStore, clearPersonalContext, LensConflictError, MAX_IMPORT_BYTES, updateJournalEntry, type LensStore } from './storage';
 const AssetPicker = lazyPanel(() => import('./AssetPicker'));
@@ -20,10 +20,10 @@ const RulesPanel = lazyPanel(() => import('./RulesPanel'));
 import type { MarketDataset } from './types';
 import './lens.css';
 const BriefPanel = lazyPanel(() => import('./BriefPanel'));
-const EconomicDetail = lazyPanel(() => import('./EconomicDetail'));
+const EventDetail = lazyPanel(() => import('./EventDetail'));
+const LedgerPanel = lazyPanel(() => import('./LedgerPanel'));
 const SetupPanel = lazyPanel(() => import('./SetupPanel'));
 const PersonalContext = lazyPanel(() => import('./PersonalContext'));
-const PersonalDetail = lazyPanel(() => import('./PersonalDetail'));
 
 const FAMILIES: EventFamily[] = ['lunation', 'eclipse', 'station', 'retrograde', 'ingress', 'aspect'];
 const admitPersonalContext = (store: LensStore, session?: { id: string; updatedAt: string } | null) => { const own = explicitSelfChart(loadProfile().charts); const source = session?.id === 'session' && profileAccessAllowed() ? session : own; return clearPersonalContext(store, source?.id ?? null, source?.updatedAt); };
@@ -186,16 +186,16 @@ export default function MarketLens({ manifest }: { manifest: EventManifest }) {
     <div key="workspace" class={`lens-workspace ${view === 'journal' || view === 'rules' ? 'lens-workspace--wide' : ''}`}>
       <div key="main-view" class="lens-main-view"><>
         {(view === 'rules' || view === 'journal') && !storageReady && !storageError && <p class="lens-muted" role="status">Opening your private workspace…</p>}
-        <div hidden={view !== 'setup'}><SetupPanel key={instrument} instrument={instrument} interval={interval} selectedEvent={selectedEvent} entries={store.entries} storageError={storageReady ? storageError : 'Private storage is loading.'} onJournal={() => setView('journal')} onSave={input => persist(current => {
+        <div hidden={view !== 'setup'}><SetupPanel key={instrument} instrument={instrument} interval={interval} selectedEvent={selectedEvent} entries={store.entries} storageError={storageReady ? storageError : 'Private storage is loading.'} events={displayEvents} timeZone={timeZone} coverage={historyCoverage} economicCoverage={economics?.coverage} onSelect={selectEvent} onJournal={() => setView('journal')} onSave={input => persist(current => {
           if (input.id) {
             const entry = current.entries.find(entry => entry.id === input.id);
             if (!entry) throw new Error('This setup was deleted in another tab. Save it as a new setup.');
             if (entry.updatedAt !== input.baseUpdatedAt) throw new LensConflictError();
             return { ...current, entries: current.entries.map(entry => entry.id === input.id ? updateJournalEntry(entry, { hypothesis: input.hypothesis, plan: input.plan, setup: input.setup }) : entry) };
           }
-          return { ...current, entries: [...current.entries, createJournalEntry({ hypothesis: input.hypothesis, plan: input.plan, setup: input.setup, horizonHours: input.horizonHours, method: input.method, eventIds: input.eventIds, instrument, outcome: '', ...(input.setup.window?.kind === 'personal' && input.setup.window.sourceUpdatedAt ? { chartRef: { id: input.setup.window.sourceId!, updatedAt: input.setup.window.sourceUpdatedAt } } : {}) })] };
+          return { ...current, entries: [...current.entries, createJournalEntry({ hypothesis: input.hypothesis, plan: input.plan, setup: input.setup, horizonHours: input.horizonHours, method: input.method, eventIds: input.eventIds, instrument, outcome: '', timingRole: input.timingRole, ...(input.setup.window?.kind === 'personal' && input.setup.window.sourceUpdatedAt ? { chartRef: { id: input.setup.window.sourceId!, updatedAt: input.setup.window.sourceUpdatedAt } } : {}) })] };
         })} /></div>
-        {view === 'brief' && <BriefPanel instrument={instrument} interval={interval} timeZone={timeZone} data={data} marketError={marketError} indicators={indicators} events={displayEvents} economics={economics} rules={store.rules} entries={store.entries} onSetup={() => setView('setup')} onJournal={() => setView('journal')} onSelect={selectEvent} />}
+        {view === 'brief' && <BriefPanel instrument={instrument} interval={interval} timeZone={timeZone} data={data} marketError={marketError} indicators={indicators} events={displayEvents} economics={economics} rules={store.rules} entries={store.entries} onSetup={() => setView('setup')} onJournal={() => setView('journal')} onSelect={selectEvent} coverage={historyCoverage} />}
         {view === 'chart' && <ChartPanel data={data} indicators={indicators} events={displayEvents} selectedEvent={selectedEvent} timeZone={timeZone} onSelectEvent={selectEvent} />}
         {view === 'calendar' && <CalendarPanel outlook={personal?.outlook} events={displayEvents} timeZone={timeZone} selectedDate={selectedDate} onDate={setSelectedDate} onSelect={event => setSelectedId(event.id)} />}
         {view === 'history' && <HistoryPanel eventCoverage={historyCoverage} data={data} events={allEvents} selectedEvent={selectedEvent} timeZone={timeZone} onSelect={selectEvent} loading={loading} onExpand={() => { setInterval('1d'); setExpanded(true); setRefresh((n) => n + 1); }} />}
@@ -203,7 +203,7 @@ export default function MarketLens({ manifest }: { manifest: EventManifest }) {
           onSave={(input: { condition: RuleCondition; threshold?: number; family: EventFamily | 'any'; windowHours: number }) => persist((current) => ({ ...current, rules: [...current.rules, { ...input, id: crypto.randomUUID(), version: 1, instrument, interval, enabled: true, createdAt: new Date().toISOString() }] }))}
           onToggle={(id: string) => persist((current) => ({ ...current, rules: current.rules.map((rule) => rule.id === id ? { ...rule, enabled: !rule.enabled } : rule) }))}
           onDelete={(id: string) => persist((current) => ({ ...current, rules: current.rules.filter((rule) => rule.id !== id) }))} /></div>}
-        {(storageReady || storageError) && <div key="journal-panel" hidden={view !== 'journal'}><JournalPanel entries={store.entries} instrument={instrument} selectedEvent={selectedEvent} timeZone={timeZone} storageError={storageError} personalSourceKey={liveChartRef.current ? `${liveChartRef.current.id}:${liveChartRef.current.updatedAt}` : ''}
+        {(storageReady || storageError) && <div key="journal-panel" hidden={view !== 'journal'}><LedgerPanel entries={store.entries} timeZone={timeZone} now={clock} storageError={storageError} onUpdate={persist} /><JournalPanel entries={store.entries} instrument={instrument} selectedEvent={selectedEvent} timeZone={timeZone} storageError={storageError} onUpdate={persist} personalSourceKey={liveChartRef.current ? `${liveChartRef.current.id}:${liveChartRef.current.updatedAt}` : ''}
           onSave={(input: { id?: string; baseUpdatedAt?: string; instrument: InstrumentId; hypothesis: string; plan: string; outcome: string; horizonHours: number; method: JournalEntry['method']; eventIds: string[] }) => persist((current) => {
             if (input.id) {
               const saved = current.entries.find(entry => entry.id === input.id);
@@ -214,21 +214,11 @@ export default function MarketLens({ manifest }: { manifest: EventManifest }) {
             return { ...current, entries: [...current.entries, createJournalEntry({ instrument: input.instrument, hypothesis: input.hypothesis, plan: input.plan, horizonHours: input.horizonHours, method: input.method, eventIds: input.eventIds, outcome: input.outcome, ...(selectedEvent?.personal?.sourceUpdatedAt && input.eventIds.includes(selectedEvent.id) ? { chartRef: { id: selectedEvent.personal.sourceId, updatedAt: selectedEvent.personal.sourceUpdatedAt } } : {}) })] };
           })}
           onDelete={(id: string) => persist((current) => ({ ...current, entries: current.entries.filter((entry) => entry.id !== id) }))}
-          onExport={() => download('zodiacs-market-lens-journal.json', exportStore(admitPersonalContext(storeRef.current, liveChartRef.current)), 'application/json')}
+          onExport={() => download('zodiacs-desk-journal.json', exportStore(admitPersonalContext(storeRef.current, liveChartRef.current)), 'application/json')}
           onImport={async (file: File) => { if (file.size > MAX_IMPORT_BYTES) throw new Error('Import file is too large (2 MB maximum).'); const payload = await file.text(); let result = ''; await persist((current) => { const imported = importStore(payload, current); result = `Imported ${imported.importedEntries} notes and ${imported.importedRules} rules. ${imported.conflicts.length} conflicts retained separately.`; return imported.store; }); setNotice(result); }} /></div>}
       </></div>
-      {view !== 'journal' && view !== 'rules' && <aside class="lens-event-detail lens-panel" aria-labelledby="lens-event-detail-title" data-testid="lens-event-detail">
-        {selectedEvent?.economic ? <><EconomicDetail event={selectedEvent.economic} timeZone={timeZone} /><div class="lens-inline"><button class="lens-button" onClick={() => download(`${selectedEvent.id}.ics`, eventICS(selectedEvent), 'text/calendar')}>Add to calendar</button><button class="lens-button" onClick={() => setView('journal')}>Record hypothesis</button></div></> : selectedEvent ? <>
-          <span class={`lens-tag lens-event--${selectedEvent.family}`}>{selectedEvent.family}</span><h2 id="lens-event-detail-title">{selectedEvent.title}</h2>
-          <p class="lens-event-instant">{formatEventDate(selectedEvent, timeZone)}<br />{formatEventTime(selectedEvent, timeZone)}</p>
-          {selectedEvent.personal && <><PersonalDetail event={selectedEvent} timeZone={timeZone} /></>}
-          <dl><dt>Calculated fact</dt><dd>{selectedEvent.bodies.join(' · ')}{selectedEvent.aspectType ? ` · ${selectedEvent.aspectType}` : ''}{selectedEvent.sign ? ` · ${selectedEvent.sign}` : ''}<br /><span class="lens-muted">UTC {selectedEvent.at}</span>{selectedEvent.end && <><br />Ends {formatEventDate(selectedEvent.end, timeZone)} · {formatEventTime(selectedEvent.end, timeZone)}</>}</dd>
-            <dt>Traditional interpretation</dt><dd>{selectedEvent.interpretation}</dd><dt>Market observation</dt><dd>Inspect the selected asset and previous occurrences. This interpretation does not establish a price direction.</dd><dt>Trader hypothesis / plan</dt><dd>Write your technical confirmation, invalidation and risk before the outcome. Link this window in the setup planner or journal.</dd></dl>
-          <div class="lens-inline"><button class="lens-button" onClick={() => download(`${selectedEvent.id}.ics`, eventICS(selectedEvent), 'text/calendar')}>Add to calendar</button><button class="lens-button" onClick={() => setView('setup')}>Plan setup &amp; risk</button><button class="lens-button lens-button--primary" onClick={() => setView('journal')}>Record hypothesis</button><button class="lens-button lens-button--quiet" onClick={() => setView('history')}>Explore history →</button></div>
-          <details class="lens-method"><summary>Source &amp; calculation</summary><p>{selectedEvent.provenance.catalog}<br />{selectedEvent.provenance.convention}<br />Engine {selectedEvent.provenance.engineVersion}</p>{selectedEvent.provenance.sha256 && <p class="lens-hash">SHA-256 {selectedEvent.provenance.sha256}</p>}</details>
-        </> : <><h2 id="lens-event-detail-title">Select a sky event</h2><p class="lens-muted">Choose a marker, upcoming event or calendar entry to see its facts and interpretation.</p></>}
-      </aside>}
+      {view !== 'journal' && view !== 'rules' && <aside class="lens-event-detail lens-panel" aria-labelledby="lens-event-detail-title" data-testid="lens-event-detail"><EventDetail event={selectedEvent} timeZone={timeZone} onView={setView} /></aside>}
     </div>
-    <details class="lens-coverage"><summary>Coverage &amp; research boundaries</summary><p>Sky catalog: {manifest.coverage.start.slice(0, 10)} through {manifest.coverage.end.slice(0, 10)}. Loaded UTC months: {loadedMonths[0] ?? 'none'} through {loadedMonths.at(-1) ?? 'none'}. Filtered absence outside coverage is not an all-clear signal.</p><ul>{manifest.limitations.map((text) => <li>{text}</li>)}</ul><p>Astrology has no established predictive relationship with asset prices. Market Lens is a read-only research workspace. Notes stay in this browser; exports are your responsibility. Local timestamps are not independently verified publication records.</p><p>Chart software: <a href="/data/market-lens/chart-license/NOTICE.txt">TradingView notice</a> · <a href="/data/market-lens/chart-license/LICENSE.txt">Apache 2.0 license</a>.</p></details>
+    <details class="lens-coverage"><summary>Coverage &amp; research boundaries</summary><p>Sky catalog: {manifest.coverage.start.slice(0, 10)} through {manifest.coverage.end.slice(0, 10)}. Loaded UTC months: {loadedMonths[0] ?? 'none'} through {loadedMonths.at(-1) ?? 'none'}. Filtered absence outside coverage is not an all-clear signal.</p><ul>{manifest.limitations.map((text) => <li>{text}</li>)}</ul><p>Astrology has no established predictive relationship with asset prices. Zodiacs Desk is a read-only research workspace. Notes stay in this browser; exports are your responsibility. Local timestamps are not independently verified publication records.</p><p>Chart software: <a href="/data/market-lens/chart-license/NOTICE.txt">TradingView notice</a> · <a href="/data/market-lens/chart-license/LICENSE.txt">Apache 2.0 license</a>.</p></details>
   </div>;
 }

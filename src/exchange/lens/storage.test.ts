@@ -80,7 +80,7 @@ describe('versioned workspace backup', () => {
   });
 
   it('rejects unsupported schemas, poisoned fields, oversized files, and duplicate IDs', () => {
-    expect(() => importStore('{')).toThrow('valid Market Lens JSON');
+    expect(() => importStore('{')).toThrow('valid Zodiacs Desk');
     expect(() => importStore(JSON.stringify({ ...emptyStore(), schema: 99 }))).toThrow('schema version');
     expect(() => importStore('{"schema":1,"rules":[],"entries":[],"seenMatches":[],"__proto__":{"polluted":true}}')).toThrow('unsupported fields');
     expect(() => importStore(' '.repeat(MAX_IMPORT_BYTES + 1))).toThrow('bytes');
@@ -285,3 +285,77 @@ function fakeIndexedDB(abortWrite = false) {
   } as unknown as IDBFactory;
   return { factory, opened, closed: () => closeCount, commits: () => commitCount };
 }
+
+describe('schema 3 plan reviews, timing answers and planned entries', () => {
+  const setup = {
+    interval: '1d' as const, technicalSetup: 'Reclaim of the 20-day average', confirmation: 'Daily close above 100', invalidation: 'Daily close below 95',
+    risk: { equity: 10_000, riskMode: 'percent' as const, riskValue: 1, entry: 100, stop: 95, feeBps: 10, slippageBps: 5 }, entryAt: '2026-10-13T02:30:00.000Z',
+  };
+  const planned = () => createJournalEntry({ ...journalInput, setup, timingRole: 'larger' }, { at: START, id: 'plan-one' });
+
+  it('reads schema 1 and 2 workspaces unchanged and saves them as schema 3', () => {
+    const legacy = { schema: 2, catalogVersion: emptyStore().catalogVersion, rules: [makeRule()], entries: [makeEntry()], seenMatches: ['reminder-one'] };
+    const before = JSON.stringify(legacy);
+    const upgraded = validateStore(legacy);
+    expect(upgraded.schema).toBe(3);
+    expect(upgraded.entries).toEqual(legacy.entries);
+    expect(upgraded.rules).toEqual(legacy.rules);
+    expect(JSON.stringify(legacy)).toBe(before);
+    expect(JSON.parse(exportStore(upgraded, NEXT)).schema).toBe(3);
+    expect(importStore(before).store.entries).toEqual(legacy.entries);
+  });
+
+  it('records a review as a new revision and keeps the original plan, timing answer and entry time', () => {
+    const original = planned();
+    expect(original.timingRole).toBe('larger');
+    expect(original.setup?.entryAt).toBe('2026-10-13T02:30:00.000Z');
+    const reviewed = updateJournalEntry(original, { review: { status: 'stop', r: -1, followedPlan: true }, outcome: 'Stopped at the planned level.' }, { at: NEXT });
+    expect(reviewed.review).toEqual({ status: 'stop', r: -1, followedPlan: true });
+    expect(reviewed.revisions).toHaveLength(2);
+    expect(reviewed.revisions[0].review).toBeUndefined();
+    expect(reviewed.revisions[1].review).toEqual(reviewed.review);
+    expect(reviewed.timingRole).toBe('larger');
+    expect(updateJournalEntry(reviewed, { review: { status: 'stop', r: -1, followedPlan: true } }, { at: '2026-10-01T00:02:00.000Z' })).toEqual(reviewed);
+    const restored = importStore(exportStore({ ...emptyStore(), entries: [reviewed] }, NEXT)).store;
+    expect(restored.entries[0]).toEqual(reviewed);
+  });
+
+  it('keeps the timing answer fixed and only on TA + astrology plans', () => {
+    expect(() => updateJournalEntry(planned(), { timingRole: 'veto' } as never, { at: NEXT })).toThrow('original instrument');
+    expect(() => createJournalEntry({ ...journalInput, method: 'TA only', timingRole: 'none' }, { at: START, id: 'ta-one' })).toThrow('Only TA + astrology');
+    expect(() => validateStore({ ...emptyStore(), entries: [{ ...planned(), timingRole: 'sometimes' }] })).toThrow('Timing answer');
+  });
+
+  it('validates review fields and refuses a review that differs from its revision', () => {
+    const entry = planned();
+    expect(updateJournalEntry(entry, { review: { status: 'skipped', exit: 92, r: -1.5 } }, { at: NEXT }).review).toEqual({ status: 'skipped', exit: 92, r: -1.5 });
+    expect(() => updateJournalEntry(entry, { review: { status: 'skipped', r: 1, followedPlan: true } }, { at: NEXT })).toThrow('Only a taken trade');
+    expect(() => updateJournalEntry(entry, { review: { status: 'not-triggered', r: 1 } }, { at: NEXT })).toThrow('never came');
+    expect(() => updateJournalEntry(entry, { review: { status: 'target', exit: 120 } }, { at: NEXT })).toThrow('also records its R');
+    expect(() => updateJournalEntry(entry, { review: { status: 'target', exit: -5, r: 1 } }, { at: NEXT })).toThrow('Exit price');
+    expect(() => updateJournalEntry(entry, { review: { status: 'target', r: 101 } }, { at: NEXT })).toThrow('R multiple');
+    expect(() => updateJournalEntry(entry, { review: { status: 'won' } as never }, { at: NEXT })).toThrow('Review status');
+    expect(() => updateJournalEntry(entry, { review: { status: 'target', extra: true } as never }, { at: NEXT })).toThrow('unsupported fields');
+    const reviewed = updateJournalEntry(entry, { review: { status: 'target', r: 2 } }, { at: NEXT });
+    expect(() => validateStore({ ...emptyStore(), entries: [{ ...reviewed, review: { status: 'target', r: 3 } }] })).toThrow('latest review');
+    expect(() => validateStore({ ...emptyStore(), entries: [{ ...reviewed, review: undefined }] })).toThrow('latest review');
+  });
+
+  it('refuses schema 3 fields inside a schema 1 or 2 workspace', () => {
+    const legacy = { schema: 2, catalogVersion: emptyStore().catalogVersion, rules: [], entries: [planned()], seenMatches: [] };
+    expect(() => validateStore(legacy)).toThrow('need workspace schema 3');
+    expect(() => importStore(JSON.stringify(legacy))).toThrow('need workspace schema 3');
+    expect(validateStore({ ...legacy, schema: 3 }).entries).toHaveLength(1);
+  });
+
+  it('stores review fields in one key order, so an unchanged review adds no revision', () => {
+    const reviewed = updateJournalEntry(planned(), { review: { followedPlan: true, r: 2, exit: 120, status: 'target' } as never }, { at: NEXT });
+    expect(JSON.stringify(reviewed.review)).toBe('{"status":"target","exit":120,"r":2,"followedPlan":true}');
+    expect(updateJournalEntry(reviewed, { review: { status: 'target', exit: 120, r: 2, followedPlan: true } }, { at: '2026-10-01T00:02:00.000Z' })).toEqual(reviewed);
+  });
+
+  it('requires a real UTC planned entry instant', () => {
+    expect(() => createJournalEntry({ ...journalInput, setup: { ...setup, entryAt: '2026-10-13 09:30' } }, { at: START, id: 'bad-entry' })).toThrow('Planned entry');
+    expect(() => createJournalEntry({ ...journalInput, setup: { ...setup, entryAt: '2026-02-30T00:00:00Z' } }, { at: START, id: 'bad-entry' })).toThrow('Planned entry');
+  });
+});

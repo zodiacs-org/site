@@ -1,5 +1,9 @@
 # Market Lens implementation checkpoints
 
+## Zodiacs Desk — 7 October 2026 (Asia/Bangkok)
+
+The product is now named Zodiacs Desk at `/terminal/desk/`, with permanent redirects from `/terminal/lens/`. It adds a trade window to Setup & risk and the Session brief, and a plan ledger with fixed timing answers, structured reviews with results in R, hindsight flags and would-have results for passed plans (workspace schema 3). Site Check gains a Desk browser drive. See [DESK.md](DESK.md) for behavior, storage, bundle and verification. Internal names, storage keys and research records keep the Market Lens name; the sections below are dated records of Market Lens.
+
 ## Local continuation — 7 October 2026 (Asia/Bangkok)
 
 Current evidence is in [LOCAL-CONTINUATION.md](LOCAL-CONTINUATION.md) and [CROSS-ASSET.md](CROSS-ASSET.md). Private v2 is running and its initial run, Git persistence, downloaded backup, restored source/protocol and signed receipts have now been independently verified. Earlier statements below about an empty private repository or inaccessible GitHub are dated history. The cross-asset extension and separate blocked v3 draft are under fresh validation; historical tests/previews do not establish their acceptance. Public display rights remain ungranted.

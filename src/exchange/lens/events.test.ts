@@ -33,6 +33,7 @@ describe('ICS export', () => {
     expect(first.match(/^UID:.+$/m)?.[0]).toBe(second.match(/^UID:.+$/m)?.[0]);
     expect(first.replace(/\r\n/g, '')).not.toMatch(/[\r\n]/);
     expect(first.match(/BEGIN:VEVENT/g)).toHaveLength(1);
+    expect(first).toContain('PRODID:-//Zodiacs//Zodiacs Desk//EN\r\n');
   });
   it('folds non-ASCII at octet boundaries without breaking a character', () => {
     const line = `DESCRIPTION:${'月é'.repeat(50)}`;
