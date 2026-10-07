@@ -123,6 +123,7 @@ export const SCOPE_DROP = Object.freeze([
   { pattern: /^src\/data\/transits-\d{4}-\d{2}\.json$/u, reason: 'generated sky data with no prose' },
   { pattern: /^src\/data\/tz-(?:lmt\.json|history\/)/u, reason: 'generated time zone tables' },
   { pattern: /^src\/data\/people\.json$/u, reason: 'the people pilot\'s frozen, generated copy; its facts are checked by build-people-pilot.mjs --check' },
+  { pattern: /^api\/_mcp\/remote\.mjs$/u, reason: 'generated from src/mcp/hosted-*.ts, src/lib/compute-api/ and the vendored engine, which are read instead' },
   { pattern: /(?:^|\/)fixtures\/|\.fixture\.json$/u, reason: 'test fixtures, not copy' },
 ]);
 
