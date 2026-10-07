@@ -60,7 +60,8 @@ try {
       const iframe = document.querySelector('iframe')!;
       if (event.source !== iframe.contentWindow) return;
       (window as any).protocolMessages.push(event.data);
-      if (event.data.method === 'ui/initialize') iframe.contentWindow!.postMessage({ jsonrpc: '2.0', id: event.data.id, result: { protocolVersion: '2026-01-26', hostInfo: { name: 'synthetic-host', version: '1' }, hostCapabilities: { serverTools: {} } } }, '*');
+      if (event.data.method === 'ui/initialize') iframe.contentWindow!.postMessage({ jsonrpc: '2.0', id: event.data.id, result: { protocolVersion: '2026-01-26', hostInfo: { name: 'synthetic-host', version: '1' }, hostCapabilities: { serverTools: {}, openLinks: {} } } }, '*');
+      if (event.data.method === 'ui/notifications/size-changed') iframe.style.height = `${event.data.params.height}px`;
       if (event.data.method === 'tools/call') iframe.contentWindow!.postMessage({ jsonrpc: '2.0', id: event.data.id, result: { structuredContent: result } }, '*');
     });
   }, changed);
@@ -71,10 +72,18 @@ try {
   await frame.locator('#zone').selectOption('America/New_York'); await frame.locator('#from').fill('2026-10-02'); await frame.locator('#to').fill('2026-10-09');
   await frame.locator('#update').click();
   await frame.waitForFunction(() => document.querySelector('#status')?.textContent?.includes('times for New York'));
+  // The frame takes the calendar's height, with no scrolling inside it, and links open through the host.
+  await page.waitForTimeout(200);
+  assert.equal(await frame.evaluate(() => document.documentElement.scrollHeight <= innerHeight + 1), true, 'The calendar frame fits its content');
+  const content = await frame.evaluate(() => { const root = document.documentElement; root.style.height = 'max-content'; const height = root.getBoundingClientRect().height; root.style.height = ''; return Math.ceil(height); });
+  assert.equal(await page.evaluate(() => document.querySelector('iframe')!.getBoundingClientRect().height), content, 'The frame is exactly as tall as the calendar');
+  await frame.locator('#links a').first().click();
+  await page.waitForFunction(() => (window as any).protocolMessages.some((message: any) => message.method === 'ui/open-link'));
   const messages = await page.evaluate(() => (window as any).protocolMessages);
+  assert.match(messages.find((message: any) => message.method === 'ui/open-link').params.url, /^https:\/\/zodiacs\.org\//);
   assert.ok(messages.some((message: any) => message.method === 'ui/notifications/initialized'));
   assert.deepEqual(messages.find((message: any) => message.method === 'tools/call').params, { name: 'get_upcoming_events', arguments: { from: '2026-10-02T04:00:00.000Z', to: '2026-10-10T04:00:00.000Z', zone: 'America/New_York' } });
   assert.equal(network, 0); assert.deepEqual(errors, []);
-  await writeFile(new URL('widget-review.json', out), JSON.stringify({ scope: 'Local Chromium render and synthetic host bridges; not ChatGPT host acceptance', passed: ['desktop', '360px mobile', 'local dates and times', 'no UTC or ISO times on screen', 'coverage', 'no external requests', 'text injection', 'URL allowlist', 'refusal clears stale content', 'calendar form through OpenAI bridge', '92-day form limit before host call', 'MCP Apps initialization and calendar tools/call'], errors }, null, 2) + '\n');
+  await writeFile(new URL('widget-review.json', out), JSON.stringify({ scope: 'Local Chromium render and synthetic host bridges; not ChatGPT host acceptance', passed: ['desktop', '360px mobile', 'local dates and times', 'no UTC or ISO times on screen', 'coverage', 'no external requests', 'text injection', 'URL allowlist', 'refusal clears stale content', 'calendar form through OpenAI bridge', '92-day form limit before host call', 'MCP Apps initialization and calendar tools/call', 'frame fits the calendar', 'links open through an MCP Apps host that offers it'], errors }, null, 2) + '\n');
   console.log('Widget browser QA: desktop, mobile, injection, links and error recovery passed.');
 } finally { await browser.close(); }

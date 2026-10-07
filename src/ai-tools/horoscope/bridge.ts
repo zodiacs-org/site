@@ -15,6 +15,9 @@ interface OpenAiGlobals {
   callTool?: (name: string, args: Record<string, unknown>) => Promise<{ structuredContent?: unknown; _meta?: Record<string, unknown>; meta?: Record<string, unknown> }>;
 }
 
+import { reportSizeChanges } from '../fit-height';
+import { openLinksThroughHost } from '../open-links';
+
 const openai = () => (window as unknown as { openai?: OpenAiGlobals }).openai;
 
 export class HoroscopeBridge {
@@ -23,6 +26,8 @@ export class HoroscopeBridge {
   private targetOrigin = '*';
   private ready = false;
   private serverTools = false;
+  private stopSizing: () => void = () => {};
+  private stopLinks: () => void = () => {};
   private listener = (event: MessageEvent) => {
     if (event.source !== window.parent || event.data?.jsonrpc !== '2.0') return;
     if (this.targetOrigin !== '*' && event.origin !== this.targetOrigin) return;
@@ -67,6 +72,8 @@ export class HoroscopeBridge {
       this.serverTools = !!result?.hostCapabilities?.serverTools;
       this.onTheme(result?.hostContext?.theme);
       window.parent.postMessage({ jsonrpc: '2.0', method: 'ui/notifications/initialized' }, this.targetOrigin);
+      this.stopSizing = reportSizeChanges((message) => window.parent.postMessage(message, this.targetOrigin));
+      if (result?.hostCapabilities?.openLinks) this.stopLinks = openLinksThroughHost((url) => this.request('ui/open-link', { url }));
     }).catch(() => {});
   }
 
@@ -97,6 +104,8 @@ export class HoroscopeBridge {
   dispose() {
     window.removeEventListener('message', this.listener);
     window.removeEventListener('openai:set_globals', this.globals);
+    this.stopSizing();
+    this.stopLinks();
     for (const request of this.pending.values()) { clearTimeout(request.timer); request.reject(new Error('The panel closed.')); }
     this.pending.clear();
   }

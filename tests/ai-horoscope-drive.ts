@@ -101,6 +101,52 @@ try {
   await studio.getByRole('button', { name: 'See an example chart (not yours)' }).click();
   assert.match(await studio.locator('.chart-meta').innerText(), /Example chart \(not yours\)/);
   assert.deepEqual(studioErrors, []);
-  await writeFile(new URL('horoscopes-review.json', out), JSON.stringify({ scope: 'Local Chromium render with synthetic host bridges; not ChatGPT or Claude host acceptance', timezone: 'Asia/Bangkok', window: window.editions.map(edition => edition.anchorDate), passed: ['sign picker', 'sign choice through the OpenAI bridge', 'host updates after a choice keep it','plain dates and places', 'focus and week switching', 'why this reading', '375px phone: no sideways scroll, reading on the first screen', 'text injection', 'no external requests', 'Chart Studio opens on birth details', 'unknown birth time path', 'labelled example chart'], errors: [...errors, ...studioErrors] }, null, 2) + '\n');
+
+  // In an MCP Apps host such as Claude, both panels report their content height,
+  // so the frame grows to fit instead of scrolling inside a short frame, and open
+  // their links through the host.
+  const host = await context.newPage();
+  const hostErrors: string[] = []; host.on('pageerror', error => hostErrors.push(error.message));
+  await host.setContent('<iframe title="Zodiacs panel" style="width:100%;height:160px;border:0"></iframe>');
+  await host.evaluate(() => {
+    (window as any).sizes = []; (window as any).links = [];
+    window.addEventListener('message', event => {
+      const iframe = document.querySelector('iframe')!;
+      if (event.source !== iframe.contentWindow) return;
+      if (event.data.method === 'ui/initialize') iframe.contentWindow!.postMessage({ jsonrpc: '2.0', id: event.data.id, result: { protocolVersion: '2026-01-26', hostInfo: { name: 'synthetic-host', version: '1' }, hostCapabilities: { serverTools: {}, openLinks: {} } } }, '*');
+      if (event.data.method === 'ui/open-link') { (window as any).links.push(event.data.params.url); iframe.contentWindow!.postMessage({ jsonrpc: '2.0', id: event.data.id, result: {} }, '*'); }
+      if (event.data.method === 'ui/notifications/size-changed') { (window as any).sizes.push(event.data.params.height); iframe.style.height = `${event.data.params.height}px`; }
+    });
+  });
+  const fitsFrame = (frame: import('playwright-core').Frame) => frame.evaluate(() => document.documentElement.scrollHeight <= innerHeight + 1);
+  const panel = host.frames()[1];
+  await panel.setContent(HOROSCOPES_HTML);
+  await host.waitForFunction(() => (window as any).sizes.length > 0);
+  await host.evaluate(result => document.querySelector('iframe')!.contentWindow!.postMessage({ jsonrpc: '2.0', method: 'ui/notifications/tool-result', params: result }, '*'), leo);
+  await panel.getByRole('heading', { name: 'Leo' }).waitFor();
+  await host.waitForFunction(() => (window as any).sizes.at(-1) > 500);
+  await host.waitForTimeout(200);
+  assert.equal(await fitsFrame(panel), true, 'The horoscope frame fits the reading, with no scrolling inside it');
+  await panel.getByRole('link', { name: /More on zodiacs\.org/ }).click();
+  await host.waitForFunction(() => (window as any).links.length === 1);
+  assert.deepEqual(await host.evaluate(() => (window as any).links), ['https://zodiacs.org/horoscopes/leo/'], 'Links open through the host');
+  assert.equal(await panel.getByRole('heading', { name: 'Leo' }).count(), 1, 'The panel stays put when a link opens');
+  await host.evaluate(() => { (window as any).sizes = []; document.querySelector('iframe')!.style.height = '160px'; });
+  await panel.setContent(STUDIO_HTML);
+  await panel.getByRole('heading', { name: 'When and where were you born?' }).waitFor();
+  await host.waitForFunction(() => (window as any).sizes.length > 0);
+  const before = await host.evaluate(() => (window as any).sizes.at(-1));
+  await panel.locator('details.unknown-time summary').click();
+  await panel.locator('details.unknown-time input[type=date]').fill('1992-03-14');
+  await panel.getByRole('button', { name: 'Make my chart without a time' }).click();
+  await panel.locator('.wheel-wrap').waitFor();
+  await host.waitForFunction(previous => (window as any).sizes.at(-1) !== previous, before);
+  await host.waitForTimeout(200);
+  assert.equal(await fitsFrame(panel), true, 'Chart Studio grows with its chart, with no scrolling inside the frame');
+  await panel.getByRole('link', { name: 'Privacy' }).click();
+  await host.waitForFunction(() => (window as any).links.length === 2);
+  assert.equal(await host.evaluate(() => (window as any).links[1]), 'https://zodiacs.org/privacy/');
+  assert.deepEqual(hostErrors, []);
+  await writeFile(new URL('horoscopes-review.json', out), JSON.stringify({ scope: 'Local Chromium render with synthetic host bridges; not ChatGPT or Claude host acceptance', timezone: 'Asia/Bangkok', window: window.editions.map(edition => edition.anchorDate), passed: ['sign picker', 'sign choice through the OpenAI bridge', 'host updates after a choice keep it','plain dates and places', 'focus and week switching', 'why this reading', '375px phone: no sideways scroll, reading on the first screen', 'text injection', 'no external requests', 'Chart Studio opens on birth details', 'unknown birth time path', 'labelled example chart', 'both panels report their content height to an MCP Apps host', 'links open through an MCP Apps host that offers it'], errors: [...errors, ...studioErrors] }, null, 2) + '\n');
   console.log('Horoscope and Chart Studio browser QA passed.');
 } finally { await browser.close(); }

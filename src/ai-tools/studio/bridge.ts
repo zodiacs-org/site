@@ -1,3 +1,6 @@
+import { reportSizeChanges } from '../fit-height';
+import { openLinksThroughHost } from '../open-links';
+
 /** MCP Apps transport. Only explicit user actions call share(); chart state is never persisted. */
 export class StudioBridge {
   private pending = new Map<string, { resolve: (value: any) => void; reject: (reason: Error) => void; timer: ReturnType<typeof setTimeout> }>();
@@ -6,6 +9,8 @@ export class StudioBridge {
   private targetOrigin = '*';
   private textContext = false;
   private textMessage = false;
+  private stopSizing: () => void = () => {};
+  private stopLinks: () => void = () => {};
   private listener = (event: MessageEvent) => {
     if (event.source !== window.parent || event.data?.jsonrpc !== '2.0') return;
     if (this.targetOrigin !== '*' && event.origin !== this.targetOrigin) return;
@@ -27,6 +32,8 @@ export class StudioBridge {
       this.ready = true;
       window.parent.postMessage({ jsonrpc: '2.0', method: 'ui/notifications/initialized' }, this.targetOrigin);
       this.changed(this.textContext || this.textMessage);
+      this.stopSizing = reportSizeChanges((message) => window.parent.postMessage(message, this.targetOrigin));
+      if (result?.hostCapabilities?.openLinks) this.stopLinks = openLinksThroughHost((url) => this.request('ui/open-link', { url }));
     } catch { this.changed(false); }
   }
   private request(method: string, params: unknown): Promise<any> {
@@ -47,6 +54,8 @@ export class StudioBridge {
   }
   dispose() {
     window.removeEventListener('message', this.listener);
+    this.stopSizing();
+    this.stopLinks();
     for (const p of this.pending.values()) { clearTimeout(p.timer); p.reject(new Error('Chart Studio closed.')); }
     this.pending.clear(); this.ready = false;
   }

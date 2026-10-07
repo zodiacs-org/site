@@ -12,7 +12,9 @@
     "refusal clears stale content",
     "calendar form through OpenAI bridge",
     "92-day form limit before host call",
-    "MCP Apps initialization and calendar tools/call"
+    "MCP Apps initialization and calendar tools/call",
+    "frame fits the calendar",
+    "links open through an MCP Apps host that offers it"
   ],
   "errors": []
 }
