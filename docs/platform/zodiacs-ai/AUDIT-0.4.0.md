@@ -16,6 +16,83 @@ Protocol checks and desktop responsive screenshots do not establish those
 host results. Keep `demo_recording_url` empty until an actual 0.4 recording
 exists. Do not merge this server change during the existing 0.3.4 review.
 
+## Claude's review and update — 7 October 2026, about 06:30 UTC
+
+**Recommendation: not ready to submit.** No assistant has yet run the 0.4.0
+server for a real conversation. The blocks below are access problems, not
+product failures, and each has a documented way through. Two need the owner's
+decision.
+
+### Codex's amendments: accepted
+
+- The four Codex commits match their descriptions. CI on the staged head
+  `edb05486` passed all 20 jobs.
+- The text evidence contains no shareable-link token, preview cookie, bypass
+  secret or service key; I searched every changed text file for each pattern.
+  The Claude screenshot shows the header value masked.
+- The Claude manifest and the typed `.mcp.json` are consistent with the
+  package checks. Validation is not a directory approval.
+- The evidence is honest. Nothing is counted as a host result unless a host
+  produced it.
+
+### What the documentation says about each block
+
+1. **The existing ChatGPT preview identity cannot be repointed by us.**
+   OpenAI's [submission guide](https://developers.openai.com/plugins/deploy/submission)
+   says: "To change an existing MCP server's URL, contact support; the current
+   update flow does not support URL changes." Its frozen URL carries an expired
+   23-hour preview credential, so Refresh and Reconnect cannot repair it.
+   - The supported procedure that keeps the identity is a support request.
+     The owner sends it; nothing has been sent. It must stay separate from
+     case 16624967, which concerns the obsolete 0.1.0 listing.
+   - The alternative is a new temporary custom MCP server in ChatGPT for
+     testing, which gets a new identity and needs the owner's approval.
+2. **ChatGPT on iPhone cannot be tested before publication.** OpenAI's
+   [developer mode article](https://help.openai.com/en/articles/12584461-developer-mode-and-mcp-apps-in-chatgpt)
+   answers "Are MCP apps available on mobile? No - web only." A private
+   preview therefore cannot open on the owner's iPhone. The mobile check moves
+   to after approval. It is recorded as **not executable**, not as a failure.
+3. **Claude: custom header names need Anthropic's approval.** Claude's dialog
+   says to contact support to request approval for a new name. Vercel's
+   shareable link answers with a 307 cookie redirect that Claude's connector
+   does not keep.
+4. **The documented route for clients that send only a URL** is Vercel's
+   [Protection Bypass for Automation](https://vercel.com/docs/deployment-protection/methods-to-bypass-deployment-protection/protection-bypass-automation)
+   as a query parameter: `…/mcp?x-vercel-protection-bypass=<secret>`. Vercel
+   documents it for third-party services that cannot set headers, and the
+   secret travels on every request without a redirect.
+   - **Server side, done here (commit `1dd7d698`).** `/mcp` refused that
+     parameter with 400 even after Vercel accepted it; I observed this on
+     `zodiacs.org/mcp`. It now tolerates the parameter on preview deployments
+     only, never reads, echoes or logs it, and still refuses it in production.
+     Tests cover both cases.
+   - **Owner side, not done.** A bypass secret works on every deployment of
+     the project until it is revoked, so it is wider than a one-preview
+     temporary link. Creating, sharing and revoking it is the owner's
+     decision. It is a security setting, made in the Vercel dashboard. The
+     owner pastes the full URL only into the ChatGPT and Claude connector
+     forms, never into a chat, commit or evidence file, and revokes it when
+     testing ends.
+
+### What has to happen before the host tests
+
+- Redeploy staging from `1dd7d698` or later with Codex's bounded-preview
+  procedure, keeping the deployment-only switch, staging host and quota
+  credential.
+- Before testing on 8 October or later, merge main into the branch and rebuild
+  `src/data/horoscope-window.json`. The committed window covers 6–8 October
+  only.
+- Then run the case matrix on ChatGPT web, through a new temporary connection
+  or a repaired identity, and on Claude. Mobile waits until after approval.
+- Record the eight-case walkthrough from ChatGPT web, then set
+  `demo_recording_url` and rebuild the packages.
+
+### Case status after this update
+
+The matrix above is unchanged: every ChatGPT web and Claude case is still
+blocked, and every iPhone case is not executable before publication. No new
+host result has been observed.
+
 ## Source and amendments
 
 Claude's initial candidate was `deb0dd933844f13af1052546401ed8db18226513`.
