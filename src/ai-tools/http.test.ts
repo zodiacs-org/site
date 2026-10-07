@@ -2,7 +2,7 @@ import { beforeAll, afterAll, describe, it, expect } from 'vitest';
 import { createServer, request, type Server } from 'node:http';
 import { Client, LATEST_PROTOCOL_VERSION, StreamableHTTPClientTransport } from '@modelcontextprotocol/client';
 import { createAiNodeHandler } from './http';
-import { AI_TOOL_NAMES, HOROSCOPE_URI, MAX_HTTP_BYTES, OUTPUT_SCHEMAS, WIDGET_URI, STUDIO_URI, LEGACY_STUDIO_URI } from './contracts';
+import { AI_TOOL_NAMES, HOROSCOPE_URI, MAX_HTTP_BYTES, OUTPUT_SCHEMAS, TOOL_TITLES, WIDGET_URI, STUDIO_URI, LEGACY_STUDIO_URI } from './contracts';
 import committedWindow from '../data/horoscope-window.json';
 import type { HoroscopeWindow } from './horoscope/window';
 import { COMPUTE_EVENTS_RATE_LIMIT_ID, COMPUTE_RATE_LIMIT_ID } from '../lib/compute-api/constants';
@@ -58,7 +58,15 @@ describe('stateless MCP HTTP boundary', () => {
     await client.connect(new StreamableHTTPClientTransport(new URL(base)));
     try {
       const tools = await client.listTools(); expect(tools.tools.map(tool => tool.name)).toEqual(AI_TOOL_NAMES);
-      for (const tool of tools.tools) { expect(tool.annotations?.readOnlyHint).toBe(true); expect(tool.annotations?.openWorldHint).toBe(false); expect(tool.outputSchema).toBeDefined(); }
+      for (const tool of tools.tools) {
+        expect(tool.title).toBe(TOOL_TITLES[tool.name as keyof typeof TOOL_TITLES]);
+        expect(tool.annotations?.title).toBe(tool.title);
+        expect(tool.annotations?.readOnlyHint).toBe(true);
+        expect(tool.annotations?.destructiveHint).toBe(false);
+        expect(tool.annotations?.openWorldHint).toBe(false);
+        expect(tool.outputSchema).toBeDefined();
+      }
+      expect(tools.tools.find(tool => tool.name === 'check_sky_fact')?.description).toContain('https://zodiacs.org/developers/compute/');
       const calendar = tools.tools.find(tool => tool.name === 'get_upcoming_events')!;
       expect(calendar._meta?.['openai/ui']).toEqual({ entrypoints: [{ type: 'global' }, { type: 'thread' }] });
       expect(calendar.annotations?.idempotentHint).toBe(false);
