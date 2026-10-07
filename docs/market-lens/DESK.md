@@ -89,11 +89,12 @@ that differs from its latest revision.
 ## Bundle
 
 The selected-event detail moved into a lazily loaded `EventDetail` component,
-and the trade window, ledger and review form load with the panels that use
-them. A local esbuild estimate of the island's static closure as one gzip
-stream went from 21.30 KB to 21.36 KB (minified size fell by 0.31 KB). The route
-measured 31.8 of 32 KB at the validated commit; Site Check's bundle gate is the
-authority.
+and the economic-schedule and research-boundary notes into `CoverageNotes`,
+which renders nothing until it loads. The trade window, ledger and review form
+load with the panels that use them. Local esbuild estimates of the island's
+static closure, against the validated commit: one gzip stream 21.30 → 20.83 KB;
+per-chunk gzip 23.23 → 23.19 KB. The route measured 31.8 of 32 KB at the
+validated commit; Site Check's bundle gate is the authority.
 
 ## Verification
 

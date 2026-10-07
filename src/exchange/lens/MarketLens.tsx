@@ -2,7 +2,7 @@ import { isInstrumentId } from './catalog';
 import { profileAccessAllowed } from '../../lib/account-v2/profile-access-reader';
 import { explicitSelfChart, loadProfile } from '../../lib/profile/read-store';
 import { lazyPanel } from './lazy-panel';
-import { loadEconomics, economicAsEvent, economicState, type EconomicCatalog } from './economics';
+import { loadEconomics, economicAsEvent, type EconomicCatalog } from './economics';
 import type { PersonalResult } from './personal';
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import type { EventFamily, EventManifest, InstrumentId, Interval, JournalEntry, RuleCondition, SkyEvent } from './types';
@@ -21,6 +21,7 @@ import type { MarketDataset } from './types';
 import './lens.css';
 const BriefPanel = lazyPanel(() => import('./BriefPanel'));
 const EventDetail = lazyPanel(() => import('./EventDetail'));
+const CoverageNotes = lazyPanel(() => import('./CoverageNotes'), true);
 const LedgerPanel = lazyPanel(() => import('./LedgerPanel'));
 const SetupPanel = lazyPanel(() => import('./SetupPanel'));
 const PersonalContext = lazyPanel(() => import('./PersonalContext'));
@@ -182,7 +183,7 @@ export default function MarketLens({ manifest }: { manifest: EventManifest }) {
     <div key="upcoming" class="lens-upcoming" aria-label="Next sky events">{upcoming.map((event) => <button key={event.id} class="lens-next-event" onClick={() => selectEvent(event)}><span>{formatEventDate(event, timeZone)} · {formatEventTime(event, timeZone)}</span><strong>{event.title}</strong><small>{event.family}</small></button>)}</div>
     <div key="workspace-nav" class="lens-workspace-nav"><div class="lens-segments" aria-label="Workspace view">{(['chart', 'calendar', 'setup', 'brief', 'rules', 'journal', 'history'] as const).map((tab) => <button data-testid={`lens-tab-${tab}`} aria-pressed={view === tab} onClick={() => setView(tab)}>{({ chart: 'Chart', calendar: 'Calendar', rules: 'Watch rules', journal: 'Journal', history: 'History', setup: 'Setup & risk', brief: 'Session brief' })[tab]}</button>)}</div>
       <fieldset class="lens-event-filters"><legend>Context layers</legend><label><input type="checkbox" checked={showEconomics} onChange={() => setShowEconomics(!showEconomics)} />Economics</label><label><input type="checkbox" checked={showPersonal} onChange={() => setShowPersonal(!showPersonal)} />Personal contacts</label>{FAMILIES.map((family) => <label><input type="checkbox" checked={families.includes(family)} onChange={() => setFamilies((current) => current.includes(family) ? current.filter((x) => x !== family) : [...current, family])} />{family === 'lunation' ? 'Moon phases' : family[0].toUpperCase() + family.slice(1)}</label>)}</fieldset></div>
-    {economicError && <p class="lens-error">{economicError}</p>}{showEconomics && economics && <details class="lens-coverage"><summary>Economic schedule · {economicState(economics, selectedDate)} · verified {economics.verifiedAt.slice(0, 10)}</summary><p>Official Fed and BLS snapshot · {economics.coverage.start} to {economics.coverage.endExclusive} exclusive · America/New_York. Refresh verification is due after 7 days. Dates outside coverage are unavailable.</p><fieldset class="lens-event-filters"><legend>Economic releases</legend>{[['cpi', 'US CPI'], ['employment', 'US employment'], ['fomc-decision', 'FOMC decisions'], ['fomc-press-conference', 'FOMC press conferences']].map(([kind, label]) => <label><input type="checkbox" checked={economicKinds.includes(kind)} onChange={() => setEconomicKinds(current => current.includes(kind) ? current.filter(value => value !== kind) : [...current, kind])} />{label}</label>)}</fieldset>{economics.unavailable.map(row => <p>{row.period}: {row.reason} <a href={row.sourceUrl} target="_blank" rel="noopener noreferrer">Source</a></p>)}{economics.limitations.map(text => <p>{text}</p>)}</details>}
+    {economicError && <p class="lens-error">{economicError}</p>}{showEconomics && economics && <CoverageNotes part="economics" economics={economics} selectedDate={selectedDate} kinds={economicKinds} onKinds={setEconomicKinds} />}
     <div key="workspace" class={`lens-workspace ${view === 'journal' || view === 'rules' ? 'lens-workspace--wide' : ''}`}>
       <div key="main-view" class="lens-main-view"><>
         {(view === 'rules' || view === 'journal') && !storageReady && !storageError && <p class="lens-muted" role="status">Opening your private workspace…</p>}
@@ -219,6 +220,6 @@ export default function MarketLens({ manifest }: { manifest: EventManifest }) {
       </></div>
       {view !== 'journal' && view !== 'rules' && <aside class="lens-event-detail lens-panel" aria-labelledby="lens-event-detail-title" data-testid="lens-event-detail"><EventDetail event={selectedEvent} timeZone={timeZone} onView={setView} /></aside>}
     </div>
-    <details class="lens-coverage"><summary>Coverage &amp; research boundaries</summary><p>Sky catalog: {manifest.coverage.start.slice(0, 10)} through {manifest.coverage.end.slice(0, 10)}. Loaded UTC months: {loadedMonths[0] ?? 'none'} through {loadedMonths.at(-1) ?? 'none'}. Filtered absence outside coverage is not an all-clear signal.</p><ul>{manifest.limitations.map((text) => <li>{text}</li>)}</ul><p>Astrology has no established predictive relationship with asset prices. Zodiacs Desk is a read-only research workspace. Notes stay in this browser; exports are your responsibility. Local timestamps are not independently verified publication records.</p><p>Chart software: <a href="/data/market-lens/chart-license/NOTICE.txt">TradingView notice</a> · <a href="/data/market-lens/chart-license/LICENSE.txt">Apache 2.0 license</a>.</p></details>
+    <CoverageNotes part="boundaries" manifest={manifest} loadedMonths={loadedMonths} />
   </div>;
 }
