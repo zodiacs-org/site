@@ -49,7 +49,15 @@ assert.equal(skyCompatibility.version, sky.version);
 const { interface: skyInterface, ...skySettings } = sky.extensions['com.openai'];
 assert.deepEqual(skyCompatibility.interface, skyInterface);
 assert.deepEqual(skyCompatibility.extensions['com.openai'], skySettings);
-assert.deepEqual((await json('plugins/zodiacs-sky/.mcp.json')).mcpServers['zodiacs-sky'], { url: 'https://zodiacs.org/mcp' });
+assert.deepEqual((await json('plugins/zodiacs-sky/.mcp.json')).mcpServers['zodiacs-sky'], { type: 'http', url: 'https://zodiacs.org/mcp' });
+const skyClaude = await json('plugins/zodiacs-sky/.claude-plugin/plugin.json');
+for (const key of ['name', 'version', 'description', 'author', 'homepage', 'repository', 'license', 'keywords']) assert.deepEqual(skyClaude[key], sky[key]);
+assert.equal(skyClaude.displayName, skyInterface.displayName);
+assert.equal(skyClaude.mcpServers, './.mcp.json');
+assert.equal(skyClaude.icon, skyInterface.logo);
+assert.equal(skyClaude.documentationUrl, sky.homepage);
+for (const [claudeKey, openaiKey] of [['supportUrl', 'supportURL'], ['privacyPolicyUrl', 'privacyPolicyURL'], ['termsOfServiceUrl', 'termsOfServiceURL']]) assert.equal(skyClaude[claudeKey], skyInterface[openaiKey]);
+assert.ok(!skyClaude.apps && !skyClaude.hooks);
 const review = sky.extensions['com.openai'].review;
 assert.equal(review.test_cases.positive.length, 5); assert.equal(review.test_cases.negative.length, 3);
 for (const entry of review.test_cases.positive) {
@@ -59,9 +67,10 @@ assert.ok(!sky.apps && !sky.hooks && !sky.extensions['com.openai'].apps && !sky.
 assert.deepEqual((await json('plugins/zodiacs-sky/mcp.json')).mcpServers['zodiacs-sky'], { type: 'streamable-http', url: 'https://zodiacs.org/mcp' });
 assert.deepEqual((await json('plugins/zodiacs-developer/mcp.json')).mcpServers['zodiacs-developer'], { type: 'stdio', command: 'node', cwd: './', args: ['${PLUGIN_ROOT}/mcp/server.mjs'] });
 const submission = await json('integrations/chatgpt/chatgpt-app-submission.json');
-const names = ['get_capabilities', 'get_sky', 'get_upcoming_events', 'check_sky_fact', 'search_zodiacs', 'open_chart_studio'];
+const names = ['get_capabilities', 'get_sky', 'get_upcoming_events', 'check_sky_fact', 'get_horoscope', 'open_chart_studio'];
 assert.deepEqual(Object.keys(submission.tools), names);
 assert.equal(submission.schema_version, 1); assert.ok(submission.app_info.subtitle.length <= 30);
+assert.equal(submission.app_info.category, 'EDUCATION');
 assert.equal(submission.test_cases.length, 5); assert.equal(submission.negative_test_cases.length, 3);
 for (const name of names) {
   assert.deepEqual(submission.tools[name].annotations, { readOnlyHint: true, openWorldHint: false, destructiveHint: false });
@@ -87,9 +96,8 @@ const slashRedirect = vercel.redirects.find(entry => entry.destination === '/:pa
 const slashPattern = new RegExp(`^${slashRedirect.source.slice('/:path('.length, -1)}$`);
 for (const path of ['mcp', 'mcp/health']) assert.equal(slashPattern.test(path), false, `MCP must not redirect: /${path}`);
 assert.equal(slashPattern.test('moon-sign'), true, 'Consumer canonical redirects remain active');
-// Curated URLs must map to existing consumer pages; do not create dead referrals.
-const catalog = await readFile(new URL('src/ai-tools/catalog.ts', root), 'utf8');
-for (const match of catalog.matchAll(/path: '([^']+)'/g)) await access(new URL(`src/pages${match[1]}index.astro`, root));
+// Horoscope links must reach existing consumer pages; do not create dead referrals.
+await access(new URL('src/pages/horoscopes/[sign]/index.astro', root));
 const packageInfo = await json('plugins/zodiacs-developer/package.json');
 assert.equal(packageInfo.dependencies['@zodiacs/engine'], '0.1.1-rc.16');
 assert.equal(packageInfo.dependencies['@modelcontextprotocol/server'], '2.0.0');

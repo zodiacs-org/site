@@ -8,11 +8,12 @@ import { createNatalEnvelope } from '@zodiacs/engine/receipt';
 import { scanTransitContacts } from '../src/lib/engine/transit-scan';
 
 const cases = JSON.parse(await readFile(new URL('../integrations/chatgpt/evaluation-cases.json', import.meta.url), 'utf8'));
+const horoscopeWindow = JSON.parse(await readFile(new URL('../src/data/horoscope-window.json', import.meta.url), 'utf8'));
 assert.equal(cases.length, 40);
 const timings: number[] = [], results = [];
 for (const entry of cases) {
   const start = performance.now();
-  const result = await executeAiTool(entry.tool as AiToolName, entry.args, { now: () => new Date('2026-10-01T06:00:00Z') });
+  const result = await executeAiTool(entry.tool as AiToolName, entry.args, { now: () => new Date('2026-10-01T06:00:00Z'), horoscopeWindow: async () => horoscopeWindow });
   timings.push(performance.now() - start);
   assert.equal(result.ok, entry.ok, `${entry.id}: expected ${entry.ok}, received ${JSON.stringify(result)}`);
   assert.ok(!JSON.stringify(result).includes('private-canary'));

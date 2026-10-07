@@ -57,11 +57,6 @@ export default async function handler(req: any, res: any): Promise<void> {
     await computeApi(req, res);
     return;
   }
-  // The hosted sky MCP endpoint, /api/v1/mcp (src/mcp/hosted-route.ts).
-  if (req.query?.__zodiacs_mcp !== undefined) {
-    await (await import('./_mcp/handler.js')).default(req, res);
-    return;
-  }
   const previewRoute = req.query?.__zodiacs_og_route;
   if (previewRoute === 'link' || previewRoute === 'image') {
     await handleChartPreviewNodeRequest(req, res, previewRoute);

@@ -3,7 +3,7 @@ import { findStudioCities, localStudioInput, type LocalDraft, type StudioCity } 
 import type { StudioInput } from './model';
 
 declare const STUDIO_CITIES: StudioCity[];
-export function LocalTimeEntry({ input, onApply }: { input: StudioInput; onApply: (input: StudioInput) => void }) {
+export function LocalTimeEntry({ input, onApply, title = 'Start with local time', intro = 'Choose the place and the clock time recorded there. Review the conversion before updating your chart.', applyLabel = 'Use this instant' }: { input: StudioInput; onApply: (input: StudioInput) => void; title?: string; intro?: string; applyLabel?: string }) {
   const [draft, setDraft] = useState<LocalDraft>({ date: '', time: '', zone: '', latitude: '', longitude: '' });
   const [query, setQuery] = useState('');
   const [place, setPlace] = useState('');
@@ -23,7 +23,7 @@ export function LocalTimeEntry({ input, onApply }: { input: StudioInput; onApply
     finally { if (id === revision.current) setBusy(false); }
   }
   return <section class="local-entry" aria-label="Local date and place">
-    <h2>Start with local time</h2><p>Choose the place and the clock time recorded there. Review the conversion before updating your chart.</p>
+    <h2>{title}</h2><p>{intro}</p>
     <form onSubmit={event => { event.preventDefault(); void review(); }} onKeyDown={event => { if (event.key === 'Enter' && event.target instanceof HTMLInputElement) { event.preventDefault(); void review(); } }}>
       <label>Local date<input type="date" required min="1800-01-01" max="2199-12-31" value={draft.date} onInput={event => update('date', event.currentTarget.value)} /></label>
       <label>Local time<input type="time" required value={draft.time} onInput={event => update('time', event.currentTarget.value)} /></label>
@@ -46,7 +46,7 @@ export function LocalTimeEntry({ input, onApply }: { input: StudioInput; onApply
       {result.input.local!.resolution.clock === 'local-mean-time' && <p class="callout">Before standard time, the place’s longitude determines its local mean time. The calculation record preserves this assumption.</p>}
       {result.zoneUncertain && <p class="callout">Pinned historical data is unavailable for this zone. This conversion uses this browser’s time-zone history; verify the historical clock before relying on it.</p>}
       <p>The converted instant and time-zone assumptions are included in your downloaded record. This step does not share them with the assistant.</p>
-      <button type="button" onClick={() => { onApply({ ...result.input, houseSystem: input.houseSystem }); setResult(null); setNotice('Chart updated from the reviewed local time.'); }}>Use this instant</button>
+      <button type="button" onClick={() => { onApply({ ...result.input, houseSystem: input.houseSystem }); setResult(null); setNotice('Chart updated from the reviewed local time.'); }}>{applyLabel}</button>
     </div>}
     <p role="status">{notice}</p><p class="city-credit">City data: <a href="https://www.geonames.org/" target="_blank" rel="noreferrer">GeoNames</a>, <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer">CC BY 4.0</a>. Population-ranked subset of the site’s city index.</p>
   </section>;

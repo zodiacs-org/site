@@ -1,0 +1,39 @@
+{
+  "schema": "zodiacs.claude-connector-block.v1",
+  "observedDate": "2026-10-07",
+  "host": "Claude desktop app; normal Chat mode; custom connector UI",
+  "name": "Zodiacs 0.4 preview",
+  "endpoint": "https://zodiacs-consumer-040-preview-zodiacsofficial.vercel.app/mcp",
+  "attempts": [
+    {
+      "step": "Initial temporary share URL check",
+      "status": 307,
+      "result": "Could not determine server sign-in; Continue anyway offered"
+    },
+    {
+      "step": "Automatic approval review",
+      "result": "Rejected continuing because preview secret would be shared with Anthropic"
+    },
+    {
+      "step": "Owner approval",
+      "result": "Explicitly approved temporary preview connection to Anthropic"
+    },
+    {
+      "step": "Supported Request headers setup",
+      "authentication": "No sign-in; temporary deployment-only access cookie in custom header",
+      "headerHealthCheck": {
+        "status": 200,
+        "ready": true
+      },
+      "creationResult": "The header name cookie is not approved; remove it or contact Anthropic support"
+    }
+  ],
+  "connectorCreated": false,
+  "conversationTestsExecuted": false,
+  "originHeaderPresent": null,
+  "panelsRendered": null,
+  "credentialsIncluded": false,
+  "privateScreenshot": "Earlier sidebar-visible capture retained outside Git; final screenshot hides sidebar and masks credentials",
+  "disposition": "Closed uncreated connector draft; no deletion or protection change",
+  "screenshot": "claude-header-rejected.jpg"
+}

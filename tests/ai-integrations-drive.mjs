@@ -25,7 +25,8 @@ const client = new Client({ name: 'zodiacs-plugin-review', version: '1.0.0' });
 await client.connect(transport);
 let stderr = ''; transport.stderr?.on('data', data => { stderr += data; });
 try {
-  const tools = await client.listTools(); assert.equal(tools.tools.length, 9);
+  const tools = await client.listTools(); assert.equal(tools.tools.length, 8);
+  assert.ok(!tools.tools.some(tool => tool.name === 'get_horoscope' || tool.name === 'search_zodiacs'), 'The local server offers no horoscopes and no catalogue search');
   for (const tool of tools.tools) assert.equal(tool.annotations.readOnlyHint, true);
   const call = async (name, args = {}) => {
     const result = await client.callTool({ name, arguments: args }); assert.equal(result.isError ?? false, false, `${name}: ${JSON.stringify(result)}`); return result.structuredContent;
@@ -40,12 +41,11 @@ try {
   await call('get_upcoming_events', { from: '2026-10-01T00:00:00Z', to: '2026-10-08T00:00:00Z', kinds: ['lunation'] });
   const opened = await call('get_upcoming_events'); assert.equal(opened.data.zone, 'UTC');
   await call('check_sky_fact', { kind: 'retrograde', body: 'Mercury', instant: '2026-10-01T00:00:00Z' });
-  await call('search_zodiacs', { query: 'Moon sign' });
   const natal = await call('calculate_natal_chart', { utc: '1990-06-15T12:00:00Z', timeKnown: false, reference: 'utc-noon', output: 'record' });
   const comparison = await call('compare_calculation_records', { left: natal.record, right: natal.record }); assert.equal(comparison.identical, true);
   const refusal = await client.callTool({ name: 'get_sky', arguments: { 'private-canary-1985': 'secret' } });
   assert.equal(refusal.isError, true); assert.ok(!JSON.stringify(refusal).includes('private-canary'));
   await call('get_capabilities');
   assert.ok(!stderr.includes('private-canary'));
-  console.log('Developer bundle: manifest, three skills, nine MCP tools, synthetic record comparison and privacy recovery passed.');
+  console.log('Developer bundle: manifest, three skills, eight MCP tools, synthetic record comparison and privacy recovery passed.');
 } finally { await client.close(); }

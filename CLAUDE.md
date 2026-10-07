@@ -155,12 +155,22 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
 - `integrations/generated/chart-studio.mjs` ← `scripts/build-chart-studio.mjs`
   through `npm run ai:build`; standalone browser bundle with inline fonts/icons.
   Its sources are `src/ai-tools/studio/`; never edit the generated HTML string.
+- `integrations/generated/horoscopes.mjs` ← `scripts/build-horoscope-panel.mjs`
+  through `npm run ai:build`; the get_horoscope panel (sources
+  `src/ai-tools/horoscope/`). It carries no reading data.
+- `src/data/horoscope-window.json` ← `vite-node --script
+  scripts/build-horoscope-window.ts` (the daily workflow rebuilds it after the
+  day's program; `verify-horoscope-window.ts --replay` checks it). It holds the
+  editions for the day before, the day of and the day after the committed daily
+  date; `api/_ai/handler.ts` reads it when a horoscope is asked for.
 - `api/_ai/runtime.mjs`, `plugins/zodiacs-developer/mcp/server.mjs` and the
   developer's portable `plugin.json`/`mcp.json` ← `npm run ai:build` (sources
   `src/ai-tools/` and the compatibility manifest). `integrations/packages/`
   ZIPs and manifest ← `npm run ai:package`. `npm run ai:check` checks drift.
-  The hosted MCP defaults off; its exact optional staging hostname is configured
-  with `ZODIACS_MCP_STAGING_HOST`. See `docs/platform/zodiacs-ai/LAUNCH.md`.
+  The hosted MCP at /mcp is switched on in production with
+  `ZODIACS_MCP_ENABLED=1` and is the only hosted MCP server; its exact optional
+  staging hostname is configured with `ZODIACS_MCP_STAGING_HOST`. See
+  `docs/platform/zodiacs-ai/LAUNCH.md`.
 - `api/_assistant/persona.ts` is Fable-authored source; edit it only via Fable.
 - `public/assets/og/v2/` ← `node --experimental-strip-types
   scripts/build-og-void.mjs` (ALL share cards sitewide since Part Q — wing
@@ -218,13 +228,6 @@ navigation source and run the synchronizer, leaving the rest hand-authored.
   astronomy-engine's ESM build so the function loads no engine module at run
   time (F-58); `--check` for drift, and `tests/api/compute-api-bundle.test.ts`
   rebuilds it byte for byte and loads it without module syntax detection)
-- `api/_mcp/remote.mjs` + `remote.d.mts` ← `node scripts/build-mcp-remote.mjs`
-  (the hosted sky MCP endpoint at `/api/v1/mcp`, from `src/mcp/hosted-http.ts` and
-  `hosted-server.ts`, bundled with the engine, the MCP SDK and zod; the engine
-  inputs must be the set audited for the compute bundle, and each request ends
-  by clearing the same engine memos. `--check` for drift, and
-  `tests/api/mcp-remote-bundle.test.ts` rebuilds it byte for byte. Off unless
-  `ZODIACS_SKY_MCP_ENABLED=1`; not one of the local MCP archive's sources)
 - `src/lib/compute-api/examples.json` ← `npx vite-node --script
   scripts/build-compute-examples.mjs` (the compute API's documented answers,
   run through the real handler; `tests/api/compute-api-openapi.test.ts` fails

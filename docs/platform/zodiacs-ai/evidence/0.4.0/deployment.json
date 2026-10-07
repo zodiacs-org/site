@@ -1,0 +1,10 @@
+{
+  "id": "dpl_F3jbqCMvgb8rHX6XsYVZ2e9r7MHZ",
+  "url": "https://zodiacs-2v4ljkch2-zodiacsofficial.vercel.app",
+  "alias": "zodiacs-consumer-040-preview-zodiacsofficial.vercel.app",
+  "sourceCommit": "edb054868f20f6a82fe7f3fab5c4824aa070522e",
+  "team": "zodiacsofficial",
+  "project": "zodiacs-org",
+  "target": "preview",
+  "buildScope": "bounded prebuilt compatibility MCP function"
+}

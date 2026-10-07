@@ -141,7 +141,24 @@ export async function expectedHoroscopeProgram(
   if (anchorDate !== committedDaily.date) {
     throw new Error(`Horoscope program date ${anchorDate} does not match committed daily date ${committedDaily.date}`);
   }
+  return computeHoroscopeEdition(anchorDate);
+}
 
+/**
+ * The edition for any anchor date, computed exactly as the committed program
+ * is. The assistant window (scripts/horoscope-window-files.ts) uses it for the
+ * days either side of the committed date.
+ */
+export async function computeHoroscopeEdition(
+  anchorDate: string,
+): Promise<{
+  input: BuildHoroscopeProgramInput;
+  program: HoroscopeProgram;
+  violations: HoroscopeProgramViolation[];
+}> {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(anchorDate) || addDays(anchorDate, 0) !== anchorDate) {
+    throw new Error(`Horoscope edition date ${anchorDate} is not a calendar date`);
+  }
   const snapshotDates = [...new Set([
     anchorDate,
     addDays(anchorDate, 1),

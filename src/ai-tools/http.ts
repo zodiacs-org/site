@@ -1,16 +1,24 @@
 import { createMcpHandler } from '@modelcontextprotocol/server';
 import { COMPUTE_EVENTS_RATE_LIMIT_ID, COMPUTE_RATE_LIMIT_ID, type RateLimitVerdict } from '../lib/compute-api/constants';
 import { computeApiRateLimit } from '../lib/compute-api/handler';
-import { AI_TOOL_NAMES, STUDIO_URI, LEGACY_STUDIO_URI, AI_ROUTE_PARAM, AI_SWITCH_ENV, AI_VERSION, MAX_HTTP_BYTES, ORIGIN } from './contracts';
+import { AI_TOOL_NAMES, HOROSCOPE_URI, STUDIO_URI, LEGACY_STUDIO_URI, AI_ROUTE_PARAM, AI_SWITCH_ENV, AI_VERSION, MAX_HTTP_BYTES, ORIGIN } from './contracts';
 import { createAiServer } from './server';
 import type { AiDependencies } from './tools';
 import { sanitizeProtocolMessage } from './sanitize';
 import { reserveAiQuota, type QuotaKind } from './quota';
 import { configuredSkyWatch, type SkyWatch } from './watch/service';
 
-const ALLOWED_ORIGINS = new Set(['https://chatgpt.com', 'https://chat.openai.com', ORIGIN]);
+// Browser-side MCP clients of the assistants Zodiacs is listed in, and the site itself.
+const ALLOWED_ORIGINS = new Set(['https://chatgpt.com', 'https://chat.openai.com', 'https://claude.ai', 'https://claude.com', ORIGIN]);
 const SECURITY_HEADERS = { 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff', 'X-Robots-Tag': 'noindex' };
 let handledPreviewRequests = 0;
+/** Plain refusals; none repeats anything from the request. */
+const REFUSALS: Record<string, string> = {
+  'rate-limited': 'Zodiacs is busy. Try again in a minute.',
+  'rate-limit-unavailable': 'Zodiacs is busy. Try again in a few minutes.',
+  disabled: 'Zodiacs is not available right now. Try again later.',
+  'payload-too-large': 'That request is too large for Zodiacs.',
+};
 
 export interface AiHttpOptions {
   env?: Readonly<Record<string, string | undefined>>;
@@ -30,7 +38,7 @@ function send(res: any, status: number, code: string, retry?: number) {
   for (const [key, value] of Object.entries(SECURITY_HEADERS)) res.setHeader(key, value);
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
   if (retry) res.setHeader('Retry-After', String(retry));
-  res.end(JSON.stringify({ error: { code, message: 'The MCP request cannot be served under its method, schema or availability requirements.' } }));
+  res.end(JSON.stringify({ error: { code, message: REFUSALS[code] ?? 'Zodiacs could not accept this request.' } }));
 }
 
 async function readBody(req: any): Promise<string> {
@@ -151,10 +159,10 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
         // Single-result JSON/SSE responses let us suppress SDK validation diagnostics
         // which may repeat unknown property names. Neither logs nor refusals quote inputs.
         const reply = await response.text();
-        // Only the fixed, self-contained Studio resource has a larger response budget.
+        // Only the fixed, self-contained panel resources have a larger response budget.
         const resourceUri = (message.params as { uri?: unknown })?.uri;
-        const studioResource = message.method === 'resources/read' && (resourceUri === STUDIO_URI || resourceUri === LEGACY_STUDIO_URI);
-        if (Buffer.byteLength(reply) > (studioResource ? 2_100_000 : 262144)) throw new Error('output-budget');
+        const panelResource = message.method === 'resources/read' && (resourceUri === STUDIO_URI || resourceUri === LEGACY_STUDIO_URI || resourceUri === HOROSCOPE_URI);
+        if (Buffer.byteLength(reply) > (panelResource ? 2_100_000 : 262144)) throw new Error('output-budget');
         function sanitize(text: string) {
           return JSON.stringify(sanitizeProtocolMessage(JSON.parse(text)));
         }

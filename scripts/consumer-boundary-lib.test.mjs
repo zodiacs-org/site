@@ -4,7 +4,6 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import {
   READ_ONLY_POSTURE,
-  consumerSurfaceFiles,
   extractConsumerFragments,
   findConsumerBoundaryViolations,
   scanConsumerBoundary,
@@ -16,14 +15,6 @@ function rules(source, file) {
 }
 
 describe('consumer boundary source scanner', () => {
-  it('skips the hosted MCP bundle and only it, and still scans the sources it is built from', async () => {
-    const files = await consumerSurfaceFiles(process.cwd());
-    expect(files).not.toContain('api/_mcp/remote.mjs');
-    for (const source of ['src/mcp/hosted-server.ts', 'src/mcp/hosted-http.ts', 'src/mcp/hosted-route.ts', 'api/_mcp/handler.ts', 'api/_compute/compute.mjs']) {
-      expect(files).toContain(source);
-    }
-  });
-
   it('allows only the approved collection description in shared navigation', () => {
     const copy = "---\nconst description = 'Official Zodiac token collection';\n---\n<p>{description}</p>";
     expect(rules(copy, 'src/components/SiteNav.astro')).toEqual([]);

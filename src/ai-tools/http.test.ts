@@ -2,7 +2,9 @@ import { beforeAll, afterAll, describe, it, expect } from 'vitest';
 import { createServer, request, type Server } from 'node:http';
 import { Client, LATEST_PROTOCOL_VERSION, StreamableHTTPClientTransport } from '@modelcontextprotocol/client';
 import { createAiNodeHandler } from './http';
-import { AI_TOOL_NAMES, MAX_HTTP_BYTES, OUTPUT_SCHEMAS, WIDGET_URI, STUDIO_URI, LEGACY_STUDIO_URI } from './contracts';
+import { AI_TOOL_NAMES, HOROSCOPE_URI, MAX_HTTP_BYTES, OUTPUT_SCHEMAS, WIDGET_URI, STUDIO_URI, LEGACY_STUDIO_URI } from './contracts';
+import committedWindow from '../data/horoscope-window.json';
+import type { HoroscopeWindow } from './horoscope/window';
 import { COMPUTE_EVENTS_RATE_LIMIT_ID, COMPUTE_RATE_LIMIT_ID } from '../lib/compute-api/constants';
 
 let server: Server, base: string;
@@ -13,7 +15,7 @@ let atomicEvent: 'allowed' | 'limited' | 'unavailable' = 'allowed';
 const atomicCounted: string[] = [];
 const env = { get ZODIACS_MCP_ENABLED() { return enabled; } };
 beforeAll(async () => {
-  server = createServer((req, res) => { void createAiNodeHandler({ env, allowedHosts: [allowedHost], atomicQuota: async kind => { atomicCounted.push(kind); return kind === 'request' ? atomicRequest : atomicEvent; }, rateLimit: async (_req, id) => { counted.push(id); return verdict; } })(req, res); });
+  server = createServer((req, res) => { void createAiNodeHandler({ env, allowedHosts: [allowedHost], atomicQuota: async kind => { atomicCounted.push(kind); return kind === 'request' ? atomicRequest : atomicEvent; }, rateLimit: async (_req, id) => { counted.push(id); return verdict; }, dependencies: { horoscopeWindow: async () => committedWindow as HoroscopeWindow } })(req, res); });
   await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve));
   base = `http://127.0.0.1:${(server.address() as { port: number }).port}/mcp`;
   allowedHost = new URL(base).host;
@@ -67,6 +69,17 @@ describe('stateless MCP HTTP boundary', () => {
       expect(studio._meta?.['openai/ui']).toEqual({ entrypoints: [{ type: 'global' }, { type: 'thread' }] });
       const launch = await client.callTool({ name: 'open_chart_studio', arguments: {} });
       expect(launch.isError).toBe(false); expect(OUTPUT_SCHEMAS.open_chart_studio.parse(launch.structuredContent).ok).toBe(true);
+      const horoscopes = tools.tools.find(tool => tool.name === 'get_horoscope')!;
+      expect(horoscopes.title).toBe('Horoscopes');
+      expect(horoscopes._meta?.['openai/widgetAccessible']).toBe(true);
+      expect(horoscopes._meta?.['openai/outputTemplate']).toBe(HOROSCOPE_URI);
+      const reading = await client.callTool({ name: 'get_horoscope', arguments: { sign: 'leo', zone: 'Asia/Bangkok' } });
+      expect(reading.isError).toBe(false);
+      const parsed = OUTPUT_SCHEMAS.get_horoscope.parse(reading.structuredContent);
+      expect(parsed.ok && parsed.data.status).toBe('available');
+      expect((reading._meta?.['zodiacs/horoscope'] as { sign?: string } | undefined)?.sign).toBe('leo');
+      const horoscopePanel = await client.readResource({ uri: HOROSCOPE_URI });
+      expect((horoscopePanel.contents[0] as { text: string }).text.startsWith('<!doctype html>')).toBe(true);
       const refused = await client.callTool({ name: 'open_chart_studio', arguments: { birth: 'private-canary' } });
       expect(refused.isError).toBe(true); expect(JSON.stringify(refused)).not.toContain('private-canary');
       const panel = await client.readResource({ uri: STUDIO_URI });
@@ -149,6 +162,14 @@ describe('stateless MCP HTTP boundary', () => {
     expect((await fetch(base)).status).toBe(405);
     const response = await post(rpc('subscriptions/listen'));
     expect((await response.json()).error.code).toBe(-32601);
+  });
+  it('accepts Claude origins and uses the time zone an assistant shares with the call', async () => {
+    for (const origin of ['https://claude.ai', 'https://claude.com']) expect((await post(rpc('tools/list'), { Origin: origin })).status).toBe(200);
+    const response = await post(rpc('tools/call', { name: 'get_horoscope', arguments: { sign: 'leo' }, _meta: { 'openai/userLocation': { city: 'Bangkok', country: 'TH', timezone: 'Asia/Bangkok' } } }));
+    const result = (await readMessage(response)).result;
+    expect(result.structuredContent.data.zoneSource).toBe('assistant');
+    expect(result.structuredContent.data.zone).toBe('Asia/Bangkok');
+    expect(JSON.stringify(result.structuredContent)).not.toContain('TH');
   });
   it('serves the newer per-request protocol envelope without a session', async () => {
     const response = await post(rpc('tools/list', { _meta: {

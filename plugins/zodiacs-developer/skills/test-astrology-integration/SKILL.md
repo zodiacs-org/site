@@ -20,6 +20,6 @@ failure. Use canaries to prove error bodies, application logs and URLs do not
 repeat personal fields. Hosting-layer retention and real host behavior require
 separate evidence; do not mark them passed from unit tests.
 
-Run `npm test` in this plugin to exercise the published-engine recipes. Prefer
-GPT-6.1 Sol High and xhigh for final privacy/time review. Produce reviewable
+Run `npm test` in this plugin to exercise the published-engine recipes. Review
+the privacy boundaries and time assumptions before finishing. Produce reviewable
 changes in the authorized repository; no unsolicited contributions elsewhere.

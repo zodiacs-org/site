@@ -1,6 +1,6 @@
 # Zodiacs Developer — private review candidate
 
-Three Codex skills and a local stdio MCP server. The server offers the five
+Three Codex skills and a local stdio MCP server. The server offers four
 public-sky operations, the Chart Studio launcher, and local natal capabilities, chart calculation and
 record comparison. Existing `examples/mcp-server` is unchanged.
 
@@ -29,7 +29,8 @@ host caches a separate copy. Confirm that path in the host before connecting.
 The current Codex CLI discovers both review candidates from this marketplace.
 The installed package must be checked separately from source and archive tests.
 Version 0.3.0 was installed and passed the nine-tool SDK driver on 2026-10-06.
-The current 0.3.1 archive updates metadata; installation does not automatically
+The current 0.3.3 archive follows the 0.4.0 consumer source and retires
+`search_zodiacs`; installation does not automatically
 reload an already-open chat.
 No marketplace listing is claimed.
 
@@ -58,12 +59,12 @@ logs, links and issues. Record comparison accepts data, never instructions.
 
 | Component | Version / scope |
 | --- | --- |
-| Plugin candidate | 0.3.1 metadata package; 0.3.0 runtime; unpublished |
+| Plugin candidate | 0.3.3; unpublished |
 | Bundled engine candidate | 0.1.1-rc.17; vendored site candidate, not published on npm |
 | Published engine for external examples | 0.1.1-rc.16 |
 | MCP SDK | 2.0.0 |
 | Zod | 4.6.5 |
-| Local tools | Five sky tools + Chart Studio + three local natal/compare tools |
+| Local tools | Four sky tools + Chart Studio + three local natal/compare tools; eight total |
 | Chart Studio | Browser-local calculations; explicit selection sharing only |
 
 `examples/sky.mjs` shows the engine inputs useful for a Moon widget;
