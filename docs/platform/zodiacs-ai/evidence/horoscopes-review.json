@@ -18,7 +18,10 @@
     "no external requests",
     "Chart Studio opens on birth details",
     "unknown birth time path",
-    "labelled example chart"
+    "labelled example chart",
+    "both panels report their content height to an MCP Apps host",
+    "links open through an MCP Apps host that offers it",
+    "ChatGPT keeps the reviewed panels"
   ],
   "errors": []
 }
