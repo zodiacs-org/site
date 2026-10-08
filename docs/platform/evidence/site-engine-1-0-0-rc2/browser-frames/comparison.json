@@ -49,6 +49,18 @@
       "baselineFps": 51.92557334487235,
       "passingTrials": 3,
       "pass": false
+    },
+    {
+      "report": "../refresh-20261008/frames-chromium151.json",
+      "reportSha256": "f3dffe9907d091bf61c0f67a4d2868048763a0e0ab9487a608b4986f82d1d5d8",
+      "assembledSourceCommit": "97d59ff024dbf09f64387bac4b8054c228db3dac",
+      "templateSourceSha256": "b513a934c454dd36466ea647c234010cd0ab063027f9bcb521486d2334ba9d45",
+      "browser": "Chromium 151.0.7922.173",
+      "cpuThrottleRate": 4,
+      "baselinePass": false,
+      "baselineFps": 56.84509711037423,
+      "passingTrials": 3,
+      "pass": false
     }
   ]
 }

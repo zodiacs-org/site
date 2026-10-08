@@ -1,0 +1,13 @@
+
+> zodiacs-org@1.0.0 test
+> vitest run scripts/platform-candidate-docs.test.mjs --pool=forks --maxWorkers=1 --no-file-parallelism
+
+
+ RUN  v3.2.7 /workspace/site
+
+ ✓ scripts/platform-candidate-docs.test.mjs (25 tests) 210ms
+
+ Test Files  1 passed (1)
+      Tests  25 passed (25)
+   Start at  05:03:49
+   Duration  728ms (transform 58ms, setup 0ms, collect 125ms, tests 210ms, environment 0ms, prepare 159ms)

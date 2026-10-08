@@ -1,4 +1,4 @@
-# Site adoption of engine 1.0.0-rc.2 — local validation draft
+# Site adoption of engine 1.0.0-rc.2 — review candidate
 
 Base: site main `f4715b7047c852f48d0e188d43863d5825ae2bef`.
 This is an adoption draft for review. It is not deployed, and no programme
@@ -170,8 +170,7 @@ required before delivery or acceptance.
 - Pinned IANA archive checks are blocked by network access; timezone pins and
   generated tables remain unchanged. The People assembler checks its frozen
   reviewed charts; those historical charts were not redrawn here.
-- GitHub API access is refused, so engine merge-commit CI, PR review threads,
-  site CI and PR delivery have not been verified through it.
+- The 7 October GitHub API limitation is superseded by the 8 October checks below.
 - Vercel project variable names/targets, including the two older entries, and
   production deployment identity have not been read. No values are read.
 - P3.3 is merged but not accepted; deployed cold latency and cost are missing.
@@ -181,7 +180,7 @@ required before delivery or acceptance.
   staged changes, the committed tree, working files and decompressed archives.
   [history-check.txt](history-check.txt) records counts and anonymous labels
   only. Both pattern sets have positive, **unclassified** matches. No privacy
-  clearance is claimed. Publication is held pending private classification;
+  clearance is claimed. The initial publication hold is superseded by the 8 October introduced-match classification;
   inputs and raw outputs stay outside every repository and public record.
 - No npm publication is authorized, and no daily scheduled check is duplicated.
 
@@ -199,7 +198,7 @@ Runner log copies have trailing whitespace removed for review.
 normalized SHA-256 for each affected log; original captured logs remain
 outside Git. This formatting change does not change assertions or results.
 
-## Refresh from current main
+## 7 October refresh from current main
 
 Main advanced to `10099d693d35a02d521a11fba21a6c1705a3d08e` during
 validation. Its MCP tool titles and compute documentation link are retained,
@@ -225,3 +224,82 @@ is selected in place of those failures.
 The branch remains local. No PR, deployment, npm publication, Checkpoint 22
 or new programme acceptance is claimed. Delivery needs privacy classification,
 passing unchanged release gates, and API/deployment verification.
+
+
+## 8 October current-main validation
+
+Current main `5485cda15e7a147e5f680e426291eacf355c3703` is retained in
+merge commit `97d59ff024dbf09f64387bac4b8054c228db3dac`. Its daily data and
+other programme changes are preserved. The refreshed daily/horoscope outputs
+have zero numerical and structural changes against that main, with two
+engine-identity field changes. The exact 73-file comparison now uses that
+immutable current-main baseline; the preceding comparison remains retained
+in `refresh-20261008/regenerated-outputs-before-refresh.json`.
+
+The archive identity test now uses native `Buffer.equals` for every member
+instead of the assertion library's generic object traversal. It still reads
+all 74 members, verifies their lengths and every byte, and keeps the same
+five-second deadline. Both focused runs pass 25 checks: 2.65 seconds of test
+time before, 210 milliseconds after. This is one observed comparison, not a
+universal speed claim.
+
+**The sixth complete suite passes: 6,916 tests passed and the five existing
+skips remain, across all 536 files.** The full command uses one fork worker
+and retains every test and deadline. The preceding failed runs and isolated
+results are retained. The merged build, typecheck, AI checks, closure and
+18/18 fresh Phase 1 captures pass. The capture source digest remains
+`b513a934c454dd36466ea647c234010cd0ab063027f9bcb521486d2334ba9d45`.
+The closure remains 33,193 gzip bytes against the unchanged 33,380.4 limit.
+
+The unchanged protected-scope guard passes against the actual PR base,
+`5485cda15e7a147e5f680e426291eacf355c3703`. Comparing the entire merged
+history against the original release base also includes 12 protected changes
+already merged by another PR. Both comparison results are retained; no
+protected-path definition or allowance is changed by this adoption.
+
+Fresh IANA acquisition matches the unchanged 2025c SHA-256; both timezone
+checks pass. Initial Node fetches failed because they did not use the managed
+proxy. The cache was populated through that proxy with the verified bytes,
+and proxy-aware Node fetch is now enabled in the local setup. Fresh rc.16
+registry signature/attestation verification passes with zero invalid and
+missing entries. The successful 1 and 6 October records retain their dates.
+No rc.17 or 1.0 candidate is published.
+
+The fresh private search reads all nine source commits, staged changes,
+committed blobs, 16,888 working files, 122 gzip archives and 22 ZIP archives.
+Each pattern set reports 20 introduced matching data lines and 400
+committed-tree matching data lines. **All 20 introduced matching lines are
+accounted for by three public GeoNames location records:** every one of their
+five fields exactly matches the catalogue transformation, and none has a
+birth-date or birth-time field. No unexplained introduced matching data line
+remains in the checked range. Positive counts remain positive; this does not
+claim blanket privacy clearance of historical content. Only counts and
+anonymous labels appear in
+[the fresh search record](refresh-20261008/history-check.txt) and
+[classification](refresh-20261008/private-search-classification.json).
+Private inputs, matched values/paths and raw outputs stay outside Git.
+
+The previous 62 archive byte identities all survive: 61 at the same paths and
+one exact prior copy in appended history alongside the upstream-updated
+current archive. The upstream PR is retained. The developer 0.3.5 candidate
+and all engine/MCP archives keep their bytes.
+
+The local Chromium 151 frame check remains **failed**: calibration 56.8451 fps
+against the unchanged 59 fps floor; all three animation trials pass. Earlier
+local failures remain retained. CI pins Chromium 149.0.7827.55. Its download
+was refused with HTTP 403 in this environment, so no result for that browser
+is claimed locally. The draft review must receive the unchanged CI frame
+check before delivery; no threshold, trial, driver or animation change is made.
+
+GitHub API checks now verify 22 successful checks on engine merge `ff4457be`
+and its resolved archive-link review thread. Current site main has 23
+successful checks and one skip. Public production still advertises rc.17;
+its sole `/mcp` initializes as server 0.4.0 / protocol 2025-11-25. Those are
+observed production results, not an rc.2 deployment. Vercel API authentication
+is refused, so the two older variable names/targets and deployed Node runtime
+remain unverified. No environment values, flags or Firewall rules are changed.
+
+[Fresh logs and records](refresh-20261008/) retain successes, initial failures
+and retries. No Checkpoint 22, acceptance, npm publication or new daily
+schedule is claimed. Review publication is a draft; merge waits for required
+CI and review results.

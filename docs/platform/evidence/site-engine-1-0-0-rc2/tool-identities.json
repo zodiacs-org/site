@@ -17,5 +17,6 @@
   "tests/visual/phase1-evidence-contract.mjs": "a52c7aa2502cc0ce787655fab1f6f375b6f825f251eee4e9b5b817874f060d04",
   "docs/platform/evidence/site-engine-1-0-0-rc2/tools/check-phase1-hash.mjs": "b594a6d4d0349867f2bb6489808a7ff7625951bfdbf8d7e75633da46399f1b9e",
   "src/ai-tools/contracts.ts": "9953cf3ad61e39a461453a4083924012c1f568206ebb19d5809a4eb5a68cc58e",
-  "src/ai-tools/server.ts": "a0b394e6c1ed642c684779fb244e942e2776e2bdf5599cb2bd51022097b39f3d"
+  "src/ai-tools/server.ts": "a0b394e6c1ed642c684779fb244e942e2776e2bdf5599cb2bd51022097b39f3d",
+  "scripts/platform-candidate-docs.test.mjs": "65568581648758d98c8789e08b3ea874eb3baf4057992cf793bba5fb43942aa7"
 }
