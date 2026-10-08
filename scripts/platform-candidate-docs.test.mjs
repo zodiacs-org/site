@@ -50,7 +50,9 @@ describe('developer candidate documentation', () => {
     const files = readPackageArchive(archive);
     expect(files.size).toBe(74);
     for (const [path, bytes] of files) {
-      expect(readFileSync(resolve(root, 'node_modules/@zodiacs/engine', path)), path).toEqual(bytes);
+      // Buffer.equals checks length and every byte without walking a large
+      // archive member through the assertion library's generic object comparer.
+      expect(readFileSync(resolve(root, 'node_modules/@zodiacs/engine', path)).equals(bytes), path).toBe(true);
     }
   });
 
