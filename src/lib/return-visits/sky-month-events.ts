@@ -1,5 +1,6 @@
 /** Build-time only: the feed's events in the shape the month view draws. */
 import type { CatalogLocale } from '../i18n/core';
+import sky from '../../data/sky.json';
 import { skyCalendarEvents } from './sky-calendar';
 import { localizePath } from '../i18n';
 import type { SkyMonthEvent, SkyMonthKind } from './sky-month';
@@ -13,8 +14,10 @@ export function skyMonthEvents(locale: CatalogLocale): SkyMonthEvent[] {
       : id.startsWith('lunar-eclipse') ? 'lunar'
       : 'retro';
     const href = kind === 'retro' ? '/retrogrades/' : kind === 'solar' || kind === 'lunar' ? '/eclipses/' : '/moon-phase/';
+    const planet = kind === 'retro' ? sky.retrogrades.find((w) => id === `${w.planet}-retrograde-${w.from}`)?.planet : undefined;
     return {
       kind,
+      ...(planet ? { planet } : {}),
       at: String(event.start),
       ...(event.end ? { end: String(event.end) } : {}),
       label: event.summary,

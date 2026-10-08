@@ -79,10 +79,20 @@ export function placeBodies(bodies: { body: string; lon: number; retrograde?: bo
     .filter((b) => (BODIES as readonly string[]).includes(b.body))
     .map((b) => ({ body: b.body, lon: norm(b.lon), retrograde: Boolean(b.retrograde) }))
     .sort((a, b) => a.lon - b.lon);
+  // Start the walk just after the widest gap, so a cluster that straddles
+  // 0° Aries (say 359° and 1°) is walked as one run.
+  let startIndex = 0;
+  let widest = -1;
+  sorted.forEach((b, i) => {
+    const prev = sorted[(i - 1 + sorted.length) % sorted.length];
+    const gap = sorted.length > 1 ? norm(b.lon - prev.lon) : 360;
+    if (gap > widest) { widest = gap; startIndex = i; }
+  });
+  const ordered = [...sorted.slice(startIndex), ...sorted.slice(0, startIndex)];
   const placed: PlacedBody[] = [];
   let lane = 0;
-  sorted.forEach((b, i) => {
-    const prev = sorted[i - 1];
+  ordered.forEach((b, i) => {
+    const prev = ordered[i - 1];
     const close = prev && norm(b.lon - prev.lon) < 7.5;
     lane = close ? (lane + 1) % 3 : 0;
     placed.push({ ...b, radius: base - lane * step });

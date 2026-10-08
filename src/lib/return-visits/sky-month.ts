@@ -13,6 +13,8 @@ export interface SkyMonthEvent {
   at: string;
   end?: string;
   label: string;
+  /** The planet's English identifier for a retrograde window. */
+  planet?: string;
   /** Absent where the page has no version in the visitor's language. */
   href?: string;
 }
@@ -52,7 +54,7 @@ const RETRO_HUE: Record<string, string> = {
 };
 
 function retroHue(event: SkyMonthEvent, index: number): string {
-  const planet = Object.keys(RETRO_HUE).find((name) => event.label.includes(name));
+  const planet = event.planet && event.planet in RETRO_HUE ? event.planet : undefined;
   return planet ? RETRO_HUE[planet] : Object.values(RETRO_HUE)[index % 8];
 }
 
@@ -87,7 +89,7 @@ export function skyMonthHtml(events: SkyMonthEvent[], options: SkyMonthOptions):
   }).filter((r) => r.from <= monthEnd && r.to >= monthStart);
   // Bars only for the planets whose retrogrades come and go within weeks; the
   // outer planets spend months retrograde, so they stay in the list below.
-  const barred = retros.filter((r) => BARRED.some((planet) => r.e.label.includes(planet)));
+  const barred = retros.filter((r) => r.e.planet !== undefined && BARRED.includes(r.e.planet));
 
   const weekdays = Array.from({ length: 7 }, (_, i) => weekdayFmt.format(new Date(Date.UTC(2024, 0, 1 + i))));
   const cells: string[] = weekdays.map((w) => `<div class="skym__wd" aria-hidden="true">${escapeHtml(w)}</div>`);

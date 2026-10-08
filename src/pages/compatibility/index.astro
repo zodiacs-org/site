@@ -169,12 +169,7 @@ const inviteUiEnabled = import.meta.env.PUBLIC_COMPAT_INVITES_ENABLED === '1';
   }
   .compat-choice:hover { border-color: var(--hair-3); transform: translateY(-2px); }
   .compat-choice:focus-visible { outline: 2px solid var(--ink-0); outline-offset: 3px; }
-  .compat-choice--invite {
-    border-color: var(--hair-3);
-    background:
-      radial-gradient(80% 90% at 90% 0%, rgba(211, 169, 222, 0.12), transparent 70%),
-      var(--void-2);
-  }
+  .compat-choice--invite { border-color: var(--hair-3); background: var(--void-2); }
   .compat-choice :global(.tool-emblem) { --emblem-size: 72px; flex: none; }
   .compat-choice__body { display: grid; gap: 6px; }
   .compat-choice__body strong { font-family: var(--font-serif); font-weight: 400; font-size: var(--text-xl); line-height: 1.15; color: var(--text); }
