@@ -4,6 +4,24 @@ Base: site main `f4715b7047c852f48d0e188d43863d5825ae2bef`.
 This is an adoption draft for review. It is not deployed, and no programme
 unit is accepted here.
 
+## CI repair — 2026-10-08
+
+Draft review PR: https://github.com/zodiacs-org/site/pull/689. Preserve the artifact carrier in a merge commit. Source 1fd24bcbc7c7281245c83fb12c0d321028068085 incorporates three CI repairs, the share-date contract correction and the import-graph scan optimization.
+
+The clean-checkout MCP failure was tar-header permissions: all seven members had identical content, while the immutable rc.18 archive carries mode 0600 and Git checks out mode 0644. Packaging now obtains npm’s complete packlist and normalizes a temporary copy, including implicit README/licence entries, without modifying source permissions. The archive, bundle and manifest remain byte-identical. A regression fixture checks both source modes, implicit file selection and unchanged source files.
+
+The independent references are rebuilt offline with CI’s Python 3.11 and unchanged hash-pinned dependencies. All 1,042 numerical scalars and every structure remain unchanged; four engine-version metadata fields and their reference digest pins change. Policy files, tolerances and retained Horizons responses remain unchanged. Python 3.12 produced one last-decimal numerical difference; that output was discarded in favour of the CI runtime.
+
+Production flags exposed a compatibility initial-JavaScript budget failure: 36,896 bytes against 36,864. Sharing the repeated chart projection reduces the final route to 36,861 bytes, with 3 bytes of headroom under the original limit. Each caller still explicitly chooses its civil birth date or UTC instant. The first repair full suite found that source-contract omission; its failed run is retained, the guard is unchanged, and the caller expressions were restored.
+
+The second full repair run found a five-second timeout in the saved-record import-graph boundary test. Its AST visitor only follows children, so the parser now omits unused parent links. The complete graph retains exactly 992 nodes and 3,501 edges; the comparison takes 1,571 ms versus 2,287 ms, about 31% less time. File coverage, Astro regions, imports, dependency assertions and the original five-second deadline are unchanged. Both failed full repair runs are retained.
+
+The final full suite passes 6,917 tests with five existing skips across 536 passing files and one existing skipped file. The default build and 18 captures are refreshed on this source. The production-flags build, typecheck and compatibility browser results bind e814676c, whose only subsequent source change is the test-only AST scan optimization.
+
+Latest source validation results and count-only release search are in `ci-repair-20261008/`. Earlier Chromium 151 calibration failures remain in `refresh-20261008/`. The preceding PR head d591f309 passed CI’s full suite, exact-width acceptance and frame-cadence gates; these results bind that head, and the new repair head requires its own complete CI run.
+
+Vercel authentication remains unavailable. The configured production Node version and the two oldest July 6 environment names/targets remain unverified. Public production still advertises rc.17. No deployment, npm publication, flag/Firewall change, programme acceptance, ledger change or Checkpoint 22 is claimed.
+
 ## Artifact and registry identity
 
 The site consumes [the immutable engine carrier](https://raw.githubusercontent.com/zodiacs-org/engine/e790362bddf28016405df4164e66baea057c4f19/artifacts/zodiacs-engine-1.0.0-rc.2.tgz),

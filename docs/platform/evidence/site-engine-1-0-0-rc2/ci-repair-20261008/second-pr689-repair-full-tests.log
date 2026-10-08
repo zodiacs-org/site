@@ -1,0 +1,1967 @@
+(node:184850) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+> zodiacs-org@1.0.0 test
+> vitest run --pool=forks --maxWorkers=1 --no-file-parallelism
+
+(node:184863) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+ RUN  v3.2.7 /workspace/site
+
+(node:184875) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/build-transits.test.mjs (64 tests) 67910ms
+   ✓ Transit fact generation > regenerates transits-2026-01.json byte for byte from the site engine  1886ms
+   ✓ Transit fact generation > regenerates transits-2026-02.json byte for byte from the site engine  1375ms
+   ✓ Transit fact generation > regenerates transits-2026-03.json byte for byte from the site engine  1367ms
+   ✓ Transit fact generation > regenerates transits-2026-04.json byte for byte from the site engine  1542ms
+   ✓ Transit fact generation > regenerates transits-2026-05.json byte for byte from the site engine  1827ms
+   ✓ Transit fact generation > regenerates transits-2026-06.json byte for byte from the site engine  2054ms
+   ✓ Transit fact generation > regenerates transits-2026-07.json byte for byte from the site engine  1694ms
+   ✓ Transit fact generation > regenerates transits-2026-08.json byte for byte from the site engine  1673ms
+   ✓ Transit fact generation > regenerates transits-2026-09.json byte for byte from the site engine  840ms
+   ✓ Transit fact generation > regenerates transits-2026-10.json byte for byte from the site engine  1103ms
+   ✓ Transit fact generation > regenerates transits-2026-11.json byte for byte from the site engine  1084ms
+   ✓ Transit fact generation > regenerates transits-2026-12.json byte for byte from the site engine  1097ms
+   ✓ Transit fact generation > regenerates transits-2027-01.json byte for byte from the site engine  2386ms
+   ✓ Transit fact generation > regenerates transits-2027-02.json byte for byte from the site engine  1381ms
+   ✓ Transit fact generation > regenerates transits-2027-03.json byte for byte from the site engine  3101ms
+   ✓ Transit fact generation > regenerates transits-2027-04.json byte for byte from the site engine  1026ms
+   ✓ Transit fact generation > regenerates transits-2027-05.json byte for byte from the site engine  1203ms
+   ✓ Transit fact generation > regenerates transits-2027-06.json byte for byte from the site engine  1177ms
+   ✓ Transit fact generation > regenerates transits-2027-07.json byte for byte from the site engine  804ms
+   ✓ Transit fact generation > regenerates transits-2027-08.json byte for byte from the site engine  1041ms
+   ✓ Transit fact generation > regenerates transits-2027-09.json byte for byte from the site engine  1030ms
+   ✓ Transit fact generation > regenerates transits-2027-10.json byte for byte from the site engine  1170ms
+   ✓ Transit fact generation > regenerates transits-2027-11.json byte for byte from the site engine  1563ms
+   ✓ Transit fact generation > regenerates transits-2027-12.json byte for byte from the site engine  867ms
+   ✓ Transit fact generation > regenerates transits-2028-01.json byte for byte from the site engine  812ms
+   ✓ Transit fact generation > regenerates transits-2028-02.json byte for byte from the site engine  1111ms
+   ✓ Transit fact generation > regenerates transits-2028-03.json byte for byte from the site engine  1176ms
+   ✓ Transit fact generation > regenerates transits-2028-04.json byte for byte from the site engine  957ms
+   ✓ Transit fact generation > regenerates transits-2028-05.json byte for byte from the site engine  835ms
+   ✓ Transit fact generation > regenerates transits-2028-06.json byte for byte from the site engine  1076ms
+   ✓ Transit fact generation > regenerates transits-2028-07.json byte for byte from the site engine  1055ms
+   ✓ Transit fact generation > regenerates transits-2028-08.json byte for byte from the site engine  1070ms
+   ✓ Transit fact generation > regenerates transits-2028-09.json byte for byte from the site engine  849ms
+   ✓ Transit fact generation > regenerates transits-2028-10.json byte for byte from the site engine  804ms
+   ✓ Transit fact generation > regenerates transits-2028-11.json byte for byte from the site engine  775ms
+   ✓ Transit fact generation > regenerates transits-2028-12.json byte for byte from the site engine  804ms
+   ✓ Transit fact generation > regenerates transits-2029-01.json byte for byte from the site engine  786ms
+   ✓ Transit fact generation > regenerates transits-2029-02.json byte for byte from the site engine  758ms
+   ✓ Transit fact generation > regenerates transits-2029-03.json byte for byte from the site engine  1227ms
+   ✓ Transit fact generation > regenerates transits-2029-04.json byte for byte from the site engine  1173ms
+   ✓ Transit fact generation > regenerates transits-2029-05.json byte for byte from the site engine  1122ms
+   ✓ Transit fact generation > regenerates transits-2029-06.json byte for byte from the site engine  1040ms
+   ✓ Transit fact generation > regenerates transits-2029-07.json byte for byte from the site engine  1043ms
+   ✓ Transit fact generation > regenerates transits-2029-08.json byte for byte from the site engine  1021ms
+   ✓ Transit fact generation > regenerates transits-2029-09.json byte for byte from the site engine  1104ms
+   ✓ Transit fact generation > regenerates transits-2029-10.json byte for byte from the site engine  766ms
+   ✓ Transit fact generation > regenerates transits-2029-11.json byte for byte from the site engine  763ms
+   ✓ Transit fact generation > regenerates transits-2029-12.json byte for byte from the site engine  748ms
+   ✓ Transit fact generation > regenerates transits-2030-01.json byte for byte from the site engine  745ms
+   ✓ Transit fact generation > regenerates transits-2030-02.json byte for byte from the site engine  714ms
+   ✓ Transit fact generation > regenerates transits-2030-03.json byte for byte from the site engine  812ms
+   ✓ Transit fact generation > regenerates transits-2030-04.json byte for byte from the site engine  784ms
+   ✓ Transit fact generation > regenerates transits-2030-05.json byte for byte from the site engine  829ms
+   ✓ Transit fact generation > regenerates transits-2030-06.json byte for byte from the site engine  1063ms
+   ✓ Transit fact generation > regenerates transits-2030-07.json byte for byte from the site engine  1022ms
+   ✓ Transit fact generation > regenerates transits-2030-08.json byte for byte from the site engine  823ms
+   ✓ Transit fact generation > regenerates transits-2030-09.json byte for byte from the site engine  793ms
+   ✓ Transit fact generation > regenerates transits-2030-10.json byte for byte from the site engine  811ms
+   ✓ Transit fact generation > regenerates transits-2030-11.json byte for byte from the site engine  857ms
+   ✓ Transit fact generation > regenerates transits-2030-12.json byte for byte from the site engine  756ms
+   ✓ Transit fact generation > preserves both Mercury ingresses when a retrograde turn returns across a cusp the same day  699ms
+(node:186347) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/astrofolio-identity.test.mjs (27 tests) 28602ms
+   ✓ Astrofolio seasonal identity generator > replays semantically from canonical sources with platform-safe artwork comparison  18719ms
+   ✓ Astrofolio seasonal identity generator > replays every v4 social card from the same deterministic seasonal composition  9694ms
+(node:186445) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/swiss-output-guard.test.mjs (11 tests) 31111ms
+   ✓ Swiss Ephemeris output stays out of the tree > finds no removed or replaced file's bytes under any name, archive members included  31045ms
+(node:186454) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/api/compute-api-elections.test.ts (16 tests) 24018ms
+   ✓ each condition against its own reading of the engine > finds the Moon's void periods that the engine's voidOfCourseWindows finds, to within 2 seconds, over a year and in two other eras  4669ms
+   ✓ each condition against its own reading of the engine > finds the Moon in a sign, a planet retrograde and the Moon waxing where a scan of positions every 10 minutes does  10672ms
+   ✓ the house search > finds the spans in an angular house that a scan every minute finds, to within 2 seconds, sampled hourly and every six hours  4449ms
+   ✓ the house search > samples hourly, narrows each change of house by interpolation, and searches only where the other conditions hold  622ms
+   ✓ the house search > negates an angular condition within the stretches the other conditions leave, as a scan every minute finds  2753ms
+   ✓ the allowance > refuses a request whose station searches pass the allowance with the positions they read as they step  381ms
+(node:186479) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/time/localToUtc-roundtrip.test.ts (13 tests) 24367ms
+   ✓ resolveLocalToUtc on the zone clock, around every offset change, 1850-2037 (2100 in the full scan) > round-trips zone group 1 of 12  2333ms
+   ✓ resolveLocalToUtc on the zone clock, around every offset change, 1850-2037 (2100 in the full scan) > round-trips zone group 2 of 12  2169ms
+   ✓ resolveLocalToUtc on the zone clock, around every offset change, 1850-2037 (2100 in the full scan) > round-trips zone group 3 of 12  2097ms
+   ✓ resolveLocalToUtc on the zone clock, around every offset change, 1850-2037 (2100 in the full scan) > round-trips zone group 4 of 12  1913ms
+   ✓ resolveLocalToUtc on the zone clock, around every offset change, 1850-2037 (2100 in the full scan) > round-trips zone group 5 of 12  1843ms
+   ✓ resolveLocalToUtc on the zone clock, around every offset change, 1850-2037 (2100 in the full scan) > round-trips zone group 6 of 12  2226ms
+   ✓ resolveLocalToUtc on the zone clock, around every offset change, 1850-2037 (2100 in the full scan) > round-trips zone group 7 of 12  1960ms
+   ✓ resolveLocalToUtc on the zone clock, around every offset change, 1850-2037 (2100 in the full scan) > round-trips zone group 8 of 12  1945ms
+   ✓ resolveLocalToUtc on the zone clock, around every offset change, 1850-2037 (2100 in the full scan) > round-trips zone group 9 of 12  1885ms
+   ✓ resolveLocalToUtc on the zone clock, around every offset change, 1850-2037 (2100 in the full scan) > round-trips zone group 10 of 12  1995ms
+   ✓ resolveLocalToUtc on the zone clock, around every offset change, 1850-2037 (2100 in the full scan) > round-trips zone group 11 of 12  2031ms
+   ✓ resolveLocalToUtc on the zone clock, around every offset change, 1850-2037 (2100 in the full scan) > round-trips zone group 12 of 12  1955ms
+(node:186487) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/share-positions-callers.test.ts (44 tests) 20313ms
+   ✓ producers of shared chart codes > finds encoder calls in .ts, .tsx, .js, .jsx, .astro and .mdx files, through aliases, namespaces and dynamic imports  2524ms
+   ✓ the audit of encoder callers > fails on .call  573ms
+   ✓ the audit of encoder callers > fails on .apply  552ms
+   ✓ the audit of encoder callers > fails on .bind  552ms
+   ✓ the audit of encoder callers > fails on element access on a namespace  508ms
+   ✓ the audit of encoder callers > fails on element access on a dynamic import  489ms
+   ✓ the audit of encoder callers > fails on a computed destructuring  509ms
+   ✓ the audit of encoder callers > fails on an exported alias  507ms
+   ✓ the audit of encoder callers > fails on a consumer of an exported alias, alone  318ms
+   ✓ the audit of encoder callers > fails on a consumer of an exported alias  495ms
+   ✓ the audit of encoder callers > fails on export *  577ms
+   ✓ the audit of encoder callers > fails on an alias in an .astro template  313ms
+   ✓ the audit of encoder callers > fails on an .astro script  309ms
+   ✓ the audit of encoder callers > fails on a comma callee  499ms
+   ✓ the audit of encoder callers > fails on Reflect.apply  506ms
+   ✓ the audit of encoder callers > fails on a default import  302ms
+   ✓ the audit of encoder callers > fails on an .mdx expression  503ms
+   ✓ the audit of encoder callers > fails on an exported wrapper  314ms
+   ✓ the audit of encoder callers > fails on a new call in a listed module  304ms
+   ✓ the audit of encoder callers > fails on a re-export from a listed module  702ms
+   ✓ the audit of encoder callers > fails on an alias exported from a listed module  1380ms
+   ✓ the audit of encoder callers > fails on a named re-export  514ms
+   ✓ the audit of encoder callers > fails on a shared encoder re-exported  311ms
+   ✓ the audit of encoder callers > fails on require  323ms
+   ✓ the audit of encoder callers > fails on a template-literal import  815ms
+   ✓ the audit of encoder callers > fails on a computed import  311ms
+   ✓ the audit of encoder callers > fails on a glob  564ms
+   ✓ the audit of encoder callers > fails on eval  318ms
+   ✓ the audit of encoder callers > fails on the Function constructor  358ms
+   ✓ the audit of encoder callers > fails on a load in an .astro template  317ms
+   ✓ the audit of encoder callers > fails on the module object passed on  546ms
+   ✓ the audit of encoder callers > fails on the module object into a rest element  501ms
+   ✓ the audit of encoder callers > fails on a script tag  332ms
+   ✓ the audit of encoder callers > fails on a type-only import that is not  303ms
+   ✓ the audit of encoder callers > fails on a new call of a shared encoder in a listed producer  499ms
+   ✓ the audit of encoder callers > fails on a shared encoder as a value in .tsx  322ms
+   ✓ the audit of encoder callers > passes on a type-only import and on a module that only decodes  1195ms
+(node:186495) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/report-bundles.test.mjs (26 tests) 16024ms
+   ✓ actual bundle gate > accepts a factored static engine closure and an inert provenance name  897ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: import "astronomy-engine";  621ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: export * from "astronomy-engine";  586ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: import /* comment */ ("astronomy-engine");  655ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: import (`astronomy-engine`);  636ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: require /* comment */ ("astronomy-engine");  606ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: import "astronomy-engine/astronomy.browser.js";  651ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: import "astronomy-\u0065ngine";  564ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: export * from "\u0061stronomy-engine";  565ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: import("astronomy-\x65ngine");  609ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: require("astronomy-\u0065ngine");  585ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: import(("astronomy-engine"));  623ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: require(("astronomy-engine"));  608ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: (require)("astronomy-engine");  618ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: import "https://esm.sh/astronomy-engine@2.1.19";  534ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: import("https://esm.sh/astronomy-engine");  562ms
+   ✓ actual bundle gate > still rejects actual server/vendor loading: import { createRequire } from "node:module";  556ms
+   ✓ actual bundle gate > does not parse comments or data strings as vendor imports  569ms
+   ✓ actual bundle gate > rejects the engine when imported eagerly through a shared chunk  579ms
+   ✓ actual bundle gate > rejects a missing dependency rather than measuring a partial closure  701ms
+   ✓ actual bundle gate > rejects shared engine code eagerly loaded by Registry Collection  859ms
+   ✓ actual bundle gate > preserves exact source import boundaries at src/islands/Unexpected.ts  566ms
+   ✓ actual bundle gate > preserves exact source import boundaries at src/lib/Unexpected.ts  551ms
+   ✓ actual bundle gate > preserves exact source import boundaries at src/islands/SideEffect.ts  578ms
+   ✓ actual bundle gate > requires both ephemeris fingerprints in the full static closure  545ms
+   ✓ actual bundle gate > enforces the unchanged engine limit across multiple individually small chunks  576ms
+(node:186815) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/benchmarks/sky-benchmark.test.ts (22 tests | 1 skipped) 22028ms
+   ✓ the sky-fact benchmark, v0 > is what the generator draws, the questions and key byte for byte and check_sky_fact's answers and facts, and with another engine the generator refuses to draw it again  977ms
+   ✓ the sky-fact benchmark, v0 > holds check_sky_fact's replies to what decides them, and not to the receipts beside them  773ms
+   ✓ the sky-fact benchmark, v0 > check_sky_fact gives the key's answer to every question, for every sign, and on the dates around each date answer  3090ms
+   ✓ the sky-fact benchmark, v0 > check_sky_fact finds every entry into a sign while retrograde in the ingress questions' periods, on every date that holds it  4660ms
+   ✓ the sky-fact benchmark, v0 > samples the same longitudes and speeds that positions() reports  2686ms
+   ✓ the sky-fact benchmark, v0 > leaves the Moon at least 45 minutes from a sign boundary in the questions about an instant  8514ms
+   ✓ the benchmark's scorer > runs from the command line, through a link too, and names a reply to no question  539ms
+(node:186851) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/claims-ledger.test.mjs (11 tests) 11424ms
+   ✓ claims ledger > R3 resolves every claim's evidence  330ms
+(node:186863) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/api/compute-api.test.ts (38 tests) 10027ms
+   ✓ compute API validation > passes the resolver one spelling of a zone: 5,000 case variants add no formatter  2516ms
+   ✓ compute API receipts, backend and citation > identifies a chart's birth details through cite.receipt: its date and place give back its time  4192ms
+   ✓ compute API receipts, backend and citation > identifies the place as well: a chart's date and time give back its place through cite.receipt  850ms
+   ✓ compute API parity with the engine and the site resolver > events find the stations, lunations and ingresses the site published for 2026, to within minutes  665ms
+   ✓ compute API through the compatibility function > answers every compute route from api/compatibility.ts before any route of its own  531ms
+(node:186871) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/share-positions.test.ts (12 tests) 8080ms
+   ✓ what a shared positions code leaves of the birthplace > leaves an area about a degree of longitude wide and, from north to south, at least 400 km within 15° of the equator, 200 km within 45° and 70 km within 60°  3090ms
+   ✓ what a shared positions code leaves of the birthplace > can leave much less far from the equator: tens of kilometres in the far north, and on the Arctic Circle a strip less than a kilometre from north to south  4375ms
+(node:186882) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/time/localToUtc-birthplace-clock.test.ts (26 tests) 6378ms
+   ✓ the birthplace clock at each change of its pinned history before 1970 > America/New_York: New York  1232ms
+   ✓ the birthplace clock at each change of its pinned history before 1970 > Europe/Amsterdam: Amsterdam  555ms
+   ✓ the birthplace clock at each change of its pinned history before 1970 > Atlantic/Reykjavik: Reykjavik  489ms
+(node:186958) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/engine/year-scan-returns.test.ts (5 tests) 6208ms
+   ✓ yearScan solar returns come from @zodiacs/engine > matches the site's former scan on seeded synthetic charts and windows  5205ms
+   ✓ yearScan solar returns come from @zodiacs/engine > keeps the window (from, to]: a return at its start is out, one before its end is in  459ms
+(node:186969) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/mcp/sky-tools.test.ts (13 tests) 5614ms
+   ✓ the three tools are the compute API's calculations > returns, for every request of the corpus, the body the compute API's handler answers, with the tool's cite  2306ms
+   ✓ the three tools are the compute API's calculations > holds every result to its output schema, to the JSON Schema a host reads, and to the compute API's OpenAPI response  469ms
+   ✓ the ends of the accepted dates > answers each as the compute API's handler does, flags every fact on a date, and passes every schema and the SDK's client  1815ms
+   ✓ refusals are the compute API's own sentences > sends each result unchanged through the SDK's client, which checks it against the advertised schema  698ms
+(node:186985) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/time/localToUtc-birthplace-identity.test.ts (2 tests) 6651ms
+   ✓ the birthplace clock on its zone's own meridian > matches the zone clock at every era end where the host agrees with the table  4624ms
+(node:186993) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/mcp/outputs.test.ts (28 tests) 6296ms
+   ✓ calculate_natal_chart over the seeded corpus > cites the digest of the calculation receipt, the same for a summary and a record  334ms
+   ✓ calculate_natal_chart over the seeded corpus > identifies a chart's birth details through cite.receipt: its date and place give back its time  3643ms
+   ✓ calculate_natal_chart over the seeded corpus > shows nothing that depends on the place when the time is unknown, while its receipt still holds the place  334ms
+   ✓ calculate_natal_chart over the seeded corpus > identifies the place as well: an unknown-time chart's instant and cite.receipt give back its coordinates  886ms
+   ✓ the registrations, through the SDK's own client > sends each result unchanged, and the advertised JSON Schema accepts it  616ms
+(node:187001) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/i18n/ui/build-audit.test.ts (11 tests) 4625ms
+   ✓ built client UI payloads > installs one locale catalog before every island that uses shared UI copy  4551ms
+(node:187009) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/precision-alpha-types.test.mjs (4 tests) 4836ms
+   ✓ the alpha ships declarations a consumer can actually use > compiles a strict consumer using both entry points and both search modes  1644ms
+   ✓ the alpha ships declarations a consumer can actually use > rejects everything it should, including an exact total off the proved branch  1553ms
+   ✓ the alpha ships declarations a consumer can actually use > compiles a consumer of the experimental subpath, deflected rung included  1633ms
+(node:187041) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/engine/lite.test.ts (1 test) 4781ms
+   ✓ the homepage's low-precision Sun and Moon > stay within the accuracy its header states, 1900 to 2100  4779ms
+(node:187049) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/wallet/holdings.test.ts (28 tests) 4461ms
+   ✓ official holdings resolution > fails closed when any Base response carries a mismatched response id  402ms
+   ✓ official holdings resolution > fails closed when any Base response carries a provider error  402ms
+   ✓ official holdings resolution > fails closed when any Base response carries a array payload  402ms
+   ✓ official holdings resolution > fails closed when any single Base request fails at HTTP or JSON level  804ms
+   ✓ official holdings resolution > fails closed when any Solana response carries a mismatched response id  404ms
+   ✓ official holdings resolution > fails closed when any Solana response carries a provider error  403ms
+   ✓ official holdings resolution > fails closed when any Solana response carries a array payload  401ms
+   ✓ official holdings resolution > fails closed when any single Solana request fails at the HTTP level  402ms
+   ✓ official holdings resolution > retries a failed call once before failing closed  402ms
+   ✓ official holdings resolution > fails closed when the retry also fails, and reports the failure without the address  403ms
+(node:187057) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/check-developer-authorship.test.mjs (190 tests) 5037ms
+(node:187094) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/api/compute-api-bundle.test.ts (5 tests) 1758ms
+   ✓ the compute API's handler bundle > is what scripts/build-compute-handler.mjs builds from its sources  447ms
+   ✓ the compute API's handler bundle > answers every documented example as the source handler does  949ms
+(node:187130) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/games-sql-readiness.test.mjs (4 tests) 4129ms
+   ✓ Zodiac Games SQL container readiness > waits through socket-only initialization before the unchanged SQL sequence  2420ms
+   ✓ Zodiac Games SQL container readiness > reproduces the original premature socket-readiness failure  631ms
+   ✓ Zodiac Games SQL container readiness > retains the bounded readiness failure, diagnostics and container cleanup  423ms
+   ✓ Zodiac Games SQL container readiness > keeps a real SQL-stage failure fatal without retrying or running later files  653ms
+(node:187638) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/angles-grid.test.mjs (5 tests) 2779ms
+   ✓ the angles against the ERFA arbiter (rule 1b) > agrees with the arbiter's formula on the engine's own sidereal time and true obliquity  2480ms
+(node:187646) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/engine/void-of-course.test.ts (7 tests) 6298ms
+   ✓ void-of-course Moon > misses no aspect: a fine brute-force sweep finds a reported perfection in every zero-crossing interval  4905ms
+   ✓ void-of-course Moon > computes a quarter of windows in a few seconds  903ms
+(node:187654) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/api/compute-api-private-state.test.ts (1 test) 4748ms
+   ✓ compute API private module lifetime > clears exact instants and selected caches on success, refusal and failure, without racing another resolver  4745ms
+(node:187800) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/return-image-privacy.test.ts (7 tests) 3242ms
+   ✓ a solar return image > leaves the birthplace’s latitude to the whole degree of the Ascendant, not a few kilometres  2809ms
+(node:187809) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:187823) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:187835) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/engine-install-block.test.mjs (51 tests) 2461ms
+   ✓ the install commands the engine page publishes > guards against what npm really does without a package.json here (F-04)  444ms
+(node:188150) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/share-card.test.ts (44 tests) 1424ms
+   ✓ a chart image with birth details hidden > draws a chart with a birth time at its whole UTC minute: the same sheet for every instant that rounds to it  585ms
+   ✓ a chart image with birth details hidden > leaves a solver of the sheet at least the whole minute, so no strip of longitude  626ms
+(node:188158) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/independent-copy-verifier.test.ts (10 tests) 3807ms
+   ✓ independent copy verifier > accepts the committed daily and multi-surface packages  523ms
+   ✓ independent copy verifier > independently catches program evidence, declared length, voice, and distinctness  402ms
+   ✓ independent copy verifier > caps exact sentence reuse across signs and surfaces  867ms
+   ✓ independent copy verifier > rejects near-duplicate actions inside one short-form reading  467ms
+   ✓ independent copy verifier > rejects a tomorrow edition that merely relabels today  577ms
+   ✓ independent copy verifier > independently reconciles prose claims to phase, sign, aspect, house, and event receipts  916ms
+(node:188166) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/build-event-horizon.test.mjs (3 tests) 3209ms
+   ✓ Phase 2 five-year event horizon > regenerates the committed 'src/data/sky.json' byte-for-byte  2960ms
+(node:188202) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/build-assistant-context.test.mjs (5 tests) 1079ms
+   ✓ assistant site context > is byte-identical across two builds and matches the committed module  347ms
+(node:188214) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ src/lib/profile/saved-record-inactive.test.ts (4 tests | 1 failed) 6276ms
+   × inactive saved receipt integration boundary > has only the coordinator as runtime caller and no dependency path into legacy profile writers or another private database 5780ms
+     → Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+   ✓ inactive saved receipt integration boundary > imports without storage discovery, writes, auth subscription or network activity 217ms
+   ✓ inactive saved receipt integration boundary > leaves legacy reads byte-identical and existing explicit saves in their original stores 130ms
+   ✓ inactive saved receipt integration boundary > does not migrate a legacy summary or admit an SDK receipt through legacy sync merge 147ms
+(node:188226) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/horoscope-program.test.ts (13 tests) 4453ms
+   ✓ horoscope program domain > builds one deterministic, serializable six-surface program for all signs  1084ms
+   ✓ horoscope program domain > keeps love actions distinct when Venus and the Moon share a sign  474ms
+   ✓ horoscope program domain > re-frames only the later sign when two tomorrow readings would exceed the distinctness limit  1485ms
+(node:188234) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/claims-bindings.test.mjs (14 tests) 1223ms
+   ✓ images of one birth shared together > narrow the birthplace about five times with one solar return image, as the privacy page says  431ms
+   ✓ the famous-people pages > keep the reference instant and civil day the birth chart calculator gives for the same place and date  443ms
+(node:188242) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/mcp-pack-permissions.test.mjs (1 test) 1689ms
+   ✓ packs the complete npm file selection identically from private and Git checkout permissions  1687ms
+(node:188302) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/build-icons.test.mjs (3 tests) 795ms
+   ✓ zodiac icon derivatives > centers every generated disc on one shared visible diameter  314ms
+   ✓ zodiac icon derivatives > keeps the alpha plane lossless across AVIF and WebP outputs  460ms
+(node:188322) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/phase1-acceptance-evidence.test.mjs (5 tests) 2097ms
+   ✓ Phase 1 durable acceptance evidence > invalidates stale evidence when a transitive render source or bundled font changes  1245ms
+(node:188334) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/engine/returns.test.ts (14 tests) 1806ms
+   ✓ saturnReturns > first return begins between ages 27.5 and 30.5 for every fixture  335ms
+   ✓ saturnReturns > every season carries an odd number of crossings  352ms
+(node:188342) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/api/compute-api-openapi.test.ts (5 tests) 701ms
+   ✓ compute API in the OpenAPI document > shows what the handler answers: every example runs through it and the committed responses match  426ms
+(node:188354) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/ai-tools/lifetime.test.ts (3 tests) 1452ms
+   ✓ clears actual HTTP bundle state after success and failure  513ms
+   ✓ clears actual stdio bundle state after success and failure  478ms
+   ✓ clears actual Sky Watch bundle state after success and failure  461ms
+(node:188390) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/build-pwa-icons.test.mjs (20 tests) 1305ms
+   ✓ PWA icon compositor > writes install metadata from the English catalogue  302ms
+(node:188418) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/today/TodayBrief.loading.test.ts (20 tests) 1052ms
+(node:188426) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/sky-api.test.mjs (21 tests) 2083ms
+   ✓ sky data API — coverage and contracts > advertises exactly the files it writes, and the OpenAPI document covers them all  305ms
+   ✓ sky data API — coverage and contracts > is deterministic, and keeps yearly files and schemas byte-stable across builds  852ms
+   ✓ sky data API — daily payloads > orders upcoming events, keeps them inside the window, and points nextByKind past it  336ms
+   ✓ sky data API — daily payloads > keeps an event thirty minutes ahead even when tenths of a day round to zero  373ms
+(node:188438) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/engine/grazing-crossings.test.ts (5 tests) 1885ms
+   ✓ grazing crossing pairs > returns both Jupiter conjunction passes for dips ≤ 0.005° at every scan phase  1668ms
+(node:188446) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/build-cabinet-materials.test.mjs (4 tests) 1882ms
+   ✓ cabinet material derivatives > keeps all material artwork centered inside the 14% safe inset  800ms
+   ✓ cabinet material derivatives > preserves one silhouette across every material and output format  950ms
+(node:188464) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/send-daily-push.test.mjs (45 tests) 829ms
+   ✓ sky-alert event selection and copy > keeps the entire committed editorial stream below three alerts in every seven UTC dates  553ms
+(node:188472) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/check-source-authorship.test.mjs (22 tests) 1208ms
+   ✓ source authorship guard > passes the repository as it is, with the People subject allowance in use  967ms
+(node:188509) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/horoscope-program-files.test.ts (5 tests) 2068ms
+   ✓ strict 2027 horoscope fact catalog > renders the complete catalog inside the strict yearly word bounds  434ms
+   ✓ computed daily horoscope editions > passes both validators for the 2026-10-08 edition  895ms
+   ✓ computed daily horoscope editions > passes both validators for the 2026-10-10 edition  717ms
+(node:188521) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/engine/transit-window-independent.test.ts (11 tests) 663ms
+(node:188529) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/api/compute-api-privacy.test.ts (6 tests) 1695ms
+   ✓ compute API negative control > keeps every canary out of the same places when the compatibility function serves the request, as deployed  664ms
+   ✓ the site and the compute API > is not called by any page, island or script of the site  584ms
+(node:188541) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/mcp-install-block.test.mjs (16 tests) 1730ms
+   ✓ the install commands the MCP page publishes > stops when the package verifier fails, before claiming success  315ms
+(node:188721) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/email/daily-sun-state.test.ts (9 tests) 1640ms
+   ✓ durable daily sun confirmation state > dispatches in waitUntil, suppresses duplicate token churn, and safely repairs a replay  559ms
+(node:188729) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/time/zone-case.test.ts (7 tests) 1715ms
+   ✓ a zone name in any letter case > gives every zone with a local mean time era the same instant lower-cased and upper-cased  1195ms
+   ✓ a zone name in any letter case > keeps at most 1,024 formatters of each kind, whatever names a caller sends  418ms
+(node:188737) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/platform-starter.test.mjs (113 tests) 1065ms
+(node:188767) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/guide-protocol/contract-surface.test.ts (4 tests) 558ms
+(node:188779) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/profile/saved-record-store.test.ts (53 tests) 1061ms
+   ✓ owner-bound immutable saved natal operations > serializes concurrent creates and enforces cap40 with insertion atomically  865ms
+(node:188795) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/check-programmatic-uniqueness.test.mjs (3 tests) 772ms
+   ✓ programmatic-page uniqueness gate > keeps all 366 birthday essays below the CI threshold  650ms
+(node:188807) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/mcp-artifact.test.mjs (46 tests) 1329ms
+   ✓ the install check a downloader runs > passes every check against the bundle that ships, and there are as many as the documents say  1093ms
+(node:188843) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/crossings-s2.test.mjs (4 tests) 992ms
+   ✓ the audit s2 cases on the one crossing solver > scans the Moon over 2,600 days at a quarter-day step without a budget, and both sides agree  444ms
+   ✓ the audit s2 cases on the one crossing solver > scans Saturn from 1900 to 2100 at a five-day step, and both sides agree  536ms
+(node:188851) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/shelf-figures.test.mjs (10 tests) 981ms
+   ✓ the committed geometry > still says what the artwork says, and covers what it traced  766ms
+(node:188864) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/account-v2/cutover.test.ts (8 tests) 286ms
+(node:188876) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/return-visits/return-visits.test.ts (20 tests) 541ms
+(node:188884) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/engine-reference.test.mjs (40 tests) 758ms
+(node:188896) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/api/compute-api-local-time.test.ts (4 tests) 523ms
+(node:188917) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/living-chart/store.test.ts (20 tests) 940ms
+   ✓ LivingChartStore > caps active records at 250 without blocking tombstones  741ms
+(node:188925) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/ChartCalculator.ownership.test.ts (27 tests) 938ms
+(node:188933) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/api/runtime-imports.test.ts (11 tests) 945ms
+   ✓ Vercel API runtime packaging > uses Node ESM-safe relative imports through every handler graph  908ms
+(node:188941) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/ai-tools/http.test.ts (15 tests) 796ms
+   ✓ stateless MCP HTTP boundary > works with the official SDK client: list, call, widget read and close  541ms
+(node:188949) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/email/daily-api.test.ts (35 tests) 856ms
+   ✓ daily sun confirmation > retries a Resend 429 without moving segment membership for a sign change  506ms
+(node:188957) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/engine/package-integration.test.ts (8 tests) 437ms
+(node:188973) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/compare/diff.test.ts (69 tests) 762ms
+(node:188981) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/engine/calculator-receipt.test.ts (58 tests) 460ms
+(node:188997) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/time/calendar.test.ts (39 tests) 522ms
+   ✓ Julian and Gregorian calendar dates > agrees, day by day from 1500 to 2199, with two counters walked from the 1582 changeover  404ms
+(node:189005) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+stderr | src/lib/server/transit-calendar.test.ts > subscribable transit calendar > rejects invalid tokens and non-GET requests without scanning
+Provide the `firewallHostForDevelopment` option to support rate-limiting in development mode
+
+stderr | src/lib/server/transit-calendar.test.ts > subscribable transit calendar > serves the feed inline with a six-hour shared cache policy
+Provide the `firewallHostForDevelopment` option to support rate-limiting in development mode
+
+ ✓ src/lib/server/transit-calendar.test.ts (5 tests) 600ms
+   ✓ subscribable transit calendar > serializes a pinned positions-only token with stable UIDs and valid RFC 5545 lines  308ms
+(node:189013) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/solar-return/compute.test.ts (5 tests) 366ms
+(node:189021) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/mcp/tools.test.ts (43 tests) 414ms
+(node:189029) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/build-tz-history.test.mjs (10 tests) 525ms
+   ✓ the committed pinned zone history (tzdb 2025c with backzone) > holds well-formed offsets before 1970  411ms
+(node:189037) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/events/publication.test.ts (5 tests) 362ms
+   ✓ bounded event reading revision > revises exactly five pages and their four timeline entries without changing factual descriptors  347ms
+(node:189045) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/engine/lunar-return.test.ts (49 tests) 303ms
+(node:189053) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/composite-browser-checks.test.mjs (6 tests) 540ms
+   ✓ PNG observation rejects blank and heading-only images as full composite evidence  534ms
+(node:189061) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/engine/server-ephemeris.test.ts (3 tests) 453ms
+(node:189069) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/api/og-chart-render.test.ts (1 test) 540ms
+   ✓ chart preview renderer > renders the full card as a local-asset-only 1200×630 PNG  539ms
+(node:189081) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+stderr | tests/api/email-unconfigured.test.ts > unconfigured email endpoints > returns the designed JSON 503 from subscribe without contacting a provider
+Provide the `firewallHostForDevelopment` option to support rate-limiting in development mode
+
+stderr | tests/api/email-unconfigured.test.ts > unconfigured email endpoints > returns the localized HTML 503 from a subscribe form post
+Provide the `firewallHostForDevelopment` option to support rate-limiting in development mode
+
+stderr | tests/api/email-unconfigured.test.ts > unconfigured email endpoints > does not let a filled honeypot bypass the unconfigured 503
+Provide the `firewallHostForDevelopment` option to support rate-limiting in development mode
+
+ ✓ tests/api/email-unconfigured.test.ts (9 tests) 1742ms
+   ✓ unconfigured email endpoints > returns the existing status page as a 503 from a confirm form post  1288ms
+(node:189089) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/engine/solar-return.test.ts (10 tests) 268ms
+(node:189097) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/SynastryCalculator.recovery.test.ts (23 tests) 485ms
+(node:189105) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/wheel/Wheel.crowding.test.ts (29 tests) 369ms
+(node:189113) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/db-backup-contract.test.mjs (8 tests) 436ms
+(node:189199) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/assistant/open-assistant.test.ts (35 tests) 576ms
+   ✓ saved-chart assistant context > sends a chart with a birth time as its link carries it, at its UTC instant rounded to the whole minute  388ms
+(node:189211) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/aura/readings.test.ts (9 tests) 296ms
+(node:189219) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/sign-records.test.mjs (10 tests) 396ms
+(node:189231) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/ChartCalculator.confidence.test.ts (27 tests) 306ms
+(node:189239) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/engine/transit-scan.test.ts (15 tests) 291ms
+(node:189247) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+stderr | tests/api/aura-holdings.test.ts > Aura holdings endpoint > maps a partial Base RPC batch to unavailable end to end
+aura-holdings lookup failed base calls.slice is not a function
+
+ ✓ tests/api/aura-holdings.test.ts (22 tests) 436ms
+   ✓ Aura holdings endpoint > maps a partial Base RPC batch to unavailable end to end  405ms
+(node:189259) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/profile/polar-repair.test.ts (37 tests) 306ms
+(node:189267) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/build-build-report.test.mjs (5 tests) 441ms
+(node:189335) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/time/localToUtc-precision.test.ts (36 tests) 261ms
+(node:189343) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/analytics-referrer-privacy.test.mjs (1 test) 243ms
+(node:189355) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/chart-images-privacy.test.ts (3 tests) 256ms
+(node:189363) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/AccountProfileAccessBootstrap.test.ts (10 tests) 322ms
+(node:189371) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/profile/card-link.test.ts (11 tests) 253ms
+(node:189379) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/compare/angles.test.ts (14 tests) 431ms
+   ✓ circular angular differences > never exceeds half a turn, and is antisymmetric, at any offset  412ms
+(node:189387) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/ai-tools/tools.test.ts (21 tests) 260ms
+(node:189395) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/events/catalog.test.ts (27 tests) 329ms
+(node:189403) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/engine/reference-span.test.ts (4 tests) 393ms
+(node:189411) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/engine/portable.test.ts (22 tests) 266ms
+(node:189427) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/glossary-crosslinks.test.mjs (1 test) 280ms
+(node:189439) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/build-i18n-additions.test.mjs (8 tests) 284ms
+(node:189451) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/guide-api.test.ts (64 tests) 255ms
+(node:189463) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:189471) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:189479) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:189487) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/of-date-pass-rule-replay.test.mjs (3 tests) 232ms
+(node:189495) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/api/og-chart.test.ts (14 tests) 206ms
+(node:189507) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/email/daily-admin-bootstrap.test.ts (14 tests) 313ms
+(node:189515) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/lunar-return/compute.test.ts (19 tests) 200ms
+(node:189523) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/events/format.test.ts (4 tests) 216ms
+(node:189531) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/mcp/create-server.test.ts (2 tests) 280ms
+(node:189539) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/events/interpretations.test.ts (7 tests) 155ms
+(node:189547) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/precision-preview.test.mjs (13 tests) 178ms
+(node:189571) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/registry-og.test.mjs (3 tests) 168ms
+(node:189592) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/registry-research.test.mjs (12 tests) 240ms
+(node:189604) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/time/localToUtc-birthplace.test.ts (43 tests) 205ms
+(node:189612) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/ChartCalculator.calendar.test.ts (3 tests) 169ms
+(node:189620) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/registry-pastel-polish.test.mjs (25 tests) 473ms
+(node:189632) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/send-daily-email.test.ts (10 tests) 305ms
+(node:189644) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/registry-risk.test.mjs (9 tests) 136ms
+(node:189656) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/profile/store.test.ts (37 tests) 211ms
+(node:189664) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/compatibility-card.test.ts (6 tests) 167ms
+(node:189672) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/legacy-polar-fixture.test.mjs (14 tests) 218ms
+(node:189680) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/profile/saved-record-access.test.ts (15 tests) 233ms
+(node:189688) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/ChartCalculator.reference-sun.test.ts (14 tests) 183ms
+(node:189696) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/ai-tools/watch/watch.test.ts (37 tests) 212ms
+(node:189708) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/platform-candidate-docs.test.mjs (25 tests) 198ms
+(node:189738) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/ai-tools/studio/local-time.test.ts (11 tests) 180ms
+(node:189746) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/engine-demo.test.mjs (4 tests) 210ms
+(node:189762) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/time/localToUtc-history.test.ts (19 tests) 293ms
+(node:189770) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/numerology/index.test.ts (155 tests) 139ms
+(node:189778) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/synastry/SendBackExperience.test.tsx (7 tests) 99ms
+(node:189786) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/MoonPhaseTool.reference.test.ts (36 tests) 86ms
+(node:189794) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/lunar-return/export-model.test.ts (6 tests) 173ms
+(node:189802) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/deltat-monitor.test.mjs (13 tests) 132ms
+(node:189814) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/methodology-accuracy-claim.test.mjs (21 tests) 128ms
+(node:189822) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/synastry/composite-model.test.tsx (23 tests) 89ms
+(node:189830) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/sharing/sharing.test.ts (9 tests) 122ms
+(node:189838) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/daily-snapshot-lib.test.mjs (6 tests) 107ms
+(node:189850) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/AccountSyncV2Panel.test.tsx (17 tests) 133ms
+(node:189862) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/ai-tools/studio/explore.test.ts (16 tests) 160ms
+(node:189870) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/daily-market-snapshot.test.mjs (7 tests) 95ms
+(node:189882) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/lunar-return-card.test.ts (21 tests) 96ms
+(node:189890) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/guide-server/safety.test.ts (16 tests) 179ms
+(node:189898) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/phase4-sharing-readiness.test.mjs (4 tests) 10ms
+(node:189906) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/ai-tools/studio/inspect.test.ts (7 tests) 168ms
+(node:189914) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/visual/runner-stalls.test.mjs (11 tests) 172ms
+(node:189922) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/moon-certainty.test.tsx (14 tests) 156ms
+(node:189930) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/engine-entry-imports.test.mjs (2 tests) 94ms
+(node:189938) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/chart-date-certainty.test.ts (8 tests) 97ms
+(node:189946) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/people-font-preload.test.mjs (10 tests) 92ms
+(node:189958) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/consumer-boundary-lib.test.mjs (29 tests) 111ms
+(node:189970) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/trade-entry.test.mjs (15 tests) 152ms
+(node:189982) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/profile/daily-email-client.test.ts (13 tests) 91ms
+(node:189990) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/lunar-return/LunarReturnResult.test.tsx (3 tests) 137ms
+(node:189998) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/registry-gallery-band.test.mjs (18 tests) 94ms
+(node:190010) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/engine/engine.test.ts (53 tests) 150ms
+(node:190018) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/living-chart/cloud.test.ts (6 tests) 87ms
+(node:190026) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/SynastryCalculator.share.test.ts (1 test) 110ms
+(node:190034) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/explorer/ChartContext.export.test.tsx (9 tests) 65ms
+(node:190042) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/terminal-public-routes.test.mjs (8 tests) 58ms
+(node:190054) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/daily-publication.test.ts (17 tests) 118ms
+(node:190062) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/ai-tools/studio/model.test.ts (15 tests) 118ms
+(node:190070) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/daily-fact-audit.test.mjs (3 tests) 86ms
+(node:190082) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/i18n/astrology.test.ts (12 tests) 75ms
+(node:190090) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/scene/scene.test.ts (15 tests) 80ms
+(node:190102) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/people-pilot.test.mjs (13 tests) 74ms
+(node:190114) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/registry-consumer-contract.test.mjs (13 tests) 116ms
+(node:190126) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/chart-shape.test.ts (59 tests) 60ms
+(node:190134) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/api/compute-api-samples.test.ts (2 tests) 88ms
+(node:190142) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/natal.test.ts (18 tests) 63ms
+(node:190150) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/thesis-contract.test.mjs (39 tests) 85ms
+(node:190158) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/time/localToUtc-callers.test.ts (3 tests) 70ms
+(node:190166) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/build-service-worker.test.mjs (9 tests) 75ms
+(node:190178) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/ProfileDashboard.recovery.test.ts (17 tests) 79ms
+(node:190186) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/account-api/handler.test.ts (18 tests) 81ms
+(node:190194) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/BigThreeQuick.recovery.test.ts (19 tests) 119ms
+(node:190202) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/ChartCalculator.phase.test.ts (7 tests) 65ms
+(node:190210) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/sky-api-headers.test.mjs (4 tests) 84ms
+(node:190222) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/exchange-risk.test.mjs (14 tests) 45ms
+(node:190234) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/synastry/composite-picture.test.ts (4 tests) 100ms
+(node:190242) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/scene/chapters.test.ts (20 tests) 40ms
+(node:190250) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/i18n/index.test.ts (20 tests) 82ms
+(node:190258) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/invite/api.test.ts (11 tests) 98ms
+(node:190266) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/sign-icon.test.ts (5 tests) 88ms
+(node:190274) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/api/registry-news.test.ts (17 tests) 60ms
+(node:190282) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/engine/progressions.test.ts (3 tests) 87ms
+(node:190290) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/astrofolio-canonical.test.mjs (4 tests) 54ms
+(node:190302) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/weekly-digest/delivery.test.ts (21 tests) 64ms
+(node:190310) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/aura-share-card.test.ts (18 tests) 89ms
+(node:190318) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/daily-email/content.test.ts (9 tests) 80ms
+(node:190326) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/aspect-pattern-card.test.ts (26 tests) 169ms
+(node:190334) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/calculator-first-paint.test.mjs (2 tests) 392ms
+(node:190346) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/api/email-subscribe-cooldown.test.ts (3 tests) 89ms
+(node:190354) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/time/localToUtc.test.ts (53 tests) 68ms
+(node:190362) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/guide-protocol/validators.test.ts (25 tests) 46ms
+(node:190370) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/time/localDateContainsUtc.test.ts (55 tests) 55ms
+(node:190378) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/data/glossary.test.ts (7 tests) 40ms
+(node:190386) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/profile/today-reading.test.ts (3 tests) 61ms
+(node:190394) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/composite-card.test.ts (21 tests) 143ms
+(node:190402) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/registry-shell-parity.test.mjs (3 tests) 62ms
+(node:190414) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/daily-email/delivery.test.ts (12 tests) 127ms
+(node:190422) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/assistant-api.test.ts (23 tests) 93ms
+(node:190430) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/communication.test.ts (10 tests) 230ms
+(node:190438) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/disclosure.test.ts (14 tests) 229ms
+(node:190450) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/ReturnCalculators.recovery.test.ts (21 tests) 170ms
+(node:190458) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/shelf-layout.test.mjs (59 tests) 79ms
+(node:190470) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/share.test.ts (48 tests) 142ms
+(node:190478) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/technical-audit-remediation.test.mjs (7 tests) 75ms
+(node:190490) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/account-api/sync-handler.test.ts (20 tests) 75ms
+(node:190498) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/profile/backup.test.ts (16 tests) 65ms
+(node:190506) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/ProfileInvites.test.tsx (11 tests) 33ms
+(node:190514) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/registry-selected-token-chart.test.mjs (27 tests) 143ms
+(node:190526) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/chart-context-card.test.ts (31 tests) 79ms
+(node:190538) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/inline-critical-styles.test.mjs (13 tests) 73ms
+(node:190550) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/build-search-index.test.mjs (1 test) 73ms
+(node:190562) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/registry-outlook.test.mjs (7 tests) 47ms
+(node:190574) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/guide-server/local-safety.test.ts (171 tests) 70ms
+(node:190582) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/time/local-date-intervals.test.ts (79 tests) 112ms
+(node:190590) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/wheel/wheel-serialization.test.ts (6 tests) 39ms
+(node:190602) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/synastry/InviteExperience.test.ts (5 tests) 62ms
+(node:190614) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/aura/AuraCollectionCabinet.test.tsx (12 tests) 24ms
+(node:190622) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/birthdays.test.ts (12 tests) 50ms
+(node:190630) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/SkyTicker.test.tsx (2 tests) 28ms
+(node:190638) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/living-chart/sync.test.ts (7 tests) 35ms
+(node:190646) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/mcp/bounds.test.ts (44 tests) 34ms
+(node:190654) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/account-api/sync-wire.test.ts (24 tests) 35ms
+(node:190662) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/learning-source.test.ts (25 tests) 31ms
+(node:190670) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/BirthCalendar.test.tsx (17 tests) 49ms
+(node:190678) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/daily-feed-dates.test.ts (2 tests) 30ms
+(node:190686) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/horoscope-page-data.test.ts (12 tests) 52ms
+(node:190694) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/phase1-motion-layout-contract.test.ts (12 tests) 30ms
+(node:190706) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/profile/saved-record.test.ts (17 tests) 33ms
+(node:190714) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/trade-panel-model.test.mjs (29 tests) 43ms
+(node:190722) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/home-first-paint.test.mjs (11 tests) 44ms
+(node:190734) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/synastry/RelationshipWheel.recovery.test.tsx (14 tests) 31ms
+(node:190742) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/chart-handoff.test.ts (10 tests) 39ms
+(node:190750) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/race-recap.test.mjs (8 tests) 32ms
+(node:190758) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/time/local-date-reference.test.ts (48 tests) 57ms
+(node:190766) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/synastry/CompositePanel.test.tsx (22 tests) 38ms
+(node:190774) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/engine/transit-window-core.test.ts (34 tests) 48ms
+(node:190782) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/SomeoneElseChart.test.ts (7 tests) 32ms
+(node:190794) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/aspect-patterns/AspectPatternActions.test.tsx (12 tests) 32ms
+(node:190802) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/exchange-entry.test.mjs (18 tests) 61ms
+(node:190814) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/daily-email/recipients.test.ts (8 tests) 29ms
+(node:190822) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/ChartCalculator.locale.test.ts (7 tests) 22ms
+(node:190834) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/people-source-corrections.test.mjs (10 tests) 30ms
+(node:190842) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/sky-lunations.test.mjs (2 tests) 28ms
+(node:190854) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/astrofolio-share-card.test.mjs (3 tests) 45ms
+(node:190866) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/reference-captions.test.tsx (26 tests) 26ms
+(node:190874) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/declination.test.ts (11 tests) 36ms
+(node:190882) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/growth-link-graph.test.ts (5 tests) 13ms
+(node:190894) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/stamp-astrofolio-season.test.mjs (4 tests) 30ms
+(node:190906) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/api/compute-api-vercel.test.ts (7 tests) 44ms
+(node:190914) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/hooks/useProfileAccessGeneration.test.ts (5 tests) 13ms
+(node:190926) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/guide-protocol/adapters.test.ts (17 tests) 50ms
+(node:190938) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/guide-server/quota.test.ts (7 tests) 20ms
+(node:190946) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/i18n/ui/ru.test.ts (6 tests) 28ms
+(node:190954) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/guide-protocol/context-state.test.ts (12 tests) 36ms
+(node:190962) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/explorer/EntityPicker.test.tsx (13 tests) 35ms
+(node:190970) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/account-v2/client.test.ts (8 tests) 36ms
+(node:190978) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/exchange-gecko.test.mjs (26 tests) 27ms
+(node:190990) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/visual/lighthouse-assets.test.mjs (12 tests) 33ms
+(node:191002) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/WalletChart.test.ts (2 tests) 36ms
+(node:191010) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/data/it-guides.test.ts (2 tests) 22ms
+(node:191018) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/account-v2/profile-boundary.test.ts (22 tests) 23ms
+(node:191026) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+stderr | src/lib/games/server.test.ts > handleGamesApi gates > fails closed without Supabase or session configuration
+[games] unconfigured {"hasSupabaseUrl":true,"hasServiceKey":true,"hasSecret":true,"secretLength":5,"secretValid":false}
+
+stderr | src/lib/games/server.test.ts > join and check-in > answers 502 when PostgREST fails, never a fabricated result
+[games] upstream PostgREST zodiac_games_join_v1 500
+
+stderr | src/lib/games/server.test.ts > join and check-in > collapses non-PostgREST upstream failures to a fixed token
+[games] upstream fetch failed: https://example.supabase.co
+
+ ✓ src/lib/games/server.test.ts (18 tests) 31ms
+(node:191034) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/explorer/ChartContext.test.tsx (8 tests) 36ms
+(node:191042) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/geo/search.test.ts (8 tests) 36ms
+(node:191050) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/wheel/ecliptic3d.test.ts (30 tests) 30ms
+(node:191058) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/LunarReturnCalculator.test.tsx (15 tests) 43ms
+(node:191066) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/aura/AuraTalisman.test.tsx (3 tests) 29ms
+(node:191074) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/aura/AuraResult.test.tsx (3 tests) 22ms
+(node:191082) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/trust-surface-consistency.test.mjs (9 tests) 35ms
+(node:191094) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/t17-hydration-diagnostics.test.mjs (4 tests) 54ms
+(node:191106) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/horoscopes.test.ts (10 tests) 57ms
+(node:191114) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/trade-ultra.test.mjs (24 tests) 62ms
+(node:191122) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/explorer/Inspector.test.tsx (4 tests) 31ms
+(node:191130) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/lunar-return/LunarReturnActions.test.tsx (13 tests) 55ms
+(node:191138) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/editorial-metadata-checks.test.mjs (5 tests) 26ms
+(node:191146) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/edition-freshness.test.ts (4 tests) 23ms
+(node:191154) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/solar-return/SolarReturnActions.test.tsx (9 tests) 48ms
+(node:191162) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/github-actions-pins.test.mjs (1 test) 22ms
+(node:191174) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/account-api/encryption.test.ts (12 tests) 27ms
+(node:191182) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/transits.test.ts (5 tests) 45ms
+(node:191190) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/invite/email.test.ts (5 tests) 43ms
+(node:191198) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/webmcp/search.test.ts (27 tests) 30ms
+(node:191212) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/data/fr-guides.test.ts (2 tests) 21ms
+(node:191223) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/games/share-card.test.ts (10 tests) 43ms
+(node:191231) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/visual/lighthouse-gate.test.mjs (12 tests) 20ms
+(node:191239) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/transit-window-ical.test.ts (5 tests) 20ms
+(node:191247) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/footer-style-loader.test.mjs (10 tests) 23ms
+(node:191255) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/explorer/LearningPractice.test.tsx (9 tests) 16ms
+(node:191263) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/daily-email/schedule.test.ts (3 tests) 24ms
+(node:191271) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/exchange-analytics.test.mjs (9 tests) 26ms
+(node:191283) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/guide-server/openai.test.ts (10 tests) 32ms
+(node:191291) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/ai-tools/watch/oauth.test.ts (3 tests) 43ms
+(node:191303) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/transit/slow-transit-scan.test.ts (6 tests) 16ms
+(node:191311) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/chart-context.test.ts (109 tests) 28ms
+(node:191319) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/email/email.test.ts (22 tests) 33ms
+(node:191327) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/registry-hub.test.mjs (8 tests) 25ms
+(node:191339) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/wheel/Wheel.spotlight.test.ts (4 tests) 14ms
+(node:191347) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/learning-progress.test.ts (12 tests) 16ms
+(node:191355) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/ical.test.ts (11 tests) 23ms
+(node:191363) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/developer-structured-data-checks.test.mjs (10 tests) 33ms
+(node:191371) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/PositionsShareSurface.test.tsx (4 tests) 14ms
+(node:191379) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/aura/talisman.test.ts (8 tests) 12ms
+(node:191387) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/horoscope-window-files.test.ts (3 tests) 26ms
+(node:191399) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/PlaceSearch.recovery.test.ts (11 tests) 25ms
+(node:191407) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/wallet/providers.test.ts (4 tests) 13ms
+(node:191415) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/audit-with-retry.test.mjs (49 tests) 22ms
+(node:191423) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/build-thesis-disclosure.test.mjs (10 tests) 23ms
+(node:191431) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/ai-tools/watch/callback.test.ts (3 tests) 14ms
+(node:191439) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/exchange-depth.test.mjs (18 tests) 30ms
+(node:191447) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/engine/aspect-patterns.test.ts (18 tests) 26ms
+(node:191455) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/registry-market-snapshot.test.mjs (8 tests) 27ms
+(node:191467) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/i18n/plural.test.ts (5 tests) 29ms
+(node:191475) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/email/daily-token.test.ts (7 tests) 31ms
+(node:191483) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/data/pt-guides.test.ts (1 test) 20ms
+(node:191491) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/transit/transit-search-model.test.ts (2 tests) 16ms
+(node:191499) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/aspect-pattern-model.test.ts (6 tests) 17ms
+(node:191510) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/horoscope-route-map.test.mjs (9 tests) 13ms
+(node:191522) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/exchange-chart-model.test.mjs (15 tests) 37ms
+(node:191530) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/ChartCalculator.actions.test.ts (20 tests) 22ms
+(node:191542) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/explorer/ReadingPath.test.tsx (5 tests) 21ms
+(node:191550) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/synastry/inviteClient.test.ts (7 tests) 38ms
+(node:191558) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/profile/pairs.test.ts (13 tests) 22ms
+(node:191566) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/account-v2/local-state.test.ts (16 tests) 15ms
+(node:191574) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/aspect-patterns/AspectPatternPanel.test.tsx (9 tests) 20ms
+(node:191582) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/invite/server.test.ts (5 tests) 17ms
+(node:191590) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/aura-cabinet-card.test.ts (19 tests) 30ms
+(node:191598) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/verify-phase1-operations.test.mjs (13 tests) 26ms
+(node:191606) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/nav-stability.test.mjs (21 tests) 25ms
+(node:191614) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/SavedRecordsPanel.test.tsx (3 tests) 19ms
+(node:191622) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/wheel/horizon-fixtures.test.ts (13 tests) 15ms
+(node:191630) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/invite/validate.test.ts (8 tests) 19ms
+(node:191638) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/webmcp/register.test.ts (3 tests) 18ms
+(node:191646) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/consumer-copy-lib.test.mjs (6 tests) 8ms
+(node:191654) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/data/ru-guides.test.ts (5 tests) 29ms
+(node:191662) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/chart3d/turning.test.ts (13 tests) 27ms
+(node:191670) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/CalculationReload.test.ts (7 tests) 14ms
+(node:191696) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/how-to-buy.test.mjs (5 tests) 22ms
+(node:191744) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/ProfileHome.test.tsx (10 tests) 18ms
+(node:191766) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/github-actions-trust-contract.test.mjs (3 tests) 13ms
+(node:191778) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/daily.test.ts (11 tests) 21ms
+(node:191786) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/upcoming.test.ts (9 tests) 16ms
+(node:191794) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/sky-api-quickstart.test.mjs (21 tests) 15ms
+(node:191802) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/share-synastry.test.ts (6 tests) 11ms
+(node:191813) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/year-ahead.test.ts (9 tests) 24ms
+(node:191821) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/i18n/daily-reading.test.ts (2 tests) 28ms
+(node:191829) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/locale-discovery-drive.test.mjs (5 tests) 30ms
+(node:191837) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/configure-legacy-analytics.test.mjs (9 tests) 13ms
+(node:191845) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/ai-tools/studio/bridge.test.ts (4 tests) 16ms
+(node:191853) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/aura/compose.test.ts (14 tests) 19ms
+(node:191861) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/ChartTrust.test.tsx (14 tests) 21ms
+(node:191869) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/search-index-lib.test.mjs (7 tests) 23ms
+(node:191877) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/trade-styles.test.mjs (5 tests) 8ms
+(node:191885) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/account-v2/profile-lease.test.ts (7 tests) 12ms
+(node:191893) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/programme-ledger.test.mjs (6 tests) 19ms
+(node:191901) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/daily-email/sun-authority.test.ts (3 tests) 17ms
+(node:191909) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/trade-wallet.test.mjs (1 test) 15ms
+(node:191917) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/people-identity-og-review.test.mjs (11 tests) 10ms
+(node:191925) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/profile/your-people.test.ts (7 tests) 9ms
+(node:191933) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/registry-aura-entry.test.mjs (10 tests) 25ms
+(node:191941) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/search-learning-checks.test.mjs (10 tests) 8ms
+(node:191949) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/profile/merge.test.ts (11 tests) 8ms
+(node:191957) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/exchange-styles.test.mjs (5 tests) 21ms
+(node:191965) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/lunar-return-ical.test.ts (10 tests) 38ms
+(node:191973) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/share-card-brand.test.ts (7 tests) 11ms
+(node:191981) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/chart-signature.test.ts (10 tests) 13ms
+(node:191989) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/WelcomeBack.test.ts (4 tests) 16ms
+(node:191997) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/daily-email-canary-workflow.test.mjs (17 tests) 9ms
+(node:192009) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/terminal-market-notice.test.mjs (4 tests) 25ms
+(node:192021) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/email/weekly-unsubscribe-api.test.ts (5 tests) 15ms
+(node:192029) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/receipt-download.test.ts (5 tests) 37ms
+(node:192037) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/solar-return-ical.test.ts (11 tests) 53ms
+(node:192045) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/LearningPath.navigation.test.ts (7 tests) 27ms
+(node:192053) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/webmcp/polyfill.test.ts (1 test) 22ms
+(node:192061) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/account-v2/mutation-fingerprint.test.ts (2 tests) 9ms
+(node:192073) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/synastry/synastryLines.test.ts (7 tests) 22ms
+(node:192081) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/profile/me.test.ts (7 tests) 19ms
+(node:192089) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/horoscope-freshness-lib.test.mjs (4 tests) 9ms
+(node:192101) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/dignities.test.ts (5 tests) 8ms
+(node:192109) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/email/post-chart-state.test.ts (16 tests) 10ms
+(node:192117) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/portrait-readiness.test.mjs (8 tests) 16ms
+(node:192125) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/time/birth-calendar.test.ts (17 tests) 24ms
+(node:192133) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/profile/navigation-avatar.test.ts (2 tests) 7ms
+(node:192141) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/nav-tools.test.ts (11 tests) 15ms
+(node:192149) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/trust-boundary.test.ts (6 tests) 15ms
+(node:192157) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/living-chart/forecast-snapshot.test.ts (3 tests) 8ms
+(node:192165) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/account-v2/chart-wire.test.ts (4 tests) 8ms
+(node:192173) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/engine/moon-phase-category.test.ts (16 tests) 6ms
+(node:192181) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/check-text-seams.test.mjs (6 tests) 12ms
+(node:192189) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/components/CollectBand.contract.test.ts (3 tests) 9ms
+(node:192201) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/locale-capture-readiness.test.mjs (19 tests) 12ms
+(node:192209) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/race-close.test.mjs (4 tests) 8ms
+(node:192217) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/strings/seo.test.ts (3 tests) 12ms
+(node:192225) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/invite/local-links.test.ts (5 tests) 6ms
+(node:192233) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/profile/initial.test.tsx (4 tests) 8ms
+(node:192241) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/embed-headers.test.mjs (1 test) 13ms
+(node:192253) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/weekly-digest-contract.test.mjs (3 tests) 18ms
+(node:192265) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/deltat-install-guard.test.mjs (5 tests) 8ms
+(node:192273) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/aura/persistence.test.ts (9 tests) 10ms
+(node:192281) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/share-card-brand-contract.test.ts (8 tests) 10ms
+(node:192289) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/daily-email/segments.test.ts (3 tests) 11ms
+(node:192297) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/aura/curatorialSets.test.ts (3 tests) 6ms
+(node:192305) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/share-positions-reading.test.ts (3 tests) 6ms
+(node:192313) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/guide-server/security.test.ts (3 tests) 7ms
+(node:192321) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/daily-email/identity.test.ts (3 tests) 7ms
+(node:192329) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/phase1-design-contract.test.ts (14 tests) 9ms
+(node:192341) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/daily-email/resend-request.test.ts (3 tests) 14ms
+(node:192349) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/daily-workflow.test.mjs (4 tests) 10ms
+(node:192361) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/invite/request.test.ts (3 tests) 5ms
+(node:192369) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/i18n-hreflang-policy.test.ts (2 tests) 9ms
+(node:192377) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/EvidenceDisclosure.test.tsx (2 tests) 10ms
+(node:192385) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/engine/independent-references-clock.test.ts (10 tests) 18ms
+(node:192393) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/ai-tools/quota.test.ts (4 tests) 11ms
+(node:192401) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/analytics.test.ts (13 tests) 12ms
+(node:192409) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/aura/source-alignment.test.ts (7 tests) 11ms
+(node:192417) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/phase1-scope-guard.test.mjs (30 tests) 10ms
+(node:192425) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/engine/synastry.test.ts (10 tests) 9ms
+(node:192433) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/invite/config.test.ts (7 tests) 7ms
+(node:192441) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/http-cache-policy.test.mjs (10 tests) 10ms
+(node:192449) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/ChartCalculator.registry-bridge.test.ts (1 test) 7ms
+(node:192461) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/api/push-subscribe.test.ts (5 tests) 8ms
+(node:192469) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/strings/seo.ru.test.ts (4 tests) 10ms
+(node:192477) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/browser-evidence-control.test.mjs (19 tests) 9ms
+(node:192485) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/profile/post-chart-context.test.ts (4 tests) 9ms
+(node:192493) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/footer-boundary.test.mjs (21 tests) 6ms
+(node:192505) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/explorer/tour/TourCard.test.tsx (3 tests) 9ms
+(node:192513) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/email-capture-deferred.test.mjs (3 tests) 10ms
+(node:192531) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/archive-data.test.mjs (7 tests) 10ms
+(node:192543) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/wallet/aura-connectors.test.ts (2 tests) 7ms
+(node:192551) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/data/almanac.test.ts (3 tests) 9ms
+(node:192559) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/guide-knowledge/retriever.test.ts (5 tests) 10ms
+(node:192567) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/bio-page.test.ts (4 tests) 5ms
+(node:192579) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/approach.test.ts (4 tests) 7ms
+(node:192587) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/server/digest-unsubscribe.test.ts (2 tests) 6ms
+(node:192595) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/account-api/mutation-verifier.test.ts (2 tests) 7ms
+(node:192603) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/engine/year-scan.test.ts (3 tests) 13ms
+(node:192611) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/account-v2/auth-epoch.test.ts (3 tests) 5ms
+(node:192619) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/locale-discovery.test.ts (6 tests) 16ms
+(node:192627) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/games/season.test.ts (8 tests) 13ms
+(node:192635) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/explorer-crowded-wheel-checks.test.mjs (4 tests) 10ms
+(node:192647) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/people-civil-day-bounds.test.mjs (12 tests) 9ms
+(node:192655) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/build-tz-lmt.test.mjs (6 tests) 12ms
+(node:192663) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/module-load.test.ts (4 tests) 8ms
+(node:192671) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/i18n/ru-runtime/client.test.ts (2 tests) 4ms
+(node:192679) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/natal-context.test.ts (4 tests) 5ms
+(node:192687) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/seo-lastmod.test.ts (5 tests) 13ms
+(node:192695) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/scene/overlay.test.ts (4 tests) 6ms
+(node:192703) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/time/civil-date.test.ts (64 tests) 28ms
+(node:192711) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/today/index.test.ts (8 tests) 11ms
+(node:192719) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/ProfileManager.test.ts (13 tests) 25ms
+(node:192731) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/search/score.test.ts (10 tests) 8ms
+(node:192739) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/search-asset-cache.test.mjs (2 tests) 5ms
+(node:192747) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/push.test.ts (4 tests) 10ms
+(node:192755) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/sect.test.ts (11 tests) 8ms
+(node:192763) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/lunar-return/copy.test.ts (2 tests) 5ms
+(node:192771) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/trust-games.test.mjs (1 test) 10ms
+(node:192783) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/profile/sync.test.ts (4 tests) 8ms
+(node:192791) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/living-chart/schema.test.ts (5 tests) 8ms
+(node:192799) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/zodiac-dates.test.ts (4 tests) 7ms
+(node:192807) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/LearningPath.test.ts (8 tests) 10ms
+(node:192815) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/composite.test.ts (3 tests) 6ms
+(node:192823) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/aspect-pattern-observation.test.mjs (3 tests) 7ms
+(node:192831) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/trust-privacy-boundary.test.mjs (3 tests) 12ms
+(node:192839) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/profile/settled-signs.test.ts (6 tests) 7ms
+(node:192851) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/aura/cabinet-finish.test.ts (32 tests) 8ms
+(node:192859) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+stderr | tests/api/wallet-birth.test.ts > wallet birth endpoint > returns the neutral not-found outcome for malformed input
+Provide the `firewallHostForDevelopment` option to support rate-limiting in development mode
+
+stderr | tests/api/wallet-birth.test.ts > wallet birth endpoint > caches only public timestamp context and optional official sign slugs
+Provide the `firewallHostForDevelopment` option to support rate-limiting in development mode
+
+stderr | tests/api/wallet-birth.test.ts > wallet birth endpoint > caches only public timestamp context and optional official sign slugs
+Provide the `firewallHostForDevelopment` option to support rate-limiting in development mode
+
+stderr | tests/api/wallet-birth.test.ts > wallet birth endpoint > is unavailable when the feature flag is off, before any provider call
+Provide the `firewallHostForDevelopment` option to support rate-limiting in development mode
+
+ ✓ tests/api/wallet-birth.test.ts (4 tests) 10ms
+(node:192867) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/account-v2/profile-access.test.ts (7 tests) 7ms
+(node:192875) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/i18n-r2-deferred-styles.test.mjs (7 tests) 8ms
+(node:192883) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/account-v2/deletion-recovery.test.ts (1 test) 7ms
+(node:192891) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/hooks/useEngine.test.ts (4 tests) 8ms
+(node:192899) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/ru-hero-source.test.mjs (5 tests) 11ms
+(node:192911) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/account-v2/browser-storage.test.ts (3 tests) 4ms
+(node:192919) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/contact-identity.test.ts (1 test) 9ms
+(node:192931) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/horoscope-month.test.mjs (4 tests) 7ms
+(node:192939) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/email/template.test.ts (9 tests) 7ms
+(node:192947) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/account-v2/remote-chart.test.ts (3 tests) 6ms
+(node:192955) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/i18n/ui/client.test.ts (4 tests) 8ms
+(node:192963) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/aura/events.test.ts (4 tests) 5ms
+(node:192971) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/solar-return/copy.test.ts (3 tests) 4ms
+(node:192979) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/legal-identity.test.ts (2 tests) 10ms
+(node:192991) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/wallet/config.test.ts (3 tests) 7ms
+(node:192999) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/synastry/relationshipData.test.ts (3 tests) 4ms
+(node:193007) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/share-card-copy.test.ts (2 tests) 4ms
+(node:193015) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/transit/TransitRing.test.ts (4 tests) 5ms
+(node:193023) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/compat.test.ts (2 tests) 4ms
+(node:193031) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/aura/analytics.test.ts (12 tests) 8ms
+(node:193039) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/ChartCompare.test.tsx (19 tests) 7ms
+(node:193051) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/sync-registry-establishment.test.mjs (1 test) 2ms
+(node:193059) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/living-chart/initialization-guard.test.ts (2 tests) 3ms
+(node:193067) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/vercel-compatibility-routes.test.ts (2 tests) 5ms
+(node:193075) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/AccountBoundProfileSurface.test.ts (3 tests) 4ms
+(node:193083) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/event-article-dates.test.mjs (4 tests) 5ms
+(node:193091) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/explorer/learning-exercises.test.ts (11 tests) 7ms
+(node:193099) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/solar-return/export-model.test.ts (4 tests) 8ms
+(node:193107) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/widgets.test.ts (4 tests) 7ms
+(node:193115) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/a2hs.test.ts (3 tests) 5ms
+(node:193123) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/aura/copy.test.ts (14 tests) 8ms
+(node:193131) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/data/es-guides.test.ts (1 test) 6ms
+(node:193139) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/living-chart/capture-sync-choice.test.ts (4 tests) 3ms
+(node:193147) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/build-distribution.test.mjs (4 tests) 6ms
+(node:193155) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/today/sun-sign-reading.test.ts (1 test) 7ms
+(node:193163) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/explorer/tour/progress.test.ts (4 tests) 4ms
+(node:193171) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/aura/sdk-conformance.test.ts (2 tests) 6ms
+(node:193179) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/trade-panel.test.mjs (1 test) 5ms
+(node:193187) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/data/chinese-zodiac.test.ts (3 tests) 6ms
+(node:193195) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/data/conformance/conformance-data.test.ts (4 tests) 5ms
+(node:193203) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/events/transit-link.test.ts (4 tests) 6ms
+(node:193211) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/games/champions.test.ts (2 tests) 4ms
+(node:193219) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/profile/photo.test.ts (1 test) 3ms
+(node:193227) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/profile/personal-chart.test.ts (3 tests) 4ms
+(node:193235) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/exchange-pools.test.mjs (6 tests) 6ms
+(node:193243) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/solar-return-observation.test.mjs (3 tests) 4ms
+(node:193251) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/exchange-mobile.test.mjs (5 tests) 10ms
+(node:193263) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/wallet/address.test.ts (3 tests) 5ms
+(node:193271) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/living-chart/owner.test.ts (4 tests) 5ms
+(node:193279) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/trade-liquidity.test.mjs (3 tests) 6ms
+(node:193287) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/wallet/share-card.test.ts (3 tests) 4ms
+(node:193295) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/lunar-return-observation.test.mjs (2 tests) 5ms
+(node:193303) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/living-chart/feature-flags.test.ts (3 tests) 4ms
+(node:193311) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/account-v2/pending-operation.test.ts (2 tests) 5ms
+(node:193319) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/vercel-aura-headers.test.ts (2 tests) 6ms
+(node:193327) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/SynastryCalculator.test.ts (2 tests) 5ms
+(node:193335) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/chart-context-observation.test.mjs (2 tests) 5ms
+(node:193343) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/pwa-install.test.ts (2 tests) 3ms
+(node:193351) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/recovery-browser-observation.test.mjs (3 tests) 3ms
+(node:193359) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/islands/ProfileSunSignCapture.test.ts (2 tests) 4ms
+(node:193367) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ scripts/build-widget-loader.test.mjs (1 test) 3ms
+(node:193375) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/account-v2/feature-flags.test.ts (1 test) 8ms
+(node:193383) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ docs/platform/evidence/swiss-benchmark/prototype/spk.test.mjs (4 tests | 4 skipped)
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/lib/profile/saved-record-inactive.test.ts > inactive saved receipt integration boundary > has only the coordinator as runtime caller and no dependency path into legacy profile writers or another private database
+Error: Test timed out in 5000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/lib/profile/saved-record-inactive.test.ts:122:3
+    120|
+    121| describe('inactive saved receipt integration boundary', () => {
+    122|   it('has only the coordinator as runtime caller and no dependency pat…
+       |   ^
+    123|     const graph = await runtimeImportGraph();
+    124|     const savedModules = [...graph.keys()].filter(savedRecordModule);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 535 passed | 1 skipped (537)
+      Tests  1 failed | 6916 passed | 5 skipped (6922)
+   Start at  06:51:48
+   Duration  651.32s (transform 15.99s, setup 0ms, collect 72.52s, tests 444.06s, environment 128ms, prepare 42.48s)
+
+(node:193391) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)

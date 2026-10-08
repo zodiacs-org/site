@@ -1,0 +1,19 @@
+(node:193582) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:193595) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+ RUN  v3.2.7 /workspace/site
+
+(node:193607) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/lib/profile/saved-record-inactive.test.ts (4 tests) 3026ms
+   ✓ inactive saved receipt integration boundary > has only the coordinator as runtime caller and no dependency path into legacy profile writers or another private database  2605ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  07:06:54
+   Duration  4.17s (transform 327ms, setup 0ms, collect 841ms, tests 3.03s, environment 0ms, prepare 60ms)
+
+(node:193628) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)

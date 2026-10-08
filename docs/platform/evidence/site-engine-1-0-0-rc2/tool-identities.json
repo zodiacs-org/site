@@ -18,5 +18,9 @@
   "docs/platform/evidence/site-engine-1-0-0-rc2/tools/check-phase1-hash.mjs": "b594a6d4d0349867f2bb6489808a7ff7625951bfdbf8d7e75633da46399f1b9e",
   "src/ai-tools/contracts.ts": "9953cf3ad61e39a461453a4083924012c1f568206ebb19d5809a4eb5a68cc58e",
   "src/ai-tools/server.ts": "a0b394e6c1ed642c684779fb244e942e2776e2bdf5599cb2bd51022097b39f3d",
-  "scripts/platform-candidate-docs.test.mjs": "65568581648758d98c8789e08b3ea874eb3baf4057992cf793bba5fb43942aa7"
+  "scripts/platform-candidate-docs.test.mjs": "65568581648758d98c8789e08b3ea874eb3baf4057992cf793bba5fb43942aa7",
+  "scripts/pack-mcp-server.mjs": "bb5419d6d0604f3888a14464ad415d86b5d5bccf6a7325e102dcf55b86b5393b",
+  "scripts/mcp-pack-permissions.test.mjs": "5ad940d0dd522599fe27bbe9602783f4f9973654370a0bfe55ffb86c62eac219",
+  "src/islands/SynastryCalculator.tsx": "e718c6fd525f5490ae21c0c423902094e2ea7032a90b8ef73dade1e52835a2b3",
+  "src/lib/profile/saved-record-inactive.test.ts": "55293fbb3482622ec98d82b8ed903054141282af5fa0e1e5b58b5e4314156b60"
 }

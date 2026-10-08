@@ -1,0 +1,21 @@
+{
+  "sourceHead": "d591f309fd0db03db56f58f9f6c9a7c4346f7426",
+  "stagedTree": "b67884444510c5b7cef7d8a7be1b09448e123627",
+  "scope": "Exact staged blobs compared with preceding committed blobs. Positive matching lines are inherited verbatim; this does not clear the rest of the historical tree.",
+  "reports": [
+    {
+      "stagedFilesRead": 10,
+      "matchingDataLines": 8,
+      "matchingNameLines": 6,
+      "newMatchingDataLines": 0,
+      "newMatchingNameLines": 0
+    },
+    {
+      "stagedFilesRead": 10,
+      "matchingDataLines": 8,
+      "matchingNameLines": 6,
+      "newMatchingDataLines": 0,
+      "newMatchingNameLines": 0
+    }
+  ]
+}
