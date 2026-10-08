@@ -12,9 +12,11 @@ export const weekTitle = (item: WeekItem) => `${item.transitBody} ${item.aspect}
 /** The site's transit sentence for this contact. */
 export const weekLine = (item: WeekItem) => transitLine(item.transitBody, item.aspect, pointName(item.natalPoint));
 
-/** "Thu 9 Oct", on the device's clock unless a zone is given. */
+/** "Thu 9 Oct", on the device's clock unless a zone is given. Built from parts: older browsers put a comma after the weekday. */
 export function weekDay(iso: string, timeZone?: string): string {
-  return new Intl.DateTimeFormat('en-GB', { weekday: 'short', day: 'numeric', month: 'short', ...(timeZone ? { timeZone } : {}) }).format(new Date(iso));
+  const parts = new Intl.DateTimeFormat('en-GB', { weekday: 'short', day: 'numeric', month: 'short', ...(timeZone ? { timeZone } : {}) }).formatToParts(new Date(iso));
+  const part = (type: Intl.DateTimeFormatPartTypes) => parts.find(item => item.type === type)?.value ?? '';
+  return `${part('weekday')} ${part('day')} ${part('month')}`;
 }
 
 /** "Thu 9 Oct to Sat 11 Oct · exact on Fri 10 Oct", "All week", "Until Sat 11 Oct", "From Tue 14 Oct". */
