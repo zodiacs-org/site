@@ -118,10 +118,14 @@ file, so changing the shell's working directory alone cannot select that source.
 This correction does not change the dated measurements or captured bytes.
 
 Use Node 22 and npm 10. The repository must already contain commit
-`b1c42f199cea5c879afd1be3597666d43abf9653`. Set `REVIEW_NPM_CACHE` to a writable,
-populated npm cache containing the dependencies of that commit's `package-lock.json`
-and the captured adapter's `npm-shrinkwrap.json`. Missing cached dependencies are
-a setup failure; the recipe deliberately forbids npm network access.
+`b1c42f199cea5c879afd1be3597666d43abf9653`. Both dependency installations may
+access the npm registry. The pinned checkout's install uses a new cache under
+the temporary review directory. The runner installs the extracted adapter's own
+shrinkwrap using its separate fixed cache, `/tmp/zodiacs-consumer-npm-cache`;
+its sanitized child environment does not forward the caller's npm cache or offline
+settings. Plan for registry access and writable temporary/cache directories.
+Existing cache contents can affect whether dependencies are downloaded. Dependency
+installation traffic is separate from the loopback calculation requests below.
 
 Run this block from the PR's site checkout. It creates a detached pinned worktree,
 copies only the runner and its selftests into that checkout, and installs its own
@@ -133,7 +137,6 @@ HTTP checks use loopback only, with zero production calls.
 ```bash
 (
   set -eu
-  : "${REVIEW_NPM_CACHE:?Set REVIEW_NPM_CACHE to a populated writable npm cache}"
   review_site=$(git rev-parse --show-toplevel)
   review_evidence="$review_site/docs/platform/evidence/mcp-live-parity-2026-10-06"
   review_scratch=$(mktemp -d /tmp/zodiacs-rc17-review-XXXXXX)
@@ -144,8 +147,7 @@ HTTP checks use loopback only, with zero production calls.
   cp "$review_site/scripts/mcp-independent-consumer.selftest.mjs" "$review_source/scripts/"
   (
     cd "$review_source"
-    export npm_config_cache="$REVIEW_NPM_CACHE"
-    export npm_config_offline=true
+    export npm_config_cache="$review_scratch/source-npm-cache"
     npm ci --ignore-scripts --no-audit --no-fund
     node --test scripts/mcp-independent-consumer.selftest.mjs
     node scripts/mcp-independent-consumer.mjs \
