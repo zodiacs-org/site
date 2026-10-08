@@ -1,0 +1,241 @@
+{
+  "node": "v24.19.0",
+  "controls": [
+    {
+      "id": "non-finite-json",
+      "assertion": "assert(Number.isFinite(value), \"non-finite canonical number\")",
+      "expectedMessage": "non-finite",
+      "actualCode": "ERR_ASSERTION",
+      "actualMessage": "non-finite canonical number"
+    },
+    {
+      "id": "altered-archive-hash",
+      "assertion": "assert.equal(sha256(bytes), pin.sha256, \"archive SHA-256\")",
+      "expectedMessage": "archive SHA-256",
+      "actualCode": "ERR_ASSERTION",
+      "actualMessage": "archive SHA-256\n+ actual - expected\n\n+ 'c1d063a7d0c3a77c75fd42425dd4e0026babcc898866165b93834c0a66cfb5c1'\n- '5576bea6a42349a860c723dd65a854f1ae55d4f66fd246533207a90048205f17'\n"
+    },
+    {
+      "id": "altered-archive-size",
+      "assertion": "assert.equal(bytes.length, pin.bytes, \"archive bytes\")",
+      "expectedMessage": "archive bytes",
+      "actualCode": "ERR_ASSERTION",
+      "actualMessage": "archive bytes\n\n31 !== 1\n"
+    },
+    {
+      "id": "stale-engine-version",
+      "assertion": "assert.equal(backend?.version, pin.engineVersion, \"backend version\")",
+      "expectedMessage": "backend version",
+      "actualCode": "ERR_ASSERTION",
+      "actualMessage": "backend version\n+ actual - expected\n\n+ '0.1.1-rc.15'\n- '0.1.1-rc.16'\n             ^\n"
+    },
+    {
+      "id": "stale-adapter-version",
+      "assertion": "assert.deepEqual(info, { name: \"zodiacs-mcp-server\", version: pin.adapterVersion }, \"MCP handshake version\")",
+      "expectedMessage": "MCP handshake version",
+      "actualCode": "ERR_ASSERTION",
+      "actualMessage": "MCP handshake version\n+ actual - expected\n\n  {\n    name: 'zodiacs-mcp-server',\n+   version: '0.1.0-rc.16.2'\n-   version: '0.1.0-rc.16.3'\n  }\n"
+    },
+    {
+      "id": "missing-receipt",
+      "assertion": "assert(value.receipt && typeof value.receipt === \"object\", \"missing receipt\")",
+      "expectedMessage": "missing receipt",
+      "actualCode": "ERR_ASSERTION",
+      "actualMessage": "missing receipt"
+    },
+    {
+      "id": "bad-citation-digest",
+      "assertion": "assert.equal(value.cite?.receipt, digest(value.receipt), \"citation digest\")",
+      "expectedMessage": "citation digest",
+      "actualCode": "ERR_ASSERTION",
+      "actualMessage": "citation digest\n+ actual - expected\n\n+ 'sha256:0000000000000000000000000000000000000000000000000000000000000000'\n- 'sha256:87cf013a563aee9723708410abe9fc8038a635fe0e8a20a7bae26ec57e1c87d1'\n"
+    },
+    {
+      "id": "lost-depends",
+      "assertion": "assert.equal(value.result?.answer, row.answer, `${row.id}: answer`)",
+      "expectedMessage": "date-depends: answer",
+      "actualCode": "ERR_ASSERTION",
+      "actualMessage": "date-depends: answer\n\n'true' !== 'depends'\n"
+    },
+    {
+      "id": "inflated-completeness",
+      "assertion": "assert.equal(search.completeness, \"tested-not-proven\", \"search completeness\")",
+      "expectedMessage": "search completeness",
+      "actualCode": "ERR_ASSERTION",
+      "actualMessage": "search completeness\n+ actual - expected\n\n+ 'proven-complete'\n- 'tested-not-proven'\n"
+    },
+    {
+      "id": "unadvertised-result-difference",
+      "assertion": "assert.equal(canonical(normalized(mcp)), canonical(normalized(http)), `${row.id}: parity beyond citation URL`)",
+      "expectedMessage": "parity beyond citation URL",
+      "actualCode": "ERR_ASSERTION",
+      "actualMessage": "sun-never-retrograde: parity beyond citation URL\n+ actual - expected\n\n+ '{\"backend\":{\"ephemeris\":{\"name\":\"astronomy-engine\",\"version\":\"2.1.19\"},\"name\":\"@zodiacs/engine\",\"version\":\"0.1.1-rc.16\"},\"cite\":{\"engine\":\"@zodiacs/engine\",\"receipt\":\"sha256:87cf013a563aee9723708410abe9fc8038a635fe0e8a20a7bae26ec57e1c87d1\",\"url\":\"<transport documentation URL>\",\"version\":\"0.1.1-rc.16\"},\"receipt\":{\"endpoint\":\"sky-fact\",\"engine\":{\"ephemeris\":{\"name\":\"astronomy-engine\",\"version\":\"2.1.19\"},\"name\":\"@zodiacs/engine\",\"version\":\"0.1.1-rc.16\"},\"schema\":\"zodiacs.compute-receipt.v1\"},\"result\":{\"answer\":\"false\",\"window\":{\"from\":\"2026-03-02T10:00:00Z\",\"to\":\"2026-03-04T12:00:00Z\"},\"zone\":null},\"schema\":\"zodiacs.compute-api.sky-fact.v1\"}'\n- '{\"backend\":{\"ephemeris\":{\"name\":\"astronomy-engine\",\"version\":\"2.1.19\"},\"name\":\"@zodiacs/engine\",\"version\":\"0.1.1-rc.16\"},\"cite\":{\"engine\":\"@zodiacs/engine\",\"receipt\":\"sha256:87cf013a563aee9723708410abe9fc8038a635fe0e8a20a7bae26ec57e1c87d1\",\"url\":\"<transport documentation URL>\",\"version\":\"0.1.1-rc.16\"},\"receipt\":{\"endpoint\":\"sky-fact\",\"engine\":{\"ephemeris\":{\"name\":\"astronomy-engine\",\"version\":\"2.1.19\"},\"name\":\"@zodiacs/engine\",\"version\":\"0.1.1-rc.16\"},\"schema\":\"zodiacs.compute-receipt.v1\"},\"result\":{\"answer\":\"false\",\"unadvertised\":true,\"window\":{\"from\":\"2026-03-02T10:00:00Z\",\"to\":\"2026-03-04T12:00:00Z\"},\"zone\":null},\"schema\":\"zodiacs.compute-api.sky-fact.v1\"}'\n"
+    },
+    {
+      "id": "wrong-citation-url",
+      "assertion": "assert.equal(value.cite?.url, exact transport documentation anchor, \"citation URL\")",
+      "expectedMessage": "citation URL",
+      "actualCode": "ERR_ASSERTION",
+      "actualMessage": "citation URL\n+ actual - expected\n\n+ 'https://example.invalid/'\n- 'https://zodiacs.org/developers/compute/#sky-fact'\n           ^\n"
+    },
+    {
+      "id": "malformed-json",
+      "assertion": "record.value = JSON.parse(record.text), after save(raw evidence)",
+      "expectedMessage": "JSON",
+      "actualCode": null,
+      "actualName": "SyntaxError",
+      "actualMessage": "Unexpected end of JSON input"
+    },
+    {
+      "id": "non-json",
+      "assertion": "record.value = JSON.parse(record.text), after save(raw evidence)",
+      "expectedMessage": "JSON",
+      "actualCode": null,
+      "actualName": "SyntaxError",
+      "actualMessage": "Unexpected token '<', \"<html>gateway</html>\" is not valid JSON"
+    },
+    {
+      "id": "http-fetch-failure",
+      "assertion": "fetch failure saved with null response status",
+      "expectedMessage": "synthetic fetch failure",
+      "actualCode": null,
+      "actualName": "TypeError",
+      "actualMessage": "synthetic fetch failure"
+    },
+    {
+      "id": "http-body-failure",
+      "assertion": "body failure saved with received status and partial raw body",
+      "expectedMessage": "synthetic body failure",
+      "actualCode": null,
+      "actualName": "TypeError",
+      "actualMessage": "synthetic body failure"
+    },
+    {
+      "id": "http-body-byte-limit",
+      "assertion": "assert.fail(\"HTTP body exceeds evidence byte limit; stopping\")",
+      "expectedMessage": "HTTP body exceeds evidence byte limit",
+      "actualCode": "ERR_ASSERTION",
+      "actualName": "AssertionError",
+      "actualMessage": "HTTP body exceeds evidence byte limit; stopping"
+    },
+    {
+      "id": "http-header-byte-limit",
+      "assertion": "assert(!record.headersTruncated, \"HTTP headers exceed evidence byte limit; stopping\")",
+      "expectedMessage": "HTTP headers exceed evidence byte limit",
+      "actualCode": "ERR_ASSERTION",
+      "actualName": "AssertionError",
+      "actualMessage": "HTTP headers exceed evidence byte limit; stopping"
+    },
+    {
+      "id": "stale-output-directory",
+      "assertion": "atomic mkdir(out) rejects EEXIST before any evidence write",
+      "expectedMessage": "output directory already exists",
+      "actualCode": "ERR_ASSERTION",
+      "actualName": "AssertionError",
+      "actualMessage": "output directory already exists; use a new output directory"
+    },
+    {
+      "id": "live-host-www.zodiacs.org",
+      "assertion": "LIVE_HOSTS.includes(url.hostname)",
+      "expectedMessage": "exact approved hosts",
+      "actualCode": "ERR_ASSERTION",
+      "actualMessage": "live host outside exact approved hosts"
+    },
+    {
+      "id": "live-host-unapproved.vercel.app",
+      "assertion": "LIVE_HOSTS.includes(url.hostname)",
+      "expectedMessage": "exact approved hosts",
+      "actualCode": "ERR_ASSERTION",
+      "actualMessage": "live host outside exact approved hosts"
+    },
+    {
+      "id": "live-credentials",
+      "assertion": "url.origin must equal the credential-free origin",
+      "expectedMessage": "credentials",
+      "actualCode": "ERR_ASSERTION",
+      "actualMessage": "live origin cannot contain credentials, path, query or fragment\n+ actual - expected\n\n+ 'https://zodiacs.org'\n- 'https://user:pass@zodiacs.org'\n           ^\n"
+    },
+    {
+      "id": "live-missing-active-policy",
+      "assertion": "both approved exact hosts must be present in the active policy",
+      "expectedMessage": "absent",
+      "actualCode": "ERR_ASSERTION",
+      "actualMessage": "approved hosts absent from active environment policy"
+    },
+    {
+      "id": "live-source-drift",
+      "assertion": "provider source commit must match the pinned HTTP source, independent of versions",
+      "expectedMessage": "source commit binding",
+      "actualCode": "ERR_ASSERTION",
+      "actualMessage": "provider source commit binding\n+ actual - expected\n\n+ 'different-source-same-version'\n- 'synthetic-source'\n"
+    },
+    {
+      "id": "live-served-openapi-drift",
+      "assertion": "served OpenAPI hash must match independently built source bytes",
+      "expectedMessage": "served hash binding",
+      "actualCode": "ERR_ASSERTION",
+      "actualMessage": "openapi served hash binding\n+ actual - expected\n\n+ '0000000000000000000000000000000000000000000000000000000000000000'\n- '44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a'\n"
+    },
+    {
+      "id": "live-captured-archive-drift",
+      "assertion": "captured archive bytes must match the bound hash",
+      "expectedMessage": "captured bytes binding",
+      "actualCode": "ERR_ASSERTION",
+      "actualMessage": "archive captured bytes binding\n+ actual - expected\n\n+ 'd67e2e944994496c8d8ec76eed0cf9f09679448d584b532bebf941852a37f5ed'\n- '74a06ea6113b7f98d70ba2286ddaa21a9a17e25ed2bb8736a823dbc46177eb44'\n"
+    },
+    {
+      "id": "live-metadata-denial",
+      "assertion": "metadata denial rejects binding before compute",
+      "expectedMessage": "metadata status",
+      "actualCode": "ERR_ASSERTION",
+      "actualMessage": "archive metadata status\n\n403 !== 200\n"
+    },
+    {
+      "id": "live-mutable-origin",
+      "assertion": "compute uses the approved immutable host bound by provider evidence",
+      "expectedMessage": "immutable origin",
+      "actualCode": "ERR_ASSERTION",
+      "actualMessage": "live calls use source-bound immutable origin\n+ actual - expected\n\n+ 'https://zodiacs.org'\n- 'https://zodiacs-pqzrjq0ev-zodiacsofficial.vercel.app'\n                  ^\n"
+    },
+    {
+      "id": "live-stop-403",
+      "assertion": "unexpected status stops the fixed live plan immediately, without retries",
+      "expectedMessage": "unexpected.*HTTP|unexpected live HTTP",
+      "actualCode": "ERR_ASSERTION",
+      "actualName": "AssertionError",
+      "actualMessage": "positions: unexpected live HTTP status; stopping\n\n403 !== 200\n"
+    },
+    {
+      "id": "live-stop-429",
+      "assertion": "unexpected status stops the fixed live plan immediately, without retries",
+      "expectedMessage": "unexpected.*HTTP|unexpected live HTTP",
+      "actualCode": "ERR_ASSERTION",
+      "actualName": "AssertionError",
+      "actualMessage": "unexpected HTTP 429; stopping"
+    },
+    {
+      "id": "live-stop-500",
+      "assertion": "unexpected status stops the fixed live plan immediately, without retries",
+      "expectedMessage": "unexpected.*HTTP|unexpected live HTTP",
+      "actualCode": "ERR_ASSERTION",
+      "actualName": "AssertionError",
+      "actualMessage": "unexpected HTTP 500; stopping"
+    },
+    {
+      "id": "live-stop-502",
+      "assertion": "unexpected status stops the fixed live plan immediately, without retries",
+      "expectedMessage": "unexpected.*HTTP|unexpected live HTTP",
+      "actualCode": "ERR_ASSERTION",
+      "actualName": "AssertionError",
+      "actualMessage": "positions: unexpected live HTTP status; stopping\n\n502 !== 200\n"
+    },
+    {
+      "id": "live-stop-503",
+      "assertion": "unexpected status stops the fixed live plan immediately, without retries",
+      "expectedMessage": "unexpected.*HTTP|unexpected live HTTP",
+      "actualCode": "ERR_ASSERTION",
+      "actualName": "AssertionError",
+      "actualMessage": "unexpected HTTP 503; stopping"
+    }
+  ]
+}

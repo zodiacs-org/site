@@ -1,0 +1,17 @@
+{
+  "startedAt": "2026-10-06T07:19:53.571464+00:00",
+  "method": "GET",
+  "url": "https://zodiacs.org/examples/mcp-server.json",
+  "curlExitCode": 0,
+  "status": 200,
+  "stderr": "",
+  "bodyBytes": 731,
+  "bodySha256": "5bf917ab2235887898d658ab94fa8260f7dfcba8dfeb9fc3436bdc711ac1536f",
+  "headersSha256": "cd481f04848c2d755861346397f32f3847896ed68cc44823fa5791dcf2570816",
+  "responseHeaderOmissions": [
+    "set-cookie",
+    "authorization",
+    "proxy-authorization"
+  ],
+  "redirectsFollowed": 0
+}

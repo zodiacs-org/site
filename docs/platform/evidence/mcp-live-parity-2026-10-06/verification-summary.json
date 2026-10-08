@@ -1,0 +1,48 @@
+{
+  "schema": "zodiacs.live-parity-verification-summary.v1",
+  "startedAt": "2026-10-06T07:25:33.606Z",
+  "finishedAt": "2026-10-06T07:25:38.839Z",
+  "liveStatus": "pass",
+  "productionComputeAttempts": 6,
+  "shortEventSearchAttempts": 1,
+  "metadataGetAttempts": 4,
+  "metadataStatuses": [
+    200,
+    200,
+    200,
+    200
+  ],
+  "httpStatuses": [
+    200,
+    200,
+    200,
+    200,
+    400,
+    200
+  ],
+  "allHttpRecordsParsed": true,
+  "httpRawBodyHashesValid": true,
+  "runnerSha256": "9f69059315551111c3c732a5220afb30fab81eb026335a02a210e1834f2b3964",
+  "selftests": 17,
+  "recordedNegativeControls": 32,
+  "packagedChecks": 21,
+  "mcpStatus": "pass",
+  "mcpCases": 6,
+  "mcpParserRefusals": 2,
+  "mcpUnsupportedRefusals": 2,
+  "consumerLicense": "MIT AND CC-BY-4.0",
+  "sourceInstallAttempts": [
+    {
+      "attempt": 1,
+      "exitCode": 254,
+      "reason": "default npm cache outside writable roots; preserved log"
+    },
+    {
+      "attempt": 2,
+      "exitCode": 0,
+      "cache": "/tmp/zodiacs-live-source-npm-cache"
+    }
+  ],
+  "limits": "F-78 remains open; no capacity, quota, rate or load probes; no scientific accuracy/completeness claim.",
+  "programmeSummary": "Overall delivery: 33% (61 of 182.45); blocked 2% (3)"
+}

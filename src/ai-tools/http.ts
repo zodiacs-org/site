@@ -1,11 +1,12 @@
 import { createMcpHandler } from '@modelcontextprotocol/server';
 import { COMPUTE_EVENTS_RATE_LIMIT_ID, COMPUTE_RATE_LIMIT_ID, type RateLimitVerdict } from '../lib/compute-api/constants';
 import { computeApiRateLimit } from '../lib/compute-api/handler';
-import { AI_TOOL_NAMES, HOROSCOPE_URI, STUDIO_URI, LEGACY_STUDIO_URI, AI_ROUTE_PARAM, AI_SWITCH_ENV, AI_VERSION, MAX_HTTP_BYTES, ORIGIN } from './contracts';
+import { AI_TOOL_NAMES, HOROSCOPE_URI, STUDIO_URI, LEGACY_STUDIO_URI, AI_ROUTE_PARAM, AI_SWITCH_ENV, AI_VERSION, MAX_HTTP_BYTES, ORIGIN, type AiToolName } from './contracts';
 import { createAiServer } from './server';
 import type { AiDependencies } from './tools';
 import { sanitizeProtocolMessage } from './sanitize';
 import { reserveAiQuota, type QuotaKind } from './quota';
+import { countAiToolCall, usageHostFamily, type UsageHost } from './usage';
 import { configuredSkyWatch, type SkyWatch } from './watch/service';
 
 // Browser-side MCP clients of the assistants Zodiacs is listed in, and the site itself.
@@ -31,6 +32,22 @@ export interface AiHttpOptions {
   allowedHosts?: readonly string[];
   /** Isolated protocol tests inject a store-backed preview service. */
   skyWatch?: SkyWatch;
+  /** Explicit injection for loopback tests only; deployment adds one to the anonymous daily usage counter. */
+  countUsage?: (tool: AiToolName, host: UsageHost) => Promise<unknown>;
+  /** The platform hook that lets a count started after the reply finish (Vercel's waitUntil). Without it the count runs detached. */
+  waitUntil?: (task: Promise<unknown>) => void;
+}
+
+/** One count per handled tool call, started after its reply has ended. Only the
+ * tool name and the coarse host family are passed on. It never throws, waits or
+ * changes a reply; every failure is dropped.
+ */
+function countAfterReply(options: AiHttpOptions, env: Readonly<Record<string, string | undefined>>, tool: AiToolName, userAgent: unknown) {
+  try {
+    const count = options.countUsage ?? ((name: AiToolName, host: UsageHost) => countAiToolCall(name, host, env));
+    const settled = Promise.resolve(count(tool, usageHostFamily(userAgent))).then(() => undefined, () => undefined);
+    options.waitUntil?.(settled);
+  } catch { /* Counting never affects a reply. */ }
 }
 
 function send(res: any, status: number, code: string, retry?: number) {
@@ -129,9 +146,11 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
     catch (error) { return send(res, error instanceof Error && error.message === 'payload-too-large' ? 413 : 400, error instanceof Error && error.message === 'payload-too-large' ? 'payload-too-large' : 'invalid-json'); }
     if (!body || typeof body !== 'object' || Array.isArray(body)) return send(res, 400, 'invalid-json-rpc');
     const message = body as Record<string, unknown>;
+    let calledTool: AiToolName | undefined;
     if (message.method === 'tools/call' && message.params && typeof message.params === 'object') {
       const name = (message.params as Record<string, unknown>).name;
       if ((AI_TOOL_NAMES as readonly string[]).includes(String(name))) operation = String(name);
+      if (typeof name === 'string' && name === operation) calledTool = name as AiToolName;
     }
     const watchMethod = ['events/list', 'events/subscribe', 'events/unsubscribe'].includes(String(message.method));
     if (watch && watchMethod && req.headers?.['mcp-protocol-version'] !== '2026-07-28') return send(res, 400, 'event-protocol-required');
@@ -174,7 +193,11 @@ export function createAiNodeHandler(options: AiHttpOptions = {}) {
       }
       res.end();
     } catch { if (!res.headersSent) send(res, 500, 'protocol-failed'); else res.end(); }
-    finally { await sdk.close().catch(() => {}); }
+    finally {
+      // The reply has ended: count the call once, including an error result.
+      if (calledTool) countAfterReply(options, env, calledTool, req.headers?.['user-agent']);
+      await sdk.close().catch(() => {});
+    }
     } finally {
       if (measure && cpu) {
         const used = process.cpuUsage(cpu);

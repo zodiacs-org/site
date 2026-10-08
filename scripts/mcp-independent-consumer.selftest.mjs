@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url';
 import {
   assertArchive, assertBackend, assertCapabilities, assertParity, assertReply, canonical, CORPUS, digest, sha256,
   captureHttpResponse, HTTP_EVIDENCE_LIMITS, prepareOutputDirectory,
+  assertLivePolicy, assertLiveBinding, runLiveHttp, LIVE_PLAN,
 } from './mcp-independent-consumer.mjs';
 
 const pin = { adapterVersion: '0.1.0-rc.16.3', engineVersion: '0.1.1-rc.16', ephemerisVersion: '2.1.19' };
@@ -18,6 +19,7 @@ function reply(row, transport = 'mcp') {
     completeness: 'tested-not-proven', window: 'start-exclusive-end-inclusive' };
   return { schema: `zodiacs.compute-api.${row.endpoint}.v1`, backend,
     result: { ...(row.answer ? { answer: row.answer } : {}), ...(row.basis ? { basis: row.basis } : {}), zone: null,
+      ...(row.flag ? { facts: { flags: [row.flag] } } : {}),
       window: { from: '2026-03-02T10:00:00Z', to: '2026-03-04T12:00:00Z' },
       ...(row.endpoint === 'events' ? { events: [{ kind: 'lunation', at: '2026-03-03T12:00:00Z' }] } : {}) }, receipt,
     cite: { engine: backend.name, version: backend.version, receipt: digest(receipt),
@@ -231,4 +233,107 @@ test('stale output directory is rejected by helper and CLI without changing orig
     for (const [name, text] of Object.entries(originals)) assert.equal(await readFile(join(out, name), 'utf8'), text,
       `${name}: original evidence must remain byte-identical`);
   } finally { await rm(scratch, { recursive: true, force: true }); }
+});
+
+const liveOrigin = 'https://zodiacs-pqzrjq0ev-zodiacsofficial.vercel.app';
+const policy = { http_network_policy: { type: 'restricted', egress_rules: [
+  { host: 'zodiacs.org' }, { host: 'zodiacs-pqzrjq0ev-zodiacsofficial.vercel.app' },
+] } };
+test('live policy accepts only the two exact approved HTTPS hosts', () => {
+  assertLivePolicy(policy, liveOrigin);
+  assertLivePolicy(policy, 'https://zodiacs.org');
+  for (const origin of ['https://www.zodiacs.org', 'https://unapproved.vercel.app']) {
+    mustReject(`live-host-${new URL(origin).hostname}`, () => assertLivePolicy(policy, origin), /exact approved hosts/,
+      'LIVE_HOSTS.includes(url.hostname)');
+  }
+  mustReject('live-credentials', () => assertLivePolicy(policy, 'https://user:pass@zodiacs.org'), /credentials/,
+    'url.origin must equal the credential-free origin');
+  mustReject('live-missing-active-policy', () => assertLivePolicy({ http_network_policy: { type: 'restricted', egress_rules: [] } }, liveOrigin),
+    /absent/, 'both approved exact hosts must be present in the active policy');
+});
+
+function syntheticBinding() {
+  const bytes = { manifest: Buffer.from('{"file":"synthetic.tgz"}'), archive: Buffer.from('synthetic archive'), openapi: Buffer.from('{}') };
+  const livePin = { ...pin, manifestSha256: sha256(bytes.manifest), http: { sourceCommit: 'synthetic-source' },
+    archive: { bytes: bytes.archive.length, sha256: sha256(bytes.archive) },
+    openapi: { bytes: bytes.openapi.length, sha256: sha256(bytes.openapi) } };
+  const binding = { schema: 'zodiacs.live-parity-binding.v1', origin: liveOrigin,
+    provider: { deployment: { id: 'dpl_6omXmaCaRgp4BXt9ZDBskx84262E', url: new URL(liveOrigin).hostname,
+      sourceCommit: livePin.http.sourceCommit, repository: 'zodiacs-org/site', target: 'production',
+      readyState: 'READY', source: 'git', alias: ['zodiacs.org'] } }, served: {} };
+  for (const [name, path] of [['manifest', '/examples/mcp-server.json'], ['archive', '/examples/synthetic.tgz'], ['openapi', '/api/v1/openapi.json']]) {
+    binding.served[name] = { method: 'GET', url: liveOrigin + path, status: 200, curlExitCode: 0,
+      redirectsFollowed: 0, headersTruncated: false, bodySha256: sha256(bytes[name]), bodyBytes: bytes[name].length };
+  }
+  return { binding, livePin, bytes };
+}
+test('live binding rejects same-version source drift and changed served bytes before compute', () => {
+  const { binding, livePin, bytes } = syntheticBinding();
+  assertLiveBinding(binding, livePin, bytes);
+  const stale = clone(binding); stale.provider.deployment.sourceCommit = 'different-source-same-version';
+  mustReject('live-source-drift', () => assertLiveBinding(stale, livePin, bytes), /source commit binding/,
+    'provider source commit must match the pinned HTTP source, independent of versions');
+  const changed = clone(binding); changed.served.openapi.bodySha256 = '0'.repeat(64);
+  mustReject('live-served-openapi-drift', () => assertLiveBinding(changed, livePin, bytes), /served hash binding/,
+    'served OpenAPI hash must match independently built source bytes');
+  mustReject('live-captured-archive-drift', () => assertLiveBinding(binding, livePin, { ...bytes, archive: Buffer.from('changed') }),
+    /captured bytes binding/, 'captured archive bytes must match the bound hash');
+  const denied = clone(binding); denied.served.archive.status = 403;
+  mustReject('live-metadata-denial', () => assertLiveBinding(denied, livePin, bytes), /metadata status/,
+    'metadata denial rejects binding before compute');
+  const alias = clone(binding); alias.origin = 'https://zodiacs.org';
+  mustReject('live-mutable-origin', () => assertLiveBinding(alias, livePin, bytes), /immutable origin/,
+    'compute uses the approved immutable host bound by provider evidence');
+});
+
+function liveFixture() {
+  const detail = { code: 'invalid-input', pointer: 'instants[0]', message: 'invalid civil date' };
+  return { binding: { origin: liveOrigin }, pin,
+    mcp: { cases: CORPUS.map(row => ({ ...row, value: reply(row) })),
+      refusals: [{ id: 'invalid-civil-date', refusal: { layer: 'tool', message: `${detail.pointer}: ${detail.message}` } }] },
+    validate: () => {}, report: { httpRequests: 0, live: { requests: 0, eventSearches: 0 } }, detail };
+}
+test('live fixed plan makes six sequential attempts, one event search, and recovers after refusal', async () => {
+  const out = await mkdtemp('/tmp/zodiacs-live-plan-control-');
+  try {
+    const fixture = liveFixture(); let calls = 0, active = 0;
+    await runLiveHttp({ ...fixture, out, fetchImpl: async (url, init) => {
+      assert.equal(active++, 0, 'production calls must be sequential');
+      const row = LIVE_PLAN[calls++];
+      assert.equal(url, liveOrigin + `/api/v1/${row.endpoint}`);
+      assert.equal(init.method, 'POST'); assert.equal(init.redirect, 'error');
+      assert.deepEqual(JSON.parse(init.body), row.args);
+      active -= 1;
+      return new Response(JSON.stringify(row.refusal ? { error: fixture.detail } : reply(row, 'http')), { status: row.refusal ? 400 : 200 });
+    } });
+    assert.equal(calls, 6); assert.equal(fixture.report.live.requests, 6);
+    assert.equal(fixture.report.live.eventSearches, 1); assert.equal(fixture.report.live.status, 'pass');
+    assert.equal(fixture.report.cases.at(-1).id, 'invalid-civil-date-recovery');
+  } finally { await rm(out, { recursive: true, force: true }); }
+});
+test('live denial and unexpected errors stop at the first attempt and preserve raw failure', async () => {
+  for (const status of [403, 429, 500, 502, 503]) {
+    const out = await mkdtemp('/tmp/zodiacs-live-stop-control-');
+    try {
+      const fixture = liveFixture(); let calls = 0;
+      await mustRejectAsync(`live-stop-${status}`, () => runLiveHttp({ ...fixture, out,
+        fetchImpl: async () => { calls += 1; return new Response('{"error":{"message":"synthetic denial"}}', { status }); } }),
+      /unexpected.*HTTP|unexpected live HTTP/, 'unexpected status stops the fixed live plan immediately, without retries');
+      assert.equal(calls, 1); assert.equal(fixture.report.live.requests, 1);
+      const saved = JSON.parse(await readFile(join(out, 'http.json'), 'utf8'));
+      assert.equal(saved.length, 1); assert.equal(saved[0].status, status);
+      assert.equal(saved[0].text, '{"error":{"message":"synthetic denial"}}');
+    } finally { await rm(out, { recursive: true, force: true }); }
+  }
+});
+test('sensitive response headers are omitted while raw body evidence remains intact', async () => {
+  const out = await mkdtemp('/tmp/zodiacs-header-privacy-control-');
+  try {
+    const records = [];
+    await captureHttpResponse(CORPUS[0], 'http://synthetic.invalid', records, join(out, 'http.json'),
+      async () => new Response('{}', { headers: { 'set-cookie': 'synthetic-secret', 'x-control': 'retained' } }));
+    const text = await readFile(join(out, 'http.json'), 'utf8');
+    assert(!text.includes('synthetic-secret')); assert(text.includes('retained'));
+    assert.equal(records[0].text, '{}');
+  } finally { await rm(out, { recursive: true, force: true }); }
 });
