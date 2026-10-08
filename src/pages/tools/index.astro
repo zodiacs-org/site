@@ -1,14 +1,27 @@
 ---
 import Base from '../../layouts/Base.astro';
 import ToolGlyph from '../../components/ToolGlyph.astro';
+import ToolEmblem from '../../components/ToolEmblem.astro';
 import AstroTerm from '../../components/AstroTerm.astro';
 import { TOOLS_HUB as tools } from '../../lib/nav-tools';
+
+// The five tools most visitors come for get the large cards; everything else
+// in TOOLS_HUB follows as a grouped list of plain links.
+const featured = [
+  { href: '/birth-chart/', title: 'Birth chart', promise: 'Your sun, moon, rising, planets, and houses, with what each one means. It takes about twenty seconds.', emblem: 'birth', go: 'Get your free birth chart' },
+  { href: '/today/', title: 'Today', promise: 'Today’s sky read against your saved chart.', emblem: 'today', go: 'Open today' },
+  { href: '/compatibility/', title: 'Compatibility', promise: 'Compare two charts, or send someone a link to add theirs.', emblem: 'compat', go: 'Compare charts' },
+  { href: '/horoscopes/', title: 'Horoscopes', promise: 'This month for every sign, written from the real dates.', emblem: 'horoscopes', go: 'Read yours' },
+  { href: '/moon-sign/', title: 'Moon and rising', promise: 'The two signs that matter most after your sun sign.', emblem: 'moonrise', go: 'Find your moon sign', also: { href: '/rising-sign/', label: 'or your rising sign' } },
+] as const;
+const featuredHrefs = new Set<string>(['/birth-chart/', '/today/', '/compatibility/', '/moon-sign/', '/rising-sign/']);
+const rest = tools.filter((tool) => !featuredHrefs.has(tool.href));
 
 const groups = [
   {
     id: 'start',
     eyebrow: 'Start here',
-    title: 'Understand yourself and your relationships',
+    title: 'Charts and people',
     copy: 'These tools explain the basics first and introduce the chart a piece at a time.',
   },
   {
@@ -20,13 +33,13 @@ const groups = [
   {
     id: 'milestones',
     eyebrow: 'For a specific question',
-    title: 'Life moments and annual charts',
+    title: 'Life moments',
     copy: 'Use these when you are looking at a birthday, due date, Saturn return, or personal new year.',
   },
   {
     id: 'numbers',
     eyebrow: 'A different tradition',
-    title: 'Numbers from your name and birth date',
+    title: 'Another tradition',
     copy: 'Numerology is not astrology: it reduces a birth date and a name to numbers and reads them by convention. It sits here because people ask for both.',
   },
 ] as const;
@@ -48,85 +61,187 @@ const jsonLd = [
   imageAlt="Free astrology tools — Zodiacs.org"
   jsonLd={jsonLd}
 >
-  <section class="section container">
-    <div class="section-head">
+  <section class="section container tools-page">
+    <div class="section-head tools-head">
+      <em class="kicker">Free, no signup</em>
       <h1 class="display tools-title">Free astrology tools</h1>
       <p>
-        Find your <AstroTerm term="birth-chart" label="birth chart" surface="tools-index" />, <AstroTerm term="moon-sign" label="moon sign" surface="tools-index" />, <AstroTerm term="rising-sign" label="rising sign" surface="tools-index" />, compatibility, and what
-        the sky is doing now. Start with the question you want answered.
+        Most people start with one of these five: a <AstroTerm term="birth-chart" label="birth chart" surface="tools-index" />, today’s sky, compatibility, a horoscope, or their <AstroTerm term="moon-sign" label="moon sign" surface="tools-index" /> and <AstroTerm term="rising-sign" label="rising sign" surface="tools-index" />.
       </p>
     </div>
 
-    <div class="tool-groups">
-      {groups.map((group) => (
-        <>
-          <section class="tool-group" aria-labelledby={`tools-${group.id}`}>
-            <header class="tool-group__head">
-              <em class="kicker">{group.eyebrow}</em>
-              <h2 id={`tools-${group.id}`}>{group.title}</h2>
-              <p>{group.copy}</p>
-            </header>
-            <div class="tools-grid">
-              {tools.filter((tool) => tool.group === group.id).map((t) => (
-                <a class="shell tinted" href={t.href} style={`--sign:${t.hue}`}>
-                  <div class="core tinted tool-card">
-                    <ToolGlyph kind={t.kind} />
-                    <h3>{t.title}</h3>
-                    <p>{t.promise}</p>
-                    <span class="tool-card__go">Explore {t.title} →</span>
-                  </div>
-                </a>
-              ))}
-            </div>
-          </section>
-          {group.id === 'start' && (
-            <div class="tools-assistant shell tinted" style="--sign:var(--sign-aquarius)">
-              <button
-                class="assistant-tool core tinted"
-                type="button"
-                data-assistant-open
-                data-assistant-locale="en"
-                aria-haspopup="dialog"
-              >
-                <div class="tool-card">
-                  <ToolGlyph kind="assistant" />
-                  <h3>Not sure which tool you need?</h3>
-                  <p>Ask about a term, a tool, or your chart.</p>
-                  <span class="tool-card__go">Ask Guide →</span>
-                </div>
-              </button>
-            </div>
-          )}
-        </>
+    <div class="tools-grid tools-featured">
+      {featured.map((t, i) => (
+        <div class={`featured-card${i === 0 ? ' featured-card--lead' : ''}`}>
+          <a class="featured-card__link" href={t.href}>
+            <ToolEmblem kind={t.emblem} />
+            <h2>{t.title}</h2>
+            <p>{t.promise}</p>
+            <span class={i === 0 ? 'featured-card__cta' : 'featured-card__go'}>{t.go} {i === 0 ? '↗' : '→'}</span>
+          </a>
+          {'also' in t && <a class="featured-card__also" href={t.also.href}>{t.also.label} →</a>}
+        </div>
       ))}
-      </div>
-
-      <p class="tools-privacy"><strong>Private by default.</strong> Birth-chart calculations stay in your browser. <a href="/privacy/">Privacy and method →</a></p>
-
-      <div class="tools-upcoming">
-      <em class="kicker">And for the month ahead</em>
-      <ul>
-        <li>
-          <strong>Horoscopes.</strong> Monthly, for every sign, written against
-          the real dates of the month's sky —{' '}
-          <a href="/horoscopes/">read this month’s</a>.
-        </li>
-        <li>
-          <strong>Mercury retrograde.</strong> The famous one gets its own
-          page, every window through 2027 —{' '}
-          <a href="/mercury-retrograde/">see the dates</a>.
-        </li>
-      </ul>
     </div>
+
+    <section class="tools-more" aria-labelledby="tools-more">
+      <h2 id="tools-more" class="tools-more__title">Everything else</h2>
+      <div class="tools-more__cols">
+        {groups.map((group) => (
+          <section class="tool-group" aria-labelledby={`tools-${group.id}`}>
+            <h3 id={`tools-${group.id}`}>{group.title}</h3>
+            <ul>
+              {rest.filter((tool) => tool.group === group.id).map((t) => (
+                <li>
+                  <a href={t.href} title={t.promise}>
+                    <ToolGlyph kind={t.kind} />
+                    <span>{t.title}</span>
+                  </a>
+                </li>
+              ))}
+              {group.id === 'numbers' && (
+                <li>
+                  <button class="tools-more__ask" type="button" data-assistant-open data-assistant-locale="en" aria-haspopup="dialog">
+                    <ToolGlyph kind="assistant" />
+                    <span>Not sure? Ask Guide</span>
+                  </button>
+                </li>
+              )}
+            </ul>
+          </section>
+        ))}
+      </div>
+    </section>
+
+    <p class="tools-privacy"><strong>Private by default.</strong> Birth-chart calculations stay in your browser. <a href="/privacy/">Privacy and method →</a></p>
   </section>
 </Base>
 
 <style>
+  .tools-page { display: grid; gap: clamp(40px, 6vw, 64px); }
+  .tools-head { display: grid; gap: 10px; max-width: 58ch; }
   .tools-title {
     margin: 0;
-    font-size: var(--text-xl);
-    line-height: 1.1;
+    font-size: var(--text-2xl);
+    line-height: 1.05;
   }
+  .tools-head p { margin: 0; }
+  .tools-featured {
+    display: grid;
+    gap: 14px;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 700px) {
+    .tools-featured { grid-template-columns: repeat(2, 1fr); }
+    .featured-card--lead { grid-column: 1 / -1; }
+  }
+  @media (min-width: 1000px) {
+    .tools-featured { grid-template-columns: 1.35fr 1fr 1fr; grid-template-rows: auto auto; }
+    .featured-card--lead { grid-column: 1; grid-row: span 2; }
+  }
+  .featured-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--hair-2);
+    border-radius: var(--r-lg);
+    background: var(--void-2);
+    transition: border-color var(--dur-1) var(--ease), transform var(--dur-2) var(--ease-soft);
+  }
+  .featured-card:hover { border-color: var(--hair-3); transform: translateY(-2px); }
+  .featured-card__link {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 26px 24px 22px;
+    color: inherit;
+    text-decoration: none;
+    flex: 1;
+  }
+  .featured-card__link:focus-visible { outline: 2px solid var(--ink-1); outline-offset: 3px; border-radius: var(--r-lg); }
+  .featured-card h2 {
+    margin: 8px 0 0;
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: var(--text-xl);
+    letter-spacing: -0.01em;
+    color: var(--text);
+  }
+  .featured-card p { margin: 0; font-size: var(--text-sm); color: var(--text-2); line-height: 1.6; max-width: 40ch; }
+  .featured-card__go { margin-top: auto; padding-top: 6px; font-size: 13px; font-weight: 550; color: var(--text); }
+  .featured-card__also {
+    position: absolute;
+    right: 24px;
+    bottom: 22px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .featured-card--lead {
+    background:
+      radial-gradient(90% 70% at 78% 18%, rgba(182, 212, 228, 0.09), transparent 70%),
+      var(--void-2);
+  }
+  .featured-card--lead .featured-card__link { justify-content: flex-end; padding: 32px 30px 30px; gap: 14px; }
+
+  .featured-card--lead h2 { font-size: var(--text-2xl); }
+  .featured-card :global(.tool-emblem) { --emblem-size: 84px; }
+  .featured-card.featured-card--lead :global(.tool-emblem) { --emblem-size: clamp(180px, 22vw, 280px); margin: 0 auto auto; }
+  .featured-card__cta {
+    align-self: flex-start;
+    margin-top: 8px;
+    padding: 12px 22px;
+    border-radius: var(--r-full);
+    background: var(--ink-0);
+    color: var(--void-0);
+    font-weight: 600;
+    font-size: var(--text-sm);
+  }
+  .tools-more { display: grid; gap: 20px; }
+  .tools-more__title {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: var(--text-xl);
+  }
+  .tools-more__cols {
+    display: grid;
+    gap: 28px;
+    grid-template-columns: 1fr;
+    padding-top: 22px;
+    border-top: 1px solid var(--hair-2);
+  }
+  @media (min-width: 600px) { .tools-more__cols { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1000px) { .tools-more__cols { grid-template-columns: repeat(4, 1fr); } }
+  .tool-group h3 { margin: 0 0 10px; font-size: var(--text-sm); font-weight: 600; color: var(--text-2); }
+  .tool-group ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 2px; }
+  .tool-group a,
+  .tools-more__ask {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 0;
+    color: var(--muted);
+    font: inherit;
+    font-size: var(--text-sm);
+    text-decoration: none;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    text-align: start;
+  }
+  .tool-group a:hover, .tools-more__ask:hover { color: var(--text); }
+  /* In the list the glyph is a small ink line drawing, not a pastel disc. */
+  .tool-group :global(.tool-glyph) {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    background: none;
+    box-shadow: none;
+    color: var(--faint);
+    flex: none;
+  }
+  .tool-group :global(.tool-glyph svg) { width: 18px; height: 18px; }
+  .tool-group a:hover :global(.tool-glyph), .tools-more__ask:hover :global(.tool-glyph) { color: var(--text-2); }
   .tools-privacy {
     margin: 0;
     color: var(--faint);
@@ -135,69 +250,5 @@ const jsonLd = [
   }
   .tools-privacy strong { color: var(--text-2); }
   .tools-privacy a { color: var(--muted); }
-  .tools-grid {
-    display: grid;
-    gap: 14px;
-    grid-template-columns: 1fr;
-  }
-  .tool-groups { display: grid; gap: clamp(42px, 7vw, 72px); }
-  .tool-group { display: grid; gap: 18px; }
-  .tool-group__head { max-width: 58ch; }
-  .tool-group__head h2 { margin: 8px 0 7px; color: var(--text); font-size: var(--text-xl); letter-spacing: -0.02em; }
-  .tool-group__head p { margin: 0; color: var(--muted); font-size: var(--text-sm); line-height: 1.6; }
-  @media (min-width: 700px) { .tools-grid { grid-template-columns: repeat(2, 1fr); } }
-  @media (min-width: 1000px) { .tools-grid { grid-template-columns: repeat(3, 1fr); } }
-  .tools-grid .shell { padding: 0; border-radius: var(--r-lg); }
-  .tools-grid .core { margin: 0; border: 0; box-shadow: none; background: transparent; }
-  .tool-card {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 26px 22px;
-    min-height: 210px;
-  }
-  /* Tool-card icon disc lives in ToolGlyph.astro. */
-  .tool-card h3 {
-    margin: 4px 0 0;
-    font-size: var(--text-lg);
-    font-weight: 620;
-    letter-spacing: -0.02em;
-    color: var(--text);
-  }
-  .tool-card p { margin: 0; font-size: var(--text-sm); color: var(--text-2); line-height: 1.6; }
-  .tool-card__go {
-    margin-top: auto;
-    font-size: 13px;
-    font-weight: 550;
-    color: var(--text);
-  }
-  .assistant-tool {
-    display: block;
-    width: 100%;
-    text-align: start;
-    transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  .tools-assistant { margin-top: -22px; }
-  .tools-assistant .assistant-tool { border: 0; background: transparent; }
-  .tools-assistant .tool-card { min-height: 0; }
-  .assistant-tool:active { transform: scale(0.995); }
-  @media (hover: hover) and (pointer: fine) {
-    .assistant-tool:hover { transform: translateY(-2px); }
-  }
-  .tools-upcoming {
-    margin-top: clamp(28px, 5vw, 44px);
-    padding-top: 24px;
-    border-top: 1px solid var(--hair-1);
-  }
-  .tools-upcoming ul {
-    margin: 12px 0 0;
-    padding: 0;
-    list-style: none;
-    display: grid;
-    gap: 8px;
-  }
-  .tools-upcoming li { font-size: var(--text-sm); color: var(--muted); }
-  .tools-upcoming strong { color: var(--text-2); font-weight: 600; }
-  .tools-upcoming a { color: var(--text); }
-  @media (prefers-reduced-motion: reduce) { .assistant-tool { transition: none; } }
+  @media (prefers-reduced-motion: reduce) { .featured-card { transition: none; } .featured-card:hover { transform: none; } }
 </style>
