@@ -12,8 +12,10 @@ export async function buildChartStudio(check = false) {
     const label = [row[0], cityIndex.admin1[row[2]], cityIndex.countries[row[3]]].filter(Boolean).join(', ');
     return { label, search: `${label} ${row[1] || ''}`.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase(), latitude: String(row[4] / 100), longitude: String(row[5] / 100), zone: cityIndex.tz[row[6]] };
   });
-  const worker = await build({ absWorkingDir: fileURLToPath(root), entryPoints: ['src/ai-tools/studio/window.worker.ts'], bundle: true, write: false, format: 'iife', platform: 'browser', target: 'es2022', minify: true, legalComments: 'inline' });
-  const result = await build({ absWorkingDir: fileURLToPath(root), entryPoints: ['src/ai-tools/studio/app.tsx'], bundle: true, write: false, outdir: 'out', format: 'iife', platform: 'browser', target: 'es2022', minify: true, legalComments: 'inline', jsx: 'automatic', jsxImportSource: 'preact', define: { STUDIO_ICONS: JSON.stringify(icons), STUDIO_CITIES: JSON.stringify(cities), STUDIO_WINDOW_WORKER: JSON.stringify(worker.outputFiles[0].text), 'process.env.NODE_ENV': '"production"', 'import.meta.env.SSR': 'false' } });
+  const bundleWorker = entry => build({ absWorkingDir: fileURLToPath(root), entryPoints: [entry], bundle: true, write: false, format: 'iife', platform: 'browser', target: 'es2022', minify: true, legalComments: 'inline' });
+  const worker = await bundleWorker('src/ai-tools/studio/window.worker.ts');
+  const weekWorker = await bundleWorker('src/ai-tools/studio/week.worker.ts');
+  const result = await build({ absWorkingDir: fileURLToPath(root), entryPoints: ['src/ai-tools/studio/app.tsx'], bundle: true, write: false, outdir: 'out', format: 'iife', platform: 'browser', target: 'es2022', minify: true, legalComments: 'inline', jsx: 'automatic', jsxImportSource: 'preact', define: { STUDIO_ICONS: JSON.stringify(icons), STUDIO_CITIES: JSON.stringify(cities), STUDIO_WINDOW_WORKER: JSON.stringify(worker.outputFiles[0].text), STUDIO_WEEK_WORKER: JSON.stringify(weekWorker.outputFiles[0].text), 'process.env.NODE_ENV': '"production"', 'import.meta.env.SSR': 'false' } });
   const js = result.outputFiles.find(file => file.path.endsWith('.js')).text.replace(/<\/script/gi, '<\\/script');
   let css = result.outputFiles.find(file => file.path.endsWith('.css')).text;
   for (const [family,file] of [['Instrument Sans','instrument-sans-latin-wght-normal.woff2'],['EB Garamond','eb-garamond-latin-400-normal.woff2'],['JetBrains Mono','jetbrains-mono-latin-wght-normal.woff2']]) {

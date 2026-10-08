@@ -10,6 +10,8 @@ import { StudioBridge } from './bridge';
 import { TimeExplorer } from './TimeExplorer';
 import { RecordInspector } from './RecordInspector';
 import { LocalTimeEntry } from './LocalTimeEntry';
+import { chartHeading, EXAMPLE_HEADING } from './heading';
+import { YourWeekSection } from './YourWeek';
 import './style.css';
 
 declare const STUDIO_ICONS: Record<string, string>;
@@ -87,12 +89,13 @@ function App() {
   const changes = comparison ? compareStudio(run, comparison) : [];
   const changed = changes.filter(row => row.currentHouse !== row.comparedHouse).length;
   const dirty = JSON.stringify(draft) !== JSON.stringify(applied);
+  const heading = example ? EXAMPLE_HEADING : chartHeading(applied, run.inputSnapshot.utc);
   const selectedBody = selection?.kind === 'body' ? scene.bodies.find(b => b.body === selection.body) : null;
   const selectedHue = selectedBody ? SIGNS.find(s => s.slug === selectedBody.sign)?.hue : '#B6D4E4';
   const selectedTitle = selection?.kind === 'body' ? selection.body : selection?.kind === 'house' ? `House ${selection.house}` : selection?.kind === 'sign' ? titleCase(selection.sign) : selection?.kind === 'angle' ? ({ asc: 'Ascendant', mc: 'Midheaven', dsc: 'Descendant', ic: 'Imum coeli' }[selection.angle]) : selection?.kind === 'aspect' ? `${selection.a} ${selection.type} ${selection.b}` : 'Select a placement';
   const shareRevision = useRef(0);
   function select(next: EntityRef | null) { shareRevision.current++; setSelection(next); setShareOpen(false); setNotice(''); }
-  function update<K extends keyof StudioInput>(key: K, value: StudioInput[K]) { setDraft(previous => ({ ...previous, local: key === 'houseSystem' ? previous.local : undefined, [key]: value })); setError(''); }
+  function update<K extends keyof StudioInput>(key: K, value: StudioInput[K]) { setDraft(previous => ({ ...previous, local: key === 'houseSystem' ? previous.local : undefined, place: ['latitude', 'longitude', 'timeKnown'].includes(key) ? undefined : previous.place, [key]: value })); setError(''); }
   function apply(input: StudioInput, isExample = false) {
     try {
       const next = calculateStudio(input);
@@ -150,8 +153,8 @@ function App() {
     {workspace === 'time' && <TimeExplorer key={workspaceEpoch} input={applied} run={run} onApply={apply} dirty={dirty} />}
     <div class="workspace">
       <section class="chart-area" aria-label="Chart workspace">
-        <div class="chart-meta"><span>{example ? 'Example chart (not yours)' : 'Your chart'}</span><time dateTime={run.inputSnapshot.utc}>{run.inputSnapshot.utc.replace('T', ' · ').replace(':00.000Z', ' UTC').replace('Z', ' UTC')}</time></div>
-        {applied.local && run.chart.input.timeKnown && <p class="local-origin">From {applied.local.resolution.date} at {applied.local.resolution.time} · {applied.local.resolution.timeZone}. Time-zone assumptions are in the calculation record.</p>}
+        <div class="chart-meta"><span>{example ? 'Example chart (not yours)' : 'Your chart'}</span><time dateTime={heading.dateTime}>{heading.text}</time></div>
+        {applied.local && run.chart.input.timeKnown && <p class="local-origin">Converted from your local clock time. Time-zone details are in the calculation record.</p>}
         <div class="wheel-wrap" ref={wheelRoot}><Wheel bodies={run.chart.bodies} asc={run.chart.angles?.asc} mc={run.chart.angles?.mc} cusps={run.chart.houses?.cusps} aspects={run.chart.aspects} size={520} deferIcons interactive={{ scene, selection, emphasis, onSelect: select, label: 'Select a chart element' }} /></div>
         <div class="chart-caption"><span>Tropical zodiac</span><span>{run.chart.houses ? `${houseName(run.chart.houses.system)} houses` : 'No houses or angles'}</span><span>Engine {run.chart.engineVersion}</span></div>
         {run.chart.flags.includes('polar-fallback') && <p class="callout">Placidus is unavailable at this latitude. The engine used whole-sign houses; the receipt records the fallback.</p>}
@@ -167,6 +170,7 @@ function App() {
         <div class="assistant-action"><button disabled={!selection || sharing} onClick={() => setShareOpen(!shareOpen)} aria-expanded={shareOpen}>Ask about this</button><p>Only the selection you review is shared. Chart positions can reveal personal information.</p>{shareOpen && <div class="share-preview"><h3>Review this selection</h3><p>{selectedTitle}, its computed facts, and the calculation settings shown below.</p><details><summary>See exactly what's shared</summary><pre tabIndex={0}>{context}</pre></details><p>{available ? 'Your assistant provider will receive these facts. Earlier shared selections remain in the conversation.' : 'Open Chart Studio through the connected plugin to share this selection.'}</p><button disabled={!available || sharing} onClick={() => void share()}>{sharing ? 'Sharing…' : 'Share these facts'}</button><button class="quiet" disabled={sharing} onClick={() => setShareOpen(false)}>Cancel</button></div>}<p role="status">{notice}</p></div>
       </aside>
     </div>
+    {!example && workspace === 'chart' && <YourWeekSection run={run} />}
     <section class="records" aria-label="Calculation details"><div class="record-tabs" role="group" aria-label="View calculation details">{(['placements','aspects','receipt'] as const).map(name => <button key={name} aria-pressed={tab === name} onClick={() => setTab(name)}>{titleCase(name)}</button>)}</div>
       {tab === 'placements' && <div class="placement-grid">{scene.bodies.map(b => <button key={b.body} aria-pressed={selection?.kind === 'body' && selection.body === b.body} onClick={() => select({ kind: 'body', body: b.body })}><span>{b.body}</span><strong>{formatLongitude(b.lon)}</strong><small>{b.house ? `House ${b.house}` : 'House unavailable'}{b.retrograde ? ' · retrograde' : ''}</small></button>)}</div>}
       {tab === 'aspects' && <div class="aspect-grid">{scene.aspects.map(a => <button key={entityId({ kind: 'aspect', ...a })} onClick={() => select({ kind: 'aspect', ...a })}><span>{a.a} {a.type} {a.b}</span><small>Orb {a.orb.toFixed(3)}° · {a.applying ? 'applying' : 'separating'}</small></button>)}</div>}
