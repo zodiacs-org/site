@@ -8386,27 +8386,61 @@ function sanitizeProtocolMessage(message) {
 }
 
 // src/ai-tools/quota.ts
-async function reserveAiQuota(kind, env, fetcher = fetch) {
+function serviceRpc(env) {
   const url = env.PUBLIC_SUPABASE_URL;
   const key = env.SUPABASE_SERVICE_ROLE_KEY;
   const scope = env.VERCEL_ENV;
-  if (!url || !/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(url) || !key || key.length < 24 || key.length > 2048 || !["preview", "production"].includes(scope ?? "")) return "unavailable";
+  if (!url || !/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(url) || !key || key.length < 24 || key.length > 2048 || scope !== "preview" && scope !== "production") return void 0;
   const headers = { apikey: key, "Content-Type": "application/json", "Cache-Control": "no-store" };
   if (!key.startsWith("sb_secret_")) headers.Authorization = `Bearer ${key}`;
+  return { url, scope, headers };
+}
+async function reserveAiQuota(kind, env, fetcher = fetch) {
+  const rpc = serviceRpc(env);
+  if (!rpc) return "unavailable";
   try {
-    const response = await fetcher(`${url}/rest/v1/rpc/zodiacs_mcp_quota_reserve_v1`, {
+    const response = await fetcher(`${rpc.url}/rest/v1/rpc/zodiacs_mcp_quota_reserve_v1`, {
       method: "POST",
-      headers,
+      headers: rpc.headers,
       cache: "no-store",
       redirect: "error",
       signal: AbortSignal.timeout(3e3),
-      body: JSON.stringify({ quota_scope: scope, quota_kind: kind })
+      body: JSON.stringify({ quota_scope: rpc.scope, quota_kind: kind })
     });
     if (!response.ok) return "unavailable";
     const result = await response.json();
     return result === true ? "allowed" : result === false ? "limited" : "unavailable";
   } catch {
     return "unavailable";
+  }
+}
+
+// src/ai-tools/usage.ts
+var USAGE_HOSTS = ["chatgpt", "claude", "other"];
+var USAGE_TIMEOUT_MS = 1500;
+function usageHostFamily(userAgent) {
+  if (typeof userAgent !== "string") return "other";
+  if (/openai|chatgpt/i.test(userAgent)) return "chatgpt";
+  if (/claude|anthropic/i.test(userAgent)) return "claude";
+  return "other";
+}
+async function countAiToolCall(tool, host, env, fetcher = fetch) {
+  const rpc = serviceRpc(env);
+  if (!rpc || !AI_TOOL_NAMES.includes(tool) || !USAGE_HOSTS.includes(host)) return false;
+  try {
+    const response = await fetcher(`${rpc.url}/rest/v1/rpc/zodiacs_mcp_usage_count_v1`, {
+      method: "POST",
+      headers: rpc.headers,
+      cache: "no-store",
+      redirect: "error",
+      signal: AbortSignal.timeout(USAGE_TIMEOUT_MS),
+      body: JSON.stringify({ usage_scope: rpc.scope, usage_tool: tool, usage_host: host })
+    });
+    await response.body?.cancel().catch(() => {
+    });
+    return response.ok;
+  } catch {
+    return false;
   }
 }
 
@@ -8420,6 +8454,14 @@ var REFUSALS = {
   disabled: "Zodiacs is not available right now. Try again later.",
   "payload-too-large": "That request is too large for Zodiacs."
 };
+function countAfterReply(options, env, tool, userAgent) {
+  try {
+    const count = options.countUsage ?? ((name, host) => countAiToolCall(name, host, env));
+    const settled = Promise.resolve(count(tool, usageHostFamily(userAgent))).then(() => void 0, () => void 0);
+    options.waitUntil?.(settled);
+  } catch {
+  }
+}
 function send(res, status, code, retry) {
   res.statusCode = status;
   for (const [key, value] of Object.entries(SECURITY_HEADERS)) res.setHeader(key, value);
@@ -8542,9 +8584,11 @@ function createAiNodeHandler(options = {}) {
       }
       if (!body2 || typeof body2 !== "object" || Array.isArray(body2)) return send(res, 400, "invalid-json-rpc");
       const message = body2;
+      let calledTool;
       if (message.method === "tools/call" && message.params && typeof message.params === "object") {
         const name = message.params.name;
         if (AI_TOOL_NAMES.includes(String(name))) operation = String(name);
+        if (typeof name === "string" && name === operation) calledTool = name;
       }
       const watchMethod = ["events/list", "events/subscribe", "events/unsubscribe"].includes(String(message.method));
       if (watch && watchMethod && req.headers?.["mcp-protocol-version"] !== "2026-07-28") return send(res, 400, "event-protocol-required");
@@ -8595,6 +8639,7 @@ function createAiNodeHandler(options = {}) {
         if (!res.headersSent) send(res, 500, "protocol-failed");
         else res.end();
       } finally {
+        if (calledTool) countAfterReply(options, env, calledTool, req.headers?.["user-agent"]);
         await sdk.close().catch(() => {
         });
       }
