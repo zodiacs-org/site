@@ -282,7 +282,11 @@ export async function resolveLink(link: { input: ShareChartInput; label: string 
     timeKnown: input.timeKnown,
     flags: resolved.flags,
   });
-  return personFromChart(result, link.label, input.timeKnown, resolved.utc, input.date);
+  return {
+    ...personFromChart(result, link.label, input.timeKnown),
+    computedUtc: resolved.utc,
+    ...(input.timeKnown ? { utc: resolved.utc } : { untimedDate: input.date }),
+  };
 }
 
 export async function resolveForm(slot: SlotState, fallbackLabel: string, loadEngine: EngineLoader): Promise<Person> {
@@ -302,13 +306,15 @@ export async function resolveForm(slot: SlotState, fallbackLabel: string, loadEn
     flags: resolved.flags,
   });
   return {
-    ...personFromChart(result, slot.name.trim() || fallbackLabel, timeKnown, resolved.utc, slot.date),
+    ...personFromChart(result, slot.name.trim() || fallbackLabel, timeKnown),
+    computedUtc: resolved.utc,
+    ...(timeKnown ? { utc: resolved.utc } : { untimedDate: slot.date }),
     oldStyle: slot.oldStyle,
   };
 }
 
 /** Shared projection for entered details and birth-input links. */
-function personFromChart(result: Chart, label: string, timeKnown: boolean, utc: Date, date: string): Person {
+function personFromChart(result: Chart, label: string, timeKnown: boolean): Person {
   return {
     label,
     bodies: result.bodies.map(({ body, lon }) => ({ body, lon })),
@@ -326,8 +332,6 @@ function personFromChart(result: Chart, label: string, timeKnown: boolean, utc: 
       houseSystem: result.input.houseSystem,
       engineVersion: result.engineVersion,
     },
-    computedUtc: utc,
-    ...(timeKnown ? { utc } : { untimedDate: date }),
   };
 }
 
