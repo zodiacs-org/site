@@ -1,0 +1,82 @@
+[
+  {
+    "check": "clean-mcp-final",
+    "exit": 0,
+    "seconds": 1.513
+  },
+  {
+    "check": "registry-hub",
+    "exit": 0,
+    "seconds": 0.282
+  },
+  {
+    "check": "time-basis",
+    "exit": 0,
+    "seconds": 14.285
+  },
+  {
+    "check": "build-app",
+    "exit": 0,
+    "seconds": 1.366
+  },
+  {
+    "check": "build-registry-token-chart",
+    "exit": 0,
+    "seconds": 0.126
+  },
+  {
+    "check": "build-sign-pages",
+    "exit": 0,
+    "seconds": 0.288
+  },
+  {
+    "check": "build-archive",
+    "exit": 0,
+    "seconds": 0.102
+  },
+  {
+    "check": "build-shelf",
+    "exit": 0,
+    "seconds": 0.258
+  },
+  {
+    "check": "build-trade",
+    "exit": 0,
+    "seconds": 0.111
+  },
+  {
+    "check": "build-exchange",
+    "exit": 0,
+    "seconds": 0.123
+  },
+  {
+    "check": "configure-registry-exchange",
+    "exit": 0,
+    "seconds": 0.084
+  },
+  {
+    "check": "build-precision-preview",
+    "exit": 0,
+    "seconds": 0.148
+  },
+  {
+    "check": "legacy-public-drift",
+    "exit": 0,
+    "seconds": 0.149
+  },
+  {
+    "check": "reference-python311-repeat",
+    "exit": 0,
+    "seconds": 6.526
+  },
+  {
+    "check": "reference-drift",
+    "exit": 0,
+    "seconds": 0.04
+  },
+  {
+    "check": "protected-scope",
+    "exit": 0,
+    "seconds": 0.22
+  }
+]

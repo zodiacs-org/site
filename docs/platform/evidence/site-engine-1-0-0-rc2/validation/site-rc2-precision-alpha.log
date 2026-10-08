@@ -1,0 +1,2553 @@
+
+> @zodiacs/precision-alpha@0.1.0-preview.1 test
+> node --test "test/tier-a/*.nodetest.mjs"
+
+TAP version 13
+# Subtest: AB-R1: with the observer at rest the aberrated enclosure IS the light-time one
+ok 1 - AB-R1: with the observer at rest the aberrated enclosure IS the light-time one
+  ---
+  duration_ms: 2.25713
+  type: 'test'
+  ...
+# Subtest: AB-R2: with the observer at rest the SEARCH returns the light-time mode exactly
+ok 2 - AB-R2: with the observer at rest the SEARCH returns the light-time mode exactly
+  ---
+  duration_ms: 152.578222
+  type: 'test'
+  ...
+# Subtest: AB-L: the three rungs differ by the corrections they name, and nothing else
+ok 3 - AB-L: the three rungs differ by the corrections they name, and nothing else
+  ---
+  duration_ms: 224.599526
+  type: 'test'
+  ...
+# Subtest: AB-F1 L=83: a genuine crossing, isolated and bracketed
+ok 4 - AB-F1 L=83: a genuine crossing, isolated and bracketed
+  ---
+  duration_ms: 61.96581
+  type: 'test'
+  ...
+# Subtest: AB-F1 L=85: a genuine crossing, isolated and bracketed
+ok 5 - AB-F1 L=85: a genuine crossing, isolated and bracketed
+  ---
+  duration_ms: 59.585931
+  type: 'test'
+  ...
+# Subtest: AB-F1 L=87: a genuine crossing, isolated and bracketed
+ok 6 - AB-F1 L=87: a genuine crossing, isolated and bracketed
+  ---
+  duration_ms: 55.224144
+  type: 'test'
+  ...
+# Subtest: AB-F1 L=89: a genuine crossing, isolated and bracketed
+ok 7 - AB-F1 L=89: a genuine crossing, isolated and bracketed
+  ---
+  duration_ms: 55.456879
+  type: 'test'
+  ...
+# Subtest: AB-F1 L=91: a genuine crossing, isolated and bracketed
+ok 8 - AB-F1 L=91: a genuine crossing, isolated and bracketed
+  ---
+  duration_ms: 63.807059
+  type: 'test'
+  ...
+# Subtest: AB-F1 L=93: a genuine crossing, isolated and bracketed
+ok 9 - AB-F1 L=93: a genuine crossing, isolated and bracketed
+  ---
+  duration_ms: 71.766106
+  type: 'test'
+  ...
+# Subtest: AB-F1 L=95: a genuine crossing, isolated and bracketed
+ok 10 - AB-F1 L=95: a genuine crossing, isolated and bracketed
+  ---
+  duration_ms: 59.744809
+  type: 'test'
+  ...
+# Subtest: AB-F1 L=97: a genuine crossing, isolated and bracketed
+ok 11 - AB-F1 L=97: a genuine crossing, isolated and bracketed
+  ---
+  duration_ms: 78.90823
+  type: 'test'
+  ...
+# Subtest: AB-F2 L=99: no crossing, and the emptiness is established
+ok 12 - AB-F2 L=99: no crossing, and the emptiness is established
+  ---
+  duration_ms: 119.31345
+  type: 'test'
+  ...
+# Subtest: AB-F2 L=100: no crossing, and the emptiness is established
+ok 13 - AB-F2 L=100: no crossing, and the emptiness is established
+  ---
+  duration_ms: 65.237925
+  type: 'test'
+  ...
+# Subtest: AB-F2 L=180: no crossing, and the emptiness is established
+ok 14 - AB-F2 L=180: no crossing, and the emptiness is established
+  ---
+  duration_ms: 66.900107
+  type: 'test'
+  ...
+# Subtest: AB-F2 L=270: no crossing, and the emptiness is established
+ok 15 - AB-F2 L=270: no crossing, and the emptiness is established
+  ---
+  duration_ms: 51.024278
+  type: 'test'
+  ...
+# Subtest: AB-F3 L=10: three crossings of a lapping companion, all found
+ok 16 - AB-F3 L=10: three crossings of a lapping companion, all found
+  ---
+  duration_ms: 184.804466
+  type: 'test'
+  ...
+# Subtest: AB-F3 L=90: three crossings of a lapping companion, all found
+ok 17 - AB-F3 L=90: three crossings of a lapping companion, all found
+  ---
+  duration_ms: 185.341736
+  type: 'test'
+  ...
+# Subtest: AB-F3 L=200: three crossings of a lapping companion, all found
+ok 18 - AB-F3 L=200: three crossings of a lapping companion, all found
+  ---
+  duration_ms: 182.595868
+  type: 'test'
+  ...
+# Subtest: AB-F3 L=300: three crossings of a lapping companion, all found
+ok 19 - AB-F3 L=300: three crossings of a lapping companion, all found
+  ---
+  duration_ms: 138.485176
+  type: 'test'
+  ...
+# Subtest: AB-F4 L=91: adjacent half-open windows report a root exactly once
+ok 20 - AB-F4 L=91: adjacent half-open windows report a root exactly once
+  ---
+  duration_ms: 193.571991
+  type: 'test'
+  ...
+# Subtest: AB-F4 L=89: adjacent half-open windows report a root exactly once
+ok 21 - AB-F4 L=89: adjacent half-open windows report a root exactly once
+  ---
+  duration_ms: 167.675639
+  type: 'test'
+  ...
+# Subtest: AB-F5 L=97.959881: a close pair either side of the retrograde turn
+ok 22 - AB-F5 L=97.959881: a close pair either side of the retrograde turn
+  ---
+  duration_ms: 204.065978
+  type: 'test'
+  ...
+# Subtest: AB-F5 L=97.899881: a close pair either side of the retrograde turn
+ok 23 - AB-F5 L=97.899881: a close pair either side of the retrograde turn
+  ---
+  duration_ms: 151.823431
+  type: 'test'
+  ...
+# Subtest: AB-F6 maximum: at the retrograde turn the answer is honest about its own width
+ok 24 - AB-F6 maximum: at the retrograde turn the answer is honest about its own width
+  ---
+  duration_ms: 423.02355
+  type: 'test'
+  ...
+# Subtest: AB-F6 minimum: at the retrograde turn the answer is honest about its own width
+ok 25 - AB-F6 minimum: at the retrograde turn the answer is honest about its own width
+  ---
+  duration_ms: 461.542454
+  type: 'test'
+  ...
+# Subtest: AB-F7a: an observer above c is refused by name, and not subdivided into the budget
+ok 26 - AB-F7a: an observer above c is refused by name, and not subdivided into the budget
+  ---
+  duration_ms: 13.665136
+  type: 'test'
+  ...
+# Subtest: AB-F7b: an observer far below c but far above anything physical still works
+ok 27 - AB-F7b: an observer far below c but far above anything physical still works
+  ---
+  duration_ms: 25.167646
+  type: 'test'
+  ...
+# Subtest: AB-F7c: a target above c is refused, and says it is the light-time that fails
+ok 28 - AB-F7c: a target above c is refused, and says it is the light-time that fails
+  ---
+  duration_ms: 8.170904
+  type: 'test'
+  ...
+# Subtest: AB-F7d: a target passing through the observer is refused locally, not globally
+ok 29 - AB-F7d: a target passing through the observer is refused locally, not globally
+  ---
+  duration_ms: 12.745559
+  type: 'test'
+  ...
+# Subtest: AB-F7e: a reception window past the target's records is refused, not raised
+ok 30 - AB-F7e: a reception window past the target's records is refused, not raised
+  ---
+  duration_ms: 9.615366
+  type: 'test'
+  ...
+# Subtest: AB-G1: an exhausted evaluation budget reports it and never an exact total
+ok 31 - AB-G1: an exhausted evaluation budget reports it and never an exact total
+  ---
+  duration_ms: 4.121009
+  type: 'test'
+  ...
+# Subtest: AB-G2: an exhausted cell budget reports it too
+ok 32 - AB-G2: an exhausted cell budget reports it too
+  ---
+  duration_ms: 1.753784
+  type: 'test'
+  ...
+# Subtest: AB-G3: cancellation is honoured at every stage, and never fakes a result
+ok 33 - AB-G3: cancellation is honoured at every stage, and never fakes a result
+  ---
+  duration_ms: 29.27624
+  type: 'test'
+  ...
+# Subtest: AB-G4: an unknown tuning option is refused rather than ignored
+ok 34 - AB-G4: an unknown tuning option is refused rather than ignored
+  ---
+  duration_ms: 1.724699
+  type: 'test'
+  ...
+# Subtest: AB-E1: velocity parallel and antiparallel to the direction leaves it alone
+ok 35 - AB-E1: velocity parallel and antiparallel to the direction leaves it alone
+  ---
+  duration_ms: 0.420144
+  type: 'test'
+  ...
+# Subtest: AB-E2: a transverse velocity tilts the enclosure by the closed-form angle
+ok 36 - AB-E2: a transverse velocity tilts the enclosure by the closed-form angle
+  ---
+  duration_ms: 0.24118
+  type: 'test'
+  ...
+# Subtest: AB-E3: an observer velocity that CHANGES across the interval is carried, not sampled
+ok 37 - AB-E3: an observer velocity that CHANGES across the interval is carried, not sampled
+  ---
+  duration_ms: 0.218325
+  type: 'test'
+  ...
+# Subtest: AB-E4: the subluminal domain is enforced at the enclosure, both sides of the edge
+ok 38 - AB-E4: the subluminal domain is enforced at the enclosure, both sides of the edge
+  ---
+  duration_ms: 0.277548
+  type: 'test'
+  ...
+# Subtest: AB-E5: a zero-length direction is refused rather than normalised
+ok 39 - AB-E5: a zero-length direction is refused rather than normalised
+  ---
+  duration_ms: 0.241055
+  type: 'test'
+  ...
+# Subtest: AB-E6: emission crossing coefficient-record boundaries is walked, not clamped
+ok 40 - AB-E6: emission crossing coefficient-record boundaries is walked, not clamped
+  ---
+  duration_ms: 255.004661
+  type: 'test'
+  ...
+# Subtest: AB-E7: many turns inside one seed cell are all found, not aliased away
+ok 41 - AB-E7: many turns inside one seed cell are all found, not aliased away
+  ---
+  duration_ms: 1110.041349
+  type: 'test'
+  ...
+# Subtest: AB-E8: catastrophic cancellation does not widen the enclosure to the cancelled terms
+ok 42 - AB-E8: catastrophic cancellation does not widen the enclosure to the cancelled terms
+  ---
+  duration_ms: 2.134136
+  type: 'test'
+  ...
+# Subtest: AB-E8b: the correction's own cancelling term cancels exactly
+ok 43 - AB-E8b: the correction's own cancelling term cancels exactly
+  ---
+  duration_ms: 0.918468
+  type: 'test'
+  ...
+# Subtest: AB-E9: the exclusion lever arm reaches the whole cell in the aberrated mode too
+ok 44 - AB-E9: the exclusion lever arm reaches the whole cell in the aberrated mode too
+  ---
+  duration_ms: 12.693209
+  type: 'test'
+  ...
+# Subtest: AB-F7f: a cell the OBSERVER has no records for is refused, not raised
+ok 45 - AB-F7f: a cell the OBSERVER has no records for is refused, not raised
+  ---
+  duration_ms: 96.705396
+  type: 'test'
+  ...
+# Subtest: AB-DIR: the reported direction is the LONGITUDE's, in all three modes
+ok 46 - AB-DIR: the reported direction is the LONGITUDE's, in all three modes
+  ---
+  duration_ms: 295.738672
+  type: 'test'
+  ...
+# Subtest: AB-Z: section 6 of the preregistration was actually covered
+ok 47 - AB-Z: section 6 of the preregistration was actually covered
+  ---
+  duration_ms: 0.850287
+  type: 'test'
+  ...
+# Subtest: A1: a stationary observer does not move the direction
+ok 48 - A1: a stationary observer does not move the direction
+  ---
+  duration_ms: 6.917643
+  type: 'test'
+  ...
+# Subtest: A2: velocity parallel or antiparallel to the direction changes nothing at all
+ok 49 - A2: velocity parallel or antiparallel to the direction changes nothing at all
+  ---
+  duration_ms: 0.911348
+  type: 'test'
+  ...
+# Subtest: A3: transverse velocity turns the direction by exactly atan(gamma beta)
+ok 50 - A3: transverse velocity turns the direction by exactly atan(gamma beta)
+  ---
+  duration_ms: 1.369229
+  type: 'test'
+  ...
+# Subtest: A4: at Earth-like speed the transverse turn is the familiar ~20.5 arcsec
+ok 51 - A4: at Earth-like speed the transverse turn is the familiar ~20.5 arcsec
+  ---
+  duration_ms: 0.272161
+  type: 'test'
+  ...
+# Subtest: A5: the result is a unit vector for every admitted input
+ok 52 - A5: the result is a unit vector for every admitted input
+  ---
+  duration_ms: 23.563817
+  type: 'test'
+  ...
+# Subtest: A6: the domain is enforced, not assumed
+ok 53 - A6: the domain is enforced, not assumed
+  ---
+  duration_ms: 2.465145
+  type: 'test'
+  ...
+# Subtest: A7: the gravitational-potential term is optional, bounded, and matches ERFA's stated size
+ok 54 - A7: the gravitational-potential term is optional, bounded, and matches ERFA's stated size
+  ---
+  duration_ms: 2.228062
+  type: 'test'
+  ...
+# Subtest: A8: this module and reduce.mjs compute the same transformation, bit for bit
+ok 55 - A8: this module and reduce.mjs compute the same transformation, bit for bit
+  ---
+  duration_ms: 29.922862
+  type: 'test'
+  ...
+# Subtest: 96 turns across the 96 default sampling intervals
+ok 56 - 96 turns across the 96 default sampling intervals
+  ---
+  duration_ms: 116.49903
+  type: 'test'
+  ...
+# Subtest: 48 turns: every other sample aliases
+ok 57 - 48 turns: every other sample aliases
+  ---
+  duration_ms: 135.900466
+  type: 'test'
+  ...
+# Subtest: 192 turns: two turns per sampling interval
+ok 58 - 192 turns: two turns per sampling interval
+  ---
+  duration_ms: 163.470134
+  type: 'test'
+  ...
+# Subtest: 95 turns: off by one from the aliasing grid
+ok 59 - 95 turns: off by one from the aliasing grid
+  ---
+  duration_ms: 99.682045
+  type: 'test'
+  ...
+# Subtest: 3 turns: the easy case still works
+ok 60 - 3 turns: the easy case still works
+  ---
+  duration_ms: 84.369489
+  type: 'test'
+  ...
+# Subtest: 96 oscillations, sampled endpoints identical
+ok 61 - 96 oscillations, sampled endpoints identical
+  ---
+  duration_ms: 189.515053
+  type: 'test'
+  ...
+# Subtest: 96 oscillations, target off centre
+ok 62 - 96 oscillations, target off centre
+  ---
+  duration_ms: 161.057985
+  type: 'test'
+  ...
+# Subtest: an oscillation that never reaches the target
+ok 63 - an oscillation that never reaches the target
+  ---
+  duration_ms: 7.876262
+  type: 'test'
+  ...
+# Subtest: two crossings a tenth of a day apart
+ok 64 - two crossings a tenth of a day apart
+  ---
+  duration_ms: 127.406868
+  type: 'test'
+  ...
+# Subtest: two crossings two days apart
+ok 65 - two crossings two days apart
+  ---
+  duration_ms: 100.325558
+  type: 'test'
+  ...
+# Subtest: a parabola whose vertex misses the level but whose sweep does not
+ok 66 - a parabola whose vertex misses the level but whose sweep does not
+  ---
+  duration_ms: 91.854654
+  type: 'test'
+  ...
+# Subtest: an exact tangency is never certified, and never invents a crossing
+ok 67 - an exact tangency is never certified, and never invents a crossing
+  ---
+  duration_ms: 3.768225
+  type: 'test'
+  ...
+# Subtest: a root exactly at the left boundary is reported, and said to be at the edge
+ok 68 - a root exactly at the left boundary is reported, and said to be at the edge
+  ---
+  duration_ms: 1.683006
+  type: 'test'
+  ...
+# Subtest: a root exactly at the right boundary is reported
+ok 69 - a root exactly at the right boundary is reported
+  ---
+  duration_ms: 1.096351
+  type: 'test'
+  ...
+# Subtest: a target the angle passes 10 times, so 10 antipode splits
+ok 70 - a target the angle passes 10 times, so 10 antipode splits
+  ---
+  duration_ms: 116.735946
+  type: 'test'
+  ...
+# Subtest: an interval with no roots reports none, and does not claim to have proved it
+ok 71 - an interval with no roots reports none, and does not claim to have proved it
+  ---
+  duration_ms: 0.763303
+  type: 'test'
+  ...
+# Subtest: the implied-travel diagnostic is reported, and is not called a bound
+ok 72 - the implied-travel diagnostic is reported, and is not called a bound
+  ---
+  duration_ms: 16.425423
+  type: 'test'
+  ...
+# Subtest: a rate past the declared ceiling is refused, not answered
+ok 73 - a rate past the declared ceiling is refused, not answered
+  ---
+  duration_ms: 4.451362
+  type: 'test'
+  ...
+# Subtest: a step too long for the declared rate is refused up front
+ok 74 - a step too long for the declared rate is refused up front
+  ---
+  duration_ms: 0.955206
+  type: 'test'
+  ...
+# Subtest: the rate ceiling is carried as an unverified assumption, and says why
+ok 75 - the rate ceiling is carried as an unverified assumption, and says why
+  ---
+  duration_ms: 1.66857
+  type: 'test'
+  ...
+# Subtest: the good fixture is accepted, so every refusal below is about the edit
+ok 76 - the good fixture is accepted, so every refusal below is about the edit
+  ---
+  duration_ms: 6.473338
+  type: 'test'
+  ...
+# Subtest: B1 magic: a file that is not a pack is refused before anything is read
+ok 77 - B1 magic: a file that is not a pack is refused before anything is read
+  ---
+  duration_ms: 0.767201
+  type: 'test'
+  ...
+# Subtest: B1 version: a v1 pack is refused by name, because its digest misses the header
+ok 78 - B1 version: a v1 pack is refused by name, because its digest misses the header
+  ---
+  duration_ms: 0.671863
+  type: 'test'
+  ...
+# Subtest: B1 header cap: a declared header larger than the cap is refused, not allocated
+ok 79 - B1 header cap: a declared header larger than the cap is refused, not allocated
+  ---
+  duration_ms: 0.683838
+  type: 'test'
+  ...
+# Subtest: B1 header cap: a zero-length header is refused
+ok 80 - B1 header cap: a zero-length header is refused
+  ---
+  duration_ms: 3.422117
+  type: 'test'
+  ...
+# Subtest: B1 header longer than the file is refused
+ok 81 - B1 header longer than the file is refused
+  ---
+  duration_ms: 2.9445
+  type: 'test'
+  ...
+# Subtest: B1 size cap: an oversized artifact is refused on its length alone, unread
+ok 82 - B1 size cap: an oversized artifact is refused on its length alone, unread
+  ---
+  duration_ms: 9.364179
+  type: 'test'
+  ...
+# Subtest: B1 a file too short to be a pack is refused
+ok 83 - B1 a file too short to be a pack is refused
+  ---
+  duration_ms: 0.566864
+  type: 'test'
+  ...
+# Subtest: B2 ncoef is a float is refused
+ok 84 - B2 ncoef is a float is refused
+  ---
+  duration_ms: 1.718745
+  type: 'test'
+  ...
+# Subtest: B2 ncoef is negative is refused
+ok 85 - B2 ncoef is negative is refused
+  ---
+  duration_ms: 1.175715
+  type: 'test'
+  ...
+# Subtest: B2 ncoef is past the cap is refused
+ok 86 - B2 ncoef is past the cap is refused
+  ---
+  duration_ms: 0.960807
+  type: 'test'
+  ...
+# Subtest: B2 ncoef is 1 is refused
+ok 87 - B2 ncoef is 1 is refused
+  ---
+  duration_ms: 0.646583
+  type: 'test'
+  ...
+# Subtest: B2 nrec is zero is refused
+ok 88 - B2 nrec is zero is refused
+  ---
+  duration_ms: 0.956294
+  type: 'test'
+  ...
+# Subtest: B2 nrec claims twenty million is refused
+ok 89 - B2 nrec claims twenty million is refused
+  ---
+  duration_ms: 0.584567
+  type: 'test'
+  ...
+# Subtest: B2 nrec is not an integer is refused
+ok 90 - B2 nrec is not an integer is refused
+  ---
+  duration_ms: 2.58342
+  type: 'test'
+  ...
+# Subtest: B2 offset is negative is refused
+ok 91 - B2 offset is negative is refused
+  ---
+  duration_ms: 0.475722
+  type: 'test'
+  ...
+# Subtest: B2 offset is NaN is refused
+ok 92 - B2 offset is NaN is refused
+  ---
+  duration_ms: 1.648585
+  type: 'test'
+  ...
+# Subtest: B2 initEt is not finite is refused
+ok 93 - B2 initEt is not finite is refused
+  ---
+  duration_ms: 0.475963
+  type: 'test'
+  ...
+# Subtest: B2 intervalSec is zero is refused
+ok 94 - B2 intervalSec is zero is refused
+  ---
+  duration_ms: 0.683743
+  type: 'test'
+  ...
+# Subtest: B2 intervalSec is negative is refused
+ok 95 - B2 intervalSec is negative is refused
+  ---
+  duration_ms: 0.464164
+  type: 'test'
+  ...
+# Subtest: B2 intervalSec is absurd is refused
+ok 96 - B2 intervalSec is absurd is refused
+  ---
+  duration_ms: 0.487989
+  type: 'test'
+  ...
+# Subtest: B2 stride is zero is refused
+ok 97 - B2 stride is zero is refused
+  ---
+  duration_ms: 0.427753
+  type: 'test'
+  ...
+# Subtest: B2 stride is a float is refused
+ok 98 - B2 stride is a float is refused
+  ---
+  duration_ms: 5.563919
+  type: 'test'
+  ...
+# Subtest: B2 the extent would overflow exact integers is refused
+ok 99 - B2 the extent would overflow exact integers is refused
+  ---
+  duration_ms: 2.578069
+  type: 'test'
+  ...
+# Subtest: B2 payloadEndOffset is not an integer is refused
+ok 100 - B2 payloadEndOffset is not an integer is refused
+  ---
+  duration_ms: 0.505683
+  type: 'test'
+  ...
+# Subtest: B2 payloadEndOffset is negative is refused
+ok 101 - B2 payloadEndOffset is negative is refused
+  ---
+  duration_ms: 16.312039
+  type: 'test'
+  ...
+# Subtest: B2 the overflow guard is what catches the huge extent, and nothing is allocated
+ok 102 - B2 the overflow guard is what catches the huge extent, and nothing is allocated
+  ---
+  duration_ms: 3.552338
+  type: 'test'
+  ...
+# Subtest: B3 a body whose records run past the payload is refused
+ok 103 - B3 a body whose records run past the payload is refused
+  ---
+  duration_ms: 0.285618
+  type: 'test'
+  ...
+# Subtest: B3 a body starting before the payload is refused
+ok 104 - B3 a body starting before the payload is refused
+  ---
+  duration_ms: 2.71073
+  type: 'test'
+  ...
+# Subtest: B3 overlapping bodies are refused
+ok 105 - B3 overlapping bodies are refused
+  ---
+  duration_ms: 0.99795
+  type: 'test'
+  ...
+# Subtest: B3 a field that runs past its own stride is refused
+ok 106 - B3 a field that runs past its own stride is refused
+  ---
+  duration_ms: 2.370038
+  type: 'test'
+  ...
+# Subtest: B3 an unsupported field width is refused
+ok 107 - B3 an unsupported field width is refused
+  ---
+  duration_ms: 0.558308
+  type: 'test'
+  ...
+# Subtest: B3 a widths array of the wrong length is refused
+ok 108 - B3 a widths array of the wrong length is refused
+  ---
+  duration_ms: 1.902328
+  type: 'test'
+  ...
+# Subtest: B3 the mid-point table may not run into the records
+ok 109 - B3 the mid-point table may not run into the records
+  ---
+  duration_ms: 1.024592
+  type: 'test'
+  ...
+# Subtest: B3 trailing data is counted and reported, not ignored
+ok 110 - B3 trailing data is counted and reported, not ignored
+  ---
+  duration_ms: 0.459076
+  type: 'test'
+  ...
+# Subtest: B3 a payload that claims more bytes than precede the trailer is refused
+ok 111 - B3 a payload that claims more bytes than precede the trailer is refused
+  ---
+  duration_ms: 0.896715
+  type: 'test'
+  ...
+# Subtest: B4 an implausible EMRAT is refused, because it would displace the observer
+ok 112 - B4 an implausible EMRAT is refused, because it would displace the observer
+  ---
+  duration_ms: 0.935703
+  type: 'test'
+  ...
+# Subtest: B4 a derived body depending on a body the pack lacks is refused
+ok 113 - B4 a derived body depending on a body the pack lacks is refused
+  ---
+  duration_ms: 0.701259
+  type: 'test'
+  ...
+# Subtest: B4 coverage must be monotonic and finite
+ok 114 - B4 coverage must be monotonic and finite
+  ---
+  duration_ms: 6.313465
+  type: 'test'
+  ...
+# Subtest: B4 a body that does not span the coverage it is listed under is refused
+ok 115 - B4 a body that does not span the coverage it is listed under is refused
+  ---
+  duration_ms: 0.583306
+  type: 'test'
+  ...
+# Subtest: B4 duplicate body names are refused
+ok 116 - B4 duplicate body names are refused
+  ---
+  duration_ms: 1.245952
+  type: 'test'
+  ...
+# Subtest: B4 an unusable body name is refused
+ok 117 - B4 an unusable body name is refused
+  ---
+  duration_ms: 2.182906
+  type: 'test'
+  ...
+# Subtest: B4 an unsupported frame or encoding is refused
+ok 118 - B4 an unsupported frame or encoding is refused
+  ---
+  duration_ms: 0.965167
+  type: 'test'
+  ...
+# Subtest: B4 a non-positive quantum is refused
+ok 119 - B4 a non-positive quantum is refused
+  ---
+  duration_ms: 0.793328
+  type: 'test'
+  ...
+# Subtest: B4 a header that is not valid JSON is refused
+ok 120 - B4 a header that is not valid JSON is refused
+  ---
+  duration_ms: 0.723576
+  type: 'test'
+  ...
+# Subtest: B4 a header that is valid JSON but not an object is refused
+ok 121 - B4 a header that is valid JSON but not an object is refused
+  ---
+  duration_ms: 0.909423
+  type: 'test'
+  ...
+# Subtest: B4 a header declaring no bodies is refused
+ok 122 - B4 a header declaring no bodies is refused
+  ---
+  duration_ms: 0.801496
+  type: 'test'
+  ...
+# Subtest: B5 a payload bit flip fails verification
+ok 123 - B5 a payload bit flip fails verification
+  ---
+  duration_ms: 77.224677
+  type: 'test'
+  ...
+# Subtest: B5 a HEADER edit fails verification, which is the whole reason for v2
+ok 124 - B5 a HEADER edit fails verification, which is the whole reason for v2
+  ---
+  duration_ms: 15.118987
+  type: 'test'
+  ...
+# Subtest: B5 truncation past the trailer fails
+ok 125 - B5 truncation past the trailer fails
+  ---
+  duration_ms: 3.102804
+  type: 'test'
+  ...
+# Subtest: B6 validity, integrity and authenticity are three separate answers
+ok 126 - B6 validity, integrity and authenticity are three separate answers
+  ---
+  duration_ms: 4.750636
+  type: 'test'
+  ...
+# Subtest: B6 an out-of-band digest is the only thing that speaks to provenance
+ok 127 - B6 an out-of-band digest is the only thing that speaks to provenance
+  ---
+  duration_ms: 10.57393
+  type: 'test'
+  ...
+# Subtest: B6 the digest stored in the artifact is never presented as provenance
+ok 128 - B6 the digest stored in the artifact is never presented as provenance
+  ---
+  duration_ms: 1.637941
+  type: 'test'
+  ...
+# Subtest: B8 the runtime keeps its own copy of what it verified
+ok 129 - B8 the runtime keeps its own copy of what it verified
+  ---
+  duration_ms: 1.088531
+  type: 'test'
+  ...
+# Subtest: B9 every refusal is a typed error with a code from the list
+ok 130 - B9 every refusal is a typed error with a code from the list
+  ---
+  duration_ms: 0.875823
+  type: 'test'
+  ...
+# Subtest: B9 a missing file names no absolute path and closes nothing it did not open
+ok 131 - B9 a missing file names no absolute path and closes nothing it did not open
+  ---
+  duration_ms: 1.588947
+  type: 'test'
+  ...
+# Subtest: B9 a failed open releases the descriptor it did open
+ok 132 - B9 a failed open releases the descriptor it did open
+  ---
+  duration_ms: 11.718311
+  type: 'test'
+  ...
+# Subtest: B9 a disposed runtime throws instead of reading released state
+ok 133 - B9 a disposed runtime throws instead of reading released state
+  ---
+  duration_ms: 3.954855
+  type: 'test'
+  ...
+# Subtest: the core has files to check
+ok 134 - the core has files to check
+  ---
+  duration_ms: 1.525319
+  type: 'test'
+  ...
+# Subtest: core/aberration.mjs imports nothing environment-specific
+ok 135 - core/aberration.mjs imports nothing environment-specific
+  ---
+  duration_ms: 0.698431
+  type: 'test'
+  ...
+# Subtest: core/cheb.mjs imports nothing environment-specific
+ok 136 - core/cheb.mjs imports nothing environment-specific
+  ---
+  duration_ms: 0.450598
+  type: 'test'
+  ...
+# Subtest: core/container.mjs imports nothing environment-specific
+ok 137 - core/container.mjs imports nothing environment-specific
+  ---
+  duration_ms: 4.071789
+  type: 'test'
+  ...
+# Subtest: core/deflection.mjs imports nothing environment-specific
+ok 138 - core/deflection.mjs imports nothing environment-specific
+  ---
+  duration_ms: 2.276966
+  type: 'test'
+  ...
+# Subtest: core/domain-partition.mjs imports nothing environment-specific
+ok 139 - core/domain-partition.mjs imports nothing environment-specific
+  ---
+  duration_ms: 0.591395
+  type: 'test'
+  ...
+# Subtest: core/ephemeris.mjs imports nothing environment-specific
+ok 140 - core/ephemeris.mjs imports nothing environment-specific
+  ---
+  duration_ms: 0.15625
+  type: 'test'
+  ...
+# Subtest: core/errors.mjs imports nothing environment-specific
+ok 141 - core/errors.mjs imports nothing environment-specific
+  ---
+  duration_ms: 0.08919
+  type: 'test'
+  ...
+# Subtest: core/frame-of-date.mjs imports nothing environment-specific
+ok 142 - core/frame-of-date.mjs imports nothing environment-specific
+  ---
+  duration_ms: 0.443198
+  type: 'test'
+  ...
+# Subtest: core/frames.mjs imports nothing environment-specific
+ok 143 - core/frames.mjs imports nothing environment-specific
+  ---
+  duration_ms: 0.464304
+  type: 'test'
+  ...
+# Subtest: core/instrument.mjs imports nothing environment-specific
+ok 144 - core/instrument.mjs imports nothing environment-specific
+  ---
+  duration_ms: 0.142203
+  type: 'test'
+  ...
+# Subtest: core/interval-search.mjs imports nothing environment-specific
+ok 145 - core/interval-search.mjs imports nothing environment-specific
+  ---
+  duration_ms: 1.324034
+  type: 'test'
+  ...
+# Subtest: core/interval.mjs imports nothing environment-specific
+ok 146 - core/interval.mjs imports nothing environment-specific
+  ---
+  duration_ms: 0.106412
+  type: 'test'
+  ...
+# Subtest: core/nutation-series-2000b.mjs imports nothing environment-specific
+ok 147 - core/nutation-series-2000b.mjs imports nothing environment-specific
+  ---
+  duration_ms: 0.04995
+  type: 'test'
+  ...
+# Subtest: core/nutation.mjs imports nothing environment-specific
+ok 148 - core/nutation.mjs imports nothing environment-specific
+  ---
+  duration_ms: 0.061797
+  type: 'test'
+  ...
+# Subtest: core/partitioned-search.mjs imports nothing environment-specific
+ok 149 - core/partitioned-search.mjs imports nothing environment-specific
+  ---
+  duration_ms: 0.171002
+  type: 'test'
+  ...
+# Subtest: core/reduce.mjs imports nothing environment-specific
+ok 150 - core/reduce.mjs imports nothing environment-specific
+  ---
+  duration_ms: 0.110371
+  type: 'test'
+  ...
+# Subtest: core/result.mjs imports nothing environment-specific
+ok 151 - core/result.mjs imports nothing environment-specific
+  ---
+  duration_ms: 0.072958
+  type: 'test'
+  ...
+# Subtest: core/retarded-search.mjs imports nothing environment-specific
+ok 152 - core/retarded-search.mjs imports nothing environment-specific
+  ---
+  duration_ms: 0.369889
+  type: 'test'
+  ...
+# Subtest: core/retarded.mjs imports nothing environment-specific
+ok 153 - core/retarded.mjs imports nothing environment-specific
+  ---
+  duration_ms: 0.257403
+  type: 'test'
+  ...
+# Subtest: core/search.mjs imports nothing environment-specific
+ok 154 - core/search.mjs imports nothing environment-specific
+  ---
+  duration_ms: 0.543699
+  type: 'test'
+  ...
+# Subtest: core/source.mjs imports nothing environment-specific
+ok 155 - core/source.mjs imports nothing environment-specific
+  ---
+  duration_ms: 0.068363
+  type: 'test'
+  ...
+# Subtest: core/trig.mjs imports nothing environment-specific
+ok 156 - core/trig.mjs imports nothing environment-specific
+  ---
+  duration_ms: 0.053755
+  type: 'test'
+  ...
+# Subtest: core/validated-search.mjs imports nothing environment-specific
+ok 157 - core/validated-search.mjs imports nothing environment-specific
+  ---
+  duration_ms: 0.135
+  type: 'test'
+  ...
+# Subtest: the core does not use Math.hypot, which engines round differently
+ok 158 - the core does not use Math.hypot, which engines round differently
+  ---
+  duration_ms: 10.538942
+  type: 'test'
+  ...
+# Subtest: the core reaches WebCrypto only through the one helper
+ok 159 - the core reaches WebCrypto only through the one helper
+  ---
+  duration_ms: 3.543546
+  type: 'test'
+  ...
+# Subtest: no module offers a way to skip verification
+ok 160 - no module offers a way to skip verification
+  ---
+  duration_ms: 3.891781
+  type: 'test'
+  ...
+# Subtest: the two fixtures are the two cases they claim to be
+ok 161 - the two fixtures are the two cases they claim to be
+  ---
+  duration_ms: 57.773471
+  type: 'test'
+  ...
+# Subtest: inside the domain the deflected search establishes completeness
+ok 162 - inside the domain the deflected search establishes completeness
+  ---
+  duration_ms: 305.179439
+  type: 'test'
+  ...
+# Subtest: the deflection moves the roots, by no more than it can
+ok 163 - the deflection moves the roots, by no more than it can
+  ---
+  duration_ms: 357.921015
+  type: 'test'
+  ...
+# Subtest: a window through conjunction excludes rather than guesses
+ok 164 - a window through conjunction excludes rather than guesses
+  ---
+  duration_ms: 1700.075349
+  type: 'test'
+  ...
+# Subtest: the supported events survive the excluded region
+ok 165 - the supported events survive the excluded region
+  ---
+  duration_ms: 1922.625254
+  type: 'test'
+  ...
+# Subtest: the contract says what is applied and what is not
+ok 166 - the contract says what is applied and what is not
+  ---
+  duration_ms: 0.71845
+  type: 'test'
+  ...
+# Subtest: a result cannot claim coverage over a span it excluded
+ok 167 - a result cannot claim coverage over a span it excluded
+  ---
+  duration_ms: 3.206379
+  type: 'test'
+  ...
+# Subtest: the deflected mode needs a Sun in the pack, and refuses before any cell opens
+ok 168 - the deflected mode needs a Sun in the pack, and refuses before any cell opens
+  ---
+  duration_ms: 96.221292
+  type: 'test'
+  ...
+# Subtest: the Sun as target does not describe itself as deflected, anywhere a reader looks
+ok 169 - the Sun as target does not describe itself as deflected, anywhere a reader looks
+  ---
+  duration_ms: 357.421831
+  type: 'test'
+  ...
+# Subtest: the deflector geometry splits the epochs and carries the chain rule on q
+ok 170 - the deflector geometry splits the epochs and carries the chain rule on q
+  ---
+  duration_ms: 1.789964
+  type: 'test'
+  ...
+# Subtest: closestElongationCos is the CLOSEST approach, not the furthest
+ok 171 - closestElongationCos is the CLOSEST approach, not the furthest
+  ---
+  duration_ms: 177.598517
+  type: 'test'
+  ...
+# Subtest: merged runs sample their reasons instead of collecting every one
+ok 172 - merged runs sample their reasons instead of collecting every one
+  ---
+  duration_ms: 2187.480024
+  type: 'test'
+  ...
+# Subtest: every cell evaluation had the deflection applied, not just the subdivision ones
+ok 173 - every cell evaluation had the deflection applied, not just the subdivision ones
+  ---
+  duration_ms: 383.975567
+  type: 'test'
+  ...
+# Subtest: the result separates the deflection's four uncertainty sources
+ok 174 - the result separates the deflection's four uncertainty sources
+  ---
+  duration_ms: 183.434844
+  type: 'test'
+  ...
+# Subtest: a window entirely inside the floor decides nothing, and says so
+ok 175 - a window entirely inside the floor decides nothing, and says so
+  ---
+  duration_ms: 24.902665
+  type: 'test'
+  ...
+# Subtest: the half-plane enclosure is the deflected one too
+ok 176 - the half-plane enclosure is the deflected one too
+  ---
+  duration_ms: 343.084251
+  type: 'test'
+  ...
+# Subtest: the Sun's epoch matters, and a static Sun cannot show that
+ok 177 - the Sun's epoch matters, and a static Sun cannot show that
+  ---
+  duration_ms: 4.944766
+  type: 'test'
+  ...
+# Subtest: the search runs against a moving Sun, not only a barycentric one
+ok 178 - the search runs against a moving Sun, not only a barycentric one
+  ---
+  duration_ms: 179.926876
+  type: 'test'
+  ...
+# Subtest: T1: zero deflecting mass reduces to the of-date rung, exactly
+ok 179 - T1: zero deflecting mass reduces to the of-date rung, exactly
+  ---
+  duration_ms: 700.864588
+  type: 'test'
+  ...
+# Subtest: T3: the distant-source approximation costs something at search level
+ok 180 - T3: the distant-source approximation costs something at search level
+  ---
+  duration_ms: 296.128263
+  type: 'test'
+  ...
+# Subtest: T6: an obstructed line of sight is excluded, by the floor
+ok 181 - T6: an obstructed line of sight is excluded, by the floor
+  ---
+  duration_ms: 1.694083
+  type: 'test'
+  ...
+# Subtest: T7: the Sun as target is not deflected, and says so
+ok 182 - T7: the Sun as target is not deflected, and says so
+  ---
+  duration_ms: 139.821981
+  type: 'test'
+  ...
+# Subtest: T9: multiple crossings, all found
+ok 183 - T9: multiple crossings, all found
+  ---
+  duration_ms: 968.60801
+  type: 'test'
+  ...
+# Subtest: T10: a genuinely empty interval, with completeness established
+ok 184 - T10: a genuinely empty interval, with completeness established
+  ---
+  duration_ms: 96.013235
+  type: 'test'
+  ...
+# Subtest: T11: refusals are typed, and none of them escapes
+ok 185 - T11: refusals are typed, and none of them escapes
+  ---
+  duration_ms: 9099.359838
+  type: 'test'
+  ...
+# Subtest: the fixture is ERFA 2.0.1 / SOFA 2023-10-11, by digest
+ok 186 - the fixture is ERFA 2.0.1 / SOFA 2023-10-11, by digest
+  ---
+  duration_ms: 6.117237
+  type: 'test'
+  ...
+# Subtest: deflect reproduces the compiled eraLd bit for bit on every fixture case
+ok 187 - deflect reproduces the compiled eraLd bit for bit on every fixture case
+  ---
+  duration_ms: 7.65241
+  type: 'test'
+  ...
+# Subtest: eraLd is linear in d: a positive rescaling cannot move a root
+ok 188 - eraLd is linear in d: a positive rescaling cannot move a root
+  ---
+  duration_ms: 4.082156
+  type: 'test'
+  ...
+# Subtest: the linearity is the reference implementation's, not this transliteration's
+ok 189 - the linearity is the reference implementation's, not this transliteration's
+  ---
+  duration_ms: 0.750949
+  type: 'test'
+  ...
+# Subtest: q and e are not scale-free, and the law says exactly what that costs
+ok 190 - q and e are not scale-free, and the law says exactly what that costs
+  ---
+  duration_ms: 22.102031
+  type: 'test'
+  ...
+# Subtest: the closed form (SRS/em)tan(chi/2) agrees with the vector path
+ok 191 - the closed form (SRS/em)tan(chi/2) agrees with the vector path
+  ---
+  duration_ms: 13.768049
+  type: 'test'
+  ...
+# Subtest: the deflection angle must be read from the perturbation, not from d and D
+ok 192 - the deflection angle must be read from the perturbation, not from d and D
+  ---
+  duration_ms: 3.612335
+  type: 'test'
+  ...
+# Subtest: the distant-source approximation is wrong by arcseconds for planets
+ok 193 - the distant-source approximation is wrong by arcseconds for planets
+  ---
+  duration_ms: 6.166526
+  type: 'test'
+  ...
+# Subtest: the module's own limiter fires, and without it the model is NaN on axis
+ok 194 - the module's own limiter fires, and without it the model is NaN on axis
+  ---
+  duration_ms: 5.76137
+  type: 'test'
+  ...
+# Subtest: inside the limiter the model is replaced by a ramp that goes the wrong way
+ok 195 - inside the limiter the model is replaced by a ramp that goes the wrong way
+  ---
+  duration_ms: 0.913914
+  type: 'test'
+  ...
+# Subtest: on axis: exactly zero from both sides, for two different reasons
+ok 196 - on axis: exactly zero from both sides, for two different reasons
+  ---
+  duration_ms: 4.435789
+  type: 'test'
+  ...
+# Subtest: dlim is phi^2/2 -- the separation where limiting begins, not an error cap
+ok 197 - dlim is phi^2/2 -- the separation where limiting begins, not an error cap
+  ---
+  duration_ms: 0.312376
+  type: 'test'
+  ...
+# Subtest: the deflection peaks AT the limiter threshold, at 5.7586 arcsec -- not a tenth of one
+ok 198 - the deflection peaks AT the limiter threshold, at 5.7586 arcsec -- not a tenth of one
+  ---
+  duration_ms: 0.314405
+  type: 'test'
+  ...
+# Subtest: the limiter transition is piecewise: the derivative jumps
+ok 199 - the limiter transition is piecewise: the derivative jumps
+  ---
+  duration_ms: 0.160459
+  type: 'test'
+  ...
+# Subtest: the four boundaries are four different boundaries
+ok 200 - the four boundaries are four different boundaries
+  ---
+  duration_ms: 0.183723
+  type: 'test'
+  ...
+# Subtest: the apparent solar radius is not a constant, and the domain uses the computed one
+ok 201 - the apparent solar radius is not a constant, and the domain uses the computed one
+  ---
+  duration_ms: 0.569291
+  type: 'test'
+  ...
+# Subtest: outside the domain it refuses with a typed code, and says which boundary
+ok 202 - outside the domain it refuses with a typed code, and says which boundary
+  ---
+  duration_ms: 0.971288
+  type: 'test'
+  ...
+# Subtest: degenerate geometries refuse rather than returning a non-finite direction
+ok 203 - degenerate geometries refuse rather than returning a non-finite direction
+  ---
+  duration_ms: 0.251709
+  type: 'test'
+  ...
+# Subtest: the profile declares what it omits, including the model's own second-order term
+ok 204 - the profile declares what it omits, including the model's own second-order term
+  ---
+  duration_ms: 0.319819
+  type: 'test'
+  ...
+# Subtest: degenerate intervals reproduce the pointwise transformation
+ok 205 - degenerate intervals reproduce the pointwise transformation
+  ---
+  duration_ms: 14.331278
+  type: 'test'
+  ...
+# Subtest: a cell encloses the transformation at every instant inside it
+ok 206 - a cell encloses the transformation at every instant inside it
+  ---
+  duration_ms: 42.447337
+  type: 'test'
+  ...
+# Subtest: the derivative encloses every difference quotient the cell admits
+ok 207 - the derivative encloses every difference quotient the cell admits
+  ---
+  duration_ms: 21.376385
+  type: 'test'
+  ...
+# Subtest: the length is recomputed, because d -> D is not a rescaling
+ok 208 - the length is recomputed, because d -> D is not a rescaling
+  ---
+  duration_ms: 15.53999
+  type: 'test'
+  ...
+# Subtest: outside the elongation floor it says EXCLUDED, not unresolved
+ok 209 - outside the elongation floor it says EXCLUDED, not unresolved
+  ---
+  duration_ms: 275.967112
+  type: 'test'
+  ...
+# Subtest: a cell that cannot rule the limiter out is refused, not differentiated
+ok 210 - a cell that cannot rule the limiter out is refused, not differentiated
+  ---
+  duration_ms: 0.673755
+  type: 'test'
+  ...
+# Subtest: degenerate geometries refuse over intervals too, with retry set
+ok 211 - degenerate geometries refuse over intervals too, with retry set
+  ---
+  duration_ms: 0.286741
+  type: 'test'
+  ...
+# Subtest: the test geometry exercises what it claims to
+ok 212 - the test geometry exercises what it claims to
+  ---
+  duration_ms: 0.33649
+  type: 'test'
+  ...
+# Subtest: the derivative matches an independent reference at a point
+ok 213 - the derivative matches an independent reference at a point
+  ---
+  duration_ms: 2.041858
+  type: 'test'
+  ...
+# Subtest: the caller owns the chain rule on q, and it is load-bearing
+ok 214 - the caller owns the chain rule on q, and it is load-bearing
+  ---
+  duration_ms: 1.281466
+  type: 'test'
+  ...
+# Subtest: the fixtures are the geometries they claim to be
+ok 215 - the fixtures are the geometries they claim to be
+  ---
+  duration_ms: 101.620394
+  type: 'test'
+  ...
+# Subtest: a known entry and a known exit: the partition owns only what it proved
+ok 216 - a known entry and a known exit: the partition owns only what it proved
+  ---
+  duration_ms: 45.265056
+  type: 'test'
+  ...
+# Subtest: two passages two boundary tolerances apart stay two
+ok 217 - two passages two boundary tolerances apart stay two
+  ---
+  duration_ms: 9.986788
+  type: 'test'
+  ...
+# Subtest: a tangency that never crosses excludes nothing, and does not pretend to admit
+ok 218 - a tangency that never crosses excludes nothing, and does not pretend to admit
+  ---
+  duration_ms: 18.013268
+  type: 'test'
+  ...
+# Subtest: a window wholly inside the domain is one admissible span and nothing else
+ok 219 - a window wholly inside the domain is one admissible span and nothing else
+  ---
+  duration_ms: 9.933914
+  type: 'test'
+  ...
+# Subtest: a window wholly below the floor is excluded, and admits nothing
+ok 220 - a window wholly below the floor is excluded, and admits nothing
+  ---
+  duration_ms: 2.045816
+  type: 'test'
+  ...
+# Subtest: a request that begins at the floor, and one that ends at it
+ok 221 - a request that begins at the floor, and one that ends at it
+  ---
+  duration_ms: 6.366245
+  type: 'test'
+  ...
+# Subtest: the four classes tile the request, on every finished geometry in this file
+ok 222 - the four classes tile the request, on every finished geometry in this file
+  ---
+  duration_ms: 888.750434
+  type: 'test'
+  ...
+# Subtest: the two conservative bounds point in opposite directions and are not interchangeable
+ok 223 - the two conservative bounds point in opposite directions and are not interchangeable
+  ---
+  duration_ms: 2.485145
+  type: 'test'
+  ...
+# Subtest: a geometry that cannot be decided comes back boundary with a reason, not excluded
+ok 224 - a geometry that cannot be decided comes back boundary with a reason, not excluded
+  ---
+  duration_ms: 20.878965
+  type: 'test'
+  ...
+# Subtest: a window the records do not cover is an answer, not an exception
+ok 225 - a window the records do not cover is an answer, not an exception
+  ---
+  duration_ms: 9.510016
+  type: 'test'
+  ...
+# Subtest: a request wholly outside the records costs nothing and says which it is
+ok 226 - a request wholly outside the records costs nothing and says which it is
+  ---
+  duration_ms: 24.057359
+  type: 'test'
+  ...
+# Subtest: a pack with no Sun is refused once, before any cell
+ok 227 - a pack with no Sun is refused once, before any cell
+  ---
+  duration_ms: 21.315417
+  type: 'test'
+  ...
+# Subtest: a cancelled run reports what it never examined, and does not call it excluded
+ok 228 - a cancelled run reports what it never examined, and does not call it excluded
+  ---
+  duration_ms: 26.214148
+  type: 'test'
+  ...
+# Subtest: a partition of two halves against a partition of the whole
+ok 229 - a partition of two halves against a partition of the whole
+  ---
+  duration_ms: 1705.365335
+  type: 'test'
+  ...
+# Subtest: a tighter boundary tolerance only ever proves more
+ok 230 - a tighter boundary tolerance only ever proves more
+  ---
+  duration_ms: 1210.87469
+  type: 'test'
+  ...
+# Subtest: the same request twice is the same answer, span for span
+ok 231 - the same request twice is the same answer, span for span
+  ---
+  duration_ms: 708.477612
+  type: 'test'
+  ...
+# Subtest: the key changes when the question changes
+ok 232 - the key changes when the question changes
+  ---
+  duration_ms: 2928.202122
+  type: 'test'
+  ...
+# Subtest: the deflector as target is admitted whole, and only by that rule
+ok 233 - the deflector as target is admitted whole, and only by that rule
+  ---
+  duration_ms: 71.500514
+  type: 'test'
+  ...
+# Subtest: the Sun's own position is read, and a barycentric Sun cannot show that
+ok 234 - the Sun's own position is read, and a barycentric Sun cannot show that
+  ---
+  duration_ms: 89.551111
+  type: 'test'
+  ...
+# Subtest: f64: position and velocity are the polynomial and its analytic derivative
+ok 235 - f64: position and velocity are the polynomial and its analytic derivative
+  ---
+  duration_ms: 9.170579
+  type: 'test'
+  ...
+# Subtest: quantised: decoding lands within the quantum of the value that was stored
+ok 236 - quantised: decoding lands within the quantum of the value that was stored
+  ---
+  duration_ms: 1.915064
+  type: 'test'
+  ...
+# Subtest: frames compose: a sun-relative body is returned barycentric
+ok 237 - frames compose: a sun-relative body is returned barycentric
+  ---
+  duration_ms: 0.799014
+  type: 'test'
+  ...
+# Subtest: Earth and Moon come out of EMB and Moon with the pack's own EMRAT
+ok 238 - Earth and Moon come out of EMB and Moon with the pack's own EMRAT
+  ---
+  duration_ms: 0.664424
+  type: 'test'
+  ...
+# Subtest: record boundaries agree from both sides to within the fit, not by luck
+ok 239 - record boundaries agree from both sides to within the fit, not by luck
+  ---
+  duration_ms: 0.905175
+  type: 'test'
+  ...
+# Subtest: a request outside coverage is refused by the runtime, not clamped silently
+ok 240 - a request outside coverage is refused by the runtime, not clamped silently
+  ---
+  duration_ms: 0.862726
+  type: 'test'
+  ...
+# Subtest: state() refuses to write into its own scratch
+ok 241 - state() refuses to write into its own scratch
+  ---
+  duration_ms: 0.750033
+  type: 'test'
+  ...
+# Subtest: an unknown body is a typed error
+ok 242 - an unknown body is a typed error
+  ---
+  duration_ms: 0.465101
+  type: 'test'
+  ...
+# Subtest: a pack with no EMRAT cannot silently invent Earth
+ok 243 - a pack with no EMRAT cannot silently invent Earth
+  ---
+  duration_ms: 0.726477
+  type: 'test'
+  ...
+# Subtest: the same instant gives bit-identical numbers every time
+ok 244 - the same instant gives bit-identical numbers every time
+  ---
+  duration_ms: 0.674316
+  type: 'test'
+  ...
+# Subtest: the frame chain is not applied twice when a body is asked for twice
+ok 245 - the frame chain is not applied twice when a body is asked for twice
+  ---
+  duration_ms: 0.61943
+  type: 'test'
+  ...
+# Subtest: every import the experimental path needs has an exports entry
+ok 246 - every import the experimental path needs has an exports entry
+  ---
+  duration_ms: 1.35332
+  type: 'test'
+  ...
+# Subtest: and the files it points at are shipped
+ok 247 - and the files it points at are shipped
+  ---
+  duration_ms: 0.388106
+  type: 'test'
+  ...
+# Subtest: the handle refuses after its own dispose, and after the runtime's
+ok 248 - the handle refuses after its own dispose, and after the runtime's
+  ---
+  duration_ms: 157.577812
+  type: 'test'
+  ...
+# Subtest: experimental() refuses anything that is not an open runtime
+ok 249 - experimental() refuses anything that is not an open runtime
+  ---
+  duration_ms: 0.39478
+  type: 'test'
+  ...
+# Subtest: the surface says it is experimental, and names every mode
+ok 250 - the surface says it is experimental, and names every mode
+  ---
+  duration_ms: 1.476746
+  type: 'test'
+  ...
+# Subtest: the declared modes are exactly the modes the handle actually returns
+ok 251 - the declared modes are exactly the modes the handle actually returns
+  ---
+  duration_ms: 325.189321
+  type: 'test'
+  ...
+# Subtest: the surface declares which modes can decline, and names the right one
+ok 252 - the surface declares which modes can decline, and names the right one
+  ---
+  duration_ms: 0.443151
+  type: 'test'
+  ...
+# Subtest: the deflection floor is reachable from the handle, before asking
+ok 253 - the deflection floor is reachable from the handle, before asking
+  ---
+  duration_ms: 49.80789
+  type: 'test'
+  ...
+# Subtest: the aberrated contract names what it adds and keeps naming what it omits
+ok 254 - the aberrated contract names what it adds and keeps naming what it omits
+  ---
+  duration_ms: 1.148194
+  type: 'test'
+  ...
+# Subtest: the synthetic fixture is the geometry it says it is
+ok 255 - the synthetic fixture is the geometry it says it is
+  ---
+  duration_ms: 84.311573
+  type: 'test'
+  ...
+# Subtest: the of-date mode is reachable through the handle and says what frame it is in
+ok 256 - the of-date mode is reachable through the handle and says what frame it is in
+  ---
+  duration_ms: 131.931287
+  type: 'test'
+  ...
+# Subtest: the of-date mode is disposed with the handle and with the runtime
+ok 257 - the of-date mode is disposed with the handle and with the runtime
+  ---
+  duration_ms: 56.469546
+  type: 'test'
+  ...
+# Subtest: ERFA t_pfw06: the Fukushima-Williams bias-precession angles
+ok 258 - ERFA t_pfw06: the Fukushima-Williams bias-precession angles
+  ---
+  duration_ms: 1.317307
+  type: 'test'
+  ...
+# Subtest: ERFA t_obl06: the IAU 2006 mean obliquity
+ok 259 - ERFA t_obl06: the IAU 2006 mean obliquity
+  ---
+  duration_ms: 0.303462
+  type: 'test'
+  ...
+# Subtest: ERFA t_nut00b: IAU 2000B nutation, raw, with the planetary-bias offsets
+ok 260 - ERFA t_nut00b: IAU 2000B nutation, raw, with the planetary-bias offsets
+  ---
+  duration_ms: 3.657487
+  type: 'test'
+  ...
+# Subtest: ERFA t_pmat06: the bias-precession matrix is fw2m with no nutation
+ok 261 - ERFA t_pmat06: the bias-precession matrix is fw2m with no nutation
+  ---
+  duration_ms: 0.424643
+  type: 'test'
+  ...
+# Subtest: ERFA t_ecm06: the mean-of-date rung IS the published ICRS-to-ecliptic matrix
+ok 262 - ERFA t_ecm06: the mean-of-date rung IS the published ICRS-to-ecliptic matrix
+  ---
+  duration_ms: 2.529342
+  type: 'test'
+  ...
+# Subtest: ERFA ships no TRUE-equinox ecliptic matrix, so the third rung is not eraEcm06
+ok 263 - ERFA ships no TRUE-equinox ecliptic matrix, so the third rung is not eraEcm06
+  ---
+  duration_ms: 1.409628
+  type: 'test'
+  ...
+# Subtest: the true-equinox frame is the mean-equinox one turned about the ECLIPTIC POLE
+ok 264 - the true-equinox frame is the mean-equinox one turned about the ECLIPTIC POLE
+  ---
+  duration_ms: 11.749229
+  type: 'test'
+  ...
+# Subtest: and it turns by exactly the nutation in longitude, P03 adjustment included
+ok 265 - and it turns by exactly the nutation in longitude, P03 adjustment included
+  ---
+  duration_ms: 9.184536
+  type: 'test'
+  ...
+# Subtest: the P03 factor is checked separately, because the identity cannot see it
+ok 266 - the P03 factor is checked separately, because the identity cannot see it
+  ---
+  duration_ms: 7.479711
+  type: 'test'
+  ...
+# Subtest: so at ERFA's test epoch the TRUE-equinox matrix follows from the PUBLISHED one
+ok 267 - so at ERFA's test epoch the TRUE-equinox matrix follows from the PUBLISHED one
+  ---
+  duration_ms: 1.349015
+  type: 'test'
+  ...
+# Subtest: the assembled reference would catch the sign, which is the easiest thing to get wrong
+ok 268 - the assembled reference would catch the sign, which is the easiest thing to get wrong
+  ---
+  duration_ms: 0.969416
+  type: 'test'
+  ...
+# Subtest: the frame matrix reproduces the released reducer chain
+ok 269 - the frame matrix reproduces the released reducer chain
+  ---
+  duration_ms: 8.027299
+  type: 'test'
+  ...
+# Subtest: the obliquity cancels out of the ecliptic projection, and deps never enters it
+ok 270 - the obliquity cancels out of the ecliptic projection, and deps never enters it
+  ---
+  duration_ms: 0.494313
+  type: 'test'
+  ...
+# Subtest: the frame is NOT the identity at J2000
+ok 271 - the frame is NOT the identity at J2000
+  ---
+  duration_ms: 0.575255
+  type: 'test'
+  ...
+# Subtest: orthogonality and determinant hold, which proves less than it looks
+ok 272 - orthogonality and determinant hold, which proves less than it looks
+  ---
+  duration_ms: 2.189362
+  type: 'test'
+  ...
+# Subtest: Rdot is the derivative of R, checked at a step that resolves the fastest term
+ok 273 - Rdot is the derivative of R, checked at a step that resolves the fastest term
+  ---
+  duration_ms: 16.219657
+  type: 'test'
+  ...
+# Subtest: the interval frame encloses the frame across the whole cell
+ok 274 - the interval frame encloses the frame across the whole cell
+  ---
+  duration_ms: 444.081534
+  type: 'test'
+  ...
+# Subtest: pfw06 and the mean obliquity read the exported tables and are unchanged by it
+ok 275 - pfw06 and the mean obliquity read the exported tables and are unchanged by it
+  ---
+  duration_ms: 19.68038
+  type: 'test'
+  ...
+# Subtest: the time model converts TDB to TT and says what it costs
+ok 276 - the time model converts TDB to TT and says what it costs
+  ---
+  duration_ms: 0.531814
+  type: 'test'
+  ...
+# Subtest: the validated trigonometry refuses an argument it cannot bound
+ok 277 - the validated trigonometry refuses an argument it cannot bound
+  ---
+  duration_ms: 0.605772
+  type: 'test'
+  ...
+# Subtest: the interval sine contains an interior extremum the endpoints miss
+ok 278 - the interval sine contains an interior extremum the endpoints miss
+  ---
+  duration_ms: 0.26186
+  type: 'test'
+  ...
+# Subtest: A-transversal-crossing
+ok 279 - A-transversal-crossing
+  ---
+  duration_ms: 4.223289
+  type: 'test'
+  ...
+# Subtest: B-exact-tangency
+ok 280 - B-exact-tangency
+  ---
+  duration_ms: 1.688827
+  type: 'test'
+  ...
+# Subtest: C-near-tangency-no-crossing
+ok 281 - C-near-tangency-no-crossing
+  ---
+  duration_ms: 0.165317
+  type: 'test'
+  ...
+# Subtest: C2-near-tangency-under-coarse-epsilon
+ok 282 - C2-near-tangency-under-coarse-epsilon
+  ---
+  duration_ms: 2.294872
+  type: 'test'
+  ...
+# Subtest: D-two-very-close-roots
+ok 283 - D-two-very-close-roots
+  ---
+  duration_ms: 0.386976
+  type: 'test'
+  ...
+# Subtest: D2-two-very-close-roots-under-coarse-epsilon
+ok 284 - D2-two-very-close-roots-under-coarse-epsilon
+  ---
+  duration_ms: 0.571694
+  type: 'test'
+  ...
+# Subtest: E-root-at-left-boundary
+ok 285 - E-root-at-left-boundary
+  ---
+  duration_ms: 0.146964
+  type: 'test'
+  ...
+# Subtest: E2-root-at-right-boundary
+ok 286 - E2-root-at-right-boundary
+  ---
+  duration_ms: 0.146468
+  type: 'test'
+  ...
+# Subtest: F-two-well-separated-roots
+ok 287 - F-two-well-separated-roots
+  ---
+  duration_ms: 0.730672
+  type: 'test'
+  ...
+# Subtest: G-budget-refusal
+ok 288 - G-budget-refusal
+  ---
+  duration_ms: 1.248095
+  type: 'test'
+  ...
+# Subtest: H-unbounded-ambiguity-without-curvature
+ok 289 - H-unbounded-ambiguity-without-curvature
+  ---
+  duration_ms: 0.584911
+  type: 'test'
+  ...
+# Subtest: every verdict name is used by at least one analytic case
+ok 290 - every verdict name is used by at least one analytic case
+  ---
+  duration_ms: 0.190695
+  type: 'test'
+  ...
+# Subtest: A5: the file-backed loader returns bit-identical numbers to the resident one
+ok 291 - A5: the file-backed loader returns bit-identical numbers to the resident one
+  ---
+  duration_ms: 19.59797
+  type: 'test'
+  ...
+# Subtest: A5: the two loaders agree on a whole search, not just a point
+ok 292 - A5: the two loaders agree on a whole search, not just a point
+  ---
+  duration_ms: 278.493816
+  type: 'test'
+  ...
+# Subtest: A3: opening is async; every calculation afterwards is synchronous
+ok 293 - A3: opening is async; every calculation afterwards is synchronous
+  ---
+  duration_ms: 13.920522
+  type: 'test'
+  ...
+# Subtest: A3: the same instant gives the same answer on a second call and across runtimes
+ok 294 - A3: the same instant gives the same answer on a second call and across runtimes
+  ---
+  duration_ms: 7.495018
+  type: 'test'
+  ...
+# Subtest: dispose releases the descriptor, and a disposed file-backed source refuses
+ok 295 - dispose releases the descriptor, and a disposed file-backed source refuses
+  ---
+  duration_ms: 1.907004
+  type: 'test'
+  ...
+# Subtest: a released file source refuses further reads rather than reading a closed descriptor
+ok 296 - a released file source refuses further reads rather than reading a closed descriptor
+  ---
+  duration_ms: 0.436008
+  type: 'test'
+  ...
+# Subtest: the runtime reports its integrity, and never claims authenticity
+ok 297 - the runtime reports its integrity, and never claims authenticity
+  ---
+  duration_ms: 2.907718
+  type: 'test'
+  ...
+# Subtest: S1a: the fixed ecliptic rotation reduces the of-date mode to the aberrated one
+ok 298 - S1a: the fixed ecliptic rotation reduces the of-date mode to the aberrated one
+  ---
+  duration_ms: 178.596745
+  type: 'test'
+  ...
+# Subtest: S1b: a literal identity is a DIFFERENT frame, so S1a is not vacuous
+ok 299 - S1b: a literal identity is a DIFFERENT frame, so S1a is not vacuous
+  ---
+  duration_ms: 89.881205
+  type: 'test'
+  ...
+# Subtest: S2: a constant rotation by theta shifts the target longitude by exactly theta
+ok 300 - S2: a constant rotation by theta shifts the target longitude by exactly theta
+  ---
+  duration_ms: 73.281337
+  type: 'test'
+  ...
+# Subtest: S3: a uniformly rotating frame is not a shift of the constant one
+ok 301 - S3: a uniformly rotating frame is not a shift of the constant one
+  ---
+  duration_ms: 174.110832
+  type: 'test'
+  ...
+# Subtest: S4: a frame turning the other way flips the reported direction
+ok 302 - S4: a frame turning the other way flips the reported direction
+  ---
+  duration_ms: 150.025504
+  type: 'test'
+  ...
+# Subtest: S5a: with a dominant R-dot the search still establishes completeness
+ok 303 - S5a: with a dominant R-dot the search still establishes completeness
+  ---
+  duration_ms: 99.345689
+  type: 'test'
+  ...
+# Subtest: S5b: dropping R-dot from Q-dot is detectably wrong, or the case says it could not tell
+ok 304 - S5b: dropping R-dot from Q-dot is detectably wrong, or the case says it could not tell
+  ---
+  duration_ms: 67.328771
+  type: 'test'
+  ...
+# Subtest: S5c: dt/dTDB lands on the R-dot term and nowhere else
+ok 305 - S5c: dt/dTDB lands on the R-dot term and nowhere else
+  ---
+  duration_ms: 9.602476
+  type: 'test'
+  ...
+# Subtest: S6: freezing R at the window midpoint is detectably wrong
+ok 306 - S6: freezing R at the window midpoint is detectably wrong
+  ---
+  duration_ms: 99.08978
+  type: 'test'
+  ...
+# Subtest: S7: a near-tangency under rotation keeps containment, and may report a wide bracket
+ok 307 - S7: a near-tangency under rotation keeps containment, and may report a wide bracket
+  ---
+  duration_ms: 1134.041619
+  type: 'test'
+  ...
+# Subtest: S8: adjacent half-open windows account for a root on the shared boundary
+ok 308 - S8: adjacent half-open windows account for a root on the shared boundary
+  ---
+  duration_ms: 76.973737
+  type: 'test'
+  ...
+# Subtest: S9: the enclosure holds through cancellation in the rotated projection
+ok 309 - S9: the enclosure holds through cancellation in the rotated projection
+  ---
+  duration_ms: 91.540236
+  type: 'test'
+  ...
+# Subtest: S10: a budget below need reports budget-exhausted and no exact total
+ok 310 - S10: a budget below need reports budget-exhausted and no exact total
+  ---
+  duration_ms: 22.82016
+  type: 'test'
+  ...
+# Subtest: S11: an invalid or uncovered time refuses with a typed code and nothing escapes
+ok 311 - S11: an invalid or uncovered time refuses with a typed code and nothing escapes
+  ---
+  duration_ms: 12116.898278
+  type: 'test'
+  ...
+# Subtest: S11c: a cell wider than half a turn is handled, not thrown out of
+ok 312 - S11c: a cell wider than half a turn is handled, not thrown out of
+  ---
+  duration_ms: 12.626903
+  type: 'test'
+  ...
+# Subtest: S12: a cell wide enough to hide an extremum of sine is still enclosed
+ok 313 - S12: a cell wide enough to hide an extremum of sine is still enclosed
+  ---
+  duration_ms: 1.074262
+  type: 'test'
+  ...
+# Subtest: reporting: the of-date result separates three error sources and never sums them
+ok 314 - reporting: the of-date result separates three error sources and never sums them
+  ---
+  duration_ms: 167.593318
+  type: 'test'
+  ...
+# Subtest: reporting: the supported range is 1900-2100 and the result says which side it is on
+ok 315 - reporting: the supported range is 1900-2100 and the result says which side it is on
+  ---
+  duration_ms: 67.192552
+  type: 'test'
+  ...
+# Subtest: the two fixtures sweep one body each, and sweep it through the floor
+ok 316 - the two fixtures sweep one body each, and sweep it through the floor
+  ---
+  duration_ms: 75.550838
+  type: 'test'
+  ...
+# Subtest: over the cell that decides, a midpoint reading and an enclosure disagree
+ok 317 - over the cell that decides, a midpoint reading and an enclosure disagree
+  ---
+  duration_ms: 0.98182
+  type: 'test'
+  ...
+# Subtest: a moving observer: no span is admitted over the conjunction it sweeps through
+ok 318 - a moving observer: no span is admitted over the conjunction it sweeps through
+  ---
+  duration_ms: 45.694214
+  type: 'test'
+  ...
+# Subtest: a moving Sun: no span is admitted over the conjunction it sweeps through
+ok 319 - a moving Sun: no span is admitted over the conjunction it sweeps through
+  ---
+  duration_ms: 28.48849
+  type: 'test'
+  ...
+# Subtest: a target on the observer is refused by the light-time derivation, before any cell
+ok 320 - a target on the observer is refused by the light-time derivation, before any cell
+  ---
+  duration_ms: 2.196659
+  type: 'test'
+  ...
+# Subtest: narrowing a cell cannot widen the separation its enclosures establish
+ok 321 - narrowing a cell cannot widen the separation its enclosures establish
+  ---
+  duration_ms: 2.206724
+  type: 'test'
+  ...
+# Subtest: the fixtures move: observer, light-time and apparent place all change across one cell
+ok 322 - the fixtures move: observer, light-time and apparent place all change across one cell
+  ---
+  duration_ms: 2.679474
+  type: 'test'
+  ...
+# Subtest: a light-time interval nine times the cell: the sweep at seed width
+ok 323 - a light-time interval nine times the cell: the sweep at seed width
+  ---
+  duration_ms: 115.068739
+  type: 'test'
+  ...
+# Subtest: the same sweep bisected to 30 s, against crossings it did not compute
+ok 324 - the same sweep bisected to 30 s, against crossings it did not compute
+  ---
+  duration_ms: 103.536879
+  type: 'test'
+  ...
+# Subtest: a plunging light-time: the first candidate interval is not a self-map here
+ok 325 - a plunging light-time: the first candidate interval is not a self-map here
+  ---
+  duration_ms: 271.618891
+  type: 'test'
+  ...
+# Subtest: a speed bound above c over the emission window is a refusal, not a verdict
+ok 326 - a speed bound above c over the emission window is a refusal, not a verdict
+  ---
+  duration_ms: 126.84441
+  type: 'test'
+  ...
+# Subtest: a plan this runtime did not derive is refused, and says why
+ok 327 - a plan this runtime did not derive is refused, and says why
+  ---
+  duration_ms: 217.982261
+  type: 'test'
+  ...
+# Subtest: an accepted import is checked for shape, and every claim over it says so
+ok 328 - an accepted import is checked for shape, and every claim over it says so
+  ---
+  duration_ms: 97.354807
+  type: 'test'
+  ...
+# Subtest: the identity is rebuilt from the caller, never from the plan it is checking
+ok 329 - the identity is rebuilt from the caller, never from the plan it is checking
+  ---
+  duration_ms: 289.71428
+  type: 'test'
+  ...
+# Subtest: a plan that did not classify its whole window is refused by default
+ok 330 - a plan that did not classify its whole window is refused by default
+  ---
+  duration_ms: 61.792733
+  type: 'test'
+  ...
+# Subtest: the four classes tile the request at every budget, and examination is a separate axis
+ok 331 - the four classes tile the request at every budget, and examination is a separate axis
+  ---
+  duration_ms: 328.655375
+  type: 'test'
+  ...
+# Subtest: running out never converts unexamined time into an exclusion
+ok 332 - running out never converts unexamined time into an exclusion
+  ---
+  duration_ms: 178.852386
+  type: 'test'
+  ...
+# Subtest: no completeness flag survives a run that stopped early
+ok 333 - no completeness flag survives a run that stopped early
+  ---
+  duration_ms: 153.148518
+  type: 'test'
+  ...
+# Subtest: the partition stops when the allowance is gone, and the allowance is one
+ok 334 - the partition stops when the allowance is gone, and the allowance is one
+  ---
+  duration_ms: 56.89155
+  type: 'test'
+  ...
+# Subtest: a crossing found where nothing was proved says so, twice
+ok 335 - a crossing found where nothing was proved says so, twice
+  ---
+  duration_ms: 16209.835105
+  type: 'test'
+  ...
+# Subtest: the overlap predicate is strict, and no derived plan can make it fire
+ok 336 - the overlap predicate is strict, and no derived plan can make it fire
+  ---
+  duration_ms: 1934.191459
+  type: 'test'
+  ...
+# Subtest: the plan identity moves when the pack's numerical metadata moves
+ok 337 - the plan identity moves when the pack's numerical metadata moves
+  ---
+  duration_ms: 283.190894
+  type: 'test'
+  ...
+# Subtest: open the synthetic pack
+ok 338 - open the synthetic pack
+  ---
+  duration_ms: 14.825397
+  type: 'test'
+  ...
+# Subtest: the fixture sweeps a full turn, so the wrap really is exercised
+ok 339 - the fixture sweeps a full turn, so the wrap really is exercised
+  ---
+  duration_ms: 3.018593
+  type: 'test'
+  ...
+# Subtest: an unknown body is refused by name
+ok 340 - an unknown body is refused by name
+  ---
+  duration_ms: 0.432019
+  type: 'test'
+  ...
+# Subtest: an unknown reduction option is refused rather than ignored
+ok 341 - an unknown reduction option is refused rather than ignored
+  ---
+  duration_ms: 0.199638
+  type: 'test'
+  ...
+# Subtest: an out-of-range option value is refused
+ok 342 - an out-of-range option value is refused
+  ---
+  duration_ms: 1.74425
+  type: 'test'
+  ...
+# Subtest: a non-finite instant is refused
+ok 343 - a non-finite instant is refused
+  ---
+  duration_ms: 0.313442
+  type: 'test'
+  ...
+# Subtest: an instant outside coverage is refused, and so is a light-time lookback that leaves it
+ok 344 - an instant outside coverage is refused, and so is a light-time lookback that leaves it
+  ---
+  duration_ms: 0.190514
+  type: 'test'
+  ...
+# Subtest: IAU 2000A is not reachable, as the contract says
+ok 345 - IAU 2000A is not reachable, as the contract says
+  ---
+  duration_ms: 0.140315
+  type: 'test'
+  ...
+# Subtest: the advertised body list contains only bodies this pack can answer for
+ok 346 - the advertised body list contains only bodies this pack can answer for
+  ---
+  duration_ms: 3.589856
+  type: 'test'
+  ...
+# Subtest: a body sitting on the observer is refused by code, not returned as NaN
+ok 347 - a body sitting on the observer is refused by code, not returned as NaN
+  ---
+  duration_ms: 0.965829
+  type: 'test'
+  ...
+# Subtest: the Sun on the observer with deflection on is refused the same way
+ok 348 - the Sun on the observer with deflection on is refused the same way
+  ---
+  duration_ms: 0.357322
+  type: 'test'
+  ...
+# Subtest: every switch that can matter here does, and the ones that cannot are exactly zero
+ok 349 - every switch that can matter here does, and the ones that cannot are exactly zero
+  ---
+  duration_ms: 1.395583
+  type: 'test'
+  ...
+# Subtest: the same call twice gives the same bits
+ok 350 - the same call twice gives the same bits
+  ---
+  duration_ms: 0.684796
+  type: 'test'
+  ...
+# Subtest: a system barycentre is labelled as one, every time
+ok 351 - a system barycentre is labelled as one, every time
+  ---
+  duration_ms: 1.14311
+  type: 'test'
+  ...
+# Subtest: light time converges and is reported
+ok 352 - light time converges and is reported
+  ---
+  duration_ms: 0.195764
+  type: 'test'
+  ...
+# Subtest: the bounded search finds exactly the crossings a dense scan finds
+ok 353 - the bounded search finds exactly the crossings a dense scan finds
+  ---
+  duration_ms: 189.001536
+  type: 'test'
+  ...
+# Subtest: an aspect search agrees with a dense scan of the same difference
+ok 354 - an aspect search agrees with a dense scan of the same difference
+  ---
+  duration_ms: 76.08458
+  type: 'test'
+  ...
+# Subtest: a certified result never carries an unresolved interval, and vice versa
+ok 355 - a certified result never carries an unresolved interval, and vice versa
+  ---
+  duration_ms: 18.951702
+  type: 'test'
+  ...
+# Subtest: the bracket is the epsilon set: its width scales with epsilon, linearly
+ok 356 - the bracket is the epsilon set: its width scales with epsilon, linearly
+  ---
+  duration_ms: 45.689625
+  type: 'test'
+  ...
+# Subtest: the six result parts are always present and never merged
+ok 357 - the six result parts are always present and never merged
+  ---
+  duration_ms: 151.03814
+  type: 'test'
+  ...
+# Subtest: epsilon has no default: the allowance must be declared
+ok 358 - epsilon has no default: the allowance must be declared
+  ---
+  duration_ms: 1.229402
+  type: 'test'
+  ...
+# Subtest: the budget bounds the WHOLE search, not just the classifier
+ok 359 - the budget bounds the WHOLE search, not just the classifier
+  ---
+  duration_ms: 88.459452
+  type: 'test'
+  ...
+# Subtest: a cancel during the robustness probe is a result, not a throw
+ok 360 - a cancel during the robustness probe is a result, not a throw
+  ---
+  duration_ms: 71.588894
+  type: 'test'
+  ...
+# Subtest: a budget that runs out during the robustness probe keeps the topology it established
+ok 361 - a budget that runs out during the robustness probe keeps the topology it established
+  ---
+  duration_ms: 77.489956
+  type: 'test'
+  ...
+# Subtest: cancellation comes back as a result in the cancelled state, not a throw
+ok 362 - cancellation comes back as a result in the cancelled state, not a throw
+  ---
+  duration_ms: 1.066156
+  type: 'test'
+  ...
+# Subtest: an unsupported event kind is refused
+ok 363 - an unsupported event kind is refused
+  ---
+  duration_ms: 0.508062
+  type: 'test'
+  ...
+# Subtest: dispose releases and refuses
+ok 364 - dispose releases and refuses
+  ---
+  duration_ms: 0.13351
+  type: 'test'
+  ...
+# Subtest: L1: a stationary target gives tau = D/c exactly
+ok 365 - L1: a stationary target gives tau = D/c exactly
+  ---
+  duration_ms: 34.119462
+  type: 'test'
+  ...
+# Subtest: L2: a radial constant-velocity target matches the closed form
+ok 366 - L2: a radial constant-velocity target matches the closed form
+  ---
+  duration_ms: 26.327834
+  type: 'test'
+  ...
+# Subtest: L3: the observer is NOT retarded — a stationary target settles in one step
+ok 367 - L3: the observer is NOT retarded — a stationary target settles in one step
+  ---
+  duration_ms: 31.29901
+  type: 'test'
+  ...
+# Subtest: L4: both moving — the two observer conventions are distinguished, and the right one is used
+ok 368 - L4: both moving — the two observer conventions are distinguished, and the right one is used
+  ---
+  duration_ms: 17.256569
+  type: 'test'
+  ...
+# Subtest: L5: the emission time crosses record boundaries the reception time does not
+ok 369 - L5: the emission time crosses record boundaries the reception time does not
+  ---
+  duration_ms: 258.73655
+  type: 'test'
+  ...
+# Subtest: L6: a near-zero separation is refused, not answered
+ok 370 - L6: a near-zero separation is refused, not answered
+  ---
+  duration_ms: 30.438673
+  type: 'test'
+  ...
+# Subtest: L7: a target faster than light does not get a contraction, and the result says so
+ok 371 - L7: a target faster than light does not get a contraction, and the result says so
+  ---
+  duration_ms: 27.54951
+  type: 'test'
+  ...
+# Subtest: L7b: a reception window past the target's last record is refused, not raised
+ok 372 - L7b: a reception window past the target's last record is refused, not raised
+  ---
+  duration_ms: 8.558913
+  type: 'test'
+  ...
+# Subtest: L13: the exclusion test's lever arm reaches the whole cell, not (hi-lo)/2
+ok 373 - L13: the exclusion test's lever arm reaches the whole cell, not (hi-lo)/2
+  ---
+  duration_ms: 5.755447
+  type: 'test'
+  ...
+# Subtest: L8: the reported bracket and light-time contain their closed-form values
+ok 374 - L8: the reported bracket and light-time contain their closed-form values
+  ---
+  duration_ms: 29.558172
+  type: 'test'
+  ...
+# Subtest: L8: adjacent half-open windows report the root exactly once, and admit it when they cannot
+ok 375 - L8: adjacent half-open windows report the root exactly once, and admit it when they cannot
+  ---
+  duration_ms: 69.559033
+  type: 'test'
+  ...
+# Subtest: L8: the solver agrees with itself across boundary windows (consistency, retained)
+ok 376 - L8: the solver agrees with itself across boundary windows (consistency, retained)
+  ---
+  duration_ms: 36.454411
+  type: 'test'
+  ...
+# Subtest: L9: a window with no crossing is a proven zero
+ok 377 - L9: a window with no crossing is a proven zero
+  ---
+  duration_ms: 44.329157
+  type: 'test'
+  ...
+# Subtest: L10b: a close pair BELOW a tenth of the window, established analytically first
+ok 378 - L10b: a close pair BELOW a tenth of the window, established analytically first
+  ---
+  duration_ms: 535.539844
+  type: 'test'
+  ...
+# Subtest: L10: two closely spaced roots are both found, or refused — never one
+ok 379 - L10: two closely spaced roots are both found, or refused — never one
+  ---
+  duration_ms: 496.759002
+  type: 'test'
+  ...
+# Subtest: L11: a tangency is not closed either way
+ok 380 - L11: a tangency is not closed either way
+  ---
+  duration_ms: 42.117646
+  type: 'test'
+  ...
+# Subtest: L11b: a near miss that never reaches the longitude is a proven zero
+ok 381 - L11b: a near miss that never reaches the longitude is a proven zero
+  ---
+  duration_ms: 13.725158
+  type: 'test'
+  ...
+# Subtest: L12: cancellation and a spent budget are execution states, with what was found
+ok 382 - L12: cancellation and a spent budget are execution states, with what was found
+  ---
+  duration_ms: 18.369231
+  type: 'test'
+  ...
+# Subtest: the result names what it does not apply, and does not claim to be apparent
+ok 383 - the result names what it does not apply, and does not claim to be apparent
+  ---
+  duration_ms: 21.742962
+  type: 'test'
+  ...
+# Subtest: light-time actually moves the event, and by about the light travel time
+ok 384 - light-time actually moves the event, and by about the light travel time
+  ---
+  duration_ms: 28.957394
+  type: 'test'
+  ...
+# \# sinCos over 40656 arguments: worst sin 1.484e-16, worst cos 1.330e-16
+# Subtest: the BigInt reference agrees with Math.sin to about a double ulp
+ok 385 - the BigInt reference agrees with Math.sin to about a double ulp
+  ---
+  duration_ms: 23.941141
+  type: 'test'
+  ...
+# Subtest: the reference reproduces values that are known in closed form
+ok 386 - the reference reproduces values that are known in closed form
+  ---
+  duration_ms: 0.350915
+  type: 'test'
+  ...
+# Subtest: sinCos is within its declared bound everywhere it is measured
+ok 387 - sinCos is within its declared bound everywhere it is measured
+  ---
+  duration_ms: 2691.723222
+  type: 'test'
+  ...
+# Subtest: the bound is declared for the range it is measured over, and refuses outside it
+ok 388 - the bound is declared for the range it is measured over, and refuses outside it
+  ---
+  duration_ms: 0.68979
+  type: 'test'
+  ...
+# Subtest: a root exactly on a record boundary is reported once, not once per side
+ok 389 - a root exactly on a record boundary is reported once, not once per side
+  ---
+  duration_ms: 15.567728
+  type: 'test'
+  ...
+# Subtest: a root exactly at the right edge of the interval is still reported
+ok 390 - a root exactly at the right edge of the interval is still reported
+  ---
+  duration_ms: 5.130071
+  type: 'test'
+  ...
+# Subtest: a root exactly at the left edge of the interval is reported once
+ok 391 - a root exactly at the left edge of the interval is reported once
+  ---
+  duration_ms: 4.304663
+  type: 'test'
+  ...
+# Subtest: every event the validated mode returns is at a distinct instant
+ok 392 - every event the validated mode returns is at a distinct instant
+  ---
+  duration_ms: 6.386459
+  type: 'test'
+  ...
+# Subtest: a linear crossing is found, bracketed, and the count is exact
+ok 393 - a linear crossing is found, bracketed, and the count is exact
+  ---
+  duration_ms: 3.635446
+  type: 'test'
+  ...
+# Subtest: the opposite direction is NOT counted as the requested event
+ok 394 - the opposite direction is NOT counted as the requested event
+  ---
+  duration_ms: 4.507133
+  type: 'test'
+  ...
+# Subtest: a target given as 450 or -270 degrees is the same request as 90
+ok 395 - a target given as 450 or -270 degrees is the same request as 90
+  ---
+  duration_ms: 7.750495
+  type: 'test'
+  ...
+# Subtest: two well-separated crossings are both found, with the exact instants inside the brackets
+ok 396 - two well-separated crossings are both found, with the exact instants inside the brackets
+  ---
+  duration_ms: 5.404675
+  type: 'test'
+  ...
+# Subtest: roots sitting exactly on record boundaries are found, and completeness is declined
+ok 397 - roots sitting exactly on record boundaries are found, and completeness is declined
+  ---
+  duration_ms: 2.996227
+  type: 'test'
+  ...
+# Subtest: a tangency is left unresolved rather than certified either way
+ok 398 - a tangency is left unresolved rather than certified either way
+  ---
+  duration_ms: 3.298541
+  type: 'test'
+  ...
+# Subtest: a near miss is either proven empty or left open, never proven wrong
+ok 399 - a near miss is either proven empty or left open, never proven wrong
+  ---
+  duration_ms: 3.582044
+  type: 'test'
+  ...
+# Subtest: a close pair is either found as two or left open, never proven to be one
+ok 400 - a close pair is either found as two or left open, never proven to be one
+  ---
+  duration_ms: 1.512275
+  type: 'test'
+  ...
+# Subtest: an interval with no crossing is PROVEN to have none
+ok 401 - an interval with no crossing is PROVEN to have none
+  ---
+  duration_ms: 2.259009
+  type: 'test'
+  ...
+# Subtest: a body whose x-component is T_5 has exactly 5 crossings per record, and all are found
+ok 402 - a body whose x-component is T_5 has exactly 5 crossings per record, and all are found
+  ---
+  duration_ms: 1.916699
+  type: 'test'
+  ...
+# Subtest: a body whose x-component is T_11 has exactly 11 crossings per record, and all are found
+ok 403 - a body whose x-component is T_11 has exactly 11 crossings per record, and all are found
+  ---
+  duration_ms: 3.830078
+  type: 'test'
+  ...
+# Subtest: a body whose x-component is T_19 has exactly 19 crossings per record, and all are found
+ok 404 - a body whose x-component is T_19 has exactly 19 crossings per record, and all are found
+  ---
+  duration_ms: 4.99647
+  type: 'test'
+  ...
+# Subtest: the same body across many records: every record contributes its roots
+ok 405 - the same body across many records: every record contributes its roots
+  ---
+  duration_ms: 9.303734
+  type: 'test'
+  ...
+# Subtest: partitioning the interval preserves the events, under the boundary convention
+ok 406 - partitioning the interval preserves the events, under the boundary convention
+  ---
+  duration_ms: 26.352149
+  type: 'test'
+  ...
+# Subtest: a body passing through the geocentre is reported as degenerate, not answered
+ok 407 - a body passing through the geocentre is reported as degenerate, not answered
+  ---
+  duration_ms: 3.644123
+  type: 'test'
+  ...
+# Subtest: a spent budget is a status, not a silent short list
+ok 408 - a spent budget is a status, not a silent short list
+  ---
+  duration_ms: 1.531574
+  type: 'test'
+  ...
+# Subtest: cancellation comes back as a result, keeping the events already isolated
+ok 409 - cancellation comes back as a result, keeping the events already isolated
+  ---
+  duration_ms: 1.411338
+  type: 'test'
+  ...
+# Subtest: a pack whose declared coverage overhangs its records cannot be proved over the overhang
+ok 410 - a pack whose declared coverage overhangs its records cannot be proved over the overhang
+  ---
+  duration_ms: 8.738191
+  type: 'test'
+  ...
+# Subtest: a result cannot say it found a different number of events than it returned
+ok 411 - a result cannot say it found a different number of events than it returned
+  ---
+  duration_ms: 0.418361
+  type: 'test'
+  ...
+# Subtest: seriesAt refuses to extrapolate rather than clamping the record index
+ok 412 - seriesAt refuses to extrapolate rather than clamping the record index
+  ---
+  duration_ms: 1.600894
+  type: 'test'
+  ...
+# Subtest: an instant outside coverage is refused
+ok 413 - an instant outside coverage is refused
+  ---
+  duration_ms: 1.079519
+  type: 'test'
+  ...
+# Subtest: an unknown body and an unknown option are refused
+ok 414 - an unknown body and an unknown option are refused
+  ---
+  duration_ms: 1.530557
+  type: 'test'
+  ...
+# Subtest: the validated result names a different quantity from the apparent one
+ok 415 - the validated result names a different quantity from the apparent one
+  ---
+  duration_ms: 2.299217
+  type: 'test'
+  ...
+# Subtest: the proven mode carries no assumptions, because that is what proven means
+ok 416 - the proven mode carries no assumptions, because that is what proven means
+  ---
+  duration_ms: 1.146713
+  type: 'test'
+  ...
+# Subtest: the cell lever arm covers the whole cell, whatever the midpoint rounds to
+ok 417 - the cell lever arm covers the whole cell, whatever the midpoint rounds to
+  ---
+  duration_ms: 0.879506
+  type: 'test'
+  ...
+# Subtest: the vendored compiler is present
+ok 418 - the vendored compiler is present
+  ---
+  duration_ms: 1.237167
+  type: 'test'
+  ...
+# Subtest: every file the compiler reads from beside itself is there
+ok 419 - every file the compiler reads from beside itself is there
+  ---
+  duration_ms: 2.768981
+  type: 'test'
+  ...
+# Subtest: the compiler reaches nothing outside its own directory
+ok 420 - the compiler reaches nothing outside its own directory
+  ---
+  duration_ms: 0.953227
+  type: 'test'
+  ...
+# Subtest: the vendored copy matches the research tree, when the research tree is there
+ok 421 - the vendored copy matches the research tree, when the research tree is there
+  ---
+  duration_ms: 6.840558
+  type: 'test'
+  ...
+# Subtest: the recorded hashes in SOURCE.md match the files
+ok 422 - the recorded hashes in SOURCE.md match the files
+  ---
+  duration_ms: 0.863206
+  type: 'test'
+  ...
+# Subtest: nothing in the numerical core reaches into the vendored compiler
+ok 423 - nothing in the numerical core reaches into the vendored compiler
+  ---
+  duration_ms: 3.344752
+  type: 'test'
+  ...
+1..423
+# tests 423
+# suites 0
+# pass 423
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 31830.325483

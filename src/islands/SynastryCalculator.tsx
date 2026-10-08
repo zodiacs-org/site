@@ -21,6 +21,7 @@ import {
 import type { SavedPair, SavedPairSide } from '../lib/profile/pairs';
 import type { SavedChart } from '../lib/profile/schema';
 import type { MinimalBody, PairSummary } from '../lib/engine/synastry';
+import type { Chart } from '../lib/engine/types';
 import type { ShareChartInput } from '../lib/share';
 import type { PositionsShareChart, PositionsShareInput } from '../lib/share-positions';
 import type { City } from '../lib/geo/search';
@@ -282,22 +283,7 @@ export async function resolveLink(link: { input: ShareChartInput; label: string 
     flags: resolved.flags,
   });
   return {
-    label: link.label,
-    bodies: result.bodies.map(({ body, lon }) => ({ body, lon })),
-    asc: result.angles?.asc ?? null,
-    timeKnown: input.timeKnown,
-    wheel: {
-      bodies: result.bodies.map(({ body, lon, retrograde }) => ({ body, lon, retrograde })),
-      mc: result.angles?.mc ?? null,
-      cusps: input.timeKnown ? (result.houses?.cusps ?? null) : null,
-    },
-    depth: result.bodies.map(({ body, lon, lat, retrograde }) => ({ body, lon, lat, retrograde })),
-    positions: {
-      bodies: result.bodies,
-      angles: result.angles ? { asc: result.angles.asc, mc: result.angles.mc } : null,
-      houseSystem: result.input.houseSystem,
-      engineVersion: result.engineVersion,
-    },
+    ...personFromChart(result, link.label, input.timeKnown),
     computedUtc: resolved.utc,
     ...(input.timeKnown ? { utc: resolved.utc } : { untimedDate: input.date }),
   };
@@ -320,7 +306,17 @@ export async function resolveForm(slot: SlotState, fallbackLabel: string, loadEn
     flags: resolved.flags,
   });
   return {
-    label: slot.name.trim() || fallbackLabel,
+    ...personFromChart(result, slot.name.trim() || fallbackLabel, timeKnown),
+    computedUtc: resolved.utc,
+    ...(timeKnown ? { utc: resolved.utc } : { untimedDate: slot.date }),
+    oldStyle: slot.oldStyle,
+  };
+}
+
+/** Shared projection for entered details and birth-input links. */
+function personFromChart(result: Chart, label: string, timeKnown: boolean): Person {
+  return {
+    label,
     bodies: result.bodies.map(({ body, lon }) => ({ body, lon })),
     asc: result.angles?.asc ?? null,
     timeKnown,
@@ -336,9 +332,6 @@ export async function resolveForm(slot: SlotState, fallbackLabel: string, loadEn
       houseSystem: result.input.houseSystem,
       engineVersion: result.engineVersion,
     },
-    computedUtc: resolved.utc,
-    ...(timeKnown ? { utc: resolved.utc } : { untimedDate: slot.date }),
-    oldStyle: slot.oldStyle,
   };
 }
 

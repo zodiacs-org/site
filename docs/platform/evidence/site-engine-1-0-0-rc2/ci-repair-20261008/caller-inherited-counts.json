@@ -1,0 +1,22 @@
+{
+  "sourceHead": "e814676c79c7bbde54b039fd4e86fe39d5229e72",
+  "stagedTree": "de1633dd9ff8a55339db9e6b24d8412e67b31cfa",
+  "scope": "Committed caller-only blobs compared with their preceding committed blobs. Positive matching names are inherited verbatim. This does not clear the historical tree.",
+  "reports": [
+    {
+      "matchingDataLines": 0,
+      "matchingNameLines": 2,
+      "newMatchingDataLines": 0,
+      "newMatchingNameLines": 0,
+      "sourceFilesRead": 1
+    },
+    {
+      "matchingDataLines": 0,
+      "matchingNameLines": 2,
+      "newMatchingDataLines": 0,
+      "newMatchingNameLines": 0,
+      "sourceFilesRead": 1
+    }
+  ],
+  "sourceBefore": "4bad1f3e02306518a76541a26c91e4b46a416b34"
+}

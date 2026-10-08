@@ -1,0 +1,64 @@
+{
+  "baseline": "5485cda15e7a147e5f680e426291eacf355c3703",
+  "comparisons": [
+    {
+      "path": "src/data/daily.json",
+      "baselineSha256": "57284c7230c0db5abe4767d217c07aa1f85e543d3ba4910b14663dbb1ef4547a",
+      "candidateSha256": "57284c7230c0db5abe4767d217c07aa1f85e543d3ba4910b14663dbb1ef4547a",
+      "numericScalarChanges": 0,
+      "structuralChanges": 0,
+      "changedFieldPaths": []
+    },
+    {
+      "path": "src/data/daily-publication.json",
+      "baselineSha256": "099b26f8cc10379558b8f2bb2ff9c353f8826fcdcd08f404664f3cef56ec9dc0",
+      "candidateSha256": "099b26f8cc10379558b8f2bb2ff9c353f8826fcdcd08f404664f3cef56ec9dc0",
+      "numericScalarChanges": 0,
+      "structuralChanges": 0,
+      "changedFieldPaths": []
+    },
+    {
+      "path": "src/data/daily-publication-manifest.json",
+      "baselineSha256": "f782fb5d018a9b1660202fe0d65d4179c84f86518fe07404e776140f1125941b",
+      "candidateSha256": "c9019e2f54137c9170af359104915bd17016f6213461ba149c845793f7bbd26f",
+      "numericScalarChanges": 0,
+      "structuralChanges": 0,
+      "changedFieldPaths": [
+        "$/generation/generatorSha256",
+        "$/facts/engine/version"
+      ]
+    },
+    {
+      "path": "src/data/horoscope-program.json",
+      "baselineSha256": "030697e9295fd4ed9ee8d0d888b6084d942749288b0bc5ee2842633362e64b47",
+      "candidateSha256": "030697e9295fd4ed9ee8d0d888b6084d942749288b0bc5ee2842633362e64b47",
+      "numericScalarChanges": 0,
+      "structuralChanges": 0,
+      "changedFieldPaths": []
+    },
+    {
+      "path": "src/data/horoscope-window.json",
+      "baselineSha256": "c359caff9295727ee67222ec9cbca4a6f58127ff210c3ec1eed4bcaa0cbacbfa",
+      "candidateSha256": "c359caff9295727ee67222ec9cbca4a6f58127ff210c3ec1eed4bcaa0cbacbfa",
+      "numericScalarChanges": 0,
+      "structuralChanges": 0,
+      "changedFieldPaths": []
+    },
+    {
+      "path": "src/data/registry-research/drafts.json",
+      "baselineSha256": "53bbb069190fb8acd97284d5f2ce77a1e47c5c04eee9b6203d9b7a82bc71625a",
+      "candidateSha256": "53bbb069190fb8acd97284d5f2ce77a1e47c5c04eee9b6203d9b7a82bc71625a",
+      "numericScalarChanges": 0,
+      "structuralChanges": 0,
+      "changedFieldPaths": []
+    },
+    {
+      "path": "src/data/registry-research/publication.json",
+      "baselineSha256": "8f06b434dd0406e122a98d84dec5d119b59c644b3629e841d6d21589acc78c6f",
+      "candidateSha256": "8f06b434dd0406e122a98d84dec5d119b59c644b3629e841d6d21589acc78c6f",
+      "numericScalarChanges": 0,
+      "structuralChanges": 0,
+      "changedFieldPaths": []
+    }
+  ]
+}

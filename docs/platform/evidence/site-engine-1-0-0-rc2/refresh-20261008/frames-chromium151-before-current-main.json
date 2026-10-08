@@ -1,0 +1,91 @@
+{
+  "schema": "zodiacs.phase1-frame-cadence.v2",
+  "measuredAt": "2026-10-08T05:08:52.320Z",
+  "route": "/horoscopes/aries/",
+  "browser": "Chromium 151.0.7922.173",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "cpuThrottleRate": 4,
+  "thresholds": {
+    "minimumBaselineFps": 59,
+    "maximumTargetFps": 60,
+    "minimumCadenceRetention": 0.98,
+    "maximumMedianIntervalMs": 18.5,
+    "maximumP95IntervalMs": 34,
+    "maximumLongFrameRatio": 0.02,
+    "longFrameMs": 34
+  },
+  "baseline": {
+    "sampledFrames": 180,
+    "durationMs": 3266.5999999999995,
+    "effectiveFps": 55.10316537072186,
+    "medianIntervalMs": 16.699999999999818,
+    "p95IntervalMs": 16.800000000000182,
+    "p99IntervalMs": 66.59999999999991,
+    "maximumIntervalMs": 100,
+    "longFrameCount": 3,
+    "longFrameRatio": 0.016666666666666666
+  },
+  "baselinePass": false,
+  "motion": {
+    "animationName": "program-sky-drift",
+    "animationDuration": "12s",
+    "animationPlayState": "running",
+    "documentVisibility": "visible",
+    "activeAnimations": [
+      {
+        "name": "program-sky-drift",
+        "pseudoElement": "::before"
+      }
+    ]
+  },
+  "requiredPassingTrials": 3,
+  "passingTrials": 3,
+  "trials": [
+    {
+      "sampledFrames": 180,
+      "durationMs": 2999.8,
+      "effectiveFps": 60.00400026668444,
+      "medianIntervalMs": 16.699999999999818,
+      "p95IntervalMs": 16.700000000000728,
+      "p99IntervalMs": 16.800000000000182,
+      "maximumIntervalMs": 16.80000000000109,
+      "longFrameCount": 0,
+      "longFrameRatio": 0,
+      "minimumEffectiveFps": 54.00110206330742,
+      "distinctTransformSamples": 8,
+      "pass": true
+    },
+    {
+      "sampledFrames": 180,
+      "durationMs": 3000,
+      "effectiveFps": 60,
+      "medianIntervalMs": 16.69999999999891,
+      "p95IntervalMs": 16.799999999999272,
+      "p99IntervalMs": 16.80000000000109,
+      "maximumIntervalMs": 16.80000000000109,
+      "longFrameCount": 0,
+      "longFrameRatio": 0,
+      "minimumEffectiveFps": 54.00110206330742,
+      "distinctTransformSamples": 8,
+      "pass": true
+    },
+    {
+      "sampledFrames": 180,
+      "durationMs": 3016.5999999999985,
+      "effectiveFps": 59.669826957501854,
+      "medianIntervalMs": 16.69999999999891,
+      "p95IntervalMs": 16.700000000000728,
+      "p99IntervalMs": 16.80000000000109,
+      "maximumIntervalMs": 33.399999999999636,
+      "longFrameCount": 0,
+      "longFrameRatio": 0,
+      "minimumEffectiveFps": 54.00110206330742,
+      "distinctTransformSamples": 8,
+      "pass": true
+    }
+  ],
+  "pass": false
+}

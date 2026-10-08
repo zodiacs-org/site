@@ -97,12 +97,19 @@ export async function phase1TemplateSourceSha256(
     (directory) => path === directory || path.startsWith(`${directory}/`),
   ) && !PHASE1_TEMPLATE_SOURCE_EXCLUDED_PATHS.includes(path));
   const paths = [...new Set([...PHASE1_TEMPLATE_SOURCE_PATHS, ...directoryFiles])].sort();
-  for (const path of paths) {
-    const absolute = resolve(repositoryRoot, path);
-    digest.update(relative(repositoryRoot, absolute).replaceAll('\\', '/'));
-    digest.update('\0');
-    digest.update(await readSource(absolute));
-    digest.update('\0');
+  // Bound concurrent reads, then hash every path and byte in the same sorted
+  // order. Reading one file at a time made repeated invalidation checks depend
+  // on thousands of filesystem round trips; coverage and framing stay exact.
+  for (let start = 0; start < paths.length; start += 16) {
+    const batch = paths.slice(start, start + 16);
+    const bytes = await Promise.all(batch.map((path) => readSource(resolve(repositoryRoot, path))));
+    for (const [index, path] of batch.entries()) {
+      const absolute = resolve(repositoryRoot, path);
+      digest.update(relative(repositoryRoot, absolute).replaceAll('\\', '/'));
+      digest.update('\0');
+      digest.update(bytes[index]);
+      digest.update('\0');
+    }
   }
   return digest.digest('hex');
 }

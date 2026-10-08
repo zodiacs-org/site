@@ -45,7 +45,7 @@ Severity follows the audit's scale:
 | F-71 | major | process | Checkpoint 14 first accepted the co-ascendants and Koch on a clock reading and, for the co-ascendants, a window chosen after the residuals were seen, and its preregistrations said nothing had been measured | owner decision: both units `validated` until the owner ratifies the shared-UT1 reading and the window; they fail as measured if not |
 | F-74 | major | privacy | A chart's citation digest identifies the place as well as the time, and the MCP adapter's and the compute API's documents said only the time; on a chart with no known time the adapter's summary shows nothing that depends on the place | fixed in #643, each with tests: the MCP adapter states both directions from 0.1.0-rc.16.1, before its release, and so do the compute API's documents and its claim |
 | F-78 | major | cost | On engine rc.16, one address at both rate limits can cost 10.7 to 13.2 CPU-seconds a minute at the slowest requests, in three runs on one machine, against 7.8 on rc.15 in the run that timed both; DECISIONS-2026-09-30 §7 allows 10 | open, for the owner: the Firewall rules are the owner's; under the owner's delegation the programme chose 6 and 30 (DECISIONS-2026-10-05 §1), which the owner applies; options with their cost in each run are below; the compute page now gives these figures, where it gave only rc.15's 8.7; the elections endpoint does not raise the bound |
-| F-80 | major | process | P3.2's first clause holds only if calc's refusal of `SE_SIDM_USER` definitions carried by precession from epochs outside 1800–2200, which `/vedic` computes and flags, is read as the span the entry point keeps; the reading is the programme's own | owner decision: P3.2 `validated` until the owner ratifies the reading, or until an engine candidate that computes every such epoch is served and judged; the programme recommends the latter, in the 1.0 candidate |
+| F-80 | major | process | P3.2's first clause holds only if calc's refusal of `SE_SIDM_USER` definitions carried by precession from epochs outside 1800–2200, which `/vedic` computes and flags, is read as the span the entry point keeps; the reading is the programme's own | owner approved the EPHEMERIS_SPAN epoch reading (DECISIONS-2026-10-06 §3); P3.2 stays `validated` until the 1.0 candidate is served in production and judged |
 | F-06 | major | engine rc.11 | Configured-aspect "exact orb" claim fails on general decimal inputs | fix in engine rc.13 (in progress); fixed in engine rc.14 (zodiacs-org/engine#10, merged 2026-09-29 as `8deda244`); reaches production when the site adopts it; in production since #600 (merged as `6cc4d477`, deployment `dpl_2JtJjuE2bU8CYTBMxKF3kco43qcN`) |
 | F-17 | major | privacy | Share code of a chart without a birth time reveals the birthplace's longitude or zone | open: code fix planned; copy wrong until then; fixed in #599: a chart without a birth time is shared as the sky at 12:00 UTC on its date, and the copy is corrected in six locales; in production since #599 (merged as `aca257ad`, deployment `dpl_AuGvEUL1oJPenrfbFq3FkGH5V9s9`) |
 | F-18 | major | privacy | Sign-icon requests reveal Sun, Moon and rising signs to the server; privacy page silent | open: fix planned; fixed in #599: a chart's page asks for all twelve sign pictures of a size before showing its own; in production since #599 (merged as `aca257ad`, deployment `dpl_AuGvEUL1oJPenrfbFq3FkGH5V9s9`) |
@@ -757,3 +757,15 @@ The MCP adapter's part is fixed in 0.1.0-rc.16.1 (#643): `get_capabilities` labe
   the whole range of a JavaScript `Date`, compared with ERFA there. A
   candidate that covers only the engine's ephemeris span would leave a
   narrower gap that needs the same reading.
+
+
+### F-80 follow-up — owner decision of 2026-10-06
+
+The owner approved the recommendation recorded in
+[DECISIONS-2026-10-06 §3](DECISIONS-2026-10-06.md): calc accepts a caller's
+precession-carried ayanamsa epoch anywhere in EPHEMERIS_SPAN and refuses one
+beyond it. The engine's ERFA comparison grows further outside that span;
+the decision gives the measured growth. Engine 1.0.0-rc.2 implements the
+reading. P3.2 stays validated until the site serves the candidate in
+production and the complete gate is judged at checkpoint 22. This local
+adoption changes neither its status nor the fixed denominator.

@@ -1,0 +1,66 @@
+{
+  "what": "One idle drive on untouched main, then candidate drives before and after the evidence-hasher optimization. Driver, thresholds and CPU throttle unchanged; the hasher is outside the rendered application. Final candidate drive after retaining current main metadata; all earlier reports retained.",
+  "base": "f4715b7047c852f48d0e188d43863d5825ae2bef",
+  "node": "22.22.2",
+  "cpuQuota": "400000 100000",
+  "driverSha256": "e3bb7a20b60e649e0d9a76a5ac18abe6b5a70debff41b2deaa0df1cd52e02a22",
+  "runs": [
+    {
+      "report": "main-idle.json",
+      "reportSha256": "f28eb78701e946b9bbcb40fc88710c52187732408718d3efa3b7f208d67a2516",
+      "templateSourceSha256": "ae5a6444c591766c46fa28265d0ce9574b59c7ed43a4f0dff653a0eb7a9cd192",
+      "browser": "Chromium 151.0.7922.173",
+      "cpuThrottleRate": 4,
+      "baselinePass": false,
+      "baselineFps": 58.06638923836252,
+      "passingTrials": 3,
+      "pass": false
+    },
+    {
+      "report": "candidate-current.json",
+      "reportSha256": "5c8793443c7458fc496b3bd9b2b1c098c2a28d99bd702db27513cdf41ae34511",
+      "templateSourceSha256": "9bee92dfad390961d1a02132400e3d9385e30206d820880b609cae5c64d7a3e9",
+      "browser": "Chromium 151.0.7922.173",
+      "cpuThrottleRate": 4,
+      "baselinePass": false,
+      "baselineFps": 58.06826246854635,
+      "passingTrials": 3,
+      "pass": false
+    },
+    {
+      "report": "candidate-hash-fixed.json",
+      "reportSha256": "a5769c8b77a96495531481e08afdd740f271521edc4a735327679e58a7e5c94e",
+      "templateSourceSha256": "b513a934c454dd36466ea647c234010cd0ab063027f9bcb521486d2334ba9d45",
+      "browser": "Chromium 151.0.7922.173",
+      "cpuThrottleRate": 4,
+      "baselinePass": false,
+      "baselineFps": 58.38090295796575,
+      "passingTrials": 3,
+      "pass": false
+    },
+    {
+      "report": "candidate-main-refresh.json",
+      "reportSha256": "904536da8ee841c0335260fdc60212b5b56dd62847cf7291af43a5ef24fa85ac",
+      "assembledSourceCommit": "1d49fd4397e378cf86054fc930e8395da0e63f6f",
+      "templateSourceSha256": "b513a934c454dd36466ea647c234010cd0ab063027f9bcb521486d2334ba9d45",
+      "browser": "Chromium 151.0.7922.173",
+      "cpuThrottleRate": 4,
+      "baselinePass": false,
+      "baselineFps": 51.92557334487235,
+      "passingTrials": 3,
+      "pass": false
+    },
+    {
+      "report": "../refresh-20261008/frames-chromium151.json",
+      "reportSha256": "f3dffe9907d091bf61c0f67a4d2868048763a0e0ab9487a608b4986f82d1d5d8",
+      "assembledSourceCommit": "97d59ff024dbf09f64387bac4b8054c228db3dac",
+      "templateSourceSha256": "b513a934c454dd36466ea647c234010cd0ab063027f9bcb521486d2334ba9d45",
+      "browser": "Chromium 151.0.7922.173",
+      "cpuThrottleRate": 4,
+      "baselinePass": false,
+      "baselineFps": 56.84509711037423,
+      "passingTrials": 3,
+      "pass": false
+    }
+  ]
+}

@@ -1,0 +1,431 @@
+{
+  "measured": "2026-10-07",
+  "what": "warm single requests through the handler, local-time bundle, no rate-limit call, every shape in one seeded random order; wall and CPU time per request",
+  "runtime": {
+    "node": "v22.22.2",
+    "tzdb": "2025c",
+    "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+    "cores": 5
+  },
+  "minutes": 11.8,
+  "rules": {
+    "zodiacs-compute-api": {
+      "requests": 40,
+      "windowSeconds": 60
+    },
+    "zodiacs-compute-events": {
+      "requests": 10,
+      "windowSeconds": 60
+    }
+  },
+  "rows": [
+    {
+      "shape": "events, 92 days (the limit), all bodies and kinds, four windows a year 1800-2199",
+      "endpoint": "events",
+      "rules": [
+        "zodiacs-compute-api",
+        "zodiacs-compute-events"
+      ],
+      "requests": 1600,
+      "wallMs": {
+        "p50": 231.1,
+        "p95": 413.7,
+        "max": 1000.2
+      },
+      "cpuMs": {
+        "p50": 233.6,
+        "p95": 415,
+        "max": 1001.5
+      },
+      "slowestRequest": {
+        "from": "1973-07-03T00:00:00.000Z",
+        "to": "1973-10-03T00:00:00.000Z"
+      },
+      "maxResponseBytes": 9846,
+      "maxSamples": 5302
+    },
+    {
+      "shape": "positions, 100 instants (the limit), all bodies, one request a year 1800-2199",
+      "endpoint": "positions",
+      "rules": [
+        "zodiacs-compute-api"
+      ],
+      "requests": 400,
+      "wallMs": {
+        "p50": 92,
+        "p95": 167.1,
+        "max": 286.3
+      },
+      "cpuMs": {
+        "p50": 93.5,
+        "p95": 169.1,
+        "max": 287.1
+      },
+      "slowestRequest": {
+        "instants": [
+          "2056-01-01T00:00:00.000Z",
+          "2056-01-04T15:36:00.000Z",
+          "2056-01-08T07:12:00.000Z",
+          "2056-01-11T22:47:59.999Z",
+          "2056-01-15T14:24:00.000Z",
+          "2056-01-19T06:00:00.000Z",
+          "2056-01-22T21:35:59.999Z",
+          "2056-01-26T13:12:00.000Z",
+          "2056-01-30T04:48:00.000Z",
+          "2056-02-02T20:24:00.000Z",
+          "2056-02-06T12:00:00.000Z",
+          "2056-02-10T03:36:00.000Z",
+          "2056-02-13T19:11:59.999Z",
+          "2056-02-17T10:47:59.999Z",
+          "2056-02-21T02:24:00.000Z",
+          "2056-02-24T18:00:00.000Z",
+          "2056-02-28T09:36:00.000Z",
+          "2056-03-03T01:12:00.000Z",
+          "2056-03-06T16:48:00.000Z",
+          "2056-03-10T08:23:59.999Z",
+          "2056-03-14T00:00:00.000Z",
+          "2056-03-17T15:35:59.999Z",
+          "2056-03-21T07:12:00.000Z",
+          "2056-03-24T22:48:00.000Z",
+          "2056-03-28T14:23:59.999Z",
+          "2056-04-01T06:00:00.000Z",
+          "2056-04-04T21:35:59.999Z",
+          "2056-04-08T13:12:00.000Z",
+          "2056-04-12T04:48:00.000Z",
+          "2056-04-15T20:24:00.000Z",
+          "2056-04-19T12:00:00.000Z",
+          "2056-04-23T03:36:00.000Z",
+          "2056-04-26T19:12:00.000Z",
+          "2056-04-30T10:48:00.000Z",
+          "2056-05-04T02:24:00.000Z",
+          "2056-05-07T18:00:00.000Z",
+          "2056-05-11T09:36:00.000Z",
+          "2056-05-15T01:11:59.999Z",
+          "2056-05-18T16:47:59.999Z",
+          "2056-05-22T08:24:00.000Z",
+          "2056-05-26T00:00:00.000Z",
+          "2056-05-29T15:36:00.000Z",
+          "2056-06-02T07:11:59.999Z",
+          "2056-06-05T22:47:59.999Z",
+          "2056-06-09T14:24:00.000Z",
+          "2056-06-13T06:00:00.000Z",
+          "2056-06-16T21:36:00.000Z",
+          "2056-06-20T13:11:59.999Z",
+          "2056-06-24T04:47:59.999Z",
+          "2056-06-27T20:24:00.000Z",
+          "2056-07-01T12:00:00.000Z",
+          "2056-07-05T03:36:00.000Z",
+          "2056-07-08T19:11:59.999Z",
+          "2056-07-12T10:47:59.999Z",
+          "2056-07-16T02:24:00.000Z",
+          "2056-07-19T18:00:00.000Z",
+          "2056-07-23T09:36:00.000Z",
+          "2056-07-27T01:12:00.000Z",
+          "2056-07-30T16:48:00.000Z",
+          "2056-08-03T08:24:00.000Z",
+          "2056-08-07T00:00:00.000Z",
+          "2056-08-10T15:36:00.000Z",
+          "2056-08-14T07:12:00.000Z",
+          "2056-08-17T22:48:00.000Z",
+          "2056-08-21T14:24:00.000Z",
+          "2056-08-25T06:00:00.000Z",
+          "2056-08-28T21:36:00.000Z",
+          "2056-09-01T13:12:00.000Z",
+          "2056-09-05T04:48:00.000Z",
+          "2056-09-08T20:24:00.000Z",
+          "2056-09-12T12:00:00.000Z",
+          "2056-09-16T03:35:59.999Z",
+          "2056-09-19T19:12:00.000Z",
+          "2056-09-23T10:48:00.000Z",
+          "2056-09-27T02:23:59.999Z",
+          "2056-09-30T18:00:00.000Z",
+          "2056-10-04T09:35:59.999Z",
+          "2056-10-08T01:12:00.000Z",
+          "2056-10-11T16:48:00.000Z",
+          "2056-10-15T08:23:59.999Z",
+          "2056-10-19T00:00:00.000Z",
+          "2056-10-22T15:35:59.999Z",
+          "2056-10-26T07:12:00.000Z",
+          "2056-10-29T22:48:00.000Z",
+          "2056-11-02T14:23:59.999Z",
+          "2056-11-06T06:00:00.000Z",
+          "2056-11-09T21:35:59.999Z",
+          "2056-11-13T13:12:00.000Z",
+          "2056-11-17T04:48:00.000Z",
+          "2056-11-20T20:23:59.999Z",
+          "2056-11-24T12:00:00.000Z",
+          "2056-11-28T03:35:59.999Z",
+          "2056-12-01T19:12:00.000Z",
+          "2056-12-05T10:48:00.000Z",
+          "2056-12-09T02:23:59.999Z",
+          "2056-12-12T18:00:00.000Z",
+          "2056-12-16T09:35:59.999Z",
+          "2056-12-20T01:12:00.000Z",
+          "2056-12-23T16:48:00.000Z",
+          "2056-12-27T08:23:59.999Z"
+        ]
+      },
+      "maxResponseBytes": 231704
+    },
+    {
+      "shape": "chart, each of the 13 house systems, 1800-2199",
+      "endpoint": "chart",
+      "rules": [
+        "zodiacs-compute-api"
+      ],
+      "requests": 200,
+      "wallMs": {
+        "p50": 3.3,
+        "p95": 7.6,
+        "max": 10.7
+      },
+      "cpuMs": {
+        "p50": 3.6,
+        "p95": 9.5,
+        "max": 15.7
+      },
+      "slowestRequest": {
+        "utc": "2164-03-15T13:37:00.000Z",
+        "latitude": 64.1466,
+        "longitude": -21.9426,
+        "houseSystem": "whole"
+      },
+      "maxResponseBytes": 6590
+    },
+    {
+      "shape": "sky-fact, each kind on a date in every zone, 1800-2199",
+      "endpoint": "sky-fact",
+      "rules": [
+        "zodiacs-compute-api"
+      ],
+      "requests": 400,
+      "wallMs": {
+        "p50": 2.1,
+        "p95": 8.1,
+        "max": 40.6
+      },
+      "cpuMs": {
+        "p50": 2.2,
+        "p95": 8.7,
+        "max": 41.2
+      },
+      "slowestRequest": {
+        "kind": "retrograde",
+        "body": "Mercury",
+        "date": "2173-02-10"
+      },
+      "maxResponseBytes": 2703,
+      "maxSamples": 33
+    },
+    {
+      "shape": "time, with a longitude, 1800-2199",
+      "endpoint": "time",
+      "rules": [
+        "zodiacs-compute-api"
+      ],
+      "requests": 400,
+      "wallMs": {
+        "p50": 1,
+        "p95": 3.2,
+        "max": 21.1
+      },
+      "cpuMs": {
+        "p50": 1,
+        "p95": 3.5,
+        "max": 24.1
+      },
+      "slowestRequest": {
+        "local": {
+          "date": "2074-06-15",
+          "time": "12:00",
+          "zone": "America/Mexico_City"
+        },
+        "longitude": -99.13
+      },
+      "maxResponseBytes": 2610
+    },
+    {
+      "shape": "elections, the Moon void of course, 31 days, 1800-2199",
+      "endpoint": "elections",
+      "rules": [
+        "zodiacs-compute-api",
+        "zodiacs-compute-events"
+      ],
+      "requests": 400,
+      "wallMs": {
+        "p50": 129.3,
+        "p95": 252.8,
+        "max": 1130.4
+      },
+      "cpuMs": {
+        "p50": 131.2,
+        "p95": 271.9,
+        "max": 1129.6
+      },
+      "slowestRequest": {
+        "from": "2091-04-01T00:00:00.000Z",
+        "to": "2091-05-02T00:00:00.000Z",
+        "conditions": [
+          {
+            "kind": "void-of-course"
+          }
+        ]
+      },
+      "maxResponseBytes": 3471,
+      "maxSamples": 5726,
+      "refusedForAllowance": 1
+    },
+    {
+      "shape": "elections, five conditions without houses, 31 days, 1800-2199",
+      "endpoint": "elections",
+      "rules": [
+        "zodiacs-compute-api",
+        "zodiacs-compute-events"
+      ],
+      "requests": 400,
+      "wallMs": {
+        "p50": 159.6,
+        "p95": 281.5,
+        "max": 931.1
+      },
+      "cpuMs": {
+        "p50": 161.2,
+        "p95": 289.1,
+        "max": 932.8
+      },
+      "slowestRequest": {
+        "from": "2026-04-01T00:00:00.000Z",
+        "to": "2026-05-02T00:00:00.000Z",
+        "conditions": [
+          {
+            "kind": "phase",
+            "phase": "waxing"
+          },
+          {
+            "kind": "void-of-course",
+            "not": true
+          },
+          {
+            "kind": "retrograde",
+            "body": "Mercury",
+            "not": true
+          },
+          {
+            "kind": "sign",
+            "body": "Moon",
+            "sign": "libra",
+            "not": true
+          },
+          {
+            "kind": "retrograde",
+            "body": "Venus"
+          }
+        ]
+      },
+      "maxResponseBytes": 3195,
+      "maxSamples": 5991,
+      "refusedForAllowance": 28
+    },
+    {
+      "shape": "elections, the Moon angular, 4 days, 1800-2199",
+      "endpoint": "elections",
+      "rules": [
+        "zodiacs-compute-api",
+        "zodiacs-compute-events"
+      ],
+      "requests": 400,
+      "wallMs": {
+        "p50": 214.5,
+        "p95": 402,
+        "max": 1431.4
+      },
+      "cpuMs": {
+        "p50": 220.8,
+        "p95": 406.9,
+        "max": 1447.5
+      },
+      "slowestRequest": {
+        "from": "2118-02-03T00:00:00.000Z",
+        "to": "2118-02-07T00:00:00.000Z",
+        "conditions": [
+          {
+            "kind": "angular",
+            "body": "Moon"
+          }
+        ],
+        "place": {
+          "latitude": 59.9,
+          "longitude": 10.7,
+          "houseSystem": "koch"
+        }
+      },
+      "maxResponseBytes": 3607,
+      "maxSamples": 6000,
+      "refusedForAllowance": 128
+    },
+    {
+      "shape": "elections, the Moon in a sign, waxing, and Mars angular, 31 days, 1800-2199",
+      "endpoint": "elections",
+      "rules": [
+        "zodiacs-compute-api",
+        "zodiacs-compute-events"
+      ],
+      "requests": 400,
+      "wallMs": {
+        "p50": 90.7,
+        "p95": 248.3,
+        "max": 937.6
+      },
+      "cpuMs": {
+        "p50": 91.3,
+        "p95": 260.2,
+        "max": 1008.4
+      },
+      "slowestRequest": {
+        "from": "1814-04-01T00:00:00.000Z",
+        "to": "1814-05-02T00:00:00.000Z",
+        "conditions": [
+          {
+            "kind": "sign",
+            "body": "Moon",
+            "sign": "virgo"
+          },
+          {
+            "kind": "phase",
+            "phase": "waxing"
+          },
+          {
+            "kind": "angular",
+            "body": "Mars"
+          }
+        ],
+        "place": {
+          "latitude": -33.9,
+          "longitude": 151.2,
+          "houseSystem": "campanus"
+        }
+      },
+      "maxResponseBytes": 3706,
+      "maxSamples": 5748,
+      "refusedForAllowance": 30
+    }
+  ],
+  "perAddressPerMinute": {
+    "how": "10 requests under the second rule at the costliest of them, events or elections, and 30 more at the costliest other request, in seconds",
+    "cpuAtMax": {
+      "seconds": 23.1,
+      "secondRule": "elections",
+      "firstRule": "positions"
+    },
+    "cpuAtP95": {
+      "seconds": 9.2,
+      "secondRule": "events",
+      "firstRule": "positions"
+    },
+    "wallAtMax": {
+      "seconds": 22.9,
+      "secondRule": "elections",
+      "firstRule": "positions"
+    }
+  }
+}

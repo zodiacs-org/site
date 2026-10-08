@@ -1,0 +1,115 @@
+{
+  "implementation": "Rebuilt Node Unicode-regex wrapper using the privately supplied TSV inputs; original wrapper unavailable.",
+  "entries": 55998,
+  "sets": [
+    {
+      "anonymousSet": 1,
+      "dataPatterns": 79,
+      "namePatterns": 10,
+      "anonymousSubjects": 7,
+      "counts": {
+        "history:data": 48,
+        "history:name": 64,
+        "committed:name": 530,
+        "committed:data": 391,
+        "working:name": 530,
+        "working:data": 391
+      },
+      "subjects": {
+        "history:5:data": 48,
+        "history:6:name": 48,
+        "history:7:name": 16,
+        "committed:7:name": 443,
+        "committed:5:data": 33,
+        "committed:6:name": 36,
+        "committed:7:data": 357,
+        "committed:5:name": 47,
+        "committed:1:name": 3,
+        "committed:6:data": 1,
+        "committed:2:name": 3,
+        "committed:3:data": 1,
+        "committed:2:data": 1,
+        "working:7:name": 443,
+        "working:5:data": 33,
+        "working:6:name": 36,
+        "working:7:data": 357,
+        "working:5:name": 47,
+        "working:1:name": 3,
+        "working:6:data": 1,
+        "working:2:name": 3,
+        "working:3:data": 1,
+        "working:2:data": 1
+      }
+    },
+    {
+      "anonymousSet": 2,
+      "dataPatterns": 79,
+      "namePatterns": 10,
+      "anonymousSubjects": 7,
+      "counts": {
+        "history:data": 48,
+        "history:name": 64,
+        "committed:name": 530,
+        "committed:data": 391,
+        "working:name": 530,
+        "working:data": 391
+      },
+      "subjects": {
+        "history:5:data": 48,
+        "history:6:name": 48,
+        "history:7:name": 16,
+        "committed:7:name": 443,
+        "committed:5:data": 33,
+        "committed:6:name": 36,
+        "committed:7:data": 357,
+        "committed:5:name": 47,
+        "committed:1:name": 3,
+        "committed:6:data": 1,
+        "committed:2:name": 3,
+        "committed:3:data": 1,
+        "committed:2:data": 1,
+        "working:7:name": 443,
+        "working:5:data": 33,
+        "working:6:name": 36,
+        "working:7:data": 357,
+        "working:5:name": 47,
+        "working:1:name": 3,
+        "working:6:data": 1,
+        "working:2:name": 3,
+        "working:3:data": 1,
+        "working:2:data": 1
+      }
+    }
+  ],
+  "range": "254bf7fe223c2b153b6ea36d238577fd8a4516cb..HEAD",
+  "counts": {
+    "commits": 13,
+    "gzipDecompressed": 265,
+    "tarDecompressed": 191,
+    "zipDecompressed": 70,
+    "committedFiles": 17031,
+    "workingFiles": 17037
+  },
+  "readErrors": [],
+  "workerExit": 0,
+  "scope": "Each commit against every parent; added lines and changed binary/archive contents; staged; committed tracked tree; tracked and nonignored working files; recursive gzip/tar/ZIP decompression. Existing cited charts remain cited, not automatically findings.",
+  "sourceHead": "71ab060a8614e58d619b5baeb2e009245c0ef354",
+  "symlinkDirectoryCoverage": {
+    "links": 2,
+    "directoryTargetsInsideRepo": 2,
+    "regularTargetFiles": 2,
+    "regularTargetFilesAlreadyInWorkingScan": 2,
+    "uncoveredTargetFiles": 0
+  },
+  "selftest": {
+    "passed": true,
+    "scopes": {
+      "history": true,
+      "staged": true,
+      "committed": true,
+      "working": true
+    },
+    "nestedGzipTarInsideZip": true,
+    "readErrors": 0
+  }
+}

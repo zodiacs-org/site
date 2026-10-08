@@ -1,0 +1,41 @@
+
+> zodiacs-org@1.0.0 test:phase1:acceptance
+> node tests/phase1-acceptance-drive.mjs
+
+CAPTURE today @ 360: /today/
+PASS today @ 360: 360×6353
+CAPTURE today @ 1280: /today/
+PASS today @ 1280: 1280×4125
+CAPTURE horoscopes-hub @ 360: /horoscopes/
+PASS horoscopes-hub @ 360: 360×6155
+CAPTURE horoscopes-hub @ 1280: /horoscopes/
+PASS horoscopes-hub @ 1280: 1280×3118
+CAPTURE daily @ 360: /horoscopes/aries/
+PASS daily @ 360: 360×4550
+CAPTURE daily @ 1280: /horoscopes/aries/
+PASS daily @ 1280: 1280×3836
+CAPTURE tomorrow @ 360: /horoscopes/aries/tomorrow/
+PASS tomorrow @ 360: 360×4428
+CAPTURE tomorrow @ 1280: /horoscopes/aries/tomorrow/
+PASS tomorrow @ 1280: 1280×3712
+CAPTURE weekly @ 360: /horoscopes/aries/weekly/
+PASS weekly @ 360: 360×5238
+CAPTURE weekly @ 1280: /horoscopes/aries/weekly/
+PASS weekly @ 1280: 1280×4068
+CAPTURE monthly @ 360: /horoscopes/aries/monthly/
+PASS monthly @ 360: 360×4954
+CAPTURE monthly @ 1280: /horoscopes/aries/monthly/
+PASS monthly @ 1280: 1280×3839
+CAPTURE love @ 360: /horoscopes/aries/love/
+PASS love @ 360: 360×4151
+CAPTURE love @ 1280: /horoscopes/aries/love/
+PASS love @ 1280: 1280×3466
+CAPTURE career @ 360: /horoscopes/aries/career/
+PASS career @ 360: 360×4144
+CAPTURE career @ 1280: /horoscopes/aries/career/
+PASS career @ 1280: 1280×3485
+CAPTURE yearly @ 360: /horoscopes/aries/2027/
+PASS yearly @ 360: 360×12587
+CAPTURE yearly @ 1280: /horoscopes/aries/2027/
+PASS yearly @ 1280: 1280×7925
+Phase 1 visual acceptance: PASS — 18/18 exact-width captures

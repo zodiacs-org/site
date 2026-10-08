@@ -1,0 +1,17 @@
+{
+  "measured": "2026-10-07T15:16:19.789Z",
+  "what": "separate warm houses sweep, generated production bundle, 13 systems in each year 1800–2199, injected admission",
+  "node": "v22.22.2",
+  "cpu": "INTEL(R) XEON(R) PLATINUM 8573C",
+  "requests": 5200,
+  "cpuMs": {
+    "p50": 13.6,
+    "p95": 23,
+    "max": 98.5
+  },
+  "wallMs": {
+    "p50": 13.1,
+    "p95": 21.8,
+    "max": 74.8
+  }
+}

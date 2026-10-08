@@ -1,0 +1,200 @@
+[
+  {
+    "file": "pr689-repair-production-flags-build.log",
+    "withheldLines": 0,
+    "normalizedSha256": "d28182d6c742683a0bea03397e62f571e26f6d4a7826ce337342e8036fe1b6cf",
+    "capturedSha256": "9a9db2e7f2b53e3b84a2e0c640eb1d3bc9135476ae04ba499a43eaca2e1d4fb6"
+  },
+  {
+    "file": "pr689-repair-typecheck.log",
+    "withheldLines": 0,
+    "normalizedSha256": "8a50de6a4e7ceae9c7ea7bdee2bd8b0575d381c03b301e57523a6c6dcdf221f3",
+    "capturedSha256": "c1acd63a488679c608ba7166e4ffa7c4da15ca2fb4d0e993b83c446b48d8faf6"
+  },
+  {
+    "file": "pr689-repair-compatibility-browser.log",
+    "withheldLines": 4,
+    "normalizedSha256": "a58ffb31667cdd1ae69232976766ffa2a9d586b514d8f39867d8243c5ecf7bad",
+    "capturedDigestRetainedPrivately": true
+  },
+  {
+    "file": "pr689-repair-default-build.log",
+    "withheldLines": 0,
+    "normalizedSha256": "6ebbf824d271c047a55180d50e1c8a82fbf3d6fdadd9a25390f4b218e3b25b77",
+    "capturedSha256": "558b066c26c22a39199a3e6205c0b862663c2d5b6a3bd67872187e3bf2e667bf"
+  },
+  {
+    "file": "pr689-repair-captures.log",
+    "withheldLines": 0,
+    "normalizedSha256": "bb25401a544c3b9da3a7b877509273001678f54ddc708d2b16724fd00ed64467",
+    "capturedSha256": "bb25401a544c3b9da3a7b877509273001678f54ddc708d2b16724fd00ed64467"
+  },
+  {
+    "file": "pr689-repair-full-tests.log",
+    "withheldLines": 1,
+    "normalizedSha256": "49e68a3fdafb0217014f89a0076b291ef44b84d93baf0aac2d594b8b5075f2e1",
+    "capturedDigestRetainedPrivately": true
+  },
+  {
+    "file": "pr689-followup-clean-mcp-final.log",
+    "withheldLines": 0,
+    "normalizedSha256": "bed2aef9f833a0e06d314bfbe7130802127077605724e49c81422e8ef1b07a94",
+    "capturedSha256": "bed2aef9f833a0e06d314bfbe7130802127077605724e49c81422e8ef1b07a94"
+  },
+  {
+    "file": "pr689-followup-registry-hub.log",
+    "withheldLines": 0,
+    "normalizedSha256": "95ce88b75dc1396f627937f389baf4e5150be030711c5d8fac6dd338bf4c7904",
+    "capturedSha256": "95ce88b75dc1396f627937f389baf4e5150be030711c5d8fac6dd338bf4c7904"
+  },
+  {
+    "file": "pr689-followup-time-basis.log",
+    "withheldLines": 0,
+    "normalizedSha256": "57f5cd9f0a7b86644ecce1f8a1e081abd8989ce7fdc56bc48dad5d9c93c66b26",
+    "capturedSha256": "57f5cd9f0a7b86644ecce1f8a1e081abd8989ce7fdc56bc48dad5d9c93c66b26"
+  },
+  {
+    "file": "pr689-followup-build-app.log",
+    "withheldLines": 0,
+    "normalizedSha256": "84579ff4a5a1d6beb1b7bed96a1c3214d53c8e931b073cb398e832b13f5f9555",
+    "capturedSha256": "84579ff4a5a1d6beb1b7bed96a1c3214d53c8e931b073cb398e832b13f5f9555"
+  },
+  {
+    "file": "pr689-followup-build-registry-token-chart.log",
+    "withheldLines": 0,
+    "normalizedSha256": "db3ec719bba09a986892cbb287941bcb386df8ee870b175fcd2ef4aec4011517",
+    "capturedSha256": "db3ec719bba09a986892cbb287941bcb386df8ee870b175fcd2ef4aec4011517"
+  },
+  {
+    "file": "pr689-followup-build-sign-pages.log",
+    "withheldLines": 0,
+    "normalizedSha256": "2b724cc1796cca49a4fc5355d573c0cd33153bd2d2e1a1d843d87b2ca3819bcd",
+    "capturedSha256": "2b724cc1796cca49a4fc5355d573c0cd33153bd2d2e1a1d843d87b2ca3819bcd"
+  },
+  {
+    "file": "pr689-followup-build-archive.log",
+    "withheldLines": 0,
+    "normalizedSha256": "2e75c7765c4be61a01b875f0a2eb094b425f42c8b88377397ab5bd4f7aff8652",
+    "capturedSha256": "2e75c7765c4be61a01b875f0a2eb094b425f42c8b88377397ab5bd4f7aff8652"
+  },
+  {
+    "file": "pr689-followup-build-shelf.log",
+    "withheldLines": 0,
+    "normalizedSha256": "e1fa686a3ae1fd658940bb0ab14ac761cce16dbc9121105d12880cc8fd689857",
+    "capturedSha256": "e1fa686a3ae1fd658940bb0ab14ac761cce16dbc9121105d12880cc8fd689857"
+  },
+  {
+    "file": "pr689-followup-build-trade.log",
+    "withheldLines": 0,
+    "normalizedSha256": "53ab3a9109d9344483fe1b7bf7b171b3d4c53a695749f1943a6653ae184afc7d",
+    "capturedSha256": "53ab3a9109d9344483fe1b7bf7b171b3d4c53a695749f1943a6653ae184afc7d"
+  },
+  {
+    "file": "pr689-followup-build-exchange.log",
+    "withheldLines": 0,
+    "normalizedSha256": "a790c894871c474959faffb2da752b5b5bcb8dd9d0c1137456fda9b2c761deb5",
+    "capturedSha256": "a790c894871c474959faffb2da752b5b5bcb8dd9d0c1137456fda9b2c761deb5"
+  },
+  {
+    "file": "pr689-followup-configure-registry-exchange.log",
+    "withheldLines": 0,
+    "normalizedSha256": "79c719a1f28d1da071ed90ba5d02b9c1682ea858ab1395a06f22f6e2ce739568",
+    "capturedSha256": "79c719a1f28d1da071ed90ba5d02b9c1682ea858ab1395a06f22f6e2ce739568"
+  },
+  {
+    "file": "pr689-followup-build-precision-preview.log",
+    "withheldLines": 0,
+    "normalizedSha256": "9ad01e30635995532cacb7bf1580321db5b97aadb5c27384a43860e007c999ff",
+    "capturedSha256": "9ad01e30635995532cacb7bf1580321db5b97aadb5c27384a43860e007c999ff"
+  },
+  {
+    "file": "pr689-followup-legacy-public-drift.log",
+    "withheldLines": 0,
+    "normalizedSha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "capturedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "file": "pr689-followup-reference-python311-repeat.log",
+    "withheldLines": 0,
+    "normalizedSha256": "fd9eef27528bc13212e4edba7c2d0dd6187f17dd44bd39c361e8a035ba4a7e62",
+    "capturedSha256": "fd9eef27528bc13212e4edba7c2d0dd6187f17dd44bd39c361e8a035ba4a7e62"
+  },
+  {
+    "file": "pr689-followup-reference-drift.log",
+    "withheldLines": 0,
+    "normalizedSha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "capturedSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "file": "pr689-followup-protected-scope.log",
+    "withheldLines": 0,
+    "normalizedSha256": "1d3089f54709e8c77253005249d030e92ef09dfd1a4966456ae5f79aaecdf44f",
+    "capturedSha256": "1d3089f54709e8c77253005249d030e92ef09dfd1a4966456ae5f79aaecdf44f"
+  },
+  {
+    "file": "mcp-clean-check-result.log",
+    "withheldLines": 0,
+    "normalizedSha256": "75727e91c8e586f171e80f5853cb705edb7f52b881455f2a3c9b1c9e21b61a06",
+    "capturedSha256": "75727e91c8e586f171e80f5853cb705edb7f52b881455f2a3c9b1c9e21b61a06"
+  },
+  {
+    "file": "pr689-mcp-clean-normalized.log",
+    "withheldLines": 0,
+    "normalizedSha256": "63320bd3682cea1bbcf7f8b5fa10b7c90ddbe0e8d97e56e7a017e2f861b6b4de",
+    "capturedSha256": "63320bd3682cea1bbcf7f8b5fa10b7c90ddbe0e8d97e56e7a017e2f861b6b4de"
+  },
+  {
+    "file": "pr689-mcp-permissions.log",
+    "withheldLines": 0,
+    "normalizedSha256": "330deb17706a8a98fa5f6719967ef6a616a79ee19ba9efdac4dd6b16a3e5ff92",
+    "capturedSha256": "330deb17706a8a98fa5f6719967ef6a616a79ee19ba9efdac4dd6b16a3e5ff92"
+  },
+  {
+    "file": "pr689-swiss-strip.log",
+    "withheldLines": 0,
+    "normalizedSha256": "eb9a5e238bb125cee50f8bf9a265e77a5e6de90a0281a81de674fffdc20632d0",
+    "capturedSha256": "eb9a5e238bb125cee50f8bf9a265e77a5e6de90a0281a81de674fffdc20632d0"
+  },
+  {
+    "file": "pr689-reference-and-compatibility-focused.log",
+    "withheldLines": 0,
+    "normalizedSha256": "ab3fbd27df7f63561515414abc5ca64965d349fac8c0acdb2675be4591a16b1a",
+    "capturedSha256": "ab3fbd27df7f63561515414abc5ca64965d349fac8c0acdb2675be4591a16b1a"
+  },
+  {
+    "file": "pr689-independent-reference-python311.log",
+    "withheldLines": 0,
+    "normalizedSha256": "fd9eef27528bc13212e4edba7c2d0dd6187f17dd44bd39c361e8a035ba4a7e62",
+    "capturedSha256": "fd9eef27528bc13212e4edba7c2d0dd6187f17dd44bd39c361e8a035ba4a7e62"
+  },
+  {
+    "file": "pr689-production-flags-build.log",
+    "withheldLines": 0,
+    "normalizedSha256": "c67576ce6d3fc50d57c944ff9fe9c456c94f3d12adcf86792f6a788686f171e8",
+    "capturedSha256": "322cf6df8875b96f35642432d0efd4b4f0b360c44553c14444ad676fdbf59f5f"
+  },
+  {
+    "file": "first-pr689-repair-full-tests.log",
+    "withheldLines": 2,
+    "normalizedSha256": "db8e981e2ae1e3d11e2b37aa780ae6c0db17d7ff182f1411ba54df0f073b22df",
+    "capturedDigestRetainedPrivately": true
+  },
+  {
+    "file": "second-pr689-repair-full-tests.log",
+    "withheldLines": 0,
+    "normalizedSha256": "3f220177e8ea297b38a4b971804c7055962726b0013563e793f1e47389ca34df",
+    "capturedSha256": "1d8eeeca7c590fa65658ac46a19cfc58945be4b395e1e881f0b6d77dc1f06928"
+  },
+  {
+    "file": "pr689-import-graph-focused.log",
+    "withheldLines": 0,
+    "normalizedSha256": "a37abe0dd246cedc5f9f19b67fa718d986d4810fd00fe9bd3644b210c30752f8",
+    "capturedSha256": "a37abe0dd246cedc5f9f19b67fa718d986d4810fd00fe9bd3644b210c30752f8"
+  },
+  {
+    "file": "pr689-share-contract-focused.log",
+    "withheldLines": 0,
+    "normalizedSha256": "df80709c9aa7aa4c3998d373a665dcf49688cf57b15d5029baff9632e233ec0d",
+    "capturedSha256": "df80709c9aa7aa4c3998d373a665dcf49688cf57b15d5029baff9632e233ec0d"
+  }
+]

@@ -1,0 +1,19 @@
+{
+  "sourceHead": "d591f309fd0db03db56f58f9f6c9a7c4346f7426",
+  "jobId": 113169608879,
+  "gates": [
+    {
+      "name": "Engine accuracy vectors",
+      "conclusion": "success"
+    },
+    {
+      "name": "Phase 1 exact-width acceptance evidence",
+      "conclusion": "success"
+    },
+    {
+      "name": "Phase 1 mobile frame cadence",
+      "conclusion": "success"
+    }
+  ],
+  "scope": "These results bind the preceding PR head. The repair head requires its own CI run; local Chromium 151 frame failures remain retained."
+}
