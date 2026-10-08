@@ -1,0 +1,281 @@
+{
+  "schema": "zodiacs.independent-consumer-evidence.v1",
+  "startedAt": "2026-10-06T07:25:33.606Z",
+  "node": "v24.19.0",
+  "pin": {
+    "adapterVersion": "0.1.0-rc.17",
+    "engineVersion": "0.1.1-rc.17",
+    "ephemerisVersion": "2.1.19",
+    "engineArchiveSha256": "9cd24c788863424ef614aaadec580db5a0dfc529303d385274db48a092a5299a",
+    "manifestSha256": "5bf917ab2235887898d658ab94fa8260f7dfcba8dfeb9fc3436bdc711ac1536f",
+    "sourceLockSha256": "5f817f4e3f08b52a4b82694dc33b1abd794c78e6f637938eade4557992fe5798",
+    "engineSource": {
+      "mainCommit": "782b4963a8575fa8d81c602a36285f65fb9ae9bb",
+      "artifactSourceCommit": "aae419c05b77455b9e8f03ca11ee273b446f7d02",
+      "artifactCarrierCommit": "b080217c1b5b0b36c931e9c237bcff0308ec1efc"
+    },
+    "archive": {
+      "sourceCommit": "bd4d14484bf67df2de457a2cc0f1df7a825e7962",
+      "url": "https://zodiacs-pqzrjq0ev-zodiacsofficial.vercel.app/examples/zodiacs-mcp-server-0.1.0-rc.17.tgz",
+      "bytes": 125262,
+      "sha256": "e0f1f7a4035649dac0d2e18e22efd6c394e6b0d0f2377356784a3152b163a052"
+    },
+    "openapi": {
+      "bytes": 369971,
+      "sha256": "d47080a30766bdc08e9196230ac310bb9c5d47d1c6babe786c1c9d063f921a2e"
+    },
+    "http": {
+      "sourceCommit": "b1c42f199cea5c879afd1be3597666d43abf9653",
+      "bundleSha256": "8130a75d1f24f26d42da614b0acc87c8aae6ab77caf4bb9d939e92c2bf538503",
+      "localTimeBundleSha256": "6f9253009a83f84e755810ac5221eefd87811203e66aaef1933840be4e8571da"
+    }
+  },
+  "status": "pass",
+  "checks": [
+    "source and archive bindings",
+    "locked fresh consumer and packaged verify.mjs",
+    "advertised MCP schemas, versions, citations, unsupported requests and recovery",
+    "provider and freshly served metadata bound to pinned runtime sources",
+    "bounded production parity, typed refusal and recovery"
+  ],
+  "httpRequests": 6,
+  "live": {
+    "status": "pass",
+    "requests": 6,
+    "reason": "Provider git source, served manifest/archive/OpenAPI and pinned runtime source hashes established.",
+    "binding": {
+      "schema": "zodiacs.live-parity-binding.v1",
+      "origin": "https://zodiacs-pqzrjq0ev-zodiacsofficial.vercel.app",
+      "provider": {
+        "queriedAt": "2026-10-06T07:20:34.034Z",
+        "tool": "vercel.get_deployment",
+        "lookup": {
+          "idOrUrl": "zodiacs-pqzrjq0ev-zodiacsofficial.vercel.app",
+          "slug": "zodiacsofficial",
+          "withGitRepoInfo": "true"
+        },
+        "deployment": {
+          "id": "dpl_6omXmaCaRgp4BXt9ZDBskx84262E",
+          "url": "zodiacs-pqzrjq0ev-zodiacsofficial.vercel.app",
+          "state": "READY",
+          "readyState": "READY",
+          "target": "production",
+          "source": "git",
+          "readyAt": "2026-10-06T05:31:19.336Z",
+          "sourceCommit": "b1c42f199cea5c879afd1be3597666d43abf9653",
+          "sourceRef": "main",
+          "repository": "zodiacs-org/site",
+          "alias": [
+            "zodiacs.org",
+            "www.zodiacs.org",
+            "zodiacs-org.vercel.app",
+            "zodiacs-org-zodiacsofficial.vercel.app",
+            "zodiacs-org-git-main-zodiacsofficial.vercel.app"
+          ],
+          "project": {
+            "id": "prj_nRTO3q3aNYLfaM3dotAowOc028fO",
+            "name": "zodiacs-org",
+            "framework": null
+          }
+        }
+      },
+      "served": {
+        "manifest": {
+          "startedAt": "2026-10-06T07:21:00.299140+00:00",
+          "finishedAt": "2026-10-06T07:21:01.013204+00:00",
+          "method": "GET",
+          "url": "https://zodiacs-pqzrjq0ev-zodiacsofficial.vercel.app/examples/mcp-server.json",
+          "curlExitCode": 0,
+          "status": 200,
+          "stderr": "",
+          "bodyBytes": 731,
+          "bodySha256": "5bf917ab2235887898d658ab94fa8260f7dfcba8dfeb9fc3436bdc711ac1536f",
+          "headersSha256": "18f4a5ab938e04189f41e5362b87cdeb1c4a99219c8b54e69da67b0aeb1e3c76",
+          "headersTruncated": false,
+          "responseHeaderOmissions": [
+            "set-cookie",
+            "authorization",
+            "proxy-authorization"
+          ],
+          "redirectsFollowed": 0,
+          "bodyFile": "02-manifest.body"
+        },
+        "archive": {
+          "startedAt": "2026-10-06T07:21:01.013820+00:00",
+          "finishedAt": "2026-10-06T07:21:01.764498+00:00",
+          "method": "GET",
+          "url": "https://zodiacs-pqzrjq0ev-zodiacsofficial.vercel.app/examples/zodiacs-mcp-server-0.1.0-rc.17.tgz",
+          "curlExitCode": 0,
+          "status": 200,
+          "stderr": "",
+          "bodyBytes": 125262,
+          "bodySha256": "e0f1f7a4035649dac0d2e18e22efd6c394e6b0d0f2377356784a3152b163a052",
+          "headersSha256": "d0c6c4515a024b80573e6177ff8d42bc4c92e63130f8f9997f107a872f7ab513",
+          "headersTruncated": false,
+          "responseHeaderOmissions": [
+            "set-cookie",
+            "authorization",
+            "proxy-authorization"
+          ],
+          "redirectsFollowed": 0,
+          "bodyFile": "03-archive.body"
+        },
+        "openapi": {
+          "startedAt": "2026-10-06T07:21:01.765427+00:00",
+          "finishedAt": "2026-10-06T07:21:02.510016+00:00",
+          "method": "GET",
+          "url": "https://zodiacs-pqzrjq0ev-zodiacsofficial.vercel.app/api/v1/openapi.json",
+          "curlExitCode": 0,
+          "status": 200,
+          "stderr": "",
+          "bodyBytes": 369971,
+          "bodySha256": "d47080a30766bdc08e9196230ac310bb9c5d47d1c6babe786c1c9d063f921a2e",
+          "headersSha256": "bf0091e05a79e6ffb13b27d0dc4fcaba5ae4de9910ffc508e16c775cb98f4397",
+          "headersTruncated": false,
+          "responseHeaderOmissions": [
+            "set-cookie",
+            "authorization",
+            "proxy-authorization"
+          ],
+          "redirectsFollowed": 0,
+          "bodyFile": "04-openapi.body"
+        }
+      }
+    },
+    "eventSearches": 1
+  },
+  "credit": "No delivery credit. Integration evidence, not independent astronomical accuracy or astrology prediction validation.",
+  "runner": {
+    "path": "scripts/mcp-independent-consumer.mjs",
+    "sha256": "9f69059315551111c3c732a5220afb30fab81eb026335a02a210e1834f2b3964"
+  },
+  "npm": "11.9.0",
+  "sourceLockSha256": "5f817f4e3f08b52a4b82694dc33b1abd794c78e6f637938eade4557992fe5798",
+  "source": {
+    "httpCommit": "b1c42f199cea5c879afd1be3597666d43abf9653",
+    "httpTree": "52c81278e6bbfd944d4771f2012ff9bcd0dacda8",
+    "archiveSourceCommit": "bd4d14484bf67df2de457a2cc0f1df7a825e7962",
+    "sourcePaths": [
+      "src/mcp",
+      "src/lib/compute-api",
+      "src/lib/sky-api",
+      "src/lib/receipt-digest.ts",
+      "src/lib/engine/time-basis.mjs",
+      "src/lib/time",
+      "src/lib/compare",
+      "src/data",
+      "api/_compute",
+      "examples/mcp-server",
+      "public/examples/mcp-server.json",
+      "public/examples/zodiacs-mcp-server-0.1.0-rc.16.3.tgz",
+      "vendor",
+      "scripts/build-compute-handler.mjs",
+      "scripts/build-compute-local-time.mjs",
+      "scripts/build-mcp-server.mjs",
+      "scripts/pack-mcp-server.mjs",
+      "package.json",
+      "package-lock.json"
+    ]
+  },
+  "archive": {
+    "origin": "explicit local archive",
+    "bytes": 125262,
+    "sha256": "e0f1f7a4035649dac0d2e18e22efd6c394e6b0d0f2377356784a3152b163a052"
+  },
+  "scratch": "/tmp/zodiacs-mcp-consumer-lOyT2c",
+  "install": {
+    "command": [
+      "npm",
+      "ci",
+      "--ignore-scripts",
+      "--no-audit",
+      "--no-fund"
+    ],
+    "exitCode": 0,
+    "log": "/workspace/site/docs/platform/evidence/mcp-live-parity-2026-10-06/live/consumer-install.log"
+  },
+  "consumer": {
+    "packageVersion": "0.1.0-rc.17",
+    "license": "MIT AND CC-BY-4.0",
+    "shrinkwrapSha256": "51dc8fb3481fa78d3b715e6826c90fb3890aa6b1423410452988c05a4a2ec8a9",
+    "serverSha256": "0c3e739ce34a5a7f80948310dd78b3b690f905e4a9d076f80d968a09558ba1fd",
+    "nodeModules": "fresh npm ci inside extracted package",
+    "inheritedNodeModules": false,
+    "installPath": "/tmp/zodiacs-mcp-consumer-lOyT2c/package",
+    "lockPath": "/tmp/zodiacs-mcp-consumer-lOyT2c/package/npm-shrinkwrap.json"
+  },
+  "verify": {
+    "command": [
+      "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "verify.mjs"
+    ],
+    "exitCode": 0,
+    "log": "/workspace/site/docs/platform/evidence/mcp-live-parity-2026-10-06/live/packaged-verify.log"
+  },
+  "openapi": {
+    "bytes": 369971,
+    "sha256": "d47080a30766bdc08e9196230ac310bb9c5d47d1c6babe786c1c9d063f921a2e",
+    "origin": "source buildSkyApi bytes",
+    "sourceCommit": "b1c42f199cea5c879afd1be3597666d43abf9653"
+  },
+  "http": {
+    "sourceCommit": "b1c42f199cea5c879afd1be3597666d43abf9653",
+    "bundleSha256": "8130a75d1f24f26d42da614b0acc87c8aae6ab77caf4bb9d939e92c2bf538503",
+    "localTimeBundleSha256": "6f9253009a83f84e755810ac5221eefd87811203e66aaef1933840be4e8571da",
+    "mode": "live-immutable-production",
+    "origin": "https://zodiacs-pqzrjq0ev-zodiacsofficial.vercel.app",
+    "deployment": "dpl_6omXmaCaRgp4BXt9ZDBskx84262E"
+  },
+  "cases": [
+    {
+      "id": "positions",
+      "status": 200,
+      "result": "pass",
+      "receiptDigest": "sha256:166b22120fffe135225114f2274f56b0e39f7883c59a7ac4b294e1b3b62cb7de",
+      "onlyAllowedDifference": "cite.url"
+    },
+    {
+      "id": "short-lunation",
+      "status": 200,
+      "result": "pass",
+      "receiptDigest": "sha256:053bcf752f41d2b975b3d50e5cc85662778cb3208d4dbbaff850295c5620a6e2",
+      "onlyAllowedDifference": "cite.url",
+      "events": 1,
+      "completeness": "tested-not-proven"
+    },
+    {
+      "id": "date-depends",
+      "status": 200,
+      "result": "pass",
+      "receiptDigest": "sha256:52a685e6302702960426c98986fb33c3f4c257c827b4995f3bc4a4c7548ee586",
+      "onlyAllowedDifference": "cite.url",
+      "answer": "depends"
+    },
+    {
+      "id": "reference-edge",
+      "status": 200,
+      "result": "pass",
+      "receiptDigest": "sha256:a69f8fea0274209b31dc4f6a7a2777c2134b8201c8e4fae8f84e66b3a7a0ea71",
+      "onlyAllowedDifference": "cite.url",
+      "answer": "false"
+    },
+    {
+      "id": "invalid-civil-date",
+      "status": 400,
+      "result": "pass",
+      "error": {
+        "code": "invalid-request",
+        "message": "Must name a real calendar date and a time from 00:00:00 to 23:59:59; leap seconds are not accepted.",
+        "pointer": "/instants/0"
+      }
+    },
+    {
+      "id": "invalid-civil-date-recovery",
+      "status": 200,
+      "result": "pass",
+      "receiptDigest": "sha256:166b22120fffe135225114f2274f56b0e39f7883c59a7ac4b294e1b3b62cb7de",
+      "onlyAllowedDifference": "cite.url"
+    }
+  ],
+  "finishedAt": "2026-10-06T07:25:38.839Z"
+}

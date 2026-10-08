@@ -9,6 +9,8 @@ const description = 'Connect an AI assistant to the hosted Zodiacs MCP server or
     <h1 class="display">Build with the sky</h1>
     <div class="prose">
       <p>Zodiacs connects AI assistants to the Zodiacs engine in two ways: a hosted MCP server at <code>https://zodiacs.org/mcp</code> for any assistant that accepts remote MCP connections, and a local developer plugin that runs on your own machine. Public directory listings remain release gates.</p>
+      <h2>Connect it</h2>
+      <p>To use it in Claude, open Customize, then Connectors, add a custom connector and enter <code>https://zodiacs.org/mcp</code>. Other assistants that accept remote MCP connections use the same address. Then ask one of the questions below.</p>
       <h2>The hosted server</h2>
       <p>The hosted server computes positions at an explicit instant, finds sign ingresses, stations and new/full Moons in a window of up to 92 days, and checks astronomical claims. Answers include UTC, a display timezone, calculation receipts and numerical limits. A date-only claim can return <code>depends</code>. Event-search completeness is tested, not proven.</p>
       <p>It also serves dated Sun-sign horoscopes from the site's daily edition. It keeps the editions for the day before, the day of and the day after, so a reader in any time zone gets the reading written for their own date. Horoscopes are interpretation, for reflection.</p>

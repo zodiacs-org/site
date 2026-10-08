@@ -1,0 +1,26 @@
+{
+  "made": "2026-10-07T14:37:15.512Z",
+  "source": "Real panels from this build with live answers from https://zodiacs.org/mcp; dark theme; Bangkok time zone; the birth date in 05 is made up",
+  "screenshots": [
+    {
+      "file": "01-choose-your-sign.png",
+      "prompt": "Show my horoscope for today"
+    },
+    {
+      "file": "02-leo-today.png",
+      "prompt": "Show today's horoscope for Leo."
+    },
+    {
+      "file": "03-sky-this-week.png",
+      "prompt": "Use Zodiacs to show this week's sky calendar for Bangkok."
+    },
+    {
+      "file": "04-chart-studio-start.png",
+      "prompt": "Help me read my birth chart."
+    },
+    {
+      "file": "05-chart-without-birth-time.png",
+      "prompt": "Help me read my birth chart. I don't know my birth time."
+    }
+  ]
+}

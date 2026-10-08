@@ -1,0 +1,5372 @@
+{
+  "status": "pass",
+  "resolved": {
+    "@modelcontextprotocol/client": {
+      "path": "node_modules/@modelcontextprotocol/client/dist/index.cjs",
+      "sha256": "60dc3a0f0f1cdafcceec0baf33c71687a2f378741a6810f86752ef1be75eeca9"
+    },
+    "@modelcontextprotocol/client/stdio": {
+      "path": "node_modules/@modelcontextprotocol/client/dist/stdio.cjs",
+      "sha256": "0e6e3d40e172af79f57dde08024c4f9bafcb67b2f4a8ad552ef7d371f5c45a65"
+    }
+  },
+  "cases": [
+    {
+      "id": "positions",
+      "tool": "get_positions",
+      "endpoint": "positions",
+      "args": {
+        "instants": [
+          "2000-01-01T12:00:00Z"
+        ],
+        "bodies": [
+          "Sun",
+          "Moon",
+          "Mars"
+        ]
+      },
+      "value": {
+        "schema": "zodiacs.compute-api.positions.v1",
+        "result": {
+          "instants": [
+            {
+              "instant": "2000-01-01T12:00:00.000Z",
+              "bodies": [
+                {
+                  "body": "Sun",
+                  "lon": 280.3687723811323,
+                  "lat": 0.0000011205048760998976,
+                  "speed": 1.0194308605093738,
+                  "retrograde": false,
+                  "sign": "capricorn",
+                  "degree": 10.368772381132317
+                },
+                {
+                  "body": "Moon",
+                  "lon": 223.32396777014543,
+                  "lat": 5.170788636029834,
+                  "speed": 12.021413077249576,
+                  "retrograde": false,
+                  "sign": "scorpio",
+                  "degree": 13.323967770145373
+                },
+                {
+                  "body": "Mars",
+                  "lon": 327.96393186874616,
+                  "lat": -1.0680819810158533,
+                  "speed": 0.7756777245333524,
+                  "retrograde": false,
+                  "sign": "aquarius",
+                  "degree": 27.963931868746158
+                }
+              ],
+              "deltaT": {
+                "seconds": 63.8285,
+                "sigma": 0.000827,
+                "model": "iers-utc/1",
+                "table": "2026-09-24",
+                "tableDigest": "064d98b4a531053a",
+                "segment": "observed"
+              },
+              "timeScale": {
+                "input": "utc",
+                "basis": "iers",
+                "ut1MinusUtc": {
+                  "seconds": 0.35549999999999926,
+                  "sigma": 0.000827,
+                  "source": "observed"
+                },
+                "leapSeconds": {
+                  "taiMinusUtc": 32,
+                  "listed": true
+                }
+              },
+              "flags": []
+            }
+          ]
+        },
+        "receipt": {
+          "schema": "zodiacs.compute-receipt.v1",
+          "endpoint": "positions",
+          "engine": {
+            "name": "@zodiacs/engine",
+            "version": "0.1.1-rc.17",
+            "ephemeris": {
+              "name": "astronomy-engine",
+              "version": "2.1.19"
+            }
+          },
+          "conventions": {
+            "angles": "gast-and-true-obliquity",
+            "aspects": "major-aspects;sun-moon-eight-planets;no-nodes;applying-instantaneous-orb-rate",
+            "calendar": "proleptic-gregorian",
+            "deltaT": "tt-minus-ut1;value-in-result",
+            "localTime": "tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
+            "longitudeUnit": "degrees-[0,360)",
+            "moonNodes": "instantaneous-geocentric-moon-orbit-plane",
+            "moonPosition": "astronomy-engine-geo-moon;no-light-time;no-aberration",
+            "nutation": "iau2000b;equation-of-equinoxes-with-two-complementary-terms",
+            "planetPositions": "aberrated-geocentric-ecliptic-of-date;no-deflection",
+            "speed": "degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
+            "timeScale": "tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
+            "zodiac": "tropical"
+          },
+          "coverage": {
+            "angleExclusions": "exact-geographic-poles-and-ecliptic-horizon-coincidence",
+            "assessment": "finite-reference-cases-only",
+            "broadDateRange": "not-certified",
+            "inputSyntax": "not-an-astronomical-accuracy-guarantee"
+          },
+          "referenceSpan": {
+            "from": "1800-01-01T00:00:00.000Z",
+            "to": "2200-01-01T00:00:00.000Z"
+          },
+          "deltaT": [
+            {
+              "model": "iers-utc/1",
+              "table": "2026-09-24",
+              "tableDigest": "064d98b4a531053a"
+            },
+            {
+              "model": "zodiacs-deltat/1",
+              "table": "2026-09-24",
+              "tableDigest": "6371988c510a1c6c"
+            }
+          ]
+        },
+        "backend": {
+          "name": "@zodiacs/engine",
+          "version": "0.1.1-rc.17",
+          "ephemeris": {
+            "name": "astronomy-engine",
+            "version": "2.1.19"
+          }
+        },
+        "cite": {
+          "url": "https://zodiacs.org/developers/mcp/#get_positions",
+          "receipt": "sha256:166b22120fffe135225114f2274f56b0e39f7883c59a7ac4b294e1b3b62cb7de",
+          "engine": "@zodiacs/engine",
+          "version": "0.1.1-rc.17"
+        }
+      }
+    },
+    {
+      "id": "short-lunation",
+      "tool": "find_events",
+      "endpoint": "events",
+      "args": {
+        "from": "2026-03-01T00:00:00Z",
+        "to": "2026-03-05T00:00:00Z",
+        "bodies": [
+          "Moon"
+        ],
+        "kinds": [
+          "lunation"
+        ]
+      },
+      "nonempty": true,
+      "value": {
+        "schema": "zodiacs.compute-api.events.v1",
+        "result": {
+          "from": "2026-03-01T00:00:00.000Z",
+          "to": "2026-03-05T00:00:00.000Z",
+          "events": [
+            {
+              "kind": "lunation",
+              "type": "full",
+              "at": "2026-03-03T11:37:57.654Z",
+              "lon": 162.8983459950955,
+              "sign": "virgo",
+              "degree": 12.898345995095497
+            }
+          ]
+        },
+        "receipt": {
+          "schema": "zodiacs.compute-receipt.v1",
+          "endpoint": "events",
+          "engine": {
+            "name": "@zodiacs/engine",
+            "version": "0.1.1-rc.17",
+            "ephemeris": {
+              "name": "astronomy-engine",
+              "version": "2.1.19"
+            }
+          },
+          "conventions": {
+            "angles": "gast-and-true-obliquity",
+            "aspects": "major-aspects;sun-moon-eight-planets;no-nodes;applying-instantaneous-orb-rate",
+            "calendar": "proleptic-gregorian",
+            "deltaT": "tt-minus-ut1;value-in-result",
+            "localTime": "tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
+            "longitudeUnit": "degrees-[0,360)",
+            "moonNodes": "instantaneous-geocentric-moon-orbit-plane",
+            "moonPosition": "astronomy-engine-geo-moon;no-light-time;no-aberration",
+            "nutation": "iau2000b;equation-of-equinoxes-with-two-complementary-terms",
+            "planetPositions": "aberrated-geocentric-ecliptic-of-date;no-deflection",
+            "speed": "degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
+            "timeScale": "tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
+            "zodiac": "tropical"
+          },
+          "coverage": {
+            "angleExclusions": "exact-geographic-poles-and-ecliptic-horizon-coincidence",
+            "assessment": "finite-reference-cases-only",
+            "broadDateRange": "not-certified",
+            "inputSyntax": "not-an-astronomical-accuracy-guarantee"
+          },
+          "referenceSpan": {
+            "from": "1800-01-01T00:00:00.000Z",
+            "to": "2200-01-01T00:00:00.000Z"
+          },
+          "deltaT": [
+            {
+              "model": "iers-utc/1",
+              "table": "2026-09-24",
+              "tableDigest": "064d98b4a531053a"
+            },
+            {
+              "model": "zodiacs-deltat/1",
+              "table": "2026-09-24",
+              "tableDigest": "6371988c510a1c6c"
+            }
+          ],
+          "search": {
+            "solver": "engine-longitude-crossings",
+            "stepDays": {
+              "default": 5,
+              "moon": 1,
+              "elongation": 1
+            },
+            "bisections": 24,
+            "samples": 34,
+            "maxSamples": 12000,
+            "window": "start-exclusive-end-inclusive",
+            "completeness": "tested-not-proven"
+          }
+        },
+        "backend": {
+          "name": "@zodiacs/engine",
+          "version": "0.1.1-rc.17",
+          "ephemeris": {
+            "name": "astronomy-engine",
+            "version": "2.1.19"
+          }
+        },
+        "cite": {
+          "url": "https://zodiacs.org/developers/mcp/#find_events",
+          "receipt": "sha256:053bcf752f41d2b975b3d50e5cc85662778cb3208d4dbbaff850295c5620a6e2",
+          "engine": "@zodiacs/engine",
+          "version": "0.1.1-rc.17"
+        }
+      }
+    },
+    {
+      "id": "sun-never-retrograde",
+      "tool": "check_sky_fact",
+      "endpoint": "sky-fact",
+      "args": {
+        "kind": "retrograde",
+        "body": "Sun",
+        "instant": "2000-01-01T12:00:00Z"
+      },
+      "answer": "false",
+      "value": {
+        "schema": "zodiacs.compute-api.sky-fact.v1",
+        "result": {
+          "answer": "false",
+          "basis": "instant",
+          "fact": {
+            "kind": "retrograde",
+            "body": "Sun",
+            "instant": "2000-01-01T12:00:00.000Z",
+            "date": null,
+            "zone": null
+          },
+          "instant": "2000-01-01T12:00:00.000Z",
+          "window": null,
+          "zone": null,
+          "facts": {
+            "lon": 280.3687723811323,
+            "sign": "capricorn",
+            "degree": 10.368772381132317,
+            "speed": 1.0194308605093738,
+            "retrograde": false,
+            "deltaT": {
+              "seconds": 63.8285,
+              "sigma": 0.000827,
+              "model": "iers-utc/1",
+              "table": "2026-09-24",
+              "tableDigest": "064d98b4a531053a",
+              "segment": "observed"
+            },
+            "timeScale": {
+              "input": "utc",
+              "basis": "iers",
+              "ut1MinusUtc": {
+                "seconds": 0.35549999999999926,
+                "sigma": 0.000827,
+                "source": "observed"
+              },
+              "leapSeconds": {
+                "taiMinusUtc": 32,
+                "listed": true
+              }
+            },
+            "flags": []
+          }
+        },
+        "receipt": {
+          "schema": "zodiacs.compute-receipt.v1",
+          "endpoint": "sky-fact",
+          "engine": {
+            "name": "@zodiacs/engine",
+            "version": "0.1.1-rc.17",
+            "ephemeris": {
+              "name": "astronomy-engine",
+              "version": "2.1.19"
+            }
+          },
+          "conventions": {
+            "angles": "gast-and-true-obliquity",
+            "aspects": "major-aspects;sun-moon-eight-planets;no-nodes;applying-instantaneous-orb-rate",
+            "calendar": "proleptic-gregorian",
+            "deltaT": "tt-minus-ut1;value-in-result",
+            "localTime": "tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
+            "longitudeUnit": "degrees-[0,360)",
+            "moonNodes": "instantaneous-geocentric-moon-orbit-plane",
+            "moonPosition": "astronomy-engine-geo-moon;no-light-time;no-aberration",
+            "nutation": "iau2000b;equation-of-equinoxes-with-two-complementary-terms",
+            "planetPositions": "aberrated-geocentric-ecliptic-of-date;no-deflection",
+            "speed": "degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
+            "timeScale": "tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
+            "zodiac": "tropical"
+          },
+          "coverage": {
+            "angleExclusions": "exact-geographic-poles-and-ecliptic-horizon-coincidence",
+            "assessment": "finite-reference-cases-only",
+            "broadDateRange": "not-certified",
+            "inputSyntax": "not-an-astronomical-accuracy-guarantee"
+          },
+          "referenceSpan": {
+            "from": "1800-01-01T00:00:00.000Z",
+            "to": "2200-01-01T00:00:00.000Z"
+          },
+          "deltaT": [
+            {
+              "model": "iers-utc/1",
+              "table": "2026-09-24",
+              "tableDigest": "064d98b4a531053a"
+            },
+            {
+              "model": "zodiacs-deltat/1",
+              "table": "2026-09-24",
+              "tableDigest": "6371988c510a1c6c"
+            }
+          ]
+        },
+        "backend": {
+          "name": "@zodiacs/engine",
+          "version": "0.1.1-rc.17",
+          "ephemeris": {
+            "name": "astronomy-engine",
+            "version": "2.1.19"
+          }
+        },
+        "cite": {
+          "url": "https://zodiacs.org/developers/mcp/#check_sky_fact",
+          "receipt": "sha256:0e266d089ab43f31d907b6c0fe2a1ff9479a0e483add84a7da384c3748465d2e",
+          "engine": "@zodiacs/engine",
+          "version": "0.1.1-rc.17"
+        }
+      }
+    },
+    {
+      "id": "instant-sign",
+      "tool": "check_sky_fact",
+      "endpoint": "sky-fact",
+      "args": {
+        "kind": "sign",
+        "body": "Sun",
+        "sign": "capricorn",
+        "instant": "2000-01-01T12:00:00Z"
+      },
+      "answer": "true",
+      "value": {
+        "schema": "zodiacs.compute-api.sky-fact.v1",
+        "result": {
+          "answer": "true",
+          "basis": "instant",
+          "fact": {
+            "kind": "sign",
+            "body": "Sun",
+            "sign": "capricorn",
+            "instant": "2000-01-01T12:00:00.000Z",
+            "date": null,
+            "zone": null
+          },
+          "instant": "2000-01-01T12:00:00.000Z",
+          "window": null,
+          "zone": null,
+          "facts": {
+            "lon": 280.3687723811323,
+            "sign": "capricorn",
+            "degree": 10.368772381132317,
+            "speed": 1.0194308605093738,
+            "retrograde": false,
+            "deltaT": {
+              "seconds": 63.8285,
+              "sigma": 0.000827,
+              "model": "iers-utc/1",
+              "table": "2026-09-24",
+              "tableDigest": "064d98b4a531053a",
+              "segment": "observed"
+            },
+            "timeScale": {
+              "input": "utc",
+              "basis": "iers",
+              "ut1MinusUtc": {
+                "seconds": 0.35549999999999926,
+                "sigma": 0.000827,
+                "source": "observed"
+              },
+              "leapSeconds": {
+                "taiMinusUtc": 32,
+                "listed": true
+              }
+            },
+            "boundaryMarginArcsec": 37327.58057207634,
+            "flags": []
+          }
+        },
+        "receipt": {
+          "schema": "zodiacs.compute-receipt.v1",
+          "endpoint": "sky-fact",
+          "engine": {
+            "name": "@zodiacs/engine",
+            "version": "0.1.1-rc.17",
+            "ephemeris": {
+              "name": "astronomy-engine",
+              "version": "2.1.19"
+            }
+          },
+          "conventions": {
+            "angles": "gast-and-true-obliquity",
+            "aspects": "major-aspects;sun-moon-eight-planets;no-nodes;applying-instantaneous-orb-rate",
+            "calendar": "proleptic-gregorian",
+            "deltaT": "tt-minus-ut1;value-in-result",
+            "localTime": "tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
+            "longitudeUnit": "degrees-[0,360)",
+            "moonNodes": "instantaneous-geocentric-moon-orbit-plane",
+            "moonPosition": "astronomy-engine-geo-moon;no-light-time;no-aberration",
+            "nutation": "iau2000b;equation-of-equinoxes-with-two-complementary-terms",
+            "planetPositions": "aberrated-geocentric-ecliptic-of-date;no-deflection",
+            "speed": "degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
+            "timeScale": "tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
+            "zodiac": "tropical"
+          },
+          "coverage": {
+            "angleExclusions": "exact-geographic-poles-and-ecliptic-horizon-coincidence",
+            "assessment": "finite-reference-cases-only",
+            "broadDateRange": "not-certified",
+            "inputSyntax": "not-an-astronomical-accuracy-guarantee"
+          },
+          "referenceSpan": {
+            "from": "1800-01-01T00:00:00.000Z",
+            "to": "2200-01-01T00:00:00.000Z"
+          },
+          "deltaT": [
+            {
+              "model": "iers-utc/1",
+              "table": "2026-09-24",
+              "tableDigest": "064d98b4a531053a"
+            },
+            {
+              "model": "zodiacs-deltat/1",
+              "table": "2026-09-24",
+              "tableDigest": "6371988c510a1c6c"
+            }
+          ]
+        },
+        "backend": {
+          "name": "@zodiacs/engine",
+          "version": "0.1.1-rc.17",
+          "ephemeris": {
+            "name": "astronomy-engine",
+            "version": "2.1.19"
+          }
+        },
+        "cite": {
+          "url": "https://zodiacs.org/developers/mcp/#check_sky_fact",
+          "receipt": "sha256:0e266d089ab43f31d907b6c0fe2a1ff9479a0e483add84a7da384c3748465d2e",
+          "engine": "@zodiacs/engine",
+          "version": "0.1.1-rc.17"
+        }
+      }
+    },
+    {
+      "id": "date-depends",
+      "tool": "check_sky_fact",
+      "endpoint": "sky-fact",
+      "args": {
+        "kind": "phase",
+        "phase": "full",
+        "date": "2026-03-03"
+      },
+      "answer": "depends",
+      "basis": "any-zone-day",
+      "value": {
+        "schema": "zodiacs.compute-api.sky-fact.v1",
+        "result": {
+          "answer": "depends",
+          "basis": "any-zone-day",
+          "fact": {
+            "kind": "phase",
+            "phase": "full",
+            "date": "2026-03-03",
+            "zone": null
+          },
+          "instant": null,
+          "window": {
+            "from": "2026-03-02T10:00:00.000Z",
+            "to": "2026-03-04T12:00:00.000Z"
+          },
+          "zone": null,
+          "facts": {
+            "lunations": [
+              {
+                "at": "2026-03-03T11:37:57.651Z",
+                "lon": 162.898345533544,
+                "sign": "virgo",
+                "degree": 12.898345533543988
+              }
+            ],
+            "flags": []
+          }
+        },
+        "receipt": {
+          "schema": "zodiacs.compute-receipt.v1",
+          "endpoint": "sky-fact",
+          "engine": {
+            "name": "@zodiacs/engine",
+            "version": "0.1.1-rc.17",
+            "ephemeris": {
+              "name": "astronomy-engine",
+              "version": "2.1.19"
+            }
+          },
+          "conventions": {
+            "angles": "gast-and-true-obliquity",
+            "aspects": "major-aspects;sun-moon-eight-planets;no-nodes;applying-instantaneous-orb-rate",
+            "calendar": "proleptic-gregorian",
+            "deltaT": "tt-minus-ut1;value-in-result",
+            "localTime": "tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
+            "longitudeUnit": "degrees-[0,360)",
+            "moonNodes": "instantaneous-geocentric-moon-orbit-plane",
+            "moonPosition": "astronomy-engine-geo-moon;no-light-time;no-aberration",
+            "nutation": "iau2000b;equation-of-equinoxes-with-two-complementary-terms",
+            "planetPositions": "aberrated-geocentric-ecliptic-of-date;no-deflection",
+            "speed": "degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
+            "timeScale": "tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
+            "zodiac": "tropical"
+          },
+          "coverage": {
+            "angleExclusions": "exact-geographic-poles-and-ecliptic-horizon-coincidence",
+            "assessment": "finite-reference-cases-only",
+            "broadDateRange": "not-certified",
+            "inputSyntax": "not-an-astronomical-accuracy-guarantee"
+          },
+          "referenceSpan": {
+            "from": "1800-01-01T00:00:00.000Z",
+            "to": "2200-01-01T00:00:00.000Z"
+          },
+          "deltaT": [
+            {
+              "model": "iers-utc/1",
+              "table": "2026-09-24",
+              "tableDigest": "064d98b4a531053a"
+            },
+            {
+              "model": "zodiacs-deltat/1",
+              "table": "2026-09-24",
+              "tableDigest": "6371988c510a1c6c"
+            }
+          ],
+          "search": {
+            "solver": "engine-longitude-crossings",
+            "stepDays": {
+              "default": 5,
+              "moon": 1,
+              "elongation": 1
+            },
+            "bisections": 24,
+            "samples": 29,
+            "maxSamples": 1000,
+            "window": "start-exclusive-end-inclusive",
+            "completeness": "tested-not-proven"
+          }
+        },
+        "backend": {
+          "name": "@zodiacs/engine",
+          "version": "0.1.1-rc.17",
+          "ephemeris": {
+            "name": "astronomy-engine",
+            "version": "2.1.19"
+          }
+        },
+        "cite": {
+          "url": "https://zodiacs.org/developers/mcp/#check_sky_fact",
+          "receipt": "sha256:52a685e6302702960426c98986fb33c3f4c257c827b4995f3bc4a4c7548ee586",
+          "engine": "@zodiacs/engine",
+          "version": "0.1.1-rc.17"
+        }
+      }
+    },
+    {
+      "id": "reference-edge",
+      "tool": "check_sky_fact",
+      "endpoint": "sky-fact",
+      "args": {
+        "kind": "retrograde",
+        "body": "Sun",
+        "date": "1800-01-01"
+      },
+      "answer": "false",
+      "flag": "outside-reference-span",
+      "value": {
+        "schema": "zodiacs.compute-api.sky-fact.v1",
+        "result": {
+          "answer": "false",
+          "basis": "any-zone-day",
+          "fact": {
+            "kind": "retrograde",
+            "body": "Sun",
+            "instant": null,
+            "date": "1800-01-01",
+            "zone": null
+          },
+          "instant": null,
+          "window": {
+            "from": "1799-12-31T10:00:00.000Z",
+            "to": "1800-01-02T12:00:00.000Z"
+          },
+          "zone": null,
+          "facts": {
+            "atStart": {
+              "lon": 279.83467133881084,
+              "sign": "capricorn",
+              "degree": 9.834671338810836,
+              "speed": 1.0196767247236949,
+              "retrograde": false
+            },
+            "atEnd": {
+              "lon": 281.95880616450677,
+              "sign": "capricorn",
+              "degree": 11.958806164506768,
+              "speed": 1.0194843002011567,
+              "retrograde": false
+            },
+            "stations": [],
+            "flags": [
+              "outside-reference-span"
+            ]
+          }
+        },
+        "receipt": {
+          "schema": "zodiacs.compute-receipt.v1",
+          "endpoint": "sky-fact",
+          "engine": {
+            "name": "@zodiacs/engine",
+            "version": "0.1.1-rc.17",
+            "ephemeris": {
+              "name": "astronomy-engine",
+              "version": "2.1.19"
+            }
+          },
+          "conventions": {
+            "angles": "gast-and-true-obliquity",
+            "aspects": "major-aspects;sun-moon-eight-planets;no-nodes;applying-instantaneous-orb-rate",
+            "calendar": "proleptic-gregorian",
+            "deltaT": "tt-minus-ut1;value-in-result",
+            "localTime": "tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
+            "longitudeUnit": "degrees-[0,360)",
+            "moonNodes": "instantaneous-geocentric-moon-orbit-plane",
+            "moonPosition": "astronomy-engine-geo-moon;no-light-time;no-aberration",
+            "nutation": "iau2000b;equation-of-equinoxes-with-two-complementary-terms",
+            "planetPositions": "aberrated-geocentric-ecliptic-of-date;no-deflection",
+            "speed": "degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
+            "timeScale": "tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
+            "zodiac": "tropical"
+          },
+          "coverage": {
+            "angleExclusions": "exact-geographic-poles-and-ecliptic-horizon-coincidence",
+            "assessment": "finite-reference-cases-only",
+            "broadDateRange": "not-certified",
+            "inputSyntax": "not-an-astronomical-accuracy-guarantee"
+          },
+          "referenceSpan": {
+            "from": "1800-01-01T00:00:00.000Z",
+            "to": "2200-01-01T00:00:00.000Z"
+          },
+          "deltaT": [
+            {
+              "model": "iers-utc/1",
+              "table": "2026-09-24",
+              "tableDigest": "064d98b4a531053a"
+            },
+            {
+              "model": "zodiacs-deltat/1",
+              "table": "2026-09-24",
+              "tableDigest": "6371988c510a1c6c"
+            }
+          ],
+          "search": {
+            "solver": "engine-longitude-crossings",
+            "stepDays": {
+              "default": 5,
+              "moon": 1,
+              "elongation": 1
+            },
+            "bisections": 24,
+            "samples": 0,
+            "maxSamples": 1000,
+            "window": "start-exclusive-end-inclusive",
+            "completeness": "tested-not-proven"
+          }
+        },
+        "backend": {
+          "name": "@zodiacs/engine",
+          "version": "0.1.1-rc.17",
+          "ephemeris": {
+            "name": "astronomy-engine",
+            "version": "2.1.19"
+          }
+        },
+        "cite": {
+          "url": "https://zodiacs.org/developers/mcp/#check_sky_fact",
+          "receipt": "sha256:a69f8fea0274209b31dc4f6a7a2777c2134b8201c8e4fae8f84e66b3a7a0ea71",
+          "engine": "@zodiacs/engine",
+          "version": "0.1.1-rc.17"
+        }
+      }
+    }
+  ],
+  "refusals": [
+    {
+      "id": "invalid-civil-date",
+      "tool": "get_positions",
+      "endpoint": "positions",
+      "args": {
+        "instants": [
+          "2001-02-29T00:00:00Z"
+        ]
+      },
+      "refusal": {
+        "layer": "tool",
+        "message": "/instants/0: Must name a real calendar date and a time from 00:00:00 to 23:59:59; leap seconds are not accepted."
+      },
+      "recovery": {
+        "schema": "zodiacs.compute-api.positions.v1",
+        "result": {
+          "instants": [
+            {
+              "instant": "2000-01-01T12:00:00.000Z",
+              "bodies": [
+                {
+                  "body": "Sun",
+                  "lon": 280.3687723811323,
+                  "lat": 0.0000011205048760998976,
+                  "speed": 1.0194308605093738,
+                  "retrograde": false,
+                  "sign": "capricorn",
+                  "degree": 10.368772381132317
+                },
+                {
+                  "body": "Moon",
+                  "lon": 223.32396777014543,
+                  "lat": 5.170788636029834,
+                  "speed": 12.021413077249576,
+                  "retrograde": false,
+                  "sign": "scorpio",
+                  "degree": 13.323967770145373
+                },
+                {
+                  "body": "Mars",
+                  "lon": 327.96393186874616,
+                  "lat": -1.0680819810158533,
+                  "speed": 0.7756777245333524,
+                  "retrograde": false,
+                  "sign": "aquarius",
+                  "degree": 27.963931868746158
+                }
+              ],
+              "deltaT": {
+                "seconds": 63.8285,
+                "sigma": 0.000827,
+                "model": "iers-utc/1",
+                "table": "2026-09-24",
+                "tableDigest": "064d98b4a531053a",
+                "segment": "observed"
+              },
+              "timeScale": {
+                "input": "utc",
+                "basis": "iers",
+                "ut1MinusUtc": {
+                  "seconds": 0.35549999999999926,
+                  "sigma": 0.000827,
+                  "source": "observed"
+                },
+                "leapSeconds": {
+                  "taiMinusUtc": 32,
+                  "listed": true
+                }
+              },
+              "flags": []
+            }
+          ]
+        },
+        "receipt": {
+          "schema": "zodiacs.compute-receipt.v1",
+          "endpoint": "positions",
+          "engine": {
+            "name": "@zodiacs/engine",
+            "version": "0.1.1-rc.17",
+            "ephemeris": {
+              "name": "astronomy-engine",
+              "version": "2.1.19"
+            }
+          },
+          "conventions": {
+            "angles": "gast-and-true-obliquity",
+            "aspects": "major-aspects;sun-moon-eight-planets;no-nodes;applying-instantaneous-orb-rate",
+            "calendar": "proleptic-gregorian",
+            "deltaT": "tt-minus-ut1;value-in-result",
+            "localTime": "tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
+            "longitudeUnit": "degrees-[0,360)",
+            "moonNodes": "instantaneous-geocentric-moon-orbit-plane",
+            "moonPosition": "astronomy-engine-geo-moon;no-light-time;no-aberration",
+            "nutation": "iau2000b;equation-of-equinoxes-with-two-complementary-terms",
+            "planetPositions": "aberrated-geocentric-ecliptic-of-date;no-deflection",
+            "speed": "degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
+            "timeScale": "tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
+            "zodiac": "tropical"
+          },
+          "coverage": {
+            "angleExclusions": "exact-geographic-poles-and-ecliptic-horizon-coincidence",
+            "assessment": "finite-reference-cases-only",
+            "broadDateRange": "not-certified",
+            "inputSyntax": "not-an-astronomical-accuracy-guarantee"
+          },
+          "referenceSpan": {
+            "from": "1800-01-01T00:00:00.000Z",
+            "to": "2200-01-01T00:00:00.000Z"
+          },
+          "deltaT": [
+            {
+              "model": "iers-utc/1",
+              "table": "2026-09-24",
+              "tableDigest": "064d98b4a531053a"
+            },
+            {
+              "model": "zodiacs-deltat/1",
+              "table": "2026-09-24",
+              "tableDigest": "6371988c510a1c6c"
+            }
+          ]
+        },
+        "backend": {
+          "name": "@zodiacs/engine",
+          "version": "0.1.1-rc.17",
+          "ephemeris": {
+            "name": "astronomy-engine",
+            "version": "2.1.19"
+          }
+        },
+        "cite": {
+          "url": "https://zodiacs.org/developers/mcp/#get_positions",
+          "receipt": "sha256:166b22120fffe135225114f2274f56b0e39f7883c59a7ac4b294e1b3b62cb7de",
+          "engine": "@zodiacs/engine",
+          "version": "0.1.1-rc.17"
+        }
+      }
+    },
+    {
+      "id": "reversed-event-window",
+      "tool": "find_events",
+      "endpoint": "events",
+      "args": {
+        "from": "2026-03-05T00:00:00Z",
+        "to": "2026-03-01T00:00:00Z"
+      },
+      "refusal": {
+        "layer": "tool",
+        "message": "/to: Must be later than from."
+      },
+      "recovery": {
+        "schema": "zodiacs.compute-api.positions.v1",
+        "result": {
+          "instants": [
+            {
+              "instant": "2000-01-01T12:00:00.000Z",
+              "bodies": [
+                {
+                  "body": "Sun",
+                  "lon": 280.3687723811323,
+                  "lat": 0.0000011205048760998976,
+                  "speed": 1.0194308605093738,
+                  "retrograde": false,
+                  "sign": "capricorn",
+                  "degree": 10.368772381132317
+                },
+                {
+                  "body": "Moon",
+                  "lon": 223.32396777014543,
+                  "lat": 5.170788636029834,
+                  "speed": 12.021413077249576,
+                  "retrograde": false,
+                  "sign": "scorpio",
+                  "degree": 13.323967770145373
+                },
+                {
+                  "body": "Mars",
+                  "lon": 327.96393186874616,
+                  "lat": -1.0680819810158533,
+                  "speed": 0.7756777245333524,
+                  "retrograde": false,
+                  "sign": "aquarius",
+                  "degree": 27.963931868746158
+                }
+              ],
+              "deltaT": {
+                "seconds": 63.8285,
+                "sigma": 0.000827,
+                "model": "iers-utc/1",
+                "table": "2026-09-24",
+                "tableDigest": "064d98b4a531053a",
+                "segment": "observed"
+              },
+              "timeScale": {
+                "input": "utc",
+                "basis": "iers",
+                "ut1MinusUtc": {
+                  "seconds": 0.35549999999999926,
+                  "sigma": 0.000827,
+                  "source": "observed"
+                },
+                "leapSeconds": {
+                  "taiMinusUtc": 32,
+                  "listed": true
+                }
+              },
+              "flags": []
+            }
+          ]
+        },
+        "receipt": {
+          "schema": "zodiacs.compute-receipt.v1",
+          "endpoint": "positions",
+          "engine": {
+            "name": "@zodiacs/engine",
+            "version": "0.1.1-rc.17",
+            "ephemeris": {
+              "name": "astronomy-engine",
+              "version": "2.1.19"
+            }
+          },
+          "conventions": {
+            "angles": "gast-and-true-obliquity",
+            "aspects": "major-aspects;sun-moon-eight-planets;no-nodes;applying-instantaneous-orb-rate",
+            "calendar": "proleptic-gregorian",
+            "deltaT": "tt-minus-ut1;value-in-result",
+            "localTime": "tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
+            "longitudeUnit": "degrees-[0,360)",
+            "moonNodes": "instantaneous-geocentric-moon-orbit-plane",
+            "moonPosition": "astronomy-engine-geo-moon;no-light-time;no-aberration",
+            "nutation": "iau2000b;equation-of-equinoxes-with-two-complementary-terms",
+            "planetPositions": "aberrated-geocentric-ecliptic-of-date;no-deflection",
+            "speed": "degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
+            "timeScale": "tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
+            "zodiac": "tropical"
+          },
+          "coverage": {
+            "angleExclusions": "exact-geographic-poles-and-ecliptic-horizon-coincidence",
+            "assessment": "finite-reference-cases-only",
+            "broadDateRange": "not-certified",
+            "inputSyntax": "not-an-astronomical-accuracy-guarantee"
+          },
+          "referenceSpan": {
+            "from": "1800-01-01T00:00:00.000Z",
+            "to": "2200-01-01T00:00:00.000Z"
+          },
+          "deltaT": [
+            {
+              "model": "iers-utc/1",
+              "table": "2026-09-24",
+              "tableDigest": "064d98b4a531053a"
+            },
+            {
+              "model": "zodiacs-deltat/1",
+              "table": "2026-09-24",
+              "tableDigest": "6371988c510a1c6c"
+            }
+          ]
+        },
+        "backend": {
+          "name": "@zodiacs/engine",
+          "version": "0.1.1-rc.17",
+          "ephemeris": {
+            "name": "astronomy-engine",
+            "version": "2.1.19"
+          }
+        },
+        "cite": {
+          "url": "https://zodiacs.org/developers/mcp/#get_positions",
+          "receipt": "sha256:166b22120fffe135225114f2274f56b0e39f7883c59a7ac4b294e1b3b62cb7de",
+          "engine": "@zodiacs/engine",
+          "version": "0.1.1-rc.17"
+        }
+      }
+    }
+  ],
+  "unsupported": [
+    {
+      "id": "zone-unsupported",
+      "tool": "check_sky_fact",
+      "args": {
+        "kind": "phase",
+        "phase": "full",
+        "date": "2026-03-03",
+        "zone": "Europe/Paris"
+      },
+      "refusal": {
+        "layer": "tool",
+        "message": "Input validation error: Invalid arguments for tool check_sky_fact: Unrecognized key: \"zone\""
+      },
+      "recovery": {
+        "schema": "zodiacs.compute-api.positions.v1",
+        "result": {
+          "instants": [
+            {
+              "instant": "2000-01-01T12:00:00.000Z",
+              "bodies": [
+                {
+                  "body": "Sun",
+                  "lon": 280.3687723811323,
+                  "lat": 0.0000011205048760998976,
+                  "speed": 1.0194308605093738,
+                  "retrograde": false,
+                  "sign": "capricorn",
+                  "degree": 10.368772381132317
+                },
+                {
+                  "body": "Moon",
+                  "lon": 223.32396777014543,
+                  "lat": 5.170788636029834,
+                  "speed": 12.021413077249576,
+                  "retrograde": false,
+                  "sign": "scorpio",
+                  "degree": 13.323967770145373
+                },
+                {
+                  "body": "Mars",
+                  "lon": 327.96393186874616,
+                  "lat": -1.0680819810158533,
+                  "speed": 0.7756777245333524,
+                  "retrograde": false,
+                  "sign": "aquarius",
+                  "degree": 27.963931868746158
+                }
+              ],
+              "deltaT": {
+                "seconds": 63.8285,
+                "sigma": 0.000827,
+                "model": "iers-utc/1",
+                "table": "2026-09-24",
+                "tableDigest": "064d98b4a531053a",
+                "segment": "observed"
+              },
+              "timeScale": {
+                "input": "utc",
+                "basis": "iers",
+                "ut1MinusUtc": {
+                  "seconds": 0.35549999999999926,
+                  "sigma": 0.000827,
+                  "source": "observed"
+                },
+                "leapSeconds": {
+                  "taiMinusUtc": 32,
+                  "listed": true
+                }
+              },
+              "flags": []
+            }
+          ]
+        },
+        "receipt": {
+          "schema": "zodiacs.compute-receipt.v1",
+          "endpoint": "positions",
+          "engine": {
+            "name": "@zodiacs/engine",
+            "version": "0.1.1-rc.17",
+            "ephemeris": {
+              "name": "astronomy-engine",
+              "version": "2.1.19"
+            }
+          },
+          "conventions": {
+            "angles": "gast-and-true-obliquity",
+            "aspects": "major-aspects;sun-moon-eight-planets;no-nodes;applying-instantaneous-orb-rate",
+            "calendar": "proleptic-gregorian",
+            "deltaT": "tt-minus-ut1;value-in-result",
+            "localTime": "tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
+            "longitudeUnit": "degrees-[0,360)",
+            "moonNodes": "instantaneous-geocentric-moon-orbit-plane",
+            "moonPosition": "astronomy-engine-geo-moon;no-light-time;no-aberration",
+            "nutation": "iau2000b;equation-of-equinoxes-with-two-complementary-terms",
+            "planetPositions": "aberrated-geocentric-ecliptic-of-date;no-deflection",
+            "speed": "degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
+            "timeScale": "tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
+            "zodiac": "tropical"
+          },
+          "coverage": {
+            "angleExclusions": "exact-geographic-poles-and-ecliptic-horizon-coincidence",
+            "assessment": "finite-reference-cases-only",
+            "broadDateRange": "not-certified",
+            "inputSyntax": "not-an-astronomical-accuracy-guarantee"
+          },
+          "referenceSpan": {
+            "from": "1800-01-01T00:00:00.000Z",
+            "to": "2200-01-01T00:00:00.000Z"
+          },
+          "deltaT": [
+            {
+              "model": "iers-utc/1",
+              "table": "2026-09-24",
+              "tableDigest": "064d98b4a531053a"
+            },
+            {
+              "model": "zodiacs-deltat/1",
+              "table": "2026-09-24",
+              "tableDigest": "6371988c510a1c6c"
+            }
+          ]
+        },
+        "backend": {
+          "name": "@zodiacs/engine",
+          "version": "0.1.1-rc.17",
+          "ephemeris": {
+            "name": "astronomy-engine",
+            "version": "2.1.19"
+          }
+        },
+        "cite": {
+          "url": "https://zodiacs.org/developers/mcp/#get_positions",
+          "receipt": "sha256:166b22120fffe135225114f2274f56b0e39f7883c59a7ac4b294e1b3b62cb7de",
+          "engine": "@zodiacs/engine",
+          "version": "0.1.1-rc.17"
+        }
+      }
+    },
+    {
+      "id": "eclipse-unsupported",
+      "tool": "find_events",
+      "args": {
+        "from": "2026-03-01T00:00:00Z",
+        "to": "2026-03-05T00:00:00Z",
+        "kinds": [
+          "eclipse"
+        ]
+      },
+      "refusal": {
+        "layer": "tool",
+        "message": "Input validation error: Invalid arguments for tool find_events: kinds.0: Invalid option: expected one of \"ingress\"|\"station\"|\"lunation\""
+      },
+      "recovery": {
+        "schema": "zodiacs.compute-api.positions.v1",
+        "result": {
+          "instants": [
+            {
+              "instant": "2000-01-01T12:00:00.000Z",
+              "bodies": [
+                {
+                  "body": "Sun",
+                  "lon": 280.3687723811323,
+                  "lat": 0.0000011205048760998976,
+                  "speed": 1.0194308605093738,
+                  "retrograde": false,
+                  "sign": "capricorn",
+                  "degree": 10.368772381132317
+                },
+                {
+                  "body": "Moon",
+                  "lon": 223.32396777014543,
+                  "lat": 5.170788636029834,
+                  "speed": 12.021413077249576,
+                  "retrograde": false,
+                  "sign": "scorpio",
+                  "degree": 13.323967770145373
+                },
+                {
+                  "body": "Mars",
+                  "lon": 327.96393186874616,
+                  "lat": -1.0680819810158533,
+                  "speed": 0.7756777245333524,
+                  "retrograde": false,
+                  "sign": "aquarius",
+                  "degree": 27.963931868746158
+                }
+              ],
+              "deltaT": {
+                "seconds": 63.8285,
+                "sigma": 0.000827,
+                "model": "iers-utc/1",
+                "table": "2026-09-24",
+                "tableDigest": "064d98b4a531053a",
+                "segment": "observed"
+              },
+              "timeScale": {
+                "input": "utc",
+                "basis": "iers",
+                "ut1MinusUtc": {
+                  "seconds": 0.35549999999999926,
+                  "sigma": 0.000827,
+                  "source": "observed"
+                },
+                "leapSeconds": {
+                  "taiMinusUtc": 32,
+                  "listed": true
+                }
+              },
+              "flags": []
+            }
+          ]
+        },
+        "receipt": {
+          "schema": "zodiacs.compute-receipt.v1",
+          "endpoint": "positions",
+          "engine": {
+            "name": "@zodiacs/engine",
+            "version": "0.1.1-rc.17",
+            "ephemeris": {
+              "name": "astronomy-engine",
+              "version": "2.1.19"
+            }
+          },
+          "conventions": {
+            "angles": "gast-and-true-obliquity",
+            "aspects": "major-aspects;sun-moon-eight-planets;no-nodes;applying-instantaneous-orb-rate",
+            "calendar": "proleptic-gregorian",
+            "deltaT": "tt-minus-ut1;value-in-result",
+            "localTime": "tzdb-shards-before-1970;host-intl-from-1970;flags-from-transition-record",
+            "longitudeUnit": "degrees-[0,360)",
+            "moonNodes": "instantaneous-geocentric-moon-orbit-plane",
+            "moonPosition": "astronomy-engine-geo-moon;no-light-time;no-aberration",
+            "nutation": "iau2000b;equation-of-equinoxes-with-two-complementary-terms",
+            "planetPositions": "aberrated-geocentric-ecliptic-of-date;no-deflection",
+            "speed": "degrees-per-day;central-difference-plus-minus-0.001-day;nodes-plus-minus-0.25-day",
+            "timeScale": "tt-from-leap-seconds-and-ut1-from-iers-1972-to-table-end;delta-t-model-otherwise;in-result",
+            "zodiac": "tropical"
+          },
+          "coverage": {
+            "angleExclusions": "exact-geographic-poles-and-ecliptic-horizon-coincidence",
+            "assessment": "finite-reference-cases-only",
+            "broadDateRange": "not-certified",
+            "inputSyntax": "not-an-astronomical-accuracy-guarantee"
+          },
+          "referenceSpan": {
+            "from": "1800-01-01T00:00:00.000Z",
+            "to": "2200-01-01T00:00:00.000Z"
+          },
+          "deltaT": [
+            {
+              "model": "iers-utc/1",
+              "table": "2026-09-24",
+              "tableDigest": "064d98b4a531053a"
+            },
+            {
+              "model": "zodiacs-deltat/1",
+              "table": "2026-09-24",
+              "tableDigest": "6371988c510a1c6c"
+            }
+          ]
+        },
+        "backend": {
+          "name": "@zodiacs/engine",
+          "version": "0.1.1-rc.17",
+          "ephemeris": {
+            "name": "astronomy-engine",
+            "version": "2.1.19"
+          }
+        },
+        "cite": {
+          "url": "https://zodiacs.org/developers/mcp/#get_positions",
+          "receipt": "sha256:166b22120fffe135225114f2274f56b0e39f7883c59a7ac4b294e1b3b62cb7de",
+          "engine": "@zodiacs/engine",
+          "version": "0.1.1-rc.17"
+        }
+      }
+    }
+  ],
+  "stderr": "zodiacs-mcp-server: ready on stdio: adapter 0.1.0-rc.17, engine 0.1.1-rc.17, no network\n",
+  "isolation": {
+    "consumerCwd": "/tmp/zodiacs-mcp-consumer-lOyT2c/package",
+    "installPath": "/tmp/zodiacs-mcp-consumer-lOyT2c/package",
+    "checkoutRootExcluded": "/workspace/site",
+    "workerEnvironment": {
+      "HTTP_PROXY": "<platform network setting; value omitted>",
+      "HTTPS_PROXY": "<platform network setting; value omitted>",
+      "NO_PROXY": "<platform network setting; value omitted>",
+      "NODE_EXTRA_CA_CERTS": "<platform network setting; value omitted>",
+      "PATH": "/home/agent/.local/bin:/opt/codex/runtimes/codex-primary-runtime/dependencies/bin/override:/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin:/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin:/opt/codex/runtimes/codex-primary-runtime/dependencies/bin:/opt/codex/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/home/agent/.local/bin:/opt/codex/runtimes/codex-primary-runtime/dependencies/bin/fallback",
+      "TMPDIR": "/tmp",
+      "LANG": "C.UTF-8",
+      "NODE_ENV": "development",
+      "npm_config_cache": "/tmp/zodiacs-consumer-npm-cache",
+      "npm_config_userconfig": "/dev/null"
+    },
+    "serverLaunch": {
+      "command": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "args": [
+        "/tmp/zodiacs-mcp-consumer-lOyT2c/package/server.mjs"
+      ],
+      "cwd": "/tmp/zodiacs-mcp-consumer-lOyT2c/package",
+      "environment": {
+        "HTTP_PROXY": "<platform network setting; value omitted>",
+        "HTTPS_PROXY": "<platform network setting; value omitted>",
+        "NO_PROXY": "<platform network setting; value omitted>",
+        "NODE_EXTRA_CA_CERTS": "<platform network setting; value omitted>",
+        "PATH": "/home/agent/.local/bin:/opt/codex/runtimes/codex-primary-runtime/dependencies/bin/override:/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin:/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin:/opt/codex/runtimes/codex-primary-runtime/dependencies/bin:/opt/codex/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/home/agent/.local/bin:/opt/codex/runtimes/codex-primary-runtime/dependencies/bin/fallback",
+        "TMPDIR": "/tmp",
+        "LANG": "C.UTF-8",
+        "NODE_ENV": "development",
+        "npm_config_cache": "/tmp/zodiacs-consumer-npm-cache",
+        "npm_config_userconfig": "/dev/null"
+      }
+    },
+    "ancestorPackageOrNodeModules": "absent; checked again in consumer process",
+    "moduleResolution": "SDK entry realpaths are inside this consumer/node_modules; NODE_PATH and NODE_OPTIONS absent",
+    "observedServer": {
+      "pid": 1355,
+      "cwd": "/tmp/zodiacs-mcp-consumer-lOyT2c/package",
+      "environment": {
+        "PATH": "/home/agent/.local/bin:/opt/codex/runtimes/codex-primary-runtime/dependencies/bin/override:/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin:/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin:/opt/codex/runtimes/codex-primary-runtime/dependencies/bin:/opt/codex/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/home/agent/.local/bin:/opt/codex/runtimes/codex-primary-runtime/dependencies/bin/fallback",
+        "HTTP_PROXY": "<platform network setting; value omitted>",
+        "HTTPS_PROXY": "<platform network setting; value omitted>",
+        "NO_PROXY": "<platform network setting; value omitted>",
+        "NODE_EXTRA_CA_CERTS": "<platform network setting; value omitted>",
+        "TMPDIR": "/tmp",
+        "LANG": "C.UTF-8",
+        "NODE_ENV": "development",
+        "npm_config_cache": "/tmp/zodiacs-consumer-npm-cache",
+        "npm_config_userconfig": "/dev/null"
+      },
+      "proof": "read-only /proc observation after SDK initialization"
+    }
+  },
+  "clientVersion": "2.0.0",
+  "server": {
+    "name": "zodiacs-mcp-server",
+    "version": "0.1.0-rc.17"
+  },
+  "tools": [
+    {
+      "name": "get_capabilities",
+      "title": "Zodiacs engine capabilities",
+      "description": "What this adapter can calculate, the exact engine and schema versions behind it, every limit a request must respect, the resources it offers, and what it deliberately does not do. Read this before the other tools rather than guessing at supported options. A local calculation server is not a local AI experience. Whatever assistant you connect this to decides what reaches its model provider — your message, the arguments it builds for these tools, and the results it reads back. If that assistant runs in the cloud, assume the birth details in a request reach it. The calculation is local; the conversation is the assistant's to route.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "adapter": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "const": "zodiacs-mcp-server"
+              },
+              "version": {
+                "type": "string"
+              },
+              "releaseStatus": {
+                "type": "string",
+                "const": "unpublished-candidate"
+              },
+              "transport": {
+                "type": "string",
+                "const": "stdio"
+              }
+            },
+            "required": [
+              "name",
+              "version",
+              "releaseStatus",
+              "transport"
+            ],
+            "additionalProperties": false
+          },
+          "engine": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "const": "@zodiacs/engine"
+              },
+              "version": {
+                "type": "string"
+              },
+              "releaseStatus": {
+                "type": "string",
+                "const": "unpublished-candidate"
+              }
+            },
+            "required": [
+              "name",
+              "version",
+              "releaseStatus"
+            ],
+            "additionalProperties": false
+          },
+          "schemas": {
+            "type": "object",
+            "properties": {
+              "envelope": {
+                "type": "string",
+                "const": "zodiacs.natal-envelope.draft-v1"
+              },
+              "receipt": {
+                "type": "string",
+                "const": "zodiacs.calculation-receipt.draft-v1"
+              },
+              "diagnostic": {
+                "type": "string",
+                "const": "zodiacs.natal-diagnostic.draft-v1"
+              }
+            },
+            "required": [
+              "envelope",
+              "receipt",
+              "diagnostic"
+            ],
+            "additionalProperties": false
+          },
+          "supported": {
+            "type": "object",
+            "properties": {
+              "houseSystems": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "placidus",
+                    "whole",
+                    "porphyry",
+                    "equal",
+                    "vehlow",
+                    "koch",
+                    "regiomontanus",
+                    "campanus",
+                    "topocentric",
+                    "alcabitius",
+                    "morinus",
+                    "meridian",
+                    "equal-mc"
+                  ]
+                }
+              },
+              "references": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "supplied-instant",
+                    "utc-noon"
+                  ]
+                }
+              },
+              "referenceRules": {
+                "type": "object",
+                "properties": {
+                  "utc-noon": {
+                    "type": "string"
+                  },
+                  "local-noon": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "utc-noon",
+                  "local-noon"
+                ],
+                "additionalProperties": false
+              },
+              "epoch": {
+                "type": "object",
+                "properties": {
+                  "from": {
+                    "type": "string"
+                  },
+                  "to": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "from",
+                  "to"
+                ],
+                "additionalProperties": false
+              },
+              "coordinates": {
+                "type": "object",
+                "properties": {
+                  "latitude": {
+                    "minItems": 2,
+                    "maxItems": 2,
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    }
+                  },
+                  "longitude": {
+                    "minItems": 2,
+                    "maxItems": 2,
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    }
+                  },
+                  "excluded": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "latitude",
+                  "longitude",
+                  "excluded"
+                ],
+                "additionalProperties": false
+              },
+              "limits": {
+                "type": "object",
+                "properties": {
+                  "recordBytes": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "recordDepth": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "recordNodes": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "instantChars": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "requestBytes": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "resultBytes": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "differences": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "explanations": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "required": [
+                  "recordBytes",
+                  "recordDepth",
+                  "recordNodes",
+                  "instantChars",
+                  "requestBytes",
+                  "resultBytes",
+                  "differences",
+                  "explanations"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "houseSystems",
+              "references",
+              "referenceRules",
+              "epoch",
+              "coordinates",
+              "limits"
+            ],
+            "additionalProperties": false
+          },
+          "sky": {
+            "type": "object",
+            "properties": {
+              "tools": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "get_positions",
+                    "find_events",
+                    "check_sky_fact"
+                  ]
+                }
+              },
+              "sameAs": {
+                "type": "string"
+              },
+              "epoch": {
+                "type": "object",
+                "properties": {
+                  "from": {
+                    "type": "string"
+                  },
+                  "to": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "from",
+                  "to"
+                ],
+                "additionalProperties": false
+              },
+              "positionBodies": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "Sun",
+                    "Moon",
+                    "Mercury",
+                    "Venus",
+                    "Mars",
+                    "Jupiter",
+                    "Saturn",
+                    "Uranus",
+                    "Neptune",
+                    "Pluto",
+                    "North Node",
+                    "South Node"
+                  ]
+                }
+              },
+              "eventBodies": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "Sun",
+                    "Moon",
+                    "Mercury",
+                    "Venus",
+                    "Mars",
+                    "Jupiter",
+                    "Saturn",
+                    "Uranus",
+                    "Neptune",
+                    "Pluto"
+                  ]
+                }
+              },
+              "eventKinds": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "ingress",
+                    "station",
+                    "lunation"
+                  ]
+                }
+              },
+              "factKinds": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "sign",
+                    "retrograde",
+                    "ingress",
+                    "phase"
+                  ]
+                }
+              },
+              "phases": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "new",
+                    "first-quarter",
+                    "full",
+                    "last-quarter"
+                  ]
+                }
+              },
+              "limits": {
+                "type": "object",
+                "properties": {
+                  "positions.instants": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "events.windowDays": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "events.samples": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "sky-fact.samples": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "required": [
+                  "positions.instants",
+                  "events.windowDays",
+                  "events.samples",
+                  "sky-fact.samples"
+                ],
+                "additionalProperties": false
+              },
+              "search": {
+                "type": "object",
+                "properties": {
+                  "window": {
+                    "type": "string",
+                    "const": "start-exclusive-end-inclusive"
+                  },
+                  "completeness": {
+                    "type": "string",
+                    "const": "tested-not-proven"
+                  }
+                },
+                "required": [
+                  "window",
+                  "completeness"
+                ],
+                "additionalProperties": false
+              },
+              "dates": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "tools",
+              "sameAs",
+              "epoch",
+              "positionBodies",
+              "eventBodies",
+              "eventKinds",
+              "factKinds",
+              "phases",
+              "limits",
+              "search",
+              "dates"
+            ],
+            "additionalProperties": false,
+            "description": "What get_positions, find_events and check_sky_fact accept."
+          },
+          "resources": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "uri": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "mimeType": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "uri",
+                "name",
+                "mimeType"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "unsupported": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "privacy": {
+            "type": "object",
+            "properties": {
+              "calculation": {
+                "type": "string"
+              },
+              "assistant": {
+                "type": "string"
+              },
+              "output": {
+                "type": "string"
+              },
+              "withheld": {
+                "type": "string"
+              },
+              "claims": {
+                "type": "string"
+              },
+              "citation": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "calculation",
+              "assistant",
+              "output",
+              "withheld",
+              "claims",
+              "citation"
+            ],
+            "additionalProperties": false
+          },
+          "receipt": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "type": "string",
+                "const": "zodiacs.mcp-receipt.v1"
+              },
+              "tool": {
+                "type": "string",
+                "const": "get_capabilities"
+              },
+              "adapter": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "const": "zodiacs-mcp-server"
+                  },
+                  "version": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name",
+                  "version"
+                ],
+                "additionalProperties": false
+              },
+              "engine": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "const": "@zodiacs/engine"
+                  },
+                  "version": {
+                    "type": "string"
+                  },
+                  "ephemeris": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "const": "astronomy-engine"
+                      },
+                      "version": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "version"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "name",
+                  "version",
+                  "ephemeris"
+                ],
+                "additionalProperties": false,
+                "description": "The engine that calculated, as its calculation record names it."
+              }
+            },
+            "required": [
+              "schema",
+              "tool",
+              "adapter",
+              "engine"
+            ],
+            "additionalProperties": false,
+            "description": "The adapter and the engine that answered. The cite digest is of this object."
+          },
+          "cite": {
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string",
+                "const": "https://zodiacs.org/developers/mcp/#get_capabilities"
+              },
+              "receipt": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$",
+                "description": "SHA-256 of the RFC 8785 canonical JSON of the receipt this reply carries, which holds nothing from a record."
+              },
+              "engine": {
+                "type": "string",
+                "const": "@zodiacs/engine"
+              },
+              "version": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "url",
+              "receipt",
+              "engine",
+              "version"
+            ],
+            "additionalProperties": false,
+            "description": "What to quote as this result's source."
+          }
+        },
+        "required": [
+          "adapter",
+          "engine",
+          "schemas",
+          "supported",
+          "sky",
+          "resources",
+          "unsupported",
+          "privacy",
+          "receipt",
+          "cite"
+        ],
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "calculate_natal_chart",
+      "title": "Calculate a natal chart",
+      "description": "Calculate one natal chart from a birth instant and, optionally, coordinates. Returns body positions, angles, house cusps and aspects, with whether the time was known and which house system was requested against which one was actually used, and what to cite. The citation's digest identifies the birth details, so quote it only where they may be known. Computed on this machine by the pinned Zodiacs engine. A local calculation server is not a local AI experience. Whatever assistant you connect this to decides what reaches its model provider — your message, the arguments it builds for these tools, and the results it reads back. If that assistant runs in the cloud, assume the birth details in a request reach it. The calculation is local; the conversation is the assistant's to route.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "utc": {
+            "type": "string",
+            "maxLength": 64,
+            "description": "The birth instant as ISO-8601 with an explicit zone, such as 1990-06-15T13:30:00Z or 1990-06-15T19:00:00+05:30. A naked wall time is refused rather than assumed to be UTC. Must fall within 1800-01-01T00:00:00.000Z to 2199-12-31T23:59:59.999Z."
+          },
+          "latitude": {
+            "description": "Degrees north, -90 to 90. Supply both coordinates or neither; with neither, the result carries no angles or houses and says why. Exactly 90 or -90 needs timeKnown: false: the engine does not compute angles at the poles.",
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90
+          },
+          "longitude": {
+            "description": "Degrees east, -180 to 180. Supply both coordinates or neither.",
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180
+          },
+          "houseSystem": {
+            "default": "placidus",
+            "description": "Requested house system. Both the request and what the engine could actually use are reported, which differ inside the polar circle: Placidus and Koch are undefined there, and the engine uses whole sign.",
+            "type": "string",
+            "enum": [
+              "placidus",
+              "whole",
+              "porphyry",
+              "equal",
+              "vehlow",
+              "koch",
+              "regiomontanus",
+              "campanus",
+              "topocentric",
+              "alcabitius",
+              "morinus",
+              "meridian",
+              "equal-mc"
+            ]
+          },
+          "timeKnown": {
+            "default": true,
+            "description": "False means utc is a reference instant rather than a birth time, which suppresses angles and houses. It does not imply noon. With false, coordinates change nothing in the result, but the calculation record still holds them and the result's cite.receipt identifies them.",
+            "type": "boolean"
+          },
+          "reference": {
+            "description": "What the supplied instant represents, recorded in the calculation record. Omitting it is the usual case and infers nothing, including when timeKnown is false. \"utc-noon\" means no birth time was known and midday UTC stands in, so it needs timeKnown: false and utc at exactly 12:00:00Z.",
+            "type": "string",
+            "enum": [
+              "supplied-instant",
+              "utc-noon"
+            ]
+          },
+          "output": {
+            "default": "summary",
+            "description": "summary returns the computed chart and the four fields needed to read it. record additionally returns the full calculation record, which repeats every input back — ask for it only when the record is what you need, such as to compare two of them.",
+            "type": "string",
+            "enum": [
+              "summary",
+              "record"
+            ]
+          }
+        },
+        "required": [
+          "utc"
+        ],
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "type": "object",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "engine": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "const": "@zodiacs/engine"
+                  },
+                  "version": {
+                    "type": "string"
+                  },
+                  "ephemeris": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "const": "astronomy-engine"
+                      },
+                      "version": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "version"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "name",
+                  "version",
+                  "ephemeris"
+                ],
+                "additionalProperties": false,
+                "description": "The engine that calculated, as its calculation record names it."
+              },
+              "timeKnown": {
+                "type": "boolean"
+              },
+              "houses": {
+                "type": "object",
+                "properties": {
+                  "requested": {
+                    "type": "string",
+                    "enum": [
+                      "placidus",
+                      "whole",
+                      "porphyry",
+                      "equal",
+                      "vehlow",
+                      "koch",
+                      "regiomontanus",
+                      "campanus",
+                      "topocentric",
+                      "alcabitius",
+                      "morinus",
+                      "meridian",
+                      "equal-mc"
+                    ]
+                  },
+                  "actual": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "placidus",
+                          "whole",
+                          "porphyry",
+                          "equal",
+                          "vehlow",
+                          "koch",
+                          "regiomontanus",
+                          "campanus",
+                          "topocentric",
+                          "alcabitius",
+                          "morinus",
+                          "meridian",
+                          "equal-mc"
+                        ]
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "absenceReason": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "enum": [
+                          "unknown-time",
+                          "missing-location"
+                        ]
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "requested",
+                  "actual",
+                  "absenceReason"
+                ],
+                "additionalProperties": false
+              },
+              "inputFlags": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "dst-gap",
+                    "dst-fold",
+                    "lmt",
+                    "no-time",
+                    "polar-fallback",
+                    "outside-reference-span"
+                  ]
+                }
+              },
+              "resultFlags": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "dst-gap",
+                    "dst-fold",
+                    "lmt",
+                    "no-time",
+                    "polar-fallback",
+                    "outside-reference-span"
+                  ]
+                }
+              },
+              "bodies": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "body": {
+                      "type": "string",
+                      "enum": [
+                        "Sun",
+                        "Moon",
+                        "Mercury",
+                        "Venus",
+                        "Mars",
+                        "Jupiter",
+                        "Saturn",
+                        "Uranus",
+                        "Neptune",
+                        "Pluto",
+                        "North Node",
+                        "South Node"
+                      ]
+                    },
+                    "lon": {
+                      "type": "number",
+                      "description": "Tropical ecliptic longitude of date, degrees in [0, 360)."
+                    },
+                    "lat": {
+                      "type": "number",
+                      "description": "Ecliptic latitude, degrees."
+                    },
+                    "speed": {
+                      "type": "number",
+                      "description": "Daily motion in longitude, degrees a day; negative when retrograde."
+                    },
+                    "retrograde": {
+                      "type": "boolean"
+                    },
+                    "sign": {
+                      "type": "string",
+                      "enum": [
+                        "aries",
+                        "taurus",
+                        "gemini",
+                        "cancer",
+                        "leo",
+                        "virgo",
+                        "libra",
+                        "scorpio",
+                        "sagittarius",
+                        "capricorn",
+                        "aquarius",
+                        "pisces"
+                      ]
+                    },
+                    "degree": {
+                      "type": "number",
+                      "description": "Longitude within the sign, degrees in [0, 30)."
+                    }
+                  },
+                  "required": [
+                    "body",
+                    "lon",
+                    "lat",
+                    "speed",
+                    "retrograde",
+                    "sign",
+                    "degree"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "angles": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "asc": {
+                        "type": "number"
+                      },
+                      "mc": {
+                        "type": "number"
+                      },
+                      "dsc": {
+                        "type": "number"
+                      },
+                      "ic": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "asc",
+                      "mc",
+                      "dsc",
+                      "ic"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "cusps": {
+                "anyOf": [
+                  {
+                    "minItems": 12,
+                    "maxItems": 12,
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    }
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "Twelve cusp longitudes from the first house, or null when there are no houses."
+              },
+              "aspects": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "a": {
+                      "type": "string",
+                      "enum": [
+                        "Sun",
+                        "Moon",
+                        "Mercury",
+                        "Venus",
+                        "Mars",
+                        "Jupiter",
+                        "Saturn",
+                        "Uranus",
+                        "Neptune",
+                        "Pluto",
+                        "North Node",
+                        "South Node"
+                      ]
+                    },
+                    "b": {
+                      "type": "string",
+                      "enum": [
+                        "Sun",
+                        "Moon",
+                        "Mercury",
+                        "Venus",
+                        "Mars",
+                        "Jupiter",
+                        "Saturn",
+                        "Uranus",
+                        "Neptune",
+                        "Pluto",
+                        "North Node",
+                        "South Node"
+                      ]
+                    },
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "conjunction",
+                        "sextile",
+                        "square",
+                        "trine",
+                        "opposition"
+                      ]
+                    },
+                    "orb": {
+                      "type": "number",
+                      "description": "Distance from exact, degrees."
+                    },
+                    "applying": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "a",
+                    "b",
+                    "type",
+                    "orb",
+                    "applying"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "cite": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "const": "https://zodiacs.org/developers/mcp/#calculate_natal_chart"
+                  },
+                  "receipt": {
+                    "type": "string",
+                    "pattern": "^sha256:[0-9a-f]{64}$",
+                    "description": "SHA-256 of the calculation receipt's RFC 8785 canonical JSON. The receipt holds the instant as written, the coordinates and the settings, so this digest identifies the birth details, even when the time is unknown: quote it only where they may be known."
+                  },
+                  "engine": {
+                    "type": "string",
+                    "const": "@zodiacs/engine"
+                  },
+                  "version": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "url",
+                  "receipt",
+                  "engine",
+                  "version"
+                ],
+                "additionalProperties": false,
+                "description": "What to quote as this result's source."
+              }
+            },
+            "required": [
+              "engine",
+              "timeKnown",
+              "houses",
+              "inputFlags",
+              "resultFlags",
+              "bodies",
+              "angles",
+              "cusps",
+              "aspects",
+              "cite"
+            ],
+            "additionalProperties": false,
+            "description": "The default reply: the chart, and the four fields needed to read it."
+          },
+          {
+            "type": "object",
+            "properties": {
+              "engine": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "const": "@zodiacs/engine"
+                  },
+                  "version": {
+                    "type": "string"
+                  },
+                  "ephemeris": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "const": "astronomy-engine"
+                      },
+                      "version": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "version"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "name",
+                  "version",
+                  "ephemeris"
+                ],
+                "additionalProperties": false,
+                "description": "The engine that calculated, as its calculation record names it."
+              },
+              "schema": {
+                "type": "string",
+                "const": "zodiacs.natal-envelope.draft-v1"
+              },
+              "record": {
+                "type": "string",
+                "description": "The calculation record itself, as JSON text. Pass this field, not the whole reply, to compare_calculation_records."
+              },
+              "cite": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "const": "https://zodiacs.org/developers/mcp/#calculate_natal_chart"
+                  },
+                  "receipt": {
+                    "type": "string",
+                    "pattern": "^sha256:[0-9a-f]{64}$",
+                    "description": "SHA-256 of the calculation receipt's RFC 8785 canonical JSON. The receipt holds the instant as written, the coordinates and the settings, so this digest identifies the birth details, even when the time is unknown: quote it only where they may be known."
+                  },
+                  "engine": {
+                    "type": "string",
+                    "const": "@zodiacs/engine"
+                  },
+                  "version": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "url",
+                  "receipt",
+                  "engine",
+                  "version"
+                ],
+                "additionalProperties": false,
+                "description": "What to quote as this result's source."
+              }
+            },
+            "required": [
+              "engine",
+              "schema",
+              "record",
+              "cite"
+            ],
+            "additionalProperties": false,
+            "description": "The reply to output: \"record\"."
+          }
+        ]
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "compare_calculation_records",
+      "title": "Compare two calculation records",
+      "description": "Read two Zodiacs calculation records and report what differs between them and how much of it is explained. Each difference is a fact read from the two records. Each proposed cause is labelled by its evidence: reproduced by a local recalculation, reported by the records themselves, a hypothesis that fits, or unresolved. Pass record content, not a path or a URL. A local calculation server is not a local AI experience. Whatever assistant you connect this to decides what reaches its model provider — your message, the arguments it builds for these tools, and the results it reads back. If that assistant runs in the cloud, assume the birth details in a request reach it. The calculation is local; the conversation is the assistant's to route. A comparison reports the exact difference between two charts. Anyone holding one of the two can reconstruct the other from it, so that output is safer to pass on than a full record but it is not anonymous.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "left": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 65536,
+            "description": "The content of a zodiacs.natal-envelope.draft-v1 calculation record, as JSON text. Not a file path, URL or identifier: the adapter reads no files and fetches nothing. At most 65536 bytes."
+          },
+          "right": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 65536,
+            "description": "The content of the second calculation record, as JSON text."
+          },
+          "output": {
+            "default": "summary",
+            "description": "summary lists every row full does, with its label, kind and numeric difference, and leaves out the values of rows carrying birth details or computed positions — you already hold both records. full returns those values too; ask for it when you need to read them rather than act on which fields moved.",
+            "type": "string",
+            "enum": [
+              "summary",
+              "full"
+            ]
+          }
+        },
+        "required": [
+          "left",
+          "right"
+        ],
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "identical": {
+            "type": "boolean"
+          },
+          "counts": {
+            "type": "object",
+            "properties": {
+              "differences": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "substantive": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "displayOnly": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "explanations": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "differences",
+              "substantive",
+              "displayOnly",
+              "explanations"
+            ],
+            "additionalProperties": false
+          },
+          "output": {
+            "type": "string",
+            "enum": [
+              "summary",
+              "full"
+            ]
+          },
+          "differences": {
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "area": {
+                      "type": "string"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "delta": {
+                      "description": "Right minus left, in the row's own unit: degrees, taken the shorter way round the circle for a body's longitude, an angle or a cusp, or degrees a day for a speed. Null for a row with no numeric difference, or one too large for a number.",
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "metadata",
+                        "numeric",
+                        "display"
+                      ]
+                    },
+                    "left": {
+                      "type": "string"
+                    },
+                    "right": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "area",
+                    "label",
+                    "delta",
+                    "kind",
+                    "left",
+                    "right"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "area": {
+                      "type": "string"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "delta": {
+                      "description": "Right minus left, in the row's own unit: degrees, taken the shorter way round the circle for a body's longitude, an angle or a cusp, or degrees a day for a speed. Null for a row with no numeric difference, or one too large for a number.",
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "metadata",
+                        "numeric",
+                        "display"
+                      ]
+                    },
+                    "valuesWithheld": {
+                      "type": "boolean",
+                      "const": true
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "area",
+                    "label",
+                    "delta",
+                    "kind",
+                    "valuesWithheld"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            }
+          },
+          "explanations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "evidence": {
+                  "type": "string",
+                  "enum": [
+                    "reproduced",
+                    "reported",
+                    "hypothesis",
+                    "unresolved"
+                  ]
+                },
+                "statement": {
+                  "type": "string"
+                },
+                "covers": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "detail": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "evidence",
+                "statement",
+                "covers",
+                "detail"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "limits": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "disclosure": {
+            "type": "string"
+          },
+          "withheld": {
+            "type": "string"
+          },
+          "receipt": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "type": "string",
+                "const": "zodiacs.mcp-receipt.v1"
+              },
+              "tool": {
+                "type": "string",
+                "const": "compare_calculation_records"
+              },
+              "adapter": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "const": "zodiacs-mcp-server"
+                  },
+                  "version": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name",
+                  "version"
+                ],
+                "additionalProperties": false
+              },
+              "engine": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "const": "@zodiacs/engine"
+                  },
+                  "version": {
+                    "type": "string"
+                  },
+                  "ephemeris": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "const": "astronomy-engine"
+                      },
+                      "version": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "version"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "name",
+                  "version",
+                  "ephemeris"
+                ],
+                "additionalProperties": false,
+                "description": "The engine that calculated, as its calculation record names it."
+              },
+              "output": {
+                "type": "string",
+                "enum": [
+                  "summary",
+                  "full"
+                ]
+              }
+            },
+            "required": [
+              "schema",
+              "tool",
+              "adapter",
+              "engine",
+              "output"
+            ],
+            "additionalProperties": false,
+            "description": "The adapter and the engine that answered. The cite digest is of this object."
+          },
+          "cite": {
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string",
+                "const": "https://zodiacs.org/developers/mcp/#compare_calculation_records"
+              },
+              "receipt": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$",
+                "description": "SHA-256 of the RFC 8785 canonical JSON of the receipt this reply carries, which holds nothing from a record."
+              },
+              "engine": {
+                "type": "string",
+                "const": "@zodiacs/engine"
+              },
+              "version": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "url",
+              "receipt",
+              "engine",
+              "version"
+            ],
+            "additionalProperties": false,
+            "description": "What to quote as this result's source."
+          }
+        },
+        "required": [
+          "identical",
+          "counts",
+          "output",
+          "differences",
+          "explanations",
+          "limits",
+          "disclosure",
+          "receipt",
+          "cite"
+        ],
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "get_positions",
+      "title": "Body positions at given instants",
+      "description": "The positions of the Sun, the Moon, the planets and the two lunar nodes at up to 100 instants: tropical ecliptic longitude, latitude, daily motion, sign and degree, with the ΔT and time scale the engine used. The same calculation, result and receipt as POST https://zodiacs.org/api/v1/positions for the same request, computed on this machine by the pinned Zodiacs engine. A local calculation server is not a local AI experience. Whatever assistant you connect this to decides what reaches its model provider — your message, the arguments it builds for these tools, and the results it reads back. If that assistant runs in the cloud, assume the birth details in a request reach it. The calculation is local; the conversation is the assistant's to route.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "instants": {
+            "minItems": 1,
+            "maxItems": 100,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 29
+            },
+            "description": "One to 100 instants, each in ISO 8601 with Z or a numeric offset, such as 2000-01-01T12:00:00Z or 1990-06-15T14:30:00+02:00, from 1800-01-01T00:00:00.000Z to 2199-12-31T23:59:59.999Z once the offset is applied. A time without Z or an offset is refused."
+          },
+          "bodies": {
+            "description": "Which rows to return, each named once; all twelve when omitted.",
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "Sun",
+                "Moon",
+                "Mercury",
+                "Venus",
+                "Mars",
+                "Jupiter",
+                "Saturn",
+                "Uranus",
+                "Neptune",
+                "Pluto",
+                "North Node",
+                "South Node"
+              ]
+            }
+          }
+        },
+        "required": [
+          "instants"
+        ],
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "schema": {
+            "type": "string",
+            "const": "zodiacs.compute-api.positions.v1"
+          },
+          "result": {
+            "type": "object",
+            "properties": {
+              "instants": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "instant": {
+                      "type": "string",
+                      "description": "An instant in UTC, written as ISO 8601 with milliseconds."
+                    },
+                    "bodies": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "body": {
+                            "type": "string",
+                            "enum": [
+                              "Sun",
+                              "Moon",
+                              "Mercury",
+                              "Venus",
+                              "Mars",
+                              "Jupiter",
+                              "Saturn",
+                              "Uranus",
+                              "Neptune",
+                              "Pluto",
+                              "North Node",
+                              "South Node"
+                            ]
+                          },
+                          "lon": {
+                            "type": "number",
+                            "description": "Tropical ecliptic longitude of date, degrees in [0, 360)."
+                          },
+                          "lat": {
+                            "type": "number",
+                            "description": "Ecliptic latitude, degrees."
+                          },
+                          "speed": {
+                            "type": "number",
+                            "description": "Daily motion in longitude, degrees a day; negative when retrograde."
+                          },
+                          "retrograde": {
+                            "type": "boolean"
+                          },
+                          "sign": {
+                            "type": "string",
+                            "enum": [
+                              "aries",
+                              "taurus",
+                              "gemini",
+                              "cancer",
+                              "leo",
+                              "virgo",
+                              "libra",
+                              "scorpio",
+                              "sagittarius",
+                              "capricorn",
+                              "aquarius",
+                              "pisces"
+                            ]
+                          },
+                          "degree": {
+                            "type": "number",
+                            "description": "Longitude within the sign, degrees in [0, 30)."
+                          }
+                        },
+                        "required": [
+                          "body",
+                          "lon",
+                          "lat",
+                          "speed",
+                          "retrograde",
+                          "sign",
+                          "degree"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "deltaT": {
+                      "type": "object",
+                      "properties": {
+                        "seconds": {
+                          "type": "number"
+                        },
+                        "sigma": {
+                          "type": "number"
+                        },
+                        "model": {
+                          "type": "string",
+                          "enum": [
+                            "iers-utc/1",
+                            "zodiacs-deltat/1"
+                          ]
+                        },
+                        "table": {
+                          "type": "string"
+                        },
+                        "tableDigest": {
+                          "type": "string"
+                        },
+                        "segment": {
+                          "type": "string",
+                          "enum": [
+                            "long-term",
+                            "reconstructed",
+                            "observed",
+                            "predicted",
+                            "extrapolated"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "seconds",
+                        "sigma",
+                        "model",
+                        "table",
+                        "tableDigest",
+                        "segment"
+                      ],
+                      "additionalProperties": false,
+                      "description": "ΔT = TT − UT1 in seconds, with its 1-sigma band and where it came from: iers-utc/1 from 1972 to the end of the engine's UT1 table, its model zodiacs-deltat/1 otherwise."
+                    },
+                    "timeScale": {
+                      "type": "object",
+                      "properties": {
+                        "input": {
+                          "type": "string",
+                          "const": "utc"
+                        },
+                        "basis": {
+                          "type": "string",
+                          "enum": [
+                            "iers",
+                            "delta-t"
+                          ]
+                        },
+                        "ut1MinusUtc": {
+                          "anyOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "seconds": {
+                                  "type": "number"
+                                },
+                                "sigma": {
+                                  "type": "number"
+                                },
+                                "source": {
+                                  "type": "string",
+                                  "enum": [
+                                    "observed",
+                                    "predicted",
+                                    "fallback"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "seconds",
+                                "sigma",
+                                "source"
+                              ],
+                              "additionalProperties": false
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "leapSeconds": {
+                          "anyOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "taiMinusUtc": {
+                                  "type": "number"
+                                },
+                                "listed": {
+                                  "type": "boolean"
+                                }
+                              },
+                              "required": [
+                                "taiMinusUtc",
+                                "listed"
+                              ],
+                              "additionalProperties": false
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "input",
+                        "basis",
+                        "ut1MinusUtc",
+                        "leapSeconds"
+                      ],
+                      "additionalProperties": false,
+                      "description": "How the engine read the instant. basis iers, from 1972 to the end of its UT1 table: TT is UTC plus the leap seconds and 32.184 s, and UT1 is UTC plus IERS UT1 − UTC. basis delta-t, otherwise: the instant is read as UT1, and TT is UT1 plus the ΔT model."
+                    },
+                    "flags": {
+                      "maxItems": 1,
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "const": "outside-reference-span"
+                      }
+                    }
+                  },
+                  "required": [
+                    "instant",
+                    "bodies",
+                    "deltaT",
+                    "timeScale",
+                    "flags"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "instants"
+            ],
+            "additionalProperties": false
+          },
+          "receipt": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "type": "string",
+                "const": "zodiacs.compute-receipt.v1"
+              },
+              "endpoint": {
+                "type": "string",
+                "const": "positions"
+              },
+              "engine": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "const": "@zodiacs/engine"
+                  },
+                  "version": {
+                    "type": "string"
+                  },
+                  "ephemeris": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "const": "astronomy-engine"
+                      },
+                      "version": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "version"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "name",
+                  "version",
+                  "ephemeris"
+                ],
+                "additionalProperties": false
+              },
+              "conventions": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "coverage": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "referenceSpan": {
+                "type": "object",
+                "properties": {
+                  "from": {
+                    "type": "string",
+                    "description": "An instant in UTC, written as ISO 8601 with milliseconds."
+                  },
+                  "to": {
+                    "type": "string",
+                    "description": "An instant in UTC, written as ISO 8601 with milliseconds."
+                  }
+                },
+                "required": [
+                  "from",
+                  "to"
+                ],
+                "additionalProperties": false
+              },
+              "deltaT": {
+                "minItems": 2,
+                "maxItems": 2,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "model": {
+                      "type": "string",
+                      "enum": [
+                        "iers-utc/1",
+                        "zodiacs-deltat/1"
+                      ]
+                    },
+                    "table": {
+                      "type": "string"
+                    },
+                    "tableDigest": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "model",
+                    "table",
+                    "tableDigest"
+                  ],
+                  "additionalProperties": false
+                },
+                "description": "The two sources of ΔT the engine's time basis uses: IERS from 1972 to the end of its UT1 table, and its model at every other instant."
+              },
+              "search": {
+                "description": "How a search searched: present when one ran.",
+                "type": "object",
+                "properties": {
+                  "solver": {
+                    "type": "string",
+                    "const": "engine-longitude-crossings"
+                  },
+                  "stepDays": {
+                    "type": "object",
+                    "properties": {
+                      "default": {
+                        "type": "number",
+                        "const": 5
+                      },
+                      "moon": {
+                        "type": "number",
+                        "const": 1
+                      },
+                      "elongation": {
+                        "type": "number",
+                        "const": 1
+                      }
+                    },
+                    "required": [
+                      "default",
+                      "moon",
+                      "elongation"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "bisections": {
+                    "type": "number",
+                    "const": 24
+                  },
+                  "samples": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "maxSamples": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "window": {
+                    "type": "string",
+                    "const": "start-exclusive-end-inclusive"
+                  },
+                  "completeness": {
+                    "type": "string",
+                    "const": "tested-not-proven",
+                    "description": "The search samples each motion at a fixed step and bisects every crossing it sees. It is tested, not proven to miss nothing."
+                  }
+                },
+                "required": [
+                  "solver",
+                  "stepDays",
+                  "bisections",
+                  "samples",
+                  "maxSamples",
+                  "window",
+                  "completeness"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "schema",
+              "endpoint",
+              "engine",
+              "conventions",
+              "coverage",
+              "referenceSpan",
+              "deltaT"
+            ],
+            "additionalProperties": false,
+            "description": "The compute API's receipt for this calculation: the engine, its conventions and coverage as its own receipts state them, and what this request used. The cite digest is of this object."
+          },
+          "backend": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "const": "@zodiacs/engine"
+              },
+              "version": {
+                "type": "string"
+              },
+              "ephemeris": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "const": "astronomy-engine"
+                  },
+                  "version": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name",
+                  "version"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "name",
+              "version",
+              "ephemeris"
+            ],
+            "additionalProperties": false
+          },
+          "cite": {
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string",
+                "const": "https://zodiacs.org/developers/mcp/#get_positions"
+              },
+              "receipt": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$",
+                "description": "SHA-256 of the RFC 8785 canonical JSON of the receipt this reply carries, which holds no instant, date or body from the request. It is the digest the hosted compute API cites for the same request."
+              },
+              "engine": {
+                "type": "string",
+                "const": "@zodiacs/engine"
+              },
+              "version": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "url",
+              "receipt",
+              "engine",
+              "version"
+            ],
+            "additionalProperties": false,
+            "description": "What to quote as this result's source."
+          }
+        },
+        "required": [
+          "schema",
+          "result",
+          "receipt",
+          "backend",
+          "cite"
+        ],
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "description": "The body of POST /api/v1/positions for the same request, with this tool's cite."
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "find_events",
+      "title": "Find sign ingresses, stations and lunations",
+      "description": "Sign ingresses, stations and new and full moons in a window of up to 92 days, in time order, found by the engine's crossing search. The search is tested, not proven to miss nothing: the receipt says so in search.completeness, beside how it searched and how many evaluations it made. The same calculation, result and receipt as POST https://zodiacs.org/api/v1/events for the same request, computed on this machine. A local calculation server is not a local AI experience. Whatever assistant you connect this to decides what reaches its model provider — your message, the arguments it builds for these tools, and the results it reads back. If that assistant runs in the cloud, assume the birth details in a request reach it. The calculation is local; the conversation is the assistant's to route.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "maxLength": 29,
+            "description": "The start of the window, which is excluded, in ISO 8601 with Z or a numeric offset, such as 2000-01-01T12:00:00Z or 1990-06-15T14:30:00+02:00, from 1800-01-01T00:00:00.000Z to 2199-12-31T23:59:59.999Z once the offset is applied. A time without Z or an offset is refused."
+          },
+          "to": {
+            "type": "string",
+            "maxLength": 29,
+            "description": "The end of the window, which is included: later than from and at most 92 days after it, in ISO 8601 with Z or a numeric offset, such as 2000-01-01T12:00:00Z or 1990-06-15T14:30:00+02:00, from 1800-01-01T00:00:00.000Z to 2199-12-31T23:59:59.999Z once the offset is applied. A time without Z or an offset is refused."
+          },
+          "bodies": {
+            "description": "Which bodies to search, each named once; all ten when omitted. Only Mercury to Pluto station: the Sun and the Moon never move backward.",
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "Sun",
+                "Moon",
+                "Mercury",
+                "Venus",
+                "Mars",
+                "Jupiter",
+                "Saturn",
+                "Uranus",
+                "Neptune",
+                "Pluto"
+              ]
+            }
+          },
+          "kinds": {
+            "description": "ingress: a body entering a sign. station: a planet turning retrograde or direct. lunation: a new or full moon, whichever bodies are named. Each named once; all three when omitted.",
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "ingress",
+                "station",
+                "lunation"
+              ]
+            }
+          }
+        },
+        "required": [
+          "from",
+          "to"
+        ],
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "schema": {
+            "type": "string",
+            "const": "zodiacs.compute-api.events.v1"
+          },
+          "result": {
+            "type": "object",
+            "properties": {
+              "from": {
+                "type": "string",
+                "description": "An instant in UTC, written as ISO 8601 with milliseconds."
+              },
+              "to": {
+                "type": "string",
+                "description": "An instant in UTC, written as ISO 8601 with milliseconds."
+              },
+              "events": {
+                "type": "array",
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "const": "ingress"
+                        },
+                        "body": {
+                          "type": "string",
+                          "enum": [
+                            "Sun",
+                            "Moon",
+                            "Mercury",
+                            "Venus",
+                            "Mars",
+                            "Jupiter",
+                            "Saturn",
+                            "Uranus",
+                            "Neptune",
+                            "Pluto"
+                          ]
+                        },
+                        "at": {
+                          "type": "string",
+                          "description": "An instant in UTC, written as ISO 8601 with milliseconds."
+                        },
+                        "sign": {
+                          "type": "string",
+                          "enum": [
+                            "aries",
+                            "taurus",
+                            "gemini",
+                            "cancer",
+                            "leo",
+                            "virgo",
+                            "libra",
+                            "scorpio",
+                            "sagittarius",
+                            "capricorn",
+                            "aquarius",
+                            "pisces"
+                          ]
+                        },
+                        "retrograde": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "kind",
+                        "body",
+                        "at",
+                        "sign",
+                        "retrograde"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "const": "station"
+                        },
+                        "body": {
+                          "type": "string",
+                          "enum": [
+                            "Sun",
+                            "Moon",
+                            "Mercury",
+                            "Venus",
+                            "Mars",
+                            "Jupiter",
+                            "Saturn",
+                            "Uranus",
+                            "Neptune",
+                            "Pluto"
+                          ]
+                        },
+                        "at": {
+                          "type": "string",
+                          "description": "An instant in UTC, written as ISO 8601 with milliseconds."
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "retrograde",
+                            "direct"
+                          ]
+                        },
+                        "lon": {
+                          "type": "number"
+                        },
+                        "sign": {
+                          "type": "string",
+                          "enum": [
+                            "aries",
+                            "taurus",
+                            "gemini",
+                            "cancer",
+                            "leo",
+                            "virgo",
+                            "libra",
+                            "scorpio",
+                            "sagittarius",
+                            "capricorn",
+                            "aquarius",
+                            "pisces"
+                          ]
+                        },
+                        "degree": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "kind",
+                        "body",
+                        "at",
+                        "type",
+                        "lon",
+                        "sign",
+                        "degree"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "const": "lunation"
+                        },
+                        "type": {
+                          "type": "string",
+                          "enum": [
+                            "new",
+                            "full"
+                          ]
+                        },
+                        "at": {
+                          "type": "string",
+                          "description": "An instant in UTC, written as ISO 8601 with milliseconds."
+                        },
+                        "lon": {
+                          "type": "number"
+                        },
+                        "sign": {
+                          "type": "string",
+                          "enum": [
+                            "aries",
+                            "taurus",
+                            "gemini",
+                            "cancer",
+                            "leo",
+                            "virgo",
+                            "libra",
+                            "scorpio",
+                            "sagittarius",
+                            "capricorn",
+                            "aquarius",
+                            "pisces"
+                          ]
+                        },
+                        "degree": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "kind",
+                        "type",
+                        "at",
+                        "lon",
+                        "sign",
+                        "degree"
+                      ],
+                      "additionalProperties": false
+                    }
+                  ]
+                },
+                "description": "In time order. A window excludes its start and includes its end."
+              }
+            },
+            "required": [
+              "from",
+              "to",
+              "events"
+            ],
+            "additionalProperties": false
+          },
+          "receipt": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "type": "string",
+                "const": "zodiacs.compute-receipt.v1"
+              },
+              "endpoint": {
+                "type": "string",
+                "const": "events"
+              },
+              "engine": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "const": "@zodiacs/engine"
+                  },
+                  "version": {
+                    "type": "string"
+                  },
+                  "ephemeris": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "const": "astronomy-engine"
+                      },
+                      "version": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "version"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "name",
+                  "version",
+                  "ephemeris"
+                ],
+                "additionalProperties": false
+              },
+              "conventions": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "coverage": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "referenceSpan": {
+                "type": "object",
+                "properties": {
+                  "from": {
+                    "type": "string",
+                    "description": "An instant in UTC, written as ISO 8601 with milliseconds."
+                  },
+                  "to": {
+                    "type": "string",
+                    "description": "An instant in UTC, written as ISO 8601 with milliseconds."
+                  }
+                },
+                "required": [
+                  "from",
+                  "to"
+                ],
+                "additionalProperties": false
+              },
+              "deltaT": {
+                "minItems": 2,
+                "maxItems": 2,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "model": {
+                      "type": "string",
+                      "enum": [
+                        "iers-utc/1",
+                        "zodiacs-deltat/1"
+                      ]
+                    },
+                    "table": {
+                      "type": "string"
+                    },
+                    "tableDigest": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "model",
+                    "table",
+                    "tableDigest"
+                  ],
+                  "additionalProperties": false
+                },
+                "description": "The two sources of ΔT the engine's time basis uses: IERS from 1972 to the end of its UT1 table, and its model at every other instant."
+              },
+              "search": {
+                "description": "How a search searched: present when one ran.",
+                "type": "object",
+                "properties": {
+                  "solver": {
+                    "type": "string",
+                    "const": "engine-longitude-crossings"
+                  },
+                  "stepDays": {
+                    "type": "object",
+                    "properties": {
+                      "default": {
+                        "type": "number",
+                        "const": 5
+                      },
+                      "moon": {
+                        "type": "number",
+                        "const": 1
+                      },
+                      "elongation": {
+                        "type": "number",
+                        "const": 1
+                      }
+                    },
+                    "required": [
+                      "default",
+                      "moon",
+                      "elongation"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "bisections": {
+                    "type": "number",
+                    "const": 24
+                  },
+                  "samples": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "maxSamples": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "window": {
+                    "type": "string",
+                    "const": "start-exclusive-end-inclusive"
+                  },
+                  "completeness": {
+                    "type": "string",
+                    "const": "tested-not-proven",
+                    "description": "The search samples each motion at a fixed step and bisects every crossing it sees. It is tested, not proven to miss nothing."
+                  }
+                },
+                "required": [
+                  "solver",
+                  "stepDays",
+                  "bisections",
+                  "samples",
+                  "maxSamples",
+                  "window",
+                  "completeness"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "schema",
+              "endpoint",
+              "engine",
+              "conventions",
+              "coverage",
+              "referenceSpan",
+              "deltaT"
+            ],
+            "additionalProperties": false,
+            "description": "The compute API's receipt for this calculation: the engine, its conventions and coverage as its own receipts state them, and what this request used. The cite digest is of this object."
+          },
+          "backend": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "const": "@zodiacs/engine"
+              },
+              "version": {
+                "type": "string"
+              },
+              "ephemeris": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "const": "astronomy-engine"
+                  },
+                  "version": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name",
+                  "version"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "name",
+              "version",
+              "ephemeris"
+            ],
+            "additionalProperties": false
+          },
+          "cite": {
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string",
+                "const": "https://zodiacs.org/developers/mcp/#find_events"
+              },
+              "receipt": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$",
+                "description": "SHA-256 of the RFC 8785 canonical JSON of the receipt this reply carries, which holds no instant, date or body from the request. It is the digest the hosted compute API cites for the same request."
+              },
+              "engine": {
+                "type": "string",
+                "const": "@zodiacs/engine"
+              },
+              "version": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "url",
+              "receipt",
+              "engine",
+              "version"
+            ],
+            "additionalProperties": false,
+            "description": "What to quote as this result's source."
+          }
+        },
+        "required": [
+          "schema",
+          "result",
+          "receipt",
+          "backend",
+          "cite"
+        ],
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "description": "The body of POST /api/v1/events for the same request, with this tool's cite."
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "check_sky_fact",
+      "title": "Check a stated sky fact",
+      "description": "Whether a stated fact holds: a body in a sign or retrograde at an instant or on a date, a body entering a sign on a date, or the Moon reaching a phase on a date. Answers true, false or depends, with the computed values that decide it and a receipt. It never interprets. This adapter looks up no time zone, so a date is read as that day in every UTC offset in use today, from −12:00 to +14:00, at once: from 14 hours before its midnight UTC to 36 hours after. depends means the answer turns on the time of day or on the offset. The same calculation, result and receipt as POST https://zodiacs.org/api/v1/sky-fact for the same request without a zone, computed on this machine. A local calculation server is not a local AI experience. Whatever assistant you connect this to decides what reaches its model provider — your message, the arguments it builds for these tools, and the results it reads back. If that assistant runs in the cloud, assume the birth details in a request reach it. The calculation is local; the conversation is the assistant's to route.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "sign",
+              "retrograde",
+              "ingress",
+              "phase"
+            ],
+            "description": "sign: is the body in the sign? retrograde: is the body retrograde? ingress: does the body enter the sign on the date? phase: does the Moon reach the phase on the date?"
+          },
+          "body": {
+            "description": "For sign, retrograde and ingress.",
+            "type": "string",
+            "enum": [
+              "Sun",
+              "Moon",
+              "Mercury",
+              "Venus",
+              "Mars",
+              "Jupiter",
+              "Saturn",
+              "Uranus",
+              "Neptune",
+              "Pluto"
+            ]
+          },
+          "sign": {
+            "description": "For sign and ingress, in lowercase.",
+            "type": "string",
+            "enum": [
+              "aries",
+              "taurus",
+              "gemini",
+              "cancer",
+              "leo",
+              "virgo",
+              "libra",
+              "scorpio",
+              "sagittarius",
+              "capricorn",
+              "aquarius",
+              "pisces"
+            ]
+          },
+          "phase": {
+            "description": "For phase.",
+            "type": "string",
+            "enum": [
+              "new",
+              "first-quarter",
+              "full",
+              "last-quarter"
+            ]
+          },
+          "instant": {
+            "description": "For sign and retrograde: the moment to check, in ISO 8601 with Z or a numeric offset, such as 2000-01-01T12:00:00Z or 1990-06-15T14:30:00+02:00, from 1800-01-01T00:00:00.000Z to 2199-12-31T23:59:59.999Z once the offset is applied. A time without Z or an offset is refused. Give instant or date, not both.",
+            "type": "string",
+            "maxLength": 29
+          },
+          "date": {
+            "description": "YYYY-MM-DD, from 1800-01-01 to 2199-12-31. Needed for ingress and phase; for sign and retrograde, the alternative to instant. This adapter looks up no time zone, so a date is read as that day in every UTC offset in use today, from −12:00 to +14:00, at once: from 14 hours before its midnight UTC to 36 hours after. depends means the answer turns on the time of day or on the offset.",
+            "type": "string",
+            "maxLength": 10
+          }
+        },
+        "required": [
+          "kind"
+        ],
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "schema": {
+            "type": "string",
+            "const": "zodiacs.compute-api.sky-fact.v1"
+          },
+          "result": {
+            "type": "object",
+            "properties": {
+              "answer": {
+                "type": "string",
+                "enum": [
+                  "true",
+                  "false",
+                  "depends"
+                ]
+              },
+              "basis": {
+                "type": "string",
+                "enum": [
+                  "instant",
+                  "any-zone-day"
+                ],
+                "description": "instant: the fact at one moment. any-zone-day: the date in every UTC offset in use today at once."
+              },
+              "fact": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "const": "sign"
+                      },
+                      "body": {
+                        "type": "string",
+                        "enum": [
+                          "Sun",
+                          "Moon",
+                          "Mercury",
+                          "Venus",
+                          "Mars",
+                          "Jupiter",
+                          "Saturn",
+                          "Uranus",
+                          "Neptune",
+                          "Pluto"
+                        ]
+                      },
+                      "sign": {
+                        "type": "string",
+                        "enum": [
+                          "aries",
+                          "taurus",
+                          "gemini",
+                          "cancer",
+                          "leo",
+                          "virgo",
+                          "libra",
+                          "scorpio",
+                          "sagittarius",
+                          "capricorn",
+                          "aquarius",
+                          "pisces"
+                        ]
+                      },
+                      "instant": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "description": "An instant in UTC, written as ISO 8601 with milliseconds."
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "date": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "zone": {
+                        "type": "null"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "body",
+                      "sign",
+                      "instant",
+                      "date",
+                      "zone"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "const": "retrograde"
+                      },
+                      "body": {
+                        "type": "string",
+                        "enum": [
+                          "Sun",
+                          "Moon",
+                          "Mercury",
+                          "Venus",
+                          "Mars",
+                          "Jupiter",
+                          "Saturn",
+                          "Uranus",
+                          "Neptune",
+                          "Pluto"
+                        ]
+                      },
+                      "instant": {
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "description": "An instant in UTC, written as ISO 8601 with milliseconds."
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "date": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "zone": {
+                        "type": "null"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "body",
+                      "instant",
+                      "date",
+                      "zone"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "const": "ingress"
+                      },
+                      "body": {
+                        "type": "string",
+                        "enum": [
+                          "Sun",
+                          "Moon",
+                          "Mercury",
+                          "Venus",
+                          "Mars",
+                          "Jupiter",
+                          "Saturn",
+                          "Uranus",
+                          "Neptune",
+                          "Pluto"
+                        ]
+                      },
+                      "sign": {
+                        "type": "string",
+                        "enum": [
+                          "aries",
+                          "taurus",
+                          "gemini",
+                          "cancer",
+                          "leo",
+                          "virgo",
+                          "libra",
+                          "scorpio",
+                          "sagittarius",
+                          "capricorn",
+                          "aquarius",
+                          "pisces"
+                        ]
+                      },
+                      "date": {
+                        "type": "string"
+                      },
+                      "zone": {
+                        "type": "null"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "body",
+                      "sign",
+                      "date",
+                      "zone"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "const": "phase"
+                      },
+                      "phase": {
+                        "type": "string",
+                        "enum": [
+                          "new",
+                          "first-quarter",
+                          "full",
+                          "last-quarter"
+                        ]
+                      },
+                      "date": {
+                        "type": "string"
+                      },
+                      "zone": {
+                        "type": "null"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "phase",
+                      "date",
+                      "zone"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "instant": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "description": "An instant in UTC, written as ISO 8601 with milliseconds."
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "window": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "from": {
+                        "type": "string",
+                        "description": "An instant in UTC, written as ISO 8601 with milliseconds."
+                      },
+                      "to": {
+                        "type": "string",
+                        "description": "An instant in UTC, written as ISO 8601 with milliseconds."
+                      }
+                    },
+                    "required": [
+                      "from",
+                      "to"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "description": "The span read for a date: from its start, included, to its end, excluded."
+              },
+              "zone": {
+                "type": "null"
+              },
+              "facts": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "lon": {
+                        "type": "number"
+                      },
+                      "sign": {
+                        "type": "string",
+                        "enum": [
+                          "aries",
+                          "taurus",
+                          "gemini",
+                          "cancer",
+                          "leo",
+                          "virgo",
+                          "libra",
+                          "scorpio",
+                          "sagittarius",
+                          "capricorn",
+                          "aquarius",
+                          "pisces"
+                        ]
+                      },
+                      "degree": {
+                        "type": "number"
+                      },
+                      "speed": {
+                        "type": "number"
+                      },
+                      "retrograde": {
+                        "type": "boolean"
+                      },
+                      "deltaT": {
+                        "type": "object",
+                        "properties": {
+                          "seconds": {
+                            "type": "number"
+                          },
+                          "sigma": {
+                            "type": "number"
+                          },
+                          "model": {
+                            "type": "string",
+                            "enum": [
+                              "iers-utc/1",
+                              "zodiacs-deltat/1"
+                            ]
+                          },
+                          "table": {
+                            "type": "string"
+                          },
+                          "tableDigest": {
+                            "type": "string"
+                          },
+                          "segment": {
+                            "type": "string",
+                            "enum": [
+                              "long-term",
+                              "reconstructed",
+                              "observed",
+                              "predicted",
+                              "extrapolated"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "seconds",
+                          "sigma",
+                          "model",
+                          "table",
+                          "tableDigest",
+                          "segment"
+                        ],
+                        "additionalProperties": false,
+                        "description": "ΔT = TT − UT1 in seconds, with its 1-sigma band and where it came from: iers-utc/1 from 1972 to the end of the engine's UT1 table, its model zodiacs-deltat/1 otherwise."
+                      },
+                      "timeScale": {
+                        "type": "object",
+                        "properties": {
+                          "input": {
+                            "type": "string",
+                            "const": "utc"
+                          },
+                          "basis": {
+                            "type": "string",
+                            "enum": [
+                              "iers",
+                              "delta-t"
+                            ]
+                          },
+                          "ut1MinusUtc": {
+                            "anyOf": [
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "seconds": {
+                                    "type": "number"
+                                  },
+                                  "sigma": {
+                                    "type": "number"
+                                  },
+                                  "source": {
+                                    "type": "string",
+                                    "enum": [
+                                      "observed",
+                                      "predicted",
+                                      "fallback"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "seconds",
+                                  "sigma",
+                                  "source"
+                                ],
+                                "additionalProperties": false
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "leapSeconds": {
+                            "anyOf": [
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "taiMinusUtc": {
+                                    "type": "number"
+                                  },
+                                  "listed": {
+                                    "type": "boolean"
+                                  }
+                                },
+                                "required": [
+                                  "taiMinusUtc",
+                                  "listed"
+                                ],
+                                "additionalProperties": false
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          }
+                        },
+                        "required": [
+                          "input",
+                          "basis",
+                          "ut1MinusUtc",
+                          "leapSeconds"
+                        ],
+                        "additionalProperties": false,
+                        "description": "How the engine read the instant. basis iers, from 1972 to the end of its UT1 table: TT is UTC plus the leap seconds and 32.184 s, and UT1 is UTC plus IERS UT1 − UTC. basis delta-t, otherwise: the instant is read as UT1, and TT is UT1 plus the ΔT model."
+                      },
+                      "boundaryMarginArcsec": {
+                        "description": "For a sign fact: the distance to the nearer sign boundary, in arcseconds.",
+                        "type": "number",
+                        "minimum": 0
+                      },
+                      "flags": {
+                        "maxItems": 1,
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "const": "outside-reference-span"
+                        }
+                      }
+                    },
+                    "required": [
+                      "lon",
+                      "sign",
+                      "degree",
+                      "speed",
+                      "retrograde",
+                      "deltaT",
+                      "timeScale",
+                      "flags"
+                    ],
+                    "additionalProperties": false,
+                    "description": "At an instant."
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "atStart": {
+                        "type": "object",
+                        "properties": {
+                          "lon": {
+                            "type": "number"
+                          },
+                          "sign": {
+                            "type": "string",
+                            "enum": [
+                              "aries",
+                              "taurus",
+                              "gemini",
+                              "cancer",
+                              "leo",
+                              "virgo",
+                              "libra",
+                              "scorpio",
+                              "sagittarius",
+                              "capricorn",
+                              "aquarius",
+                              "pisces"
+                            ]
+                          },
+                          "degree": {
+                            "type": "number"
+                          },
+                          "speed": {
+                            "type": "number"
+                          },
+                          "retrograde": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "lon",
+                          "sign",
+                          "degree",
+                          "speed",
+                          "retrograde"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "atEnd": {
+                        "type": "object",
+                        "properties": {
+                          "lon": {
+                            "type": "number"
+                          },
+                          "sign": {
+                            "type": "string",
+                            "enum": [
+                              "aries",
+                              "taurus",
+                              "gemini",
+                              "cancer",
+                              "leo",
+                              "virgo",
+                              "libra",
+                              "scorpio",
+                              "sagittarius",
+                              "capricorn",
+                              "aquarius",
+                              "pisces"
+                            ]
+                          },
+                          "degree": {
+                            "type": "number"
+                          },
+                          "speed": {
+                            "type": "number"
+                          },
+                          "retrograde": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "lon",
+                          "sign",
+                          "degree",
+                          "speed",
+                          "retrograde"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "changes": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "at": {
+                              "type": "string",
+                              "description": "An instant in UTC, written as ISO 8601 with milliseconds."
+                            },
+                            "into": {
+                              "type": "string",
+                              "enum": [
+                                "aries",
+                                "taurus",
+                                "gemini",
+                                "cancer",
+                                "leo",
+                                "virgo",
+                                "libra",
+                                "scorpio",
+                                "sagittarius",
+                                "capricorn",
+                                "aquarius",
+                                "pisces"
+                              ]
+                            },
+                            "retrograde": {
+                              "type": "boolean"
+                            }
+                          },
+                          "required": [
+                            "at",
+                            "into",
+                            "retrograde"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "flags": {
+                        "maxItems": 1,
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "const": "outside-reference-span"
+                        }
+                      }
+                    },
+                    "required": [
+                      "atStart",
+                      "atEnd",
+                      "changes",
+                      "flags"
+                    ],
+                    "additionalProperties": false,
+                    "description": "A sign on a date: the sign changes in the span."
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "atStart": {
+                        "type": "object",
+                        "properties": {
+                          "lon": {
+                            "type": "number"
+                          },
+                          "sign": {
+                            "type": "string",
+                            "enum": [
+                              "aries",
+                              "taurus",
+                              "gemini",
+                              "cancer",
+                              "leo",
+                              "virgo",
+                              "libra",
+                              "scorpio",
+                              "sagittarius",
+                              "capricorn",
+                              "aquarius",
+                              "pisces"
+                            ]
+                          },
+                          "degree": {
+                            "type": "number"
+                          },
+                          "speed": {
+                            "type": "number"
+                          },
+                          "retrograde": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "lon",
+                          "sign",
+                          "degree",
+                          "speed",
+                          "retrograde"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "atEnd": {
+                        "type": "object",
+                        "properties": {
+                          "lon": {
+                            "type": "number"
+                          },
+                          "sign": {
+                            "type": "string",
+                            "enum": [
+                              "aries",
+                              "taurus",
+                              "gemini",
+                              "cancer",
+                              "leo",
+                              "virgo",
+                              "libra",
+                              "scorpio",
+                              "sagittarius",
+                              "capricorn",
+                              "aquarius",
+                              "pisces"
+                            ]
+                          },
+                          "degree": {
+                            "type": "number"
+                          },
+                          "speed": {
+                            "type": "number"
+                          },
+                          "retrograde": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "lon",
+                          "sign",
+                          "degree",
+                          "speed",
+                          "retrograde"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "stations": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "at": {
+                              "type": "string",
+                              "description": "An instant in UTC, written as ISO 8601 with milliseconds."
+                            },
+                            "type": {
+                              "type": "string",
+                              "enum": [
+                                "retrograde",
+                                "direct"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "at",
+                            "type"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "flags": {
+                        "maxItems": 1,
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "const": "outside-reference-span"
+                        }
+                      }
+                    },
+                    "required": [
+                      "atStart",
+                      "atEnd",
+                      "stations",
+                      "flags"
+                    ],
+                    "additionalProperties": false,
+                    "description": "Retrograde on a date: the stations in the span."
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "ingresses": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "at": {
+                              "type": "string",
+                              "description": "An instant in UTC, written as ISO 8601 with milliseconds."
+                            },
+                            "retrograde": {
+                              "type": "boolean"
+                            }
+                          },
+                          "required": [
+                            "at",
+                            "retrograde"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "flags": {
+                        "maxItems": 1,
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "const": "outside-reference-span"
+                        }
+                      }
+                    },
+                    "required": [
+                      "ingresses",
+                      "flags"
+                    ],
+                    "additionalProperties": false,
+                    "description": "An ingress on a date."
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "lunations": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "at": {
+                              "type": "string",
+                              "description": "An instant in UTC, written as ISO 8601 with milliseconds."
+                            },
+                            "lon": {
+                              "type": "number"
+                            },
+                            "sign": {
+                              "type": "string",
+                              "enum": [
+                                "aries",
+                                "taurus",
+                                "gemini",
+                                "cancer",
+                                "leo",
+                                "virgo",
+                                "libra",
+                                "scorpio",
+                                "sagittarius",
+                                "capricorn",
+                                "aquarius",
+                                "pisces"
+                              ]
+                            },
+                            "degree": {
+                              "type": "number"
+                            }
+                          },
+                          "required": [
+                            "at",
+                            "lon",
+                            "sign",
+                            "degree"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "flags": {
+                        "maxItems": 1,
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "const": "outside-reference-span"
+                        }
+                      }
+                    },
+                    "required": [
+                      "lunations",
+                      "flags"
+                    ],
+                    "additionalProperties": false,
+                    "description": "A phase on a date."
+                  }
+                ],
+                "description": "The computed values that decide the answer."
+              }
+            },
+            "required": [
+              "answer",
+              "basis",
+              "fact",
+              "instant",
+              "window",
+              "zone",
+              "facts"
+            ],
+            "additionalProperties": false
+          },
+          "receipt": {
+            "type": "object",
+            "properties": {
+              "schema": {
+                "type": "string",
+                "const": "zodiacs.compute-receipt.v1"
+              },
+              "endpoint": {
+                "type": "string",
+                "const": "sky-fact"
+              },
+              "engine": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "const": "@zodiacs/engine"
+                  },
+                  "version": {
+                    "type": "string"
+                  },
+                  "ephemeris": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "const": "astronomy-engine"
+                      },
+                      "version": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "version"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "name",
+                  "version",
+                  "ephemeris"
+                ],
+                "additionalProperties": false
+              },
+              "conventions": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "coverage": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "referenceSpan": {
+                "type": "object",
+                "properties": {
+                  "from": {
+                    "type": "string",
+                    "description": "An instant in UTC, written as ISO 8601 with milliseconds."
+                  },
+                  "to": {
+                    "type": "string",
+                    "description": "An instant in UTC, written as ISO 8601 with milliseconds."
+                  }
+                },
+                "required": [
+                  "from",
+                  "to"
+                ],
+                "additionalProperties": false
+              },
+              "deltaT": {
+                "minItems": 2,
+                "maxItems": 2,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "model": {
+                      "type": "string",
+                      "enum": [
+                        "iers-utc/1",
+                        "zodiacs-deltat/1"
+                      ]
+                    },
+                    "table": {
+                      "type": "string"
+                    },
+                    "tableDigest": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "model",
+                    "table",
+                    "tableDigest"
+                  ],
+                  "additionalProperties": false
+                },
+                "description": "The two sources of ΔT the engine's time basis uses: IERS from 1972 to the end of its UT1 table, and its model at every other instant."
+              },
+              "search": {
+                "description": "How a search searched: present when one ran.",
+                "type": "object",
+                "properties": {
+                  "solver": {
+                    "type": "string",
+                    "const": "engine-longitude-crossings"
+                  },
+                  "stepDays": {
+                    "type": "object",
+                    "properties": {
+                      "default": {
+                        "type": "number",
+                        "const": 5
+                      },
+                      "moon": {
+                        "type": "number",
+                        "const": 1
+                      },
+                      "elongation": {
+                        "type": "number",
+                        "const": 1
+                      }
+                    },
+                    "required": [
+                      "default",
+                      "moon",
+                      "elongation"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "bisections": {
+                    "type": "number",
+                    "const": 24
+                  },
+                  "samples": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "maxSamples": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "window": {
+                    "type": "string",
+                    "const": "start-exclusive-end-inclusive"
+                  },
+                  "completeness": {
+                    "type": "string",
+                    "const": "tested-not-proven",
+                    "description": "The search samples each motion at a fixed step and bisects every crossing it sees. It is tested, not proven to miss nothing."
+                  }
+                },
+                "required": [
+                  "solver",
+                  "stepDays",
+                  "bisections",
+                  "samples",
+                  "maxSamples",
+                  "window",
+                  "completeness"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "schema",
+              "endpoint",
+              "engine",
+              "conventions",
+              "coverage",
+              "referenceSpan",
+              "deltaT"
+            ],
+            "additionalProperties": false,
+            "description": "The compute API's receipt for this calculation: the engine, its conventions and coverage as its own receipts state them, and what this request used. The cite digest is of this object."
+          },
+          "backend": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "const": "@zodiacs/engine"
+              },
+              "version": {
+                "type": "string"
+              },
+              "ephemeris": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "const": "astronomy-engine"
+                  },
+                  "version": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name",
+                  "version"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "name",
+              "version",
+              "ephemeris"
+            ],
+            "additionalProperties": false
+          },
+          "cite": {
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string",
+                "const": "https://zodiacs.org/developers/mcp/#check_sky_fact"
+              },
+              "receipt": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$",
+                "description": "SHA-256 of the RFC 8785 canonical JSON of the receipt this reply carries, which holds no instant, date or body from the request. It is the digest the hosted compute API cites for the same request."
+              },
+              "engine": {
+                "type": "string",
+                "const": "@zodiacs/engine"
+              },
+              "version": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "url",
+              "receipt",
+              "engine",
+              "version"
+            ],
+            "additionalProperties": false,
+            "description": "What to quote as this result's source."
+          }
+        },
+        "required": [
+          "schema",
+          "result",
+          "receipt",
+          "backend",
+          "cite"
+        ],
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "additionalProperties": false,
+        "description": "The body of POST /api/v1/sky-fact for the same request, with this tool's cite. answer is never an interpretation."
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    }
+  ],
+  "capabilities": {
+    "adapter": {
+      "name": "zodiacs-mcp-server",
+      "version": "0.1.0-rc.17",
+      "releaseStatus": "unpublished-candidate",
+      "transport": "stdio"
+    },
+    "engine": {
+      "name": "@zodiacs/engine",
+      "version": "0.1.1-rc.17",
+      "releaseStatus": "unpublished-candidate"
+    },
+    "schemas": {
+      "envelope": "zodiacs.natal-envelope.draft-v1",
+      "receipt": "zodiacs.calculation-receipt.draft-v1",
+      "diagnostic": "zodiacs.natal-diagnostic.draft-v1"
+    },
+    "supported": {
+      "houseSystems": [
+        "placidus",
+        "whole",
+        "porphyry",
+        "equal",
+        "vehlow",
+        "koch",
+        "regiomontanus",
+        "campanus",
+        "topocentric",
+        "alcabitius",
+        "morinus",
+        "meridian",
+        "equal-mc"
+      ],
+      "references": [
+        "supplied-instant",
+        "utc-noon"
+      ],
+      "referenceRules": {
+        "utc-noon": "needs timeKnown: false and utc at exactly 12:00:00Z; it records that no birth time was known",
+        "local-noon": "not offered: it needs a captured local date, wall time, zone and offset, and this adapter resolves no timezones"
+      },
+      "epoch": {
+        "from": "1800-01-01T00:00:00.000Z",
+        "to": "2199-12-31T23:59:59.999Z"
+      },
+      "coordinates": {
+        "latitude": [
+          -90,
+          90
+        ],
+        "longitude": [
+          -180,
+          180
+        ],
+        "excluded": "latitude exactly 90 or -90 with timeKnown: true — the engine does not compute angles at the exact poles"
+      },
+      "limits": {
+        "recordBytes": 65536,
+        "recordDepth": 12,
+        "recordNodes": 4096,
+        "instantChars": 64,
+        "requestBytes": 1048576,
+        "resultBytes": 262144,
+        "differences": 512,
+        "explanations": 64
+      }
+    },
+    "sky": {
+      "tools": [
+        "get_positions",
+        "find_events",
+        "check_sky_fact"
+      ],
+      "sameAs": "POST https://zodiacs.org/api/v1/positions, /events and /sky-fact: the same parser, calculation and receipt, so the same result and cite.receipt for the same request",
+      "epoch": {
+        "from": "1800-01-01T00:00:00.000Z",
+        "to": "2199-12-31T23:59:59.999Z"
+      },
+      "positionBodies": [
+        "Sun",
+        "Moon",
+        "Mercury",
+        "Venus",
+        "Mars",
+        "Jupiter",
+        "Saturn",
+        "Uranus",
+        "Neptune",
+        "Pluto",
+        "North Node",
+        "South Node"
+      ],
+      "eventBodies": [
+        "Sun",
+        "Moon",
+        "Mercury",
+        "Venus",
+        "Mars",
+        "Jupiter",
+        "Saturn",
+        "Uranus",
+        "Neptune",
+        "Pluto"
+      ],
+      "eventKinds": [
+        "ingress",
+        "station",
+        "lunation"
+      ],
+      "factKinds": [
+        "sign",
+        "retrograde",
+        "ingress",
+        "phase"
+      ],
+      "phases": [
+        "new",
+        "first-quarter",
+        "full",
+        "last-quarter"
+      ],
+      "limits": {
+        "positions.instants": 100,
+        "events.windowDays": 92,
+        "events.samples": 12000,
+        "sky-fact.samples": 1000
+      },
+      "search": {
+        "window": "start-exclusive-end-inclusive",
+        "completeness": "tested-not-proven"
+      },
+      "dates": "This adapter looks up no time zone, so a date is read as that day in every UTC offset in use today, from −12:00 to +14:00, at once: from 14 hours before its midnight UTC to 36 hours after. depends means the answer turns on the time of day or on the offset."
+    },
+    "resources": [
+      {
+        "uri": "zodiacs://conventions",
+        "name": "conventions",
+        "mimeType": "application/json"
+      },
+      {
+        "uri": "zodiacs://methodology",
+        "name": "methodology",
+        "mimeType": "text/markdown"
+      }
+    ],
+    "unsupported": [
+      "Transit, progression, return or eclipse searches. find_events finds sign ingresses, stations and new and full moons in a window of at most 92 days, and nothing else.",
+      "Interpretation, horoscope or any generated reading.",
+      "Resolving a place name or time zone: supply an instant with an explicit offset. check_sky_fact reads a date without a zone as that day in every UTC offset in use today at once.",
+      "Reading or writing files. Records are passed as content; the adapter accepts no path and imports no filesystem module.",
+      "Fetching a URL, running a command, importing a named module or installing a package.",
+      "Any network listener, remote endpoint or browser-reachable port. The transport is local stdio only.",
+      "Authenticating a record, or establishing that two records came from independent software.",
+      "Interrupting work in progress. A calculation is synchronous, so it completes or throws; there is no timeout that could stop it mid-way and none is claimed."
+    ],
+    "privacy": {
+      "calculation": "This server calculates on the machine it runs on. No birth detail reaches zodiacs.org, and the server opens no network connection, listener or port of any kind.",
+      "assistant": "A local calculation server is not a local AI experience. Whatever assistant you connect this to decides what reaches its model provider — your message, the arguments it builds for these tools, and the results it reads back. If that assistant runs in the cloud, assume the birth details in a request reach it. The calculation is local; the conversation is the assistant's to route.",
+      "output": "A comparison reports the exact difference between two charts. Anyone holding one of the two can reconstruct the other from it, so that output is safer to pass on than a full record but it is not anonymous.",
+      "withheld": "By default a comparison names which fields differ and by how much, and leaves out the values of rows carrying birth details or computed positions — you supplied both records to this call, so repeating their contents back tells you nothing you did not have, while adding a second copy to whatever this result travels through. Ask for output: \"full\" when you need those values. This shortens what travels onward; it hides nothing from the assistant you are talking to, which already received both records as arguments.",
+      "claims": "A version, checksum or source URL inside a supplied record is a claim that record makes about itself. Nothing here authenticates it.",
+      "citation": "A chart's cite.receipt is the digest of its calculation receipt, which holds the instant as it was written, offset included, the coordinates and the settings. The digest identifies the birth details from either side: with the date and the place, trying each time of day finds the time; with the instant, which the positions give away, trying places from a list of towns finds the place, even for a chart with no known time, whose summary shows no angle, cusp or coordinate. With timeKnown: false the coordinates change nothing else in the result, so leaving them out keeps them out of the receipt. Quote the digest only where the birth details may be known. A comparison cites the adapter's own receipt, which holds nothing from either record. get_positions, find_events and check_sky_fact cite the compute API's receipt for the same calculation, which they carry and which holds no instant, date or body from the request."
+    },
+    "receipt": {
+      "schema": "zodiacs.mcp-receipt.v1",
+      "tool": "get_capabilities",
+      "adapter": {
+        "name": "zodiacs-mcp-server",
+        "version": "0.1.0-rc.17"
+      },
+      "engine": {
+        "name": "@zodiacs/engine",
+        "version": "0.1.1-rc.17",
+        "ephemeris": {
+          "name": "astronomy-engine",
+          "version": "2.1.19"
+        }
+      }
+    },
+    "cite": {
+      "url": "https://zodiacs.org/developers/mcp/#get_capabilities",
+      "receipt": "sha256:ece36a13982c7ff35660e125e8b653c67842c63be6de2ab570883e5f7a47f3ab",
+      "engine": "@zodiacs/engine",
+      "version": "0.1.1-rc.17"
+    }
+  }
+}

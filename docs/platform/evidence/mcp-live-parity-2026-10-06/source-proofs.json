@@ -1,0 +1,19 @@
+{
+  "site": {
+    "commit": "b1c42f199cea5c879afd1be3597666d43abf9653",
+    "tree": "52c81278e6bbfd944d4771f2012ff9bcd0dacda8",
+    "mcpArtifactSourceCommit": "bd4d14484bf67df2de457a2cc0f1df7a825e7962"
+  },
+  "engine": {
+    "mainCommit": "782b4963a8575fa8d81c602a36285f65fb9ae9bb",
+    "mainTree": "62a2ce002d8f848b370af2bfeb59d2f1f3891531",
+    "artifactSourceCommit": "aae419c05b77455b9e8f03ca11ee273b446f7d02",
+    "artifactSourceTree": "81391ab5829a74b5d302ac7c7c07209d64d30509",
+    "artifactCarrierCommit": "b080217c1b5b0b36c931e9c237bcff0308ec1efc",
+    "artifactCarrierTree": "d0e6c9708ae3462ee88c17229cea38822826fdcf",
+    "ancestryVerified": true,
+    "gitArchiveBytes": 273123,
+    "gitArchiveSha256": "9cd24c788863424ef614aaadec580db5a0dfc529303d385274db48a092a5299a",
+    "vendoredArchiveExactlyMatchesGitCarrier": true
+  }
+}
