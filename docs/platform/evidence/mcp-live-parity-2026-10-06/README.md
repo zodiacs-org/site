@@ -112,16 +112,50 @@ request, fallback route, credential change or sandbox escalation.
 
 ## Reproduction and review
 
-From the site checkout, the following perform local checks only. Use a new output
-directory; the runner intentionally rejects any existing output directory.
+Documentation correction, 8 October 2026: the local reproduction needs the
+pinned source checkout below. The runner derives its source root from its own
+file, so changing the shell's working directory alone cannot select that source.
+This correction does not change the dated measurements or captured bytes.
+
+Use Node 22 and npm 10. The repository must already contain commit
+`b1c42f199cea5c879afd1be3597666d43abf9653`. Set `REVIEW_NPM_CACHE` to a writable,
+populated npm cache containing the dependencies of that commit's `package-lock.json`
+and the captured adapter's `npm-shrinkwrap.json`. Missing cached dependencies are
+a setup failure; the recipe deliberately forbids npm network access.
+
+Run this block from the PR's site checkout. It creates a detached pinned worktree,
+copies only the runner and its selftests into that checkout, and installs its own
+locked dependencies. The absolute pin/archive paths continue to refer to this
+dated evidence in the PR checkout. The new output directory is outside both
+checkouts and does not exist before the runner starts. No live binding is supplied;
+HTTP checks use loopback only, with zero production calls.
 
 ```bash
-node --test scripts/mcp-independent-consumer.selftest.mjs
-node scripts/mcp-independent-consumer.mjs \
-  --pin docs/platform/evidence/mcp-live-parity-2026-10-06/pin.json \
-  --archive docs/platform/evidence/mcp-live-parity-2026-10-06/03-archive.body \
-  --out /tmp/zodiacs-rc17-review-CHOOSE-A-NEW-DIRECTORY
-node scripts/programme-ledger.mjs --summary
+(
+  set -eu
+  : "${REVIEW_NPM_CACHE:?Set REVIEW_NPM_CACHE to a populated writable npm cache}"
+  review_site=$(git rev-parse --show-toplevel)
+  review_evidence="$review_site/docs/platform/evidence/mcp-live-parity-2026-10-06"
+  review_scratch=$(mktemp -d /tmp/zodiacs-rc17-review-XXXXXX)
+  review_source="$review_scratch/source"
+  git -C "$review_site" worktree add --detach "$review_source" \
+    b1c42f199cea5c879afd1be3597666d43abf9653
+  cp "$review_site/scripts/mcp-independent-consumer.mjs" "$review_source/scripts/"
+  cp "$review_site/scripts/mcp-independent-consumer.selftest.mjs" "$review_source/scripts/"
+  (
+    cd "$review_source"
+    export npm_config_cache="$REVIEW_NPM_CACHE"
+    export npm_config_offline=true
+    npm ci --ignore-scripts --no-audit --no-fund
+    node --test scripts/mcp-independent-consumer.selftest.mjs
+    node scripts/mcp-independent-consumer.mjs \
+      --pin "$review_evidence/pin.json" \
+      --archive "$review_evidence/03-archive.body" \
+      --out "$review_scratch/output"
+  )
+  node "$review_site/scripts/programme-ledger.mjs" --summary
+  printf 'Review output: %s\n' "$review_scratch/output"
+)
 ```
 
 From this evidence directory, verify captured artifacts without network access:
