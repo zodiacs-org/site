@@ -48,6 +48,90 @@ const REFUSALS = [
     args: { from: '2026-03-05T00:00:00Z', to: '2026-03-01T00:00:00Z' } },
 ];
 
+// Opt-in production plan: four meaningful successes, one cheap refusal,
+// then recovery. Never add requests to this plan to diagnose a live failure.
+export const LIVE_PLAN = Object.freeze([
+  CORPUS[0], CORPUS[1], CORPUS[4], CORPUS[5],
+  { ...REFUSALS[0], refusal: true },
+  { ...CORPUS[0], id: 'invalid-civil-date-recovery', mcpCaseId: 'positions' },
+]);
+const LIVE_HOSTS = ['zodiacs.org', 'zodiacs-pqzrjq0ev-zodiacsofficial.vercel.app'];
+export function assertLivePolicy(policy, origin) {
+  const url = new URL(origin);
+  assert.equal(url.protocol, 'https:', 'live HTTPS origin');
+  assert.equal(url.origin, origin, 'live origin cannot contain credentials, path, query or fragment');
+  assert(!url.username && !url.password, 'live credentials forbidden');
+  assert(LIVE_HOSTS.includes(url.hostname), 'live host outside exact approved hosts');
+  assert.equal(policy.http_network_policy?.type, 'restricted', 'restricted environment policy required');
+  const hosts = policy.http_network_policy.egress_rules.map(rule => rule.host);
+  assert(LIVE_HOSTS.every(host => hosts.includes(host)), 'approved hosts absent from active environment policy');
+}
+export function assertLiveBinding(binding, pin, bytes) {
+  const deployment = binding.provider.deployment;
+  assert.equal(binding.schema, 'zodiacs.live-parity-binding.v1');
+  assert.equal(deployment.id, 'dpl_6omXmaCaRgp4BXt9ZDBskx84262E', 'approved immutable deployment');
+  assert.equal(deployment.url, LIVE_HOSTS[1], 'approved immutable deployment host');
+  assert.equal(binding.origin, `https://${deployment.url}`, 'live calls use source-bound immutable origin');
+  assert.equal(deployment.sourceCommit, pin.http.sourceCommit, 'provider source commit binding');
+  assert.equal(deployment.repository, 'zodiacs-org/site', 'provider repository');
+  assert.equal(deployment.target, 'production', 'provider production target');
+  assert.equal(deployment.readyState, 'READY', 'provider READY state');
+  assert.equal(deployment.source, 'git', 'provider git source');
+  assert(deployment.alias.includes('zodiacs.org'), 'canonical alias observed on deployment');
+  for (const [name, expected, path] of [
+    ['manifest', { sha256: pin.manifestSha256, bytes: bytes.manifest.length }, '/examples/mcp-server.json'],
+    ['archive', pin.archive, `/examples/${JSON.parse(bytes.manifest).file}`],
+    ['openapi', pin.openapi, '/api/v1/openapi.json'],
+  ]) {
+    const record = binding.served[name];
+    assert.equal(record.method, 'GET', `${name} metadata method`);
+    assert.equal(record.url, binding.origin + path, `${name} source-bound URL`);
+    assert.equal(record.status, 200, `${name} metadata status`);
+    assert.equal(record.curlExitCode, 0, `${name} metadata transport`);
+    assert.equal(record.redirectsFollowed, 0, `${name} metadata redirects`);
+    assert.equal(record.headersTruncated, false, `${name} metadata header limit`);
+    assert.equal(record.bodySha256, expected.sha256, `${name} served hash binding`);
+    assert.equal(record.bodyBytes, expected.bytes, `${name} served byte binding`);
+    assert.equal(sha256(bytes[name]), expected.sha256, `${name} captured bytes binding`);
+    assert.equal(bytes[name].length, expected.bytes, `${name} captured byte length`);
+  }
+}
+export async function runLiveHttp({ binding, pin, mcp, validate, out, report, fetchImpl = fetch }) {
+  const http = [];
+  report.live.status = 'running';
+  report.cases = [];
+  for (const row of LIVE_PLAN) {
+    assert(report.live.requests < 6, 'six production compute calls maximum');
+    if (row.endpoint === 'events') {
+      assert(report.live.eventSearches < 2, 'two short production event searches maximum');
+      report.live.eventSearches += 1;
+    }
+    report.httpRequests += 1;
+    report.live.requests += 1; // Count attempts, including fetch/status/parse failures.
+    await save(join(out, 'report.json'), report);
+    const response = await captureHttpResponse(row, binding.origin, http, join(out, 'http.json'), fetchImpl);
+    const expectedStatus = row.refusal ? 400 : 200;
+    assert.equal(response.status, expectedStatus, `${row.id}: unexpected live HTTP status; stopping`);
+    validate(response.value, row.endpoint, expectedStatus);
+    if (row.refusal) {
+      const refusal = mcp.refusals.find(item => item.id === row.id).refusal;
+      assert.equal(refusal.layer, 'tool', 'live parser refusal layer');
+      const detail = response.value.error;
+      assert.equal(refusal.message, `${detail.pointer ? `${detail.pointer}: ` : ''}${detail.message}`, 'live shared parser refusal sentence');
+      report.cases.push({ id: row.id, status: response.status, result: 'pass', error: detail });
+    } else {
+      const value = mcp.cases.find(item => item.id === (row.mcpCaseId ?? row.id)).value;
+      validate(value, row.endpoint);
+      assertParity(value, response.value, row, pin);
+      report.cases.push({ id: row.id, status: response.status, result: 'pass', receiptDigest: digest(response.value.receipt),
+        onlyAllowedDifference: 'cite.url', ...(row.answer ? { answer: response.value.result.answer } : {}),
+        ...(row.endpoint === 'events' ? { events: response.value.result.events.length,
+          completeness: response.value.receipt.search.completeness } : {}) });
+    }
+  }
+  report.live.status = 'pass';
+}
+
 // Independent implementation: never import the application's receipt helper.
 export function canonical(value) {
   if (value === null || ['string', 'boolean'].includes(typeof value)) return JSON.stringify(value);
@@ -171,6 +255,11 @@ export async function captureHttpResponse(row, origin, records, evidencePath, fe
       }
       record.headers[name] = value;
       record.headersBytes += size;
+      // Response cookies can be credentials; their bytes count toward the
+      // bound, but their values never enter durable evidence.
+      if (['set-cookie', 'authorization', 'proxy-authorization'].includes(name.toLowerCase())) {
+        record.headers[name] = '<sensitive response header omitted>';
+      }
     }
     record.state = 'reading-body';
     await save(evidencePath, records);
@@ -350,7 +439,7 @@ async function generateOpenApi(out) {
 }
 
 async function main(pinPath, out) {
-  assert(pinPath && out, 'usage: node scripts/mcp-independent-consumer.mjs --pin FILE --out DIRECTORY [--archive FILE]');
+  assert(pinPath && out, 'usage: node scripts/mcp-independent-consumer.mjs --pin FILE --out DIRECTORY [--archive FILE] [--live-binding FILE]');
   const pin = await jsonFile(resolve(pinPath));
   // Atomic creation rejects even empty existing directories and symlinks.
   // Never overwrite or remove evidence from a prior run.
@@ -361,6 +450,21 @@ async function main(pinPath, out) {
     credit: 'No delivery credit. Integration evidence, not independent astronomical accuracy or astrology prediction validation.' };
   let server;
   try {
+    const liveBindingPath = option('--live-binding');
+    let liveBinding, liveBytes;
+    if (liveBindingPath) {
+      assert(option('--archive'), 'live mode requires a captured archive; no fallback download');
+      assert(process.execArgv.includes('--use-env-proxy'), 'live mode requires --use-env-proxy for the active environment policy');
+      liveBinding = await jsonFile(resolve(liveBindingPath));
+      assertLivePolicy(await jsonFile('/etc/codex/network-policy.json'), liveBinding.origin);
+      liveBytes = {};
+      for (const name of ['manifest', 'archive', 'openapi']) {
+        liveBytes[name] = await readFile(resolve(dirname(resolve(liveBindingPath)), liveBinding.served[name].bodyFile));
+      }
+      assertLiveBinding(liveBinding, pin, liveBytes);
+      report.live.binding = liveBinding;
+      report.live.reason = 'Provider source and served bytes bound; source build and consumer checks pending.';
+    }
     const git = async (...args) => (await exec('git', args, { cwd: ROOT })).stdout.trim();
     report.runner = { path: 'scripts/mcp-independent-consumer.mjs', sha256: sha256(await readFile(FILE)) };
     report.npm = (await exec('npm', ['--version'])).stdout.trim();
@@ -378,6 +482,7 @@ async function main(pinPath, out) {
     assert.equal(manifest.sha256, pin.archive.sha256);
     assert.equal(manifest.artifactCommit, pin.archive.sourceCommit);
     assert.equal(manifest.bytes, pin.archive.bytes);
+    await git('diff', '--exit-code', pin.http.sourceCommit, '--', `public/examples/${manifest.file}`);
     const archiveOverride = option('--archive');
     // curl follows the environment's supported proxy/CA configuration. Native
     // Node fetch does not do so by default on every supported Node release.
@@ -386,6 +491,7 @@ async function main(pinPath, out) {
         '--max-time', '30', '--max-filesize', String(pin.archive.bytes), pin.archive.url],
       { encoding: 'buffer', timeout: 35000, maxBuffer: pin.archive.bytes + 4096 })).stdout;
     assertArchive(archiveBytes, pin.archive);
+    if (liveBinding) assert.deepEqual(archiveBytes, liveBytes.archive, 'consumer uses freshly served archive bytes');
     report.archive = { origin: archiveOverride ? 'explicit local archive' : pin.archive.url, bytes: archiveBytes.length, sha256: sha256(archiveBytes) };
     report.checks.push('source and archive bindings');
 
@@ -447,6 +553,22 @@ async function main(pinPath, out) {
     };
     const modulePath = join(ROOT, 'api/_compute/compute.mjs');
     assert.equal(sha256(await readFile(modulePath)), pin.http.bundleSha256, 'HTTP bundle SHA-256');
+    if (liveBinding) {
+      assert.deepEqual(manifestBytes, liveBytes.manifest, 'served manifest equals pinned source');
+      assert.deepEqual(openapiBytes, liveBytes.openapi, 'served OpenAPI equals pinned source build');
+      assert.equal(sha256(await readFile(join(ROOT, 'api/_compute/local-time.mjs'))), pin.http.localTimeBundleSha256, 'local-time bundle SHA-256');
+      assert.equal(report.sourceLockSha256, pin.sourceLockSha256, 'runtime source lock SHA-256');
+      assert.equal(sha256(await readFile(join(ROOT, 'vendor', `zodiacs-engine-${pin.engineVersion}.tgz`))), pin.engineArchiveSha256, 'vendored runtime engine archive SHA-256');
+      report.http = { ...pin.http, mode: 'live-immutable-production', origin: liveBinding.origin,
+        deployment: liveBinding.provider.deployment.id };
+      Object.assign(report.live, { status: 'bound', eventSearches: 0,
+        reason: 'Provider git source, served manifest/archive/OpenAPI and pinned runtime source hashes established.' });
+      report.checks.push('provider and freshly served metadata bound to pinned runtime sources');
+      await runLiveHttp({ binding: liveBinding, pin, mcp, validate, out, report });
+      report.checks.push('bounded production parity, typed refusal and recovery');
+      report.status = 'pass';
+      return;
+    }
     const { createComputeApiHandler } = await import(pathToFileURL(modulePath));
     const { createLocalTimeModule } = await import(pathToFileURL(join(ROOT, 'api/_compute/local-time.mjs')));
     server = createServer(async (req, res) => {
@@ -496,12 +618,16 @@ async function main(pinPath, out) {
   } catch (error) {
     report.status = 'fail';
     report.failure = error.stack ?? String(error);
+    if (option('--live-binding')) {
+      report.live.status = report.live.requests ? 'fail' : 'inconclusive';
+      report.live.reason = error.message;
+    }
     process.exitCode = 1;
   } finally {
     if (server) await new Promise(yes => server.close(yes));
     report.finishedAt = new Date().toISOString();
     await save(join(out, 'report.json'), report);
-    console.log(`${report.status}: ${report.checks.length} stages, ${report.httpRequests} local HTTP requests, 0 live HTTP requests. ${join(out, 'report.json')}`);
+    console.log(`${report.status}: ${report.checks.length} stages, ${report.httpRequests - report.live.requests} local HTTP requests, ${report.live.requests} live HTTP requests. ${join(out, 'report.json')}`);
   }
 }
 
