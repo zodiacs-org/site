@@ -1,0 +1,6 @@
+{
+  "host": "claude-code-cli",
+  "available": false,
+  "reason": "the claude executable is not on PATH in this environment",
+  "completedAt": "2026-10-08T14:52:39.161Z"
+}

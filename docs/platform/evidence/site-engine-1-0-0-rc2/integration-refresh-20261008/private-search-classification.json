@@ -1,0 +1,24 @@
+{
+  "proof": {
+    "anonymousRows": 3,
+    "exactFiveFieldCatalogueTransformations": 3,
+    "birthDateOrTimeFields": 0,
+    "source": "Recomputed from the committed public GeoNames shards and the chart-studio generator transformation."
+  },
+  "reports": [
+    {
+      "anonymousSet": 1,
+      "historyDataRecords": 48,
+      "stagedDataRecords": 0,
+      "recordsExplainedByExactPublicRows": 48,
+      "unexplainedDataRecords": 0
+    },
+    {
+      "anonymousSet": 2,
+      "historyDataRecords": 48,
+      "stagedDataRecords": 0,
+      "recordsExplainedByExactPublicRows": 48,
+      "unexplainedDataRecords": 0
+    }
+  ]
+}
