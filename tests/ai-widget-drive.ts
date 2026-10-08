@@ -81,9 +81,19 @@ try {
   await page.waitForFunction(() => (window as any).protocolMessages.some((message: any) => message.method === 'ui/open-link'));
   const messages = await page.evaluate(() => (window as any).protocolMessages);
   assert.match(messages.find((message: any) => message.method === 'ui/open-link').params.url, /^https:\/\/zodiacs\.org\//);
+  // In ChatGPT (window.openai) the calendar stays as OpenAI reviewed it: links aren't routed through the host.
+  await page.evaluate(() => { (window as any).protocolMessages = []; document.body.innerHTML = '<iframe title="Sky calendar" style="width:100%;height:740px;border:0"></iframe>'; });
+  const chatgpt = page.frames().find(item => item !== page.mainFrame() && !item.isDetached())!;
+  await chatgpt.setContent(WIDGET_HTML.replace('<head>', '<head><script>window.openai = {};</script>'));
+  await page.evaluate(result => document.querySelector('iframe')!.contentWindow!.postMessage({ jsonrpc: '2.0', method: 'ui/notifications/tool-result', params: { structuredContent: result } }, '*'), result);
+  await chatgpt.waitForFunction(() => document.querySelector('#status')?.textContent?.includes('times for Bangkok'));
+  await chatgpt.evaluate(() => window.addEventListener('click', event => event.preventDefault()));
+  await chatgpt.locator('#links a').first().click();
+  await page.waitForTimeout(300);
+  assert.equal(await page.evaluate(() => (window as any).protocolMessages.filter((message: any) => message.method === 'ui/open-link').length), 0, 'ChatGPT keeps ordinary links');
   assert.ok(messages.some((message: any) => message.method === 'ui/notifications/initialized'));
   assert.deepEqual(messages.find((message: any) => message.method === 'tools/call').params, { name: 'get_upcoming_events', arguments: { from: '2026-10-02T04:00:00.000Z', to: '2026-10-10T04:00:00.000Z', zone: 'America/New_York' } });
   assert.equal(network, 0); assert.deepEqual(errors, []);
-  await writeFile(new URL('widget-review.json', out), JSON.stringify({ scope: 'Local Chromium render and synthetic host bridges; not ChatGPT host acceptance', passed: ['desktop', '360px mobile', 'local dates and times', 'no UTC or ISO times on screen', 'coverage', 'no external requests', 'text injection', 'URL allowlist', 'refusal clears stale content', 'calendar form through OpenAI bridge', '92-day form limit before host call', 'MCP Apps initialization and calendar tools/call', 'frame fits the calendar', 'links open through an MCP Apps host that offers it'], errors }, null, 2) + '\n');
+  await writeFile(new URL('widget-review.json', out), JSON.stringify({ scope: 'Local Chromium render and synthetic host bridges; not ChatGPT host acceptance', passed: ['desktop', '360px mobile', 'local dates and times', 'no UTC or ISO times on screen', 'coverage', 'no external requests', 'text injection', 'URL allowlist', 'refusal clears stale content', 'calendar form through OpenAI bridge', '92-day form limit before host call', 'MCP Apps initialization and calendar tools/call', 'frame fits the calendar', 'links open through an MCP Apps host that offers it', 'ChatGPT keeps the reviewed calendar'], errors }, null, 2) + '\n');
   console.log('Widget browser QA: desktop, mobile, injection, links and error recovery passed.');
 } finally { await browser.close(); }

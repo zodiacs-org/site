@@ -32,8 +32,11 @@ export class StudioBridge {
       this.ready = true;
       window.parent.postMessage({ jsonrpc: '2.0', method: 'ui/notifications/initialized' }, this.targetOrigin);
       this.changed(this.textContext || this.textMessage);
-      this.stopSizing = reportSizeChanges((message) => window.parent.postMessage(message, this.targetOrigin));
-      if (result?.hostCapabilities?.openLinks) this.stopLinks = openLinksThroughHost((url) => this.request('ui/open-link', { url }));
+      // ChatGPT (window.openai) keeps the panel exactly as OpenAI reviewed it; it has its own bridge.
+      if (!(window as { openai?: unknown }).openai) {
+        this.stopSizing = reportSizeChanges((message) => window.parent.postMessage(message, this.targetOrigin));
+        if (result?.hostCapabilities?.openLinks) this.stopLinks = openLinksThroughHost((url) => this.request('ui/open-link', { url }));
+      }
     } catch { this.changed(false); }
   }
   private request(method: string, params: unknown): Promise<any> {

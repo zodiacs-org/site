@@ -62,15 +62,17 @@ export const WIDGET_HTML = `<!doctype html>
     fit();
   }
   // Content height, not the frame's: a host that started the frame tall can shrink it to fit.
+  // A host with its own bridge (window.openai) keeps the one report per render it reviewed.
   let fitted = 0;
   function fit() {
     if (window.parent === window) return;
+    if (window.openai) { window.parent.postMessage({jsonrpc:'2.0',method:'ui/notifications/size-changed',params:{height:document.documentElement.scrollHeight}}, '*'); return; }
     const root = document.documentElement, previous = root.style.height;
     root.style.height = 'max-content'; const height = Math.ceil(root.getBoundingClientRect().height); root.style.height = previous;
     if (height === fitted) return; fitted = height;
     window.parent.postMessage({jsonrpc:'2.0',method:'ui/notifications/size-changed',params:{height}}, '*');
   }
-  if (typeof ResizeObserver === 'function') new ResizeObserver(() => fit()).observe(document.body);
+  if (!window.openai && typeof ResizeObserver === 'function') new ResizeObserver(() => fit()).observe(document.body);
   zone.addEventListener('change', () => { if (last) { const data = last.data; last = { ...last, data: { ...data, zone: zone.value } }; render(last); } });
   async function callCalendar(args) {
     if (typeof window.openai?.callTool === 'function') return window.openai.callTool('get_upcoming_events', args);
@@ -103,7 +105,7 @@ export const WIDGET_HTML = `<!doctype html>
     if (event.data.id === 'zodiacs-ui-init' && event.data.result && !ready) {
       ready = true; window.parent.postMessage({jsonrpc:'2.0',method:'ui/notifications/initialized'}, '*');
       // A sandboxed frame may not open tabs itself; when the host offers to, links go through it.
-      if (event.data.result.hostCapabilities?.openLinks) document.addEventListener('click', click => {
+      if (!window.openai && event.data.result.hostCapabilities?.openLinks) document.addEventListener('click', click => {
         const link = click.target instanceof Element ? click.target.closest('a[href]') : null;
         if (!link || !/^https?:$/.test(link.protocol)) return;
         click.preventDefault();

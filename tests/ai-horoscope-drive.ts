@@ -113,6 +113,7 @@ try {
     window.addEventListener('message', event => {
       const iframe = document.querySelector('iframe')!;
       if (event.source !== iframe.contentWindow) return;
+      if (event.data.method === 'ui/initialize') (window as any).inits = ((window as any).inits ?? 0) + 1;
       if (event.data.method === 'ui/initialize') iframe.contentWindow!.postMessage({ jsonrpc: '2.0', id: event.data.id, result: { protocolVersion: '2026-01-26', hostInfo: { name: 'synthetic-host', version: '1' }, hostCapabilities: { serverTools: {}, openLinks: {} } } }, '*');
       if (event.data.method === 'ui/open-link') { (window as any).links.push(event.data.params.url); iframe.contentWindow!.postMessage({ jsonrpc: '2.0', id: event.data.id, result: {} }, '*'); }
       if (event.data.method === 'ui/notifications/size-changed') { (window as any).sizes.push(event.data.params.height); iframe.style.height = `${event.data.params.height}px`; }
@@ -146,7 +147,31 @@ try {
   await panel.getByRole('link', { name: 'Privacy' }).click();
   await host.waitForFunction(() => (window as any).links.length === 2);
   assert.equal(await host.evaluate(() => (window as any).links[1]), 'https://zodiacs.org/privacy/');
+  // In ChatGPT (window.openai) both panels stay as OpenAI reviewed them: no size reports and no host links.
+  // Each check gets a fresh frame, as a real host gives each panel.
+  const inChatGpt = (html: string) => html.replace('<head>', '<head><script>window.openai = {};</script>');
+  const freshFrame = async () => {
+    await host.evaluate(() => { document.body.innerHTML = '<iframe title="Zodiacs panel" style="width:100%;height:160px;border:0"></iframe>'; (window as any).sizes = []; (window as any).links = []; });
+    return host.frames().find(frame => frame !== host.mainFrame() && !frame.isDetached())!;
+  };
+  let chatgpt = await freshFrame();
+  const inits = await host.evaluate(() => (window as any).inits);
+  await chatgpt.setContent(inChatGpt(HOROSCOPES_HTML));
+  await host.waitForFunction(previous => (window as any).inits > previous, inits);
+  await host.evaluate(result => document.querySelector('iframe')!.contentWindow!.postMessage({ jsonrpc: '2.0', method: 'ui/notifications/tool-result', params: result }, '*'), leo);
+  await chatgpt.getByRole('heading', { name: 'Leo' }).waitFor();
+  await chatgpt.evaluate(() => window.addEventListener('click', event => event.preventDefault()));
+  await chatgpt.getByRole('link', { name: /More on zodiacs\.org/ }).click();
+  await host.waitForTimeout(300);
+  assert.deepEqual(await host.evaluate(() => [(window as any).sizes, (window as any).links]), [[], []], 'ChatGPT keeps the reviewed horoscope panel');
+  chatgpt = await freshFrame();
+  await chatgpt.setContent(inChatGpt(STUDIO_HTML));
+  await chatgpt.getByRole('heading', { name: 'When and where were you born?' }).waitFor();
+  await chatgpt.evaluate(() => window.addEventListener('click', event => event.preventDefault()));
+  await chatgpt.getByRole('link', { name: 'Privacy' }).click();
+  await host.waitForTimeout(300);
+  assert.deepEqual(await host.evaluate(() => [(window as any).sizes, (window as any).links]), [[], []], 'ChatGPT keeps the reviewed Chart Studio');
   assert.deepEqual(hostErrors, []);
-  await writeFile(new URL('horoscopes-review.json', out), JSON.stringify({ scope: 'Local Chromium render with synthetic host bridges; not ChatGPT or Claude host acceptance', timezone: 'Asia/Bangkok', window: window.editions.map(edition => edition.anchorDate), passed: ['sign picker', 'sign choice through the OpenAI bridge', 'host updates after a choice keep it','plain dates and places', 'focus and week switching', 'why this reading', '375px phone: no sideways scroll, reading on the first screen', 'text injection', 'no external requests', 'Chart Studio opens on birth details', 'unknown birth time path', 'labelled example chart', 'both panels report their content height to an MCP Apps host', 'links open through an MCP Apps host that offers it'], errors: [...errors, ...studioErrors] }, null, 2) + '\n');
+  await writeFile(new URL('horoscopes-review.json', out), JSON.stringify({ scope: 'Local Chromium render with synthetic host bridges; not ChatGPT or Claude host acceptance', timezone: 'Asia/Bangkok', window: window.editions.map(edition => edition.anchorDate), passed: ['sign picker', 'sign choice through the OpenAI bridge', 'host updates after a choice keep it','plain dates and places', 'focus and week switching', 'why this reading', '375px phone: no sideways scroll, reading on the first screen', 'text injection', 'no external requests', 'Chart Studio opens on birth details', 'unknown birth time path', 'labelled example chart', 'both panels report their content height to an MCP Apps host', 'links open through an MCP Apps host that offers it', 'ChatGPT keeps the reviewed panels'], errors: [...errors, ...studioErrors] }, null, 2) + '\n');
   console.log('Horoscope and Chart Studio browser QA passed.');
 } finally { await browser.close(); }
