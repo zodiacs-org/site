@@ -1,0 +1,597 @@
+[
+  {
+    "slug": "node",
+    "title": "Node quickstart",
+    "description": "Compute a synthetic chart in a Node process using the verified candidate archive.",
+    "installation": true,
+    "sections": [
+      {
+        "heading": "Install and run",
+        "paragraphs": [
+          "Use an ESM project. Create package.json with npm init -y, then run the verified archive installation block below in that directory. Save this example as chart.mjs and run node chart.mjs.",
+          "The package supports Node 20.19 or later in the 20 series, and Node 22.7 or newer. Earlier releases cannot load the astronomy dependency's ESM in the required way."
+        ],
+        "code": {
+          "language": "javascript",
+          "source": "import { natalChart } from '@zodiacs/engine';\nconst chart = natalChart({\n  utc: '2000-01-01T12:00:00Z',\n  latitude: 51.4779,\n  longitude: -0.0015,\n  houseSystem: 'whole',\n});\nconsole.log(chart.bodies.map(({ body, lon }) => ({ body, lon })));"
+        }
+      },
+      {
+        "heading": "Choose your inputs",
+        "paragraphs": [
+          "The instant and coordinates here are synthetic. The package calculates locally; this example makes no HTTP request. Resolve civil time explicitly before passing a UTC instant. Unknown birth time requires a different input policy; do not treat noon as a known birth time."
+        ]
+      }
+    ],
+    "links": [
+      {
+        "label": "Engine source reference",
+        "url": "https://github.com/zodiacs-org/engine/blob/7fa964d2a77d09dbb819b5733b36e303fc7fc513/README.md"
+      }
+    ]
+  },
+  {
+    "slug": "browser",
+    "title": "Browser quickstart",
+    "description": "Bundle a chart calculation into a browser application without uploading chart inputs.",
+    "installation": true,
+    "sections": [
+      {
+        "heading": "Bundle the module",
+        "paragraphs": [
+          "Install the verified archive in an existing browser project with a bundler such as Vite. Put a pre element with id result in the HTML, then import this code from the application's module entry.",
+          "Use the bundler's development server. Directly opening a module through a file URL does not resolve npm package imports. Keep chart inputs on the device unless the user separately chooses a hosted service."
+        ],
+        "code": {
+          "language": "javascript",
+          "source": "import { natalChart } from '@zodiacs/engine';\nconst chart = natalChart({\n  utc: '2000-01-01T12:00:00Z',\n  latitude: 51.4779,\n  longitude: -0.0015,\n  houseSystem: 'whole',\n});\ndocument.querySelector('#result').textContent =\n  JSON.stringify(chart.bodies, null, 2);"
+        }
+      },
+      {
+        "heading": "Keep the main thread responsive",
+        "paragraphs": [
+          "Calculate after an explicit user action. For repeated or long searches, move work to a module worker and apply a sample budget. Import optional entry points only when the application uses them."
+        ]
+      }
+    ],
+    "links": [
+      {
+        "label": "Engine source reference",
+        "url": "https://github.com/zodiacs-org/engine/blob/7fa964d2a77d09dbb819b5733b36e303fc7fc513/README.md"
+      }
+    ]
+  },
+  {
+    "slug": "deno",
+    "title": "Deno quickstart",
+    "description": "Use the installed engine through Deno's Node compatibility and a local node_modules directory.",
+    "installation": true,
+    "sections": [
+      {
+        "heading": "Run the installed package",
+        "paragraphs": [
+          "Install the candidate archive with npm in an ESM project, keeping node_modules. Save the synthetic chart example as chart.mjs. Deno's Node compatibility must resolve that installed package, rather than substituting a registry version.",
+          "Run deno run --node-modules-dir=manual chart.mjs. This example needs no network permission once dependencies are installed. Candidate compatibility is still part of this preparation's runtime validation."
+        ],
+        "code": {
+          "language": "javascript",
+          "source": "import { natalChart } from '@zodiacs/engine';\nconst chart = natalChart({\n  utc: '2000-01-01T12:00:00Z',\n  latitude: 51.4779,\n  longitude: -0.0015,\n  houseSystem: 'whole',\n});\nconsole.log(chart.bodies.map(({ body, lon }) => ({ body, lon })));"
+        }
+      },
+      {
+        "heading": "Permission boundary",
+        "paragraphs": [
+          "Do not add broad network or filesystem permissions merely to compute a chart. If your application uses a hosted API, grant that origin deliberately and disclose the transfer of inputs."
+        ]
+      }
+    ],
+    "links": [
+      {
+        "label": "Engine source reference",
+        "url": "https://github.com/zodiacs-org/engine/blob/7fa964d2a77d09dbb819b5733b36e303fc7fc513/README.md"
+      }
+    ]
+  },
+  {
+    "slug": "bun",
+    "title": "Bun quickstart",
+    "description": "Run an ESM chart example with Bun using the exact verified engine archive.",
+    "installation": true,
+    "sections": [
+      {
+        "heading": "Use the existing package",
+        "paragraphs": [
+          "Install the candidate archive in the project directory, then save this as chart.mjs and run bun chart.mjs. Avoid replacing the candidate with an npm dist-tag: the carried candidate and the published registry release differ.",
+          "Candidate compatibility is still part of this preparation's runtime validation. Keep the lockfile that records the archive installation."
+        ],
+        "code": {
+          "language": "javascript",
+          "source": "import { natalChart } from '@zodiacs/engine';\nconst chart = natalChart({\n  utc: '2000-01-01T12:00:00Z',\n  latitude: 51.4779,\n  longitude: -0.0015,\n  houseSystem: 'whole',\n});\nconsole.log(chart.bodies.map(({ body, lon }) => ({ body, lon })));"
+        }
+      },
+      {
+        "heading": "Transfer the same request",
+        "paragraphs": [
+          "The example uses a resolved UTC instant and east longitude. Persist the conventions and version along with any calculated result you retain."
+        ]
+      }
+    ],
+    "links": [
+      {
+        "label": "Engine source reference",
+        "url": "https://github.com/zodiacs-org/engine/blob/7fa964d2a77d09dbb819b5733b36e303fc7fc513/README.md"
+      }
+    ]
+  },
+  {
+    "slug": "cloudflare",
+    "title": "Cloudflare Workers quickstart",
+    "description": "Bundle a fixed synthetic chart into a Worker without a hosted engine dependency.",
+    "installation": true,
+    "sections": [
+      {
+        "heading": "Worker entry",
+        "paragraphs": [
+          "Install the archive in an existing Wrangler project and use this module as the Worker entry. This handler always calculates the fixed synthetic request; it does not accept personal chart input.",
+          "The fetch handler returns a JSON response. Before adapting it to user input, add schema validation, request limits, consent and a policy for logging and retention. Do not log birth details."
+        ],
+        "code": {
+          "language": "javascript",
+          "source": "import { natalChart } from '@zodiacs/engine';\nexport default {\n  fetch() {\n    const chart = natalChart({\n      utc: '2000-01-01T12:00:00Z',\n      latitude: 51.4779,\n      longitude: -0.0015,\n      houseSystem: 'whole',\n    });\n    return Response.json({ bodies: chart.bodies, flags: chart.flags });\n  },\n};"
+        }
+      },
+      {
+        "heading": "Runtime verification",
+        "paragraphs": [
+          "Bundle the dependency graph with Wrangler and exercise the Worker locally before deploying. Node compilation alone does not establish Workers compatibility. Deployment is separate from this draft recipe."
+        ]
+      }
+    ],
+    "links": [
+      {
+        "label": "Engine source reference",
+        "url": "https://github.com/zodiacs-org/engine/blob/7fa964d2a77d09dbb819b5733b36e303fc7fc513/README.md"
+      }
+    ]
+  },
+  {
+    "slug": "natal",
+    "title": "Natal chart recipe",
+    "description": "Calculate bodies, angles, houses and aspects from a resolved UTC instant and place.",
+    "installation": true,
+    "sections": [
+      {
+        "heading": "A known synthetic time",
+        "paragraphs": [
+          "Call natalChart with UTC, latitude, east longitude and an explicit house system. The returned chart includes flags; retain and display them with any result. The example's time is known by construction."
+        ],
+        "code": {
+          "language": "javascript",
+          "source": "import { natalChart } from '@zodiacs/engine';\nconst chart = natalChart({\n  utc: '2000-01-01T12:00:00Z',\n  latitude: 51.4779,\n  longitude: -0.0015,\n  houseSystem: 'whole',\n});\nconsole.log(chart.bodies.map(({ body, lon }) => ({ body, lon })));"
+        }
+      },
+      {
+        "heading": "Civil time and uncertainty",
+        "paragraphs": [
+          "Resolve a local civil time with the geo entry or your application's documented time-zone policy. A skipped or repeated local time needs an explicit choice. An unknown time cannot support a definite rising sign or houses; use the package's documented unknown-time form instead of inventing a time.",
+          "House systems can have polar fallbacks. Read the returned house system and flags rather than assuming the requested system was computed."
+        ]
+      }
+    ],
+    "links": [
+      {
+        "label": "Engine source reference",
+        "url": "https://github.com/zodiacs-org/engine/blob/7fa964d2a77d09dbb819b5733b36e303fc7fc513/docs/time.md"
+      },
+      {
+        "label": "Engine source reference",
+        "url": "https://github.com/zodiacs-org/engine/blob/7fa964d2a77d09dbb819b5733b36e303fc7fc513/README.md"
+      }
+    ]
+  },
+  {
+    "slug": "transits",
+    "title": "Transit recipe",
+    "description": "Compare positions at a target instant with a synthetic natal chart.",
+    "installation": true,
+    "sections": [
+      {
+        "heading": "Calculate one instant",
+        "paragraphs": [
+          "Pass a validated natal chart or documented birth input and the target instant to transits. The result reports the positions and inter-chart aspects for that instant; it is not a complete transit-window search."
+        ],
+        "code": {
+          "language": "javascript",
+          "source": "import { natalChart, transits } from '@zodiacs/engine';\nconst natal = natalChart({\n  utc: '2000-01-01T12:00:00Z', latitude: 51.4779,\n  longitude: -0.0015, houseSystem: 'whole',\n});\nconst result = transits(natal, '2026-03-20T12:00:00Z');\nconsole.log(result);"
+        }
+      },
+      {
+        "heading": "State the policy",
+        "paragraphs": [
+          "Preserve the engine version and the aspect convention used by your application. A matching aspect at a sampled instant does not establish its exact crossing time or prove that every event in a window was found."
+        ]
+      }
+    ],
+    "links": [
+      {
+        "label": "Engine source reference",
+        "url": "https://github.com/zodiacs-org/engine/blob/7fa964d2a77d09dbb819b5733b36e303fc7fc513/README.md"
+      }
+    ]
+  },
+  {
+    "slug": "returns",
+    "title": "Solar and lunar returns",
+    "description": "Find return instants and their charts through the techniques entry point.",
+    "installation": true,
+    "sections": [
+      {
+        "heading": "Use the opt-in entry",
+        "paragraphs": [
+          "Import solarReturn and lunarReturn from the techniques entry. Solar return chooses the return nearest the supplied date by default; lunar return finds the first one after the supplied instant. Keep their different selection rules visible to users."
+        ],
+        "code": {
+          "language": "javascript",
+          "source": "import { natalChart } from '@zodiacs/engine';\nimport { solarReturn, lunarReturn } from '@zodiacs/engine/techniques';\nconst natal = natalChart({\n  utc: '2000-01-01T12:00:00Z', latitude: 51.4779,\n  longitude: -0.0015, houseSystem: 'whole',\n});\nconst solar = solarReturn(natal, '2026-01-01T12:00:00Z');\nconst lunar = lunarReturn(natal, '2026-03-20T12:00:00Z');\nconsole.log({ solar: solar.instant.toISOString(), lunar: lunar.instant.toISOString() });"
+        }
+      },
+      {
+        "heading": "Place and time",
+        "paragraphs": [
+          "Return charts use the natal place and house system by default; set the options explicitly when you use a different location. Lunar returns require a known natal time without an unresolved DST gap or fold. Retain flags and the actual instant; do not present the solver as interval-proven completeness."
+        ]
+      }
+    ],
+    "links": [
+      {
+        "label": "Engine source reference",
+        "url": "https://github.com/zodiacs-org/engine/blob/7fa964d2a77d09dbb819b5733b36e303fc7fc513/docs/techniques.md"
+      }
+    ]
+  },
+  {
+    "slug": "synastry",
+    "title": "Synastry recipe",
+    "description": "Compare two synthetic natal charts with explicit input and time policies.",
+    "installation": true,
+    "sections": [
+      {
+        "heading": "Compare validated charts",
+        "paragraphs": [
+          "Calculate both charts, then pass them to synastry. The result compares their bodies and gives the package's inter-chart aspects and balance summary. Both examples are synthetic and have known UTC times."
+        ],
+        "code": {
+          "language": "javascript",
+          "source": "import { natalChart, synastry } from '@zodiacs/engine';\nconst first = natalChart({\n  utc: '2000-01-01T12:00:00Z', latitude: 51.4779,\n  longitude: -0.0015, houseSystem: 'whole',\n});\nconst second = natalChart({\n  utc: '2000-06-21T12:00:00Z', latitude: -33.8688,\n  longitude: 151.2093, houseSystem: 'whole',\n});\nconsole.log(synastry(first, second));"
+        }
+      },
+      {
+        "heading": "Share deliberately",
+        "paragraphs": [
+          "Comparing charts needs two sets of input. Keep calculation local by default, and obtain a person's permission before sharing their chart or input. Preserve each chart's flags rather than turning uncertain positions into certain claims."
+        ]
+      }
+    ],
+    "links": [
+      {
+        "label": "Engine source reference",
+        "url": "https://github.com/zodiacs-org/engine/blob/7fa964d2a77d09dbb819b5733b36e303fc7fc513/README.md"
+      }
+    ]
+  },
+  {
+    "slug": "crossings",
+    "title": "Longitude-crossing searches",
+    "description": "Find longitude crossings under a sample budget and handle a refusal as a whole result.",
+    "installation": true,
+    "sections": [
+      {
+        "heading": "Bound the work",
+        "paragraphs": [
+          "Use searchLongitudeCrossings to cap longitude evaluations. A refused search contains no partial crossings: treat it as a failure to complete, then shorten the window or deliberately choose a different budget."
+        ],
+        "code": {
+          "language": "javascript",
+          "source": "import { searchLongitudeCrossings } from '@zodiacs/engine';\nconst result = searchLongitudeCrossings(\n  'Mercury', 0, '2026-01-01T00:00:00Z', '2027-01-01T00:00:00Z',\n  { stepDays: 1, maxSamples: 5000 },\n);\nif (result.status === 'refused') {\n  console.log({ reason: result.reason, samples: result.samples });\n} else {\n  console.log(result.crossings.map(({ at, retrograde }) =>\n    ({ utc: at.toISOString(), retrograde })));\n}"
+        }
+      },
+      {
+        "heading": "Completeness",
+        "paragraphs": [
+          "The solver is tested and assumes smooth motion with a bounded pattern of stations between samples. It is not a proof that every event was found. A plain longitude scan and an interval-certified search have different guarantees; retain the declared method."
+        ]
+      }
+    ],
+    "links": [
+      {
+        "label": "Engine source reference",
+        "url": "https://github.com/zodiacs-org/engine/blob/7fa964d2a77d09dbb819b5733b36e303fc7fc513/docs/calc.md"
+      },
+      {
+        "label": "Engine source reference",
+        "url": "https://github.com/zodiacs-org/engine/blob/7fa964d2a77d09dbb819b5733b36e303fc7fc513/src/crossings.ts"
+      }
+    ]
+  },
+  {
+    "slug": "conventions",
+    "title": "Calculation conventions",
+    "description": "Keep UTC, TT, UT1, frames, centres, corrections and zodiac choices explicit.",
+    "installation": true,
+    "sections": [
+      {
+        "heading": "An explicit position request",
+        "paragraphs": [
+          "The calc time-scale values are lowercase: utc, ut1 and tt. The TT label on EPHEMERIS_SPAN describes its bounds and is not an input scale value.",
+          "An instant's UTC, terrestrial clock and Earth-rotation clock have different roles. Preserve the receipt and time basis instead of treating the labels as interchangeable."
+        ],
+        "code": {
+          "language": "javascript",
+          "source": "import { calc } from '@zodiacs/engine/calc';\nconst result = calc({\n  body: 'Sun', time: { jd: 2451545, scale: 'tt' },\n  frame: 'ecliptic-true-of-date', center: 'geocentric',\n  flags: { correction: 'apparent' },\n  zodiac: { sidereal: 'lahiri' },\n});\nconsole.log(result);"
+        }
+      },
+      {
+        "heading": "Coordinates and output",
+        "paragraphs": [
+          "Latitude is geodetic and north-positive; longitude is east-positive. Ecliptic longitudes and equatorial right ascension are different frames. The default apparent correction includes the documented light-time and aberration policy; it is not a claim of every possible relativistic correction.",
+          "Sidereal requests name an ayanamsa or a caller definition. Keep its epoch, model or linear rate and the time-scale convention with the result."
+        ]
+      }
+    ],
+    "links": [
+      {
+        "label": "Engine source reference",
+        "url": "https://github.com/zodiacs-org/engine/blob/7fa964d2a77d09dbb819b5733b36e303fc7fc513/docs/calc.md"
+      },
+      {
+        "label": "Engine source reference",
+        "url": "https://github.com/zodiacs-org/engine/blob/7fa964d2a77d09dbb819b5733b36e303fc7fc513/docs/time.md"
+      },
+      {
+        "label": "Engine source reference",
+        "url": "https://github.com/zodiacs-org/engine/blob/7fa964d2a77d09dbb819b5733b36e303fc7fc513/docs/vedic.md"
+      }
+    ]
+  },
+  {
+    "slug": "errors",
+    "title": "Errors and refusals",
+    "description": "Distinguish invalid inputs, typed calculation refusals and hosted API errors.",
+    "installation": true,
+    "sections": [
+      {
+        "heading": "Handle the result contract",
+        "paragraphs": [
+          "Invalid input can throw RangeError. A valid request that the calc entry cannot compute returns status refused with a reason and detail. Do not automatically retry invalid data."
+        ],
+        "code": {
+          "language": "javascript",
+          "source": "import { calc } from '@zodiacs/engine/calc';\ntry {\n  const result = calc({ body: 'Sun', time: '1700-06-01T12:00:00Z' });\n  if (result.status === 'refused') {\n    console.log({ reason: result.reason, detail: result.detail });\n  }\n} catch (error) {\n  if (!(error instanceof RangeError)) throw error;\n  console.log('Invalid input; correct the request before retrying.');\n}"
+        }
+      },
+      {
+        "heading": "Typed refusal catalogue",
+        "paragraphs": [
+          "unsupported-combination identifies an unsupported combination; not-in-this-version identifies a capability this entry does not offer. out-of-range carries the instant span. epoch-out-of-range carries the permitted precession epoch span. sample-budget carries samples and maxSamples.",
+          "A linear ayanamsa and a precession-carried ayanamsa have different epoch rules. A hosted HTTP failure is a separate envelope and status code: preserve Retry-After for rate limits, and never treat a refusal as a successful numerical result."
+        ]
+      }
+    ],
+    "links": [
+      {
+        "label": "Engine source reference",
+        "url": "https://github.com/zodiacs-org/engine/blob/7fa964d2a77d09dbb819b5733b36e303fc7fc513/docs/calc.md"
+      },
+      {
+        "label": "Hosted error catalogue",
+        "url": "/developers/compute/#errors"
+      }
+    ]
+  },
+  {
+    "slug": "receipts",
+    "title": "Receipts and reproduction",
+    "description": "Reproduce a request and track where a numerical result came from.",
+    "installation": true,
+    "sections": [
+      {
+        "heading": "Replay a calc receipt",
+        "paragraphs": [
+          "A successful calc-entry result carries the normalized request and its calculation conventions. JSON-clone the receipt request, then call the same function on the same engine version. Store the engine version and the complete receipt when retaining a result."
+        ],
+        "code": {
+          "language": "javascript",
+          "source": "import { chart } from '@zodiacs/engine/calc';\nconst result = chart({\n  time: '2000-01-01T12:00:00Z',\n  place: { latitude: 51.4779, longitude: -0.0015 },\n  houseSystem: 'whole',\n});\nif (result.status === 'ok') {\n  const request = JSON.parse(JSON.stringify(result.receipt.request));\n  const replayed = chart(request);\n  console.log({ receipt: result.receipt, replayed });\n} else {\n  console.log({ reason: result.reason, detail: result.detail });\n}"
+        }
+      },
+      {
+        "heading": "What a receipt establishes",
+        "paragraphs": [
+          "A receipt records the request and method. It does not independently prove astronomical accuracy. Compare to independent references using the documented bounds and span.",
+          "Receipts can contain sensitive inputs. Redact personal context before publishing an issue or sharing a result. The receipt entry supplies natal-envelope parsing, serialization and redaction; its schema identifiers remain versioned separately from the package."
+        ]
+      }
+    ],
+    "links": [
+      {
+        "label": "Engine source reference",
+        "url": "https://github.com/zodiacs-org/engine/blob/7fa964d2a77d09dbb819b5733b36e303fc7fc513/docs/calc.md"
+      },
+      {
+        "label": "Engine source reference",
+        "url": "https://github.com/zodiacs-org/engine/blob/7fa964d2a77d09dbb819b5733b36e303fc7fc513/docs/versioning.md"
+      }
+    ]
+  },
+  {
+    "slug": "python",
+    "title": "Python hosted quickstart",
+    "description": "Call the hosted positions endpoint from Python without claiming a native Python engine.",
+    "installation": false,
+    "sections": [
+      {
+        "heading": "Use the HTTP boundary",
+        "paragraphs": [
+          "This uses Python's standard HTTP and JSON libraries to call the hosted service. It does not import a native Python port of the engine. The request dates and bodies are the service's committed synthetic example.",
+          "Calling the service sends the request to Zodiacs infrastructure. Use the local TypeScript engine when an application needs calculation without that transfer."
+        ],
+        "code": {
+          "language": "python",
+          "source": "import json\nfrom urllib.request import Request, urlopen\nbody = {\n    \"instants\": [\"2026-09-29T12:00:00Z\", \"2026-12-31T00:00:00-05:00\"],\n    \"bodies\": [\"Sun\", \"Moon\", \"Mercury\"],\n}\nrequest = Request(\n    \"https://zodiacs.org/api/v1/positions\",\n    data=json.dumps(body).encode(\"utf-8\"),\n    headers={\"Content-Type\": \"application/json\"},\n    method=\"POST\",\n)\nwith urlopen(request, timeout=30) as response:\n    result = json.load(response)\nprint(result)"
+        }
+      },
+      {
+        "heading": "Failures and receipts",
+        "paragraphs": [
+          "urllib raises HTTPError for non-success status codes. Inspect the response's error envelope, preserve Retry-After when present and keep the receipt from a successful response. Apply a finite timeout; do not log private chart inputs.",
+          "No credentials are required by this example. Current service availability and limits are documented on the Compute API page."
+        ]
+      }
+    ],
+    "links": [
+      {
+        "label": "Compute API",
+        "url": "/developers/compute/"
+      },
+      {
+        "label": "OpenAPI",
+        "url": "/api/v1/openapi.json"
+      }
+    ]
+  },
+  {
+    "slug": "elections",
+    "title": "Hosted election search",
+    "description": "Search a bounded window for a declared set of sky conditions over HTTP.",
+    "installation": false,
+    "sections": [
+      {
+        "heading": "State the conditions",
+        "paragraphs": [
+          "This is the Compute API's committed synthetic example. It asks for a waxing Moon outside void-of-course periods, direct Mercury and angular Jupiter at a declared place. It is a traditional selection rule, not a prediction of an outcome."
+        ],
+        "code": {
+          "language": "javascript",
+          "source": "const request = {\n  from: '2026-12-09T00:00:00Z',\n  to: '2026-12-12T00:00:00Z',\n  conditions: [\n    { kind: 'phase', phase: 'waxing' },\n    { kind: 'void-of-course', not: true },\n    { kind: 'retrograde', body: 'Mercury', not: true },\n    { kind: 'angular', body: 'Jupiter' },\n  ],\n  place: { latitude: 51.5072, longitude: -0.1276, houseSystem: 'placidus' },\n};\nconst response = await fetch('https://zodiacs.org/api/v1/elections', {\n  method: 'POST',\n  headers: { 'Content-Type': 'application/json' },\n  body: JSON.stringify(request),\n});\nconst result = await response.json();\nif (!response.ok) throw new Error('The service refused this request: ' + response.status);\nconsole.log(result);"
+        }
+      },
+      {
+        "heading": "Read the guarantee",
+        "paragraphs": [
+          "Keep the service's method, sampling policy, budgets and receipts with the returned stretches. Do not label a sampled result as proven complete. A budget refusal means the request was not completed.",
+          "Use only the conditions the endpoint documents. The HTTP call transfers the request; obtain consent before sending any personal chart context."
+        ]
+      }
+    ],
+    "links": [
+      {
+        "label": "Compute API",
+        "url": "/developers/compute/"
+      },
+      {
+        "label": "OpenAPI",
+        "url": "/api/v1/openapi.json"
+      }
+    ]
+  },
+  {
+    "slug": "deprecation",
+    "title": "Deprecation policy",
+    "description": "Understand public API stability, experimental exclusions and removal notice.",
+    "installation": false,
+    "sections": [
+      {
+        "heading": "Public and private boundaries",
+        "paragraphs": [
+          "The engine versioning policy defines the public exported entry points. Internal entry points are private implementation boundaries; consuming them does not create a stability promise.",
+          "Receipt schema identifiers have their own permanence rules. A package-version change does not authorize silently changing a schema identifier's meaning."
+        ]
+      },
+      {
+        "heading": "Notice and removal",
+        "paragraphs": [
+          "The policy provides at least twelve months' notice before removing a public API, followed by removal in a major version. A deprecated alias can remain available while its preferred replacement is documented.",
+          "Experimental features follow the exclusions in the versioning policy. Pin an exact release and read its changelog before an upgrade. This candidate does not establish a stable npm publication."
+        ]
+      }
+    ],
+    "links": [
+      {
+        "label": "Engine source reference",
+        "url": "https://github.com/zodiacs-org/engine/blob/7fa964d2a77d09dbb819b5733b36e303fc7fc513/docs/versioning.md"
+      },
+      {
+        "label": "Engine source reference",
+        "url": "https://github.com/zodiacs-org/engine/blob/7fa964d2a77d09dbb819b5733b36e303fc7fc513/CHANGELOG.md"
+      }
+    ]
+  },
+  {
+    "slug": "changelog",
+    "title": "Release changelog",
+    "description": "Find the authoritative release changes and distinguish carried candidates from published versions.",
+    "installation": false,
+    "sections": [
+      {
+        "heading": "Use the version-bound record",
+        "paragraphs": [
+          "The engine CHANGELOG is the authoritative per-version history. Read it at the candidate's source commit when evaluating this documentation, and at your installed release's tag when upgrading.",
+          "Candidate archives are immutable. A version names its recorded bytes; do not repack an existing candidate or replace it with a package that merely prints the same version."
+        ]
+      },
+      {
+        "heading": "Candidate status",
+        "paragraphs": [
+          "The site carries rc.2 from a verified archive. Stable 1.0 publication is still pending explicit approval and release gates. Installing the carried candidate and installing a registry dist-tag are different operations.",
+          "The candidate's evidence explains its bundling changes and records its tests. Compatibility and accuracy claims apply only to the referenced build and measured span."
+        ]
+      }
+    ],
+    "links": [
+      {
+        "label": "Engine source reference",
+        "url": "https://github.com/zodiacs-org/engine/blob/7fa964d2a77d09dbb819b5733b36e303fc7fc513/CHANGELOG.md"
+      },
+      {
+        "label": "Candidate evidence",
+        "url": "https://github.com/zodiacs-org/engine/tree/7fa964d2a77d09dbb819b5733b36e303fc7fc513/docs/evidence/1.0.0-rc.2-20261006"
+      }
+    ]
+  },
+  {
+    "slug": "status",
+    "title": "Developer status",
+    "description": "Identify the installed candidate, supported surfaces and remaining programme work.",
+    "installation": false,
+    "sections": [
+      {
+        "heading": "Available surfaces",
+        "paragraphs": [
+          "The local TypeScript engine, shared-sky static JSON and hosted Compute API have different deployment and privacy boundaries. The engine page names the exact carried archive and source; the Compute API page states HTTP limits and errors.",
+          "This guide collection is preparation for the developer-documentation gate. Its examples must pass runtime validation before publication. No unit is accepted merely because a page exists."
+        ]
+      },
+      {
+        "heading": "Still separate",
+        "paragraphs": [
+          "Stable npm publication, client-package publication and remote MCP delivery remain separate programme gates. React Native runtime validation and a complete sunrise-based panchang recipe are not claimed by this draft.",
+          "A nakshatra position alone is not a panchang. The programme also requires tithi, yoga, karana and vara from sunrise, transition evidence and a published-season comparison before that capability is accepted."
+        ]
+      }
+    ],
+    "links": [
+      {
+        "label": "Engine release status",
+        "url": "/developers/engine/"
+      },
+      {
+        "label": "Compute API",
+        "url": "/developers/compute/"
+      },
+      {
+        "label": "Programme ledger",
+        "url": "https://github.com/zodiacs-org/site/blob/main/docs/platform/programme/LEDGER.md"
+      }
+    ]
+  }
+]

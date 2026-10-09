@@ -1,0 +1,63 @@
+---
+import Base from '../../../layouts/Base.astro';
+import candidate from '../../../data/platform-engine-candidate.json';
+import guides from '../../../data/developer-guides.json';
+import { engineInstallBlock } from '../../../lib/engine-install-block';
+import { developerBreadcrumb } from '../../../lib/developer-structured-data.mjs';
+
+export function getStaticPaths() {
+  return [
+    { params: { guide: undefined }, props: { guide: null } },
+    ...guides.map((guide) => ({ params: { guide: guide.slug }, props: { guide } })),
+  ];
+}
+const { guide } = Astro.props;
+const path = guide ? `/developers/docs/${guide.slug}/` : '/developers/docs/';
+const title = guide ? `${guide.title} | Zodiacs developer guides` : 'Developer guides | Zodiacs.org';
+const description = guide?.description ?? 'Version-bound quickstarts, recipes, conventions, errors and receipts for the Zodiacs engine and Compute API.';
+const markdown = guide ? `/developers/docs/${guide.slug}.md` : '/developers/docs/index.md';
+const install = guide?.installation ? engineInstallBlock(candidate) : '';
+---
+<Base title={title} description={description} path={path} jsonLd={[developerBreadcrumb(path, guide?.title ?? 'Developer guides')]}>
+  <article class="section container container--narrow developer-guide" data-developer-guide={guide?.slug ?? 'index'}>
+    <nav aria-label="Developer documentation"><a href="/developers/">Developers</a> / <a href="/developers/docs/">Guides</a></nav>
+    <h1>{guide?.title ?? 'Developer guides'}</h1>
+    <p class="developer-guide__lede">{description}</p>
+    <p class="developer-guide__version">Engine {candidate.version}: {candidate.releaseLabel}. <a href="/developers/engine/">Archive identity and release status</a>.</p>
+    <p><a href={markdown}>Read this page as Markdown</a></p>
+    {guide ? (
+      <>
+        {guide.sections.map((section) => (
+          <section>
+            <h2>{section.heading}</h2>
+            {section.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+            {'code' in section && section.code && <pre><code>{section.code.source}</code></pre>}
+          </section>
+        ))}
+        {install && <section><h2>Verify and install the candidate</h2><pre><code>{install}</code></pre></section>}
+        <section><h2>References</h2><ul>{guide.links.map((link) => <li><a href={link.url}>{link.label}</a></li>)}</ul></section>
+      </>
+    ) : (
+      <>
+        <p>Choose the local engine for on-device or server-local calculation. Hosted recipes send their requests to the Compute API; each guide states that boundary.</p>
+        <ul class="developer-guide__index">{guides.map((item) => (
+          <li><a href={`/developers/docs/${item.slug}/`}>{item.title}</a><p>{item.description}</p><a href={`/developers/docs/${item.slug}.md`}>Markdown</a></li>
+        ))}</ul>
+        <p>These pages are preparation for the documentation gate. React Native runtime validation and a complete sunrise-based panchang recipe remain outstanding.</p>
+      </>
+    )}
+  </article>
+</Base>
+<style>
+  .developer-guide { padding-block: var(--space-2xl, 4rem); }
+  .developer-guide nav, .developer-guide__version { font-size: .875rem; color: var(--text-muted); }
+  .developer-guide h1 { margin-block: 1rem; }
+  .developer-guide section { margin-block: 2.5rem; }
+  .developer-guide p { line-height: 1.75; }
+  .developer-guide__lede { font-size: 1.125rem; }
+  .developer-guide pre { max-width: 100%; overflow-x: auto; padding: 1.25rem; border: 1px solid var(--border, #25252b); border-radius: .75rem; background: var(--surface, #111116); }
+  .developer-guide code { font-family: var(--font-mono, monospace); font-size: .8rem; line-height: 1.65; white-space: pre; }
+  .developer-guide__index { padding-left: 1.25rem; }
+  .developer-guide__index li { margin-block: 1.5rem; }
+  .developer-guide__index p { margin-block: .35rem; }
+</style>

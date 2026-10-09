@@ -290,3 +290,28 @@ The required sandbox is `allow-scripts allow-forms allow-same-origin allow-popup
 The SDK does not request private keys, take custody, connect wallets, sign messages, submit transactions, approve transfers, move assets, or gate astrology access by ownership. Registry tools accept pasted addresses only. Unknown addresses use the neutral result “not found in the official Zodiacs.org registry.” Optional delayed market context is separate and never changes verification status.
 
 Official registry. Public reads. No custody. No signing. No transactions. Nothing in the registry or SDK documentation is financial advice.
+
+## Developer quickstarts and recipes
+
+These guides describe the exact candidate named on the engine page; stable npm publication remains separate. Hosted recipes disclose their HTTP boundary. Each page has a Markdown twin.
+
+- Guide index: https://zodiacs.org/developers/docs/
+- Guide index as Markdown: https://zodiacs.org/developers/docs/index.md
+- Node quickstart: https://zodiacs.org/developers/docs/node/ | Markdown: https://zodiacs.org/developers/docs/node.md
+- Browser quickstart: https://zodiacs.org/developers/docs/browser/ | Markdown: https://zodiacs.org/developers/docs/browser.md
+- Deno quickstart: https://zodiacs.org/developers/docs/deno/ | Markdown: https://zodiacs.org/developers/docs/deno.md
+- Bun quickstart: https://zodiacs.org/developers/docs/bun/ | Markdown: https://zodiacs.org/developers/docs/bun.md
+- Cloudflare Workers quickstart: https://zodiacs.org/developers/docs/cloudflare/ | Markdown: https://zodiacs.org/developers/docs/cloudflare.md
+- Natal chart recipe: https://zodiacs.org/developers/docs/natal/ | Markdown: https://zodiacs.org/developers/docs/natal.md
+- Transit recipe: https://zodiacs.org/developers/docs/transits/ | Markdown: https://zodiacs.org/developers/docs/transits.md
+- Solar and lunar returns: https://zodiacs.org/developers/docs/returns/ | Markdown: https://zodiacs.org/developers/docs/returns.md
+- Synastry recipe: https://zodiacs.org/developers/docs/synastry/ | Markdown: https://zodiacs.org/developers/docs/synastry.md
+- Longitude-crossing searches: https://zodiacs.org/developers/docs/crossings/ | Markdown: https://zodiacs.org/developers/docs/crossings.md
+- Calculation conventions: https://zodiacs.org/developers/docs/conventions/ | Markdown: https://zodiacs.org/developers/docs/conventions.md
+- Errors and refusals: https://zodiacs.org/developers/docs/errors/ | Markdown: https://zodiacs.org/developers/docs/errors.md
+- Receipts and reproduction: https://zodiacs.org/developers/docs/receipts/ | Markdown: https://zodiacs.org/developers/docs/receipts.md
+- Python hosted quickstart: https://zodiacs.org/developers/docs/python/ | Markdown: https://zodiacs.org/developers/docs/python.md
+- Hosted election search: https://zodiacs.org/developers/docs/elections/ | Markdown: https://zodiacs.org/developers/docs/elections.md
+- Deprecation policy: https://zodiacs.org/developers/docs/deprecation/ | Markdown: https://zodiacs.org/developers/docs/deprecation.md
+- Release changelog: https://zodiacs.org/developers/docs/changelog/ | Markdown: https://zodiacs.org/developers/docs/changelog.md
+- Developer status: https://zodiacs.org/developers/docs/status/ | Markdown: https://zodiacs.org/developers/docs/status.md

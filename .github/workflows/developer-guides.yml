@@ -1,0 +1,62 @@
+name: Developer guide preparation
+on:
+  pull_request:
+    paths:
+      - 'src/data/developer-guides.json'
+      - 'src/pages/developers/docs/**'
+      - 'scripts/verify-developer-guide-*.mjs'
+      - '.github/workflows/developer-guides.yml'
+      - 'public/llms*.txt'
+permissions:
+  contents: read
+jobs:
+  guides:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 22
+          cache: npm
+      - uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed
+        with:
+          deno-version: v2.x
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6
+        with:
+          bun-version: latest
+      - run: npm ci
+      - run: npx playwright-core install --with-deps chromium
+      - run: npm run build
+      - name: Verify served HTML, Markdown twins and llms listings
+        run: |
+          mkdir -p docs/platform/evidence/developer-guides-20261009/results
+          node scripts/verify-developer-guide-twins.mjs > docs/platform/evidence/developer-guides-20261009/results/twins.json
+      - name: Execute synthetic candidate examples in isolated consumers
+        env:
+          TMPDIR: ${{ runner.temp }}
+        run: node scripts/verify-developer-guide-examples.mjs > docs/platform/evidence/developer-guides-20261009/results/examples.json
+      - name: Export actual review records
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFileSync } from 'node:fs';
+          import { createHash } from 'node:crypto';
+          const root = 'docs/platform/evidence/developer-guides-20261009/results';
+          for (const file of ['twins.json', 'examples.json']) {
+            const bytes = readFileSync(root + '/' + file);
+            console.log('PROGRAMME_FILE ' + JSON.stringify({
+              path: root + '/' + file, size: bytes.length,
+              sha256: createHash('sha256').update(bytes).digest('hex'),
+              base64: bytes.toString('base64')
+            }));
+          }
+          NODE
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: developer-guide-preparation-${{ github.sha }}
+          path: docs/platform/evidence/developer-guides-20261009/results/
+          if-no-files-found: warn
+          retention-days: 90

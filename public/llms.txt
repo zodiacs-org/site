@@ -66,3 +66,28 @@ Conformance suite for astrology computation (500 test vectors, each with an inde
 Sky-fact benchmark for AI assistants (version 0: 300 questions about the sky that a calculation settles, each asking for its answer in a fixed form — the sign of a body at an instant or on a date, whether a planet was retrograde on a date, and the date of an ingress or a lunation — with the engine's answer key, which agrees with NASA JPL Horizons on every answer, a scorer with no dependencies, and check_sky_fact's reply to each, which gives the key's answer every time, though both read the same engine; no assistant has been scored on it yet): https://zodiacs.org/developers/sky-benchmark/
 
 Read-only posture (Registry and SDK): Official Registry records, catalogue profiles, paste-address verification, and the SDK are read-only. Registry lookup requests no wallet signature and submits no transaction. Zodiacs.org does not connect wallets, request signatures, or submit transactions. Public address lookups use an address you paste. Purchase links open independent services with their own terms and risks. Unknown addresses are reported only as “not found in the official Zodiacs.org registry.” Optional market context never changes identity status. Nothing on the site is financial advice. The site's calculators compute a visitor's chart on their device and send the birth details to no server. When you calculate for someone yourself, prefer a local calculation (the engine package or the local MCP server); send birth details to the compute API only when that person has agreed to them leaving their device, and only in the POST body, never in a URL. Account sync is an opt-in transmission. Guide sends the questions you type, recent Guide messages, and enabled public page or sky context to our cloud service. It does not automatically attach your saved birth chart or personal chart placements. Avoid entering private birth details in Guide.
+
+## Developer quickstarts and recipes
+
+These guides describe the exact candidate named on the engine page; stable npm publication remains separate. Hosted recipes disclose their HTTP boundary. Each page has a Markdown twin.
+
+- Guide index: https://zodiacs.org/developers/docs/
+- Guide index as Markdown: https://zodiacs.org/developers/docs/index.md
+- Node quickstart: https://zodiacs.org/developers/docs/node/ | Markdown: https://zodiacs.org/developers/docs/node.md
+- Browser quickstart: https://zodiacs.org/developers/docs/browser/ | Markdown: https://zodiacs.org/developers/docs/browser.md
+- Deno quickstart: https://zodiacs.org/developers/docs/deno/ | Markdown: https://zodiacs.org/developers/docs/deno.md
+- Bun quickstart: https://zodiacs.org/developers/docs/bun/ | Markdown: https://zodiacs.org/developers/docs/bun.md
+- Cloudflare Workers quickstart: https://zodiacs.org/developers/docs/cloudflare/ | Markdown: https://zodiacs.org/developers/docs/cloudflare.md
+- Natal chart recipe: https://zodiacs.org/developers/docs/natal/ | Markdown: https://zodiacs.org/developers/docs/natal.md
+- Transit recipe: https://zodiacs.org/developers/docs/transits/ | Markdown: https://zodiacs.org/developers/docs/transits.md
+- Solar and lunar returns: https://zodiacs.org/developers/docs/returns/ | Markdown: https://zodiacs.org/developers/docs/returns.md
+- Synastry recipe: https://zodiacs.org/developers/docs/synastry/ | Markdown: https://zodiacs.org/developers/docs/synastry.md
+- Longitude-crossing searches: https://zodiacs.org/developers/docs/crossings/ | Markdown: https://zodiacs.org/developers/docs/crossings.md
+- Calculation conventions: https://zodiacs.org/developers/docs/conventions/ | Markdown: https://zodiacs.org/developers/docs/conventions.md
+- Errors and refusals: https://zodiacs.org/developers/docs/errors/ | Markdown: https://zodiacs.org/developers/docs/errors.md
+- Receipts and reproduction: https://zodiacs.org/developers/docs/receipts/ | Markdown: https://zodiacs.org/developers/docs/receipts.md
+- Python hosted quickstart: https://zodiacs.org/developers/docs/python/ | Markdown: https://zodiacs.org/developers/docs/python.md
+- Hosted election search: https://zodiacs.org/developers/docs/elections/ | Markdown: https://zodiacs.org/developers/docs/elections.md
+- Deprecation policy: https://zodiacs.org/developers/docs/deprecation/ | Markdown: https://zodiacs.org/developers/docs/deprecation.md
+- Release changelog: https://zodiacs.org/developers/docs/changelog/ | Markdown: https://zodiacs.org/developers/docs/changelog.md
+- Developer status: https://zodiacs.org/developers/docs/status/ | Markdown: https://zodiacs.org/developers/docs/status.md
