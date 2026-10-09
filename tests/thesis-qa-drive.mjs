@@ -186,9 +186,11 @@ try {
   const errors = [];
   const external = [];
   const galleryRequests = [];
+  const heroMediaRequests = [];
   page.on('pageerror', (err) => errors.push(String(err)));
   page.on('request', (req) => {
     if (new URL(req.url()).pathname === '/assets/gallery.js') galleryRequests.push(req.url());
+    if (new URL(req.url()).pathname === '/assets/art/zodiac-clock.mp4') heroMediaRequests.push(req);
   });
   page.on('requestfailed', (req) => {
     (req.url().startsWith('http://127.0.0.1') ? errors : external).push(req.url());
@@ -231,6 +233,7 @@ try {
   check('hero uses one ambient zodiac-clock video', (await heroVideo.count()) === 1);
   const heroVideoStart = await heroVideo.evaluate((video) => ({
     autoplay: video.hasAttribute('autoplay'),
+    preload: video.preload,
     currentTime: video.currentTime,
     filter: getComputedStyle(video).filter,
     loop: video.loop,
@@ -251,6 +254,7 @@ try {
   check('hero ambient video is loaded, looping, muted, inline, and moving',
     heroVideoStart.readyState >= 2
       && !heroVideoStart.autoplay
+      && heroVideoStart.preload === 'none'
       && heroVideoStart.loop
       && heroVideoStart.muted
       && heroVideoStart.playsInline
@@ -260,6 +264,20 @@ try {
       && !heroVideoLater.paused
       && heroVideoLater.currentTime !== heroVideoStart.currentTime,
     JSON.stringify({ start: heroVideoStart, later: heroVideoLater }));
+  const heroPaint = await page.evaluate(() => ({
+    firstContentfulPaint: performance.getEntriesByName('first-contentful-paint')[0]?.startTime,
+    origin: performance.timeOrigin,
+    posterFinished: performance.getEntriesByType('resource')
+      .find((entry) => new URL(entry.name).pathname === '/assets/art/zodiac-clock-768.avif')?.responseEnd,
+  }));
+  const firstMediaRequest = heroMediaRequests[0]?.timing().startTime;
+  check('ambient media starts after the poster load and first contentful paint',
+    typeof firstMediaRequest === 'number'
+      && typeof heroPaint.firstContentfulPaint === 'number'
+      && typeof heroPaint.posterFinished === 'number'
+      && firstMediaRequest >= heroPaint.origin + heroPaint.firstContentfulPaint
+      && firstMediaRequest >= heroPaint.origin + heroPaint.posterFinished,
+    JSON.stringify({ ...heroPaint, firstMediaRequest }));
   check('hero keeps the original cover crop and color treatment',
     heroVideoStart.objectFit === 'cover'
       && heroVideoStart.objectPosition === '28% 50%'
@@ -909,6 +927,10 @@ try {
   // No-JavaScript pass — the baked static values must stand on their own.
   const nojsContext = await browser.newContext({ javaScriptEnabled: false, reducedMotion: 'reduce' });
   const nojs = await nojsContext.newPage();
+  const nojsMedia = [];
+  nojs.on('request', (request) => {
+    if (new URL(request.url()).pathname === '/assets/art/zodiac-clock.mp4') nojsMedia.push(request.url());
+  });
   await nojs.setViewportSize({ width: 1280, height: 1000 });
   await nojs.goto(`${BASE}/thesis/`, { waitUntil: 'domcontentloaded' });
   check('no-JS: zero pending chips', (await nojs.locator('.pending-disclosure').count()) === 0);
@@ -963,11 +985,16 @@ try {
   check('no-JS: comparison opens and exposes the full matrix',
     await isVisuallyExposed(nojs.locator('#comparison-drawer .ztbl')));
   await nojs.locator('#comparison-drawer > summary').click();
+  check('no-JS never downloads the ambient loop', nojsMedia.length === 0, JSON.stringify(nojsMedia));
   await nojsContext.close();
 
   // Reduced motion shows final states without transitions or transforms.
   const reducedContext = await browser.newContext({ reducedMotion: 'reduce' });
   const reduced = await reducedContext.newPage();
+  const reducedMedia = [];
+  reduced.on('request', (request) => {
+    if (new URL(request.url()).pathname === '/assets/art/zodiac-clock.mp4') reducedMedia.push(request.url());
+  });
   await reduced.setViewportSize({ width: 1280, height: 1000 });
   await reduced.goto(`${BASE}/thesis/`, { waitUntil: 'networkidle' });
   await wait(600);
@@ -1026,6 +1053,7 @@ try {
   check('reduced motion: comparison opens and exposes the full matrix',
     await isVisuallyExposed(reduced.locator('#comparison-drawer .ztbl')));
   await reduced.locator('#comparison-drawer > summary').click();
+  check('reduced motion never downloads the ambient loop', reducedMedia.length === 0, JSON.stringify(reducedMedia));
   await reducedContext.close();
 
   // A preference change after load must stop the ambient video immediately.

@@ -1945,7 +1945,7 @@
     <video
       class="hero__media"
       muted loop playsinline
-      preload="auto"
+      preload="none"
       poster="/assets/art/zodiac-clock-768.avif"
       fetchpriority="high"
       aria-hidden="true"
@@ -2770,13 +2770,32 @@
       var video = document.querySelector('.hero video.hero__media');
       if (video) {
         var heroIsVisible = true;
+        var heroPosterPainted = false;
         var syncHeroPlayback = function () {
-          if (reduce.matches || !heroIsVisible) {
+          if (reduce.matches || !heroIsVisible || !heroPosterPainted) {
             try { video.pause(); } catch (e) {}
           } else {
             video.play().catch(function () {});
           }
         };
+        // Let the already-preloaded poster paint before starting the media request.
+        // Reduced motion keeps the poster and never needs to download the loop.
+        var posterScheduled = false;
+        var allowHeroPlayback = function () {
+          if (posterScheduled) return;
+          posterScheduled = true;
+          requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+              heroPosterPainted = true;
+              syncHeroPlayback();
+            });
+          });
+        };
+        var heroPoster = new Image();
+        heroPoster.onload = allowHeroPlayback;
+        heroPoster.onerror = allowHeroPlayback;
+        heroPoster.src = video.poster;
+        if (heroPoster.complete) allowHeroPlayback();
         if ('IntersectionObserver' in window) {
           // Keep the ambient loop active only while the hero is on screen.
           new IntersectionObserver(function (entries) {
