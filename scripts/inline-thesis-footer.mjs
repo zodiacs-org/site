@@ -46,6 +46,9 @@ export async function minifyThesisPayload(html) {
       legalComments: 'inline',
       platform: 'browser',
     });
+    if (result.warnings.length) {
+      throw new Error('Thesis inline code has parser warnings: ' + result.warnings.map((warning) => warning.text).join('; '));
+    }
     if (new RegExp('</' + tag + '\\b', 'i').test(result.code)) {
       throw new Error('Minified thesis code cannot be embedded safely');
     }
