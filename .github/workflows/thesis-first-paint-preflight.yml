@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      PREFLIGHT_SOURCE: '6ba9ed02d7334bba66ebf30516727bc76cac04b8'
+      PREFLIGHT_SOURCE: 'dadc59afab302a70e7a36b3ee475791aca3696ed'
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
         with:
@@ -25,6 +25,22 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx playwright-core install --with-deps chromium
+      - name: Parse every inline classic script before build
+        run: |
+          node --input-type=module <<'THESIS_SOURCE'
+          import {readFileSync} from 'node:fs';
+          import {createHash} from 'node:crypto';
+          import vm from 'node:vm';
+          const html=readFileSync('public/thesis/index.html','utf8');
+          if(createHash('sha256').update(html).digest('hex')!=='6033797e3126f910dd6f55c5132021013d0b3e9bec5133a27322d59e4d8a47d3')throw Error('Candidate bytes do not match');
+          let scripts=0;
+          for(const match of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)){
+            if(/\b(?:src|type)\s*=/.test(match[1]))continue;
+            new vm.Script(match[2]);scripts++;
+          }
+          if(scripts<1)throw Error('No inline classic scripts checked');
+          console.log(JSON.stringify({source:process.env.PREFLIGHT_SOURCE,inlineClassicScripts:scripts,syntax:'passed'}));
+          THESIS_SOURCE
       - name: Build candidate with unchanged source and dist checks
         run: npm run build
       - name: Existing thesis contracts and footer transform controls
