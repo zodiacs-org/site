@@ -69,9 +69,17 @@ jobs:
           }));
           
           CAPTURE_EXPORT
+      - name: Unchanged visual comparisons after fresh captures
+        run: npm run test:visual
+      - name: Unchanged thirty-route Lighthouse budgets
+        env:
+          LIGHTHOUSE_SAVE_ASSETS: '1'
+        run: npm run test:lighthouse
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
         with:
           name: checkpoint23-phase1-captures-${{ github.run_id }}
-          path: docs/acceptance/phase1/screenshots/
+          path: |
+            docs/acceptance/phase1/screenshots/
+            tests/visual/artifacts/
           retention-days: 90
