@@ -25,7 +25,7 @@ for run_id, artifact_id, source, digest in samples:
     reports = []
     with zipfile.ZipFile(io.BytesIO(archive)) as z:
         names = z.namelist()
-        homes = sorted(n for n in names if n.endswith(('/thesis-1.json', '/thesis-2.json', '/thesis-3.json')) and '/lighthouse/' in n)
+        homes = sorted(n for n in names if n.endswith(('/thesis-1.json', '/thesis-2.json', '/thesis-3.json')) and 'lighthouse/' in n)
         assert len(homes) == 3, homes
         for name in homes:
             data = z.read(name)
