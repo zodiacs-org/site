@@ -1,0 +1,30 @@
+name: Read retained thesis first-paint preflight evidence
+on:
+  push:
+    branches: ['codex/developer-docs-preparation']
+    paths:
+      - 'scripts/diagnose-thesis-first-paint.py'
+      - '.github/workflows/thesis-first-paint-diagnosis.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  retained:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - name: Verify original archives and extract selected retained audits
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python scripts/diagnose-thesis-first-paint.py
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: first-paint-retained-diagnosis
+          path: docs/platform/evidence/thesis-poster-loading-20261009/first-paint-retained-diagnosis.json
+          retention-days: 90
