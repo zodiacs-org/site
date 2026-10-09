@@ -5,6 +5,7 @@ on:
       - 'src/data/developer-guides.json'
       - 'src/pages/developers/docs/**'
       - 'scripts/verify-developer-guide-*.mjs'
+      - 'scripts/verify-programme-production.mjs'
       - '.github/workflows/developer-guides.yml'
       - 'public/llms*.txt'
 permissions:
@@ -42,13 +43,17 @@ jobs:
         run: node scripts/verify-developer-guide-examples.mjs > docs/platform/evidence/developer-guides-20261009/results/examples.json
       - name: Execute documented Python HTTP success and failure handling
         run: node scripts/verify-developer-guide-python.mjs > docs/platform/evidence/developer-guides-20261009/results/python.json
+      - name: Verify public production candidate assets and hosted backend
+        env:
+          PRODUCTION_SOURCE_COMMIT: e9a21981eeeb99b34f44b1a2325d80160dcf0fb0
+        run: node scripts/verify-programme-production.mjs > docs/platform/evidence/developer-guides-20261009/results/production.json
       - name: Export actual review records
         run: |
           node --input-type=module <<'NODE'
           import { readFileSync } from 'node:fs';
           import { createHash } from 'node:crypto';
           const root = 'docs/platform/evidence/developer-guides-20261009/results';
-          for (const file of ['twins.json', 'browser.json', 'examples.json', 'python.json']) {
+          for (const file of ['twins.json', 'browser.json', 'examples.json', 'python.json', 'production.json']) {
             const bytes = readFileSync(root + '/' + file);
             console.log('PROGRAMME_FILE ' + JSON.stringify({
               path: root + '/' + file, size: bytes.length,
