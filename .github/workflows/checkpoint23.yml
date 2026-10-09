@@ -34,11 +34,11 @@ jobs:
           mkdir -p docs/platform/evidence/checkpoint23-20261009/results
           node docs/platform/evidence/houses-2026-10-04/tools/dump-given.mjs > "$PROGRAMME_SCRATCH/houses-given.jsonl"
           python docs/platform/evidence/houses-2026-10-04/tools/compare-given.py "$PROGRAMME_SCRATCH/houses-given.jsonl" > docs/platform/evidence/checkpoint23-20261009/results/houses-given.json
-          node docs/platform/evidence/houses-2026-10-04/tools/dump-end-to-end.mjs > "$PROGRAMME_SCRATCH/houses-end.jsonl"
+          node docs/platform/evidence/checkpoint23-20261009/tools/dump-houses-end.mjs > "$PROGRAMME_SCRATCH/houses-end.jsonl"
           python docs/platform/evidence/houses-2026-10-04/tools/compare-end-to-end.py "$PROGRAMME_SCRATCH/houses-end.jsonl" > docs/platform/evidence/checkpoint23-20261009/results/houses-end-to-end.json
           node docs/platform/evidence/checkpoint23-20261009/tools/dump-co-given.mjs > "$PROGRAMME_SCRATCH/co-given.jsonl"
           python docs/platform/evidence/checkpoint23-20261009/tools/compare-co-given.py "$PROGRAMME_SCRATCH/co-given.jsonl" > docs/platform/evidence/checkpoint23-20261009/results/co-given.json
-          node docs/platform/evidence/co-ascendants-2026-10-04/tools/dump-end-to-end.mjs > "$PROGRAMME_SCRATCH/co-end.jsonl"
+          node docs/platform/evidence/checkpoint23-20261009/tools/dump-co-end.mjs > "$PROGRAMME_SCRATCH/co-end.jsonl"
           python docs/platform/evidence/co-ascendants-2026-10-04/tools/compare-end-to-end.py "$PROGRAMME_SCRATCH/co-end.jsonl" > docs/platform/evidence/checkpoint23-20261009/results/co-end-to-end.json
       - name: Current tool agreement, frozen v0, surrounding facts and scorer
         run: npx vitest run tests/benchmarks/sky-benchmark.test.ts
