@@ -437,13 +437,13 @@
         ],
         "code": {
           "language": "python",
-          "source": "import json\nfrom urllib.request import Request, urlopen\nbody = {\n    \"instants\": [\"2026-09-29T12:00:00Z\", \"2026-12-31T00:00:00-05:00\"],\n    \"bodies\": [\"Sun\", \"Moon\", \"Mercury\"],\n}\nrequest = Request(\n    \"https://zodiacs.org/api/v1/positions\",\n    data=json.dumps(body).encode(\"utf-8\"),\n    headers={\"Content-Type\": \"application/json\"},\n    method=\"POST\",\n)\nwith urlopen(request, timeout=30) as response:\n    result = json.load(response)\nprint(result)"
+          "source": "import json\nimport os\nimport sys\nfrom urllib.error import HTTPError, URLError\nfrom urllib.request import Request, urlopen\n\nbody = {\n    \"instants\": [\"2026-09-29T12:00:00Z\", \"2026-12-31T00:00:00-05:00\"],\n    \"bodies\": [\"Sun\", \"Moon\", \"Mercury\"],\n}\norigin = os.environ.get(\"ZODIACS_COMPUTE_ORIGIN\", \"https://zodiacs.org\")\nrequest = Request(\n    origin.rstrip(\"/\") + \"/api/v1/positions\",\n    data=json.dumps(body).encode(\"utf-8\"),\n    headers={\"Content-Type\": \"application/json\"},\n    method=\"POST\",\n)\ntry:\n    with urlopen(request, timeout=15) as response:\n        result = json.load(response)\n    print(json.dumps(result))\nexcept HTTPError as error:\n    failure = {\n        \"status\": error.code,\n        \"retryAfter\": error.headers.get(\"Retry-After\"),\n        \"response\": json.loads(error.read().decode(\"utf-8\")),\n    }\n    print(json.dumps(failure), file=sys.stderr)\n    sys.exit(1)\nexcept URLError:\n    print(\"Request failed; check connectivity before retrying.\", file=sys.stderr)\n    sys.exit(1)"
         }
       },
       {
         "heading": "Failures and receipts",
         "paragraphs": [
-          "urllib raises HTTPError for non-success status codes. Inspect the response's error envelope, preserve Retry-After when present and keep the receipt from a successful response. Apply a finite timeout; do not log private chart inputs.",
+          "The example preserves the HTTP error status, response envelope and Retry-After, and exits with status 1 on failure. It uses a finite 15-second socket timeout. Never log private chart inputs. ZODIACS_COMPUTE_ORIGIN can point to a local mock during development.",
           "No credentials are required by this example. Current service availability and limits are documented on the Compute API page."
         ]
       }
@@ -568,14 +568,13 @@
         "heading": "Available surfaces",
         "paragraphs": [
           "The local TypeScript engine, shared-sky static JSON and hosted Compute API have different deployment and privacy boundaries. The engine page names the exact carried archive and source; the Compute API page states HTTP limits and errors.",
-          "This guide collection is preparation for the developer-documentation gate. Its examples must pass runtime validation before publication. No unit is accepted merely because a page exists."
+          "Use the engine page to verify the candidate before installing it. The guides identify the supported entry point and whether requests remain local or go to the hosted service."
         ]
       },
       {
         "heading": "Still separate",
         "paragraphs": [
-          "Stable npm publication, client-package publication and remote MCP delivery remain separate programme gates. React Native runtime validation and a complete sunrise-based panchang recipe are not claimed by this draft.",
-          "A nakshatra position alone is not a panchang. The programme also requires tithi, yoga, karana and vara from sunrise, transition evidence and a published-season comparison before that capability is accepted."
+          "Stable npm publication, client-package publication and remote MCP delivery are tracked separately. React Native and complete sunrise-based panchang guides are not yet available."
         ]
       }
     ],

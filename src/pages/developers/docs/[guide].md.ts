@@ -41,7 +41,7 @@ export const GET: APIRoute = ({ props }) => {
         `HTML: https://zodiacs.org/developers/docs/${item.slug}/`,
         `Markdown: https://zodiacs.org/developers/docs/${item.slug}.md`, '',
       ]),
-      'React Native runtime validation and a complete sunrise-based panchang recipe remain outstanding.', '',
+      'React Native and complete sunrise-based panchang guides are not yet available.', '',
     );
   }
   return new Response(lines.join('\n'), { headers: { 'Content-Type': 'text/markdown; charset=utf-8' } });

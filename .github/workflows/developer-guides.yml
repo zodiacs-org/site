@@ -38,13 +38,15 @@ jobs:
         env:
           TMPDIR: ${{ runner.temp }}
         run: node scripts/verify-developer-guide-examples.mjs > docs/platform/evidence/developer-guides-20261009/results/examples.json
+      - name: Execute documented Python HTTP success and failure handling
+        run: node scripts/verify-developer-guide-python.mjs > docs/platform/evidence/developer-guides-20261009/results/python.json
       - name: Export actual review records
         run: |
           node --input-type=module <<'NODE'
           import { readFileSync } from 'node:fs';
           import { createHash } from 'node:crypto';
           const root = 'docs/platform/evidence/developer-guides-20261009/results';
-          for (const file of ['twins.json', 'examples.json']) {
+          for (const file of ['twins.json', 'examples.json', 'python.json']) {
             const bytes = readFileSync(root + '/' + file);
             console.log('PROGRAMME_FILE ' + JSON.stringify({
               path: root + '/' + file, size: bytes.length,
