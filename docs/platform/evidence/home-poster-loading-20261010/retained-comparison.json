@@ -1,0 +1,4681 @@
+{
+  "schema": "zodiacs.readonly-home-thesis-lighthouse-comparison.v1",
+  "producer": {
+    "source": "ca63ca95a584de93969a901bb2b6ef521ccbd36a",
+    "run": "37977917228"
+  },
+  "cases": [
+    {
+      "run": 37962304681,
+      "source": "50636624a8677da3644987cfa4fe735e811650f3",
+      "integration": "45fc46b25fd96a17ae6029820f8382d623e7bdad",
+      "tree": "7d8126fc00dea60caebaf85540e2919c90dab72a",
+      "conclusion": "success",
+      "artifact": 11634551439,
+      "bytes": 158914369,
+      "sha256": "d7b777abb513f7e37df7c303a588c479cf6891b4edc6dbf424c44098e2029681",
+      "samples": [
+        {
+          "file": "tests/visual/artifacts/lighthouse/home-1.json",
+          "sha256": "bc11a3ff9368618f0e5569585df84295815a4e395454943dd434fcc757dfee74",
+          "lcpMs": 2559.6434,
+          "fcpMs": 1495.4651,
+          "cls": 0,
+          "tbtMs": 0,
+          "scores": {
+            "performance": 0.97,
+            "accessibility": 1,
+            "seo": 1
+          },
+          "diagnostics": {
+            "type": "debugdata",
+            "items": [
+              {
+                "numRequests": 40,
+                "numScripts": 26,
+                "numStylesheets": 3,
+                "numFonts": 3,
+                "numTasks": 1550,
+                "numTasksOver10ms": 7,
+                "numTasksOver25ms": 1,
+                "numTasksOver50ms": 0,
+                "numTasksOver100ms": 0,
+                "numTasksOver500ms": 0,
+                "rtt": 0.049800000000000004,
+                "throughput": 56389930.46890158,
+                "maxRtt": 0.049800000000000004,
+                "maxServerLatency": 4.8217,
+                "totalByteWeight": 307163,
+                "totalTaskTime": 323.53199999999634,
+                "mainDocumentTransferSize": 67065
+              }
+            ]
+          },
+          "insights": {
+            "font-display-insight": {
+              "type": "table",
+              "headings": [
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL"
+                },
+                {
+                  "key": "wastedMs",
+                  "valueType": "ms",
+                  "label": "Est Savings"
+                }
+              ],
+              "items": [],
+              "skipSumming": [
+                "wastedMs"
+              ]
+            },
+            "lcp-breakdown-insight": {
+              "type": "list",
+              "items": [
+                {
+                  "type": "table",
+                  "headings": [
+                    {
+                      "key": "label",
+                      "valueType": "text",
+                      "label": "Subpart"
+                    },
+                    {
+                      "key": "duration",
+                      "valueType": "ms",
+                      "label": "Duration"
+                    }
+                  ],
+                  "items": [
+                    {
+                      "subpart": "timeToFirstByte",
+                      "label": "Time to first byte",
+                      "duration": 10.284
+                    },
+                    {
+                      "subpart": "resourceLoadDelay",
+                      "label": "Resource load delay",
+                      "duration": 20.897
+                    },
+                    {
+                      "subpart": "resourceLoadDuration",
+                      "label": "Resource load duration",
+                      "duration": 18.884
+                    },
+                    {
+                      "subpart": "elementRenderDelay",
+                      "label": "Element render delay",
+                      "duration": 126.355
+                    }
+                  ]
+                },
+                {
+                  "type": "node",
+                  "lhId": "page-0-IMG",
+                  "path": "1,HTML,1,BODY,10,MAIN,1,SECTION,0,DIV,0,PICTURE,1,IMG",
+                  "selector": "section.hero > div.hero__frame > picture > img.hero__poster",
+                  "boundingRect": {
+                    "top": -15,
+                    "bottom": 776,
+                    "left": 2,
+                    "right": 409,
+                    "width": 408,
+                    "height": 791
+                  },
+                  "snippet": "<img class=\"hero__poster\" src=\"http://127.0.0.1:4328/assets/hero/zodiacs-hero-poster-mobile-v2.avif\" width=\"1600\" height=\"900\" loading=\"eager\" fetchpriority=\"high\" alt=\"\" aria-hidden=\"true\" data-hero-poster=\"\" data-astro-cid-lcdefpme=\"\" data-hero-motion=\"drift\" data-hero-visible=\"true\">",
+                  "nodeLabel": "section.hero > div.hero__frame > picture > img.hero__poster"
+                }
+              ]
+            },
+            "lcp-discovery-insight": {
+              "type": "list",
+              "items": [
+                {
+                  "type": "checklist",
+                  "items": {
+                    "priorityHinted": {
+                      "label": "fetchpriority=high applied",
+                      "value": true
+                    },
+                    "requestDiscoverable": {
+                      "label": "Request is discoverable in initial document",
+                      "value": true
+                    },
+                    "eagerlyLoaded": {
+                      "label": "LCP resources should not use loading=lazy",
+                      "value": true
+                    }
+                  }
+                },
+                {
+                  "type": "node",
+                  "lhId": "page-0-IMG",
+                  "path": "1,HTML,1,BODY,10,MAIN,1,SECTION,0,DIV,0,PICTURE,1,IMG",
+                  "selector": "section.hero > div.hero__frame > picture > img.hero__poster",
+                  "boundingRect": {
+                    "top": -15,
+                    "bottom": 776,
+                    "left": 2,
+                    "right": 409,
+                    "width": 408,
+                    "height": 791
+                  },
+                  "snippet": "<img class=\"hero__poster\" src=\"http://127.0.0.1:4328/assets/hero/zodiacs-hero-poster-mobile-v2.avif\" width=\"1600\" height=\"900\" loading=\"eager\" fetchpriority=\"high\" alt=\"\" aria-hidden=\"true\" data-hero-poster=\"\" data-astro-cid-lcdefpme=\"\" data-hero-motion=\"drift\" data-hero-visible=\"true\">",
+                  "nodeLabel": "section.hero > div.hero__frame > picture > img.hero__poster"
+                }
+              ]
+            },
+            "render-blocking-insight": {
+              "type": "table",
+              "headings": [
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL"
+                },
+                {
+                  "key": "totalBytes",
+                  "valueType": "bytes",
+                  "label": "Transfer Size"
+                },
+                {
+                  "key": "wastedMs",
+                  "valueType": "timespanMs",
+                  "label": "Duration"
+                }
+              ],
+              "items": []
+            }
+          },
+          "requests": [
+            {
+              "protocol": "http/1.1",
+              "transferSize": 67065,
+              "resourceSize": 274413,
+              "statusCode": 200,
+              "mimeType": "text/html",
+              "resourceType": "Document",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 111905,
+              "resourceSize": 111635,
+              "statusCode": 200,
+              "mimeType": "image/avif",
+              "resourceType": "Image",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/hero/zodiacs-hero-poster-mobile-v2.avif"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 20608,
+              "resourceSize": 20288,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/home/instrument-sans-home-nav-core.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 13768,
+              "resourceSize": 13448,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/home/eb-garamond-home-400-core.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1094,
+              "resourceSize": 773,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/AstroTerm.astro_astro_type_script_index_0_lang.DB1iYTmP.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 2042,
+              "resourceSize": 3393,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/webmcp-register.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 13516,
+              "resourceSize": 13196,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/assets/home/jetbrains-mono-home-nav-core.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1134,
+              "resourceSize": 1402,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/preload-helper.L5lOfJxi.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1372,
+              "resourceSize": 2472,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/context-help-client.BqVrBbz0.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1899,
+              "resourceSize": 4190,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/analytics.CH5T6e-b.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1553,
+              "resourceSize": 2909,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/WelcomeBack.1YJn0hin.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1192,
+              "resourceSize": 1447,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/client.DPkn9Lbl.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 4795,
+              "resourceSize": 10499,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/preact.module.Bjq9tLsx.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1089,
+              "resourceSize": 1301,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/read-store.SGxiCNaN.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 879,
+              "resourceSize": 558,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/useProfile.BMlKl8HW.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 4646,
+              "resourceSize": 11693,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/signs.BMXPKoMF.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 468,
+              "resourceSize": 147,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/feature-flags.BT17fOoR.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 751,
+              "resourceSize": 430,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/jsxRuntime.module.BG9KJlGc.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 3265,
+              "resourceSize": 7060,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/i18n.BHqINcbi.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1414,
+              "resourceSize": 2125,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/share.CN4LGlan.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 805,
+              "resourceSize": 484,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/SignChip.BsmErr-0.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1034,
+              "resourceSize": 713,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/NextActionCard.eDMj-LSr.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1606,
+              "resourceSize": 2875,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/hooks.module.C0_8FjiD.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 418,
+              "resourceSize": 99,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/schema.DqKqbGHb.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 759,
+              "resourceSize": 438,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/profile-access-reader.DoQqlSjt.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1571,
+              "resourceSize": 3226,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/chunk-ZX3QENKK.D45xPG4w.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 549,
+              "resourceSize": 228,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/sign-icon.5AEtqUYO.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 479,
+              "resourceSize": 158,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/rolldown-runtime.DK3Fl9T5.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 854,
+              "resourceSize": 533,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/civil-date.CpOZUt7Z.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 365,
+              "resourceSize": 46,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/technical-locales.DDKucXXd.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 4474,
+              "resourceSize": 18927,
+              "statusCode": 200,
+              "mimeType": "text/css",
+              "resourceType": "Stylesheet",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/_astro/index.Bq786fej.css"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 3637,
+              "resourceSize": 12153,
+              "statusCode": 200,
+              "mimeType": "text/css",
+              "resourceType": "Stylesheet",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/assets/site-footer.css"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 2168,
+              "resourceSize": 3972,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/assistant-ui.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 994,
+              "resourceSize": 1416,
+              "statusCode": 200,
+              "mimeType": "text/css",
+              "resourceType": "Stylesheet",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/assistant-ui.css"
+            }
+          ]
+        },
+        {
+          "file": "tests/visual/artifacts/lighthouse/home-2.json",
+          "sha256": "e5e38cc8f7f247c03ad1fdce4e4f6ac95f5f50d1163133a15e9b6023b991612a",
+          "lcpMs": 2411.224,
+          "fcpMs": 1569.8359999999998,
+          "cls": 0,
+          "tbtMs": 6.500000000000227,
+          "scores": {
+            "performance": 0.97,
+            "accessibility": 1,
+            "seo": 1
+          },
+          "diagnostics": {
+            "type": "debugdata",
+            "items": [
+              {
+                "numRequests": 40,
+                "numScripts": 26,
+                "numStylesheets": 3,
+                "numFonts": 3,
+                "numTasks": 1566,
+                "numTasksOver10ms": 8,
+                "numTasksOver25ms": 1,
+                "numTasksOver50ms": 0,
+                "numTasksOver100ms": 0,
+                "numTasksOver500ms": 0,
+                "rtt": 0.028499999999999998,
+                "throughput": 63448681.864642926,
+                "maxRtt": 0.028499999999999998,
+                "maxServerLatency": 5.612,
+                "totalByteWeight": 307163,
+                "totalTaskTime": 329.9349999999966,
+                "mainDocumentTransferSize": 67065
+              }
+            ]
+          },
+          "insights": {
+            "font-display-insight": {
+              "type": "table",
+              "headings": [
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL"
+                },
+                {
+                  "key": "wastedMs",
+                  "valueType": "ms",
+                  "label": "Est Savings"
+                }
+              ],
+              "items": [],
+              "skipSumming": [
+                "wastedMs"
+              ]
+            },
+            "lcp-breakdown-insight": {
+              "type": "list",
+              "items": [
+                {
+                  "type": "table",
+                  "headings": [
+                    {
+                      "key": "label",
+                      "valueType": "text",
+                      "label": "Subpart"
+                    },
+                    {
+                      "key": "duration",
+                      "valueType": "ms",
+                      "label": "Duration"
+                    }
+                  ],
+                  "items": [
+                    {
+                      "subpart": "timeToFirstByte",
+                      "label": "Time to first byte",
+                      "duration": 8.792
+                    },
+                    {
+                      "subpart": "resourceLoadDelay",
+                      "label": "Resource load delay",
+                      "duration": 21.523
+                    },
+                    {
+                      "subpart": "resourceLoadDuration",
+                      "label": "Resource load duration",
+                      "duration": 13.191
+                    },
+                    {
+                      "subpart": "elementRenderDelay",
+                      "label": "Element render delay",
+                      "duration": 125.8
+                    }
+                  ]
+                },
+                {
+                  "type": "node",
+                  "lhId": "page-0-IMG",
+                  "path": "1,HTML,1,BODY,10,MAIN,1,SECTION,0,DIV,0,PICTURE,1,IMG",
+                  "selector": "section.hero > div.hero__frame > picture > img.hero__poster",
+                  "boundingRect": {
+                    "top": -14,
+                    "bottom": 776,
+                    "left": 2,
+                    "right": 409,
+                    "width": 408,
+                    "height": 790
+                  },
+                  "snippet": "<img class=\"hero__poster\" src=\"http://127.0.0.1:4328/assets/hero/zodiacs-hero-poster-mobile-v2.avif\" width=\"1600\" height=\"900\" loading=\"eager\" fetchpriority=\"high\" alt=\"\" aria-hidden=\"true\" data-hero-poster=\"\" data-astro-cid-lcdefpme=\"\" data-hero-motion=\"drift\" data-hero-visible=\"true\">",
+                  "nodeLabel": "section.hero > div.hero__frame > picture > img.hero__poster"
+                }
+              ]
+            },
+            "lcp-discovery-insight": {
+              "type": "list",
+              "items": [
+                {
+                  "type": "checklist",
+                  "items": {
+                    "priorityHinted": {
+                      "label": "fetchpriority=high applied",
+                      "value": true
+                    },
+                    "requestDiscoverable": {
+                      "label": "Request is discoverable in initial document",
+                      "value": true
+                    },
+                    "eagerlyLoaded": {
+                      "label": "LCP resources should not use loading=lazy",
+                      "value": true
+                    }
+                  }
+                },
+                {
+                  "type": "node",
+                  "lhId": "page-0-IMG",
+                  "path": "1,HTML,1,BODY,10,MAIN,1,SECTION,0,DIV,0,PICTURE,1,IMG",
+                  "selector": "section.hero > div.hero__frame > picture > img.hero__poster",
+                  "boundingRect": {
+                    "top": -14,
+                    "bottom": 776,
+                    "left": 2,
+                    "right": 409,
+                    "width": 408,
+                    "height": 790
+                  },
+                  "snippet": "<img class=\"hero__poster\" src=\"http://127.0.0.1:4328/assets/hero/zodiacs-hero-poster-mobile-v2.avif\" width=\"1600\" height=\"900\" loading=\"eager\" fetchpriority=\"high\" alt=\"\" aria-hidden=\"true\" data-hero-poster=\"\" data-astro-cid-lcdefpme=\"\" data-hero-motion=\"drift\" data-hero-visible=\"true\">",
+                  "nodeLabel": "section.hero > div.hero__frame > picture > img.hero__poster"
+                }
+              ]
+            },
+            "render-blocking-insight": {
+              "type": "table",
+              "headings": [
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL"
+                },
+                {
+                  "key": "totalBytes",
+                  "valueType": "bytes",
+                  "label": "Transfer Size"
+                },
+                {
+                  "key": "wastedMs",
+                  "valueType": "timespanMs",
+                  "label": "Duration"
+                }
+              ],
+              "items": []
+            }
+          },
+          "requests": [
+            {
+              "protocol": "http/1.1",
+              "transferSize": 67065,
+              "resourceSize": 274413,
+              "statusCode": 200,
+              "mimeType": "text/html",
+              "resourceType": "Document",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 111905,
+              "resourceSize": 111635,
+              "statusCode": 200,
+              "mimeType": "image/avif",
+              "resourceType": "Image",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/hero/zodiacs-hero-poster-mobile-v2.avif"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 20608,
+              "resourceSize": 20288,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/home/instrument-sans-home-nav-core.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 13768,
+              "resourceSize": 13448,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/home/eb-garamond-home-400-core.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1094,
+              "resourceSize": 773,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/AstroTerm.astro_astro_type_script_index_0_lang.DB1iYTmP.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 2042,
+              "resourceSize": 3393,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/webmcp-register.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 13516,
+              "resourceSize": 13196,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/assets/home/jetbrains-mono-home-nav-core.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1134,
+              "resourceSize": 1402,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/preload-helper.L5lOfJxi.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1372,
+              "resourceSize": 2472,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/context-help-client.BqVrBbz0.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1899,
+              "resourceSize": 4190,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/analytics.CH5T6e-b.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1553,
+              "resourceSize": 2909,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/WelcomeBack.1YJn0hin.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1192,
+              "resourceSize": 1447,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/client.DPkn9Lbl.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 4795,
+              "resourceSize": 10499,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/preact.module.Bjq9tLsx.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1089,
+              "resourceSize": 1301,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/read-store.SGxiCNaN.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 879,
+              "resourceSize": 558,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/useProfile.BMlKl8HW.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 4646,
+              "resourceSize": 11693,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/signs.BMXPKoMF.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 468,
+              "resourceSize": 147,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/feature-flags.BT17fOoR.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 751,
+              "resourceSize": 430,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/jsxRuntime.module.BG9KJlGc.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 3265,
+              "resourceSize": 7060,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/i18n.BHqINcbi.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1414,
+              "resourceSize": 2125,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/share.CN4LGlan.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 805,
+              "resourceSize": 484,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/SignChip.BsmErr-0.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1034,
+              "resourceSize": 713,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/NextActionCard.eDMj-LSr.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1606,
+              "resourceSize": 2875,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/hooks.module.C0_8FjiD.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 418,
+              "resourceSize": 99,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/schema.DqKqbGHb.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 759,
+              "resourceSize": 438,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/profile-access-reader.DoQqlSjt.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1571,
+              "resourceSize": 3226,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/chunk-ZX3QENKK.D45xPG4w.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 549,
+              "resourceSize": 228,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/sign-icon.5AEtqUYO.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 479,
+              "resourceSize": 158,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/rolldown-runtime.DK3Fl9T5.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 854,
+              "resourceSize": 533,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/civil-date.CpOZUt7Z.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 365,
+              "resourceSize": 46,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/technical-locales.DDKucXXd.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 4474,
+              "resourceSize": 18927,
+              "statusCode": 200,
+              "mimeType": "text/css",
+              "resourceType": "Stylesheet",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/_astro/index.Bq786fej.css"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 3637,
+              "resourceSize": 12153,
+              "statusCode": 200,
+              "mimeType": "text/css",
+              "resourceType": "Stylesheet",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/assets/site-footer.css"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 2168,
+              "resourceSize": 3972,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/assistant-ui.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 994,
+              "resourceSize": 1416,
+              "statusCode": 200,
+              "mimeType": "text/css",
+              "resourceType": "Stylesheet",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/assistant-ui.css"
+            }
+          ]
+        },
+        {
+          "file": "tests/visual/artifacts/lighthouse/home-3.json",
+          "sha256": "9cbd57c744248d9ef0550130ab9e86aee86f76a02a231c0f85b1a7beb2493c61",
+          "lcpMs": 2556.0092,
+          "fcpMs": 1486.0138,
+          "cls": 0,
+          "tbtMs": 0,
+          "scores": {
+            "performance": 0.97,
+            "accessibility": 1,
+            "seo": 1
+          },
+          "diagnostics": {
+            "type": "debugdata",
+            "items": [
+              {
+                "numRequests": 40,
+                "numScripts": 26,
+                "numStylesheets": 3,
+                "numFonts": 3,
+                "numTasks": 1559,
+                "numTasksOver10ms": 7,
+                "numTasksOver25ms": 1,
+                "numTasksOver50ms": 0,
+                "numTasksOver100ms": 0,
+                "numTasksOver500ms": 0,
+                "rtt": 0.0339,
+                "throughput": 85871680.1780694,
+                "maxRtt": 0.0339,
+                "maxServerLatency": 3.0045999999999995,
+                "totalByteWeight": 307163,
+                "totalTaskTime": 319.0029999999964,
+                "mainDocumentTransferSize": 67065
+              }
+            ]
+          },
+          "insights": {
+            "font-display-insight": {
+              "type": "table",
+              "headings": [
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL"
+                },
+                {
+                  "key": "wastedMs",
+                  "valueType": "ms",
+                  "label": "Est Savings"
+                }
+              ],
+              "items": [],
+              "skipSumming": [
+                "wastedMs"
+              ]
+            },
+            "lcp-breakdown-insight": {
+              "type": "list",
+              "items": [
+                {
+                  "type": "table",
+                  "headings": [
+                    {
+                      "key": "label",
+                      "valueType": "text",
+                      "label": "Subpart"
+                    },
+                    {
+                      "key": "duration",
+                      "valueType": "ms",
+                      "label": "Duration"
+                    }
+                  ],
+                  "items": [
+                    {
+                      "subpart": "timeToFirstByte",
+                      "label": "Time to first byte",
+                      "duration": 9.55400000023842
+                    },
+                    {
+                      "subpart": "resourceLoadDelay",
+                      "label": "Resource load delay",
+                      "duration": 16.869999999761582
+                    },
+                    {
+                      "subpart": "resourceLoadDuration",
+                      "label": "Resource load duration",
+                      "duration": 13.77
+                    },
+                    {
+                      "subpart": "elementRenderDelay",
+                      "label": "Element render delay",
+                      "duration": 133.751
+                    }
+                  ]
+                },
+                {
+                  "type": "node",
+                  "lhId": "page-0-IMG",
+                  "path": "1,HTML,1,BODY,10,MAIN,1,SECTION,0,DIV,0,PICTURE,1,IMG",
+                  "selector": "section.hero > div.hero__frame > picture > img.hero__poster",
+                  "boundingRect": {
+                    "top": -14,
+                    "bottom": 776,
+                    "left": 2,
+                    "right": 409,
+                    "width": 408,
+                    "height": 790
+                  },
+                  "snippet": "<img class=\"hero__poster\" src=\"http://127.0.0.1:4328/assets/hero/zodiacs-hero-poster-mobile-v2.avif\" width=\"1600\" height=\"900\" loading=\"eager\" fetchpriority=\"high\" alt=\"\" aria-hidden=\"true\" data-hero-poster=\"\" data-astro-cid-lcdefpme=\"\" data-hero-motion=\"drift\" data-hero-visible=\"true\">",
+                  "nodeLabel": "section.hero > div.hero__frame > picture > img.hero__poster"
+                }
+              ]
+            },
+            "lcp-discovery-insight": {
+              "type": "list",
+              "items": [
+                {
+                  "type": "checklist",
+                  "items": {
+                    "priorityHinted": {
+                      "label": "fetchpriority=high applied",
+                      "value": true
+                    },
+                    "requestDiscoverable": {
+                      "label": "Request is discoverable in initial document",
+                      "value": true
+                    },
+                    "eagerlyLoaded": {
+                      "label": "LCP resources should not use loading=lazy",
+                      "value": true
+                    }
+                  }
+                },
+                {
+                  "type": "node",
+                  "lhId": "page-0-IMG",
+                  "path": "1,HTML,1,BODY,10,MAIN,1,SECTION,0,DIV,0,PICTURE,1,IMG",
+                  "selector": "section.hero > div.hero__frame > picture > img.hero__poster",
+                  "boundingRect": {
+                    "top": -14,
+                    "bottom": 776,
+                    "left": 2,
+                    "right": 409,
+                    "width": 408,
+                    "height": 790
+                  },
+                  "snippet": "<img class=\"hero__poster\" src=\"http://127.0.0.1:4328/assets/hero/zodiacs-hero-poster-mobile-v2.avif\" width=\"1600\" height=\"900\" loading=\"eager\" fetchpriority=\"high\" alt=\"\" aria-hidden=\"true\" data-hero-poster=\"\" data-astro-cid-lcdefpme=\"\" data-hero-motion=\"drift\" data-hero-visible=\"true\">",
+                  "nodeLabel": "section.hero > div.hero__frame > picture > img.hero__poster"
+                }
+              ]
+            },
+            "render-blocking-insight": {
+              "type": "table",
+              "headings": [
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL"
+                },
+                {
+                  "key": "totalBytes",
+                  "valueType": "bytes",
+                  "label": "Transfer Size"
+                },
+                {
+                  "key": "wastedMs",
+                  "valueType": "timespanMs",
+                  "label": "Duration"
+                }
+              ],
+              "items": []
+            }
+          },
+          "requests": [
+            {
+              "protocol": "http/1.1",
+              "transferSize": 67065,
+              "resourceSize": 274413,
+              "statusCode": 200,
+              "mimeType": "text/html",
+              "resourceType": "Document",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 111905,
+              "resourceSize": 111635,
+              "statusCode": 200,
+              "mimeType": "image/avif",
+              "resourceType": "Image",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/hero/zodiacs-hero-poster-mobile-v2.avif"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 20608,
+              "resourceSize": 20288,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/home/instrument-sans-home-nav-core.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 13768,
+              "resourceSize": 13448,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/home/eb-garamond-home-400-core.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1094,
+              "resourceSize": 773,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/AstroTerm.astro_astro_type_script_index_0_lang.DB1iYTmP.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 2042,
+              "resourceSize": 3393,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/webmcp-register.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 13516,
+              "resourceSize": 13196,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/assets/home/jetbrains-mono-home-nav-core.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1134,
+              "resourceSize": 1402,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/preload-helper.L5lOfJxi.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1372,
+              "resourceSize": 2472,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/context-help-client.BqVrBbz0.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1899,
+              "resourceSize": 4190,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/analytics.CH5T6e-b.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1553,
+              "resourceSize": 2909,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/WelcomeBack.1YJn0hin.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1192,
+              "resourceSize": 1447,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/client.DPkn9Lbl.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 4795,
+              "resourceSize": 10499,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/preact.module.Bjq9tLsx.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1089,
+              "resourceSize": 1301,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/read-store.SGxiCNaN.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 879,
+              "resourceSize": 558,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/useProfile.BMlKl8HW.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 4646,
+              "resourceSize": 11693,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/signs.BMXPKoMF.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 468,
+              "resourceSize": 147,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/feature-flags.BT17fOoR.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 751,
+              "resourceSize": 430,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/jsxRuntime.module.BG9KJlGc.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 3265,
+              "resourceSize": 7060,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/i18n.BHqINcbi.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1414,
+              "resourceSize": 2125,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/share.CN4LGlan.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 805,
+              "resourceSize": 484,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/SignChip.BsmErr-0.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1034,
+              "resourceSize": 713,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/NextActionCard.eDMj-LSr.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1606,
+              "resourceSize": 2875,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/hooks.module.C0_8FjiD.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 418,
+              "resourceSize": 99,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/schema.DqKqbGHb.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 759,
+              "resourceSize": 438,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/profile-access-reader.DoQqlSjt.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1571,
+              "resourceSize": 3226,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/chunk-ZX3QENKK.D45xPG4w.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 549,
+              "resourceSize": 228,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/sign-icon.5AEtqUYO.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 479,
+              "resourceSize": 158,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/rolldown-runtime.DK3Fl9T5.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 854,
+              "resourceSize": 533,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/civil-date.CpOZUt7Z.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 365,
+              "resourceSize": 46,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/technical-locales.DDKucXXd.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 4474,
+              "resourceSize": 18927,
+              "statusCode": 200,
+              "mimeType": "text/css",
+              "resourceType": "Stylesheet",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/_astro/index.Bq786fej.css"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 3637,
+              "resourceSize": 12153,
+              "statusCode": 200,
+              "mimeType": "text/css",
+              "resourceType": "Stylesheet",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/assets/site-footer.css"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 2168,
+              "resourceSize": 3972,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/assistant-ui.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 994,
+              "resourceSize": 1416,
+              "statusCode": 200,
+              "mimeType": "text/css",
+              "resourceType": "Stylesheet",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/assistant-ui.css"
+            }
+          ]
+        },
+        {
+          "file": "tests/visual/artifacts/lighthouse/thesis-1.json",
+          "sha256": "018dce2a3f21b699bd251fc387b79c6c3ebc78ecb00c5acf5495e768edc65125",
+          "lcpMs": 2408.9809999999998,
+          "fcpMs": 1504.4904999999999,
+          "cls": 0,
+          "tbtMs": 0,
+          "scores": {
+            "performance": 0.97,
+            "accessibility": 1,
+            "seo": 1
+          },
+          "diagnostics": {
+            "type": "debugdata",
+            "items": [
+              {
+                "numRequests": 28,
+                "numScripts": 1,
+                "numStylesheets": 1,
+                "numFonts": 5,
+                "numTasks": 1078,
+                "numTasksOver10ms": 7,
+                "numTasksOver25ms": 1,
+                "numTasksOver50ms": 0,
+                "numTasksOver100ms": 0,
+                "numTasksOver500ms": 0,
+                "rtt": 0.02175,
+                "throughput": 588548003.530234,
+                "maxRtt": 0.02175,
+                "maxServerLatency": 2.2452500000000004,
+                "totalByteWeight": 2419153,
+                "totalTaskTime": 229.9629999999974,
+                "mainDocumentTransferSize": 71342
+              }
+            ]
+          },
+          "insights": {
+            "font-display-insight": {
+              "type": "table",
+              "headings": [
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL"
+                },
+                {
+                  "key": "wastedMs",
+                  "valueType": "ms",
+                  "label": "Est Savings"
+                }
+              ],
+              "items": [],
+              "skipSumming": [
+                "wastedMs"
+              ]
+            },
+            "lcp-breakdown-insight": {
+              "type": "list",
+              "items": [
+                {
+                  "type": "table",
+                  "headings": [
+                    {
+                      "key": "label",
+                      "valueType": "text",
+                      "label": "Subpart"
+                    },
+                    {
+                      "key": "duration",
+                      "valueType": "ms",
+                      "label": "Duration"
+                    }
+                  ],
+                  "items": [
+                    {
+                      "subpart": "timeToFirstByte",
+                      "label": "Time to first byte",
+                      "duration": 10.418
+                    },
+                    {
+                      "subpart": "resourceLoadDelay",
+                      "label": "Resource load delay",
+                      "duration": 48.151
+                    },
+                    {
+                      "subpart": "resourceLoadDuration",
+                      "label": "Resource load duration",
+                      "duration": 4.407
+                    },
+                    {
+                      "subpart": "elementRenderDelay",
+                      "label": "Element render delay",
+                      "duration": 121.478
+                    }
+                  ]
+                },
+                {
+                  "type": "node",
+                  "lhId": "page-0-VIDEO",
+                  "path": "1,HTML,1,BODY,4,HEADER,0,VIDEO",
+                  "selector": "body > header.hero > video.hero__media",
+                  "boundingRect": {
+                    "top": -76,
+                    "bottom": 681,
+                    "left": 0,
+                    "right": 412,
+                    "width": 412,
+                    "height": 757
+                  },
+                  "snippet": "<video class=\"hero__media\" muted=\"\" loop=\"\" playsinline=\"\" preload=\"none\" poster=\"/assets/art/zodiac-clock-768.avif\" fetchpriority=\"high\" aria-hidden=\"true\" tabindex=\"-1\">",
+                  "nodeLabel": "body > header.hero > video.hero__media"
+                }
+              ]
+            },
+            "lcp-discovery-insight": {
+              "type": "list",
+              "items": [
+                {
+                  "type": "checklist",
+                  "items": {
+                    "priorityHinted": {
+                      "label": "fetchpriority=high applied",
+                      "value": true
+                    },
+                    "requestDiscoverable": {
+                      "label": "Request is discoverable in initial document",
+                      "value": true
+                    },
+                    "eagerlyLoaded": {
+                      "label": "LCP resources should not use loading=lazy",
+                      "value": true
+                    }
+                  }
+                },
+                {
+                  "type": "node",
+                  "lhId": "page-0-VIDEO",
+                  "path": "1,HTML,1,BODY,4,HEADER,0,VIDEO",
+                  "selector": "body > header.hero > video.hero__media",
+                  "boundingRect": {
+                    "top": -76,
+                    "bottom": 681,
+                    "left": 0,
+                    "right": 412,
+                    "width": 412,
+                    "height": 757
+                  },
+                  "snippet": "<video class=\"hero__media\" muted=\"\" loop=\"\" playsinline=\"\" preload=\"none\" poster=\"/assets/art/zodiac-clock-768.avif\" fetchpriority=\"high\" aria-hidden=\"true\" tabindex=\"-1\">",
+                  "nodeLabel": "body > header.hero > video.hero__media"
+                }
+              ]
+            },
+            "render-blocking-insight": {
+              "type": "table",
+              "headings": [
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL"
+                },
+                {
+                  "key": "totalBytes",
+                  "valueType": "bytes",
+                  "label": "Transfer Size"
+                },
+                {
+                  "key": "wastedMs",
+                  "valueType": "timespanMs",
+                  "label": "Duration"
+                }
+              ],
+              "items": []
+            }
+          },
+          "requests": [
+            {
+              "protocol": "http/1.1",
+              "transferSize": 71342,
+              "resourceSize": 333565,
+              "statusCode": 200,
+              "mimeType": "text/html",
+              "resourceType": "Document",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/thesis/"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 22024,
+              "resourceSize": 21704,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/fonts/eb-garamond-latin-400-normal.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 30412,
+              "resourceSize": 30092,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/fonts/instrument-sans-latin-wght-normal.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 40724,
+              "resourceSize": 40404,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/fonts/jetbrains-mono-latin-wght-normal.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 23332,
+              "resourceSize": 23012,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/fonts/eb-garamond-latin-500-normal.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 22492,
+              "resourceSize": 22172,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/fonts/eb-garamond-latin-400-italic.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 2168,
+              "resourceSize": 3972,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/assistant-ui.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 994,
+              "resourceSize": 1416,
+              "statusCode": 200,
+              "mimeType": "text/css",
+              "resourceType": "Stylesheet",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/assistant-ui.css"
+            }
+          ]
+        },
+        {
+          "file": "tests/visual/artifacts/lighthouse/thesis-2.json",
+          "sha256": "7f8235c522096793e998cd0931b8ef379a8b1f46c8e7ae336d78e4c89eb20e6e",
+          "lcpMs": 2412.3624,
+          "fcpMs": 1506.1812,
+          "cls": 0,
+          "tbtMs": 0,
+          "scores": {
+            "performance": 0.97,
+            "accessibility": 1,
+            "seo": 1
+          },
+          "diagnostics": {
+            "type": "debugdata",
+            "items": [
+              {
+                "numRequests": 28,
+                "numScripts": 1,
+                "numStylesheets": 1,
+                "numFonts": 5,
+                "numTasks": 1059,
+                "numTasksOver10ms": 8,
+                "numTasksOver25ms": 1,
+                "numTasksOver50ms": 0,
+                "numTasksOver100ms": 0,
+                "numTasksOver500ms": 0,
+                "rtt": 0.027899999999999998,
+                "throughput": 465244098.2660828,
+                "maxRtt": 0.027899999999999998,
+                "maxServerLatency": 3.0906000000000002,
+                "totalByteWeight": 2419153,
+                "totalTaskTime": 243.1069999999965,
+                "mainDocumentTransferSize": 71342
+              }
+            ]
+          },
+          "insights": {
+            "font-display-insight": {
+              "type": "table",
+              "headings": [
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL"
+                },
+                {
+                  "key": "wastedMs",
+                  "valueType": "ms",
+                  "label": "Est Savings"
+                }
+              ],
+              "items": [],
+              "skipSumming": [
+                "wastedMs"
+              ]
+            },
+            "lcp-breakdown-insight": {
+              "type": "list",
+              "items": [
+                {
+                  "type": "table",
+                  "headings": [
+                    {
+                      "key": "label",
+                      "valueType": "text",
+                      "label": "Subpart"
+                    },
+                    {
+                      "key": "duration",
+                      "valueType": "ms",
+                      "label": "Duration"
+                    }
+                  ],
+                  "items": [
+                    {
+                      "subpart": "timeToFirstByte",
+                      "label": "Time to first byte",
+                      "duration": 10.133999999761581
+                    },
+                    {
+                      "subpart": "resourceLoadDelay",
+                      "label": "Resource load delay",
+                      "duration": 38.332000000238416
+                    },
+                    {
+                      "subpart": "resourceLoadDuration",
+                      "label": "Resource load duration",
+                      "duration": 3.1389999997615816
+                    },
+                    {
+                      "subpart": "elementRenderDelay",
+                      "label": "Element render delay",
+                      "duration": 145.5790000002384
+                    }
+                  ]
+                },
+                {
+                  "type": "node",
+                  "lhId": "page-0-VIDEO",
+                  "path": "1,HTML,1,BODY,4,HEADER,0,VIDEO",
+                  "selector": "body > header.hero > video.hero__media",
+                  "boundingRect": {
+                    "top": -76,
+                    "bottom": 681,
+                    "left": 0,
+                    "right": 412,
+                    "width": 412,
+                    "height": 757
+                  },
+                  "snippet": "<video class=\"hero__media\" muted=\"\" loop=\"\" playsinline=\"\" preload=\"none\" poster=\"/assets/art/zodiac-clock-768.avif\" fetchpriority=\"high\" aria-hidden=\"true\" tabindex=\"-1\">",
+                  "nodeLabel": "body > header.hero > video.hero__media"
+                }
+              ]
+            },
+            "lcp-discovery-insight": {
+              "type": "list",
+              "items": [
+                {
+                  "type": "checklist",
+                  "items": {
+                    "priorityHinted": {
+                      "label": "fetchpriority=high applied",
+                      "value": true
+                    },
+                    "requestDiscoverable": {
+                      "label": "Request is discoverable in initial document",
+                      "value": true
+                    },
+                    "eagerlyLoaded": {
+                      "label": "LCP resources should not use loading=lazy",
+                      "value": true
+                    }
+                  }
+                },
+                {
+                  "type": "node",
+                  "lhId": "page-0-VIDEO",
+                  "path": "1,HTML,1,BODY,4,HEADER,0,VIDEO",
+                  "selector": "body > header.hero > video.hero__media",
+                  "boundingRect": {
+                    "top": -76,
+                    "bottom": 681,
+                    "left": 0,
+                    "right": 412,
+                    "width": 412,
+                    "height": 757
+                  },
+                  "snippet": "<video class=\"hero__media\" muted=\"\" loop=\"\" playsinline=\"\" preload=\"none\" poster=\"/assets/art/zodiac-clock-768.avif\" fetchpriority=\"high\" aria-hidden=\"true\" tabindex=\"-1\">",
+                  "nodeLabel": "body > header.hero > video.hero__media"
+                }
+              ]
+            },
+            "render-blocking-insight": {
+              "type": "table",
+              "headings": [
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL"
+                },
+                {
+                  "key": "totalBytes",
+                  "valueType": "bytes",
+                  "label": "Transfer Size"
+                },
+                {
+                  "key": "wastedMs",
+                  "valueType": "timespanMs",
+                  "label": "Duration"
+                }
+              ],
+              "items": []
+            }
+          },
+          "requests": [
+            {
+              "protocol": "http/1.1",
+              "transferSize": 71342,
+              "resourceSize": 333565,
+              "statusCode": 200,
+              "mimeType": "text/html",
+              "resourceType": "Document",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/thesis/"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 22024,
+              "resourceSize": 21704,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/fonts/eb-garamond-latin-400-normal.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 30412,
+              "resourceSize": 30092,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/fonts/instrument-sans-latin-wght-normal.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 40724,
+              "resourceSize": 40404,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/fonts/jetbrains-mono-latin-wght-normal.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 23332,
+              "resourceSize": 23012,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/fonts/eb-garamond-latin-500-normal.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 22492,
+              "resourceSize": 22172,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/fonts/eb-garamond-latin-400-italic.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 2168,
+              "resourceSize": 3972,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/assistant-ui.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 994,
+              "resourceSize": 1416,
+              "statusCode": 200,
+              "mimeType": "text/css",
+              "resourceType": "Stylesheet",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/assistant-ui.css"
+            }
+          ]
+        },
+        {
+          "file": "tests/visual/artifacts/lighthouse/thesis-3.json",
+          "sha256": "74de7d9fb4eb9830c20030b165af3cdbcef88c14db543a92eb3998669985aa03",
+          "lcpMs": 2413.9336000000003,
+          "fcpMs": 1506.9668000000001,
+          "cls": 0,
+          "tbtMs": 0,
+          "scores": {
+            "performance": 0.97,
+            "accessibility": 1,
+            "seo": 1
+          },
+          "diagnostics": {
+            "type": "debugdata",
+            "items": [
+              {
+                "numRequests": 28,
+                "numScripts": 1,
+                "numStylesheets": 1,
+                "numFonts": 5,
+                "numTasks": 1074,
+                "numTasksOver10ms": 6,
+                "numTasksOver25ms": 1,
+                "numTasksOver50ms": 0,
+                "numTasksOver100ms": 0,
+                "numTasksOver500ms": 0,
+                "rtt": 0.030599999999999995,
+                "throughput": 556382934.690765,
+                "maxRtt": 0.030599999999999995,
+                "maxServerLatency": 3.4834,
+                "totalByteWeight": 2419153,
+                "totalTaskTime": 207.56199999999848,
+                "mainDocumentTransferSize": 71342
+              }
+            ]
+          },
+          "insights": {
+            "font-display-insight": {
+              "type": "table",
+              "headings": [
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL"
+                },
+                {
+                  "key": "wastedMs",
+                  "valueType": "ms",
+                  "label": "Est Savings"
+                }
+              ],
+              "items": [],
+              "skipSumming": [
+                "wastedMs"
+              ]
+            },
+            "lcp-breakdown-insight": {
+              "type": "list",
+              "items": [
+                {
+                  "type": "table",
+                  "headings": [
+                    {
+                      "key": "label",
+                      "valueType": "text",
+                      "label": "Subpart"
+                    },
+                    {
+                      "key": "duration",
+                      "valueType": "ms",
+                      "label": "Duration"
+                    }
+                  ],
+                  "items": [
+                    {
+                      "subpart": "timeToFirstByte",
+                      "label": "Time to first byte",
+                      "duration": 9.385
+                    },
+                    {
+                      "subpart": "resourceLoadDelay",
+                      "label": "Resource load delay",
+                      "duration": 15.33
+                    },
+                    {
+                      "subpart": "resourceLoadDuration",
+                      "label": "Resource load duration",
+                      "duration": 4.185
+                    },
+                    {
+                      "subpart": "elementRenderDelay",
+                      "label": "Element render delay",
+                      "duration": 130.175
+                    }
+                  ]
+                },
+                {
+                  "type": "node",
+                  "lhId": "page-0-VIDEO",
+                  "path": "1,HTML,1,BODY,4,HEADER,0,VIDEO",
+                  "selector": "body > header.hero > video.hero__media",
+                  "boundingRect": {
+                    "top": -76,
+                    "bottom": 681,
+                    "left": 0,
+                    "right": 412,
+                    "width": 412,
+                    "height": 757
+                  },
+                  "snippet": "<video class=\"hero__media\" muted=\"\" loop=\"\" playsinline=\"\" preload=\"none\" poster=\"/assets/art/zodiac-clock-768.avif\" fetchpriority=\"high\" aria-hidden=\"true\" tabindex=\"-1\">",
+                  "nodeLabel": "body > header.hero > video.hero__media"
+                }
+              ]
+            },
+            "lcp-discovery-insight": {
+              "type": "list",
+              "items": [
+                {
+                  "type": "checklist",
+                  "items": {
+                    "priorityHinted": {
+                      "label": "fetchpriority=high applied",
+                      "value": true
+                    },
+                    "requestDiscoverable": {
+                      "label": "Request is discoverable in initial document",
+                      "value": true
+                    },
+                    "eagerlyLoaded": {
+                      "label": "LCP resources should not use loading=lazy",
+                      "value": true
+                    }
+                  }
+                },
+                {
+                  "type": "node",
+                  "lhId": "page-0-VIDEO",
+                  "path": "1,HTML,1,BODY,4,HEADER,0,VIDEO",
+                  "selector": "body > header.hero > video.hero__media",
+                  "boundingRect": {
+                    "top": -76,
+                    "bottom": 681,
+                    "left": 0,
+                    "right": 412,
+                    "width": 412,
+                    "height": 757
+                  },
+                  "snippet": "<video class=\"hero__media\" muted=\"\" loop=\"\" playsinline=\"\" preload=\"none\" poster=\"/assets/art/zodiac-clock-768.avif\" fetchpriority=\"high\" aria-hidden=\"true\" tabindex=\"-1\">",
+                  "nodeLabel": "body > header.hero > video.hero__media"
+                }
+              ]
+            },
+            "render-blocking-insight": {
+              "type": "table",
+              "headings": [
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL"
+                },
+                {
+                  "key": "totalBytes",
+                  "valueType": "bytes",
+                  "label": "Transfer Size"
+                },
+                {
+                  "key": "wastedMs",
+                  "valueType": "timespanMs",
+                  "label": "Duration"
+                }
+              ],
+              "items": []
+            }
+          },
+          "requests": [
+            {
+              "protocol": "http/1.1",
+              "transferSize": 71342,
+              "resourceSize": 333565,
+              "statusCode": 200,
+              "mimeType": "text/html",
+              "resourceType": "Document",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/thesis/"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 22024,
+              "resourceSize": 21704,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/fonts/eb-garamond-latin-400-normal.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 30412,
+              "resourceSize": 30092,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/fonts/instrument-sans-latin-wght-normal.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 40724,
+              "resourceSize": 40404,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/fonts/jetbrains-mono-latin-wght-normal.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 23332,
+              "resourceSize": 23012,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/fonts/eb-garamond-latin-500-normal.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 22492,
+              "resourceSize": 22172,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/fonts/eb-garamond-latin-400-italic.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 2168,
+              "resourceSize": 3972,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/assistant-ui.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 994,
+              "resourceSize": 1416,
+              "statusCode": 200,
+              "mimeType": "text/css",
+              "resourceType": "Stylesheet",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/assistant-ui.css"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "run": 37973273635,
+      "source": "6d8b8a112b0ed079875e92e93ddcbf4444b4d658",
+      "integration": "53a3925683b65e72eeb5fb440bf225b51b1728d3",
+      "tree": "39cec9a839aa274bd77cc4657043220e4b11f434",
+      "conclusion": "failure",
+      "artifact": 11639781725,
+      "bytes": 157960211,
+      "sha256": "4606fb1b7527581ff4b2356baacb0643c1c2fb8bcb675b0a9c285bb851e268b6",
+      "samples": [
+        {
+          "file": "tests/visual/artifacts/lighthouse/home-1.json",
+          "sha256": "5648302f1173c590f3b761a01c70e3f51b3db0fab3d8018610aeb33759eed158",
+          "lcpMs": 3154.710600000001,
+          "fcpMs": 1584.4211999999998,
+          "cls": 0,
+          "tbtMs": 0,
+          "scores": {
+            "performance": 0.93,
+            "accessibility": 1,
+            "seo": 1
+          },
+          "diagnostics": {
+            "type": "debugdata",
+            "items": [
+              {
+                "numRequests": 40,
+                "numScripts": 26,
+                "numStylesheets": 3,
+                "numFonts": 3,
+                "numTasks": 1537,
+                "numTasksOver10ms": 5,
+                "numTasksOver25ms": 0,
+                "numTasksOver50ms": 0,
+                "numTasksOver100ms": 0,
+                "numTasksOver500ms": 0,
+                "rtt": 0.0312,
+                "throughput": 107797526.10646653,
+                "maxRtt": 0.0312,
+                "maxServerLatency": 2.3552999999999997,
+                "totalByteWeight": 307196,
+                "totalTaskTime": 203.62899999999902,
+                "mainDocumentTransferSize": 67098
+              }
+            ]
+          },
+          "insights": {
+            "font-display-insight": {
+              "type": "table",
+              "headings": [
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL"
+                },
+                {
+                  "key": "wastedMs",
+                  "valueType": "ms",
+                  "label": "Est Savings"
+                }
+              ],
+              "items": [],
+              "skipSumming": [
+                "wastedMs"
+              ]
+            },
+            "lcp-breakdown-insight": {
+              "type": "list",
+              "items": [
+                {
+                  "type": "table",
+                  "headings": [
+                    {
+                      "key": "label",
+                      "valueType": "text",
+                      "label": "Subpart"
+                    },
+                    {
+                      "key": "duration",
+                      "valueType": "ms",
+                      "label": "Duration"
+                    }
+                  ],
+                  "items": [
+                    {
+                      "subpart": "timeToFirstByte",
+                      "label": "Time to first byte",
+                      "duration": 6.473000000238419
+                    },
+                    {
+                      "subpart": "resourceLoadDelay",
+                      "label": "Resource load delay",
+                      "duration": 10.902999999761581
+                    },
+                    {
+                      "subpart": "resourceLoadDuration",
+                      "label": "Resource load duration",
+                      "duration": 9.427
+                    },
+                    {
+                      "subpart": "elementRenderDelay",
+                      "label": "Element render delay",
+                      "duration": 108.122
+                    }
+                  ]
+                },
+                {
+                  "type": "node",
+                  "lhId": "page-0-IMG",
+                  "path": "1,HTML,1,BODY,10,MAIN,1,SECTION,0,DIV,0,PICTURE,1,IMG",
+                  "selector": "section.hero > div.hero__frame > picture > img.hero__poster",
+                  "boundingRect": {
+                    "top": -14,
+                    "bottom": 775,
+                    "left": 2,
+                    "right": 409,
+                    "width": 407,
+                    "height": 789
+                  },
+                  "snippet": "<img class=\"hero__poster\" src=\"http://127.0.0.1:4328/assets/hero/zodiacs-hero-poster-mobile-v2.avif\" width=\"1600\" height=\"900\" loading=\"eager\" fetchpriority=\"high\" alt=\"\" aria-hidden=\"true\" data-hero-poster=\"\" data-astro-cid-lcdefpme=\"\" data-hero-motion=\"drift\" data-hero-visible=\"true\">",
+                  "nodeLabel": "section.hero > div.hero__frame > picture > img.hero__poster"
+                }
+              ]
+            },
+            "lcp-discovery-insight": {
+              "type": "list",
+              "items": [
+                {
+                  "type": "checklist",
+                  "items": {
+                    "priorityHinted": {
+                      "label": "fetchpriority=high applied",
+                      "value": true
+                    },
+                    "requestDiscoverable": {
+                      "label": "Request is discoverable in initial document",
+                      "value": true
+                    },
+                    "eagerlyLoaded": {
+                      "label": "LCP resources should not use loading=lazy",
+                      "value": true
+                    }
+                  }
+                },
+                {
+                  "type": "node",
+                  "lhId": "page-0-IMG",
+                  "path": "1,HTML,1,BODY,10,MAIN,1,SECTION,0,DIV,0,PICTURE,1,IMG",
+                  "selector": "section.hero > div.hero__frame > picture > img.hero__poster",
+                  "boundingRect": {
+                    "top": -14,
+                    "bottom": 775,
+                    "left": 2,
+                    "right": 409,
+                    "width": 407,
+                    "height": 789
+                  },
+                  "snippet": "<img class=\"hero__poster\" src=\"http://127.0.0.1:4328/assets/hero/zodiacs-hero-poster-mobile-v2.avif\" width=\"1600\" height=\"900\" loading=\"eager\" fetchpriority=\"high\" alt=\"\" aria-hidden=\"true\" data-hero-poster=\"\" data-astro-cid-lcdefpme=\"\" data-hero-motion=\"drift\" data-hero-visible=\"true\">",
+                  "nodeLabel": "section.hero > div.hero__frame > picture > img.hero__poster"
+                }
+              ]
+            },
+            "render-blocking-insight": {
+              "type": "table",
+              "headings": [
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL"
+                },
+                {
+                  "key": "totalBytes",
+                  "valueType": "bytes",
+                  "label": "Transfer Size"
+                },
+                {
+                  "key": "wastedMs",
+                  "valueType": "timespanMs",
+                  "label": "Duration"
+                }
+              ],
+              "items": []
+            }
+          },
+          "requests": [
+            {
+              "protocol": "http/1.1",
+              "transferSize": 67098,
+              "resourceSize": 274504,
+              "statusCode": 200,
+              "mimeType": "text/html",
+              "resourceType": "Document",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 111905,
+              "resourceSize": 111635,
+              "statusCode": 200,
+              "mimeType": "image/avif",
+              "resourceType": "Image",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/hero/zodiacs-hero-poster-mobile-v2.avif"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 20608,
+              "resourceSize": 20288,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/home/instrument-sans-home-nav-core.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 13768,
+              "resourceSize": 13448,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/home/eb-garamond-home-400-core.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1094,
+              "resourceSize": 773,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/AstroTerm.astro_astro_type_script_index_0_lang.DB1iYTmP.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 2042,
+              "resourceSize": 3393,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/webmcp-register.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 13516,
+              "resourceSize": 13196,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/assets/home/jetbrains-mono-home-nav-core.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1134,
+              "resourceSize": 1402,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/preload-helper.L5lOfJxi.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1372,
+              "resourceSize": 2472,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/context-help-client.BqVrBbz0.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1899,
+              "resourceSize": 4190,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/analytics.CH5T6e-b.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1553,
+              "resourceSize": 2909,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/WelcomeBack.1YJn0hin.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1192,
+              "resourceSize": 1447,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/client.DPkn9Lbl.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 4795,
+              "resourceSize": 10499,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/preact.module.Bjq9tLsx.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1089,
+              "resourceSize": 1301,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/read-store.SGxiCNaN.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 879,
+              "resourceSize": 558,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/useProfile.BMlKl8HW.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 4646,
+              "resourceSize": 11693,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/signs.BMXPKoMF.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 468,
+              "resourceSize": 147,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/feature-flags.BT17fOoR.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 751,
+              "resourceSize": 430,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/jsxRuntime.module.BG9KJlGc.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 3265,
+              "resourceSize": 7060,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/i18n.BHqINcbi.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1414,
+              "resourceSize": 2125,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/share.CN4LGlan.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 805,
+              "resourceSize": 484,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/SignChip.BsmErr-0.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1034,
+              "resourceSize": 713,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/NextActionCard.eDMj-LSr.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1606,
+              "resourceSize": 2875,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/hooks.module.C0_8FjiD.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 418,
+              "resourceSize": 99,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/schema.DqKqbGHb.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 759,
+              "resourceSize": 438,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/profile-access-reader.DoQqlSjt.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1571,
+              "resourceSize": 3226,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/chunk-ZX3QENKK.D45xPG4w.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 549,
+              "resourceSize": 228,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/sign-icon.5AEtqUYO.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 479,
+              "resourceSize": 158,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/rolldown-runtime.DK3Fl9T5.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 854,
+              "resourceSize": 533,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/civil-date.CpOZUt7Z.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 365,
+              "resourceSize": 46,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/technical-locales.DDKucXXd.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 4474,
+              "resourceSize": 18927,
+              "statusCode": 200,
+              "mimeType": "text/css",
+              "resourceType": "Stylesheet",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/_astro/index.Bq786fej.css"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 3637,
+              "resourceSize": 12153,
+              "statusCode": 200,
+              "mimeType": "text/css",
+              "resourceType": "Stylesheet",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/assets/site-footer.css"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 2168,
+              "resourceSize": 3972,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/assistant-ui.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 994,
+              "resourceSize": 1416,
+              "statusCode": 200,
+              "mimeType": "text/css",
+              "resourceType": "Stylesheet",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/assistant-ui.css"
+            }
+          ]
+        },
+        {
+          "file": "tests/visual/artifacts/lighthouse/home-2.json",
+          "sha256": "41fc4570feb2b4c13608c6e45e3326ba0969ff4f6efab5a691e5bac8e13a2282",
+          "lcpMs": 2554.6804,
+          "fcpMs": 1434.5205999999998,
+          "cls": 0,
+          "tbtMs": 0,
+          "scores": {
+            "performance": 0.97,
+            "accessibility": 1,
+            "seo": 1
+          },
+          "diagnostics": {
+            "type": "debugdata",
+            "items": [
+              {
+                "numRequests": 40,
+                "numScripts": 26,
+                "numStylesheets": 3,
+                "numFonts": 3,
+                "numTasks": 1555,
+                "numTasksOver10ms": 5,
+                "numTasksOver25ms": 0,
+                "numTasksOver50ms": 0,
+                "numTasksOver100ms": 0,
+                "numTasksOver500ms": 0,
+                "rtt": 0.031799999999999995,
+                "throughput": 108177128.2707811,
+                "maxRtt": 0.031799999999999995,
+                "maxServerLatency": 2.3402000000000003,
+                "totalByteWeight": 307196,
+                "totalTaskTime": 219.94999999999865,
+                "mainDocumentTransferSize": 67098
+              }
+            ]
+          },
+          "insights": {
+            "font-display-insight": {
+              "type": "table",
+              "headings": [
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL"
+                },
+                {
+                  "key": "wastedMs",
+                  "valueType": "ms",
+                  "label": "Est Savings"
+                }
+              ],
+              "items": [],
+              "skipSumming": [
+                "wastedMs"
+              ]
+            },
+            "lcp-breakdown-insight": {
+              "type": "list",
+              "items": [
+                {
+                  "type": "table",
+                  "headings": [
+                    {
+                      "key": "label",
+                      "valueType": "text",
+                      "label": "Subpart"
+                    },
+                    {
+                      "key": "duration",
+                      "valueType": "ms",
+                      "label": "Duration"
+                    }
+                  ],
+                  "items": [
+                    {
+                      "subpart": "timeToFirstByte",
+                      "label": "Time to first byte",
+                      "duration": 5.701000000238419
+                    },
+                    {
+                      "subpart": "resourceLoadDelay",
+                      "label": "Resource load delay",
+                      "duration": 27.297999999761583
+                    },
+                    {
+                      "subpart": "resourceLoadDuration",
+                      "label": "Resource load duration",
+                      "duration": 9.129
+                    },
+                    {
+                      "subpart": "elementRenderDelay",
+                      "label": "Element render delay",
+                      "duration": 76.866
+                    }
+                  ]
+                },
+                {
+                  "type": "node",
+                  "lhId": "page-0-IMG",
+                  "path": "1,HTML,1,BODY,10,MAIN,1,SECTION,0,DIV,0,PICTURE,1,IMG",
+                  "selector": "section.hero > div.hero__frame > picture > img.hero__poster",
+                  "boundingRect": {
+                    "top": -14,
+                    "bottom": 775,
+                    "left": 2,
+                    "right": 409,
+                    "width": 407,
+                    "height": 789
+                  },
+                  "snippet": "<img class=\"hero__poster\" src=\"http://127.0.0.1:4328/assets/hero/zodiacs-hero-poster-mobile-v2.avif\" width=\"1600\" height=\"900\" loading=\"eager\" fetchpriority=\"high\" alt=\"\" aria-hidden=\"true\" data-hero-poster=\"\" data-astro-cid-lcdefpme=\"\" data-hero-motion=\"drift\" data-hero-visible=\"true\">",
+                  "nodeLabel": "section.hero > div.hero__frame > picture > img.hero__poster"
+                }
+              ]
+            },
+            "lcp-discovery-insight": {
+              "type": "list",
+              "items": [
+                {
+                  "type": "checklist",
+                  "items": {
+                    "priorityHinted": {
+                      "label": "fetchpriority=high applied",
+                      "value": true
+                    },
+                    "requestDiscoverable": {
+                      "label": "Request is discoverable in initial document",
+                      "value": true
+                    },
+                    "eagerlyLoaded": {
+                      "label": "LCP resources should not use loading=lazy",
+                      "value": true
+                    }
+                  }
+                },
+                {
+                  "type": "node",
+                  "lhId": "page-0-IMG",
+                  "path": "1,HTML,1,BODY,10,MAIN,1,SECTION,0,DIV,0,PICTURE,1,IMG",
+                  "selector": "section.hero > div.hero__frame > picture > img.hero__poster",
+                  "boundingRect": {
+                    "top": -14,
+                    "bottom": 775,
+                    "left": 2,
+                    "right": 409,
+                    "width": 407,
+                    "height": 789
+                  },
+                  "snippet": "<img class=\"hero__poster\" src=\"http://127.0.0.1:4328/assets/hero/zodiacs-hero-poster-mobile-v2.avif\" width=\"1600\" height=\"900\" loading=\"eager\" fetchpriority=\"high\" alt=\"\" aria-hidden=\"true\" data-hero-poster=\"\" data-astro-cid-lcdefpme=\"\" data-hero-motion=\"drift\" data-hero-visible=\"true\">",
+                  "nodeLabel": "section.hero > div.hero__frame > picture > img.hero__poster"
+                }
+              ]
+            },
+            "render-blocking-insight": {
+              "type": "table",
+              "headings": [
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL"
+                },
+                {
+                  "key": "totalBytes",
+                  "valueType": "bytes",
+                  "label": "Transfer Size"
+                },
+                {
+                  "key": "wastedMs",
+                  "valueType": "timespanMs",
+                  "label": "Duration"
+                }
+              ],
+              "items": []
+            }
+          },
+          "requests": [
+            {
+              "protocol": "http/1.1",
+              "transferSize": 67098,
+              "resourceSize": 274504,
+              "statusCode": 200,
+              "mimeType": "text/html",
+              "resourceType": "Document",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 111905,
+              "resourceSize": 111635,
+              "statusCode": 200,
+              "mimeType": "image/avif",
+              "resourceType": "Image",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/hero/zodiacs-hero-poster-mobile-v2.avif"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 20608,
+              "resourceSize": 20288,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/home/instrument-sans-home-nav-core.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 13768,
+              "resourceSize": 13448,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/home/eb-garamond-home-400-core.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1094,
+              "resourceSize": 773,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/AstroTerm.astro_astro_type_script_index_0_lang.DB1iYTmP.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 2042,
+              "resourceSize": 3393,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/webmcp-register.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 13516,
+              "resourceSize": 13196,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/assets/home/jetbrains-mono-home-nav-core.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1134,
+              "resourceSize": 1402,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/preload-helper.L5lOfJxi.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1372,
+              "resourceSize": 2472,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/context-help-client.BqVrBbz0.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1899,
+              "resourceSize": 4190,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/analytics.CH5T6e-b.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1553,
+              "resourceSize": 2909,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/WelcomeBack.1YJn0hin.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1192,
+              "resourceSize": 1447,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/client.DPkn9Lbl.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 4795,
+              "resourceSize": 10499,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/preact.module.Bjq9tLsx.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1089,
+              "resourceSize": 1301,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/read-store.SGxiCNaN.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 879,
+              "resourceSize": 558,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/useProfile.BMlKl8HW.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 4646,
+              "resourceSize": 11693,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/signs.BMXPKoMF.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 468,
+              "resourceSize": 147,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/feature-flags.BT17fOoR.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 751,
+              "resourceSize": 430,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/jsxRuntime.module.BG9KJlGc.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 3265,
+              "resourceSize": 7060,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/i18n.BHqINcbi.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1414,
+              "resourceSize": 2125,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/share.CN4LGlan.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 805,
+              "resourceSize": 484,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/SignChip.BsmErr-0.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1034,
+              "resourceSize": 713,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/NextActionCard.eDMj-LSr.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 418,
+              "resourceSize": 99,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/schema.DqKqbGHb.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 759,
+              "resourceSize": 438,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/profile-access-reader.DoQqlSjt.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1571,
+              "resourceSize": 3226,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/chunk-ZX3QENKK.D45xPG4w.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1606,
+              "resourceSize": 2875,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/hooks.module.C0_8FjiD.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 549,
+              "resourceSize": 228,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/sign-icon.5AEtqUYO.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 479,
+              "resourceSize": 158,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/rolldown-runtime.DK3Fl9T5.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 854,
+              "resourceSize": 533,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/civil-date.CpOZUt7Z.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 365,
+              "resourceSize": 46,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/technical-locales.DDKucXXd.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 4474,
+              "resourceSize": 18927,
+              "statusCode": 200,
+              "mimeType": "text/css",
+              "resourceType": "Stylesheet",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/_astro/index.Bq786fej.css"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 3637,
+              "resourceSize": 12153,
+              "statusCode": 200,
+              "mimeType": "text/css",
+              "resourceType": "Stylesheet",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/assets/site-footer.css"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 2168,
+              "resourceSize": 3972,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/assistant-ui.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 994,
+              "resourceSize": 1416,
+              "statusCode": 200,
+              "mimeType": "text/css",
+              "resourceType": "Stylesheet",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/assistant-ui.css"
+            }
+          ]
+        },
+        {
+          "file": "tests/visual/artifacts/lighthouse/home-3.json",
+          "sha256": "bcfb1f57a24efa9cfe99f6cfea7fac1d61954db5b625a25268e9821ded97cbbf",
+          "lcpMs": 3154.3239999999996,
+          "fcpMs": 1583.6480000000001,
+          "cls": 0,
+          "tbtMs": 0,
+          "scores": {
+            "performance": 0.93,
+            "accessibility": 1,
+            "seo": 1
+          },
+          "diagnostics": {
+            "type": "debugdata",
+            "items": [
+              {
+                "numRequests": 40,
+                "numScripts": 26,
+                "numStylesheets": 3,
+                "numFonts": 3,
+                "numTasks": 1560,
+                "numTasksOver10ms": 5,
+                "numTasksOver25ms": 1,
+                "numTasksOver50ms": 0,
+                "numTasksOver100ms": 0,
+                "numTasksOver500ms": 0,
+                "rtt": 0.03,
+                "throughput": 107811713.09348828,
+                "maxRtt": 0.03,
+                "maxServerLatency": 2.162,
+                "totalByteWeight": 307196,
+                "totalTaskTime": 245.18899999999917,
+                "mainDocumentTransferSize": 67098
+              }
+            ]
+          },
+          "insights": {
+            "font-display-insight": {
+              "type": "table",
+              "headings": [
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL"
+                },
+                {
+                  "key": "wastedMs",
+                  "valueType": "ms",
+                  "label": "Est Savings"
+                }
+              ],
+              "items": [],
+              "skipSumming": [
+                "wastedMs"
+              ]
+            },
+            "lcp-breakdown-insight": {
+              "type": "list",
+              "items": [
+                {
+                  "type": "table",
+                  "headings": [
+                    {
+                      "key": "label",
+                      "valueType": "text",
+                      "label": "Subpart"
+                    },
+                    {
+                      "key": "duration",
+                      "valueType": "ms",
+                      "label": "Duration"
+                    }
+                  ],
+                  "items": [
+                    {
+                      "subpart": "timeToFirstByte",
+                      "label": "Time to first byte",
+                      "duration": 5.9690000002384185
+                    },
+                    {
+                      "subpart": "resourceLoadDelay",
+                      "label": "Resource load delay",
+                      "duration": 11.604999999761581
+                    },
+                    {
+                      "subpart": "resourceLoadDuration",
+                      "label": "Resource load duration",
+                      "duration": 21.815
+                    },
+                    {
+                      "subpart": "elementRenderDelay",
+                      "label": "Element render delay",
+                      "duration": 114.824
+                    }
+                  ]
+                },
+                {
+                  "type": "node",
+                  "lhId": "page-0-IMG",
+                  "path": "1,HTML,1,BODY,10,MAIN,1,SECTION,0,DIV,0,PICTURE,1,IMG",
+                  "selector": "section.hero > div.hero__frame > picture > img.hero__poster",
+                  "boundingRect": {
+                    "top": -14,
+                    "bottom": 775,
+                    "left": 2,
+                    "right": 409,
+                    "width": 407,
+                    "height": 789
+                  },
+                  "snippet": "<img class=\"hero__poster\" src=\"http://127.0.0.1:4328/assets/hero/zodiacs-hero-poster-mobile-v2.avif\" width=\"1600\" height=\"900\" loading=\"eager\" fetchpriority=\"high\" alt=\"\" aria-hidden=\"true\" data-hero-poster=\"\" data-astro-cid-lcdefpme=\"\" data-hero-motion=\"drift\" data-hero-visible=\"true\">",
+                  "nodeLabel": "section.hero > div.hero__frame > picture > img.hero__poster"
+                }
+              ]
+            },
+            "lcp-discovery-insight": {
+              "type": "list",
+              "items": [
+                {
+                  "type": "checklist",
+                  "items": {
+                    "priorityHinted": {
+                      "label": "fetchpriority=high applied",
+                      "value": true
+                    },
+                    "requestDiscoverable": {
+                      "label": "Request is discoverable in initial document",
+                      "value": true
+                    },
+                    "eagerlyLoaded": {
+                      "label": "LCP resources should not use loading=lazy",
+                      "value": true
+                    }
+                  }
+                },
+                {
+                  "type": "node",
+                  "lhId": "page-0-IMG",
+                  "path": "1,HTML,1,BODY,10,MAIN,1,SECTION,0,DIV,0,PICTURE,1,IMG",
+                  "selector": "section.hero > div.hero__frame > picture > img.hero__poster",
+                  "boundingRect": {
+                    "top": -14,
+                    "bottom": 775,
+                    "left": 2,
+                    "right": 409,
+                    "width": 407,
+                    "height": 789
+                  },
+                  "snippet": "<img class=\"hero__poster\" src=\"http://127.0.0.1:4328/assets/hero/zodiacs-hero-poster-mobile-v2.avif\" width=\"1600\" height=\"900\" loading=\"eager\" fetchpriority=\"high\" alt=\"\" aria-hidden=\"true\" data-hero-poster=\"\" data-astro-cid-lcdefpme=\"\" data-hero-motion=\"drift\" data-hero-visible=\"true\">",
+                  "nodeLabel": "section.hero > div.hero__frame > picture > img.hero__poster"
+                }
+              ]
+            },
+            "render-blocking-insight": {
+              "type": "table",
+              "headings": [
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL"
+                },
+                {
+                  "key": "totalBytes",
+                  "valueType": "bytes",
+                  "label": "Transfer Size"
+                },
+                {
+                  "key": "wastedMs",
+                  "valueType": "timespanMs",
+                  "label": "Duration"
+                }
+              ],
+              "items": []
+            }
+          },
+          "requests": [
+            {
+              "protocol": "http/1.1",
+              "transferSize": 67098,
+              "resourceSize": 274504,
+              "statusCode": 200,
+              "mimeType": "text/html",
+              "resourceType": "Document",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 111905,
+              "resourceSize": 111635,
+              "statusCode": 200,
+              "mimeType": "image/avif",
+              "resourceType": "Image",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/hero/zodiacs-hero-poster-mobile-v2.avif"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 20608,
+              "resourceSize": 20288,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/home/instrument-sans-home-nav-core.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 13768,
+              "resourceSize": 13448,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/home/eb-garamond-home-400-core.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1094,
+              "resourceSize": 773,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/AstroTerm.astro_astro_type_script_index_0_lang.DB1iYTmP.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 2042,
+              "resourceSize": 3393,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/webmcp-register.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 13516,
+              "resourceSize": 13196,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/assets/home/jetbrains-mono-home-nav-core.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1134,
+              "resourceSize": 1402,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/preload-helper.L5lOfJxi.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1372,
+              "resourceSize": 2472,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/context-help-client.BqVrBbz0.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1899,
+              "resourceSize": 4190,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/analytics.CH5T6e-b.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1553,
+              "resourceSize": 2909,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/WelcomeBack.1YJn0hin.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1192,
+              "resourceSize": 1447,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/client.DPkn9Lbl.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 4795,
+              "resourceSize": 10499,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/preact.module.Bjq9tLsx.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1089,
+              "resourceSize": 1301,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/read-store.SGxiCNaN.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 879,
+              "resourceSize": 558,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/useProfile.BMlKl8HW.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 4646,
+              "resourceSize": 11693,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/signs.BMXPKoMF.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 468,
+              "resourceSize": 147,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/feature-flags.BT17fOoR.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 751,
+              "resourceSize": 430,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/jsxRuntime.module.BG9KJlGc.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 3265,
+              "resourceSize": 7060,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/i18n.BHqINcbi.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1414,
+              "resourceSize": 2125,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/share.CN4LGlan.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 805,
+              "resourceSize": 484,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/SignChip.BsmErr-0.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1034,
+              "resourceSize": 713,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/NextActionCard.eDMj-LSr.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1606,
+              "resourceSize": 2875,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/hooks.module.C0_8FjiD.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 418,
+              "resourceSize": 99,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/schema.DqKqbGHb.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 759,
+              "resourceSize": 438,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/profile-access-reader.DoQqlSjt.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 1571,
+              "resourceSize": 3226,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/chunk-ZX3QENKK.D45xPG4w.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 549,
+              "resourceSize": 228,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/sign-icon.5AEtqUYO.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 479,
+              "resourceSize": 158,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/rolldown-runtime.DK3Fl9T5.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 854,
+              "resourceSize": 533,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/civil-date.CpOZUt7Z.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 365,
+              "resourceSize": 46,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/_astro/technical-locales.DDKucXXd.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 4474,
+              "resourceSize": 18927,
+              "statusCode": 200,
+              "mimeType": "text/css",
+              "resourceType": "Stylesheet",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/_astro/index.Bq786fej.css"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 3637,
+              "resourceSize": 12153,
+              "statusCode": 200,
+              "mimeType": "text/css",
+              "resourceType": "Stylesheet",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/assets/site-footer.css"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 2168,
+              "resourceSize": 3972,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/assistant-ui.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 994,
+              "resourceSize": 1416,
+              "statusCode": 200,
+              "mimeType": "text/css",
+              "resourceType": "Stylesheet",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/assistant-ui.css"
+            }
+          ]
+        },
+        {
+          "file": "tests/visual/artifacts/lighthouse/thesis-1.json",
+          "sha256": "baa932c8e0da29d948aa7c334f251edd6af9318274443422c7e780555e327169",
+          "lcpMs": 2405.187,
+          "fcpMs": 1502.5935,
+          "cls": 0,
+          "tbtMs": 0,
+          "scores": {
+            "performance": 0.97,
+            "accessibility": 1,
+            "seo": 1
+          },
+          "diagnostics": {
+            "type": "debugdata",
+            "items": [
+              {
+                "numRequests": 28,
+                "numScripts": 1,
+                "numStylesheets": 1,
+                "numFonts": 5,
+                "numTasks": 1046,
+                "numTasksOver10ms": 3,
+                "numTasksOver25ms": 1,
+                "numTasksOver50ms": 0,
+                "numTasksOver100ms": 0,
+                "numTasksOver500ms": 0,
+                "rtt": 0.02175,
+                "throughput": 1061265189.7146438,
+                "maxRtt": 0.02175,
+                "maxServerLatency": 1.29675,
+                "totalByteWeight": 2419154,
+                "totalTaskTime": 157.40299999999996,
+                "mainDocumentTransferSize": 71343
+              }
+            ]
+          },
+          "insights": {
+            "font-display-insight": {
+              "type": "table",
+              "headings": [
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL"
+                },
+                {
+                  "key": "wastedMs",
+                  "valueType": "ms",
+                  "label": "Est Savings"
+                }
+              ],
+              "items": [],
+              "skipSumming": [
+                "wastedMs"
+              ]
+            },
+            "lcp-breakdown-insight": {
+              "type": "list",
+              "items": [
+                {
+                  "type": "table",
+                  "headings": [
+                    {
+                      "key": "label",
+                      "valueType": "text",
+                      "label": "Subpart"
+                    },
+                    {
+                      "key": "duration",
+                      "valueType": "ms",
+                      "label": "Duration"
+                    }
+                  ],
+                  "items": [
+                    {
+                      "subpart": "timeToFirstByte",
+                      "label": "Time to first byte",
+                      "duration": 5.947
+                    },
+                    {
+                      "subpart": "resourceLoadDelay",
+                      "label": "Resource load delay",
+                      "duration": 43.155
+                    },
+                    {
+                      "subpart": "resourceLoadDuration",
+                      "label": "Resource load duration",
+                      "duration": 3.201
+                    },
+                    {
+                      "subpart": "elementRenderDelay",
+                      "label": "Element render delay",
+                      "duration": 81.99
+                    }
+                  ]
+                },
+                {
+                  "type": "node",
+                  "lhId": "page-0-VIDEO",
+                  "path": "1,HTML,1,BODY,4,HEADER,0,VIDEO",
+                  "selector": "body > header.hero > video.hero__media",
+                  "boundingRect": {
+                    "top": -76,
+                    "bottom": 681,
+                    "left": 0,
+                    "right": 412,
+                    "width": 412,
+                    "height": 757
+                  },
+                  "snippet": "<video class=\"hero__media\" muted=\"\" loop=\"\" playsinline=\"\" preload=\"none\" poster=\"/assets/art/zodiac-clock-768.avif\" fetchpriority=\"high\" aria-hidden=\"true\" tabindex=\"-1\">",
+                  "nodeLabel": "body > header.hero > video.hero__media"
+                }
+              ]
+            },
+            "lcp-discovery-insight": {
+              "type": "list",
+              "items": [
+                {
+                  "type": "checklist",
+                  "items": {
+                    "priorityHinted": {
+                      "label": "fetchpriority=high applied",
+                      "value": true
+                    },
+                    "requestDiscoverable": {
+                      "label": "Request is discoverable in initial document",
+                      "value": true
+                    },
+                    "eagerlyLoaded": {
+                      "label": "LCP resources should not use loading=lazy",
+                      "value": true
+                    }
+                  }
+                },
+                {
+                  "type": "node",
+                  "lhId": "page-0-VIDEO",
+                  "path": "1,HTML,1,BODY,4,HEADER,0,VIDEO",
+                  "selector": "body > header.hero > video.hero__media",
+                  "boundingRect": {
+                    "top": -76,
+                    "bottom": 681,
+                    "left": 0,
+                    "right": 412,
+                    "width": 412,
+                    "height": 757
+                  },
+                  "snippet": "<video class=\"hero__media\" muted=\"\" loop=\"\" playsinline=\"\" preload=\"none\" poster=\"/assets/art/zodiac-clock-768.avif\" fetchpriority=\"high\" aria-hidden=\"true\" tabindex=\"-1\">",
+                  "nodeLabel": "body > header.hero > video.hero__media"
+                }
+              ]
+            },
+            "render-blocking-insight": {
+              "type": "table",
+              "headings": [
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL"
+                },
+                {
+                  "key": "totalBytes",
+                  "valueType": "bytes",
+                  "label": "Transfer Size"
+                },
+                {
+                  "key": "wastedMs",
+                  "valueType": "timespanMs",
+                  "label": "Duration"
+                }
+              ],
+              "items": []
+            }
+          },
+          "requests": [
+            {
+              "protocol": "http/1.1",
+              "transferSize": 71343,
+              "resourceSize": 333573,
+              "statusCode": 200,
+              "mimeType": "text/html",
+              "resourceType": "Document",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/thesis/"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 22024,
+              "resourceSize": 21704,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/fonts/eb-garamond-latin-400-normal.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 30412,
+              "resourceSize": 30092,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/fonts/instrument-sans-latin-wght-normal.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 40724,
+              "resourceSize": 40404,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/fonts/jetbrains-mono-latin-wght-normal.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 23332,
+              "resourceSize": 23012,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/fonts/eb-garamond-latin-500-normal.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 22492,
+              "resourceSize": 22172,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/fonts/eb-garamond-latin-400-italic.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 2168,
+              "resourceSize": 3972,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/assistant-ui.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 994,
+              "resourceSize": 1416,
+              "statusCode": 200,
+              "mimeType": "text/css",
+              "resourceType": "Stylesheet",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/assistant-ui.css"
+            }
+          ]
+        },
+        {
+          "file": "tests/visual/artifacts/lighthouse/thesis-2.json",
+          "sha256": "0ae1025c5d6393c4e123726508bb51991f12abf68c28313e2d61a9fc9bd72702",
+          "lcpMs": 2418.437,
+          "fcpMs": 1509.2185,
+          "cls": 0,
+          "tbtMs": 0,
+          "scores": {
+            "performance": 0.97,
+            "accessibility": 1,
+            "seo": 1
+          },
+          "diagnostics": {
+            "type": "debugdata",
+            "items": [
+              {
+                "numRequests": 28,
+                "numScripts": 1,
+                "numStylesheets": 1,
+                "numFonts": 5,
+                "numTasks": 1081,
+                "numTasksOver10ms": 5,
+                "numTasksOver25ms": 0,
+                "numTasksOver50ms": 0,
+                "numTasksOver100ms": 0,
+                "numTasksOver500ms": 0,
+                "rtt": 0.02775,
+                "throughput": 904948657.9858419,
+                "maxRtt": 0.02775,
+                "maxServerLatency": 4.60925,
+                "totalByteWeight": 2419154,
+                "totalTaskTime": 198.35099999999932,
+                "mainDocumentTransferSize": 71343
+              }
+            ]
+          },
+          "insights": {
+            "font-display-insight": {
+              "type": "table",
+              "headings": [
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL"
+                },
+                {
+                  "key": "wastedMs",
+                  "valueType": "ms",
+                  "label": "Est Savings"
+                }
+              ],
+              "items": [],
+              "skipSumming": [
+                "wastedMs"
+              ]
+            },
+            "lcp-breakdown-insight": {
+              "type": "list",
+              "items": [
+                {
+                  "type": "table",
+                  "headings": [
+                    {
+                      "key": "label",
+                      "valueType": "text",
+                      "label": "Subpart"
+                    },
+                    {
+                      "key": "duration",
+                      "valueType": "ms",
+                      "label": "Duration"
+                    }
+                  ],
+                  "items": [
+                    {
+                      "subpart": "timeToFirstByte",
+                      "label": "Time to first byte",
+                      "duration": 6.219
+                    },
+                    {
+                      "subpart": "resourceLoadDelay",
+                      "label": "Resource load delay",
+                      "duration": 36.201
+                    },
+                    {
+                      "subpart": "resourceLoadDuration",
+                      "label": "Resource load duration",
+                      "duration": 3.423
+                    },
+                    {
+                      "subpart": "elementRenderDelay",
+                      "label": "Element render delay",
+                      "duration": 106.08
+                    }
+                  ]
+                },
+                {
+                  "type": "node",
+                  "lhId": "page-0-VIDEO",
+                  "path": "1,HTML,1,BODY,4,HEADER,0,VIDEO",
+                  "selector": "body > header.hero > video.hero__media",
+                  "boundingRect": {
+                    "top": -76,
+                    "bottom": 681,
+                    "left": 0,
+                    "right": 412,
+                    "width": 412,
+                    "height": 757
+                  },
+                  "snippet": "<video class=\"hero__media\" muted=\"\" loop=\"\" playsinline=\"\" preload=\"none\" poster=\"/assets/art/zodiac-clock-768.avif\" fetchpriority=\"high\" aria-hidden=\"true\" tabindex=\"-1\">",
+                  "nodeLabel": "body > header.hero > video.hero__media"
+                }
+              ]
+            },
+            "lcp-discovery-insight": {
+              "type": "list",
+              "items": [
+                {
+                  "type": "checklist",
+                  "items": {
+                    "priorityHinted": {
+                      "label": "fetchpriority=high applied",
+                      "value": true
+                    },
+                    "requestDiscoverable": {
+                      "label": "Request is discoverable in initial document",
+                      "value": true
+                    },
+                    "eagerlyLoaded": {
+                      "label": "LCP resources should not use loading=lazy",
+                      "value": true
+                    }
+                  }
+                },
+                {
+                  "type": "node",
+                  "lhId": "page-0-VIDEO",
+                  "path": "1,HTML,1,BODY,4,HEADER,0,VIDEO",
+                  "selector": "body > header.hero > video.hero__media",
+                  "boundingRect": {
+                    "top": -76,
+                    "bottom": 681,
+                    "left": 0,
+                    "right": 412,
+                    "width": 412,
+                    "height": 757
+                  },
+                  "snippet": "<video class=\"hero__media\" muted=\"\" loop=\"\" playsinline=\"\" preload=\"none\" poster=\"/assets/art/zodiac-clock-768.avif\" fetchpriority=\"high\" aria-hidden=\"true\" tabindex=\"-1\">",
+                  "nodeLabel": "body > header.hero > video.hero__media"
+                }
+              ]
+            },
+            "render-blocking-insight": {
+              "type": "table",
+              "headings": [
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL"
+                },
+                {
+                  "key": "totalBytes",
+                  "valueType": "bytes",
+                  "label": "Transfer Size"
+                },
+                {
+                  "key": "wastedMs",
+                  "valueType": "timespanMs",
+                  "label": "Duration"
+                }
+              ],
+              "items": []
+            }
+          },
+          "requests": [
+            {
+              "protocol": "http/1.1",
+              "transferSize": 71343,
+              "resourceSize": 333573,
+              "statusCode": 200,
+              "mimeType": "text/html",
+              "resourceType": "Document",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/thesis/"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 22024,
+              "resourceSize": 21704,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/fonts/eb-garamond-latin-400-normal.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 30412,
+              "resourceSize": 30092,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/fonts/instrument-sans-latin-wght-normal.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 40724,
+              "resourceSize": 40404,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/fonts/jetbrains-mono-latin-wght-normal.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 23332,
+              "resourceSize": 23012,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/fonts/eb-garamond-latin-500-normal.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 22492,
+              "resourceSize": 22172,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/fonts/eb-garamond-latin-400-italic.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 2168,
+              "resourceSize": 3972,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/assistant-ui.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 994,
+              "resourceSize": 1416,
+              "statusCode": 200,
+              "mimeType": "text/css",
+              "resourceType": "Stylesheet",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/assistant-ui.css"
+            }
+          ]
+        },
+        {
+          "file": "tests/visual/artifacts/lighthouse/thesis-3.json",
+          "sha256": "c4b1eaa6371021b6ca15d0775fd40dbd0c80ab7181952da9a78469aef1204ee9",
+          "lcpMs": 2407.392,
+          "fcpMs": 1503.696,
+          "cls": 0,
+          "tbtMs": 0,
+          "scores": {
+            "performance": 0.97,
+            "accessibility": 1,
+            "seo": 1
+          },
+          "diagnostics": {
+            "type": "debugdata",
+            "items": [
+              {
+                "numRequests": 28,
+                "numScripts": 1,
+                "numStylesheets": 1,
+                "numFonts": 5,
+                "numTasks": 1035,
+                "numTasksOver10ms": 4,
+                "numTasksOver25ms": 0,
+                "numTasksOver50ms": 0,
+                "numTasksOver100ms": 0,
+                "numTasksOver500ms": 0,
+                "rtt": 0.0225,
+                "throughput": 844824166.2416295,
+                "maxRtt": 0.0225,
+                "maxServerLatency": 1.8480000000000003,
+                "totalByteWeight": 2419154,
+                "totalTaskTime": 160.0739999999997,
+                "mainDocumentTransferSize": 71343
+              }
+            ]
+          },
+          "insights": {
+            "font-display-insight": {
+              "type": "table",
+              "headings": [
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL"
+                },
+                {
+                  "key": "wastedMs",
+                  "valueType": "ms",
+                  "label": "Est Savings"
+                }
+              ],
+              "items": [],
+              "skipSumming": [
+                "wastedMs"
+              ]
+            },
+            "lcp-breakdown-insight": {
+              "type": "list",
+              "items": [
+                {
+                  "type": "table",
+                  "headings": [
+                    {
+                      "key": "label",
+                      "valueType": "text",
+                      "label": "Subpart"
+                    },
+                    {
+                      "key": "duration",
+                      "valueType": "ms",
+                      "label": "Duration"
+                    }
+                  ],
+                  "items": [
+                    {
+                      "subpart": "timeToFirstByte",
+                      "label": "Time to first byte",
+                      "duration": 6.22
+                    },
+                    {
+                      "subpart": "resourceLoadDelay",
+                      "label": "Resource load delay",
+                      "duration": 41.107
+                    },
+                    {
+                      "subpart": "resourceLoadDuration",
+                      "label": "Resource load duration",
+                      "duration": 1.982
+                    },
+                    {
+                      "subpart": "elementRenderDelay",
+                      "label": "Element render delay",
+                      "duration": 85.407
+                    }
+                  ]
+                },
+                {
+                  "type": "node",
+                  "lhId": "page-0-VIDEO",
+                  "path": "1,HTML,1,BODY,4,HEADER,0,VIDEO",
+                  "selector": "body > header.hero > video.hero__media",
+                  "boundingRect": {
+                    "top": -76,
+                    "bottom": 681,
+                    "left": 0,
+                    "right": 412,
+                    "width": 412,
+                    "height": 757
+                  },
+                  "snippet": "<video class=\"hero__media\" muted=\"\" loop=\"\" playsinline=\"\" preload=\"none\" poster=\"/assets/art/zodiac-clock-768.avif\" fetchpriority=\"high\" aria-hidden=\"true\" tabindex=\"-1\">",
+                  "nodeLabel": "body > header.hero > video.hero__media"
+                }
+              ]
+            },
+            "lcp-discovery-insight": {
+              "type": "list",
+              "items": [
+                {
+                  "type": "checklist",
+                  "items": {
+                    "priorityHinted": {
+                      "label": "fetchpriority=high applied",
+                      "value": true
+                    },
+                    "requestDiscoverable": {
+                      "label": "Request is discoverable in initial document",
+                      "value": true
+                    },
+                    "eagerlyLoaded": {
+                      "label": "LCP resources should not use loading=lazy",
+                      "value": true
+                    }
+                  }
+                },
+                {
+                  "type": "node",
+                  "lhId": "page-0-VIDEO",
+                  "path": "1,HTML,1,BODY,4,HEADER,0,VIDEO",
+                  "selector": "body > header.hero > video.hero__media",
+                  "boundingRect": {
+                    "top": -76,
+                    "bottom": 681,
+                    "left": 0,
+                    "right": 412,
+                    "width": 412,
+                    "height": 757
+                  },
+                  "snippet": "<video class=\"hero__media\" muted=\"\" loop=\"\" playsinline=\"\" preload=\"none\" poster=\"/assets/art/zodiac-clock-768.avif\" fetchpriority=\"high\" aria-hidden=\"true\" tabindex=\"-1\">",
+                  "nodeLabel": "body > header.hero > video.hero__media"
+                }
+              ]
+            },
+            "render-blocking-insight": {
+              "type": "table",
+              "headings": [
+                {
+                  "key": "url",
+                  "valueType": "url",
+                  "label": "URL"
+                },
+                {
+                  "key": "totalBytes",
+                  "valueType": "bytes",
+                  "label": "Transfer Size"
+                },
+                {
+                  "key": "wastedMs",
+                  "valueType": "timespanMs",
+                  "label": "Duration"
+                }
+              ],
+              "items": []
+            }
+          },
+          "requests": [
+            {
+              "protocol": "http/1.1",
+              "transferSize": 71343,
+              "resourceSize": 333573,
+              "statusCode": 200,
+              "mimeType": "text/html",
+              "resourceType": "Document",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/thesis/"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 22024,
+              "resourceSize": 21704,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/fonts/eb-garamond-latin-400-normal.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 30412,
+              "resourceSize": 30092,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/fonts/instrument-sans-latin-wght-normal.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 40724,
+              "resourceSize": 40404,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/fonts/jetbrains-mono-latin-wght-normal.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 23332,
+              "resourceSize": 23012,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/fonts/eb-garamond-latin-500-normal.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 22492,
+              "resourceSize": 22172,
+              "statusCode": 200,
+              "mimeType": "font/woff2",
+              "resourceType": "Font",
+              "priority": "VeryHigh",
+              "url": "http://127.0.0.1:4328/fonts/eb-garamond-latin-400-italic.woff2"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 2168,
+              "resourceSize": 3972,
+              "statusCode": 200,
+              "mimeType": "text/javascript",
+              "resourceType": "Script",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/assistant-ui.js"
+            },
+            {
+              "protocol": "http/1.1",
+              "transferSize": 994,
+              "resourceSize": 1416,
+              "statusCode": 200,
+              "mimeType": "text/css",
+              "resourceType": "Stylesheet",
+              "priority": "High",
+              "url": "http://127.0.0.1:4328/assets/assistant-ui.css"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Read-only original artifacts; no new browser run, source correction or acceptance.",
+    "Insights diagnose retained samples; observed differences alone do not prove a cause."
+  ]
+}

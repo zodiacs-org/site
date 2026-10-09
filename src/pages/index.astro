@@ -428,8 +428,10 @@ const tools = [
     globalThis.__ZDX_UI__ = { locale: 'en', messages: homeUiMessages };
   </script>
 
-  <!-- 01b · Returning visitors with a saved chart get greeted; everyone else sees nothing here -->
-  <WelcomeBack client:idle />
+  <!-- 01b · Returning visitors with a saved chart get greeted; everyone else sees nothing here.
+       The shared intent/load directive reaches the empty SSR island automatically
+       after load, keeping its module tree out of the poster's initial fetches. -->
+  <WelcomeBack client:interaction />
 
   <!-- 02 · The sky, right now -->
   <section class="container ticker-band reveal">
